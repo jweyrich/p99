@@ -252,9 +252,10 @@ if (defined($ofile) && ${ofile} ne "-") {
   my $cookie = rand()."-$$";
  DIRS:
   foreach my $dir ("/dev/shm", "/tmp", ".") {
-   $tmp = "${dir}/target-copy-${cookie}.txt";
-   next DIRS if !open($target, ">${tmp}");
- }
+    $tmp = "${dir}/target-copy-${cookie}.txt";
+    open($target, ">${tmp}");
+    last DIRS if ${target};
+  }
   die "can't open ${tmp} for writing"
     if (!${target});
 } else {
