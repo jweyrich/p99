@@ -22,18 +22,23 @@ sub is_comment(@);
 my $ifile;
 my $ofile;
 my $type;
-my $spaces = 2;
-my $result = GetOptions ("ifile=s"   => \${ifile},      # string
-                         "ofile=s"   => \${ofile},      # string
-                         "spaces=i"  => \${spaces},     # integer
-                         "type=s"    => \${type});      # string
+my $spaces = 1;
+my $metoo = 0;
+my $beauty = "astyle";
+my @beautyArgs = ("-aNoO", "-s2", "-M2", "--convert-tabs");
+my $result = GetOptions ("ifile=s"      => \${ifile},      # string
+                         "ofile=s"       => \${ofile},      # string
+                         "spaces=i"      => \${spaces},     # integer
+                         "type=s"        => \${type},       # string
+                         "metoo!"        => \${metoo},      # flag
+                         "beauty=s"      => \${beauty},     # string
+                         "beautyArgs=s"  => \@{beautyArgs}, # list of strings
+);
 
 $ifile = ${ofile} if (!defined($ifile));
+@beautyArgs = split(/[,:]/,join(',',@beautyArgs));
 
 $spaces = " " x ${spaces};
-
-die "Usage: $0 -ifile <filename> -ofile <filename [-type <filetype>]"
-  if (!defined($ifile));
 
 my ($scriptdir, $execname) = ${PROGRAM_NAME} =~ m{^(.*/)?(.+)$}o;
 $scriptdir = "." if (!defined($scriptdir) || ${scriptdir} eq "");
@@ -90,6 +95,40 @@ my %slogan = (
                 "autoconf" => "dnl This may look like nonsense, but it really is -*- autoconf -*-",
 );
 
+sub usage () {
+  my @types = sort keys %combeg;
+  $ifile = "<undef>" if (!defined($ifile));
+  $ofile = "<undef>" if (!defined($ofile));
+  print STDERR <<"USAGE";
+Usage: $0 [options]
+             --ofile      <filename>    (${ofile})
+             --ifile      <filename>    (${ifile})
+             --type       <filetype>    (@types)
+             --beauty     <executable>  (${beauty})
+             --beautyArgs arg1:arg2:... (@{beautyArgs})
+             --metoo                    (${metoo})
+
+Where --ifile defaults to --ofile, and --ofile defaults stdout.
+At least one of ifile or ofile must be set.
+USAGE
+}
+
+if (!defined($ifile)) {
+  usage();
+  exit(1);
+}
+
+if (!$result || @ARGV) {
+  usage();
+  print STDERR ($#{ARGV} ? <<"OPTIONS" : <<"OPTION");
+Unknown options @{ARGV}
+OPTIONS
+Unknown option @{ARGV}
+OPTION
+  exit(1);
+}
+
+
 ### END CONDIDITIONING
 
 
@@ -100,7 +139,7 @@ my @tuples
 
 print STDERR @{tuples}/2 . "\t*****\t\trevisions in total\n";
 
-if (!@{tuples}) {
+if (!@{tuples} || ${metoo}) {
   ## nothing found, fall back to POSIX information
   my $au = $ENV{USER};
   my @years = ();
@@ -124,7 +163,7 @@ if (!@{tuples}) {
     $year += 1900;
     @years = (${year});
   }
-  @tuples = map { ${au} => $_ } @{years};
+  push(@tuples, map { ${au} => $_ } @{years});
 }
 
 ## This now has one occuring year for any author
@@ -159,25 +198,30 @@ while (@{tuples}) {
 
 my @text = ();
 my $source;
+my $icopy;
 if (defined($ifile)) {
   my $tmp = $$ . rand();
  TMPIFILE:
-  foreach my $icopy ("/dev/shm/fsa-${tmp}",
-                     "/tmp/fsa-${tmp}",
-                     "${ifile}-${tmp}") {
-    system("cp", "-fp", ${ifile}, ${icopy});
-    if (open($source, "<${icopy}")) {
-      unlink(${icopy});
-      # read the first three lines
-    FIRSTLINES:
-      while (my $line = <$source>) {
-        push(@text, ${line});
-        last TMPIFILE if ($#{text} > 1);
-      }
-    }
-    unlink(${icopy});
+  foreach ("/dev/shm/fsa-${tmp}",
+           "/tmp/fsa-${tmp}",
+           "${ifile}-${tmp}") {
+    $icopy = $_;
+    last TMPIFILE
+      if (!system("cp", "-fp", ${ifile}, ${icopy}));
   }
 }
+
+READIN:
+if (open($source, "<${icopy}")) {
+  # read the first three lines
+ FIRSTLINES:
+  while (my $line = <$source>) {
+    push(@text, ${line});
+    last FIRSTLINES
+      if ($#{text} > 1);
+  }
+}
+unlink(${icopy});
 
 if (@{text}) {
   foreach my $i (0 ... 1) {
@@ -193,6 +237,21 @@ if (@{text}) {
     }
   }
   $type = "c++"  if (!defined($type));
+}
+
+unlink(${icopy});
+# Since we are at it try to beautify the file, first.
+if (defined(${beauty}) && ${type} eq "c++") {
+  if (system("${beauty} @{beautyArgs} <${ifile} >${icopy}")) {
+    print STDERR "${ifile} beautification had error: " . $OS_ERROR ."\n";
+    # Fall back to the already opened file and remove the garbage.
+    unlink(${icopy});
+  } else {
+    $beauty = undef;
+    # We changed the file so we have to restart
+    close($source);
+    goto READIN;
+  }
 }
 
 my  $combeg = ${combeg{${type}}};
@@ -398,7 +457,9 @@ if (!close($target)) {
 
 if (defined($ofile) && ${ofile} ne "-") {
   # Be sure to keep the file access rights.
-  if (system("cp ${tmp} ${ofile}")) {
+  if (system("diff -u ${ofile} ${tmp}") == 0) {
+    print STDERR "no difference encoutered, ${ofile} unchanged.\n";
+  } elsif (system("cp ${tmp} ${ofile}")) {
     my $err = $?;
     if ($err == -1) {
       print "failed to copy to target file: $!\n";
