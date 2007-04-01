@@ -226,8 +226,9 @@ unlink(${icopy});
 if (@{text}) {
   foreach my $i (0 ... 1) {
     my $line = ${text[${i}]};
-    if ($line =~ m{-\*- ([-a-z0-9]+) -\*-}o) {
-      my ($ntype) = $line =~ m{-\*- ([-a-z0-9]+) -\*-}o;
+    if ($line =~ m{-\*- ([-a-zA-Z0-9]+) -\*-}o) {
+      my ($ntype) = $1;
+      $ntype = lc ${ntype};
       if (!defined($type)) {
         $type = ${ntype};
         print STDERR "guessing ${type}\n";
