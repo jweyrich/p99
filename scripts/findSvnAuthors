@@ -23,6 +23,7 @@ my $ifile;
 my $ofile;
 my $type;
 my $spaces = 1;
+my $diff = 1;
 my $metoo = 0;
 my $beauty = "astyle";
 my @beautyArgs = ("-aNoO", "-s2", "-M2", "--convert-tabs");
@@ -31,6 +32,7 @@ my $result = GetOptions ("ifile=s"      => \${ifile},      # string
                          "spaces=i"      => \${spaces},     # integer
                          "type=s"        => \${type},       # string
                          "metoo!"        => \${metoo},      # flag
+                         "diff!"        => \${diff},      # flag
                          "beauty=s"      => \${beauty},     # string
                          "beautyArgs=s"  => \@{beautyArgs}, # list of strings
 );
@@ -251,6 +253,7 @@ if (defined(${beauty}) && ${type} eq "c++") {
     $beauty = undef;
     # We changed the file so we have to restart
     close($source);
+    @text = ();
     goto READIN;
   }
 }
@@ -458,7 +461,7 @@ if (!close($target)) {
 
 if (defined($ofile) && ${ofile} ne "-") {
   # Be sure to keep the file access rights.
-  if (system("diff -u ${ofile} ${tmp}") == 0) {
+  if ($diff && system("diff -u ${ofile} ${tmp}") == 0) {
     print STDERR "no difference encoutered, ${ofile} unchanged.\n";
   } elsif (system("cp ${tmp} ${ofile}")) {
     my $err = $?;
