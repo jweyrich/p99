@@ -1,16 +1,19 @@
-# This may look like complete nonsense, but it really is -*- perl -*-
+#  This may look like complete nonsense, but it really is -*- perl -*-
 eval '[ $?0 -eq 0 ]' && eval 'exec perl -wS $0 ${1+"$@"}' || eval 'exec perl -wS $0 ${*:q}'
-if 0;
-#  Except of parts copied from previous work and as explicitly stated 
-#  below, the author and copyright holder for this work is
-#  Copyright (c) 2006-2007 Jens Gustedt, INRIA, France
-#
-#  This file is part of the parXXL library. It is free software;
-#  you can redistribute it and/or modify it under the terms as given in
-#  the file LICENSE. It is distributed without any warranty;
-#  without even the implied warranty of merchantability or fitness
-#  for a particular purpose.
-#
+if 0;               #### for this magic, see findSvnAuthors ####
+# 
+# 
+# Except of parts copied from previous work and as explicitly stated below,
+# the author and copyright holder for this work is
+# Copyright (c) 2006-2007 Jens Gustedt, INRIA, France
+# 
+# 
+# This file is part of the parXXL library. It is free software;
+# you can redistribute it and/or modify it under the terms as given in
+# the file LICENSE. It is distributed without any warranty;
+# without even the implied warranty of merchantability or fitness
+# for a particular purpose.
+# 
 
 use English;
 use Getopt::Long;
