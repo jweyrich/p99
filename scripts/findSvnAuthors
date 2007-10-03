@@ -242,8 +242,9 @@ if (@{text}) {
         if (${type} ne ${ntype});
     }
   }
-  $type = "c++"  if (!defined($type));
 }
+
+$type = "c++"  if (!defined($type));
 
 unlink(${icopy});
 # Since we are at it try to beautify the file, first.
