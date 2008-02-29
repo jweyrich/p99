@@ -1,11 +1,13 @@
+#!/bin/sh -f
 #  This may look like complete nonsense, but it really is -*- perl -*-
-eval '[ $?0 -eq 0 ]' && eval 'exec perl -wS $0 ${1+"$@"}' || eval 'exec perl -wS $0 ${*:q}'
+eval 'exec perl -wS -x $0 ${1+"$@"}'
 if 0;               #### for this magic, see findSvnAuthors ####
+#!perl
 # 
 # 
 # Except of parts copied from previous work and as explicitly stated below,
 # the author and copyright holder for this work is
-# Copyright (c) 2006-2007 Jens Gustedt, INRIA, France
+# Copyright (c) 2006-2008 Jens Gustedt, INRIA, France
 # 
 # 
 # This file is part of the parXXL library. It is free software;
@@ -218,12 +220,12 @@ if (defined($ifile)) {
 
 READIN:
 if (open($source, "<${icopy}")) {
-  # read the first three lines
+  # read the first five lines
  FIRSTLINES:
   while (my $line = <$source>) {
     push(@text, ${line});
     last FIRSTLINES
-      if ($#{text} > 1);
+      if ($#{text} > 3);
   }
 }
 unlink(${icopy});
@@ -333,48 +335,61 @@ FOUND:
 select $target;
 
 if (@{text}) {
-  if ($text[0] =~ m{^#!}o) {
-    my $line = shift(@text);
-    die "Interpreter line: ${line}\ndoes not match comment begin sequence `${combeg}' of ${type}\n"
-      if (!is_comment(${line}));
-    print ${line};
-    while (@{text} && is_comment(${text[0]})) {
-      shift @text;
-    }
-  } elsif (${type} eq "perl") {
+  if (${type} eq "perl") {
     print STDERR "you dare?\n";
     if (defined($text[2])) {
       # are the first two lines such that they will never be executed
       # by perl?
       if ((is_comment(@{text}))
           ||(is_comment(${text[0]})
+             && is_comment(${text[1]})
+             && ${text[2]} !~ m{;}o
+             && $text[3] =~ m{^\s*if 0;}o
+             && $text[4] =~ m{#!perl})
+          ||(is_comment(${text[0]})
              && ${text[1]} !~ m{;}o
-             && $text[2] =~ m{^\s*if 0;}o)) {
+             && $text[2] =~ m{^\s*if 0;}o
+             && is_comment(${text[3]})
+             && is_comment(${text[4]}))) {
         print STDERR "you won!\n";
-        shift @text; shift @text; shift @text;
+        shift @text; shift @text; shift @text; shift @text; shift @text;
 
-        ### Insert a magic sequence that never will be executed by
-        ### perl but will launch it.
-        ### The 3 evals ensure that this a valid sequence for perl.
+        ### Insert a magic sequence that will launch perl wherever it
+        ### is found in PATH.
+        ###
+        ### First we ensure that we get a /bin/sh to execute once that
+        ### may then look for perl in the PATH.
+        ### 
+        ### The 2 evals ensure that this a valid sequence for perl.
         ### The `if 0' at the end hinders perl to evaluate the parts.
-        ### (1) distinguishes `sh' and `csh' dialects:
-        ###   eval '[ $?0 -eq 0 ]'
-        ### (2) is for `sh' dialects. Csh would not like the
-        ### positional parameters `${1+"$@"}'
-        ###   eval 'exec perl -wS $0 ${1+"$@"}'
-        ### (3) is for `csh' dialiects. Sh would not know for the
-        ### ${*:q}uoting
-        ###   eval 'exec perl -wS $0 ${*:q}'
+        ### The `eval ...' launches perl on the same script
+        ###
+        ### At the end we place a line with `#!perl' to ensure that
+        ### perl starts thereafter.
 
-        ${slogan} .= "\n" . <<'INTERPRETER' ;
-eval '[ $?0 -eq 0 ]' && eval 'exec perl -wS $0 ${1+"$@"}' || eval 'exec perl -wS $0 ${*:q}'
+        ${slogan} = <<"INTERPRETER" ;
+#!/bin/sh -f
+${slogan}
+INTERPRETER
+
+        ${slogan} .= <<'INTERPRETER' ;
+eval 'exec perl -wS -x $0 ${1+"$@"}'
 if 0;               #### for this magic, see 
 INTERPRETER
+
         chomp $slogan;
         $slogan .= "${execname} ####";
-        print "${slogan}\n";
+        print "${slogan}\n#!perl\n";
         ${slogan} = "";
       }
+    }
+  } elsif ($text[0] =~ m{^#!}o) {
+    my $line = shift(@text);
+    die "Interpreter line: ${line}\ndoes not match comment begin sequence `${combeg}' of ${type}\n"
+      if (!is_comment(${line}));
+    print ${line};
+    while (@{text} && is_comment(${text[0]})) {
+      shift @text;
     }
   } else {
     shift(@text) while (@{text} && is_comment(${text[0]}));
