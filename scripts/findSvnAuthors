@@ -24,6 +24,7 @@ use Getopt::Long;
 sub slurp(&;@);
 sub is_comment(@);
 
+my $help = 0;
 my $ifile;
 my $ofile;
 my $type;
@@ -40,6 +41,7 @@ my $result = GetOptions ("ifile=s"      => \${ifile},      # string
                          "diff!"        => \${diff},      # flag
                          "beauty=s"      => \${beauty},     # string
                          "beautyArgs=s"  => \@{beautyArgs}, # list of strings
+                         "help!"        => \${help},      # flag
 );
 
 $ifile = ${ofile} if (!defined($ifile));
@@ -106,21 +108,39 @@ sub usage () {
   my @types = sort keys %combeg;
   $ifile = "<undef>" if (!defined($ifile));
   $ofile = "<undef>" if (!defined($ofile));
+  $metoo = ${metoo} ? "true" : "false";
+  $diff = ${diff} ? "true" : "false";
+  $PROGRAM_NAME =~ s{.*[/\\]}{}o;
   print STDERR <<"USAGE";
-Usage: $0 [options]
+Add author information to the start of a file.
+
+Usage: ${PROGRAM_NAME} [options]
              --ofile      <filename>    (${ofile})
              --ifile      <filename>    (${ifile})
-             --type       <filetype>    (@types)
+             --type       <filetype>    (one of: @types)
              --beauty     <executable>  (${beauty})
              --beautyArgs arg1:arg2:... (@{beautyArgs})
-             --metoo                    (${metoo})
+             --metoo                    (flag: ${metoo})
+             --diff                     (flag: ${diff})
 
 Where --ifile defaults to --ofile, and --ofile defaults stdout.
 At least one of ifile or ofile must be set.
+
+This program tries to find revision information from an SCM (supported
+are svn and bzr) in terms of author / year pairs and updates an
+initial copyright information at the start of the file. If the option
+--metoo is given it also adds the current user and year to the list of
+revisions.
+
+It knows of different file types (see --type above) and tries to guess
+it if you don\'t provide the --type option. This is used to get the
+comment syntax right. Then it also beautifies the file (see --beauty
+above).
 USAGE
+
 }
 
-if (!defined($ifile)) {
+if (${help} || !defined($ifile)) {
   usage();
   exit(1);
 }
@@ -138,11 +158,29 @@ OPTION
 
 ### END CONDIDITIONING
 
+my @tuples = ();
 
-## Check if the file is logged into svn.
-my @tuples
-  = slurp { m{^(?:r[^|]*)\s+[|]\s+([^|()]+)\s+[|]\s+(\d+)}o ; }
-  "svn log -q ${ifile} |";
+if ( -d ".svn" ) {
+    ## Check if the file is logged into svn.
+    @tuples
+	= slurp { m{^(?:r[^|]*)\s+[|]\s+([^|()]+)\s+[|]\s+(\d+)}o ; }
+    "svn log -q ${ifile} |";
+} else {
+    ## Otherwise suppose that we have bzr
+    my @ttuples
+	= slurp { 
+	    m{(committer|timestamp):\s*(.*)}o ; 
+	    #m{([^:]+):\s*(.+)}o; 
+    }
+    "bzr log ${ifile} |";
+    while (@ttuples) {
+	my ($tag1, $name, $tag2, $time) = splice(@ttuples, -4);
+	if ($name !~ m{^\s*$}o ) {
+	    $time =~ s{^[a-zA-Z]+ ([0-9]+).*}{$1}o;
+	    push(@tuples, $name, $time);
+	}
+    }
+}
 
 print STDERR @{tuples}/2 . "\t*****\t\trevisions in total\n";
 
@@ -436,8 +474,9 @@ copyright
 $header .= ${licence};
 my @header = map {
   chomp;
+  $_ = "${combeg}${spaces}$_";
   s{\s+$}{};
-  "${combeg}${spaces}$_"
+  "$_"
 } split(m{\n}o, ${header}, -1);
 
 if (${comend} ne "") {
