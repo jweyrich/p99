@@ -19,10 +19,12 @@ if 0;               #### for this magic, see findSvnAuthors ####
 
 use English;
 use Getopt::Long;
+use locale;
 
 ### Read in files whoes names are given as arguments.
 sub slurp(&;@);
 sub is_comment(@);
+sub fullname($);
 
 my $help = 0;
 my $ifile;
@@ -32,7 +34,7 @@ my $spaces = 1;
 my $diff = 1;
 my $metoo = 0;
 my $beauty = "astyle";
-my @beautyArgs = ("-aNoO", "-s2", "-M2", "--convert-tabs");
+my @beautyArgs = ("-aNoO", "-s2", "--convert-tabs");
 my $result = GetOptions ("ifile=s"      => \${ifile},      # string
                          "ofile=s"       => \${ofile},      # string
                          "spaces=i"      => \${spaces},     # integer
@@ -54,6 +56,12 @@ $scriptdir = "." if (!defined($scriptdir) || ${scriptdir} eq "");
 
 my $authorsFile = "${scriptdir}/AUTHORS.txt";
 my %names = slurp { m{^(\S+)\s+(.*?)\s*$}o } ${authorsFile};
+
+my %fnames = map { (fullname($_), $_) } values(%names);
+
+foreach my $name (keys(%fnames)) {
+    $names{$name} = $fnames{$name};
+}
 
 my $licenceFile = "${scriptdir}/SHORTLICENCE.txt";
 my $licence = slurp { $_ } ${licenceFile};
@@ -175,10 +183,20 @@ if ( -d ".svn" ) {
     "bzr log ${ifile} |";
     while (@ttuples) {
 	my ($tag1, $name, $tag2, $time) = splice(@ttuples, -4);
+        $name = $names{$name}
+        if (defined($names{$name}));
+        $name = fullname($name);
 	if ($name !~ m{^\s*$}o ) {
 	    $time =~ s{^[a-zA-Z]+ ([0-9]+).*}{$1}o;
 	    push(@tuples, $name, $time);
 	}
+    }
+}
+
+for (my $i = 0; $i < length(@tuples); $i += 2) {
+    my $fname = fullname($names{$tuples[$i]});
+    if (defined($fname) && $fname !~ m{^\s*$}o) {
+        $tuples[$i] = $fname;
     }
 }
 
@@ -201,6 +219,12 @@ if (!@{tuples} || ${metoo}) {
       ${year}
     } (${mtime}, ${ctime});
   }
+  for (my $i = 0; $i < length(@tuples); $i += 2) {
+      my $fname = fullname($names{$tuples[$i]});
+      if (defined($fname) && $fname !~ m{^\s*$}o) {
+          $tuples[$i] = $fname;
+      }
+  }
   # Fall back to actual date
   if (!@{years}) {
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)
@@ -211,8 +235,17 @@ if (!@{tuples} || ${metoo}) {
   push(@tuples, map { ${au} => $_ } @{years});
 }
 
+for (my $i = 0; $i < length(@tuples); $i += 2) {
+    my $fname = fullname($names{$tuples[$i]});
+    if (defined($fname) && $fname !~ m{^\s*$}o) {
+        $tuples[$i] = $fname;
+    }
+}
+
 ## This now has one occuring year for any author
 my %authors = @{tuples};
+
+
 ## Do some statistics and find the full name
 foreach my $au (sort keys %authors) {
   my $name = \${names{${au}}};
@@ -572,4 +605,10 @@ sub slurp (&;@) {
   return wantarray ? @{ret} : join('', @{ret})
     if (@{ret});
   return;
+}
+
+sub fullname($) {
+    my $fname = shift;
+    $fname =~ s{^([[:alnum:]][- _[:alnum:][:space:]]*[[:alnum:]]).*}{$1}o;
+    $fname;
 }
