@@ -193,7 +193,7 @@ if ( -d ".svn" ) {
     }
 }
 
-for (my $i = 0; $i < length(@tuples); $i += 2) {
+for (my $i = 0; $i < scalar(@tuples); $i += 2) {
     my $fname = fullname($names{$tuples[$i]});
     if (defined($fname) && $fname !~ m{^\s*$}o) {
         $tuples[$i] = $fname;
@@ -541,7 +541,35 @@ if (@{text}) {
   }
 }
 # dump the remainder of the file
-print while (<$source>);
+my @contl = ();
+
+foreach my $line (<$source>) {
+    chomp $line;
+    if ($line =~ m{^(.*\S)?(\s*[\\]$)}go) {
+        if (defined($1)) {
+            push @contl, $1;
+        } else {
+            push @contl, "";
+        }
+    } else {
+        if (@contl) {
+            my $max = length($line);
+            foreach my $con (@contl) {
+                my $len = length($con);
+                $max = $len if ($len > $max);
+            }
+            ++$max;
+            $max = 63 if ($max < 63);
+            foreach my $con (@contl) {
+                my $len = length($con);
+                print "$con" . " " x ($max - $len) . "\\" . "\n";
+            }
+            @contl = ();
+        }
+        print "$line\n";
+    }
+}
+
 close($source) or warn "Error closing source stream: $!";
 if (!close($target)) {
   my $err = $?;
