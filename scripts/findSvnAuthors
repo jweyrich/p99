@@ -219,7 +219,7 @@ if (!@{tuples} || ${metoo}) {
       ${year}
     } (${mtime}, ${ctime});
   }
-  for (my $i = 0; $i < length(@tuples); $i += 2) {
+  for (my $i = 0; $i < scalar(@tuples); $i += 2) {
       my $fname = fullname($names{$tuples[$i]});
       if (defined($fname) && $fname !~ m{^\s*$}o) {
           $tuples[$i] = $fname;
@@ -235,7 +235,7 @@ if (!@{tuples} || ${metoo}) {
   push(@tuples, map { ${au} => $_ } @{years});
 }
 
-for (my $i = 0; $i < length(@tuples); $i += 2) {
+for (my $i = 0; $i < scalar(@tuples); $i += 2) {
     my $fname = fullname($names{$tuples[$i]});
     if (defined($fname) && $fname !~ m{^\s*$}o) {
         $tuples[$i] = $fname;
