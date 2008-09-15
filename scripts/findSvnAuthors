@@ -25,6 +25,7 @@ use locale;
 sub slurp(&;@);
 sub is_comment(@);
 sub fullname($);
+sub scm($);
 
 my $help = 0;
 my $ifile;
@@ -45,6 +46,21 @@ my $result = GetOptions ("ifile=s"      => \${ifile},      # string
                          "beautyArgs=s"  => \@{beautyArgs}, # list of strings
                          "help!"        => \${help},      # flag
 );
+
+# collect the command arguments for the log command
+my %commands = (
+    "svn", ["-q"],
+    "bzr", [],
+    "git", ["--pretty=format:%an %ai"],
+    );
+
+# collect the error codes that status issues if the command
+# doesn't identify this.
+my %errors = (
+    "svn", 0,
+    "bzr", 3,
+    "git", 128,
+    );
 
 $ifile = ${ofile} if (!defined($ifile));
 @beautyArgs = split(/[,:]/,join(',',@beautyArgs));
@@ -168,19 +184,26 @@ OPTION
 
 my @tuples = ();
 
-if ( -d ".svn" ) {
+my $scm = scm(${ifile});
+
+my $command = join(" ", $scm, "log",
+                   map { "'$_'"; } @{$commands{$scm}});
+
+print STDERR "$command\n";
+
+if ( $scm eq "svn" ) {
     ## Check if the file is logged into svn.
     @tuples
 	= slurp { m{^(?:r[^|]*)\s+[|]\s+([^|()]+)\s+[|]\s+(\d+)}o ; }
-    "svn log -q ${ifile} |";
-} else {
+    "$command ${ifile} |";
+} elsif ( $scm eq "bzr" ) {
     ## Otherwise suppose that we have bzr
     my @ttuples
 	= slurp { 
 	    m{(committer|timestamp):\s*(.*)}o ; 
 	    #m{([^:]+):\s*(.+)}o; 
     }
-    "bzr log ${ifile} |";
+    "$command ${ifile} |";
     while (@ttuples) {
 	my ($tag1, $name, $tag2, $time) = splice(@ttuples, -4);
         $name = $names{$name}
@@ -191,6 +214,27 @@ if ( -d ".svn" ) {
 	    push(@tuples, $name, $time);
 	}
     }
+} elsif ( $scm eq "git" ) {
+    ## Otherwise suppose that we have bzr
+    my @ttuples
+	= slurp {
+            m/(.+) (\d\d\d\d)/o;
+    }
+    "$command ${ifile} |";
+    while (@ttuples) {
+	my ($name, $year) = splice(@ttuples, -2);
+        if ($name !~ m"^\(.+\)") 
+        {
+            $name = $names{$name}
+            if (defined($names{$name}));
+            $name = fullname($name);
+            if ($name !~ m{^\s*$}o ) {
+                push(@tuples, $name, $year);
+            }
+        }
+    }
+} else {
+    die "unknwon SCM '$scm'";
 }
 
 for (my $i = 0; $i < scalar(@tuples); $i += 2) {
@@ -639,4 +683,27 @@ sub fullname($) {
     my $fname = shift;
     $fname =~ s{^([[:alnum:]][- _[:alnum:][:space:]]*[[:alnum:]]).*}{$1}o;
     $fname;
+}
+
+sub scm($) {
+    my $file = shift;
+    my $ret;
+    if (-d ".svn") {
+        $ret = "svn";
+    } else {
+        $commands{svn} = undef;
+        if (defined($commands{svn})) {
+            print "svn still defined to $commands{svn}\n";
+        }
+      SCM: foreach $scm (keys(%commands)) {
+          my $code = system("$scm status $file >&/dev/null 2>&1");
+          my $code2 = $code >> 8;
+          print "$scm gave $code, $code2\n";
+          if ($code == 0 || $code2 != $errors{$scm}) {
+              $ret = $scm;
+              last SCM;
+          }
+      }
+    }
+    $ret;
 }
