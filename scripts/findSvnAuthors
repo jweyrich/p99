@@ -51,7 +51,7 @@ my $result = GetOptions ("ifile=s"      => \${ifile},      # string
 my %commands = (
     "svn", ["-q"],
     "bzr", [],
-    "git", ["--pretty=format:%an %ai"],
+    "git", ["-M", "-C", "--follow", "--pretty=format:%an %ai", "--"],
     );
 
 # collect the error codes that status issues if the command
@@ -78,6 +78,9 @@ my %fnames = map { (fullname($_), $_) } values(%names);
 foreach my $name (keys(%fnames)) {
     $names{$name} = $fnames{$name};
 }
+
+my $historyFile = "${scriptdir}/HISTORY.txt";
+my %history = slurp { m{^(\S+)\s+(.*?)\s*$}o } ${historyFile};
 
 my $licenceFile = "${scriptdir}/SHORTLICENCE.txt";
 my $licence = slurp { $_ } ${licenceFile};
@@ -189,15 +192,12 @@ my $scm = scm(${ifile});
 my $command = join(" ", $scm, "log",
                    map { "'$_'"; } @{$commands{$scm}});
 
-print STDERR "$command\n";
-
 if ( $scm eq "svn" ) {
     ## Check if the file is logged into svn.
     @tuples
 	= slurp { m{^(?:r[^|]*)\s+[|]\s+([^|()]+)\s+[|]\s+(\d+)}o ; }
     "$command ${ifile} |";
 } elsif ( $scm eq "bzr" ) {
-    ## Otherwise suppose that we have bzr
     my @ttuples
 	= slurp { 
 	    m{(committer|timestamp):\s*(.*)}o ; 
@@ -215,12 +215,34 @@ if ( $scm eq "svn" ) {
 	}
     }
 } elsif ( $scm eq "git" ) {
-    ## Otherwise suppose that we have bzr
-    my @ttuples
-	= slurp {
-            m/(.+) (\d\d\d\d)/o;
+
+    my $prefix = `git rev-parse --show-prefix`;
+    chomp $prefix;
+    my $fname = "${prefix}${ifile}";
+    my @fnames = ($fname);
+
+    print STDERR "full name for ${ifile} is $fname\n";
+
+    while (defined($history{$fname})) {
+        $fname = $history{$fname};
+        unshift @fnames, $fname;
     }
-    "$command ${ifile} |";
+
+    print STDERR "historical names are @fnames\n";
+
+
+    $prefix =~ s{[^/]+}{..}og;
+
+    my @ttuples;
+
+    foreach my $fname (@fnames) {
+        my @ntuples
+            = slurp {
+                m/(.+) (\d\d\d\d)/o;
+        }
+        "$command ${prefix}${fname} |";
+        push @ttuples, @ntuples;
+    }
     while (@ttuples) {
 	my ($name, $year) = splice(@ttuples, -2);
         if ($name !~ m"^\(.+\)") 
@@ -698,7 +720,6 @@ sub scm($) {
       SCM: foreach $scm (keys(%commands)) {
           my $code = system("$scm status $file >&/dev/null 2>&1");
           my $code2 = $code >> 8;
-          print "$scm gave $code, $code2\n";
           if ($code == 0 || $code2 != $errors{$scm}) {
               $ret = $scm;
               last SCM;
