@@ -26,6 +26,7 @@ sub slurp(&;@);
 sub is_comment(@);
 sub fullname($);
 sub scm($);
+sub gitfollow($;$);
 
 my $help = 0;
 my $ifile;
@@ -219,19 +220,32 @@ if ( $scm eq "svn" ) {
     my $prefix = `git rev-parse --show-prefix`;
     chomp $prefix;
     my $fname = "${prefix}${ifile}";
-    my @fnames = ($fname);
+    $fname =~ s{/[.]/}{/}go;
+    $prefix =~ s{[^/]+}{..}og;
 
-    print STDERR "full name for ${ifile} is $fname\n";
+    my @nnames = ($fname);
+    $fname = gitfollow($fname,$prefix);
+    unshift(@nnames, $fname) if (defined($fname));
 
-    while (defined($history{$fname})) {
-        $fname = $history{$fname};
-        unshift @fnames, $fname;
+    my @fnames;
+
+  RETRY:
+    while ($#fnames != $#nnames) {
+        @fnames = (@nnames);
+        foreach my $fname (@fnames) {
+            my $nname = $history{$fname};
+            unshift(@nnames, $nname) if (defined($nname));
+            $nname = gitfollow($fname,$prefix);
+            unshift(@nnames, $nname) if (defined($nname));
+        }
+        my %nnames = map {
+            ($_, $_);
+        } @nnames;
+        @nnames = sort(keys(%nnames));
     }
 
     print STDERR "historical names are @fnames\n";
 
-
-    $prefix =~ s{[^/]+}{..}og;
 
     my @ttuples;
 
@@ -727,4 +741,33 @@ sub scm($) {
       }
     }
     $ret;
+}
+
+{
+
+    my %gitorigin = ();
+
+    sub gitfollow($;$) {
+        my ($ifile, $prefix) = (@_);
+        $ifile = $prefix.$ifile if (defined($prefix));
+        $ifile =~ s{/[.]/}{/}go;
+        my $origin = $gitorigin{$ifile};
+        if (!defined($origin)) {
+            my @origin
+                = slurp {
+                    m{^A\s+(.+)}o;
+            }
+            "git log --name-status --follow --diff-filter=A '--pretty=format:' -- $ifile |";
+            my $origin = shift @origin;
+            if (defined($origin)) {
+                $origin =~ s{\s+}{ }o;
+                $origin =~ s{\s+$}{}o;
+                $origin =~ s{^.+\s}{}o;
+                print STDERR "origin of ${ifile} seems to be ${origin}\n";
+            }
+            $gitorigin{$ifile} = $origin;
+        }
+        $origin;
+    }
+
 }
