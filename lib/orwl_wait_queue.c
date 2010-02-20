@@ -9,6 +9,7 @@
 */
 
 #include <stdlib.h>
+#include <string.h>
 #include "orwl_wait_queue.h"
 
 struct _orwl_wq {
@@ -56,18 +57,59 @@ void orwl_wq_destroy(orwl_wq *wq) {
   wq->tail = orwl_wh_garb;
 }
 
-orwl_wq *orwl_wq_new(void) {
-  orwl_wq *ret = (orwl_wq*)malloc(sizeof(orwl_wq));
-  if (ret) orwl_wq_init(ret, NULL);
-  return ret;
+#define DEFINE_NEW(T, ...)                      \
+T *T ## _new(void) {                            \
+  T *ret = (T*)malloc(sizeof(T));               \
+  if (ret) T ## _init(ret, __VA_ARGS__);        \
+  return ret;                                   \
 }
 
-void orwl_wq_delete(orwl_wq *wq) {
-  if (wq) {
-    orwl_wq_destroy(wq);
-    free(wq);
-  }
+#define DEFINE_DELETE(T)                        \
+void T ## _delete(T *el) {                      \
+  if (el) {                                     \
+    T ## _destroy(el);                          \
+    free(el);                                   \
+  }                                             \
 }
+
+#define DEFINE_VNEW(T)                          \
+T *const*T ## _vnew(size_t n) {                 \
+  size_t N = (n + 1)*sizeof(T*);                \
+  T **ret = malloc(N);                          \
+  if (ret) {                                    \
+    size_t i;                                   \
+    memset(ret, 0, N);                          \
+    assert(!ret[n]);                            \
+    for (i = 0; i < n; ++i) {                   \
+      ret[i] = T ## _new();                     \
+      /* roll back if allocation failed */      \
+      if (!ret[i]) {                            \
+        T ## _vdelete(ret);                     \
+        ret = NULL;                             \
+        break;                                  \
+      }                                         \
+    }                                           \
+  }                                             \
+  return ret;                                   \
+}
+
+#define DEFINE_VDELETE(T)                       \
+void T ## _vdelete(T *const*vec) {              \
+  if (vec) {                                    \
+    T *v;                                       \
+    for (v = *vec; v; ++v)                      \
+      T ## _delete(v);                          \
+    free((T**)vec);                             \
+  }                                             \
+}
+
+#define DEFINE_NEW_DELETE(T, ...)               \
+DEFINE_NEW(T, __VA_ARGS__);                     \
+DEFINE_VNEW(T);                                 \
+DEFINE_DELETE(T);                               \
+DEFINE_VDELETE(T)
+
+DEFINE_NEW_DELETE(orwl_wq, NULL);
 
 
 static pthread_condattr_t *scattr_p = NULL;
@@ -99,18 +141,7 @@ void orwl_wh_destroy(orwl_wh *wh) {
   wh->next = orwl_wh_garb;
 }
 
-orwl_wh *orwl_wh_new(void) {
-  orwl_wh *ret = (orwl_wh*)malloc(sizeof(orwl_wh));
-  if (ret) orwl_wh_init(ret, NULL);
-  return ret;
-}
-
-void orwl_wh_delete(orwl_wh *wh) {
-  if (wh) {
-    orwl_wh_destroy(wh);
-    free(wh);
-  }
-}
+DEFINE_NEW_DELETE(orwl_wh, NULL);
 
 static
 int orwl_wh_valid(orwl_wh *wh) {

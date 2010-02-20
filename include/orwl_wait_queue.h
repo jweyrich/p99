@@ -74,6 +74,8 @@ void orwl_wq_destroy(orwl_wq *wq);
 
 orwl_wq *orwl_wq_new(void);
 void orwl_wq_delete(orwl_wq *wq);
+orwl_wq *const*orwl_wq_vnew(size_t n);
+void orwl_wq_vdelete(orwl_wq *const*wq);
 
 
 #define ORWL_WH_INITIALIZER { PTHREAD_COND_INITIALIZER }
@@ -84,6 +86,8 @@ void orwl_wh_destroy(orwl_wh *wh);
 
 orwl_wh *orwl_wh_new(void);
 void orwl_wh_delete(orwl_wh *wh);
+orwl_wh *const*orwl_wh_vnew(size_t n);
+void orwl_wh_vdelete(orwl_wh *const*wh);
 
 /**
  * @brief Insert a request on @a wh into location @a wq
