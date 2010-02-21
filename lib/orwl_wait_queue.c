@@ -9,6 +9,7 @@
 */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "orwl_wait_queue.h"
 
@@ -32,6 +33,8 @@ static orwl_wq *const orwl_wq_garb = ((orwl_wq*)(~(uintptr_t)0));
 static pthread_mutexattr_t *smattr_p = NULL;
 static pthread_mutex_t smut = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutexattr_t smattr = {};
+
+#define report(F, ...) fprintf(stderr, "%lu: " F, (ulong)pthread_self(), __VA_ARGS__)
 
 void orwl_wq_init(orwl_wq *wq,
                   const pthread_mutexattr_t *attr) {
