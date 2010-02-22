@@ -19,8 +19,8 @@
  ** 
  **/
 typedef enum {
-  orwl_invalid = -1,    /**< call with an invalid object     **/
-  orwl_valid = 0,       /**< object valid, but not requested **/
+  orwl_invalid,         /**< call with an invalid object     **/
+  orwl_valid,           /**< object valid, but not requested **/
   orwl_requested,       /**< unspecific request was placed   **/
   orwl_read_requested,  /**< read request was placed         **/
   orwl_write_requested, /**< write request was placed        **/
@@ -30,6 +30,9 @@ typedef enum {
   /* LEAVE AS LAST ELEMENT */
   orwl_state_sup
 } orwl_state;
+
+extern
+char const* orwl_state_name[];
 
 struct _orwl_wq;
 
