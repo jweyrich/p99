@@ -48,6 +48,8 @@ struct _orwl_wq;
  **/
 typedef struct _orwl_wq orwl_wq;
 
+DECLARE_ONCE(orwl_wq);
+
 struct _orwl_wh;
 
 /**
@@ -68,6 +70,8 @@ struct _orwl_wh;
  ** fixed condition to be the first in the FIFO.
  **/
 typedef struct _orwl_wh orwl_wh;
+
+DECLARE_ONCE(orwl_wh);
 
 #define ORWL_WQ_INITIALIZER { PTHREAD_MUTEX_INITIALIZER }
 

@@ -33,23 +33,18 @@ struct _orwl_wh {
 static orwl_wh *const orwl_wh_garb = ((orwl_wh*)(~(uintptr_t)0));
 static orwl_wq *const orwl_wq_garb = ((orwl_wq*)(~(uintptr_t)0));
 
-static pthread_mutexattr_t *smattr_p = NULL;
-static pthread_mutex_t smut = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutexattr_t smattr = {};
 
 #define report(F, ...) fprintf(stderr, "%lu: " F, (ulong)pthread_self(), __VA_ARGS__)
 
+DEFINE_ONCE(orwl_wq) {
+  pthread_mutexattr_init(&smattr);
+}
+
 void orwl_wq_init(orwl_wq *wq,
                   const pthread_mutexattr_t *attr) {
-  if (!smattr_p) {
-    pthread_mutex_lock(&smut);
-    if (!smattr_p) {
-      pthread_mutexattr_init(&smattr);
-      smattr_p = &smattr;
-    }
-    pthread_mutex_unlock(&smut);
-  }
-  if (!attr) attr = smattr_p;
+  INIT_ONCE(orwl_wq);
+  if (!attr) attr = &smattr;
   pthread_mutex_init(&wq->mut, attr);
   wq->head = NULL;
   wq->tail = NULL;
@@ -67,21 +62,16 @@ void orwl_wq_destroy(orwl_wq *wq) {
 DEFINE_NEW_DELETE(orwl_wq, NULL);
 
 
-static pthread_condattr_t *scattr_p = NULL;
 static pthread_condattr_t scattr = { };
+
+DEFINE_ONCE(orwl_wh) {
+  pthread_condattr_init(&scattr);
+}
 
 void orwl_wh_init(orwl_wh *wh,
                   const pthread_condattr_t *attr) {
-  if (!scattr_p) {
-    //static pthread_mutex_t smut = PTHREAD_MUTEX_INITIALIZER;
-    pthread_mutex_lock(&smut);
-    if (!scattr_p) {
-      pthread_condattr_init(&scattr);
-      scattr_p = &scattr;
-    }
-    pthread_mutex_unlock(&smut);
-  }
-  if (!attr) attr = scattr_p;
+  INIT_ONCE(orwl_wh);
+  if (!attr) attr = &scattr;
   pthread_cond_init(&wh->cond, attr);
   wh->location = NULL;
   wh->next = NULL;
