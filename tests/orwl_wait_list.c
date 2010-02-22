@@ -72,23 +72,23 @@ void *start_thread(void* arg) {
       if (ostate == orwl_requested) break;
       progress(!mynum, try, "req, handle %lu, %s\n",
                (ulong)(threadof(mynum + (phase>>1)) + (phase % 2)*np),
-               orwl_state_name[ostate]);
+               orwl_state_getname(ostate));
       usleep(await);
     }
     report(!mynum, "req, handle %lu, %s\n",
            (ulong)(threadof(mynum + (phase>>1)) + (phase % 2)*np),
-           orwl_state_name[ostate]);
+           orwl_state_getname(ostate));
     ostate = orwl_invalid;
     for (try = 0; ostate != orwl_acquired; ++try) {
       ostate = orwl_wait_acquire(handle[mynum + (phase % 2)*np]);
       if (ostate == orwl_acquired) break;
       progress(!mynum, try, "acq, handle %lu, state %s, waiting for %lu\r",
-               (ulong)(mynum + np), orwl_state_name[ostate],
+               (ulong)(mynum + np), orwl_state_getname(ostate),
                threadof(mynum - phase));
       usleep(iwait);
     }
     report(!mynum, "acq, handle %lu, state %s                            \n",
-           (ulong)(mynum + np), orwl_state_name[ostate]);
+           (ulong)(mynum + np), orwl_state_getname(ostate));
     usleep(rwait);
     orwl_wait_release(handle[mynum + (phase % 2)*np]);
     report(!mynum, "rel, handle %lu\n", (ulong)(mynum + (phase % 2)*np));

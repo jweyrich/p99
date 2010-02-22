@@ -11,8 +11,8 @@
 # Complete this to make it ! #
 ##############################
 NAME 	=	liborwl.a liborwl.so	# Name of executable file
-SRC	=	orwl_wait_queue.c	# List of *.c
-INCL  	=	orwl_wait_queue.h	# List of *.h
+SRC	=	orwl_wait_queue.c	orwl_enum.c # List of *.c
+INCL  	=	# List of *.h
 ################
 # Optional add #
 ################

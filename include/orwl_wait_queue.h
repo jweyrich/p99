@@ -15,22 +15,21 @@
 #include <stdint.h>
 #include <pthread.h>
 #include "orwl_new.h"
+#include "orwl_enum.h"
 
 /** @brief Return type for @c orwl functions
  ** 
  **/
-typedef enum {
-  orwl_invalid,         /**< call with an invalid object     **/
-  orwl_valid,           /**< object valid, but not requested **/
-  orwl_requested,       /**< unspecific request was placed   **/
-  orwl_read_requested,  /**< read request was placed         **/
-  orwl_write_requested, /**< write request was placed        **/
-  orwl_acquired,        /**< unspecific request was acquired **/
-  orwl_read_acquired,   /**< read request was acquired       **/
-  orwl_write_acquired,  /**< write request was acquired      **/
-  /* LEAVE AS LAST ELEMENT */
-  orwl_state_sup
-} orwl_state;
+DECLARE_ENUM(orwl_state,
+             orwl_invalid,         /**< call with an invalid object     **/
+             orwl_valid,           /**< object valid, but not requested **/
+             orwl_requested,       /**< unspecific request was placed   **/
+             orwl_read_requested,  /**< read request was placed         **/
+             orwl_write_requested, /**< write request was placed        **/
+             orwl_acquired,        /**< unspecific request was acquired **/
+             orwl_read_acquired,   /**< read request was acquired       **/
+             orwl_write_acquired   /**< write request was acquired      **/
+             );
 
 extern
 char const* orwl_state_name[];
