@@ -72,9 +72,30 @@ void sleepfor(double t) {
   }
 }
 
+#define DECLARE_THREAD(T)                               \
+static inline T *T ## _join(pthread_t id) {             \
+  void *ret = NULL;                                     \
+  pthread_join(id, &ret);                               \
+  return ret ? ret : NULL;                              \
+}                                                       \
+extern void *T ## _start(void* arg);                    \
+static inline int T ## _create(pthread_t *id, T* arg) { \
+  return pthread_create(id, NULL, T ## _start, arg);    \
+}                                                       \
+extern void *T ## _start(void* arg)
 
-void *start_thread(void* arg) {
-  arg_t const*const Arg = (arg_t*)arg;
+#define DEFINE_THREAD(T)                        \
+static inline void _ ## T ## _start(T* Arg);    \
+void *T ## _start(void* arg) {                  \
+  T* Arg = (T*)arg;                             \
+  _ ## T ## _start(Arg);                        \
+  return arg;                                   \
+}                                               \
+static inline void _ ## T ## _start(T* Arg)
+
+DECLARE_THREAD(arg_t);
+
+DEFINE_THREAD(arg_t) {
   size_t const mynum = Arg->mynum;
   size_t const np = Arg->np;
   size_t const phases = Arg->phases;
@@ -114,7 +135,6 @@ void *start_thread(void* arg) {
     orwl_wait_release(handle[mynum + (phase % 2)*np]);
     report(!mynum, "rel, handle %lu\n", (ulong)(mynum + (phase % 2)*np));
   }
-  return NULL;
 }
 
 
@@ -137,11 +157,11 @@ int main(int argc, char **argv) {
     arg[i].mynum = i;
     arg[i].np = threads;
     arg[i].phases = phases;
-    pthread_create(id + i, NULL, start_thread, arg + i);
+    arg_t_create(id + i, arg + i);
   }
 
   for (i = 0; i < threads; ++i) {
-    pthread_join(id[i], NULL);
+    arg_t_join(id[i]);
   }
 
   return 0;
