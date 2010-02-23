@@ -53,18 +53,22 @@ do {                                            \
 #define threadof(x) ((((size_t)x) + (size_t)np) % (size_t)np)
 
 void sleepfor(double t) {
-  double const mega = 1E9;
+  double const mega = 1E+9;
   double const nano = 1E-9;
   while (t > 0.0) {
-    struct timespec req = { 0 };
-    struct timespec rem = { 0 };
     double sec = trunc(t);
-    req.tv_sec = (time_t)sec;
-    req.tv_nsec = (time_t)((t - sec) * mega);
-    if (nanosleep(&req, &rem)) {
-      sec = (double)rem.tv_sec + nano*(double)rem.tv_nsec;
-      if (sec < t) t = sec;
-    } else t = 0.0;
+    struct timespec rem = {
+      .tv_sec = 0,
+      .tv_nsec = 0
+    };
+    struct timespec req = {
+      .tv_sec = (time_t)sec,
+      .tv_nsec = (time_t)((t - sec) * mega)
+    };
+    if (!nanosleep(&req, &rem)) return;
+    sec = (double)rem.tv_sec + nano*rem.tv_nsec;
+    if (sec >= t) return;
+    t = sec;
   }
 }
 
