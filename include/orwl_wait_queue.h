@@ -70,13 +70,27 @@ typedef struct _orwl_wh orwl_wh;
 
 DECLARE_ONCE(orwl_wh);
 
+struct _orwl_wq {
+  pthread_mutex_t mut;
+  orwl_wh *head;
+  orwl_wh *tail;
+};
+
+
+struct _orwl_wh {
+  pthread_cond_t cond;
+  orwl_wq *location;
+  orwl_wh *next;
+  uint64_t waiters;
+};
+
 #define ORWL_WQ_INITIALIZER { PTHREAD_MUTEX_INITIALIZER }
 
 void orwl_wq_init(orwl_wq *wq,
                          const pthread_mutexattr_t *attr);
 void orwl_wq_destroy(orwl_wq *wq);
 
-DECLARE_NEW_DELETE(orwl_wq);
+DEFINE_NEW_DELETE(orwl_wq, NULL);
 
 #define ORWL_WH_INITIALIZER { PTHREAD_COND_INITIALIZER }
 
@@ -84,7 +98,7 @@ void orwl_wh_init(orwl_wh *wh,
                           const pthread_condattr_t *attr);
 void orwl_wh_destroy(orwl_wh *wh);
 
-DECLARE_NEW_DELETE(orwl_wh);
+DEFINE_NEW_DELETE(orwl_wh, NULL);
 
 /**
  * @brief Insert a request on @a wh into location @a wq

@@ -16,20 +16,6 @@
 DEFINE_ENUM(orwl_state);
 
 
-struct _orwl_wq {
-  pthread_mutex_t mut;
-  orwl_wh *head;
-  orwl_wh *tail;
-};
-
-
-struct _orwl_wh {
-  pthread_cond_t cond;
-  orwl_wq *location;
-  orwl_wh *next;
-  uint64_t waiters;
-};
-
 static orwl_wh *const orwl_wh_garb = ((orwl_wh*)(~(uintptr_t)0));
 static orwl_wq *const orwl_wq_garb = ((orwl_wq*)(~(uintptr_t)0));
 
@@ -59,9 +45,6 @@ void orwl_wq_destroy(orwl_wq *wq) {
 }
 
 
-DEFINE_NEW_DELETE(orwl_wq, NULL);
-
-
 static pthread_condattr_t scattr = { { 0 } };
 
 DEFINE_ONCE(orwl_wh) {
@@ -86,29 +69,27 @@ void orwl_wh_destroy(orwl_wh *wh) {
   wh->next = orwl_wh_garb;
 }
 
-DEFINE_NEW_DELETE(orwl_wh, NULL);
-
-static
+static inline
 int orwl_wh_valid(orwl_wh *wh) {
   return wh
     && wh->location != orwl_wq_garb
     && wh->next != orwl_wh_garb;
 }
 
-static
+static inline
 int orwl_wh_idle(orwl_wh *wh) {
   return wh && !wh->location && !wh->next;
 }
 
 /* This supposes that wq != NULL */
-static
+static inline
 int orwl_wq_valid(orwl_wq *wq) {
   return wq->head != orwl_wh_garb
     && wq->tail != orwl_wh_garb;
 }
 
 /* This supposes that wq != NULL */
-static
+static inline
 int orwl_wq_idle(orwl_wq *wq) {
   return !wq->head && !wq->tail;
 }

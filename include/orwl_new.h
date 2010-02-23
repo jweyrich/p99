@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 #define DEFINE_NEW(T, ...)                      \
+inline                                          \
 T *T ## _new(void) {                            \
   T *ret = (T*)malloc(sizeof(T));               \
   if (ret) T ## _init(ret, __VA_ARGS__);        \
@@ -21,6 +22,7 @@ T *T ## _new(void) {                            \
 }
 
 #define DEFINE_DELETE(T)                        \
+inline                                          \
 void T ## _delete(T *el) {                      \
   if (el) {                                     \
     T ## _destroy(el);                          \
@@ -29,6 +31,7 @@ void T ## _delete(T *el) {                      \
 }
 
 #define DEFINE_VNEW(T)                          \
+inline                                          \
 T *const*T ## _vnew(size_t n) {                 \
   size_t N = (n + 1)*sizeof(T*);                \
   T **ret = malloc(N);                          \
@@ -49,6 +52,7 @@ T *const*T ## _vnew(size_t n) {                 \
 }
 
 #define DEFINE_VDELETE(T)                       \
+inline                                          \
 void T ## _vdelete(T *const*vec) {              \
   if (vec) {                                    \
     for (T *v = *vec; v; ++v)                   \
@@ -58,16 +62,17 @@ void T ## _vdelete(T *const*vec) {              \
 }
 
 #define DEFINE_NEW_DELETE(T, ...)                               \
+  DECLARE_NEW_DELETE(T);                                        \
 DEFINE_NEW(T, __VA_ARGS__)                                      \
 DEFINE_VNEW(T)                                                  \
 DEFINE_DELETE(T)                                                \
 DEFINE_VDELETE(T)                                               \
 enum { __tame_ansi_c_semicolon_message_for_new_delete_ ## T }
 
-#define DECLARE_NEW(T) T *T ## _new(void)
-#define DECLARE_DELETE(T) void T ## _delete(T *el)
-#define DECLARE_VNEW(T) T *const*T ## _vnew(size_t n)
-#define DECLARE_VDELETE(T) void T ## _vdelete(T *const*vec)
+#define DECLARE_NEW(T) extern T *T ## _new(void)
+#define DECLARE_DELETE(T) extern void T ## _delete(T *el)
+#define DECLARE_VNEW(T) extern T *const*T ## _vnew(size_t n)
+#define DECLARE_VDELETE(T) extern void T ## _vdelete(T *const*vec)
 
 #define DECLARE_NEW_DELETE(T)                   \
 DECLARE_NEW(T);                                 \
