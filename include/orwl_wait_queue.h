@@ -90,7 +90,7 @@ void orwl_wq_init(orwl_wq *wq,
                          const pthread_mutexattr_t *attr);
 void orwl_wq_destroy(orwl_wq *wq);
 
-DEFINE_NEW_DELETE(orwl_wq, NULL);
+DECLARE_NEW_DELETE(orwl_wq, NULL);
 
 #define ORWL_WH_INITIALIZER { PTHREAD_COND_INITIALIZER }
 
@@ -98,7 +98,7 @@ void orwl_wh_init(orwl_wh *wh,
                           const pthread_condattr_t *attr);
 void orwl_wh_destroy(orwl_wh *wh);
 
-DEFINE_NEW_DELETE(orwl_wh, NULL);
+DECLARE_NEW_DELETE(orwl_wh, NULL);
 
 /**
  * @brief Insert a request on @a wh into location @a wq

@@ -44,6 +44,7 @@ void orwl_wq_destroy(orwl_wq *wq) {
   wq->tail = orwl_wh_garb;
 }
 
+DEFINE_NEW_DELETE(orwl_wq);
 
 static pthread_condattr_t scattr = { { 0 } };
 
@@ -68,6 +69,8 @@ void orwl_wh_destroy(orwl_wh *wh) {
   wh->location = orwl_wq_garb;
   wh->next = orwl_wh_garb;
 }
+
+DEFINE_NEW_DELETE(orwl_wh);
 
 static inline
 int orwl_wh_valid(orwl_wh *wh) {

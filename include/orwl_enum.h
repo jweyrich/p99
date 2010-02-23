@@ -45,9 +45,16 @@ typedef enum { __VA_ARGS__ ,                                            \
                T ## _max = ((unsigned long)(T ## _amount) - 1ul),       \
                T ## _min = 0                                            \
 } T;                                                                    \
+extern char const* _ ## T ## _names[T ## _amount];                      \
+DECLARE_ONCE(T);                                                        \
+inline                                                                  \
+char const* T ## _getname(T x) {                                        \
+  unsigned pos = x;                                                     \
+  INIT_ONCE(T);                                                         \
+  return (pos < T ## _amount) ? _ ## T ## _names[pos] : "((" #T ")unknown value)"; \
+}                                                                       \
 static char _ ## T ## _concat[] =  # __VA_ARGS__;                       \
-enum { _ ## T ## _concat_len = sizeof(_ ## T ## _concat) };             \
-extern char const* T ## _getname(T x)
+enum { _ ## T ## _concat_len = sizeof(_ ## T ## _concat) }
 
 
 /**
@@ -56,7 +63,8 @@ extern char const* T ## _getname(T x)
  ** Use this with DECLARE_ENUM(), which see.
  **/
 #define DEFINE_ENUM(T)                                                  \
-static char const* _ ## T ## _names[T ## _amount] = { 0 };              \
+/* Ensure that the table is generated in this object file */            \
+char const* _ ## T ## _names[T ## _amount] = { 0 };                     \
 DEFINE_ONCE(T) {                                                        \
   char *head = _ ## T ## _concat;                                       \
   for (T i = T ## _min; i < T ## _max; ++i) {                           \
@@ -69,12 +77,9 @@ DEFINE_ONCE(T) {                                                        \
   }                                                                     \
   _ ## T ## _names[T ## _max] = head;                                   \
 }                                                                       \
-char const* T ## _getname(T x) {                                        \
-  unsigned pos = x;                                                     \
-  INIT_ONCE(T);                                                         \
-  return (pos < T ## _amount) ? _ ## T ## _names[pos] : "((" #T ")unknown value)"; \
-}                                                                       \
-enum { __tame_ansi_c_semicolon_message_for_enum ## T }
+/* Ensure that the function symbol is generated in this object file */  \
+char const* T ## _getname(T x)
+
 
 DECLARE_ENUM(bool, false, true);
 
