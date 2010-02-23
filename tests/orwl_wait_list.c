@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <math.h>
+#include "orwl_thread.h"
 #include "orwl_wait_queue.h"
 
 static orwl_wq *location = NULL;
@@ -72,26 +73,6 @@ void sleepfor(double t) {
   }
 }
 
-#define DECLARE_THREAD(T)                               \
-static inline T *T ## _join(pthread_t id) {             \
-  void *ret = NULL;                                     \
-  pthread_join(id, &ret);                               \
-  return ret ? ret : NULL;                              \
-}                                                       \
-extern void *T ## _start(void* arg);                    \
-static inline int T ## _create(pthread_t *id, T* arg) { \
-  return pthread_create(id, NULL, T ## _start, arg);    \
-}                                                       \
-extern void *T ## _start(void* arg)
-
-#define DEFINE_THREAD(T)                        \
-static inline void _ ## T ## _start(T* Arg);    \
-void *T ## _start(void* arg) {                  \
-  T* Arg = (T*)arg;                             \
-  _ ## T ## _start(Arg);                        \
-  return arg;                                   \
-}                                               \
-static inline void _ ## T ## _start(T* Arg)
 
 DECLARE_THREAD(arg_t);
 
