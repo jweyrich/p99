@@ -12,6 +12,8 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <time.h>
+#include <math.h>
 #include "orwl_wait_queue.h"
 
 static orwl_wq *location = NULL;
@@ -50,46 +52,61 @@ do {                                            \
 
 #define threadof(x) ((((size_t)x) + (size_t)np) % (size_t)np)
 
+void sleepfor(double t) {
+  double const mega = 1E9;
+  double const nano = 1E-9;
+  while (t > 0.0) {
+    struct timespec req = { 0 };
+    struct timespec rem = { 0 };
+    double sec = trunc(t);
+    req.tv_sec = (time_t)sec;
+    req.tv_nsec = (time_t)((t - sec) * mega);
+    if (nanosleep(&req, &rem)) {
+      sec = (double)rem.tv_sec + nano*(double)rem.tv_nsec;
+      if (sec < t) t = sec;
+    } else t = 0.0;
+  }
+}
+
+
 void *start_thread(void* arg) {
   arg_t const*const Arg = (arg_t*)arg;
   size_t const mynum = Arg->mynum;
   size_t const np = Arg->np;
   size_t const phases = Arg->phases;
-  size_t phase;
   /* The buffer for the reentrant pseudo random generator */
   unsigned short xsubi[3] = { mynum, np, time(NULL) };
 
-  for (phase = 0; phase < phases; ++phase) {
-    size_t const twait = 10000;
-    size_t const iwait = twait / 10;
+  for (size_t phase = 0; phase < phases; ++phase) {
+    double const twait = 0.01;
+    double const iwait = twait / 10.0;
+    double const rwait = twait * erand48(xsubi);
+    double const await = twait - rwait;
     orwl_state ostate = orwl_invalid;
-    size_t rwait = (size_t)(twait * erand48(xsubi));
-    size_t await = twait - rwait;
-    size_t try;
-    for (try = 0; ostate != orwl_acquired; ++try) {
+    for (size_t try = 0; ostate != orwl_acquired; ++try) {
       ostate = orwl_wait_request(handle[threadof(mynum + (phase>>1)) + (phase % 2)*np],
                                  location);
       if (ostate == orwl_requested) break;
       progress(!mynum, try, "req, handle %lu, %s\n",
                (ulong)(threadof(mynum + (phase>>1)) + (phase % 2)*np),
                orwl_state_getname(ostate));
-      usleep(await);
+      sleepfor(await);
     }
     report(!mynum, "req, handle %lu, %s\n",
            (ulong)(threadof(mynum + (phase>>1)) + (phase % 2)*np),
            orwl_state_getname(ostate));
     ostate = orwl_invalid;
-    for (try = 0; ostate != orwl_acquired; ++try) {
+    for (size_t try = 0; ostate != orwl_acquired; ++try) {
       ostate = orwl_wait_acquire(handle[mynum + (phase % 2)*np]);
       if (ostate == orwl_acquired) break;
       progress(!mynum, try, "acq, handle %lu, state %s, waiting for %lu\r",
                (ulong)(mynum + np), orwl_state_getname(ostate),
                threadof(mynum - phase));
-      usleep(iwait);
+      sleepfor(iwait);
     }
     report(!mynum, "acq, handle %lu, state %s                            \n",
            (ulong)(mynum + np), orwl_state_getname(ostate));
-    usleep(rwait);
+    sleepfor(rwait);
     orwl_wait_release(handle[mynum + (phase % 2)*np]);
     report(!mynum, "rel, handle %lu\n", (ulong)(mynum + (phase % 2)*np));
   }

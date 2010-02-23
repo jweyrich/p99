@@ -18,9 +18,9 @@ LIBDIR	= ../lib
 # Optional add #
 ################
 IPATH   = -I. -I../include          # path of include file
-OBJOPT  = -O2 -Wall -Wstrict-prototypes       # option for obj
-EXEOPT  = -O2 -Wall -Wstrict-prototypes       # option for exe (-lefence ...)
-LPATH   = -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR} -lorwl -lpthread       # path for librairies ...
+OBJOPT  = -std=gnu99 -D__USE_MISC -O2 -Wall -Wstrict-prototypes       # option for obj
+EXEOPT  = -std=gnu99 -O2 -Wall -Wstrict-prototypes       # option for exe (-lefence ...)
+LPATH   = -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR} -lorwl -lm -lpthread       # path for librairies ...
 
 #####################
 # Macro Definitions #

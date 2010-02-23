@@ -31,9 +31,6 @@ DECLARE_ENUM(orwl_state,
              orwl_write_acquired   /**< write request was acquired      **/
              );
 
-extern
-char const* orwl_state_name[];
-
 struct _orwl_wq;
 
 /**

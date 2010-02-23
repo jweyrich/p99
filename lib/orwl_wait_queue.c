@@ -33,7 +33,7 @@ struct _orwl_wh {
 static orwl_wh *const orwl_wh_garb = ((orwl_wh*)(~(uintptr_t)0));
 static orwl_wq *const orwl_wq_garb = ((orwl_wq*)(~(uintptr_t)0));
 
-static pthread_mutexattr_t smattr = {};
+static pthread_mutexattr_t smattr = { { 0 } };
 
 #define report(F, ...) fprintf(stderr, "%lu: " F, (ulong)pthread_self(), __VA_ARGS__)
 
@@ -62,7 +62,7 @@ void orwl_wq_destroy(orwl_wq *wq) {
 DEFINE_NEW_DELETE(orwl_wq, NULL);
 
 
-static pthread_condattr_t scattr = { };
+static pthread_condattr_t scattr = { { 0 } };
 
 DEFINE_ONCE(orwl_wh) {
   pthread_condattr_init(&scattr);

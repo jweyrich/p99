@@ -33,10 +33,9 @@ T *const*T ## _vnew(size_t n) {                 \
   size_t N = (n + 1)*sizeof(T*);                \
   T **ret = malloc(N);                          \
   if (ret) {                                    \
-    size_t i;                                   \
     memset(ret, 0, N);                          \
     assert(!ret[n]);                            \
-    for (i = 0; i < n; ++i) {                   \
+    for (size_t i = 0; i < n; ++i) {            \
       ret[i] = T ## _new();                     \
       /* roll back if allocation failed */      \
       if (!ret[i]) {                            \
@@ -52,18 +51,18 @@ T *const*T ## _vnew(size_t n) {                 \
 #define DEFINE_VDELETE(T)                       \
 void T ## _vdelete(T *const*vec) {              \
   if (vec) {                                    \
-    T *v;                                       \
-    for (v = *vec; v; ++v)                      \
+    for (T *v = *vec; v; ++v)                   \
       T ## _delete(v);                          \
     free((T**)vec);                             \
   }                                             \
 }
 
-#define DEFINE_NEW_DELETE(T, ...)               \
-DEFINE_NEW(T, __VA_ARGS__);                     \
-DEFINE_VNEW(T);                                 \
-DEFINE_DELETE(T);                               \
-DEFINE_VDELETE(T)
+#define DEFINE_NEW_DELETE(T, ...)                               \
+DEFINE_NEW(T, __VA_ARGS__)                                      \
+DEFINE_VNEW(T)                                                  \
+DEFINE_DELETE(T)                                                \
+DEFINE_VDELETE(T)                                               \
+enum { __tame_ansi_c_semicolon_message_for_new_delete_ ## T }
 
 #define DECLARE_NEW(T) T *T ## _new(void)
 #define DECLARE_DELETE(T) void T ## _delete(T *el)

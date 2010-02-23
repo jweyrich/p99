@@ -11,6 +11,7 @@
 #ifndef   	ORWL_ENUM_H_
 # define   	ORWL_ENUM_H_
 
+#include <strings.h>
 #include <string.h>
 #include "orwl_once.h"
 
@@ -18,42 +19,62 @@
  ** @brief Declare a simple enumeration type.
  **
  ** This macro only works for enumeration types that have no
- ** assignments to the constants. Use it in something as
+ ** assignments to the constants. To define an enumeration type @c
+ ** color Use it in something as
  ** @code
- ** DECLARE_ENUM(bool, false, true);
+ ** DECLARE_ENUM(color, red, green, blue);
  ** @endcode
- ** 
+ **
+ ** As additional benefits you obtain:
+ **
+ ** - constants @c color_min and @c color_max that in this example
+ **   here would correspond to @c red and @c blue, respectively
+ ** - a function @c color_getname that returns a string containing the
+ **   name of its argument.
+ **
+ ** To have this functional, you have to put an line
+ ** @code
+ ** DEFINE_ENUM(color);
+ ** @endcode
+ **
+ ** in one of your object files.
  **/
 #define DECLARE_ENUM(T, ...)                                            \
-typedef enum { __VA_ARGS__ } T;                                         \
-static T const _ ## T ## _consts[] = {  __VA_ARGS__ };                  \
-enum { _ ## T ## _max = (sizeof(_ ## T ## _consts) / sizeof(T)) };      \
+typedef enum { __VA_ARGS__ ,                                            \
+               T ## _amount,                                            \
+               T ## _max = ((unsigned long)(T ## _amount) - 1ul),       \
+               T ## _min = 0                                            \
+} T;                                                                    \
 static char _ ## T ## _concat[] =  # __VA_ARGS__;                       \
 enum { _ ## T ## _concat_len = sizeof(_ ## T ## _concat) };             \
-DECLARE_ONCE(T);                                                        \
 extern char const* T ## _getname(T x)
 
 
+/**
+ ** @brief Define the necessary symbols for a simple enumeration type.
+ **
+ ** Use this with DECLARE_ENUM(), which see.
+ **/
 #define DEFINE_ENUM(T)                                                  \
-static char const* _ ## T ## _names[_ ## T ## _max] = { };              \
+static char const* _ ## T ## _names[T ## _amount] = { 0 };              \
 DEFINE_ONCE(T) {                                                        \
-  size_t i;                                                             \
   char *head = _ ## T ## _concat;                                       \
-  for (i = 1; i < _ ## T ## _max; ++i) {                                \
+  for (T i = T ## _min; i < T ## _max; ++i) {                           \
+    _ ## T ## _names[i] = head;                                         \
     head = index(head, ',');                                            \
     for (; *head == ',' || *head == ' '; ++head)                        \
       *head = '\0';                                                     \
     _ ## T ## _names[i] = head;                                         \
     ++head;                                                             \
   }                                                                     \
-  /* be sure to have this assigned last */                              \
-  _ ## T ## _names[0] = _ ## T ## _concat;                              \
+  _ ## T ## _names[T ## _max] = head;                                   \
 }                                                                       \
 char const* T ## _getname(T x) {                                        \
   unsigned pos = x;                                                     \
   INIT_ONCE(T);                                                         \
-  return (pos < _ ## T ## _max) ? _ ## T ## _names[pos] : "((" #T ")unknown value)"; \
-}
+  return (pos < T ## _amount) ? _ ## T ## _names[pos] : "((" #T ")unknown value)"; \
+}                                                                       \
+enum { __tame_ansi_c_semicolon_message_for_enum ## T }
 
 DECLARE_ENUM(bool, false, true);
 
