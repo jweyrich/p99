@@ -12,6 +12,9 @@
 # define   	ORWL_NEW_H_
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 
 #define DECLARE_NEW(T, ...)                     \
 inline                                          \
