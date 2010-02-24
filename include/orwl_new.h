@@ -55,8 +55,8 @@ T *const*T ## _vnew(size_t n) {                 \
 inline                                          \
 void T ## _vdelete(T *const*vec) {              \
   if (vec) {                                    \
-    for (T *v = *vec; v; ++v)                   \
-      T ## _delete(v);                          \
+    for (T **v = (T**)vec; *v; ++v)             \
+      T ## _delete(*v);                         \
     free((T**)vec);                             \
   }                                             \
 }
