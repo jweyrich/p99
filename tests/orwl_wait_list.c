@@ -22,12 +22,6 @@ static orwl_wh *const*handle = NULL;
 static size_t phases = 4;
 static size_t threads = 1;
 
-typedef struct _arg_t {
-  size_t mynum;
-  size_t np;
-  size_t phases;
-} arg_t;
-
 #define report(exp, F, ...)                     \
 do {                                            \
   if (exp)                                      \
@@ -73,6 +67,34 @@ void sleepfor(double t) {
   }
 }
 
+void size_t_init(size_t *size, size_t def) {
+  *size = def;
+}
+
+void size_t_destroy(size_t *arg) {
+  /* empty */
+}
+
+DECLARE_NEW_DELETE(size_t, 0);
+DEFINE_NEW_DELETE(size_t);
+
+typedef struct _arg_t {
+  size_t mynum;
+  size_t np;
+  size_t phases;
+} arg_t;
+
+void arg_t_init(arg_t *arg, size_t def) {
+  arg->mynum = def;
+  arg->np = def;
+  arg->phases = def;
+}
+
+void arg_t_destroy(arg_t *arg) {
+}
+
+DECLARE_NEW_DELETE(arg_t, 0);
+DEFINE_NEW_DELETE(arg_t);
 
 DECLARE_THREAD(arg_t);
 
@@ -106,12 +128,12 @@ DEFINE_THREAD(arg_t) {
       ostate = orwl_wait_acquire(handle[mynum + (phase % 2)*np]);
       if (ostate == orwl_acquired) break;
       progress(!mynum, try, "acq, handle %lu, state %s, waiting for %lu\r",
-               (ulong)(mynum + np), orwl_state_getname(ostate),
+               (ulong)(mynum + (phase % 2)*np), orwl_state_getname(ostate),
                threadof(mynum - phase));
       sleepfor(iwait);
     }
     report(!mynum, "acq, handle %lu, state %s                            \n",
-           (ulong)(mynum + np), orwl_state_getname(ostate));
+           (ulong)(mynum + (phase % 2)*np), orwl_state_getname(ostate));
     sleepfor(rwait);
     orwl_wait_release(handle[mynum + (phase % 2)*np]);
     report(!mynum, "rel, handle %lu\n", (ulong)(mynum + (phase % 2)*np));
@@ -120,8 +142,6 @@ DEFINE_THREAD(arg_t) {
 
 
 int main(int argc, char **argv) {
-  size_t i;
-
   if (argc > 1) phases = strtoul(argv[1], NULL, 0);
   if (argc > 2) threads = strtoul(argv[2], NULL, 0);
 
@@ -131,19 +151,39 @@ int main(int argc, char **argv) {
   location = orwl_wq_new();
   handle = orwl_wh_vnew(2 * threads);
 
-  pthread_t *id = malloc(threads * sizeof(pthread_t));
-  arg_t *arg = malloc(threads * sizeof(arg_t));
+  /* Half of the threads are created detached and half joinable */
+  pthread_t *const*id = size_t_vnew(threads/2);
+  arg_t *const*arg = arg_t_vnew(threads/2);
 
-  for (i = 0; i < threads; ++i) {
-    arg[i].mynum = i;
-    arg[i].np = threads;
-    arg[i].phases = phases;
-    arg_t_create(id + i, arg + i);
+  for (size_t i = 0; i < threads; ++i) {
+    arg_t *myarg = (i%2 ? arg[i/2] : arg_t_new());
+    myarg->mynum = i;
+    myarg->np = threads;
+    myarg->phases = phases;
+    if (i%2)
+      arg_t_create(myarg, id[i/2]);
+    else
+      arg_t_create(myarg, NULL);
   }
 
-  for (i = 0; i < threads; ++i) {
-    arg_t_join(id[i]);
+
+  fprintf(stderr, "%s: waiting for %lu joinable threads\n",
+          argv[0], threads/2);
+  for (size_t i = 0; i < threads/2; ++i) {
+    arg_t_join(*id[i]);
   }
 
+  fprintf(stderr, "%s: waiting for %lu detached threads\n",
+          argv[0], threads - threads/2);
+  orwl_pthread_wait_detached();
+
+  fprintf(stderr, "freeing arg\n");
+  arg_t_vdelete(arg);
+  fprintf(stderr, "freeing id\n");
+  size_t_vdelete(id);
+  fprintf(stderr, "freeing handle\n");
+  orwl_wh_vdelete(handle);
+  fprintf(stderr, "freeing location\n");
+  orwl_wq_delete(location);
   return 0;
 }
