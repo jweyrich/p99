@@ -1,0 +1,130 @@
+/*
+** orwl_thread.c
+** 
+** Made by (Jens Gustedt)
+** Login   <gustedt@damogran.loria.fr>
+** 
+** Started on  Wed Feb 24 11:38:27 2010 Jens Gustedt
+** Last update Sun May 12 01:17:25 2002 Speed Blue
+*/
+
+#include <stdint.h>
+#include <semaphore.h>
+#include <stdio.h>
+#include "orwl_thread.h"
+#include "orwl_once.h"
+#include "orwl_new.h"
+
+static pthread_attr_t attr_detached;
+static pthread_attr_t attr_joinable;
+
+/* The following three are needed to communicate termination of
+ * detached threads.
+ *
+ * The counter is realized by a semaphore to ensure that thread
+ * startup is as fast as possible. A call to sem_post should be the
+ * most efficient operation for such a case.
+ *
+ * The wait routine on the other hand then has to check for the value
+ * 0 of the semaphore. Semaphores are not made for this and we can't
+ * wait on just using the semaphore. Thus we use a mutex / cond pair
+ * to use pthread signaling through conditions.
+ */
+static sem_t create_sem;
+static pthread_mutex_t create_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t create_cond = PTHREAD_COND_INITIALIZER;
+
+DEFINE_ONCE(orwl_pthread_create) {
+  sem_init(&create_sem, 0, 0);
+  pthread_attr_init(&attr_detached);
+  pthread_attr_setdetachstate(&attr_detached, PTHREAD_CREATE_DETACHED);
+  pthread_attr_init(&attr_joinable);
+  pthread_attr_setdetachstate(&attr_joinable, PTHREAD_CREATE_JOINABLE);
+}
+
+int orwl_pthread_create_joinable(pthread_t *restrict thread,
+                                 void *(*start_routine)(void*),
+                                 void *restrict arg) {
+  INIT_ONCE(orwl_pthread_create);
+  return pthread_create(thread, &attr_joinable, start_routine, arg);
+}
+
+/* The joinable case is a bit more involved. We wrap another function
+ * around the user thread function since we have to do some
+ * preparation and clean up to do.
+ *
+ * Therefore we need a @c struct that combines the function pointer
+ * and its argument.
+ */
+
+typedef struct {
+  void *(*start_routine)(void*);
+  void *arg;
+} routine_arg_t;
+
+inline
+void routine_arg_t_init(routine_arg_t *rt, int dum) {
+  rt->start_routine = NULL;
+  rt->arg = NULL;
+}
+
+inline
+void routine_arg_t_destroy(routine_arg_t *rt) {
+  /* empty */
+}
+
+DECLARE_NEW(routine_arg_t, 0)
+DECLARE_DELETE(routine_arg_t)
+
+static
+void *detached_wrapper(void *routine_arg) {
+  routine_arg_t *Routine_Arg = routine_arg;
+  void *(*start_routine)(void*) = Routine_Arg->start_routine;
+  void *restrict arg = Routine_Arg->arg;
+  /* Be careful to eliminate all garbage that the wrapping has
+     generated. */
+  routine_arg_t_delete(Routine_Arg);
+  Routine_Arg = NULL;
+  routine_arg = NULL;
+  /* This should be fast since usually there should never be a waiter
+     block on this semaphore. */
+  sem_post(&create_sem);
+  /* Do the real work */
+  void *ret = start_routine(arg);
+  /* This should return immediately, since we ourselves have posted
+     a token */
+  sem_wait(&create_sem);
+  /* The remaining part could be a bit slower but usually only at the
+     very end of the program and in a situation where a lot of
+     threads return simultaneously. */
+  pthread_mutex_lock(&create_mutex);
+  pthread_cond_broadcast(&create_cond);
+  pthread_mutex_unlock(&create_mutex);
+  return ret;
+}
+
+
+int orwl_pthread_create_detached(void *(*start_routine)(void*),
+                                 void *restrict arg) {
+  INIT_ONCE(orwl_pthread_create);
+  /* Be sure to allocate the pair on the heap to leave full control
+     to detached_wrapper() of what to do with it. */
+  routine_arg_t *Routine_Arg = routine_arg_t_new();
+  Routine_Arg->start_routine = start_routine;
+  Routine_Arg->arg = arg;
+  return pthread_create(&(pthread_t){0},
+                           &attr_detached,
+                           detached_wrapper,
+                           Routine_Arg);
+}
+
+void orwl_pthread_wait_detached(void) {
+  INIT_ONCE(orwl_pthread_create);
+  pthread_mutex_lock(&create_mutex);
+  for (int sval = 1;;) {
+    sem_getvalue(&create_sem, &sval);
+    if (!sval) break;
+    pthread_cond_wait(&create_cond, &create_mutex);
+  }
+  pthread_mutex_unlock(&create_mutex);
+}

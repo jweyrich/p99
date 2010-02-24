@@ -11,14 +11,17 @@
 # Complete this to make it ! #
 ##############################
 NAME 	=	liborwl.a liborwl.so	# Name of executable file
-SRC	=	orwl_wait_queue.c	orwl_enum.c # List of *.c
+SRC	=					\
+	orwl_wait_queue.c			\
+	orwl_enum.c				\
+	orwl_thread.c
 INCL  	=	# List of *.h
 ################
 # Optional add #
 ################
 IPATH   = -I.  -I../include         # path of include file
-OBJOPT  = -std=gnu99 -pedantic -O2 -Wall -Wstrict-prototypes       # option for obj
-EXEOPT  = -std=gnu99 -pedantic -O2 -Wall -Wstrict-prototypes       # option for exe (-lefence ...)
+OBJOPT  = -std=gnu99 -pedantic -g -O2 -Wall -Wstrict-prototypes       # option for obj
+EXEOPT  = -std=gnu99 -pedantic -g -O2 -Wall -Wstrict-prototypes       # option for exe (-lefence ...)
 LPATH   = -L.           # path for librairies ... 
 
 #####################
