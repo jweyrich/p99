@@ -76,11 +76,12 @@ int orwl_wq_valid(orwl_wq *wq);
 /* This supposes that wq != NULL */
 int orwl_wq_idle(orwl_wq *wq);
 
-orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq) {
+orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq, uint64_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (wq && orwl_wq_valid(wq) && orwl_wh_idle(wh)) {
     pthread_mutex_lock(&wq->mut);
     wh->location = wq;
+    orwl_wh_block(wh, howmuch);
     if (orwl_wq_idle(wq)) wq->head = wh;
     else wq->tail->next = wh;
     wq->tail = wh;
@@ -98,9 +99,9 @@ orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
     /* We are on the slow path */
     else {
     RETRY:
-      orwl_wh_block(wh);
+      orwl_wh_block(wh, 1);
       pthread_cond_wait(&wh->cond, &wq->mut);
-      orwl_wh_deblock(wh);
+      orwl_wh_deblock(wh, 1);
       /* Check everything again, somebody might have destroyed
          our wq */
       if (orwl_wq_valid(wq)) {
@@ -113,20 +114,22 @@ orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
   return ret;
 }
 
-orwl_state orwl_wait_acquire(orwl_wh *wh) {
+orwl_state orwl_wait_acquire(orwl_wh *wh, uint64_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
     if (wq) {
       pthread_mutex_lock(&wq->mut);
       ret = orwl_wait_acquire_locked(wh, wq);
+      if (ret == orwl_acquired)
+        orwl_wh_deblock(wh, howmuch);
       pthread_mutex_unlock(&wq->mut);
     }
   }
   return ret;
 }
 
-orwl_state orwl_wait_test(orwl_wh *wh) {
+orwl_state orwl_wait_test(orwl_wh *wh, uint64_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
@@ -136,6 +139,7 @@ orwl_state orwl_wait_test(orwl_wh *wh) {
           && wq->head) {
         ret = wq->head == wh ? orwl_acquired : orwl_requested;
       }
+      if (ret == orwl_acquired) orwl_wh_deblock(wh, howmuch);
       pthread_mutex_unlock(&wq->mut);
     } else {
       if (!wh->next) ret = orwl_valid;

@@ -16,6 +16,7 @@
 #include <math.h>
 #include "orwl_thread.h"
 #include "orwl_wait_queue.h"
+#include "orwl_callback.h"
 
 static orwl_wq *location = NULL;
 static orwl_wh *const*handle = NULL;
@@ -78,6 +79,31 @@ void size_t_destroy(size_t *arg) {
 DECLARE_NEW_DELETE(size_t, 0);
 DEFINE_NEW_DELETE(size_t);
 
+typedef struct {
+  uint64_t mynum;
+  uint64_t phase;
+} cb_t;
+
+void cb_t_init(cb_t *cb, uint64_t v) {
+  cb->mynum = v;
+  cb->phase = v;
+}
+
+void cb_t_destroy(cb_t *cb) {
+  /* empty */
+}
+
+DECLARE_NEW_DELETE(cb_t, 0);
+DEFINE_NEW_DELETE(cb_t);
+
+DECLARE_CALLBACK(cb_t);
+
+DEFINE_CALLBACK(cb_t) {
+  if (!Arg->mynum) fprintf(stderr, "callback %lu phase %lu\n",
+          (ulong)Arg->mynum,
+          (ulong)Arg->phase);
+}
+
 typedef struct _arg_t {
   size_t mynum;
   size_t np;
@@ -111,32 +137,61 @@ DEFINE_THREAD(arg_t) {
     double const rwait = twait * erand48(xsubi);
     double const await = twait - rwait;
     orwl_state ostate = orwl_invalid;
-    for (size_t try = 0; ostate != orwl_acquired; ++try) {
+    for (size_t try = 0; ostate != orwl_requested; ++try) {
       ostate = orwl_wait_request(handle[threadof(mynum + (phase>>1)) + (phase % 2)*np],
-                                 location);
+                                 location,
+                                 1);
       if (ostate == orwl_requested) break;
-      progress(!mynum, try, "req, handle %lu, %s\n",
+      progress(!mynum,  try, "req, handle %lu, %s\r",
                (ulong)(threadof(mynum + (phase>>1)) + (phase % 2)*np),
                orwl_state_getname(ostate));
       sleepfor(await);
     }
-    report(!mynum, "req, handle %lu, %s\n",
+    report(!mynum,  "req, handle %lu, %s\n",
            (ulong)(threadof(mynum + (phase>>1)) + (phase % 2)*np),
            orwl_state_getname(ostate));
+    /**/
+    cb_t *cb = cb_t_new();
+    cb->mynum = mynum;
+    cb->phase = phase;
+    ostate = orwl_invalid;
+    for (size_t try = 0; ostate != orwl_requested; ++try) {
+      ostate = orwl_wait_test(handle[mynum + (phase % 2)*np], 0);
+      if (ostate == orwl_requested || ostate == orwl_acquired) break;
+      progress(!mynum,  try, "test, handle %lu, %s (%lu, %lu)\r",
+               (ulong)(mynum + (phase % 2)*np),
+               orwl_state_getname(ostate),
+               (ulong)ostate,
+               (ulong)orwl_requested);
+      sleepfor(await);
+    }
+    report(!mynum, "test, handle %lu, %s\n",
+           (ulong)(mynum + (phase % 2)*np),
+           orwl_state_getname(ostate));
+    orwl_callback_attach_cb_t(cb, handle[mynum + (phase % 2)*np]);
+    /**/
     ostate = orwl_invalid;
     for (size_t try = 0; ostate != orwl_acquired; ++try) {
-      ostate = orwl_wait_acquire(handle[mynum + (phase % 2)*np]);
+      ostate = orwl_wait_acquire(handle[mynum + (phase % 2)*np], 1);
       if (ostate == orwl_acquired) break;
-      progress(!mynum, try, "acq, handle %lu, state %s, waiting for %lu\r",
+      progress(!mynum,  try, "acq, handle %lu, state %s, waiting for %lu\r",
                (ulong)(mynum + (phase % 2)*np), orwl_state_getname(ostate),
                threadof(mynum - phase));
       sleepfor(iwait);
     }
-    report(!mynum, "acq, handle %lu, state %s                            \n",
+    report(!mynum,  "acq, handle %lu, state %s                            \n",
            (ulong)(mynum + (phase % 2)*np), orwl_state_getname(ostate));
     sleepfor(rwait);
-    orwl_wait_release(handle[mynum + (phase % 2)*np]);
-    report(!mynum, "rel, handle %lu\n", (ulong)(mynum + (phase % 2)*np));
+    ostate = orwl_invalid;
+    for (size_t try = 0; ostate != orwl_valid; ++try) {
+      ostate = orwl_wait_release(handle[mynum + (phase % 2)*np]);
+      if (ostate == orwl_valid) break;
+      progress(!mynum,  try, "rel, handle %lu, state %s, waiting for %lu\r",
+               (ulong)(mynum + (phase % 2)*np), orwl_state_getname(ostate),
+               threadof(mynum - phase));
+      sleepfor(iwait);
+    }
+    report(!mynum,  "rel, handle %lu\n", (ulong)(mynum + (phase % 2)*np));
   }
 }
 
