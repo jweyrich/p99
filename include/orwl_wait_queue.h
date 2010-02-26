@@ -80,7 +80,7 @@ struct _orwl_wh {
   pthread_cond_t cond;
   orwl_wq *location;
   orwl_wh *next;
-  uint64_t waiters;
+  uint64_t tokens;
 };
 
 #define orwl_wh_garb ((orwl_wh*)(~(uintptr_t)0))
@@ -130,57 +130,76 @@ void orwl_wh_destroy(orwl_wh *wh);
 DECLARE_NEW_DELETE(orwl_wh, NULL);
 
 /**
- * @brief Insert a request on @a wh into location @a wq
- *
- * @return @c orwl_invalid if any of @a wh or @a wq was invalid, or if
- * there was already a request pending on @a wh. Otherwise returns @c
- * orwl_requested.
+ ** @brief Insert a request of @a howmuch tokens on @a wh into location
+ ** @a wq
+ **
+ ** @return @c orwl_invalid if any of @a wh or @a wq was invalid, or if
+ ** there was already a request pending on @a wh. Otherwise returns @c
+ ** orwl_requested.
+ **
+ ** This places @a howmuch tokens on @a wh. @a wh will only be possible
+ ** to be released if, first, it is acquired (that is it moves front in
+ ** the FIFO) and then if all tokens are unloaded with
+ ** orwl_wait_acquire() or orwl_wait_test().
+ **
+ ** The tokens are only considered to be loaded on @a wh if the call is
+ ** successful.
  **/
 orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq, uint64_t howmuch);
 
 /**
- * @brief Acquire a pending request on @a wh. Blocking until the
- * request is acquired.
- *
- * @return @c orwl_invalid if @a wh was invalid, or if there
- * was no request pending on @a wh. Otherwise it eventually blocks and
- * then returns @c orwl_acquired.
+ ** @brief Acquire a pending request on @a wh. Blocking until the
+ ** request is acquired.
+ **
+ ** @return @c orwl_invalid if @a wh was invalid, or if there
+ ** was no request pending on @a wh. Otherwise it eventually blocks and
+ ** then returns @c orwl_acquired.
+ **
+ ** The tokens are considered to be removed frome @a wh iff the call
+ ** returns orwl_acquired.
  **/
 orwl_state orwl_wait_acquire(orwl_wh *wh, uint64_t howmuch);
 
+/**
+ ** Of internal use. Supposes that @a wh is in the queue of @a wq and
+ ** that the lock on @a wq is taken by this thread.
+ **/
 orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq);
 
 
 /**
- * @brief Test for a pending request on @a wh. Never blocking.
- *
- * @return @c orwl_invalid if @a wh was invalid, @c orwl_valid if there
- * was no request pending on @a wh, @c orwl_requested if a request is
- * pending that is not yet acquired, and @c orwl_acquired if a request
- * is already acquired.
+ ** @brief Test for a pending request on @a wh. Never blocking.
+ **
+ ** @return @c orwl_invalid if @a wh was invalid, @c orwl_valid if there
+ ** was no request pending on @a wh, @c orwl_requested if a request is
+ ** pending that is not yet acquired, and @c orwl_acquired if a request
+ ** is already acquired.
+ **
+ ** The tokens are considered to be removed frome @a wh iff the call
+ ** returns orwl_acquired.
  **/
 orwl_state orwl_wait_test(orwl_wh *wh, uint64_t howmuch);
 
 /**
- * @brief Release a request on @a wh. Never blocking.
- *
- * @return @c orwl_invalid if @a wh was invalid, or if there was no
- * request acquired for @a wh. Otherwise it returns @c orwl_valid.
+ ** @brief Release a request on @a wh. Never blocking.
+ **
+ ** @return @c orwl_invalid if @a wh was invalid, or if there was no
+ ** request acquired for @a wh. Otherwise it returns @c orwl_valid.
  **/
 orwl_state orwl_wait_release(orwl_wh *wh);
 
 /* This supposes that the corresponding wq != NULL */
 inline
-void orwl_wh_block(orwl_wh *wh, uint64_t howmuch) {
-  wh->waiters += howmuch;
+void orwl_wh_load(orwl_wh *wh, uint64_t howmuch) {
+  wh->tokens += howmuch;
 }
 
 /* This supposes that the corresponding wq != NULL */
 inline
-void orwl_wh_deblock(orwl_wh *wh, uint64_t howmuch) {
-  wh->waiters -= howmuch;
-  /* If the condition has change, wake up all waiters */
-  if (!wh->waiters) pthread_cond_broadcast(&wh->cond);
+void orwl_wh_unload(orwl_wh *wh, uint64_t howmuch) {
+  wh->tokens -= howmuch;
+  /* If the condition has change, wake up all tokens */
+  if (!wh->tokens) pthread_cond_broadcast(&wh->cond);
 }
 
 #endif

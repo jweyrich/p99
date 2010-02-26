@@ -56,7 +56,7 @@ void orwl_wh_init(orwl_wh *wh,
   pthread_cond_init(&wh->cond, attr);
   wh->location = NULL;
   wh->next = NULL;
-  wh->waiters = 0;
+  wh->tokens = 0;
 }
 
 void orwl_wh_destroy(orwl_wh *wh) {
@@ -81,7 +81,7 @@ orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq, uint64_t howmuch) {
   if (wq && orwl_wq_valid(wq) && orwl_wh_idle(wh)) {
     pthread_mutex_lock(&wq->mut);
     wh->location = wq;
-    orwl_wh_block(wh, howmuch);
+    orwl_wh_load(wh, howmuch);
     if (orwl_wq_idle(wq)) wq->head = wh;
     else wq->tail->next = wh;
     wq->tail = wh;
@@ -99,9 +99,9 @@ orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
     /* We are on the slow path */
     else {
     RETRY:
-      orwl_wh_block(wh, 1);
+      orwl_wh_load(wh, 1);
       pthread_cond_wait(&wh->cond, &wq->mut);
-      orwl_wh_deblock(wh, 1);
+      orwl_wh_unload(wh, 1);
       /* Check everything again, somebody might have destroyed
          our wq */
       if (orwl_wq_valid(wq)) {
@@ -122,7 +122,7 @@ orwl_state orwl_wait_acquire(orwl_wh *wh, uint64_t howmuch) {
       pthread_mutex_lock(&wq->mut);
       ret = orwl_wait_acquire_locked(wh, wq);
       if (ret == orwl_acquired)
-        orwl_wh_deblock(wh, howmuch);
+        orwl_wh_unload(wh, howmuch);
       pthread_mutex_unlock(&wq->mut);
     }
   }
@@ -139,7 +139,7 @@ orwl_state orwl_wait_test(orwl_wh *wh, uint64_t howmuch) {
           && wq->head) {
         ret = wq->head == wh ? orwl_acquired : orwl_requested;
       }
-      if (ret == orwl_acquired) orwl_wh_deblock(wh, howmuch);
+      if (ret == orwl_acquired) orwl_wh_unload(wh, howmuch);
       pthread_mutex_unlock(&wq->mut);
     } else {
       if (!wh->next) ret = orwl_valid;
@@ -154,17 +154,16 @@ orwl_state orwl_wait_release(orwl_wh *wh) {
     orwl_wq *wq = wh->location;
     if (wq) {
       pthread_mutex_lock(&wq->mut);
-      if (orwl_wq_valid(wq)
-          && wq->head == wh
-          && !wh->waiters) {
-        if (!wh->next)
-          wq->tail = NULL;
-        wq->head = wh->next;
-        wh->location = NULL;
-        wh->next = NULL;
-        ret = orwl_valid;
-        if (wq->head)
-          pthread_cond_broadcast(&wq->head->cond);
+      while (orwl_wq_valid(wq)) {
+        if (wq->head == wh && !wh->tokens) {
+          wh->location = NULL;
+          if (!wh->next) wq->tail = NULL;
+          wq->head = wh->next;
+          wh->next = NULL;
+          ret = orwl_valid;
+          if (wq->head) pthread_cond_broadcast(&wq->head->cond);
+          break;
+        } else pthread_cond_wait(&wh->cond, &wq->mut);
       }
       pthread_mutex_unlock(&wq->mut);
     } else {

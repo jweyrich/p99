@@ -17,6 +17,30 @@
 
 #define _CALLBACK_PAIR(T) _ ## T ## _orwl_wh_t
 
+/**
+ ** @brief Declare that a type @a T acts as a callback that is
+ ** piggybacked on a orwl_wh_t.
+ **
+ ** In a .c file you must define the callback function by means of the
+ ** DEFINE_CALLBACK() macro. If your type @a T is cb_t, say, you then
+ ** may have two functions declared:
+ ** @code
+ ** int orwl_callback_attach_cb_t(cb_t *Arg, orwl_wh *wh);
+ ** void orwl_callback_cb_t(cb_t *Arg, orwl_wh *wh);
+ ** @endcode
+ **
+ ** The first is used to attach the callback function (with argument
+ ** @c Arg) to wait handle @c wh. The second is how the user supplied
+ ** callback function is invoked. I.e it see the same two arguments as
+ ** were passed through @c orwl_callback_attach_cb_t.
+ **
+ ** Since the callback function is invoked asynchronously, the caller
+ ** may never know when argument @c arg is not used anymore. Therefore
+ ** the control on @c arg passes entirely to the callback
+ ** routines. User code should never @c free or delete it. It will be
+ ** automatically deleted (via @c cb_t_delete) once the callback has
+ ** returned.
+ **/
 #define DECLARE_CALLBACK(T)                                             \
 typedef struct {                                                        \
   pthread_cond_t cond;                                                  \
@@ -41,6 +65,10 @@ DECLARE_THREAD(_ ## T ## _orwl_wh_t);                                   \
 extern int orwl_callback_attach_ ## T(T *Arg, orwl_wh *wh);             \
 extern void orwl_callback_ ## T(T *Arg, orwl_wh *Wh)
 
+/** @brief Define the callback function for type @a T.
+ **
+ ** @see DECLARE_CALLBACK
+ **/
 #define DEFINE_CALLBACK(T)                                              \
 DEFINE_THREAD(_ ## T ## _orwl_wh_t) {                                   \
   T *arg = Arg->Arg;                                                    \
@@ -51,7 +79,7 @@ DEFINE_THREAD(_ ## T ## _orwl_wh_t) {                                   \
   pthread_cond_signal(&Arg->cond);                                      \
   /* Afterwards Arg might already be deleted by the caller */           \
   state = orwl_wait_acquire_locked(wh, wq);                             \
-  if (state == orwl_acquired) orwl_wh_deblock(wh, 1);                   \
+  if (state == orwl_acquired) orwl_wh_unload(wh, 1);                    \
   else                                                                  \
     fprintf(stderr, "thread %lu|%p failed to acquire\n", pthread_self(), (void*)wh); \
   pthread_mutex_unlock(&wq->mut);                                       \
@@ -76,13 +104,13 @@ int orwl_callback_attach_ ## T(T *arg, orwl_wh *wh) {                   \
         /* it anymore */                                                \
         arg = NULL;                                                     \
         /* One token for ourselves, one for our child */                \
-        orwl_wh_block(wh, 2);                                           \
+        orwl_wh_load(wh, 2);                                            \
         /* create thread detached */                                    \
         ret = _ ## T ## _orwl_wh_t ## _create(pair, NULL);              \
         /* wait until we know that the client thread has attached to */ \
         /* wh                                                        */ \
         pthread_cond_wait(&pair->cond, &wq->mut);                       \
-        orwl_wh_deblock(wh, 1);                                         \
+        orwl_wh_unload(wh, 1);                                          \
         /* Be careful to eliminate all garbage that the wrapping has */ \
         /* generated.                                                */ \
         /*_ ## T ## _orwl_wh_t ## _delete(pair);*/                      \

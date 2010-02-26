@@ -182,15 +182,7 @@ DEFINE_THREAD(arg_t) {
     report(!mynum,  "acq, handle %lu, state %s                            \n",
            (ulong)(mynum + (phase % 2)*np), orwl_state_getname(ostate));
     sleepfor(rwait);
-    ostate = orwl_invalid;
-    for (size_t try = 0; ostate != orwl_valid; ++try) {
-      ostate = orwl_wait_release(handle[mynum + (phase % 2)*np]);
-      if (ostate == orwl_valid) break;
-      progress(!mynum,  try, "rel, handle %lu, state %s, waiting for %lu\r",
-               (ulong)(mynum + (phase % 2)*np), orwl_state_getname(ostate),
-               threadof(mynum - phase));
-      sleepfor(iwait);
-    }
+    orwl_wait_release(handle[mynum + (phase % 2)*np]);
     report(!mynum,  "rel, handle %lu\n", (ulong)(mynum + (phase % 2)*np));
   }
 }
