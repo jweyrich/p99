@@ -18,7 +18,6 @@
 #include "orwl_enum.h"
 
 /** @brief Return type for @c orwl functions
- ** 
  **/
 DECLARE_ENUM(orwl_state,
              orwl_invalid,         /**< call with an invalid object     **/
@@ -84,6 +83,9 @@ struct _orwl_wh {
   uint64_t waiters;
 };
 
+#define orwl_wh_garb ((orwl_wh*)(~(uintptr_t)0))
+#define orwl_wq_garb ((orwl_wq*)(~(uintptr_t)0))
+
 #define ORWL_WQ_INITIALIZER { PTHREAD_MUTEX_INITIALIZER }
 
 void orwl_wq_init(orwl_wq *wq,
@@ -91,6 +93,33 @@ void orwl_wq_init(orwl_wq *wq,
 void orwl_wq_destroy(orwl_wq *wq);
 
 DECLARE_NEW_DELETE(orwl_wq, NULL);
+
+inline
+int orwl_wh_valid(orwl_wh *wh) {
+  return wh
+    && wh->location != orwl_wq_garb
+    && wh->next != orwl_wh_garb;
+}
+
+inline
+int orwl_wh_idle(orwl_wh *wh) {
+  return wh && !wh->location && !wh->next;
+}
+
+/* This supposes that wq != NULL */
+inline
+int orwl_wq_valid(orwl_wq *wq) {
+  return wq->head != orwl_wh_garb
+    && wq->tail != orwl_wh_garb;
+}
+
+/* This supposes that wq != NULL */
+inline
+int orwl_wq_idle(orwl_wq *wq) {
+  return !wq->head && !wq->tail;
+}
+
+
 
 #define ORWL_WH_INITIALIZER { PTHREAD_COND_INITIALIZER }
 
@@ -119,6 +148,9 @@ orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq);
  **/
 orwl_state orwl_wait_acquire(orwl_wh *wh);
 
+orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq);
+
+
 /**
  * @brief Test for a pending request on @a wh. Never blocking.
  *
@@ -137,5 +169,18 @@ orwl_state orwl_wait_test(orwl_wh *wh);
  **/
 orwl_state orwl_wait_release(orwl_wh *wh);
 
+/* This supposes that the corresponding wq != NULL */
+inline
+void orwl_wh_block(orwl_wh *wh) {
+  ++wh->waiters;
+}
+
+/* This supposes that the corresponding wq != NULL */
+inline
+void orwl_wh_deblock(orwl_wh *wh) {
+  --wh->waiters;
+  /* If the condition has change, wake up all waiters */
+  if (!wh->waiters) pthread_cond_broadcast(&wh->cond);
+}
 
 #endif

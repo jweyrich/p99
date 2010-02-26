@@ -16,9 +16,6 @@
 DEFINE_ENUM(orwl_state);
 
 
-static orwl_wh *const orwl_wh_garb = ((orwl_wh*)(~(uintptr_t)0));
-static orwl_wq *const orwl_wq_garb = ((orwl_wq*)(~(uintptr_t)0));
-
 static pthread_mutexattr_t smattr = { { 0 } };
 
 #define report(F, ...) fprintf(stderr, "%lu: " F, (ulong)pthread_self(), __VA_ARGS__)
@@ -72,30 +69,12 @@ void orwl_wh_destroy(orwl_wh *wh) {
 
 DEFINE_NEW_DELETE(orwl_wh);
 
-static inline
-int orwl_wh_valid(orwl_wh *wh) {
-  return wh
-    && wh->location != orwl_wq_garb
-    && wh->next != orwl_wh_garb;
-}
-
-static inline
-int orwl_wh_idle(orwl_wh *wh) {
-  return wh && !wh->location && !wh->next;
-}
-
+int orwl_wh_valid(orwl_wh *wh);
+int orwl_wh_idle(orwl_wh *wh);
 /* This supposes that wq != NULL */
-static inline
-int orwl_wq_valid(orwl_wq *wq) {
-  return wq->head != orwl_wh_garb
-    && wq->tail != orwl_wh_garb;
-}
-
+int orwl_wq_valid(orwl_wq *wq);
 /* This supposes that wq != NULL */
-static inline
-int orwl_wq_idle(orwl_wq *wq) {
-  return !wq->head && !wq->tail;
-}
+int orwl_wq_idle(orwl_wq *wq);
 
 orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq) {
   orwl_state ret = orwl_invalid;
@@ -111,26 +90,36 @@ orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq) {
   return ret;
 }
 
+orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
+  orwl_state ret = orwl_invalid;
+  if (orwl_wq_valid(wq) && wq->head) {
+    /* We are on the fast path */
+    if (wq->head == wh) ret = orwl_acquired;
+    /* We are on the slow path */
+    else {
+    RETRY:
+      orwl_wh_block(wh);
+      pthread_cond_wait(&wh->cond, &wq->mut);
+      orwl_wh_deblock(wh);
+      /* Check everything again, somebody might have destroyed
+         our wq */
+      if (orwl_wq_valid(wq)) {
+        if (wq->head == wh)
+          ret = orwl_acquired;
+        else goto RETRY;
+      }
+    }
+  }
+  return ret;
+}
+
 orwl_state orwl_wait_acquire(orwl_wh *wh) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
     if (wq) {
       pthread_mutex_lock(&wq->mut);
-      if (orwl_wq_valid(wq) && wq->head) {
-        /* We are on the fast path */
-        if (wq->head == wh) ret = orwl_acquired;
-        /* We are on the slow path */
-        else {
-          ++wh->waiters;
-          pthread_cond_wait(&wh->cond, &wq->mut);
-          --wh->waiters;
-          /* Check everything again, somebody might have destroyed
-             our wq */
-          if (orwl_wq_valid(wq) && wq->head == wh)
-            ret = orwl_acquired;
-        }
-      }
+      ret = orwl_wait_acquire_locked(wh, wq);
       pthread_mutex_unlock(&wq->mut);
     }
   }
@@ -164,14 +153,14 @@ orwl_state orwl_wait_release(orwl_wh *wh) {
       if (orwl_wq_valid(wq)
           && wq->head == wh
           && !wh->waiters) {
-        if (wh->next)
-          pthread_cond_broadcast(&wh->next->cond);
-        else
+        if (!wh->next)
           wq->tail = NULL;
         wq->head = wh->next;
         wh->location = NULL;
         wh->next = NULL;
         ret = orwl_valid;
+        if (wq->head)
+          pthread_cond_broadcast(&wq->head->cond);
       }
       pthread_mutex_unlock(&wq->mut);
     } else {
