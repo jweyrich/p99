@@ -72,8 +72,6 @@ DEFINE_ONCE(T) {                                                        \
     head = index(head, ',');                                            \
     for (; *head == ',' || *head == ' '; ++head)                        \
       *head = '\0';                                                     \
-    _ ## T ## _names[i] = head;                                         \
-    ++head;                                                             \
   }                                                                     \
   _ ## T ## _names[T ## _max] = head;                                   \
 }                                                                       \
