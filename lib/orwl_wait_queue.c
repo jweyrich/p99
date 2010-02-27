@@ -18,7 +18,7 @@ DEFINE_ENUM(orwl_state);
 
 static pthread_mutexattr_t smattr = { { 0 } };
 
-#define report(F, ...) fprintf(stderr, "%lu: " F, (ulong)pthread_self(), __VA_ARGS__)
+#define report(F, ...) fprintf(stderr, "%ju: " F, (uintmax_t)pthread_self(), __VA_ARGS__)
 
 DEFINE_ONCE(orwl_wq) {
   pthread_mutexattr_init(&smattr);
@@ -76,7 +76,7 @@ int orwl_wq_valid(orwl_wq *wq);
 /* This supposes that wq != NULL */
 int orwl_wq_idle(orwl_wq *wq);
 
-orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq, uint64_t howmuch) {
+orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq, uintptr_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (wq && orwl_wq_valid(wq) && orwl_wh_idle(wh)) {
     pthread_mutex_lock(&wq->mut);
@@ -114,7 +114,7 @@ orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
   return ret;
 }
 
-orwl_state orwl_wait_acquire(orwl_wh *wh, uint64_t howmuch) {
+orwl_state orwl_wait_acquire(orwl_wh *wh, uintptr_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
@@ -129,7 +129,7 @@ orwl_state orwl_wait_acquire(orwl_wh *wh, uint64_t howmuch) {
   return ret;
 }
 
-orwl_state orwl_wait_test(orwl_wh *wh, uint64_t howmuch) {
+orwl_state orwl_wait_test(orwl_wh *wh, uintptr_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;

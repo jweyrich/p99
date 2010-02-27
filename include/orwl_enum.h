@@ -42,7 +42,7 @@
 #define DECLARE_ENUM(T, ...)                                            \
 typedef enum { __VA_ARGS__ ,                                            \
                T ## _amount,                                            \
-               T ## _max = ((unsigned long)(T ## _amount) - 1ul),       \
+               T ## _max = ((size_t)(T ## _amount) - 1u),               \
                T ## _min = 0                                            \
 } T;                                                                    \
 extern char const* _ ## T ## _names[T ## _amount];                      \

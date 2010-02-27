@@ -80,7 +80,7 @@ struct _orwl_wh {
   pthread_cond_t cond;
   orwl_wq *location;
   orwl_wh *next;
-  uint64_t tokens;
+  uintptr_t tokens;
 };
 
 #define orwl_wh_garb ((orwl_wh*)(~(uintptr_t)0))
@@ -145,7 +145,7 @@ DECLARE_NEW_DELETE(orwl_wh, NULL);
  ** The tokens are only considered to be loaded on @a wh if the call is
  ** successful.
  **/
-orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq, uint64_t howmuch);
+orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq, uintptr_t howmuch);
 
 /**
  ** @brief Acquire a pending request on @a wh. Blocking until the
@@ -158,7 +158,7 @@ orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq, uint64_t howmuch);
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
  **/
-orwl_state orwl_wait_acquire(orwl_wh *wh, uint64_t howmuch);
+orwl_state orwl_wait_acquire(orwl_wh *wh, uintptr_t howmuch);
 
 /**
  ** Of internal use. Supposes that @a wh is in the queue of @a wq and
@@ -178,7 +178,7 @@ orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq);
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
  **/
-orwl_state orwl_wait_test(orwl_wh *wh, uint64_t howmuch);
+orwl_state orwl_wait_test(orwl_wh *wh, uintptr_t howmuch);
 
 /**
  ** @brief Release a request on @a wh. Never blocking.
@@ -190,13 +190,13 @@ orwl_state orwl_wait_release(orwl_wh *wh);
 
 /* This supposes that the corresponding wq != NULL */
 inline
-void orwl_wh_load(orwl_wh *wh, uint64_t howmuch) {
+void orwl_wh_load(orwl_wh *wh, uintptr_t howmuch) {
   wh->tokens += howmuch;
 }
 
 /* This supposes that the corresponding wq != NULL */
 inline
-void orwl_wh_unload(orwl_wh *wh, uint64_t howmuch) {
+void orwl_wh_unload(orwl_wh *wh, uintptr_t howmuch) {
   wh->tokens -= howmuch;
   /* If the condition has change, wake up all tokens */
   if (!wh->tokens) pthread_cond_broadcast(&wh->cond);
