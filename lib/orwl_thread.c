@@ -11,9 +11,64 @@
 #include <stdint.h>
 #include <semaphore.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include "orwl_thread.h"
 #include "orwl_once.h"
 #include "orwl_new.h"
+
+size_t const orwl_mynum = ~(size_t)0;
+size_t orwl_np = ~(size_t)0;
+size_t orwl_phase = 0;
+
+void orwl_report(size_t mynum, size_t np, size_t phase, char const* format, ...) {
+  static char const form0[] = "%0*jX:%08zX: %s\n";
+  static char const form1[] = "%0*zX/%zX:%08zX: %s\n";
+  static size_t const headstart =
+    (sizeof(form0) < sizeof(form1) ? sizeof(form1) : sizeof(form0))
+    + sizeof(uintmax_t)/4 /* for the thread id */
+    + 8  /* for the phase  id */;
+  size_t const headlen = headstart + strlen(format);
+  char *head = malloc(headlen);
+  if (mynum == (size_t)-1)
+    snprintf(head, headlen, form0,
+             (int)(sizeof(uintmax_t)/4),
+             (uintmax_t)pthread_self(),
+             phase, format);
+  else
+    snprintf(head, headlen, form1,
+            (np < 0x10 ? 1 : (np < 0x100 ? 2 : (np < 0x1000 ? 3 : 4))),
+            mynum, np, phase, format);
+  va_list ap;
+  va_start(ap, format);
+  vfprintf(stderr, head, ap);
+  free(head);
+}
+
+void orwl_progress(size_t t, size_t mynum, size_t np, size_t phase, char const* format, ...) {
+  static char const form0[] = "%0*jX:%08zX: (%c) %s\r";
+  static char const form1[] = "%0*zX/%zX:%08zX: (%c) %s\r";
+  static char const img[] = "|\\-/";
+  static size_t const headstart =
+    (sizeof(form0) < sizeof(form1) ? sizeof(form1) : sizeof(form0))
+    + sizeof(uintmax_t)/4 /* for the thread id */
+    + 8  /* for the phase  id */;
+  size_t const headlen = headstart + strlen(format);
+  char *head = malloc(headlen);
+  if (mynum == (size_t)-1)
+    snprintf(head, headlen, form0,
+             (int)(sizeof(uintmax_t)/4),
+             (uintmax_t)pthread_self(),
+             phase, img[t%4], format);
+  else
+    snprintf(head, headlen, form1,
+             (np < 0x10 ? 1 : (np < 0x100 ? 2 : (np < 0x1000 ? 3 : 4))),
+             mynum, np, phase, img[t%4], format);
+  va_list ap;
+  va_start(ap, format);
+  vfprintf(stderr, head, ap);
+  free(head);
+}
+
 
 static pthread_attr_t attr_detached;
 static pthread_attr_t attr_joinable;

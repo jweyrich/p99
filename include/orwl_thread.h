@@ -12,6 +12,88 @@
 # define   	ORWL_THREAD_H_
 
 #include <pthread.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+/**
+ ** @brief A default (global!) version of something like a
+ ** thread id.
+ **
+ ** This is used by #report and #progress, unless you define a local
+ ** variable with the same name.
+ **
+ ** This is constant. If you want to use different values per thread
+ ** you should declare it on the stack of the thread.
+ **/
+extern size_t const orwl_mynum;
+
+/**
+ ** @brief A default (global!) version of something like the
+ ** total number of threads.
+ **
+ ** This is used by #report and #progress, unless you define a local
+ ** variable with the same name.
+ **
+ ** This variable here is shared among all threads. So you should
+ ** probably only assign this variable once and then evaluate it.
+ **/
+extern size_t orwl_np;
+
+/**
+ ** @brief A default (global!) version of something like a phase
+ ** your program is in.
+ **
+ ** This is used by #report and #progress, unless you define a local
+ ** variable with the same name.
+ **
+ ** This variable here is shared among all threads. So you should
+ ** rarely assign this variable and then mostly evaluate it.
+ **/
+extern size_t orwl_phase;
+
+/**
+ ** @brief Internally use by report().
+ **/
+extern void orwl_report(size_t mynum, size_t np, size_t phase, char const* format, ...);
+
+/**
+ ** @brief Internally use by progress().
+ **/
+extern void orwl_progress(size_t t, size_t mynum, size_t np, size_t phase, char const* format, ...);
+
+/**
+ ** @brief Report to @c stderr if @a expr is fulfilled.
+ **
+ ** The ... arguments to that function should just be as for the @c
+ ** printf family, i.e a format followed with a list of arguments.
+ **
+ ** The output is prefixed with an identification of the thread. This
+ ** is either the return of @c pthread_self or the value of a local
+ ** variable #orwl_mynum. Then a phase id is shown, either the value
+ ** of the global variable #orwl_phase or of a local variable with the
+ ** same name.
+ **/
+#define report(exp, ...)                                        \
+do {                                                            \
+  if ((bool)exp) {                                              \
+    orwl_report(orwl_mynum, orwl_np, orwl_phase, __VA_ARGS__);  \
+  }                                                             \
+ } while(0)
+
+
+/**
+ ** @brief Report progress to @c stderr if @a expr is fulfilled. @a t
+ ** is supposed to be a progress count.
+ **
+ ** @a t modulo 4 is used to print a spinning \.
+ **/
+#define progress(exp, t, ...)                                           \
+do {                                                                    \
+  if ((bool)exp) {                                                      \
+    orwl_progress(t, orwl_mynum, orwl_np, orwl_phase, __VA_ARGS__);     \
+  }                                                                     \
+ } while(0)
+
 
 /**
  ** @brief Internal interface to pthread_create() for joinable threads.
