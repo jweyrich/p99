@@ -9,5 +9,3 @@
 */
 
 #include "orwl_enum.h"
-
-DEFINE_ENUM(bool);

@@ -11,6 +11,7 @@
 #ifndef   	ORWL_ENUM_H_
 # define   	ORWL_ENUM_H_
 
+#include <stdbool.h>
 #include <strings.h>
 #include <string.h>
 #include "orwl_once.h"
@@ -78,7 +79,5 @@ DEFINE_ONCE(T) {                                                        \
 /* Ensure that the function symbol is generated in this object file */  \
 char const* T ## _getname(T x)
 
-
-DECLARE_ENUM(bool, false, true);
 
 #endif 	    /* !ORWL_ENUM_H_ */
