@@ -73,6 +73,7 @@ struct _orwl_wq {
   pthread_mutex_t mut;
   orwl_wh *head;
   orwl_wh *tail;
+  uintptr_t clock;
 };
 
 
@@ -81,6 +82,7 @@ struct _orwl_wh {
   orwl_wq *location;
   orwl_wh *next;
   uintptr_t tokens;
+  uintptr_t priority;
 };
 
 #define orwl_wh_garb ((orwl_wh*)(~(uintptr_t)0))

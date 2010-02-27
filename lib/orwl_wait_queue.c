@@ -31,6 +31,7 @@ void orwl_wq_init(orwl_wq *wq,
   pthread_mutex_init(&wq->mut, attr);
   wq->head = NULL;
   wq->tail = NULL;
+  wq->clock = 0;
 }
 
 void orwl_wq_destroy(orwl_wq *wq) {
@@ -39,6 +40,7 @@ void orwl_wq_destroy(orwl_wq *wq) {
   pthread_mutex_destroy(&wq->mut);
   wq->head = orwl_wh_garb;
   wq->tail = orwl_wh_garb;
+  wq->clock = ~(uintptr_t)0;
 }
 
 DEFINE_NEW_DELETE(orwl_wq);
@@ -57,6 +59,7 @@ void orwl_wh_init(orwl_wh *wh,
   wh->location = NULL;
   wh->next = NULL;
   wh->tokens = 0;
+  wh->priority = 0;
 }
 
 void orwl_wh_destroy(orwl_wh *wh) {
@@ -65,6 +68,7 @@ void orwl_wh_destroy(orwl_wh *wh) {
   pthread_cond_destroy(&wh->cond);
   wh->location = orwl_wq_garb;
   wh->next = orwl_wh_garb;
+  wh->priority = ~(uintptr_t)0;
 }
 
 DEFINE_NEW_DELETE(orwl_wh);
@@ -86,6 +90,8 @@ orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq, uintptr_t howmuch) {
     if (orwl_wq_idle(wq)) wq->head = wh;
     else wq->tail->next = wh;
     wq->tail = wh;
+    ++wq->clock;
+    wh->priority = wq->clock;
     ret = orwl_requested;
     pthread_mutex_unlock(&wq->mut);
   }
