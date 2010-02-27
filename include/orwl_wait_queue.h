@@ -131,7 +131,7 @@ DECLARE_NEW_DELETE(orwl_wh, NULL);
 
 /**
  ** @brief Insert a request of @a howmuch tokens on @a wh into location
- ** @a wq
+ ** @a wq. Blocking if @a wh is already requested.
  **
  ** @return @c orwl_invalid if any of @a wh or @a wq was invalid, or if
  ** there was already a request pending on @a wh. Otherwise returns @c
@@ -181,7 +181,8 @@ orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq);
 orwl_state orwl_wait_test(orwl_wh *wh, uintptr_t howmuch);
 
 /**
- ** @brief Release a request on @a wh. Never blocking.
+ ** @brief Release a request on @a wh. If @a wh had been acquired this
+ ** is blocking until all tokens are unloaded.
  **
  ** @return @c orwl_invalid if @a wh was invalid, or if there was no
  ** request acquired for @a wh. Otherwise it returns @c orwl_valid.

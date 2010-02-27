@@ -162,10 +162,10 @@ orwl_state orwl_wait_release(orwl_wh *wh) {
           wq->head = wh->next;
           wh->next = NULL;
           ret = orwl_valid;
-          /* Unlock potential requesters */
-          pthread_cond_broadcast(&wh->cond);
           /* Unlock potential acquirers */
           if (wq->head) pthread_cond_broadcast(&wq->head->cond);
+          /* Unlock potential requesters */
+          pthread_cond_broadcast(&wh->cond);
           break;
         } else pthread_cond_wait(&wh->cond, &wq->mut);
       }
