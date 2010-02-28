@@ -70,6 +70,8 @@ extern void orwl_callback_ ## T(T *Arg, orwl_wh *Wh)
  ** @see DECLARE_CALLBACK
  **/
 #define DEFINE_CALLBACK(T)                                              \
+  DEFINE_NEW(_ ## T ## _orwl_wh_t);                                     \
+  DEFINE_DELETE(_ ## T ## _orwl_wh_t);                                  \
 DEFINE_THREAD(_ ## T ## _orwl_wh_t) {                                   \
   T *arg = Arg->Arg;                                                    \
   orwl_wh *wh = Arg->Wh;                                                \
