@@ -147,7 +147,7 @@ DECLARE_NEW_DELETE(orwl_wh, NULL);
  ** The tokens are only considered to be loaded on @a wh if the call is
  ** successful.
  **/
-orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq, uintptr_t howmuch);
+orwl_state orwl_wait_request(orwl_wq *wq, orwl_wh *wh, uintptr_t howmuch);
 
 /**
  ** @brief Acquire a pending request on @a wh. Blocking until the

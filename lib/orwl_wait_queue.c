@@ -80,7 +80,7 @@ int orwl_wq_valid(orwl_wq *wq);
 /* This supposes that wq != NULL */
 int orwl_wq_idle(orwl_wq *wq);
 
-orwl_state orwl_wait_request(orwl_wh *wh, orwl_wq *wq, uintptr_t howmuch) {
+orwl_state orwl_wait_request(orwl_wq *wq, orwl_wh *wh, uintptr_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (wq && orwl_wq_valid(wq)) {
     pthread_mutex_lock(&wq->mut);
