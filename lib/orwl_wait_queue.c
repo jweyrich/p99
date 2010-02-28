@@ -10,6 +10,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <string.h>
 #include "orwl_wait_queue.h"
 
@@ -17,8 +18,6 @@ DEFINE_ENUM(orwl_state);
 
 
 static pthread_mutexattr_t smattr = { { 0 } };
-
-#define report(F, ...) fprintf(stderr, "%ju: " F, (uintmax_t)pthread_self(), __VA_ARGS__)
 
 DEFINE_ONCE(orwl_wq) {
   pthread_mutexattr_init(&smattr);
@@ -80,18 +79,45 @@ int orwl_wq_valid(orwl_wq *wq);
 /* This supposes that wq != NULL */
 int orwl_wq_idle(orwl_wq *wq);
 
-orwl_state orwl_wait_request(orwl_wq *wq, orwl_wh *wh, uintptr_t howmuch) {
+/* This supposes that the corresponding wq != NULL */
+void orwl_wh_load(orwl_wh *wh, uintptr_t howmuch);
+/* This supposes that the corresponding wq != NULL */
+void orwl_wh_unload(orwl_wh *wh, uintptr_t howmuch);
+
+orwl_state _orwl_wait_request(orwl_wq *wq, VA_ARGS(number)) {
   orwl_state ret = orwl_invalid;
   if (wq && orwl_wq_valid(wq)) {
     pthread_mutex_lock(&wq->mut);
-    while (!orwl_wh_idle(wh)) pthread_cond_wait(&wh->cond, &wq->mut);
-    wh->location = wq;
-    orwl_wh_load(wh, howmuch);
-    if (orwl_wq_idle(wq)) wq->head = wh;
-    else wq->tail->next = wh;
-    wq->tail = wh;
-    ++wq->clock;
-    wh->priority = wq->clock;
+    /* Check (and wait eventually) that all wh are idle */
+    for (bool idle = false; !idle; ) {
+      va_list ap;
+      va_start(ap, number);
+      idle = true;
+      for (size_t i = 0; i < number; ++i) {
+        orwl_wh *wh = va_arg(ap, orwl_wh*);
+        va_arg(ap, uintptr_t);
+        if (!orwl_wh_idle(wh)) {
+          idle = false;
+          pthread_cond_wait(&wh->cond, &wq->mut);
+        }
+      }
+      va_end(ap);
+    }
+    /* Now insert them */
+    va_list ap;
+    va_start(ap, number);
+    for (size_t i = 0; i < number; ++i) {
+      orwl_wh *wh = va_arg(ap, orwl_wh*);
+      size_t howmuch = va_arg(ap, uintptr_t);
+      wh->location = wq;
+      orwl_wh_load(wh, howmuch);
+      if (orwl_wq_idle(wq)) wq->head = wh;
+      else wq->tail->next = wh;
+      wq->tail = wh;
+      ++wq->clock;
+      wh->priority = wq->clock;
+    }
+    va_end(ap);
     ret = orwl_requested;
     pthread_mutex_unlock(&wq->mut);
   }

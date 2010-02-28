@@ -16,6 +16,8 @@
 #include <pthread.h>
 #include "orwl_new.h"
 #include "orwl_enum.h"
+#include "orwl_macro.h"
+
 
 /** @brief Return type for @c orwl functions
  **/
@@ -131,23 +133,40 @@ void orwl_wh_destroy(orwl_wh *wh);
 
 DECLARE_NEW_DELETE(orwl_wh, NULL);
 
+typedef struct {
+  orwl_wh *wh;
+  uintptr_t howmuch;
+} _orwl_wh_pair;
+
 /**
- ** @brief Insert a request of @a howmuch tokens on @a wh into location
- ** @a wq. Blocking if @a wh is already requested.
+ ** @brief Insert a request of @c howmuch tokens on @c wh into location
+ ** @a wq. Blocking if one of the @c wh is already requested.
  **
- ** @return @c orwl_invalid if any of @a wh or @a wq was invalid, or if
- ** there was already a request pending on @a wh. Otherwise returns @c
- ** orwl_requested.
+ ** The argument @a number gives the number of pairs (@c wh, @c
+ ** howmuch) of orwl_wh and token number pairs that are to be inserted
+ ** consequently in the FIFO of @a wq.
  **
- ** This places @a howmuch tokens on @a wh. @a wh will only be possible
- ** to be released if, first, it is acquired (that is it moves front in
- ** the FIFO) and then if all tokens are unloaded with
- ** orwl_wait_acquire() or orwl_wait_test().
+ ** @return @c orwl_invalid if any of @c wh or @a wq was
+ ** invalid. Otherwise returns @c orwl_requested. Blocking until it is
+ ** detected that none of the @c wh is already requested.
+ **
+ ** This places @c howmuch tokens on each @c wh. Any of the @c wh will
+ ** only be possible to be released if, first, it is acquired (that is
+ ** it moves front in the FIFO) and then if all tokens are unloaded
+ ** with orwl_wait_acquire() or orwl_wait_test().
  **
  ** The tokens are only considered to be loaded on @a wh if the call is
  ** successful.
  **/
-orwl_state orwl_wait_request(orwl_wq *wq, orwl_wh *wh, uintptr_t howmuch);
+orwl_state _orwl_wait_request(orwl_wq *wq, VA_ARGS(number));
+
+/**
+ ** @brief Macro to hide the difficulties of variable length arguments.
+ **
+ ** This is just a wrapper for _orwl_wait_request() that adds the
+ ** additional @c NULL at the end of the list.
+ **/
+#define orwl_wait_request(WQ, ...) _orwl_wait_request(WQ, LEN_MODARG(2, __VA_ARGS__))
 
 /**
  ** @brief Acquire a pending request on @a wh. Blocking until the
