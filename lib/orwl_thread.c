@@ -117,19 +117,17 @@ typedef struct {
   void *arg;
 } routine_arg_t;
 
-inline
-void routine_arg_t_init(routine_arg_t *rt, int dum) {
+void routine_arg_t_init(routine_arg_t *rt) {
   rt->start_routine = NULL;
   rt->arg = NULL;
 }
 
-inline
 void routine_arg_t_destroy(routine_arg_t *rt) {
   /* empty */
 }
 
-DECLARE_NEW(routine_arg_t, 0)
-DECLARE_DELETE(routine_arg_t)
+DECLARE_NEW_DELETE(routine_arg_t);
+DEFINE_NEW_DELETE(routine_arg_t);
 
 static
 void *detached_wrapper(void *routine_arg) {

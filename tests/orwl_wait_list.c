@@ -44,15 +44,18 @@ void sleepfor(double t) {
   }
 }
 
-void size_t_init(size_t *size, size_t def) {
+void FUNC_DEFAULT(size_t_init)(size_t *size, size_t def) {
   *size = def;
 }
+
+#define size_t_init(...) DEFINE_FUNC_DEFAULT(size_t_init, 2, __VA_ARGS__)
+declare_default_arg(size_t_init, 1, size_t, 0);
 
 void size_t_destroy(size_t *arg) {
   /* empty */
 }
 
-DECLARE_NEW_DELETE(size_t, 0);
+DECLARE_NEW_DELETE(size_t);
 DEFINE_NEW_DELETE(size_t);
 
 typedef struct {
@@ -60,16 +63,16 @@ typedef struct {
   size_t phase;
 } cb_t;
 
-void cb_t_init(cb_t *cb, size_t v) {
-  cb->mynum = v;
-  cb->phase = v;
+void cb_t_init(cb_t *cb) {
+  cb->mynum = 0;
+  cb->phase = 0;
 }
 
 void cb_t_destroy(cb_t *cb) {
   /* empty */
 }
 
-DECLARE_NEW_DELETE(cb_t, 0);
+DECLARE_NEW_DELETE(cb_t);
 DEFINE_NEW_DELETE(cb_t);
 
 DECLARE_CALLBACK(cb_t);
@@ -85,15 +88,19 @@ typedef struct _arg_t {
   size_t phases;
 } arg_t;
 
-void arg_t_init(arg_t *arg, size_t def) {
+void FUNC_DEFAULT(arg_t_init)(arg_t *arg, size_t def) {
   arg->mynum = def;
   arg->phases = def;
 }
 
+#define arg_t_init(...) DEFINE_FUNC_DEFAULT(arg_t_init, 2, __VA_ARGS__)
+declare_default_arg(arg_t_init, 1, size_t, 0);
+
+
 void arg_t_destroy(arg_t *arg) {
 }
 
-DECLARE_NEW_DELETE(arg_t, 0);
+DECLARE_NEW_DELETE(arg_t);
 DEFINE_NEW_DELETE(arg_t);
 
 DECLARE_THREAD(arg_t);
@@ -123,7 +130,7 @@ DEFINE_THREAD(arg_t) {
     cb->phase = orwl_phase;
     ostate = orwl_invalid;
     for (size_t try = 0; ostate != orwl_requested; ++try) {
-      ostate = orwl_wait_test(handle[pacq], 0);
+      ostate = orwl_wait_test(handle[pacq]);
       if (ostate == orwl_requested || ostate == orwl_acquired) break;
       progress(!orwl_mynum,  try, "test, handle %zu, %s",
                pacq, orwl_state_getname(ostate));
@@ -134,7 +141,7 @@ DEFINE_THREAD(arg_t) {
     orwl_callback_attach_cb_t(cb, handle[pacq]);
     /**/
     sleepfor(await);
-    ostate = orwl_wait_acquire(handle[pacq], 1);
+    ostate = orwl_wait_acquire(handle[pacq]);
     report(!orwl_mynum,  "acq, handle %zu, state %s                            ",
            pacq, orwl_state_getname(ostate));
     sleepfor(rwait);
@@ -151,7 +158,7 @@ int main(int argc, char **argv) {
   report(1, "%s: starting with %zu phases and %zu threads",
           argv[0], phases, orwl_np);
   /* Initialization of the static location */
-  orwl_wq_init(&location, 0);
+  orwl_wq_init(&location);
   handle = orwl_wh_vnew(2 * orwl_np);
 
   /* Half of the threads are created detached and half joinable */

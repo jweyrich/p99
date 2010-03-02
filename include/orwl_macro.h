@@ -286,5 +286,219 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
 #define __hexadecimal_(DEC) _hexadecimal_ ## DEC
 #define _hexadecimal_(DEC) __hexadecimal_(DEC)
 
+#define _predecessor_1  0 
+#define _predecessor_2  1 
+#define _predecessor_3  2 
+#define _predecessor_4  3 
+#define _predecessor_5  4 
+#define _predecessor_6  5 
+#define _predecessor_7  6 
+#define _predecessor_8  7 
+#define _predecessor_9  8 
+#define _predecessor_10 9 
+#define _predecessor_11 10
+#define _predecessor_12 11
+#define _predecessor_13 12
+#define _predecessor_14 13
+#define _predecessor_15 14
+#define _predecessor_16 15
+#define _predecessor_17 16
+#define _predecessor_18 17
+#define _predecessor_19 18
+#define _predecessor_20 19
+#define _predecessor_21 20
+#define _predecessor_22 21
+#define _predecessor_23 22
+#define _predecessor_24 23
+#define _predecessor_25 24
+#define _predecessor_26 25
+#define _predecessor_27 26
+#define _predecessor_28 27
+#define _predecessor_29 28
+#define _predecessor_30 29
+#define _predecessor_31 30
+#define _predecessor_32 31
+#define _predecessor_33 32
+#define _predecessor_34 33
+#define _predecessor_35 34
+#define _predecessor_36 35
+#define _predecessor_37 36
+#define _predecessor_38 37
+#define _predecessor_39 38
+#define _predecessor_40 39
+#define _predecessor_41 40
+#define _predecessor_42 41
+#define _predecessor_43 42
+#define _predecessor_44 43
+#define _predecessor_45 44
+#define _predecessor_46 45
+#define _predecessor_47 46
+#define _predecessor_48 47
+#define _predecessor_49 48
+#define _predecessor_50 49
+#define _predecessor_51 50
+#define _predecessor_52 51
+#define _predecessor_53 52
+#define _predecessor_54 53
+#define _predecessor_55 54
+#define _predecessor_56 55
+#define _predecessor_57 56
+#define _predecessor_58 57
+#define _predecessor_59 58
+#define _predecessor_60 59
+#define _predecessor_61 60
+#define _predecessor_62 61
+#define _predecessor_63 62
+
+#define __predecessor(N) _predecessor_ ## N
+#define _predecessor(N) __predecessor(N)
+
+#define _call_with_1_1(NAME, ...) (__VA_ARGS__)
+#define _call_with_1_0(NAME, _ign) _call_with_1_1(NAME, NAME ## _default_arg_ ## 0())
+
+#define _call_with_2_2(NAME, ...) (__VA_ARGS__)
+#define _call_with_2_1(NAME, ...) _call_with_2_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
+#define _call_with_2_0(NAME, _ign) _call_with_2_1(NAME, NAME ## _default_arg_ ## 0())
+
+#define _call_with_3_3(NAME, ...) (__VA_ARGS__)
+#define _call_with_3_2(NAME, ...) _call_with_3_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
+#define _call_with_3_1(NAME, ...) _call_with_3_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
+#define _call_with_3_0(NAME, _ign) _call_with_3_1(NAME, NAME ## _default_arg_ ## 0())
+
+#define _call_with_4_4(NAME, ...) (__VA_ARGS__)
+#define _call_with_4_3(NAME, ...) _call_with_4_4(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 3())
+#define _call_with_4_2(NAME, ...) _call_with_4_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
+#define _call_with_4_1(NAME, ...) _call_with_4_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
+#define _call_with_4_0(NAME, _ign) _call_with_4_1(NAME, NAME ## _default_arg_ ## 0())
+
+#define _call_with_5_5(NAME, ...) (__VA_ARGS__)
+#define _call_with_5_4(NAME, ...) _call_with_5_5(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 4())
+#define _call_with_5_3(NAME, ...) _call_with_5_4(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 3())
+#define _call_with_5_2(NAME, ...) _call_with_5_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
+#define _call_with_5_1(NAME, ...) _call_with_5_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
+#define _call_with_5_0(NAME, _ign) _call_with_5_1(NAME, NAME ## _default_arg_ ## 0())
+
+#define _call_with_6_6(NAME, ...) (__VA_ARGS__)
+#define _call_with_6_5(NAME, ...) _call_with_6_6(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 5())
+#define _call_with_6_4(NAME, ...) _call_with_6_5(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 4())
+#define _call_with_6_3(NAME, ...) _call_with_6_4(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 3())
+#define _call_with_6_2(NAME, ...) _call_with_6_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
+#define _call_with_6_1(NAME, ...) _call_with_6_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
+#define _call_with_6_0(NAME, _ign) _call_with_6_1(NAME, NAME ## _default_arg_ ## 0())
+
+#define _call_with_7_7(NAME, ...) (__VA_ARGS__)
+#define _call_with_7_6(NAME, ...) _call_with_7_7(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 6())
+#define _call_with_7_5(NAME, ...) _call_with_7_6(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 5())
+#define _call_with_7_4(NAME, ...) _call_with_7_5(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 4())
+#define _call_with_7_3(NAME, ...) _call_with_7_4(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 3())
+#define _call_with_7_2(NAME, ...) _call_with_7_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
+#define _call_with_7_1(NAME, ...) _call_with_7_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
+#define _call_with_7_0(NAME, _ign) _call_with_7_1(NAME, NAME ## _default_arg_ ## 0())
+
+#define _call_with_8_8(NAME, ...) (__VA_ARGS__)
+#define _call_with_8_7(NAME, ...) _call_with_8_8(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 7())
+#define _call_with_8_6(NAME, ...) _call_with_8_7(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 6())
+#define _call_with_8_5(NAME, ...) _call_with_8_6(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 5())
+#define _call_with_8_4(NAME, ...) _call_with_8_5(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 4())
+#define _call_with_8_3(NAME, ...) _call_with_8_4(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 3())
+#define _call_with_8_2(NAME, ...) _call_with_8_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
+#define _call_with_8_1(NAME, ...) _call_with_8_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
+#define _call_with_8_0(NAME, _ign) _call_with_8_1(NAME, NAME ## _default_arg_ ## 0())
+
+#define _call_with_9_9(NAME, ...) (__VA_ARGS__)
+#define _call_with_9_8(NAME, ...) _call_with_9_9(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 8())
+#define _call_with_9_7(NAME, ...) _call_with_9_8(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 7())
+#define _call_with_9_6(NAME, ...) _call_with_9_7(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 6())
+#define _call_with_9_5(NAME, ...) _call_with_9_6(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 5())
+#define _call_with_9_4(NAME, ...) _call_with_9_5(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 4())
+#define _call_with_9_3(NAME, ...) _call_with_9_4(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 3())
+#define _call_with_9_2(NAME, ...) _call_with_9_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
+#define _call_with_9_1(NAME, ...) _call_with_9_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
+#define _call_with_9_0(NAME, _ign) _call_with_9_1(NAME, NAME ## _default_arg_ ## 0())
+
+#define ___call_with(M, N) _call_with_ ## M ##  _ ## N
+#define __call_with(M, N) ___call_with(M, N)
+
+/**
+ ** @brief Declare the value @a V and type @a T @a of the M th default
+ ** argument for @a NAME.
+ **
+ ** @param NAME must have been defined as described for
+ ** #DEFINE_FUNC_DEFAULT.
+ **
+ ** @param T Obviously, should coincide with the type of the corresponding
+ ** argument that is given in the definition of @a NAME.
+ **
+ ** @param M The use of this makes only sense if you define it for all possible
+ ** @a M to the end of @a NAME's argument list, e.g for 1 and 2 if you
+ ** have a function with three arguments (arguments are numbered from
+ ** zero upwards). Position @ M as zero, i.e all arguments are
+ ** provided by default, is based on an extension of C99 that is non
+ ** standard. Avoid it if you can.
+ **
+ ** @param V is not limited to a constant but may be any type of
+ ** expression with return type @a T that can be evaluated at the
+ ** point of definition, using any global function, constant or
+ ** variable. Such an evaluation that takes place at run time whenever
+ ** a default argument must be provided. So you'd better be very
+ ** careful with side effects.
+ **
+ ** Use a corresponding define_default_arg() in a .c file to ensure
+ ** that all functions are realized.
+ **/
+#define declare_default_arg(NAME, M, T, V)                      \
+inline T NAME ## _default_arg_ ## M(void) { return (V); }       \
+enum { _dummy_ ## NAME ## _default_arg_ ## M }
+
+#define define_default_arg(NAME, M, T)          \
+T NAME ## _default_arg_ ## M(void)
+
+#define FUNC_DEFAULT_(NAME) NAME ## _default_
+#define FUNC_DEFAULT(NAME) FUNC_DEFAULT_(NAME)
+
+/* The construct of eating away an empty argument list with `, ## __VA_ARGS__'
+   only works for some compilers, namely gcc, icc and IBM. Therefore
+   the orwl library itself should not use default arguments for the
+   zeroth argument. */
+#ifndef NO_ZERO_DEFAULT_ARG
+# define _call_with(M, ...) __call_with(M, _predecessor(_NARG_64(x, ## __VA_ARGS__)))
+# define DEFINE_FUNC_DEFAULT(NAME, M, ...)                               \
+  FUNC_DEFAULT(NAME)_call_with(M, ## __VA_ARGS__)(NAME, ## __VA_ARGS__)
+#else
+# define _call_with(M, ...) __call_with(M, _predecessor(_NARG_64(x, __VA_ARGS__)))
+# define DEFINE_FUNC_DEFAULT(NAME, M, ...)                              \
+  FUNC_DEFAULT(NAME)_call_with(M, __VA_ARGS__)(NAME, __VA_ARGS__)
+#endif
+
+/**
+ ** @define DEFINE_FUNC_DEFAULT
+ ** @brief Define a replacement macro for functions that can provide
+ ** default arguments to the underlying real function.
+ **
+ ** The easiest is to explain this with an example
+ ** @code
+ ** void FUNC_DEFAULT(size_t_init)(size_t *size, size_t def) {
+ **   *size = def;
+ ** }
+ **
+ ** #define size_t_init(...) DEFINE_FUNC_DEFAULT(size_t_init, 2, __VA_ARGS__)
+ ** declare_default_arg(size_t_init, 1, size_t, 0);
+ ** @endcode
+ **
+ ** This declares a macro @c size_t_init that resolves to the call of
+ ** a function (hidden behind a name provided by
+ ** FUNC_DEFAULT(size_t_init)) to initialize a @c size_t. If invoked
+ ** with two arguments, these should be a pointer to the variable and
+ ** an initialization value. If this initialization value is omitted
+ ** the default value of @c 0 is used. Valid use is
+ ** @code
+ ** size_t i;
+ ** size_t_init(&i, 87);
+ ** size_t_init(&i);
+ ** @endcode
+ **/
+
+
 
 #endif 	    /* !ORWL_MACRO_H_ */
+

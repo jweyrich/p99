@@ -48,7 +48,7 @@ typedef struct {                                                        \
   orwl_wh *Wh;                                                          \
   orwl_wq *Wq;                                                          \
 } _ ## T ## _orwl_wh_t;                                                 \
-void _ ## T ## _orwl_wh_t ## _init(_ ## T ## _orwl_wh_t *arg, int i) {  \
+void _ ## T ## _orwl_wh_t ## _init(_ ## T ## _orwl_wh_t *arg) {         \
   pthread_cond_init(&arg->cond, NULL);                                  \
   arg->Arg = NULL;                                                      \
   arg->Wh = NULL;                                                       \
@@ -59,8 +59,7 @@ void _ ## T ## _orwl_wh_t ## _destroy(_ ## T ## _orwl_wh_t *arg) {      \
   pthread_cond_destroy(&arg->cond);                                     \
   if (arg->Arg) T ## _delete(arg->Arg);                                 \
 }                                                                       \
-DECLARE_NEW(_ ## T ## _orwl_wh_t, 0)                                    \
-DECLARE_DELETE(_ ## T ## _orwl_wh_t)                                    \
+DECLARE_NEW_DELETE(_ ## T ## _orwl_wh_t);                               \
 DECLARE_THREAD(_ ## T ## _orwl_wh_t);                                   \
 extern int orwl_callback_attach_ ## T(T *Arg, orwl_wh *wh);             \
 extern void orwl_callback_ ## T(T *Arg, orwl_wh *Wh)
@@ -70,8 +69,7 @@ extern void orwl_callback_ ## T(T *Arg, orwl_wh *Wh)
  ** @see DECLARE_CALLBACK
  **/
 #define DEFINE_CALLBACK(T)                                              \
-  DEFINE_NEW(_ ## T ## _orwl_wh_t);                                     \
-  DEFINE_DELETE(_ ## T ## _orwl_wh_t);                                  \
+  DEFINE_NEW_DELETE(_ ## T ## _orwl_wh_t);                              \
 DEFINE_THREAD(_ ## T ## _orwl_wh_t) {                                   \
   T *arg = Arg->Arg;                                                    \
   orwl_wh *wh = Arg->Wh;                                                \

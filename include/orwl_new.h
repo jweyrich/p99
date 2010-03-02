@@ -16,11 +16,11 @@
 #include <string.h>
 #include <assert.h>
 
-#define DECLARE_NEW(T, ...)                     \
+#define DECLARE_NEW(T)                          \
 inline                                          \
 T *T ## _new(void) {                            \
   T *ret = (T*)malloc(sizeof(T));               \
-  if (ret) T ## _init(ret, __VA_ARGS__);        \
+  if (ret) T ## _init(ret);                     \
   return ret;                                   \
 }
 
@@ -64,8 +64,8 @@ void T ## _vdelete(T *const*vec) {              \
   }                                             \
 }
 
-#define DECLARE_NEW_DELETE(T, ...)                               \
-DECLARE_NEW(T, __VA_ARGS__)                                      \
+#define DECLARE_NEW_DELETE(T)                                    \
+DECLARE_NEW(T)                                                   \
 DECLARE_DELETE(T)                                                \
 DECLARE_VDELETE(T)                                               \
 DECLARE_VNEW(T)                                                  \

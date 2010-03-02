@@ -23,8 +23,8 @@ DEFINE_ONCE(orwl_wq) {
   pthread_mutexattr_init(&smattr);
 }
 
-void orwl_wq_init(orwl_wq *wq,
-                  const pthread_mutexattr_t *attr) {
+void FUNC_DEFAULT(orwl_wq_init)(orwl_wq *wq,
+                                const pthread_mutexattr_t *attr) {
   INIT_ONCE(orwl_wq);
   if (!attr) attr = &smattr;
   pthread_mutex_init(&wq->mut, attr);
@@ -32,6 +32,8 @@ void orwl_wq_init(orwl_wq *wq,
   wq->tail = NULL;
   wq->clock = 0;
 }
+
+define_default_arg(orwl_wq_init, 1, const pthread_mutexattr_t *);
 
 void orwl_wq_destroy(orwl_wq *wq) {
   assert(!wq->head);
@@ -50,7 +52,7 @@ DEFINE_ONCE(orwl_wh) {
   pthread_condattr_init(&scattr);
 }
 
-void orwl_wh_init(orwl_wh *wh,
+void FUNC_DEFAULT(orwl_wh_init)(orwl_wh *wh,
                   const pthread_condattr_t *attr) {
   INIT_ONCE(orwl_wh);
   if (!attr) attr = &scattr;
@@ -60,6 +62,8 @@ void orwl_wh_init(orwl_wh *wh,
   wh->tokens = 0;
   wh->priority = 0;
 }
+
+define_default_arg(orwl_wh_init, 1, const pthread_condattr_t *);
 
 void orwl_wh_destroy(orwl_wh *wh) {
   assert(!wh->location);
@@ -80,9 +84,9 @@ int orwl_wq_valid(orwl_wq *wq);
 int orwl_wq_idle(orwl_wq *wq);
 
 /* This supposes that the corresponding wq != NULL */
-void orwl_wh_load(orwl_wh *wh, uintptr_t howmuch);
+void FUNC_DEFAULT(orwl_wh_load)(orwl_wh *wh, uintptr_t howmuch);
 /* This supposes that the corresponding wq != NULL */
-void orwl_wh_unload(orwl_wh *wh, uintptr_t howmuch);
+void FUNC_DEFAULT(orwl_wh_unload)(orwl_wh *wh, uintptr_t howmuch);
 
 orwl_state _orwl_wait_request(orwl_wq *wq, VA_ARGS(number)) {
   orwl_state ret = orwl_invalid;
@@ -147,7 +151,7 @@ orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
   return ret;
 }
 
-orwl_state orwl_wait_acquire(orwl_wh *wh, uintptr_t howmuch) {
+orwl_state FUNC_DEFAULT(orwl_wait_acquire)(orwl_wh *wh, uintptr_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
@@ -162,7 +166,7 @@ orwl_state orwl_wait_acquire(orwl_wh *wh, uintptr_t howmuch) {
   return ret;
 }
 
-orwl_state orwl_wait_test(orwl_wh *wh, uintptr_t howmuch) {
+orwl_state FUNC_DEFAULT(orwl_wait_test)(orwl_wh *wh, uintptr_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;

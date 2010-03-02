@@ -92,11 +92,16 @@ struct _orwl_wh {
 
 #define ORWL_WQ_INITIALIZER { PTHREAD_MUTEX_INITIALIZER }
 
-void orwl_wq_init(orwl_wq *wq,
-                         const pthread_mutexattr_t *attr);
+void FUNC_DEFAULT(orwl_wq_init)(orwl_wq *wq,
+                                const pthread_mutexattr_t *attr);
+
+#define orwl_wq_init(...) DEFINE_FUNC_DEFAULT(orwl_wq_init, 2, __VA_ARGS__)
+
+declare_default_arg(orwl_wq_init, 1, const pthread_mutexattr_t *, NULL);
+
 void orwl_wq_destroy(orwl_wq *wq);
 
-DECLARE_NEW_DELETE(orwl_wq, NULL);
+DECLARE_NEW_DELETE(orwl_wq);
 
 inline
 int orwl_wh_valid(orwl_wh *wh) {
@@ -127,11 +132,16 @@ int orwl_wq_idle(orwl_wq *wq) {
 
 #define ORWL_WH_INITIALIZER { PTHREAD_COND_INITIALIZER }
 
-void orwl_wh_init(orwl_wh *wh,
+void FUNC_DEFAULT(orwl_wh_init)(orwl_wh *wh,
                           const pthread_condattr_t *attr);
+#define orwl_wh_init(...) DEFINE_FUNC_DEFAULT(orwl_wh_init, 2, __VA_ARGS__)
+
+declare_default_arg(orwl_wh_init, 1, const pthread_condattr_t *, NULL);
+
+
 void orwl_wh_destroy(orwl_wh *wh);
 
-DECLARE_NEW_DELETE(orwl_wh, NULL);
+DECLARE_NEW_DELETE(orwl_wh);
 
 typedef struct {
   orwl_wh *wh;
@@ -179,7 +189,10 @@ orwl_state _orwl_wait_request(orwl_wq *wq, VA_ARGS(number));
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
  **/
-orwl_state orwl_wait_acquire(orwl_wh *wh, uintptr_t howmuch);
+orwl_state FUNC_DEFAULT(orwl_wait_acquire)(orwl_wh *wh, uintptr_t howmuch);
+
+#define orwl_wait_acquire(...) DEFINE_FUNC_DEFAULT(orwl_wait_acquire, 2, __VA_ARGS__)
+declare_default_arg(orwl_wait_acquire, 1, uintptr_t, 1);
 
 /**
  ** Of internal use. Supposes that @a wh is in the queue of @a wq and
@@ -199,7 +212,10 @@ orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq);
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
  **/
-orwl_state orwl_wait_test(orwl_wh *wh, uintptr_t howmuch);
+orwl_state FUNC_DEFAULT(orwl_wait_test)(orwl_wh *wh, uintptr_t howmuch);
+
+#define orwl_wait_test(...) DEFINE_FUNC_DEFAULT(orwl_wait_test, 2, __VA_ARGS__)
+declare_default_arg(orwl_wait_test, 1, uintptr_t, 0);
 
 /**
  ** @brief Release a request on @a wh. If @a wh had been acquired this
@@ -212,16 +228,22 @@ orwl_state orwl_wait_release(orwl_wh *wh);
 
 /* This supposes that the corresponding wq != NULL */
 inline
-void orwl_wh_load(orwl_wh *wh, uintptr_t howmuch) {
+void FUNC_DEFAULT(orwl_wh_load)(orwl_wh *wh, uintptr_t howmuch) {
   wh->tokens += howmuch;
 }
 
+#define orwl_wh_load(...) DEFINE_FUNC_DEFAULT(orwl_wh_load, 2, __VA_ARGS__)
+declare_default_arg(orwl_wh_load, 1, uintptr_t, 1);
+
 /* This supposes that the corresponding wq != NULL */
 inline
-void orwl_wh_unload(orwl_wh *wh, uintptr_t howmuch) {
+void FUNC_DEFAULT(orwl_wh_unload)(orwl_wh *wh, uintptr_t howmuch) {
   wh->tokens -= howmuch;
   /* If the condition has change, wake up all tokens */
   if (!wh->tokens) pthread_cond_broadcast(&wh->cond);
 }
+
+#define orwl_wh_unload(...) DEFINE_FUNC_DEFAULT(orwl_wh_unload, 2, __VA_ARGS__)
+declare_default_arg(orwl_wh_unload, 1, uintptr_t, 1);
 
 #endif
