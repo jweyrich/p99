@@ -446,15 +446,21 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  ** Use a corresponding define_default_arg() in a .c file to ensure
  ** that all functions are realized.
  **/
-#define declare_default_arg(NAME, M, T, V)                      \
-inline T NAME ## _default_arg_ ## M(void) { return (V); }       \
-enum { _dummy_ ## NAME ## _default_arg_ ## M }
+#define declare_default_arg(NAME, M, T, V)                              \
+/*! @brief Default initializer for argument M of FUNC_DEFAULT_(NAME)() **/ \
+/*! @return the expression V as evaluated at the place of the definition. **/ \
+inline T NAME ## _default_arg_ ## M(void) { return (V); }               \
+enum _dummy_ ## NAME ## _default_arg { _dummy_ ## NAME ## _default_arg_ ## M }
 
 #define define_default_arg(NAME, M, T)          \
 T NAME ## _default_arg_ ## M(void)
 
 #define FUNC_DEFAULT_(NAME) NAME ## _default_
 #define FUNC_DEFAULT(NAME) FUNC_DEFAULT_(NAME)
+
+#define FUNC_DEFAULT_DOCUMENTATION(NAME)                        \
+/*! Don't call FUNC_DEFAULT_(NAME)() but use #NAME instead. */
+
 
 /* The construct of eating away an empty argument list with `, ## __VA_ARGS__'
    only works for some compilers, namely gcc, icc and IBM. Therefore

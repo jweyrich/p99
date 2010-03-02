@@ -17,6 +17,10 @@
 #include <assert.h>
 
 #define DECLARE_NEW(T)                          \
+/*! @brief Operator @c new for class T   **/    \
+/*!                                   **/       \
+/*! This uses the default constructor **/       \
+/*! T ## _init(T*) to initialize      **/       \
 inline                                          \
 T *T ## _new(void) {                            \
   T *ret = (T*)malloc(sizeof(T));               \
@@ -25,6 +29,7 @@ T *T ## _new(void) {                            \
 }
 
 #define DECLARE_DELETE(T)                       \
+/*! @brief Operator @c delete for class T   **/ \
 inline                                          \
 void T ## _delete(T *el) {                      \
   if (el) {                                     \
@@ -34,6 +39,7 @@ void T ## _delete(T *el) {                      \
 }
 
 #define DECLARE_VNEW(T)                         \
+/*! @brief Operator @c new[] for class T   **/  \
 inline                                          \
 T *const*T ## _vnew(size_t n) {                 \
   size_t N = (n + 1)*sizeof(T*);                \
@@ -54,14 +60,15 @@ T *const*T ## _vnew(size_t n) {                 \
   return ret;                                   \
 }
 
-#define DECLARE_VDELETE(T)                      \
-inline                                          \
-void T ## _vdelete(T *const*vec) {              \
-  if (vec) {                                    \
-    for (T **v = (T**)vec; *v; ++v)             \
-      T ## _delete(*v);                         \
-    free((T**)vec);                             \
-  }                                             \
+#define DECLARE_VDELETE(T)                              \
+/*! @brief Operator @c delete[] for class T   **/       \
+inline                                                  \
+void T ## _vdelete(T *const*vec) {                      \
+  if (vec) {                                            \
+    for (T **v = (T**)vec; *v; ++v)                     \
+      T ## _delete(*v);                                 \
+    free((T**)vec);                                     \
+  }                                                     \
 }
 
 #define DECLARE_NEW_DELETE(T)                                    \
@@ -69,7 +76,7 @@ DECLARE_NEW(T)                                                   \
 DECLARE_DELETE(T)                                                \
 DECLARE_VDELETE(T)                                               \
 DECLARE_VNEW(T)                                                  \
-enum { __tame_ansi_c_semicolon_message_for_new_delete_ ## T }
+enum _tame_ansi_c_semicolon_message_ ## T { _new_delete_ ## T }
 
 #define DEFINE_NEW(T) T *T ## _new(void)
 #define DEFINE_DELETE(T) void T ## _delete(T *el)

@@ -18,21 +18,38 @@
 #include "orwl_enum.h"
 #include "orwl_macro.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** @brief Return type for @c orwl functions
  **/
 DECLARE_ENUM(orwl_state,
-             orwl_invalid,         /**< call with an invalid object     **/
-             orwl_valid,           /**< object valid, but not requested **/
-             orwl_requested,       /**< unspecific request was placed   **/
-             orwl_read_requested,  /**< read request was placed         **/
-             orwl_write_requested, /**< write request was placed        **/
-             orwl_acquired,        /**< unspecific request was acquired **/
-             orwl_read_acquired,   /**< read request was acquired       **/
-             orwl_write_acquired   /**< write request was acquired      **/
+             orwl_invalid,         /*!< call with an invalid object     **/
+             orwl_valid,           /*!< object valid, but not requested **/
+             orwl_requested,       /*!< unspecific request was placed   **/
+             orwl_read_requested,  /*!< read request was placed         **/
+             orwl_write_requested, /*!< write request was placed        **/
+             orwl_acquired,        /*!< unspecific request was acquired **/
+             orwl_read_acquired,   /*!< read request was acquired       **/
+             orwl_write_acquired   /*!< write request was acquired      **/
              );
 
-struct _orwl_wq;
+struct orwl_wq;
+
+#ifndef __cplusplus
+typedef struct orwl_wq orwl_wq;
+#endif
+
+DECLARE_ONCE(orwl_wq);
+
+struct orwl_wh;
+
+#ifndef __cplusplus
+typedef struct orwl_wh orwl_wh;
+#endif
+
+DECLARE_ONCE(orwl_wh);
 
 /**
  ** @brief A proactive locking object with FIFO policy.
@@ -44,11 +61,13 @@ struct _orwl_wq;
  ** In essence, orwl_wq is just a pthread_mutex_t with some
  ** additional sugar around it.
  **/
-typedef struct _orwl_wq orwl_wq;
+struct orwl_wq {
+  pthread_mutex_t mut;
+  orwl_wh *head;
+  orwl_wh *tail;
+  uintptr_t clock;
+};
 
-DECLARE_ONCE(orwl_wq);
-
-struct _orwl_wh;
 
 /**
  ** @brief The handle type corresponding to orwl_wq.
@@ -67,19 +86,7 @@ struct _orwl_wh;
  ** orwl_wh is mainly a pthread_cond_t that is bound to the
  ** fixed condition to be the first in the FIFO.
  **/
-typedef struct _orwl_wh orwl_wh;
-
-DECLARE_ONCE(orwl_wh);
-
-struct _orwl_wq {
-  pthread_mutex_t mut;
-  orwl_wh *head;
-  orwl_wh *tail;
-  uintptr_t clock;
-};
-
-
-struct _orwl_wh {
+struct orwl_wh {
   pthread_cond_t cond;
   orwl_wq *location;
   orwl_wh *next;
@@ -92,6 +99,7 @@ struct _orwl_wh {
 
 #define ORWL_WQ_INITIALIZER { PTHREAD_MUTEX_INITIALIZER }
 
+  FUNC_DEFAULT_DOCUMENTATION(orwl_wq_init)
 void FUNC_DEFAULT(orwl_wq_init)(orwl_wq *wq,
                                 const pthread_mutexattr_t *attr);
 
@@ -132,6 +140,7 @@ int orwl_wq_idle(orwl_wq *wq) {
 
 #define ORWL_WH_INITIALIZER { PTHREAD_COND_INITIALIZER }
 
+  FUNC_DEFAULT_DOCUMENTATION(orwl_wh_init)
 void FUNC_DEFAULT(orwl_wh_init)(orwl_wh *wh,
                           const pthread_condattr_t *attr);
 #define orwl_wh_init(...) DEFINE_FUNC_DEFAULT(orwl_wh_init, 2, __VA_ARGS__)
@@ -168,7 +177,8 @@ typedef struct {
  ** The tokens are only considered to be loaded on @a wh if the call is
  ** successful.
  **/
-orwl_state _orwl_wait_request(orwl_wq *wq, VA_ARGS(number));
+  FUNC_DEFAULT_DOCUMENTATION(orwl_wait_request)
+orwl_state FUNC_DEFAULT(orwl_wait_request)(orwl_wq *wq, VA_ARGS(number));
 
 /**
  ** @brief Macro to hide the difficulties of variable length arguments.
@@ -176,7 +186,7 @@ orwl_state _orwl_wait_request(orwl_wq *wq, VA_ARGS(number));
  ** This is just a wrapper for _orwl_wait_request() that adds the
  ** additional @c NULL at the end of the list.
  **/
-#define orwl_wait_request(WQ, ...) _orwl_wait_request(WQ, LEN_MODARG(2, __VA_ARGS__))
+#define orwl_wait_request(WQ, ...) FUNC_DEFAULT(orwl_wait_request)(WQ, LEN_MODARG(2, __VA_ARGS__))
 
 /**
  ** @brief Acquire a pending request on @a wh. Blocking until the
@@ -189,6 +199,7 @@ orwl_state _orwl_wait_request(orwl_wq *wq, VA_ARGS(number));
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
  **/
+  FUNC_DEFAULT_DOCUMENTATION(orwl_wait_acquire)
 orwl_state FUNC_DEFAULT(orwl_wait_acquire)(orwl_wh *wh, uintptr_t howmuch);
 
 #define orwl_wait_acquire(...) DEFINE_FUNC_DEFAULT(orwl_wait_acquire, 2, __VA_ARGS__)
@@ -212,6 +223,7 @@ orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq);
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
  **/
+  FUNC_DEFAULT_DOCUMENTATION(orwl_wait_test)
 orwl_state FUNC_DEFAULT(orwl_wait_test)(orwl_wh *wh, uintptr_t howmuch);
 
 #define orwl_wait_test(...) DEFINE_FUNC_DEFAULT(orwl_wait_test, 2, __VA_ARGS__)
@@ -227,6 +239,7 @@ declare_default_arg(orwl_wait_test, 1, uintptr_t, 0);
 orwl_state orwl_wait_release(orwl_wh *wh);
 
 /* This supposes that the corresponding wq != NULL */
+  FUNC_DEFAULT_DOCUMENTATION(orwl_wh_load)
 inline
 void FUNC_DEFAULT(orwl_wh_load)(orwl_wh *wh, uintptr_t howmuch) {
   wh->tokens += howmuch;
@@ -236,6 +249,7 @@ void FUNC_DEFAULT(orwl_wh_load)(orwl_wh *wh, uintptr_t howmuch) {
 declare_default_arg(orwl_wh_load, 1, uintptr_t, 1);
 
 /* This supposes that the corresponding wq != NULL */
+  FUNC_DEFAULT_DOCUMENTATION(orwl_wh_unload)
 inline
 void FUNC_DEFAULT(orwl_wh_unload)(orwl_wh *wh, uintptr_t howmuch) {
   wh->tokens -= howmuch;
@@ -245,5 +259,10 @@ void FUNC_DEFAULT(orwl_wh_unload)(orwl_wh *wh, uintptr_t howmuch) {
 
 #define orwl_wh_unload(...) DEFINE_FUNC_DEFAULT(orwl_wh_unload, 2, __VA_ARGS__)
 declare_default_arg(orwl_wh_unload, 1, uintptr_t, 1);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif

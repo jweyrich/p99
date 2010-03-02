@@ -55,7 +55,7 @@ char const* T ## _getname(T x) {                                        \
   return (pos < T ## _amount) ? _ ## T ## _names[pos] : "((" #T ")unknown value)"; \
 }                                                                       \
 static char _ ## T ## _concat[] =  # __VA_ARGS__;                       \
-enum { _ ## T ## _concat_len = sizeof(_ ## T ## _concat) }
+enum _decl_enum_ ## T { _ ## T ## _concat_len = sizeof(_ ## T ## _concat) }
 
 
 /**
