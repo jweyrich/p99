@@ -25,14 +25,14 @@ extern "C" {
 /** @brief Return type for @c orwl functions
  **/
 DECLARE_ENUM(orwl_state,
-             orwl_invalid,         /*!< call with an invalid object     **/
-             orwl_valid,           /*!< object valid, but not requested **/
-             orwl_requested,       /*!< unspecific request was placed   **/
-             orwl_read_requested,  /*!< read request was placed         **/
-             orwl_write_requested, /*!< write request was placed        **/
-             orwl_acquired,        /*!< unspecific request was acquired **/
-             orwl_read_acquired,   /*!< read request was acquired       **/
-             orwl_write_acquired   /*!< write request was acquired      **/
+             orwl_invalid,         /*!< call with an invalid object     */
+             orwl_valid,           /*!< object valid, but not requested */
+             orwl_requested,       /*!< unspecific request was placed   */
+             orwl_read_requested,  /*!< read request was placed         */
+             orwl_write_requested, /*!< write request was placed        */
+             orwl_acquired,        /*!< unspecific request was acquired */
+             orwl_read_acquired,   /*!< read request was acquired       */
+             orwl_write_acquired   /*!< write request was acquired      */
              );
 
 struct orwl_wq;
@@ -99,9 +99,11 @@ struct orwl_wh {
 
 #define ORWL_WQ_INITIALIZER { PTHREAD_MUTEX_INITIALIZER }
 
-  FUNC_DEFAULT_DOCUMENTATION(orwl_wq_init)
-void FUNC_DEFAULT(orwl_wq_init)(orwl_wq *wq,
-                                const pthread_mutexattr_t *attr);
+FUNC_DEFAULT_DOCUMENTATION(orwl_wq_init)
+void FUNC_DEFAULT(orwl_wq_init)
+(orwl_wq *wq,                    /*!< wait queue to initialize */
+ const pthread_mutexattr_t *attr /*!< defaults to @c NULL */
+);
 
 #define orwl_wq_init(...) DEFINE_FUNC_DEFAULT(orwl_wq_init, 2, __VA_ARGS__)
 
@@ -141,8 +143,9 @@ int orwl_wq_idle(orwl_wq *wq) {
 #define ORWL_WH_INITIALIZER { PTHREAD_COND_INITIALIZER }
 
   FUNC_DEFAULT_DOCUMENTATION(orwl_wh_init)
-void FUNC_DEFAULT(orwl_wh_init)(orwl_wh *wh,
-                          const pthread_condattr_t *attr);
+void FUNC_DEFAULT(orwl_wh_init)
+(orwl_wh *wh,
+ const pthread_condattr_t *attr /*!< [in] defaults to @c NULL */);
 #define orwl_wh_init(...) DEFINE_FUNC_DEFAULT(orwl_wh_init, 2, __VA_ARGS__)
 
 declare_default_arg(orwl_wh_init, 1, const pthread_condattr_t *, NULL);
@@ -177,15 +180,9 @@ typedef struct {
  ** The tokens are only considered to be loaded on @a wh if the call is
  ** successful.
  **/
-  FUNC_DEFAULT_DOCUMENTATION(orwl_wait_request)
+  VA_ARGS_DOCUMENTATION(orwl_wait_request)
 orwl_state FUNC_DEFAULT(orwl_wait_request)(orwl_wq *wq, VA_ARGS(number));
 
-/**
- ** @brief Macro to hide the difficulties of variable length arguments.
- **
- ** This is just a wrapper for _orwl_wait_request() that adds the
- ** additional @c NULL at the end of the list.
- **/
 #define orwl_wait_request(WQ, ...) FUNC_DEFAULT(orwl_wait_request)(WQ, LEN_MODARG(2, __VA_ARGS__))
 
 /**
@@ -200,7 +197,9 @@ orwl_state FUNC_DEFAULT(orwl_wait_request)(orwl_wq *wq, VA_ARGS(number));
  ** returns orwl_acquired.
  **/
   FUNC_DEFAULT_DOCUMENTATION(orwl_wait_acquire)
-orwl_state FUNC_DEFAULT(orwl_wait_acquire)(orwl_wh *wh, uintptr_t howmuch);
+orwl_state FUNC_DEFAULT(orwl_wait_acquire)
+  (orwl_wh *wh,
+   uintptr_t howmuch    /*!< defaults to @c 1 */);
 
 #define orwl_wait_acquire(...) DEFINE_FUNC_DEFAULT(orwl_wait_acquire, 2, __VA_ARGS__)
 declare_default_arg(orwl_wait_acquire, 1, uintptr_t, 1);
@@ -224,7 +223,9 @@ orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq);
  ** returns orwl_acquired.
  **/
   FUNC_DEFAULT_DOCUMENTATION(orwl_wait_test)
-orwl_state FUNC_DEFAULT(orwl_wait_test)(orwl_wh *wh, uintptr_t howmuch);
+orwl_state FUNC_DEFAULT(orwl_wait_test)
+  (orwl_wh *wh,
+   uintptr_t howmuch  /*!< defaults to 0 */);
 
 #define orwl_wait_test(...) DEFINE_FUNC_DEFAULT(orwl_wait_test, 2, __VA_ARGS__)
 declare_default_arg(orwl_wait_test, 1, uintptr_t, 0);
@@ -238,20 +239,35 @@ declare_default_arg(orwl_wait_test, 1, uintptr_t, 0);
  **/
 orwl_state orwl_wait_release(orwl_wh *wh);
 
-/* This supposes that the corresponding wq != NULL */
+  /** @brief load @a howmuch additional tokens on @a wh.
+   ** 
+   ** This supposes that the corresponding @c wq != NULL and that @c
+   ** wq is already locked.
+   ** @see orwl_wh_unload
+   */
   FUNC_DEFAULT_DOCUMENTATION(orwl_wh_load)
 inline
-void FUNC_DEFAULT(orwl_wh_load)(orwl_wh *wh, uintptr_t howmuch) {
-  wh->tokens += howmuch;
+void FUNC_DEFAULT(orwl_wh_load)
+  (orwl_wh *wh,
+   uintptr_t howmuch  /*!< defaults to 1 */) {
+   wh->tokens += howmuch;
 }
 
 #define orwl_wh_load(...) DEFINE_FUNC_DEFAULT(orwl_wh_load, 2, __VA_ARGS__)
 declare_default_arg(orwl_wh_load, 1, uintptr_t, 1);
 
-/* This supposes that the corresponding wq != NULL */
+  /** @brief unload @a howmuch additional tokens from @a wh.
+   ** 
+   ** This supposes that the corresponding @c wq != NULL and that @c
+   ** wq is already locked. If by this action the token count drops to
+   ** zero, eventual waiters for this @a wh are notified.
+   ** @see orwl_wh_load
+   */
   FUNC_DEFAULT_DOCUMENTATION(orwl_wh_unload)
 inline
-void FUNC_DEFAULT(orwl_wh_unload)(orwl_wh *wh, uintptr_t howmuch) {
+void FUNC_DEFAULT(orwl_wh_unload)
+  (orwl_wh *wh,
+   uintptr_t howmuch  /*!< defaults to 1 */) {
   wh->tokens -= howmuch;
   /* If the condition has change, wake up all tokens */
   if (!wh->tokens) pthread_cond_broadcast(&wh->cond);

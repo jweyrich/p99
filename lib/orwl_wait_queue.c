@@ -88,7 +88,7 @@ void FUNC_DEFAULT(orwl_wh_load)(orwl_wh *wh, uintptr_t howmuch);
 /* This supposes that the corresponding wq != NULL */
 void FUNC_DEFAULT(orwl_wh_unload)(orwl_wh *wh, uintptr_t howmuch);
 
-orwl_state _orwl_wait_request(orwl_wq *wq, VA_ARGS(number)) {
+orwl_state FUNC_DEFAULT(orwl_wait_request)(orwl_wq *wq, VA_ARGS(number)) {
   orwl_state ret = orwl_invalid;
   if (wq && orwl_wq_valid(wq)) {
     pthread_mutex_lock(&wq->mut);

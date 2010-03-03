@@ -100,15 +100,16 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
 #define _MODARG_(_X) _NARG_64_ ## _X
 
 /**
+ ** @def LEN_MODARG
  ** @brief Meta-macro to generate calls to functions with variable
  ** argument list.
  **
  ** This supposes that the length is less than 64. It replaces @a X by
  ** the number of X-tuples in the following list of arguments.
  **/
-#define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), __VA_ARGS__
 
 /**
+ ** @def LEN_ARG
  ** @brief Meta-macro to generate calls to functions with variable
  ** argument list.
  **
@@ -116,7 +117,6 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  ** list of arguments by an integer constant containing the length of
  ** the list.
  **/
-#define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), __VA_ARGS__
 
 
 /**
@@ -128,9 +128,51 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  **
  ** Wrap your function into a macro that uses LEN_ARG. If used through
  ** that macro, the correct value for @a X will always be provided at
- ** compile time. 
+ ** compile time. Declare such a function as this:
+ ** @code
+ ** unsigned FUNC_DEFAULT(toto)(unsigned a, VA_ARGS(number));
+ ** #define toto(A, ...) FUNC_DEFAULT(toto)(A, LEN_ARG(__VA_ARGS__))
+ ** @endcode
+ **
+ ** In the definition of the function you then may use the @c va_start
+ ** etc from stdarg.h to tread the argument list.
+ ** @code
+ ** unsigned FUNC_DEFAULT(toto)((unsigned a, VA_ARGS(number)) {
+ **     unsigned ret = 0;
+ **     va_list ap;
+ **     va_start(ap, number);
+ **     for (size_t i = 0; i < number; ++i) {
+ **       ret += va_arg(ap, unsigned);
+ **     }
+ **     va_end(ap);
+ **     return ret % a;
+ ** }
+ ** @endcode
+ ** In this toy example @c toto can be used as
+ ** @code
+ ** unsigned magic = toto(3, 1, 3, 5, 7);
+ ** @endcode
+ ** which will result in computing the sum of 1, 3, 5, 7 (the variable
+ ** arguments), i.e 16, and compute that value mod 3 (the fixed
+ ** argument @a a). So @a magic should hold the value 1 thereafter.
+ **
+ ** @param X is the name of the `length' parameter that you want to
+ ** use in the definition of the function. As in the example above it
+ ** should be then used as the second argument to @c va_start and as a
+ ** loop boudary when you actual handle the argument list. @a X is
+ ** implicitly declared to have type @c size_t.
+ **
+ ** @see LEN_ARG
+ ** @see LEN_MODARG
+ ** @see FUNC_DEFAULT
  **/
 #define VA_ARGS(X) size_t X, ...
+
+#define VA_ARGS_DOCUMENTATION(NAME)                                     \
+                                                                        \
+/*! @see VA_ARGS */                                                     \
+/*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
+
 
 #define _decimal_0x0 0
 #define _decimal_0x1 1
@@ -432,7 +474,7 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  ** @param M The use of this makes only sense if you define it for all possible
  ** @a M to the end of @a NAME's argument list, e.g for 1 and 2 if you
  ** have a function with three arguments (arguments are numbered from
- ** zero upwards). Position @ M as zero, i.e all arguments are
+ ** zero upwards). Position @a M as zero, i.e all arguments are
  ** provided by default, is based on an extension of C99 that is non
  ** standard. Avoid it if you can.
  **
@@ -443,24 +485,44 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  ** a default argument must be provided. So you'd better be very
  ** careful with side effects.
  **
- ** Use a corresponding define_default_arg() in a .c file to ensure
+ ** Use a corresponding ::define_default_arg in a .c file to ensure
  ** that all functions are realized.
  **/
 #define declare_default_arg(NAME, M, T, V)                              \
-/*! @brief Default initializer for argument M of FUNC_DEFAULT_(NAME)() **/ \
-/*! @return the expression V as evaluated at the place of the definition. **/ \
+/*! @brief Default initializer for argument M **/                       \
+/*! @return the expression `V' as evaluated at the place of the definition. **/ \
+/*! @see NAME **/                                                       \
 inline T NAME ## _default_arg_ ## M(void) { return (V); }               \
 enum _dummy_ ## NAME ## _default_arg { _dummy_ ## NAME ## _default_arg_ ## M }
 
+/**
+ ** @brief Define the symbols that are declared through a
+ ** corresponding call ::declare_default_arg.
+ **/
 #define define_default_arg(NAME, M, T)          \
 T NAME ## _default_arg_ ## M(void)
 
+/** @internal **/
 #define FUNC_DEFAULT_(NAME) NAME ## _default_
+
+/** @brief Mangle @a NAME for the use with ::DEFINE_FUNC_DEFAULT
+ **
+ ** This should only be used in declaration and definition of the
+ ** function that is hidden behind the macro @a NAME.
+ **/
 #define FUNC_DEFAULT(NAME) FUNC_DEFAULT_(NAME)
 
-#define FUNC_DEFAULT_DOCUMENTATION(NAME)                        \
-/*! Don't call FUNC_DEFAULT_(NAME)() but use #NAME instead. */
+/**
+ ** @brief Provide a documentation section to a function defined with ::DEFINE_FUNC_DEFAULT.
+ **/
+#define FUNC_DEFAULT_DOCUMENTATION(NAME)                                \
+/*! @see DEFINE_FUNC_DEFAULT */                                         \
+/*! @see declare_default_arg */                                         \
+/*! This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
+/**
+ ** @brief Provide a documentation section to a function defined with ::VA_ARGS.
+ **/
 
 /* The construct of eating away an empty argument list with `, ## __VA_ARGS__'
    only works for some compilers, namely gcc, icc and IBM. Therefore
@@ -470,14 +532,18 @@ T NAME ## _default_arg_ ## M(void)
 # define _call_with(M, ...) __call_with(M, _predecessor(_NARG_64(x, ## __VA_ARGS__)))
 # define DEFINE_FUNC_DEFAULT(NAME, M, ...)                               \
   FUNC_DEFAULT(NAME)_call_with(M, ## __VA_ARGS__)(NAME, ## __VA_ARGS__)
+# define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), ## __VA_ARGS__
+# define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), ## __VA_ARGS__
 #else
 # define _call_with(M, ...) __call_with(M, _predecessor(_NARG_64(x, __VA_ARGS__)))
 # define DEFINE_FUNC_DEFAULT(NAME, M, ...)                              \
   FUNC_DEFAULT(NAME)_call_with(M, __VA_ARGS__)(NAME, __VA_ARGS__)
+# define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), __VA_ARGS__
+# define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), __VA_ARGS__
 #endif
 
 /**
- ** @define DEFINE_FUNC_DEFAULT
+ ** @def DEFINE_FUNC_DEFAULT
  ** @brief Define a replacement macro for functions that can provide
  ** default arguments to the underlying real function.
  **
@@ -492,7 +558,7 @@ T NAME ## _default_arg_ ## M(void)
  ** @endcode
  **
  ** This declares a macro @c size_t_init that resolves to the call of
- ** a function (hidden behind a name provided by
+ ** a real function (hidden behind a mangled name provided by
  ** FUNC_DEFAULT(size_t_init)) to initialize a @c size_t. If invoked
  ** with two arguments, these should be a pointer to the variable and
  ** an initialization value. If this initialization value is omitted
@@ -502,6 +568,9 @@ T NAME ## _default_arg_ ## M(void)
  ** size_t_init(&i, 87);
  ** size_t_init(&i);
  ** @endcode
+ ** @param NAME is the function to provide with default argument features.
+ ** @param M is the number of arguments that a full call to @a NAME takes.
+ ** @see declare_default_arg
  **/
 
 

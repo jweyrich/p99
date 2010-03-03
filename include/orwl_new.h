@@ -18,9 +18,7 @@
 
 #define DECLARE_NEW(T)                          \
 /*! @brief Operator @c new for class T   **/    \
-/*!                                   **/       \
-/*! This uses the default constructor **/       \
-/*! T ## _init(T*) to initialize      **/       \
+/*! @see T ## _init **/                         \
 inline                                          \
 T *T ## _new(void) {                            \
   T *ret = (T*)malloc(sizeof(T));               \

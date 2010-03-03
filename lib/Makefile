@@ -20,8 +20,8 @@ INCL  	=	# List of *.h
 # Optional add #
 ################
 IPATH   = -I.  -I../include         # path of include file
-OBJOPT  = -std=gnu99 -pedantic -g -O2 -Wall -Wstrict-prototypes       # option for obj
-EXEOPT  = -std=gnu99 -pedantic -g -O2 -Wall -Wstrict-prototypes       # option for exe (-lefence ...)
+OBJOPT  = -std=gnu99 -pedantic -g -O0 -Wall -Wstrict-prototypes       # option for obj
+EXEOPT  = -std=gnu99 -pedantic -g -O0 -Wall -Wstrict-prototypes       # option for exe (-lefence ...)
 LPATH   = -L.           # path for librairies ... 
 
 #####################

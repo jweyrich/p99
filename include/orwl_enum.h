@@ -42,12 +42,13 @@
  **/
 #define DECLARE_ENUM(T, ...)                                            \
 typedef enum { __VA_ARGS__ ,                                            \
-               T ## _amount,                                            \
-               T ## _max = ((size_t)(T ## _amount) - 1u),               \
-               T ## _min = 0                                            \
+               T ## _amount, /*!< upper bound of the T constants */     \
+               T ## _max = ((size_t)(T ## _amount) - 1u), /*!< the largest T constant */\
+               T ## _min = 0  /*!< the smallest T constant */           \
 } T;                                                                    \
 extern char const* _ ## T ## _names[T ## _amount];                      \
 DECLARE_ONCE(T);                                                        \
+/*! @brief Get a string with the name of the T constant @a x */         \
 inline                                                                  \
 char const* T ## _getname(T x) {                                        \
   unsigned pos = x;                                                     \
