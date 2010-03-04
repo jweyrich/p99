@@ -106,6 +106,7 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  **
  ** This supposes that the length is less than 64. It replaces @a X by
  ** the number of X-tuples in the following list of arguments.
+ ** @see VA_ARGS
  **/
 
 /**
@@ -116,6 +117,7 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  ** This supposes that the length is less than 64. It prefixes the
  ** list of arguments by an integer constant containing the length of
  ** the list.
+ ** @see VA_ARGS
  **/
 
 
