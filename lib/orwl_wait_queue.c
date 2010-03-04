@@ -16,6 +16,10 @@
 
 DEFINE_ENUM(orwl_state);
 
+define_default_arg(orwl_wait_test, 1, uintptr_t);
+define_default_arg(orwl_wait_acquire, 1, uintptr_t);
+define_default_arg(orwl_wh_load, 1, uintptr_t);
+define_default_arg(orwl_wh_unload, 1, uintptr_t);
 
 static pthread_mutexattr_t smattr = { { 0 } };
 
