@@ -11,62 +11,130 @@
 #ifndef   	ORWL_NEW_H_
 # define   	ORWL_NEW_H_
 
+/**
+ ** @file orwl_new.h
+ **
+ ** @brief implement poor mans constructors, destructors, @c new and
+ ** @c delete.
+ */
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
-#define DECLARE_NEW(T)                          \
-/*! @brief Operator @c new for class T   **/    \
-/*! @see T ## _init **/                         \
-inline                                          \
-T *T ## _new(void) {                            \
-  T *ret = (T*)malloc(sizeof(T));               \
-  if (ret) T ## _init(ret);                     \
-  return ret;                                   \
+/**
+ ** @brief Declare a `new' operator for type @a T.
+ **
+ ** This supposes that type @a T has a `constructor', i.e an init
+ ** function, that just takes a pointer to the element that is to be
+ ** initialized.
+ **
+ ** Use the corresponding function from ::DECLARE_DELETE to free a
+ ** variable that you have such allocated.
+ ** @see DECLARE_NEW_DELETE
+ **/
+#define DECLARE_NEW(T)                                                  \
+  /*! @brief Operator @c new for class T     **/                        \
+  /*! @see T ## _init  is supposed to exist and to be callable with just one T* argument **/ \
+  /*! @see T ## _delete                      **/                        \
+inline                                                                  \
+T *T ## _new(void) {                                                    \
+    T *ret = (T*)malloc(sizeof(T));                                     \
+    if (ret) T ## _init(ret);                                           \
+    return ret;                                                         \
 }
 
-#define DECLARE_DELETE(T)                       \
-/*! @brief Operator @c delete for class T   **/ \
-inline                                          \
-void T ## _delete(T *el) {                      \
-  if (el) {                                     \
-    T ## _destroy(el);                          \
-    free(el);                                   \
-  }                                             \
+/**
+ ** @brief Declare a `delete' operator for type @a T.
+ **
+ ** This supposes that type @a T has a `destructor', i.e a destroy
+ ** function, that just takes a pointer to the element that is to be
+ ** initialized.
+ **
+ ** Use the corresponding function from ::DECLARE_NEW to free a
+ ** variable that you have such allocated.
+ ** @see DECLARE_NEW_DELETE
+ **/
+#define DECLARE_DELETE(T)                                               \
+/*! @brief Operator @c delete for class T   **/                         \
+  /*! @see T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
+  /*! @see T ## _new                       **/                          \
+inline                                                                  \
+void T ## _delete(T *el) {                                              \
+  if (el) {                                                             \
+    T ## _destroy(el);                                                  \
+    free(el);                                                           \
+  }                                                                     \
 }
 
-#define DECLARE_VNEW(T)                         \
-/*! @brief Operator @c new[] for class T   **/  \
-inline                                          \
-T *const*T ## _vnew(size_t n) {                 \
-  size_t N = (n + 1)*sizeof(T*);                \
-  T **ret = malloc(N);                          \
-  if (ret) {                                    \
-    memset(ret, 0, N);                          \
-    assert(!ret[n]);                            \
-    for (size_t i = 0; i < n; ++i) {            \
-      ret[i] = T ## _new();                     \
-      /* roll back if allocation failed */      \
-      if (!ret[i]) {                            \
-        T ## _vdelete(ret);                     \
-        ret = NULL;                             \
-        break;                                  \
-      }                                         \
-    }                                           \
-  }                                             \
-  return ret;                                   \
+inline
+void *_vnew(size_t n) {
+  /* allocate in multiples of the alignment */
+  size_t const ali = sizeof(uintmax_t);
+  size_t N = (n / ali);
+  /* add one if n doesn't fit uintmax_t boundary */
+  if (n % ali) ++N;
+  /* add one for the header */
+  size_t tot = (N + 1) * ali;
+  uintmax_t *ret = (uintmax_t*)memset(malloc(tot), 0, tot);
+  ret[0] = n;
+  return ret + 1;
 }
 
-#define DECLARE_VDELETE(T)                              \
-/*! @brief Operator @c delete[] for class T   **/       \
-inline                                                  \
-void T ## _vdelete(T *const*vec) {                      \
-  if (vec) {                                            \
-    for (T **v = (T**)vec; *v; ++v)                     \
-      T ## _delete(*v);                                 \
-    free((T**)vec);                                     \
-  }                                                     \
+inline
+uintmax_t *_vfind(void *p) {
+  uintmax_t *ret = ((uintmax_t*)p) - 1;
+  return ret;
+}
+
+inline
+size_t _vlen(void *p) {
+  uintmax_t *ret = _vfind(p);
+  return ret[0];
+}
+
+inline
+void _vdelete(void *p) {
+  free(_vfind(p));
+}
+
+/**
+ ** @brief Declare a `new[]' operator for type @a T.
+ **
+ ** This supposes that type @a T has a `constructor', i.e and init
+ ** function, that just takes a pointer to the element that is to be
+ ** initialized.
+ **/
+#define DECLARE_VNEW(T)                                                 \
+/*! @brief Operator @c new[] for class T   **/                          \
+  /*! @see T ## _init  is supposed to exist and to be callable with just one T* argument **/ \
+  /*! @see T ## _vdelete                      **/                       \
+inline                                                                  \
+T *T ## _vnew(size_t n) {                                               \
+  size_t N = n*sizeof(T);                                               \
+  T *ret = _vnew(N);                                                    \
+  if (ret) {                                                            \
+    for (size_t i = 0; i < n; ++i) {                                    \
+      T ## _init(ret + i);                                              \
+    }                                                                   \
+  }                                                                     \
+  return ret;                                                           \
+}
+
+#define DECLARE_VDELETE(T)                                              \
+/*! @brief Operator @c delete[] for class T   **/                       \
+  /*! @see T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
+  /*! @see T ## _vnew                        **/                        \
+inline                                                                  \
+void T ## _vdelete(T *vec) {                                            \
+  if (vec) {                                                            \
+    size_t n = _vlen(vec) / sizeof(T);                                  \
+    for (size_t i = 0; i < n; ++i) {                                    \
+      T ## _destroy(vec + i);                                           \
+    }                                                                   \
+    _vdelete(vec);                                                      \
+  }                                                                     \
 }
 
 #define DECLARE_NEW_DELETE(T)                                    \
@@ -78,8 +146,8 @@ enum _tame_ansi_c_semicolon_message_ ## T { _new_delete_ ## T }
 
 #define DEFINE_NEW(T) T *T ## _new(void)
 #define DEFINE_DELETE(T) void T ## _delete(T *el)
-#define DEFINE_VNEW(T) T *const*T ## _vnew(size_t n)
-#define DEFINE_VDELETE(T) void T ## _vdelete(T *const*vec)
+#define DEFINE_VNEW(T) T *T ## _vnew(size_t n)
+#define DEFINE_VDELETE(T) void T ## _vdelete(T *vec)
 
 #define DEFINE_NEW_DELETE(T)                   \
 DEFINE_NEW(T);                                 \

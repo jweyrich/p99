@@ -13,6 +13,7 @@
 NAME 	=	liborwl.a liborwl.so	# Name of executable file
 SRC	=					\
 	orwl_wait_queue.c			\
+	orwl_new.c       			\
 	orwl_enum.c				\
 	orwl_thread.c
 INCL  	=	# List of *.h

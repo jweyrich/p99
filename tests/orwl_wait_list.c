@@ -19,7 +19,7 @@
 #include "orwl_callback.h"
 
 static orwl_wq location;
-static orwl_wh *const*handle = NULL;
+static orwl_wh *handle = NULL;
 static size_t phases = 4;
 
 #define threadof(x) ((((size_t)x) + orwl_np) % orwl_np)
@@ -50,6 +50,7 @@ void FUNC_DEFAULT(size_t_init)(size_t *size, size_t def) {
 
 #define size_t_init(...) DEFINE_FUNC_DEFAULT(size_t_init, 2, __VA_ARGS__)
 declare_default_arg(size_t_init, 1, size_t, 0);
+define_default_arg(size_t_init, 1, size_t);
 
 void size_t_destroy(size_t *arg) {
   /* empty */
@@ -95,6 +96,7 @@ void FUNC_DEFAULT(arg_t_init)(arg_t *arg, size_t def) {
 
 #define arg_t_init(...) DEFINE_FUNC_DEFAULT(arg_t_init, 2, __VA_ARGS__)
 declare_default_arg(arg_t_init, 1, size_t, 0);
+define_default_arg(arg_t_init, 1, size_t);
 
 
 void arg_t_destroy(arg_t *arg) {
@@ -121,7 +123,7 @@ DEFINE_THREAD(arg_t) {
     /* the postion where we put the callback and that we acquire */
     size_t pacq = orwl_mynum + (orwl_phase % 2)*orwl_np;
     orwl_state ostate =
-      orwl_wait_request(&location, handle[preq], 1);
+      orwl_wait_request(&location, handle + preq, 1);
     report(!orwl_mynum,  "req, handle %zu, %s",
            preq, orwl_state_getname(ostate));
     /**/
@@ -130,7 +132,7 @@ DEFINE_THREAD(arg_t) {
     cb->phase = orwl_phase;
     ostate = orwl_invalid;
     for (size_t try = 0; ostate != orwl_requested; ++try) {
-      ostate = orwl_wait_test(handle[pacq]);
+      ostate = orwl_wait_test(handle + pacq);
       if (ostate == orwl_requested || ostate == orwl_acquired) break;
       progress(!orwl_mynum,  try, "test, handle %zu, %s",
                pacq, orwl_state_getname(ostate));
@@ -138,14 +140,14 @@ DEFINE_THREAD(arg_t) {
     }
     report(!orwl_mynum, "test, handle %zu, %s",
            pacq, orwl_state_getname(ostate));
-    orwl_callback_attach_cb_t(cb, handle[pacq]);
+    orwl_callback_attach_cb_t(cb, handle + pacq);
     /**/
     sleepfor(await);
-    ostate = orwl_wait_acquire(handle[pacq]);
+    ostate = orwl_wait_acquire(handle + pacq);
     report(!orwl_mynum,  "acq, handle %zu, state %s                            ",
            pacq, orwl_state_getname(ostate));
     sleepfor(rwait);
-    orwl_wait_release(handle[pacq]);
+    orwl_wait_release(handle + pacq);
     report(!orwl_mynum,  "rel, handle %zu", pacq);
   }
 }
@@ -162,15 +164,15 @@ int main(int argc, char **argv) {
   handle = orwl_wh_vnew(2 * orwl_np);
 
   /* Half of the threads are created detached and half joinable */
-  pthread_t *const*id = size_t_vnew(orwl_np/2);
-  arg_t *const*arg = arg_t_vnew(orwl_np/2);
+  pthread_t *id = size_t_vnew(orwl_np/2);
+  arg_t *arg = arg_t_vnew(orwl_np/2);
 
   for (size_t i = 0; i < orwl_np; ++i) {
-    arg_t *myarg = (i%2 ? arg[i/2] : arg_t_new());
+    arg_t *myarg = (i%2 ? arg + (i/2) : arg_t_new());
     myarg->mynum = i;
     myarg->phases = phases;
     if (i%2)
-      arg_t_create(myarg, id[i/2]);
+      arg_t_create(myarg, id + (i/2));
     else
       arg_t_create(myarg, NULL);
   }
@@ -179,7 +181,7 @@ int main(int argc, char **argv) {
   report(1, "%s: waiting for %zu joinable threads",
          argv[0], orwl_np/2);
   for (size_t i = 0; i < orwl_np/2; ++i) {
-    arg_t_join(*id[i]);
+    arg_t_join(id[i]);
   }
 
   report(1, "%s: waiting for %zu detached threads",
