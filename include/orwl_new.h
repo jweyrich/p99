@@ -23,6 +23,14 @@
 #include <string.h>
 #include <assert.h>
 
+#define DOCUMENT_INIT(T)                                                \
+/*! @brief Initialize a variable of type T */                           \
+/*! @see T ## _new needs a version of this that takes just the T* as argument. */
+
+#define DOCUMENT_DESTROY(T)                     \
+/*! @brief Destroy a variable of type T */      \
+/*! @see T ## _delete needs this. */
+
 /**
  ** @brief Declare a `new' operator for type @a T.
  **

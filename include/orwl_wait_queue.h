@@ -99,6 +99,7 @@ struct orwl_wh {
 
 #define ORWL_WQ_INITIALIZER { PTHREAD_MUTEX_INITIALIZER }
 
+  DOCUMENT_INIT(orwl_wq)
 FUNC_DEFAULT_DOCUMENTATION(orwl_wq_init)
 void FUNC_DEFAULT(orwl_wq_init)
 (orwl_wq *wq,                    /*!< wait queue to initialize */
@@ -109,10 +110,17 @@ void FUNC_DEFAULT(orwl_wq_init)
 
 declare_default_arg(orwl_wq_init, 1, const pthread_mutexattr_t *, NULL);
 
+  DOCUMENT_DESTROY(orwl_wq)
 void orwl_wq_destroy(orwl_wq *wq);
 
 DECLARE_NEW_DELETE(orwl_wq);
 
+  /**
+   ** @brief Test @a wh for validity.
+   **
+   ** This is just a simple test that @a wh has not just been
+   ** destroyed.
+   **/
 inline
 int orwl_wh_valid(orwl_wh *wh) {
   return wh
@@ -120,19 +128,39 @@ int orwl_wh_valid(orwl_wh *wh) {
     && wh->next != orwl_wh_garb;
 }
 
+  /**
+   ** @brief Test @a wh for idleness.
+   **
+   ** This is just a simple test that @a wh doesn't link to any
+   ** location.
+   **/
 inline
 int orwl_wh_idle(orwl_wh *wh) {
   return wh && !wh->location && !wh->next;
 }
 
-/* This supposes that wq != NULL */
+  /**
+   ** @brief Test @a wq for validity.
+   **
+   ** This is just a simple test that @a wq has not just been
+   ** destroyed.
+   **
+   ** This supposes that @a wq != NULL.
+   **/
 inline
 int orwl_wq_valid(orwl_wq *wq) {
   return wq->head != orwl_wh_garb
     && wq->tail != orwl_wh_garb;
 }
 
-/* This supposes that wq != NULL */
+  /**
+   ** @brief Test @a wq for idleness.
+   **
+   ** Idleness here means that there is no ::orwl_wh in the FIFO queue
+   ** of this location.
+   **
+   ** This supposes that wq != NULL
+   **/
 inline
 int orwl_wq_idle(orwl_wq *wq) {
   return !wq->head && !wq->tail;
@@ -142,6 +170,7 @@ int orwl_wq_idle(orwl_wq *wq) {
 
 #define ORWL_WH_INITIALIZER { PTHREAD_COND_INITIALIZER }
 
+  DOCUMENT_INIT(orwl_wh)
   FUNC_DEFAULT_DOCUMENTATION(orwl_wh_init)
 void FUNC_DEFAULT(orwl_wh_init)
 (orwl_wh *wh,
@@ -151,6 +180,7 @@ void FUNC_DEFAULT(orwl_wh_init)
 declare_default_arg(orwl_wh_init, 1, const pthread_condattr_t *, NULL);
 
 
+  DOCUMENT_DESTROY(orwl_wh)
 void orwl_wh_destroy(orwl_wh *wh);
 
 DECLARE_NEW_DELETE(orwl_wh);

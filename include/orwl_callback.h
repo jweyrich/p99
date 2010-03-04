@@ -48,12 +48,14 @@ typedef struct {                                                        \
   orwl_wh *Wh;                                                          \
   orwl_wq *Wq;                                                          \
 } _ ## T ## _orwl_wh_t;                                                 \
+ DOCUMENT_INIT(_ ## T ## _orwl_wh_t)                                    \
 void _ ## T ## _orwl_wh_t ## _init(_ ## T ## _orwl_wh_t *arg) {         \
   pthread_cond_init(&arg->cond, NULL);                                  \
   arg->Arg = NULL;                                                      \
   arg->Wh = NULL;                                                       \
   arg->Wq = NULL;                                                       \
 }                                                                       \
+ DOCUMENT_DESTROY(_ ## T ## _orwl_wh_t)                                 \
 void _ ## T ## _orwl_wh_t ## _destroy(_ ## T ## _orwl_wh_t *arg) {      \
   if (!arg) return;                                                     \
   pthread_cond_destroy(&arg->cond);                                     \
