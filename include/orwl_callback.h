@@ -80,7 +80,7 @@ DEFINE_THREAD(_ ## T ## _orwl_wh_t) {                                   \
   pthread_mutex_lock(&wq->mut);                                         \
   pthread_cond_signal(&Arg->cond);                                      \
   /* Afterwards Arg might already be deleted by the caller */           \
-  state = orwl_wait_acquire_locked(wh, wq);                             \
+  state = orwl_wh_acquire_locked(wh, wq);                               \
   if (state == orwl_acquired) orwl_wh_unload(wh, 1);                    \
   else                                                                  \
     fprintf(stderr, "thread %lu|%p failed to acquire\n", pthread_self(), (void*)wh); \

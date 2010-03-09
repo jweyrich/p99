@@ -16,8 +16,8 @@
 
 DEFINE_ENUM(orwl_state);
 
-define_default_arg(orwl_wait_test, 1, uintptr_t);
-define_default_arg(orwl_wait_acquire, 1, uintptr_t);
+define_default_arg(orwl_wh_test, 1, uintptr_t);
+define_default_arg(orwl_wh_acquire, 1, uintptr_t);
 define_default_arg(orwl_wh_load, 1, uintptr_t);
 define_default_arg(orwl_wh_unload, 1, uintptr_t);
 
@@ -92,7 +92,7 @@ void FUNC_DEFAULT(orwl_wh_load)(orwl_wh *wh, uintptr_t howmuch);
 /* This supposes that the corresponding wq != NULL */
 void FUNC_DEFAULT(orwl_wh_unload)(orwl_wh *wh, uintptr_t howmuch);
 
-orwl_state FUNC_DEFAULT(orwl_wait_request)(orwl_wq *wq, VA_ARGS(number)) {
+orwl_state FUNC_DEFAULT(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
   orwl_state ret = orwl_invalid;
   if (wq && orwl_wq_valid(wq)) {
     pthread_mutex_lock(&wq->mut);
@@ -132,7 +132,7 @@ orwl_state FUNC_DEFAULT(orwl_wait_request)(orwl_wq *wq, VA_ARGS(number)) {
   return ret;
 }
 
-orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
+orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
   orwl_state ret = orwl_invalid;
   if (orwl_wq_valid(wq) && wq->head) {
     /* We are on the fast path */
@@ -155,13 +155,13 @@ orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
   return ret;
 }
 
-orwl_state FUNC_DEFAULT(orwl_wait_acquire)(orwl_wh *wh, uintptr_t howmuch) {
+orwl_state FUNC_DEFAULT(orwl_wh_acquire)(orwl_wh *wh, uintptr_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
     if (wq) {
       pthread_mutex_lock(&wq->mut);
-      ret = orwl_wait_acquire_locked(wh, wq);
+      ret = orwl_wh_acquire_locked(wh, wq);
       if (ret == orwl_acquired)
         orwl_wh_unload(wh, howmuch);
       pthread_mutex_unlock(&wq->mut);
@@ -170,7 +170,7 @@ orwl_state FUNC_DEFAULT(orwl_wait_acquire)(orwl_wh *wh, uintptr_t howmuch) {
   return ret;
 }
 
-orwl_state FUNC_DEFAULT(orwl_wait_test)(orwl_wh *wh, uintptr_t howmuch) {
+orwl_state FUNC_DEFAULT(orwl_wh_test)(orwl_wh *wh, uintptr_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
@@ -189,7 +189,7 @@ orwl_state FUNC_DEFAULT(orwl_wait_test)(orwl_wh *wh, uintptr_t howmuch) {
   return ret;
 }
 
-orwl_state orwl_wait_release(orwl_wh *wh) {
+orwl_state orwl_wh_release(orwl_wh *wh) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
@@ -219,14 +219,14 @@ orwl_state orwl_wait_release(orwl_wh *wh) {
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_wq, {0});
 
-DEFINE_ORWL_REGISTER_ALIAS(orwl_wait_acquire, orwl_wh);
-DEFINE_ORWL_REGISTER_ALIAS(orwl_wait_release, orwl_wh);
+DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_acquire, orwl_wh);
+DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_release, orwl_wh);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_load, orwl_wh);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_unload, orwl_wh);
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_wh,
-                         ORWL_REGISTER_ALIAS(orwl_wait_acquire),
-                         ORWL_REGISTER_ALIAS(orwl_wait_release),
+                         ORWL_REGISTER_ALIAS(orwl_wh_acquire),
+                         ORWL_REGISTER_ALIAS(orwl_wh_release),
                          ORWL_REGISTER_ALIAS(orwl_wh_load),
                          ORWL_REGISTER_ALIAS(orwl_wh_unload)
                          );

@@ -77,10 +77,10 @@ struct orwl_wq {
  ** procedure. First, a lock is @em requested through
  ** orwl_wait_request(). This binds the orwl_wh to a
  ** designated orwl_wq and appends the request to the FIFO
- ** queue of it. Then in a second step, orwl_wait_acquire() waits
+ ** queue of it. Then in a second step, orwl_wh_acquire() waits
  ** until the request has become the first in the queue.
  **
- ** orwl_wait_release() releases the lock by popping the request from
+ ** orwl_wh_release() releases the lock by popping the request from
  ** the FIFO. Thus, it allows for the following request in the FIFO
  ** (if any) to be acquired.
  **
@@ -210,15 +210,15 @@ typedef struct {
  ** This places @c howmuch tokens on each @c wh. Any of the @c wh will
  ** only be possible to be released if, first, it is acquired (that is
  ** it moves front in the FIFO) and then if all tokens are unloaded
- ** with orwl_wait_acquire() or orwl_wait_test().
+ ** with orwl_wh_acquire() or orwl_wh_test().
  **
  ** The tokens are only considered to be loaded on @a wh if the call is
  ** successful.
  **/
-  VA_ARGS_DOCUMENTATION(orwl_wait_request)
-orwl_state FUNC_DEFAULT(orwl_wait_request)(orwl_wq *wq, VA_ARGS(number));
+  VA_ARGS_DOCUMENTATION(orwl_wq_request)
+orwl_state FUNC_DEFAULT(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number));
 
-#define orwl_wait_request(WQ, ...) FUNC_DEFAULT(orwl_wait_request)(WQ, LEN_MODARG(2, __VA_ARGS__))
+#define orwl_wq_request(WQ, ...) FUNC_DEFAULT(orwl_wq_request)(WQ, LEN_MODARG(2, __VA_ARGS__))
 
 /**
  ** @brief Acquire a pending request on @a wh. Blocking until the
@@ -231,20 +231,20 @@ orwl_state FUNC_DEFAULT(orwl_wait_request)(orwl_wq *wq, VA_ARGS(number));
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
  **/
-  FUNC_DEFAULT_DOCUMENTATION(orwl_wait_acquire)
-orwl_state FUNC_DEFAULT(orwl_wait_acquire)
+  FUNC_DEFAULT_DOCUMENTATION(orwl_wh_acquire)
+orwl_state FUNC_DEFAULT(orwl_wh_acquire)
   (orwl_wh *wh,
    uintptr_t howmuch    /*!< defaults to @c 1 */);
 
-#define orwl_wait_acquire(...) DEFINE_FUNC_DEFAULT(orwl_wait_acquire, 2, __VA_ARGS__)
-declare_default_arg(orwl_wait_acquire, 1, uintptr_t, 1);
+#define orwl_wh_acquire(...) DEFINE_FUNC_DEFAULT(orwl_wh_acquire, 2, __VA_ARGS__)
+declare_default_arg(orwl_wh_acquire, 1, uintptr_t, 1);
 
 
 /**
  ** Of internal use. Supposes that @a wh is in the queue of @a wq and
  ** that the lock on @a wq is taken by this thread.
  **/
-orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq);
+orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq);
 
 
 /**
@@ -258,13 +258,13 @@ orwl_state orwl_wait_acquire_locked(orwl_wh *wh, orwl_wq *wq);
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
  **/
-  FUNC_DEFAULT_DOCUMENTATION(orwl_wait_test)
-orwl_state FUNC_DEFAULT(orwl_wait_test)
+  FUNC_DEFAULT_DOCUMENTATION(orwl_wh_test)
+orwl_state FUNC_DEFAULT(orwl_wh_test)
   (orwl_wh *wh,
    uintptr_t howmuch  /*!< defaults to 0 */);
 
-#define orwl_wait_test(...) DEFINE_FUNC_DEFAULT(orwl_wait_test, 2, __VA_ARGS__)
-declare_default_arg(orwl_wait_test, 1, uintptr_t, 0);
+#define orwl_wh_test(...) DEFINE_FUNC_DEFAULT(orwl_wh_test, 2, __VA_ARGS__)
+declare_default_arg(orwl_wh_test, 1, uintptr_t, 0);
 
 /**
  ** @brief Release a request on @a wh. If @a wh had been acquired this
@@ -273,7 +273,7 @@ declare_default_arg(orwl_wait_test, 1, uintptr_t, 0);
  ** @return @c orwl_invalid if @a wh was invalid, or if there was no
  ** request acquired for @a wh. Otherwise it returns @c orwl_valid.
  **/
-orwl_state orwl_wait_release(orwl_wh *wh);
+orwl_state orwl_wh_release(orwl_wh *wh);
 
   /** @brief load @a howmuch additional tokens on @a wh.
    ** 
@@ -312,8 +312,8 @@ void FUNC_DEFAULT(orwl_wh_unload)
 #define orwl_wh_unload(...) DEFINE_FUNC_DEFAULT(orwl_wh_unload, 2, __VA_ARGS__)
 declare_default_arg(orwl_wh_unload, 1, uintptr_t, 1);
 
-DECLARE_ORWL_REGISTER(orwl_wait_acquire);
-DECLARE_ORWL_REGISTER(orwl_wait_release);
+DECLARE_ORWL_REGISTER(orwl_wh_acquire);
+DECLARE_ORWL_REGISTER(orwl_wh_release);
 DECLARE_ORWL_REGISTER(orwl_wh_load);
 DECLARE_ORWL_REGISTER(orwl_wh_unload);
 

@@ -123,7 +123,7 @@ DEFINE_THREAD(arg_t) {
     /* the postion where we put the callback and that we acquire */
     size_t pacq = orwl_mynum + (orwl_phase % 2)*orwl_np;
     orwl_state ostate =
-      orwl_wait_request(&location, handle + preq, 1);
+      orwl_wq_request(&location, handle + preq, 1);
     report(!orwl_mynum,  "req, handle %zu, %s",
            preq, orwl_state_getname(ostate));
     /**/
@@ -132,7 +132,7 @@ DEFINE_THREAD(arg_t) {
     cb->phase = orwl_phase;
     ostate = orwl_invalid;
     for (size_t try = 0; ostate != orwl_requested; ++try) {
-      ostate = orwl_wait_test(handle + pacq);
+      ostate = orwl_wh_test(handle + pacq);
       if (ostate == orwl_requested || ostate == orwl_acquired) break;
       progress(!orwl_mynum,  try, "test, handle %zu, %s",
                pacq, orwl_state_getname(ostate));
@@ -143,11 +143,11 @@ DEFINE_THREAD(arg_t) {
     orwl_callback_attach_cb_t(cb, handle + pacq);
     /**/
     sleepfor(await);
-    ostate = orwl_wait_acquire(handle + pacq);
+    ostate = orwl_wh_acquire(handle + pacq);
     report(!orwl_mynum,  "acq, handle %zu, state %s                            ",
            pacq, orwl_state_getname(ostate));
     sleepfor(rwait);
-    orwl_wait_release(handle + pacq);
+    orwl_wh_release(handle + pacq);
     report(!orwl_mynum,  "rel, handle %zu", pacq);
   }
 }
