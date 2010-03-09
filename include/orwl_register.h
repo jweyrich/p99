@@ -150,6 +150,8 @@ DECLARE_ORWL_REGISTER(T ## _destroy)
  **
  ** @see DECLARE_ORWL_TYPE_DYNAMIC on how to make this definition
  ** visible in a .h file.
+ ** @see DEFINE_ORWL_TYPES to establish the meta-register containing
+ ** all the types.
  **/
 #define DEFINE_ORWL_TYPE_DYNAMIC(T, ...)                        \
 DEFINE_ORWL_REGISTER(ORWL_FTAB(T));                             \
@@ -167,6 +169,20 @@ DECLARE_ORWL_DOMAIN(orwl_types);
 
 #define ORWL_REGISTER_TYPE(T) ORWL_REGISTER_DATA(ORWL_FTAB(T))
 
+/**
+ ** @brief Register all types that are to be accessible through the
+ ** registration mechanism.
+ **
+ ** This should look something like
+ ** @code
+ ** DEFINE_ORWL_TYPES(ORWL_REGISTER_TYPE(orwl_wq),
+ **                   ORWL_REGISTER_TYPE(orwl_wh));
+ ** @endcode
+ ** The effect of this is that all the types mentioned here get a
+ ** unique ID that makes them identifiable remotely.
+ ** @see DECLARE_ORWL_TYPE_DYNAMIC and ::DEFINE_ORWL_TYPE_DYNAMIC on
+ ** how to prepare a type to be visible through this system.
+ **/
 #define DEFINE_ORWL_TYPES(...)                  \
 DEFINE_ORWL_DOMAIN(orwl_types, __VA_ARGS__)
 

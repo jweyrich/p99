@@ -115,28 +115,28 @@ int orwl_pthread_create_joinable(pthread_t *restrict thread,
 typedef struct {
   void *(*start_routine)(void*);
   void *arg;
-} routine_arg_t;
+} _routine_arg;
 
-void routine_arg_t_init(routine_arg_t *rt) {
+void _routine_arg_init(_routine_arg *rt) {
   rt->start_routine = NULL;
   rt->arg = NULL;
 }
 
-void routine_arg_t_destroy(routine_arg_t *rt) {
+void _routine_arg_destroy(_routine_arg *rt) {
   /* empty */
 }
 
-DECLARE_NEW_DELETE(routine_arg_t);
-DEFINE_NEW_DELETE(routine_arg_t);
+DECLARE_NEW_DELETE(_routine_arg);
+DEFINE_NEW_DELETE(_routine_arg);
 
 static
 void *detached_wrapper(void *routine_arg) {
-  routine_arg_t *Routine_Arg = routine_arg;
+  _routine_arg *Routine_Arg = routine_arg;
   void *(*start_routine)(void*) = Routine_Arg->start_routine;
   void *restrict arg = Routine_Arg->arg;
   /* Be careful to eliminate all garbage that the wrapping has
      generated. */
-  routine_arg_t_delete(Routine_Arg);
+  _routine_arg_delete(Routine_Arg);
   Routine_Arg = NULL;
   routine_arg = NULL;
   /* This should be fast since usually there should never be a waiter
@@ -162,7 +162,7 @@ int orwl_pthread_create_detached(void *(*start_routine)(void*),
   INIT_ONCE(orwl_pthread_create);
   /* Be sure to allocate the pair on the heap to leave full control
      to detached_wrapper() of what to do with it. */
-  routine_arg_t *Routine_Arg = routine_arg_t_new();
+  _routine_arg *Routine_Arg = _routine_arg_new();
   Routine_Arg->start_routine = start_routine;
   Routine_Arg->arg = arg;
   return pthread_create(&(pthread_t){0},
