@@ -216,3 +216,17 @@ orwl_state orwl_wait_release(orwl_wh *wh) {
   }
   return ret;
 }
+
+DEFINE_ORWL_TYPE_DYNAMIC(orwl_wq, {0});
+
+DEFINE_ORWL_REGISTER_ALIAS(orwl_wait_acquire, orwl_wh);
+DEFINE_ORWL_REGISTER_ALIAS(orwl_wait_release, orwl_wh);
+DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_load, orwl_wh);
+DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_unload, orwl_wh);
+
+DEFINE_ORWL_TYPE_DYNAMIC(orwl_wh,
+                         ORWL_REGISTER_ALIAS(orwl_wait_acquire),
+                         ORWL_REGISTER_ALIAS(orwl_wait_release),
+                         ORWL_REGISTER_ALIAS(orwl_wh_load),
+                         ORWL_REGISTER_ALIAS(orwl_wh_unload)
+                         );

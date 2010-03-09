@@ -17,6 +17,7 @@
 #include "orwl_new.h"
 #include "orwl_enum.h"
 #include "orwl_macro.h"
+#include "orwl_register.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -115,6 +116,8 @@ void orwl_wq_destroy(orwl_wq *wq);
 
 DECLARE_NEW_DELETE(orwl_wq);
 
+DECLARE_ORWL_TYPE_DYNAMIC(orwl_wq);
+
   /**
    ** @brief Test @a wh for validity.
    **
@@ -185,6 +188,8 @@ void orwl_wh_destroy(orwl_wh *wh);
 
 DECLARE_NEW_DELETE(orwl_wh);
 
+DECLARE_ORWL_TYPE_DYNAMIC(orwl_wh);
+
 typedef struct {
   orwl_wh *wh;
   uintptr_t howmuch;
@@ -233,6 +238,7 @@ orwl_state FUNC_DEFAULT(orwl_wait_acquire)
 
 #define orwl_wait_acquire(...) DEFINE_FUNC_DEFAULT(orwl_wait_acquire, 2, __VA_ARGS__)
 declare_default_arg(orwl_wait_acquire, 1, uintptr_t, 1);
+
 
 /**
  ** Of internal use. Supposes that @a wh is in the queue of @a wq and
@@ -305,6 +311,11 @@ void FUNC_DEFAULT(orwl_wh_unload)
 
 #define orwl_wh_unload(...) DEFINE_FUNC_DEFAULT(orwl_wh_unload, 2, __VA_ARGS__)
 declare_default_arg(orwl_wh_unload, 1, uintptr_t, 1);
+
+DECLARE_ORWL_REGISTER(orwl_wait_acquire);
+DECLARE_ORWL_REGISTER(orwl_wait_release);
+DECLARE_ORWL_REGISTER(orwl_wh_load);
+DECLARE_ORWL_REGISTER(orwl_wh_unload);
 
 #ifdef __cplusplus
 }
