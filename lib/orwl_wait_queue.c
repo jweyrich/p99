@@ -217,6 +217,12 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
   return ret;
 }
 
+void orwl_state_destroy(orwl_state *el);
+define_default_arg(orwl_state_init, 1, orwl_state);
+void FUNC_DEFAULT(orwl_state_init) (orwl_state *el, orwl_state val);
+
+DEFINE_ORWL_TYPE_DYNAMIC(orwl_state, {0});
+
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_wq, {0});
 
 DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_acquire, orwl_wh);

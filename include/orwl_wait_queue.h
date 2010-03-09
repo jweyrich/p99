@@ -36,6 +36,29 @@ DECLARE_ENUM(orwl_state,
              orwl_write_acquired   /*!< write request was acquired      */
              );
 
+DOCUMENT_INIT(orwl_state)
+FUNC_DEFAULT_DOCUMENTATION(orwl_state_init)
+inline
+void FUNC_DEFAULT(orwl_state_init)
+(orwl_state *el,                    /*!< wait queue to initialize */
+ orwl_state val                     /*!< defaults to orwl_invalid */
+ ) {
+  *el = val;
+}
+
+#define orwl_state_init(...) DEFINE_FUNC_DEFAULT(orwl_state_init, 2, __VA_ARGS__)
+declare_default_arg(orwl_state_init, 1, orwl_state, orwl_invalid);
+
+DOCUMENT_DESTROY(orwl_state)
+inline
+void orwl_state_destroy(orwl_state *el) {
+  /* empty */
+}
+
+DECLARE_NEW_DELETE(orwl_state);
+
+DECLARE_ORWL_TYPE_DYNAMIC(orwl_state);
+
 struct orwl_wq;
 
 #ifndef __cplusplus

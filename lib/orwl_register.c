@@ -34,10 +34,7 @@ void orwl_register_call(orwl_register const *field, void *arg);
 
 void orwl_domain_call(orwl_domain domain, size_t id, void *arg);
 
-DEFINE_ORWL_TYPES(ORWL_REGISTER_TYPE(orwl_wq),
+DEFINE_ORWL_TYPES(ORWL_REGISTER_TYPE(orwl_state),
+                  ORWL_REGISTER_TYPE(orwl_wq),
                   ORWL_REGISTER_TYPE(orwl_wh)
                   );
-
-size_t hu(void) {
-  return ORWL_TYPEID(orwl_wh) + ORWL_OBJID(orwl_wait_release);
-}
