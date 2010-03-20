@@ -182,9 +182,7 @@ void orwl_pthread_wait_detached(void) {
   pthread_mutex_unlock(&create_mutex);
 }
 
-void FUNC_DEFAULT(pthread_t_init)(pthread_t *id, pthread_t def);
+void pthread_t_init(pthread_t *id);
 void pthread_t_destroy(pthread_t *id);
-
-define_default_arg(pthread_t_init, 1, pthread_t);
 
 DEFINE_NEW_DELETE(pthread_t);

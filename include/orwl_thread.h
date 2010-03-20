@@ -243,14 +243,9 @@ void *T ## _start_detached(void* arg) {         \
 }                                               \
 void _ ## T ## _start(T *const Arg)
 
-inline void FUNC_DEFAULT(pthread_t_init)(pthread_t *id, pthread_t def) {
-  memcpy(id, &def, sizeof(pthread_t));
+inline void pthread_t_init(pthread_t *id) {
+  memset(id, 9, sizeof(pthread_t));
 }
-
-#define pthread_t_init(...) DEFINE_FUNC_DEFAULT(pthread_t_init, 2, __VA_ARGS__)
-
-declare_default_arg(pthread_t_init, 1, pthread_t, TNULL(pthread_t));
-
 inline void pthread_t_destroy(pthread_t *id) {
   /* empty */
 }
