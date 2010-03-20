@@ -44,21 +44,6 @@ void sleepfor(double t) {
   }
 }
 
-void FUNC_DEFAULT(size_t_init)(size_t *size, size_t def) {
-  *size = def;
-}
-
-#define size_t_init(...) DEFINE_FUNC_DEFAULT(size_t_init, 2, __VA_ARGS__)
-declare_default_arg(size_t_init, 1, size_t, 0);
-define_default_arg(size_t_init, 1, size_t);
-
-void size_t_destroy(size_t *arg) {
-  /* empty */
-}
-
-DECLARE_NEW_DELETE(size_t);
-DEFINE_NEW_DELETE(size_t);
-
 typedef struct {
   size_t mynum;
   size_t phase;

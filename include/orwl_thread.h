@@ -12,12 +12,10 @@
 # define   	ORWL_THREAD_H_
 
 #include <pthread.h>
-#include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
 
-#include "orwl_macro.h"
-#include "orwl_new.h"
+#include "orwl_int.h"
 
 /**
  ** @brief A default (global!) version of something like a
