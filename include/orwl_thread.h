@@ -14,6 +14,10 @@
 #include <pthread.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
+
+#include "orwl_macro.h"
+#include "orwl_new.h"
 
 /**
  ** @brief A default (global!) version of something like a
@@ -151,14 +155,14 @@ extern void orwl_pthread_wait_detached(void);
  **    orwl_pthread_wait_detached() for that purpose.
  **/
 #define DECLARE_THREAD(T)                                               \
-static inline T *T ## _join(pthread_t id) {                             \
+inline T *T ## _join(pthread_t id) {                                    \
   void *ret = NULL;                                                     \
   pthread_join(id, &ret);                                               \
   return ret;                                                           \
 }                                                                       \
 extern void *T ## _start_joinable(void* arg);                           \
 extern void *T ## _start_detached(void* arg);                           \
-static inline int T ## _create(T* arg, pthread_t *id) {                 \
+inline int T ## _create(T* arg, pthread_t *id) {                        \
   if (id)                                                               \
     return orwl_pthread_create_joinable(id, T ## _start_joinable, arg); \
   else                                                                  \
@@ -226,20 +230,35 @@ extern void *T ## _start_joinable(void* arg)
  ** orwl_pthread_wait_detached();
  ** @endcode
  **/
-#define DEFINE_THREAD(T)                                        \
-static inline void _ ## T ## _start(T* Arg);                    \
-void *T ## _start_joinable(void* arg) {                         \
-  T *Arg = (T*)arg;                                             \
-  _ ## T ## _start(Arg);                                        \
-  return arg;                                                   \
-}                                                               \
-void *T ## _start_detached(void* arg) {                         \
-  T *Arg = (T*)arg;                                             \
-  _ ## T ## _start(Arg);                                        \
-  T ## _delete(Arg);                                            \
-  return NULL;                                                  \
-}                                                               \
-static inline void _ ## T ## _start(T *const Arg)
+#define DEFINE_THREAD(T)                        \
+inline void _ ## T ## _start(T* Arg);           \
+void *T ## _start_joinable(void* arg) {         \
+  T *Arg = (T*)arg;                             \
+  _ ## T ## _start(Arg);                        \
+  return arg;                                   \
+}                                               \
+void *T ## _start_detached(void* arg) {         \
+  T *Arg = (T*)arg;                             \
+  _ ## T ## _start(Arg);                        \
+  T ## _delete(Arg);                            \
+  return NULL;                                  \
+}                                               \
+void _ ## T ## _start(T *const Arg)
 
+inline void FUNC_DEFAULT(pthread_t_init)(pthread_t *id, pthread_t def) {
+  memcpy(id, &def, sizeof(pthread_t));
+}
+
+#define pthread_t_init(...) DEFINE_FUNC_DEFAULT(pthread_t_init, 2, __VA_ARGS__)
+
+static pthread_t const pthread_t_null = { 0 };
+
+declare_default_arg(pthread_t_init, 1, pthread_t, pthread_t_null);
+
+inline void pthread_t_destroy(pthread_t *id) {
+  /* empty */
+}
+
+DECLARE_NEW_DELETE(pthread_t);
 
 #endif 	    /* !ORWL_THREAD_H_ */

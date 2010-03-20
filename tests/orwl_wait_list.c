@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
   handle = orwl_wh_vnew(2 * orwl_np);
 
   /* Half of the threads are created detached and half joinable */
-  pthread_t *id = size_t_vnew(orwl_np/2);
+  pthread_t *id = pthread_t_vnew(orwl_np/2);
   arg_t *arg = arg_t_vnew(orwl_np/2);
 
   for (size_t i = 0; i < orwl_np; ++i) {
@@ -191,7 +191,7 @@ int main(int argc, char **argv) {
   report(1, "freeing arg");
   arg_t_vdelete(arg);
   report(1, "freeing id");
-  size_t_vdelete(id);
+  pthread_t_vdelete(id);
   report(1, "freeing handle");
   orwl_wh_vdelete(handle);
   report(1, "destroying location");
