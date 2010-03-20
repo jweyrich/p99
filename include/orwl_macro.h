@@ -577,6 +577,23 @@ T NAME ## _default_arg_ ## M(void)
  ** @see declare_default_arg
  **/
 
+/**
+ ** @brief Define an (almost) all purpose initializer
+ **/
+#define INITIALIZER INIT1
+
+#define INIT0 (0)
+#define INIT1 { 0 }
+#define INIT2 { { 0 } }
+
+/**
+ ** @brief Define a @c NULL initialized constant of type @a T
+ **/
+#define TNULL NULL1
+
+#define NULL0(T) ((T)INIT0)
+#define NULL1(T) ((T)INIT1)
+#define NULL2(T) ((T)INIT2)
 
 
 #endif 	    /* !ORWL_MACRO_H_ */

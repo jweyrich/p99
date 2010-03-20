@@ -66,7 +66,7 @@ enum _decl_enum_ ## T { _ ## T ## _concat_len = sizeof(_ ## T ## _concat) }
  **/
 #define DEFINE_ENUM(T)                                                  \
 /* Ensure that the table is generated in this object file */            \
-char const* _ ## T ## _names[T ## _amount] = { 0 };                     \
+char const* _ ## T ## _names[T ## _amount] = INITIALIZER;               \
 DEFINE_ONCE(T) {                                                        \
   char *head = _ ## T ## _concat;                                       \
   for (T i = T ## _min; i < T ## _max; ++i) {                           \

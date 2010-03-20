@@ -21,7 +21,7 @@ define_default_arg(orwl_wh_acquire, 1, uintptr_t);
 define_default_arg(orwl_wh_load, 1, uintptr_t);
 define_default_arg(orwl_wh_unload, 1, uintptr_t);
 
-static pthread_mutexattr_t smattr = { { 0 } };
+static pthread_mutexattr_t smattr = INIT2;
 
 DEFINE_ONCE(orwl_wq) {
   pthread_mutexattr_init(&smattr);
@@ -50,7 +50,7 @@ void orwl_wq_destroy(orwl_wq *wq) {
 
 DEFINE_NEW_DELETE(orwl_wq);
 
-static pthread_condattr_t scattr = { { 0 } };
+static pthread_condattr_t scattr = INIT2;
 
 DEFINE_ONCE(orwl_wh) {
   pthread_condattr_init(&scattr);

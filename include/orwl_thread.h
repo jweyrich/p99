@@ -251,9 +251,7 @@ inline void FUNC_DEFAULT(pthread_t_init)(pthread_t *id, pthread_t def) {
 
 #define pthread_t_init(...) DEFINE_FUNC_DEFAULT(pthread_t_init, 2, __VA_ARGS__)
 
-static pthread_t const pthread_t_null = { 0 };
-
-declare_default_arg(pthread_t_init, 1, pthread_t, pthread_t_null);
+declare_default_arg(pthread_t_init, 1, pthread_t, TNULL(pthread_t));
 
 inline void pthread_t_destroy(pthread_t *id) {
   /* empty */

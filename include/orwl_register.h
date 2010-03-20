@@ -105,7 +105,7 @@ orwl_register const*ORWL_REGISTER(NAME) = NULL
 #define DECLARE_ORWL_DOMAIN(NAME) extern orwl_domain NAME
 
 #define DEFINE_ORWL_DOMAIN(NAME, ...)                                   \
-static orwl_register const ORWL_DOMAIN_TABLE[] = { __VA_ARGS__ , { 0 }}; \
+static orwl_register const ORWL_DOMAIN_TABLE[] = { __VA_ARGS__ , INITIALIZER}; \
 orwl_domain NAME = ORWL_DOMAIN_TABLE
 
 /**
