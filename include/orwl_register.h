@@ -14,6 +14,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "orwl_inline.h"
+
 typedef  void (*orwl_plain)(void*);
 
 /**

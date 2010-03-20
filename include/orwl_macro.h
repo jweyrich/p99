@@ -11,6 +11,8 @@
 #ifndef   	ORWL_MACRO_H_
 # define   	ORWL_MACRO_H_
 
+#include "orwl_inline.h"
+
 /**
  ** @brief Return the 64th argument.
  **/

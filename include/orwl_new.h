@@ -23,6 +23,8 @@
 #include <string.h>
 #include <assert.h>
 
+#include "orwl_inline.h"
+
 #define DOCUMENT_INIT(T)                                                \
 /*! @brief Initialize a variable of type T */                           \
 /*! @see T ## _new needs a version of this that takes just the T* as argument. */
