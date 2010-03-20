@@ -13,7 +13,7 @@
 NAME 	=	orwl_wait_list	# Name of executable file
 SRC	=	orwl_wait_list.c	# List of *.c
 INCL  	=		# List of *.h
-LIBDIR	= ../lib
+LIBDIR	:= $(join $(dir ${PWD}),lib)
 ################
 # Optional add #
 ################
