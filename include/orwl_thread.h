@@ -229,7 +229,7 @@ extern void *T ## _start_joinable(void* arg)
  ** @endcode
  **/
 #define DEFINE_THREAD(T)                        \
-inline void _ ## T ## _start(T* Arg);           \
+void _ ## T ## _start(T* Arg);                  \
 void *T ## _start_joinable(void* arg) {         \
   T *Arg = (T*)arg;                             \
   _ ## T ## _start(Arg);                        \

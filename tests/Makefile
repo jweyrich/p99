@@ -17,7 +17,7 @@ LIBDIR	= ../lib
 ################
 # Optional add #
 ################
-OPT     = -O2
+OPT     = -O0
 IPATH   = -I. -I../include          # path of include file
 OBJOPT  = -std=gnu99 -g ${OPT} -Wall -Wstrict-prototypes       # option for obj
 EXEOPT  = -std=gnu99 -g ${OPT} -Wall -Wstrict-prototypes       # option for exe (-lefence ...)
