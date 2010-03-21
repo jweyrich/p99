@@ -17,6 +17,7 @@ SRC	=					\
 	orwl_int.c				\
 	orwl_enum.c				\
 	orwl_register.c				\
+	orwl_socket.c				\
 	orwl_thread.c
 INCL  	=	# List of *.h
 ################
