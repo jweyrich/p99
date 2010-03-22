@@ -64,3 +64,8 @@ bool same_endianess(uint32_t c) {
   INIT_ONCE(mycode);
   return c == mycode;
 }
+
+void FUNC_DEFAULT(orwl_hton)(uint32_t *n, uint64_t const *h, size_t l);
+define_default_arg(orwl_hton, 2, size_t);
+void FUNC_DEFAULT(orwl_ntoh)(uint64_t* h, uint32_t const *n, size_t l);
+define_default_arg(orwl_ntoh, 2, size_t);
