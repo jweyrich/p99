@@ -229,6 +229,8 @@ extern void *T ## _start_joinable(void* arg)
  ** @endcode
  **/
 #define DEFINE_THREAD(T)                        \
+T *T ## _join(pthread_t id);                    \
+int T ## _create(T* arg, pthread_t *id);        \
 void _ ## T ## _start(T* Arg);                  \
 void *T ## _start_joinable(void* arg) {         \
   T *Arg = (T*)arg;                             \
