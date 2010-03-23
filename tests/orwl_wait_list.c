@@ -15,6 +15,7 @@
 #include <time.h>
 #include <math.h>
 #include "orwl_thread.h"
+#include "orwl_rand.h"
 #include "orwl_wait_queue.h"
 #include "orwl_callback.h"
 
@@ -96,7 +97,7 @@ DEFINE_THREAD(arg_t) {
   size_t const orwl_mynum = Arg->mynum;
   size_t const phases = Arg->phases;
   /* The buffer for the reentrant pseudo random generator */
-  unsigned short xsubi[3] = { orwl_mynum, orwl_np, time(NULL) };
+  rand48_t xsubi = { orwl_mynum, orwl_np, time(NULL) };
 
   for (size_t orwl_phase = 0; orwl_phase < phases; ++orwl_phase) {
     double const twait = 0.01;
