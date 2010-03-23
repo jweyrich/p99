@@ -21,6 +21,7 @@
  **/
 #define DECLARE_ONCE(T)                         \
 extern pthread_once_t _ ## T ## _once;          \
+extern int _ ## T ## _once_;                    \
 void _ ## T ## _once_init(void)
 
 
@@ -34,7 +35,13 @@ void _ ## T ## _once_init(void)
  **/
 #define DEFINE_ONCE(T)                                  \
 pthread_once_t _ ## T ## _once = PTHREAD_ONCE_INIT;     \
-void _ ## T ## _once_init(void)
+int _ ## T ## _once_ = INITIALIZER;                     \
+static void _ ## T ## _once_init_(void);                \
+void _ ## T ## _once_init(void) {                       \
+  _ ## T ## _once_init_();                              \
+  _ ## T ## _once_ = 1;                                 \
+}                                                       \
+static void _ ## T ## _once_init_(void)
 
 /**
  ** @brief Ensure that the function that was defined with
@@ -43,9 +50,11 @@ void _ ## T ## _once_init(void)
  **
  ** @param T should be a type.
  **/
-#define INIT_ONCE(T)                                    \
-do {                                                    \
-  pthread_once(&_ ## T ## _once, _ ## T ## _once_init); \
+#define INIT_ONCE(T)                                            \
+do {                                                            \
+  if (!_ ## T ## _once_) {                                      \
+    pthread_once(&_ ## T ## _once, _ ## T ## _once_init);       \
+  }                                                             \
  } while(0)
 
 
