@@ -497,7 +497,7 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
 /*! @return the expression `V' as evaluated at the place of the definition. **/ \
 /*! @see NAME **/                                                       \
 inline T NAME ## _default_arg_ ## M(void) { return (V); }               \
-enum _dummy_ ## NAME ## _default_arg { _dummy_ ## NAME ## _default_arg_ ## M }
+enum _dummy_ ## NAME ## _default_arg_ ## M { _dummy_ ## NAME ## _default_arg_ ## M }
 
 /**
  ** @brief Define the symbols that are declared through a
