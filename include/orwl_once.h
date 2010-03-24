@@ -13,6 +13,11 @@
 
 #include <pthread.h>
 
+#define DECLARE_ONCE_UPON(T, N)                 \
+extern pthread_once_t _ ## T ## _once;          \
+void _ ## T ## _once_init(void)
+
+
 /**
  ** @brief Declare the symbols that are needed for the macro
  ** INIT_ONCE().
@@ -20,8 +25,12 @@
  ** @param T should be a type.
  **/
 #define DECLARE_ONCE(T)                         \
-extern pthread_once_t _ ## T ## _once;          \
 extern int _ ## T ## _once_;                    \
+DECLARE_ONCE_UPON(T, _ ## T ## _once_)
+
+
+#define DEFINE_ONCE_UPON(T, N)                          \
+pthread_once_t _ ## T ## _once = PTHREAD_ONCE_INIT;     \
 void _ ## T ## _once_init(void)
 
 
@@ -43,6 +52,13 @@ void _ ## T ## _once_init(void) {                       \
 }                                                       \
 static void _ ## T ## _once_init_(void)
 
+#define INIT_ONCE_UPON(T, N)                                    \
+do {                                                            \
+  if (!(N)) {                                                   \
+    pthread_once(&_ ## T ## _once, _ ## T ## _once_init);       \
+  }                                                             \
+ } while(0)
+
 /**
  ** @brief Ensure that the function that was defined with
  ** DEFINE_ONCE() has been called exactly once before further
@@ -50,12 +66,7 @@ static void _ ## T ## _once_init_(void)
  **
  ** @param T should be a type.
  **/
-#define INIT_ONCE(T)                                            \
-do {                                                            \
-  if (!_ ## T ## _once_) {                                      \
-    pthread_once(&_ ## T ## _once, _ ## T ## _once_init);       \
-  }                                                             \
- } while(0)
+#define INIT_ONCE(T) INIT_ONCE_UPON(T, _ ## T ## _once_)
 
 
 #endif 	    /* !ORWL_ONCE_H_ */
