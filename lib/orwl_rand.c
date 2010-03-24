@@ -12,6 +12,8 @@
 #include "orwl_once.h"
 
 uint32_t orwl_rand(rand48_t xsubi);
+double orwl_drand(rand48_t xsubi);
+uint64_t orwl_rand64(rand48_t xsubi);
 
 uint64_t orwl_mix(uint64_t a, uint64_t b) {
   uint16_t a0 = a >> 0;
