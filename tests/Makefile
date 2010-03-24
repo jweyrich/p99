@@ -18,10 +18,10 @@ LIBDIR	:= $(join $(dir ${PWD}),lib)
 # Optional add #
 ################
 OPT     = -O0
-IPATH   = -I. -I../include          # path of include file
-OBJOPT  = -std=gnu99 -g ${OPT} -Wall -Wstrict-prototypes       # option for obj
-EXEOPT  = -std=gnu99 -g ${OPT} -Wall -Wstrict-prototypes       # option for exe (-lefence ...)
-LPATH   = -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR} -lorwl -lm -lpthread       # path for librairies ...
+IPATH   = -I. -I../include
+OBJOPT  = -std=gnu99 -g ${OPT} -Wall -Wstrict-prototypes
+EXEOPT  = -lorwl
+LPATH   = -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR}
 
 #####################
 # Macro Definitions #

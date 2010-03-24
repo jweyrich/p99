@@ -24,10 +24,10 @@ INCL  	=	# List of *.h
 ################
 # Optional add #
 ################
-IPATH   = -I.  -I../include         # path of include file
-OBJOPT  = -std=gnu99 -pedantic -g -O3 -Wall -Wstrict-prototypes       # option for obj
-EXEOPT  = -std=gnu99 -pedantic -g -O3 -Wall -Wstrict-prototypes       # option for exe (-lefence ...)
-LPATH   = -L.           # path for librairies ... 
+IPATH   = -I.  -I../include
+OBJOPT  = -std=gnu99 -pedantic -g -O3 -Wall -Wstrict-prototypes
+EXEOPT  = -lpthread -lm
+LPATH   = -L.
 
 #####################
 # Macro Definitions #
@@ -77,7 +77,7 @@ ucomp:
 
 liborwl.a : liborwl.a(${OBJS})
 
-liborwl.so : ${OBJS}
-	${CC} --shared $(LDFLAGS) $(TARGET_ARCH) -o liborwl.so ${OBJS}
+liborwl.so : liborwl.a # ${OBJS}
+	${CC} --shared  ${OBJS} $(LDFLAGS) $(TARGET_ARCH) -o liborwl.so
 
 include Makefile.inc
