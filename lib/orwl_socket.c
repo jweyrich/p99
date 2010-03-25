@@ -121,6 +121,25 @@ enum { header_t_els = 2 };
 
 typedef uint64_t header_t[header_t_els];
 
+static
+void orwl_ntoa(struct sockaddr_in *addr, char *name) {
+  char *tmp = inet_ntoa(addr->sin_addr);
+  strcpy(name, tmp);
+  size_t len = strlen(name);
+  name[len] = ':';
+  sprintf(name + len + 1, "%u", (unsigned)addr->sin_port);
+}
+
+#define diagnose(fd, form, ...)                                         \
+do {                                                                    \
+  struct sockaddr_in addr = INITIALIZER;                                \
+  if (getpeername(fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) { \
+    char name[256] = INITIALIZER;                                       \
+    orwl_ntoa(&addr, name);                                             \
+    report(stderr, "connection from /%s/ " form, name, __VA_ARGS__);    \
+  }                                                                     \
+ } while (0)
+
 struct auth_sock {
   int fd;
   size_t len;
@@ -212,12 +231,14 @@ DEFINE_THREAD(orwl_server) {
           continue;
         } else {
           /* The authorized empty message indicates termination */
-          report(stderr, "Received termination message, closing");
+          diagnose(fd, "Received termination message, closing fd %d", fd);
           close(fd);
           close(fd_listen);
           fd_listen = -1;
           break;
         }
+      } else {
+        diagnose(fd, "You are not authorized to to talk on fd %d", fd);
       }
     FINISH:
       close(fd);
@@ -270,6 +291,7 @@ bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, siz
     }
   } else  {
     /* The other side is not authorized. Terminate. */
+    diagnose(fd, "fd %d, you are not who you pretend to be", fd);
     header[1] = 0;
     header[0] = 0;
     if (orwl_send_(fd, header, header_t_els))
@@ -277,5 +299,6 @@ bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, siz
   }
  FINISH:
   close(fd);
+  if (ret && len) report(stderr, "send request didn't succeed");
   return ret;
 }

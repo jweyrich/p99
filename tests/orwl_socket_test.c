@@ -8,6 +8,7 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
+#include <signal.h>
 #include <stdio.h>
 #include "orwl_socket.h"
 
@@ -42,7 +43,17 @@ int main(int argc, char **argv) {
   orwl_endpoint other = { .addr = addr[!orwl_mynum], .port = port[!orwl_mynum] };
   uint64_t mess[3] = { orwl_mynum, addr[orwl_mynum], port[orwl_mynum] };
   rand48_t seed = { orwl_mynum, addr[orwl_mynum], port[orwl_mynum] };
-  while (orwl_send(&other, seed, mess, 3)) sleepfor(0.2);
+  /* wait until the other side is up. */
+  while (orwl_send(&other, seed, mess, 3)) {
+    int ret = pthread_kill(id, 0);
+    if (ret) {
+      char mesg[256] = INITIALIZER;
+      strerror_r(ret, mesg, 256);
+      report(stderr, "Server already terminated: %s", mesg);
+      break;
+    }
+    sleepfor(0.2);
+  }
   orwl_send(&other, seed, NULL, 0);
   orwl_server_join(id);
   orwl_pthread_wait_detached();
