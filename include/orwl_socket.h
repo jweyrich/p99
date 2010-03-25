@@ -12,6 +12,7 @@
 # define   	ORWL_SOCKET_H_
 
 #include <unistd.h>
+#include <arpa/inet.h>
 
 #include "orwl_macro.h"
 #include "orwl_int.h"
@@ -94,7 +95,7 @@ declare_default_arg(orwl_endpoint_init, 1, in_addr_t, TNULL(in_addr_t));
 
 DECLARE_NEW_DELETE(orwl_endpoint);
 
-void orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, size_t len);
+bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, size_t len);
 
 
 struct orwl_server;

@@ -75,7 +75,7 @@ static
 bool orwl_send_(int fd, uint64_t const*mess, size_t len) {
   uint32_t *buf = uint32_t_vnew(2 * len);
   orwl_hton(buf, mess, len);
-  ssize_t ret = send(fd, &buf, sizeof(uint64_t) * len, MSG_WAITALL);
+  ssize_t ret = send(fd, buf, sizeof(uint64_t) * len, MSG_WAITALL);
   uint32_t_vdelete(buf);
   return ret != sizeof(uint64_t) * len;
 }
@@ -83,7 +83,7 @@ bool orwl_send_(int fd, uint64_t const*mess, size_t len) {
 static
 bool orwl_recv_(int fd, uint64_t *mess, size_t len) {
   uint32_t *buf = uint32_t_vnew(2 * len);
-  ssize_t ret = recv(fd, &buf, sizeof(uint64_t) * len, MSG_WAITALL);
+  ssize_t ret = recv(fd, buf, sizeof(uint64_t) * len, MSG_WAITALL);
   orwl_ntoh(mess, buf , len);
   uint32_t_vdelete(buf);
   return ret != sizeof(uint64_t) * len;
@@ -124,7 +124,7 @@ typedef uint64_t header_t[header_t_els];
 struct auth_sock {
   int fd;
   size_t len;
-  server_cb_t const cb;
+  server_cb_t cb;
 };
 
 typedef struct auth_sock auth_sock;
@@ -160,11 +160,13 @@ DEFINE_THREAD(auth_sock) {
 
 
 DEFINE_THREAD(orwl_server) {
+  report(stderr, "starting server");
   int fd_listen = socket(AF_INET, SOCK_STREAM, 0);
   if (fd_listen != -1) {
     rand48_t seed = { time(NULL) };
     struct sockaddr_in addr = INITIALIZER;
     socklen_t len = sizeof(addr);
+    report(stderr, "found %jX:%jX", Arg->ep.addr, Arg->ep.port);
     addr.sin_addr.s_addr = Arg->ep.addr;
     addr.sin_port = Arg->ep.port;
     addr.sin_family = AF_INET;
@@ -203,12 +205,14 @@ DEFINE_THREAD(orwl_server) {
       if (header[1] == repl) {
         size_t len = header[0];
         if (len) {
-          auth_sock sock = { .fd = fd, .len = len, .cb = Arg->cb };
-          auth_sock_create(&sock, NULL);
+          auth_sock *sock = auth_sock_new();
+          sock->fd = fd; sock->len = len; sock->cb = Arg->cb;
+          auth_sock_create(sock, NULL);
           /* The spawned thread will close the fd. */
           continue;
         } else {
           /* The authorized empty message indicates termination */
+          report(stderr, "Received termination message, closing");
           close(fd);
           close(fd_listen);
           fd_listen = -1;
@@ -223,7 +227,8 @@ DEFINE_THREAD(orwl_server) {
   if (fd_listen != -1) close(fd_listen);
 }
 
-void orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, size_t len) {
+bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, size_t len) {
+  bool ret = true;
   /* do all this work before opening the socket */
   uint64_t chal = orwl_rand64(seed);
   uint64_t repl = orwl_challenge(chal);
@@ -235,7 +240,7 @@ void orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, siz
   };
 
   int fd = socket(PF_INET, SOCK_STREAM, 0);
-  if (fd == -1) return;
+  if (fd == -1) return ret;
 
   if (connect(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1)
     goto FINISH;
@@ -259,7 +264,9 @@ void orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, siz
         goto FINISH;
       /* Receive a final message, until the other end closes the
          connection. */
-      orwl_recv_(fd, header, header_t_els);
+      if (orwl_recv_(fd, header, header_t_els))
+        goto FINISH;
+      ret = false;
     }
   } else  {
     /* The other side is not authorized. Terminate. */
@@ -270,4 +277,5 @@ void orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, siz
   }
  FINISH:
   close(fd);
+  return ret;
 }
