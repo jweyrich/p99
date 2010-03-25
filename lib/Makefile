@@ -25,7 +25,8 @@ INCL  	=	# List of *.h
 # Optional add #
 ################
 IPATH   = -I.  -I../include
-OBJOPT  = -std=gnu99 -pedantic -g -O3 -Wall -Wstrict-prototypes
+OPT	= -O3
+OBJOPT  = -std=gnu99 -pedantic -Wall -Wstrict-prototypes ${OPT}
 EXEOPT  = -lpthread -lm
 LPATH   = -L.
 

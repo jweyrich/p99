@@ -10,8 +10,12 @@
 ##############################
 # Complete this to make it ! #
 ##############################
-NAME 	=	orwl_wait_list	# Name of executable file
-SRC	=	orwl_wait_list.c	# List of *.c
+NAME 	=	orwl_wait_list			\
+		orwl_socket_test
+
+SRC	=	orwl_wait_list.c		\
+		orwl_socket_test.c
+
 INCL  	=		# List of *.h
 LIBDIR	:= $(join $(dir ${PWD}),lib)
 ################
@@ -19,7 +23,7 @@ LIBDIR	:= $(join $(dir ${PWD}),lib)
 ################
 OPT     = -O0
 IPATH   = -I. -I../include
-OBJOPT  = -std=gnu99 -g ${OPT} -Wall -Wstrict-prototypes
+OBJOPT  = -std=gnu99 -pedantic -Wall -Wstrict-prototypes ${OPT}
 EXEOPT  = -lorwl
 LPATH   = -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR}
 
@@ -45,8 +49,9 @@ LDFLAGS = $(EXEOPT) $(LPATH)
 ##############################
 
 all:	$(NAME)
-$(NAME): $(OBJS) $(SRC) $(INCL)  
-	$(CC) $(OBJS) $(LDFLAGS) -o $(NAME) 
+$(NAME) : ${OBJS}
+% : %.o
+	$(CC) $< $(LDFLAGS) -o $@
 #	$(STRIP) ./$(NAME) # if you debug ,don't strip ...
 
 depend Makefile.inc:
