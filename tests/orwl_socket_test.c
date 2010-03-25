@@ -26,7 +26,7 @@ define_default_arg(strtoul, 2, int);
 define_default_arg(strtoul, 1, char **);
 
 int main(int argc, char **argv) {
-  in_addr_t addr[2] = { inet_addr(argv[1]), inet_addr(argv[3]) };
+  in_addr_t addr[2] = { orwl_inet_addr(argv[1]), orwl_inet_addr(argv[3]) };
   uint16_t port[2] = { strtoul(argv[2]), strtoul(argv[4]) };
   size_t orwl_mynum = strtoul(argv[5]);
   size_t orwl_np = 2;

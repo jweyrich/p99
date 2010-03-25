@@ -46,6 +46,7 @@ void FUNC_DEFAULT(orwl_ntoh)(uint64_t* h, uint32_t const *n, size_t l) {
 #define orwl_ntoh(...) DEFINE_FUNC_DEFAULT(orwl_ntoh, 3, __VA_ARGS__)
 declare_default_arg(orwl_ntoh, 2, size_t, 1);
 
+extern in_addr_t orwl_inet_addr(char const *name);
 
 extern in_addr_t _inet4_addr;
 

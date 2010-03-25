@@ -8,6 +8,9 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
 #include <arpa/inet.h>
 #include <stdio.h>
 
@@ -139,6 +142,72 @@ do {                                                                    \
     report(stderr, "connection from /%s/ " form, name, __VA_ARGS__);    \
   }                                                                     \
  } while (0)
+
+static
+unsigned importance(in_addr_t a) {
+  unsigned ret = ~0u;
+  uint32_t h = ntohl(a);
+  uchar high = (h >> 24);
+  uchar low = (h >> 16) & 0xFF;
+  switch (high) {
+  case 0:
+    ret = 0;
+    break;
+    /* The loopback network */
+  case 127:
+    ret = 1;
+    break;
+    /* Link local addresses */
+  case 169:
+    ret = (low == 254) ? 2 : ~0u;
+    break;
+    /* The private /16 networks */
+  case 192:
+    ret = (low == 168) ? 3 : ~0u;
+    break;
+    /* The private /12 network */
+  case 172:
+    ret = (16 <= low && low <= 31) ? 4 : ~0u;
+    break;
+    /* The private /8 network */
+  case 10:
+    ret = 5;
+    break;
+  default:;
+    ret = ~0u;
+  }
+  return ret;
+}
+
+in_addr_t orwl_inet_addr(char const *name) {
+  in_addr_t ret = INITIALIZER;
+  struct addrinfo *res = INITIALIZER;
+  struct addrinfo hints = {
+    .ai_family = AF_UNSPEC,
+    .ai_flags = AI_V4MAPPED | AI_ADDRCONFIG | AI_CANONNAME,
+    .ai_socktype = SOCK_STREAM,
+  };
+  getaddrinfo(name, NULL, &hints, &res);
+  report(stderr, "%s's canonical name is %s", name, res->ai_canonname);
+  for (struct addrinfo *p = res; p; p = p->ai_next) {
+    switch (p->ai_family) {
+    case AF_INET: {
+      struct sockaddr_in *addr = (struct sockaddr_in *)p->ai_addr;
+      in_addr_t act = addr->sin_addr.s_addr;
+      if (importance(act) > importance(ret)) {
+        ret = act;
+        char addrstr[256] = INITIALIZER;
+        orwl_ntoa(addr, addrstr);
+        report(stderr, "%s's inet4 address is %s", name, addrstr);
+      }
+    }
+    default:;
+    }
+  }
+  freeaddrinfo(res);
+  return ret;
+}
+
 
 struct auth_sock {
   int fd;
