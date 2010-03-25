@@ -25,26 +25,6 @@ static size_t phases = 4;
 
 #define threadof(x) ((((size_t)x) + orwl_np) % orwl_np)
 
-void sleepfor(double t) {
-  double const mega = 1E+9;
-  double const nano = 1E-9;
-  while (t > 0.0) {
-    double sec = trunc(t);
-    struct timespec rem = {
-      .tv_sec = 0,
-      .tv_nsec = 0
-    };
-    struct timespec req = {
-      .tv_sec = (time_t)sec,
-      .tv_nsec = (time_t)((t - sec) * mega)
-    };
-    if (!nanosleep(&req, &rem)) return;
-    sec = (double)rem.tv_sec + nano*rem.tv_nsec;
-    if (sec >= t) return;
-    t = sec;
-  }
-}
-
 typedef struct {
   size_t mynum;
   size_t phase;

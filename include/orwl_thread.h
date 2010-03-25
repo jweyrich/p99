@@ -254,4 +254,9 @@ inline void pthread_t_destroy(pthread_t *id) {
 
 DECLARE_NEW_DELETE(pthread_t);
 
+/**
+ ** @brief Let the calling thread rest for @a t seconds
+ **/
+extern void sleepfor(double t);
+
 #endif 	    /* !ORWL_THREAD_H_ */

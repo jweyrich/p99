@@ -12,6 +12,7 @@
 #include <semaphore.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <math.h>
 #include "orwl_thread.h"
 #include "orwl_once.h"
 #include "orwl_new.h"
@@ -186,3 +187,23 @@ void pthread_t_init(pthread_t *id);
 void pthread_t_destroy(pthread_t *id);
 
 DEFINE_NEW_DELETE(pthread_t);
+
+void sleepfor(double t) {
+  double const mega = 1E+9;
+  double const nano = 1E-9;
+  while (t > 0.0) {
+    double sec = trunc(t);
+    struct timespec rem = {
+      .tv_sec = 0,
+      .tv_nsec = 0
+    };
+    struct timespec req = {
+      .tv_sec = (time_t)sec,
+      .tv_nsec = (time_t)((t - sec) * mega)
+    };
+    if (!nanosleep(&req, &rem)) return;
+    sec = (double)rem.tv_sec + nano*rem.tv_nsec;
+    if (sec >= t) return;
+    t = sec;
+  }
+}
