@@ -39,13 +39,18 @@ static uint64_t secret = INITIALIZER;
 
 static char const ENVVAR[] = "ORWL_SECRET";
 
-DECLARE_ONCE(secret);
-DEFINE_ONCE(secret) {
+DECLARE_ONCE_UPON(secret);
+DEFINE_ONCE_UPON(secret) {
   char const *str = getenv(ENVVAR);
-  secret = strtoul(str, NULL, 0);
+  if (str) secret = strtoul(str, NULL, 0);
 }
 
 uint64_t orwl_challenge(uint64_t a) {
-  INIT_ONCE(secret);
-  return orwl_mix(a, secret);
+  uint64_t ret = 0;
+  INIT_ONCE_UPON(secret, secret);
+  if (secret) {
+    for (; !ret; ++a)
+      ret = orwl_mix(a, secret);
+  }
+  return ret;
 }

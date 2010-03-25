@@ -50,7 +50,7 @@ extern in_addr_t orwl_inet_addr(char const *name);
 
 extern in_addr_t _inet4_addr;
 
-DECLARE_ONCE_UPON(inet4_addr, _inet4_addr);
+DECLARE_ONCE_UPON(inet4_addr);
 
 
 inline

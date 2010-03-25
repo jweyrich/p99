@@ -32,8 +32,8 @@ do {                                                    \
  } while (false)
 
 
-DECLARE_ONCE_UPON(mycode, mycode);
-DEFINE_ONCE_UPON(mycode, mycode) {
+DECLARE_ONCE_UPON(mycode);
+DEFINE_ONCE_UPON(mycode) {
     ifCode(0, 1, 2, 3);
     ifCode(0, 1, 3, 2);
     ifCode(0, 2, 1, 3);
@@ -95,7 +95,7 @@ bool orwl_recv_(int fd, uint64_t *mess, size_t len) {
 
 in_addr_t _inet4_addr = INITIALIZER;
 
-DEFINE_ONCE_UPON(inet4_addr, _inet4_addr) {
+DEFINE_ONCE_UPON(inet4_addr) {
   char const* str = getenv("INET4");
   struct in_addr inaddr = INITIALIZER;
   if (inet_aton(str, &inaddr)) {
@@ -274,6 +274,12 @@ DEFINE_THREAD(orwl_server) {
       uint64_t repl = orwl_challenge(chal);
       header_t header = INITIALIZER;
 
+      if (!repl) {
+        report(stderr, "cannot serve without a secret");
+        close(fd_listen);
+        fd_listen = -1;
+        goto TERMINATE;
+      }
       int fd = -1;
       do {
         fd = accept(fd_listen, NULL, &TNULL(socklen_t));
@@ -328,6 +334,10 @@ bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, siz
     .sin_port = ep->port,
     .sin_family = AF_INET
   };
+  if (!repl) {
+    report(stderr, "cannot send without a secret");
+    goto FINISH;
+  }
 
   int fd = socket(PF_INET, SOCK_STREAM, 0);
   if (fd == -1) return ret;
