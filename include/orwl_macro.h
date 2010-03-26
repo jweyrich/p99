@@ -595,6 +595,25 @@ T NAME ## _default_arg_ ## M(void)
 #define NULL1(T) ((T)INIT1)
 #define NULL2(T) ((T)INIT2)
 
+/**
+ ** @brief A meta-macro to protect a dependent block or statement by a
+ ** statement that is executed before and one after.
+ **
+ ** Preliminary exit of the block is possible with @c break.
+ **
+ ** @warning @c continue and @c return inside the dependent block will
+ ** not execute @a AFTER, so be careful.
+ **/
+#define BLOCK(BEFORE, AFTER)                                    \
+for (int _one1_ = 1;                                            \
+     /* lock the mutex before execution */                      \
+     ((void)(BEFORE), _one1_);                                  \
+     /* unlock the mutex before execution */                    \
+     ((void)(AFTER), _one1_ = 0))                               \
+  /* Ensure that a `break' will still unlock the mutex */       \
+  for (; _one1_; _one1_ = 0)
+
+#define DOCUMENT_BLOCK /*! @see BLOCK for restrictions on preliminary exits from the dependent block or statement. **/
 
 #endif 	    /* !ORWL_MACRO_H_ */
 

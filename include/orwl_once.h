@@ -12,8 +12,9 @@
 # define   	ORWL_ONCE_H_
 
 #include <pthread.h>
+#include "orwl_macro.h"
 
-struct once_uponn_cont {
+struct once_upon_cont {
   void (*const init)(void);
   pthread_mutex_t mut;
 };
@@ -35,12 +36,12 @@ struct once_cont {
 extern struct once_cont _ ## T ## _once
 
 #define DECLARE_ONCE_UPON(T)                    \
-extern struct once_uponn_cont _ ## T ## _once
+extern struct once_upon_cont _ ## T ## _once
 
 
 #define DEFINE_ONCE_UPON(T)                     \
 static void _ ## T ## _once_init(void);         \
-struct once_uponn_cont _ ## T ## _once = {      \
+struct once_upon_cont _ ## T ## _once = {      \
   .mut = PTHREAD_MUTEX_INITIALIZER,             \
   .init = _ ## T ## _once_init,                 \
 };                                              \
@@ -68,12 +69,8 @@ static void _ ## T ## _once_init(void)
  ** @brief Protect the following block or statement with @c
  ** pthread_mutex_t @a mut.
  **/
-#define CRITICAL(mut)                                   \
-for (int _crit = 1;                                     \
-     (pthread_mutex_lock(&(mut)), _crit);               \
-     _crit = 0)                                         \
-  for (; _crit;                                         \
-       (pthread_mutex_unlock(&(mut)), _crit = 0))
+DOCUMENT_BLOCK
+#define MUTUAL_EXCLUDE(mut) BLOCK(pthread_mutex_lock(&(mut)), pthread_mutex_unlock(&(mut)))
 
 /**
  ** @brief Ensure that the function that was defined with
@@ -94,7 +91,7 @@ for (int _crit = 1;                                     \
 #define INIT_ONCE_UPON(T, N)                    \
 do {                                            \
   if (!(N))                                     \
-    CRITICAL(_ ## T ## _once.mut)               \
+    MUTUAL_EXCLUDE(_ ## T ## _once.mut)         \
       if (!(N)) _ ## T ## _once.init();         \
  } while(0)
 
@@ -108,7 +105,7 @@ do {                                            \
 #define INIT_ONCE(T)                            \
 do {                                            \
   if (!(_ ## T ## _once.cond))                  \
-    CRITICAL(_ ## T ## _once.mut)               \
+    MUTUAL_EXCLUDE(_ ## T ## _once.mut)         \
       if (!(_ ## T ## _once.cond)) {            \
         _ ## T ## _once.init();                 \
         _ ## T ## _once.cond = 1;               \
