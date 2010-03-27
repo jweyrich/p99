@@ -12,7 +12,8 @@
 #include <stdio.h>
 #include "orwl_socket.h"
 
-void test_callback(uint64_t const* mes, size_t n) {
+void test_callback(int fd, uint64_t const* mes, size_t n) {
+  diagnose(fd, "message of size %d", n);
   for (size_t i = 0; i < n; ++i)
     report(stdout, "%jX", (uintmax_t)mes[i]);
 }

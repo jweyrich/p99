@@ -48,6 +48,19 @@ declare_default_arg(orwl_ntoh, 2, size_t, 1);
 
 extern in_addr_t orwl_inet_addr(char const *name);
 
+extern void orwl_ntoa(struct sockaddr_in *addr, char *name);
+
+#define diagnose(fd, form, ...)                                         \
+do {                                                                    \
+  struct sockaddr_in addr = INITIALIZER;                                \
+  if (getpeername(fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) { \
+    char name[256] = INITIALIZER;                                       \
+    orwl_ntoa(&addr, name);                                             \
+    report(stderr, "connection from /%s/ " form, name, __VA_ARGS__);    \
+  }                                                                     \
+ } while (0)
+
+
 extern in_addr_t _inet4_addr;
 
 DECLARE_ONCE_UPON(inet4_addr);
@@ -105,7 +118,7 @@ struct orwl_server;
 typedef struct orwl_server orwl_server;
 #endif
 
-typedef void (*server_cb_t)(uint64_t const* mes, size_t n);
+typedef void (*server_cb_t)(int fd, uint64_t const* mes, size_t n);
 
 struct orwl_server {
   orwl_endpoint ep;

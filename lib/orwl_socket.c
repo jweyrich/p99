@@ -124,7 +124,6 @@ enum { header_t_els = 2 };
 
 typedef uint64_t header_t[header_t_els];
 
-static
 void orwl_ntoa(struct sockaddr_in *addr, char *name) {
   char *tmp = inet_ntoa(addr->sin_addr);
   strcpy(name, tmp);
@@ -132,16 +131,6 @@ void orwl_ntoa(struct sockaddr_in *addr, char *name) {
   name[len] = ':';
   sprintf(name + len + 1, "%u", (unsigned)addr->sin_port);
 }
-
-#define diagnose(fd, form, ...)                                         \
-do {                                                                    \
-  struct sockaddr_in addr = INITIALIZER;                                \
-  if (getpeername(fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) { \
-    char name[256] = INITIALIZER;                                       \
-    orwl_ntoa(&addr, name);                                             \
-    report(stderr, "connection from /%s/ " form, name, __VA_ARGS__);    \
-  }                                                                     \
- } while (0)
 
 static
 unsigned importance(in_addr_t a) {
@@ -237,7 +226,7 @@ DEFINE_THREAD(auth_sock) {
   if (!orwl_recv_(Arg->fd, mess, Arg->len))
     if (Arg->cb)
       /* do something with mess here */
-      Arg->cb(mess, Arg->len);
+      Arg->cb(Arg->fd, mess, Arg->len);
   /* now clean up */
   uint64_t_vdelete(mess);
   header_t header = INITIALIZER;
