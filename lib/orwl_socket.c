@@ -325,6 +325,7 @@ DEFINE_THREAD(orwl_server) {
 
 bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, size_t len) {
   bool ret = true;
+  int fd = -1;
   /* do all this work before opening the socket */
   uint64_t chal = orwl_rand64(seed);
   uint64_t repl = orwl_challenge(chal);
@@ -339,7 +340,7 @@ bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, siz
     goto FINISH;
   }
 
-  int fd = socket(PF_INET, SOCK_STREAM, 0);
+  fd = socket(PF_INET, SOCK_STREAM, 0);
   if (fd == -1) return ret;
 
   if (connect(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1)
