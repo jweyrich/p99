@@ -12,8 +12,10 @@
 # define   	ORWL_THREAD_H_
 
 #include <pthread.h>
+#include <semaphore.h>
 #include <stdbool.h>
 #include <string.h>
+#include <errno.h>
 
 #include "orwl_int.h"
 
@@ -258,5 +260,118 @@ DECLARE_NEW_DELETE(pthread_t);
  ** @brief Let the calling thread rest for @a t seconds
  **/
 extern void sleepfor(double t);
+
+/**
+ ** @brief Just a wrapper for @c sem_init
+ **/
+inline
+int orwl_sem_init(sem_t *sem, int pshared, unsigned int value) {
+  return sem_init(sem, pshared, value);
+}
+
+/**
+ ** @brief Just a wrapper for @c sem_destroy
+ **/
+inline
+int orwl_sem_destroy(sem_t *sem) {
+  return sem_destroy(sem);
+}
+
+
+/**
+ ** @brief Just a wrapper for @c sem_getvalue
+ **/
+inline
+int orwl_sem_getvalue(sem_t *sem, int *sval) {
+  return sem_getvalue(sem, sval);
+}
+
+/**
+ ** @brief Just a wrapper for @c sem_post
+ **/
+inline
+int orwl_sem_post(sem_t *sem) {
+  return sem_post(sem);
+}
+
+/**
+ ** @brief An interrupt safe wrapper for @c sem_trywait.
+ **
+ ** The POSIX function may be interrupted if e.g there is delivery of IO.
+ ** This function here catches the case of an interrupt and retries
+ ** until success or until another error condition occurs.
+ **/
+inline
+int orwl_sem_trywait(sem_t *sem) {
+  int ret;
+ RETRY:
+  ret = sem_trywait(sem);
+  if (ret && errno == EINTR) {
+    errno = 0;
+    goto RETRY;
+  }
+  return ret;
+}
+
+/**
+ ** @brief An interrupt safe wrapper for @c sem_trywait.
+ **
+ ** The POSIX function may be interrupted if e.g there is delivery of IO.
+ ** This function here catches the case of an interrupt and retries
+ ** until success or until another error condition occurs.
+ **/
+inline
+int orwl_sem_wait(sem_t *sem)  {
+  int ret;
+ RETRY:
+  ret = sem_wait(sem);
+  if (ret && errno == EINTR) {
+    errno = 0;
+    goto RETRY;
+  }
+  return ret;
+}
+
+/**
+ ** @brief An interrupt safe wrapper for @c sem_timedwait.
+ **
+ ** The POSIX function may be interrupted if e.g there is delivery of IO.
+ ** This function here catches the case of an interrupt and retries
+ ** until success or until another error condition occurs.
+ **/
+inline
+int orwl_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout) {
+  int ret;
+ RETRY:
+  ret = sem_timedwait(sem, abs_timeout);
+  if (ret && errno == EINTR) {
+    errno = 0;
+    goto RETRY;
+  }
+  return ret;
+}
+
+/**
+ ** @brief Relax the @c sem_t @a SEM during execution of a dependent
+ ** block or statement.
+ **/
+DOCUMENT_BLOCK
+#define SEM_RELAX(SEM) BLOCK(orwl_sem_post(&(SEM)), orwl_sem_wait(&(SEM)))
+
+/**
+ ** @brief Request one token from @c sem_t @a SEM during execution of a dependent
+ ** block or statement.
+ **
+ ** Execution will block until the value of @a SEM is positive, i.e a
+ ** token is available on @a SEM. The token is re-injected into @a SEM
+ ** after execution of the dependent block or statement.
+ **
+ ** @see orwl_sem_wait
+ ** @see orwl_sem_post
+ ** @see MUTUAL_EXCLUDE
+ **/
+DOCUMENT_BLOCK
+#define SEM_CRITICAL(SEM) BLOCK(orwl_sem_wait(&(SEM)), orwl_sem_post(&(SEM)))
+
 
 #endif 	    /* !ORWL_THREAD_H_ */

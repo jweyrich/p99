@@ -9,7 +9,6 @@
 */
 
 #include <stdint.h>
-#include <semaphore.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -78,7 +77,7 @@ static pthread_attr_t attr_joinable;
  * detached threads.
  *
  * The counter is realized by a semaphore to ensure that thread
- * startup is as fast as possible. A call to sem_post should be the
+ * startup is as fast as possible. A call to orwl_sem_post should be the
  * most efficient operation for such a case.
  *
  * The wait routine on the other hand then has to check for the value
@@ -91,7 +90,7 @@ static pthread_mutex_t create_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t create_cond = PTHREAD_COND_INITIALIZER;
 
 DEFINE_ONCE(orwl_pthread_create) {
-  sem_init(&create_sem, 0, 0);
+  orwl_sem_init(&create_sem, 0, 0);
   pthread_attr_init(&attr_detached);
   pthread_attr_setdetachstate(&attr_detached, PTHREAD_CREATE_DETACHED);
   pthread_attr_init(&attr_joinable);
@@ -142,12 +141,11 @@ void *detached_wrapper(void *routine_arg) {
   routine_arg = NULL;
   /* This should be fast since usually there should never be a waiter
      block on this semaphore. */
-  sem_post(&create_sem);
-  /* Do the real work */
-  void *ret = start_routine(arg);
   /* This should return immediately, since we ourselves have posted
      a token */
-  sem_wait(&create_sem);
+  void *ret = INITIALIZER;
+  SEM_RELAX(create_sem)
+    ret = start_routine(arg);
   /* The remaining part could be a bit slower but usually only at the
      very end of the program and in a situation where a lot of
      threads return simultaneously. */
@@ -175,7 +173,7 @@ void orwl_pthread_wait_detached(void) {
   INIT_ONCE(orwl_pthread_create);
   MUTUAL_EXCLUDE(create_mutex) {
     for (int sval = 1;;) {
-      sem_getvalue(&create_sem, &sval);
+      orwl_sem_getvalue(&create_sem, &sval);
       if (!sval) break;
       pthread_cond_wait(&create_cond, &create_mutex);
     }
@@ -206,3 +204,11 @@ void sleepfor(double t) {
     t = sec;
   }
 }
+
+int orwl_sem_init(sem_t *sem, int pshared, unsigned int value);
+int orwl_sem_destroy(sem_t *sem);
+int orwl_sem_getvalue(sem_t *sem, int *sval);
+int orwl_sem_post(sem_t *sem);
+int orwl_sem_trywait(sem_t *sem);
+int orwl_sem_wait(sem_t *sem);
+int orwl_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout);
