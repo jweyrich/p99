@@ -151,9 +151,8 @@ void *detached_wrapper(void *routine_arg) {
   /* The remaining part could be a bit slower but usually only at the
      very end of the program and in a situation where a lot of
      threads return simultaneously. */
-  pthread_mutex_lock(&create_mutex);
-  pthread_cond_broadcast(&create_cond);
-  pthread_mutex_unlock(&create_mutex);
+  MUTUAL_EXCLUDE(create_mutex)
+    pthread_cond_broadcast(&create_cond);
   return ret;
 }
 
@@ -174,13 +173,13 @@ int orwl_pthread_create_detached(void *(*start_routine)(void*),
 
 void orwl_pthread_wait_detached(void) {
   INIT_ONCE(orwl_pthread_create);
-  pthread_mutex_lock(&create_mutex);
-  for (int sval = 1;;) {
-    sem_getvalue(&create_sem, &sval);
-    if (!sval) break;
-    pthread_cond_wait(&create_cond, &create_mutex);
+  MUTUAL_EXCLUDE(create_mutex) {
+    for (int sval = 1;;) {
+      sem_getvalue(&create_sem, &sval);
+      if (!sval) break;
+      pthread_cond_wait(&create_cond, &create_mutex);
+    }
   }
-  pthread_mutex_unlock(&create_mutex);
 }
 
 void pthread_t_init(pthread_t *id);

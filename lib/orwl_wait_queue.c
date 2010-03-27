@@ -95,7 +95,7 @@ void FUNC_DEFAULT(orwl_wh_unload)(orwl_wh *wh, uintptr_t howmuch);
 orwl_state FUNC_DEFAULT(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
   orwl_state ret = orwl_invalid;
   if (wq && orwl_wq_valid(wq)) {
-    pthread_mutex_lock(&wq->mut);
+    MUTUAL_EXCLUDE(wq->mut) {
     /* Check (and wait eventually) that all wh are idle */
     for (bool idle = false; !idle; ) {
       va_list ap;
@@ -127,7 +127,7 @@ orwl_state FUNC_DEFAULT(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
     }
     va_end(ap);
     ret = orwl_requested;
-    pthread_mutex_unlock(&wq->mut);
+    }
   }
   return ret;
 }
@@ -160,11 +160,11 @@ orwl_state FUNC_DEFAULT(orwl_wh_acquire)(orwl_wh *wh, uintptr_t howmuch) {
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
     if (wq) {
-      pthread_mutex_lock(&wq->mut);
-      ret = orwl_wh_acquire_locked(wh, wq);
-      if (ret == orwl_acquired)
-        orwl_wh_unload(wh, howmuch);
-      pthread_mutex_unlock(&wq->mut);
+      MUTUAL_EXCLUDE(wq->mut) {
+        ret = orwl_wh_acquire_locked(wh, wq);
+        if (ret == orwl_acquired)
+          orwl_wh_unload(wh, howmuch);
+      }
     }
   }
   return ret;
@@ -174,15 +174,11 @@ orwl_state FUNC_DEFAULT(orwl_wh_test)(orwl_wh *wh, uintptr_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
-    if (wq) {
-      pthread_mutex_lock(&wq->mut);
-      if (orwl_wq_valid(wq)
-          && wq->head) {
-        ret = wq->head == wh ? orwl_acquired : orwl_requested;
-      }
-      if (ret == orwl_acquired) orwl_wh_unload(wh, howmuch);
-      pthread_mutex_unlock(&wq->mut);
-    } else {
+    if (wq) MUTUAL_EXCLUDE(wq->mut) {
+        if (orwl_wq_valid(wq) && wq->head)
+          ret = wq->head == wh ? orwl_acquired : orwl_requested;
+        if (ret == orwl_acquired) orwl_wh_unload(wh, howmuch);
+      } else {
       if (!wh->next) ret = orwl_valid;
     }
   }
@@ -194,22 +190,22 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
     if (wq) {
-      pthread_mutex_lock(&wq->mut);
-      while (orwl_wq_valid(wq)) {
-        if (wq->head == wh && !wh->tokens) {
-          wh->location = NULL;
-          if (!wh->next) wq->tail = NULL;
-          wq->head = wh->next;
-          wh->next = NULL;
-          ret = orwl_valid;
-          /* Unlock potential acquirers */
-          if (wq->head) pthread_cond_broadcast(&wq->head->cond);
-          /* Unlock potential requesters */
-          pthread_cond_broadcast(&wh->cond);
-          break;
-        } else pthread_cond_wait(&wh->cond, &wq->mut);
+      MUTUAL_EXCLUDE(wq->mut) {
+        while (orwl_wq_valid(wq)) {
+          if (wq->head == wh && !wh->tokens) {
+            wh->location = NULL;
+            if (!wh->next) wq->tail = NULL;
+            wq->head = wh->next;
+            wh->next = NULL;
+            ret = orwl_valid;
+            /* Unlock potential acquirers */
+            if (wq->head) pthread_cond_broadcast(&wq->head->cond);
+            /* Unlock potential requesters */
+            pthread_cond_broadcast(&wh->cond);
+            break;
+          } else pthread_cond_wait(&wh->cond, &wq->mut);
+        }
       }
-      pthread_mutex_unlock(&wq->mut);
     } else {
       if (!wh->next) ret = orwl_valid;
     }

@@ -77,14 +77,14 @@ DEFINE_THREAD(_ ## T ## _orwl_wh_t) {                                   \
   orwl_wh *wh = Arg->Wh;                                                \
   orwl_wq *wq = Arg->Wq;                                                \
   orwl_state state;                                                     \
-  pthread_mutex_lock(&wq->mut);                                         \
-  pthread_cond_signal(&Arg->cond);                                      \
-  /* Afterwards Arg might already be deleted by the caller */           \
-  state = orwl_wh_acquire_locked(wh, wq);                               \
-  if (state == orwl_acquired) orwl_wh_unload(wh, 1);                    \
-  else                                                                  \
-    fprintf(stderr, "thread %lu|%p failed to acquire\n", pthread_self(), (void*)wh); \
-  pthread_mutex_unlock(&wq->mut);                                       \
+  MUTUAL_EXCLUDE(wq->mut) {                                             \
+    pthread_cond_signal(&Arg->cond);                                    \
+    /* Afterwards Arg might already be deleted by the caller */         \
+    state = orwl_wh_acquire_locked(wh, wq);                             \
+    if (state == orwl_acquired) orwl_wh_unload(wh, 1);                  \
+    else                                                                \
+      fprintf(stderr, "thread %lu|%p failed to acquire\n", pthread_self(), (void*)wh); \
+  }                                                                     \
   if (state == orwl_acquired)                                           \
     orwl_callback_ ## T(arg, wh);                                       \
 }                                                                       \
