@@ -606,11 +606,11 @@ T NAME ## _default_arg_ ## M(void)
  **/
 #define BLOCK(BEFORE, AFTER)                                    \
 for (int _one1_ = 1;                                            \
-     /* lock the mutex before execution */                      \
-     ((void)(BEFORE), _one1_);                                  \
-     /* unlock the mutex before execution */                    \
+     /* be sure to execute BEFORE only at the first evaluation */       \
+     (_one1_ ? ((void)(BEFORE), _one1_) : _one1_);              \
+     /* run AFTER exactly once */                               \
      ((void)(AFTER), _one1_ = 0))                               \
-  /* Ensure that a `break' will still unlock the mutex */       \
+  /* Ensure that a `break' will still execute AFTER */          \
   for (; _one1_; _one1_ = 0)
 
 #define DOCUMENT_BLOCK /*! @see BLOCK for restrictions on preliminary exits from the dependent block or statement. **/
