@@ -165,7 +165,10 @@ DEFINE_ORWL_DOMAIN(ORWL_FTAB(T),                                \
                    ORWL_REGISTER_ALIAS(T ## _destroy),          \
                    __VA_ARGS__)
 
+#define ORWL_TYPE_DYNAMIC_INIT(T) orwl_register_init(ORWL_FTAB(T))
+
 DECLARE_ORWL_DOMAIN(orwl_types);
+void orwl_types_init(void);
 
 #define ORWL_REGISTER_TYPE(T) ORWL_REGISTER_DATA(ORWL_FTAB(T))
 

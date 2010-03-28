@@ -16,11 +16,11 @@
 pthread_mutex_t _reg_mut = PTHREAD_MUTEX_INITIALIZER;
 
 void orwl_register_init(orwl_register const* field) {
-  if (!(field->regptr)) {
+  if (!*(field->regptr)) {
     MUTUAL_EXCLUDE(_reg_mut) {
-      if (!(field->regptr)) {
+      if (!*(field->regptr)) {
         orwl_register const*base = (field->start);
-        for (size_t i = 0; base[i].fptr != NULL && base[i].dptr != NULL; ++i)
+        for (size_t i = 0; base[i].fptr != NULL || base[i].dptr != NULL; ++i)
           *(base[i].regptr) = &(base[i]);
       }
     }
@@ -37,3 +37,12 @@ DEFINE_ORWL_TYPES(ORWL_REGISTER_TYPE(orwl_state),
                   ORWL_REGISTER_TYPE(orwl_wq),
                   ORWL_REGISTER_TYPE(orwl_wh)
                   );
+
+void orwl_types_init(void) {
+  orwl_register_init(orwl_types);
+  for (size_t i = 0; ; ++i) {
+    void *R = orwl_register_get(orwl_types + i);
+    if (!R) break;
+    orwl_register_init(*(orwl_register**)R);
+  }
+}
