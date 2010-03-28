@@ -70,7 +70,12 @@ static void _ ## T ## _once_init(void)
  ** pthread_mutex_t @a mut.
  **/
 DOCUMENT_BLOCK
-#define MUTUAL_EXCLUDE(mut) BLOCK(pthread_mutex_lock(&(mut)), pthread_mutex_unlock(&(mut)))
+#define MUTUAL_EXCLUDE(MUT)                     \
+SAVE_BLOCK(pthread_mutex_t*,                    \
+      mut,                                      \
+      &(MUT),                                   \
+      pthread_mutex_lock(mut),                  \
+      pthread_mutex_unlock(mut))
 
 /**
  ** @brief Ensure that the function that was defined with

@@ -613,6 +613,17 @@ for (int _one1_ = 1;                                            \
   /* Ensure that a `break' will still execute AFTER */          \
   for (; _one1_; _one1_ = 0)
 
+#define SAVE_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)                     \
+for (int _one1_ = 1; _one1_; _one1_ = 0)                                \
+  for (T NAME = (INITIAL);                                              \
+       /* be sure to execute BEFORE only at the first evaluation */     \
+       (_one1_ ? ((void)(BEFORE), _one1_) : _one1_);                    \
+       /* run AFTER exactly once */                                     \
+       ((void)(AFTER), _one1_ = 0))                                     \
+    /* Ensure that a `break' will still execute AFTER */                \
+    for (; _one1_; _one1_ = 0)
+
+
 #define DOCUMENT_BLOCK /*! @see BLOCK for restrictions on preliminary exits from the dependent block or statement. **/
 
 #endif 	    /* !ORWL_MACRO_H_ */

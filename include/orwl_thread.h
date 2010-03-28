@@ -356,7 +356,13 @@ int orwl_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout) {
  ** block or statement.
  **/
 DOCUMENT_BLOCK
-#define SEM_RELAX(SEM) BLOCK(orwl_sem_post(&(SEM)), orwl_sem_wait(&(SEM)))
+#define SEM_RELAX(SEM)                          \
+SAVE_BLOCK(                                     \
+           sem_t*,                              \
+           sem,                                 \
+           &(SEM),                              \
+           orwl_sem_post(sem),                  \
+           orwl_sem_wait(sem))
 
 /**
  ** @brief Request one token from @c sem_t @a SEM during execution of a dependent
@@ -371,7 +377,13 @@ DOCUMENT_BLOCK
  ** @see MUTUAL_EXCLUDE
  **/
 DOCUMENT_BLOCK
-#define SEM_CRITICAL(SEM) BLOCK(orwl_sem_wait(&(SEM)), orwl_sem_post(&(SEM)))
+#define SEM_CRITICAL(SEM)                       \
+SAVE_BLOCK(                                     \
+           sem_t*,                              \
+           sem,                                 \
+           &(SEM),                              \
+           orwl_sem_wait(sem),                  \
+           orwl_sem_post(sem))
 
 
 #endif 	    /* !ORWL_THREAD_H_ */
