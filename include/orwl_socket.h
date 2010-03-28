@@ -112,6 +112,47 @@ DECLARE_NEW_DELETE(orwl_endpoint);
 bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, size_t len);
 
 
+struct orwl_host;
+
+typedef struct orwl_host orwl_host;
+
+struct orwl_host {
+  pthread_mutex_t mut;
+  orwl_endpoint ep;
+  orwl_host *prev;
+  orwl_host *next;
+  size_t refs;
+};
+
+#define ORWL_HOST_STATIC_INITIALIZER(NAME) {    \
+  .mut = PTHREAD_MUTEX_INITIALIZER,             \
+  .ep = INITIALIZER,                            \
+  .prev = &NAME,                                \
+  .next = &NAME,                                \
+  .refs = 2                                     \
+}
+
+orwl_host here = ORWL_HOST_STATIC_INITIALIZER(here);
+
+
+void orwl_host_connect(orwl_host *th, orwl_host *q);
+void orwl_host_disconnect(orwl_host *th);
+
+inline
+void orwl_host_init(orwl_host *th) {
+  th->next = th;
+  th->prev = th;
+  th->refs = 0;
+  pthread_mutex_init(&th->mut);
+}
+
+inline
+void orwl_host_destroy(orwl_host *th) {
+  orwl_host_disconnect(th);
+}
+
+DECLARE_NEW_DELETE(orwl_host);
+
 struct orwl_server;
 
 #ifndef __cplusplus

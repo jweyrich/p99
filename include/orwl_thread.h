@@ -19,6 +19,9 @@
 
 #include "orwl_int.h"
 
+#define pthread_mutex_init(...) pthread_mutex_init _call_with(2, __VA_ARGS__)(pthread_mutex_init, __VA_ARGS__)
+declare_default_arg(pthread_mutex_init, 1, pthread_mutexattr_t*, NULL);
+
 /**
  ** @brief A default (global!) version of something like a
  ** thread id.

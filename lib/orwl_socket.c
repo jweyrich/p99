@@ -373,3 +373,61 @@ bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, siz
   if (ret && len) report(stderr, "send request didn't succeed");
   return ret;
 }
+
+void orwl_host_connect(orwl_host *th, orwl_host *q) {
+  if (!th || !q) return;
+  if (th->prev != th || th->next != th) return;
+  for (bool ok = false; !ok; ) {
+    MUTUAL_EXCLUDE(th->mut) {
+      if (!pthread_mutex_trylock(&q->mut)) {
+        orwl_host *p = q->prev;
+        if (p == q || !pthread_mutex_trylock(&p->mut)) {
+          ok = true;
+          /* splice us between q and p */
+          th->next = q;
+          th-> prev = p;
+          th->refs += 2;
+          q->prev = th;
+          p->next = th;
+          report(stderr, "%p points to %p and %p", (void*)th, (void*)th->prev, (void*)th->next);
+          report(stderr, "%p points to %p and %p", (void*)q, (void*)q->prev, (void*)q->next);
+          if (p != q) pthread_mutex_unlock(&p->mut);
+        }
+        pthread_mutex_unlock(&q->mut);
+      }
+    }
+    if (!ok) {
+      sleepfor(1E-0);
+      report(stderr,"looping");
+    }
+  }
+}
+
+void orwl_host_disconnect(orwl_host *th) {
+  if (!th) return;
+  if (th->prev || th->next) return;
+  for (bool ok = false; !ok; ) {
+    MUTUAL_EXCLUDE(th->mut) {
+      orwl_host *q = th->next;
+      orwl_host *p = q->prev;
+      if (!pthread_mutex_trylock(&q->mut)) {
+        if (p == q || !pthread_mutex_trylock(&p->mut)) {
+          ok = true;
+          th->next = th;
+          th->prev = th;
+          th->refs -= 2;
+          q->prev = p;
+          p->next = q;
+          if (p != q) pthread_mutex_unlock(&p->mut);
+        }
+        pthread_mutex_unlock(&q->mut);
+      }
+    }
+    if (!ok) sleepfor(1E-6);
+  }
+}
+
+void orwl_host_init(orwl_host *th);
+void orwl_host_destroy(orwl_host *th);
+
+DEFINE_NEW_DELETE(orwl_host);
