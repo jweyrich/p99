@@ -129,7 +129,7 @@ void orwl_ntoa(struct sockaddr_in *addr, char *name) {
   strcpy(name, tmp);
   size_t len = strlen(name);
   name[len] = ':';
-  sprintf(name + len + 1, "%u", (unsigned)addr->sin_port);
+  sprintf(name + len + 1, "0x%X", (unsigned)addr->sin_port);
 }
 
 static
@@ -197,42 +197,39 @@ in_addr_t orwl_inet_addr(char const *name) {
   return ret;
 }
 
+void FUNC_DEFAULT(auth_sock_init)(auth_sock *sock,
+                                  int fd,
+                                  orwl_server* srv,
+                                  size_t len);
 
-struct auth_sock {
-  int fd;
-  size_t len;
-  server_cb_t cb;
-};
+define_default_arg(auth_sock_init, 3, size_t);
+define_default_arg(auth_sock_init, 2, orwl_server*);
+define_default_arg(auth_sock_init, 1, int);
 
-typedef struct auth_sock auth_sock;
-
-void auth_sock_init(auth_sock *sock) {
-  /* empty */
-}
 
 void auth_sock_destroy(auth_sock *sock) {
   if (sock->fd != -1) close(sock->fd);
   sock->fd = -1;
 }
 
-DECLARE_NEW_DELETE(auth_sock);
 DEFINE_NEW_DELETE(auth_sock);
-
-DECLARE_THREAD(auth_sock);
 
 
 DEFINE_THREAD(auth_sock) {
-  uint64_t *mess = uint64_t_vnew(Arg->len);
-  if (!orwl_recv_(Arg->fd, mess, Arg->len))
-    if (Arg->cb)
+  assert(Arg->mes);
+  if (!orwl_recv_(Arg->fd, Arg->mes, Arg->len))
+    if (Arg->srv && Arg->srv->cb) {
       /* do something with mess here */
-      Arg->cb(Arg->fd, mess, Arg->len);
+      Arg->srv->cb(Arg);
+      report(stderr, "finished callback with %jd elements", Arg->len);
+    }
   /* now clean up */
-  uint64_t_vdelete(mess);
+  uint64_t_vdelete(Arg->mes);
   header_t header = INITIALIZER;
   /* Ack the termination of the call */
   orwl_send_(Arg->fd, header, header_t_els);
   close(Arg->fd);
+  report(stderr, "cleanup after %jd elements", Arg->len);
 }
 
 
@@ -249,11 +246,13 @@ DEFINE_THREAD(orwl_server) {
     addr.sin_family = AF_INET;
     if (bind(fd_listen, (struct sockaddr*) &addr, sizeof(addr)) == -1)
       goto TERMINATE;
+    report(stderr, "bound port 0x%X", Arg->ep.port);
     /* If the port was not yet specified find and store it. */
     if (!addr.sin_port) {
       if (getsockname(fd_listen, (struct sockaddr*)&addr, &len) == -1)
         goto TERMINATE;
       Arg->ep.port = addr.sin_port;
+      report(stderr, "allocated port 0x%X", Arg->ep.port);
     }
     if (listen(fd_listen, Arg->max_connections) == -1)
       goto TERMINATE;
@@ -289,7 +288,7 @@ DEFINE_THREAD(orwl_server) {
         size_t len = header[0];
         if (len) {
           auth_sock *sock = auth_sock_new();
-          sock->fd = fd; sock->len = len; sock->cb = Arg->cb;
+          auth_sock_init(sock, fd, Arg, len);
           auth_sock_create(sock, NULL);
           /* The spawned thread will close the fd. */
           continue;
@@ -309,6 +308,9 @@ DEFINE_THREAD(orwl_server) {
     }
   }
  TERMINATE:
+  if (errno) {
+    perror("cannot proceed");
+  }
   if (fd_listen != -1) close(fd_listen);
 }
 

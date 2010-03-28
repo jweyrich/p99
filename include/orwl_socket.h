@@ -118,7 +118,44 @@ struct orwl_server;
 typedef struct orwl_server orwl_server;
 #endif
 
-typedef void (*server_cb_t)(int fd, uint64_t const* mes, size_t n);
+struct auth_sock;
+
+#ifndef __cplusplus
+typedef struct auth_sock auth_sock;
+#endif
+
+typedef void (*server_cb_t)(auth_sock *);
+
+struct auth_sock {
+  orwl_server* srv;
+  int fd;
+  size_t len;
+  uint64_t *mes;
+};
+
+inline
+void FUNC_DEFAULT(auth_sock_init)(auth_sock *sock,
+                                  int fd,
+                                  orwl_server* srv,
+                                  size_t len) {
+  memset(sock, 0, sizeof(auth_sock));
+  sock->fd = fd;
+  sock->srv = srv;
+  sock->len = len;
+  if (sock->mes) uint64_t_vdelete(sock->mes);
+  sock->mes = len ? uint64_t_vnew(len) : NULL;
+}
+
+declare_default_arg(auth_sock_init, 3, size_t, 0);
+declare_default_arg(auth_sock_init, 2, orwl_server*, NULL);
+declare_default_arg(auth_sock_init, 1, int, -1);
+
+
+#define auth_sock_init(...) DEFINE_FUNC_DEFAULT(auth_sock_init, 4, __VA_ARGS__);
+
+void auth_sock_destroy(auth_sock *sock);
+DECLARE_NEW_DELETE(auth_sock);
+DECLARE_THREAD(auth_sock);
 
 struct orwl_server {
   orwl_endpoint ep;
