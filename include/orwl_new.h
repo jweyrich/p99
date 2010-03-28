@@ -25,13 +25,16 @@
 
 #include "orwl_inline.h"
 
-#define DOCUMENT_INIT(T)                                                \
-/*! @brief Initialize a variable of type T */                           \
-/*! @see T ## _new needs a version of this that takes just the T* as argument. */
 
-#define DOCUMENT_DESTROY(T)                     \
-/*! @brief Destroy a variable of type T */      \
-/*! @see T ## _delete needs this. */
+/**
+ ** @brief Add some indications to a @c _init documentation.
+ */
+#define DOCUMENT_INIT(T) /*! @brief Initialize a variable of type T @see T ## _new needs a version of this that takes just the T* as argument. */
+
+/**
+ ** @brief Add some indications to a @c _destroy documentation.
+ */
+#define DOCUMENT_DESTROY(T) /*! @brief Destroy a variable of type T @see T ## _delete needs this. */
 
 /**
  ** @brief Declare a `new' operator for type @a T.
@@ -44,19 +47,26 @@
  ** variable that you have such allocated.
  ** @see DECLARE_NEW_DELETE
  **/
-#define DECLARE_NEW(T)                                                  \
-  /*! @brief Operator @c new for class T     **/                        \
-  /*! @see T ## _init  is supposed to exist and to be callable with just one T* argument **/ \
-  /*! @see T ## _delete                      **/                        \
-inline                                                                  \
-T *T ## _new(void) {                                                    \
-    T *ret = (T*)malloc(sizeof(T));                                     \
-    if (ret) T ## _init(ret);                                           \
-    return ret;                                                         \
-}
+#define DECLARE_NEW(T) enum _dummy_ ## T ## _enum_new { _dummy_ ## T ## _enum_new_val }
 
-#define NEW(T) T ## _new()
 
+/*                                                   \ */
+/*   /\*! @brief Operator @c new for class T     **\/                        \ */
+/*   /\*! @see T ## _init  is supposed to exist and to be callable with just one T* argument **\/ \ */
+/*   /\*! @see T ## _delete                      **\/                        \ */
+/* inline                                                                  \ */
+/* T *T ## _new(void) {                                                    \ */
+/*     T *ret = (T*)malloc(sizeof(T));                                     \ */
+/*     if (ret) T ## _init(ret);                                           \ */
+/*     return ret;                                                         \ */
+/* } */
+
+#define NEW(T) T ## _init((T*)malloc(sizeof(T)))
+
+/**
+ ** @brief Allocate an element of type @a T and initialize it with the
+ ** remaining arguments.
+ **/
 #define NEW_INIT(T, ...) T ## _init((T*)malloc(sizeof(T)), __VA_ARGS__)
 
 
@@ -153,13 +163,16 @@ void T ## _vdelete(T *vec) {                                            \
 }
 
 #define DECLARE_NEW_DELETE(T)                                    \
-DECLARE_NEW(T)                                                   \
+  /*DECLARE_NEW(T) */                                            \
 DECLARE_DELETE(T)                                                \
 DECLARE_VDELETE(T)                                               \
 DECLARE_VNEW(T)                                                  \
 enum _tame_ansi_c_semicolon_message_ ## T { _new_delete_ ## T }
 
-#define DEFINE_NEW(T) T *T ## _new(void)
+#define DEFINE_NEW(T) 
+
+//T *T ## _new(void)
+
 #define DEFINE_DELETE(T) void T ## _delete(T *el)
 #define DEFINE_VNEW(T) T *T ## _vnew(size_t n)
 #define DEFINE_VDELETE(T) void T ## _vdelete(T *vec)
