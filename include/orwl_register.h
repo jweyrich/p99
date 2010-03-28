@@ -116,6 +116,7 @@ orwl_domain NAME = ORWL_DOMAIN_TABLE
 DECLARE_ORWL_DOMAIN(ORWL_FTAB(T));              \
 DECLARE_ORWL_REGISTER(ORWL_FTAB(T));            \
 DECLARE_ORWL_REGISTER(T ## _sizeof);            \
+DECLARE_ORWL_REGISTER(T ## _typename);          \
 DECLARE_ORWL_REGISTER(T ## _init);              \
 DECLARE_ORWL_REGISTER(T ## _destroy)
 
@@ -157,10 +158,12 @@ DECLARE_ORWL_REGISTER(T ## _destroy)
 DEFINE_ORWL_REGISTER(ORWL_FTAB(T));                             \
 DEFINE_ORWL_REGISTER(T ## _sizeof);                             \
 static size_t const T ## _sizeof = sizeof(T);                   \
+static char const T ## _typename[] = #T;                        \
 DEFINE_ORWL_REGISTER_ALIAS(T ## _init, T);                      \
 DEFINE_ORWL_REGISTER_ALIAS(T ## _destroy, T);                   \
 DEFINE_ORWL_DOMAIN(ORWL_FTAB(T),                                \
                    ORWL_REGISTER_DATA(T ## _sizeof),            \
+                   ORWL_REGISTER_DATA(T ## _typename),          \
                    ORWL_REGISTER_ALIAS(T ## _init),             \
                    ORWL_REGISTER_ALIAS(T ## _destroy),          \
                    __VA_ARGS__)

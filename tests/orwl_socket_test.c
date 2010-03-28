@@ -21,59 +21,6 @@ declare_default_arg(strtoul, 1, char **, NULL);
 define_default_arg(strtoul, 2, int);
 define_default_arg(strtoul, 1, char **);
 
-
-
-
-
-void insert_peer(auth_sock *Arg) {
-  struct sockaddr_in addr = INITIALIZER;
-  if (getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) {
-    report(stderr, "insertion of /%X:0x%X/ ", addr.sin_addr.s_addr, Arg->mes[1]);
-  }
-  orwl_host *h = orwl_host_new();
-  h->ep.addr = addr.sin_addr.s_addr;
-  h->ep.port = Arg->mes[1];
-  orwl_host_connect(h, &Arg->srv->host);
-}
-
-void insert_host(auth_sock *Arg) {
-  report(stderr, "insertion of /%X:0x%X/ ", Arg->mes[1], Arg->mes[2]);
-  orwl_host *h = orwl_host_new();
-  h->ep.addr = Arg->mes[1];
-  h->ep.port = Arg->mes[2];
-  orwl_host_connect(h, &Arg->srv->host);
-}
-
-void do_nothing(auth_sock *Arg) {
-  /* empty */
-}
-
-void test_callback(auth_sock *Arg);
-
-DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
-
-DECLARE_ORWL_REGISTER(insert_peer);
-DECLARE_ORWL_REGISTER(insert_host);
-DECLARE_ORWL_REGISTER(do_nothing);
-DECLARE_ORWL_REGISTER(test_callback);
-
-
-DEFINE_ORWL_REGISTER_ALIAS(insert_peer, auth_sock);
-DEFINE_ORWL_REGISTER_ALIAS(insert_host, auth_sock);
-DEFINE_ORWL_REGISTER_ALIAS(do_nothing, auth_sock);
-DEFINE_ORWL_REGISTER_ALIAS(test_callback, auth_sock);
-
-DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
-                         ORWL_REGISTER_ALIAS(insert_peer),
-                         ORWL_REGISTER_ALIAS(insert_host),
-                         ORWL_REGISTER_ALIAS(do_nothing),
-                         ORWL_REGISTER_ALIAS(test_callback)
-                         );
-
-
-DEFINE_ORWL_TYPES(ORWL_REGISTER_TYPE(orwl_wh), ORWL_REGISTER_TYPE(auth_sock));
-
-
 void test_callback(auth_sock *Arg) {
   diagnose(Arg->fd, "message of size %d", Arg->len);
   for (size_t i = 0; i < Arg->len; ++i)

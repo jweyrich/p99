@@ -232,6 +232,9 @@ DEFINE_THREAD(auth_sock) {
   report(stderr, "cleanup after %jd elements", Arg->len);
 }
 
+void orwl_server_init(orwl_server *serv);
+void orwl_server_destroy(orwl_server *serv);
+DEFINE_NEW_DELETE(orwl_server);
 
 DEFINE_THREAD(orwl_server) {
   report(stderr, "starting server");
@@ -431,3 +434,37 @@ void orwl_host_init(orwl_host *th);
 void orwl_host_destroy(orwl_host *th);
 
 DEFINE_NEW_DELETE(orwl_host);
+
+
+void insert_peer(auth_sock *Arg) {
+  struct sockaddr_in addr = INITIALIZER;
+  if (getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) {
+    report(stderr, "insertion of /%X:0x%X/ ", addr.sin_addr.s_addr, Arg->mes[1]);
+  }
+  orwl_host *h = orwl_host_new();
+  h->ep.addr = addr.sin_addr.s_addr;
+  h->ep.port = Arg->mes[1];
+  orwl_host_connect(h, &Arg->srv->host);
+}
+
+void insert_host(auth_sock *Arg) {
+  report(stderr, "insertion of /%X:0x%X/ ", Arg->mes[1], Arg->mes[2]);
+  orwl_host *h = orwl_host_new();
+  h->ep.addr = Arg->mes[1];
+  h->ep.port = Arg->mes[2];
+  orwl_host_connect(h, &Arg->srv->host);
+}
+
+void do_nothing(auth_sock *Arg) {
+  /* empty */
+}
+
+DEFINE_ORWL_REGISTER_ALIAS(insert_peer, auth_sock);
+DEFINE_ORWL_REGISTER_ALIAS(insert_host, auth_sock);
+DEFINE_ORWL_REGISTER_ALIAS(do_nothing, auth_sock);
+
+DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
+                         ORWL_REGISTER_ALIAS(insert_peer),
+                         ORWL_REGISTER_ALIAS(insert_host),
+                         ORWL_REGISTER_ALIAS(do_nothing)
+                         );

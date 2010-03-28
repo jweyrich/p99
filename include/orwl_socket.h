@@ -19,6 +19,7 @@
 #include "orwl_enum.h"
 #include "orwl_thread.h"
 #include "orwl_rand.h"
+#include "orwl_register.h"
 
 inline
 void FUNC_DEFAULT(orwl_hton)(uint32_t *n, uint64_t const *h, size_t l) {
@@ -195,6 +196,18 @@ void auth_sock_destroy(auth_sock *sock);
 DECLARE_NEW_DELETE(auth_sock);
 DECLARE_THREAD(auth_sock);
 
+void insert_peer(auth_sock *Arg);
+void insert_host(auth_sock *Arg);
+void do_nothing(auth_sock *Arg);
+
+DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
+
+DECLARE_ORWL_REGISTER(insert_peer);
+DECLARE_ORWL_REGISTER(insert_host);
+DECLARE_ORWL_REGISTER(do_nothing);
+
+
+
 struct orwl_server {
   orwl_host host;
   unsigned max_connections;
@@ -208,18 +221,19 @@ struct orwl_server {
   .max_connections = MAXC                                       \
 }
 
+inline
 void orwl_server_init(orwl_server *serv) {
   memset(serv, 0, sizeof(orwl_server));
   orwl_host_init(&serv->host);
   serv->host.refs = 1;
 }
 
+inline
 void orwl_server_destroy(orwl_server *serv) {
   /* empty */
 }
 
 DECLARE_NEW_DELETE(orwl_server);
-DEFINE_NEW_DELETE(orwl_server);
 
 DECLARE_THREAD(orwl_server);
 

@@ -11,7 +11,8 @@
 #include <stddef.h>
 #include "orwl_thread.h"
 #include "orwl_register.h"
-#include "orwl_wait_queue.h"
+#include "orwl_once.h"
+
 
 pthread_mutex_t _reg_mut = PTHREAD_MUTEX_INITIALIZER;
 
@@ -32,11 +33,6 @@ void *orwl_register_get(orwl_register const *field);
 void orwl_register_call(orwl_register const *field, void *arg);
 
 void orwl_domain_call(orwl_domain domain, size_t id, void *arg);
-
-DEFINE_ORWL_TYPES(ORWL_REGISTER_TYPE(orwl_state),
-                  ORWL_REGISTER_TYPE(orwl_wq),
-                  ORWL_REGISTER_TYPE(orwl_wh)
-                  );
 
 void orwl_types_init(void) {
   orwl_register_init(orwl_types);
