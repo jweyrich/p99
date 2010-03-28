@@ -138,13 +138,20 @@ void orwl_host_connect(orwl_host *th, orwl_host *q);
 void orwl_host_disconnect(orwl_host *th);
 
 inline
-orwl_host* orwl_host_init(orwl_host *th) {
+orwl_host* FUNC_DEFAULT(orwl_host_init)(orwl_host *th, in_addr_t addr, in_port_t port) {
   th->next = th;
   th->prev = th;
   th->refs = 0;
+  th->ep.addr = addr;
+  th->ep.port = port;
   pthread_mutex_init(&th->mut);
   return th;
 }
+
+#define orwl_host_init(...) DEFINE_FUNC_DEFAULT(orwl_host_init, 3, __VA_ARGS__)
+declare_default_arg(orwl_host_init, 2, in_port_t, 0);
+declare_default_arg(orwl_host_init, 1, in_addr_t, 0);
+
 
 inline
 void orwl_host_destroy(orwl_host *th) {

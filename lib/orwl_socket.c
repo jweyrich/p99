@@ -290,8 +290,7 @@ DEFINE_THREAD(orwl_server) {
       if (header[1] == repl) {
         size_t len = header[0];
         if (len) {
-          auth_sock *sock = auth_sock_new();
-          auth_sock_init(sock, fd, Arg, len);
+          auth_sock *sock = NEW_INIT(auth_sock, fd, Arg, len);
           auth_sock_create(sock, NULL);
           /* The spawned thread will close the fd. */
           continue;
@@ -430,7 +429,7 @@ void orwl_host_disconnect(orwl_host *th) {
   }
 }
 
-orwl_host* orwl_host_init(orwl_host *th);
+orwl_host* FUNC_DEFAULT(orwl_host_init)(orwl_host *th, in_addr_t addr, in_port_t port);
 void orwl_host_destroy(orwl_host *th);
 
 DEFINE_NEW_DELETE(orwl_host);
@@ -441,9 +440,7 @@ void insert_peer(auth_sock *Arg) {
   if (getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) {
     report(stderr, "insertion of /%X:0x%X/ ", addr.sin_addr.s_addr, Arg->mes[1]);
   }
-  orwl_host *h = orwl_host_new();
-  h->ep.addr = addr.sin_addr.s_addr;
-  h->ep.port = Arg->mes[1];
+  orwl_host *h = NEW_INIT(orwl_host, addr.sin_addr.s_addr, Arg->mes[1]);
   orwl_host_connect(h, &Arg->srv->host);
 }
 

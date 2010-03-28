@@ -15,6 +15,7 @@
 #include "orwl_thread.h"
 #include "orwl_once.h"
 #include "orwl_new.h"
+#include "orwl_register.h"
 
 size_t const orwl_mynum = ~(size_t)0;
 size_t orwl_np = ~(size_t)0;
@@ -98,7 +99,7 @@ DEFINE_ONCE(orwl_pthread_create) {
 }
 
 int orwl_pthread_create_joinable(pthread_t *restrict thread,
-                                 void *(*start_routine)(void*),
+                                 start_routine_t start_routine,
                                  void *restrict arg) {
   INIT_ONCE(orwl_pthread_create);
   return pthread_create(thread, &attr_joinable, start_routine, arg);
@@ -113,14 +114,27 @@ int orwl_pthread_create_joinable(pthread_t *restrict thread,
  */
 
 typedef struct {
-  void *(*start_routine)(void*);
+  start_routine_t start_routine;
   void *arg;
 } _routine_arg;
 
-void _routine_arg_init(_routine_arg *rt) {
-  rt->start_routine = NULL;
-  rt->arg = NULL;
+
+
+_routine_arg* FUNC_DEFAULT(_routine_arg_init)(_routine_arg *rt,
+                                              start_routine_t start_routine,
+                                              void* arg) {
+  rt->start_routine = start_routine;
+  rt->arg = arg;
+  return rt;
 }
+
+#define _routine_arg_init(...) DEFINE_FUNC_DEFAULT(_routine_arg_init, 3, __VA_ARGS__)
+
+declare_default_arg(_routine_arg_init, 2, void*, NULL);
+declare_default_arg(_routine_arg_init, 1, start_routine_t, NULL);
+
+define_default_arg(_routine_arg_init, 2, void*);
+define_default_arg(_routine_arg_init, 1, start_routine_t);
 
 void _routine_arg_destroy(_routine_arg *rt) {
   /* empty */
@@ -132,7 +146,7 @@ DEFINE_NEW_DELETE(_routine_arg);
 static
 void *detached_wrapper(void *routine_arg) {
   _routine_arg *Routine_Arg = routine_arg;
-  void *(*start_routine)(void*) = Routine_Arg->start_routine;
+  start_routine_t start_routine = Routine_Arg->start_routine;
   void *restrict arg = Routine_Arg->arg;
   /* Be careful to eliminate all garbage that the wrapping has
      generated. */
@@ -155,14 +169,12 @@ void *detached_wrapper(void *routine_arg) {
 }
 
 
-int orwl_pthread_create_detached(void *(*start_routine)(void*),
+int orwl_pthread_create_detached(start_routine_t start_routine,
                                  void *restrict arg) {
   INIT_ONCE(orwl_pthread_create);
   /* Be sure to allocate the pair on the heap to leave full control
      to detached_wrapper() of what to do with it. */
-  _routine_arg *Routine_Arg = _routine_arg_new();
-  Routine_Arg->start_routine = start_routine;
-  Routine_Arg->arg = arg;
+  _routine_arg *Routine_Arg = NEW_INIT(_routine_arg, start_routine, arg);
   return pthread_create(&(pthread_t){0},
                            &attr_detached,
                            detached_wrapper,

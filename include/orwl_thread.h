@@ -102,17 +102,19 @@ do {                                                                    \
  } while(0)
 
 
+typedef void *(*start_routine_t)(void*);
+
 /**
  ** @brief Internal interface to pthread_create() for joinable threads.
  **/
 extern int orwl_pthread_create_joinable(pthread_t *restrict thread,
-                                        void *(*start_routine)(void*),
+                                        start_routine_t start_routine,
                                         void *restrict arg);
 
 /**
  ** @brief Internal interface to pthread_create() for detached threads.
  **/
-extern int orwl_pthread_create_detached(void *(*start_routine)(void*),
+extern int orwl_pthread_create_detached(start_routine_t start_routine,
                                         void *restrict arg);
 
 /**

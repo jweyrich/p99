@@ -30,9 +30,10 @@ typedef struct {
   size_t phase;
 } cb_t;
 
-void cb_t_init(cb_t *cb) {
+cb_t* cb_t_init(cb_t *cb) {
   cb->mynum = 0;
   cb->phase = 0;
+  return cb;
 }
 
 void cb_t_destroy(cb_t *cb) {
@@ -55,9 +56,10 @@ typedef struct _arg_t {
   size_t phases;
 } arg_t;
 
-void FUNC_DEFAULT(arg_t_init)(arg_t *arg, size_t def) {
+arg_t* FUNC_DEFAULT(arg_t_init)(arg_t *arg, size_t def) {
   arg->mynum = def;
   arg->phases = def;
+  return arg;
 }
 
 #define arg_t_init(...) DEFINE_FUNC_DEFAULT(arg_t_init, 2, __VA_ARGS__)
@@ -93,7 +95,7 @@ DEFINE_THREAD(arg_t) {
     report(!orwl_mynum,  "req, handle %zu, %s",
            preq, orwl_state_getname(ostate));
     /**/
-    cb_t *cb = cb_t_new();
+    cb_t *cb = NEW(cb_t);
     cb->mynum = orwl_mynum;
     cb->phase = orwl_phase;
     ostate = orwl_invalid;
@@ -134,7 +136,7 @@ int main(int argc, char **argv) {
   arg_t *arg = arg_t_vnew(orwl_np/2);
 
   for (size_t i = 0; i < orwl_np; ++i) {
-    arg_t *myarg = (i%2 ? arg + (i/2) : arg_t_new());
+    arg_t *myarg = (i%2 ? arg + (i/2) : NEW(arg_t));
     myarg->mynum = i;
     myarg->phases = phases;
     if (i%2)
