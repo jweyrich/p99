@@ -124,16 +124,13 @@ struct orwl_host {
   size_t refs;
 };
 
-#define ORWL_HOST_STATIC_INITIALIZER(NAME) {    \
+#define ORWL_HOST_INITIALIZER(NAME, ADDR, PORT) { \
   .mut = PTHREAD_MUTEX_INITIALIZER,             \
-  .ep = INITIALIZER,                            \
+      .ep = { .addr = ADDR, .port = PORT},        \
   .prev = &NAME,                                \
   .next = &NAME,                                \
   .refs = 2                                     \
 }
-
-orwl_host here = ORWL_HOST_STATIC_INITIALIZER(here);
-
 
 void orwl_host_connect(orwl_host *th, orwl_host *q);
 void orwl_host_disconnect(orwl_host *th);
@@ -199,14 +196,22 @@ DECLARE_NEW_DELETE(auth_sock);
 DECLARE_THREAD(auth_sock);
 
 struct orwl_server {
-  orwl_endpoint ep;
+  orwl_host host;
   unsigned max_connections;
   server_cb_t const cb;
 };
 
+#define ORWL_SERVER_INITIALIZER(NAME, CB, MAXC, ADDR, PORT)     \
+{                                                               \
+  .host = ORWL_HOST_INITIALIZER(NAME.host, ADDR, PORT),         \
+  .cb = CB,                                                     \
+  .max_connections = MAXC                                       \
+}
 
 void orwl_server_init(orwl_server *serv) {
   memset(serv, 0, sizeof(orwl_server));
+  orwl_host_init(&serv->host);
+  serv->host.refs = 1;
 }
 
 void orwl_server_destroy(orwl_server *serv) {

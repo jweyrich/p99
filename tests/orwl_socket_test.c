@@ -33,7 +33,7 @@ void insert_peer(auth_sock *Arg) {
   orwl_host *h = orwl_host_new();
   h->ep.addr = addr.sin_addr.s_addr;
   h->ep.port = Arg->mes[1];
-  orwl_host_connect(h, &here);
+  orwl_host_connect(h, &Arg->srv->host);
 }
 
 void insert_host(auth_sock *Arg) {
@@ -41,7 +41,7 @@ void insert_host(auth_sock *Arg) {
   orwl_host *h = orwl_host_new();
   h->ep.addr = Arg->mes[1];
   h->ep.port = Arg->mes[2];
-  orwl_host_connect(h, &here);
+  orwl_host_connect(h, &Arg->srv->host);
 }
 
 void do_nothing(auth_sock *Arg) {
@@ -85,17 +85,19 @@ int main(int argc, char **argv) {
   report(stderr, "starting");
   /* ORWL_TYPE_DYNAMIC_INIT(auth_sock); */
   orwl_types_init();
-  orwl_server srv = {
-    .ep = { .addr =  orwl_inet_addr(argv[1]), .port = 0 },
-    .max_connections = 4,
-    .cb = test_callback,
-  };
-  report(stderr, "starting %jX:0x%jX", srv.ep.addr, srv.ep.port);
+  orwl_server srv
+    = ORWL_SERVER_INITIALIZER(
+                              srv,
+                              test_callback,
+                              4,
+                              orwl_inet_addr(argv[1]),
+                              0);
+  report(stderr, "starting %jX:0x%jX", srv.host.ep.addr, srv.host.ep.port);
   pthread_t id;
   orwl_server_create(&srv, &id);
-  report(stderr, "started %jX:0x%jX, got id 0x%jX", srv.ep.addr, srv.ep.port, id);
+  report(stderr, "started %jX:0x%jX, got id 0x%jX", srv.host.ep.addr, srv.host.ep.port, id);
 
-  rand48_t seed = { srv.ep.addr, srv.ep.port };
+  rand48_t seed = { srv.host.ep.addr, srv.host.ep.port };
 
   if (argc > 2) {
     in_addr_t addr = orwl_inet_addr(argv[2]);
@@ -103,7 +105,7 @@ int main(int argc, char **argv) {
 
 
     orwl_endpoint other = { .addr = addr, .port = port };
-    uint64_t mess[2] = {  ORWL_OBJID(insert_peer), srv.ep.port };
+    uint64_t mess[2] = {  ORWL_OBJID(insert_peer), srv.host.ep.port };
     /* wait until the other side is up. */
     while (orwl_send(&other, seed, mess, 2)) {
       int ret = pthread_kill(id, 0);
@@ -115,24 +117,24 @@ int main(int argc, char **argv) {
       }
       sleepfor(0.2);
     }
-    report(stderr, "server %jX:0x%jX is set up", srv.ep.addr, srv.ep.port, id);
+    report(stderr, "server %jX:0x%jX is set up", srv.host.ep.addr, srv.host.ep.port, id);
   } else {
-    report(stderr, "initial server %jX:0x%jX is set up", srv.ep.addr, srv.ep.port, id);
+    report(stderr, "initial server %jX:0x%jX is set up", srv.host.ep.addr, srv.host.ep.port, id);
     for (size_t t = 0; t < 1000; ++t) {
       sleepfor(1.0);
       report(stderr, "looping %jd", t);
       orwl_host *n = NULL;
-      MUTUAL_EXCLUDE(here.mut)
-        n = here.next;
-      report(stderr, "%p -- %p", (void*)&here, (void*)n);
-      for (orwl_host *h = n; h != &here; ) {
+      MUTUAL_EXCLUDE(srv.host.mut)
+        n = srv.host.next;
+      report(stderr, "%p -- %p", (void*)&srv.host, (void*)n);
+      for (orwl_host *h = n; h != &srv.host; ) {
         orwl_endpoint other = INITIALIZER;
         MUTUAL_EXCLUDE(h->mut) {
           other.addr = h->ep.addr;
           other.port = h->ep.port;
           h = h->next;
         }
-        uint64_t mess[4] = { ORWL_OBJID(do_nothing), srv.ep.addr, srv.ep.port, t };
+        uint64_t mess[4] = { ORWL_OBJID(do_nothing), srv.host.ep.addr, srv.host.ep.port, t };
         report(stderr, "sending to /%X:0x%X/ ", other.addr, other.port);
         orwl_send(&other, seed, mess, 4);
       }

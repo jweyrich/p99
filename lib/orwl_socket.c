@@ -240,19 +240,19 @@ DEFINE_THREAD(orwl_server) {
     rand48_t seed = { time(NULL) };
     struct sockaddr_in addr = INITIALIZER;
     socklen_t len = sizeof(addr);
-    report(stderr, "found %jX:%jX", Arg->ep.addr, Arg->ep.port);
-    addr.sin_addr.s_addr = Arg->ep.addr;
-    addr.sin_port = Arg->ep.port;
+    report(stderr, "found %jX:%jX", Arg->host.ep.addr, Arg->host.ep.port);
+    addr.sin_addr.s_addr = Arg->host.ep.addr;
+    addr.sin_port = Arg->host.ep.port;
     addr.sin_family = AF_INET;
     if (bind(fd_listen, (struct sockaddr*) &addr, sizeof(addr)) == -1)
       goto TERMINATE;
-    report(stderr, "bound port 0x%X", Arg->ep.port);
+    report(stderr, "bound port 0x%X", Arg->host.ep.port);
     /* If the port was not yet specified find and store it. */
     if (!addr.sin_port) {
       if (getsockname(fd_listen, (struct sockaddr*)&addr, &len) == -1)
         goto TERMINATE;
-      Arg->ep.port = addr.sin_port;
-      report(stderr, "allocated port 0x%X", Arg->ep.port);
+      Arg->host.ep.port = addr.sin_port;
+      report(stderr, "allocated port 0x%X", Arg->host.ep.port);
     }
     if (listen(fd_listen, Arg->max_connections) == -1)
       goto TERMINATE;
