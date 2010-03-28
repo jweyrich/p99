@@ -87,13 +87,14 @@ struct orwl_endpoint {
 DOCUMENT_INIT(orwl_endpoint)
 FUNC_DEFAULT_DOCUMENTATION(orwl_endpoint_init)
 inline
-void FUNC_DEFAULT(orwl_endpoint_init)
+orwl_endpoint* FUNC_DEFAULT(orwl_endpoint_init)
 (orwl_endpoint *endpoint,
  in_addr_t addr,
  in_port_t port
  ) {
   orwl_endpoint const ep = { addr, port };
   memcpy(endpoint, &ep, sizeof(orwl_endpoint));
+  return endpoint;
 }
 
 DOCUMENT_DESTROY(orwl_endpoint)
@@ -137,11 +138,12 @@ void orwl_host_connect(orwl_host *th, orwl_host *q);
 void orwl_host_disconnect(orwl_host *th);
 
 inline
-void orwl_host_init(orwl_host *th) {
+orwl_host* orwl_host_init(orwl_host *th) {
   th->next = th;
   th->prev = th;
   th->refs = 0;
   pthread_mutex_init(&th->mut);
+  return th;
 }
 
 inline
@@ -173,7 +175,7 @@ struct auth_sock {
 };
 
 inline
-void FUNC_DEFAULT(auth_sock_init)(auth_sock *sock,
+auth_sock* FUNC_DEFAULT(auth_sock_init)(auth_sock *sock,
                                   int fd,
                                   orwl_server* srv,
                                   size_t len) {
@@ -183,6 +185,7 @@ void FUNC_DEFAULT(auth_sock_init)(auth_sock *sock,
   sock->len = len;
   if (sock->mes) uint64_t_vdelete(sock->mes);
   sock->mes = len ? uint64_t_vnew(len) : NULL;
+  return sock;
 }
 
 declare_default_arg(auth_sock_init, 3, size_t, 0);
@@ -222,10 +225,11 @@ struct orwl_server {
 }
 
 inline
-void orwl_server_init(orwl_server *serv) {
+orwl_server* orwl_server_init(orwl_server *serv) {
   memset(serv, 0, sizeof(orwl_server));
   orwl_host_init(&serv->host);
   serv->host.refs = 1;
+  return serv;
 }
 
 inline

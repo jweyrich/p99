@@ -37,11 +37,12 @@ DECLARE_ENUM(orwl_state,
 DOCUMENT_INIT(orwl_state)
 FUNC_DEFAULT_DOCUMENTATION(orwl_state_init)
 inline
-void FUNC_DEFAULT(orwl_state_init)
+orwl_state* FUNC_DEFAULT(orwl_state_init)
 (orwl_state *el,                    /*!< wait queue to initialize */
  orwl_state val                     /*!< defaults to orwl_invalid */
  ) {
   *el = val;
+  return el;
 }
 
 #define orwl_state_init(...) DEFINE_FUNC_DEFAULT(orwl_state_init, 2, __VA_ARGS__)
@@ -123,7 +124,7 @@ struct orwl_wh {
 
   DOCUMENT_INIT(orwl_wq)
 FUNC_DEFAULT_DOCUMENTATION(orwl_wq_init)
-void FUNC_DEFAULT(orwl_wq_init)
+orwl_wq* FUNC_DEFAULT(orwl_wq_init)
 (orwl_wq *wq,                    /*!< wait queue to initialize */
  const pthread_mutexattr_t *attr /*!< defaults to @c NULL */
 );
@@ -196,7 +197,7 @@ int orwl_wq_idle(orwl_wq *wq) {
 
   DOCUMENT_INIT(orwl_wh)
   FUNC_DEFAULT_DOCUMENTATION(orwl_wh_init)
-void FUNC_DEFAULT(orwl_wh_init)
+orwl_wh* FUNC_DEFAULT(orwl_wh_init)
 (orwl_wh *wh,
  const pthread_condattr_t *attr /*!< [in] defaults to @c NULL */);
 #define orwl_wh_init(...) DEFINE_FUNC_DEFAULT(orwl_wh_init, 2, __VA_ARGS__)

@@ -66,8 +66,9 @@ DECLARE_POINTER_TYPE(uint64_t);
 
 
 #define DECLARE_BASIC(T)                        \
-inline void T ## _init(T *id) {                 \
+inline T* T ## _init(T *id) {                   \
   *id = TNULL(T);                               \
+  return id;                                    \
 }                                               \
 inline void T ## _destroy(T *id) {              \
   /* empty */                                   \
@@ -80,7 +81,7 @@ DECLARE_BASIC(T ## _cptr);                      \
 DECLARE_BASIC(T ## _ptr)
 
 #define DEFINE_BASIC(T)                         \
-void T ## _init(T *id);                         \
+T* T ## _init(T *id);                           \
 void T ## _destroy(T *id);                      \
 DEFINE_NEW_DELETE(T)
 

@@ -27,7 +27,7 @@ DEFINE_ONCE(orwl_wq) {
   pthread_mutexattr_init(&smattr);
 }
 
-void FUNC_DEFAULT(orwl_wq_init)(orwl_wq *wq,
+orwl_wq* FUNC_DEFAULT(orwl_wq_init)(orwl_wq *wq,
                                 const pthread_mutexattr_t *attr) {
   INIT_ONCE(orwl_wq);
   if (!attr) attr = &smattr;
@@ -35,6 +35,7 @@ void FUNC_DEFAULT(orwl_wq_init)(orwl_wq *wq,
   wq->head = NULL;
   wq->tail = NULL;
   wq->clock = 0;
+  return wq;
 }
 
 define_default_arg(orwl_wq_init, 1, const pthread_mutexattr_t *);
@@ -56,7 +57,7 @@ DEFINE_ONCE(orwl_wh) {
   pthread_condattr_init(&scattr);
 }
 
-void FUNC_DEFAULT(orwl_wh_init)(orwl_wh *wh,
+orwl_wh* FUNC_DEFAULT(orwl_wh_init)(orwl_wh *wh,
                   const pthread_condattr_t *attr) {
   INIT_ONCE(orwl_wh);
   if (!attr) attr = &scattr;
@@ -65,6 +66,7 @@ void FUNC_DEFAULT(orwl_wh_init)(orwl_wh *wh,
   wh->next = NULL;
   wh->tokens = 0;
   wh->priority = 0;
+  return wh;
 }
 
 define_default_arg(orwl_wh_init, 1, const pthread_condattr_t *);
@@ -215,7 +217,7 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
 
 void orwl_state_destroy(orwl_state *el);
 define_default_arg(orwl_state_init, 1, orwl_state);
-void FUNC_DEFAULT(orwl_state_init) (orwl_state *el, orwl_state val);
+orwl_state* FUNC_DEFAULT(orwl_state_init) (orwl_state *el, orwl_state val);
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_state, {0});
 

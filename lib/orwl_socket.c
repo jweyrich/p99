@@ -106,7 +106,7 @@ DEFINE_ONCE_UPON(inet4_addr) {
 in_addr_t inet4_addr(void);
 
 
-void FUNC_DEFAULT(orwl_endpoint_init)
+orwl_endpoint* FUNC_DEFAULT(orwl_endpoint_init)
      (orwl_endpoint *endpoint,
       in_addr_t addr,
       in_port_t port
@@ -197,7 +197,7 @@ in_addr_t orwl_inet_addr(char const *name) {
   return ret;
 }
 
-void FUNC_DEFAULT(auth_sock_init)(auth_sock *sock,
+auth_sock* FUNC_DEFAULT(auth_sock_init)(auth_sock *sock,
                                   int fd,
                                   orwl_server* srv,
                                   size_t len);
@@ -232,7 +232,7 @@ DEFINE_THREAD(auth_sock) {
   report(stderr, "cleanup after %jd elements", Arg->len);
 }
 
-void orwl_server_init(orwl_server *serv);
+orwl_server* orwl_server_init(orwl_server *serv);
 void orwl_server_destroy(orwl_server *serv);
 DEFINE_NEW_DELETE(orwl_server);
 
@@ -430,7 +430,7 @@ void orwl_host_disconnect(orwl_host *th) {
   }
 }
 
-void orwl_host_init(orwl_host *th);
+orwl_host* orwl_host_init(orwl_host *th);
 void orwl_host_destroy(orwl_host *th);
 
 DEFINE_NEW_DELETE(orwl_host);

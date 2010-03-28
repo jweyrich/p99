@@ -55,6 +55,11 @@ T *T ## _new(void) {                                                    \
     return ret;                                                         \
 }
 
+#define NEW(T) T ## _new()
+
+#define NEW_INIT(T, ...) T ## _init((T*)malloc(sizeof(T)), __VA_ARGS__)
+
+
 /**
  ** @brief Declare a `delete' operator for type @a T.
  **

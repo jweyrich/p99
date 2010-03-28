@@ -16,7 +16,7 @@
 
 pthread_mutex_t _reg_mut = PTHREAD_MUTEX_INITIALIZER;
 
-void orwl_register_init(orwl_register const* field) {
+orwl_register const* orwl_register_init(orwl_register const* field) {
   if (!*(field->regptr)) {
     MUTUAL_EXCLUDE(_reg_mut) {
       if (!*(field->regptr)) {
@@ -26,6 +26,7 @@ void orwl_register_init(orwl_register const* field) {
       }
     }
   }
+  return field;
 }
 
 size_t orwl_register_id(orwl_register const *field);

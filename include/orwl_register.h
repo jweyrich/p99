@@ -32,7 +32,7 @@ typedef struct orwl_register orwl_register;
 
 typedef orwl_register const*const orwl_domain;
 
-void orwl_register_init(orwl_register const* field);
+orwl_register const* orwl_register_init(orwl_register const* field);
 
 inline size_t orwl_register_id(orwl_register const* field) {
   if (!(field->regptr))
@@ -158,6 +158,7 @@ DECLARE_ORWL_REGISTER(T ## _destroy)
 DEFINE_ORWL_REGISTER(ORWL_FTAB(T));                             \
 DEFINE_ORWL_REGISTER(T ## _sizeof);                             \
 static size_t const T ## _sizeof = sizeof(T);                   \
+DEFINE_ORWL_REGISTER(T ## _typename);                           \
 static char const T ## _typename[] = #T;                        \
 DEFINE_ORWL_REGISTER_ALIAS(T ## _init, T);                      \
 DEFINE_ORWL_REGISTER_ALIAS(T ## _destroy, T);                   \

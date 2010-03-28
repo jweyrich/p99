@@ -180,7 +180,7 @@ void orwl_pthread_wait_detached(void) {
   }
 }
 
-void pthread_t_init(pthread_t *id);
+pthread_t* pthread_t_init(pthread_t *id);
 void pthread_t_destroy(pthread_t *id);
 
 DEFINE_NEW_DELETE(pthread_t);
