@@ -36,31 +36,6 @@
  */
 #define DOCUMENT_DESTROY(T) /*! @brief Destroy a variable of type T @see T ## _delete needs this. */
 
-/**
- ** @brief Declare a `new' operator for type @a T.
- **
- ** This supposes that type @a T has a `constructor', i.e an init
- ** function, that just takes a pointer to the element that is to be
- ** initialized.
- **
- ** Use the corresponding function from ::DECLARE_DELETE to free a
- ** variable that you have such allocated.
- ** @see DECLARE_NEW_DELETE
- **/
-#define DECLARE_NEW(T) enum _dummy_ ## T ## _enum_new { _dummy_ ## T ## _enum_new_val }
-
-
-/*                                                   \ */
-/*   /\*! @brief Operator @c new for class T     **\/                        \ */
-/*   /\*! @see T ## _init  is supposed to exist and to be callable with just one T* argument **\/ \ */
-/*   /\*! @see T ## _delete                      **\/                        \ */
-/* inline                                                                  \ */
-/* T *T ## _new(void) {                                                    \ */
-/*     T *ret = (T*)malloc(sizeof(T));                                     \ */
-/*     if (ret) T ## _init(ret);                                           \ */
-/*     return ret;                                                         \ */
-/* } */
-
 #define NEW(T) T ## _init((T*)malloc(sizeof(T)))
 
 /**
@@ -178,7 +153,6 @@ enum _tame_ansi_c_semicolon_message_ ## T { _new_delete_ ## T }
 #define DEFINE_VDELETE(T) void T ## _vdelete(T *vec)
 
 #define DEFINE_NEW_DELETE(T)                   \
-DEFINE_NEW(T);                                 \
 DEFINE_VNEW(T);                                \
 DEFINE_DELETE(T);                              \
 DEFINE_VDELETE(T)

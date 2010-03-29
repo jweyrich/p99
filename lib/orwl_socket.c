@@ -446,7 +446,7 @@ void insert_peer(auth_sock *Arg) {
 
 void insert_host(auth_sock *Arg) {
   report(stderr, "insertion of /%X:0x%X/ ", Arg->mes[1], Arg->mes[2]);
-  orwl_host *h = orwl_host_new();
+  orwl_host *h = NEW(orwl_host);
   h->ep.addr = Arg->mes[1];
   h->ep.port = Arg->mes[2];
   orwl_host_connect(h, &Arg->srv->host);
