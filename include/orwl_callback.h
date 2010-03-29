@@ -100,7 +100,7 @@ int orwl_callback_attach_ ## T(T *arg, orwl_wh *wh) {                   \
         pthread_mutex_unlock(&wq->mut);                                 \
         orwl_callback_ ## T(arg, wh);                                   \
       } else {                                                          \
-        _ ## T ## _orwl_wh_t *pair = _ ## T ## _orwl_wh_t ## _new();    \
+        _ ## T ## _orwl_wh_t *pair = NEW(_ ## T ## _orwl_wh_t);         \
         pair->Arg = arg;                                                \
         pair->Wh = wh;                                                  \
         pair->Wq = wq;                                                  \

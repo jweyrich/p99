@@ -120,7 +120,7 @@ typedef struct {
 
 
 
-_routine_arg* FUNC_DEFAULT(_routine_arg_init)(_routine_arg *rt,
+_routine_arg* FSYMB(_routine_arg_init)(_routine_arg *rt,
                                               start_routine_t start_routine,
                                               void* arg) {
   rt->start_routine = start_routine;
@@ -128,13 +128,13 @@ _routine_arg* FUNC_DEFAULT(_routine_arg_init)(_routine_arg *rt,
   return rt;
 }
 
-#define _routine_arg_init(...) DEFINE_FUNC_DEFAULT(_routine_arg_init, 3, __VA_ARGS__)
+#define _routine_arg_init(...) DEFINE_FSYMB(_routine_arg_init, 3, __VA_ARGS__)
 
-declare_default_arg(_routine_arg_init, 2, void*, NULL);
-declare_default_arg(_routine_arg_init, 1, start_routine_t, NULL);
+declare_defarg(_routine_arg_init, 2, void*, NULL);
+declare_defarg(_routine_arg_init, 1, start_routine_t, NULL);
 
-define_default_arg(_routine_arg_init, 2, void*);
-define_default_arg(_routine_arg_init, 1, start_routine_t);
+define_defarg(_routine_arg_init, 2, void*);
+define_defarg(_routine_arg_init, 1, start_routine_t);
 
 void _routine_arg_destroy(_routine_arg *rt) {
   /* empty */
@@ -225,4 +225,4 @@ int orwl_sem_trywait(sem_t *sem);
 int orwl_sem_wait(sem_t *sem);
 int orwl_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout);
 
-define_default_arg(pthread_mutex_init, 1, pthread_mutexattr_t*);
+define_defarg(pthread_mutex_init, 1, pthread_mutexattr_t*);

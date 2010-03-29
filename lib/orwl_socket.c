@@ -16,6 +16,7 @@
 
 #include "orwl_socket.h"
 #include "orwl_rand.h"
+#include "orwl_posix_default.h"
 
 static uint32_t mycode = 0;
 
@@ -69,10 +70,10 @@ bool same_endianess(uint32_t c) {
   return c == mycode;
 }
 
-void FUNC_DEFAULT(orwl_hton)(uint32_t *n, uint64_t const *h, size_t l);
-define_default_arg(orwl_hton, 2, size_t);
-void FUNC_DEFAULT(orwl_ntoh)(uint64_t* h, uint32_t const *n, size_t l);
-define_default_arg(orwl_ntoh, 2, size_t);
+void FSYMB(orwl_hton)(uint32_t *n, uint64_t const *h, size_t l);
+define_defarg(orwl_hton, 2, size_t);
+void FSYMB(orwl_ntoh)(uint64_t* h, uint32_t const *n, size_t l);
+define_defarg(orwl_ntoh, 2, size_t);
 
 static
 bool orwl_send_(int fd, uint64_t const*mess, size_t len) {
@@ -106,7 +107,7 @@ DEFINE_ONCE_UPON(inet4_addr) {
 in_addr_t inet4_addr(void);
 
 
-orwl_endpoint* FUNC_DEFAULT(orwl_endpoint_init)
+orwl_endpoint* FSYMB(orwl_endpoint_init)
      (orwl_endpoint *endpoint,
       in_addr_t addr,
       in_port_t port
@@ -115,8 +116,8 @@ orwl_endpoint* FUNC_DEFAULT(orwl_endpoint_init)
 void orwl_endpoint_destroy(orwl_endpoint *endpoint);
 
 
-define_default_arg(orwl_endpoint_init, 2, in_port_t);
-define_default_arg(orwl_endpoint_init, 1, in_addr_t);
+define_defarg(orwl_endpoint_init, 2, in_port_t);
+define_defarg(orwl_endpoint_init, 1, in_addr_t);
 
 DEFINE_NEW_DELETE(orwl_endpoint);
 
@@ -197,14 +198,14 @@ in_addr_t orwl_inet_addr(char const *name) {
   return ret;
 }
 
-auth_sock* FUNC_DEFAULT(auth_sock_init)(auth_sock *sock,
+auth_sock* FSYMB(auth_sock_init)(auth_sock *sock,
                                   int fd,
                                   orwl_server* srv,
                                   size_t len);
 
-define_default_arg(auth_sock_init, 3, size_t);
-define_default_arg(auth_sock_init, 2, orwl_server*);
-define_default_arg(auth_sock_init, 1, int);
+define_defarg(auth_sock_init, 3, size_t);
+define_defarg(auth_sock_init, 2, orwl_server*);
+define_defarg(auth_sock_init, 1, int);
 
 
 void auth_sock_destroy(auth_sock *sock) {
@@ -238,15 +239,16 @@ DEFINE_NEW_DELETE(orwl_server);
 
 DEFINE_THREAD(orwl_server) {
   report(stderr, "starting server");
-  int fd_listen = socket(AF_INET, SOCK_STREAM, 0);
+  int fd_listen = socket(AF_INET);
   if (fd_listen != -1) {
-    rand48_t seed = { time(NULL) };
-    struct sockaddr_in addr = INITIALIZER;
-    socklen_t len = sizeof(addr);
     report(stderr, "found %jX:%jX", Arg->host.ep.addr, Arg->host.ep.port);
-    addr.sin_addr.s_addr = Arg->host.ep.addr;
-    addr.sin_port = Arg->host.ep.port;
-    addr.sin_family = AF_INET;
+    rand48_t seed = { time(NULL) };
+    struct sockaddr_in addr = {
+      .sin_addr = { .s_addr = Arg->host.ep.addr, },
+      .sin_port = Arg->host.ep.port,
+      .sin_family = AF_INET,
+    };
+    socklen_t len = sizeof(addr);
     if (bind(fd_listen, (struct sockaddr*) &addr, sizeof(addr)) == -1)
       goto TERMINATE;
     report(stderr, "bound port 0x%X", Arg->host.ep.port);
@@ -273,7 +275,7 @@ DEFINE_THREAD(orwl_server) {
       }
       int fd = -1;
       do {
-        fd = accept(fd_listen, NULL, &TNULL(socklen_t));
+        fd = accept(fd_listen);
       } while(fd == -1);
 
       /* Receive a challenge from the new connection */
@@ -429,8 +431,14 @@ void orwl_host_disconnect(orwl_host *th) {
   }
 }
 
-orwl_host* FUNC_DEFAULT(orwl_host_init)(orwl_host *th, in_addr_t addr, in_port_t port);
+orwl_host* FSYMB(orwl_host_init)(orwl_host *th, in_addr_t addr, in_port_t port);
+
+define_defarg(orwl_host_init, 2, in_port_t);
+define_defarg(orwl_host_init, 1, in_addr_t);
+
+
 void orwl_host_destroy(orwl_host *th);
+
 
 DEFINE_NEW_DELETE(orwl_host);
 

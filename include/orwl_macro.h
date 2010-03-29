@@ -134,14 +134,14 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  ** that macro, the correct value for @a X will always be provided at
  ** compile time. Declare such a function as this:
  ** @code
- ** unsigned FUNC_DEFAULT(toto)(unsigned a, VA_ARGS(number));
- ** #define toto(A, ...) FUNC_DEFAULT(toto)(A, LEN_ARG(__VA_ARGS__))
+ ** unsigned FSYMB(toto)(unsigned a, VA_ARGS(number));
+ ** #define toto(A, ...) FSYMB(toto)(A, LEN_ARG(__VA_ARGS__))
  ** @endcode
  **
  ** In the definition of the function you then may use the @c va_start
  ** etc from stdarg.h to tread the argument list.
  ** @code
- ** unsigned FUNC_DEFAULT(toto)((unsigned a, VA_ARGS(number)) {
+ ** unsigned FSYMB(toto)((unsigned a, VA_ARGS(number)) {
  **     unsigned ret = 0;
  **     va_list ap;
  **     va_start(ap, number);
@@ -168,7 +168,7 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  **
  ** @see LEN_ARG
  ** @see LEN_MODARG
- ** @see FUNC_DEFAULT
+ ** @see FSYMB
  **/
 #define VA_ARGS(X) size_t X, ...
 
@@ -400,67 +400,67 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
 #define _predecessor(N) __predecessor(N)
 
 #define _call_with_1_1(NAME, ...) (__VA_ARGS__)
-#define _call_with_1_0(NAME, _ign) _call_with_1_1(NAME, NAME ## _default_arg_ ## 0())
+#define _call_with_1_0(NAME, _ign) _call_with_1_1(NAME, NAME ## _defarg_ ## 0())
 
 #define _call_with_2_2(NAME, ...) (__VA_ARGS__)
-#define _call_with_2_1(NAME, ...) _call_with_2_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
-#define _call_with_2_0(NAME, _ign) _call_with_2_1(NAME, NAME ## _default_arg_ ## 0())
+#define _call_with_2_1(NAME, ...) _call_with_2_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
+#define _call_with_2_0(NAME, _ign) _call_with_2_1(NAME, NAME ## _defarg_ ## 0())
 
 #define _call_with_3_3(NAME, ...) (__VA_ARGS__)
-#define _call_with_3_2(NAME, ...) _call_with_3_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
-#define _call_with_3_1(NAME, ...) _call_with_3_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
-#define _call_with_3_0(NAME, _ign) _call_with_3_1(NAME, NAME ## _default_arg_ ## 0())
+#define _call_with_3_2(NAME, ...) _call_with_3_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
+#define _call_with_3_1(NAME, ...) _call_with_3_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
+#define _call_with_3_0(NAME, _ign) _call_with_3_1(NAME, NAME ## _defarg_ ## 0())
 
 #define _call_with_4_4(NAME, ...) (__VA_ARGS__)
-#define _call_with_4_3(NAME, ...) _call_with_4_4(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 3())
-#define _call_with_4_2(NAME, ...) _call_with_4_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
-#define _call_with_4_1(NAME, ...) _call_with_4_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
-#define _call_with_4_0(NAME, _ign) _call_with_4_1(NAME, NAME ## _default_arg_ ## 0())
+#define _call_with_4_3(NAME, ...) _call_with_4_4(NAME, __VA_ARGS__, NAME ## _defarg_ ## 3())
+#define _call_with_4_2(NAME, ...) _call_with_4_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
+#define _call_with_4_1(NAME, ...) _call_with_4_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
+#define _call_with_4_0(NAME, _ign) _call_with_4_1(NAME, NAME ## _defarg_ ## 0())
 
 #define _call_with_5_5(NAME, ...) (__VA_ARGS__)
-#define _call_with_5_4(NAME, ...) _call_with_5_5(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 4())
-#define _call_with_5_3(NAME, ...) _call_with_5_4(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 3())
-#define _call_with_5_2(NAME, ...) _call_with_5_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
-#define _call_with_5_1(NAME, ...) _call_with_5_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
-#define _call_with_5_0(NAME, _ign) _call_with_5_1(NAME, NAME ## _default_arg_ ## 0())
+#define _call_with_5_4(NAME, ...) _call_with_5_5(NAME, __VA_ARGS__, NAME ## _defarg_ ## 4())
+#define _call_with_5_3(NAME, ...) _call_with_5_4(NAME, __VA_ARGS__, NAME ## _defarg_ ## 3())
+#define _call_with_5_2(NAME, ...) _call_with_5_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
+#define _call_with_5_1(NAME, ...) _call_with_5_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
+#define _call_with_5_0(NAME, _ign) _call_with_5_1(NAME, NAME ## _defarg_ ## 0())
 
 #define _call_with_6_6(NAME, ...) (__VA_ARGS__)
-#define _call_with_6_5(NAME, ...) _call_with_6_6(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 5())
-#define _call_with_6_4(NAME, ...) _call_with_6_5(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 4())
-#define _call_with_6_3(NAME, ...) _call_with_6_4(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 3())
-#define _call_with_6_2(NAME, ...) _call_with_6_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
-#define _call_with_6_1(NAME, ...) _call_with_6_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
-#define _call_with_6_0(NAME, _ign) _call_with_6_1(NAME, NAME ## _default_arg_ ## 0())
+#define _call_with_6_5(NAME, ...) _call_with_6_6(NAME, __VA_ARGS__, NAME ## _defarg_ ## 5())
+#define _call_with_6_4(NAME, ...) _call_with_6_5(NAME, __VA_ARGS__, NAME ## _defarg_ ## 4())
+#define _call_with_6_3(NAME, ...) _call_with_6_4(NAME, __VA_ARGS__, NAME ## _defarg_ ## 3())
+#define _call_with_6_2(NAME, ...) _call_with_6_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
+#define _call_with_6_1(NAME, ...) _call_with_6_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
+#define _call_with_6_0(NAME, _ign) _call_with_6_1(NAME, NAME ## _defarg_ ## 0())
 
 #define _call_with_7_7(NAME, ...) (__VA_ARGS__)
-#define _call_with_7_6(NAME, ...) _call_with_7_7(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 6())
-#define _call_with_7_5(NAME, ...) _call_with_7_6(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 5())
-#define _call_with_7_4(NAME, ...) _call_with_7_5(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 4())
-#define _call_with_7_3(NAME, ...) _call_with_7_4(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 3())
-#define _call_with_7_2(NAME, ...) _call_with_7_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
-#define _call_with_7_1(NAME, ...) _call_with_7_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
-#define _call_with_7_0(NAME, _ign) _call_with_7_1(NAME, NAME ## _default_arg_ ## 0())
+#define _call_with_7_6(NAME, ...) _call_with_7_7(NAME, __VA_ARGS__, NAME ## _defarg_ ## 6())
+#define _call_with_7_5(NAME, ...) _call_with_7_6(NAME, __VA_ARGS__, NAME ## _defarg_ ## 5())
+#define _call_with_7_4(NAME, ...) _call_with_7_5(NAME, __VA_ARGS__, NAME ## _defarg_ ## 4())
+#define _call_with_7_3(NAME, ...) _call_with_7_4(NAME, __VA_ARGS__, NAME ## _defarg_ ## 3())
+#define _call_with_7_2(NAME, ...) _call_with_7_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
+#define _call_with_7_1(NAME, ...) _call_with_7_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
+#define _call_with_7_0(NAME, _ign) _call_with_7_1(NAME, NAME ## _defarg_ ## 0())
 
 #define _call_with_8_8(NAME, ...) (__VA_ARGS__)
-#define _call_with_8_7(NAME, ...) _call_with_8_8(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 7())
-#define _call_with_8_6(NAME, ...) _call_with_8_7(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 6())
-#define _call_with_8_5(NAME, ...) _call_with_8_6(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 5())
-#define _call_with_8_4(NAME, ...) _call_with_8_5(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 4())
-#define _call_with_8_3(NAME, ...) _call_with_8_4(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 3())
-#define _call_with_8_2(NAME, ...) _call_with_8_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
-#define _call_with_8_1(NAME, ...) _call_with_8_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
-#define _call_with_8_0(NAME, _ign) _call_with_8_1(NAME, NAME ## _default_arg_ ## 0())
+#define _call_with_8_7(NAME, ...) _call_with_8_8(NAME, __VA_ARGS__, NAME ## _defarg_ ## 7())
+#define _call_with_8_6(NAME, ...) _call_with_8_7(NAME, __VA_ARGS__, NAME ## _defarg_ ## 6())
+#define _call_with_8_5(NAME, ...) _call_with_8_6(NAME, __VA_ARGS__, NAME ## _defarg_ ## 5())
+#define _call_with_8_4(NAME, ...) _call_with_8_5(NAME, __VA_ARGS__, NAME ## _defarg_ ## 4())
+#define _call_with_8_3(NAME, ...) _call_with_8_4(NAME, __VA_ARGS__, NAME ## _defarg_ ## 3())
+#define _call_with_8_2(NAME, ...) _call_with_8_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
+#define _call_with_8_1(NAME, ...) _call_with_8_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
+#define _call_with_8_0(NAME, _ign) _call_with_8_1(NAME, NAME ## _defarg_ ## 0())
 
 #define _call_with_9_9(NAME, ...) (__VA_ARGS__)
-#define _call_with_9_8(NAME, ...) _call_with_9_9(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 8())
-#define _call_with_9_7(NAME, ...) _call_with_9_8(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 7())
-#define _call_with_9_6(NAME, ...) _call_with_9_7(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 6())
-#define _call_with_9_5(NAME, ...) _call_with_9_6(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 5())
-#define _call_with_9_4(NAME, ...) _call_with_9_5(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 4())
-#define _call_with_9_3(NAME, ...) _call_with_9_4(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 3())
-#define _call_with_9_2(NAME, ...) _call_with_9_3(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 2())
-#define _call_with_9_1(NAME, ...) _call_with_9_2(NAME, __VA_ARGS__, NAME ## _default_arg_ ## 1())
-#define _call_with_9_0(NAME, _ign) _call_with_9_1(NAME, NAME ## _default_arg_ ## 0())
+#define _call_with_9_8(NAME, ...) _call_with_9_9(NAME, __VA_ARGS__, NAME ## _defarg_ ## 8())
+#define _call_with_9_7(NAME, ...) _call_with_9_8(NAME, __VA_ARGS__, NAME ## _defarg_ ## 7())
+#define _call_with_9_6(NAME, ...) _call_with_9_7(NAME, __VA_ARGS__, NAME ## _defarg_ ## 6())
+#define _call_with_9_5(NAME, ...) _call_with_9_6(NAME, __VA_ARGS__, NAME ## _defarg_ ## 5())
+#define _call_with_9_4(NAME, ...) _call_with_9_5(NAME, __VA_ARGS__, NAME ## _defarg_ ## 4())
+#define _call_with_9_3(NAME, ...) _call_with_9_4(NAME, __VA_ARGS__, NAME ## _defarg_ ## 3())
+#define _call_with_9_2(NAME, ...) _call_with_9_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
+#define _call_with_9_1(NAME, ...) _call_with_9_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
+#define _call_with_9_0(NAME, _ign) _call_with_9_1(NAME, NAME ## _defarg_ ## 0())
 
 #define ___call_with(M, N) _call_with_ ## M ##  _ ## N
 #define __call_with(M, N) ___call_with(M, N)
@@ -470,7 +470,7 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  ** argument for @a NAME.
  **
  ** @param NAME must have been defined as described for
- ** #DEFINE_FUNC_DEFAULT.
+ ** #DEFINE_FSYMB.
  **
  ** @param T Obviously, should coincide with the type of the corresponding
  ** argument that is given in the definition of @a NAME.
@@ -489,39 +489,39 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  ** a default argument must be provided. So you'd better be very
  ** careful with side effects.
  **
- ** Use a corresponding ::define_default_arg in a .c file to ensure
+ ** Use a corresponding ::define_defarg in a .c file to ensure
  ** that all functions are realized.
  **/
-#define declare_default_arg(NAME, M, T, V)                              \
+#define declare_defarg(NAME, M, T, V)                                   \
 /*! @brief Default initializer for argument M **/                       \
 /*! @return the expression `V' as evaluated at the place of the definition. **/ \
 /*! @see NAME **/                                                       \
-inline T NAME ## _default_arg_ ## M(void) { return (V); }               \
-enum _dummy_ ## NAME ## _default_arg_ ## M { _dummy_ ## NAME ## _default_arg_ ## M }
+inline T NAME ## _defarg_ ## M(void) { return (V); }                    \
+enum _dummy_ ## NAME ## _defarg_ ## M { _dummy_ ## NAME ## _defarg_ ## M }
 
 /**
  ** @brief Define the symbols that are declared through a
- ** corresponding call ::declare_default_arg.
+ ** corresponding call ::declare_defarg.
  **/
-#define define_default_arg(NAME, M, T)          \
-T NAME ## _default_arg_ ## M(void)
+#define define_defarg(NAME, M, T)          \
+T NAME ## _defarg_ ## M(void)
 
 /** @internal **/
-#define FUNC_DEFAULT_(NAME) NAME ## _default_
+#define FSYMB_(NAME) NAME ## _fsymb_
 
-/** @brief Mangle @a NAME for the use with ::DEFINE_FUNC_DEFAULT
+/** @brief Mangle @a NAME for the use with ::DEFINE_FSYMB
  **
  ** This should only be used in declaration and definition of the
  ** function that is hidden behind the macro @a NAME.
  **/
-#define FUNC_DEFAULT(NAME) FUNC_DEFAULT_(NAME)
+#define FSYMB(NAME) FSYMB_(NAME)
 
 /**
- ** @brief Provide a documentation section to a function defined with ::DEFINE_FUNC_DEFAULT.
+ ** @brief Provide a documentation section to a function defined with ::DEFINE_FSYMB.
  **/
-#define FUNC_DEFAULT_DOCUMENTATION(NAME)                                \
-/*! @see DEFINE_FUNC_DEFAULT */                                         \
-/*! @see declare_default_arg */                                         \
+#define FSYMB_DOCUMENTATION(NAME)                                       \
+/*! @see DEFINE_FSYMB */                                                \
+/*! @see declare_defarg */                                              \
 /*! This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
 /**
@@ -532,38 +532,40 @@ T NAME ## _default_arg_ ## M(void)
    only works for some compilers, namely gcc, icc and IBM. Therefore
    the orwl library itself should not use default arguments for the
    zeroth argument. */
-#ifndef NO_ZERO_DEFAULT_ARG
+#ifndef NO_ZERO_DEFARG
 # define _call_with(M, ...) __call_with(M, _predecessor(_NARG_64(x, ## __VA_ARGS__)))
-# define DEFINE_FUNC_DEFAULT(NAME, M, ...)                               \
-  FUNC_DEFAULT(NAME)_call_with(M, ## __VA_ARGS__)(NAME, ## __VA_ARGS__)
+# define DEFINE_FSYMB(NAME, M, ...)                               \
+  FSYMB(NAME)_call_with(M, ## __VA_ARGS__)(NAME, ## __VA_ARGS__)
 # define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), ## __VA_ARGS__
 # define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), ## __VA_ARGS__
+# define CALL_THE_FUNC(NAME, MAX, ...) NAME _call_with(MAX, ## __VA_ARGS__)(NAME, ## __VA_ARGS__)
 #else
 # define _call_with(M, ...) __call_with(M, _predecessor(_NARG_64(x, __VA_ARGS__)))
-# define DEFINE_FUNC_DEFAULT(NAME, M, ...)                              \
-  FUNC_DEFAULT(NAME)_call_with(M, __VA_ARGS__)(NAME, __VA_ARGS__)
+# define DEFINE_FSYMB(NAME, M, ...)                              \
+  FSYMB(NAME)_call_with(M, __VA_ARGS__)(NAME, __VA_ARGS__)
 # define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), __VA_ARGS__
 # define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), __VA_ARGS__
+# define CALL_THE_FUNC(NAME, MAX, ...) NAME _call_with(MAX, __VA_ARGS__)(NAME, __VA_ARGS__)
 #endif
 
 /**
- ** @def DEFINE_FUNC_DEFAULT
+ ** @def DEFINE_FSYMB
  ** @brief Define a replacement macro for functions that can provide
  ** default arguments to the underlying real function.
  **
  ** The easiest is to explain this with an example
  ** @code
- ** void FUNC_DEFAULT(size_t_init)(size_t *size, size_t def) {
+ ** void FSYMB(size_t_init)(size_t *size, size_t def) {
  **   *size = def;
  ** }
  **
- ** #define size_t_init(...) DEFINE_FUNC_DEFAULT(size_t_init, 2, __VA_ARGS__)
- ** declare_default_arg(size_t_init, 1, size_t, 0);
+ ** #define size_t_init(...) DEFINE_FSYMB(size_t_init, 2, __VA_ARGS__)
+ ** declare_defarg(size_t_init, 1, size_t, 0);
  ** @endcode
  **
  ** This declares a macro @c size_t_init that resolves to the call of
  ** a real function (hidden behind a mangled name provided by
- ** FUNC_DEFAULT(size_t_init)) to initialize a @c size_t. If invoked
+ ** FSYMB(size_t_init)) to initialize a @c size_t. If invoked
  ** with two arguments, these should be a pointer to the variable and
  ** an initialization value. If this initialization value is omitted
  ** the default value of @c 0 is used. Valid use is
@@ -574,7 +576,55 @@ T NAME ## _default_arg_ ## M(void)
  ** @endcode
  ** @param NAME is the function to provide with default argument features.
  ** @param M is the number of arguments that a full call to @a NAME takes.
- ** @see declare_default_arg
+ ** @see declare_defarg
+ **/
+
+/**
+ ** @def CALL_THE_FUNC
+ ** @brief Define a replacement macro for functions that can provide
+ ** default arguments to the underlying real function.
+ **
+ ** This is similar to ::DEFINE_FSYMB, only that it should be used for
+ ** pre-existing function (e.g system functions).
+ **
+ ** The easiest is to explain this with an example. The system
+ ** function @c pthread_mutex_init is defined as follows:
+ **
+ ** @code
+ ** int pthread_mutex_init(pthread_mutex_t *mut, pthread_mutexattr_t* attr);
+ ** @endcode
+ **
+ ** Here the second argument is used to eventually specify an
+ ** `attribute' to the mutex @c mut. Most people don't use that
+ ** functionality and therefore @c pthread_mutex_init accepts @c NULL
+ ** as a replacement for @c attr. This might be annoying since the
+ ** focus of the syntax is on the exception than on the main use: the
+ ** programmer always has to remember this particular special case and
+ ** give explicit @c NULL's.
+ **
+ ** The following two lines heal this.
+ **
+ ** @code
+ ** #define pthread_mutex_init(...) CALL_THE_FUNC(pthread_mutex_init, 2, __VA_ARGS__)
+ ** declare_defarg(pthread_mutex_init, 1, pthread_mutexattr_t*, NULL);
+ ** @endcode
+ **
+ ** This declares a macro @c pthread_mutex_init that resolves to the call of
+ ** a real function to initialize a @c pthread_mutexattr_t*. If invoked
+ ** with two arguments, this should be the same types of value as to a
+ ** direct call of @c pthread_mutex_init. If this initialization value is omitted
+ ** the default value of @c NULL is used. Valid use is
+ ** @code
+ ** static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
+ ** static pthread_mutexattr_t attr;
+ ** .
+ ** pthread_mutex_init(&mut, &attr); // full specification with attributes
+ ** pthread_mutex_init(&mut, NULL);  // still a valid form
+ ** pthread_mutex_init(&mut);        // easy variant for everyday use
+ ** @endcode
+ ** @param NAME is the function to provide with default argument features.
+ ** @param M is the number of arguments that a full call to @a NAME takes.
+ ** @see declare_defarg
  **/
 
 /**

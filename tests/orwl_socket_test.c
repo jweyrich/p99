@@ -13,13 +13,8 @@
 #include "orwl_socket.h"
 #include "orwl_register.h"
 #include "orwl_wait_queue.h"
+#include "orwl_posix_default.h"
 
-#define strtoul(...) strtoul _call_with(3, __VA_ARGS__)(strtoul, __VA_ARGS__)
-declare_default_arg(strtoul, 2, int, 0);
-declare_default_arg(strtoul, 1, char **, NULL);
-
-define_default_arg(strtoul, 2, int);
-define_default_arg(strtoul, 1, char **);
 
 void test_callback(auth_sock *Arg) {
   diagnose(Arg->fd, "message of size %d", Arg->len);

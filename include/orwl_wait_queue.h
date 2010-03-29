@@ -35,9 +35,9 @@ DECLARE_ENUM(orwl_state,
              );
 
 DOCUMENT_INIT(orwl_state)
-FUNC_DEFAULT_DOCUMENTATION(orwl_state_init)
+FSYMB_DOCUMENTATION(orwl_state_init)
 inline
-orwl_state* FUNC_DEFAULT(orwl_state_init)
+orwl_state* FSYMB(orwl_state_init)
 (orwl_state *el,                    /*!< wait queue to initialize */
  orwl_state val                     /*!< defaults to orwl_invalid */
  ) {
@@ -45,8 +45,8 @@ orwl_state* FUNC_DEFAULT(orwl_state_init)
   return el;
 }
 
-#define orwl_state_init(...) DEFINE_FUNC_DEFAULT(orwl_state_init, 2, __VA_ARGS__)
-declare_default_arg(orwl_state_init, 1, orwl_state, orwl_invalid);
+#define orwl_state_init(...) DEFINE_FSYMB(orwl_state_init, 2, __VA_ARGS__)
+declare_defarg(orwl_state_init, 1, orwl_state, orwl_invalid);
 
 DOCUMENT_DESTROY(orwl_state)
 inline
@@ -123,15 +123,15 @@ struct orwl_wh {
 #define ORWL_WQ_INITIALIZER { PTHREAD_MUTEX_INITIALIZER }
 
   DOCUMENT_INIT(orwl_wq)
-FUNC_DEFAULT_DOCUMENTATION(orwl_wq_init)
-orwl_wq* FUNC_DEFAULT(orwl_wq_init)
+FSYMB_DOCUMENTATION(orwl_wq_init)
+orwl_wq* FSYMB(orwl_wq_init)
 (orwl_wq *wq,                    /*!< wait queue to initialize */
  const pthread_mutexattr_t *attr /*!< defaults to @c NULL */
 );
 
-#define orwl_wq_init(...) DEFINE_FUNC_DEFAULT(orwl_wq_init, 2, __VA_ARGS__)
+#define orwl_wq_init(...) DEFINE_FSYMB(orwl_wq_init, 2, __VA_ARGS__)
 
-declare_default_arg(orwl_wq_init, 1, const pthread_mutexattr_t *, NULL);
+declare_defarg(orwl_wq_init, 1, const pthread_mutexattr_t *, NULL);
 
   DOCUMENT_DESTROY(orwl_wq)
 void orwl_wq_destroy(orwl_wq *wq);
@@ -196,13 +196,13 @@ int orwl_wq_idle(orwl_wq *wq) {
 #define ORWL_WH_INITIALIZER { PTHREAD_COND_INITIALIZER }
 
   DOCUMENT_INIT(orwl_wh)
-  FUNC_DEFAULT_DOCUMENTATION(orwl_wh_init)
-orwl_wh* FUNC_DEFAULT(orwl_wh_init)
+  FSYMB_DOCUMENTATION(orwl_wh_init)
+orwl_wh* FSYMB(orwl_wh_init)
 (orwl_wh *wh,
  const pthread_condattr_t *attr /*!< [in] defaults to @c NULL */);
-#define orwl_wh_init(...) DEFINE_FUNC_DEFAULT(orwl_wh_init, 2, __VA_ARGS__)
+#define orwl_wh_init(...) DEFINE_FSYMB(orwl_wh_init, 2, __VA_ARGS__)
 
-declare_default_arg(orwl_wh_init, 1, const pthread_condattr_t *, NULL);
+declare_defarg(orwl_wh_init, 1, const pthread_condattr_t *, NULL);
 
 
   DOCUMENT_DESTROY(orwl_wh)
@@ -238,9 +238,9 @@ typedef struct {
  ** successful.
  **/
   VA_ARGS_DOCUMENTATION(orwl_wq_request)
-orwl_state FUNC_DEFAULT(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number));
+orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number));
 
-#define orwl_wq_request(WQ, ...) FUNC_DEFAULT(orwl_wq_request)(WQ, LEN_MODARG(2, __VA_ARGS__))
+#define orwl_wq_request(WQ, ...) FSYMB(orwl_wq_request)(WQ, LEN_MODARG(2, __VA_ARGS__))
 
 /**
  ** @brief Acquire a pending request on @a wh. Blocking until the
@@ -253,13 +253,13 @@ orwl_state FUNC_DEFAULT(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number));
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
  **/
-  FUNC_DEFAULT_DOCUMENTATION(orwl_wh_acquire)
-orwl_state FUNC_DEFAULT(orwl_wh_acquire)
+  FSYMB_DOCUMENTATION(orwl_wh_acquire)
+orwl_state FSYMB(orwl_wh_acquire)
   (orwl_wh *wh,
    uintptr_t howmuch    /*!< defaults to @c 1 */);
 
-#define orwl_wh_acquire(...) DEFINE_FUNC_DEFAULT(orwl_wh_acquire, 2, __VA_ARGS__)
-declare_default_arg(orwl_wh_acquire, 1, uintptr_t, 1);
+#define orwl_wh_acquire(...) DEFINE_FSYMB(orwl_wh_acquire, 2, __VA_ARGS__)
+declare_defarg(orwl_wh_acquire, 1, uintptr_t, 1);
 
 
 /**
@@ -280,13 +280,13 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq);
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
  **/
-  FUNC_DEFAULT_DOCUMENTATION(orwl_wh_test)
-orwl_state FUNC_DEFAULT(orwl_wh_test)
+  FSYMB_DOCUMENTATION(orwl_wh_test)
+orwl_state FSYMB(orwl_wh_test)
   (orwl_wh *wh,
    uintptr_t howmuch  /*!< defaults to 0 */);
 
-#define orwl_wh_test(...) DEFINE_FUNC_DEFAULT(orwl_wh_test, 2, __VA_ARGS__)
-declare_default_arg(orwl_wh_test, 1, uintptr_t, 0);
+#define orwl_wh_test(...) DEFINE_FSYMB(orwl_wh_test, 2, __VA_ARGS__)
+declare_defarg(orwl_wh_test, 1, uintptr_t, 0);
 
 /**
  ** @brief Release a request on @a wh. If @a wh had been acquired this
@@ -303,16 +303,16 @@ orwl_state orwl_wh_release(orwl_wh *wh);
    ** wq is already locked.
    ** @see orwl_wh_unload
    */
-  FUNC_DEFAULT_DOCUMENTATION(orwl_wh_load)
+  FSYMB_DOCUMENTATION(orwl_wh_load)
 inline
-void FUNC_DEFAULT(orwl_wh_load)
+void FSYMB(orwl_wh_load)
   (orwl_wh *wh,
    uintptr_t howmuch  /*!< defaults to 1 */) {
    wh->tokens += howmuch;
 }
 
-#define orwl_wh_load(...) DEFINE_FUNC_DEFAULT(orwl_wh_load, 2, __VA_ARGS__)
-declare_default_arg(orwl_wh_load, 1, uintptr_t, 1);
+#define orwl_wh_load(...) DEFINE_FSYMB(orwl_wh_load, 2, __VA_ARGS__)
+declare_defarg(orwl_wh_load, 1, uintptr_t, 1);
 
   /** @brief unload @a howmuch additional tokens from @a wh.
    ** 
@@ -321,9 +321,9 @@ declare_default_arg(orwl_wh_load, 1, uintptr_t, 1);
    ** zero, eventual waiters for this @a wh are notified.
    ** @see orwl_wh_load
    */
-  FUNC_DEFAULT_DOCUMENTATION(orwl_wh_unload)
+  FSYMB_DOCUMENTATION(orwl_wh_unload)
 inline
-void FUNC_DEFAULT(orwl_wh_unload)
+void FSYMB(orwl_wh_unload)
   (orwl_wh *wh,
    uintptr_t howmuch  /*!< defaults to 1 */) {
   wh->tokens -= howmuch;
@@ -331,8 +331,8 @@ void FUNC_DEFAULT(orwl_wh_unload)
   if (!wh->tokens) pthread_cond_broadcast(&wh->cond);
 }
 
-#define orwl_wh_unload(...) DEFINE_FUNC_DEFAULT(orwl_wh_unload, 2, __VA_ARGS__)
-declare_default_arg(orwl_wh_unload, 1, uintptr_t, 1);
+#define orwl_wh_unload(...) DEFINE_FSYMB(orwl_wh_unload, 2, __VA_ARGS__)
+declare_defarg(orwl_wh_unload, 1, uintptr_t, 1);
 
 DECLARE_ORWL_REGISTER(orwl_wh_acquire);
 DECLARE_ORWL_REGISTER(orwl_wh_release);

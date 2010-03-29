@@ -16,6 +16,7 @@ SRC	=					\
 	orwl_new.c				\
 	orwl_int.c				\
 	orwl_enum.c				\
+	orwl_posix_default.c			\
 	orwl_rand.c				\
 	orwl_register.c				\
 	orwl_socket.c				\
