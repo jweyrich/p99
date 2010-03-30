@@ -17,7 +17,7 @@
 
 
 void test_callback(auth_sock *Arg) {
-  diagnose(Arg->fd, "message of size %d", Arg->len);
+  diagnose(Arg->fd, "message of size %jd", Arg->len);
   for (size_t i = 0; i < Arg->len; ++i)
     report(stdout, "%jX", (uintmax_t)Arg->mes[i]);
   orwl_domain_call(ORWL_FTAB(auth_sock), Arg->mes[0], Arg);
@@ -55,14 +55,14 @@ int main(int argc, char **argv) {
       if (ret) break;
       sleepfor(0.2);
     }
-    report(stderr, "server %jX:0x%jX is set up", srv.host.ep.addr, srv.host.ep.port, id);
+    report(stderr, "server %jX:0x%jX is set up", srv.host.ep.addr, srv.host.ep.port);
   } else {
-    report(stderr, "initial server %jX:0x%jX is set up", srv.host.ep.addr, srv.host.ep.port, id);
+    report(stderr, "initial server %jX:0x%jX is set up", srv.host.ep.addr, srv.host.ep.port);
     for (size_t t = 0; t < 1000; ++t) {
       ret = pthread_kill(id, 0);
       if (ret) break;
       sleepfor(1.0);
-      report(stderr, "looping %jd", t);
+      report(stderr, "looping %jd", (uintmax_t)t);
       orwl_host *n = NULL;
       MUTUAL_EXCLUDE(srv.host.mut)
         n = srv.host.next;
@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
           h = h->next;
         }
         uint64_t mess[4] = { ORWL_OBJID(do_nothing), srv.host.ep.addr, srv.host.ep.port, t };
-        report(stderr, "sending to /%X:0x%X/ ", other.addr, other.port);
+        report(stderr, "sending to /%jX:0x%X/ ", other.addr, (unsigned)other.port);
         orwl_send(&other, seed, mess, 4);
       }
     }

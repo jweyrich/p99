@@ -260,13 +260,13 @@ DEFINE_THREAD(orwl_server) {
     socklen_t len = sizeof(addr);
     if (bind(fd_listen, (struct sockaddr*) &addr, sizeof(addr)) == -1)
       goto TERMINATE;
-    report(stderr, "bound port 0x%X", Arg->host.ep.port);
+    report(stderr, "bound port 0x%jX", (uintmax_t)Arg->host.ep.port);
     /* If the port was not yet specified find and store it. */
     if (!addr.sin_port) {
       if (getsockname(fd_listen, (struct sockaddr*)&addr, &len) == -1)
         goto TERMINATE;
       Arg->host.ep.port = addr.sin_port;
-      report(stderr, "allocated port 0x%X", Arg->host.ep.port);
+      report(stderr, "allocated port 0x%jX", (uintmax_t)Arg->host.ep.port);
     }
     if (listen(fd_listen, Arg->max_connections) == -1)
       goto TERMINATE;
@@ -455,14 +455,14 @@ DEFINE_NEW_DELETE(orwl_host);
 void insert_peer(auth_sock *Arg) {
   struct sockaddr_in addr = INITIALIZER;
   if (getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) {
-    report(stderr, "insertion of /%X:0x%X/ ", addr.sin_addr.s_addr, Arg->mes[1]);
+    report(stderr, "insertion of /%jX:0x%jX/ ", (uintmax_t)addr.sin_addr.s_addr, (uintmax_t)Arg->mes[1]);
   }
   orwl_host *h = NEW_INIT(orwl_host, addr.sin_addr.s_addr, Arg->mes[1]);
   orwl_host_connect(h, &Arg->srv->host);
 }
 
 void insert_host(auth_sock *Arg) {
-  report(stderr, "insertion of /%X:0x%X/ ", Arg->mes[1], Arg->mes[2]);
+  report(stderr, "insertion of /%jX:0x%jX/ ", Arg->mes[1], (uintmax_t)Arg->mes[2]);
   orwl_host *h = NEW(orwl_host);
   h->ep.addr = Arg->mes[1];
   h->ep.port = Arg->mes[2];

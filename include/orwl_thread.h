@@ -58,11 +58,17 @@ extern size_t orwl_phase;
 /**
  ** @brief Internally use by report().
  **/
+#ifdef __GNUC__
+__attribute__((format(printf, 4, 5)))
+#endif
 extern void orwl_report(size_t mynum, size_t np, size_t phase, char const* format, ...);
 
 /**
  ** @brief Internally use by progress().
  **/
+#ifdef __GNUC__
+__attribute__((format(printf, 5, 6)))
+#endif
 extern void orwl_progress(size_t t, size_t mynum, size_t np, size_t phase, char const* format, ...);
 
 /**
