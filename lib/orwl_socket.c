@@ -210,7 +210,8 @@ define_defarg(auth_sock_init, 1, int);
 
 void auth_sock_destroy(auth_sock *sock) {
   if (sock->fd != -1) close(sock->fd);
-  sock->fd = -1;
+  if (sock->mes) uint64_t_vdelete(sock->mes);
+  auth_sock_init(sock);
 }
 
 DEFINE_NEW_DELETE(auth_sock);
@@ -224,17 +225,25 @@ DEFINE_THREAD(auth_sock) {
       Arg->srv->cb(Arg);
       report(stderr, "finished callback with %jd elements", Arg->len);
     }
-  /* now clean up */
-  uint64_t_vdelete(Arg->mes);
-  header_t header = INITIALIZER;
   /* Ack the termination of the call */
-  orwl_send_(Arg->fd, header, header_t_els);
-  close(Arg->fd);
-  report(stderr, "cleanup after %jd elements", Arg->len);
+  orwl_send_(Arg->fd, TNULL(header_t), header_t_els);
 }
 
 orwl_server* orwl_server_init(orwl_server *serv);
-void orwl_server_destroy(orwl_server *serv);
+
+void orwl_server_destroy(orwl_server *serv) {
+  orwl_host *n = NULL;
+  MUTUAL_EXCLUDE(serv->host.mut)
+    n = serv->host.next;
+  for (orwl_host *h = n; h != &serv->host; ) {
+    MUTUAL_EXCLUDE(h->mut) {
+      n = h;
+      h = h->next;
+    }
+    orwl_host_delete(n);
+  }
+}
+
 DEFINE_NEW_DELETE(orwl_server);
 
 DEFINE_THREAD(orwl_server) {

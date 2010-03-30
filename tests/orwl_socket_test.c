@@ -25,6 +25,7 @@ void test_callback(auth_sock *Arg) {
 
 int main(int argc, char **argv) {
   report(stderr, "starting");
+  int ret = 0;
   /* ORWL_TYPE_DYNAMIC_INIT(auth_sock); */
   orwl_types_init();
   orwl_server srv
@@ -50,19 +51,16 @@ int main(int argc, char **argv) {
     uint64_t mess[2] = {  ORWL_OBJID(insert_peer), srv.host.ep.port };
     /* wait until the other side is up. */
     while (orwl_send(&other, seed, mess, 2)) {
-      int ret = pthread_kill(id, 0);
-      if (ret) {
-        char mesg[256] = INITIALIZER;
-        strerror_r(ret, mesg, 256);
-        report(stderr, "Server already terminated: %s", mesg);
-        break;
-      }
+      ret = pthread_kill(id, 0);
+      if (ret) break;
       sleepfor(0.2);
     }
     report(stderr, "server %jX:0x%jX is set up", srv.host.ep.addr, srv.host.ep.port, id);
   } else {
     report(stderr, "initial server %jX:0x%jX is set up", srv.host.ep.addr, srv.host.ep.port, id);
     for (size_t t = 0; t < 1000; ++t) {
+      ret = pthread_kill(id, 0);
+      if (ret) break;
       sleepfor(1.0);
       report(stderr, "looping %jd", t);
       orwl_host *n = NULL;
@@ -85,5 +83,12 @@ int main(int argc, char **argv) {
   }
 
   orwl_server_join(id);
+  if (ret) {
+    char mesg[256] = INITIALIZER;
+    strerror_r(ret, mesg, 256);
+    report(stderr, "Server already terminated: %s", mesg);
+  }
   orwl_pthread_wait_detached();
+  report(stderr, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
+  orwl_server_destroy(&srv);
 }

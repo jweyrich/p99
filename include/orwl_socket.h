@@ -191,7 +191,6 @@ auth_sock* FSYMB(auth_sock_init)(auth_sock *sock,
   sock->fd = fd;
   sock->srv = srv;
   sock->len = len;
-  if (sock->mes) uint64_t_vdelete(sock->mes);
   sock->mes = len ? uint64_t_vnew(len) : NULL;
   return sock;
 }
@@ -240,10 +239,7 @@ orwl_server* orwl_server_init(orwl_server *serv) {
   return serv;
 }
 
-inline
-void orwl_server_destroy(orwl_server *serv) {
-  /* empty */
-}
+void orwl_server_destroy(orwl_server *serv);
 
 DECLARE_NEW_DELETE(orwl_server);
 
