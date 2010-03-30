@@ -17,7 +17,7 @@
 
 
 void test_callback(auth_sock *Arg) {
-  diagnose(Arg->fd, "message of size %jd", Arg->len);
+  diagnose(Arg->fd, "message of size %zd", Arg->len);
   for (size_t i = 0; i < Arg->len; ++i)
     report(stdout, "%jX", (uintmax_t)Arg->mes[i]);
   orwl_domain_call(ORWL_FTAB(auth_sock), Arg->mes[0], Arg);
@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
   report(stderr, "starting %jX:0x%jX", srv.host.ep.addr, srv.host.ep.port);
   pthread_t id;
   orwl_server_create(&srv, &id);
-  report(stderr, "started %jX:0x%jX, got id 0x%jX", srv.host.ep.addr, srv.host.ep.port, id);
+  report(stderr, "started %jX:0x%jX, got id 0x%jX", srv.host.ep.addr, srv.host.ep.port, (uintmax_t)id);
 
   rand48_t seed = { srv.host.ep.addr, srv.host.ep.port };
 

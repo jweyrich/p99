@@ -223,7 +223,7 @@ DEFINE_THREAD(auth_sock) {
     if (Arg->srv && Arg->srv->cb) {
       /* do something with mess here */
       Arg->srv->cb(Arg);
-      report(stderr, "finished callback with %jd elements", Arg->len);
+      report(stderr, "finished callback with %zd elements", Arg->len);
     }
   /* Ack the termination of the call */
   orwl_send_(Arg->fd, TNULL(header_t), header_t_els);
