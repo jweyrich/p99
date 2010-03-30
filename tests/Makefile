@@ -11,10 +11,12 @@
 # Complete this to make it ! #
 ##############################
 NAME 	=	orwl_wait_list			\
-		orwl_socket_test
+		orwl_socket_test		\
+		orwl_socket_finish
 
 SRC	=	orwl_wait_list.c		\
-		orwl_socket_test.c
+		orwl_socket_test.c		\
+		orwl_socket_finish.c
 
 INCL  	=		# List of *.h
 LIBDIR	:= $(join $(dir ${PWD}),lib)
