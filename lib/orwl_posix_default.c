@@ -29,3 +29,5 @@ declare_defarg(strtould, 1, char **, NULL);
 
 declare_defarg(accept, 2, socklen_t*, &TNULL(socklen_t));
 declare_defarg(accept, 1, struct sockaddr *, NULL);
+declare_defarg(socket, 2, int, 0);
+declare_defarg(socket, 1, int, SOCK_STREAM);
