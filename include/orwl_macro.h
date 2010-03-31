@@ -637,13 +637,44 @@ T NAME ## _defarg_ ## M(void)
 #define INIT2 { { 0 } }
 
 /**
- ** @brief Define a @c NULL initialized constant of type @a T
+ ** @brief Typed @c NULL
+ **
+ ** Define a @c NULL initialized constant of type @a T.
  **/
-#define TNULL NULL1
+#define TNULL(T) NULL1(T)
 
 #define NULL0(T) ((T)INIT0)
 #define NULL1(T) ((T)INIT1)
 #define NULL2(T) ((T)INIT2)
+
+/**
+ ** @brief Typed ones
+ **
+ ** Define a all-one-bits initialized constant of integer type @a T.
+ **/
+#define TONES(T) (~TNULL(T))
+
+/**
+ ** @brief Signedness of a type
+ **
+ ** Determine if @a T corresponds to a signed integer type or not.
+ **/
+#define ISSIGNED(T) (TONES(T) < TNULL(T))
+
+/**
+ ** @brief Typed max value
+ **
+ ** Define the largest value that integer type @a T may hold.
+ **/
+#define TMAX(T) (ISSIGNED(T) ? (TONES(T) >> 1) : TONES(T))
+
+/**
+ ** @brief Typed min value
+ **
+ ** Define the smallest value that integer type @a T may hold.
+ **/
+#define TMIN(T) (~TMAX(T))
+
 
 /**
  ** @brief A meta-macro to protect a dependent block or statement by a
