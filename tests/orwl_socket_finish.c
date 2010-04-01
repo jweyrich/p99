@@ -17,7 +17,7 @@
 
 
 void test_callback(auth_sock *Arg) {
-  diagnose(Arg->fd, "message of size %d", Arg->len);
+  diagnose(Arg->fd, "message of size %zd", Arg->len);
   for (size_t i = 0; i < Arg->len; ++i)
     report(stdout, "%jX", (uintmax_t)Arg->mes[i]);
   orwl_domain_call(ORWL_FTAB(auth_sock), Arg->mes[0], Arg);
@@ -27,19 +27,19 @@ int main(int argc, char **argv) {
   report(stderr, "starting");
   /* ORWL_TYPE_DYNAMIC_INIT(auth_sock); */
   orwl_types_init();
-  orwl_server srv
-    = ORWL_SERVER_INITIALIZER(
-                              srv,
-                              test_callback,
-                              4,
-                              orwl_inet_addr(argv[1]),
-                              0);
-  rand48_t seed = { srv.host.ep.addr, srv.host.ep.port };
-
   if (argc > 2) {
+    orwl_server srv
+      = ORWL_SERVER_INITIALIZER(
+                                srv,
+                                test_callback,
+                                4,
+                                orwl_inet_addr(argv[1]),
+                                0);
+    rand48_t seed = { srv.host.ep.addr, srv.host.ep.port };
+
     in_addr_t addr = orwl_inet_addr(argv[1]);
     uint16_t port = strtoul(argv[2]);
-    report(stderr, "ending %jX:0x%jX", addr, port);
+    report(stderr, "ending %jX:0x%jX", (uintmax_t)addr, (uintmax_t)port);
 
     orwl_endpoint other = { .addr = addr, .port = port };
     errno = 0;
