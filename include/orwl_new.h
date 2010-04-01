@@ -36,6 +36,40 @@
  */
 #define DOCUMENT_DESTROY(T) /*! @brief Destroy a variable of type T @see T ## _delete needs this. */
 
+/**
+ ** @brief Zero out all bits in the object that @a X points to.
+ **
+ ** @a X can be a pointer or an array
+ ** @code
+ ** T *A;
+ ** T B[3];
+ ** PZERO(A, 29);
+ ** PZERO(B, 2);
+ ** @endcode
+ **
+ ** Here the first call zeroes out 29 elements of type T starting at
+ ** the memory where @c A points to. The second zeroes out the first
+ ** two elements of the array @c B.
+ **
+ ** This is a macro not a function, but anyhow @a X is evaluated only
+ ** once.
+ **/
+#define PZERO(X, N) (memset((X), 0, sizeof(X[0]) * N))
+
+/**
+ ** @brief Zero out all bits in the object @a X.
+ **
+ ** @a X must be an object from which the address can be taken, such
+ ** as a normal variable or an array.
+ **
+ ** This is a macro not a function, but anyhow @a X is evaluated only
+ ** once.
+ **/
+#define TZERO(X) (memset(&(X), 0, sizeof(X)))
+
+/**
+ ** @brief Allocate and initialize an element of type @a T
+ **/
 #define NEW(T) T ## _init((T*)malloc(sizeof(T)))
 
 /**
