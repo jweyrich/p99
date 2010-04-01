@@ -178,6 +178,13 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
 /*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
 
 
+#define __decimal_(HEX) _decimal_ ## HEX
+#define _decimal_(HEX) __decimal_(HEX)
+#define __hexadecimal_(DEC) _hexadecimal_ ## DEC
+#define _hexadecimal_(DEC) __hexadecimal_(DEC)
+#define __predecessor(N) _predecessor_ ## N
+#define _predecessor(N) __predecessor(N)
+
 #define _decimal_0x0 0
 #define _decimal_0x1 1
 #define _decimal_0x2 2
@@ -260,9 +267,6 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
 #define _decimal_0x3F 63
 #define _decimal_0x40 64
 
-#define __decimal_(HEX) _decimal_ ## HEX
-#define _decimal_(HEX) __decimal_(HEX)
-
 #define _hexadecimal_0 0x00
 #define _hexadecimal_1 0x01
 #define _hexadecimal_2 0x02
@@ -329,9 +333,6 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
 #define _hexadecimal_63 0x3F
 #define _hexadecimal_64 0x40
 
-#define __hexadecimal_(DEC) _hexadecimal_ ## DEC
-#define _hexadecimal_(DEC) __hexadecimal_(DEC)
-
 #define _predecessor_1  0 
 #define _predecessor_2  1 
 #define _predecessor_3  2 
@@ -395,9 +396,6 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
 #define _predecessor_61 60
 #define _predecessor_62 61
 #define _predecessor_63 62
-
-#define __predecessor(N) _predecessor_ ## N
-#define _predecessor(N) __predecessor(N)
 
 #define _call_with_1_1(NAME, ...) (__VA_ARGS__)
 #define _call_with_1_0(NAME, _ign) _call_with_1_1(NAME, NAME ## _defarg_ ## 0())
