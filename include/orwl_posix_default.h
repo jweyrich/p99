@@ -9,13 +9,27 @@
 */
 
 #ifndef   	ORWL_POSIX_DEFAULT_H_
-# define   	ORWL_POSIX_DEFAULT_H_
+/*! @brief Control the include of "orwl_posix_default.h"
+**
+** The special value 1 will be used in a second include to do the
+** instantiation.
+**/
+# define   	ORWL_POSIX_DEFAULT_H_ 0
+#endif
+
+#if   	ORWL_POSIX_DEFAULT_H_ < 2
+#if   	ORWL_POSIX_DEFAULT_H_ == 0
+# undef   	ORWL_POSIX_DEFAULT_H_
+# define   	ORWL_POSIX_DEFAULT_H_ 2
+#endif
 
 #include "orwl_macro.h"
 
 #include <pthread.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 // pthread_barrier_init (3posix) - destroy and initialize a barrier object (ADVANCED REALTIME THREADS)
 // not possible because of the count argument
@@ -36,7 +50,12 @@ declare_defarg(pthread_rwlock_init, 1, pthread_rwlockattr_t*, NULL);
 #define pthread_spin_init(...) CALL_THE_FUNC(pthread_spin_init, 2, __VA_ARGS__)
 declare_defarg(pthread_spin_init, 1, int, PTHREAD_PROCESS_PRIVATE);
 
-
+// int pthread_key_create (pthread_key_t *__key, void (*__destr_function) (void *))
+#define pthread_key_create(...) CALL_THE_FUNC(pthread_key_create, 2, __VA_ARGS__)
+#if   	ORWL_POSIX_DEFAULT_H_ == 2
+typedef void (*pthread_key_create_arg1_t)(void *);
+#endif
+declare_defarg(pthread_key_create, 1, pthread_key_create_arg1_t, NULL);
 
 
 #define strtoul(...) CALL_THE_FUNC(strtoul, 3, __VA_ARGS__)
@@ -67,5 +86,34 @@ declare_defarg(accept, 1, struct sockaddr *, NULL);
 declare_defarg(socket, 2, int, 0);
 declare_defarg(socket, 1, int, SOCK_STREAM);
 
+// int open(const char *pathname, int flags);
+// int open(const char *pathname, int flags, mode_t mode);
+#define open(...) CALL_THE_FUNC(open, 3, __VA_ARGS__)
+declare_defarg(open, 2, mode_t,  S_IRWXU);
+declare_defarg(open, 1, int, O_RDONLY);
+
+// int openat (int __fd, __const char *__file, int __oflag, ...)
+#define openat(...) CALL_THE_FUNC(openat, 4, __VA_ARGS__)
+declare_defarg(openat, 3, mode_t,  S_IRWXU);
+declare_defarg(openat, 2, int, O_RDONLY);
+
+// int creat(const char *pathname, mode_t mode);
+#define creat(...) CALL_THE_FUNC(creat, 2, __VA_ARGS__)
+declare_defarg(creat, 1, mode_t, S_IRWXU);
+
+// int open64(const char *pathname, int flags);
+// int open64(const char *pathname, int flags, mode_t mode);
+#define open64(...) CALL_THE_FUNC(open64, 3, __VA_ARGS__)
+declare_defarg(open64, 2, mode_t,  S_IRWXU);
+declare_defarg(open64, 1, int, O_RDONLY);
+
+// int openat64 (int __fd, __const char *__file, int __oflag, ...)
+#define openat64(...) CALL_THE_FUNC(openat64, 4, __VA_ARGS__)
+declare_defarg(openat64, 3, mode_t,  S_IRWXU);
+declare_defarg(openat64, 2, int, O_RDONLY);
+
+// int creat(const char *pathname, mode_t mode);
+#define creat64(...) CALL_THE_FUNC(creat64, 2, __VA_ARGS__)
+declare_defarg(creat64, 1, mode_t, S_IRWXU);
 
 #endif 	    /* !ORWL_POSIX_DEFAULT_H_ */
