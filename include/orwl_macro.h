@@ -215,7 +215,7 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  ** argument for @a NAME.
  **
  ** @param NAME must have been defined as described for
- ** #DEFINE_FSYMB.
+ ** #DEFINE_FSYMB or #CALL_THE_FUNC.
  **
  ** @param T Obviously, should coincide with the type of the corresponding
  ** argument that is given in the definition of @a NAME.
@@ -237,6 +237,7 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  ** Use a corresponding ::define_defarg in a .c file to ensure
  ** that all functions are realized.
  **/
+
 #define declare_defarg(NAME, M, T, V)                                   \
 /*! @brief Default initializer for argument M **/                       \
 /*! @return the expression `V' as evaluated at the place of the definition. **/ \
@@ -313,13 +314,13 @@ T NAME ## _defarg_ ## M(void)
  ** This declares a macro @c size_t_init that resolves to the call of
  ** a real function (hidden behind a mangled name provided by
  ** FSYMB(size_t_init)) to initialize a @c size_t. If invoked
- ** with two arguments, these should be a pointer to the variable and
+ ** with two arguments or more, these should be a pointer to the variable and
  ** an initialization value. If this initialization value is omitted
  ** the default value of @c 0 is used. Valid use is
  ** @code
  ** size_t i;
- ** size_t_init(&i, 87);
- ** size_t_init(&i);
+ ** size_t_init(&i, 87);   // initialize i to 87
+ ** size_t_init(&i);       // initialize i to 0
  ** @endcode
  ** @param NAME is the function to provide with default argument features.
  ** @param M is the number of arguments that a full call to @a NAME takes.
@@ -358,7 +359,7 @@ T NAME ## _defarg_ ## M(void)
  **
  ** This declares a macro @c pthread_mutex_init that resolves to the call of
  ** a real function to initialize a @c pthread_mutexattr_t*. If invoked
- ** with two arguments, this should be the same types of value as to a
+ ** with two arguments or more, this should be the same types of value as to a
  ** direct call of @c pthread_mutex_init. If this initialization value is omitted
  ** the default value of @c NULL is used. Valid use is
  ** @code

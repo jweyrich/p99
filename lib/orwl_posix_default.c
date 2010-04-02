@@ -10,8 +10,10 @@
 
 #include "orwl_posix_default.h"
 
+#ifndef DOXYGEN
 #undef declare_defarg
 #define declare_defarg(A, B, C, D) define_defarg(A, B, C)
+#endif
 
 declare_defarg(pthread_barrier_init, 1, pthread_barrierattr_t*, NULL);
 declare_defarg(pthread_cond_init, 1, pthread_condattr_t*, NULL);

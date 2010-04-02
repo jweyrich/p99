@@ -7,7 +7,6 @@ if 0;               #### for this magic, see findSvnAuthors ####
 #
 
 my $maxnumber = 64;
-my $maxargs = 32;
 my $digit = "1";
 
 for (my $i = 0; $i < 0x10 && $i < $maxnumber; ++$i) {
