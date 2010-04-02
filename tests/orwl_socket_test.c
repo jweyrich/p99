@@ -35,29 +35,30 @@ int main(int argc, char **argv) {
                               4,
                               orwl_inet_addr(argv[1]),
                               0);
-  report(stderr, "starting %jX:0x%jX", srv.host.ep.addr, srv.host.ep.port);
+  report(stderr, "starting %jX:0x%jX", addr2net(&srv.host.ep.addr), port2net(&srv.host.ep.port));
   pthread_t id;
   orwl_server_create(&srv, &id);
-  report(stderr, "started %jX:0x%jX, got id 0x%jX", srv.host.ep.addr, srv.host.ep.port, (uintmax_t)id);
+  report(stderr, "started %jX:0x%jX, got id 0x%jX", addr2net(&srv.host.ep.addr), port2net(&srv.host.ep.port), (uintmax_t)id);
 
-  rand48_t seed = { srv.host.ep.addr, srv.host.ep.port };
+  rand48_t seed = { addr2net(&srv.host.ep.addr), port2net(&srv.host.ep.port) };
 
   if (argc > 2) {
     in_addr_t addr = orwl_inet_addr(argv[2]);
-    uint16_t port = strtoul(argv[3]);
+    in_port_t port = strtoul(argv[3]);
 
 
-    orwl_endpoint other = { .addr = addr, .port = port };
-    uint64_t mess[2] = {  ORWL_OBJID(insert_peer), srv.host.ep.port };
+    orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);
+    /* ep.port is already in host order */
+    uint64_t mess[2] = {  ORWL_OBJID(insert_peer), srv.host.ep.port.p };
     /* wait until the other side is up. */
     while (orwl_send(&other, seed, mess, 2)) {
       ret = pthread_kill(id, 0);
       if (ret) break;
       sleepfor(0.2);
     }
-    report(stderr, "server %jX:0x%jX is set up", srv.host.ep.addr, srv.host.ep.port);
+    report(stderr, "server %jX:0x%jX is set up", addr2net(&srv.host.ep.addr), port2net(&srv.host.ep.port));
   } else {
-    report(stderr, "initial server %jX:0x%jX is set up", srv.host.ep.addr, srv.host.ep.port);
+    report(stderr, "initial server %jX:0x%jX is set up", addr2net(&srv.host.ep.addr), port2net(&srv.host.ep.port));
     for (size_t t = 0; t < 1000; ++t) {
       ret = pthread_kill(id, 0);
       if (ret) break;
@@ -68,14 +69,15 @@ int main(int argc, char **argv) {
         n = srv.host.next;
       report(stderr, "%p -- %p", (void*)&srv.host, (void*)n);
       for (orwl_host *h = n; h != &srv.host; ) {
-        orwl_endpoint other = INITIALIZER;
+        orwl_endpoint other = { INITIALIZER };
         MUTUAL_EXCLUDE(h->mut) {
           other.addr = h->ep.addr;
           other.port = h->ep.port;
           h = h->next;
         }
-        uint64_t mess[4] = { ORWL_OBJID(do_nothing), srv.host.ep.addr, srv.host.ep.port, t };
-        report(stderr, "sending to /%jX:0x%X/ ", other.addr, (unsigned)other.port);
+        /* ep.addr and ep.port are already in host order */
+        uint64_t mess[4] = { ORWL_OBJID(do_nothing), srv.host.ep.addr.a, srv.host.ep.port.p, t };
+        report(stderr, "sending to /%jX:0x%X/ ", addr2net(&other.addr), (unsigned)port2net(&other.port));
         orwl_send(&other, seed, mess, 4);
       }
     }

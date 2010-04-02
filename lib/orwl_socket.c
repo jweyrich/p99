@@ -106,6 +106,21 @@ DEFINE_ONCE_UPON(inet4_addr) {
 
 in_addr_t inet4_addr(void);
 
+addr_t* FSYMB(addr_t_init)(addr_t *A, in_addr_t I);
+
+define_defarg(addr_t_init, 1, in_addr_t);
+
+in_addr_t addr2net(addr_t const*A);
+
+port_t* FSYMB(port_t_init)(port_t *A, in_port_t P);
+
+define_defarg(port_t_init, 1, in_port_t);
+
+in_port_t port2net(port_t const*A);
+
+
+
+
 
 orwl_endpoint* FSYMB(orwl_endpoint_init)
      (orwl_endpoint *endpoint,
@@ -250,23 +265,23 @@ DEFINE_THREAD(orwl_server) {
   report(stderr, "starting server");
   int fd_listen = socket(AF_INET);
   if (fd_listen != -1) {
-    report(stderr, "found %jX:%jX", Arg->host.ep.addr, Arg->host.ep.port);
+    report(stderr, "found %jX:%jX", (uintmax_t)addr2net(&Arg->host.ep.addr), (uintmax_t)port2net(&Arg->host.ep.port));
     rand48_t seed = { time(NULL) };
     struct sockaddr_in addr = {
-      .sin_addr = { .s_addr = Arg->host.ep.addr, },
-      .sin_port = Arg->host.ep.port,
+      .sin_addr = { .s_addr = addr2net(&Arg->host.ep.addr), },
+      .sin_port = port2net(&Arg->host.ep.port),
       .sin_family = AF_INET,
     };
     socklen_t len = sizeof(addr);
     if (bind(fd_listen, (struct sockaddr*) &addr, sizeof(addr)) == -1)
       goto TERMINATE;
-    report(stderr, "bound port 0x%jX", (uintmax_t)Arg->host.ep.port);
+    report(stderr, "bound port 0x%jX", (uintmax_t)port2net(&Arg->host.ep.port));
     /* If the port was not yet specified find and store it. */
     if (!addr.sin_port) {
       if (getsockname(fd_listen, (struct sockaddr*)&addr, &len) == -1)
         goto TERMINATE;
-      Arg->host.ep.port = addr.sin_port;
-      report(stderr, "allocated port 0x%jX", (uintmax_t)Arg->host.ep.port);
+      port_t_init(&Arg->host.ep.port, addr.sin_port);
+      report(stderr, "allocated port 0x%jX", (uintmax_t)port2net(&Arg->host.ep.port));
     }
     if (listen(fd_listen, Arg->max_connections) == -1)
       goto TERMINATE;
@@ -335,8 +350,8 @@ bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, siz
   uint64_t repl = orwl_challenge(chal);
   header_t header = { [0] = chal };
   struct sockaddr_in addr = {
-    .sin_addr = { .s_addr = ep->addr },
-    .sin_port = ep->port,
+    .sin_addr = { .s_addr = addr2net(&ep->addr) },
+    .sin_port = port2net(&ep->port),
     .sin_family = AF_INET
   };
   if (!repl) {
@@ -457,15 +472,18 @@ void insert_peer(auth_sock *Arg) {
   if (getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) {
     report(stderr, "insertion of /%jX:0x%jX/ ", (uintmax_t)addr.sin_addr.s_addr, (uintmax_t)Arg->mes[1]);
   }
-  orwl_host *h = NEW_INIT(orwl_host, addr.sin_addr.s_addr, Arg->mes[1]);
+  orwl_host *h = NEW_INIT(orwl_host, addr.sin_addr.s_addr);
+  /* mes is already in host order */
+  h->ep.port.p = Arg->mes[1];
   orwl_host_connect(h, &Arg->srv->host);
 }
 
 void insert_host(auth_sock *Arg) {
   report(stderr, "insertion of /%jX:0x%jX/ ", Arg->mes[1], (uintmax_t)Arg->mes[2]);
   orwl_host *h = NEW(orwl_host);
-  h->ep.addr = Arg->mes[1];
-  h->ep.port = Arg->mes[2];
+  /* mes is already in host order */
+  h->ep.addr.a = Arg->mes[1];
+  h->ep.port.p = Arg->mes[2];
   orwl_host_connect(h, &Arg->srv->host);
 }
 

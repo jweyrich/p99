@@ -35,13 +35,13 @@ int main(int argc, char **argv) {
                                 4,
                                 orwl_inet_addr(argv[1]),
                                 0);
-    rand48_t seed = { srv.host.ep.addr, srv.host.ep.port };
+    rand48_t seed = { addr2net(&srv.host.ep.addr), port2net(&srv.host.ep.port) };
 
     in_addr_t addr = orwl_inet_addr(argv[1]);
-    uint16_t port = strtoul(argv[2]);
+    in_port_t port = strtoul(argv[2]);
     report(stderr, "ending %jX:0x%jX", (uintmax_t)addr, (uintmax_t)port);
 
-    orwl_endpoint other = { .addr = addr, .port = port };
+    orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);
     errno = 0;
     /* wait until the other side is up. */
     orwl_send(&other, seed, NULL, 0);

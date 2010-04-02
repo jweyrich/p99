@@ -76,14 +76,57 @@ in_addr_t inet4_addr(void) {
 
 struct orwl_endpoint;
 
+struct addr_t { uint64_t a; };
+struct port_t { uint64_t p; };
+
 #ifndef __cplusplus
 typedef struct orwl_endpoint orwl_endpoint;
+typedef struct addr_t addr_t;
+typedef struct port_t port_t;
 #endif
 
 struct orwl_endpoint {
-  uint64_t addr;
-  uint64_t port;
+  addr_t addr;
+  port_t port;
 };
+
+
+#define ADDR_T_INITIALIZER(NADDR) { .a = ntohl(NADDR) }
+#define PORT_T_INITIALIZER(NPORT) { .p = ntohs(NPORT) }
+#define ORWL_ENDPOINT_INITIALIZER(NADDR,  NPORT) {      \
+    .addr = ADDR_T_INITIALIZER(NADDR),                  \
+      .port = PORT_T_INITIALIZER(NPORT),                \
+      }
+
+inline
+addr_t* FSYMB(addr_t_init)(addr_t *A, in_addr_t I) {
+  A->a = ntohl(I);
+  return A;
+}
+
+#define addr_t_init(...) DEFINE_FSYMB(addr_t_init, 2, __VA_ARGS__)
+declare_defarg(addr_t_init, 1, in_addr_t, TNULL(in_addr_t));
+
+inline
+in_addr_t addr2net(addr_t const*A) {
+  return htonl(A->a);
+}
+
+inline
+port_t* FSYMB(port_t_init)(port_t *A, in_port_t P) {
+  A->p = ntohs(P);
+  return A;
+}
+
+#define port_t_init(...) DEFINE_FSYMB(port_t_init, 2, __VA_ARGS__)
+declare_defarg(port_t_init, 1, in_port_t, TNULL(in_port_t));
+
+inline
+in_port_t port2net(port_t const*A) {
+  return htons(A->p);
+}
+
+
 
 DOCUMENT_INIT(orwl_endpoint)
 FSYMB_DOCUMENTATION(orwl_endpoint_init)
@@ -93,8 +136,8 @@ orwl_endpoint* FSYMB(orwl_endpoint_init)
  in_addr_t addr,
  in_port_t port
  ) {
-  orwl_endpoint const ep = { addr, port };
-  memcpy(endpoint, &ep, sizeof(orwl_endpoint));
+  addr_t_init(&endpoint->addr, addr);
+  port_t_init(&endpoint->port, port);
   return endpoint;
 }
 
@@ -127,13 +170,13 @@ struct orwl_host {
   size_t refs;
 };
 
-#define ORWL_HOST_INITIALIZER(NAME, ADDR, PORT) { \
-  .mut = PTHREAD_MUTEX_INITIALIZER,             \
-      .ep = { .addr = ADDR, .port = PORT},        \
-  .prev = &NAME,                                \
-  .next = &NAME,                                \
-  .refs = 2                                     \
-}
+#define ORWL_HOST_INITIALIZER(NAME, NADDR,  NPORT) {    \
+    .mut = PTHREAD_MUTEX_INITIALIZER,                   \
+    .ep = ORWL_ENDPOINT_INITIALIZER(NADDR, NPORT),      \
+      .prev = &NAME,                                    \
+      .next = &NAME,                                    \
+      .refs = 2                                         \
+      }
 
 void orwl_host_connect(orwl_host *th, orwl_host *q);
 void orwl_host_disconnect(orwl_host *th);
@@ -143,8 +186,7 @@ orwl_host* FSYMB(orwl_host_init)(orwl_host *th, in_addr_t addr, in_port_t port) 
   th->next = th;
   th->prev = th;
   th->refs = 0;
-  th->ep.addr = addr;
-  th->ep.port = port;
+  orwl_endpoint_init(&th->ep, addr, port);
   pthread_mutex_init(&th->mut);
   return th;
 }
