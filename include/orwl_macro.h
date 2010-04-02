@@ -28,7 +28,7 @@
 #define _INV(N) _variable_argument_list_must_be_divisible_by_ ## N
 
 #define _NARG_64_1(...)                                                 \
-_decimal_(__NARG_64(__VA_ARGS__,                                        \
+_hex2dec_(__NARG_64(__VA_ARGS__,                                        \
                     0x3F, 0x3E, 0x3D, 0x3C, 0x3B, 0x3A, 0x39, 0x38, 0x37, 0x36, 0x35, 0x34, 0x33, 0x32, 0x31, 0x30, \
                     0x2F, 0x2E, 0x2D, 0x2C, 0x2B, 0x2A, 0x29, 0x28, 0x27, 0x26, 0x25, 0x24, 0x23, 0x22, 0x21, 0x20, \
                     0x1F, 0x1E, 0x1D, 0x1C, 0x1B, 0x1A, 0x19, 0x18, 0x17, 0x16, 0x15, 0x14, 0x13, 0x12, 0x11, 0x10, \
@@ -52,7 +52,7 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  ** If the length of the list is odd, a compile time error occurs.
  **/
 #define _NARG_64_2(...)                                                 \
-_decimal_(__NARG_64(__VA_ARGS__,                                        \
+_hex2dec_(__NARG_64(__VA_ARGS__,                                        \
                     _INV(2), 0x1F, _INV(2), 0x1E, _INV(2), 0x1D, _INV(2), 0x1C, \
                     _INV(2), 0x1B, _INV(2), 0x1A, _INV(2), 0x19, _INV(2), 0x18, \
                     _INV(2), 0x17, _INV(2), 0x16, _INV(2), 0x15, _INV(2), 0x14, \
@@ -70,7 +70,7 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  ** If the length of the list is not divisible by 3, a compile time error occurs.
  **/
 #define _NARG_64_3(...)                                                 \
-_decimal_(__NARG_64(__VA_ARGS__,                                        \
+_hex2dec_(__NARG_64(__VA_ARGS__,                                        \
                     0x16,                                               \
                     _INV(3), _INV(3), 0x15, _INV(3), _INV(3), 0x14, _INV(3), _INV(3), 0x13, \
                     _INV(3), _INV(3), 0x12, _INV(3), _INV(3), 0x11, _INV(3), _INV(3), 0x10, \
@@ -88,7 +88,7 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
  ** If the length of the list is not divisible by 4, a compile time error occurs.
  **/
 #define _NARG_64_4(...)                                                 \
-_decimal_(__NARG_64(__VA_ARGS__,                                        \
+_hex2dec_(__NARG_64(__VA_ARGS__,                                        \
                     _INV(4), _INV(4), _INV(4), 0xF, _INV(4), _INV(4), _INV(4), 0xE, \
                     _INV(4), _INV(4), _INV(4), 0xD, _INV(4), _INV(4), _INV(4), 0xC, \
                     _INV(4), _INV(4), _INV(4), 0xB, _INV(4), _INV(4), _INV(4), 0xA, \
@@ -179,36 +179,36 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
 /*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
 
 
-#define __decimal_(HEX) _decimal_ ## HEX
-#define _decimal_(HEX) __decimal_(HEX)
-#define __hexadecimal_(DEC) _hexadecimal_ ## DEC
-#define _hexadecimal_(DEC) __hexadecimal_(DEC)
+#define __hex2dec_(HEX) _hex2dec_ ## HEX
+#define _hex2dec_(HEX) __hex2dec_(HEX)
+#define __dec2hex_(DEC) _dec2hex_ ## DEC
+#define _dec2hex_(DEC) __dec2hex_(DEC)
 #define __predecessor(N) _predecessor_ ## N
 #define _predecessor(N) __predecessor(N)
 
 #define _itpredecessor_0(DEC) DEC
 
-#define __unitary(DEC) _decimal_unitary_ ## DEC
-#define _unitary(DEC) __unitary(DEC)
+#define __dec2uni(DEC) _dec2uni_ ## DEC
+#define _dec2uni(DEC) __dec2uni(DEC)
 
-#define __unitary_decimal(UN) _unitary_ ## UN
-#define _unitary_decimal(UN) __unitary_decimal(UN)
+#define __uni2dec(UN) _uni2dec_ ## UN
+#define _uni2dec(UN) __uni2dec(UN)
 
-#define __unitary_add(U,V) U ## V
-#define _unitary_add(U,V) __unitary_add(U,V)
+#define __uni_add(U,V) U ## V
+#define _uni_add(U,V) __uni_add(U,V)
 
-#define ____decimal_add(U,V) _unitary_add(U,V)
-#define ___decimal_add(D,E) ____decimal_add(_unitary(D),_unitary(E))
-#define __decimal_add(D,E) _unitary_decimal(___decimal_add(D,E))
-#define _decimal_add(D,E) __decimal_add(D,E)
+#define ____dec_add(U,V) _uni_add(U,V)
+#define ___dec_add(D,E) ____dec_add(_dec2uni(D),_dec2uni(E))
+#define __dec_add(D,E) _uni2dec(___dec_add(D,E))
+#define _dec_add(D,E) __dec_add(D,E)
 
 #define _predecessor_0 minus_1
 
 #define __dec_eval(EDEC) _dec_eval_ ## EDEC
 #define _dec_eval(EDEC) __dec_eval(EDEC)
 
-#define __decimal_minus(D,E) _dec_eval(_itpredecessor_ ## E(D))
-#define _decimal_minus(D,E) __decimal_minus(D,E)
+#define __dec_minus(D,E) /*_dec_eval(*/_itpredecessor_ ## E(D)/*)*/
+#define _dec_minus(D,E) __dec_minus(D,E)
 
 /**
  ** @brief Declare the value @a V and type @a T @a of the M th default
@@ -274,26 +274,26 @@ T NAME ## _defarg_ ## M(void)
    the orwl library itself should not use default arguments for the
    zeroth argument. */
 #ifndef NO_ZERO_DEFARG
-#define _wda_0(NAME, ...) (__VA_ARGS__)
+#define _wda_0(NAME, ...) __VA_ARGS__
 #define ____call_wda(NAME, K, ...) _wda_ ## K(NAME, ## __VA_ARGS__)
 #define ___call_wda(NAME, K, ...) ____call_wda(NAME, K, ## __VA_ARGS__)
-#define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _decimal_minus(M, N), ## __VA_ARGS__)
+#define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _dec_minus(M, N), ## __VA_ARGS__)
 #define _call_wda(NAME, M, ...) __call_wda(NAME, M, _predecessor(_NARG_64(x, ## __VA_ARGS__)), ## __VA_ARGS__)
 # define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), ## __VA_ARGS__
 # define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), ## __VA_ARGS__
 #else
-#define _wda_0(NAME, ...) (__VA_ARGS__)
+#define _wda_0(NAME, ...) __VA_ARGS__
 #define ____call_wda(NAME, K, ...) _wda_ ## K(NAME, __VA_ARGS__)
 #define ___call_wda(NAME, K, ...) ____call_wda(NAME, K, __VA_ARGS__)
-#define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _decimal_minus(M, N), __VA_ARGS__)
+#define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _dec_minus(M, N), __VA_ARGS__)
 #define _call_wda(NAME, M, ...) __call_wda(NAME, M, _predecessor(_NARG_64(x, __VA_ARGS__)), __VA_ARGS__)
 # define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), __VA_ARGS__
 # define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), __VA_ARGS__
 #endif
 
-# define DEFINE_FSYMB(NAME, M, ...) FSYMB(NAME) _call_wda(NAME, M, __VA_ARGS__)
+# define DEFINE_FSYMB(NAME, M, ...) FSYMB(NAME)(_call_wda(NAME, M, __VA_ARGS__))
 
-# define CALL_THE_FUNC(NAME, M, ...) NAME _call_wda(NAME, M, __VA_ARGS__)
+# define CALL_THE_FUNC(NAME, M, ...) NAME(_call_wda(NAME, M, __VA_ARGS__))
 
 /**
  ** @def DEFINE_FSYMB
