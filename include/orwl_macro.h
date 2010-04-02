@@ -186,72 +186,29 @@ _decimal_(__NARG_64(__VA_ARGS__,                                        \
 #define __predecessor(N) _predecessor_ ## N
 #define _predecessor(N) __predecessor(N)
 
+#define _itpredecessor_0(DEC) DEC
 
-#define _call_with_1_1(NAME, ...) (__VA_ARGS__)
-#define _call_with_1_0(NAME, _ign) _call_with_1_1(NAME, NAME ## _defarg_ ## 0())
+#define __unitary(DEC) _decimal_unitary_ ## DEC
+#define _unitary(DEC) __unitary(DEC)
 
-#define _call_with_2_2(NAME, ...) (__VA_ARGS__)
-#define _call_with_2_1(NAME, ...) _call_with_2_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
-#define _call_with_2_0(NAME, _ign) _call_with_2_1(NAME, NAME ## _defarg_ ## 0())
+#define __unitary_decimal(UN) _unitary_ ## UN
+#define _unitary_decimal(UN) __unitary_decimal(UN)
 
-#define _call_with_3_3(NAME, ...) (__VA_ARGS__)
-#define _call_with_3_2(NAME, ...) _call_with_3_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
-#define _call_with_3_1(NAME, ...) _call_with_3_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
-#define _call_with_3_0(NAME, _ign) _call_with_3_1(NAME, NAME ## _defarg_ ## 0())
+#define __unitary_add(U,V) U ## V
+#define _unitary_add(U,V) __unitary_add(U,V)
 
-#define _call_with_4_4(NAME, ...) (__VA_ARGS__)
-#define _call_with_4_3(NAME, ...) _call_with_4_4(NAME, __VA_ARGS__, NAME ## _defarg_ ## 3())
-#define _call_with_4_2(NAME, ...) _call_with_4_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
-#define _call_with_4_1(NAME, ...) _call_with_4_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
-#define _call_with_4_0(NAME, _ign) _call_with_4_1(NAME, NAME ## _defarg_ ## 0())
+#define ____decimal_add(U,V) _unitary_add(U,V)
+#define ___decimal_add(D,E) ____decimal_add(_unitary(D),_unitary(E))
+#define __decimal_add(D,E) _unitary_decimal(___decimal_add(D,E))
+#define _decimal_add(D,E) __decimal_add(D,E)
 
-#define _call_with_5_5(NAME, ...) (__VA_ARGS__)
-#define _call_with_5_4(NAME, ...) _call_with_5_5(NAME, __VA_ARGS__, NAME ## _defarg_ ## 4())
-#define _call_with_5_3(NAME, ...) _call_with_5_4(NAME, __VA_ARGS__, NAME ## _defarg_ ## 3())
-#define _call_with_5_2(NAME, ...) _call_with_5_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
-#define _call_with_5_1(NAME, ...) _call_with_5_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
-#define _call_with_5_0(NAME, _ign) _call_with_5_1(NAME, NAME ## _defarg_ ## 0())
+#define _predecessor_0 minus_1
 
-#define _call_with_6_6(NAME, ...) (__VA_ARGS__)
-#define _call_with_6_5(NAME, ...) _call_with_6_6(NAME, __VA_ARGS__, NAME ## _defarg_ ## 5())
-#define _call_with_6_4(NAME, ...) _call_with_6_5(NAME, __VA_ARGS__, NAME ## _defarg_ ## 4())
-#define _call_with_6_3(NAME, ...) _call_with_6_4(NAME, __VA_ARGS__, NAME ## _defarg_ ## 3())
-#define _call_with_6_2(NAME, ...) _call_with_6_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
-#define _call_with_6_1(NAME, ...) _call_with_6_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
-#define _call_with_6_0(NAME, _ign) _call_with_6_1(NAME, NAME ## _defarg_ ## 0())
+#define __dec_eval(EDEC) _dec_eval_ ## EDEC
+#define _dec_eval(EDEC) __dec_eval(EDEC)
 
-#define _call_with_7_7(NAME, ...) (__VA_ARGS__)
-#define _call_with_7_6(NAME, ...) _call_with_7_7(NAME, __VA_ARGS__, NAME ## _defarg_ ## 6())
-#define _call_with_7_5(NAME, ...) _call_with_7_6(NAME, __VA_ARGS__, NAME ## _defarg_ ## 5())
-#define _call_with_7_4(NAME, ...) _call_with_7_5(NAME, __VA_ARGS__, NAME ## _defarg_ ## 4())
-#define _call_with_7_3(NAME, ...) _call_with_7_4(NAME, __VA_ARGS__, NAME ## _defarg_ ## 3())
-#define _call_with_7_2(NAME, ...) _call_with_7_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
-#define _call_with_7_1(NAME, ...) _call_with_7_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
-#define _call_with_7_0(NAME, _ign) _call_with_7_1(NAME, NAME ## _defarg_ ## 0())
-
-#define _call_with_8_8(NAME, ...) (__VA_ARGS__)
-#define _call_with_8_7(NAME, ...) _call_with_8_8(NAME, __VA_ARGS__, NAME ## _defarg_ ## 7())
-#define _call_with_8_6(NAME, ...) _call_with_8_7(NAME, __VA_ARGS__, NAME ## _defarg_ ## 6())
-#define _call_with_8_5(NAME, ...) _call_with_8_6(NAME, __VA_ARGS__, NAME ## _defarg_ ## 5())
-#define _call_with_8_4(NAME, ...) _call_with_8_5(NAME, __VA_ARGS__, NAME ## _defarg_ ## 4())
-#define _call_with_8_3(NAME, ...) _call_with_8_4(NAME, __VA_ARGS__, NAME ## _defarg_ ## 3())
-#define _call_with_8_2(NAME, ...) _call_with_8_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
-#define _call_with_8_1(NAME, ...) _call_with_8_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
-#define _call_with_8_0(NAME, _ign) _call_with_8_1(NAME, NAME ## _defarg_ ## 0())
-
-#define _call_with_9_9(NAME, ...) (__VA_ARGS__)
-#define _call_with_9_8(NAME, ...) _call_with_9_9(NAME, __VA_ARGS__, NAME ## _defarg_ ## 8())
-#define _call_with_9_7(NAME, ...) _call_with_9_8(NAME, __VA_ARGS__, NAME ## _defarg_ ## 7())
-#define _call_with_9_6(NAME, ...) _call_with_9_7(NAME, __VA_ARGS__, NAME ## _defarg_ ## 6())
-#define _call_with_9_5(NAME, ...) _call_with_9_6(NAME, __VA_ARGS__, NAME ## _defarg_ ## 5())
-#define _call_with_9_4(NAME, ...) _call_with_9_5(NAME, __VA_ARGS__, NAME ## _defarg_ ## 4())
-#define _call_with_9_3(NAME, ...) _call_with_9_4(NAME, __VA_ARGS__, NAME ## _defarg_ ## 3())
-#define _call_with_9_2(NAME, ...) _call_with_9_3(NAME, __VA_ARGS__, NAME ## _defarg_ ## 2())
-#define _call_with_9_1(NAME, ...) _call_with_9_2(NAME, __VA_ARGS__, NAME ## _defarg_ ## 1())
-#define _call_with_9_0(NAME, _ign) _call_with_9_1(NAME, NAME ## _defarg_ ## 0())
-
-#define ___call_with(M, N) _call_with_ ## M ##  _ ## N
-#define __call_with(M, N) ___call_with(M, N)
+#define __decimal_minus(D,E) _dec_eval(_itpredecessor_ ## E(D))
+#define _decimal_minus(D,E) __decimal_minus(D,E)
 
 /**
  ** @brief Declare the value @a V and type @a T @a of the M th default
@@ -312,29 +269,31 @@ T NAME ## _defarg_ ## M(void)
 /*! @see declare_defarg */                                              \
 /*! This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
-/**
- ** @brief Provide a documentation section to a function defined with ::VA_ARGS.
- **/
-
 /* The construct of eating away an empty argument list with `, ## __VA_ARGS__'
    only works for some compilers, namely gcc, icc and IBM. Therefore
    the orwl library itself should not use default arguments for the
    zeroth argument. */
 #ifndef NO_ZERO_DEFARG
-# define _call_with(M, ...) __call_with(M, _predecessor(_NARG_64(x, ## __VA_ARGS__)))
-# define DEFINE_FSYMB(NAME, M, ...)                               \
-  FSYMB(NAME)_call_with(M, ## __VA_ARGS__)(NAME, ## __VA_ARGS__)
+#define _wda_0(NAME, ...) (__VA_ARGS__)
+#define ____call_wda(NAME, K, ...) _wda_ ## K(NAME, ## __VA_ARGS__)
+#define ___call_wda(NAME, K, ...) ____call_wda(NAME, K, ## __VA_ARGS__)
+#define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _decimal_minus(M, N), ## __VA_ARGS__)
+#define _call_wda(NAME, M, ...) __call_wda(NAME, M, _predecessor(_NARG_64(x, ## __VA_ARGS__)), ## __VA_ARGS__)
 # define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), ## __VA_ARGS__
 # define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), ## __VA_ARGS__
-# define CALL_THE_FUNC(NAME, MAX, ...) NAME _call_with(MAX, ## __VA_ARGS__)(NAME, ## __VA_ARGS__)
 #else
-# define _call_with(M, ...) __call_with(M, _predecessor(_NARG_64(x, __VA_ARGS__)))
-# define DEFINE_FSYMB(NAME, M, ...)                              \
-  FSYMB(NAME)_call_with(M, __VA_ARGS__)(NAME, __VA_ARGS__)
+#define _wda_0(NAME, ...) (__VA_ARGS__)
+#define ____call_wda(NAME, K, ...) _wda_ ## K(NAME, __VA_ARGS__)
+#define ___call_wda(NAME, K, ...) ____call_wda(NAME, K, __VA_ARGS__)
+#define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _decimal_minus(M, N), __VA_ARGS__)
+#define _call_wda(NAME, M, ...) __call_wda(NAME, M, _predecessor(_NARG_64(x, __VA_ARGS__)), __VA_ARGS__)
 # define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), __VA_ARGS__
 # define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), __VA_ARGS__
-# define CALL_THE_FUNC(NAME, MAX, ...) NAME _call_with(MAX, __VA_ARGS__)(NAME, __VA_ARGS__)
 #endif
+
+# define DEFINE_FSYMB(NAME, M, ...) FSYMB(NAME) _call_wda(NAME, M, __VA_ARGS__)
+
+# define CALL_THE_FUNC(NAME, M, ...) NAME _call_wda(NAME, M, __VA_ARGS__)
 
 /**
  ** @def DEFINE_FSYMB

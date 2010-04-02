@@ -8,6 +8,7 @@ if 0;               #### for this magic, see findSvnAuthors ####
 
 my $maxnumber = 64;
 my $maxargs = 32;
+my $digit = "1";
 
 for (my $i = 0; $i < 0x10 && $i < $maxnumber; ++$i) {
     printf "#define _decimal_0x%X %d\n", $i, $i;
@@ -26,14 +27,18 @@ for (my $i = 0; $i < 0x1000 && $i < $maxnumber; ++$i) {
 }
 
 for (my $i = 0; $i < $maxnumber; ++$i) {
+    printf "#define _unitary_%s %d\n", ${digit}x$i, $i;
+    printf "#define _decimal_unitary_%d %s\n", $i, ${digit}x$i;
     printf "#define _predecessor_%d %d\n", $i + 1, $i;
+    printf "#define _itpredecessor_%d(DEC) _predecessor(_itpredecessor_%d(DEC))\n", $i + 1, $i;
+    printf "#define _predecessor_minus_%d minus_%d\n", $i, $i + 1;
+    printf "#define _dec_eval_%d %d\n", $i, $i;
+    printf "#define _dec_eval_minus_%d %d\n", $i, -$i;
 }
 
-for (my $i = 1; $i < $maxargs; ++$i) {
-    print "#define _call_with_${i}_0(NAME, _ign) _call_with_${i}_1(NAME, NAME ## _defarg_ ## 0())\n";
-    for (my $j = 1; $j < $i; ++$j) {
-        my $j1 = $j + 1;
-        print "#define _call_with_${i}_${j}(NAME, ...) _call_with_${i}_${j1}(NAME, __VA_ARGS__, NAME ## _defarg_ ## ${j}())\n";
-    }
-    print "#define _call_with_${i}_${i}(NAME, ...) (__VA_ARGS__)\n";
+for (my $i = 1; $i < $maxnumber; ++$i) {
+    my $i0 = $i - 1;
+    print "#define ___wda_${i}(NAME, N, ...) _wda_${i0}(NAME, __VA_ARGS__, NAME ## _defarg_ ## N())\n";
+    print "#define __wda_${i}(NAME, N, ...) ___wda_${i}(NAME, N, __VA_ARGS__)\n";
+    print "#define _wda_${i}(NAME, ...) __wda_${i}(NAME, _predecessor(_NARG_64(x, ## __VA_ARGS__)), __VA_ARGS__)\n";
 }
