@@ -14,6 +14,14 @@
 #include "orwl_inline.h"
 #include "orwl_default_arg.h"
 
+/* This was inspired by BOOT's PP_CAT macro. Using such a thing avoid
+   to define multiple levels of expansion for each macro. */
+#define PASTE2(_1, _2) _1 ## _2
+#define PASTE3(_1, _2, _3) _1 ## _2 ## _3
+#define PASTE4(_1, _2, _3, _4) _1 ## _2 ## _3 ## _4
+#define PASTE5(_1, _2, _3, _4, _5) _1 ## _2 ## _3 ## _4 ## _5
+#define PASTE6(_1, _2, _3, _4, _5, _6) _1 ## _2 ## _3 ## _4 ## _5 ## _6
+
 /**
  ** @brief Return the 64th argument.
  **/
@@ -25,7 +33,7 @@
   ...)                                                                  \
   _40
 
-#define _INV(N) _variable_argument_list_must_be_divisible_by_ ## N
+#define _INV(N) PASTE2(_variable_argument_list_must_be_divisible_by_, N)
 
 #define _NARG_64_1(...)                                                 \
 _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
@@ -100,7 +108,7 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 
 #define __NARG_64(...) _ARG_64(__VA_ARGS__)
 
-#define _MODARG_(_X) _NARG_64_ ## _X
+#define _MODARG_(_X) PASTE2(_NARG_64_,  _X)
 
 /**
  ** @def LEN_MODARG
@@ -179,23 +187,13 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 /*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
 
 
-#define __hex2dec_(HEX) _hex2dec_ ## HEX
-#define _hex2dec_(HEX) __hex2dec_(HEX)
-#define __dec2hex_(DEC) _dec2hex_ ## DEC
-#define _dec2hex_(DEC) __dec2hex_(DEC)
-#define __predecessor(N) _predecessor_ ## N
-#define _predecessor(N) __predecessor(N)
-
+#define _hex2dec_(HEX) PASTE2(_hex2dec_, HEX)
+#define _dec2hex_(DEC) PASTE2(_dec2hex_, DEC)
+#define _predecessor(N) PASTE2(_predecessor_, N)
 #define _itpredecessor_0(DEC) DEC
-
-#define __dec2uni(DEC) _dec2uni_ ## DEC
-#define _dec2uni(DEC) __dec2uni(DEC)
-
-#define __uni2dec(UN) _uni2dec_ ## UN
-#define _uni2dec(UN) __uni2dec(UN)
-
-#define __uni_add(U,V) U ## V
-#define _uni_add(U,V) __uni_add(U,V)
+#define _dec2uni(DEC) PASTE2(_dec2uni_, DEC)
+#define _uni2dec(UN) PASTE2(_uni2dec_, UN)
+#define _uni_add(U,V) PASTE2(U, V)
 
 #define ____dec_add(U,V) _uni_add(U,V)
 #define ___dec_add(D,E) ____dec_add(_dec2uni(D),_dec2uni(E))
@@ -203,12 +201,12 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 #define _dec_add(D,E) __dec_add(D,E)
 
 #define _predecessor_0 minus_1
+#define _dec_eval(EDEC) PASTE2(_dec_eval_, EDEC)
+#define _dec_minus(D,E) PASTE2(_itpredecessor_, E)(D)
 
-#define __dec_eval(EDEC) _dec_eval_ ## EDEC
-#define _dec_eval(EDEC) __dec_eval(EDEC)
-
-#define __dec_minus(D,E) /*_dec_eval(*/_itpredecessor_ ## E(D)/*)*/
-#define _dec_minus(D,E) __dec_minus(D,E)
+#define __PASTE(_N, ...) PASTE2(PASTE, _N)(__VA_ARGS__)
+#define _PASTE(...) __PASTE(_predecessor(_NARG_64(~, __VA_ARGS__)), __VA_ARGS__)
+#define PASTE(...) _PASTE(__VA_ARGS__)
 
 /**
  ** @brief Declare the value @a V and type @a T @a of the M th default
@@ -242,18 +240,17 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 /*! @brief Default initializer for argument M **/                       \
 /*! @return the expression `V' as evaluated at the place of the definition. **/ \
 /*! @see NAME **/                                                       \
-inline T NAME ## _defarg_ ## M(void) { return (V); }                    \
-enum _dummy_ ## NAME ## _defarg_ ## M { _dummy_ ## NAME ## _defarg_ ## M }
+  inline T PASTE(NAME, _defarg_, M)(void) { return (V); }               \
+  enum PASTE(_dummy_, NAME, _defarg_, M) { PASTE(_dummy_, NAME, _defarg_, M) }
 
 /**
  ** @brief Define the symbols that are declared through a
  ** corresponding call ::declare_defarg.
  **/
-#define define_defarg(NAME, M, T)          \
-T NAME ## _defarg_ ## M(void)
+#define define_defarg(NAME, M, T) T PASTE(NAME, _defarg_, M)(void)
 
 /** @internal **/
-#define FSYMB_(NAME) NAME ## _fsymb_
+#define FSYMB_(NAME) PASTE2(NAME, _fsymb_)
 
 /** @brief Mangle @a NAME for the use with ::DEFINE_FSYMB
  **
@@ -276,18 +273,18 @@ T NAME ## _defarg_ ## M(void)
    zeroth argument. */
 #ifndef NO_ZERO_DEFARG
 #define _wda_0(NAME, ...) __VA_ARGS__
-#define ____call_wda(NAME, K, ...) _wda_ ## K(NAME, ## __VA_ARGS__)
+#define ____call_wda(NAME, K, ...) PASTE2(_wda_, K)(NAME, ## __VA_ARGS__)
 #define ___call_wda(NAME, K, ...) ____call_wda(NAME, K, ## __VA_ARGS__)
 #define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _dec_minus(M, N), ## __VA_ARGS__)
-#define _call_wda(NAME, M, ...) __call_wda(NAME, M, _predecessor(_NARG_64(x, ## __VA_ARGS__)), ## __VA_ARGS__)
+#define _call_wda(NAME, M, ...) __call_wda(NAME, M, _predecessor(_NARG_64(~, ## __VA_ARGS__)), ## __VA_ARGS__)
 # define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), ## __VA_ARGS__
 # define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), ## __VA_ARGS__
 #else
 #define _wda_0(NAME, ...) __VA_ARGS__
-#define ____call_wda(NAME, K, ...) _wda_ ## K(NAME, __VA_ARGS__)
+#define ____call_wda(NAME, K, ...) PASTE2(_wda_, K)(NAME, __VA_ARGS__)
 #define ___call_wda(NAME, K, ...) ____call_wda(NAME, K, __VA_ARGS__)
 #define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _dec_minus(M, N), __VA_ARGS__)
-#define _call_wda(NAME, M, ...) __call_wda(NAME, M, _predecessor(_NARG_64(x, __VA_ARGS__)), __VA_ARGS__)
+#define _call_wda(NAME, M, ...) __call_wda(NAME, M, _predecessor(_NARG_64(~, __VA_ARGS__)), __VA_ARGS__)
 # define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), __VA_ARGS__
 # define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), __VA_ARGS__
 #endif
