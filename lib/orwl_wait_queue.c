@@ -27,7 +27,7 @@ DEFINE_ONCE(orwl_wq) {
   pthread_mutexattr_init(&smattr);
 }
 
-orwl_wq* FSYMB(orwl_wq_init)(orwl_wq *wq,
+orwl_wq* orwl_wq_init(orwl_wq *wq,
                                 const pthread_mutexattr_t *attr) {
   INIT_ONCE(orwl_wq);
   if (!attr) attr = &smattr;
@@ -57,7 +57,7 @@ DEFINE_ONCE(orwl_wh) {
   pthread_condattr_init(&scattr);
 }
 
-orwl_wh* FSYMB(orwl_wh_init)(orwl_wh *wh,
+orwl_wh* orwl_wh_init(orwl_wh *wh,
                   const pthread_condattr_t *attr) {
   INIT_ONCE(orwl_wh);
   if (!attr) attr = &scattr;
@@ -90,9 +90,9 @@ int orwl_wq_valid(orwl_wq *wq);
 int orwl_wq_idle(orwl_wq *wq);
 
 /* This supposes that the corresponding wq != NULL */
-void FSYMB(orwl_wh_load)(orwl_wh *wh, uintptr_t howmuch);
+void orwl_wh_load(orwl_wh *wh, uintptr_t howmuch);
 /* This supposes that the corresponding wq != NULL */
-void FSYMB(orwl_wh_unload)(orwl_wh *wh, uintptr_t howmuch);
+void orwl_wh_unload(orwl_wh *wh, uintptr_t howmuch);
 
 orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
   orwl_state ret = orwl_invalid;
@@ -157,7 +157,7 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
   return ret;
 }
 
-orwl_state FSYMB(orwl_wh_acquire)(orwl_wh *wh, uintptr_t howmuch) {
+orwl_state orwl_wh_acquire(orwl_wh *wh, uintptr_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
@@ -172,7 +172,7 @@ orwl_state FSYMB(orwl_wh_acquire)(orwl_wh *wh, uintptr_t howmuch) {
   return ret;
 }
 
-orwl_state FSYMB(orwl_wh_test)(orwl_wh *wh, uintptr_t howmuch) {
+orwl_state orwl_wh_test(orwl_wh *wh, uintptr_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
@@ -217,7 +217,7 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
 
 void orwl_state_destroy(orwl_state *el);
 define_defarg(orwl_state_init, 1, orwl_state);
-orwl_state* FSYMB(orwl_state_init) (orwl_state *el, orwl_state val);
+orwl_state* orwl_state_init (orwl_state *el, orwl_state val);
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_state, {0});
 

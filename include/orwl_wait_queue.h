@@ -37,7 +37,7 @@ DECLARE_ENUM(orwl_state,
 DOCUMENT_INIT(orwl_state)
 FSYMB_DOCUMENTATION(orwl_state_init)
 inline
-orwl_state* FSYMB(orwl_state_init)
+orwl_state* orwl_state_init
 (orwl_state *el,                    /*!< wait queue to initialize */
  orwl_state val                     /*!< defaults to orwl_invalid */
  ) {
@@ -45,7 +45,7 @@ orwl_state* FSYMB(orwl_state_init)
   return el;
 }
 
-#define orwl_state_init(...) DEFINE_FSYMB(orwl_state_init, 2, __VA_ARGS__)
+#define orwl_state_init(...) CALL_THE_FUNC(orwl_state_init, 2, __VA_ARGS__)
 declare_defarg(orwl_state_init, 1, orwl_state, orwl_invalid);
 
 DOCUMENT_DESTROY(orwl_state)
@@ -124,12 +124,12 @@ struct orwl_wh {
 
   DOCUMENT_INIT(orwl_wq)
 FSYMB_DOCUMENTATION(orwl_wq_init)
-orwl_wq* FSYMB(orwl_wq_init)
+orwl_wq* orwl_wq_init
 (orwl_wq *wq,                    /*!< wait queue to initialize */
  const pthread_mutexattr_t *attr /*!< defaults to @c NULL */
 );
 
-#define orwl_wq_init(...) DEFINE_FSYMB(orwl_wq_init, 2, __VA_ARGS__)
+#define orwl_wq_init(...) CALL_THE_FUNC(orwl_wq_init, 2, __VA_ARGS__)
 
 declare_defarg(orwl_wq_init, 1, const pthread_mutexattr_t *, NULL);
 
@@ -197,10 +197,10 @@ int orwl_wq_idle(orwl_wq *wq) {
 
   DOCUMENT_INIT(orwl_wh)
   FSYMB_DOCUMENTATION(orwl_wh_init)
-orwl_wh* FSYMB(orwl_wh_init)
+orwl_wh* orwl_wh_init
 (orwl_wh *wh,
  const pthread_condattr_t *attr /*!< [in] defaults to @c NULL */);
-#define orwl_wh_init(...) DEFINE_FSYMB(orwl_wh_init, 2, __VA_ARGS__)
+#define orwl_wh_init(...) CALL_THE_FUNC(orwl_wh_init, 2, __VA_ARGS__)
 
 declare_defarg(orwl_wh_init, 1, const pthread_condattr_t *, NULL);
 
@@ -254,11 +254,11 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number));
  ** returns orwl_acquired.
  **/
   FSYMB_DOCUMENTATION(orwl_wh_acquire)
-orwl_state FSYMB(orwl_wh_acquire)
+orwl_state orwl_wh_acquire
   (orwl_wh *wh,
    uintptr_t howmuch    /*!< defaults to @c 1 */);
 
-#define orwl_wh_acquire(...) DEFINE_FSYMB(orwl_wh_acquire, 2, __VA_ARGS__)
+#define orwl_wh_acquire(...) CALL_THE_FUNC(orwl_wh_acquire, 2, __VA_ARGS__)
 declare_defarg(orwl_wh_acquire, 1, uintptr_t, 1);
 
 
@@ -281,11 +281,11 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq);
  ** returns orwl_acquired.
  **/
   FSYMB_DOCUMENTATION(orwl_wh_test)
-orwl_state FSYMB(orwl_wh_test)
+orwl_state orwl_wh_test
   (orwl_wh *wh,
    uintptr_t howmuch  /*!< defaults to 0 */);
 
-#define orwl_wh_test(...) DEFINE_FSYMB(orwl_wh_test, 2, __VA_ARGS__)
+#define orwl_wh_test(...) CALL_THE_FUNC(orwl_wh_test, 2, __VA_ARGS__)
 declare_defarg(orwl_wh_test, 1, uintptr_t, 0);
 
 /**
@@ -305,13 +305,13 @@ orwl_state orwl_wh_release(orwl_wh *wh);
    */
   FSYMB_DOCUMENTATION(orwl_wh_load)
 inline
-void FSYMB(orwl_wh_load)
+void orwl_wh_load
   (orwl_wh *wh,
    uintptr_t howmuch  /*!< defaults to 1 */) {
    wh->tokens += howmuch;
 }
 
-#define orwl_wh_load(...) DEFINE_FSYMB(orwl_wh_load, 2, __VA_ARGS__)
+#define orwl_wh_load(...) CALL_THE_FUNC(orwl_wh_load, 2, __VA_ARGS__)
 declare_defarg(orwl_wh_load, 1, uintptr_t, 1);
 
   /** @brief unload @a howmuch additional tokens from @a wh.
@@ -323,7 +323,7 @@ declare_defarg(orwl_wh_load, 1, uintptr_t, 1);
    */
   FSYMB_DOCUMENTATION(orwl_wh_unload)
 inline
-void FSYMB(orwl_wh_unload)
+void orwl_wh_unload
   (orwl_wh *wh,
    uintptr_t howmuch  /*!< defaults to 1 */) {
   wh->tokens -= howmuch;
@@ -331,7 +331,7 @@ void FSYMB(orwl_wh_unload)
   if (!wh->tokens) pthread_cond_broadcast(&wh->cond);
 }
 
-#define orwl_wh_unload(...) DEFINE_FSYMB(orwl_wh_unload, 2, __VA_ARGS__)
+#define orwl_wh_unload(...) CALL_THE_FUNC(orwl_wh_unload, 2, __VA_ARGS__)
 declare_defarg(orwl_wh_unload, 1, uintptr_t, 1);
 
 DECLARE_ORWL_REGISTER(orwl_wh_acquire);

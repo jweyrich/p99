@@ -56,13 +56,13 @@ typedef struct _arg_t {
   size_t phases;
 } arg_t;
 
-arg_t* FSYMB(arg_t_init)(arg_t *arg, size_t def) {
+arg_t* arg_t_init(arg_t *arg, size_t def) {
   arg->mynum = def;
   arg->phases = def;
   return arg;
 }
 
-#define arg_t_init(...) DEFINE_FSYMB(arg_t_init, 2, __VA_ARGS__)
+#define arg_t_init(...) CALL_THE_FUNC(arg_t_init, 2, __VA_ARGS__)
 declare_defarg(arg_t_init, 1, size_t, 0);
 define_defarg(arg_t_init, 1, size_t);
 

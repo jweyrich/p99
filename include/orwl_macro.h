@@ -209,19 +209,21 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 #define PASTE(...) _PASTE(__VA_ARGS__)
 
 /**
- ** @brief Declare the value @a V and type @a T @a of the M th default
- ** argument for @a NAME.
+ ** @brief Declare the value of the @a M th default argument for @a
+ ** NAME to be of value @a V and of type @a T .
  **
  ** @param NAME must have been defined as described for
- ** #DEFINE_FSYMB or #CALL_THE_FUNC.
+ ** #CALL_THE_FUNC.
  **
- ** @param T Obviously, should coincide with the type of the corresponding
- ** argument that is given in the definition of @a NAME.
+ ** @param T Obviously, should coincide with the type of the
+ ** corresponding argument that is given in the definition of the real
+ ** function @a NAME.
  **
- ** @param M The use of this makes only sense if you define it for all possible
- ** @a M to the end of @a NAME's argument list, e.g for 1 and 2 if you
- ** have a function with three arguments (arguments are numbered from
- ** zero upwards). Position @a M as zero, i.e all arguments are
+ ** @param M The position of the argument in the call of @a
+ ** NAME. Positions are counted from 0. The use of this makes only
+ ** sense if you define it for all possible @a M to the end of @a
+ ** NAME's argument list, e.g for 1 and 2 if you have a function with
+ ** three arguments. Position @a M as zero, i.e all arguments are
  ** provided by default, is based on an extension of C99 that is non
  ** standard. Avoid it if you can.
  **
@@ -252,7 +254,7 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 /** @internal **/
 #define FSYMB_(NAME) PASTE2(NAME, _fsymb_)
 
-/** @brief Mangle @a NAME for the use with ::DEFINE_FSYMB
+/** @brief Mangle @a NAME 
  **
  ** This should only be used in declaration and definition of the
  ** function that is hidden behind the macro @a NAME.
@@ -260,10 +262,10 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 #define FSYMB(NAME) FSYMB_(NAME)
 
 /**
- ** @brief Provide a documentation section to a function defined with ::DEFINE_FSYMB.
+ ** @brief Provide a documentation section to a function defined with ::CALL_THE_FUNC
  **/
 #define FSYMB_DOCUMENTATION(NAME)                                       \
-/*! @see DEFINE_FSYMB */                                                \
+/*! @see CALL_THE_FUNC */                                                \
 /*! @see declare_defarg */                                              \
 /*! This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
@@ -289,51 +291,17 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 # define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), __VA_ARGS__
 #endif
 
-# define DEFINE_FSYMB(NAME, M, ...) FSYMB(NAME)(_call_wda(NAME, M, __VA_ARGS__))
-
 # define CALL_THE_FUNC(NAME, M, ...) NAME(_call_wda(NAME, M, __VA_ARGS__))
-
-/**
- ** @def DEFINE_FSYMB
- ** @brief Define a replacement macro for functions that can provide
- ** default arguments to the underlying real function.
- **
- ** The easiest is to explain this with an example
- ** @code
- ** void FSYMB(size_t_init)(size_t *size, size_t def) {
- **   *size = def;
- ** }
- **
- ** #define size_t_init(...) DEFINE_FSYMB(size_t_init, 2, __VA_ARGS__)
- ** declare_defarg(size_t_init, 1, size_t, 0);
- ** @endcode
- **
- ** This declares a macro @c size_t_init that resolves to the call of
- ** a real function (hidden behind a mangled name provided by
- ** FSYMB(size_t_init)) to initialize a @c size_t. If invoked
- ** with two arguments or more, these should be a pointer to the variable and
- ** an initialization value. If this initialization value is omitted
- ** the default value of @c 0 is used. Valid use is
- ** @code
- ** size_t i;
- ** size_t_init(&i, 87);   // initialize i to 87
- ** size_t_init(&i);       // initialize i to 0
- ** @endcode
- ** @param NAME is the function to provide with default argument features.
- ** @param M is the number of arguments that a full call to @a NAME takes.
- ** @see declare_defarg
- **/
 
 /**
  ** @def CALL_THE_FUNC
  ** @brief Define a replacement macro for functions that can provide
  ** default arguments to the underlying real function.
  **
- ** This is similar to ::DEFINE_FSYMB, only that it should be used for
- ** pre-existing function (e.g system functions).
- **
- ** The easiest is to explain this with an example. The system
- ** function @c pthread_mutex_init is defined as follows:
+ ** This macro may be used for `overloading' system functions or
+ ** functions that you define by your own. The easiest is to explain
+ ** this with an example. The system function @c pthread_mutex_init is
+ ** defined as follows:
  **
  ** @code
  ** int pthread_mutex_init(pthread_mutex_t *mut, pthread_mutexattr_t* attr);
@@ -356,16 +324,24 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  **
  ** This declares a macro @c pthread_mutex_init that resolves to the call of
  ** a real function to initialize a @c pthread_mutexattr_t*. If invoked
- ** with two arguments or more, this should be the same types of value as to a
- ** direct call of @c pthread_mutex_init. If this initialization value is omitted
- ** the default value of @c NULL is used. Valid use is
+ ** with two arguments or more, the macro expansion results just in
+ ** the usual call to the function.
+ **
+ ** If this initialization value for argument 1 is omitted (arguments
+ ** count from 0) the default value of @c NULL is used. Valid use is
+ **
  ** @code
  ** static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
  ** static pthread_mutexattr_t attr;
  ** .
  ** pthread_mutex_init(&mut, &attr); // full specification with attributes
  ** pthread_mutex_init(&mut, NULL);  // still a valid form
- ** pthread_mutex_init(&mut);        // easy variant for everyday use
+ **
+ ** // easy variant for everyday use, equivalent to the previous one
+ ** pthread_mutex_init(&mut);
+ **
+ ** // Also function pointers can still be taken.
+ ** int (*myFunc)(pthread_mutex_t *, pthread_mutexattr_t*) = pthread_mutex_init;
  ** @endcode
  ** @param NAME is the function to provide with default argument features.
  ** @param M is the number of arguments that a full call to @a NAME takes.

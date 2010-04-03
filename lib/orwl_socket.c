@@ -70,9 +70,9 @@ bool same_endianess(uint32_t c) {
   return c == mycode;
 }
 
-void FSYMB(orwl_hton)(uint32_t *n, uint64_t const *h, size_t l);
+void orwl_hton(uint32_t *n, uint64_t const *h, size_t l);
 define_defarg(orwl_hton, 2, size_t);
-void FSYMB(orwl_ntoh)(uint64_t* h, uint32_t const *n, size_t l);
+void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l);
 define_defarg(orwl_ntoh, 2, size_t);
 
 static
@@ -106,13 +106,13 @@ DEFINE_ONCE_UPON(inet4_addr) {
 
 in_addr_t inet4_addr(void);
 
-addr_t* FSYMB(addr_t_init)(addr_t *A, in_addr_t I);
+addr_t* addr_t_init(addr_t *A, in_addr_t I);
 
 define_defarg(addr_t_init, 1, in_addr_t);
 
 in_addr_t addr2net(addr_t const*A);
 
-port_t* FSYMB(port_t_init)(port_t *A, in_port_t P);
+port_t* port_t_init(port_t *A, in_port_t P);
 
 define_defarg(port_t_init, 1, in_port_t);
 
@@ -122,7 +122,7 @@ in_port_t port2net(port_t const*A);
 
 
 
-orwl_endpoint* FSYMB(orwl_endpoint_init)
+orwl_endpoint* orwl_endpoint_init
      (orwl_endpoint *endpoint,
       in_addr_t addr,
       in_port_t port
@@ -213,7 +213,7 @@ in_addr_t orwl_inet_addr(char const *name) {
   return ret;
 }
 
-auth_sock* FSYMB(auth_sock_init)(auth_sock *sock,
+auth_sock* auth_sock_init(auth_sock *sock,
                                   int fd,
                                   orwl_server* srv,
                                   size_t len);
@@ -455,7 +455,7 @@ void orwl_host_disconnect(orwl_host *th) {
   }
 }
 
-orwl_host* FSYMB(orwl_host_init)(orwl_host *th, in_addr_t addr, in_port_t port);
+orwl_host* orwl_host_init(orwl_host *th, in_addr_t addr, in_port_t port);
 
 define_defarg(orwl_host_init, 2, in_port_t);
 define_defarg(orwl_host_init, 1, in_addr_t);

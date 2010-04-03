@@ -23,7 +23,7 @@
 #include "orwl_posix_default.h"
 
 inline
-void FSYMB(orwl_hton)(uint32_t *n, uint64_t const *h, size_t l) {
+void orwl_hton(uint32_t *n, uint64_t const *h, size_t l) {
   for (size_t i = 0; i < l; ++i) {
     n[0] = htonl((uint32_t)h[0]);
     n[1] = htonl((uint32_t)(h[0] >> 32));
@@ -32,12 +32,12 @@ void FSYMB(orwl_hton)(uint32_t *n, uint64_t const *h, size_t l) {
   }
 }
 
-#define orwl_hton(...) DEFINE_FSYMB(orwl_hton, 3, __VA_ARGS__)
+#define orwl_hton(...) CALL_THE_FUNC(orwl_hton, 3, __VA_ARGS__)
 declare_defarg(orwl_hton, 2, size_t, 1);
 
 
 inline
-void FSYMB(orwl_ntoh)(uint64_t* h, uint32_t const *n, size_t l) {
+void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l) {
   for (size_t i = 0; i < l; ++i) {
     h[0] = ((uint64_t)ntohl(n[0])) | (((uint64_t)ntohl(n[1])) << 32);
     n += 2;
@@ -45,7 +45,7 @@ void FSYMB(orwl_ntoh)(uint64_t* h, uint32_t const *n, size_t l) {
   }
 }
 
-#define orwl_ntoh(...) DEFINE_FSYMB(orwl_ntoh, 3, __VA_ARGS__)
+#define orwl_ntoh(...) CALL_THE_FUNC(orwl_ntoh, 3, __VA_ARGS__)
 declare_defarg(orwl_ntoh, 2, size_t, 1);
 
 extern in_addr_t orwl_inet_addr(char const *name);
@@ -99,12 +99,12 @@ struct orwl_endpoint {
       }
 
 inline
-addr_t* FSYMB(addr_t_init)(addr_t *A, in_addr_t I) {
+addr_t* addr_t_init(addr_t *A, in_addr_t I) {
   A->a = ntohl(I);
   return A;
 }
 
-#define addr_t_init(...) DEFINE_FSYMB(addr_t_init, 2, __VA_ARGS__)
+#define addr_t_init(...) CALL_THE_FUNC(addr_t_init, 2, __VA_ARGS__)
 declare_defarg(addr_t_init, 1, in_addr_t, TNULL(in_addr_t));
 
 inline
@@ -113,12 +113,12 @@ in_addr_t addr2net(addr_t const*A) {
 }
 
 inline
-port_t* FSYMB(port_t_init)(port_t *A, in_port_t P) {
+port_t* port_t_init(port_t *A, in_port_t P) {
   A->p = ntohs(P);
   return A;
 }
 
-#define port_t_init(...) DEFINE_FSYMB(port_t_init, 2, __VA_ARGS__)
+#define port_t_init(...) CALL_THE_FUNC(port_t_init, 2, __VA_ARGS__)
 declare_defarg(port_t_init, 1, in_port_t, TNULL(in_port_t));
 
 inline
@@ -131,7 +131,7 @@ in_port_t port2net(port_t const*A) {
 DOCUMENT_INIT(orwl_endpoint)
 FSYMB_DOCUMENTATION(orwl_endpoint_init)
 inline
-orwl_endpoint* FSYMB(orwl_endpoint_init)
+orwl_endpoint* orwl_endpoint_init
 (orwl_endpoint *endpoint,
  in_addr_t addr,
  in_port_t port
@@ -148,7 +148,7 @@ void orwl_endpoint_destroy(orwl_endpoint *endpoint) {
 }
 
 
-#define orwl_endpoint_init(...) DEFINE_FSYMB(orwl_endpoint_init, 3, __VA_ARGS__)
+#define orwl_endpoint_init(...) CALL_THE_FUNC(orwl_endpoint_init, 3, __VA_ARGS__)
 
 declare_defarg(orwl_endpoint_init, 2, in_port_t, TNULL(in_port_t));
 declare_defarg(orwl_endpoint_init, 1, in_addr_t, TNULL(in_addr_t));
@@ -182,7 +182,7 @@ void orwl_host_connect(orwl_host *th, orwl_host *q);
 void orwl_host_disconnect(orwl_host *th);
 
 inline
-orwl_host* FSYMB(orwl_host_init)(orwl_host *th, in_addr_t addr, in_port_t port) {
+orwl_host* orwl_host_init(orwl_host *th, in_addr_t addr, in_port_t port) {
   th->next = th;
   th->prev = th;
   th->refs = 0;
@@ -191,7 +191,7 @@ orwl_host* FSYMB(orwl_host_init)(orwl_host *th, in_addr_t addr, in_port_t port) 
   return th;
 }
 
-#define orwl_host_init(...) DEFINE_FSYMB(orwl_host_init, 3, __VA_ARGS__)
+#define orwl_host_init(...) CALL_THE_FUNC(orwl_host_init, 3, __VA_ARGS__)
 declare_defarg(orwl_host_init, 2, in_port_t, 0);
 declare_defarg(orwl_host_init, 1, in_addr_t, 0);
 
@@ -225,7 +225,7 @@ struct auth_sock {
 };
 
 inline
-auth_sock* FSYMB(auth_sock_init)(auth_sock *sock,
+auth_sock* auth_sock_init(auth_sock *sock,
                                   int fd,
                                   orwl_server* srv,
                                   size_t len) {
@@ -242,7 +242,7 @@ declare_defarg(auth_sock_init, 2, orwl_server*, NULL);
 declare_defarg(auth_sock_init, 1, int, -1);
 
 
-#define auth_sock_init(...) DEFINE_FSYMB(auth_sock_init, 4, __VA_ARGS__);
+#define auth_sock_init(...) CALL_THE_FUNC(auth_sock_init, 4, __VA_ARGS__)
 
 void auth_sock_destroy(auth_sock *sock);
 DECLARE_NEW_DELETE(auth_sock);
