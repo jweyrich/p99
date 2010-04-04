@@ -35,10 +35,10 @@ int main(int argc, char **argv) {
                               4,
                               orwl_inet_addr(argv[1]),
                               0);
-  report(stderr, "starting %jX:0x%jX", addr2net(&srv.host.ep.addr), port2net(&srv.host.ep.port));
+  report(stderr, "starting %jX:0x%jX", (uintmax_t)addr2net(&srv.host.ep.addr), (uintmax_t)port2net(&srv.host.ep.port));
   pthread_t id;
   orwl_server_create(&srv, &id);
-  report(stderr, "started %jX:0x%jX, got id 0x%jX", addr2net(&srv.host.ep.addr), port2net(&srv.host.ep.port), (uintmax_t)id);
+  report(stderr, "started %jX:0x%jX, got id 0x%jX", (uintmax_t)addr2net(&srv.host.ep.addr), (uintmax_t)port2net(&srv.host.ep.port), (uintmax_t)id);
 
   rand48_t seed = { addr2net(&srv.host.ep.addr), port2net(&srv.host.ep.port) };
 
@@ -56,9 +56,9 @@ int main(int argc, char **argv) {
       if (ret) break;
       sleepfor(0.2);
     }
-    report(stderr, "server %jX:0x%jX is set up", addr2net(&srv.host.ep.addr), port2net(&srv.host.ep.port));
+    report(stderr, "server %jX:0x%jX is set up", (uintmax_t)addr2net(&srv.host.ep.addr), (uintmax_t)port2net(&srv.host.ep.port));
   } else {
-    report(stderr, "initial server %jX:0x%jX is set up", addr2net(&srv.host.ep.addr), port2net(&srv.host.ep.port));
+    report(stderr, "initial server %jX:0x%jX is set up", (uintmax_t)addr2net(&srv.host.ep.addr), (uintmax_t)port2net(&srv.host.ep.port));
     for (size_t t = 0; t < 1000; ++t) {
       ret = pthread_kill(id, 0);
       if (ret) break;
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
         }
         /* ep.addr and ep.port are already in host order */
         uint64_t mess[4] = { ORWL_OBJID(do_nothing), srv.host.ep.addr.a, srv.host.ep.port.p, t };
-        report(stderr, "sending to /%jX:0x%X/ ", addr2net(&other.addr), (unsigned)port2net(&other.port));
+        report(stderr, "sending to /%jX:0x%X/ ", (uintmax_t)addr2net(&other.addr), (unsigned)port2net(&other.port));
         orwl_send(&other, seed, mess, 4);
       }
     }
