@@ -128,7 +128,7 @@ _routine_arg* _routine_arg_init(_routine_arg *rt,
   return rt;
 }
 
-#define _routine_arg_init(...) CALL_THE_FUNC(_routine_arg_init, 3, __VA_ARGS__)
+#define _routine_arg_init(...) CALL_WITH_DEFAULTS(_routine_arg_init, 3, __VA_ARGS__)
 
 declare_defarg(_routine_arg_init, 2, void*, NULL);
 declare_defarg(_routine_arg_init, 1, start_routine_t, NULL);

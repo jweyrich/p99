@@ -213,7 +213,7 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  ** NAME to be of value @a V and of type @a T .
  **
  ** @param NAME must have been defined as described for
- ** #CALL_THE_FUNC.
+ ** #CALL_WITH_DEFAULTS.
  **
  ** @param T Obviously, should coincide with the type of the
  ** corresponding argument that is given in the definition of the real
@@ -262,10 +262,10 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 #define FSYMB(NAME) FSYMB_(NAME)
 
 /**
- ** @brief Provide a documentation section to a function defined with ::CALL_THE_FUNC
+ ** @brief Provide a documentation section to a function defined with ::CALL_WITH_DEFAULTS
  **/
 #define FSYMB_DOCUMENTATION(NAME)                                       \
-/*! @see CALL_THE_FUNC */                                                \
+/*! @see CALL_WITH_DEFAULTS */                                                \
 /*! @see declare_defarg */                                              \
 /*! This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
@@ -291,10 +291,10 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 # define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), __VA_ARGS__
 #endif
 
-# define CALL_THE_FUNC(NAME, M, ...) NAME(_call_wda(NAME, M, __VA_ARGS__))
+# define CALL_WITH_DEFAULTS(NAME, M, ...) NAME(_call_wda(NAME, M, __VA_ARGS__))
 
 /**
- ** @def CALL_THE_FUNC
+ ** @def CALL_WITH_DEFAULTS
  ** @brief Define a replacement macro for functions that can provide
  ** default arguments to the underlying real function.
  **
@@ -318,7 +318,7 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  ** The following two lines heal this.
  **
  ** @code
- ** #define pthread_mutex_init(...) CALL_THE_FUNC(pthread_mutex_init, 2, __VA_ARGS__)
+ ** #define pthread_mutex_init(...) CALL_WITH_DEFAULTS(pthread_mutex_init, 2, __VA_ARGS__)
  ** declare_defarg(pthread_mutex_init, 1, pthread_mutexattr_t*, NULL);
  ** @endcode
  **
@@ -346,7 +346,153 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  ** @param NAME is the function to provide with default argument features.
  ** @param M is the number of arguments that a full call to @a NAME takes.
  ** @see declare_defarg
+ ** @warning Don't use this if you have give a default for the 0th
+ ** argument of a function. Because of the weird rules for empty
+ ** argument lists of C99 and the preprocessor a more complicated set
+ ** of macros, ::CALL_WITH_DEFAULTS_EVEN_EMPTY, must be used.
  **/
+
+
+#define __cexpr_empty(...) (!# __VA_ARGS__[1])
+
+/** preprocessor macro that results in a compiler expression that is
+ ** true iff the past argument consists of a token that is exactly
+ ** one character wide. */
+#define _cexpr_empty(...) __cexpr_empty(__VA_ARGS__)
+
+/**
+ ** @define expand to a comma token
+ **
+ ** This sometimes needed for trick macros such as
+ ** ::CALL_WITH_DEFAULTS_EVEN_EMPTY to ensure that a macro parameter
+ ** inside a recursion is not empty.
+ **/
+#define _COMMA_ ,
+
+/** preprocessor macro that results in a compiler expression of type
+ ** @a T that corresponds to the variadic argument. The variadic
+ ** argument must already start with a comma. @a DUMMY is a dummy
+ ** variable of type @a T whoes value might be copied once, when not
+ ** optimizing, but will be otherwise ignored.
+ **/
+#define _non_empty_first(T, DUMMY, ...) (((T[2]){ DUMMY __VA_ARGS__ })[1])
+
+/** preprocessor macro that results in a compiler expression of type
+ ** @a T that evaluates either to the variadic argument, if it is
+ ** non-empty, or to the default argument for @a NAME if none such
+ ** argument is given. The variadic argument must already start with a
+ ** comma. @a DUMMY is a dummy variable of type @a T whoes value might
+ ** be copied once, when not optimizing, but will be otherwise
+ ** ignored.
+ **
+ ** The variadic argument or the default function will be evaluated
+ ** only if necessary and at most once. 
+ **/
+#define __if_empty_default(NAME, T, DUMMY, ...) (_cexpr_empty(__VA_ARGS__) ? PASTE2(NAME, _defarg_0)() : _non_empty_first(T, DUMMY, __VA_ARGS__))
+
+#define _IGNORE(...)
+#define _IDENT(...) __VA_ARGS__
+#define _SKIP_ 
+#define _CLAUSE1(...) __VA_ARGS__ _IGNORE
+#define _CLAUSE2(...) _IDENT
+
+/**
+ ** @brief Preprocessor conditional
+ **
+ ** @code
+ ** _if_more_ignore(arg list)(arg list is short)(arg list is long)
+ ** @endcode
+ **
+ **/
+#define _if_more_ignore(...)                                            \
+  _ARG_64(__VA_ARGS__,                                                  \
+          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
+          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
+          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
+          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
+          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
+          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
+          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
+          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2,             \
+                                                                        \
+          _CLAUSE1, _CLAUSE1, _CLAUSE1,                                 \
+          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
+          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
+          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
+          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
+          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
+          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
+          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
+          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1)
+
+/**
+ ** @brief Construct a macro that can even replace argument 0 by a default.
+ **
+ ** This is similar to a macro constructed with ::CALL_WITH_DEFAULTS but
+ ** for the subtle difference of the ::_COMMA_ macro as given here.
+ ** @code
+ ** #define ftester(...) ftester(CALL_WITH_DEFAULTS_EVEN_EMPTY(ftester, 3, _COMMA_ __VA_ARGS__))
+ ** @endcode
+ **
+ ** In difference to ::CALL_WITH_DEFAULTS @c ftester may now even be called
+ ** with an empty argument list:
+ **
+ ** @code
+ ** ftester();
+ ** ftester(a);
+ ** ftester(a, b);
+ ** ftester(a, b, c);
+ ** @endcode
+ **
+ ** The resulting code for the first two cases resembles more to an
+ ** insult than to reasonable code. Basically it ensures the that the
+ ** default function for @c tester and argument 0 gets called exactly
+ ** when its needed. On the other hand the lack of any expression at
+ ** all as an argument still results in something that the compiler
+ ** should be able to digest. Don't ask.
+ **
+ ** The later two cases should result in something, simpler, where
+ ** calls to the default functions are just substituted for missing
+ ** arguments. In particular the last, when @c ftester is called with
+ ** exactly the 3 arguments that it requires, the result should just
+ ** be the identity.
+ **
+ ** But defining things becomes a bit more complicated than with
+ ** ::CALL_WITH_DEFAULTS:
+ ** - The default argument for position 0 @b must be declared and
+ **   defined with ::declare_defarg_0 and ::define_defarg_0
+ **   respectively.
+ ** - Functions with just one argument even need more special care
+ **   since otherwise the real function definition will explode. Use
+ **   something like
+ **
+ ** @code
+ ** #define ftaster(...) CALL_WITH_DEFAULTS_EVEN_EMPTY(ftaster, 1, _COMMA_ __VA_ARGS__)
+ **
+ ** void ftaster _SKIP_ (int A) {
+ **   fprintf(stderr, "ftaster has %d\n", A);
+ ** }
+ **
+ ** declare_defarg_0(ftaster, int, -1);
+ ** @endcode
+ **
+ ** So in addition to the ::_COMMA_ inside the @c define, there must
+ ** also be a ::_SKIP_ in the function definition itself.
+ **/
+#define CALL_WITH_DEFAULTS_EVEN_EMPTY(NAME, M, ...)                     \
+  NAME(                                                                 \
+_if_more_ignore(__VA_ARGS__)                                            \
+(_call_wda(NAME, M, __if_empty_default(NAME, PASTE2(NAME, _def0dummy_t), PASTE2(NAME, _def0dummy), __VA_ARGS__))) \
+(_call_wda(NAME, M __VA_ARGS__))                                        \
+)
+
+#define declare_defarg_0(NAME, T, V)                    \
+typedef T PASTE2(NAME, _def0dummy_t);                  \
+PASTE2(NAME, _def0dummy_t) PASTE2(NAME, _def0dummy);  \
+declare_defarg(NAME, 0, T, V)
+
+#define define_defarg_0(NAME, T) define_defarg(NAME, 0, T)
+
 
 /**
  ** @brief Define an (almost) all purpose initializer

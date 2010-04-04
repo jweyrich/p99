@@ -35,85 +35,85 @@
 // not possible because of the count argument
 
  // pthread_cond_init (3posix) - destroy and initialize condition variables
-#define pthread_cond_init(...) CALL_THE_FUNC(pthread_cond_init, 2, __VA_ARGS__)
+#define pthread_cond_init(...) CALL_WITH_DEFAULTS(pthread_cond_init, 2, __VA_ARGS__)
 declare_defarg(pthread_cond_init, 1, pthread_condattr_t*, NULL);
 
  // pthread_mutex_init (3posix) - destroy and initialize a mutex
-#define pthread_mutex_init(...) CALL_THE_FUNC(pthread_mutex_init, 2, __VA_ARGS__)
+#define pthread_mutex_init(...) CALL_WITH_DEFAULTS(pthread_mutex_init, 2, __VA_ARGS__)
 declare_defarg(pthread_mutex_init, 1, pthread_mutexattr_t*, NULL);
 
  // pthread_rwlock_init (3posix) - destroy and initialize a read-write lock object
-#define pthread_rwlock_init(...) CALL_THE_FUNC(pthread_rwlock_init, 2, __VA_ARGS__)
+#define pthread_rwlock_init(...) CALL_WITH_DEFAULTS(pthread_rwlock_init, 2, __VA_ARGS__)
 declare_defarg(pthread_rwlock_init, 1, pthread_rwlockattr_t*, NULL);
 
  // pthread_spin_init (3posix) - destroy or initialize a spin lock object (ADVANCED REALTIME THREADS)
-#define pthread_spin_init(...) CALL_THE_FUNC(pthread_spin_init, 2, __VA_ARGS__)
+#define pthread_spin_init(...) CALL_WITH_DEFAULTS(pthread_spin_init, 2, __VA_ARGS__)
 declare_defarg(pthread_spin_init, 1, int, PTHREAD_PROCESS_PRIVATE);
 
 // int pthread_key_create (pthread_key_t *__key, void (*__destr_function) (void *))
-#define pthread_key_create(...) CALL_THE_FUNC(pthread_key_create, 2, __VA_ARGS__)
+#define pthread_key_create(...) CALL_WITH_DEFAULTS(pthread_key_create, 2, __VA_ARGS__)
 #if   	ORWL_POSIX_DEFAULT_H_ == 2
 typedef void (*pthread_key_create_arg1_t)(void *);
 #endif
 declare_defarg(pthread_key_create, 1, pthread_key_create_arg1_t, NULL);
 
 
-#define strtoul(...) CALL_THE_FUNC(strtoul, 3, __VA_ARGS__)
+#define strtoul(...) CALL_WITH_DEFAULTS(strtoul, 3, __VA_ARGS__)
 declare_defarg(strtoul, 2, int, 0);
 declare_defarg(strtoul, 1, char **, NULL);
 
-#define strtoull(...) CALL_THE_FUNC(strtoull, 3, __VA_ARGS__)
+#define strtoull(...) CALL_WITH_DEFAULTS(strtoull, 3, __VA_ARGS__)
 declare_defarg(strtoull, 2, int, 0);
 declare_defarg(strtoull, 1, char **, NULL);
 
-#define strtouf(...) CALL_THE_FUNC(strtouf, 2, __VA_ARGS__)
+#define strtouf(...) CALL_WITH_DEFAULTS(strtouf, 2, __VA_ARGS__)
 declare_defarg(strtouf, 1, char **, NULL);
 
-#define strtoud(...) CALL_THE_FUNC(strtoud, 2, __VA_ARGS__)
+#define strtoud(...) CALL_WITH_DEFAULTS(strtoud, 2, __VA_ARGS__)
 declare_defarg(strtoud, 1, char **, NULL);
 
-#define strtould(...) CALL_THE_FUNC(strtould, 2, __VA_ARGS__)
+#define strtould(...) CALL_WITH_DEFAULTS(strtould, 2, __VA_ARGS__)
 declare_defarg(strtould, 1, char **, NULL);
 
 
 // int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
-#define accept(...) CALL_THE_FUNC(accept, 3, __VA_ARGS__)
+#define accept(...) CALL_WITH_DEFAULTS(accept, 3, __VA_ARGS__)
 declare_defarg(accept, 2, socklen_t*, &TNULL(socklen_t));
 declare_defarg(accept, 1, struct sockaddr *, NULL);
 
 // int socket(int domain, int type, int protocol);
-#define socket(...) CALL_THE_FUNC(socket, 3, __VA_ARGS__)
+#define socket(...) CALL_WITH_DEFAULTS(socket, 3, __VA_ARGS__)
 declare_defarg(socket, 2, int, 0);
 declare_defarg(socket, 1, int, SOCK_STREAM);
 
 // int open(const char *pathname, int flags);
 // int open(const char *pathname, int flags, mode_t mode);
-#define open(...) CALL_THE_FUNC(open, 3, __VA_ARGS__)
+#define open(...) CALL_WITH_DEFAULTS(open, 3, __VA_ARGS__)
 declare_defarg(open, 2, mode_t,  S_IRWXU);
 declare_defarg(open, 1, int, O_RDONLY);
 
 // int openat (int __fd, __const char *__file, int __oflag, ...)
-#define openat(...) CALL_THE_FUNC(openat, 4, __VA_ARGS__)
+#define openat(...) CALL_WITH_DEFAULTS(openat, 4, __VA_ARGS__)
 declare_defarg(openat, 3, mode_t,  S_IRWXU);
 declare_defarg(openat, 2, int, O_RDONLY);
 
 // int creat(const char *pathname, mode_t mode);
-#define creat(...) CALL_THE_FUNC(creat, 2, __VA_ARGS__)
+#define creat(...) CALL_WITH_DEFAULTS(creat, 2, __VA_ARGS__)
 declare_defarg(creat, 1, mode_t, S_IRWXU);
 
 // int open64(const char *pathname, int flags);
 // int open64(const char *pathname, int flags, mode_t mode);
-#define open64(...) CALL_THE_FUNC(open64, 3, __VA_ARGS__)
+#define open64(...) CALL_WITH_DEFAULTS(open64, 3, __VA_ARGS__)
 declare_defarg(open64, 2, mode_t,  S_IRWXU);
 declare_defarg(open64, 1, int, O_RDONLY);
 
 // int openat64 (int __fd, __const char *__file, int __oflag, ...)
-#define openat64(...) CALL_THE_FUNC(openat64, 4, __VA_ARGS__)
+#define openat64(...) CALL_WITH_DEFAULTS(openat64, 4, __VA_ARGS__)
 declare_defarg(openat64, 3, mode_t,  S_IRWXU);
 declare_defarg(openat64, 2, int, O_RDONLY);
 
 // int creat(const char *pathname, mode_t mode);
-#define creat64(...) CALL_THE_FUNC(creat64, 2, __VA_ARGS__)
+#define creat64(...) CALL_WITH_DEFAULTS(creat64, 2, __VA_ARGS__)
 declare_defarg(creat64, 1, mode_t, S_IRWXU);
 
 #endif 	    /* !ORWL_POSIX_DEFAULT_H_ */

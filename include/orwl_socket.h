@@ -32,7 +32,7 @@ void orwl_hton(uint32_t *n, uint64_t const *h, size_t l) {
   }
 }
 
-#define orwl_hton(...) CALL_THE_FUNC(orwl_hton, 3, __VA_ARGS__)
+#define orwl_hton(...) CALL_WITH_DEFAULTS(orwl_hton, 3, __VA_ARGS__)
 declare_defarg(orwl_hton, 2, size_t, 1);
 
 
@@ -45,7 +45,7 @@ void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l) {
   }
 }
 
-#define orwl_ntoh(...) CALL_THE_FUNC(orwl_ntoh, 3, __VA_ARGS__)
+#define orwl_ntoh(...) CALL_WITH_DEFAULTS(orwl_ntoh, 3, __VA_ARGS__)
 declare_defarg(orwl_ntoh, 2, size_t, 1);
 
 extern in_addr_t orwl_inet_addr(char const *name);
@@ -104,7 +104,7 @@ addr_t* addr_t_init(addr_t *A, in_addr_t I) {
   return A;
 }
 
-#define addr_t_init(...) CALL_THE_FUNC(addr_t_init, 2, __VA_ARGS__)
+#define addr_t_init(...) CALL_WITH_DEFAULTS(addr_t_init, 2, __VA_ARGS__)
 declare_defarg(addr_t_init, 1, in_addr_t, TNULL(in_addr_t));
 
 inline
@@ -118,7 +118,7 @@ port_t* port_t_init(port_t *A, in_port_t P) {
   return A;
 }
 
-#define port_t_init(...) CALL_THE_FUNC(port_t_init, 2, __VA_ARGS__)
+#define port_t_init(...) CALL_WITH_DEFAULTS(port_t_init, 2, __VA_ARGS__)
 declare_defarg(port_t_init, 1, in_port_t, TNULL(in_port_t));
 
 inline
@@ -148,7 +148,7 @@ void orwl_endpoint_destroy(orwl_endpoint *endpoint) {
 }
 
 
-#define orwl_endpoint_init(...) CALL_THE_FUNC(orwl_endpoint_init, 3, __VA_ARGS__)
+#define orwl_endpoint_init(...) CALL_WITH_DEFAULTS(orwl_endpoint_init, 3, __VA_ARGS__)
 
 declare_defarg(orwl_endpoint_init, 2, in_port_t, TNULL(in_port_t));
 declare_defarg(orwl_endpoint_init, 1, in_addr_t, TNULL(in_addr_t));
@@ -191,7 +191,7 @@ orwl_host* orwl_host_init(orwl_host *th, in_addr_t addr, in_port_t port) {
   return th;
 }
 
-#define orwl_host_init(...) CALL_THE_FUNC(orwl_host_init, 3, __VA_ARGS__)
+#define orwl_host_init(...) CALL_WITH_DEFAULTS(orwl_host_init, 3, __VA_ARGS__)
 declare_defarg(orwl_host_init, 2, in_port_t, 0);
 declare_defarg(orwl_host_init, 1, in_addr_t, 0);
 
@@ -242,7 +242,7 @@ declare_defarg(auth_sock_init, 2, orwl_server*, NULL);
 declare_defarg(auth_sock_init, 1, int, -1);
 
 
-#define auth_sock_init(...) CALL_THE_FUNC(auth_sock_init, 4, __VA_ARGS__)
+#define auth_sock_init(...) CALL_WITH_DEFAULTS(auth_sock_init, 4, __VA_ARGS__)
 
 void auth_sock_destroy(auth_sock *sock);
 DECLARE_NEW_DELETE(auth_sock);

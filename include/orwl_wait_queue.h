@@ -45,7 +45,7 @@ orwl_state* orwl_state_init
   return el;
 }
 
-#define orwl_state_init(...) CALL_THE_FUNC(orwl_state_init, 2, __VA_ARGS__)
+#define orwl_state_init(...) CALL_WITH_DEFAULTS(orwl_state_init, 2, __VA_ARGS__)
 declare_defarg(orwl_state_init, 1, orwl_state, orwl_invalid);
 
 DOCUMENT_DESTROY(orwl_state)
@@ -129,7 +129,7 @@ orwl_wq* orwl_wq_init
  const pthread_mutexattr_t *attr /*!< defaults to @c NULL */
 );
 
-#define orwl_wq_init(...) CALL_THE_FUNC(orwl_wq_init, 2, __VA_ARGS__)
+#define orwl_wq_init(...) CALL_WITH_DEFAULTS(orwl_wq_init, 2, __VA_ARGS__)
 
 declare_defarg(orwl_wq_init, 1, const pthread_mutexattr_t *, NULL);
 
@@ -200,7 +200,7 @@ int orwl_wq_idle(orwl_wq *wq) {
 orwl_wh* orwl_wh_init
 (orwl_wh *wh,
  const pthread_condattr_t *attr /*!< [in] defaults to @c NULL */);
-#define orwl_wh_init(...) CALL_THE_FUNC(orwl_wh_init, 2, __VA_ARGS__)
+#define orwl_wh_init(...) CALL_WITH_DEFAULTS(orwl_wh_init, 2, __VA_ARGS__)
 
 declare_defarg(orwl_wh_init, 1, const pthread_condattr_t *, NULL);
 
@@ -258,7 +258,7 @@ orwl_state orwl_wh_acquire
   (orwl_wh *wh,
    uintptr_t howmuch    /*!< defaults to @c 1 */);
 
-#define orwl_wh_acquire(...) CALL_THE_FUNC(orwl_wh_acquire, 2, __VA_ARGS__)
+#define orwl_wh_acquire(...) CALL_WITH_DEFAULTS(orwl_wh_acquire, 2, __VA_ARGS__)
 declare_defarg(orwl_wh_acquire, 1, uintptr_t, 1);
 
 
@@ -285,7 +285,7 @@ orwl_state orwl_wh_test
   (orwl_wh *wh,
    uintptr_t howmuch  /*!< defaults to 0 */);
 
-#define orwl_wh_test(...) CALL_THE_FUNC(orwl_wh_test, 2, __VA_ARGS__)
+#define orwl_wh_test(...) CALL_WITH_DEFAULTS(orwl_wh_test, 2, __VA_ARGS__)
 declare_defarg(orwl_wh_test, 1, uintptr_t, 0);
 
 /**
@@ -311,7 +311,7 @@ void orwl_wh_load
    wh->tokens += howmuch;
 }
 
-#define orwl_wh_load(...) CALL_THE_FUNC(orwl_wh_load, 2, __VA_ARGS__)
+#define orwl_wh_load(...) CALL_WITH_DEFAULTS(orwl_wh_load, 2, __VA_ARGS__)
 declare_defarg(orwl_wh_load, 1, uintptr_t, 1);
 
   /** @brief unload @a howmuch additional tokens from @a wh.
@@ -331,7 +331,7 @@ void orwl_wh_unload
   if (!wh->tokens) pthread_cond_broadcast(&wh->cond);
 }
 
-#define orwl_wh_unload(...) CALL_THE_FUNC(orwl_wh_unload, 2, __VA_ARGS__)
+#define orwl_wh_unload(...) CALL_WITH_DEFAULTS(orwl_wh_unload, 2, __VA_ARGS__)
 declare_defarg(orwl_wh_unload, 1, uintptr_t, 1);
 
 DECLARE_ORWL_REGISTER(orwl_wh_acquire);
