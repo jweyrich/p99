@@ -19,6 +19,10 @@ void orwl_rq_destroy(orwl_rq *rq);
 DEFINE_ORWL_REGISTER(orwl_rq_serve_request);
 DEFINE_ORWL_REGISTER(orwl_rq_triggered_release);
 
+orwl_rh *orwl_rh_init(orwl_rh *rh);
+void orwl_rh_destroy(orwl_rh *rh);
+orwl_state orwl_acquire(orwl_rh* rh, size_t token);
+orwl_state orwl_test(orwl_rh* rh, size_t token);
 
 orwl_state orwl_request(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed) {
   // insert two wh in the local queue
@@ -61,10 +65,6 @@ orwl_state orwl_release(orwl_rh* rh, rand48_t *seed) {
   return ret;
 }
 
-orwl_state orwl_acquire(orwl_rh* rh, size_t token);
-orwl_state orwl_test(orwl_rh* rh, size_t token);
-
-
 void orwl_rq_serve_request(auth_sock *Arg) {
   // extract wq and the remote wh ID from Arg
   orwl_wq *srv_wq = (orwl_wq*)(void*)(uintptr_t)Arg->mes[1];
@@ -78,7 +78,7 @@ void orwl_rq_serve_request(auth_sock *Arg) {
     orwl_endpoint ep = { .addr = getpeer(Arg), .port = { .p = Arg->mes[3] } };
     uint64_t id = Arg->mes[2];
     // acknowledge the creation of the wh and send back its id
-    Arg->mes[0] = (uintptr_t)srv_wh;
+    Arg->ret = (uintptr_t)srv_wh;
     auth_sock_destroy(Arg);
     // Unfortunately we don't know anybody who could borrow us some
     // randomness, here. So do this after the ack has been send to the
@@ -90,7 +90,7 @@ void orwl_rq_serve_request(auth_sock *Arg) {
     trigger_release(&ep, id, &seed);
   } else {
     // tell other side about the error
-    Arg->mes[0] = 0;
+    Arg->ret = 0;
     orwl_wh_delete(srv_wh);
   }
 }
@@ -121,6 +121,6 @@ void orwl_rq_triggered_release(auth_sock *Arg) {
     state = orwl_wh_release(wh);
   }
   // delete wh and return
-  Arg->mes[0] = state;
+  Arg->ret = state;
   orwl_wh_delete(wh);
 }

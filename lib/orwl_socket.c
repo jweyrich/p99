@@ -241,7 +241,7 @@ DEFINE_THREAD(auth_sock) {
       report(stderr, "finished callback with %zd elements", Arg->len);
     }
   /* Ack the termination of the call */
-  header_t header = { Arg->mes[0] };
+  header_t header = { Arg->ret };
   orwl_send_(Arg->fd, header, header_t_els);
 }
 

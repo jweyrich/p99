@@ -221,6 +221,7 @@ struct auth_sock {
   int fd;
   size_t len;
   uint64_t *mes;
+  uint64_t ret;
 };
 
 inline
