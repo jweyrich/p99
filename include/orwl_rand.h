@@ -11,31 +11,76 @@
 #ifndef   	ORWL_RAND_H_
 # define   	ORWL_RAND_H_
 
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <math.h>
+#include <pthread.h>
 #include "orwl_int.h"
-
-typedef unsigned short rand48_t[3];
-
-inline
-uint32_t orwl_rand(rand48_t xsubi) {
-  return jrand48(xsubi);
-}
-
-inline
-double orwl_drand(rand48_t xsubi) {
-  return erand48(xsubi);
-}
-
-inline
-uint64_t orwl_rand64(rand48_t xsubi) {
-  double ret = ldexp(orwl_drand(xsubi), 48);
-  return (uint64_t)ret;
-}
 
 uint64_t orwl_mix(uint64_t a, uint64_t b);
 
 uint64_t orwl_challenge(uint64_t a);
+
+inline
+uint64_t utime(void) {
+  struct timeval t;
+  gettimeofday(&t, NULL);
+  uint64_t ret = t.tv_sec;
+  ret *= 1000000;
+  ret += t.tv_usec;
+  return ret;
+}
+
+
+struct rand48_t {
+  unsigned short x[3];
+};
+
+#ifndef __cplusplus
+typedef struct rand48_t rand48_t;
+#endif
+
+#define RAND48_T_INITIALIZER { { utime(), getpid(), pthread_self() } }
+
+inline
+rand48_t *rand48_t_init(rand48_t *seed, unsigned short x0, unsigned short x1, unsigned short x2) {
+  seed->x[0] = x0;
+  seed->x[1] = x1;
+  seed->x[2] = x2;
+  return seed;
+}
+
+#define rand48_t_init(...) CALL_WITH_DEFAULTS(rand48_t_init, 4, __VA_ARGS__)
+
+declare_defarg(rand48_t_init, 3, ushort, pthread_self());
+declare_defarg(rand48_t_init, 2, ushort, getpid());
+declare_defarg(rand48_t_init, 1, ushort, utime());
+
+inline
+void rand48_t_destroy(rand48_t *seed){
+  /* empty */
+}
+
+DECLARE_NEW_DELETE(rand48_t);
+
+
+inline
+uint32_t orwl_rand(rand48_t *xsubi) {
+  return jrand48(xsubi->x);
+}
+
+inline
+double orwl_drand(rand48_t *xsubi) {
+  return erand48(xsubi->x);
+}
+
+inline
+uint64_t orwl_rand64(rand48_t *xsubi) {
+  double ret = ldexp(orwl_drand(xsubi), 48);
+  return (uint64_t)ret;
+}
 
 
 #endif 	    /* !ORWL_RAND_H_ */
