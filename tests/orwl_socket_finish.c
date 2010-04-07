@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
                                 4,
                                 orwl_inet_addr(argv[1]),
                                 0);
-    rand48_t seed = { addr2net(&srv.host.ep.addr), port2net(&srv.host.ep.port) };
+    rand48_t seed = RAND48_T_INITIALIZER;
 
     in_addr_t addr = orwl_inet_addr(argv[1]);
     in_port_t port = strtoul(argv[2]);
@@ -80,9 +80,10 @@ int main(int argc, char **argv) {
     orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);
     errno = 0;
     /* wait until the other side is up. */
-    orwl_send(&other, seed, NULL, 0);
+    uint64_t ret = orwl_send(&other, &seed, NULL, 0);
     char messg[245];
-    sprintf(messg, "finish server /%lX:0x%lX/", (ulong)addr, (ulong)port);
+    sprintf(messg, "finish server /%lX:0x%lX/, %jX",
+            (ulong)addr, (ulong)port, (uintmax_t)ret);
     perror(messg);
     errno = 0;
   }

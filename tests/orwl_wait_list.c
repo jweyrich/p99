@@ -79,12 +79,12 @@ DEFINE_THREAD(arg_t) {
   size_t const orwl_mynum = Arg->mynum;
   size_t const phases = Arg->phases;
   /* The buffer for the reentrant pseudo random generator */
-  rand48_t xsubi = { orwl_mynum, orwl_np, time(NULL) };
+  rand48_t seed = RAND48_T_INITIALIZER;
 
   for (size_t orwl_phase = 0; orwl_phase < phases; ++orwl_phase) {
     double const twait = 0.01;
     double const iwait = twait / 10.0;
-    double const rwait = twait * erand48(xsubi);
+    double const rwait = twait * orwl_drand(&seed);
     double const await = twait - rwait;
     /* the position to be requested */
     size_t preq = threadof(orwl_mynum + (orwl_phase>>1)) + (orwl_phase % 2)*orwl_np;
