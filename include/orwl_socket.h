@@ -155,8 +155,7 @@ declare_defarg(orwl_endpoint_init, 1, in_addr_t, TNULL(in_addr_t));
 
 DECLARE_NEW_DELETE(orwl_endpoint);
 
-bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, size_t len);
-
+uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size_t len);
 
 struct orwl_host;
 
@@ -258,6 +257,8 @@ DECLARE_ORWL_REGISTER(insert_peer);
 DECLARE_ORWL_REGISTER(insert_host);
 DECLARE_ORWL_REGISTER(do_nothing);
 
+/* some helper */
+addr_t getpeer(auth_sock *Arg);
 
 
 struct orwl_server {

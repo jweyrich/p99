@@ -241,7 +241,8 @@ DEFINE_THREAD(auth_sock) {
       report(stderr, "finished callback with %zd elements", Arg->len);
     }
   /* Ack the termination of the call */
-  orwl_send_(Arg->fd, TNULL(header_t), header_t_els);
+  header_t header = { Arg->mes[0] };
+  orwl_send_(Arg->fd, header, header_t_els);
 }
 
 orwl_server* orwl_server_init(orwl_server *serv);
@@ -266,7 +267,7 @@ DEFINE_THREAD(orwl_server) {
   int fd_listen = socket(AF_INET);
   if (fd_listen != -1) {
     report(stderr, "found %jX:%jX", (uintmax_t)addr2net(&Arg->host.ep.addr), (uintmax_t)port2net(&Arg->host.ep.port));
-    rand48_t seed = { time(NULL) };
+    rand48_t seed = RAND48_T_INITIALIZER;
     struct sockaddr_in addr = {
       .sin_addr = { .s_addr = addr2net(&Arg->host.ep.addr), },
       .sin_port = port2net(&Arg->host.ep.port),
@@ -287,7 +288,7 @@ DEFINE_THREAD(orwl_server) {
       goto TERMINATE;
     while (fd_listen != -1) {
       /* Do this work before being connected */
-      uint64_t chal = orwl_rand64(seed);
+      uint64_t chal = orwl_rand64(&seed);
       uint64_t repl = orwl_challenge(chal);
       header_t header = INITIALIZER;
 
@@ -342,8 +343,8 @@ DEFINE_THREAD(orwl_server) {
   if (fd_listen != -1) close(fd_listen);
 }
 
-bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, size_t len) {
-  bool ret = true;
+uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size_t len) {
+  uint64_t ret = TONES(uint64_t);
   int fd = -1;
   /* do all this work before opening the socket */
   uint64_t chal = orwl_rand64(seed);
@@ -384,10 +385,12 @@ bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, siz
         goto FINISH;
       /* Receive a final message, until the other end closes the
          connection. */
-      if (orwl_recv_(fd, header, header_t_els))
+      if (orwl_recv_(fd, header, header_t_els)) {
+        ret = header[0];
         goto FINISH;
-      ret = false;
+      }
     }
+    ret = 0;
   } else  {
     /* The other side is not authorized. Terminate. */
     diagnose(fd, "fd %d, you are not who you pretend to be", fd);
@@ -398,7 +401,7 @@ bool orwl_send(orwl_endpoint const* ep, rand48_t seed, uint64_t const* mess, siz
   }
  FINISH:
   close(fd);
-  if (ret && len) report(stderr, "send request didn't succeed");
+  if (ret == TONES(uint64_t) && len) report(stderr, "send request didn't succeed");
   return ret;
 }
 
@@ -466,14 +469,23 @@ void orwl_host_destroy(orwl_host *th);
 
 DEFINE_NEW_DELETE(orwl_host);
 
-
-void insert_peer(auth_sock *Arg) {
+addr_t getpeer(auth_sock *Arg) {
   struct sockaddr_in addr = INITIALIZER;
   if (getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) {
-    report(stderr, "insertion of /%jX:0x%jX/ ", (uintmax_t)addr.sin_addr.s_addr, (uintmax_t)Arg->mes[1]);
+    report(stderr, "getpeer /%jX/ ", (uintmax_t)addr.sin_addr.s_addr);
   }
-  orwl_host *h = NEW_INIT(orwl_host, addr.sin_addr.s_addr);
-  /* mes is already in host order */
+  return (addr_t)ADDR_T_INITIALIZER(addr.sin_addr.s_addr);
+}
+
+
+void insert_peer(auth_sock *Arg) {
+  /* struct sockaddr_in addr = INITIALIZER; */
+  /* if (getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) { */
+  /*   report(stderr, "insertion of /%jX:0x%jX/ ", (uintmax_t)addr.sin_addr.s_addr, (uintmax_t)Arg->mes[1]); */
+  /* } */
+  orwl_host *h = NEW(orwl_host);
+  /* mes and addr_t is already in host order */
+  h->ep.addr = getpeer(Arg);
   h->ep.port.p = Arg->mes[1];
   orwl_host_connect(h, &Arg->srv->host);
 }
