@@ -17,6 +17,7 @@
 #include "orwl_socket.h"
 #include "orwl_rand.h"
 #include "orwl_posix_default.h"
+#include "orwl_remote_queue.h"
 
 static uint32_t mycode = 0;
 
@@ -506,9 +507,13 @@ void do_nothing(auth_sock *Arg) {
 DEFINE_ORWL_REGISTER_ALIAS(insert_peer, auth_sock);
 DEFINE_ORWL_REGISTER_ALIAS(insert_host, auth_sock);
 DEFINE_ORWL_REGISTER_ALIAS(do_nothing, auth_sock);
+DEFINE_ORWL_REGISTER_ALIAS(orwl_rq_serve_request, auth_sock);
+DEFINE_ORWL_REGISTER_ALIAS(orwl_rq_triggered_release, auth_sock);
 
 DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
                          ORWL_REGISTER_ALIAS(insert_peer),
                          ORWL_REGISTER_ALIAS(insert_host),
-                         ORWL_REGISTER_ALIAS(do_nothing)
+                         ORWL_REGISTER_ALIAS(do_nothing),
+                         ORWL_REGISTER_ALIAS(orwl_rq_serve_request),
+                         ORWL_REGISTER_ALIAS(orwl_rq_triggered_release)
                          );

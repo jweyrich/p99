@@ -16,9 +16,6 @@ define_defarg(orwl_rq_init, 2, orwl_endpoint);
 define_defarg(orwl_rq_init, 1, orwl_endpoint);
 void orwl_rq_destroy(orwl_rq *rq);
 
-DEFINE_ORWL_REGISTER(orwl_rq_serve_request);
-DEFINE_ORWL_REGISTER(orwl_rq_triggered_release);
-
 orwl_rh *orwl_rh_init(orwl_rh *rh);
 void orwl_rh_destroy(orwl_rh *rh);
 orwl_state orwl_acquire(orwl_rh* rh, size_t token);
@@ -49,9 +46,6 @@ orwl_state orwl_request(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed) 
   }
   return state;
 }
-
-static
-uint64_t trigger_release(orwl_endpoint *ep, uint64_t id, rand48_t *seed);
 
 orwl_state orwl_release(orwl_rh* rh, rand48_t *seed) {
   orwl_state ret = orwl_wh_release(rh->wh);
@@ -110,3 +104,4 @@ void orwl_rq_triggered_release(auth_sock *Arg) {
   Arg->ret = state;
   orwl_wh_delete(wh);
 }
+

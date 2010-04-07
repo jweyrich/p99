@@ -98,7 +98,6 @@ void orwl_rq_serve_request(auth_sock *Arg);
 void orwl_rq_trigger_acquired(auth_sock *Arg);
 void orwl_rq_triggered_release(auth_sock *Arg);
 
-DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
 DECLARE_ORWL_REGISTER(orwl_rq_serve_request);
 DECLARE_ORWL_REGISTER(orwl_rq_triggered_release);
 
