@@ -56,7 +56,7 @@ uint64_t trigger_release(orwl_endpoint *ep, uint64_t id, rand48_t *seed);
 orwl_state orwl_release(orwl_rh* rh, rand48_t *seed) {
   orwl_state ret = orwl_wh_release(rh->wh);
   if (ret == orwl_valid) {
-    trigger_release(&rh->rq->there, rh->rID, seed);
+    orwl_rpc(&rh->rq->there, seed, orwl_rq_triggered_release, rh->rID);
     orwl_wh_delete(rh->wh);
     orwl_rh_init(rh);
   }
@@ -85,19 +85,12 @@ void orwl_rq_serve_request(auth_sock *Arg) {
     // wait until the lock on wh is obtained
     state = orwl_wh_acquire(srv_wh);
     // send a request to the other side to remove the remote wh ID
-    trigger_release(&ep, id, &seed);
+    orwl_rpc(&ep, &seed, orwl_rq_triggered_release, id);
   } else {
     // tell other side about the error
     Arg->ret = 0;
     orwl_wh_delete(srv_wh);
   }
-}
-
-
-static
-uint64_t trigger_release(orwl_endpoint *ep, uint64_t id, rand48_t *seed) {
-  // send a request to the other side to remove the remote wh ID
-  return orwl_rpc(ep, seed, orwl_rq_triggered_release, id);
 }
 
 /* this is executed first on the client when the lock is acquired and */
