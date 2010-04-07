@@ -479,11 +479,7 @@ addr_t getpeer(auth_sock *Arg) {
 }
 
 
-void insert_peer(auth_sock *Arg) {
-  /* struct sockaddr_in addr = INITIALIZER; */
-  /* if (getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) { */
-  /*   report(stderr, "insertion of /%jX:0x%jX/ ", (uintmax_t)addr.sin_addr.s_addr, (uintmax_t)Arg->mes[1]); */
-  /* } */
+void auth_sock_insert_peer(auth_sock *Arg) {
   orwl_host *h = NEW(orwl_host);
   /* mes and addr_t is already in host order */
   h->ep.addr = getpeer(Arg);
@@ -491,7 +487,7 @@ void insert_peer(auth_sock *Arg) {
   orwl_host_connect(h, &Arg->srv->host);
 }
 
-void insert_host(auth_sock *Arg) {
+void auth_sock_insert_host(auth_sock *Arg) {
   report(stderr, "insertion of /%jX:0x%jX/ ", Arg->mes[1], (uintmax_t)Arg->mes[2]);
   orwl_host *h = NEW(orwl_host);
   /* mes is already in host order */
@@ -500,20 +496,20 @@ void insert_host(auth_sock *Arg) {
   orwl_host_connect(h, &Arg->srv->host);
 }
 
-void do_nothing(auth_sock *Arg) {
+void auth_sock_do_nothing(auth_sock *Arg) {
   /* empty */
 }
 
-DEFINE_ORWL_REGISTER_ALIAS(insert_peer, auth_sock);
-DEFINE_ORWL_REGISTER_ALIAS(insert_host, auth_sock);
-DEFINE_ORWL_REGISTER_ALIAS(do_nothing, auth_sock);
-DEFINE_ORWL_REGISTER_ALIAS(orwl_rq_serve_request, auth_sock);
-DEFINE_ORWL_REGISTER_ALIAS(orwl_rq_triggered_release, auth_sock);
+DEFINE_ORWL_REGISTER_ALIAS(auth_sock_insert_peer, auth_sock);
+DEFINE_ORWL_REGISTER_ALIAS(auth_sock_insert_host, auth_sock);
+DEFINE_ORWL_REGISTER_ALIAS(auth_sock_do_nothing, auth_sock);
+DEFINE_ORWL_REGISTER_ALIAS(auth_sock_request, auth_sock);
+DEFINE_ORWL_REGISTER_ALIAS(auth_sock_release, auth_sock);
 
 DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
-                         ORWL_REGISTER_ALIAS(insert_peer),
-                         ORWL_REGISTER_ALIAS(insert_host),
-                         ORWL_REGISTER_ALIAS(do_nothing),
-                         ORWL_REGISTER_ALIAS(orwl_rq_serve_request),
-                         ORWL_REGISTER_ALIAS(orwl_rq_triggered_release)
+                         ORWL_REGISTER_ALIAS(auth_sock_insert_peer),
+                         ORWL_REGISTER_ALIAS(auth_sock_insert_host),
+                         ORWL_REGISTER_ALIAS(auth_sock_do_nothing),
+                         ORWL_REGISTER_ALIAS(auth_sock_request),
+                         ORWL_REGISTER_ALIAS(auth_sock_release)
                          );

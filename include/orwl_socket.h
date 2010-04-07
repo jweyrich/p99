@@ -257,15 +257,15 @@ void auth_sock_destroy(auth_sock *sock);
 DECLARE_NEW_DELETE(auth_sock);
 DECLARE_THREAD(auth_sock);
 
-void insert_peer(auth_sock *Arg);
-void insert_host(auth_sock *Arg);
-void do_nothing(auth_sock *Arg);
+void auth_sock_insert_peer(auth_sock *Arg);
+void auth_sock_insert_host(auth_sock *Arg);
+void auth_sock_do_nothing(auth_sock *Arg);
 
 DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
 
-DECLARE_ORWL_REGISTER(insert_peer);
-DECLARE_ORWL_REGISTER(insert_host);
-DECLARE_ORWL_REGISTER(do_nothing);
+DECLARE_ORWL_REGISTER(auth_sock_insert_peer);
+DECLARE_ORWL_REGISTER(auth_sock_insert_host);
+DECLARE_ORWL_REGISTER(auth_sock_do_nothing);
 
 /* some helper */
 addr_t getpeer(auth_sock *Arg);

@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
     orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);
     /* wait until the other side is up. */
     /* ep.port is already in host order */
-    while (orwl_rpc(&other, &seed, insert_peer, srv.host.ep.port.p)
+    while (orwl_rpc(&other, &seed, auth_sock_insert_peer, srv.host.ep.port.p)
            == TONES(uint64_t)) {
       ret = pthread_kill(id, 0);
       if (ret) break;
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
         }
         report(stderr, "sending to /%jX:0x%X/ ", (uintmax_t)addr2net(&other.addr), (unsigned)port2net(&other.port));
         /* ep.addr and ep.port are already in host order */
-        orwl_rpc(&other, &seed, do_nothing,
+        orwl_rpc(&other, &seed, auth_sock_do_nothing,
                   srv.host.ep.addr.a, srv.host.ep.port.p, t);
       }
     }

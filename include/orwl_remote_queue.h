@@ -94,12 +94,12 @@ orwl_state orwl_test(orwl_rh* rh, size_t token) {
 }
 
 
-void orwl_rq_serve_request(auth_sock *Arg);
+void auth_sock_request(auth_sock *Arg);
 void orwl_rq_trigger_acquired(auth_sock *Arg);
-void orwl_rq_triggered_release(auth_sock *Arg);
+void auth_sock_release(auth_sock *Arg);
 
-DECLARE_ORWL_REGISTER(orwl_rq_serve_request);
-DECLARE_ORWL_REGISTER(orwl_rq_triggered_release);
+DECLARE_ORWL_REGISTER(auth_sock_request);
+DECLARE_ORWL_REGISTER(auth_sock_release);
 
 
 
