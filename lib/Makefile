@@ -19,6 +19,7 @@ SRC	=					\
 	orwl_posix_default.c			\
 	orwl_rand.c				\
 	orwl_register.c				\
+	orwl_remote_queue.c      		\
 	orwl_socket.c				\
 	orwl_thread.c				\
 	orwl_types.c
