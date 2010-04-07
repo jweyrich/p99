@@ -157,6 +157,15 @@ DECLARE_NEW_DELETE(orwl_endpoint);
 
 uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size_t len);
 
+#define orwl_rpc(EP, SEED, F, ...)                      \
+orwl_send(EP,                                           \
+          SEED,                                         \
+          (uint64_t[ _NARG_64(~, __VA_ARGS__) ]){       \
+            ORWL_OBJID(F),                              \
+              __VA_ARGS__                               \
+              },                                        \
+          _NARG_64(~,  __VA_ARGS__))
+
 struct orwl_host;
 
 typedef struct orwl_host orwl_host;

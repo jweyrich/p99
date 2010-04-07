@@ -48,10 +48,10 @@ int main(int argc, char **argv) {
 
 
     orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);
-    /* ep.port is already in host order */
-    uint64_t mess[2] = {  ORWL_OBJID(insert_peer), srv.host.ep.port.p };
     /* wait until the other side is up. */
-    while (orwl_send(&other, &seed, mess, 2) == TONES(uint64_t)) {
+    /* ep.port is already in host order */
+    while (orwl_rpc(&other, &seed, insert_peer, srv.host.ep.port.p)
+           == TONES(uint64_t)) {
       ret = pthread_kill(id, 0);
       if (ret) break;
       sleepfor(0.2);
@@ -75,10 +75,10 @@ int main(int argc, char **argv) {
           other.port = h->ep.port;
           h = h->next;
         }
-        /* ep.addr and ep.port are already in host order */
-        uint64_t mess[4] = { ORWL_OBJID(do_nothing), srv.host.ep.addr.a, srv.host.ep.port.p, t };
         report(stderr, "sending to /%jX:0x%X/ ", (uintmax_t)addr2net(&other.addr), (unsigned)port2net(&other.port));
-        orwl_send(&other, &seed, mess, 4);
+        /* ep.addr and ep.port are already in host order */
+        orwl_rpc(&other, &seed, do_nothing,
+                  srv.host.ep.addr.a, srv.host.ep.port.p, t);
       }
     }
   }

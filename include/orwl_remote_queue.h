@@ -30,9 +30,7 @@ typedef struct orwl_rq orwl_rq;
 inline
 orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t, uint64_t id) {
   orwl_wq_init(&rq->local);
-  //orwl_endpoint_init(&rq->here);
   rq->here = h;
-  //orwl_endpoint_init(&rq->there);
   rq->there = t;
   rq->ID = id;
   return rq;

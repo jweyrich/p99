@@ -32,18 +32,16 @@ orwl_state orwl_request(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed) 
   orwl_state state = orwl_wq_request(&rq->local, cli_wh, 1, rh->wh, token);
   if (state == orwl_requested) {
     assert(!rh->rq);
-    // send the insertion request with the id of cli_wh to the other side
-    uint64_t mess[4] = { ORWL_OBJID(orwl_rq_serve_request),
-                         rq->ID,
-                         (uintptr_t)cli_wh,
-                         rq->here.port.p
-    };
-    orwl_send(&rq->there, seed, mess, 4);
+    /* Send the insertion request with the id of cli_wh to the other
+       side. As result retrieve the ID on the other side that is to be
+       released when we release here. */
+    rh->rID = orwl_rpc(&rq->there, seed, orwl_rq_serve_request,
+                       rq->ID,
+                       (uintptr_t)cli_wh,
+                       rq->here.port.p
+                       );
     /* Link us to rq */
     rh->rq = rq;
-    /* retrieve the ID on the other side that is to be released when
-       we release here */
-    rh->rID = mess[0];
   } else {
     /* roll back */
     orwl_wh_delete(rh->wh); rh->wh = NULL;
@@ -99,12 +97,7 @@ void orwl_rq_serve_request(auth_sock *Arg) {
 static
 uint64_t trigger_release(orwl_endpoint *ep, uint64_t id, rand48_t *seed) {
   // send a request to the other side to remove the remote wh ID
-  uint64_t back[2] = {
-    ORWL_OBJID(orwl_rq_triggered_release),
-    id
-  };
-  orwl_send(ep, seed, back, 2);
-  return back[0];
+  return orwl_rpc(ep, seed, orwl_rq_triggered_release, id);
 }
 
 /* this is executed first on the client when the lock is acquired and */
