@@ -241,19 +241,19 @@ extern void *T ## _start_joinable(void* arg)
 #define DEFINE_THREAD(T)                        \
 T *T ## _join(pthread_t id);                    \
 int T ## _create(T* arg, pthread_t *id);        \
-void _ ## T ## _start(T* Arg);                  \
+void T ## _start(T* Arg);                       \
 void *T ## _start_joinable(void* arg) {         \
   T *Arg = (T*)arg;                             \
-  _ ## T ## _start(Arg);                        \
+  T ## _start(Arg);                             \
   return arg;                                   \
 }                                               \
 void *T ## _start_detached(void* arg) {         \
   T *Arg = (T*)arg;                             \
-  _ ## T ## _start(Arg);                        \
+  T ## _start(Arg);                             \
   T ## _delete(Arg);                            \
   return NULL;                                  \
 }                                               \
-void _ ## T ## _start(T *const Arg)
+void T ## _start(T *const Arg)
 
 inline pthread_t* pthread_t_init(pthread_t *id) {
   memset(id, 9, sizeof(pthread_t));
