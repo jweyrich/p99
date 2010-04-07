@@ -120,7 +120,7 @@ struct orwl_wh {
 #define orwl_wh_garb ((orwl_wh*)(~(uintptr_t)0))
 #define orwl_wq_garb ((orwl_wq*)(~(uintptr_t)0))
 
-#define ORWL_WQ_INITIALIZER { PTHREAD_MUTEX_INITIALIZER }
+#define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER }
 
   DOCUMENT_INIT(orwl_wq)
 FSYMB_DOCUMENTATION(orwl_wq_init)
