@@ -15,6 +15,7 @@
 #include "orwl_socket.h"
 
 struct orwl_rq {
+  pthread_mutex_t mut;
   orwl_endpoint here;
   orwl_endpoint there;
   uint64_t ID;
@@ -25,10 +26,11 @@ struct orwl_rq {
 typedef struct orwl_rq orwl_rq;
 #endif
 
-#define ORWL_RQ_INITIALIZER { .local = ORWL_WQ_INITIALIZER }
+#define ORWL_RQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .local = ORWL_WQ_INITIALIZER }
 
 inline
 orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t, uint64_t id) {
+  pthread_mutex_init(&rq->mut);
   orwl_wq_init(&rq->local);
   rq->here = h;
   rq->there = t;
@@ -88,10 +90,17 @@ orwl_state orwl_acquire(orwl_rh* rh, size_t token) {
   return orwl_wh_acquire(rh->wh, token);
 }
 
+#define orwl_acquire(...) CALL_WITH_DEFAULTS(orwl_acquire, 2, __VA_ARGS__)
+declare_defarg(orwl_acquire, 1, uintptr_t, 1);
+
+
 inline
 orwl_state orwl_test(orwl_rh* rh, size_t token) {
   return orwl_wh_test(rh->wh, token);
 }
+
+#define orwl_test(...) CALL_WITH_DEFAULTS(orwl_test, 2, __VA_ARGS__)
+declare_defarg(orwl_test, 1, uintptr_t, 0);
 
 
 void auth_sock_request(auth_sock *Arg);
