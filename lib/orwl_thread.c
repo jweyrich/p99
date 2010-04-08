@@ -114,6 +114,7 @@ int orwl_pthread_create_joinable(pthread_t *restrict thread,
  */
 
 typedef struct {
+  sem_t sem;
   start_routine_t start_routine;
   void *arg;
 } _routine_arg;
@@ -123,6 +124,7 @@ typedef struct {
 _routine_arg* _routine_arg_init(_routine_arg *rt,
                                               start_routine_t start_routine,
                                               void* arg) {
+  sem_init(&rt->sem, 0, 0);
   rt->start_routine = start_routine;
   rt->arg = arg;
   return rt;
@@ -148,23 +150,28 @@ void *detached_wrapper(void *routine_arg) {
   _routine_arg *Routine_Arg = routine_arg;
   start_routine_t start_routine = Routine_Arg->start_routine;
   void *restrict arg = Routine_Arg->arg;
-  /* Be careful to eliminate all garbage that the wrapping has
-     generated. */
-  _routine_arg_delete(Routine_Arg);
-  Routine_Arg = NULL;
-  routine_arg = NULL;
   /* This should be fast since usually there should never be a waiter
      block on this semaphore. */
   /* This should return immediately, since we ourselves have posted
      a token */
   void *ret = INITIALIZER;
-  SEM_RELAX(create_sem)
+  SEM_RELAX(create_sem) {
+    /* tell the creator that we are in charge */
+    orwl_sem_post(&Routine_Arg->sem);
     ret = start_routine(arg);
+  }
   /* The remaining part could be a bit slower but usually only at the
      very end of the program and in a situation where a lot of
      threads return simultaneously. */
   MUTUAL_EXCLUDE(create_mutex)
     pthread_cond_broadcast(&create_cond);
+  /* wait if the creator might still be needing the semaphore */
+  sem_wait(&Routine_Arg->sem);
+  /* Be careful to eliminate all garbage that the wrapping has
+     generated. */
+  _routine_arg_delete(Routine_Arg);
+  Routine_Arg = NULL;
+  routine_arg = NULL;
   return ret;
 }
 
@@ -175,10 +182,15 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
   /* Be sure to allocate the pair on the heap to leave full control
      to detached_wrapper() of what to do with it. */
   _routine_arg *Routine_Arg = NEW_INIT(_routine_arg, start_routine, arg);
-  return pthread_create(&(pthread_t){0},
+  int ret = pthread_create(&(pthread_t){0},
                            &attr_detached,
                            detached_wrapper,
                            Routine_Arg);
+  /* Wait until the routine is accounted for */
+  sem_wait(&Routine_Arg->sem);
+  /* Notify that Routine_Arg may savely be delete thereafter */
+  orwl_sem_post(&Routine_Arg->sem);
+  return ret;
 }
 
 void orwl_pthread_wait_detached(void) {
