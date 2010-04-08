@@ -41,7 +41,6 @@ orwl_state orwl_request(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed) 
     state = orwl_wq_request(&rq->local, cli_wh, 1, rh->wh, token);
     if (state == orwl_requested) {
       assert(!rh->rq);
-      report(stderr, "%s, inserted wh %p in local queue", __func__, (void*)cli_wh);
       /* Send the insertion request with the id of cli_wh to the other
          side. As result retrieve the ID on the other side that is to be
          released when we release here. */
@@ -50,7 +49,6 @@ orwl_state orwl_request(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed) 
                          (uintptr_t)cli_wh,
                          rq->here.port.p
                          );
-      report(stderr, "%s, received ID 0x%jX from RPC", __func__, (uintmax_t)rh->rID);
       if (rh->rID) {
         /* Link us to rq */
         rh->rq = rq;
@@ -96,7 +94,6 @@ void auth_sock_request(auth_sock *Arg) {
     // acknowledge the creation of the wh and send back its id
     Arg->ret = (uintptr_t)srv_wh;
     auth_sock_close(Arg);
-    report(stderr, "sent back srv_wh %p, going to acquire", (void*)srv_wh);
     // Unfortunately we don't know anybody who could borrow us some
     // randomness, here. So do this after the ack has been send to the
     // other side and we prepare for waiting a while, anyhow.
@@ -104,7 +101,6 @@ void auth_sock_request(auth_sock *Arg) {
     // wait until the lock on wh is obtained
     state = orwl_wh_acquire(srv_wh);
     // send a request to the other side to remove the remote wh ID
-    report(stderr, "acquired, asking client to release 0x%jX", (uintmax_t)id);
     orwl_rpc(&ep, &seed, auth_sock_release, id);
   } else {
     // tell other side about the error
@@ -118,17 +114,14 @@ void auth_sock_request(auth_sock *Arg) {
 void auth_sock_release(auth_sock *Arg) {
   // extract the wh for Arg
   orwl_wh* wh = (void*)(uintptr_t)Arg->mes[1];
-  report(stderr, "we are asked to release %p", (void*)wh);
   // acquire and release wh
   // * in fact this must already been acquired when we come here,
   // * the acquire only serve to take out the last token.
   // * replace by a test!
   orwl_state state = orwl_wh_acquire(wh);
-  report(stderr, "acquired %p, state is %s", (void*)wh, orwl_state_getname(state));
   if (state == orwl_acquired) {
     state = orwl_wh_release(wh);
   }
-  report(stderr, "released %p, state is %s", (void*)wh, orwl_state_getname(state));
   // delete wh and return
   Arg->ret = state;
   orwl_wh_delete(wh);

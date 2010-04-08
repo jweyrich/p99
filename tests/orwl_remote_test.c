@@ -119,13 +119,12 @@ DEFINE_THREAD(arg_t) {
     orwl_release(handle + pacq, &seed);
     report(!orwl_mynum,  "rel, handle %zu", pacq);
   }
+  report(true, "finished");
+
 }
 
 
 void test_callback(auth_sock *Arg) {
-  diagnose(Arg->fd, "message of size %zd", Arg->len);
-  for (size_t i = 0; i < Arg->len; ++i)
-    report(stdout, "%jX", (uintmax_t)Arg->mes[i]);
   orwl_domain_call(ORWL_FTAB(auth_sock), Arg->mes[0], Arg);
 }
 
@@ -197,13 +196,15 @@ int main(int argc, char **argv) {
 
     report(1, "%s: waiting for %zu detached threads",
            argv[0], orwl_np - orwl_np/2);
-    orwl_server_join(srv_id);
     if (ret) {
       char mesg[256] = INITIALIZER;
       strerror_r(ret, mesg, 256);
       report(stderr, "Server already terminated: %s", mesg);
     }
     orwl_pthread_wait_detached();
+    report(1, "%s: killing server", argv[0]);
+    orwl_server_terminate(&srv);
+    orwl_server_join(srv_id);
     report(stderr, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
     orwl_server_destroy(&srv);
 
