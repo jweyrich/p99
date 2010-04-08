@@ -24,7 +24,7 @@ uint64_t orwl_mix(uint64_t a, uint64_t b);
 uint64_t orwl_challenge(uint64_t a);
 
 inline
-uint64_t utime(void) {
+uint64_t useconds(void) {
   struct timeval t;
   gettimeofday(&t, NULL);
   uint64_t ret = t.tv_sec;
@@ -42,7 +42,7 @@ struct rand48_t {
 typedef struct rand48_t rand48_t;
 #endif
 
-#define RAND48_T_INITIALIZER { { utime(), getpid(), pthread_self() } }
+#define RAND48_T_INITIALIZER { { useconds(), getpid(), pthread_self() } }
 
 inline
 rand48_t *rand48_t_init(rand48_t *seed, unsigned short x0, unsigned short x1, unsigned short x2) {
@@ -56,7 +56,7 @@ rand48_t *rand48_t_init(rand48_t *seed, unsigned short x0, unsigned short x1, un
 
 declare_defarg(rand48_t_init, 3, ushort, pthread_self());
 declare_defarg(rand48_t_init, 2, ushort, getpid());
-declare_defarg(rand48_t_init, 1, ushort, utime());
+declare_defarg(rand48_t_init, 1, ushort, useconds());
 
 inline
 void rand48_t_destroy(rand48_t *seed){
