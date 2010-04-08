@@ -223,9 +223,18 @@ define_defarg(auth_sock_init, 3, size_t);
 define_defarg(auth_sock_init, 2, orwl_server*);
 define_defarg(auth_sock_init, 1, int);
 
+void auth_sock_close(auth_sock *sock) {
+  /* Ack the termination of the call */
+  header_t header = { sock->ret };
+  orwl_send_(sock->fd, header, header_t_els);
+  report(stderr, "sent return value 0x%jX", sock->ret);
+  sleepfor(0.5);
+  close(sock->fd);
+  sock->fd = -1;
+}
 
 void auth_sock_destroy(auth_sock *sock) {
-  if (sock->fd != -1) close(sock->fd);
+  if (sock->fd != -1) auth_sock_close(sock);
   if (sock->mes) uint64_t_vdelete(sock->mes);
   auth_sock_init(sock);
 }
@@ -241,9 +250,7 @@ DEFINE_THREAD(auth_sock) {
       Arg->srv->cb(Arg);
       report(stderr, "finished callback with %zd elements", Arg->len);
     }
-  /* Ack the termination of the call */
-  header_t header = { Arg->ret };
-  orwl_send_(Arg->fd, header, header_t_els);
+  if (Arg->fd != -1) auth_sock_close(Arg);
 }
 
 orwl_server* orwl_server_init(orwl_server *serv);
@@ -386,9 +393,12 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size
         goto FINISH;
       /* Receive a final message, until the other end closes the
          connection. */
-      if (orwl_recv_(fd, header, header_t_els)) {
+      if (!orwl_recv_(fd, header, header_t_els)) {
         ret = header[0];
+        report(stderr, "received 0x%jX from other side", (uintmax_t)ret);
         goto FINISH;
+      } else {
+        report(stderr, "terminal reception not successful");
       }
     }
     ret = 0;
@@ -403,6 +413,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size
  FINISH:
   close(fd);
   if (ret == TONES(uint64_t) && len) report(stderr, "send request didn't succeed");
+  else  report(stderr, "send request returning 0x%jX", (uintmax_t)ret);
   return ret;
 }
 
