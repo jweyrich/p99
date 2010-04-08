@@ -227,8 +227,6 @@ void auth_sock_close(auth_sock *sock) {
   /* Ack the termination of the call */
   header_t header = { sock->ret };
   orwl_send_(sock->fd, header, header_t_els);
-  report(stderr, "sent return value 0x%jX", sock->ret);
-  sleepfor(0.5);
   close(sock->fd);
   sock->fd = -1;
 }
@@ -248,14 +246,32 @@ DEFINE_THREAD(auth_sock) {
     if (Arg->srv && Arg->srv->cb) {
       /* do something with mess here */
       Arg->srv->cb(Arg);
-      report(stderr, "finished callback with %zd elements", Arg->len);
+      //report(stderr, "finished callback with %zd elements", Arg->len);
     }
   if (Arg->fd != -1) auth_sock_close(Arg);
 }
 
 orwl_server* orwl_server_init(orwl_server *serv);
 
+void orwl_server_close(orwl_server *serv) {
+  MUTUAL_EXCLUDE(serv->host.mut)
+    if (serv->fd_listen != -1) {
+      int fd = serv->fd_listen;
+      serv->fd_listen = -1;
+      close(fd);
+    }
+}
+
+
+void orwl_server_terminate(orwl_server *serv, rand48_t *seed) {
+  orwl_send(&serv->host.ep, seed, NULL, 0);
+}
+
+define_defarg(orwl_server_terminate, 1, rand48_t*);
+
+
 void orwl_server_destroy(orwl_server *serv) {
+  orwl_server_close(serv);
   orwl_host *n = NULL;
   MUTUAL_EXCLUDE(serv->host.mut)
     n = serv->host.next;
@@ -272,8 +288,8 @@ DEFINE_NEW_DELETE(orwl_server);
 
 DEFINE_THREAD(orwl_server) {
   report(stderr, "starting server");
-  int fd_listen = socket(AF_INET);
-  if (fd_listen != -1) {
+  Arg->fd_listen = socket(AF_INET);
+  if (Arg->fd_listen != -1) {
     report(stderr, "found %jX:%jX", (uintmax_t)addr2net(&Arg->host.ep.addr), (uintmax_t)port2net(&Arg->host.ep.port));
     rand48_t seed = RAND48_T_INITIALIZER;
     struct sockaddr_in addr = {
@@ -282,19 +298,19 @@ DEFINE_THREAD(orwl_server) {
       .sin_family = AF_INET,
     };
     socklen_t len = sizeof(addr);
-    if (bind(fd_listen, (struct sockaddr*) &addr, sizeof(addr)) == -1)
+    if (bind(Arg->fd_listen, (struct sockaddr*) &addr, sizeof(addr)) == -1)
       goto TERMINATE;
     report(stderr, "bound port 0x%jX", (uintmax_t)port2net(&Arg->host.ep.port));
     /* If the port was not yet specified find and store it. */
     if (!addr.sin_port) {
-      if (getsockname(fd_listen, (struct sockaddr*)&addr, &len) == -1)
+      if (getsockname(Arg->fd_listen, (struct sockaddr*)&addr, &len) == -1)
         goto TERMINATE;
       port_t_init(&Arg->host.ep.port, addr.sin_port);
       report(stderr, "allocated port 0x%jX", (uintmax_t)port2net(&Arg->host.ep.port));
     }
-    if (listen(fd_listen, Arg->max_connections) == -1)
+    if (listen(Arg->fd_listen, Arg->max_connections) == -1)
       goto TERMINATE;
-    while (fd_listen != -1) {
+    while (Arg->fd_listen != -1) {
       /* Do this work before being connected */
       uint64_t chal = orwl_rand64(&seed);
       uint64_t repl = orwl_challenge(chal);
@@ -302,13 +318,13 @@ DEFINE_THREAD(orwl_server) {
 
       if (!repl) {
         report(stderr, "cannot serve without a secret");
-        close(fd_listen);
-        fd_listen = -1;
+        close(Arg->fd_listen);
+        Arg->fd_listen = -1;
         goto TERMINATE;
       }
       int fd = -1;
       do {
-        fd = accept(fd_listen);
+        fd = accept(Arg->fd_listen);
       } while(fd == -1);
 
       /* Receive a challenge from the new connection */
@@ -333,8 +349,8 @@ DEFINE_THREAD(orwl_server) {
           /* The authorized empty message indicates termination */
           diagnose(fd, "Received termination message, closing fd %d", fd);
           close(fd);
-          close(fd_listen);
-          fd_listen = -1;
+          close(Arg->fd_listen);
+          Arg->fd_listen = -1;
           break;
         }
       } else {
@@ -348,7 +364,7 @@ DEFINE_THREAD(orwl_server) {
   if (errno) {
     perror("cannot proceed");
   }
-  if (fd_listen != -1) close(fd_listen);
+  if (Arg->fd_listen != -1) close(Arg->fd_listen);
 }
 
 uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size_t len) {
@@ -395,7 +411,6 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size
          connection. */
       if (!orwl_recv_(fd, header, header_t_els)) {
         ret = header[0];
-        report(stderr, "received 0x%jX from other side", (uintmax_t)ret);
         goto FINISH;
       } else {
         report(stderr, "terminal reception not successful");
@@ -413,7 +428,6 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size
  FINISH:
   close(fd);
   if (ret == TONES(uint64_t) && len) report(stderr, "send request didn't succeed");
-  else  report(stderr, "send request returning 0x%jX", (uintmax_t)ret);
   return ret;
 }
 
@@ -432,8 +446,6 @@ void orwl_host_connect(orwl_host *th, orwl_host *q) {
           th->refs += 2;
           q->prev = th;
           p->next = th;
-          report(stderr, "%p points to %p and %p", (void*)th, (void*)th->prev, (void*)th->next);
-          report(stderr, "%p points to %p and %p", (void*)q, (void*)q->prev, (void*)q->next);
           if (p != q) pthread_mutex_unlock(&p->mut);
         }
         pthread_mutex_unlock(&q->mut);
