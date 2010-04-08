@@ -58,6 +58,14 @@ typedef void (*pthread_key_create_arg1_t)(void *);
 declare_defarg(pthread_key_create, 1, pthread_key_create_arg1_t, NULL);
 
 
+#define strtol(...) CALL_WITH_DEFAULTS(strtol, 3, __VA_ARGS__)
+declare_defarg(strtol, 2, int, 0);
+declare_defarg(strtol, 1, char **, NULL);
+
+#define strtoll(...) CALL_WITH_DEFAULTS(strtoll, 3, __VA_ARGS__)
+declare_defarg(strtoll, 2, int, 0);
+declare_defarg(strtoll, 1, char **, NULL);
+
 #define strtoul(...) CALL_WITH_DEFAULTS(strtoul, 3, __VA_ARGS__)
 declare_defarg(strtoul, 2, int, 0);
 declare_defarg(strtoul, 1, char **, NULL);
@@ -66,14 +74,14 @@ declare_defarg(strtoul, 1, char **, NULL);
 declare_defarg(strtoull, 2, int, 0);
 declare_defarg(strtoull, 1, char **, NULL);
 
-#define strtouf(...) CALL_WITH_DEFAULTS(strtouf, 2, __VA_ARGS__)
-declare_defarg(strtouf, 1, char **, NULL);
+#define strtof(...) CALL_WITH_DEFAULTS(strtof, 2, __VA_ARGS__)
+declare_defarg(strtof, 1, char **, NULL);
 
-#define strtoud(...) CALL_WITH_DEFAULTS(strtoud, 2, __VA_ARGS__)
-declare_defarg(strtoud, 1, char **, NULL);
+#define strtod(...) CALL_WITH_DEFAULTS(strtod, 2, __VA_ARGS__)
+declare_defarg(strtod, 1, char **, NULL);
 
-#define strtould(...) CALL_WITH_DEFAULTS(strtould, 2, __VA_ARGS__)
-declare_defarg(strtould, 1, char **, NULL);
+#define strtold(...) CALL_WITH_DEFAULTS(strtold, 2, __VA_ARGS__)
+declare_defarg(strtold, 1, char **, NULL);
 
 
 // int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
