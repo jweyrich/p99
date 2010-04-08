@@ -26,7 +26,7 @@ void test_callback(auth_sock *Arg) {
 int main(int argc, char **argv) {
   report(stderr, "starting");
   int ret = 0;
-  /* ORWL_TYPE_DYNAMIC_INIT(auth_sock); */
+
   orwl_types_init();
   orwl_server srv
     = ORWL_SERVER_INITIALIZER(

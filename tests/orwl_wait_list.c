@@ -19,7 +19,7 @@
 #include "orwl_wait_queue.h"
 #include "orwl_callback.h"
 
-static orwl_wq location;
+static orwl_wq location = ORWL_WQ_INITIALIZER;
 static orwl_wh *handle = NULL;
 static size_t phases = 4;
 
@@ -127,8 +127,6 @@ int main(int argc, char **argv) {
 
   report(1, "%s: starting with %zu phases and %zu threads",
           argv[0], phases, orwl_np);
-  /* Initialization of the static location */
-  orwl_wq_init(&location);
   handle = orwl_wh_vnew(2 * orwl_np);
 
   /* Half of the threads are created detached and half joinable */
