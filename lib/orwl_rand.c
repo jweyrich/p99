@@ -44,7 +44,7 @@ static char const ENVVAR[] = "ORWL_SECRET";
 DECLARE_ONCE_UPON(secret);
 DEFINE_ONCE_UPON(secret) {
   char const *str = getenv(ENVVAR);
-  if (str) secret = strtoul(str, NULL, 0);
+  if (str) secret = str2uint64_t(str);
 }
 
 uint64_t orwl_challenge(uint64_t a) {

@@ -237,4 +237,3 @@ int orwl_sem_trywait(sem_t *sem);
 int orwl_sem_wait(sem_t *sem);
 int orwl_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout);
 
-define_defarg(pthread_mutex_init, 1, pthread_mutexattr_t*);

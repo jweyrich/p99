@@ -15,6 +15,7 @@
 #include <stddef.h>
 #include "orwl_macro.h"
 #include "orwl_new.h"
+#include "orwl_posix_default.h"
 
 /* For each one word integer type have a signed and unsigned variant. */
 typedef unsigned long ulong;
@@ -127,6 +128,46 @@ DECLARE_BASIC_TYPE(int32_t);
 DECLARE_BASIC_TYPE(uint32_t);
 DECLARE_BASIC_TYPE(int64_t);
 DECLARE_BASIC_TYPE(uint64_t);
+
+#define _STRTO(T, ...)                          \
+(ISSIGNED(T)                                    \
+ ? ((sizeof(T) == sizeof(long))                 \
+    ? (T)strtol(__VA_ARGS__)                    \
+    : (T)strtoll(__VA_ARGS__))                  \
+ : ((sizeof(T) == sizeof(unsigned long))        \
+    ? (T)strtoul(__VA_ARGS__)                   \
+    : (T)strtoull(__VA_ARGS__)))
+
+#define str2dobule(...) strtod(__VA_ARGS__)
+#define str2float(...) strtof(__VA_ARGS__)
+#define str2ulong(...) _STRTO(ulong, __VA_ARGS__)
+#define str2slong(...) _STRTO(slong, __VA_ARGS__)
+#define str2long(...) _STRTO(long, __VA_ARGS__)
+#define str2uint(...) _STRTO(uint, __VA_ARGS__)
+#define str2sint(...) _STRTO(sint, __VA_ARGS__)
+#define str2int(...) _STRTO(int, __VA_ARGS__)
+#define str2ushort(...) _STRTO(ushort, __VA_ARGS__)
+#define str2short(...) _STRTO(short, __VA_ARGS__)
+#define str2uchar(...) _STRTO(uchar, __VA_ARGS__)
+#define str2schar(...) _STRTO(schar, __VA_ARGS__)
+#define str2unsigned(...) _STRTO(unsigned, __VA_ARGS__)
+#define str2signed(...) _STRTO(signed, __VA_ARGS__)
+#define str2size_t(...) _STRTO(size_t, __VA_ARGS__)
+#define str2ssize_t(...) _STRTO(ssize_t, __VA_ARGS__)
+#define str2intmax_t(...) _STRTO(intmax_t, __VA_ARGS__)
+#define str2uintmax_t(...) _STRTO(uintmax_t, __VA_ARGS__)
+#define str2intptr_t(...) _STRTO(intptr_t, __VA_ARGS__)
+#define str2uintptr_t(...) _STRTO(uintptr_t, __VA_ARGS__)
+#define str2ptrdiff_t(...) _STRTO(ptrdiff_t, __VA_ARGS__)
+#define str2int8_t(...) _STRTO(int8_t, __VA_ARGS__)
+#define str2uint8_t(...) _STRTO(uint8_t, __VA_ARGS__)
+#define str2int16_t(...) _STRTO(int16_t, __VA_ARGS__)
+#define str2uint16_t(...) _STRTO(uint16_t, __VA_ARGS__)
+#define str2int32_t(...) _STRTO(int32_t, __VA_ARGS__)
+#define str2uint32_t(...) _STRTO(uint32_t, __VA_ARGS__)
+#define str2int64_t(...) _STRTO(int64_t, __VA_ARGS__)
+#define str2uint64_t(...) _STRTO(uint64_t, __VA_ARGS__)
+
 
 
 #endif 	    /* !ORWL_INT_H_ */

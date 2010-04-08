@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
     rand48_t seed = RAND48_T_INITIALIZER;
 
     in_addr_t addr = orwl_inet_addr(argv[1]);
-    in_port_t port = strtoul(argv[2]);
+    in_port_t port = str2uint16_t(argv[2]);
     report(stderr, "ending %jX:0x%jX", (uintmax_t)addr, (uintmax_t)port);
 
     orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);

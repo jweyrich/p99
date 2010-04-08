@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 
   if (argc > 2) {
     in_addr_t addr = orwl_inet_addr(argv[2]);
-    in_port_t port = strtoul(argv[3]);
+    in_port_t port = str2uint16_t(argv[3]);
 
 
     orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);

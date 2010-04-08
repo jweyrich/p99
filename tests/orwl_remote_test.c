@@ -130,8 +130,8 @@ void test_callback(auth_sock *Arg) {
 
 int main(int argc, char **argv) {
   int ret = 0;
-  if (argc > 2) phases = strtoull(argv[2]);
-  if (argc > 3) orwl_np = strtoull(argv[3]);
+  if (argc > 2) phases = str2size_t(argv[2]);
+  if (argc > 3) orwl_np = str2size_t(argv[3]);
 
   report(1, "%s: starting with %zu phases and %zu threads",
           argv[0], phases, orwl_np);
@@ -151,13 +151,13 @@ int main(int argc, char **argv) {
 
   if (argc > 4) {
     in_addr_t addr = orwl_inet_addr(argv[4]);
-    in_port_t port = strtoull(argv[5]);
+    in_port_t port = str2uint16_t(argv[5]);
 
 
     orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);
 
     /* Initialization of the static location */
-    orwl_rq_init(&location, srv.host.ep, other, strtoull(argv[6]));
+    orwl_rq_init(&location, srv.host.ep, other, str2uint64_t(argv[6]));
 
     report(stderr, "remote id is 0x%jX", (uintmax_t)location.ID);
 
