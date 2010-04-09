@@ -16,6 +16,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <errno.h>
+#include <stdio.h>
 
 #include "orwl_int.h"
 
@@ -393,6 +394,21 @@ SAVE_BLOCK(                                     \
            &(SEM),                              \
            orwl_sem_wait(sem),                  \
            orwl_sem_post(sem))
+
+inline
+char const* pthread2str(char *buf, pthread_t id) {
+  uchar *p = (uchar*)&id;
+  for (unsigned i = 0; i < sizeof(pthread_t); ++i) {
+    snprintf(buf + 2*i, 3, "%02" PRIX8, p[i]);
+  }
+  return buf;
+}
+
+
+#define PTHREAD2STR(ID) pthread2str((char[1 + sizeof(pthread_t) * 2]){0}, ID)
+
+
+
 
 
 #endif 	    /* !ORWL_THREAD_H_ */

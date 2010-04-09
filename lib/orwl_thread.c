@@ -22,7 +22,7 @@ size_t orwl_np = ~(size_t)0;
 size_t orwl_phase = 0;
 
 void orwl_report(size_t mynum, size_t np, size_t phase, char const* format, ...) {
-  static char const form0[] = "%0*jX:%08zX: %s\n";
+  static char const form0[] = "%s:%zX: %s\n";
   static char const form1[] = "%0*zX/%zX:%08zX: %s\n";
   static size_t const headstart =
     (sizeof(form0) < sizeof(form1) ? sizeof(form1) : sizeof(form0))
@@ -32,8 +32,7 @@ void orwl_report(size_t mynum, size_t np, size_t phase, char const* format, ...)
   char *head = malloc(headlen);
   if (mynum == (size_t)-1)
     snprintf(head, headlen, form0,
-             (int)(sizeof(uintmax_t)/4),
-             (uintmax_t)pthread_self(),
+             PTHREAD2STR(pthread_self()),
              phase, format);
   else
     snprintf(head, headlen, form1,
@@ -237,3 +236,4 @@ int orwl_sem_trywait(sem_t *sem);
 int orwl_sem_wait(sem_t *sem);
 int orwl_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout);
 
+char const* pthread2str(char *buf, pthread_t id);

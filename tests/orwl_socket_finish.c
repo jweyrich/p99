@@ -24,11 +24,11 @@ define_defarg_0(ftaster, int);
 #define ftaster(...) CALL_WITH_DEFAULTS_EVEN_EMPTY(ftaster, 1, _COMMA_ __VA_ARGS__)
 
 void ftaster _SKIP_ (int A) {
-  report(stderr, "ftaster has %d", A);
+  report(1, "ftaster has %d", A);
 }
 
 void ftister(int A, unsigned B) {
-  report(stderr, "ftister has %d %u", A, B);
+  report(1, "ftister has %d %u", A, B);
 }
 declare_defarg(ftister, 1, unsigned, 1);
 declare_defarg_0(ftister, int, -2);
@@ -40,7 +40,7 @@ define_defarg_0(ftister, int);
 typedef struct { int x; } test_t;
 
 void ftester(test_t A, unsigned B, double C) {
-  report(stderr, "ftester has %d %u %g", A.x, B, C);
+  report(1, "ftester has %d %u %g", A.x, B, C);
 }
 declare_defarg(ftester, 2, double, 0.5);
 declare_defarg(ftester, 1, unsigned, 2);
@@ -55,12 +55,12 @@ define_defarg_0(ftester, test_t);
 void test_callback(auth_sock *Arg) {
   diagnose(Arg->fd, "message of size %zd", Arg->len);
   for (size_t i = 0; i < Arg->len; ++i)
-    report(stdout, "%jX", (uintmax_t)Arg->mes[i]);
+    report(stdout, "%" PRIX64, Arg->mes[i]);
   orwl_domain_call(ORWL_FTAB(auth_sock), Arg->mes[0], Arg);
 }
 
 int main(int argc, char **argv) {
-  report(stderr, "starting");
+  report(1, "starting");
   /* ORWL_TYPE_DYNAMIC_INIT(auth_sock); */
   orwl_types_init();
   if (argc > 2) {
@@ -75,15 +75,15 @@ int main(int argc, char **argv) {
 
     in_addr_t addr = orwl_inet_addr(argv[1]);
     in_port_t port = str2uint16_t(argv[2]);
-    report(stderr, "ending %jX:0x%jX", (uintmax_t)addr, (uintmax_t)port);
+    report(1, "ending %" PRIX32 ":0x%" PRIX16, addr, port);
 
     orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);
     errno = 0;
     /* wait until the other side is up. */
     uint64_t ret = orwl_send(&other, &seed, NULL, 0);
     char messg[245];
-    sprintf(messg, "finish server /%lX:0x%lX/, %jX",
-            (ulong)addr, (ulong)port, (uintmax_t)ret);
+    sprintf(messg, "finish server /%" PRIX32 ":0x%" PRIX16 "/, %" PRIX64 "",
+            addr, port, ret);
     perror(messg);
     errno = 0;
   }

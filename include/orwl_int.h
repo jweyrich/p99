@@ -12,6 +12,7 @@
 # define   	ORWL_INT_H_
 
 #include <stdint.h>
+#include <inttypes.h>
 #include <stddef.h>
 #include "orwl_macro.h"
 #include "orwl_new.h"

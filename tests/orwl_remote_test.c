@@ -144,7 +144,9 @@ int main(int argc, char **argv) {
                               4,
                               orwl_inet_addr(argv[1]),
                               0);
-  report(stderr, "starting %jX:0x%jX", (uintmax_t)addr2net(&srv.host.ep.addr), (uintmax_t)port2net(&srv.host.ep.port));
+  report(1, "starting %" PRIX32 ":0x%" PRIX16 "",
+         addr2net(&srv.host.ep.addr),
+         port2net(&srv.host.ep.port));
   pthread_t srv_id;
   orwl_server_create(&srv, &srv_id);
   rand48_t seed = RAND48_T_INITIALIZER;
@@ -154,12 +156,13 @@ int main(int argc, char **argv) {
     in_port_t port = str2uint16_t(argv[5]);
 
 
+    report(1, "connecting to %" PRIX32 ":0x%" PRIX16, addr, port);
     orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);
 
     /* Initialization of the static location */
     orwl_rq_init(&location, srv.host.ep, other, str2uint64_t(argv[6]));
 
-    report(stderr, "remote id is 0x%jX", (uintmax_t)location.ID);
+    report(1, "remote id is 0x%" PRIX64, location.ID);
 
     /* wait until the other side is up. */
     /* ep.port is already in host order */
@@ -169,7 +172,9 @@ int main(int argc, char **argv) {
       if (ret) break;
       sleepfor(0.2);
     }
-    report(stderr, "server %jX:0x%jX is set up", (uintmax_t)addr2net(&srv.host.ep.addr), (uintmax_t)port2net(&srv.host.ep.port));
+    report(1, "server %" PRIX32 ":0x%" PRIX16 " is set up",
+           addr2net(&srv.host.ep.addr),
+           port2net(&srv.host.ep.port));
     handle = orwl_rh_vnew(2 * orwl_np);
 
 
@@ -199,13 +204,13 @@ int main(int argc, char **argv) {
     if (ret) {
       char mesg[256] = INITIALIZER;
       strerror_r(ret, mesg, 256);
-      report(stderr, "Server already terminated: %s", mesg);
+      report(1, "Server already terminated: %s", mesg);
     }
     orwl_pthread_wait_detached();
     report(1, "%s: killing server", argv[0]);
     orwl_server_terminate(&srv);
     orwl_server_join(srv_id);
-    report(stderr, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
+    report(1, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
     orwl_server_destroy(&srv);
 
     report(1, "freeing arg");
@@ -218,15 +223,15 @@ int main(int argc, char **argv) {
     orwl_rq_destroy(&location);
   }  else {
     orwl_wq location = ORWL_WQ_INITIALIZER;
-    report(stderr, "set up initial server 0x%jX 0x%jX 0x%jX",
-           (uintmax_t)addr2net(&srv.host.ep.addr),
-           (uintmax_t)port2net(&srv.host.ep.port),
-           (uintmax_t)(uintptr_t)&location);
+    report(1, "set up initial server 0x%" PRIX32 " 0x%" PRIX16 " %p",
+           addr2net(&srv.host.ep.addr),
+           port2net(&srv.host.ep.port),
+           (void*)&location);
     for (size_t t = 0; t < 1000; ++t) {
       ret = pthread_kill(srv_id, 0);
       if (ret) break;
       sleepfor(1.0);
-      report(stderr, "looping %jd", (uintmax_t)t);
+      report(1, "looping %zd", t);
     }
     orwl_server_join(srv_id);
   }

@@ -19,12 +19,12 @@
 void test_callback(auth_sock *Arg) {
   diagnose(Arg->fd, "message of size %zd", Arg->len);
   for (size_t i = 0; i < Arg->len; ++i)
-    report(stdout, "%jX", (uintmax_t)Arg->mes[i]);
+    report(stdout, "%" PRIX64 "", Arg->mes[i]);
   orwl_domain_call(ORWL_FTAB(auth_sock), Arg->mes[0], Arg);
 }
 
 int main(int argc, char **argv) {
-  report(stderr, "starting");
+  report(1, "starting");
   int ret = 0;
 
   orwl_types_init();
@@ -35,10 +35,15 @@ int main(int argc, char **argv) {
                               4,
                               orwl_inet_addr(argv[1]),
                               0);
-  report(stderr, "starting %jX:0x%jX", (uintmax_t)addr2net(&srv.host.ep.addr), (uintmax_t)port2net(&srv.host.ep.port));
+  report(1, "starting %" PRIX32 ":0x%" PRIX16,
+         addr2net(&srv.host.ep.addr),
+         port2net(&srv.host.ep.port));
   pthread_t id;
   orwl_server_create(&srv, &id);
-  report(stderr, "started %jX:0x%jX, got id 0x%jX", (uintmax_t)addr2net(&srv.host.ep.addr), (uintmax_t)port2net(&srv.host.ep.port), (uintmax_t)id);
+  report(1, "started %" PRIX32 ":0x%" PRIX16 ", got id 0x%" PRIX64,
+         addr2net(&srv.host.ep.addr),
+         port2net(&srv.host.ep.port),
+         id);
 
   rand48_t seed = RAND48_T_INITIALIZER;
 
@@ -56,18 +61,22 @@ int main(int argc, char **argv) {
       if (ret) break;
       sleepfor(0.2);
     }
-    report(stderr, "server %jX:0x%jX is set up", (uintmax_t)addr2net(&srv.host.ep.addr), (uintmax_t)port2net(&srv.host.ep.port));
+    report(1, "server %" PRIX32 ":0x%" PRIX16 " is set up",
+           addr2net(&srv.host.ep.addr),
+           port2net(&srv.host.ep.port));
   } else {
-    report(stderr, "initial server %jX:0x%jX is set up", (uintmax_t)addr2net(&srv.host.ep.addr), (uintmax_t)port2net(&srv.host.ep.port));
+    report(1, "initial server %" PRIX32 ":0x%" PRIX16 " is set up",
+           addr2net(&srv.host.ep.addr),
+           port2net(&srv.host.ep.port));
     for (size_t t = 0; t < 1000; ++t) {
       ret = pthread_kill(id, 0);
       if (ret) break;
       sleepfor(1.0);
-      report(stderr, "looping %jd", (uintmax_t)t);
+      report(1, "looping %zd", t);
       orwl_host *n = NULL;
       MUTUAL_EXCLUDE(srv.host.mut)
         n = srv.host.next;
-      report(stderr, "%p -- %p", (void*)&srv.host, (void*)n);
+      report(1, "%p -- %p", (void*)&srv.host, (void*)n);
       for (orwl_host *h = n; h != &srv.host; ) {
         orwl_endpoint other = { INITIALIZER };
         MUTUAL_EXCLUDE(h->mut) {
@@ -75,7 +84,9 @@ int main(int argc, char **argv) {
           other.port = h->ep.port;
           h = h->next;
         }
-        report(stderr, "sending to /%jX:0x%X/ ", (uintmax_t)addr2net(&other.addr), (unsigned)port2net(&other.port));
+        report(1, "sending to /%" PRIX32 ":0x%" PRIX16 "/ ",
+               addr2net(&other.addr),
+               port2net(&other.port));
         /* ep.addr and ep.port are already in host order */
         orwl_rpc(&other, &seed, auth_sock_do_nothing,
                   srv.host.ep.addr.a, srv.host.ep.port.p, t);
@@ -87,9 +98,9 @@ int main(int argc, char **argv) {
   if (ret) {
     char mesg[256] = INITIALIZER;
     strerror_r(ret, mesg, 256);
-    report(stderr, "Server already terminated: %s", mesg);
+    report(1, "Server already terminated: %s", mesg);
   }
   orwl_pthread_wait_detached();
-  report(stderr, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
+  report(1, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
   orwl_server_destroy(&srv);
 }

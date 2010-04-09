@@ -194,7 +194,7 @@ in_addr_t orwl_inet_addr(char const *name) {
     .ai_socktype = SOCK_STREAM,
   };
   getaddrinfo(name, NULL, &hints, &res);
-  report(stderr, "%s's canonical name is %s", name, res->ai_canonname);
+  report(1, "%s's canonical name is %s", name, res->ai_canonname);
   for (struct addrinfo *p = res; p; p = p->ai_next) {
     switch (p->ai_family) {
     case AF_INET: {
@@ -204,7 +204,7 @@ in_addr_t orwl_inet_addr(char const *name) {
         ret = act;
         char addrstr[256] = INITIALIZER;
         orwl_ntoa(addr, addrstr);
-        report(stderr, "%s's inet4 address is %s", name, addrstr);
+        report(1, "%s's inet4 address is %s", name, addrstr);
       }
     }
     default:;
@@ -246,7 +246,7 @@ DEFINE_THREAD(auth_sock) {
     if (Arg->srv && Arg->srv->cb) {
       /* do something with mess here */
       Arg->srv->cb(Arg);
-      //report(stderr, "finished callback with %zd elements", Arg->len);
+      //report(1, "finished callback with %zd elements", Arg->len);
     }
   if (Arg->fd != -1) auth_sock_close(Arg);
 }
@@ -287,10 +287,12 @@ void orwl_server_destroy(orwl_server *serv) {
 DEFINE_NEW_DELETE(orwl_server);
 
 DEFINE_THREAD(orwl_server) {
-  report(stderr, "starting server");
+  report(1, "starting server");
   Arg->fd_listen = socket(AF_INET);
   if (Arg->fd_listen != -1) {
-    report(stderr, "found %jX:%jX", (uintmax_t)addr2net(&Arg->host.ep.addr), (uintmax_t)port2net(&Arg->host.ep.port));
+    report(1, "found %" PRIX32 ":%" PRIX16,
+           addr2net(&Arg->host.ep.addr),
+           port2net(&Arg->host.ep.port));
     rand48_t seed = RAND48_T_INITIALIZER;
     struct sockaddr_in addr = {
       .sin_addr = { .s_addr = addr2net(&Arg->host.ep.addr), },
@@ -300,20 +302,21 @@ DEFINE_THREAD(orwl_server) {
     socklen_t len = sizeof(addr);
     if (bind(Arg->fd_listen, (struct sockaddr*) &addr, sizeof(addr)) == -1)
       goto TERMINATE;
-    report(stderr, "bound port 0x%jX", (uintmax_t)port2net(&Arg->host.ep.port));
+    report(1, "bound port 0x%" PRIX32, port2net(&Arg->host.ep.port));
     /* If the port was not yet specified find and store it. */
     if (!addr.sin_port) {
       if (getsockname(Arg->fd_listen, (struct sockaddr*)&addr, &len) == -1)
         goto TERMINATE;
       port_t_init(&Arg->host.ep.port, addr.sin_port);
-      report(stderr, "allocated port 0x%jX", (uintmax_t)port2net(&Arg->host.ep.port));
+      report(1, "allocated port 0x%" PRIX32, port2net(&Arg->host.ep.port));
     }
     if (listen(Arg->fd_listen, Arg->max_connections) == -1)
       goto TERMINATE;
     char info[256];
     uint64_t t = 0;
-    snprintf(ARRAY2SIZE(info), "server at /0x%jX:0x%jX/",
-            (uintmax_t)addr2net(&Arg->host.ep.addr), (uintmax_t)port2net(&Arg->host.ep.port));
+    snprintf(info, 256, "server at /0x%" PRIX32 ":0x%" PRIX16 "/",
+             addr2net(&Arg->host.ep.addr),
+             port2net(&Arg->host.ep.port));
     while (Arg->fd_listen != -1) {
       /* Do this work before being connected */
       uint64_t chal = orwl_rand64(&seed);
@@ -323,7 +326,7 @@ DEFINE_THREAD(orwl_server) {
       progress(1, ++t, "%s", info);
 
       if (!repl) {
-        report(stderr, "cannot serve without a secret");
+        report(1, "cannot serve without a secret");
         close(Arg->fd_listen);
         Arg->fd_listen = -1;
         goto TERMINATE;
@@ -386,7 +389,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size
     .sin_family = AF_INET
   };
   if (!repl) {
-    report(stderr, "cannot send without a secret");
+    report(1, "cannot send without a secret");
     goto FINISH;
   }
 
@@ -419,7 +422,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size
         ret = header[0];
         goto FINISH;
       } else {
-        report(stderr, "terminal reception not successful");
+        report(1, "terminal reception not successful");
       }
     }
     ret = 0;
@@ -433,7 +436,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size
   }
  FINISH:
   close(fd);
-  if (ret == TONES(uint64_t) && len) report(stderr, "send request didn't succeed");
+  if (ret == TONES(uint64_t) && len) report(1, "send request didn't succeed");
   return ret;
 }
 
@@ -459,7 +462,7 @@ void orwl_host_connect(orwl_host *th, orwl_host *q) {
     }
     if (!ok) {
       sleepfor(1E-0);
-      report(stderr,"looping");
+      report(1,"looping");
     }
   }
 }
@@ -517,7 +520,9 @@ void auth_sock_insert_peer(auth_sock *Arg) {
 }
 
 void auth_sock_insert_host(auth_sock *Arg) {
-  report(stderr, "insertion of /%jX:0x%jX/ ", Arg->mes[1], (uintmax_t)Arg->mes[2]);
+  report(1, "insertion of /0x%" PRIX64 ":0x%" PRIX64 "/ ",
+         Arg->mes[1],
+         Arg->mes[2]);
   orwl_host *h = NEW(orwl_host);
   /* mes is already in host order */
   h->ep.addr.a = Arg->mes[1];
