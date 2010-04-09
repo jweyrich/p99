@@ -88,9 +88,6 @@ void auth_sock_request(auth_sock *Arg) {
     // mes is already in host order
     orwl_endpoint ep = { .addr = getpeer(Arg), .port = { .p = Arg->mes[3] } };
     uint64_t id = Arg->mes[2];
-    report(stderr, "local rh %p inserted in queue, id received is 0x%jX",
-           (void*)srv_wh,
-           (uintmax_t)id);
     // acknowledge the creation of the wh and send back its id
     Arg->ret = (uintptr_t)srv_wh;
     auth_sock_close(Arg);

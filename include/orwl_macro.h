@@ -574,5 +574,10 @@ for (int _one1_ = 1; _one1_; _one1_ = 0)                                \
 
 #define DOCUMENT_BLOCK /*! @see BLOCK for restrictions on preliminary exits from the dependent block or statement. **/
 
+
+#define ARRAYSIZE(A) (sizeof(A)/sizeof(A[0]))
+
+#define ARRAY2SIZE(A) A, ARRAY2SIZE(A)
+
 #endif 	    /* !ORWL_MACRO_H_ */
 

@@ -310,11 +310,17 @@ DEFINE_THREAD(orwl_server) {
     }
     if (listen(Arg->fd_listen, Arg->max_connections) == -1)
       goto TERMINATE;
+    char info[256];
+    uint64_t t = 0;
+    snprintf(ARRAY2SIZE(info), "server at /0x%jX:0x%jX/",
+            (uintmax_t)addr2net(&Arg->host.ep.addr), (uintmax_t)port2net(&Arg->host.ep.port));
     while (Arg->fd_listen != -1) {
       /* Do this work before being connected */
       uint64_t chal = orwl_rand64(&seed);
       uint64_t repl = orwl_challenge(chal);
       header_t header = INITIALIZER;
+
+      progress(1, ++t, "%s", info);
 
       if (!repl) {
         report(stderr, "cannot serve without a secret");
@@ -495,10 +501,10 @@ DEFINE_NEW_DELETE(orwl_host);
 
 addr_t getpeer(auth_sock *Arg) {
   struct sockaddr_in addr = INITIALIZER;
-  if (getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) {
-    report(stderr, "getpeer /%jX/ ", (uintmax_t)addr.sin_addr.s_addr);
-  }
-  return (addr_t)ADDR_T_INITIALIZER(addr.sin_addr.s_addr);
+  int ret = getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)});
+  return (ret == -1)
+    ? TNULL(addr_t)
+    : (addr_t)ADDR_T_INITIALIZER(addr.sin_addr.s_addr);
 }
 
 
