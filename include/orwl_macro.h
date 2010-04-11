@@ -579,5 +579,45 @@ for (int _one1_ = 1; _one1_; _one1_ = 0)                                \
 
 #define ARRAY2SIZE(A) A, ARRAY2SIZE(A)
 
+#define CHOOSE5(xT, cc, cs, ci, cl, cll)        \
+((sizeof(xT) < sizeof(int))                     \
+ ? ((sizeof(xT) < sizeof(short))                \
+    ? cc                                        \
+    : cs)                                       \
+ : ((sizeof(xT) <= sizeof(long))                \
+    ? ((sizeof(xT) == sizeof(int))              \
+       ? ci                                     \
+       : cl)                                    \
+    : cll))
+
+#define PRI(xT, F, ...)                         \
+CHOOSE5(xT,                                     \
+        "%" #__VA_ARGS__ "hh" #F,               \
+        "%" #__VA_ARGS__ "h" #F,                \
+        "%" #__VA_ARGS__ "" #F,                 \
+        "%" #__VA_ARGS__ "l" #F,                \
+        "%" #__VA_ARGS__ "ll" #F)
+
+/**
+ ** @brief Promote integer expression @a x to the width of @c
+ ** uintmax_t but keep signedness if possible.
+ **/
+#define _J(x) (0 ? TNULL(uintmax_t) : (x))
+
+/**
+ ** @brief Promote integer expression @a x to the width of @c
+ ** size_t but keep signedness if possible.
+ **/
+#define _Z(x) (0 ? TNULL(size_t) : (x))
+
+#define _LEN0(...) 1
+#define _STRLENS(N, ...) PASTE2(_LEN, N)(__VA_ARGS__)
+#define STRLENS(...) _STRLENS(_NARG_64(__VA_ARGS__), __VA_ARGS__)
+
+#define _JOIN0(buf, ...) (buf)
+#define __JOIN(N, ...) PASTE2(_JOIN, N)((char[STRLENS(__VA_ARGS__)]){ 0 }, __VA_ARGS__)
+#define _JOIN(...) __JOIN(_NARG_64(__VA_ARGS__), __VA_ARGS__)
+#define JOIN(...) _JOIN(__VA_ARGS__)
+
 #endif 	    /* !ORWL_MACRO_H_ */
 

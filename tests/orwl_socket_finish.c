@@ -99,4 +99,7 @@ int main(int argc, char **argv) {
   ftester((test_t){16});
   ftester((test_t){17}, 18);
   ftester((test_t){19}, 20, 19.9999);
+  report(1, "%s %s %s %s %s", PRI(char, X,), PRI(short, X,), PRI(signed, X,), PRI(long, X,), PRI(long long, X,));
+  report(1, "%zu %zu %zu %zu %zu", sizeof(char), sizeof(short), sizeof(signed), sizeof(long), sizeof(long long));
+  report(1, "%s", JOIN("aa", "BB", "CC"));
 }

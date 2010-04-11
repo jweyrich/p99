@@ -657,189 +657,315 @@
 #define __wda_1(NAME, N, ...) _wda_0(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_1(NAME, ...) __wda_1(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_1(NAME, ...) __VA_ARGS__
+#define _LEN1(A, ...) (_LEN0(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN1(buf, A, ...) _JOIN0(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_2(NAME, N, ...) _wda_1(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_2(NAME, ...) __wda_2(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_2(NAME, ...) __VA_ARGS__
+#define _LEN2(A, ...) (_LEN1(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN2(buf, A, ...) _JOIN1(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_3(NAME, N, ...) _wda_2(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_3(NAME, ...) __wda_3(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_3(NAME, ...) __VA_ARGS__
+#define _LEN3(A, ...) (_LEN2(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN3(buf, A, ...) _JOIN2(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_4(NAME, N, ...) _wda_3(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_4(NAME, ...) __wda_4(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_4(NAME, ...) __VA_ARGS__
+#define _LEN4(A, ...) (_LEN3(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN4(buf, A, ...) _JOIN3(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_5(NAME, N, ...) _wda_4(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_5(NAME, ...) __wda_5(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_5(NAME, ...) __VA_ARGS__
+#define _LEN5(A, ...) (_LEN4(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN5(buf, A, ...) _JOIN4(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_6(NAME, N, ...) _wda_5(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_6(NAME, ...) __wda_6(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_6(NAME, ...) __VA_ARGS__
+#define _LEN6(A, ...) (_LEN5(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN6(buf, A, ...) _JOIN5(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_7(NAME, N, ...) _wda_6(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_7(NAME, ...) __wda_7(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_7(NAME, ...) __VA_ARGS__
+#define _LEN7(A, ...) (_LEN6(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN7(buf, A, ...) _JOIN6(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_8(NAME, N, ...) _wda_7(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_8(NAME, ...) __wda_8(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_8(NAME, ...) __VA_ARGS__
+#define _LEN8(A, ...) (_LEN7(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN8(buf, A, ...) _JOIN7(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_9(NAME, N, ...) _wda_8(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_9(NAME, ...) __wda_9(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_9(NAME, ...) __VA_ARGS__
+#define _LEN9(A, ...) (_LEN8(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN9(buf, A, ...) _JOIN8(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_10(NAME, N, ...) _wda_9(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_10(NAME, ...) __wda_10(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_10(NAME, ...) __VA_ARGS__
+#define _LEN10(A, ...) (_LEN9(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN10(buf, A, ...) _JOIN9(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_11(NAME, N, ...) _wda_10(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_11(NAME, ...) __wda_11(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_11(NAME, ...) __VA_ARGS__
+#define _LEN11(A, ...) (_LEN10(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN11(buf, A, ...) _JOIN10(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_12(NAME, N, ...) _wda_11(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_12(NAME, ...) __wda_12(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_12(NAME, ...) __VA_ARGS__
+#define _LEN12(A, ...) (_LEN11(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN12(buf, A, ...) _JOIN11(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_13(NAME, N, ...) _wda_12(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_13(NAME, ...) __wda_13(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_13(NAME, ...) __VA_ARGS__
+#define _LEN13(A, ...) (_LEN12(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN13(buf, A, ...) _JOIN12(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_14(NAME, N, ...) _wda_13(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_14(NAME, ...) __wda_14(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_14(NAME, ...) __VA_ARGS__
+#define _LEN14(A, ...) (_LEN13(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN14(buf, A, ...) _JOIN13(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_15(NAME, N, ...) _wda_14(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_15(NAME, ...) __wda_15(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_15(NAME, ...) __VA_ARGS__
+#define _LEN15(A, ...) (_LEN14(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN15(buf, A, ...) _JOIN14(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_16(NAME, N, ...) _wda_15(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_16(NAME, ...) __wda_16(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_16(NAME, ...) __VA_ARGS__
+#define _LEN16(A, ...) (_LEN15(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN16(buf, A, ...) _JOIN15(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_17(NAME, N, ...) _wda_16(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_17(NAME, ...) __wda_17(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_17(NAME, ...) __VA_ARGS__
+#define _LEN17(A, ...) (_LEN16(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN17(buf, A, ...) _JOIN16(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_18(NAME, N, ...) _wda_17(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_18(NAME, ...) __wda_18(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_18(NAME, ...) __VA_ARGS__
+#define _LEN18(A, ...) (_LEN17(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN18(buf, A, ...) _JOIN17(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_19(NAME, N, ...) _wda_18(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_19(NAME, ...) __wda_19(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_19(NAME, ...) __VA_ARGS__
+#define _LEN19(A, ...) (_LEN18(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN19(buf, A, ...) _JOIN18(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_20(NAME, N, ...) _wda_19(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_20(NAME, ...) __wda_20(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_20(NAME, ...) __VA_ARGS__
+#define _LEN20(A, ...) (_LEN19(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN20(buf, A, ...) _JOIN19(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_21(NAME, N, ...) _wda_20(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_21(NAME, ...) __wda_21(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_21(NAME, ...) __VA_ARGS__
+#define _LEN21(A, ...) (_LEN20(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN21(buf, A, ...) _JOIN20(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_22(NAME, N, ...) _wda_21(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_22(NAME, ...) __wda_22(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_22(NAME, ...) __VA_ARGS__
+#define _LEN22(A, ...) (_LEN21(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN22(buf, A, ...) _JOIN21(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_23(NAME, N, ...) _wda_22(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_23(NAME, ...) __wda_23(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_23(NAME, ...) __VA_ARGS__
+#define _LEN23(A, ...) (_LEN22(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN23(buf, A, ...) _JOIN22(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_24(NAME, N, ...) _wda_23(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_24(NAME, ...) __wda_24(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_24(NAME, ...) __VA_ARGS__
+#define _LEN24(A, ...) (_LEN23(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN24(buf, A, ...) _JOIN23(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_25(NAME, N, ...) _wda_24(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_25(NAME, ...) __wda_25(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_25(NAME, ...) __VA_ARGS__
+#define _LEN25(A, ...) (_LEN24(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN25(buf, A, ...) _JOIN24(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_26(NAME, N, ...) _wda_25(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_26(NAME, ...) __wda_26(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_26(NAME, ...) __VA_ARGS__
+#define _LEN26(A, ...) (_LEN25(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN26(buf, A, ...) _JOIN25(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_27(NAME, N, ...) _wda_26(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_27(NAME, ...) __wda_27(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_27(NAME, ...) __VA_ARGS__
+#define _LEN27(A, ...) (_LEN26(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN27(buf, A, ...) _JOIN26(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_28(NAME, N, ...) _wda_27(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_28(NAME, ...) __wda_28(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_28(NAME, ...) __VA_ARGS__
+#define _LEN28(A, ...) (_LEN27(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN28(buf, A, ...) _JOIN27(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_29(NAME, N, ...) _wda_28(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_29(NAME, ...) __wda_29(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_29(NAME, ...) __VA_ARGS__
+#define _LEN29(A, ...) (_LEN28(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN29(buf, A, ...) _JOIN28(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_30(NAME, N, ...) _wda_29(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_30(NAME, ...) __wda_30(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_30(NAME, ...) __VA_ARGS__
+#define _LEN30(A, ...) (_LEN29(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN30(buf, A, ...) _JOIN29(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_31(NAME, N, ...) _wda_30(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_31(NAME, ...) __wda_31(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_31(NAME, ...) __VA_ARGS__
+#define _LEN31(A, ...) (_LEN30(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN31(buf, A, ...) _JOIN30(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_32(NAME, N, ...) _wda_31(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_32(NAME, ...) __wda_32(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_32(NAME, ...) __VA_ARGS__
+#define _LEN32(A, ...) (_LEN31(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN32(buf, A, ...) _JOIN31(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_33(NAME, N, ...) _wda_32(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_33(NAME, ...) __wda_33(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_33(NAME, ...) __VA_ARGS__
+#define _LEN33(A, ...) (_LEN32(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN33(buf, A, ...) _JOIN32(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_34(NAME, N, ...) _wda_33(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_34(NAME, ...) __wda_34(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_34(NAME, ...) __VA_ARGS__
+#define _LEN34(A, ...) (_LEN33(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN34(buf, A, ...) _JOIN33(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_35(NAME, N, ...) _wda_34(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_35(NAME, ...) __wda_35(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_35(NAME, ...) __VA_ARGS__
+#define _LEN35(A, ...) (_LEN34(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN35(buf, A, ...) _JOIN34(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_36(NAME, N, ...) _wda_35(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_36(NAME, ...) __wda_36(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_36(NAME, ...) __VA_ARGS__
+#define _LEN36(A, ...) (_LEN35(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN36(buf, A, ...) _JOIN35(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_37(NAME, N, ...) _wda_36(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_37(NAME, ...) __wda_37(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_37(NAME, ...) __VA_ARGS__
+#define _LEN37(A, ...) (_LEN36(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN37(buf, A, ...) _JOIN36(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_38(NAME, N, ...) _wda_37(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_38(NAME, ...) __wda_38(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_38(NAME, ...) __VA_ARGS__
+#define _LEN38(A, ...) (_LEN37(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN38(buf, A, ...) _JOIN37(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_39(NAME, N, ...) _wda_38(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_39(NAME, ...) __wda_39(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_39(NAME, ...) __VA_ARGS__
+#define _LEN39(A, ...) (_LEN38(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN39(buf, A, ...) _JOIN38(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_40(NAME, N, ...) _wda_39(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_40(NAME, ...) __wda_40(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_40(NAME, ...) __VA_ARGS__
+#define _LEN40(A, ...) (_LEN39(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN40(buf, A, ...) _JOIN39(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_41(NAME, N, ...) _wda_40(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_41(NAME, ...) __wda_41(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_41(NAME, ...) __VA_ARGS__
+#define _LEN41(A, ...) (_LEN40(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN41(buf, A, ...) _JOIN40(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_42(NAME, N, ...) _wda_41(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_42(NAME, ...) __wda_42(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_42(NAME, ...) __VA_ARGS__
+#define _LEN42(A, ...) (_LEN41(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN42(buf, A, ...) _JOIN41(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_43(NAME, N, ...) _wda_42(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_43(NAME, ...) __wda_43(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_43(NAME, ...) __VA_ARGS__
+#define _LEN43(A, ...) (_LEN42(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN43(buf, A, ...) _JOIN42(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_44(NAME, N, ...) _wda_43(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_44(NAME, ...) __wda_44(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_44(NAME, ...) __VA_ARGS__
+#define _LEN44(A, ...) (_LEN43(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN44(buf, A, ...) _JOIN43(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_45(NAME, N, ...) _wda_44(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_45(NAME, ...) __wda_45(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_45(NAME, ...) __VA_ARGS__
+#define _LEN45(A, ...) (_LEN44(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN45(buf, A, ...) _JOIN44(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_46(NAME, N, ...) _wda_45(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_46(NAME, ...) __wda_46(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_46(NAME, ...) __VA_ARGS__
+#define _LEN46(A, ...) (_LEN45(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN46(buf, A, ...) _JOIN45(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_47(NAME, N, ...) _wda_46(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_47(NAME, ...) __wda_47(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_47(NAME, ...) __VA_ARGS__
+#define _LEN47(A, ...) (_LEN46(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN47(buf, A, ...) _JOIN46(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_48(NAME, N, ...) _wda_47(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_48(NAME, ...) __wda_48(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_48(NAME, ...) __VA_ARGS__
+#define _LEN48(A, ...) (_LEN47(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN48(buf, A, ...) _JOIN47(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_49(NAME, N, ...) _wda_48(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_49(NAME, ...) __wda_49(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_49(NAME, ...) __VA_ARGS__
+#define _LEN49(A, ...) (_LEN48(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN49(buf, A, ...) _JOIN48(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_50(NAME, N, ...) _wda_49(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_50(NAME, ...) __wda_50(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_50(NAME, ...) __VA_ARGS__
+#define _LEN50(A, ...) (_LEN49(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN50(buf, A, ...) _JOIN49(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_51(NAME, N, ...) _wda_50(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_51(NAME, ...) __wda_51(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_51(NAME, ...) __VA_ARGS__
+#define _LEN51(A, ...) (_LEN50(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN51(buf, A, ...) _JOIN50(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_52(NAME, N, ...) _wda_51(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_52(NAME, ...) __wda_52(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_52(NAME, ...) __VA_ARGS__
+#define _LEN52(A, ...) (_LEN51(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN52(buf, A, ...) _JOIN51(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_53(NAME, N, ...) _wda_52(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_53(NAME, ...) __wda_53(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_53(NAME, ...) __VA_ARGS__
+#define _LEN53(A, ...) (_LEN52(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN53(buf, A, ...) _JOIN52(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_54(NAME, N, ...) _wda_53(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_54(NAME, ...) __wda_54(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_54(NAME, ...) __VA_ARGS__
+#define _LEN54(A, ...) (_LEN53(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN54(buf, A, ...) _JOIN53(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_55(NAME, N, ...) _wda_54(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_55(NAME, ...) __wda_55(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_55(NAME, ...) __VA_ARGS__
+#define _LEN55(A, ...) (_LEN54(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN55(buf, A, ...) _JOIN54(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_56(NAME, N, ...) _wda_55(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_56(NAME, ...) __wda_56(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_56(NAME, ...) __VA_ARGS__
+#define _LEN56(A, ...) (_LEN55(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN56(buf, A, ...) _JOIN55(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_57(NAME, N, ...) _wda_56(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_57(NAME, ...) __wda_57(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_57(NAME, ...) __VA_ARGS__
+#define _LEN57(A, ...) (_LEN56(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN57(buf, A, ...) _JOIN56(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_58(NAME, N, ...) _wda_57(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_58(NAME, ...) __wda_58(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_58(NAME, ...) __VA_ARGS__
+#define _LEN58(A, ...) (_LEN57(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN58(buf, A, ...) _JOIN57(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_59(NAME, N, ...) _wda_58(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_59(NAME, ...) __wda_59(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_59(NAME, ...) __VA_ARGS__
+#define _LEN59(A, ...) (_LEN58(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN59(buf, A, ...) _JOIN58(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_60(NAME, N, ...) _wda_59(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_60(NAME, ...) __wda_60(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_60(NAME, ...) __VA_ARGS__
+#define _LEN60(A, ...) (_LEN59(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN60(buf, A, ...) _JOIN59(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_61(NAME, N, ...) _wda_60(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_61(NAME, ...) __wda_61(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_61(NAME, ...) __VA_ARGS__
+#define _LEN61(A, ...) (_LEN60(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN61(buf, A, ...) _JOIN60(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_62(NAME, N, ...) _wda_61(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_62(NAME, ...) __wda_62(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_62(NAME, ...) __VA_ARGS__
+#define _LEN62(A, ...) (_LEN61(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN62(buf, A, ...) _JOIN61(strcat(buf, A), __VA_ARGS__ _COMMA_)
 #define __wda_63(NAME, N, ...) _wda_62(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
 #define _wda_63(NAME, ...) __wda_63(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)
 #define _wda_minus_63(NAME, ...) __VA_ARGS__
+#define _LEN63(A, ...) (_LEN62(__VA_ARGS__ _COMMA_) + strlen(A))
+#define _JOIN63(buf, A, ...) _JOIN62(strcat(buf, A), __VA_ARGS__ _COMMA_)
