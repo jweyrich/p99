@@ -610,14 +610,20 @@ CHOOSE5(xT,                                     \
  **/
 #define _Z(x) (0 ? TNULL(size_t) : (x))
 
-#define _LEN0(...) 1
-#define _STRLENS(N, ...) PASTE2(_LEN, N)(__VA_ARGS__)
-#define STRLENS(...) _STRLENS(_NARG_64(__VA_ARGS__), __VA_ARGS__)
+#define _DOIT0(N, FUNC, ...) PASTE2(FUNC, 0)(__VA_ARGS__)
 
-#define _JOIN0(buf, ...) (buf)
-#define __JOIN(N, ...) PASTE2(_JOIN, N)((char[STRLENS(__VA_ARGS__)]){ 0 }, __VA_ARGS__)
-#define _JOIN(...) __JOIN(_NARG_64(__VA_ARGS__), __VA_ARGS__)
-#define JOIN(...) _JOIN(__VA_ARGS__)
+#define _STRLEN(X, REC) strlen(X) + REC
+#define _STRLEN0(...) 1
+#define _STRLENS(N, ...) PASTE2(_DOIT, N)(N, _STRLEN, __VA_ARGS__)
+#define STRLENS(...) _STRLENS(_NARG_64(__VA_ARGS__),__VA_ARGS__)
+
+#define _JOIN_TAIL0(...)
+#define _JOIN_TAIL(A, REC) , A) REC
+#define _JOIN_HEAD0(...)
+#define _JOIN_HEAD(A, REC) strcat(REC
+#define __JOIN(N, ...) PASTE2(_DOIT, N)(N, _JOIN_HEAD, __VA_ARGS__)  (char[STRLENS(__VA_ARGS__)]){ 0 } PASTE2(_DOIT, N)(N, _JOIN_TAIL, __VA_ARGS__)
+#define JOIN(...) __JOIN(_NARG_64(__VA_ARGS__), __VA_ARGS__)
+
 
 #endif 	    /* !ORWL_MACRO_H_ */
 
