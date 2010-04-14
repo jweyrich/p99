@@ -45,3 +45,18 @@ DEFINE_BASIC_TYPE(int32_t);
 DEFINE_BASIC_TYPE(uint32_t);
 DEFINE_BASIC_TYPE(int64_t);
 DEFINE_BASIC_TYPE(uint64_t);
+
+DEFINE_ARI2STR(schar);
+DEFINE_ARI2STR(uchar);
+DEFINE_ARI2STR(short);
+DEFINE_ARI2STR(ushort);
+DEFINE_ARI2STR(signed);
+DEFINE_ARI2STR(unsigned);
+DEFINE_ARI2STR(long);
+DEFINE_ARI2STR(ulong);
+DEFINE_ARI2STR(llong);
+DEFINE_ARI2STR(ullong);
+
+_DEFINE_ARI2STR(void_cptr, p);
+
+int mfputs_func(FILE* f, size_t n, char const*const* A);

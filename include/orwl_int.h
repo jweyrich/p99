@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include <stddef.h>
+#include <stdio.h>
 #include "orwl_macro.h"
 #include "orwl_new.h"
 #include "orwl_posix_default.h"
@@ -27,6 +28,8 @@ typedef unsigned short ushort;
 typedef signed short sshort;
 typedef unsigned char uchar;
 typedef signed char schar;
+typedef long long llong;
+typedef unsigned long long ullong;
 
 #define DECLARE_POINTER_TYPE(T)                 \
 typedef T *T ## _ptr;                           \
@@ -169,6 +172,102 @@ DECLARE_BASIC_TYPE(uint64_t);
 #define str2int64_t(...) _STRTO(int64_t, __VA_ARGS__)
 #define str2uint64_t(...) _STRTO(uint64_t, __VA_ARGS__)
 
+#define _DECLARE_ARI2STR(T, X, S, P)                            \
+inline                                                          \
+ char const* PASTE3(T, 2, X)(char* buf, T x) {                  \
+  char const* form = PRI(T,X,S);                                \
+  sprintf(buf, strcat(strcat(buf, #P), form), x);                \
+  return buf;                                                   \
+}                                                               \
 
+
+#define DECLARE_ARI2STR(T)                      \
+  _DECLARE_ARI2STR(T, d, , )                    \
+  _DECLARE_ARI2STR(T, o, 0, 0)                  \
+  _DECLARE_ARI2STR(T, u, , )                    \
+  _DECLARE_ARI2STR(T, x, , 0x)                  \
+  _DECLARE_ARI2STR(T, X, , 0x)
+
+inline
+char const* void_cptr2p(char* buf, void_cptr x) {
+  sprintf(buf, "%p", x);
+  return buf;
+}
+
+#define _DEFINE_ARI2STR(T, X)                     \
+  char const* PASTE3(T, 2, X)(char* buf, T x)
+
+#define DEFINE_ARI2STR(T)                      \
+  _DEFINE_ARI2STR(T, d);                       \
+  _DEFINE_ARI2STR(T, o);                       \
+  _DEFINE_ARI2STR(T, u);                       \
+  _DEFINE_ARI2STR(T, x);                       \
+  _DEFINE_ARI2STR(T, X)
+
+DECLARE_ARI2STR(schar)
+DECLARE_ARI2STR(uchar)
+DECLARE_ARI2STR(short)
+DECLARE_ARI2STR(ushort)
+DECLARE_ARI2STR(signed)
+DECLARE_ARI2STR(unsigned)
+DECLARE_ARI2STR(long)
+DECLARE_ARI2STR(ulong)
+DECLARE_ARI2STR(llong)
+DECLARE_ARI2STR(ullong)
+
+#define ALLO(N) ((char[N]){0})
+
+#define PRIu(x)                                 \
+CHOOSE5(x,                                      \
+        uchar2u(ALLO(3*sizeof(llong)),x),       \
+        ushort2u(ALLO(3*sizeof(llong)),x),      \
+        unsigned2u(ALLO(3*sizeof(llong)),x),    \
+        ulong2u(ALLO(3*sizeof(llong)),x),       \
+        ullong2u(ALLO(3*sizeof(llong)),x))
+
+#define PRId(x)                                 \
+CHOOSE5(x,                                      \
+        schar2d(ALLO(3*sizeof(llong)),x),       \
+        short2d(ALLO(3*sizeof(llong)),x),       \
+        signed2d(ALLO(3*sizeof(llong)),x),      \
+        long2d(ALLO(3*sizeof(llong)),x),        \
+        llong2d(ALLO(3*sizeof(llong)),x))
+
+#define PRIo(x)                                 \
+CHOOSE5(x,                                      \
+        uchar2o(ALLO(3*sizeof(llong)),x),       \
+        ushort2o(ALLO(3*sizeof(llong)),x),      \
+        unsigned2o(ALLO(3*sizeof(llong)),x),    \
+        ulong2o(ALLO(3*sizeof(llong)),x),       \
+        ullong2o(ALLO(3*sizeof(llong)),x))
+
+#define PRIx(x)                                 \
+CHOOSE5(x,                                      \
+        uchar2x(ALLO(2*sizeof(llong)),x),       \
+        ushort2x(ALLO(2*sizeof(llong)),x),      \
+        unsigned2x(ALLO(2*sizeof(llong)),x),    \
+        ulong2x(ALLO(2*sizeof(llong)),x),       \
+        ullong2x(ALLO(2*sizeof(llong)),x))
+
+#define PRIX(x)                                 \
+CHOOSE5(x,                                      \
+        uchar2X(ALLO(2*sizeof(llong)),x),       \
+        ushort2X(ALLO(2*sizeof(llong)),x),      \
+        unsigned2X(ALLO(2*sizeof(llong)),x),    \
+        ulong2X(ALLO(2*sizeof(llong)),x),       \
+        ullong2X(ALLO(2*sizeof(llong)),x))
+
+#define PRIp(x) void_cptr2p(ALLO(2*sizeof(void*) + 3), x)
+
+inline
+int mfputs_func(FILE* f, size_t n, char const*const* A) {
+  int ret = 0;
+  for (size_t i = 0; i < n && ret != EOF; ++i)
+    if (A[i]) ret = fputs(A[i], f);
+  return ret;
+}
+
+#define _mfputs(F, ...) mfputs_func(F, _NARG_64(__VA_ARGS__), (char const*[]){__VA_ARGS__})
+#define mfputs(...) _mfputs(__VA_ARGS__)
 
 #endif 	    /* !ORWL_INT_H_ */
