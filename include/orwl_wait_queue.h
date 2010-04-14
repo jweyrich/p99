@@ -234,6 +234,10 @@ typedef struct {
  ** it moves front in the FIFO) and then if all tokens are unloaded
  ** with orwl_wh_acquire() or orwl_wh_test().
  **
+ ** A @c wh that is given as @c NULL is considered to relate to the
+ ** last such handle that had inserted previously, if such a handle
+ ** exists.
+ **
  ** The tokens are only considered to be loaded on @a wh if the call is
  ** successful.
  **/
@@ -305,10 +309,11 @@ orwl_state orwl_wh_release(orwl_wh *wh);
    */
   FSYMB_DOCUMENTATION(orwl_wh_load)
 inline
-void orwl_wh_load
+uintptr_t orwl_wh_load
   (orwl_wh *wh,
    uintptr_t howmuch  /*!< defaults to 1 */) {
    wh->tokens += howmuch;
+   return howmuch;
 }
 
 #define orwl_wh_load(...) CALL_WITH_DEFAULTS(orwl_wh_load, 2, __VA_ARGS__)
@@ -323,12 +328,13 @@ declare_defarg(orwl_wh_load, 1, uintptr_t, 1);
    */
   FSYMB_DOCUMENTATION(orwl_wh_unload)
 inline
-void orwl_wh_unload
+uintptr_t orwl_wh_unload
   (orwl_wh *wh,
    uintptr_t howmuch  /*!< defaults to 1 */) {
   wh->tokens -= howmuch;
   /* If the condition has change, wake up all tokens */
   if (!wh->tokens) pthread_cond_broadcast(&wh->cond);
+  return howmuch;
 }
 
 #define orwl_wh_unload(...) CALL_WITH_DEFAULTS(orwl_wh_unload, 2, __VA_ARGS__)

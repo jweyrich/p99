@@ -90,45 +90,53 @@ int orwl_wq_valid(orwl_wq *wq);
 int orwl_wq_idle(orwl_wq *wq);
 
 /* This supposes that the corresponding wq != NULL */
-void orwl_wh_load(orwl_wh *wh, uintptr_t howmuch);
+uintptr_t orwl_wh_load(orwl_wh *wh, uintptr_t howmuch);
 /* This supposes that the corresponding wq != NULL */
-void orwl_wh_unload(orwl_wh *wh, uintptr_t howmuch);
+uintptr_t orwl_wh_unload(orwl_wh *wh, uintptr_t howmuch);
 
 orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
   orwl_state ret = orwl_invalid;
   if (wq && orwl_wq_valid(wq)) {
     MUTUAL_EXCLUDE(wq->mut) {
-    /* Check (and wait eventually) that all wh are idle */
-    for (bool idle = false; !idle; ) {
+      /* Check (and wait eventually) that all wh are idle */
+      for (bool idle = false; !idle; ) {
+        va_list ap;
+        va_start(ap, number);
+        idle = true;
+        for (size_t i = 0; i < number; ++i) {
+          orwl_wh *wh = va_arg(ap, orwl_wh*);
+          va_arg(ap, uintptr_t);
+          if (wh && !orwl_wh_idle(wh)) {
+            idle = false;
+            pthread_cond_wait(&wh->cond, &wq->mut);
+          }
+        }
+        va_end(ap);
+      }
+      ret = orwl_requested;
+      /* Now insert them */
       va_list ap;
       va_start(ap, number);
-      idle = true;
       for (size_t i = 0; i < number; ++i) {
         orwl_wh *wh = va_arg(ap, orwl_wh*);
-        va_arg(ap, uintptr_t);
-        if (!orwl_wh_idle(wh)) {
-          idle = false;
-          pthread_cond_wait(&wh->cond, &wq->mut);
+        size_t howmuch = va_arg(ap, uintptr_t);
+        if (wh) {
+          wh->location = wq;
+          orwl_wh_load(wh, howmuch);
+          if (orwl_wq_idle(wq)) wq->head = wh;
+          else wq->tail->next = wh;
+          wq->tail = wh;
+          ++wq->clock;
+          wh->priority = wq->clock;
+        } else {
+          if (number == 1 && !orwl_wq_idle(wq))
+            /* if the wh is NULL, take this as a request to add to the
+               last handle if it exists */
+            orwl_wh_load(wq->tail, howmuch);
+          else ret = orwl_invalid;
         }
       }
       va_end(ap);
-    }
-    /* Now insert them */
-    va_list ap;
-    va_start(ap, number);
-    for (size_t i = 0; i < number; ++i) {
-      orwl_wh *wh = va_arg(ap, orwl_wh*);
-      size_t howmuch = va_arg(ap, uintptr_t);
-      wh->location = wq;
-      orwl_wh_load(wh, howmuch);
-      if (orwl_wq_idle(wq)) wq->head = wh;
-      else wq->tail->next = wh;
-      wq->tail = wh;
-      ++wq->clock;
-      wh->priority = wq->clock;
-    }
-    va_end(ap);
-    ret = orwl_requested;
     }
   }
   return ret;
