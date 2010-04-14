@@ -14,12 +14,18 @@
 #include "orwl_wait_queue.h"
 #include "orwl_socket.h"
 
+/**
+ ** @brief A structure to regulate queues between different servers.
+ **
+ ** @see orwl_rh
+ **/
 struct orwl_rq {
-  pthread_mutex_t mut;
-  orwl_endpoint here;
-  orwl_endpoint there;
-  uint64_t ID;
-  orwl_wq local;
+  pthread_mutex_t mut;  /**< control access during insertion */
+  orwl_endpoint here;   /**< the local endpoint to which we report */
+  orwl_endpoint there;  /**< the remote that centralizes the order */
+  uint64_t ID;          /**< the id of the queue on the remote */
+  orwl_wq local;        /**< the local queue that interfaces the
+                           remote */
 };
 
 #ifndef __cplusplus
