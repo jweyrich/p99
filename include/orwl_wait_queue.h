@@ -88,7 +88,7 @@ struct orwl_wq {
   pthread_mutex_t mut;
   orwl_wh *head;
   orwl_wh *tail;
-  uintptr_t clock;
+  uint64_t clock;
 };
 
 
@@ -113,12 +113,12 @@ struct orwl_wh {
   pthread_cond_t cond;
   orwl_wq *location;
   orwl_wh *next;
-  uintptr_t tokens;
-  uintptr_t priority;
+  uint64_t tokens;
+  uint64_t priority;
 };
 
-#define orwl_wh_garb ((orwl_wh*)(~(uintptr_t)0))
-#define orwl_wq_garb ((orwl_wq*)(~(uintptr_t)0))
+#define orwl_wh_garb ((orwl_wh*)(TONES(uintptr_t)))
+#define orwl_wq_garb ((orwl_wq*)(TONES(uintptr_t)))
 
 #define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER }
 
@@ -214,7 +214,7 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_wh);
 
 typedef struct {
   orwl_wh *wh;
-  uintptr_t howmuch;
+  uint64_t howmuch;
 } _orwl_wh_pair;
 
 /**
@@ -260,10 +260,10 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number));
   FSYMB_DOCUMENTATION(orwl_wh_acquire)
 orwl_state orwl_wh_acquire
   (orwl_wh *wh,
-   uintptr_t howmuch    /*!< defaults to @c 1 */);
+   uint64_t howmuch    /*!< defaults to @c 1 */);
 
 #define orwl_wh_acquire(...) CALL_WITH_DEFAULTS(orwl_wh_acquire, 2, __VA_ARGS__)
-declare_defarg(orwl_wh_acquire, 1, uintptr_t, 1);
+declare_defarg(orwl_wh_acquire, 1, uint64_t, 1);
 
 
 /**
@@ -287,10 +287,10 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq);
   FSYMB_DOCUMENTATION(orwl_wh_test)
 orwl_state orwl_wh_test
   (orwl_wh *wh,
-   uintptr_t howmuch  /*!< defaults to 0 */);
+   uint64_t howmuch  /*!< defaults to 0 */);
 
 #define orwl_wh_test(...) CALL_WITH_DEFAULTS(orwl_wh_test, 2, __VA_ARGS__)
-declare_defarg(orwl_wh_test, 1, uintptr_t, 0);
+declare_defarg(orwl_wh_test, 1, uint64_t, 0);
 
 /**
  ** @brief Release a request on @a wh. If @a wh had been acquired this
@@ -309,15 +309,15 @@ orwl_state orwl_wh_release(orwl_wh *wh);
    */
   FSYMB_DOCUMENTATION(orwl_wh_load)
 inline
-uintptr_t orwl_wh_load
+uint64_t orwl_wh_load
   (orwl_wh *wh,
-   uintptr_t howmuch  /*!< defaults to 1 */) {
+   uint64_t howmuch  /*!< defaults to 1 */) {
    wh->tokens += howmuch;
    return howmuch;
 }
 
 #define orwl_wh_load(...) CALL_WITH_DEFAULTS(orwl_wh_load, 2, __VA_ARGS__)
-declare_defarg(orwl_wh_load, 1, uintptr_t, 1);
+declare_defarg(orwl_wh_load, 1, uint64_t, 1);
 
   /** @brief unload @a howmuch additional tokens from @a wh.
    ** 
@@ -328,9 +328,9 @@ declare_defarg(orwl_wh_load, 1, uintptr_t, 1);
    */
   FSYMB_DOCUMENTATION(orwl_wh_unload)
 inline
-uintptr_t orwl_wh_unload
+uint64_t orwl_wh_unload
   (orwl_wh *wh,
-   uintptr_t howmuch  /*!< defaults to 1 */) {
+   uint64_t howmuch  /*!< defaults to 1 */) {
   wh->tokens -= howmuch;
   /* If the condition has change, wake up all tokens */
   if (!wh->tokens) pthread_cond_broadcast(&wh->cond);
@@ -338,7 +338,7 @@ uintptr_t orwl_wh_unload
 }
 
 #define orwl_wh_unload(...) CALL_WITH_DEFAULTS(orwl_wh_unload, 2, __VA_ARGS__)
-declare_defarg(orwl_wh_unload, 1, uintptr_t, 1);
+declare_defarg(orwl_wh_unload, 1, uint64_t, 1);
 
 DECLARE_ORWL_REGISTER(orwl_wh_acquire);
 DECLARE_ORWL_REGISTER(orwl_wh_release);

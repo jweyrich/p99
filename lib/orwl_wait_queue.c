@@ -16,10 +16,10 @@
 
 DEFINE_ENUM(orwl_state);
 
-define_defarg(orwl_wh_test, 1, uintptr_t);
-define_defarg(orwl_wh_acquire, 1, uintptr_t);
-define_defarg(orwl_wh_load, 1, uintptr_t);
-define_defarg(orwl_wh_unload, 1, uintptr_t);
+define_defarg(orwl_wh_test, 1, uint64_t);
+define_defarg(orwl_wh_acquire, 1, uint64_t);
+define_defarg(orwl_wh_load, 1, uint64_t);
+define_defarg(orwl_wh_unload, 1, uint64_t);
 
 static pthread_mutexattr_t smattr = INIT2;
 
@@ -46,7 +46,7 @@ void orwl_wq_destroy(orwl_wq *wq) {
   pthread_mutex_destroy(&wq->mut);
   wq->head = orwl_wh_garb;
   wq->tail = orwl_wh_garb;
-  wq->clock = ~(uintptr_t)0;
+  wq->clock = TONES(uint64_t);
 }
 
 DEFINE_NEW_DELETE(orwl_wq);
@@ -77,7 +77,7 @@ void orwl_wh_destroy(orwl_wh *wh) {
   pthread_cond_destroy(&wh->cond);
   wh->location = orwl_wq_garb;
   wh->next = orwl_wh_garb;
-  wh->priority = ~(uintptr_t)0;
+  wh->priority = TONES(uint64_t);
 }
 
 DEFINE_NEW_DELETE(orwl_wh);
@@ -90,9 +90,9 @@ int orwl_wq_valid(orwl_wq *wq);
 int orwl_wq_idle(orwl_wq *wq);
 
 /* This supposes that the corresponding wq != NULL */
-uintptr_t orwl_wh_load(orwl_wh *wh, uintptr_t howmuch);
+uint64_t orwl_wh_load(orwl_wh *wh, uint64_t howmuch);
 /* This supposes that the corresponding wq != NULL */
-uintptr_t orwl_wh_unload(orwl_wh *wh, uintptr_t howmuch);
+uint64_t orwl_wh_unload(orwl_wh *wh, uint64_t howmuch);
 
 orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
   orwl_state ret = orwl_invalid;
@@ -105,7 +105,7 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
         idle = true;
         for (size_t i = 0; i < number; ++i) {
           orwl_wh *wh = va_arg(ap, orwl_wh*);
-          va_arg(ap, uintptr_t);
+          va_arg(ap, uint64_t);
           if (wh && !orwl_wh_idle(wh)) {
             idle = false;
             pthread_cond_wait(&wh->cond, &wq->mut);
@@ -119,7 +119,7 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
       va_start(ap, number);
       for (size_t i = 0; i < number; ++i) {
         orwl_wh *wh = va_arg(ap, orwl_wh*);
-        size_t howmuch = va_arg(ap, uintptr_t);
+        size_t howmuch = va_arg(ap, uint64_t);
         if (wh) {
           wh->location = wq;
           orwl_wh_load(wh, howmuch);
@@ -165,7 +165,7 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
   return ret;
 }
 
-orwl_state orwl_wh_acquire(orwl_wh *wh, uintptr_t howmuch) {
+orwl_state orwl_wh_acquire(orwl_wh *wh, uint64_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
@@ -180,7 +180,7 @@ orwl_state orwl_wh_acquire(orwl_wh *wh, uintptr_t howmuch) {
   return ret;
 }
 
-orwl_state orwl_wh_test(orwl_wh *wh, uintptr_t howmuch) {
+orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
