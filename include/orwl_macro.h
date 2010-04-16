@@ -616,24 +616,61 @@ CHOOSE5(xT,                                     \
 #define _STRLEN(...) strlen(__VA_ARGS__)
 
 #define _SUM(X, REC) (X + REC)
+#define _PROD(X, REC) (X * REC)
 #define _SEQ(X, REC) X, REC
 #define _REV(X, REC) REC, X
 #define _STRCAT(X, REC) strcat(X, REC)
 #define _STRTAC(X, REC) strcat(REC, X)
 
 #define _SUMS(N, ...) PASTE2(_DOIT, N)(N, _SUM, _IDENT, __VA_ARGS__)
+
+/**
+ ** @brief Compute the right associative sum of all the arguments.
+ **/
 #define SUMS(...) _SUMS(_NARG_64(__VA_ARGS__),__VA_ARGS__)
 
 #define _STRLENS(N, ...) PASTE2(_DOIT, N)(N, _SUM, _STRLEN, __VA_ARGS__)
+
+/**
+ ** @brief Return an expression that returns the sum of the lengths of
+ ** all strings that are given as arguments.
+ **/
 #define STRLENS(...) _STRLENS(_NARG_64(__VA_ARGS__),__VA_ARGS__)
 
 #define _REVS(N, ...) PASTE2(_DOIT, N)(N, _REV, _IDENT, __VA_ARGS__)
 #define REVS(...) _REVS(_NARG_64(__VA_ARGS__),__VA_ARGS__)
 
 #define _STRCATS(N, ...) PASTE2(_DOIT, N)(N, _STRTAC, _IDENT, __VA_ARGS__)
-#define STRCATS(...) _STRCATS(_NARG_64(__VA_ARGS__), REVS(__VA_ARGS__))
 
-#define JOIN(...) STRCATS((char[SUMS(STRLENS(__VA_ARGS__)) + 1]){ 0 }, __VA_ARGS__)
+/**
+ ** @brief Append all argument strings after @a TARG to @a TARG.
+ **
+ ** @a TARG must be compatible with @c char* and provide enough space
+ ** to hold the concatenation of all strings. The remaining arguments
+ ** must be compatible with @c const char*.
+ **/
+#define STRCATS(TARG, ...) _STRCATS(_NARG_64(TARG, __VA_ARGS__), REVS(TARG, __VA_ARGS__))
+
+/**
+ ** @brief Concatenate all arguments.
+ **
+ ** All arguments must be strings for which the length can be computed
+ ** at compile time.
+ **
+ ** @return a temporary string that is valid in the containing block
+ ** of the expression holding the call to this macro.
+ **
+ ** @see STRDUP for a variant that returns a @c malloc'ed string and
+ ** thus can be called with any type of @c char* arguments.
+ **/
+#define JOIN(...) STRCATS((char[STRLENS(__VA_ARGS__) + 1]){ 0 }, __VA_ARGS__)
+
+/**
+ ** @brief Concatenate all arguments.
+ **
+ ** @return a string that must be freed by @c free
+ **/
+#define STRDUP(...) STRCATS(memset(malloc(STRLENS(__VA_ARGS__) + 1), 0, 1), __VA_ARGS__)
 
 
 #endif 	    /* !ORWL_MACRO_H_ */
