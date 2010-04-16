@@ -610,19 +610,30 @@ CHOOSE5(xT,                                     \
  **/
 #define _Z(x) (0 ? TNULL(size_t) : (x))
 
-#define _DOIT0(N, FUNC, ...) PASTE2(FUNC, 0)(__VA_ARGS__)
+#define _DOIT1(N, OP, FUNC, ...) FUNC(__VA_ARGS__)
 
-#define _STRLEN(X, REC) strlen(X) + REC
-#define _STRLEN0(...) 1
-#define _STRLENS(N, ...) PASTE2(_DOIT, N)(N, _STRLEN, __VA_ARGS__)
+#define _IDENT(...) __VA_ARGS__
+#define _STRLEN(...) strlen(__VA_ARGS__)
+
+#define _SUM(X, REC) (X + REC)
+#define _SEQ(X, REC) X, REC
+#define _REV(X, REC) REC, X
+#define _STRCAT(X, REC) strcat(X, REC)
+#define _STRTAC(X, REC) strcat(REC, X)
+
+#define _SUMS(N, ...) PASTE2(_DOIT, N)(N, _SUM, _IDENT, __VA_ARGS__)
+#define SUMS(...) _SUMS(_NARG_64(__VA_ARGS__),__VA_ARGS__)
+
+#define _STRLENS(N, ...) PASTE2(_DOIT, N)(N, _SUM, _STRLEN, __VA_ARGS__)
 #define STRLENS(...) _STRLENS(_NARG_64(__VA_ARGS__),__VA_ARGS__)
 
-#define _JOIN_TAIL0(...)
-#define _JOIN_TAIL(A, REC) , A) REC
-#define _JOIN_HEAD0(...)
-#define _JOIN_HEAD(A, REC) strcat(REC
-#define __JOIN(N, ...) PASTE2(_DOIT, N)(N, _JOIN_HEAD, __VA_ARGS__)  (char[STRLENS(__VA_ARGS__)]){ 0 } PASTE2(_DOIT, N)(N, _JOIN_TAIL, __VA_ARGS__)
-#define JOIN(...) __JOIN(_NARG_64(__VA_ARGS__), __VA_ARGS__)
+#define _REVS(N, ...) PASTE2(_DOIT, N)(N, _REV, _IDENT, __VA_ARGS__)
+#define REVS(...) _REVS(_NARG_64(__VA_ARGS__),__VA_ARGS__)
+
+#define _STRCATS(N, ...) PASTE2(_DOIT, N)(N, _STRTAC, _IDENT, __VA_ARGS__)
+#define STRCATS(...) _STRCATS(_NARG_64(__VA_ARGS__), REVS(__VA_ARGS__))
+
+#define JOIN(...) STRCATS((char[SUMS(STRLENS(__VA_ARGS__)) + 1]){ 0 }, __VA_ARGS__)
 
 
 #endif 	    /* !ORWL_MACRO_H_ */
