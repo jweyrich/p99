@@ -110,17 +110,32 @@ struct orwl_wq {
  ** fixed condition to be the first in the FIFO.
  **/
 struct orwl_wh {
+  /** A wh will wait on that condition for requests and acquires. */
   pthread_cond_t cond;
+  /** The location to which this wh links. */
   orwl_wq *location;
+  /** The next wh in the priority queue. */
   orwl_wh *next;
+  /** @brief The number of tokens that have been loaded on this wh.
+   **
+   ** Generally this will reflect the number of threads that may wait
+   ** for this handle to be acquired. A wh can only be released when
+   ** this has dropped to zero.
+   **/
   uint64_t tokens;
-  uint64_t priority;
+  /** @brief The historical position in the wait queue.
+   **
+   ** The special case of negative priority is used for wh that
+   ** represent exclusive locks, i.e where no other token may be
+   ** loaded.
+   **/
+  int64_t priority;
 };
 
 #define orwl_wh_garb ((orwl_wh*)(TONES(uintptr_t)))
 #define orwl_wq_garb ((orwl_wq*)(TONES(uintptr_t)))
 
-#define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER }
+#define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .clock = 1 }
 
   DOCUMENT_INIT(orwl_wq)
 FSYMB_DOCUMENTATION(orwl_wq_init)
@@ -312,9 +327,12 @@ inline
 uint64_t orwl_wh_load
   (orwl_wh *wh,
    uint64_t howmuch  /*!< defaults to 1 */) {
-   wh->tokens += howmuch;
-   return howmuch;
-}
+    if (wh->priority > 0)
+      wh->tokens += howmuch;
+    else
+      howmuch = 0;
+    return howmuch;
+  }
 
 #define orwl_wh_load(...) CALL_WITH_DEFAULTS(orwl_wh_load, 2, __VA_ARGS__)
 declare_defarg(orwl_wh_load, 1, uint64_t, 1);
@@ -331,11 +349,12 @@ inline
 uint64_t orwl_wh_unload
   (orwl_wh *wh,
    uint64_t howmuch  /*!< defaults to 1 */) {
-  wh->tokens -= howmuch;
-  /* If the condition has change, wake up all tokens */
-  if (!wh->tokens) pthread_cond_broadcast(&wh->cond);
-  return howmuch;
-}
+    if (wh->tokens < howmuch) howmuch = wh->tokens;
+    wh->tokens -= howmuch;
+    /* If the condition has changed, wake up all tokens */
+    if (!wh->tokens) pthread_cond_broadcast(&wh->cond);
+    return howmuch;
+  }
 
 #define orwl_wh_unload(...) CALL_WITH_DEFAULTS(orwl_wh_unload, 2, __VA_ARGS__)
 declare_defarg(orwl_wh_unload, 1, uint64_t, 1);

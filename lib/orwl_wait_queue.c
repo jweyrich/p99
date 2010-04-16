@@ -34,7 +34,7 @@ orwl_wq* orwl_wq_init(orwl_wq *wq,
   pthread_mutex_init(&wq->mut, attr);
   wq->head = NULL;
   wq->tail = NULL;
-  wq->clock = 0;
+  wq->clock = 1;
   return wq;
 }
 
@@ -77,7 +77,7 @@ void orwl_wh_destroy(orwl_wh *wh) {
   pthread_cond_destroy(&wh->cond);
   wh->location = orwl_wq_garb;
   wh->next = orwl_wh_garb;
-  wh->priority = TONES(uint64_t);
+  wh->priority = TONES(int64_t);
 }
 
 DEFINE_NEW_DELETE(orwl_wh);
@@ -105,7 +105,7 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
         idle = true;
         for (size_t i = 0; i < number; ++i) {
           orwl_wh *wh = va_arg(ap, orwl_wh*);
-          va_arg(ap, uint64_t);
+          va_arg(ap, int64_t);
           if (wh && !orwl_wh_idle(wh)) {
             idle = false;
             pthread_cond_wait(&wh->cond, &wq->mut);
@@ -119,21 +119,26 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
       va_start(ap, number);
       for (size_t i = 0; i < number; ++i) {
         orwl_wh *wh = va_arg(ap, orwl_wh*);
-        size_t howmuch = va_arg(ap, uint64_t);
+        int64_t hm = va_arg(ap, int64_t);
+        uint64_t howmuch = (hm > TNULL(int64_t)) ? hm : -hm;
         if (wh) {
           wh->location = wq;
+          wh->priority = wq->clock;
           orwl_wh_load(wh, howmuch);
+          if (hm < TNULL(int64_t)) wh->priority = -(wq->clock);
           if (orwl_wq_idle(wq)) wq->head = wh;
           else wq->tail->next = wh;
           wq->tail = wh;
           ++wq->clock;
-          wh->priority = wq->clock;
         } else {
-          if (number == 1 && !orwl_wq_idle(wq))
+          if (number == 1
+              && !orwl_wq_idle(wq)
+              && wq->tail) {
+            assert(hm >= TNULL(int64_t));
             /* if the wh is NULL, take this as a request to add to the
                last handle if it exists */
             orwl_wh_load(wq->tail, howmuch);
-          else ret = orwl_invalid;
+          } else ret = orwl_invalid;
         }
       }
       va_end(ap);
