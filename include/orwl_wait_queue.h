@@ -97,16 +97,16 @@ struct orwl_wq {
  **
  ** Locks through such a handle object are achieved in a two-step
  ** procedure. First, a lock is @em requested through
- ** orwl_wait_request(). This binds the orwl_wh to a
+ ** ::orwl_wq_request. This binds the orwl_wh to a
  ** designated orwl_wq and appends the request to the FIFO
- ** queue of it. Then in a second step, orwl_wh_acquire() waits
+ ** queue of it. Then in a second step, ::orwl_wh_acquire waits
  ** until the request has become the first in the queue.
  **
- ** orwl_wh_release() releases the lock by popping the request from
+ ** ::orwl_wh_release releases the lock by popping the request from
  ** the FIFO. Thus, it allows for the following request in the FIFO
  ** (if any) to be acquired.
  **
- ** orwl_wh is mainly a pthread_cond_t that is bound to the
+ ** orwl_wh is mainly a @c pthread_cond_t that is bound to the
  ** fixed condition to be the first in the FIFO.
  **/
 struct orwl_wh {
