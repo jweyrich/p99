@@ -154,10 +154,11 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
     if (wq->head == wh) ret = orwl_acquired;
     /* We are on the slow path */
     else {
+      uint64_t loaded;
     RETRY:
-      orwl_wh_load(wh, 1);
+      loaded = orwl_wh_load(wh, 1);
       pthread_cond_wait(&wh->cond, &wq->mut);
-      orwl_wh_unload(wh, 1);
+      orwl_wh_unload(wh, loaded);
       /* Check everything again, somebody might have destroyed
          our wq */
       if (orwl_wq_valid(wq)) {
