@@ -40,7 +40,9 @@ for (my $i = 1; $i < $maxnumber; ++$i) {
     print "#define __wda_${i}(NAME, N, ...) _wda_${i0}(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())\n";
     print "#define _wda_${i}(NAME, ...) __wda_${i}(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)\n";
     print "#define _wda_minus_${i}(NAME, ...) __VA_ARGS__\n";
-    print "#define __DOIT${i}(N, FUNC, A, ...) FUNC(A, PASTE2(_DOIT, N)(N, FUNC, __VA_ARGS__ _COMMA_))\n";
-    print "#define _DOIT${i}(N, FUNC, A, ...) __DOIT${i}(_predecessor(N), FUNC, A, __VA_ARGS__)\n";
+}
 
+for (my $i = 2; $i < $maxnumber; ++$i) {
+    print "#define __DOIT${i}(N, OP, FUNC, A, ...) OP(FUNC(A), PASTE2(_DOIT, N)(N, OP, FUNC, __VA_ARGS__))\n";
+    print "#define _DOIT${i}(N, OP, FUNC, A, ...) __DOIT${i}(_predecessor(N), OP, FUNC, A, __VA_ARGS__)\n";
 }
