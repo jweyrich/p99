@@ -610,19 +610,24 @@ CHOOSE5(xT,                                     \
  **/
 #define _Z(x) (0 ? TNULL(size_t) : (x))
 
-#define _DOIT1(N, OP, FUNC, ...) FUNC(__VA_ARGS__)
+#define _DOIT1(N, OP, FUNC, X, ...) FUNC(X, 0)
 
-#define _IDENT(...) __VA_ARGS__
-#define _STRLEN(...) strlen(__VA_ARGS__)
+#define _IDT(X, N) X
+#define _SOP(X, N) N
+#define _CCA(X, N) X[N]
+#define _IGN(X, N)
+#define _STRLEN(X, N) strlen(X)
 
 #define _SUM(X, REC) (X + REC)
 #define _PROD(X, REC) (X * REC)
 #define _SEQ(X, REC) X, REC
+#define _SEP(X, REC) X; REC
+#define _PES(X, REC) REC; X
 #define _REV(X, REC) REC, X
 #define _STRCAT(X, REC) strcat(X, REC)
-#define _STRTAC(X, REC) strcat(REC, X)
+#define _STRTAC(X, REC) _STRCAT(REC, X)
 
-#define _SUMS(N, ...) PASTE2(_DOIT, N)(N, _SUM, _IDENT, __VA_ARGS__)
+#define _SUMS(N, ...) PASTE2(_DOIT, N)(N, _SUM, _IDT, __VA_ARGS__)
 
 /**
  ** @brief Compute the right associative sum of all the arguments.
@@ -637,10 +642,10 @@ CHOOSE5(xT,                                     \
  **/
 #define STRLENS(...) _STRLENS(_NARG_64(__VA_ARGS__),__VA_ARGS__)
 
-#define _REVS(N, ...) PASTE2(_DOIT, N)(N, _REV, _IDENT, __VA_ARGS__)
+#define _REVS(N, ...) PASTE2(_DOIT, N)(N, _REV, _IDT, __VA_ARGS__)
 #define REVS(...) _REVS(_NARG_64(__VA_ARGS__),__VA_ARGS__)
 
-#define _STRCATS(N, ...) PASTE2(_DOIT, N)(N, _STRTAC, _IDENT, __VA_ARGS__)
+#define _STRCATS(N, ...) PASTE2(_DOIT, N)(N, _STRTAC, _IDT, __VA_ARGS__)
 
 /**
  ** @brief Append all argument strings after @a TARG to @a TARG.
@@ -672,6 +677,63 @@ CHOOSE5(xT,                                     \
  **/
 #define STRDUP(...) STRCATS(memset(malloc(STRLENS(__VA_ARGS__) + 1), 0, 1), __VA_ARGS__)
 
+#define _DECLS(N, ...) PASTE2(_DOIT, N)(N, _SEP, _IDT, __VA_ARGS__)
+
+/**
+ ** @brief Change the commas in the argument list into semicolons.
+ **/
+#define DECLS(...) _DECLS(_NARG_64(__VA_ARGS__), __VA_ARGS__)
+
+/**
+ ** Repeat the parameter @a X @a N times.
+ **/
+#define REPS(X, N) PASTE2(_DOIT, N)(N, _SEQ, X _IGN,,)
+
+/**
+ ** Produce a list of length @a N that has the contents of 0, 1, ...,
+ ** @a N-1
+ **/
+#define POSS(N) REVS(PASTE2(_DOIT, N)(N, _SEQ, _SOP,,))
+
+/**
+ ** Produce a list of length @a N that has the contents of @a X[0], @a
+ ** X [1], ...,
+ ** @a X[@a N-1]
+ **/
+#define ACCS(X, N) REVS(PASTE2(_DOIT, N)(N, _SEQ, _CCA, REPS(X, N),))
+
+/**
+ ** Cut the argument list at position @a N
+ **/
+#define SELS(N, ...) PASTE2(_DOIT, N)(N, _SEQ, _IDT, __VA_ARGS__,)
+
+#define _ASG(X, N) _predecessor(N)] , X
+
+#define _SAR(X, REC) X = REC
+
+#define _ASGS(X, N, ...)                                                \
+DECLS(                                                                  \
+      SELS(_dec_minus(N,2),                                             \
+           REVS(                                                        \
+                SELS(_predecessor(N),                                   \
+                     PASTE2(_DOIT, N)(N,                                \
+                                      (X)[_SAR,                         \
+                                        _ASG,                           \
+                                        REVS(__VA_ARGS__),              \
+                                        ] /* dummy closing bracket */   \
+                                      )                                 \
+                     )                                                  \
+                )                                                       \
+           )                                                            \
+      )
+
+
+/**
+ ** @brief Produce a list of length @a N that has the contents of @c
+ ** V0 = @a X[0], @c V1 @a = X [1], , @c VN-1 = @a X[@a N-1], where
+ ** V0, etc are the remaining arguments.
+ **/
+#define ASGS(X, ...) _if_more_ignore(__VA_ARGS__,)(__VA_ARGS__ = (X)[0])(_ASGS(X, _NARG_64(,,__VA_ARGS__), ,,__VA_ARGS__))
 
 #endif 	    /* !ORWL_MACRO_H_ */
 
