@@ -230,6 +230,7 @@ struct auth_sock {
   int fd;
   size_t len;
   uint64_t *mes;
+  uint64_t *back;
   uint64_t ret;
 };
 
@@ -243,6 +244,7 @@ auth_sock* auth_sock_init(auth_sock *sock,
   sock->srv = srv;
   sock->len = len;
   sock->mes = len ? uint64_t_vnew(len) : NULL;
+  sock->back = sock->mes;
   return sock;
 }
 

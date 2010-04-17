@@ -125,7 +125,9 @@ DEFINE_THREAD(arg_t) {
 
 
 void test_callback(auth_sock *Arg) {
-  orwl_domain_call(ORWL_FTAB(auth_sock), Arg->mes[0], Arg);
+  ASGS(Arg->mes, uint64_t funcID);
+  ++(Arg->mes);
+  orwl_domain_call(ORWL_FTAB(auth_sock), funcID, Arg);
 }
 
 int main(int argc, char **argv) {

@@ -233,7 +233,7 @@ void auth_sock_close(auth_sock *sock) {
 
 void auth_sock_destroy(auth_sock *sock) {
   if (sock->fd != -1) auth_sock_close(sock);
-  if (sock->mes) uint64_t_vdelete(sock->mes);
+  if (sock->back) uint64_t_vdelete(sock->back);
   auth_sock_init(sock);
 }
 
@@ -512,21 +512,18 @@ addr_t getpeer(auth_sock *Arg) {
 
 
 void auth_sock_insert_peer(auth_sock *Arg) {
+  ASGS(Arg->mes, uint64_t port);
   orwl_host *h = NEW(orwl_host);
   /* mes and addr_t is already in host order */
   h->ep.addr = getpeer(Arg);
-  h->ep.port.p = Arg->mes[1];
+  h->ep.port.p = port;
   orwl_host_connect(h, &Arg->srv->host);
 }
 
 void auth_sock_insert_host(auth_sock *Arg) {
-  report(1, "insertion of /0x%" PRIX64 ":0x%" PRIX64 "/ ",
-         Arg->mes[1],
-         Arg->mes[2]);
   orwl_host *h = NEW(orwl_host);
   /* mes is already in host order */
-  h->ep.addr.a = Arg->mes[1];
-  h->ep.port.p = Arg->mes[2];
+  ASGS(Arg->mes, h->ep.addr.a, h->ep.port.p);
   orwl_host_connect(h, &Arg->srv->host);
 }
 

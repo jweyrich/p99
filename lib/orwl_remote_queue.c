@@ -77,8 +77,9 @@ orwl_state orwl_release(orwl_rh* rh, rand48_t *seed) {
 }
 
 void auth_sock_request(auth_sock *Arg) {
+  ASGS(Arg->mes, uintptr_t wqID, uint64_t whID, uint64_t port);
   // extract wq and the remote wh ID from Arg
-  orwl_wq *srv_wq = (orwl_wq*)(void*)(uintptr_t)Arg->mes[1];
+  orwl_wq *srv_wq = (orwl_wq*)(void*)wqID;
   // create a wh and insert it in wq
   orwl_wh *srv_wh = NEW(orwl_wh);
   // request two tokens, one for this function here when it acquires
@@ -86,8 +87,7 @@ void auth_sock_request(auth_sock *Arg) {
   orwl_state state = orwl_wq_request(srv_wq, srv_wh, 2);
   if (state == orwl_requested) {
     // mes is already in host order
-    orwl_endpoint ep = { .addr = getpeer(Arg), .port = { .p = Arg->mes[3] } };
-    uint64_t id = Arg->mes[2];
+    orwl_endpoint ep = { .addr = getpeer(Arg), .port = { .p = port } };
     // acknowledge the creation of the wh and send back its id
     Arg->ret = (uintptr_t)srv_wh;
     auth_sock_close(Arg);
@@ -98,7 +98,7 @@ void auth_sock_request(auth_sock *Arg) {
     // wait until the lock on wh is obtained
     state = orwl_wh_acquire(srv_wh);
     // send a request to the other side to remove the remote wh ID
-    orwl_rpc(&ep, &seed, auth_sock_release, id);
+    orwl_rpc(&ep, &seed, auth_sock_release, whID);
   } else {
     // tell other side about the error
     Arg->ret = 0;
@@ -109,8 +109,9 @@ void auth_sock_request(auth_sock *Arg) {
 /* this is executed first on the client when the lock is acquired and */
 /* then on the server when the lock is released. */
 void auth_sock_release(auth_sock *Arg) {
+  ASGS(Arg->mes, uintptr_t whID);
   // extract the wh for Arg
-  orwl_wh* wh = (void*)(uintptr_t)Arg->mes[1];
+  orwl_wh* wh = (void*)whID;
   // acquire and release wh
   // * in fact this must already been acquired when we come here,
   // * the acquire only serve to take out the last token.

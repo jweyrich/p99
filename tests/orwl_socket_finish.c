@@ -56,7 +56,9 @@ void test_callback(auth_sock *Arg) {
   diagnose(Arg->fd, "message of size %zd", Arg->len);
   for (size_t i = 0; i < Arg->len; ++i)
     report(stdout, "%" PRIX64, Arg->mes[i]);
-  orwl_domain_call(ORWL_FTAB(auth_sock), Arg->mes[0], Arg);
+  ASGS(Arg->mes, uint64_t funcID);
+  ++(Arg->mes);
+  orwl_domain_call(ORWL_FTAB(auth_sock), funcID, Arg);
 }
 
 int main(int argc, char **argv) {
@@ -102,4 +104,9 @@ int main(int argc, char **argv) {
   report(1, "%s %s %s %s %s", PRI(char, X,), PRI(short, X,), PRI(signed, X,), PRI(long, X,), PRI(long long, X,));
   report(1, "%zu %zu %zu %zu %zu", sizeof(char), sizeof(short), sizeof(signed), sizeof(long), sizeof(long long));
   mfputs(stderr, JOIN("aa", "BB", "CC "), PRIX(37ull), " ", PRId(37), " ", PRIo(37), " ", PRIp(argv), "\n");
+  int Y[17] = {  REPS(1, 17) };
+  int Z[22] = {  POSS(22) };
+  ASGS(Z, int x, double k, int y, bool r);
+  ASGS(Y, int s);
+  ASGS(Y, int i, float o);
 }
