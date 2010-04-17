@@ -272,6 +272,11 @@ DECLARE_ORWL_REGISTER(auth_sock_insert_peer);
 DECLARE_ORWL_REGISTER(auth_sock_insert_host);
 DECLARE_ORWL_REGISTER(auth_sock_do_nothing);
 
+#define AUTH_SOCK_READ(A, ...)                  \
+ASGS((A)->mes, __VA_ARGS__);                    \
+(A)->len -= _NARG_64(__VA_ARGS__);              \
+(A)->mes += _NARG_64(__VA_ARGS__)
+
 /* some helper */
 addr_t getpeer(auth_sock *Arg);
 

@@ -20,8 +20,7 @@ void test_callback(auth_sock *Arg) {
   diagnose(Arg->fd, "message of size %zd", Arg->len);
   for (size_t i = 0; i < Arg->len; ++i)
     report(stdout, "%" PRIX64 "", Arg->mes[i]);
-  ASGS(Arg->mes, uint64_t funcID);
-  ++(Arg->mes);
+  AUTH_SOCK_READ(Arg, uint64_t funcID);
   orwl_domain_call(ORWL_FTAB(auth_sock), funcID, Arg);
 }
 

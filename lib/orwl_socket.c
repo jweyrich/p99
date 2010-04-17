@@ -512,7 +512,7 @@ addr_t getpeer(auth_sock *Arg) {
 
 
 void auth_sock_insert_peer(auth_sock *Arg) {
-  ASGS(Arg->mes, uint64_t port);
+  AUTH_SOCK_READ(Arg, uint64_t port);
   orwl_host *h = NEW(orwl_host);
   /* mes and addr_t is already in host order */
   h->ep.addr = getpeer(Arg);
@@ -523,7 +523,7 @@ void auth_sock_insert_peer(auth_sock *Arg) {
 void auth_sock_insert_host(auth_sock *Arg) {
   orwl_host *h = NEW(orwl_host);
   /* mes is already in host order */
-  ASGS(Arg->mes, h->ep.addr.a, h->ep.port.p);
+  AUTH_SOCK_READ(Arg, h->ep.addr.a, h->ep.port.p);
   orwl_host_connect(h, &Arg->srv->host);
 }
 
