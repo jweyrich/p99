@@ -49,8 +49,172 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  **
  ** Idea is due to Laurent Deniau, CERN, and taken from a discussion
  ** in comp.lang.c.
+ **
+ ** @warning this also counts an empty argument list as having one (=
+ ** the empty) argument
+ ** @see NARG for a macro that returns 0 if the list is empty
  **/
 #define _NARG_64(...) _NARG_64_1(__VA_ARGS__)
+
+#define _IGNORE(...)
+#define _IDENT(...) __VA_ARGS__
+#define _SKIP_
+#define _CLAUSE1(...) __VA_ARGS__ _IGNORE
+#define _CLAUSE2(...) _IDENT
+
+#define _IS__EQ__(...) ,
+#define _IS_0_EQ_0(...) ,
+#define _IS_1_EQ_1(...) ,
+#define _IS_2_EQ_2(...) ,
+#define _IS_3_EQ_3(...) ,
+#define _IS_4_EQ_4(...) ,
+#define __IF_CLAUSE(A,B,C,...) C
+#define _IF_CLAUSE(EXP) __IF_CLAUSE(EXP, _CLAUSE1, _CLAUSE2, ~)
+#define _IF_NOT_CLAUSE(EXP) __IF_CLAUSE(EXP, _CLAUSE2, _CLAUSE1, ~)
+
+/**
+ ** @brief Test two words @a A and @a B if they are equal.
+ **
+ ** @a A and @a B must be just one word, i.e composed of
+ ** alpha-numerical characters and underscores.
+ **
+ ** For such a test to work properly a corresponding macro @c _IS_A_EQ_A
+ ** must exist for all @a A such that @a B may be the same word as @a
+ ** A. E.g for the test
+ **
+ ** @code
+ ** IS_EQ(0, X)(expand_when_equal)(expand_when_unequal)
+ ** @endcode
+ **
+ ** the macro ::_IF_0_EQ_0 must exist. (Which it does in that case).
+ **
+ ** @see IS_DEC_EQ for equality of not too large decimal numbers
+ **/
+#define IS_EQ(A, B) _IF_CLAUSE(PASTE4(_IS_,A,_EQ_,B)())
+
+/**
+ ** @brief Test two words @a A and @a B if they are unequal.
+ **
+ ** @see IS_EQ 
+ **/
+#define IS_NE(A, B) _IF_NOT_CLAUSE(PASTE4(_IS_,A,_EQ_,B)())
+
+/**
+ ** @brief Test two decimal numbers @a A and @a B if they are equal.
+ **/
+#define IS_DEC_EQ(A, B) IS_EQ(0,_dec_minus(A,B))
+
+/**
+ ** @brief Test two decimal numbers @a A and @a B if they are unequal.
+ **/
+#define IS_DEC_NE(A, B) IS_NE(0,_dec_minus(A,B))
+
+#define IS_GE_0(A) _IF_CLAUSE(PASTE3(_IS_,A,_GE_0)())
+#define IS_LT_0(A) _IF_NOT_CLAUSE(PASTE3(_IS_,A,_GE_0)())
+
+/**
+ ** @brief Test two decimal numbers @a A and @a B if @a A is greater
+ ** or equal to @a B.
+ **/
+#define IS_DEC_GE(A, B) IS_GE_0(_dec_minus(A,B))
+
+/**
+ ** @brief Test two decimal numbers @a A and @a B if @a A is less
+ ** or equal to @a B.
+ **/
+#define IS_DEC_LE(A, B) IS_GE_0(_dec_minus(B,A))
+
+/**
+ ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
+ ** less than @a B.
+ **/
+#define IS_DEC_LT(A, B) IS_LT_0(_dec_minus(A,B))
+
+/**
+ ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
+ ** greater than @a B.
+ **/
+#define IS_DEC_GT(A, B) IS_LT_0(_dec_minus(B,A))
+
+#define IS_EQ_0(N) IS_EQ(0, N)
+#define IS_EQ_1(N) IS_EQ(1, N)
+#define IS_EQ_2(N) IS_EQ(2, N)
+#define IS_EQ_3(N) IS_EQ(3, N)
+#define IS_EQ_4(N) IS_EQ(4, N)
+
+/**
+ ** @brief Test if the argument list is empty.
+ **
+ ** Use this as follows
+ ** @code
+ ** IS_EMPTY(something_that_expands_or_not_to_empty)(tokens_A)(tokens_B)
+ ** @endcode
+ ** This expands to tokens_A if the list was empty and to tokens_B if
+ ** there was anything different from a comment in the list.
+ **
+ ** Observe the parenthesis around tokens_A and tokens_B.
+ **
+ ** The implementation of this macro is kind of tricky and heavily
+ ** uses the fact that a function macro (@c _IS__EQ__ in this case)
+ ** is left untouched if it is not followed by a parenthesis. By that
+ ** the inner part of the macro will expand to a non-empty sequence
+ ** with a different number of commas:
+ **
+ ** <DL>
+ **  <DT>0</DT>
+ **  <DD>if there was an non empty argument without commas and not
+ **       starting with a parenthesis</DD>
+ **  <DT>1</DT> <DD>if the argument was empty</DD>
+ **  <DT>2</DT> <DD>if the argument had no comma but started with a parenthesis</DD>
+ **  <DT>2N</DT> <DD>if the argument had N commas</DD>
+ ** </DL>
+ **
+ ** So the case of exactly one comma is what we are looking for. For
+ ** that case, ::_NARG_64 returns the value 2, and then we may just
+ ** test for the token 2.
+ **/
+#define IS_EMPTY(...) IS_EQ_2(_NARG_64(_IS__EQ__ __VA_ARGS__ (~) _IS__EQ__ __VA_ARGS__))
+
+/**
+ ** @brief Return the length of the variate argument list, an empty
+ ** argument list accounting for 0 arguments.
+ **
+ ** This supposes that the length of the list is less than 64.
+ **
+ ** @see _NARG_64 for a macro that accounts an empty list to be 1
+ **/
+#define NARG(...) IS_EMPTY(__VA_ARGS__)(0)(_NARG_64(__VA_ARGS__))
+
+
+#define _IS_VOID_CLAUSE1(...) __VA_ARGS__ _IGNORE
+#define _IS_VOID_CLAUSE2(...) _IDENT
+
+
+#define _IS_void_EQ_void(...) ,
+
+/**
+ ** @brief Test if the argument consists of exactly the word @c void.
+ **
+ ** @see IS_VOID for a macro that test whether or not its argument is
+ ** empty @b or if it consists of the word @c void.
+ **/
+#define IS_void(...)                                                    \
+IS_EMPTY(__VA_ARGS__)                                                   \
+(_IS_VOID_CLAUSE2)                                                      \
+(IS_EQ_2(_NARG_64(_IS_void_EQ_ ## __VA_ARGS__ (~) _IS_void_EQ_ ## __VA_ARGS__)))
+
+
+/**
+ ** @brief Test whether or not its argument is empty @b or if it
+ ** consists of the word @c void.
+ **
+ ** @see IS_void for a macro that tests if the argument is exactly the
+ ** word @c void.
+ **/
+#define IS_VOID(...)                                                    \
+IS_EMPTY(__VA_ARGS__)                                                   \
+(_IS_VOID_CLAUSE1)                                                      \
+(IS_EQ_2(_NARG_64(_IS_void_EQ_ ## __VA_ARGS__ (~) _IS_void_EQ_ ## __VA_ARGS__)))
 
 /**
  ** @brief Return the number of pairs of the variate argument list.
@@ -269,29 +433,21 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 /*! @see declare_defarg */                                              \
 /*! This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
-/* The construct of eating away an empty argument list with `, ## __VA_ARGS__'
-   only works for some compilers, namely gcc, icc and IBM. Therefore
-   the orwl library itself should not use default arguments for the
-   zeroth argument. */
-#ifndef NO_ZERO_DEFARG
-#define _wda_0(NAME, ...) __VA_ARGS__
-#define ____call_wda(NAME, K, ...) PASTE2(_wda_, K)(NAME, ## __VA_ARGS__)
-#define ___call_wda(NAME, K, ...) ____call_wda(NAME, K, ## __VA_ARGS__)
-#define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _dec_minus(M, N), ## __VA_ARGS__)
-#define _call_wda(NAME, M, ...) __call_wda(NAME, M, _predecessor(_NARG_64(~, ## __VA_ARGS__)), ## __VA_ARGS__)
-# define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), ## __VA_ARGS__
-# define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), ## __VA_ARGS__
-#else
 #define _wda_0(NAME, ...) __VA_ARGS__
 #define ____call_wda(NAME, K, ...) PASTE2(_wda_, K)(NAME, __VA_ARGS__)
 #define ___call_wda(NAME, K, ...) ____call_wda(NAME, K, __VA_ARGS__)
 #define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _dec_minus(M, N), __VA_ARGS__)
-#define _call_wda(NAME, M, ...) __call_wda(NAME, M, _predecessor(_NARG_64(~, __VA_ARGS__)), __VA_ARGS__)
-# define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), __VA_ARGS__
-# define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), __VA_ARGS__
-#endif
+#define _call_wda(NAME, M, ...) __call_wda(NAME, M, NARG(__VA_ARGS__), __VA_ARGS__)
+#define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), __VA_ARGS__
+#define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), __VA_ARGS__
 
-# define CALL_WITH_DEFAULTS(NAME, M, ...) NAME(_call_wda(NAME, M, __VA_ARGS__))
+#define _CALL_WITH_ALL_DEFAULTS(NAME, M) PASTE2(_wda_, M)(NAME, PASTE2(NAME,_defarg_0)())
+
+# define CALL_WITH_DEFAULTS(NAME, M, ...)               \
+NAME(IS_EMPTY(__VA_ARGS__)                              \
+     (_CALL_WITH_ALL_DEFAULTS(NAME, _predecessor(M)))   \
+     (_call_wda(NAME, M, __VA_ARGS__))                  \
+     )
 
 /**
  ** @def CALL_WITH_DEFAULTS
@@ -346,19 +502,8 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  ** @param NAME is the function to provide with default argument features.
  ** @param M is the number of arguments that a full call to @a NAME takes.
  ** @see declare_defarg
- ** @warning Don't use this if you have give a default for the 0th
- ** argument of a function. Because of the weird rules for empty
- ** argument lists of C99 and the preprocessor a more complicated set
- ** of macros, ::CALL_WITH_DEFAULTS_EVEN_EMPTY, must be used.
  **/
 
-
-#define __cexpr_empty(...) (!# __VA_ARGS__[1])
-
-/** preprocessor macro that results in a compiler expression that is
- ** true iff the past argument consists of a token that is exactly
- ** one character wide. */
-#define _cexpr_empty(...) __cexpr_empty(__VA_ARGS__)
 
 /**
  ** @define expand to a comma token
@@ -368,33 +513,6 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  ** inside a recursion is not empty.
  **/
 #define _COMMA_ ,
-
-/** preprocessor macro that results in a compiler expression of type
- ** @a T that corresponds to the variadic argument. The variadic
- ** argument must already start with a comma. @a DUMMY is a dummy
- ** variable of type @a T whoes value might be copied once, when not
- ** optimizing, but will be otherwise ignored.
- **/
-#define _non_empty_first(T, DUMMY, ...) (((T[2]){ DUMMY __VA_ARGS__ })[1])
-
-/** preprocessor macro that results in a compiler expression of type
- ** @a T that evaluates either to the variadic argument, if it is
- ** non-empty, or to the default argument for @a NAME if none such
- ** argument is given. The variadic argument must already start with a
- ** comma. @a DUMMY is a dummy variable of type @a T whoes value might
- ** be copied once, when not optimizing, but will be otherwise
- ** ignored.
- **
- ** The variadic argument or the default function will be evaluated
- ** only if necessary and at most once. 
- **/
-#define __if_empty_default(NAME, T, DUMMY, ...) (_cexpr_empty(__VA_ARGS__) ? PASTE2(NAME, _defarg_0)() : _non_empty_first(T, DUMMY, __VA_ARGS__))
-
-#define _IGNORE(...)
-#define _IDENT(...) __VA_ARGS__
-#define _SKIP_ 
-#define _CLAUSE1(...) __VA_ARGS__ _IGNORE
-#define _CLAUSE2(...) _IDENT
 
 /**
  ** @brief Preprocessor conditional
@@ -424,74 +542,6 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
           _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
           _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
           _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1)
-
-/**
- ** @brief Construct a macro that can even replace argument 0 by a default.
- **
- ** This is similar to a macro constructed with ::CALL_WITH_DEFAULTS but
- ** for the subtle difference of the ::_COMMA_ macro as given here.
- ** @code
- ** #define ftester(...) ftester(CALL_WITH_DEFAULTS_EVEN_EMPTY(ftester, 3, _COMMA_ __VA_ARGS__))
- ** @endcode
- **
- ** In difference to ::CALL_WITH_DEFAULTS @c ftester may now even be called
- ** with an empty argument list:
- **
- ** @code
- ** ftester();
- ** ftester(a);
- ** ftester(a, b);
- ** ftester(a, b, c);
- ** @endcode
- **
- ** The resulting code for the first two cases resembles more to an
- ** insult than to reasonable code. Basically it ensures the that the
- ** default function for @c tester and argument 0 gets called exactly
- ** when its needed. On the other hand the lack of any expression at
- ** all as an argument still results in something that the compiler
- ** should be able to digest. Don't ask.
- **
- ** The later two cases should result in something, simpler, where
- ** calls to the default functions are just substituted for missing
- ** arguments. In particular the last, when @c ftester is called with
- ** exactly the 3 arguments that it requires, the result should just
- ** be the identity.
- **
- ** But defining things becomes a bit more complicated than with
- ** ::CALL_WITH_DEFAULTS:
- ** - The default argument for position 0 @b must be declared and
- **   defined with ::declare_defarg_0 and ::define_defarg_0
- **   respectively.
- ** - Functions with just one argument even need more special care
- **   since otherwise the real function definition will explode. Use
- **   something like
- **
- ** @code
- ** #define ftaster(...) CALL_WITH_DEFAULTS_EVEN_EMPTY(ftaster, 1, _COMMA_ __VA_ARGS__)
- **
- ** void ftaster _SKIP_ (int A) {
- **   fprintf(stderr, "ftaster has %d\n", A);
- ** }
- **
- ** declare_defarg_0(ftaster, int, -1);
- ** @endcode
- **
- ** So in addition to the ::_COMMA_ inside the @c define, there must
- ** also be a ::_SKIP_ in the function definition itself.
- **/
-#define CALL_WITH_DEFAULTS_EVEN_EMPTY(NAME, M, ...)                     \
-  NAME(                                                                 \
-_if_more_ignore(__VA_ARGS__)                                            \
-(_call_wda(NAME, M, __if_empty_default(NAME, PASTE2(NAME, _def0dummy_t), PASTE2(NAME, _def0dummy), __VA_ARGS__))) \
-(_call_wda(NAME, M __VA_ARGS__))                                        \
-)
-
-#define declare_defarg_0(NAME, T, V)                    \
-typedef T PASTE2(NAME, _def0dummy_t);                  \
-PASTE2(NAME, _def0dummy_t) PASTE2(NAME, _def0dummy);  \
-declare_defarg(NAME, 0, T, V)
-
-#define define_defarg_0(NAME, T) define_defarg(NAME, 0, T)
 
 
 /**
@@ -610,6 +660,7 @@ CHOOSE5(xT,                                     \
  **/
 #define _Z(x) (0 ? TNULL(size_t) : (x))
 
+#define _DOIT0(...)
 #define _DOIT1(N, OP, FUNC, X, ...) FUNC(X, 0)
 
 #define _IDT(X, N) X
@@ -632,7 +683,7 @@ CHOOSE5(xT,                                     \
 /**
  ** @brief Compute the right associative sum of all the arguments.
  **/
-#define SUMS(...) _SUMS(_NARG_64(__VA_ARGS__),__VA_ARGS__)
+#define SUMS(...) _SUMS(NARG(__VA_ARGS__),__VA_ARGS__)
 
 #define _STRLENS(N, ...) PASTE2(_DOIT, N)(N, _SUM, _STRLEN, __VA_ARGS__)
 
@@ -640,10 +691,10 @@ CHOOSE5(xT,                                     \
  ** @brief Return an expression that returns the sum of the lengths of
  ** all strings that are given as arguments.
  **/
-#define STRLENS(...) _STRLENS(_NARG_64(__VA_ARGS__),__VA_ARGS__)
+#define STRLENS(...) _STRLENS(NARG(__VA_ARGS__),__VA_ARGS__)
 
 #define _REVS(N, ...) PASTE2(_DOIT, N)(N, _REV, _IDT, __VA_ARGS__)
-#define REVS(...) _REVS(_NARG_64(__VA_ARGS__),__VA_ARGS__)
+#define REVS(...) _if_more_ignore(__VA_ARGS__,)(__VA_ARGS__)(_REVS(NARG(__VA_ARGS__),__VA_ARGS__))
 
 #define _STRCATS(N, ...) PASTE2(_DOIT, N)(N, _STRTAC, _IDT, __VA_ARGS__)
 
@@ -654,7 +705,7 @@ CHOOSE5(xT,                                     \
  ** to hold the concatenation of all strings. The remaining arguments
  ** must be compatible with @c const char*.
  **/
-#define STRCATS(TARG, ...) _STRCATS(_NARG_64(TARG, __VA_ARGS__), REVS(TARG, __VA_ARGS__))
+#define STRCATS(TARG, ...) _STRCATS(NARG(TARG, __VA_ARGS__), REVS(TARG, __VA_ARGS__))
 
 /**
  ** @brief Concatenate all arguments.
@@ -682,7 +733,7 @@ CHOOSE5(xT,                                     \
 /**
  ** @brief Change the commas in the argument list into semicolons.
  **/
-#define DECLS(...) _DECLS(_NARG_64(__VA_ARGS__), __VA_ARGS__)
+#define DECLS(...) _DECLS(NARG(__VA_ARGS__), __VA_ARGS__)
 
 /**
  ** Repeat the parameter @a X @a N times.
@@ -690,14 +741,14 @@ CHOOSE5(xT,                                     \
 #define REPS(X, N) PASTE2(_DOIT, N)(N, _SEQ, X _IGN,,)
 
 /**
- ** Produce a list of length @a N that has the contents of 0, 1, ...,
- ** @a N-1
+ ** @brief Produce a list of length @a N that has the contents of 0,
+ ** 1, , @a N-1
  **/
 #define POSS(N) REVS(PASTE2(_DOIT, N)(N, _SEQ, _SOP,,))
 
 /**
  ** Produce a list of length @a N that has the contents of @a X[0], @a
- ** X [1], ...,
+ ** X [1], ,
  ** @a X[@a N-1]
  **/
 #define ACCS(X, N) REVS(PASTE2(_DOIT, N)(N, _SEQ, _CCA, REPS(X, N),))
@@ -706,6 +757,8 @@ CHOOSE5(xT,                                     \
  ** Cut the argument list at position @a N
  **/
 #define SELS(N, ...) PASTE2(_DOIT, N)(N, _SEQ, _IDT, __VA_ARGS__,)
+
+#define CHS(N, ...) _if_more_ignore(__VA_ARGS__,,)(__VA_ARGS__)(SELS(1, REVS(SELS(N, __VA_ARGS__))))
 
 #define _ASG(X, N) _predecessor(N)] , X
 
@@ -733,7 +786,9 @@ DECLS(                                                                  \
  ** V0 = @a X[0], @c V1 @a = X [1], , @c VN-1 = @a X[@a N-1], where
  ** V0, etc are the remaining arguments.
  **/
-#define ASGS(X, ...) _if_more_ignore(__VA_ARGS__,)(__VA_ARGS__ = (X)[0])(_ASGS(X, _NARG_64(,,__VA_ARGS__), ,,__VA_ARGS__))
+#define ASGS(X, ...)                                    \
+_if_more_ignore(__VA_ARGS__,)                           \
+(IS_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (X)[0]))   \
+(_ASGS(X, _NARG_64(,,__VA_ARGS__), ,,__VA_ARGS__))
 
 #endif 	    /* !ORWL_MACRO_H_ */
-

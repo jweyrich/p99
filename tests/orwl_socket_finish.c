@@ -17,11 +17,11 @@
 
 void ftaster _SKIP_ (int A);
 
-declare_defarg_0(ftaster, int, -1);
-define_defarg_0(ftaster, int);
+declare_defarg(ftaster, 0, int, -1);
+define_defarg(ftaster, 0, int);
 
 
-#define ftaster(...) CALL_WITH_DEFAULTS_EVEN_EMPTY(ftaster, 1, _COMMA_ __VA_ARGS__)
+#define ftaster(...) CALL_WITH_DEFAULTS(ftaster, 1, __VA_ARGS__)
 
 void ftaster _SKIP_ (int A) {
   report(1, "ftaster has %d", A);
@@ -31,11 +31,11 @@ void ftister(int A, unsigned B) {
   report(1, "ftister has %d %u", A, B);
 }
 declare_defarg(ftister, 1, unsigned, 1);
-declare_defarg_0(ftister, int, -2);
+declare_defarg(ftister, 0, int, -2);
 define_defarg(ftister, 1, unsigned);
-define_defarg_0(ftister, int);
+define_defarg(ftister, 0, int);
 
-#define ftister(...) CALL_WITH_DEFAULTS_EVEN_EMPTY(ftister, 2, _COMMA_ __VA_ARGS__)
+#define ftister(...) CALL_WITH_DEFAULTS(ftister, 2, __VA_ARGS__)
 
 typedef struct { int x; } test_t;
 
@@ -44,12 +44,12 @@ void ftester(test_t A, unsigned B, double C) {
 }
 declare_defarg(ftester, 2, double, 0.5);
 declare_defarg(ftester, 1, unsigned, 2);
-declare_defarg_0(ftester, test_t, (test_t){ -2 });
+declare_defarg(ftester, 0, test_t, (test_t){ -2 });
 define_defarg(ftester, 2, double);
 define_defarg(ftester, 1, unsigned);
-define_defarg_0(ftester, test_t);
+define_defarg(ftester, 0, test_t);
 
-#define ftester(...) CALL_WITH_DEFAULTS_EVEN_EMPTY(ftester, 3, _COMMA_ __VA_ARGS__)
+#define ftester(...) CALL_WITH_DEFAULTS(ftester, 3, __VA_ARGS__)
 
 
 void test_callback(auth_sock *Arg) {
@@ -108,4 +108,17 @@ int main(int argc, char **argv) {
   ASGS(Z, int x, double k, int y, bool r);
   ASGS(Y, int s);
   ASGS(Y, int i, float o);
+  ASGS(Y, void);
+  ASGS(Y,);
+  IS_DEC_LT(7,5)(true)(false);
+  IS_DEC_GE(5,5)(true)(false);
+  IS_DEC_LE(7,5)(true)(false);
+  IS_DEC_GT(5,5)(true)(false);
+
+  IS_DEC_GT(0,0)(true)(false);
+  IS_DEC_GE(0,0)(true)(false);
+  IS_DEC_LT(0,0)(true)(false);
+  IS_DEC_LE(0,0)(true)(false);
+
+  IS_DEC_GT(1,0)(true)(false);
 }

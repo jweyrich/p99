@@ -31,6 +31,8 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
     printf "#define _predecessor_%d %d\n", $i + 1, $i;
     printf "#define _itpredecessor_%d(DEC) _predecessor(_itpredecessor_%d(DEC))\n", $i + 1, $i;
     printf "#define _predecessor_minus_%d minus_%d\n", $i, $i + 1;
+    printf "#define _minus_minus_%d %d\n", $i, $i;
+    printf "#define _IS_%d_GE_0 ,\n", $i;
     printf "#define _dec_eval_%d %d\n", $i, $i;
     printf "#define _dec_eval_minus_%d %d\n", $i, -$i;
 }

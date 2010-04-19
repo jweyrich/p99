@@ -211,6 +211,8 @@
 #define _predecessor_1 0
 #define _itpredecessor_1(DEC) _predecessor(_itpredecessor_0(DEC))
 #define _predecessor_minus_0 minus_1
+#define _minus_minus_0 0
+#define _IS_0_GE_0 ,
 #define _dec_eval_0 0
 #define _dec_eval_minus_0 0
 #define _uni2dec_1 1
@@ -218,6 +220,8 @@
 #define _predecessor_2 1
 #define _itpredecessor_2(DEC) _predecessor(_itpredecessor_1(DEC))
 #define _predecessor_minus_1 minus_2
+#define _minus_minus_1 1
+#define _IS_1_GE_0 ,
 #define _dec_eval_1 1
 #define _dec_eval_minus_1 -1
 #define _uni2dec_11 2
@@ -225,6 +229,8 @@
 #define _predecessor_3 2
 #define _itpredecessor_3(DEC) _predecessor(_itpredecessor_2(DEC))
 #define _predecessor_minus_2 minus_3
+#define _minus_minus_2 2
+#define _IS_2_GE_0 ,
 #define _dec_eval_2 2
 #define _dec_eval_minus_2 -2
 #define _uni2dec_111 3
@@ -232,6 +238,8 @@
 #define _predecessor_4 3
 #define _itpredecessor_4(DEC) _predecessor(_itpredecessor_3(DEC))
 #define _predecessor_minus_3 minus_4
+#define _minus_minus_3 3
+#define _IS_3_GE_0 ,
 #define _dec_eval_3 3
 #define _dec_eval_minus_3 -3
 #define _uni2dec_1111 4
@@ -239,6 +247,8 @@
 #define _predecessor_5 4
 #define _itpredecessor_5(DEC) _predecessor(_itpredecessor_4(DEC))
 #define _predecessor_minus_4 minus_5
+#define _minus_minus_4 4
+#define _IS_4_GE_0 ,
 #define _dec_eval_4 4
 #define _dec_eval_minus_4 -4
 #define _uni2dec_11111 5
@@ -246,6 +256,8 @@
 #define _predecessor_6 5
 #define _itpredecessor_6(DEC) _predecessor(_itpredecessor_5(DEC))
 #define _predecessor_minus_5 minus_6
+#define _minus_minus_5 5
+#define _IS_5_GE_0 ,
 #define _dec_eval_5 5
 #define _dec_eval_minus_5 -5
 #define _uni2dec_111111 6
@@ -253,6 +265,8 @@
 #define _predecessor_7 6
 #define _itpredecessor_7(DEC) _predecessor(_itpredecessor_6(DEC))
 #define _predecessor_minus_6 minus_7
+#define _minus_minus_6 6
+#define _IS_6_GE_0 ,
 #define _dec_eval_6 6
 #define _dec_eval_minus_6 -6
 #define _uni2dec_1111111 7
@@ -260,6 +274,8 @@
 #define _predecessor_8 7
 #define _itpredecessor_8(DEC) _predecessor(_itpredecessor_7(DEC))
 #define _predecessor_minus_7 minus_8
+#define _minus_minus_7 7
+#define _IS_7_GE_0 ,
 #define _dec_eval_7 7
 #define _dec_eval_minus_7 -7
 #define _uni2dec_11111111 8
@@ -267,6 +283,8 @@
 #define _predecessor_9 8
 #define _itpredecessor_9(DEC) _predecessor(_itpredecessor_8(DEC))
 #define _predecessor_minus_8 minus_9
+#define _minus_minus_8 8
+#define _IS_8_GE_0 ,
 #define _dec_eval_8 8
 #define _dec_eval_minus_8 -8
 #define _uni2dec_111111111 9
@@ -274,6 +292,8 @@
 #define _predecessor_10 9
 #define _itpredecessor_10(DEC) _predecessor(_itpredecessor_9(DEC))
 #define _predecessor_minus_9 minus_10
+#define _minus_minus_9 9
+#define _IS_9_GE_0 ,
 #define _dec_eval_9 9
 #define _dec_eval_minus_9 -9
 #define _uni2dec_1111111111 10
@@ -281,6 +301,8 @@
 #define _predecessor_11 10
 #define _itpredecessor_11(DEC) _predecessor(_itpredecessor_10(DEC))
 #define _predecessor_minus_10 minus_11
+#define _minus_minus_10 10
+#define _IS_10_GE_0 ,
 #define _dec_eval_10 10
 #define _dec_eval_minus_10 -10
 #define _uni2dec_11111111111 11
@@ -288,6 +310,8 @@
 #define _predecessor_12 11
 #define _itpredecessor_12(DEC) _predecessor(_itpredecessor_11(DEC))
 #define _predecessor_minus_11 minus_12
+#define _minus_minus_11 11
+#define _IS_11_GE_0 ,
 #define _dec_eval_11 11
 #define _dec_eval_minus_11 -11
 #define _uni2dec_111111111111 12
@@ -295,6 +319,8 @@
 #define _predecessor_13 12
 #define _itpredecessor_13(DEC) _predecessor(_itpredecessor_12(DEC))
 #define _predecessor_minus_12 minus_13
+#define _minus_minus_12 12
+#define _IS_12_GE_0 ,
 #define _dec_eval_12 12
 #define _dec_eval_minus_12 -12
 #define _uni2dec_1111111111111 13
@@ -302,6 +328,8 @@
 #define _predecessor_14 13
 #define _itpredecessor_14(DEC) _predecessor(_itpredecessor_13(DEC))
 #define _predecessor_minus_13 minus_14
+#define _minus_minus_13 13
+#define _IS_13_GE_0 ,
 #define _dec_eval_13 13
 #define _dec_eval_minus_13 -13
 #define _uni2dec_11111111111111 14
@@ -309,6 +337,8 @@
 #define _predecessor_15 14
 #define _itpredecessor_15(DEC) _predecessor(_itpredecessor_14(DEC))
 #define _predecessor_minus_14 minus_15
+#define _minus_minus_14 14
+#define _IS_14_GE_0 ,
 #define _dec_eval_14 14
 #define _dec_eval_minus_14 -14
 #define _uni2dec_111111111111111 15
@@ -316,6 +346,8 @@
 #define _predecessor_16 15
 #define _itpredecessor_16(DEC) _predecessor(_itpredecessor_15(DEC))
 #define _predecessor_minus_15 minus_16
+#define _minus_minus_15 15
+#define _IS_15_GE_0 ,
 #define _dec_eval_15 15
 #define _dec_eval_minus_15 -15
 #define _uni2dec_1111111111111111 16
@@ -323,6 +355,8 @@
 #define _predecessor_17 16
 #define _itpredecessor_17(DEC) _predecessor(_itpredecessor_16(DEC))
 #define _predecessor_minus_16 minus_17
+#define _minus_minus_16 16
+#define _IS_16_GE_0 ,
 #define _dec_eval_16 16
 #define _dec_eval_minus_16 -16
 #define _uni2dec_11111111111111111 17
@@ -330,6 +364,8 @@
 #define _predecessor_18 17
 #define _itpredecessor_18(DEC) _predecessor(_itpredecessor_17(DEC))
 #define _predecessor_minus_17 minus_18
+#define _minus_minus_17 17
+#define _IS_17_GE_0 ,
 #define _dec_eval_17 17
 #define _dec_eval_minus_17 -17
 #define _uni2dec_111111111111111111 18
@@ -337,6 +373,8 @@
 #define _predecessor_19 18
 #define _itpredecessor_19(DEC) _predecessor(_itpredecessor_18(DEC))
 #define _predecessor_minus_18 minus_19
+#define _minus_minus_18 18
+#define _IS_18_GE_0 ,
 #define _dec_eval_18 18
 #define _dec_eval_minus_18 -18
 #define _uni2dec_1111111111111111111 19
@@ -344,6 +382,8 @@
 #define _predecessor_20 19
 #define _itpredecessor_20(DEC) _predecessor(_itpredecessor_19(DEC))
 #define _predecessor_minus_19 minus_20
+#define _minus_minus_19 19
+#define _IS_19_GE_0 ,
 #define _dec_eval_19 19
 #define _dec_eval_minus_19 -19
 #define _uni2dec_11111111111111111111 20
@@ -351,6 +391,8 @@
 #define _predecessor_21 20
 #define _itpredecessor_21(DEC) _predecessor(_itpredecessor_20(DEC))
 #define _predecessor_minus_20 minus_21
+#define _minus_minus_20 20
+#define _IS_20_GE_0 ,
 #define _dec_eval_20 20
 #define _dec_eval_minus_20 -20
 #define _uni2dec_111111111111111111111 21
@@ -358,6 +400,8 @@
 #define _predecessor_22 21
 #define _itpredecessor_22(DEC) _predecessor(_itpredecessor_21(DEC))
 #define _predecessor_minus_21 minus_22
+#define _minus_minus_21 21
+#define _IS_21_GE_0 ,
 #define _dec_eval_21 21
 #define _dec_eval_minus_21 -21
 #define _uni2dec_1111111111111111111111 22
@@ -365,6 +409,8 @@
 #define _predecessor_23 22
 #define _itpredecessor_23(DEC) _predecessor(_itpredecessor_22(DEC))
 #define _predecessor_minus_22 minus_23
+#define _minus_minus_22 22
+#define _IS_22_GE_0 ,
 #define _dec_eval_22 22
 #define _dec_eval_minus_22 -22
 #define _uni2dec_11111111111111111111111 23
@@ -372,6 +418,8 @@
 #define _predecessor_24 23
 #define _itpredecessor_24(DEC) _predecessor(_itpredecessor_23(DEC))
 #define _predecessor_minus_23 minus_24
+#define _minus_minus_23 23
+#define _IS_23_GE_0 ,
 #define _dec_eval_23 23
 #define _dec_eval_minus_23 -23
 #define _uni2dec_111111111111111111111111 24
@@ -379,6 +427,8 @@
 #define _predecessor_25 24
 #define _itpredecessor_25(DEC) _predecessor(_itpredecessor_24(DEC))
 #define _predecessor_minus_24 minus_25
+#define _minus_minus_24 24
+#define _IS_24_GE_0 ,
 #define _dec_eval_24 24
 #define _dec_eval_minus_24 -24
 #define _uni2dec_1111111111111111111111111 25
@@ -386,6 +436,8 @@
 #define _predecessor_26 25
 #define _itpredecessor_26(DEC) _predecessor(_itpredecessor_25(DEC))
 #define _predecessor_minus_25 minus_26
+#define _minus_minus_25 25
+#define _IS_25_GE_0 ,
 #define _dec_eval_25 25
 #define _dec_eval_minus_25 -25
 #define _uni2dec_11111111111111111111111111 26
@@ -393,6 +445,8 @@
 #define _predecessor_27 26
 #define _itpredecessor_27(DEC) _predecessor(_itpredecessor_26(DEC))
 #define _predecessor_minus_26 minus_27
+#define _minus_minus_26 26
+#define _IS_26_GE_0 ,
 #define _dec_eval_26 26
 #define _dec_eval_minus_26 -26
 #define _uni2dec_111111111111111111111111111 27
@@ -400,6 +454,8 @@
 #define _predecessor_28 27
 #define _itpredecessor_28(DEC) _predecessor(_itpredecessor_27(DEC))
 #define _predecessor_minus_27 minus_28
+#define _minus_minus_27 27
+#define _IS_27_GE_0 ,
 #define _dec_eval_27 27
 #define _dec_eval_minus_27 -27
 #define _uni2dec_1111111111111111111111111111 28
@@ -407,6 +463,8 @@
 #define _predecessor_29 28
 #define _itpredecessor_29(DEC) _predecessor(_itpredecessor_28(DEC))
 #define _predecessor_minus_28 minus_29
+#define _minus_minus_28 28
+#define _IS_28_GE_0 ,
 #define _dec_eval_28 28
 #define _dec_eval_minus_28 -28
 #define _uni2dec_11111111111111111111111111111 29
@@ -414,6 +472,8 @@
 #define _predecessor_30 29
 #define _itpredecessor_30(DEC) _predecessor(_itpredecessor_29(DEC))
 #define _predecessor_minus_29 minus_30
+#define _minus_minus_29 29
+#define _IS_29_GE_0 ,
 #define _dec_eval_29 29
 #define _dec_eval_minus_29 -29
 #define _uni2dec_111111111111111111111111111111 30
@@ -421,6 +481,8 @@
 #define _predecessor_31 30
 #define _itpredecessor_31(DEC) _predecessor(_itpredecessor_30(DEC))
 #define _predecessor_minus_30 minus_31
+#define _minus_minus_30 30
+#define _IS_30_GE_0 ,
 #define _dec_eval_30 30
 #define _dec_eval_minus_30 -30
 #define _uni2dec_1111111111111111111111111111111 31
@@ -428,6 +490,8 @@
 #define _predecessor_32 31
 #define _itpredecessor_32(DEC) _predecessor(_itpredecessor_31(DEC))
 #define _predecessor_minus_31 minus_32
+#define _minus_minus_31 31
+#define _IS_31_GE_0 ,
 #define _dec_eval_31 31
 #define _dec_eval_minus_31 -31
 #define _uni2dec_11111111111111111111111111111111 32
@@ -435,6 +499,8 @@
 #define _predecessor_33 32
 #define _itpredecessor_33(DEC) _predecessor(_itpredecessor_32(DEC))
 #define _predecessor_minus_32 minus_33
+#define _minus_minus_32 32
+#define _IS_32_GE_0 ,
 #define _dec_eval_32 32
 #define _dec_eval_minus_32 -32
 #define _uni2dec_111111111111111111111111111111111 33
@@ -442,6 +508,8 @@
 #define _predecessor_34 33
 #define _itpredecessor_34(DEC) _predecessor(_itpredecessor_33(DEC))
 #define _predecessor_minus_33 minus_34
+#define _minus_minus_33 33
+#define _IS_33_GE_0 ,
 #define _dec_eval_33 33
 #define _dec_eval_minus_33 -33
 #define _uni2dec_1111111111111111111111111111111111 34
@@ -449,6 +517,8 @@
 #define _predecessor_35 34
 #define _itpredecessor_35(DEC) _predecessor(_itpredecessor_34(DEC))
 #define _predecessor_minus_34 minus_35
+#define _minus_minus_34 34
+#define _IS_34_GE_0 ,
 #define _dec_eval_34 34
 #define _dec_eval_minus_34 -34
 #define _uni2dec_11111111111111111111111111111111111 35
@@ -456,6 +526,8 @@
 #define _predecessor_36 35
 #define _itpredecessor_36(DEC) _predecessor(_itpredecessor_35(DEC))
 #define _predecessor_minus_35 minus_36
+#define _minus_minus_35 35
+#define _IS_35_GE_0 ,
 #define _dec_eval_35 35
 #define _dec_eval_minus_35 -35
 #define _uni2dec_111111111111111111111111111111111111 36
@@ -463,6 +535,8 @@
 #define _predecessor_37 36
 #define _itpredecessor_37(DEC) _predecessor(_itpredecessor_36(DEC))
 #define _predecessor_minus_36 minus_37
+#define _minus_minus_36 36
+#define _IS_36_GE_0 ,
 #define _dec_eval_36 36
 #define _dec_eval_minus_36 -36
 #define _uni2dec_1111111111111111111111111111111111111 37
@@ -470,6 +544,8 @@
 #define _predecessor_38 37
 #define _itpredecessor_38(DEC) _predecessor(_itpredecessor_37(DEC))
 #define _predecessor_minus_37 minus_38
+#define _minus_minus_37 37
+#define _IS_37_GE_0 ,
 #define _dec_eval_37 37
 #define _dec_eval_minus_37 -37
 #define _uni2dec_11111111111111111111111111111111111111 38
@@ -477,6 +553,8 @@
 #define _predecessor_39 38
 #define _itpredecessor_39(DEC) _predecessor(_itpredecessor_38(DEC))
 #define _predecessor_minus_38 minus_39
+#define _minus_minus_38 38
+#define _IS_38_GE_0 ,
 #define _dec_eval_38 38
 #define _dec_eval_minus_38 -38
 #define _uni2dec_111111111111111111111111111111111111111 39
@@ -484,6 +562,8 @@
 #define _predecessor_40 39
 #define _itpredecessor_40(DEC) _predecessor(_itpredecessor_39(DEC))
 #define _predecessor_minus_39 minus_40
+#define _minus_minus_39 39
+#define _IS_39_GE_0 ,
 #define _dec_eval_39 39
 #define _dec_eval_minus_39 -39
 #define _uni2dec_1111111111111111111111111111111111111111 40
@@ -491,6 +571,8 @@
 #define _predecessor_41 40
 #define _itpredecessor_41(DEC) _predecessor(_itpredecessor_40(DEC))
 #define _predecessor_minus_40 minus_41
+#define _minus_minus_40 40
+#define _IS_40_GE_0 ,
 #define _dec_eval_40 40
 #define _dec_eval_minus_40 -40
 #define _uni2dec_11111111111111111111111111111111111111111 41
@@ -498,6 +580,8 @@
 #define _predecessor_42 41
 #define _itpredecessor_42(DEC) _predecessor(_itpredecessor_41(DEC))
 #define _predecessor_minus_41 minus_42
+#define _minus_minus_41 41
+#define _IS_41_GE_0 ,
 #define _dec_eval_41 41
 #define _dec_eval_minus_41 -41
 #define _uni2dec_111111111111111111111111111111111111111111 42
@@ -505,6 +589,8 @@
 #define _predecessor_43 42
 #define _itpredecessor_43(DEC) _predecessor(_itpredecessor_42(DEC))
 #define _predecessor_minus_42 minus_43
+#define _minus_minus_42 42
+#define _IS_42_GE_0 ,
 #define _dec_eval_42 42
 #define _dec_eval_minus_42 -42
 #define _uni2dec_1111111111111111111111111111111111111111111 43
@@ -512,6 +598,8 @@
 #define _predecessor_44 43
 #define _itpredecessor_44(DEC) _predecessor(_itpredecessor_43(DEC))
 #define _predecessor_minus_43 minus_44
+#define _minus_minus_43 43
+#define _IS_43_GE_0 ,
 #define _dec_eval_43 43
 #define _dec_eval_minus_43 -43
 #define _uni2dec_11111111111111111111111111111111111111111111 44
@@ -519,6 +607,8 @@
 #define _predecessor_45 44
 #define _itpredecessor_45(DEC) _predecessor(_itpredecessor_44(DEC))
 #define _predecessor_minus_44 minus_45
+#define _minus_minus_44 44
+#define _IS_44_GE_0 ,
 #define _dec_eval_44 44
 #define _dec_eval_minus_44 -44
 #define _uni2dec_111111111111111111111111111111111111111111111 45
@@ -526,6 +616,8 @@
 #define _predecessor_46 45
 #define _itpredecessor_46(DEC) _predecessor(_itpredecessor_45(DEC))
 #define _predecessor_minus_45 minus_46
+#define _minus_minus_45 45
+#define _IS_45_GE_0 ,
 #define _dec_eval_45 45
 #define _dec_eval_minus_45 -45
 #define _uni2dec_1111111111111111111111111111111111111111111111 46
@@ -533,6 +625,8 @@
 #define _predecessor_47 46
 #define _itpredecessor_47(DEC) _predecessor(_itpredecessor_46(DEC))
 #define _predecessor_minus_46 minus_47
+#define _minus_minus_46 46
+#define _IS_46_GE_0 ,
 #define _dec_eval_46 46
 #define _dec_eval_minus_46 -46
 #define _uni2dec_11111111111111111111111111111111111111111111111 47
@@ -540,6 +634,8 @@
 #define _predecessor_48 47
 #define _itpredecessor_48(DEC) _predecessor(_itpredecessor_47(DEC))
 #define _predecessor_minus_47 minus_48
+#define _minus_minus_47 47
+#define _IS_47_GE_0 ,
 #define _dec_eval_47 47
 #define _dec_eval_minus_47 -47
 #define _uni2dec_111111111111111111111111111111111111111111111111 48
@@ -547,6 +643,8 @@
 #define _predecessor_49 48
 #define _itpredecessor_49(DEC) _predecessor(_itpredecessor_48(DEC))
 #define _predecessor_minus_48 minus_49
+#define _minus_minus_48 48
+#define _IS_48_GE_0 ,
 #define _dec_eval_48 48
 #define _dec_eval_minus_48 -48
 #define _uni2dec_1111111111111111111111111111111111111111111111111 49
@@ -554,6 +652,8 @@
 #define _predecessor_50 49
 #define _itpredecessor_50(DEC) _predecessor(_itpredecessor_49(DEC))
 #define _predecessor_minus_49 minus_50
+#define _minus_minus_49 49
+#define _IS_49_GE_0 ,
 #define _dec_eval_49 49
 #define _dec_eval_minus_49 -49
 #define _uni2dec_11111111111111111111111111111111111111111111111111 50
@@ -561,6 +661,8 @@
 #define _predecessor_51 50
 #define _itpredecessor_51(DEC) _predecessor(_itpredecessor_50(DEC))
 #define _predecessor_minus_50 minus_51
+#define _minus_minus_50 50
+#define _IS_50_GE_0 ,
 #define _dec_eval_50 50
 #define _dec_eval_minus_50 -50
 #define _uni2dec_111111111111111111111111111111111111111111111111111 51
@@ -568,6 +670,8 @@
 #define _predecessor_52 51
 #define _itpredecessor_52(DEC) _predecessor(_itpredecessor_51(DEC))
 #define _predecessor_minus_51 minus_52
+#define _minus_minus_51 51
+#define _IS_51_GE_0 ,
 #define _dec_eval_51 51
 #define _dec_eval_minus_51 -51
 #define _uni2dec_1111111111111111111111111111111111111111111111111111 52
@@ -575,6 +679,8 @@
 #define _predecessor_53 52
 #define _itpredecessor_53(DEC) _predecessor(_itpredecessor_52(DEC))
 #define _predecessor_minus_52 minus_53
+#define _minus_minus_52 52
+#define _IS_52_GE_0 ,
 #define _dec_eval_52 52
 #define _dec_eval_minus_52 -52
 #define _uni2dec_11111111111111111111111111111111111111111111111111111 53
@@ -582,6 +688,8 @@
 #define _predecessor_54 53
 #define _itpredecessor_54(DEC) _predecessor(_itpredecessor_53(DEC))
 #define _predecessor_minus_53 minus_54
+#define _minus_minus_53 53
+#define _IS_53_GE_0 ,
 #define _dec_eval_53 53
 #define _dec_eval_minus_53 -53
 #define _uni2dec_111111111111111111111111111111111111111111111111111111 54
@@ -589,6 +697,8 @@
 #define _predecessor_55 54
 #define _itpredecessor_55(DEC) _predecessor(_itpredecessor_54(DEC))
 #define _predecessor_minus_54 minus_55
+#define _minus_minus_54 54
+#define _IS_54_GE_0 ,
 #define _dec_eval_54 54
 #define _dec_eval_minus_54 -54
 #define _uni2dec_1111111111111111111111111111111111111111111111111111111 55
@@ -596,6 +706,8 @@
 #define _predecessor_56 55
 #define _itpredecessor_56(DEC) _predecessor(_itpredecessor_55(DEC))
 #define _predecessor_minus_55 minus_56
+#define _minus_minus_55 55
+#define _IS_55_GE_0 ,
 #define _dec_eval_55 55
 #define _dec_eval_minus_55 -55
 #define _uni2dec_11111111111111111111111111111111111111111111111111111111 56
@@ -603,6 +715,8 @@
 #define _predecessor_57 56
 #define _itpredecessor_57(DEC) _predecessor(_itpredecessor_56(DEC))
 #define _predecessor_minus_56 minus_57
+#define _minus_minus_56 56
+#define _IS_56_GE_0 ,
 #define _dec_eval_56 56
 #define _dec_eval_minus_56 -56
 #define _uni2dec_111111111111111111111111111111111111111111111111111111111 57
@@ -610,6 +724,8 @@
 #define _predecessor_58 57
 #define _itpredecessor_58(DEC) _predecessor(_itpredecessor_57(DEC))
 #define _predecessor_minus_57 minus_58
+#define _minus_minus_57 57
+#define _IS_57_GE_0 ,
 #define _dec_eval_57 57
 #define _dec_eval_minus_57 -57
 #define _uni2dec_1111111111111111111111111111111111111111111111111111111111 58
@@ -617,6 +733,8 @@
 #define _predecessor_59 58
 #define _itpredecessor_59(DEC) _predecessor(_itpredecessor_58(DEC))
 #define _predecessor_minus_58 minus_59
+#define _minus_minus_58 58
+#define _IS_58_GE_0 ,
 #define _dec_eval_58 58
 #define _dec_eval_minus_58 -58
 #define _uni2dec_11111111111111111111111111111111111111111111111111111111111 59
@@ -624,6 +742,8 @@
 #define _predecessor_60 59
 #define _itpredecessor_60(DEC) _predecessor(_itpredecessor_59(DEC))
 #define _predecessor_minus_59 minus_60
+#define _minus_minus_59 59
+#define _IS_59_GE_0 ,
 #define _dec_eval_59 59
 #define _dec_eval_minus_59 -59
 #define _uni2dec_111111111111111111111111111111111111111111111111111111111111 60
@@ -631,6 +751,8 @@
 #define _predecessor_61 60
 #define _itpredecessor_61(DEC) _predecessor(_itpredecessor_60(DEC))
 #define _predecessor_minus_60 minus_61
+#define _minus_minus_60 60
+#define _IS_60_GE_0 ,
 #define _dec_eval_60 60
 #define _dec_eval_minus_60 -60
 #define _uni2dec_1111111111111111111111111111111111111111111111111111111111111 61
@@ -638,6 +760,8 @@
 #define _predecessor_62 61
 #define _itpredecessor_62(DEC) _predecessor(_itpredecessor_61(DEC))
 #define _predecessor_minus_61 minus_62
+#define _minus_minus_61 61
+#define _IS_61_GE_0 ,
 #define _dec_eval_61 61
 #define _dec_eval_minus_61 -61
 #define _uni2dec_11111111111111111111111111111111111111111111111111111111111111 62
@@ -645,6 +769,8 @@
 #define _predecessor_63 62
 #define _itpredecessor_63(DEC) _predecessor(_itpredecessor_62(DEC))
 #define _predecessor_minus_62 minus_63
+#define _minus_minus_62 62
+#define _IS_62_GE_0 ,
 #define _dec_eval_62 62
 #define _dec_eval_minus_62 -62
 #define _uni2dec_111111111111111111111111111111111111111111111111111111111111111 63
@@ -652,6 +778,8 @@
 #define _predecessor_64 63
 #define _itpredecessor_64(DEC) _predecessor(_itpredecessor_63(DEC))
 #define _predecessor_minus_63 minus_64
+#define _minus_minus_63 63
+#define _IS_63_GE_0 ,
 #define _dec_eval_63 63
 #define _dec_eval_minus_63 -63
 #define __wda_1(NAME, N, ...) _wda_0(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())
