@@ -728,7 +728,7 @@ CHOOSE5(xT,                                     \
  **/
 #define STRDUP(...) STRCATS(memset(malloc(STRLENS(__VA_ARGS__) + 1), 0, 1), __VA_ARGS__)
 
-#define _DECLS(N, ...) PASTE2(_DOIT, N)(N, _SEP, _IDT, __VA_ARGS__)
+#define _DECLS(N, ...) PASTE2(_DOIT, N)(N, _SEP, _IDT, __VA_ARGS__,)
 
 /**
  ** @brief Change the commas in the argument list into semicolons.

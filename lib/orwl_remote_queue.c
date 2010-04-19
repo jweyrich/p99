@@ -76,8 +76,8 @@ orwl_state orwl_release(orwl_rh* rh, rand48_t *seed) {
   return ret;
 }
 
-void auth_sock_request(auth_sock *Arg) {
-  AUTH_SOCK_READ(Arg, uintptr_t wqID, uint64_t whID, uint64_t port);
+DEFINE_AUTH_SOCK_FUNC(auth_sock_request, uintptr_t wqID, uint64_t whID, uint64_t port) {
+  AUTH_SOCK_READ(Arg, auth_sock_request, uintptr_t wqID, uint64_t whID, uint64_t port);
   // extract wq and the remote wh ID from Arg
   orwl_wq *srv_wq = (orwl_wq*)(void*)wqID;
   // create a wh and insert it in wq
@@ -108,8 +108,8 @@ void auth_sock_request(auth_sock *Arg) {
 
 /* this is executed first on the client when the lock is acquired and */
 /* then on the server when the lock is released. */
-void auth_sock_release(auth_sock *Arg) {
-  AUTH_SOCK_READ(Arg, uintptr_t whID);
+DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
+  AUTH_SOCK_READ(Arg, auth_sock_release, uintptr_t whID);
   // extract the wh for Arg
   orwl_wh* wh = (void*)whID;
   // acquire and release wh

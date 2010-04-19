@@ -15,12 +15,13 @@
 #include "orwl_wait_queue.h"
 #include "orwl_posix_default.h"
 
+DECLARE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID);
 
-void test_callback(auth_sock *Arg) {
+DEFINE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID) {
   diagnose(Arg->fd, "message of size %zd", Arg->len);
   for (size_t i = 0; i < Arg->len; ++i)
     report(stdout, "%" PRIX64 "", Arg->mes[i]);
-  AUTH_SOCK_READ(Arg, uint64_t funcID);
+  AUTH_SOCK_READ(Arg, test_callback, uint64_t funcID);
   orwl_domain_call(ORWL_FTAB(auth_sock), funcID, Arg);
 }
 

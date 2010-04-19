@@ -261,20 +261,29 @@ DECLARE_THREAD(auth_sock);
 
 void auth_sock_close(auth_sock *sock);
 
+#define DEFINE_AUTH_SOCK_FUNC(F, ...)                   \
+void (*PASTE2(F, _signature))(__VA_ARGS__) = NULL;      \
+DEFINE_ORWL_REGISTER_ALIAS(F, auth_sock);               \
+void F(auth_sock *Arg)
 
-void auth_sock_insert_peer(auth_sock *Arg);
-void auth_sock_insert_host(auth_sock *Arg);
-void auth_sock_do_nothing(auth_sock *Arg);
+
+
+#define DECLARE_AUTH_SOCK_FUNC(F, ...)                  \
+extern void (*PASTE2(F, _signature))(__VA_ARGS__);      \
+DECLARE_ORWL_REGISTER_ALIAS(F, auth_sock);              \
+void F(auth_sock *Arg)
+
 
 DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
 
-DECLARE_ORWL_REGISTER(auth_sock_insert_peer);
-DECLARE_ORWL_REGISTER(auth_sock_insert_host);
-DECLARE_ORWL_REGISTER(auth_sock_do_nothing);
+DECLARE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port);
+DECLARE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port);
+DECLARE_AUTH_SOCK_FUNC(auth_sock_do_nothing, void);
 
-#define AUTH_SOCK_READ(A, ...)                  \
-ASGS((A)->mes, __VA_ARGS__);                    \
-(A)->len -= _NARG_64(__VA_ARGS__);              \
+#define AUTH_SOCK_READ(A, F, ...)                       \
+(void)((void (*)(__VA_ARGS__)){PASTE2(F, _signature)}); \
+ASGS((A)->mes, __VA_ARGS__);                            \
+(A)->len -= _NARG_64(__VA_ARGS__);                      \
 (A)->mes += _NARG_64(__VA_ARGS__)
 
 /* some helper */

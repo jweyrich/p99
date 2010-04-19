@@ -78,8 +78,12 @@ extern orwl_register const*ORWL_REGISTER(NAME)
 #define DEFINE_ORWL_REGISTER(NAME)              \
 orwl_register const*ORWL_REGISTER(NAME) = NULL
 
+#define DECLARE_ORWL_REGISTER_ALIAS(NAME, T)    \
+extern void ORWL_ALIAS(NAME)(T *x);             \
+extern orwl_register const*ORWL_REGISTER(NAME)
+
 #define DEFINE_ORWL_REGISTER_ALIAS(NAME, T)     \
-  static void ORWL_ALIAS(NAME)(T *x) {  NAME(x); }  \
+void ORWL_ALIAS(NAME)(T *x) {  NAME(x); }       \
 orwl_register const*ORWL_REGISTER(NAME) = NULL
 
 #define ORWL_REGISTER_FUNCTION(NAME) {          \

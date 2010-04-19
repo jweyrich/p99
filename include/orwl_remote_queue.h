@@ -108,13 +108,8 @@ orwl_state orwl_test(orwl_rh* rh, size_t token) {
 #define orwl_test(...) CALL_WITH_DEFAULTS(orwl_test, 2, __VA_ARGS__)
 declare_defarg(orwl_test, 1, uintptr_t, 0);
 
-
-void auth_sock_request(auth_sock *Arg);
-void orwl_rq_trigger_acquired(auth_sock *Arg);
-void auth_sock_release(auth_sock *Arg);
-
-DECLARE_ORWL_REGISTER(auth_sock_request);
-DECLARE_ORWL_REGISTER(auth_sock_release);
+DECLARE_AUTH_SOCK_FUNC(auth_sock_request, uintptr_t wqID, uint64_t whID, uint64_t port);
+DECLARE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID);
 
 
 

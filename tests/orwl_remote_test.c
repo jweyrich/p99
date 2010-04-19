@@ -123,9 +123,10 @@ DEFINE_THREAD(arg_t) {
 
 }
 
+DECLARE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID);
 
-void test_callback(auth_sock *Arg) {
-  AUTH_SOCK_READ(Arg, uint64_t funcID);
+DEFINE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID) {
+  AUTH_SOCK_READ(Arg, test_callback, uint64_t funcID);
   orwl_domain_call(ORWL_FTAB(auth_sock), funcID, Arg);
 }
 

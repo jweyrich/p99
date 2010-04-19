@@ -15,6 +15,12 @@
 #include "orwl_wait_queue.h"
 #include "orwl_posix_default.h"
 
+inline void F_(int a) { }
+
+void F_(int a);
+
+
+
 void ftaster _SKIP_ (int A);
 
 declare_defarg(ftaster, 0, int, -1);
@@ -52,11 +58,13 @@ define_defarg(ftester, 0, test_t);
 #define ftester(...) CALL_WITH_DEFAULTS(ftester, 3, __VA_ARGS__)
 
 
-void test_callback(auth_sock *Arg) {
+DECLARE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID);
+
+DEFINE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID) {
   diagnose(Arg->fd, "message of size %zd", Arg->len);
   for (size_t i = 0; i < Arg->len; ++i)
     report(stdout, "%" PRIX64, Arg->mes[i]);
-  AUTH_SOCK_READ(Arg, uint64_t funcID);
+  AUTH_SOCK_READ(Arg, test_callback, uint64_t funcID);
   orwl_domain_call(ORWL_FTAB(auth_sock), funcID, Arg);
 }
 

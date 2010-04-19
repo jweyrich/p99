@@ -510,9 +510,8 @@ addr_t getpeer(auth_sock *Arg) {
     : (addr_t)ADDR_T_INITIALIZER(addr.sin_addr.s_addr);
 }
 
-
-void auth_sock_insert_peer(auth_sock *Arg) {
-  AUTH_SOCK_READ(Arg, uint64_t port);
+DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
+  AUTH_SOCK_READ(Arg, auth_sock_insert_peer, uint64_t port);
   orwl_host *h = NEW(orwl_host);
   /* mes and addr_t is already in host order */
   h->ep.addr = getpeer(Arg);
@@ -520,22 +519,18 @@ void auth_sock_insert_peer(auth_sock *Arg) {
   orwl_host_connect(h, &Arg->srv->host);
 }
 
-void auth_sock_insert_host(auth_sock *Arg) {
+DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port) {
+  AUTH_SOCK_READ(Arg, auth_sock_insert_host, uint64_t addr, uint64_t port);
   orwl_host *h = NEW(orwl_host);
   /* mes is already in host order */
-  AUTH_SOCK_READ(Arg, h->ep.addr.a, h->ep.port.p);
+  h->ep.addr.a = addr;
+  h->ep.port.p = port;
   orwl_host_connect(h, &Arg->srv->host);
 }
 
-void auth_sock_do_nothing(auth_sock *Arg) {
+DEFINE_AUTH_SOCK_FUNC(auth_sock_do_nothing, void) {
   /* empty */
 }
-
-DEFINE_ORWL_REGISTER_ALIAS(auth_sock_insert_peer, auth_sock);
-DEFINE_ORWL_REGISTER_ALIAS(auth_sock_insert_host, auth_sock);
-DEFINE_ORWL_REGISTER_ALIAS(auth_sock_do_nothing, auth_sock);
-DEFINE_ORWL_REGISTER_ALIAS(auth_sock_request, auth_sock);
-DEFINE_ORWL_REGISTER_ALIAS(auth_sock_release, auth_sock);
 
 DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
                          ORWL_REGISTER_ALIAS(auth_sock_insert_peer),
