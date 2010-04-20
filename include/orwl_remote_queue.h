@@ -44,6 +44,9 @@ orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t, uint64_t id
   return rq;
 }
 
+inline
+DEFARG_SIGNATURE(orwl_rq *, orwl_rq_init, orwl_rq *, orwl_endpoint, orwl_endpoint, uint64_t);
+
 #define orwl_rq_init(...) CALL_WITH_DEFAULTS(orwl_rq_init, 4, __VA_ARGS__)
 declare_defarg(orwl_rq_init, 3, uint64_t, TNULL(uint64_t));
 declare_defarg(orwl_rq_init, 2, orwl_endpoint, (orwl_endpoint){{0}});

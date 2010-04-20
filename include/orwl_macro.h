@@ -661,31 +661,31 @@ CHOOSE5(xT,                                     \
 #define _Z(x) (0 ? TNULL(size_t) : (x))
 
 #define _DOIT0(...)
-#define _DOIT1(N, OP, FUNC, X, ...) FUNC(X, 0)
+#define _DOIT1(NAME, N, OP, FUNC, X, ...) FUNC(NAME, X, 0)
 
-#define _IDT(X, N) X
-#define _SOP(X, N) N
-#define _CCA(X, N) X[N]
-#define _IGN(X, N)
-#define _STRLEN(X, N) strlen(X)
+#define _IDT(NAME, X, N) X
+#define _SOP(NAME, X, N) N
+#define _CCA(NAME, X, N) X[N]
+#define _IGN(NAME, X, N)
+#define _STRLEN(NAME, X, N) strlen(X)
 
-#define _SUM(X, REC) (X + REC)
-#define _PROD(X, REC) (X * REC)
-#define _SEQ(X, REC) X, REC
-#define _SEP(X, REC) X; REC
-#define _PES(X, REC) REC; X
-#define _REV(X, REC) REC, X
-#define _STRCAT(X, REC) strcat(X, REC)
-#define _STRTAC(X, REC) _STRCAT(REC, X)
+#define _SUM(NAME, X, N, REC) (X + REC)
+#define _PROD(NAME, X, N, REC) (X * REC)
+#define _SEQ(NAME, X, N, REC) X, REC
+#define _SEP(NAME, X, N, REC) X; REC
+#define _PES(NAME, X, N, REC) REC; X
+#define _REV(NAME, X, N, REC) REC, X
+#define _STRCAT(NAME, X, N, REC) strcat(X, REC)
+#define _STRTAC(NAME, X, N, REC) _STRCAT(REC, X)
 
-#define _SUMS(N, ...) PASTE2(_DOIT, N)(N, _SUM, _IDT, __VA_ARGS__)
+#define _SUMS(N, ...) PASTE2(_DOIT, N)(,N, _SUM, _IDT, __VA_ARGS__)
 
 /**
  ** @brief Compute the right associative sum of all the arguments.
  **/
 #define SUMS(...) _SUMS(NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define _STRLENS(N, ...) PASTE2(_DOIT, N)(N, _SUM, _STRLEN, __VA_ARGS__)
+#define _STRLENS(N, ...) PASTE2(_DOIT, N)(,N, _SUM, _STRLEN, __VA_ARGS__)
 
 /**
  ** @brief Return an expression that returns the sum of the lengths of
@@ -693,10 +693,10 @@ CHOOSE5(xT,                                     \
  **/
 #define STRLENS(...) _STRLENS(NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define _REVS(N, ...) PASTE2(_DOIT, N)(N, _REV, _IDT, __VA_ARGS__)
+#define _REVS(N, ...) PASTE2(_DOIT, N)(,N, _REV, _IDT, __VA_ARGS__)
 #define REVS(...) _if_more_ignore(__VA_ARGS__,)(__VA_ARGS__)(_REVS(NARG(__VA_ARGS__),__VA_ARGS__))
 
-#define _STRCATS(N, ...) PASTE2(_DOIT, N)(N, _STRTAC, _IDT, __VA_ARGS__)
+#define _STRCATS(N, ...) PASTE2(_DOIT, N)(,N, _STRTAC, _IDT, __VA_ARGS__)
 
 /**
  ** @brief Append all argument strings after @a TARG to @a TARG.
@@ -728,7 +728,7 @@ CHOOSE5(xT,                                     \
  **/
 #define STRDUP(...) STRCATS(memset(malloc(STRLENS(__VA_ARGS__) + 1), 0, 1), __VA_ARGS__)
 
-#define _DECLS(N, ...) PASTE2(_DOIT, N)(N, _SEP, _IDT, __VA_ARGS__,)
+#define _DECLS(N, ...) PASTE2(_DOIT, N)(,N, _SEP, _IDT, __VA_ARGS__,)
 
 /**
  ** @brief Change the commas in the argument list into semicolons.
@@ -744,32 +744,32 @@ CHOOSE5(xT,                                     \
  ** @brief Produce a list of length @a N that has the contents of 0,
  ** 1, , @a N-1
  **/
-#define POSS(N) REVS(PASTE2(_DOIT, N)(N, _SEQ, _SOP,,))
+#define POSS(N) REVS(PASTE2(_DOIT, N)(,N, _SEQ, _SOP,,))
 
 /**
  ** Produce a list of length @a N that has the contents of @a X[0], @a
  ** X [1], ,
  ** @a X[@a N-1]
  **/
-#define ACCS(X, N) REVS(PASTE2(_DOIT, N)(N, _SEQ, _CCA, REPS(X, N),))
+#define ACCS(X, N) REVS(PASTE2(_DOIT, N)(, N, _SEQ, _CCA, REPS(X, N),))
 
 /**
  ** Cut the argument list at position @a N
  **/
-#define SELS(N, ...) PASTE2(_DOIT, N)(N, _SEQ, _IDT, __VA_ARGS__,)
+#define SELS(N, ...) PASTE2(_DOIT, N)(, N, _SEQ, _IDT, __VA_ARGS__,)
 
 #define CHS(N, ...) _if_more_ignore(__VA_ARGS__,,)(__VA_ARGS__)(SELS(1, REVS(SELS(N, __VA_ARGS__))))
 
-#define _ASG(X, N) _predecessor(N)] , X
+#define _ASG(NAME, X, N) _predecessor(N)] , X
 
-#define _SAR(X, REC) X = REC
+#define _SAR(NAME, X, N, REC) X = REC
 
 #define _ASGS(X, N, ...)                                                \
 DECLS(                                                                  \
       SELS(_dec_minus(N,2),                                             \
            REVS(                                                        \
                 SELS(_predecessor(N),                                   \
-                     PASTE2(_DOIT, N)(N,                                \
+                     PASTE2(_DOIT, N)(, N,                              \
                                       (X)[_SAR,                         \
                                         _ASG,                           \
                                         REVS(__VA_ARGS__),              \
@@ -790,5 +790,19 @@ DECLS(                                                                  \
 _if_more_ignore(__VA_ARGS__,)                           \
 (IS_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (X)[0]))   \
 (_ASGS(X, _NARG_64(,,__VA_ARGS__), ,,__VA_ARGS__))
+
+#define _TYPD(NAME, X, N) typedef X PASTE2(NAME, N)
+#define _TYPN(NAME, X, N, REC) X, REC
+
+#define _DARGS(NAME, N, ...)                                         \
+  DECLS(REVS(PASTE2(_DOIT, N)(NAME, N, _TYPN, _TYPD, __VA_ARGS__)))
+
+#define DARGS(NAME, N, ...) _DARGS(NAME, N, __VA_ARGS__)
+
+#define DEFARG_SIGNATURE(RT, NAME, ...)                                 \
+  RT NAME(__VA_ARGS__);                                                 \
+  typedef RT PASTE2(NAME, _sigtype_ret);                                \
+  DARGS(PASTE2(NAME, _sigtype_), NARG(__VA_ARGS__), REVS(__VA_ARGS__),) \
+
 
 #endif 	    /* !ORWL_MACRO_H_ */

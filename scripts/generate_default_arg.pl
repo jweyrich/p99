@@ -45,6 +45,6 @@ for (my $i = 1; $i < $maxnumber; ++$i) {
 }
 
 for (my $i = 2; $i < $maxnumber; ++$i) {
-    print "#define __DOIT${i}(N, OP, FUNC, A, ...) OP(FUNC(A, N), PASTE2(_DOIT, N)(N, OP, FUNC, __VA_ARGS__, ))\n";
-    print "#define _DOIT${i}(N, OP, FUNC, A, ...) __DOIT${i}(_predecessor(N), OP, FUNC, A, __VA_ARGS__)\n";
+    print "#define __DOIT${i}(NAME, N, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, N), N, PASTE2(_DOIT, N)(NAME, N, OP, FUNC, __VA_ARGS__, ))\n";
+    print "#define _DOIT${i}(NAME, N, OP, FUNC, A, ...) __DOIT${i}(NAME, _predecessor(N), OP, FUNC, A, __VA_ARGS__)\n";
 }
