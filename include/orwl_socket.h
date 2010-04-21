@@ -32,8 +32,10 @@ void orwl_hton(uint32_t *n, uint64_t const *h, size_t l) {
   }
 }
 
+inline
+DEFARG_SIGNATURE(void, orwl_hton, uint32_t *, uint64_t const *, size_t);
 #define orwl_hton(...) CALL_WITH_DEFAULTS(orwl_hton, 3, __VA_ARGS__)
-declare_defarg(orwl_hton, 2, size_t, 1);
+DECLARE_DEFARG(orwl_hton, , , 1);
 
 
 inline
@@ -45,8 +47,10 @@ void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l) {
   }
 }
 
+inline
+DEFARG_SIGNATURE(void, orwl_ntoh, uint64_t*, uint32_t const *, size_t);
 #define orwl_ntoh(...) CALL_WITH_DEFAULTS(orwl_ntoh, 3, __VA_ARGS__)
-declare_defarg(orwl_ntoh, 2, size_t, 1);
+DECLARE_DEFARG(orwl_ntoh, , , 1);
 
 extern in_addr_t orwl_inet_addr(char const *name);
 
@@ -104,8 +108,10 @@ addr_t* addr_t_init(addr_t *A, in_addr_t I) {
   return A;
 }
 
+inline
+DEFARG_SIGNATURE(addr_t*, addr_t_init, addr_t *, in_addr_t);
 #define addr_t_init(...) CALL_WITH_DEFAULTS(addr_t_init, 2, __VA_ARGS__)
-declare_defarg(addr_t_init, 1, in_addr_t, TNULL(in_addr_t));
+DECLARE_DEFARG(addr_t_init, , TNULL(in_addr_t));
 
 inline
 in_addr_t addr2net(addr_t const*A) {
@@ -118,8 +124,10 @@ port_t* port_t_init(port_t *A, in_port_t P) {
   return A;
 }
 
+inline
+DEFARG_SIGNATURE(port_t*, port_t_init, port_t *, in_port_t);
 #define port_t_init(...) CALL_WITH_DEFAULTS(port_t_init, 2, __VA_ARGS__)
-declare_defarg(port_t_init, 1, in_port_t, TNULL(in_port_t));
+DECLARE_DEFARG(port_t_init, , TNULL(in_port_t));
 
 inline
 in_port_t port2net(port_t const*A) {
@@ -148,10 +156,10 @@ void orwl_endpoint_destroy(orwl_endpoint *endpoint) {
 }
 
 
+inline
+DEFARG_SIGNATURE(orwl_endpoint*, orwl_endpoint_init, orwl_endpoint*, in_addr_t, in_port_t);
 #define orwl_endpoint_init(...) CALL_WITH_DEFAULTS(orwl_endpoint_init, 3, __VA_ARGS__)
-
-declare_defarg(orwl_endpoint_init, 2, in_port_t, TNULL(in_port_t));
-declare_defarg(orwl_endpoint_init, 1, in_addr_t, TNULL(in_addr_t));
+DECLARE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t));
 
 DECLARE_NEW_DELETE(orwl_endpoint);
 
@@ -199,9 +207,10 @@ orwl_host* orwl_host_init(orwl_host *th, in_addr_t addr, in_port_t port) {
   return th;
 }
 
+inline
+DEFARG_SIGNATURE(orwl_host*, orwl_host_init, orwl_host *, in_addr_t, in_port_t);
 #define orwl_host_init(...) CALL_WITH_DEFAULTS(orwl_host_init, 3, __VA_ARGS__)
-declare_defarg(orwl_host_init, 2, in_port_t, 0);
-declare_defarg(orwl_host_init, 1, in_addr_t, 0);
+DECLARE_DEFARG(orwl_host_init, , TNULL(in_addr_t), TNULL(in_port_t));
 
 
 inline
@@ -248,9 +257,9 @@ auth_sock* auth_sock_init(auth_sock *sock,
   return sock;
 }
 
-declare_defarg(auth_sock_init, 3, size_t, 0);
-declare_defarg(auth_sock_init, 2, orwl_server*, NULL);
-declare_defarg(auth_sock_init, 1, int, -1);
+inline
+DEFARG_SIGNATURE(auth_sock*, auth_sock_init, auth_sock *, int, orwl_server*, size_t);
+DECLARE_DEFARG(auth_sock_init, , -1, NULL, TNULL(size_t));
 
 
 #define auth_sock_init(...) CALL_WITH_DEFAULTS(auth_sock_init, 4, __VA_ARGS__)
@@ -322,8 +331,8 @@ DECLARE_THREAD(orwl_server);
 
 void orwl_server_close(orwl_server *serv);
 
-void orwl_server_terminate(orwl_server *serv, rand48_t *seed);
-declare_defarg(orwl_server_terminate, 1, rand48_t*, &(rand48_t)RAND48_T_INITIALIZER);
+DEFARG_SIGNATURE(void, orwl_server_terminate, orwl_server *, rand48_t *);
+DECLARE_DEFARG(orwl_server_terminate, , (&(rand48_t)RAND48_T_INITIALIZER));
 #define orwl_server_terminate(...) CALL_WITH_DEFAULTS(orwl_server_terminate, 2, __VA_ARGS__)
 
 

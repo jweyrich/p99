@@ -136,10 +136,29 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  **/
 #define IS_DEC_GT(A, B) IS_LT_0(_dec_minus(B,A))
 
+/**
+ ** @brief Test if token N is the token 0.
+ **/
 #define IS_EQ_0(N) IS_EQ(0, N)
+
+/**
+ ** @brief Test if token N is the token 1.
+ **/
 #define IS_EQ_1(N) IS_EQ(1, N)
+
+/**
+ ** @brief Test if token N is the token 2.
+ **/
 #define IS_EQ_2(N) IS_EQ(2, N)
+
+/**
+ ** @brief Test if token N is the token 3.
+ **/
 #define IS_EQ_3(N) IS_EQ(3, N)
+
+/**
+ ** @brief Test if token N is the token 4.
+ **/
 #define IS_EQ_4(N) IS_EQ(4, N)
 
 /**
@@ -402,28 +421,14 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  ** that all functions are realized.
  **/
 
-#define declare_defarg(NAME, M, T, V)                                   \
-/*! @brief Default initializer for argument M **/                       \
-/*! @return the expression `V' as evaluated at the place of the definition. **/ \
-/*! @see NAME **/                                                       \
-  inline T PASTE(NAME, _defarg_, M)(void) { return (V); }               \
-  enum PASTE(_dummy_, NAME, _defarg_, M) { PASTE(_dummy_, NAME, _defarg_, M) }
-
-/**
- ** @brief Define the symbols that are declared through a
- ** corresponding call ::declare_defarg.
- **/
-#define define_defarg(NAME, M, T) T PASTE(NAME, _defarg_, M)(void)
-
-/** @internal **/
-#define FSYMB_(NAME) PASTE2(NAME, _fsymb_)
+#define _FSYMB(NAME) PASTE2(NAME, _fsymb_)
 
 /** @brief Mangle @a NAME 
  **
  ** This should only be used in declaration and definition of the
  ** function that is hidden behind the macro @a NAME.
  **/
-#define FSYMB(NAME) FSYMB_(NAME)
+#define FSYMB(NAME) _FSYMB(NAME)
 
 /**
  ** @brief Provide a documentation section to a function defined with ::CALL_WITH_DEFAULTS
@@ -676,16 +681,16 @@ CHOOSE5(xT,                                     \
 #define _PES(NAME, X, N, REC) REC; X
 #define _REV(NAME, X, N, REC) REC, X
 #define _STRCAT(NAME, X, N, REC) strcat(X, REC)
-#define _STRTAC(NAME, X, N, REC) _STRCAT(REC, X)
+#define _STRTAC(NAME, X, N, REC) _STRCAT(NAME, REC, N, X)
 
-#define _SUMS(N, ...) PASTE2(_DOIT, N)(,N, _SUM, _IDT, __VA_ARGS__)
+#define _SUMS(N, ...) PASTE2(_DOIT, N)(,N, _SUM, _IDT, __VA_ARGS__,)
 
 /**
  ** @brief Compute the right associative sum of all the arguments.
  **/
 #define SUMS(...) _SUMS(NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define _STRLENS(N, ...) PASTE2(_DOIT, N)(,N, _SUM, _STRLEN, __VA_ARGS__)
+#define _STRLENS(N, ...) PASTE2(_DOIT, N)(,N, _SUM, _STRLEN, __VA_ARGS__,)
 
 /**
  ** @brief Return an expression that returns the sum of the lengths of
@@ -693,10 +698,14 @@ CHOOSE5(xT,                                     \
  **/
 #define STRLENS(...) _STRLENS(NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define _REVS(N, ...) PASTE2(_DOIT, N)(,N, _REV, _IDT, __VA_ARGS__)
+#define _REVS(N, ...) PASTE2(_DOIT, N)(,N, _REV, _IDT, __VA_ARGS__,)
+
+/**
+ ** @brief Revert the argument list
+ **/
 #define REVS(...) _if_more_ignore(__VA_ARGS__,)(__VA_ARGS__)(_REVS(NARG(__VA_ARGS__),__VA_ARGS__))
 
-#define _STRCATS(N, ...) PASTE2(_DOIT, N)(,N, _STRTAC, _IDT, __VA_ARGS__)
+#define _STRCATS(N, ...) PASTE2(_DOIT, N)(,N, _STRTAC, _IDT, __VA_ARGS__,)
 
 /**
  ** @brief Append all argument strings after @a TARG to @a TARG.
@@ -738,7 +747,7 @@ CHOOSE5(xT,                                     \
 /**
  ** Repeat the parameter @a X @a N times.
  **/
-#define REPS(X, N) PASTE2(_DOIT, N)(N, _SEQ, X _IGN,,)
+#define REPS(X, N) PASTE2(_DOIT, N)(, N, _SEQ, X _IGN,,)
 
 /**
  ** @brief Produce a list of length @a N that has the contents of 0,
@@ -794,15 +803,69 @@ _if_more_ignore(__VA_ARGS__,)                           \
 #define _TYPD(NAME, X, N) typedef X PASTE2(NAME, N)
 #define _TYPN(NAME, X, N, REC) X, REC
 
-#define _DARGS(NAME, N, ...)                                         \
-  DECLS(REVS(PASTE2(_DOIT, N)(NAME, N, _TYPN, _TYPD, __VA_ARGS__)))
+#define _TYPEDEFS(NAME, N, ...)                                         \
+  DECLS(REVS(PASTE2(_DOIT, N)(NAME, N, _TYPN, _TYPD, __VA_ARGS__,)))
 
-#define DARGS(NAME, N, ...) _DARGS(NAME, N, __VA_ARGS__)
+#define TYPEDEFS(NAME, ...) _TYPEDEFS(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
 
 #define DEFARG_SIGNATURE(RT, NAME, ...)                                 \
   RT NAME(__VA_ARGS__);                                                 \
   typedef RT PASTE2(NAME, _sigtype_ret);                                \
-  DARGS(PASTE2(NAME, _sigtype_), NARG(__VA_ARGS__), REVS(__VA_ARGS__),) \
+  TYPEDEFS(PASTE2(NAME, _sigtype_), REVS(__VA_ARGS__))
+
+
+#define _DAFD(NAME, X, N)                                       \
+IS_EMPTY(X)                                                     \
+()                                                              \
+(                                                               \
+ inline                                                         \
+ PASTE3(NAME, _sigtype_, N) PASTE3(NAME, _defarg_, N)(void) {   \
+   PASTE3(NAME, _sigtype_, N) ret = (X);                        \
+   return ret;                                                  \
+ }                                                              \
+ )
+
+#define _DAFE(NAME, X, N)                                       \
+  IS_EMPTY(X)(enum { PASTE3(NAME, _boring_, N) })(PASTE3(NAME, _sigtype_, N) PASTE3(NAME, _defarg_, N)(void))
+
+#define _DAFN(NAME, X, N, REC) X REC
+
+#define _DECLARE_DEFARG(NAME, N, ...)                                   \
+  DECLS(REVS(PASTE2(_DOIT, N)(NAME, N, _DAFN, _DAFD, __VA_ARGS__,)))    \
+enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
+
+/**
+ ** @brief Provide default arguments for macro @a NAME
+ **
+ ** Each element in the list must correspond to an expression that can
+ ** be evaluated in the outer scope, just where this call is placed.
+ ** In many cases this will be constant expressions such as @c 0 or @c
+ ** NULL, but they must not necessarily be so.
+ **
+ ** An empty argument, i.e nothing but an eventual comment, produces
+ ** nothing. So no default argument will be provided for the
+ ** corresponding position in the parameter list of @a NAME.
+ **
+ ** @see DEFARG_SIGNATURE on how to declare a prototype of a function
+ ** @a NAME that can be used with this
+ **
+ ** @see CALL_WITH_DEFAULTS on how to declare the macro @a NAME
+ **
+ ** @see rand48_t_init for a more sophisticated example with
+ ** non-constant expressions.
+ **/
+#define DECLARE_DEFARG(NAME, ...) _DECLARE_DEFARG(NAME, NARG(__VA_ARGS__), REVS(__VA_ARGS__))
+
+#define _DEFINE_DEFARG(NAME, N, ...)                                         \
+  DECLS(REVS(PASTE2(_DOIT, N)(NAME, N, _SEP, _DAFE, __VA_ARGS__,)))
+
+/**
+ ** @brief Define the symbols that are declared through a
+ ** corresponding call ::DECLARE_DEFARG.
+ **
+ ** The argument list here should be exactly the same as for ::DECLARE_DEFARG.
+ **/
+#define DEFINE_DEFARG(NAME, ...) _DEFINE_DEFARG(NAME, NARG(__VA_ARGS__), REVS(__VA_ARGS__))
 
 
 #endif 	    /* !ORWL_MACRO_H_ */

@@ -16,10 +16,10 @@
 
 DEFINE_ENUM(orwl_state);
 
-define_defarg(orwl_wh_test, 1, uint64_t);
-define_defarg(orwl_wh_acquire, 1, uint64_t);
-define_defarg(orwl_wh_load, 1, uint64_t);
-define_defarg(orwl_wh_unload, 1, uint64_t);
+DEFINE_DEFARG(orwl_wh_test, , 0);
+DEFINE_DEFARG(orwl_wh_acquire, , 1);
+DEFINE_DEFARG(orwl_wh_load, , 1);
+DEFINE_DEFARG(orwl_wh_unload, , 1);
 
 static pthread_mutexattr_t smattr = INIT2;
 
@@ -38,7 +38,7 @@ orwl_wq* orwl_wq_init(orwl_wq *wq,
   return wq;
 }
 
-define_defarg(orwl_wq_init, 1, const pthread_mutexattr_t *);
+DEFINE_DEFARG(orwl_wq_init, , NULL);
 
 void orwl_wq_destroy(orwl_wq *wq) {
   assert(!wq->head);
@@ -69,7 +69,7 @@ orwl_wh* orwl_wh_init(orwl_wh *wh,
   return wh;
 }
 
-define_defarg(orwl_wh_init, 1, const pthread_condattr_t *);
+DEFINE_DEFARG(orwl_wh_init, , NULL);
 
 void orwl_wh_destroy(orwl_wh *wh) {
   assert(!wh->location);
@@ -230,7 +230,7 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
 }
 
 void orwl_state_destroy(orwl_state *el);
-define_defarg(orwl_state_init, 1, orwl_state);
+DEFINE_DEFARG(orwl_state_init, , orwl_invalid);
 orwl_state* orwl_state_init (orwl_state *el, orwl_state val);
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_state, {0});

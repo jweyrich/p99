@@ -35,6 +35,11 @@ typedef struct orwl_rq orwl_rq;
 #define ORWL_RQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .local = ORWL_WQ_INITIALIZER }
 
 inline
+DEFARG_SIGNATURE(orwl_rq *, orwl_rq_init, orwl_rq *, orwl_endpoint, orwl_endpoint, uint64_t);
+
+#define orwl_rq_init(...) CALL_WITH_DEFAULTS(orwl_rq_init, 4, __VA_ARGS__)
+
+inline
 orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t, uint64_t id) {
   pthread_mutex_init(&rq->mut);
   orwl_wq_init(&rq->local);
@@ -44,13 +49,7 @@ orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t, uint64_t id
   return rq;
 }
 
-inline
-DEFARG_SIGNATURE(orwl_rq *, orwl_rq_init, orwl_rq *, orwl_endpoint, orwl_endpoint, uint64_t);
-
-#define orwl_rq_init(...) CALL_WITH_DEFAULTS(orwl_rq_init, 4, __VA_ARGS__)
-declare_defarg(orwl_rq_init, 3, uint64_t, TNULL(uint64_t));
-declare_defarg(orwl_rq_init, 2, orwl_endpoint, (orwl_endpoint){{0}});
-declare_defarg(orwl_rq_init, 1, orwl_endpoint, (orwl_endpoint){{0}});
+DECLARE_DEFARG(orwl_rq_init, , (orwl_endpoint){{0}}, (orwl_endpoint){{0}}, TNULL(uint64_t));
 
 inline
 void orwl_rq_destroy(orwl_rq *rq) {
@@ -99,8 +98,10 @@ orwl_state orwl_acquire(orwl_rh* rh, size_t token) {
   return orwl_wh_acquire(rh->wh, token);
 }
 
+inline
+DEFARG_SIGNATURE(orwl_state, orwl_acquire, orwl_rh*, size_t);
 #define orwl_acquire(...) CALL_WITH_DEFAULTS(orwl_acquire, 2, __VA_ARGS__)
-declare_defarg(orwl_acquire, 1, uintptr_t, 1);
+DECLARE_DEFARG(orwl_acquire, , 1);
 
 
 inline
@@ -108,8 +109,10 @@ orwl_state orwl_test(orwl_rh* rh, size_t token) {
   return orwl_wh_test(rh->wh, token);
 }
 
+inline
+DEFARG_SIGNATURE(orwl_state, orwl_test, orwl_rh*, size_t);
 #define orwl_test(...) CALL_WITH_DEFAULTS(orwl_test, 2, __VA_ARGS__)
-declare_defarg(orwl_test, 1, uintptr_t, 0);
+DECLARE_DEFARG(orwl_test, , TNULL(size_t));
 
 DECLARE_AUTH_SOCK_FUNC(auth_sock_request, uintptr_t wqID, uint64_t whID, uint64_t port);
 DECLARE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID);

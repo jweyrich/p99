@@ -21,10 +21,10 @@ void F_(int a);
 
 
 
-void ftaster _SKIP_ (int A);
+DEFARG_SIGNATURE(void, ftaster, int);
 
-declare_defarg(ftaster, 0, int, -1);
-define_defarg(ftaster, 0, int);
+DECLARE_DEFARG(ftaster, -1);
+DEFINE_DEFARG(ftaster, -1);
 
 
 #define ftaster(...) CALL_WITH_DEFAULTS(ftaster, 1, __VA_ARGS__)
@@ -33,27 +33,24 @@ void ftaster _SKIP_ (int A) {
   report(1, "ftaster has %d", A);
 }
 
+DEFARG_SIGNATURE(void, ftister, int, unsigned);
+
 void ftister(int A, unsigned B) {
   report(1, "ftister has %d %u", A, B);
 }
-declare_defarg(ftister, 1, unsigned, 1);
-declare_defarg(ftister, 0, int, -2);
-define_defarg(ftister, 1, unsigned);
-define_defarg(ftister, 0, int);
+DECLARE_DEFARG(ftister, -2, 1);
+DEFINE_DEFARG(ftister, -2, 1);
 
 #define ftister(...) CALL_WITH_DEFAULTS(ftister, 2, __VA_ARGS__)
 
 typedef struct { int x; } test_t;
 
+DEFARG_SIGNATURE(void, ftester, test_t, unsigned, double);
 void ftester(test_t A, unsigned B, double C) {
   report(1, "ftester has %d %u %g", A.x, B, C);
 }
-declare_defarg(ftester, 2, double, 0.5);
-declare_defarg(ftester, 1, unsigned, 2);
-declare_defarg(ftester, 0, test_t, (test_t){ -2 });
-define_defarg(ftester, 2, double);
-define_defarg(ftester, 1, unsigned);
-define_defarg(ftester, 0, test_t);
+DECLARE_DEFARG(ftester, ((test_t){ -2 }), 2, 0.5);
+DEFINE_DEFARG(ftester, ((test_t){ -2 }), 2, 0.5);
 
 #define ftester(...) CALL_WITH_DEFAULTS(ftester, 3, __VA_ARGS__)
 

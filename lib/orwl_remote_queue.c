@@ -12,9 +12,8 @@
 #include "orwl_remote_queue.h"
 
 orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t, uint64_t id);
-define_defarg(orwl_rq_init, 3, uint64_t);
-define_defarg(orwl_rq_init, 2, orwl_endpoint);
-define_defarg(orwl_rq_init, 1, orwl_endpoint);
+DEFINE_DEFARG(orwl_rq_init, , (orwl_endpoint){{0}}, (orwl_endpoint){{0}}, TNULL(uint64_t));
+
 void orwl_rq_destroy(orwl_rq *rq);
 
 DEFINE_NEW_DELETE(orwl_rq);
@@ -25,11 +24,11 @@ void orwl_rh_destroy(orwl_rh *rh);
 DEFINE_NEW_DELETE(orwl_rh);
 
 orwl_state orwl_acquire(orwl_rh* rh, size_t token);
-define_defarg(orwl_acquire, 1, uintptr_t);
+DEFINE_DEFARG(orwl_acquire, , 1);
 
 
 orwl_state orwl_test(orwl_rh* rh, size_t token);
-define_defarg(orwl_test, 1, uintptr_t);
+DEFINE_DEFARG(orwl_test, , TNULL(size_t));
 
 orwl_state orwl_request(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed) {
   // insert two wh in the local queue

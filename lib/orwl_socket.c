@@ -72,9 +72,9 @@ bool same_endianess(uint32_t c) {
 }
 
 void orwl_hton(uint32_t *n, uint64_t const *h, size_t l);
-define_defarg(orwl_hton, 2, size_t);
+DEFINE_DEFARG(orwl_hton, , , 1);
 void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l);
-define_defarg(orwl_ntoh, 2, size_t);
+DEFINE_DEFARG(orwl_ntoh, , , 1);
 
 static
 bool orwl_send_(int fd, uint64_t const*mess, size_t len) {
@@ -109,13 +109,13 @@ in_addr_t inet4_addr(void);
 
 addr_t* addr_t_init(addr_t *A, in_addr_t I);
 
-define_defarg(addr_t_init, 1, in_addr_t);
+DEFINE_DEFARG(addr_t_init, , TNULL(in_addr_t));
 
 in_addr_t addr2net(addr_t const*A);
 
 port_t* port_t_init(port_t *A, in_port_t P);
 
-define_defarg(port_t_init, 1, in_port_t);
+DEFINE_DEFARG(port_t_init, , TNULL(in_port_t));
 
 in_port_t port2net(port_t const*A);
 
@@ -132,8 +132,7 @@ orwl_endpoint* orwl_endpoint_init
 void orwl_endpoint_destroy(orwl_endpoint *endpoint);
 
 
-define_defarg(orwl_endpoint_init, 2, in_port_t);
-define_defarg(orwl_endpoint_init, 1, in_addr_t);
+DEFINE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t));
 
 DEFINE_NEW_DELETE(orwl_endpoint);
 
@@ -219,9 +218,7 @@ auth_sock* auth_sock_init(auth_sock *sock,
                                   orwl_server* srv,
                                   size_t len);
 
-define_defarg(auth_sock_init, 3, size_t);
-define_defarg(auth_sock_init, 2, orwl_server*);
-define_defarg(auth_sock_init, 1, int);
+DEFINE_DEFARG(auth_sock_init, , -1, NULL, TNULL(size_t));
 
 void auth_sock_close(auth_sock *sock) {
   /* Ack the termination of the call */
@@ -267,7 +264,7 @@ void orwl_server_terminate(orwl_server *serv, rand48_t *seed) {
   orwl_send(&serv->host.ep, seed, NULL, 0);
 }
 
-define_defarg(orwl_server_terminate, 1, rand48_t*);
+DEFINE_DEFARG(orwl_server_terminate, , (&(rand48_t)RAND48_T_INITIALIZER));
 
 
 void orwl_server_destroy(orwl_server *serv) {
@@ -493,8 +490,7 @@ void orwl_host_disconnect(orwl_host *th) {
 
 orwl_host* orwl_host_init(orwl_host *th, in_addr_t addr, in_port_t port);
 
-define_defarg(orwl_host_init, 2, in_port_t);
-define_defarg(orwl_host_init, 1, in_addr_t);
+DEFINE_DEFARG(orwl_host_init, , TNULL(in_addr_t), TNULL(in_port_t));
 
 
 void orwl_host_destroy(orwl_host *th);

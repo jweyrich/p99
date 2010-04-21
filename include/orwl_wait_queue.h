@@ -45,8 +45,10 @@ orwl_state* orwl_state_init
   return el;
 }
 
+inline
+DEFARG_SIGNATURE(orwl_state*, orwl_state_init, orwl_state *, orwl_state);
 #define orwl_state_init(...) CALL_WITH_DEFAULTS(orwl_state_init, 2, __VA_ARGS__)
-declare_defarg(orwl_state_init, 1, orwl_state, orwl_invalid);
+DECLARE_DEFARG(orwl_state_init, , orwl_invalid);
 
 DOCUMENT_DESTROY(orwl_state)
 inline
@@ -144,9 +146,10 @@ orwl_wq* orwl_wq_init
  const pthread_mutexattr_t *attr /*!< defaults to @c NULL */
 );
 
+  DEFARG_SIGNATURE(orwl_wq*, orwl_wq_init, orwl_wq*, const pthread_mutexattr_t*);
 #define orwl_wq_init(...) CALL_WITH_DEFAULTS(orwl_wq_init, 2, __VA_ARGS__)
 
-declare_defarg(orwl_wq_init, 1, const pthread_mutexattr_t *, NULL);
+DECLARE_DEFARG(orwl_wq_init, , NULL);
 
   DOCUMENT_DESTROY(orwl_wq)
 void orwl_wq_destroy(orwl_wq *wq);
@@ -215,9 +218,11 @@ int orwl_wq_idle(orwl_wq *wq) {
 orwl_wh* orwl_wh_init
 (orwl_wh *wh,
  const pthread_condattr_t *attr /*!< [in] defaults to @c NULL */);
+
+  DEFARG_SIGNATURE(orwl_wh*, orwl_wh_init, orwl_wh *, const pthread_condattr_t *);
 #define orwl_wh_init(...) CALL_WITH_DEFAULTS(orwl_wh_init, 2, __VA_ARGS__)
 
-declare_defarg(orwl_wh_init, 1, const pthread_condattr_t *, NULL);
+DECLARE_DEFARG(orwl_wh_init, , NULL);
 
 
   DOCUMENT_DESTROY(orwl_wh)
@@ -277,8 +282,9 @@ orwl_state orwl_wh_acquire
   (orwl_wh *wh,
    uint64_t howmuch    /*!< defaults to @c 1 */);
 
+  DEFARG_SIGNATURE(orwl_state, orwl_wh_acquire, orwl_wh*, uint64_t);
 #define orwl_wh_acquire(...) CALL_WITH_DEFAULTS(orwl_wh_acquire, 2, __VA_ARGS__)
-declare_defarg(orwl_wh_acquire, 1, uint64_t, 1);
+DECLARE_DEFARG(orwl_wh_acquire, , 1);
 
 
 /**
@@ -304,8 +310,9 @@ orwl_state orwl_wh_test
   (orwl_wh *wh,
    uint64_t howmuch  /*!< defaults to 0 */);
 
+  DEFARG_SIGNATURE(orwl_state, orwl_wh_test, orwl_wh*, uint64_t);
 #define orwl_wh_test(...) CALL_WITH_DEFAULTS(orwl_wh_test, 2, __VA_ARGS__)
-declare_defarg(orwl_wh_test, 1, uint64_t, 0);
+DECLARE_DEFARG(orwl_wh_test, , 0);
 
 /**
  ** @brief Release a request on @a wh. If @a wh had been acquired this
@@ -334,8 +341,10 @@ uint64_t orwl_wh_load
     return howmuch;
   }
 
+inline
+DEFARG_SIGNATURE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
 #define orwl_wh_load(...) CALL_WITH_DEFAULTS(orwl_wh_load, 2, __VA_ARGS__)
-declare_defarg(orwl_wh_load, 1, uint64_t, 1);
+DECLARE_DEFARG(orwl_wh_load, , 1);
 
   /** @brief unload @a howmuch additional tokens from @a wh.
    ** 
@@ -356,8 +365,10 @@ uint64_t orwl_wh_unload
     return howmuch;
   }
 
+inline
+DEFARG_SIGNATURE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
 #define orwl_wh_unload(...) CALL_WITH_DEFAULTS(orwl_wh_unload, 2, __VA_ARGS__)
-declare_defarg(orwl_wh_unload, 1, uint64_t, 1);
+DECLARE_DEFARG(orwl_wh_unload, , 1);
 
 DECLARE_ORWL_REGISTER(orwl_wh_acquire);
 DECLARE_ORWL_REGISTER(orwl_wh_release);

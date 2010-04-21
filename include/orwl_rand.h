@@ -52,11 +52,10 @@ rand48_t *rand48_t_init(rand48_t *seed, unsigned short x0, unsigned short x1, un
   return seed;
 }
 
+inline
+DEFARG_SIGNATURE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
 #define rand48_t_init(...) CALL_WITH_DEFAULTS(rand48_t_init, 4, __VA_ARGS__)
-
-declare_defarg(rand48_t_init, 3, ushort, pthread_self());
-declare_defarg(rand48_t_init, 2, ushort, getpid());
-declare_defarg(rand48_t_init, 1, ushort, useconds());
+DECLARE_DEFARG(rand48_t_init, , useconds(), getpid(), pthread_self());
 
 inline
 void rand48_t_destroy(rand48_t *seed){

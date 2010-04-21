@@ -35,93 +35,72 @@
 // not possible because of the count argument
 
  // pthread_cond_init (3posix) - destroy and initialize condition variables
+DEFARG_SIGNATURE(int, pthread_cond_init, pthread_cond_t*, pthread_condattr_t const*);
 #define pthread_cond_init(...) CALL_WITH_DEFAULTS(pthread_cond_init, 2, __VA_ARGS__)
-declare_defarg(pthread_cond_init, 1, pthread_condattr_t*, NULL);
+DECLARE_DEFARG(pthread_cond_init, , NULL);
 
  // pthread_mutex_init (3posix) - destroy and initialize a mutex
+DEFARG_SIGNATURE(int, pthread_mutex_init, pthread_mutex_t*, pthread_mutexattr_t const*);
 #define pthread_mutex_init(...) CALL_WITH_DEFAULTS(pthread_mutex_init, 2, __VA_ARGS__)
-declare_defarg(pthread_mutex_init, 1, pthread_mutexattr_t*, NULL);
+DECLARE_DEFARG(pthread_mutex_init, , NULL);
 
  // pthread_rwlock_init (3posix) - destroy and initialize a read-write lock object
+DEFARG_SIGNATURE(int, pthread_rwlock_init, pthread_rwlock_t*, pthread_rwlockattr_t const*);
 #define pthread_rwlock_init(...) CALL_WITH_DEFAULTS(pthread_rwlock_init, 2, __VA_ARGS__)
-declare_defarg(pthread_rwlock_init, 1, pthread_rwlockattr_t*, NULL);
+DECLARE_DEFARG(pthread_rwlock_init, , NULL);
 
  // pthread_spin_init (3posix) - destroy or initialize a spin lock object (ADVANCED REALTIME THREADS)
+DEFARG_SIGNATURE(int, pthread_spin_init, pthread_spinlock_t*, int);
 #define pthread_spin_init(...) CALL_WITH_DEFAULTS(pthread_spin_init, 2, __VA_ARGS__)
-declare_defarg(pthread_spin_init, 1, int, PTHREAD_PROCESS_PRIVATE);
+DECLARE_DEFARG(pthread_spin_init, , PTHREAD_PROCESS_PRIVATE);
 
 // int pthread_key_create (pthread_key_t *__key, void (*__destr_function) (void *))
-#define pthread_key_create(...) CALL_WITH_DEFAULTS(pthread_key_create, 2, __VA_ARGS__)
 #if   	ORWL_POSIX_DEFAULT_H_ == 2
 typedef void (*pthread_key_create_arg1_t)(void *);
 #endif
-declare_defarg(pthread_key_create, 1, pthread_key_create_arg1_t, NULL);
+DEFARG_SIGNATURE(int, pthread_key_create, pthread_key_t*, pthread_key_create_arg1_t);
+#define pthread_key_create(...) CALL_WITH_DEFAULTS(pthread_key_create, 2, __VA_ARGS__)
+DECLARE_DEFARG(pthread_key_create, , NULL);
 
 
+DEFARG_SIGNATURE(long, strtol, char const*, char**, int);
 #define strtol(...) CALL_WITH_DEFAULTS(strtol, 3, __VA_ARGS__)
-declare_defarg(strtol, 2, int, 0);
-declare_defarg(strtol, 1, char **, NULL);
+DECLARE_DEFARG(strtol, , NULL, 0);
 
+DEFARG_SIGNATURE(long long, strtoll, char const*, char**, int);
 #define strtoll(...) CALL_WITH_DEFAULTS(strtoll, 3, __VA_ARGS__)
-declare_defarg(strtoll, 2, int, 0);
-declare_defarg(strtoll, 1, char **, NULL);
+DECLARE_DEFARG(strtoll, , NULL, 0);
 
+DEFARG_SIGNATURE(ulong, strtoul, char const*, char**, int);
 #define strtoul(...) CALL_WITH_DEFAULTS(strtoul, 3, __VA_ARGS__)
-declare_defarg(strtoul, 2, int, 0);
-declare_defarg(strtoul, 1, char **, NULL);
+DECLARE_DEFARG(strtoul, , NULL, 0);
 
+DEFARG_SIGNATURE(unsigned long long, strtoull, char const*, char**, int);
 #define strtoull(...) CALL_WITH_DEFAULTS(strtoull, 3, __VA_ARGS__)
-declare_defarg(strtoull, 2, int, 0);
-declare_defarg(strtoull, 1, char **, NULL);
+DECLARE_DEFARG(strtoull, , NULL, 0);
 
+DEFARG_SIGNATURE(float, strtof, char const*, char**);
 #define strtof(...) CALL_WITH_DEFAULTS(strtof, 2, __VA_ARGS__)
-declare_defarg(strtof, 1, char **, NULL);
+DECLARE_DEFARG(strtof, , NULL);
 
+DEFARG_SIGNATURE(double, strtod, char const*, char**);
 #define strtod(...) CALL_WITH_DEFAULTS(strtod, 2, __VA_ARGS__)
-declare_defarg(strtod, 1, char **, NULL);
+DECLARE_DEFARG(strtod, , NULL);
 
+DEFARG_SIGNATURE(long double, strtold, char const*, char**);
 #define strtold(...) CALL_WITH_DEFAULTS(strtold, 2, __VA_ARGS__)
-declare_defarg(strtold, 1, char **, NULL);
+DECLARE_DEFARG(strtold, , NULL);
 
 
 // int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+DEFARG_SIGNATURE(int, accept, int, struct sockaddr *, socklen_t *);
 #define accept(...) CALL_WITH_DEFAULTS(accept, 3, __VA_ARGS__)
-declare_defarg(accept, 2, socklen_t*, &TNULL(socklen_t));
-declare_defarg(accept, 1, struct sockaddr *, NULL);
+DECLARE_DEFARG(accept, , NULL, &TNULL(socklen_t));
 
 // int socket(int domain, int type, int protocol);
+DEFARG_SIGNATURE(int, socket, int, int, int);
 #define socket(...) CALL_WITH_DEFAULTS(socket, 3, __VA_ARGS__)
-declare_defarg(socket, 2, int, 0);
-declare_defarg(socket, 1, int, SOCK_STREAM);
+DECLARE_DEFARG(socket, , SOCK_STREAM, 0);
 
-// int open(const char *pathname, int flags);
-// int open(const char *pathname, int flags, mode_t mode);
-#define open(...) CALL_WITH_DEFAULTS(open, 3, __VA_ARGS__)
-declare_defarg(open, 2, mode_t,  S_IRWXU);
-declare_defarg(open, 1, int, O_RDONLY);
-
-// int openat (int __fd, __const char *__file, int __oflag, ...)
-#define openat(...) CALL_WITH_DEFAULTS(openat, 4, __VA_ARGS__)
-declare_defarg(openat, 3, mode_t,  S_IRWXU);
-declare_defarg(openat, 2, int, O_RDONLY);
-
-// int creat(const char *pathname, mode_t mode);
-#define creat(...) CALL_WITH_DEFAULTS(creat, 2, __VA_ARGS__)
-declare_defarg(creat, 1, mode_t, S_IRWXU);
-
-// int open64(const char *pathname, int flags);
-// int open64(const char *pathname, int flags, mode_t mode);
-#define open64(...) CALL_WITH_DEFAULTS(open64, 3, __VA_ARGS__)
-declare_defarg(open64, 2, mode_t,  S_IRWXU);
-declare_defarg(open64, 1, int, O_RDONLY);
-
-// int openat64 (int __fd, __const char *__file, int __oflag, ...)
-#define openat64(...) CALL_WITH_DEFAULTS(openat64, 4, __VA_ARGS__)
-declare_defarg(openat64, 3, mode_t,  S_IRWXU);
-declare_defarg(openat64, 2, int, O_RDONLY);
-
-// int creat(const char *pathname, mode_t mode);
-#define creat64(...) CALL_WITH_DEFAULTS(creat64, 2, __VA_ARGS__)
-declare_defarg(creat64, 1, mode_t, S_IRWXU);
 
 #endif 	    /* !ORWL_POSIX_DEFAULT_H_ */

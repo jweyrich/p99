@@ -129,13 +129,11 @@ _routine_arg* _routine_arg_init(_routine_arg *rt,
   return rt;
 }
 
+DEFARG_SIGNATURE(_routine_arg*, _routine_arg_init, _routine_arg *, start_routine_t, void*);
 #define _routine_arg_init(...) CALL_WITH_DEFAULTS(_routine_arg_init, 3, __VA_ARGS__)
 
-declare_defarg(_routine_arg_init, 2, void*, NULL);
-declare_defarg(_routine_arg_init, 1, start_routine_t, NULL);
-
-define_defarg(_routine_arg_init, 2, void*);
-define_defarg(_routine_arg_init, 1, start_routine_t);
+DECLARE_DEFARG(_routine_arg_init, , NULL, NULL);
+DEFINE_DEFARG(_routine_arg_init, , NULL, NULL);
 
 void _routine_arg_destroy(_routine_arg *rt) {
   /* empty */

@@ -63,9 +63,10 @@ arg_t* arg_t_init(arg_t *arg, size_t def) {
   return arg;
 }
 
+DEFARG_SIGNATURE(arg_t*, arg_t_init, arg_t *, size_t);
 #define arg_t_init(...) CALL_WITH_DEFAULTS(arg_t_init, 2, __VA_ARGS__)
-declare_defarg(arg_t_init, 1, size_t, 0);
-define_defarg(arg_t_init, 1, size_t);
+DECLARE_DEFARG(arg_t_init, , TNULL(size_t));
+DEFINE_DEFARG(arg_t_init, , TNULL(size_t));
 
 
 void arg_t_destroy(arg_t *arg) {
