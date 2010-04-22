@@ -46,7 +46,7 @@ orwl_state* orwl_state_init
 }
 
 inline
-DEFARG_SIGNATURE(orwl_state*, orwl_state_init, orwl_state *, orwl_state);
+PROTOTYPE(orwl_state*, orwl_state_init, orwl_state *, orwl_state);
 #define orwl_state_init(...) CALL_WITH_DEFAULTS(orwl_state_init, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_state_init, , orwl_invalid);
 
@@ -146,7 +146,7 @@ orwl_wq* orwl_wq_init
  const pthread_mutexattr_t *attr /*!< defaults to @c NULL */
 );
 
-  DEFARG_SIGNATURE(orwl_wq*, orwl_wq_init, orwl_wq*, const pthread_mutexattr_t*);
+  PROTOTYPE(orwl_wq*, orwl_wq_init, orwl_wq*, const pthread_mutexattr_t*);
 #define orwl_wq_init(...) CALL_WITH_DEFAULTS(orwl_wq_init, 2, __VA_ARGS__)
 
 DECLARE_DEFARG(orwl_wq_init, , NULL);
@@ -219,7 +219,7 @@ orwl_wh* orwl_wh_init
 (orwl_wh *wh,
  const pthread_condattr_t *attr /*!< [in] defaults to @c NULL */);
 
-  DEFARG_SIGNATURE(orwl_wh*, orwl_wh_init, orwl_wh *, const pthread_condattr_t *);
+  PROTOTYPE(orwl_wh*, orwl_wh_init, orwl_wh *, const pthread_condattr_t *);
 #define orwl_wh_init(...) CALL_WITH_DEFAULTS(orwl_wh_init, 2, __VA_ARGS__)
 
 DECLARE_DEFARG(orwl_wh_init, , NULL);
@@ -282,7 +282,7 @@ orwl_state orwl_wh_acquire
   (orwl_wh *wh,
    uint64_t howmuch    /*!< defaults to @c 1 */);
 
-  DEFARG_SIGNATURE(orwl_state, orwl_wh_acquire, orwl_wh*, uint64_t);
+  PROTOTYPE(orwl_state, orwl_wh_acquire, orwl_wh*, uint64_t);
 #define orwl_wh_acquire(...) CALL_WITH_DEFAULTS(orwl_wh_acquire, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_wh_acquire, , 1);
 
@@ -310,7 +310,7 @@ orwl_state orwl_wh_test
   (orwl_wh *wh,
    uint64_t howmuch  /*!< defaults to 0 */);
 
-  DEFARG_SIGNATURE(orwl_state, orwl_wh_test, orwl_wh*, uint64_t);
+  PROTOTYPE(orwl_state, orwl_wh_test, orwl_wh*, uint64_t);
 #define orwl_wh_test(...) CALL_WITH_DEFAULTS(orwl_wh_test, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_wh_test, , 0);
 
@@ -342,7 +342,7 @@ uint64_t orwl_wh_load
   }
 
 inline
-DEFARG_SIGNATURE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
+PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
 #define orwl_wh_load(...) CALL_WITH_DEFAULTS(orwl_wh_load, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_wh_load, , 1);
 
@@ -366,7 +366,7 @@ uint64_t orwl_wh_unload
   }
 
 inline
-DEFARG_SIGNATURE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
+PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
 #define orwl_wh_unload(...) CALL_WITH_DEFAULTS(orwl_wh_unload, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_wh_unload, , 1);
 

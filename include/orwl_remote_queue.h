@@ -35,7 +35,7 @@ typedef struct orwl_rq orwl_rq;
 #define ORWL_RQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .local = ORWL_WQ_INITIALIZER }
 
 inline
-DEFARG_SIGNATURE(orwl_rq *, orwl_rq_init, orwl_rq *, orwl_endpoint, orwl_endpoint, uint64_t);
+PROTOTYPE(orwl_rq *, orwl_rq_init, orwl_rq *, orwl_endpoint, orwl_endpoint, uint64_t);
 
 #define orwl_rq_init(...) CALL_WITH_DEFAULTS(orwl_rq_init, 4, __VA_ARGS__)
 
@@ -99,7 +99,7 @@ orwl_state orwl_acquire(orwl_rh* rh, size_t token) {
 }
 
 inline
-DEFARG_SIGNATURE(orwl_state, orwl_acquire, orwl_rh*, size_t);
+PROTOTYPE(orwl_state, orwl_acquire, orwl_rh*, size_t);
 #define orwl_acquire(...) CALL_WITH_DEFAULTS(orwl_acquire, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_acquire, , 1);
 
@@ -110,7 +110,7 @@ orwl_state orwl_test(orwl_rh* rh, size_t token) {
 }
 
 inline
-DEFARG_SIGNATURE(orwl_state, orwl_test, orwl_rh*, size_t);
+PROTOTYPE(orwl_state, orwl_test, orwl_rh*, size_t);
 #define orwl_test(...) CALL_WITH_DEFAULTS(orwl_test, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_test, , TNULL(size_t));
 

@@ -129,7 +129,7 @@ _routine_arg* _routine_arg_init(_routine_arg *rt,
   return rt;
 }
 
-DEFARG_SIGNATURE(_routine_arg*, _routine_arg_init, _routine_arg *, start_routine_t, void*);
+PROTOTYPE(_routine_arg*, _routine_arg_init, _routine_arg *, start_routine_t, void*);
 #define _routine_arg_init(...) CALL_WITH_DEFAULTS(_routine_arg_init, 3, __VA_ARGS__)
 
 DECLARE_DEFARG(_routine_arg_init, , NULL, NULL);

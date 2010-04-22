@@ -36,11 +36,12 @@
 #define _INV(N) PASTE2(_variable_argument_list_must_be_divisible_by_, N)
 
 #define _NARG_64_1(...)                                                 \
-_hex2dec_(__NARG_64(__VA_ARGS__,                                        \
-                    0x3F, 0x3E, 0x3D, 0x3C, 0x3B, 0x3A, 0x39, 0x38, 0x37, 0x36, 0x35, 0x34, 0x33, 0x32, 0x31, 0x30, \
-                    0x2F, 0x2E, 0x2D, 0x2C, 0x2B, 0x2A, 0x29, 0x28, 0x27, 0x26, 0x25, 0x24, 0x23, 0x22, 0x21, 0x20, \
-                    0x1F, 0x1E, 0x1D, 0x1C, 0x1B, 0x1A, 0x19, 0x18, 0x17, 0x16, 0x15, 0x14, 0x13, 0x12, 0x11, 0x10, \
-                    0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01, 0x00))
+_ARG_64(__VA_ARGS__,                                                    \
+            63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, \
+        48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, \
+        32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, \
+        16, 15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1,  0 \
+        )
 
 /**
  ** @brief Return the length of the variate argument list.
@@ -68,6 +69,15 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 #define _IS_2_EQ_2(...) ,
 #define _IS_3_EQ_3(...) ,
 #define _IS_4_EQ_4(...) ,
+#define _IS_5_EQ_5(...) ,
+#define _IS_6_EQ_6(...) ,
+#define _IS_7_EQ_7(...) ,
+#define _IS_8_EQ_8(...) ,
+#define _IS_9_EQ_9(...) ,
+#define _IS_00_EQ_00(...) ,
+#define _IS_10_EQ_10(...) ,
+#define _IS_01_EQ_01(...) ,
+#define _IS_11_EQ_11(...) ,
 #define __IF_CLAUSE(A,B,C,...) C
 #define _IF_CLAUSE(EXP) __IF_CLAUSE(EXP, _CLAUSE1, _CLAUSE2, ~)
 #define _IF_NOT_CLAUSE(EXP) __IF_CLAUSE(EXP, _CLAUSE2, _CLAUSE1, ~)
@@ -83,95 +93,94 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  ** A. E.g for the test
  **
  ** @code
- ** IS_EQ(0, X)(expand_when_equal)(expand_when_unequal)
+ ** IF_EQ(0, X)(expand_when_equal)(expand_when_unequal)
  ** @endcode
  **
  ** the macro ::_IF_0_EQ_0 must exist. (Which it does in that case).
  **
- ** @see IS_DEC_EQ for equality of not too large decimal numbers
+ ** @see IF_DEC_EQ for equality of not too large decimal numbers
  **/
-#define IS_EQ(A, B) _IF_CLAUSE(PASTE4(_IS_,A,_EQ_,B)())
+#define IF_EQ(A, B) _IF_CLAUSE(PASTE4(_IS_,A,_EQ_,B)())
 
 /**
  ** @brief Test two words @a A and @a B if they are unequal.
  **
- ** @see IS_EQ 
+ ** @see IF_EQ 
  **/
-#define IS_NE(A, B) _IF_NOT_CLAUSE(PASTE4(_IS_,A,_EQ_,B)())
+#define IF_NE(A, B) _IF_NOT_CLAUSE(PASTE4(_IS_,A,_EQ_,B)())
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if they are equal.
  **/
-#define IS_DEC_EQ(A, B) IS_EQ(0,_dec_minus(A,B))
+#define IF_DEC_EQ(A, B) IF_EQ(0,_dec_minus(A,B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if they are unequal.
  **/
-#define IS_DEC_NE(A, B) IS_NE(0,_dec_minus(A,B))
+#define IF_DEC_NE(A, B) IF_NE(0,_dec_minus(A,B))
 
-#define IS_GE_0(A) _IF_CLAUSE(PASTE3(_IS_,A,_GE_0)())
-#define IS_LT_0(A) _IF_NOT_CLAUSE(PASTE3(_IS_,A,_GE_0)())
+#define IF_GE_0(A) _IF_CLAUSE(PASTE3(_IS_,A,_GE_0)())
+#define IF_LT_0(A) _IF_NOT_CLAUSE(PASTE3(_IS_,A,_GE_0)())
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is greater
  ** or equal to @a B.
  **/
-#define IS_DEC_GE(A, B) IS_GE_0(_dec_minus(A,B))
+#define IF_DEC_GE(A, B) IF_GE_0(_dec_minus(A,B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is less
  ** or equal to @a B.
  **/
-#define IS_DEC_LE(A, B) IS_GE_0(_dec_minus(B,A))
+#define IF_DEC_LE(A, B) IF_GE_0(_dec_minus(B,A))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
  ** less than @a B.
  **/
-#define IS_DEC_LT(A, B) IS_LT_0(_dec_minus(A,B))
+#define IF_DEC_LT(A, B) IF_LT_0(_dec_minus(A,B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
  ** greater than @a B.
  **/
-#define IS_DEC_GT(A, B) IS_LT_0(_dec_minus(B,A))
+#define IF_DEC_GT(A, B) IF_LT_0(_dec_minus(B,A))
 
 /**
  ** @brief Test if token N is the token 0.
  **/
-#define IS_EQ_0(N) IS_EQ(0, N)
+#define IF_EQ_0(N) IF_EQ(0, N)
+#define IS_EQ_0(N) IF_EQ(0, N)(1)(0)
 
 /**
  ** @brief Test if token N is the token 1.
  **/
-#define IS_EQ_1(N) IS_EQ(1, N)
+#define IF_EQ_1(N) IF_EQ(1, N)
+#define IS_EQ_1(N) IF_EQ(1, N)(1)(0)
 
 /**
  ** @brief Test if token N is the token 2.
  **/
-#define IS_EQ_2(N) IS_EQ(2, N)
+#define IF_EQ_2(N) IF_EQ(2, N)
+#define IS_EQ_2(N) IF_EQ(2, N)(1)(0)
 
 /**
  ** @brief Test if token N is the token 3.
  **/
-#define IS_EQ_3(N) IS_EQ(3, N)
+#define IF_EQ_3(N) IF_EQ(3, N)
+#define IS_EQ_3(N) IF_EQ(3, N)(1)(0)
 
 /**
  ** @brief Test if token N is the token 4.
  **/
-#define IS_EQ_4(N) IS_EQ(4, N)
+#define IF_EQ_4(N) IF_EQ(4, N)
+#define IS_EQ_4(N) IF_EQ(4, N)(1)(0)
 
 /**
  ** @brief Test if the argument list is empty.
  **
- ** Use this as follows
- ** @code
- ** IS_EMPTY(something_that_expands_or_not_to_empty)(tokens_A)(tokens_B)
- ** @endcode
- ** This expands to tokens_A if the list was empty and to tokens_B if
+ ** This expands to token 1 if the list was empty and to token 0 if
  ** there was anything different from a comment in the list.
- **
- ** Observe the parenthesis around tokens_A and tokens_B.
  **
  ** The implementation of this macro is kind of tricky and heavily
  ** uses the fact that a function macro (@c _IS__EQ__ in this case)
@@ -191,8 +200,84 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  ** So the case of exactly one comma is what we are looking for. For
  ** that case, ::_NARG_64 returns the value 2, and then we may just
  ** test for the token 2.
+ **
+ ** @return tokens 0 or 1
  **/
 #define IS_EMPTY(...) IS_EQ_2(_NARG_64(_IS__EQ__ __VA_ARGS__ (~) _IS__EQ__ __VA_ARGS__))
+
+#define IF_EMPTY(...) IF_EQ_1(IS_EMPTY(__VA_ARGS__))
+
+/**
+ ** @brief Do a evaluation of the argument.
+ **
+ ** The result is the token 0 (seen here as `false') if the argument
+ ** was empty or if it evaluated to the token 0. Otherwise returns the
+ ** token 1.
+ **
+ ** @return tokens 0 or 1
+ **/
+#define LOGIC_EVAL(A) IF_EMPTY(A)(0)(IF_EQ_0(A)(0)(1))
+
+
+/**
+ ** @brief Do a logical negation of the argument.
+ **
+ ** The result is the token 1 (seen here as `true') if the argument
+ ** was empty or if it evaluated to the token 0. Otherwise returns the
+ ** token 0.
+ **
+ ** @return tokens 0 or 1
+ **/
+#define LOGIC_NOT(A)  IF_EQ_0(A)(1)(IS_EMPTY(A))
+
+/**
+ ** @brief Do a logical exclusive or of the arguments.
+ **
+ ** @see LOGIC_EVAL for how the individual arguments are considered to
+ ** be truth values.
+ **
+ ** @return tokens 0 or 1
+ **/
+#define LOGIC_XOR(A, B) IF_EQ(LOGIC_NOT(A), LOGIC_EVAL(B))(1)(0)
+#define _LOGIC_OR(A, B) IF_EQ(00, PASTE2(A, B))(0)(1)
+
+/**
+ ** @brief Do a logical inclusive or of the arguments.
+ **
+ ** @see LOGIC_EVAL for how the individual arguments are considered to
+ ** be truth values.
+ **
+ ** @return tokens 0 or 1
+ **/
+#define LOGIC_OR(A, B) _LOGIC_OR(LOGIC_EVAL(A), LOGIC_EVAL(B))
+
+#define _LOGIC_AND(A, B) IF_EQ(00, PASTE2(A, B))(1)(0)
+
+/**
+ ** @brief Do a logical and of the arguments.
+ **
+ ** @see LOGIC_EVAL for how the individual arguments are considered to
+ ** be truth values.
+ **
+ ** @return tokens 0 or 1
+ **/
+#define LOGIC_AND(A, B) _LOGIC_AND(LOGIC_NOT(A), LOGIC_NOT(B))
+
+
+/**
+ ** @brief A preprocessor control structure
+ **
+ ** Use this as follows
+ ** @code
+ ** IF_ELSE(some_expression)(tokens_A)(tokens_B)
+ ** @endcode
+ ** This expands to tokens_B if the list expanded to the token 0 and
+ ** to tokens_A in any other case.
+ **
+ ** Observe the parenthesis around tokens_A and tokens_B.
+ **/
+#define IF_ELSE(...) IF_EQ_1(IS_EQ_0(__VA_ARGS__))
+
 
 /**
  ** @brief Return the length of the variate argument list, an empty
@@ -202,38 +287,34 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
  **
  ** @see _NARG_64 for a macro that accounts an empty list to be 1
  **/
-#define NARG(...) IS_EMPTY(__VA_ARGS__)(0)(_NARG_64(__VA_ARGS__))
-
-
-#define _IS_VOID_CLAUSE1(...) __VA_ARGS__ _IGNORE
-#define _IS_VOID_CLAUSE2(...) _IDENT
-
+#define NARG(...) IF_EMPTY(__VA_ARGS__)(0)(_NARG_64(__VA_ARGS__))
 
 #define _IS_void_EQ_void(...) ,
 
 /**
  ** @brief Test if the argument consists of exactly the word @c void.
  **
- ** @see IS_VOID for a macro that test whether or not its argument is
+ ** @see IF_VOID for a macro that test whether or not its argument is
  ** empty @b or if it consists of the word @c void.
  **/
 #define IS_void(...)                                                    \
-IS_EMPTY(__VA_ARGS__)                                                   \
-(_IS_VOID_CLAUSE2)                                                      \
-(IS_EQ_2(_NARG_64(_IS_void_EQ_ ## __VA_ARGS__ (~) _IS_void_EQ_ ## __VA_ARGS__)))
+IS_EQ_2(_NARG_64(_IS_void_EQ_ ## __VA_ARGS__ (~) _IS_void_EQ_ ## __VA_ARGS__))
+
+#define IF_void(...) IF_EQ_1(IS_void(__VA_ARGS__))
 
 
 /**
  ** @brief Test whether or not its argument is empty @b or if it
  ** consists of the word @c void.
  **
- ** @see IS_void for a macro that tests if the argument is exactly the
+ ** @see IF_void for a macro that tests if the argument is exactly the
  ** word @c void.
  **/
-#define IS_VOID(...)                                                    \
-IS_EMPTY(__VA_ARGS__)                                                   \
-(_IS_VOID_CLAUSE1)                                                      \
-(IS_EQ_2(_NARG_64(_IS_void_EQ_ ## __VA_ARGS__ (~) _IS_void_EQ_ ## __VA_ARGS__)))
+#define IS_VOID(...) IF_EMPTY(__VA_ARGS__)(1)(IS_void(__VA_ARGS__))
+
+//#define IS_VOID(...) _IS_VOID(__VA_ARGS__)
+
+#define IF_VOID(...) IF_EQ_1(IS_VOID(__VA_ARGS__))
 
 /**
  ** @brief Return the number of pairs of the variate argument list.
@@ -449,7 +530,7 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 #define _CALL_WITH_ALL_DEFAULTS(NAME, M) PASTE2(_wda_, M)(NAME, PASTE2(NAME,_defarg_0)())
 
 # define CALL_WITH_DEFAULTS(NAME, M, ...)               \
-NAME(IS_EMPTY(__VA_ARGS__)                              \
+NAME(IF_EMPTY(__VA_ARGS__)                              \
      (_CALL_WITH_ALL_DEFAULTS(NAME, _predecessor(M)))   \
      (_call_wda(NAME, M, __VA_ARGS__))                  \
      )
@@ -518,36 +599,6 @@ NAME(IS_EMPTY(__VA_ARGS__)                              \
  ** inside a recursion is not empty.
  **/
 #define _COMMA_ ,
-
-/**
- ** @brief Preprocessor conditional
- **
- ** @code
- ** _if_more_ignore(arg list)(arg list is short)(arg list is long)
- ** @endcode
- **
- **/
-#define _if_more_ignore(...)                                            \
-  _ARG_64(__VA_ARGS__,                                                  \
-          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
-          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
-          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
-          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
-          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
-          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
-          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, \
-          _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2, _CLAUSE2,             \
-                                                                        \
-          _CLAUSE1, _CLAUSE1, _CLAUSE1,                                 \
-          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
-          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
-          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
-          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
-          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
-          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
-          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, \
-          _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1, _CLAUSE1)
-
 
 /**
  ** @brief Define an (almost) all purpose initializer
@@ -703,7 +754,7 @@ CHOOSE5(xT,                                     \
 /**
  ** @brief Revert the argument list
  **/
-#define REVS(...) _if_more_ignore(__VA_ARGS__,)(__VA_ARGS__)(_REVS(NARG(__VA_ARGS__),__VA_ARGS__))
+#define REVS(...) IF_DEC_LT(NARG(__VA_ARGS__),2)(__VA_ARGS__)(_REVS(NARG(__VA_ARGS__),__VA_ARGS__))
 
 #define _STRCATS(N, ...) PASTE2(_DOIT, N)(,N, _STRTAC, _IDT, __VA_ARGS__,)
 
@@ -767,7 +818,12 @@ CHOOSE5(xT,                                     \
  **/
 #define SELS(N, ...) PASTE2(_DOIT, N)(, N, _SEQ, _IDT, __VA_ARGS__,)
 
-#define CHS(N, ...) _if_more_ignore(__VA_ARGS__,,)(__VA_ARGS__)(SELS(1, REVS(SELS(N, __VA_ARGS__))))
+#define CHS(N, ...)                             \
+IF_DEC_GE(N, NARG(__VA_ARGS__))                 \
+()                                              \
+(IF_DEC_LT(NARG(__VA_ARGS__), 2)                \
+ (__VA_ARGS__)                                  \
+ (SELS(1, REVS(SELS(N, __VA_ARGS__)))))
 
 #define _ASG(NAME, X, N) _predecessor(N)] , X
 
@@ -796,26 +852,34 @@ DECLS(                                                                  \
  ** V0, etc are the remaining arguments.
  **/
 #define ASGS(X, ...)                                    \
-_if_more_ignore(__VA_ARGS__,)                           \
-(IS_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (X)[0]))   \
+IF_DEC_LT(NARG(__VA_ARGS__),2)                          \
+(IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (X)[0]))   \
 (_ASGS(X, _NARG_64(,,__VA_ARGS__), ,,__VA_ARGS__))
 
 #define _TYPD(NAME, X, N) typedef X PASTE2(NAME, N)
 #define _TYPN(NAME, X, N, REC) X, REC
 
 #define _TYPEDEFS(NAME, N, ...)                                         \
-  DECLS(REVS(PASTE2(_DOIT, N)(NAME, N, _TYPN, _TYPD, __VA_ARGS__,)))
+  IF_VOID(__VA_ARGS__)                                  \
+  (enum { PASTE3(NAME, _eat_the_semicolon_, N) })                         \
+  (DECLS(REVS(PASTE2(_DOIT, N)(NAME, N, _TYPN, _TYPD, __VA_ARGS__,))))
 
-#define TYPEDEFS(NAME, ...) _TYPEDEFS(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
+#define TYPEDEFS(NAME, ...)                             \
+_TYPEDEFS(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
 
-#define DEFARG_SIGNATURE(RT, NAME, ...)                                 \
-  RT NAME(__VA_ARGS__);                                                 \
-  typedef RT PASTE2(NAME, _sigtype_ret);                                \
+#define _PROTOTYPE(RT, NAME, ...)                       \
+  RT NAME(IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));    \
+  typedef RT PASTE2(NAME, _sigtype_ret);                \
   TYPEDEFS(PASTE2(NAME, _sigtype_), REVS(__VA_ARGS__))
+
+#define PROTOTYPE(...)                          \
+IF_EQ_2(NARG(__VA_ARGS__))                      \
+(_PROTOTYPE(__VA_ARGS__, void))                 \
+(_PROTOTYPE(__VA_ARGS__))
 
 
 #define _DAFD(NAME, X, N)                                       \
-IS_EMPTY(X)                                                     \
+IF_EMPTY(X)                                                     \
 ()                                                              \
 (                                                               \
  inline                                                         \
@@ -826,7 +890,7 @@ IS_EMPTY(X)                                                     \
  )
 
 #define _DAFE(NAME, X, N)                                       \
-  IS_EMPTY(X)(enum { PASTE3(NAME, _boring_, N) })(PASTE3(NAME, _sigtype_, N) PASTE3(NAME, _defarg_, N)(void))
+  IF_EMPTY(X)(enum { PASTE3(NAME, _boring_, N) })(PASTE3(NAME, _sigtype_, N) PASTE3(NAME, _defarg_, N)(void))
 
 #define _DAFN(NAME, X, N, REC) X REC
 
@@ -846,7 +910,7 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  ** nothing. So no default argument will be provided for the
  ** corresponding position in the parameter list of @a NAME.
  **
- ** @see DEFARG_SIGNATURE on how to declare a prototype of a function
+ ** @see PROTOTYPE on how to declare a prototype of a function
  ** @a NAME that can be used with this
  **
  ** @see CALL_WITH_DEFAULTS on how to declare the macro @a NAME

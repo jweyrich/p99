@@ -62,7 +62,7 @@ arg_t* arg_t_init(arg_t *arg, size_t def) {
   return arg;
 }
 
-DEFARG_SIGNATURE(arg_t*, arg_t_init, arg_t *, size_t);
+PROTOTYPE(arg_t*, arg_t_init, arg_t *, size_t);
 #define arg_t_init(...) CALL_WITH_DEFAULTS(arg_t_init, 2, __VA_ARGS__)
 DECLARE_DEFARG(arg_t_init, , TNULL(size_t));
 DEFINE_DEFARG(arg_t_init, , TNULL(size_t));

@@ -15,8 +15,8 @@
 #define declare_defarg(A, B, C, D) define_defarg(A, B, C)
 #undef DECLARE_DEFARG
 #define DECLARE_DEFARG(A, ...) DEFINE_DEFARG(A, __VA_ARGS__)
-#undef DEFARG_SIGNATURE
-#define DEFARG_SIGNATURE(T, NAME, ...) enum { PASTE2(_another_boring_enum_, NAME) }
+#undef PROTOTYPE
+#define PROTOTYPE(T, NAME, ...) enum { PASTE2(_another_boring_enum_, NAME) }
 #endif
 
 #undef   	ORWL_POSIX_DEFAULT_H_

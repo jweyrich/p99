@@ -19,9 +19,10 @@ inline void F_(int a) { }
 
 void F_(int a);
 
+PROTOTYPE(void, ftoaster);
 
 
-DEFARG_SIGNATURE(void, ftaster, int);
+PROTOTYPE(void, ftaster, int);
 
 DECLARE_DEFARG(ftaster, -1);
 DEFINE_DEFARG(ftaster, -1);
@@ -33,7 +34,7 @@ void ftaster _SKIP_ (int A) {
   report(1, "ftaster has %d", A);
 }
 
-DEFARG_SIGNATURE(void, ftister, int, unsigned);
+PROTOTYPE(void, ftister, int, unsigned);
 
 void ftister(int A, unsigned B) {
   report(1, "ftister has %d %u", A, B);
@@ -45,7 +46,7 @@ DEFINE_DEFARG(ftister, -2, 1);
 
 typedef struct { int x; } test_t;
 
-DEFARG_SIGNATURE(void, ftester, test_t, unsigned, double);
+PROTOTYPE(void, ftester, test_t, unsigned, double);
 void ftester(test_t A, unsigned B, double C) {
   report(1, "ftester has %d %u %g", A.x, B, C);
 }
@@ -115,15 +116,17 @@ int main(int argc, char **argv) {
   ASGS(Y, int i, float o);
   ASGS(Y, void);
   ASGS(Y,);
-  IS_DEC_LT(7,5)(true)(false);
-  IS_DEC_GE(5,5)(true)(false);
-  IS_DEC_LE(7,5)(true)(false);
-  IS_DEC_GT(5,5)(true)(false);
+  IF_DEC_LT(7,5)(true)(false);
+  IF_DEC_GE(5,5)(true)(false);
+  IF_DEC_LE(7,5)(true)(false);
+  IF_DEC_GT(5,5)(true)(false);
 
-  IS_DEC_GT(0,0)(true)(false);
-  IS_DEC_GE(0,0)(true)(false);
-  IS_DEC_LT(0,0)(true)(false);
-  IS_DEC_LE(0,0)(true)(false);
+  IF_DEC_GT(0,0)(true)(false);
+  IF_DEC_GE(0,0)(true)(false);
+  IF_DEC_LT(0,0)(true)(false);
+  IF_DEC_LE(0,0)(true)(false);
 
-  IS_DEC_GT(1,0)(true)(false);
+  IF_DEC_GT(1,0)(true)(false);
+
+  REVS("a", "b", "c");
 }

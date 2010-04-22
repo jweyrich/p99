@@ -53,7 +53,7 @@ rand48_t *rand48_t_init(rand48_t *seed, unsigned short x0, unsigned short x1, un
 }
 
 inline
-DEFARG_SIGNATURE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
+PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
 #define rand48_t_init(...) CALL_WITH_DEFAULTS(rand48_t_init, 4, __VA_ARGS__)
 DECLARE_DEFARG(rand48_t_init, , useconds(), getpid(), pthread_self());
 
