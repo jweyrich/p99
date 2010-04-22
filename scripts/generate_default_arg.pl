@@ -9,6 +9,11 @@ if 0;               #### for this magic, see findSvnAuthors ####
 my $maxnumber = 64;
 my $digit = "1";
 
+
+printf "/* This file is automat";
+printf "ically generated, do not chan";
+printf "ge manually. */\n";
+
 for (my $i = 0; $i < 0x10 && $i < $maxnumber; ++$i) {
     printf "#define _hex2dec_0x%X %d\n", $i, $i;
 }
