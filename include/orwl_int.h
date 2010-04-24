@@ -267,7 +267,7 @@ int mfputs_func(FILE* f, size_t n, char const*const* A) {
   return ret;
 }
 
-#define _mfputs(F, ...) mfputs_func(F, _NARG_64(__VA_ARGS__), (char const*[]){__VA_ARGS__})
+#define _mfputs(F, ...) mfputs_func(F, NARG(__VA_ARGS__), (char const*[]){__VA_ARGS__})
 #define mfputs(...) _mfputs(__VA_ARGS__)
 
 #endif 	    /* !ORWL_INT_H_ */

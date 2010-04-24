@@ -22,26 +22,7 @@
 #define PASTE5(_1, _2, _3, _4, _5) _1 ## _2 ## _3 ## _4 ## _5
 #define PASTE6(_1, _2, _3, _4, _5, _6) _1 ## _2 ## _3 ## _4 ## _5 ## _6
 
-/**
- ** @brief Return the 64th argument.
- **/
-#define _ARG_64(                                                        \
-  _01, _02, _03, _04, _05, _06, _07, _08, _09, _0A, _0B, _0C, _0D, _0E, _0F, _10, \
-  _11, _12, _13, _14, _15, _16, _17, _18, _19, _1A, _1B, _1C, _1D, _1E, _1F, _20, \
-  _21, _22, _23, _24, _25, _26, _27, _28, _29, _2A, _2B, _2C, _2D, _2E, _2F, _30, \
-  _31, _32, _33, _34, _35, _36, _37, _38, _39, _3A, _3B, _3C, _3D, _3E, _3F, _40, \
-  ...)                                                                  \
-  _40
-
 #define _INV(N) PASTE2(_variable_argument_list_must_be_divisible_by_, N)
-
-#define _NARG_64_1(...)                                                 \
-_ARG_64(__VA_ARGS__,                                                    \
-            63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, \
-        48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, \
-        32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, \
-        16, 15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1,  0 \
-        )
 
 /**
  ** @brief Return the length of the variate argument list.
@@ -55,7 +36,7 @@ _ARG_64(__VA_ARGS__,                                                    \
  ** the empty) argument
  ** @see NARG for a macro that returns 0 if the list is empty
  **/
-#define _NARG_64(...) _NARG_64_1(__VA_ARGS__)
+#define _NARG(...) _NARG_1(__VA_ARGS__)
 
 #define _IGNORE(...)
 #define _IDENT(...) __VA_ARGS__
@@ -198,12 +179,12 @@ _ARG_64(__VA_ARGS__,                                                    \
  ** </DL>
  **
  ** So the case of exactly one comma is what we are looking for. For
- ** that case, ::_NARG_64 returns the value 2, and then we may just
+ ** that case, ::_NARG returns the value 2, and then we may just
  ** test for the token 2.
  **
  ** @return tokens 0 or 1
  **/
-#define IS_EMPTY(...) IS_EQ_2(_NARG_64(_IS__EQ__ __VA_ARGS__ (~) _IS__EQ__ __VA_ARGS__))
+#define IS_EMPTY(...) IS_EQ_2(_NARG(_IS__EQ__ __VA_ARGS__ (~) _IS__EQ__ __VA_ARGS__))
 
 #define IF_EMPTY(...) IF_EQ_1(IS_EMPTY(__VA_ARGS__))
 
@@ -285,9 +266,9 @@ _ARG_64(__VA_ARGS__,                                                    \
  **
  ** This supposes that the length of the list is less than 64.
  **
- ** @see _NARG_64 for a macro that accounts an empty list to be 1
+ ** @see _NARG for a macro that accounts an empty list to be 1
  **/
-#define NARG(...) IF_EMPTY(__VA_ARGS__)(0)(_NARG_64(__VA_ARGS__))
+#define NARG(...) IF_EMPTY(__VA_ARGS__)(0)(_NARG(__VA_ARGS__))
 
 #define _IS_void_EQ_void(...) ,
 
@@ -298,7 +279,7 @@ _ARG_64(__VA_ARGS__,                                                    \
  ** empty @b or if it consists of the word @c void.
  **/
 #define IS_void(...)                                                    \
-IS_EQ_2(_NARG_64(_IS_void_EQ_ ## __VA_ARGS__ (~) _IS_void_EQ_ ## __VA_ARGS__))
+IS_EQ_2(_NARG(_IS_void_EQ_ ## __VA_ARGS__ (~) _IS_void_EQ_ ## __VA_ARGS__))
 
 #define IF_void(...) IF_EQ_1(IS_void(__VA_ARGS__))
 
@@ -312,67 +293,16 @@ IS_EQ_2(_NARG_64(_IS_void_EQ_ ## __VA_ARGS__ (~) _IS_void_EQ_ ## __VA_ARGS__))
  **/
 #define IS_VOID(...) IF_EMPTY(__VA_ARGS__)(1)(IS_void(__VA_ARGS__))
 
-//#define IS_VOID(...) _IS_VOID(__VA_ARGS__)
-
 #define IF_VOID(...) IF_EQ_1(IS_VOID(__VA_ARGS__))
 
-/**
- ** @brief Return the number of pairs of the variate argument list.
- **
- ** This supposes that the total length is less than 64.
- **
- ** If the length of the list is odd, a compile time error occurs.
- **/
-#define _NARG_64_2(...)                                                 \
-_hex2dec_(__NARG_64(__VA_ARGS__,                                        \
-                    _INV(2), 0x1F, _INV(2), 0x1E, _INV(2), 0x1D, _INV(2), 0x1C, \
-                    _INV(2), 0x1B, _INV(2), 0x1A, _INV(2), 0x19, _INV(2), 0x18, \
-                    _INV(2), 0x17, _INV(2), 0x16, _INV(2), 0x15, _INV(2), 0x14, \
-                    _INV(2), 0x13, _INV(2), 0x12, _INV(2), 0x11, _INV(2), 0x10, \
-                    _INV(2), 0x0F, _INV(2), 0x0E, _INV(2), 0x0D, _INV(2), 0x0C, \
-                    _INV(2), 0x0B, _INV(2), 0x0A, _INV(2), 0x09, _INV(2), 0x08, \
-                    _INV(2), 0x07, _INV(2), 0x06, _INV(2), 0x05, _INV(2), 0x04, \
-                    _INV(2), 0x03, _INV(2), 0x02, _INV(2), 0x01, _INV(2), 0x00))
+#define IS_COMMA(...)                                                   \
+IF_EQ_2(NARG(__VA_ARGS__))                                              \
+(LOGIC_AND(IS_EMPTY(CHS(0,__VA_ARGS__)),IS_EMPTY(CHS(1,__VA_ARGS__))))  \
+(0)
 
-/**
- ** @brief Return the number of triples of the variate argument list.
- **
- ** This supposes that the total length is less than 64.
- **
- ** If the length of the list is not divisible by 3, a compile time error occurs.
- **/
-#define _NARG_64_3(...)                                                 \
-_hex2dec_(__NARG_64(__VA_ARGS__,                                        \
-                    0x16,                                               \
-                    _INV(3), _INV(3), 0x15, _INV(3), _INV(3), 0x14, _INV(3), _INV(3), 0x13, \
-                    _INV(3), _INV(3), 0x12, _INV(3), _INV(3), 0x11, _INV(3), _INV(3), 0x10, \
-                    _INV(3), _INV(3), 0x0F, _INV(3), _INV(3), 0x0D, _INV(3), _INV(3), 0x0C, \
-                    _INV(3), _INV(3), 0x0B, _INV(3), _INV(3), 0x0A, _INV(3), _INV(3), 0x09, \
-                    _INV(3), _INV(3), 0x08, _INV(3), _INV(3), 0x07, _INV(3), _INV(3), 0x06, \
-                    _INV(3), _INV(3), 0x05, _INV(3), _INV(3), 0x04, _INV(3), _INV(3), 0x03, \
-                    _INV(3), _INV(3), 0x02, _INV(3), _INV(3), 0x01, _INV(3), _INV(3), 0x00))
+//#define __NARG(...) _ARG(__VA_ARGS__)
 
-/**
- ** @brief Return the number of quadruples of the variate argument list.
- **
- ** This supposes that the total length is less than 64.
- **
- ** If the length of the list is not divisible by 4, a compile time error occurs.
- **/
-#define _NARG_64_4(...)                                                 \
-_hex2dec_(__NARG_64(__VA_ARGS__,                                        \
-                    _INV(4), _INV(4), _INV(4), 0xF, _INV(4), _INV(4), _INV(4), 0xE, \
-                    _INV(4), _INV(4), _INV(4), 0xD, _INV(4), _INV(4), _INV(4), 0xC, \
-                    _INV(4), _INV(4), _INV(4), 0xB, _INV(4), _INV(4), _INV(4), 0xA, \
-                    _INV(4), _INV(4), _INV(4), 0x9, _INV(4), _INV(4), _INV(4), 0x8, \
-                    _INV(4), _INV(4), _INV(4), 0x7, _INV(4), _INV(4), _INV(4), 0x6, \
-                    _INV(4), _INV(4), _INV(4), 0x5, _INV(4), _INV(4), _INV(4), 0x4, \
-                    _INV(4), _INV(4), _INV(4), 0x3, _INV(4), _INV(4), _INV(4), 0x2, \
-                    _INV(4), _INV(4), _INV(4), 0x1, _INV(4), _INV(4), _INV(4), 0x0))
-
-#define __NARG_64(...) _ARG_64(__VA_ARGS__)
-
-#define _MODARG_(_X) PASTE2(_NARG_64_,  _X)
+#define _MODARG_(_X) PASTE2(_NARG_,  _X)
 
 /**
  ** @def LEN_MODARG
@@ -469,7 +399,7 @@ _hex2dec_(__NARG_64(__VA_ARGS__,                                        \
 #define _dec_minus(D,E) PASTE2(_itpredecessor_, E)(D)
 
 #define __PASTE(_N, ...) PASTE2(PASTE, _N)(__VA_ARGS__)
-#define _PASTE(...) __PASTE(_predecessor(_NARG_64(~, __VA_ARGS__)), __VA_ARGS__)
+#define _PASTE(...) __PASTE(_predecessor(_NARG(~, __VA_ARGS__)), __VA_ARGS__)
 #define PASTE(...) _PASTE(__VA_ARGS__)
 
 /**
@@ -854,7 +784,7 @@ DECLS(                                                                  \
 #define ASGS(X, ...)                                    \
 IF_DEC_LT(NARG(__VA_ARGS__),2)                          \
 (IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (X)[0]))   \
-(_ASGS(X, _NARG_64(,,__VA_ARGS__), ,,__VA_ARGS__))
+(_ASGS(X, _NARG(,,__VA_ARGS__), ,,__VA_ARGS__))
 
 #define _TYPD(NAME, X, N) typedef X PASTE2(NAME, N)
 #define _TYPN(NAME, X, N, REC) X, REC

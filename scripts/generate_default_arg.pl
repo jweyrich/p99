@@ -10,9 +10,33 @@ my $maxnumber = 64;
 my $digit = "1";
 
 
-printf "/* This file is automat";
-printf "ically generated, do not chan";
-printf "ge manually. */\n";
+print "/* This file is automat";
+print "ically generated, do not chan";
+print "ge manually. */\n";
+
+print "#define _ARG(";
+for (my $i = 1; $i <= $maxnumber; ++$i) {
+    if ($i % 8 != 1) {
+        print "\t_$i,";
+    } else {
+        print "\\\n\t_$i,";
+    }
+}
+print "\\\n\t...) _$maxnumber\n";
+
+for (my $m = 1; $m < 5; ++$m) {
+    print "#define _NARG_$m(...) _ARG(__VA_ARGS__, ";
+    for (my $i = ($maxnumber - 1); $i >= 0; --$i) {
+        my $val = ($i % $m) ? "_INV($m)" : ($i / $m);
+        if ($i % 8 != 7) {
+            print "\t$val,";
+        } else {
+            print "\\\n\t$val,";
+        }
+    }
+    print ")\n";
+}
+
 
 for (my $i = 0; $i < 0x10 && $i < $maxnumber; ++$i) {
     printf "#define _hex2dec_0x%X %d\n", $i, $i;
@@ -45,7 +69,7 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
 for (my $i = 1; $i < $maxnumber; ++$i) {
     my $i0 = $i - 1;
     print "#define __wda_${i}(NAME, N, ...) _wda_${i0}(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())\n";
-    print "#define _wda_${i}(NAME, ...) __wda_${i}(NAME, _NARG_64(__VA_ARGS__), __VA_ARGS__)\n";
+    print "#define _wda_${i}(NAME, ...) __wda_${i}(NAME, _NARG(__VA_ARGS__), __VA_ARGS__)\n";
     print "#define _wda_minus_${i}(NAME, ...) __VA_ARGS__\n";
 }
 
