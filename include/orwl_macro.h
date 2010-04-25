@@ -16,13 +16,88 @@
 
 /* This was inspired by BOOT's PP_CAT macro. Using such a thing avoid
    to define multiple levels of expansion for each macro. */
+#define PASTE0()
+#define PASTE1(_1) _1
 #define PASTE2(_1, _2) _1 ## _2
-#define PASTE3(_1, _2, _3) _1 ## _2 ## _3
-#define PASTE4(_1, _2, _3, _4) _1 ## _2 ## _3 ## _4
-#define PASTE5(_1, _2, _3, _4, _5) _1 ## _2 ## _3 ## _4 ## _5
-#define PASTE6(_1, _2, _3, _4, _5, _6) _1 ## _2 ## _3 ## _4 ## _5 ## _6
+#define _PASTE2(_1, _2) PASTE2(_1, _2)
 
-#define _INV(N) PASTE2(_variable_argument_list_must_be_divisible_by_, N)
+#define __PASTE(F, N, ...) F ## N(__VA_ARGS__)
+#define _PASTE(N, ...) __PASTE(PASTE, N, __VA_ARGS__)
+
+/**
+ ** @brief A left-to-right associative paste operator.
+ **
+ ** This macro avoids the ambiguity of the @c ## preprocessor operator
+ ** which has no well defined associativity. With this macro here
+ ** something like
+ ** @code
+ ** PASTE(0.1E, -, 1)
+ ** @endcode
+ ** is guaranteed to produce the token @c 0.1E-1, whereas the
+ ** seemingly equivalent
+ ** @code
+ ** ETSAP(0.1E, -, 1)
+ ** @endcode
+ ** is not valid: the intermediate operation to paste tokens `-' and
+ ** `1' would result in an invalid token and is thus rejected.
+ **/
+#define PASTE(...) _PASTE(_NARG(__VA_ARGS__), __VA_ARGS__)
+
+
+#define ETSAP0()
+#define ETSAP1(_1) _1
+#define ETSAP2(_2, _1) _2 ## _1
+#define _ETSAP2(_2, _1) ETSAP2(_2, _1)
+#define ETSAP3(_3, _2, _1) _ETSAP2(_3, ETSAP2(_2, _1))
+#define ETSAP4(_4, _3, _2, _1) _ETSAP2(_4, ETSAP3(_3, _2, _1))
+#define ETSAP5(_5, _4, _3, _2, _1) _ETSAP2(_5, ETSAP4(_4, _3, _2, _1))
+#define ETSAP6(_6, _5, _4, _3, _2, _1) _ETSAP2(_6, ETSAP5(_5, _4, _3, _2, _1))
+#define ETSAP7(_7, _6, _5, _4, _3, _2, _1) _ETSAP2(_7, ETSAP6(_6, _5, _4, _3, _2, _1))
+
+#define __ETSAP(F, N, ...) F ## N(__VA_ARGS__)
+#define _ETSAP(N, ...) __ETSAP(ETSAP, N, __VA_ARGS__)
+
+/**
+ ** @brief A right-to-left associative paste operator.
+ **
+ ** @see PASTE
+ **/
+#define ETSAP(...) _ETSAP(_NARG(__VA_ARGS__), __VA_ARGS__)
+
+#define _DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)   \
+  IF_EMPTY(SIGN)(+)(SIGN)_SKIP_ PASTE(                  \
+  IF_EMPTY(INT)(0)(INT),                                \
+  .,                                                    \
+  IF_EMPTY(FRAC)(0)(FRAC),                              \
+  E,                                                    \
+  IF_EMPTY(ESIGN)(+)(ESIGN),                            \
+  IF_EMPTY(EXP)(0)(EXP),                                \
+  __VA_ARGS__)
+
+#define DEC_DOUBLE(...)                         \
+  IF_DEC_GE(NARG(__VA_ARGS__), 6)               \
+  (_DEC_DOUBLE(__VA_ARGS__))                    \
+  (_DEC_DOUBLE(__VA_ARGS__,,,,,))
+
+
+#define _HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP, ...)  \
+  IF_EMPTY(SIGN)(+)(SIGN)_SKIP_ PASTE(                          \
+  0x,                                                           \
+  IF_EMPTY(HEXINT)(0)(HEXINT),                                  \
+  .,                                                            \
+  IF_EMPTY(HEXFRAC)(0)(HEXFRAC),                                \
+  P,                                                            \
+  IF_EMPTY(ESIGN)(+)(ESIGN),                                    \
+  IF_EMPTY(BINEXP)(0)(BINEXP),                                  \
+  __VA_ARGS__)
+
+#define HEX_DOUBLE(...)                         \
+  IF_DEC_GE(NARG(__VA_ARGS__), 6)               \
+  (_HEX_DOUBLE(__VA_ARGS__))                    \
+  (_HEX_DOUBLE(__VA_ARGS__,,,,,))
+
+
+#define _INV(N) PASTE(_variable_argument_list_must_be_divisible_by_, N)
 
 /**
  ** @brief Return the length of the variate argument list.
@@ -81,14 +156,14 @@
  **
  ** @see IF_DEC_EQ for equality of not too large decimal numbers
  **/
-#define IF_EQ(A, B) _IF_CLAUSE(PASTE4(_IS_,A,_EQ_,B)())
+#define IF_EQ(A, B) _IF_CLAUSE(PASTE(_IS_,A,_EQ_,B)())
 
 /**
  ** @brief Test two words @a A and @a B if they are unequal.
  **
  ** @see IF_EQ 
  **/
-#define IF_NE(A, B) _IF_NOT_CLAUSE(PASTE4(_IS_,A,_EQ_,B)())
+#define IF_NE(A, B) _IF_NOT_CLAUSE(PASTE(_IS_,A,_EQ_,B)())
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if they are equal.
@@ -100,8 +175,8 @@
  **/
 #define IF_DEC_NE(A, B) IF_NE(0,_dec_minus(A,B))
 
-#define IF_GE_0(A) _IF_CLAUSE(PASTE3(_IS_,A,_GE_0)())
-#define IF_LT_0(A) _IF_NOT_CLAUSE(PASTE3(_IS_,A,_GE_0)())
+#define IF_GE_0(A) _IF_CLAUSE(PASTE(_IS_,A,_GE_,0)())
+#define IF_LT_0(A) _IF_NOT_CLAUSE(PASTE(_IS_,A,_GE_,0)())
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is greater
@@ -300,9 +375,7 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 (LOGIC_AND(IS_EMPTY(CHS(0,__VA_ARGS__)),IS_EMPTY(CHS(1,__VA_ARGS__))))  \
 (0)
 
-//#define __NARG(...) _ARG(__VA_ARGS__)
-
-#define _MODARG_(_X) PASTE2(_NARG_,  _X)
+#define _MODARG_(_X) PASTE(_NARG_,  _X)
 
 /**
  ** @def LEN_MODARG
@@ -381,13 +454,13 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 /*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
 
 
-#define _hex2dec_(HEX) PASTE2(_hex2dec_, HEX)
-#define _dec2hex_(DEC) PASTE2(_dec2hex_, DEC)
-#define _predecessor(N) PASTE2(_predecessor_, N)
+#define _hex2dec_(HEX) PASTE(_hex2dec_, HEX)
+#define _dec2hex_(DEC) PASTE(_dec2hex_, DEC)
+#define _predecessor(N) PASTE(_predecessor_, N)
 #define _itpredecessor_0(DEC) DEC
-#define _dec2uni(DEC) PASTE2(_dec2uni_, DEC)
-#define _uni2dec(UN) PASTE2(_uni2dec_, UN)
-#define _uni_add(U,V) PASTE2(U, V)
+#define _dec2uni(DEC) PASTE(_dec2uni_, DEC)
+#define _uni2dec(UN) PASTE(_uni2dec_, UN)
+#define _uni_add(U,V) PASTE(U, V)
 
 #define ____dec_add(U,V) _uni_add(U,V)
 #define ___dec_add(D,E) ____dec_add(_dec2uni(D),_dec2uni(E))
@@ -395,12 +468,8 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 #define _dec_add(D,E) __dec_add(D,E)
 
 #define _predecessor_0 minus_1
-#define _dec_eval(EDEC) PASTE2(_dec_eval_, EDEC)
-#define _dec_minus(D,E) PASTE2(_itpredecessor_, E)(D)
-
-#define __PASTE(_N, ...) PASTE2(PASTE, _N)(__VA_ARGS__)
-#define _PASTE(...) __PASTE(_predecessor(_NARG(~, __VA_ARGS__)), __VA_ARGS__)
-#define PASTE(...) _PASTE(__VA_ARGS__)
+#define _dec_eval(EDEC) PASTE(_dec_eval_, EDEC)
+#define _dec_minus(D,E) PASTE(_itpredecessor_, E)(D)
 
 /**
  ** @brief Declare the value of the @a M th default argument for @a
@@ -432,7 +501,7 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
  ** that all functions are realized.
  **/
 
-#define _FSYMB(NAME) PASTE2(NAME, _fsymb_)
+#define _FSYMB(NAME) PASTE(NAME, _f, sy, mb, _)
 
 /** @brief Mangle @a NAME 
  **
@@ -450,14 +519,14 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 /*! This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
 #define _wda_0(NAME, ...) __VA_ARGS__
-#define ____call_wda(NAME, K, ...) PASTE2(_wda_, K)(NAME, __VA_ARGS__)
+#define ____call_wda(NAME, K, ...) PASTE(_wda_, K)(NAME, __VA_ARGS__)
 #define ___call_wda(NAME, K, ...) ____call_wda(NAME, K, __VA_ARGS__)
 #define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _dec_minus(M, N), __VA_ARGS__)
 #define _call_wda(NAME, M, ...) __call_wda(NAME, M, NARG(__VA_ARGS__), __VA_ARGS__)
 #define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), __VA_ARGS__
 #define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), __VA_ARGS__
 
-#define _CALL_WITH_ALL_DEFAULTS(NAME, M) PASTE2(_wda_, M)(NAME, PASTE2(NAME,_defarg_0)())
+#define _CALL_WITH_ALL_DEFAULTS(NAME, M) PASTE(_wda_, M)(NAME, PASTE(NAME,_defarg_0)())
 
 # define CALL_WITH_DEFAULTS(NAME, M, ...)               \
 NAME(IF_EMPTY(__VA_ARGS__)                              \
@@ -664,14 +733,14 @@ CHOOSE5(xT,                                     \
 #define _STRCAT(NAME, X, N, REC) strcat(X, REC)
 #define _STRTAC(NAME, X, N, REC) _STRCAT(NAME, REC, N, X)
 
-#define _SUMS(N, ...) PASTE2(_DOIT, N)(,N, _SUM, _IDT, __VA_ARGS__,)
+#define _SUMS(N, ...) PASTE(_DOIT, N)(,N, _SUM, _IDT, __VA_ARGS__,)
 
 /**
  ** @brief Compute the right associative sum of all the arguments.
  **/
 #define SUMS(...) _SUMS(NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define _STRLENS(N, ...) PASTE2(_DOIT, N)(,N, _SUM, _STRLEN, __VA_ARGS__,)
+#define _STRLENS(N, ...) PASTE(_DOIT, N)(,N, _SUM, _STRLEN, __VA_ARGS__,)
 
 /**
  ** @brief Return an expression that returns the sum of the lengths of
@@ -679,14 +748,14 @@ CHOOSE5(xT,                                     \
  **/
 #define STRLENS(...) _STRLENS(NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define _REVS(N, ...) PASTE2(_DOIT, N)(,N, _REV, _IDT, __VA_ARGS__,)
+#define _REVS(N, ...) PASTE(_DOIT, N)(,N, _REV, _IDT, __VA_ARGS__,)
 
 /**
  ** @brief Revert the argument list
  **/
 #define REVS(...) IF_DEC_LT(NARG(__VA_ARGS__),2)(__VA_ARGS__)(_REVS(NARG(__VA_ARGS__),__VA_ARGS__))
 
-#define _STRCATS(N, ...) PASTE2(_DOIT, N)(,N, _STRTAC, _IDT, __VA_ARGS__,)
+#define _STRCATS(N, ...) PASTE(_DOIT, N)(,N, _STRTAC, _IDT, __VA_ARGS__,)
 
 /**
  ** @brief Append all argument strings after @a TARG to @a TARG.
@@ -718,7 +787,7 @@ CHOOSE5(xT,                                     \
  **/
 #define STRDUP(...) STRCATS(memset(malloc(STRLENS(__VA_ARGS__) + 1), 0, 1), __VA_ARGS__)
 
-#define _DECLS(N, ...) PASTE2(_DOIT, N)(,N, _SEP, _IDT, __VA_ARGS__,)
+#define _DECLS(N, ...) PASTE(_DOIT, N)(,N, _SEP, _IDT, __VA_ARGS__,)
 
 /**
  ** @brief Change the commas in the argument list into semicolons.
@@ -728,25 +797,25 @@ CHOOSE5(xT,                                     \
 /**
  ** Repeat the parameter @a X @a N times.
  **/
-#define REPS(X, N) PASTE2(_DOIT, N)(, N, _SEQ, X _IGN,,)
+#define REPS(X, N) PASTE(_DOIT, N)(, N, _SEQ, X _IGN,,)
 
 /**
  ** @brief Produce a list of length @a N that has the contents of 0,
  ** 1, , @a N-1
  **/
-#define POSS(N) REVS(PASTE2(_DOIT, N)(,N, _SEQ, _SOP,,))
+#define POSS(N) REVS(PASTE(_DOIT, N)(,N, _SEQ, _SOP,,))
 
 /**
  ** Produce a list of length @a N that has the contents of @a X[0], @a
  ** X [1], ,
  ** @a X[@a N-1]
  **/
-#define ACCS(X, N) REVS(PASTE2(_DOIT, N)(, N, _SEQ, _CCA, REPS(X, N),))
+#define ACCS(X, N) REVS(PASTE(_DOIT, N)(, N, _SEQ, _CCA, REPS(X, N),))
 
 /**
  ** Cut the argument list at position @a N
  **/
-#define SELS(N, ...) PASTE2(_DOIT, N)(, N, _SEQ, _IDT, __VA_ARGS__,)
+#define SELS(N, ...) PASTE(_DOIT, N)(, N, _SEQ, _IDT, __VA_ARGS__,)
 
 #define CHS(N, ...)                             \
 IF_DEC_GE(N, NARG(__VA_ARGS__))                 \
@@ -764,7 +833,7 @@ DECLS(                                                                  \
       SELS(_dec_minus(N,2),                                             \
            REVS(                                                        \
                 SELS(_predecessor(N),                                   \
-                     PASTE2(_DOIT, N)(, N,                              \
+                     PASTE(_DOIT, N)(, N,                              \
                                       (X)[_SAR,                         \
                                         _ASG,                           \
                                         REVS(__VA_ARGS__),              \
@@ -786,21 +855,21 @@ IF_DEC_LT(NARG(__VA_ARGS__),2)                          \
 (IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (X)[0]))   \
 (_ASGS(X, _NARG(,,__VA_ARGS__), ,,__VA_ARGS__))
 
-#define _TYPD(NAME, X, N) typedef X PASTE2(NAME, N)
+#define _TYPD(NAME, X, N) typedef X PASTE(NAME, N)
 #define _TYPN(NAME, X, N, REC) X, REC
 
 #define _TYPEDEFS(NAME, N, ...)                                         \
   IF_VOID(__VA_ARGS__)                                  \
   (enum { PASTE3(NAME, _eat_the_semicolon_, N) })                         \
-  (DECLS(REVS(PASTE2(_DOIT, N)(NAME, N, _TYPN, _TYPD, __VA_ARGS__,))))
+  (DECLS(REVS(PASTE(_DOIT, N)(NAME, N, _TYPN, _TYPD, __VA_ARGS__,))))
 
 #define TYPEDEFS(NAME, ...)                             \
 _TYPEDEFS(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
 
 #define _PROTOTYPE(RT, NAME, ...)                       \
   RT NAME(IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));    \
-  typedef RT PASTE2(NAME, _sigtype_ret);                \
-  TYPEDEFS(PASTE2(NAME, _sigtype_), REVS(__VA_ARGS__))
+  typedef RT PASTE(NAME, _sigtype_ret);                \
+  TYPEDEFS(PASTE(NAME, _sigtype_), REVS(__VA_ARGS__))
 
 #define PROTOTYPE(...)                          \
 IF_EQ_2(NARG(__VA_ARGS__))                      \
@@ -825,7 +894,7 @@ IF_EMPTY(X)                                                     \
 #define _DAFN(NAME, X, N, REC) X REC
 
 #define _DECLARE_DEFARG(NAME, N, ...)                                   \
-  DECLS(REVS(PASTE2(_DOIT, N)(NAME, N, _DAFN, _DAFD, __VA_ARGS__,)))    \
+  DECLS(REVS(PASTE(_DOIT, N)(NAME, N, _DAFN, _DAFD, __VA_ARGS__,)))    \
 enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 
 /**
@@ -851,7 +920,7 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 #define DECLARE_DEFARG(NAME, ...) _DECLARE_DEFARG(NAME, NARG(__VA_ARGS__), REVS(__VA_ARGS__))
 
 #define _DEFINE_DEFARG(NAME, N, ...)                                         \
-  DECLS(REVS(PASTE2(_DOIT, N)(NAME, N, _SEP, _DAFE, __VA_ARGS__,)))
+  DECLS(REVS(PASTE(_DOIT, N)(NAME, N, _SEP, _DAFE, __VA_ARGS__,)))
 
 /**
  ** @brief Define the symbols that are declared through a

@@ -38,6 +38,16 @@ for (my $m = 1; $m < 5; ++$m) {
 }
 
 
+{
+    my $li = "_1,\t_2";
+    for (my $m = 3; $m < 20; ++$m) {
+        my $m1 = $m - 1;
+        print "#define PASTE$m(${li},\t_${m})\t\\\n\t_PASTE2(PASTE${m1}(${li}), _${m})\n";
+        $li .= ",\t_${m}";
+    }
+}
+
+
 for (my $i = 0; $i < 0x10 && $i < $maxnumber; ++$i) {
     printf "#define _hex2dec_0x%X %d\n", $i, $i;
 }
@@ -74,6 +84,6 @@ for (my $i = 1; $i < $maxnumber; ++$i) {
 }
 
 for (my $i = 2; $i < $maxnumber; ++$i) {
-    print "#define __DOIT${i}(NAME, N, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, N), N, PASTE2(_DOIT, N)(NAME, N, OP, FUNC, __VA_ARGS__, ))\n";
+    print "#define __DOIT${i}(NAME, N, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, N), N, PASTE(_DOIT, N)(NAME, N, OP, FUNC, __VA_ARGS__, ))\n";
     print "#define _DOIT${i}(NAME, N, OP, FUNC, A, ...) __DOIT${i}(NAME, _predecessor(N), OP, FUNC, A, __VA_ARGS__)\n";
 }

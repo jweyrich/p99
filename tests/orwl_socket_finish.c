@@ -129,4 +129,14 @@ int main(int argc, char **argv) {
   IF_DEC_GT(1,0)(true)(false);
 
   REVS("a", "b", "c");
+  long double const a0 = +0.5L;
+  long double const a1 = DEC_DOUBLE();
+  long double const a2 = DEC_DOUBLE(,1);
+  long double const a3 = DEC_DOUBLE(,,9);
+  long double const a4 = HEX_DOUBLE(,,9,-,7);
+  long double const a5 = HEX_DOUBLE();
+  long double const a6 = HEX_DOUBLE(,1);
+  long double const a7 = HEX_DOUBLE(,,9);
+  long double const a8 = HEX_DOUBLE(,,8,-,,L);
+  long double const a9 = HEX_DOUBLE(-,1,8,-,1);
 }
