@@ -376,6 +376,7 @@ DEFINE_THREAD(orwl_server) {
 uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size_t len) {
   uint64_t ret = TONES(uint64_t);
   int fd = -1;
+  report(1, "dispatching message %p of size %jd", (void*)mess, len);
   /* do all this work before opening the socket */
   uint64_t chal = orwl_rand64(seed);
   uint64_t repl = orwl_challenge(chal);
