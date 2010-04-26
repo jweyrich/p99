@@ -861,7 +861,7 @@ IF_DEC_LT(NARG(__VA_ARGS__),2)                          \
 #define _TYPEDEFS(NAME, N, ...)                                         \
   IF_VOID(__VA_ARGS__)                                  \
   (enum { PASTE3(NAME, _eat_the_semicolon_, N) })                         \
-  (DECLS(REVS(PASTE(_DOIT, N)(NAME, N, _TYPN, _TYPD, __VA_ARGS__,))))
+  (DECLS(REVS(PASTE(_DOIT, N)(NAME, N, _TYPN, _TYPD, REVS(__VA_ARGS__),))))
 
 #define TYPEDEFS(NAME, ...)                             \
 _TYPEDEFS(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
@@ -869,7 +869,7 @@ _TYPEDEFS(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
 #define _PROTOTYPE(RT, NAME, ...)                       \
   RT NAME(IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));    \
   typedef RT PASTE(NAME, _sigtype_ret);                \
-  TYPEDEFS(PASTE(NAME, _sigtype_), REVS(__VA_ARGS__))
+  TYPEDEFS(PASTE(NAME, _sigtype_), __VA_ARGS__)
 
 #define PROTOTYPE(...)                          \
 IF_EQ_2(NARG(__VA_ARGS__))                      \
