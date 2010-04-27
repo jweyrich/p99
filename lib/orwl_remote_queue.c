@@ -30,12 +30,12 @@ DEFINE_DEFARG(orwl_acquire, , 1);
 orwl_state orwl_test(orwl_rh* rh, size_t token);
 DEFINE_DEFARG(orwl_test, , TNULL(size_t));
 
-orwl_state orwl_request(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed) {
+orwl_state orwl_request_excl(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed) {
+  orwl_state state = orwl_invalid;
   // insert two wh in the local queue
   assert(!rh->wh);
   rh->wh = NEW(orwl_wh);
   orwl_wh* cli_wh = NEW(orwl_wh);
-  orwl_state state = orwl_invalid;
   MUTUAL_EXCLUDE(rq->mut) {
     state = orwl_wq_request(&rq->local, &cli_wh, 1, &rh->wh, token);
     if (state == orwl_requested) {
@@ -43,7 +43,7 @@ orwl_state orwl_request(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed) 
       /* Send the insertion request with the id of cli_wh to the other
          side. As result retrieve the ID on the other side that is to be
          released when we release here. */
-      rh->rID = orwl_rpc(&rq->there, seed, auth_sock_request,
+      rh->rID = orwl_rpc(&rq->there, seed, auth_sock_request_excl,
                          rq->ID,
                          (uintptr_t)cli_wh,
                          rq->here.port.p
@@ -65,6 +65,45 @@ orwl_state orwl_request(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed) 
   return state;
 }
 
+orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed) {
+  orwl_state state = orwl_invalid;
+  assert(!rh->wh);
+  MUTUAL_EXCLUDE(rq->mut) {
+    // first try to piggyback the latest wh in the local list
+    state = orwl_wq_request(&rq->local, &rh->wh, token);
+    if (state != orwl_requested) {
+      // insert two wh in the local queue
+      rh->wh = NEW(orwl_wh);
+      orwl_wh* cli_wh = NEW(orwl_wh);
+      state = orwl_wq_request(&rq->local, &cli_wh, 1, &rh->wh, token);
+      if (state == orwl_requested) {
+        assert(!rh->rq);
+        /* Send the insertion request with the id of cli_wh to the other
+           side. As result retrieve the ID on the other side that is to be
+           released when we release here. */
+        rh->rID = orwl_rpc(&rq->there, seed, auth_sock_request_incl,
+                           rq->ID,
+                           (uintptr_t)cli_wh,
+                           rq->here.port.p
+                           );
+        if (rh->rID) {
+          /* Link us to rq */
+          rh->rq = rq;
+        } else {
+          /* something went wrong */
+          state = orwl_invalid;
+        }
+      } else {
+        /* roll back */
+        orwl_wh_delete(rh->wh); rh->wh = NULL;
+        orwl_wh_delete(cli_wh);
+        state = orwl_invalid;
+      }
+    }
+  }
+  return state;
+}
+
 orwl_state orwl_release(orwl_rh* rh, rand48_t *seed) {
   orwl_state ret = orwl_wh_release(rh->wh);
   if (ret == orwl_valid) {
@@ -75,8 +114,8 @@ orwl_state orwl_release(orwl_rh* rh, rand48_t *seed) {
   return ret;
 }
 
-DEFINE_AUTH_SOCK_FUNC(auth_sock_request, uintptr_t wqID, uint64_t whID, uint64_t port) {
-  AUTH_SOCK_READ(Arg, auth_sock_request, uintptr_t wqID, uint64_t whID, uint64_t port);
+DEFINE_AUTH_SOCK_FUNC(auth_sock_request_excl, uintptr_t wqID, uint64_t whID, uint64_t port) {
+  AUTH_SOCK_READ(Arg, auth_sock_request_excl, uintptr_t wqID, uint64_t whID, uint64_t port);
   // extract wq and the remote wh ID from Arg
   orwl_wq *srv_wq = (orwl_wq*)(void*)wqID;
   // create a wh and insert it in wq
@@ -102,6 +141,42 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_request, uintptr_t wqID, uint64_t whID, uint64_t
     // tell other side about the error
     Arg->ret = 0;
     orwl_wh_delete(srv_wh);
+  }
+}
+
+DEFINE_AUTH_SOCK_FUNC(auth_sock_request_incl, uintptr_t wqID, uint64_t whID, uint64_t port) {
+  AUTH_SOCK_READ(Arg, auth_sock_request_incl, uintptr_t wqID, uint64_t whID, uint64_t port);
+  // extract wq and the remote wh ID from Arg
+  orwl_wq *srv_wq = (orwl_wq*)(void*)wqID;
+  // create a wh and insert it in wq
+  orwl_wh *srv_wh = NULL;
+ RETRY: ;
+  // request two tokens, one for this function here when it acquires
+  // below, the other one to block until the remote issues a release
+  orwl_state state = orwl_wq_request(srv_wq, &srv_wh, 2);
+  if (state != orwl_requested) {
+    if (!srv_wh) {
+      srv_wh = NEW(orwl_wh);
+      goto RETRY;
+    } else {
+      // tell other side about the error
+      Arg->ret = 0;
+      orwl_wh_delete(srv_wh);
+    }
+  } else {
+    // mes is already in host order
+    orwl_endpoint ep = { .addr = getpeer(Arg), .port = { .p = port } };
+    // acknowledge the creation of the wh and send back its id
+    Arg->ret = (uintptr_t)srv_wh;
+    auth_sock_close(Arg);
+    // Unfortunately we don't know anybody who could borrow us some
+    // randomness, here. So do this after the ack has been send to the
+    // other side and we prepare for waiting a while, anyhow.
+    rand48_t seed = RAND48_T_INITIALIZER;
+    // wait until the lock on wh is obtained
+    state = orwl_wh_acquire(srv_wh);
+    // send a request to the other side to remove the remote wh ID
+    orwl_rpc(&ep, &seed, auth_sock_release, whID);
   }
 }
 

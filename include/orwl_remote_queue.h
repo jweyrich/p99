@@ -92,7 +92,8 @@ DECLARE_NEW_DELETE(orwl_rh);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_rh);
 
-orwl_state orwl_request(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed);
+orwl_state orwl_request_excl(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed);
+orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed);
 orwl_state orwl_release(orwl_rh* rh, rand48_t *seed);
 
 inline
@@ -117,7 +118,8 @@ PROTOTYPE(orwl_state, orwl_test, orwl_rh*, size_t);
 DECLARE_DEFARG(orwl_test, , TNULL(size_t));
 #endif
 
-DECLARE_AUTH_SOCK_FUNC(auth_sock_request, uintptr_t wqID, uint64_t whID, uint64_t port);
+DECLARE_AUTH_SOCK_FUNC(auth_sock_request_excl, uintptr_t wqID, uint64_t whID, uint64_t port);
+DECLARE_AUTH_SOCK_FUNC(auth_sock_request_incl, uintptr_t wqID, uint64_t whID, uint64_t port);
 DECLARE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID);
 
 
