@@ -37,7 +37,7 @@ orwl_state orwl_request(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed) 
   orwl_wh* cli_wh = NEW(orwl_wh);
   orwl_state state = orwl_invalid;
   MUTUAL_EXCLUDE(rq->mut) {
-    state = orwl_wq_request(&rq->local, cli_wh, (uint64_t)1, rh->wh, (uint64_t)token);
+    state = orwl_wq_request(&rq->local, cli_wh, 1, rh->wh, token);
     if (state == orwl_requested) {
       assert(!rh->rq);
       /* Send the insertion request with the id of cli_wh to the other
@@ -83,7 +83,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_request, uintptr_t wqID, uint64_t whID, uint64_t
   orwl_wh *srv_wh = NEW(orwl_wh);
   // request two tokens, one for this function here when it acquires
   // below, the other one to block until the remote issues a release
-  orwl_state state = orwl_wq_request(srv_wq, srv_wh, (uint64_t)2);
+  orwl_state state = orwl_wq_request(srv_wq, srv_wh, 2);
   if (state == orwl_requested) {
     // mes is already in host order
     orwl_endpoint ep = { .addr = getpeer(Arg), .port = { .p = port } };
