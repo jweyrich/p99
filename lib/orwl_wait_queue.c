@@ -104,11 +104,11 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
         va_start(ap, number);
         idle = true;
         for (size_t i = 0; i < number; ++i) {
-          orwl_wh *wh = VA_MODARG(ap, orwl_wq_request, 0);
+          orwl_wh **wh = VA_MODARG(ap, orwl_wq_request, 0);
           VA_MODARG(ap, orwl_wq_request, 1);
-          if (wh && !orwl_wh_idle(wh)) {
+          if (*wh && !orwl_wh_idle(*wh)) {
             idle = false;
-            pthread_cond_wait(&wh->cond, &wq->mut);
+            pthread_cond_wait(&(*wh)->cond, &wq->mut);
           }
         }
         va_end(ap);
@@ -118,27 +118,30 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
       va_list ap;
       va_start(ap, number);
       for (size_t i = 0; i < number; ++i) {
-        orwl_wh *wh = VA_MODARG(ap, orwl_wq_request, 0);
+        orwl_wh **wh = VA_MODARG(ap, orwl_wq_request, 0);
         int64_t hm = VA_MODARG(ap, orwl_wq_request, 1);
         uint64_t howmuch = (hm > TNULL(int64_t)) ? hm : -hm;
         if (wh) {
-          wh->location = wq;
-          wh->priority = wq->clock;
-          orwl_wh_load(wh, howmuch);
-          if (hm < TNULL(int64_t)) wh->priority = -(wq->clock);
-          if (orwl_wq_idle(wq)) wq->head = wh;
-          else wq->tail->next = wh;
-          wq->tail = wh;
-          ++wq->clock;
-        } else {
-          if (number == 1
-              && !orwl_wq_idle(wq)
-              && wq->tail) {
-            assert(hm >= TNULL(int64_t));
-            /* if the wh is NULL, take this as a request to add to the
-               last handle if it exists */
-            orwl_wh_load(wq->tail, howmuch);
-          } else ret = orwl_invalid;
+          if (*wh) {
+            (*wh)->location = wq;
+            (*wh)->priority = wq->clock;
+            orwl_wh_load(*wh, howmuch);
+            if (hm < TNULL(int64_t)) (*wh)->priority = -(wq->clock);
+            if (orwl_wq_idle(wq)) wq->head = *wh;
+            else wq->tail->next = *wh;
+            wq->tail = *wh;
+            ++wq->clock;
+          } else {
+            if (number == 1
+                && !orwl_wq_idle(wq)
+                && wq->tail) {
+              assert(hm >= TNULL(int64_t));
+              /* if the wh is NULL, take this as a request to add to the
+                 last handle if it exists */
+              orwl_wh_load(wq->tail, howmuch);
+              wh = &wq->tail;
+            } else ret = orwl_invalid;
+          }
         }
       }
       va_end(ap);

@@ -271,7 +271,7 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number));
 
 #define orwl_wq_request(WQ, ...) FSYMB(orwl_wq_request)(WQ, LEN_MODARG(orwl_wq_request, 2, __VA_ARGS__))
 
-VA_TYPES(orwl_wq_request, orwl_wh*, int64_t);
+VA_TYPES(orwl_wq_request, orwl_wh**, int64_t);
 
 /**
  ** @brief Acquire a pending request on @a wh. Blocking until the
