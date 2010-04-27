@@ -869,6 +869,7 @@ IF_EMPTY(X)                                                     \
   DECLS(REVS(PASTE(_DOIT, N)(NAME, N, _DAFN, _DAFD, __VA_ARGS__,)))    \
 enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 
+#ifdef DOXYGEN
 /**
  ** @brief Provide default arguments for macro @a NAME
  **
@@ -889,18 +890,25 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  ** @see rand48_t_init for a more sophisticated example with
  ** non-constant expressions.
  **/
+#define DECLARE_DEFARG(NAME, ...)
+#else
 #define DECLARE_DEFARG(NAME, ...) _DECLARE_DEFARG(NAME, NARG(__VA_ARGS__), REVS(__VA_ARGS__))
+#endif
 
 #define _DEFINE_DEFARG(NAME, N, ...)                                         \
   DECLS(REVS(PASTE(_DOIT, N)(NAME, N, _SEP, _DAFE, __VA_ARGS__,)))
 
+#ifdef DOXYGEN
 /**
  ** @brief Define the symbols that are declared through a
  ** corresponding call ::DECLARE_DEFARG.
  **
  ** The argument list here should be exactly the same as for ::DECLARE_DEFARG.
  **/
+#define DEFINE_DEFARG(NAME, ...)
+#else
 #define DEFINE_DEFARG(NAME, ...) _DEFINE_DEFARG(NAME, NARG(__VA_ARGS__), REVS(__VA_ARGS__))
+#endif
 
 #define _EMP(B, X, N) B
 #define _COU(B, X, N, REC) PASTE(B, REC)

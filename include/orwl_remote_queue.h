@@ -34,10 +34,12 @@ typedef struct orwl_rq orwl_rq;
 
 #define ORWL_RQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .local = ORWL_WQ_INITIALIZER }
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(orwl_rq *, orwl_rq_init, orwl_rq *, orwl_endpoint, orwl_endpoint, uint64_t);
 
 #define orwl_rq_init(...) CALL_WITH_DEFAULTS(orwl_rq_init, 4, __VA_ARGS__)
+#endif
 
 inline
 orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t, uint64_t id) {
@@ -98,11 +100,11 @@ orwl_state orwl_acquire(orwl_rh* rh, size_t token) {
   return orwl_wh_acquire(rh->wh, token);
 }
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(orwl_state, orwl_acquire, orwl_rh*, size_t);
 #define orwl_acquire(...) CALL_WITH_DEFAULTS(orwl_acquire, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_acquire, , 1);
-
 
 inline
 orwl_state orwl_test(orwl_rh* rh, size_t token) {
@@ -113,6 +115,7 @@ inline
 PROTOTYPE(orwl_state, orwl_test, orwl_rh*, size_t);
 #define orwl_test(...) CALL_WITH_DEFAULTS(orwl_test, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_test, , TNULL(size_t));
+#endif
 
 DECLARE_AUTH_SOCK_FUNC(auth_sock_request, uintptr_t wqID, uint64_t whID, uint64_t port);
 DECLARE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID);

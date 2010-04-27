@@ -45,10 +45,12 @@ orwl_state* orwl_state_init
   return el;
 }
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(orwl_state*, orwl_state_init, orwl_state *, orwl_state);
 #define orwl_state_init(...) CALL_WITH_DEFAULTS(orwl_state_init, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_state_init, , orwl_invalid);
+#endif
 
 DOCUMENT_DESTROY(orwl_state)
 inline
@@ -146,10 +148,12 @@ orwl_wq* orwl_wq_init
  const pthread_mutexattr_t *attr /*!< defaults to @c NULL */
 );
 
+#ifndef DOXYGEN
   PROTOTYPE(orwl_wq*, orwl_wq_init, orwl_wq*, const pthread_mutexattr_t*);
 #define orwl_wq_init(...) CALL_WITH_DEFAULTS(orwl_wq_init, 2, __VA_ARGS__)
 
 DECLARE_DEFARG(orwl_wq_init, , NULL);
+#endif
 
   DOCUMENT_DESTROY(orwl_wq)
 void orwl_wq_destroy(orwl_wq *wq);
@@ -219,11 +223,12 @@ orwl_wh* orwl_wh_init
 (orwl_wh *wh,
  const pthread_condattr_t *attr /*!< [in] defaults to @c NULL */);
 
+#ifndef DOXYGEN
   PROTOTYPE(orwl_wh*, orwl_wh_init, orwl_wh *, const pthread_condattr_t *);
 #define orwl_wh_init(...) CALL_WITH_DEFAULTS(orwl_wh_init, 2, __VA_ARGS__)
 
 DECLARE_DEFARG(orwl_wh_init, , NULL);
-
+#endif
 
   DOCUMENT_DESTROY(orwl_wh)
 void orwl_wh_destroy(orwl_wh *wh);
@@ -284,10 +289,11 @@ orwl_state orwl_wh_acquire
   (orwl_wh *wh,
    uint64_t howmuch    /*!< defaults to @c 1 */);
 
+#ifndef DOXYGEN
   PROTOTYPE(orwl_state, orwl_wh_acquire, orwl_wh*, uint64_t);
 #define orwl_wh_acquire(...) CALL_WITH_DEFAULTS(orwl_wh_acquire, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_wh_acquire, , 1);
-
+#endif
 
 /**
  ** Of internal use. Supposes that @a wh is in the queue of @a wq and
@@ -312,9 +318,11 @@ orwl_state orwl_wh_test
   (orwl_wh *wh,
    uint64_t howmuch  /*!< defaults to 0 */);
 
+#ifndef DOXYGEN
   PROTOTYPE(orwl_state, orwl_wh_test, orwl_wh*, uint64_t);
 #define orwl_wh_test(...) CALL_WITH_DEFAULTS(orwl_wh_test, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_wh_test, , 0);
+#endif
 
 /**
  ** @brief Release a request on @a wh. If @a wh had been acquired this
@@ -343,10 +351,12 @@ uint64_t orwl_wh_load
     return howmuch;
   }
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
 #define orwl_wh_load(...) CALL_WITH_DEFAULTS(orwl_wh_load, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_wh_load, , 1);
+#endif
 
   /** @brief unload @a howmuch additional tokens from @a wh.
    ** 
@@ -367,10 +377,12 @@ uint64_t orwl_wh_unload
     return howmuch;
   }
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
 #define orwl_wh_unload(...) CALL_WITH_DEFAULTS(orwl_wh_unload, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_wh_unload, , 1);
+#endif
 
 DECLARE_ORWL_REGISTER(orwl_wh_acquire);
 DECLARE_ORWL_REGISTER(orwl_wh_release);

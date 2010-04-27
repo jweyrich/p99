@@ -32,11 +32,12 @@ void orwl_hton(uint32_t *n, uint64_t const *h, size_t l) {
   }
 }
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(void, orwl_hton, uint32_t *, uint64_t const *, size_t);
 #define orwl_hton(...) CALL_WITH_DEFAULTS(orwl_hton, 3, __VA_ARGS__)
 DECLARE_DEFARG(orwl_hton, , , 1);
-
+#endif
 
 inline
 void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l) {
@@ -47,10 +48,12 @@ void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l) {
   }
 }
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(void, orwl_ntoh, uint64_t*, uint32_t const *, size_t);
 #define orwl_ntoh(...) CALL_WITH_DEFAULTS(orwl_ntoh, 3, __VA_ARGS__)
 DECLARE_DEFARG(orwl_ntoh, , , 1);
+#endif
 
 extern in_addr_t orwl_inet_addr(char const *name);
 
@@ -108,10 +111,12 @@ addr_t* addr_t_init(addr_t *A, in_addr_t I) {
   return A;
 }
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(addr_t*, addr_t_init, addr_t *, in_addr_t);
 #define addr_t_init(...) CALL_WITH_DEFAULTS(addr_t_init, 2, __VA_ARGS__)
 DECLARE_DEFARG(addr_t_init, , TNULL(in_addr_t));
+#endif
 
 inline
 in_addr_t addr2net(addr_t const*A) {
@@ -124,10 +129,12 @@ port_t* port_t_init(port_t *A, in_port_t P) {
   return A;
 }
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(port_t*, port_t_init, port_t *, in_port_t);
 #define port_t_init(...) CALL_WITH_DEFAULTS(port_t_init, 2, __VA_ARGS__)
 DECLARE_DEFARG(port_t_init, , TNULL(in_port_t));
+#endif
 
 inline
 in_port_t port2net(port_t const*A) {
@@ -156,10 +163,12 @@ void orwl_endpoint_destroy(orwl_endpoint *endpoint) {
 }
 
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(orwl_endpoint*, orwl_endpoint_init, orwl_endpoint*, in_addr_t, in_port_t);
 #define orwl_endpoint_init(...) CALL_WITH_DEFAULTS(orwl_endpoint_init, 3, __VA_ARGS__)
 DECLARE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t));
+#endif
 
 DECLARE_NEW_DELETE(orwl_endpoint);
 
@@ -207,11 +216,12 @@ orwl_host* orwl_host_init(orwl_host *th, in_addr_t addr, in_port_t port) {
   return th;
 }
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(orwl_host*, orwl_host_init, orwl_host *, in_addr_t, in_port_t);
 #define orwl_host_init(...) CALL_WITH_DEFAULTS(orwl_host_init, 3, __VA_ARGS__)
 DECLARE_DEFARG(orwl_host_init, , TNULL(in_addr_t), TNULL(in_port_t));
-
+#endif
 
 inline
 void orwl_host_destroy(orwl_host *th) {
@@ -257,12 +267,14 @@ auth_sock* auth_sock_init(auth_sock *sock,
   return sock;
 }
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, orwl_server*, size_t);
 DECLARE_DEFARG(auth_sock_init, , -1, NULL, TNULL(size_t));
 
 
 #define auth_sock_init(...) CALL_WITH_DEFAULTS(auth_sock_init, 4, __VA_ARGS__)
+#endif
 
 void auth_sock_destroy(auth_sock *sock);
 DECLARE_NEW_DELETE(auth_sock);
@@ -331,9 +343,10 @@ DECLARE_THREAD(orwl_server);
 
 void orwl_server_close(orwl_server *serv);
 
+#ifndef DOXYGEN
 PROTOTYPE(void, orwl_server_terminate, orwl_server *, rand48_t *);
 DECLARE_DEFARG(orwl_server_terminate, , (&(rand48_t)RAND48_T_INITIALIZER));
 #define orwl_server_terminate(...) CALL_WITH_DEFAULTS(orwl_server_terminate, 2, __VA_ARGS__)
-
+#endif
 
 #endif 	    /* !ORWL_SOCKET_H_ */
