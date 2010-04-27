@@ -139,4 +139,24 @@ int main(int argc, char **argv) {
   long double const a7 = HEX_DOUBLE(,,9);
   long double const a8 = HEX_DOUBLE(,,8,-,,L);
   long double const a9 = HEX_DOUBLE(-,1,8,-,1);
+
+  _dec_add(3, 7);
+  DEC_MUL(7, 2);
+  DEC_MUL(9, 3);
+  //DEC_MUL(8, 8);
+  DEC_MUL(10, 5);
+
+  DEC_DIV(7, 2);
+  DEC_DIV(9, 3);
+  DEC_DIV(8, 8);
+  DEC_DIV(7, 8);
+  DEC_DIV(10, 5);
+  DEC_DIV(3, 7);
+
+  DEC_MOD(7, 2);
+  DEC_MOD(9, 3);
+  DEC_MOD(8, 8);
+  DEC_MOD(7, 8);
+  DEC_MOD(10, 5);
+  DEC_MOD(3, 7);
 }

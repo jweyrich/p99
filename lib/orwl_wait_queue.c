@@ -104,8 +104,8 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
         va_start(ap, number);
         idle = true;
         for (size_t i = 0; i < number; ++i) {
-          orwl_wh *wh = va_arg(ap, orwl_wh*);
-          va_arg(ap, int64_t);
+          orwl_wh *wh = VA_MODARG(ap, orwl_wq_request, 0);
+          VA_MODARG(ap, orwl_wq_request, 1);
           if (wh && !orwl_wh_idle(wh)) {
             idle = false;
             pthread_cond_wait(&wh->cond, &wq->mut);
@@ -118,8 +118,8 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
       va_list ap;
       va_start(ap, number);
       for (size_t i = 0; i < number; ++i) {
-        orwl_wh *wh = va_arg(ap, orwl_wh*);
-        int64_t hm = va_arg(ap, int64_t);
+        orwl_wh *wh = VA_MODARG(ap, orwl_wq_request, 0);
+        int64_t hm = VA_MODARG(ap, orwl_wq_request, 1);
         uint64_t howmuch = (hm > TNULL(int64_t)) ? hm : -hm;
         if (wh) {
           wh->location = wq;

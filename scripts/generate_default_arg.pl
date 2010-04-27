@@ -38,6 +38,18 @@ for (my $m = 1; $m < 5; ++$m) {
 }
 
 
+print "#define _ASCENDING() ";
+for (my $i = 0; $i < $maxnumber; ++$i) {
+    if ($i % 8 != 0) {
+        print "\t$i,";
+    } else {
+        print "\\\n\t$i,";
+    }
+}
+print STDOUT "\t", $maxnumber, "\n";
+
+
+
 {
     my $li = "_1,\t_2";
     for (my $m = 3; $m < 20; ++$m) {

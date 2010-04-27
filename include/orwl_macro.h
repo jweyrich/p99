@@ -411,7 +411,8 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
  ** compile time. Declare such a function as this:
  ** @code
  ** unsigned FSYMB(toto)(unsigned a, VA_ARGS(number));
- ** #define toto(A, ...) FSYMB(toto)(A, LEN_ARG(__VA_ARGS__))
+ ** #define toto(A, ...) FSYMB(toto)(A, LEN_ARG(toto, __VA_ARGS__))
+ ** VA_TYPES(toto, unsigned);
  ** @endcode
  **
  ** In the definition of the function you then may use the @c va_start
@@ -422,7 +423,7 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
  **     va_list ap;
  **     va_start(ap, number);
  **     for (size_t i = 0; i < number; ++i) {
- **       ret += va_arg(ap, unsigned);
+ **       ret += VA_MODARG(ap, toto);
  **     }
  **     va_end(ap);
  **     return ret % a;
@@ -432,9 +433,10 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
  ** @code
  ** unsigned magic = toto(3, 1, 3, 5, 7);
  ** @endcode
- ** which will result in computing the sum of 1, 3, 5, 7 (the variable
- ** arguments), i.e 16, and compute that value mod 3 (the fixed
- ** argument @a a). So @a magic should hold the value 1 thereafter.
+ ** which will result in converting 1, 3, 5, 7 (the variable
+ ** arguments) to @c unsigned, computing their sum, i.e 16u, and
+ ** compute that value mod 3u (the fixed argument @a a). So @a magic
+ ** should hold the value 1u thereafter.
  **
  ** @param X is the name of the `length' parameter that you want to
  ** use in the definition of the function. As in the example above it
@@ -444,6 +446,7 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
  **
  ** @see LEN_ARG
  ** @see LEN_MODARG
+ ** @see VA_TYPES
  ** @see FSYMB
  **/
 #define VA_ARGS(X) size_t X, ...
@@ -459,7 +462,7 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 #define _predecessor(N) PASTE(_predecessor_, N)
 #define _itpredecessor_0(DEC) DEC
 #define _dec2uni(DEC) PASTE(_dec2uni_, DEC)
-#define _uni2dec(UN) PASTE(_uni2dec_, UN)
+#define _uni2dec(UN) ETSAP(_uni2, dec_, UN)
 #define _uni_add(U,V) PASTE(U, V)
 
 #define ____dec_add(U,V) _uni_add(U,V)
@@ -471,35 +474,6 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 #define _dec_eval(EDEC) PASTE(_dec_eval_, EDEC)
 #define _dec_minus(D,E) PASTE(_itpredecessor_, E)(D)
 
-/**
- ** @brief Declare the value of the @a M th default argument for @a
- ** NAME to be of value @a V and of type @a T .
- **
- ** @param NAME must have been defined as described for
- ** #CALL_WITH_DEFAULTS.
- **
- ** @param T Obviously, should coincide with the type of the
- ** corresponding argument that is given in the definition of the real
- ** function @a NAME.
- **
- ** @param M The position of the argument in the call of @a
- ** NAME. Positions are counted from 0. The use of this makes only
- ** sense if you define it for all possible @a M to the end of @a
- ** NAME's argument list, e.g for 1 and 2 if you have a function with
- ** three arguments. Position @a M as zero, i.e all arguments are
- ** provided by default, is based on an extension of C99 that is non
- ** standard. Avoid it if you can.
- **
- ** @param V is not limited to a constant but may be any type of
- ** expression with return type @a T that can be evaluated at the
- ** point of definition, using any global function, constant or
- ** variable. Such an evaluation that takes place at run time whenever
- ** a default argument must be provided. So you'd better be very
- ** careful with side effects.
- **
- ** Use a corresponding ::define_defarg in a .c file to ensure
- ** that all functions are realized.
- **/
 
 #define _FSYMB(NAME) PASTE(NAME, _f, sy, mb, _)
 
@@ -514,8 +488,8 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
  ** @brief Provide a documentation section to a function defined with ::CALL_WITH_DEFAULTS
  **/
 #define FSYMB_DOCUMENTATION(NAME)                                       \
-/*! @see CALL_WITH_DEFAULTS */                                                \
-/*! @see declare_defarg */                                              \
+/*! @see CALL_WITH_DEFAULTS */                                          \
+/*! @see DECLARE_DEFARG */                                              \
 /*! This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
 #define _wda_0(NAME, ...) __VA_ARGS__
@@ -523,8 +497,6 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 #define ___call_wda(NAME, K, ...) ____call_wda(NAME, K, __VA_ARGS__)
 #define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _dec_minus(M, N), __VA_ARGS__)
 #define _call_wda(NAME, M, ...) __call_wda(NAME, M, NARG(__VA_ARGS__), __VA_ARGS__)
-#define LEN_MODARG(X, ...) _MODARG_(X)(__VA_ARGS__), __VA_ARGS__
-#define LEN_ARG(...) _MODARG_(1)(__VA_ARGS__), __VA_ARGS__
 
 #define _CALL_WITH_ALL_DEFAULTS(NAME, M) PASTE(_wda_, M)(NAME, PASTE(NAME,_defarg_0)())
 
@@ -929,6 +901,57 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  ** The argument list here should be exactly the same as for ::DECLARE_DEFARG.
  **/
 #define DEFINE_DEFARG(NAME, ...) _DEFINE_DEFARG(NAME, NARG(__VA_ARGS__), REVS(__VA_ARGS__))
+
+#define _EMP(B, X, N) B
+#define _COU(B, X, N, REC) PASTE(B, REC)
+#define _DEC_MUL(A, B) IF_EQ_0(A)(0)(_uni2dec(IF_EQ_1(A)(B)(PASTE(_DOIT, A)(B, A, _COU, _EMP, _ASCENDING(),))))
+#define DEC_MUL(A, B) IF_DEC_LT(A, B)(_DEC_MUL(A, _dec2uni(B)))(_DEC_MUL(B, _dec2uni(A)))
+
+#define _ExP(A, X, N) X
+#define _MxL(A, X, N, REC) IF_DEC_LE(X, A)(N)(REC)
+#define _DEC_X(N, A, B, ...) PASTE(_DOIT, N)(A, N, _MxL, _ExP, __VA_ARGS__,)
+
+
+#define _ENP(B, X, N)
+#define _MIL(B, X, N, REC) IF_DEC_GT(N, 1)(DEC_MUL(N, B))(B), REC
+#define _DEC_DIV(N, A, B) PASTE(_DOIT, N)(B, N, _MIL, _ENP, _ASCENDING(),)
+#define DEC_DIV(A, B) IF_DEC_LT(A, B)(0)(_DEC_X(A, A, B,_DEC_DIV(A, A, B)))
+
+#define DEC_MOD(A, B) IF_DEC_LT(A, B)(A)(_dec_minus(A, DEC_MUL(B, DEC_DIV(A, B))))
+
+
+/**
+ ** @brief Declare the types that are going to be used with a
+ ** ::LEN_ARG or ::LEN_MODARG parameter list.
+ **/
+#define VA_TYPES(NAME, ...)   TYPEDEFS(PASTE(NAME, _mod_type_), __VA_ARGS__)
+
+#define _VA_MODARG(AP, NAME, M, ...) va_arg(AP, PASTE(NAME, _mod_type_, M))
+
+/**
+ ** @brief Obtain the next argument in the variable argument list of
+ ** function @a NAME.
+ **
+ ** This takes three arguments, @a AP, @c NAME and  @c R.
+ ** @a AP is the @c va_list that has been defined in the function.
+ **
+ ** @c NAME is the name of the function
+ **
+ ** @c R should be the position modulo the module M that was given to
+ ** ::LEN_MODARG. @c R defaults to 0 if omitted.
+ ** @see VA_ARGS
+ **/
+#define VA_MODARG(AP, ...) _VA_MODARG(AP, __VA_ARGS__, 0, ~)
+
+#define _CAS1(NAME, X, N) (PASTE(NAME, _mod_type_0){ X }
+#define _CAS2(NAME, X, N) (PASTE(NAME, _mod_type_, DEC_MOD(N, 2))){ X }
+#define _CAS3(NAME, X, N) (PASTE(NAME, _mod_type_, DEC_MOD(N, 3))){ X }
+#define _CAS4(NAME, X, N) (PASTE(NAME, _mod_type_, DEC_MOD(N, 4))){ X }
+#define _CAS5(NAME, X, N) (PASTE(NAME, _mod_type_, DEC_MOD(N, 5))){ X }
+#define _MODARG_LIST(NAME, F, N, ...) PASTE(_DOIT, N)(NAME, N, _REV, F, __VA_ARGS__,)
+
+#define LEN_MODARG(NAME, M, ...) _MODARG_(M)(__VA_ARGS__), _MODARG_LIST(NAME, PASTE(_CAS, M), NARG(__VA_ARGS__), REVS(__VA_ARGS__))
+#define LEN_ARG(NAME, ...) _MODARG_(1)(__VA_ARGS__), _MODARG_LIST(NAME, _CAS1, NARG(__VA_ARGS__), REVS(__VA_ARGS__))
 
 
 #endif 	    /* !ORWL_MACRO_H_ */
