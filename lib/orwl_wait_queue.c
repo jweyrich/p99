@@ -66,6 +66,7 @@ orwl_wh* orwl_wh_init(orwl_wh *wh,
   wh->next = NULL;
   wh->tokens = 0;
   wh->priority = 0;
+  wh->exclusive = true;
   return wh;
 }
 
@@ -98,7 +99,7 @@ void orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch, int64_t 
   wh->location = wq;
   wh->priority = wq->clock;
   orwl_wh_load(wh, howmuch);
-  if (hm < TNULL(int64_t)) wh->priority = -(wq->clock);
+  wh->exclusive = (hm < TNULL(int64_t));
   if (orwl_wq_idle(wq)) wq->head = wh;
   else wq->tail->next = wh;
   wq->tail = wh;
@@ -138,7 +139,8 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
           } else {
             if (number == 1
                 && !orwl_wq_idle(wq)
-                && wq->tail) {
+                && wq->tail
+                && !(wq->tail->exclusive)) {
               assert(hm >= TNULL(int64_t));
               /* if the wh is NULL, take this as a request to add to the
                  last handle if it exists */

@@ -127,13 +127,11 @@ struct orwl_wh {
    ** this has dropped to zero.
    **/
   uint64_t tokens;
-  /** @brief The historical position in the wait queue.
-   **
-   ** The special case of negative priority is used for wh that
-   ** represent exclusive locks, i.e where no other token may be
-   ** loaded.
+  /**
+   ** @brief The historical position in the wait queue.
    **/
-  int64_t priority;
+  uint64_t priority;
+  bool exclusive;
 };
 
 #define orwl_wh_garb ((orwl_wh*)(TONES(uintptr_t)))
@@ -215,7 +213,7 @@ int orwl_wq_idle(orwl_wq *wq) {
 
 
 
-#define ORWL_WH_INITIALIZER { PTHREAD_COND_INITIALIZER }
+#define ORWL_WH_INITIALIZER { .cond = PTHREAD_COND_INITIALIZER, exclusive = true }
 
   DOCUMENT_INIT(orwl_wh)
   FSYMB_DOCUMENTATION(orwl_wh_init)
@@ -350,10 +348,10 @@ inline
 uint64_t orwl_wh_load
   (orwl_wh *wh,
    uint64_t howmuch  /*!< defaults to 1 */) {
-    if (wh->priority > 0)
-      wh->tokens += howmuch;
-    else
+    if (wh->exclusive)
       howmuch = 0;
+    else
+      wh->tokens += howmuch;
     return howmuch;
   }
 
