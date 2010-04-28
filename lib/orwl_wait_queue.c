@@ -94,6 +94,17 @@ uint64_t orwl_wh_load(orwl_wh *wh, uint64_t howmuch);
 /* This supposes that the corresponding wq != NULL */
 uint64_t orwl_wh_unload(orwl_wh *wh, uint64_t howmuch);
 
+void orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch, int64_t hm) {
+  wh->location = wq;
+  wh->priority = wq->clock;
+  orwl_wh_load(wh, howmuch);
+  if (hm < TNULL(int64_t)) wh->priority = -(wq->clock);
+  if (orwl_wq_idle(wq)) wq->head = wh;
+  else wq->tail->next = wh;
+  wq->tail = wh;
+  ++wq->clock;
+}
+
 orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
   orwl_state ret = orwl_invalid;
   if (wq && orwl_wq_valid(wq)) {
@@ -123,14 +134,7 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
         uint64_t howmuch = (hm > TNULL(int64_t)) ? hm : -hm;
         if (wh) {
           if (*wh) {
-            (*wh)->location = wq;
-            (*wh)->priority = wq->clock;
-            orwl_wh_load(*wh, howmuch);
-            if (hm < TNULL(int64_t)) (*wh)->priority = -(wq->clock);
-            if (orwl_wq_idle(wq)) wq->head = *wh;
-            else wq->tail->next = *wh;
-            wq->tail = *wh;
-            ++wq->clock;
+            orwl_wq_request_locked(wq, *wh, howmuch, hm);
           } else {
             if (number == 1
                 && !orwl_wq_idle(wq)

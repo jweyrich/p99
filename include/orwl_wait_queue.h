@@ -273,6 +273,12 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number));
 
 VA_TYPES(orwl_wq_request, orwl_wh**, int64_t);
 
+  /**
+   ** @brief Insert a handle into the queue where we know that the
+   ** lock is already held.
+   **/
+void orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch, int64_t hm);
+
 /**
  ** @brief Acquire a pending request on @a wh. Blocking until the
  ** request is acquired.
