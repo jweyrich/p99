@@ -377,10 +377,7 @@ inline
 uint64_t orwl_wh_load
   (orwl_wh *wh,
    uint64_t howmuch  /*!< defaults to 1 */) {
-    if (wh->svrID)
-      wh->tokens += howmuch;
-    else
-      howmuch = 0;
+    wh->tokens += howmuch;
     return howmuch;
   }
 

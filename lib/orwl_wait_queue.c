@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include "orwl_thread.h"
 #include "orwl_wait_queue.h"
 
 DEFINE_ENUM(orwl_state);
@@ -136,16 +137,22 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
           if (*wh) {
             orwl_wq_request_locked(wq, *wh, howmuch);
           } else {
+            report(1, "request for augmenting an inclusive lock %p", wq->tail);
             if (number == 1
                 && !orwl_wq_idle(wq)
                 && wq->tail
                 && wq->tail->svrID) {
+              report(1, "request for augmenting an inclusive lock %p, succes", wq->tail);
               assert(hm >= TNULL(int64_t));
               /* if the wh is NULL, take this as a request to add to the
                  last handle if it exists */
               orwl_wh_load(wq->tail, howmuch);
-              wh = &wq->tail;
-            } else ret = orwl_invalid;
+              *wh = wq->tail;
+            } else {
+              report(wq->tail, "request for augmenting an inclusive lock %p (%jX), failed",
+                     wq->tail, wq->tail->svrID);
+              ret = orwl_invalid;
+            }
           }
         }
       }

@@ -91,6 +91,8 @@ orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *s
       state = orwl_invalid;
       roll_back = true;
     } else {
+      /* Link us to rq */
+      rh->rq = rq;
       if (state == orwl_requested
           && wh_inc
           && wh_inc->svrID == rh->svrID) {
@@ -106,7 +108,7 @@ orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *s
           // received the information and have released and deleted
           // cli_wh.
           bool is_acquired = false;
-          MUTUAL_EXCLUDE(wq.mut) {
+         MUTUAL_EXCLUDE(wq.mut) {
             is_acquired = (wq.head != cli_wh);
           }
           if (!is_acquired) {
@@ -118,7 +120,9 @@ orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *s
           if (!is_acquired)
             orwl_wq_request_locked(&rq->local, cli_wh, 1);
           orwl_wq_request_locked(&rq->local, wh, token);
-          // Finally have rh point on wh.
+          // Finally have rh point on wh and mark wh as being
+          // inclusive.
+          wh->svrID = rh->svrID;
           rh->wh = wh;
         }
       }
@@ -183,9 +187,11 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_request_incl, uintptr_t wqID, uint64_t cliID, ui
   orwl_wq *srv_wq = (orwl_wq*)(void*)wqID;
   // create a wh and insert it in wq
   orwl_wh *srv_wh = NULL;
+  report(1, "inclusive request %jX %jX", (uintmax_t)cliID, (uintmax_t)svrID);
  RETRY: ;
   // request two tokens, one for this function here when it acquires
   // below, the other one to block until the remote issues a release
+  report(1, "inclusive request %p %jX %jX", srv_wh, (uintmax_t)cliID, (uintmax_t)svrID);
   orwl_state state = orwl_wq_request(srv_wq, &srv_wh, 2);
   if (state != orwl_requested) {
     if (!srv_wh) {
@@ -205,15 +211,22 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_request_incl, uintptr_t wqID, uint64_t cliID, ui
     // acknowledge the creation of the wh and send back its id
     Arg->ret = (uintptr_t)srv_wh;
     auth_sock_close(Arg);
-    // If now the local handle is `requested' we only have to do
-    // something if we establish a new pair of client-server handles.
-    if (svrID != (uintptr_t)srv_wh) {
+    // If now the local handle is `requested' we only have to wait if
+    // we establish a new pair of client-server handles.
+    if (svrID == (uintptr_t)srv_wh) {
+      report(1, "unloading server handle %p (%jX)", srv_wh, (uintmax_t)svrID);
+      MUTUAL_EXCLUDE(srv_wq->mut) {
+        orwl_wh_unload(srv_wh, 2);
+      }
+    } else {
+      report(1, "waiting to acquire server handle %p (%jX)", srv_wh, (uintmax_t)svrID);
       // Unfortunately we don't know anybody who could borrow us some
       // randomness, here. So do this after the ack has been send to the
       // other side and we prepare for waiting a while, anyhow.
       rand48_t seed = RAND48_T_INITIALIZER;
       // wait until the lock on wh is obtained
       state = orwl_wh_acquire(srv_wh);
+      report(1, "acquired server handle %p (%jX)", srv_wh, (uintmax_t)svrID);
       // send a request to the other side to remove the remote wh ID
       orwl_rpc(&ep, &seed, auth_sock_release, cliID);
     }
