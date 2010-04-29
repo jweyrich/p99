@@ -66,9 +66,20 @@ DECLARE_NEW_DELETE(orwl_rq);
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_rq);
 
 struct orwl_rh {
-  orwl_wh *wh;
+  /**
+   ** @brief The queue that regulates the local accesses.
+   **/
   orwl_rq *rq;
-  uint64_t rID;
+  /**
+   ** @brief The handle in the local queue.
+   **/
+  orwl_wh *wh;
+  /**
+   ** @brief An ID of a local or remote handle that holds the global lock.
+   **
+   ** This will be notified whence here locally we have released the lock.
+   **/
+  uint64_t svrID;
 };
 
 #ifndef __cplusplus
@@ -119,7 +130,7 @@ DECLARE_DEFARG(orwl_test, , TNULL(size_t));
 #endif
 
 DECLARE_AUTH_SOCK_FUNC(auth_sock_request_excl, uintptr_t wqID, uint64_t whID, uint64_t port);
-DECLARE_AUTH_SOCK_FUNC(auth_sock_request_incl, uintptr_t wqID, uint64_t whID, uint64_t port);
+DECLARE_AUTH_SOCK_FUNC(auth_sock_request_incl, uintptr_t wqID, uint64_t cliID, uint64_t svrID, uint64_t port);
 DECLARE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID);
 
 

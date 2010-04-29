@@ -89,29 +89,46 @@ DECLARE_ONCE(orwl_wh);
  ** additional sugar around it.
  **/
 struct orwl_wq {
-  pthread_mutex_t mut;
-  orwl_wh *head;
-  orwl_wh *tail;
-  uint64_t clock;
+  pthread_mutex_t mut;  /**< The mutex used to control the access to the queue **/
+  orwl_wh *head;        /**< The head of the priority queue */
+  orwl_wh *tail;        /**< The tail of the priority queue */
+  uint64_t clock;       /**< A counter that is increased at each
+                           event that this queue encounters. */
 };
 
 
 /**
- ** @brief The handle type corresponding to orwl_wq.
+ ** @brief The handle type corresponding to ::orwl_wq.
+ **
+ ** ::orwl_wh is mainly a @c pthread_cond_t that is bound to the
+ ** fixed condition to be the first in the FIFO.
  **
  ** Locks through such a handle object are achieved in a two-step
  ** procedure. First, a lock is @em requested through
- ** ::orwl_wq_request. This binds the orwl_wh to a
- ** designated orwl_wq and appends the request to the FIFO
+ ** ::orwl_wq_request. This binds the ::orwl_wh to a
+ ** designated ::orwl_wq and appends the request to the FIFO
  ** queue of it. Then in a second step, ::orwl_wh_acquire waits
  ** until the request has become the first in the queue.
  **
+ ** An ::orwl_wh is loaded with #tokens. Each ::orwl_wq_request places
+ ** tokes on the corresponding handle and ::orwl_wh_acquire removes
+ ** these tokens. It is up to the code that uses a handle to watch
+ ** that the number of placed and removed tokens match.
+ **
+ ** Depending on the field #svrID a handle can be in an inclusive or
+ ** exclusive state. In inclusive state and when it is still at the
+ ** tail of the corresponding queue subsequent calls ::orwl_wq_request
+ ** may load additional tokens on the handle. Such a ::orwl_wq_request
+ ** will always be refused for a handle that is in exclusive state.
+ **
  ** ::orwl_wh_release releases the lock by popping the request from
  ** the FIFO. Thus, it allows for the following request in the FIFO
- ** (if any) to be acquired.
+ ** (if any) to be acquired. A ::orwl_wh_release may only be performed
+ ** if all tokens have been removed, i.e if all lock holders have had
+ ** notice that the lock is acquired. If #tokens is not 0 whence
+ ** ::orwl_wh_release is called, the call blocks until the condition
+ ** is fulfilled.
  **
- ** orwl_wh is mainly a @c pthread_cond_t that is bound to the
- ** fixed condition to be the first in the FIFO.
  **/
 struct orwl_wh {
   /** A wh will wait on that condition for requests and acquires. */
@@ -131,7 +148,11 @@ struct orwl_wh {
    ** @brief The historical position in the wait queue.
    **/
   uint64_t priority;
-  bool exclusive;
+  /**
+   ** @brief An ID of a local or remote orwl_wh in case that this
+   ** orwl_wh represents an inclusive lock.
+   **/
+  uint64_t svrID;
 };
 
 #define orwl_wh_garb ((orwl_wh*)(TONES(uintptr_t)))
@@ -213,7 +234,7 @@ int orwl_wq_idle(orwl_wq *wq) {
 
 
 
-#define ORWL_WH_INITIALIZER { .cond = PTHREAD_COND_INITIALIZER, exclusive = true }
+#define ORWL_WH_INITIALIZER { .cond = PTHREAD_COND_INITIALIZER }
 
   DOCUMENT_INIT(orwl_wh)
   FSYMB_DOCUMENTATION(orwl_wh_init)
@@ -245,21 +266,28 @@ typedef struct {
  ** @a wq. Blocking if one of the @c wh is already requested.
  **
  ** The argument @a number gives the number of pairs (@c wh, @c
- ** howmuch) of orwl_wh and token number pairs that are to be inserted
- ** consequently in the FIFO of @a wq.
+ ** howmuch) of orwl_wh** (pointer-to-pointer of orwl_wh) and token
+ ** number pairs that are to be inserted consequently in the FIFO of
+ ** @a wq.
  **
- ** @return @c orwl_invalid if any of @c wh or @a wq was
- ** invalid. Otherwise returns @c orwl_requested. Blocking until it is
+ ** @return ::orwl_invalid if any of @c wh or @a wq was
+ ** invalid. Otherwise returns ::orwl_requested. Blocking until it is
  ** detected that none of the @c wh is already requested.
  **
- ** This places @c howmuch tokens on each @c wh. Any of the @c wh will
- ** only be possible to be released if, first, it is acquired (that is
- ** it moves front in the FIFO) and then if all tokens are unloaded
- ** with orwl_wh_acquire() or orwl_wh_test().
+ ** For @c wh arguments that are not NULL, this inserts the
+ ** handle into the queue and places @c howmuch tokens on each @c
+ ** wh. Any of the @c wh will only be possible to be released if,
+ ** first, it is acquired (that is it moves front in the FIFO) and
+ ** then if all tokens are unloaded ::with orwl_wh_acquire or
+ ** ::orwl_wh_test.
  **
- ** A @c wh that is given as @c NULL is considered to relate to the
- ** last such handle that had inserted previously, if such a handle
- ** exists.
+ ** A @c wh that points to @c NULL is considered to relate to the last
+ ** such handle that is at the tail of the queue, if such a handle
+ ** exists. Such a NULL-request will check if this trailing handle is
+ ** in inclusive state and if so will place the tokens on that handle
+ ** and return the address of that handle in @c wh. If the trailing
+ ** handle doesn't exist or if it is in exclusive state the call fails
+ ** and returns ::orwl_invalid.
  **
  ** The tokens are only considered to be loaded on @a wh if the call is
  ** successful.
@@ -267,15 +295,16 @@ typedef struct {
   VA_ARGS_DOCUMENTATION(orwl_wq_request)
 orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number));
 
+#ifndef DOXYGEN
 #define orwl_wq_request(WQ, ...) FSYMB(orwl_wq_request)(WQ, LEN_MODARG(orwl_wq_request, 2, __VA_ARGS__))
-
 VA_TYPES(orwl_wq_request, orwl_wh**, int64_t);
+#endif
 
   /**
    ** @brief Insert a handle into the queue where we know that the
    ** lock is already held.
    **/
-void orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch, int64_t hm);
+void orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch);
 
 /**
  ** @brief Acquire a pending request on @a wh. Blocking until the
@@ -348,10 +377,10 @@ inline
 uint64_t orwl_wh_load
   (orwl_wh *wh,
    uint64_t howmuch  /*!< defaults to 1 */) {
-    if (wh->exclusive)
-      howmuch = 0;
-    else
+    if (wh->svrID)
       wh->tokens += howmuch;
+    else
+      howmuch = 0;
     return howmuch;
   }
 
