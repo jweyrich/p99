@@ -407,7 +407,25 @@ char const* pthread2str(char *buf, pthread_t id) {
 
 #define PTHREAD2STR(ID) pthread2str((char[1 + sizeof(pthread_t) * 2]){0}, ID)
 
+#define DECLARE_THREAD_VAR(T, NAME) T* NAME(void)
 
+#define _DEFINE_THREAD_VAR(T, NAME, KEY)                                \
+static pthread_key_t KEY;                                               \
+DEFINE_ONCE(KEY) {                                                      \
+  (void) pthread_key_create(&KEY, (void (*)(void *))PASTE2(T, _delete)); \
+}                                                                       \
+T* NAME(void) {                                                         \
+  INIT_ONCE(KEY);                                                       \
+  void* ret = pthread_getspecific(KEY);                                 \
+  if (!ret) {                                                           \
+    ret = NEW(T);                                                       \
+    (void)pthread_setspecific(KEY, ret);                                \
+  }                                                                     \
+  return (T*)ret;                                                       \
+}                                                                       \
+extern T* NAME(void)
+
+#define DEFINE_THREAD_VAR(T, NAME) _DEFINE_THREAD_VAR(T, NAME, PASTE2(_key_, NAME))
 
 
 
