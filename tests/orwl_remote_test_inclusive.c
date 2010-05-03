@@ -92,11 +92,17 @@ DEFINE_THREAD(arg_t) {
     size_t preq = threadof(orwl_mynum + (orwl_phase>>1)) + (orwl_phase % 2)*orwl_np;
     /* the postion where we put the callback and that we acquire */
     size_t pacq = orwl_mynum + (orwl_phase % 2)*orwl_np;
-    orwl_state ostate =
-      (orwl_phase % 3
-       ? orwl_request_incl(&location, handle + preq, 1, &seed)
-       : orwl_request_excl(&location, handle + preq, 1, &seed)
-       );
+    orwl_state ostate = orwl_invalid;
+    for (size_t try = 0; ostate == orwl_invalid; ++try) {
+      ostate = (orwl_phase % 3
+                ? orwl_request_incl(&location, handle + preq, &seed)
+                : orwl_request_excl(&location, handle + preq, &seed)
+                );
+      if (ostate == orwl_requested || ostate == orwl_acquired) break;
+      progress(!orwl_mynum,  try, "request, handle %zu, %s",
+               pacq, orwl_state_getname(ostate));
+      sleepfor(iwait);
+    }
     report(!orwl_mynum,  "req, handle %zu, %s",
            preq, orwl_state_getname(ostate));
     /**/

@@ -103,31 +103,19 @@ DECLARE_NEW_DELETE(orwl_rh);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_rh);
 
-orwl_state orwl_request_excl(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed);
-orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, size_t token, rand48_t *seed);
+orwl_state orwl_request_excl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed);
+orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed);
 orwl_state orwl_release(orwl_rh* rh, rand48_t *seed);
 
 inline
-orwl_state orwl_acquire(orwl_rh* rh, size_t token) {
-  return orwl_wh_acquire(rh->wh, token);
-}
-
-#ifndef DOXYGEN
-inline
-PROTOTYPE(orwl_state, orwl_acquire, orwl_rh*, size_t);
-#define orwl_acquire(...) CALL_WITH_DEFAULTS(orwl_acquire, 2, __VA_ARGS__)
-DECLARE_DEFARG(orwl_acquire, , 1);
-
-inline
-orwl_state orwl_test(orwl_rh* rh, size_t token) {
-  return orwl_wh_test(rh->wh, token);
+orwl_state orwl_acquire(orwl_rh* rh) {
+  return orwl_wh_acquire(rh->wh, 0);
 }
 
 inline
-PROTOTYPE(orwl_state, orwl_test, orwl_rh*, size_t);
-#define orwl_test(...) CALL_WITH_DEFAULTS(orwl_test, 2, __VA_ARGS__)
-DECLARE_DEFARG(orwl_test, , TNULL(size_t));
-#endif
+orwl_state orwl_test(orwl_rh* rh) {
+  return orwl_wh_test(rh->wh, 0);
+}
 
 DECLARE_AUTH_SOCK_FUNC(auth_sock_request_excl, uintptr_t wqID, uint64_t whID, uint64_t port);
 DECLARE_AUTH_SOCK_FUNC(auth_sock_request_incl, uintptr_t wqID, uint64_t cliID, uint64_t svrID, uint64_t port);

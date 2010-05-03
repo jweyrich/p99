@@ -92,11 +92,7 @@ DEFINE_THREAD(arg_t) {
     size_t preq = threadof(orwl_mynum + (orwl_phase>>1)) + (orwl_phase % 2)*orwl_np;
     /* the postion where we put the callback and that we acquire */
     size_t pacq = orwl_mynum + (orwl_phase % 2)*orwl_np;
-    orwl_state ostate =
-      (orwl_phase % 3
-       ? orwl_request_incl(&location, handle + preq, 1, &seed)
-       : orwl_request_excl(&location, handle + preq, 1, &seed)
-       );
+    orwl_state ostate = orwl_request_excl(&location, handle + preq, &seed);
     report(!orwl_mynum,  "req, handle %zu, %s",
            preq, orwl_state_getname(ostate));
     /**/
