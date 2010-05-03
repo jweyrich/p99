@@ -18,6 +18,7 @@
 #include <math.h>
 #include <pthread.h>
 #include "orwl_int.h"
+#include "orwl_thread.h"
 
 uint64_t orwl_mix(uint64_t a, uint64_t b);
 
@@ -63,6 +64,10 @@ void rand48_t_destroy(rand48_t *seed){
 }
 
 DECLARE_NEW_DELETE(rand48_t);
+
+/** @brief Give access to a seed variable that is specific to each
+    thread. */
+DECLARE_THREAD_VAR(rand48_t, seed_get);
 
 
 inline

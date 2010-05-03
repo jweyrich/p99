@@ -10,6 +10,18 @@
 
 #include "orwl_rand.h"
 #include "orwl_once.h"
+#include "orwl_thread.h"
+
+
+rand48_t *rand48_t_init(rand48_t*, unsigned short, unsigned short, unsigned short);
+DEFINE_DEFARG(rand48_t_init, , useconds(), getpid(), pthread_self());
+
+void rand48_t_destroy(rand48_t *seed);
+
+DEFINE_NEW_DELETE(rand48_t);
+
+DEFINE_THREAD_VAR(rand48_t, seed_get);
+
 
 uint32_t orwl_rand(rand48_t *xsubi);
 double orwl_drand(rand48_t *xsubi);

@@ -345,7 +345,7 @@ void orwl_server_close(orwl_server *serv);
 
 #ifndef DOXYGEN
 PROTOTYPE(void, orwl_server_terminate, orwl_server *, rand48_t *);
-DECLARE_DEFARG(orwl_server_terminate, , (&(rand48_t)RAND48_T_INITIALIZER));
+DECLARE_DEFARG(orwl_server_terminate, , seed_get());
 #define orwl_server_terminate(...) CALL_WITH_DEFAULTS(orwl_server_terminate, 2, __VA_ARGS__)
 #endif
 

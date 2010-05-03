@@ -188,14 +188,10 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_request_excl, uintptr_t wqID, uint64_t whID, uin
     /* Acknowledge the creation of the wh and send back its id. */
     Arg->ret = (uintptr_t)srv_wh;
     auth_sock_close(Arg);
-    /* Unfortunately we don't know anybody who could borrow us some
-       randomness, here. So do this after the ack has been send to the
-       other side and we prepare for waiting a while, anyhow. */
-    rand48_t seed = RAND48_T_INITIALIZER;
     /* Wait until the lock on wh is obtained. */
     state = orwl_wh_acquire(srv_wh);
     /* Send a request to the other side to remove the remote wh ID. */
-    orwl_rpc(&ep, &seed, auth_sock_release, whID);
+    orwl_rpc(&ep, seed_get(), auth_sock_release, whID);
   } else {
     /* Tell other side about the error. */
     Arg->ret = 0;
@@ -248,15 +244,11 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_request_incl, uintptr_t wqID, uint64_t cliID, ui
       }
     } else {
       report(1, "waiting to acquire server handle %p 0x%jx (0x%jX)", srv_wh, cliID, (uintmax_t)svrID);
-      // Unfortunately we don't know anybody who could borrow us some
-      // randomness, here. So do this after the ack has been send to the
-      // other side and we prepare for waiting a while, anyhow.
-      rand48_t seed = RAND48_T_INITIALIZER;
       // wait until the lock on wh is obtained
       state = orwl_wh_acquire(srv_wh);
       report(1, "acquired server handle %p (0x%jX)", srv_wh, (uintmax_t)svrID);
       // send a request to the other side to remove the remote wh ID
-      orwl_rpc(&ep, &seed, auth_sock_release, cliID);
+      orwl_rpc(&ep, seed_get(), auth_sock_release, cliID);
     }
   }
 }
@@ -285,3 +277,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
   Arg->ret = state;
 }
 
+
+DEFINE_DEFARG(orwl_request_excl, , , seed_get());
+DEFINE_DEFARG(orwl_request_incl, , , seed_get());
+DEFINE_DEFARG(orwl_release, , seed_get());

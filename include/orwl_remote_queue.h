@@ -103,9 +103,19 @@ DECLARE_NEW_DELETE(orwl_rh);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_rh);
 
-orwl_state orwl_request_excl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed);
-orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed);
-orwl_state orwl_release(orwl_rh* rh, rand48_t *seed);
+#ifndef DOXYGEN
+PROTOTYPE(orwl_state, orwl_request_excl, orwl_rq*, orwl_rh*, rand48_t*);
+#define orwl_request_excl(...)  CALL_WITH_DEFAULTS(orwl_request_excl, 3, __VA_ARGS__)
+DECLARE_DEFARG(orwl_request_excl, , , seed_get());
+
+PROTOTYPE(orwl_state, orwl_request_incl, orwl_rq*, orwl_rh*, rand48_t*);
+#define orwl_request_incl(...)  CALL_WITH_DEFAULTS(orwl_request_incl, 3, __VA_ARGS__)
+DECLARE_DEFARG(orwl_request_incl, , , seed_get());
+
+PROTOTYPE(orwl_state, orwl_release, orwl_rh*, rand48_t*);
+#define orwl_release(...)  CALL_WITH_DEFAULTS(orwl_release, 2, __VA_ARGS__)
+DECLARE_DEFARG(orwl_release, , seed_get());
+#endif
 
 inline
 orwl_state orwl_acquire(orwl_rh* rh) {

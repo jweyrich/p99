@@ -210,7 +210,7 @@ int main(int argc, char **argv) {
     }
     orwl_pthread_wait_detached();
     report(1, "%s: killing server", argv[0]);
-    orwl_server_terminate(&srv);
+    orwl_server_terminate(&srv, &seed);
     orwl_server_join(srv_id);
     report(1, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
     orwl_server_destroy(&srv);

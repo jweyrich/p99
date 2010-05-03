@@ -264,7 +264,7 @@ void orwl_server_terminate(orwl_server *serv, rand48_t *seed) {
   orwl_send(&serv->host.ep, seed, NULL, 0);
 }
 
-DEFINE_DEFARG(orwl_server_terminate, , (&(rand48_t)RAND48_T_INITIALIZER));
+DEFINE_DEFARG(orwl_server_terminate, , seed_get());
 
 
 void orwl_server_destroy(orwl_server *serv) {
