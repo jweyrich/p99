@@ -30,7 +30,9 @@ struct once_cont {
  ** @brief Declare the symbols that are needed for the macro
  ** INIT_ONCE().
  **
- ** @param T should be a type.
+ ** @param T should be unique for each use of this macro.
+ ** @see INIT_ONCE
+ ** @see DEFINE_ONCE
  **/
 #define DECLARE_ONCE(T)                         \
 extern struct once_cont _ ## T ## _once
@@ -54,7 +56,7 @@ static void _ ## T ## _once_init(void)
  **
  ** The function has a prototype of void (*name)(void).
  **
- ** @param T should be a type.
+ ** @see DECLARE_ONCE
  **/
 #define DEFINE_ONCE(T)                          \
 static void _ ## T ## _once_init(void);         \
@@ -90,8 +92,6 @@ SAVE_BLOCK(pthread_mutex_t*,                    \
  **  - @a N @b must be changed at the very end of the function, since
  **    otherwise new threads that arrive while the function is
  **    executed will continue processing too early.
- **
- ** @param T should be a type.
  **/
 #define INIT_ONCE_UPON(T, N)                    \
 do {                                            \
@@ -104,8 +104,6 @@ do {                                            \
  ** @brief Ensure that the function that was defined with
  ** DEFINE_ONCE() has been called exactly once before further
  ** proceeding.
- **
- ** @param T should be a type.
  **/
 #define INIT_ONCE(T)                                    \
 do {                                                    \
@@ -116,6 +114,59 @@ do {                                                    \
         _ ## T ## _once.cond = 1;                       \
       }                                                 \
  } while(0)
+
+/**
+ ** @def DECLARE_ONCE_STATIC
+ ** @brief Almost the same as ::DECLARE_ONCE, with the difference that
+ ** the once-function might be called at any point before a call to
+ ** ::INIT_ONCE_STATIC, even if no such call is issued at all
+ **
+ ** @see DECLARE_ONCE
+ ** @see DEFINE_ONCE_STATIC
+ ** @see INIT_ONCE_STATIC
+ **/
+
+
+/**
+ ** @def DEFINE_ONCE_STATIC
+ ** @brief Almost the same as ::DEFINE_ONCE, with the difference that
+ ** the once-function might be called at any point before a call to
+ ** ::INIT_ONCE_STATIC, even if no such call is issued at all
+ **
+ ** @see DECLARE_ONCE_STATIC
+ ** @see DEFINE_ONCE
+ ** @see INIT_ONCE_STATIC
+ **/
+
+/**
+ ** @def INIT_ONCE_STATIC
+ ** @brief Almost the same as ::INIT_ONCE, with the difference that
+ ** the once-function might be called at any point before a call to
+ ** ::INIT_ONCE_STATIC, even if no such call is issued at all
+ **
+ ** @see DECLARE_ONCE_STATIC
+ ** @see DEFINE_ONCE_STATIC
+ ** @see INIT_ONCE
+ **/
+
+
+#if (defined(__GNUC__) && (__GNUC__ > 3))
+# define DECLARE_ONCE_STATIC(NAME)              \
+extern                                          \
+__attribute__((constructor))                    \
+void PASTE(_, NAME, _once_static)(void)
+
+# define DEFINE_ONCE_STATIC(NAME)               \
+__attribute__((constructor))                    \
+void PASTE(_, NAME, _once_static)(void)
+
+# define INIT_ONCE_STATIC(NAME)
+#else
+# define DECLARE_ONCE_STATIC(NAME) DECLARE_ONCE(NAME)
+# define DEFINE_ONCE_STATIC(NAME) DEFINE_ONCE(NAME)
+# define INIT_ONCE_STATIC(NAME) DEFINE_ONCE(NAME)
+#endif
+
 
 
 #endif 	    /* !ORWL_ONCE_H_ */
