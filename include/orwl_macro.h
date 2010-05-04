@@ -962,4 +962,20 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 #define LEN_ARG(NAME, ...) _MODARG_(1)(__VA_ARGS__), _MODARG_LIST(NAME, _CAS1, NARG(__VA_ARGS__), REVS(__VA_ARGS__))
 
 
+/**
+ ** @def branch_expect
+ ** @brief Provide a compiler hint concerning the likelihood of a
+ ** certain value in an expression @a EXP.
+ **
+ ** With this you indicate that in the overwhelming number of cases
+ ** the integer expression @a EXP will evaluate to @a VAL.
+ **
+ ** Currently this is only implemented for gcc.
+ **/
+#if (defined(__GNUC__) && (__GNUC__ > 3))
+#define branch_expect(EXP, VAL) __builtin_expect((EXP), (VAL))
+#else
+#define branch_expect(EXP, VAL) (EXP)
+#endif
+
 #endif 	    /* !ORWL_MACRO_H_ */
