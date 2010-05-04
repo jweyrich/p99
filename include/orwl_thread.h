@@ -18,6 +18,7 @@
 #include <errno.h>
 #include <stdio.h>
 
+#include "orwl_once.h"
 #include "orwl_int.h"
 
 /**
@@ -407,26 +408,31 @@ char const* pthread2str(char *buf, pthread_t id) {
 
 #define PTHREAD2STR(ID) pthread2str((char[1 + sizeof(pthread_t) * 2]){0}, ID)
 
-#define DECLARE_THREAD_VAR(T, NAME) T* NAME(void)
+#define _DECLARE_THREAD_VAR(T, NAME, KEY)       \
+extern pthread_key_t KEY;                       \
+DECLARE_ONCE(KEY);                              \
+inline T* NAME(void) {                          \
+  INIT_ONCE(KEY);                               \
+  T* ret = pthread_getspecific(KEY);            \
+  if (branch_expect(!ret, false)) {             \
+    ret = NEW(T);                               \
+    (void)pthread_setspecific(KEY, ret);        \
+  }                                             \
+  return ret;                                   \
+}                                               \
+extern pthread_key_t KEY
+
+
+#define DECLARE_THREAD_VAR(T, NAME) _DECLARE_THREAD_VAR(T, NAME, PASTE(_, NAME, _key_))
+
 
 #define _DEFINE_THREAD_VAR(T, NAME, KEY)                                \
-static pthread_key_t KEY;                                               \
+pthread_key_t KEY;                                                      \
 DEFINE_ONCE(KEY) {                                                      \
-  (void) pthread_key_create(&KEY, (void (*)(void *))PASTE2(T, _delete)); \
+  (void) pthread_key_create(&KEY, (void (*)(void *))PASTE(T, _delete)); \
 }                                                                       \
-T* NAME(void) {                                                         \
-  INIT_ONCE(KEY);                                                       \
-  void* ret = pthread_getspecific(KEY);                                 \
-  if (!ret) {                                                           \
-    ret = NEW(T);                                                       \
-    (void)pthread_setspecific(KEY, ret);                                \
-  }                                                                     \
-  return (T*)ret;                                                       \
-}                                                                       \
-extern T* NAME(void)
+T* NAME(void)
 
-#define DEFINE_THREAD_VAR(T, NAME) _DEFINE_THREAD_VAR(T, NAME, PASTE2(_key_, NAME))
-
-
+#define DEFINE_THREAD_VAR(T, NAME) _DEFINE_THREAD_VAR(T, NAME, PASTE(_, NAME, _key_))
 
 #endif 	    /* !ORWL_THREAD_H_ */
