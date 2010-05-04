@@ -95,7 +95,7 @@ SAVE_BLOCK(pthread_mutex_t*,                    \
  **/
 #define INIT_ONCE_UPON(T, N)                    \
 do {                                            \
-  if (!(N))                                     \
+  if (branch_expect(!(N), false))               \
     MUTUAL_EXCLUDE(_ ## T ## _once.mut)         \
       if (!(N)) _ ## T ## _once.init();         \
  } while(0)
@@ -107,14 +107,14 @@ do {                                            \
  **
  ** @param T should be a type.
  **/
-#define INIT_ONCE(T)                            \
-do {                                            \
-  if (!(_ ## T ## _once.cond))                  \
-    MUTUAL_EXCLUDE(_ ## T ## _once.mut)         \
-      if (!(_ ## T ## _once.cond)) {            \
-        _ ## T ## _once.init();                 \
-        _ ## T ## _once.cond = 1;               \
-      }                                         \
+#define INIT_ONCE(T)                                    \
+do {                                                    \
+  if (branch_expect(!(_ ## T ## _once.cond), false))    \
+    MUTUAL_EXCLUDE(_ ## T ## _once.mut)                 \
+      if (!(_ ## T ## _once.cond)) {                    \
+        _ ## T ## _once.init();                         \
+        _ ## T ## _once.cond = 1;                       \
+      }                                                 \
  } while(0)
 
 
