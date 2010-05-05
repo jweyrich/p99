@@ -102,5 +102,10 @@ PROTOTYPE(int, socket, int, int, int);
 #define socket(...) CALL_WITH_DEFAULTS(socket, 3, __VA_ARGS__)
 DECLARE_DEFARG(socket, , SOCK_STREAM, 0);
 
+PROTOTYPE(char const*, inet_ntop, int, const void *, char *, socklen_t);
+DECLARE_DEFARG(inet_ntop, , , );
+#define inet_ntop(...) CALL_WITH_DEFAULTS(inet_ntop, 4, __VA_ARGS__)
+#define inet_ntop_defarg_2() ((char[INET6_ADDRSTRLEN]){ 0 })
+#define inet_ntop_defarg_3() (INET6_ADDRSTRLEN)
 
 #endif 	    /* !ORWL_POSIX_DEFAULT_H_ */

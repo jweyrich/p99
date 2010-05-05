@@ -184,6 +184,9 @@ unsigned importance(in_addr_t a) {
   return ret;
 }
 
+char const* orwl_inet_ntop(struct sockaddr const* addr, char* buf, size_t size);
+DEFINE_DEFARG(orwl_inet_ntop, , , );
+
 in_addr_t orwl_inet_addr(char const *name) {
   in_addr_t ret = INITIALIZER;
   struct addrinfo *res = INITIALIZER;
@@ -197,17 +200,19 @@ in_addr_t orwl_inet_addr(char const *name) {
          (name ? name : "<unspecific>"),
          (res ? res->ai_canonname : "unknonwn"));
   for (struct addrinfo *p = res; p; p = p->ai_next) {
+    report(1, "%s's inet address is %s",
+           (name ? name : "<unspecific>"),
+           orwl_inet_ntop(p->ai_addr));
     switch (p->ai_family) {
     case AF_INET: {
       struct sockaddr_in *addr = (struct sockaddr_in *)p->ai_addr;
-      in_addr_t act = addr->sin_addr.s_addr;
-      if (importance(act) > importance(ret)) {
-        ret = act;
-        char addrstr[256] = INITIALIZER;
-        orwl_ntoa(addr, addrstr);
-        report(1, "%s's inet4 address is %s", (name ? name : "<unspecific>"), addrstr);
+      assert(addr->sin_family == AF_INET);
+      struct in_addr* act = &(addr->sin_addr);
+      if (importance(act->s_addr) > importance(ret)) {
+        ret = act->s_addr;
       }
     }
+      break;
     default:;
     }
   }

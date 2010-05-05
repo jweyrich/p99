@@ -81,6 +81,29 @@ in_addr_t inet4_addr(void) {
   return _inet4_addr;
 }
 
+inline
+char const* orwl_inet_ntop(struct sockaddr const* addr, char* buf, size_t size) {
+  void const* src =
+    ((addr->sa_family) == AF_INET
+     ? (void*)&(((struct sockaddr_in *)(addr))->sin_addr)
+     :  ((addr->sa_family) == AF_INET6
+         ? (void*)&(((struct sockaddr_in6 *)(addr))->sin6_addr)
+         : NULL)
+     );
+  if (src) inet_ntop(addr->sa_family, src, buf, size);
+  else strncpy(buf, "<invalid addr>", size);
+  return buf;
+}
+
+#ifndef DOXYGEN
+inline
+PROTOTYPE(char const*, orwl_inet_ntop, struct sockaddr const*, char*, size_t);
+DECLARE_DEFARG(orwl_inet_ntop, , , );
+#define orwl_inet_ntop(...) CALL_WITH_DEFAULTS(orwl_inet_ntop, 3, __VA_ARGS__)
+#define orwl_inet_ntop_defarg_1() ((char[INET6_ADDRSTRLEN]){ 0 })
+#define orwl_inet_ntop_defarg_2() (INET6_ADDRSTRLEN)
+#endif
+
 struct orwl_endpoint;
 
 struct addr_t { uint64_t a; };
