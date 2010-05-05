@@ -142,8 +142,8 @@ DEFINE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID) {
 
 int main(int argc, char **argv) {
   int ret = 0;
-  if (argc > 2) phases = str2size_t(argv[2]);
-  if (argc > 3) orwl_np = str2size_t(argv[3]);
+  if (argc > 1) phases = str2size_t(argv[1]);
+  if (argc > 2) orwl_np = str2size_t(argv[2]);
 
   report(1, "%s: starting with %zu phases and %zu threads",
           argv[0], phases, orwl_np);
@@ -154,7 +154,7 @@ int main(int argc, char **argv) {
                               srv,
                               test_callback,
                               4,
-                              orwl_inet_addr(argv[1]),
+                              TNULL(in_addr_t),
                               0);
   report(1, "starting %" PRIX32 ":0x%" PRIX16 "",
          addr2net(&srv.host.ep.addr),
@@ -164,15 +164,15 @@ int main(int argc, char **argv) {
   rand48_t seed = RAND48_T_INITIALIZER;
 
   if (argc > 4) {
-    in_addr_t addr = orwl_inet_addr(argv[4]);
-    in_port_t port = str2uint16_t(argv[5]);
+    in_addr_t addr = orwl_inet_addr(argv[3]);
+    in_port_t port = str2uint16_t(argv[4]);
 
 
     report(1, "connecting to %" PRIX32 ":0x%" PRIX16, addr, port);
     orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);
 
     /* Initialization of the static location */
-    orwl_rq_init(&location, srv.host.ep, other, str2uint64_t(argv[6]));
+    orwl_rq_init(&location, srv.host.ep, other, str2uint64_t(argv[5]));
 
     report(1, "remote id is 0x%" PRIX64, location.ID);
 

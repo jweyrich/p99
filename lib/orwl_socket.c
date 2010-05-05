@@ -189,11 +189,13 @@ in_addr_t orwl_inet_addr(char const *name) {
   struct addrinfo *res = INITIALIZER;
   struct addrinfo hints = {
     .ai_family = AF_UNSPEC,
-    .ai_flags = AI_V4MAPPED | AI_ADDRCONFIG | AI_CANONNAME,
+    .ai_flags = AI_V4MAPPED | AI_ADDRCONFIG | AI_CANONNAME | (name ? 0 : AI_PASSIVE),
     .ai_socktype = SOCK_STREAM,
   };
   getaddrinfo(name, NULL, &hints, &res);
-  report(1, "%s's canonical name is %s", name, res->ai_canonname);
+  report(1, "%s's canonical name is %s",
+         (name ? name : "<unspecific>"),
+         (res ? res->ai_canonname : "unknonwn"));
   for (struct addrinfo *p = res; p; p = p->ai_next) {
     switch (p->ai_family) {
     case AF_INET: {
@@ -203,7 +205,7 @@ in_addr_t orwl_inet_addr(char const *name) {
         ret = act;
         char addrstr[256] = INITIALIZER;
         orwl_ntoa(addr, addrstr);
-        report(1, "%s's inet4 address is %s", name, addrstr);
+        report(1, "%s's inet4 address is %s", (name ? name : "<unspecific>"), addrstr);
       }
     }
     default:;
