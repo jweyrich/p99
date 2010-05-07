@@ -21,7 +21,7 @@
 #include "orwl_rand.h"
 #include "orwl_register.h"
 #include "orwl_posix_default.h"
-#include "orwl_endpoint.h"
+#include "orwl_host.h"
 
 inline
 void orwl_hton(uint32_t *n, uint64_t const *h, size_t l) {
@@ -118,69 +118,9 @@ orwl_send(EP,                                           \
               },                                        \
           NARG(~,  __VA_ARGS__))
 
-struct orwl_host;
-
-typedef struct orwl_host orwl_host;
-
-struct orwl_host {
-  pthread_mutex_t mut;
-  orwl_endpoint ep;
-  orwl_host *prev;
-  orwl_host *next;
-  size_t refs;
-};
-
-#define ORWL_HOST_INITIALIZER(NAME, NADDR,  NPORT) {    \
-    .mut = PTHREAD_MUTEX_INITIALIZER,                   \
-    .ep = ORWL_ENDPOINT_INITIALIZER(NADDR, NPORT),      \
-      .prev = &NAME,                                    \
-      .next = &NAME,                                    \
-      .refs = 2                                         \
-      }
-
-void orwl_host_connect(orwl_host *th, orwl_host *q);
-void orwl_host_disconnect(orwl_host *th);
-
-inline
-orwl_host* orwl_host_init(orwl_host *th, in_addr_t addr, in_port_t port) {
-  th->next = th;
-  th->prev = th;
-  th->refs = 0;
-  orwl_endpoint_init(&th->ep, addr, port);
-  pthread_mutex_init(&th->mut);
-  return th;
-}
-
-#ifndef DOXYGEN
-inline
-PROTOTYPE(orwl_host*, orwl_host_init, orwl_host *, in_addr_t, in_port_t);
-#define orwl_host_init(...) CALL_WITH_DEFAULTS(orwl_host_init, 3, __VA_ARGS__)
-DECLARE_DEFARG(orwl_host_init, , TNULL(in_addr_t), TNULL(in_port_t));
-#endif
-
-inline
-void orwl_host_destroy(orwl_host *th) {
-  orwl_host_disconnect(th);
-}
-
-DECLARE_NEW_DELETE(orwl_host);
-
-struct orwl_server;
-
-#ifndef __cplusplus
-typedef struct orwl_server orwl_server;
-#endif
-
-struct auth_sock;
-
-#ifndef __cplusplus
-typedef struct auth_sock auth_sock;
-#endif
-
-typedef void (*server_cb_t)(auth_sock *);
 
 struct auth_sock {
-  orwl_server* srv;
+  struct orwl_server* srv;
   int fd;
   size_t len;
   uint64_t *mes;
@@ -191,7 +131,7 @@ struct auth_sock {
 inline
 auth_sock* auth_sock_init(auth_sock *sock,
                                   int fd,
-                                  orwl_server* srv,
+                                  struct orwl_server* srv,
                                   size_t len) {
   memset(sock, 0, sizeof(auth_sock));
   sock->fd = fd;
@@ -204,7 +144,7 @@ auth_sock* auth_sock_init(auth_sock *sock,
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, orwl_server*, size_t);
+PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t);
 DECLARE_DEFARG(auth_sock_init, , -1, NULL, TNULL(size_t));
 
 
@@ -245,44 +185,6 @@ ASGS((A)->mes, __VA_ARGS__);                            \
 /* some helper */
 addr_t getpeer(auth_sock *Arg);
 
-
-struct orwl_server {
-  int fd_listen;
-  orwl_host host;
-  unsigned max_connections;
-  server_cb_t const cb;
-};
-
-#define ORWL_SERVER_INITIALIZER(NAME, CB, MAXC, ADDR, PORT)     \
-{                                                               \
-  .fd_listen = -1,                                              \
-  .host = ORWL_HOST_INITIALIZER(NAME.host, ADDR, PORT),         \
-  .cb = CB,                                                     \
-  .max_connections = MAXC                                       \
-}
-
-inline
-orwl_server* orwl_server_init(orwl_server *serv) {
-  memset(serv, 0, sizeof(orwl_server));
-  serv->fd_listen = -1;
-  orwl_host_init(&serv->host);
-  serv->host.refs = 1;
-  return serv;
-}
-
-void orwl_server_destroy(orwl_server *serv);
-
-DECLARE_NEW_DELETE(orwl_server);
-
-DECLARE_THREAD(orwl_server);
-
-void orwl_server_close(orwl_server *serv);
-
-#ifndef DOXYGEN
-PROTOTYPE(void, orwl_server_terminate, orwl_server *, rand48_t *);
-DECLARE_DEFARG(orwl_server_terminate, , seed_get());
-#define orwl_server_terminate(...) CALL_WITH_DEFAULTS(orwl_server_terminate, 2, __VA_ARGS__)
-#endif
 
 inline
 char const* hostname(char *buffer, size_t len) {

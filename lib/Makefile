@@ -14,6 +14,7 @@ NAME 	=	liborwl.a liborwl.so	# Name of executable file
 SRC	=					\
 	orwl_wait_queue.c			\
 	orwl_new.c				\
+	orwl_host.c				\
 	orwl_int.c				\
 	orwl_endpoint.c				\
 	orwl_enum.c				\
@@ -22,6 +23,7 @@ SRC	=					\
 	orwl_register.c				\
 	orwl_remote_queue.c      		\
 	orwl_socket.c				\
+	orwl_server.c				\
 	orwl_thread.c				\
 	orwl_types.c
 INCL  	=	# List of *.h

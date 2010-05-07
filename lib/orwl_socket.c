@@ -18,6 +18,7 @@
 #include "orwl_rand.h"
 #include "orwl_posix_default.h"
 #include "orwl_remote_queue.h"
+#include "orwl_server.h"
 
 static uint32_t mycode = 0;
 
@@ -243,40 +244,6 @@ DEFINE_THREAD(auth_sock) {
   if (Arg->fd != -1) auth_sock_close(Arg);
 }
 
-orwl_server* orwl_server_init(orwl_server *serv);
-
-void orwl_server_close(orwl_server *serv) {
-  MUTUAL_EXCLUDE(serv->host.mut)
-    if (serv->fd_listen != -1) {
-      int fd = serv->fd_listen;
-      serv->fd_listen = -1;
-      close(fd);
-    }
-}
-
-
-void orwl_server_terminate(orwl_server *serv, rand48_t *seed) {
-  orwl_send(&serv->host.ep, seed, NULL, 0);
-}
-
-DEFINE_DEFARG(orwl_server_terminate, , seed_get());
-
-
-void orwl_server_destroy(orwl_server *serv) {
-  orwl_server_close(serv);
-  orwl_host *n = NULL;
-  MUTUAL_EXCLUDE(serv->host.mut)
-    n = serv->host.next;
-  for (orwl_host *h = n; h != &serv->host; ) {
-    MUTUAL_EXCLUDE(h->mut) {
-      n = h;
-      h = h->next;
-    }
-    orwl_host_delete(n);
-  }
-}
-
-DEFINE_NEW_DELETE(orwl_server);
 
 DEFINE_THREAD(orwl_server) {
   report(1, "starting server");
@@ -432,66 +399,6 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size
   return ret;
 }
 
-void orwl_host_connect(orwl_host *th, orwl_host *q) {
-  if (!th || !q) return;
-  if (th->prev != th || th->next != th) return;
-  for (bool ok = false; !ok; ) {
-    MUTUAL_EXCLUDE(th->mut) {
-      if (!pthread_mutex_trylock(&q->mut)) {
-        orwl_host *p = q->prev;
-        if (p == q || !pthread_mutex_trylock(&p->mut)) {
-          ok = true;
-          /* splice us between q and p */
-          th->next = q;
-          th-> prev = p;
-          th->refs += 2;
-          q->prev = th;
-          p->next = th;
-          if (p != q) pthread_mutex_unlock(&p->mut);
-        }
-        pthread_mutex_unlock(&q->mut);
-      }
-    }
-    if (!ok) {
-      sleepfor(1E-0);
-      report(1,"looping");
-    }
-  }
-}
-
-void orwl_host_disconnect(orwl_host *th) {
-  if (!th) return;
-  if (th->prev || th->next) return;
-  for (bool ok = false; !ok; ) {
-    MUTUAL_EXCLUDE(th->mut) {
-      orwl_host *q = th->next;
-      orwl_host *p = q->prev;
-      if (!pthread_mutex_trylock(&q->mut)) {
-        if (p == q || !pthread_mutex_trylock(&p->mut)) {
-          ok = true;
-          th->next = th;
-          th->prev = th;
-          th->refs -= 2;
-          q->prev = p;
-          p->next = q;
-          if (p != q) pthread_mutex_unlock(&p->mut);
-        }
-        pthread_mutex_unlock(&q->mut);
-      }
-    }
-    if (!ok) sleepfor(1E-6);
-  }
-}
-
-orwl_host* orwl_host_init(orwl_host *th, in_addr_t addr, in_port_t port);
-
-DEFINE_DEFARG(orwl_host_init, , TNULL(in_addr_t), TNULL(in_port_t));
-
-
-void orwl_host_destroy(orwl_host *th);
-
-
-DEFINE_NEW_DELETE(orwl_host);
 
 addr_t getpeer(auth_sock *Arg) {
   struct sockaddr_in addr = INITIALIZER;

@@ -16,6 +16,23 @@
 
 #include "orwl_macro.h"
 #include "orwl_int.h"
+#include "orwl_rand.h"
+
+struct orwl_server;
+
+#ifndef __cplusplus
+typedef struct orwl_server orwl_server;
+#endif
+
+struct auth_sock;
+
+#ifndef __cplusplus
+typedef struct auth_sock auth_sock;
+#endif
+
+typedef void (*server_cb_t)(auth_sock *);
+
+
 
 struct orwl_endpoint;
 
@@ -117,6 +134,19 @@ PROTOTYPE(char const*, orwl_endpoint_print, orwl_endpoint const*, char*);
 DECLARE_DEFARG(orwl_endpoint_print, , );
 #define orwl_endpoint_print_defarg_1() ((char[128])INITIALIZER)
 #endif
+
+uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size_t len);
+
+#define orwl_rpc(EP, SEED, F, ...)                      \
+orwl_send(EP,                                           \
+          SEED,                                         \
+          (uint64_t[ NARG(~, __VA_ARGS__) ]){           \
+            ORWL_OBJID(F),                              \
+              __VA_ARGS__                               \
+              },                                        \
+          NARG(~,  __VA_ARGS__))
+
+
 
 
 #endif 	    /* !ORWL_ENDPOINT_H_ */

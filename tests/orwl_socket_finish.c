@@ -11,6 +11,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include "orwl_socket.h"
+#include "orwl_server.h"
 #include "orwl_register.h"
 #include "orwl_wait_queue.h"
 #include "orwl_posix_default.h"
