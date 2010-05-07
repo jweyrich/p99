@@ -28,10 +28,6 @@ struct orwl_rq {
                            remote */
 };
 
-#ifndef __cplusplus
-typedef struct orwl_rq orwl_rq;
-#endif
-
 #define ORWL_RQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .local = ORWL_WQ_INITIALIZER }
 
 #ifndef DOXYGEN

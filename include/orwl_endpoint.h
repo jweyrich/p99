@@ -32,7 +32,11 @@ typedef struct auth_sock auth_sock;
 
 typedef void (*server_cb_t)(auth_sock *);
 
+struct orwl_rq;
 
+#ifndef __cplusplus
+typedef struct orwl_rq orwl_rq;
+#endif
 
 struct orwl_endpoint;
 
