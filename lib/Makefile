@@ -15,6 +15,7 @@ SRC	=					\
 	orwl_wait_queue.c			\
 	orwl_new.c				\
 	orwl_int.c				\
+	orwl_endpoint.c				\
 	orwl_enum.c				\
 	orwl_posix_default.c			\
 	orwl_rand.c				\
