@@ -135,6 +135,9 @@ DECLARE_DEFARG(orwl_endpoint_print, , );
 #define orwl_endpoint_print_defarg_1() ((char[128])INITIALIZER)
 #endif
 
+bool orwl_send_(int fd, uint64_t const*mess, size_t len);
+bool orwl_recv_(int fd, uint64_t *mess, size_t len);
+
 uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size_t len);
 
 #define orwl_rpc(EP, SEED, F, ...)                      \

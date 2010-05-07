@@ -19,6 +19,7 @@
 #include "orwl_rand.h"
 #include "orwl_remote_queue.h"
 #include "orwl_callback.h"
+#include "orwl_server.h"
 
 static orwl_rq location;
 static orwl_rh *handle = NULL;
