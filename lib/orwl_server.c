@@ -9,6 +9,8 @@
 */
 
 #include "orwl_server.h"
+#include "orwl_header.h"
+#include "orwl_socket.h"
 
 orwl_server* orwl_server_init(orwl_server *serv);
 
@@ -44,4 +46,94 @@ void orwl_server_destroy(orwl_server *serv) {
 }
 
 DEFINE_NEW_DELETE(orwl_server);
+
+DEFINE_THREAD(orwl_server) {
+  report(1, "starting server");
+  Arg->fd_listen = socket(AF_INET);
+  if (Arg->fd_listen != -1) {
+    report(1, "found %" PRIX32 ":%" PRIX16,
+           addr2net(&Arg->host.ep.addr),
+           port2net(&Arg->host.ep.port));
+    rand48_t seed = RAND48_T_INITIALIZER;
+    struct sockaddr_in addr = {
+      .sin_addr = { .s_addr = addr2net(&Arg->host.ep.addr), },
+      .sin_port = port2net(&Arg->host.ep.port),
+      .sin_family = AF_INET,
+    };
+    socklen_t len = sizeof(addr);
+    if (bind(Arg->fd_listen, (struct sockaddr*) &addr, sizeof(addr)) == -1)
+      goto TERMINATE;
+    report(1, "bound port 0x%" PRIX32, port2net(&Arg->host.ep.port));
+    /* If the port was not yet specified find and store it. */
+    if (!addr.sin_port) {
+      if (getsockname(Arg->fd_listen, (struct sockaddr*)&addr, &len) == -1)
+        goto TERMINATE;
+      port_t_init(&Arg->host.ep.port, addr.sin_port);
+      report(1, "allocated port 0x%" PRIX32, port2net(&Arg->host.ep.port));
+    }
+    char const* server_name = orwl_endpoint_print(&Arg->host.ep);
+    report(1, "server listening at %s", server_name);
+    if (listen(Arg->fd_listen, Arg->max_connections) == -1)
+      goto TERMINATE;
+    char info[256];
+    uint64_t t = 0;
+    snprintf(info, 256, "server at %s ", server_name);
+    while (Arg->fd_listen != -1) {
+      /* Do this work before being connected */
+      uint64_t chal = orwl_rand64(&seed);
+      uint64_t repl = orwl_challenge(chal);
+      header_t header = INITIALIZER;
+
+      progress(1, ++t, "%s", info);
+
+      if (!repl) {
+        report(1, "cannot serve without a secret");
+        close(Arg->fd_listen);
+        Arg->fd_listen = -1;
+        goto TERMINATE;
+      }
+      int fd = -1;
+      do {
+        fd = accept(Arg->fd_listen);
+      } while(fd == -1);
+
+      /* Receive a challenge from the new connection */
+      if (orwl_recv_(fd, header, header_t_els))
+        goto FINISH;
+      header[1] = orwl_challenge(header[0]);
+      header[0] = chal;
+      /* Send the reply and a new challenge to the new connection */
+      if (orwl_send_(fd, header, header_t_els))
+        goto FINISH;
+      /* Receive the reply and the message length from the new connection */
+      if (orwl_recv_(fd, header, header_t_els))
+        goto FINISH;
+      if (header[1] == repl) {
+        size_t len = header[0];
+        if (len) {
+          auth_sock *sock = NEW_INIT(auth_sock, fd, Arg, len);
+          auth_sock_create(sock, NULL);
+          /* The spawned thread will close the fd. */
+          continue;
+        } else {
+          /* The authorized empty message indicates termination */
+          diagnose(fd, "Received termination message, closing fd %d", fd);
+          close(fd);
+          close(Arg->fd_listen);
+          Arg->fd_listen = -1;
+          break;
+        }
+      } else {
+        diagnose(fd, "You are not authorized to to talk on fd %d", fd);
+      }
+    FINISH:
+      close(fd);
+    }
+  }
+ TERMINATE:
+  if (errno) {
+    perror("cannot proceed");
+  }
+  if (Arg->fd_listen != -1) close(Arg->fd_listen);
+}
 
