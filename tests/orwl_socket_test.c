@@ -63,13 +63,7 @@ int main(int argc, char **argv) {
       if (ret) break;
       sleepfor(0.2);
     }
-    report(1, "server %" PRIX32 ":0x%" PRIX16 " is set up",
-           addr2net(&srv.host.ep.addr),
-           port2net(&srv.host.ep.port));
   } else {
-    report(1, "initial server %" PRIX32 ":0x%" PRIX16 " is set up",
-           addr2net(&srv.host.ep.addr),
-           port2net(&srv.host.ep.port));
     for (size_t t = 0; t < 1000; ++t) {
       ret = pthread_kill(id, 0);
       if (ret) break;

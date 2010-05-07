@@ -153,16 +153,13 @@ int main(int argc, char **argv) {
   orwl_server_create(&srv, &srv_id);
   rand48_t seed = RAND48_T_INITIALIZER;
 
-  if (argc > 4) {
-    in_addr_t addr = orwl_inet_addr(argv[3]);
-    in_port_t port = str2uint16_t(argv[4]);
-
-
-    report(1, "connecting to %" PRIX32 ":0x%" PRIX16, addr, port);
-    orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);
+  if (argc > 3) {
+    report(1, "connecting to %s", argv[3]);
+    orwl_endpoint other = { INITIALIZER };
+    orwl_endpoint_parse(&other, argv[3]);
 
     /* Initialization of the static location */
-    orwl_rq_init(&location, srv.host.ep, other, str2uint64_t(argv[5]));
+    orwl_rq_init(&location, srv.host.ep, other, str2uint64_t(argv[4]));
 
     report(1, "remote id is 0x%" PRIX64, location.ID);
 
@@ -174,9 +171,6 @@ int main(int argc, char **argv) {
       if (ret) break;
       sleepfor(0.2);
     }
-    report(1, "server %" PRIX32 ":0x%" PRIX16 " is set up",
-           addr2net(&srv.host.ep.addr),
-           port2net(&srv.host.ep.port));
     handle = orwl_rh_vnew(2 * orwl_np);
 
 

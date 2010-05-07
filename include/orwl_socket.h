@@ -57,7 +57,7 @@ DECLARE_DEFARG(orwl_ntoh, , , 1);
 
 extern in_addr_t orwl_inet_addr(char const *name);
 
-extern void orwl_ntoa(struct sockaddr_in *addr, char *name);
+extern void orwl_ntoa(struct sockaddr_in const* addr, char *name);
 
 #define diagnose(fd, form, ...)                                         \
 do {                                                                    \
@@ -65,7 +65,7 @@ do {                                                                    \
   if (getpeername(fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) { \
     char name[256] = INITIALIZER;                                       \
     orwl_ntoa(&addr, name);                                             \
-    report(stderr, "connection from /%s/ " form, name, __VA_ARGS__);    \
+    report(stderr, "connection from %s " form, name, __VA_ARGS__);    \
   }                                                                     \
  } while (0)
 
@@ -194,6 +194,17 @@ DECLARE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t));
 #endif
 
 DECLARE_NEW_DELETE(orwl_endpoint);
+
+orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name);
+char const* orwl_endpoint_print(orwl_endpoint const* ep, char name[static 128]);
+
+#ifndef DOXYGEN
+PROTOTYPE(char const*, orwl_endpoint_print, orwl_endpoint const*, char*);
+#define orwl_endpoint_print(...) CALL_WITH_DEFAULTS(orwl_endpoint_print, 2, __VA_ARGS__)
+DECLARE_DEFARG(orwl_endpoint_print, , );
+#define orwl_endpoint_print_defarg_1() ((char[128])INITIALIZER)
+#endif
+
 
 uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size_t len);
 
@@ -372,4 +383,18 @@ DECLARE_DEFARG(orwl_server_terminate, , seed_get());
 #define orwl_server_terminate(...) CALL_WITH_DEFAULTS(orwl_server_terminate, 2, __VA_ARGS__)
 #endif
 
+inline
+char const* hostname(char *buffer, size_t len) {
+  gethostname(buffer, len);
+  return buffer;
+}
+
+#ifndef DOXYGEN
+inline
+PROTOTYPE(char const*, hostname, char *, size_t);
+DECLARE_DEFARG(hostname, , );
+#define hostname(...) CALL_WITH_DEFAULTS(hostname, 2, __VA_ARGS__)
+#define hostname_defarg_0() ((char[64]){ 0 })
+#define hostname_defarg_1() (64)
+#endif
 #endif 	    /* !ORWL_SOCKET_H_ */

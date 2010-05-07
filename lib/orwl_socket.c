@@ -136,16 +136,67 @@ DEFINE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t));
 
 DEFINE_NEW_DELETE(orwl_endpoint);
 
+
+orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
+  if (ep && name) {
+    addr_t addr = INITIALIZER;
+    port_t port = INITIALIZER;
+    char const prefix[7 + 1] = "orwl://";
+    if (strstr(name, prefix) == name) {
+      name += 7;
+    }
+    {
+      char const* host = NULL;
+      if (name[0] == '[') {
+        ++name;
+        size_t len = strcspn(name, "]");
+        if (!len) return NULL;
+        if (name[len] != ']') return NULL;
+        host = strndup(name, len);
+        name += (len + 1);
+      } else {
+        size_t len = strcspn(name, ":");
+        if (!len) return NULL;
+        host = strndup(name, len);
+        name += len;
+      }
+      if (host) {
+        addr_t_init(&addr, orwl_inet_addr(host));
+        free((void*)host);
+      }
+    }
+    if (name[0]) {
+      if (name[0] != ':') return NULL;
+      ++name;
+      port_t_init(&port, str2uint16_t(name));
+    }
+    *ep = (orwl_endpoint){ .addr = addr, .port = port};
+  }
+  return ep;
+}
+
+char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
+  name[0] = '\0';
+  struct sockaddr_in addr = { .sin_addr = { .s_addr = htonl((uint32_t)(ep->addr.a)) } };
+  snprintf(name, 128, "orwl://%s:%" PRIu32 "/",
+          (ep->addr.a
+           ? orwl_inet_ntop((struct sockaddr*)&addr)
+           : hostname()),
+          port2net(&ep->port));
+  return name;
+}
+
+
 enum { header_t_els = 2 };
 
 typedef uint64_t header_t[header_t_els];
 
-void orwl_ntoa(struct sockaddr_in *addr, char *name) {
-  char *tmp = inet_ntoa(addr->sin_addr);
-  strcpy(name, tmp);
-  size_t len = strlen(name);
-  name[len] = ':';
-  sprintf(name + len + 1, "0x%X", (unsigned)addr->sin_port);
+void orwl_ntoa(struct sockaddr_in const* addr, char *name) {
+  sprintf(name, "orwl://%s:%" PRIu32 "/",
+          (addr->sin_addr.s_addr
+           ? orwl_inet_ntop((struct sockaddr const*)addr)
+           : hostname()),
+          addr->sin_port);
 }
 
 static
@@ -314,13 +365,13 @@ DEFINE_THREAD(orwl_server) {
       port_t_init(&Arg->host.ep.port, addr.sin_port);
       report(1, "allocated port 0x%" PRIX32, port2net(&Arg->host.ep.port));
     }
+    char const* server_name = orwl_endpoint_print(&Arg->host.ep);
+    report(1, "server listening at %s", server_name);
     if (listen(Arg->fd_listen, Arg->max_connections) == -1)
       goto TERMINATE;
     char info[256];
     uint64_t t = 0;
-    snprintf(info, 256, "server at /0x%" PRIX32 ":0x%" PRIX16 "/",
-             addr2net(&Arg->host.ep.addr),
-             port2net(&Arg->host.ep.port));
+    snprintf(info, 256, "server at %s ", server_name);
     while (Arg->fd_listen != -1) {
       /* Do this work before being connected */
       uint64_t chal = orwl_rand64(&seed);
@@ -543,3 +594,5 @@ DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
                          ORWL_REGISTER_ALIAS(auth_sock_request_incl),
                          ORWL_REGISTER_ALIAS(auth_sock_release)
                          );
+
+char const* hostname(char *buffer, size_t len);
