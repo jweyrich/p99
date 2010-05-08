@@ -67,16 +67,22 @@
  **/
 #define TZERO(X) (memset(&(X), 0, sizeof(X)))
 
-/**
- ** @brief Allocate and initialize an element of type @a T
- **/
-#define NEW(T) T ## _init((T*)malloc(sizeof(T)))
+#define _NEW(T) T ## _init((T*)malloc(sizeof(T)))
+
+#define _NEW_ARGS(T, ...) T ## _init((T*)malloc(sizeof(T)), __VA_ARGS__)
+
 
 /**
- ** @brief Allocate an element of type @a T and initialize it with the
- ** remaining arguments.
+ ** @brief Allocate an element of type @c T as given by the first
+ ** argument and initialize it with the remaining arguments, if any.
+ **
+ ** This suppose that a function or macro named @c T_init exists and
+ ** is ready to take the arguments that are provided in addition to
+ ** the pointer of type T (which comes first).
+ **
+ ** @see CALL_WITH_DEFAULTS
  **/
-#define NEW_INIT(T, ...) T ## _init((T*)malloc(sizeof(T)), __VA_ARGS__)
+#define NEW(...) IF_DEC_LT(NARG(__VA_ARGS__), 2)(_NEW(__VA_ARGS__))(_NEW_ARGS(__VA_ARGS__))
 
 
 /**
