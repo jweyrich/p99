@@ -8,6 +8,8 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
+#include <string.h>
+
 #include "orwl_socket.h"
 #include "orwl_header.h"
 
@@ -34,23 +36,22 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
       name += 7;
     }
     {
-      char const* host = NULL;
+      char host[256] = INITIALIZER;
       if (name[0] == '[') {
         ++name;
         size_t len = strcspn(name, "]");
         if (!len) return NULL;
         if (name[len] != ']') return NULL;
-        host = strndup(name, len);
+        memcpy(host, name, len);
         name += (len + 1);
       } else {
         size_t len = strcspn(name, ":");
         if (!len) return NULL;
-        host = strndup(name, len);
+        memcpy(host, name, len);
         name += len;
       }
-      if (host) {
+      if (host[0]) {
         addr_t_init(&addr, orwl_inet_addr(host));
-        free((void*)host);
       }
     }
     if (name[0]) {
