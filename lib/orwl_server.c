@@ -68,25 +68,20 @@ DEFINE_THREAD(orwl_server) {
   report(1, "starting server");
   Arg->fd_listen = socket(AF_INET);
   if (Arg->fd_listen != -1) {
-    report(1, "found %" PRIX32 ":%" PRIX16,
-           addr2net(&Arg->host.ep.addr),
-           port2net(&Arg->host.ep.port));
     rand48_t seed = RAND48_T_INITIALIZER;
     struct sockaddr_in addr = {
-      .sin_addr = { .s_addr = addr2net(&Arg->host.ep.addr), },
+      .sin_addr = addr2net(&Arg->host.ep.addr),
       .sin_port = port2net(&Arg->host.ep.port),
       .sin_family = AF_INET,
     };
     socklen_t len = sizeof(addr);
     if (bind(Arg->fd_listen, (struct sockaddr*) &addr, sizeof(addr)) == -1)
       goto TERMINATE;
-    report(1, "bound port 0x%" PRIX32, port2net(&Arg->host.ep.port));
     /* If the port was not yet specified find and store it. */
     if (!addr.sin_port) {
       if (getsockname(Arg->fd_listen, (struct sockaddr*)&addr, &len) == -1)
         goto TERMINATE;
       port_t_init(&Arg->host.ep.port, addr.sin_port);
-      report(1, "allocated port 0x%" PRIX32, port2net(&Arg->host.ep.port));
     }
     char const* server_name = orwl_endpoint_print(&Arg->host.ep);
     report(1, "server listening at %s", server_name);

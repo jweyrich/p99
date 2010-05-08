@@ -27,21 +27,16 @@ int main(int argc, char **argv) {
                               4,
                               TNULL(in_addr_t),
                               0);
-  report(1, "starting %" PRIX32 ":0x%" PRIX16,
-         addr2net(&srv.host.ep.addr),
-         port2net(&srv.host.ep.port));
+  report(1, "starting %s ", orwl_endpoint_print(&srv.host.ep));
   pthread_t id;
   orwl_server_create(&srv, &id);
-  report(1, "started %" PRIX32 ":0x%" PRIX16 ", got id 0x%" PRIX64,
-         addr2net(&srv.host.ep.addr),
-         port2net(&srv.host.ep.port),
-         id);
+  report(1, "started %s, got id 0x%" PRIX64, orwl_endpoint_print(&srv.host.ep), id);
 
   rand48_t seed = RAND48_T_INITIALIZER;
 
   if (argc > 1) {
     report(1, "connecting to %s", argv[1]);
-    orwl_endpoint other = { INITIALIZER };
+    orwl_endpoint other = {{ INITIALIZER }};
     orwl_endpoint_parse(&other, argv[1]);
 
     /* wait until the other side is up. */
@@ -63,18 +58,16 @@ int main(int argc, char **argv) {
         n = srv.host.next;
       report(1, "%p -- %p", (void*)&srv.host, (void*)n);
       for (orwl_host *h = n; h != &srv.host; ) {
-        orwl_endpoint other = { INITIALIZER };
+        orwl_endpoint other = {{ INITIALIZER }};
         MUTUAL_EXCLUDE(h->mut) {
           other.addr = h->ep.addr;
           other.port = h->ep.port;
           h = h->next;
         }
-        report(1, "sending to /%" PRIX32 ":0x%" PRIX16 "/ ",
-               addr2net(&other.addr),
-               port2net(&other.port));
+        report(1, "sending to %s ", orwl_endpoint_print(&other));
         /* ep.addr and ep.port are already in host order */
         orwl_rpc(&other, &seed, auth_sock_do_nothing,
-                  srv.host.ep.addr.a, srv.host.ep.port.p, t);
+                 srv.host.ep.addr.a[3], srv.host.ep.port.p, t);
       }
     }
   }

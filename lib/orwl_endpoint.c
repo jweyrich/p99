@@ -27,7 +27,7 @@ DEFINE_NEW_DELETE(orwl_endpoint);
 
 orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
   if (ep && name) {
-    addr_t addr = INITIALIZER;
+    addr_t addr = ADDR_T_INITIALIZER(0);
     port_t port = INITIALIZER;
     char const prefix[7 + 1] = "orwl://";
     if (strstr(name, prefix) == name) {
@@ -65,12 +65,38 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
 
 char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
   name[0] = '\0';
-  struct sockaddr_in addr = { .sin_addr = { .s_addr = htonl((uint32_t)(ep->addr.a)) } };
-  snprintf(name, 128, "orwl://%s:%" PRIu32 "/",
-          (ep->addr.a
-           ? orwl_inet_ntop((struct sockaddr*)&addr)
-           : hostname()),
-          port2net(&ep->port));
+  struct in_addr in4_addr = addr2net(&ep->addr);
+  if (!in4_addr.s_addr
+      || ((in4_addr.s_addr == TONES(in_addr_t))
+          && !memcmp(ep->addr.aaaa, &in6addr_any, 16))) {
+    snprintf(name, 128, "orwl://%s:%" PRIu32 "/",
+             hostname(),
+             port2net(&ep->port));
+  } else {
+    if (in4_addr.s_addr == TONES(in_addr_t)) {
+      struct sockaddr_in6 addr6 = { .sin6_family = AF_INET6 };
+      memcpy(addr6.sin6_addr.s6_addr, ep->addr.aaaa, 16);
+      struct sockaddr* addr_6 = (struct sockaddr*)&addr6;
+      /* We need this, since sa_family is not necessarily atop of
+         sin6_family */
+      addr_6->sa_family = AF_INET6;
+      snprintf(name, 128, "orwl://[%s]:%" PRIu32 "/",
+               orwl_inet_ntop(addr_6),
+               port2net(&ep->port));
+    } else {
+      struct sockaddr_in addr4 = {
+        .sin_family = AF_INET,
+        .sin_addr = in4_addr
+      };
+      struct sockaddr* addr_4 = (struct sockaddr*)&addr4;
+      /* We need this, since sa_family is not necessarily atop of
+         sin_family */
+      addr_4->sa_family = AF_INET;
+      snprintf(name, 128, "orwl://%s:%" PRIu32 "/",
+               orwl_inet_ntop(addr_4),
+               port2net(&ep->port));
+    }
+  }
   return name;
 }
 
@@ -82,7 +108,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size
   uint64_t repl = orwl_challenge(chal);
   header_t header = { [0] = chal };
   struct sockaddr_in addr = {
-    .sin_addr = { .s_addr = addr2net(&ep->addr) },
+    .sin_addr = addr2net(&ep->addr),
     .sin_port = port2net(&ep->port),
     .sin_family = AF_INET
   };

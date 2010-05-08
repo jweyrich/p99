@@ -144,16 +144,13 @@ int main(int argc, char **argv) {
   orwl_types_init();
 
   orwl_server* srv = NEW(orwl_server, 4, 10);
-  report(1, "starting %" PRIX32 ":0x%" PRIX16 "",
-         addr2net(&srv->host.ep.addr),
-         port2net(&srv->host.ep.port));
   pthread_t srv_id;
   orwl_server_create(srv, &srv_id);
   rand48_t seed = RAND48_T_INITIALIZER;
 
   if (argc > 1) {
     report(1, "connecting to %s", argv[3]);
-    orwl_endpoint other = { INITIALIZER };
+    orwl_endpoint other = {{ INITIALIZER }};
     orwl_endpoint_parse(&other, argv[3]);
 
     /* Initialization of the static location */

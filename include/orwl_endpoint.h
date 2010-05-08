@@ -42,12 +42,22 @@ struct orwl_wq;
 
 struct orwl_endpoint;
 
-struct addr_t { uint64_t a; };
+/**
+ ** @brief Store IPv4 and IPv6 addresses in the same structure.
+ **
+ ** In case this is an IPv4 address the significant part is stored in
+ ** word @c a[3], @c a[0] and @c a[1] then hold 0 and @c a[2] holds
+ ** the value @c 0x0000FFFF.
+ **/
+union addr_t {
+  in_addr_t a[4];
+  uint8_t aaaa[16];
+};
 struct port_t { uint64_t p; };
 
 #ifndef __cplusplus
 typedef struct orwl_endpoint orwl_endpoint;
-typedef struct addr_t addr_t;
+typedef union addr_t addr_t;
 typedef struct port_t port_t;
 #endif
 
@@ -57,7 +67,7 @@ struct orwl_endpoint {
 };
 
 
-#define ADDR_T_INITIALIZER(NADDR) { .a = ntohl(NADDR) }
+#define ADDR_T_INITIALIZER(NADDR) { .a[2] = htonl(0x0000FFFF), .a[3] = NADDR }
 #define PORT_T_INITIALIZER(NPORT) { .p = ntohs(NPORT) }
 #define ORWL_ENDPOINT_INITIALIZER(NADDR,  NPORT) {      \
     .addr = ADDR_T_INITIALIZER(NADDR),                  \
@@ -66,7 +76,10 @@ struct orwl_endpoint {
 
 inline
 addr_t* addr_t_init(addr_t *A, in_addr_t I) {
-  A->a = ntohl(I);
+  A->a[0] = TNULL(in_addr_t);
+  A->a[1] = TNULL(in_addr_t);
+  A->a[2] = htonl(0x0000FFFF);
+  A->a[3] = I;
   return A;
 }
 
@@ -77,9 +90,28 @@ PROTOTYPE(addr_t*, addr_t_init, addr_t *, in_addr_t);
 DECLARE_DEFARG(addr_t_init, , TNULL(in_addr_t));
 #endif
 
+/**
+ ** @brief Return the IPv4 address stored in @a A.
+ **
+ ** If this is not an IPv4 address return all bit ones.
+ **/
 inline
-in_addr_t addr2net(addr_t const*A) {
-  return htonl(A->a);
+struct in_addr addr2net(addr_t const*A) {
+  struct in_addr ret = {
+    .s_addr = ((!A->a[0]
+                && !A->a[1]
+                && (ntohl(A->a[2]) == 0x0000FFFF))
+               ? A->a[3]
+               : TONES(in_addr_t))
+  };
+  return ret;
+}
+
+inline
+struct in6_addr addr2net6(addr_t const*A) {
+  struct in6_addr ret = { .s6_addr[0] = 0 };
+  memcpy(ret.s6_addr, A->aaaa, 16);
+  return ret;
 }
 
 inline

@@ -95,7 +95,9 @@ addr_t* addr_t_init(addr_t *A, in_addr_t I);
 
 DEFINE_DEFARG(addr_t_init, , TNULL(in_addr_t));
 
-in_addr_t addr2net(addr_t const*A);
+struct in_addr addr2net(addr_t const*A);
+
+struct in6_addr addr2net6(addr_t const*A);
 
 port_t* port_t_init(port_t *A, in_port_t P);
 
@@ -230,9 +232,7 @@ DEFINE_THREAD(auth_sock) {
 addr_t getpeer(auth_sock *Arg) {
   struct sockaddr_in addr = INITIALIZER;
   int ret = getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)});
-  return (ret == -1)
-    ? TNULL(addr_t)
-    : (addr_t)ADDR_T_INITIALIZER(addr.sin_addr.s_addr);
+  return  (addr_t)ADDR_T_INITIALIZER((ret == -1) ? TNULL(in_addr_t) : addr.sin_addr.s_addr);
 }
 
 DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
@@ -241,6 +241,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
   /* mes and addr_t is already in host order */
   h->ep.addr = getpeer(Arg);
   h->ep.port.p = port;
+  report(1, "inserting peer %s", orwl_endpoint_print(&h->ep));
   orwl_host_connect(h, &Arg->srv->host);
 }
 
@@ -248,8 +249,8 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port) {
   AUTH_SOCK_READ(Arg, auth_sock_insert_host, uint64_t addr, uint64_t port);
   orwl_host *h = NEW(orwl_host);
   /* mes is already in host order */
-  h->ep.addr.a = addr;
-  h->ep.port.p = port;
+  addr_t_init(&h->ep.addr, addr);
+  port_t_init(&h->ep.port, port);
   orwl_host_connect(h, &Arg->srv->host);
 }
 
