@@ -16,16 +16,6 @@
 #include "orwl_wait_queue.h"
 #include "orwl_posix_default.h"
 
-DECLARE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID);
-
-DEFINE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID) {
-  diagnose(Arg->fd, "message of size %zd", Arg->len);
-  for (size_t i = 0; i < Arg->len; ++i)
-    report(stdout, "%" PRIX64 "", Arg->mes[i]);
-  AUTH_SOCK_READ(Arg, test_callback, uint64_t funcID);
-  orwl_domain_call(ORWL_FTAB(auth_sock), funcID, Arg);
-}
-
 int main(int argc, char **argv) {
   report(1, "starting");
   int ret = 0;
@@ -34,9 +24,8 @@ int main(int argc, char **argv) {
   orwl_server srv
     = ORWL_SERVER_INITIALIZER(
                               srv,
-                              test_callback,
                               4,
-                              orwl_inet_addr(argv[1]),
+                              TNULL(in_addr_t),
                               0);
   report(1, "starting %" PRIX32 ":0x%" PRIX16,
          addr2net(&srv.host.ep.addr),
@@ -50,12 +39,11 @@ int main(int argc, char **argv) {
 
   rand48_t seed = RAND48_T_INITIALIZER;
 
-  if (argc > 2) {
-    in_addr_t addr = orwl_inet_addr(argv[2]);
-    in_port_t port = str2uint16_t(argv[3]);
+  if (argc > 1) {
+    report(1, "connecting to %s", argv[1]);
+    orwl_endpoint other = { INITIALIZER };
+    orwl_endpoint_parse(&other, argv[1]);
 
-
-    orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);
     /* wait until the other side is up. */
     /* ep.port is already in host order */
     while (orwl_rpc(&other, &seed, auth_sock_insert_peer, srv.host.ep.port.p)

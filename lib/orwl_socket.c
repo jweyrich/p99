@@ -206,13 +206,19 @@ void auth_sock_destroy(auth_sock *sock) {
 
 DEFINE_NEW_DELETE(auth_sock);
 
+DECLARE_AUTH_SOCK_FUNC(server_callback, uint64_t funcID);
+
+DEFINE_AUTH_SOCK_FUNC(server_callback, uint64_t funcID) {
+  AUTH_SOCK_READ(Arg, server_callback, uint64_t funcID);
+  orwl_domain_call(ORWL_FTAB(auth_sock), funcID, Arg);
+}
 
 DEFINE_THREAD(auth_sock) {
   assert(Arg->mes);
   if (!orwl_recv_(Arg->fd, Arg->mes, Arg->len))
-    if (Arg->srv && Arg->srv->cb) {
+    if (Arg->srv) {
       /* do something with mess here */
-      Arg->srv->cb(Arg);
+      server_callback(Arg);
       //report(1, "finished callback with %zd elements", Arg->len);
     }
   if (Arg->fd != -1) auth_sock_close(Arg);

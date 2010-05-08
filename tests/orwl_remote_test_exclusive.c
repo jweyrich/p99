@@ -124,13 +124,6 @@ DEFINE_THREAD(arg_t) {
 
 }
 
-DECLARE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID);
-
-DEFINE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID) {
-  AUTH_SOCK_READ(Arg, test_callback, uint64_t funcID);
-  orwl_domain_call(ORWL_FTAB(auth_sock), funcID, Arg);
-}
-
 int main(int argc, char **argv) {
   int ret = 0;
   if (argc > 1) phases = str2size_t(argv[1]);
@@ -140,7 +133,7 @@ int main(int argc, char **argv) {
           argv[0], phases, orwl_np);
   orwl_types_init();
 
-  orwl_server* srv = NEW(orwl_server, test_callback, 4, 1);
+  orwl_server* srv = NEW(orwl_server, 4, 1);
   report(1, "starting %" PRIX32 ":0x%" PRIX16 "",
          addr2net(&srv->host.ep.addr),
          port2net(&srv->host.ep.port));

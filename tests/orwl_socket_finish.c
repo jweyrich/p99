@@ -56,17 +56,6 @@ DEFINE_DEFARG(ftester, ((test_t){ -2 }), 2, 0.5);
 
 #define ftester(...) CALL_WITH_DEFAULTS(ftester, 3, __VA_ARGS__)
 
-
-DECLARE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID);
-
-DEFINE_AUTH_SOCK_FUNC(test_callback, uint64_t funcID) {
-  diagnose(Arg->fd, "message of size %zd", Arg->len);
-  for (size_t i = 0; i < Arg->len; ++i)
-    report(stdout, "%" PRIX64, Arg->mes[i]);
-  AUTH_SOCK_READ(Arg, test_callback, uint64_t funcID);
-  orwl_domain_call(ORWL_FTAB(auth_sock), funcID, Arg);
-}
-
 int main(int argc, char **argv) {
   report(1, "starting");
   /* ORWL_TYPE_DYNAMIC_INIT(auth_sock); */
@@ -75,7 +64,6 @@ int main(int argc, char **argv) {
     orwl_server srv
       = ORWL_SERVER_INITIALIZER(
                                 srv,
-                                test_callback,
                                 4,
                                 TNULL(in_addr_t),
                                 0);

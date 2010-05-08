@@ -14,7 +14,6 @@
 #include "orwl_remote_queue.h"
 
 orwl_server* orwl_server_init(orwl_server *serv,
-                              server_cb_t cb,
                               size_t max_connections,
                               size_t max_queues,
                               in_addr_t addr,
@@ -24,13 +23,12 @@ orwl_server* orwl_server_init(orwl_server *serv,
   orwl_host_init(&serv->host, addr, port);
   serv->host.refs = 1;
   serv->max_connections = max_connections;
-  serv->cb = cb;
   serv->max_queues = max_queues;
   serv->rqs = max_queues ? orwl_rq_vnew(max_queues) : NULL;
   return serv;
 }
 
-DEFINE_DEFARG(orwl_server_init, , NULL, (size_t)20u, TNULL(size_t), TNULL(in_addr_t), TNULL(in_port_t));
+DEFINE_DEFARG(orwl_server_init, , (size_t)20u, TNULL(size_t), TNULL(in_addr_t), TNULL(in_port_t));
 
 void orwl_server_close(orwl_server *serv) {
   MUTUAL_EXCLUDE(serv->host.mut)
