@@ -19,7 +19,7 @@ struct orwl_server {
   orwl_host host;
   size_t max_connections;
   size_t max_queues;
-  orwl_rq *rqs;
+  struct orwl_wq *wqs;
 };
 
 #define ORWL_SERVER_INITIALIZER(NAME, MAXC, ADDR, PORT)         \

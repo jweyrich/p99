@@ -24,7 +24,7 @@ orwl_server* orwl_server_init(orwl_server *serv,
   serv->host.refs = 1;
   serv->max_connections = max_connections;
   serv->max_queues = max_queues;
-  serv->rqs = max_queues ? orwl_rq_vnew(max_queues) : NULL;
+  serv->wqs = max_queues ? orwl_wq_vnew(max_queues) : NULL;
   return serv;
 }
 
@@ -59,7 +59,7 @@ void orwl_server_destroy(orwl_server *serv) {
     }
     orwl_host_delete(n);
   }
-  if (serv->rqs) orwl_rq_vdelete(serv->rqs);
+  if (serv->wqs) orwl_wq_vdelete(serv->wqs);
 }
 
 DEFINE_NEW_DELETE(orwl_server);

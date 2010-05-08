@@ -38,6 +38,8 @@ struct orwl_rq;
 typedef struct orwl_rq orwl_rq;
 #endif
 
+struct orwl_wq;
+
 struct orwl_endpoint;
 
 struct addr_t { uint64_t a; };
