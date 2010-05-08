@@ -11,8 +11,26 @@
 #include "orwl_server.h"
 #include "orwl_header.h"
 #include "orwl_socket.h"
+#include "orwl_remote_queue.h"
 
-orwl_server* orwl_server_init(orwl_server *serv);
+orwl_server* orwl_server_init(orwl_server *serv,
+                              server_cb_t cb,
+                              size_t max_connections,
+                              size_t max_queues,
+                              in_addr_t addr,
+                              in_port_t port) {
+  memset(serv, 0, sizeof(orwl_server));
+  serv->fd_listen = -1;
+  orwl_host_init(&serv->host, addr, port);
+  serv->host.refs = 1;
+  serv->max_connections = max_connections;
+  serv->cb = cb;
+  serv->max_queues = max_queues;
+  serv->rqs = max_queues ? orwl_rq_vnew(max_queues) : NULL;
+  return serv;
+}
+
+DEFINE_DEFARG(orwl_server_init, , NULL, (size_t)20u, TNULL(size_t), TNULL(in_addr_t), TNULL(in_port_t));
 
 void orwl_server_close(orwl_server *serv) {
   MUTUAL_EXCLUDE(serv->host.mut)
@@ -43,6 +61,7 @@ void orwl_server_destroy(orwl_server *serv) {
     }
     orwl_host_delete(n);
   }
+  if (serv->rqs) orwl_rq_vdelete(serv->rqs);
 }
 
 DEFINE_NEW_DELETE(orwl_server);
@@ -111,7 +130,7 @@ DEFINE_THREAD(orwl_server) {
       if (header[1] == repl) {
         size_t len = header[0];
         if (len) {
-          auth_sock *sock = NEW_INIT(auth_sock, fd, Arg, len);
+          auth_sock *sock = NEW(auth_sock, fd, Arg, len);
           auth_sock_create(sock, NULL);
           /* The spawned thread will close the fd. */
           continue;

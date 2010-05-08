@@ -17,8 +17,10 @@
 struct orwl_server {
   int fd_listen;
   orwl_host host;
-  unsigned max_connections;
-  server_cb_t const cb;
+  size_t max_connections;
+  size_t max_queues;
+  orwl_rq *rqs;
+  server_cb_t cb;
 };
 
 #define ORWL_SERVER_INITIALIZER(NAME, CB, MAXC, ADDR, PORT)     \
@@ -29,14 +31,22 @@ struct orwl_server {
   .max_connections = MAXC                                       \
 }
 
-inline
-orwl_server* orwl_server_init(orwl_server *serv) {
-  memset(serv, 0, sizeof(orwl_server));
-  serv->fd_listen = -1;
-  orwl_host_init(&serv->host);
-  serv->host.refs = 1;
-  return serv;
-}
+orwl_server* orwl_server_init(orwl_server *serv,
+                              server_cb_t cb,
+                              size_t max_connections,
+                              size_t max_queues,
+                              in_addr_t addr,
+                              in_port_t port);
+
+#ifndef DOXYGEN
+PROTOTYPE(orwl_server*, orwl_server_init,
+          orwl_server*, server_cb_t,
+          size_t, size_t, in_addr_t, in_port_t);
+DECLARE_DEFARG(orwl_server_init, , NULL, (size_t)20u, TNULL(size_t), TNULL(in_addr_t), TNULL(in_port_t));
+#define orwl_server_init(...) CALL_WITH_DEFAULTS(orwl_server_init, 6, __VA_ARGS__)
+#endif
+
+
 
 void orwl_server_destroy(orwl_server *serv);
 

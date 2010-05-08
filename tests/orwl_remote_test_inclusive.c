@@ -150,18 +150,12 @@ int main(int argc, char **argv) {
           argv[0], phases, orwl_np);
   orwl_types_init();
 
-  orwl_server srv
-    = ORWL_SERVER_INITIALIZER(
-                              srv,
-                              test_callback,
-                              4,
-                              TNULL(in_addr_t),
-                              0);
+  orwl_server* srv = NEW(orwl_server, test_callback, 4, 1);
   report(1, "starting %" PRIX32 ":0x%" PRIX16 "",
-         addr2net(&srv.host.ep.addr),
-         port2net(&srv.host.ep.port));
+         addr2net(&srv->host.ep.addr),
+         port2net(&srv->host.ep.port));
   pthread_t srv_id;
-  orwl_server_create(&srv, &srv_id);
+  orwl_server_create(srv, &srv_id);
   rand48_t seed = RAND48_T_INITIALIZER;
 
   if (argc > 3) {
@@ -170,13 +164,13 @@ int main(int argc, char **argv) {
     orwl_endpoint_parse(&other, argv[3]);
 
     /* Initialization of the static location */
-    orwl_rq_init(&location, srv.host.ep, other, str2uint64_t(argv[5]));
+    orwl_rq_init(&location, srv->host.ep, other, str2uint64_t(argv[4]));
 
     report(1, "remote id is 0x%" PRIX64, location.ID);
 
     /* wait until the other side is up. */
     /* ep.port is already in host order */
-    while (orwl_rpc(&other, &seed, auth_sock_insert_peer, srv.host.ep.port.p)
+    while (orwl_rpc(&other, &seed, auth_sock_insert_peer, srv->host.ep.port.p)
            == TONES(uint64_t)) {
       ret = pthread_kill(srv_id, 0);
       if (ret) break;
@@ -215,10 +209,10 @@ int main(int argc, char **argv) {
     }
     orwl_pthread_wait_detached();
     report(1, "%s: killing server", argv[0]);
-    orwl_server_terminate(&srv);
+    orwl_server_terminate(srv, &seed);
     orwl_server_join(srv_id);
-    report(1, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
-    orwl_server_destroy(&srv);
+    report(1, "host %p and next %p", (void*)srv->host.next, (void*)&srv->host);
+    orwl_server_delete(srv);
 
     report(1, "freeing arg");
     arg_t_vdelete(arg);
@@ -231,8 +225,8 @@ int main(int argc, char **argv) {
   }  else {
     orwl_wq location = ORWL_WQ_INITIALIZER;
     report(1, "set up initial server 0x%" PRIX32 " 0x%" PRIX16 " %p",
-           addr2net(&srv.host.ep.addr),
-           port2net(&srv.host.ep.port),
+           addr2net(&srv->host.ep.addr),
+           port2net(&srv->host.ep.port),
            (void*)&location);
     for (size_t t = 0; t < 1000; ++t) {
       ret = pthread_kill(srv_id, 0);
@@ -241,6 +235,7 @@ int main(int argc, char **argv) {
       report(1, "looping %zd", t);
     }
     orwl_server_join(srv_id);
+    orwl_server_delete(srv);
   }
 
 
