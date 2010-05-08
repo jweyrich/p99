@@ -133,7 +133,7 @@ int main(int argc, char **argv) {
           argv[0], phases, orwl_np);
   orwl_types_init();
 
-  orwl_server* srv = NEW(orwl_server, 4, 1);
+  orwl_server* srv = NEW(orwl_server, 4, 10);
   report(1, "starting %" PRIX32 ":0x%" PRIX16 "",
          addr2net(&srv->host.ep.addr),
          port2net(&srv->host.ep.port));
@@ -141,15 +141,15 @@ int main(int argc, char **argv) {
   orwl_server_create(srv, &srv_id);
   rand48_t seed = RAND48_T_INITIALIZER;
 
-  if (argc > 3) {
+  if (argc > 1) {
     report(1, "connecting to %s", argv[3]);
     orwl_endpoint other = { INITIALIZER };
     orwl_endpoint_parse(&other, argv[3]);
 
     /* Initialization of the static location */
-    orwl_rq_init(&location, srv->host.ep, other, str2uint64_t(argv[4]));
+    orwl_rq_init(&location, srv->host.ep, other, argv[4] ? str2uint64_t(argv[4]) : TNULL(uint64_t));
 
-    report(1, "remote id is 0x%" PRIX64, location.ID);
+    report(1, "remote id is 0x%" PRIX64, location.pos);
 
     /* wait until the other side is up. */
     /* ep.port is already in host order */
@@ -206,16 +206,11 @@ int main(int argc, char **argv) {
     report(1, "destroying location");
     orwl_rq_destroy(&location);
   }  else {
-    orwl_wq location = ORWL_WQ_INITIALIZER;
-    report(1, "set up initial server 0x%" PRIX32 " 0x%" PRIX16 " %p",
-           addr2net(&srv->host.ep.addr),
-           port2net(&srv->host.ep.port),
-           (void*)&location);
-    for (size_t t = 0; t < 1000; ++t) {
+    for (size_t t = 0; ; ++t) {
       ret = pthread_kill(srv_id, 0);
       if (ret) break;
-      sleepfor(1.0);
-      report(1, "looping %zd", t);
+      sleepfor(0.1);
+      progress(1, t, " server idle                                           ");
     }
     orwl_server_join(srv_id);
     orwl_server_delete(srv);

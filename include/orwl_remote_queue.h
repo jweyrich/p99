@@ -23,7 +23,7 @@ struct orwl_rq {
   pthread_mutex_t mut;  /**< control access during insertion */
   orwl_endpoint here;   /**< the local endpoint to which we report */
   orwl_endpoint there;  /**< the remote that centralizes the order */
-  uint64_t ID;          /**< the id of the queue on the remote */
+  uint64_t pos;         /**< the position of the queue on the remote */
   orwl_wq local;        /**< the local queue that interfaces the
                            remote */
 };
@@ -38,12 +38,12 @@ PROTOTYPE(orwl_rq *, orwl_rq_init, orwl_rq *, orwl_endpoint, orwl_endpoint, uint
 #endif
 
 inline
-orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t, uint64_t id) {
+orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t, uint64_t pos) {
   pthread_mutex_init(&rq->mut);
   orwl_wq_init(&rq->local);
   rq->here = h;
   rq->there = t;
-  rq->ID = id;
+  rq->pos = pos;
   return rq;
 }
 
@@ -54,7 +54,7 @@ void orwl_rq_destroy(orwl_rq *rq) {
   orwl_wq_destroy(&rq->local);
   orwl_endpoint_destroy(&rq->here);
   orwl_endpoint_destroy(&rq->there);
-  rq->ID = 0;
+  rq->pos = TONES(uint64_t);
 }
 
 DECLARE_NEW_DELETE(orwl_rq);
@@ -123,8 +123,8 @@ orwl_state orwl_test(orwl_rh* rh) {
   return orwl_wh_test(rh->wh, 0);
 }
 
-DECLARE_AUTH_SOCK_FUNC(auth_sock_request_excl, uintptr_t wqID, uint64_t whID, uint64_t port);
-DECLARE_AUTH_SOCK_FUNC(auth_sock_request_incl, uintptr_t wqID, uint64_t cliID, uint64_t svrID, uint64_t port);
+DECLARE_AUTH_SOCK_FUNC(auth_sock_request_excl, uint64_t wqPOS, uint64_t whID, uint64_t port);
+DECLARE_AUTH_SOCK_FUNC(auth_sock_request_incl, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port);
 DECLARE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID);
 
 
