@@ -71,27 +71,25 @@ int main(int argc, char **argv) {
   report(1, "starting");
   /* ORWL_TYPE_DYNAMIC_INIT(auth_sock); */
   orwl_types_init();
-  if (argc > 2) {
+  if (argc > 1) {
     orwl_server srv
       = ORWL_SERVER_INITIALIZER(
                                 srv,
                                 test_callback,
                                 4,
-                                orwl_inet_addr(argv[1]),
+                                TNULL(in_addr_t),
                                 0);
     rand48_t seed = RAND48_T_INITIALIZER;
 
-    in_addr_t addr = orwl_inet_addr(argv[1]);
-    in_port_t port = str2uint16_t(argv[2]);
-    report(1, "ending %" PRIX32 ":0x%" PRIX16, addr, port);
-
-    orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(addr, port);
+    report(1, "connecting to %s", argv[1]);
+    orwl_endpoint other = { INITIALIZER };
+    orwl_endpoint_parse(&other, argv[1]);
     errno = 0;
     /* wait until the other side is up. */
     uint64_t ret = orwl_send(&other, &seed, NULL, 0);
     char messg[245];
-    sprintf(messg, "finish server /%" PRIX32 ":0x%" PRIX16 "/, %" PRIX64 "",
-            addr, port, ret);
+    sprintf(messg, "finish server %s %" PRIX64,
+            argv[1], ret);
     perror(messg);
     errno = 0;
   }
