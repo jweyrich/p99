@@ -11,12 +11,14 @@
 # Complete this to make it ! #
 ##############################
 NAME 	=	orwl_wait_list			\
+		orwl_remote_server		\
 		orwl_remote_test_inclusive	\
 		orwl_remote_test_exclusive	\
 		orwl_socket_test		\
 		orwl_socket_finish
 
 SRC	=	orwl_wait_list.c		\
+		orwl_remote_server.c		\
 		orwl_remote_test_inclusive.c	\
 		orwl_remote_test_exclusive.c	\
 		orwl_socket_test.c		\
