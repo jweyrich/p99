@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
     rand48_t seed = RAND48_T_INITIALIZER;
 
     report(1, "connecting to %s", argv[1]);
-    orwl_endpoint other = {{ INITIALIZER }};
+    orwl_endpoint other = { INITIALIZER };
     orwl_endpoint_parse(&other, argv[1]);
     errno = 0;
     /* wait until the other side is up. */

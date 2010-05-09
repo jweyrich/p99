@@ -12,8 +12,8 @@
 #include "orwl_remote_queue.h"
 #include "orwl_server.h"
 
-orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t, uint64_t id);
-DEFINE_DEFARG(orwl_rq_init, , (orwl_endpoint){{0}}, (orwl_endpoint){{0}}, TNULL(uint64_t));
+orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t);
+DEFINE_DEFARG(orwl_rq_init, , (orwl_endpoint){{0}}, (orwl_endpoint){{0}});
 
 void orwl_rq_destroy(orwl_rq *rq);
 
@@ -41,7 +41,7 @@ orwl_state orwl_request_excl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed) {
            side. As result retrieve the ID on the other side that is to be
            released when we release here. */
         rh->svrID = orwl_rpc(&rq->there, seed, auth_sock_request_excl,
-                             rq->pos,
+                             rq->there.index,
                              (uintptr_t)cli_wh,
                              port2host(&rq->here.port)
                              );
@@ -81,7 +81,7 @@ orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed) {
          the other side. As result retrieve the ID on the other side
          that is to be released when we release here. */
       rh->svrID = orwl_rpc(&rq->there, seed, auth_sock_request_incl,
-                           rq->pos,
+                           rq->there.index,
                            (uintptr_t)cli_wh,
                            wh_inc ? wh_inc->svrID : 0,
                            port2host(&rq->here.port)

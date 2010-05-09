@@ -76,6 +76,7 @@ typedef union port_t port_t;
 
 struct orwl_endpoint {
   port_t port;
+  uint64_t index;
   addr_t addr;
 };
 
@@ -168,25 +169,28 @@ inline
 orwl_endpoint* orwl_endpoint_init
 (orwl_endpoint *endpoint,
  in_addr_t addr,
- in_port_t port
+ in_port_t port,
+ uint64_t index
  ) {
   addr_t_init(&endpoint->addr, addr);
   port_t_init(&endpoint->port, port);
+  endpoint->index = index;
   return endpoint;
 }
 
 DOCUMENT_DESTROY(orwl_endpoint)
 inline
 void orwl_endpoint_destroy(orwl_endpoint *endpoint) {
-  /* empty */
+  memset(endpoint, 0, sizeof(orwl_endpoint));
+  endpoint->index = TONES(uint64_t);
 }
 
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(orwl_endpoint*, orwl_endpoint_init, orwl_endpoint*, in_addr_t, in_port_t);
-#define orwl_endpoint_init(...) CALL_WITH_DEFAULTS(orwl_endpoint_init, 3, __VA_ARGS__)
-DECLARE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t));
+PROTOTYPE(orwl_endpoint*, orwl_endpoint_init, orwl_endpoint*, in_addr_t, in_port_t, uint64_t);
+#define orwl_endpoint_init(...) CALL_WITH_DEFAULTS(orwl_endpoint_init, 4, __VA_ARGS__)
+DECLARE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t), TNULL(uint64_t));
 #endif
 
 DECLARE_NEW_DELETE(orwl_endpoint);

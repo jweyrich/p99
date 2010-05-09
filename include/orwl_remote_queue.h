@@ -23,7 +23,6 @@ struct orwl_rq {
   pthread_mutex_t mut;  /**< control access during insertion */
   orwl_endpoint here;   /**< the local endpoint to which we report */
   orwl_endpoint there;  /**< the remote that centralizes the order */
-  uint64_t pos;         /**< the position of the queue on the remote */
   orwl_wq local;        /**< the local queue that interfaces the
                            remote */
 };
@@ -32,29 +31,27 @@ struct orwl_rq {
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(orwl_rq *, orwl_rq_init, orwl_rq *, orwl_endpoint, orwl_endpoint, uint64_t);
+PROTOTYPE(orwl_rq *, orwl_rq_init, orwl_rq *, orwl_endpoint, orwl_endpoint);
 
-#define orwl_rq_init(...) CALL_WITH_DEFAULTS(orwl_rq_init, 4, __VA_ARGS__)
+#define orwl_rq_init(...) CALL_WITH_DEFAULTS(orwl_rq_init, 3, __VA_ARGS__)
 #endif
 
 inline
-orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t, uint64_t pos) {
+orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t) {
   pthread_mutex_init(&rq->mut);
   orwl_wq_init(&rq->local);
   rq->here = h;
   rq->there = t;
-  rq->pos = pos;
   return rq;
 }
 
-DECLARE_DEFARG(orwl_rq_init, , (orwl_endpoint){{0}}, (orwl_endpoint){{0}}, TNULL(uint64_t));
+DECLARE_DEFARG(orwl_rq_init, , (orwl_endpoint){ .index = 0 }, (orwl_endpoint){ .index = 0 });
 
 inline
 void orwl_rq_destroy(orwl_rq *rq) {
   orwl_wq_destroy(&rq->local);
   orwl_endpoint_destroy(&rq->here);
   orwl_endpoint_destroy(&rq->there);
-  rq->pos = TONES(uint64_t);
 }
 
 DECLARE_NEW_DELETE(orwl_rq);

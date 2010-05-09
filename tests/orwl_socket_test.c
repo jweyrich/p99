@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 
   if (argc > 1) {
     report(1, "connecting to %s", argv[1]);
-    orwl_endpoint other = {{ INITIALIZER }};
+    orwl_endpoint other = { INITIALIZER };
     orwl_endpoint_parse(&other, argv[1]);
 
     /* wait until the other side is up. */
@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
         n = srv.host.next;
       report(1, "%p -- %p", (void*)&srv.host, (void*)n);
       for (orwl_host *h = n; h != &srv.host; ) {
-        orwl_endpoint other = {{ INITIALIZER }};
+        orwl_endpoint other = { INITIALIZER };
         MUTUAL_EXCLUDE(h->mut) {
           other.addr = h->ep.addr;
           other.port = h->ep.port;

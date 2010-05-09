@@ -14,13 +14,14 @@
 orwl_endpoint* orwl_endpoint_init
      (orwl_endpoint *endpoint,
       in_addr_t addr,
-      in_port_t port
+      in_port_t port,
+      uint64_t index
       );
 
 void orwl_endpoint_destroy(orwl_endpoint *endpoint);
 
 
-DEFINE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t));
+DEFINE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t), TNULL(uint64_t));
 
 DEFINE_NEW_DELETE(orwl_endpoint);
 
@@ -29,6 +30,7 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
   if (ep && name) {
     addr_t addr = ADDR_T_INITIALIZER(0);
     port_t port = INITIALIZER;
+    uint64_t index = 0;
     char const prefix[7 + 1] = "orwl://";
     if (strstr(name, prefix) == name) {
       name += 7;
@@ -57,21 +59,30 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
       if (name[0] != ':') return NULL;
       ++name;
       port_t_init(&port, str2uint16_t(name));
+      size_t len = strcspn(name, "/");
+      if (!len) return NULL;
+      name += len;
     }
-    *ep = (orwl_endpoint){ .addr = addr, .port = port};
+    if (name[0]) {
+      if (name[0] != '/') return NULL;
+      ++name;
+      index = str2uint64_t(name);
+    }
+    ep->addr = addr;
+    ep->port = port;
+    ep->index = index;
   }
   return ep;
 }
 
 char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
   name[0] = '\0';
+  char host[256] = INITIALIZER;
   struct in_addr in4_addr = addr2net(&ep->addr);
   if (!in4_addr.s_addr
       || ((in4_addr.s_addr == TONES(in_addr_t))
           && !memcmp(ep->addr.aaaa, &in6addr_any, 16))) {
-    snprintf(name, 128, "orwl://%s:%" PRIu32 "/",
-             hostname(),
-             port2net(&ep->port));
+    hostname(host);
   } else {
     if (in4_addr.s_addr == TONES(in_addr_t)) {
       struct sockaddr_in6 addr6 = { .sin6_family = AF_INET6 };
@@ -80,9 +91,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
       /* We need this, since sa_family is not necessarily atop of
          sin6_family */
       addr_6->sa_family = AF_INET6;
-      snprintf(name, 128, "orwl://[%s]:%" PRIu32 "/",
-               orwl_inet_ntop(addr_6),
-               port2net(&ep->port));
+      snprintf(host, 256, "[%s]", orwl_inet_ntop(addr_6));
     } else {
       struct sockaddr_in addr4 = {
         .sin_family = AF_INET,
@@ -92,11 +101,11 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
       /* We need this, since sa_family is not necessarily atop of
          sin_family */
       addr_4->sa_family = AF_INET;
-      snprintf(name, 128, "orwl://%s:%" PRIu32 "/",
-               orwl_inet_ntop(addr_4),
-               port2net(&ep->port));
+      orwl_inet_ntop(addr_4, host);
     }
   }
+  STRCATS(name, "orwl://", host, ":", PRIu(port2net(&ep->port)), "/");
+  if (ep->index) STRCATS(name, PRIu(ep->index));
   return name;
 }
 

@@ -140,13 +140,11 @@ int main(int argc, char **argv) {
 
   if (argc > 1) {
     report(1, "connecting to %s", argv[3]);
-    orwl_endpoint other = {{ INITIALIZER }};
+    orwl_endpoint other = { INITIALIZER };
     orwl_endpoint_parse(&other, argv[3]);
 
     /* Initialization of the static location */
-    orwl_rq_init(&location, srv->host.ep, other, argv[4] ? str2uint64_t(argv[4]) : TNULL(uint64_t));
-
-    report(1, "remote id is 0x%" PRIX64, location.pos);
+    orwl_rq_init(&location, srv->host.ep, other);
 
     /* wait until the other side is up. */
     /* ep.port is already in host order */
