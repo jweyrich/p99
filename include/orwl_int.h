@@ -172,13 +172,14 @@ DECLARE_BASIC_TYPE(uint64_t);
 #define str2int64_t(...) _STRTO(int64_t, __VA_ARGS__)
 #define str2uint64_t(...) _STRTO(uint64_t, __VA_ARGS__)
 
-#define _DECLARE_ARI2STR(T, X, S, P)                            \
-inline                                                          \
- char const* PASTE3(T, 2, X)(char* buf, T x) {                  \
-  char const* form = PRI(T,X,S);                                \
-  sprintf(buf, strcat(strcat(buf, #P), form), x);                \
-  return buf;                                                   \
-}                                                               \
+#define _DECLARE_ARI2STR(T, X, S, P)            \
+inline                                          \
+ char const* PASTE3(T, 2, X)(char* buf, T x) {  \
+  char* form = STRDUP(#P, PRI(T,X,S));          \
+  sprintf(buf, form, x);                        \
+  free(form);                                   \
+  return buf;                                   \
+}
 
 
 #define DECLARE_ARI2STR(T)                      \
