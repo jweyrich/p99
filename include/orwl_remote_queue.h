@@ -47,7 +47,7 @@ orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t, uint64_t po
   return rq;
 }
 
-DECLARE_DEFARG(orwl_rq_init, , (orwl_endpoint){{{0}}}, (orwl_endpoint){{{0}}}, TNULL(uint64_t));
+DECLARE_DEFARG(orwl_rq_init, , (orwl_endpoint){{0}}, (orwl_endpoint){{0}}, TNULL(uint64_t));
 
 inline
 void orwl_rq_destroy(orwl_rq *rq) {

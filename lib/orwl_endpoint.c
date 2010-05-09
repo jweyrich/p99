@@ -8,8 +8,6 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include <string.h>
-
 #include "orwl_socket.h"
 #include "orwl_header.h"
 
@@ -36,22 +34,23 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
       name += 7;
     }
     {
-      char host[256] = INITIALIZER;
+      char const* host = NULL;
       if (name[0] == '[') {
         ++name;
         size_t len = strcspn(name, "]");
         if (!len) return NULL;
         if (name[len] != ']') return NULL;
-        memcpy(host, name, len);
+        host = strndup(name, len);
         name += (len + 1);
       } else {
         size_t len = strcspn(name, ":");
         if (!len) return NULL;
-        memcpy(host, name, len);
+        host = strndup(name, len);
         name += len;
       }
-      if (host[0]) {
+      if (host) {
         addr_t_init(&addr, orwl_inet_addr(host));
+        free((void*)host);
       }
     }
     if (name[0]) {
@@ -180,4 +179,21 @@ bool orwl_recv_(int fd, uint64_t *mess, size_t len) {
   uint32_t_vdelete(buf);
   return ret != sizeof(uint64_t) * len;
 }
+
+addr_t* addr_t_init(addr_t *A, in_addr_t I);
+
+DEFINE_DEFARG(addr_t_init, , TNULL(in_addr_t));
+
+struct in_addr addr2net(addr_t const*A);
+
+struct in6_addr addr2net6(addr_t const*A);
+
+port_t* port_t_init(port_t *A, in_port_t P);
+
+DEFINE_DEFARG(port_t_init, , TNULL(in_port_t));
+
+in_port_t port2net(port_t const*A);
+uint64_t port2host(port_t const*A);
+port_t net2port(in_port_t P);
+port_t host2port(uint64_t A);
 

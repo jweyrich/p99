@@ -43,7 +43,7 @@ orwl_state orwl_request_excl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed) {
         rh->svrID = orwl_rpc(&rq->there, seed, auth_sock_request_excl,
                              rq->pos,
                              (uintptr_t)cli_wh,
-                             rq->here.port.p
+                             port2host(&rq->here.port)
                              );
         if (rh->svrID) {
           /* Link us to rq */
@@ -84,7 +84,7 @@ orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed) {
                            rq->pos,
                            (uintptr_t)cli_wh,
                            wh_inc ? wh_inc->svrID : 0,
-                           rq->here.port.p
+                           port2host(&rq->here.port)
                            );
       if (!rh->svrID) {
         state = orwl_invalid;
@@ -188,7 +188,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_request_excl, uint64_t wqPOS, uint64_t whID, uin
     orwl_state state = orwl_wq_request(srv_wq, &srv_wh, 2);
     if (state == orwl_requested) {
       /* mes is already in host order */
-      orwl_endpoint ep = { .addr = getpeer(Arg), .port = { .p = port } };
+      orwl_endpoint ep = { .addr = getpeer(Arg), .port = host2port(port) };
       /* Acknowledge the creation of the wh and send back its id. */
       Arg->ret = (uintptr_t)srv_wh;
       auth_sock_close(Arg);
@@ -234,7 +234,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_request_incl, uint64_t wqPOS, uint64_t cliID, ui
       if (!piggyback) orwl_wh_delete(srv_wh);
       auth_sock_close(Arg);
     } else {
-      orwl_endpoint ep = { .addr = getpeer(Arg), .port = { .p = port } };
+      orwl_endpoint ep = { .addr = getpeer(Arg), .port = host2port(port) };
       /* Acknowledge the creation of the wh and send back its ID. */
       Arg->ret = (uintptr_t)srv_wh;
       auth_sock_close(Arg);

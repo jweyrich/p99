@@ -48,27 +48,40 @@ struct orwl_endpoint;
  ** In case this is an IPv4 address the significant part is stored in
  ** word @c a[3], @c a[0] and @c a[1] then hold 0 and @c a[2] holds
  ** the value @c 0x0000FFFF.
+ **
+ ** This should be used as an opaque type, don't use network addresses
+ ** as numbers or so.
  **/
 union addr_t {
   in_addr_t a[4];
   uint8_t aaaa[16];
 };
-struct port_t { uint64_t p; };
+
+/**
+ ** @brief Store a network port number in an opaque type.
+ **
+ ** This should be used as an opaque type, don't see port `ids' as
+ ** numbers or so.
+ **/
+union port_t {
+  in_port_t p;
+  uint8_t pp[2];
+};
 
 #ifndef __cplusplus
 typedef struct orwl_endpoint orwl_endpoint;
 typedef union addr_t addr_t;
-typedef struct port_t port_t;
+typedef union port_t port_t;
 #endif
 
 struct orwl_endpoint {
-  addr_t addr;
   port_t port;
+  addr_t addr;
 };
 
 
 #define ADDR_T_INITIALIZER(NADDR) { .a[2] = htonl(0x0000FFFF), .a[3] = NADDR }
-#define PORT_T_INITIALIZER(NPORT) { .p = ntohs(NPORT) }
+#define PORT_T_INITIALIZER(NPORT) { .p = NPORT }
 #define ORWL_ENDPOINT_INITIALIZER(NADDR,  NPORT) {      \
     .addr = ADDR_T_INITIALIZER(NADDR),                  \
       .port = PORT_T_INITIALIZER(NPORT),                \
@@ -115,8 +128,30 @@ struct in6_addr addr2net6(addr_t const*A) {
 }
 
 inline
+in_port_t port2net(port_t const*A) {
+  return A->p;
+}
+
+inline
+uint64_t port2host(port_t const*A) {
+  return ntohs(A->p);
+}
+
+inline
+port_t net2port(in_port_t P) {
+  port_t ret = { .p = P };
+  return ret;
+}
+
+inline
+port_t host2port(uint64_t A) {
+  port_t ret = { .p = htons(A) };
+  return ret;
+}
+
+inline
 port_t* port_t_init(port_t *A, in_port_t P) {
-  A->p = ntohs(P);
+  *A = net2port(P);
   return A;
 }
 
@@ -126,13 +161,6 @@ PROTOTYPE(port_t*, port_t_init, port_t *, in_port_t);
 #define port_t_init(...) CALL_WITH_DEFAULTS(port_t_init, 2, __VA_ARGS__)
 DECLARE_DEFARG(port_t_init, , TNULL(in_port_t));
 #endif
-
-inline
-in_port_t port2net(port_t const*A) {
-  return htons(A->p);
-}
-
-
 
 DOCUMENT_INIT(orwl_endpoint)
 FSYMB_DOCUMENTATION(orwl_endpoint_init)

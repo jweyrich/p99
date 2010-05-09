@@ -91,20 +91,6 @@ DEFINE_ONCE_UPON(inet4_addr) {
 
 in_addr_t inet4_addr(void);
 
-addr_t* addr_t_init(addr_t *A, in_addr_t I);
-
-DEFINE_DEFARG(addr_t_init, , TNULL(in_addr_t));
-
-struct in_addr addr2net(addr_t const*A);
-
-struct in6_addr addr2net6(addr_t const*A);
-
-port_t* port_t_init(port_t *A, in_port_t P);
-
-DEFINE_DEFARG(port_t_init, , TNULL(in_port_t));
-
-in_port_t port2net(port_t const*A);
-
 void orwl_ntoa(struct sockaddr_in const* addr, char *name) {
   sprintf(name, "orwl://%s:%" PRIu32 "/",
           (addr->sin_addr.s_addr
@@ -240,7 +226,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
   orwl_host *h = NEW(orwl_host);
   /* mes and addr_t is already in host order */
   h->ep.addr = getpeer(Arg);
-  h->ep.port.p = port;
+  h->ep.port.p = htons(port);
   report(1, "inserting peer %s", orwl_endpoint_print(&h->ep));
   orwl_host_connect(h, &Arg->srv->host);
 }
