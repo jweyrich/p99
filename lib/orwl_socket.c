@@ -248,8 +248,8 @@ DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
                          ORWL_REGISTER_ALIAS(auth_sock_insert_peer),
                          ORWL_REGISTER_ALIAS(auth_sock_insert_host),
                          ORWL_REGISTER_ALIAS(auth_sock_do_nothing),
-                         ORWL_REGISTER_ALIAS(auth_sock_request_excl),
-                         ORWL_REGISTER_ALIAS(auth_sock_request_incl),
+                         ORWL_REGISTER_ALIAS(auth_sock_write_request),
+                         ORWL_REGISTER_ALIAS(auth_sock_read_request),
                          ORWL_REGISTER_ALIAS(auth_sock_release)
                          );
 

@@ -137,12 +137,12 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
           if (*wh) {
             orwl_wq_request_locked(wq, *wh, howmuch);
           } else {
-            report(1, "request for augmenting an inclusive lock %p", wq->tail);
+            report(1, "request for augmenting an inclusive lock %p", (void*)wq->tail);
             if (number == 1
                 && !orwl_wq_idle(wq)
                 && wq->tail
                 && wq->tail->svrID) {
-              report(1, "request for augmenting an inclusive lock %p, succes", wq->tail);
+              report(1, "request for augmenting an inclusive lock %p, succes", (void*)wq->tail);
               assert(hm >= TNULL(int64_t));
               /* if the wh is NULL, take this as a request to add to the
                  last handle if it exists */
@@ -150,7 +150,7 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
               *wh = wq->tail;
             } else {
               report(wq->tail, "request for augmenting an inclusive lock %p (%jX), failed",
-                     wq->tail, wq->tail->svrID);
+                     (void*)wq->tail, wq->tail->svrID);
               ret = orwl_invalid;
             }
           }

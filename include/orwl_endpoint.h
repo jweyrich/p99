@@ -32,10 +32,10 @@ typedef struct auth_sock auth_sock;
 
 typedef void (*server_cb_t)(auth_sock *);
 
-struct orwl_rq;
+struct orwl_mirror;
 
 #ifndef __cplusplus
-typedef struct orwl_rq orwl_rq;
+typedef struct orwl_mirror orwl_mirror;
 #endif
 
 struct orwl_wq;

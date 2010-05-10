@@ -12,22 +12,22 @@
 #include "orwl_remote_queue.h"
 #include "orwl_server.h"
 
-orwl_rq *orwl_rq_init(orwl_rq *rq, orwl_endpoint h, orwl_endpoint t);
-DEFINE_DEFARG(orwl_rq_init, , (orwl_endpoint){{0}}, (orwl_endpoint){{0}});
+orwl_mirror *orwl_mirror_init(orwl_mirror *rq, orwl_endpoint h, orwl_endpoint t);
+DEFINE_DEFARG(orwl_mirror_init, , (orwl_endpoint){{0}}, (orwl_endpoint){{0}});
 
-void orwl_rq_destroy(orwl_rq *rq);
+void orwl_mirror_destroy(orwl_mirror *rq);
 
-DEFINE_NEW_DELETE(orwl_rq);
+DEFINE_NEW_DELETE(orwl_mirror);
 
-orwl_rh *orwl_rh_init(orwl_rh *rh);
-void orwl_rh_destroy(orwl_rh *rh);
+orwl_handle *orwl_handle_init(orwl_handle *rh);
+void orwl_handle_destroy(orwl_handle *rh);
 
-DEFINE_NEW_DELETE(orwl_rh);
+DEFINE_NEW_DELETE(orwl_handle);
 
-orwl_state orwl_acquire(orwl_rh* rh);
-orwl_state orwl_test(orwl_rh* rh);
+orwl_state orwl_acquire(orwl_handle* rh);
+orwl_state orwl_test(orwl_handle* rh);
 
-orwl_state orwl_request_excl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed) {
+orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_invalid;
   MUTUAL_EXCLUDE(rq->mut) {
     if (!rh->wh) {
@@ -40,7 +40,7 @@ orwl_state orwl_request_excl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed) {
         /* Send the insertion request with the id of cli_wh to the other
            side. As result retrieve the ID on the other side that is to be
            released when we release here. */
-        rh->svrID = orwl_rpc(&rq->there, seed, auth_sock_request_excl,
+        rh->svrID = orwl_rpc(&rq->there, seed, auth_sock_write_request,
                              rq->there.index,
                              (uintptr_t)cli_wh,
                              port2host(&rq->here.port)
@@ -64,7 +64,7 @@ orwl_state orwl_request_excl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed) {
   return state;
 }
 
-orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed) {
+orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_invalid;
   MUTUAL_EXCLUDE(rq->mut) {
     if (!rh->wh) {
@@ -80,7 +80,7 @@ orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed) {
       /* Send the insertion request with the two ids of the handles to
          the other side. As result retrieve the ID on the other side
          that is to be released when we release here. */
-      rh->svrID = orwl_rpc(&rq->there, seed, auth_sock_request_incl,
+      rh->svrID = orwl_rpc(&rq->there, seed, auth_sock_read_request,
                            rq->there.index,
                            (uintptr_t)cli_wh,
                            wh_inc ? wh_inc->svrID : 0,
@@ -139,14 +139,14 @@ orwl_state orwl_request_incl(orwl_rq *rq, orwl_rh* rh, rand48_t *seed) {
   return state;
 }
 
-orwl_state orwl_release(orwl_rh* rh, rand48_t *seed) {
+orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_valid;
   assert(rh);
   assert(rh->wh);
   /* To be able to re-initialize rh in the middle of the procedure,
      tore all necessary data on the stack.*/
   orwl_wh* wh = rh->wh;
-  orwl_rq* rq = rh->rq;
+  orwl_mirror* rq = rh->rq;
   uint64_t svrID = rh->svrID;
   orwl_endpoint there = rq->there;
   orwl_wq* wq = wh->location;
@@ -158,14 +158,14 @@ orwl_state orwl_release(orwl_rh* rh, rand48_t *seed) {
     assert(wq->head == wh);
     remain = wh->tokens;
     if (remain != 1) {
-      orwl_rh_init(rh);
+      orwl_handle_init(rh);
       pthread_mutex_unlock(&rq->mut);
     }
     orwl_wh_unload(wh);
   }
   if (remain == 1) {
     state = orwl_wh_release(wh);
-    orwl_rh_init(rh);
+    orwl_handle_init(rh);
     pthread_mutex_unlock(&rq->mut);
     orwl_rpc(&there, seed, auth_sock_release, svrID);
     /* We should be the last to have a reference to this handle so
@@ -175,8 +175,8 @@ orwl_state orwl_release(orwl_rh* rh, rand48_t *seed) {
   return state;
 }
 
-DEFINE_AUTH_SOCK_FUNC(auth_sock_request_excl, uint64_t wqPOS, uint64_t whID, uint64_t port) {
-  AUTH_SOCK_READ(Arg, auth_sock_request_excl, uint64_t wqPOS, uint64_t whID, uint64_t port);
+DEFINE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port) {
+  AUTH_SOCK_READ(Arg, auth_sock_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port);
   Arg->ret = 0;
   if (wqPOS < Arg->srv->max_queues) {
     /* extract wq and the remote wh ID */
@@ -203,10 +203,10 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_request_excl, uint64_t wqPOS, uint64_t whID, uin
 }
 
 
-DEFINE_AUTH_SOCK_FUNC(auth_sock_request_incl, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port) {
+DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port) {
   orwl_state state = orwl_invalid;
   /* Extract wq and the remote handle IDs from Arg */
-  AUTH_SOCK_READ(Arg, auth_sock_request_incl, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port);
+  AUTH_SOCK_READ(Arg, auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port);
   Arg->ret = 0;
   if (wqPOS < Arg->srv->max_queues) {
     /* extract wq and the remote wh ID */
@@ -219,7 +219,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_request_incl, uint64_t wqPOS, uint64_t cliID, ui
     bool piggyback = false;
     orwl_wh *srv_wh = NULL;
     if (svrID) {
-      report(1, "inclusive request (%p) 0x%jx 0x%jx", srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
+      report(1, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
       state = orwl_wq_request(srv_wq, &srv_wh, 2);
       piggyback = (svrID == (uintptr_t)srv_wh);
     }
@@ -227,7 +227,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_request_incl, uint64_t wqPOS, uint64_t cliID, ui
       srv_wh = NEW(orwl_wh);
       /* mark it as being inclusive */
       srv_wh->svrID = (uintptr_t)srv_wh;
-      report(1, "inclusive request (%p) 0x%jx 0x%jx", srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
+      report(1, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
       state = orwl_wq_request(srv_wq, &srv_wh, 2);
     }
     if (state != orwl_requested) {
@@ -242,15 +242,15 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_request_incl, uint64_t wqPOS, uint64_t cliID, ui
          we establish a new pair of client-server handles. */
       if (svrID == (uintptr_t)srv_wh) {
         assert(piggyback);
-        report(1, "unloading server handle %p for existing pair", srv_wh);
+        report(1, "unloading server handle %p for existing pair", (void*)srv_wh);
         MUTUAL_EXCLUDE(srv_wq->mut) {
           orwl_wh_unload(srv_wh, 2);
         }
       } else {
-        report(1, "waiting to acquire server handle %p 0x%jx (0x%jX)", srv_wh, cliID, (uintmax_t)svrID);
+        report(1, "waiting to acquire server handle %p 0x%jx (0x%jX)", (void*)srv_wh, cliID, (uintmax_t)svrID);
         // wait until the lock on wh is obtained
         state = orwl_wh_acquire(srv_wh);
-        report(1, "acquired server handle %p (0x%jX)", srv_wh, (uintmax_t)svrID);
+        report(1, "acquired server handle %p (0x%jX)", (void*)srv_wh, (uintmax_t)svrID);
         // send a request to the other side to remove the remote wh ID
         orwl_rpc(&ep, seed_get(), auth_sock_release, cliID);
       }
@@ -283,6 +283,6 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
 }
 
 
-DEFINE_DEFARG(orwl_request_excl, , , seed_get());
-DEFINE_DEFARG(orwl_request_incl, , , seed_get());
+DEFINE_DEFARG(orwl_write_request, , , seed_get());
+DEFINE_DEFARG(orwl_read_request, , , seed_get());
 DEFINE_DEFARG(orwl_release, , seed_get());

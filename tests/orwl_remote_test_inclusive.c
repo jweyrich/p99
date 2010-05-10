@@ -21,8 +21,8 @@
 #include "orwl_callback.h"
 #include "orwl_server.h"
 
-static orwl_rq location;
-static orwl_rh *handle = NULL;
+static orwl_mirror location;
+static orwl_handle *handle = NULL;
 static size_t phases = 4;
 
 #define threadof(x) ((((size_t)x) + orwl_np) % orwl_np)
@@ -96,8 +96,8 @@ DEFINE_THREAD(arg_t) {
     orwl_state ostate = orwl_invalid;
     for (size_t try = 0; ostate == orwl_invalid; ++try) {
       ostate = (orwl_phase % 3
-                ? orwl_request_incl(&location, handle + preq, &seed)
-                : orwl_request_excl(&location, handle + preq, &seed)
+                ? orwl_read_request(&location, handle + preq, &seed)
+                : orwl_write_request(&location, handle + preq, &seed)
                 );
       if (ostate == orwl_requested || ostate == orwl_acquired) break;
       progress(!orwl_mynum,  try, "request, handle %zu, %s",
@@ -154,7 +154,7 @@ int main(int argc, char **argv) {
     orwl_endpoint_parse(&other, argv[3]);
 
     /* Initialization of the static location */
-    orwl_rq_init(&location, srv->host.ep, other);
+    orwl_mirror_init(&location, srv->host.ep, other);
 
     /* wait until the other side is up. */
     /* ep.port is already in host order */
@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
       if (ret) break;
       sleepfor(0.2);
     }
-    handle = orwl_rh_vnew(2 * orwl_np);
+    handle = orwl_handle_vnew(2 * orwl_np);
 
 
     /* Half of the threads are created detached and half joinable */
@@ -207,9 +207,9 @@ int main(int argc, char **argv) {
     report(1, "freeing id");
     pthread_t_vdelete(id);
     report(1, "freeing handle");
-    orwl_rh_vdelete(handle);
+    orwl_handle_vdelete(handle);
     report(1, "destroying location");
-    orwl_rq_destroy(&location);
+    orwl_mirror_destroy(&location);
   }  else {
     for (size_t t = 0; ; ++t) {
       ret = pthread_kill(srv_id, 0);
