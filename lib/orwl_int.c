@@ -54,7 +54,7 @@ DEFINE_ARI2STR(signed);
 DEFINE_ARI2STR(unsigned);
 DEFINE_ARI2STR(long);
 DEFINE_ARI2STR(ulong);
-DEFINE_ARI2STR(llong);
+DEFINE_ARI2STR(sllong);
 DEFINE_ARI2STR(ullong);
 
 _DEFINE_ARI2STR(void_cptr, p);

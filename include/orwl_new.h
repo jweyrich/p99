@@ -29,7 +29,9 @@
 /**
  ** @brief Add some indications to a @c _init documentation.
  */
-#define DOCUMENT_INIT(T) /*! @brief Initialize a variable of type T @see T ## _new needs a version of this that takes just the T* as argument. */
+#define DOCUMENT_INIT(T)                                                \
+/*! @brief Initialize a variable of type T */                           \
+/*! @see NEW needs a version of this that takes just the T* as argument. */
 
 /**
  ** @brief Add some indications to a @c _destroy documentation.
@@ -149,7 +151,7 @@ void _vdelete(void *p) {
 #define DECLARE_VNEW(T)                                                 \
 /*! @brief Operator @c new[] for class T   **/                          \
   /*! @see T ## _init  is supposed to exist and to be callable with just one T* argument **/ \
-  /*! @see T ## _vdelete                      **/                       \
+  /*! @see T ## _vdelete @b must be used to de-allocate such a variable **/ \
 inline                                                                  \
 T *T ## _vnew(size_t n) {                                               \
   size_t N = n*sizeof(T);                                               \
@@ -165,7 +167,7 @@ T *T ## _vnew(size_t n) {                                               \
 #define DECLARE_VDELETE(T)                                              \
 /*! @brief Operator @c delete[] for class T   **/                       \
   /*! @see T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
-  /*! @see T ## _vnew                        **/                        \
+  /*! @see T ## _vnew @b must have been used to allocate this variable **/ \
 inline                                                                  \
 void T ## _vdelete(T *vec) {                                            \
   if (vec) {                                                            \
@@ -178,15 +180,10 @@ void T ## _vdelete(T *vec) {                                            \
 }
 
 #define DECLARE_NEW_DELETE(T)                                    \
-  /*DECLARE_NEW(T) */                                            \
 DECLARE_DELETE(T)                                                \
 DECLARE_VDELETE(T)                                               \
 DECLARE_VNEW(T)                                                  \
 enum _tame_ansi_c_semicolon_message_ ## T { _new_delete_ ## T }
-
-#define DEFINE_NEW(T) 
-
-//T *T ## _new(void)
 
 #define DEFINE_DELETE(T) void T ## _delete(T *el)
 #define DEFINE_VNEW(T) T *T ## _vnew(size_t n)

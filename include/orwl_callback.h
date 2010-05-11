@@ -19,7 +19,7 @@
 
 /**
  ** @brief Declare that a type @a T acts as a callback that is
- ** piggybacked on a orwl_wh_t.
+ ** piggybacked on a ::orwl_wh.
  **
  ** In a .c file you must define the callback function by means of the
  ** DEFINE_CALLBACK() macro. If your type @a T is cb_t, say, you then

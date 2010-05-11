@@ -155,9 +155,6 @@ struct orwl_wh {
   uint64_t svrID;
 };
 
-#define orwl_wh_garb ((orwl_wh*)(TONES(uintptr_t)))
-#define orwl_wq_garb ((orwl_wq*)(TONES(uintptr_t)))
-
 #define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .clock = 1 }
 
   DOCUMENT_INIT(orwl_wq)
@@ -190,8 +187,8 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_wq);
 inline
 int orwl_wh_valid(orwl_wh *wh) {
   return wh
-    && wh->location != orwl_wq_garb
-    && wh->next != orwl_wh_garb;
+    && wh->location != TGARB(orwl_wq*)
+    && wh->next != TGARB(orwl_wh*);
 }
 
   /**
@@ -215,8 +212,8 @@ int orwl_wh_idle(orwl_wh *wh) {
    **/
 inline
 int orwl_wq_valid(orwl_wq *wq) {
-  return wq->head != orwl_wh_garb
-    && wq->tail != orwl_wh_garb;
+  return wq->head != TGARB(orwl_wh*)
+    && wq->tail != TGARB(orwl_wh*);
 }
 
   /**
@@ -239,8 +236,9 @@ int orwl_wq_idle(orwl_wq *wq) {
   DOCUMENT_INIT(orwl_wh)
   FSYMB_DOCUMENTATION(orwl_wh_init)
 orwl_wh* orwl_wh_init
-(orwl_wh *wh,
- const pthread_condattr_t *attr /*!< [in] defaults to @c NULL */);
+  (orwl_wh *wh, /*!< the handle to be initialized */
+   const pthread_condattr_t *attr /*!< [in] defaults to @c NULL */
+   );
 
 #ifndef DOXYGEN
   PROTOTYPE(orwl_wh*, orwl_wh_init, orwl_wh *, const pthread_condattr_t *);
@@ -293,7 +291,9 @@ typedef struct {
  ** successful.
  **/
   VA_ARGS_DOCUMENTATION(orwl_wq_request)
-orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number));
+  orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, /*!< the queue to act on */
+                                    VA_ARGS(number)
+                                    );
 
 #ifndef DOXYGEN
 #define orwl_wq_request(WQ, ...) FSYMB(orwl_wq_request)(WQ, LEN_MODARG(orwl_wq_request, 2, __VA_ARGS__))
@@ -304,7 +304,10 @@ VA_TYPES(orwl_wq_request, orwl_wh**, int64_t);
    ** @brief Insert a handle into the queue where we know that the
    ** lock is already held.
    **/
-void orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch);
+void orwl_wq_request_locked(orwl_wq *wq,  /*!< the locked queue to act on */
+                            orwl_wh *wh,  /*!< the handle to be inserted */
+                            uint64_t howmuch /*!< the number of tokies to place */
+                            );
 
 /**
  ** @brief Acquire a pending request on @a wh. Blocking until the
@@ -319,8 +322,9 @@ void orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch);
  **/
   FSYMB_DOCUMENTATION(orwl_wh_acquire)
 orwl_state orwl_wh_acquire
-  (orwl_wh *wh,
-   uint64_t howmuch    /*!< defaults to @c 1 */);
+  (orwl_wh *wh,       /*!< the handle to act upon */
+   uint64_t howmuch   /*!< defaults to @c 1 */
+   );
 
 #ifndef DOXYGEN
   PROTOTYPE(orwl_state, orwl_wh_acquire, orwl_wh*, uint64_t);
@@ -332,7 +336,9 @@ DECLARE_DEFARG(orwl_wh_acquire, , 1);
  ** Of internal use. Supposes that @a wh is in the queue of @a wq and
  ** that the lock on @a wq is taken by this thread.
  **/
-orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq);
+  orwl_state orwl_wh_acquire_locked(orwl_wh *wh, /*!< the handle to act upon */
+                                    orwl_wq *wq  /*!< the locked queue in which to insert */
+                                    );
 
 
 /**
@@ -348,7 +354,7 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq);
  **/
   FSYMB_DOCUMENTATION(orwl_wh_test)
 orwl_state orwl_wh_test
-  (orwl_wh *wh,
+  (orwl_wh *wh /*!< the handle to act upon */,
    uint64_t howmuch  /*!< defaults to 0 */);
 
 #ifndef DOXYGEN
@@ -364,7 +370,7 @@ DECLARE_DEFARG(orwl_wh_test, , 0);
  ** @return @c orwl_invalid if @a wh was invalid, or if there was no
  ** request acquired for @a wh. Otherwise it returns @c orwl_valid.
  **/
-orwl_state orwl_wh_release(orwl_wh *wh);
+orwl_state orwl_wh_release(orwl_wh *wh /*!< the handle to act upon */);
 
   /** @brief load @a howmuch additional tokens on @a wh.
    ** 
@@ -375,7 +381,7 @@ orwl_state orwl_wh_release(orwl_wh *wh);
   FSYMB_DOCUMENTATION(orwl_wh_load)
 inline
 uint64_t orwl_wh_load
-  (orwl_wh *wh,
+  (orwl_wh *wh /*!< the handle to act upon */,
    uint64_t howmuch  /*!< defaults to 1 */) {
     wh->tokens += howmuch;
     return howmuch;
@@ -389,7 +395,7 @@ DECLARE_DEFARG(orwl_wh_load, , 1);
 #endif
 
   /** @brief unload @a howmuch additional tokens from @a wh.
-   ** 
+   **
    ** This supposes that the corresponding @c wq != NULL and that @c
    ** wq is already locked. If by this action the token count drops to
    ** zero, eventual waiters for this @a wh are notified.
@@ -398,7 +404,7 @@ DECLARE_DEFARG(orwl_wh_load, , 1);
   FSYMB_DOCUMENTATION(orwl_wh_unload)
 inline
 uint64_t orwl_wh_unload
-  (orwl_wh *wh,
+  (orwl_wh *wh /*!< the handle to act upon */,
    uint64_t howmuch  /*!< defaults to 1 */) {
     if (wh->tokens < howmuch) howmuch = wh->tokens;
     wh->tokens -= howmuch;

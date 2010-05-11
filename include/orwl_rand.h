@@ -24,6 +24,9 @@ uint64_t orwl_mix(uint64_t a, uint64_t b);
 
 uint64_t orwl_challenge(uint64_t a);
 
+/**
+ ** @brief Get the micro seconds since epoch.
+ **/
 inline
 uint64_t useconds(void) {
   struct timeval t;
@@ -35,6 +38,12 @@ uint64_t useconds(void) {
 }
 
 
+/**
+ ** @brief A seed class that is compatible with the @c rand48 family
+ ** of pseudo random generators
+ **
+ ** @see seed_get
+ **/
 struct rand48_t {
   unsigned short x[3];
 };
@@ -45,18 +54,26 @@ typedef struct rand48_t rand48_t;
 
 #define RAND48_T_INITIALIZER { { useconds(), getpid(), pthread_self() } }
 
+DOCUMENT_INIT(rand48_t)
+FSYMB_DOCUMENTATION(rand48_t)
 inline
-rand48_t *rand48_t_init(rand48_t *seed, unsigned short x0, unsigned short x1, unsigned short x2) {
+rand48_t *rand48_t_init(rand48_t *seed,     /*!< [out] the object to iniialize */
+                        unsigned short x0,  /*!< [in] defaults to a time value */
+                        unsigned short x1,  /*!< [in] defaults to the process id */
+                        unsigned short x2   /*!< [in] defaults to the thread id */
+                        ) {
   seed->x[0] = x0;
   seed->x[1] = x1;
   seed->x[2] = x2;
   return seed;
 }
 
+#ifndef DOXYGEN
 inline
 PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
 #define rand48_t_init(...) CALL_WITH_DEFAULTS(rand48_t_init, 4, __VA_ARGS__)
 DECLARE_DEFARG(rand48_t_init, , useconds(), getpid(), pthread_self());
+#endif
 
 inline
 void rand48_t_destroy(rand48_t *seed){
@@ -65,8 +82,10 @@ void rand48_t_destroy(rand48_t *seed){
 
 DECLARE_NEW_DELETE(rand48_t);
 
-/** @brief Give access to a seed variable that is specific to each
-    thread. */
+/**
+ ** @brief Give access to a seed variable that is specific to each
+ ** thread.
+ **/
 DECLARE_THREAD_VAR(rand48_t, seed_get);
 
 

@@ -29,11 +29,16 @@ struct orwl_server {
   .max_connections = MAXC                                       \
 }
 
-orwl_server* orwl_server_init(orwl_server *serv,
-                              size_t max_connections,
-                              size_t max_queues,
-                              in_addr_t addr,
-                              in_port_t port);
+orwl_server*
+orwl_server_init(orwl_server *serv,       /*!< [out] the object to iniialize */
+                 size_t max_connections,  /*!< [in] maximum socket queue length,
+                                            defaults to 20 */
+                 size_t max_queues,       /*!< [in] the maximum number of locations,
+                                            defaults to 0 */
+                 in_addr_t addr,          /*!< [in] defaults to the
+                                             null address */
+                 in_port_t port           /*!< [in] defaults to 0 */
+                 );
 
 #ifndef DOXYGEN
 PROTOTYPE(orwl_server*, orwl_server_init, orwl_server *, size_t, size_t, in_addr_t, in_port_t);
@@ -50,6 +55,12 @@ DECLARE_NEW_DELETE(orwl_server);
 DECLARE_THREAD(orwl_server);
 
 void orwl_server_close(orwl_server *serv);
+
+void
+orwl_server_terminate(orwl_server *,   /*!< the server to terminate */
+                       rand48_t* seed  /*!< [in] defaults to a thread local seed */
+                      );
+
 
 #ifndef DOXYGEN
 PROTOTYPE(void, orwl_server_terminate, orwl_server *, rand48_t *);

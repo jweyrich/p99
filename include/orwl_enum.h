@@ -48,7 +48,7 @@ typedef enum { __VA_ARGS__ ,                                            \
 } T;                                                                    \
 extern char const* _ ## T ## _names[T ## _amount];                      \
 DECLARE_ONCE(T);                                                        \
-/*! @brief Get a string with the name of the T constant @a x */         \
+ /*! @brief Get a string with the name of @a x. @see T */               \
 inline                                                                  \
 char const* T ## _getname(T x) {                                        \
   unsigned pos = x;                                                     \

@@ -37,7 +37,10 @@ PROTOTYPE(orwl_mirror *, orwl_mirror_init, orwl_mirror *, orwl_endpoint, orwl_en
 #endif
 
 inline
-orwl_mirror *orwl_mirror_init(orwl_mirror *rq, orwl_endpoint h, orwl_endpoint t) {
+orwl_mirror *orwl_mirror_init(orwl_mirror *rq, /*!< [out] the object to iniialize */
+                              orwl_endpoint h, /*!< [in] local, defaults to a temp variable */
+                              orwl_endpoint t  /*!< [in] remote, defaults to a temp variable */
+                              ) {
   pthread_mutex_init(&rq->mut);
   orwl_wq_init(&rq->local);
   rq->here = h;
@@ -96,6 +99,25 @@ DECLARE_NEW_DELETE(orwl_handle);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
 
+
+orwl_state orwl_write_request(orwl_mirror* location, /*!< [in,out] the location for the request */
+                              orwl_handle* handle,   /*!< [in,out] the handle for the request */
+                              rand48_t* seed         /*!< [in] defaults to a thread local seed */
+                              );
+
+orwl_state orwl_read_request(orwl_mirror* location, /*!< [in,out] the location for the request */
+                             orwl_handle* handle,   /*!< [in,out] the handle for the request */
+                             rand48_t* seed         /*!< [in] defaults to a thread local seed */
+                             );
+
+orwl_state orwl_release(orwl_handle* handle,   /*!< [in,out] the handle to be released */
+                        rand48_t* seed         /*!< [in] defaults to a thread local seed */
+                        );
+
+orwl_state orwl_cancel(orwl_handle* handle,   /*!< [in,out] the handle to be canceled */
+                       rand48_t* seed         /*!< [in] defaults to a thread local seed */
+                       );
+
 #ifndef DOXYGEN
 PROTOTYPE(orwl_state, orwl_write_request, orwl_mirror*, orwl_handle*, rand48_t*);
 #define orwl_write_request(...)  CALL_WITH_DEFAULTS(orwl_write_request, 3, __VA_ARGS__)
@@ -108,6 +130,10 @@ DECLARE_DEFARG(orwl_read_request, , , seed_get());
 PROTOTYPE(orwl_state, orwl_release, orwl_handle*, rand48_t*);
 #define orwl_release(...)  CALL_WITH_DEFAULTS(orwl_release, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_release, , seed_get());
+
+PROTOTYPE(orwl_state, orwl_cancel, orwl_handle*, rand48_t*);
+#define orwl_cancel(...)  CALL_WITH_DEFAULTS(orwl_cancel, 2, __VA_ARGS__)
+DECLARE_DEFARG(orwl_cancel, , seed_get());
 #endif
 
 inline

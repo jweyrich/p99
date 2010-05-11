@@ -24,7 +24,11 @@
 #include "orwl_host.h"
 
 inline
-void orwl_hton(uint32_t *n, uint64_t const *h, size_t l) {
+void
+orwl_hton(uint32_t *n,        /*!< [out] array of length 2 @a l */
+          uint64_t const *h,  /*!< [in] array of length @a l */
+          size_t l            /*!< [in] defaults to 1 */
+          ) {
   for (size_t i = 0; i < l; ++i) {
     n[0] = htonl((uint32_t)h[0]);
     n[1] = htonl((uint32_t)(h[0] >> 32));
@@ -41,7 +45,11 @@ DECLARE_DEFARG(orwl_hton, , , 1);
 #endif
 
 inline
-void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l) {
+void
+orwl_ntoh(uint64_t* h,       /*!< [out] array of length @a l */
+          uint32_t const *n, /*!< [in] array of length 2 @a l */
+          size_t l           /*!< [in] defaults to 1 */
+          ) {
   for (size_t i = 0; i < l; ++i) {
     h[0] = ((uint64_t)ntohl(n[0])) | (((uint64_t)ntohl(n[1])) << 32);
     n += 2;
@@ -83,12 +91,13 @@ in_addr_t inet4_addr(void) {
 }
 
 inline
-char const* orwl_inet_ntop(struct sockaddr const* addr, char* buf, size_t size) {
+char const* orwl_inet_ntop(struct sockaddr const* addr,
+                           char* buf, size_t size) {
   void const* src =
     ((addr->sa_family) == AF_INET
-     ? (void*)&(((struct sockaddr_in *)(addr))->sin_addr)
+     ? (void const*)&(((struct sockaddr_in const*)(addr))->sin_addr)
      :  ((addr->sa_family) == AF_INET6
-         ? (void*)&(((struct sockaddr_in6 *)(addr))->sin6_addr)
+         ? (void const*)&(((struct sockaddr_in6 const*)(addr))->sin6_addr)
          : NULL)
      );
   if (src) inet_ntop(addr->sa_family, src, buf, size);
@@ -129,10 +138,12 @@ struct auth_sock {
 };
 
 inline
-auth_sock* auth_sock_init(auth_sock *sock,
-                                  int fd,
-                                  struct orwl_server* srv,
-                                  size_t len) {
+auth_sock*
+auth_sock_init(auth_sock *sock,         /*!< [out] */
+               int fd,                  /*!< [in] file descriptor, defaults to -1 */
+               struct orwl_server* srv, /*!< [in,out] defaults to @c NULL */
+               size_t len               /*!< [in] the length of the message 0 */
+               ) {
   memset(sock, 0, sizeof(auth_sock));
   sock->fd = fd;
   sock->srv = srv;
@@ -187,7 +198,10 @@ addr_t getpeer(auth_sock *Arg);
 
 
 inline
-char const* hostname(char *buffer, size_t len) {
+char const*
+hostname(char buffer[static 64], /*!< [out] defaults to a temporary */
+         size_t len              /*!< [in] maximum length of the name (64) */
+         ) {
   gethostname(buffer, len);
   return buffer;
 }

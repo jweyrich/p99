@@ -30,8 +30,6 @@ struct auth_sock;
 typedef struct auth_sock auth_sock;
 #endif
 
-typedef void (*server_cb_t)(auth_sock *);
-
 struct orwl_mirror;
 
 #ifndef __cplusplus
@@ -74,6 +72,9 @@ typedef union addr_t addr_t;
 typedef union port_t port_t;
 #endif
 
+/**
+ ** @brief Represent a remote ORWL location.
+ **/
 struct orwl_endpoint {
   port_t port;
   uint64_t index;
@@ -88,8 +89,12 @@ struct orwl_endpoint {
       .port = PORT_T_INITIALIZER(NPORT),                \
       }
 
+DOCUMENT_INIT(addr_t)
+FSYMB_DOCUMENTATION(addr_t)
 inline
-addr_t* addr_t_init(addr_t *A, in_addr_t I) {
+addr_t* addr_t_init(addr_t *A,  /*!< the object to initialize */
+                    in_addr_t I /*!< defaults to the null address */
+                    ) {
   A->a[0] = TNULL(in_addr_t);
   A->a[1] = TNULL(in_addr_t);
   A->a[2] = htonl(0x0000FFFF);
@@ -121,6 +126,9 @@ struct in_addr addr2net(addr_t const*A) {
   return ret;
 }
 
+/**
+ ** @brief Return the IPv6 address stored in @a A.
+ **/
 inline
 struct in6_addr addr2net6(addr_t const*A) {
   struct in6_addr ret = { .s6_addr[0] = 0 };
@@ -150,8 +158,12 @@ port_t host2port(uint64_t A) {
   return ret;
 }
 
+DOCUMENT_INIT(port_t)
+FSYMB_DOCUMENTATION(port_t)
 inline
-port_t* port_t_init(port_t *A, in_port_t P) {
+port_t* port_t_init(port_t *A,   /*!< the object to initialize */
+                    in_port_t P  /*!< defaults to 0 */
+                    ) {
   *A = net2port(P);
   return A;
 }
@@ -167,10 +179,10 @@ DOCUMENT_INIT(orwl_endpoint)
 FSYMB_DOCUMENTATION(orwl_endpoint_init)
 inline
 orwl_endpoint* orwl_endpoint_init
-(orwl_endpoint *endpoint,
- in_addr_t addr,
- in_port_t port,
- uint64_t index
+(orwl_endpoint *endpoint, /*!< the object to initialize */
+ in_addr_t addr,          /*!< defaults to the null address */
+ in_port_t port,          /*!< defaults to 0 */
+ uint64_t index           /*!< defaults to 0 */
  ) {
   addr_t_init(&endpoint->addr, addr);
   port_t_init(&endpoint->port, port);
@@ -195,8 +207,14 @@ DECLARE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t), TNULL(u
 
 DECLARE_NEW_DELETE(orwl_endpoint);
 
-orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name);
-char const* orwl_endpoint_print(orwl_endpoint const* ep, char name[static 128]);
+orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, /*!< [out] the object to initialize */
+                                   char const* name   /*!< [in] the string to parse */
+                                   );
+
+
+char const* orwl_endpoint_print(orwl_endpoint const* ep, /*!< [in] the object to interpret */
+                                char name[static 128]    /*!< [out] the string to initialize */
+                                );
 
 #ifndef DOXYGEN
 PROTOTYPE(char const*, orwl_endpoint_print, orwl_endpoint const*, char*);

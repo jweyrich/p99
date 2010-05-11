@@ -45,8 +45,8 @@ void orwl_wq_destroy(orwl_wq *wq) {
   assert(!wq->head);
   assert(!wq->tail);
   pthread_mutex_destroy(&wq->mut);
-  wq->head = orwl_wh_garb;
-  wq->tail = orwl_wh_garb;
+  wq->head = TGARB(orwl_wh*);
+  wq->tail = TGARB(orwl_wh*);
   wq->clock = TONES(uint64_t);
 }
 
@@ -77,8 +77,8 @@ void orwl_wh_destroy(orwl_wh *wh) {
   assert(!wh->location);
   assert(!wh->next);
   pthread_cond_destroy(&wh->cond);
-  wh->location = orwl_wq_garb;
-  wh->next = orwl_wh_garb;
+  wh->location = TGARB(orwl_wq*);
+  wh->next = TGARB(orwl_wh*);
   wh->priority = TONES(int64_t);
 }
 

@@ -19,6 +19,10 @@ struct orwl_host;
 
 typedef struct orwl_host orwl_host;
 
+/**
+ ** @brief List element to hold the hosts to which an ::orwl_server
+ ** has been connected.
+ **/
 struct orwl_host {
   pthread_mutex_t mut;
   orwl_endpoint ep;
@@ -39,7 +43,10 @@ void orwl_host_connect(orwl_host *th, orwl_host *q);
 void orwl_host_disconnect(orwl_host *th);
 
 inline
-orwl_host* orwl_host_init(orwl_host *th, in_addr_t addr, in_port_t port) {
+orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
+                          in_addr_t addr, /*!< [in] defaults to the null address */
+                          in_port_t port  /*!< [in] defaults to 0 */
+                          ) {
   th->next = th;
   th->prev = th;
   th->refs = 0;

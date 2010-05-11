@@ -1258,7 +1258,6 @@ INCLUDE_FILE_PATTERNS  =
 # instead of the = operator.
 
 PREDEFINED             = FSYMB(x)=x			\
-                         DECLARE_NEW_DELETE(X,Y,Z,R,S,T)=		\
                          DECLARE_DEFARG(X,Y,Z,R,S,T)=		\
                          CALL_WITH_DEFAULTS(X,Y,Z,R,S,T)= \
                          _NARG_64(X)=			\

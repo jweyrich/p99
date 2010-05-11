@@ -144,7 +144,7 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   assert(rh);
   assert(rh->wh);
   /* To be able to re-initialize rh in the middle of the procedure,
-     tore all necessary data on the stack.*/
+     store all necessary data on the stack.*/
   orwl_wh* wh = rh->wh;
   orwl_mirror* rq = rh->rq;
   uint64_t svrID = rh->svrID;
@@ -171,6 +171,62 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     /* We should be the last to have a reference to this handle so
        we may destroy it. */
     orwl_wh_delete(wh);
+  }
+  return state;
+}
+
+typedef orwl_wh _orwl_handle_cancel;
+
+_orwl_handle_cancel* _orwl_handle_cancel_init(_orwl_handle_cancel* H) {
+  return orwl_wh_init(H);
+}
+
+void _orwl_handle_cancel_destroy(_orwl_handle_cancel* H) {
+  orwl_wh_destroy(H);
+}
+
+DECLARE_NEW_DELETE(_orwl_handle_cancel);
+DEFINE_NEW_DELETE(_orwl_handle_cancel);
+
+DECLARE_THREAD(_orwl_handle_cancel);
+
+
+DEFINE_THREAD(_orwl_handle_cancel) {
+  orwl_wh_acquire(Arg);
+  orwl_wh_release(Arg);
+  /* We should be the last to have a reference to this handle so this
+     may be automatically destroyed when we exit this thread. */
+}
+
+orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
+  orwl_state state = orwl_valid;
+  if (!rh || !rh->wh) return orwl_valid;
+  /* To be able to re-initialize rh in the middle of the procedure,
+     store all necessary data on the stack.*/
+  orwl_mirror* rq = rh->rq;
+  orwl_wh* wh = rh->wh;
+  uint64_t svrID = rh->svrID;
+  orwl_endpoint there = rq->there;
+
+  orwl_wq* wq = wh->location;
+  /* Detect if we are the last user of this handle */
+  uint64_t remain = 0;
+  MUTUAL_EXCLUDE(rq->mut) {
+    MUTUAL_EXCLUDE(wq->mut) {
+      assert(wq == &rq->local);
+      remain = wh->tokens;
+      if (remain != 1) {
+        orwl_handle_init(rh);
+      }
+      orwl_wh_unload(wh);
+    }
+  }
+  if (remain == 1) {
+    orwl_rpc(&there, seed, auth_sock_release, svrID);
+    _orwl_handle_cancel_create(wh, NULL);
+    /* We should be the last to have a reference to this handle so
+       we may re-initialize it. */
+    orwl_handle_init(rh);
   }
   return state;
 }

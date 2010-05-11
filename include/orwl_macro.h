@@ -74,10 +74,30 @@
   IF_EMPTY(EXP)(0)(EXP),                                \
   __VA_ARGS__)
 
+#ifdef DOXYGEN
+/** 
+ ** @brief construct a @c double constant in decimal representation.
+ **
+ ** @param SIGN the sign of the constant, (+)
+ ** @param INT the integer part, (0)
+ ** @param FRAC the fractional part, (0)
+ ** @param ESIGN sign of the exponent, (+)
+ ** @param EXP exponent in decimal, (0)
+ **
+ ** So if all parameters are empty such as
+ ** @code
+ ** DEC_DOUBLE()
+ ** DEC(,,,,)
+ ** @endcode
+ ** this produces @c +0.0E+0
+ **/
+#define DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP)
+#else
 #define DEC_DOUBLE(...)                         \
   IF_DEC_GE(NARG(__VA_ARGS__), 6)               \
   (_DEC_DOUBLE(__VA_ARGS__))                    \
   (_DEC_DOUBLE(__VA_ARGS__,,,,,))
+#endif
 
 
 #define _HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP, ...)  \
@@ -91,11 +111,19 @@
   IF_EMPTY(BINEXP)(0)(BINEXP),                                  \
   __VA_ARGS__)
 
+#ifdef DOXYGEN
+/**
+ ** @brief construct a @c double constant in hexadecimal representation.
+ **
+ ** @see DEC_DOUBLE for the analog with decimal representation
+ **/
+#define HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP)
+#else
 #define HEX_DOUBLE(...)                         \
   IF_DEC_GE(NARG(__VA_ARGS__), 6)               \
   (_HEX_DOUBLE(__VA_ARGS__))                    \
   (_HEX_DOUBLE(__VA_ARGS__,,,,,))
-
+#endif
 
 #define _INV(N) PASTE(_variable_argument_list_must_be_divisible_by_, N)
 
@@ -449,7 +477,7 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
  ** @see VA_TYPES
  ** @see FSYMB
  **/
-#define VA_ARGS(X) size_t X, ...
+#define VA_ARGS(X) size_t X /*!< the number of arguments that follow */, ...
 
 #define VA_ARGS_DOCUMENTATION(NAME)                                     \
                                                                         \
@@ -597,6 +625,13 @@ NAME(IF_EMPTY(__VA_ARGS__)                              \
  ** Define a all-one-bits initialized constant of integer type @a T.
  **/
 #define TONES(T) (~TNULL(T))
+
+/**
+ ** @brief Invalidated pointer
+ **
+ ** Define a all-one-bits initialized constant of pointer type @a T.
+ **/
+#define TGARB(T) ((T)~TNULL(uintptr_t))
 
 /**
  ** @brief Signedness of a type
