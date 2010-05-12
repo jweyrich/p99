@@ -103,10 +103,10 @@
   /*! @see T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @see T ## _new                       **/                          \
 inline                                                                  \
-void T ## _delete(T *el) {                                              \
+void T ## _delete(T const*el) {                                         \
   if (el) {                                                             \
-    T ## _destroy(el);                                                  \
-    free(el);                                                           \
+    T ## _destroy((T*)el);                                              \
+    free((void*)el);                                                    \
   }                                                                     \
 }
 
@@ -125,20 +125,20 @@ void *_vnew(size_t n) {
 }
 
 inline
-uintmax_t *_vfind(void *p) {
-  uintmax_t *ret = ((uintmax_t*)p) - 1;
+uintmax_t const*_vfind(void const*p) {
+  uintmax_t const* ret = ((uintmax_t const*)p) - 1;
   return ret;
 }
 
 inline
-size_t _vlen(void *p) {
-  uintmax_t *ret = _vfind(p);
+size_t _vlen(void const*p) {
+  uintmax_t const*ret = _vfind(p);
   return ret[0];
 }
 
 inline
-void _vdelete(void *p) {
-  free(_vfind(p));
+void _vdelete(void const*p) {
+  free((void*)_vfind(p));
 }
 
 /**
@@ -169,11 +169,11 @@ T *T ## _vnew(size_t n) {                                               \
   /*! @see T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @see T ## _vnew @b must have been used to allocate this variable **/ \
 inline                                                                  \
-void T ## _vdelete(T *vec) {                                            \
+void T ## _vdelete(T const*vec) {                                       \
   if (vec) {                                                            \
     size_t n = _vlen(vec) / sizeof(T);                                  \
     for (size_t i = 0; i < n; ++i) {                                    \
-      T ## _destroy(vec + i);                                           \
+      T ## _destroy((T*)(vec + i));                                     \
     }                                                                   \
     _vdelete(vec);                                                      \
   }                                                                     \
@@ -185,9 +185,9 @@ DECLARE_VDELETE(T)                                               \
 DECLARE_VNEW(T)                                                  \
 enum _tame_ansi_c_semicolon_message_ ## T { _new_delete_ ## T }
 
-#define DEFINE_DELETE(T) void T ## _delete(T *el)
+#define DEFINE_DELETE(T) void T ## _delete(T const*el)
 #define DEFINE_VNEW(T) T *T ## _vnew(size_t n)
-#define DEFINE_VDELETE(T) void T ## _vdelete(T *vec)
+#define DEFINE_VDELETE(T) void T ## _vdelete(T const*vec)
 
 #define DEFINE_NEW_DELETE(T)                   \
 DEFINE_VNEW(T);                                \
