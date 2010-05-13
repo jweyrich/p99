@@ -23,13 +23,13 @@
 
 static uint32_t mycode = 0;
 
-typedef uint32_t U;
-#define Code(C0, C1, C2, C3) ((((U)C0) << 0) | (((U)C1) << 8) | (((U)C2) << 16) | (((U)C3) << 24))
+typedef uint32_t _U;
+#define _Code(C0, C1, C2, C3) ((((_U)C0) << 0) | (((_U)C1) << 8) | (((_U)C2) << 16) | (((_U)C3) << 24))
 
-#define ifCode(C0, C1, C2, C3)                          \
+#define _if_Code(C0, C1, C2, C3)                          \
 do {                                                    \
-  static uint32_t const c = Code(C0, C1, C2, C3);       \
-  if (ntohl(c) == Code(0, 1, 2, 3)) {                   \
+  static uint32_t const c = _Code(C0, C1, C2, C3);       \
+  if (ntohl(c) == _Code(0, 1, 2, 3)) {                   \
     mycode = c;                                         \
     goto END;                                           \
   }                                                     \
@@ -38,33 +38,33 @@ do {                                                    \
 
 DECLARE_ONCE_UPON(mycode);
 DEFINE_ONCE_UPON(mycode) {
-    ifCode(0, 1, 2, 3);
-    ifCode(0, 1, 3, 2);
-    ifCode(0, 2, 1, 3);
-    ifCode(0, 2, 3, 1);
-    ifCode(0, 3, 1, 2);
-    ifCode(0, 3, 2, 1);
+    _if_Code(0, 1, 2, 3);
+    _if_Code(0, 1, 3, 2);
+    _if_Code(0, 2, 1, 3);
+    _if_Code(0, 2, 3, 1);
+    _if_Code(0, 3, 1, 2);
+    _if_Code(0, 3, 2, 1);
 
-    ifCode(1, 0, 2, 3);
-    ifCode(1, 0, 3, 2);
-    ifCode(1, 2, 0, 3);
-    ifCode(1, 2, 3, 0);
-    ifCode(1, 3, 0, 2);
-    ifCode(1, 3, 2, 0);
+    _if_Code(1, 0, 2, 3);
+    _if_Code(1, 0, 3, 2);
+    _if_Code(1, 2, 0, 3);
+    _if_Code(1, 2, 3, 0);
+    _if_Code(1, 3, 0, 2);
+    _if_Code(1, 3, 2, 0);
 
-    ifCode(2, 0, 1, 3);
-    ifCode(2, 0, 3, 1);
-    ifCode(2, 1, 0, 3);
-    ifCode(2, 1, 3, 0);
-    ifCode(2, 3, 0, 1);
-    ifCode(2, 3, 1, 0);
+    _if_Code(2, 0, 1, 3);
+    _if_Code(2, 0, 3, 1);
+    _if_Code(2, 1, 0, 3);
+    _if_Code(2, 1, 3, 0);
+    _if_Code(2, 3, 0, 1);
+    _if_Code(2, 3, 1, 0);
 
-    ifCode(3, 0, 1, 2);
-    ifCode(3, 0, 2, 1);
-    ifCode(3, 1, 0, 2);
-    ifCode(3, 1, 2, 0);
-    ifCode(3, 2, 0, 1);
-    ifCode(3, 2, 1, 0);
+    _if_Code(3, 0, 1, 2);
+    _if_Code(3, 0, 2, 1);
+    _if_Code(3, 1, 0, 2);
+    _if_Code(3, 1, 2, 0);
+    _if_Code(3, 2, 0, 1);
+    _if_Code(3, 2, 1, 0);
  END:;
 }
 

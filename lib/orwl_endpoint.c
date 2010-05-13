@@ -75,7 +75,8 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
   return ep;
 }
 
-union sockaddr_alias {
+/* Needed to switch off alias testing by the compiler */
+union _sockaddr_alias {
   struct sockaddr_in in4;
   struct sockaddr_in6 in6;
   struct sockaddr in46;
@@ -91,7 +92,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
     hostname(host);
   } else {
     if (in4_addr.s_addr == TONES(in_addr_t)) {
-      union sockaddr_alias addr6 = { .in6 = { .sin6_family = AF_INET6 } };
+      union _sockaddr_alias addr6 = { .in6 = { .sin6_family = AF_INET6 } };
       memcpy(addr6.in6.sin6_addr.s6_addr, ep->addr.aaaa, 16);
       /* We need this, since sa_family is not necessarily atop of
          sin6_family */
@@ -100,7 +101,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
       orwl_inet_ntop(&addr6.in46, host + 1);
       strcat(host, "]");
     } else {
-      union sockaddr_alias addr4 = {
+      union _sockaddr_alias addr4 = {
         .in4 = {
           .sin_family = AF_INET,
           .sin_addr = in4_addr
@@ -117,6 +118,20 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
   return name;
 }
 
+/**
+ ** @brief Lauch a remote procedure call with function @a F.
+ **
+ ** @msc
+ **   caller,server,thread;
+ **   caller -> server [label="connect()", URL="\ref connect()"];
+ **   caller -> server [label="orwl_send_(chal1)", URL="\ref orwl_send_()"];
+ **   server -> caller [label="orwl_recv_(chal2, repl1)", URL="\ref orwl_recv_()"];
+ **   caller -> server [label="orwl_send_(len, repl2)", URL="\ref orwl_send_()"];
+ **   server -> thread [label="pthread_create()"];
+ **   caller -> thread [label="orwl_send_(mess)", URL="\ref orwl_send_()"];
+ **   thread -> caller [label="orwl_recv_(ret)", URL="\ref orwl_recv_()"];
+ ** @endmsc
+ **/
 uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size_t len) {
   uint64_t ret = TONES(uint64_t);
   int fd = -1;

@@ -44,7 +44,7 @@ struct orwl_endpoint;
  ** @brief Store IPv4 and IPv6 addresses in the same structure.
  **
  ** In case this is an IPv4 address the significant part is stored in
- ** word @c a[3], @c a[0] and @c a[1] then hold 0 and @c a[2] holds
+ ** word @c a[3]. @c a[0] and @c a[1] then hold the value 0 and @c a[2] holds
  ** the value @c 0x0000FFFF.
  **
  ** This should be used as an opaque type, don't use network addresses

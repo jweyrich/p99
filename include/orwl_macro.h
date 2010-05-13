@@ -518,7 +518,7 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 #define FSYMB_DOCUMENTATION(NAME)                                       \
 /*! @see CALL_WITH_DEFAULTS */                                          \
 /*! @see DECLARE_DEFARG */                                              \
-/*! This is actually implemented as a macro that helps to provide default arguments to the real function. */
+/*! @see NAME This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
 #define _wda_0(NAME, ...) __VA_ARGS__
 #define ____call_wda(NAME, K, ...) PASTE(_wda_, K)(NAME, __VA_ARGS__)
@@ -873,15 +873,22 @@ IF_DEC_LT(NARG(__VA_ARGS__),2)                          \
 #define TYPEDEFS(NAME, ...)                             \
 _TYPEDEFS(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
 
+#ifdef DOXYGEN
+#define _PROTOTYPE(RT, NAME, ...)                                       \
+/*! @remark This function might be hidden behind a macro :: ## NAME of the same name. */ \
+RT NAME(__VA_ARGS__)
+#define PROTOTYPE(...) _PROTOTYPE(__VA_ARGS__)
+#else
 #define _PROTOTYPE(RT, NAME, ...)                       \
   RT NAME(IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));    \
-  typedef RT PASTE(NAME, _sigtype_ret);                \
-  TYPEDEFS(PASTE(NAME, _sigtype_), __VA_ARGS__)
+  typedef RT PASTE2(NAME, _sigtype_ret);                \
+  TYPEDEFS(PASTE2(NAME, _sigtype_), __VA_ARGS__)
 
 #define PROTOTYPE(...)                          \
 IF_EQ_2(NARG(__VA_ARGS__))                      \
 (_PROTOTYPE(__VA_ARGS__, void))                 \
 (_PROTOTYPE(__VA_ARGS__))
+#endif
 
 
 #define _DAFD(NAME, X, N)                                       \

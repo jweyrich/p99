@@ -99,7 +99,7 @@
  ** @see DECLARE_NEW_DELETE
  **/
 #define DECLARE_DELETE(T)                                               \
-/*! @brief Operator @c delete for class T   **/                         \
+/*! @brief Operator @c delete for type T   **/                          \
   /*! @see T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @see T ## _new                       **/                          \
 inline                                                                  \
@@ -149,7 +149,7 @@ void _vdelete(void const*p) {
  ** initialized.
  **/
 #define DECLARE_VNEW(T)                                                 \
-/*! @brief Operator @c new[] for class T   **/                          \
+/*! @brief Operator @c new[] for type T   **/                           \
   /*! @see T ## _init  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @see T ## _vdelete @b must be used to de-allocate such a variable **/ \
 inline                                                                  \
@@ -165,7 +165,7 @@ T *T ## _vnew(size_t n) {                                               \
 }
 
 #define DECLARE_VDELETE(T)                                              \
-/*! @brief Operator @c delete[] for class T   **/                       \
+/*! @brief Operator @c delete[] for type T **/                          \
   /*! @see T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @see T ## _vnew @b must have been used to allocate this variable **/ \
 inline                                                                  \

@@ -17,6 +17,22 @@
 /**
  ** @brief A structure to regulate queues between different servers.
  **
+ ** @msc
+ **   orwl_server,orwl_mirror,cli_wh,orwl_handle;
+ **   cli_wh<-orwl_handle [label="orwl_request()", URL="\ref orwl_request()", ID="1"];
+ **   orwl_mirror<-cli_wh [label="orwl_request()", URL="\ref orwl_request()", ID="1"];
+ **   orwl_server<-orwl_mirror [label="orwl_rpc()"];
+ **   orwl_auth_sock<-orwl_server [label="orwl_auth_sock_request()"];
+ **   orwl_auth_sock;
+ **   orwl_auth_sock->orwl_server [label="Ack"];
+ **   orwl_server->orwl_mirror [label="orwl_rpc()"];
+ **   orwl_mirror->orwl_handle [label="Ack "];
+ **   cli_wh<-orwl_handle [label="orwl_acquire"];
+ **   orwl_auth_sock->cli_wh [label="acquired"];
+ **   cli_wh->orwl_handle [label="orwl_acquired"];
+ **   cli_wh<-orwl_handle [label="orwl_release"];
+ **   cli_wh<-orwl_handle [label="orwl_release"];
+ ** @endmsc
  ** @see orwl_handle
  **/
 struct orwl_mirror {
@@ -61,6 +77,17 @@ DECLARE_NEW_DELETE(orwl_mirror);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_mirror);
 
+/**
+ ** @brief An ORWL lock handle for remote locations.
+ **
+ ** @see orwl_mirror
+ ** @see orwl_read_request
+ ** @see orwl_write_request
+ ** @see orwl_acquire
+ ** @see orwl_test
+ ** @see orwl_release
+ ** @see orwl_cancel
+ **/
 struct orwl_handle {
   /**
    ** @brief The queue that regulates the local accesses.

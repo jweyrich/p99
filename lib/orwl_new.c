@@ -12,6 +12,6 @@
 #include "orwl_new.h"
 
 void* _vnew(size_t n);
-size_t _vlen(void *p);
-void _vdelete(void *p);
-uintmax_t *_vfind(void *p);
+size_t _vlen(void const*p);
+void _vdelete(void const*p);
+uintmax_t const*_vfind(void const*p);

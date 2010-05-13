@@ -15,11 +15,12 @@
 #include "orwl_host.h"
 
 struct orwl_server {
-  int fd_listen;
-  orwl_host host;
-  size_t max_connections;
-  size_t max_queues;
-  struct orwl_wq *wqs;
+  int fd_listen;           /*!< this servers file descriptor */
+  orwl_host host;          /*!< a list of hosts that this server has seen */
+  size_t max_connections;  /*!< maximum number of simultaneous connections */
+  size_t max_queues;       /*!< number of locations served by this */
+  struct orwl_wq *wqs;     /*!< the priority queues of these
+                              locations, if any */
 };
 
 #define ORWL_SERVER_INITIALIZER(NAME, MAXC, ADDR, PORT)         \

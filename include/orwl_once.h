@@ -14,12 +14,12 @@
 #include <pthread.h>
 #include "orwl_macro.h"
 
-struct once_upon_cont {
+struct _once_upon_cont {
   void (*const init)(void);
   pthread_mutex_t mut;
 };
 
-struct once_cont {
+struct _once_cont {
   void (*const init)(void);
   int cond;
   pthread_mutex_t mut;
@@ -35,15 +35,15 @@ struct once_cont {
  ** @see DEFINE_ONCE
  **/
 #define DECLARE_ONCE(T)                         \
-extern struct once_cont _ ## T ## _once
+extern struct _once_cont _ ## T ## _once
 
 #define DECLARE_ONCE_UPON(T)                    \
-extern struct once_upon_cont _ ## T ## _once
+extern struct _once_upon_cont _ ## T ## _once
 
 
 #define DEFINE_ONCE_UPON(T)                     \
 static void _ ## T ## _once_init(void);         \
-struct once_upon_cont _ ## T ## _once = {      \
+struct _once_upon_cont _ ## T ## _once = {      \
   .mut = PTHREAD_MUTEX_INITIALIZER,             \
   .init = _ ## T ## _once_init,                 \
 };                                              \
@@ -60,7 +60,7 @@ static void _ ## T ## _once_init(void)
  **/
 #define DEFINE_ONCE(T)                          \
 static void _ ## T ## _once_init(void);         \
-struct once_cont _ ## T ## _once = {            \
+struct _once_cont _ ## T ## _once = {            \
   .mut = PTHREAD_MUTEX_INITIALIZER,             \
   .cond = 0,                                    \
   .init = _ ## T ## _once_init,                 \

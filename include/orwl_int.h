@@ -221,7 +221,12 @@ char const* void_cptr2p(char* buf, void_cptr x) {
   return buf;
 }
 
-#ifndef DOXYGEN
+#ifdef DOXYGEN
+#define _DECLARE_ARI2STR(T, X, S, P)                                    \
+/*! @brief Return a `X' representation of @a x in @a buf. */            \
+/*! Here `X' is taken as a format specifier as for @c printf. The output is eventually prefixed. */ \
+char const* T ## 2 ## X (char* buf, T x);
+#else
 #define _DECLARE_ARI2STR(T, X, S, P)            \
 inline                                          \
  char const* PASTE3(T, 2, X)(char* buf, T x) {  \
@@ -230,7 +235,7 @@ inline                                          \
   free(form);                                   \
   return buf;                                   \
 }
-
+#endif
 
 #define DECLARE_ARI2STR(T)                      \
   _DECLARE_ARI2STR(T, d, , )                    \
@@ -260,7 +265,6 @@ DECLARE_ARI2STR(long)
 DECLARE_ARI2STR(ulong)
 DECLARE_ARI2STR(sllong)
 DECLARE_ARI2STR(ullong)
-#endif
 
 
 #define _ALLO(N) ((char[N]){0})

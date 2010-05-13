@@ -128,6 +128,7 @@ extern int orwl_pthread_create_detached(start_routine_t start_routine,
 extern void orwl_pthread_wait_detached(void);
 
 /**
+ ** @def DECLARE_THREAD
  ** @brief Some simple thread launching mechanism.
  **
  ** This declares two functions to create and join a thread that
@@ -164,23 +165,10 @@ extern void orwl_pthread_wait_detached(void);
  **    should be awaited for at the end of the main program. Use
  **    orwl_pthread_wait_detached() for that purpose.
  **/
-#define DECLARE_THREAD(T)                                               \
-inline T *T ## _join(pthread_t id) {                                    \
-  void *ret = NULL;                                                     \
-  pthread_join(id, &ret);                                               \
-  return ret;                                                           \
-}                                                                       \
-extern void *T ## _start_joinable(void* arg);                           \
-extern void *T ## _start_detached(void* arg);                           \
-inline int T ## _create(T* arg, pthread_t *id) {                        \
-  if (id)                                                               \
-    return orwl_pthread_create_joinable(id, T ## _start_joinable, arg); \
-  else                                                                  \
-    return orwl_pthread_create_detached(T ## _start_detached, arg);     \
-}                                                                       \
-extern void *T ## _start_joinable(void* arg)
+
 
 /**
+ ** @def DEFINE_THREAD
  ** @brief Define the function that is to be executed by a thread
  ** creation for type @a T.
  **
@@ -240,6 +228,40 @@ extern void *T ## _start_joinable(void* arg)
  ** orwl_pthread_wait_detached();
  ** @endcode
  **/
+
+#ifdef DOXYGEN
+#define DECLARE_THREAD(T)                               \
+  int T ## _create(T* arg, pthread_t *id);              \
+  T *T ## _join(pthread_t id);
+
+/* @brief Join a callback procedure of type T */       \
+/* @see T */                                           \
+/* @param id the thread that is to be joined */        \
+
+
+#define DEFINE_THREAD(T)                                                \
+/*! This is the callback procedure for type T */                        \
+/*! @see T */                                                           \
+/*! @see DECLARE_THREAD */                                              \
+/*! @param arg the object for this call */                              \
+/*! @param id if non-NULL, the thread can be joined on this @a id */    \
+int T ## _create(T* arg, pthread_t *id)
+#else
+#define DECLARE_THREAD(T)                                               \
+inline T *T ## _join(pthread_t id) {                                    \
+  void *ret = NULL;                                                     \
+  pthread_join(id, &ret);                                               \
+  return ret;                                                           \
+}                                                                       \
+extern void *T ## _start_joinable(void* arg);                           \
+extern void *T ## _start_detached(void* arg);                           \
+inline int T ## _create(T* arg, pthread_t *id) {                        \
+  if (id)                                                               \
+    return orwl_pthread_create_joinable(id, T ## _start_joinable, arg); \
+  else                                                                  \
+    return orwl_pthread_create_detached(T ## _start_detached, arg);     \
+}                                                                       \
+extern void *T ## _start_joinable(void* arg)
 #define DEFINE_THREAD(T)                        \
 T *T ## _join(pthread_t id);                    \
 int T ## _create(T* arg, pthread_t *id);        \
@@ -256,6 +278,7 @@ void *T ## _start_detached(void* arg) {         \
   return NULL;                                  \
 }                                               \
 void T ## _start(T *const Arg)
+#endif
 
 inline pthread_t* pthread_t_init(pthread_t *id) {
   memset(id, 9, sizeof(pthread_t));
