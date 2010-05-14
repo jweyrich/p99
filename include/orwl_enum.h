@@ -39,16 +39,34 @@
  ** @endcode
  **
  ** in one of your object files.
+ **
+ ** Unfortunately you can't use doxygen like comments inside the
+ ** argument list to document the enumeration constants. You have to
+ ** document the constants separately. For the above example you would
+ ** do
+ ** @code
+ **   /// @var color red
+ **   /// the most redish color of all colors
+ ** @endcode
+ ** Observe the bizarre naming convention, here. Although in C (and
+ ** C++) `red' is declared in the same scope as `enum color' you have
+ ** to prefix it with `color' such that the documentation lands inside
+ ** the one for `color'.
  **/
 #define DECLARE_ENUM(T, ...)                                            \
+/*! @see DECLARE_ENUM was used for the declaration of this enumeration type */ \
+/*! @see T ## _getname for access to the names of the constants as strings */ \
 typedef enum { __VA_ARGS__ ,                                            \
-               T ## _amount, /*!< upper bound of the T constants */     \
-               T ## _max = ((size_t)(T ## _amount) - 1u), /*!< the largest T constant */\
-               T ## _min = 0  /*!< the smallest T constant */           \
+               /*! upper bound of the @ref T constants */               \
+               T ## _amount,                                            \
+               /*! the largest @ref T constant */                       \
+               T ## _max = ((size_t)(T ## _amount) - 1u),               \
+               /*! the smallest @ref T constant */                      \
+               T ## _min = 0                                            \
 } T;                                                                    \
 extern char const* _ ## T ## _names[T ## _amount];                      \
 DECLARE_ONCE(T);                                                        \
- /*! @brief Get a string with the name of @a x. @see T */               \
+ /*! @brief Get a string with the name of constant @a x of type @ref T */ \
 inline                                                                  \
 char const* T ## _getname(T x) {                                        \
   unsigned pos = x;                                                     \

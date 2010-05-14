@@ -24,15 +24,41 @@ extern "C" {
 /** @brief Return type for @c orwl functions
  **/
 DECLARE_ENUM(orwl_state,
-             orwl_invalid,         /*!< call with an invalid object     */
-             orwl_valid,           /*!< object valid, but not requested */
-             orwl_requested,       /*!< unspecific request was placed   */
-             orwl_read_requested,  /*!< read request was placed         */
-             orwl_write_requested, /*!< write request was placed        */
-             orwl_acquired,        /*!< unspecific request was acquired */
-             orwl_read_acquired,   /*!< read request was acquired       */
-             orwl_write_acquired   /*!< write request was acquired      */
+             orwl_invalid,
+             orwl_valid,
+             orwl_requested,
+             orwl_read_requested,
+             orwl_write_requested,
+             orwl_acquired,
+             orwl_read_acquired,
+             orwl_write_acquired
              );
+
+  /** @var orwl_state orwl_invalid
+   ** call with an invalid object
+   **/
+  /** @var orwl_state orwl_valid
+   ** object valid, but not requested
+   **/
+  /** @var orwl_state orwl_requested
+   ** unspecific request was placed
+   **/
+  /** @var orwl_state orwl_read_requested
+   ** read request was placed
+   **/
+  /** @var orwl_state orwl_write_requested
+   ** write request was placed
+   **/
+  /** @var orwl_state orwl_acquired
+   ** unspecific request was acquired
+   **/
+  /** @var orwl_state orwl_read_acquired
+   ** read request was acquired
+   **/
+  /** @var orwl_state orwl_write_acquired
+   ** write request was acquired
+   **/
+
 
 DOCUMENT_INIT(orwl_state)
 FSYMB_DOCUMENTATION(orwl_state_init)
