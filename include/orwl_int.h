@@ -323,7 +323,8 @@ CHOOSE5(x,                                      \
 /**
  ** @brief Output a series of @a n strings to file @a f.
  **
- ** @see mfputs which you should use and for which this here only is a helper
+ ** This here only is a helper @ref mfputs which you should use
+ ** instead.
  **/
 inline
 int mfputs_func(FILE* f, size_t n, char const*const* A) {

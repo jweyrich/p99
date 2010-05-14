@@ -100,8 +100,8 @@
  **/
 #define DECLARE_DELETE(T)                                               \
 /*! @brief Operator @c delete for type T   **/                          \
-  /*! @see T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
-  /*! @see T ## _new                       **/                          \
+  /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
+  /*! @attention @a el show have been allocated through @ref NEW */     \
 inline                                                                  \
 void T ## _delete(T const*el) {                                         \
   if (el) {                                                             \
@@ -150,8 +150,8 @@ void _vdelete(void const*p) {
  **/
 #define DECLARE_VNEW(T)                                                 \
 /*! @brief Operator @c new[] for type T   **/                           \
-  /*! @see T ## _init  is supposed to exist and to be callable with just one T* argument **/ \
-  /*! @see T ## _vdelete @b must be used to de-allocate such a variable **/ \
+  /*! @attention @ref T ## _init  is supposed to exist and to be callable with just one T* argument **/ \
+  /*! @attention @ref T ## _vdelete @b must be used to de-allocate such a variable **/ \
 inline                                                                  \
 T *T ## _vnew(size_t n) {                                               \
   size_t N = n*sizeof(T);                                               \
@@ -166,8 +166,8 @@ T *T ## _vnew(size_t n) {                                               \
 
 #define DECLARE_VDELETE(T)                                              \
 /*! @brief Operator @c delete[] for type T **/                          \
-  /*! @see T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
-  /*! @see T ## _vnew @b must have been used to allocate this variable **/ \
+  /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
+  /*! @attention @ref T ## _vnew @b must have been used to allocate this variable **/ \
 inline                                                                  \
 void T ## _vdelete(T const*vec) {                                       \
   if (vec) {                                                            \
