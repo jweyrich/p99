@@ -230,14 +230,7 @@ extern void orwl_pthread_wait_detached(void);
  **/
 
 #ifdef DOXYGEN
-#define DECLARE_THREAD(T)                               \
-  int T ## _create(T* arg, pthread_t *id);              \
-  T *T ## _join(pthread_t id);
-
-/* @brief Join a callback procedure of type T */       \
-/* @see T */                                           \
-/* @param id the thread that is to be joined */        \
-
+#define DECLARE_THREAD(T)
 
 #define DEFINE_THREAD(T)                                                \
 /*! This is the callback procedure for type T */                        \
