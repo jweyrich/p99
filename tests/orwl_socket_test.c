@@ -8,13 +8,12 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include <signal.h>
-#include <stdio.h>
 #include "orwl_socket.h"
 #include "orwl_server.h"
 #include "orwl_register.h"
 #include "orwl_wait_queue.h"
 #include "orwl_posix_default.h"
+#include "orwl_auth_sock_functions.h"
 
 int main(int argc, char **argv) {
   report(1, "starting");

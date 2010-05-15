@@ -18,7 +18,6 @@
  ** @c delete.
  */
 
-#include "orwl_inline.h"
 #include "orwl_posix_default.h"
 
 

@@ -8,14 +8,7 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include <stdint.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <math.h>
 #include "orwl_thread.h"
-#include "orwl_once.h"
-#include "orwl_new.h"
-#include "orwl_register.h"
 
 size_t const orwl_mynum = ~(size_t)0;
 size_t orwl_np = ~(size_t)0;

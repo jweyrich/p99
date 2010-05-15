@@ -11,7 +11,6 @@
 #ifndef   	ORWL_REGISTER_H_
 # define   	ORWL_REGISTER_H_
 
-#include "orwl_inline.h"
 #include "orwl_int.h"
 
 typedef  void (*orwl_plain)(void*);

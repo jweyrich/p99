@@ -11,13 +11,7 @@
 #ifndef   	ORWL_SOCKET_H_
 # define   	ORWL_SOCKET_H_
 
-#include "orwl_macro.h"
-#include "orwl_int.h"
-#include "orwl_enum.h"
-#include "orwl_thread.h"
-#include "orwl_rand.h"
 #include "orwl_register.h"
-#include "orwl_posix_default.h"
 #include "orwl_host.h"
 
 inline
@@ -219,9 +213,6 @@ void F(auth_sock *Arg)
 
 DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
 
-DECLARE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port);
-DECLARE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port);
-DECLARE_AUTH_SOCK_FUNC(auth_sock_do_nothing, void);
 
 #define AUTH_SOCK_READ(A, F, ...)                       \
 (void)((void (*)(__VA_ARGS__)){PASTE2(F, _signature)}); \

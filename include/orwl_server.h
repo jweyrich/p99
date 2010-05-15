@@ -11,7 +11,6 @@
 #ifndef   	ORWL_SERVER_H_
 # define   	ORWL_SERVER_H_
 
-#include "orwl_rand.h"
 #include "orwl_host.h"
 
 struct orwl_server {

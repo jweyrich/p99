@@ -16,9 +16,7 @@
  ** @brief implement a compatibility layer for integer types.
  **/
 
-#include "orwl_macro.h"
 #include "orwl_new.h"
-#include "orwl_posix_default.h"
 
 /* For each one word integer type have a signed and unsigned variant. */ \
 #define _ONE_TOK_(T, NAME)                                              \

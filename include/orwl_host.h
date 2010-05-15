@@ -11,8 +11,6 @@
 #ifndef   	ORWL_HOST_H_
 # define   	ORWL_HOST_H_
 
-#include "orwl_enum.h"
-#include "orwl_thread.h"
 #include "orwl_endpoint.h"
 
 /**

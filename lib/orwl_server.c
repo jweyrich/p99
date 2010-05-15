@@ -9,9 +9,10 @@
 */
 
 #include "orwl_server.h"
+
 #include "orwl_header.h"
 #include "orwl_socket.h"
-#include "orwl_remote_queue.h"
+#include "orwl_wait_queue.h"
 
 orwl_server* orwl_server_init(orwl_server *serv,
                               size_t max_connections,

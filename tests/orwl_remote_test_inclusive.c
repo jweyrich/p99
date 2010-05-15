@@ -8,18 +8,11 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include <signal.h>
-#include <stdlib.h>
-#include <inttypes.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <time.h>
-#include <math.h>
-#include "orwl_thread.h"
-#include "orwl_rand.h"
 #include "orwl_remote_queue.h"
 #include "orwl_callback.h"
 #include "orwl_server.h"
+#include "orwl_socket.h"
+#include "orwl_auth_sock_functions.h"
 
 static orwl_mirror location;
 static orwl_handle *handle = NULL;

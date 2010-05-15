@@ -11,11 +11,6 @@
 #ifndef   	ORWL_ENDPOINT_H_
 # define   	ORWL_ENDPOINT_H_
 
-#include <unistd.h>
-#include <arpa/inet.h>
-
-#include "orwl_macro.h"
-#include "orwl_int.h"
 #include "orwl_rand.h"
 
 struct orwl_server;

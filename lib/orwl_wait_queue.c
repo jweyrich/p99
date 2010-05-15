@@ -8,12 +8,9 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include "orwl_thread.h"
 #include "orwl_wait_queue.h"
+
+#include "orwl_thread.h"
 
 DEFINE_ENUM(orwl_state);
 

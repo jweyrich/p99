@@ -8,16 +8,8 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <stdio.h>
-
 #include "orwl_socket.h"
-#include "orwl_rand.h"
-#include "orwl_posix_default.h"
-#include "orwl_remote_queue.h"
+
 #include "orwl_server.h"
 #include "orwl_header.h"
 
@@ -221,36 +213,5 @@ addr_t getpeer(auth_sock *Arg) {
   return  (addr_t)ADDR_T_INITIALIZER((ret == -1) ? TNULL(in_addr_t) : addr.sin_addr.s_addr);
 }
 
-DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
-  AUTH_SOCK_READ(Arg, auth_sock_insert_peer, uint64_t port);
-  orwl_host *h = NEW(orwl_host);
-  /* mes and addr_t is already in host order */
-  h->ep.addr = getpeer(Arg);
-  h->ep.port.p = htons(port);
-  report(1, "inserting peer %s", orwl_endpoint_print(&h->ep));
-  orwl_host_connect(h, &Arg->srv->host);
-}
-
-DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port) {
-  AUTH_SOCK_READ(Arg, auth_sock_insert_host, uint64_t addr, uint64_t port);
-  orwl_host *h = NEW(orwl_host);
-  /* mes is already in host order */
-  addr_t_init(&h->ep.addr, addr);
-  port_t_init(&h->ep.port, port);
-  orwl_host_connect(h, &Arg->srv->host);
-}
-
-DEFINE_AUTH_SOCK_FUNC(auth_sock_do_nothing, void) {
-  /* empty */
-}
-
-DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
-                         ORWL_REGISTER_ALIAS(auth_sock_insert_peer),
-                         ORWL_REGISTER_ALIAS(auth_sock_insert_host),
-                         ORWL_REGISTER_ALIAS(auth_sock_do_nothing),
-                         ORWL_REGISTER_ALIAS(auth_sock_write_request),
-                         ORWL_REGISTER_ALIAS(auth_sock_read_request),
-                         ORWL_REGISTER_ALIAS(auth_sock_release)
-                         );
 
 char const* hostname(char *buffer, size_t len);

@@ -21,4 +21,6 @@
 
 #undef   	ORWL_POSIX_DEFAULT_H_
 #define   	ORWL_POSIX_DEFAULT_H_ 1
+#ifndef DOXYGEN
 #include "orwl_posix_default.h"
+#endif

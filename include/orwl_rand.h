@@ -11,7 +11,6 @@
 #ifndef   	ORWL_RAND_H_
 # define   	ORWL_RAND_H_
 
-#include "orwl_int.h"
 #include "orwl_thread.h"
 
 uint64_t orwl_mix(uint64_t a, uint64_t b);

@@ -8,7 +8,6 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include <stddef.h>
 #include "orwl_new.h"
 
 void* _vnew(size_t n);

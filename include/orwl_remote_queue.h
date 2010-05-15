@@ -12,7 +12,7 @@
 # define   	ORWL_REMOTE_QUEUE_H_
 
 #include "orwl_wait_queue.h"
-#include "orwl_socket.h"
+#include "orwl_endpoint.h"
 
 /**
  ** @brief A structure to regulate queues between different servers.
@@ -172,12 +172,6 @@ inline
 orwl_state orwl_test(orwl_handle* rh) {
   return orwl_wh_test(rh->wh, 0);
 }
-
-DECLARE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port);
-DECLARE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port);
-DECLARE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID);
-
-
 
 
 

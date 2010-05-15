@@ -12,20 +12,22 @@
 ##############################
 NAME 	=	liborwl.a liborwl.so	# Name of executable file
 SRC	=					\
-	orwl_wait_queue.c			\
-	orwl_new.c				\
-	orwl_host.c				\
-	orwl_int.c				\
+	orwl_auth_sock_functions.c		\
 	orwl_endpoint.c				\
 	orwl_enum.c				\
+	orwl_host.c				\
+	orwl_int.c				\
+	orwl_new.c				\
+	orwl_once.c				\
 	orwl_posix_default.c			\
 	orwl_rand.c				\
 	orwl_register.c				\
-	orwl_remote_queue.c      		\
-	orwl_socket.c				\
+	orwl_remote_queue.c			\
 	orwl_server.c				\
+	orwl_socket.c				\
 	orwl_thread.c				\
-	orwl_types.c
+	orwl_types.c				\
+	orwl_wait_queue.c
 INCL  	=	# List of *.h
 # The global variables that are used and that are external
 GLOBVARS=stderr stdout stdin in6addr_any
@@ -61,6 +63,8 @@ LDFLAGS = $(EXEOPT) $(LPATH)
 ##############################
 
 all:	$(NAME) external_symbols.o
+
+${NAME} : ${OBJS}
 
 depend Makefile.inc :
 	gcc $(IPATH) -MM $(SRC) > Makefile.inc

@@ -12,7 +12,6 @@
 # define   	ORWL_CALLBACK_H_
 
 #include "orwl_wait_queue.h"
-#include "orwl_thread.h"
 
 #define _CALLBACK_PAIR(T) _ ## T ## _orwl_wh_t
 

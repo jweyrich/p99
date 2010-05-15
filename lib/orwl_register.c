@@ -8,11 +8,9 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include <stddef.h>
-#include "orwl_thread.h"
 #include "orwl_register.h"
-#include "orwl_once.h"
 
+#include "orwl_once.h"
 
 pthread_mutex_t _reg_mut = PTHREAD_MUTEX_INITIALIZER;
 
