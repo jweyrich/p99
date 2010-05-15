@@ -21,6 +21,14 @@
 #if   	ORWL_POSIX_DEFAULT_H_ == 0
 # undef   	ORWL_POSIX_DEFAULT_H_
 # define   	ORWL_POSIX_DEFAULT_H_ 2
+
+struct rand48_t;
+
+#ifndef __cplusplus
+typedef struct rand48_t rand48_t;
+#endif
+
+
 #endif
 
 
@@ -146,13 +154,6 @@ FSYMB_DOCUMENTATION(inet_ntop)
 #define inet_ntop(...) CALL_WITH_DEFAULTS(inet_ntop, 4, __VA_ARGS__)
 #define inet_ntop_defarg_2() ((char[INET6_ADDRSTRLEN]){ 0 })
 #define inet_ntop_defarg_3() (INET6_ADDRSTRLEN)
-
-struct rand48_t;
-
-#ifndef __cplusplus
-typedef struct rand48_t rand48_t;
-#endif
-
 
 
 #endif 	    /* !ORWL_POSIX_DEFAULT_H_ */
