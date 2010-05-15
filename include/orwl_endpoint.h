@@ -40,6 +40,12 @@ struct orwl_wq;
 
 struct orwl_endpoint;
 
+struct orwl_host;
+
+#ifndef __cplusplus
+typedef struct orwl_host orwl_host;
+#endif
+
 /**
  ** @brief Store IPv4 and IPv6 addresses in the same structure.
  **

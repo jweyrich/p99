@@ -15,10 +15,6 @@
 #include "orwl_thread.h"
 #include "orwl_endpoint.h"
 
-struct orwl_host;
-
-typedef struct orwl_host orwl_host;
-
 /**
  ** @brief List element to hold the hosts to which an ::orwl_server
  ** has been connected.
