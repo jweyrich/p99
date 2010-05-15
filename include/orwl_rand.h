@@ -48,10 +48,6 @@ struct rand48_t {
   unsigned short x[3];
 };
 
-#ifndef __cplusplus
-typedef struct rand48_t rand48_t;
-#endif
-
 #define RAND48_T_INITIALIZER { { useconds(), getpid(), pthread_self() } }
 
 DOCUMENT_INIT(rand48_t)

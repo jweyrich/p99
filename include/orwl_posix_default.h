@@ -23,24 +23,37 @@
 # define   	ORWL_POSIX_DEFAULT_H_ 2
 #endif
 
-#include "orwl_macro.h"
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <arpa/inet.h>
+#include <arpa/inet.h>
+#include <assert.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <inttypes.h>
 #include <math.h>
-#include <strings.h>
-#include <string.h>
+#include <netdb.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <pthread.h>
 #include <semaphore.h>
-#include <sys/types.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/socket.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include <sys/types.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#include "orwl_macro.h"
 
 // pthread_barrier_init (3posix) - destroy and initialize a barrier object (ADVANCED REALTIME THREADS)
 // not possible because of the count argument
@@ -133,5 +146,13 @@ FSYMB_DOCUMENTATION(inet_ntop)
 #define inet_ntop(...) CALL_WITH_DEFAULTS(inet_ntop, 4, __VA_ARGS__)
 #define inet_ntop_defarg_2() ((char[INET6_ADDRSTRLEN]){ 0 })
 #define inet_ntop_defarg_3() (INET6_ADDRSTRLEN)
+
+struct rand48_t;
+
+#ifndef __cplusplus
+typedef struct rand48_t rand48_t;
+#endif
+
+
 
 #endif 	    /* !ORWL_POSIX_DEFAULT_H_ */
