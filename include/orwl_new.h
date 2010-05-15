@@ -27,18 +27,6 @@
 
 
 /**
- ** @brief Add some indications to a @c _init documentation.
- */
-#define DOCUMENT_INIT(T)                                                \
-/*! @brief Initialize a variable of type T */                           \
-/*! @see NEW needs a version of this that takes just the T* as argument. */
-
-/**
- ** @brief Add some indications to a @c _destroy documentation.
- */
-#define DOCUMENT_DESTROY(T) /*! @brief Destroy a variable of type T @see T ## _delete needs this. */
-
-/**
  ** @brief Zero out all bits in the object that @a X points to.
  **
  ** @a X can be a pointer or an array
