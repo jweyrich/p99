@@ -16,10 +16,6 @@
  ** @brief implement a compatibility layer for integer types.
  **/
 
-#include <stdint.h>
-#include <inttypes.h>
-#include <stddef.h>
-#include <stdio.h>
 #include "orwl_macro.h"
 #include "orwl_new.h"
 #include "orwl_posix_default.h"

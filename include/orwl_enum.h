@@ -11,9 +11,6 @@
 #ifndef   	ORWL_ENUM_H_
 # define   	ORWL_ENUM_H_
 
-#include <stdbool.h>
-#include <strings.h>
-#include <string.h>
 #include "orwl_once.h"
 
 /**

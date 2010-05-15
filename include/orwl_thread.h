@@ -11,13 +11,6 @@
 #ifndef   	ORWL_THREAD_H_
 # define   	ORWL_THREAD_H_
 
-#include <pthread.h>
-#include <semaphore.h>
-#include <stdbool.h>
-#include <string.h>
-#include <errno.h>
-#include <stdio.h>
-
 #include "orwl_once.h"
 #include "orwl_int.h"
 

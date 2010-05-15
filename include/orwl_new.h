@@ -18,12 +18,8 @@
  ** @c delete.
  */
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-
 #include "orwl_inline.h"
+#include "orwl_posix_default.h"
 
 
 /**

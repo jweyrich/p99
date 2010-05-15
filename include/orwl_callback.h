@@ -11,7 +11,6 @@
 #ifndef   	ORWL_CALLBACK_H_
 # define   	ORWL_CALLBACK_H_
 
-#include <pthread.h>
 #include "orwl_wait_queue.h"
 #include "orwl_thread.h"
 

@@ -11,12 +11,6 @@
 #ifndef   	ORWL_RAND_H_
 # define   	ORWL_RAND_H_
 
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <math.h>
-#include <pthread.h>
 #include "orwl_int.h"
 #include "orwl_thread.h"
 

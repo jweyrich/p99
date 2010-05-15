@@ -11,9 +11,6 @@
 #ifndef   	ORWL_SOCKET_H_
 # define   	ORWL_SOCKET_H_
 
-#include <unistd.h>
-#include <arpa/inet.h>
-
 #include "orwl_macro.h"
 #include "orwl_int.h"
 #include "orwl_enum.h"

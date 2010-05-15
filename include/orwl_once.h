@@ -11,8 +11,7 @@
 #ifndef   	ORWL_ONCE_H_
 # define   	ORWL_ONCE_H_
 
-#include <pthread.h>
-#include "orwl_macro.h"
+#include "orwl_posix_default.h"
 
 struct _once_upon_cont {
   void (*const init)(void);
