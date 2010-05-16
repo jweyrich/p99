@@ -113,7 +113,7 @@ typedef struct orwl_handle orwl_handle;
 
 inline
 orwl_handle *orwl_handle_init(orwl_handle *rh) {
-  memset(rh, 0, sizeof(orwl_handle));
+  TZERO(*rh);
   return rh;
 }
 

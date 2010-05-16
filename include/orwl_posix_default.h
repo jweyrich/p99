@@ -132,6 +132,10 @@ FSYMB_DOCUMENTATION(strtold)
 #define strtold(...) CALL_WITH_DEFAULTS(strtold, 2, __VA_ARGS__)
 DECLARE_DEFARG(strtold, , NULL);
 
+PROTOTYPE(void*, calloc, size_t, size_t);
+FSYMB_DOCUMENTATION(calloc)
+#define calloc(...) CALL_WITH_DEFAULTS(calloc, 2, __VA_ARGS__)
+DECLARE_DEFARG(calloc, , 1);
 
 // int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 PROTOTYPE(int, accept, int, struct sockaddr *, socklen_t *);

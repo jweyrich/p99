@@ -101,8 +101,7 @@ void *_vnew(size_t n) {
   /* add one if n doesn't fit uintmax_t boundary */
   if (n % ali) ++N;
   /* add one for the header */
-  size_t tot = (N + 1) * ali;
-  uintmax_t *ret = (uintmax_t*)memset(malloc(tot), 0, tot);
+  uintmax_t *ret = (uintmax_t*)calloc(N + 1, ali);
   ret[0] = n;
   return ret + 1;
 }

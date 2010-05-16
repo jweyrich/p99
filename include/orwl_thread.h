@@ -267,7 +267,7 @@ void T ## _start(T *const Arg)
 #endif
 
 inline pthread_t* pthread_t_init(pthread_t *id) {
-  memset(id, 9, sizeof(pthread_t));
+  TZERO(*id);
   return id;
 }
 inline void pthread_t_destroy(pthread_t *id) {

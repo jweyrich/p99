@@ -167,7 +167,7 @@ auth_sock_init(auth_sock *sock,         /*!< [out] */
                struct orwl_server* srv, /*!< [in,out] defaults to @c NULL */
                size_t len               /*!< [in] the length of the message 0 */
                ) {
-  memset(sock, 0, sizeof(auth_sock));
+  TZERO(*sock);
   sock->fd = fd;
   sock->srv = srv;
   sock->len = len;

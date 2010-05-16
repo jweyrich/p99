@@ -29,7 +29,7 @@ DEFINE_NEW_DELETE(orwl_endpoint);
 
 
 orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
-  if (ep && name) {
+  if (ep && name && name[0]) {
     addr_t addr = ADDR_T_INITIALIZER(0);
     port_t port = INITIALIZER;
     uint64_t index = 0;
@@ -38,24 +38,23 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
       name += 7;
     }
     {
-      char const* host = NULL;
+      char const* name1 = NULL;
+      size_t len = 0;
       if (name[0] == '[') {
         ++name;
-        size_t len = strcspn(name, "]");
-        if (!len) return NULL;
+        len = strcspn(name, "]");
         if (name[len] != ']') return NULL;
-        host = strndup(name, len);
-        name += (len + 1);
+        name1 = name + (len + 1);
       } else {
-        size_t len = strcspn(name, ":");
-        if (!len) return NULL;
-        host = strndup(name, len);
-        name += len;
+        len = strcspn(name, ":");
+        name1 = name + len;
       }
-      if (host) {
-        addr_t_init(&addr, orwl_inet_addr(host));
-        free((void*)host);
-      }
+      if (!len) return NULL;
+      assert(len);
+      char * host = memcpy(calloc(len + 1u, 1), name, len);
+      addr_t_init(&addr, orwl_inet_addr(host));
+      name = name1;
+      free(host);
     }
     if (name[0]) {
       if (name[0] != ':') return NULL;
