@@ -77,6 +77,8 @@ DECLARE_THREAD(arg_t);
 
 typedef orwl_handle orwl_handle2[2];
 
+static pthread_barrier_t init_barr = { INITIALIZER };
+
 DEFINE_THREAD(arg_t) {
   size_t const orwl_mynum = Arg->mynum;
   size_t const phases = Arg->phases;
@@ -109,6 +111,8 @@ DEFINE_THREAD(arg_t) {
            (orwl_np + orwl_mynum + (i - 1)) % orwl_np, orwl_state_getname(ostate));
   }
 
+  pthread_barrier_wait(&init_barr);
+  report(1, "initial barrier passed");
 
   for (size_t orwl_phase = 0; orwl_phase < phases; ++orwl_phase) {
     double const twait = 0.01;
@@ -116,9 +120,9 @@ DEFINE_THREAD(arg_t) {
     double const await = twait - rwait;
     bool const parity = orwl_phase % 2;
     /**/
-    cb_t *cb = NEW(cb_t);
-    cb->mynum = orwl_mynum;
-    cb->phase = orwl_phase;
+    /* cb_t *cb = NEW(cb_t); */
+    /* cb->mynum = orwl_mynum; */
+    /* cb->phase = orwl_phase; */
     /**/
     sleepfor(await);
     for (size_t i = 0; i < 3; ++i) {
@@ -126,6 +130,7 @@ DEFINE_THREAD(arg_t) {
       report(1,  "acq, handle %zu, state %s                            ",
              (orwl_mynum + (i - 1) + orwl_np) % orwl_np, orwl_state_getname(ostate));
     }
+    if (orwl_phase < phases - 1)
     for (size_t i = 0; i < 3; ++i) {
       ostate = orwl_invalid;
       for (size_t try = 0; ostate == orwl_invalid; ++try) {
@@ -145,6 +150,8 @@ DEFINE_THREAD(arg_t) {
       report(1,  "rel, handle %zu", (orwl_mynum + (i - 1) + orwl_np) % orwl_np);
     }
   }
+  pthread_barrier_wait(&init_barr);
+  report(1, "final barrier passed");
   report(true, "finished");
 
 }
@@ -175,6 +182,8 @@ int main(int argc, char **argv) {
 
   report(1, "%s: starting %zu phases, %zu/%zu threads, offset %zu",
          argv[0], phases, number, orwl_np, offset);
+
+  pthread_barrier_init(&init_barr, NULL, number);
 
   /* Initialization of the static location */
   location_back = orwl_mirror_vnew(number + 2);
