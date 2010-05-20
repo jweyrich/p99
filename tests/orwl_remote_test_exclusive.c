@@ -75,18 +75,18 @@ DEFINE_THREAD(arg_t) {
   size_t const orwl_mynum = Arg->mynum;
   size_t const phases = Arg->phases;
   /* The buffer for the reentrant pseudo random generator */
-  rand48_t seed = RAND48_T_INITIALIZER;
+  rand48_t* seed = seed_get();
 
   for (size_t orwl_phase = 0; orwl_phase < phases; ++orwl_phase) {
     double const twait = 0.01;
     double const iwait = twait / 10.0;
-    double const rwait = twait * orwl_drand(&seed);
+    double const rwait = twait * orwl_drand(seed);
     double const await = twait - rwait;
     /* the position to be requested */
     size_t preq = threadof(orwl_mynum + (orwl_phase>>1)) + (orwl_phase % 2)*orwl_np;
     /* the postion where we put the callback and that we acquire */
     size_t pacq = orwl_mynum + (orwl_phase % 2)*orwl_np;
-    orwl_state ostate = orwl_write_request(&location, handle + preq, &seed);
+    orwl_state ostate = orwl_write_request(&location, handle + preq, seed);
     report(!orwl_mynum,  "req, handle %zu, %s",
            preq, orwl_state_getname(ostate));
     /**/
@@ -110,7 +110,7 @@ DEFINE_THREAD(arg_t) {
     report(!orwl_mynum,  "acq, handle %zu, state %s                            ",
            pacq, orwl_state_getname(ostate));
     sleepfor(rwait);
-    orwl_release(handle + pacq, &seed);
+    orwl_release(handle + pacq, seed);
     report(!orwl_mynum,  "rel, handle %zu", pacq);
   }
   report(true, "finished");
@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
   orwl_server* srv = NEW(orwl_server, 4, 10);
   pthread_t srv_id;
   orwl_server_create(srv, &srv_id);
-  rand48_t seed = RAND48_T_INITIALIZER;
+  rand48_t* seed = seed_get();
 
   if (argc > 1) {
     report(1, "connecting to %s", argv[3]);
@@ -141,7 +141,7 @@ int main(int argc, char **argv) {
 
     /* wait until the other side is up. */
     /* ep.port is already in host order */
-    while (orwl_rpc(&other, &seed, auth_sock_insert_peer, port2host(&srv->host.ep.port))
+    while (orwl_rpc(&other, seed, auth_sock_insert_peer, port2host(&srv->host.ep.port))
            == TONES(uint64_t)) {
       ret = pthread_kill(srv_id, 0);
       if (ret) break;
@@ -180,7 +180,7 @@ int main(int argc, char **argv) {
     }
     orwl_pthread_wait_detached();
     report(1, "%s: killing server", argv[0]);
-    orwl_server_terminate(srv, &seed);
+    orwl_server_terminate(srv, seed);
     orwl_server_join(srv_id);
     report(1, "host %p and next %p", (void*)srv->host.next, (void*)&srv->host);
     orwl_server_delete(srv);
@@ -204,6 +204,6 @@ int main(int argc, char **argv) {
     orwl_server_delete(srv);
   }
 
-
+  seed_get_clear();
   return 0;
 }

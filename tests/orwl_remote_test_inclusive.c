@@ -253,6 +253,6 @@ int main(int argc, char **argv) {
   pthread_t_vdelete(id);
   report(1, "destroying location");
   orwl_mirror_vdelete(location_back);
-
+  seed_get_clear();
   return 0;
 }
