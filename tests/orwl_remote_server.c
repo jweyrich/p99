@@ -60,11 +60,20 @@ int main(int argc, char **argv) {
   if (address[0]) orwl_endpoint_parse(&srv->host.ep, address);
   pthread_t srv_id;
   orwl_server_create(srv, &srv_id);
+  /* give the server the chance to fire things up */
+  while (!port2net(&srv->host.ep.port)) sleepfor(0.01);
+  {
+    char const* server_name = orwl_endpoint_print(&srv->host.ep);
+    char* info = calloc(256);
+    snprintf(info, 256, "server at %s                                               ", server_name);
+    srv->info = info;
+    srv->info_len = 256;
+  }
 
   for (size_t t = 0; ; ++t) {
     ret = pthread_kill(srv_id, 0);
     if (ret) break;
-    sleepfor(0.1);
+    sleepfor(1.0);
     progress(1, t, " server idle                                           ");
   }
   orwl_server_join(srv_id);

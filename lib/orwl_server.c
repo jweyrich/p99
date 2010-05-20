@@ -108,16 +108,13 @@ DEFINE_THREAD(orwl_server) {
     report(1, "server listening at %s", server_name);
     if (listen(Arg->fd_listen, Arg->max_connections) == -1)
       goto TERMINATE;
-    char info[256];
-    uint64_t t = 0;
-    snprintf(info, 256, "server at %s ", server_name);
-    while (Arg->fd_listen != -1) {
+    for (uint64_t t = 1; Arg->fd_listen != -1; ++t) {
       /* Do this work before being connected */
       uint64_t chal = orwl_rand64(&seed);
       uint64_t repl = orwl_challenge(chal);
       header_t header = INITIALIZER;
 
-      progress(1, ++t, "%s", info);
+      if (Arg->info && Arg->info_len) progress(1, t, "%s", Arg->info);
 
       if (!repl) {
         report(1, "cannot serve without a secret");

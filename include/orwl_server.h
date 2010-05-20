@@ -20,6 +20,9 @@ struct orwl_server {
   size_t max_queues;       /*!< number of locations served by this */
   struct orwl_wq *wqs;     /*!< the priority queues of these
                               locations, if any */
+  char* info;              /*!< an informative string that is
+                             presented in the terminal */
+  size_t info_len;         /*!< the length of #info */
 };
 
 #define ORWL_SERVER_INITIALIZER(NAME, MAXC, ADDR, PORT)         \
