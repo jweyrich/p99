@@ -429,6 +429,14 @@ inline T* NAME(void) {                          \
   }                                             \
   return ret;                                   \
 }                                               \
+inline void PASTE(NAME, _clear)(void) {         \
+  INIT_ONCE_STATIC(KEY);                        \
+  T* ret = pthread_getspecific(KEY);            \
+  if (branch_expect(!!ret, true)) {             \
+    (void)pthread_setspecific(KEY, NULL);       \
+    PASTE(T, _delete)(ret);                     \
+  }                                             \
+}                                               \
 extern pthread_key_t KEY
 
 
@@ -440,6 +448,7 @@ pthread_key_t KEY;                                                      \
 DEFINE_ONCE_STATIC(KEY) {                                               \
   (void) pthread_key_create(&KEY, (void (*)(void *))PASTE(T, _delete)); \
 }                                                                       \
+void PASTE(NAME, _clear)(void);                                         \
 T* NAME(void)
 
 #define _DEFINE_THREAD_VAR(T, NAME, KEY) __DEFINE_THREAD_VAR(T, NAME, KEY)
