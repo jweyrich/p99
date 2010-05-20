@@ -23,13 +23,22 @@ static size_t phases = 4;
 typedef struct {
   size_t mynum;
   size_t phase;
+  char* info;
 } cb_t;
 
-cb_t* cb_t_init(cb_t *cb) {
-  cb->mynum = 0;
-  cb->phase = 0;
+cb_t* cb_t_init(cb_t *cb, size_t m, size_t p, char* i) {
+  cb->mynum = m;
+  cb->phase = p;
+  cb->info = i;
   return cb;
 }
+
+PROTOTYPE(cb_t*, cb_t_init, cb_t*, size_t, size_t, char*);
+FSYMB_DOCUMENTATION(cb_t_init)
+#define cb_t_init(...) CALL_WITH_DEFAULTS(cb_t_init, 4, __VA_ARGS__)
+DECLARE_DEFARG(cb_t_init, , TNULL(size_t), TNULL(size_t), NULL);
+DEFINE_DEFARG(cb_t_init, , TNULL(size_t), TNULL(size_t), NULL);
+
 
 void cb_t_destroy(cb_t *cb) {
   /* empty */
@@ -41,14 +50,14 @@ DEFINE_NEW_DELETE(cb_t);
 DECLARE_CALLBACK(cb_t);
 
 DEFINE_CALLBACK(cb_t) {
-  if (!Arg->mynum)
-    fprintf(stderr, "callback %zu phase %zu\n",
-            Arg->mynum, Arg->phase);
+  if (Arg->info)
+    memset(Arg->info, ' ', 2);
 }
 
 typedef struct _arg_t {
   size_t mynum;
   size_t phases;
+  char* info;
 } arg_t;
 
 arg_t* arg_t_init(arg_t *arg, size_t def) {
@@ -76,7 +85,8 @@ DEFINE_THREAD(arg_t) {
   size_t const phases = Arg->phases;
   /* The buffer for the reentrant pseudo random generator */
   rand48_t* seed = seed_get();
-
+  char* info = Arg->info;
+  if (info) info += 3*orwl_mynum;
   for (size_t orwl_phase = 0; orwl_phase < phases; ++orwl_phase) {
     double const twait = 0.01;
     double const iwait = twait / 10.0;
@@ -87,31 +97,32 @@ DEFINE_THREAD(arg_t) {
     /* the postion where we put the callback and that we acquire */
     size_t pacq = orwl_mynum + (orwl_phase % 2)*orwl_np;
     orwl_state ostate = orwl_write_request(&location, handle + preq, seed);
-    report(!orwl_mynum,  "req, handle %zu, %s",
+    report(false,  "req, handle %zu, %s",
            preq, orwl_state_getname(ostate));
     /**/
-    cb_t *cb = NEW(cb_t);
-    cb->mynum = orwl_mynum;
-    cb->phase = orwl_phase;
+    cb_t *cb = NEW(cb_t, orwl_mynum, orwl_phase, info);
     ostate = orwl_invalid;
     for (size_t try = 0; ostate != orwl_requested; ++try) {
       ostate = orwl_test(handle + pacq);
       if (ostate == orwl_requested || ostate == orwl_acquired) break;
-      progress(!orwl_mynum,  try, "test, handle %zu, %s",
+      progress(false,  try, "test, handle %zu, %s",
                pacq, orwl_state_getname(ostate));
       sleepfor(iwait);
     }
-    report(!orwl_mynum, "test, handle %zu, %s",
+    report(false, "test, handle %zu, %s",
            pacq, orwl_state_getname(ostate));
     orwl_callback_attach_cb_t(cb, handle[pacq].wh);
     /**/
     sleepfor(await);
     ostate = orwl_acquire(handle + pacq);
-    report(!orwl_mynum,  "acq, handle %zu, state %s                            ",
-           pacq, orwl_state_getname(ostate));
+    if (info) {
+      char num[10];
+      sprintf(num, "  %jX", orwl_phase);
+      memcpy(info, num + strlen(num) - 2, 2);
+    }
     sleepfor(rwait);
     orwl_release(handle + pacq, seed);
-    report(!orwl_mynum,  "rel, handle %zu", pacq);
+    report(false,  "rel, handle %zu", pacq);
   }
   report(true, "finished");
 
@@ -131,6 +142,14 @@ int main(int argc, char **argv) {
   orwl_server_create(srv, &srv_id);
   rand48_t* seed = seed_get();
 
+  size_t info_len = 3*orwl_np;
+  char* info = calloc(info_len + 1);
+  memset(info, ' ', info_len);
+  for (size_t i = 2; i < info_len; i += 3)
+    info[i] = '|';
+  srv->info = info;
+  srv->info_len = info_len;
+
   if (argc > 1) {
     report(1, "connecting to %s", argv[3]);
     orwl_endpoint other = { INITIALIZER };
@@ -149,7 +168,6 @@ int main(int argc, char **argv) {
     }
     handle = orwl_handle_vnew(2 * orwl_np);
 
-
     /* Half of the threads are created detached and half joinable */
     pthread_t *id = pthread_t_vnew(orwl_np/2);
     arg_t *arg = arg_t_vnew(orwl_np/2);
@@ -158,6 +176,7 @@ int main(int argc, char **argv) {
       arg_t *myarg = (i%2 ? arg + (i/2) : NEW(arg_t));
       myarg->mynum = i;
       myarg->phases = phases;
+      myarg->info = srv->info;
       if (i%2)
         arg_t_create(myarg, id + (i/2));
       else

@@ -61,6 +61,7 @@ void orwl_server_destroy(orwl_server *serv) {
     orwl_host_delete(n);
   }
   if (serv->wqs) orwl_wq_vdelete(serv->wqs);
+  if (serv->info) char_delete(serv->info);
 }
 
 DEFINE_NEW_DELETE(orwl_server);
