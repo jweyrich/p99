@@ -176,14 +176,14 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   return state;
 }
 
-typedef orwl_wh _orwl_handle_cancel;
+typedef orwl_handle _orwl_handle_cancel;
 
 _orwl_handle_cancel* _orwl_handle_cancel_init(_orwl_handle_cancel* H) {
-  return orwl_wh_init(H);
+  return orwl_handle_init(H);
 }
 
 void _orwl_handle_cancel_destroy(_orwl_handle_cancel* H) {
-  orwl_wh_destroy(H);
+  orwl_handle_destroy(H);
 }
 
 DECLARE_NEW_DELETE(_orwl_handle_cancel);
@@ -193,8 +193,8 @@ DECLARE_THREAD(_orwl_handle_cancel);
 
 
 DEFINE_THREAD(_orwl_handle_cancel) {
-  orwl_wh_acquire(Arg);
-  orwl_wh_release(Arg);
+  orwl_acquire(Arg);
+  orwl_release(Arg);
   /* We should be the last to have a reference to this handle so this
      may be automatically destroyed when we exit this thread. */
 }
@@ -202,33 +202,9 @@ DEFINE_THREAD(_orwl_handle_cancel) {
 orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_valid;
   if (!rh || !rh->wh) return orwl_valid;
-  /* To be able to re-initialize rh in the middle of the procedure,
-     store all necessary data on the stack.*/
-  orwl_mirror* rq = rh->rq;
-  orwl_wh* wh = rh->wh;
-  uint64_t svrID = rh->svrID;
-  orwl_endpoint there = rq->there;
-
-  orwl_wq* wq = wh->location;
-  /* Detect if we are the last user of this handle */
-  uint64_t remain = 0;
-  MUTUAL_EXCLUDE(rq->mut) {
-    MUTUAL_EXCLUDE(wq->mut) {
-      assert(wq == &rq->local);
-      remain = wh->tokens;
-      if (remain != 1) {
-        orwl_handle_init(rh);
-      }
-      orwl_wh_unload(wh);
-    }
-  }
-  if (remain == 1) {
-    orwl_rpc(&there, seed, auth_sock_release, svrID);
-    _orwl_handle_cancel_create(wh, NULL);
-    /* We should be the last to have a reference to this handle so
-       we may re-initialize it. */
-    orwl_handle_init(rh);
-  }
+  _orwl_handle_cancel* rhcp = memcpy(NEW(_orwl_handle_cancel), rh, sizeof(*rh));
+  _orwl_handle_cancel_create(rhcp, NULL);
+  orwl_handle_destroy(rh);
   return state;
 }
 
@@ -237,4 +213,15 @@ orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
 DEFINE_DEFARG(orwl_write_request, , , seed_get());
 DEFINE_DEFARG(orwl_read_request, , , seed_get());
 DEFINE_DEFARG(orwl_release, , seed_get());
+DEFINE_DEFARG(orwl_cancel, , seed_get());
 
+DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire, orwl_handle);
+DEFINE_ORWL_REGISTER_ALIAS(orwl_release, orwl_handle);
+DEFINE_ORWL_REGISTER_ALIAS(orwl_cancel, orwl_handle);
+
+
+DEFINE_ORWL_TYPE_DYNAMIC(orwl_handle,
+                         ORWL_REGISTER_ALIAS(orwl_acquire),
+                         ORWL_REGISTER_ALIAS(orwl_release),
+                         ORWL_REGISTER_ALIAS(orwl_cancel)
+                         );

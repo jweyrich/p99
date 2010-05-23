@@ -173,6 +173,9 @@ orwl_state orwl_test(orwl_handle* rh) {
   return orwl_wh_test(rh->wh, 0);
 }
 
+DECLARE_ORWL_REGISTER(orwl_wh_acquire);
+DECLARE_ORWL_REGISTER(orwl_wh_release);
+DECLARE_ORWL_REGISTER(orwl_wh_cancel);
 
 
 #endif 	    /* !ORWL_REMOTE_QUEUE_H_ */
