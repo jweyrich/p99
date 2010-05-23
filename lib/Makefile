@@ -15,6 +15,7 @@ SRC	=					\
 	orwl_auth_sock_functions.c		\
 	orwl_endpoint.c				\
 	orwl_enum.c				\
+	orwl_handle2.c				\
 	orwl_host.c				\
 	orwl_int.c				\
 	orwl_new.c				\

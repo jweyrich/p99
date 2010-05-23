@@ -8,7 +8,7 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include "orwl_remote_queue.h"
+#include "orwl_handle2.h"
 #include "orwl_callback.h"
 #include "orwl_server.h"
 #include "orwl_socket.h"
@@ -84,8 +84,6 @@ DEFINE_NEW_DELETE(arg_t);
 
 DECLARE_THREAD(arg_t);
 
-typedef orwl_handle orwl_handle2[2];
-
 static pthread_barrier_t init_barr = { INITIALIZER };
 
 DEFINE_THREAD(arg_t) {
@@ -93,7 +91,7 @@ DEFINE_THREAD(arg_t) {
   size_t const phases = Arg->phases;
   orwl_mirror* left = Arg->left;
 
-  orwl_handle2 leh[3] = { [0] = { [0] = INITIALIZER } };
+  orwl_handle2 leh[3] = { ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER };
 
   char* info = Arg->info;
   if (info) info += 3*orwl_mynum;
@@ -109,16 +107,10 @@ DEFINE_THREAD(arg_t) {
     ostate = orwl_invalid;
     report(false, "request, handle %zu, %s",
            (orwl_np + orwl_mynum + (i - 1)) % orwl_np, orwl_state_getname(ostate));
-    for (size_t try = 0; ostate == orwl_invalid; ++try) {
-      ostate = (i % 2
-                ? orwl_write_request(&left[i], &((leh[i])[0]), seed)
-                : orwl_read_request(&left[i], &((leh[i])[0]), seed)
-                );
-      if (ostate == orwl_requested || ostate == orwl_acquired) break;
-      progress(false,  try, "request, handle %zu, %s",
-               (orwl_np + orwl_mynum + (i - 1)) % orwl_np, orwl_state_getname(ostate));
-      sleepfor(0.2);
-    }
+    ostate = (i % 2
+              ? orwl_write_request2(&left[i], &leh[i], seed)
+              : orwl_read_request2(&left[i], &leh[i], seed)
+              );
     report(false, "request, handle %zu, %s",
            (orwl_np + orwl_mynum + (i - 1)) % orwl_np, orwl_state_getname(ostate));
   }
@@ -130,11 +122,10 @@ DEFINE_THREAD(arg_t) {
     double const twait = 0.01;
     double const rwait = twait * orwl_drand(seed);
     double const await = twait - rwait;
-    bool const parity = orwl_phase % 2;
     /**/
     sleepfor(await);
     for (size_t i = 0; i < 3; ++i) {
-      ostate = orwl_acquire(&((leh[i])[parity]));
+      ostate = orwl_acquire2(&leh[i], seed);
       report(false,  "acq, handle %zu, state %s                            ",
              (orwl_mynum + (i - 1) + orwl_np) % orwl_np, orwl_state_getname(ostate));
     }
@@ -143,23 +134,10 @@ DEFINE_THREAD(arg_t) {
       sprintf(num, "  %jX", orwl_phase);
       memcpy(info, num + strlen(num) - 2, 2);
     }
-    if (orwl_phase < phases - 1) {
-      cb_t *cb = NEW(cb_t, orwl_mynum, orwl_phase, info);
-      for (size_t i = 0; i < 3; ++i) {
-        ostate = orwl_invalid;
-        for (size_t try = 0; ostate == orwl_invalid; ++try) {
-          ostate = (i % 2
-                    ? orwl_write_request(&left[i], &((leh[i])[!parity]), seed)
-                    : orwl_read_request(&left[i], &((leh[i])[!parity]), seed)
-                    );
-          if (ostate == orwl_requested || ostate == orwl_acquired) break;
-          report(false, "request, handle %zu, %s",
-                 (orwl_mynum + (i - 1) + orwl_np) % orwl_np, orwl_state_getname(ostate));
-          sleepfor(0.2);
-        }
-      }
-      orwl_callback_attach_cb_t(cb, ((leh[1])[!parity]).wh);
-    }
+    /* if (orwl_phase < phases - 1) { */
+    /*   cb_t *cb = NEW(cb_t, orwl_mynum, orwl_phase, info); */
+    /*   orwl_callback_attach_cb_t(cb, ((leh[1])[!parity]).wh); */
+    /* } */
     sleepfor(rwait);
     if (info) {
       char num[10];
@@ -167,9 +145,13 @@ DEFINE_THREAD(arg_t) {
       memcpy(info, num + strlen(num) - 2, 2);
     }
     for (size_t i = 0; i < 3; ++i) {
-      ostate = orwl_release(&((leh[i])[parity]), seed);
+      ostate = orwl_release2(&leh[i], seed);
       report(false,  "rel, handle %zu", (orwl_mynum + (i - 1) + orwl_np) % orwl_np);
     }
+  }
+  for (size_t i = 0; i < 3; ++i) {
+    ostate = orwl_cancel2(&leh[i], seed);
+    report(false,  "can, handle %zu", (orwl_mynum + (i - 1) + orwl_np) % orwl_np);
   }
   pthread_barrier_wait(&init_barr);
   report(1, "final barrier passed");
