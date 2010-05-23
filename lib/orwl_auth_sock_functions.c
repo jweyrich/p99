@@ -79,12 +79,13 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
        issues a release */
     bool piggyback = false;
     orwl_wh *srv_wh = NULL;
-    if (svrID) {
-      report(1, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
-      state = orwl_wq_request(srv_wq, &srv_wh, 2);
-      piggyback = (svrID == (uintptr_t)srv_wh);
-    }
-    if (!piggyback) {
+    report(1, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
+    state = orwl_wq_request(srv_wq, &srv_wh, 2);
+    if (srv_wh) {
+      if (svrID) {
+        piggyback = (svrID == (uintptr_t)srv_wh);
+      }
+    } else {
       srv_wh = NEW(orwl_wh);
       /* mark it as being inclusive */
       srv_wh->svrID = (uintptr_t)srv_wh;
@@ -104,8 +105,14 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
       if (svrID == (uintptr_t)srv_wh) {
         assert(piggyback);
         report(1, "unloading server handle %p for existing pair", (void*)srv_wh);
+        bool last = false;
         MUTUAL_EXCLUDE(srv_wq->mut) {
           orwl_wh_unload(srv_wh, 2);
+          last = (srv_wh->tokens == 0);
+        }
+        if (last) {
+          state = orwl_wh_release(srv_wh);
+          orwl_wh_delete(srv_wh);
         }
       } else {
         report(1, "waiting to acquire server handle %p 0x%jx (0x%jX)", (void*)srv_wh, cliID, (uintmax_t)svrID);
@@ -128,15 +135,14 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
   orwl_wh* wh = (void*)whID;
   orwl_wq* wq = wh->location;
   assert(wq);
-  uint64_t remain = 0;
+  bool last = false;
   MUTUAL_EXCLUDE(wq->mut) {
-    remain = wh->tokens;
-    assert(remain);
+    last = (wh->tokens == 1);
     orwl_wh_unload(wh);
   }
   // delete wh and return
   orwl_state state = orwl_valid;
-  if (remain == 1) {
+  if (last) {
     state = orwl_wh_release(wh);
     orwl_wh_delete(wh);
   }

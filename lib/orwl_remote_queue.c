@@ -99,6 +99,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
         if (state == orwl_requested
             && wh_inc
             && wh_inc->svrID == rh->svrID) {
+          report(1, "piggybacked on srvID %" PRIx64, rh->svrID);
           /* remote and local queue have still the same last element, a
              corresponding inclusive pair at the tail of the their
              list. */
@@ -119,19 +120,26 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
         } else {
           // A new handle has to be inserted in the local queue
           orwl_wh* wh = NEW(orwl_wh);
+          report(1, "new handle %p for remote %" PRIx64, (void*)wh, rh->svrID);
           assert(&rq->local == cli_wh->location);
+          // The handle on the remote side might have been acquired
+          // before we even woke up. In that case we may already have
+          // received the information and will have to release and delete
+          // cli_wh.
+          bool last = false;
           MUTUAL_EXCLUDE(rq->local.mut) {
             assert(rq->local.tail == cli_wh);
-            // The handle on the remote side might have been acquired
-            // before we even woke up. In that case we may already have
-            // received the information and have released and deleted
-            // cli_wh.
             orwl_wq_request_locked(&rq->local, wh, 1);
             // Finally have rh point on wh and mark wh as being
             // inclusive.
             wh->svrID = rh->svrID;
             rh->wh = wh;
+            last = (cli_wh->tokens == 1);
             orwl_wh_unload(cli_wh, 1);
+          }
+          if (last) {
+            state = orwl_wh_release(cli_wh);
+            orwl_wh_delete(cli_wh);
           }
         }
       }
@@ -152,19 +160,19 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   orwl_endpoint there = rq->there;
   orwl_wq* wq = wh->location;
   /* Detect if we are the last user of this handle */
-  uint64_t remain = 0;
+  bool last = false;
   pthread_mutex_lock(&rq->mut);
   MUTUAL_EXCLUDE(wq->mut) {
     assert(wq == &rq->local);
     assert(wq->head == wh);
-    remain = wh->tokens;
-    if (remain != 1) {
+    last = (wh->tokens == 1);
+    if (!last) {
       orwl_handle_init(rh);
       pthread_mutex_unlock(&rq->mut);
     }
     orwl_wh_unload(wh);
   }
-  if (remain == 1) {
+  if (last) {
     state = orwl_wh_release(wh);
     orwl_handle_init(rh);
     pthread_mutex_unlock(&rq->mut);
