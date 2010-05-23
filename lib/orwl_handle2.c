@@ -35,6 +35,16 @@ DEFINE_ORWL_TYPE_DYNAMIC(orwl_handle2,
                          );
 
 static
+orwl_mirror* _location(orwl_handle2* rh2) {
+  orwl_mirror* ret = NULL;
+  if (rh2) {
+    bool par = (rh2->clock % 2);
+    ret = rh2->pair[par].rq;
+  }
+  return ret;
+}
+
+static
 void _orwl_new_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed, bool par) {
   if (rh2->state[par] != orwl_requested)
     rh2->state[par] = rh2->inclusive
@@ -47,10 +57,10 @@ orwl_state _orwl_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* se
   rh2->state[0] = orwl_invalid;
   rh2->state[1] = orwl_invalid;
   bool par = (rh2->clock % 2);
-  if (!rh2->location) {
+  if (!_location(rh2)) {
     rh2->inclusive = inclusive;
     _orwl_new_request2(location, rh2, seed, par);
-    rh2->location = location;
+    //rh2->location = location;
   }
   return rh2->state[par];
 }
@@ -67,7 +77,7 @@ orwl_state orwl_release2(orwl_handle2* rh2, rand48_t* seed)  {
   bool par = (rh2->clock % 2);
   orwl_acquire2(rh2);
   if (rh2->state[par] == orwl_acquired) {
-    rh2->state[par] =  rh2->location
+    rh2->state[par] =  _location(rh2)
       ? orwl_release(&rh2->pair[par], seed)
       : orwl_invalid;
   }
@@ -76,8 +86,7 @@ orwl_state orwl_release2(orwl_handle2* rh2, rand48_t* seed)  {
 }
 
 orwl_state orwl_cancel2(orwl_handle2* rh2, rand48_t* seed) {
-  if (rh2->location) {
-    rh2->location = NULL;
+  if (_location(rh2)) {
     rh2->inclusive = false;
     for (int par = 0; par < 2; ++par) {
       rh2->state[par] = orwl_cancel(&rh2->pair[par], seed);
@@ -89,7 +98,7 @@ orwl_state orwl_cancel2(orwl_handle2* rh2, rand48_t* seed) {
 orwl_state orwl_acquire2(orwl_handle2* rh2, rand48_t* seed) {
   bool par = (rh2->clock % 2);
   orwl_state *const state = rh2->state;
-  orwl_mirror *const location = rh2->location;
+  orwl_mirror *const location = _location(rh2);
   switch (state[par]) {
   case orwl_requested:
     state[par] = location
@@ -107,7 +116,7 @@ orwl_state orwl_acquire2(orwl_handle2* rh2, rand48_t* seed) {
 
 orwl_state orwl_test2(orwl_handle2* rh2, rand48_t* seed) {
   bool par = (rh2->clock % 2);
-  rh2->state[par] =  rh2->location
+  rh2->state[par] =  _location(rh2)
     ? orwl_test(&rh2->pair[par])
     : orwl_invalid;
   return rh2->state[par];

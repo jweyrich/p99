@@ -38,8 +38,6 @@ struct orwl_handle2 {
   unsigned clock:(sizeof(unsigned)*8 - 1);
   /** the last known state of pair[i] */
   orwl_state state[2];
-  /** the location to which this is inserted, if any */
-  orwl_mirror* location;
   /** the two handles that are used in alternation */
   orwl_handle pair[2];
 };
@@ -52,7 +50,6 @@ typedef struct orwl_handle2 orwl_handle2;
 {                                                               \
   .inclusive = false,                                           \
     .clock = 1,                                                 \
-    .location = NULL,                                           \
     .state = { [0] = orwl_invalid, [1] = orwl_invalid },        \
     .pair = {                                                   \
     [0] = ORWL_HANDLE_INITIALIZER,                              \
@@ -68,7 +65,6 @@ orwl_handle2 *orwl_handle2_init(orwl_handle2 *rh2, orwl_mirror* m, bool inc) {
   rh2->state[1] = orwl_invalid;
   rh2->inclusive = false;
   rh2->clock = 1;
-  rh2->location = NULL;
   return rh2;
 }
 
@@ -78,7 +74,7 @@ void orwl_handle2_destroy(orwl_handle2 *rh2) {
   orwl_handle_destroy(&rh2->pair[1]);
   rh2->inclusive = false;
   rh2->clock = 0;
-  rh2->location = NULL;
+  //rh2->location = NULL;
 }
 
 inline
