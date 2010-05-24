@@ -432,7 +432,7 @@ uint64_t orwl_wh_unload
     if (wh->tokens < howmuch) howmuch = wh->tokens;
     wh->tokens -= howmuch;
     /* If the condition has changed, wake up all tokens */
-    if (!wh->tokens) pthread_cond_broadcast(&wh->cond);
+    if (howmuch) pthread_cond_broadcast(&wh->cond);
     return howmuch;
   }
 
