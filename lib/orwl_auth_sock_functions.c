@@ -72,14 +72,14 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
   if (wqPOS < Arg->srv->max_queues) {
     /* extract wq and the remote wh ID */
     orwl_wq *srv_wq = &Arg->srv->wqs[wqPOS];
-    report(1, "inclusive request 0x%jx 0x%jx", (uintmax_t)svrID, (uintmax_t)cliID);
+    report(0, "inclusive request 0x%jx 0x%jx", (uintmax_t)svrID, (uintmax_t)cliID);
     /* First check if a previously inserted inclusive handle can be
        re-used. Always request two tokens, one for this function here
        when it acquires below, the other one to block until the remote
        issues a release */
     bool piggyback = false;
     orwl_wh *srv_wh = NULL;
-    report(1, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
+    report(0, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
     state = orwl_wq_request(srv_wq, &srv_wh, 2);
     if (srv_wh) {
       if (svrID) {
@@ -89,7 +89,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
       srv_wh = NEW(orwl_wh);
       /* mark it as being inclusive */
       srv_wh->svrID = (uintptr_t)srv_wh;
-      report(1, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
+      report(0, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
       state = orwl_wq_request(srv_wq, &srv_wh, 2);
     }
     if (state != orwl_requested) {
@@ -103,7 +103,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
       /* If now the local handle is `requested' we only have to wait if
          we establish a new pair of client-server handles. */
       if (piggyback) {
-        report(1, "unloading server handle %p for existing pair", (void*)srv_wh);
+        report(0, "unloading server handle %p for existing pair", (void*)srv_wh);
         bool last = false;
         MUTUAL_EXCLUDE(srv_wq->mut) {
           orwl_wh_unload(srv_wh, 2);
@@ -114,10 +114,10 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
           orwl_wh_delete(srv_wh);
         }
       } else {
-        report(1, "waiting to acquire server handle %p 0x%jx (0x%jX)", (void*)srv_wh, cliID, (uintmax_t)svrID);
+        report(0, "waiting to acquire server handle %p 0x%jx (0x%jX)", (void*)srv_wh, cliID, (uintmax_t)svrID);
         // wait until the lock on wh is obtained
         state = orwl_wh_acquire(srv_wh);
-        report(1, "acquired server handle %p (0x%jX)", (void*)srv_wh, (uintmax_t)svrID);
+        report(0, "acquired server handle %p (0x%jX)", (void*)srv_wh, (uintmax_t)svrID);
         // send a request to the other side to remove the remote wh ID
         orwl_rpc(&ep, seed_get(), auth_sock_release, cliID);
       }
