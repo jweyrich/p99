@@ -70,6 +70,19 @@ int main(int argc, char **argv) {
     srv->info_len = 256;
   }
 
+  orwl_wh *wh = orwl_wh_vnew(len);
+  for (uint64_t i = 0; i < len; ++i) {
+    orwl_wh *whp = &wh[i];
+    orwl_wq_request(&srv->wqs[i], &whp, 1);
+  }
+  progress(1, 0, " waiting for kick off                                           ");
+  fgets((char[32]){0}, 32, stdin);
+  for (uint64_t i = 0; i < len; ++i) {
+    orwl_wh_acquire(&wh[i]);
+    orwl_wh_release(&wh[i]);
+  }
+  orwl_wh_vdelete(wh);
+
   for (size_t t = 0; ; ++t) {
     ret = pthread_kill(srv_id, 0);
     if (ret) break;
