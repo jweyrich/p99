@@ -30,6 +30,7 @@ orwl_state orwl_test(orwl_handle* rh);
 
 orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_invalid;
+  if (rq && rh)
   MUTUAL_EXCLUDE(rq->mut) {
     if (!rh->wh) {
       // insert two wh in the local queue
@@ -50,7 +51,7 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
           /* Link us to rq */
           rh->rq = rq;
         } else {
-          report(1, "bad things happen: unable to get an insertion request from the other side.");
+          report(1, "bad things happen: unable to get a write insertion request from the other side.");
           /* something went wrong */
           state = orwl_invalid;
         }
@@ -67,19 +68,23 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
 
 orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_invalid;
+  if (rq && rh)
   MUTUAL_EXCLUDE(rq->mut) {
     if (!rh->wh) {
       orwl_wh* cli_wh = NEW(orwl_wh);
       orwl_wh* wh_inc = NULL;
       /* first try to piggyback the latest wh in the local list */
       state = orwl_wq_request(&rq->local, &wh_inc, 1);
-      /* the dummy handle is loaded with two tokens, one for the remote
-         event of acquisition of the lock. The other is used here locally
-         to ensure that cli_wh is not freed before we have finished our
-         work, here. */
+      assert(!wh_inc || wh_inc->svrID);
+      /* Otherwise, the dummy handle is loaded with two tokens, one
+         for the remote event of acquisition of the lock. The other is
+         used here locally to ensure that cli_wh is not freed before
+         we have finished our work, here. */
       state = orwl_wq_request(&rq->local, &cli_wh, 2);
-      /* Send the insertion request with the two ids of the handles to
-         the other side. As result retrieve the ID on the other side
+      /* Send the insertion request to the other side. This consists
+         of sending cli_wh, for the case that this is will be
+         considered a new request, and the svrID that was memorized on
+         wh_inc, if any. As result retrieve the ID on the other side
          that is to be released when we release here. */
       rh->svrID = orwl_rpc(&rq->there, seed, auth_sock_read_request,
                            rq->there.index,
@@ -89,7 +94,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
                            );
       if (!rh->svrID) {
         state = orwl_invalid;
-        report(1, "bad things happen: unable to get an insertion request from the other side.");
+        report(1, "bad things happen: unable to get a read insertion request from the other side.");
         orwl_wh_acquire(cli_wh, 2);
         orwl_wh_release(cli_wh);
         orwl_wh_delete(cli_wh);
@@ -134,8 +139,8 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
             // inclusive.
             wh->svrID = rh->svrID;
             rh->wh = wh;
-            last = (cli_wh->tokens == 1);
             orwl_wh_unload(cli_wh, 1);
+            last = (cli_wh->tokens == 0);
           }
           if (last) {
             state = orwl_wh_release(cli_wh);

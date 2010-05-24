@@ -102,8 +102,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
       auth_sock_close(Arg);
       /* If now the local handle is `requested' we only have to wait if
          we establish a new pair of client-server handles. */
-      if (svrID == (uintptr_t)srv_wh) {
-        assert(piggyback);
+      if (piggyback) {
         report(1, "unloading server handle %p for existing pair", (void*)srv_wh);
         bool last = false;
         MUTUAL_EXCLUDE(srv_wq->mut) {
@@ -130,6 +129,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
 /* then on the server when the lock is released. */
 DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
   AUTH_SOCK_READ(Arg, auth_sock_release, uintptr_t whID);
+  orwl_state ret = orwl_valid;
   // extract the wh for Arg
   assert(whID);
   orwl_wh* wh = (void*)whID;
@@ -137,16 +137,14 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
   assert(wq);
   bool last = false;
   MUTUAL_EXCLUDE(wq->mut) {
-    last = (wh->tokens == 1);
     orwl_wh_unload(wh);
+    last = (wh->tokens == 0);
   }
-  // delete wh and return
-  orwl_state state = orwl_valid;
   if (last) {
-    state = orwl_wh_release(wh);
+    ret = orwl_wh_release(wh);
     orwl_wh_delete(wh);
   }
-  Arg->ret = state;
+  Arg->ret = ret;
 }
 
 DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
