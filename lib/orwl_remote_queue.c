@@ -104,7 +104,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
         if (state == orwl_requested
             && wh_inc
             && wh_inc->svrID == rh->svrID) {
-          report(1, "piggybacked on srvID %" PRIx64, rh->svrID);
+          report(0, "piggybacked on srvID %" PRIx64, rh->svrID);
           /* remote and local queue have still the same last element, a
              corresponding inclusive pair at the tail of the their
              list. */
@@ -125,24 +125,38 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
         } else {
           // A new handle has to be inserted in the local queue
           orwl_wh* wh = NEW(orwl_wh);
-          report(1, "new handle %p for remote %" PRIx64, (void*)wh, rh->svrID);
+          wh->svrID = rh->svrID;
+          report(0, "new handle %p for remote %" PRIx64, (void*)wh, rh->svrID);
           assert(&rq->local == cli_wh->location);
           // The handle on the remote side might have been acquired
           // before we even woke up. In that case we may already have
           // received the information and will have to release and delete
           // cli_wh.
-          bool last = false;
+          bool last_cli = false;
+          bool last_inc = false;
           MUTUAL_EXCLUDE(rq->local.mut) {
+            // If we added a token to an existing handle but now we
+            // see that this corresponds to a different priority
+            // (because remotely there was something in between) we
+            // have to unload this again.
+            if (wh_inc) {
+              orwl_wh_unload(wh_inc, 1);
+              last_inc = (wh_inc->tokens == 0);
+            }
             assert(rq->local.tail == cli_wh);
             orwl_wq_request_locked(&rq->local, wh, 1);
             // Finally have rh point on wh and mark wh as being
             // inclusive.
-            wh->svrID = rh->svrID;
             rh->wh = wh;
             orwl_wh_unload(cli_wh, 1);
-            last = (cli_wh->tokens == 0);
+            last_cli = (cli_wh->tokens == 0);
           }
-          if (last) {
+          if (last_inc) {
+            assert(wh_inc);
+            state = orwl_wh_release(wh_inc);
+            orwl_wh_delete(wh_inc);
+          }
+          if (last_cli) {
             state = orwl_wh_release(cli_wh);
             orwl_wh_delete(cli_wh);
           }
