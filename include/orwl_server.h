@@ -65,7 +65,22 @@ orwl_server_terminate(orwl_server *,   /*!< the server to terminate */
                        rand48_t* seed  /*!< [in] defaults to a thread local seed */
                       );
 
+/**
+ ** @brief Block the server initially.
+ **
+ ** Use this to first insert all handles in their queues and then kick
+ ** off the system with ::orwl_server_unblock.
+ **/
 void orwl_server_block(orwl_server *serv);
+
+/**
+ ** @brief Unblock the server.
+ **
+ ** Use this to kick off the system after having inserted all handles
+ ** in their queues.
+ **
+ ** @see orwl_server_unblock.
+ **/
 void orwl_server_unblock(orwl_server *serv);
 
 
