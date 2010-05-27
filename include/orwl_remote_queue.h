@@ -173,6 +173,22 @@ orwl_state orwl_test(orwl_handle* rh) {
   return orwl_wh_test(rh->wh, 0);
 }
 
+inline
+void orwl_map(orwl_handle* rh, uint64_t** data, size_t* data_len) {
+  if (orwl_test(rh) > orwl_valid) {
+    assert(rh->wh);
+    orwl_wh_map(rh->wh, data, data_len);
+  }
+}
+
+inline
+void orwl_resize(orwl_handle* rh, size_t data_len) {
+  if (orwl_test(rh) > orwl_valid) {
+    assert(rh->wh);
+    orwl_wh_resize(rh->wh, data_len);
+  }
+}
+
 DECLARE_ORWL_REGISTER(orwl_wh_acquire);
 DECLARE_ORWL_REGISTER(orwl_wh_release);
 DECLARE_ORWL_REGISTER(orwl_wh_cancel);

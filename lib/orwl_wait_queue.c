@@ -32,6 +32,8 @@ orwl_wq* orwl_wq_init(orwl_wq *wq,
   pthread_mutex_init(&wq->mut, attr);
   wq->head = NULL;
   wq->tail = NULL;
+  wq->data = NULL;
+  wq->data_len = 0;
   wq->clock = 1;
   return wq;
 }
@@ -41,10 +43,13 @@ DEFINE_DEFARG(orwl_wq_init, , NULL);
 void orwl_wq_destroy(orwl_wq *wq) {
   assert(!wq->head);
   assert(!wq->tail);
+  if (wq->data) free(wq->data);
   pthread_mutex_destroy(&wq->mut);
   wq->head = TGARB(orwl_wh*);
   wq->tail = TGARB(orwl_wh*);
+  wq->data = TGARB(void*);
   wq->clock = TONES(uint64_t);
+  wq->data_len = TONES(size_t);
 }
 
 DEFINE_NEW_DELETE(orwl_wq);
@@ -240,6 +245,47 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
   }
   return ret;
 }
+
+void orwl_wh_map(orwl_wh* wh, uint64_t** datap, size_t* data_len) {
+  if (datap && data_len) {
+    if (orwl_wh_acquire(wh) == orwl_acquired) {
+      *datap = wh->location->data;
+      *data_len = wh->location->data_len;
+    } else {
+      *datap = NULL;
+      *data_len = 0;
+    }
+  }
+}
+
+void orwl_wh_resize(orwl_wh* wh, size_t len) {
+  if (orwl_wh_acquire(wh) == orwl_acquired) {
+    size_t data_len = wh->location->data_len;
+    /* realloc is allowed to return something non-NULL if len is
+       0. Avoid that. */
+    if (len) {
+      size_t const blen = len * sizeof(uint64_t);
+      uint64_t* data = (uint64_t*)realloc(wh->location->data, blen);
+      if (data) {
+        size_t const data_blen = data_len * sizeof(uint64_t);
+        if (data_blen < blen)
+          memset(&data[data_len], 0, blen - data_blen);
+        if (wh->location->data != data)
+          wh->location->data = data;
+        wh->location->data_len = len;
+      } else {
+        /* realloc failed, don't do anything */
+      }
+    } else {
+      if (wh->location->data) free(wh->location->data);
+      wh->location->data = NULL;
+      wh->location->data_len = 0;
+    }
+  }
+}
+
+
+
 
 void orwl_state_destroy(orwl_state *el);
 DEFINE_DEFARG(orwl_state_init, , orwl_invalid);

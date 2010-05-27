@@ -235,6 +235,8 @@ orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
   return state;
 }
 
+void orwl_map(orwl_handle* rh, uint64_t** data, size_t* data_len);
+void orwl_resize(orwl_handle* rh, size_t data_len);
 
 
 DEFINE_DEFARG(orwl_write_request, , , seed_get());

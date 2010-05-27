@@ -117,6 +117,8 @@ struct orwl_wq {
   orwl_wh *tail;        /**< The tail of the priority queue */
   uint64_t clock;       /**< A counter that is increased at each
                            event that this queue encounters. */
+  uint64_t* data;
+  size_t data_len;
 };
 
 
@@ -442,6 +444,10 @@ PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
 #define orwl_wh_unload(...) CALL_WITH_DEFAULTS(orwl_wh_unload, 2, __VA_ARGS__)
 DECLARE_DEFARG(orwl_wh_unload, , 1);
 #endif
+
+
+void orwl_wh_map(orwl_wh* wh, uint64_t** data, size_t* data_len);
+void orwl_wh_resize(orwl_wh* wh, size_t data_len);
 
 DECLARE_ORWL_REGISTER(orwl_wh_acquire);
 DECLARE_ORWL_REGISTER(orwl_wh_release);

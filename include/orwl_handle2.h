@@ -91,28 +91,46 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle2);
 
 orwl_state orwl_write_request2(orwl_mirror* location, /*!< [in,out] the location for the request */
                               orwl_handle2* handle,   /*!< [in,out] the handle for the request */
-                              rand48_t* seed         /*!< [in] defaults to a thread local seed */
+                              rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                               );
 
 orwl_state orwl_read_request2(orwl_mirror* location, /*!< [in,out] the location for the request */
                              orwl_handle2* handle,   /*!< [in,out] the handle for the request */
-                             rand48_t* seed         /*!< [in] defaults to a thread local seed */
+                             rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                              );
 
 orwl_state orwl_release2(orwl_handle2* handle,   /*!< [in,out] the handle to be released */
-                        rand48_t* seed         /*!< [in] defaults to a thread local seed */
+                        rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                         );
 
 orwl_state orwl_cancel2(orwl_handle2* handle,   /*!< [in,out] the handle to be canceled */
-                       rand48_t* seed         /*!< [in] defaults to a thread local seed */
+                       rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                        );
 
 orwl_state orwl_acquire2(orwl_handle2* handle,   /*!< [in,out] the handle to be acquired */
-                         rand48_t* seed         /*!< [in] defaults to a thread local seed */
+                         rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                          );
 orwl_state orwl_test2(orwl_handle2* handle,   /*!< [in,out] the handle to be tested */
-                      rand48_t* seed         /*!< [in] defaults to a thread local seed */
+                      rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                       );
+
+void orwl_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
+               uint64_t** data,         /*!< [out] place a pointer to the
+                                       data, here */
+               size_t* data_len,    /*!< [out] length of @a data in
+                                       number of elements */
+               rand48_t* seed       /*!< [in,out] defaults to a thread local seed */
+               );
+
+void orwl_resize2(orwl_handle2* rh2,   /*!< [in,out] the handle whos
+                                          data to resize */
+                  size_t data_len,     /*!< [in] future length of @a data in
+                                         number of elements */
+                  rand48_t* seed       /*!< [in,out] defaults to a thread local seed */
+                  );
+
+
+
 
 #ifndef DOXYGEN
 PROTOTYPE(orwl_state, orwl_write_request2, orwl_mirror*, orwl_handle2*, rand48_t*);
