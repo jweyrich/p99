@@ -89,7 +89,7 @@ DEFINE_NEW_DELETE(orwl_server);
  ** @endmsc
  **/
 DEFINE_THREAD(orwl_server) {
-  report(1, "starting server");
+  report(0, "starting server");
   Arg->fd_listen = socket(AF_INET);
   if (Arg->fd_listen != -1) {
     rand48_t seed = RAND48_T_INITIALIZER;
@@ -108,7 +108,7 @@ DEFINE_THREAD(orwl_server) {
       port_t_init(&Arg->host.ep.port, addr.sin_port);
     }
     char const* server_name = orwl_endpoint_print(&Arg->host.ep);
-    report(1, "server listening at %s", server_name);
+    report(0, "server listening at %s", server_name);
     if (listen(Arg->fd_listen, Arg->max_connections) == -1)
       goto TERMINATE;
     for (uint64_t t = 1; Arg->fd_listen != -1; ++t) {

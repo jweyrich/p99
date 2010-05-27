@@ -139,11 +139,11 @@ in_addr_t orwl_inet_addr(char const *name) {
     .ai_socktype = SOCK_STREAM,
   };
   getaddrinfo(name, NULL, &hints, &res);
-  report(1, "%s's canonical name is %s",
+  report(0, "%s's canonical name is %s",
          (name ? name : "<unspecific>"),
          (res ? res->ai_canonname : "unknonwn"));
   for (struct addrinfo *p = res; p; p = p->ai_next) {
-    report(1, "%s's inet address is %s",
+    report(0, "%s's inet address is %s",
            (name ? name : "<unspecific>"),
            orwl_inet_ntop(p->ai_addr));
     switch (p->ai_family) {
@@ -199,7 +199,6 @@ DEFINE_THREAD(auth_sock) {
     if (Arg->srv) {
       /* do something with mess here */
       server_callback(Arg);
-      //report(1, "finished callback with %zd elements", Arg->len);
     }
   if (Arg->fd != -1) auth_sock_close(Arg);
 }
