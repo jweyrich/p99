@@ -62,32 +62,26 @@ int main(int argc, char **argv) {
   orwl_server_create(srv, &srv_id);
   /* give the server the chance to fire things up */
   while (!port2net(&srv->host.ep.port)) sleepfor(0.01);
+  char const* server_name = orwl_endpoint_print(&srv->host.ep);
   {
-    char const* server_name = orwl_endpoint_print(&srv->host.ep);
     char* info = calloc(256);
     snprintf(info, 256, "server at %s                                               ", server_name);
     srv->info = info;
     srv->info_len = 256;
   }
 
-  orwl_wh *wh = orwl_wh_vnew(len);
-  for (uint64_t i = 0; i < len; ++i) {
-    orwl_wh *whp = &wh[i];
-    orwl_wq_request(&srv->wqs[i], &whp, 1);
-  }
-  progress(1, 0, " waiting for kick off                                           ");
+  orwl_server_block(srv);
+  progress(1, 0, "%s waiting for kick off                                           ",
+           server_name);
   fgets((char[32]){0}, 32, stdin);
-  for (uint64_t i = 0; i < len; ++i) {
-    orwl_wh_acquire(&wh[i]);
-    orwl_wh_release(&wh[i]);
-  }
-  orwl_wh_vdelete(wh);
+  orwl_server_unblock(srv);
 
   for (size_t t = 0; ; ++t) {
     ret = pthread_kill(srv_id, 0);
     if (ret) break;
     sleepfor(1.0);
-    progress(1, t, " server idle                                           ");
+    progress(1, t, "%s idle                                           ",
+             server_name);
   }
   orwl_server_join(srv_id);
   orwl_server_delete(srv);

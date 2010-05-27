@@ -61,7 +61,9 @@ void orwl_server_destroy(orwl_server *serv) {
     orwl_host_delete(n);
   }
   if (serv->wqs) orwl_wq_vdelete(serv->wqs);
+  if (serv->whs) orwl_wh_vdelete(serv->whs);
   if (serv->info) char_delete(serv->info);
+  orwl_server_init(serv);
 }
 
 DEFINE_NEW_DELETE(orwl_server);
@@ -168,3 +170,21 @@ DEFINE_THREAD(orwl_server) {
   if (Arg->fd_listen != -1) close(Arg->fd_listen);
 }
 
+void orwl_server_block(orwl_server *srv) {
+  assert(!srv->whs);
+  srv->whs = orwl_wh_vnew(srv->max_queues);
+  for (uint64_t i = 0; i < srv->max_queues; ++i) {
+    orwl_wh *whp = &srv->whs[i];
+    orwl_wq_request(&srv->wqs[i], &whp, 1);
+  }
+}
+
+void orwl_server_unblock(orwl_server *srv) {
+  assert(srv->whs);
+  for (uint64_t i = 0; i < srv->max_queues; ++i) {
+    orwl_wh_acquire(&srv->whs[i]);
+    orwl_wh_release(&srv->whs[i]);
+  }
+  orwl_wh_vdelete(srv->whs);
+  srv->whs = NULL;
+}

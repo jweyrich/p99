@@ -20,6 +20,7 @@ struct orwl_server {
   size_t max_queues;       /*!< number of locations served by this */
   struct orwl_wq *wqs;     /*!< the priority queues of these
                               locations, if any */
+  struct orwl_wh *whs;     /*!< handles to block the server, if any */
   char* info;              /*!< an informative string that is
                              presented in the terminal */
   size_t info_len;         /*!< the length of #info */
@@ -63,6 +64,9 @@ void
 orwl_server_terminate(orwl_server *,   /*!< the server to terminate */
                        rand48_t* seed  /*!< [in] defaults to a thread local seed */
                       );
+
+void orwl_server_block(orwl_server *serv);
+void orwl_server_unblock(orwl_server *serv);
 
 
 #ifndef DOXYGEN
