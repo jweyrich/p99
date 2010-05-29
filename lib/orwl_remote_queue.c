@@ -178,6 +178,10 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   uint64_t svrID = rh->svrID;
   orwl_endpoint there = rq->there;
   orwl_wq* wq = wh->location;
+  /* If we are the last that holds this handle we have to prepare the
+     buffer for the return message while we hold the inner lock. */
+  uint64_t* mess = NULL;
+  size_t len = 2;
   /* Detect if we are the last user of this handle */
   bool last = false;
   pthread_mutex_lock(&rq->mut);
@@ -185,7 +189,19 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     assert(wq == &rq->local);
     assert(wq->head == wh);
     last = (wh->tokens == 1);
-    if (!last) {
+    if (last) {
+      bool inclusive = svrID;
+      size_t extend = (inclusive ? 0 : wq->data_len);
+      report(true, "adding extend of length %zu?", extend);
+      len += extend;
+      mess = uint64_t_vnew(len);
+      mess[0] = ORWL_OBJID(auth_sock_release);
+      mess[1] = svrID;
+      if (extend) {
+        report(true, "adding suplement of length %zu", extend);
+        memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
+      }
+    } else {
       orwl_handle_init(rh);
       pthread_mutex_unlock(&rq->mut);
     }
@@ -195,10 +211,11 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     state = orwl_wh_release(wh);
     orwl_handle_init(rh);
     pthread_mutex_unlock(&rq->mut);
-    orwl_rpc(&there, seed, auth_sock_release, svrID);
+    orwl_send(&there, seed, mess, len);
     /* We should be the last to have a reference to this handle so
        we may destroy it. */
     orwl_wh_delete(wh);
+    uint64_t_vdelete(mess);
   }
   return state;
 }

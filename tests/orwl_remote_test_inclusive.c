@@ -129,10 +129,32 @@ DEFINE_THREAD(arg_t) {
       report(false,  "acq, handle %zu, state %s                            ",
              (orwl_mynum + (i - 1) + orwl_np) % orwl_np, orwl_state_getname(ostate));
     }
+    if (!orwl_phase) {
+      orwl_resize2(&leh[1], 1, seed);
+      report(true, "handle resized");
+      uint64_t* data;
+      size_t data_len;
+      orwl_map2(&leh[1], &data, &data_len, seed);
+      memset(data, 0, data_len * sizeof(uint64_t));
+      report(true, "handle mapped");
+    }
+
     if (info) {
       char num[10];
       sprintf(num, "  %jX", orwl_phase);
       memcpy(info, num + strlen(num) - 2, 2);
+      for (size_t i = 0; i < 3; ++i) {
+        uint64_t* data;
+        size_t data_len;
+        orwl_map2(&leh[i], &data, &data_len, seed);
+        if (data_len) {
+          if (i == 1)
+            data[0] = orwl_phase;
+          else
+            report(true, "found suplement of length %zu, says %" PRIX64 " we are at %" PRIX64,
+                   data_len, data[0], orwl_phase);
+        }
+      }
     }
     /* if (orwl_phase < phases - 1) { */
     /*   cb_t *cb = NEW(cb_t, orwl_mynum, orwl_phase, info); */
@@ -154,7 +176,7 @@ DEFINE_THREAD(arg_t) {
     report(false,  "can, handle %zu", (orwl_mynum + (i - 1) + orwl_np) % orwl_np);
   }
   pthread_barrier_wait(&init_barr);
-  report(1, "final barrier passed");
+  report(true, "final barrier passed");
   report(true, "finished");
 
 }
@@ -219,8 +241,6 @@ int main(int argc, char **argv) {
     }
     report(1, "connected to %s", orwl_endpoint_print(&there));
   }
-
-  sleepfor(2.0);
 
   /* Half of the threads are created detached and half joinable */
   pthread_t *id = pthread_t_vnew(number/2);

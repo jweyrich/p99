@@ -55,8 +55,23 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, ui
       auth_sock_close(Arg);
       /* Wait until the lock on wh is obtained. */
       state = orwl_wh_acquire(srv_wh);
-      /* Send a request to the other side to remove the remote wh ID. */
-      orwl_rpc(&ep, seed_get(), auth_sock_release, whID);
+      /* Send a request to the other side to remove the remote wh ID
+         and to transfer the data, if any. */
+      orwl_wq* wq = srv_wh->location;
+      assert(wq);
+      MUTUAL_EXCLUDE(wq->mut) {
+        size_t extend = wq->data_len;
+        size_t len = 2 + extend;
+        uint64_t* mess = uint64_t_vnew(len);
+        mess[0] = ORWL_OBJID(auth_sock_release);
+        mess[1] = whID;
+        if (extend) {
+          report(true, "adding suplement of length %zu", extend);
+          memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
+        }
+        orwl_send(&ep, seed_get(), mess, len);
+        uint64_t_vdelete(mess);
+      }
     } else {
       orwl_wh_delete(srv_wh);
     }
@@ -118,8 +133,23 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
         // wait until the lock on wh is obtained
         state = orwl_wh_acquire(srv_wh);
         report(0, "acquired server handle %p (0x%jX)", (void*)srv_wh, (uintmax_t)svrID);
-        // send a request to the other side to remove the remote wh ID
-        orwl_rpc(&ep, seed_get(), auth_sock_release, cliID);
+        /* Send a request to the other side to remove the remote wh ID
+           and to transfer the data, if any. */
+        orwl_wq* wq = srv_wh->location;
+        assert(wq);
+        MUTUAL_EXCLUDE(wq->mut) {
+          size_t extend = wq->data_len;
+          size_t len = 2 + extend;
+          uint64_t* mess = uint64_t_vnew(len);
+          mess[0] = ORWL_OBJID(auth_sock_release);
+          mess[1] = cliID;
+          if (extend) {
+            report(true, "adding suplement of length %zu", extend);
+            memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
+          }
+          orwl_send(&ep, seed_get(), mess, len);
+          uint64_t_vdelete(mess);
+        }
       }
     }
   }
@@ -139,6 +169,18 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
   MUTUAL_EXCLUDE(wq->mut) {
     orwl_wh_unload(wh);
     last = (wh->tokens == 0);
+    size_t len = Arg->len;
+    if (len) {
+      report(true, "found suplementary message of length %zu", len);
+      uint64_t* data;
+      size_t data_len;
+      orwl_wh_map(wh, &data, &data_len);
+      if (data_len != len) {
+        orwl_wq_resize_locked(wq, len);
+        orwl_wq_map_locked(wq, &data, &data_len);
+      }
+      memcpy(data, Arg->mes, len * sizeof(uint64_t));
+    }
   }
   if (last) {
     ret = orwl_wh_release(wh);

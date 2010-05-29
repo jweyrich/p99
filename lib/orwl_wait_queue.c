@@ -281,6 +281,7 @@ void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
       wq->data_len = len;
     } else {
       /* realloc failed, don't do anything */
+      report(true, "adding suplement of length %zu failed", len);
     }
   } else {
     if (wq->data) free(wq->data);
