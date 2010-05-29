@@ -246,11 +246,18 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
   return ret;
 }
 
+void orwl_wq_map_locked(orwl_wq* wq, uint64_t** datap, size_t* data_len) {
+  *datap = wq->data;
+  *data_len = wq->data_len;
+}
+
 void orwl_wh_map(orwl_wh* wh, uint64_t** datap, size_t* data_len) {
   if (datap && data_len) {
     if (orwl_wh_acquire(wh) == orwl_acquired) {
-      *datap = wh->location->data;
-      *data_len = wh->location->data_len;
+      orwl_wq *wq = wh->location;
+      assert(wq);
+      MUTUAL_EXCLUDE(wq->mut)
+        orwl_wq_map_locked(wq, datap, data_len);
     } else {
       *datap = NULL;
       *data_len = 0;
@@ -258,34 +265,38 @@ void orwl_wh_map(orwl_wh* wh, uint64_t** datap, size_t* data_len) {
   }
 }
 
-void orwl_wh_resize(orwl_wh* wh, size_t len) {
-  if (orwl_wh_acquire(wh) == orwl_acquired) {
-    size_t data_len = wh->location->data_len;
-    /* realloc is allowed to return something non-NULL if len is
-       0. Avoid that. */
-    if (len) {
-      size_t const blen = len * sizeof(uint64_t);
-      uint64_t* data = (uint64_t*)realloc(wh->location->data, blen);
-      if (data) {
-        size_t const data_blen = data_len * sizeof(uint64_t);
-        if (data_blen < blen)
-          memset(&data[data_len], 0, blen - data_blen);
-        if (wh->location->data != data)
-          wh->location->data = data;
-        wh->location->data_len = len;
-      } else {
-        /* realloc failed, don't do anything */
-      }
+void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
+  size_t data_len = wq->data_len;
+  /* realloc is allowed to return something non-NULL if len is
+     0. Avoid that. */
+  if (len) {
+    size_t const blen = len * sizeof(uint64_t);
+    uint64_t* data = (uint64_t*)realloc(wq->data, blen);
+    if (data) {
+      size_t const data_blen = data_len * sizeof(uint64_t);
+      if (data_blen < blen)
+        memset(&data[data_len], 0, blen - data_blen);
+      if (wq->data != data)
+        wq->data = data;
+      wq->data_len = len;
     } else {
-      if (wh->location->data) free(wh->location->data);
-      wh->location->data = NULL;
-      wh->location->data_len = 0;
+      /* realloc failed, don't do anything */
     }
+  } else {
+    if (wq->data) free(wq->data);
+    wq->data = NULL;
+    wq->data_len = 0;
   }
 }
 
-
-
+void orwl_wh_resize(orwl_wh* wh, size_t len) {
+  if (orwl_wh_acquire(wh) == orwl_acquired) {
+    orwl_wq *wq = wh->location;
+    assert(wq);
+    MUTUAL_EXCLUDE(wq->mut)
+      orwl_wq_resize_locked(wq, len);
+  }
+}
 
 void orwl_state_destroy(orwl_state *el);
 DEFINE_DEFARG(orwl_state_init, , orwl_invalid);

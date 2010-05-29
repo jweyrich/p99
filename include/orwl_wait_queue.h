@@ -445,6 +445,8 @@ PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
 DECLARE_DEFARG(orwl_wh_unload, , 1);
 #endif
 
+void orwl_wq_map_locked(orwl_wq* wq, uint64_t** datap, size_t* data_len);
+void orwl_wq_resize_locked(orwl_wq* wq, size_t len);
 
 void orwl_wh_map(orwl_wh* wh, uint64_t** data, size_t* data_len);
 void orwl_wh_resize(orwl_wh* wh, size_t data_len);
