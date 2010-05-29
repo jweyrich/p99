@@ -253,7 +253,7 @@ void orwl_wq_map_locked(orwl_wq* wq, uint64_t** datap, size_t* data_len) {
 
 void orwl_wh_map(orwl_wh* wh, uint64_t** datap, size_t* data_len) {
   if (datap && data_len) {
-    if (orwl_wh_acquire(wh) == orwl_acquired) {
+    if (orwl_wh_acquire(wh, 0) == orwl_acquired) {
       orwl_wq *wq = wh->location;
       assert(wq);
       MUTUAL_EXCLUDE(wq->mut)
@@ -290,7 +290,7 @@ void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
 }
 
 void orwl_wh_resize(orwl_wh* wh, size_t len) {
-  if (orwl_wh_acquire(wh) == orwl_acquired) {
+  if (orwl_wh_acquire(wh, 0) == orwl_acquired) {
     orwl_wq *wq = wh->location;
     assert(wq);
     MUTUAL_EXCLUDE(wq->mut)
