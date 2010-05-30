@@ -66,7 +66,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, ui
         mess[0] = ORWL_OBJID(auth_sock_release);
         mess[1] = whID;
         if (extend) {
-          report(true, "adding suplement of length %zu", extend);
+          report(false, "adding suplement of length %zu", extend);
           memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
         }
         orwl_send(&ep, seed_get(), mess, len);
@@ -144,7 +144,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
           mess[0] = ORWL_OBJID(auth_sock_release);
           mess[1] = cliID;
           if (extend) {
-            report(true, "adding suplement of length %zu", extend);
+            report(false, "adding suplement of length %zu", extend);
             memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
           }
           orwl_send(&ep, seed_get(), mess, len);
@@ -171,15 +171,17 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
     last = (wh->tokens == 0);
     size_t len = Arg->len;
     if (len) {
-      report(true, "found suplementary message of length %zu", len);
+      report(false, "found suplementary message of length %zu", len);
+      Arg->len = 0;
       uint64_t* data;
       size_t data_len;
-      orwl_wh_map(wh, &data, &data_len);
+      orwl_wq_map_locked(wq, &data, &data_len);
       if (data_len != len) {
         orwl_wq_resize_locked(wq, len);
         orwl_wq_map_locked(wq, &data, &data_len);
       }
       memcpy(data, Arg->mes, len * sizeof(uint64_t));
+      report(false, "copied suplementary message of length %zu", len);
     }
   }
   if (last) {
