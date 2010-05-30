@@ -190,15 +190,15 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     assert(wq->head == wh);
     last = (wh->tokens == 1);
     if (last) {
-      bool inclusive = svrID;
+      bool inclusive = wh->svrID;
       size_t extend = (inclusive ? 0 : wq->data_len);
-      report(true, "adding extend of length %zu?", extend);
+      report(false, "adding extend of length %zu?", extend);
       len += extend;
       mess = uint64_t_vnew(len);
       mess[0] = ORWL_OBJID(auth_sock_release);
       mess[1] = svrID;
       if (extend) {
-        report(true, "adding suplement of length %zu", extend);
+        report(false, "adding suplement of length %zu", extend);
         memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
       }
     } else {
