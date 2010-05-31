@@ -645,14 +645,14 @@ NAME(IF_EMPTY(__VA_ARGS__)                              \
  **
  ** Define the largest value that integer type @a T may hold.
  **/
-#define TMAX(T) (ISSIGNED(T) ? (TONES(T) >> 1) : TONES(T))
+#define TMAX(T) (~TMIN(T))
 
 /**
  ** @brief Typed min value
  **
  ** Define the smallest value that integer type @a T may hold.
  **/
-#define TMIN(T) (~TMAX(T))
+#define TMIN(T) (((T)ISSIGNED(T)) << ((sizeof(T)*CHAR_BIT)-1))
 
 
 /**
