@@ -56,6 +56,7 @@ DEFINE_CALLBACK(cb_t) {
 }
 
 typedef struct _arg_t {
+  size_t offset;
   size_t mynum;
   size_t phases;
   orwl_mirror* left;
@@ -87,6 +88,7 @@ DECLARE_THREAD(arg_t);
 static pthread_barrier_t init_barr = { INITIALIZER };
 
 DEFINE_THREAD(arg_t) {
+  size_t const offset = Arg->offset;
   size_t const orwl_mynum = Arg->mynum;
   size_t const phases = Arg->phases;
   orwl_mirror* left = Arg->left;
@@ -94,7 +96,7 @@ DEFINE_THREAD(arg_t) {
   orwl_handle2 leh[3] = { ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER };
 
   char* info = Arg->info;
-  if (info) info += 3*orwl_mynum;
+  if (info) info += 3*orwl_mynum + 1;
 
   /* The buffer for the reentrant pseudo random generator */
   rand48_t* seed = seed_get();
@@ -119,7 +121,7 @@ DEFINE_THREAD(arg_t) {
   report(1, "initial barrier passed");
 
   for (size_t orwl_phase = 0; orwl_phase < phases; ++orwl_phase) {
-    double const twait = 0.01;
+    double const twait = 0.1;
     double const rwait = twait * orwl_drand(seed);
     double const await = twait - rwait;
     /**/
@@ -139,21 +141,42 @@ DEFINE_THREAD(arg_t) {
       report(true, "handle mapped");
     }
 
+    int diff[3] = { TMIN(int), TNULL(int), TMIN(int) };
     if (info) {
-      char num[10];
-      sprintf(num, "  %jX", orwl_phase);
-      memcpy(info, num + strlen(num) - 2, 2);
       for (size_t i = 0; i < 3; ++i) {
         uint64_t* data;
         size_t data_len;
         orwl_map2(&leh[i], &data, &data_len, seed);
         if (data_len) {
-          if (i == 1)
+          switch (i) {
+          case 0:
+            diff[0] = data[0] - (orwl_phase - 1);
+            break;
+          case 1:
             data[0] = orwl_phase;
-          else
-            report(true, "found suplement of length %zu, says %" PRIX64 " we are at %" PRIX64,
-                   data_len, data[0], orwl_phase);
+            break;
+          case 2:
+            diff[2] = (orwl_phase - 1) - data[0];
+            break;
+          default:
+            break;
+          }
+          report(false, "%zu found suplement of length %zu, says %" PRIX64 " we are at %" PRIX64,
+                 i, data_len, data[0], orwl_phase);
         }
+      }
+      char num[10];
+      sprintf(num, "  %jX", orwl_phase);
+      memcpy(info, num + strlen(num) - 2, 2);
+      if (diff[2] == TMIN(int))
+        info[2] = '|';
+      else
+        info[2] = (abs(diff[2]) <= 2 ? ((char[]){ '-', '<', '.', '>', '+'})[diff[2] + 2] : '!');
+      if (orwl_mynum == offset) {
+        if (diff[0] == TMIN(int))
+          info[-1] = '|';
+        else
+          info[-1] = (abs(diff[0]) <= 2 ? ((char[]){ '-', '<', '.', '>', '+'})[diff[0] + 2] : '!');
       }
     }
     /* if (orwl_phase < phases - 1) { */
@@ -165,6 +188,10 @@ DEFINE_THREAD(arg_t) {
       char num[10];
       sprintf(num, "  %jx", orwl_phase);
       memcpy(info, num + strlen(num) - 2, 2);
+      if (diff[2] == TMIN(int))
+        info[2] = '|';
+      else
+        info[2] = (abs(diff[2]) <= 2 ? ((char[]){ '<', '.', '>', '+', '!'})[diff[2] + 2] : '!');
     }
     for (size_t i = 0; i < 3; ++i) {
       ostate = orwl_release2(&leh[i], seed);
@@ -205,10 +232,12 @@ int main(int argc, char **argv) {
   orwl_np = str2size_t(argv[4]);
   offset = str2size_t(argv[5]);
 
+  /* info has one suplementary char in front such that we may always
+     address field -1 from the threads. */
   size_t info_len = 3*orwl_np;
-  char* info = calloc(info_len + 1);
-  memset(info, ' ', info_len);
-  for (size_t i = 2; i < info_len; i += 3)
+  char* info = calloc(info_len + 2);
+  memset(info, ' ', info_len + 1);
+  for (size_t i = 3; i < info_len; i += 3)
     info[i] = '|';
   srv->info = info;
   srv->info_len = info_len;
@@ -248,6 +277,7 @@ int main(int argc, char **argv) {
 
   for (size_t i = 0; i < number; ++i) {
     arg_t *myarg = (i%2 ? arg + (i/2) : NEW(arg_t));
+    myarg->offset = offset;
     myarg->mynum = i + offset;
     myarg->phases = phases;
     myarg->left = &location[i - 1];
