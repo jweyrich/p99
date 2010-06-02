@@ -13,7 +13,7 @@
 rand48_t *rand48_t_init(rand48_t*, unsigned short, unsigned short, unsigned short);
 DEFINE_DEFARG(rand48_t_init, , useconds(), getpid(), pthread_self());
 
-void rand48_t_destroy(rand48_t const*seed);
+void rand48_t_destroy(rand48_t* seed);
 
 DEFINE_NEW_DELETE(rand48_t);
 

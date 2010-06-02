@@ -89,7 +89,7 @@ inline T* T ## _init(T *id) {                                   \
   return id;                                                    \
 }                                                               \
 /*! @brief destroy the object that @a id points to. */          \
-inline void T ## _destroy(T const*id) {                         \
+ inline void T ## _destroy(T*  id) {                            \
   /* empty */                                                   \
 }                                                               \
 DECLARE_NEW_DELETE(T)
@@ -101,7 +101,7 @@ DECLARE_BASIC(T ## _ptr)
 
 #define DEFINE_BASIC(T)                         \
 T* T ## _init(T *id);                           \
-void T ## _destroy(T const*id);                 \
+void T ## _destroy(T* id);                      \
 DEFINE_NEW_DELETE(T)
 
 #define DEFINE_BASIC_TYPE(T)                    \
