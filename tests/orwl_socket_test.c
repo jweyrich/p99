@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
   report(1, "starting %s ", orwl_endpoint_print(&srv.host.ep));
   pthread_t id;
   orwl_server_create(&srv, &id);
-  report(1, "started %s, got id 0x%" PRIX64, orwl_endpoint_print(&srv.host.ep), id);
+  report(1, "started %s" PRIX64, orwl_endpoint_print(&srv.host.ep));
 
   rand48_t seed = RAND48_T_INITIALIZER;
 

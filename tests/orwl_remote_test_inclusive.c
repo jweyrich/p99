@@ -161,12 +161,12 @@ DEFINE_THREAD(arg_t) {
           default:
             break;
           }
-          report(false, "%zu found suplement of length %zu, says %" PRIX64 " we are at %" PRIX64,
+          report(false, "%zu found suplement of length %zu, says %" PRIX64 " we are at %zu",
                  i, data_len, data[0], orwl_phase);
         }
       }
       char num[10];
-      sprintf(num, "  %jX", orwl_phase);
+      sprintf(num, "  %zX", orwl_phase);
       memcpy(info, num + strlen(num) - 2, 2);
       if (diff[2] == TMIN(int))
         info[2] = '|';
@@ -186,7 +186,7 @@ DEFINE_THREAD(arg_t) {
     sleepfor(rwait);
     if (info) {
       char num[10];
-      sprintf(num, "  %jx", orwl_phase);
+      sprintf(num, "  %zx", orwl_phase);
       memcpy(info, num + strlen(num) - 2, 2);
       if (diff[2] == TMIN(int))
         info[2] = '|';

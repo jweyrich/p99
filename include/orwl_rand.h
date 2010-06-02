@@ -65,7 +65,7 @@ DECLARE_DEFARG(rand48_t_init, , useconds(), getpid(), pthread_self());
 #endif
 
 inline
-void rand48_t_destroy(rand48_t *seed){
+void rand48_t_destroy(rand48_t const*seed){
   /* empty */
 }
 

@@ -32,6 +32,7 @@ _ONE_TOK_(unsigned short, ushort);
 _ONE_TOK_(signed short, sshort);
 _ONE_TOK_(unsigned char, uchar);
 _ONE_TOK_(signed char, schar);
+_ONE_TOK_(long long, llong);
 _ONE_TOK_(signed long long, sllong);
 _ONE_TOK_(unsigned long long, ullong);
 
@@ -45,6 +46,9 @@ DECLARE_POINTER_TYPE(void);
 DECLARE_POINTER_TYPE(double);
 DECLARE_POINTER_TYPE(float);
 
+DECLARE_POINTER_TYPE(ullong);
+DECLARE_POINTER_TYPE(sllong);
+DECLARE_POINTER_TYPE(llong);
 DECLARE_POINTER_TYPE(long);
 DECLARE_POINTER_TYPE(ulong);
 DECLARE_POINTER_TYPE(slong);
@@ -110,6 +114,9 @@ DECLARE_BASIC(void_cptr);
 
 DECLARE_BASIC_TYPE(double);
 DECLARE_BASIC_TYPE(float);
+DECLARE_BASIC_TYPE(ullong);
+DECLARE_BASIC_TYPE(sllong);
+DECLARE_BASIC_TYPE(llong);
 DECLARE_BASIC_TYPE(ulong);
 DECLARE_BASIC_TYPE(slong);
 DECLARE_BASIC_TYPE(long);
@@ -257,6 +264,7 @@ DECLARE_ARI2STR(signed)
 DECLARE_ARI2STR(unsigned)
 DECLARE_ARI2STR(long)
 DECLARE_ARI2STR(ulong)
+DECLARE_ARI2STR(llong)
 DECLARE_ARI2STR(sllong)
 DECLARE_ARI2STR(ullong)
 

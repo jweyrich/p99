@@ -117,7 +117,7 @@ DEFINE_THREAD(arg_t) {
     ostate = orwl_acquire(handle + pacq);
     if (info) {
       char num[10];
-      sprintf(num, "  %jX", orwl_phase);
+      sprintf(num, "  %zX", orwl_phase);
       memcpy(info, num + strlen(num) - 2, 2);
     }
     sleepfor(rwait);
