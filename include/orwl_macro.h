@@ -267,27 +267,30 @@
  ** there was anything different from a comment in the list.
  **
  ** The implementation of this macro is kind of tricky and heavily
- ** uses the fact that a function macro (@c _IS__EQ__ in this case)
- ** is left untouched if it is not followed by a parenthesis. By that
- ** the inner part of the macro will expand to a non-empty sequence
- ** with a different number of commas:
- **
- ** <DL>
- **  <DT>0</DT>
- **  <DD>if there was an non empty argument without commas and not
- **       starting with a parenthesis</DD>
- **  <DT>1</DT> <DD>if the argument was empty</DD>
- **  <DT>2</DT> <DD>if the argument had no comma but started with a parenthesis</DD>
- **  <DT>2N</DT> <DD>if the argument had N commas</DD>
- ** </DL>
- **
- ** So the case of exactly one comma is what we are looking for. For
- ** that case, ::_NARG returns the value 2, and then we may just
- ** test for the token 2.
+ ** uses the fact that a function macro (@c _IS__EQ__ in this case) is
+ ** left untouched if it is not followed by a parenthesis. See
+ ** http://gustedt.wordpress.com/2010/06/08/detect-empty-macro-arguments/
  **
  ** @return tokens 0 or 1
  **/
-#define IS_EMPTY(...) IS_EQ_2(_NARG(_IS__EQ__ __VA_ARGS__ (~) _IS__EQ__ __VA_ARGS__))
+#define IS_EMPTY(...)                                                   \
+  _ISEMPTY(                                                             \
+          /* test if there is just one argument, eventually an empty    \
+             one */                                                     \
+          HAS_COMMA(__VA_ARGS__),                                       \
+          /* test if _IS__EQ__ together with the argument               \
+             adds a comma */                                            \
+          HAS_COMMA(_IS__EQ__ __VA_ARGS__),                             \
+          /* test if the argument together with a parenthesis           \
+             adds a comma */                                            \
+          HAS_COMMA(__VA_ARGS__ (~)),                                   \
+          /* test if placing it between _IS__EQ__ and the               \
+             parenthesis adds a comma */                                \
+          HAS_COMMA(_IS__EQ__ __VA_ARGS__ (~))                          \
+          )
+
+#define _ISEMPTY(_0, _1, _2, _3) HAS_COMMA(PASTE5(_IS_EMPTY_CASE_, _0, _1, _2, _3))
+#define _IS_EMPTY_CASE_0001 ,
 
 #define IF_EMPTY(...) IF_EQ_1(IS_EMPTY(__VA_ARGS__))
 
@@ -397,6 +400,8 @@ IS_EQ_2(_NARG(_IS_void_EQ_ ## __VA_ARGS__ (~) _IS_void_EQ_ ## __VA_ARGS__))
 #define IS_VOID(...) IF_EMPTY(__VA_ARGS__)(1)(IS_void(__VA_ARGS__))
 
 #define IF_VOID(...) IF_EQ_1(IS_VOID(__VA_ARGS__))
+
+#define HAS_COMMA(...) IF_DEC_GT(_NARG(__VA_ARGS__), 1)(1)(0)
 
 #define IS_COMMA(...)                                                   \
 IF_EQ_2(NARG(__VA_ARGS__))                                              \
