@@ -33,6 +33,8 @@ struct orwl_server {
   .max_connections = MAXC                                       \
 }
 
+DOCUMENT_INIT(orwl_server)
+FSYMB_DOCUMENTATION(orwl_server_init)
 orwl_server*
 orwl_server_init(orwl_server *serv,       /*!< [out] the object to iniialize */
                  size_t max_connections,  /*!< [in] maximum socket queue length,
@@ -60,6 +62,7 @@ DECLARE_THREAD(orwl_server);
 
 void orwl_server_close(orwl_server *serv);
 
+FSYMB_DOCUMENTATION(orwl_server_terminate)
 void
 orwl_server_terminate(orwl_server *,   /*!< the server to terminate */
                        rand48_t* seed  /*!< [in] defaults to a thread local seed */

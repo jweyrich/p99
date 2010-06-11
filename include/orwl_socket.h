@@ -14,6 +14,7 @@
 #include "orwl_register.h"
 #include "orwl_host.h"
 
+FSYMB_DOCUMENTATION(orwl_hton)
 inline
 void
 orwl_hton(uint32_t *n,        /*!< [out] array of length 2 @a l */
@@ -35,6 +36,7 @@ PROTOTYPE(void, orwl_hton, uint32_t *, uint64_t const *, size_t);
 DECLARE_DEFARG(orwl_hton, , , 1);
 #endif
 
+FSYMB_DOCUMENTATION(orwl_ntoh)
 inline
 void
 orwl_ntoh(uint64_t* h,       /*!< [out] array of length @a l */
@@ -81,6 +83,7 @@ in_addr_t inet4_addr(void) {
   return _inet4_addr;
 }
 
+FSYMB_DOCUMENTATION(orwl_inet_ntop)
 inline
 char const* orwl_inet_ntop(struct sockaddr const* addr,
                            char* buf, size_t size) {
@@ -160,6 +163,8 @@ struct auth_sock {
                              the call */
 };
 
+DOCUMENT_INIT(auth_sock)
+FSYMB_DOCUMENTATION(auth_sock_init)
 inline
 auth_sock*
 auth_sock_init(auth_sock *sock,         /*!< [out] */
@@ -224,6 +229,7 @@ ASGS((A)->mes, __VA_ARGS__);                            \
 addr_t getpeer(auth_sock *Arg);
 
 
+FSYMB_DOCUMENTATION(hostname)
 inline
 char const*
 hostname(char buffer[static 64], /*!< [out] defaults to a temporary */

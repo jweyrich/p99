@@ -52,6 +52,7 @@ PROTOTYPE(orwl_mirror *, orwl_mirror_init, orwl_mirror *, orwl_endpoint, orwl_en
 #define orwl_mirror_init(...) CALL_WITH_DEFAULTS(orwl_mirror_init, 3, __VA_ARGS__)
 #endif
 
+FSYMB_DOCUMENTATION(orwl_mirror_init)
 inline
 orwl_mirror *orwl_mirror_init(orwl_mirror *rq, /*!< [out] the object to iniialize */
                               orwl_endpoint h, /*!< [in] local, defaults to a temp variable */
@@ -127,20 +128,24 @@ DECLARE_NEW_DELETE(orwl_handle);
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
 
 
+FSYMB_DOCUMENTATION(orwl_write_request)
 orwl_state orwl_write_request(orwl_mirror* location, /*!< [in,out] the location for the request */
                               orwl_handle* handle,   /*!< [in,out] the handle for the request */
                               rand48_t* seed         /*!< [in] defaults to a thread local seed */
                               );
 
+FSYMB_DOCUMENTATION(orwl_read_request)
 orwl_state orwl_read_request(orwl_mirror* location, /*!< [in,out] the location for the request */
                              orwl_handle* handle,   /*!< [in,out] the handle for the request */
                              rand48_t* seed         /*!< [in] defaults to a thread local seed */
                              );
 
+FSYMB_DOCUMENTATION(orwl_release)
 orwl_state orwl_release(orwl_handle* handle,   /*!< [in,out] the handle to be released */
                         rand48_t* seed         /*!< [in] defaults to a thread local seed */
                         );
 
+FSYMB_DOCUMENTATION(orwl_cancel)
 orwl_state orwl_cancel(orwl_handle* handle,   /*!< [in,out] the handle to be canceled */
                        rand48_t* seed         /*!< [in] defaults to a thread local seed */
                        );

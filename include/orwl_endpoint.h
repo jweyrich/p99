@@ -212,7 +212,7 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, /*!< [out] the object to i
                                    char const* name   /*!< [in] the string to parse */
                                    );
 
-
+FSYMB_DOCUMENTATION(orwl_endpoint_print)
 char const* orwl_endpoint_print(orwl_endpoint const* ep, /*!< [in] the object to interpret */
                                 char name[static 128]    /*!< [out] the string to initialize */
                                 );

@@ -525,19 +525,19 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 /*! @see DECLARE_DEFARG */                                              \
 /*! @see NAME This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
-#define _wda_0(NAME, ...) __VA_ARGS__
-#define ____call_wda(NAME, K, ...) PASTE(_wda_, K)(NAME, __VA_ARGS__)
-#define ___call_wda(NAME, K, ...) ____call_wda(NAME, K, __VA_ARGS__)
-#define __call_wda(NAME, M, N, ...) ___call_wda(NAME, _dec_minus(M, N), __VA_ARGS__)
-#define _call_wda(NAME, M, ...) __call_wda(NAME, M, NARG(__VA_ARGS__), __VA_ARGS__)
-
-#define _CALL_WITH_ALL_DEFAULTS(NAME, M) PASTE(_wda_, M)(NAME, PASTE(NAME,_defarg_0)())
-
+#ifdef DOXYGEN
+# define CALL_WITH_DEFAULTS(NAME, M, ...) NAME(__VA_ARGS__)
+#else
 # define CALL_WITH_DEFAULTS(NAME, M, ...)               \
-NAME(IF_EMPTY(__VA_ARGS__)                              \
-     (_CALL_WITH_ALL_DEFAULTS(NAME, _predecessor(M)))   \
-     (_call_wda(NAME, M, __VA_ARGS__))                  \
+NAME(IF_EQ(0,M)                                         \
+     (__VA_ARGS__)                                      \
+     (IF_EMPTY(__VA_ARGS__)                             \
+      (_DEFARGS(NAME, M, PASTE(NAME,_defarg_0)()))      \
+      (_DEFARGS(NAME, M, __VA_ARGS__))                  \
+      )                                                 \
      )
+#endif
+
 
 /**
  ** @def CALL_WITH_DEFAULTS
@@ -561,11 +561,12 @@ NAME(IF_EMPTY(__VA_ARGS__)                              \
  ** programmer always has to remember this particular special case and
  ** give explicit @c NULL's.
  **
- ** The following two lines heal this.
+ ** The following lines heal this.
  **
  ** @code
+ ** PROTOTYPE(int, pthread_mutex_init, pthread_mutex_t*, pthread_mutexattr_t const*);
  ** #define pthread_mutex_init(...) CALL_WITH_DEFAULTS(pthread_mutex_init, 2, __VA_ARGS__)
- ** declare_defarg(pthread_mutex_init, 1, pthread_mutexattr_t*, NULL);
+ ** DECLARE_DEFARG(pthread_mutex_init, , NULL);
  ** @endcode
  **
  ** This declares a macro @c pthread_mutex_init that resolves to the call of
@@ -591,9 +592,32 @@ NAME(IF_EMPTY(__VA_ARGS__)                              \
  ** @endcode
  ** @param NAME is the function to provide with default argument features.
  ** @param M is the number of arguments that a full call to @a NAME takes.
- ** @see declare_defarg
+ ** @see DECLARE_DEFARG
+ ** @see PROTOTYPE
+ **
+ ** This macro is more flexible than the corresponding C++ feature of
+ ** default arguments. It also lets you omit middle arguments.
+ **
+ ** More technically, for arguments that are omitted this just
+ ** requires that NAME_defarg_M is defined for function @a NAME
+ ** and @a M and that it is callable without arguments. This may just
+ ** be a function (as implicitly defined by #DECLARE_DEFARG) or a
+ ** macro. For the first case everything the function refers to must
+ ** be declare at the point of its definition. For the second case,
+ ** the macro is evaluate at the place of the call and could refer to
+ ** local variables or anything you like.
  **/
 
+/**
+ ** @def PROTOTYPE(RT, NAME, ...)
+ ** @brief Define the prototype of function @a NAME.
+ **
+ ** @a RT is the return type of the function, and the remaining
+ ** arguments list the types of the arguments. This is needed by
+ ** #DECLARE_DEFARG to determine the type of the functions that return
+ ** default arguments.
+ **
+ **/
 
 /**
  ** @define expand to a comma token
@@ -882,7 +906,7 @@ _TYPEDEFS(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
 #define _PROTOTYPE(RT, NAME, ...)                                       \
 /*! @remark This function might be hidden behind a macro :: ## NAME of the same name. */ \
 RT NAME(__VA_ARGS__)
-#define PROTOTYPE(...) _PROTOTYPE(__VA_ARGS__)
+#define PROTOTYPE(RT, NAME, ...) _PROTOTYPE(__VA_ARGS__)
 #else
 #define _PROTOTYPE(RT, NAME, ...)                       \
   RT NAME(IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));    \
@@ -956,6 +980,12 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 #else
 #define DEFINE_DEFARG(NAME, ...) _DEFINE_DEFARG(NAME, NARG(__VA_ARGS__), REVS(__VA_ARGS__))
 #endif
+
+
+#define _DARG(NAME, X, N) IF_EMPTY(X)(PASTE3(NAME, _defarg_, N)())(X)
+#define _DARGS(B, X, N, REC) X, REC
+#define __DEFARGS(NAME, N, ...) REVS(PASTE2(_DOIT, N)(NAME, N, _DARGS, _DARG, REVS(__VA_ARGS__), ))
+#define _DEFARGS(NAME, N, ...) __DEFARGS(NAME, N, IF_DEC_LT(NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,_dec_minus(N,NARG(__VA_ARGS__)))) (__VA_ARGS__))
 
 #define _EMP(B, X, N) B
 #define _COU(B, X, N, REC) PASTE(B, REC)

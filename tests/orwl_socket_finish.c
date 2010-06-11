@@ -22,6 +22,17 @@ void F_(int a);
 
 PROTOTYPE(void, ftoaster);
 
+/* It makes not much sense to define a macro with 0 arguments by
+   itself. But such a thing might occur through an automatic
+   generation of sources, so better test for it and treat the corner
+   case. */
+#define ftoaster(...) CALL_WITH_DEFAULTS(ftoaster, 0, __VA_ARGS__)
+
+/* check a version that declares with explicit `void' parameter list */
+void ftoaster (void) {
+  report(1, "ftoaster has is called");
+}
+
 
 PROTOTYPE(void, ftaster, int);
 
@@ -31,7 +42,7 @@ DEFINE_DEFARG(ftaster, -1);
 
 #define ftaster(...) CALL_WITH_DEFAULTS(ftaster, 1, __VA_ARGS__)
 
-void ftaster _SKIP_ (int A) {
+void ftaster(int A) {
   report(1, "ftaster has %d", A);
 }
 
@@ -81,6 +92,8 @@ int main(int argc, char **argv) {
     perror(messg);
     errno = 0;
   }
+  (void)ftoaster;
+  ftoaster();
   (void)ftaster;
   ftaster();
   ftaster(12);

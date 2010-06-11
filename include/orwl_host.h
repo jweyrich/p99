@@ -36,6 +36,7 @@ struct orwl_host {
 void orwl_host_connect(orwl_host *th, orwl_host *q);
 void orwl_host_disconnect(orwl_host *th);
 
+FSYMB_DOCUMENTATION(orwl_host_init)
 inline
 orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
                           in_addr_t addr, /*!< [in] defaults to the null address */

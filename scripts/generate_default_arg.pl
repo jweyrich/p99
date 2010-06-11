@@ -88,13 +88,6 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
     printf "#define _dec_eval_minus_%d %d\n", $i, -$i;
 }
 
-for (my $i = 1; $i < $maxnumber; ++$i) {
-    my $i0 = $i - 1;
-    print "#define __wda_${i}(NAME, N, ...) _wda_${i0}(NAME, __VA_ARGS__, PASTE3(NAME, _defarg_, N)())\n";
-    print "#define _wda_${i}(NAME, ...) __wda_${i}(NAME, _NARG(__VA_ARGS__), __VA_ARGS__)\n";
-    print "#define _wda_minus_${i}(NAME, ...) __VA_ARGS__\n";
-}
-
 for (my $i = 2; $i < $maxnumber; ++$i) {
     print "#define __DOIT${i}(NAME, N, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, N), N, PASTE(_DOIT, N)(NAME, N, OP, FUNC, __VA_ARGS__, ))\n";
     print "#define _DOIT${i}(NAME, N, OP, FUNC, A, ...) __DOIT${i}(NAME, _predecessor(N), OP, FUNC, A, __VA_ARGS__)\n";

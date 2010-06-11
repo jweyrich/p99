@@ -1271,6 +1271,7 @@ int T ## _create(T* arg, pthread_t *id)"
 # Use the PREDEFINED tag if you want to use a different macro definition.
 
 EXPAND_AS_DEFINED      =			\
+CALL_WITH_DEFAULTS                              \
 DECLARE_ARI2STR					\
 DECLARE_AUTH_SOCK_FUNC				\
 DECLARE_BASIC					\
