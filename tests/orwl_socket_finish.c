@@ -111,11 +111,11 @@ int main(int argc, char **argv) {
   mfputs(stderr, JOIN("aa", "BB", "CC "), PRIX(37ull), " ", PRId(37), " ", PRIo(37), " ", PRIp(argv), "\n");
   int Y[17] = {  REPS(1, 17) };
   int Z[22] = {  POSS(22) };
-  ASGS(Z, int x, double k, int y, bool r);
-  ASGS(Y, int s);
-  ASGS(Y, int i, float o);
-  ASGS(Y, void);
-  ASGS(Y,);
+  VASSIGNS(Z, int x, double k, int y, bool r);
+  VASSIGNS(Y, int s);
+  VASSIGNS(Y, int i, float o);
+  VASSIGNS(Y, void);
+  VASSIGNS(Y,);
   IF_DEC_LT(7,5)(true)(false);
   IF_DEC_GE(5,5)(true)(false);
   IF_DEC_LE(7,5)(true)(false);

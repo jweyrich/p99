@@ -89,6 +89,7 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
 }
 
 for (my $i = 2; $i < $maxnumber; ++$i) {
-    print "#define __DOIT${i}(NAME, N, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, N), N, PASTE(_DOIT, N)(NAME, N, OP, FUNC, __VA_ARGS__, ))\n";
-    print "#define _DOIT${i}(NAME, N, OP, FUNC, A, ...) __DOIT${i}(NAME, _predecessor(N), OP, FUNC, A, __VA_ARGS__)\n";
+    my $i1 = $i - 1;
+    print "#define __DOIT${i}(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, $i1), $i1, _DOIT${i1}(NAME, $i1, OP, FUNC, __VA_ARGS__, ))\n";
+    print "#define _DOIT${i}(NAME, N, OP, FUNC, A, ...) __DOIT${i}(NAME, OP, FUNC, A, __VA_ARGS__)\n";
 }
