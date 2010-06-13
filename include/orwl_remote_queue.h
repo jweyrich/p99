@@ -129,24 +129,24 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
 
 
 FSYMB_DOCUMENTATION(orwl_write_request)
-orwl_state orwl_write_request(orwl_mirror* location, /*!< [in,out] the location for the request */
-                              orwl_handle* handle,   /*!< [in,out] the handle for the request */
+orwl_state orwl_write_request(orwl_mirror* rq, /*!< [in,out] the location for the request */
+                              orwl_handle* rh,   /*!< [in,out] the handle for the request */
                               rand48_t* seed         /*!< [in] defaults to a thread local seed */
                               );
 
 FSYMB_DOCUMENTATION(orwl_read_request)
-orwl_state orwl_read_request(orwl_mirror* location, /*!< [in,out] the location for the request */
-                             orwl_handle* handle,   /*!< [in,out] the handle for the request */
+orwl_state orwl_read_request(orwl_mirror* rq, /*!< [in,out] the location for the request */
+                             orwl_handle* rh,   /*!< [in,out] the handle for the request */
                              rand48_t* seed         /*!< [in] defaults to a thread local seed */
                              );
 
 FSYMB_DOCUMENTATION(orwl_release)
-orwl_state orwl_release(orwl_handle* handle,   /*!< [in,out] the handle to be released */
+orwl_state orwl_release(orwl_handle* rh,   /*!< [in,out] the handle to be released */
                         rand48_t* seed         /*!< [in] defaults to a thread local seed */
                         );
 
 FSYMB_DOCUMENTATION(orwl_cancel)
-orwl_state orwl_cancel(orwl_handle* handle,   /*!< [in,out] the handle to be canceled */
+orwl_state orwl_cancel(orwl_handle* rh,   /*!< [in,out] the handle to be canceled */
                        rand48_t* seed         /*!< [in] defaults to a thread local seed */
                        );
 

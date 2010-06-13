@@ -64,7 +64,7 @@ void orwl_server_close(orwl_server *serv);
 
 FSYMB_DOCUMENTATION(orwl_server_terminate)
 void
-orwl_server_terminate(orwl_server *,   /*!< the server to terminate */
+orwl_server_terminate(orwl_server *serv,   /*!< the server to terminate */
                        rand48_t* seed  /*!< [in] defaults to a thread local seed */
                       );
 

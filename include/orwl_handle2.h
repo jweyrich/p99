@@ -94,33 +94,33 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle2);
 
 FSYMB_DOCUMENTATION(orwl_write_request2)
 orwl_state orwl_write_request2(orwl_mirror* location, /*!< [in,out] the location for the request */
-                              orwl_handle2* handle,   /*!< [in,out] the handle for the request */
+                              orwl_handle2* rh2,   /*!< [in,out] the handle for the request */
                               rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                               );
 
 FSYMB_DOCUMENTATION(orwl_read_request2)
 orwl_state orwl_read_request2(orwl_mirror* location, /*!< [in,out] the location for the request */
-                             orwl_handle2* handle,   /*!< [in,out] the handle for the request */
+                             orwl_handle2* rh2,   /*!< [in,out] the handle for the request */
                              rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                              );
 
 FSYMB_DOCUMENTATION(orwl_release2)
-orwl_state orwl_release2(orwl_handle2* handle,   /*!< [in,out] the handle to be released */
+orwl_state orwl_release2(orwl_handle2* rh2,   /*!< [in,out] the handle to be released */
                         rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                         );
 
 FSYMB_DOCUMENTATION(orwl_cancel2)
-orwl_state orwl_cancel2(orwl_handle2* handle,   /*!< [in,out] the handle to be canceled */
+orwl_state orwl_cancel2(orwl_handle2* rh2,   /*!< [in,out] the handle to be canceled */
                        rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                        );
 
 FSYMB_DOCUMENTATION(orwl_acquire2)
-orwl_state orwl_acquire2(orwl_handle2* handle,   /*!< [in,out] the handle to be acquired */
+orwl_state orwl_acquire2(orwl_handle2* rh2,   /*!< [in,out] the handle to be acquired */
                          rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                          );
 
 FSYMB_DOCUMENTATION(orwl_test2)
-orwl_state orwl_test2(orwl_handle2* handle,   /*!< [in,out] the handle to be tested */
+orwl_state orwl_test2(orwl_handle2* rh2,   /*!< [in,out] the handle to be tested */
                       rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                       );
 

@@ -221,7 +221,7 @@ DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
 
 #define AUTH_SOCK_READ(A, F, ...)                       \
 (void)((void (*)(__VA_ARGS__)){PASTE2(F, _signature)}); \
-ASGS((A)->mes, __VA_ARGS__);                            \
+VASSIGNS((A)->mes, __VA_ARGS__);                        \
 (A)->len -= NARG(__VA_ARGS__);                          \
 (A)->mes += NARG(__VA_ARGS__)
 
