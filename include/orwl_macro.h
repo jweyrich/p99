@@ -770,8 +770,13 @@ CHOOSE5(xT,                                     \
 
 #define DO(NAME, OP, FUNC, X, ...) DOIT(NAME, NARG(__VA_ARGS__), OP, FUNC, X, __VA_ARGS__)
 
+#ifndef DOXYGEN
 #define REP0(...)
 #define REP1(X) X
+#endif
+/**
+ ** @brief Concatenate the token @a X @a N times.
+ **/
 #define REP(N, X) _REP(N, X)
 #define _REP(N, X) REP ## N(X)
 
@@ -1069,8 +1074,30 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 #define _DEFARGS(NAME, N, ...) __DEFARGS(NAME, N, IF_DEC_LT(NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,_dec_minus(N,NARG(__VA_ARGS__)))) (__VA_ARGS__))
 
 #define _DEC_MUL(A, B) IF_EQ_0(A)(0)(_uni2dec(REP(A, B)))
+
+/**
+ ** @brief Generate the product of non-negative decimal numbers @a A and @a B at
+ ** preprocessing time.
+ **
+ ** @warning The result must be less than the maximum argument list number that
+ ** is supported, currently 64.
+ **/
 #define DEC_MUL(A, B) IF_DEC_LT(A, B)(_DEC_MUL(A, _dec2uni(B)))(_DEC_MUL(B, _dec2uni(A)))
+/**
+ ** @brief Generate the quotient of non-negative decimal numbers @a A and @a B at
+ ** preprocessing time.
+ **
+ ** @warning Both arguments must be less than the maximum argument list number that
+ ** is supported, currently 64.
+ **/
 #define DEC_DIV(A, B) CHS(A, _DIV ## B())
+/**
+ ** @brief Generate the modulus of non-negative decimal numbers @a A and @a B at
+ ** preprocessing time.
+ **
+ ** @warning Both arguments must be less than the maximum argument list number that
+ ** is supported, currently 64.
+ **/
 #define DEC_MOD(A, B) CHS(A, _MOD ## B())
 
 /**
