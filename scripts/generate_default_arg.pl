@@ -37,6 +37,17 @@ for (my $m = 1; $m < 5; ++$m) {
     print ")\n";
 }
 
+for (my $arg = 0; $arg < $maxnumber; ++$arg) {
+    print "#define _CHS${arg}(";
+    for (my $i = 0; $i <= $arg; ++$i) {
+        if ($i % 8 != 1) {
+            print "\t_$i,";
+        } else {
+            print "\\\n\t_$i,";
+        }
+    }
+    print "\\\n\t...) _$arg\n";
+}
 
 print "#define _ASCENDING() ";
 for (my $i = 0; $i < $maxnumber; ++$i) {
@@ -48,11 +59,34 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
 }
 print STDOUT "\t", $maxnumber, "\n";
 
+for(my $mod = 1; $mod < $maxnumber; ++$mod) {
+    print "#define _MOD${mod}() ";
+    for (my $i = 0; $i < $maxnumber; ++$i) {
+        if ($i % ${mod} != 0) {
+            printf "\t%d,", $i % ${mod};
+        } else {
+            printf "\\\n\t%d,", $i % ${mod};
+        }
+    }
+    print STDOUT "\t", $maxnumber % ${mod}, "\n";
+}
+
+for(my $div = 1; $div < $maxnumber; ++$div) {
+    print "#define _DIV${div}() ";
+    for (my $i = 0; $i < $maxnumber; ++$i) {
+        if ($i % ${div} != 0) {
+            printf "\t%d,", $i / ${div};
+        } else {
+            printf "\\\n\t%d,", $i / ${div};
+        }
+    }
+    print STDOUT "\t", int($maxnumber / ${div}), "\n";
+}
 
 
 {
     my $li = "_1,\t_2";
-    for (my $m = 3; $m < 20; ++$m) {
+    for (my $m = 3; $m < $maxnumber; ++$m) {
         my $m1 = $m - 1;
         print "#define PASTE$m(${li},\t_${m})\t\\\n\t_PASTE2(PASTE${m1}(${li}), _${m})\n";
         $li .= ",\t_${m}";
@@ -90,6 +124,7 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
 
 for (my $i = 2; $i < $maxnumber; ++$i) {
     my $i1 = $i - 1;
-    print "#define __DOIT${i}(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, $i1), $i1, _DOIT${i1}(NAME, $i1, OP, FUNC, __VA_ARGS__, ))\n";
+    print "#define __DOIT${i}(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, $i1), $i1, _DOIT${i1}(NAME, , OP, FUNC, __VA_ARGS__, ))\n";
     print "#define _DOIT${i}(NAME, N, OP, FUNC, A, ...) __DOIT${i}(NAME, OP, FUNC, A, __VA_ARGS__)\n";
+    print "#define REP${i}(X) ", "X ## " x $i1, "X\n";
 }

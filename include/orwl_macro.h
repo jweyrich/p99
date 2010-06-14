@@ -765,9 +765,15 @@ CHOOSE5(xT,                                     \
 /**
  ** @brief A macro list iterator
  **/
-#define DOIT(NAME, N, OP, FUNC, X, ...) PASTE2(_DOIT, N)(NAME, N, OP, FUNC, X, __VA_ARGS__)
+#define DOIT(NAME, N, OP, FUNC, X, ...) _DOIT(NAME, N, OP, FUNC, X, __VA_ARGS__)
+#define _DOIT(NAME, N, OP, FUNC, X, ...) _DOIT ## N(NAME, , OP, FUNC, X, __VA_ARGS__)
 
 #define DO(NAME, OP, FUNC, X, ...) DOIT(NAME, NARG(__VA_ARGS__), OP, FUNC, X, __VA_ARGS__)
+
+#define REP0(...)
+#define REP1(X) X
+#define REP(N, X) _REP(N, X)
+#define _REP(N, X) REP ## N(X)
 
 
 #define _IDT(NAME, X, N) X
@@ -916,15 +922,12 @@ CHOOSE5(xT,                                     \
 
 
 /**
- ** Choose the @a N<sup>th</sup> element in the remaining argument
+ ** @brief Choose the @a N<sup>th</sup> element in the remaining argument
  ** list.
+ **
+ ** Counting of elements starts at 0.
  **/
-#define CHS(N, ...)                             \
-IF_DEC_GE(N, NARG(__VA_ARGS__))                 \
-()                                              \
-(IF_DEC_LT(NARG(__VA_ARGS__), 2)                \
- (__VA_ARGS__)                                  \
- (SELS(1, REVS(SELS(N, __VA_ARGS__)))))
+#define CHS(N, ...) _CHS ## N (__VA_ARGS__)
 
 #define _ASG(NAME, X, N) _predecessor(N)] , X
 
@@ -1065,23 +1068,10 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 #define __DEFARGS(NAME, N, ...) REVS(DOIT(NAME, N, _DARGS, _DARG, REVS(__VA_ARGS__), ))
 #define _DEFARGS(NAME, N, ...) __DEFARGS(NAME, N, IF_DEC_LT(NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,_dec_minus(N,NARG(__VA_ARGS__)))) (__VA_ARGS__))
 
-#define _EMP(B, X, N) B
-#define _COU(B, X, N, REC) PASTE(B, REC)
-#define _DEC_MUL(A, B) IF_EQ_0(A)(0)(_uni2dec(IF_EQ_1(A)(B)(PASTE2(_DOIT, A)(B, A, _COU, _EMP, _ASCENDING(),))))
+#define _DEC_MUL(A, B) IF_EQ_0(A)(0)(_uni2dec(REP(A, B)))
 #define DEC_MUL(A, B) IF_DEC_LT(A, B)(_DEC_MUL(A, _dec2uni(B)))(_DEC_MUL(B, _dec2uni(A)))
-
-#define _ExP(A, X, N) X
-#define _MxL(A, X, N, REC) IF_DEC_LE(X, A)(N)(REC)
-#define _DEC_X(N, A, B, ...) PASTE2(_DOIT, N)(A, N, _MxL, _ExP, __VA_ARGS__,)
-
-
-#define _ENP(B, X, N)
-#define _MIL(B, X, N, REC) IF_DEC_GT(N, 1)(DEC_MUL(N, B))(B), REC
-#define _DEC_DIV(N, A, B) DOIT(B, N, _MIL, _ENP, _ASCENDING(),)
-#define DEC_DIV(A, B) IF_DEC_LT(A, B)(0)(_DEC_X(A, A, B,_DEC_DIV(A, A, B)))
-
-#define DEC_MOD(A, B) IF_DEC_GE(A, B)(_dec_minus(A, DEC_MUL(B, DEC_DIV(A, B))))(A)
-
+#define DEC_DIV(A, B) CHS(A, _DIV ## B())
+#define DEC_MOD(A, B) CHS(A, _MOD ## B())
 
 /**
  ** @brief Declare the types that are going to be used with a
@@ -1106,15 +1096,14 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  **/
 #define VA_MODARG(AP, ...) _VA_MODARG(AP, __VA_ARGS__, 0, ~)
 
-#define _CAS1(NAME, X, N) (PASTE2(NAME, _mod_type_0){ X }
+#define _CAS1(NAME, X, N) (_PASTE2(NAME, _mod_type_0){ X }
 #define _CAS2(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 2))){ X }
 #define _CAS3(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 3))){ X }
 #define _CAS4(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 4))){ X }
 #define _CAS5(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 5))){ X }
-#define _MODARG_LIST(NAME, F, N, ...) _PASTE2(_DOIT, N)(NAME, N, _REV, F, __VA_ARGS__,)
-#define __MODARG_LIST(NAME, F, N, ...) DOIT(NAME, N, _REV, F, __VA_ARGS__,)
+#define _MODARG_LIST(NAME, F, N, ...) DOIT(NAME, N, _REV, F, __VA_ARGS__,)
 
-#define LEN_MODARG(NAME, M, ...) _MODARG_(M)(__VA_ARGS__), _MODARG_LIST(NAME, PASTE2(_CAS, M), NARG(__VA_ARGS__), REVS(__VA_ARGS__))
+#define LEN_MODARG(NAME, M, ...) _MODARG_(M)(__VA_ARGS__), _MODARG_LIST(NAME, _PASTE2(_CAS, M), NARG(__VA_ARGS__), REVS(__VA_ARGS__))
 #define LEN_ARG(NAME, ...) _MODARG_(1)(__VA_ARGS__), _MODARG_LIST(NAME, _CAS1, NARG(__VA_ARGS__), REVS(__VA_ARGS__))
 
 
