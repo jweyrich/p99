@@ -124,7 +124,7 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
 
 for (my $i = 2; $i < $maxnumber; ++$i) {
     my $i1 = $i - 1;
-    print "#define __DOIT${i}(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, $i1), $i1, _DOIT${i1}(NAME, OP, FUNC, __VA_ARGS__, ))\n";
-    print "#define _DOIT${i}(NAME, OP, FUNC, A, ...) __DOIT${i}(NAME, OP, FUNC, A, __VA_ARGS__)\n";
+    print "#define _DOIT${i}(NAME, OP, FUNC, A, ...) \\\n",
+    "\tOP(NAME, FUNC(NAME, A, $i1), $i1, _DOIT${i1}(NAME, OP, FUNC, __VA_ARGS__, ))\n";
     print "#define REP${i}(X) ", "X ## " x $i1, "X\n";
 }
