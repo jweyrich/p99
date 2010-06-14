@@ -2166,189 +2166,189 @@
 #define _IS_63_GE_0 ,
 #define _dec_eval_63 63
 #define _dec_eval_minus_63 -63
-#define __DOIT2(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 1), 1, _DOIT1(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT2(NAME, N, OP, FUNC, A, ...) __DOIT2(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT2(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 1), 1, _DOIT1(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT2(NAME, OP, FUNC, A, ...) __DOIT2(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP2(X) X ## X
-#define __DOIT3(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 2), 2, _DOIT2(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT3(NAME, N, OP, FUNC, A, ...) __DOIT3(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT3(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 2), 2, _DOIT2(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT3(NAME, OP, FUNC, A, ...) __DOIT3(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP3(X) X ## X ## X
-#define __DOIT4(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 3), 3, _DOIT3(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT4(NAME, N, OP, FUNC, A, ...) __DOIT4(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT4(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 3), 3, _DOIT3(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT4(NAME, OP, FUNC, A, ...) __DOIT4(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP4(X) X ## X ## X ## X
-#define __DOIT5(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 4), 4, _DOIT4(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT5(NAME, N, OP, FUNC, A, ...) __DOIT5(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT5(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 4), 4, _DOIT4(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT5(NAME, OP, FUNC, A, ...) __DOIT5(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP5(X) X ## X ## X ## X ## X
-#define __DOIT6(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 5), 5, _DOIT5(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT6(NAME, N, OP, FUNC, A, ...) __DOIT6(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT6(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 5), 5, _DOIT5(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT6(NAME, OP, FUNC, A, ...) __DOIT6(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP6(X) X ## X ## X ## X ## X ## X
-#define __DOIT7(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 6), 6, _DOIT6(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT7(NAME, N, OP, FUNC, A, ...) __DOIT7(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT7(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 6), 6, _DOIT6(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT7(NAME, OP, FUNC, A, ...) __DOIT7(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP7(X) X ## X ## X ## X ## X ## X ## X
-#define __DOIT8(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 7), 7, _DOIT7(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT8(NAME, N, OP, FUNC, A, ...) __DOIT8(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT8(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 7), 7, _DOIT7(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT8(NAME, OP, FUNC, A, ...) __DOIT8(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP8(X) X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT9(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 8), 8, _DOIT8(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT9(NAME, N, OP, FUNC, A, ...) __DOIT9(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT9(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 8), 8, _DOIT8(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT9(NAME, OP, FUNC, A, ...) __DOIT9(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP9(X) X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT10(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 9), 9, _DOIT9(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT10(NAME, N, OP, FUNC, A, ...) __DOIT10(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT10(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 9), 9, _DOIT9(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT10(NAME, OP, FUNC, A, ...) __DOIT10(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP10(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT11(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 10), 10, _DOIT10(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT11(NAME, N, OP, FUNC, A, ...) __DOIT11(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT11(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 10), 10, _DOIT10(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT11(NAME, OP, FUNC, A, ...) __DOIT11(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP11(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT12(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 11), 11, _DOIT11(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT12(NAME, N, OP, FUNC, A, ...) __DOIT12(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT12(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 11), 11, _DOIT11(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT12(NAME, OP, FUNC, A, ...) __DOIT12(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP12(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT13(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 12), 12, _DOIT12(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT13(NAME, N, OP, FUNC, A, ...) __DOIT13(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT13(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 12), 12, _DOIT12(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT13(NAME, OP, FUNC, A, ...) __DOIT13(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP13(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT14(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 13), 13, _DOIT13(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT14(NAME, N, OP, FUNC, A, ...) __DOIT14(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT14(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 13), 13, _DOIT13(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT14(NAME, OP, FUNC, A, ...) __DOIT14(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP14(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT15(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 14), 14, _DOIT14(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT15(NAME, N, OP, FUNC, A, ...) __DOIT15(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT15(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 14), 14, _DOIT14(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT15(NAME, OP, FUNC, A, ...) __DOIT15(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP15(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT16(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 15), 15, _DOIT15(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT16(NAME, N, OP, FUNC, A, ...) __DOIT16(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT16(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 15), 15, _DOIT15(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT16(NAME, OP, FUNC, A, ...) __DOIT16(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP16(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT17(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 16), 16, _DOIT16(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT17(NAME, N, OP, FUNC, A, ...) __DOIT17(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT17(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 16), 16, _DOIT16(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT17(NAME, OP, FUNC, A, ...) __DOIT17(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP17(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT18(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 17), 17, _DOIT17(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT18(NAME, N, OP, FUNC, A, ...) __DOIT18(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT18(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 17), 17, _DOIT17(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT18(NAME, OP, FUNC, A, ...) __DOIT18(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP18(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT19(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 18), 18, _DOIT18(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT19(NAME, N, OP, FUNC, A, ...) __DOIT19(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT19(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 18), 18, _DOIT18(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT19(NAME, OP, FUNC, A, ...) __DOIT19(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP19(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT20(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 19), 19, _DOIT19(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT20(NAME, N, OP, FUNC, A, ...) __DOIT20(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT20(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 19), 19, _DOIT19(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT20(NAME, OP, FUNC, A, ...) __DOIT20(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP20(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT21(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 20), 20, _DOIT20(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT21(NAME, N, OP, FUNC, A, ...) __DOIT21(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT21(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 20), 20, _DOIT20(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT21(NAME, OP, FUNC, A, ...) __DOIT21(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP21(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT22(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 21), 21, _DOIT21(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT22(NAME, N, OP, FUNC, A, ...) __DOIT22(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT22(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 21), 21, _DOIT21(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT22(NAME, OP, FUNC, A, ...) __DOIT22(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP22(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT23(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 22), 22, _DOIT22(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT23(NAME, N, OP, FUNC, A, ...) __DOIT23(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT23(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 22), 22, _DOIT22(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT23(NAME, OP, FUNC, A, ...) __DOIT23(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP23(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT24(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 23), 23, _DOIT23(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT24(NAME, N, OP, FUNC, A, ...) __DOIT24(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT24(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 23), 23, _DOIT23(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT24(NAME, OP, FUNC, A, ...) __DOIT24(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP24(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT25(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 24), 24, _DOIT24(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT25(NAME, N, OP, FUNC, A, ...) __DOIT25(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT25(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 24), 24, _DOIT24(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT25(NAME, OP, FUNC, A, ...) __DOIT25(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP25(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT26(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 25), 25, _DOIT25(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT26(NAME, N, OP, FUNC, A, ...) __DOIT26(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT26(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 25), 25, _DOIT25(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT26(NAME, OP, FUNC, A, ...) __DOIT26(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP26(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT27(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 26), 26, _DOIT26(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT27(NAME, N, OP, FUNC, A, ...) __DOIT27(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT27(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 26), 26, _DOIT26(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT27(NAME, OP, FUNC, A, ...) __DOIT27(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP27(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT28(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 27), 27, _DOIT27(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT28(NAME, N, OP, FUNC, A, ...) __DOIT28(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT28(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 27), 27, _DOIT27(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT28(NAME, OP, FUNC, A, ...) __DOIT28(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP28(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT29(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 28), 28, _DOIT28(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT29(NAME, N, OP, FUNC, A, ...) __DOIT29(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT29(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 28), 28, _DOIT28(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT29(NAME, OP, FUNC, A, ...) __DOIT29(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP29(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT30(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 29), 29, _DOIT29(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT30(NAME, N, OP, FUNC, A, ...) __DOIT30(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT30(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 29), 29, _DOIT29(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT30(NAME, OP, FUNC, A, ...) __DOIT30(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP30(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT31(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 30), 30, _DOIT30(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT31(NAME, N, OP, FUNC, A, ...) __DOIT31(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT31(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 30), 30, _DOIT30(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT31(NAME, OP, FUNC, A, ...) __DOIT31(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP31(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT32(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 31), 31, _DOIT31(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT32(NAME, N, OP, FUNC, A, ...) __DOIT32(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT32(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 31), 31, _DOIT31(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT32(NAME, OP, FUNC, A, ...) __DOIT32(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP32(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT33(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 32), 32, _DOIT32(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT33(NAME, N, OP, FUNC, A, ...) __DOIT33(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT33(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 32), 32, _DOIT32(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT33(NAME, OP, FUNC, A, ...) __DOIT33(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP33(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT34(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 33), 33, _DOIT33(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT34(NAME, N, OP, FUNC, A, ...) __DOIT34(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT34(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 33), 33, _DOIT33(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT34(NAME, OP, FUNC, A, ...) __DOIT34(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP34(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT35(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 34), 34, _DOIT34(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT35(NAME, N, OP, FUNC, A, ...) __DOIT35(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT35(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 34), 34, _DOIT34(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT35(NAME, OP, FUNC, A, ...) __DOIT35(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP35(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT36(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 35), 35, _DOIT35(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT36(NAME, N, OP, FUNC, A, ...) __DOIT36(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT36(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 35), 35, _DOIT35(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT36(NAME, OP, FUNC, A, ...) __DOIT36(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP36(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT37(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 36), 36, _DOIT36(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT37(NAME, N, OP, FUNC, A, ...) __DOIT37(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT37(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 36), 36, _DOIT36(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT37(NAME, OP, FUNC, A, ...) __DOIT37(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP37(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT38(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 37), 37, _DOIT37(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT38(NAME, N, OP, FUNC, A, ...) __DOIT38(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT38(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 37), 37, _DOIT37(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT38(NAME, OP, FUNC, A, ...) __DOIT38(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP38(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT39(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 38), 38, _DOIT38(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT39(NAME, N, OP, FUNC, A, ...) __DOIT39(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT39(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 38), 38, _DOIT38(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT39(NAME, OP, FUNC, A, ...) __DOIT39(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP39(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT40(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 39), 39, _DOIT39(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT40(NAME, N, OP, FUNC, A, ...) __DOIT40(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT40(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 39), 39, _DOIT39(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT40(NAME, OP, FUNC, A, ...) __DOIT40(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP40(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT41(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 40), 40, _DOIT40(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT41(NAME, N, OP, FUNC, A, ...) __DOIT41(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT41(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 40), 40, _DOIT40(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT41(NAME, OP, FUNC, A, ...) __DOIT41(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP41(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT42(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 41), 41, _DOIT41(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT42(NAME, N, OP, FUNC, A, ...) __DOIT42(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT42(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 41), 41, _DOIT41(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT42(NAME, OP, FUNC, A, ...) __DOIT42(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP42(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT43(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 42), 42, _DOIT42(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT43(NAME, N, OP, FUNC, A, ...) __DOIT43(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT43(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 42), 42, _DOIT42(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT43(NAME, OP, FUNC, A, ...) __DOIT43(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP43(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT44(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 43), 43, _DOIT43(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT44(NAME, N, OP, FUNC, A, ...) __DOIT44(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT44(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 43), 43, _DOIT43(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT44(NAME, OP, FUNC, A, ...) __DOIT44(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP44(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT45(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 44), 44, _DOIT44(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT45(NAME, N, OP, FUNC, A, ...) __DOIT45(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT45(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 44), 44, _DOIT44(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT45(NAME, OP, FUNC, A, ...) __DOIT45(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP45(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT46(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 45), 45, _DOIT45(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT46(NAME, N, OP, FUNC, A, ...) __DOIT46(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT46(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 45), 45, _DOIT45(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT46(NAME, OP, FUNC, A, ...) __DOIT46(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP46(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT47(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 46), 46, _DOIT46(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT47(NAME, N, OP, FUNC, A, ...) __DOIT47(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT47(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 46), 46, _DOIT46(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT47(NAME, OP, FUNC, A, ...) __DOIT47(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP47(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT48(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 47), 47, _DOIT47(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT48(NAME, N, OP, FUNC, A, ...) __DOIT48(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT48(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 47), 47, _DOIT47(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT48(NAME, OP, FUNC, A, ...) __DOIT48(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP48(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT49(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 48), 48, _DOIT48(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT49(NAME, N, OP, FUNC, A, ...) __DOIT49(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT49(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 48), 48, _DOIT48(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT49(NAME, OP, FUNC, A, ...) __DOIT49(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP49(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT50(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 49), 49, _DOIT49(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT50(NAME, N, OP, FUNC, A, ...) __DOIT50(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT50(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 49), 49, _DOIT49(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT50(NAME, OP, FUNC, A, ...) __DOIT50(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP50(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT51(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 50), 50, _DOIT50(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT51(NAME, N, OP, FUNC, A, ...) __DOIT51(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT51(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 50), 50, _DOIT50(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT51(NAME, OP, FUNC, A, ...) __DOIT51(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP51(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT52(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 51), 51, _DOIT51(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT52(NAME, N, OP, FUNC, A, ...) __DOIT52(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT52(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 51), 51, _DOIT51(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT52(NAME, OP, FUNC, A, ...) __DOIT52(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP52(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT53(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 52), 52, _DOIT52(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT53(NAME, N, OP, FUNC, A, ...) __DOIT53(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT53(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 52), 52, _DOIT52(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT53(NAME, OP, FUNC, A, ...) __DOIT53(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP53(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT54(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 53), 53, _DOIT53(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT54(NAME, N, OP, FUNC, A, ...) __DOIT54(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT54(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 53), 53, _DOIT53(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT54(NAME, OP, FUNC, A, ...) __DOIT54(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP54(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT55(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 54), 54, _DOIT54(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT55(NAME, N, OP, FUNC, A, ...) __DOIT55(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT55(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 54), 54, _DOIT54(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT55(NAME, OP, FUNC, A, ...) __DOIT55(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP55(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT56(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 55), 55, _DOIT55(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT56(NAME, N, OP, FUNC, A, ...) __DOIT56(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT56(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 55), 55, _DOIT55(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT56(NAME, OP, FUNC, A, ...) __DOIT56(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP56(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT57(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 56), 56, _DOIT56(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT57(NAME, N, OP, FUNC, A, ...) __DOIT57(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT57(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 56), 56, _DOIT56(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT57(NAME, OP, FUNC, A, ...) __DOIT57(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP57(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT58(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 57), 57, _DOIT57(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT58(NAME, N, OP, FUNC, A, ...) __DOIT58(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT58(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 57), 57, _DOIT57(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT58(NAME, OP, FUNC, A, ...) __DOIT58(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP58(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT59(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 58), 58, _DOIT58(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT59(NAME, N, OP, FUNC, A, ...) __DOIT59(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT59(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 58), 58, _DOIT58(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT59(NAME, OP, FUNC, A, ...) __DOIT59(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP59(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT60(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 59), 59, _DOIT59(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT60(NAME, N, OP, FUNC, A, ...) __DOIT60(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT60(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 59), 59, _DOIT59(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT60(NAME, OP, FUNC, A, ...) __DOIT60(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP60(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT61(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 60), 60, _DOIT60(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT61(NAME, N, OP, FUNC, A, ...) __DOIT61(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT61(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 60), 60, _DOIT60(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT61(NAME, OP, FUNC, A, ...) __DOIT61(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP61(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT62(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 61), 61, _DOIT61(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT62(NAME, N, OP, FUNC, A, ...) __DOIT62(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT62(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 61), 61, _DOIT61(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT62(NAME, OP, FUNC, A, ...) __DOIT62(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP62(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
-#define __DOIT63(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 62), 62, _DOIT62(NAME, , OP, FUNC, __VA_ARGS__, ))
-#define _DOIT63(NAME, N, OP, FUNC, A, ...) __DOIT63(NAME, OP, FUNC, A, __VA_ARGS__)
+#define __DOIT63(NAME, OP, FUNC, A, ...) OP(NAME, FUNC(NAME, A, 62), 62, _DOIT62(NAME, OP, FUNC, __VA_ARGS__, ))
+#define _DOIT63(NAME, OP, FUNC, A, ...) __DOIT63(NAME, OP, FUNC, A, __VA_ARGS__)
 #define REP63(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X

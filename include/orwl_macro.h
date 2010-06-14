@@ -760,13 +760,13 @@ CHOOSE5(xT,                                     \
  **/
 
 #define _DOIT0(...)
-#define _DOIT1(NAME, N, OP, FUNC, X, ...) FUNC(NAME, X, 0)
+#define _DOIT1(NAME, OP, FUNC, X, ...) FUNC(NAME, X, 0)
 
 /**
  ** @brief A macro list iterator
  **/
 #define DOIT(NAME, N, OP, FUNC, X, ...) _DOIT(NAME, N, OP, FUNC, X, __VA_ARGS__)
-#define _DOIT(NAME, N, OP, FUNC, X, ...) _DOIT ## N(NAME, , OP, FUNC, X, __VA_ARGS__)
+#define _DOIT(NAME, N, OP, FUNC, X, ...) _DOIT ## N(NAME, OP, FUNC, X, __VA_ARGS__)
 
 #define DO(NAME, OP, FUNC, X, ...) DOIT(NAME, NARG(__VA_ARGS__), OP, FUNC, X, __VA_ARGS__)
 
