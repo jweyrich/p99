@@ -490,7 +490,7 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 /*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
 
 
-#define _predecessor(N) PASTE(_predecessor_, N)
+#define DEC_PRED(N) PASTE(_DEC_PRED_, N)
 #define _itpredecessor_0(DEC) DEC
 #define _dec2uni(DEC) PASTE(_dec2uni_, DEC)
 #define _uni2dec(UN) ETSAP(_uni2, dec_, UN)
@@ -501,7 +501,7 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 #define __dec_add(D,E) _uni2dec(___dec_add(D,E))
 #define _dec_add(D,E) __dec_add(D,E)
 
-#define _predecessor_0 minus_1
+#define _DEC_PRED_0 minus_1
 #define _dec_eval(EDEC) PASTE(_dec_eval_, EDEC)
 #define _dec_minus(D,E) PASTE(_itpredecessor_, E)(D)
 
@@ -932,15 +932,15 @@ CHOOSE5(xT,                                     \
  **/
 #define CHS(N, ...) _CHS ## N (__VA_ARGS__)
 
-#define _ASG(NAME, X, N) _predecessor(N)] , X
+#define _ASG(NAME, X, N) DEC_PRED(N)] , X
 
 #define _SAR(NAME, X, N, REC) X = REC
 
-#define _VASSIGNS(X, N, ...)                                                \
+#define _VASSIGNS(X, N, ...)                                            \
 DECLS(                                                                  \
       SELS(_dec_minus(N,2),                                             \
            REVS(                                                        \
-                SELS(_predecessor(N),                                   \
+                SELS(DEC_PRED(N),                                       \
                      DOIT(, N,                                          \
                                       (X)[_SAR,                         \
                                         _ASG,                           \

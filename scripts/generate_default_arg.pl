@@ -97,11 +97,11 @@ printf "#define _uni2dec_%s %d\n", ${digit}x$_, $_
     foreach (0.. $maxnumber);
 printf "#define _dec2uni_%d %s\n", $_, ${digit}x$_
     foreach (0.. $maxnumber);
-printf "#define _predecessor_%d %d\n", $_ + 1, $_
+printf "#define _DEC_PRED_%d %d\n", $_ + 1, $_
     foreach (0.. $maxnumber);
-printf "#define _itpredecessor_%d(DEC) _predecessor(_itpredecessor_%d(DEC))\n", $_ + 1, $_
+printf "#define _itpredecessor_%d(DEC) DEC_PRED(_itpredecessor_%d(DEC))\n", $_ + 1, $_
     foreach (0.. $maxnumber);
-printf "#define _predecessor_minus_%d minus_%d\n", $_, $_ + 1
+printf "#define _DEC_PRED_minus_%d minus_%d\n", $_, $_ + 1
     foreach (0.. $maxnumber);
 printf "#define _minus_minus_%d %d\n", $_, $_
     foreach (0.. $maxnumber);
