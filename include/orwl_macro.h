@@ -490,8 +490,6 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 /*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
 
 
-#define _hex2dec_(HEX) PASTE(_hex2dec_, HEX)
-#define _dec2hex_(DEC) PASTE(_dec2hex_, DEC)
 #define _predecessor(N) PASTE(_predecessor_, N)
 #define _itpredecessor_0(DEC) DEC
 #define _dec2uni(DEC) PASTE(_dec2uni_, DEC)

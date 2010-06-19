@@ -93,23 +93,6 @@ for(my $div = 1; $div < $maxnumber; ++$div) {
     }
 }
 
-
-for (my $i = 0; $i < 0x10 && $i < $maxnumber; ++$i) {
-    printf "#define _hex2dec_0x%X %d\n", $i, $i;
-}
-
-for (my $i = 0; $i < 0x100 && $i < $maxnumber; ++$i) {
-    printf "#define _hex2dec_0x%02X %d\n", $i, $i;
-}
-
-for (my $i = 0; $i < 0x1000 && $i < $maxnumber; ++$i) {
-    printf "#define _hex2dec_0x%03X %d\n", $i, $i;
-}
-
-for (my $i = 0; $i < 0x1000 && $i < $maxnumber; ++$i) {
-    printf "#define _dec2hex_%d %03X\n", $i, $i;
-}
-
 for (my $i = 0; $i < $maxnumber; ++$i) {
     printf "#define _uni2dec_%s %d\n", ${digit}x$i, $i;
     printf "#define _dec2uni_%d %s\n", $i, ${digit}x$i;
