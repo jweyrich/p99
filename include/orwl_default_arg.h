@@ -1383,764 +1383,774 @@
 #define PASTE63(_1,	_2,	_3,	_4,	_5,	_6,	_7,	_8,	_9,	_10,	_11,	_12,	_13,	_14,	_15,	_16,	_17,	_18,	_19,	_20,	_21,	_22,	_23,	_24,	_25,	_26,	_27,	_28,	_29,	_30,	_31,	_32,	_33,	_34,	_35,	_36,	_37,	_38,	_39,	_40,	_41,	_42,	_43,	_44,	_45,	_46,	_47,	_48,	_49,	_50,	_51,	_52,	_53,	_54,	_55,	_56,	_57,	_58,	_59,	_60,	_61,	_62,	_63)	\
 	_PASTE2(PASTE62(_1,	_2,	_3,	_4,	_5,	_6,	_7,	_8,	_9,	_10,	_11,	_12,	_13,	_14,	_15,	_16,	_17,	_18,	_19,	_20,	_21,	_22,	_23,	_24,	_25,	_26,	_27,	_28,	_29,	_30,	_31,	_32,	_33,	_34,	_35,	_36,	_37,	_38,	_39,	_40,	_41,	_42,	_43,	_44,	_45,	_46,	_47,	_48,	_49,	_50,	_51,	_52,	_53,	_54,	_55,	_56,	_57,	_58,	_59,	_60,	_61,	_62), _63)
 #define _uni2dec_ 0
-#define _dec2uni_0 
-#define _predecessor_1 0
-#define _itpredecessor_1(DEC) _predecessor(_itpredecessor_0(DEC))
-#define _predecessor_minus_0 minus_1
-#define _minus_minus_0 0
-#define _IS_0_GE_0 ,
-#define _dec_eval_0 0
-#define _dec_eval_minus_0 0
 #define _uni2dec_1 1
-#define _dec2uni_1 1
-#define _predecessor_2 1
-#define _itpredecessor_2(DEC) _predecessor(_itpredecessor_1(DEC))
-#define _predecessor_minus_1 minus_2
-#define _minus_minus_1 1
-#define _IS_1_GE_0 ,
-#define _dec_eval_1 1
-#define _dec_eval_minus_1 -1
 #define _uni2dec_11 2
-#define _dec2uni_2 11
-#define _predecessor_3 2
-#define _itpredecessor_3(DEC) _predecessor(_itpredecessor_2(DEC))
-#define _predecessor_minus_2 minus_3
-#define _minus_minus_2 2
-#define _IS_2_GE_0 ,
-#define _dec_eval_2 2
-#define _dec_eval_minus_2 -2
 #define _uni2dec_111 3
-#define _dec2uni_3 111
-#define _predecessor_4 3
-#define _itpredecessor_4(DEC) _predecessor(_itpredecessor_3(DEC))
-#define _predecessor_minus_3 minus_4
-#define _minus_minus_3 3
-#define _IS_3_GE_0 ,
-#define _dec_eval_3 3
-#define _dec_eval_minus_3 -3
 #define _uni2dec_1111 4
-#define _dec2uni_4 1111
-#define _predecessor_5 4
-#define _itpredecessor_5(DEC) _predecessor(_itpredecessor_4(DEC))
-#define _predecessor_minus_4 minus_5
-#define _minus_minus_4 4
-#define _IS_4_GE_0 ,
-#define _dec_eval_4 4
-#define _dec_eval_minus_4 -4
 #define _uni2dec_11111 5
-#define _dec2uni_5 11111
-#define _predecessor_6 5
-#define _itpredecessor_6(DEC) _predecessor(_itpredecessor_5(DEC))
-#define _predecessor_minus_5 minus_6
-#define _minus_minus_5 5
-#define _IS_5_GE_0 ,
-#define _dec_eval_5 5
-#define _dec_eval_minus_5 -5
 #define _uni2dec_111111 6
-#define _dec2uni_6 111111
-#define _predecessor_7 6
-#define _itpredecessor_7(DEC) _predecessor(_itpredecessor_6(DEC))
-#define _predecessor_minus_6 minus_7
-#define _minus_minus_6 6
-#define _IS_6_GE_0 ,
-#define _dec_eval_6 6
-#define _dec_eval_minus_6 -6
 #define _uni2dec_1111111 7
-#define _dec2uni_7 1111111
-#define _predecessor_8 7
-#define _itpredecessor_8(DEC) _predecessor(_itpredecessor_7(DEC))
-#define _predecessor_minus_7 minus_8
-#define _minus_minus_7 7
-#define _IS_7_GE_0 ,
-#define _dec_eval_7 7
-#define _dec_eval_minus_7 -7
 #define _uni2dec_11111111 8
-#define _dec2uni_8 11111111
-#define _predecessor_9 8
-#define _itpredecessor_9(DEC) _predecessor(_itpredecessor_8(DEC))
-#define _predecessor_minus_8 minus_9
-#define _minus_minus_8 8
-#define _IS_8_GE_0 ,
-#define _dec_eval_8 8
-#define _dec_eval_minus_8 -8
 #define _uni2dec_111111111 9
-#define _dec2uni_9 111111111
-#define _predecessor_10 9
-#define _itpredecessor_10(DEC) _predecessor(_itpredecessor_9(DEC))
-#define _predecessor_minus_9 minus_10
-#define _minus_minus_9 9
-#define _IS_9_GE_0 ,
-#define _dec_eval_9 9
-#define _dec_eval_minus_9 -9
 #define _uni2dec_1111111111 10
-#define _dec2uni_10 1111111111
-#define _predecessor_11 10
-#define _itpredecessor_11(DEC) _predecessor(_itpredecessor_10(DEC))
-#define _predecessor_minus_10 minus_11
-#define _minus_minus_10 10
-#define _IS_10_GE_0 ,
-#define _dec_eval_10 10
-#define _dec_eval_minus_10 -10
 #define _uni2dec_11111111111 11
-#define _dec2uni_11 11111111111
-#define _predecessor_12 11
-#define _itpredecessor_12(DEC) _predecessor(_itpredecessor_11(DEC))
-#define _predecessor_minus_11 minus_12
-#define _minus_minus_11 11
-#define _IS_11_GE_0 ,
-#define _dec_eval_11 11
-#define _dec_eval_minus_11 -11
 #define _uni2dec_111111111111 12
-#define _dec2uni_12 111111111111
-#define _predecessor_13 12
-#define _itpredecessor_13(DEC) _predecessor(_itpredecessor_12(DEC))
-#define _predecessor_minus_12 minus_13
-#define _minus_minus_12 12
-#define _IS_12_GE_0 ,
-#define _dec_eval_12 12
-#define _dec_eval_minus_12 -12
 #define _uni2dec_1111111111111 13
-#define _dec2uni_13 1111111111111
-#define _predecessor_14 13
-#define _itpredecessor_14(DEC) _predecessor(_itpredecessor_13(DEC))
-#define _predecessor_minus_13 minus_14
-#define _minus_minus_13 13
-#define _IS_13_GE_0 ,
-#define _dec_eval_13 13
-#define _dec_eval_minus_13 -13
 #define _uni2dec_11111111111111 14
-#define _dec2uni_14 11111111111111
-#define _predecessor_15 14
-#define _itpredecessor_15(DEC) _predecessor(_itpredecessor_14(DEC))
-#define _predecessor_minus_14 minus_15
-#define _minus_minus_14 14
-#define _IS_14_GE_0 ,
-#define _dec_eval_14 14
-#define _dec_eval_minus_14 -14
 #define _uni2dec_111111111111111 15
-#define _dec2uni_15 111111111111111
-#define _predecessor_16 15
-#define _itpredecessor_16(DEC) _predecessor(_itpredecessor_15(DEC))
-#define _predecessor_minus_15 minus_16
-#define _minus_minus_15 15
-#define _IS_15_GE_0 ,
-#define _dec_eval_15 15
-#define _dec_eval_minus_15 -15
 #define _uni2dec_1111111111111111 16
-#define _dec2uni_16 1111111111111111
-#define _predecessor_17 16
-#define _itpredecessor_17(DEC) _predecessor(_itpredecessor_16(DEC))
-#define _predecessor_minus_16 minus_17
-#define _minus_minus_16 16
-#define _IS_16_GE_0 ,
-#define _dec_eval_16 16
-#define _dec_eval_minus_16 -16
 #define _uni2dec_11111111111111111 17
-#define _dec2uni_17 11111111111111111
-#define _predecessor_18 17
-#define _itpredecessor_18(DEC) _predecessor(_itpredecessor_17(DEC))
-#define _predecessor_minus_17 minus_18
-#define _minus_minus_17 17
-#define _IS_17_GE_0 ,
-#define _dec_eval_17 17
-#define _dec_eval_minus_17 -17
 #define _uni2dec_111111111111111111 18
-#define _dec2uni_18 111111111111111111
-#define _predecessor_19 18
-#define _itpredecessor_19(DEC) _predecessor(_itpredecessor_18(DEC))
-#define _predecessor_minus_18 minus_19
-#define _minus_minus_18 18
-#define _IS_18_GE_0 ,
-#define _dec_eval_18 18
-#define _dec_eval_minus_18 -18
 #define _uni2dec_1111111111111111111 19
-#define _dec2uni_19 1111111111111111111
-#define _predecessor_20 19
-#define _itpredecessor_20(DEC) _predecessor(_itpredecessor_19(DEC))
-#define _predecessor_minus_19 minus_20
-#define _minus_minus_19 19
-#define _IS_19_GE_0 ,
-#define _dec_eval_19 19
-#define _dec_eval_minus_19 -19
 #define _uni2dec_11111111111111111111 20
-#define _dec2uni_20 11111111111111111111
-#define _predecessor_21 20
-#define _itpredecessor_21(DEC) _predecessor(_itpredecessor_20(DEC))
-#define _predecessor_minus_20 minus_21
-#define _minus_minus_20 20
-#define _IS_20_GE_0 ,
-#define _dec_eval_20 20
-#define _dec_eval_minus_20 -20
 #define _uni2dec_111111111111111111111 21
-#define _dec2uni_21 111111111111111111111
-#define _predecessor_22 21
-#define _itpredecessor_22(DEC) _predecessor(_itpredecessor_21(DEC))
-#define _predecessor_minus_21 minus_22
-#define _minus_minus_21 21
-#define _IS_21_GE_0 ,
-#define _dec_eval_21 21
-#define _dec_eval_minus_21 -21
 #define _uni2dec_1111111111111111111111 22
-#define _dec2uni_22 1111111111111111111111
-#define _predecessor_23 22
-#define _itpredecessor_23(DEC) _predecessor(_itpredecessor_22(DEC))
-#define _predecessor_minus_22 minus_23
-#define _minus_minus_22 22
-#define _IS_22_GE_0 ,
-#define _dec_eval_22 22
-#define _dec_eval_minus_22 -22
 #define _uni2dec_11111111111111111111111 23
-#define _dec2uni_23 11111111111111111111111
-#define _predecessor_24 23
-#define _itpredecessor_24(DEC) _predecessor(_itpredecessor_23(DEC))
-#define _predecessor_minus_23 minus_24
-#define _minus_minus_23 23
-#define _IS_23_GE_0 ,
-#define _dec_eval_23 23
-#define _dec_eval_minus_23 -23
 #define _uni2dec_111111111111111111111111 24
-#define _dec2uni_24 111111111111111111111111
-#define _predecessor_25 24
-#define _itpredecessor_25(DEC) _predecessor(_itpredecessor_24(DEC))
-#define _predecessor_minus_24 minus_25
-#define _minus_minus_24 24
-#define _IS_24_GE_0 ,
-#define _dec_eval_24 24
-#define _dec_eval_minus_24 -24
 #define _uni2dec_1111111111111111111111111 25
-#define _dec2uni_25 1111111111111111111111111
-#define _predecessor_26 25
-#define _itpredecessor_26(DEC) _predecessor(_itpredecessor_25(DEC))
-#define _predecessor_minus_25 minus_26
-#define _minus_minus_25 25
-#define _IS_25_GE_0 ,
-#define _dec_eval_25 25
-#define _dec_eval_minus_25 -25
 #define _uni2dec_11111111111111111111111111 26
-#define _dec2uni_26 11111111111111111111111111
-#define _predecessor_27 26
-#define _itpredecessor_27(DEC) _predecessor(_itpredecessor_26(DEC))
-#define _predecessor_minus_26 minus_27
-#define _minus_minus_26 26
-#define _IS_26_GE_0 ,
-#define _dec_eval_26 26
-#define _dec_eval_minus_26 -26
 #define _uni2dec_111111111111111111111111111 27
-#define _dec2uni_27 111111111111111111111111111
-#define _predecessor_28 27
-#define _itpredecessor_28(DEC) _predecessor(_itpredecessor_27(DEC))
-#define _predecessor_minus_27 minus_28
-#define _minus_minus_27 27
-#define _IS_27_GE_0 ,
-#define _dec_eval_27 27
-#define _dec_eval_minus_27 -27
 #define _uni2dec_1111111111111111111111111111 28
-#define _dec2uni_28 1111111111111111111111111111
-#define _predecessor_29 28
-#define _itpredecessor_29(DEC) _predecessor(_itpredecessor_28(DEC))
-#define _predecessor_minus_28 minus_29
-#define _minus_minus_28 28
-#define _IS_28_GE_0 ,
-#define _dec_eval_28 28
-#define _dec_eval_minus_28 -28
 #define _uni2dec_11111111111111111111111111111 29
-#define _dec2uni_29 11111111111111111111111111111
-#define _predecessor_30 29
-#define _itpredecessor_30(DEC) _predecessor(_itpredecessor_29(DEC))
-#define _predecessor_minus_29 minus_30
-#define _minus_minus_29 29
-#define _IS_29_GE_0 ,
-#define _dec_eval_29 29
-#define _dec_eval_minus_29 -29
 #define _uni2dec_111111111111111111111111111111 30
-#define _dec2uni_30 111111111111111111111111111111
-#define _predecessor_31 30
-#define _itpredecessor_31(DEC) _predecessor(_itpredecessor_30(DEC))
-#define _predecessor_minus_30 minus_31
-#define _minus_minus_30 30
-#define _IS_30_GE_0 ,
-#define _dec_eval_30 30
-#define _dec_eval_minus_30 -30
 #define _uni2dec_1111111111111111111111111111111 31
-#define _dec2uni_31 1111111111111111111111111111111
-#define _predecessor_32 31
-#define _itpredecessor_32(DEC) _predecessor(_itpredecessor_31(DEC))
-#define _predecessor_minus_31 minus_32
-#define _minus_minus_31 31
-#define _IS_31_GE_0 ,
-#define _dec_eval_31 31
-#define _dec_eval_minus_31 -31
 #define _uni2dec_11111111111111111111111111111111 32
-#define _dec2uni_32 11111111111111111111111111111111
-#define _predecessor_33 32
-#define _itpredecessor_33(DEC) _predecessor(_itpredecessor_32(DEC))
-#define _predecessor_minus_32 minus_33
-#define _minus_minus_32 32
-#define _IS_32_GE_0 ,
-#define _dec_eval_32 32
-#define _dec_eval_minus_32 -32
 #define _uni2dec_111111111111111111111111111111111 33
-#define _dec2uni_33 111111111111111111111111111111111
-#define _predecessor_34 33
-#define _itpredecessor_34(DEC) _predecessor(_itpredecessor_33(DEC))
-#define _predecessor_minus_33 minus_34
-#define _minus_minus_33 33
-#define _IS_33_GE_0 ,
-#define _dec_eval_33 33
-#define _dec_eval_minus_33 -33
 #define _uni2dec_1111111111111111111111111111111111 34
-#define _dec2uni_34 1111111111111111111111111111111111
-#define _predecessor_35 34
-#define _itpredecessor_35(DEC) _predecessor(_itpredecessor_34(DEC))
-#define _predecessor_minus_34 minus_35
-#define _minus_minus_34 34
-#define _IS_34_GE_0 ,
-#define _dec_eval_34 34
-#define _dec_eval_minus_34 -34
 #define _uni2dec_11111111111111111111111111111111111 35
-#define _dec2uni_35 11111111111111111111111111111111111
-#define _predecessor_36 35
-#define _itpredecessor_36(DEC) _predecessor(_itpredecessor_35(DEC))
-#define _predecessor_minus_35 minus_36
-#define _minus_minus_35 35
-#define _IS_35_GE_0 ,
-#define _dec_eval_35 35
-#define _dec_eval_minus_35 -35
 #define _uni2dec_111111111111111111111111111111111111 36
-#define _dec2uni_36 111111111111111111111111111111111111
-#define _predecessor_37 36
-#define _itpredecessor_37(DEC) _predecessor(_itpredecessor_36(DEC))
-#define _predecessor_minus_36 minus_37
-#define _minus_minus_36 36
-#define _IS_36_GE_0 ,
-#define _dec_eval_36 36
-#define _dec_eval_minus_36 -36
 #define _uni2dec_1111111111111111111111111111111111111 37
-#define _dec2uni_37 1111111111111111111111111111111111111
-#define _predecessor_38 37
-#define _itpredecessor_38(DEC) _predecessor(_itpredecessor_37(DEC))
-#define _predecessor_minus_37 minus_38
-#define _minus_minus_37 37
-#define _IS_37_GE_0 ,
-#define _dec_eval_37 37
-#define _dec_eval_minus_37 -37
 #define _uni2dec_11111111111111111111111111111111111111 38
-#define _dec2uni_38 11111111111111111111111111111111111111
-#define _predecessor_39 38
-#define _itpredecessor_39(DEC) _predecessor(_itpredecessor_38(DEC))
-#define _predecessor_minus_38 minus_39
-#define _minus_minus_38 38
-#define _IS_38_GE_0 ,
-#define _dec_eval_38 38
-#define _dec_eval_minus_38 -38
 #define _uni2dec_111111111111111111111111111111111111111 39
-#define _dec2uni_39 111111111111111111111111111111111111111
-#define _predecessor_40 39
-#define _itpredecessor_40(DEC) _predecessor(_itpredecessor_39(DEC))
-#define _predecessor_minus_39 minus_40
-#define _minus_minus_39 39
-#define _IS_39_GE_0 ,
-#define _dec_eval_39 39
-#define _dec_eval_minus_39 -39
 #define _uni2dec_1111111111111111111111111111111111111111 40
-#define _dec2uni_40 1111111111111111111111111111111111111111
-#define _predecessor_41 40
-#define _itpredecessor_41(DEC) _predecessor(_itpredecessor_40(DEC))
-#define _predecessor_minus_40 minus_41
-#define _minus_minus_40 40
-#define _IS_40_GE_0 ,
-#define _dec_eval_40 40
-#define _dec_eval_minus_40 -40
 #define _uni2dec_11111111111111111111111111111111111111111 41
-#define _dec2uni_41 11111111111111111111111111111111111111111
-#define _predecessor_42 41
-#define _itpredecessor_42(DEC) _predecessor(_itpredecessor_41(DEC))
-#define _predecessor_minus_41 minus_42
-#define _minus_minus_41 41
-#define _IS_41_GE_0 ,
-#define _dec_eval_41 41
-#define _dec_eval_minus_41 -41
 #define _uni2dec_111111111111111111111111111111111111111111 42
-#define _dec2uni_42 111111111111111111111111111111111111111111
-#define _predecessor_43 42
-#define _itpredecessor_43(DEC) _predecessor(_itpredecessor_42(DEC))
-#define _predecessor_minus_42 minus_43
-#define _minus_minus_42 42
-#define _IS_42_GE_0 ,
-#define _dec_eval_42 42
-#define _dec_eval_minus_42 -42
 #define _uni2dec_1111111111111111111111111111111111111111111 43
-#define _dec2uni_43 1111111111111111111111111111111111111111111
-#define _predecessor_44 43
-#define _itpredecessor_44(DEC) _predecessor(_itpredecessor_43(DEC))
-#define _predecessor_minus_43 minus_44
-#define _minus_minus_43 43
-#define _IS_43_GE_0 ,
-#define _dec_eval_43 43
-#define _dec_eval_minus_43 -43
 #define _uni2dec_11111111111111111111111111111111111111111111 44
-#define _dec2uni_44 11111111111111111111111111111111111111111111
-#define _predecessor_45 44
-#define _itpredecessor_45(DEC) _predecessor(_itpredecessor_44(DEC))
-#define _predecessor_minus_44 minus_45
-#define _minus_minus_44 44
-#define _IS_44_GE_0 ,
-#define _dec_eval_44 44
-#define _dec_eval_minus_44 -44
 #define _uni2dec_111111111111111111111111111111111111111111111 45
-#define _dec2uni_45 111111111111111111111111111111111111111111111
-#define _predecessor_46 45
-#define _itpredecessor_46(DEC) _predecessor(_itpredecessor_45(DEC))
-#define _predecessor_minus_45 minus_46
-#define _minus_minus_45 45
-#define _IS_45_GE_0 ,
-#define _dec_eval_45 45
-#define _dec_eval_minus_45 -45
 #define _uni2dec_1111111111111111111111111111111111111111111111 46
-#define _dec2uni_46 1111111111111111111111111111111111111111111111
-#define _predecessor_47 46
-#define _itpredecessor_47(DEC) _predecessor(_itpredecessor_46(DEC))
-#define _predecessor_minus_46 minus_47
-#define _minus_minus_46 46
-#define _IS_46_GE_0 ,
-#define _dec_eval_46 46
-#define _dec_eval_minus_46 -46
 #define _uni2dec_11111111111111111111111111111111111111111111111 47
-#define _dec2uni_47 11111111111111111111111111111111111111111111111
-#define _predecessor_48 47
-#define _itpredecessor_48(DEC) _predecessor(_itpredecessor_47(DEC))
-#define _predecessor_minus_47 minus_48
-#define _minus_minus_47 47
-#define _IS_47_GE_0 ,
-#define _dec_eval_47 47
-#define _dec_eval_minus_47 -47
 #define _uni2dec_111111111111111111111111111111111111111111111111 48
-#define _dec2uni_48 111111111111111111111111111111111111111111111111
-#define _predecessor_49 48
-#define _itpredecessor_49(DEC) _predecessor(_itpredecessor_48(DEC))
-#define _predecessor_minus_48 minus_49
-#define _minus_minus_48 48
-#define _IS_48_GE_0 ,
-#define _dec_eval_48 48
-#define _dec_eval_minus_48 -48
 #define _uni2dec_1111111111111111111111111111111111111111111111111 49
-#define _dec2uni_49 1111111111111111111111111111111111111111111111111
-#define _predecessor_50 49
-#define _itpredecessor_50(DEC) _predecessor(_itpredecessor_49(DEC))
-#define _predecessor_minus_49 minus_50
-#define _minus_minus_49 49
-#define _IS_49_GE_0 ,
-#define _dec_eval_49 49
-#define _dec_eval_minus_49 -49
 #define _uni2dec_11111111111111111111111111111111111111111111111111 50
-#define _dec2uni_50 11111111111111111111111111111111111111111111111111
-#define _predecessor_51 50
-#define _itpredecessor_51(DEC) _predecessor(_itpredecessor_50(DEC))
-#define _predecessor_minus_50 minus_51
-#define _minus_minus_50 50
-#define _IS_50_GE_0 ,
-#define _dec_eval_50 50
-#define _dec_eval_minus_50 -50
 #define _uni2dec_111111111111111111111111111111111111111111111111111 51
-#define _dec2uni_51 111111111111111111111111111111111111111111111111111
-#define _predecessor_52 51
-#define _itpredecessor_52(DEC) _predecessor(_itpredecessor_51(DEC))
-#define _predecessor_minus_51 minus_52
-#define _minus_minus_51 51
-#define _IS_51_GE_0 ,
-#define _dec_eval_51 51
-#define _dec_eval_minus_51 -51
 #define _uni2dec_1111111111111111111111111111111111111111111111111111 52
-#define _dec2uni_52 1111111111111111111111111111111111111111111111111111
-#define _predecessor_53 52
-#define _itpredecessor_53(DEC) _predecessor(_itpredecessor_52(DEC))
-#define _predecessor_minus_52 minus_53
-#define _minus_minus_52 52
-#define _IS_52_GE_0 ,
-#define _dec_eval_52 52
-#define _dec_eval_minus_52 -52
 #define _uni2dec_11111111111111111111111111111111111111111111111111111 53
-#define _dec2uni_53 11111111111111111111111111111111111111111111111111111
-#define _predecessor_54 53
-#define _itpredecessor_54(DEC) _predecessor(_itpredecessor_53(DEC))
-#define _predecessor_minus_53 minus_54
-#define _minus_minus_53 53
-#define _IS_53_GE_0 ,
-#define _dec_eval_53 53
-#define _dec_eval_minus_53 -53
 #define _uni2dec_111111111111111111111111111111111111111111111111111111 54
-#define _dec2uni_54 111111111111111111111111111111111111111111111111111111
-#define _predecessor_55 54
-#define _itpredecessor_55(DEC) _predecessor(_itpredecessor_54(DEC))
-#define _predecessor_minus_54 minus_55
-#define _minus_minus_54 54
-#define _IS_54_GE_0 ,
-#define _dec_eval_54 54
-#define _dec_eval_minus_54 -54
 #define _uni2dec_1111111111111111111111111111111111111111111111111111111 55
-#define _dec2uni_55 1111111111111111111111111111111111111111111111111111111
-#define _predecessor_56 55
-#define _itpredecessor_56(DEC) _predecessor(_itpredecessor_55(DEC))
-#define _predecessor_minus_55 minus_56
-#define _minus_minus_55 55
-#define _IS_55_GE_0 ,
-#define _dec_eval_55 55
-#define _dec_eval_minus_55 -55
 #define _uni2dec_11111111111111111111111111111111111111111111111111111111 56
-#define _dec2uni_56 11111111111111111111111111111111111111111111111111111111
-#define _predecessor_57 56
-#define _itpredecessor_57(DEC) _predecessor(_itpredecessor_56(DEC))
-#define _predecessor_minus_56 minus_57
-#define _minus_minus_56 56
-#define _IS_56_GE_0 ,
-#define _dec_eval_56 56
-#define _dec_eval_minus_56 -56
 #define _uni2dec_111111111111111111111111111111111111111111111111111111111 57
-#define _dec2uni_57 111111111111111111111111111111111111111111111111111111111
-#define _predecessor_58 57
-#define _itpredecessor_58(DEC) _predecessor(_itpredecessor_57(DEC))
-#define _predecessor_minus_57 minus_58
-#define _minus_minus_57 57
-#define _IS_57_GE_0 ,
-#define _dec_eval_57 57
-#define _dec_eval_minus_57 -57
 #define _uni2dec_1111111111111111111111111111111111111111111111111111111111 58
-#define _dec2uni_58 1111111111111111111111111111111111111111111111111111111111
-#define _predecessor_59 58
-#define _itpredecessor_59(DEC) _predecessor(_itpredecessor_58(DEC))
-#define _predecessor_minus_58 minus_59
-#define _minus_minus_58 58
-#define _IS_58_GE_0 ,
-#define _dec_eval_58 58
-#define _dec_eval_minus_58 -58
 #define _uni2dec_11111111111111111111111111111111111111111111111111111111111 59
-#define _dec2uni_59 11111111111111111111111111111111111111111111111111111111111
-#define _predecessor_60 59
-#define _itpredecessor_60(DEC) _predecessor(_itpredecessor_59(DEC))
-#define _predecessor_minus_59 minus_60
-#define _minus_minus_59 59
-#define _IS_59_GE_0 ,
-#define _dec_eval_59 59
-#define _dec_eval_minus_59 -59
 #define _uni2dec_111111111111111111111111111111111111111111111111111111111111 60
-#define _dec2uni_60 111111111111111111111111111111111111111111111111111111111111
-#define _predecessor_61 60
-#define _itpredecessor_61(DEC) _predecessor(_itpredecessor_60(DEC))
-#define _predecessor_minus_60 minus_61
-#define _minus_minus_60 60
-#define _IS_60_GE_0 ,
-#define _dec_eval_60 60
-#define _dec_eval_minus_60 -60
 #define _uni2dec_1111111111111111111111111111111111111111111111111111111111111 61
-#define _dec2uni_61 1111111111111111111111111111111111111111111111111111111111111
-#define _predecessor_62 61
-#define _itpredecessor_62(DEC) _predecessor(_itpredecessor_61(DEC))
-#define _predecessor_minus_61 minus_62
-#define _minus_minus_61 61
-#define _IS_61_GE_0 ,
-#define _dec_eval_61 61
-#define _dec_eval_minus_61 -61
 #define _uni2dec_11111111111111111111111111111111111111111111111111111111111111 62
-#define _dec2uni_62 11111111111111111111111111111111111111111111111111111111111111
-#define _predecessor_63 62
-#define _itpredecessor_63(DEC) _predecessor(_itpredecessor_62(DEC))
-#define _predecessor_minus_62 minus_63
-#define _minus_minus_62 62
-#define _IS_62_GE_0 ,
-#define _dec_eval_62 62
-#define _dec_eval_minus_62 -62
 #define _uni2dec_111111111111111111111111111111111111111111111111111111111111111 63
+#define _uni2dec_1111111111111111111111111111111111111111111111111111111111111111 64
+#define _dec2uni_0 
+#define _dec2uni_1 1
+#define _dec2uni_2 11
+#define _dec2uni_3 111
+#define _dec2uni_4 1111
+#define _dec2uni_5 11111
+#define _dec2uni_6 111111
+#define _dec2uni_7 1111111
+#define _dec2uni_8 11111111
+#define _dec2uni_9 111111111
+#define _dec2uni_10 1111111111
+#define _dec2uni_11 11111111111
+#define _dec2uni_12 111111111111
+#define _dec2uni_13 1111111111111
+#define _dec2uni_14 11111111111111
+#define _dec2uni_15 111111111111111
+#define _dec2uni_16 1111111111111111
+#define _dec2uni_17 11111111111111111
+#define _dec2uni_18 111111111111111111
+#define _dec2uni_19 1111111111111111111
+#define _dec2uni_20 11111111111111111111
+#define _dec2uni_21 111111111111111111111
+#define _dec2uni_22 1111111111111111111111
+#define _dec2uni_23 11111111111111111111111
+#define _dec2uni_24 111111111111111111111111
+#define _dec2uni_25 1111111111111111111111111
+#define _dec2uni_26 11111111111111111111111111
+#define _dec2uni_27 111111111111111111111111111
+#define _dec2uni_28 1111111111111111111111111111
+#define _dec2uni_29 11111111111111111111111111111
+#define _dec2uni_30 111111111111111111111111111111
+#define _dec2uni_31 1111111111111111111111111111111
+#define _dec2uni_32 11111111111111111111111111111111
+#define _dec2uni_33 111111111111111111111111111111111
+#define _dec2uni_34 1111111111111111111111111111111111
+#define _dec2uni_35 11111111111111111111111111111111111
+#define _dec2uni_36 111111111111111111111111111111111111
+#define _dec2uni_37 1111111111111111111111111111111111111
+#define _dec2uni_38 11111111111111111111111111111111111111
+#define _dec2uni_39 111111111111111111111111111111111111111
+#define _dec2uni_40 1111111111111111111111111111111111111111
+#define _dec2uni_41 11111111111111111111111111111111111111111
+#define _dec2uni_42 111111111111111111111111111111111111111111
+#define _dec2uni_43 1111111111111111111111111111111111111111111
+#define _dec2uni_44 11111111111111111111111111111111111111111111
+#define _dec2uni_45 111111111111111111111111111111111111111111111
+#define _dec2uni_46 1111111111111111111111111111111111111111111111
+#define _dec2uni_47 11111111111111111111111111111111111111111111111
+#define _dec2uni_48 111111111111111111111111111111111111111111111111
+#define _dec2uni_49 1111111111111111111111111111111111111111111111111
+#define _dec2uni_50 11111111111111111111111111111111111111111111111111
+#define _dec2uni_51 111111111111111111111111111111111111111111111111111
+#define _dec2uni_52 1111111111111111111111111111111111111111111111111111
+#define _dec2uni_53 11111111111111111111111111111111111111111111111111111
+#define _dec2uni_54 111111111111111111111111111111111111111111111111111111
+#define _dec2uni_55 1111111111111111111111111111111111111111111111111111111
+#define _dec2uni_56 11111111111111111111111111111111111111111111111111111111
+#define _dec2uni_57 111111111111111111111111111111111111111111111111111111111
+#define _dec2uni_58 1111111111111111111111111111111111111111111111111111111111
+#define _dec2uni_59 11111111111111111111111111111111111111111111111111111111111
+#define _dec2uni_60 111111111111111111111111111111111111111111111111111111111111
+#define _dec2uni_61 1111111111111111111111111111111111111111111111111111111111111
+#define _dec2uni_62 11111111111111111111111111111111111111111111111111111111111111
 #define _dec2uni_63 111111111111111111111111111111111111111111111111111111111111111
+#define _dec2uni_64 1111111111111111111111111111111111111111111111111111111111111111
+#define _predecessor_1 0
+#define _predecessor_2 1
+#define _predecessor_3 2
+#define _predecessor_4 3
+#define _predecessor_5 4
+#define _predecessor_6 5
+#define _predecessor_7 6
+#define _predecessor_8 7
+#define _predecessor_9 8
+#define _predecessor_10 9
+#define _predecessor_11 10
+#define _predecessor_12 11
+#define _predecessor_13 12
+#define _predecessor_14 13
+#define _predecessor_15 14
+#define _predecessor_16 15
+#define _predecessor_17 16
+#define _predecessor_18 17
+#define _predecessor_19 18
+#define _predecessor_20 19
+#define _predecessor_21 20
+#define _predecessor_22 21
+#define _predecessor_23 22
+#define _predecessor_24 23
+#define _predecessor_25 24
+#define _predecessor_26 25
+#define _predecessor_27 26
+#define _predecessor_28 27
+#define _predecessor_29 28
+#define _predecessor_30 29
+#define _predecessor_31 30
+#define _predecessor_32 31
+#define _predecessor_33 32
+#define _predecessor_34 33
+#define _predecessor_35 34
+#define _predecessor_36 35
+#define _predecessor_37 36
+#define _predecessor_38 37
+#define _predecessor_39 38
+#define _predecessor_40 39
+#define _predecessor_41 40
+#define _predecessor_42 41
+#define _predecessor_43 42
+#define _predecessor_44 43
+#define _predecessor_45 44
+#define _predecessor_46 45
+#define _predecessor_47 46
+#define _predecessor_48 47
+#define _predecessor_49 48
+#define _predecessor_50 49
+#define _predecessor_51 50
+#define _predecessor_52 51
+#define _predecessor_53 52
+#define _predecessor_54 53
+#define _predecessor_55 54
+#define _predecessor_56 55
+#define _predecessor_57 56
+#define _predecessor_58 57
+#define _predecessor_59 58
+#define _predecessor_60 59
+#define _predecessor_61 60
+#define _predecessor_62 61
+#define _predecessor_63 62
 #define _predecessor_64 63
+#define _predecessor_65 64
+#define _itpredecessor_1(DEC) _predecessor(_itpredecessor_0(DEC))
+#define _itpredecessor_2(DEC) _predecessor(_itpredecessor_1(DEC))
+#define _itpredecessor_3(DEC) _predecessor(_itpredecessor_2(DEC))
+#define _itpredecessor_4(DEC) _predecessor(_itpredecessor_3(DEC))
+#define _itpredecessor_5(DEC) _predecessor(_itpredecessor_4(DEC))
+#define _itpredecessor_6(DEC) _predecessor(_itpredecessor_5(DEC))
+#define _itpredecessor_7(DEC) _predecessor(_itpredecessor_6(DEC))
+#define _itpredecessor_8(DEC) _predecessor(_itpredecessor_7(DEC))
+#define _itpredecessor_9(DEC) _predecessor(_itpredecessor_8(DEC))
+#define _itpredecessor_10(DEC) _predecessor(_itpredecessor_9(DEC))
+#define _itpredecessor_11(DEC) _predecessor(_itpredecessor_10(DEC))
+#define _itpredecessor_12(DEC) _predecessor(_itpredecessor_11(DEC))
+#define _itpredecessor_13(DEC) _predecessor(_itpredecessor_12(DEC))
+#define _itpredecessor_14(DEC) _predecessor(_itpredecessor_13(DEC))
+#define _itpredecessor_15(DEC) _predecessor(_itpredecessor_14(DEC))
+#define _itpredecessor_16(DEC) _predecessor(_itpredecessor_15(DEC))
+#define _itpredecessor_17(DEC) _predecessor(_itpredecessor_16(DEC))
+#define _itpredecessor_18(DEC) _predecessor(_itpredecessor_17(DEC))
+#define _itpredecessor_19(DEC) _predecessor(_itpredecessor_18(DEC))
+#define _itpredecessor_20(DEC) _predecessor(_itpredecessor_19(DEC))
+#define _itpredecessor_21(DEC) _predecessor(_itpredecessor_20(DEC))
+#define _itpredecessor_22(DEC) _predecessor(_itpredecessor_21(DEC))
+#define _itpredecessor_23(DEC) _predecessor(_itpredecessor_22(DEC))
+#define _itpredecessor_24(DEC) _predecessor(_itpredecessor_23(DEC))
+#define _itpredecessor_25(DEC) _predecessor(_itpredecessor_24(DEC))
+#define _itpredecessor_26(DEC) _predecessor(_itpredecessor_25(DEC))
+#define _itpredecessor_27(DEC) _predecessor(_itpredecessor_26(DEC))
+#define _itpredecessor_28(DEC) _predecessor(_itpredecessor_27(DEC))
+#define _itpredecessor_29(DEC) _predecessor(_itpredecessor_28(DEC))
+#define _itpredecessor_30(DEC) _predecessor(_itpredecessor_29(DEC))
+#define _itpredecessor_31(DEC) _predecessor(_itpredecessor_30(DEC))
+#define _itpredecessor_32(DEC) _predecessor(_itpredecessor_31(DEC))
+#define _itpredecessor_33(DEC) _predecessor(_itpredecessor_32(DEC))
+#define _itpredecessor_34(DEC) _predecessor(_itpredecessor_33(DEC))
+#define _itpredecessor_35(DEC) _predecessor(_itpredecessor_34(DEC))
+#define _itpredecessor_36(DEC) _predecessor(_itpredecessor_35(DEC))
+#define _itpredecessor_37(DEC) _predecessor(_itpredecessor_36(DEC))
+#define _itpredecessor_38(DEC) _predecessor(_itpredecessor_37(DEC))
+#define _itpredecessor_39(DEC) _predecessor(_itpredecessor_38(DEC))
+#define _itpredecessor_40(DEC) _predecessor(_itpredecessor_39(DEC))
+#define _itpredecessor_41(DEC) _predecessor(_itpredecessor_40(DEC))
+#define _itpredecessor_42(DEC) _predecessor(_itpredecessor_41(DEC))
+#define _itpredecessor_43(DEC) _predecessor(_itpredecessor_42(DEC))
+#define _itpredecessor_44(DEC) _predecessor(_itpredecessor_43(DEC))
+#define _itpredecessor_45(DEC) _predecessor(_itpredecessor_44(DEC))
+#define _itpredecessor_46(DEC) _predecessor(_itpredecessor_45(DEC))
+#define _itpredecessor_47(DEC) _predecessor(_itpredecessor_46(DEC))
+#define _itpredecessor_48(DEC) _predecessor(_itpredecessor_47(DEC))
+#define _itpredecessor_49(DEC) _predecessor(_itpredecessor_48(DEC))
+#define _itpredecessor_50(DEC) _predecessor(_itpredecessor_49(DEC))
+#define _itpredecessor_51(DEC) _predecessor(_itpredecessor_50(DEC))
+#define _itpredecessor_52(DEC) _predecessor(_itpredecessor_51(DEC))
+#define _itpredecessor_53(DEC) _predecessor(_itpredecessor_52(DEC))
+#define _itpredecessor_54(DEC) _predecessor(_itpredecessor_53(DEC))
+#define _itpredecessor_55(DEC) _predecessor(_itpredecessor_54(DEC))
+#define _itpredecessor_56(DEC) _predecessor(_itpredecessor_55(DEC))
+#define _itpredecessor_57(DEC) _predecessor(_itpredecessor_56(DEC))
+#define _itpredecessor_58(DEC) _predecessor(_itpredecessor_57(DEC))
+#define _itpredecessor_59(DEC) _predecessor(_itpredecessor_58(DEC))
+#define _itpredecessor_60(DEC) _predecessor(_itpredecessor_59(DEC))
+#define _itpredecessor_61(DEC) _predecessor(_itpredecessor_60(DEC))
+#define _itpredecessor_62(DEC) _predecessor(_itpredecessor_61(DEC))
+#define _itpredecessor_63(DEC) _predecessor(_itpredecessor_62(DEC))
 #define _itpredecessor_64(DEC) _predecessor(_itpredecessor_63(DEC))
+#define _itpredecessor_65(DEC) _predecessor(_itpredecessor_64(DEC))
+#define _predecessor_minus_0 minus_1
+#define _predecessor_minus_1 minus_2
+#define _predecessor_minus_2 minus_3
+#define _predecessor_minus_3 minus_4
+#define _predecessor_minus_4 minus_5
+#define _predecessor_minus_5 minus_6
+#define _predecessor_minus_6 minus_7
+#define _predecessor_minus_7 minus_8
+#define _predecessor_minus_8 minus_9
+#define _predecessor_minus_9 minus_10
+#define _predecessor_minus_10 minus_11
+#define _predecessor_minus_11 minus_12
+#define _predecessor_minus_12 minus_13
+#define _predecessor_minus_13 minus_14
+#define _predecessor_minus_14 minus_15
+#define _predecessor_minus_15 minus_16
+#define _predecessor_minus_16 minus_17
+#define _predecessor_minus_17 minus_18
+#define _predecessor_minus_18 minus_19
+#define _predecessor_minus_19 minus_20
+#define _predecessor_minus_20 minus_21
+#define _predecessor_minus_21 minus_22
+#define _predecessor_minus_22 minus_23
+#define _predecessor_minus_23 minus_24
+#define _predecessor_minus_24 minus_25
+#define _predecessor_minus_25 minus_26
+#define _predecessor_minus_26 minus_27
+#define _predecessor_minus_27 minus_28
+#define _predecessor_minus_28 minus_29
+#define _predecessor_minus_29 minus_30
+#define _predecessor_minus_30 minus_31
+#define _predecessor_minus_31 minus_32
+#define _predecessor_minus_32 minus_33
+#define _predecessor_minus_33 minus_34
+#define _predecessor_minus_34 minus_35
+#define _predecessor_minus_35 minus_36
+#define _predecessor_minus_36 minus_37
+#define _predecessor_minus_37 minus_38
+#define _predecessor_minus_38 minus_39
+#define _predecessor_minus_39 minus_40
+#define _predecessor_minus_40 minus_41
+#define _predecessor_minus_41 minus_42
+#define _predecessor_minus_42 minus_43
+#define _predecessor_minus_43 minus_44
+#define _predecessor_minus_44 minus_45
+#define _predecessor_minus_45 minus_46
+#define _predecessor_minus_46 minus_47
+#define _predecessor_minus_47 minus_48
+#define _predecessor_minus_48 minus_49
+#define _predecessor_minus_49 minus_50
+#define _predecessor_minus_50 minus_51
+#define _predecessor_minus_51 minus_52
+#define _predecessor_minus_52 minus_53
+#define _predecessor_minus_53 minus_54
+#define _predecessor_minus_54 minus_55
+#define _predecessor_minus_55 minus_56
+#define _predecessor_minus_56 minus_57
+#define _predecessor_minus_57 minus_58
+#define _predecessor_minus_58 minus_59
+#define _predecessor_minus_59 minus_60
+#define _predecessor_minus_60 minus_61
+#define _predecessor_minus_61 minus_62
+#define _predecessor_minus_62 minus_63
 #define _predecessor_minus_63 minus_64
+#define _predecessor_minus_64 minus_65
+#define _minus_minus_0 0
+#define _minus_minus_1 1
+#define _minus_minus_2 2
+#define _minus_minus_3 3
+#define _minus_minus_4 4
+#define _minus_minus_5 5
+#define _minus_minus_6 6
+#define _minus_minus_7 7
+#define _minus_minus_8 8
+#define _minus_minus_9 9
+#define _minus_minus_10 10
+#define _minus_minus_11 11
+#define _minus_minus_12 12
+#define _minus_minus_13 13
+#define _minus_minus_14 14
+#define _minus_minus_15 15
+#define _minus_minus_16 16
+#define _minus_minus_17 17
+#define _minus_minus_18 18
+#define _minus_minus_19 19
+#define _minus_minus_20 20
+#define _minus_minus_21 21
+#define _minus_minus_22 22
+#define _minus_minus_23 23
+#define _minus_minus_24 24
+#define _minus_minus_25 25
+#define _minus_minus_26 26
+#define _minus_minus_27 27
+#define _minus_minus_28 28
+#define _minus_minus_29 29
+#define _minus_minus_30 30
+#define _minus_minus_31 31
+#define _minus_minus_32 32
+#define _minus_minus_33 33
+#define _minus_minus_34 34
+#define _minus_minus_35 35
+#define _minus_minus_36 36
+#define _minus_minus_37 37
+#define _minus_minus_38 38
+#define _minus_minus_39 39
+#define _minus_minus_40 40
+#define _minus_minus_41 41
+#define _minus_minus_42 42
+#define _minus_minus_43 43
+#define _minus_minus_44 44
+#define _minus_minus_45 45
+#define _minus_minus_46 46
+#define _minus_minus_47 47
+#define _minus_minus_48 48
+#define _minus_minus_49 49
+#define _minus_minus_50 50
+#define _minus_minus_51 51
+#define _minus_minus_52 52
+#define _minus_minus_53 53
+#define _minus_minus_54 54
+#define _minus_minus_55 55
+#define _minus_minus_56 56
+#define _minus_minus_57 57
+#define _minus_minus_58 58
+#define _minus_minus_59 59
+#define _minus_minus_60 60
+#define _minus_minus_61 61
+#define _minus_minus_62 62
 #define _minus_minus_63 63
+#define _minus_minus_64 64
+#define _IS_0_GE_0 ,
+#define _IS_1_GE_0 ,
+#define _IS_2_GE_0 ,
+#define _IS_3_GE_0 ,
+#define _IS_4_GE_0 ,
+#define _IS_5_GE_0 ,
+#define _IS_6_GE_0 ,
+#define _IS_7_GE_0 ,
+#define _IS_8_GE_0 ,
+#define _IS_9_GE_0 ,
+#define _IS_10_GE_0 ,
+#define _IS_11_GE_0 ,
+#define _IS_12_GE_0 ,
+#define _IS_13_GE_0 ,
+#define _IS_14_GE_0 ,
+#define _IS_15_GE_0 ,
+#define _IS_16_GE_0 ,
+#define _IS_17_GE_0 ,
+#define _IS_18_GE_0 ,
+#define _IS_19_GE_0 ,
+#define _IS_20_GE_0 ,
+#define _IS_21_GE_0 ,
+#define _IS_22_GE_0 ,
+#define _IS_23_GE_0 ,
+#define _IS_24_GE_0 ,
+#define _IS_25_GE_0 ,
+#define _IS_26_GE_0 ,
+#define _IS_27_GE_0 ,
+#define _IS_28_GE_0 ,
+#define _IS_29_GE_0 ,
+#define _IS_30_GE_0 ,
+#define _IS_31_GE_0 ,
+#define _IS_32_GE_0 ,
+#define _IS_33_GE_0 ,
+#define _IS_34_GE_0 ,
+#define _IS_35_GE_0 ,
+#define _IS_36_GE_0 ,
+#define _IS_37_GE_0 ,
+#define _IS_38_GE_0 ,
+#define _IS_39_GE_0 ,
+#define _IS_40_GE_0 ,
+#define _IS_41_GE_0 ,
+#define _IS_42_GE_0 ,
+#define _IS_43_GE_0 ,
+#define _IS_44_GE_0 ,
+#define _IS_45_GE_0 ,
+#define _IS_46_GE_0 ,
+#define _IS_47_GE_0 ,
+#define _IS_48_GE_0 ,
+#define _IS_49_GE_0 ,
+#define _IS_50_GE_0 ,
+#define _IS_51_GE_0 ,
+#define _IS_52_GE_0 ,
+#define _IS_53_GE_0 ,
+#define _IS_54_GE_0 ,
+#define _IS_55_GE_0 ,
+#define _IS_56_GE_0 ,
+#define _IS_57_GE_0 ,
+#define _IS_58_GE_0 ,
+#define _IS_59_GE_0 ,
+#define _IS_60_GE_0 ,
+#define _IS_61_GE_0 ,
+#define _IS_62_GE_0 ,
 #define _IS_63_GE_0 ,
+#define _IS_64_GE_0 ,
+#define _dec_eval_0 0
+#define _dec_eval_1 1
+#define _dec_eval_2 2
+#define _dec_eval_3 3
+#define _dec_eval_4 4
+#define _dec_eval_5 5
+#define _dec_eval_6 6
+#define _dec_eval_7 7
+#define _dec_eval_8 8
+#define _dec_eval_9 9
+#define _dec_eval_10 10
+#define _dec_eval_11 11
+#define _dec_eval_12 12
+#define _dec_eval_13 13
+#define _dec_eval_14 14
+#define _dec_eval_15 15
+#define _dec_eval_16 16
+#define _dec_eval_17 17
+#define _dec_eval_18 18
+#define _dec_eval_19 19
+#define _dec_eval_20 20
+#define _dec_eval_21 21
+#define _dec_eval_22 22
+#define _dec_eval_23 23
+#define _dec_eval_24 24
+#define _dec_eval_25 25
+#define _dec_eval_26 26
+#define _dec_eval_27 27
+#define _dec_eval_28 28
+#define _dec_eval_29 29
+#define _dec_eval_30 30
+#define _dec_eval_31 31
+#define _dec_eval_32 32
+#define _dec_eval_33 33
+#define _dec_eval_34 34
+#define _dec_eval_35 35
+#define _dec_eval_36 36
+#define _dec_eval_37 37
+#define _dec_eval_38 38
+#define _dec_eval_39 39
+#define _dec_eval_40 40
+#define _dec_eval_41 41
+#define _dec_eval_42 42
+#define _dec_eval_43 43
+#define _dec_eval_44 44
+#define _dec_eval_45 45
+#define _dec_eval_46 46
+#define _dec_eval_47 47
+#define _dec_eval_48 48
+#define _dec_eval_49 49
+#define _dec_eval_50 50
+#define _dec_eval_51 51
+#define _dec_eval_52 52
+#define _dec_eval_53 53
+#define _dec_eval_54 54
+#define _dec_eval_55 55
+#define _dec_eval_56 56
+#define _dec_eval_57 57
+#define _dec_eval_58 58
+#define _dec_eval_59 59
+#define _dec_eval_60 60
+#define _dec_eval_61 61
+#define _dec_eval_62 62
 #define _dec_eval_63 63
+#define _dec_eval_64 64
+#define _dec_eval_minus_0 0
+#define _dec_eval_minus_1 -1
+#define _dec_eval_minus_2 -2
+#define _dec_eval_minus_3 -3
+#define _dec_eval_minus_4 -4
+#define _dec_eval_minus_5 -5
+#define _dec_eval_minus_6 -6
+#define _dec_eval_minus_7 -7
+#define _dec_eval_minus_8 -8
+#define _dec_eval_minus_9 -9
+#define _dec_eval_minus_10 -10
+#define _dec_eval_minus_11 -11
+#define _dec_eval_minus_12 -12
+#define _dec_eval_minus_13 -13
+#define _dec_eval_minus_14 -14
+#define _dec_eval_minus_15 -15
+#define _dec_eval_minus_16 -16
+#define _dec_eval_minus_17 -17
+#define _dec_eval_minus_18 -18
+#define _dec_eval_minus_19 -19
+#define _dec_eval_minus_20 -20
+#define _dec_eval_minus_21 -21
+#define _dec_eval_minus_22 -22
+#define _dec_eval_minus_23 -23
+#define _dec_eval_minus_24 -24
+#define _dec_eval_minus_25 -25
+#define _dec_eval_minus_26 -26
+#define _dec_eval_minus_27 -27
+#define _dec_eval_minus_28 -28
+#define _dec_eval_minus_29 -29
+#define _dec_eval_minus_30 -30
+#define _dec_eval_minus_31 -31
+#define _dec_eval_minus_32 -32
+#define _dec_eval_minus_33 -33
+#define _dec_eval_minus_34 -34
+#define _dec_eval_minus_35 -35
+#define _dec_eval_minus_36 -36
+#define _dec_eval_minus_37 -37
+#define _dec_eval_minus_38 -38
+#define _dec_eval_minus_39 -39
+#define _dec_eval_minus_40 -40
+#define _dec_eval_minus_41 -41
+#define _dec_eval_minus_42 -42
+#define _dec_eval_minus_43 -43
+#define _dec_eval_minus_44 -44
+#define _dec_eval_minus_45 -45
+#define _dec_eval_minus_46 -46
+#define _dec_eval_minus_47 -47
+#define _dec_eval_minus_48 -48
+#define _dec_eval_minus_49 -49
+#define _dec_eval_minus_50 -50
+#define _dec_eval_minus_51 -51
+#define _dec_eval_minus_52 -52
+#define _dec_eval_minus_53 -53
+#define _dec_eval_minus_54 -54
+#define _dec_eval_minus_55 -55
+#define _dec_eval_minus_56 -56
+#define _dec_eval_minus_57 -57
+#define _dec_eval_minus_58 -58
+#define _dec_eval_minus_59 -59
+#define _dec_eval_minus_60 -60
+#define _dec_eval_minus_61 -61
+#define _dec_eval_minus_62 -62
 #define _dec_eval_minus_63 -63
+#define _dec_eval_minus_64 -64
+#define REP2(X) X ## X
+#define REP3(X) X ## X ## X
+#define REP4(X) X ## X ## X ## X
+#define REP5(X) X ## X ## X ## X ## X
+#define REP6(X) X ## X ## X ## X ## X ## X
+#define REP7(X) X ## X ## X ## X ## X ## X ## X
+#define REP8(X) X ## X ## X ## X ## X ## X ## X ## X
+#define REP9(X) X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP10(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP11(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP12(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP13(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP14(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP15(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP16(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP17(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP18(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP19(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP20(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP21(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP22(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP23(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP24(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP25(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP26(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP27(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP28(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP29(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP30(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP31(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP32(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP33(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP34(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP35(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP36(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP37(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP38(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP39(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP40(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP41(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP42(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP43(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP44(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP45(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP46(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP47(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP48(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP49(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP50(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP51(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP52(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP53(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP54(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP55(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP56(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP57(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP58(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP59(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP60(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP61(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP62(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP63(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
+#define REP64(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT2(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 1), 1, _DOIT1(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP2(X) X ## X
 #define _DOIT3(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 2), 2, _DOIT2(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP3(X) X ## X ## X
 #define _DOIT4(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 3), 3, _DOIT3(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP4(X) X ## X ## X ## X
 #define _DOIT5(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 4), 4, _DOIT4(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP5(X) X ## X ## X ## X ## X
 #define _DOIT6(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 5), 5, _DOIT5(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP6(X) X ## X ## X ## X ## X ## X
 #define _DOIT7(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 6), 6, _DOIT6(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP7(X) X ## X ## X ## X ## X ## X ## X
 #define _DOIT8(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 7), 7, _DOIT7(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP8(X) X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT9(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 8), 8, _DOIT8(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP9(X) X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT10(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 9), 9, _DOIT9(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP10(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT11(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 10), 10, _DOIT10(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP11(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT12(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 11), 11, _DOIT11(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP12(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT13(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 12), 12, _DOIT12(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP13(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT14(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 13), 13, _DOIT13(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP14(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT15(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 14), 14, _DOIT14(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP15(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT16(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 15), 15, _DOIT15(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP16(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT17(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 16), 16, _DOIT16(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP17(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT18(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 17), 17, _DOIT17(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP18(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT19(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 18), 18, _DOIT18(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP19(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT20(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 19), 19, _DOIT19(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP20(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT21(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 20), 20, _DOIT20(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP21(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT22(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 21), 21, _DOIT21(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP22(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT23(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 22), 22, _DOIT22(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP23(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT24(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 23), 23, _DOIT23(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP24(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT25(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 24), 24, _DOIT24(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP25(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT26(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 25), 25, _DOIT25(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP26(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT27(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 26), 26, _DOIT26(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP27(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT28(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 27), 27, _DOIT27(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP28(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT29(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 28), 28, _DOIT28(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP29(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT30(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 29), 29, _DOIT29(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP30(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT31(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 30), 30, _DOIT30(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP31(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT32(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 31), 31, _DOIT31(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP32(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT33(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 32), 32, _DOIT32(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP33(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT34(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 33), 33, _DOIT33(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP34(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT35(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 34), 34, _DOIT34(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP35(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT36(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 35), 35, _DOIT35(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP36(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT37(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 36), 36, _DOIT36(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP37(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT38(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 37), 37, _DOIT37(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP38(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT39(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 38), 38, _DOIT38(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP39(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT40(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 39), 39, _DOIT39(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP40(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT41(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 40), 40, _DOIT40(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP41(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT42(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 41), 41, _DOIT41(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP42(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT43(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 42), 42, _DOIT42(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP43(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT44(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 43), 43, _DOIT43(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP44(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT45(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 44), 44, _DOIT44(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP45(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT46(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 45), 45, _DOIT45(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP46(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT47(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 46), 46, _DOIT46(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP47(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT48(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 47), 47, _DOIT47(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP48(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT49(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 48), 48, _DOIT48(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP49(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT50(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 49), 49, _DOIT49(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP50(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT51(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 50), 50, _DOIT50(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP51(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT52(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 51), 51, _DOIT51(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP52(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT53(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 52), 52, _DOIT52(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP53(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT54(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 53), 53, _DOIT53(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP54(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT55(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 54), 54, _DOIT54(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP55(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT56(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 55), 55, _DOIT55(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP56(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT57(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 56), 56, _DOIT56(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP57(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT58(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 57), 57, _DOIT57(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP58(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT59(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 58), 58, _DOIT58(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP59(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT60(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 59), 59, _DOIT59(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP60(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT61(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 60), 60, _DOIT60(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP61(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT62(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 61), 61, _DOIT61(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP62(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X
 #define _DOIT63(NAME, OP, FUNC, A, ...) \
 	OP(NAME, FUNC(NAME, A, 62), 62, _DOIT62(NAME, OP, FUNC, __VA_ARGS__, ))
-#define REP63(X) X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X ## X

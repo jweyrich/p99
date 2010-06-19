@@ -93,21 +93,30 @@ for(my $div = 1; $div < $maxnumber; ++$div) {
     }
 }
 
-for (my $i = 0; $i < $maxnumber; ++$i) {
-    printf "#define _uni2dec_%s %d\n", ${digit}x$i, $i;
-    printf "#define _dec2uni_%d %s\n", $i, ${digit}x$i;
-    printf "#define _predecessor_%d %d\n", $i + 1, $i;
-    printf "#define _itpredecessor_%d(DEC) _predecessor(_itpredecessor_%d(DEC))\n", $i + 1, $i;
-    printf "#define _predecessor_minus_%d minus_%d\n", $i, $i + 1;
-    printf "#define _minus_minus_%d %d\n", $i, $i;
-    printf "#define _IS_%d_GE_0 ,\n", $i;
-    printf "#define _dec_eval_%d %d\n", $i, $i;
-    printf "#define _dec_eval_minus_%d %d\n", $i, -$i;
-}
+printf "#define _uni2dec_%s %d\n", ${digit}x$_, $_
+    foreach (0.. $maxnumber);
+printf "#define _dec2uni_%d %s\n", $_, ${digit}x$_
+    foreach (0.. $maxnumber);
+printf "#define _predecessor_%d %d\n", $_ + 1, $_
+    foreach (0.. $maxnumber);
+printf "#define _itpredecessor_%d(DEC) _predecessor(_itpredecessor_%d(DEC))\n", $_ + 1, $_
+    foreach (0.. $maxnumber);
+printf "#define _predecessor_minus_%d minus_%d\n", $_, $_ + 1
+    foreach (0.. $maxnumber);
+printf "#define _minus_minus_%d %d\n", $_, $_
+    foreach (0.. $maxnumber);
+printf "#define _IS_%d_GE_0 ,\n", $_
+    foreach (0.. $maxnumber);
+printf "#define _dec_eval_%d %d\n", $_, $_
+    foreach (0.. $maxnumber);
+printf "#define _dec_eval_minus_%d %d\n", $_, -$_
+    foreach (0.. $maxnumber);
+print "#define REP${_}(X) ", "X ## " x ($_ - 1), "X\n"
+    foreach (2 .. $maxnumber);
+
 
 for (my $i = 2; $i < $maxnumber; ++$i) {
     my $i1 = $i - 1;
     print "#define _DOIT${i}(NAME, OP, FUNC, A, ...) \\\n",
     "\tOP(NAME, FUNC(NAME, A, $i1), $i1, _DOIT${i1}(NAME, OP, FUNC, __VA_ARGS__, ))\n";
-    print "#define REP${i}(X) ", "X ## " x $i1, "X\n";
 }
