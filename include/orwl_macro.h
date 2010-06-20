@@ -63,28 +63,6 @@
 #define __PASTE(F, N, ...) F ## N(__VA_ARGS__)
 #define _PASTE(N, ...) __PASTE(PASTE, N, __VA_ARGS__)
 
-
-
-#define ETSAP0()
-#define ETSAP1(_1) _1
-#define ETSAP2(_2, _1) _2 ## _1
-#define _ETSAP2(_2, _1) ETSAP2(_2, _1)
-#define ETSAP3(_3, _2, _1) _ETSAP2(_3, ETSAP2(_2, _1))
-#define ETSAP4(_4, _3, _2, _1) _ETSAP2(_4, ETSAP3(_3, _2, _1))
-#define ETSAP5(_5, _4, _3, _2, _1) _ETSAP2(_5, ETSAP4(_4, _3, _2, _1))
-#define ETSAP6(_6, _5, _4, _3, _2, _1) _ETSAP2(_6, ETSAP5(_5, _4, _3, _2, _1))
-#define ETSAP7(_7, _6, _5, _4, _3, _2, _1) _ETSAP2(_7, ETSAP6(_6, _5, _4, _3, _2, _1))
-
-#define __ETSAP(F, N, ...) F ## N(__VA_ARGS__)
-#define _ETSAP(N, ...) __ETSAP(ETSAP, N, __VA_ARGS__)
-
-/**
- ** @brief A right-to-left associative paste operator.
- **
- ** @see PASTE
- **/
-#define ETSAP(...) _ETSAP(_NARG(__VA_ARGS__), __VA_ARGS__)
-
 #define _DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)   \
   IF_EMPTY(SIGN)(+)(SIGN)_SKIP_ PASTE(                  \
   IF_EMPTY(INT)(0)(INT),                                \
@@ -519,7 +497,7 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 #define DEC_PRED(N) _DEC_PRED(N)
 #define _itpredecessor_0(DEC) DEC
 #define _dec2uni(DEC) PASTE(_dec2uni_, DEC)
-#define _uni2dec(UN) ETSAP(_uni2, dec_, UN)
+#define _uni2dec(UN) PASTE(_uni2dec_, UN)
 #define _uni_add(U,V) PASTE(U, V)
 
 #define ____dec_add(U,V) _uni_add(U,V)
