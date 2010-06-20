@@ -801,7 +801,7 @@ CHOOSE5(xT,                                     \
 #define LAST(...) PASTE2(_CHS,DEC_PRED(_NARG(__VA_ARGS__)))(__VA_ARGS__,)
 #define ALLBUTLAST(...) PASTE2(_PRE,DEC_PRED(_NARG(__VA_ARGS__)))(__VA_ARGS__,)
 #define _FOR1(NAME, OP, FUNC, ...) FUNC(NAME, _PRE1(__VA_ARGS__,), 0)
-#define FOR(NAME, OP, FUNC, ...) PASTE2(_FOR, _NARG(__VA_ARGS__))(NAME, OP, FUNC, __VA_ARGS__)
+#define FOR(NAME, N, OP, FUNC, ...) PASTE2(_FOR, N)(NAME, OP, FUNC, __VA_ARGS__)
 
 #ifndef DOXYGEN
 #define REP0(...)
@@ -820,20 +820,23 @@ CHOOSE5(xT,                                     \
 #define _IGN(NAME, X, N)
 #define _STRLEN(NAME, X, N) strlen(X)
 
-#define _SUM(NAME, X, N, REC) (X + REC)
-#define _PROD(NAME, X, N, REC) (X * REC)
-#define _QUOT(NAME, X, N, REC) (X / REC)
-#define _XOR(NAME, X, N, REC) (X ^ REC)
-#define _BOR(NAME, X, N, REC) (X | REC)
-#define _BAND(NAME, X, N, REC) (X & REC)
-#define _OR(NAME, X, N, REC) (X || REC)
-#define _AND(NAME, X, N, REC) (X && REC)
-#define _SEQ(NAME, X, N, REC) X, REC
+#define _SUM(NAME, N, X, Y) (X + Y)
+#define _PROD(NAME, N, X, Y) (X * Y)
+#define _QUOT(NAME, N, X, Y) (X / Y)
+#define _XOR(NAME, N, X, Y) (X ^ Y)
+#define _BOR(NAME, N, X, Y) (X | Y)
+#define _BAND(NAME, N, X, Y) (X & Y)
+#define _OR(NAME, N, X, Y) (X || Y)
+#define _AND(NAME, N, X, Y) (X && Y)
+
+#define _SEQ(NAME, N, REC, X) REC, X
 #define _SEP(NAME, X, N, REC) X; REC
+#define SEP(NAME, N, REC, X) REC; X
 #define _PES(NAME, X, N, REC) REC; X
 #define _REV(NAME, X, N, REC) REC, X
-#define _STRCAT(NAME, X, N, REC) strcat(X, REC)
-#define _STRTAC(NAME, X, N, REC) _STRCAT(NAME, REC, N, X)
+#define REV(NAME, N, REC, X) X, REC
+#define _STRCAT(NAME, N, REC, X) strcat(REC, X)
+#define _STRTAC(NAME, N, REC, X) _STRCAT(NAME, N, REC, X)
 
 /**
  ** @brief Compute the right associative operation @a OP of all the arguments.
@@ -845,7 +848,7 @@ CHOOSE5(xT,                                     \
  **
  ** @a M is the length of the list that follows it.
  **/
-#define BIGOP(OP, M, ...) DOIT( , M, OP, _IDT, __VA_ARGS__,)
+#define BIGOP(OP, M, ...) FOR( , M, OP, _IDT, __VA_ARGS__,)
 
 /**
  ** @brief Compute the right associative sum of all the arguments.
@@ -881,7 +884,7 @@ CHOOSE5(xT,                                     \
 #define ANDS(...) BIGOP(_AND, (NARG(__VA_ARGS__),__VA_ARGS__)
 
 
-#define _STRLENS(N, ...) DOIT(,N, _SUM, _STRLEN, __VA_ARGS__,)
+#define _STRLENS(N, ...) FOR(,N, _SUM, _STRLEN, __VA_ARGS__)
 
 /**
  ** @brief Return an expression that returns the sum of the lengths of
@@ -889,14 +892,14 @@ CHOOSE5(xT,                                     \
  **/
 #define STRLENS(...) _STRLENS(NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define _REVS(N, ...) DOIT(,N, _REV, _IDT, __VA_ARGS__,)
+#define _REVS(N, ...) FOR(,N, REV, _IDT, __VA_ARGS__)
 
 /**
  ** @brief Revert the argument list
  **/
 #define REVS(...) IF_DEC_LT(NARG(__VA_ARGS__),2)(__VA_ARGS__)(_REVS(NARG(__VA_ARGS__),__VA_ARGS__))
 
-#define _STRCATS(N, ...) DOIT(,N, _STRTAC, _IDT, __VA_ARGS__,)
+#define _STRCATS(N, ...) FOR(,N, _STRTAC, _IDT, __VA_ARGS__)
 
 /**
  ** @brief Append all argument strings after @a TARG to @a TARG.
@@ -905,7 +908,7 @@ CHOOSE5(xT,                                     \
  ** to hold the concatenation of all strings. The remaining arguments
  ** must be compatible with @c const char*.
  **/
-#define STRCATS(TARG, ...) _STRCATS(NARG(TARG, __VA_ARGS__), REVS(TARG, __VA_ARGS__))
+#define STRCATS(TARG, ...) _STRCATS(NARG(TARG, __VA_ARGS__), TARG, __VA_ARGS__)
 
 /**
  ** @brief Concatenate all arguments.
@@ -929,6 +932,7 @@ CHOOSE5(xT,                                     \
 #define STRDUP(...) STRCATS(memset(malloc(STRLENS(__VA_ARGS__) + 1), 0, 1), __VA_ARGS__)
 
 #define _DECLS(N, ...) DOIT(,N, _SEP, _IDT, __VA_ARGS__,)
+//#define _DECLS(N, ...) FOR(,N, SEP, _IDT, SELS(N, __VA_ARGS__))
 
 /**
  ** @brief Change the commas in the argument list into semicolons.
@@ -938,25 +942,25 @@ CHOOSE5(xT,                                     \
 /**
  ** Repeat the parameter @a X @a N times.
  **/
-#define REPS(X, N) DOIT(, N, _SEQ, X _IGN,,)
+#define REPS(X, N) FOR(, N, _SEQ, X _IGN,,)
 
 /**
  ** @brief Produce a list of length @a N that has the contents of 0,
  ** 1, , @a N-1
  **/
-#define POSS(N) REVS(DOIT(,N, _SEQ, _SOP,,))
+#define POSS(N) FOR(,N, _SEQ, _SOP,)
 
 /**
  ** Produce a list of length @a N that has the contents of @a X[0], @a
  ** X [1], ,
  ** @a X[@a N-1]
  **/
-#define ACCESSORS(X, N) REVS(DOIT(, N, _SEQ, _CCA, REPS(X, N),))
+#define ACCESSORS(X, N) FOR(, N, _SEQ, _CCA, REPS(X, N))
 
 /**
  ** Cut the argument list at position @a N
  **/
-#define SELS(N, ...) DOIT(, N, _SEQ, _IDT, __VA_ARGS__,)
+#define SELS(N, ...) PASTE2(_PRE, N)(__VA_ARGS__)
 
 
 /**
