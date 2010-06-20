@@ -18,30 +18,51 @@
    to define multiple levels of expansion for each macro. */
 #define PASTE0()
 #define PASTE1(_1) _1
-#define PASTE2(_1, _2) _1 ## _2
-#define _PASTE2(_1, _2) PASTE2(_1, _2)
+
+/**
+ ** @brief Paste two token sequences at their junction.
+ **
+ ** This macro does the paste operation first, and then an evaluation
+ ** of the result. Thus
+ ** @code
+ ** #define B(x) toto(x)
+ ** CAT2(A, B(6));
+ ** @endcode
+ ** will result in
+ ** @code
+ ** AB(6);
+ ** @endcode
+ ** and not in
+ ** @code
+ ** Atoto(6)
+ ** @endcode
+ **/
+#define CAT2(_1, _2) _1 ## _2
+
+/**
+ ** @brief Paste two token sequences at their junction.
+ **
+ ** This macro does the evaluation of the arguments first and then
+ ** proceeds at the concatenation
+ ** of the results. Thus
+ ** @code
+ ** #define B(x) toto(x)
+ ** CAT2(A, B(6));
+ ** @endcode
+ ** will result in
+ ** @code
+ ** Atoto(6)
+ ** @endcode
+ ** and not in
+ ** @code
+ ** AB(6);
+ ** @endcode
+ **/
+#define PASTE2(_1, _2) CAT2(_1, _2)
 
 #define __PASTE(F, N, ...) F ## N(__VA_ARGS__)
 #define _PASTE(N, ...) __PASTE(PASTE, N, __VA_ARGS__)
 
-/**
- ** @brief A left-to-right associative paste operator.
- **
- ** This macro avoids the ambiguity of the @c ## preprocessor operator
- ** which has no well defined associativity. With this macro here
- ** something like
- ** @code
- ** PASTE(0.1E, -, 1)
- ** @endcode
- ** is guaranteed to produce the token @c 0.1E-1, whereas the
- ** seemingly equivalent
- ** @code
- ** ETSAP(0.1E, -, 1)
- ** @endcode
- ** is not valid: the intermediate operation to paste tokens `-' and
- ** `1' would result in an invalid token and is thus rejected.
- **/
-#define PASTE(...) _PASTE(_NARG(__VA_ARGS__), __VA_ARGS__)
 
 
 #define ETSAP0()
@@ -326,7 +347,7 @@
  ** @return tokens 0 or 1
  **/
 #define LOGIC_XOR(A, B) IF_EQ(LOGIC_NOT(A), LOGIC_EVAL(B))(1)(0)
-#define _LOGIC_OR(A, B) IF_EQ(00, PASTE2(A, B))(0)(1)
+#define _LOGIC_OR(A, B) IF_EQ(00, CAT2(A, B))(0)(1)
 
 /**
  ** @brief Do a logical inclusive or of the arguments.
@@ -338,7 +359,7 @@
  **/
 #define LOGIC_OR(A, B) _LOGIC_OR(LOGIC_EVAL(A), LOGIC_EVAL(B))
 
-#define _LOGIC_AND(A, B) IF_EQ(00, PASTE2(A, B))(1)(0)
+#define _LOGIC_AND(A, B) IF_EQ(00, CAT2(A, B))(1)(0)
 
 /**
  ** @brief Do a logical and of the arguments.
@@ -489,8 +510,13 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 /*! @see VA_ARGS */                                                     \
 /*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
 
-
-#define DEC_PRED(N) PASTE(_DEC_PRED_, N)
+/**
+ ** @brief Macro that expands to the predecessor of decimal constant
+ ** #a N
+ **/
+#define __DEC_PRED(P, N) P ## N
+#define _DEC_PRED(N) __DEC_PRED(_DEC_PRED_ , N)
+#define DEC_PRED(N) _DEC_PRED(N)
 #define _itpredecessor_0(DEC) DEC
 #define _dec2uni(DEC) PASTE(_dec2uni_, DEC)
 #define _uni2dec(UN) ETSAP(_uni2, dec_, UN)
@@ -757,6 +783,31 @@ CHOOSE5(xT,                                     \
  ** @{
  **/
 
+
+/**
+ ** @brief A left-to-right associative paste operator.
+ **
+ ** This macro avoids the ambiguity of the @c ## preprocessor operator
+ ** which has no well defined associativity. With this macro here
+ ** something like
+ ** @code
+ ** PASTE(0.1E, -, 1)
+ ** @endcode
+ ** is guaranteed to produce the token @c 0.1E-1, whereas the
+ ** seemingly equivalent
+ ** @code
+ ** ETSAP(0.1E, -, 1)
+ ** @endcode
+ ** is not valid: the intermediate operation to paste tokens `-' and
+ ** `1' would result in an invalid token and is thus rejected.
+ **
+ ** This macro does the evaluation of the arguments first and
+ ** then proceeds at the concatenation of the results.
+ ** @pre the argumentlist should not be empty.
+ **/
+#define PASTE(...) _PASTE(_NARG(__VA_ARGS__), __VA_ARGS__)
+
+
 #define _DOIT0(...)
 #define _DOIT1(NAME, OP, FUNC, X, ...) FUNC(NAME, X, 0)
 
@@ -994,8 +1045,8 @@ RT NAME(__VA_ARGS__)
 #else
 #define _PROTOTYPE(RT, NAME, ...)                       \
   RT NAME(IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));    \
-  typedef RT PASTE2(NAME, _sigtype_ret);                \
-  TYPEDEFS(PASTE2(NAME, _sigtype_), __VA_ARGS__)
+  typedef RT CAT2(NAME, _sigtype_ret);                \
+  TYPEDEFS(CAT2(NAME, _sigtype_), __VA_ARGS__)
 
 #define PROTOTYPE(...)                          \
 IF_EQ_2(NARG(__VA_ARGS__))                      \
@@ -1121,14 +1172,14 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  **/
 #define VA_MODARG(AP, ...) _VA_MODARG(AP, __VA_ARGS__, 0, ~)
 
-#define _CAS1(NAME, X, N) (_PASTE2(NAME, _mod_type_0){ X }
+#define _CAS1(NAME, X, N) (PASTE2(NAME, _mod_type_0){ X }
 #define _CAS2(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 2))){ X }
 #define _CAS3(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 3))){ X }
 #define _CAS4(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 4))){ X }
 #define _CAS5(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 5))){ X }
 #define _MODARG_LIST(NAME, F, N, ...) DOIT(NAME, N, _REV, F, __VA_ARGS__,)
 
-#define LEN_MODARG(NAME, M, ...) _MODARG_(M)(__VA_ARGS__), _MODARG_LIST(NAME, _PASTE2(_CAS, M), NARG(__VA_ARGS__), REVS(__VA_ARGS__))
+#define LEN_MODARG(NAME, M, ...) _MODARG_(M)(__VA_ARGS__), _MODARG_LIST(NAME, PASTE2(_CAS, M), NARG(__VA_ARGS__), REVS(__VA_ARGS__))
 #define LEN_ARG(NAME, ...) _MODARG_(1)(__VA_ARGS__), _MODARG_LIST(NAME, _CAS1, NARG(__VA_ARGS__), REVS(__VA_ARGS__))
 
 

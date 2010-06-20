@@ -88,7 +88,7 @@ for(my $div = 1; $div < $maxnumber; ++$div) {
     my $li = "_1,\t_2";
     for (my $m = 3; $m < $maxnumber; ++$m) {
         my $m1 = $m - 1;
-        print "#define PASTE$m(${li},\t_${m})\t\\\n\t_PASTE2(PASTE${m1}(${li}), _${m})\n";
+        print "#define PASTE$m(${li},\t_${m})\t\\\n\tPASTE2(PASTE${m1}(${li}), _${m})\n";
         $li .= ",\t_${m}";
     }
 }
