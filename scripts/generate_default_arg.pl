@@ -49,6 +49,26 @@ for (my $arg = 0; $arg < $maxnumber; ++$arg) {
     print "\\\n\t...) _$arg\n";
 }
 
+for (my $arg = 1; $arg < $maxnumber; ++$arg) {
+    print "#define _PRE${arg}(";
+    for (my $i = 0; $i < $arg; ++$i) {
+        if ($i % 8 != 1) {
+            print "\t_$i,";
+        } else {
+            print "\\\n\t_$i,";
+        }
+    }
+    print "\\\n\t...) _0";
+    for (my $i = 1; $i < $arg; ++$i) {
+        if ($i % 8 != 1) {
+            print ",\t_$i";
+        } else {
+            print ",\\\n\t_$i";
+        }
+    }
+    print "\n";
+}
+
 print "#define _ASCENDING() ";
 for (my $i = 0; $i < $maxnumber; ++$i) {
     if ($i % 8 != 0) {
@@ -119,4 +139,10 @@ for (my $i = 2; $i < $maxnumber; ++$i) {
     my $i1 = $i - 1;
     print "#define _DOIT${i}(NAME, OP, FUNC, A, ...) \\\n",
     "\tOP(NAME, FUNC(NAME, A, $i1), $i1, _DOIT${i1}(NAME, OP, FUNC, __VA_ARGS__, ))\n";
+}
+
+for (my $i = 2; $i < $maxnumber; ++$i) {
+    my $i1 = $i - 1;
+    print "#define _FOR${i}(NAME, OP, FUNC, ...) \\\n",
+    "\tOP(NAME, $i1, _FOR${i1}(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), $i1))\n";
 }

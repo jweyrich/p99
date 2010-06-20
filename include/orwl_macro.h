@@ -797,6 +797,12 @@ CHOOSE5(xT,                                     \
 
 #define DO(NAME, OP, FUNC, X, ...) DOIT(NAME, NARG(__VA_ARGS__), OP, FUNC, X, __VA_ARGS__)
 
+
+#define LAST(...) PASTE2(_CHS,DEC_PRED(_NARG(__VA_ARGS__)))(__VA_ARGS__,)
+#define ALLBUTLAST(...) PASTE2(_PRE,DEC_PRED(_NARG(__VA_ARGS__)))(__VA_ARGS__,)
+#define _FOR1(NAME, OP, FUNC, ...) FUNC(NAME, _PRE1(__VA_ARGS__,), 0)
+#define FOR(NAME, OP, FUNC, ...) PASTE2(_FOR, _NARG(__VA_ARGS__))(NAME, OP, FUNC, __VA_ARGS__)
+
 #ifndef DOXYGEN
 #define REP0(...)
 #define REP1(X) X
