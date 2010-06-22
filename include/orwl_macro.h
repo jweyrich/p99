@@ -785,19 +785,6 @@ CHOOSE5(xT,                                     \
  **/
 #define PASTE(...) _PASTE(_NARG(__VA_ARGS__), __VA_ARGS__)
 
-
-#define _DOIT0(...)
-#define _DOIT1(NAME, OP, FUNC, X, ...) FUNC(NAME, X, 0)
-
-/**
- ** @brief A macro list iterator
- **/
-#define DOIT(NAME, N, OP, FUNC, X, ...) _DOIT(NAME, N, OP, FUNC, X, __VA_ARGS__)
-#define _DOIT(NAME, N, OP, FUNC, X, ...) _DOIT ## N(NAME, OP, FUNC, X, __VA_ARGS__)
-
-#define DO(NAME, OP, FUNC, X, ...) DOIT(NAME, NARG(__VA_ARGS__), OP, FUNC, X, __VA_ARGS__)
-
-
 #define LAST(...) PASTE2(_CHS,DEC_PRED(_NARG(__VA_ARGS__)))(__VA_ARGS__,)
 #define ALLBUTLAST(...) PASTE2(_PRE,DEC_PRED(_NARG(__VA_ARGS__)))(__VA_ARGS__,)
 #define _FOR1(NAME, OP, FUNC, ...) FUNC(NAME, _PRE1(__VA_ARGS__,), 0)
