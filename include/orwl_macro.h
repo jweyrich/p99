@@ -807,14 +807,14 @@ CHOOSE5(xT,                                     \
 #define _IGN(NAME, X, N)
 #define _STRLEN(NAME, X, N) strlen(X)
 
-#define _SUM(NAME, N, X, Y) (X + Y)
-#define _PROD(NAME, N, X, Y) (X * Y)
-#define _QUOT(NAME, N, X, Y) (X / Y)
-#define _XOR(NAME, N, X, Y) (X ^ Y)
-#define _BOR(NAME, N, X, Y) (X | Y)
-#define _BAND(NAME, N, X, Y) (X & Y)
-#define _OR(NAME, N, X, Y) (X || Y)
-#define _AND(NAME, N, X, Y) (X && Y)
+#define _SUM(NAME, N, X, Y) ((X) + (Y))
+#define _PROD(NAME, N, X, Y) ((X) * (Y))
+#define _QUOT(NAME, N, X, Y) ((X) / (Y))
+#define _XOR(NAME, N, X, Y) ((X) ^ (Y))
+#define _BOR(NAME, N, X, Y) ((X) | (Y))
+#define _BAND(NAME, N, X, Y) ((X) & (Y))
+#define _OR(NAME, N, X, Y) ((X) || (Y))
+#define _AND(NAME, N, X, Y) ((X) && (Y))
 
 #define _SEQ(NAME, N, REC, X) REC, X
 #define _SEP(NAME, N, REC, X) REC; X
