@@ -801,11 +801,15 @@ CHOOSE5(xT,                                     \
 #define _REP(N, X) REP ## N(X)
 
 
-#define _IDT(NAME, X, N) X
-#define _SOP(NAME, X, N) N
-#define _CCA(NAME, X, N) X[N]
 #define _IGN(NAME, X, N)
+#define _IDT(NAME, X, N) X
+#define _POS(NAME, X, N) N
+#define _NAM(NAME, X, N) NAME
+
+#define _ACCESSOR(NAME, X, N) (NAME)[N]
+#define _VASSIGN(NAME, X, N) X = _ACCESSOR(NAME, X, N)
 #define _STRLEN(NAME, X, N) strlen(X)
+#define _TYPD(NAME, X, N) typedef X PASTE2(NAME, N)
 
 #define _SUM(NAME, N, X, Y) ((X) + (Y))
 #define _PROD(NAME, N, X, Y) ((X) * (Y))
@@ -821,7 +825,6 @@ CHOOSE5(xT,                                     \
 #define _SER(NAME, N, REC, X) REC X
 #define _REV(NAME, N, REC, X) X, REC
 #define _STRCAT(NAME, N, REC, X) strcat(REC, X)
-#define _STRTAC(NAME, N, REC, X) _STRCAT(NAME, N, REC, X)
 
 /**
  ** @brief Compute the right associative operation @a OP of all the arguments.
@@ -884,7 +887,7 @@ CHOOSE5(xT,                                     \
  **/
 #define REVS(...) IF_DEC_LT(NARG(__VA_ARGS__),2)(__VA_ARGS__)(_REVS(NARG(__VA_ARGS__),__VA_ARGS__))
 
-#define _STRCATS(N, ...) FOR(,N, _STRTAC, _IDT, __VA_ARGS__)
+#define _STRCATS(N, ...) FOR(,N, _STRCAT, _IDT, __VA_ARGS__)
 
 /**
  ** @brief Append all argument strings after @a TARG to @a TARG.
@@ -919,20 +922,20 @@ CHOOSE5(xT,                                     \
 /**
  ** Repeat the parameter @a X @a N times.
  **/
-#define REPS(X, N) FOR(, N, _SEQ, X _IGN,,)
+#define REPS(X, N) FOR(X, N, _SEQ, _NAM, )
 
 /**
  ** @brief Produce a list of length @a N that has the contents of 0,
  ** 1, , @a N-1
  **/
-#define POSS(N) FOR(,N, _SEQ, _SOP,)
+#define POSS(N) FOR(,N, _SEQ, _POS,)
 
 /**
  ** Produce a list of length @a N that has the contents of @a X[0], @a
  ** X [1], ,
  ** @a X[@a N-1]
  **/
-#define ACCESSORS(X, N) FOR(, N, _SEQ, _CCA, REPS(X, N))
+#define ACCESSORS(X, N) FOR(X, N, _SEQ, _ACCESSOR, )
 
 /**
  ** Cut the argument list at position @a N
@@ -948,8 +951,6 @@ CHOOSE5(xT,                                     \
  **/
 #define CHS(N, ...) _CHS ## N (__VA_ARGS__)
 
-#define _VASSIGN(NAME, X, N) X = (NAME)[N]
-
 /**
  ** @brief Vector-assign to a list
  **
@@ -961,8 +962,6 @@ CHOOSE5(xT,                                     \
 IF_DEC_LT(NARG(__VA_ARGS__),2)                                  \
 (IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))        \
   (FOR(NAME, _NARG(__VA_ARGS__),_SEP, _VASSIGN, __VA_ARGS__))
-
-#define _TYPD(NAME, X, N) typedef X PASTE(NAME, N)
 
 #define _TYPEDEFS(NAME, N, ...)                         \
   IF_VOID(__VA_ARGS__)                                  \
@@ -992,8 +991,8 @@ RT NAME(__VA_ARGS__)
 #else
 #define _PROTOTYPE(RT, NAME, ...)                       \
   RT NAME(IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));    \
-  typedef RT CAT2(NAME, _sigtype_ret);                \
-  TYPEDEFS(CAT2(NAME, _sigtype_), __VA_ARGS__)
+  typedef RT CAT2(NAME, _prototype_ret);                \
+  TYPEDEFS(CAT2(NAME, _prototype_), __VA_ARGS__)
 
 #define PROTOTYPE(...)                          \
 IF_EQ_2(NARG(__VA_ARGS__))                      \
@@ -1002,22 +1001,24 @@ IF_EQ_2(NARG(__VA_ARGS__))                      \
 #endif
 
 
-#define _DAFD(NAME, X, N)                                       \
+#define _EXPR_FUNCTION(NAME, X, N)                                       \
 IF_EMPTY(X)                                                     \
 ()                                                              \
 (                                                               \
  inline                                                         \
- PASTE3(NAME, _sigtype_, N) PASTE3(NAME, _defarg_, N)(void) {   \
-   PASTE3(NAME, _sigtype_, N) ret = (X);                        \
+ PASTE3(NAME, _prototype_, N) PASTE3(NAME, _defarg_, N)(void) { \
+   PASTE3(NAME, _prototype_, N) ret = (X);                      \
    return ret;                                                  \
  }                                                              \
- )
+)
 
 #define _DAFE(NAME, X, N)                                       \
-  IF_EMPTY(X)(enum { PASTE3(NAME, _boring_, N) })(PASTE3(NAME, _sigtype_, N) PASTE3(NAME, _defarg_, N)(void))
+IF_EMPTY(X)                                                     \
+(enum { PASTE3(NAME, _boring_, N) })                            \
+(PASTE3(NAME, _prototype_, N) PASTE3(NAME, _defarg_, N)(void))
 
 #define _DECLARE_DEFARG(NAME, N, ...)                   \
-  FOR(NAME, N, _SER, _DAFD, __VA_ARGS__)        \
+  FOR(NAME, N, _SER, _EXPR_FUNCTION, __VA_ARGS__)        \
 enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 
 #ifdef DOXYGEN
