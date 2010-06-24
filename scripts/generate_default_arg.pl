@@ -38,7 +38,7 @@ for (my $m = 1; $m < 5; ++$m) {
 }
 
 for (my $arg = 0; $arg < $maxnumber; ++$arg) {
-    print "#define _CHS${arg}(";
+    print "#define _SKP${arg}(";
     for (my $i = 0; $i <= $arg; ++$i) {
         if ($i % 8 != 1) {
             print "\t_$i,";
@@ -46,7 +46,7 @@ for (my $arg = 0; $arg < $maxnumber; ++$arg) {
             print "\\\n\t_$i,";
         }
     }
-    print "\\\n\t...) _$arg\n";
+    print "\\\n\t...) _$arg, __VA_ARGS__\n";
 }
 
 for (my $arg = 1; $arg < $maxnumber; ++$arg) {

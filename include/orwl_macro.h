@@ -785,7 +785,7 @@ CHOOSE5(xT,                                     \
  **/
 #define PASTE(...) _PASTE(_NARG(__VA_ARGS__), __VA_ARGS__)
 
-#define LAST(...) PASTE2(_CHS,DEC_PRED(_NARG(__VA_ARGS__)))(__VA_ARGS__,)
+#define LAST(...) CHS(DEC_PRED(_NARG(__VA_ARGS__)), __VA_ARGS__,)
 #define ALLBUTLAST(...) PASTE2(_PRE,DEC_PRED(_NARG(__VA_ARGS__)))(__VA_ARGS__,)
 #define _FOR1(NAME, OP, FUNC, ...) FUNC(NAME, _PRE1(__VA_ARGS__,), 0)
 #define FOR(NAME, N, OP, FUNC, ...) PASTE2(_FOR, N)(NAME, OP, FUNC, __VA_ARGS__)
@@ -944,12 +944,26 @@ CHOOSE5(xT,                                     \
 
 
 /**
+ ** @brief Skip @a N elements in the remaining argument list.
+ **/
+#define SKP(N, ...) PASTE2(_SKP, N)(__VA_ARGS__)
+
+/**
+ ** @brief Get the sublist of length @a L starting at the @a
+ ** N<sup>th</sup> element in the remaining argument list.
+ **
+ ** Counting of elements starts at 0.
+ **/
+#define SUB(N, L, ...) _SUB(L, SKP(N, __VA_ARGS__))
+#define _SUB(L, ...) SELS(L, __VA_ARGS__)
+
+/**
  ** @brief Choose the @a N<sup>th</sup> element in the remaining argument
  ** list.
  **
  ** Counting of elements starts at 0.
  **/
-#define CHS(N, ...) _CHS ## N (__VA_ARGS__)
+#define CHS(N, ...) SUB(N, 1, __VA_ARGS__)
 
 /**
  ** @brief Vector-assign to a list
