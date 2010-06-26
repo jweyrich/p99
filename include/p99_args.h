@@ -8,8 +8,8 @@
 ** Last update Sun Feb 28 18:48:25 2010 Jens Gustedt
 */
 
-#ifndef   	ORWL_MACRO_H_
-# define   	ORWL_MACRO_H_
+#ifndef   	P99_MACRO_ARGS_H_
+# define   	P99_MACRO_ARGS_H_
 
 #include "orwl_inline.h"
 #include "orwl_default_arg.h"
@@ -1173,4 +1173,4 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 
 
 
-#endif 	    /* !ORWL_MACRO_H_ */
+#endif 	    /* !P99_MACRO_ARGS_H_ */
