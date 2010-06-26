@@ -18,23 +18,23 @@
 
 #include "orwl_new.h"
 
-/* For each one word integer type have a signed and unsigned variant. */ \
-#define _ONE_TOK_(T, NAME)                                              \
+/* For each one word integer type have a signed and unsigned variant. */
+#define P99__ONE_TOK_(T, NAME)                                          \
 /*! @brief a `one token' abreviation for @c T */        \
 /*! These type names are needed to have a valid naming scheme for functions. */ \
 typedef T NAME
 
-_ONE_TOK_(unsigned long, ulong);
-_ONE_TOK_(signed long, slong);
-_ONE_TOK_(unsigned int, uint);
-_ONE_TOK_(signed int, sint);
-_ONE_TOK_(unsigned short, ushort);
-_ONE_TOK_(signed short, sshort);
-_ONE_TOK_(unsigned char, uchar);
-_ONE_TOK_(signed char, schar);
-_ONE_TOK_(long long, llong);
-_ONE_TOK_(signed long long, sllong);
-_ONE_TOK_(unsigned long long, ullong);
+P99__ONE_TOK_(unsigned long, ulong);
+P99__ONE_TOK_(signed long, slong);
+P99__ONE_TOK_(unsigned int, uint);
+P99__ONE_TOK_(signed int, sint);
+P99__ONE_TOK_(unsigned short, ushort);
+P99__ONE_TOK_(signed short, sshort);
+P99__ONE_TOK_(unsigned char, uchar);
+P99__ONE_TOK_(signed char, schar);
+P99__ONE_TOK_(long long, llong);
+P99__ONE_TOK_(signed long long, sllong);
+P99__ONE_TOK_(unsigned long long, ullong);
 
 #define DECLARE_POINTER_TYPE(T)                 \
 /*! @brief a pointer to T */                    \
@@ -148,7 +148,7 @@ DECLARE_BASIC_TYPE(uint32_t);
 DECLARE_BASIC_TYPE(int64_t);
 DECLARE_BASIC_TYPE(uint64_t);
 
-#define _STRTO(T, ...)                          \
+#define P99__STRTO(T, ...)                          \
 (ISSIGNED(T)                                    \
  ? ((sizeof(T) == sizeof(long))                 \
     ? (T)strtol(__VA_ARGS__)                    \
@@ -162,59 +162,59 @@ DECLARE_BASIC_TYPE(uint64_t);
 /** @brief convert a string to a float */
 #define str2float(...) strtof(__VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2ulong(...) _STRTO(ulong, __VA_ARGS__)
+#define str2ulong(...) P99__STRTO(ulong, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2slong(...) _STRTO(slong, __VA_ARGS__)
+#define str2slong(...) P99__STRTO(slong, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2long(...) _STRTO(long, __VA_ARGS__)
+#define str2long(...) P99__STRTO(long, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2uint(...) _STRTO(uint, __VA_ARGS__)
+#define str2uint(...) P99__STRTO(uint, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2sint(...) _STRTO(sint, __VA_ARGS__)
+#define str2sint(...) P99__STRTO(sint, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2int(...) _STRTO(int, __VA_ARGS__)
+#define str2int(...) P99__STRTO(int, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2ushort(...) _STRTO(ushort, __VA_ARGS__)
+#define str2ushort(...) P99__STRTO(ushort, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2short(...) _STRTO(short, __VA_ARGS__)
+#define str2short(...) P99__STRTO(short, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2uchar(...) _STRTO(uchar, __VA_ARGS__)
+#define str2uchar(...) P99__STRTO(uchar, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2schar(...) _STRTO(schar, __VA_ARGS__)
+#define str2schar(...) P99__STRTO(schar, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2unsigned(...) _STRTO(unsigned, __VA_ARGS__)
+#define str2unsigned(...) P99__STRTO(unsigned, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2signed(...) _STRTO(signed, __VA_ARGS__)
+#define str2signed(...) P99__STRTO(signed, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2size_t(...) _STRTO(size_t, __VA_ARGS__)
+#define str2size_t(...) P99__STRTO(size_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2ssize_t(...) _STRTO(ssize_t, __VA_ARGS__)
+#define str2ssize_t(...) P99__STRTO(ssize_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2intmax_t(...) _STRTO(intmax_t, __VA_ARGS__)
+#define str2intmax_t(...) P99__STRTO(intmax_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2uintmax_t(...) _STRTO(uintmax_t, __VA_ARGS__)
+#define str2uintmax_t(...) P99__STRTO(uintmax_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2intptr_t(...) _STRTO(intptr_t, __VA_ARGS__)
+#define str2intptr_t(...) P99__STRTO(intptr_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2uintptr_t(...) _STRTO(uintptr_t, __VA_ARGS__)
+#define str2uintptr_t(...) P99__STRTO(uintptr_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2ptrdiff_t(...) _STRTO(ptrdiff_t, __VA_ARGS__)
+#define str2ptrdiff_t(...) P99__STRTO(ptrdiff_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2int8_t(...) _STRTO(int8_t, __VA_ARGS__)
+#define str2int8_t(...) P99__STRTO(int8_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2uint8_t(...) _STRTO(uint8_t, __VA_ARGS__)
+#define str2uint8_t(...) P99__STRTO(uint8_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2int16_t(...) _STRTO(int16_t, __VA_ARGS__)
+#define str2int16_t(...) P99__STRTO(int16_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2uint16_t(...) _STRTO(uint16_t, __VA_ARGS__)
+#define str2uint16_t(...) P99__STRTO(uint16_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2int32_t(...) _STRTO(int32_t, __VA_ARGS__)
+#define str2int32_t(...) P99__STRTO(int32_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2uint32_t(...) _STRTO(uint32_t, __VA_ARGS__)
+#define str2uint32_t(...) P99__STRTO(uint32_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2int64_t(...) _STRTO(int64_t, __VA_ARGS__)
+#define str2int64_t(...) P99__STRTO(int64_t, __VA_ARGS__)
 /** @brief convert a string to integer */
-#define str2uint64_t(...) _STRTO(uint64_t, __VA_ARGS__)
+#define str2uint64_t(...) P99__STRTO(uint64_t, __VA_ARGS__)
 
 inline
 char const* void_cptr2p(char* buf, void_cptr x) {
@@ -223,12 +223,12 @@ char const* void_cptr2p(char* buf, void_cptr x) {
 }
 
 #ifdef DOXYGEN
-#define _DECLARE_ARI2STR(T, X, S, P)                                    \
+#define P99__DECLARE_ARI2STR(T, X, S, P)                                    \
 /*! @brief Return a `X' representation of @a x in @a buf. */            \
 /*! Here `X' is taken as a format specifier as for @c printf. The output is eventually prefixed. */ \
 char const* T ## 2 ## X (char* buf, T x);
 #else
-#define _DECLARE_ARI2STR(T, X, S, P)            \
+#define P99__DECLARE_ARI2STR(T, X, S, P)            \
 inline                                          \
  char const* PASTE3(T, 2, X)(char* buf, T x) {  \
   char* form = STRDUP(#P, PRI(T,X,S));          \
@@ -239,22 +239,22 @@ inline                                          \
 #endif
 
 #define DECLARE_ARI2STR(T)                      \
-  _DECLARE_ARI2STR(T, d, , )                    \
-  _DECLARE_ARI2STR(T, o, 0, 0)                  \
-  _DECLARE_ARI2STR(T, u, , )                    \
-  _DECLARE_ARI2STR(T, x, , 0x)                  \
-  _DECLARE_ARI2STR(T, X, , 0x)
+  P99__DECLARE_ARI2STR(T, d, , )                    \
+  P99__DECLARE_ARI2STR(T, o, 0, 0)                  \
+  P99__DECLARE_ARI2STR(T, u, , )                    \
+  P99__DECLARE_ARI2STR(T, x, , 0x)                  \
+  P99__DECLARE_ARI2STR(T, X, , 0x)
 
 
-#define _DEFINE_ARI2STR(T, X)                     \
+#define P99__DEFINE_ARI2STR(T, X)                     \
   char const* PASTE3(T, 2, X)(char* buf, T x)
 
 #define DEFINE_ARI2STR(T)                      \
-  _DEFINE_ARI2STR(T, d);                       \
-  _DEFINE_ARI2STR(T, o);                       \
-  _DEFINE_ARI2STR(T, u);                       \
-  _DEFINE_ARI2STR(T, x);                       \
-  _DEFINE_ARI2STR(T, X)
+  P99__DEFINE_ARI2STR(T, d);                       \
+  P99__DEFINE_ARI2STR(T, o);                       \
+  P99__DEFINE_ARI2STR(T, u);                       \
+  P99__DEFINE_ARI2STR(T, x);                       \
+  P99__DEFINE_ARI2STR(T, X)
 
 DECLARE_ARI2STR(schar)
 DECLARE_ARI2STR(uchar)
@@ -269,7 +269,7 @@ DECLARE_ARI2STR(sllong)
 DECLARE_ARI2STR(ullong)
 
 
-#define _ALLO(N) ((char[N]){0})
+#define P99__ALLO(N) ((char[N]){0})
 
 /**
  ** @def PRIu
@@ -277,50 +277,50 @@ DECLARE_ARI2STR(ullong)
  */
 #define PRIu(x)                                 \
 CHOOSE5(x,                                      \
-        uchar2u(_ALLO(3*sizeof(sllong)),x),      \
-        ushort2u(_ALLO(3*sizeof(sllong)),x),     \
-        unsigned2u(_ALLO(3*sizeof(sllong)),x),   \
-        ulong2u(_ALLO(3*sizeof(sllong)),x),      \
-        ullong2u(_ALLO(3*sizeof(sllong)),x))
+        uchar2u(P99__ALLO(3*sizeof(sllong)),x),      \
+        ushort2u(P99__ALLO(3*sizeof(sllong)),x),     \
+        unsigned2u(P99__ALLO(3*sizeof(sllong)),x),   \
+        ulong2u(P99__ALLO(3*sizeof(sllong)),x),      \
+        ullong2u(P99__ALLO(3*sizeof(sllong)),x))
 
 /*! @brief convert @a x to decimal, possibly signed */
 #define PRId(x)                                 \
 CHOOSE5(x,                                      \
-        schar2d(_ALLO(3*sizeof(sllong)),x),      \
-        short2d(_ALLO(3*sizeof(sllong)),x),      \
-        signed2d(_ALLO(3*sizeof(sllong)),x),     \
-        long2d(_ALLO(3*sizeof(sllong)),x),       \
-        llong2d(_ALLO(3*sizeof(sllong)),x))
+        schar2d(P99__ALLO(3*sizeof(sllong)),x),      \
+        short2d(P99__ALLO(3*sizeof(sllong)),x),      \
+        signed2d(P99__ALLO(3*sizeof(sllong)),x),     \
+        long2d(P99__ALLO(3*sizeof(sllong)),x),       \
+        llong2d(P99__ALLO(3*sizeof(sllong)),x))
 
 /*! @brief convert @a x to octal */
 #define PRIo(x)                                 \
 CHOOSE5(x,                                      \
-        uchar2o(_ALLO(3*sizeof(sllong)),x),      \
-        ushort2o(_ALLO(3*sizeof(sllong)),x),     \
-        unsigned2o(_ALLO(3*sizeof(sllong)),x),   \
-        ulong2o(_ALLO(3*sizeof(sllong)),x),      \
-        ullong2o(_ALLO(3*sizeof(sllong)),x))
+        uchar2o(P99__ALLO(3*sizeof(sllong)),x),      \
+        ushort2o(P99__ALLO(3*sizeof(sllong)),x),     \
+        unsigned2o(P99__ALLO(3*sizeof(sllong)),x),   \
+        ulong2o(P99__ALLO(3*sizeof(sllong)),x),      \
+        ullong2o(P99__ALLO(3*sizeof(sllong)),x))
 
 /*! @brief convert @a x to hexadecimal using a...f for 10 to 15 */
 #define PRIx(x)                                 \
 CHOOSE5(x,                                      \
-        uchar2x(_ALLO(2*sizeof(sllong)),x),      \
-        ushort2x(_ALLO(2*sizeof(sllong)),x),     \
-        unsigned2x(_ALLO(2*sizeof(sllong)),x),   \
-        ulong2x(_ALLO(2*sizeof(sllong)),x),      \
-        ullong2x(_ALLO(2*sizeof(sllong)),x))
+        uchar2x(P99__ALLO(2*sizeof(sllong)),x),      \
+        ushort2x(P99__ALLO(2*sizeof(sllong)),x),     \
+        unsigned2x(P99__ALLO(2*sizeof(sllong)),x),   \
+        ulong2x(P99__ALLO(2*sizeof(sllong)),x),      \
+        ullong2x(P99__ALLO(2*sizeof(sllong)),x))
 
 /*! @brief convert @a x to hexadecimal using A...F for 10 to 15 */
 #define PRIX(x)                                 \
 CHOOSE5(x,                                      \
-        uchar2X(_ALLO(2*sizeof(sllong)),x),      \
-        ushort2X(_ALLO(2*sizeof(sllong)),x),     \
-        unsigned2X(_ALLO(2*sizeof(sllong)),x),   \
-        ulong2X(_ALLO(2*sizeof(sllong)),x),      \
-        ullong2X(_ALLO(2*sizeof(sllong)),x))
+        uchar2X(P99__ALLO(2*sizeof(sllong)),x),      \
+        ushort2X(P99__ALLO(2*sizeof(sllong)),x),     \
+        unsigned2X(P99__ALLO(2*sizeof(sllong)),x),   \
+        ulong2X(P99__ALLO(2*sizeof(sllong)),x),      \
+        ullong2X(P99__ALLO(2*sizeof(sllong)),x))
 
 /*! @brief convert pointer @a x to hexadecimal */
-#define PRIp(x) void_cptr2p(_ALLO(2*sizeof(void*) + 3), x)
+#define PRIp(x) void_cptr2p(P99__ALLO(2*sizeof(void*) + 3), x)
 
 /**
  ** @brief Output a series of @a n strings to file @a f.
@@ -346,7 +346,7 @@ int mfputs_func(FILE* f, size_t n, char const*const* A) {
   return ret;
 }
 
-#define _mfputs(F, ...) mfputs_func(F, NARG(__VA_ARGS__), (char const*[]){__VA_ARGS__})
+#define P99__mfputs(F, ...) mfputs_func(F, NARG(__VA_ARGS__), (char const*[]){__VA_ARGS__})
 
 
 /**
@@ -357,6 +357,6 @@ int mfputs_func(FILE* f, size_t n, char const*const* A) {
  ** mfputs(sderr, "something ", SOME_STRING_VARIABLE, "something else");
  ** @endcode
  **/
-#define mfputs(...) _mfputs(__VA_ARGS__)
+#define mfputs(...) P99__mfputs(__VA_ARGS__)
 
 #endif 	    /* !ORWL_INT_H_ */

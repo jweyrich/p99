@@ -60,11 +60,11 @@
  **/
 #define PASTE2(_1, _2) CAT2(_1, _2)
 
-#define __PASTE(F, N, ...) F ## N(__VA_ARGS__)
-#define _PASTE(N, ...) __PASTE(PASTE, N, __VA_ARGS__)
+#define P99___PASTE(F, N, ...) F ## N(__VA_ARGS__)
+#define P99__PASTE(N, ...) P99___PASTE(PASTE, N, __VA_ARGS__)
 
-#define _DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)   \
-  IF_EMPTY(SIGN)(+)(SIGN)_SKIP_ PASTE(                  \
+#define P99__DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)   \
+  IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ PASTE(                  \
   IF_EMPTY(INT)(0)(INT),                                \
   .,                                                    \
   IF_EMPTY(FRAC)(0)(FRAC),                              \
@@ -94,13 +94,13 @@
 #else
 #define DEC_DOUBLE(...)                         \
   IF_DEC_GE(NARG(__VA_ARGS__), 6)               \
-  (_DEC_DOUBLE(__VA_ARGS__))                    \
-  (_DEC_DOUBLE(__VA_ARGS__,,,,,))
+  (P99__DEC_DOUBLE(__VA_ARGS__))                    \
+  (P99__DEC_DOUBLE(__VA_ARGS__,,,,,))
 #endif
 
 
-#define _HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP, ...)  \
-  IF_EMPTY(SIGN)(+)(SIGN)_SKIP_ PASTE(                          \
+#define P99__HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP, ...)  \
+  IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ PASTE(                          \
   0x,                                                           \
   IF_EMPTY(HEXINT)(0)(HEXINT),                                  \
   .,                                                            \
@@ -120,11 +120,11 @@
 #else
 #define HEX_DOUBLE(...)                         \
   IF_DEC_GE(NARG(__VA_ARGS__), 6)               \
-  (_HEX_DOUBLE(__VA_ARGS__))                    \
-  (_HEX_DOUBLE(__VA_ARGS__,,,,,))
+  (P99__HEX_DOUBLE(__VA_ARGS__))                    \
+  (P99__HEX_DOUBLE(__VA_ARGS__,,,,,))
 #endif
 
-#define _INV(N) PASTE(_variable_argument_list_must_be_divisible_by_, N)
+#define P99__INV(N) PASTE(P99__variable_argument_list_must_be_divisible_by_, N)
 
 /**
  ** @brief Return the length of the variate argument list.
@@ -138,32 +138,32 @@
  ** the empty) argument
  ** @see NARG for a macro that returns 0 if the list is empty
  **/
-#define _NARG(...) _NARG_1(__VA_ARGS__)
+#define P99__NARG(...) P99__NARG_1(__VA_ARGS__)
 
-#define _IGNORE(...)
-#define _IDENT(...) __VA_ARGS__
-#define _SKIP_
-#define _CLAUSE1(...) __VA_ARGS__ _IGNORE
-#define _CLAUSE2(...) _IDENT
+#define P99__IGNORE(...)
+#define P99__IDENT(...) __VA_ARGS__
+#define P99__SKIP_
+#define P99__CLAUSE1(...) __VA_ARGS__ P99__IGNORE
+#define P99__CLAUSE2(...) P99__IDENT
 
-#define _IS__EQ__(...) ,
-#define _IS_0_EQ_0(...) ,
-#define _IS_1_EQ_1(...) ,
-#define _IS_2_EQ_2(...) ,
-#define _IS_3_EQ_3(...) ,
-#define _IS_4_EQ_4(...) ,
-#define _IS_5_EQ_5(...) ,
-#define _IS_6_EQ_6(...) ,
-#define _IS_7_EQ_7(...) ,
-#define _IS_8_EQ_8(...) ,
-#define _IS_9_EQ_9(...) ,
-#define _IS_00_EQ_00(...) ,
-#define _IS_10_EQ_10(...) ,
-#define _IS_01_EQ_01(...) ,
-#define _IS_11_EQ_11(...) ,
-#define __IF_CLAUSE(A,B,C,...) C
-#define _IF_CLAUSE(EXP) __IF_CLAUSE(EXP, _CLAUSE1, _CLAUSE2, ~)
-#define _IF_NOT_CLAUSE(EXP) __IF_CLAUSE(EXP, _CLAUSE2, _CLAUSE1, ~)
+#define P99__IS__EQ__(...) ,
+#define P99__IS_0_EQ_0(...) ,
+#define P99__IS_1_EQ_1(...) ,
+#define P99__IS_2_EQ_2(...) ,
+#define P99__IS_3_EQ_3(...) ,
+#define P99__IS_4_EQ_4(...) ,
+#define P99__IS_5_EQ_5(...) ,
+#define P99__IS_6_EQ_6(...) ,
+#define P99__IS_7_EQ_7(...) ,
+#define P99__IS_8_EQ_8(...) ,
+#define P99__IS_9_EQ_9(...) ,
+#define P99__IS_00_EQ_00(...) ,
+#define P99__IS_10_EQ_10(...) ,
+#define P99__IS_01_EQ_01(...) ,
+#define P99__IS_11_EQ_11(...) ,
+#define P99___IF_CLAUSE(A,B,C,...) C
+#define P99__IF_CLAUSE(EXP) P99___IF_CLAUSE(EXP, P99__CLAUSE1, P99__CLAUSE2, ~)
+#define P99__IF_NOT_CLAUSE(EXP) P99___IF_CLAUSE(EXP, P99__CLAUSE2, P99__CLAUSE1, ~)
 
 /**
  ** @brief Test two words @a A and @a B if they are equal.
@@ -171,7 +171,7 @@
  ** @a A and @a B must be just one word, i.e composed of
  ** alpha-numerical characters and underscores.
  **
- ** For such a test to work properly a corresponding macro @c _IS_A_EQ_A
+ ** For such a test to work properly a corresponding macro @c P99__IS_A_EQ_A
  ** must exist for all @a A such that @a B may be the same word as @a
  ** A. E.g for the test
  **
@@ -179,55 +179,55 @@
  ** IF_EQ(0, X)(expand_when_equal)(expand_when_unequal)
  ** @endcode
  **
- ** the macro ::_IF_0_EQ_0 must exist. (Which it does in that case).
+ ** the macro ::P99__IF_0_EQ_0 must exist. (Which it does in that case).
  **
  ** @see IF_DEC_EQ for equality of not too large decimal numbers
  **/
-#define IF_EQ(A, B) _IF_CLAUSE(PASTE(_IS_,A,_EQ_,B)())
+#define IF_EQ(A, B) P99__IF_CLAUSE(PASTE(P99__IS_,A,_EQ_,B)())
 
 /**
  ** @brief Test two words @a A and @a B if they are unequal.
  **
  ** @see IF_EQ 
  **/
-#define IF_NE(A, B) _IF_NOT_CLAUSE(PASTE(_IS_,A,_EQ_,B)())
+#define IF_NE(A, B) P99__IF_NOT_CLAUSE(PASTE(P99__IS_,A,_EQ_,B)())
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if they are equal.
  **/
-#define IF_DEC_EQ(A, B) IF_EQ(0,_dec_minus(A,B))
+#define IF_DEC_EQ(A, B) IF_EQ(0,P99__dec_minus(A,B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if they are unequal.
  **/
-#define IF_DEC_NE(A, B) IF_NE(0,_dec_minus(A,B))
+#define IF_DEC_NE(A, B) IF_NE(0,P99__dec_minus(A,B))
 
-#define IF_GE_0(A) _IF_CLAUSE(PASTE(_IS_,A,_GE_,0)())
-#define IF_LT_0(A) _IF_NOT_CLAUSE(PASTE(_IS_,A,_GE_,0)())
+#define IF_GE_0(A) P99__IF_CLAUSE(PASTE(P99__IS_,A,_GE_,0)())
+#define IF_LT_0(A) P99__IF_NOT_CLAUSE(PASTE(P99__IS_,A,_GE_,0)())
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is greater
  ** or equal to @a B.
  **/
-#define IF_DEC_GE(A, B) IF_GE_0(_dec_minus(A,B))
+#define IF_DEC_GE(A, B) IF_GE_0(P99__dec_minus(A,B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is less
  ** or equal to @a B.
  **/
-#define IF_DEC_LE(A, B) IF_GE_0(_dec_minus(B,A))
+#define IF_DEC_LE(A, B) IF_GE_0(P99__dec_minus(B,A))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
  ** less than @a B.
  **/
-#define IF_DEC_LT(A, B) IF_LT_0(_dec_minus(A,B))
+#define IF_DEC_LT(A, B) IF_LT_0(P99__dec_minus(A,B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
  ** greater than @a B.
  **/
-#define IF_DEC_GT(A, B) IF_LT_0(_dec_minus(B,A))
+#define IF_DEC_GT(A, B) IF_LT_0(P99__dec_minus(B,A))
 
 /**
  ** @brief Test if token N is the token 0.
@@ -266,30 +266,30 @@
  ** there was anything different from a comment in the list.
  **
  ** The implementation of this macro is kind of tricky and heavily
- ** uses the fact that a function macro (@c _IS__EQ__ in this case) is
+ ** uses the fact that a function macro (@c P99__IS__EQ__ in this case) is
  ** left untouched if it is not followed by a parenthesis. See
  ** http://gustedt.wordpress.com/2010/06/08/detect-empty-macro-arguments/
  **
  ** @return tokens 0 or 1
  **/
 #define IS_EMPTY(...)                                                   \
-  _ISEMPTY(                                                             \
+  P99__ISEMPTY(                                                             \
           /* test if there is just one argument, eventually an empty    \
              one */                                                     \
           HAS_COMMA(__VA_ARGS__),                                       \
           /* test if _IS__EQ__ together with the argument               \
              adds a comma */                                            \
-          HAS_COMMA(_IS__EQ__ __VA_ARGS__),                             \
+    HAS_COMMA(P99__IS__EQ__ __VA_ARGS__),                                \
           /* test if the argument together with a parenthesis           \
              adds a comma */                                            \
           HAS_COMMA(__VA_ARGS__ (~)),                                   \
           /* test if placing it between _IS__EQ__ and the               \
              parenthesis adds a comma */                                \
-          HAS_COMMA(_IS__EQ__ __VA_ARGS__ (~))                          \
+          HAS_COMMA(P99__IS__EQ__ __VA_ARGS__ (~))                          \
           )
 
-#define _ISEMPTY(_0, _1, _2, _3) HAS_COMMA(PASTE5(_IS_EMPTY_CASE_, _0, _1, _2, _3))
-#define _IS_EMPTY_CASE_0001 ,
+#define P99__ISEMPTY(_0, _1, _2, _3) HAS_COMMA(PASTE5(P99__IS_EMPTY_CASE_, _0, _1, _2, _3))
+#define P99__IS_EMPTY_CASE_0001 ,
 
 #define IF_EMPTY(...) IF_EQ_1(IS_EMPTY(__VA_ARGS__))
 
@@ -325,7 +325,7 @@
  ** @return tokens 0 or 1
  **/
 #define LOGIC_XOR(A, B) IF_EQ(LOGIC_NOT(A), LOGIC_EVAL(B))(1)(0)
-#define _LOGIC_OR(A, B) IF_EQ(00, CAT2(A, B))(0)(1)
+#define P99__LOGIC_OR(A, B) IF_EQ(00, CAT2(A, B))(0)(1)
 
 /**
  ** @brief Do a logical inclusive or of the arguments.
@@ -335,9 +335,9 @@
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_OR(A, B) _LOGIC_OR(LOGIC_EVAL(A), LOGIC_EVAL(B))
+#define LOGIC_OR(A, B) P99__LOGIC_OR(LOGIC_EVAL(A), LOGIC_EVAL(B))
 
-#define _LOGIC_AND(A, B) IF_EQ(00, CAT2(A, B))(1)(0)
+#define P99__LOGIC_AND(A, B) IF_EQ(00, CAT2(A, B))(1)(0)
 
 /**
  ** @brief Do a logical and of the arguments.
@@ -347,7 +347,7 @@
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_AND(A, B) _LOGIC_AND(LOGIC_NOT(A), LOGIC_NOT(B))
+#define LOGIC_AND(A, B) P99__LOGIC_AND(LOGIC_NOT(A), LOGIC_NOT(B))
 
 
 /**
@@ -371,11 +371,11 @@
  **
  ** This supposes that the length of the list is less than 64.
  **
- ** @see _NARG for a macro that accounts an empty list to be 1
+ ** @see P99__NARG for a macro that accounts an empty list to be 1
  **/
-#define NARG(...) IF_EMPTY(__VA_ARGS__)(0)(_NARG(__VA_ARGS__))
+#define NARG(...) IF_EMPTY(P99___VA_ARGS__)(0)(P99__NARG(__VA_ARGS__))
 
-#define _IS_void_EQ_void(...) ,
+#define P99__IS_void_EQ_void(...) ,
 
 /**
  ** @brief Test if the argument consists of exactly the word @c void.
@@ -384,7 +384,7 @@
  ** empty @b or if it consists of the word @c void.
  **/
 #define IS_void(...)                                                    \
-IS_EQ_2(_NARG(_IS_void_EQ_ ## __VA_ARGS__ (~) _IS_void_EQ_ ## __VA_ARGS__))
+IS_EQ_2(P99__NARG(P99__IS_void_EQ_ ## __VA_ARGS__ (~) P99__IS_void_EQ_ ## __VA_ARGS__))
 
 #define IF_void(...) IF_EQ_1(IS_void(__VA_ARGS__))
 
@@ -400,14 +400,14 @@ IS_EQ_2(_NARG(_IS_void_EQ_ ## __VA_ARGS__ (~) _IS_void_EQ_ ## __VA_ARGS__))
 
 #define IF_VOID(...) IF_EQ_1(IS_VOID(__VA_ARGS__))
 
-#define HAS_COMMA(...) IF_DEC_GT(_NARG(__VA_ARGS__), 1)(1)(0)
+#define HAS_COMMA(...) IF_DEC_GT(P99__NARG(__VA_ARGS__), 1)(1)(0)
 
 #define IS_COMMA(...)                                                   \
 IF_EQ_2(NARG(__VA_ARGS__))                                              \
 (LOGIC_AND(IS_EMPTY(CHS(0,__VA_ARGS__)),IS_EMPTY(CHS(1,__VA_ARGS__))))  \
 (0)
 
-#define _MODARG_(_X) PASTE(_NARG_,  _X)
+#define P99__MODARG_(_X) PASTE(P99__NARG_,  _X)
 
 /**
  ** @def LEN_MODARG
@@ -492,32 +492,32 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
  ** @brief Macro that expands to the predecessor of decimal constant
  ** #a N
  **/
-#define __DEC_PRED(P, N) P ## N
-#define _DEC_PRED(N) __DEC_PRED(_DEC_PRED_ , N)
-#define DEC_PRED(N) _DEC_PRED(N)
-#define _itpredecessor_0(DEC) DEC
-#define _dec2uni(DEC) PASTE(_dec2uni_, DEC)
-#define _uni2dec(UN) PASTE(_uni2dec_, UN)
-#define _uni_add(U,V) PASTE(U, V)
+#define P99___DEC_PRED(P, N) P ## N
+#define P99__DEC_PRED(N) P99___DEC_PRED(P99__DEC_PRED_ , N)
+#define DEC_PRED(N) P99__DEC_PRED(N)
+#define P99__itpredecessor_0(DEC) DEC
+#define P99__dec2uni(DEC) PASTE(P99__dec2uni_, DEC)
+#define P99__uni2dec(UN) PASTE(P99__uni2dec_, UN)
+#define P99__uni_add(U,V) PASTE(U, V)
 
-#define ____dec_add(U,V) _uni_add(U,V)
-#define ___dec_add(D,E) ____dec_add(_dec2uni(D),_dec2uni(E))
-#define __dec_add(D,E) _uni2dec(___dec_add(D,E))
-#define _dec_add(D,E) __dec_add(D,E)
+#define P99_____dec_add(U,V) P99__uni_add(U,V)
+#define P99____dec_add(D,E) P99_____dec_add(P99__dec2uni(D),P99__dec2uni(E))
+#define P99___dec_add(D,E) P99__uni2dec(P99____dec_add(D,E))
+#define P99__dec_add(D,E) P99___dec_add(D,E)
 
-#define _DEC_PRED_0 minus_1
-#define _dec_eval(EDEC) PASTE(_dec_eval_, EDEC)
-#define _dec_minus(D,E) PASTE(_itpredecessor_, E)(D)
+#define P99__DEC_PRED_0 minus_1
+#define P99__dec_eval(EDEC) PASTE(P99__dec_eval_, EDEC)
+#define P99__dec_minus(D,E) PASTE(P99__itpredecessor_, E)(D)
 
 
-#define _FSYMB(NAME) PASTE(NAME, _f, sy, mb, _)
+#define P99__FSYMB(NAME) PASTE(NAME, _f, sy, mb, _)
 
 /** @brief Mangle @a NAME 
  **
  ** This should only be used in declaration and definition of the
  ** function that is hidden behind the macro @a NAME.
  **/
-#define FSYMB(NAME) _FSYMB(NAME)
+#define FSYMB(NAME) P99__FSYMB(NAME)
 
 /**
  ** @brief Provide a documentation section to a function defined with ::CALL_WITH_DEFAULTS
@@ -534,8 +534,8 @@ IF_EQ_2(NARG(__VA_ARGS__))                                              \
 NAME(IF_EQ(0,M)                                         \
      (__VA_ARGS__)                                      \
      (IF_EMPTY(__VA_ARGS__)                             \
-      (_DEFARGS(NAME, M, PASTE(NAME,_defarg_0)()))      \
-      (_DEFARGS(NAME, M, __VA_ARGS__))                  \
+      (P99__DEFARGS(NAME, M, PASTE(NAME,_defarg_0)()))      \
+      (P99__DEFARGS(NAME, M, __VA_ARGS__))                  \
       )                                                 \
      )
 #endif
@@ -628,7 +628,7 @@ NAME(IF_EQ(0,M)                                         \
  ** ::CALL_WITH_DEFAULTS_EVEN_EMPTY to ensure that a macro parameter
  ** inside a recursion is not empty.
  **/
-#define _COMMA_ ,
+#define P99__COMMA_ ,
 
 /**
  ** @brief Define an (almost) all purpose initializer
@@ -745,13 +745,13 @@ CHOOSE5(xT,                                     \
  ** @brief Promote integer expression @a x to the width of @c
  ** uintmax_t but keep signedness if possible.
  **/
-#define _J(x) (0 ? TNULL(uintmax_t) : (x))
+#define P99__J(x) (0 ? TNULL(uintmax_t) : (x))
 
 /**
  ** @brief Promote integer expression @a x to the width of @c
  ** size_t but keep signedness if possible.
  **/
-#define _Z(x) (0 ? TNULL(size_t) : (x))
+#define P99__Z(x) (0 ? TNULL(size_t) : (x))
 
 
 /** @addtogroup list_processing List processing macros
@@ -783,12 +783,12 @@ CHOOSE5(xT,                                     \
  ** then proceeds at the concatenation of the results.
  ** @pre the argumentlist should not be empty.
  **/
-#define PASTE(...) _PASTE(_NARG(__VA_ARGS__), __VA_ARGS__)
+#define PASTE(...) P99__PASTE(P99__NARG(__VA_ARGS__), __VA_ARGS__)
 
-#define LAST(...) CHS(DEC_PRED(_NARG(__VA_ARGS__)), __VA_ARGS__,)
-#define ALLBUTLAST(...) PASTE2(_PRE,DEC_PRED(_NARG(__VA_ARGS__)))(__VA_ARGS__,)
-#define _FOR1(NAME, OP, FUNC, ...) FUNC(NAME, _PRE1(__VA_ARGS__,), 0)
-#define FOR(NAME, N, OP, FUNC, ...) PASTE2(_FOR, N)(NAME, OP, FUNC, __VA_ARGS__)
+#define LAST(...) CHS(DEC_PRED(P99__NARG(__VA_ARGS__)), __VA_ARGS__,)
+#define ALLBUTLAST(...) PASTE2(P99__PRE,DEC_PRED(P99__NARG(__VA_ARGS__)))(__VA_ARGS__,)
+#define P99__FOR1(NAME, OP, FUNC, ...) FUNC(NAME, P99__PRE1(__VA_ARGS__,), 0)
+#define FOR(NAME, N, OP, FUNC, ...) PASTE2(P99__FOR, N)(NAME, OP, FUNC, __VA_ARGS__)
 
 #ifndef DOXYGEN
 #define REP0(...)
@@ -797,34 +797,34 @@ CHOOSE5(xT,                                     \
 /**
  ** @brief Concatenate the token @a X @a N times.
  **/
-#define REP(N, X) _REP(N, X)
-#define _REP(N, X) REP ## N(X)
+#define REP(N, X) P99__REP(N, X)
+#define P99__REP(N, X) REP ## N(X)
 
 
-#define _IGN(NAME, X, N)
-#define _IDT(NAME, X, N) X
-#define _POS(NAME, X, N) N
-#define _NAM(NAME, X, N) NAME
+#define P99__IGN(NAME, X, N)
+#define P99__IDT(NAME, X, N) X
+#define P99__POS(NAME, X, N) N
+#define P99__NAM(NAME, X, N) NAME
 
-#define _ACCESSOR(NAME, X, N) (NAME)[N]
-#define _VASSIGN(NAME, X, N) X = _ACCESSOR(NAME, X, N)
-#define _STRLEN(NAME, X, N) strlen(X)
-#define _TYPD(NAME, X, N) typedef X PASTE2(NAME, N)
+#define P99__ACCESSOR(NAME, X, N) (NAME)[N]
+#define P99__VASSIGN(NAME, X, N) X = P99__ACCESSOR(NAME, X, N)
+#define P99__STRLEN(NAME, X, N) strlen(X)
+#define P99__TYPD(NAME, X, N) typedef X PASTE2(NAME, N)
 
-#define _SUM(NAME, N, X, Y) ((X) + (Y))
-#define _PROD(NAME, N, X, Y) ((X) * (Y))
-#define _QUOT(NAME, N, X, Y) ((X) / (Y))
-#define _XOR(NAME, N, X, Y) ((X) ^ (Y))
-#define _BOR(NAME, N, X, Y) ((X) | (Y))
-#define _BAND(NAME, N, X, Y) ((X) & (Y))
-#define _OR(NAME, N, X, Y) ((X) || (Y))
-#define _AND(NAME, N, X, Y) ((X) && (Y))
+#define P99__SUM(NAME, N, X, Y) ((X) + (Y))
+#define P99__PROD(NAME, N, X, Y) ((X) * (Y))
+#define P99__QUOT(NAME, N, X, Y) ((X) / (Y))
+#define P99__XOR(NAME, N, X, Y) ((X) ^ (Y))
+#define P99__BOR(NAME, N, X, Y) ((X) | (Y))
+#define P99__BAND(NAME, N, X, Y) ((X) & (Y))
+#define P99__OR(NAME, N, X, Y) ((X) || (Y))
+#define P99__AND(NAME, N, X, Y) ((X) && (Y))
 
-#define _SEQ(NAME, N, REC, X) REC, X
-#define _SEP(NAME, N, REC, X) REC; X
-#define _SER(NAME, N, REC, X) REC X
-#define _REV(NAME, N, REC, X) X, REC
-#define _STRCAT(NAME, N, REC, X) strcat(REC, X)
+#define P99__SEQ(NAME, N, REC, X) REC, X
+#define P99__SEP(NAME, N, REC, X) REC; X
+#define P99__SER(NAME, N, REC, X) REC X
+#define P99__REV(NAME, N, REC, X) X, REC
+#define P99__STRCAT(NAME, N, REC, X) strcat(REC, X)
 
 /**
  ** @brief Compute the right associative operation @a OP of all the arguments.
@@ -836,58 +836,58 @@ CHOOSE5(xT,                                     \
  **
  ** @a M is the length of the list that follows it.
  **/
-#define BIGOP(OP, M, ...) FOR( , M, OP, _IDT, __VA_ARGS__,)
+#define BIGOP(OP, M, ...) FOR( , M, OP, P99__IDT, __VA_ARGS__,)
 
 /**
  ** @brief Compute the right associative sum of all the arguments.
  **/
-#define SUMS(...) BIGOP(_SUM, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define SUMS(...) BIGOP(P99__SUM, (NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative product of all the arguments.
  **/
-#define PRODS(...) BIGOP(_PROD, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define PRODS(...) BIGOP(P99__PROD, (NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative quotient of all the arguments.
  **/
-#define QUOTS(...) BIGOP(_QUOT, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define QUOTS(...) BIGOP(P99__QUOT, (NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative bitwise exclusive or of all the arguments.
  **/
-#define XORS(...) BIGOP(_XOR, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define XORS(...) BIGOP(P99__XOR, (NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative bitwise or of all the arguments.
  **/
-#define BORS(...) BIGOP(_BOR, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define BORS(...) BIGOP(P99__BOR, (NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative bitwise and of all the arguments.
  **/
-#define BANDS(...) BIGOP(_BAND, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define BANDS(...) BIGOP(P99__BAND, (NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative logical or of all the arguments.
  **/
-#define ORS(...) BIGOP(_OR, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define ORS(...) BIGOP(P99__OR, (NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative logical and of all the arguments.
  **/
-#define ANDS(...) BIGOP(_AND, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define ANDS(...) BIGOP(P99__AND, (NARG(__VA_ARGS__),__VA_ARGS__)
 
 
-#define _STRLENS(N, ...) FOR(,N, _SUM, _STRLEN, __VA_ARGS__)
+#define P99__STRLENS(N, ...) FOR(,N, P99__SUM, P99__STRLEN, __VA_ARGS__)
 
 /**
  ** @brief Return an expression that returns the sum of the lengths of
  ** all strings that are given as arguments.
  **/
-#define STRLENS(...) _STRLENS(NARG(__VA_ARGS__),__VA_ARGS__)
+#define STRLENS(...) P99__STRLENS(NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define _REVS(N, ...) FOR(,N, _REV, _IDT, __VA_ARGS__)
+#define P99__REVS(N, ...) FOR(,N, P99__REV, P99__IDT, __VA_ARGS__)
 
 /**
  ** @brief Revert the argument list
  **/
-#define REVS(...) IF_DEC_LT(NARG(__VA_ARGS__),2)(__VA_ARGS__)(_REVS(NARG(__VA_ARGS__),__VA_ARGS__))
+#define REVS(...) IF_DEC_LT(NARG(__VA_ARGS__),2)(__VA_ARGS__)(P99__REVS(NARG(__VA_ARGS__),__VA_ARGS__))
 
-#define _STRCATS(N, ...) FOR(,N, _STRCAT, _IDT, __VA_ARGS__)
+#define P99__STRCATS(N, ...) FOR(,N, P99__STRCAT, P99__IDT, __VA_ARGS__)
 
 /**
  ** @brief Append all argument strings after @a TARG to @a TARG.
@@ -896,7 +896,7 @@ CHOOSE5(xT,                                     \
  ** to hold the concatenation of all strings. The remaining arguments
  ** must be compatible with @c const char*.
  **/
-#define STRCATS(TARG, ...) _STRCATS(NARG(TARG, __VA_ARGS__), TARG, __VA_ARGS__)
+#define STRCATS(TARG, ...) P99__STRCATS(NARG(TARG, __VA_ARGS__), TARG, __VA_ARGS__)
 
 /**
  ** @brief Concatenate all arguments.
@@ -922,31 +922,31 @@ CHOOSE5(xT,                                     \
 /**
  ** Repeat the parameter @a X @a N times.
  **/
-#define REPS(X, N) FOR(X, N, _SEQ, _NAM, )
+#define REPS(X, N) FOR(X, N, P99__SEQ, P99__NAM, )
 
 /**
  ** @brief Produce a list of length @a N that has the contents of 0,
  ** 1, , @a N-1
  **/
-#define POSS(N) FOR(,N, _SEQ, _POS,)
+#define POSS(N) FOR(,N, P99__SEQ, P99__POS,)
 
 /**
  ** Produce a list of length @a N that has the contents of @a X[0], @a
  ** X [1], ,
  ** @a X[@a N-1]
  **/
-#define ACCESSORS(X, N) FOR(X, N, _SEQ, _ACCESSOR, )
+#define ACCESSORS(X, N) FOR(X, N, P99__SEQ, P99__ACCESSOR, )
 
 /**
  ** Cut the argument list at position @a N
  **/
-#define SELS(N, ...) PASTE2(_PRE, N)(__VA_ARGS__)
+#define SELS(N, ...) PASTE2(P99__PRE, N)(__VA_ARGS__)
 
 
 /**
  ** @brief Skip @a N elements in the remaining argument list.
  **/
-#define SKP(N, ...) PASTE2(_SKP, N)(__VA_ARGS__)
+#define SKP(N, ...) PASTE2(P99__SKP, N)(__VA_ARGS__)
 
 /**
  ** @brief Get the sublist of length @a L starting at the @a
@@ -954,8 +954,8 @@ CHOOSE5(xT,                                     \
  **
  ** Counting of elements starts at 0.
  **/
-#define SUB(N, L, ...) _SUB(L, SKP(N, __VA_ARGS__))
-#define _SUB(L, ...) SELS(L, __VA_ARGS__)
+#define SUB(N, L, ...) P99__SUB(L, SKP(N, __VA_ARGS__))
+#define P99__SUB(L, ...) SELS(L, __VA_ARGS__)
 
 /**
  ** @brief Choose the @a N<sup>th</sup> element in the remaining argument
@@ -975,12 +975,12 @@ CHOOSE5(xT,                                     \
 #define VASSIGNS(NAME, ...)                                     \
 IF_DEC_LT(NARG(__VA_ARGS__),2)                                  \
 (IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))        \
-  (FOR(NAME, _NARG(__VA_ARGS__),_SEP, _VASSIGN, __VA_ARGS__))
+  (FOR(NAME, P99__NARG(__VA_ARGS__),P99__SEP, P99__VASSIGN, __VA_ARGS__))
 
-#define _TYPEDEFS(NAME, N, ...)                         \
+#define P99__TYPEDEFS(NAME, N, ...)                         \
   IF_VOID(__VA_ARGS__)                                  \
   (enum { PASTE3(NAME, _eat_the_semicolon_, N) })       \
-  (FOR(NAME, N, _SEP, _TYPD, __VA_ARGS__))
+  (FOR(NAME, N, P99__SEP, P99__TYPD, __VA_ARGS__))
 
 /**
  ** @brief Take each argument of the list and transform it into a
@@ -990,7 +990,7 @@ IF_DEC_LT(NARG(__VA_ARGS__),2)                                  \
  ** array type derivatives.
  **/
 #define TYPEDEFS(NAME, ...)                             \
-_TYPEDEFS(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
+P99__TYPEDEFS(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
 
 
 
@@ -998,24 +998,24 @@ _TYPEDEFS(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
  **/
 
 #ifdef DOXYGEN
-#define _PROTOTYPE(RT, NAME, ...)                                       \
+#define P99__PROTOTYPE(RT, NAME, ...)                                       \
 /*! @remark This function might be hidden behind a macro :: ## NAME of the same name. */ \
 RT NAME(__VA_ARGS__)
-#define PROTOTYPE(RT, NAME, ...) _PROTOTYPE(__VA_ARGS__)
+#define PROTOTYPE(RT, NAME, ...) P99__PROTOTYPE(__VA_ARGS__)
 #else
-#define _PROTOTYPE(RT, NAME, ...)                       \
+#define P99__PROTOTYPE(RT, NAME, ...)                       \
   RT NAME(IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));    \
   typedef RT CAT2(NAME, _prototype_ret);                \
   TYPEDEFS(CAT2(NAME, _prototype_), __VA_ARGS__)
 
 #define PROTOTYPE(...)                          \
 IF_EQ_2(NARG(__VA_ARGS__))                      \
-(_PROTOTYPE(__VA_ARGS__, void))                 \
-(_PROTOTYPE(__VA_ARGS__))
+(P99__PROTOTYPE(__VA_ARGS__, void))                 \
+(P99__PROTOTYPE(__VA_ARGS__))
 #endif
 
 
-#define _EXPR_FUNCTION(NAME, X, N)                                       \
+#define P99__EXPR_FUNCTION(NAME, X, N)                                       \
 IF_EMPTY(X)                                                     \
 ()                                                              \
 (                                                               \
@@ -1026,13 +1026,13 @@ IF_EMPTY(X)                                                     \
  }                                                              \
 )
 
-#define _DAFE(NAME, X, N)                                       \
+#define P99__DAFE(NAME, X, N)                                       \
 IF_EMPTY(X)                                                     \
 (enum { PASTE3(NAME, _boring_, N) })                            \
 (PASTE3(NAME, _prototype_, N) PASTE3(NAME, _defarg_, N)(void))
 
-#define _DECLARE_DEFARG(NAME, N, ...)                   \
-  FOR(NAME, N, _SER, _EXPR_FUNCTION, __VA_ARGS__)        \
+#define P99__DECLARE_DEFARG(NAME, N, ...)                   \
+  FOR(NAME, N, P99__SER, P99__EXPR_FUNCTION, __VA_ARGS__)        \
 enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 
 #ifdef DOXYGEN
@@ -1058,11 +1058,11 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  **/
 #define DECLARE_DEFARG(NAME, ...)
 #else
-#define DECLARE_DEFARG(NAME, ...) _DECLARE_DEFARG(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
+#define DECLARE_DEFARG(NAME, ...) P99__DECLARE_DEFARG(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
 #endif
 
-#define _DEFINE_DEFARG(NAME, N, ...)                                         \
-  FOR(NAME, N, _SEP, _DAFE, __VA_ARGS__)
+#define P99__DEFINE_DEFARG(NAME, N, ...)                                         \
+  FOR(NAME, N, P99__SEP, P99__DAFE, __VA_ARGS__)
 
 #ifdef DOXYGEN
 /**
@@ -1073,15 +1073,15 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  **/
 #define DEFINE_DEFARG(NAME, ...)
 #else
-#define DEFINE_DEFARG(NAME, ...) _DEFINE_DEFARG(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
+#define DEFINE_DEFARG(NAME, ...) P99__DEFINE_DEFARG(NAME, NARG(__VA_ARGS__), __VA_ARGS__)
 #endif
 
 
-#define _DARG(NAME, X, N) IF_EMPTY(X)(PASTE3(NAME, _defarg_, N)())(X)
-#define __DEFARGS(NAME, N, ...) FOR(NAME, N, _SEQ, _DARG, __VA_ARGS__)
-#define _DEFARGS(NAME, N, ...) __DEFARGS(NAME, N, IF_DEC_LT(NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,_dec_minus(N,NARG(__VA_ARGS__)))) (__VA_ARGS__))
+#define P99__DARG(NAME, X, N) IF_EMPTY(X)(PASTE3(NAME, _defarg_, N)())(X)
+#define P99___DEFARGS(NAME, N, ...) FOR(NAME, N, P99__SEQ, P99__DARG, __VA_ARGS__)
+#define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, IF_DEC_LT(NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,P99__dec_minus(N,NARG(__VA_ARGS__)))) (__VA_ARGS__))
 
-#define _DEC_MUL(A, B) IF_EQ_0(A)(0)(_uni2dec(REP(A, B)))
+#define P99__DEC_MUL(A, B) IF_EQ_0(A)(0)(P99__uni2dec(REP(A, B)))
 
 /**
  ** @brief Generate the product of non-negative decimal numbers @a A and @a B at
@@ -1090,7 +1090,7 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  ** @warning The result must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define DEC_MUL(A, B) IF_DEC_LT(A, B)(_DEC_MUL(A, _dec2uni(B)))(_DEC_MUL(B, _dec2uni(A)))
+#define DEC_MUL(A, B) IF_DEC_LT(A, B)(P99__DEC_MUL(A, P99__dec2uni(B)))(P99__DEC_MUL(B, P99__dec2uni(A)))
 /**
  ** @brief Generate the quotient of non-negative decimal numbers @a A and @a B at
  ** preprocessing time.
@@ -1098,7 +1098,7 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  ** @warning Both arguments must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define DEC_DIV(A, B) CHS(A, _DIV ## B())
+#define DEC_DIV(A, B) CHS(A, P99__DIV ## B())
 /**
  ** @brief Generate the modulus of non-negative decimal numbers @a A and @a B at
  ** preprocessing time.
@@ -1106,7 +1106,7 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  ** @warning Both arguments must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define DEC_MOD(A, B) CHS(A, _MOD ## B())
+#define DEC_MOD(A, B) CHS(A, P99__MOD ## B())
 
 /**
  ** @brief Declare the types that are going to be used with a
@@ -1114,7 +1114,7 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  **/
 #define VA_TYPES(NAME, ...)   TYPEDEFS(PASTE(NAME, _mod_type_), __VA_ARGS__)
 
-#define _VA_MODARG(AP, NAME, M, ...) va_arg(AP, PASTE(NAME, _mod_type_, M))
+#define P99__VA_MODARG(AP, NAME, M, ...) va_arg(AP, PASTE(NAME, _mod_type_, M))
 
 /**
  ** @brief Obtain the next argument in the variable argument list of
@@ -1129,17 +1129,17 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  ** ::LEN_MODARG. @c R defaults to 0 if omitted.
  ** @see VA_ARGS
  **/
-#define VA_MODARG(AP, ...) _VA_MODARG(AP, __VA_ARGS__, 0, ~)
+#define VA_MODARG(AP, ...) P99__VA_MODARG(AP, __VA_ARGS__, 0, ~)
 
-#define _CAS1(NAME, X, N) (PASTE2(NAME, _mod_type_0){ X }
-#define _CAS2(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 2))){ X }
-#define _CAS3(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 3))){ X }
-#define _CAS4(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 4))){ X }
-#define _CAS5(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 5))){ X }
-#define _MODARG_LIST(NAME, F, N, ...) FOR(NAME, N, _SEQ, F, __VA_ARGS__)
+#define P99__CAS1(NAME, X, N) (PASTE2(NAME, _mod_type_0){ X }
+#define P99__CAS2(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 2))){ X }
+#define P99__CAS3(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 3))){ X }
+#define P99__CAS4(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 4))){ X }
+#define P99__CAS5(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 5))){ X }
+#define P99__MODARG_LIST(NAME, F, N, ...) FOR(NAME, N, P99__SEQ, F, __VA_ARGS__)
 
-#define LEN_MODARG(NAME, M, ...) _MODARG_(M)(__VA_ARGS__), _MODARG_LIST(NAME, PASTE2(_CAS, M), NARG(__VA_ARGS__), __VA_ARGS__)
-#define LEN_ARG(NAME, ...) _MODARG_(1)(__VA_ARGS__), _MODARG_LIST(NAME, _CAS1, NARG(__VA_ARGS__), __VA_ARGS__)
+#define LEN_MODARG(NAME, M, ...) P99__MODARG_(M)(__VA_ARGS__), P99__MODARG_LIST(NAME, PASTE2(P99__CAS, M), NARG(__VA_ARGS__), __VA_ARGS__)
+#define LEN_ARG(NAME, ...) P99__MODARG_(1)(__VA_ARGS__), P99__MODARG_LIST(NAME, P99__CAS1, NARG(__VA_ARGS__), __VA_ARGS__)
 
 
 /**

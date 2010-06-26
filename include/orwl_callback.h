@@ -13,7 +13,7 @@
 
 #include "orwl_wait_queue.h"
 
-#define _CALLBACK_PAIR(T) _ ## T ## _orwl_wh_t
+#define P99__CALLBACK_PAIR(T) _ ## T ## _orwl_wh_t
 
 /**
  ** @brief Declare that a type @a T acts as a callback that is

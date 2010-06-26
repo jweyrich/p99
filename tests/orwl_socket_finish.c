@@ -140,7 +140,7 @@ int main(int argc, char **argv) {
   long double const a8 = HEX_DOUBLE(,,8,-,,L);
   long double const a9 = HEX_DOUBLE(-,1,8,-,1);
 
-  _dec_add(3, 7);
+  P99__dec_add(3, 7);
   DEC_MUL(7, 2);
   DEC_MUL(9, 3);
   //DEC_MUL(8, 8);

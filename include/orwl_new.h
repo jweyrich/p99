@@ -52,9 +52,9 @@
  **/
 #define TZERO(X) (memset(&(X), 0, sizeof(X)))
 
-#define _NEW(T) T ## _init((T*)malloc(sizeof(T)))
+#define P99__NEW(T) T ## _init((T*)malloc(sizeof(T)))
 
-#define _NEW_ARGS(T, ...) T ## _init((T*)malloc(sizeof(T)), __VA_ARGS__)
+#define P99__NEW_ARGS(T, ...) T ## _init((T*)malloc(sizeof(T)), __VA_ARGS__)
 
 
 /**
@@ -67,7 +67,7 @@
  **
  ** @see CALL_WITH_DEFAULTS
  **/
-#define NEW(...) IF_DEC_LT(NARG(__VA_ARGS__), 2)(_NEW(__VA_ARGS__))(_NEW_ARGS(__VA_ARGS__))
+#define NEW(...) IF_DEC_LT(NARG(__VA_ARGS__), 2)(P99__NEW(__VA_ARGS__))(P99__NEW_ARGS(__VA_ARGS__))
 
 
 /**
@@ -165,7 +165,7 @@ void T ## _vdelete(T const*vec) {                                       \
 DECLARE_DELETE(T)                                                \
 DECLARE_VDELETE(T)                                               \
 DECLARE_VNEW(T)                                                  \
-enum _tame_ansi_c_semicolon_message_ ## T { _new_delete_ ## T }
+enum P99__tame_ansi_c_semicolon_message_ ## T { P99__new_delete_ ## T }
 
 #define DEFINE_DELETE(T) void T ## _delete(T const*el)
 #define DEFINE_VNEW(T) T *T ## _vnew(size_t n)

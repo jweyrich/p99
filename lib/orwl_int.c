@@ -57,6 +57,6 @@ DEFINE_ARI2STR(ulong);
 DEFINE_ARI2STR(sllong);
 DEFINE_ARI2STR(ullong);
 
-_DEFINE_ARI2STR(void_cptr, p);
+P99__DEFINE_ARI2STR(void_cptr, p);
 
 int mfputs_func(FILE* f, size_t n, char const*const* A);

@@ -14,7 +14,7 @@ print "/* This file is automat";
 print "ically generated, do not chan";
 print "ge manually. */\n";
 
-print "#define _ARG(";
+print "#define P99__ARG(";
 for (my $i = 1; $i <= $maxnumber; ++$i) {
     if ($i % 8 != 1) {
         print "\t_$i,";
@@ -25,9 +25,9 @@ for (my $i = 1; $i <= $maxnumber; ++$i) {
 print "\\\n\t...) _$maxnumber\n";
 
 for (my $m = 1; $m < 5; ++$m) {
-    print "#define _NARG_$m(...) _ARG(__VA_ARGS__, ";
+    print "#define P99__NARG_$m(...) P99__ARG(__VA_ARGS__, ";
     for (my $i = ($maxnumber - 1); $i >= 0; --$i) {
-        my $val = ($i % $m) ? "_INV($m)" : ($i / $m);
+        my $val = ($i % $m) ? "P99__INV($m)" : ($i / $m);
         if ($i % 8 != 7) {
             print "\t$val,";
         } else {
@@ -38,7 +38,7 @@ for (my $m = 1; $m < 5; ++$m) {
 }
 
 for (my $arg = 0; $arg < $maxnumber; ++$arg) {
-    print "#define _SKP${arg}(";
+    print "#define P99__SKP${arg}(";
     for (my $i = 0; $i <= $arg; ++$i) {
         if ($i % 8 != 1) {
             print "\t_$i,";
@@ -50,7 +50,7 @@ for (my $arg = 0; $arg < $maxnumber; ++$arg) {
 }
 
 for (my $arg = 1; $arg < $maxnumber; ++$arg) {
-    print "#define _PRE${arg}(";
+    print "#define P99__PRE${arg}(";
     for (my $i = 0; $i < $arg; ++$i) {
         if ($i % 8 != 1) {
             print "\t_$i,";
@@ -69,7 +69,7 @@ for (my $arg = 1; $arg < $maxnumber; ++$arg) {
     print "\n";
 }
 
-print "#define _ASCENDING() ";
+print "#define P99__ASCENDING() ";
 for (my $i = 0; $i < $maxnumber; ++$i) {
     if ($i % 8 != 0) {
         print "\t$i,";
@@ -80,7 +80,7 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
 print STDOUT "\t", $maxnumber, "\n";
 
 for(my $mod = 1; $mod < $maxnumber; ++$mod) {
-    print "#define _MOD${mod}() ";
+    print "#define P99__MOD${mod}() ";
     for (my $i = 0; $i < $maxnumber; ++$i) {
         if ($i % ${mod} != 0) {
             printf "\t%d,", $i % ${mod};
@@ -92,7 +92,7 @@ for(my $mod = 1; $mod < $maxnumber; ++$mod) {
 }
 
 for(my $div = 1; $div < $maxnumber; ++$div) {
-    print "#define _DIV${div}() ";
+    print "#define P99__DIV${div}() ";
     for (my $i = 0; $i < $maxnumber; ++$i) {
         if ($i % ${div} != 0) {
             printf "\t%d,", $i / ${div};
@@ -113,23 +113,23 @@ for(my $div = 1; $div < $maxnumber; ++$div) {
     }
 }
 
-printf "#define _uni2dec_%s %d\n", ${digit}x$_, $_
+printf "#define P99__uni2dec_%s %d\n", ${digit}x$_, $_
     foreach (0.. $maxnumber);
-printf "#define _dec2uni_%d %s\n", $_, ${digit}x$_
+printf "#define P99__dec2uni_%d %s\n", $_, ${digit}x$_
     foreach (0.. $maxnumber);
-printf "#define _DEC_PRED_%d %d\n", $_ + 1, $_
+printf "#define P99__DEC_PRED_%d %d\n", $_ + 1, $_
     foreach (0.. $maxnumber);
-printf "#define _itpredecessor_%d(DEC) DEC_PRED(_itpredecessor_%d(DEC))\n", $_ + 1, $_
+printf "#define P99__itpredecessor_%d(DEC) DEC_PRED(P99__itpredecessor_%d(DEC))\n", $_ + 1, $_
     foreach (0.. $maxnumber);
-printf "#define _DEC_PRED_minus_%d minus_%d\n", $_, $_ + 1
+printf "#define P99__DEC_PRED_minus_%d minus_%d\n", $_, $_ + 1
     foreach (0.. $maxnumber);
-printf "#define _minus_minus_%d %d\n", $_, $_
+printf "#define P99__minus_minus_%d %d\n", $_, $_
     foreach (0.. $maxnumber);
-printf "#define _IS_%d_GE_0 ,\n", $_
+printf "#define P99__IS_%d_GE_0 ,\n", $_
     foreach (0.. $maxnumber);
-printf "#define _dec_eval_%d %d\n", $_, $_
+printf "#define P99__dec_eval_%d %d\n", $_, $_
     foreach (0.. $maxnumber);
-printf "#define _dec_eval_minus_%d %d\n", $_, -$_
+printf "#define P99__dec_eval_minus_%d %d\n", $_, -$_
     foreach (0.. $maxnumber);
 print "#define REP${_}(X) ", "X ## " x ($_ - 1), "X\n"
     foreach (2 .. $maxnumber);
@@ -137,12 +137,6 @@ print "#define REP${_}(X) ", "X ## " x ($_ - 1), "X\n"
 
 for (my $i = 2; $i < $maxnumber; ++$i) {
     my $i1 = $i - 1;
-    print "#define _DOIT${i}(NAME, OP, FUNC, A, ...) \\\n",
-    "\tOP(NAME, FUNC(NAME, A, $i1), $i1, _DOIT${i1}(NAME, OP, FUNC, __VA_ARGS__, ))\n";
-}
-
-for (my $i = 2; $i < $maxnumber; ++$i) {
-    my $i1 = $i - 1;
-    print "#define _FOR${i}(NAME, OP, FUNC, ...) \\\n",
-    "\tOP(NAME, $i1, _FOR${i1}(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), $i1))\n";
+    print "#define P99__FOR${i}(NAME, OP, FUNC, ...) \\\n",
+    "\tOP(NAME, $i1, P99__FOR${i1}(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), $i1))\n";
 }
