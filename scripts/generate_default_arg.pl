@@ -37,6 +37,17 @@ for (my $m = 1; $m < 5; ++$m) {
     print ")\n";
 }
 
+print "#define HAS_COMMA(...) P99__ARG(__VA_ARGS__,\\\n";
+for (my $i = 2; $i < $maxnumber; ++$i) {
+    if ($i % 8 != 1) {
+        print "\t1,";
+    } else {
+        print "\\\n\t1,";
+    }
+}
+print "\t0, ...)\n";
+
+
 for (my $arg = 0; $arg < $maxnumber; ++$arg) {
     print "#define P99__SKP${arg}(";
     for (my $i = 0; $i <= $arg; ++$i) {
