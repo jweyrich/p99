@@ -220,23 +220,23 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   return state;
 }
 
-typedef orwl_handle _orwl_handle_cancel;
+typedef orwl_handle orwl_handle_cancel;
 
-_orwl_handle_cancel* _orwl_handle_cancel_init(_orwl_handle_cancel* H) {
+orwl_handle_cancel* orwl_handle_cancel_init(orwl_handle_cancel* H) {
   return orwl_handle_init(H);
 }
 
-void _orwl_handle_cancel_destroy(_orwl_handle_cancel* H) {
+void orwl_handle_cancel_destroy(orwl_handle_cancel* H) {
   orwl_handle_destroy(H);
 }
 
-DECLARE_NEW_DELETE(_orwl_handle_cancel);
-DEFINE_NEW_DELETE(_orwl_handle_cancel);
+DECLARE_NEW_DELETE(orwl_handle_cancel);
+DEFINE_NEW_DELETE(orwl_handle_cancel);
 
-DECLARE_THREAD(_orwl_handle_cancel);
+DECLARE_THREAD(orwl_handle_cancel);
 
 
-DEFINE_THREAD(_orwl_handle_cancel) {
+DEFINE_THREAD(orwl_handle_cancel) {
   orwl_acquire(Arg);
   orwl_release(Arg);
   /* We should be the last to have a reference to this handle so this
@@ -246,8 +246,8 @@ DEFINE_THREAD(_orwl_handle_cancel) {
 orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_valid;
   if (!rh || !rh->wh) return orwl_valid;
-  _orwl_handle_cancel* rhcp = memcpy(NEW(_orwl_handle_cancel), rh, sizeof(*rh));
-  _orwl_handle_cancel_create(rhcp, NULL);
+  orwl_handle_cancel* rhcp = memcpy(NEW(orwl_handle_cancel), rh, sizeof(*rh));
+  orwl_handle_cancel_create(rhcp, NULL);
   orwl_handle_destroy(rh);
   return state;
 }

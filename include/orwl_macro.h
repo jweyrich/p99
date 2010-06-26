@@ -273,20 +273,20 @@
  ** @return tokens 0 or 1
  **/
 #define IS_EMPTY(...)                                                   \
-  P99__ISEMPTY(                                                             \
-          /* test if there is just one argument, eventually an empty    \
-             one */                                                     \
-          HAS_COMMA(__VA_ARGS__),                                       \
-          /* test if _IS__EQ__ together with the argument               \
-             adds a comma */                                            \
-    HAS_COMMA(P99__IS__EQ__ __VA_ARGS__),                                \
-          /* test if the argument together with a parenthesis           \
-             adds a comma */                                            \
-          HAS_COMMA(__VA_ARGS__ (~)),                                   \
-          /* test if placing it between _IS__EQ__ and the               \
-             parenthesis adds a comma */                                \
-          HAS_COMMA(P99__IS__EQ__ __VA_ARGS__ (~))                          \
-          )
+P99__ISEMPTY(                                                           \
+             /* test if there is just one argument, eventually an empty \
+                one */                                                  \
+             HAS_COMMA(__VA_ARGS__),                                    \
+             /* test if P99_IS__EQ__ together with the argument         \
+                adds a comma */                                         \
+             HAS_COMMA(P99__IS__EQ__ __VA_ARGS__),                      \
+             /* test if the argument together with a parenthesis        \
+                adds a comma */                                         \
+             HAS_COMMA(__VA_ARGS__ (~)),                                \
+             /* test if placing it between P99_IS__EQ__ and the         \
+                parenthesis adds a comma */                             \
+             HAS_COMMA(P99__IS__EQ__ __VA_ARGS__ (~))                   \
+             )
 
 #define P99__ISEMPTY(_0, _1, _2, _3) HAS_COMMA(PASTE5(P99__IS_EMPTY_CASE_, _0, _1, _2, _3))
 #define P99__IS_EMPTY_CASE_0001 ,

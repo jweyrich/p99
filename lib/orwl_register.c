@@ -12,11 +12,12 @@
 
 #include "orwl_once.h"
 
-pthread_mutex_t _reg_mut = PTHREAD_MUTEX_INITIALIZER;
+static
+pthread_mutex_t orwl__reg_mut = PTHREAD_MUTEX_INITIALIZER;
 
 orwl_register const* orwl_register_init(orwl_register const* field) {
   if (!*(field->regptr)) {
-    MUTUAL_EXCLUDE(_reg_mut) {
+    MUTUAL_EXCLUDE(orwl__reg_mut) {
       if (!*(field->regptr)) {
         orwl_register const*base = (field->start);
         for (size_t i = 0; base[i].fptr != NULL || base[i].dptr != NULL; ++i)

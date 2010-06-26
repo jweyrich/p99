@@ -35,7 +35,7 @@ DEFINE_ORWL_TYPE_DYNAMIC(orwl_handle2,
                          );
 
 static
-orwl_mirror* _location(orwl_handle2* rh2) {
+orwl_mirror* mirror_location(orwl_handle2* rh2) {
   orwl_mirror* ret = NULL;
   if (rh2) {
     bool par = (rh2->clock % 2);
@@ -45,7 +45,7 @@ orwl_mirror* _location(orwl_handle2* rh2) {
 }
 
 static
-void _orwl_new_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed, bool par) {
+void orwl__new_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed, bool par) {
   if (rh2->state[par] != orwl_requested)
     rh2->state[par] = rh2->inclusive
       ? orwl_read_request(location, &rh2->pair[par], seed)
@@ -53,31 +53,31 @@ void _orwl_new_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed
 }
 
 static
-orwl_state _orwl_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed, bool inclusive) {
+orwl_state orwl__request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed, bool inclusive) {
   rh2->state[0] = orwl_invalid;
   rh2->state[1] = orwl_invalid;
   bool par = (rh2->clock % 2);
-  if (!_location(rh2)) {
+  if (!mirror_location(rh2)) {
     rh2->inclusive = inclusive;
-    _orwl_new_request2(location, rh2, seed, par);
+    orwl__new_request2(location, rh2, seed, par);
     //rh2->location = location;
   }
   return rh2->state[par];
 }
 
 orwl_state orwl_write_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed) {
-  return _orwl_request2(location, rh2, seed, false);
+  return orwl__request2(location, rh2, seed, false);
 }
 
 orwl_state orwl_read_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed) {
-  return _orwl_request2(location, rh2, seed, true);
+  return orwl__request2(location, rh2, seed, true);
 }
 
 orwl_state orwl_release2(orwl_handle2* rh2, rand48_t* seed)  {
   bool par = (rh2->clock % 2);
   orwl_acquire2(rh2);
   if (rh2->state[par] == orwl_acquired) {
-    rh2->state[par] =  _location(rh2)
+    rh2->state[par] =  mirror_location(rh2)
       ? orwl_release(&rh2->pair[par], seed)
       : orwl_invalid;
   }
@@ -86,7 +86,7 @@ orwl_state orwl_release2(orwl_handle2* rh2, rand48_t* seed)  {
 }
 
 orwl_state orwl_cancel2(orwl_handle2* rh2, rand48_t* seed) {
-  if (_location(rh2)) {
+  if (mirror_location(rh2)) {
     rh2->inclusive = false;
     for (int par = 0; par < 2; ++par) {
       rh2->state[par] = orwl_cancel(&rh2->pair[par], seed);
@@ -98,7 +98,7 @@ orwl_state orwl_cancel2(orwl_handle2* rh2, rand48_t* seed) {
 orwl_state orwl_acquire2(orwl_handle2* rh2, rand48_t* seed) {
   bool par = (rh2->clock % 2);
   orwl_state *const state = rh2->state;
-  orwl_mirror *const location = _location(rh2);
+  orwl_mirror *const location = mirror_location(rh2);
   switch (state[par]) {
   case orwl_requested:
     state[par] = location
@@ -108,7 +108,7 @@ orwl_state orwl_acquire2(orwl_handle2* rh2, rand48_t* seed) {
   default: return orwl_invalid;
   }
   if (state[par] == orwl_acquired) {
-    _orwl_new_request2(location, rh2, seed, !par);
+    orwl__new_request2(location, rh2, seed, !par);
     if (state[!par] != orwl_requested) state[par] = orwl_invalid;
   }
   return state[par];
@@ -116,7 +116,7 @@ orwl_state orwl_acquire2(orwl_handle2* rh2, rand48_t* seed) {
 
 orwl_state orwl_test2(orwl_handle2* rh2, rand48_t* seed) {
   bool par = (rh2->clock % 2);
-  rh2->state[par] =  _location(rh2)
+  rh2->state[par] =  mirror_location(rh2)
     ? orwl_test(&rh2->pair[par])
     : orwl_invalid;
   return rh2->state[par];

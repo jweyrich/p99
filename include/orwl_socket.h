@@ -72,15 +72,15 @@ do {                                                                    \
  } while (0)
 
 
-extern in_addr_t _inet4_addr;
+extern in_addr_t p99__inet4_addr;
 
 DECLARE_ONCE_UPON(inet4_addr);
 
 
 inline
 in_addr_t inet4_addr(void) {
-  INIT_ONCE_UPON(inet4_addr, _inet4_addr);
-  return _inet4_addr;
+  INIT_ONCE_UPON(inet4_addr, p99__inet4_addr);
+  return p99__inet4_addr;
 }
 
 FSYMB_DOCUMENTATION(orwl_inet_ntop)

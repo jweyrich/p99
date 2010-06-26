@@ -13,7 +13,7 @@
 
 #include "orwl_wait_queue.h"
 
-#define P99__CALLBACK_PAIR(T) _ ## T ## _orwl_wh_t
+#define P99__CALLBACK_PAIR(T) p99__## T ## _orwl_wh_t
 
 /**
  ** @brief Declare that a type @a T acts as a callback that is
@@ -45,24 +45,24 @@ typedef struct {                                                        \
   T *Arg;                                                               \
   orwl_wh *Wh;                                                          \
   orwl_wq *Wq;                                                          \
-} _ ## T ## _orwl_wh_t;                                                 \
- DOCUMENT_INIT(_ ## T ## _orwl_wh_t)                                    \
-_ ## T ## _orwl_wh_t *                                                  \
-_ ## T ## _orwl_wh_t ## _init(_ ## T ## _orwl_wh_t *arg) {              \
+} p99__## T ## _orwl_wh_t;                                              \
+ DOCUMENT_INIT(p99__ ## T ## _orwl_wh_t)                                \
+p99__ ## T ## _orwl_wh_t *                                              \
+p99__ ## T ## _orwl_wh_t ## _init(p99__ ## T ## _orwl_wh_t *arg) {      \
   pthread_cond_init(&arg->cond, NULL);                                  \
   arg->Arg = NULL;                                                      \
   arg->Wh = NULL;                                                       \
   arg->Wq = NULL;                                                       \
   return arg;                                                           \
 }                                                                       \
- DOCUMENT_DESTROY(_ ## T ## _orwl_wh_t)                                 \
-void _ ## T ## _orwl_wh_t ## _destroy(_ ## T ## _orwl_wh_t *arg) {      \
+ DOCUMENT_DESTROY(p99__ ## T ## _orwl_wh_t)                             \
+void p99__## T ## _orwl_wh_t ## _destroy(p99__ ## T ## _orwl_wh_t *arg) { \
   if (!arg) return;                                                     \
   pthread_cond_destroy(&arg->cond);                                     \
   if (arg->Arg) T ## _delete(arg->Arg);                                 \
 }                                                                       \
-DECLARE_NEW_DELETE(_ ## T ## _orwl_wh_t);                               \
-DECLARE_THREAD(_ ## T ## _orwl_wh_t);                                   \
+DECLARE_NEW_DELETE(p99__ ## T ## _orwl_wh_t);                           \
+DECLARE_THREAD(p99__ ## T ## _orwl_wh_t);                               \
 extern int orwl_callback_attach_ ## T(T *Arg, orwl_wh *wh);             \
 extern void orwl_callback_ ## T(T *Arg, orwl_wh *Wh)
 
@@ -71,8 +71,8 @@ extern void orwl_callback_ ## T(T *Arg, orwl_wh *Wh)
  ** @see DECLARE_CALLBACK
  **/
 #define DEFINE_CALLBACK(T)                                              \
-  DEFINE_NEW_DELETE(_ ## T ## _orwl_wh_t);                              \
-DEFINE_THREAD(_ ## T ## _orwl_wh_t) {                                   \
+DEFINE_NEW_DELETE(p99__ ## T ## _orwl_wh_t);                            \
+DEFINE_THREAD(p99__ ## T ## _orwl_wh_t) {                               \
   T *arg = Arg->Arg;                                                    \
   orwl_wh *wh = Arg->Wh;                                                \
   orwl_wq *wq = Arg->Wq;                                                \
@@ -98,7 +98,7 @@ int orwl_callback_attach_ ## T(T *arg, orwl_wh *wh) {                   \
         pthread_mutex_unlock(&wq->mut);                                 \
         orwl_callback_ ## T(arg, wh);                                   \
       } else {                                                          \
-        _ ## T ## _orwl_wh_t *pair = NEW(_ ## T ## _orwl_wh_t);         \
+        p99__## T ## _orwl_wh_t *pair = NEW(p99__ ## T ## _orwl_wh_t);  \
         pair->Arg = arg;                                                \
         pair->Wh = wh;                                                  \
         pair->Wq = wq;                                                  \
@@ -108,14 +108,14 @@ int orwl_callback_attach_ ## T(T *arg, orwl_wh *wh) {                   \
         /* One token for ourselves, one for our child */                \
         orwl_wh_load(wh, 2);                                            \
         /* create thread detached */                                    \
-        ret = _ ## T ## _orwl_wh_t ## _create(pair, NULL);              \
+        ret = p99__## T ## _orwl_wh_t ## _create(pair, NULL);           \
         /* wait until we know that the client thread has attached to */ \
         /* wh                                                        */ \
         pthread_cond_wait(&pair->cond, &wq->mut);                       \
         orwl_wh_unload(wh, 1);                                          \
         /* Be careful to eliminate all garbage that the wrapping has */ \
         /* generated.                                                */ \
-        /*_ ## T ## _orwl_wh_t ## _delete(pair);*/                      \
+        /*p99__ ## T ## _orwl_wh_t ## _delete(pair);*/                  \
         pthread_mutex_unlock(&wq->mut);                                 \
       }                                                                 \
     }                                                                   \

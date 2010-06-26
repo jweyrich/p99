@@ -13,12 +13,12 @@
 
 #include "orwl_posix_default.h"
 
-struct _once_upon_cont {
+struct p99__once_upon_cont {
   void (*const init)(void);
   pthread_mutex_t mut;
 };
 
-struct _once_cont {
+struct p99__once_cont {
   void (*const init)(void);
   int cond;
   pthread_mutex_t mut;
@@ -34,19 +34,19 @@ struct _once_cont {
  ** @see DEFINE_ONCE
  **/
 #define DECLARE_ONCE(T)                         \
-extern struct _once_cont _ ## T ## _once
+extern struct p99__once_cont p99__## T ## _once
 
 #define DECLARE_ONCE_UPON(T)                    \
-extern struct _once_upon_cont _ ## T ## _once
+extern struct p99__once_upon_cont p99__## T ## _once
 
 
-#define DEFINE_ONCE_UPON(T)                     \
-static void _ ## T ## _once_init(void);         \
-struct _once_upon_cont _ ## T ## _once = {      \
-  .mut = PTHREAD_MUTEX_INITIALIZER,             \
-  .init = _ ## T ## _once_init,                 \
-};                                              \
-static void _ ## T ## _once_init(void)
+#define DEFINE_ONCE_UPON(T)                             \
+static void p99__## T ## _once_init(void);              \
+struct p99__once_upon_cont p99__## T ## _once = {       \
+  .mut = PTHREAD_MUTEX_INITIALIZER,                     \
+  .init = p99__## T ## _once_init,                      \
+};                                                      \
+static void p99__## T ## _once_init(void)
 
 
 /**
@@ -58,13 +58,13 @@ static void _ ## T ## _once_init(void)
  ** @see DECLARE_ONCE
  **/
 #define DEFINE_ONCE(T)                          \
-static void _ ## T ## _once_init(void);         \
-struct _once_cont _ ## T ## _once = {            \
+static void p99__## T ## _once_init(void);      \
+struct p99__once_cont p99__## T ## _once = {    \
   .mut = PTHREAD_MUTEX_INITIALIZER,             \
   .cond = 0,                                    \
-  .init = _ ## T ## _once_init,                 \
+  .init = p99__## T ## _once_init,              \
 };                                              \
-static void _ ## T ## _once_init(void)
+static void p99__## T ## _once_init(void)
 
 /**
  ** @brief Protect the following block or statement with @c
@@ -95,8 +95,8 @@ SAVE_BLOCK(pthread_mutex_t*,                    \
 #define INIT_ONCE_UPON(T, N)                    \
 do {                                            \
   if (branch_expect(!(N), false))               \
-    MUTUAL_EXCLUDE(_ ## T ## _once.mut)         \
-      if (!(N)) _ ## T ## _once.init();         \
+    MUTUAL_EXCLUDE(p99__ ## T ## _once.mut)     \
+      if (!(N)) p99__## T ## _once.init();      \
  } while(0)
 
 /**
@@ -104,14 +104,14 @@ do {                                            \
  ** DEFINE_ONCE() has been called exactly once before further
  ** proceeding.
  **/
-#define INIT_ONCE(T)                                    \
-do {                                                    \
-  if (branch_expect(!(_ ## T ## _once.cond), false))    \
-    MUTUAL_EXCLUDE(_ ## T ## _once.mut)                 \
-      if (!(_ ## T ## _once.cond)) {                    \
-        _ ## T ## _once.init();                         \
-        _ ## T ## _once.cond = 1;                       \
-      }                                                 \
+#define INIT_ONCE(T)                                            \
+do {                                                            \
+  if (branch_expect(!(p99__ ## T ## _once.cond), false))        \
+    MUTUAL_EXCLUDE(p99__ ## T ## _once.mut)                     \
+      if (!(p99__ ## T ## _once.cond)) {                        \
+        p99__## T ## _once.init();                              \
+        p99__## T ## _once.cond = 1;                            \
+      }                                                         \
  } while(0)
 
 /**
@@ -153,11 +153,11 @@ do {                                                    \
 # define DECLARE_ONCE_STATIC(NAME)              \
 extern                                          \
 __attribute__((constructor))                    \
-void PASTE(_, NAME, _once_static)(void)
+void PASTE(p99__, NAME, _once_static)(void)
 
 # define DEFINE_ONCE_STATIC(NAME)               \
 __attribute__((constructor))                    \
-void PASTE(_, NAME, _once_static)(void)
+void PASTE(p99__, NAME, _once_static)(void)
 
 # define INIT_ONCE_STATIC(NAME)
 #else

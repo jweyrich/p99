@@ -61,17 +61,17 @@ typedef enum { __VA_ARGS__ ,                                            \
                /*! the smallest @ref T constant */                      \
                T ## _min = 0                                            \
 } T;                                                                    \
-extern char const* _ ## T ## _names[T ## _amount];                      \
+extern char const* p99__## T ## _names[T ## _amount];                   \
 DECLARE_ONCE(T);                                                        \
  /*! @brief Get a string with the name of constant @a x of type @ref T */ \
 inline                                                                  \
 char const* T ## _getname(T x) {                                        \
   unsigned pos = x;                                                     \
   INIT_ONCE(T);                                                         \
-  return (pos < T ## _amount) ? _ ## T ## _names[pos] : "((" #T ")unknown value)"; \
+  return (pos < T ## _amount) ? p99__## T ## _names[pos] : "((" #T ")unknown value)"; \
 }                                                                       \
-static char _ ## T ## _concat[] =  # __VA_ARGS__;                       \
-enum P99__decl_enum_ ## T { _ ## T ## _concat_len = sizeof(_ ## T ## _concat) }
+static char p99__## T ## _concat[] =  # __VA_ARGS__;                    \
+enum P99__decl_enum_ ## T { p99__## T ## _concat_len = sizeof(p99__ ## T ## _concat) }
 
 
 /**
@@ -81,16 +81,16 @@ enum P99__decl_enum_ ## T { _ ## T ## _concat_len = sizeof(_ ## T ## _concat) }
  **/
 #define DEFINE_ENUM(T)                                                  \
 /* Ensure that the table is generated in this object file */            \
-char const* _ ## T ## _names[T ## _amount] = INITIALIZER;               \
+char const* p99__## T ## _names[T ## _amount] = INITIALIZER;            \
 DEFINE_ONCE(T) {                                                        \
-  char *head = _ ## T ## _concat;                                       \
+  char *head = p99__## T ## _concat;                                    \
   for (T i = T ## _min; i < T ## _max; ++i) {                           \
-    _ ## T ## _names[i] = head;                                         \
+    p99__## T ## _names[i] = head;                                      \
     head = index(head, ',');                                            \
     for (; *head == ',' || *head == ' '; ++head)                        \
       *head = '\0';                                                     \
   }                                                                     \
-  _ ## T ## _names[T ## _max] = head;                                   \
+  p99__## T ## _names[T ## _max] = head;                                \
 }                                                                       \
 /* Ensure that the function symbol is generated in this object file */  \
 char const* T ## _getname(T x)

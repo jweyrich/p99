@@ -440,7 +440,7 @@ inline void PASTE(NAME, _clear)(void) {         \
 extern pthread_key_t KEY
 
 
-#define DECLARE_THREAD_VAR(T, NAME) P99__DECLARE_THREAD_VAR(T, NAME, PASTE(_, NAME, _key_))
+#define DECLARE_THREAD_VAR(T, NAME) P99__DECLARE_THREAD_VAR(T, NAME, PASTE(p99__, NAME, _key))
 
 
 #define P99___DEFINE_THREAD_VAR(T, NAME, KEY)                               \
@@ -453,7 +453,7 @@ T* NAME(void)
 
 #define P99__DEFINE_THREAD_VAR(T, NAME, KEY) P99___DEFINE_THREAD_VAR(T, NAME, KEY)
 
-#define DEFINE_THREAD_VAR(T, NAME) P99__DEFINE_THREAD_VAR(T, NAME, PASTE(_, NAME, _key_))
+#define DEFINE_THREAD_VAR(T, NAME) P99__DEFINE_THREAD_VAR(T, NAME, PASTE(p99__, NAME, _key))
 
 
 

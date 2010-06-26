@@ -110,11 +110,11 @@ typedef struct {
   sem_t semCalled;
   start_routine_t start_routine;
   void *arg;
-} _routine_arg;
+} orwl__routine_arg;
 
 
 
-_routine_arg* _routine_arg_init(_routine_arg *rt,
+orwl__routine_arg* orwl__routine_arg_init(orwl__routine_arg *rt,
                                               start_routine_t start_routine,
                                               void* arg) {
   sem_init(&rt->semCaller, 0, 0);
@@ -124,22 +124,22 @@ _routine_arg* _routine_arg_init(_routine_arg *rt,
   return rt;
 }
 
-PROTOTYPE(_routine_arg*, _routine_arg_init, _routine_arg *, start_routine_t, void*);
-#define _routine_arg_init(...) CALL_WITH_DEFAULTS(_routine_arg_init, 3, __VA_ARGS__)
+PROTOTYPE(orwl__routine_arg*, orwl__routine_arg_init, orwl__routine_arg *, start_routine_t, void*);
+#define orwl__routine_arg_init(...) CALL_WITH_DEFAULTS(orwl__routine_arg_init, 3, __VA_ARGS__)
 
-DECLARE_DEFARG(_routine_arg_init, , NULL, NULL);
-DEFINE_DEFARG(_routine_arg_init, , NULL, NULL);
+DECLARE_DEFARG(orwl__routine_arg_init, , NULL, NULL);
+DEFINE_DEFARG(orwl__routine_arg_init, , NULL, NULL);
 
-void _routine_arg_destroy(_routine_arg *rt) {
+void orwl__routine_arg_destroy(orwl__routine_arg *rt) {
   /* empty */
 }
 
-DECLARE_NEW_DELETE(_routine_arg);
-DEFINE_NEW_DELETE(_routine_arg);
+DECLARE_NEW_DELETE(orwl__routine_arg);
+DEFINE_NEW_DELETE(orwl__routine_arg);
 
 static
 void *detached_wrapper(void *routine_arg) {
-  _routine_arg *Routine_Arg = routine_arg;
+  orwl__routine_arg *Routine_Arg = routine_arg;
   start_routine_t start_routine = Routine_Arg->start_routine;
   void *restrict arg = Routine_Arg->arg;
   /* This should be fast since usually there should never be a waiter
@@ -159,7 +159,7 @@ void *detached_wrapper(void *routine_arg) {
   sem_wait(&Routine_Arg->semCaller);
   /* Be careful to eliminate all garbage that the wrapping has
      generated. */
-  _routine_arg_delete(Routine_Arg);
+  orwl__routine_arg_delete(Routine_Arg);
   Routine_Arg = NULL;
   routine_arg = NULL;
   return ret;
@@ -171,7 +171,7 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
   INIT_ONCE(orwl_pthread_create);
   /* Be sure to allocate the pair on the heap to leave full control
      to detached_wrapper() of what to do with it. */
-  _routine_arg *Routine_Arg = NEW(_routine_arg, start_routine, arg);
+  orwl__routine_arg *Routine_Arg = NEW(orwl__routine_arg, start_routine, arg);
   int ret = pthread_create(&(pthread_t){0},
                            &attr_detached,
                            detached_wrapper,

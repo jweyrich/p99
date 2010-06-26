@@ -58,16 +58,16 @@ void orwl_domain_call(orwl_domain domain, size_t id, void *arg) {
 }
 
 
-#define P99__ORWL_ALIAS(NAME) _ ## NAME ## _alias
+#define P99__ORWL_ALIAS(NAME) p99__## NAME ## _alias
 #define ORWL_ALIAS(NAME) P99__ORWL_ALIAS(NAME)
 
-#define P99__ORWL_REGISTER(NAME) _ ## NAME ## _regptr
+#define P99__ORWL_REGISTER(NAME) p99__## NAME ## _regptr
 #define ORWL_REGISTER(NAME) P99__ORWL_REGISTER(NAME)
 
-#define P99__ORWL_FTAB(NAME) _ ## NAME ## _ftab
+#define P99__ORWL_FTAB(NAME) p99__## NAME ## _ftab
 #define ORWL_FTAB(NAME) P99__ORWL_FTAB(NAME)
 
-#define P99___ORWL_DOMAIN_TABLE(L) P99__domain_tab ## L
+#define P99___ORWL_DOMAIN_TABLE(L) p99__domain_tab ## L
 #define P99__ORWL_DOMAIN_TABLE(L) P99___ORWL_DOMAIN_TABLE(L)
 #define ORWL_DOMAIN_TABLE P99__ORWL_DOMAIN_TABLE(__LINE__)
 

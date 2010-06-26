@@ -71,13 +71,13 @@ void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l);
 DEFINE_DEFARG(orwl_ntoh, , , 1);
 
 
-in_addr_t _inet4_addr = INITIALIZER;
+in_addr_t p99__inet4_addr = INITIALIZER;
 
 DEFINE_ONCE_UPON(inet4_addr) {
   char const* str = getenv("INET4");
   struct in_addr inaddr = INITIALIZER;
   if (inet_aton(str, &inaddr)) {
-    _inet4_addr = inaddr.s_addr;
+    p99__inet4_addr = inaddr.s_addr;
   }
 }
 

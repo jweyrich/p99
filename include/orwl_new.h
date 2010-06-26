@@ -94,7 +94,7 @@ void T ## _delete(T const*el) {                                         \
 }
 
 inline
-void *_vnew(size_t n) {
+void *p99__vnew(size_t n) {
   /* allocate in multiples of the alignment */
   size_t const ali = sizeof(uintmax_t);
   size_t N = (n / ali);
@@ -107,20 +107,20 @@ void *_vnew(size_t n) {
 }
 
 inline
-uintmax_t const*_vfind(void const*p) {
+uintmax_t const*p99__vfind(void const*p) {
   uintmax_t const* ret = ((uintmax_t const*)p) - 1;
   return ret;
 }
 
 inline
-size_t _vlen(void const*p) {
-  uintmax_t const*ret = _vfind(p);
+size_t p99__vlen(void const*p) {
+  uintmax_t const*ret = p99__vfind(p);
   return ret[0];
 }
 
 inline
-void _vdelete(void const*p) {
-  free((void*)_vfind(p));
+void p99__vdelete(void const*p) {
+  free((void*)p99__vfind(p));
 }
 
 /**
@@ -137,7 +137,7 @@ void _vdelete(void const*p) {
 inline                                                                  \
 T *T ## _vnew(size_t n) {                                               \
   size_t N = n*sizeof(T);                                               \
-  T *ret = _vnew(N);                                                    \
+  T *ret = p99__vnew(N);                                                \
   if (ret) {                                                            \
     for (size_t i = 0; i < n; ++i) {                                    \
       T ## _init(ret + i);                                              \
@@ -153,11 +153,11 @@ T *T ## _vnew(size_t n) {                                               \
 inline                                                                  \
 void T ## _vdelete(T const*vec) {                                       \
   if (vec) {                                                            \
-    size_t n = _vlen(vec) / sizeof(T);                                  \
+    size_t n = p99__vlen(vec) / sizeof(T);                              \
     for (size_t i = 0; i < n; ++i) {                                    \
       T ## _destroy((T*)(vec + i));                                     \
     }                                                                   \
-    _vdelete(vec);                                                      \
+    p99__vdelete(vec);                                                  \
   }                                                                     \
 }
 
