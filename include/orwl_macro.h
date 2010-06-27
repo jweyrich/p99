@@ -117,12 +117,12 @@
 /**
  ** @brief Test two decimal numbers @a A and @a B if they are equal.
  **/
-#define IF_DEC_EQ(A, B) IF_EQ(0,P99__dec_minus(A,B))
+#define IF_DEC_EQ(A, B) IF_EQ_1(IS_DEC_EQ(A,B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if they are unequal.
  **/
-#define IF_DEC_NE(A, B) IF_NE(0,P99__dec_minus(A,B))
+#define IF_DEC_NE(A, B) IF_EQ_0(IS_DEC_EQ(A,B))
 
 #define IF_GE_0(A) P99__IF_CLAUSE(PASTE(P99__IS_,A,_GE_,0)())
 #define IF_LT_0(A) P99__IF_NOT_CLAUSE(PASTE(P99__IS_,A,_GE_,0)())
@@ -131,25 +131,25 @@
  ** @brief Test two decimal numbers @a A and @a B if @a A is greater
  ** or equal to @a B.
  **/
-#define IF_DEC_GE(A, B) IF_GE_0(P99__dec_minus(A,B))
+#define IF_DEC_GE(A, B) IF_EQ_1(IS_DEC_GE(A, B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is less
  ** or equal to @a B.
  **/
-#define IF_DEC_LE(A, B) IF_GE_0(P99__dec_minus(B,A))
+#define IF_DEC_LE(A, B) IF_EQ_1(IS_DEC_LE(A, B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
  ** less than @a B.
  **/
-#define IF_DEC_LT(A, B) IF_LT_0(P99__dec_minus(A,B))
+#define IF_DEC_LT(A, B) IF_EQ_1(IS_DEC_LT(A, B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
  ** greater than @a B.
  **/
-#define IF_DEC_GT(A, B) IF_LT_0(P99__dec_minus(B,A))
+#define IF_DEC_GT(A, B) IF_EQ_1(IS_DEC_GT(A, B))
 
 /**
  ** @brief Test if token N is the token 0.
@@ -292,11 +292,13 @@
 #define P99_____dec_add(U,V) P99__uni_add(U,V)
 #define P99____dec_add(D,E) P99_____dec_add(P99__dec2uni(D),P99__dec2uni(E))
 #define P99___dec_add(D,E) P99__uni2dec(P99____dec_add(D,E))
-#define P99__dec_add(D,E) P99___dec_add(D,E)
+//#define P99__dec_add(D,E) P99___dec_add(D,E)
+#define P99__dec_add(D, E) DEC_ADD(D, E)
 
 #define P99__DEC_PRED_0 minus_1
 #define P99__dec_eval(EDEC) PASTE(P99__dec_eval_, EDEC)
 #define P99__dec_minus(D,E) PASTE(P99__itpredecessor_, E)(D)
+//#define P99__dec_minus(D, E) DEC_MINUS(D, E)
 
 
 #define P99__FSYMB(NAME) PASTE(NAME, _f, sy, mb, _)
@@ -543,10 +545,7 @@ CHOOSE5(xT,                                     \
 #define P99__Z(x) (0 ? TNULL(size_t) : (x))
 
 
-/** @addtogroup list_processing List processing macros
- ** @brief We provide here a series of macros that take a list of
- ** arguments of arbitrary length and that transform each element in
- ** that list in some way.
+/** @addtogroup list_processing
  ** @{
  **/
 
@@ -704,33 +703,6 @@ CHOOSE5(xT,                                     \
  **/
 #define ACCESSORS(X, N) FOR(X, N, P99__SEQ, P99__ACCESSOR, )
 
-/**
- ** Cut the argument list at position @a N
- **/
-#define SELS(N, ...) PASTE2(P99__PRE, N)(__VA_ARGS__)
-
-
-/**
- ** @brief Skip @a N elements in the remaining argument list.
- **/
-#define SKP(N, ...) PASTE2(P99__SKP, N)(__VA_ARGS__)
-
-/**
- ** @brief Get the sublist of length @a L starting at the @a
- ** N<sup>th</sup> element in the remaining argument list.
- **
- ** Counting of elements starts at 0.
- **/
-#define SUB(N, L, ...) P99__SUB(L, SKP(N, __VA_ARGS__))
-#define P99__SUB(L, ...) SELS(L, __VA_ARGS__)
-
-/**
- ** @brief Choose the @a N<sup>th</sup> element in the remaining argument
- ** list.
- **
- ** Counting of elements starts at 0.
- **/
-#define CHS(N, ...) SUB(N, 1, __VA_ARGS__)
 
 /**
  ** @brief Vector-assign to a list

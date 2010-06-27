@@ -94,7 +94,27 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
         print "\\\n\t$i,";
     }
 }
-print STDOUT "\t", $maxnumber, "\n";
+print STDOUT "\n";
+
+print "#define P99__ALL_ZEROES() ";
+for (my $i = 0; $i < $maxnumber; ++$i) {
+    if ($i % 8 != 0) {
+        print "\t0,";
+    } else {
+        print "\\\n\t0,";
+    }
+}
+print STDOUT "\n";
+
+print "#define P99__ALL_ONES() ";
+for (my $i = 0; $i < $maxnumber; ++$i) {
+    if ($i % 8 != 0) {
+        print "\t1,";
+    } else {
+        print "\\\n\t1,";
+    }
+}
+print STDOUT "\n";
 
 for(my $mod = 1; $mod < $maxnumber; ++$mod) {
     print "#define P99__MOD${mod}() ";
