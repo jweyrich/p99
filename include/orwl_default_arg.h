@@ -2061,6 +2061,136 @@
 	PASTE2(PASTE61(_1,	_2,	_3,	_4,	_5,	_6,	_7,	_8,	_9,	_10,	_11,	_12,	_13,	_14,	_15,	_16,	_17,	_18,	_19,	_20,	_21,	_22,	_23,	_24,	_25,	_26,	_27,	_28,	_29,	_30,	_31,	_32,	_33,	_34,	_35,	_36,	_37,	_38,	_39,	_40,	_41,	_42,	_43,	_44,	_45,	_46,	_47,	_48,	_49,	_50,	_51,	_52,	_53,	_54,	_55,	_56,	_57,	_58,	_59,	_60,	_61), _62)
 #define PASTE63(_1,	_2,	_3,	_4,	_5,	_6,	_7,	_8,	_9,	_10,	_11,	_12,	_13,	_14,	_15,	_16,	_17,	_18,	_19,	_20,	_21,	_22,	_23,	_24,	_25,	_26,	_27,	_28,	_29,	_30,	_31,	_32,	_33,	_34,	_35,	_36,	_37,	_38,	_39,	_40,	_41,	_42,	_43,	_44,	_45,	_46,	_47,	_48,	_49,	_50,	_51,	_52,	_53,	_54,	_55,	_56,	_57,	_58,	_59,	_60,	_61,	_62,	_63)	\
 	PASTE2(PASTE62(_1,	_2,	_3,	_4,	_5,	_6,	_7,	_8,	_9,	_10,	_11,	_12,	_13,	_14,	_15,	_16,	_17,	_18,	_19,	_20,	_21,	_22,	_23,	_24,	_25,	_26,	_27,	_28,	_29,	_30,	_31,	_32,	_33,	_34,	_35,	_36,	_37,	_38,	_39,	_40,	_41,	_42,	_43,	_44,	_45,	_46,	_47,	_48,	_49,	_50,	_51,	_52,	_53,	_54,	_55,	_56,	_57,	_58,	_59,	_60,	_61,	_62), _63)
+#define P99__IS_0_EQ_0(...) ,
+#define P99__IS_1_EQ_1(...) ,
+#define P99__IS_2_EQ_2(...) ,
+#define P99__IS_3_EQ_3(...) ,
+#define P99__IS_4_EQ_4(...) ,
+#define P99__IS_5_EQ_5(...) ,
+#define P99__IS_6_EQ_6(...) ,
+#define P99__IS_7_EQ_7(...) ,
+#define P99__IS_8_EQ_8(...) ,
+#define P99__IS_9_EQ_9(...) ,
+#define P99__IS_10_EQ_10(...) ,
+#define P99__IS_11_EQ_11(...) ,
+#define P99__IS_12_EQ_12(...) ,
+#define P99__IS_13_EQ_13(...) ,
+#define P99__IS_14_EQ_14(...) ,
+#define P99__IS_15_EQ_15(...) ,
+#define P99__IS_16_EQ_16(...) ,
+#define P99__IS_17_EQ_17(...) ,
+#define P99__IS_18_EQ_18(...) ,
+#define P99__IS_19_EQ_19(...) ,
+#define P99__IS_20_EQ_20(...) ,
+#define P99__IS_21_EQ_21(...) ,
+#define P99__IS_22_EQ_22(...) ,
+#define P99__IS_23_EQ_23(...) ,
+#define P99__IS_24_EQ_24(...) ,
+#define P99__IS_25_EQ_25(...) ,
+#define P99__IS_26_EQ_26(...) ,
+#define P99__IS_27_EQ_27(...) ,
+#define P99__IS_28_EQ_28(...) ,
+#define P99__IS_29_EQ_29(...) ,
+#define P99__IS_30_EQ_30(...) ,
+#define P99__IS_31_EQ_31(...) ,
+#define P99__IS_32_EQ_32(...) ,
+#define P99__IS_33_EQ_33(...) ,
+#define P99__IS_34_EQ_34(...) ,
+#define P99__IS_35_EQ_35(...) ,
+#define P99__IS_36_EQ_36(...) ,
+#define P99__IS_37_EQ_37(...) ,
+#define P99__IS_38_EQ_38(...) ,
+#define P99__IS_39_EQ_39(...) ,
+#define P99__IS_40_EQ_40(...) ,
+#define P99__IS_41_EQ_41(...) ,
+#define P99__IS_42_EQ_42(...) ,
+#define P99__IS_43_EQ_43(...) ,
+#define P99__IS_44_EQ_44(...) ,
+#define P99__IS_45_EQ_45(...) ,
+#define P99__IS_46_EQ_46(...) ,
+#define P99__IS_47_EQ_47(...) ,
+#define P99__IS_48_EQ_48(...) ,
+#define P99__IS_49_EQ_49(...) ,
+#define P99__IS_50_EQ_50(...) ,
+#define P99__IS_51_EQ_51(...) ,
+#define P99__IS_52_EQ_52(...) ,
+#define P99__IS_53_EQ_53(...) ,
+#define P99__IS_54_EQ_54(...) ,
+#define P99__IS_55_EQ_55(...) ,
+#define P99__IS_56_EQ_56(...) ,
+#define P99__IS_57_EQ_57(...) ,
+#define P99__IS_58_EQ_58(...) ,
+#define P99__IS_59_EQ_59(...) ,
+#define P99__IS_60_EQ_60(...) ,
+#define P99__IS_61_EQ_61(...) ,
+#define P99__IS_62_EQ_62(...) ,
+#define P99__IS_63_EQ_63(...) ,
+#define P99__IS_64_EQ_64(...) ,
+#define IS_EQ_0(_0) HAS_COMMA(PASTE2(P99__IS_0_EQ_, _0)())
+#define IS_EQ_1(_0) HAS_COMMA(PASTE2(P99__IS_1_EQ_, _0)())
+#define IS_EQ_2(_0) HAS_COMMA(PASTE2(P99__IS_2_EQ_, _0)())
+#define IS_EQ_3(_0) HAS_COMMA(PASTE2(P99__IS_3_EQ_, _0)())
+#define IS_EQ_4(_0) HAS_COMMA(PASTE2(P99__IS_4_EQ_, _0)())
+#define IS_EQ_5(_0) HAS_COMMA(PASTE2(P99__IS_5_EQ_, _0)())
+#define IS_EQ_6(_0) HAS_COMMA(PASTE2(P99__IS_6_EQ_, _0)())
+#define IS_EQ_7(_0) HAS_COMMA(PASTE2(P99__IS_7_EQ_, _0)())
+#define IS_EQ_8(_0) HAS_COMMA(PASTE2(P99__IS_8_EQ_, _0)())
+#define IS_EQ_9(_0) HAS_COMMA(PASTE2(P99__IS_9_EQ_, _0)())
+#define IS_EQ_10(_0) HAS_COMMA(PASTE2(P99__IS_10_EQ_, _0)())
+#define IS_EQ_11(_0) HAS_COMMA(PASTE2(P99__IS_11_EQ_, _0)())
+#define IS_EQ_12(_0) HAS_COMMA(PASTE2(P99__IS_12_EQ_, _0)())
+#define IS_EQ_13(_0) HAS_COMMA(PASTE2(P99__IS_13_EQ_, _0)())
+#define IS_EQ_14(_0) HAS_COMMA(PASTE2(P99__IS_14_EQ_, _0)())
+#define IS_EQ_15(_0) HAS_COMMA(PASTE2(P99__IS_15_EQ_, _0)())
+#define IS_EQ_16(_0) HAS_COMMA(PASTE2(P99__IS_16_EQ_, _0)())
+#define IS_EQ_17(_0) HAS_COMMA(PASTE2(P99__IS_17_EQ_, _0)())
+#define IS_EQ_18(_0) HAS_COMMA(PASTE2(P99__IS_18_EQ_, _0)())
+#define IS_EQ_19(_0) HAS_COMMA(PASTE2(P99__IS_19_EQ_, _0)())
+#define IS_EQ_20(_0) HAS_COMMA(PASTE2(P99__IS_20_EQ_, _0)())
+#define IS_EQ_21(_0) HAS_COMMA(PASTE2(P99__IS_21_EQ_, _0)())
+#define IS_EQ_22(_0) HAS_COMMA(PASTE2(P99__IS_22_EQ_, _0)())
+#define IS_EQ_23(_0) HAS_COMMA(PASTE2(P99__IS_23_EQ_, _0)())
+#define IS_EQ_24(_0) HAS_COMMA(PASTE2(P99__IS_24_EQ_, _0)())
+#define IS_EQ_25(_0) HAS_COMMA(PASTE2(P99__IS_25_EQ_, _0)())
+#define IS_EQ_26(_0) HAS_COMMA(PASTE2(P99__IS_26_EQ_, _0)())
+#define IS_EQ_27(_0) HAS_COMMA(PASTE2(P99__IS_27_EQ_, _0)())
+#define IS_EQ_28(_0) HAS_COMMA(PASTE2(P99__IS_28_EQ_, _0)())
+#define IS_EQ_29(_0) HAS_COMMA(PASTE2(P99__IS_29_EQ_, _0)())
+#define IS_EQ_30(_0) HAS_COMMA(PASTE2(P99__IS_30_EQ_, _0)())
+#define IS_EQ_31(_0) HAS_COMMA(PASTE2(P99__IS_31_EQ_, _0)())
+#define IS_EQ_32(_0) HAS_COMMA(PASTE2(P99__IS_32_EQ_, _0)())
+#define IS_EQ_33(_0) HAS_COMMA(PASTE2(P99__IS_33_EQ_, _0)())
+#define IS_EQ_34(_0) HAS_COMMA(PASTE2(P99__IS_34_EQ_, _0)())
+#define IS_EQ_35(_0) HAS_COMMA(PASTE2(P99__IS_35_EQ_, _0)())
+#define IS_EQ_36(_0) HAS_COMMA(PASTE2(P99__IS_36_EQ_, _0)())
+#define IS_EQ_37(_0) HAS_COMMA(PASTE2(P99__IS_37_EQ_, _0)())
+#define IS_EQ_38(_0) HAS_COMMA(PASTE2(P99__IS_38_EQ_, _0)())
+#define IS_EQ_39(_0) HAS_COMMA(PASTE2(P99__IS_39_EQ_, _0)())
+#define IS_EQ_40(_0) HAS_COMMA(PASTE2(P99__IS_40_EQ_, _0)())
+#define IS_EQ_41(_0) HAS_COMMA(PASTE2(P99__IS_41_EQ_, _0)())
+#define IS_EQ_42(_0) HAS_COMMA(PASTE2(P99__IS_42_EQ_, _0)())
+#define IS_EQ_43(_0) HAS_COMMA(PASTE2(P99__IS_43_EQ_, _0)())
+#define IS_EQ_44(_0) HAS_COMMA(PASTE2(P99__IS_44_EQ_, _0)())
+#define IS_EQ_45(_0) HAS_COMMA(PASTE2(P99__IS_45_EQ_, _0)())
+#define IS_EQ_46(_0) HAS_COMMA(PASTE2(P99__IS_46_EQ_, _0)())
+#define IS_EQ_47(_0) HAS_COMMA(PASTE2(P99__IS_47_EQ_, _0)())
+#define IS_EQ_48(_0) HAS_COMMA(PASTE2(P99__IS_48_EQ_, _0)())
+#define IS_EQ_49(_0) HAS_COMMA(PASTE2(P99__IS_49_EQ_, _0)())
+#define IS_EQ_50(_0) HAS_COMMA(PASTE2(P99__IS_50_EQ_, _0)())
+#define IS_EQ_51(_0) HAS_COMMA(PASTE2(P99__IS_51_EQ_, _0)())
+#define IS_EQ_52(_0) HAS_COMMA(PASTE2(P99__IS_52_EQ_, _0)())
+#define IS_EQ_53(_0) HAS_COMMA(PASTE2(P99__IS_53_EQ_, _0)())
+#define IS_EQ_54(_0) HAS_COMMA(PASTE2(P99__IS_54_EQ_, _0)())
+#define IS_EQ_55(_0) HAS_COMMA(PASTE2(P99__IS_55_EQ_, _0)())
+#define IS_EQ_56(_0) HAS_COMMA(PASTE2(P99__IS_56_EQ_, _0)())
+#define IS_EQ_57(_0) HAS_COMMA(PASTE2(P99__IS_57_EQ_, _0)())
+#define IS_EQ_58(_0) HAS_COMMA(PASTE2(P99__IS_58_EQ_, _0)())
+#define IS_EQ_59(_0) HAS_COMMA(PASTE2(P99__IS_59_EQ_, _0)())
+#define IS_EQ_60(_0) HAS_COMMA(PASTE2(P99__IS_60_EQ_, _0)())
+#define IS_EQ_61(_0) HAS_COMMA(PASTE2(P99__IS_61_EQ_, _0)())
+#define IS_EQ_62(_0) HAS_COMMA(PASTE2(P99__IS_62_EQ_, _0)())
+#define IS_EQ_63(_0) HAS_COMMA(PASTE2(P99__IS_63_EQ_, _0)())
+#define IS_EQ_64(_0) HAS_COMMA(PASTE2(P99__IS_64_EQ_, _0)())
 #define P99__uni2dec_ 0
 #define P99__uni2dec_1 1
 #define P99__uni2dec_11 2

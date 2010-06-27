@@ -83,20 +83,6 @@
 #define P99__CLAUSE1(...) __VA_ARGS__ P99__IGNORE
 #define P99__CLAUSE2(...) P99__IDENT
 
-#define P99__IS_0_EQ_0(...) ,
-#define P99__IS_1_EQ_1(...) ,
-#define P99__IS_2_EQ_2(...) ,
-#define P99__IS_3_EQ_3(...) ,
-#define P99__IS_4_EQ_4(...) ,
-#define P99__IS_5_EQ_5(...) ,
-#define P99__IS_6_EQ_6(...) ,
-#define P99__IS_7_EQ_7(...) ,
-#define P99__IS_8_EQ_8(...) ,
-#define P99__IS_9_EQ_9(...) ,
-#define P99__IS_00_EQ_00(...) ,
-#define P99__IS_10_EQ_10(...) ,
-#define P99__IS_01_EQ_01(...) ,
-#define P99__IS_11_EQ_11(...) ,
 #define P99___IF_CLAUSE(A,B,C,...) C
 #define P99__IF_CLAUSE(EXP) P99___IF_CLAUSE(EXP, P99__CLAUSE1, P99__CLAUSE2, ~)
 #define P99__IF_NOT_CLAUSE(EXP) P99___IF_CLAUSE(EXP, P99__CLAUSE2, P99__CLAUSE1, ~)
@@ -165,36 +151,32 @@
  **/
 #define IF_DEC_GT(A, B) IF_LT_0(P99__dec_minus(B,A))
 
+#define IS_EQ(_0, _1) HAS_COMMA(PASTE4(P99__IS_, _0, _EQ_, _1))
+
 /**
  ** @brief Test if token N is the token 0.
  **/
 #define IF_EQ_0(N) IF_EQ(0, N)
-#define IS_EQ_0(N) IF_EQ(0, N)(1)(0)
 
 /**
  ** @brief Test if token N is the token 1.
  **/
 #define IF_EQ_1(N) IF_EQ(1, N)
-#define IS_EQ_1(N) IF_EQ(1, N)(1)(0)
 
 /**
  ** @brief Test if token N is the token 2.
  **/
 #define IF_EQ_2(N) IF_EQ(2, N)
-#define IS_EQ_2(N) IF_EQ(2, N)(1)(0)
 
 /**
  ** @brief Test if token N is the token 3.
  **/
 #define IF_EQ_3(N) IF_EQ(3, N)
-#define IS_EQ_3(N) IF_EQ(3, N)(1)(0)
 
 /**
  ** @brief Test if token N is the token 4.
  **/
 #define IF_EQ_4(N) IF_EQ(4, N)
-#define IS_EQ_4(N) IF_EQ(4, N)(1)(0)
-
 
 #define IF_EMPTY(...) IF_EQ_1(IS_EMPTY(__VA_ARGS__))
 
@@ -207,8 +189,15 @@
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_EVAL(A) IF_EMPTY(A)(0)(IF_EQ_0(A)(0)(1))
+#define LOGIC_EVAL(_0) P99__EVAL_0(IS_EMPTY(_0), IS_EQ_0(_0))
 
+#define P99__EVAL_0(_0, _1) PASTE3(P99__EVAL_, _0, _1)
+
+#define P99__EVAL_00 0
+#define P99__EVAL_10 1
+#define P99__EVAL_01 0
+/* should never happen */
+#define P99__EVAL_11 WEIRD_EVALUATION_ERROR
 
 /**
  ** @brief Do a logical negation of the argument.
@@ -219,7 +208,15 @@
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_NOT(A)  IF_EQ_0(A)(1)(IS_EMPTY(A))
+#define LOGIC_NOT(A)  P99__NOT_0(IS_EMPTY(_0), IS_EQ_0(_0))
+
+#define P99__NOT_0(_0, _1) PASTE3(P99__NOT_, _0, _1)
+
+#define P99__NOT_00 1
+#define P99__NOT_10 0
+#define P99__NOT_01 1
+/* should never happen */
+#define P99__NOT_11 WEIRD_NEGATION_ERROR
 
 /**
  ** @brief Do a logical exclusive or of the arguments.
@@ -229,8 +226,8 @@
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_XOR(A, B) IF_EQ(LOGIC_NOT(A), LOGIC_EVAL(B))(1)(0)
-#define P99__LOGIC_OR(A, B) IF_EQ(00, CAT2(A, B))(0)(1)
+//#define LOGIC_XOR(A, B) IF_EQ(LOGIC_NOT(A), LOGIC_EVAL(B))(1)(0)
+//#define P99__LOGIC_OR(A, B) IF_EQ(00, CAT2(A, B))(0)(1)
 
 /**
  ** @brief Do a logical inclusive or of the arguments.
@@ -240,9 +237,9 @@
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_OR(A, B) P99__LOGIC_OR(LOGIC_EVAL(A), LOGIC_EVAL(B))
+//#define LOGIC_OR(A, B) P99__LOGIC_OR(LOGIC_EVAL(A), LOGIC_EVAL(B))
 
-#define P99__LOGIC_AND(A, B) IF_EQ(00, CAT2(A, B))(1)(0)
+//#define P99__LOGIC_AND(A, B) IF_EQ(00, CAT2(A, B))(1)(0)
 
 /**
  ** @brief Do a logical and of the arguments.
@@ -252,7 +249,7 @@
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_AND(A, B) P99__LOGIC_AND(LOGIC_NOT(A), LOGIC_NOT(B))
+//#define LOGIC_AND(A, B) P99__LOGIC_AND(LOGIC_NOT(A), LOGIC_NOT(B))
 
 
 /**
@@ -290,14 +287,17 @@ IS_EQ_2(P99__NARG(P99__IS_void_EQ_ ## __VA_ARGS__ (~) P99__IS_void_EQ_ ## __VA_A
  ** @see IF_void for a macro that tests if the argument is exactly the
  ** word @c void.
  **/
-#define IS_VOID(...) IF_EMPTY(__VA_ARGS__)(1)(IS_void(__VA_ARGS__))
+#define IS_VOID(...) P99__IS_VOID(IS_EMPTY(__VA_ARGS__), IS_void(__VA_ARGS__))
+
+#define P99__IS_VOID(_0, _1) PASTE3(P99__IS_VOID_, _0, _1)
+
+#define P99__IS_VOID_00 0
+#define P99__IS_VOID_01 1
+#define P99__IS_VOID_10 1
+/* should not happen */
+#define P99__IS_VOID_11 WEIRD_VOID_ARG_ERROR
 
 #define IF_VOID(...) IF_EQ_1(IS_VOID(__VA_ARGS__))
-
-#define IS_COMMA(...)                                                   \
-IF_EQ_2(NARG(__VA_ARGS__))                                              \
-(LOGIC_AND(IS_EMPTY(CHS(0,__VA_ARGS__)),IS_EMPTY(CHS(1,__VA_ARGS__))))  \
-(0)
 
 #define P99__MODARG_(_X) PASTE(P99__NARG_,  _X)
 

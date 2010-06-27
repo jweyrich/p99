@@ -124,6 +124,11 @@ for(my $div = 1; $div < $maxnumber; ++$div) {
     }
 }
 
+print "#define P99__IS_${_}_EQ_${_}(...) ,\n"
+    foreach (0.. $maxnumber);
+print "#define IS_EQ_${_}(_0) HAS_COMMA(PASTE2(P99__IS_${_}_EQ_, _0)())\n"
+    foreach (0.. $maxnumber);
+
 printf "#define P99__uni2dec_%s %d\n", ${digit}x$_, $_
     foreach (0.. $maxnumber);
 printf "#define P99__dec2uni_%d %s\n", $_, ${digit}x$_

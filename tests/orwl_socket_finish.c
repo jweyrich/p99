@@ -114,6 +114,10 @@ int main(int argc, char **argv) {
   VASSIGNS(Z, int x, double k, int y, bool r);
   VASSIGNS(Y, int s);
   VASSIGNS(Y, int i, float o);
+  IS_void();
+  IS_void(void);
+  IS_void(void*);
+  IS_void(void, void);
   VASSIGNS(Y, void);
   VASSIGNS(Y,);
   IF_DEC_LT(7,5)(true)(false);
