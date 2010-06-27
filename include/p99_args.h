@@ -77,4 +77,21 @@ P99__ISEMPTY(                                                           \
 #define NARG__1(B, VAL) NARG__2(PASTE2(P99__NARG_EMPTY_, B), VAL)
 #define NARG__2(B, VAL) B(VAL)
 
+/**
+ ** @brief Detect if two tokens are equal.
+ **
+ ** These must be alphanumerical tokens composed of [_a-zA-Z_] and to
+ ** be able to test for equality of token @c X the macro @c
+ ** P99__IS_X_EQ_X(...) must be defined to expand to a comma.
+ **/
+#define TOK_EQ(TOK, ...)  P99__TOK_EQ_(PASTE3(P99__IS_, TOK, _EQ_), __VA_ARGS__)
+#define P99__TOK_EQ_(MAC, ...)  P99__TOK_EQ__(MAC, __VA_ARGS__)
+#define P99__TOK_EQ__(MAC, ...) HAS_COMMA(PASTE2(P99__TOK_EQ_, P99__NARG(MAC ## __VA_ARGS__ (~) MAC ## __VA_ARGS__))(~))
+
+#define P99__TOK_EQ_0(...) ~
+#define P99__TOK_EQ_1(...) ~
+#define P99__TOK_EQ_2(...) ,
+#define P99__TOK_EQ_3(...) ~
+#define P99__TOK_EQ_4(...) ~
+
 #endif 	    /* !P99_ARGS_H_ */

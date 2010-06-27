@@ -2126,71 +2126,145 @@
 #define P99__IS_62_EQ_62(...) ,
 #define P99__IS_63_EQ_63(...) ,
 #define P99__IS_64_EQ_64(...) ,
-#define IS_EQ_0(_0) HAS_COMMA(PASTE2(P99__IS_0_EQ_, _0)())
-#define IS_EQ_1(_0) HAS_COMMA(PASTE2(P99__IS_1_EQ_, _0)())
-#define IS_EQ_2(_0) HAS_COMMA(PASTE2(P99__IS_2_EQ_, _0)())
-#define IS_EQ_3(_0) HAS_COMMA(PASTE2(P99__IS_3_EQ_, _0)())
-#define IS_EQ_4(_0) HAS_COMMA(PASTE2(P99__IS_4_EQ_, _0)())
-#define IS_EQ_5(_0) HAS_COMMA(PASTE2(P99__IS_5_EQ_, _0)())
-#define IS_EQ_6(_0) HAS_COMMA(PASTE2(P99__IS_6_EQ_, _0)())
-#define IS_EQ_7(_0) HAS_COMMA(PASTE2(P99__IS_7_EQ_, _0)())
-#define IS_EQ_8(_0) HAS_COMMA(PASTE2(P99__IS_8_EQ_, _0)())
-#define IS_EQ_9(_0) HAS_COMMA(PASTE2(P99__IS_9_EQ_, _0)())
-#define IS_EQ_10(_0) HAS_COMMA(PASTE2(P99__IS_10_EQ_, _0)())
-#define IS_EQ_11(_0) HAS_COMMA(PASTE2(P99__IS_11_EQ_, _0)())
-#define IS_EQ_12(_0) HAS_COMMA(PASTE2(P99__IS_12_EQ_, _0)())
-#define IS_EQ_13(_0) HAS_COMMA(PASTE2(P99__IS_13_EQ_, _0)())
-#define IS_EQ_14(_0) HAS_COMMA(PASTE2(P99__IS_14_EQ_, _0)())
-#define IS_EQ_15(_0) HAS_COMMA(PASTE2(P99__IS_15_EQ_, _0)())
-#define IS_EQ_16(_0) HAS_COMMA(PASTE2(P99__IS_16_EQ_, _0)())
-#define IS_EQ_17(_0) HAS_COMMA(PASTE2(P99__IS_17_EQ_, _0)())
-#define IS_EQ_18(_0) HAS_COMMA(PASTE2(P99__IS_18_EQ_, _0)())
-#define IS_EQ_19(_0) HAS_COMMA(PASTE2(P99__IS_19_EQ_, _0)())
-#define IS_EQ_20(_0) HAS_COMMA(PASTE2(P99__IS_20_EQ_, _0)())
-#define IS_EQ_21(_0) HAS_COMMA(PASTE2(P99__IS_21_EQ_, _0)())
-#define IS_EQ_22(_0) HAS_COMMA(PASTE2(P99__IS_22_EQ_, _0)())
-#define IS_EQ_23(_0) HAS_COMMA(PASTE2(P99__IS_23_EQ_, _0)())
-#define IS_EQ_24(_0) HAS_COMMA(PASTE2(P99__IS_24_EQ_, _0)())
-#define IS_EQ_25(_0) HAS_COMMA(PASTE2(P99__IS_25_EQ_, _0)())
-#define IS_EQ_26(_0) HAS_COMMA(PASTE2(P99__IS_26_EQ_, _0)())
-#define IS_EQ_27(_0) HAS_COMMA(PASTE2(P99__IS_27_EQ_, _0)())
-#define IS_EQ_28(_0) HAS_COMMA(PASTE2(P99__IS_28_EQ_, _0)())
-#define IS_EQ_29(_0) HAS_COMMA(PASTE2(P99__IS_29_EQ_, _0)())
-#define IS_EQ_30(_0) HAS_COMMA(PASTE2(P99__IS_30_EQ_, _0)())
-#define IS_EQ_31(_0) HAS_COMMA(PASTE2(P99__IS_31_EQ_, _0)())
-#define IS_EQ_32(_0) HAS_COMMA(PASTE2(P99__IS_32_EQ_, _0)())
-#define IS_EQ_33(_0) HAS_COMMA(PASTE2(P99__IS_33_EQ_, _0)())
-#define IS_EQ_34(_0) HAS_COMMA(PASTE2(P99__IS_34_EQ_, _0)())
-#define IS_EQ_35(_0) HAS_COMMA(PASTE2(P99__IS_35_EQ_, _0)())
-#define IS_EQ_36(_0) HAS_COMMA(PASTE2(P99__IS_36_EQ_, _0)())
-#define IS_EQ_37(_0) HAS_COMMA(PASTE2(P99__IS_37_EQ_, _0)())
-#define IS_EQ_38(_0) HAS_COMMA(PASTE2(P99__IS_38_EQ_, _0)())
-#define IS_EQ_39(_0) HAS_COMMA(PASTE2(P99__IS_39_EQ_, _0)())
-#define IS_EQ_40(_0) HAS_COMMA(PASTE2(P99__IS_40_EQ_, _0)())
-#define IS_EQ_41(_0) HAS_COMMA(PASTE2(P99__IS_41_EQ_, _0)())
-#define IS_EQ_42(_0) HAS_COMMA(PASTE2(P99__IS_42_EQ_, _0)())
-#define IS_EQ_43(_0) HAS_COMMA(PASTE2(P99__IS_43_EQ_, _0)())
-#define IS_EQ_44(_0) HAS_COMMA(PASTE2(P99__IS_44_EQ_, _0)())
-#define IS_EQ_45(_0) HAS_COMMA(PASTE2(P99__IS_45_EQ_, _0)())
-#define IS_EQ_46(_0) HAS_COMMA(PASTE2(P99__IS_46_EQ_, _0)())
-#define IS_EQ_47(_0) HAS_COMMA(PASTE2(P99__IS_47_EQ_, _0)())
-#define IS_EQ_48(_0) HAS_COMMA(PASTE2(P99__IS_48_EQ_, _0)())
-#define IS_EQ_49(_0) HAS_COMMA(PASTE2(P99__IS_49_EQ_, _0)())
-#define IS_EQ_50(_0) HAS_COMMA(PASTE2(P99__IS_50_EQ_, _0)())
-#define IS_EQ_51(_0) HAS_COMMA(PASTE2(P99__IS_51_EQ_, _0)())
-#define IS_EQ_52(_0) HAS_COMMA(PASTE2(P99__IS_52_EQ_, _0)())
-#define IS_EQ_53(_0) HAS_COMMA(PASTE2(P99__IS_53_EQ_, _0)())
-#define IS_EQ_54(_0) HAS_COMMA(PASTE2(P99__IS_54_EQ_, _0)())
-#define IS_EQ_55(_0) HAS_COMMA(PASTE2(P99__IS_55_EQ_, _0)())
-#define IS_EQ_56(_0) HAS_COMMA(PASTE2(P99__IS_56_EQ_, _0)())
-#define IS_EQ_57(_0) HAS_COMMA(PASTE2(P99__IS_57_EQ_, _0)())
-#define IS_EQ_58(_0) HAS_COMMA(PASTE2(P99__IS_58_EQ_, _0)())
-#define IS_EQ_59(_0) HAS_COMMA(PASTE2(P99__IS_59_EQ_, _0)())
-#define IS_EQ_60(_0) HAS_COMMA(PASTE2(P99__IS_60_EQ_, _0)())
-#define IS_EQ_61(_0) HAS_COMMA(PASTE2(P99__IS_61_EQ_, _0)())
-#define IS_EQ_62(_0) HAS_COMMA(PASTE2(P99__IS_62_EQ_, _0)())
-#define IS_EQ_63(_0) HAS_COMMA(PASTE2(P99__IS_63_EQ_, _0)())
-#define IS_EQ_64(_0) HAS_COMMA(PASTE2(P99__IS_64_EQ_, _0)())
+#define P99__IS__Bool_EQ__Bool(...) ,
+#define P99__IS__Complex_EQ__Complex(...) ,
+#define P99__IS__Imaginary_EQ__Imaginary(...) ,
+#define P99__IS_auto_EQ_auto(...) ,
+#define P99__IS_break_EQ_break(...) ,
+#define P99__IS_case_EQ_case(...) ,
+#define P99__IS_char_EQ_char(...) ,
+#define P99__IS_const_EQ_const(...) ,
+#define P99__IS_continue_EQ_continue(...) ,
+#define P99__IS_default_EQ_default(...) ,
+#define P99__IS_do_EQ_do(...) ,
+#define P99__IS_double_EQ_double(...) ,
+#define P99__IS_else_EQ_else(...) ,
+#define P99__IS_enum_EQ_enum(...) ,
+#define P99__IS_extern_EQ_extern(...) ,
+#define P99__IS_float_EQ_float(...) ,
+#define P99__IS_for_EQ_for(...) ,
+#define P99__IS_goto_EQ_goto(...) ,
+#define P99__IS_if_EQ_if(...) ,
+#define P99__IS_inline_EQ_inline(...) ,
+#define P99__IS_int_EQ_int(...) ,
+#define P99__IS_long_EQ_long(...) ,
+#define P99__IS_register_EQ_register(...) ,
+#define P99__IS_restrict_EQ_restrict(...) ,
+#define P99__IS_return_EQ_return(...) ,
+#define P99__IS_short_EQ_short(...) ,
+#define P99__IS_signed_EQ_signed(...) ,
+#define P99__IS_sizeof_EQ_sizeof(...) ,
+#define P99__IS_static_EQ_static(...) ,
+#define P99__IS_struct_EQ_struct(...) ,
+#define P99__IS_switch_EQ_switch(...) ,
+#define P99__IS_typedef_EQ_typedef(...) ,
+#define P99__IS_union_EQ_union(...) ,
+#define P99__IS_unsigned_EQ_unsigned(...) ,
+#define P99__IS_void_EQ_void(...) ,
+#define P99__IS_volatile_EQ_volatile(...) ,
+#define P99__IS_while_EQ_while(...) ,
+#define IS_EQ_0(...) TOK_EQ(0, __VA_ARGS__)
+#define IS_EQ_1(...) TOK_EQ(1, __VA_ARGS__)
+#define IS_EQ_2(...) TOK_EQ(2, __VA_ARGS__)
+#define IS_EQ_3(...) TOK_EQ(3, __VA_ARGS__)
+#define IS_EQ_4(...) TOK_EQ(4, __VA_ARGS__)
+#define IS_EQ_5(...) TOK_EQ(5, __VA_ARGS__)
+#define IS_EQ_6(...) TOK_EQ(6, __VA_ARGS__)
+#define IS_EQ_7(...) TOK_EQ(7, __VA_ARGS__)
+#define IS_EQ_8(...) TOK_EQ(8, __VA_ARGS__)
+#define IS_EQ_9(...) TOK_EQ(9, __VA_ARGS__)
+#define IS_EQ_10(...) TOK_EQ(10, __VA_ARGS__)
+#define IS_EQ_11(...) TOK_EQ(11, __VA_ARGS__)
+#define IS_EQ_12(...) TOK_EQ(12, __VA_ARGS__)
+#define IS_EQ_13(...) TOK_EQ(13, __VA_ARGS__)
+#define IS_EQ_14(...) TOK_EQ(14, __VA_ARGS__)
+#define IS_EQ_15(...) TOK_EQ(15, __VA_ARGS__)
+#define IS_EQ_16(...) TOK_EQ(16, __VA_ARGS__)
+#define IS_EQ_17(...) TOK_EQ(17, __VA_ARGS__)
+#define IS_EQ_18(...) TOK_EQ(18, __VA_ARGS__)
+#define IS_EQ_19(...) TOK_EQ(19, __VA_ARGS__)
+#define IS_EQ_20(...) TOK_EQ(20, __VA_ARGS__)
+#define IS_EQ_21(...) TOK_EQ(21, __VA_ARGS__)
+#define IS_EQ_22(...) TOK_EQ(22, __VA_ARGS__)
+#define IS_EQ_23(...) TOK_EQ(23, __VA_ARGS__)
+#define IS_EQ_24(...) TOK_EQ(24, __VA_ARGS__)
+#define IS_EQ_25(...) TOK_EQ(25, __VA_ARGS__)
+#define IS_EQ_26(...) TOK_EQ(26, __VA_ARGS__)
+#define IS_EQ_27(...) TOK_EQ(27, __VA_ARGS__)
+#define IS_EQ_28(...) TOK_EQ(28, __VA_ARGS__)
+#define IS_EQ_29(...) TOK_EQ(29, __VA_ARGS__)
+#define IS_EQ_30(...) TOK_EQ(30, __VA_ARGS__)
+#define IS_EQ_31(...) TOK_EQ(31, __VA_ARGS__)
+#define IS_EQ_32(...) TOK_EQ(32, __VA_ARGS__)
+#define IS_EQ_33(...) TOK_EQ(33, __VA_ARGS__)
+#define IS_EQ_34(...) TOK_EQ(34, __VA_ARGS__)
+#define IS_EQ_35(...) TOK_EQ(35, __VA_ARGS__)
+#define IS_EQ_36(...) TOK_EQ(36, __VA_ARGS__)
+#define IS_EQ_37(...) TOK_EQ(37, __VA_ARGS__)
+#define IS_EQ_38(...) TOK_EQ(38, __VA_ARGS__)
+#define IS_EQ_39(...) TOK_EQ(39, __VA_ARGS__)
+#define IS_EQ_40(...) TOK_EQ(40, __VA_ARGS__)
+#define IS_EQ_41(...) TOK_EQ(41, __VA_ARGS__)
+#define IS_EQ_42(...) TOK_EQ(42, __VA_ARGS__)
+#define IS_EQ_43(...) TOK_EQ(43, __VA_ARGS__)
+#define IS_EQ_44(...) TOK_EQ(44, __VA_ARGS__)
+#define IS_EQ_45(...) TOK_EQ(45, __VA_ARGS__)
+#define IS_EQ_46(...) TOK_EQ(46, __VA_ARGS__)
+#define IS_EQ_47(...) TOK_EQ(47, __VA_ARGS__)
+#define IS_EQ_48(...) TOK_EQ(48, __VA_ARGS__)
+#define IS_EQ_49(...) TOK_EQ(49, __VA_ARGS__)
+#define IS_EQ_50(...) TOK_EQ(50, __VA_ARGS__)
+#define IS_EQ_51(...) TOK_EQ(51, __VA_ARGS__)
+#define IS_EQ_52(...) TOK_EQ(52, __VA_ARGS__)
+#define IS_EQ_53(...) TOK_EQ(53, __VA_ARGS__)
+#define IS_EQ_54(...) TOK_EQ(54, __VA_ARGS__)
+#define IS_EQ_55(...) TOK_EQ(55, __VA_ARGS__)
+#define IS_EQ_56(...) TOK_EQ(56, __VA_ARGS__)
+#define IS_EQ_57(...) TOK_EQ(57, __VA_ARGS__)
+#define IS_EQ_58(...) TOK_EQ(58, __VA_ARGS__)
+#define IS_EQ_59(...) TOK_EQ(59, __VA_ARGS__)
+#define IS_EQ_60(...) TOK_EQ(60, __VA_ARGS__)
+#define IS_EQ_61(...) TOK_EQ(61, __VA_ARGS__)
+#define IS_EQ_62(...) TOK_EQ(62, __VA_ARGS__)
+#define IS_EQ_63(...) TOK_EQ(63, __VA_ARGS__)
+#define IS_EQ_64(...) TOK_EQ(64, __VA_ARGS__)
+#define IS_EQ__Bool(...) TOK_EQ(_Bool, __VA_ARGS__)
+#define IS_EQ__Complex(...) TOK_EQ(_Complex, __VA_ARGS__)
+#define IS_EQ__Imaginary(...) TOK_EQ(_Imaginary, __VA_ARGS__)
+#define IS_EQ_auto(...) TOK_EQ(auto, __VA_ARGS__)
+#define IS_EQ_break(...) TOK_EQ(break, __VA_ARGS__)
+#define IS_EQ_case(...) TOK_EQ(case, __VA_ARGS__)
+#define IS_EQ_char(...) TOK_EQ(char, __VA_ARGS__)
+#define IS_EQ_const(...) TOK_EQ(const, __VA_ARGS__)
+#define IS_EQ_continue(...) TOK_EQ(continue, __VA_ARGS__)
+#define IS_EQ_default(...) TOK_EQ(default, __VA_ARGS__)
+#define IS_EQ_do(...) TOK_EQ(do, __VA_ARGS__)
+#define IS_EQ_double(...) TOK_EQ(double, __VA_ARGS__)
+#define IS_EQ_else(...) TOK_EQ(else, __VA_ARGS__)
+#define IS_EQ_enum(...) TOK_EQ(enum, __VA_ARGS__)
+#define IS_EQ_extern(...) TOK_EQ(extern, __VA_ARGS__)
+#define IS_EQ_float(...) TOK_EQ(float, __VA_ARGS__)
+#define IS_EQ_for(...) TOK_EQ(for, __VA_ARGS__)
+#define IS_EQ_goto(...) TOK_EQ(goto, __VA_ARGS__)
+#define IS_EQ_if(...) TOK_EQ(if, __VA_ARGS__)
+#define IS_EQ_inline(...) TOK_EQ(inline, __VA_ARGS__)
+#define IS_EQ_int(...) TOK_EQ(int, __VA_ARGS__)
+#define IS_EQ_long(...) TOK_EQ(long, __VA_ARGS__)
+#define IS_EQ_register(...) TOK_EQ(register, __VA_ARGS__)
+#define IS_EQ_restrict(...) TOK_EQ(restrict, __VA_ARGS__)
+#define IS_EQ_return(...) TOK_EQ(return, __VA_ARGS__)
+#define IS_EQ_short(...) TOK_EQ(short, __VA_ARGS__)
+#define IS_EQ_signed(...) TOK_EQ(signed, __VA_ARGS__)
+#define IS_EQ_sizeof(...) TOK_EQ(sizeof, __VA_ARGS__)
+#define IS_EQ_static(...) TOK_EQ(static, __VA_ARGS__)
+#define IS_EQ_struct(...) TOK_EQ(struct, __VA_ARGS__)
+#define IS_EQ_switch(...) TOK_EQ(switch, __VA_ARGS__)
+#define IS_EQ_typedef(...) TOK_EQ(typedef, __VA_ARGS__)
+#define IS_EQ_union(...) TOK_EQ(union, __VA_ARGS__)
+#define IS_EQ_unsigned(...) TOK_EQ(unsigned, __VA_ARGS__)
+#define IS_EQ_void(...) TOK_EQ(void, __VA_ARGS__)
+#define IS_EQ_volatile(...) TOK_EQ(volatile, __VA_ARGS__)
+#define IS_EQ_while(...) TOK_EQ(while, __VA_ARGS__)
 #define P99__uni2dec_ 0
 #define P99__uni2dec_1 1
 #define P99__uni2dec_11 2

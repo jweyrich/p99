@@ -111,17 +111,14 @@
 
 
 
-#define P99__IS_void_EQ_void(...) ,
-#define P99__IS_void_EQ_(...) ~
-
 /**
- ** @brief Test if the argument consists of exactly the word @c void.
+ ** @def IS_EQ_void(...)
+ ** @brief Test if the argument consists of exactly the token @c void.
  **
- ** @see IF_VOID for a macro that test whether or not its argument is
+ ** @see IS_VOID for a macro that test whether or not its argument is
  ** empty @b or if it consists of the word @c void.
  **/
-#define IS_void(...)                                                    \
-IS_EQ_2(P99__NARG(P99__IS_void_EQ_ ## __VA_ARGS__ (~) P99__IS_void_EQ_ ## __VA_ARGS__))
+
 
 /**
  ** @brief Test whether or not its argument is empty @b or if it
@@ -130,7 +127,7 @@ IS_EQ_2(P99__NARG(P99__IS_void_EQ_ ## __VA_ARGS__ (~) P99__IS_void_EQ_ ## __VA_A
  ** @see IF_void for a macro that tests if the argument is exactly the
  ** word @c void.
  **/
-#define IS_VOID(...) P99__IS_VOID(IS_EMPTY(__VA_ARGS__), IS_void(__VA_ARGS__))
+#define IS_VOID(...) P99__IS_VOID(IS_EMPTY(__VA_ARGS__), IS_EQ_void(__VA_ARGS__))
 
 #define P99__IS_VOID(_0, _1) PASTE3(P99__IS_VOID_, _0, _1)
 

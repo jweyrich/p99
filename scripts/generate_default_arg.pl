@@ -9,6 +9,12 @@ if 0;               #### for this magic, see findSvnAuthors ####
 my $maxnumber = 64;
 my $digit = "1";
 
+# these are the normative keywords in C99
+my @keywords_C99
+    = qw( _Bool _Complex _Imaginary auto break case char
+         const continue default do double else enum extern float for goto if
+         inline int long register restrict return short signed sizeof static
+         struct switch typedef union unsigned void volatile while );
 
 print "/* This file is automat";
 print "ically generated, do not chan";
@@ -125,9 +131,9 @@ for(my $div = 1; $div < $maxnumber; ++$div) {
 }
 
 print "#define P99__IS_${_}_EQ_${_}(...) ,\n"
-    foreach (0.. $maxnumber);
-print "#define IS_EQ_${_}(_0) HAS_COMMA(PASTE2(P99__IS_${_}_EQ_, _0)())\n"
-    foreach (0.. $maxnumber);
+    foreach (0.. $maxnumber, @keywords_C99);
+print "#define IS_EQ_${_}(...) TOK_EQ(${_}, __VA_ARGS__)\n"
+    foreach (0.. $maxnumber, @keywords_C99);
 
 printf "#define P99__uni2dec_%s %d\n", ${digit}x$_, $_
     foreach (0.. $maxnumber);

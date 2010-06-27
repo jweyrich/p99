@@ -192,7 +192,7 @@
  **/
 #define IF_ELSE(...) IF_EQ_1(IS_EQ_0(__VA_ARGS__))
 
-#define IF_void(...) IF_EQ_1(IS_void(__VA_ARGS__))
+#define IF_void(...) IF_EQ_1(IS_EQ_void(__VA_ARGS__))
 
 #define IF_VOID(...) IF_EQ_1(IS_VOID(__VA_ARGS__))
 
