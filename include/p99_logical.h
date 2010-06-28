@@ -158,13 +158,20 @@
 #define IS_DEC_LE(_0, _1)  IS_DEC_GE(_1, _0)
 
 /** @brief a decimal equal operator **/
-#define IS_DEC_EQ(_0, _1)  IS_EQ(_1, _0)
+#define IS_DEC_EQ(_0, _1)  IS_EQ(_0, _1)
 
 /** @brief a decimal unequal operator **/
-#define IS_DEC_NE(_0, _1)  LOGIC_NOT(IS_EQ(_1, _0))
+#define IS_DEC_NE(_0, _1)  LOGIC_NOT(IS_EQ(_0, _1))
 
 /** @brief add two decimal numbers **/
-#define DEC_ADD(_0, _1) P99__DEC_ADD(_0, _1, IS_EQ_0(_0), IS_EQ_0(_1), NARG(SELS(_0, P99__ALL_ZEROES()), SELS(_1, P99__ALL_ZEROES())))
+#define DEC_ADD(_0, _1)                         \
+P99__DEC_ADD(_0, _1,                            \
+             IS_EQ_0(_0),                       \
+             IS_EQ_0(_1),                       \
+             NARG(                              \
+                  SELS(_0, P99__ALL_ZEROES()),  \
+                  SELS(_1, P99__ALL_ZEROES())))
+
 
 #define P99__DEC_ADD(_0, _1, _2, _3, _4) PASTE3(P99__DEC_ADD_, _2, _3)(_0, _1, _4)
 
@@ -183,26 +190,29 @@
  ** DEC_MINUS(_1, _0)
  ** @endcode
  **/
-#define DEC_MINUS(_0, _1) P99__DEC_MINUS(_0, _1, IS_DEC_LT(_0, _1), IS_EQ_0(_0), IS_EQ_0(_1))
+#define DEC_MINUS(_0, _1) P99__DEC_MINUS(_0, _1, IS_EQ(_0, _1), IS_EQ_0(_0), IS_EQ_0(_1))
 #define P99__DEC_MINUS(_0, _1, _2, _3, _4) PASTE4(P99__DEC_MINUS_, _2, _3, _4)(_0, _1)
 
-#define P99__DEC_MINUS_000(_0, _1) P99__DEC_MINUS_(_0, _1)
-#define P99__DEC_MINUS_100(_0, _1) PASTE2(minus_, P99__DEC_MINUS_(_1, _0))
-#define P99__DEC_MINUS_010(_0, _1) PASTE2(minus_, _1)
-#define P99__DEC_MINUS_110(_0, _1) PASTE2(minus_, _1)
+#define P99__DEC_MINUS_000(_0, _1) P99__DEC_MINUS_(_0, _1, IS_DEC_LT(_0, _1))
+/* if one of _0 or _1 is 0, there is not much to do */
 #define P99__DEC_MINUS_001(_0, _1) _0
-#define P99__DEC_MINUS_101(_0, _1) _0
-#define P99__DEC_MINUS_011(_0, _1) _0
-#define P99__DEC_MINUS_111(_0, _1) _0
+#define P99__DEC_MINUS_010(_0, _1) PASTE2(minus_, _1)
+/* should not occur */
+#define P99__DEC_MINUS_011(_0, _1) P99_WEIRD_MINUS_ARG_ERROR
+/* whenever _0 and _1 are equal there is nothing to do */
+#define P99__DEC_MINUS_100(_0, _1) 0
+#define P99__DEC_MINUS_101(_0, _1) 0
+#define P99__DEC_MINUS_110(_0, _1) 0
+#define P99__DEC_MINUS_111(_0, _1) 0
+
+#define P99__DEC_MINUS_(_0, _1, _2) PASTE2(P99__DEC_MINUS_, _2)(_0, _1)
+
+#define P99__DEC_MINUS_0(_0, _1) P99__DEC_MINUS__(_0, _1)
+#define P99__DEC_MINUS_1(_0, _1) PASTE2(minus_, P99__DEC_MINUS__(_1, _0))
 
 
-#define P99__DEC_MINUS_(_0, _1) P99__DEC_MINUS__(_0, _1, IS_EQ_0(_0), IS_EQ_0(_1), NARGOOOO(SKP(_1, SELS(_0, P99__ALL_ZEROES()))))
 
-#define P99__DEC_MINUS__(_0, _1, _2, _3, _4) PASTE3(P99__DEC_MINUS__, _2, _3)(_0, _1, _4)
-
-#define P99__DEC_MINUS__00(_0, _1, _2) _2
-#define P99__DEC_MINUS__01(_0, _1, _2) _0
-#define P99__DEC_MINUS__10(_0, _1, _2) _1
-#define P99__DEC_MINUS__11(_0, _1, _2) 0
+/* The general case both are non-zero and _0 is strictly greater than _1 */
+#define P99__DEC_MINUS__(_0, _1) NARG(SKP(_1, SELS(_0, P99__ALL_ZEROES())))
 
 #endif 	    /* !P99_LOGICAL_H_ */

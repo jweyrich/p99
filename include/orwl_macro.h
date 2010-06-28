@@ -284,22 +284,11 @@
 #define P99___DEC_PRED(P, N) P ## N
 #define P99__DEC_PRED(N) P99___DEC_PRED(P99__DEC_PRED_ , N)
 #define DEC_PRED(N) P99__DEC_PRED(N)
-#define P99__itpredecessor_0(DEC) DEC
 #define P99__dec2uni(DEC) PASTE(P99__dec2uni_, DEC)
 #define P99__uni2dec(UN) PASTE(P99__uni2dec_, UN)
-#define P99__uni_add(U,V) PASTE(U, V)
-
-#define P99_____dec_add(U,V) P99__uni_add(U,V)
-#define P99____dec_add(D,E) P99_____dec_add(P99__dec2uni(D),P99__dec2uni(E))
-#define P99___dec_add(D,E) P99__uni2dec(P99____dec_add(D,E))
-//#define P99__dec_add(D,E) P99___dec_add(D,E)
-#define P99__dec_add(D, E) DEC_ADD(D, E)
 
 #define P99__DEC_PRED_0 minus_1
 #define P99__dec_eval(EDEC) PASTE(P99__dec_eval_, EDEC)
-#define P99__dec_minus(D,E) PASTE(P99__itpredecessor_, E)(D)
-//#define P99__dec_minus(D, E) DEC_MINUS(D, E)
-
 
 #define P99__FSYMB(NAME) PASTE(NAME, _f, sy, mb, _)
 
@@ -818,7 +807,7 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 
 #define P99__DARG(NAME, X, N) IF_EMPTY(X)(PASTE3(NAME, _defarg_, N)())(X)
 #define P99___DEFARGS(NAME, N, ...) FOR(NAME, N, P99__SEQ, P99__DARG, __VA_ARGS__)
-#define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, IF_DEC_LT(NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,P99__dec_minus(N,NARG(__VA_ARGS__)))) (__VA_ARGS__))
+#define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, IF_DEC_LT(NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,DEC_MINUS(N,NARG(__VA_ARGS__)))) (__VA_ARGS__))
 
 #define P99__DEC_MUL(A, B) IF_EQ_0(A)(0)(P99__uni2dec(REP(A, B)))
 

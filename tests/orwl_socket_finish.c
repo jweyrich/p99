@@ -114,10 +114,47 @@ int main(int argc, char **argv) {
   VASSIGNS(Z, int x, double k, int y, bool r);
   VASSIGNS(Y, int s);
   VASSIGNS(Y, int i, float o);
-  IS_void();
-  IS_void(void);
-  IS_void(void*);
-  IS_void(void, void);
+  IS_EQ_void();
+  IS_EQ_void(void);
+  IS_EQ_void(void*);
+  IS_EQ_void(void());
+  IS_EQ_void(void, void);
+  TOK_EQ(void, void);
+  TOK_EQ(void, int);
+  TOK_EQ(int, int);
+
+  IS_DEC_LT(0, 0);
+  IS_DEC_LT(0, 1);
+  IS_DEC_LT(0, 2);
+  IS_DEC_LT(1, 1);
+  IS_DEC_LT(1, 0);
+  IS_DEC_LT(1, 2);
+  IS_DEC_LT(1, 3);
+
+  IS_DEC_GT(0, 0);
+  IS_DEC_GT(0, 1);
+  IS_DEC_GT(0, 2);
+  IS_DEC_GT(1, 1);
+  IS_DEC_GT(1, 0);
+  IS_DEC_GT(1, 2);
+  IS_DEC_GT(1, 3);
+
+  IS_DEC_GE(0, 0);
+  IS_DEC_GE(0, 1);
+  IS_DEC_GE(0, 2);
+  IS_DEC_GE(1, 1);
+  IS_DEC_GE(1, 0);
+  IS_DEC_GE(1, 2);
+  IS_DEC_GE(1, 3);
+
+  IS_DEC_LE(0, 0);
+  IS_DEC_LE(0, 1);
+  IS_DEC_LE(0, 2);
+  IS_DEC_LE(1, 1);
+  IS_DEC_LE(1, 0);
+  IS_DEC_LE(1, 2);
+  IS_DEC_LE(1, 3);
+
   VASSIGNS(Y, void);
   VASSIGNS(Y,);
   IF_DEC_LT(7,5)(true)(false);
@@ -144,7 +181,7 @@ int main(int argc, char **argv) {
   long double const a8 = HEX_DOUBLE(,,8,-,,L);
   long double const a9 = HEX_DOUBLE(-,1,8,-,1);
 
-  P99__dec_add(3, 7);
+  DEC_ADD(3, 7);
   DEC_MUL(7, 2);
   DEC_MUL(9, 3);
   //DEC_MUL(8, 8);

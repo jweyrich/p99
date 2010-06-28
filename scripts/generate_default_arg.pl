@@ -56,14 +56,14 @@ print "\t0, ...)\n";
 
 for (my $arg = 0; $arg < $maxnumber; ++$arg) {
     print "#define P99__SKP${arg}(";
-    for (my $i = 0; $i <= $arg; ++$i) {
+    for (my $i = 0; $i < $arg; ++$i) {
         if ($i % 8 != 1) {
             print "\t_$i,";
         } else {
             print "\\\n\t_$i,";
         }
     }
-    print "\\\n\t...) _$arg, __VA_ARGS__\n";
+    print "\\\n\t...) __VA_ARGS__\n";
 }
 
 for (my $arg = 1; $arg < $maxnumber; ++$arg) {
@@ -160,8 +160,6 @@ printf "#define P99__uni2dec_%s %d\n", ${digit}x$_, $_
 printf "#define P99__dec2uni_%d %s\n", $_, ${digit}x$_
     foreach (0.. $maxnumber);
 printf "#define P99__DEC_PRED_%d %d\n", $_ + 1, $_
-    foreach (0.. $maxnumber);
-printf "#define P99__itpredecessor_%d(DEC) DEC_PRED(P99__itpredecessor_%d(DEC))\n", $_ + 1, $_
     foreach (0.. $maxnumber);
 printf "#define P99__DEC_PRED_minus_%d minus_%d\n", $_, $_ + 1
     foreach (0.. $maxnumber);
