@@ -13,6 +13,7 @@
 
 #include "orwl_inline.h"
 #include "p99_if.h"
+#include "p99_for.h"
 
 #define P99__DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)   \
   IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ PASTE(                  \
@@ -409,13 +410,6 @@ CHOOSE5(xT,                                     \
  ** @{
  **/
 
-
-#define LAST(...) CHS(DEC_PRED(P99__NARG(__VA_ARGS__)), __VA_ARGS__,)
-#define ALLBUTLAST(...) PASTE2(P99__PRE,DEC_PRED(P99__NARG(__VA_ARGS__)))(__VA_ARGS__,)
-#define P99__FOR0(NAME, OP, FUNC, ...)
-#define P99__FOR1(NAME, OP, FUNC, ...) FUNC(NAME, P99__PRE1(__VA_ARGS__,), 0)
-#define FOR(NAME, N, OP, FUNC, ...) PASTE2(P99__FOR, N)(NAME, OP, FUNC, __VA_ARGS__)
-
 #ifndef DOXYGEN
 #define REP0(...)
 #define REP1(X) X
@@ -427,75 +421,13 @@ CHOOSE5(xT,                                     \
 #define P99__REP(N, X) REP ## N(X)
 
 
-#define P99__IGN(NAME, X, N)
-#define P99__IDT(NAME, X, N) X
-#define P99__POS(NAME, X, N) N
-#define P99__NAM(NAME, X, N) NAME
+#define P99__ACCESSOR(NAME, X, I) (NAME)[I]
+#define P99__VASSIGN(NAME, X, I) X = P99__ACCESSOR(NAME, X, I)
+#define P99__STRLEN(NAME, X, I) strlen(X)
+#define P99__TYPD(NAME, X, I) typedef X PASTE2(NAME, I)
 
-#define P99__ACCESSOR(NAME, X, N) (NAME)[N]
-#define P99__VASSIGN(NAME, X, N) X = P99__ACCESSOR(NAME, X, N)
-#define P99__STRLEN(NAME, X, N) strlen(X)
-#define P99__TYPD(NAME, X, N) typedef X PASTE2(NAME, N)
+#define P99__STRCAT(NAME, I, REC, X) strcat(REC, X)
 
-#define P99__SUM(NAME, N, X, Y) ((X) + (Y))
-#define P99__PROD(NAME, N, X, Y) ((X) * (Y))
-#define P99__QUOT(NAME, N, X, Y) ((X) / (Y))
-#define P99__XOR(NAME, N, X, Y) ((X) ^ (Y))
-#define P99__BOR(NAME, N, X, Y) ((X) | (Y))
-#define P99__BAND(NAME, N, X, Y) ((X) & (Y))
-#define P99__OR(NAME, N, X, Y) ((X) || (Y))
-#define P99__AND(NAME, N, X, Y) ((X) && (Y))
-
-#define P99__SEQ(NAME, N, REC, X) REC, X
-#define P99__SEP(NAME, N, REC, X) REC; X
-#define P99__SER(NAME, N, REC, X) REC X
-#define P99__REV(NAME, N, REC, X) X, REC
-#define P99__STRCAT(NAME, N, REC, X) strcat(REC, X)
-
-/**
- ** @brief Compute the right associative operation @a OP of all the arguments.
- **
- ** Here @a OP should receive four arguments <code>NAME, X, N,
- ** REC</code> out of which @c NAME and @c N are ignored and @c X and
- ** @c REC should be interpreted as the left and right hand of the
- ** operator action, respectively.
- **
- ** @a M is the length of the list that follows it.
- **/
-#define BIGOP(OP, M, ...) FOR( , M, OP, P99__IDT, __VA_ARGS__,)
-
-/**
- ** @brief Compute the right associative sum of all the arguments.
- **/
-#define SUMS(...) BIGOP(P99__SUM, (NARG(__VA_ARGS__),__VA_ARGS__)
-/**
- ** @brief Compute the right associative product of all the arguments.
- **/
-#define PRODS(...) BIGOP(P99__PROD, (NARG(__VA_ARGS__),__VA_ARGS__)
-/**
- ** @brief Compute the right associative quotient of all the arguments.
- **/
-#define QUOTS(...) BIGOP(P99__QUOT, (NARG(__VA_ARGS__),__VA_ARGS__)
-/**
- ** @brief Compute the right associative bitwise exclusive or of all the arguments.
- **/
-#define XORS(...) BIGOP(P99__XOR, (NARG(__VA_ARGS__),__VA_ARGS__)
-/**
- ** @brief Compute the right associative bitwise or of all the arguments.
- **/
-#define BORS(...) BIGOP(P99__BOR, (NARG(__VA_ARGS__),__VA_ARGS__)
-/**
- ** @brief Compute the right associative bitwise and of all the arguments.
- **/
-#define BANDS(...) BIGOP(P99__BAND, (NARG(__VA_ARGS__),__VA_ARGS__)
-/**
- ** @brief Compute the right associative logical or of all the arguments.
- **/
-#define ORS(...) BIGOP(P99__OR, (NARG(__VA_ARGS__),__VA_ARGS__)
-/**
- ** @brief Compute the right associative logical and of all the arguments.
- **/
-#define ANDS(...) BIGOP(P99__AND, (NARG(__VA_ARGS__),__VA_ARGS__)
 
 
 #define P99__STRLENS(N, ...) FOR(,N, P99__SUM, P99__STRLEN, __VA_ARGS__)
@@ -506,12 +438,6 @@ CHOOSE5(xT,                                     \
  **/
 #define STRLENS(...) P99__STRLENS(NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define P99__REVS(N, ...) FOR(,N, P99__REV, P99__IDT, __VA_ARGS__)
-
-/**
- ** @brief Revert the argument list
- **/
-#define REVS(...) IF_DEC_LT(NARG(__VA_ARGS__),2)(__VA_ARGS__)(P99__REVS(NARG(__VA_ARGS__),__VA_ARGS__))
 
 #define P99__STRCATS(N, ...) FOR(,N, P99__STRCAT, P99__IDT, __VA_ARGS__)
 
