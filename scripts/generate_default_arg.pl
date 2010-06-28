@@ -116,31 +116,6 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
 }
 print STDOUT "\n";
 
-for(my $mod = 1; $mod < $maxnumber; ++$mod) {
-    print "#define P99__MOD${mod}() ";
-    for (my $i = 0; $i < $maxnumber; ++$i) {
-        if ($i % ${mod} != 0) {
-            printf "\t%d,", $i % ${mod};
-        } else {
-            printf "\\\n\t%d,", $i % ${mod};
-        }
-    }
-    print STDOUT "\t", $maxnumber % ${mod}, "\n";
-}
-
-for(my $div = 1; $div < $maxnumber; ++$div) {
-    print "#define P99__DIV${div}() ";
-    for (my $i = 0; $i < $maxnumber; ++$i) {
-        if ($i % ${div} != 0) {
-            printf "\t%d,", $i / ${div};
-        } else {
-            printf "\\\n\t%d,", $i / ${div};
-        }
-    }
-    print STDOUT "\t", int($maxnumber / ${div}), "\n";
-}
-
-
 {
     my $li = "_1,\t_2";
     for (my $m = 3; $m < $maxnumber; ++$m) {
@@ -168,6 +143,8 @@ printf "#define P99__dec_eval_%d %d\n", $_, $_
 printf "#define P99__dec_eval_minus_%d %d\n", $_, -$_
     foreach (0.. $maxnumber);
 print "#define REP${_}(X) ", "X ## " x ($_ - 1), "X\n"
+    foreach (2 .. $maxnumber);
+print "#define DUPL${_}(...) ", "__VA_ARGS__, " x ($_ - 1), "__VA_ARGS__\n"
     foreach (2 .. $maxnumber);
 
 

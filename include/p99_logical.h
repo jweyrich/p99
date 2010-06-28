@@ -231,4 +231,30 @@ P99__DEC_ADD(_0, _1,                            \
  **/
 #define DEC_EVAL(EDEC) PASTE(P99__dec_eval_, EDEC)
 
+
+/**
+ ** @brief Generate the product of non-negative decimal numbers @a A and @a B at
+ ** preprocessing time.
+ **
+ ** @warning The result must be less than the maximum argument list number that
+ ** is supported, currently 64.
+ **/
+#define DEC_MUL(A, B) PASTE3(DEC_MUL_, IS_EQ_0(A), IS_EQ_0(B))(A, B)
+
+#define DEC_MUL_00(A, B) NARG(DUPL(A, SELS(B, P99__ALL_ONES())))
+#define DEC_MUL_01(A, B) 0
+#define DEC_MUL_10(A, B) 0
+#define DEC_MUL_11(A, B) 0
+
+
+/**
+ ** @brief Generate the modulus of non-negative decimal numbers @a A and @a B at
+ ** preprocessing time.
+ **
+ ** @warning Both arguments must be less than the maximum argument list number that
+ ** is supported, currently 64.
+ **/
+#define DEC_MOD(A, B) P99__DEC_MOD(A, DUPL(32, SELS(B, P99__ASCENDING())))
+#define P99__DEC_MOD(A, ...) CHS(A, __VA_ARGS__)
+
 #endif 	    /* !P99_LOGICAL_H_ */

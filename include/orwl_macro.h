@@ -407,15 +407,6 @@ CHOOSE5(xT,                                     \
  ** @{
  **/
 
-#ifndef DOXYGEN
-#define REP0(...)
-#define REP1(X) X
-#endif
-/**
- ** @brief Concatenate the token @a X @a N times.
- **/
-#define REP(N, X) P99__REP(N, X)
-#define P99__REP(N, X) REP ## N(X)
 
 
 #define P99__ACCESSOR(NAME, X, I) (NAME)[I]
@@ -602,23 +593,6 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 #define P99__DARG(NAME, X, N) IF_EMPTY(X)(PASTE3(NAME, _defarg_, N)())(X)
 #define P99___DEFARGS(NAME, N, ...) FOR(NAME, N, P99__SEQ, P99__DARG, __VA_ARGS__)
 #define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, IF_DEC_LT(NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,DEC_MINUS(N,NARG(__VA_ARGS__)))) (__VA_ARGS__))
-
-/**
- ** @brief Generate the quotient of non-negative decimal numbers @a A and @a B at
- ** preprocessing time.
- **
- ** @warning Both arguments must be less than the maximum argument list number that
- ** is supported, currently 64.
- **/
-#define DEC_DIV(A, B) CHS(A, P99__DIV ## B())
-/**
- ** @brief Generate the modulus of non-negative decimal numbers @a A and @a B at
- ** preprocessing time.
- **
- ** @warning Both arguments must be less than the maximum argument list number that
- ** is supported, currently 64.
- **/
-#define DEC_MOD(A, B) CHS(A, P99__MOD ## B())
 
 /**
  ** @brief Declare the types that are going to be used with a
