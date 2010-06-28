@@ -257,4 +257,54 @@ P99__DEC_ADD(_0, _1,                            \
 #define DEC_MOD(A, B) P99__DEC_MOD(A, DUPL(32, SELS(B, P99__ASCENDING())))
 #define P99__DEC_MOD(A, ...) CHS(A, __VA_ARGS__)
 
+
+/**
+ ** @brief Obtain the last element of a list.
+ **/
+#define LAST(...) CHS(DEC_PRED(P99__NARG(__VA_ARGS__)), __VA_ARGS__,)
+
+/**
+ ** @brief Obtain all elements but the last of a list.
+ **/
+#define ALLBUTLAST(...) PASTE2(P99__PRE,DEC_PRED(P99__NARG(__VA_ARGS__)))(__VA_ARGS__,)
+
+#define P99___PASTE(F, N, ...) F ## N(__VA_ARGS__)
+#define P99__PASTE(N, ...) P99___PASTE(PASTE, N, __VA_ARGS__)
+
+
+/** @addtogroup list_processing List processing macros
+ ** @brief We provide here a series of macros that take a list of
+ ** arguments of arbitrary length and that transform each element in
+ ** that list in some way.
+ ** @{
+ **/
+
+
+/**
+ ** @brief A left-to-right associative paste operator.
+ **
+ ** This macro avoids the ambiguity of the @c ## preprocessor operator
+ ** which has no well defined associativity. With this macro here
+ ** something like
+ ** @code
+ ** PASTE(0.1E, -, 1)
+ ** @endcode
+ ** is guaranteed to produce the token @c 0.1E-1, whereas the
+ ** seemingly equivalent
+ ** @code
+ ** ETSAP(0.1E, -, 1)
+ ** @endcode
+ ** is not valid: the intermediate operation to paste tokens `-' and
+ ** `1' would result in an invalid token and is thus rejected.
+ **
+ ** This macro does the evaluation of the arguments first and
+ ** then proceeds at the concatenation of the results.
+ ** @pre the argumentlist should not be empty.
+ **/
+#define PASTE(...) P99__PASTE(P99__NARG(__VA_ARGS__), __VA_ARGS__)
+
+/** @}
+ **/
+
+
 #endif 	    /* !P99_LOGICAL_H_ */

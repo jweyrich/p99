@@ -13,6 +13,7 @@
 
 
 #define P99__PRE0(...)
+#define P99__PRE1(_0, ...) _0
 
 /** @addtogroup list_processing List processing macros
  ** @brief We provide here a series of macros that take a list of
@@ -25,6 +26,9 @@
  ** Cut the argument list at position @a N
  **/
 #define SELS(N, ...) PASTE2(P99__PRE, N)(__VA_ARGS__)
+
+#define P99__SKP0(...) __VA_ARGS__
+#define P99__SKP1(_0, ...) __VA_ARGS__
 
 
 /**

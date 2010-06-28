@@ -54,36 +54,14 @@ for (my $i = 2; $i < $maxnumber; ++$i) {
 print "\t0, ...)\n";
 
 
-for (my $arg = 0; $arg < $maxnumber; ++$arg) {
-    print "#define P99__SKP${arg}(";
-    for (my $i = 0; $i < $arg; ++$i) {
-        if ($i % 8 != 1) {
-            print "\t_$i,";
-        } else {
-            print "\\\n\t_$i,";
-        }
-    }
-    print "\\\n\t...) __VA_ARGS__\n";
+for (my $arg = 2; $arg < $maxnumber; ++$arg) {
+    my $arg1 = ${arg} - 1;
+    print "#define P99__SKP${arg}(_0, ...) P99__SKP${arg1}(__VA_ARGS__)\n";
 }
 
-for (my $arg = 1; $arg < $maxnumber; ++$arg) {
-    print "#define P99__PRE${arg}(";
-    for (my $i = 0; $i < $arg; ++$i) {
-        if ($i % 8 != 1) {
-            print "\t_$i,";
-        } else {
-            print "\\\n\t_$i,";
-        }
-    }
-    print "\\\n\t...) _0";
-    for (my $i = 1; $i < $arg; ++$i) {
-        if ($i % 8 != 1) {
-            print ",\t_$i";
-        } else {
-            print ",\\\n\t_$i";
-        }
-    }
-    print "\n";
+for (my $arg = 2; $arg < $maxnumber; ++$arg) {
+    my $arg1 = ${arg} - 1;
+    print "#define P99__PRE${arg}(_0, ...) _0, P99__PRE${arg1}(__VA_ARGS__)\n";
 }
 
 print "#define P99__ASCENDING() ";
@@ -116,13 +94,10 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
 }
 print STDOUT "\n";
 
-{
-    my $li = "_1,\t_2";
-    for (my $m = 3; $m < $maxnumber; ++$m) {
-        my $m1 = $m - 1;
-        print "#define PASTE$m(${li},\t_${m})\t\\\n\tPASTE2(PASTE${m1}(${li}), _${m})\n";
-        $li .= ",\t_${m}";
-    }
+for (my $m = 7; $m < $maxnumber; ++$m) {
+    my $m1 = $m - 1;
+    print "#define PASTE$m(...) P99__PASTE$m(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))\n";
+    print "#define P99__PASTE$m(L, ...) PASTE2(PASTE${m1}(__VA_ARGS__), L)\n";
 }
 
 print "#define P99__IS_${_}_EQ_${_}(...) ,\n"
@@ -142,9 +117,7 @@ printf "#define P99__dec_eval_%d %d\n", $_, $_
     foreach (0.. $maxnumber);
 printf "#define P99__dec_eval_minus_%d %d\n", $_, -$_
     foreach (0.. $maxnumber);
-print "#define REP${_}(X) ", "X ## " x ($_ - 1), "X\n"
-    foreach (2 .. $maxnumber);
-print "#define DUPL${_}(...) ", "__VA_ARGS__, " x ($_ - 1), "__VA_ARGS__\n"
+print "#define DUPL${_}(...) __VA_ARGS__, DUPL", ($_ - 1), "(__VA_ARGS__)\n"
     foreach (2 .. $maxnumber);
 
 

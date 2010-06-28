@@ -20,16 +20,6 @@
  ** @{
  **/
 
-/**
- ** @brief Obtain the last element of a list.
- **/
-#define LAST(...) CHS(DEC_PRED(P99__NARG(__VA_ARGS__)), __VA_ARGS__,)
-
-/**
- ** @brief Obtain all elements but the last of a list.
- **/
-#define ALLBUTLAST(...) PASTE2(P99__PRE,DEC_PRED(P99__NARG(__VA_ARGS__)))(__VA_ARGS__,)
-
 #define P99__FOR0(NAME, OP, FUNC, ...)
 #define P99__FOR1(NAME, OP, FUNC, ...) FUNC(NAME, P99__PRE1(__VA_ARGS__,), 0)
 

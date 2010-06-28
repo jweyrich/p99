@@ -59,44 +59,13 @@
  ** @endcode
  **/
 #define PASTE2(_1, _2) CAT2(_1, _2)
-
-#define P99___PASTE(F, N, ...) F ## N(__VA_ARGS__)
-#define P99__PASTE(N, ...) P99___PASTE(PASTE, N, __VA_ARGS__)
-
-
-/** @addtogroup list_processing List processing macros
- ** @brief We provide here a series of macros that take a list of
- ** arguments of arbitrary length and that transform each element in
- ** that list in some way.
- ** @{
- **/
-
-
-/**
- ** @brief A left-to-right associative paste operator.
- **
- ** This macro avoids the ambiguity of the @c ## preprocessor operator
- ** which has no well defined associativity. With this macro here
- ** something like
- ** @code
- ** PASTE(0.1E, -, 1)
- ** @endcode
- ** is guaranteed to produce the token @c 0.1E-1, whereas the
- ** seemingly equivalent
- ** @code
- ** ETSAP(0.1E, -, 1)
- ** @endcode
- ** is not valid: the intermediate operation to paste tokens `-' and
- ** `1' would result in an invalid token and is thus rejected.
- **
- ** This macro does the evaluation of the arguments first and
- ** then proceeds at the concatenation of the results.
- ** @pre the argumentlist should not be empty.
- **/
-#define PASTE(...) P99__PASTE(P99__NARG(__VA_ARGS__), __VA_ARGS__)
-
-/** @}
- **/
-
+#define PASTE3(_1,	_2,	_3)	\
+	PASTE2(PASTE2(_1,	_2), _3)
+#define PASTE4(_1,	_2,	_3,	_4)	\
+	PASTE2(PASTE3(_1,	_2,	_3), _4)
+#define PASTE5(_1,	_2,	_3,	_4,	_5)	\
+	PASTE2(PASTE4(_1,	_2,	_3,	_4), _5)
+#define PASTE6(_1,	_2,	_3,	_4,	_5,	_6)	\
+	PASTE2(PASTE5(_1,	_2,	_3,	_4,	_5), _6)
 
 #endif 	    /* !P99_PASTE_H_ */
