@@ -215,4 +215,20 @@ P99__DEC_ADD(_0, _1,                            \
 /* The general case both are non-zero and _0 is strictly greater than _1 */
 #define P99__DEC_MINUS__(_0, _1) NARG(SKP(_1, SELS(_0, P99__ALL_ZEROES())))
 
+
+/**
+ ** @brief Macro that expands to the predecessor of decimal constant
+ ** #a N
+ **/
+#define DEC_PRED(N) P99__DEC_PRED(N)
+#define P99__DEC_PRED(N) P99___DEC_PRED(P99__DEC_PRED_ , N)
+#define P99___DEC_PRED(P, N) P ## N
+
+#define P99__DEC_PRED_0 minus_1
+
+/**
+ ** @brief evaluate the result of one of the arithmetic preprocessor 
+ **/
+#define DEC_EVAL(EDEC) PASTE(P99__dec_eval_, EDEC)
+
 #endif 	    /* !P99_LOGICAL_H_ */

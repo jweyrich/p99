@@ -277,18 +277,8 @@
 /*! @see VA_ARGS */                                                     \
 /*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
 
-/**
- ** @brief Macro that expands to the predecessor of decimal constant
- ** #a N
- **/
-#define P99___DEC_PRED(P, N) P ## N
-#define P99__DEC_PRED(N) P99___DEC_PRED(P99__DEC_PRED_ , N)
-#define DEC_PRED(N) P99__DEC_PRED(N)
 #define P99__dec2uni(DEC) PASTE(P99__dec2uni_, DEC)
 #define P99__uni2dec(UN) PASTE(P99__uni2dec_, UN)
-
-#define P99__DEC_PRED_0 minus_1
-#define P99__dec_eval(EDEC) PASTE(P99__dec_eval_, EDEC)
 
 #define P99__FSYMB(NAME) PASTE(NAME, _f, sy, mb, _)
 
