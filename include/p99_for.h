@@ -147,14 +147,47 @@
 /**
  ** @brief Revert the argument list
  **/
-#define REVS(...) PASTE2(P99__REVS_, NARG(__VA_ARGS__))(__VA_ARGS__)
+#define REVS(...) P99__REVS(NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define P99__REVS_0(...) P99__REVS_(NARG(__VA_ARGS__),__VA_ARGS__)
-#define P99__REVS_1(...) __VA_ARGS__
+#define P99__REVS(N, ...) PASTE2(P99__REVS_, IS_DEC_LT(N, 2))(N, __VA_ARGS__)
+
+#define P99__REVS_0(N, ...) P99__REVS_(N,__VA_ARGS__)
+#define P99__REVS_1(N, ...) __VA_ARGS__
 
 /* the general case for an argument list of at least two elements */
 #define P99__REVS_(N, ...) FOR(,N, P99__REV, P99__IDT, __VA_ARGS__)
 
+#define P99__UNP(NAME, X, I) P99__IDENT NAME
+
+/**
+ ** @brief Construct a list that repeats the argument list @a N times
+ **
+ ** The corner cases should work as expected:
+ ** - If @a N is 0 the empty list is produced.
+ ** - If the argument list is empty, the empty list is produced.
+ ** - If the argument list has just one element which is empty, the
+ **   result will just be a sequence of @a N - 1 commas.
+ **/
+#define DUPL(...) PASTE2(P99__DUPL_, IS_DEC_LT(NARG(__VA_ARGS__), 2))(__VA_ARGS__)
+
+#define P99__DUPL_0(...) P99__DUPL__(__VA_ARGS__)
+#define P99__DUPL_1(...)
+
+#define P99__DUPL__(N, ...) FOR((__VA_ARGS__), N, P99__SEQ, P99__UNP, P99__ALL_ZEROES)
+
+/**
+ ** @brief Generate the product of non-negative decimal numbers @a A and @a B at
+ ** preprocessing time.
+ **
+ ** @warning The result must be less than the maximum argument list number that
+ ** is supported, currently 64.
+ **/
+#define DEC_MUL(A, B) PASTE3(DEC_MUL_, IS_EQ_0(A), IS_EQ_0(B))(A, B)
+
+#define DEC_MUL_00(A, B) NARG(DUPL(A, SELS(B, P99__ALL_ONES())))
+#define DEC_MUL_01(A, B) 0
+#define DEC_MUL_10(A, B) 0
+#define DEC_MUL_11(A, B) 0
 
 /** @}
  **/

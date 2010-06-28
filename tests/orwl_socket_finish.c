@@ -169,6 +169,9 @@ int main(int argc, char **argv) {
 
   IF_DEC_GT(1,0)(true)(false);
 
+  REVS();
+  REVS("a");
+  REVS("a", "b");
   REVS("a", "b", "c");
   long double const a0 = +0.5L;
   long double const a1 = DEC_DOUBLE();
@@ -185,6 +188,7 @@ int main(int argc, char **argv) {
   DEC_MUL(7, 2);
   DEC_MUL(9, 3);
   //DEC_MUL(8, 8);
+  DEC_MUL(8, 0);
   DEC_MUL(10, 5);
 
   DEC_DIV(7, 2);

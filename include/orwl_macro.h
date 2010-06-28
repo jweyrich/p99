@@ -159,9 +159,6 @@
 /*! @see VA_ARGS */                                                     \
 /*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
 
-#define P99__dec2uni(DEC) PASTE(P99__dec2uni_, DEC)
-#define P99__uni2dec(UN) PASTE(P99__uni2dec_, UN)
-
 #define P99__FSYMB(NAME) PASTE(NAME, _f, sy, mb, _)
 
 /** @brief Mangle @a NAME 
@@ -606,16 +603,6 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 #define P99___DEFARGS(NAME, N, ...) FOR(NAME, N, P99__SEQ, P99__DARG, __VA_ARGS__)
 #define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, IF_DEC_LT(NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,DEC_MINUS(N,NARG(__VA_ARGS__)))) (__VA_ARGS__))
 
-#define P99__DEC_MUL(A, B) IF_EQ_0(A)(0)(P99__uni2dec(REP(A, B)))
-
-/**
- ** @brief Generate the product of non-negative decimal numbers @a A and @a B at
- ** preprocessing time.
- **
- ** @warning The result must be less than the maximum argument list number that
- ** is supported, currently 64.
- **/
-#define DEC_MUL(A, B) IF_DEC_LT(A, B)(P99__DEC_MUL(A, P99__dec2uni(B)))(P99__DEC_MUL(B, P99__dec2uni(A)))
 /**
  ** @brief Generate the quotient of non-negative decimal numbers @a A and @a B at
  ** preprocessing time.

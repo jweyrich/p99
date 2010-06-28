@@ -155,10 +155,6 @@ print "#define P99__IS_${_}_EQ_${_}(...) ,\n"
 print "#define IS_EQ_${_}(...) TOK_EQ(${_}, __VA_ARGS__)\n"
     foreach (0.. $maxnumber, @keywords_C99);
 
-printf "#define P99__uni2dec_%s %d\n", ${digit}x$_, $_
-    foreach (0.. $maxnumber);
-printf "#define P99__dec2uni_%d %s\n", $_, ${digit}x$_
-    foreach (0.. $maxnumber);
 printf "#define P99__DEC_PRED_%d %d\n", $_ + 1, $_
     foreach (0.. $maxnumber);
 printf "#define P99__DEC_PRED_minus_%d minus_%d\n", $_, $_ + 1
