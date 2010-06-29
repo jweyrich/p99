@@ -15,13 +15,12 @@
 
 static uint32_t mycode = 0;
 
-typedef uint32_t _U;
-#define _Code(C0, C1, C2, C3) ((((_U)C0) << 0) | (((_U)C1) << 8) | (((_U)C2) << 16) | (((_U)C3) << 24))
+#define if_code(C0, C1, C2, C3) ((((uint32_t)C0) << 0) | (((uint32_t)C1) << 8) | (((uint32_t)C2) << 16) | (((uint32_t)C3) << 24))
 
-#define _if_Code(C0, C1, C2, C3)                          \
+#define orwl_if_code(C0, C1, C2, C3)                    \
 do {                                                    \
-  static uint32_t const c = _Code(C0, C1, C2, C3);       \
-  if (ntohl(c) == _Code(0, 1, 2, 3)) {                   \
+  static uint32_t const c = if_code(C0, C1, C2, C3);    \
+  if (ntohl(c) == if_code(0, 1, 2, 3)) {                \
     mycode = c;                                         \
     goto END;                                           \
   }                                                     \
@@ -30,33 +29,33 @@ do {                                                    \
 
 DECLARE_ONCE_UPON(mycode);
 DEFINE_ONCE_UPON(mycode) {
-    _if_Code(0, 1, 2, 3);
-    _if_Code(0, 1, 3, 2);
-    _if_Code(0, 2, 1, 3);
-    _if_Code(0, 2, 3, 1);
-    _if_Code(0, 3, 1, 2);
-    _if_Code(0, 3, 2, 1);
+    orwl_if_code(0, 1, 2, 3);
+    orwl_if_code(0, 1, 3, 2);
+    orwl_if_code(0, 2, 1, 3);
+    orwl_if_code(0, 2, 3, 1);
+    orwl_if_code(0, 3, 1, 2);
+    orwl_if_code(0, 3, 2, 1);
 
-    _if_Code(1, 0, 2, 3);
-    _if_Code(1, 0, 3, 2);
-    _if_Code(1, 2, 0, 3);
-    _if_Code(1, 2, 3, 0);
-    _if_Code(1, 3, 0, 2);
-    _if_Code(1, 3, 2, 0);
+    orwl_if_code(1, 0, 2, 3);
+    orwl_if_code(1, 0, 3, 2);
+    orwl_if_code(1, 2, 0, 3);
+    orwl_if_code(1, 2, 3, 0);
+    orwl_if_code(1, 3, 0, 2);
+    orwl_if_code(1, 3, 2, 0);
 
-    _if_Code(2, 0, 1, 3);
-    _if_Code(2, 0, 3, 1);
-    _if_Code(2, 1, 0, 3);
-    _if_Code(2, 1, 3, 0);
-    _if_Code(2, 3, 0, 1);
-    _if_Code(2, 3, 1, 0);
+    orwl_if_code(2, 0, 1, 3);
+    orwl_if_code(2, 0, 3, 1);
+    orwl_if_code(2, 1, 0, 3);
+    orwl_if_code(2, 1, 3, 0);
+    orwl_if_code(2, 3, 0, 1);
+    orwl_if_code(2, 3, 1, 0);
 
-    _if_Code(3, 0, 1, 2);
-    _if_Code(3, 0, 2, 1);
-    _if_Code(3, 1, 0, 2);
-    _if_Code(3, 1, 2, 0);
-    _if_Code(3, 2, 0, 1);
-    _if_Code(3, 2, 1, 0);
+    orwl_if_code(3, 0, 1, 2);
+    orwl_if_code(3, 0, 2, 1);
+    orwl_if_code(3, 1, 0, 2);
+    orwl_if_code(3, 1, 2, 0);
+    orwl_if_code(3, 2, 0, 1);
+    orwl_if_code(3, 2, 1, 0);
  END:;
 }
 

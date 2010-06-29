@@ -98,8 +98,8 @@ SYMBOLS=${filter-out ${GLOBVARS}, ${sort ${shell ${NM} liborwl.so | ${NM_UNDEF_F
 
 COMMA=,
 
-CASTS=${patsubst %,\t(_FT)%${COMMA}\n,${SYMBOLS}}
-CALLS=${patsubst %,\t((_FT)%)(NULL);\n,${SYMBOLS}}
+CASTS=${patsubst %,\t(orwl__FT)%${COMMA}\n,${SYMBOLS}}
+CALLS=${patsubst %,\t((orwl__FT)%)(NULL);\n,${SYMBOLS}}
 PROTS=${patsubst %,\tvoid* %(void*);\n,${SYMBOLS}}
 
 external_symbols.c : liborwl.so Makefile
@@ -107,7 +107,7 @@ external_symbols.c : liborwl.so Makefile
 	@printf ' ** @brief External refferences in the library\n' >> external_symbols.c
 	@printf ' **/\n' >> external_symbols.c
 	@printf '#include "orwl_posix_default.h"\n' >> external_symbols.c
-	@printf 'typedef void* (*_FT)(void*);\n' >> external_symbols.c
+	@printf 'typedef void* (*orwl__FT)(void*);\n' >> external_symbols.c
 	@printf 'void* (*const external_functions[])(void*) = {\n${CASTS}};\n' >> external_symbols.c
 	@printf '#ifdef DOXYGEN\n' >> external_symbols.c
 	@printf 'void call_externals(void) {\n${CALLS}}\n' >> external_symbols.c
