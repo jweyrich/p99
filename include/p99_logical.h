@@ -217,7 +217,7 @@ P99__DEC_ADD(_0, _1,                            \
 
 /**
  ** @brief Macro that expands to the predecessor of decimal constant
- ** #a N
+ ** @a N
  **/
 #define DEC_PRED(N) P99__DEC_PRED(N)
 #define P99__DEC_PRED(N) P99___DEC_PRED(P99__DEC_PRED_ , N)

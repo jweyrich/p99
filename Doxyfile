@@ -597,7 +597,7 @@ RECURSIVE              = YES
 # excluded from the INPUT source files. This way you can easily exclude a
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
-EXCLUDE                = orwl_default_arg.h
+EXCLUDE                = include/p99_generated.h
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or
 # directories that are symbolic links (a Unix filesystem feature) are excluded
@@ -1321,9 +1321,9 @@ PASTE4						\
 PROTOTYPE					\
 VA_ARGS						\
 VA_ARGS_DOCUMENTATION				\
-_DECLARE_ARI2STR				\
-_ORWL_ALIAS					\
-_PROTOTYPE
+P99__DECLARE_ARI2STR				\
+P99__ORWL_ALIAS					\
+P99__PROTOTYPE
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then
 # doxygen's preprocessor will remove all function-like macros that are alone

@@ -272,7 +272,6 @@ DECLARE_ARI2STR(ullong)
 #define P99__ALLO(N) ((char[N]){0})
 
 /**
- ** @def PRIu
  ** @brief convert @a x to unsigned decimal
  */
 #define PRIu(x)                                 \
