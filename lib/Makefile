@@ -71,6 +71,8 @@ depend Makefile.inc :
 	gcc $(IPATH) -MM $(SRC) > Makefile.inc
 clean:
 	-$(RM) $(NAME) $(OBJS) *~
+distclean: clean
+	-$(RM) Makefile.inc
 fclean:
 	-$(RM) $(NAME)
 comp: clean

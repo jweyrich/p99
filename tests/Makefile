@@ -25,7 +25,7 @@ SRC	=	orwl_wait_list.c		\
 		orwl_socket_finish.c
 
 INCL  	=		# List of *.h
-LIBDIR	:= $(join $(dir ${PWD}),lib)
+LIBDIR	:= $(join $(dir ${CURDIR}),lib)
 ################
 # Optional add #
 ################
@@ -66,6 +66,8 @@ depend Makefile.inc:
 	gcc $(IPATH) -MM $(SRC) > Makefile.inc
 clean:
 	-$(RM) $(NAME) $(OBJS) *~
+distclean: clean
+	-$(RM) Makefile.inc
 fclean:
 	-$(RM) $(NAME)
 comp: clean
