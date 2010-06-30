@@ -1,7 +1,7 @@
 ## -*- Makefile -*-
 
-orwl_default_arg.h : ../scripts/generate_default_arg.pl
-	../scripts/generate_default_arg.pl > $@
+p99_generated.h : ../scripts/p99_generate.pl
+	../scripts/p99_generate.pl > $@
 
 TAGS : *.h
 	etags *.h

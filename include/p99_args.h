@@ -11,7 +11,6 @@
 #ifndef   	P99_ARGS_H_
 # define   	P99_ARGS_H_
 
-#include "orwl_inline.h"
 #include "p99_paste.h"
 
 /**

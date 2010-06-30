@@ -11,6 +11,7 @@
 #ifndef   	P99_LIST_H_
 # define   	P99_LIST_H_
 
+#include "p99_generated.h"
 
 #define P99__PRE0(...)
 #define P99__PRE1(_0, ...) _0

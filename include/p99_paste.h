@@ -11,8 +11,7 @@
 #ifndef   	P99_PASTE_H_
 # define   	P99_PASTE_H_
 
-#include "orwl_inline.h"
-#include "orwl_default_arg.h"
+#include "p99_generated.h"
 
 /* This was inspired by BOOT's PP_CAT macro. Using such a thing avoid
    to define multiple levels of expansion for each macro. */
