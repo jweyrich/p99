@@ -284,7 +284,7 @@ extern void sleepfor(double t);
 /**
  ** @brief Just a wrapper for @c sem_init
  **/
-inline
+static_inline
 int orwl_sem_init(sem_t *sem, int pshared, unsigned int value) {
   return sem_init(sem, pshared, value);
 }
@@ -292,7 +292,7 @@ int orwl_sem_init(sem_t *sem, int pshared, unsigned int value) {
 /**
  ** @brief Just a wrapper for @c sem_destroy
  **/
-inline
+static_inline
 int orwl_sem_destroy(sem_t *sem) {
   return sem_destroy(sem);
 }
@@ -301,7 +301,7 @@ int orwl_sem_destroy(sem_t *sem) {
 /**
  ** @brief Just a wrapper for @c sem_getvalue
  **/
-inline
+static_inline
 int orwl_sem_getvalue(sem_t *sem, int *sval) {
   return sem_getvalue(sem, sval);
 }
@@ -309,7 +309,7 @@ int orwl_sem_getvalue(sem_t *sem, int *sval) {
 /**
  ** @brief Just a wrapper for @c sem_post
  **/
-inline
+static_inline
 int orwl_sem_post(sem_t *sem) {
   return sem_post(sem);
 }
@@ -321,16 +321,12 @@ int orwl_sem_post(sem_t *sem) {
  ** This function here catches the case of an interrupt and retries
  ** until success or until another error condition occurs.
  **/
-inline
+static_inline
 int orwl_sem_trywait(sem_t *sem) {
-  int ret;
- RETRY:
-  ret = sem_trywait(sem);
-  if (ret && errno == EINTR) {
-    errno = 0;
-    goto RETRY;
-  }
-  return ret;
+  while (sem_trywait(sem))
+    if (errno == EINTR) errno = 0;
+    else return -1;
+  return 0;
 }
 
 /**
@@ -340,16 +336,12 @@ int orwl_sem_trywait(sem_t *sem) {
  ** This function here catches the case of an interrupt and retries
  ** until success or until another error condition occurs.
  **/
-inline
-int orwl_sem_wait(sem_t *sem)  {
-  int ret;
- RETRY:
-  ret = sem_wait(sem);
-  if (ret && errno == EINTR) {
-    errno = 0;
-    goto RETRY;
-  }
-  return ret;
+static_inline
+int orwl_sem_wait(sem_t *sem) {
+  while (sem_wait(sem))
+    if (errno == EINTR) errno = 0;
+    else return -1;
+  return 0;
 }
 
 /**
@@ -359,16 +351,12 @@ int orwl_sem_wait(sem_t *sem)  {
  ** This function here catches the case of an interrupt and retries
  ** until success or until another error condition occurs.
  **/
-inline
+static_inline
 int orwl_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout) {
-  int ret;
- RETRY:
-  ret = sem_timedwait(sem, abs_timeout);
-  if (ret && errno == EINTR) {
-    errno = 0;
-    goto RETRY;
-  }
-  return ret;
+  while (sem_timedwait(sem, abs_timeout))
+    if (errno == EINTR) errno = 0;
+    else return -1;
+  return 0;
 }
 
 /**
