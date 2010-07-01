@@ -117,8 +117,8 @@ typedef struct {
 orwl__routine_arg* orwl__routine_arg_init(orwl__routine_arg *rt,
                                               start_routine_t start_routine,
                                               void* arg) {
-  sem_init(&rt->semCaller, 0, 0);
-  sem_init(&rt->semCalled, 0, 0);
+  orwl_sem_init(&rt->semCaller, 0, 0);
+  orwl_sem_init(&rt->semCalled, 0, 0);
   rt->start_routine = start_routine;
   rt->arg = arg;
   return rt;
@@ -156,7 +156,7 @@ void *detached_wrapper(void *routine_arg) {
   MUTUAL_EXCLUDE(create_mutex)
     pthread_cond_broadcast(&create_cond);
   /* wait if the creator might still be needing the semaphore */
-  sem_wait(&Routine_Arg->semCaller);
+  orwl_sem_wait(&Routine_Arg->semCaller);
   /* Be careful to eliminate all garbage that the wrapping has
      generated. */
   orwl__routine_arg_delete(Routine_Arg);
@@ -177,7 +177,7 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
                            detached_wrapper,
                            Routine_Arg);
   /* Wait until the routine is accounted for */
-  sem_wait(&Routine_Arg->semCalled);
+  orwl_sem_wait(&Routine_Arg->semCalled);
   /* Notify that Routine_Arg may safely be deleted thereafter */
   orwl_sem_post(&Routine_Arg->semCaller);
   return ret;
