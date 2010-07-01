@@ -70,7 +70,7 @@ static pthread_attr_t attr_joinable;
  * detached threads.
  *
  * The counter is realized by a semaphore to ensure that thread
- * startup is as fast as possible. A call to orwl_sem_post should be the
+ * startup is as fast as possible. A call to sem_post_nointr should be the
  * most efficient operation for such a case.
  *
  * The wait routine on the other hand then has to check for the value
@@ -83,7 +83,7 @@ static pthread_mutex_t create_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t create_cond = PTHREAD_COND_INITIALIZER;
 
 DEFINE_ONCE(orwl_pthread_create) {
-  orwl_sem_init(&create_sem, 0, 0);
+  sem_init_nointr(&create_sem, 0, 0);
   pthread_attr_init(&attr_detached);
   pthread_attr_setdetachstate(&attr_detached, PTHREAD_CREATE_DETACHED);
   pthread_attr_init(&attr_joinable);
@@ -117,8 +117,8 @@ typedef struct {
 orwl__routine_arg* orwl__routine_arg_init(orwl__routine_arg *rt,
                                               start_routine_t start_routine,
                                               void* arg) {
-  orwl_sem_init(&rt->semCaller, 0, 0);
-  orwl_sem_init(&rt->semCalled, 0, 0);
+  sem_init_nointr(&rt->semCaller, 0, 0);
+  sem_init_nointr(&rt->semCalled, 0, 0);
   rt->start_routine = start_routine;
   rt->arg = arg;
   return rt;
@@ -147,7 +147,7 @@ void *detached_wrapper(void *routine_arg) {
   void *ret = INITIALIZER;
   SEM_RELAX(create_sem) {
     /* tell the creator that we are in charge */
-    orwl_sem_post(&Routine_Arg->semCalled);
+    sem_post_nointr(&Routine_Arg->semCalled);
     ret = start_routine(arg);
   }
   /* The remaining part could be a bit slower but usually only at the
@@ -156,7 +156,7 @@ void *detached_wrapper(void *routine_arg) {
   MUTUAL_EXCLUDE(create_mutex)
     pthread_cond_broadcast(&create_cond);
   /* wait if the creator might still be needing the semaphore */
-  orwl_sem_wait(&Routine_Arg->semCaller);
+  sem_wait_nointr(&Routine_Arg->semCaller);
   /* Be careful to eliminate all garbage that the wrapping has
      generated. */
   orwl__routine_arg_delete(Routine_Arg);
@@ -177,9 +177,9 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
                            detached_wrapper,
                            Routine_Arg);
   /* Wait until the routine is accounted for */
-  orwl_sem_wait(&Routine_Arg->semCalled);
+  sem_wait_nointr(&Routine_Arg->semCalled);
   /* Notify that Routine_Arg may safely be deleted thereafter */
-  orwl_sem_post(&Routine_Arg->semCaller);
+  sem_post_nointr(&Routine_Arg->semCaller);
   return ret;
 }
 
@@ -187,7 +187,7 @@ void orwl_pthread_wait_detached(void) {
   INIT_ONCE(orwl_pthread_create);
   MUTUAL_EXCLUDE(create_mutex) {
     for (int sval = 1;;) {
-      orwl_sem_getvalue(&create_sem, &sval);
+      sem_getvalue_nointr(&create_sem, &sval);
       if (!sval) break;
       pthread_cond_wait(&create_cond, &create_mutex);
     }
@@ -219,12 +219,12 @@ void sleepfor(double t) {
   }
 }
 
-int orwl_sem_init(sem_t *sem, int pshared, unsigned int value);
-int orwl_sem_destroy(sem_t *sem);
-int orwl_sem_getvalue(sem_t *sem, int *sval);
-int orwl_sem_post(sem_t *sem);
-int orwl_sem_trywait(sem_t *sem);
-int orwl_sem_wait(sem_t *sem);
-int orwl_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout);
+int sem_init_nointr(sem_t *sem, int pshared, unsigned int value);
+int sem_destroy_nointr(sem_t *sem);
+int sem_getvalue_nointr(sem_t *sem, int *sval);
+int sem_post_nointr(sem_t *sem);
+int sem_trywait_nointr(sem_t *sem);
+int sem_wait_nointr(sem_t *sem);
+int sem_timedwait_nointr(sem_t *sem, const struct timespec *abs_timeout);
 
 char const* pthread2str(char *buf, pthread_t id);

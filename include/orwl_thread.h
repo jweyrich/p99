@@ -285,7 +285,7 @@ extern void sleepfor(double t);
  ** @brief Just a wrapper for @c sem_init
  **/
 static_inline
-int orwl_sem_init(sem_t *sem, int pshared, unsigned int value) {
+int sem_init_nointr(sem_t *sem, int pshared, unsigned int value) {
   return sem_init(sem, pshared, value);
 }
 
@@ -293,7 +293,7 @@ int orwl_sem_init(sem_t *sem, int pshared, unsigned int value) {
  ** @brief Just a wrapper for @c sem_destroy
  **/
 static_inline
-int orwl_sem_destroy(sem_t *sem) {
+int sem_destroy_nointr(sem_t *sem) {
   return sem_destroy(sem);
 }
 
@@ -302,7 +302,7 @@ int orwl_sem_destroy(sem_t *sem) {
  ** @brief Just a wrapper for @c sem_getvalue
  **/
 static_inline
-int orwl_sem_getvalue(sem_t *sem, int *sval) {
+int sem_getvalue_nointr(sem_t *sem, int *sval) {
   return sem_getvalue(sem, sval);
 }
 
@@ -310,7 +310,7 @@ int orwl_sem_getvalue(sem_t *sem, int *sval) {
  ** @brief Just a wrapper for @c sem_post
  **/
 static_inline
-int orwl_sem_post(sem_t *sem) {
+int sem_post_nointr(sem_t *sem) {
   return sem_post(sem);
 }
 
@@ -322,7 +322,7 @@ int orwl_sem_post(sem_t *sem) {
  ** until success or until another error condition occurs.
  **/
 static_inline
-int orwl_sem_trywait(sem_t *sem) {
+int sem_trywait_nointr(sem_t *sem) {
   while (sem_trywait(sem))
     if (errno == EINTR) errno = 0;
     else return -1;
@@ -337,7 +337,7 @@ int orwl_sem_trywait(sem_t *sem) {
  ** until success or until another error condition occurs.
  **/
 static_inline
-int orwl_sem_wait(sem_t *sem) {
+int sem_wait_nointr(sem_t *sem) {
   while (sem_wait(sem))
     if (errno == EINTR) errno = 0;
     else return -1;
@@ -352,7 +352,7 @@ int orwl_sem_wait(sem_t *sem) {
  ** until success or until another error condition occurs.
  **/
 static_inline
-int orwl_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout) {
+int sem_timedwait_nointr(sem_t *sem, const struct timespec *abs_timeout) {
   while (sem_timedwait(sem, abs_timeout))
     if (errno == EINTR) errno = 0;
     else return -1;
@@ -369,8 +369,8 @@ SAVE_BLOCK(                                     \
            sem_t*,                              \
            sem,                                 \
            &(SEM),                              \
-           orwl_sem_post(sem),                  \
-           orwl_sem_wait(sem))
+           sem_post_nointr(sem),                  \
+           sem_wait_nointr(sem))
 
 /**
  ** @brief Request one token from @c sem_t @a SEM during execution of a dependent
@@ -380,8 +380,8 @@ SAVE_BLOCK(                                     \
  ** token is available on @a SEM. The token is re-injected into @a SEM
  ** after execution of the dependent block or statement.
  **
- ** @see orwl_sem_wait
- ** @see orwl_sem_post
+ ** @see sem_wait_nointr
+ ** @see sem_post_nointr
  ** @see MUTUAL_EXCLUDE
  **/
 DOCUMENT_BLOCK
@@ -390,8 +390,8 @@ SAVE_BLOCK(                                     \
            sem_t*,                              \
            sem,                                 \
            &(SEM),                              \
-           orwl_sem_wait(sem),                  \
-           orwl_sem_post(sem))
+           sem_wait_nointr(sem),                \
+           sem_post_nointr(sem))
 
 inline
 char const* pthread2str(char *buf, pthread_t id) {
