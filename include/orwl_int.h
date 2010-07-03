@@ -38,9 +38,9 @@ P99__ONE_TOK_(unsigned long long, ullong);
 
 #define DECLARE_POINTER_TYPE(T)                 \
 /*! @brief a pointer to T */                    \
-typedef T *T ## _ptr;                           \
+typedef T *PASTE2(T, _ptr);                     \
 /*! @brief a @c const pointer to T */           \
-typedef T const*T ## _cptr
+typedef T const*PASTE2(T, _cptr)
 
 DECLARE_POINTER_TYPE(void);
 DECLARE_POINTER_TYPE(double);
@@ -84,30 +84,30 @@ DECLARE_POINTER_TYPE(uint64_t);
 
 #define DECLARE_BASIC(T)                                        \
 /*! @brief initialize the object that @a id points to by 0. */  \
-inline T* T ## _init(T *id) {                                   \
+inline T* PASTE2(T, _init)(T *id) {                             \
   *id = TNULL(T);                                               \
   return id;                                                    \
 }                                                               \
 /*! @brief destroy the object that @a id points to. */          \
- inline void T ## _destroy(T*  id) {                            \
+ inline void PASTE2(T, _destroy)(T*  id) {                      \
   /* empty */                                                   \
 }                                                               \
 DECLARE_NEW_DELETE(T)
 
 #define DECLARE_BASIC_TYPE(T)                   \
 DECLARE_BASIC(T);                               \
-DECLARE_BASIC(T ## _cptr);                      \
-DECLARE_BASIC(T ## _ptr)
+DECLARE_BASIC(PASTE2(T, _cptr));                \
+DECLARE_BASIC(PASTE2(T, _ptr))
 
 #define DEFINE_BASIC(T)                         \
-T* T ## _init(T *id);                           \
-void T ## _destroy(T* id);                      \
+T* PASTE2(T, _init)(T *id);                     \
+void PASTE2(T, _destroy)(T* id);                \
 DEFINE_NEW_DELETE(T)
 
 #define DEFINE_BASIC_TYPE(T)                    \
 DEFINE_BASIC(T);                                \
-DEFINE_BASIC(T ## _cptr);                       \
-DEFINE_BASIC(T ## _ptr)
+DEFINE_BASIC(PASTE2(T, _cptr));                 \
+DEFINE_BASIC(PASTE2(T, _ptr))
 
 DECLARE_BASIC(void_ptr);
 DECLARE_BASIC(void_cptr);
@@ -226,7 +226,7 @@ char const* void_cptr2p(char* buf, void_cptr x) {
 #define P99__DECLARE_ARI2STR(T, X, S, P)                                    \
 /*! @brief Return a `X' representation of @a x in @a buf. */            \
 /*! Here `X' is taken as a format specifier as for @c printf. The output is eventually prefixed. */ \
-char const* T ## 2 ## X (char* buf, T x);
+  char const* PASTE3(T, 2, X)(char* buf, T x);
 #else
 #define P99__DECLARE_ARI2STR(T, X, S, P)            \
 inline                                          \

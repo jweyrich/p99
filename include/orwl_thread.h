@@ -231,39 +231,39 @@ extern void orwl_pthread_wait_detached(void);
 /*! @see DECLARE_THREAD */                                              \
 /*! @param arg the object for this call */                              \
 /*! @param id if non-NULL, the thread can be joined on this @a id */    \
-int T ## _create(T* arg, pthread_t *id)
+  int PASTE2(T, _create)(T* arg, pthread_t *id)
 #else
 #define DECLARE_THREAD(T)                                               \
-inline T *T ## _join(pthread_t id) {                                    \
+  inline T * PASTE2(T, _join)(pthread_t id) {                           \
   void *ret = NULL;                                                     \
   pthread_join(id, &ret);                                               \
   return ret;                                                           \
 }                                                                       \
-extern void *T ## _start_joinable(void* arg);                           \
-extern void *T ## _start_detached(void* arg);                           \
-inline int T ## _create(T* arg, pthread_t *id) {                        \
+extern void * PASTE2(T, _start_joinable)(void* arg);                    \
+extern void * PASTE2(T, _start_detached)(void* arg);                    \
+inline int PASTE2(T, _create)(T* arg, pthread_t *id) {                  \
   if (id)                                                               \
-    return orwl_pthread_create_joinable(id, T ## _start_joinable, arg); \
+    return orwl_pthread_create_joinable(id, PASTE2(T, _start_joinable), arg); \
   else                                                                  \
-    return orwl_pthread_create_detached(T ## _start_detached, arg);     \
+    return orwl_pthread_create_detached(PASTE2(T, _start_detached), arg); \
 }                                                                       \
-extern void *T ## _start_joinable(void* arg)
+extern void * PASTE2(T, _start_joinable)(void* arg)
 #define DEFINE_THREAD(T)                        \
-T *T ## _join(pthread_t id);                    \
-int T ## _create(T* arg, pthread_t *id);        \
-void T ## _start(T* Arg);                       \
-void *T ## _start_joinable(void* arg) {         \
+T *PASTE2(T, _join)(pthread_t id);                    \
+int PASTE2(T, _create)(T* arg, pthread_t *id);        \
+void PASTE2(T, _start)(T* Arg);                       \
+void *PASTE2(T, _start_joinable)(void* arg) {         \
   T *Arg = (T*)arg;                             \
-  T ## _start(Arg);                             \
+  PASTE2(T, _start)(Arg);                             \
   return arg;                                   \
 }                                               \
-void *T ## _start_detached(void* arg) {         \
+void *PASTE2(T, _start_detached)(void* arg) {         \
   T *Arg = (T*)arg;                             \
-  T ## _start(Arg);                             \
-  T ## _delete(Arg);                            \
+  PASTE2(T, _start)(Arg);                             \
+  PASTE2(T, _delete)(Arg);                            \
   return NULL;                                  \
 }                                               \
-void T ## _start(T *const Arg)
+void PASTE2(T, _start)(T *const Arg)
 #endif
 
 inline pthread_t* pthread_t_init(pthread_t *id) {

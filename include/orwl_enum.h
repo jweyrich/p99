@@ -55,23 +55,23 @@
 /*! @see T ## _getname for access to the names of the constants as strings */ \
 typedef enum { __VA_ARGS__ ,                                            \
                /*! upper bound of the @ref T constants */               \
-               T ## _amount,                                            \
+               PASTE2(T, _amount),                                      \
                /*! the largest @ref T constant */                       \
-               T ## _max = ((size_t)(T ## _amount) - 1u),               \
+               PASTE2(T, _max) = ((size_t)(PASTE2(T, _amount)) - 1u),   \
                /*! the smallest @ref T constant */                      \
-               T ## _min = 0                                            \
+               PASTE2(T, _min) = 0                                      \
 } T;                                                                    \
-extern char const* p99__## T ## _names[T ## _amount];                   \
+ extern char const* PASTE3(p99__, T, _names)[PASTE2(T, _amount)];       \
 DECLARE_ONCE(T);                                                        \
  /*! @brief Get a string with the name of constant @a x of type @ref T */ \
 inline                                                                  \
-char const* T ## _getname(T x) {                                        \
+char const* PASTE2(T, _getname)(T x) {                                  \
   unsigned pos = x;                                                     \
   INIT_ONCE(T);                                                         \
-  return (pos < T ## _amount) ? p99__## T ## _names[pos] : "((" #T ")unknown value)"; \
+  return (pos < PASTE2(T, _amount)) ? PASTE3(p99__, T, _names)[pos] : "((" #T ")unknown value)"; \
 }                                                                       \
-static char p99__## T ## _concat[] =  # __VA_ARGS__;                    \
-enum P99__decl_enum_ ## T { p99__## T ## _concat_len = sizeof(p99__ ## T ## _concat) }
+ static char PASTE3(p99__, T, _concat)[] =  # __VA_ARGS__;              \
+enum PASTE2(p99__decl_enum_, T) { PASTE3(p99__, T, _concat_len) = sizeof(PASTE3(p99__, T, _concat)) }
 
 
 /**
@@ -81,19 +81,19 @@ enum P99__decl_enum_ ## T { p99__## T ## _concat_len = sizeof(p99__ ## T ## _con
  **/
 #define DEFINE_ENUM(T)                                                  \
 /* Ensure that the table is generated in this object file */            \
-char const* p99__## T ## _names[T ## _amount] = INITIALIZER;            \
+char const* PASTE3(p99__, T, _names)[PASTE2(T, _amount)] = INITIALIZER; \
 DEFINE_ONCE(T) {                                                        \
-  char *head = p99__## T ## _concat;                                    \
-  for (T i = T ## _min; i < T ## _max; ++i) {                           \
-    p99__## T ## _names[i] = head;                                      \
+  char *head = PASTE3(p99__, T, _concat);                               \
+  for (T i = PASTE2(T, _min); i < PASTE2(T, _max); ++i) {               \
+    PASTE3(p99__, T, _names)[i] = head;                                 \
     head = index(head, ',');                                            \
     for (; *head == ',' || *head == ' '; ++head)                        \
       *head = '\0';                                                     \
   }                                                                     \
-  p99__## T ## _names[T ## _max] = head;                                \
+  PASTE3(p99__, T, _names)[PASTE2(T, _max)] = head;                     \
 }                                                                       \
 /* Ensure that the function symbol is generated in this object file */  \
-char const* T ## _getname(T x)
+char const* PASTE2(T, _getname)(T x)
 
 
 #endif 	    /* !ORWL_ENUM_H_ */

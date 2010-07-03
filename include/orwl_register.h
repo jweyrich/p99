@@ -58,16 +58,16 @@ void orwl_domain_call(orwl_domain domain, size_t id, void *arg) {
 }
 
 
-#define P99__ORWL_ALIAS(NAME) p99__## NAME ## _alias
+#define P99__ORWL_ALIAS(NAME) PASTE3(p99__, NAME, _alias)
 #define ORWL_ALIAS(NAME) P99__ORWL_ALIAS(NAME)
 
-#define P99__ORWL_REGISTER(NAME) p99__## NAME ## _regptr
+#define P99__ORWL_REGISTER(NAME) PASTE3(p99__, NAME, _regptr)
 #define ORWL_REGISTER(NAME) P99__ORWL_REGISTER(NAME)
 
-#define P99__ORWL_FTAB(NAME) p99__## NAME ## _ftab
+#define P99__ORWL_FTAB(NAME) PASTE3(p99__, NAME, _ftab)
 #define ORWL_FTAB(NAME) P99__ORWL_FTAB(NAME)
 
-#define P99___ORWL_DOMAIN_TABLE(L) p99__domain_tab ## L
+#define P99___ORWL_DOMAIN_TABLE(L) PASTE2(p99__domain_tab, L)
 #define P99__ORWL_DOMAIN_TABLE(L) P99___ORWL_DOMAIN_TABLE(L)
 #define ORWL_DOMAIN_TABLE P99__ORWL_DOMAIN_TABLE(__LINE__)
 
@@ -118,10 +118,10 @@ orwl_domain NAME = ORWL_DOMAIN_TABLE
 #define DECLARE_ORWL_TYPE_DYNAMIC(T)            \
 DECLARE_ORWL_DOMAIN(ORWL_FTAB(T));              \
 DECLARE_ORWL_REGISTER(ORWL_FTAB(T));            \
-DECLARE_ORWL_REGISTER(T ## _sizeof);            \
-DECLARE_ORWL_REGISTER(T ## _typename);          \
-DECLARE_ORWL_REGISTER(T ## _init);              \
-DECLARE_ORWL_REGISTER(T ## _destroy)
+DECLARE_ORWL_REGISTER(PASTE2(T, _sizeof));            \
+DECLARE_ORWL_REGISTER(PASTE2(T, _typename));          \
+DECLARE_ORWL_REGISTER(PASTE2(T, _init));              \
+DECLARE_ORWL_REGISTER(PASTE2(T, _destroy))
 
 /**
  ** @brief Register the functions of type @a T to be able to identify
@@ -159,17 +159,17 @@ DECLARE_ORWL_REGISTER(T ## _destroy)
  **/
 #define DEFINE_ORWL_TYPE_DYNAMIC(T, ...)                        \
 DEFINE_ORWL_REGISTER(ORWL_FTAB(T));                             \
-DEFINE_ORWL_REGISTER(T ## _sizeof);                             \
-static size_t const T ## _sizeof = sizeof(T);                   \
-DEFINE_ORWL_REGISTER(T ## _typename);                           \
-static char const T ## _typename[] = #T;                        \
-DEFINE_ORWL_REGISTER_ALIAS(T ## _init, T);                      \
-DEFINE_ORWL_REGISTER_ALIAS(T ## _destroy, T);                   \
+DEFINE_ORWL_REGISTER(PASTE2(T, _sizeof));                             \
+static size_t const PASTE2(T, _sizeof) = sizeof(T);                   \
+DEFINE_ORWL_REGISTER(PASTE2(T, _typename));                           \
+static char const PASTE2(T, _typename)[] = #T;                        \
+DEFINE_ORWL_REGISTER_ALIAS(PASTE2(T, _init), T);                      \
+DEFINE_ORWL_REGISTER_ALIAS(PASTE2(T, _destroy), T);                   \
 DEFINE_ORWL_DOMAIN(ORWL_FTAB(T),                                \
-                   ORWL_REGISTER_DATA(T ## _sizeof),            \
-                   ORWL_REGISTER_DATA(T ## _typename),          \
-                   ORWL_REGISTER_ALIAS(T ## _init),             \
-                   ORWL_REGISTER_ALIAS(T ## _destroy),          \
+                   ORWL_REGISTER_DATA(PASTE2(T, _sizeof)),            \
+                   ORWL_REGISTER_DATA(PASTE2(T, _typename)),          \
+                   ORWL_REGISTER_ALIAS(PASTE2(T, _init)),             \
+                   ORWL_REGISTER_ALIAS(PASTE2(T, _destroy)),          \
                    __VA_ARGS__)
 
 #define ORWL_TYPE_DYNAMIC_INIT(T) orwl_register_init(ORWL_FTAB(T))

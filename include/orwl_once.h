@@ -34,19 +34,19 @@ struct p99__once_cont {
  ** @see DEFINE_ONCE
  **/
 #define DECLARE_ONCE(T)                         \
-extern struct p99__once_cont p99__## T ## _once
+extern struct p99__once_cont PASTE3(p99__, T, _once)
 
 #define DECLARE_ONCE_UPON(T)                    \
-extern struct p99__once_upon_cont p99__## T ## _once
+extern struct p99__once_upon_cont PASTE3(p99__, T, _once)
 
 
 #define DEFINE_ONCE_UPON(T)                             \
-static void p99__## T ## _once_init(void);              \
-struct p99__once_upon_cont p99__## T ## _once = {       \
+static void PASTE3(p99__, T, _once_init)(void);         \
+struct p99__once_upon_cont PASTE3(p99__, T, _once) = {  \
   .mut = PTHREAD_MUTEX_INITIALIZER,                     \
-  .init = p99__## T ## _once_init,                      \
+  .init = PASTE3(p99__, T, _once_init),                 \
 };                                                      \
-static void p99__## T ## _once_init(void)
+static void PASTE3(p99__, T, _once_init)(void)
 
 
 /**
@@ -57,14 +57,14 @@ static void p99__## T ## _once_init(void)
  **
  ** @see DECLARE_ONCE
  **/
-#define DEFINE_ONCE(T)                          \
-static void p99__## T ## _once_init(void);      \
-struct p99__once_cont p99__## T ## _once = {    \
-  .mut = PTHREAD_MUTEX_INITIALIZER,             \
-  .cond = 0,                                    \
-  .init = p99__## T ## _once_init,              \
-};                                              \
-static void p99__## T ## _once_init(void)
+#define DEFINE_ONCE(T)                                  \
+static void PASTE3(p99__, T, _once_init)(void);         \
+struct p99__once_cont PASTE3(p99__, T, _once) = {       \
+  .mut = PTHREAD_MUTEX_INITIALIZER,                     \
+  .cond = 0,                                            \
+  .init = PASTE3(p99__, T, _once_init),                 \
+};                                                      \
+static void PASTE3(p99__, T, _once_init)(void)
 
 /**
  ** @brief Protect the following block or statement with @c
@@ -95,8 +95,8 @@ SAVE_BLOCK(pthread_mutex_t*,                    \
 #define INIT_ONCE_UPON(T, N)                    \
 do {                                            \
   if (branch_expect(!(N), false))               \
-    MUTUAL_EXCLUDE(p99__ ## T ## _once.mut)     \
-      if (!(N)) p99__## T ## _once.init();      \
+    MUTUAL_EXCLUDE(PASTE3(p99__, T, _once).mut) \
+      if (!(N)) PASTE3(p99__, T, _once).init(); \
  } while(0)
 
 /**
@@ -106,11 +106,11 @@ do {                                            \
  **/
 #define INIT_ONCE(T)                                            \
 do {                                                            \
-  if (branch_expect(!(p99__ ## T ## _once.cond), false))        \
-    MUTUAL_EXCLUDE(p99__ ## T ## _once.mut)                     \
-      if (!(p99__ ## T ## _once.cond)) {                        \
-        p99__## T ## _once.init();                              \
-        p99__## T ## _once.cond = 1;                            \
+  if (branch_expect(!(PASTE3(p99__, T, _once).cond), false))    \
+    MUTUAL_EXCLUDE(PASTE3(p99__, T, _once).mut)                 \
+      if (!(PASTE3(p99__, T, _once).cond)) {                    \
+        PASTE3(p99__, T, _once).init();                         \
+        PASTE3(p99__, T, _once).cond = 1;                       \
       }                                                         \
  } while(0)
 
