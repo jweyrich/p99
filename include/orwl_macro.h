@@ -77,9 +77,9 @@
   (P99__HEX_DOUBLE(__VA_ARGS__,,,,,))
 #endif
 
-#define P99__INV(N) PASTE(P99__variable_argument_list_must_be_divisible_by_, N)
+#define P99__INV(N) PASTE2(P99__variable_argument_list_must_be_divisible_by_, N)
 
-#define P99__MODARG_(_X) PASTE(P99__NARG_,  _X)
+#define P99__MODARG_(_X) PASTE2(P99__NARG_,  _X)
 
 /**
  ** @def LEN_MODARG
@@ -155,7 +155,7 @@
  **/
 #define VA_ARGS(X) size_t X /*!< the number of arguments that follow */, ...
 
-#define P99__FSYMB(NAME) PASTE(NAME, _f, sy, mb, _)
+#define P99__FSYMB(NAME) PASTE5(NAME, _f, sy, mb, _)
 
 /** @brief Mangle @a NAME 
  **
@@ -171,8 +171,8 @@
 NAME(IF_EQ(0,M)                                         \
      (__VA_ARGS__)                                      \
      (IF_EMPTY(__VA_ARGS__)                             \
-      (P99__DEFARGS(NAME, M, PASTE(NAME,_defarg_0)()))      \
-      (P99__DEFARGS(NAME, M, __VA_ARGS__))                  \
+      (P99__DEFARGS(NAME, M, PASTE2(NAME,_defarg_0)())) \
+      (P99__DEFARGS(NAME, M, __VA_ARGS__))              \
       )                                                 \
      )
 #endif
@@ -527,9 +527,9 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
  ** @brief Declare the types that are going to be used with a
  ** ::LEN_ARG or ::LEN_MODARG parameter list.
  **/
-#define VA_TYPES(NAME, ...)   TYPEDEFS(PASTE(NAME, _mod_type_), __VA_ARGS__)
+#define VA_TYPES(NAME, ...)   TYPEDEFS(PASTE2(NAME, _mod_type_), __VA_ARGS__)
 
-#define P99__VA_MODARG(AP, NAME, M, ...) va_arg(AP, PASTE(NAME, _mod_type_, M))
+#define P99__VA_MODARG(AP, NAME, M, ...) va_arg(AP, PASTE3(NAME, _mod_type_, M))
 
 /**
  ** @brief Obtain the next argument in the variable argument list of

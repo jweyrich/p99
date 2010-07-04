@@ -423,31 +423,31 @@ inline T* NAME(void) {                          \
   }                                             \
   return ret;                                   \
 }                                               \
-inline void PASTE(NAME, _clear)(void) {         \
+inline void PASTE2(NAME, _clear)(void) {        \
   INIT_ONCE_STATIC(KEY);                        \
   T* ret = pthread_getspecific(KEY);            \
   if (branch_expect(!!ret, true)) {             \
     (void)pthread_setspecific(KEY, NULL);       \
-    PASTE(T, _delete)(ret);                     \
+    PASTE2(T, _delete)(ret);                    \
   }                                             \
 }                                               \
 extern pthread_key_t KEY
 
 
-#define DECLARE_THREAD_VAR(T, NAME) P99__DECLARE_THREAD_VAR(T, NAME, PASTE(p99__, NAME, _key))
+#define DECLARE_THREAD_VAR(T, NAME) P99__DECLARE_THREAD_VAR(T, NAME, PASTE3(p99__, NAME, _key))
 
 
-#define P99___DEFINE_THREAD_VAR(T, NAME, KEY)                               \
+#define P99___DEFINE_THREAD_VAR(T, NAME, KEY)                           \
 pthread_key_t KEY;                                                      \
 DEFINE_ONCE_STATIC(KEY) {                                               \
-  (void) pthread_key_create(&KEY, (void (*)(void *))PASTE(T, _delete)); \
+  (void) pthread_key_create(&KEY, (void (*)(void *))PASTE2(T, _delete)); \
 }                                                                       \
-void PASTE(NAME, _clear)(void);                                         \
+void PASTE2(NAME, _clear)(void);                                        \
 T* NAME(void)
 
 #define P99__DEFINE_THREAD_VAR(T, NAME, KEY) P99___DEFINE_THREAD_VAR(T, NAME, KEY)
 
-#define DEFINE_THREAD_VAR(T, NAME) P99__DEFINE_THREAD_VAR(T, NAME, PASTE(p99__, NAME, _key))
+#define DEFINE_THREAD_VAR(T, NAME) P99__DEFINE_THREAD_VAR(T, NAME, PASTE3(p99__, NAME, _key))
 
 
 

@@ -167,7 +167,7 @@ void PASTE2(T, _vdelete)(T const*vec) {                                 \
 DECLARE_DELETE(T)                                                \
 DECLARE_VDELETE(T)                                               \
 DECLARE_VNEW(T)                                                  \
- enum PASTE(p99__tame_ansi_c_semicolon_message_, T) { PASTE2(p99__new_delete_, T) }
+ enum PASTE2(p99__tame_ansi_c_semicolon_message_, T) { PASTE2(p99__new_delete_, T) }
 
 #define DEFINE_DELETE(T) void PASTE2(T, _delete)(T const*el)
 #define DEFINE_VNEW(T) T * PASTE2(T, _vnew)(size_t n)

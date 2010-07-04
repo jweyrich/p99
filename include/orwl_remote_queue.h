@@ -12,7 +12,6 @@
 # define   	ORWL_REMOTE_QUEUE_H_
 
 #include "orwl_wait_queue.h"
-#include "orwl_endpoint.h"
 
 /**
  ** @brief A structure to regulate queues between different servers.

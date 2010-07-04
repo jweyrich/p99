@@ -228,7 +228,7 @@ P99__DEC_ADD(_0, _1,                            \
 /**
  ** @brief evaluate the result of one of the arithmetic preprocessor 
  **/
-#define DEC_EVAL(EDEC) PASTE(P99__dec_eval_, EDEC)
+#define DEC_EVAL(EDEC) PASTE2(P99__dec_eval_, EDEC)
 
 
 /**

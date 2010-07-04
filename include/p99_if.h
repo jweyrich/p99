@@ -42,14 +42,14 @@
  **
  ** @see IF_DEC_EQ for equality of not too large decimal numbers
  **/
-#define IF_EQ(A, B) P99__IF_CLAUSE(PASTE(P99__IS_,A,_EQ_,B)())
+#define IF_EQ(A, B) P99__IF_CLAUSE(PASTE4(P99__IS_,A,_EQ_,B)())
 
 /**
  ** @brief Test two words @a A and @a B if they are unequal.
  **
  ** @see IF_EQ
  **/
-#define IF_NE(A, B) P99__IF_NOT_CLAUSE(PASTE(P99__IS_,A,_EQ_,B)())
+#define IF_NE(A, B) P99__IF_NOT_CLAUSE(PASTE4(P99__IS_,A,_EQ_,B)())
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if they are equal.
@@ -61,8 +61,8 @@
  **/
 #define IF_DEC_NE(A, B) IF_EQ_0(IS_DEC_EQ(A,B))
 
-#define IF_GE_0(A) P99__IF_CLAUSE(PASTE(P99__IS_,A,_GE_,0)())
-#define IF_LT_0(A) P99__IF_NOT_CLAUSE(PASTE(P99__IS_,A,_GE_,0)())
+#define IF_GE_0(A) P99__IF_CLAUSE(PASTE4(P99__IS_,A,_GE_,0)())
+#define IF_LT_0(A) P99__IF_NOT_CLAUSE(PASTE4(P99__IS_,A,_GE_,0)())
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is greater

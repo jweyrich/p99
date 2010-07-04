@@ -1272,6 +1272,7 @@ int T ## _create(T* arg, pthread_t *id)"
 
 EXPAND_AS_DEFINED      =			\
 CALL_WITH_DEFAULTS                              \
+CAT2                                            \
 DECLARE_ARI2STR					\
 DECLARE_AUTH_SOCK_FUNC				\
 DECLARE_BASIC					\
@@ -1286,8 +1287,10 @@ DECLARE_ORWL_REGISTER				\
 DECLARE_ORWL_REGISTER_ALIAS			\
 DECLARE_ORWL_TYPE_DYNAMIC			\
 DECLARE_POINTER_TYPE				\
+DECLARE_STRUCT                                  \
 DECLARE_THREAD					\
 DECLARE_THREAD_VAR				\
+DECLARE_UNION                                   \
 DECLARE_VDELETE					\
 DECLARE_VNEW					\
 DEFINE_ARI2STR					\
@@ -1311,19 +1314,19 @@ DEFINE_VNEW					\
 DOCUMENT_DESTROY				\
 DOCUMENT_INIT					\
 FSYMB_DOCUMENTATION				\
-ORWL_FTAB					\
-ORWL_ALIAS					\
-ORWL_REGISTER					\
 MAYBE_EXTERNAL					\
+ORWL_ALIAS					\
+ORWL_FTAB					\
+ORWL_REGISTER					\
+P99__DECLARE_ARI2STR				\
+P99__ORWL_ALIAS					\
+P99__PROTOTYPE                                  \
 PASTE2						\
 PASTE3						\
 PASTE4						\
 PROTOTYPE					\
 VA_ARGS						\
-VA_ARGS_DOCUMENTATION				\
-P99__DECLARE_ARI2STR				\
-P99__ORWL_ALIAS					\
-P99__PROTOTYPE
+VA_ARGS_DOCUMENTATION
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then
 # doxygen's preprocessor will remove all function-like macros that are alone
