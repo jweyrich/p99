@@ -11,8 +11,9 @@
 #ifndef   	ORWL_ONCE_H_
 # define   	ORWL_ONCE_H_
 
-#include "orwl_posix_default.h"
 #include <pthread.h>
+#include "p99_paste.h"
+#include "orwl_document.h"
 
 struct p99__once_upon_cont {
   void (*const init)(void);

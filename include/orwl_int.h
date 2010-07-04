@@ -16,7 +16,67 @@
  ** @brief implement a compatibility layer for integer types.
  **/
 
+#include <stdio.h>
+#include <string.h>
+#include "p99_paste.h"
 #include "orwl_new.h"
+#include "orwl_macro.h"
+
+
+/**
+ ** @brief Define an (almost) all purpose initializer
+ **/
+#define INITIALIZER INIT1
+
+#define INIT0 (0)
+#define INIT1 { 0 }
+#define INIT2 { { 0 } }
+
+/**
+ ** @brief Typed @c NULL
+ **
+ ** Define a @c NULL initialized constant of type @a T.
+ **/
+#define TNULL(T) NULL1(T)
+
+#define NULL0(T) ((T)INIT0)
+#define NULL1(T) ((T)INIT1)
+#define NULL2(T) ((T)INIT2)
+
+/**
+ ** @brief Typed ones
+ **
+ ** Define a all-one-bits initialized constant of integer type @a T.
+ **/
+#define TONES(T) (~TNULL(T))
+
+/**
+ ** @brief Invalidated pointer
+ **
+ ** Define a all-one-bits initialized constant of pointer type @a T.
+ **/
+#define TGARB(T) ((T)~TNULL(uintptr_t))
+
+/**
+ ** @brief Signedness of a type
+ **
+ ** Determine if @a T corresponds to a signed integer type or not.
+ **/
+#define ISSIGNED(T) (TONES(T) < TNULL(T))
+
+/**
+ ** @brief Typed max value
+ **
+ ** Define the largest value that integer type @a T may hold.
+ **/
+#define TMAX(T) (~TMIN(T))
+
+/**
+ ** @brief Typed min value
+ **
+ ** Define the smallest value that integer type @a T may hold.
+ **/
+#define TMIN(T) (((T)ISSIGNED(T)) << ((sizeof(T)*CHAR_BIT)-1))
 
 /* For each one word integer type have a signed and unsigned variant. */
 #define P99__ONE_TOK_(T, NAME)                                          \

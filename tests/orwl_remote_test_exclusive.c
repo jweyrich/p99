@@ -8,6 +8,7 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
+#include "orwl_posix_default.h"
 #include "orwl_remote_queue.h"
 #include "orwl_callback.h"
 #include "orwl_server.h"

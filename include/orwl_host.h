@@ -46,7 +46,7 @@ orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
   th->prev = th;
   th->refs = 0;
   orwl_endpoint_init(&th->ep, addr, port);
-  pthread_mutex_init(&th->mut);
+  pthread_mutex_init(&th->mut, NULL);
   return th;
 }
 

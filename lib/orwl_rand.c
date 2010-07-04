@@ -9,6 +9,7 @@
 */
 
 #include "orwl_rand.h"
+#include "orwl_posix_default.h"
 
 rand48_t *rand48_t_init(rand48_t*, unsigned short, unsigned short, unsigned short);
 DEFINE_DEFARG(rand48_t_init, , useconds(), getpid(), pthread_self());

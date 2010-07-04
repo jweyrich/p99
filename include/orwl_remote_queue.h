@@ -58,7 +58,7 @@ orwl_mirror *orwl_mirror_init(orwl_mirror *rq, /*!< [out] the object to iniializ
                               orwl_endpoint h, /*!< [in] local, defaults to a temp variable */
                               orwl_endpoint t  /*!< [in] remote, defaults to a temp variable */
                               ) {
-  pthread_mutex_init(&rq->mut);
+  pthread_mutex_init(&rq->mut, NULL);
   orwl_wq_init(&rq->local);
   rq->here = h;
   rq->there = t;

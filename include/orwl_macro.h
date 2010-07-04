@@ -12,6 +12,7 @@
 # define   	ORWL_MACRO_H_
 
 #include "orwl_inline.h"
+#include "orwl_document.h"
 #include "p99_if.h"
 #include "p99_for.h"
 
@@ -154,11 +155,6 @@
  **/
 #define VA_ARGS(X) size_t X /*!< the number of arguments that follow */, ...
 
-#define VA_ARGS_DOCUMENTATION(NAME)                                     \
-                                                                        \
-/*! @see VA_ARGS */                                                     \
-/*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
-
 #define P99__FSYMB(NAME) PASTE(NAME, _f, sy, mb, _)
 
 /** @brief Mangle @a NAME 
@@ -167,14 +163,6 @@
  ** function that is hidden behind the macro @a NAME.
  **/
 #define FSYMB(NAME) P99__FSYMB(NAME)
-
-/**
- ** @brief Provide a documentation section to a function defined with ::CALL_WITH_DEFAULTS
- **/
-#define FSYMB_DOCUMENTATION(NAME)                                       \
-/*! @see CALL_WITH_DEFAULTS */                                          \
-/*! @see DECLARE_DEFARG */                                              \
-/*! @see NAME This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
 #ifdef DOXYGEN
 # define CALL_WITH_DEFAULTS(NAME, M, ...) NAME(__VA_ARGS__)
@@ -280,62 +268,6 @@ NAME(IF_EQ(0,M)                                         \
 #define P99__COMMA_ ,
 
 /**
- ** @brief Define an (almost) all purpose initializer
- **/
-#define INITIALIZER INIT1
-
-#define INIT0 (0)
-#define INIT1 { 0 }
-#define INIT2 { { 0 } }
-
-/**
- ** @brief Typed @c NULL
- **
- ** Define a @c NULL initialized constant of type @a T.
- **/
-#define TNULL(T) NULL1(T)
-
-#define NULL0(T) ((T)INIT0)
-#define NULL1(T) ((T)INIT1)
-#define NULL2(T) ((T)INIT2)
-
-/**
- ** @brief Typed ones
- **
- ** Define a all-one-bits initialized constant of integer type @a T.
- **/
-#define TONES(T) (~TNULL(T))
-
-/**
- ** @brief Invalidated pointer
- **
- ** Define a all-one-bits initialized constant of pointer type @a T.
- **/
-#define TGARB(T) ((T)~TNULL(uintptr_t))
-
-/**
- ** @brief Signedness of a type
- **
- ** Determine if @a T corresponds to a signed integer type or not.
- **/
-#define ISSIGNED(T) (TONES(T) < TNULL(T))
-
-/**
- ** @brief Typed max value
- **
- ** Define the largest value that integer type @a T may hold.
- **/
-#define TMAX(T) (~TMIN(T))
-
-/**
- ** @brief Typed min value
- **
- ** Define the smallest value that integer type @a T may hold.
- **/
-#define TMIN(T) (((T)ISSIGNED(T)) << ((sizeof(T)*CHAR_BIT)-1))
-
-
-/**
  ** @brief A meta-macro to protect a dependent block or statement by a
  ** statement that is executed before and one after.
  **
@@ -362,9 +294,6 @@ for (int _one1_ = 1; _one1_; _one1_ = 0)                                \
        ((void)(AFTER), _one1_ = 0))                                     \
     /* Ensure that a `break' will still execute AFTER */                \
     for (; _one1_; _one1_ = 0)
-
-
-#define DOCUMENT_BLOCK /*! @see BLOCK for restrictions on preliminary exits from the dependent block or statement. **/
 
 
 #define ARRAYSIZE(A) (sizeof(A)/sizeof(A[0]))
@@ -643,20 +572,6 @@ enum { PASTE3(_, NAME, _defarg_dummy_enum_val_) }
 #else
 #define branch_expect(EXP, VAL) (EXP)
 #endif
-
-
-/**
- ** @brief Add some indications to a @c _init documentation.
- */
-#define DOCUMENT_INIT(T)                                                \
-/*! @brief Initialize a variable of type T */                           \
-/*! @see NEW needs a version of this that takes just the T* as argument. */
-
-/**
- ** @brief Add some indications to a @c _destroy documentation.
- */
-#define DOCUMENT_DESTROY(T) /*! @brief Destroy a variable of type T @see T ## _delete needs this. */
-
 
 
 #endif 	    /* !ORWL_MACRO_H_ */

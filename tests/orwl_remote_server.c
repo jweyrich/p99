@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <math.h>
+#include "orwl_posix_default.h"
 #include "orwl_thread.h"
 #include "orwl_rand.h"
 #include "orwl_remote_queue.h"
