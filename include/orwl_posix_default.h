@@ -22,13 +22,6 @@
 # undef   	ORWL_POSIX_DEFAULT_H_
 # define   	ORWL_POSIX_DEFAULT_H_ 2
 
-struct rand48_t;
-
-#ifndef __cplusplus
-typedef struct rand48_t rand48_t;
-#endif
-
-
 #endif
 
 

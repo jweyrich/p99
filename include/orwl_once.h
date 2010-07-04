@@ -12,6 +12,7 @@
 # define   	ORWL_ONCE_H_
 
 #include "orwl_posix_default.h"
+#include <pthread.h>
 
 struct p99__once_upon_cont {
   void (*const init)(void);
@@ -153,11 +154,11 @@ do {                                                            \
 # define DECLARE_ONCE_STATIC(NAME)              \
 extern                                          \
 __attribute__((constructor))                    \
-void PASTE(p99__, NAME, _once_static)(void)
+void PASTE3(p99__, NAME, _once_static)(void)
 
 # define DEFINE_ONCE_STATIC(NAME)               \
 __attribute__((constructor))                    \
-void PASTE(p99__, NAME, _once_static)(void)
+void PASTE3(p99__, NAME, _once_static)(void)
 
 # define INIT_ONCE_STATIC(NAME)
 #else

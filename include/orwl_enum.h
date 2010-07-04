@@ -96,4 +96,29 @@ DEFINE_ONCE(T) {                                                        \
 char const* PASTE2(T, _getname)(T x)
 
 
+/**
+ ** @brief forward declaration of a @c struct @a NAME
+ **
+ ** This combines a @c struct forward declaration and a @c typedef
+ ** that should allow you to use @c struct @a NAME and just @a NAME
+ ** interchangeably.
+ **
+ ** This declaration should also be suitable to be included into a C++
+ ** source.
+ **/
+#define DECLARE_STRUCT(NAME) typedef struct NAME NAME
+
+
+/**
+ ** @brief forward declaration of a @c union @a NAME
+ **
+ ** This combines a @c union forward declaration and a @c typedef
+ ** that should allow you to use @c union @a NAME and just @a NAME
+ ** interchangeably.
+ **
+ ** This declaration should also be suitable to be included into a C++
+ ** source.
+ **/
+#define DECLARE_UNION(NAME) typedef union NAME NAME
+
 #endif 	    /* !ORWL_ENUM_H_ */

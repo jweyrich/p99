@@ -42,10 +42,6 @@ struct orwl_handle2 {
   orwl_handle pair[2];
 };
 
-#ifndef __cplusplus
-typedef struct orwl_handle2 orwl_handle2;
-#endif
-
 #define ORWL_HANDLE2_INITIALIZER                                \
 {                                                               \
   .inclusive = false,                                           \

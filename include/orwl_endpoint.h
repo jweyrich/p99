@@ -12,34 +12,19 @@
 # define   	ORWL_ENDPOINT_H_
 
 #include "orwl_rand.h"
+#include "orwl_enum.h"
 
-struct orwl_server;
-
-#ifndef __cplusplus
-typedef struct orwl_server orwl_server;
-#endif
-
-struct auth_sock;
-
-#ifndef __cplusplus
-typedef struct auth_sock auth_sock;
-#endif
-
-struct orwl_mirror;
-
-#ifndef __cplusplus
-typedef struct orwl_mirror orwl_mirror;
-#endif
-
-struct orwl_wq;
-
-struct orwl_endpoint;
-
-struct orwl_host;
-
-#ifndef __cplusplus
-typedef struct orwl_host orwl_host;
-#endif
+DECLARE_STRUCT(orwl_server);
+DECLARE_STRUCT(auth_sock);
+DECLARE_STRUCT(orwl_mirror);
+DECLARE_STRUCT(orwl_wq);
+DECLARE_STRUCT(orwl_endpoint);
+DECLARE_STRUCT(orwl_host);
+DECLARE_UNION(addr_t);
+DECLARE_UNION(port_t);
+DECLARE_STRUCT(orwl_wh);
+DECLARE_STRUCT(orwl_handle2);
+DECLARE_STRUCT(orwl_handle);
 
 /**
  ** @brief Store IPv4 and IPv6 addresses in the same structure.
@@ -66,12 +51,6 @@ union port_t {
   in_port_t p;
   uint8_t pp[2];
 };
-
-#ifndef __cplusplus
-typedef struct orwl_endpoint orwl_endpoint;
-typedef union addr_t addr_t;
-typedef union port_t port_t;
-#endif
 
 /**
  ** @brief Represent a remote ORWL location.

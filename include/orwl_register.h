@@ -12,7 +12,10 @@
 # define   	ORWL_REGISTER_H_
 
 #include "orwl_int.h"
+#include "orwl_enum.h"
 
+DECLARE_STRUCT(orwl_register);
+typedef orwl_register const*const orwl_domain;
 typedef  void (*orwl_plain)(void*);
 
 /**
@@ -24,12 +27,6 @@ struct orwl_register {
   orwl_plain const fptr;
   void *const dptr;
 };
-
-#ifndef __cplusplus
-typedef struct orwl_register orwl_register;
-#endif
-
-typedef orwl_register const*const orwl_domain;
 
 orwl_register const* orwl_register_init(orwl_register const* field);
 

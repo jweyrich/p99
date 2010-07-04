@@ -12,6 +12,10 @@
 # define   	ORWL_RAND_H_
 
 #include "orwl_thread.h"
+#include "orwl_enum.h"
+
+
+DECLARE_STRUCT(rand48_t);
 
 uint64_t orwl_mix(uint64_t a, uint64_t b);
 

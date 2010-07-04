@@ -13,6 +13,7 @@
 
 #include "orwl_enum.h"
 #include "orwl_register.h"
+#include "orwl_endpoint.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -85,19 +86,9 @@ DECLARE_NEW_DELETE(orwl_state);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_state);
 
-struct orwl_wq;
-
-#ifndef __cplusplus
-typedef struct orwl_wq orwl_wq;
-#endif
-
 DECLARE_ONCE(orwl_wq);
 
 struct orwl_wh;
-
-#ifndef __cplusplus
-typedef struct orwl_wh orwl_wh;
-#endif
 
 DECLARE_ONCE(orwl_wh);
 

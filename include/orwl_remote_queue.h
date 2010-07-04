@@ -106,10 +106,6 @@ struct orwl_handle {
   uint64_t svrID;
 };
 
-#ifndef __cplusplus
-typedef struct orwl_handle orwl_handle;
-#endif
-
 #define ORWL_HANDLE_INITIALIZER INITIALIZER
 
 inline
