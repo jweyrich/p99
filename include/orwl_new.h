@@ -22,6 +22,8 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
+#include "orwl_inline.h"
+
 
 /**
  ** @brief Zero out all bits in the object that @a X points to.
@@ -90,8 +92,9 @@
 inline                                                                  \
 void PASTE2(T, _delete)(T const*el) {                                   \
   if (el) {                                                             \
-    PASTE2(T, _destroy)((T*)el);                                        \
-    free((void*)el);                                                    \
+    T* e = (T*)el;                                                      \
+    PASTE2(T, _destroy)(e);                                             \
+    free((void*)e);                                                     \
   }                                                                     \
 }
 
@@ -156,8 +159,8 @@ inline                                                                  \
 void PASTE2(T, _vdelete)(T const*vec) {                                 \
   if (vec) {                                                            \
     size_t n = p99__vlen(vec) / sizeof(T);                              \
-    for (size_t i = 0; i < n; ++i) {                                    \
-      PASTE2(T, _destroy)((T*)(vec + i));                               \
+    for (T *ve = (T*)vec, *stop = ve + n; ve < stop; ++ve) {            \
+      PASTE2(T, _destroy)(ve);                                          \
     }                                                                   \
     p99__vdelete(vec);                                                  \
   }                                                                     \

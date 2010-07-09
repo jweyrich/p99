@@ -63,7 +63,7 @@ void orwl_server_destroy(orwl_server *serv) {
   }
   if (serv->wqs) orwl_wq_vdelete(serv->wqs);
   if (serv->whs) orwl_wh_vdelete(serv->whs);
-  if (serv->info) char_delete(serv->info);
+  if (serv->info) free(serv->info);
   orwl_server_init(serv);
 }
 
