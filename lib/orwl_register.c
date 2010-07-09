@@ -12,6 +12,8 @@
 
 #include "orwl_once.h"
 
+#include "orwl_macro.h"
+
 static
 pthread_mutex_t orwl__reg_mut = PTHREAD_MUTEX_INITIALIZER;
 

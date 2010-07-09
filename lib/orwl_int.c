@@ -9,6 +9,33 @@
 */
 
 #include "orwl_int.h"
+#include "orwl_macro.h"
+
+#define DEFINE_BASIC(T)                         \
+T* PASTE2(T, _init)(T *id);                     \
+void PASTE2(T, _destroy)(T* id);                \
+DEFINE_NEW_DELETE(T)
+
+#define DEFINE_BASIC_TYPE(T)                    \
+DEFINE_BASIC(T);                                \
+DEFINE_BASIC(PASTE2(T, _cptr));                 \
+DEFINE_BASIC(PASTE2(T, _ptr))
+
+#define P99__DEFINE_ARI2STR(T, X, S, P)         \
+ char const* PASTE3(T, 2, X)(char* buf, T x) {  \
+  char* form = STRDUP(#P, PRI(T,X,S));          \
+  sprintf(buf, form, x);                        \
+  free(form);                                   \
+  return buf;                                   \
+}                                               \
+ char const* PASTE3(T, 2, X)(char* buf, T x)
+
+#define DEFINE_ARI2STR(T)                       \
+  P99__DEFINE_ARI2STR(T, d, , );                \
+  P99__DEFINE_ARI2STR(T, o, 0, 0);              \
+  P99__DEFINE_ARI2STR(T, u, , );                \
+  P99__DEFINE_ARI2STR(T, x, , 0x);              \
+  P99__DEFINE_ARI2STR(T, X, , 0x)
 
 DEFINE_BASIC(void_ptr);
 DEFINE_BASIC(void_cptr);
@@ -57,6 +84,6 @@ DEFINE_ARI2STR(ulong);
 DEFINE_ARI2STR(sllong);
 DEFINE_ARI2STR(ullong);
 
-P99__DEFINE_ARI2STR(void_cptr, p);
+char const* void_cptr2p(char* buf, void_cptr x);
 
 int mfputs_func(FILE* f, size_t n, char const*const* A);

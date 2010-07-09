@@ -20,8 +20,6 @@
 #include <string.h>
 #include "p99_paste.h"
 #include "orwl_new.h"
-#include "orwl_macro.h"
-
 
 /**
  ** @brief Define an (almost) all purpose initializer
@@ -159,16 +157,6 @@ DECLARE_BASIC(T);                               \
 DECLARE_BASIC(PASTE2(T, _cptr));                \
 DECLARE_BASIC(PASTE2(T, _ptr))
 
-#define DEFINE_BASIC(T)                         \
-T* PASTE2(T, _init)(T *id);                     \
-void PASTE2(T, _destroy)(T* id);                \
-DEFINE_NEW_DELETE(T)
-
-#define DEFINE_BASIC_TYPE(T)                    \
-DEFINE_BASIC(T);                                \
-DEFINE_BASIC(PASTE2(T, _cptr));                 \
-DEFINE_BASIC(PASTE2(T, _ptr))
-
 DECLARE_BASIC(void_ptr);
 DECLARE_BASIC(void_cptr);
 
@@ -289,44 +277,28 @@ char const* void_cptr2p(char* buf, void_cptr x) {
   char const* PASTE3(T, 2, X)(char* buf, T x);
 #else
 #define P99__DECLARE_ARI2STR(T, X, S, P)            \
-inline                                          \
- char const* PASTE3(T, 2, X)(char* buf, T x) {  \
-  char* form = STRDUP(#P, PRI(T,X,S));          \
-  sprintf(buf, form, x);                        \
-  free(form);                                   \
-  return buf;                                   \
-}
+  char const* PASTE3(T, 2, X)(char* buf, T x)
 #endif
 
 #define DECLARE_ARI2STR(T)                      \
-  P99__DECLARE_ARI2STR(T, d, , )                    \
-  P99__DECLARE_ARI2STR(T, o, 0, 0)                  \
-  P99__DECLARE_ARI2STR(T, u, , )                    \
-  P99__DECLARE_ARI2STR(T, x, , 0x)                  \
+  P99__DECLARE_ARI2STR(T, d, , );                   \
+  P99__DECLARE_ARI2STR(T, o, 0, 0);                 \
+  P99__DECLARE_ARI2STR(T, u, , );                   \
+  P99__DECLARE_ARI2STR(T, x, , 0x);                 \
   P99__DECLARE_ARI2STR(T, X, , 0x)
 
 
-#define P99__DEFINE_ARI2STR(T, X)                     \
-  char const* PASTE3(T, 2, X)(char* buf, T x)
-
-#define DEFINE_ARI2STR(T)                      \
-  P99__DEFINE_ARI2STR(T, d);                       \
-  P99__DEFINE_ARI2STR(T, o);                       \
-  P99__DEFINE_ARI2STR(T, u);                       \
-  P99__DEFINE_ARI2STR(T, x);                       \
-  P99__DEFINE_ARI2STR(T, X)
-
-DECLARE_ARI2STR(schar)
-DECLARE_ARI2STR(uchar)
-DECLARE_ARI2STR(short)
-DECLARE_ARI2STR(ushort)
-DECLARE_ARI2STR(signed)
-DECLARE_ARI2STR(unsigned)
-DECLARE_ARI2STR(long)
-DECLARE_ARI2STR(ulong)
-DECLARE_ARI2STR(llong)
-DECLARE_ARI2STR(sllong)
-DECLARE_ARI2STR(ullong)
+DECLARE_ARI2STR(schar);
+DECLARE_ARI2STR(uchar);
+DECLARE_ARI2STR(short);
+DECLARE_ARI2STR(ushort);
+DECLARE_ARI2STR(signed);
+DECLARE_ARI2STR(unsigned);
+DECLARE_ARI2STR(long);
+DECLARE_ARI2STR(ulong);
+DECLARE_ARI2STR(llong);
+DECLARE_ARI2STR(sllong);
+DECLARE_ARI2STR(ullong);
 
 
 #define P99__ALLO(N) ((char[N]){0})

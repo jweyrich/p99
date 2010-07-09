@@ -19,6 +19,7 @@
 #include <assert.h>
 #include "orwl_once.h"
 #include "orwl_int.h"
+#include "orwl_macro.h"
 
 /**
  ** @brief A default (global!) version of something like a
@@ -434,7 +435,10 @@ inline void PASTE2(NAME, _clear)(void) {        \
 extern pthread_key_t KEY
 
 
-#define DECLARE_THREAD_VAR(T, NAME) P99__DECLARE_THREAD_VAR(T, NAME, PASTE3(p99__, NAME, _key))
+#define DECLARE_THREAD_VAR(T, NAME)                             \
+/*! An accessor function to a thread local variable */          \
+inline T* NAME(void);                                           \
+P99__DECLARE_THREAD_VAR(T, NAME, PASTE3(p99__, NAME, _key))
 
 
 #define P99___DEFINE_THREAD_VAR(T, NAME, KEY)                           \

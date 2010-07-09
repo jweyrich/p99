@@ -17,10 +17,9 @@
 #define DECLARE_DEFARG(A, ...) DEFINE_DEFARG(A, __VA_ARGS__)
 #undef PROTOTYPE
 #define PROTOTYPE(T, NAME, ...) enum { PASTE2(_another_boring_enum_, NAME) }
-#endif
 
 #undef   	ORWL_POSIX_DEFAULT_H_
 #define   	ORWL_POSIX_DEFAULT_H_ 1
-#ifndef DOXYGEN
+
 #include "orwl_posix_default.h"
 #endif
