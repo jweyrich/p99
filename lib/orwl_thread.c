@@ -83,7 +83,7 @@ static pthread_mutex_t create_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t create_cond = PTHREAD_COND_INITIALIZER;
 
 DEFINE_ONCE(orwl_pthread_create) {
-  sem_init_nointr(&create_sem, 0, 0);
+  sem_init(&create_sem, 0, 0);
   pthread_attr_init(&attr_detached);
   pthread_attr_setdetachstate(&attr_detached, PTHREAD_CREATE_DETACHED);
   pthread_attr_init(&attr_joinable);
@@ -117,8 +117,8 @@ typedef struct {
 orwl__routine_arg* orwl__routine_arg_init(orwl__routine_arg *rt,
                                               start_routine_t start_routine,
                                               void* arg) {
-  sem_init_nointr(&rt->semCaller, 0, 0);
-  sem_init_nointr(&rt->semCalled, 0, 0);
+  sem_init(&rt->semCaller, 0, 0);
+  sem_init(&rt->semCalled, 0, 0);
   rt->start_routine = start_routine;
   rt->arg = arg;
   return rt;
@@ -147,7 +147,7 @@ void *detached_wrapper(void *routine_arg) {
   void *ret = INITIALIZER;
   SEM_RELAX(create_sem) {
     /* tell the creator that we are in charge */
-    sem_post_nointr(&Routine_Arg->semCalled);
+    sem_post(&Routine_Arg->semCalled);
     ret = start_routine(arg);
   }
   /* The remaining part could be a bit slower but usually only at the
@@ -179,7 +179,7 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
   /* Wait until the routine is accounted for */
   sem_wait_nointr(&Routine_Arg->semCalled);
   /* Notify that Routine_Arg may safely be deleted thereafter */
-  sem_post_nointr(&Routine_Arg->semCaller);
+  sem_post(&Routine_Arg->semCaller);
   return ret;
 }
 
@@ -187,7 +187,7 @@ void orwl_pthread_wait_detached(void) {
   INIT_ONCE(orwl_pthread_create);
   MUTUAL_EXCLUDE(create_mutex) {
     for (int sval = 1;;) {
-      sem_getvalue_nointr(&create_sem, &sval);
+      sem_getvalue(&create_sem, &sval);
       if (!sval) break;
       pthread_cond_wait(&create_cond, &create_mutex);
     }

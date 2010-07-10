@@ -12,11 +12,11 @@
 # define   	ORWL_THREAD_H_
 
 #include <errno.h>
-#include <semaphore.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <math.h>
 #include <assert.h>
+#include "semaphore_nointr.h"
 #include "orwl_once.h"
 #include "orwl_int.h"
 #include "orwl_macro.h"
@@ -288,83 +288,6 @@ DECLARE_NEW_DELETE(pthread_t);
  **/
 extern void sleepfor(double t);
 
-/**
- ** @brief Just a wrapper for @c sem_init
- **/
-static_inline
-int sem_init_nointr(sem_t *sem, int pshared, unsigned int value) {
-  return sem_init(sem, pshared, value);
-}
-
-/**
- ** @brief Just a wrapper for @c sem_destroy
- **/
-static_inline
-int sem_destroy_nointr(sem_t *sem) {
-  return sem_destroy(sem);
-}
-
-
-/**
- ** @brief Just a wrapper for @c sem_getvalue
- **/
-static_inline
-int sem_getvalue_nointr(sem_t *sem, int *sval) {
-  return sem_getvalue(sem, sval);
-}
-
-/**
- ** @brief Just a wrapper for @c sem_post
- **/
-static_inline
-int sem_post_nointr(sem_t *sem) {
-  return sem_post(sem);
-}
-
-/**
- ** @brief An interrupt safe wrapper for @c sem_trywait.
- **
- ** The POSIX function may be interrupted if e.g there is delivery of IO.
- ** This function here catches the case of an interrupt and retries
- ** until success or until another error condition occurs.
- **/
-static_inline
-int sem_trywait_nointr(sem_t *sem) {
-  while (sem_trywait(sem))
-    if (errno == EINTR) errno = 0;
-    else return -1;
-  return 0;
-}
-
-/**
- ** @brief An interrupt safe wrapper for @c sem_trywait.
- **
- ** The POSIX function may be interrupted if e.g there is delivery of IO.
- ** This function here catches the case of an interrupt and retries
- ** until success or until another error condition occurs.
- **/
-static_inline
-int sem_wait_nointr(sem_t *sem) {
-  while (sem_wait(sem))
-    if (errno == EINTR) errno = 0;
-    else return -1;
-  return 0;
-}
-
-/**
- ** @brief An interrupt safe wrapper for @c sem_timedwait.
- **
- ** The POSIX function may be interrupted if e.g there is delivery of IO.
- ** This function here catches the case of an interrupt and retries
- ** until success or until another error condition occurs.
- **/
-static_inline
-int sem_timedwait_nointr(sem_t *sem, const struct timespec *abs_timeout) {
-  while (sem_timedwait(sem, abs_timeout))
-    if (errno == EINTR) errno = 0;
-    else return -1;
-  return 0;
-}
 
 /**
  ** @brief Relax the @c sem_t @a SEM during execution of a dependent
@@ -376,7 +299,7 @@ SAVE_BLOCK(                                     \
            sem_t*,                              \
            sem,                                 \
            &(SEM),                              \
-           sem_post_nointr(sem),                  \
+           sem_post(sem),                       \
            sem_wait_nointr(sem))
 
 /**
@@ -388,7 +311,7 @@ SAVE_BLOCK(                                     \
  ** after execution of the dependent block or statement.
  **
  ** @see sem_wait_nointr
- ** @see sem_post_nointr
+ ** @see sem_post
  ** @see MUTUAL_EXCLUDE
  **/
 DOCUMENT_BLOCK
@@ -398,7 +321,7 @@ SAVE_BLOCK(                                     \
            sem,                                 \
            &(SEM),                              \
            sem_wait_nointr(sem),                \
-           sem_post_nointr(sem))
+           sem_post(sem))
 
 inline
 char const* pthread2str(char *buf, pthread_t id) {

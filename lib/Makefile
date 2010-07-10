@@ -28,7 +28,8 @@ SRC	=					\
 	orwl_socket.c				\
 	orwl_thread.c				\
 	orwl_types.c				\
-	orwl_wait_queue.c
+	orwl_wait_queue.c			\
+	semaphore_nointr.c
 INCL  	=	# List of *.h
 # The global variables that are used and that are external
 GLOBVARS=stderr stdout stdin in6addr_any
