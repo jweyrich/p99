@@ -219,12 +219,4 @@ void sleepfor(double t) {
   }
 }
 
-int sem_init_nointr(sem_t *sem, int pshared, unsigned int value);
-int sem_destroy_nointr(sem_t *sem);
-int sem_getvalue_nointr(sem_t *sem, int *sval);
-int sem_post_nointr(sem_t *sem);
-int sem_trywait_nointr(sem_t *sem);
-int sem_wait_nointr(sem_t *sem);
-int sem_timedwait_nointr(sem_t *sem, const struct timespec *abs_timeout);
-
 char const* pthread2str(char *buf, pthread_t id);
