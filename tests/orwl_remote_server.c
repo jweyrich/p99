@@ -82,7 +82,10 @@ int main(int argc, char **argv) {
 
   int fd[2] = { fileno(stdin), -1 };
   if (block && background) {
-    pipe(fd);
+    if (pipe(fd)) {
+      perror("Couldn't create pipe");
+      exit(errno);
+    }
   }
 
   pid_t pid = background ? fork() : 0;
@@ -118,7 +121,10 @@ int main(int argc, char **argv) {
       orwl_server_block(srv);
       progress(1, 0, "%s waiting for kick off                                           ",
                server_name);
-      fgets((char[32]){0}, 32, stdin);
+      if (!fgets((char[32]){0}, 32, stdin)) {
+        perror("error when reading from stdin");
+        exit(1);
+      }
       orwl_server_unblock(srv);
       if (background)
         fclose(stdin);
@@ -155,7 +161,10 @@ int main(int argc, char **argv) {
       close(fd[0]);
       char mess[32] = {0};
       FILE* out = fdopen(fd[1], "w");
-      fgets(mess, 32, stdin);
+      if (!fgets(mess, 32, stdin)) {
+        perror("error when reading from stdin");
+        exit(1);
+      }
       fputs(mess, out);
       fclose(out);
     }
