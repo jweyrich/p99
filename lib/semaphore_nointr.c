@@ -13,3 +13,5 @@
 int sem_wait_nointr(sem_t *sem);
 int sem_trywait_nointr(sem_t *sem);
 int sem_timedwait_nointr(sem_t *sem, const struct timespec *abs_timeout);
+int sem_getvalue0(sem_t* p, unsigned* val);
+unsigned sem_assert(sem_t* p);
