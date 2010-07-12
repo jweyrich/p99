@@ -43,6 +43,7 @@ for (my $m = 1; $m < 5; ++$m) {
     print ")\n";
 }
 
+print "/*! \@brief Determine of the argument list has a comma, i.e at least two arguments.*/\n";
 print "#define HAS_COMMA(...) P99__ARG(__VA_ARGS__,\\\n";
 for (my $i = 2; $i < $maxnumber; ++$i) {
     if ($i % 8 != 1) {
@@ -96,13 +97,15 @@ print STDOUT "\n";
 
 for (my $m = 7; $m < $maxnumber; ++$m) {
     my $m1 = $m - 1;
+    print "/*! \@brief Paste $m arguments at their boundary.*/\n";
     print "#define PASTE$m(...) P99__PASTE$m(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))\n";
     print "#define P99__PASTE$m(L, ...) PASTE2(PASTE${m1}(__VA_ARGS__), L)\n";
 }
 
 print "#define P99__IS_${_}_EQ_${_}(...) ,\n"
     foreach (0.. $maxnumber, @keywords_C99);
-print "#define IS_EQ_${_}(...) TOK_EQ(${_}, __VA_ARGS__)\n"
+print "/*! \@brief Test if the argument consists of exactly the token \@c ${_} */\
+#define IS_EQ_${_}(...) TOK_EQ(${_}, __VA_ARGS__)\n"
     foreach (0.. $maxnumber, @keywords_C99);
 
 printf "#define P99__DEC_PRED_%d %d\n", $_ + 1, $_

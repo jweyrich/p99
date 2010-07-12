@@ -45,6 +45,7 @@
 	P99__INV(4),	P99__INV(4),	P99__INV(4),	5,	P99__INV(4),	P99__INV(4),	P99__INV(4),	4,\
 	P99__INV(4),	P99__INV(4),	P99__INV(4),	3,	P99__INV(4),	P99__INV(4),	P99__INV(4),	2,\
 	P99__INV(4),	P99__INV(4),	P99__INV(4),	1,	P99__INV(4),	P99__INV(4),	P99__INV(4),	0,)
+/*! @brief Determine of the argument list has a comma, i.e at least two arguments.*/
 #define HAS_COMMA(...) P99__ARG(__VA_ARGS__,\
 	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
@@ -205,118 +206,175 @@
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,
+/*! @brief Paste 7 arguments at their boundary.*/
 #define PASTE7(...) P99__PASTE7(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE7(L, ...) PASTE2(PASTE6(__VA_ARGS__), L)
+/*! @brief Paste 8 arguments at their boundary.*/
 #define PASTE8(...) P99__PASTE8(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE8(L, ...) PASTE2(PASTE7(__VA_ARGS__), L)
+/*! @brief Paste 9 arguments at their boundary.*/
 #define PASTE9(...) P99__PASTE9(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE9(L, ...) PASTE2(PASTE8(__VA_ARGS__), L)
+/*! @brief Paste 10 arguments at their boundary.*/
 #define PASTE10(...) P99__PASTE10(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE10(L, ...) PASTE2(PASTE9(__VA_ARGS__), L)
+/*! @brief Paste 11 arguments at their boundary.*/
 #define PASTE11(...) P99__PASTE11(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE11(L, ...) PASTE2(PASTE10(__VA_ARGS__), L)
+/*! @brief Paste 12 arguments at their boundary.*/
 #define PASTE12(...) P99__PASTE12(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE12(L, ...) PASTE2(PASTE11(__VA_ARGS__), L)
+/*! @brief Paste 13 arguments at their boundary.*/
 #define PASTE13(...) P99__PASTE13(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE13(L, ...) PASTE2(PASTE12(__VA_ARGS__), L)
+/*! @brief Paste 14 arguments at their boundary.*/
 #define PASTE14(...) P99__PASTE14(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE14(L, ...) PASTE2(PASTE13(__VA_ARGS__), L)
+/*! @brief Paste 15 arguments at their boundary.*/
 #define PASTE15(...) P99__PASTE15(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE15(L, ...) PASTE2(PASTE14(__VA_ARGS__), L)
+/*! @brief Paste 16 arguments at their boundary.*/
 #define PASTE16(...) P99__PASTE16(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE16(L, ...) PASTE2(PASTE15(__VA_ARGS__), L)
+/*! @brief Paste 17 arguments at their boundary.*/
 #define PASTE17(...) P99__PASTE17(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE17(L, ...) PASTE2(PASTE16(__VA_ARGS__), L)
+/*! @brief Paste 18 arguments at their boundary.*/
 #define PASTE18(...) P99__PASTE18(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE18(L, ...) PASTE2(PASTE17(__VA_ARGS__), L)
+/*! @brief Paste 19 arguments at their boundary.*/
 #define PASTE19(...) P99__PASTE19(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE19(L, ...) PASTE2(PASTE18(__VA_ARGS__), L)
+/*! @brief Paste 20 arguments at their boundary.*/
 #define PASTE20(...) P99__PASTE20(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE20(L, ...) PASTE2(PASTE19(__VA_ARGS__), L)
+/*! @brief Paste 21 arguments at their boundary.*/
 #define PASTE21(...) P99__PASTE21(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE21(L, ...) PASTE2(PASTE20(__VA_ARGS__), L)
+/*! @brief Paste 22 arguments at their boundary.*/
 #define PASTE22(...) P99__PASTE22(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE22(L, ...) PASTE2(PASTE21(__VA_ARGS__), L)
+/*! @brief Paste 23 arguments at their boundary.*/
 #define PASTE23(...) P99__PASTE23(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE23(L, ...) PASTE2(PASTE22(__VA_ARGS__), L)
+/*! @brief Paste 24 arguments at their boundary.*/
 #define PASTE24(...) P99__PASTE24(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE24(L, ...) PASTE2(PASTE23(__VA_ARGS__), L)
+/*! @brief Paste 25 arguments at their boundary.*/
 #define PASTE25(...) P99__PASTE25(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE25(L, ...) PASTE2(PASTE24(__VA_ARGS__), L)
+/*! @brief Paste 26 arguments at their boundary.*/
 #define PASTE26(...) P99__PASTE26(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE26(L, ...) PASTE2(PASTE25(__VA_ARGS__), L)
+/*! @brief Paste 27 arguments at their boundary.*/
 #define PASTE27(...) P99__PASTE27(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE27(L, ...) PASTE2(PASTE26(__VA_ARGS__), L)
+/*! @brief Paste 28 arguments at their boundary.*/
 #define PASTE28(...) P99__PASTE28(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE28(L, ...) PASTE2(PASTE27(__VA_ARGS__), L)
+/*! @brief Paste 29 arguments at their boundary.*/
 #define PASTE29(...) P99__PASTE29(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE29(L, ...) PASTE2(PASTE28(__VA_ARGS__), L)
+/*! @brief Paste 30 arguments at their boundary.*/
 #define PASTE30(...) P99__PASTE30(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE30(L, ...) PASTE2(PASTE29(__VA_ARGS__), L)
+/*! @brief Paste 31 arguments at their boundary.*/
 #define PASTE31(...) P99__PASTE31(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE31(L, ...) PASTE2(PASTE30(__VA_ARGS__), L)
+/*! @brief Paste 32 arguments at their boundary.*/
 #define PASTE32(...) P99__PASTE32(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE32(L, ...) PASTE2(PASTE31(__VA_ARGS__), L)
+/*! @brief Paste 33 arguments at their boundary.*/
 #define PASTE33(...) P99__PASTE33(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE33(L, ...) PASTE2(PASTE32(__VA_ARGS__), L)
+/*! @brief Paste 34 arguments at their boundary.*/
 #define PASTE34(...) P99__PASTE34(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE34(L, ...) PASTE2(PASTE33(__VA_ARGS__), L)
+/*! @brief Paste 35 arguments at their boundary.*/
 #define PASTE35(...) P99__PASTE35(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE35(L, ...) PASTE2(PASTE34(__VA_ARGS__), L)
+/*! @brief Paste 36 arguments at their boundary.*/
 #define PASTE36(...) P99__PASTE36(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE36(L, ...) PASTE2(PASTE35(__VA_ARGS__), L)
+/*! @brief Paste 37 arguments at their boundary.*/
 #define PASTE37(...) P99__PASTE37(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE37(L, ...) PASTE2(PASTE36(__VA_ARGS__), L)
+/*! @brief Paste 38 arguments at their boundary.*/
 #define PASTE38(...) P99__PASTE38(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE38(L, ...) PASTE2(PASTE37(__VA_ARGS__), L)
+/*! @brief Paste 39 arguments at their boundary.*/
 #define PASTE39(...) P99__PASTE39(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE39(L, ...) PASTE2(PASTE38(__VA_ARGS__), L)
+/*! @brief Paste 40 arguments at their boundary.*/
 #define PASTE40(...) P99__PASTE40(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE40(L, ...) PASTE2(PASTE39(__VA_ARGS__), L)
+/*! @brief Paste 41 arguments at their boundary.*/
 #define PASTE41(...) P99__PASTE41(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE41(L, ...) PASTE2(PASTE40(__VA_ARGS__), L)
+/*! @brief Paste 42 arguments at their boundary.*/
 #define PASTE42(...) P99__PASTE42(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE42(L, ...) PASTE2(PASTE41(__VA_ARGS__), L)
+/*! @brief Paste 43 arguments at their boundary.*/
 #define PASTE43(...) P99__PASTE43(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE43(L, ...) PASTE2(PASTE42(__VA_ARGS__), L)
+/*! @brief Paste 44 arguments at their boundary.*/
 #define PASTE44(...) P99__PASTE44(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE44(L, ...) PASTE2(PASTE43(__VA_ARGS__), L)
+/*! @brief Paste 45 arguments at their boundary.*/
 #define PASTE45(...) P99__PASTE45(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE45(L, ...) PASTE2(PASTE44(__VA_ARGS__), L)
+/*! @brief Paste 46 arguments at their boundary.*/
 #define PASTE46(...) P99__PASTE46(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE46(L, ...) PASTE2(PASTE45(__VA_ARGS__), L)
+/*! @brief Paste 47 arguments at their boundary.*/
 #define PASTE47(...) P99__PASTE47(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE47(L, ...) PASTE2(PASTE46(__VA_ARGS__), L)
+/*! @brief Paste 48 arguments at their boundary.*/
 #define PASTE48(...) P99__PASTE48(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE48(L, ...) PASTE2(PASTE47(__VA_ARGS__), L)
+/*! @brief Paste 49 arguments at their boundary.*/
 #define PASTE49(...) P99__PASTE49(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE49(L, ...) PASTE2(PASTE48(__VA_ARGS__), L)
+/*! @brief Paste 50 arguments at their boundary.*/
 #define PASTE50(...) P99__PASTE50(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE50(L, ...) PASTE2(PASTE49(__VA_ARGS__), L)
+/*! @brief Paste 51 arguments at their boundary.*/
 #define PASTE51(...) P99__PASTE51(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE51(L, ...) PASTE2(PASTE50(__VA_ARGS__), L)
+/*! @brief Paste 52 arguments at their boundary.*/
 #define PASTE52(...) P99__PASTE52(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE52(L, ...) PASTE2(PASTE51(__VA_ARGS__), L)
+/*! @brief Paste 53 arguments at their boundary.*/
 #define PASTE53(...) P99__PASTE53(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE53(L, ...) PASTE2(PASTE52(__VA_ARGS__), L)
+/*! @brief Paste 54 arguments at their boundary.*/
 #define PASTE54(...) P99__PASTE54(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE54(L, ...) PASTE2(PASTE53(__VA_ARGS__), L)
+/*! @brief Paste 55 arguments at their boundary.*/
 #define PASTE55(...) P99__PASTE55(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE55(L, ...) PASTE2(PASTE54(__VA_ARGS__), L)
+/*! @brief Paste 56 arguments at their boundary.*/
 #define PASTE56(...) P99__PASTE56(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE56(L, ...) PASTE2(PASTE55(__VA_ARGS__), L)
+/*! @brief Paste 57 arguments at their boundary.*/
 #define PASTE57(...) P99__PASTE57(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE57(L, ...) PASTE2(PASTE56(__VA_ARGS__), L)
+/*! @brief Paste 58 arguments at their boundary.*/
 #define PASTE58(...) P99__PASTE58(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE58(L, ...) PASTE2(PASTE57(__VA_ARGS__), L)
+/*! @brief Paste 59 arguments at their boundary.*/
 #define PASTE59(...) P99__PASTE59(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE59(L, ...) PASTE2(PASTE58(__VA_ARGS__), L)
+/*! @brief Paste 60 arguments at their boundary.*/
 #define PASTE60(...) P99__PASTE60(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE60(L, ...) PASTE2(PASTE59(__VA_ARGS__), L)
+/*! @brief Paste 61 arguments at their boundary.*/
 #define PASTE61(...) P99__PASTE61(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE61(L, ...) PASTE2(PASTE60(__VA_ARGS__), L)
+/*! @brief Paste 62 arguments at their boundary.*/
 #define PASTE62(...) P99__PASTE62(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE62(L, ...) PASTE2(PASTE61(__VA_ARGS__), L)
+/*! @brief Paste 63 arguments at their boundary.*/
 #define PASTE63(...) P99__PASTE63(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE63(L, ...) PASTE2(PASTE62(__VA_ARGS__), L)
 #define P99__IS_0_EQ_0(...) ,
@@ -421,107 +479,209 @@
 #define P99__IS_void_EQ_void(...) ,
 #define P99__IS_volatile_EQ_volatile(...) ,
 #define P99__IS_while_EQ_while(...) ,
+/*! @brief Test if the argument consists of exactly the token @c 0 */
 #define IS_EQ_0(...) TOK_EQ(0, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 1 */
 #define IS_EQ_1(...) TOK_EQ(1, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 2 */
 #define IS_EQ_2(...) TOK_EQ(2, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 3 */
 #define IS_EQ_3(...) TOK_EQ(3, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 4 */
 #define IS_EQ_4(...) TOK_EQ(4, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 5 */
 #define IS_EQ_5(...) TOK_EQ(5, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 6 */
 #define IS_EQ_6(...) TOK_EQ(6, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 7 */
 #define IS_EQ_7(...) TOK_EQ(7, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 8 */
 #define IS_EQ_8(...) TOK_EQ(8, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 9 */
 #define IS_EQ_9(...) TOK_EQ(9, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 10 */
 #define IS_EQ_10(...) TOK_EQ(10, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 11 */
 #define IS_EQ_11(...) TOK_EQ(11, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 12 */
 #define IS_EQ_12(...) TOK_EQ(12, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 13 */
 #define IS_EQ_13(...) TOK_EQ(13, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 14 */
 #define IS_EQ_14(...) TOK_EQ(14, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 15 */
 #define IS_EQ_15(...) TOK_EQ(15, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 16 */
 #define IS_EQ_16(...) TOK_EQ(16, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 17 */
 #define IS_EQ_17(...) TOK_EQ(17, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 18 */
 #define IS_EQ_18(...) TOK_EQ(18, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 19 */
 #define IS_EQ_19(...) TOK_EQ(19, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 20 */
 #define IS_EQ_20(...) TOK_EQ(20, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 21 */
 #define IS_EQ_21(...) TOK_EQ(21, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 22 */
 #define IS_EQ_22(...) TOK_EQ(22, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 23 */
 #define IS_EQ_23(...) TOK_EQ(23, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 24 */
 #define IS_EQ_24(...) TOK_EQ(24, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 25 */
 #define IS_EQ_25(...) TOK_EQ(25, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 26 */
 #define IS_EQ_26(...) TOK_EQ(26, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 27 */
 #define IS_EQ_27(...) TOK_EQ(27, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 28 */
 #define IS_EQ_28(...) TOK_EQ(28, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 29 */
 #define IS_EQ_29(...) TOK_EQ(29, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 30 */
 #define IS_EQ_30(...) TOK_EQ(30, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 31 */
 #define IS_EQ_31(...) TOK_EQ(31, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 32 */
 #define IS_EQ_32(...) TOK_EQ(32, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 33 */
 #define IS_EQ_33(...) TOK_EQ(33, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 34 */
 #define IS_EQ_34(...) TOK_EQ(34, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 35 */
 #define IS_EQ_35(...) TOK_EQ(35, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 36 */
 #define IS_EQ_36(...) TOK_EQ(36, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 37 */
 #define IS_EQ_37(...) TOK_EQ(37, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 38 */
 #define IS_EQ_38(...) TOK_EQ(38, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 39 */
 #define IS_EQ_39(...) TOK_EQ(39, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 40 */
 #define IS_EQ_40(...) TOK_EQ(40, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 41 */
 #define IS_EQ_41(...) TOK_EQ(41, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 42 */
 #define IS_EQ_42(...) TOK_EQ(42, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 43 */
 #define IS_EQ_43(...) TOK_EQ(43, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 44 */
 #define IS_EQ_44(...) TOK_EQ(44, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 45 */
 #define IS_EQ_45(...) TOK_EQ(45, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 46 */
 #define IS_EQ_46(...) TOK_EQ(46, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 47 */
 #define IS_EQ_47(...) TOK_EQ(47, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 48 */
 #define IS_EQ_48(...) TOK_EQ(48, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 49 */
 #define IS_EQ_49(...) TOK_EQ(49, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 50 */
 #define IS_EQ_50(...) TOK_EQ(50, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 51 */
 #define IS_EQ_51(...) TOK_EQ(51, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 52 */
 #define IS_EQ_52(...) TOK_EQ(52, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 53 */
 #define IS_EQ_53(...) TOK_EQ(53, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 54 */
 #define IS_EQ_54(...) TOK_EQ(54, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 55 */
 #define IS_EQ_55(...) TOK_EQ(55, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 56 */
 #define IS_EQ_56(...) TOK_EQ(56, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 57 */
 #define IS_EQ_57(...) TOK_EQ(57, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 58 */
 #define IS_EQ_58(...) TOK_EQ(58, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 59 */
 #define IS_EQ_59(...) TOK_EQ(59, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 60 */
 #define IS_EQ_60(...) TOK_EQ(60, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 61 */
 #define IS_EQ_61(...) TOK_EQ(61, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 62 */
 #define IS_EQ_62(...) TOK_EQ(62, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 63 */
 #define IS_EQ_63(...) TOK_EQ(63, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 64 */
 #define IS_EQ_64(...) TOK_EQ(64, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c _Bool */
 #define IS_EQ__Bool(...) TOK_EQ(_Bool, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c _Complex */
 #define IS_EQ__Complex(...) TOK_EQ(_Complex, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c _Imaginary */
 #define IS_EQ__Imaginary(...) TOK_EQ(_Imaginary, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c auto */
 #define IS_EQ_auto(...) TOK_EQ(auto, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c break */
 #define IS_EQ_break(...) TOK_EQ(break, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c case */
 #define IS_EQ_case(...) TOK_EQ(case, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c char */
 #define IS_EQ_char(...) TOK_EQ(char, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c const */
 #define IS_EQ_const(...) TOK_EQ(const, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c continue */
 #define IS_EQ_continue(...) TOK_EQ(continue, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c default */
 #define IS_EQ_default(...) TOK_EQ(default, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c do */
 #define IS_EQ_do(...) TOK_EQ(do, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c double */
 #define IS_EQ_double(...) TOK_EQ(double, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c else */
 #define IS_EQ_else(...) TOK_EQ(else, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c enum */
 #define IS_EQ_enum(...) TOK_EQ(enum, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c extern */
 #define IS_EQ_extern(...) TOK_EQ(extern, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c float */
 #define IS_EQ_float(...) TOK_EQ(float, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c for */
 #define IS_EQ_for(...) TOK_EQ(for, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c goto */
 #define IS_EQ_goto(...) TOK_EQ(goto, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c if */
 #define IS_EQ_if(...) TOK_EQ(if, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c inline */
 #define IS_EQ_inline(...) TOK_EQ(inline, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c int */
 #define IS_EQ_int(...) TOK_EQ(int, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c long */
 #define IS_EQ_long(...) TOK_EQ(long, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c register */
 #define IS_EQ_register(...) TOK_EQ(register, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c restrict */
 #define IS_EQ_restrict(...) TOK_EQ(restrict, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c return */
 #define IS_EQ_return(...) TOK_EQ(return, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c short */
 #define IS_EQ_short(...) TOK_EQ(short, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c signed */
 #define IS_EQ_signed(...) TOK_EQ(signed, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c sizeof */
 #define IS_EQ_sizeof(...) TOK_EQ(sizeof, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c static */
 #define IS_EQ_static(...) TOK_EQ(static, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c struct */
 #define IS_EQ_struct(...) TOK_EQ(struct, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c switch */
 #define IS_EQ_switch(...) TOK_EQ(switch, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c typedef */
 #define IS_EQ_typedef(...) TOK_EQ(typedef, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c union */
 #define IS_EQ_union(...) TOK_EQ(union, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c unsigned */
 #define IS_EQ_unsigned(...) TOK_EQ(unsigned, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c void */
 #define IS_EQ_void(...) TOK_EQ(void, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c volatile */
 #define IS_EQ_volatile(...) TOK_EQ(volatile, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c while */
 #define IS_EQ_while(...) TOK_EQ(while, __VA_ARGS__)
 #define P99__DEC_PRED_1 0
 #define P99__DEC_PRED_2 1

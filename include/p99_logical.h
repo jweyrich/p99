@@ -113,8 +113,6 @@
 
 /**
  ** @def IS_EQ_void(...)
- ** @brief Test if the argument consists of exactly the token @c void.
- **
  ** @see IS_VOID for a macro that test whether or not its argument is
  ** empty @b or if it consists of the word @c void.
  **/

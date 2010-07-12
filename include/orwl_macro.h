@@ -285,6 +285,9 @@ for (int _one1_ = 1;                                            \
   /* Ensure that a `break' will still execute AFTER */          \
   for (; _one1_; _one1_ = 0)
 
+
+#define INVARIANT(EXPR) BLOCK(assert("" && (EXPR)), assert("" && (EXPR)))
+
 #define SAVE_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)                     \
 for (int _one1_ = 1; _one1_; _one1_ = 0)                                \
   for (T NAME = (INITIAL);                                              \
