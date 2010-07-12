@@ -12,6 +12,7 @@
 ##############################
 NAME 	=	liborwl.a liborwl.so	# Name of executable file
 SRC	=					\
+	atomic_counter.c	                \
 	orwl_auth_sock_functions.c		\
 	orwl_endpoint.c				\
 	orwl_enum.c				\
@@ -68,7 +69,7 @@ all:	$(NAME) external_symbols.o
 
 ${NAME} : ${OBJS}
 
-depend Makefile.inc :
+depend Makefile.inc : Makefile
 	gcc $(IPATH) -MM $(SRC) > Makefile.inc
 clean:
 	-$(RM) $(NAME) $(OBJS) *~

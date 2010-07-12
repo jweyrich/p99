@@ -109,6 +109,18 @@ do {                                                                    \
 
 typedef void *(*start_routine_t)(void*);
 
+
+extern pthread_attr_t const*const pthread_attr_detached;
+extern pthread_attr_t const*const pthread_attr_joinable;
+extern pthread_mutexattr_t const*const pthread_mutexattr_thread;
+extern pthread_mutexattr_t const*const pthread_mutexattr_process;
+extern pthread_condattr_t const*const pthread_condattr_thread;
+extern pthread_condattr_t const*const pthread_condattr_process;
+
+DECLARE_ONCE(orwl_thread);
+DECLARE_ONCE(pthread_mutex_t);
+DECLARE_ONCE(pthread_cond_t);
+
 /**
  ** @brief Internal interface to pthread_create() for joinable threads.
  **/

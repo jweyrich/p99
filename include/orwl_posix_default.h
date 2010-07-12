@@ -82,6 +82,12 @@ FSYMB_DOCUMENTATION(pthread_spin_init)
 #define pthread_spin_init(...) CALL_WITH_DEFAULTS(pthread_spin_init, 2, __VA_ARGS__)
 DECLARE_DEFARG(pthread_spin_init, , PTHREAD_PROCESS_PRIVATE);
 
+ // sem_init - initialize a sem_t object
+PROTOTYPE(int, sem_init, sem_t*, int, unsigned);
+FSYMB_DOCUMENTATION(sem_init)
+#define sem_init(...) CALL_WITH_DEFAULTS(sem_init, 3, __VA_ARGS__)
+DECLARE_DEFARG(sem_init, , PTHREAD_PROCESS_PRIVATE, 0u);
+
 // int pthread_key_create (pthread_key_t *__key, void (*__destr_function) (void *))
 #if   	ORWL_POSIX_DEFAULT_H_ == 2
 typedef void (*pthread_key_create_arg1_t)(void *);
