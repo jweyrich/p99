@@ -250,39 +250,39 @@ extern void orwl_pthread_wait_detached(void);
 /*! @see DECLARE_THREAD */                                              \
 /*! @param arg the object for this call */                              \
 /*! @param id if non-NULL, the thread can be joined on this @a id */    \
-  int PASTE2(T, _create)(T* arg, pthread_t *id)
+  int P99_PASTE2(T, _create)(T* arg, pthread_t *id)
 #else
 #define DECLARE_THREAD(T)                                               \
-  inline T * PASTE2(T, _join)(pthread_t id) {                           \
+  inline T * P99_PASTE2(T, _join)(pthread_t id) {                       \
   void *ret = NULL;                                                     \
   pthread_join(id, &ret);                                               \
   return ret;                                                           \
 }                                                                       \
-extern void * PASTE2(T, _start_joinable)(void* arg);                    \
-extern void * PASTE2(T, _start_detached)(void* arg);                    \
-inline int PASTE2(T, _create)(T* arg, pthread_t *id) {                  \
+extern void * P99_PASTE2(T, _start_joinable)(void* arg);                \
+extern void * P99_PASTE2(T, _start_detached)(void* arg);                \
+inline int P99_PASTE2(T, _create)(T* arg, pthread_t *id) {              \
   if (id)                                                               \
-    return orwl_pthread_create_joinable(id, PASTE2(T, _start_joinable), arg); \
+    return orwl_pthread_create_joinable(id, P99_PASTE2(T, _start_joinable), arg); \
   else                                                                  \
-    return orwl_pthread_create_detached(PASTE2(T, _start_detached), arg); \
+    return orwl_pthread_create_detached(P99_PASTE2(T, _start_detached), arg); \
 }                                                                       \
-extern void * PASTE2(T, _start_joinable)(void* arg)
-#define DEFINE_THREAD(T)                        \
-T *PASTE2(T, _join)(pthread_t id);                    \
-int PASTE2(T, _create)(T* arg, pthread_t *id);        \
-void PASTE2(T, _start)(T* Arg);                       \
-void *PASTE2(T, _start_joinable)(void* arg) {         \
-  T *Arg = (T*)arg;                             \
-  PASTE2(T, _start)(Arg);                             \
-  return arg;                                   \
-}                                               \
-void *PASTE2(T, _start_detached)(void* arg) {         \
-  T *Arg = (T*)arg;                             \
-  PASTE2(T, _start)(Arg);                             \
-  PASTE2(T, _delete)(Arg);                            \
-  return NULL;                                  \
-}                                               \
-void PASTE2(T, _start)(T *const Arg)
+extern void * P99_PASTE2(T, _start_joinable)(void* arg)
+#define DEFINE_THREAD(T)                                \
+T *P99_PASTE2(T, _join)(pthread_t id);                  \
+int P99_PASTE2(T, _create)(T* arg, pthread_t *id);      \
+void P99_PASTE2(T, _start)(T* Arg);                     \
+void *P99_PASTE2(T, _start_joinable)(void* arg) {       \
+  T *Arg = (T*)arg;                                     \
+  P99_PASTE2(T, _start)(Arg);                           \
+  return arg;                                           \
+}                                                       \
+void *P99_PASTE2(T, _start_detached)(void* arg) {       \
+  T *Arg = (T*)arg;                                     \
+  P99_PASTE2(T, _start)(Arg);                           \
+  P99_PASTE2(T, _delete)(Arg);                          \
+  return NULL;                                          \
+}                                                       \
+void P99_PASTE2(T, _start)(T *const Arg)
 #endif
 
 inline pthread_t* pthread_t_init(pthread_t *id) {
@@ -359,12 +359,12 @@ inline T* NAME(void) {                          \
   }                                             \
   return ret;                                   \
 }                                               \
-inline void PASTE2(NAME, _clear)(void) {        \
+inline void P99_PASTE2(NAME, _clear)(void) {        \
   INIT_ONCE_STATIC(KEY);                        \
   T* ret = pthread_getspecific(KEY);            \
   if (branch_expect(!!ret, true)) {             \
     (void)pthread_setspecific(KEY, NULL);       \
-    PASTE2(T, _delete)(ret);                    \
+    P99_PASTE2(T, _delete)(ret);                    \
   }                                             \
 }                                               \
 extern pthread_key_t KEY
@@ -373,20 +373,20 @@ extern pthread_key_t KEY
 #define DECLARE_THREAD_VAR(T, NAME)                             \
 /*! An accessor function to a thread local variable */          \
 inline T* NAME(void);                                           \
-P99__DECLARE_THREAD_VAR(T, NAME, PASTE3(p99__, NAME, _key))
+P99__DECLARE_THREAD_VAR(T, NAME, P99_PASTE3(p99__, NAME, _key))
 
 
 #define P99___DEFINE_THREAD_VAR(T, NAME, KEY)                           \
 pthread_key_t KEY;                                                      \
 DEFINE_ONCE_STATIC(KEY) {                                               \
-  (void) pthread_key_create(&KEY, (void (*)(void *))PASTE2(T, _delete)); \
+  (void) pthread_key_create(&KEY, (void (*)(void *))P99_PASTE2(T, _delete)); \
 }                                                                       \
-void PASTE2(NAME, _clear)(void);                                        \
+void P99_PASTE2(NAME, _clear)(void);                                    \
 T* NAME(void)
 
 #define P99__DEFINE_THREAD_VAR(T, NAME, KEY) P99___DEFINE_THREAD_VAR(T, NAME, KEY)
 
-#define DEFINE_THREAD_VAR(T, NAME) P99__DEFINE_THREAD_VAR(T, NAME, PASTE3(p99__, NAME, _key))
+#define DEFINE_THREAD_VAR(T, NAME) P99__DEFINE_THREAD_VAR(T, NAME, P99_PASTE3(p99__, NAME, _key))
 
 
 

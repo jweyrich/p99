@@ -207,176 +207,176 @@
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,
 /*! @brief Paste 7 arguments at their boundary.*/
-#define PASTE7(...) P99__PASTE7(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE7(L, ...) PASTE2(PASTE6(__VA_ARGS__), L)
+#define P99_PASTE7(...) P99__PASTE7(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE7(L, ...) P99_PASTE2(P99_PASTE6(__VA_ARGS__), L)
 /*! @brief Paste 8 arguments at their boundary.*/
-#define PASTE8(...) P99__PASTE8(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE8(L, ...) PASTE2(PASTE7(__VA_ARGS__), L)
+#define P99_PASTE8(...) P99__PASTE8(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE8(L, ...) P99_PASTE2(P99_PASTE7(__VA_ARGS__), L)
 /*! @brief Paste 9 arguments at their boundary.*/
-#define PASTE9(...) P99__PASTE9(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE9(L, ...) PASTE2(PASTE8(__VA_ARGS__), L)
+#define P99_PASTE9(...) P99__PASTE9(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE9(L, ...) P99_PASTE2(P99_PASTE8(__VA_ARGS__), L)
 /*! @brief Paste 10 arguments at their boundary.*/
-#define PASTE10(...) P99__PASTE10(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE10(L, ...) PASTE2(PASTE9(__VA_ARGS__), L)
+#define P99_PASTE10(...) P99__PASTE10(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE10(L, ...) P99_PASTE2(P99_PASTE9(__VA_ARGS__), L)
 /*! @brief Paste 11 arguments at their boundary.*/
-#define PASTE11(...) P99__PASTE11(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE11(L, ...) PASTE2(PASTE10(__VA_ARGS__), L)
+#define P99_PASTE11(...) P99__PASTE11(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE11(L, ...) P99_PASTE2(P99_PASTE10(__VA_ARGS__), L)
 /*! @brief Paste 12 arguments at their boundary.*/
-#define PASTE12(...) P99__PASTE12(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE12(L, ...) PASTE2(PASTE11(__VA_ARGS__), L)
+#define P99_PASTE12(...) P99__PASTE12(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE12(L, ...) P99_PASTE2(P99_PASTE11(__VA_ARGS__), L)
 /*! @brief Paste 13 arguments at their boundary.*/
-#define PASTE13(...) P99__PASTE13(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE13(L, ...) PASTE2(PASTE12(__VA_ARGS__), L)
+#define P99_PASTE13(...) P99__PASTE13(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE13(L, ...) P99_PASTE2(P99_PASTE12(__VA_ARGS__), L)
 /*! @brief Paste 14 arguments at their boundary.*/
-#define PASTE14(...) P99__PASTE14(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE14(L, ...) PASTE2(PASTE13(__VA_ARGS__), L)
+#define P99_PASTE14(...) P99__PASTE14(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE14(L, ...) P99_PASTE2(P99_PASTE13(__VA_ARGS__), L)
 /*! @brief Paste 15 arguments at their boundary.*/
-#define PASTE15(...) P99__PASTE15(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE15(L, ...) PASTE2(PASTE14(__VA_ARGS__), L)
+#define P99_PASTE15(...) P99__PASTE15(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE15(L, ...) P99_PASTE2(P99_PASTE14(__VA_ARGS__), L)
 /*! @brief Paste 16 arguments at their boundary.*/
-#define PASTE16(...) P99__PASTE16(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE16(L, ...) PASTE2(PASTE15(__VA_ARGS__), L)
+#define P99_PASTE16(...) P99__PASTE16(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE16(L, ...) P99_PASTE2(P99_PASTE15(__VA_ARGS__), L)
 /*! @brief Paste 17 arguments at their boundary.*/
-#define PASTE17(...) P99__PASTE17(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE17(L, ...) PASTE2(PASTE16(__VA_ARGS__), L)
+#define P99_PASTE17(...) P99__PASTE17(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE17(L, ...) P99_PASTE2(P99_PASTE16(__VA_ARGS__), L)
 /*! @brief Paste 18 arguments at their boundary.*/
-#define PASTE18(...) P99__PASTE18(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE18(L, ...) PASTE2(PASTE17(__VA_ARGS__), L)
+#define P99_PASTE18(...) P99__PASTE18(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE18(L, ...) P99_PASTE2(P99_PASTE17(__VA_ARGS__), L)
 /*! @brief Paste 19 arguments at their boundary.*/
-#define PASTE19(...) P99__PASTE19(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE19(L, ...) PASTE2(PASTE18(__VA_ARGS__), L)
+#define P99_PASTE19(...) P99__PASTE19(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE19(L, ...) P99_PASTE2(P99_PASTE18(__VA_ARGS__), L)
 /*! @brief Paste 20 arguments at their boundary.*/
-#define PASTE20(...) P99__PASTE20(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE20(L, ...) PASTE2(PASTE19(__VA_ARGS__), L)
+#define P99_PASTE20(...) P99__PASTE20(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE20(L, ...) P99_PASTE2(P99_PASTE19(__VA_ARGS__), L)
 /*! @brief Paste 21 arguments at their boundary.*/
-#define PASTE21(...) P99__PASTE21(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE21(L, ...) PASTE2(PASTE20(__VA_ARGS__), L)
+#define P99_PASTE21(...) P99__PASTE21(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE21(L, ...) P99_PASTE2(P99_PASTE20(__VA_ARGS__), L)
 /*! @brief Paste 22 arguments at their boundary.*/
-#define PASTE22(...) P99__PASTE22(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE22(L, ...) PASTE2(PASTE21(__VA_ARGS__), L)
+#define P99_PASTE22(...) P99__PASTE22(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE22(L, ...) P99_PASTE2(P99_PASTE21(__VA_ARGS__), L)
 /*! @brief Paste 23 arguments at their boundary.*/
-#define PASTE23(...) P99__PASTE23(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE23(L, ...) PASTE2(PASTE22(__VA_ARGS__), L)
+#define P99_PASTE23(...) P99__PASTE23(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE23(L, ...) P99_PASTE2(P99_PASTE22(__VA_ARGS__), L)
 /*! @brief Paste 24 arguments at their boundary.*/
-#define PASTE24(...) P99__PASTE24(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE24(L, ...) PASTE2(PASTE23(__VA_ARGS__), L)
+#define P99_PASTE24(...) P99__PASTE24(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE24(L, ...) P99_PASTE2(P99_PASTE23(__VA_ARGS__), L)
 /*! @brief Paste 25 arguments at their boundary.*/
-#define PASTE25(...) P99__PASTE25(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE25(L, ...) PASTE2(PASTE24(__VA_ARGS__), L)
+#define P99_PASTE25(...) P99__PASTE25(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE25(L, ...) P99_PASTE2(P99_PASTE24(__VA_ARGS__), L)
 /*! @brief Paste 26 arguments at their boundary.*/
-#define PASTE26(...) P99__PASTE26(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE26(L, ...) PASTE2(PASTE25(__VA_ARGS__), L)
+#define P99_PASTE26(...) P99__PASTE26(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE26(L, ...) P99_PASTE2(P99_PASTE25(__VA_ARGS__), L)
 /*! @brief Paste 27 arguments at their boundary.*/
-#define PASTE27(...) P99__PASTE27(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE27(L, ...) PASTE2(PASTE26(__VA_ARGS__), L)
+#define P99_PASTE27(...) P99__PASTE27(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE27(L, ...) P99_PASTE2(P99_PASTE26(__VA_ARGS__), L)
 /*! @brief Paste 28 arguments at their boundary.*/
-#define PASTE28(...) P99__PASTE28(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE28(L, ...) PASTE2(PASTE27(__VA_ARGS__), L)
+#define P99_PASTE28(...) P99__PASTE28(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE28(L, ...) P99_PASTE2(P99_PASTE27(__VA_ARGS__), L)
 /*! @brief Paste 29 arguments at their boundary.*/
-#define PASTE29(...) P99__PASTE29(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE29(L, ...) PASTE2(PASTE28(__VA_ARGS__), L)
+#define P99_PASTE29(...) P99__PASTE29(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE29(L, ...) P99_PASTE2(P99_PASTE28(__VA_ARGS__), L)
 /*! @brief Paste 30 arguments at their boundary.*/
-#define PASTE30(...) P99__PASTE30(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE30(L, ...) PASTE2(PASTE29(__VA_ARGS__), L)
+#define P99_PASTE30(...) P99__PASTE30(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE30(L, ...) P99_PASTE2(P99_PASTE29(__VA_ARGS__), L)
 /*! @brief Paste 31 arguments at their boundary.*/
-#define PASTE31(...) P99__PASTE31(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE31(L, ...) PASTE2(PASTE30(__VA_ARGS__), L)
+#define P99_PASTE31(...) P99__PASTE31(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE31(L, ...) P99_PASTE2(P99_PASTE30(__VA_ARGS__), L)
 /*! @brief Paste 32 arguments at their boundary.*/
-#define PASTE32(...) P99__PASTE32(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE32(L, ...) PASTE2(PASTE31(__VA_ARGS__), L)
+#define P99_PASTE32(...) P99__PASTE32(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE32(L, ...) P99_PASTE2(P99_PASTE31(__VA_ARGS__), L)
 /*! @brief Paste 33 arguments at their boundary.*/
-#define PASTE33(...) P99__PASTE33(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE33(L, ...) PASTE2(PASTE32(__VA_ARGS__), L)
+#define P99_PASTE33(...) P99__PASTE33(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE33(L, ...) P99_PASTE2(P99_PASTE32(__VA_ARGS__), L)
 /*! @brief Paste 34 arguments at their boundary.*/
-#define PASTE34(...) P99__PASTE34(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE34(L, ...) PASTE2(PASTE33(__VA_ARGS__), L)
+#define P99_PASTE34(...) P99__PASTE34(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE34(L, ...) P99_PASTE2(P99_PASTE33(__VA_ARGS__), L)
 /*! @brief Paste 35 arguments at their boundary.*/
-#define PASTE35(...) P99__PASTE35(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE35(L, ...) PASTE2(PASTE34(__VA_ARGS__), L)
+#define P99_PASTE35(...) P99__PASTE35(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE35(L, ...) P99_PASTE2(P99_PASTE34(__VA_ARGS__), L)
 /*! @brief Paste 36 arguments at their boundary.*/
-#define PASTE36(...) P99__PASTE36(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE36(L, ...) PASTE2(PASTE35(__VA_ARGS__), L)
+#define P99_PASTE36(...) P99__PASTE36(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE36(L, ...) P99_PASTE2(P99_PASTE35(__VA_ARGS__), L)
 /*! @brief Paste 37 arguments at their boundary.*/
-#define PASTE37(...) P99__PASTE37(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE37(L, ...) PASTE2(PASTE36(__VA_ARGS__), L)
+#define P99_PASTE37(...) P99__PASTE37(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE37(L, ...) P99_PASTE2(P99_PASTE36(__VA_ARGS__), L)
 /*! @brief Paste 38 arguments at their boundary.*/
-#define PASTE38(...) P99__PASTE38(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE38(L, ...) PASTE2(PASTE37(__VA_ARGS__), L)
+#define P99_PASTE38(...) P99__PASTE38(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE38(L, ...) P99_PASTE2(P99_PASTE37(__VA_ARGS__), L)
 /*! @brief Paste 39 arguments at their boundary.*/
-#define PASTE39(...) P99__PASTE39(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE39(L, ...) PASTE2(PASTE38(__VA_ARGS__), L)
+#define P99_PASTE39(...) P99__PASTE39(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE39(L, ...) P99_PASTE2(P99_PASTE38(__VA_ARGS__), L)
 /*! @brief Paste 40 arguments at their boundary.*/
-#define PASTE40(...) P99__PASTE40(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE40(L, ...) PASTE2(PASTE39(__VA_ARGS__), L)
+#define P99_PASTE40(...) P99__PASTE40(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE40(L, ...) P99_PASTE2(P99_PASTE39(__VA_ARGS__), L)
 /*! @brief Paste 41 arguments at their boundary.*/
-#define PASTE41(...) P99__PASTE41(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE41(L, ...) PASTE2(PASTE40(__VA_ARGS__), L)
+#define P99_PASTE41(...) P99__PASTE41(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE41(L, ...) P99_PASTE2(P99_PASTE40(__VA_ARGS__), L)
 /*! @brief Paste 42 arguments at their boundary.*/
-#define PASTE42(...) P99__PASTE42(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE42(L, ...) PASTE2(PASTE41(__VA_ARGS__), L)
+#define P99_PASTE42(...) P99__PASTE42(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE42(L, ...) P99_PASTE2(P99_PASTE41(__VA_ARGS__), L)
 /*! @brief Paste 43 arguments at their boundary.*/
-#define PASTE43(...) P99__PASTE43(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE43(L, ...) PASTE2(PASTE42(__VA_ARGS__), L)
+#define P99_PASTE43(...) P99__PASTE43(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE43(L, ...) P99_PASTE2(P99_PASTE42(__VA_ARGS__), L)
 /*! @brief Paste 44 arguments at their boundary.*/
-#define PASTE44(...) P99__PASTE44(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE44(L, ...) PASTE2(PASTE43(__VA_ARGS__), L)
+#define P99_PASTE44(...) P99__PASTE44(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE44(L, ...) P99_PASTE2(P99_PASTE43(__VA_ARGS__), L)
 /*! @brief Paste 45 arguments at their boundary.*/
-#define PASTE45(...) P99__PASTE45(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE45(L, ...) PASTE2(PASTE44(__VA_ARGS__), L)
+#define P99_PASTE45(...) P99__PASTE45(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE45(L, ...) P99_PASTE2(P99_PASTE44(__VA_ARGS__), L)
 /*! @brief Paste 46 arguments at their boundary.*/
-#define PASTE46(...) P99__PASTE46(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE46(L, ...) PASTE2(PASTE45(__VA_ARGS__), L)
+#define P99_PASTE46(...) P99__PASTE46(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE46(L, ...) P99_PASTE2(P99_PASTE45(__VA_ARGS__), L)
 /*! @brief Paste 47 arguments at their boundary.*/
-#define PASTE47(...) P99__PASTE47(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE47(L, ...) PASTE2(PASTE46(__VA_ARGS__), L)
+#define P99_PASTE47(...) P99__PASTE47(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE47(L, ...) P99_PASTE2(P99_PASTE46(__VA_ARGS__), L)
 /*! @brief Paste 48 arguments at their boundary.*/
-#define PASTE48(...) P99__PASTE48(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE48(L, ...) PASTE2(PASTE47(__VA_ARGS__), L)
+#define P99_PASTE48(...) P99__PASTE48(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE48(L, ...) P99_PASTE2(P99_PASTE47(__VA_ARGS__), L)
 /*! @brief Paste 49 arguments at their boundary.*/
-#define PASTE49(...) P99__PASTE49(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE49(L, ...) PASTE2(PASTE48(__VA_ARGS__), L)
+#define P99_PASTE49(...) P99__PASTE49(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE49(L, ...) P99_PASTE2(P99_PASTE48(__VA_ARGS__), L)
 /*! @brief Paste 50 arguments at their boundary.*/
-#define PASTE50(...) P99__PASTE50(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE50(L, ...) PASTE2(PASTE49(__VA_ARGS__), L)
+#define P99_PASTE50(...) P99__PASTE50(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE50(L, ...) P99_PASTE2(P99_PASTE49(__VA_ARGS__), L)
 /*! @brief Paste 51 arguments at their boundary.*/
-#define PASTE51(...) P99__PASTE51(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE51(L, ...) PASTE2(PASTE50(__VA_ARGS__), L)
+#define P99_PASTE51(...) P99__PASTE51(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE51(L, ...) P99_PASTE2(P99_PASTE50(__VA_ARGS__), L)
 /*! @brief Paste 52 arguments at their boundary.*/
-#define PASTE52(...) P99__PASTE52(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE52(L, ...) PASTE2(PASTE51(__VA_ARGS__), L)
+#define P99_PASTE52(...) P99__PASTE52(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE52(L, ...) P99_PASTE2(P99_PASTE51(__VA_ARGS__), L)
 /*! @brief Paste 53 arguments at their boundary.*/
-#define PASTE53(...) P99__PASTE53(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE53(L, ...) PASTE2(PASTE52(__VA_ARGS__), L)
+#define P99_PASTE53(...) P99__PASTE53(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE53(L, ...) P99_PASTE2(P99_PASTE52(__VA_ARGS__), L)
 /*! @brief Paste 54 arguments at their boundary.*/
-#define PASTE54(...) P99__PASTE54(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE54(L, ...) PASTE2(PASTE53(__VA_ARGS__), L)
+#define P99_PASTE54(...) P99__PASTE54(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE54(L, ...) P99_PASTE2(P99_PASTE53(__VA_ARGS__), L)
 /*! @brief Paste 55 arguments at their boundary.*/
-#define PASTE55(...) P99__PASTE55(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE55(L, ...) PASTE2(PASTE54(__VA_ARGS__), L)
+#define P99_PASTE55(...) P99__PASTE55(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE55(L, ...) P99_PASTE2(P99_PASTE54(__VA_ARGS__), L)
 /*! @brief Paste 56 arguments at their boundary.*/
-#define PASTE56(...) P99__PASTE56(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE56(L, ...) PASTE2(PASTE55(__VA_ARGS__), L)
+#define P99_PASTE56(...) P99__PASTE56(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE56(L, ...) P99_PASTE2(P99_PASTE55(__VA_ARGS__), L)
 /*! @brief Paste 57 arguments at their boundary.*/
-#define PASTE57(...) P99__PASTE57(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE57(L, ...) PASTE2(PASTE56(__VA_ARGS__), L)
+#define P99_PASTE57(...) P99__PASTE57(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE57(L, ...) P99_PASTE2(P99_PASTE56(__VA_ARGS__), L)
 /*! @brief Paste 58 arguments at their boundary.*/
-#define PASTE58(...) P99__PASTE58(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE58(L, ...) PASTE2(PASTE57(__VA_ARGS__), L)
+#define P99_PASTE58(...) P99__PASTE58(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE58(L, ...) P99_PASTE2(P99_PASTE57(__VA_ARGS__), L)
 /*! @brief Paste 59 arguments at their boundary.*/
-#define PASTE59(...) P99__PASTE59(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE59(L, ...) PASTE2(PASTE58(__VA_ARGS__), L)
+#define P99_PASTE59(...) P99__PASTE59(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE59(L, ...) P99_PASTE2(P99_PASTE58(__VA_ARGS__), L)
 /*! @brief Paste 60 arguments at their boundary.*/
-#define PASTE60(...) P99__PASTE60(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE60(L, ...) PASTE2(PASTE59(__VA_ARGS__), L)
+#define P99_PASTE60(...) P99__PASTE60(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE60(L, ...) P99_PASTE2(P99_PASTE59(__VA_ARGS__), L)
 /*! @brief Paste 61 arguments at their boundary.*/
-#define PASTE61(...) P99__PASTE61(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE61(L, ...) PASTE2(PASTE60(__VA_ARGS__), L)
+#define P99_PASTE61(...) P99__PASTE61(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE61(L, ...) P99_PASTE2(P99_PASTE60(__VA_ARGS__), L)
 /*! @brief Paste 62 arguments at their boundary.*/
-#define PASTE62(...) P99__PASTE62(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE62(L, ...) PASTE2(PASTE61(__VA_ARGS__), L)
+#define P99_PASTE62(...) P99__PASTE62(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE62(L, ...) P99_PASTE2(P99_PASTE61(__VA_ARGS__), L)
 /*! @brief Paste 63 arguments at their boundary.*/
-#define PASTE63(...) P99__PASTE63(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
-#define P99__PASTE63(L, ...) PASTE2(PASTE62(__VA_ARGS__), L)
+#define P99_PASTE63(...) P99__PASTE63(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE63(L, ...) P99_PASTE2(P99_PASTE62(__VA_ARGS__), L)
 #define P99__IS_0_EQ_0(...) ,
 #define P99__IS_1_EQ_1(...) ,
 #define P99__IS_2_EQ_2(...) ,

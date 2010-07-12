@@ -98,8 +98,8 @@ print STDOUT "\n";
 for (my $m = 7; $m < $maxnumber; ++$m) {
     my $m1 = $m - 1;
     print "/*! \@brief Paste $m arguments at their boundary.*/\n";
-    print "#define PASTE$m(...) P99__PASTE$m(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))\n";
-    print "#define P99__PASTE$m(L, ...) PASTE2(PASTE${m1}(__VA_ARGS__), L)\n";
+    print "#define P99_PASTE$m(...) P99__PASTE$m(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))\n";
+    print "#define P99__PASTE$m(L, ...) P99_PASTE2(P99_PASTE${m1}(__VA_ARGS__), L)\n";
 }
 
 print "#define P99__IS_${_}_EQ_${_}(...) ,\n"

@@ -58,7 +58,7 @@ P99__ISEMPTY(                                                           \
              HAS_COMMA(P99__IS__EQ__ __VA_ARGS__ (~))                   \
              )
 
-#define P99__ISEMPTY(_0, _1, _2, _3) HAS_COMMA(PASTE5(P99__IS_EMPTY_CASE_, _0, _1, _2, _3))
+#define P99__ISEMPTY(_0, _1, _2, _3) HAS_COMMA(P99_PASTE5(P99__IS_EMPTY_CASE_, _0, _1, _2, _3))
 #define P99__IS_EMPTY_CASE_0001 ,
 
 #define P99__NARG_EMPTY_1(VAL) 0
@@ -73,7 +73,7 @@ P99__ISEMPTY(                                                           \
  ** @see P99__NARG for a macro that accounts an empty list to be 1
  **/
 #define P99_NARG(...) P99__NARG__1(P99_IS_EMPTY(__VA_ARGS__), P99__NARG(__VA_ARGS__))
-#define P99__NARG__1(B, VAL) P99__NARG__2(PASTE2(P99__NARG_EMPTY_, B), VAL)
+#define P99__NARG__1(B, VAL) P99__NARG__2(P99_PASTE2(P99__NARG_EMPTY_, B), VAL)
 #define P99__NARG__2(B, VAL) B(VAL)
 
 /**
@@ -83,9 +83,9 @@ P99__ISEMPTY(                                                           \
  ** be able to test for equality of token @c X the macro @c
  ** P99__IS_X_EQ_X(...) must be defined to expand to a comma.
  **/
-#define P99_TOK_EQ(TOK, ...)  P99__TOK_EQ_(PASTE3(P99__IS_, TOK, _EQ_), __VA_ARGS__)
+#define P99_TOK_EQ(TOK, ...)  P99__TOK_EQ_(P99_PASTE3(P99__IS_, TOK, _EQ_), __VA_ARGS__)
 #define P99__TOK_EQ_(MAC, ...)  P99__TOK_EQ__(MAC, __VA_ARGS__)
-#define P99__TOK_EQ__(MAC, ...) HAS_COMMA(PASTE2(P99__TOK_EQ_, P99__NARG(MAC ## __VA_ARGS__ (~) MAC ## __VA_ARGS__))(~))
+#define P99__TOK_EQ__(MAC, ...) HAS_COMMA(P99_PASTE2(P99__TOK_EQ_, P99__NARG(MAC ## __VA_ARGS__ (~) MAC ## __VA_ARGS__))(~))
 
 #define P99__TOK_EQ_0(...) ~
 #define P99__TOK_EQ_1(...) ~

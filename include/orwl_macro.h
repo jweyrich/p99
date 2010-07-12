@@ -16,14 +16,14 @@
 #include "p99_if.h"
 #include "p99_for.h"
 
-#define P99__DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)   \
-  IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ PASTE(                  \
-  IF_EMPTY(INT)(0)(INT),                                \
-  .,                                                    \
-  IF_EMPTY(FRAC)(0)(FRAC),                              \
-  E,                                                    \
-  IF_EMPTY(ESIGN)(+)(ESIGN),                            \
-  IF_EMPTY(EXP)(0)(EXP),                                \
+#define P99__DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)       \
+  IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(                  \
+  IF_EMPTY(INT)(0)(INT),                                        \
+  .,                                                            \
+  IF_EMPTY(FRAC)(0)(FRAC),                                      \
+  E,                                                            \
+  IF_EMPTY(ESIGN)(+)(ESIGN),                                    \
+  IF_EMPTY(EXP)(0)(EXP),                                        \
   __VA_ARGS__)
 
 #ifdef DOXYGEN
@@ -53,7 +53,7 @@
 
 
 #define P99__HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP, ...)      \
-  IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ PASTE(                              \
+  IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(                          \
   0x,                                                                   \
   IF_EMPTY(HEXINT)(0)(HEXINT),                                          \
   .,                                                                    \
@@ -77,9 +77,9 @@
   (P99__HEX_DOUBLE(__VA_ARGS__,,,,,))
 #endif
 
-#define P99__INV(N) PASTE2(P99__variable_argument_list_must_be_divisible_by_, N)
+#define P99__INV(N) P99_PASTE2(P99__variable_argument_list_must_be_divisible_by_, N)
 
-#define P99__MODARG_(_X) PASTE2(P99__NARG_,  _X)
+#define P99__MODARG_(_X) P99_PASTE2(P99__NARG_,  _X)
 
 /**
  ** @def LEN_MODARG
@@ -155,7 +155,7 @@
  **/
 #define VA_ARGS(X) size_t X /*!< the number of arguments that follow */, ...
 
-#define P99__FSYMB(NAME) PASTE5(NAME, _f, sy, mb, _)
+#define P99__FSYMB(NAME) P99_PASTE5(NAME, _f, sy, mb, _)
 
 /** @brief Mangle @a NAME 
  **
@@ -171,7 +171,7 @@
 NAME(IF_EQ(0,M)                                         \
      (__VA_ARGS__)                                      \
      (IF_EMPTY(__VA_ARGS__)                             \
-      (P99__DEFARGS(NAME, M, PASTE2(NAME,_defarg_0)())) \
+      (P99__DEFARGS(NAME, M, P99_PASTE2(NAME,_defarg_0)())) \
       (P99__DEFARGS(NAME, M, __VA_ARGS__))              \
       )                                                 \
      )
@@ -344,7 +344,7 @@ CHOOSE5(xT,                                     \
 #define P99__ACCESSOR(NAME, X, I) (NAME)[I]
 #define P99__VASSIGN(NAME, X, I) X = P99__ACCESSOR(NAME, X, I)
 #define P99__STRLEN(NAME, X, I) strlen(X)
-#define P99__TYPD(NAME, X, I) typedef X PASTE2(NAME, I)
+#define P99__TYPD(NAME, X, I) typedef X P99_PASTE2(NAME, I)
 
 #define P99__STRCAT(NAME, I, REC, X) strcat(REC, X)
 
@@ -424,7 +424,7 @@ IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                      \
 
 #define P99__TYPEDEFS(NAME, N, ...)                     \
   IF_VOID(__VA_ARGS__)                                  \
-  (enum { PASTE3(NAME, _eat_the_semicolon_, N) })       \
+  (enum { P99_PASTE3(NAME, _eat_the_semicolon_, N) })   \
   (FOR(NAME, N, P99__SEP, P99__TYPD, __VA_ARGS__))
 
 /**
@@ -450,8 +450,8 @@ RT NAME(__VA_ARGS__)
 #else
 #define P99__PROTOTYPE(RT, NAME, ...)                   \
   RT NAME(IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));    \
-  typedef RT CAT2(NAME, _prototype_ret);                \
-  TYPEDEFS(CAT2(NAME, _prototype_), __VA_ARGS__)
+  typedef RT P99_CAT2(NAME, _prototype_ret);            \
+  TYPEDEFS(P99_CAT2(NAME, _prototype_), __VA_ARGS__)
 
 #define PROTOTYPE(...)                          \
 IF_EQ_2(P99_NARG(__VA_ARGS__))                  \
@@ -460,25 +460,25 @@ IF_EQ_2(P99_NARG(__VA_ARGS__))                  \
 #endif
 
 
-#define P99__EXPR_FUNCTION(NAME, X, N)                          \
-IF_EMPTY(X)                                                     \
-()                                                              \
-(                                                               \
- inline                                                         \
- PASTE3(NAME, _prototype_, N) PASTE3(NAME, _defarg_, N)(void) { \
-   PASTE3(NAME, _prototype_, N) ret = (X);                      \
-   return ret;                                                  \
- }                                                              \
+#define P99__EXPR_FUNCTION(NAME, X, N)                                  \
+IF_EMPTY(X)                                                             \
+()                                                                      \
+(                                                                       \
+ inline                                                                 \
+ P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void) { \
+   P99_PASTE3(NAME, _prototype_, N) ret = (X);                          \
+   return ret;                                                          \
+ }                                                                      \
 )
 
-#define P99__DAFE(NAME, X, N)                                   \
-IF_EMPTY(X)                                                     \
-(enum { PASTE3(NAME, _boring_, N) })                            \
-(PASTE3(NAME, _prototype_, N) PASTE3(NAME, _defarg_, N)(void))
+#define P99__DAFE(NAME, X, N)                                           \
+IF_EMPTY(X)                                                             \
+(enum { P99_PASTE3(NAME, _boring_, N) })                                \
+(P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void))
 
 #define P99__DECLARE_DEFARG(NAME, N, ...)                       \
   FOR(NAME, N, P99__SER, P99__EXPR_FUNCTION, __VA_ARGS__)       \
-enum { PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
+enum { P99_PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
 
 #ifdef DOXYGEN
 /**
@@ -522,7 +522,7 @@ enum { PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
 #endif
 
 
-#define P99__DARG(NAME, X, N) IF_EMPTY(X)(PASTE3(NAME, _defarg_, N)())(X)
+#define P99__DARG(NAME, X, N) IF_EMPTY(X)(P99_PASTE3(NAME, _defarg_, N)())(X)
 #define P99___DEFARGS(NAME, N, ...) FOR(NAME, N, P99__SEQ, P99__DARG, __VA_ARGS__)
 #define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, IF_DEC_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,DEC_MINUS(N,P99_NARG(__VA_ARGS__)))) (__VA_ARGS__))
 
@@ -530,9 +530,9 @@ enum { PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
  ** @brief Declare the types that are going to be used with a
  ** ::LEN_ARG or ::LEN_MODARG parameter list.
  **/
-#define VA_TYPES(NAME, ...)   TYPEDEFS(PASTE2(NAME, _mod_type_), __VA_ARGS__)
+#define VA_TYPES(NAME, ...)   TYPEDEFS(P99_PASTE2(NAME, _mod_type_), __VA_ARGS__)
 
-#define P99__VA_MODARG(AP, NAME, M, ...) va_arg(AP, PASTE3(NAME, _mod_type_, M))
+#define P99__VA_MODARG(AP, NAME, M, ...) va_arg(AP, P99_PASTE3(NAME, _mod_type_, M))
 
 /**
  ** @brief Obtain the next argument in the variable argument list of
@@ -549,14 +549,14 @@ enum { PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
  **/
 #define VA_MODARG(AP, ...) P99__VA_MODARG(AP, __VA_ARGS__, 0, ~)
 
-#define P99__CAS1(NAME, X, N) (PASTE2(NAME, _mod_type_0){ X }
-#define P99__CAS2(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 2))){ X }
-#define P99__CAS3(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 3))){ X }
-#define P99__CAS4(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 4))){ X }
-#define P99__CAS5(NAME, X, N) (PASTE3(NAME, _mod_type_, DEC_MOD(N, 5))){ X }
+#define P99__CAS1(NAME, X, N) (P99_PASTE2(NAME, _mod_type_0){ X }
+#define P99__CAS2(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, DEC_MOD(N, 2))){ X }
+#define P99__CAS3(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, DEC_MOD(N, 3))){ X }
+#define P99__CAS4(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, DEC_MOD(N, 4))){ X }
+#define P99__CAS5(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, DEC_MOD(N, 5))){ X }
 #define P99__MODARG_LIST(NAME, F, N, ...) FOR(NAME, N, P99__SEQ, F, __VA_ARGS__)
 
-#define LEN_MODARG(NAME, M, ...) P99__MODARG_(M)(__VA_ARGS__), P99__MODARG_LIST(NAME, PASTE2(P99__CAS, M), P99_NARG(__VA_ARGS__), __VA_ARGS__)
+#define LEN_MODARG(NAME, M, ...) P99__MODARG_(M)(__VA_ARGS__), P99__MODARG_LIST(NAME, P99_PASTE2(P99__CAS, M), P99_NARG(__VA_ARGS__), __VA_ARGS__)
 #define LEN_ARG(NAME, ...) P99__MODARG_(1)(__VA_ARGS__), P99__MODARG_LIST(NAME, P99__CAS1, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
 

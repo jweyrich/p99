@@ -206,12 +206,12 @@ void F(auth_sock *Arg)
 #define DECLARE_AUTH_SOCK_FUNC(F, ...) void F(auth_sock *Arg)
 #else
 #define DEFINE_AUTH_SOCK_FUNC(F, ...)                   \
-void (*PASTE2(F, _signature))(__VA_ARGS__) = NULL;      \
+void (*P99_PASTE2(F, _signature))(__VA_ARGS__) = NULL;  \
 DEFINE_ORWL_REGISTER_ALIAS(F, auth_sock);               \
 void F(auth_sock *Arg)
 
 #define DECLARE_AUTH_SOCK_FUNC(F, ...)                  \
-extern void (*PASTE2(F, _signature))(__VA_ARGS__);      \
+extern void (*P99_PASTE2(F, _signature))(__VA_ARGS__);  \
 DECLARE_ORWL_REGISTER_ALIAS(F, auth_sock);              \
 void F(auth_sock *Arg)
 #endif
@@ -219,10 +219,10 @@ void F(auth_sock *Arg)
 DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
 
 
-#define AUTH_SOCK_READ(A, F, ...)                       \
-(void)((void (*)(__VA_ARGS__)){PASTE2(F, _signature)}); \
-VASSIGNS((A)->mes, __VA_ARGS__);                        \
-(A)->len -= P99_NARG(__VA_ARGS__);                      \
+#define AUTH_SOCK_READ(A, F, ...)                               \
+(void)((void (*)(__VA_ARGS__)){P99_PASTE2(F, _signature)});     \
+VASSIGNS((A)->mes, __VA_ARGS__);                                \
+(A)->len -= P99_NARG(__VA_ARGS__);                              \
 (A)->mes += P99_NARG(__VA_ARGS__)
 
 /* some helper */

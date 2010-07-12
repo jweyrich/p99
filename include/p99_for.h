@@ -67,7 +67,7 @@
  ** ((((a) + (b))) + (c))
  ** @endcode
  **/
-#define FOR(NAME, N, OP, FUNC, ...) PASTE2(P99__FOR, N)(NAME, OP, FUNC, __VA_ARGS__)
+#define FOR(NAME, N, OP, FUNC, ...) P99_PASTE2(P99__FOR, N)(NAME, OP, FUNC, __VA_ARGS__)
 
 #define P99__IGN(NAME, X, I)
 #define P99__IDT(NAME, X, I) X
@@ -138,7 +138,7 @@
  **/
 #define REVS(...) P99__REVS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define P99__REVS(N, ...) PASTE2(P99__REVS_, IS_DEC_LT(N, 2))(N, __VA_ARGS__)
+#define P99__REVS(N, ...) P99_PASTE2(P99__REVS_, IS_DEC_LT(N, 2))(N, __VA_ARGS__)
 
 #define P99__REVS_0(N, ...) P99__REVS_(N,__VA_ARGS__)
 #define P99__REVS_1(N, ...) __VA_ARGS__

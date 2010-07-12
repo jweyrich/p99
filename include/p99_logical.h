@@ -21,7 +21,7 @@
  ** For a specific token X to work with this, a macro @c
  ** P99__IS_X_EQ_X must have been declared and expand to a comma.
  **/
-#define IS_EQ(_0, _1) HAS_COMMA(PASTE4(P99__IS_, _0, _EQ_, _1)())
+#define IS_EQ(_0, _1) HAS_COMMA(P99_PASTE4(P99__IS_, _0, _EQ_, _1)())
 
 
 /**
@@ -35,7 +35,7 @@
  **/
 #define LOGIC_EVAL(_0) P99__EVAL_0(P99_IS_EMPTY(_0), IS_EQ_0(_0))
 
-#define P99__EVAL_0(_0, _1) PASTE3(P99__EVAL_, _0, _1)
+#define P99__EVAL_0(_0, _1) P99_PASTE3(P99__EVAL_, _0, _1)
 
 #define P99__EVAL_00 0
 #define P99__EVAL_10 1
@@ -54,7 +54,7 @@
  **/
 #define LOGIC_NOT(A)  P99__NOT_0(P99_IS_EMPTY(_0), IS_EQ_0(_0))
 
-#define P99__NOT_0(_0, _1) PASTE3(P99__NOT_, _0, _1)
+#define P99__NOT_0(_0, _1) P99_PASTE3(P99__NOT_, _0, _1)
 
 #define P99__NOT_00 1
 #define P99__NOT_10 0
@@ -84,7 +84,7 @@
 #define LOGIC_OR(A, B) P99__LOGIC_OR(LOGIC_EVAL(A), LOGIC_EVAL(B))
 
 
-#define P99__LOGIC_OR(_0, _1) PASTE3(P99__LOGIC_OR_, _0, _1)
+#define P99__LOGIC_OR(_0, _1) P99_PASTE3(P99__LOGIC_OR_, _0, _1)
 
 #define P99__LOGIC_OR_00 0
 #define P99__LOGIC_OR_10 1
@@ -102,7 +102,7 @@
 #define LOGIC_AND(A, B) P99__LOGIC_AND(LOGIC_EVAL(A), LOGIC_EVAL(B))
 
 
-#define P99__LOGIC_AND(_0, _1) PASTE3(P99__LOGIC_AND_, _0, _1)
+#define P99__LOGIC_AND(_0, _1) P99_PASTE3(P99__LOGIC_AND_, _0, _1)
 
 #define P99__LOGIC_AND_00 0
 #define P99__LOGIC_AND_10 0
@@ -127,7 +127,7 @@
  **/
 #define IS_VOID(...) P99__IS_VOID(P99_IS_EMPTY(__VA_ARGS__), IS_EQ_void(__VA_ARGS__))
 
-#define P99__IS_VOID(_0, _1) PASTE3(P99__IS_VOID_, _0, _1)
+#define P99__IS_VOID(_0, _1) P99_PASTE3(P99__IS_VOID_, _0, _1)
 
 #define P99__IS_VOID_00 0
 #define P99__IS_VOID_01 1
@@ -137,14 +137,14 @@
 
 /** @brief a decimal less than operator **/
 #define IS_DEC_LT(_0, _1)  P99__DEC_LT( IS_EQ_0(_1), CHS(_0, SELS(_1, P99__ALL_ONES()), P99__ALL_ZEROES()))
-#define P99__DEC_LT(_0, _1)  PASTE2(P99__DEC_LT_, _0)(_1)
+#define P99__DEC_LT(_0, _1)  P99_PASTE2(P99__DEC_LT_, _0)(_1)
 
 #define P99__DEC_LT_0(_0) _0
 #define P99__DEC_LT_1(_0) 0
 
 /** @brief a decimal greater or equal operator **/
 #define IS_DEC_GE(_0, _1)  P99__DEC_GE( IS_EQ_0(_1), CHS(_0, SELS(_1, P99__ALL_ZEROES()), P99__ALL_ONES()))
-#define P99__DEC_GE(_0, _1)  PASTE2(P99__DEC_GE_, _0)(_1)
+#define P99__DEC_GE(_0, _1)  P99_PASTE2(P99__DEC_GE_, _0)(_1)
 
 #define P99__DEC_GE_0(_0) _0
 #define P99__DEC_GE_1(_0) 1
@@ -170,7 +170,7 @@ P99__DEC_ADD(_0, _1,                            \
                   SELS(_1, P99__ALL_ZEROES())))
 
 
-#define P99__DEC_ADD(_0, _1, _2, _3, _4) PASTE3(P99__DEC_ADD_, _2, _3)(_0, _1, _4)
+#define P99__DEC_ADD(_0, _1, _2, _3, _4) P99_PASTE3(P99__DEC_ADD_, _2, _3)(_0, _1, _4)
 
 #define P99__DEC_ADD_00(_0, _1, _2) _2
 #define P99__DEC_ADD_01(_0, _1, _2) _0
@@ -188,12 +188,12 @@ P99__DEC_ADD(_0, _1,                            \
  ** @endcode
  **/
 #define DEC_MINUS(_0, _1) P99__DEC_MINUS(_0, _1, IS_EQ(_0, _1), IS_EQ_0(_0), IS_EQ_0(_1))
-#define P99__DEC_MINUS(_0, _1, _2, _3, _4) PASTE4(P99__DEC_MINUS_, _2, _3, _4)(_0, _1)
+#define P99__DEC_MINUS(_0, _1, _2, _3, _4) P99_PASTE4(P99__DEC_MINUS_, _2, _3, _4)(_0, _1)
 
 #define P99__DEC_MINUS_000(_0, _1) P99__DEC_MINUS_(_0, _1, IS_DEC_LT(_0, _1))
 /* if one of _0 or _1 is 0, there is not much to do */
 #define P99__DEC_MINUS_001(_0, _1) _0
-#define P99__DEC_MINUS_010(_0, _1) PASTE2(minus_, _1)
+#define P99__DEC_MINUS_010(_0, _1) P99_PASTE2(minus_, _1)
 /* should not occur */
 #define P99__DEC_MINUS_011(_0, _1) P99_WEIRD_MINUS_ARG_ERROR
 /* whenever _0 and _1 are equal there is nothing to do */
@@ -202,10 +202,10 @@ P99__DEC_ADD(_0, _1,                            \
 #define P99__DEC_MINUS_110(_0, _1) 0
 #define P99__DEC_MINUS_111(_0, _1) 0
 
-#define P99__DEC_MINUS_(_0, _1, _2) PASTE2(P99__DEC_MINUS_, _2)(_0, _1)
+#define P99__DEC_MINUS_(_0, _1, _2) P99_PASTE2(P99__DEC_MINUS_, _2)(_0, _1)
 
 #define P99__DEC_MINUS_0(_0, _1) P99__DEC_MINUS__(_0, _1)
-#define P99__DEC_MINUS_1(_0, _1) PASTE2(minus_, P99__DEC_MINUS__(_1, _0))
+#define P99__DEC_MINUS_1(_0, _1) P99_PASTE2(minus_, P99__DEC_MINUS__(_1, _0))
 
 
 
@@ -226,7 +226,7 @@ P99__DEC_ADD(_0, _1,                            \
 /**
  ** @brief evaluate the result of one of the arithmetic preprocessor 
  **/
-#define DEC_EVAL(EDEC) PASTE2(P99__dec_eval_, EDEC)
+#define DEC_EVAL(EDEC) P99_PASTE2(P99__dec_eval_, EDEC)
 
 
 /**
@@ -236,7 +236,7 @@ P99__DEC_ADD(_0, _1,                            \
  ** @warning The result must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define DEC_MUL(A, B) PASTE3(DEC_MUL_, IS_EQ_0(A), IS_EQ_0(B))(A, B)
+#define DEC_MUL(A, B) P99_PASTE3(DEC_MUL_, IS_EQ_0(A), IS_EQ_0(B))(A, B)
 
 #define DEC_MUL_00(A, B) P99_NARG(DUPL(A, SELS(B, P99__ALL_ONES())))
 #define DEC_MUL_01(A, B) 0
@@ -263,10 +263,10 @@ P99__DEC_ADD(_0, _1,                            \
 /**
  ** @brief Obtain all elements but the last of a list.
  **/
-#define ALLBUTLAST(...) PASTE2(P99__PRE,DEC_PRED(P99__NARG(__VA_ARGS__)))(__VA_ARGS__,)
+#define ALLBUTLAST(...) P99_PASTE2(P99__PRE,DEC_PRED(P99__NARG(__VA_ARGS__)))(__VA_ARGS__,)
 
 #define P99___PASTE(F, N, ...) F ## N(__VA_ARGS__)
-#define P99__PASTE(N, ...) P99___PASTE(PASTE, N, __VA_ARGS__)
+#define P99__PASTE(N, ...) P99___PASTE(P99_PASTE, N, __VA_ARGS__)
 
 
 /** @addtogroup list_processing List processing macros
@@ -284,7 +284,7 @@ P99__DEC_ADD(_0, _1,                            \
  ** which has no well defined associativity. With this macro here
  ** something like
  ** @code
- ** PASTE(0.1E, -, 1)
+ ** P99_PASTE(0.1E, -, 1)
  ** @endcode
  ** is guaranteed to produce the token @c 0.1E-1, whereas the
  ** seemingly equivalent
@@ -298,7 +298,7 @@ P99__DEC_ADD(_0, _1,                            \
  ** then proceeds at the concatenation of the results.
  ** @pre the argumentlist should not be empty.
  **/
-#define PASTE(...) P99__PASTE(P99__NARG(__VA_ARGS__), __VA_ARGS__)
+#define P99_PASTE(...) P99__PASTE(P99__NARG(__VA_ARGS__), __VA_ARGS__)
 
 /** @}
  **/

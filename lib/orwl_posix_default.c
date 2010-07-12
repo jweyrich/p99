@@ -16,7 +16,7 @@
 #undef DECLARE_DEFARG
 #define DECLARE_DEFARG(A, ...) DEFINE_DEFARG(A, __VA_ARGS__)
 #undef PROTOTYPE
-#define PROTOTYPE(T, NAME, ...) enum { PASTE2(_another_boring_enum_, NAME) }
+#define PROTOTYPE(T, NAME, ...) enum { P99_PASTE2(_another_boring_enum_, NAME) }
 
 #undef   	ORWL_POSIX_DEFAULT_H_
 #define   	ORWL_POSIX_DEFAULT_H_ 1

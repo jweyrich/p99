@@ -96,9 +96,9 @@ P99__ONE_TOK_(unsigned long long, ullong);
 
 #define DECLARE_POINTER_TYPE(T)                 \
 /*! @brief a pointer to T */                    \
-typedef T *PASTE2(T, _ptr);                     \
+typedef T *P99_PASTE2(T, _ptr);                 \
 /*! @brief a @c const pointer to T */           \
-typedef T const*PASTE2(T, _cptr)
+typedef T const*P99_PASTE2(T, _cptr)
 
 DECLARE_POINTER_TYPE(void);
 DECLARE_POINTER_TYPE(double);
@@ -142,20 +142,20 @@ DECLARE_POINTER_TYPE(uint64_t);
 
 #define DECLARE_BASIC(T)                                        \
 /*! @brief initialize the object that @a id points to by 0. */  \
-inline T* PASTE2(T, _init)(T *id) {                             \
+inline T* P99_PASTE2(T, _init)(T *id) {                         \
   *id = TNULL(T);                                               \
   return id;                                                    \
 }                                                               \
 /*! @brief destroy the object that @a id points to. */          \
- inline void PASTE2(T, _destroy)(T*  id) {                      \
+ inline void P99_PASTE2(T, _destroy)(T*  id) {                  \
   /* empty */                                                   \
 }                                                               \
 DECLARE_NEW_DELETE(T)
 
 #define DECLARE_BASIC_TYPE(T)                   \
 DECLARE_BASIC(T);                               \
-DECLARE_BASIC(PASTE2(T, _cptr));                \
-DECLARE_BASIC(PASTE2(T, _ptr))
+DECLARE_BASIC(P99_PASTE2(T, _cptr));            \
+DECLARE_BASIC(P99_PASTE2(T, _ptr))
 
 DECLARE_BASIC(void_ptr);
 DECLARE_BASIC(void_cptr);
@@ -196,7 +196,7 @@ DECLARE_BASIC_TYPE(uint32_t);
 DECLARE_BASIC_TYPE(int64_t);
 DECLARE_BASIC_TYPE(uint64_t);
 
-#define P99__STRTO(T, ...)                          \
+#define P99__STRTO(T, ...)                      \
 (ISSIGNED(T)                                    \
  ? ((sizeof(T) == sizeof(long))                 \
     ? (T)strtol(__VA_ARGS__)                    \
@@ -271,20 +271,20 @@ char const* void_cptr2p(char* buf, void_cptr x) {
 }
 
 #ifdef DOXYGEN
-#define P99__DECLARE_ARI2STR(T, X, S, P)                                    \
+#define P99__DECLARE_ARI2STR(T, X, S, P)                                \
 /*! @brief Return a `X' representation of @a x in @a buf. */            \
 /*! Here `X' is taken as a format specifier as for @c printf. The output is eventually prefixed. */ \
-  char const* PASTE3(T, 2, X)(char* buf, T x);
+  char const* P99_PASTE3(T, 2, X)(char* buf, T x);
 #else
 #define P99__DECLARE_ARI2STR(T, X, S, P)            \
-  char const* PASTE3(T, 2, X)(char* buf, T x)
+  char const* P99_PASTE3(T, 2, X)(char* buf, T x)
 #endif
 
 #define DECLARE_ARI2STR(T)                      \
-  P99__DECLARE_ARI2STR(T, d, , );                   \
-  P99__DECLARE_ARI2STR(T, o, 0, 0);                 \
-  P99__DECLARE_ARI2STR(T, u, , );                   \
-  P99__DECLARE_ARI2STR(T, x, , 0x);                 \
+  P99__DECLARE_ARI2STR(T, d, , );               \
+  P99__DECLARE_ARI2STR(T, o, 0, 0);             \
+  P99__DECLARE_ARI2STR(T, u, , );               \
+  P99__DECLARE_ARI2STR(T, x, , 0x);             \
   P99__DECLARE_ARI2STR(T, X, , 0x)
 
 

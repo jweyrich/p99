@@ -56,9 +56,9 @@
  **/
 #define TZERO(X) (memset(&(X), 0, sizeof(X)))
 
-#define P99__NEW(T) PASTE2(T, _init)((T*)malloc(sizeof(T)))
+#define P99__NEW(T) P99_PASTE2(T, _init)((T*)malloc(sizeof(T)))
 
-#define P99__NEW_ARGS(T, ...) PASTE2(T, _init)((T*)malloc(sizeof(T)), __VA_ARGS__)
+#define P99__NEW_ARGS(T, ...) P99_PASTE2(T, _init)((T*)malloc(sizeof(T)), __VA_ARGS__)
 
 
 /**
@@ -90,10 +90,10 @@
   /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @attention @a el show have been allocated through @ref NEW */     \
 inline                                                                  \
-void PASTE2(T, _delete)(T const*el) {                                   \
+void P99_PASTE2(T, _delete)(T const*el) {                               \
   if (el) {                                                             \
     T* e = (T*)el;                                                      \
-    PASTE2(T, _destroy)(e);                                             \
+    P99_PASTE2(T, _destroy)(e);                                         \
     free((void*)e);                                                     \
   }                                                                     \
 }
@@ -140,12 +140,12 @@ void p99__vdelete(void const*p) {
   /*! @attention @ref T ## _init  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @attention @ref T ## _vdelete @b must be used to de-allocate such a variable **/ \
 inline                                                                  \
-T *PASTE2(T, _vnew)(size_t n) {                                         \
+T *P99_PASTE2(T, _vnew)(size_t n) {                                     \
   size_t N = n*sizeof(T);                                               \
   T *ret = p99__vnew(N);                                                \
   if (ret) {                                                            \
     for (size_t i = 0; i < n; ++i) {                                    \
-      PASTE2(T, _init)(ret + i);                                        \
+      P99_PASTE2(T, _init)(ret + i);                                    \
     }                                                                   \
   }                                                                     \
   return ret;                                                           \
@@ -156,11 +156,11 @@ T *PASTE2(T, _vnew)(size_t n) {                                         \
   /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @attention @ref T ## _vnew @b must have been used to allocate this variable **/ \
 inline                                                                  \
-void PASTE2(T, _vdelete)(T const*vec) {                                 \
+void P99_PASTE2(T, _vdelete)(T const*vec) {                             \
   if (vec) {                                                            \
     size_t n = p99__vlen(vec) / sizeof(T);                              \
     for (T *ve = (T*)vec, *stop = ve + n; ve < stop; ++ve) {            \
-      PASTE2(T, _destroy)(ve);                                          \
+      P99_PASTE2(T, _destroy)(ve);                                      \
     }                                                                   \
     p99__vdelete(vec);                                                  \
   }                                                                     \
@@ -170,11 +170,11 @@ void PASTE2(T, _vdelete)(T const*vec) {                                 \
 DECLARE_DELETE(T)                                                \
 DECLARE_VDELETE(T)                                               \
 DECLARE_VNEW(T)                                                  \
- enum PASTE2(p99__tame_ansi_c_semicolon_message_, T) { PASTE2(p99__new_delete_, T) }
+ enum P99_PASTE2(p99__tame_ansi_c_semicolon_message_, T) { P99_PASTE2(p99__new_delete_, T) }
 
-#define DEFINE_DELETE(T) void PASTE2(T, _delete)(T const*el)
-#define DEFINE_VNEW(T) T * PASTE2(T, _vnew)(size_t n)
-#define DEFINE_VDELETE(T) void PASTE2(T, _vdelete)(T const*vec)
+#define DEFINE_DELETE(T) void P99_PASTE2(T, _delete)(T const*el)
+#define DEFINE_VNEW(T) T * P99_PASTE2(T, _vnew)(size_t n)
+#define DEFINE_VDELETE(T) void P99_PASTE2(T, _vdelete)(T const*vec)
 
 #define DEFINE_NEW_DELETE(T)                   \
 DEFINE_VNEW(T);                                \

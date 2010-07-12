@@ -13,7 +13,7 @@
 
 #include "orwl_wait_queue.h"
 
-#define P99__CALLBACK_PAIR(T) PASTE3(p99__, T, _orwl_wh_t)
+#define P99__CALLBACK_PAIR(T) P99_PASTE3(p99__, T, _orwl_wh_t)
 
 /**
  ** @brief Declare that a type @a T acts as a callback that is
@@ -48,7 +48,7 @@ typedef struct {                                                        \
 } P99__CALLBACK_PAIR(T);                                                \
  DOCUMENT_INIT(P99__CALLBACK_PAIR(T))                                   \
 P99__CALLBACK_PAIR(T) *                                                 \
-PASTE2(P99__CALLBACK_PAIR(T), _init)(P99__CALLBACK_PAIR(T) *arg,        \
+P99_PASTE2(P99__CALLBACK_PAIR(T), _init)(P99__CALLBACK_PAIR(T) *arg,    \
                                    T* Arg,                              \
                                    orwl_wh *Wh,                         \
                                    orwl_wq *Wq                          \
@@ -60,15 +60,15 @@ PASTE2(P99__CALLBACK_PAIR(T), _init)(P99__CALLBACK_PAIR(T) *arg,        \
    return arg;                                                          \
 }                                                                       \
  DOCUMENT_DESTROY(P99__CALLBACK_PAIR(T))                                \
- void PASTE2(P99__CALLBACK_PAIR(T), _destroy)(P99__CALLBACK_PAIR(T) *arg) { \
+ void P99_PASTE2(P99__CALLBACK_PAIR(T), _destroy)(P99__CALLBACK_PAIR(T) *arg) { \
   if (!arg) return;                                                     \
   pthread_cond_destroy(&arg->cond);                                     \
-  if (arg->Arg) PASTE2(T, _delete)(arg->Arg);                           \
+  if (arg->Arg) P99_PASTE2(T, _delete)(arg->Arg);                       \
 }                                                                       \
 DECLARE_DELETE(P99__CALLBACK_PAIR(T))                                   \
 DECLARE_THREAD(P99__CALLBACK_PAIR(T));                                  \
-extern int PASTE2(orwl_callback_attach_, T)(T *Arg, orwl_wh *wh);       \
-extern void PASTE2(orwl_callback_, T)(T *Arg, orwl_wh *Wh)
+extern int P99_PASTE2(orwl_callback_attach_, T)(T *Arg, orwl_wh *wh);   \
+extern void P99_PASTE2(orwl_callback_, T)(T *Arg, orwl_wh *Wh)
 
 /** @brief Define the callback function for type @a T.
  **
@@ -90,9 +90,9 @@ DEFINE_THREAD(P99__CALLBACK_PAIR(T)) {                                  \
       fprintf(stderr, "thread %lu|%p failed to acquire\n", pthread_self(), (void*)wh); \
   }                                                                     \
   if (state == orwl_acquired)                                           \
-    PASTE2(orwl_callback_, T)(arg, wh);                                 \
+    P99_PASTE2(orwl_callback_, T)(arg, wh);                             \
 }                                                                       \
-int PASTE2(orwl_callback_attach_, T)(T *arg, orwl_wh *wh) {             \
+int P99_PASTE2(orwl_callback_attach_, T)(T *arg, orwl_wh *wh) {         \
   int ret = 0;                                                          \
   if (orwl_wh_valid(wh)) {                                              \
     orwl_wq *wq = wh->location;                                         \
@@ -100,7 +100,7 @@ int PASTE2(orwl_callback_attach_, T)(T *arg, orwl_wh *wh) {             \
       pthread_mutex_lock(&wq->mut);                                     \
       if (wq->head == wh) {                                             \
         pthread_mutex_unlock(&wq->mut);                                 \
-        PASTE2(orwl_callback_, T)(arg, wh);                             \
+        P99_PASTE2(orwl_callback_, T)(arg, wh);                         \
       } else {                                                          \
         P99__CALLBACK_PAIR(T) *pair                                     \
           = NEW(P99__CALLBACK_PAIR(T), arg, wh, wq);                    \
@@ -110,7 +110,7 @@ int PASTE2(orwl_callback_attach_, T)(T *arg, orwl_wh *wh) {             \
         /* One token for ourselves, one for our child */                \
         orwl_wh_load(wh, 2);                                            \
         /* create thread detached */                                    \
-        ret = PASTE2(P99__CALLBACK_PAIR(T), _create)(pair, NULL);       \
+        ret = P99_PASTE2(P99__CALLBACK_PAIR(T), _create)(pair, NULL);   \
         /* wait until we know that the client thread has attached to */ \
         /* wh                                                        */ \
         pthread_cond_wait(&pair->cond, &wq->mut);                       \
@@ -122,9 +122,9 @@ int PASTE2(orwl_callback_attach_, T)(T *arg, orwl_wh *wh) {             \
       }                                                                 \
     }                                                                   \
   }                                                                     \
-  if (arg) PASTE2(T, _delete)(arg);                                     \
+  if (arg) P99_PASTE2(T, _delete)(arg);                                 \
   return ret;                                                           \
 }                                                                       \
-void PASTE2(orwl_callback_, T)(T *Arg, orwl_wh *Wh)
+void P99_PASTE2(orwl_callback_, T)(T *Arg, orwl_wh *Wh)
 
 #endif 	    /* !ORWL_CALLBACK_H_ */
