@@ -33,7 +33,7 @@
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_EVAL(_0) P99__EVAL_0(IS_EMPTY(_0), IS_EQ_0(_0))
+#define LOGIC_EVAL(_0) P99__EVAL_0(P99_IS_EMPTY(_0), IS_EQ_0(_0))
 
 #define P99__EVAL_0(_0, _1) PASTE3(P99__EVAL_, _0, _1)
 
@@ -52,7 +52,7 @@
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_NOT(A)  P99__NOT_0(IS_EMPTY(_0), IS_EQ_0(_0))
+#define LOGIC_NOT(A)  P99__NOT_0(P99_IS_EMPTY(_0), IS_EQ_0(_0))
 
 #define P99__NOT_0(_0, _1) PASTE3(P99__NOT_, _0, _1)
 
@@ -125,7 +125,7 @@
  ** @see IF_void for a macro that tests if the argument is exactly the
  ** word @c void.
  **/
-#define IS_VOID(...) P99__IS_VOID(IS_EMPTY(__VA_ARGS__), IS_EQ_void(__VA_ARGS__))
+#define IS_VOID(...) P99__IS_VOID(P99_IS_EMPTY(__VA_ARGS__), IS_EQ_void(__VA_ARGS__))
 
 #define P99__IS_VOID(_0, _1) PASTE3(P99__IS_VOID_, _0, _1)
 
@@ -165,7 +165,7 @@
 P99__DEC_ADD(_0, _1,                            \
              IS_EQ_0(_0),                       \
              IS_EQ_0(_1),                       \
-             NARG(                              \
+             P99_NARG(                          \
                   SELS(_0, P99__ALL_ZEROES()),  \
                   SELS(_1, P99__ALL_ZEROES())))
 
@@ -210,7 +210,7 @@ P99__DEC_ADD(_0, _1,                            \
 
 
 /* The general case both are non-zero and _0 is strictly greater than _1 */
-#define P99__DEC_MINUS__(_0, _1) NARG(SKP(_1, SELS(_0, P99__ALL_ZEROES())))
+#define P99__DEC_MINUS__(_0, _1) P99_NARG(SKP(_1, SELS(_0, P99__ALL_ZEROES())))
 
 
 /**
@@ -238,7 +238,7 @@ P99__DEC_ADD(_0, _1,                            \
  **/
 #define DEC_MUL(A, B) PASTE3(DEC_MUL_, IS_EQ_0(A), IS_EQ_0(B))(A, B)
 
-#define DEC_MUL_00(A, B) NARG(DUPL(A, SELS(B, P99__ALL_ONES())))
+#define DEC_MUL_00(A, B) P99_NARG(DUPL(A, SELS(B, P99__ALL_ONES())))
 #define DEC_MUL_01(A, B) 0
 #define DEC_MUL_10(A, B) 0
 #define DEC_MUL_11(A, B) 0

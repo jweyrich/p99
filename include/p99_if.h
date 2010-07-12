@@ -113,7 +113,7 @@
  **/
 #define IF_EQ_4(N) IF_EQ(4, N)
 
-#define IF_EMPTY(...) IF_EQ_1(IS_EMPTY(__VA_ARGS__))
+#define IF_EMPTY(...) IF_EQ_1(P99_IS_EMPTY(__VA_ARGS__))
 
 /**
  ** @brief A preprocessor control structure

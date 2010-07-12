@@ -71,7 +71,7 @@
  **
  ** @see CALL_WITH_DEFAULTS
  **/
-#define NEW(...) IF_DEC_LT(NARG(__VA_ARGS__), 2)(P99__NEW(__VA_ARGS__))(P99__NEW_ARGS(__VA_ARGS__))
+#define NEW(...) IF_DEC_LT(P99_NARG(__VA_ARGS__), 2)(P99__NEW(__VA_ARGS__))(P99__NEW_ARGS(__VA_ARGS__))
 
 
 /**

@@ -119,9 +119,9 @@ int main(int argc, char **argv) {
   IS_EQ_void(void*);
   IS_EQ_void(void());
   IS_EQ_void(void, void);
-  TOK_EQ(void, void);
-  TOK_EQ(void, int);
-  TOK_EQ(int, int);
+  P99_TOK_EQ(void, void);
+  P99_TOK_EQ(void, int);
+  P99_TOK_EQ(int, int);
 
   IS_DEC_LT(0, 0);
   IS_DEC_LT(0, 1);

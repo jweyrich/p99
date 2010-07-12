@@ -131,11 +131,11 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size
 #define orwl_rpc(EP, SEED, F, ...)                      \
 orwl_send(EP,                                           \
           SEED,                                         \
-          (uint64_t[ NARG(~, __VA_ARGS__) ]){           \
+          (uint64_t[ P99_NARG(~, __VA_ARGS__) ]){       \
             ORWL_OBJID(F),                              \
               __VA_ARGS__                               \
               },                                        \
-          NARG(~,  __VA_ARGS__))
+          P99_NARG(~,  __VA_ARGS__))
 
 
 /**
@@ -222,8 +222,8 @@ DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
 #define AUTH_SOCK_READ(A, F, ...)                       \
 (void)((void (*)(__VA_ARGS__)){PASTE2(F, _signature)}); \
 VASSIGNS((A)->mes, __VA_ARGS__);                        \
-(A)->len -= NARG(__VA_ARGS__);                          \
-(A)->mes += NARG(__VA_ARGS__)
+(A)->len -= P99_NARG(__VA_ARGS__);                      \
+(A)->mes += P99_NARG(__VA_ARGS__)
 
 /* some helper */
 addr_t getpeer(auth_sock *Arg);

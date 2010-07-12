@@ -105,7 +105,7 @@ for (my $m = 7; $m < $maxnumber; ++$m) {
 print "#define P99__IS_${_}_EQ_${_}(...) ,\n"
     foreach (0.. $maxnumber, @keywords_C99);
 print "/*! \@brief Test if the argument consists of exactly the token \@c ${_} */\
-#define IS_EQ_${_}(...) TOK_EQ(${_}, __VA_ARGS__)\n"
+#define IS_EQ_${_}(...) P99_TOK_EQ(${_}, __VA_ARGS__)\n"
     foreach (0.. $maxnumber, @keywords_C99);
 
 printf "#define P99__DEC_PRED_%d %d\n", $_ + 1, $_

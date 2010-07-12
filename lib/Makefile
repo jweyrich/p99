@@ -71,6 +71,9 @@ ${NAME} : ${OBJS}
 
 depend Makefile.inc : Makefile
 	gcc $(IPATH) -MM $(SRC) > Makefile.inc
+
+TAGS : ${SRC}
+	etags ${SRC}
 clean:
 	-$(RM) $(NAME) $(OBJS) *~
 distclean: clean

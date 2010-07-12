@@ -23,7 +23,7 @@
  **
  ** @warning this also counts an empty argument list as having one (=
  ** the empty) argument
- ** @see NARG for a macro that returns 0 if the list is empty
+ ** @see P99_NARG for a macro that returns 0 if the list is empty
  **/
 #define P99__NARG(...) P99__NARG_1(__VA_ARGS__)
 
@@ -42,7 +42,7 @@
  **
  ** @return tokens 0 or 1
  **/
-#define IS_EMPTY(...)                                                   \
+#define P99_IS_EMPTY(...)                                               \
 P99__ISEMPTY(                                                           \
              /* test if there is just one argument, eventually an empty \
                 one */                                                  \
@@ -72,9 +72,9 @@ P99__ISEMPTY(                                                           \
  **
  ** @see P99__NARG for a macro that accounts an empty list to be 1
  **/
-#define NARG(...) NARG__1(IS_EMPTY(__VA_ARGS__), P99__NARG(__VA_ARGS__))
-#define NARG__1(B, VAL) NARG__2(PASTE2(P99__NARG_EMPTY_, B), VAL)
-#define NARG__2(B, VAL) B(VAL)
+#define P99_NARG(...) P99__NARG__1(P99_IS_EMPTY(__VA_ARGS__), P99__NARG(__VA_ARGS__))
+#define P99__NARG__1(B, VAL) P99__NARG__2(PASTE2(P99__NARG_EMPTY_, B), VAL)
+#define P99__NARG__2(B, VAL) B(VAL)
 
 /**
  ** @brief Detect if two tokens are equal.
@@ -83,7 +83,7 @@ P99__ISEMPTY(                                                           \
  ** be able to test for equality of token @c X the macro @c
  ** P99__IS_X_EQ_X(...) must be defined to expand to a comma.
  **/
-#define TOK_EQ(TOK, ...)  P99__TOK_EQ_(PASTE3(P99__IS_, TOK, _EQ_), __VA_ARGS__)
+#define P99_TOK_EQ(TOK, ...)  P99__TOK_EQ_(PASTE3(P99__IS_, TOK, _EQ_), __VA_ARGS__)
 #define P99__TOK_EQ_(MAC, ...)  P99__TOK_EQ__(MAC, __VA_ARGS__)
 #define P99__TOK_EQ__(MAC, ...) HAS_COMMA(PASTE2(P99__TOK_EQ_, P99__NARG(MAC ## __VA_ARGS__ (~) MAC ## __VA_ARGS__))(~))
 

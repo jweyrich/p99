@@ -103,40 +103,40 @@
 /**
  ** @brief Compute the right associative sum of all the arguments.
  **/
-#define SUMS(...) BIGOP(P99__SUM, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define SUMS(...) BIGOP(P99__SUM, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative product of all the arguments.
  **/
-#define PRODS(...) BIGOP(P99__PROD, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define PRODS(...) BIGOP(P99__PROD, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative quotient of all the arguments.
  **/
-#define QUOTS(...) BIGOP(P99__QUOT, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define QUOTS(...) BIGOP(P99__QUOT, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative bitwise exclusive or of all the arguments.
  **/
-#define XORS(...) BIGOP(P99__XOR, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define XORS(...) BIGOP(P99__XOR, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative bitwise or of all the arguments.
  **/
-#define BORS(...) BIGOP(P99__BOR, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define BORS(...) BIGOP(P99__BOR, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative bitwise and of all the arguments.
  **/
-#define BANDS(...) BIGOP(P99__BAND, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define BANDS(...) BIGOP(P99__BAND, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative logical or of all the arguments.
  **/
-#define ORS(...) BIGOP(P99__OR, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define ORS(...) BIGOP(P99__OR, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Compute the right associative logical and of all the arguments.
  **/
-#define ANDS(...) BIGOP(P99__AND, (NARG(__VA_ARGS__),__VA_ARGS__)
+#define ANDS(...) BIGOP(P99__AND, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
 /**
  ** @brief Revert the argument list
  **/
-#define REVS(...) P99__REVS(NARG(__VA_ARGS__),__VA_ARGS__)
+#define REVS(...) P99__REVS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
 #define P99__REVS(N, ...) PASTE2(P99__REVS_, IS_DEC_LT(N, 2))(N, __VA_ARGS__)
 

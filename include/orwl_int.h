@@ -377,7 +377,7 @@ int mfputs_func(FILE* f, size_t n, char const*const* A) {
   return ret;
 }
 
-#define P99__mfputs(F, ...) mfputs_func(F, NARG(__VA_ARGS__), (char const*[]){__VA_ARGS__})
+#define P99__mfputs(F, ...) mfputs_func(F, P99_NARG(__VA_ARGS__), (char const*[]){__VA_ARGS__})
 
 
 /**
