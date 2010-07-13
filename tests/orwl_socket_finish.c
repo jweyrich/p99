@@ -157,17 +157,17 @@ int main(int argc, char **argv) {
 
   VASSIGNS(Y, void);
   VASSIGNS(Y,);
-  IF_DEC_LT(7,5)(true)(false);
-  IF_DEC_GE(5,5)(true)(false);
-  IF_DEC_LE(7,5)(true)(false);
-  IF_DEC_GT(5,5)(true)(false);
+  P99_IF_DEC_LT(7,5)(true)(false);
+  P99_IF_DEC_GE(5,5)(true)(false);
+  P99_IF_DEC_LE(7,5)(true)(false);
+  P99_IF_DEC_GT(5,5)(true)(false);
 
-  IF_DEC_GT(0,0)(true)(false);
-  IF_DEC_GE(0,0)(true)(false);
-  IF_DEC_LT(0,0)(true)(false);
-  IF_DEC_LE(0,0)(true)(false);
+  P99_IF_DEC_GT(0,0)(true)(false);
+  P99_IF_DEC_GE(0,0)(true)(false);
+  P99_IF_DEC_LT(0,0)(true)(false);
+  P99_IF_DEC_LE(0,0)(true)(false);
 
-  IF_DEC_GT(1,0)(true)(false);
+  P99_IF_DEC_GT(1,0)(true)(false);
 
   REVS();
   REVS("a");

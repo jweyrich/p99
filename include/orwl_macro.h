@@ -17,13 +17,13 @@
 #include "p99_for.h"
 
 #define P99__DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)       \
-  IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(                  \
-  IF_EMPTY(INT)(0)(INT),                                        \
+  P99_IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(              \
+  P99_IF_EMPTY(INT)(0)(INT),                                    \
   .,                                                            \
-  IF_EMPTY(FRAC)(0)(FRAC),                                      \
+  P99_IF_EMPTY(FRAC)(0)(FRAC),                                  \
   E,                                                            \
-  IF_EMPTY(ESIGN)(+)(ESIGN),                                    \
-  IF_EMPTY(EXP)(0)(EXP),                                        \
+  P99_IF_EMPTY(ESIGN)(+)(ESIGN),                                \
+  P99_IF_EMPTY(EXP)(0)(EXP),                                    \
   __VA_ARGS__)
 
 #ifdef DOXYGEN
@@ -45,22 +45,22 @@
  **/
 #define P99_DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP)
 #else
-#define P99_DEC_DOUBLE(...)                         \
-  IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)           \
+#define P99_DEC_DOUBLE(...)                     \
+  P99_IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)       \
   (P99__DEC_DOUBLE(__VA_ARGS__))                \
   (P99__DEC_DOUBLE(__VA_ARGS__,,,,,))
 #endif
 
 
 #define P99__HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP, ...)      \
-  IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(                          \
+  P99_IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(                      \
   0x,                                                                   \
-  IF_EMPTY(HEXINT)(0)(HEXINT),                                          \
+  P99_IF_EMPTY(HEXINT)(0)(HEXINT),                                      \
   .,                                                                    \
-  IF_EMPTY(HEXFRAC)(0)(HEXFRAC),                                        \
+  P99_IF_EMPTY(HEXFRAC)(0)(HEXFRAC),                                    \
   P,                                                                    \
-  IF_EMPTY(ESIGN)(+)(ESIGN),                                            \
-  IF_EMPTY(BINEXP)(0)(BINEXP),                                          \
+  P99_IF_EMPTY(ESIGN)(+)(ESIGN),                                        \
+  P99_IF_EMPTY(BINEXP)(0)(BINEXP),                                      \
   __VA_ARGS__)
 
 #ifdef DOXYGEN
@@ -72,7 +72,7 @@
 #define HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP)
 #else
 #define HEX_DOUBLE(...)                         \
-  IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)           \
+  P99_IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)       \
   (P99__HEX_DOUBLE(__VA_ARGS__))                \
   (P99__HEX_DOUBLE(__VA_ARGS__,,,,,))
 #endif
@@ -167,13 +167,13 @@
 #ifdef DOXYGEN
 # define CALL_WITH_DEFAULTS(NAME, M, ...) NAME(__VA_ARGS__)
 #else
-# define CALL_WITH_DEFAULTS(NAME, M, ...)               \
-NAME(IF_EQ(0,M)                                         \
-     (__VA_ARGS__)                                      \
-     (IF_EMPTY(__VA_ARGS__)                             \
-      (P99__DEFARGS(NAME, M, P99_PASTE2(NAME,_defarg_0)())) \
-      (P99__DEFARGS(NAME, M, __VA_ARGS__))              \
-      )                                                 \
+# define CALL_WITH_DEFAULTS(NAME, M, ...)                       \
+NAME(P99_IF_EQ(0,M)                                             \
+     (__VA_ARGS__)                                              \
+     (P99_IF_EMPTY(__VA_ARGS__)                                 \
+      (P99__DEFARGS(NAME, M, P99_PASTE2(NAME,_defarg_0)()))     \
+      (P99__DEFARGS(NAME, M, __VA_ARGS__))                      \
+      )                                                         \
      )
 #endif
 
@@ -276,13 +276,13 @@ NAME(IF_EQ(0,M)                                         \
  ** @warning @c continue and @c return inside the dependent block will
  ** not execute @a AFTER, so be careful.
  **/
-#define BLOCK(BEFORE, AFTER)                                    \
-for (int _one1_ = 1;                                            \
+#define BLOCK(BEFORE, AFTER)                                            \
+for (int _one1_ = 1;                                                    \
      /* be sure to execute BEFORE only at the first evaluation */       \
-     (_one1_ ? ((void)(BEFORE), _one1_) : _one1_);              \
-     /* run AFTER exactly once */                               \
-     ((void)(AFTER), _one1_ = 0))                               \
-  /* Ensure that a `break' will still execute AFTER */          \
+     (_one1_ ? ((void)(BEFORE), _one1_) : _one1_);                      \
+     /* run AFTER exactly once */                                       \
+     ((void)(AFTER), _one1_ = 0))                                       \
+  /* Ensure that a `break' will still execute AFTER */                  \
   for (; _one1_; _one1_ = 0)
 
 
@@ -418,12 +418,12 @@ CHOOSE5(xT,                                     \
  ** V0, etc are the remaining arguments.
  **/
 #define VASSIGNS(NAME, ...)                                             \
-IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                      \
-(IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))                \
+P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                  \
+(P99_IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))            \
   (FOR(NAME, P99__NARG(__VA_ARGS__),P99__SEP, P99__VASSIGN, __VA_ARGS__))
 
 #define P99__TYPEDEFS(NAME, N, ...)                     \
-  IF_VOID(__VA_ARGS__)                                  \
+  P99_IF_VOID(__VA_ARGS__)                              \
   (enum { P99_PASTE3(NAME, _eat_the_semicolon_, N) })   \
   (FOR(NAME, N, P99__SEP, P99__TYPD, __VA_ARGS__))
 
@@ -448,20 +448,20 @@ P99__TYPEDEFS(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 RT NAME(__VA_ARGS__)
 #define PROTOTYPE(RT, NAME, ...) P99__PROTOTYPE(__VA_ARGS__)
 #else
-#define P99__PROTOTYPE(RT, NAME, ...)                   \
-  RT NAME(IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));    \
-  typedef RT P99_CAT2(NAME, _prototype_ret);            \
+#define P99__PROTOTYPE(RT, NAME, ...)                           \
+  RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));        \
+  typedef RT P99_CAT2(NAME, _prototype_ret);                    \
   TYPEDEFS(P99_CAT2(NAME, _prototype_), __VA_ARGS__)
 
 #define PROTOTYPE(...)                          \
-IF_EQ_2(P99_NARG(__VA_ARGS__))                  \
+P99_IF_EQ_2(P99_NARG(__VA_ARGS__))              \
 (P99__PROTOTYPE(__VA_ARGS__, void))             \
 (P99__PROTOTYPE(__VA_ARGS__))
 #endif
 
 
 #define P99__EXPR_FUNCTION(NAME, X, N)                                  \
-IF_EMPTY(X)                                                             \
+P99_IF_EMPTY(X)                                                         \
 ()                                                                      \
 (                                                                       \
  inline                                                                 \
@@ -472,7 +472,7 @@ IF_EMPTY(X)                                                             \
 )
 
 #define P99__DAFE(NAME, X, N)                                           \
-IF_EMPTY(X)                                                             \
+P99_IF_EMPTY(X)                                                         \
 (enum { P99_PASTE3(NAME, _boring_, N) })                                \
 (P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void))
 
@@ -522,9 +522,9 @@ enum { P99_PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
 #endif
 
 
-#define P99__DARG(NAME, X, N) IF_EMPTY(X)(P99_PASTE3(NAME, _defarg_, N)())(X)
+#define P99__DARG(NAME, X, N) P99_IF_EMPTY(X)(P99_PASTE3(NAME, _defarg_, N)())(X)
 #define P99___DEFARGS(NAME, N, ...) FOR(NAME, N, P99__SEQ, P99__DARG, __VA_ARGS__)
-#define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, IF_DEC_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,P99_DEC_MINUS(N,P99_NARG(__VA_ARGS__)))) (__VA_ARGS__))
+#define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,P99_DEC_MINUS(N,P99_NARG(__VA_ARGS__)))) (__VA_ARGS__))
 
 /**
  ** @brief Declare the types that are going to be used with a

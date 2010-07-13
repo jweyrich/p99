@@ -122,7 +122,7 @@
  ** @brief Test whether or not its argument is empty @b or if it
  ** consists of the word @c void.
  **
- ** @see IF_void for a macro that tests if the argument is exactly the
+ ** @see P99_IF_void for a macro that tests if the argument is exactly the
  ** word @c void.
  **/
 #define P99_IS_VOID(...) P99__IS_VOID(P99_IS_EMPTY(__VA_ARGS__), P99_IS_EQ_void(__VA_ARGS__))
