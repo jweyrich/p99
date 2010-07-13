@@ -54,12 +54,12 @@
 /**
  ** @brief Test two decimal numbers @a A and @a B if they are equal.
  **/
-#define IF_DEC_EQ(A, B) IF_EQ_1(IS_DEC_EQ(A,B))
+#define IF_DEC_EQ(A, B) IF_EQ_1(P99_IS_DEC_EQ(A,B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if they are unequal.
  **/
-#define IF_DEC_NE(A, B) IF_EQ_0(IS_DEC_EQ(A,B))
+#define IF_DEC_NE(A, B) IF_EQ_0(P99_IS_DEC_EQ(A,B))
 
 #define IF_GE_0(A) P99__IF_CLAUSE(P99_PASTE4(P99__IS_,A,_GE_,0)())
 #define IF_LT_0(A) P99__IF_NOT_CLAUSE(P99_PASTE4(P99__IS_,A,_GE_,0)())
@@ -68,25 +68,25 @@
  ** @brief Test two decimal numbers @a A and @a B if @a A is greater
  ** or equal to @a B.
  **/
-#define IF_DEC_GE(A, B) IF_EQ_1(IS_DEC_GE(A, B))
+#define IF_DEC_GE(A, B) IF_EQ_1(P99_IS_DEC_GE(A, B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is less
  ** or equal to @a B.
  **/
-#define IF_DEC_LE(A, B) IF_EQ_1(IS_DEC_LE(A, B))
+#define IF_DEC_LE(A, B) IF_EQ_1(P99_IS_DEC_LE(A, B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
  ** less than @a B.
  **/
-#define IF_DEC_LT(A, B) IF_EQ_1(IS_DEC_LT(A, B))
+#define IF_DEC_LT(A, B) IF_EQ_1(P99_IS_DEC_LT(A, B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
  ** greater than @a B.
  **/
-#define IF_DEC_GT(A, B) IF_EQ_1(IS_DEC_GT(A, B))
+#define IF_DEC_GT(A, B) IF_EQ_1(P99_IS_DEC_GT(A, B))
 
 /**
  ** @brief Test if token N is the token 0.
@@ -127,10 +127,10 @@
  **
  ** Observe the parenthesis around tokens_A and tokens_B.
  **/
-#define IF_ELSE(...) IF_EQ_1(IS_EQ_0(__VA_ARGS__))
+#define IF_ELSE(...) IF_EQ_1(P99_IS_EQ_0(__VA_ARGS__))
 
-#define IF_void(...) IF_EQ_1(IS_EQ_void(__VA_ARGS__))
+#define IF_void(...) IF_EQ_1(P99_IS_EQ_void(__VA_ARGS__))
 
-#define IF_VOID(...) IF_EQ_1(IS_VOID(__VA_ARGS__))
+#define IF_VOID(...) IF_EQ_1(P99_IS_VOID(__VA_ARGS__))
 
 #endif 	    /* !P99_IF_H_ */

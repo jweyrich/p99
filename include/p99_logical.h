@@ -16,12 +16,12 @@
 
 
 /**
- ** @brief Determine if the two tokens @a _0 and @a _2 are equal
+ ** @brief Determine if the two tokens @a _0 and @a _1 are equal
  **
  ** For a specific token X to work with this, a macro @c
  ** P99__IS_X_EQ_X must have been declared and expand to a comma.
  **/
-#define IS_EQ(_0, _1) HAS_COMMA(P99_PASTE4(P99__IS_, _0, _EQ_, _1)())
+#define P99_IS_EQ(_0, _1) HAS_COMMA(P99_PASTE4(P99__IS_, _0, _EQ_, _1)())
 
 
 /**
@@ -33,7 +33,7 @@
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_EVAL(_0) P99__EVAL_0(P99_IS_EMPTY(_0), IS_EQ_0(_0))
+#define P99_LOGIC_EVAL(_0) P99__EVAL_0(P99_IS_EMPTY(_0), P99_IS_EQ_0(_0))
 
 #define P99__EVAL_0(_0, _1) P99_PASTE3(P99__EVAL_, _0, _1)
 
@@ -52,7 +52,7 @@
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_NOT(A)  P99__NOT_0(P99_IS_EMPTY(_0), IS_EQ_0(_0))
+#define P99_LOGIC_NOT(A)  P99__NOT_0(P99_IS_EMPTY(_0), P99_IS_EQ_0(_0))
 
 #define P99__NOT_0(_0, _1) P99_PASTE3(P99__NOT_, _0, _1)
 
@@ -65,23 +65,23 @@
 /**
  ** @brief Do a logical exclusive or of the arguments.
  **
- ** @see LOGIC_EVAL for how the individual arguments are considered to
+ ** @see P99_LOGIC_EVAL for how the individual arguments are considered to
  ** be truth values.
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_XOR(A, B) IS_EQ(LOGIC_NOT(A), LOGIC_EVAL(B))
+#define P99_LOGIC_XOR(A, B) P99_IS_EQ(P99_LOGIC_NOT(A), P99_LOGIC_EVAL(B))
 
 
 /**
  ** @brief Do a logical inclusive or of the arguments.
  **
- ** @see LOGIC_EVAL for how the individual arguments are considered to
+ ** @see P99_LOGIC_EVAL for how the individual arguments are considered to
  ** be truth values.
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_OR(A, B) P99__LOGIC_OR(LOGIC_EVAL(A), LOGIC_EVAL(B))
+#define P99_LOGIC_OR(A, B) P99__LOGIC_OR(P99_LOGIC_EVAL(A), P99_LOGIC_EVAL(B))
 
 
 #define P99__LOGIC_OR(_0, _1) P99_PASTE3(P99__LOGIC_OR_, _0, _1)
@@ -94,12 +94,12 @@
 /**
  ** @brief Do a logical and of the arguments.
  **
- ** @see LOGIC_EVAL for how the individual arguments are considered to
+ ** @see P99_LOGIC_EVAL for how the individual arguments are considered to
  ** be truth values.
  **
  ** @return tokens 0 or 1
  **/
-#define LOGIC_AND(A, B) P99__LOGIC_AND(LOGIC_EVAL(A), LOGIC_EVAL(B))
+#define P99_LOGIC_AND(A, B) P99__LOGIC_AND(P99_LOGIC_EVAL(A), P99_LOGIC_EVAL(B))
 
 
 #define P99__LOGIC_AND(_0, _1) P99_PASTE3(P99__LOGIC_AND_, _0, _1)
@@ -112,8 +112,8 @@
 
 
 /**
- ** @def IS_EQ_void(...)
- ** @see IS_VOID for a macro that test whether or not its argument is
+ ** @def P99_IS_EQ_void(...)
+ ** @see P99_IS_VOID for a macro that test whether or not its argument is
  ** empty @b or if it consists of the word @c void.
  **/
 
@@ -125,7 +125,7 @@
  ** @see IF_void for a macro that tests if the argument is exactly the
  ** word @c void.
  **/
-#define IS_VOID(...) P99__IS_VOID(P99_IS_EMPTY(__VA_ARGS__), IS_EQ_void(__VA_ARGS__))
+#define P99_IS_VOID(...) P99__IS_VOID(P99_IS_EMPTY(__VA_ARGS__), P99_IS_EQ_void(__VA_ARGS__))
 
 #define P99__IS_VOID(_0, _1) P99_PASTE3(P99__IS_VOID_, _0, _1)
 
@@ -136,35 +136,35 @@
 #define P99__IS_VOID_11 WEIRD_VOID_ARG_ERROR
 
 /** @brief a decimal less than operator **/
-#define IS_DEC_LT(_0, _1)  P99__DEC_LT( IS_EQ_0(_1), CHS(_0, SELS(_1, P99__ALL_ONES()), P99__ALL_ZEROES()))
+#define P99_IS_DEC_LT(_0, _1)  P99__DEC_LT( P99_IS_EQ_0(_1), CHS(_0, SELS(_1, P99__ALL_ONES()), P99__ALL_ZEROES()))
 #define P99__DEC_LT(_0, _1)  P99_PASTE2(P99__DEC_LT_, _0)(_1)
 
 #define P99__DEC_LT_0(_0) _0
 #define P99__DEC_LT_1(_0) 0
 
 /** @brief a decimal greater or equal operator **/
-#define IS_DEC_GE(_0, _1)  P99__DEC_GE( IS_EQ_0(_1), CHS(_0, SELS(_1, P99__ALL_ZEROES()), P99__ALL_ONES()))
+#define P99_IS_DEC_GE(_0, _1)  P99__DEC_GE( P99_IS_EQ_0(_1), CHS(_0, SELS(_1, P99__ALL_ZEROES()), P99__ALL_ONES()))
 #define P99__DEC_GE(_0, _1)  P99_PASTE2(P99__DEC_GE_, _0)(_1)
 
 #define P99__DEC_GE_0(_0) _0
 #define P99__DEC_GE_1(_0) 1
 
 /** @brief a decimal greater than operator **/
-#define IS_DEC_GT(_0, _1)  IS_DEC_LT(_1, _0)
+#define P99_IS_DEC_GT(_0, _1)  P99_IS_DEC_LT(_1, _0)
 /** @brief a decimal less or equal operator **/
-#define IS_DEC_LE(_0, _1)  IS_DEC_GE(_1, _0)
+#define P99_IS_DEC_LE(_0, _1)  P99_IS_DEC_GE(_1, _0)
 
 /** @brief a decimal equal operator **/
-#define IS_DEC_EQ(_0, _1)  IS_EQ(_0, _1)
+#define P99_IS_DEC_EQ(_0, _1)  P99_IS_EQ(_0, _1)
 
 /** @brief a decimal unequal operator **/
-#define IS_DEC_NE(_0, _1)  LOGIC_NOT(IS_EQ(_0, _1))
+#define P99_IS_DEC_NE(_0, _1)  P99_LOGIC_NOT(P99_IS_EQ(_0, _1))
 
 /** @brief add two decimal numbers **/
-#define DEC_ADD(_0, _1)                         \
+#define P99_DEC_ADD(_0, _1)                     \
 P99__DEC_ADD(_0, _1,                            \
-             IS_EQ_0(_0),                       \
-             IS_EQ_0(_1),                       \
+             P99_IS_EQ_0(_0),                   \
+             P99_IS_EQ_0(_1),                   \
              P99_NARG(                          \
                   SELS(_0, P99__ALL_ZEROES()),  \
                   SELS(_1, P99__ALL_ZEROES())))
@@ -184,13 +184,13 @@ P99__DEC_ADD(_0, _1,                            \
  ** If the result is negative, a token of the form @c minus_NNN is
  ** returned where @c NNN would be the result of
  ** @code
- ** DEC_MINUS(_1, _0)
+ ** P99_DEC_MINUS(_1, _0)
  ** @endcode
  **/
-#define DEC_MINUS(_0, _1) P99__DEC_MINUS(_0, _1, IS_EQ(_0, _1), IS_EQ_0(_0), IS_EQ_0(_1))
+#define P99_DEC_MINUS(_0, _1) P99__DEC_MINUS(_0, _1, P99_IS_EQ(_0, _1), P99_IS_EQ_0(_0), P99_IS_EQ_0(_1))
 #define P99__DEC_MINUS(_0, _1, _2, _3, _4) P99_PASTE4(P99__DEC_MINUS_, _2, _3, _4)(_0, _1)
 
-#define P99__DEC_MINUS_000(_0, _1) P99__DEC_MINUS_(_0, _1, IS_DEC_LT(_0, _1))
+#define P99__DEC_MINUS_000(_0, _1) P99__DEC_MINUS_(_0, _1, P99_IS_DEC_LT(_0, _1))
 /* if one of _0 or _1 is 0, there is not much to do */
 #define P99__DEC_MINUS_001(_0, _1) _0
 #define P99__DEC_MINUS_010(_0, _1) P99_PASTE2(minus_, _1)
@@ -217,7 +217,7 @@ P99__DEC_ADD(_0, _1,                            \
  ** @brief Macro that expands to the predecessor of decimal constant
  ** @a N
  **/
-#define DEC_PRED(N) P99__DEC_PRED(N)
+#define P99_DEC_PRED(N) P99__DEC_PRED(N)
 #define P99__DEC_PRED(N) P99___DEC_PRED(P99__DEC_PRED_ , N)
 #define P99___DEC_PRED(P, N) P ## N
 
@@ -226,7 +226,7 @@ P99__DEC_ADD(_0, _1,                            \
 /**
  ** @brief evaluate the result of one of the arithmetic preprocessor 
  **/
-#define DEC_EVAL(EDEC) P99_PASTE2(P99__dec_eval_, EDEC)
+#define P99_DEC_EVAL(EDEC) P99_PASTE2(P99__dec_eval_, EDEC)
 
 
 /**
@@ -236,12 +236,12 @@ P99__DEC_ADD(_0, _1,                            \
  ** @warning The result must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define DEC_MUL(A, B) P99_PASTE3(DEC_MUL_, IS_EQ_0(A), IS_EQ_0(B))(A, B)
+#define P99_DEC_MUL(A, B) P99_PASTE3(P99_DEC_MUL_, P99_IS_EQ_0(A), P99_IS_EQ_0(B))(A, B)
 
-#define DEC_MUL_00(A, B) P99_NARG(DUPL(A, SELS(B, P99__ALL_ONES())))
-#define DEC_MUL_01(A, B) 0
-#define DEC_MUL_10(A, B) 0
-#define DEC_MUL_11(A, B) 0
+#define P99_DEC_MUL_00(A, B) P99_NARG(DUPL(A, SELS(B, P99__ALL_ONES())))
+#define P99_DEC_MUL_01(A, B) 0
+#define P99_DEC_MUL_10(A, B) 0
+#define P99_DEC_MUL_11(A, B) 0
 
 
 /**
@@ -251,19 +251,19 @@ P99__DEC_ADD(_0, _1,                            \
  ** @warning Both arguments must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define DEC_MOD(A, B) P99__DEC_MOD(A, DUPL(32, SELS(B, P99__ASCENDING())))
+#define P99_DEC_MOD(A, B) P99__DEC_MOD(A, DUPL(32, SELS(B, P99__ASCENDING())))
 #define P99__DEC_MOD(A, ...) CHS(A, __VA_ARGS__)
 
 
 /**
  ** @brief Obtain the last element of a list.
  **/
-#define LAST(...) CHS(DEC_PRED(P99__NARG(__VA_ARGS__)), __VA_ARGS__,)
+#define P99_LAST(...) CHS(P99_DEC_PRED(P99__NARG(__VA_ARGS__)), __VA_ARGS__,)
 
 /**
  ** @brief Obtain all elements but the last of a list.
  **/
-#define ALLBUTLAST(...) P99_PASTE2(P99__PRE,DEC_PRED(P99__NARG(__VA_ARGS__)))(__VA_ARGS__,)
+#define P99_ALLBUTLAST(...) P99_PASTE2(P99__PRE,P99_DEC_PRED(P99__NARG(__VA_ARGS__)))(__VA_ARGS__,)
 
 #define P99___PASTE(F, N, ...) F ## N(__VA_ARGS__)
 #define P99__PASTE(N, ...) P99___PASTE(P99_PASTE, N, __VA_ARGS__)

@@ -98,14 +98,14 @@ print STDOUT "\n";
 for (my $m = 7; $m < $maxnumber; ++$m) {
     my $m1 = $m - 1;
     print "/*! \@brief Paste $m arguments at their boundary.*/\n";
-    print "#define P99_PASTE$m(...) P99__PASTE$m(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))\n";
+    print "#define P99_PASTE$m(...) P99__PASTE$m(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))\n";
     print "#define P99__PASTE$m(L, ...) P99_PASTE2(P99_PASTE${m1}(__VA_ARGS__), L)\n";
 }
 
 print "#define P99__IS_${_}_EQ_${_}(...) ,\n"
     foreach (0.. $maxnumber, @keywords_C99);
 print "/*! \@brief Test if the argument consists of exactly the token \@c ${_} */\
-#define IS_EQ_${_}(...) P99_TOK_EQ(${_}, __VA_ARGS__)\n"
+#define P99_IS_EQ_${_}(...) P99_TOK_EQ(${_}, __VA_ARGS__)\n"
     foreach (0.. $maxnumber, @keywords_C99);
 
 printf "#define P99__DEC_PRED_%d %d\n", $_ + 1, $_
@@ -127,5 +127,5 @@ print "#define DUPL${_}(...) __VA_ARGS__, DUPL", ($_ - 1), "(__VA_ARGS__)\n"
 for (my $i = 2; $i < $maxnumber; ++$i) {
     my $i1 = $i - 1;
     print "#define P99__FOR${i}(NAME, OP, FUNC, ...) \\\n",
-    "\tOP(NAME, $i1, P99__FOR${i1}(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), $i1))\n";
+    "\tOP(NAME, $i1, P99__FOR${i1}(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), $i1))\n";
 }

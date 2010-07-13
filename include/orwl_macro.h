@@ -38,14 +38,14 @@
  **
  ** So if all parameters are empty such as
  ** @code
- ** DEC_DOUBLE()
+ ** P99_DEC_DOUBLE()
  ** DEC(,,,,)
  ** @endcode
  ** this produces @c +0.0E+0
  **/
-#define DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP)
+#define P99_DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP)
 #else
-#define DEC_DOUBLE(...)                         \
+#define P99_DEC_DOUBLE(...)                         \
   IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)           \
   (P99__DEC_DOUBLE(__VA_ARGS__))                \
   (P99__DEC_DOUBLE(__VA_ARGS__,,,,,))
@@ -67,7 +67,7 @@
 /**
  ** @brief construct a @c double constant in hexadecimal representation.
  **
- ** @see DEC_DOUBLE for the analog with decimal representation
+ ** @see P99_DEC_DOUBLE for the analog with decimal representation
  **/
 #define HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP)
 #else
@@ -524,7 +524,7 @@ enum { P99_PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
 
 #define P99__DARG(NAME, X, N) IF_EMPTY(X)(P99_PASTE3(NAME, _defarg_, N)())(X)
 #define P99___DEFARGS(NAME, N, ...) FOR(NAME, N, P99__SEQ, P99__DARG, __VA_ARGS__)
-#define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, IF_DEC_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,DEC_MINUS(N,P99_NARG(__VA_ARGS__)))) (__VA_ARGS__))
+#define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, IF_DEC_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,P99_DEC_MINUS(N,P99_NARG(__VA_ARGS__)))) (__VA_ARGS__))
 
 /**
  ** @brief Declare the types that are going to be used with a
@@ -550,10 +550,10 @@ enum { P99_PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
 #define VA_MODARG(AP, ...) P99__VA_MODARG(AP, __VA_ARGS__, 0, ~)
 
 #define P99__CAS1(NAME, X, N) (P99_PASTE2(NAME, _mod_type_0){ X }
-#define P99__CAS2(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, DEC_MOD(N, 2))){ X }
-#define P99__CAS3(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, DEC_MOD(N, 3))){ X }
-#define P99__CAS4(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, DEC_MOD(N, 4))){ X }
-#define P99__CAS5(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, DEC_MOD(N, 5))){ X }
+#define P99__CAS2(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 2))){ X }
+#define P99__CAS3(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 3))){ X }
+#define P99__CAS4(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 4))){ X }
+#define P99__CAS5(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 5))){ X }
 #define P99__MODARG_LIST(NAME, F, N, ...) FOR(NAME, N, P99__SEQ, F, __VA_ARGS__)
 
 #define LEN_MODARG(NAME, M, ...) P99__MODARG_(M)(__VA_ARGS__), P99__MODARG_LIST(NAME, P99_PASTE2(P99__CAS, M), P99_NARG(__VA_ARGS__), __VA_ARGS__)

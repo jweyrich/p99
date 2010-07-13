@@ -207,175 +207,175 @@
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,
 /*! @brief Paste 7 arguments at their boundary.*/
-#define P99_PASTE7(...) P99__PASTE7(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE7(...) P99__PASTE7(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE7(L, ...) P99_PASTE2(P99_PASTE6(__VA_ARGS__), L)
 /*! @brief Paste 8 arguments at their boundary.*/
-#define P99_PASTE8(...) P99__PASTE8(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE8(...) P99__PASTE8(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE8(L, ...) P99_PASTE2(P99_PASTE7(__VA_ARGS__), L)
 /*! @brief Paste 9 arguments at their boundary.*/
-#define P99_PASTE9(...) P99__PASTE9(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE9(...) P99__PASTE9(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE9(L, ...) P99_PASTE2(P99_PASTE8(__VA_ARGS__), L)
 /*! @brief Paste 10 arguments at their boundary.*/
-#define P99_PASTE10(...) P99__PASTE10(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE10(...) P99__PASTE10(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE10(L, ...) P99_PASTE2(P99_PASTE9(__VA_ARGS__), L)
 /*! @brief Paste 11 arguments at their boundary.*/
-#define P99_PASTE11(...) P99__PASTE11(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE11(...) P99__PASTE11(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE11(L, ...) P99_PASTE2(P99_PASTE10(__VA_ARGS__), L)
 /*! @brief Paste 12 arguments at their boundary.*/
-#define P99_PASTE12(...) P99__PASTE12(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE12(...) P99__PASTE12(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE12(L, ...) P99_PASTE2(P99_PASTE11(__VA_ARGS__), L)
 /*! @brief Paste 13 arguments at their boundary.*/
-#define P99_PASTE13(...) P99__PASTE13(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE13(...) P99__PASTE13(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE13(L, ...) P99_PASTE2(P99_PASTE12(__VA_ARGS__), L)
 /*! @brief Paste 14 arguments at their boundary.*/
-#define P99_PASTE14(...) P99__PASTE14(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE14(...) P99__PASTE14(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE14(L, ...) P99_PASTE2(P99_PASTE13(__VA_ARGS__), L)
 /*! @brief Paste 15 arguments at their boundary.*/
-#define P99_PASTE15(...) P99__PASTE15(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE15(...) P99__PASTE15(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE15(L, ...) P99_PASTE2(P99_PASTE14(__VA_ARGS__), L)
 /*! @brief Paste 16 arguments at their boundary.*/
-#define P99_PASTE16(...) P99__PASTE16(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE16(...) P99__PASTE16(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE16(L, ...) P99_PASTE2(P99_PASTE15(__VA_ARGS__), L)
 /*! @brief Paste 17 arguments at their boundary.*/
-#define P99_PASTE17(...) P99__PASTE17(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE17(...) P99__PASTE17(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE17(L, ...) P99_PASTE2(P99_PASTE16(__VA_ARGS__), L)
 /*! @brief Paste 18 arguments at their boundary.*/
-#define P99_PASTE18(...) P99__PASTE18(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE18(...) P99__PASTE18(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE18(L, ...) P99_PASTE2(P99_PASTE17(__VA_ARGS__), L)
 /*! @brief Paste 19 arguments at their boundary.*/
-#define P99_PASTE19(...) P99__PASTE19(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE19(...) P99__PASTE19(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE19(L, ...) P99_PASTE2(P99_PASTE18(__VA_ARGS__), L)
 /*! @brief Paste 20 arguments at their boundary.*/
-#define P99_PASTE20(...) P99__PASTE20(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE20(...) P99__PASTE20(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE20(L, ...) P99_PASTE2(P99_PASTE19(__VA_ARGS__), L)
 /*! @brief Paste 21 arguments at their boundary.*/
-#define P99_PASTE21(...) P99__PASTE21(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE21(...) P99__PASTE21(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE21(L, ...) P99_PASTE2(P99_PASTE20(__VA_ARGS__), L)
 /*! @brief Paste 22 arguments at their boundary.*/
-#define P99_PASTE22(...) P99__PASTE22(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE22(...) P99__PASTE22(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE22(L, ...) P99_PASTE2(P99_PASTE21(__VA_ARGS__), L)
 /*! @brief Paste 23 arguments at their boundary.*/
-#define P99_PASTE23(...) P99__PASTE23(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE23(...) P99__PASTE23(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE23(L, ...) P99_PASTE2(P99_PASTE22(__VA_ARGS__), L)
 /*! @brief Paste 24 arguments at their boundary.*/
-#define P99_PASTE24(...) P99__PASTE24(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE24(...) P99__PASTE24(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE24(L, ...) P99_PASTE2(P99_PASTE23(__VA_ARGS__), L)
 /*! @brief Paste 25 arguments at their boundary.*/
-#define P99_PASTE25(...) P99__PASTE25(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE25(...) P99__PASTE25(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE25(L, ...) P99_PASTE2(P99_PASTE24(__VA_ARGS__), L)
 /*! @brief Paste 26 arguments at their boundary.*/
-#define P99_PASTE26(...) P99__PASTE26(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE26(...) P99__PASTE26(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE26(L, ...) P99_PASTE2(P99_PASTE25(__VA_ARGS__), L)
 /*! @brief Paste 27 arguments at their boundary.*/
-#define P99_PASTE27(...) P99__PASTE27(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE27(...) P99__PASTE27(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE27(L, ...) P99_PASTE2(P99_PASTE26(__VA_ARGS__), L)
 /*! @brief Paste 28 arguments at their boundary.*/
-#define P99_PASTE28(...) P99__PASTE28(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE28(...) P99__PASTE28(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE28(L, ...) P99_PASTE2(P99_PASTE27(__VA_ARGS__), L)
 /*! @brief Paste 29 arguments at their boundary.*/
-#define P99_PASTE29(...) P99__PASTE29(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE29(...) P99__PASTE29(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE29(L, ...) P99_PASTE2(P99_PASTE28(__VA_ARGS__), L)
 /*! @brief Paste 30 arguments at their boundary.*/
-#define P99_PASTE30(...) P99__PASTE30(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE30(...) P99__PASTE30(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE30(L, ...) P99_PASTE2(P99_PASTE29(__VA_ARGS__), L)
 /*! @brief Paste 31 arguments at their boundary.*/
-#define P99_PASTE31(...) P99__PASTE31(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE31(...) P99__PASTE31(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE31(L, ...) P99_PASTE2(P99_PASTE30(__VA_ARGS__), L)
 /*! @brief Paste 32 arguments at their boundary.*/
-#define P99_PASTE32(...) P99__PASTE32(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE32(...) P99__PASTE32(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE32(L, ...) P99_PASTE2(P99_PASTE31(__VA_ARGS__), L)
 /*! @brief Paste 33 arguments at their boundary.*/
-#define P99_PASTE33(...) P99__PASTE33(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE33(...) P99__PASTE33(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE33(L, ...) P99_PASTE2(P99_PASTE32(__VA_ARGS__), L)
 /*! @brief Paste 34 arguments at their boundary.*/
-#define P99_PASTE34(...) P99__PASTE34(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE34(...) P99__PASTE34(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE34(L, ...) P99_PASTE2(P99_PASTE33(__VA_ARGS__), L)
 /*! @brief Paste 35 arguments at their boundary.*/
-#define P99_PASTE35(...) P99__PASTE35(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE35(...) P99__PASTE35(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE35(L, ...) P99_PASTE2(P99_PASTE34(__VA_ARGS__), L)
 /*! @brief Paste 36 arguments at their boundary.*/
-#define P99_PASTE36(...) P99__PASTE36(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE36(...) P99__PASTE36(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE36(L, ...) P99_PASTE2(P99_PASTE35(__VA_ARGS__), L)
 /*! @brief Paste 37 arguments at their boundary.*/
-#define P99_PASTE37(...) P99__PASTE37(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE37(...) P99__PASTE37(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE37(L, ...) P99_PASTE2(P99_PASTE36(__VA_ARGS__), L)
 /*! @brief Paste 38 arguments at their boundary.*/
-#define P99_PASTE38(...) P99__PASTE38(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE38(...) P99__PASTE38(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE38(L, ...) P99_PASTE2(P99_PASTE37(__VA_ARGS__), L)
 /*! @brief Paste 39 arguments at their boundary.*/
-#define P99_PASTE39(...) P99__PASTE39(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE39(...) P99__PASTE39(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE39(L, ...) P99_PASTE2(P99_PASTE38(__VA_ARGS__), L)
 /*! @brief Paste 40 arguments at their boundary.*/
-#define P99_PASTE40(...) P99__PASTE40(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE40(...) P99__PASTE40(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE40(L, ...) P99_PASTE2(P99_PASTE39(__VA_ARGS__), L)
 /*! @brief Paste 41 arguments at their boundary.*/
-#define P99_PASTE41(...) P99__PASTE41(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE41(...) P99__PASTE41(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE41(L, ...) P99_PASTE2(P99_PASTE40(__VA_ARGS__), L)
 /*! @brief Paste 42 arguments at their boundary.*/
-#define P99_PASTE42(...) P99__PASTE42(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE42(...) P99__PASTE42(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE42(L, ...) P99_PASTE2(P99_PASTE41(__VA_ARGS__), L)
 /*! @brief Paste 43 arguments at their boundary.*/
-#define P99_PASTE43(...) P99__PASTE43(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE43(...) P99__PASTE43(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE43(L, ...) P99_PASTE2(P99_PASTE42(__VA_ARGS__), L)
 /*! @brief Paste 44 arguments at their boundary.*/
-#define P99_PASTE44(...) P99__PASTE44(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE44(...) P99__PASTE44(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE44(L, ...) P99_PASTE2(P99_PASTE43(__VA_ARGS__), L)
 /*! @brief Paste 45 arguments at their boundary.*/
-#define P99_PASTE45(...) P99__PASTE45(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE45(...) P99__PASTE45(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE45(L, ...) P99_PASTE2(P99_PASTE44(__VA_ARGS__), L)
 /*! @brief Paste 46 arguments at their boundary.*/
-#define P99_PASTE46(...) P99__PASTE46(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE46(...) P99__PASTE46(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE46(L, ...) P99_PASTE2(P99_PASTE45(__VA_ARGS__), L)
 /*! @brief Paste 47 arguments at their boundary.*/
-#define P99_PASTE47(...) P99__PASTE47(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE47(...) P99__PASTE47(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE47(L, ...) P99_PASTE2(P99_PASTE46(__VA_ARGS__), L)
 /*! @brief Paste 48 arguments at their boundary.*/
-#define P99_PASTE48(...) P99__PASTE48(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE48(...) P99__PASTE48(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE48(L, ...) P99_PASTE2(P99_PASTE47(__VA_ARGS__), L)
 /*! @brief Paste 49 arguments at their boundary.*/
-#define P99_PASTE49(...) P99__PASTE49(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE49(...) P99__PASTE49(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE49(L, ...) P99_PASTE2(P99_PASTE48(__VA_ARGS__), L)
 /*! @brief Paste 50 arguments at their boundary.*/
-#define P99_PASTE50(...) P99__PASTE50(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE50(...) P99__PASTE50(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE50(L, ...) P99_PASTE2(P99_PASTE49(__VA_ARGS__), L)
 /*! @brief Paste 51 arguments at their boundary.*/
-#define P99_PASTE51(...) P99__PASTE51(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE51(...) P99__PASTE51(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE51(L, ...) P99_PASTE2(P99_PASTE50(__VA_ARGS__), L)
 /*! @brief Paste 52 arguments at their boundary.*/
-#define P99_PASTE52(...) P99__PASTE52(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE52(...) P99__PASTE52(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE52(L, ...) P99_PASTE2(P99_PASTE51(__VA_ARGS__), L)
 /*! @brief Paste 53 arguments at their boundary.*/
-#define P99_PASTE53(...) P99__PASTE53(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE53(...) P99__PASTE53(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE53(L, ...) P99_PASTE2(P99_PASTE52(__VA_ARGS__), L)
 /*! @brief Paste 54 arguments at their boundary.*/
-#define P99_PASTE54(...) P99__PASTE54(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE54(...) P99__PASTE54(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE54(L, ...) P99_PASTE2(P99_PASTE53(__VA_ARGS__), L)
 /*! @brief Paste 55 arguments at their boundary.*/
-#define P99_PASTE55(...) P99__PASTE55(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE55(...) P99__PASTE55(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE55(L, ...) P99_PASTE2(P99_PASTE54(__VA_ARGS__), L)
 /*! @brief Paste 56 arguments at their boundary.*/
-#define P99_PASTE56(...) P99__PASTE56(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE56(...) P99__PASTE56(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE56(L, ...) P99_PASTE2(P99_PASTE55(__VA_ARGS__), L)
 /*! @brief Paste 57 arguments at their boundary.*/
-#define P99_PASTE57(...) P99__PASTE57(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE57(...) P99__PASTE57(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE57(L, ...) P99_PASTE2(P99_PASTE56(__VA_ARGS__), L)
 /*! @brief Paste 58 arguments at their boundary.*/
-#define P99_PASTE58(...) P99__PASTE58(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE58(...) P99__PASTE58(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE58(L, ...) P99_PASTE2(P99_PASTE57(__VA_ARGS__), L)
 /*! @brief Paste 59 arguments at their boundary.*/
-#define P99_PASTE59(...) P99__PASTE59(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE59(...) P99__PASTE59(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE59(L, ...) P99_PASTE2(P99_PASTE58(__VA_ARGS__), L)
 /*! @brief Paste 60 arguments at their boundary.*/
-#define P99_PASTE60(...) P99__PASTE60(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE60(...) P99__PASTE60(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE60(L, ...) P99_PASTE2(P99_PASTE59(__VA_ARGS__), L)
 /*! @brief Paste 61 arguments at their boundary.*/
-#define P99_PASTE61(...) P99__PASTE61(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE61(...) P99__PASTE61(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE61(L, ...) P99_PASTE2(P99_PASTE60(__VA_ARGS__), L)
 /*! @brief Paste 62 arguments at their boundary.*/
-#define P99_PASTE62(...) P99__PASTE62(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE62(...) P99__PASTE62(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE62(L, ...) P99_PASTE2(P99_PASTE61(__VA_ARGS__), L)
 /*! @brief Paste 63 arguments at their boundary.*/
-#define P99_PASTE63(...) P99__PASTE63(LAST(__VA_ARGS__), ALLBUTLAST(__VA_ARGS__))
+#define P99_PASTE63(...) P99__PASTE63(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE63(L, ...) P99_PASTE2(P99_PASTE62(__VA_ARGS__), L)
 #define P99__IS_0_EQ_0(...) ,
 #define P99__IS_1_EQ_1(...) ,
@@ -480,209 +480,209 @@
 #define P99__IS_volatile_EQ_volatile(...) ,
 #define P99__IS_while_EQ_while(...) ,
 /*! @brief Test if the argument consists of exactly the token @c 0 */
-#define IS_EQ_0(...) P99_TOK_EQ(0, __VA_ARGS__)
+#define P99_IS_EQ_0(...) P99_TOK_EQ(0, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 1 */
-#define IS_EQ_1(...) P99_TOK_EQ(1, __VA_ARGS__)
+#define P99_IS_EQ_1(...) P99_TOK_EQ(1, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 2 */
-#define IS_EQ_2(...) P99_TOK_EQ(2, __VA_ARGS__)
+#define P99_IS_EQ_2(...) P99_TOK_EQ(2, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 3 */
-#define IS_EQ_3(...) P99_TOK_EQ(3, __VA_ARGS__)
+#define P99_IS_EQ_3(...) P99_TOK_EQ(3, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 4 */
-#define IS_EQ_4(...) P99_TOK_EQ(4, __VA_ARGS__)
+#define P99_IS_EQ_4(...) P99_TOK_EQ(4, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 5 */
-#define IS_EQ_5(...) P99_TOK_EQ(5, __VA_ARGS__)
+#define P99_IS_EQ_5(...) P99_TOK_EQ(5, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 6 */
-#define IS_EQ_6(...) P99_TOK_EQ(6, __VA_ARGS__)
+#define P99_IS_EQ_6(...) P99_TOK_EQ(6, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 7 */
-#define IS_EQ_7(...) P99_TOK_EQ(7, __VA_ARGS__)
+#define P99_IS_EQ_7(...) P99_TOK_EQ(7, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 8 */
-#define IS_EQ_8(...) P99_TOK_EQ(8, __VA_ARGS__)
+#define P99_IS_EQ_8(...) P99_TOK_EQ(8, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 9 */
-#define IS_EQ_9(...) P99_TOK_EQ(9, __VA_ARGS__)
+#define P99_IS_EQ_9(...) P99_TOK_EQ(9, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 10 */
-#define IS_EQ_10(...) P99_TOK_EQ(10, __VA_ARGS__)
+#define P99_IS_EQ_10(...) P99_TOK_EQ(10, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 11 */
-#define IS_EQ_11(...) P99_TOK_EQ(11, __VA_ARGS__)
+#define P99_IS_EQ_11(...) P99_TOK_EQ(11, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 12 */
-#define IS_EQ_12(...) P99_TOK_EQ(12, __VA_ARGS__)
+#define P99_IS_EQ_12(...) P99_TOK_EQ(12, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 13 */
-#define IS_EQ_13(...) P99_TOK_EQ(13, __VA_ARGS__)
+#define P99_IS_EQ_13(...) P99_TOK_EQ(13, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 14 */
-#define IS_EQ_14(...) P99_TOK_EQ(14, __VA_ARGS__)
+#define P99_IS_EQ_14(...) P99_TOK_EQ(14, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 15 */
-#define IS_EQ_15(...) P99_TOK_EQ(15, __VA_ARGS__)
+#define P99_IS_EQ_15(...) P99_TOK_EQ(15, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 16 */
-#define IS_EQ_16(...) P99_TOK_EQ(16, __VA_ARGS__)
+#define P99_IS_EQ_16(...) P99_TOK_EQ(16, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 17 */
-#define IS_EQ_17(...) P99_TOK_EQ(17, __VA_ARGS__)
+#define P99_IS_EQ_17(...) P99_TOK_EQ(17, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 18 */
-#define IS_EQ_18(...) P99_TOK_EQ(18, __VA_ARGS__)
+#define P99_IS_EQ_18(...) P99_TOK_EQ(18, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 19 */
-#define IS_EQ_19(...) P99_TOK_EQ(19, __VA_ARGS__)
+#define P99_IS_EQ_19(...) P99_TOK_EQ(19, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 20 */
-#define IS_EQ_20(...) P99_TOK_EQ(20, __VA_ARGS__)
+#define P99_IS_EQ_20(...) P99_TOK_EQ(20, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 21 */
-#define IS_EQ_21(...) P99_TOK_EQ(21, __VA_ARGS__)
+#define P99_IS_EQ_21(...) P99_TOK_EQ(21, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 22 */
-#define IS_EQ_22(...) P99_TOK_EQ(22, __VA_ARGS__)
+#define P99_IS_EQ_22(...) P99_TOK_EQ(22, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 23 */
-#define IS_EQ_23(...) P99_TOK_EQ(23, __VA_ARGS__)
+#define P99_IS_EQ_23(...) P99_TOK_EQ(23, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 24 */
-#define IS_EQ_24(...) P99_TOK_EQ(24, __VA_ARGS__)
+#define P99_IS_EQ_24(...) P99_TOK_EQ(24, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 25 */
-#define IS_EQ_25(...) P99_TOK_EQ(25, __VA_ARGS__)
+#define P99_IS_EQ_25(...) P99_TOK_EQ(25, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 26 */
-#define IS_EQ_26(...) P99_TOK_EQ(26, __VA_ARGS__)
+#define P99_IS_EQ_26(...) P99_TOK_EQ(26, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 27 */
-#define IS_EQ_27(...) P99_TOK_EQ(27, __VA_ARGS__)
+#define P99_IS_EQ_27(...) P99_TOK_EQ(27, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 28 */
-#define IS_EQ_28(...) P99_TOK_EQ(28, __VA_ARGS__)
+#define P99_IS_EQ_28(...) P99_TOK_EQ(28, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 29 */
-#define IS_EQ_29(...) P99_TOK_EQ(29, __VA_ARGS__)
+#define P99_IS_EQ_29(...) P99_TOK_EQ(29, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 30 */
-#define IS_EQ_30(...) P99_TOK_EQ(30, __VA_ARGS__)
+#define P99_IS_EQ_30(...) P99_TOK_EQ(30, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 31 */
-#define IS_EQ_31(...) P99_TOK_EQ(31, __VA_ARGS__)
+#define P99_IS_EQ_31(...) P99_TOK_EQ(31, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 32 */
-#define IS_EQ_32(...) P99_TOK_EQ(32, __VA_ARGS__)
+#define P99_IS_EQ_32(...) P99_TOK_EQ(32, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 33 */
-#define IS_EQ_33(...) P99_TOK_EQ(33, __VA_ARGS__)
+#define P99_IS_EQ_33(...) P99_TOK_EQ(33, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 34 */
-#define IS_EQ_34(...) P99_TOK_EQ(34, __VA_ARGS__)
+#define P99_IS_EQ_34(...) P99_TOK_EQ(34, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 35 */
-#define IS_EQ_35(...) P99_TOK_EQ(35, __VA_ARGS__)
+#define P99_IS_EQ_35(...) P99_TOK_EQ(35, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 36 */
-#define IS_EQ_36(...) P99_TOK_EQ(36, __VA_ARGS__)
+#define P99_IS_EQ_36(...) P99_TOK_EQ(36, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 37 */
-#define IS_EQ_37(...) P99_TOK_EQ(37, __VA_ARGS__)
+#define P99_IS_EQ_37(...) P99_TOK_EQ(37, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 38 */
-#define IS_EQ_38(...) P99_TOK_EQ(38, __VA_ARGS__)
+#define P99_IS_EQ_38(...) P99_TOK_EQ(38, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 39 */
-#define IS_EQ_39(...) P99_TOK_EQ(39, __VA_ARGS__)
+#define P99_IS_EQ_39(...) P99_TOK_EQ(39, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 40 */
-#define IS_EQ_40(...) P99_TOK_EQ(40, __VA_ARGS__)
+#define P99_IS_EQ_40(...) P99_TOK_EQ(40, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 41 */
-#define IS_EQ_41(...) P99_TOK_EQ(41, __VA_ARGS__)
+#define P99_IS_EQ_41(...) P99_TOK_EQ(41, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 42 */
-#define IS_EQ_42(...) P99_TOK_EQ(42, __VA_ARGS__)
+#define P99_IS_EQ_42(...) P99_TOK_EQ(42, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 43 */
-#define IS_EQ_43(...) P99_TOK_EQ(43, __VA_ARGS__)
+#define P99_IS_EQ_43(...) P99_TOK_EQ(43, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 44 */
-#define IS_EQ_44(...) P99_TOK_EQ(44, __VA_ARGS__)
+#define P99_IS_EQ_44(...) P99_TOK_EQ(44, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 45 */
-#define IS_EQ_45(...) P99_TOK_EQ(45, __VA_ARGS__)
+#define P99_IS_EQ_45(...) P99_TOK_EQ(45, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 46 */
-#define IS_EQ_46(...) P99_TOK_EQ(46, __VA_ARGS__)
+#define P99_IS_EQ_46(...) P99_TOK_EQ(46, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 47 */
-#define IS_EQ_47(...) P99_TOK_EQ(47, __VA_ARGS__)
+#define P99_IS_EQ_47(...) P99_TOK_EQ(47, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 48 */
-#define IS_EQ_48(...) P99_TOK_EQ(48, __VA_ARGS__)
+#define P99_IS_EQ_48(...) P99_TOK_EQ(48, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 49 */
-#define IS_EQ_49(...) P99_TOK_EQ(49, __VA_ARGS__)
+#define P99_IS_EQ_49(...) P99_TOK_EQ(49, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 50 */
-#define IS_EQ_50(...) P99_TOK_EQ(50, __VA_ARGS__)
+#define P99_IS_EQ_50(...) P99_TOK_EQ(50, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 51 */
-#define IS_EQ_51(...) P99_TOK_EQ(51, __VA_ARGS__)
+#define P99_IS_EQ_51(...) P99_TOK_EQ(51, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 52 */
-#define IS_EQ_52(...) P99_TOK_EQ(52, __VA_ARGS__)
+#define P99_IS_EQ_52(...) P99_TOK_EQ(52, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 53 */
-#define IS_EQ_53(...) P99_TOK_EQ(53, __VA_ARGS__)
+#define P99_IS_EQ_53(...) P99_TOK_EQ(53, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 54 */
-#define IS_EQ_54(...) P99_TOK_EQ(54, __VA_ARGS__)
+#define P99_IS_EQ_54(...) P99_TOK_EQ(54, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 55 */
-#define IS_EQ_55(...) P99_TOK_EQ(55, __VA_ARGS__)
+#define P99_IS_EQ_55(...) P99_TOK_EQ(55, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 56 */
-#define IS_EQ_56(...) P99_TOK_EQ(56, __VA_ARGS__)
+#define P99_IS_EQ_56(...) P99_TOK_EQ(56, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 57 */
-#define IS_EQ_57(...) P99_TOK_EQ(57, __VA_ARGS__)
+#define P99_IS_EQ_57(...) P99_TOK_EQ(57, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 58 */
-#define IS_EQ_58(...) P99_TOK_EQ(58, __VA_ARGS__)
+#define P99_IS_EQ_58(...) P99_TOK_EQ(58, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 59 */
-#define IS_EQ_59(...) P99_TOK_EQ(59, __VA_ARGS__)
+#define P99_IS_EQ_59(...) P99_TOK_EQ(59, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 60 */
-#define IS_EQ_60(...) P99_TOK_EQ(60, __VA_ARGS__)
+#define P99_IS_EQ_60(...) P99_TOK_EQ(60, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 61 */
-#define IS_EQ_61(...) P99_TOK_EQ(61, __VA_ARGS__)
+#define P99_IS_EQ_61(...) P99_TOK_EQ(61, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 62 */
-#define IS_EQ_62(...) P99_TOK_EQ(62, __VA_ARGS__)
+#define P99_IS_EQ_62(...) P99_TOK_EQ(62, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 63 */
-#define IS_EQ_63(...) P99_TOK_EQ(63, __VA_ARGS__)
+#define P99_IS_EQ_63(...) P99_TOK_EQ(63, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 64 */
-#define IS_EQ_64(...) P99_TOK_EQ(64, __VA_ARGS__)
+#define P99_IS_EQ_64(...) P99_TOK_EQ(64, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c _Bool */
-#define IS_EQ__Bool(...) P99_TOK_EQ(_Bool, __VA_ARGS__)
+#define P99_IS_EQ__Bool(...) P99_TOK_EQ(_Bool, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c _Complex */
-#define IS_EQ__Complex(...) P99_TOK_EQ(_Complex, __VA_ARGS__)
+#define P99_IS_EQ__Complex(...) P99_TOK_EQ(_Complex, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c _Imaginary */
-#define IS_EQ__Imaginary(...) P99_TOK_EQ(_Imaginary, __VA_ARGS__)
+#define P99_IS_EQ__Imaginary(...) P99_TOK_EQ(_Imaginary, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c auto */
-#define IS_EQ_auto(...) P99_TOK_EQ(auto, __VA_ARGS__)
+#define P99_IS_EQ_auto(...) P99_TOK_EQ(auto, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c break */
-#define IS_EQ_break(...) P99_TOK_EQ(break, __VA_ARGS__)
+#define P99_IS_EQ_break(...) P99_TOK_EQ(break, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c case */
-#define IS_EQ_case(...) P99_TOK_EQ(case, __VA_ARGS__)
+#define P99_IS_EQ_case(...) P99_TOK_EQ(case, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c char */
-#define IS_EQ_char(...) P99_TOK_EQ(char, __VA_ARGS__)
+#define P99_IS_EQ_char(...) P99_TOK_EQ(char, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c const */
-#define IS_EQ_const(...) P99_TOK_EQ(const, __VA_ARGS__)
+#define P99_IS_EQ_const(...) P99_TOK_EQ(const, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c continue */
-#define IS_EQ_continue(...) P99_TOK_EQ(continue, __VA_ARGS__)
+#define P99_IS_EQ_continue(...) P99_TOK_EQ(continue, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c default */
-#define IS_EQ_default(...) P99_TOK_EQ(default, __VA_ARGS__)
+#define P99_IS_EQ_default(...) P99_TOK_EQ(default, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c do */
-#define IS_EQ_do(...) P99_TOK_EQ(do, __VA_ARGS__)
+#define P99_IS_EQ_do(...) P99_TOK_EQ(do, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c double */
-#define IS_EQ_double(...) P99_TOK_EQ(double, __VA_ARGS__)
+#define P99_IS_EQ_double(...) P99_TOK_EQ(double, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c else */
-#define IS_EQ_else(...) P99_TOK_EQ(else, __VA_ARGS__)
+#define P99_IS_EQ_else(...) P99_TOK_EQ(else, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c enum */
-#define IS_EQ_enum(...) P99_TOK_EQ(enum, __VA_ARGS__)
+#define P99_IS_EQ_enum(...) P99_TOK_EQ(enum, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c extern */
-#define IS_EQ_extern(...) P99_TOK_EQ(extern, __VA_ARGS__)
+#define P99_IS_EQ_extern(...) P99_TOK_EQ(extern, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c float */
-#define IS_EQ_float(...) P99_TOK_EQ(float, __VA_ARGS__)
+#define P99_IS_EQ_float(...) P99_TOK_EQ(float, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c for */
-#define IS_EQ_for(...) P99_TOK_EQ(for, __VA_ARGS__)
+#define P99_IS_EQ_for(...) P99_TOK_EQ(for, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c goto */
-#define IS_EQ_goto(...) P99_TOK_EQ(goto, __VA_ARGS__)
+#define P99_IS_EQ_goto(...) P99_TOK_EQ(goto, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c if */
-#define IS_EQ_if(...) P99_TOK_EQ(if, __VA_ARGS__)
+#define P99_IS_EQ_if(...) P99_TOK_EQ(if, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c inline */
-#define IS_EQ_inline(...) P99_TOK_EQ(inline, __VA_ARGS__)
+#define P99_IS_EQ_inline(...) P99_TOK_EQ(inline, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c int */
-#define IS_EQ_int(...) P99_TOK_EQ(int, __VA_ARGS__)
+#define P99_IS_EQ_int(...) P99_TOK_EQ(int, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c long */
-#define IS_EQ_long(...) P99_TOK_EQ(long, __VA_ARGS__)
+#define P99_IS_EQ_long(...) P99_TOK_EQ(long, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c register */
-#define IS_EQ_register(...) P99_TOK_EQ(register, __VA_ARGS__)
+#define P99_IS_EQ_register(...) P99_TOK_EQ(register, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c restrict */
-#define IS_EQ_restrict(...) P99_TOK_EQ(restrict, __VA_ARGS__)
+#define P99_IS_EQ_restrict(...) P99_TOK_EQ(restrict, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c return */
-#define IS_EQ_return(...) P99_TOK_EQ(return, __VA_ARGS__)
+#define P99_IS_EQ_return(...) P99_TOK_EQ(return, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c short */
-#define IS_EQ_short(...) P99_TOK_EQ(short, __VA_ARGS__)
+#define P99_IS_EQ_short(...) P99_TOK_EQ(short, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c signed */
-#define IS_EQ_signed(...) P99_TOK_EQ(signed, __VA_ARGS__)
+#define P99_IS_EQ_signed(...) P99_TOK_EQ(signed, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c sizeof */
-#define IS_EQ_sizeof(...) P99_TOK_EQ(sizeof, __VA_ARGS__)
+#define P99_IS_EQ_sizeof(...) P99_TOK_EQ(sizeof, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c static */
-#define IS_EQ_static(...) P99_TOK_EQ(static, __VA_ARGS__)
+#define P99_IS_EQ_static(...) P99_TOK_EQ(static, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c struct */
-#define IS_EQ_struct(...) P99_TOK_EQ(struct, __VA_ARGS__)
+#define P99_IS_EQ_struct(...) P99_TOK_EQ(struct, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c switch */
-#define IS_EQ_switch(...) P99_TOK_EQ(switch, __VA_ARGS__)
+#define P99_IS_EQ_switch(...) P99_TOK_EQ(switch, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c typedef */
-#define IS_EQ_typedef(...) P99_TOK_EQ(typedef, __VA_ARGS__)
+#define P99_IS_EQ_typedef(...) P99_TOK_EQ(typedef, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c union */
-#define IS_EQ_union(...) P99_TOK_EQ(union, __VA_ARGS__)
+#define P99_IS_EQ_union(...) P99_TOK_EQ(union, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c unsigned */
-#define IS_EQ_unsigned(...) P99_TOK_EQ(unsigned, __VA_ARGS__)
+#define P99_IS_EQ_unsigned(...) P99_TOK_EQ(unsigned, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c void */
-#define IS_EQ_void(...) P99_TOK_EQ(void, __VA_ARGS__)
+#define P99_IS_EQ_void(...) P99_TOK_EQ(void, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c volatile */
-#define IS_EQ_volatile(...) P99_TOK_EQ(volatile, __VA_ARGS__)
+#define P99_IS_EQ_volatile(...) P99_TOK_EQ(volatile, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c while */
-#define IS_EQ_while(...) P99_TOK_EQ(while, __VA_ARGS__)
+#define P99_IS_EQ_while(...) P99_TOK_EQ(while, __VA_ARGS__)
 #define P99__DEC_PRED_1 0
 #define P99__DEC_PRED_2 1
 #define P99__DEC_PRED_3 2
@@ -1137,126 +1137,126 @@
 #define DUPL63(...) __VA_ARGS__, DUPL62(__VA_ARGS__)
 #define DUPL64(...) __VA_ARGS__, DUPL63(__VA_ARGS__)
 #define P99__FOR2(NAME, OP, FUNC, ...) \
-	OP(NAME, 1, P99__FOR1(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 1))
+	OP(NAME, 1, P99__FOR1(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 1))
 #define P99__FOR3(NAME, OP, FUNC, ...) \
-	OP(NAME, 2, P99__FOR2(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 2))
+	OP(NAME, 2, P99__FOR2(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 2))
 #define P99__FOR4(NAME, OP, FUNC, ...) \
-	OP(NAME, 3, P99__FOR3(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 3))
+	OP(NAME, 3, P99__FOR3(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 3))
 #define P99__FOR5(NAME, OP, FUNC, ...) \
-	OP(NAME, 4, P99__FOR4(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 4))
+	OP(NAME, 4, P99__FOR4(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 4))
 #define P99__FOR6(NAME, OP, FUNC, ...) \
-	OP(NAME, 5, P99__FOR5(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 5))
+	OP(NAME, 5, P99__FOR5(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 5))
 #define P99__FOR7(NAME, OP, FUNC, ...) \
-	OP(NAME, 6, P99__FOR6(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 6))
+	OP(NAME, 6, P99__FOR6(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 6))
 #define P99__FOR8(NAME, OP, FUNC, ...) \
-	OP(NAME, 7, P99__FOR7(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 7))
+	OP(NAME, 7, P99__FOR7(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 7))
 #define P99__FOR9(NAME, OP, FUNC, ...) \
-	OP(NAME, 8, P99__FOR8(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 8))
+	OP(NAME, 8, P99__FOR8(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 8))
 #define P99__FOR10(NAME, OP, FUNC, ...) \
-	OP(NAME, 9, P99__FOR9(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 9))
+	OP(NAME, 9, P99__FOR9(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 9))
 #define P99__FOR11(NAME, OP, FUNC, ...) \
-	OP(NAME, 10, P99__FOR10(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 10))
+	OP(NAME, 10, P99__FOR10(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 10))
 #define P99__FOR12(NAME, OP, FUNC, ...) \
-	OP(NAME, 11, P99__FOR11(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 11))
+	OP(NAME, 11, P99__FOR11(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 11))
 #define P99__FOR13(NAME, OP, FUNC, ...) \
-	OP(NAME, 12, P99__FOR12(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 12))
+	OP(NAME, 12, P99__FOR12(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 12))
 #define P99__FOR14(NAME, OP, FUNC, ...) \
-	OP(NAME, 13, P99__FOR13(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 13))
+	OP(NAME, 13, P99__FOR13(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 13))
 #define P99__FOR15(NAME, OP, FUNC, ...) \
-	OP(NAME, 14, P99__FOR14(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 14))
+	OP(NAME, 14, P99__FOR14(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 14))
 #define P99__FOR16(NAME, OP, FUNC, ...) \
-	OP(NAME, 15, P99__FOR15(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 15))
+	OP(NAME, 15, P99__FOR15(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 15))
 #define P99__FOR17(NAME, OP, FUNC, ...) \
-	OP(NAME, 16, P99__FOR16(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 16))
+	OP(NAME, 16, P99__FOR16(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 16))
 #define P99__FOR18(NAME, OP, FUNC, ...) \
-	OP(NAME, 17, P99__FOR17(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 17))
+	OP(NAME, 17, P99__FOR17(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 17))
 #define P99__FOR19(NAME, OP, FUNC, ...) \
-	OP(NAME, 18, P99__FOR18(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 18))
+	OP(NAME, 18, P99__FOR18(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 18))
 #define P99__FOR20(NAME, OP, FUNC, ...) \
-	OP(NAME, 19, P99__FOR19(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 19))
+	OP(NAME, 19, P99__FOR19(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 19))
 #define P99__FOR21(NAME, OP, FUNC, ...) \
-	OP(NAME, 20, P99__FOR20(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 20))
+	OP(NAME, 20, P99__FOR20(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 20))
 #define P99__FOR22(NAME, OP, FUNC, ...) \
-	OP(NAME, 21, P99__FOR21(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 21))
+	OP(NAME, 21, P99__FOR21(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 21))
 #define P99__FOR23(NAME, OP, FUNC, ...) \
-	OP(NAME, 22, P99__FOR22(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 22))
+	OP(NAME, 22, P99__FOR22(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 22))
 #define P99__FOR24(NAME, OP, FUNC, ...) \
-	OP(NAME, 23, P99__FOR23(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 23))
+	OP(NAME, 23, P99__FOR23(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 23))
 #define P99__FOR25(NAME, OP, FUNC, ...) \
-	OP(NAME, 24, P99__FOR24(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 24))
+	OP(NAME, 24, P99__FOR24(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 24))
 #define P99__FOR26(NAME, OP, FUNC, ...) \
-	OP(NAME, 25, P99__FOR25(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 25))
+	OP(NAME, 25, P99__FOR25(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 25))
 #define P99__FOR27(NAME, OP, FUNC, ...) \
-	OP(NAME, 26, P99__FOR26(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 26))
+	OP(NAME, 26, P99__FOR26(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 26))
 #define P99__FOR28(NAME, OP, FUNC, ...) \
-	OP(NAME, 27, P99__FOR27(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 27))
+	OP(NAME, 27, P99__FOR27(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 27))
 #define P99__FOR29(NAME, OP, FUNC, ...) \
-	OP(NAME, 28, P99__FOR28(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 28))
+	OP(NAME, 28, P99__FOR28(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 28))
 #define P99__FOR30(NAME, OP, FUNC, ...) \
-	OP(NAME, 29, P99__FOR29(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 29))
+	OP(NAME, 29, P99__FOR29(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 29))
 #define P99__FOR31(NAME, OP, FUNC, ...) \
-	OP(NAME, 30, P99__FOR30(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 30))
+	OP(NAME, 30, P99__FOR30(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 30))
 #define P99__FOR32(NAME, OP, FUNC, ...) \
-	OP(NAME, 31, P99__FOR31(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 31))
+	OP(NAME, 31, P99__FOR31(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 31))
 #define P99__FOR33(NAME, OP, FUNC, ...) \
-	OP(NAME, 32, P99__FOR32(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 32))
+	OP(NAME, 32, P99__FOR32(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 32))
 #define P99__FOR34(NAME, OP, FUNC, ...) \
-	OP(NAME, 33, P99__FOR33(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 33))
+	OP(NAME, 33, P99__FOR33(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 33))
 #define P99__FOR35(NAME, OP, FUNC, ...) \
-	OP(NAME, 34, P99__FOR34(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 34))
+	OP(NAME, 34, P99__FOR34(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 34))
 #define P99__FOR36(NAME, OP, FUNC, ...) \
-	OP(NAME, 35, P99__FOR35(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 35))
+	OP(NAME, 35, P99__FOR35(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 35))
 #define P99__FOR37(NAME, OP, FUNC, ...) \
-	OP(NAME, 36, P99__FOR36(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 36))
+	OP(NAME, 36, P99__FOR36(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 36))
 #define P99__FOR38(NAME, OP, FUNC, ...) \
-	OP(NAME, 37, P99__FOR37(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 37))
+	OP(NAME, 37, P99__FOR37(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 37))
 #define P99__FOR39(NAME, OP, FUNC, ...) \
-	OP(NAME, 38, P99__FOR38(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 38))
+	OP(NAME, 38, P99__FOR38(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 38))
 #define P99__FOR40(NAME, OP, FUNC, ...) \
-	OP(NAME, 39, P99__FOR39(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 39))
+	OP(NAME, 39, P99__FOR39(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 39))
 #define P99__FOR41(NAME, OP, FUNC, ...) \
-	OP(NAME, 40, P99__FOR40(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 40))
+	OP(NAME, 40, P99__FOR40(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 40))
 #define P99__FOR42(NAME, OP, FUNC, ...) \
-	OP(NAME, 41, P99__FOR41(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 41))
+	OP(NAME, 41, P99__FOR41(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 41))
 #define P99__FOR43(NAME, OP, FUNC, ...) \
-	OP(NAME, 42, P99__FOR42(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 42))
+	OP(NAME, 42, P99__FOR42(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 42))
 #define P99__FOR44(NAME, OP, FUNC, ...) \
-	OP(NAME, 43, P99__FOR43(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 43))
+	OP(NAME, 43, P99__FOR43(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 43))
 #define P99__FOR45(NAME, OP, FUNC, ...) \
-	OP(NAME, 44, P99__FOR44(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 44))
+	OP(NAME, 44, P99__FOR44(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 44))
 #define P99__FOR46(NAME, OP, FUNC, ...) \
-	OP(NAME, 45, P99__FOR45(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 45))
+	OP(NAME, 45, P99__FOR45(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 45))
 #define P99__FOR47(NAME, OP, FUNC, ...) \
-	OP(NAME, 46, P99__FOR46(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 46))
+	OP(NAME, 46, P99__FOR46(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 46))
 #define P99__FOR48(NAME, OP, FUNC, ...) \
-	OP(NAME, 47, P99__FOR47(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 47))
+	OP(NAME, 47, P99__FOR47(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 47))
 #define P99__FOR49(NAME, OP, FUNC, ...) \
-	OP(NAME, 48, P99__FOR48(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 48))
+	OP(NAME, 48, P99__FOR48(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 48))
 #define P99__FOR50(NAME, OP, FUNC, ...) \
-	OP(NAME, 49, P99__FOR49(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 49))
+	OP(NAME, 49, P99__FOR49(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 49))
 #define P99__FOR51(NAME, OP, FUNC, ...) \
-	OP(NAME, 50, P99__FOR50(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 50))
+	OP(NAME, 50, P99__FOR50(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 50))
 #define P99__FOR52(NAME, OP, FUNC, ...) \
-	OP(NAME, 51, P99__FOR51(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 51))
+	OP(NAME, 51, P99__FOR51(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 51))
 #define P99__FOR53(NAME, OP, FUNC, ...) \
-	OP(NAME, 52, P99__FOR52(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 52))
+	OP(NAME, 52, P99__FOR52(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 52))
 #define P99__FOR54(NAME, OP, FUNC, ...) \
-	OP(NAME, 53, P99__FOR53(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 53))
+	OP(NAME, 53, P99__FOR53(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 53))
 #define P99__FOR55(NAME, OP, FUNC, ...) \
-	OP(NAME, 54, P99__FOR54(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 54))
+	OP(NAME, 54, P99__FOR54(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 54))
 #define P99__FOR56(NAME, OP, FUNC, ...) \
-	OP(NAME, 55, P99__FOR55(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 55))
+	OP(NAME, 55, P99__FOR55(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 55))
 #define P99__FOR57(NAME, OP, FUNC, ...) \
-	OP(NAME, 56, P99__FOR56(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 56))
+	OP(NAME, 56, P99__FOR56(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 56))
 #define P99__FOR58(NAME, OP, FUNC, ...) \
-	OP(NAME, 57, P99__FOR57(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 57))
+	OP(NAME, 57, P99__FOR57(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 57))
 #define P99__FOR59(NAME, OP, FUNC, ...) \
-	OP(NAME, 58, P99__FOR58(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 58))
+	OP(NAME, 58, P99__FOR58(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 58))
 #define P99__FOR60(NAME, OP, FUNC, ...) \
-	OP(NAME, 59, P99__FOR59(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 59))
+	OP(NAME, 59, P99__FOR59(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 59))
 #define P99__FOR61(NAME, OP, FUNC, ...) \
-	OP(NAME, 60, P99__FOR60(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 60))
+	OP(NAME, 60, P99__FOR60(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 60))
 #define P99__FOR62(NAME, OP, FUNC, ...) \
-	OP(NAME, 61, P99__FOR61(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 61))
+	OP(NAME, 61, P99__FOR61(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 61))
 #define P99__FOR63(NAME, OP, FUNC, ...) \
-	OP(NAME, 62, P99__FOR62(NAME, OP, FUNC, ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, LAST(__VA_ARGS__), 62))
+	OP(NAME, 62, P99__FOR62(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 62))

@@ -138,7 +138,7 @@
  **/
 #define REVS(...) P99__REVS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define P99__REVS(N, ...) P99_PASTE2(P99__REVS_, IS_DEC_LT(N, 2))(N, __VA_ARGS__)
+#define P99__REVS(N, ...) P99_PASTE2(P99__REVS_, P99_IS_DEC_LT(N, 2))(N, __VA_ARGS__)
 
 #define P99__REVS_0(N, ...) P99__REVS_(N,__VA_ARGS__)
 #define P99__REVS_1(N, ...) __VA_ARGS__
@@ -153,7 +153,7 @@
  ** @warning Both arguments must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define DEC_DIV(A, B) CHS(A, FOR(B, 32, P99__SEQ, P99__IDI, P99__ALL_ONES()))
+#define P99_DEC_DIV(A, B) CHS(A, FOR(B, 32, P99__SEQ, P99__IDI, P99__ALL_ONES()))
 
 #define P99__IDI(B, X, I) DUPL(B, I)
 

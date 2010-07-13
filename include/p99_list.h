@@ -79,7 +79,7 @@
  ** - If the argument list has just one element which is empty, the
  **   result will just be a sequence of @a N - 1 commas.
  **/
-#define DUPL(...) P99_PASTE2(P99__DUPL_, IS_DEC_LT(P99_NARG(__VA_ARGS__), 2))(__VA_ARGS__)
+#define DUPL(...) P99_PASTE2(P99__DUPL_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 2))(__VA_ARGS__)
 
 #define P99__DUPL_0(...) P99__DUPL(__VA_ARGS__)
 #define P99__DUPL_1(...)
