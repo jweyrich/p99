@@ -17,14 +17,6 @@
 /*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
 
 
-/**
- ** @brief Provide a documentation section to a function defined with ::P99_CALL_DEFARG
- **/
-#define P99_DEFARG_DOCU(NAME)                                       \
-/*! @see P99_CALL_DEFARG */                                          \
-/*! @see P99_DECLARE_DEFARG */                                              \
-/*! @see NAME This is actually implemented as a macro that helps to provide default arguments to the real function. */
-
 #define DOCUMENT_BLOCK /*! @see BLOCK for restrictions on preliminary exits from the dependent block or statement. **/
 
 

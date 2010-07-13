@@ -1271,13 +1271,10 @@ int T ## _create(T* arg, pthread_t *id)"
 # Use the PREDEFINED tag if you want to use a different macro definition.
 
 EXPAND_AS_DEFINED      =			\
-CALL_WITH_DEFAULTS                              \
-CAT2                                            \
 DECLARE_ARI2STR					\
 DECLARE_AUTH_SOCK_FUNC				\
 DECLARE_BASIC					\
 DECLARE_BASIC_TYPE				\
-DECLARE_DEFARG					\
 DECLARE_DELETE					\
 DECLARE_ENUM					\
 DECLARE_NEW_DELETE				\
@@ -1298,7 +1295,6 @@ DEFINE_AUTH_SOCK_FUNC				\
 DEFINE_BASIC					\
 DEFINE_BASIC_TYPE				\
 DEFINE_DEFARG					\
-DEFINE_DELETE					\
 DEFINE_ENUM					\
 DEFINE_NEW_DELETE				\
 DEFINE_ONCE					\
@@ -1313,18 +1309,22 @@ DEFINE_VDELETE					\
 DEFINE_VNEW					\
 DOCUMENT_DESTROY				\
 DOCUMENT_INIT					\
-FSYMB_DOCUMENTATION				\
 MAYBE_EXTERNAL					\
 ORWL_ALIAS					\
 ORWL_FTAB					\
 ORWL_REGISTER					\
+P99_CALL_DEFARG                                 \
+P99_CAT2                                        \
+P99_DECLARE_DEFARG				\
+P99_DEFARG_DOCU 				\
+P99_DEFINE_DELETE				\
+P99_PASTE2					\
+P99_PASTE3					\
+P99_PASTE4					\
+P99_PROTOTYPE					\
 P99__DECLARE_ARI2STR				\
 P99__ORWL_ALIAS					\
 P99__PROTOTYPE                                  \
-PASTE2						\
-PASTE3						\
-PASTE4						\
-PROTOTYPE					\
 VA_ARGS						\
 VA_ARGS_DOCUMENTATION
 

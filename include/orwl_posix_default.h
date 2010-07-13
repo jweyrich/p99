@@ -52,8 +52,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "p99_defarg.h"
 #include "orwl_int.h"
-#include "orwl_macro.h"
 
 // pthread_barrier_init (3posix) - destroy and initialize a barrier object (ADVANCED REALTIME THREADS)
 // not possible because of the count argument
