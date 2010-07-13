@@ -120,7 +120,7 @@ printf "#define P99__dec_eval_%d %d\n", $_, $_
     foreach (0.. $maxnumber);
 printf "#define P99__dec_eval_minus_%d %d\n", $_, -$_
     foreach (0.. $maxnumber);
-print "#define DUPL${_}(...) __VA_ARGS__, DUPL", ($_ - 1), "(__VA_ARGS__)\n"
+print "#define P99_DUPL${_}(...) __VA_ARGS__, P99_DUPL", ($_ - 1), "(__VA_ARGS__)\n"
     foreach (2 .. $maxnumber);
 
 

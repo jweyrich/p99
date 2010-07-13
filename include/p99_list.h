@@ -26,7 +26,7 @@
 /**
  ** Cut the argument list at position @a N
  **/
-#define SELS(N, ...) P99_PASTE2(P99__PRE, N)(__VA_ARGS__)
+#define P99_SELS(N, ...) P99_PASTE2(P99__PRE, N)(__VA_ARGS__)
 
 #define P99__SKP0(...) __VA_ARGS__
 #define P99__SKP1(_0, ...) __VA_ARGS__
@@ -35,7 +35,7 @@
 /**
  ** @brief Skip @a N elements in the remaining argument list.
  **/
-#define SKP(N, ...) P99_PASTE2(P99__SKP, N)(__VA_ARGS__)
+#define P99_SKP(N, ...) P99_PASTE2(P99__SKP, N)(__VA_ARGS__)
 
 /**
  ** @brief Get the sublist of length @a L starting at the @a
@@ -43,8 +43,8 @@
  **
  ** Counting of elements starts at 0.
  **/
-#define SUB(N, L, ...) P99__SUB(L, SKP(N, __VA_ARGS__))
-#define P99__SUB(L, ...) SELS(L, __VA_ARGS__)
+#define P99_SUB(N, L, ...) P99__SUB(L, P99_SKP(N, __VA_ARGS__))
+#define P99__SUB(L, ...) P99_SELS(L, __VA_ARGS__)
 
 /**
  ** @brief Choose the @a N<sup>th</sup> element in the remaining argument
@@ -52,22 +52,11 @@
  **
  ** Counting of elements starts at 0.
  **/
-#define CHS(N, ...) SUB(N, 1, __VA_ARGS__)
-
-
-#ifndef DOXYGEN
-#define REP0(...)
-#define REP1(X) X
-#endif
-/**
- ** @brief Concatenate the token @a X @a N times.
- **/
-#define REP(N, X) P99__REP(N, X)
-#define P99__REP(N, X) REP ## N(X)
+#define P99_CHS(N, ...) P99_SUB(N, 1, __VA_ARGS__)
 
 #ifndef DOXYGEN
-#define DUPL0(...)
-#define DUPL1(...) __VA_ARGS__
+#define P99_DUPL0(...)
+#define P99_DUPL1(...) __VA_ARGS__
 #endif
 
 /**
@@ -79,13 +68,13 @@
  ** - If the argument list has just one element which is empty, the
  **   result will just be a sequence of @a N - 1 commas.
  **/
-#define DUPL(...) P99_PASTE2(P99__DUPL_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 2))(__VA_ARGS__)
+#define P99_DUPL(...) P99_PASTE2(P99__DUPL_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 2))(__VA_ARGS__)
 
 #define P99__DUPL_0(...) P99__DUPL(__VA_ARGS__)
 #define P99__DUPL_1(...)
 
 
-#define P99__DUPL(N, ...) DUPL ## N(__VA_ARGS__)
+#define P99__DUPL(N, ...) P99_DUPL ## N(__VA_ARGS__)
 
 
 /** @}

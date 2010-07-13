@@ -153,9 +153,9 @@
  ** @warning Both arguments must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define P99_DEC_DIV(A, B) CHS(A, P99_FOR(B, 32, P99__SEQ, P99__IDI, P99__ALL_ONES()))
+#define P99_DEC_DIV(A, B) P99_CHS(A, P99_FOR(B, 32, P99__SEQ, P99__IDI, P99__ALL_ONES()))
 
-#define P99__IDI(B, X, I) DUPL(B, I)
+#define P99__IDI(B, X, I) P99_DUPL(B, I)
 
 /** @}
  **/
