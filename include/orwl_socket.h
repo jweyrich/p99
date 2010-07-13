@@ -14,7 +14,7 @@
 #include "orwl_register.h"
 #include "orwl_host.h"
 
-FSYMB_DOCUMENTATION(orwl_hton)
+P99_DEFARG_DOCU(orwl_hton)
 inline
 void
 orwl_hton(uint32_t *n,        /*!< [out] array of length 2 @a l */
@@ -31,12 +31,12 @@ orwl_hton(uint32_t *n,        /*!< [out] array of length 2 @a l */
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(void, orwl_hton, uint32_t *, uint64_t const *, size_t);
-#define orwl_hton(...) CALL_WITH_DEFAULTS(orwl_hton, 3, __VA_ARGS__)
-DECLARE_DEFARG(orwl_hton, , , 1);
+P99_PROTOTYPE(void, orwl_hton, uint32_t *, uint64_t const *, size_t);
+#define orwl_hton(...) P99_CALL_DEFARG(orwl_hton, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_hton, , , 1);
 #endif
 
-FSYMB_DOCUMENTATION(orwl_ntoh)
+P99_DEFARG_DOCU(orwl_ntoh)
 inline
 void
 orwl_ntoh(uint64_t* h,       /*!< [out] array of length @a l */
@@ -52,9 +52,9 @@ orwl_ntoh(uint64_t* h,       /*!< [out] array of length @a l */
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(void, orwl_ntoh, uint64_t*, uint32_t const *, size_t);
-#define orwl_ntoh(...) CALL_WITH_DEFAULTS(orwl_ntoh, 3, __VA_ARGS__)
-DECLARE_DEFARG(orwl_ntoh, , , 1);
+P99_PROTOTYPE(void, orwl_ntoh, uint64_t*, uint32_t const *, size_t);
+#define orwl_ntoh(...) P99_CALL_DEFARG(orwl_ntoh, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_ntoh, , , 1);
 #endif
 
 extern in_addr_t orwl_inet_addr(char const *name);
@@ -83,7 +83,7 @@ in_addr_t inet4_addr(void) {
   return p99__inet4_addr;
 }
 
-FSYMB_DOCUMENTATION(orwl_inet_ntop)
+P99_DEFARG_DOCU(orwl_inet_ntop)
 inline
 char const* orwl_inet_ntop(struct sockaddr const* addr,
                            char* buf, size_t size) {
@@ -101,9 +101,9 @@ char const* orwl_inet_ntop(struct sockaddr const* addr,
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(char const*, orwl_inet_ntop, struct sockaddr const*, char*, size_t);
-DECLARE_DEFARG(orwl_inet_ntop, , , );
-#define orwl_inet_ntop(...) CALL_WITH_DEFAULTS(orwl_inet_ntop, 3, __VA_ARGS__)
+P99_PROTOTYPE(char const*, orwl_inet_ntop, struct sockaddr const*, char*, size_t);
+P99_DECLARE_DEFARG(orwl_inet_ntop, , , );
+#define orwl_inet_ntop(...) P99_CALL_DEFARG(orwl_inet_ntop, 3, __VA_ARGS__)
 #define orwl_inet_ntop_defarg_1() ((char[INET6_ADDRSTRLEN]){ 0 })
 #define orwl_inet_ntop_defarg_2() (INET6_ADDRSTRLEN)
 #endif
@@ -164,7 +164,7 @@ struct auth_sock {
 };
 
 DOCUMENT_INIT(auth_sock)
-FSYMB_DOCUMENTATION(auth_sock_init)
+P99_DEFARG_DOCU(auth_sock_init)
 inline
 auth_sock*
 auth_sock_init(auth_sock *sock,         /*!< [out] */
@@ -183,11 +183,11 @@ auth_sock_init(auth_sock *sock,         /*!< [out] */
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t);
-DECLARE_DEFARG(auth_sock_init, , -1, NULL, TNULL(size_t));
+P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t);
+P99_DECLARE_DEFARG(auth_sock_init, , -1, NULL, TNULL(size_t));
 
 
-#define auth_sock_init(...) CALL_WITH_DEFAULTS(auth_sock_init, 4, __VA_ARGS__)
+#define auth_sock_init(...) P99_CALL_DEFARG(auth_sock_init, 4, __VA_ARGS__)
 #endif
 
 void auth_sock_destroy(auth_sock *sock);
@@ -221,7 +221,7 @@ DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
 
 #define AUTH_SOCK_READ(A, F, ...)                               \
 (void)((void (*)(__VA_ARGS__)){P99_PASTE2(F, _signature)});     \
-VASSIGNS((A)->mes, __VA_ARGS__);                                \
+P99_VASSIGNS((A)->mes, __VA_ARGS__);                                \
 (A)->len -= P99_NARG(__VA_ARGS__);                              \
 (A)->mes += P99_NARG(__VA_ARGS__)
 
@@ -229,7 +229,7 @@ VASSIGNS((A)->mes, __VA_ARGS__);                                \
 addr_t getpeer(auth_sock *Arg);
 
 
-FSYMB_DOCUMENTATION(hostname)
+P99_DEFARG_DOCU(hostname)
 inline
 char const*
 hostname(char buffer[static 64], /*!< [out] defaults to a temporary */
@@ -241,9 +241,9 @@ hostname(char buffer[static 64], /*!< [out] defaults to a temporary */
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(char const*, hostname, char *, size_t);
-DECLARE_DEFARG(hostname, , );
-#define hostname(...) CALL_WITH_DEFAULTS(hostname, 2, __VA_ARGS__)
+P99_PROTOTYPE(char const*, hostname, char *, size_t);
+P99_DECLARE_DEFARG(hostname, , );
+#define hostname(...) P99_CALL_DEFARG(hostname, 2, __VA_ARGS__)
 #define hostname_defarg_0() ((char[64]){ 0 })
 #define hostname_defarg_1() (64)
 #endif

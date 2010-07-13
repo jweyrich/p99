@@ -71,7 +71,7 @@ struct orwl_endpoint {
       }
 
 DOCUMENT_INIT(addr_t)
-FSYMB_DOCUMENTATION(addr_t)
+P99_DEFARG_DOCU(addr_t)
 inline
 addr_t* addr_t_init(addr_t *A,  /*!< the object to initialize */
                     in_addr_t I /*!< defaults to the null address */
@@ -85,9 +85,9 @@ addr_t* addr_t_init(addr_t *A,  /*!< the object to initialize */
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(addr_t*, addr_t_init, addr_t *, in_addr_t);
-#define addr_t_init(...) CALL_WITH_DEFAULTS(addr_t_init, 2, __VA_ARGS__)
-DECLARE_DEFARG(addr_t_init, , TNULL(in_addr_t));
+P99_PROTOTYPE(addr_t*, addr_t_init, addr_t *, in_addr_t);
+#define addr_t_init(...) P99_CALL_DEFARG(addr_t_init, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(addr_t_init, , TNULL(in_addr_t));
 #endif
 
 /**
@@ -140,7 +140,7 @@ port_t host2port(uint64_t A) {
 }
 
 DOCUMENT_INIT(port_t)
-FSYMB_DOCUMENTATION(port_t)
+P99_DEFARG_DOCU(port_t)
 inline
 port_t* port_t_init(port_t *A,   /*!< the object to initialize */
                     in_port_t P  /*!< defaults to 0 */
@@ -151,13 +151,13 @@ port_t* port_t_init(port_t *A,   /*!< the object to initialize */
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(port_t*, port_t_init, port_t *, in_port_t);
-#define port_t_init(...) CALL_WITH_DEFAULTS(port_t_init, 2, __VA_ARGS__)
-DECLARE_DEFARG(port_t_init, , TNULL(in_port_t));
+P99_PROTOTYPE(port_t*, port_t_init, port_t *, in_port_t);
+#define port_t_init(...) P99_CALL_DEFARG(port_t_init, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(port_t_init, , TNULL(in_port_t));
 #endif
 
 DOCUMENT_INIT(orwl_endpoint)
-FSYMB_DOCUMENTATION(orwl_endpoint_init)
+P99_DEFARG_DOCU(orwl_endpoint_init)
 inline
 orwl_endpoint* orwl_endpoint_init
 (orwl_endpoint *endpoint, /*!< the object to initialize */
@@ -181,9 +181,9 @@ void orwl_endpoint_destroy(orwl_endpoint *endpoint) {
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(orwl_endpoint*, orwl_endpoint_init, orwl_endpoint*, in_addr_t, in_port_t, uint64_t);
-#define orwl_endpoint_init(...) CALL_WITH_DEFAULTS(orwl_endpoint_init, 4, __VA_ARGS__)
-DECLARE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t), TNULL(uint64_t));
+P99_PROTOTYPE(orwl_endpoint*, orwl_endpoint_init, orwl_endpoint*, in_addr_t, in_port_t, uint64_t);
+#define orwl_endpoint_init(...) P99_CALL_DEFARG(orwl_endpoint_init, 4, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t), TNULL(uint64_t));
 #endif
 
 DECLARE_NEW_DELETE(orwl_endpoint);
@@ -192,15 +192,15 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, /*!< [out] the object to i
                                    char const* name   /*!< [in] the string to parse */
                                    );
 
-FSYMB_DOCUMENTATION(orwl_endpoint_print)
+P99_DEFARG_DOCU(orwl_endpoint_print)
 char const* orwl_endpoint_print(orwl_endpoint const* ep, /*!< [in] the object to interpret */
                                 char name[static 128]    /*!< [out] the string to initialize */
                                 );
 
 #ifndef DOXYGEN
-PROTOTYPE(char const*, orwl_endpoint_print, orwl_endpoint const*, char*);
-#define orwl_endpoint_print(...) CALL_WITH_DEFAULTS(orwl_endpoint_print, 2, __VA_ARGS__)
-DECLARE_DEFARG(orwl_endpoint_print, , );
+P99_PROTOTYPE(char const*, orwl_endpoint_print, orwl_endpoint const*, char*);
+#define orwl_endpoint_print(...) P99_CALL_DEFARG(orwl_endpoint_print, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_endpoint_print, , );
 #define orwl_endpoint_print_defarg_1() ((char[128])INITIALIZER)
 #endif
 

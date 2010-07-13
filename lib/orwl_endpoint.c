@@ -22,7 +22,7 @@ orwl_endpoint* orwl_endpoint_init
 void orwl_endpoint_destroy(orwl_endpoint *endpoint);
 
 
-DEFINE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t), TNULL(uint64_t));
+P99_DEFINE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t), TNULL(uint64_t));
 
 DEFINE_NEW_DELETE(orwl_endpoint);
 
@@ -113,8 +113,8 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
       orwl_inet_ntop(&addr4.in46, host);
     }
   }
-  STRCATS(name, "orwl://", host, ":", PRIu(port2net(&ep->port)), "/");
-  if (ep->index) STRCATS(name, PRIu(ep->index));
+  P99_STRCATS(name, "orwl://", host, ":", PRIu(port2net(&ep->port)), "/");
+  if (ep->index) P99_STRCATS(name, PRIu(ep->index));
   return name;
 }
 
@@ -214,7 +214,7 @@ bool orwl_recv_(int fd, uint64_t *mess, size_t len) {
 
 addr_t* addr_t_init(addr_t *A, in_addr_t I);
 
-DEFINE_DEFARG(addr_t_init, , TNULL(in_addr_t));
+P99_DEFINE_DEFARG(addr_t_init, , TNULL(in_addr_t));
 
 struct in_addr addr2net(addr_t const*A);
 
@@ -222,7 +222,7 @@ struct in6_addr addr2net6(addr_t const*A);
 
 port_t* port_t_init(port_t *A, in_port_t P);
 
-DEFINE_DEFARG(port_t_init, , TNULL(in_port_t));
+P99_DEFINE_DEFARG(port_t_init, , TNULL(in_port_t));
 
 in_port_t port2net(port_t const*A);
 uint64_t port2host(port_t const*A);

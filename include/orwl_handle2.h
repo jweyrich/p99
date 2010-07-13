@@ -53,7 +53,7 @@ struct orwl_handle2 {
   }                                                             \
 }
 
-FSYMB_DOCUMENTATION(orwl_handle2_init)
+P99_DEFARG_DOCU(orwl_handle2_init)
 DOCUMENT_INIT(orwl_handle2)
 inline
 orwl_handle2 *orwl_handle2_init(orwl_handle2 *rh2, orwl_mirror* m, bool inc) {
@@ -77,50 +77,50 @@ void orwl_handle2_destroy(orwl_handle2 *rh2) {
 }
 
 inline
-PROTOTYPE(orwl_handle2 *, orwl_handle2_init, orwl_handle2 *, orwl_mirror*, bool);
+P99_PROTOTYPE(orwl_handle2 *, orwl_handle2_init, orwl_handle2 *, orwl_mirror*, bool);
 
-#define orwl_handle2_init(...) CALL_WITH_DEFAULTS(orwl_handle2_init, 3, __VA_ARGS__)
+#define orwl_handle2_init(...) P99_CALL_DEFARG(orwl_handle2_init, 3, __VA_ARGS__)
 
-DECLARE_DEFARG(orwl_handle2_init, , NULL, false);
+P99_DECLARE_DEFARG(orwl_handle2_init, , NULL, false);
 
 DECLARE_NEW_DELETE(orwl_handle2);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle2);
 
 
-FSYMB_DOCUMENTATION(orwl_write_request2)
+P99_DEFARG_DOCU(orwl_write_request2)
 orwl_state orwl_write_request2(orwl_mirror* location, /*!< [in,out] the location for the request */
                               orwl_handle2* rh2,   /*!< [in,out] the handle for the request */
                               rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                               );
 
-FSYMB_DOCUMENTATION(orwl_read_request2)
+P99_DEFARG_DOCU(orwl_read_request2)
 orwl_state orwl_read_request2(orwl_mirror* location, /*!< [in,out] the location for the request */
                              orwl_handle2* rh2,   /*!< [in,out] the handle for the request */
                              rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                              );
 
-FSYMB_DOCUMENTATION(orwl_release2)
+P99_DEFARG_DOCU(orwl_release2)
 orwl_state orwl_release2(orwl_handle2* rh2,   /*!< [in,out] the handle to be released */
                         rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                         );
 
-FSYMB_DOCUMENTATION(orwl_cancel2)
+P99_DEFARG_DOCU(orwl_cancel2)
 orwl_state orwl_cancel2(orwl_handle2* rh2,   /*!< [in,out] the handle to be canceled */
                        rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                        );
 
-FSYMB_DOCUMENTATION(orwl_acquire2)
+P99_DEFARG_DOCU(orwl_acquire2)
 orwl_state orwl_acquire2(orwl_handle2* rh2,   /*!< [in,out] the handle to be acquired */
                          rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                          );
 
-FSYMB_DOCUMENTATION(orwl_test2)
+P99_DEFARG_DOCU(orwl_test2)
 orwl_state orwl_test2(orwl_handle2* rh2,   /*!< [in,out] the handle to be tested */
                       rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                       );
 
-FSYMB_DOCUMENTATION(orwl_map2)
+P99_DEFARG_DOCU(orwl_map2)
 void orwl_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
                uint64_t** data,         /*!< [out] place a pointer to the
                                        data, here */
@@ -129,7 +129,7 @@ void orwl_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
                rand48_t* seed       /*!< [in,out] defaults to a thread local seed */
                );
 
-FSYMB_DOCUMENTATION(orwl_resize2)
+P99_DEFARG_DOCU(orwl_resize2)
 void orwl_resize2(orwl_handle2* rh2,   /*!< [in,out] the handle whos
                                           data to resize */
                   size_t data_len,     /*!< [in] future length of @a data in
@@ -141,29 +141,29 @@ void orwl_resize2(orwl_handle2* rh2,   /*!< [in,out] the handle whos
 
 
 #ifndef DOXYGEN
-PROTOTYPE(orwl_state, orwl_write_request2, orwl_mirror*, orwl_handle2*, rand48_t*);
-#define orwl_write_request2(...)  CALL_WITH_DEFAULTS(orwl_write_request2, 3, __VA_ARGS__)
-DECLARE_DEFARG(orwl_write_request2, , , seed_get());
+P99_PROTOTYPE(orwl_state, orwl_write_request2, orwl_mirror*, orwl_handle2*, rand48_t*);
+#define orwl_write_request2(...)  P99_CALL_DEFARG(orwl_write_request2, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_write_request2, , , seed_get());
 
-PROTOTYPE(orwl_state, orwl_read_request2, orwl_mirror*, orwl_handle2*, rand48_t*);
-#define orwl_read_request2(...)  CALL_WITH_DEFAULTS(orwl_read_request2, 3, __VA_ARGS__)
-DECLARE_DEFARG(orwl_read_request2, , , seed_get());
+P99_PROTOTYPE(orwl_state, orwl_read_request2, orwl_mirror*, orwl_handle2*, rand48_t*);
+#define orwl_read_request2(...)  P99_CALL_DEFARG(orwl_read_request2, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_read_request2, , , seed_get());
 
-PROTOTYPE(orwl_state, orwl_release2, orwl_handle2*, rand48_t*);
-#define orwl_release2(...)  CALL_WITH_DEFAULTS(orwl_release2, 2, __VA_ARGS__)
-DECLARE_DEFARG(orwl_release2, , seed_get());
+P99_PROTOTYPE(orwl_state, orwl_release2, orwl_handle2*, rand48_t*);
+#define orwl_release2(...)  P99_CALL_DEFARG(orwl_release2, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_release2, , seed_get());
 
-PROTOTYPE(orwl_state, orwl_cancel2, orwl_handle2*, rand48_t*);
-#define orwl_cancel2(...)  CALL_WITH_DEFAULTS(orwl_cancel2, 2, __VA_ARGS__)
-DECLARE_DEFARG(orwl_cancel2, , seed_get());
+P99_PROTOTYPE(orwl_state, orwl_cancel2, orwl_handle2*, rand48_t*);
+#define orwl_cancel2(...)  P99_CALL_DEFARG(orwl_cancel2, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_cancel2, , seed_get());
 
-PROTOTYPE(orwl_state, orwl_acquire2, orwl_handle2*, rand48_t*);
-#define orwl_acquire2(...)  CALL_WITH_DEFAULTS(orwl_acquire2, 2, __VA_ARGS__)
-DECLARE_DEFARG(orwl_acquire2, , seed_get());
+P99_PROTOTYPE(orwl_state, orwl_acquire2, orwl_handle2*, rand48_t*);
+#define orwl_acquire2(...)  P99_CALL_DEFARG(orwl_acquire2, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_acquire2, , seed_get());
 
-PROTOTYPE(orwl_state, orwl_test2, orwl_handle2*, rand48_t*);
-#define orwl_test2(...)  CALL_WITH_DEFAULTS(orwl_test2, 2, __VA_ARGS__)
-DECLARE_DEFARG(orwl_test2, , seed_get());
+P99_PROTOTYPE(orwl_state, orwl_test2, orwl_handle2*, rand48_t*);
+#define orwl_test2(...)  P99_CALL_DEFARG(orwl_test2, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_test2, , seed_get());
 
 #endif
 

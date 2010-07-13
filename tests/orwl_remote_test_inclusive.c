@@ -36,11 +36,11 @@ cb_t* cb_t_init(cb_t *cb, size_t m, size_t p, char* i) {
   return cb;
 }
 
-PROTOTYPE(cb_t*, cb_t_init, cb_t*, size_t, size_t, char*);
-FSYMB_DOCUMENTATION(cb_t_init)
-#define cb_t_init(...) CALL_WITH_DEFAULTS(cb_t_init, 4, __VA_ARGS__)
-DECLARE_DEFARG(cb_t_init, , TNULL(size_t), TNULL(size_t), NULL);
-DEFINE_DEFARG(cb_t_init, , TNULL(size_t), TNULL(size_t), NULL);
+P99_PROTOTYPE(cb_t*, cb_t_init, cb_t*, size_t, size_t, char*);
+P99_DEFARG_DOCU(cb_t_init)
+#define cb_t_init(...) P99_CALL_DEFARG(cb_t_init, 4, __VA_ARGS__)
+P99_DECLARE_DEFARG(cb_t_init, , TNULL(size_t), TNULL(size_t), NULL);
+P99_DEFINE_DEFARG(cb_t_init, , TNULL(size_t), TNULL(size_t), NULL);
 
 void cb_t_destroy(cb_t *cb) {
   /* empty */
@@ -72,10 +72,10 @@ arg_t* arg_t_init(arg_t *arg, size_t m, size_t ph, orwl_mirror* le) {
   return arg;
 }
 
-PROTOTYPE(arg_t*, arg_t_init, arg_t *, size_t, size_t, orwl_mirror*);
-#define arg_t_init(...) CALL_WITH_DEFAULTS(arg_t_init, 4, __VA_ARGS__)
-DECLARE_DEFARG(arg_t_init, , TNULL(size_t), TNULL(size_t), NULL);
-DEFINE_DEFARG(arg_t_init, , TNULL(size_t), TNULL(size_t), NULL);
+P99_PROTOTYPE(arg_t*, arg_t_init, arg_t *, size_t, size_t, orwl_mirror*);
+#define arg_t_init(...) P99_CALL_DEFARG(arg_t_init, 4, __VA_ARGS__)
+P99_DECLARE_DEFARG(arg_t_init, , TNULL(size_t), TNULL(size_t), NULL);
+P99_DEFINE_DEFARG(arg_t_init, , TNULL(size_t), TNULL(size_t), NULL);
 
 
 void arg_t_destroy(arg_t *arg) {

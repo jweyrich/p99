@@ -58,7 +58,7 @@ DECLARE_ENUM(orwl_state,
 
 
 DOCUMENT_INIT(orwl_state)
-FSYMB_DOCUMENTATION(orwl_state_init)
+P99_DEFARG_DOCU(orwl_state_init)
 inline
 orwl_state* orwl_state_init
 (orwl_state *el,                    /*!< wait queue to initialize */
@@ -70,9 +70,9 @@ orwl_state* orwl_state_init
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(orwl_state*, orwl_state_init, orwl_state *, orwl_state);
-#define orwl_state_init(...) CALL_WITH_DEFAULTS(orwl_state_init, 2, __VA_ARGS__)
-DECLARE_DEFARG(orwl_state_init, , orwl_invalid);
+P99_PROTOTYPE(orwl_state*, orwl_state_init, orwl_state *, orwl_state);
+#define orwl_state_init(...) P99_CALL_DEFARG(orwl_state_init, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_state_init, , orwl_invalid);
 #endif
 
 DOCUMENT_DESTROY(orwl_state)
@@ -173,17 +173,17 @@ struct orwl_wh {
 #define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .clock = 1 }
 
   DOCUMENT_INIT(orwl_wq)
-FSYMB_DOCUMENTATION(orwl_wq_init)
+P99_DEFARG_DOCU(orwl_wq_init)
 orwl_wq* orwl_wq_init
 (orwl_wq *wq,                    /*!< wait queue to initialize */
  const pthread_mutexattr_t *attr /*!< defaults to @c NULL */
 );
 
 #ifndef DOXYGEN
-  PROTOTYPE(orwl_wq*, orwl_wq_init, orwl_wq*, const pthread_mutexattr_t*);
-#define orwl_wq_init(...) CALL_WITH_DEFAULTS(orwl_wq_init, 2, __VA_ARGS__)
+  P99_PROTOTYPE(orwl_wq*, orwl_wq_init, orwl_wq*, const pthread_mutexattr_t*);
+#define orwl_wq_init(...) P99_CALL_DEFARG(orwl_wq_init, 2, __VA_ARGS__)
 
-DECLARE_DEFARG(orwl_wq_init, , NULL);
+P99_DECLARE_DEFARG(orwl_wq_init, , NULL);
 #endif
 
   DOCUMENT_DESTROY(orwl_wq)
@@ -249,17 +249,17 @@ int orwl_wq_idle(orwl_wq *wq) {
 #define ORWL_WH_INITIALIZER { .cond = PTHREAD_COND_INITIALIZER }
 
   DOCUMENT_INIT(orwl_wh)
-  FSYMB_DOCUMENTATION(orwl_wh_init)
+  P99_DEFARG_DOCU(orwl_wh_init)
 orwl_wh* orwl_wh_init
   (orwl_wh *wh, /*!< the handle to be initialized */
    const pthread_condattr_t *attr /*!< [in] defaults to @c NULL */
    );
 
 #ifndef DOXYGEN
-  PROTOTYPE(orwl_wh*, orwl_wh_init, orwl_wh *, const pthread_condattr_t *);
-#define orwl_wh_init(...) CALL_WITH_DEFAULTS(orwl_wh_init, 2, __VA_ARGS__)
+  P99_PROTOTYPE(orwl_wh*, orwl_wh_init, orwl_wh *, const pthread_condattr_t *);
+#define orwl_wh_init(...) P99_CALL_DEFARG(orwl_wh_init, 2, __VA_ARGS__)
 
-DECLARE_DEFARG(orwl_wh_init, , NULL);
+P99_DECLARE_DEFARG(orwl_wh_init, , NULL);
 #endif
 
   DOCUMENT_DESTROY(orwl_wh)
@@ -335,16 +335,16 @@ void orwl_wq_request_locked(orwl_wq *wq,  /*!< the locked queue to act on */
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
  **/
-  FSYMB_DOCUMENTATION(orwl_wh_acquire)
+  P99_DEFARG_DOCU(orwl_wh_acquire)
 orwl_state orwl_wh_acquire
   (orwl_wh *wh,       /*!< the handle to act upon */
    uint64_t howmuch   /*!< defaults to @c 1 */
    );
 
 #ifndef DOXYGEN
-  PROTOTYPE(orwl_state, orwl_wh_acquire, orwl_wh*, uint64_t);
-#define orwl_wh_acquire(...) CALL_WITH_DEFAULTS(orwl_wh_acquire, 2, __VA_ARGS__)
-DECLARE_DEFARG(orwl_wh_acquire, , 1);
+  P99_PROTOTYPE(orwl_state, orwl_wh_acquire, orwl_wh*, uint64_t);
+#define orwl_wh_acquire(...) P99_CALL_DEFARG(orwl_wh_acquire, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_wh_acquire, , 1);
 #endif
 
 /**
@@ -367,15 +367,15 @@ DECLARE_DEFARG(orwl_wh_acquire, , 1);
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
  **/
-  FSYMB_DOCUMENTATION(orwl_wh_test)
+  P99_DEFARG_DOCU(orwl_wh_test)
 orwl_state orwl_wh_test
   (orwl_wh *wh /*!< the handle to act upon */,
    uint64_t howmuch  /*!< defaults to 0 */);
 
 #ifndef DOXYGEN
-  PROTOTYPE(orwl_state, orwl_wh_test, orwl_wh*, uint64_t);
-#define orwl_wh_test(...) CALL_WITH_DEFAULTS(orwl_wh_test, 2, __VA_ARGS__)
-DECLARE_DEFARG(orwl_wh_test, , 0);
+  P99_PROTOTYPE(orwl_state, orwl_wh_test, orwl_wh*, uint64_t);
+#define orwl_wh_test(...) P99_CALL_DEFARG(orwl_wh_test, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_wh_test, , 0);
 #endif
 
 /**
@@ -393,7 +393,7 @@ orwl_state orwl_wh_release(orwl_wh *wh /*!< the handle to act upon */);
    ** wq is already locked.
    ** @see orwl_wh_unload
    */
-  FSYMB_DOCUMENTATION(orwl_wh_load)
+  P99_DEFARG_DOCU(orwl_wh_load)
 inline
 uint64_t orwl_wh_load
   (orwl_wh *wh /*!< the handle to act upon */,
@@ -404,9 +404,9 @@ uint64_t orwl_wh_load
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
-#define orwl_wh_load(...) CALL_WITH_DEFAULTS(orwl_wh_load, 2, __VA_ARGS__)
-DECLARE_DEFARG(orwl_wh_load, , 1);
+P99_PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
+#define orwl_wh_load(...) P99_CALL_DEFARG(orwl_wh_load, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_wh_load, , 1);
 #endif
 
   /** @brief unload @a howmuch additional tokens from @a wh.
@@ -416,7 +416,7 @@ DECLARE_DEFARG(orwl_wh_load, , 1);
    ** zero, eventual waiters for this @a wh are notified.
    ** @see orwl_wh_load
    */
-  FSYMB_DOCUMENTATION(orwl_wh_unload)
+  P99_DEFARG_DOCU(orwl_wh_unload)
 inline
 uint64_t orwl_wh_unload
   (orwl_wh *wh /*!< the handle to act upon */,
@@ -430,9 +430,9 @@ uint64_t orwl_wh_unload
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
-#define orwl_wh_unload(...) CALL_WITH_DEFAULTS(orwl_wh_unload, 2, __VA_ARGS__)
-DECLARE_DEFARG(orwl_wh_unload, , 1);
+P99_PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
+#define orwl_wh_unload(...) P99_CALL_DEFARG(orwl_wh_unload, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_wh_unload, , 1);
 #endif
 
 void orwl_wq_map_locked(orwl_wq* wq, uint64_t** datap, size_t* data_len);

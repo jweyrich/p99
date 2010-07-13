@@ -51,7 +51,7 @@ struct rand48_t {
 #define RAND48_T_INITIALIZER { { useconds(), getpid(), pthread_self() } }
 
 DOCUMENT_INIT(rand48_t)
-FSYMB_DOCUMENTATION(rand48_t)
+P99_DEFARG_DOCU(rand48_t)
 inline
 rand48_t *rand48_t_init(rand48_t *seed,     /*!< [out] the object to iniialize */
                         unsigned short x0,  /*!< [in] defaults to a time value */
@@ -66,9 +66,9 @@ rand48_t *rand48_t_init(rand48_t *seed,     /*!< [out] the object to iniialize *
 
 #ifndef DOXYGEN
 inline
-PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
-#define rand48_t_init(...) CALL_WITH_DEFAULTS(rand48_t_init, 4, __VA_ARGS__)
-DECLARE_DEFARG(rand48_t_init, , useconds(), getpid(), pthread_self());
+P99_PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
+#define rand48_t_init(...) P99_CALL_DEFARG(rand48_t_init, 4, __VA_ARGS__)
+P99_DECLARE_DEFARG(rand48_t_init, , useconds(), getpid(), pthread_self());
 #endif
 
 inline

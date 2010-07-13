@@ -69,7 +69,7 @@
  ** is ready to take the arguments that are provided in addition to
  ** the pointer of type T (which comes first).
  **
- ** @see CALL_WITH_DEFAULTS
+ ** @see P99_CALL_DEFARG
  **/
 #define NEW(...) P99_IF_DEC_LT(P99_NARG(__VA_ARGS__), 2)(P99__NEW(__VA_ARGS__))(P99__NEW_ARGS(__VA_ARGS__))
 

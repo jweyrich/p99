@@ -15,7 +15,7 @@ void atomic_counter_dec(atomic_counter* p);
 void atomic_counter_wait(atomic_counter* p);
 unsigned atomic_counter_getvalue(atomic_counter* p);
 
-DEFINE_DEFARG(atomic_counter_init, , PTHREAD_PROCESS_PRIVATE, 0u);
+P99_DEFINE_DEFARG(atomic_counter_init, , PTHREAD_PROCESS_PRIVATE, 0u);
 
 
 DEFINE_ONCE(atomic_counter) {

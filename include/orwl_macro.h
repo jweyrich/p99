@@ -165,9 +165,9 @@
 #define FSYMB(NAME) P99__FSYMB(NAME)
 
 #ifdef DOXYGEN
-# define CALL_WITH_DEFAULTS(NAME, M, ...) NAME(__VA_ARGS__)
+# define P99_CALL_DEFARG(NAME, M, ...) NAME(__VA_ARGS__)
 #else
-# define CALL_WITH_DEFAULTS(NAME, M, ...)                       \
+# define P99_CALL_DEFARG(NAME, M, ...)                          \
 NAME(P99_IF_EQ(0,M)                                             \
      (__VA_ARGS__)                                              \
      (P99_IF_EMPTY(__VA_ARGS__)                                 \
@@ -179,7 +179,7 @@ NAME(P99_IF_EQ(0,M)                                             \
 
 
 /**
- ** @def CALL_WITH_DEFAULTS
+ ** @def P99_CALL_DEFARG
  ** @brief Define a replacement macro for functions that can provide
  ** default arguments to the underlying real function.
  **
@@ -203,9 +203,9 @@ NAME(P99_IF_EQ(0,M)                                             \
  ** The following lines heal this.
  **
  ** @code
- ** PROTOTYPE(int, pthread_mutex_init, pthread_mutex_t*, pthread_mutexattr_t const*);
- ** #define pthread_mutex_init(...) CALL_WITH_DEFAULTS(pthread_mutex_init, 2, __VA_ARGS__)
- ** DECLARE_DEFARG(pthread_mutex_init, , NULL);
+ ** P99_PROTOTYPE(int, pthread_mutex_init, pthread_mutex_t*, pthread_mutexattr_t const*);
+ ** #define pthread_mutex_init(...) P99_CALL_DEFARG(pthread_mutex_init, 2, __VA_ARGS__)
+ ** P99_DECLARE_DEFARG(pthread_mutex_init, , NULL);
  ** @endcode
  **
  ** This declares a macro @c pthread_mutex_init that resolves to the call of
@@ -231,8 +231,8 @@ NAME(P99_IF_EQ(0,M)                                             \
  ** @endcode
  ** @param NAME is the function to provide with default argument features.
  ** @param M is the number of arguments that a full call to @a NAME takes.
- ** @see DECLARE_DEFARG
- ** @see PROTOTYPE
+ ** @see P99_DECLARE_DEFARG
+ ** @see P99_PROTOTYPE
  **
  ** This macro is more flexible than the corresponding C++ feature of
  ** default arguments. It also lets you omit middle arguments.
@@ -240,7 +240,7 @@ NAME(P99_IF_EQ(0,M)                                             \
  ** More technically, for arguments that are omitted this just
  ** requires that NAME_defarg_M is defined for function @a NAME
  ** and @a M and that it is callable without arguments. This may just
- ** be a function (as implicitly defined by #DECLARE_DEFARG) or a
+ ** be a function (as implicitly defined by #P99_DECLARE_DEFARG) or a
  ** macro. For the first case everything the function refers to must
  ** be declare at the point of its definition. For the second case,
  ** the macro is evaluate at the place of the call and could refer to
@@ -248,12 +248,12 @@ NAME(P99_IF_EQ(0,M)                                             \
  **/
 
 /**
- ** @def PROTOTYPE(RT, NAME, ...)
+ ** @def P99_PROTOTYPE(RT, NAME, ...)
  ** @brief Define the prototype of function @a NAME.
  **
  ** @a RT is the return type of the function, and the remaining
  ** arguments list the types of the arguments. This is needed by
- ** #DECLARE_DEFARG to determine the type of the functions that return
+ ** #P99_DECLARE_DEFARG to determine the type of the functions that return
  ** default arguments.
  **
  **/
@@ -262,7 +262,7 @@ NAME(P99_IF_EQ(0,M)                                             \
  ** @define expand to a comma token
  **
  ** This sometimes needed for trick macros such as
- ** ::CALL_WITH_DEFAULTS_EVEN_EMPTY to ensure that a macro parameter
+ ** ::P99_CALL_DEFARG_EVEN_EMPTY to ensure that a macro parameter
  ** inside a recursion is not empty.
  **/
 #define P99__COMMA_ ,
@@ -356,7 +356,7 @@ CHOOSE5(xT,                                     \
  ** @brief Return an expression that returns the sum of the lengths of
  ** all strings that are given as arguments.
  **/
-#define STRLENS(...) P99__STRLENS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_STRLENS(...) P99__STRLENS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
 
 #define P99__STRCATS(N, ...) P99_FOR(,N, P99__STRCAT, P99__IDT, __VA_ARGS__)
@@ -368,7 +368,7 @@ CHOOSE5(xT,                                     \
  ** to hold the concatenation of all strings. The remaining arguments
  ** must be compatible with @c const char*.
  **/
-#define STRCATS(TARG, ...) P99__STRCATS(P99_NARG(TARG, __VA_ARGS__), TARG, __VA_ARGS__)
+#define P99_STRCATS(TARG, ...) P99__STRCATS(P99_NARG(TARG, __VA_ARGS__), TARG, __VA_ARGS__)
 
 /**
  ** @brief Concatenate all arguments.
@@ -379,35 +379,35 @@ CHOOSE5(xT,                                     \
  ** @return a temporary string that is valid in the containing block
  ** of the expression holding the call to this macro.
  **
- ** @see STRDUP for a variant that returns a @c malloc'ed string and
+ ** @see P99_STRDUP for a variant that returns a @c malloc'ed string and
  ** thus can be called with any type of @c char* arguments.
  **/
-#define JOIN(...) STRCATS((char[STRLENS(__VA_ARGS__) + 1]){ 0 }, __VA_ARGS__)
+#define P99_JOIN(...) P99_STRCATS((char[P99_STRLENS(__VA_ARGS__) + 1]){ 0 }, __VA_ARGS__)
 
 /**
  ** @brief Concatenate all arguments.
  **
  ** @return a string that must be freed by @c free
  **/
-#define STRDUP(...) STRCATS(memset(malloc(STRLENS(__VA_ARGS__) + 1), 0, 1), __VA_ARGS__)
+#define P99_STRDUP(...) P99_STRCATS(memset(malloc(P99_STRLENS(__VA_ARGS__) + 1), 0, 1), __VA_ARGS__)
 
 /**
  ** Repeat the parameter @a X @a N times.
  **/
-#define REPS(X, N) P99_FOR(X, N, P99__SEQ, P99__NAM, )
+#define P99_REPS(X, N) P99_FOR(X, N, P99__SEQ, P99__NAM, )
 
 /**
  ** @brief Produce a list of length @a N that has the contents of 0,
  ** 1, , @a N-1
  **/
-#define POSS(N) P99_FOR(,N, P99__SEQ, P99__POS,)
+#define P99_POSS(N) P99_FOR(,N, P99__SEQ, P99__POS,)
 
 /**
  ** Produce a list of length @a N that has the contents of @a X[0], @a
  ** X [1], ,
  ** @a X[@a N-1]
  **/
-#define ACCESSORS(X, N) P99_FOR(X, N, P99__SEQ, P99__ACCESSOR, )
+#define P99_ACCESSORS(X, N) P99_FOR(X, N, P99__SEQ, P99__ACCESSOR, )
 
 
 /**
@@ -417,7 +417,7 @@ CHOOSE5(xT,                                     \
  ** NAME[0], @c V1 = @a NAME[1], ..., @c VN-1 = @a NAME[@a N-1], where
  ** V0, etc are the remaining arguments.
  **/
-#define VASSIGNS(NAME, ...)                                             \
+#define P99_VASSIGNS(NAME, ...)                                             \
 P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                  \
 (P99_IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))            \
   (P99_FOR(NAME, P99__NARG(__VA_ARGS__),P99__SEP, P99__VASSIGN, __VA_ARGS__))
@@ -434,7 +434,7 @@ P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                  \
  ** Because of syntax problems this can't be used for function or
  ** array type derivatives.
  **/
-#define TYPEDEFS(NAME, ...)                             \
+#define P99_TYPEDEFS(NAME, ...)                             \
 P99__TYPEDEFS(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
 
@@ -446,14 +446,14 @@ P99__TYPEDEFS(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 #define P99__PROTOTYPE(RT, NAME, ...)                                       \
 /*! @remark This function might be hidden behind a macro :: ## NAME of the same name. */ \
 RT NAME(__VA_ARGS__)
-#define PROTOTYPE(RT, NAME, ...) P99__PROTOTYPE(__VA_ARGS__)
+#define P99_PROTOTYPE(RT, NAME, ...) P99__PROTOTYPE(__VA_ARGS__)
 #else
 #define P99__PROTOTYPE(RT, NAME, ...)                           \
   RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));        \
   typedef RT P99_CAT2(NAME, _prototype_ret);                    \
-  TYPEDEFS(P99_CAT2(NAME, _prototype_), __VA_ARGS__)
+  P99_TYPEDEFS(P99_CAT2(NAME, _prototype_), __VA_ARGS__)
 
-#define PROTOTYPE(...)                          \
+#define P99_PROTOTYPE(...)                          \
 P99_IF_EQ_2(P99_NARG(__VA_ARGS__))              \
 (P99__PROTOTYPE(__VA_ARGS__, void))             \
 (P99__PROTOTYPE(__VA_ARGS__))
@@ -493,17 +493,17 @@ enum { P99_PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
  ** nothing. So no default argument will be provided for the
  ** corresponding position in the parameter list of @a NAME.
  **
- ** @see PROTOTYPE on how to declare a prototype of a function
+ ** @see P99_PROTOTYPE on how to declare a prototype of a function
  ** @a NAME that can be used with this
  **
- ** @see CALL_WITH_DEFAULTS on how to declare the macro @a NAME
+ ** @see P99_CALL_DEFARG on how to declare the macro @a NAME
  **
  ** @see rand48_t_init for a more sophisticated example with
  ** non-constant expressions.
  **/
-#define DECLARE_DEFARG(NAME, ...)
+#define P99_DECLARE_DEFARG(NAME, ...)
 #else
-#define DECLARE_DEFARG(NAME, ...) P99__DECLARE_DEFARG(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
+#define P99_DECLARE_DEFARG(NAME, ...) P99__DECLARE_DEFARG(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 #endif
 
 #define P99__DEFINE_DEFARG(NAME, N, ...)                \
@@ -512,25 +512,25 @@ enum { P99_PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
 #ifdef DOXYGEN
 /**
  ** @brief Define the symbols that are declared through a
- ** corresponding call ::DECLARE_DEFARG.
+ ** corresponding call ::P99_DECLARE_DEFARG.
  **
- ** The argument list here should be exactly the same as for ::DECLARE_DEFARG.
+ ** The argument list here should be exactly the same as for ::P99_DECLARE_DEFARG.
  **/
-#define DEFINE_DEFARG(NAME, ...)
+#define P99_DEFINE_DEFARG(NAME, ...)
 #else
-#define DEFINE_DEFARG(NAME, ...) P99__DEFINE_DEFARG(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
+#define P99_DEFINE_DEFARG(NAME, ...) P99__DEFINE_DEFARG(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 #endif
 
 
 #define P99__DARG(NAME, X, N) P99_IF_EMPTY(X)(P99_PASTE3(NAME, _defarg_, N)())(X)
 #define P99___DEFARGS(NAME, N, ...) P99_FOR(NAME, N, P99__SEQ, P99__DARG, __VA_ARGS__)
-#define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,P99_DEC_MINUS(N,P99_NARG(__VA_ARGS__)))) (__VA_ARGS__))
+#define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, P99_REPS(,P99_DEC_MINUS(N,P99_NARG(__VA_ARGS__)))) (__VA_ARGS__))
 
 /**
  ** @brief Declare the types that are going to be used with a
  ** ::LEN_ARG or ::LEN_MODARG parameter list.
  **/
-#define VA_TYPES(NAME, ...)   TYPEDEFS(P99_PASTE2(NAME, _mod_type_), __VA_ARGS__)
+#define VA_TYPES(NAME, ...)   P99_TYPEDEFS(P99_PASTE2(NAME, _mod_type_), __VA_ARGS__)
 
 #define P99__VA_MODARG(AP, NAME, M, ...) va_arg(AP, P99_PASTE3(NAME, _mod_type_, M))
 

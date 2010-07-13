@@ -14,7 +14,7 @@
 #include "orwl_auth_sock_functions.h"
 
 orwl_mirror *orwl_mirror_init(orwl_mirror *rq, orwl_endpoint h, orwl_endpoint t);
-DEFINE_DEFARG(orwl_mirror_init, , (orwl_endpoint){{0}}, (orwl_endpoint){{0}});
+P99_DEFINE_DEFARG(orwl_mirror_init, , (orwl_endpoint){{0}}, (orwl_endpoint){{0}});
 
 void orwl_mirror_destroy(orwl_mirror *rq);
 
@@ -256,10 +256,10 @@ void orwl_map(orwl_handle* rh, uint64_t** data, size_t* data_len);
 void orwl_resize(orwl_handle* rh, size_t data_len);
 
 
-DEFINE_DEFARG(orwl_write_request, , , seed_get());
-DEFINE_DEFARG(orwl_read_request, , , seed_get());
-DEFINE_DEFARG(orwl_release, , seed_get());
-DEFINE_DEFARG(orwl_cancel, , seed_get());
+P99_DEFINE_DEFARG(orwl_write_request, , , seed_get());
+P99_DEFINE_DEFARG(orwl_read_request, , , seed_get());
+P99_DEFINE_DEFARG(orwl_release, , seed_get());
+P99_DEFINE_DEFARG(orwl_cancel, , seed_get());
 
 DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire, orwl_handle);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_release, orwl_handle);

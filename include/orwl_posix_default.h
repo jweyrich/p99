@@ -59,101 +59,101 @@
 // not possible because of the count argument
 
  // pthread_cond_init (3posix) - destroy and initialize condition variables
-PROTOTYPE(int, pthread_cond_init, pthread_cond_t*, pthread_condattr_t const*);
-FSYMB_DOCUMENTATION(pthread_cond_init)
-#define pthread_cond_init(...) CALL_WITH_DEFAULTS(pthread_cond_init, 2, __VA_ARGS__)
-DECLARE_DEFARG(pthread_cond_init, , NULL);
+P99_PROTOTYPE(int, pthread_cond_init, pthread_cond_t*, pthread_condattr_t const*);
+P99_DEFARG_DOCU(pthread_cond_init)
+#define pthread_cond_init(...) P99_CALL_DEFARG(pthread_cond_init, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(pthread_cond_init, , NULL);
 
  // pthread_mutex_init (3posix) - destroy and initialize a mutex
-PROTOTYPE(int, pthread_mutex_init, pthread_mutex_t*, pthread_mutexattr_t const*);
-FSYMB_DOCUMENTATION(pthread_mutex_init)
-#define pthread_mutex_init(...) CALL_WITH_DEFAULTS(pthread_mutex_init, 2, __VA_ARGS__)
-DECLARE_DEFARG(pthread_mutex_init, , NULL);
+P99_PROTOTYPE(int, pthread_mutex_init, pthread_mutex_t*, pthread_mutexattr_t const*);
+P99_DEFARG_DOCU(pthread_mutex_init)
+#define pthread_mutex_init(...) P99_CALL_DEFARG(pthread_mutex_init, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(pthread_mutex_init, , NULL);
 
  // pthread_rwlock_init (3posix) - destroy and initialize a read-write lock object
-PROTOTYPE(int, pthread_rwlock_init, pthread_rwlock_t*, pthread_rwlockattr_t const*);
-FSYMB_DOCUMENTATION(pthread_rwlock_init)
-#define pthread_rwlock_init(...) CALL_WITH_DEFAULTS(pthread_rwlock_init, 2, __VA_ARGS__)
-DECLARE_DEFARG(pthread_rwlock_init, , NULL);
+P99_PROTOTYPE(int, pthread_rwlock_init, pthread_rwlock_t*, pthread_rwlockattr_t const*);
+P99_DEFARG_DOCU(pthread_rwlock_init)
+#define pthread_rwlock_init(...) P99_CALL_DEFARG(pthread_rwlock_init, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(pthread_rwlock_init, , NULL);
 
  // pthread_spin_init (3posix) - destroy or initialize a spin lock object (ADVANCED REALTIME THREADS)
-PROTOTYPE(int, pthread_spin_init, pthread_spinlock_t*, int);
-FSYMB_DOCUMENTATION(pthread_spin_init)
-#define pthread_spin_init(...) CALL_WITH_DEFAULTS(pthread_spin_init, 2, __VA_ARGS__)
-DECLARE_DEFARG(pthread_spin_init, , PTHREAD_PROCESS_PRIVATE);
+P99_PROTOTYPE(int, pthread_spin_init, pthread_spinlock_t*, int);
+P99_DEFARG_DOCU(pthread_spin_init)
+#define pthread_spin_init(...) P99_CALL_DEFARG(pthread_spin_init, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(pthread_spin_init, , PTHREAD_PROCESS_PRIVATE);
 
  // sem_init - initialize a sem_t object
-PROTOTYPE(int, sem_init, sem_t*, int, unsigned);
-FSYMB_DOCUMENTATION(sem_init)
-#define sem_init(...) CALL_WITH_DEFAULTS(sem_init, 3, __VA_ARGS__)
-DECLARE_DEFARG(sem_init, , PTHREAD_PROCESS_PRIVATE, 0u);
+P99_PROTOTYPE(int, sem_init, sem_t*, int, unsigned);
+P99_DEFARG_DOCU(sem_init)
+#define sem_init(...) P99_CALL_DEFARG(sem_init, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(sem_init, , PTHREAD_PROCESS_PRIVATE, 0u);
 
 // int pthread_key_create (pthread_key_t *__key, void (*__destr_function) (void *))
 #if   	ORWL_POSIX_DEFAULT_H_ == 2
 typedef void (*pthread_key_create_arg1_t)(void *);
 #endif
-PROTOTYPE(int, pthread_key_create, pthread_key_t*, pthread_key_create_arg1_t);
-FSYMB_DOCUMENTATION(pthread_key_create)
-#define pthread_key_create(...) CALL_WITH_DEFAULTS(pthread_key_create, 2, __VA_ARGS__)
-DECLARE_DEFARG(pthread_key_create, , NULL);
+P99_PROTOTYPE(int, pthread_key_create, pthread_key_t*, pthread_key_create_arg1_t);
+P99_DEFARG_DOCU(pthread_key_create)
+#define pthread_key_create(...) P99_CALL_DEFARG(pthread_key_create, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(pthread_key_create, , NULL);
 
 
-PROTOTYPE(long, strtol, char const*, char**, int);
-FSYMB_DOCUMENTATION(strtol)
-#define strtol(...) CALL_WITH_DEFAULTS(strtol, 3, __VA_ARGS__)
-DECLARE_DEFARG(strtol, , NULL, 0);
+P99_PROTOTYPE(long, strtol, char const*, char**, int);
+P99_DEFARG_DOCU(strtol)
+#define strtol(...) P99_CALL_DEFARG(strtol, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(strtol, , NULL, 0);
 
-PROTOTYPE(long long, strtoll, char const*, char**, int);
-FSYMB_DOCUMENTATION(strtoll)
-#define strtoll(...) CALL_WITH_DEFAULTS(strtoll, 3, __VA_ARGS__)
-DECLARE_DEFARG(strtoll, , NULL, 0);
+P99_PROTOTYPE(long long, strtoll, char const*, char**, int);
+P99_DEFARG_DOCU(strtoll)
+#define strtoll(...) P99_CALL_DEFARG(strtoll, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(strtoll, , NULL, 0);
 
-PROTOTYPE(ulong, strtoul, char const*, char**, int);
-FSYMB_DOCUMENTATION(strtoul)
-#define strtoul(...) CALL_WITH_DEFAULTS(strtoul, 3, __VA_ARGS__)
-DECLARE_DEFARG(strtoul, , NULL, 0);
+P99_PROTOTYPE(ulong, strtoul, char const*, char**, int);
+P99_DEFARG_DOCU(strtoul)
+#define strtoul(...) P99_CALL_DEFARG(strtoul, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(strtoul, , NULL, 0);
 
-PROTOTYPE(unsigned long long, strtoull, char const*, char**, int);
-FSYMB_DOCUMENTATION(strtoull)
-#define strtoull(...) CALL_WITH_DEFAULTS(strtoull, 3, __VA_ARGS__)
-DECLARE_DEFARG(strtoull, , NULL, 0);
+P99_PROTOTYPE(unsigned long long, strtoull, char const*, char**, int);
+P99_DEFARG_DOCU(strtoull)
+#define strtoull(...) P99_CALL_DEFARG(strtoull, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(strtoull, , NULL, 0);
 
-PROTOTYPE(float, strtof, char const*, char**);
-FSYMB_DOCUMENTATION(strtof)
-#define strtof(...) CALL_WITH_DEFAULTS(strtof, 2, __VA_ARGS__)
-DECLARE_DEFARG(strtof, , NULL);
+P99_PROTOTYPE(float, strtof, char const*, char**);
+P99_DEFARG_DOCU(strtof)
+#define strtof(...) P99_CALL_DEFARG(strtof, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(strtof, , NULL);
 
-PROTOTYPE(double, strtod, char const*, char**);
-FSYMB_DOCUMENTATION(strtod)
-#define strtod(...) CALL_WITH_DEFAULTS(strtod, 2, __VA_ARGS__)
-DECLARE_DEFARG(strtod, , NULL);
+P99_PROTOTYPE(double, strtod, char const*, char**);
+P99_DEFARG_DOCU(strtod)
+#define strtod(...) P99_CALL_DEFARG(strtod, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(strtod, , NULL);
 
-PROTOTYPE(long double, strtold, char const*, char**);
-FSYMB_DOCUMENTATION(strtold)
-#define strtold(...) CALL_WITH_DEFAULTS(strtold, 2, __VA_ARGS__)
-DECLARE_DEFARG(strtold, , NULL);
+P99_PROTOTYPE(long double, strtold, char const*, char**);
+P99_DEFARG_DOCU(strtold)
+#define strtold(...) P99_CALL_DEFARG(strtold, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(strtold, , NULL);
 
-PROTOTYPE(void*, calloc, size_t, size_t);
-FSYMB_DOCUMENTATION(calloc)
-#define calloc(...) CALL_WITH_DEFAULTS(calloc, 2, __VA_ARGS__)
-DECLARE_DEFARG(calloc, , 1);
+P99_PROTOTYPE(void*, calloc, size_t, size_t);
+P99_DEFARG_DOCU(calloc)
+#define calloc(...) P99_CALL_DEFARG(calloc, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(calloc, , 1);
 
 // int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
-PROTOTYPE(int, accept, int, struct sockaddr *, socklen_t *);
-FSYMB_DOCUMENTATION(accept)
-#define accept(...) CALL_WITH_DEFAULTS(accept, 3, __VA_ARGS__)
-DECLARE_DEFARG(accept, , NULL, &TNULL(socklen_t));
+P99_PROTOTYPE(int, accept, int, struct sockaddr *, socklen_t *);
+P99_DEFARG_DOCU(accept)
+#define accept(...) P99_CALL_DEFARG(accept, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(accept, , NULL, &TNULL(socklen_t));
 
 // int socket(int domain, int type, int protocol);
-PROTOTYPE(int, socket, int, int, int);
-FSYMB_DOCUMENTATION(socket)
-#define socket(...) CALL_WITH_DEFAULTS(socket, 3, __VA_ARGS__)
-DECLARE_DEFARG(socket, , SOCK_STREAM, 0);
+P99_PROTOTYPE(int, socket, int, int, int);
+P99_DEFARG_DOCU(socket)
+#define socket(...) P99_CALL_DEFARG(socket, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(socket, , SOCK_STREAM, 0);
 
-PROTOTYPE(char const*, inet_ntop, int, const void *, char *, socklen_t);
-DECLARE_DEFARG(inet_ntop, , , );
-FSYMB_DOCUMENTATION(inet_ntop)
-#define inet_ntop(...) CALL_WITH_DEFAULTS(inet_ntop, 4, __VA_ARGS__)
+P99_PROTOTYPE(char const*, inet_ntop, int, const void *, char *, socklen_t);
+P99_DECLARE_DEFARG(inet_ntop, , , );
+P99_DEFARG_DOCU(inet_ntop)
+#define inet_ntop(...) P99_CALL_DEFARG(inet_ntop, 4, __VA_ARGS__)
 #define inet_ntop_defarg_2() ((char[INET6_ADDRSTRLEN]){ 0 })
 #define inet_ntop_defarg_3() (INET6_ADDRSTRLEN)
 

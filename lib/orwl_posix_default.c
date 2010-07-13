@@ -13,10 +13,10 @@
 #ifndef DOXYGEN
 #undef declare_defarg
 #define declare_defarg(A, B, C, D) define_defarg(A, B, C)
-#undef DECLARE_DEFARG
-#define DECLARE_DEFARG(A, ...) DEFINE_DEFARG(A, __VA_ARGS__)
-#undef PROTOTYPE
-#define PROTOTYPE(T, NAME, ...) enum { P99_PASTE2(_another_boring_enum_, NAME) }
+#undef P99_DECLARE_DEFARG
+#define P99_DECLARE_DEFARG(A, ...) P99_DEFINE_DEFARG(A, __VA_ARGS__)
+#undef P99_PROTOTYPE
+#define P99_PROTOTYPE(T, NAME, ...) enum { P99_PASTE2(_another_boring_enum_, NAME) }
 
 #undef   	ORWL_POSIX_DEFAULT_H_
 #define   	ORWL_POSIX_DEFAULT_H_ 1

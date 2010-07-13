@@ -23,7 +23,7 @@ DEFINE_BASIC(P99_PASTE2(T, _ptr))
 
 #define P99__DEFINE_ARI2STR(T, X, S, P)         \
  char const* P99_PASTE3(T, 2, X)(char* buf, T x) {  \
-  char* form = STRDUP(#P, PRI(T,X,S));          \
+  char* form = P99_STRDUP(#P, PRI(T,X,S));          \
   sprintf(buf, form, x);                        \
   free(form);                                   \
   return buf;                                   \

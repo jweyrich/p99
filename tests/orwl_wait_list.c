@@ -62,10 +62,10 @@ arg_t* arg_t_init(arg_t *arg, size_t def) {
   return arg;
 }
 
-PROTOTYPE(arg_t*, arg_t_init, arg_t *, size_t);
-#define arg_t_init(...) CALL_WITH_DEFAULTS(arg_t_init, 2, __VA_ARGS__)
-DECLARE_DEFARG(arg_t_init, , TNULL(size_t));
-DEFINE_DEFARG(arg_t_init, , TNULL(size_t));
+P99_PROTOTYPE(arg_t*, arg_t_init, arg_t *, size_t);
+#define arg_t_init(...) P99_CALL_DEFARG(arg_t_init, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(arg_t_init, , TNULL(size_t));
+P99_DEFINE_DEFARG(arg_t_init, , TNULL(size_t));
 
 
 void arg_t_destroy(arg_t *arg) {

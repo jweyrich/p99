@@ -18,11 +18,11 @@
 
 
 /**
- ** @brief Provide a documentation section to a function defined with ::CALL_WITH_DEFAULTS
+ ** @brief Provide a documentation section to a function defined with ::P99_CALL_DEFARG
  **/
-#define FSYMB_DOCUMENTATION(NAME)                                       \
-/*! @see CALL_WITH_DEFAULTS */                                          \
-/*! @see DECLARE_DEFARG */                                              \
+#define P99_DEFARG_DOCU(NAME)                                       \
+/*! @see P99_CALL_DEFARG */                                          \
+/*! @see P99_DECLARE_DEFARG */                                              \
 /*! @see NAME This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
 #define DOCUMENT_BLOCK /*! @see BLOCK for restrictions on preliminary exits from the dependent block or statement. **/

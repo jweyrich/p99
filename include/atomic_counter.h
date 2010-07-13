@@ -35,22 +35,22 @@ struct atomic_counter {
 
 DECLARE_ONCE(atomic_counter);
 
-PROTOTYPE(atomic_counter*, atomic_counter_init, atomic_counter*, int, unsigned);
-FSYMB_DOCUMENTATION(atomic_counter_init)
-#define atomic_counter_init(...) CALL_WITH_DEFAULTS(atomic_counter_init, 3, __VA_ARGS__)
-DECLARE_DEFARG(atomic_counter_init, , PTHREAD_PROCESS_PRIVATE, 0u);
+P99_PROTOTYPE(atomic_counter*, atomic_counter_init, atomic_counter*, int, unsigned);
+P99_DEFARG_DOCU(atomic_counter_init)
+#define atomic_counter_init(...) P99_CALL_DEFARG(atomic_counter_init, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(atomic_counter_init, , PTHREAD_PROCESS_PRIVATE, 0u);
 
 inline
-PROTOTYPE(void, atomic_counter_inc, atomic_counter*);
+P99_PROTOTYPE(void, atomic_counter_inc, atomic_counter*);
 
 inline
-PROTOTYPE(void, atomic_counter_dec, atomic_counter*);
+P99_PROTOTYPE(void, atomic_counter_dec, atomic_counter*);
 
 inline
-PROTOTYPE(unsigned, atomic_counter_getvalue, atomic_counter*);
+P99_PROTOTYPE(unsigned, atomic_counter_getvalue, atomic_counter*);
 
 inline
-PROTOTYPE(void, atomic_counter_wait, atomic_counter*);
+P99_PROTOTYPE(void, atomic_counter_wait, atomic_counter*);
 
 /**
  ** @brief Get the value of the counter.

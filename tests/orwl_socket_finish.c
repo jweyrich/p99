@@ -20,13 +20,13 @@ inline void F_(int a) { }
 
 void F_(int a);
 
-PROTOTYPE(void, ftoaster);
+P99_PROTOTYPE(void, ftoaster);
 
 /* It makes not much sense to define a macro with 0 arguments by
    itself. But such a thing might occur through an automatic
    generation of sources, so better test for it and treat the corner
    case. */
-#define ftoaster(...) CALL_WITH_DEFAULTS(ftoaster, 0, __VA_ARGS__)
+#define ftoaster(...) P99_CALL_DEFARG(ftoaster, 0, __VA_ARGS__)
 
 /* check a version that declares with explicit `void' parameter list */
 void ftoaster (void) {
@@ -34,38 +34,38 @@ void ftoaster (void) {
 }
 
 
-PROTOTYPE(void, ftaster, int);
+P99_PROTOTYPE(void, ftaster, int);
 
-DECLARE_DEFARG(ftaster, -1);
-DEFINE_DEFARG(ftaster, -1);
+P99_DECLARE_DEFARG(ftaster, -1);
+P99_DEFINE_DEFARG(ftaster, -1);
 
 
-#define ftaster(...) CALL_WITH_DEFAULTS(ftaster, 1, __VA_ARGS__)
+#define ftaster(...) P99_CALL_DEFARG(ftaster, 1, __VA_ARGS__)
 
 void ftaster(int A) {
   report(1, "ftaster has %d", A);
 }
 
-PROTOTYPE(void, ftister, int, unsigned);
+P99_PROTOTYPE(void, ftister, int, unsigned);
 
 void ftister(int A, unsigned B) {
   report(1, "ftister has %d %u", A, B);
 }
-DECLARE_DEFARG(ftister, -2, 1);
-DEFINE_DEFARG(ftister, -2, 1);
+P99_DECLARE_DEFARG(ftister, -2, 1);
+P99_DEFINE_DEFARG(ftister, -2, 1);
 
-#define ftister(...) CALL_WITH_DEFAULTS(ftister, 2, __VA_ARGS__)
+#define ftister(...) P99_CALL_DEFARG(ftister, 2, __VA_ARGS__)
 
 typedef struct { int x; } test_t;
 
-PROTOTYPE(void, ftester, test_t, unsigned, double);
+P99_PROTOTYPE(void, ftester, test_t, unsigned, double);
 void ftester(test_t A, unsigned B, double C) {
   report(1, "ftester has %d %u %g", A.x, B, C);
 }
-DECLARE_DEFARG(ftester, ((test_t){ -2 }), 2, 0.5);
-DEFINE_DEFARG(ftester, ((test_t){ -2 }), 2, 0.5);
+P99_DECLARE_DEFARG(ftester, ((test_t){ -2 }), 2, 0.5);
+P99_DEFINE_DEFARG(ftester, ((test_t){ -2 }), 2, 0.5);
 
-#define ftester(...) CALL_WITH_DEFAULTS(ftester, 3, __VA_ARGS__)
+#define ftester(...) P99_CALL_DEFARG(ftester, 3, __VA_ARGS__)
 
 int main(int argc, char **argv) {
   report(1, "starting");
@@ -108,12 +108,12 @@ int main(int argc, char **argv) {
   ftester((test_t){19}, 20, 19.9999);
   report(1, "%s %s %s %s %s", PRI(char, X,), PRI(short, X,), PRI(signed, X,), PRI(long, X,), PRI(long long, X,));
   report(1, "%zu %zu %zu %zu %zu", sizeof(char), sizeof(short), sizeof(signed), sizeof(long), sizeof(long long));
-  mfputs(stderr, JOIN("aa", "BB", "CC "), PRIX(37ull), " ", PRId(37), " ", PRIo(37), " ", PRIp(argv), "\n");
-  int Y[17] = {  REPS(1, 17) };
-  int Z[22] = {  POSS(22) };
-  VASSIGNS(Z, int x, double k, int y, bool r);
-  VASSIGNS(Y, int s);
-  VASSIGNS(Y, int i, float o);
+  mfputs(stderr, P99_JOIN("aa", "BB", "CC "), PRIX(37ull), " ", PRId(37), " ", PRIo(37), " ", PRIp(argv), "\n");
+  int Y[17] = {  P99_REPS(1, 17) };
+  int Z[22] = {  P99_POSS(22) };
+  P99_VASSIGNS(Z, int x, double k, int y, bool r);
+  P99_VASSIGNS(Y, int s);
+  P99_VASSIGNS(Y, int i, float o);
   P99_IS_EQ_void();
   P99_IS_EQ_void(void);
   P99_IS_EQ_void(void*);
@@ -155,8 +155,8 @@ int main(int argc, char **argv) {
   P99_IS_DEC_LE(1, 2);
   P99_IS_DEC_LE(1, 3);
 
-  VASSIGNS(Y, void);
-  VASSIGNS(Y,);
+  P99_VASSIGNS(Y, void);
+  P99_VASSIGNS(Y,);
   P99_IF_DEC_LT(7,5)(true)(false);
   P99_IF_DEC_GE(5,5)(true)(false);
   P99_IF_DEC_LE(7,5)(true)(false);

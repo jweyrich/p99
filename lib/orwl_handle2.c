@@ -13,15 +13,15 @@
 orwl_handle2 *orwl_handle2_init(orwl_handle2 *rh2, orwl_mirror* m, bool inc);
 void orwl_handle2_destroy(orwl_handle2 *rh2);
 
-DEFINE_DEFARG(orwl_handle2_init, , NULL, false);
+P99_DEFINE_DEFARG(orwl_handle2_init, , NULL, false);
 
 DEFINE_NEW_DELETE(orwl_handle2);
 
-DEFINE_DEFARG(orwl_write_request2, , , seed_get());
-DEFINE_DEFARG(orwl_read_request2, , , seed_get());
-DEFINE_DEFARG(orwl_release2, , seed_get());
-DEFINE_DEFARG(orwl_acquire2, , seed_get());
-DEFINE_DEFARG(orwl_cancel2, , seed_get());
+P99_DEFINE_DEFARG(orwl_write_request2, , , seed_get());
+P99_DEFINE_DEFARG(orwl_read_request2, , , seed_get());
+P99_DEFINE_DEFARG(orwl_release2, , seed_get());
+P99_DEFINE_DEFARG(orwl_acquire2, , seed_get());
+P99_DEFINE_DEFARG(orwl_cancel2, , seed_get());
 
 DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire2, orwl_handle2);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_release2, orwl_handle2);

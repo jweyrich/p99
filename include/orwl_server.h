@@ -34,7 +34,7 @@ struct orwl_server {
 }
 
 DOCUMENT_INIT(orwl_server)
-FSYMB_DOCUMENTATION(orwl_server_init)
+P99_DEFARG_DOCU(orwl_server_init)
 orwl_server*
 orwl_server_init(orwl_server *serv,       /*!< [out] the object to iniialize */
                  size_t max_connections,  /*!< [in] maximum socket queue length,
@@ -47,9 +47,9 @@ orwl_server_init(orwl_server *serv,       /*!< [out] the object to iniialize */
                  );
 
 #ifndef DOXYGEN
-PROTOTYPE(orwl_server*, orwl_server_init, orwl_server *, size_t, size_t, in_addr_t, in_port_t);
-DECLARE_DEFARG(orwl_server_init, , (size_t)20u, TNULL(size_t), TNULL(in_addr_t), TNULL(in_port_t));
-#define orwl_server_init(...) CALL_WITH_DEFAULTS(orwl_server_init, 5, __VA_ARGS__)
+P99_PROTOTYPE(orwl_server*, orwl_server_init, orwl_server *, size_t, size_t, in_addr_t, in_port_t);
+P99_DECLARE_DEFARG(orwl_server_init, , (size_t)20u, TNULL(size_t), TNULL(in_addr_t), TNULL(in_port_t));
+#define orwl_server_init(...) P99_CALL_DEFARG(orwl_server_init, 5, __VA_ARGS__)
 #endif
 
 
@@ -62,7 +62,7 @@ DECLARE_THREAD(orwl_server);
 
 void orwl_server_close(orwl_server *serv);
 
-FSYMB_DOCUMENTATION(orwl_server_terminate)
+P99_DEFARG_DOCU(orwl_server_terminate)
 void
 orwl_server_terminate(orwl_server *serv,   /*!< the server to terminate */
                        rand48_t* seed  /*!< [in] defaults to a thread local seed */
@@ -88,9 +88,9 @@ void orwl_server_unblock(orwl_server *serv);
 
 
 #ifndef DOXYGEN
-PROTOTYPE(void, orwl_server_terminate, orwl_server *, rand48_t *);
-DECLARE_DEFARG(orwl_server_terminate, , seed_get());
-#define orwl_server_terminate(...) CALL_WITH_DEFAULTS(orwl_server_terminate, 2, __VA_ARGS__)
+P99_PROTOTYPE(void, orwl_server_terminate, orwl_server *, rand48_t *);
+P99_DECLARE_DEFARG(orwl_server_terminate, , seed_get());
+#define orwl_server_terminate(...) P99_CALL_DEFARG(orwl_server_terminate, 2, __VA_ARGS__)
 #endif
 
 
