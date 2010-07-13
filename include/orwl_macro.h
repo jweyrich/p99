@@ -350,7 +350,7 @@ CHOOSE5(xT,                                     \
 
 
 
-#define P99__STRLENS(N, ...) FOR(,N, P99__SUM, P99__STRLEN, __VA_ARGS__)
+#define P99__STRLENS(N, ...) P99_FOR(,N, P99__SUM, P99__STRLEN, __VA_ARGS__)
 
 /**
  ** @brief Return an expression that returns the sum of the lengths of
@@ -359,7 +359,7 @@ CHOOSE5(xT,                                     \
 #define STRLENS(...) P99__STRLENS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
 
-#define P99__STRCATS(N, ...) FOR(,N, P99__STRCAT, P99__IDT, __VA_ARGS__)
+#define P99__STRCATS(N, ...) P99_FOR(,N, P99__STRCAT, P99__IDT, __VA_ARGS__)
 
 /**
  ** @brief Append all argument strings after @a TARG to @a TARG.
@@ -394,20 +394,20 @@ CHOOSE5(xT,                                     \
 /**
  ** Repeat the parameter @a X @a N times.
  **/
-#define REPS(X, N) FOR(X, N, P99__SEQ, P99__NAM, )
+#define REPS(X, N) P99_FOR(X, N, P99__SEQ, P99__NAM, )
 
 /**
  ** @brief Produce a list of length @a N that has the contents of 0,
  ** 1, , @a N-1
  **/
-#define POSS(N) FOR(,N, P99__SEQ, P99__POS,)
+#define POSS(N) P99_FOR(,N, P99__SEQ, P99__POS,)
 
 /**
  ** Produce a list of length @a N that has the contents of @a X[0], @a
  ** X [1], ,
  ** @a X[@a N-1]
  **/
-#define ACCESSORS(X, N) FOR(X, N, P99__SEQ, P99__ACCESSOR, )
+#define ACCESSORS(X, N) P99_FOR(X, N, P99__SEQ, P99__ACCESSOR, )
 
 
 /**
@@ -420,12 +420,12 @@ CHOOSE5(xT,                                     \
 #define VASSIGNS(NAME, ...)                                             \
 P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                  \
 (P99_IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))            \
-  (FOR(NAME, P99__NARG(__VA_ARGS__),P99__SEP, P99__VASSIGN, __VA_ARGS__))
+  (P99_FOR(NAME, P99__NARG(__VA_ARGS__),P99__SEP, P99__VASSIGN, __VA_ARGS__))
 
 #define P99__TYPEDEFS(NAME, N, ...)                     \
   P99_IF_VOID(__VA_ARGS__)                              \
   (enum { P99_PASTE3(NAME, _eat_the_semicolon_, N) })   \
-  (FOR(NAME, N, P99__SEP, P99__TYPD, __VA_ARGS__))
+  (P99_FOR(NAME, N, P99__SEP, P99__TYPD, __VA_ARGS__))
 
 /**
  ** @brief Take each argument of the list and transform it into a
@@ -477,7 +477,7 @@ P99_IF_EMPTY(X)                                                         \
 (P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void))
 
 #define P99__DECLARE_DEFARG(NAME, N, ...)                       \
-  FOR(NAME, N, P99__SER, P99__EXPR_FUNCTION, __VA_ARGS__)       \
+  P99_FOR(NAME, N, P99__SER, P99__EXPR_FUNCTION, __VA_ARGS__)       \
 enum { P99_PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
 
 #ifdef DOXYGEN
@@ -507,7 +507,7 @@ enum { P99_PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
 #endif
 
 #define P99__DEFINE_DEFARG(NAME, N, ...)                \
-  FOR(NAME, N, P99__SEP, P99__DAFE, __VA_ARGS__)
+  P99_FOR(NAME, N, P99__SEP, P99__DAFE, __VA_ARGS__)
 
 #ifdef DOXYGEN
 /**
@@ -523,7 +523,7 @@ enum { P99_PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
 
 
 #define P99__DARG(NAME, X, N) P99_IF_EMPTY(X)(P99_PASTE3(NAME, _defarg_, N)())(X)
-#define P99___DEFARGS(NAME, N, ...) FOR(NAME, N, P99__SEQ, P99__DARG, __VA_ARGS__)
+#define P99___DEFARGS(NAME, N, ...) P99_FOR(NAME, N, P99__SEQ, P99__DARG, __VA_ARGS__)
 #define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, REPS(,P99_DEC_MINUS(N,P99_NARG(__VA_ARGS__)))) (__VA_ARGS__))
 
 /**
@@ -554,7 +554,7 @@ enum { P99_PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
 #define P99__CAS3(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 3))){ X }
 #define P99__CAS4(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 4))){ X }
 #define P99__CAS5(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 5))){ X }
-#define P99__MODARG_LIST(NAME, F, N, ...) FOR(NAME, N, P99__SEQ, F, __VA_ARGS__)
+#define P99__MODARG_LIST(NAME, F, N, ...) P99_FOR(NAME, N, P99__SEQ, F, __VA_ARGS__)
 
 #define LEN_MODARG(NAME, M, ...) P99__MODARG_(M)(__VA_ARGS__), P99__MODARG_LIST(NAME, P99_PASTE2(P99__CAS, M), P99_NARG(__VA_ARGS__), __VA_ARGS__)
 #define LEN_ARG(NAME, ...) P99__MODARG_(1)(__VA_ARGS__), P99__MODARG_LIST(NAME, P99__CAS1, P99_NARG(__VA_ARGS__), __VA_ARGS__)

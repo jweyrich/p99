@@ -169,10 +169,10 @@ int main(int argc, char **argv) {
 
   P99_IF_DEC_GT(1,0)(true)(false);
 
-  REVS();
-  REVS("a");
-  REVS("a", "b");
-  REVS("a", "b", "c");
+  P99_REVS();
+  P99_REVS("a");
+  P99_REVS("a", "b");
+  P99_REVS("a", "b", "c");
   long double const a0 = +0.5L;
   long double const a1 = P99_DEC_DOUBLE();
   long double const a2 = P99_DEC_DOUBLE(,1);
