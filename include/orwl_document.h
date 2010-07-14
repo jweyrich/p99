@@ -17,9 +17,6 @@
 /*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
 
 
-#define DOCUMENT_BLOCK /*! @see BLOCK for restrictions on preliminary exits from the dependent block or statement. **/
-
-
 /**
  ** @brief Add some indications to a @c _init documentation.
  */

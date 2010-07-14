@@ -13,7 +13,7 @@
 
 #include <pthread.h>
 #include "p99_paste.h"
-#include "orwl_document.h"
+#include "p99_block.h"
 
 struct orwl__once_upon_cont {
   void (*const init)(void);
@@ -72,9 +72,9 @@ static void P99_PASTE3(orwl__, T, _once_init)(void)
  ** @brief Protect the following block or statement with @c
  ** pthread_mutex_t @a mut.
  **/
-DOCUMENT_BLOCK
+P99_BLOCK_DOCUMENT
 #define MUTUAL_EXCLUDE(MUT)                     \
-SAVE_BLOCK(pthread_mutex_t*,                    \
+P99_GUARDED_BLOCK(pthread_mutex_t*,             \
       mut,                                      \
       &(MUT),                                   \
       pthread_mutex_lock(mut),                  \

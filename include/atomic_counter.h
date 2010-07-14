@@ -162,9 +162,9 @@ void atomic_counter_wait(atomic_counter* p) {
  ** @brief Account the @c atomic_counter @a COUNT during execution of a
  ** dependent block or statement.
  **/
-DOCUMENT_BLOCK
+P99_BLOCK_DOCUMENT
 #define ACCOUNT(COUNT)                          \
-SAVE_BLOCK(                                     \
+P99_GUARDED_BLOCK(                              \
            atomic_counter*,                     \
            _count,                              \
            &(COUNT),                            \

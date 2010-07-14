@@ -305,9 +305,9 @@ extern void sleepfor(double t);
  ** @brief Relax the @c sem_t @a SEM during execution of a dependent
  ** block or statement.
  **/
-DOCUMENT_BLOCK
+P99_BLOCK_DOCUMENT
 #define SEM_RELAX(SEM)                          \
-SAVE_BLOCK(                                     \
+P99_GUARDED_BLOCK(                              \
            sem_t*,                              \
            sem,                                 \
            &(SEM),                              \
@@ -326,9 +326,9 @@ SAVE_BLOCK(                                     \
  ** @see sem_post
  ** @see MUTUAL_EXCLUDE
  **/
-DOCUMENT_BLOCK
+P99_BLOCK_DOCUMENT
 #define SEM_CRITICAL(SEM)                       \
-SAVE_BLOCK(                                     \
+P99_GUARDED_BLOCK(                              \
            sem_t*,                              \
            sem,                                 \
            &(SEM),                              \

@@ -1313,6 +1313,7 @@ MAYBE_EXTERNAL					\
 ORWL_ALIAS					\
 ORWL_FTAB					\
 ORWL_REGISTER					\
+P99_BLOCK_DOCUMENT                              \
 P99_CALL_DEFARG                                 \
 P99_CAT2                                        \
 P99_DECLARE_DEFARG				\

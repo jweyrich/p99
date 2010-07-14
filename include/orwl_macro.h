@@ -13,6 +13,7 @@
 
 #include "orwl_inline.h"
 #include "orwl_document.h"
+#include "p99_block.h"
 #include "p99_defarg.h"
 
 #define P99__DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)       \
@@ -173,37 +174,7 @@
  **/
 #define P99__COMMA_ ,
 
-/**
- ** @brief A meta-macro to protect a dependent block or statement by a
- ** statement that is executed before and one after.
- **
- ** Preliminary exit of the block is possible with @c break.
- **
- ** @warning @c continue and @c return inside the dependent block will
- ** not execute @a AFTER, so be careful.
- **/
-#define BLOCK(BEFORE, AFTER)                                            \
-for (int _one1_ = 1;                                                    \
-     /* be sure to execute BEFORE only at the first evaluation */       \
-     (_one1_ ? ((void)(BEFORE), _one1_) : _one1_);                      \
-     /* run AFTER exactly once */                                       \
-     ((void)(AFTER), _one1_ = 0))                                       \
-  /* Ensure that a `break' will still execute AFTER */                  \
-  for (; _one1_; _one1_ = 0)
-
-
-#define INVARIANT(EXPR) BLOCK(assert("" && (EXPR)), assert("" && (EXPR)))
-
-#define SAVE_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)                     \
-for (int _one1_ = 1; _one1_; _one1_ = 0)                                \
-  for (T NAME = (INITIAL);                                              \
-       /* be sure to execute BEFORE only at the first evaluation */     \
-       (_one1_ ? ((void)(BEFORE), _one1_) : _one1_);                    \
-       /* run AFTER exactly once */                                     \
-       ((void)(AFTER), _one1_ = 0))                                     \
-    /* Ensure that a `break' will still execute AFTER */                \
-    for (; _one1_; _one1_ = 0)
-
+#define INVARIANT(EXPR) P99_PROTECTED_BLOCK(assert("" && (EXPR)), assert("" && (EXPR)))
 
 #define ARRAYSIZE(A) (sizeof(A)/sizeof(A[0]))
 
