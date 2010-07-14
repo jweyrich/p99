@@ -13,7 +13,20 @@
 
 #include "p99_map.h"
 
-/** @addtogroup default_arguments
+/**
+ ** @addtogroup default_arguments Default arguments for functions
+ **
+ ** @brief As a C++ like feature, this series of macros can be used to
+ ** provide default arguments to functions.
+ **
+ ** This goes in several parts.
+ **
+ **   - Use ::P99_PROTOTYPE to define a prototype for your function.
+ **   - define a macro that just calls ::P99_CALL_DEFARG as a
+ **       replacement for your function
+ **   - declare the default arguments with ::P99_DECLARE_DEFARG
+ **   - generate the necessary external symbols with
+ **       ::P99_DEFINE_DEFARG 
  ** @{
  **/
 
@@ -110,6 +123,8 @@ NAME(P99_IF_EQ(0,M)                                             \
  ** #P99_DECLARE_DEFARG to determine the type of the functions that return
  ** default arguments.
  **
+ ** @warning the list should only contain types and should not give
+ ** names to the individual parameters.
  **/
 
 #ifdef DOXYGEN
