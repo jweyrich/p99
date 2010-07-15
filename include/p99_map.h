@@ -14,10 +14,10 @@
 #include "p99_if.h"
 #include "p99_for.h"
 
-/** @addtogroup list_processing
+/** @addtogroup statement_lists List processing macros that produce C statements or initializer lists
+ **
  ** @{
  **/
-
 
 
 #define P99__ACCESSOR(NAME, X, I) (NAME)[I]
@@ -71,11 +71,6 @@
 #define P99_STRDUP(...) P99_STRCATS(memset(malloc(P99_STRLENS(__VA_ARGS__) + 1), 0, 1), __VA_ARGS__)
 
 /**
- ** Repeat the parameter @a X @a N times.
- **/
-#define P99_REPS(X, N) P99_FOR(X, N, P99__SEQ, P99__NAM, )
-
-/**
  ** @brief Produce a list of length @a N that has the contents of 0,
  ** 1, , @a N-1
  **/
@@ -120,6 +115,5 @@ P99__TYPEDEFS(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
 /** @}
  **/
-
 
 #endif 	    /* !P99_MAP_H_ */

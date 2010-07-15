@@ -209,7 +209,7 @@ enum { P99_PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
 
 #define P99__DARG(NAME, X, N) P99_IF_EMPTY(X)(P99_PASTE3(NAME, _defarg_, N)())(X)
 #define P99___DEFARGS(NAME, N, ...) P99_FOR(NAME, N, P99__SEQ, P99__DARG, __VA_ARGS__)
-#define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, P99_REPS(,P99_DEC_MINUS(N,P99_NARG(__VA_ARGS__)))) (__VA_ARGS__))
+#define P99__DEFARGS(NAME, N, ...) P99___DEFARGS(NAME, N, P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, P99_DUPL(P99_DEC_MINUS(N,P99_NARG(__VA_ARGS__)),)) (__VA_ARGS__))
 
 
 /**

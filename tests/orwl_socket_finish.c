@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
   report(1, "%s %s %s %s %s", PRI(char, X,), PRI(short, X,), PRI(signed, X,), PRI(long, X,), PRI(long long, X,));
   report(1, "%zu %zu %zu %zu %zu", sizeof(char), sizeof(short), sizeof(signed), sizeof(long), sizeof(long long));
   mfputs(stderr, P99_JOIN("aa", "BB", "CC "), PRIX(37ull), " ", PRId(37), " ", PRIo(37), " ", PRIp(argv), "\n");
-  int Y[17] = {  P99_REPS(1, 17) };
+  int Y[17] = {  P99_DUPL(17, 1) };
   int Z[22] = {  P99_POSS(22) };
   P99_VASSIGNS(Z, int x, double k, int y, bool r);
   P99_VASSIGNS(Y, int s);
