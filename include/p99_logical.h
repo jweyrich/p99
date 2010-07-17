@@ -14,6 +14,20 @@
 #include "p99_args.h"
 #include "p99_list.h"
 
+/**
+ ** @addtogroup preprocessor_operators Preprocessor operations
+ **
+ ** @brief Preprocessor macros that perform simple operations on there
+ ** arguments, such as Boolean, arithmetic or text.
+ **/
+
+/**
+ ** @addtogroup preprocessor_logic Preprocessor Boolean operations
+ **
+ ** @brief Preprocessor macros that return tokens 0 or 1 according to
+ ** the evaluation of their arguments.
+ ** @{
+ **/
 
 /**
  ** @brief Determine if the two tokens @a _0 and @a _1 are equal
@@ -160,6 +174,22 @@
 /** @brief a decimal unequal operator **/
 #define P99_IS_DEC_NE(_0, _1)  P99_LOGIC_NOT(P99_IS_EQ(_0, _1))
 
+
+/**
+ ** @}
+ **/
+
+/**
+ ** @addtogroup preprocessor_arithmetic Preprocessor arithmetic operations
+ **
+ ** @brief Preprocessor macros that perform simple arithmetic on
+ ** decimal arguments.
+ **
+ ** These are only implemented for small numbers, currently the limit
+ ** is somewhere around ::P99_MAX_NUMBER
+ ** @{
+ **/
+
 /** @brief add two decimal numbers **/
 #define P99_DEC_ADD(_0, _1)                             \
 P99__DEC_ADD(_0, _1,                                    \
@@ -236,12 +266,12 @@ P99__DEC_ADD(_0, _1,                                    \
  ** @warning The result must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define P99_DEC_MUL(A, B) P99_PASTE3(P99_DEC_MUL_, P99_IS_EQ_0(A), P99_IS_EQ_0(B))(A, B)
+#define P99_DEC_MUL(A, B) P99_PASTE3(P99__DEC_MUL_, P99_IS_EQ_0(A), P99_IS_EQ_0(B))(A, B)
 
-#define P99_DEC_MUL_00(A, B) P99_NARG(P99_DUPL(A, P99_SELS(B, P99__ALL_ONES())))
-#define P99_DEC_MUL_01(A, B) 0
-#define P99_DEC_MUL_10(A, B) 0
-#define P99_DEC_MUL_11(A, B) 0
+#define P99__DEC_MUL_00(A, B) P99_NARG(P99_DUPL(A, P99_SELS(B, P99__ALL_ONES())))
+#define P99__DEC_MUL_01(A, B) 0
+#define P99__DEC_MUL_10(A, B) 0
+#define P99__DEC_MUL_11(A, B) 0
 
 
 /**
@@ -253,6 +283,16 @@ P99__DEC_ADD(_0, _1,                                    \
  **/
 #define P99_DEC_MOD(A, B) P99__DEC_MOD(A, P99_DUPL(32, P99_SELS(B, P99__ASCENDING())))
 #define P99__DEC_MOD(A, ...) P99_CHS(A, __VA_ARGS__)
+
+/**
+ ** @}
+ **/
+
+
+/** @addtogroup basic_list_operations
+ **
+ ** @{
+ **/
 
 
 /**
@@ -269,15 +309,8 @@ P99__DEC_ADD(_0, _1,                                    \
 #define P99__PASTE(N, ...) P99___PASTE(P99_PASTE, N, __VA_ARGS__)
 
 
-/** @addtogroup list_processing List processing macros
- ** @brief We provide here a series of macros that take a list of
- ** arguments of arbitrary length and that transform each element in
- ** that list in some way.
- ** @{
- **/
-
-
 /**
+ ** @ingroup list_processing preprocessor_text
  ** @brief A left-to-right associative paste operator.
  **
  ** This macro avoids the ambiguity of the @c ## preprocessor operator

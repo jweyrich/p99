@@ -11,11 +11,16 @@
 #ifndef   	P99_MAP_H_
 # define   	P99_MAP_H_
 
+#include "orwl_inline.h"
 #include "p99_if.h"
 #include "p99_for.h"
 
-/** @addtogroup statement_lists List processing macros that produce C statements or initializer lists
+/** @addtogroup statement_lists Produce C99 statements or expression lists
  **
+ ** This provides tools to produce a list of declarations (e.g @c
+ ** typedef), list of initializers or perform a sequence of additions
+ ** or other operations. The input usually is just a list of names, e.g.
+ ** 
  ** @{
  **/
 
@@ -25,10 +30,6 @@
 #define P99__STRLEN(NAME, X, I) strlen(X)
 #define P99__TYPD(NAME, X, I) typedef X P99_PASTE2(NAME, I)
 
-#define P99__STRCAT(NAME, I, REC, X) strcat(REC, X)
-
-
-
 #define P99__STRLENS(N, ...) P99_FOR(,N, P99__SUM, P99__STRLEN, __VA_ARGS__)
 
 /**
@@ -37,17 +38,53 @@
  **/
 #define P99_STRLENS(...) P99__STRLENS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
+typedef struct p99__strcat_state p99__strcat_state;
 
-#define P99__STRCATS(N, ...) P99_FOR(,N, P99__STRCAT, P99__IDT, __VA_ARGS__)
+struct p99__strcat_state {
+  char* buffer;
+  size_t pos;
+};
+
+static_inline
+p99__strcat_state* p99__strcat(p99__strcat_state *restrict dest, char const*src) {
+  if (!dest->pos) dest->pos = strlen(dest->buffer);
+  size_t len = strlen(src);
+  memcpy(dest->buffer + dest->pos, src, len);
+  dest->pos += len;
+  return dest;
+}
+
+static_inline
+char* p99__strcat_terminate(p99__strcat_state *restrict dest) {
+  dest->buffer[dest->pos] = '\0';
+  return dest->buffer;
+}
 
 /**
  ** @brief Append all argument strings after @a TARG to @a TARG.
  **
- ** @a TARG must be compatible with @c char* and provide enough space
- ** to hold the concatenation of all strings. The remaining arguments
- ** must be compatible with @c const char*.
+ ** @a TARG should be compatible with @c char* and must provide enough
+ ** space to hold the concatenation of all strings. The remaining
+ ** arguments must be compatible with @c const char*.
+ **
+ ** This macro ensures a linear complexity of the operation. In
+ ** particular any position in the argument strings is accessed at
+ ** most 2 times, once by a call to strlen and once by a call to
+ ** memcpy.
+ **
+ ** This uses some small inlined helper functions, since the repeated
+ ** use of bare @c strcat would have quadratic complexity.
+ **
+ ** The resulting replacement that is produced by this macro evaluates
+ ** each of the arguments at most once.
  **/
-#define P99_STRCATS(TARG, ...) P99__STRCATS(P99_NARG(TARG, __VA_ARGS__), TARG, __VA_ARGS__)
+#define P99_STRCATS(TARG, ...)                                  \
+p99__strcat_terminate                                           \
+(P99_BIGFUNC                                                    \
+ (p99__strcat,                                                  \
+  P99_NARG(TARG, __VA_ARGS__),                                  \
+  (&(p99__strcat_state){ .buffer = (TARG), .pos = 0  }),        \
+   __VA_ARGS__))
 
 /**
  ** @brief Concatenate all arguments.
@@ -67,6 +104,10 @@
  ** @brief Concatenate all arguments.
  **
  ** @return a string that must be freed by @c free
+ **
+ ** The resulting replacement that is produced by this macro evaluates
+ ** each of the arguments twice; once to compute the overall length of
+ ** the new string and then for the duplication operation.
  **/
 #define P99_STRDUP(...) P99_STRCATS(memset(malloc(P99_STRLENS(__VA_ARGS__) + 1), 0, 1), __VA_ARGS__)
 

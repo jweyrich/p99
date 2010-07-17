@@ -7,7 +7,6 @@ if 0;               #### for this magic, see findSvnAuthors ####
 #
 
 my $maxnumber = 64;
-my $digit = "1";
 
 # these are the normative keywords in C99
 my @keywords_C99
@@ -19,6 +18,13 @@ my @keywords_C99
 print "/* This file is automat";
 print "ically generated, do not chan";
 print "ge manually. */\n";
+
+print "/*! \@brief The maximal number of arguments the P99 macros can handle. */\n";
+print "/*!                                                                    */\n";
+print "/*! This limit applies also to the integer arithmetic that is          */\n";
+print "/*! performed by the macros in \@ref preprocessor_arithmetic           */\n";
+print "#define P99_MAX_NUMBER $maxnumber\n\n";
+
 
 print "#define P99__ARG(";
 for (my $i = 1; $i <= $maxnumber; ++$i) {
@@ -129,3 +135,37 @@ for (my $i = 2; $i < $maxnumber; ++$i) {
     print "#define P99__FOR${i}(NAME, OP, FUNC, ...) \\\n",
     "\tOP(NAME, $i1, P99__FOR${i1}(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), $i1))\n";
 }
+
+my @groups =
+    [ "preprocessor_macros",
+     [ "meta_programming",
+       [ "preprocessor_conditionals" ],
+       [ "preprocessor_for" ],
+       [ "preprocessor_blocks" ],
+     ],
+     [ "list_processing",
+       [ "basic_list_operations" ],
+       [ "statement_lists" ],
+     ],
+     [ "preprocessor_operators",
+       [ "preprocessor_logic" ],
+       [ "preprocessor_arithmetic" ],
+       [ "preprocessor_text" ],
+     ],
+      [ "default_arguments" ],
+    ];
+
+sub printGroups(@);
+
+sub printGroups(@) {
+    my ($name, @rest) = (@{$_[0]});
+    print "\n//! \@addtogroup $name\n";
+    print "//! \@{\n\n";
+    print "\n#define P99__$name\n";
+    foreach my $arr (@rest) {
+        printGroups($arr);
+    }
+    print "\n//! \@}\n";
+}
+
+printGroups(@groups);

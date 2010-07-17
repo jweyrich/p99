@@ -15,7 +15,7 @@
 
 
 
-/** @addtogroup list_processing
+/** @addtogroup preprocessor_for Preprocessor FOR loops
  ** @{
  **/
 
@@ -88,8 +88,10 @@
 #define P99__SER(NAME, I, REC, X) REC X
 #define P99__REV(NAME, I, REC, X) X, REC
 
+#define P99__FUNC(NAME, I, REC, X) NAME(REC, X)
+
 /**
- ** @brief Compute the right associative operation @a OP of all the arguments.
+ ** @brief Realize the right associative operation @a OP of all the arguments.
  **
  ** Here @a OP should receive four arguments <code>NAME, X, N,
  ** REC</code> out of which @c NAME and @c N are ignored and @c X and
@@ -98,42 +100,67 @@
  **
  ** @a M is the length of the list that follows it.
  **/
-#define P99_BIGOP(OP, M, ...) P99_FOR( , M, OP, P99__IDT, __VA_ARGS__,)
+#define P99_BIGOP(OP, M, ...) P99_FOR( , M, OP, P99__IDT, __VA_ARGS__)
 
 /**
- ** @brief Compute the right associative sum of all the arguments.
+ ** @brief Realize the right associative call of binary function @a FUNC of all the arguments.
+ **
+ ** Here @a FUNC should be a function of two arguments.
+ **
+ ** @a M is the length of the list that follows it.
+ **/
+#define P99_BIGFUNC(FUNC, M, ...) P99_FOR(FUNC, M, P99__FUNC, P99__IDT, __VA_ARGS__)
+
+/**
+ ** @}
+ **/
+
+
+
+/** @addtogroup statement_lists
+ ** @{
+ **/
+
+/**
+ ** @brief Realize the right associative sum of all the arguments.
  **/
 #define P99_SUMS(...) P99_BIGOP(P99__SUM, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
- ** @brief Compute the right associative product of all the arguments.
+ ** @brief Realize the right associative product of all the arguments.
  **/
 #define P99_PRODS(...) P99_BIGOP(P99__PROD, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
- ** @brief Compute the right associative quotient of all the arguments.
+ ** @brief Realize the right associative quotient of all the arguments.
  **/
 #define P99_QUOTS(...) P99_BIGOP(P99__QUOT, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
- ** @brief Compute the right associative bitwise exclusive or of all the arguments.
+ ** @brief Realize the right associative bitwise exclusive or of all the arguments.
  **/
 #define P99_XORS(...) P99_BIGOP(P99__XOR, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
- ** @brief Compute the right associative bitwise or of all the arguments.
+ ** @brief Realize the right associative bitwise or of all the arguments.
  **/
 #define P99_BORS(...) P99_BIGOP(P99__BOR, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
- ** @brief Compute the right associative bitwise and of all the arguments.
+ ** @brief Realize the right associative bitwise and of all the arguments.
  **/
 #define P99_BANDS(...) P99_BIGOP(P99__BAND, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
- ** @brief Compute the right associative logical or of all the arguments.
+ ** @brief Realize the right associative logical or of all the arguments.
  **/
 #define P99_ORS(...) P99_BIGOP(P99__OR, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
- ** @brief Compute the right associative logical and of all the arguments.
+ ** @brief Realize the right associative logical and of all the arguments.
  **/
 #define P99_ANDS(...) P99_BIGOP(P99__AND, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
 /**
+ ** @}
+ **/
+
+
+/**
+ ** @ingroup preprocessor_for
  ** @brief Revert the argument list
  **/
 #define P99_REVS(...) P99__REVS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
@@ -147,6 +174,7 @@
 #define P99__REVS_(N, ...) P99_FOR(,N, P99__REV, P99__IDT, __VA_ARGS__)
 
 /**
+ ** @ingroup preprocessor_arithmetic 
  ** @brief Generate the quotient of non-negative decimal numbers @a A and @a B at
  ** preprocessing time.
  **
@@ -157,8 +185,6 @@
 
 #define P99__IDI(B, X, I) P99_DUPL(B, I)
 
-/** @}
- **/
 
 
 #endif 	    /* !P99_FOR_H_ */

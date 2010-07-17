@@ -20,6 +20,10 @@
  ** @brief We provide here a series of macros that take a list of
  ** arguments of arbitrary length and that transform each element in
  ** that list in some way.
+ **/
+
+/** @addtogroup basic_list_operations Basic list processing macros
+ ** 
  ** @{
  **/
 

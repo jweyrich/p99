@@ -13,6 +13,16 @@
 
 #include "p99_logical.h"
 
+/**
+ ** @addtogroup preprocessor_conditionals Preprocessor conditionals
+ **
+ ** @brief This provides different types of if-else clauses for the preprocessor.
+ **
+ ** For the underlying logical and arithmetical operations
+ ** @see preprocessor_logic
+ ** @see preprocessor_arithmetic
+ ** @{
+ **/
 
 #define P99__IGNORE(...)
 #define P99__IDENT(...) __VA_ARGS__
@@ -132,5 +142,10 @@
 #define P99_IF_void(...) P99_IF_EQ_1(P99_IS_EQ_void(__VA_ARGS__))
 
 #define P99_IF_VOID(...) P99_IF_EQ_1(P99_IS_VOID(__VA_ARGS__))
+
+
+/**
+ ** @}
+ **/
 
 #endif 	    /* !P99_IF_H_ */
