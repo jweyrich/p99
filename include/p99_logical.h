@@ -35,7 +35,7 @@
  ** For a specific token X to work with this, a macro @c
  ** P99__IS_X_EQ_X must have been declared and expand to a comma.
  **/
-#define P99_IS_EQ(_0, _1) HAS_COMMA(P99_PASTE4(P99__IS_, _0, _EQ_, _1)())
+#define P99_IS_EQ(_0, _1) P99_HAS_COMMA(P99_PASTE4(P99__IS_, _0, _EQ_, _1)())
 
 
 /**

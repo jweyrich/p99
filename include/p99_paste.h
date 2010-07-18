@@ -13,6 +13,11 @@
 
 #include "p99_generated.h"
 
+/** @addtogroup preprocessor_text Preprocessor text and token manipulation
+ ** @{
+ **/
+
+
 /* This was inspired by BOOT's PP_CAT macro. Using such a thing avoid
    to define multiple levels of expansion for each macro. */
 #define P99_PASTE0()
@@ -66,5 +71,11 @@
 	P99_PASTE2(P99_PASTE4(_1,	_2,	_3,	_4), _5)
 #define P99_PASTE6(_1,	_2,	_3,	_4,	_5,	_6)	\
 	P99_PASTE2(P99_PASTE5(_1,	_2,	_3,	_4,	_5), _6)
+
+
+/**
+ ** @}
+ **/
+
 
 #endif 	    /* !P99_PASTE_H_ */

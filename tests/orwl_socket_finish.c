@@ -204,4 +204,8 @@ int main(int argc, char **argv) {
   P99_DEC_MOD(7, 8);
   P99_DEC_MOD(10, 5);
   P99_DEC_MOD(3, 7);
+  P99_IS_EQ_assert(acos);
+  P99_IS_EQ_assert(assert);
+  P99_IS_EQ_acos(acos);
+  P99_IS_EQ_acos(assert);
 }

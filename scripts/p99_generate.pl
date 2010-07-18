@@ -10,10 +10,374 @@ my $maxnumber = 64;
 
 # these are the normative keywords in C99
 my @keywords_C99
-    = qw( _Bool _Complex _Imaginary auto break case char
+    = sort qw( _Bool _Complex _Imaginary auto break case char
          const continue default do double else enum extern float for goto if
          inline int long register restrict return short signed sizeof static
          struct switch typedef union unsigned void volatile while );
+
+# these are macros that are usually defined by C99
+my @macros_C99
+    = sort qw( bool true false NULL );
+
+# these are typedefs that are usually defined by C99
+my @typedefs_C99
+    = sort qw(
+    clock_t
+    div_t
+    double_t
+    fenv_t
+    fexcept_t
+    float_t
+    fpos_t
+    imaxdiv_t
+    intmax_t
+    intptr_t
+    ldiv_t
+    lldiv_t
+    mbstate_t
+    off_t
+    ptrdiff_t
+    sig_atomic_t
+    size_t
+    ssize_t
+    time_t
+    uintmax_t
+    uintptr_t
+    wchar_t
+    wctrans_t
+    wctype_t
+    wint_t
+    );
+
+push(@typedefs_C99, "uint${_}_t", "int${_}_t", "uintleast${_}_t", "intleast${_}_t", "uintfast${_}_t", "intfast${_}_t")
+    foreach (8, 16, 32, 64);
+
+@typedefs_C99 = sort @typedefs_C99;
+
+
+# these are functions and functional macros that are usually defined by C99
+my @functions_C99 = sort(
+    # assert.h
+    qw(
+        assert
+    ),
+
+    # complex.h
+    qw(
+        cabs
+        cacos
+        cacosh
+        carg
+        casin
+        casinh
+        catan
+        catanh
+        ccos
+        ccosh
+        cexp
+        cimag
+        clog
+        conj
+        cpow
+        cproj
+        creal
+        csin
+        csinh
+        csqrt
+        ctan
+        ctanh
+    ),
+
+    # ctype.h
+    qw(
+        isalnum
+        isalpha
+        isblank
+        iscntrl
+        isdigit
+        isgraph
+        islower
+        isprint
+        ispunct
+        isspace
+        isupper
+        isxdigit
+        tolower
+        toupper
+    ),
+
+    # inttypes.h
+    qw(
+        imaxabs
+        imaxdiv
+        strtoimax
+        strtoumax
+        wcstoimax
+        wcstoumax
+    ),
+
+    # locale.h
+    qw(
+        localeconv
+        setlocale
+    ),
+
+    # math.h
+    qw(
+        acos
+        asin
+        atan
+        atan2
+        atof
+        ceil
+        cos
+        cosh
+        exp
+        fabs
+        floor
+        frexp
+        ldexp
+        log
+        log10
+        modf
+        pow
+        sin
+        sinh
+        sqrt
+        tan
+        tanh
+    ),
+
+    # netdb.h
+    qw(
+        getaddrinfo
+        getnameinfo
+    ),
+
+    # setjmp.h
+    qw(
+        longjmp
+        setjmp
+    ),
+
+    # signal.h
+    qw(
+        raise
+    ),
+
+    # stdarg.h
+    qw(
+        va_arg
+        va_copy
+        va_end
+        va_start
+    ),
+
+    # stddef.h
+    qw(
+        offsetof
+    ),
+
+    # stdio.h
+    qw(
+        clearerr
+        fclose
+        feof
+        ferror
+        fflush
+        fgetc
+        fgetpos
+        fgets
+        fopen
+        freopen
+        fdopen
+        fprintf
+        fputc
+        fputs
+        fread
+        fscanf
+        fseek
+        fsetpos
+        ftell
+        fwrite
+        getc
+        getchar
+        gets
+        perror
+        printf
+        fprintf
+        sprintf
+        snprintf
+        putc
+        putchar
+        fputchar
+        puts
+        remove
+        rename
+        rewind
+        scanf
+        fscanf
+        sscanf
+        vfscanf
+        vscanf
+        vsscanf
+        setbuf
+        setvbuf
+        tmpfile
+        tmpnam
+        ungetc
+        vprintf
+        vfprintf
+        vsprintf
+    ),
+
+    # stdlib.h
+    qw(
+        _Exit
+        abort
+        abs
+        labs
+        atexit
+        atof
+        atoi
+        atol
+        bsearch
+        div
+        ldiv
+        exit
+        free
+        getenv
+        ldiv
+        malloc
+        calloc
+        realloc
+        qsort
+        rand
+        srand
+        strtod
+        strtol
+        strtoul
+        system
+    ),
+
+    # string.h
+    qw(
+        memchr
+        memcmp
+        memcpy
+        memmove
+        memset
+        strcat
+        strncat
+        strchr
+        strcmp
+        strncmp
+        strcoll
+        strcpy
+        strncpy
+        strcspn
+        strerror
+        strlen
+        strpbrk
+        strrchr
+        strspn
+        strstr
+        strtok
+        strxfrm
+    ),
+
+    # time.h
+    qw(
+        asctime
+        clock
+        ctime
+        difftime
+        gmtime
+        localtime
+        mktime
+        strftime
+        time
+    ),
+
+    # wchar.h
+    qw(
+        btowc
+        fgetwc
+        fgetws
+        fputwc
+        fputws
+        fwide
+        fwprintf
+        fwscanf
+        getwc
+        getwchar
+        mbrlen
+        mbrtowc
+        mbsinit
+        mbsrtowcs
+        putwc
+        putwchar
+        swprintf
+        swscanf
+        ungetwc
+        vfwprintf
+        vswprintf
+        vwprintf
+        wcrtomb
+        wcscat
+        wcschr
+        wcscmp
+        wcscoll
+        wcscpy
+        wcscspn
+        wcsftime
+        wcslen
+        wcsncat
+        wcsncmp
+        wcsncpy
+        wcspbrk
+        wcsrchr
+        wcsrtombs
+        wcsspn
+        wcsstr
+        wcstod
+        wcstok
+        wcstol
+        wcstoul
+        wcsxfrm
+        wctob
+        wmemchr
+        wmemcmp
+        wmemcpy
+        wmemmove
+        wmemset
+        wprintf
+        wscanf
+    ),
+
+    # wctype.h
+    qw(
+        iswalnum
+        iswalpha
+        iswcntrl
+        iswctype
+        iswdigit
+        iswgraph
+        iswlower
+        iswprint
+        iswpunct
+        iswspace
+        iswupper
+        iswxdigit
+        towctrans
+        towlower
+        towupper
+        wctrans
+        wctype
+    )
+    );
+
+my @token_C99 = sort(@keywords_C99, @typedefs_C99, @functions_C99);
 
 print "/* This file is automat";
 print "ically generated, do not chan";
@@ -49,8 +413,9 @@ for (my $m = 1; $m < 5; ++$m) {
     print ")\n";
 }
 
-print "/*! \@brief Determine of the argument list has a comma, i.e at least two arguments.*/\n";
-print "#define HAS_COMMA(...) P99__ARG(__VA_ARGS__,\\\n";
+print "/*! \@ingroup basic_list_operations                                                 */\n";
+print "/*! \@brief Determine of the argument list has a comma, i.e at least two arguments. */\n";
+print "#define P99_HAS_COMMA(...) P99__ARG(__VA_ARGS__,\\\n";
 for (my $i = 2; $i < $maxnumber; ++$i) {
     if ($i % 8 != 1) {
         print "\t1,";
@@ -108,11 +473,62 @@ for (my $m = 7; $m < $maxnumber; ++$m) {
     print "#define P99__PASTE$m(L, ...) P99_PASTE2(P99_PASTE${m1}(__VA_ARGS__), L)\n";
 }
 
+print <<"PREPRO1";
+/**
+ ** \@addtogroup preprocessor_text
+ **
+ ** \@brief These macros allow the handling of small texts and tokens.
+ **
+ ** For the following tokens, the macro ::P99_TOK_EQ will work.
+ ** - decimal numbers: 0 ... $maxnumber
+ ** - keywords:
+PREPRO1
+
+print " **     \@c ${_}\n"
+    foreach (@keywords_C99);
+
+print <<'PREPRO5';
+ ** - typedefs:
+PREPRO5
+
+print " **     \@c ${_}\n"
+    foreach (@typedefs_C99);
+
+print <<'PREPRO6';
+ ** - functions or functional macros:
+PREPRO6
+
+print " **     \@c ${_}\n"
+    foreach (@functions_C99);
+
+print <<'PREPRO4';
+ **
+ ** @warning Non-functional macros cannot be captured by this mechanism since they will
+ ** be expanded before we may actually handle them. This concerns in particular
+ ** the following tokens that are defined to be macros:
+PREPRO4
+
+print " **     \@c ${_}\n"
+    foreach (@macros_C99);
+
+print <<'PREPRO2';
+ ** @{
+ **/
+PREPRO2
+
+
 print "#define P99__IS_${_}_EQ_${_}(...) ,\n"
-    foreach (0.. $maxnumber, @keywords_C99);
+    foreach (0.. $maxnumber, @token_C99);
 print "/*! \@brief Test if the argument consists of exactly the token \@c ${_} */\
 #define P99_IS_EQ_${_}(...) P99_TOK_EQ(${_}, __VA_ARGS__)\n"
-    foreach (0.. $maxnumber, @keywords_C99);
+    foreach (0.. $maxnumber, @token_C99);
+
+print <<'PREPRO3';
+/**
+ ** @}
+ **/
+PREPRO3
+
 
 printf "#define P99__DEC_PRED_%d %d\n", $_ + 1, $_
     foreach (0.. $maxnumber);

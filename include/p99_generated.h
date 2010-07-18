@@ -51,8 +51,9 @@
 	P99__INV(4),	P99__INV(4),	P99__INV(4),	5,	P99__INV(4),	P99__INV(4),	P99__INV(4),	4,\
 	P99__INV(4),	P99__INV(4),	P99__INV(4),	3,	P99__INV(4),	P99__INV(4),	P99__INV(4),	2,\
 	P99__INV(4),	P99__INV(4),	P99__INV(4),	1,	P99__INV(4),	P99__INV(4),	P99__INV(4),	0,)
-/*! @brief Determine of the argument list has a comma, i.e at least two arguments.*/
-#define HAS_COMMA(...) P99__ARG(__VA_ARGS__,\
+/*! @ingroup basic_list_operations                                                 */
+/*! @brief Determine of the argument list has a comma, i.e at least two arguments. */
+#define P99_HAS_COMMA(...) P99__ARG(__VA_ARGS__,\
 	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
@@ -383,6 +384,363 @@
 /*! @brief Paste 63 arguments at their boundary.*/
 #define P99_PASTE63(...) P99__PASTE63(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE63(L, ...) P99_PASTE2(P99_PASTE62(__VA_ARGS__), L)
+/**
+ ** @addtogroup preprocessor_text
+ **
+ ** @brief These macros allow the handling of small texts and tokens.
+ **
+ ** For the following tokens, the macro ::P99_TOK_EQ will work.
+ ** - decimal numbers: 0 ... 64
+ ** - keywords:
+ **     @c _Bool
+ **     @c _Complex
+ **     @c _Imaginary
+ **     @c auto
+ **     @c break
+ **     @c case
+ **     @c char
+ **     @c const
+ **     @c continue
+ **     @c default
+ **     @c do
+ **     @c double
+ **     @c else
+ **     @c enum
+ **     @c extern
+ **     @c float
+ **     @c for
+ **     @c goto
+ **     @c if
+ **     @c inline
+ **     @c int
+ **     @c long
+ **     @c register
+ **     @c restrict
+ **     @c return
+ **     @c short
+ **     @c signed
+ **     @c sizeof
+ **     @c static
+ **     @c struct
+ **     @c switch
+ **     @c typedef
+ **     @c union
+ **     @c unsigned
+ **     @c void
+ **     @c volatile
+ **     @c while
+ ** - typedefs:
+ **     @c clock_t
+ **     @c div_t
+ **     @c double_t
+ **     @c fenv_t
+ **     @c fexcept_t
+ **     @c float_t
+ **     @c fpos_t
+ **     @c imaxdiv_t
+ **     @c int16_t
+ **     @c int32_t
+ **     @c int64_t
+ **     @c int8_t
+ **     @c intfast16_t
+ **     @c intfast32_t
+ **     @c intfast64_t
+ **     @c intfast8_t
+ **     @c intleast16_t
+ **     @c intleast32_t
+ **     @c intleast64_t
+ **     @c intleast8_t
+ **     @c intmax_t
+ **     @c intptr_t
+ **     @c ldiv_t
+ **     @c lldiv_t
+ **     @c mbstate_t
+ **     @c off_t
+ **     @c ptrdiff_t
+ **     @c sig_atomic_t
+ **     @c size_t
+ **     @c ssize_t
+ **     @c time_t
+ **     @c uint16_t
+ **     @c uint32_t
+ **     @c uint64_t
+ **     @c uint8_t
+ **     @c uintfast16_t
+ **     @c uintfast32_t
+ **     @c uintfast64_t
+ **     @c uintfast8_t
+ **     @c uintleast16_t
+ **     @c uintleast32_t
+ **     @c uintleast64_t
+ **     @c uintleast8_t
+ **     @c uintmax_t
+ **     @c uintptr_t
+ **     @c wchar_t
+ **     @c wctrans_t
+ **     @c wctype_t
+ **     @c wint_t
+ ** - functions or functional macros:
+ **     @c _Exit
+ **     @c abort
+ **     @c abs
+ **     @c acos
+ **     @c asctime
+ **     @c asin
+ **     @c assert
+ **     @c atan
+ **     @c atan2
+ **     @c atexit
+ **     @c atof
+ **     @c atof
+ **     @c atoi
+ **     @c atol
+ **     @c bsearch
+ **     @c btowc
+ **     @c cabs
+ **     @c cacos
+ **     @c cacosh
+ **     @c calloc
+ **     @c carg
+ **     @c casin
+ **     @c casinh
+ **     @c catan
+ **     @c catanh
+ **     @c ccos
+ **     @c ccosh
+ **     @c ceil
+ **     @c cexp
+ **     @c cimag
+ **     @c clearerr
+ **     @c clock
+ **     @c clog
+ **     @c conj
+ **     @c cos
+ **     @c cosh
+ **     @c cpow
+ **     @c cproj
+ **     @c creal
+ **     @c csin
+ **     @c csinh
+ **     @c csqrt
+ **     @c ctan
+ **     @c ctanh
+ **     @c ctime
+ **     @c difftime
+ **     @c div
+ **     @c exit
+ **     @c exp
+ **     @c fabs
+ **     @c fclose
+ **     @c fdopen
+ **     @c feof
+ **     @c ferror
+ **     @c fflush
+ **     @c fgetc
+ **     @c fgetpos
+ **     @c fgets
+ **     @c fgetwc
+ **     @c fgetws
+ **     @c floor
+ **     @c fopen
+ **     @c fprintf
+ **     @c fprintf
+ **     @c fputc
+ **     @c fputchar
+ **     @c fputs
+ **     @c fputwc
+ **     @c fputws
+ **     @c fread
+ **     @c free
+ **     @c freopen
+ **     @c frexp
+ **     @c fscanf
+ **     @c fscanf
+ **     @c fseek
+ **     @c fsetpos
+ **     @c ftell
+ **     @c fwide
+ **     @c fwprintf
+ **     @c fwrite
+ **     @c fwscanf
+ **     @c getaddrinfo
+ **     @c getc
+ **     @c getchar
+ **     @c getenv
+ **     @c getnameinfo
+ **     @c gets
+ **     @c getwc
+ **     @c getwchar
+ **     @c gmtime
+ **     @c imaxabs
+ **     @c imaxdiv
+ **     @c isalnum
+ **     @c isalpha
+ **     @c isblank
+ **     @c iscntrl
+ **     @c isdigit
+ **     @c isgraph
+ **     @c islower
+ **     @c isprint
+ **     @c ispunct
+ **     @c isspace
+ **     @c isupper
+ **     @c iswalnum
+ **     @c iswalpha
+ **     @c iswcntrl
+ **     @c iswctype
+ **     @c iswdigit
+ **     @c iswgraph
+ **     @c iswlower
+ **     @c iswprint
+ **     @c iswpunct
+ **     @c iswspace
+ **     @c iswupper
+ **     @c iswxdigit
+ **     @c isxdigit
+ **     @c labs
+ **     @c ldexp
+ **     @c ldiv
+ **     @c ldiv
+ **     @c localeconv
+ **     @c localtime
+ **     @c log
+ **     @c log10
+ **     @c longjmp
+ **     @c malloc
+ **     @c mbrlen
+ **     @c mbrtowc
+ **     @c mbsinit
+ **     @c mbsrtowcs
+ **     @c memchr
+ **     @c memcmp
+ **     @c memcpy
+ **     @c memmove
+ **     @c memset
+ **     @c mktime
+ **     @c modf
+ **     @c offsetof
+ **     @c perror
+ **     @c pow
+ **     @c printf
+ **     @c putc
+ **     @c putchar
+ **     @c puts
+ **     @c putwc
+ **     @c putwchar
+ **     @c qsort
+ **     @c raise
+ **     @c rand
+ **     @c realloc
+ **     @c remove
+ **     @c rename
+ **     @c rewind
+ **     @c scanf
+ **     @c setbuf
+ **     @c setjmp
+ **     @c setlocale
+ **     @c setvbuf
+ **     @c sin
+ **     @c sinh
+ **     @c snprintf
+ **     @c sprintf
+ **     @c sqrt
+ **     @c srand
+ **     @c sscanf
+ **     @c strcat
+ **     @c strchr
+ **     @c strcmp
+ **     @c strcoll
+ **     @c strcpy
+ **     @c strcspn
+ **     @c strerror
+ **     @c strftime
+ **     @c strlen
+ **     @c strncat
+ **     @c strncmp
+ **     @c strncpy
+ **     @c strpbrk
+ **     @c strrchr
+ **     @c strspn
+ **     @c strstr
+ **     @c strtod
+ **     @c strtoimax
+ **     @c strtok
+ **     @c strtol
+ **     @c strtoul
+ **     @c strtoumax
+ **     @c strxfrm
+ **     @c swprintf
+ **     @c swscanf
+ **     @c system
+ **     @c tan
+ **     @c tanh
+ **     @c time
+ **     @c tmpfile
+ **     @c tmpnam
+ **     @c tolower
+ **     @c toupper
+ **     @c towctrans
+ **     @c towlower
+ **     @c towupper
+ **     @c ungetc
+ **     @c ungetwc
+ **     @c va_arg
+ **     @c va_copy
+ **     @c va_end
+ **     @c va_start
+ **     @c vfprintf
+ **     @c vfscanf
+ **     @c vfwprintf
+ **     @c vprintf
+ **     @c vscanf
+ **     @c vsprintf
+ **     @c vsscanf
+ **     @c vswprintf
+ **     @c vwprintf
+ **     @c wcrtomb
+ **     @c wcscat
+ **     @c wcschr
+ **     @c wcscmp
+ **     @c wcscoll
+ **     @c wcscpy
+ **     @c wcscspn
+ **     @c wcsftime
+ **     @c wcslen
+ **     @c wcsncat
+ **     @c wcsncmp
+ **     @c wcsncpy
+ **     @c wcspbrk
+ **     @c wcsrchr
+ **     @c wcsrtombs
+ **     @c wcsspn
+ **     @c wcsstr
+ **     @c wcstod
+ **     @c wcstoimax
+ **     @c wcstok
+ **     @c wcstol
+ **     @c wcstoul
+ **     @c wcstoumax
+ **     @c wcsxfrm
+ **     @c wctob
+ **     @c wctrans
+ **     @c wctype
+ **     @c wmemchr
+ **     @c wmemcmp
+ **     @c wmemcpy
+ **     @c wmemmove
+ **     @c wmemset
+ **     @c wprintf
+ **     @c wscanf
+ **
+ ** @warning Non-functional macros cannot be captured by this mechanism since they will
+ ** be expanded before we may actually handle them. This concerns in particular
+ ** the following tokens that are defined to be macros:
+ **     @c NULL
+ **     @c bool
+ **     @c false
+ **     @c true
+ ** @{
+ **/
 #define P99__IS_0_EQ_0(...) ,
 #define P99__IS_1_EQ_1(...) ,
 #define P99__IS_2_EQ_2(...) ,
@@ -450,41 +808,341 @@
 #define P99__IS_64_EQ_64(...) ,
 #define P99__IS__Bool_EQ__Bool(...) ,
 #define P99__IS__Complex_EQ__Complex(...) ,
+#define P99__IS__Exit_EQ__Exit(...) ,
 #define P99__IS__Imaginary_EQ__Imaginary(...) ,
+#define P99__IS_abort_EQ_abort(...) ,
+#define P99__IS_abs_EQ_abs(...) ,
+#define P99__IS_acos_EQ_acos(...) ,
+#define P99__IS_asctime_EQ_asctime(...) ,
+#define P99__IS_asin_EQ_asin(...) ,
+#define P99__IS_assert_EQ_assert(...) ,
+#define P99__IS_atan_EQ_atan(...) ,
+#define P99__IS_atan2_EQ_atan2(...) ,
+#define P99__IS_atexit_EQ_atexit(...) ,
+#define P99__IS_atof_EQ_atof(...) ,
+#define P99__IS_atof_EQ_atof(...) ,
+#define P99__IS_atoi_EQ_atoi(...) ,
+#define P99__IS_atol_EQ_atol(...) ,
 #define P99__IS_auto_EQ_auto(...) ,
 #define P99__IS_break_EQ_break(...) ,
+#define P99__IS_bsearch_EQ_bsearch(...) ,
+#define P99__IS_btowc_EQ_btowc(...) ,
+#define P99__IS_cabs_EQ_cabs(...) ,
+#define P99__IS_cacos_EQ_cacos(...) ,
+#define P99__IS_cacosh_EQ_cacosh(...) ,
+#define P99__IS_calloc_EQ_calloc(...) ,
+#define P99__IS_carg_EQ_carg(...) ,
 #define P99__IS_case_EQ_case(...) ,
+#define P99__IS_casin_EQ_casin(...) ,
+#define P99__IS_casinh_EQ_casinh(...) ,
+#define P99__IS_catan_EQ_catan(...) ,
+#define P99__IS_catanh_EQ_catanh(...) ,
+#define P99__IS_ccos_EQ_ccos(...) ,
+#define P99__IS_ccosh_EQ_ccosh(...) ,
+#define P99__IS_ceil_EQ_ceil(...) ,
+#define P99__IS_cexp_EQ_cexp(...) ,
 #define P99__IS_char_EQ_char(...) ,
+#define P99__IS_cimag_EQ_cimag(...) ,
+#define P99__IS_clearerr_EQ_clearerr(...) ,
+#define P99__IS_clock_EQ_clock(...) ,
+#define P99__IS_clock_t_EQ_clock_t(...) ,
+#define P99__IS_clog_EQ_clog(...) ,
+#define P99__IS_conj_EQ_conj(...) ,
 #define P99__IS_const_EQ_const(...) ,
 #define P99__IS_continue_EQ_continue(...) ,
+#define P99__IS_cos_EQ_cos(...) ,
+#define P99__IS_cosh_EQ_cosh(...) ,
+#define P99__IS_cpow_EQ_cpow(...) ,
+#define P99__IS_cproj_EQ_cproj(...) ,
+#define P99__IS_creal_EQ_creal(...) ,
+#define P99__IS_csin_EQ_csin(...) ,
+#define P99__IS_csinh_EQ_csinh(...) ,
+#define P99__IS_csqrt_EQ_csqrt(...) ,
+#define P99__IS_ctan_EQ_ctan(...) ,
+#define P99__IS_ctanh_EQ_ctanh(...) ,
+#define P99__IS_ctime_EQ_ctime(...) ,
 #define P99__IS_default_EQ_default(...) ,
+#define P99__IS_difftime_EQ_difftime(...) ,
+#define P99__IS_div_EQ_div(...) ,
+#define P99__IS_div_t_EQ_div_t(...) ,
 #define P99__IS_do_EQ_do(...) ,
 #define P99__IS_double_EQ_double(...) ,
+#define P99__IS_double_t_EQ_double_t(...) ,
 #define P99__IS_else_EQ_else(...) ,
 #define P99__IS_enum_EQ_enum(...) ,
+#define P99__IS_exit_EQ_exit(...) ,
+#define P99__IS_exp_EQ_exp(...) ,
 #define P99__IS_extern_EQ_extern(...) ,
+#define P99__IS_fabs_EQ_fabs(...) ,
+#define P99__IS_fclose_EQ_fclose(...) ,
+#define P99__IS_fdopen_EQ_fdopen(...) ,
+#define P99__IS_fenv_t_EQ_fenv_t(...) ,
+#define P99__IS_feof_EQ_feof(...) ,
+#define P99__IS_ferror_EQ_ferror(...) ,
+#define P99__IS_fexcept_t_EQ_fexcept_t(...) ,
+#define P99__IS_fflush_EQ_fflush(...) ,
+#define P99__IS_fgetc_EQ_fgetc(...) ,
+#define P99__IS_fgetpos_EQ_fgetpos(...) ,
+#define P99__IS_fgets_EQ_fgets(...) ,
+#define P99__IS_fgetwc_EQ_fgetwc(...) ,
+#define P99__IS_fgetws_EQ_fgetws(...) ,
 #define P99__IS_float_EQ_float(...) ,
+#define P99__IS_float_t_EQ_float_t(...) ,
+#define P99__IS_floor_EQ_floor(...) ,
+#define P99__IS_fopen_EQ_fopen(...) ,
 #define P99__IS_for_EQ_for(...) ,
+#define P99__IS_fpos_t_EQ_fpos_t(...) ,
+#define P99__IS_fprintf_EQ_fprintf(...) ,
+#define P99__IS_fprintf_EQ_fprintf(...) ,
+#define P99__IS_fputc_EQ_fputc(...) ,
+#define P99__IS_fputchar_EQ_fputchar(...) ,
+#define P99__IS_fputs_EQ_fputs(...) ,
+#define P99__IS_fputwc_EQ_fputwc(...) ,
+#define P99__IS_fputws_EQ_fputws(...) ,
+#define P99__IS_fread_EQ_fread(...) ,
+#define P99__IS_free_EQ_free(...) ,
+#define P99__IS_freopen_EQ_freopen(...) ,
+#define P99__IS_frexp_EQ_frexp(...) ,
+#define P99__IS_fscanf_EQ_fscanf(...) ,
+#define P99__IS_fscanf_EQ_fscanf(...) ,
+#define P99__IS_fseek_EQ_fseek(...) ,
+#define P99__IS_fsetpos_EQ_fsetpos(...) ,
+#define P99__IS_ftell_EQ_ftell(...) ,
+#define P99__IS_fwide_EQ_fwide(...) ,
+#define P99__IS_fwprintf_EQ_fwprintf(...) ,
+#define P99__IS_fwrite_EQ_fwrite(...) ,
+#define P99__IS_fwscanf_EQ_fwscanf(...) ,
+#define P99__IS_getaddrinfo_EQ_getaddrinfo(...) ,
+#define P99__IS_getc_EQ_getc(...) ,
+#define P99__IS_getchar_EQ_getchar(...) ,
+#define P99__IS_getenv_EQ_getenv(...) ,
+#define P99__IS_getnameinfo_EQ_getnameinfo(...) ,
+#define P99__IS_gets_EQ_gets(...) ,
+#define P99__IS_getwc_EQ_getwc(...) ,
+#define P99__IS_getwchar_EQ_getwchar(...) ,
+#define P99__IS_gmtime_EQ_gmtime(...) ,
 #define P99__IS_goto_EQ_goto(...) ,
 #define P99__IS_if_EQ_if(...) ,
+#define P99__IS_imaxabs_EQ_imaxabs(...) ,
+#define P99__IS_imaxdiv_EQ_imaxdiv(...) ,
+#define P99__IS_imaxdiv_t_EQ_imaxdiv_t(...) ,
 #define P99__IS_inline_EQ_inline(...) ,
 #define P99__IS_int_EQ_int(...) ,
+#define P99__IS_int16_t_EQ_int16_t(...) ,
+#define P99__IS_int32_t_EQ_int32_t(...) ,
+#define P99__IS_int64_t_EQ_int64_t(...) ,
+#define P99__IS_int8_t_EQ_int8_t(...) ,
+#define P99__IS_intfast16_t_EQ_intfast16_t(...) ,
+#define P99__IS_intfast32_t_EQ_intfast32_t(...) ,
+#define P99__IS_intfast64_t_EQ_intfast64_t(...) ,
+#define P99__IS_intfast8_t_EQ_intfast8_t(...) ,
+#define P99__IS_intleast16_t_EQ_intleast16_t(...) ,
+#define P99__IS_intleast32_t_EQ_intleast32_t(...) ,
+#define P99__IS_intleast64_t_EQ_intleast64_t(...) ,
+#define P99__IS_intleast8_t_EQ_intleast8_t(...) ,
+#define P99__IS_intmax_t_EQ_intmax_t(...) ,
+#define P99__IS_intptr_t_EQ_intptr_t(...) ,
+#define P99__IS_isalnum_EQ_isalnum(...) ,
+#define P99__IS_isalpha_EQ_isalpha(...) ,
+#define P99__IS_isblank_EQ_isblank(...) ,
+#define P99__IS_iscntrl_EQ_iscntrl(...) ,
+#define P99__IS_isdigit_EQ_isdigit(...) ,
+#define P99__IS_isgraph_EQ_isgraph(...) ,
+#define P99__IS_islower_EQ_islower(...) ,
+#define P99__IS_isprint_EQ_isprint(...) ,
+#define P99__IS_ispunct_EQ_ispunct(...) ,
+#define P99__IS_isspace_EQ_isspace(...) ,
+#define P99__IS_isupper_EQ_isupper(...) ,
+#define P99__IS_iswalnum_EQ_iswalnum(...) ,
+#define P99__IS_iswalpha_EQ_iswalpha(...) ,
+#define P99__IS_iswcntrl_EQ_iswcntrl(...) ,
+#define P99__IS_iswctype_EQ_iswctype(...) ,
+#define P99__IS_iswdigit_EQ_iswdigit(...) ,
+#define P99__IS_iswgraph_EQ_iswgraph(...) ,
+#define P99__IS_iswlower_EQ_iswlower(...) ,
+#define P99__IS_iswprint_EQ_iswprint(...) ,
+#define P99__IS_iswpunct_EQ_iswpunct(...) ,
+#define P99__IS_iswspace_EQ_iswspace(...) ,
+#define P99__IS_iswupper_EQ_iswupper(...) ,
+#define P99__IS_iswxdigit_EQ_iswxdigit(...) ,
+#define P99__IS_isxdigit_EQ_isxdigit(...) ,
+#define P99__IS_labs_EQ_labs(...) ,
+#define P99__IS_ldexp_EQ_ldexp(...) ,
+#define P99__IS_ldiv_EQ_ldiv(...) ,
+#define P99__IS_ldiv_EQ_ldiv(...) ,
+#define P99__IS_ldiv_t_EQ_ldiv_t(...) ,
+#define P99__IS_lldiv_t_EQ_lldiv_t(...) ,
+#define P99__IS_localeconv_EQ_localeconv(...) ,
+#define P99__IS_localtime_EQ_localtime(...) ,
+#define P99__IS_log_EQ_log(...) ,
+#define P99__IS_log10_EQ_log10(...) ,
 #define P99__IS_long_EQ_long(...) ,
+#define P99__IS_longjmp_EQ_longjmp(...) ,
+#define P99__IS_malloc_EQ_malloc(...) ,
+#define P99__IS_mbrlen_EQ_mbrlen(...) ,
+#define P99__IS_mbrtowc_EQ_mbrtowc(...) ,
+#define P99__IS_mbsinit_EQ_mbsinit(...) ,
+#define P99__IS_mbsrtowcs_EQ_mbsrtowcs(...) ,
+#define P99__IS_mbstate_t_EQ_mbstate_t(...) ,
+#define P99__IS_memchr_EQ_memchr(...) ,
+#define P99__IS_memcmp_EQ_memcmp(...) ,
+#define P99__IS_memcpy_EQ_memcpy(...) ,
+#define P99__IS_memmove_EQ_memmove(...) ,
+#define P99__IS_memset_EQ_memset(...) ,
+#define P99__IS_mktime_EQ_mktime(...) ,
+#define P99__IS_modf_EQ_modf(...) ,
+#define P99__IS_off_t_EQ_off_t(...) ,
+#define P99__IS_offsetof_EQ_offsetof(...) ,
+#define P99__IS_perror_EQ_perror(...) ,
+#define P99__IS_pow_EQ_pow(...) ,
+#define P99__IS_printf_EQ_printf(...) ,
+#define P99__IS_ptrdiff_t_EQ_ptrdiff_t(...) ,
+#define P99__IS_putc_EQ_putc(...) ,
+#define P99__IS_putchar_EQ_putchar(...) ,
+#define P99__IS_puts_EQ_puts(...) ,
+#define P99__IS_putwc_EQ_putwc(...) ,
+#define P99__IS_putwchar_EQ_putwchar(...) ,
+#define P99__IS_qsort_EQ_qsort(...) ,
+#define P99__IS_raise_EQ_raise(...) ,
+#define P99__IS_rand_EQ_rand(...) ,
+#define P99__IS_realloc_EQ_realloc(...) ,
 #define P99__IS_register_EQ_register(...) ,
+#define P99__IS_remove_EQ_remove(...) ,
+#define P99__IS_rename_EQ_rename(...) ,
 #define P99__IS_restrict_EQ_restrict(...) ,
 #define P99__IS_return_EQ_return(...) ,
+#define P99__IS_rewind_EQ_rewind(...) ,
+#define P99__IS_scanf_EQ_scanf(...) ,
+#define P99__IS_setbuf_EQ_setbuf(...) ,
+#define P99__IS_setjmp_EQ_setjmp(...) ,
+#define P99__IS_setlocale_EQ_setlocale(...) ,
+#define P99__IS_setvbuf_EQ_setvbuf(...) ,
 #define P99__IS_short_EQ_short(...) ,
+#define P99__IS_sig_atomic_t_EQ_sig_atomic_t(...) ,
 #define P99__IS_signed_EQ_signed(...) ,
+#define P99__IS_sin_EQ_sin(...) ,
+#define P99__IS_sinh_EQ_sinh(...) ,
+#define P99__IS_size_t_EQ_size_t(...) ,
 #define P99__IS_sizeof_EQ_sizeof(...) ,
+#define P99__IS_snprintf_EQ_snprintf(...) ,
+#define P99__IS_sprintf_EQ_sprintf(...) ,
+#define P99__IS_sqrt_EQ_sqrt(...) ,
+#define P99__IS_srand_EQ_srand(...) ,
+#define P99__IS_sscanf_EQ_sscanf(...) ,
+#define P99__IS_ssize_t_EQ_ssize_t(...) ,
 #define P99__IS_static_EQ_static(...) ,
+#define P99__IS_strcat_EQ_strcat(...) ,
+#define P99__IS_strchr_EQ_strchr(...) ,
+#define P99__IS_strcmp_EQ_strcmp(...) ,
+#define P99__IS_strcoll_EQ_strcoll(...) ,
+#define P99__IS_strcpy_EQ_strcpy(...) ,
+#define P99__IS_strcspn_EQ_strcspn(...) ,
+#define P99__IS_strerror_EQ_strerror(...) ,
+#define P99__IS_strftime_EQ_strftime(...) ,
+#define P99__IS_strlen_EQ_strlen(...) ,
+#define P99__IS_strncat_EQ_strncat(...) ,
+#define P99__IS_strncmp_EQ_strncmp(...) ,
+#define P99__IS_strncpy_EQ_strncpy(...) ,
+#define P99__IS_strpbrk_EQ_strpbrk(...) ,
+#define P99__IS_strrchr_EQ_strrchr(...) ,
+#define P99__IS_strspn_EQ_strspn(...) ,
+#define P99__IS_strstr_EQ_strstr(...) ,
+#define P99__IS_strtod_EQ_strtod(...) ,
+#define P99__IS_strtoimax_EQ_strtoimax(...) ,
+#define P99__IS_strtok_EQ_strtok(...) ,
+#define P99__IS_strtol_EQ_strtol(...) ,
+#define P99__IS_strtoul_EQ_strtoul(...) ,
+#define P99__IS_strtoumax_EQ_strtoumax(...) ,
 #define P99__IS_struct_EQ_struct(...) ,
+#define P99__IS_strxfrm_EQ_strxfrm(...) ,
 #define P99__IS_switch_EQ_switch(...) ,
+#define P99__IS_swprintf_EQ_swprintf(...) ,
+#define P99__IS_swscanf_EQ_swscanf(...) ,
+#define P99__IS_system_EQ_system(...) ,
+#define P99__IS_tan_EQ_tan(...) ,
+#define P99__IS_tanh_EQ_tanh(...) ,
+#define P99__IS_time_EQ_time(...) ,
+#define P99__IS_time_t_EQ_time_t(...) ,
+#define P99__IS_tmpfile_EQ_tmpfile(...) ,
+#define P99__IS_tmpnam_EQ_tmpnam(...) ,
+#define P99__IS_tolower_EQ_tolower(...) ,
+#define P99__IS_toupper_EQ_toupper(...) ,
+#define P99__IS_towctrans_EQ_towctrans(...) ,
+#define P99__IS_towlower_EQ_towlower(...) ,
+#define P99__IS_towupper_EQ_towupper(...) ,
 #define P99__IS_typedef_EQ_typedef(...) ,
+#define P99__IS_uint16_t_EQ_uint16_t(...) ,
+#define P99__IS_uint32_t_EQ_uint32_t(...) ,
+#define P99__IS_uint64_t_EQ_uint64_t(...) ,
+#define P99__IS_uint8_t_EQ_uint8_t(...) ,
+#define P99__IS_uintfast16_t_EQ_uintfast16_t(...) ,
+#define P99__IS_uintfast32_t_EQ_uintfast32_t(...) ,
+#define P99__IS_uintfast64_t_EQ_uintfast64_t(...) ,
+#define P99__IS_uintfast8_t_EQ_uintfast8_t(...) ,
+#define P99__IS_uintleast16_t_EQ_uintleast16_t(...) ,
+#define P99__IS_uintleast32_t_EQ_uintleast32_t(...) ,
+#define P99__IS_uintleast64_t_EQ_uintleast64_t(...) ,
+#define P99__IS_uintleast8_t_EQ_uintleast8_t(...) ,
+#define P99__IS_uintmax_t_EQ_uintmax_t(...) ,
+#define P99__IS_uintptr_t_EQ_uintptr_t(...) ,
+#define P99__IS_ungetc_EQ_ungetc(...) ,
+#define P99__IS_ungetwc_EQ_ungetwc(...) ,
 #define P99__IS_union_EQ_union(...) ,
 #define P99__IS_unsigned_EQ_unsigned(...) ,
+#define P99__IS_va_arg_EQ_va_arg(...) ,
+#define P99__IS_va_copy_EQ_va_copy(...) ,
+#define P99__IS_va_end_EQ_va_end(...) ,
+#define P99__IS_va_start_EQ_va_start(...) ,
+#define P99__IS_vfprintf_EQ_vfprintf(...) ,
+#define P99__IS_vfscanf_EQ_vfscanf(...) ,
+#define P99__IS_vfwprintf_EQ_vfwprintf(...) ,
 #define P99__IS_void_EQ_void(...) ,
 #define P99__IS_volatile_EQ_volatile(...) ,
+#define P99__IS_vprintf_EQ_vprintf(...) ,
+#define P99__IS_vscanf_EQ_vscanf(...) ,
+#define P99__IS_vsprintf_EQ_vsprintf(...) ,
+#define P99__IS_vsscanf_EQ_vsscanf(...) ,
+#define P99__IS_vswprintf_EQ_vswprintf(...) ,
+#define P99__IS_vwprintf_EQ_vwprintf(...) ,
+#define P99__IS_wchar_t_EQ_wchar_t(...) ,
+#define P99__IS_wcrtomb_EQ_wcrtomb(...) ,
+#define P99__IS_wcscat_EQ_wcscat(...) ,
+#define P99__IS_wcschr_EQ_wcschr(...) ,
+#define P99__IS_wcscmp_EQ_wcscmp(...) ,
+#define P99__IS_wcscoll_EQ_wcscoll(...) ,
+#define P99__IS_wcscpy_EQ_wcscpy(...) ,
+#define P99__IS_wcscspn_EQ_wcscspn(...) ,
+#define P99__IS_wcsftime_EQ_wcsftime(...) ,
+#define P99__IS_wcslen_EQ_wcslen(...) ,
+#define P99__IS_wcsncat_EQ_wcsncat(...) ,
+#define P99__IS_wcsncmp_EQ_wcsncmp(...) ,
+#define P99__IS_wcsncpy_EQ_wcsncpy(...) ,
+#define P99__IS_wcspbrk_EQ_wcspbrk(...) ,
+#define P99__IS_wcsrchr_EQ_wcsrchr(...) ,
+#define P99__IS_wcsrtombs_EQ_wcsrtombs(...) ,
+#define P99__IS_wcsspn_EQ_wcsspn(...) ,
+#define P99__IS_wcsstr_EQ_wcsstr(...) ,
+#define P99__IS_wcstod_EQ_wcstod(...) ,
+#define P99__IS_wcstoimax_EQ_wcstoimax(...) ,
+#define P99__IS_wcstok_EQ_wcstok(...) ,
+#define P99__IS_wcstol_EQ_wcstol(...) ,
+#define P99__IS_wcstoul_EQ_wcstoul(...) ,
+#define P99__IS_wcstoumax_EQ_wcstoumax(...) ,
+#define P99__IS_wcsxfrm_EQ_wcsxfrm(...) ,
+#define P99__IS_wctob_EQ_wctob(...) ,
+#define P99__IS_wctrans_EQ_wctrans(...) ,
+#define P99__IS_wctrans_t_EQ_wctrans_t(...) ,
+#define P99__IS_wctype_EQ_wctype(...) ,
+#define P99__IS_wctype_t_EQ_wctype_t(...) ,
 #define P99__IS_while_EQ_while(...) ,
+#define P99__IS_wint_t_EQ_wint_t(...) ,
+#define P99__IS_wmemchr_EQ_wmemchr(...) ,
+#define P99__IS_wmemcmp_EQ_wmemcmp(...) ,
+#define P99__IS_wmemcpy_EQ_wmemcpy(...) ,
+#define P99__IS_wmemmove_EQ_wmemmove(...) ,
+#define P99__IS_wmemset_EQ_wmemset(...) ,
+#define P99__IS_wprintf_EQ_wprintf(...) ,
+#define P99__IS_wscanf_EQ_wscanf(...) ,
 /*! @brief Test if the argument consists of exactly the token @c 0 */
 #define P99_IS_EQ_0(...) P99_TOK_EQ(0, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 1 */
@@ -619,76 +1277,679 @@
 #define P99_IS_EQ__Bool(...) P99_TOK_EQ(_Bool, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c _Complex */
 #define P99_IS_EQ__Complex(...) P99_TOK_EQ(_Complex, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c _Exit */
+#define P99_IS_EQ__Exit(...) P99_TOK_EQ(_Exit, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c _Imaginary */
 #define P99_IS_EQ__Imaginary(...) P99_TOK_EQ(_Imaginary, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c abort */
+#define P99_IS_EQ_abort(...) P99_TOK_EQ(abort, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c abs */
+#define P99_IS_EQ_abs(...) P99_TOK_EQ(abs, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c acos */
+#define P99_IS_EQ_acos(...) P99_TOK_EQ(acos, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c asctime */
+#define P99_IS_EQ_asctime(...) P99_TOK_EQ(asctime, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c asin */
+#define P99_IS_EQ_asin(...) P99_TOK_EQ(asin, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c assert */
+#define P99_IS_EQ_assert(...) P99_TOK_EQ(assert, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c atan */
+#define P99_IS_EQ_atan(...) P99_TOK_EQ(atan, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c atan2 */
+#define P99_IS_EQ_atan2(...) P99_TOK_EQ(atan2, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c atexit */
+#define P99_IS_EQ_atexit(...) P99_TOK_EQ(atexit, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c atof */
+#define P99_IS_EQ_atof(...) P99_TOK_EQ(atof, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c atof */
+#define P99_IS_EQ_atof(...) P99_TOK_EQ(atof, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c atoi */
+#define P99_IS_EQ_atoi(...) P99_TOK_EQ(atoi, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c atol */
+#define P99_IS_EQ_atol(...) P99_TOK_EQ(atol, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c auto */
 #define P99_IS_EQ_auto(...) P99_TOK_EQ(auto, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c break */
 #define P99_IS_EQ_break(...) P99_TOK_EQ(break, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c bsearch */
+#define P99_IS_EQ_bsearch(...) P99_TOK_EQ(bsearch, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c btowc */
+#define P99_IS_EQ_btowc(...) P99_TOK_EQ(btowc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c cabs */
+#define P99_IS_EQ_cabs(...) P99_TOK_EQ(cabs, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c cacos */
+#define P99_IS_EQ_cacos(...) P99_TOK_EQ(cacos, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c cacosh */
+#define P99_IS_EQ_cacosh(...) P99_TOK_EQ(cacosh, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c calloc */
+#define P99_IS_EQ_calloc(...) P99_TOK_EQ(calloc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c carg */
+#define P99_IS_EQ_carg(...) P99_TOK_EQ(carg, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c case */
 #define P99_IS_EQ_case(...) P99_TOK_EQ(case, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c casin */
+#define P99_IS_EQ_casin(...) P99_TOK_EQ(casin, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c casinh */
+#define P99_IS_EQ_casinh(...) P99_TOK_EQ(casinh, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c catan */
+#define P99_IS_EQ_catan(...) P99_TOK_EQ(catan, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c catanh */
+#define P99_IS_EQ_catanh(...) P99_TOK_EQ(catanh, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ccos */
+#define P99_IS_EQ_ccos(...) P99_TOK_EQ(ccos, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ccosh */
+#define P99_IS_EQ_ccosh(...) P99_TOK_EQ(ccosh, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ceil */
+#define P99_IS_EQ_ceil(...) P99_TOK_EQ(ceil, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c cexp */
+#define P99_IS_EQ_cexp(...) P99_TOK_EQ(cexp, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c char */
 #define P99_IS_EQ_char(...) P99_TOK_EQ(char, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c cimag */
+#define P99_IS_EQ_cimag(...) P99_TOK_EQ(cimag, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c clearerr */
+#define P99_IS_EQ_clearerr(...) P99_TOK_EQ(clearerr, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c clock */
+#define P99_IS_EQ_clock(...) P99_TOK_EQ(clock, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c clock_t */
+#define P99_IS_EQ_clock_t(...) P99_TOK_EQ(clock_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c clog */
+#define P99_IS_EQ_clog(...) P99_TOK_EQ(clog, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c conj */
+#define P99_IS_EQ_conj(...) P99_TOK_EQ(conj, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c const */
 #define P99_IS_EQ_const(...) P99_TOK_EQ(const, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c continue */
 #define P99_IS_EQ_continue(...) P99_TOK_EQ(continue, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c cos */
+#define P99_IS_EQ_cos(...) P99_TOK_EQ(cos, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c cosh */
+#define P99_IS_EQ_cosh(...) P99_TOK_EQ(cosh, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c cpow */
+#define P99_IS_EQ_cpow(...) P99_TOK_EQ(cpow, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c cproj */
+#define P99_IS_EQ_cproj(...) P99_TOK_EQ(cproj, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c creal */
+#define P99_IS_EQ_creal(...) P99_TOK_EQ(creal, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c csin */
+#define P99_IS_EQ_csin(...) P99_TOK_EQ(csin, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c csinh */
+#define P99_IS_EQ_csinh(...) P99_TOK_EQ(csinh, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c csqrt */
+#define P99_IS_EQ_csqrt(...) P99_TOK_EQ(csqrt, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ctan */
+#define P99_IS_EQ_ctan(...) P99_TOK_EQ(ctan, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ctanh */
+#define P99_IS_EQ_ctanh(...) P99_TOK_EQ(ctanh, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ctime */
+#define P99_IS_EQ_ctime(...) P99_TOK_EQ(ctime, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c default */
 #define P99_IS_EQ_default(...) P99_TOK_EQ(default, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c difftime */
+#define P99_IS_EQ_difftime(...) P99_TOK_EQ(difftime, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c div */
+#define P99_IS_EQ_div(...) P99_TOK_EQ(div, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c div_t */
+#define P99_IS_EQ_div_t(...) P99_TOK_EQ(div_t, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c do */
 #define P99_IS_EQ_do(...) P99_TOK_EQ(do, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c double */
 #define P99_IS_EQ_double(...) P99_TOK_EQ(double, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c double_t */
+#define P99_IS_EQ_double_t(...) P99_TOK_EQ(double_t, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c else */
 #define P99_IS_EQ_else(...) P99_TOK_EQ(else, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c enum */
 #define P99_IS_EQ_enum(...) P99_TOK_EQ(enum, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c exit */
+#define P99_IS_EQ_exit(...) P99_TOK_EQ(exit, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c exp */
+#define P99_IS_EQ_exp(...) P99_TOK_EQ(exp, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c extern */
 #define P99_IS_EQ_extern(...) P99_TOK_EQ(extern, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fabs */
+#define P99_IS_EQ_fabs(...) P99_TOK_EQ(fabs, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fclose */
+#define P99_IS_EQ_fclose(...) P99_TOK_EQ(fclose, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fdopen */
+#define P99_IS_EQ_fdopen(...) P99_TOK_EQ(fdopen, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fenv_t */
+#define P99_IS_EQ_fenv_t(...) P99_TOK_EQ(fenv_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c feof */
+#define P99_IS_EQ_feof(...) P99_TOK_EQ(feof, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ferror */
+#define P99_IS_EQ_ferror(...) P99_TOK_EQ(ferror, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fexcept_t */
+#define P99_IS_EQ_fexcept_t(...) P99_TOK_EQ(fexcept_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fflush */
+#define P99_IS_EQ_fflush(...) P99_TOK_EQ(fflush, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fgetc */
+#define P99_IS_EQ_fgetc(...) P99_TOK_EQ(fgetc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fgetpos */
+#define P99_IS_EQ_fgetpos(...) P99_TOK_EQ(fgetpos, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fgets */
+#define P99_IS_EQ_fgets(...) P99_TOK_EQ(fgets, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fgetwc */
+#define P99_IS_EQ_fgetwc(...) P99_TOK_EQ(fgetwc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fgetws */
+#define P99_IS_EQ_fgetws(...) P99_TOK_EQ(fgetws, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c float */
 #define P99_IS_EQ_float(...) P99_TOK_EQ(float, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c float_t */
+#define P99_IS_EQ_float_t(...) P99_TOK_EQ(float_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c floor */
+#define P99_IS_EQ_floor(...) P99_TOK_EQ(floor, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fopen */
+#define P99_IS_EQ_fopen(...) P99_TOK_EQ(fopen, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c for */
 #define P99_IS_EQ_for(...) P99_TOK_EQ(for, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fpos_t */
+#define P99_IS_EQ_fpos_t(...) P99_TOK_EQ(fpos_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fprintf */
+#define P99_IS_EQ_fprintf(...) P99_TOK_EQ(fprintf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fprintf */
+#define P99_IS_EQ_fprintf(...) P99_TOK_EQ(fprintf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fputc */
+#define P99_IS_EQ_fputc(...) P99_TOK_EQ(fputc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fputchar */
+#define P99_IS_EQ_fputchar(...) P99_TOK_EQ(fputchar, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fputs */
+#define P99_IS_EQ_fputs(...) P99_TOK_EQ(fputs, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fputwc */
+#define P99_IS_EQ_fputwc(...) P99_TOK_EQ(fputwc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fputws */
+#define P99_IS_EQ_fputws(...) P99_TOK_EQ(fputws, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fread */
+#define P99_IS_EQ_fread(...) P99_TOK_EQ(fread, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c free */
+#define P99_IS_EQ_free(...) P99_TOK_EQ(free, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c freopen */
+#define P99_IS_EQ_freopen(...) P99_TOK_EQ(freopen, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c frexp */
+#define P99_IS_EQ_frexp(...) P99_TOK_EQ(frexp, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fscanf */
+#define P99_IS_EQ_fscanf(...) P99_TOK_EQ(fscanf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fscanf */
+#define P99_IS_EQ_fscanf(...) P99_TOK_EQ(fscanf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fseek */
+#define P99_IS_EQ_fseek(...) P99_TOK_EQ(fseek, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fsetpos */
+#define P99_IS_EQ_fsetpos(...) P99_TOK_EQ(fsetpos, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ftell */
+#define P99_IS_EQ_ftell(...) P99_TOK_EQ(ftell, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fwide */
+#define P99_IS_EQ_fwide(...) P99_TOK_EQ(fwide, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fwprintf */
+#define P99_IS_EQ_fwprintf(...) P99_TOK_EQ(fwprintf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fwrite */
+#define P99_IS_EQ_fwrite(...) P99_TOK_EQ(fwrite, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c fwscanf */
+#define P99_IS_EQ_fwscanf(...) P99_TOK_EQ(fwscanf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c getaddrinfo */
+#define P99_IS_EQ_getaddrinfo(...) P99_TOK_EQ(getaddrinfo, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c getc */
+#define P99_IS_EQ_getc(...) P99_TOK_EQ(getc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c getchar */
+#define P99_IS_EQ_getchar(...) P99_TOK_EQ(getchar, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c getenv */
+#define P99_IS_EQ_getenv(...) P99_TOK_EQ(getenv, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c getnameinfo */
+#define P99_IS_EQ_getnameinfo(...) P99_TOK_EQ(getnameinfo, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c gets */
+#define P99_IS_EQ_gets(...) P99_TOK_EQ(gets, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c getwc */
+#define P99_IS_EQ_getwc(...) P99_TOK_EQ(getwc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c getwchar */
+#define P99_IS_EQ_getwchar(...) P99_TOK_EQ(getwchar, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c gmtime */
+#define P99_IS_EQ_gmtime(...) P99_TOK_EQ(gmtime, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c goto */
 #define P99_IS_EQ_goto(...) P99_TOK_EQ(goto, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c if */
 #define P99_IS_EQ_if(...) P99_TOK_EQ(if, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c imaxabs */
+#define P99_IS_EQ_imaxabs(...) P99_TOK_EQ(imaxabs, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c imaxdiv */
+#define P99_IS_EQ_imaxdiv(...) P99_TOK_EQ(imaxdiv, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c imaxdiv_t */
+#define P99_IS_EQ_imaxdiv_t(...) P99_TOK_EQ(imaxdiv_t, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c inline */
 #define P99_IS_EQ_inline(...) P99_TOK_EQ(inline, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c int */
 #define P99_IS_EQ_int(...) P99_TOK_EQ(int, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c int16_t */
+#define P99_IS_EQ_int16_t(...) P99_TOK_EQ(int16_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c int32_t */
+#define P99_IS_EQ_int32_t(...) P99_TOK_EQ(int32_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c int64_t */
+#define P99_IS_EQ_int64_t(...) P99_TOK_EQ(int64_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c int8_t */
+#define P99_IS_EQ_int8_t(...) P99_TOK_EQ(int8_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c intfast16_t */
+#define P99_IS_EQ_intfast16_t(...) P99_TOK_EQ(intfast16_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c intfast32_t */
+#define P99_IS_EQ_intfast32_t(...) P99_TOK_EQ(intfast32_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c intfast64_t */
+#define P99_IS_EQ_intfast64_t(...) P99_TOK_EQ(intfast64_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c intfast8_t */
+#define P99_IS_EQ_intfast8_t(...) P99_TOK_EQ(intfast8_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c intleast16_t */
+#define P99_IS_EQ_intleast16_t(...) P99_TOK_EQ(intleast16_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c intleast32_t */
+#define P99_IS_EQ_intleast32_t(...) P99_TOK_EQ(intleast32_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c intleast64_t */
+#define P99_IS_EQ_intleast64_t(...) P99_TOK_EQ(intleast64_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c intleast8_t */
+#define P99_IS_EQ_intleast8_t(...) P99_TOK_EQ(intleast8_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c intmax_t */
+#define P99_IS_EQ_intmax_t(...) P99_TOK_EQ(intmax_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c intptr_t */
+#define P99_IS_EQ_intptr_t(...) P99_TOK_EQ(intptr_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c isalnum */
+#define P99_IS_EQ_isalnum(...) P99_TOK_EQ(isalnum, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c isalpha */
+#define P99_IS_EQ_isalpha(...) P99_TOK_EQ(isalpha, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c isblank */
+#define P99_IS_EQ_isblank(...) P99_TOK_EQ(isblank, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iscntrl */
+#define P99_IS_EQ_iscntrl(...) P99_TOK_EQ(iscntrl, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c isdigit */
+#define P99_IS_EQ_isdigit(...) P99_TOK_EQ(isdigit, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c isgraph */
+#define P99_IS_EQ_isgraph(...) P99_TOK_EQ(isgraph, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c islower */
+#define P99_IS_EQ_islower(...) P99_TOK_EQ(islower, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c isprint */
+#define P99_IS_EQ_isprint(...) P99_TOK_EQ(isprint, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ispunct */
+#define P99_IS_EQ_ispunct(...) P99_TOK_EQ(ispunct, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c isspace */
+#define P99_IS_EQ_isspace(...) P99_TOK_EQ(isspace, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c isupper */
+#define P99_IS_EQ_isupper(...) P99_TOK_EQ(isupper, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iswalnum */
+#define P99_IS_EQ_iswalnum(...) P99_TOK_EQ(iswalnum, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iswalpha */
+#define P99_IS_EQ_iswalpha(...) P99_TOK_EQ(iswalpha, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iswcntrl */
+#define P99_IS_EQ_iswcntrl(...) P99_TOK_EQ(iswcntrl, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iswctype */
+#define P99_IS_EQ_iswctype(...) P99_TOK_EQ(iswctype, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iswdigit */
+#define P99_IS_EQ_iswdigit(...) P99_TOK_EQ(iswdigit, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iswgraph */
+#define P99_IS_EQ_iswgraph(...) P99_TOK_EQ(iswgraph, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iswlower */
+#define P99_IS_EQ_iswlower(...) P99_TOK_EQ(iswlower, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iswprint */
+#define P99_IS_EQ_iswprint(...) P99_TOK_EQ(iswprint, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iswpunct */
+#define P99_IS_EQ_iswpunct(...) P99_TOK_EQ(iswpunct, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iswspace */
+#define P99_IS_EQ_iswspace(...) P99_TOK_EQ(iswspace, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iswupper */
+#define P99_IS_EQ_iswupper(...) P99_TOK_EQ(iswupper, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c iswxdigit */
+#define P99_IS_EQ_iswxdigit(...) P99_TOK_EQ(iswxdigit, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c isxdigit */
+#define P99_IS_EQ_isxdigit(...) P99_TOK_EQ(isxdigit, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c labs */
+#define P99_IS_EQ_labs(...) P99_TOK_EQ(labs, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ldexp */
+#define P99_IS_EQ_ldexp(...) P99_TOK_EQ(ldexp, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ldiv */
+#define P99_IS_EQ_ldiv(...) P99_TOK_EQ(ldiv, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ldiv */
+#define P99_IS_EQ_ldiv(...) P99_TOK_EQ(ldiv, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ldiv_t */
+#define P99_IS_EQ_ldiv_t(...) P99_TOK_EQ(ldiv_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c lldiv_t */
+#define P99_IS_EQ_lldiv_t(...) P99_TOK_EQ(lldiv_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c localeconv */
+#define P99_IS_EQ_localeconv(...) P99_TOK_EQ(localeconv, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c localtime */
+#define P99_IS_EQ_localtime(...) P99_TOK_EQ(localtime, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c log */
+#define P99_IS_EQ_log(...) P99_TOK_EQ(log, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c log10 */
+#define P99_IS_EQ_log10(...) P99_TOK_EQ(log10, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c long */
 #define P99_IS_EQ_long(...) P99_TOK_EQ(long, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c longjmp */
+#define P99_IS_EQ_longjmp(...) P99_TOK_EQ(longjmp, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c malloc */
+#define P99_IS_EQ_malloc(...) P99_TOK_EQ(malloc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c mbrlen */
+#define P99_IS_EQ_mbrlen(...) P99_TOK_EQ(mbrlen, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c mbrtowc */
+#define P99_IS_EQ_mbrtowc(...) P99_TOK_EQ(mbrtowc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c mbsinit */
+#define P99_IS_EQ_mbsinit(...) P99_TOK_EQ(mbsinit, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c mbsrtowcs */
+#define P99_IS_EQ_mbsrtowcs(...) P99_TOK_EQ(mbsrtowcs, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c mbstate_t */
+#define P99_IS_EQ_mbstate_t(...) P99_TOK_EQ(mbstate_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c memchr */
+#define P99_IS_EQ_memchr(...) P99_TOK_EQ(memchr, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c memcmp */
+#define P99_IS_EQ_memcmp(...) P99_TOK_EQ(memcmp, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c memcpy */
+#define P99_IS_EQ_memcpy(...) P99_TOK_EQ(memcpy, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c memmove */
+#define P99_IS_EQ_memmove(...) P99_TOK_EQ(memmove, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c memset */
+#define P99_IS_EQ_memset(...) P99_TOK_EQ(memset, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c mktime */
+#define P99_IS_EQ_mktime(...) P99_TOK_EQ(mktime, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c modf */
+#define P99_IS_EQ_modf(...) P99_TOK_EQ(modf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c off_t */
+#define P99_IS_EQ_off_t(...) P99_TOK_EQ(off_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c offsetof */
+#define P99_IS_EQ_offsetof(...) P99_TOK_EQ(offsetof, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c perror */
+#define P99_IS_EQ_perror(...) P99_TOK_EQ(perror, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c pow */
+#define P99_IS_EQ_pow(...) P99_TOK_EQ(pow, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c printf */
+#define P99_IS_EQ_printf(...) P99_TOK_EQ(printf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ptrdiff_t */
+#define P99_IS_EQ_ptrdiff_t(...) P99_TOK_EQ(ptrdiff_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c putc */
+#define P99_IS_EQ_putc(...) P99_TOK_EQ(putc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c putchar */
+#define P99_IS_EQ_putchar(...) P99_TOK_EQ(putchar, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c puts */
+#define P99_IS_EQ_puts(...) P99_TOK_EQ(puts, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c putwc */
+#define P99_IS_EQ_putwc(...) P99_TOK_EQ(putwc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c putwchar */
+#define P99_IS_EQ_putwchar(...) P99_TOK_EQ(putwchar, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c qsort */
+#define P99_IS_EQ_qsort(...) P99_TOK_EQ(qsort, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c raise */
+#define P99_IS_EQ_raise(...) P99_TOK_EQ(raise, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c rand */
+#define P99_IS_EQ_rand(...) P99_TOK_EQ(rand, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c realloc */
+#define P99_IS_EQ_realloc(...) P99_TOK_EQ(realloc, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c register */
 #define P99_IS_EQ_register(...) P99_TOK_EQ(register, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c remove */
+#define P99_IS_EQ_remove(...) P99_TOK_EQ(remove, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c rename */
+#define P99_IS_EQ_rename(...) P99_TOK_EQ(rename, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c restrict */
 #define P99_IS_EQ_restrict(...) P99_TOK_EQ(restrict, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c return */
 #define P99_IS_EQ_return(...) P99_TOK_EQ(return, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c rewind */
+#define P99_IS_EQ_rewind(...) P99_TOK_EQ(rewind, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c scanf */
+#define P99_IS_EQ_scanf(...) P99_TOK_EQ(scanf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c setbuf */
+#define P99_IS_EQ_setbuf(...) P99_TOK_EQ(setbuf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c setjmp */
+#define P99_IS_EQ_setjmp(...) P99_TOK_EQ(setjmp, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c setlocale */
+#define P99_IS_EQ_setlocale(...) P99_TOK_EQ(setlocale, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c setvbuf */
+#define P99_IS_EQ_setvbuf(...) P99_TOK_EQ(setvbuf, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c short */
 #define P99_IS_EQ_short(...) P99_TOK_EQ(short, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c sig_atomic_t */
+#define P99_IS_EQ_sig_atomic_t(...) P99_TOK_EQ(sig_atomic_t, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c signed */
 #define P99_IS_EQ_signed(...) P99_TOK_EQ(signed, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c sin */
+#define P99_IS_EQ_sin(...) P99_TOK_EQ(sin, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c sinh */
+#define P99_IS_EQ_sinh(...) P99_TOK_EQ(sinh, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c size_t */
+#define P99_IS_EQ_size_t(...) P99_TOK_EQ(size_t, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c sizeof */
 #define P99_IS_EQ_sizeof(...) P99_TOK_EQ(sizeof, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c snprintf */
+#define P99_IS_EQ_snprintf(...) P99_TOK_EQ(snprintf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c sprintf */
+#define P99_IS_EQ_sprintf(...) P99_TOK_EQ(sprintf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c sqrt */
+#define P99_IS_EQ_sqrt(...) P99_TOK_EQ(sqrt, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c srand */
+#define P99_IS_EQ_srand(...) P99_TOK_EQ(srand, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c sscanf */
+#define P99_IS_EQ_sscanf(...) P99_TOK_EQ(sscanf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ssize_t */
+#define P99_IS_EQ_ssize_t(...) P99_TOK_EQ(ssize_t, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c static */
 #define P99_IS_EQ_static(...) P99_TOK_EQ(static, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strcat */
+#define P99_IS_EQ_strcat(...) P99_TOK_EQ(strcat, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strchr */
+#define P99_IS_EQ_strchr(...) P99_TOK_EQ(strchr, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strcmp */
+#define P99_IS_EQ_strcmp(...) P99_TOK_EQ(strcmp, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strcoll */
+#define P99_IS_EQ_strcoll(...) P99_TOK_EQ(strcoll, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strcpy */
+#define P99_IS_EQ_strcpy(...) P99_TOK_EQ(strcpy, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strcspn */
+#define P99_IS_EQ_strcspn(...) P99_TOK_EQ(strcspn, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strerror */
+#define P99_IS_EQ_strerror(...) P99_TOK_EQ(strerror, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strftime */
+#define P99_IS_EQ_strftime(...) P99_TOK_EQ(strftime, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strlen */
+#define P99_IS_EQ_strlen(...) P99_TOK_EQ(strlen, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strncat */
+#define P99_IS_EQ_strncat(...) P99_TOK_EQ(strncat, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strncmp */
+#define P99_IS_EQ_strncmp(...) P99_TOK_EQ(strncmp, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strncpy */
+#define P99_IS_EQ_strncpy(...) P99_TOK_EQ(strncpy, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strpbrk */
+#define P99_IS_EQ_strpbrk(...) P99_TOK_EQ(strpbrk, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strrchr */
+#define P99_IS_EQ_strrchr(...) P99_TOK_EQ(strrchr, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strspn */
+#define P99_IS_EQ_strspn(...) P99_TOK_EQ(strspn, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strstr */
+#define P99_IS_EQ_strstr(...) P99_TOK_EQ(strstr, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strtod */
+#define P99_IS_EQ_strtod(...) P99_TOK_EQ(strtod, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strtoimax */
+#define P99_IS_EQ_strtoimax(...) P99_TOK_EQ(strtoimax, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strtok */
+#define P99_IS_EQ_strtok(...) P99_TOK_EQ(strtok, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strtol */
+#define P99_IS_EQ_strtol(...) P99_TOK_EQ(strtol, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strtoul */
+#define P99_IS_EQ_strtoul(...) P99_TOK_EQ(strtoul, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strtoumax */
+#define P99_IS_EQ_strtoumax(...) P99_TOK_EQ(strtoumax, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c struct */
 #define P99_IS_EQ_struct(...) P99_TOK_EQ(struct, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c strxfrm */
+#define P99_IS_EQ_strxfrm(...) P99_TOK_EQ(strxfrm, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c switch */
 #define P99_IS_EQ_switch(...) P99_TOK_EQ(switch, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c swprintf */
+#define P99_IS_EQ_swprintf(...) P99_TOK_EQ(swprintf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c swscanf */
+#define P99_IS_EQ_swscanf(...) P99_TOK_EQ(swscanf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c system */
+#define P99_IS_EQ_system(...) P99_TOK_EQ(system, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c tan */
+#define P99_IS_EQ_tan(...) P99_TOK_EQ(tan, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c tanh */
+#define P99_IS_EQ_tanh(...) P99_TOK_EQ(tanh, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c time */
+#define P99_IS_EQ_time(...) P99_TOK_EQ(time, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c time_t */
+#define P99_IS_EQ_time_t(...) P99_TOK_EQ(time_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c tmpfile */
+#define P99_IS_EQ_tmpfile(...) P99_TOK_EQ(tmpfile, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c tmpnam */
+#define P99_IS_EQ_tmpnam(...) P99_TOK_EQ(tmpnam, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c tolower */
+#define P99_IS_EQ_tolower(...) P99_TOK_EQ(tolower, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c toupper */
+#define P99_IS_EQ_toupper(...) P99_TOK_EQ(toupper, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c towctrans */
+#define P99_IS_EQ_towctrans(...) P99_TOK_EQ(towctrans, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c towlower */
+#define P99_IS_EQ_towlower(...) P99_TOK_EQ(towlower, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c towupper */
+#define P99_IS_EQ_towupper(...) P99_TOK_EQ(towupper, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c typedef */
 #define P99_IS_EQ_typedef(...) P99_TOK_EQ(typedef, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uint16_t */
+#define P99_IS_EQ_uint16_t(...) P99_TOK_EQ(uint16_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uint32_t */
+#define P99_IS_EQ_uint32_t(...) P99_TOK_EQ(uint32_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uint64_t */
+#define P99_IS_EQ_uint64_t(...) P99_TOK_EQ(uint64_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uint8_t */
+#define P99_IS_EQ_uint8_t(...) P99_TOK_EQ(uint8_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uintfast16_t */
+#define P99_IS_EQ_uintfast16_t(...) P99_TOK_EQ(uintfast16_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uintfast32_t */
+#define P99_IS_EQ_uintfast32_t(...) P99_TOK_EQ(uintfast32_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uintfast64_t */
+#define P99_IS_EQ_uintfast64_t(...) P99_TOK_EQ(uintfast64_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uintfast8_t */
+#define P99_IS_EQ_uintfast8_t(...) P99_TOK_EQ(uintfast8_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uintleast16_t */
+#define P99_IS_EQ_uintleast16_t(...) P99_TOK_EQ(uintleast16_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uintleast32_t */
+#define P99_IS_EQ_uintleast32_t(...) P99_TOK_EQ(uintleast32_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uintleast64_t */
+#define P99_IS_EQ_uintleast64_t(...) P99_TOK_EQ(uintleast64_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uintleast8_t */
+#define P99_IS_EQ_uintleast8_t(...) P99_TOK_EQ(uintleast8_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uintmax_t */
+#define P99_IS_EQ_uintmax_t(...) P99_TOK_EQ(uintmax_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c uintptr_t */
+#define P99_IS_EQ_uintptr_t(...) P99_TOK_EQ(uintptr_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ungetc */
+#define P99_IS_EQ_ungetc(...) P99_TOK_EQ(ungetc, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c ungetwc */
+#define P99_IS_EQ_ungetwc(...) P99_TOK_EQ(ungetwc, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c union */
 #define P99_IS_EQ_union(...) P99_TOK_EQ(union, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c unsigned */
 #define P99_IS_EQ_unsigned(...) P99_TOK_EQ(unsigned, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c va_arg */
+#define P99_IS_EQ_va_arg(...) P99_TOK_EQ(va_arg, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c va_copy */
+#define P99_IS_EQ_va_copy(...) P99_TOK_EQ(va_copy, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c va_end */
+#define P99_IS_EQ_va_end(...) P99_TOK_EQ(va_end, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c va_start */
+#define P99_IS_EQ_va_start(...) P99_TOK_EQ(va_start, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c vfprintf */
+#define P99_IS_EQ_vfprintf(...) P99_TOK_EQ(vfprintf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c vfscanf */
+#define P99_IS_EQ_vfscanf(...) P99_TOK_EQ(vfscanf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c vfwprintf */
+#define P99_IS_EQ_vfwprintf(...) P99_TOK_EQ(vfwprintf, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c void */
 #define P99_IS_EQ_void(...) P99_TOK_EQ(void, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c volatile */
 #define P99_IS_EQ_volatile(...) P99_TOK_EQ(volatile, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c vprintf */
+#define P99_IS_EQ_vprintf(...) P99_TOK_EQ(vprintf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c vscanf */
+#define P99_IS_EQ_vscanf(...) P99_TOK_EQ(vscanf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c vsprintf */
+#define P99_IS_EQ_vsprintf(...) P99_TOK_EQ(vsprintf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c vsscanf */
+#define P99_IS_EQ_vsscanf(...) P99_TOK_EQ(vsscanf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c vswprintf */
+#define P99_IS_EQ_vswprintf(...) P99_TOK_EQ(vswprintf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c vwprintf */
+#define P99_IS_EQ_vwprintf(...) P99_TOK_EQ(vwprintf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wchar_t */
+#define P99_IS_EQ_wchar_t(...) P99_TOK_EQ(wchar_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcrtomb */
+#define P99_IS_EQ_wcrtomb(...) P99_TOK_EQ(wcrtomb, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcscat */
+#define P99_IS_EQ_wcscat(...) P99_TOK_EQ(wcscat, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcschr */
+#define P99_IS_EQ_wcschr(...) P99_TOK_EQ(wcschr, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcscmp */
+#define P99_IS_EQ_wcscmp(...) P99_TOK_EQ(wcscmp, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcscoll */
+#define P99_IS_EQ_wcscoll(...) P99_TOK_EQ(wcscoll, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcscpy */
+#define P99_IS_EQ_wcscpy(...) P99_TOK_EQ(wcscpy, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcscspn */
+#define P99_IS_EQ_wcscspn(...) P99_TOK_EQ(wcscspn, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcsftime */
+#define P99_IS_EQ_wcsftime(...) P99_TOK_EQ(wcsftime, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcslen */
+#define P99_IS_EQ_wcslen(...) P99_TOK_EQ(wcslen, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcsncat */
+#define P99_IS_EQ_wcsncat(...) P99_TOK_EQ(wcsncat, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcsncmp */
+#define P99_IS_EQ_wcsncmp(...) P99_TOK_EQ(wcsncmp, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcsncpy */
+#define P99_IS_EQ_wcsncpy(...) P99_TOK_EQ(wcsncpy, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcspbrk */
+#define P99_IS_EQ_wcspbrk(...) P99_TOK_EQ(wcspbrk, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcsrchr */
+#define P99_IS_EQ_wcsrchr(...) P99_TOK_EQ(wcsrchr, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcsrtombs */
+#define P99_IS_EQ_wcsrtombs(...) P99_TOK_EQ(wcsrtombs, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcsspn */
+#define P99_IS_EQ_wcsspn(...) P99_TOK_EQ(wcsspn, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcsstr */
+#define P99_IS_EQ_wcsstr(...) P99_TOK_EQ(wcsstr, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcstod */
+#define P99_IS_EQ_wcstod(...) P99_TOK_EQ(wcstod, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcstoimax */
+#define P99_IS_EQ_wcstoimax(...) P99_TOK_EQ(wcstoimax, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcstok */
+#define P99_IS_EQ_wcstok(...) P99_TOK_EQ(wcstok, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcstol */
+#define P99_IS_EQ_wcstol(...) P99_TOK_EQ(wcstol, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcstoul */
+#define P99_IS_EQ_wcstoul(...) P99_TOK_EQ(wcstoul, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcstoumax */
+#define P99_IS_EQ_wcstoumax(...) P99_TOK_EQ(wcstoumax, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wcsxfrm */
+#define P99_IS_EQ_wcsxfrm(...) P99_TOK_EQ(wcsxfrm, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wctob */
+#define P99_IS_EQ_wctob(...) P99_TOK_EQ(wctob, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wctrans */
+#define P99_IS_EQ_wctrans(...) P99_TOK_EQ(wctrans, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wctrans_t */
+#define P99_IS_EQ_wctrans_t(...) P99_TOK_EQ(wctrans_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wctype */
+#define P99_IS_EQ_wctype(...) P99_TOK_EQ(wctype, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wctype_t */
+#define P99_IS_EQ_wctype_t(...) P99_TOK_EQ(wctype_t, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c while */
 #define P99_IS_EQ_while(...) P99_TOK_EQ(while, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wint_t */
+#define P99_IS_EQ_wint_t(...) P99_TOK_EQ(wint_t, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wmemchr */
+#define P99_IS_EQ_wmemchr(...) P99_TOK_EQ(wmemchr, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wmemcmp */
+#define P99_IS_EQ_wmemcmp(...) P99_TOK_EQ(wmemcmp, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wmemcpy */
+#define P99_IS_EQ_wmemcpy(...) P99_TOK_EQ(wmemcpy, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wmemmove */
+#define P99_IS_EQ_wmemmove(...) P99_TOK_EQ(wmemmove, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wmemset */
+#define P99_IS_EQ_wmemset(...) P99_TOK_EQ(wmemset, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wprintf */
+#define P99_IS_EQ_wprintf(...) P99_TOK_EQ(wprintf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c wscanf */
+#define P99_IS_EQ_wscanf(...) P99_TOK_EQ(wscanf, __VA_ARGS__)
+/**
+ ** @}
+ **/
 #define P99__DEC_PRED_1 0
 #define P99__DEC_PRED_2 1
 #define P99__DEC_PRED_3 2
