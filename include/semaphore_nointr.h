@@ -15,7 +15,7 @@
 #include <stdint.h>
 #include <errno.h>
 #include <limits.h>
-#include "orwl_inline.h"
+#include "p99_compiler.h"
 
 
 

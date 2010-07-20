@@ -11,7 +11,7 @@
 #ifndef   	ORWL_MACRO_H_
 # define   	ORWL_MACRO_H_
 
-#include "orwl_inline.h"
+#include "p99_compiler.h"
 #include "orwl_document.h"
 #include "p99_block.h"
 #include "p99_defarg.h"

@@ -11,7 +11,7 @@
 #ifndef   	P99_MAP_H_
 # define   	P99_MAP_H_
 
-#include "orwl_inline.h"
+#include "p99_compiler.h"
 #include "p99_if.h"
 #include "p99_for.h"
 
