@@ -208,4 +208,5 @@ int main(int argc, char **argv) {
   P99_IS_EQ_assert(assert);
   P99_IS_EQ_acos(acos);
   P99_IS_EQ_acos(assert);
+  P99_GCC_VERSION;
 }
