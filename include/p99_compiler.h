@@ -32,6 +32,36 @@
 #  define P99_GCC_VERSION P99__GCC_VERSION(__GNUC__, P99__GNUC_MINOR__, P99__GNUC_PATCHLEVEL__)
 # endif
 
+
+#ifdef __cplusplus
+/* C++ as of 1998 is currently not compatible with the macros here. It
+   is missing:
+   - variate macros
+   - compound literals
+   - trailing commas in initializers
+   - trailing commas in enum declarations
+   we test for some of this to see if we have any chance to pass this
+   through. Otherwise this should error out early.
+ */
+# define P99__VA_ARGS__(...) __VA_ARGS__
+enum { p99__trailing_comma_in_enum__ = -1, };
+inline
+signed p99__trailing_comma_in_initializer__(void) {
+  signed a[] = { p99__trailing_comma_in_enum__ , };
+  return a[0];
+}
+#else
+# if !defined(__STDC_VERSION__) ||  (__STDC_VERSION__ < 199901L)
+/* If you come here your compiler is not conforming to C99, since
+   this requires the macro __STDC_VERSION__ to be set to the
+   indicated value (or larger).
+
+   You still might be able to use P99, but you would have to cheat on
+   that value. You are on your own. */
+#  error "The P99 preprocessor files need a C99 compliant compiler"
+# endif
+#endif
+
 # ifdef __GNUC__
 /* gcc prior to version 4.3 has the inline keyword but with slightly
    different semantics.
