@@ -1,5 +1,13 @@
-#ifndef ORWL_INLINE_H
-#define ORWL_INLINE_H
+#ifndef P99_COMPILER_H
+#define P99_COMPILER_H
+
+/** @file
+ ** @brief Group compiler dependencies together in one file
+ **
+ ** For the moment the only compilers we have tested are different
+ ** versions of gcc and the only feature that causes problems is the
+ ** @c inline keyword.
+ **/
 
 #define P99__PREFIX0(N) P99__PREFIX0_(N)
 #define P99__PREFIX0_(N) 0 ## N
@@ -33,7 +41,7 @@
 #   ifdef inline
 #    undef inline
 #   endif
-#   define inline __attribute__((gnu_inline,always_inline)) static __inline__
+#   define inline __attribute__((gnu_inline,always_inline)) static inline
 #   define static_inline inline
 #  endif
 # endif
