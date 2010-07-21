@@ -111,7 +111,7 @@ struct orwl_handle {
 inline
 orwl_handle *orwl_handle_init(orwl_handle *rh) {
   if (!rh) return NULL;
-  TZERO(*rh);
+  P99_TZERO(*rh);
   return rh;
 }
 

@@ -22,7 +22,7 @@
  */
 #define DOCUMENT_INIT(T)                                                \
 /*! @brief Initialize a variable of type T */                           \
-/*! @see NEW needs a version of this that takes just the T* as argument. */
+/*! @see P99_NEW needs a version of this that takes just the T* as argument. */
 
 /**
  ** @brief Add some indications to a @c _destroy documentation.

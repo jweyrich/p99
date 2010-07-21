@@ -177,7 +177,7 @@ orwl_endpoint* orwl_endpoint_init
 DOCUMENT_DESTROY(orwl_endpoint)
 inline
 void orwl_endpoint_destroy(orwl_endpoint *endpoint) {
-  TZERO(*endpoint);
+  P99_TZERO(*endpoint);
   endpoint->index = TONES(uint64_t);
 }
 

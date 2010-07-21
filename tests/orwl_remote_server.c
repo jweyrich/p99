@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
       if (block)
         stdin = fdopen(fd[0], "r");
     }
-    orwl_server* srv = NEW(orwl_server, con, len);
+    orwl_server* srv = P99_NEW(orwl_server, con, len);
     if (address[0]) orwl_endpoint_parse(&srv->host.ep, address);
     pthread_t srv_id;
     orwl_server_create(srv, &srv_id);

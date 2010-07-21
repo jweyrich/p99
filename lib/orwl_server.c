@@ -145,7 +145,7 @@ DEFINE_THREAD(orwl_server) {
       if (header[1] == repl) {
         size_t len = header[0];
         if (len) {
-          auth_sock *sock = NEW(auth_sock, fd, Arg, len);
+          auth_sock *sock = P99_NEW(auth_sock, fd, Arg, len);
           auth_sock_create(sock, NULL);
           /* The spawned thread will close the fd. */
           continue;

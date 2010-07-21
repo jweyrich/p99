@@ -34,8 +34,8 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
   MUTUAL_EXCLUDE(rq->mut) {
     if (!rh->wh) {
       // insert two wh in the local queue
-      rh->wh = NEW(orwl_wh);
-      orwl_wh* cli_wh = NEW(orwl_wh);
+      rh->wh = P99_NEW(orwl_wh);
+      orwl_wh* cli_wh = P99_NEW(orwl_wh);
       state = orwl_wq_request(&rq->local, &cli_wh, 1, &rh->wh, 1);
       if (state == orwl_requested) {
         assert(!rh->rq);
@@ -71,7 +71,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   if (rq && rh)
   MUTUAL_EXCLUDE(rq->mut) {
     if (!rh->wh) {
-      orwl_wh* cli_wh = NEW(orwl_wh);
+      orwl_wh* cli_wh = P99_NEW(orwl_wh);
       orwl_wh* wh_inc = NULL;
       /* first try to piggyback the latest wh in the local list */
       state = orwl_wq_request(&rq->local, &wh_inc, 1);
@@ -124,7 +124,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
           }
         } else {
           // A new handle has to be inserted in the local queue
-          orwl_wh* wh = NEW(orwl_wh);
+          orwl_wh* wh = P99_NEW(orwl_wh);
           wh->svrID = rh->svrID;
           report(0, "new handle %p for remote %" PRIx64, (void*)wh, rh->svrID);
           assert(&rq->local == cli_wh->location);
@@ -247,7 +247,7 @@ DEFINE_THREAD(orwl_handle_cancel) {
 orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_valid;
   if (!rh || !rh->wh) return orwl_valid;
-  orwl_handle_cancel* rhcp = memcpy(NEW(orwl_handle_cancel), rh, sizeof(*rh));
+  orwl_handle_cancel* rhcp = memcpy(P99_NEW(orwl_handle_cancel), rh, sizeof(*rh));
   orwl_handle_cancel_create(rhcp, NULL);
   orwl_handle_destroy(rh);
   return state;

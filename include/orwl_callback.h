@@ -103,7 +103,7 @@ int P99_PASTE2(orwl_callback_attach_, T)(T *arg, orwl_wh *wh) {         \
         P99_PASTE2(orwl_callback_, T)(arg, wh);                         \
       } else {                                                          \
         P99__CALLBACK_PAIR(T) *pair                                     \
-          = NEW(P99__CALLBACK_PAIR(T), arg, wh, wq);                    \
+          = P99_NEW(P99__CALLBACK_PAIR(T), arg, wh, wq);                \
         /* the subthread will take care of arg, we should not touch */  \
         /* it anymore */                                                \
         arg = NULL;                                                     \

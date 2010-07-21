@@ -195,7 +195,7 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
   INIT_ONCE(orwl_thread);
   /* Be sure to allocate the pair on the heap to leave full control
      to detached_wrapper() of what to do with it. */
-  orwl__routine_arg *Routine_Arg = NEW(orwl__routine_arg, start_routine, arg);
+  orwl__routine_arg *Routine_Arg = P99_NEW(orwl__routine_arg, start_routine, arg);
   int ret = pthread_create(&(pthread_t){0},
                            pthread_attr_detached,
                            detached_wrapper,

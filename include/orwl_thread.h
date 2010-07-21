@@ -287,7 +287,7 @@ void P99_PASTE2(T, _start)(T *const Arg)
 
 inline pthread_t* pthread_t_init(pthread_t *id) {
   if (!id) return NULL;
-  TZERO(*id);
+  P99_TZERO(*id);
   return id;
 }
 inline void pthread_t_destroy(pthread_t *id) {
@@ -348,24 +348,24 @@ char const* pthread2str(char *buf, pthread_t id) {
 
 #define PTHREAD2STR(ID) pthread2str((char[1 + sizeof(pthread_t) * 2]){0}, ID)
 
-#define P99__DECLARE_THREAD_VAR(T, NAME, KEY)       \
+#define P99__DECLARE_THREAD_VAR(T, NAME, KEY)   \
 extern pthread_key_t KEY;                       \
 DECLARE_ONCE_STATIC(KEY);                       \
 inline T* NAME(void) {                          \
   INIT_ONCE_STATIC(KEY);                        \
   T* ret = pthread_getspecific(KEY);            \
   if (branch_expect(!ret, false)) {             \
-    ret = NEW(T);                               \
+    ret = P99_NEW(T);                           \
     (void)pthread_setspecific(KEY, ret);        \
   }                                             \
   return ret;                                   \
 }                                               \
-inline void P99_PASTE2(NAME, _clear)(void) {        \
+inline void P99_PASTE2(NAME, _clear)(void) {    \
   INIT_ONCE_STATIC(KEY);                        \
   T* ret = pthread_getspecific(KEY);            \
   if (branch_expect(!!ret, true)) {             \
     (void)pthread_setspecific(KEY, NULL);       \
-    P99_PASTE2(T, _delete)(ret);                    \
+    P99_PASTE2(T, _delete)(ret);                \
   }                                             \
 }                                               \
 extern pthread_key_t KEY

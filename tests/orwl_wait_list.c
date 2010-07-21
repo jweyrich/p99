@@ -97,7 +97,7 @@ DEFINE_THREAD(arg_t) {
     report(!orwl_mynum,  "req, handle %zu, %s",
            preq, orwl_state_getname(ostate));
     /**/
-    cb_t *cb = NEW(cb_t);
+    cb_t *cb = P99_NEW(cb_t);
     cb->mynum = orwl_mynum;
     cb->phase = orwl_phase;
     ostate = orwl_invalid;
@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
   arg_t *arg = arg_t_vnew(orwl_np/2);
 
   for (size_t i = 0; i < orwl_np; ++i) {
-    arg_t *myarg = (i%2 ? arg + (i/2) : NEW(arg_t));
+    arg_t *myarg = (i%2 ? arg + (i/2) : P99_NEW(arg_t));
     myarg->mynum = i;
     myarg->phases = phases;
     if (i%2)

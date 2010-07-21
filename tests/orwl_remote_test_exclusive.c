@@ -101,7 +101,7 @@ DEFINE_THREAD(arg_t) {
     report(false,  "req, handle %zu, %s",
            preq, orwl_state_getname(ostate));
     /**/
-    cb_t *cb = NEW(cb_t, orwl_mynum, orwl_phase, info);
+    cb_t *cb = P99_NEW(cb_t, orwl_mynum, orwl_phase, info);
     ostate = orwl_invalid;
     for (size_t try = 0; ostate != orwl_requested; ++try) {
       ostate = orwl_test(handle + pacq);
@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
           argv[0], phases, orwl_np);
   orwl_types_init();
 
-  orwl_server* srv = NEW(orwl_server, 4, 10);
+  orwl_server* srv = P99_NEW(orwl_server, 4, 10);
   pthread_t srv_id;
   orwl_server_create(srv, &srv_id);
   rand48_t* seed = seed_get();
@@ -174,7 +174,7 @@ int main(int argc, char **argv) {
     arg_t *arg = arg_t_vnew(orwl_np/2);
 
     for (size_t i = 0; i < orwl_np; ++i) {
-      arg_t *myarg = (i%2 ? arg + (i/2) : NEW(arg_t));
+      arg_t *myarg = (i%2 ? arg + (i/2) : P99_NEW(arg_t));
       myarg->mynum = i;
       myarg->phases = phases;
       myarg->info = srv->info;

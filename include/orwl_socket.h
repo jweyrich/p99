@@ -173,7 +173,7 @@ auth_sock_init(auth_sock *sock,         /*!< [out] */
                size_t len               /*!< [in] the length of the message 0 */
                ) {
   if (!sock) return NULL;
-  TZERO(*sock);
+  P99_TZERO(*sock);
   sock->fd = fd;
   sock->srv = srv;
   sock->len = len;

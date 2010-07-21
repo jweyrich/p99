@@ -219,7 +219,7 @@ int main(int argc, char **argv) {
 
   orwl_types_init();
 
-  orwl_server* srv = NEW(orwl_server, 4, 10);
+  orwl_server* srv = P99_NEW(orwl_server, 4, 10);
   pthread_t srv_id;
   orwl_server_create(srv, &srv_id);
   rand48_t* seed = seed_get();
@@ -277,7 +277,7 @@ int main(int argc, char **argv) {
   arg_t *arg = arg_t_vnew(number/2);
 
   for (size_t i = 0; i < number; ++i) {
-    arg_t *myarg = (i%2 ? arg + (i/2) : NEW(arg_t));
+    arg_t *myarg = (i%2 ? arg + (i/2) : P99_NEW(arg_t));
     myarg->offset = offset;
     myarg->mynum = i + offset;
     myarg->phases = phases;

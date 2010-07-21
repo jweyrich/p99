@@ -15,7 +15,7 @@
 
 DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
   AUTH_SOCK_READ(Arg, auth_sock_insert_peer, uint64_t port);
-  orwl_host *h = NEW(orwl_host);
+  orwl_host *h = P99_NEW(orwl_host);
   /* mes and addr_t is already in host order */
   h->ep.addr = getpeer(Arg);
   h->ep.port.p = htons(port);
@@ -25,7 +25,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
 
 DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port) {
   AUTH_SOCK_READ(Arg, auth_sock_insert_host, uint64_t addr, uint64_t port);
-  orwl_host *h = NEW(orwl_host);
+  orwl_host *h = P99_NEW(orwl_host);
   /* mes is already in host order */
   addr_t_init(&h->ep.addr, addr);
   port_t_init(&h->ep.port, port);
@@ -45,7 +45,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, ui
     /* Create a handle and insert it in the queue.  Request two tokens,
        one for this function here when it acquires below, the other one to
        block until the remote issues a release. */
-    orwl_wh *srv_wh = NEW(orwl_wh);
+    orwl_wh *srv_wh = P99_NEW(orwl_wh);
     orwl_state state = orwl_wq_request(srv_wq, &srv_wh, 2);
     if (state == orwl_requested) {
       /* mes is already in host order */
@@ -101,7 +101,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
         piggyback = (svrID == (uintptr_t)srv_wh);
       }
     } else {
-      srv_wh = NEW(orwl_wh);
+      srv_wh = P99_NEW(orwl_wh);
       /* mark it as being inclusive */
       srv_wh->svrID = (uintptr_t)srv_wh;
       report(0, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
