@@ -16,6 +16,11 @@
 
 #include "p99_compiler.h"
 
+/**
+ ** @addtogroup preprocessor_initialization Iniitalization facilities throught the preprocessor
+ **
+ ** @{
+ **/
 
 /**
  ** @brief Zero out all bits in the object that @a X points to.
@@ -48,10 +53,22 @@
  **/
 #define P99_TZERO(X) (memset(&(X), 0, sizeof(X)))
 
+
+/**
+ ** @}
+ **/
+
+
 #define P99__NEW(T) P99_PASTE2(T, _init)((T*)malloc(sizeof(T)))
 
 #define P99__NEW_ARGS(T, ...) P99_PASTE2(T, _init)((T*)malloc(sizeof(T)), __VA_ARGS__)
 
+
+/**
+ ** @addtogroup preprocessor_allocation Allocation facilities throught the preprocessor
+ **
+ ** @{
+ **/
 
 /**
  ** @brief Allocate an element of type @c T as given by the first
@@ -88,5 +105,8 @@
  **/
 #define P99_NEW(...) P99_IF_DEC_LT(P99_NARG(__VA_ARGS__), 2)(P99__NEW(__VA_ARGS__))(P99__NEW_ARGS(__VA_ARGS__))
 
+/**
+ ** @}
+ **/
 
 #endif 	    /* !P99_NEW_H_ */

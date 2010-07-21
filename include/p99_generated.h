@@ -2622,11 +2622,35 @@
 
 //! @}
 
+//! @addtogroup code_augmenting
+//! @{
+
+
+#define P99__code_augmenting
+
+//! @addtogroup preprocessor_allocation
+//! @{
+
+
+#define P99__preprocessor_allocation
+
+//! @}
+
+//! @addtogroup preprocessor_initialization
+//! @{
+
+
+#define P99__preprocessor_initialization
+
+//! @}
+
 //! @addtogroup default_arguments
 //! @{
 
 
 #define P99__default_arguments
+
+//! @}
 
 //! @}
 
