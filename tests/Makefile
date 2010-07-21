@@ -63,7 +63,7 @@ $(NAME) : ${OBJS}
 #	$(STRIP) ./$(NAME) # if you debug ,don't strip ...
 
 depend Makefile.inc:
-	gcc $(IPATH) -MM $(SRC) > Makefile.inc
+	gcc $(CFLAGS) $(IPATH) -MM $(SRC) > Makefile.inc
 clean:
 	-$(RM) $(NAME) $(OBJS) *~
 distclean: clean

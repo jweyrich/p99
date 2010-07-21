@@ -70,7 +70,7 @@ all:	$(NAME) external_symbols.o
 ${NAME} : ${OBJS}
 
 depend Makefile.inc : Makefile
-	gcc $(IPATH) -MM $(SRC) > Makefile.inc
+	gcc $(OBJOPT) $(IPATH) -MM $(SRC) > Makefile.inc
 
 TAGS : ${SRC}
 	etags ${SRC}
