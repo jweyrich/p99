@@ -28,6 +28,7 @@ DEFINE_ONCE(orwl_wq) {
 orwl_wq* orwl_wq_init(orwl_wq *wq,
                                 const pthread_mutexattr_t *attr) {
   INIT_ONCE(orwl_wq);
+  if (!wq) return NULL;
   if (!attr) attr = &smattr;
   pthread_mutex_init(&wq->mut, attr);
   wq->head = NULL;
@@ -63,6 +64,7 @@ DEFINE_ONCE(orwl_wh) {
 orwl_wh* orwl_wh_init(orwl_wh *wh,
                   const pthread_condattr_t *attr) {
   INIT_ONCE(orwl_wh);
+  if (!wh) return NULL;
   if (!attr) attr = &scattr;
   pthread_cond_init(&wh->cond, attr);
   wh->location = NULL;

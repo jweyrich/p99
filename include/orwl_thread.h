@@ -286,6 +286,7 @@ void P99_PASTE2(T, _start)(T *const Arg)
 #endif
 
 inline pthread_t* pthread_t_init(pthread_t *id) {
+  if (!id) return NULL;
   TZERO(*id);
   return id;
 }

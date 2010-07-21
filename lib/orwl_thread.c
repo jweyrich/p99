@@ -145,6 +145,7 @@ typedef struct {
 orwl__routine_arg* orwl__routine_arg_init(orwl__routine_arg *rt,
                                               start_routine_t start_routine,
                                               void* arg) {
+  if (!rt) return NULL;
   sem_init(&rt->semCaller, 0, 0);
   sem_init(&rt->semCalled, 0, 0);
   rt->start_routine = start_routine;

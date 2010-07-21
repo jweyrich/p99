@@ -57,6 +57,7 @@ P99_DEFARG_DOCU(orwl_handle2_init)
 DOCUMENT_INIT(orwl_handle2)
 inline
 orwl_handle2 *orwl_handle2_init(orwl_handle2 *rh2, orwl_mirror* m, bool inc) {
+  if (!rh2) return NULL;
   orwl_handle_init(&rh2->pair[0]);
   orwl_handle_init(&rh2->pair[1]);
   rh2->state[0] = orwl_invalid;

@@ -223,6 +223,7 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
 typedef orwl_handle orwl_handle_cancel;
 
 orwl_handle_cancel* orwl_handle_cancel_init(orwl_handle_cancel* H) {
+  if (!H) return NULL;
   return orwl_handle_init(H);
 }
 

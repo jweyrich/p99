@@ -42,6 +42,7 @@ orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
                           in_addr_t addr, /*!< [in] defaults to the null address */
                           in_port_t port  /*!< [in] defaults to 0 */
                           ) {
+  if (!th) return NULL;
   th->next = th;
   th->prev = th;
   th->refs = 0;

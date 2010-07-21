@@ -58,6 +58,7 @@ rand48_t *rand48_t_init(rand48_t *seed,     /*!< [out] the object to iniialize *
                         unsigned short x1,  /*!< [in] defaults to the process id */
                         unsigned short x2   /*!< [in] defaults to the thread id */
                         ) {
+  if (!seed) return NULL;
   seed->x[0] = x0;
   seed->x[1] = x1;
   seed->x[2] = x2;

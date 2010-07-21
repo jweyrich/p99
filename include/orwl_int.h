@@ -143,7 +143,7 @@ DECLARE_POINTER_TYPE(uint64_t);
 #define DECLARE_BASIC(T)                                        \
 /*! @brief initialize the object that @a id points to by 0. */  \
 inline T* P99_PASTE2(T, _init)(T *id) {                         \
-  *id = TNULL(T);                                               \
+  if (id) *id = TNULL(T);                                       \
   return id;                                                    \
 }                                                               \
 /*! @brief destroy the object that @a id points to. */          \

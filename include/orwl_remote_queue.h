@@ -57,6 +57,7 @@ orwl_mirror *orwl_mirror_init(orwl_mirror *rq, /*!< [out] the object to iniializ
                               orwl_endpoint h, /*!< [in] local, defaults to a temp variable */
                               orwl_endpoint t  /*!< [in] remote, defaults to a temp variable */
                               ) {
+  if (!rq) return NULL;
   pthread_mutex_init(&rq->mut, NULL);
   orwl_wq_init(&rq->local);
   rq->here = h;
@@ -109,6 +110,7 @@ struct orwl_handle {
 
 inline
 orwl_handle *orwl_handle_init(orwl_handle *rh) {
+  if (!rh) return NULL;
   TZERO(*rh);
   return rh;
 }

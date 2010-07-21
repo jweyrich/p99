@@ -76,6 +76,7 @@ inline
 addr_t* addr_t_init(addr_t *A,  /*!< the object to initialize */
                     in_addr_t I /*!< defaults to the null address */
                     ) {
+  if (!A) return NULL;
   A->a[0] = TNULL(in_addr_t);
   A->a[1] = TNULL(in_addr_t);
   A->a[2] = htonl(0x0000FFFF);
@@ -145,6 +146,7 @@ inline
 port_t* port_t_init(port_t *A,   /*!< the object to initialize */
                     in_port_t P  /*!< defaults to 0 */
                     ) {
+  if (!A) return NULL;
   *A = net2port(P);
   return A;
 }
@@ -165,6 +167,7 @@ orwl_endpoint* orwl_endpoint_init
  in_port_t port,          /*!< defaults to 0 */
  uint64_t index           /*!< defaults to 0 */
  ) {
+  if (!endpoint) return NULL;
   addr_t_init(&endpoint->addr, addr);
   port_t_init(&endpoint->port, port);
   endpoint->index = index;

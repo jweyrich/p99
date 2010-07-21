@@ -26,6 +26,7 @@ DEFINE_ONCE(atomic_counter) {
 atomic_counter* atomic_counter_init(atomic_counter* p, int pshared, unsigned int value) {
   /* add this the day you add static dependencies */
   /* INIT_ONCE(atomic_counter); */
+  if (!p) return NULL;
   sem_init(&p->atomic_pos, pshared, value);
   sem_init(&p->atomic_neg, pshared, 1u);
   sem_init(&p->atomic_mut, pshared, 1u);
