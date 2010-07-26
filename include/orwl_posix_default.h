@@ -158,4 +158,10 @@ P99_DEFARG_DOCU(inet_ntop)
 #define inet_ntop_defarg_3() (INET6_ADDRSTRLEN)
 
 
+P99_PROTOTYPE(char*, realpath, const char*, char*);
+P99_DEFARG_DOCU(realpath)
+#define realpath(...) P99_CALL_DEFARG(realpath, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(realpath, , NULL);
+
+
 #endif 	    /* !ORWL_POSIX_DEFAULT_H_ */

@@ -33,7 +33,7 @@ SRC	=					\
 	semaphore_nointr.c
 INCL  	=	# List of *.h
 # The global variables that are used and that are external
-GLOBVARS=stderr stdout stdin in6addr_any
+GLOBVARS=environ stderr stdout stdin in6addr_any
 ################
 # Optional add #
 ################

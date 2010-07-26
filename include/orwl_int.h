@@ -48,12 +48,21 @@
  **/
 #define TONES(T) (~TNULL(T))
 
+
+extern char **environ;
+
 /**
  ** @brief Invalidated pointer
  **
- ** Define a all-one-bits initialized constant of pointer type @a T.
+ ** Define a pointer that is guaranteed not to point to any location
+ ** that might be user defined, neither @c static, @c auto or on the heap.
+ **
+ ** We use the @c environ pointer for such a purpose. Change to some
+ ** other known global variable (not function) if this is not good
+ ** enough. In contrast of using @c -1 or something similar, this is
+ ** guaranteed to not point to user allocated space on any platform.
  **/
-#define TGARB(T) ((T)~TNULL(uintptr_t))
+#define TGARB(T) ((T)(void*)environ)
 
 /**
  ** @brief Signedness of a type
