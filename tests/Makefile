@@ -15,14 +15,16 @@ NAME 	=	orwl_wait_list			\
 		orwl_remote_test_inclusive	\
 		orwl_remote_test_exclusive	\
 		orwl_socket_test		\
-		orwl_socket_finish
+		orwl_socket_finish              \
+		test-p99
 
 SRC	=	orwl_wait_list.c		\
 		orwl_remote_server.c		\
 		orwl_remote_test_inclusive.c	\
 		orwl_remote_test_exclusive.c	\
 		orwl_socket_test.c		\
-		orwl_socket_finish.c
+		orwl_socket_finish.c            \
+		test-p99.c
 
 INCL  	=		# List of *.h
 LIBDIR	:= $(join $(dir ${CURDIR}),lib)
