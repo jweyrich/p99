@@ -13,4 +13,4 @@
 void* p99__vnew(size_t n);
 size_t p99__vlen(void const*p);
 void p99__vdelete(void const*p);
-uintmax_t const*p99__vfind(void const*p);
+size_t const*p99__vfind(void const*p);
