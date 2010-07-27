@@ -138,11 +138,16 @@ P99_DEFARG_DOCU(calloc)
 #define calloc(...) P99_CALL_DEFARG(calloc, 2, __VA_ARGS__)
 P99_DECLARE_DEFARG(calloc, , 1);
 
+#define SOCKADDR_IN_INIIALIZER { .sin_family = AF_INET }
+
+#define IN_ADDR_INITIALIZER  { .s_addr = 0 }
+
+
 // int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 P99_PROTOTYPE(int, accept, int, struct sockaddr *, socklen_t *);
 P99_DEFARG_DOCU(accept)
 #define accept(...) P99_CALL_DEFARG(accept, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(accept, , NULL, &TNULL(socklen_t));
+P99_DECLARE_DEFARG(accept, , NULL, &LNULL(socklen_t));
 
 // int socket(int domain, int type, int protocol);
 P99_PROTOTYPE(int, socket, int, int, int);

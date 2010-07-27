@@ -106,7 +106,7 @@ struct orwl_handle {
   uint64_t svrID;
 };
 
-#define ORWL_HANDLE_INITIALIZER INITIALIZER
+#define ORWL_HANDLE_INITIALIZER { .rq = NULL, .wh = NULL, .svrID = TNULL(uint64_t) }
 
 inline
 orwl_handle *orwl_handle_init(orwl_handle *rh) {

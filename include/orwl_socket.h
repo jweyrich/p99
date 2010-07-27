@@ -63,11 +63,11 @@ extern void orwl_ntoa(struct sockaddr_in const* addr, char *name);
 
 #define diagnose(fd, form, ...)                                         \
 do {                                                                    \
-  struct sockaddr_in addr = INITIALIZER;                                \
+  struct sockaddr_in addr = SOCKADDR_IN_INIIALIZER;                     \
   if (getpeername(fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) { \
-    char name[256] = INITIALIZER;                                       \
+    char name[256] = "";                                                \
     orwl_ntoa(&addr, name);                                             \
-    report(stderr, "connection from %s " form, name, __VA_ARGS__);    \
+    report(stderr, "connection from %s " form, name, __VA_ARGS__);      \
   }                                                                     \
  } while (0)
 

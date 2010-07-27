@@ -49,16 +49,16 @@
  **
  ** The returning expression is of type @c uintmax_t
  **/
-#define P99_UT_M1(T) P99_TO_UNSIGNED(T, P99_T_M1)
+#define P99_M1U(T) P99_TO_UNSIGNED(T, P99_T_M1)
 
-#define P99_T_0(T) ((T)0)
-#define P99_UT_0(T) P99_TO_UNSIGNED(T, P99_T_0)
-#define P99_T_1(T) ((T)1)
-#define P99_UT_1(T)  P99_TO_UNSIGNED(T, P99_T_1)
-#define P99_T_2(T) ((T)2)
-#define P99_UT_2(T)  P99_TO_UNSIGNED(T, P99_T_2)
-#define P99_T_3(T) ((T)3)
-#define P99_UT_3(T)  P99_TO_UNSIGNED(T, P99_T_3)
+#define P99_0(T) ((T)0)
+#define P99_0U(T) P99_TO_UNSIGNED(T, P99_0)
+#define P99_1(T) ((T)1)
+#define P99_1U(T)  P99_TO_UNSIGNED(T, P99_1)
+#define P99_2(T) ((T)2)
+#define P99_2U(T)  P99_TO_UNSIGNED(T, P99_2)
+#define P99_3(T) ((T)3)
+#define P99_3U(T)  P99_TO_UNSIGNED(T, P99_3)
 
 /**
  ** @brief The maximum representable value of the unsigned type
@@ -66,7 +66,7 @@
  **
  ** The returning expression is of type @c uintmax_t
  **/
-#define P99_UT_MAX(T) (P99_UT_M1(T))
+#define P99_UT_MAX(T) (P99_M1U(T))
 
 /**
  ** @brief Half of the maximum representable value of the unsigned type
@@ -80,7 +80,7 @@
  ** @see P99_TMAX
  **/
 #define P99_UT_MAX1(T) (P99_UT_MAX(T)/2u)
-#define P99_UT_HIGH(T) (P99_UT_MAX1(T) + P99_UT_1(T))
+#define P99_UT_HIGH(T) (P99_UT_MAX1(T) + P99_1U(T))
 
 /**
  ** @brief The negative of the half of the maximum representable value
@@ -108,7 +108,7 @@
  ** - If @a T is @c _Bool or equivalent, -1 converted to it results in
  **    1 and 0 is also mapped to 0. Thus it is detected as unsigned.
  **/
-#define P99_ISSIGNED(T) (P99_T_M1(T) < P99_T_0(T))
+#define P99_ISSIGNED(T) (P99_M1(T) < P99_0(T))
 
 /**
  ** @brief C99 allows for exactly three different possibilities to
@@ -131,7 +131,7 @@ typedef enum {
  ** significant bits of -1 represented in @a T.
  ** @see ::p99_signed_representation
  **/
-#define P99_SIGNED_REPRESENTATION(T) ((p99_signed_representation)(P99_T_M1(T) & P99_T_3(T)))
+#define P99_SIGNED_REPRESENTATION(T) ((p99_signed_representation)(P99_M1(T) & P99_3(T)))
 
 
 /**
@@ -149,6 +149,6 @@ typedef enum {
 /**
  ** @brief Give the minimum representable value of type @a T
  **/
-#define P99_TMIN(T) ((T)(P99_ISSIGNED(T) ? (P99_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_T_0(T)))
+#define P99_TMIN(T) ((T)(P99_ISSIGNED(T) ? (P99_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T)))
 
 #endif 	    /* !P99_INT_H_ */

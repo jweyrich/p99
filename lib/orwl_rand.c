@@ -47,7 +47,7 @@ uint64_t orwl_mix(uint64_t a, uint64_t b) {
     | ((uint64_t)(orwl_rand(&tmp[2]) ^ orwl_rand(&tmp[3])) << 32);
 }
 
-static uint64_t secret = INITIALIZER;
+static uint64_t secret = P99_0(uint64_t);
 
 static char const ENVVAR[] = "ORWL_SECRET";
 

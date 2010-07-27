@@ -28,6 +28,9 @@ struct orwl_register {
   void *const dptr;
 };
 
+#define ORWL_REGISTER_INITIALIZER { .start = NULL, .regptr = NULL, .fptr = NULL, .dptr = NULL }
+
+
 orwl_register const* orwl_register_init(orwl_register const* field);
 
 inline size_t orwl_register_id(orwl_register const* field) {
@@ -103,7 +106,7 @@ orwl_register const*ORWL_REGISTER(NAME) = NULL
 #define DECLARE_ORWL_DOMAIN(NAME) extern orwl_domain NAME
 
 #define DEFINE_ORWL_DOMAIN(NAME, ...)                                   \
-static orwl_register const ORWL_DOMAIN_TABLE[] = { __VA_ARGS__ , INITIALIZER}; \
+static orwl_register const ORWL_DOMAIN_TABLE[] = { __VA_ARGS__ , ORWL_REGISTER_INITIALIZER }; \
 orwl_domain NAME = ORWL_DOMAIN_TABLE
 
 /**

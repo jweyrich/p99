@@ -86,7 +86,7 @@ DEFINE_NEW_DELETE(arg_t);
 
 DECLARE_THREAD(arg_t);
 
-static pthread_barrier_t init_barr = { INITIALIZER };
+static pthread_barrier_t init_barr;
 
 DEFINE_THREAD(arg_t) {
   size_t const offset = Arg->offset;
@@ -225,7 +225,7 @@ int main(int argc, char **argv) {
   rand48_t* seed = seed_get();
 
   report(1, "connecting to %s", argv[1]);
-  orwl_endpoint other = { INITIALIZER };
+  orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(0, 0);
   orwl_endpoint_parse(&other, argv[1]);
 
   phases = str2size_t(argv[2]);
@@ -299,7 +299,7 @@ int main(int argc, char **argv) {
   report(1, "%s: waiting for %zu detached threads",
          argv[0], number - number/2);
   if (ret) {
-    char mesg[256] = INITIALIZER;
+    char mesg[256] = "";
     strerror_r(ret, mesg, 256);
     report(1, "Server already terminated: %s", mesg);
   }

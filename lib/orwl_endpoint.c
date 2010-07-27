@@ -30,7 +30,7 @@ DEFINE_NEW_DELETE(orwl_endpoint);
 orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
   if (ep && name && name[0]) {
     addr_t addr = ADDR_T_INITIALIZER(0);
-    port_t port = INITIALIZER;
+    port_t port = PORT_T_INITIALIZER(0);
     uint64_t index = 0;
     char const prefix[7 + 1] = "orwl://";
     if (strstr(name, prefix) == name) {
@@ -84,7 +84,7 @@ union _sockaddr_alias {
 
 char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
   name[0] = '\0';
-  char host[256] = INITIALIZER;
+  char host[256] = "";
   struct in_addr in4_addr = addr2net(&ep->addr);
   if (!in4_addr.s_addr
       || ((in4_addr.s_addr == TONES(in_addr_t))

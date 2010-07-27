@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 
   if (argc > 1) {
     report(1, "connecting to %s", argv[1]);
-    orwl_endpoint other = { INITIALIZER };
+    orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(0, 0);
     orwl_endpoint_parse(&other, argv[1]);
 
     /* wait until the other side is up. */
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
         n = srv.host.next;
       report(1, "%p -- %p", (void*)&srv.host, (void*)n);
       for (orwl_host *h = n; h != &srv.host; ) {
-        orwl_endpoint other = { INITIALIZER };
+        orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(0, 0);
         MUTUAL_EXCLUDE(h->mut) {
           other.addr = h->ep.addr;
           other.port = h->ep.port;
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
 
   orwl_server_join(id);
   if (ret) {
-    char mesg[256] = INITIALIZER;
+    char mesg[256] = "";
     strerror_r(ret, mesg, 256);
     report(1, "Server already terminated: %s", mesg);
   }

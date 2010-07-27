@@ -11,10 +11,13 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include "orwl_int.h"
+
 #include "orwl_socket.h"
 
 #include "orwl_server.h"
 #include "orwl_header.h"
+#include "orwl_posix_default.h"
 
 static uint32_t mycode = 0;
 
@@ -73,11 +76,11 @@ void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l);
 P99_DEFINE_DEFARG(orwl_ntoh, , , 1);
 
 
-in_addr_t p99__inet4_addr = INITIALIZER;
+in_addr_t p99__inet4_addr = TNULL(in_addr_t);
 
 DEFINE_ONCE_UPON(inet4_addr) {
   char const* str = getenv("INET4");
-  struct in_addr inaddr = INITIALIZER;
+  struct in_addr inaddr = IN_ADDR_INITIALIZER;
   if (inet_aton(str, &inaddr)) {
     p99__inet4_addr = inaddr.s_addr;
   }
@@ -133,8 +136,8 @@ char const* orwl_inet_ntop(struct sockaddr const* addr, char* buf, size_t size);
 P99_DEFINE_DEFARG(orwl_inet_ntop, , , );
 
 in_addr_t orwl_inet_addr(char const *name) {
-  in_addr_t ret = INITIALIZER;
-  struct addrinfo *res = INITIALIZER;
+  in_addr_t ret = TNULL(in_addr_t);
+  struct addrinfo *res = NULL;
   struct addrinfo hints = {
     .ai_family = AF_UNSPEC,
     .ai_flags = AI_V4MAPPED | AI_ADDRCONFIG | AI_CANONNAME | (name ? 0 : AI_PASSIVE),
@@ -209,7 +212,7 @@ DEFINE_THREAD(auth_sock) {
 
 
 addr_t getpeer(auth_sock *Arg) {
-  struct sockaddr_in addr = INITIALIZER;
+  struct sockaddr_in addr = SOCKADDR_IN_INIIALIZER;
   int ret = getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)});
   return  (addr_t)ADDR_T_INITIALIZER((ret == -1) ? TNULL(in_addr_t) : addr.sin_addr.s_addr);
 }

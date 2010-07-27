@@ -17,5 +17,7 @@ enum { header_t_els = 2 };
 
 typedef uint64_t header_t[header_t_els];
 
+#define HEADER_T_INITIALIZER { 0 }
+
 
 #endif 	    /* !ORWL_HEADER_H_ */

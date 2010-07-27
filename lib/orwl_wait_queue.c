@@ -19,7 +19,7 @@ P99_DEFINE_DEFARG(orwl_wh_acquire, , 1);
 P99_DEFINE_DEFARG(orwl_wh_load, , 1);
 P99_DEFINE_DEFARG(orwl_wh_unload, , 1);
 
-static pthread_mutexattr_t smattr = INIT2;
+static pthread_mutexattr_t smattr;
 
 DEFINE_ONCE(orwl_wq) {
   pthread_mutexattr_init(&smattr);
@@ -55,7 +55,7 @@ void orwl_wq_destroy(orwl_wq *wq) {
 
 DEFINE_NEW_DELETE(orwl_wq);
 
-static pthread_condattr_t scattr = INIT2;
+static pthread_condattr_t scattr;
 
 DEFINE_ONCE(orwl_wh) {
   pthread_condattr_init(&scattr);

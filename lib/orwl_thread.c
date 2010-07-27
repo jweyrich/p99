@@ -173,7 +173,7 @@ void *detached_wrapper(void *routine_arg) {
   void *restrict arg = Routine_Arg->arg;
   /* This should be fast since usually there should never be a waiter
      blocked on this semaphore. */
-  void *ret = INITIALIZER;
+  void *ret = NULL;
   ACCOUNT(count) {
     /* tell the creator that we are in charge */
     sem_post(&Routine_Arg->semCalled);

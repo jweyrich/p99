@@ -19,27 +19,16 @@
 #include <stdio.h>
 #include <string.h>
 #include "p99_paste.h"
+#include "p99_int.h"
 #include "orwl_new.h"
-
-/**
- ** @brief Define an (almost) all purpose initializer
- **/
-#define INITIALIZER INIT1
-
-#define INIT0 (0)
-#define INIT1 { 0 }
-#define INIT2 { { 0 } }
 
 /**
  ** @brief Typed @c NULL
  **
  ** Define a @c NULL initialized constant of type @a T.
  **/
-#define TNULL(T) NULL1(T)
-
-#define NULL0(T) ((T)INIT0)
-#define NULL1(T) ((T)INIT1)
-#define NULL2(T) ((T)INIT2)
+#define TNULL(T) P99_0(T)
+#define LNULL(T) ((T){ 0 })
 
 /**
  ** @brief Typed ones

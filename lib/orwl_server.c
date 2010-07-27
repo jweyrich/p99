@@ -116,7 +116,7 @@ DEFINE_THREAD(orwl_server) {
       /* Do this work before being connected */
       uint64_t chal = orwl_rand64(&seed);
       uint64_t repl = orwl_challenge(chal);
-      header_t header = INITIALIZER;
+      header_t header = HEADER_T_INITIALIZER;
 
       if (Arg->info && Arg->info_len) progress(1, t, "%s", Arg->info);
 

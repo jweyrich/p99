@@ -23,7 +23,7 @@
 #include "orwl_server.h"
 
 
-static char address[256] = INITIALIZER;
+static char address[256] = "";
 static uint64_t con = 20;
 static uint64_t len = 10;
 static bool background = false;

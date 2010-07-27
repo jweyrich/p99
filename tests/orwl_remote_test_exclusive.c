@@ -153,7 +153,7 @@ int main(int argc, char **argv) {
 
   if (argc > 1) {
     report(1, "connecting to %s", argv[3]);
-    orwl_endpoint other = { INITIALIZER };
+    orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(0, 0);
     orwl_endpoint_parse(&other, argv[3]);
 
     /* Initialization of the static location */
@@ -194,7 +194,7 @@ int main(int argc, char **argv) {
     report(1, "%s: waiting for %zu detached threads",
            argv[0], orwl_np - orwl_np/2);
     if (ret) {
-      char mesg[256] = INITIALIZER;
+      char mesg[256] = "";
       strerror_r(ret, mesg, 256);
       report(1, "Server already terminated: %s", mesg);
     }
