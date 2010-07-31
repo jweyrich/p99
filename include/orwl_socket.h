@@ -185,7 +185,7 @@ auth_sock_init(auth_sock *sock,         /*!< [out] */
 #ifndef DOXYGEN
 inline
 P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t);
-P99_DECLARE_DEFARG(auth_sock_init, , -1, NULL, TNULL(size_t));
+P99_DECLARE_DEFARG(auth_sock_init, , -1, NULL, P99_0(size_t));
 
 
 #define auth_sock_init(...) P99_CALL_DEFARG(auth_sock_init, 4, __VA_ARGS__)

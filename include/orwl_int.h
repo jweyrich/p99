@@ -22,21 +22,7 @@
 #include "p99_int.h"
 #include "orwl_new.h"
 
-/**
- ** @brief Typed @c NULL
- **
- ** Define a @c NULL initialized constant of type @a T.
- **/
-#define TNULL(T) P99_0(T)
 #define LNULL(T) ((T){ 0 })
-
-/**
- ** @brief Typed ones
- **
- ** Define a all-one-bits initialized constant of integer type @a T.
- **/
-#define TONES(T) (~TNULL(T))
-
 
 extern char **environ;
 
@@ -52,27 +38,6 @@ extern char **environ;
  ** guaranteed to not point to user allocated space on any platform.
  **/
 #define TGARB(T) ((T)(void*)environ)
-
-/**
- ** @brief Signedness of a type
- **
- ** Determine if @a T corresponds to a signed integer type or not.
- **/
-#define ISSIGNED(T) (TONES(T) < TNULL(T))
-
-/**
- ** @brief Typed max value
- **
- ** Define the largest value that integer type @a T may hold.
- **/
-#define TMAX(T) (~TMIN(T))
-
-/**
- ** @brief Typed min value
- **
- ** Define the smallest value that integer type @a T may hold.
- **/
-#define TMIN(T) (((T)ISSIGNED(T)) << ((sizeof(T)*CHAR_BIT)-1))
 
 /* For each one word integer type have a signed and unsigned variant. */
 #define P99__ONE_TOK_(T, NAME)                                          \
@@ -141,7 +106,7 @@ DECLARE_POINTER_TYPE(uint64_t);
 #define DECLARE_BASIC(T)                                        \
 /*! @brief initialize the object that @a id points to by 0. */  \
 inline T* P99_PASTE2(T, _init)(T *id) {                         \
-  if (id) *id = TNULL(T);                                       \
+  if (id) *id = P99_0(T);                                       \
   return id;                                                    \
 }                                                               \
 /*! @brief destroy the object that @a id points to. */          \
@@ -195,7 +160,7 @@ DECLARE_BASIC_TYPE(int64_t);
 DECLARE_BASIC_TYPE(uint64_t);
 
 #define P99__STRTO(T, ...)                      \
-(ISSIGNED(T)                                    \
+(P99_ISSIGNED(T)                                \
  ? ((sizeof(T) == sizeof(long))                 \
     ? (T)strtol(__VA_ARGS__)                    \
     : (T)strtoll(__VA_ARGS__))                  \
@@ -358,7 +323,7 @@ CHOOSE5(x,                                      \
  ** instead.
  **/
 inline
-int mfputs_func(FILE* f, size_t n, char const*const* A) {
+int mfputs_func(FILE* f, size_t n, char const*const*const A) {
   int ret = 0;
   flockfile(f);
   for (size_t i = 0; i < n && ret != EOF; ++i)
@@ -375,16 +340,20 @@ int mfputs_func(FILE* f, size_t n, char const*const* A) {
   return ret;
 }
 
-#define P99__mfputs(F, ...) mfputs_func(F, P99_NARG(__VA_ARGS__), (char const*[]){__VA_ARGS__})
+#define P99__mfputs(F, ...) mfputs_func(F, P99_NARG(__VA_ARGS__), (char const*const[]){__VA_ARGS__})
 
 
 /**
- ** @brief Output a series of to a file given as first argument.
+ ** @brief Output a series of strings to a @c FILE* given as first argument.
  **
  ** Use this as something like
  ** @code
- ** mfputs(sderr, "something ", SOME_STRING_VARIABLE, "something else");
+ ** mfputs(stderr, "something ", SOME_STRING_VARIABLE, "something else");
  ** @endcode
+ **
+ ** This will put a lock on the @c FILE* argument and output all the
+ ** string arguments in one go, undisturbed by the eventual output
+ ** coming from another thread.
  **/
 #define mfputs(...) P99__mfputs(__VA_ARGS__)
 

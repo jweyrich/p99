@@ -49,8 +49,8 @@ void orwl_wq_destroy(orwl_wq *wq) {
   wq->head = TGARB(orwl_wh*);
   wq->tail = TGARB(orwl_wh*);
   wq->data = TGARB(void*);
-  wq->clock = TONES(uint64_t);
-  wq->data_len = TONES(size_t);
+  wq->clock = P99_TMAX(uint64_t);
+  wq->data_len = P99_TMAX(size_t);
 }
 
 DEFINE_NEW_DELETE(orwl_wq);
@@ -83,7 +83,7 @@ void orwl_wh_destroy(orwl_wh *wh) {
   pthread_cond_destroy(&wh->cond);
   wh->location = TGARB(orwl_wq*);
   wh->next = TGARB(orwl_wh*);
-  wh->priority = TONES(int64_t);
+  wh->priority = P99_TMAX(int64_t);
 }
 
 DEFINE_NEW_DELETE(orwl_wh);
@@ -136,7 +136,7 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
       for (size_t i = 0; i < number; ++i) {
         orwl_wh **wh = VA_MODARG(ap, orwl_wq_request, 0);
         int64_t hm = VA_MODARG(ap, orwl_wq_request, 1);
-        uint64_t howmuch = (hm > TNULL(int64_t)) ? hm : -hm;
+        uint64_t howmuch = (hm > P99_0(int64_t)) ? hm : -hm;
         if (wh) {
           if (*wh) {
             orwl_wq_request_locked(wq, *wh, howmuch);
@@ -147,7 +147,7 @@ orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
                 && wq->tail
                 && wq->tail->svrID) {
               report(false, "request for augmenting an inclusive lock %p, succes", (void*)wq->tail);
-              assert(hm >= TNULL(int64_t));
+              assert(hm >= P99_0(int64_t));
               /* if the wh is NULL, take this as a request to add to the
                  last handle if it exists */
               orwl_wh_load(wq->tail, howmuch);

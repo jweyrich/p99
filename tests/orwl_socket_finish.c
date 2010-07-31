@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
       = ORWL_SERVER_INITIALIZER(
                                 srv,
                                 4,
-                                TNULL(in_addr_t),
+                                P99_0(in_addr_t),
                                 0);
     rand48_t seed = RAND48_T_INITIALIZER;
 

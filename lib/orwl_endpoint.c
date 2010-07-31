@@ -22,7 +22,7 @@ orwl_endpoint* orwl_endpoint_init
 void orwl_endpoint_destroy(orwl_endpoint *endpoint);
 
 
-P99_DEFINE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t), TNULL(uint64_t));
+P99_DEFINE_DEFARG(orwl_endpoint_init, , P99_0(in_addr_t), P99_0(in_port_t), P99_0(uint64_t));
 
 DEFINE_NEW_DELETE(orwl_endpoint);
 
@@ -87,11 +87,11 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
   char host[256] = "";
   struct in_addr in4_addr = addr2net(&ep->addr);
   if (!in4_addr.s_addr
-      || ((in4_addr.s_addr == TONES(in_addr_t))
+      || ((in4_addr.s_addr == P99_TMAX(in_addr_t))
           && !memcmp(ep->addr.aaaa, &in6addr_any, 16))) {
     hostname(host);
   } else {
-    if (in4_addr.s_addr == TONES(in_addr_t)) {
+    if (in4_addr.s_addr == P99_TMAX(in_addr_t)) {
       union _sockaddr_alias addr6 = { .in6 = { .sin6_family = AF_INET6 } };
       memcpy(addr6.in6.sin6_addr.s6_addr, ep->addr.aaaa, 16);
       /* We need this, since sa_family is not necessarily atop of
@@ -133,7 +133,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
  ** @endmsc
  **/
 uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size_t len) {
-  uint64_t ret = TONES(uint64_t);
+  uint64_t ret = P99_TMAX(uint64_t);
   int fd = -1;
   /* do all this work before opening the socket */
   uint64_t chal = orwl_rand64(seed);
@@ -192,7 +192,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size
   }
  FINISH:
   close(fd);
-  if (ret == TONES(uint64_t) && len) report(1, "send request didn't succeed");
+  if (ret == P99_TMAX(uint64_t) && len) report(1, "send request didn't succeed");
   return ret;
 }
 
@@ -214,7 +214,7 @@ bool orwl_recv_(int fd, uint64_t *mess, size_t len) {
 
 addr_t* addr_t_init(addr_t *A, in_addr_t I);
 
-P99_DEFINE_DEFARG(addr_t_init, , TNULL(in_addr_t));
+P99_DEFINE_DEFARG(addr_t_init, , P99_0(in_addr_t));
 
 struct in_addr addr2net(addr_t const*A);
 
@@ -222,7 +222,7 @@ struct in6_addr addr2net6(addr_t const*A);
 
 port_t* port_t_init(port_t *A, in_port_t P);
 
-P99_DEFINE_DEFARG(port_t_init, , TNULL(in_port_t));
+P99_DEFINE_DEFARG(port_t_init, , P99_0(in_port_t));
 
 in_port_t port2net(port_t const*A);
 uint64_t port2host(port_t const*A);

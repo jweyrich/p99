@@ -76,7 +76,7 @@ void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l);
 P99_DEFINE_DEFARG(orwl_ntoh, , , 1);
 
 
-in_addr_t p99__inet4_addr = TNULL(in_addr_t);
+in_addr_t p99__inet4_addr = P99_0(in_addr_t);
 
 DEFINE_ONCE_UPON(inet4_addr) {
   char const* str = getenv("INET4");
@@ -136,7 +136,7 @@ char const* orwl_inet_ntop(struct sockaddr const* addr, char* buf, size_t size);
 P99_DEFINE_DEFARG(orwl_inet_ntop, , , );
 
 in_addr_t orwl_inet_addr(char const *name) {
-  in_addr_t ret = TNULL(in_addr_t);
+  in_addr_t ret = P99_0(in_addr_t);
   struct addrinfo *res = NULL;
   struct addrinfo hints = {
     .ai_family = AF_UNSPEC,
@@ -173,7 +173,7 @@ auth_sock* auth_sock_init(auth_sock *sock,
                                   orwl_server* srv,
                                   size_t len);
 
-P99_DEFINE_DEFARG(auth_sock_init, , -1, NULL, TNULL(size_t));
+P99_DEFINE_DEFARG(auth_sock_init, , -1, NULL, P99_0(size_t));
 
 void auth_sock_close(auth_sock *sock) {
   /* Ack the termination of the call */
@@ -214,7 +214,7 @@ DEFINE_THREAD(auth_sock) {
 addr_t getpeer(auth_sock *Arg) {
   struct sockaddr_in addr = SOCKADDR_IN_INIIALIZER;
   int ret = getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)});
-  return  (addr_t)ADDR_T_INITIALIZER((ret == -1) ? TNULL(in_addr_t) : addr.sin_addr.s_addr);
+  return  (addr_t)ADDR_T_INITIALIZER((ret == -1) ? P99_0(in_addr_t) : addr.sin_addr.s_addr);
 }
 
 

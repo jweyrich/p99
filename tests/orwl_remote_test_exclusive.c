@@ -37,8 +37,8 @@ cb_t* cb_t_init(cb_t *cb, size_t m, size_t p, char* i) {
 P99_PROTOTYPE(cb_t*, cb_t_init, cb_t*, size_t, size_t, char*);
 P99_DEFARG_DOCU(cb_t_init)
 #define cb_t_init(...) P99_CALL_DEFARG(cb_t_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(cb_t_init, , TNULL(size_t), TNULL(size_t), NULL);
-P99_DEFINE_DEFARG(cb_t_init, , TNULL(size_t), TNULL(size_t), NULL);
+P99_DECLARE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), NULL);
+P99_DEFINE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), NULL);
 
 
 void cb_t_destroy(cb_t *cb) {
@@ -69,8 +69,8 @@ arg_t* arg_t_init(arg_t *arg, size_t def) {
 
 P99_PROTOTYPE(arg_t*, arg_t_init, arg_t *, size_t);
 #define arg_t_init(...) P99_CALL_DEFARG(arg_t_init, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(arg_t_init, , TNULL(size_t));
-P99_DEFINE_DEFARG(arg_t_init, , TNULL(size_t));
+P99_DECLARE_DEFARG(arg_t_init, , P99_0(size_t));
+P99_DEFINE_DEFARG(arg_t_init, , P99_0(size_t));
 
 
 void arg_t_destroy(arg_t *arg) {
@@ -162,7 +162,7 @@ int main(int argc, char **argv) {
     /* wait until the other side is up. */
     /* ep.port is already in host order */
     while (orwl_rpc(&other, seed, auth_sock_insert_peer, port2host(&srv->host.ep.port))
-           == TONES(uint64_t)) {
+           == P99_TMAX(uint64_t)) {
       ret = pthread_kill(srv_id, 0);
       if (ret) break;
       sleepfor(0.2);

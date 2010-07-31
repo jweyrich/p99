@@ -77,8 +77,8 @@ addr_t* addr_t_init(addr_t *A,  /*!< the object to initialize */
                     in_addr_t I /*!< defaults to the null address */
                     ) {
   if (!A) return NULL;
-  A->a[0] = TNULL(in_addr_t);
-  A->a[1] = TNULL(in_addr_t);
+  A->a[0] = P99_0(in_addr_t);
+  A->a[1] = P99_0(in_addr_t);
   A->a[2] = htonl(0x0000FFFF);
   A->a[3] = I;
   return A;
@@ -88,7 +88,7 @@ addr_t* addr_t_init(addr_t *A,  /*!< the object to initialize */
 inline
 P99_PROTOTYPE(addr_t*, addr_t_init, addr_t *, in_addr_t);
 #define addr_t_init(...) P99_CALL_DEFARG(addr_t_init, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(addr_t_init, , TNULL(in_addr_t));
+P99_DECLARE_DEFARG(addr_t_init, , P99_0(in_addr_t));
 #endif
 
 /**
@@ -103,7 +103,7 @@ struct in_addr addr2net(addr_t const*A) {
                 && !A->a[1]
                 && (ntohl(A->a[2]) == 0x0000FFFF))
                ? A->a[3]
-               : TONES(in_addr_t))
+               : P99_TMAX(in_addr_t))
   };
   return ret;
 }
@@ -155,7 +155,7 @@ port_t* port_t_init(port_t *A,   /*!< the object to initialize */
 inline
 P99_PROTOTYPE(port_t*, port_t_init, port_t *, in_port_t);
 #define port_t_init(...) P99_CALL_DEFARG(port_t_init, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(port_t_init, , TNULL(in_port_t));
+P99_DECLARE_DEFARG(port_t_init, , P99_0(in_port_t));
 #endif
 
 DOCUMENT_INIT(orwl_endpoint)
@@ -178,7 +178,7 @@ DOCUMENT_DESTROY(orwl_endpoint)
 inline
 void orwl_endpoint_destroy(orwl_endpoint *endpoint) {
   P99_TZERO(*endpoint);
-  endpoint->index = TONES(uint64_t);
+  endpoint->index = P99_TMAX(uint64_t);
 }
 
 
@@ -186,7 +186,7 @@ void orwl_endpoint_destroy(orwl_endpoint *endpoint) {
 inline
 P99_PROTOTYPE(orwl_endpoint*, orwl_endpoint_init, orwl_endpoint*, in_addr_t, in_port_t, uint64_t);
 #define orwl_endpoint_init(...) P99_CALL_DEFARG(orwl_endpoint_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_endpoint_init, , TNULL(in_addr_t), TNULL(in_port_t), TNULL(uint64_t));
+P99_DECLARE_DEFARG(orwl_endpoint_init, , P99_0(in_addr_t), P99_0(in_port_t), P99_0(uint64_t));
 #endif
 
 DECLARE_NEW_DELETE(orwl_endpoint);

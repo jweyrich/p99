@@ -48,7 +48,7 @@ orwl_server_init(orwl_server *serv,       /*!< [out] the object to iniialize */
 
 #ifndef DOXYGEN
 P99_PROTOTYPE(orwl_server*, orwl_server_init, orwl_server *, size_t, size_t, in_addr_t, in_port_t);
-P99_DECLARE_DEFARG(orwl_server_init, , (size_t)20u, TNULL(size_t), TNULL(in_addr_t), TNULL(in_port_t));
+P99_DECLARE_DEFARG(orwl_server_init, , (size_t)20u, P99_0(size_t), P99_0(in_addr_t), P99_0(in_port_t));
 #define orwl_server_init(...) P99_CALL_DEFARG(orwl_server_init, 5, __VA_ARGS__)
 #endif
 

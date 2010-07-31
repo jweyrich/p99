@@ -42,22 +42,41 @@
  ** always defined to be modulo 2^N where N is the precision of the
  ** target type.
  **/
-#define P99_T_M1(T) ((T)-1)
+#define P99_M1(T) ((T)-1)
 
 /**
- ** @brief Return an unsigned version of P99_T_M1.
+ ** @brief Return an unsigned version of P99_M1.
  **
  ** The returning expression is of type @c uintmax_t
  **/
-#define P99_M1U(T) P99_TO_UNSIGNED(T, P99_T_M1)
+#define P99_M1U(T) P99_TO_UNSIGNED(T, P99_M1)
 
+#define P99__DOCUMENT_SIGNED(X) /*! @brief Cast the @c int value @c X to type @a T */
+#define P99__DOCUMENT_UNSIGNED(X)                                       \
+/*! @brief Cast the @c int value @c X to the unsigned type corresponding to @a T */
+
+P99__DOCUMENT_SIGNED(0)
 #define P99_0(T) ((T)0)
+
+P99__DOCUMENT_UNSIGNED(0)
 #define P99_0U(T) P99_TO_UNSIGNED(T, P99_0)
+
+P99__DOCUMENT_SIGNED(1)
 #define P99_1(T) ((T)1)
+
+P99__DOCUMENT_UNSIGNED(1)
 #define P99_1U(T)  P99_TO_UNSIGNED(T, P99_1)
+
+P99__DOCUMENT_SIGNED(2)
 #define P99_2(T) ((T)2)
+
+P99__DOCUMENT_UNSIGNED(2)
 #define P99_2U(T)  P99_TO_UNSIGNED(T, P99_2)
+
+P99__DOCUMENT_SIGNED(3)
 #define P99_3(T) ((T)3)
+
+P99__DOCUMENT_UNSIGNED(3)
 #define P99_3U(T)  P99_TO_UNSIGNED(T, P99_3)
 
 /**
@@ -94,7 +113,6 @@
  ** @see P99_TMIN
  **/
 #define P99_ST_MIN1(T) (-(T)P99_UT_MAX1(T))
-//#define P99_ST_SIGNATURE(T) (P99_ST_MIN1(T) ^ (T)-1)
 
 /**
  ** @brief Determine if @a T is an unsigned or signed type

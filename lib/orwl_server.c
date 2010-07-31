@@ -30,7 +30,7 @@ orwl_server* orwl_server_init(orwl_server *serv,
   return serv;
 }
 
-P99_DEFINE_DEFARG(orwl_server_init, , (size_t)20u, TNULL(size_t), TNULL(in_addr_t), TNULL(in_port_t));
+P99_DEFINE_DEFARG(orwl_server_init, , (size_t)20u, P99_0(size_t), P99_0(in_addr_t), P99_0(in_port_t));
 
 void orwl_server_close(orwl_server *serv) {
   MUTUAL_EXCLUDE(serv->host.mut)

@@ -63,7 +63,7 @@ void orwl_host_disconnect(orwl_host *th) {
 
 orwl_host* orwl_host_init(orwl_host *th, in_addr_t addr, in_port_t port);
 
-P99_DEFINE_DEFARG(orwl_host_init, , TNULL(in_addr_t), TNULL(in_port_t));
+P99_DEFINE_DEFARG(orwl_host_init, , P99_0(in_addr_t), P99_0(in_port_t));
 
 
 void orwl_host_destroy(orwl_host *th);

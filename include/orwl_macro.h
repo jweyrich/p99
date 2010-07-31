@@ -203,13 +203,13 @@ CHOOSE5(xT,                                     \
  ** @brief Promote integer expression @a x to the width of @c
  ** uintmax_t but keep signedness if possible.
  **/
-#define P99__J(x) (0 ? TNULL(uintmax_t) : (x))
+#define P99__J(x) (0 ? P99_0(uintmax_t) : (x))
 
 /**
  ** @brief Promote integer expression @a x to the width of @c
  ** size_t but keep signedness if possible.
  **/
-#define P99__Z(x) (0 ? TNULL(size_t) : (x))
+#define P99__Z(x) (0 ? P99_0(size_t) : (x))
 
 
 /**

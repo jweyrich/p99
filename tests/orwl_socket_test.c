@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     = ORWL_SERVER_INITIALIZER(
                               srv,
                               4,
-                              TNULL(in_addr_t),
+                              P99_0(in_addr_t),
                               0);
   report(1, "starting %s ", orwl_endpoint_print(&srv.host.ep));
   pthread_t id;
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     /* wait until the other side is up. */
     /* ep.port is already in host order */
     while (orwl_rpc(&other, &seed, auth_sock_insert_peer, port2host(&srv.host.ep.port))
-           == TONES(uint64_t)) {
+           == P99_TMAX(uint64_t)) {
       ret = pthread_kill(id, 0);
       if (ret) break;
       sleepfor(0.2);

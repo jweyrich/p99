@@ -39,8 +39,8 @@ cb_t* cb_t_init(cb_t *cb, size_t m, size_t p, char* i) {
 P99_PROTOTYPE(cb_t*, cb_t_init, cb_t*, size_t, size_t, char*);
 P99_DEFARG_DOCU(cb_t_init)
 #define cb_t_init(...) P99_CALL_DEFARG(cb_t_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(cb_t_init, , TNULL(size_t), TNULL(size_t), NULL);
-P99_DEFINE_DEFARG(cb_t_init, , TNULL(size_t), TNULL(size_t), NULL);
+P99_DECLARE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), NULL);
+P99_DEFINE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), NULL);
 
 void cb_t_destroy(cb_t *cb) {
   /* empty */
@@ -74,8 +74,8 @@ arg_t* arg_t_init(arg_t *arg, size_t m, size_t ph, orwl_mirror* le) {
 
 P99_PROTOTYPE(arg_t*, arg_t_init, arg_t *, size_t, size_t, orwl_mirror*);
 #define arg_t_init(...) P99_CALL_DEFARG(arg_t_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(arg_t_init, , TNULL(size_t), TNULL(size_t), NULL);
-P99_DEFINE_DEFARG(arg_t_init, , TNULL(size_t), TNULL(size_t), NULL);
+P99_DECLARE_DEFARG(arg_t_init, , P99_0(size_t), P99_0(size_t), NULL);
+P99_DEFINE_DEFARG(arg_t_init, , P99_0(size_t), P99_0(size_t), NULL);
 
 
 void arg_t_destroy(arg_t *arg) {
@@ -142,7 +142,7 @@ DEFINE_THREAD(arg_t) {
       report(true, "handle mapped");
     }
 
-    int diff[3] = { TMIN(int), TNULL(int), TMIN(int) };
+    int64_t diff[3] = { P99_TMIN(int64_t), P99_0(int64_t), P99_TMIN(int64_t) };
     if (info) {
       for (size_t i = 0; i < 3; ++i) {
         uint64_t* data;
@@ -169,12 +169,12 @@ DEFINE_THREAD(arg_t) {
       char num[10];
       sprintf(num, "  %zX", orwl_phase);
       memcpy(info, num + strlen(num) - 2, 2);
-      if (diff[2] == TMIN(int))
+      if (diff[2] == P99_TMIN(int64_t))
         info[2] = '|';
       else
         info[2] = (abs(diff[2]) <= 2 ? ((char[]){ '-', '<', '.', '>', '+'})[diff[2] + 2] : '!');
       if (orwl_mynum == offset) {
-        if (diff[0] == TMIN(int))
+        if (diff[0] == P99_TMIN(int64_t))
           info[-1] = '|';
         else
           info[-1] = (abs(diff[0]) <= 2 ? ((char[]){ '-', '<', '.', '>', '+'})[diff[0] + 2] : '!');
@@ -189,7 +189,7 @@ DEFINE_THREAD(arg_t) {
       char num[10];
       sprintf(num, "  %zx", orwl_phase);
       memcpy(info, num + strlen(num) - 2, 2);
-      if (diff[2] == TMIN(int))
+      if (diff[2] == P99_TMIN(int64_t))
         info[2] = '|';
       else
         info[2] = (abs(diff[2]) <= 2 ? ((char[]){ '<', '.', '>', '+', '!'})[diff[2] + 2] : '!');
@@ -264,7 +264,7 @@ int main(int argc, char **argv) {
     /* wait until the other side is up. */
     /* ep.port is already in host order */
     while (orwl_rpc(&there, seed, auth_sock_insert_peer, port2host(&srv->host.ep.port))
-           == TONES(uint64_t)) {
+           == P99_TMAX(uint64_t)) {
       ret = pthread_kill(srv_id, 0);
       if (ret) break;
       sleepfor(0.2);
