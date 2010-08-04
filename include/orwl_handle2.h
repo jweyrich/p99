@@ -11,6 +11,7 @@
 #ifndef   	ORWL_HANDLE2_H_
 # define   	ORWL_HANDLE2_H_
 
+#include "p99_id.h"
 #include "orwl_remote_queue.h"
 
 /**

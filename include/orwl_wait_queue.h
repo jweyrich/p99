@@ -11,6 +11,7 @@
 #ifndef   	ORWL_WAIT_QUEUE_H_
 # define   	ORWL_WAIT_QUEUE_H_
 
+#include "p99_id.h"
 #include "orwl_register.h"
 #include "orwl_endpoint.h"
 

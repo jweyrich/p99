@@ -1,0 +1,387 @@
+/*
+** p99_id.h
+** 
+** Made by Jens Gustedt
+** Login   <gustedt@damogran.loria.fr>
+** 
+** Started on  Tue Aug  3 22:10:04 2010 Jens Gustedt
+** Last update Tue Aug  3 22:10:04 2010 Jens Gustedt
+*/
+
+#ifndef   	P99_ID_H_
+# define   	P99_ID_H_
+
+#include "p99_if.h"
+
+/**
+ ** @file
+ **
+ ** @brief Implement a simple FILEID that changes at each time this file
+ ** is included somewhere
+ **
+ ** The FILEID here is hexadecimal numbers with 4 digits. 34320
+ ** different such numbers are produced by the algorithm until it
+ ** wraps around.
+ **/
+
+#define P99__DOCUMENT_ID(x) /*! @brief counting the number of inclusions of "p99_id.h" mod x */
+
+P99__DOCUMENT_ID(11)
+#define P99_ID_11 0
+
+P99__DOCUMENT_ID(13)
+#define P99_ID_13 0
+
+P99__DOCUMENT_ID(15)
+#define P99_ID_15 0
+
+P99__DOCUMENT_ID(16)
+#define P99_ID_16 0
+
+#define P99__ALPH_0 0
+#define P99__ALPH_1 1
+#define P99__ALPH_2 2
+#define P99__ALPH_3 3
+#define P99__ALPH_4 4
+#define P99__ALPH_5 5
+#define P99__ALPH_6 6
+#define P99__ALPH_7 7
+#define P99__ALPH_8 8
+#define P99__ALPH_9 9
+#define P99__ALPH_10 A
+#define P99__ALPH_11 B
+#define P99__ALPH_12 C
+#define P99__ALPH_13 D
+#define P99__ALPH_14 E
+#define P99__ALPH_15 F
+#define P99__ALPH_16 G
+#define P99__ALPH_17 H
+#define P99__ALPH_18 I
+#define P99__ALPH_19 J
+#define P99__ALPH_20 K
+#define P99__ALPH_21 L
+#define P99__ALPH_22 M
+#define P99__ALPH_23 N
+#define P99__ALPH_24 O
+#define P99__ALPH_25 P
+#define P99__ALPH_26 Q
+#define P99__ALPH_27 R
+#define P99__ALPH_28 S
+#define P99__ALPH_29 T
+#define P99__ALPH_30 U
+#define P99__ALPH_31 V
+#define P99__ALPH_32 W
+#define P99__ALPH_33 X
+#define P99__ALPH_34 Y
+#define P99__ALPH_35 Z
+
+
+
+#define P99__ALPH_(A, X) P99_PASTE2(A, X)
+#define P99__ALPH(X) P99__ALPH_(P99__ALPH_, X)
+
+#define P99_ID_11_ P99__ALPH(P99_ID_11)
+#define P99_ID_13_ P99__ALPH(P99_ID_13)
+#define P99_ID_15_ P99__ALPH(P99_ID_15)
+#define P99_ID_16_ P99__ALPH(P99_ID_16)
+
+#define P99_ID() P99_PASTE4(P99_ID_11_, P99_ID_13_, P99_ID_15_, P99_ID_16_)
+
+/**
+ ** @brief A number that identifies different times of inclusions of
+ ** the file "p99_id.h"
+ **
+ ** This is a hexadecimal constant of width at most 4 significant digits.
+ **/
+#define P99_FILENO() P99_PASTE2(0x, P99_ID())
+
+/**
+ ** @brief An id that identifies different times of inclusions of
+ ** the file "p99_id.h"
+ **/
+#define P99_FILEID() P99_PASTE2(p99__fileid_, P99_ID())
+
+/**
+ ** @brief A number that identifies different lines in an include
+ ** hierarchy.
+ **
+ ** This is a hexadecimal constant of type @c unsigned long long.
+ ** @see P99_LINEID
+ **/
+#define P99_LINENO() P99_PASTE4(0x, __LINE__, P99_ID(), ULL)
+/**
+ ** @brief An id that identifies different lines in an include
+ ** hierarchy.
+ **
+ ** If during an individual compilation there is a conflict because
+ ** this macro is used in lines with exactly the same __LINE__ number,
+ ** you'd have to include the file "p99_id.h" once more in one of the
+ ** corresponding header files.
+ **
+ ** If such a conflict only occurs when linking different object files
+ ** to your executable you should reconsider the offending lines that
+ ** use this macro more thoroughly.
+ **/
+#define P99_LINEID() P99_PASTE3(p99__lineid_, __LINE__, P99_ID())
+#endif
+
+
+#if P99_ID_11 >= 10
+# undef P99_ID_11
+# define P99_ID_11 0
+#elif P99_ID_11 == 0
+# undef P99_ID_11
+# define P99_ID_11 1
+#elif P99_ID_11 == 1
+# undef P99_ID_11
+# define P99_ID_11 2
+#elif P99_ID_11 == 2
+# undef P99_ID_11
+# define P99_ID_11 3
+#elif P99_ID_11 == 3
+# undef P99_ID_11
+# define P99_ID_11 4
+#elif P99_ID_11 == 4
+# undef P99_ID_11
+# define P99_ID_11 5
+#elif P99_ID_11 == 5
+# undef P99_ID_11
+# define P99_ID_11 6
+#elif P99_ID_11 == 6
+# undef P99_ID_11
+# define P99_ID_11 7
+#elif P99_ID_11 == 7
+# undef P99_ID_11
+# define P99_ID_11 8
+#elif P99_ID_11 == 8
+# undef P99_ID_11
+# define P99_ID_11 9
+#elif P99_ID_11 == 9
+# undef P99_ID_11
+# define P99_ID_11 10
+#elif P99_ID_11 == 10
+# undef P99_ID_11
+# define P99_ID_11 11
+#elif P99_ID_11 == 11
+# undef P99_ID_11
+# define P99_ID_11 12
+#elif P99_ID_11 == 12
+# undef P99_ID_11
+# define P99_ID_11 13
+#elif P99_ID_11 == 13
+# undef P99_ID_11
+# define P99_ID_11 14
+#elif P99_ID_11 == 14
+# undef P99_ID_11
+# define P99_ID_11 15
+#elif P99_ID_11 == 15
+# undef P99_ID_11
+# define P99_ID_11 16
+#elif P99_ID_11 == 16
+# undef P99_ID_11
+# define P99_ID_11 17
+#elif P99_ID_11 == 17
+# undef P99_ID_11
+# define P99_ID_11 18
+#elif P99_ID_11 == 18
+# undef P99_ID_11
+# define P99_ID_11 19
+#elif P99_ID_11 == 19
+# undef P99_ID_11
+# define P99_ID_11 20
+#endif
+
+#if P99_ID_13 >= 12
+# undef P99_ID_13
+# define P99_ID_13 0
+#elif P99_ID_13 == 0
+# undef P99_ID_13
+# define P99_ID_13 1
+#elif P99_ID_13 == 1
+# undef P99_ID_13
+# define P99_ID_13 2
+#elif P99_ID_13 == 2
+# undef P99_ID_13
+# define P99_ID_13 3
+#elif P99_ID_13 == 3
+# undef P99_ID_13
+# define P99_ID_13 4
+#elif P99_ID_13 == 4
+# undef P99_ID_13
+# define P99_ID_13 5
+#elif P99_ID_13 == 5
+# undef P99_ID_13
+# define P99_ID_13 6
+#elif P99_ID_13 == 6
+# undef P99_ID_13
+# define P99_ID_13 7
+#elif P99_ID_13 == 7
+# undef P99_ID_13
+# define P99_ID_13 8
+#elif P99_ID_13 == 8
+# undef P99_ID_13
+# define P99_ID_13 9
+#elif P99_ID_13 == 9
+# undef P99_ID_13
+# define P99_ID_13 10
+#elif P99_ID_13 == 10
+# undef P99_ID_13
+# define P99_ID_13 11
+#elif P99_ID_13 == 11
+# undef P99_ID_13
+# define P99_ID_13 12
+#elif P99_ID_13 == 12
+# undef P99_ID_13
+# define P99_ID_13 13
+#elif P99_ID_13 == 13
+# undef P99_ID_13
+# define P99_ID_13 14
+#elif P99_ID_13 == 14
+# undef P99_ID_13
+# define P99_ID_13 15
+#elif P99_ID_13 == 15
+# undef P99_ID_13
+# define P99_ID_13 16
+#elif P99_ID_13 == 16
+# undef P99_ID_13
+# define P99_ID_13 17
+#elif P99_ID_13 == 17
+# undef P99_ID_13
+# define P99_ID_13 18
+#elif P99_ID_13 == 18
+# undef P99_ID_13
+# define P99_ID_13 19
+#elif P99_ID_13 == 19
+# undef P99_ID_13
+# define P99_ID_13 20
+#endif
+
+#if P99_ID_15 >= 14
+# undef P99_ID_15
+# define P99_ID_15 0
+#elif P99_ID_15 == 0
+# undef P99_ID_15
+# define P99_ID_15 1
+#elif P99_ID_15 == 1
+# undef P99_ID_15
+# define P99_ID_15 2
+#elif P99_ID_15 == 2
+# undef P99_ID_15
+# define P99_ID_15 3
+#elif P99_ID_15 == 3
+# undef P99_ID_15
+# define P99_ID_15 4
+#elif P99_ID_15 == 4
+# undef P99_ID_15
+# define P99_ID_15 5
+#elif P99_ID_15 == 5
+# undef P99_ID_15
+# define P99_ID_15 6
+#elif P99_ID_15 == 6
+# undef P99_ID_15
+# define P99_ID_15 7
+#elif P99_ID_15 == 7
+# undef P99_ID_15
+# define P99_ID_15 8
+#elif P99_ID_15 == 8
+# undef P99_ID_15
+# define P99_ID_15 9
+#elif P99_ID_15 == 9
+# undef P99_ID_15
+# define P99_ID_15 10
+#elif P99_ID_15 == 10
+# undef P99_ID_15
+# define P99_ID_15 11
+#elif P99_ID_15 == 11
+# undef P99_ID_15
+# define P99_ID_15 12
+#elif P99_ID_15 == 12
+# undef P99_ID_15
+# define P99_ID_15 13
+#elif P99_ID_15 == 13
+# undef P99_ID_15
+# define P99_ID_15 14
+#elif P99_ID_15 == 14
+# undef P99_ID_15
+# define P99_ID_15 15
+#elif P99_ID_15 == 15
+# undef P99_ID_15
+# define P99_ID_15 16
+#elif P99_ID_15 == 16
+# undef P99_ID_15
+# define P99_ID_15 17
+#elif P99_ID_15 == 17
+# undef P99_ID_15
+# define P99_ID_15 18
+#elif P99_ID_15 == 18
+# undef P99_ID_15
+# define P99_ID_15 19
+#elif P99_ID_15 == 19
+# undef P99_ID_15
+# define P99_ID_15 20
+#endif
+
+#if P99_ID_16 >= 15
+# undef P99_ID_16
+# define P99_ID_16 0
+#elif P99_ID_16 == 0
+# undef P99_ID_16
+# define P99_ID_16 1
+#elif P99_ID_16 == 1
+# undef P99_ID_16
+# define P99_ID_16 2
+#elif P99_ID_16 == 2
+# undef P99_ID_16
+# define P99_ID_16 3
+#elif P99_ID_16 == 3
+# undef P99_ID_16
+# define P99_ID_16 4
+#elif P99_ID_16 == 4
+# undef P99_ID_16
+# define P99_ID_16 5
+#elif P99_ID_16 == 5
+# undef P99_ID_16
+# define P99_ID_16 6
+#elif P99_ID_16 == 6
+# undef P99_ID_16
+# define P99_ID_16 7
+#elif P99_ID_16 == 7
+# undef P99_ID_16
+# define P99_ID_16 8
+#elif P99_ID_16 == 8
+# undef P99_ID_16
+# define P99_ID_16 9
+#elif P99_ID_16 == 9
+# undef P99_ID_16
+# define P99_ID_16 10
+#elif P99_ID_16 == 10
+# undef P99_ID_16
+# define P99_ID_16 11
+#elif P99_ID_16 == 11
+# undef P99_ID_16
+# define P99_ID_16 12
+#elif P99_ID_16 == 12
+# undef P99_ID_16
+# define P99_ID_16 13
+#elif P99_ID_16 == 13
+# undef P99_ID_16
+# define P99_ID_16 14
+#elif P99_ID_16 == 14
+# undef P99_ID_16
+# define P99_ID_16 15
+#elif P99_ID_16 == 15
+# undef P99_ID_16
+# define P99_ID_16 16
+#elif P99_ID_16 == 16
+# undef P99_ID_16
+# define P99_ID_16 17
+#elif P99_ID_16 == 17
+# undef P99_ID_16
+# define P99_ID_16 18
+#elif P99_ID_16 == 18
+# undef P99_ID_16
+# define P99_ID_16 19
+#elif P99_ID_16 == 19
+# undef P99_ID_16
+# define P99_ID_16 20
+#endif

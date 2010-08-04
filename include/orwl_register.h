@@ -11,6 +11,7 @@
 #ifndef   	ORWL_REGISTER_H_
 # define   	ORWL_REGISTER_H_
 
+#include "p99_id.h"
 #include "orwl_int.h"
 #include "orwl_enum.h"
 
@@ -67,9 +68,9 @@ void orwl_domain_call(orwl_domain domain, size_t id, void *arg) {
 #define P99__ORWL_FTAB(NAME) P99_PASTE3(p99__, NAME, _ftab)
 #define ORWL_FTAB(NAME) P99__ORWL_FTAB(NAME)
 
-#define P99___ORWL_DOMAIN_TABLE(L) P99_PASTE2(p99__domain_tab, L)
+#define P99___ORWL_DOMAIN_TABLE(L) P99_PASTE2(L, _domain_tab)
 #define P99__ORWL_DOMAIN_TABLE(L) P99___ORWL_DOMAIN_TABLE(L)
-#define ORWL_DOMAIN_TABLE P99__ORWL_DOMAIN_TABLE(__LINE__)
+#define ORWL_DOMAIN_TABLE P99__ORWL_DOMAIN_TABLE(P99_LINEID())
 
 #define DECLARE_ORWL_REGISTER(NAME)             \
 extern orwl_register const*ORWL_REGISTER(NAME)

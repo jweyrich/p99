@@ -11,6 +11,7 @@
 #ifndef   	ORWL_AUTH_SOCK_FUNCTIONS_H_
 # define   	ORWL_AUTH_SOCK_FUNCTIONS_H_
 
+#include "p99_id.h"
 #include "orwl_socket.h"
 
 
