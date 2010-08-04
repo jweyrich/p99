@@ -147,7 +147,7 @@ P99_DECLARE_DEFARG(calloc, , 1);
 P99_PROTOTYPE(int, accept, int, struct sockaddr *, socklen_t *);
 P99_DEFARG_DOCU(accept)
 #define accept(...) P99_CALL_DEFARG(accept, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(accept, , NULL, &LNULL(socklen_t));
+P99_DECLARE_DEFARG(accept, , NULL, &P99_LVAL(socklen_t));
 
 // int socket(int domain, int type, int protocol);
 P99_PROTOTYPE(int, socket, int, int, int);

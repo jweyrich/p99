@@ -22,8 +22,6 @@
 #include "p99_int.h"
 #include "orwl_new.h"
 
-#define LNULL(T) ((T){ 0 })
-
 extern char **environ;
 
 /**

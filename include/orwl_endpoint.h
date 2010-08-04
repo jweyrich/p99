@@ -204,7 +204,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, /*!< [in] the object to
 P99_PROTOTYPE(char const*, orwl_endpoint_print, orwl_endpoint const*, char*);
 #define orwl_endpoint_print(...) P99_CALL_DEFARG(orwl_endpoint_print, 2, __VA_ARGS__)
 P99_DECLARE_DEFARG(orwl_endpoint_print, , );
-#define orwl_endpoint_print_defarg_1() (LNULL(char[128]))
+#define orwl_endpoint_print_defarg_1() (P99_LVAL(char[128]))
 #endif
 
 bool orwl_send_(int fd, uint64_t const*mess, size_t len);

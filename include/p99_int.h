@@ -11,6 +11,8 @@
 #ifndef   	P99_INT_H_
 # define   	P99_INT_H_
 
+#include "p99_if.h"
+
 /**
  ** @brief Apply the type macro @a MACRO to an unsigned type that is
  ** compatible with type @a T.
@@ -168,5 +170,18 @@ typedef enum {
  ** @brief Give the minimum representable value of type @a T
  **/
 #define P99_TMIN(T) ((T)(P99_ISSIGNED(T) ? (P99_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T)))
+
+#define P99__LVAL(T, ...) ((T)__VA_ARGS__)
+
+
+/**
+ ** @brief Define an lvalue of type @c T, where @c T is the first
+ ** parameter in the variable parameter list.
+ **
+ ** If only @c T is given as a parameter, @c { 0 } is used to
+ ** initialize the lvalue. Otherwise the remaining parameters are used
+ ** for initialization.
+ **/
+#define P99_LVAL(...) P99_IF_DEC_LE(P99_NARG(__VA_ARGS__),1)(P99__LVAL(__VA_ARGS__, { 0 }))(P99__LVAL(__VA_ARGS__))
 
 #endif 	    /* !P99_INT_H_ */
