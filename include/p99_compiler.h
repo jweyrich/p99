@@ -80,4 +80,21 @@ signed p99__trailing_comma_in_initializer__(void) {
 #  define static_inline static inline
 # endif
 
+/**
+ ** @def P99_EXPECT
+ ** @brief Provide a compiler hint concerning the likelihood of a
+ ** certain value in an expression @a EXP.
+ **
+ ** With this you indicate that in the overwhelming number of cases
+ ** the integer expression @a EXP will evaluate to @a VAL.
+ **
+ ** Currently this is only implemented for gcc.
+ **/
+#if (defined(__GNUC__) && (P99_GCC_VERSION >= 30000UL))
+#define P99_EXPECT(EXP, VAL) __builtin_expect((EXP), (VAL))
+#else
+#define P99_EXPECT(EXP, VAL) (EXP)
+#endif
+
+
 #endif

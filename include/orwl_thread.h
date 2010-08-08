@@ -354,7 +354,7 @@ DECLARE_ONCE_STATIC(KEY);                       \
 inline T* NAME(void) {                          \
   INIT_ONCE_STATIC(KEY);                        \
   T* ret = pthread_getspecific(KEY);            \
-  if (branch_expect(!ret, false)) {             \
+  if (P99_EXPECT(!ret, false)) {             \
     ret = P99_NEW(T);                           \
     (void)pthread_setspecific(KEY, ret);        \
   }                                             \
@@ -363,7 +363,7 @@ inline T* NAME(void) {                          \
 inline void P99_PASTE2(NAME, _clear)(void) {    \
   INIT_ONCE_STATIC(KEY);                        \
   T* ret = pthread_getspecific(KEY);            \
-  if (branch_expect(!!ret, true)) {             \
+  if (P99_EXPECT(!!ret, true)) {             \
     (void)pthread_setspecific(KEY, NULL);       \
     P99_PASTE2(T, _delete)(ret);                \
   }                                             \

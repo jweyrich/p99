@@ -96,7 +96,7 @@ P99_GUARDED_BLOCK(pthread_mutex_t*,             \
  **/
 #define INIT_ONCE_UPON(T, N)                            \
 do {                                                    \
-  if (branch_expect(!(N), false))                       \
+  if (P99_EXPECT(!(N), false))                       \
     MUTUAL_EXCLUDE(P99_PASTE3(orwl__, T, _once).mut)    \
       if (!(N)) P99_PASTE3(orwl__, T, _once).init();    \
  } while(0)
@@ -108,7 +108,7 @@ do {                                                    \
  **/
 #define INIT_ONCE(T)                                                    \
 do {                                                                    \
-  if (branch_expect(!(P99_PASTE3(orwl__, T, _once).cond), false))       \
+  if (P99_EXPECT(!(P99_PASTE3(orwl__, T, _once).cond), false))       \
     MUTUAL_EXCLUDE(P99_PASTE3(orwl__, T, _once).mut)                    \
       if (!(P99_PASTE3(orwl__, T, _once).cond)) {                       \
         P99_PASTE3(orwl__, T, _once).init();                            \
