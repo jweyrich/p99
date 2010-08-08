@@ -11,9 +11,9 @@
 #ifndef   	ORWL_DOCUMENT_H_
 # define   	ORWL_DOCUMENT_H_
 
-#define VA_ARGS_DOCUMENTATION(NAME)                                     \
+#define P99_VA_ARGS_DOCUMENTATION(NAME)                                     \
                                                                         \
-/*! @see VA_ARGS */                                                     \
+/*! @see P99_VA_ARGS */                                                     \
 /*! This is actually implemented as a macro that helps to provide the length of the variable length argument list to the function. */
 
 

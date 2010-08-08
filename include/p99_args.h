@@ -11,6 +11,8 @@
 #ifndef   	P99_ARGS_H_
 # define   	P99_ARGS_H_
 
+#include <stdarg.h>
+
 #include "p99_paste.h"
 
 /**
@@ -117,6 +119,132 @@ P99__ISEMPTY(                                                           \
 /**
  ** @}
  **/
+
+/**
+ ** @addtogroup variadic
+ **
+ ** @{
+ **/
+
+/**
+ ** @brief Helper macro to declare a variable length parameter list.
+ **
+ ** Inside the declared function @a X will of @c size_t and should
+ ** hold the actual length of the list. It can be used as the argument
+ ** to @c va_start.
+ **
+ ** Wrap your function into a macro that uses P99_LENGTH_VA_ARG. If used through
+ ** that macro, the correct value for @a X will always be provided at
+ ** compile time. Declare such a function as this:
+ ** @code
+ ** unsigned P99_FSYMB(toto)(unsigned a, P99_VA_ARGS(number));
+ ** #define toto(A, ...) P99_FSYMB(toto)(A, P99_LENGTH_VA_ARG(__VA_ARGS__))
+ ** @endcode
+ **
+ ** In the definition of the function you then may use the @c va_start
+ ** etc from stdarg.h to tread the argument list.
+ ** @code
+ ** unsigned P99_FSYMB(toto)(unsigned a, P99_VA_ARGS(number)) {
+ **     unsigned ret = 0;
+ **     va_list ap;
+ **     va_start(ap, number);
+ **     for (size_t i = 0; i < number; ++i) {
+ **       ret += va_arg(ap, unsigned);
+ **     }
+ **     va_end(ap);
+ **     return ret % a;
+ ** }
+ ** @endcode
+ ** In this toy example @c toto can be used as
+ ** @code
+ ** unsigned magic = toto(3, 1, 3, 5, 7);
+ ** @endcode
+ ** which will result in converting 1, 3, 5, 7 (the variable
+ ** arguments) to @c unsigned, computing their sum, i.e 16u, and
+ ** compute that value mod 3u (the fixed argument @a a). So @a magic
+ ** should hold the value 1u thereafter. (But beware of implicit
+ ** integer promotion rules for integers of small width.)
+ **
+ ** @param X is the name of the `length' parameter that you want to
+ ** use in the definition of the function. As in the example above it
+ ** should be then used as the second argument to @c va_start and as a
+ ** loop boudary when you actual handle the argument list. @a X is
+ ** implicitly declared to have type @c size_t.
+ **
+ ** @see P99_LENGTH_ARR_ARG for a way that is generally more efficient
+ **      than using @c va_list
+ ** @see P99_LENGTH_VA_ARG
+ ** @see P99_FSYMB
+ **/
+#define P99_VA_ARGS(X) size_t X /*!< the number of arguments that follow */, ...
+
+#define P99__FSYMB(NAME) P99_PASTE5(NAME, _f, sy, mb, _)
+
+/**
+ ** @brief Mangle @a NAME
+ **
+ ** This should only be used in declaration and definition of the
+ ** function that is hidden behind the macro @a NAME.
+ **/
+#define P99_FSYMB(NAME) P99__FSYMB(NAME)
+
+#define P99_LENGTH_VA_ARG(...) ((size_t)P99_NARG(__VA_ARGS__)), __VA_ARGS__
+
+
+/**
+ ** @brief Helper macro to declare a variable length parameter list.
+ **
+ ** Inside the declared function @a X will of @c size_t and should
+ ** hold the actual length of the list. It can be used as the argument
+ ** to @c va_start.
+ **
+ ** Wrap your function into a macro that uses P99_LENGTH_ARR_ARG. If used through
+ ** that macro, the correct value for @a X will always be provided at
+ ** compile time. Declare such a function as this:
+ ** @code
+ ** unsigned P99_FSYMB(tutu)(unsigned a, size_t number, unsigned *arr);
+ ** #define tutu(A, ...) P99_FSYMB(tutu)(A, P99_LENGTH_ARR_ARG(unsigned, __VA_ARGS__))
+ ** @endcode
+ **
+ ** In the definition of the function you then may use an array of the
+ ** arguments in the obvious way.
+ ** @code
+ ** unsigned P99_FSYMB(tutu)(unsigned a, size_t number, unsigned *arr) {
+ **   unsigned ret = 0;
+ **   for (size_t i = 0; i < number; ++i) {
+ **     ret += arr[i];
+ **   }
+ **   return ret % a;
+ ** }
+ ** @endcode
+ ** In this toy example @c tutu can be used as
+ ** @code
+ ** unsigned magic = tutu(3, 1, 3, 5, 7);
+ ** @endcode
+ ** which will result in converting 1, 3, 5, 7 (the variable
+ ** arguments) to @c unsigned, computing their sum, i.e 16u, and
+ ** compute that value mod 3u (the fixed argument @a a). So @a magic
+ ** should hold the value 1u thereafter.
+ **
+ ** In the example @c number is the name of the `length' parameter
+ ** that you want to use in the definition of the function.
+ **
+ ** This method here is generally more efficient than using
+ ** ::P99_VA_ARGS since it results in code that can easier be inlined
+ ** by the compiler. In  particular, if a function as @c tutu above is
+ ** called with all parameters being compile time constants, the call
+ ** may completely be optimized away.
+ **
+ ** @see P99_VA_ARGS
+ ** @see P99_FSYMB
+ **/
+#define P99_LENGTH_ARR_ARG(T, ...) ((size_t)P99_NARG(__VA_ARGS__)), (T[]){ __VA_ARGS__ }
+
+
+/**
+ ** @}
+ **/
+
 
 
 #endif 	    /* !P99_ARGS_H_ */

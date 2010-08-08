@@ -110,7 +110,7 @@ void orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
   ++wq->clock;
 }
 
-orwl_state FSYMB(orwl_wq_request)(orwl_wq *wq, VA_ARGS(number)) {
+orwl_state P99_FSYMB(orwl_wq_request)(orwl_wq *wq, P99_VA_ARGS(number)) {
   orwl_state ret = orwl_invalid;
   if (wq && orwl_wq_valid(wq)) {
     MUTUAL_EXCLUDE(wq->mut) {

@@ -88,81 +88,20 @@
  **
  ** This supposes that the length is less than 64. It replaces @a X by
  ** the number of X-tuples in the following list of arguments.
- ** @see VA_ARGS
+ ** @see P99_VA_ARGS
  **/
 
 /**
- ** @def LEN_ARG
+ ** @def P99_LENGTH_VA_ARG
  ** @brief Meta-macro to generate calls to functions with variable
  ** argument list.
  **
  ** This supposes that the length is less than 64. It prefixes the
  ** list of arguments by an integer constant containing the length of
  ** the list.
- ** @see VA_ARGS
+ ** @see P99_VA_ARGS
  **/
 
-
-/**
- ** @brief Helper macro to declare a variable length parameter list.
- **
- ** Inside the declared function @a X will of @c size_t and should
- ** hold the actual length of the list. It can be used as the argument
- ** to @c va_start.
- **
- ** Wrap your function into a macro that uses LEN_ARG. If used through
- ** that macro, the correct value for @a X will always be provided at
- ** compile time. Declare such a function as this:
- ** @code
- ** unsigned FSYMB(toto)(unsigned a, VA_ARGS(number));
- ** #define toto(A, ...) FSYMB(toto)(A, LEN_ARG(toto, __VA_ARGS__))
- ** VA_TYPES(toto, unsigned);
- ** @endcode
- **
- ** In the definition of the function you then may use the @c va_start
- ** etc from stdarg.h to tread the argument list.
- ** @code
- ** unsigned FSYMB(toto)((unsigned a, VA_ARGS(number)) {
- **     unsigned ret = 0;
- **     va_list ap;
- **     va_start(ap, number);
- **     for (size_t i = 0; i < number; ++i) {
- **       ret += VA_MODARG(ap, toto);
- **     }
- **     va_end(ap);
- **     return ret % a;
- ** }
- ** @endcode
- ** In this toy example @c toto can be used as
- ** @code
- ** unsigned magic = toto(3, 1, 3, 5, 7);
- ** @endcode
- ** which will result in converting 1, 3, 5, 7 (the variable
- ** arguments) to @c unsigned, computing their sum, i.e 16u, and
- ** compute that value mod 3u (the fixed argument @a a). So @a magic
- ** should hold the value 1u thereafter.
- **
- ** @param X is the name of the `length' parameter that you want to
- ** use in the definition of the function. As in the example above it
- ** should be then used as the second argument to @c va_start and as a
- ** loop boudary when you actual handle the argument list. @a X is
- ** implicitly declared to have type @c size_t.
- **
- ** @see LEN_ARG
- ** @see LEN_MODARG
- ** @see VA_TYPES
- ** @see FSYMB
- **/
-#define VA_ARGS(X) size_t X /*!< the number of arguments that follow */, ...
-
-#define P99__FSYMB(NAME) P99_PASTE5(NAME, _f, sy, mb, _)
-
-/** @brief Mangle @a NAME 
- **
- ** This should only be used in declaration and definition of the
- ** function that is hidden behind the macro @a NAME.
- **/
-#define FSYMB(NAME) P99__FSYMB(NAME)
 
 
 /**
@@ -214,7 +153,7 @@ CHOOSE5(xT,                                     \
 
 /**
  ** @brief Declare the types that are going to be used with a
- ** ::LEN_ARG or ::LEN_MODARG parameter list.
+ ** ::P99_LENGTH_VA_ARG or ::LEN_MODARG parameter list.
  **/
 #define VA_TYPES(NAME, ...)   P99_TYPEDEFS(P99_PASTE2(NAME, _mod_type_), __VA_ARGS__)
 
@@ -231,7 +170,7 @@ CHOOSE5(xT,                                     \
  **
  ** @c R should be the position modulo the module M that was given to
  ** ::LEN_MODARG. @c R defaults to 0 if omitted.
- ** @see VA_ARGS
+ ** @see P99_VA_ARGS
  **/
 #define VA_MODARG(AP, ...) P99__VA_MODARG(AP, __VA_ARGS__, 0, ~)
 
@@ -243,24 +182,5 @@ CHOOSE5(xT,                                     \
 #define P99__MODARG_LIST(NAME, F, N, ...) P99_FOR(NAME, N, P99__SEQ, F, __VA_ARGS__)
 
 #define LEN_MODARG(NAME, M, ...) P99__MODARG_(M)(__VA_ARGS__), P99__MODARG_LIST(NAME, P99_PASTE2(P99__CAS, M), P99_NARG(__VA_ARGS__), __VA_ARGS__)
-#define LEN_ARG(NAME, ...) P99__MODARG_(1)(__VA_ARGS__), P99__MODARG_LIST(NAME, P99__CAS1, P99_NARG(__VA_ARGS__), __VA_ARGS__)
-
-
-/**
- ** @def branch_expect
- ** @brief Provide a compiler hint concerning the likelihood of a
- ** certain value in an expression @a EXP.
- **
- ** With this you indicate that in the overwhelming number of cases
- ** the integer expression @a EXP will evaluate to @a VAL.
- **
- ** Currently this is only implemented for gcc.
- **/
-#if (defined(__GNUC__) && (__GNUC__ > 3))
-#define branch_expect(EXP, VAL) __builtin_expect((EXP), (VAL))
-#else
-#define branch_expect(EXP, VAL) (EXP)
-#endif
-
 
 #endif 	    /* !ORWL_MACRO_H_ */
