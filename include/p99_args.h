@@ -188,6 +188,15 @@ P99__ISEMPTY(                                                           \
  **/
 #define P99_FSYMB(NAME) P99__FSYMB(NAME)
 
+/**
+ ** @brief Meta-macro to generate calls to functions with variable
+ ** argument list.
+ **
+ ** This supposes that the length is less than 64. It prefixes the
+ ** list of arguments by an integer constant containing the length of
+ ** the list.
+ ** @see P99_VA_ARGS
+ **/
 #define P99_LENGTH_VA_ARG(...) ((size_t)P99_NARG(__VA_ARGS__)), __VA_ARGS__
 
 

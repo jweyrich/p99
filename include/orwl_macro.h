@@ -12,9 +12,9 @@
 # define   	ORWL_MACRO_H_
 
 #include "p99_compiler.h"
-#include "orwl_document.h"
 #include "p99_block.h"
 #include "p99_defarg.h"
+#include "orwl_document.h"
 
 #define P99__DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)       \
   P99_IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(              \
@@ -90,19 +90,6 @@
  ** the number of X-tuples in the following list of arguments.
  ** @see P99_VA_ARGS
  **/
-
-/**
- ** @def P99_LENGTH_VA_ARG
- ** @brief Meta-macro to generate calls to functions with variable
- ** argument list.
- **
- ** This supposes that the length is less than 64. It prefixes the
- ** list of arguments by an integer constant containing the length of
- ** the list.
- ** @see P99_VA_ARGS
- **/
-
-
 
 /**
  ** @define expand to a comma token
