@@ -210,18 +210,23 @@ P99_DECLARE_DEFARG(orwl_endpoint_print, , );
 bool orwl_send_(int fd, uint64_t const*mess, size_t len);
 bool orwl_recv_(int fd, uint64_t *mess, size_t len);
 
-uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size_t len);
+uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t*const mess);
 
-#define orwl_rpc(EP, SEED, F, ...)                      \
-orwl_send(EP,                                           \
-          SEED,                                         \
-          (uint64_t[ P99_NARG(~, __VA_ARGS__) ]){       \
-            ORWL_OBJID(F),                              \
-              __VA_ARGS__                               \
-              },                                        \
-          P99_NARG(~,  __VA_ARGS__))
-
-
-
+/**
+ ** @brief Lauch a remote procedure call with function @a F.
+ **
+ ** @msc
+ **   caller,main,server,thread,procedure;
+ **   main -> server [label="orwl_server_create()", URL="\ref orwl_server_create()"];
+ **   caller -> server [label="orwl_send(F, ...)", URL="\ref orwl_send()"];
+ **   server->thread [label="auth_sock_create(F, ...)", URL="\ref auth_sock_create()"];
+ **   thread->procedure [label="F(...)"];
+ **   procedure->caller [label="auth_sock_close()", URL="\ref auth_sock_close()"];
+ **   procedure->thread [label="\c return"];
+ **   thread->main [label="pthread_exit()"];
+ ** @endmsc
+ **/
+#define orwl_rpc(EP, SEED, F, ...)                                      \
+orwl_send(EP, SEED, P99_LENGTH_ARR_ARG(uint64_t, ORWL_OBJID(F), __VA_ARGS__))
 
 #endif 	    /* !ORWL_ENDPOINT_H_ */

@@ -321,7 +321,7 @@ CHOOSE5(x,                                      \
  ** instead.
  **/
 inline
-int mfputs_func(FILE* f, size_t n, char const*const*const A) {
+int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A) {
   int ret = 0;
   flockfile(f);
   for (size_t i = 0; i < n && ret != EOF; ++i)
@@ -338,8 +338,7 @@ int mfputs_func(FILE* f, size_t n, char const*const*const A) {
   return ret;
 }
 
-#define P99__mfputs(F, ...) mfputs_func(F, P99_NARG(__VA_ARGS__), (char const*const[]){__VA_ARGS__})
-
+#define P99__mfputs(F, ...) P99_FSYMB(mfputs)(F, P99_LENGTH_ARR_ARG(char const*const, __VA_ARGS__))
 
 /**
  ** @brief Output a series of strings to a @c FILE* given as first argument.

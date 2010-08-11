@@ -69,7 +69,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, ui
           report(false, "adding suplement of length %zu", extend);
           memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
         }
-        orwl_send(&ep, seed_get(), mess, len);
+        orwl_send(&ep, seed_get(), len, mess);
         uint64_t_vdelete(mess);
       }
     } else {
@@ -147,7 +147,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
             report(false, "adding suplement of length %zu", extend);
             memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
           }
-          orwl_send(&ep, seed_get(), mess, len);
+          orwl_send(&ep, seed_get(), len, mess);
           uint64_t_vdelete(mess);
         }
       }

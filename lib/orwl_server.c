@@ -43,7 +43,7 @@ void orwl_server_close(orwl_server *serv) {
 
 
 void orwl_server_terminate(orwl_server *serv, rand48_t *seed) {
-  orwl_send(&serv->host.ep, seed, NULL, 0);
+  orwl_send(&serv->host.ep, seed, 0, NULL);
 }
 
 P99_DEFINE_DEFARG(orwl_server_terminate, , seed_get());

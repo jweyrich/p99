@@ -132,7 +132,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
  **   thread -> caller [label="orwl_recv_(ret)", URL="\ref orwl_recv_()"];
  ** @endmsc
  **/
-uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size_t len) {
+uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t*const mess) {
   uint64_t ret = P99_TMAX(uint64_t);
   int fd = -1;
   /* do all this work before opening the socket */
@@ -196,7 +196,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, uint64_t* mess, size
   return ret;
 }
 
-bool orwl_send_(int fd, uint64_t const*mess, size_t len) {
+bool orwl_send_(int fd, uint64_t const*const mess, size_t len) {
   uint32_t *buf = uint32_t_vnew(2 * len);
   orwl_hton(buf, mess, len);
   ssize_t ret = send(fd, buf, sizeof(uint64_t) * len, MSG_WAITALL);
@@ -204,7 +204,7 @@ bool orwl_send_(int fd, uint64_t const*mess, size_t len) {
   return ret != sizeof(uint64_t) * len;
 }
 
-bool orwl_recv_(int fd, uint64_t *mess, size_t len) {
+bool orwl_recv_(int fd, uint64_t *const mess, size_t len) {
   uint32_t *buf = uint32_t_vnew(2 * len);
   ssize_t ret = recv(fd, buf, sizeof(uint64_t) * len, MSG_WAITALL);
   orwl_ntoh(mess, buf , len);

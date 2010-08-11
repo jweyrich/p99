@@ -124,35 +124,35 @@
 /**
  ** @brief Realize the right associative sum of all the arguments.
  **/
-#define P99_SUMS(...) P99_BIGOP(P99__SUM, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_SUMS(...) P99_BIGOP(P99__SUM, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative product of all the arguments.
  **/
-#define P99_PRODS(...) P99_BIGOP(P99__PROD, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_PRODS(...) P99_BIGOP(P99__PROD, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative quotient of all the arguments.
  **/
-#define P99_QUOTS(...) P99_BIGOP(P99__QUOT, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_QUOTS(...) P99_BIGOP(P99__QUOT, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative bitwise exclusive or of all the arguments.
  **/
-#define P99_XORS(...) P99_BIGOP(P99__XOR, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_XORS(...) P99_BIGOP(P99__XOR, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative bitwise or of all the arguments.
  **/
-#define P99_BORS(...) P99_BIGOP(P99__BOR, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_BORS(...) P99_BIGOP(P99__BOR, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative bitwise and of all the arguments.
  **/
-#define P99_BANDS(...) P99_BIGOP(P99__BAND, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_BANDS(...) P99_BIGOP(P99__BAND, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative logical or of all the arguments.
  **/
-#define P99_ORS(...) P99_BIGOP(P99__OR, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_ORS(...) P99_BIGOP(P99__OR, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative logical and of all the arguments.
  **/
-#define P99_ANDS(...) P99_BIGOP(P99__AND, (P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_ANDS(...) P99_BIGOP(P99__AND, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
 /**
  ** @}

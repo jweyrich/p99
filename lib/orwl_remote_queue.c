@@ -211,7 +211,7 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     state = orwl_wh_release(wh);
     orwl_handle_init(rh);
     pthread_mutex_unlock(&rq->mut);
-    orwl_send(&there, seed, mess, len);
+    orwl_send(&there, seed, len, mess);
     /* We should be the last to have a reference to this handle so
        we may destroy it. */
     orwl_wh_delete(wh);

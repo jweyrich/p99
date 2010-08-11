@@ -86,4 +86,4 @@ DEFINE_ARI2STR(ullong);
 
 char const* void_cptr2p(char* buf, void_cptr x);
 
-int mfputs_func(FILE* f, size_t n, char const*const* A);
+int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A);
