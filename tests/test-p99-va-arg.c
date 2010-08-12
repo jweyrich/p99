@@ -184,15 +184,14 @@ P99__ARR_OP_MINMAX(max, long double, l, >);
 
 #define P99__ARR_GCD(TYPE, SUFF)                                        \
 static_inline                                                           \
-TYPE P99_PASTE3(p99__, gcd_rec_, SUFF)(TYPE a, TYPE b) {                \
-  TYPE mod = b % a;                                                     \
-  return mod ? P99_PASTE3(p99__, gcd_rec_, SUFF)(mod, a) : a;           \
-}                                                                       \
-static_inline                                                           \
 TYPE P99_PASTE3(p99__, gcd_, SUFF)(TYPE a, TYPE b) {                    \
   if (!a) return b;                                                     \
-  if (!b) return a;                                                     \
-  return P99_PASTE3(p99__, gcd_rec_, SUFF)(b, a);                       \
+  if (b)                                                                \
+    for (TYPE mod = b % a; mod; mod = b % a) {                          \
+      b = a;                                                            \
+      a = mod;                                                          \
+    }                                                                   \
+  return a;                                                             \
 }                                                                       \
 static_inline                                                           \
 TYPE P99_FSYMB(P99_PASTE3(p99_, gcd_, SUFF))(size_t number, TYPE const*const arr) { \
