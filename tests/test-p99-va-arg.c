@@ -65,7 +65,7 @@ static_inline                                                           \
       if (arr[i] OP ret) ret = arr[i];                                  \
     return ret;                                                         \
 }                                                                       \
-enum { P99_LINEID(_arr_op_minmax) }
+P99_MACRO_END(_arr_op_minmax_, NAME, _, SUFF)
 
 
 P99__ARR_OP_MINMAX(min, unsigned char, hhu, <);
@@ -210,7 +210,7 @@ TYPE P99_FSYMB(P99_PASTE3(p99_, lcm_, SUFF))(size_t number, TYPE const*const arr
     ret *= (arr[i] / gcd);                                              \
   return ret;                                                           \
 }                                                                       \
-enum { P99_LINEID(_arr_gcd) }
+P99_MACRO_END(_arr_gcd_, SUFF)
 
 
 #define p99_gcd_hhu(...) P99_FSYMB(p99_gcd_hhu)(P99_LENGTH_ARR_ARG(unsigned char, __VA_ARGS__))
@@ -274,7 +274,7 @@ TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed7)(void) {                   \
 TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed15)(void) {                  \
   return P99_PASTE4(p99_, NAME, _, SUFF)(3, 1, 3, 5, 7, 3, 1, 3, 5, 0, 7, 3, 1, 3, 5, 7); \
 }                                                                       \
-enum { P99_LINEID(_arr_op_minmax_fixed) }
+P99_MACRO_END(_arr_op_minmax_fixed_, NAME, _, SUFF)
 
 
 

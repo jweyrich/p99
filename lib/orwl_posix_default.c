@@ -9,6 +9,7 @@
 */
 
 #include "orwl_posix_default.h"
+#include "p99_id.h"
 
 #ifndef DOXYGEN
 #undef declare_defarg
@@ -16,7 +17,7 @@
 #undef P99_DECLARE_DEFARG
 #define P99_DECLARE_DEFARG(A, ...) P99_DEFINE_DEFARG(A, __VA_ARGS__)
 #undef P99_PROTOTYPE
-#define P99_PROTOTYPE(T, NAME, ...) enum { P99_PASTE2(_another_boring_enum_, NAME) }
+#define P99_PROTOTYPE(T, NAME, ...) P99_MACRO_END(_another_boring, NAME)
 
 #undef   	ORWL_POSIX_DEFAULT_H_
 #define   	ORWL_POSIX_DEFAULT_H_ 1

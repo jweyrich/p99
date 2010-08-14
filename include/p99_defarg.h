@@ -158,12 +158,12 @@ P99_IF_EMPTY(X)                                                         \
 
 #define P99__DAFE(NAME, X, N)                                           \
 P99_IF_EMPTY(X)                                                         \
-(enum { P99_PASTE3(NAME, _boring_, N) })                                \
+(P99_MACRO_END(NAME, _boring_, N))                                      \
 (P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void))
 
 #define P99__DECLARE_DEFARG(NAME, N, ...)                       \
-  P99_FOR(NAME, N, P99__SER, P99__EXPR_FUNCTION, __VA_ARGS__)       \
-enum { P99_PASTE3(p99__, NAME, _defarg_dummy_enum_val_) }
+P99_FOR(NAME, N, P99__SER, P99__EXPR_FUNCTION, __VA_ARGS__)     \
+P99_MACRO_END(NAME, _declare_defarg)
 
 #ifdef DOXYGEN
 /**

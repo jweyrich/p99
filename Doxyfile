@@ -1265,6 +1265,12 @@ PREDEFINED += DECLARE_THREAD(T):="int T ## _create(T* arg, pthread_t *id);	\
 T *T ## _join(pthread_t id);							\
 int T ## _create(T* arg, pthread_t *id)"
 
+PREDEFINED += P99_LINEID(x):="p99__unique_id ## x"
+
+PREDEFINED += P99_MACRO_END(x)=
+
+PREDEFINED += static_inline="inline"
+
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
 # this tag can be used to specify a list of macro names that should be expanded.
 # The macro definition that is found in the sources will be used.
@@ -1329,6 +1335,7 @@ P99__DOCUMENT_SIGNED				\
 P99__DOCUMENT_UNSIGNED				\
 P99__ORWL_ALIAS					\
 P99__PROTOTYPE                                  \
+P99__UNIQUE_BIT                                 \
 P99_VA_ARGS					\
 P99_VA_ARGS_DOCUMENTATION
 
