@@ -101,7 +101,7 @@ P99__DOCUMENT_ID(16)
  **
  ** The argument may contain a token that is appended to the id.
  **/
-#define P99_FILEID(...) P99_PASTE3(p99__fileid_, P99_ID(), __VA_ARGS__)
+#define P99_FILEID(...) P99_PASTE(p99__fileid_, P99_ID(), __VA_ARGS__)
 
 /**
  ** @brief A number that identifies different lines in an include
@@ -126,13 +126,19 @@ P99__DOCUMENT_ID(16)
  ** to your executable you should reconsider the offending lines that
  ** use this macro more thoroughly.
  **/
-#define P99_LINEID(...) P99_PASTE4(p99__lineid_, __LINE__, P99_ID(), __VA_ARGS__)
+#define P99_LINEID(...) P99_PASTE(p99__lineid_, __LINE__, P99_ID(), __VA_ARGS__)
+
+/**
+ ** @brief A meta macro that forces the addition of a semicolon after
+ ** a call to the macro that it terminates.
+ **/
+#define P99_MACRO_END(...) enum P99_LINEID(__VA_ARGS__, _enum) { P99_LINEID(__VA_ARGS__, _0) }
 
 /**
  ** @brief Evaluate expression @a expr at compile time and ensure that
  ** it is fulfilled.
  **
- ** 
+ **
  **/
 #define P99_COMPILETIME_ASSERT(expr) typedef char P99_LINEID(_compiletime_assert)[!!(expr)]
 
