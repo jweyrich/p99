@@ -53,6 +53,7 @@
 #include <unistd.h>
 
 #include "p99_defarg.h"
+#include "p99_id.h"
 #include "orwl_int.h"
 
 // pthread_barrier_init (3posix) - destroy and initialize a barrier object (ADVANCED REALTIME THREADS)

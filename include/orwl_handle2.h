@@ -54,6 +54,10 @@ struct orwl_handle2 {
   }                                                             \
 }
 
+inline
+P99_PROTOTYPE(orwl_handle2 *, orwl_handle2_init, orwl_handle2 *, orwl_mirror*, bool);
+#define orwl_handle2_init(...) P99_CALL_DEFARG(orwl_handle2_init, 3, __VA_ARGS__)
+
 P99_DEFARG_DOCU(orwl_handle2_init)
 DOCUMENT_INIT(orwl_handle2)
 inline
@@ -78,10 +82,6 @@ void orwl_handle2_destroy(orwl_handle2 *rh2) {
   //rh2->location = NULL;
 }
 
-inline
-P99_PROTOTYPE(orwl_handle2 *, orwl_handle2_init, orwl_handle2 *, orwl_mirror*, bool);
-
-#define orwl_handle2_init(...) P99_CALL_DEFARG(orwl_handle2_init, 3, __VA_ARGS__)
 
 P99_DECLARE_DEFARG(orwl_handle2_init, , NULL, false);
 

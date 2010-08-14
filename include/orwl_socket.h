@@ -14,6 +14,13 @@
 #include "orwl_register.h"
 #include "orwl_host.h"
 
+#ifndef DOXYGEN
+inline
+P99_PROTOTYPE(void, orwl_hton, uint32_t *, uint64_t const *, size_t);
+#define orwl_hton(...) P99_CALL_DEFARG(orwl_hton, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_hton, , , 1);
+#endif
+
 P99_DEFARG_DOCU(orwl_hton)
 inline
 void
@@ -31,9 +38,9 @@ orwl_hton(uint32_t *n,        /*!< [out] array of length 2 @a l */
 
 #ifndef DOXYGEN
 inline
-P99_PROTOTYPE(void, orwl_hton, uint32_t *, uint64_t const *, size_t);
-#define orwl_hton(...) P99_CALL_DEFARG(orwl_hton, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_hton, , , 1);
+P99_PROTOTYPE(void, orwl_ntoh, uint64_t*, uint32_t const *, size_t);
+#define orwl_ntoh(...) P99_CALL_DEFARG(orwl_ntoh, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_ntoh, , , 1);
 #endif
 
 P99_DEFARG_DOCU(orwl_ntoh)
@@ -49,13 +56,6 @@ orwl_ntoh(uint64_t* h,       /*!< [out] array of length @a l */
     h += 1;
   }
 }
-
-#ifndef DOXYGEN
-inline
-P99_PROTOTYPE(void, orwl_ntoh, uint64_t*, uint32_t const *, size_t);
-#define orwl_ntoh(...) P99_CALL_DEFARG(orwl_ntoh, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_ntoh, , , 1);
-#endif
 
 extern in_addr_t orwl_inet_addr(char const *name);
 
@@ -83,6 +83,16 @@ in_addr_t inet4_addr(void) {
   return p99__inet4_addr;
 }
 
+#ifndef DOXYGEN
+inline
+P99_PROTOTYPE(char const*, orwl_inet_ntop, struct sockaddr const*, char*, size_t);
+P99_DECLARE_DEFARG(orwl_inet_ntop, , , );
+#define orwl_inet_ntop(...) P99_CALL_DEFARG(orwl_inet_ntop, 3, __VA_ARGS__)
+#define orwl_inet_ntop_defarg_1() ((char[INET6_ADDRSTRLEN]){ 0 })
+#define orwl_inet_ntop_defarg_2() (INET6_ADDRSTRLEN)
+#endif
+
+
 P99_DEFARG_DOCU(orwl_inet_ntop)
 inline
 char const* orwl_inet_ntop(struct sockaddr const* addr,
@@ -98,16 +108,6 @@ char const* orwl_inet_ntop(struct sockaddr const* addr,
   else strncpy(buf, "<invalid addr>", size);
   return buf;
 }
-
-#ifndef DOXYGEN
-inline
-P99_PROTOTYPE(char const*, orwl_inet_ntop, struct sockaddr const*, char*, size_t);
-P99_DECLARE_DEFARG(orwl_inet_ntop, , , );
-#define orwl_inet_ntop(...) P99_CALL_DEFARG(orwl_inet_ntop, 3, __VA_ARGS__)
-#define orwl_inet_ntop_defarg_1() ((char[INET6_ADDRSTRLEN]){ 0 })
-#define orwl_inet_ntop_defarg_2() (INET6_ADDRSTRLEN)
-#endif
-
 
 /**
  ** @brief Negotiate a send request with remote endpoint @a ep.
@@ -139,6 +139,13 @@ struct auth_sock {
                              the call */
 };
 
+#ifndef DOXYGEN
+inline
+P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t);
+P99_DECLARE_DEFARG(auth_sock_init, , -1, NULL, P99_0(size_t));
+#define auth_sock_init(...) P99_CALL_DEFARG(auth_sock_init, 4, __VA_ARGS__)
+#endif
+
 DOCUMENT_INIT(auth_sock)
 P99_DEFARG_DOCU(auth_sock_init)
 inline
@@ -157,15 +164,6 @@ auth_sock_init(auth_sock *sock,         /*!< [out] */
   sock->back = sock->mes;
   return sock;
 }
-
-#ifndef DOXYGEN
-inline
-P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t);
-P99_DECLARE_DEFARG(auth_sock_init, , -1, NULL, P99_0(size_t));
-
-
-#define auth_sock_init(...) P99_CALL_DEFARG(auth_sock_init, 4, __VA_ARGS__)
-#endif
 
 void auth_sock_destroy(auth_sock *sock);
 DECLARE_NEW_DELETE(auth_sock);
@@ -206,6 +204,15 @@ P99_VASSIGNS((A)->mes, __VA_ARGS__);                                \
 addr_t getpeer(auth_sock *Arg);
 
 
+#ifndef DOXYGEN
+inline
+P99_PROTOTYPE(char const*, hostname, char *, size_t);
+P99_DECLARE_DEFARG(hostname, , );
+#define hostname(...) P99_CALL_DEFARG(hostname, 2, __VA_ARGS__)
+#define hostname_defarg_0() ((char[64]){ 0 })
+#define hostname_defarg_1() (64)
+#endif
+
 P99_DEFARG_DOCU(hostname)
 inline
 char const*
@@ -216,12 +223,4 @@ hostname(char buffer[static 64], /*!< [out] defaults to a temporary */
   return buffer;
 }
 
-#ifndef DOXYGEN
-inline
-P99_PROTOTYPE(char const*, hostname, char *, size_t);
-P99_DECLARE_DEFARG(hostname, , );
-#define hostname(...) P99_CALL_DEFARG(hostname, 2, __VA_ARGS__)
-#define hostname_defarg_0() ((char[64]){ 0 })
-#define hostname_defarg_1() (64)
-#endif
 #endif 	    /* !ORWL_SOCKET_H_ */

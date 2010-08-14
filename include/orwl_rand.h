@@ -14,6 +14,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "p99_id.h"
 #include "orwl_thread.h"
 #include "orwl_enum.h"
 
@@ -50,6 +51,13 @@ struct rand48_t {
 
 #define RAND48_T_INITIALIZER { { useconds(), getpid(), pthread_self() } }
 
+#ifndef DOXYGEN
+inline
+P99_PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
+#define rand48_t_init(...) P99_CALL_DEFARG(rand48_t_init, 4, __VA_ARGS__)
+P99_DECLARE_DEFARG(rand48_t_init, , useconds(), getpid(), pthread_self());
+#endif
+
 DOCUMENT_INIT(rand48_t)
 P99_DEFARG_DOCU(rand48_t)
 inline
@@ -64,13 +72,6 @@ rand48_t *rand48_t_init(rand48_t *seed,     /*!< [out] the object to iniialize *
   seed->x[2] = x2;
   return seed;
 }
-
-#ifndef DOXYGEN
-inline
-P99_PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
-#define rand48_t_init(...) P99_CALL_DEFARG(rand48_t_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(rand48_t_init, , useconds(), getpid(), pthread_self());
-#endif
 
 inline
 void rand48_t_destroy(rand48_t* seed){

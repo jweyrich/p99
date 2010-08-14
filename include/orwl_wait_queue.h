@@ -58,6 +58,13 @@ DECLARE_ENUM(orwl_state,
    **/
 
 
+#ifndef DOXYGEN
+inline
+P99_PROTOTYPE(orwl_state*, orwl_state_init, orwl_state *, orwl_state);
+#define orwl_state_init(...) P99_CALL_DEFARG(orwl_state_init, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_state_init, , orwl_invalid);
+#endif
+
 DOCUMENT_INIT(orwl_state)
 P99_DEFARG_DOCU(orwl_state_init)
 inline
@@ -68,13 +75,6 @@ orwl_state* orwl_state_init
   *el = val;
   return el;
 }
-
-#ifndef DOXYGEN
-inline
-P99_PROTOTYPE(orwl_state*, orwl_state_init, orwl_state *, orwl_state);
-#define orwl_state_init(...) P99_CALL_DEFARG(orwl_state_init, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_state_init, , orwl_invalid);
-#endif
 
 DOCUMENT_DESTROY(orwl_state)
 inline
@@ -388,6 +388,13 @@ P99_DECLARE_DEFARG(orwl_wh_test, , 0);
  **/
 orwl_state orwl_wh_release(orwl_wh *wh /*!< the handle to act upon */);
 
+#ifndef DOXYGEN
+inline
+P99_PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
+#define orwl_wh_load(...) P99_CALL_DEFARG(orwl_wh_load, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_wh_load, , 1);
+#endif
+
   /** @brief load @a howmuch additional tokens on @a wh.
    ** 
    ** This supposes that the corresponding @c wq != NULL and that @c
@@ -405,9 +412,9 @@ uint64_t orwl_wh_load
 
 #ifndef DOXYGEN
 inline
-P99_PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
-#define orwl_wh_load(...) P99_CALL_DEFARG(orwl_wh_load, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_wh_load, , 1);
+P99_PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
+#define orwl_wh_unload(...) P99_CALL_DEFARG(orwl_wh_unload, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_wh_unload, , 1);
 #endif
 
   /** @brief unload @a howmuch additional tokens from @a wh.
@@ -428,13 +435,6 @@ uint64_t orwl_wh_unload
     if (howmuch) pthread_cond_broadcast(&wh->cond);
     return howmuch;
   }
-
-#ifndef DOXYGEN
-inline
-P99_PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
-#define orwl_wh_unload(...) P99_CALL_DEFARG(orwl_wh_unload, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_wh_unload, , 1);
-#endif
 
 void orwl_wq_map_locked(orwl_wq* wq, uint64_t** datap, size_t* data_len);
 void orwl_wq_resize_locked(orwl_wq* wq, size_t len);

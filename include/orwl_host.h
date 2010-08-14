@@ -11,6 +11,7 @@
 #ifndef   	ORWL_HOST_H_
 # define   	ORWL_HOST_H_
 
+#include "p99_id.h"
 #include "orwl_endpoint.h"
 
 /**
@@ -36,6 +37,13 @@ struct orwl_host {
 void orwl_host_connect(orwl_host *th, orwl_host *q);
 void orwl_host_disconnect(orwl_host *th);
 
+#ifndef DOXYGEN
+inline
+P99_PROTOTYPE(orwl_host*, orwl_host_init, orwl_host *, in_addr_t, in_port_t);
+#define orwl_host_init(...) P99_CALL_DEFARG(orwl_host_init, 3, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_host_init, , P99_0(in_addr_t), P99_0(in_port_t));
+#endif
+
 P99_DEFARG_DOCU(orwl_host_init)
 inline
 orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
@@ -50,13 +58,6 @@ orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
   pthread_mutex_init(&th->mut, NULL);
   return th;
 }
-
-#ifndef DOXYGEN
-inline
-P99_PROTOTYPE(orwl_host*, orwl_host_init, orwl_host *, in_addr_t, in_port_t);
-#define orwl_host_init(...) P99_CALL_DEFARG(orwl_host_init, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_host_init, , P99_0(in_addr_t), P99_0(in_port_t));
-#endif
 
 inline
 void orwl_host_destroy(orwl_host *th) {

@@ -156,7 +156,7 @@ typedef enum {
 
 /**
  ** @brief If the sign representation of a type is two's complement
- ** the type has no @i negative zero and can thus represent one more
+ ** the type has no @em negative zero and can thus represent one more
  ** value.
  **/
 #define P99_2COMPLEMENT(T) ((T)(P99_SIGNED_REPRESENTATION(T) == p99_signed_representation_twos))

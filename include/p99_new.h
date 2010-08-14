@@ -93,7 +93,7 @@
  ** - it must accept a pointer to @c T as a first argument
  ** - it must be robust to the fact of receiving NULL through that
  **     first argument (indicating an error condition)
- ** - it should return the @i same pointer @c p
+ ** - it should return the @em same pointer @c p
  ** - it may accept additional arguments which may then be passed
  **     through from the call to ::P99_NEW
  **
