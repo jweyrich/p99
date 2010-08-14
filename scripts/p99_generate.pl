@@ -6,7 +6,7 @@ if 0;               #### for this magic, see findSvnAuthors ####
 #
 #
 
-my $maxnumber = 64;
+my $maxnumber = 81;
 
 # these are the normative keywords in C99
 my @keywords_C99

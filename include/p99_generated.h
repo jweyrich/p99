@@ -3,7 +3,7 @@
 /*!                                                                    */
 /*! This limit applies also to the integer arithmetic that is          */
 /*! performed by the macros in @ref preprocessor_arithmetic           */
-#define P99_MAX_NUMBER 64
+#define P99_MAX_NUMBER 81
 
 #define P99__ARG(\
 	_1,	_2,	_3,	_4,	_5,	_6,	_7,	_8,\
@@ -14,8 +14,13 @@
 	_41,	_42,	_43,	_44,	_45,	_46,	_47,	_48,\
 	_49,	_50,	_51,	_52,	_53,	_54,	_55,	_56,\
 	_57,	_58,	_59,	_60,	_61,	_62,	_63,	_64,\
-	...) _64
-#define P99__NARG_1(...) P99__ARG(__VA_ARGS__, \
+	_65,	_66,	_67,	_68,	_69,	_70,	_71,	_72,\
+	_73,	_74,	_75,	_76,	_77,	_78,	_79,	_80,\
+	_81,\
+	...) _81
+#define P99__NARG_1(...) P99__ARG(__VA_ARGS__, 	80,\
+	79,	78,	77,	76,	75,	74,	73,	72,\
+	71,	70,	69,	68,	67,	66,	65,	64,\
 	63,	62,	61,	60,	59,	58,	57,	56,\
 	55,	54,	53,	52,	51,	50,	49,	48,\
 	47,	46,	45,	44,	43,	42,	41,	40,\
@@ -24,7 +29,9 @@
 	23,	22,	21,	20,	19,	18,	17,	16,\
 	15,	14,	13,	12,	11,	10,	9,	8,\
 	7,	6,	5,	4,	3,	2,	1,	0,)
-#define P99__NARG_2(...) P99__ARG(__VA_ARGS__, \
+#define P99__NARG_2(...) P99__ARG(__VA_ARGS__, 	40,\
+	P99__INV(2),	39,	P99__INV(2),	38,	P99__INV(2),	37,	P99__INV(2),	36,\
+	P99__INV(2),	35,	P99__INV(2),	34,	P99__INV(2),	33,	P99__INV(2),	32,\
 	P99__INV(2),	31,	P99__INV(2),	30,	P99__INV(2),	29,	P99__INV(2),	28,\
 	P99__INV(2),	27,	P99__INV(2),	26,	P99__INV(2),	25,	P99__INV(2),	24,\
 	P99__INV(2),	23,	P99__INV(2),	22,	P99__INV(2),	21,	P99__INV(2),	20,\
@@ -33,7 +40,9 @@
 	P99__INV(2),	11,	P99__INV(2),	10,	P99__INV(2),	9,	P99__INV(2),	8,\
 	P99__INV(2),	7,	P99__INV(2),	6,	P99__INV(2),	5,	P99__INV(2),	4,\
 	P99__INV(2),	3,	P99__INV(2),	2,	P99__INV(2),	1,	P99__INV(2),	0,)
-#define P99__NARG_3(...) P99__ARG(__VA_ARGS__, \
+#define P99__NARG_3(...) P99__ARG(__VA_ARGS__, 	P99__INV(3),\
+	P99__INV(3),	26,	P99__INV(3),	P99__INV(3),	25,	P99__INV(3),	P99__INV(3),	24,\
+	P99__INV(3),	P99__INV(3),	23,	P99__INV(3),	P99__INV(3),	22,	P99__INV(3),	P99__INV(3),\
 	21,	P99__INV(3),	P99__INV(3),	20,	P99__INV(3),	P99__INV(3),	19,	P99__INV(3),\
 	P99__INV(3),	18,	P99__INV(3),	P99__INV(3),	17,	P99__INV(3),	P99__INV(3),	16,\
 	P99__INV(3),	P99__INV(3),	15,	P99__INV(3),	P99__INV(3),	14,	P99__INV(3),	P99__INV(3),\
@@ -42,7 +51,9 @@
 	P99__INV(3),	P99__INV(3),	7,	P99__INV(3),	P99__INV(3),	6,	P99__INV(3),	P99__INV(3),\
 	5,	P99__INV(3),	P99__INV(3),	4,	P99__INV(3),	P99__INV(3),	3,	P99__INV(3),\
 	P99__INV(3),	2,	P99__INV(3),	P99__INV(3),	1,	P99__INV(3),	P99__INV(3),	0,)
-#define P99__NARG_4(...) P99__ARG(__VA_ARGS__, \
+#define P99__NARG_4(...) P99__ARG(__VA_ARGS__, 	20,\
+	P99__INV(4),	P99__INV(4),	P99__INV(4),	19,	P99__INV(4),	P99__INV(4),	P99__INV(4),	18,\
+	P99__INV(4),	P99__INV(4),	P99__INV(4),	17,	P99__INV(4),	P99__INV(4),	P99__INV(4),	16,\
 	P99__INV(4),	P99__INV(4),	P99__INV(4),	15,	P99__INV(4),	P99__INV(4),	P99__INV(4),	14,\
 	P99__INV(4),	P99__INV(4),	P99__INV(4),	13,	P99__INV(4),	P99__INV(4),	P99__INV(4),	12,\
 	P99__INV(4),	P99__INV(4),	P99__INV(4),	11,	P99__INV(4),	P99__INV(4),	P99__INV(4),	10,\
@@ -61,7 +72,9 @@
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
-	1,	1,	1,	1,	1,	1,	1,	0, ...)
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,	0, ...)
 #define P99__SKP2(_0, ...) P99__SKP1(__VA_ARGS__)
 #define P99__SKP3(_0, ...) P99__SKP2(__VA_ARGS__)
 #define P99__SKP4(_0, ...) P99__SKP3(__VA_ARGS__)
@@ -124,6 +137,23 @@
 #define P99__SKP61(_0, ...) P99__SKP60(__VA_ARGS__)
 #define P99__SKP62(_0, ...) P99__SKP61(__VA_ARGS__)
 #define P99__SKP63(_0, ...) P99__SKP62(__VA_ARGS__)
+#define P99__SKP64(_0, ...) P99__SKP63(__VA_ARGS__)
+#define P99__SKP65(_0, ...) P99__SKP64(__VA_ARGS__)
+#define P99__SKP66(_0, ...) P99__SKP65(__VA_ARGS__)
+#define P99__SKP67(_0, ...) P99__SKP66(__VA_ARGS__)
+#define P99__SKP68(_0, ...) P99__SKP67(__VA_ARGS__)
+#define P99__SKP69(_0, ...) P99__SKP68(__VA_ARGS__)
+#define P99__SKP70(_0, ...) P99__SKP69(__VA_ARGS__)
+#define P99__SKP71(_0, ...) P99__SKP70(__VA_ARGS__)
+#define P99__SKP72(_0, ...) P99__SKP71(__VA_ARGS__)
+#define P99__SKP73(_0, ...) P99__SKP72(__VA_ARGS__)
+#define P99__SKP74(_0, ...) P99__SKP73(__VA_ARGS__)
+#define P99__SKP75(_0, ...) P99__SKP74(__VA_ARGS__)
+#define P99__SKP76(_0, ...) P99__SKP75(__VA_ARGS__)
+#define P99__SKP77(_0, ...) P99__SKP76(__VA_ARGS__)
+#define P99__SKP78(_0, ...) P99__SKP77(__VA_ARGS__)
+#define P99__SKP79(_0, ...) P99__SKP78(__VA_ARGS__)
+#define P99__SKP80(_0, ...) P99__SKP79(__VA_ARGS__)
 #define P99__PRE2(_0, ...) _0, P99__PRE1(__VA_ARGS__)
 #define P99__PRE3(_0, ...) _0, P99__PRE2(__VA_ARGS__)
 #define P99__PRE4(_0, ...) _0, P99__PRE3(__VA_ARGS__)
@@ -186,6 +216,23 @@
 #define P99__PRE61(_0, ...) _0, P99__PRE60(__VA_ARGS__)
 #define P99__PRE62(_0, ...) _0, P99__PRE61(__VA_ARGS__)
 #define P99__PRE63(_0, ...) _0, P99__PRE62(__VA_ARGS__)
+#define P99__PRE64(_0, ...) _0, P99__PRE63(__VA_ARGS__)
+#define P99__PRE65(_0, ...) _0, P99__PRE64(__VA_ARGS__)
+#define P99__PRE66(_0, ...) _0, P99__PRE65(__VA_ARGS__)
+#define P99__PRE67(_0, ...) _0, P99__PRE66(__VA_ARGS__)
+#define P99__PRE68(_0, ...) _0, P99__PRE67(__VA_ARGS__)
+#define P99__PRE69(_0, ...) _0, P99__PRE68(__VA_ARGS__)
+#define P99__PRE70(_0, ...) _0, P99__PRE69(__VA_ARGS__)
+#define P99__PRE71(_0, ...) _0, P99__PRE70(__VA_ARGS__)
+#define P99__PRE72(_0, ...) _0, P99__PRE71(__VA_ARGS__)
+#define P99__PRE73(_0, ...) _0, P99__PRE72(__VA_ARGS__)
+#define P99__PRE74(_0, ...) _0, P99__PRE73(__VA_ARGS__)
+#define P99__PRE75(_0, ...) _0, P99__PRE74(__VA_ARGS__)
+#define P99__PRE76(_0, ...) _0, P99__PRE75(__VA_ARGS__)
+#define P99__PRE77(_0, ...) _0, P99__PRE76(__VA_ARGS__)
+#define P99__PRE78(_0, ...) _0, P99__PRE77(__VA_ARGS__)
+#define P99__PRE79(_0, ...) _0, P99__PRE78(__VA_ARGS__)
+#define P99__PRE80(_0, ...) _0, P99__PRE79(__VA_ARGS__)
 #define P99__ASCENDING() \
 	0,	1,	2,	3,	4,	5,	6,	7,\
 	8,	9,	10,	11,	12,	13,	14,	15,\
@@ -194,7 +241,10 @@
 	32,	33,	34,	35,	36,	37,	38,	39,\
 	40,	41,	42,	43,	44,	45,	46,	47,\
 	48,	49,	50,	51,	52,	53,	54,	55,\
-	56,	57,	58,	59,	60,	61,	62,	63,
+	56,	57,	58,	59,	60,	61,	62,	63,\
+	64,	65,	66,	67,	68,	69,	70,	71,\
+	72,	73,	74,	75,	76,	77,	78,	79,\
+	80,
 #define P99__ALL_ZEROES() \
 	0,	0,	0,	0,	0,	0,	0,	0,\
 	0,	0,	0,	0,	0,	0,	0,	0,\
@@ -203,7 +253,10 @@
 	0,	0,	0,	0,	0,	0,	0,	0,\
 	0,	0,	0,	0,	0,	0,	0,	0,\
 	0,	0,	0,	0,	0,	0,	0,	0,\
-	0,	0,	0,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	0,	0,	0,	0,\
+	0,	0,	0,	0,	0,	0,	0,	0,\
+	0,	0,	0,	0,	0,	0,	0,	0,\
+	0,
 #define P99__ALL_ONES() \
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
@@ -212,7 +265,10 @@
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
-	1,	1,	1,	1,	1,	1,	1,	1,
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,
 /*! @brief Paste 7 arguments at their boundary.*/
 #define P99_PASTE7(...) P99__PASTE7(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE7(L, ...) P99_PASTE2(P99_PASTE6(__VA_ARGS__), L)
@@ -384,13 +440,64 @@
 /*! @brief Paste 63 arguments at their boundary.*/
 #define P99_PASTE63(...) P99__PASTE63(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE63(L, ...) P99_PASTE2(P99_PASTE62(__VA_ARGS__), L)
+/*! @brief Paste 64 arguments at their boundary.*/
+#define P99_PASTE64(...) P99__PASTE64(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE64(L, ...) P99_PASTE2(P99_PASTE63(__VA_ARGS__), L)
+/*! @brief Paste 65 arguments at their boundary.*/
+#define P99_PASTE65(...) P99__PASTE65(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE65(L, ...) P99_PASTE2(P99_PASTE64(__VA_ARGS__), L)
+/*! @brief Paste 66 arguments at their boundary.*/
+#define P99_PASTE66(...) P99__PASTE66(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE66(L, ...) P99_PASTE2(P99_PASTE65(__VA_ARGS__), L)
+/*! @brief Paste 67 arguments at their boundary.*/
+#define P99_PASTE67(...) P99__PASTE67(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE67(L, ...) P99_PASTE2(P99_PASTE66(__VA_ARGS__), L)
+/*! @brief Paste 68 arguments at their boundary.*/
+#define P99_PASTE68(...) P99__PASTE68(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE68(L, ...) P99_PASTE2(P99_PASTE67(__VA_ARGS__), L)
+/*! @brief Paste 69 arguments at their boundary.*/
+#define P99_PASTE69(...) P99__PASTE69(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE69(L, ...) P99_PASTE2(P99_PASTE68(__VA_ARGS__), L)
+/*! @brief Paste 70 arguments at their boundary.*/
+#define P99_PASTE70(...) P99__PASTE70(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE70(L, ...) P99_PASTE2(P99_PASTE69(__VA_ARGS__), L)
+/*! @brief Paste 71 arguments at their boundary.*/
+#define P99_PASTE71(...) P99__PASTE71(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE71(L, ...) P99_PASTE2(P99_PASTE70(__VA_ARGS__), L)
+/*! @brief Paste 72 arguments at their boundary.*/
+#define P99_PASTE72(...) P99__PASTE72(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE72(L, ...) P99_PASTE2(P99_PASTE71(__VA_ARGS__), L)
+/*! @brief Paste 73 arguments at their boundary.*/
+#define P99_PASTE73(...) P99__PASTE73(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE73(L, ...) P99_PASTE2(P99_PASTE72(__VA_ARGS__), L)
+/*! @brief Paste 74 arguments at their boundary.*/
+#define P99_PASTE74(...) P99__PASTE74(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE74(L, ...) P99_PASTE2(P99_PASTE73(__VA_ARGS__), L)
+/*! @brief Paste 75 arguments at their boundary.*/
+#define P99_PASTE75(...) P99__PASTE75(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE75(L, ...) P99_PASTE2(P99_PASTE74(__VA_ARGS__), L)
+/*! @brief Paste 76 arguments at their boundary.*/
+#define P99_PASTE76(...) P99__PASTE76(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE76(L, ...) P99_PASTE2(P99_PASTE75(__VA_ARGS__), L)
+/*! @brief Paste 77 arguments at their boundary.*/
+#define P99_PASTE77(...) P99__PASTE77(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE77(L, ...) P99_PASTE2(P99_PASTE76(__VA_ARGS__), L)
+/*! @brief Paste 78 arguments at their boundary.*/
+#define P99_PASTE78(...) P99__PASTE78(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE78(L, ...) P99_PASTE2(P99_PASTE77(__VA_ARGS__), L)
+/*! @brief Paste 79 arguments at their boundary.*/
+#define P99_PASTE79(...) P99__PASTE79(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE79(L, ...) P99_PASTE2(P99_PASTE78(__VA_ARGS__), L)
+/*! @brief Paste 80 arguments at their boundary.*/
+#define P99_PASTE80(...) P99__PASTE80(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE80(L, ...) P99_PASTE2(P99_PASTE79(__VA_ARGS__), L)
 /**
  ** @addtogroup preprocessor_text
  **
  ** @brief These macros allow the handling of small texts and tokens.
  **
  ** For the following tokens, the macro ::P99_TOK_EQ will work.
- ** - decimal numbers: 0 ... 64
+ ** - decimal numbers: 0 ... 81
  ** - keywords:
  **     @c _Bool
  **     @c _Complex
@@ -806,6 +913,23 @@
 #define P99__IS_62_EQ_62(...) ,
 #define P99__IS_63_EQ_63(...) ,
 #define P99__IS_64_EQ_64(...) ,
+#define P99__IS_65_EQ_65(...) ,
+#define P99__IS_66_EQ_66(...) ,
+#define P99__IS_67_EQ_67(...) ,
+#define P99__IS_68_EQ_68(...) ,
+#define P99__IS_69_EQ_69(...) ,
+#define P99__IS_70_EQ_70(...) ,
+#define P99__IS_71_EQ_71(...) ,
+#define P99__IS_72_EQ_72(...) ,
+#define P99__IS_73_EQ_73(...) ,
+#define P99__IS_74_EQ_74(...) ,
+#define P99__IS_75_EQ_75(...) ,
+#define P99__IS_76_EQ_76(...) ,
+#define P99__IS_77_EQ_77(...) ,
+#define P99__IS_78_EQ_78(...) ,
+#define P99__IS_79_EQ_79(...) ,
+#define P99__IS_80_EQ_80(...) ,
+#define P99__IS_81_EQ_81(...) ,
 #define P99__IS__Bool_EQ__Bool(...) ,
 #define P99__IS__Complex_EQ__Complex(...) ,
 #define P99__IS__Exit_EQ__Exit(...) ,
@@ -1273,6 +1397,40 @@
 #define P99_IS_EQ_63(...) P99_TOK_EQ(63, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 64 */
 #define P99_IS_EQ_64(...) P99_TOK_EQ(64, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 65 */
+#define P99_IS_EQ_65(...) P99_TOK_EQ(65, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 66 */
+#define P99_IS_EQ_66(...) P99_TOK_EQ(66, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 67 */
+#define P99_IS_EQ_67(...) P99_TOK_EQ(67, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 68 */
+#define P99_IS_EQ_68(...) P99_TOK_EQ(68, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 69 */
+#define P99_IS_EQ_69(...) P99_TOK_EQ(69, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 70 */
+#define P99_IS_EQ_70(...) P99_TOK_EQ(70, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 71 */
+#define P99_IS_EQ_71(...) P99_TOK_EQ(71, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 72 */
+#define P99_IS_EQ_72(...) P99_TOK_EQ(72, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 73 */
+#define P99_IS_EQ_73(...) P99_TOK_EQ(73, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 74 */
+#define P99_IS_EQ_74(...) P99_TOK_EQ(74, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 75 */
+#define P99_IS_EQ_75(...) P99_TOK_EQ(75, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 76 */
+#define P99_IS_EQ_76(...) P99_TOK_EQ(76, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 77 */
+#define P99_IS_EQ_77(...) P99_TOK_EQ(77, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 78 */
+#define P99_IS_EQ_78(...) P99_TOK_EQ(78, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 79 */
+#define P99_IS_EQ_79(...) P99_TOK_EQ(79, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 80 */
+#define P99_IS_EQ_80(...) P99_TOK_EQ(80, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 81 */
+#define P99_IS_EQ_81(...) P99_TOK_EQ(81, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c _Bool */
 #define P99_IS_EQ__Bool(...) P99_TOK_EQ(_Bool, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c _Complex */
@@ -2015,6 +2173,23 @@
 #define P99__DEC_PRED_63 62
 #define P99__DEC_PRED_64 63
 #define P99__DEC_PRED_65 64
+#define P99__DEC_PRED_66 65
+#define P99__DEC_PRED_67 66
+#define P99__DEC_PRED_68 67
+#define P99__DEC_PRED_69 68
+#define P99__DEC_PRED_70 69
+#define P99__DEC_PRED_71 70
+#define P99__DEC_PRED_72 71
+#define P99__DEC_PRED_73 72
+#define P99__DEC_PRED_74 73
+#define P99__DEC_PRED_75 74
+#define P99__DEC_PRED_76 75
+#define P99__DEC_PRED_77 76
+#define P99__DEC_PRED_78 77
+#define P99__DEC_PRED_79 78
+#define P99__DEC_PRED_80 79
+#define P99__DEC_PRED_81 80
+#define P99__DEC_PRED_82 81
 #define P99__DEC_PRED_minus_0 minus_1
 #define P99__DEC_PRED_minus_1 minus_2
 #define P99__DEC_PRED_minus_2 minus_3
@@ -2080,6 +2255,23 @@
 #define P99__DEC_PRED_minus_62 minus_63
 #define P99__DEC_PRED_minus_63 minus_64
 #define P99__DEC_PRED_minus_64 minus_65
+#define P99__DEC_PRED_minus_65 minus_66
+#define P99__DEC_PRED_minus_66 minus_67
+#define P99__DEC_PRED_minus_67 minus_68
+#define P99__DEC_PRED_minus_68 minus_69
+#define P99__DEC_PRED_minus_69 minus_70
+#define P99__DEC_PRED_minus_70 minus_71
+#define P99__DEC_PRED_minus_71 minus_72
+#define P99__DEC_PRED_minus_72 minus_73
+#define P99__DEC_PRED_minus_73 minus_74
+#define P99__DEC_PRED_minus_74 minus_75
+#define P99__DEC_PRED_minus_75 minus_76
+#define P99__DEC_PRED_minus_76 minus_77
+#define P99__DEC_PRED_minus_77 minus_78
+#define P99__DEC_PRED_minus_78 minus_79
+#define P99__DEC_PRED_minus_79 minus_80
+#define P99__DEC_PRED_minus_80 minus_81
+#define P99__DEC_PRED_minus_81 minus_82
 #define P99__minus_minus_0 0
 #define P99__minus_minus_1 1
 #define P99__minus_minus_2 2
@@ -2145,6 +2337,23 @@
 #define P99__minus_minus_62 62
 #define P99__minus_minus_63 63
 #define P99__minus_minus_64 64
+#define P99__minus_minus_65 65
+#define P99__minus_minus_66 66
+#define P99__minus_minus_67 67
+#define P99__minus_minus_68 68
+#define P99__minus_minus_69 69
+#define P99__minus_minus_70 70
+#define P99__minus_minus_71 71
+#define P99__minus_minus_72 72
+#define P99__minus_minus_73 73
+#define P99__minus_minus_74 74
+#define P99__minus_minus_75 75
+#define P99__minus_minus_76 76
+#define P99__minus_minus_77 77
+#define P99__minus_minus_78 78
+#define P99__minus_minus_79 79
+#define P99__minus_minus_80 80
+#define P99__minus_minus_81 81
 #define P99__IS_0_GE_0 ,
 #define P99__IS_1_GE_0 ,
 #define P99__IS_2_GE_0 ,
@@ -2210,6 +2419,23 @@
 #define P99__IS_62_GE_0 ,
 #define P99__IS_63_GE_0 ,
 #define P99__IS_64_GE_0 ,
+#define P99__IS_65_GE_0 ,
+#define P99__IS_66_GE_0 ,
+#define P99__IS_67_GE_0 ,
+#define P99__IS_68_GE_0 ,
+#define P99__IS_69_GE_0 ,
+#define P99__IS_70_GE_0 ,
+#define P99__IS_71_GE_0 ,
+#define P99__IS_72_GE_0 ,
+#define P99__IS_73_GE_0 ,
+#define P99__IS_74_GE_0 ,
+#define P99__IS_75_GE_0 ,
+#define P99__IS_76_GE_0 ,
+#define P99__IS_77_GE_0 ,
+#define P99__IS_78_GE_0 ,
+#define P99__IS_79_GE_0 ,
+#define P99__IS_80_GE_0 ,
+#define P99__IS_81_GE_0 ,
 #define P99__dec_eval_0 0
 #define P99__dec_eval_1 1
 #define P99__dec_eval_2 2
@@ -2275,6 +2501,23 @@
 #define P99__dec_eval_62 62
 #define P99__dec_eval_63 63
 #define P99__dec_eval_64 64
+#define P99__dec_eval_65 65
+#define P99__dec_eval_66 66
+#define P99__dec_eval_67 67
+#define P99__dec_eval_68 68
+#define P99__dec_eval_69 69
+#define P99__dec_eval_70 70
+#define P99__dec_eval_71 71
+#define P99__dec_eval_72 72
+#define P99__dec_eval_73 73
+#define P99__dec_eval_74 74
+#define P99__dec_eval_75 75
+#define P99__dec_eval_76 76
+#define P99__dec_eval_77 77
+#define P99__dec_eval_78 78
+#define P99__dec_eval_79 79
+#define P99__dec_eval_80 80
+#define P99__dec_eval_81 81
 #define P99__dec_eval_minus_0 0
 #define P99__dec_eval_minus_1 -1
 #define P99__dec_eval_minus_2 -2
@@ -2340,6 +2583,23 @@
 #define P99__dec_eval_minus_62 -62
 #define P99__dec_eval_minus_63 -63
 #define P99__dec_eval_minus_64 -64
+#define P99__dec_eval_minus_65 -65
+#define P99__dec_eval_minus_66 -66
+#define P99__dec_eval_minus_67 -67
+#define P99__dec_eval_minus_68 -68
+#define P99__dec_eval_minus_69 -69
+#define P99__dec_eval_minus_70 -70
+#define P99__dec_eval_minus_71 -71
+#define P99__dec_eval_minus_72 -72
+#define P99__dec_eval_minus_73 -73
+#define P99__dec_eval_minus_74 -74
+#define P99__dec_eval_minus_75 -75
+#define P99__dec_eval_minus_76 -76
+#define P99__dec_eval_minus_77 -77
+#define P99__dec_eval_minus_78 -78
+#define P99__dec_eval_minus_79 -79
+#define P99__dec_eval_minus_80 -80
+#define P99__dec_eval_minus_81 -81
 #define P99_DUPL2(...) __VA_ARGS__, P99_DUPL1(__VA_ARGS__)
 #define P99_DUPL3(...) __VA_ARGS__, P99_DUPL2(__VA_ARGS__)
 #define P99_DUPL4(...) __VA_ARGS__, P99_DUPL3(__VA_ARGS__)
@@ -2403,6 +2663,23 @@
 #define P99_DUPL62(...) __VA_ARGS__, P99_DUPL61(__VA_ARGS__)
 #define P99_DUPL63(...) __VA_ARGS__, P99_DUPL62(__VA_ARGS__)
 #define P99_DUPL64(...) __VA_ARGS__, P99_DUPL63(__VA_ARGS__)
+#define P99_DUPL65(...) __VA_ARGS__, P99_DUPL64(__VA_ARGS__)
+#define P99_DUPL66(...) __VA_ARGS__, P99_DUPL65(__VA_ARGS__)
+#define P99_DUPL67(...) __VA_ARGS__, P99_DUPL66(__VA_ARGS__)
+#define P99_DUPL68(...) __VA_ARGS__, P99_DUPL67(__VA_ARGS__)
+#define P99_DUPL69(...) __VA_ARGS__, P99_DUPL68(__VA_ARGS__)
+#define P99_DUPL70(...) __VA_ARGS__, P99_DUPL69(__VA_ARGS__)
+#define P99_DUPL71(...) __VA_ARGS__, P99_DUPL70(__VA_ARGS__)
+#define P99_DUPL72(...) __VA_ARGS__, P99_DUPL71(__VA_ARGS__)
+#define P99_DUPL73(...) __VA_ARGS__, P99_DUPL72(__VA_ARGS__)
+#define P99_DUPL74(...) __VA_ARGS__, P99_DUPL73(__VA_ARGS__)
+#define P99_DUPL75(...) __VA_ARGS__, P99_DUPL74(__VA_ARGS__)
+#define P99_DUPL76(...) __VA_ARGS__, P99_DUPL75(__VA_ARGS__)
+#define P99_DUPL77(...) __VA_ARGS__, P99_DUPL76(__VA_ARGS__)
+#define P99_DUPL78(...) __VA_ARGS__, P99_DUPL77(__VA_ARGS__)
+#define P99_DUPL79(...) __VA_ARGS__, P99_DUPL78(__VA_ARGS__)
+#define P99_DUPL80(...) __VA_ARGS__, P99_DUPL79(__VA_ARGS__)
+#define P99_DUPL81(...) __VA_ARGS__, P99_DUPL80(__VA_ARGS__)
 #define P99__FOR2(NAME, OP, FUNC, ...) \
 	OP(NAME, 1, P99__FOR1(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 1))
 #define P99__FOR3(NAME, OP, FUNC, ...) \
@@ -2527,6 +2804,40 @@
 	OP(NAME, 61, P99__FOR61(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 61))
 #define P99__FOR63(NAME, OP, FUNC, ...) \
 	OP(NAME, 62, P99__FOR62(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 62))
+#define P99__FOR64(NAME, OP, FUNC, ...) \
+	OP(NAME, 63, P99__FOR63(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 63))
+#define P99__FOR65(NAME, OP, FUNC, ...) \
+	OP(NAME, 64, P99__FOR64(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 64))
+#define P99__FOR66(NAME, OP, FUNC, ...) \
+	OP(NAME, 65, P99__FOR65(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 65))
+#define P99__FOR67(NAME, OP, FUNC, ...) \
+	OP(NAME, 66, P99__FOR66(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 66))
+#define P99__FOR68(NAME, OP, FUNC, ...) \
+	OP(NAME, 67, P99__FOR67(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 67))
+#define P99__FOR69(NAME, OP, FUNC, ...) \
+	OP(NAME, 68, P99__FOR68(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 68))
+#define P99__FOR70(NAME, OP, FUNC, ...) \
+	OP(NAME, 69, P99__FOR69(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 69))
+#define P99__FOR71(NAME, OP, FUNC, ...) \
+	OP(NAME, 70, P99__FOR70(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 70))
+#define P99__FOR72(NAME, OP, FUNC, ...) \
+	OP(NAME, 71, P99__FOR71(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 71))
+#define P99__FOR73(NAME, OP, FUNC, ...) \
+	OP(NAME, 72, P99__FOR72(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 72))
+#define P99__FOR74(NAME, OP, FUNC, ...) \
+	OP(NAME, 73, P99__FOR73(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 73))
+#define P99__FOR75(NAME, OP, FUNC, ...) \
+	OP(NAME, 74, P99__FOR74(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 74))
+#define P99__FOR76(NAME, OP, FUNC, ...) \
+	OP(NAME, 75, P99__FOR75(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 75))
+#define P99__FOR77(NAME, OP, FUNC, ...) \
+	OP(NAME, 76, P99__FOR76(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 76))
+#define P99__FOR78(NAME, OP, FUNC, ...) \
+	OP(NAME, 77, P99__FOR77(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 77))
+#define P99__FOR79(NAME, OP, FUNC, ...) \
+	OP(NAME, 78, P99__FOR78(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 78))
+#define P99__FOR80(NAME, OP, FUNC, ...) \
+	OP(NAME, 79, P99__FOR79(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 79))
 
 //! @addtogroup preprocessor_macros
 //! @{
