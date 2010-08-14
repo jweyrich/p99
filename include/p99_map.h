@@ -28,15 +28,23 @@
 #define P99__ACCESSOR(NAME, X, I) (NAME)[I]
 #define P99__VASSIGN(NAME, X, I) X = P99__ACCESSOR(NAME, X, I)
 #define P99__STRLEN(NAME, X, I) strlen(X)
+#define P99__SIZEOF(NAME, X, I) sizeof(X)
 #define P99__TYPD(NAME, X, I) typedef X P99_PASTE2(NAME, I)
 
 #define P99__STRLENS(N, ...) P99_FOR(,N, P99__SUM, P99__STRLEN, __VA_ARGS__)
+#define P99__SIZEOFS(N, ...) P99_FOR(,N, P99__SUM, P99__SIZEOF, __VA_ARGS__)
 
 /**
  ** @brief Return an expression that returns the sum of the lengths of
  ** all strings that are given as arguments.
  **/
 #define P99_STRLENS(...) P99__STRLENS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
+
+/**
+ ** @brief Return an expression that returns the sum of the size of
+ ** all starguments.
+ **/
+#define P99_SIZEOFS(...) P99__SIZEOFS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
 typedef struct p99__strcat_state p99__strcat_state;
 
@@ -98,7 +106,7 @@ p99__strcat_terminate                                           \
  ** @see P99_STRDUP for a variant that returns a @c malloc'ed string and
  ** thus can be called with any type of @c char* arguments.
  **/
-#define P99_JOIN(...) P99_STRCATS((char[P99_STRLENS(__VA_ARGS__) + 1]){ 0 }, __VA_ARGS__)
+#define P99_JOIN(...) P99_STRCATS((char[P99_SIZEOFS(__VA_ARGS__) + 1]){ 0 }, __VA_ARGS__)
 
 /**
  ** @brief Concatenate all arguments.
@@ -137,9 +145,9 @@ P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                  \
 (P99_IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))            \
   (P99_FOR(NAME, P99__NARG(__VA_ARGS__),P99__SEP, P99__VASSIGN, __VA_ARGS__))
 
-#define P99__TYPEDEFS(NAME, N, ...)                     \
-  P99_IF_VOID(__VA_ARGS__)                              \
-  (enum { P99_PASTE3(NAME, _eat_the_semicolon_, N) })   \
+#define P99__TYPEDEFS(NAME, N, ...)                             \
+  P99_IF_VOID(__VA_ARGS__)                                      \
+  (P99_MACRO_END(NAME, _eat_the_semicolon_, N))                 \
   (P99_FOR(NAME, N, P99__SEP, P99__TYPD, __VA_ARGS__))
 
 /**
