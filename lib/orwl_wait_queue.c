@@ -121,7 +121,7 @@ orwl_state P99_FSYMB(orwl_wq_request)(orwl_wq *wq, P99_VA_ARGS(number)) {
         idle = true;
         for (size_t i = 0; i < number; ++i) {
           orwl_wh **wh = VA_MODARG(ap, orwl_wq_request, 0);
-          VA_MODARG(ap, orwl_wq_request, 1);
+          (void)VA_MODARG(ap, orwl_wq_request, 1);
           if (*wh && !orwl_wh_idle(*wh)) {
             idle = false;
             pthread_cond_wait(&(*wh)->cond, &wq->mut);
@@ -315,8 +315,8 @@ DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_load, orwl_wh);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_unload, orwl_wh);
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_wh,
-                         ORWL_REGISTER_ALIAS(orwl_wh_acquire),
-                         ORWL_REGISTER_ALIAS(orwl_wh_release),
-                         ORWL_REGISTER_ALIAS(orwl_wh_load),
-                         ORWL_REGISTER_ALIAS(orwl_wh_unload)
+                         ORWL_REGISTER_ALIAS(orwl_wh_acquire, orwl_wh),
+                         ORWL_REGISTER_ALIAS(orwl_wh_release, orwl_wh),
+                         ORWL_REGISTER_ALIAS(orwl_wh_load, orwl_wh),
+                         ORWL_REGISTER_ALIAS(orwl_wh_unload, orwl_wh)
                          );

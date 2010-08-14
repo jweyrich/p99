@@ -38,9 +38,9 @@ void orwl_register_call(orwl_register const *field, void *arg);
 void orwl_domain_call(orwl_domain domain, size_t id, void *arg);
 
 void orwl_types_init(void) {
-  orwl_register_init(orwl_types);
+  orwl_register_init(ORWL_FTAB(orwl_types));
   for (size_t i = 0; ; ++i) {
-    void *R = orwl_register_get(orwl_types + i);
+    void *R = orwl_register_get(ORWL_FTAB(orwl_types) + i);
     if (!R) break;
     orwl_register_init(*(orwl_register**)R);
   }

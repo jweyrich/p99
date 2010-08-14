@@ -8,6 +8,7 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
+#include "p99_id.h"
 #include "orwl_auth_sock_functions.h"
 
 #include "orwl_server.h"
@@ -192,11 +193,11 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
 }
 
 DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
-                         ORWL_REGISTER_ALIAS(auth_sock_insert_peer),
-                         ORWL_REGISTER_ALIAS(auth_sock_insert_host),
-                         ORWL_REGISTER_ALIAS(auth_sock_do_nothing),
-                         ORWL_REGISTER_ALIAS(auth_sock_write_request),
-                         ORWL_REGISTER_ALIAS(auth_sock_read_request),
-                         ORWL_REGISTER_ALIAS(auth_sock_release)
+                         ORWL_REGISTER_ALIAS(auth_sock_insert_peer, auth_sock),
+                         ORWL_REGISTER_ALIAS(auth_sock_insert_host, auth_sock),
+                         ORWL_REGISTER_ALIAS(auth_sock_do_nothing, auth_sock),
+                         ORWL_REGISTER_ALIAS(auth_sock_write_request, auth_sock),
+                         ORWL_REGISTER_ALIAS(auth_sock_read_request, auth_sock),
+                         ORWL_REGISTER_ALIAS(auth_sock_release, auth_sock)
                          );
 

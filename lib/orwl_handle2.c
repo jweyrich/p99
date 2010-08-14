@@ -29,9 +29,9 @@ DEFINE_ORWL_REGISTER_ALIAS(orwl_cancel2, orwl_handle2);
 
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_handle2,
-                         ORWL_REGISTER_ALIAS(orwl_acquire2),
-                         ORWL_REGISTER_ALIAS(orwl_release2),
-                         ORWL_REGISTER_ALIAS(orwl_cancel2)
+                         ORWL_REGISTER_ALIAS(orwl_acquire2, orwl_handle2),
+                         ORWL_REGISTER_ALIAS(orwl_release2, orwl_handle2),
+                         ORWL_REGISTER_ALIAS(orwl_cancel2, orwl_handle2)
                          );
 
 static

@@ -19,6 +19,7 @@
 #include "orwl_wait_queue.h"
 #include "orwl_socket.h"
 
+DECLARE_ORWL_DOMAIN(ORWL_FTAB(orwl_state));
 
 DEFINE_ORWL_TYPES(ORWL_REGISTER_TYPE(orwl_state),
                   ORWL_REGISTER_TYPE(orwl_wq),
