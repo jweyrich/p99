@@ -99,7 +99,7 @@ orwl_register const*ORWL_REGISTER(NAME) = NULL
 #define ORWL_REGISTER_DATA(NAME, T) {           \
 .start = ORWL_DOMAIN_TABLE(ORWL_FTAB(T)),       \
   .regptr = &ORWL_REGISTER(NAME),               \
-      .dptr = (void*)&NAME
+      .dptr = (void*)&NAME                      \
      }
 
 #define DECLARE_ORWL_DOMAIN(NAME) extern orwl_domain NAME
