@@ -72,12 +72,6 @@ int main(int argc, char **argv) {
   /* ORWL_TYPE_DYNAMIC_INIT(auth_sock); */
   orwl_types_init();
   if (argc > 1) {
-    orwl_server srv
-      = ORWL_SERVER_INITIALIZER(
-                                srv,
-                                4,
-                                P99_0(in_addr_t),
-                                0);
     rand48_t seed = RAND48_T_INITIALIZER;
 
     report(1, "connecting to %s", argv[1]);
