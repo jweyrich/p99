@@ -12,6 +12,13 @@
 # define   	P99_BLOCK_H_
 
 /**
+ ** @file
+ ** @brief Macros that implement controlling blocks.
+ ** @see preprocessor_blocks
+ **/
+
+
+/**
  ** @addtogroup preprocessor_blocks Preprocessor BLocks
  ** @brief This defines some macros that can be used to ensure that
  ** certain operations are always executed before entering and after

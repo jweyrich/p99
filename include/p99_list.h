@@ -11,6 +11,13 @@
 #ifndef   	P99_LIST_H_
 # define   	P99_LIST_H_
 
+/**
+ ** @file
+ ** @brief Basis macros to process the parameter list of a variadic
+ ** macro.
+ ** @see basic_list_operations
+ **/
+
 #include "p99_generated.h"
 
 #define P99__PRE0(...)

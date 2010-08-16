@@ -15,6 +15,10 @@
  ** @file
  ** @brief C99 specific include files that are required by the standard.
  **
+ ** Using this file adds some restrictions about keywords on your
+ ** code. Most prominent are probably @c bool, @c true, @c false and
+ ** @c I, but there a lot more such as
+ ** @c and @c and_eq @c bitand @c bitor @c compl @c not @c not_eq @c or @c or_eq @c xor @c xor_eq
  **/
 
 #include "p99_compiler.h"

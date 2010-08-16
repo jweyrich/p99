@@ -11,6 +11,11 @@
 #ifndef   	P99_ARGS_H_
 # define   	P99_ARGS_H_
 
+/**
+ ** @file
+ ** @brief Providing macros that handle variadic macro argument lists.
+ **/
+
 #include "p99_paste.h"
 
 /**

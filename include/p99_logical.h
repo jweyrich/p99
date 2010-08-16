@@ -11,6 +11,12 @@
 #ifndef   	P99_LOGICAL_H_
 # define   	P99_LOGICAL_H_
 
+/**
+ ** @file
+ **
+ ** @brief macros to handle Boolean conditions at compile time.
+ **/
+
 #include "p99_args.h"
 #include "p99_list.h"
 

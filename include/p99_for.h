@@ -11,6 +11,13 @@
 #ifndef   	P99_FOR_H_
 # define   	P99_FOR_H_
 
+/**
+ ** @file
+ ** @brief A prepprocessor for loop implementation and some derived
+ ** list handling macros.
+ ** @see P99_FOR
+ **/
+
 #include "p99_logical.h"
 
 

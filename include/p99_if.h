@@ -11,6 +11,11 @@
 #ifndef   	P99_IF_H_
 # define   	P99_IF_H_
 
+/**
+ ** @file
+ ** @brief preprocessor conditionals to use inside macros
+ **/
+
 #include "p99_logical.h"
 
 /**

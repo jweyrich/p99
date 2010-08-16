@@ -11,6 +11,12 @@
 #ifndef   	P99_MAP_H_
 # define   	P99_MAP_H_
 
+/**
+ ** @file
+ ** @brief macros to produce lists of statements or declarations.
+ ** @see statement_lists
+ **/
+
 #include "p99_compiler.h"
 #include "p99_if.h"
 #include "p99_for.h"

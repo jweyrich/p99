@@ -11,6 +11,12 @@
 #ifndef   	P99_INT_H_
 # define   	P99_INT_H_
 
+/**
+ ** @file
+ ** @brief Macros handling integer types.
+ **/
+
+
 #include "p99_if.h"
 
 /**

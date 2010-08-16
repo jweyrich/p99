@@ -11,6 +11,12 @@
 #ifndef   	P99_PASTE_H_
 # define   	P99_PASTE_H_
 
+/**
+ ** @file
+ ** @brief macros that paste tokens in a predictive way
+ ** @see P99_PASTE
+ **/
+
 #include "p99_generated.h"
 
 /** @addtogroup preprocessor_text Preprocessor text and token manipulation

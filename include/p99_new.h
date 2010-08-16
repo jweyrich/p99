@@ -14,6 +14,13 @@
 #include "p99_c99.h"
 
 /**
+ ** @file
+ **
+ ** @brief Macros for initialization and allocation
+ ** @see preprocessor_initialization
+ **/
+
+/**
  ** @addtogroup preprocessor_initialization Iniitalization facilities throught the preprocessor
  **
  ** @{

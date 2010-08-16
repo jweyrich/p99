@@ -11,6 +11,12 @@
 #ifndef   	P99_DEFARG_H_
 # define   	P99_DEFARG_H_
 
+/**
+ ** @file
+ ** @brief Macros for default arguments to functions.
+ ** @see default_arguments
+ **/
+
 #include "p99_map.h"
 
 /**

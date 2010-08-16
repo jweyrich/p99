@@ -1,12 +1,15 @@
 #ifndef P99_COMPILER_H
 #define P99_COMPILER_H
 
-/** @file
+/**
+ ** @file
  ** @brief Group compiler dependencies together in one file
  **
- ** For the moment the only compilers we have tested are different
- ** versions of gcc and the only feature that causes problems is the
- ** @c inline keyword.
+ ** This has been tested with different versions of gcc (versions 4.0
+ ** to 4.4) and clang.
+ **
+ ** The problem makers that are handled the @c inline keyword and some
+ ** simple branch prediction feature.
  **/
 
 #define P99__PREFIX0(N) P99__PREFIX0_(N)

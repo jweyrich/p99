@@ -17,7 +17,17 @@ my @keywords_C99
 
 # these are macros that are usually defined by C99
 my @macros_C99
-    = sort qw( bool true false NULL );
+    = sort qw(
+    bool true false
+    NULL
+    and and_eq
+    bitand bitor
+    compl
+    not not_eq
+    or or_eq
+    xor xor_eq
+    offsetof
+);
 
 # these are typedefs that are usually defined by C99
 my @typedefs_C99
@@ -382,11 +392,17 @@ my @token_C99 = sort(@keywords_C99, @typedefs_C99, @functions_C99);
 print "/* This file is automat";
 print "ically generated, do not chan";
 print "ge manually. */\n";
-
-print "/*! \@brief The maximal number of arguments the P99 macros can handle. */\n";
-print "/*!                                                                    */\n";
-print "/*! This limit applies also to the integer arithmetic that is          */\n";
-print "/*! performed by the macros in \@ref preprocessor_arithmetic           */\n";
+print "\n";
+print "/** \@file                                                               \n";
+print " ** \@brief automatically generated macros to handle variadic macros.    \n";
+print " **                                                                      \n";
+print " ** You should probably never include this file directly but through     \n";
+print " ** other P99 header files that define macros that are of direct use.  */\n";
+print "\n";
+print "/** \@brief The maximal number of arguments the P99 macros can handle.   \n";
+print " **                                                                      \n";
+print " ** This limit applies also to the integer arithmetic that is            \n";
+print " ** performed by the macros in \@ref preprocessor_arithmetic           */\n";
 print "#define P99_MAX_NUMBER $maxnumber\n\n";
 
 
@@ -413,8 +429,8 @@ for (my $m = 1; $m < 5; ++$m) {
     print ")\n";
 }
 
-print "/*! \@ingroup basic_list_operations                                                 */\n";
-print "/*! \@brief Determine of the argument list has a comma, i.e at least two arguments. */\n";
+print "/** \@ingroup basic_list_operations                                                 */\n";
+print "/** \@brief Determine of the argument list has a comma, i.e at least two arguments. */\n";
 print "#define P99_HAS_COMMA(...) P99__ARG(__VA_ARGS__,\\\n";
 for (my $i = 2; $i < $maxnumber; ++$i) {
     if ($i % 8 != 1) {
@@ -468,7 +484,7 @@ print STDOUT "\n";
 
 for (my $m = 7; $m < $maxnumber; ++$m) {
     my $m1 = $m - 1;
-    print "/*! \@brief Paste $m arguments at their boundary.*/\n";
+    print "/** \@brief Paste $m arguments at their boundary.*/\n";
     print "#define P99_PASTE$m(...) P99__PASTE$m(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))\n";
     print "#define P99__PASTE$m(L, ...) P99_PASTE2(P99_PASTE${m1}(__VA_ARGS__), L)\n";
 }
