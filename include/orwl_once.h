@@ -11,7 +11,7 @@
 #ifndef   	ORWL_ONCE_H_
 # define   	ORWL_ONCE_H_
 
-#include <pthread.h>
+#include "orwl_posix.h"
 #include "p99_paste.h"
 #include "p99_block.h"
 

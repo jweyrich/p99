@@ -11,9 +11,7 @@
 #ifndef   	ORWL_RAND_H_
 # define   	ORWL_RAND_H_
 
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include "orwl_posix.h"
 #include "p99_id.h"
 #include "orwl_thread.h"
 #include "orwl_enum.h"

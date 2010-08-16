@@ -11,11 +11,17 @@
 #ifndef   	SEMAPHORE_NOINTR_H_
 # define   	SEMAPHORE_NOINTR_H_
 
+#ifndef _XOPEN_SOURCE
+# define _XOPEN_SOURCE 600
+#elif _XOPEN_SOURCE < 600
+# error "Need at least XOPEN specification 6 to compile this file"
+#endif
 #include <semaphore.h>
 #include <stdint.h>
 #include <errno.h>
 #include <limits.h>
 #include "p99_compiler.h"
+
 
 
 
@@ -49,6 +55,8 @@ int sem_trywait_nointr(sem_t *sem) {
   return 0;
 }
 
+#if _XOPEN_SOURCE >= 600
+
 /**
  ** @brief An interrupt safe wrapper for @c sem_timedwait.
  **
@@ -64,6 +72,7 @@ int sem_timedwait_nointr(sem_t *sem, const struct timespec *abs_timeout) {
   return 0;
 }
 
+#endif /* _XOPEN_SOURCE < 600 */
 
 /**
  ** @brief Return the value of the semaphore object in @a val if it is

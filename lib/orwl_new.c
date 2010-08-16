@@ -10,6 +10,8 @@
 
 #include "orwl_new.h"
 
+size_t p99__blocks(size_t n, size_t stride);
+size_t p99__vnew_size_len(size_t n);
 void* p99__vnew(size_t n);
 size_t p99__vlen(void const*p);
 void p99__vdelete(void const*p);

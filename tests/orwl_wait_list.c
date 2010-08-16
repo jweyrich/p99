@@ -8,12 +8,6 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include <stdlib.h>
-#include <inttypes.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <time.h>
-#include <math.h>
 #include "orwl_thread.h"
 #include "orwl_rand.h"
 #include "orwl_wait_queue.h"

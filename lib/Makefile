@@ -39,7 +39,7 @@ GLOBVARS=environ stderr stdout stdin in6addr_any
 ################
 IPATH   = -I.  -I../include
 OPT	= -O3
-OBJOPT  = -std=gnu99 -pedantic -Wall -Wstrict-prototypes ${OPT}
+OBJOPT  = -std=c99 -pedantic -Wall -Wstrict-prototypes ${OPT}
 EXEOPT  = -lpthread -lm
 LPATH   = -L.
 
@@ -70,7 +70,7 @@ all:	$(NAME) external_symbols.o
 ${NAME} : ${OBJS}
 
 depend Makefile.inc : Makefile
-	gcc $(OBJOPT) $(IPATH) -MM $(SRC) > Makefile.inc
+	${CC} $(OBJOPT) $(IPATH) -MM $(SRC) > Makefile.inc
 
 TAGS : ${SRC}
 	etags ${SRC}

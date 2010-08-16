@@ -8,9 +8,7 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
+#include "orwl_posix.h"
 #include "orwl_int.h"
 
 #include "orwl_socket.h"

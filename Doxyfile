@@ -1271,6 +1271,8 @@ PREDEFINED += P99_MACRO_END(x)=
 
 PREDEFINED += static_inline="inline"
 
+PREDEFINED += P99_COMPILETIME_ASSERT(x)=
+
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
 # this tag can be used to specify a list of macro names that should be expanded.
 # The macro definition that is found in the sources will be used.

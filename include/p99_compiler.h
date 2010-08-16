@@ -62,19 +62,22 @@ signed p99__trailing_comma_in_initializer__(void) {
 # endif
 #endif
 
-# ifdef __GNUC__
+#if defined(__clang__)
+# define inline __attribute__((always_inline)) inline
+#elif defined(__GNUC__)
 /* gcc prior to version 4.3 has the inline keyword but with slightly
    different semantics.
    Be sure to allways inline functions in this cases.
    */
-#  if P99_GCC_VERSION < 40300UL
-#   ifdef inline
-#    undef inline
-#   endif
-#   define inline __attribute__((gnu_inline,always_inline)) static inline
-#   define static_inline inline
+# if P99_GCC_VERSION < 40300UL
+#  ifdef inline
+#   undef inline
 #  endif
+#  define inline __attribute__((gnu_inline,always_inline)) static inline
+#  define static_inline inline
 # endif
+#endif
+
 
 # ifndef static_inline
 #  define static_inline static inline

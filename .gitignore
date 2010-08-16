@@ -3,3 +3,7 @@
 *.a
 Makefile.inc
 *~
+*.tmp
+*.log
+*.c-analyze
+*.plist

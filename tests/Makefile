@@ -37,7 +37,7 @@ LIBDIR	:= $(join $(dir ${CURDIR}),lib)
 ################
 OPT     = -O0
 IPATH   = -I. -I../include
-OBJOPT  = -std=gnu99 -pedantic -Wall -Wstrict-prototypes ${OPT}
+OBJOPT  = -std=c99 -pedantic -Wall -Wstrict-prototypes ${OPT}
 EXEOPT  = -lorwl
 LPATH   = -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR}
 
@@ -69,7 +69,7 @@ $(NAME) : ${OBJS}
 #	$(STRIP) ./$(NAME) # if you debug ,don't strip ...
 
 depend Makefile.inc:
-	gcc $(CFLAGS) $(IPATH) -MM $(SRC) > Makefile.inc
+	${CC} $(CFLAGS) $(IPATH) -MM $(SRC) > Makefile.inc
 clean:
 	-$(RM) $(NAME) $(OBJS) *~
 distclean: clean
