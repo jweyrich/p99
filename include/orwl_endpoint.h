@@ -81,13 +81,13 @@ DOCUMENT_INIT(addr_t)
 P99_DEFARG_DOCU(addr_t)
 inline
 addr_t* addr_t_init(addr_t *A,  /*!< the object to initialize */
-                    in_addr_t I /*!< defaults to the null address */
+                    in_addr_t I0 /*!< defaults to the null address */
                     ) {
   if (!A) return NULL;
   A->a[0] = P99_0(in_addr_t);
   A->a[1] = P99_0(in_addr_t);
   A->a[2] = htonl(0x0000FFFF);
-  A->a[3] = I;
+  A->a[3] = I0;
   return A;
 }
 

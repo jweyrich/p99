@@ -212,7 +212,7 @@ bool orwl_recv_(int fd, uint64_t *const mess, size_t len) {
   return ret != sizeof(uint64_t) * len;
 }
 
-addr_t* addr_t_init(addr_t *A, in_addr_t I);
+addr_t* addr_t_init(addr_t *A, in_addr_t I0);
 
 P99_DEFINE_DEFARG(addr_t_init, , P99_0(in_addr_t));
 
