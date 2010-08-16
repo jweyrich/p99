@@ -18,10 +18,6 @@
  ** @c delete.
  */
 
-#include <stddef.h>
-#include <stdlib.h>
-#include <inttypes.h>
-
 #include "p99_new.h"
 
 /**

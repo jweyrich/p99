@@ -11,8 +11,6 @@
 #ifndef   	P99_ARGS_H_
 # define   	P99_ARGS_H_
 
-#include <stdarg.h>
-
 #include "p99_paste.h"
 
 /**

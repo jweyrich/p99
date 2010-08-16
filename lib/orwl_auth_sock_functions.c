@@ -8,8 +8,9 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include "p99_id.h"
+#include "orwl_posix.h"
 #include "orwl_auth_sock_functions.h"
+#include "p99_id.h"
 
 #include "orwl_server.h"
 #include "orwl_wait_queue.h"

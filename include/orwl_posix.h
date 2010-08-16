@@ -11,40 +11,39 @@
 #ifndef   	ORWL_POSIX_H_
 #define   	ORWL_POSIX_H_
 
+/**
+ ** @file
+ ** @brief Define feature macros and include all necessary files from
+ ** C99 and POSIX.
+ **/
+
 #ifndef _XOPEN_SOURCE
 # define _XOPEN_SOURCE 600
 #elif _XOPEN_SOURCE < 600
 # error "Need at least XOPEN specification 6 to compile this file"
 #endif
 #ifndef _BSD_SOURCE
-# define _BSD_SOURCE 600
+# define _BSD_SOURCE 1
 #endif
+
+#include "p99_compiler.h"
+#ifdef __gnu_linux__
 #include <features.h>
+#endif
+
+#include "p99_c99.h"
+
 #include <arpa/inet.h>
-#include <assert.h>
-#include <errno.h>
 #include <fcntl.h>
-#include <inttypes.h>
-#include <limits.h>
-#include <math.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <semaphore.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <strings.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <time.h>
 #include <unistd.h>
 
 #endif 	    /* !ORWL_POSIX_H_ */

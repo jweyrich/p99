@@ -12,8 +12,6 @@
 # define   	ORWL_ENDPOINT_H_
 
 #include "orwl_rand.h"
-#include <netinet/in.h>
-#include <arpa/inet.h>
 
 DECLARE_STRUCT(orwl_server);
 DECLARE_STRUCT(auth_sock);

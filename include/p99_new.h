@@ -11,10 +11,7 @@
 #ifndef   	P99_NEW_H_
 # define   	P99_NEW_H_
 
-#include <stdlib.h>
-#include <string.h>
-
-#include "p99_compiler.h"
+#include "p99_c99.h"
 
 /**
  ** @addtogroup preprocessor_initialization Iniitalization facilities throught the preprocessor
