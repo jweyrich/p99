@@ -17,6 +17,8 @@
  **
  **/
 
+#include "p99_compiler.h"
+
 #include <assert.h>
 #include <complex.h>
 #include <ctype.h>

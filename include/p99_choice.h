@@ -11,7 +11,7 @@
 #ifndef   	P99_CHOICE_H_
 # define   	P99_CHOICE_H_
 
-#include "p99_compiler.h"
+#include "p99_c99.h"
 #include "p99_id.h"
 #include "p99_for.h"
 

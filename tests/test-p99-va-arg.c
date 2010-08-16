@@ -9,19 +9,9 @@
 */
 
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-
-
-#include <stddef.h>
-
-#include "p99_compiler.h"
+#include "orwl_posix.h"
 #include "p99_id.h"
 #include "p99_args.h"
-
-#include <stdio.h>
 
 unsigned P99_FSYMB(toto)(unsigned a, P99_VA_ARGS(number));
 #define toto(A, ...) P99_FSYMB(toto)(A, P99_LENGTH_VA_ARG(__VA_ARGS__))

@@ -9,16 +9,8 @@
 */
 
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-
-
-#include <stddef.h>
-#include <stdio.h>
-
 #include "p99_choice.h"
+#include "p99_c99.h"
 
 P99_CHOICE_FUNCTION(unsigned, toto, -1, 4, 5, 6, 7, 8, 1, 2, 3, 4, 99, 3, 88 );
 

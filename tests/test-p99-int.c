@@ -9,20 +9,8 @@
 */
 
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-
-
-#include <stddef.h>
-
-#include "p99_compiler.h"
+#include "p99_c99.h"
 #include "p99_int.h"
-
-#include <stdio.h>
-#include <signal.h>
-
 
 static
 char const* representation[4] = {
