@@ -76,7 +76,11 @@ signed p99__trailing_comma_in_initializer__(void) {
 #  ifdef inline
 #   undef inline
 #  endif
-#  define inline __attribute__((gnu_inline,always_inline)) static inline
+#  ifdef __GNUC_GNU_INLINE__
+#   define inline __attribute__((gnu_inline,always_inline)) static inline
+#  else
+#   define inline __attribute__((always_inline)) static inline
+#  endif
 #  define static_inline inline
 # endif
 #endif
