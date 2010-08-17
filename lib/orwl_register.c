@@ -9,9 +9,6 @@
 */
 
 #include "orwl_register.h"
-
-#include "orwl_once.h"
-
 #include "orwl_macro.h"
 
 static

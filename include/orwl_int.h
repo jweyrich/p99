@@ -17,7 +17,6 @@
  **/
 
 #include "orwl_posix.h"
-#include "p99_paste.h"
 #include "p99_int.h"
 #include "orwl_new.h"
 

@@ -11,8 +11,7 @@
 #ifndef   	ORWL_THREAD_H_
 # define   	ORWL_THREAD_H_
 
-#include "orwl_posix.h"
-#include "semaphore_nointr.h"
+//#include "orwl_posix.h"
 #include "orwl_once.h"
 #include "orwl_int.h"
 #include "orwl_macro.h"

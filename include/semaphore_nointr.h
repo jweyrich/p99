@@ -16,14 +16,8 @@
 #elif _XOPEN_SOURCE < 600
 # error "Need at least XOPEN specification 6 to compile this file"
 #endif
+#include "p99_c99.h"
 #include <semaphore.h>
-#include <stdint.h>
-#include <errno.h>
-#include <limits.h>
-#include "p99_compiler.h"
-
-
-
 
 /**
  ** @brief An interrupt safe wrapper for @c sem_wait.

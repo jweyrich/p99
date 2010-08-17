@@ -16,7 +16,7 @@
  ** @brief Macros handling integer types.
  **/
 
-
+#include "p99_c99.h"
 #include "p99_if.h"
 
 /**

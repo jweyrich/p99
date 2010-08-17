@@ -10,8 +10,6 @@
 
 #include "orwl_wait_queue.h"
 
-#include "orwl_thread.h"
-
 DEFINE_ENUM(orwl_state);
 
 P99_DEFINE_DEFARG(orwl_wh_test, , 0);

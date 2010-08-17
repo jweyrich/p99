@@ -26,19 +26,21 @@
 # define _BSD_SOURCE 1
 #endif
 
-#include "p99_compiler.h"
 #ifdef __gnu_linux__
 #include <features.h>
 #endif
 
 #include "p99_c99.h"
-
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <pthread.h>
-#include <semaphore.h>
+#ifdef ORWL_NO_SEM_NOINTR
+# include <semaphore.h>
+#else
+# include "semaphore_nointr.h"
+#endif
 #include <strings.h>
 #include <sys/socket.h>
 #include <sys/stat.h>

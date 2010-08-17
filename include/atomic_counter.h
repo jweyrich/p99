@@ -11,9 +11,8 @@
 #ifndef   	ATOMIC_COUNTER_H_
 # define   	ATOMIC_COUNTER_H_
 
-#include "orwl_posix_default.h"
-#include "orwl_enum.h"
 #include "orwl_thread.h"
+#include "orwl_enum.h"
 #include "p99_id.h"
 
 
