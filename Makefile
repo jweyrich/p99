@@ -1,5 +1,5 @@
 
-DIRS = ./include ./lib ./tests
+DIRS = ./include ./p99 ./lib ./tests
 
 CLEAN = ${patsubst %,%/clean,${DIRS}}
 DISTCLEAN = ${patsubst %,%/distclean,${DIRS}}
@@ -20,10 +20,17 @@ tests : lib
 lib : ./include
 	$(MAKE) -C $@
 
-doxygen :
+doxygen : doxygen-p99 doxygen-orwl
+
+doxygen-orwl :
 	doxygen
 
+doxygen-p99 :
+	doxygen Doxyfile-p99
+
 ./include :
+
+./p99 :
 	$(MAKE) -C $@
 
 ./tests/clean :
@@ -34,6 +41,9 @@ doxygen :
 
 ./include/clean :
 	$(MAKE) -C include clean
+
+./p99/clean :
+	$(MAKE) -C p99 clean
 
 ./tests/distclean :
 	$(MAKE) -C tests distclean
