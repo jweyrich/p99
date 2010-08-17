@@ -190,4 +190,30 @@ typedef enum {
  **/
 #define P99_LVAL(...) P99_IF_DEC_LE(P99_NARG(__VA_ARGS__),1)(P99__LVAL(__VA_ARGS__, { 0 }))(P99__LVAL(__VA_ARGS__))
 
+
+#define P99_CHOOSE5(xT, cc, cs, ci, cl, cll)    \
+((sizeof(xT) < sizeof(int))                     \
+ ? ((sizeof(xT) < sizeof(short))                \
+    ? cc                                        \
+    : cs)                                       \
+ : ((sizeof(xT) <= sizeof(long))                \
+    ? ((sizeof(xT) == sizeof(int))              \
+       ? ci                                     \
+       : cl)                                    \
+    : cll))
+
+#define P99_PRI(xT, F, ...)                     \
+P99_CHOOSE5(xT,                                 \
+        "%" #__VA_ARGS__ "hh" #F,               \
+        "%" #__VA_ARGS__ "h" #F,                \
+        "%" #__VA_ARGS__ "" #F,                 \
+        "%" #__VA_ARGS__ "l" #F,                \
+        "%" #__VA_ARGS__ "ll" #F)
+
+/**
+ ** @brief Promote integer expression @a x to the width of @c
+ ** uintmax_t but keep signedness if possible.
+ **/
+#define P99__J(x) (0 ? P99_0(uintmax_t) : (x))
+
 #endif 	    /* !P99_INT_H_ */

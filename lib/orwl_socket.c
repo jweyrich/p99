@@ -8,9 +8,6 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include "orwl_posix.h"
-#include "orwl_int.h"
-
 #include "orwl_socket.h"
 
 #include "orwl_server.h"

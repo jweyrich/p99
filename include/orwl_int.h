@@ -17,8 +17,8 @@
  **/
 
 #include "orwl_posix.h"
-#include "p99_int.h"
 #include "orwl_new.h"
+#include "p99_int.h"
 
 extern char **environ;
 
@@ -266,7 +266,7 @@ DECLARE_ARI2STR(ullong);
  ** @brief convert @a x to unsigned decimal
  */
 #define PRIu(x)                                 \
-CHOOSE5(x,                                      \
+P99_CHOOSE5(x,                                      \
         uchar2u(P99__ALLO(3*sizeof(sllong)),x),      \
         ushort2u(P99__ALLO(3*sizeof(sllong)),x),     \
         unsigned2u(P99__ALLO(3*sizeof(sllong)),x),   \
@@ -275,7 +275,7 @@ CHOOSE5(x,                                      \
 
 /*! @brief convert @a x to decimal, possibly signed */
 #define PRId(x)                                 \
-CHOOSE5(x,                                      \
+P99_CHOOSE5(x,                                      \
         schar2d(P99__ALLO(3*sizeof(sllong)),x),      \
         short2d(P99__ALLO(3*sizeof(sllong)),x),      \
         signed2d(P99__ALLO(3*sizeof(sllong)),x),     \
@@ -284,7 +284,7 @@ CHOOSE5(x,                                      \
 
 /*! @brief convert @a x to octal */
 #define PRIo(x)                                 \
-CHOOSE5(x,                                      \
+P99_CHOOSE5(x,                                      \
         uchar2o(P99__ALLO(3*sizeof(sllong)),x),      \
         ushort2o(P99__ALLO(3*sizeof(sllong)),x),     \
         unsigned2o(P99__ALLO(3*sizeof(sllong)),x),   \
@@ -293,7 +293,7 @@ CHOOSE5(x,                                      \
 
 /*! @brief convert @a x to hexadecimal using a...f for 10 to 15 */
 #define PRIx(x)                                 \
-CHOOSE5(x,                                      \
+P99_CHOOSE5(x,                                      \
         uchar2x(P99__ALLO(2*sizeof(sllong)),x),      \
         ushort2x(P99__ALLO(2*sizeof(sllong)),x),     \
         unsigned2x(P99__ALLO(2*sizeof(sllong)),x),   \
@@ -302,7 +302,7 @@ CHOOSE5(x,                                      \
 
 /*! @brief convert @a x to hexadecimal using A...F for 10 to 15 */
 #define PRIX(x)                                 \
-CHOOSE5(x,                                      \
+P99_CHOOSE5(x,                                      \
         uchar2X(P99__ALLO(2*sizeof(sllong)),x),      \
         ushort2X(P99__ALLO(2*sizeof(sllong)),x),     \
         unsigned2X(P99__ALLO(2*sizeof(sllong)),x),   \
@@ -351,5 +351,7 @@ int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A) {
  ** coming from another thread.
  **/
 #define mfputs(...) P99__mfputs(__VA_ARGS__)
+
+
 
 #endif 	    /* !ORWL_INT_H_ */

@@ -17,7 +17,7 @@
  ** @see statement_lists
  **/
 
-#include "p99_compiler.h"
+#include "p99_c99.h"
 #include "p99_if.h"
 #include "p99_for.h"
 

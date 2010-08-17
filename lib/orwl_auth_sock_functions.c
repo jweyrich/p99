@@ -8,12 +8,10 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include "orwl_posix.h"
 #include "orwl_auth_sock_functions.h"
-#include "p99_id.h"
-
 #include "orwl_server.h"
 #include "orwl_wait_queue.h"
+#include "p99_id.h"
 
 DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
   AUTH_SOCK_READ(Arg, auth_sock_insert_peer, uint64_t port);

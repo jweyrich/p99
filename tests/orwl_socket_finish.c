@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
   ftester((test_t){16});
   ftester((test_t){17}, 18);
   ftester((test_t){19}, 20, 19.9999);
-  report(1, "%s %s %s %s %s", PRI(char, X,), PRI(short, X,), PRI(signed, X,), PRI(long, X,), PRI(long long, X,));
+  report(1, "%s %s %s %s %s", P99_PRI(char, X,), P99_PRI(short, X,), P99_PRI(signed, X,), P99_PRI(long, X,), P99_PRI(long long, X,));
   report(1, "%zu %zu %zu %zu %zu", sizeof(char), sizeof(short), sizeof(signed), sizeof(long), sizeof(long long));
   mfputs(stderr, P99_JOIN("aa", "BB", "CC "), PRIX(37ull), " ", PRId(37), " ", PRIo(37), " ", PRIp(argv), "\n");
   int Y[17] = {  P99_DUPL(17, 1) };

@@ -30,17 +30,17 @@
 #include <features.h>
 #endif
 
-#include "p99_c99.h"
+#ifdef ORWL_NO_SEM_NOINTR
+# include "p99_c99.h"
+# include <semaphore.h>
+#else
+# include "semaphore_nointr.h"
+#endif
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <pthread.h>
-#ifdef ORWL_NO_SEM_NOINTR
-# include <semaphore.h>
-#else
-# include "semaphore_nointr.h"
-#endif
 #include <strings.h>
 #include <sys/socket.h>
 #include <sys/stat.h>

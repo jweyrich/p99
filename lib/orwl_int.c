@@ -9,7 +9,7 @@
 */
 
 #include "orwl_int.h"
-#include "orwl_macro.h"
+#include "p99_map.h"
 
 #define DEFINE_BASIC(T)                         \
 T* P99_PASTE2(T, _init)(T *id);                 \
@@ -21,14 +21,14 @@ DEFINE_BASIC(T);                                \
 DEFINE_BASIC(P99_PASTE2(T, _cptr));                 \
 DEFINE_BASIC(P99_PASTE2(T, _ptr))
 
-#define P99__DEFINE_ARI2STR(T, X, S, P)         \
- char const* P99_PASTE3(T, 2, X)(char* buf, T x) {  \
-  char* form = P99_STRDUP(#P, PRI(T,X,S));          \
-  sprintf(buf, form, x);                        \
-  free(form);                                   \
-  return buf;                                   \
-}                                               \
- char const* P99_PASTE3(T, 2, X)(char* buf, T x)
+#define P99__DEFINE_ARI2STR(T, X, S, P)                 \
+char const* P99_PASTE3(T, 2, X)(char* buf, T x) {       \
+  char* form = P99_STRDUP(#P, P99_PRI(T,X,S));          \
+  sprintf(buf, form, x);                                \
+  free(form);                                           \
+  return buf;                                           \
+}                                                       \
+char const* P99_PASTE3(T, 2, X)(char* buf, T x)
 
 #define DEFINE_ARI2STR(T)                       \
   P99__DEFINE_ARI2STR(T, d, , );                \
