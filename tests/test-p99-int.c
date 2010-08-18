@@ -25,8 +25,11 @@ char const* representation[4] = {
 };
 
 #define SAYIT(T)                                                \
-printf("%20s:\t%20jd\t...\t%20ju,\t%5ssigned%20s\n",            \
+printf("%20s:\t%4u\t%5u\t%3ju\t%20jd\t%20ju,\t%5ssigned%20s\n", \
        #T,                                                      \
+       P99_TPREC(T),                                            \
+       P99_TWIDTH(T),                                           \
+       P99_TPADDING(T),                                         \
        (intmax_t)P99_TMIN(T),                                   \
        (uintmax_t)P99_TMAX(T),                                  \
        (P99_ISSIGNED(T) ? "" : "un"),                           \
@@ -35,9 +38,16 @@ printf("%20s:\t%20jd\t...\t%20ju,\t%5ssigned%20s\n",            \
         : representation[P99_SIGNED_REPRESENTATION(T)]))
 
 typedef enum { a1, b1 } enum1;
-typedef enum { a2 = -1, b2, c2 } enum2;
+typedef enum { a2 = -1, b2 } enum2;
+typedef enum { a3, b3, c3 } enum3;
+typedef enum { a4 = -1, b4, c4 } enum4;
+/* The following should fail, since enum constants are supposed to be
+   int. Currently clang accepts this and gcc doesn't. */
+//typedef enum { a5 = (unsigned)-1, b5, c5 } enum5;
 
 int main(int argc, char** argv) {
+  printf("%20s:\t%2s\t%2s\t%2s\t%20s\t%20s,\t%5ssigned%20s\n",
+         "type", "prec", "width", "pad", "min", "max", "{un}", "sign repr");
   SAYIT(_Bool);
   SAYIT(char);
   SAYIT(unsigned char);
@@ -68,4 +78,7 @@ int main(int argc, char** argv) {
   SAYIT(intmax_t);
   SAYIT(enum1);
   SAYIT(enum2);
+  SAYIT(enum3);
+  SAYIT(enum4);
+  //SAYIT(enum5);
 }

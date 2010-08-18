@@ -177,8 +177,48 @@ typedef enum {
  **/
 #define P99_TMIN(T) ((T)(P99_ISSIGNED(T) ? (P99_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T)))
 
-#define P99__LVAL(T, ...) ((T)__VA_ARGS__)
+/**
+ ** @brief The precision, i.e the number of significant bits of integral type
+ ** @a T.
+ **
+ ** The resulting expression is evaluated at compile time and maybe
+ ** used int constant expressions.
+ ** @warning this is not necessarily the width of @a T
+ ** @see P99_TWIDTH
+ ** @see P99_TPADDING
+ **/
+#define P99_TPREC(T) (P99_HIGH2_1(P99_TMAX(T)))
 
+/**
+ ** @brief The width of integral type @a T.
+ **
+ ** This is the precision plus eventually a sign bit, if @a T is signed.
+ **
+ ** The resulting expression is evaluated at compile time and maybe
+ ** used int constant expressions.
+ ** @warning These are not necessarily all bits that are @em used by
+ ** the type, there might be padding bits.
+ ** @see P99_TPREC
+ ** @see P99_TPADDING
+ **/
+#define P99_TWIDTH(T) (P99_TPREC(T) + P99_ISSIGNED(T))
+
+/**
+ ** @brief The padding bits of integral type @a T.
+ **
+ ** These are the bits that are not used for the numerical
+ ** representation of the values. On most architectures and for most
+ ** types this will be 0. But for e.g for @c _Bool this will be at
+ ** least 7.
+ **
+ ** The resulting expression is evaluated at compile time and maybe
+ ** used int constant expressions.
+ ** @see P99_TWIDTH
+ ** @see P99_TPREC
+ **/
+#define P99_TPADDING(T) ((sizeof(T)*CHAR_BIT) - P99_TWIDTH(T))
+
+#define P99__LVAL(T, ...) ((T)__VA_ARGS__)
 
 /**
  ** @brief Define an lvalue of type @c T, where @c T is the first

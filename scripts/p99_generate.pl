@@ -568,6 +568,23 @@ for (my $i = 2; $i < $maxnumber; ++$i) {
     "\tOP(NAME, $i1, P99__FOR${i1}(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), $i1))\n";
 }
 
+{
+    print "#define P99_HIGH2(X) \\\n";
+    my $pow2 = 1;
+    for (my $i = 0; $i < 64; ++$i, $pow2 = ($pow2 * 2)) {
+        print  " "x${i}, " (((X)==UINTMAX_C(${pow2}))?${i}U:", " "x(65 - $i), "\\\n";
+    }
+    print " 0" . ")"x65 . "\n",
+}
+{
+    print "#define P99_HIGH2_1(X) \\\n";
+    my $pow2 = 0;
+    for (my $i = 0; $i <= 64; ++$i, $pow2 = (($pow2 * 2) + 1)) {
+        print  " "x${i}, " (((X)==UINTMAX_C(${pow2}))?${i}U:", " "x(65 - $i), "\\\n";
+    }
+    print " 0" . ")"x65 . "\n",
+}
+
 my @groups =
     [ "preprocessor_macros",
       [ "meta_programming",
