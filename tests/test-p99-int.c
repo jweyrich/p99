@@ -25,7 +25,7 @@ char const* representation[4] = {
 };
 
 #define SAYIT(T)                                                \
-printf("%20s:\t%4u\t%5u\t%3ju\t%20jd\t%20ju,\t%5ssigned%20s\n", \
+printf("%20s:\t%4u\t%5u\t%3zu\t%20jd\t%20ju,\t%5ssigned%20s\n", \
        #T,                                                      \
        P99_TPREC(T),                                            \
        P99_TWIDTH(T),                                           \
