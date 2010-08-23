@@ -84,5 +84,6 @@
 #include "p99_defarg.h"
 #include "p99_int.h"
 #include "p99_new.h"
+#include "p99_double.h"
 
 #endif 	    /* !P99_H_ */

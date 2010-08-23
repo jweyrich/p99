@@ -18,6 +18,7 @@ NAME 	=	orwl_wait_list			\
 		orwl_socket_finish              \
 		test-p99-choice                 \
 		test-p99-int                    \
+		test-p99-double                 \
 		test-p99-va-arg
 
 SRC	=	orwl_wait_list.c		\
@@ -27,7 +28,7 @@ SRC	=	orwl_wait_list.c		\
 		orwl_socket_test.c		\
 		orwl_socket_finish.c            \
 		test-p99-choice.c               \
-		test-p99-int.c                  \
+		test-p99-double.c               \
 		test-p99-va-arg.c
 
 INCL  	=		# List of *.h

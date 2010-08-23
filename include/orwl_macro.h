@@ -15,67 +15,6 @@
 #include "p99_defarg.h"
 #include "orwl_document.h"
 
-#define P99__DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)       \
-  P99_IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(              \
-  P99_IF_EMPTY(INT)(0)(INT),                                    \
-  .,                                                            \
-  P99_IF_EMPTY(FRAC)(0)(FRAC),                                  \
-  E,                                                            \
-  P99_IF_EMPTY(ESIGN)(+)(ESIGN),                                \
-  P99_IF_EMPTY(EXP)(0)(EXP),                                    \
-  __VA_ARGS__)
-
-#ifdef DOXYGEN
-/** 
- ** @brief construct a @c double constant in decimal representation.
- **
- ** @param SIGN the sign of the constant, (+)
- ** @param INT the integer part, (0)
- ** @param FRAC the fractional part, (0)
- ** @param ESIGN sign of the exponent, (+)
- ** @param EXP exponent in decimal, (0)
- **
- ** So if all parameters are empty such as
- ** @code
- ** P99_DEC_DOUBLE()
- ** DEC(,,,,)
- ** @endcode
- ** this produces @c +0.0E+0
- **/
-#define P99_DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP)
-#else
-#define P99_DEC_DOUBLE(...)                     \
-  P99_IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)       \
-  (P99__DEC_DOUBLE(__VA_ARGS__))                \
-  (P99__DEC_DOUBLE(__VA_ARGS__,,,,,))
-#endif
-
-
-#define P99__HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP, ...)      \
-  P99_IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(                      \
-  0x,                                                                   \
-  P99_IF_EMPTY(HEXINT)(0)(HEXINT),                                      \
-  .,                                                                    \
-  P99_IF_EMPTY(HEXFRAC)(0)(HEXFRAC),                                    \
-  P,                                                                    \
-  P99_IF_EMPTY(ESIGN)(+)(ESIGN),                                        \
-  P99_IF_EMPTY(BINEXP)(0)(BINEXP),                                      \
-  __VA_ARGS__)
-
-#ifdef DOXYGEN
-/**
- ** @brief construct a @c double constant in hexadecimal representation.
- **
- ** @see P99_DEC_DOUBLE for the analog with decimal representation
- **/
-#define HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP)
-#else
-#define HEX_DOUBLE(...)                         \
-  P99_IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)       \
-  (P99__HEX_DOUBLE(__VA_ARGS__))                \
-  (P99__HEX_DOUBLE(__VA_ARGS__,,,,,))
-#endif
-
 #define P99__INV(N) P99_PASTE2(P99__variable_argument_list_must_be_divisible_by_, N)
 
 #define P99__MODARG_(_X) P99_PASTE2(P99__NARG_,  _X)

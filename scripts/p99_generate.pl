@@ -591,6 +591,7 @@ my @groups =
         [ "preprocessor_conditionals" ],
         [ "preprocessor_for" ],
         [ "preprocessor_blocks" ],
+        [ "double_constants" ],
       ],
       [ "list_processing",
         [ "basic_list_operations" ],

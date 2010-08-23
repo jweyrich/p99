@@ -3027,6 +3027,14 @@
 
 //! @}
 
+//! @addtogroup double_constants
+//! @{
+
+
+#define P99__double_constants
+
+//! @}
+
 //! @}
 
 //! @addtogroup list_processing
