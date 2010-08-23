@@ -63,6 +63,13 @@ P99__UNIQUE_BIT__(BIT, BITS, WIDTH, P99__UNIQUE_BIT_MULT(BITS, WIDTH))
 
 #define P99__UNIQUE_BIT_RETURN(NAME, X, I) case P99__UNIQUE_BIT_(I, X, NAME): return I
 
+
+#ifdef DOXYGEN
+/* doxygen can't handle the P99_FOR */
+#define P99__UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH)      \
+static_inline                                                           \
+TYPE P99_PASTE2(NAME, BITS)(size_t x)
+#else
 #define P99__UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH)      \
 static_inline                                                           \
 TYPE P99_PASTE2(NAME, BITS)(size_t x) {                                 \
@@ -72,6 +79,7 @@ TYPE P99_PASTE2(NAME, BITS)(size_t x) {                                 \
   }                                                                     \
 }                                                                       \
 P99_MACRO_END(_unique_bit)
+#endif
 
 P99__UNIQUE_BIT_FUNCTION(unsigned, p99__unique_bit_hash_, -1, 3, 8);
 P99__UNIQUE_BIT_FUNCTION(unsigned, p99__unique_bit_hash_, -1, 4, 16);

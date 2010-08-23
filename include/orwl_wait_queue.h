@@ -11,9 +11,9 @@
 #ifndef   	ORWL_WAIT_QUEUE_H_
 # define   	ORWL_WAIT_QUEUE_H_
 
-#include "p99_id.h"
 #include "orwl_register.h"
 #include "orwl_endpoint.h"
+#include P99_ADVANCE_ID
 
 #ifdef __cplusplus
 extern "C" {

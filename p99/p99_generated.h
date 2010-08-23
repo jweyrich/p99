@@ -3115,6 +3115,14 @@
 
 //! @}
 
+//! @addtogroup variadic
+//! @{
+
+
+#define P99__variadic
+
+//! @}
+
 //! @}
 
 //! @}

@@ -124,7 +124,7 @@ P99__ISEMPTY(                                                           \
  **/
 
 /**
- ** @addtogroup variadic
+ ** @addtogroup variadic Macros to ease programming of variadic functions
  **
  ** @{
  **/

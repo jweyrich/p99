@@ -11,8 +11,8 @@
 #ifndef   	ORWL_REMOTE_QUEUE_H_
 # define   	ORWL_REMOTE_QUEUE_H_
 
-#include "p99_id.h"
 #include "orwl_wait_queue.h"
+#include P99_ADVANCE_ID
 
 /**
  ** @brief A structure to regulate queues between different servers.

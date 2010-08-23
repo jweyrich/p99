@@ -11,8 +11,8 @@
 #ifndef   	ORWL_HANDLE2_H_
 # define   	ORWL_HANDLE2_H_
 
-#include "p99_id.h"
 #include "orwl_remote_queue.h"
+#include P99_ADVANCE_ID
 
 /**
  ** @brief A handle for periodic tasks

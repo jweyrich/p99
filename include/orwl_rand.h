@@ -12,7 +12,7 @@
 # define   	ORWL_RAND_H_
 
 #include "orwl_thread.h"
-#include "p99_id.h"
+#include P99_ADVANCE_ID
 #include "orwl_enum.h"
 
 

@@ -11,9 +11,9 @@
 #ifndef   	ORWL_REGISTER_H_
 # define   	ORWL_REGISTER_H_
 
-#include "p99_id.h"
 #include "orwl_int.h"
 #include "orwl_enum.h"
+#include "p99_id.h"
 
 DECLARE_STRUCT(orwl_register);
 typedef orwl_register const*const orwl_domain;

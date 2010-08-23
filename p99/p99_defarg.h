@@ -18,6 +18,25 @@
  **/
 
 #include "p99_map.h"
+#include P99_ADVANCE_ID
+
+/**
+ ** @addtogroup code_augmenting C Programming facilities
+ **
+ ** Macros and functions in these groups are designed to ease
+ ** everyday's life. These concern initialization and heap allocation
+ ** of variables, default arguments for functions (yes, this is C),
+ ** "variadic" function that magically receive the length of their
+ ** argument list...
+ **
+ ** Most of this is implemented with macros. But we might also define
+ ** some helper functions. If so they are small and defined as @c
+ ** static @c inline, @c negligible, say.
+ ** @{
+ **/
+
+#define P99__code_augmenting
+
 
 /**
  ** @addtogroup default_arguments Default arguments for functions
@@ -231,5 +250,7 @@ P99_MACRO_END(NAME, _declare_defarg)
 /** @}
  **/
 
+/** @}
+ **/
 
 #endif 	    /* !P99_DEFARG_H_ */

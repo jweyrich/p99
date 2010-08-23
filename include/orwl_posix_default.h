@@ -25,7 +25,7 @@
 
 #include "orwl_posix.h"
 #include "p99_defarg.h"
-#include "p99_id.h"
+#include P99_ADVANCE_ID
 #include "orwl_int.h"
 #endif
 

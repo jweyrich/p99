@@ -11,8 +11,8 @@
 #ifndef   	ORWL_HOST_H_
 # define   	ORWL_HOST_H_
 
-#include "p99_id.h"
 #include "orwl_endpoint.h"
+#include P99_ADVANCE_ID
 
 /**
  ** @brief List element to hold the hosts to which an ::orwl_server

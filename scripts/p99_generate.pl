@@ -605,6 +605,7 @@ my @groups =
         [ "preprocessor_allocation" ],
         [ "preprocessor_initialization" ],
         [ "default_arguments" ],
+        [ "variadic" ],
       ],
     ];
 
