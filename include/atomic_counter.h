@@ -63,8 +63,8 @@ inline
 unsigned atomic_counter_getvalue(atomic_counter* p) {
   unsigned atomic_pos = 1;
   unsigned atomic_neg = 1;
-  INVARIANT(sem_assert(&p->atomic_neg) < 2u)
-    INVARIANT(sem_assert(&p->atomic_mut) < 2u) {
+  P99_INVARIANT(sem_assert(&p->atomic_neg) < 2u)
+    P99_INVARIANT(sem_assert(&p->atomic_mut) < 2u) {
     while (P99_EXPECT(atomic_pos == atomic_neg, false)) {
       SEM_CRITICAL(p->atomic_mut) {
         sem_getvalue0(&p->atomic_pos, &atomic_pos);
@@ -87,8 +87,8 @@ unsigned atomic_counter_getvalue(atomic_counter* p) {
  **/
 inline
 void atomic_counter_inc(atomic_counter* p) {
-  INVARIANT(sem_assert(&p->atomic_neg) < 2u)
-    INVARIANT(sem_assert(&p->atomic_mut) < 2u) {
+  P99_INVARIANT(sem_assert(&p->atomic_neg) < 2u)
+    P99_INVARIANT(sem_assert(&p->atomic_mut) < 2u) {
     sem_post(&p->atomic_pos);
     if (P99_EXPECT(sem_trywait_nointr(&p->atomic_neg) != 0, true)) {
       if (errno) {
@@ -120,8 +120,8 @@ void atomic_counter_inc(atomic_counter* p) {
  **/
 inline
 void atomic_counter_dec(atomic_counter* p) {
-  INVARIANT(sem_assert(&p->atomic_neg) < 2u)
-    INVARIANT(sem_assert(&p->atomic_mut) < 2u) {
+  P99_INVARIANT(sem_assert(&p->atomic_neg) < 2u)
+    P99_INVARIANT(sem_assert(&p->atomic_mut) < 2u) {
     if (P99_EXPECT(sem_trywait_nointr(&p->atomic_pos) != 0, false)) {
       assert(errno == EAGAIN);
       errno = 0;
@@ -143,8 +143,8 @@ void atomic_counter_dec(atomic_counter* p) {
 inline
 void atomic_counter_wait(atomic_counter* p) {
   for (bool unfinished = true; unfinished;) {
-    INVARIANT(sem_assert(&p->atomic_neg) < 2u)
-      INVARIANT(sem_assert(&p->atomic_mut) < 2u) {
+    P99_INVARIANT(sem_assert(&p->atomic_neg) < 2u)
+      P99_INVARIANT(sem_assert(&p->atomic_mut) < 2u) {
       sem_wait_nointr(&p->atomic_neg);
       SEM_CRITICAL(p->atomic_mut) {
         unfinished = (sem_trywait_nointr(&p->atomic_pos) == 0);

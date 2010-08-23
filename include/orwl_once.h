@@ -22,7 +22,7 @@ struct orwl__once_upon_cont {
 
 struct orwl__once_cont {
   void (*const init)(void);
-  int cond;
+  bool cond;
   pthread_mutex_t mut;
 };
 
@@ -63,7 +63,7 @@ static void P99_PASTE3(orwl__, T, _once_init)(void)
 static void P99_PASTE3(orwl__, T, _once_init)(void);    \
 struct orwl__once_cont P99_PASTE3(orwl__, T, _once) = { \
   .mut = PTHREAD_MUTEX_INITIALIZER,                     \
-  .cond = 0,                                            \
+  .cond = false,                                        \
   .init = P99_PASTE3(orwl__, T, _once_init),            \
 };                                                      \
 static void P99_PASTE3(orwl__, T, _once_init)(void)
@@ -108,11 +108,11 @@ do {                                                    \
  **/
 #define INIT_ONCE(T)                                                    \
 do {                                                                    \
-  if (P99_EXPECT(!(P99_PASTE3(orwl__, T, _once).cond), false))       \
+  if (P99_EXPECT(!(P99_PASTE3(orwl__, T, _once).cond), false))          \
     MUTUAL_EXCLUDE(P99_PASTE3(orwl__, T, _once).mut)                    \
       if (!(P99_PASTE3(orwl__, T, _once).cond)) {                       \
         P99_PASTE3(orwl__, T, _once).init();                            \
-        P99_PASTE3(orwl__, T, _once).cond = 1;                          \
+        P99_PASTE3(orwl__, T, _once).cond = true;                       \
       }                                                                 \
  } while(0)
 

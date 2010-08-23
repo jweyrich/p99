@@ -29,16 +29,7 @@
  ** @see P99_VA_ARGS
  **/
 
-/**
- ** @define expand to a comma token
- **
- ** This sometimes needed for trick macros such as
- ** ::P99_CALL_DEFARG_EVEN_EMPTY to ensure that a macro parameter
- ** inside a recursion is not empty.
- **/
-#define P99__COMMA_ ,
-
-#define INVARIANT(EXPR) P99_PROTECTED_BLOCK(assert("" && (EXPR)), assert("" && (EXPR)))
+#define P99_INVARIANT(EXPR) P99_PROTECTED_BLOCK(assert(EXPR), assert(EXPR))
 
 #define ARRAYSIZE(A) (sizeof(A)/sizeof(A[0]))
 

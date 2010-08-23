@@ -50,7 +50,7 @@
  ** So if all parameters are empty such as
  ** @code
  ** P99_DEC_DOUBLE()
- ** DEC(,,,,)
+ ** P99_DEC_DOUBLE(,,,,)
  ** @endcode
  ** this produces @c +0.0E+0
  **/
