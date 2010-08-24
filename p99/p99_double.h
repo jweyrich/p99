@@ -19,7 +19,8 @@
  **/
 
 /**
- ** @addtogroup double_constants
+ ** @addtogroup double_constants  Decimal or hexadecimal double constants
+ **
  ** Since not all substrings of a double constant form a valid
  ** preprocessor token, construction of @c double constants must be
  ** done carefully when done with macros. The macros here guarantee
