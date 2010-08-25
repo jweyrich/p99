@@ -25,51 +25,61 @@
  ** important, they may work nicely together.
  **
  ** Macros are text replacement that is done at compile time and they
- ** can do things like ::P99_ISSIGNED(T) which is defined by P99. That
- ** macro takes a type as an argument, and gives you a compile time
- ** expression of whether or not the integral type @c T is signed or
- ** not. That is, macros are ideally used when the type of an
- ** expression is not known (at the definition) and you want to do
- ** something about it. On the other hand, the pitfall with macros is
- ** that their arguments may be evaluated several times, which is bad
- ** because of side effects.
+ ** can do things like ::P99_SIGNED(EXPR) which is defined by P99. That
+ ** macro takes an expression as an argument, and tells at compile time
+ ** of whether or not the integral type of @c EXPR is signed or
+ ** not. Additionally it guarantees that @c EXPR itself is not
+ ** evaluated at run time (so there are no side effects), but that
+ ** only its type is taken into consideration.
+ **
+ ** Such an example shows that macros are ideally used when the type
+ ** of an expression is to be determined and you want to act
+ ** accordingly to that type. On the other hand, the pitfall with
+ ** macros is that their arguments may be evaluated several times,
+ ** which is bad because of side effects.
  **
  ** Functions on the other hand are typed, which makes them more
  ** strict or, phrased negatively, less flexible. Consider the
- ** functions
+ ** function
  **
  ** @code
- ** inline uintmax_t absU(uintmax_t a) { return a; }
- ** inline uintmax_t absS(uintmax_t a) {
- **    return (-a < a) ? -a : a;
+ ** inline
+ ** intmax_t p99__abs_signed(intmax_t a) {
+ **  return (a < 0) ? -a : a;
  ** }
  ** @endcode
  **
- ** The first implements the trivial @c abs function for an unsigned
- ** integral type. The second implements it for a signed type. (Yes,
- ** it takes an unsigned as argument, this is for purpose.)
+ ** It takes signed integer value @c a and computes its absolute
+ ** value. It would not be a good candidate for a macro, since @c a is
+ ** evaluated twice; once in the controlling expression and once for
+ ** returning its value or its negation.
  **
- ** We may use these two functions with any integral type. But, the
- ** return type will always be of the largest width and there is a
- ** certain difficulty on knowing how do choose between the two.
+ ** We may use this function with any integral type, but then the
+ ** argument will be promoted to @c intmax_t. In case that the value
+ ** @c A that is passed to the call is positive and greater than @c
+ ** INTMAX_MAX = 2<sup>N-1</sup> -1, the result is probably not what
+ ** we'd expect. (Here @c N is the width of @c uintmax_t). If the
+ ** conversion doesn't result in the run time system throwing a range
+ ** error (it would be permitted to do so), the argument @a a would
+ ** receive the negative value @c -C where @c C is @c 2<sup>N</sup> -
+ ** A.  The result of the function call would then be @c C and not @c
+ ** A.
  **
  ** Now with the following macro
  **
  ** @code
- ** #define ABS(T, A) ((T)(P99_ISSIGNED(T) ? absS : absU)(A))
+ ** #define P99_ABS(A) (P99_ISSIGNED(T) ? p99__abs_signed(A) : (A))
  ** @endcode
  **
- ** we have implemented a
+ ** we have implemented a functionality
  **
  ** <ul>
- **     <li>family of functions</li>
  **     <li>that works for any integral type</li>
- **     <li>that evaluates its argument only once</li>
- **     <li>for which any recent and decent compiler will create optimal code</li>
+ **     <li>that evaluates its argument exactly once</li>
+ **     <li>for which any recent and decent compiler will create
+ **         @ref inline "optimal code".
+ **     </li>
  ** </ul>
- **
- ** Well, admittedly doing this with @c abs is a bit artificial, but I
- ** hope you get the picture.
  **
  ** In that spirit, P99 aims to provide utilities that often combine
  ** macros and @c inline funcions and that are only possible with the
