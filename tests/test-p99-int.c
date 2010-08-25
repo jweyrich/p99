@@ -37,6 +37,9 @@ printf("%20s:\t%4u\t%5u\t%3zu\t%20jd\t%20ju,\t%5ssigned%20s\n", \
         ? ""                                                    \
         : representation[P99_SIGNED_REPRESENTATION(T)]))
 
+#define SAYIT2(A)                                                       \
+  printf("%ju is %ssigned\n", UINTMAX_C(A), (P99_SIGNED(A) ? "" : "un"))
+
 typedef enum { a1, b1 } enum1;
 typedef enum { a2 = -1, b2 } enum2;
 typedef enum { a3, b3, c3 } enum3;
@@ -45,7 +48,35 @@ typedef enum { a4 = -1, b4, c4 } enum4;
    int. Currently clang accepts this and gcc doesn't. */
 //typedef enum { a5 = (unsigned)-1, b5, c5 } enum5;
 
+intmax_t test_signedness_invers_1 = 0;
+intmax_t test_signedness_invers_2 = 0;
+intmax_t test_MAX_1 = 0;
+intmax_t test_MAX_2 = 0;
+uintmax_t test_MAX_3 = 0;
+uintmax_t test_MAX_4 = 0;
+intmax_t test_MAX_5 = 0;
+intmax_t test_MAX_6 = 0;
+uintmax_t test_MAX_7 = 0;
+uintmax_t test_MAX_8 = 0;
+
+intmax_t p99_signedness_invers(uintmax_t a);
+
 int main(int argc, char** argv) {
+  intmax_t vS = (argc < 2 ? 0 : strtoll(argv[1], NULL, 0));
+  uintmax_t vU = (argc < 3 ? 0 : strtoull(argv[2], NULL, 0));
+  test_signedness_invers_1 = p99_signedness_invers(vS);
+  test_signedness_invers_2 = p99_signedness_invers(vU);
+  test_MAX_1 = P99_MAX(vS, -1);
+  test_MAX_2 = P99_MAX(vS, vU);
+  test_MAX_3 = P99_MAX(vU, vS);
+  test_MAX_4 = P99_MAX(vU, UINTMAX_MAX - 1);
+  test_MAX_5 = P99_MAX(-2, -1);
+  test_MAX_6 = P99_MAX(1, -1);
+  test_MAX_7 = P99_MAX(-1, -2);
+  test_MAX_8 = P99_MAX(1, 2);
+  SAYIT2(9223372036854775807);
+  SAYIT2(9223372036854775808);
+  SAYIT2(9223372036854775809);
   printf("%20s:\t%2s\t%2s\t%2s\t%20s\t%20s,\t%5ssigned%20s\n",
          "type", "prec", "width", "pad", "min", "max", "{un}", "sign repr");
   SAYIT(_Bool);

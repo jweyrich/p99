@@ -28,6 +28,7 @@ SRC	=	orwl_wait_list.c		\
 		orwl_socket_test.c		\
 		orwl_socket_finish.c            \
 		test-p99-choice.c               \
+		test-p99-int.c                  \
 		test-p99-double.c               \
 		test-p99-va-arg.c
 

@@ -123,7 +123,7 @@ P99__DOCUMENT_UNSIGNED(3)
 #define P99_ST_MIN1(T) (-(T)P99_UT_MAX1(T))
 
 /**
- ** @brief Determine if @a T is an unsigned or signed type
+ ** @brief Determine if @a T is an unsigned or signed integral type
  **
  ** This works as follows:
  ** - If @a T is signed then -1 in that type is always less than 0 in
@@ -133,8 +133,190 @@ P99__DOCUMENT_UNSIGNED(3)
  **    than 0 in that type,
  ** - If @a T is @c _Bool or equivalent, -1 converted to it results in
  **    1 and 0 is also mapped to 0. Thus it is detected as unsigned.
+ **
+ ** @see P99_SIGNED for a similar macro that takes an expression as an
+ ** argument
  **/
 #define P99_ISSIGNED(T) (P99_M1(T) < P99_0(T))
+
+/**
+ ** @brief Compute expression @a A and apply integer promotion rules
+ ** under the constraint of expression @a B.
+ **
+ ** Expression @a A is evaluated exactly once. Expression @a B is only
+ ** used for its type and never evaluated.
+ **
+ ** The result can always be determined at compile time, if @a A can
+ ** be determined then, regardless of the actual value of @a B.  But
+ ** it is only a constant expression in the strict sense of C99 if
+ ** both @a A and @a B are so.
+ **
+ ** @warning Due to the integer promotion rules the resulting
+ ** expression has a width that is at least that of @c int, even if @a
+ ** A and @a B have smaller width than that.
+ **/
+#define P99_SIGN_PROMOTE(A, B) (1 ? (A) : (B))
+
+/**
+ ** @brief Determine if @a EXPR has an unsigned or signed integral type
+ **
+ ** Note that this macro does not evaluate @a EXPR but uses it only to
+ ** determine its signedness. There are no side effects.
+ **
+ ** The result can always be determined at compile time, but it is not
+ ** a constant expression in the strict sense of C99 if @a EXPR is not
+ ** so.
+ **
+ ** Beware, the result of this expression is not the sign of @a EXPR,
+ ** but whether or not the type of it could hold a signed value.
+ **
+ ** This works as follows:
+ ** - The condition of the conditional subexpression is always @c 1. So
+ **    that expression always evaluates to @c (intmax_t)-1 and @a
+ **    (EXPR) is never evaluated.
+ ** - The type of the conditional expression is signed if @a EXPR
+ **    has a designated type that is signed, or if @a EXPR is an
+ **    integer constant that fits into @c intmax_t.
+ ** - The type of the conditional expression is unsigned if @a EXPR
+ **    has a designated type that is unsigned, or if @a EXPR is an
+ **    integer constant that does not fit into @c intmax_t but into @c
+ **    uintmax_t.
+ ** - The width of the conditional expression is the maximal width of
+ **    an integer on the platform, namely that of @c intmax_t and @c
+ **    uintmax_t.
+ ** - The result of that conditional expression, i.e either @c
+ **     (intmax_t)-1 or @c (uintmax_t)-1, is now compared against @c
+ **     (intmax_t)0.
+ **
+ ** @see P99_ISSIGNED for a similar macro that takes a type as an argument
+ **/
+#define P99_SIGNED(EXPR) (P99_SIGN_PROMOTE(-INTMAX_C(1), EXPR) < INTMAX_C(0))
+
+
+inline
+intmax_t p99__abs_signed(intmax_t a) {
+  return (a < INTMAX_C(0)) ? -a : a;
+}
+
+/**
+ ** @brief Compute the absolute value of an integral expression.
+ **
+ ** @return The return type of this macro is @c intmax_t if @a EXPR
+ **    has a designated type that is signed, or if @a EXPR is an
+ **    integer constant that fits into @c intmax_t. Otherwise it is @c
+ **    uintmax_t.
+ **
+ ** @a EXPR is guaranteed to be evaluated exactly once.
+ **/
+#define P99_ABS(EXPR) (P99_SIGNED(EXPR) ? p99__abs_signed(EXPR) : (EXPR))
+
+/**
+ ** @brief Return an @c intmax_t value @c b such that @c (uintmax_t)b
+ ** is @a a, again.
+ **
+ ** On most modern platforms this should just be a reinterpretation of
+ ** the value of @a a. The difference to a simple cast is that this
+ ** function is guaranteed not to raise a range exception if @a a is
+ ** greater than @c INTMAX_MAX.
+ **/
+inline
+intmax_t p99_signedness_invers(uintmax_t a) {
+  return (a <= (uintmax_t)INTMAX_MAX)
+    ? (intmax_t)a
+    : -(intmax_t)-a;
+}
+
+inline
+intmax_t p99__max_ss(intmax_t a, intmax_t b) {
+  return (a < b) ? b : a;
+}
+
+inline
+intmax_t p99__max_su(intmax_t a, uintmax_t b) {
+  intmax_t bb = p99_signedness_invers(b);
+  return (a < INTMAX_C(0) || (uintmax_t)a < b) ? bb : a;
+}
+
+inline
+intmax_t p99__max_us(uintmax_t a, intmax_t b) {
+  intmax_t aa = p99_signedness_invers(a);
+  return (b < INTMAX_C(0) || (uintmax_t)b < a) ? aa : b;
+}
+
+inline
+intmax_t p99__max_uu(uintmax_t a, uintmax_t b) {
+  return p99_signedness_invers((a < b) ? b : a);
+}
+
+/**
+ ** @brief Compute the maximum value of two integral expressions.
+ **
+ ** @return The return type of this macro is @c intmax_t if each of
+ **    the arguments have a designated type that is signed, or if they
+ **    are integer constant that fit into @c intmax_t. Otherwise it is
+ **    @c uintmax_t.
+ **
+ ** @a A and @a B are guaranteed to be evaluated exactly once, each.
+ ** @see P99_MIN
+ **/
+#define P99_MAX(A, B)                           \
+(P99_SIGN_PROMOTE                               \
+ (                                              \
+  (P99_SIGNED(A)                                \
+   ? (P99_SIGNED(B)                             \
+      ? p99__max_ss((A), (B))                   \
+      : p99__max_su((A), (B)))                  \
+   : (P99_SIGNED((B))                           \
+      ? p99__max_us((A), (B))                   \
+      : p99__max_uu((A), (B)))),                \
+  P99_SIGN_PROMOTE((A), (B))))
+
+inline
+intmax_t p99__min_ss(intmax_t a, intmax_t b) {
+  return (a < b) ? a : b;
+}
+
+inline
+intmax_t p99__min_su(intmax_t a, uintmax_t b) {
+  intmax_t bb = p99_signedness_invers(b);
+  return (a < INTMAX_C(0) || (uintmax_t)a < b) ? a : bb;
+}
+
+inline
+intmax_t p99__min_us(uintmax_t a, intmax_t b) {
+  intmax_t aa = p99_signedness_invers(a);
+  return (b < INTMAX_C(0) || (uintmax_t)b < a) ? b : aa;
+}
+
+inline
+intmax_t p99__min_uu(uintmax_t a, uintmax_t b) {
+  return p99_signedness_invers((a < b) ? a : b);
+}
+
+/**
+ ** @brief Compute the minimum value of two integral expressions.
+ **
+ ** @return The return type of this macro is @c intmax_t if each of
+ **    the arguments have a designated type that is signed, or if they
+ **    are integer constant that fit into @c intmax_t. Otherwise it is
+ **    @c uintmax_t.
+ **
+ ** @a A and @a B are guaranteed to be evaluated exactly once, each.
+ ** @see P99_MAX
+ **/
+#define P99_MIN(A, B)                           \
+(P99_SIGN_PROMOTE                               \
+ (                                              \
+  (P99_SIGNED(A)                                \
+   ? (P99_SIGNED(B)                             \
+      ? p99__min_ss((A), (B))                   \
+      : p99__min_su((A), (B)))                  \
+   : (P99_SIGNED((B))                           \
+      ? p99__min_us((A), (B))                   \
+      : p99__min_uu((A), (B)))),                \
+  P99_SIGN_PROMOTE((A), (B))))
+
+
 
 /**
  ** @brief C99 allows for exactly three different possibilities to
