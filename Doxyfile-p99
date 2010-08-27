@@ -25,7 +25,7 @@ DOXYFILE_ENCODING      = UTF-8
 # The PROJECT_NAME tag is a single word (or a sequence of words surrounded
 # by quotes) that should identify the project.
 
-PROJECT_NAME           = p99
+PROJECT_NAME           = P99
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number.
 # This could be handy for archiving the generated documentation or
@@ -557,7 +557,7 @@ WARN_FORMAT            = "$file:$line: $text"
 # and error messages should be written. If left blank the output is written
 # to stderr.
 
-WARN_LOGFILE           = doxygen.log
+WARN_LOGFILE           = doxygen-p99.log
 
 #---------------------------------------------------------------------------
 # configuration options related to the input files
@@ -568,7 +568,7 @@ WARN_LOGFILE           = doxygen.log
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = p99
+INPUT                  = p99 doxy
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -794,7 +794,7 @@ HTML_FOOTER            =
 # the style sheet file to the HTML output directory, so don't put your own
 # stylesheet in the HTML output directory as well, or it will be erased!
 
-HTML_STYLESHEET        =
+HTML_STYLESHEET        = doxy/p99-doxygen.css
 
 # If the HTML_ALIGN_MEMBERS tag is set to YES, the members of classes,
 # files or namespaces will be aligned in HTML using tables. If set to
@@ -1291,6 +1291,7 @@ P99_PASTE4					\
 P99_PROTOTYPE					\
 P99__DECLARE_ARI2STR				\
 P99__DOCUMENT_ID                                \
+P99__DOCUMENT_PROMOTE				\
 P99__DOCUMENT_SIGNED				\
 P99__DOCUMENT_UNSIGNED				\
 P99__ORWL_ALIAS					\

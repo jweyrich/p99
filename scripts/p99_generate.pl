@@ -568,21 +568,108 @@ for (my $i = 2; $i < $maxnumber; ++$i) {
     "\tOP(NAME, $i1, P99__FOR${i1}(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), $i1))\n";
 }
 
-{
-    print "#define P99_HIGH2(X) \\\n";
-    my $pow2 = 1;
-    for (my $i = 0; $i < 64; ++$i, $pow2 = ($pow2 * 2)) {
-        print  " "x${i}, " (((X)==UINTMAX_C(${pow2}))?${i}U:", " "x(65 - $i), "\\\n";
+print << 'MAXHEAD';
+
+/* The preprocessor always computes with the precision of uintmax_t */
+/* so for the preprocessor this is equivalent to UINITMAX_MAX       */
+#define P99__UNSIGNED_MAX ~0u
+
+#define P99__S0 0x01
+#define P99__S1 0x02
+#define P99__S2 0x04
+#define P99__S3 0x08
+#define P99__S4 0x10
+#define P99__S5 0x20
+#define P99__S6 0x40
+
+
+
+/* This has to be such ugly #if/#else to ensure that the            */
+/* preprocessor never sees a constant that is too large.            */
+MAXHEAD
+
+sub printnumber {
+    my @arg = @_;
+    my $ret = "";
+    my $started = 0;
+    while (@arg) {
+        my $n = pop @arg;
+        if ($started) {
+            if ($n > 0xFFFFFFF) {
+                $ret .= sprintf("%X", $n);
+            } else {
+                $ret .= sprintf("%08X", $n);
+            }
+        } elsif ($n) {
+            $started = 1;
+            $ret .= sprintf("%X", $n);
+        }
     }
-    print " 0" . ")"x65 . "\n",
+    $ret = "0" if (!$started);
+    $ret;
 }
+
 {
-    print "#define P99_HIGH2_1(X) \\\n";
-    my $pow2 = 0;
-    for (my $i = 0; $i <= 64; ++$i, $pow2 = (($pow2 * 2) + 1)) {
-        print  " "x${i}, " (((X)==UINTMAX_C(${pow2}))?${i}U:", " "x(65 - $i), "\\\n";
+    my @maxval = ( 0xFFFFFFFF, 0, 0, 0 );
+
+    my @B0 = ( 0xAAAAAAAA, 0, 0, 0);
+    my @B1 = ( 0xCCCCCCCC, 0, 0, 0);
+    my @B2 = ( 0xF0F0F0F0, 0, 0, 0);
+    my @B3 = ( 0xFF00FF00, 0, 0, 0);
+    my @B4 = ( 0xFFFF0000, 0, 0, 0);
+    my @B5 = ( 0x00000000, 0, 0, 0);
+    my @B6 = ( 0x00000000, 0, 0, 0);
+
+    sub advance($$) {
+        my ($pos, $width) = @_;
+        my $relwidth = $width % 32;
+        $maxval[$pos] = ($maxval[$pos] << 1) + 1;
+        $B0[$pos] |= (!!($width & 0x01) << $relwidth);
+        $B1[$pos] |= (!!($width & 0x02) << $relwidth);
+        $B2[$pos] |= (!!($width & 0x04) << $relwidth);
+        $B3[$pos] |= (!!($width & 0x08) << $relwidth);
+        $B4[$pos] |= (!!($width & 0x10) << $relwidth);
+        $B5[$pos] |= (!!($width & 0x20) << $relwidth);
+        $B6[$pos] |= (!!($width & 0x40) << $relwidth);
+        # $B5[$pos] = ($B5[$pos] << 1) + 1
+        #     if ($pos % 2);
+        # $B6[$pos] = ($B6[$pos] << 1) + 1
+        #     if ($width >= 64);
     }
-    print " 0" . ")"x65 . "\n",
+
+    sub printout($) {
+        my ($width) = @_;
+        printf "#if P99__UNSIGNED_MAX == 0x%s\n", printnumber(@maxval);
+        printf "#define P99_UINTMAX_BIT %u\n", $width;
+        printf "#define P99_UINTMAX_MAX UINTMAX_C(0x%s)\n", printnumber(@maxval);
+        printf "#define P99__B0 UINTMAX_C(0x%s)\n", printnumber(@B0);
+        printf "#define P99__B1 UINTMAX_C(0x%s)\n", printnumber(@B1);
+        printf "#define P99__B2 UINTMAX_C(0x%s)\n", printnumber(@B2);
+        printf "#define P99__B3 UINTMAX_C(0x%s)\n", printnumber(@B3);
+        printf "#define P99__B4 UINTMAX_C(0x%s)\n", printnumber(@B4);
+        printf "#define P99__B5 UINTMAX_C(0x%s)\n", printnumber(@B5);
+        printf "#define P99__B6 UINTMAX_C(0x%s)\n", printnumber(@B6);
+    }
+
+    for (my $i = 32; $i < 64; ++$i) {
+        printout($i);
+        advance(1, $i);
+        print "#else\n";
+    }
+    for (my $i = 64; $i < 96; ++$i) {
+        printout($i);
+        advance(2, $i);
+        print "#else\n";
+    }
+    for (my $i = 96; $i < 129; ++$i) {
+        printout($i);
+        advance(3, $i);
+        if ($i < 128) {
+            print "#else\n";
+        } else {
+            print "#endif /* P99__UNSIGNED_MAX */\n" x (129 - 32);
+        }
+    }
 }
 
 my @groups =

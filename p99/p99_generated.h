@@ -2857,139 +2857,1186 @@
 	OP(NAME, 78, P99__FOR78(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 78))
 #define P99__FOR80(NAME, OP, FUNC, ...) \
 	OP(NAME, 79, P99__FOR79(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 79))
-#define P99_HIGH2(X) \
- (((X)==UINTMAX_C(1))?0U:                                                                 \
-  (((X)==UINTMAX_C(2))?1U:                                                                \
-   (((X)==UINTMAX_C(4))?2U:                                                               \
-    (((X)==UINTMAX_C(8))?3U:                                                              \
-     (((X)==UINTMAX_C(16))?4U:                                                             \
-      (((X)==UINTMAX_C(32))?5U:                                                            \
-       (((X)==UINTMAX_C(64))?6U:                                                           \
-        (((X)==UINTMAX_C(128))?7U:                                                          \
-         (((X)==UINTMAX_C(256))?8U:                                                         \
-          (((X)==UINTMAX_C(512))?9U:                                                        \
-           (((X)==UINTMAX_C(1024))?10U:                                                       \
-            (((X)==UINTMAX_C(2048))?11U:                                                      \
-             (((X)==UINTMAX_C(4096))?12U:                                                     \
-              (((X)==UINTMAX_C(8192))?13U:                                                    \
-               (((X)==UINTMAX_C(16384))?14U:                                                   \
-                (((X)==UINTMAX_C(32768))?15U:                                                  \
-                 (((X)==UINTMAX_C(65536))?16U:                                                 \
-                  (((X)==UINTMAX_C(131072))?17U:                                                \
-                   (((X)==UINTMAX_C(262144))?18U:                                               \
-                    (((X)==UINTMAX_C(524288))?19U:                                              \
-                     (((X)==UINTMAX_C(1048576))?20U:                                             \
-                      (((X)==UINTMAX_C(2097152))?21U:                                            \
-                       (((X)==UINTMAX_C(4194304))?22U:                                           \
-                        (((X)==UINTMAX_C(8388608))?23U:                                          \
-                         (((X)==UINTMAX_C(16777216))?24U:                                         \
-                          (((X)==UINTMAX_C(33554432))?25U:                                        \
-                           (((X)==UINTMAX_C(67108864))?26U:                                       \
-                            (((X)==UINTMAX_C(134217728))?27U:                                      \
-                             (((X)==UINTMAX_C(268435456))?28U:                                     \
-                              (((X)==UINTMAX_C(536870912))?29U:                                    \
-                               (((X)==UINTMAX_C(1073741824))?30U:                                   \
-                                (((X)==UINTMAX_C(2147483648))?31U:                                  \
-                                 (((X)==UINTMAX_C(4294967296))?32U:                                 \
-                                  (((X)==UINTMAX_C(8589934592))?33U:                                \
-                                   (((X)==UINTMAX_C(17179869184))?34U:                               \
-                                    (((X)==UINTMAX_C(34359738368))?35U:                              \
-                                     (((X)==UINTMAX_C(68719476736))?36U:                             \
-                                      (((X)==UINTMAX_C(137438953472))?37U:                            \
-                                       (((X)==UINTMAX_C(274877906944))?38U:                           \
-                                        (((X)==UINTMAX_C(549755813888))?39U:                          \
-                                         (((X)==UINTMAX_C(1099511627776))?40U:                         \
-                                          (((X)==UINTMAX_C(2199023255552))?41U:                        \
-                                           (((X)==UINTMAX_C(4398046511104))?42U:                       \
-                                            (((X)==UINTMAX_C(8796093022208))?43U:                      \
-                                             (((X)==UINTMAX_C(17592186044416))?44U:                     \
-                                              (((X)==UINTMAX_C(35184372088832))?45U:                    \
-                                               (((X)==UINTMAX_C(70368744177664))?46U:                   \
-                                                (((X)==UINTMAX_C(140737488355328))?47U:                  \
-                                                 (((X)==UINTMAX_C(281474976710656))?48U:                 \
-                                                  (((X)==UINTMAX_C(562949953421312))?49U:                \
-                                                   (((X)==UINTMAX_C(1125899906842624))?50U:               \
-                                                    (((X)==UINTMAX_C(2251799813685248))?51U:              \
-                                                     (((X)==UINTMAX_C(4503599627370496))?52U:             \
-                                                      (((X)==UINTMAX_C(9007199254740992))?53U:            \
-                                                       (((X)==UINTMAX_C(18014398509481984))?54U:           \
-                                                        (((X)==UINTMAX_C(36028797018963968))?55U:          \
-                                                         (((X)==UINTMAX_C(72057594037927936))?56U:         \
-                                                          (((X)==UINTMAX_C(144115188075855872))?57U:        \
-                                                           (((X)==UINTMAX_C(288230376151711744))?58U:       \
-                                                            (((X)==UINTMAX_C(576460752303423488))?59U:      \
-                                                             (((X)==UINTMAX_C(1152921504606846976))?60U:     \
-                                                              (((X)==UINTMAX_C(2305843009213693952))?61U:    \
-                                                               (((X)==UINTMAX_C(4611686018427387904))?62U:   \
-                                                                (((X)==UINTMAX_C(9223372036854775808))?63U:  \
- 0)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
-#define P99_HIGH2_1(X) \
- (((X)==UINTMAX_C(0))?0U:                                                                 \
-  (((X)==UINTMAX_C(1))?1U:                                                                \
-   (((X)==UINTMAX_C(3))?2U:                                                               \
-    (((X)==UINTMAX_C(7))?3U:                                                              \
-     (((X)==UINTMAX_C(15))?4U:                                                             \
-      (((X)==UINTMAX_C(31))?5U:                                                            \
-       (((X)==UINTMAX_C(63))?6U:                                                           \
-        (((X)==UINTMAX_C(127))?7U:                                                          \
-         (((X)==UINTMAX_C(255))?8U:                                                         \
-          (((X)==UINTMAX_C(511))?9U:                                                        \
-           (((X)==UINTMAX_C(1023))?10U:                                                       \
-            (((X)==UINTMAX_C(2047))?11U:                                                      \
-             (((X)==UINTMAX_C(4095))?12U:                                                     \
-              (((X)==UINTMAX_C(8191))?13U:                                                    \
-               (((X)==UINTMAX_C(16383))?14U:                                                   \
-                (((X)==UINTMAX_C(32767))?15U:                                                  \
-                 (((X)==UINTMAX_C(65535))?16U:                                                 \
-                  (((X)==UINTMAX_C(131071))?17U:                                                \
-                   (((X)==UINTMAX_C(262143))?18U:                                               \
-                    (((X)==UINTMAX_C(524287))?19U:                                              \
-                     (((X)==UINTMAX_C(1048575))?20U:                                             \
-                      (((X)==UINTMAX_C(2097151))?21U:                                            \
-                       (((X)==UINTMAX_C(4194303))?22U:                                           \
-                        (((X)==UINTMAX_C(8388607))?23U:                                          \
-                         (((X)==UINTMAX_C(16777215))?24U:                                         \
-                          (((X)==UINTMAX_C(33554431))?25U:                                        \
-                           (((X)==UINTMAX_C(67108863))?26U:                                       \
-                            (((X)==UINTMAX_C(134217727))?27U:                                      \
-                             (((X)==UINTMAX_C(268435455))?28U:                                     \
-                              (((X)==UINTMAX_C(536870911))?29U:                                    \
-                               (((X)==UINTMAX_C(1073741823))?30U:                                   \
-                                (((X)==UINTMAX_C(2147483647))?31U:                                  \
-                                 (((X)==UINTMAX_C(4294967295))?32U:                                 \
-                                  (((X)==UINTMAX_C(8589934591))?33U:                                \
-                                   (((X)==UINTMAX_C(17179869183))?34U:                               \
-                                    (((X)==UINTMAX_C(34359738367))?35U:                              \
-                                     (((X)==UINTMAX_C(68719476735))?36U:                             \
-                                      (((X)==UINTMAX_C(137438953471))?37U:                            \
-                                       (((X)==UINTMAX_C(274877906943))?38U:                           \
-                                        (((X)==UINTMAX_C(549755813887))?39U:                          \
-                                         (((X)==UINTMAX_C(1099511627775))?40U:                         \
-                                          (((X)==UINTMAX_C(2199023255551))?41U:                        \
-                                           (((X)==UINTMAX_C(4398046511103))?42U:                       \
-                                            (((X)==UINTMAX_C(8796093022207))?43U:                      \
-                                             (((X)==UINTMAX_C(17592186044415))?44U:                     \
-                                              (((X)==UINTMAX_C(35184372088831))?45U:                    \
-                                               (((X)==UINTMAX_C(70368744177663))?46U:                   \
-                                                (((X)==UINTMAX_C(140737488355327))?47U:                  \
-                                                 (((X)==UINTMAX_C(281474976710655))?48U:                 \
-                                                  (((X)==UINTMAX_C(562949953421311))?49U:                \
-                                                   (((X)==UINTMAX_C(1125899906842623))?50U:               \
-                                                    (((X)==UINTMAX_C(2251799813685247))?51U:              \
-                                                     (((X)==UINTMAX_C(4503599627370495))?52U:             \
-                                                      (((X)==UINTMAX_C(9007199254740991))?53U:            \
-                                                       (((X)==UINTMAX_C(18014398509481983))?54U:           \
-                                                        (((X)==UINTMAX_C(36028797018963967))?55U:          \
-                                                         (((X)==UINTMAX_C(72057594037927935))?56U:         \
-                                                          (((X)==UINTMAX_C(144115188075855871))?57U:        \
-                                                           (((X)==UINTMAX_C(288230376151711743))?58U:       \
-                                                            (((X)==UINTMAX_C(576460752303423487))?59U:      \
-                                                             (((X)==UINTMAX_C(1152921504606846975))?60U:     \
-                                                              (((X)==UINTMAX_C(2305843009213693951))?61U:    \
-                                                               (((X)==UINTMAX_C(4611686018427387903))?62U:   \
-                                                                (((X)==UINTMAX_C(9223372036854775807))?63U:  \
-                                                                 (((X)==UINTMAX_C(18446744073709551615))?64U: \
- 0)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+
+/* The preprocessor always computes with the precision of uintmax_t */
+/* so for the preprocessor this is equivalent to UINITMAX_MAX       */
+#define P99__UNSIGNED_MAX ~0u
+
+#define P99__S0 0x01
+#define P99__S1 0x02
+#define P99__S2 0x04
+#define P99__S3 0x08
+#define P99__S4 0x10
+#define P99__S5 0x20
+#define P99__S6 0x40
+
+
+
+/* This has to be such ugly #if/#else to ensure that the            */
+/* preprocessor never sees a constant that is too large.            */
+#if P99__UNSIGNED_MAX == 0xFFFFFFFF
+#define P99_UINTMAX_BIT 32
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x0)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFF
+#define P99_UINTMAX_BIT 33
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x100000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFF
+#define P99_UINTMAX_BIT 34
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x300000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFF
+#define P99_UINTMAX_BIT 35
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x700000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFF
+#define P99_UINTMAX_BIT 36
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0xF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFF
+#define P99_UINTMAX_BIT 37
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x10F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x1F00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFF
+#define P99_UINTMAX_BIT 38
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x30F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x3F00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFF
+#define P99_UINTMAX_BIT 39
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x70F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x7F00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFF
+#define P99_UINTMAX_BIT 40
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0xFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFF
+#define P99_UINTMAX_BIT 41
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x100FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x1FF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFF
+#define P99_UINTMAX_BIT 42
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x300FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x3FF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFF
+#define P99_UINTMAX_BIT 43
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x700FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x7FF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFF
+#define P99_UINTMAX_BIT 44
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0xFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFF
+#define P99_UINTMAX_BIT 45
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x10F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x1F00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x1FFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFF
+#define P99_UINTMAX_BIT 46
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x30F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x3F00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x3FFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFF
+#define P99_UINTMAX_BIT 47
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x70F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x7F00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0x7FFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 48
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFF
+#define P99_UINTMAX_BIT 49
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x10000FFFF0000)
+#define P99__B5 UINTMAX_C(0x1FFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFF
+#define P99_UINTMAX_BIT 50
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x30000FFFF0000)
+#define P99__B5 UINTMAX_C(0x3FFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFF
+#define P99_UINTMAX_BIT 51
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x70000FFFF0000)
+#define P99__B5 UINTMAX_C(0x7FFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 52
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 53
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x10F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x1F0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x1FFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 54
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x30F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x3F0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x3FFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 55
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x70F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x7F0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x7FFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 56
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 57
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x100FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x1FF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x1FFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 58
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x300FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x3FF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x3FFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 59
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x700FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x7FF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x7FFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 60
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 61
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x10F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x1F00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x1FFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x1FFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 62
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x30F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x3F00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x3FFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x3FFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 63
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x70F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x7F00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x7FFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x7FFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 64
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x0)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 65
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x10000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 66
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x30000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 67
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x70000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 68
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 69
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x10F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1F0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 70
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x30F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3F0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 71
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x70F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7F0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 72
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 73
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x100FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 74
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x300FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 75
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x700FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 76
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 77
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x10F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x1F00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 78
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x30F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x3F00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 79
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x70F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x7F00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 80
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 81
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x10000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 82
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x30000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 83
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x70000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 84
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 85
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x10F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x1F0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 86
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x30F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x3F0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 87
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x70F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x7F0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 88
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 89
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x100FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x1FF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 90
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x300FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x3FF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 91
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x700FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x7FF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 92
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 93
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x10F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x1F00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x1FFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 94
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x30F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x3F00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x3FFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 95
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x70F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x7F00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x7FFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 96
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 97
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x100000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 98
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x300000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 99
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x700000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 100
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 101
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x10F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x1F00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 102
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x30F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x3F00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 103
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x70F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x7F00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 104
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 105
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x100FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x1FF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 106
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x300FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x3FF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 107
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x700FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x7FF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 108
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 109
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x10F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x1F00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x1FFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 110
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x30F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x3F00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x3FFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 111
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x70F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x7F00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x7FFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 112
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 113
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x10000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x1FFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 114
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x30000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x3FFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 115
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x70000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x7FFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 116
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xF0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 117
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x10F0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x1F0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x1FFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 118
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x30F0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x3F0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x3FFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 119
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x70F0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x7F0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x7FFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 120
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFF0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 121
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x100FF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x1FF0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x1FFFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 122
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x300FF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x3FF0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x3FFFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 123
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x700FF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x7FF0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x7FFFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 124
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xF00FF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFF0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 125
+#define P99_UINTMAX_MAX UINTMAX_C(0x1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x10F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x1F00FF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x1FFF0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x1FFFFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x1FFFFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 126
+#define P99_UINTMAX_MAX UINTMAX_C(0x3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x30F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x3F00FF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x3FFF0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x3FFFFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x3FFFFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 127
+#define P99_UINTMAX_MAX UINTMAX_C(0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0x2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0x4CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0x70F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0x7F00FF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0x7FFF0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0x7FFFFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0x7FFFFFFFFFFFFFFF0000000000000000)
+#else
+#if P99__UNSIGNED_MAX == 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+#define P99_UINTMAX_BIT 128
+#define P99_UINTMAX_MAX UINTMAX_C(0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+#define P99__B0 UINTMAX_C(0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+#define P99__B1 UINTMAX_C(0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC)
+#define P99__B2 UINTMAX_C(0xF0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0)
+#define P99__B3 UINTMAX_C(0xFF00FF00FF00FF00FF00FF00FF00FF00)
+#define P99__B4 UINTMAX_C(0xFFFF0000FFFF0000FFFF0000FFFF0000)
+#define P99__B5 UINTMAX_C(0xFFFFFFFF00000000FFFFFFFF00000000)
+#define P99__B6 UINTMAX_C(0xFFFFFFFFFFFFFFFF0000000000000000)
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
+#endif /* P99__UNSIGNED_MAX */
 
 //! @addtogroup preprocessor_macros
 //! @{

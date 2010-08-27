@@ -20,6 +20,27 @@
 #include "p99_if.h"
 
 /**
+ ** @addtogroup integers Macros to handle integer type expressions
+ **
+ ** The macros here help to integers more easily, e.g to detect if a
+ ** type or expression is signed, what the maximum and minimum values
+ ** are etc.
+ **
+ ** @{
+ */
+
+#define P99_HIGH2(X)                            \
+((((X) & P99__B0) ? P99__S0 : 0u)               \
+ | (((X) & P99__B1) ? P99__S1 : 0u)             \
+ | (((X) & P99__B2) ? P99__S2 : 0u)             \
+ | (((X) & P99__B3) ? P99__S3 : 0u)             \
+ | (((X) & P99__B4) ? P99__S4 : 0u)             \
+ | (((X) & P99__B5) ? P99__S5 : 0u)             \
+ | (((X) & P99__B6) ? P99__S6 : 0u))
+
+#define P99_HIGH2_1(X) ((X) == P99_UINTMAX_MAX ? P99_UINTMAX_BIT : (P99_HIGH2((X) + UINTMAX_C(1))))
+
+/**
  ** @brief Apply the type macro @a MACRO to an unsigned type that is
  ** compatible with type @a T.
  **
@@ -60,8 +81,7 @@
 #define P99_M1U(T) P99_TO_UNSIGNED(T, P99_M1)
 
 #define P99__DOCUMENT_SIGNED(X) /*! @brief Cast the @c int value @c X to type @a T */
-#define P99__DOCUMENT_UNSIGNED(X)                                       \
-/*! @brief Cast the @c int value @c X to the unsigned type corresponding to @a T */
+#define P99__DOCUMENT_UNSIGNED(X) /*! @brief Cast the @c int value @c X to the unsigned type corresponding to @a T */
 
 P99__DOCUMENT_SIGNED(0)
 #define P99_0(T) ((T)0)
@@ -107,7 +127,6 @@ P99__DOCUMENT_UNSIGNED(3)
  ** @see P99_TMAX
  **/
 #define P99_UT_MAX1(T) (P99_UT_MAX(T)/2u)
-#define P99_UT_HIGH(T) (P99_UT_MAX1(T) + P99_1U(T))
 
 /**
  ** @brief The negative of the half of the maximum representable value
@@ -120,7 +139,7 @@ P99__DOCUMENT_UNSIGNED(3)
  **
  ** @see P99_TMIN
  **/
-#define P99_ST_MIN1(T) (-(T)P99_UT_MAX1(T))
+#define P99__ST_MIN1(T) (-(T)P99_UT_MAX1(T))
 
 /**
  ** @brief Determine if @a T is an unsigned or signed integral type
@@ -157,6 +176,144 @@ P99__DOCUMENT_UNSIGNED(3)
  **/
 #define P99_SIGN_PROMOTE(A, B) (1 ? (A) : (B))
 
+
+#define P99__SEE_PROMOTE /*! @see P99_SIGN_PROMOTE for rules about integer sign promotion */
+
+#define P99__DOCUMENT_PROMOTE(X) /*! @brief Promote the integer value @c X under the constraint of expression @a EXPR */
+
+P99__DOCUMENT_PROMOTE(0)
+P99__SEE_PROMOTE
+#define P99_PROMOTE_0(EXPR) P99_SIGN_PROMOTE(0, (EXPR))
+
+P99__DOCUMENT_PROMOTE(1)
+P99__SEE_PROMOTE
+#define P99_PROMOTE_1(EXPR) P99_SIGN_PROMOTE(1, (EXPR))
+
+P99__DOCUMENT_PROMOTE(2)
+P99__SEE_PROMOTE
+#define P99_PROMOTE_2(EXPR) P99_SIGN_PROMOTE(2, (EXPR))
+
+P99__DOCUMENT_PROMOTE(3)
+P99__SEE_PROMOTE
+#define P99_PROMOTE_3(EXPR) P99_SIGN_PROMOTE(3, (EXPR))
+
+P99__DOCUMENT_PROMOTE(0U)
+P99__SEE_PROMOTE
+#define P99_PROMOTE_0U(EXPR) P99_SIGN_PROMOTE(0U, (EXPR))
+
+P99__DOCUMENT_PROMOTE(1u)
+P99__SEE_PROMOTE
+#define P99_PROMOTE_1U(EXPR) P99_SIGN_PROMOTE(1U, (EXPR))
+
+P99__DOCUMENT_PROMOTE(2u)
+P99__SEE_PROMOTE
+#define P99_PROMOTE_2U(EXPR) P99_SIGN_PROMOTE(2U, (EXPR))
+
+
+P99__DOCUMENT_PROMOTE(-1)
+P99__SEE_PROMOTE
+#define P99_PROMOTE_M1(EXPR) P99_SIGN_PROMOTE(-1, (EXPR))
+
+/**
+ ** @brief Promote the integer value @c -1 under the constraint of the
+ ** unsigned promoted expression @a EXPR
+ ** */
+P99__SEE_PROMOTE
+#define P99_PROMOTE_M1U(EXPR) P99_SIGN_PROMOTE(P99_PROMOTE_M1(EXPR), P99_PROMOTE_0U(EXPR))
+
+/**
+ ** @brief The maximum representable value of the unsigned type
+ ** promoted with respect to expression @a EXPR.
+ **
+ ** The returning expression is of unsigned integer type.
+ **/
+P99__SEE_PROMOTE
+#define P99_UE_MAX(EXPR) (P99_PROMOTE_M1U(EXPR))
+
+/**
+ ** @brief Half of the maximum representable value of the unsigned type
+ ** promoted with respect to expression @a EXPR
+ **
+ ** This is the maximum representable value of the signed type
+ ** promoted with respect to @a EXPR
+ **
+ ** The returning expression is of unsigned integer type.
+ **
+ ** @see P99_TMAX
+ **/
+P99__SEE_PROMOTE
+#define P99_UE_MAX1(EXPR) (P99_UE_MAX(EXPR)/P99_PROMOTE_2U(EXPR))
+
+
+/**
+ ** @brief The width of the integral type of expression @a EXPR.
+ **
+ ** This is the precision plus eventually a sign bit, if the type is
+ ** signed.
+ **
+ ** The resulting expression is evaluated at compile time and maybe
+ ** used int constant expressions.
+ ** @warning These are not necessarily all bits that are @em used by
+ ** the type, there might be padding bits.
+ ** @see P99_TWIDTH
+ ** @see P99_EPREC
+ ** @see P99_EPADDING
+ **/
+P99__SEE_PROMOTE
+#define P99_EWIDTH(EXPR) (P99_HIGH2_1(P99_UE_MAX(EXPR)))
+
+/**
+ ** @brief The precision, i.e the number of significant bits the
+ ** integral type of expression @a EXPR.
+ **
+ ** The resulting expression is evaluated at compile time and maybe
+ ** used int constant expressions.
+ ** @warning this is not necessarily the width of @a T
+ ** @see P99_TPREC
+ ** @see P99_EWIDTH
+ ** @see P99_EPADDING
+ **/
+P99__SEE_PROMOTE
+#define P99_EPREC(EXPR) (P99_EWIDTH(EXPR) - P99_SIGNED(EXPR))
+
+/**
+ ** @brief The padding bits of the integral type of expression @a EXPR.
+ **
+ ** These are the bits that are not used for the numerical
+ ** representation of the values. On most architectures and for most
+ ** types this will be 0. But for e.g for @c _Bool this will be at
+ ** least 7.
+ **
+ ** The resulting expression is evaluated at compile time and maybe
+ ** used int constant expressions.
+ ** @see P99_TPADDING
+ ** @see P99_EWIDTH
+ ** @see P99_EPREC
+ **/
+P99__SEE_PROMOTE
+#define P99_EPADDING(EXPR) (sizeof(P99_PROMOTE_0(EXPR))*CHAR_BIT - P99_EWIDTH(EXPR))
+
+#define P99_SE_MAX(EXPR)                        \
+((((P99_PROMOTE_1(EXPR)                         \
+    << (P99_EWIDTH(EXPR) - 2U))                 \
+   - P99_PROMOTE_1(EXPR))                       \
+  << 1U)                                        \
+ + P99_PROMOTE_1(EXPR))
+
+
+/**
+ ** @brief The negative of the half of the maximum representable value
+ ** of the promoted integral type of expression @a EXPR
+ **
+ ** This is generally not the minimum representable value of the signed type
+ ** corresponding to @a EXPR, it might deviate by one from that value.
+ **
+ ** The returning expression is of type @a T.
+ **
+ ** @see P99_TMIN
+ **/
+#define P99__SE_MIN1(EXPR) (-P99_SE_MAX(EXPR))
+
 /**
  ** @brief Determine if @a EXPR has an unsigned or signed integral type
  **
@@ -170,41 +327,27 @@ P99__DOCUMENT_UNSIGNED(3)
  ** Beware, the result of this expression is not the sign of @a EXPR,
  ** but whether or not the type of it could hold a signed value.
  **
- ** This works as follows:
- ** - The condition of the conditional subexpression is always @c 1. So
- **    that expression always evaluates to @c (intmax_t)-1 and @a
- **    (EXPR) is never evaluated.
- ** - The type of the conditional expression is signed if @a EXPR
- **    has a designated type that is signed, or if @a EXPR is an
- **    integer constant that fits into @c intmax_t.
- ** - The type of the conditional expression is unsigned if @a EXPR
- **    has a designated type that is unsigned, or if @a EXPR is an
- **    integer constant that does not fit into @c intmax_t but into @c
- **    uintmax_t.
- ** - The width of the conditional expression is the maximal width of
- **    an integer on the platform, namely that of @c intmax_t and @c
- **    uintmax_t.
- ** - The result of that conditional expression, i.e either @c
- **     (intmax_t)-1 or @c (uintmax_t)-1, is now compared against @c
- **     (intmax_t)0.
- **
  ** @see P99_ISSIGNED for a similar macro that takes a type as an argument
  **/
-#define P99_SIGNED(EXPR) (P99_SIGN_PROMOTE(-INTMAX_C(1), EXPR) < INTMAX_C(0))
+P99__SEE_PROMOTE
+#define P99_SIGNED(EXPR) (P99_PROMOTE_M1(EXPR) < P99_PROMOTE_0(EXPR))
 
 
 inline
-intmax_t p99__abs_signed(intmax_t a) {
-  return (a < INTMAX_C(0)) ? -a : a;
+uintmax_t p99__abs_signed(intmax_t a) {
+  uintmax_t aa = a;
+  /* The minus is taken on the unsigned value, so it gives the
+     correct result with -INTMAX_MAX, namely INTMAX_MAX, which might
+     not be representable for two's complement representation. */
+  return (a < INTMAX_C(0)) ? -aa : a;
 }
 
 /**
  ** @brief Compute the absolute value of an integral expression.
  **
- ** @return The return type of this macro is @c intmax_t if @a EXPR
- **    has a designated type that is signed, or if @a EXPR is an
- **    integer constant that fits into @c intmax_t. Otherwise it is @c
- **    uintmax_t.
+ ** @return The return type of this macro is @c uintmax_t. It must be
+ ** so, since if we have a two's complement representation the value
+ ** @c -INTMAX_MAX is not representable in @c intmax_t.
  **
  ** @a EXPR is guaranteed to be evaluated exactly once.
  **/
@@ -249,7 +392,36 @@ typedef enum {
 /**
  ** @brief Give the minimum representable value of type @a T
  **/
-#define P99_TMIN(T) ((T)(P99_ISSIGNED(T) ? (P99_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T)))
+#define P99_TMIN(T) ((T)(P99_ISSIGNED(T) ? (P99__ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T)))
+
+/**
+ ** @brief C99 allows for exactly three different possibilities to
+ ** encode negative values of integer types.
+ **
+ ** The representation can be found by looking at the two least
+ ** significant bits of -1 represented in @a T.
+ ** @see ::p99_signed_representation
+ **/
+#define P99_E_REPRESENTATION(EXPR) ((p99_signed_representation)(P99_PROMOTE_M1(EXPR) & P99_PROMOTE_3(EXPR)))
+
+
+/**
+ ** @brief If the sign representation of a type is two's complement
+ ** the type has no @em negative zero and can thus represent one more
+ ** value.
+ **/
+#define P99_E_2COMPLEMENT(EXPR)                                         \
+P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (EXPR))
+
+/**
+ ** @brief Give the maximum representable value of type @a T
+ **/
+#define P99_EMAX(EXPR) (P99_SIGNED(EXPR) ? P99_SE_MAX(EXPR) : P99_PROMOTE_M1(EXPR))
+
+/**
+ ** @brief Give the minimum representable value of type @a T
+ **/
+#define P99_EMIN(EXPR) (P99_SIGNED(EXPR) ? (P99__SE_MIN1(EXPR) - P99_E_2COMPLEMENT(EXPR)) : P99_PROMOTE_0(EXPR))
 
 /**
  ** @brief The precision, i.e the number of significant bits of integral type
@@ -329,5 +501,10 @@ P99_CHOOSE5(xT,                                 \
  ** uintmax_t but keep signedness if possible.
  **/
 #define P99__J(x) (0 ? P99_0(uintmax_t) : (x))
+
+/**
+ ** @}
+ **/
+
 
 #endif 	    /* !P99_INT_H_ */

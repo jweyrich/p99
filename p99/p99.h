@@ -44,15 +44,19 @@
  **
  ** @code
  ** inline
- ** intmax_t p99__abs_signed(intmax_t a) {
- **  return (a < 0) ? -a : a;
+ ** uintmax_t p99__abs_signed(intmax_t a) {
+ **  return (a < 0) ? -(uintmax_t)a : (uintmax_t)a;
  ** }
  ** @endcode
  **
  ** It takes signed integer value @c a and computes its absolute
- ** value. It would not be a good candidate for a macro, since @c a is
- ** evaluated twice; once in the controlling expression and once for
- ** returning its value or its negation.
+ ** value. Observe that the return type of this function is
+ ** unsigned. This has to be so, since otherwise not all valid values
+ ** could be necessarily be realized.
+ **
+ ** ::p99__abs_signed would not be a good candidate for a macro, since
+ ** @c a is evaluated twice; once in the controlling expression and
+ ** once for returning its value or its negation.
  **
  ** We may use this function with any integral type, but then the
  ** argument will be promoted to @c intmax_t. In case that the value
@@ -65,19 +69,20 @@
  ** A.  The result of the function call would then be @c C and not @c
  ** A.
  **
- ** Now with the following macro
+ ** With the following macro we get rid of these restrictions by
+ ** combining the macro and the function:
  **
  ** @code
- ** #define P99_ABS(A) (P99_ISSIGNED(T) ? p99__abs_signed(A) : (A))
+ ** #define P99_ABS(EXPR) (P99_SIGNED(EXPR) ? p99__abs_signed(EXPR) : (EXPR))
  ** @endcode
  **
- ** we have implemented a functionality
+ ** This has the following properties
  **
  ** <ul>
- **     <li>that works for any integral type</li>
- **     <li>that evaluates its argument exactly once</li>
- **     <li>for which any recent and decent compiler will create
- **         @ref inline "optimal code".
+ **     <li>For any integral type it returns the correct result.</li>
+ **     <li>The argument @c EXPR is evaluated exactly once.</li>
+ **     <li>Any recent and decent compiler will create
+ **         @ref inline "optimal code" for that combined macro.
  **     </li>
  ** </ul>
  **
@@ -271,19 +276,105 @@
  **     of such a variable is modifiable.
  **
  ** Example: The following returns the pointer to a character array
- ** that is initialized with all @c `a' and that is a valid objet until
- ** the program leaves the current block.
+ ** that is initialized with all @c `a', a terminating @c '\0' and
+ ** that is a valid objet until the program leaves the current block.
  ** @code
- ** char* hui = memset(&(char[256]){0}, 'a', 256)
+ ** char const*const hui = memset((char[256]){0}, 'a', 255);
  ** @endcode
  **
  ** It would be equivalent to the following
  ** @code
  ** char tmp[256] = { 0 };
- ** char* hui = memset(tmp, 'a', 256)
+ ** char const*const hui = memset(tmp, 'a', 255);
  ** @endcode
  **
+ ** Using the compound literal here has the advantage that no other
+ ** non-const reference to the temporary is exposed.
+ **
  ** @subsection hide Macros that hide a function
+ **
+ ** Per se, this is not a new feature of C99 but had been present
+ ** before. The preprocessor has two special rules, one that applies
+ ** generally to macros and the other that applies on to functional macros:
+ **
+ **  -# If during expansion of a macro XXX the token XXX is found, it
+ **    is not expanded. So there is no recursion in C macros.
+ **  -# If a functional macro YYY is found without a following
+ **    parenthesis it is not expanded.
+ **
+ ** Theses features can be used to define a macro and another
+ ** identifier that have the same name. It is sometimes used to all
+ ** for a test if some functionality is present on a platform. E.g on
+ ** my computer I have
+ **
+ ** @code
+ ** #define stdin stdin
+ ** @endcode
+ **
+ ** This can be used as follows
+ ** @code
+ ** #ifdef stdin
+ **   // Do something for an hosted environment
+ **   // Use stdin as usual
+ ** #else
+ **   // Do something for an embedded environment
+ **   // We don't have stdin at all, write to a log file or so.
+ ** #endif
+ ** @endcode
+ **
+ ** But we may equally use this technique for a function symbol. POSIX
+ ** explicitly allows this for example for the functions in @em stdio.h
+ **
+ ** <center>
+ ** <em>
+ ** The following shall be declared as functions and may also be
+ ** defined as macros.<br />
+ ** Function prototypes shall be provided.
+ ** </em>
+ ** </center>
+ **
+ ** Lets have a look at some random function from there and suppose it
+ ** would be given as follows:
+ ** @code
+ ** int putc(int, FILE *);
+ ** #define putc(C, F) (is_it_special(C) ? do_something_clever(C, F) : putc(C, F) )
+ ** @endcode
+ **
+ ** (Yes this evaluates @c C two times.)  With that, these uses of @c
+ ** putc are still valid:
+ ** @code
+ ** // Use the macro and implicitly the function, relies on rule 1
+ ** putc('A', stdout);
+ **
+ ** // Just use the function not the macro, relies on rule 2
+ ** (putc)('A', stdout);
+ **
+ ** // Get the address of putc and store it in my_putc, relies on rule 2
+ ** int (*my_putc)(int, FILE*) = &putc;
+ ** @endcode
+ **
+ ** The example above with @c putc has a particular pitfall if we have
+ ** the above definitions in a header file and then include this file
+ ** at the place where we define the the function:
+ **
+ ** @code
+ ** #include <stdio.h>
+ **
+ ** int putc(int, FILE *) {
+ **   // do the right thing here
+ ** }
+ ** @endcode
+ **
+ ** This will simply explode since the preprocessor will expand the @i
+ ** functional reference to @c putc. This can be explicitly avoided
+ ** by undefining the macro before the definition, but for this the
+ ** implementor of @c putc has to know that it is also a macro.
+ **
+ ** With P99, we use this technique to @em overload a function to
+ ** provide it with @ref defaults. A macro defined in that way will
+ ** avoid this pitfall: if it is called with the same number of
+ ** arguments (or more) that all are non-empty, it will produce the
+ ** same token sequence as if the macro had not been defined.
  **/
 
 
