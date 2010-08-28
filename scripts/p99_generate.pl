@@ -393,18 +393,22 @@ print "/* This file is automat";
 print "ically generated, do not chan";
 print "ge manually. */\n";
 print "\n";
-print "/** \@file                                                               \n";
-print " ** \@brief automatically generated macros to handle variadic macros.    \n";
-print " **                                                                      \n";
-print " ** You should probably never include this file directly but through     \n";
-print " ** other P99 header files that define macros that are of direct use.  */\n";
-print "\n";
-print "/** \@brief The maximal number of arguments the P99 macros can handle.   \n";
-print " **                                                                      \n";
-print " ** This limit applies also to the integer arithmetic that is            \n";
-print " ** performed by the macros in \@ref preprocessor_arithmetic           */\n";
-print "#define P99_MAX_NUMBER $maxnumber\n\n";
 
+print << "DOCU";
+/** \@file
+ ** \@brief automatically generated macros to handle variadic macros.
+ **
+ ** You should probably never include this file directly but through
+ ** other P99 header files that define macros that are of direct use.
+ **/
+
+/** \@brief The maximal number of arguments the P99 macros can handle.
+ **
+ ** This limit applies also to the integer arithmetic that is
+ ** performed by the macros in \@ref preprocessor_arithmetic.
+ **/
+#define P99_MAX_NUMBER $maxnumber
+DOCU
 
 print "#define P99__ARG(";
 for (my $i = 1; $i <= $maxnumber; ++$i) {
@@ -610,15 +614,15 @@ sub printnumber {
 }
 
 {
-    my @maxval = ( 0xFFFFFFFF, 0, 0, 0 );
+    my @maxval = ( 0xFFFFFFFF, 0xFFFFFFFF, 0, 0 );
 
-    my @B0 = ( 0xAAAAAAAA, 0, 0, 0);
-    my @B1 = ( 0xCCCCCCCC, 0, 0, 0);
-    my @B2 = ( 0xF0F0F0F0, 0, 0, 0);
-    my @B3 = ( 0xFF00FF00, 0, 0, 0);
-    my @B4 = ( 0xFFFF0000, 0, 0, 0);
-    my @B5 = ( 0x00000000, 0, 0, 0);
-    my @B6 = ( 0x00000000, 0, 0, 0);
+    my @B0 = ( 0xAAAAAAAA, 0xAAAAAAAA, 0, 0);
+    my @B1 = ( 0xCCCCCCCC, 0xCCCCCCCC, 0, 0);
+    my @B2 = ( 0xF0F0F0F0, 0xF0F0F0F0, 0, 0);
+    my @B3 = ( 0xFF00FF00, 0xFF00FF00, 0, 0);
+    my @B4 = ( 0xFFFF0000, 0xFFFF0000, 0, 0);
+    my @B5 = ( 0x00000000, 0xFFFFFFFF, 0, 0);
+    my @B6 = ( 0x00000000, 0x00000000, 0, 0);
 
     sub advance($$) {
         my ($pos, $width) = @_;
@@ -631,44 +635,32 @@ sub printnumber {
         $B4[$pos] |= (!!($width & 0x10) << $relwidth);
         $B5[$pos] |= (!!($width & 0x20) << $relwidth);
         $B6[$pos] |= (!!($width & 0x40) << $relwidth);
-        # $B5[$pos] = ($B5[$pos] << 1) + 1
-        #     if ($pos % 2);
-        # $B6[$pos] = ($B6[$pos] << 1) + 1
-        #     if ($width >= 64);
     }
 
     sub printout($) {
         my ($width) = @_;
-        printf "#if P99__UNSIGNED_MAX == 0x%s\n", printnumber(@maxval);
-        printf "#define P99_UINTMAX_BIT %u\n", $width;
-        printf "#define P99_UINTMAX_MAX UINTMAX_C(0x%s)\n", printnumber(@maxval);
-        printf "#define P99__B0 UINTMAX_C(0x%s)\n", printnumber(@B0);
-        printf "#define P99__B1 UINTMAX_C(0x%s)\n", printnumber(@B1);
-        printf "#define P99__B2 UINTMAX_C(0x%s)\n", printnumber(@B2);
-        printf "#define P99__B3 UINTMAX_C(0x%s)\n", printnumber(@B3);
-        printf "#define P99__B4 UINTMAX_C(0x%s)\n", printnumber(@B4);
-        printf "#define P99__B5 UINTMAX_C(0x%s)\n", printnumber(@B5);
-        printf "#define P99__B6 UINTMAX_C(0x%s)\n", printnumber(@B6);
+        print "#ifndef P99_UINTMAX_MAX\n";
+        printf "# if P99__UNSIGNED_MAX == 0x%s\n", printnumber(@maxval);
+        printf "#  define P99_UINTMAX_WIDTH %u\n", $width;
+        printf "#  define P99_UINTMAX_MAX 0x%sU\n", printnumber(@maxval);
+        printf "#  define P99__B0 0x%sU\n", printnumber(@B0);
+        printf "#  define P99__B1 0x%sU\n", printnumber(@B1);
+        printf "#  define P99__B2 0x%sU\n", printnumber(@B2);
+        printf "#  define P99__B3 0x%sU\n", printnumber(@B3);
+        printf "#  define P99__B4 0x%sU\n", printnumber(@B4);
+        printf "#  define P99__B5 0x%sU\n", printnumber(@B5);
+        printf "#  define P99__B6 0x%sU\n", printnumber(@B6);
+        print "# endif /* P99__UNSIGNED_MAX */\n";
+        print "#endif /* P99_UINTMAX_MAX */\n";
     }
 
-    for (my $i = 32; $i < 64; ++$i) {
-        printout($i);
-        advance(1, $i);
-        print "#else\n";
-    }
     for (my $i = 64; $i < 96; ++$i) {
         printout($i);
         advance(2, $i);
-        print "#else\n";
     }
     for (my $i = 96; $i < 129; ++$i) {
         printout($i);
         advance(3, $i);
-        if ($i < 128) {
-            print "#else\n";
-        } else {
-            print "#endif /* P99__UNSIGNED_MAX */\n" x (129 - 32);
-        }
     }
 }
 

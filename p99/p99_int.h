@@ -29,7 +29,20 @@
  ** @{
  */
 
-#define P99_HIGH2(X)                            \
+#ifndef P99_HIGH2
+# if P99_UINTMAX_WIDTH == 64
+#  define P99_HIGH2(X)                          \
+((((X) & P99__B0) ? P99__S0 : 0u)               \
+ | (((X) & P99__B1) ? P99__S1 : 0u)             \
+ | (((X) & P99__B2) ? P99__S2 : 0u)             \
+ | (((X) & P99__B3) ? P99__S3 : 0u)             \
+ | (((X) & P99__B4) ? P99__S4 : 0u)             \
+ | (((X) & P99__B5) ? P99__S5 : 0u))
+# endif
+#endif
+#ifndef P99_HIGH2
+# if P99_UINTMAX_WIDTH <= 128
+#  define P99_HIGH2(X)                          \
 ((((X) & P99__B0) ? P99__S0 : 0u)               \
  | (((X) & P99__B1) ? P99__S1 : 0u)             \
  | (((X) & P99__B2) ? P99__S2 : 0u)             \
@@ -37,8 +50,10 @@
  | (((X) & P99__B4) ? P99__S4 : 0u)             \
  | (((X) & P99__B5) ? P99__S5 : 0u)             \
  | (((X) & P99__B6) ? P99__S6 : 0u))
+# endif
+#endif
 
-#define P99_HIGH2_1(X) ((X) == P99_UINTMAX_MAX ? P99_UINTMAX_BIT : (P99_HIGH2((X) + UINTMAX_C(1))))
+#define P99_HIGH2_1(X) ((X) == P99_UINTMAX_MAX ? P99_UINTMAX_WIDTH : (P99_HIGH2((X) + UINTMAX_C(1))))
 
 /**
  ** @brief Apply the type macro @a MACRO to an unsigned type that is

@@ -61,7 +61,7 @@ typedef enum { a4 = -1, b4, c4 } enum4;
 int main(int argc, char** argv) {
   printf("%20s:\t%2s\t%2s\t%2s\t%20s\t%20s,\t%3ssigned%15s\n",
          "type", "prec", "width", "pad", "min", "max", "{un}", "sign repr");
-  printf("---------------------------------- types ---------------------------------\n");
+  printf("--------------------------- proper types ---------------------------------\n");
   SAYIT(_Bool);
   SAYIT(char);
   SAYIT(unsigned char);
@@ -75,22 +75,23 @@ int main(int argc, char** argv) {
   SAYIT(unsigned long long);
   SAYIT(signed long long);
 
+  printf("--------------------------- typedefs for specific width -------------------\n");
 #if defined(UINT8_MAX)
   /* if this exists this must not have padding and thus CHAR_BIT == 8 */
   SAYIT(uint8_t);
-#else
+#endif
   /* the following type is required */
   /* CHAR_BIT != 8 and we should see padding on this type */
   SAYIT(uint_least8_t);
-#endif
+  SAYIT(uint_fast8_t);
 #if defined(INT8_MAX)
   /* if this exists this must be two's representation */
   SAYIT(int8_t);
-#else
+#endif
   /* the following type is required */
   /* either this has padding or this not in two's representation */
   SAYIT(int_least8_t);
-#endif
+  SAYIT(int_fast8_t);
 
 #if defined(UINT12_MAX)
   /* if this exists this must be two's representation */
@@ -108,17 +109,17 @@ int main(int argc, char** argv) {
 #if defined(UINT16_MAX)
   /* if this exists this must not have padding */
   SAYIT(uint16_t);
-#else
+#endif
   /* the following type is required */
   SAYIT(uint_least16_t);
-#endif
+  SAYIT(uint_fast16_t);
 #if defined(INT16_MAX)
   /* if this exists this must be two's representation */
   SAYIT(int16_t);
-#else
+#endif
   /* the following type is required */
   SAYIT(int_least16_t);
-#endif
+  SAYIT(int_fast16_t);
 
 #if defined(UINT24_MAX)
   /* if this exists this must be two's representation */
@@ -136,17 +137,17 @@ int main(int argc, char** argv) {
 #if defined(UINT32_MAX)
   /* if this exists this must be two's representation */
   SAYIT(uint32_t);
-#else
+#endif
   /* the following type is required */
   SAYIT(uint_least32_t);
-#endif
+  SAYIT(uint_fast32_t);
 #if defined(INT32_MAX)
   /* if this exists this must be two's representation */
   SAYIT(int32_t);
-#else
+#endif
   /* the following type is required */
   SAYIT(int_least32_t);
-#endif
+  SAYIT(int_fast32_t);
 
 #if defined(UINT48_MAX)
   /* if this exists this must be two's representation */
@@ -164,25 +165,53 @@ int main(int argc, char** argv) {
 #if defined(UINT64_MAX)
   /* if this exists this must be two's representation */
   SAYIT(uint64_t);
-#else
+#endif
   /* the following type is required */
   SAYIT(uint_least64_t);
-#endif
+  SAYIT(uint_fast64_t);
 #if defined(INT64_MAX)
   /* if this exists this must be two's representation */
   SAYIT(int64_t);
-#else
+#endif
   /* the following type is required */
   SAYIT(int_least64_t);
+  SAYIT(int_fast64_t);
+
+#if defined(UINT96_MAX)
+  /* if this exists this must be two's representation */
+  SAYIT(uint96_t);
+#elif defined(UINT_LEAST96_MAX)
+  SAYIT(uint_least96_t);
+#endif
+#if defined(INT96_MAX)
+  /* if this exists this must be two's representation */
+  SAYIT(int96_t);
+#elif defined(INT_LEAST96_MAX)
+  SAYIT(int_least96_t);
 #endif
 
-  /* the following 3 types are required */
+#if defined(UINT128_MAX)
+  /* if this exists this must be two's representation */
+  SAYIT(uint128_t);
+#elif defined(UINT_LEAST128_MAX)
+  SAYIT(uint_least128_t);
+#endif
+#if defined(INT128_MAX)
+  /* if this exists this must be two's representation */
+  SAYIT(int128_t);
+#elif defined(INT_LEAST128_MAX)
+  SAYIT(int_least128_t);
+#endif
+
+  printf("--------------------------- required typedefs -----------------------------\n");
+  SAYIT(bool);
   SAYIT(size_t);
   SAYIT(ptrdiff_t);
   SAYIT(uintmax_t);
   SAYIT(intmax_t);
   SAYIT(wchar_t);
 
+  printf("--------------------------- optional typedefs -------------------------------\n");
 #if defined(SIG_ATOMIC_MAX)
   SAYIT(sig_atomic_t);
 #endif
@@ -192,6 +221,7 @@ int main(int argc, char** argv) {
 #if defined(INTPTR_MAX)
   SAYIT(intptr_t);
 #endif
+  printf("--------------------------- enumeration types -------------------------------\n");
   SAYIT(enum1);
   SAYIT(enum2);
   SAYIT(enum3);
