@@ -115,14 +115,16 @@ signed p99__trailing_comma_in_initializer__(void) {
 #endif
 
 #if (defined(__GNUC__) && (P99_GCC_VERSION >= 30000UL))
-# define p99x_uintmax p99x_uintmax
-# define p99x_intmax p99x_intmax
-# define p99x_uint128 p99x_uint128
-# define p99x_int128 p99x_int128
+# ifdef __x86_64
+#  define p99x_uintmax p99x_uintmax
+#  define p99x_intmax p99x_intmax
+#  define p99x_uint128 p99x_uint128
+#  define p99x_int128 p99x_int128
 typedef __uint128_t p99x_uintmax;
 typedef __int128_t p99x_intmax;
 typedef __uint128_t p99x_uint128;
 typedef __int128_t p99x_int128;
+# endif
 #endif
 
 
