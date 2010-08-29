@@ -242,7 +242,7 @@ int main(int argc, char** argv) {
   int i = 0;
   SAYIT3(i++);
   assert(!i);
-  printf("----------------------------- integer constants '-------------------------\n");
+  printf("----------------------------- integer constants -------------------------\n");
   /* Different types of integer constants may have different
      width. The minimum that we will be able to see is `int`. */
   SAYIT3(1);
@@ -257,4 +257,30 @@ int main(int argc, char** argv) {
   SAYIT3(0x80000000);
   SAYIT3(0x7FFFFFFFFFFFFFFF);
   SAYIT3(0x8000000000000000);
+  printf("------------------------- extension types (macros might not work, yet) -----\n");
+#ifdef p99x_uintmax
+  SAYIT(p99x_uintmax);
+#endif
+#ifdef p99x_intmax
+  SAYIT(p99x_intmax);
+#endif
+#ifdef p99x_uint128
+  SAYIT(p99x_uint128);
+#endif
+#ifdef p99x_int128
+  SAYIT(p99x_int128);
+#endif
+  printf("------------------------ extension expressions (macros might not work, yet) -----\n");
+#ifdef p99x_uintmax
+  SAYIT3((p99x_uintmax)0);
+#endif
+#ifdef p99x_intmax
+  SAYIT3((p99x_intmax)0);
+#endif
+#ifdef p99x_uint128
+  SAYIT3((p99x_uint128)0);
+#endif
+#ifdef p99x_int128
+  SAYIT3((p99x_int128)0);
+#endif
 }

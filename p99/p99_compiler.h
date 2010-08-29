@@ -15,7 +15,15 @@
 #define P99__PREFIX0(N) P99__PREFIX0_(N)
 #define P99__PREFIX0_(N) 0 ## N
 
+/* be sure to put all compilers that are faking gcc before gcc itself */
+#if defined(__clang__)
+# define P99_COMPILER clang
+#endif
+
 # ifdef __GNUC__
+#  ifndef P99_COMPILER
+#   define P99_COMPILER gcc
+#  endif
 #  define P99__GCC_VERSION(A, B, C) P99__GCC_VERSION_(A, B, C)
 #  define P99__GCC_VERSION_(A, B, C) A ## B ## C ## UL
 #  ifdef __GNUC_PATCHLEVEL__
@@ -104,6 +112,17 @@ signed p99__trailing_comma_in_initializer__(void) {
 #define P99_EXPECT(EXP, VAL) __builtin_expect((EXP), (VAL))
 #else
 #define P99_EXPECT(EXP, VAL) (EXP)
+#endif
+
+#if (defined(__GNUC__) && (P99_GCC_VERSION >= 30000UL))
+# define p99x_uintmax p99x_uintmax
+# define p99x_intmax p99x_intmax
+# define p99x_uint128 p99x_uint128
+# define p99x_int128 p99x_int128
+typedef __uint128_t p99x_uintmax;
+typedef __int128_t p99x_intmax;
+typedef __uint128_t p99x_uint128;
+typedef __int128_t p99x_int128;
 #endif
 
 
