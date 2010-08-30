@@ -15,15 +15,74 @@
 #define P99__PREFIX0(N) P99__PREFIX0_(N)
 #define P99__PREFIX0_(N) 0 ## N
 
+/* This long list of compilers does not mean that we tested P99, nor
+   does it even imply that there is a C99 mode for them. We just list
+   compilers and detection macros for them for completeness. The
+   information for that detection was wildly collected from the web.
+   They are listed in alphabetic order, and their numbering is
+   nothing that is supposed to stay fixed, reliable or anything. */
+
+#define P99_COMPILER_BORLAND	0x00001U
+#define P99_COMPILER_CLANG	0x00002U
+#define P99_COMPILER_COMEAU	0x00004U
+#define P99_COMPILER_CRAY	0x00008U
+#define P99_COMPILER_DEC	0x00010U
+#define P99_COMPILER_GNU	0x00020U
+#define P99_COMPILER_HP		0x00040U
+#define P99_COMPILER_IBM	0x00080U
+#define P99_COMPILER_INTEL	0x00100U
+#define P99_COMPILER_KAI	0x00200U
+#define P99_COMPILER_LCC	0x00400U
+#define P99_COMPILER_METROWERKS	0x00800U
+#define P99_COMPILER_MICROSOFT	0x01000U
+#define P99_COMPILER_PORTLAND	0x02000U
+#define P99_COMPILER_SGI	0x04000U
+#define P99_COMPILER_SUN	0x08000U
+#define P99_COMPILER_WATCOM	0x10000U
+
 /* be sure to put all compilers that are faking gcc before gcc itself */
 #if defined(__clang__)
-# define P99_COMPILER clang
+# define P99_COMPILER P99_COMPILER_CLANG
+#elif defined(__ICC)
+# define P99_COMPILER P99_COMPILER_INTEL
+/* compilers that (as far as we know) don't pretend to be gcc */
+#elif defined(__BORLANDC__)
+# define P99_COMPILER P99_COMPILER_BORLAND
+#elif defined( __clang__)
+# define P99_COMPILER P99_COMPILER_CLANG
+#elif defined(__COMO__)
+# define P99_COMPILER P99_COMPILER_COMEAU
+#elif defined(_CRAYC)
+# define P99_COMPILER P99_COMPILER_CRAY
+#elif defined(__DECC_VER)
+# define P99_COMPILER P99_COMPILER_DEC
+#elif defined(__HP_cc)
+# define P99_COMPILER P99_COMPILER_HP
+#elif defined(__IBMC__)
+# define P99_COMPILER P99_COMPILER_IBM
+#elif defined(__KCC)
+# define P99_COMPILER P99_COMPILER_KAI
+#elif defined(__LCC__)
+# define P99_COMPILER P99_COMPILER_LCC
+#elif defined(__MWERKS__)
+# define P99_COMPILER P99_COMPILER_METROWERKS
+#elif defined(_MSC_VER)
+# define P99_COMPILER P99_COMPILER_MICROSOFT
+#elif defined(__PGI)
+# define P99_COMPILER P99_COMPILER_PORTLAND
+#elif defined(__sgi)
+# define P99_COMPILER P99_COMPILER_SGI
+#elif defined(__SUNPRO_C)
+# define P99_COMPILER P99_COMPILER_SUN
+#elif defined(__WATCOMC__)
+# define P99_COMPILER P99_COMPILER_WATCOM
+#elif defined(__GNUC__)
+# define P99_COMPILER P99_COMPILER_GNU
+#else
+# define P99_COMPILER 0x00000U
 #endif
 
 # ifdef __GNUC__
-#  ifndef P99_COMPILER
-#   define P99_COMPILER gcc
-#  endif
 #  define P99__GCC_VERSION(A, B, C) P99__GCC_VERSION_(A, B, C)
 #  define P99__GCC_VERSION_(A, B, C) A ## B ## C ## UL
 #  ifdef __GNUC_PATCHLEVEL__
@@ -73,9 +132,9 @@ signed p99__trailing_comma_in_initializer__(void) {
 # endif
 #endif
 
-#if defined(__clang__)
+#if P99_COMPILER & P99_COMPILER_CLANG
 # define inline __attribute__((always_inline)) inline
-#elif defined(__GNUC__)
+#elif P99_COMPILER & P99_COMPILER_GNU
 /* gcc prior to version 4.3 has the inline keyword but with slightly
    different semantics.
    Be sure to allways inline functions in this cases.
@@ -108,22 +167,26 @@ signed p99__trailing_comma_in_initializer__(void) {
  **
  ** Currently this is only implemented for gcc.
  **/
-#if (defined(__GNUC__) && (P99_GCC_VERSION >= 30000UL))
-#define P99_EXPECT(EXP, VAL) __builtin_expect((EXP), (VAL))
-#else
-#define P99_EXPECT(EXP, VAL) (EXP)
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU)
+# if P99_GCC_VERSION >= 30000UL
+#  define P99_EXPECT(EXP, VAL) __builtin_expect((EXP), (VAL))
+# else
+#  define P99_EXPECT(EXP, VAL) (EXP)
+# endif
 #endif
 
-#if (defined(__GNUC__) && (P99_GCC_VERSION >= 30000UL))
-# ifdef __x86_64
-#  define p99x_uintmax p99x_uintmax
-#  define p99x_intmax p99x_intmax
-#  define p99x_uint128 p99x_uint128
-#  define p99x_int128 p99x_int128
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU)
+# if defined(__LONG_MAX__) && defined(__LONG_LONG_MAX__) && (P99_GCC_VERSION >= 30000UL)
+#  if (__LONG_MAX__ == 9223372036854775807) && (__LONG_LONG_MAX__ == 9223372036854775807)
+#   define p99x_uintmax p99x_uintmax
+#   define p99x_intmax p99x_intmax
+#   define p99x_uint128 p99x_uint128
+#   define p99x_int128 p99x_int128
 typedef __uint128_t p99x_uintmax;
 typedef __int128_t p99x_intmax;
 typedef __uint128_t p99x_uint128;
 typedef __int128_t p99x_int128;
+#  endif
 # endif
 #endif
 
