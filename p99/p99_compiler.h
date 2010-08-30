@@ -157,6 +157,12 @@ signed p99__trailing_comma_in_initializer__(void) {
 #  define static_inline static inline
 # endif
 
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL)
+# if P99_GCC_VERSION >= 30000UL
+#  define P99_EXPECT(EXP, VAL) __builtin_expect((EXP), (VAL))
+# endif
+#endif
+
 /**
  ** @def P99_EXPECT
  ** @brief Provide a compiler hint concerning the likelihood of a
@@ -167,12 +173,8 @@ signed p99__trailing_comma_in_initializer__(void) {
  **
  ** Currently this is only implemented for gcc.
  **/
-#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU)
-# if P99_GCC_VERSION >= 30000UL
-#  define P99_EXPECT(EXP, VAL) __builtin_expect((EXP), (VAL))
-# else
-#  define P99_EXPECT(EXP, VAL) (EXP)
-# endif
+#ifndef P99_EXPECT
+# define P99_EXPECT(EXP, VAL) (EXP)
 #endif
 
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU)
