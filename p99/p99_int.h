@@ -70,7 +70,6 @@ P99__DOCUMENT_C2(128)
 #define P99X_INT128_MIN P99X_INT128_C2(0x8000000000000000, 0x0000000000000000)
 #endif
 
-#ifdef DOXYGEN
 /**
  ** @brief An unsigned integer type of maximal width that extends the
  ** C99 specifications.
@@ -78,11 +77,14 @@ P99__DOCUMENT_C2(128)
  ** Typically this might be of width 128 where the whole tool chain,
  ** in particular the preprocessor only supports 64.
  **
- ** This @c typedef does not necessary exist. It can be checked for with a
- ** macro of the same name.
+ ** This @c typedef is always defined, in the best of all worlds it
+ ** coincides with @c uintmax_t. If it is different from that can be
+ ** checked for with a macro of the same name.
  ** @see p99x_uint128
  **/
+#ifndef p99x_uint128
 typedef uintmax_t p99x_uintmax;
+#endif
 
 /**
  ** @brief A signed integer type of maximal width that extends the
@@ -91,12 +93,16 @@ typedef uintmax_t p99x_uintmax;
  ** Typically this might be of width 128 where the whole tool chain,
  ** in particular the preprocessor only supports 64.
  **
- ** This @c typedef does not necessary exist. It can be checked for with a
- ** macro of the same name.
+ ** This @c typedef is always defined, in the best of all worlds it
+ ** coincides with @c intmax_t. If it is different from that can be
+ ** checked for with a macro of the same name.
  ** @see p99x_int128
  **/
+#ifndef p99x_int128
 typedef intmax_t p99x_intmax;
+#endif
 
+#ifdef DOXYGEN
 /**
  ** @brief An unsigned integer type of width 128 that extends the
  ** C99 specifications.
@@ -108,7 +114,7 @@ typedef intmax_t p99x_intmax;
  ** macro of the same name.
  ** @see p99x_uintmax
  **/
-typedef uintmax_t p99x_uint128;
+typedef extendedInt p99x_uint128;
 
 /**
  ** @brief A signed integer type of width 128 that extends the
@@ -121,7 +127,7 @@ typedef uintmax_t p99x_uint128;
  ** macro of the same name.
  ** @see p99x_intmax
  **/
-typedef intmax_t p99x_intmax;
+typedef extendedInt p99x_int128;
 #endif
 
 #ifdef p99x_uintmax
