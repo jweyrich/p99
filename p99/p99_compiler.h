@@ -133,7 +133,8 @@ signed p99__trailing_comma_in_initializer__(void) {
 #endif
 
 #if P99_COMPILER & P99_COMPILER_CLANG
-# define inline __attribute__((always_inline)) inline
+# define inline __attribute__((always_inline)) __inline__
+# define force_inline __attribute__((always_inline)) __inline__
 #elif P99_COMPILER & P99_COMPILER_GNU
 /* gcc prior to version 4.3 has the inline keyword but with slightly
    different semantics.
@@ -144,17 +145,21 @@ signed p99__trailing_comma_in_initializer__(void) {
 #   undef inline
 #  endif
 #  ifdef __GNUC_GNU_INLINE__
-#   define inline __attribute__((gnu_inline,always_inline)) static inline
+#   define inline __attribute__((gnu_inline,always_inline)) static __inline__
 #  else
-#   define inline __attribute__((always_inline)) static inline
+#   define inline __attribute__((always_inline)) static __inline__
 #  endif
 #  define static_inline inline
 # endif
+# define force_inline __attribute__((always_inline)) __inline__
 #endif
 
 
 # ifndef static_inline
 #  define static_inline static inline
+# endif
+# ifndef force_inline
+#  define force_inline static inline
 # endif
 
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL)
