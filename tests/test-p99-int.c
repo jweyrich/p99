@@ -11,6 +11,63 @@
 
 #include "p99_c99.h"
 #include "p99_int.h"
+#include "p99_defarg.h"
+
+P99_PROTOTYPE(char*, print_uintmax, p99x_uintmax, char*);
+P99_PROTOTYPE(const char*, print_intmax, p99x_intmax, char*);
+
+#ifdef p99x_uintmax
+char* print_uintmax(p99x_uintmax x, char* tmp) {
+  *tmp = 0;
+  //--tmp;
+  if (x) while (x) {
+      uint64_t const d19 = UINT64_C(10000000000000000000);
+      uint64_t low = x % d19;
+      char buf[] = { "18446744073709551615" };
+      sprintf(buf, "%" PRIu64, low);
+      size_t l = strlen(buf);
+      memcpy(tmp - l, buf, l);
+      tmp -= l;
+      x -= low;
+      x /= d19;
+    } else {
+    --tmp;
+    *tmp = '0';
+  }
+  return tmp;
+}
+char const* print_intmax(p99x_intmax x, char* tmp) {
+  p99x_uintmax a = (x < 0) ? -(p99x_uintmax)x : x;
+  tmp = print_uintmax(a, tmp);
+  if (x < 0) {
+    --tmp;
+    *tmp = '-';
+  }
+  return tmp;
+}
+#else
+char* print_uintmax(p99x_uintmax x, char* tmp) {
+  size_t const maxlen = sizeof("18446744073709551615");
+  tmp -= maxlen;
+  sprintf(tmp, "%" PRIu64, x);
+  return tmp;
+}
+const char* print_intmax(p99x_intmax x, char* tmp) {
+  size_t const maxlen = sizeof("18446744073709551615");
+  tmp -= maxlen;
+  sprintf(tmp, "%" PRId64, x);
+  return tmp;
+}
+#endif
+
+#define print_uintmax(...) P99_CALL_DEFARG(print_uintmax, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(print_uintmax, , ((char[40]){ "1844674407370955161518446744073709551615" })+39);
+
+#define print_intmax(...) P99_CALL_DEFARG(print_intmax, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(print_intmax, , ((char[40]){ "1844674407370955161518446744073709551615" })+39);
+
+#define PRINT_LARGE(X)                                          \
+(P99_SIGNED(X) ? print_intmax((X)) : print_uintmax((X)))
 
 static
 char const* representation[4] = {
@@ -25,26 +82,26 @@ char const* representation[4] = {
 };
 
 #define SAYIT(T)                                                \
-printf("%20s:\t%4u\t%5u\t%3zu\t%20jd\t%20ju,\t%3ssigned%15s\n", \
+printf("%20s:\t%4u\t%5u\t%3zu\t%20s\t%20s,\t%3ssigned%15s\n",   \
        #T,                                                      \
        P99_TPREC(T),                                            \
        P99_TWIDTH(T),                                           \
        P99_TPADDING(T),                                         \
-       (intmax_t)P99_TMIN(T),                                   \
-       (uintmax_t)P99_TMAX(T),                                  \
+       PRINT_LARGE(P99_TMIN(T)),                                \
+       PRINT_LARGE(P99_TMAX(T)),                                \
        (P99_ISSIGNED(T) ? "" : "un"),                           \
        (!P99_ISSIGNED(T)                                        \
         ? ""                                                    \
         : representation[P99_SIGNED_REPRESENTATION(T)]))
 
 #define SAYIT3(EXPR)                                            \
-printf("%20s:\t%4u\t%5u\t%3zu\t%20jd\t%20ju,\t%3ssigned%15s\n", \
+printf("%20s:\t%4u\t%5u\t%3zu\t%20s\t%20s,\t%3ssigned%15s\n",   \
        #EXPR,                                                   \
        P99_EPREC(EXPR),                                         \
        P99_EWIDTH(EXPR),                                        \
        P99_EPADDING(EXPR),                                      \
-       (intmax_t)P99_EMIN(EXPR),                                \
-       (uintmax_t)P99_EMAX(EXPR),                               \
+       PRINT_LARGE(P99_EMIN(EXPR)),                             \
+       PRINT_LARGE(P99_EMAX(EXPR)),                             \
        (P99_SIGNED(EXPR) ? "" : "un"),                          \
        (!P99_SIGNED(EXPR)                                       \
         ? ""                                                    \
