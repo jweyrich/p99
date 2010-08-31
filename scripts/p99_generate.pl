@@ -389,6 +389,13 @@ my @functions_C99 = sort(
 
 my @token_C99 = sort(@keywords_C99, @typedefs_C99, @functions_C99);
 
+my $fileid = '$Id$';
+
+my ($FILEID) = $fileid =~ m/[\$]Id:[ ]*([^\$ ]+)/;
+
+my $FILEDATE = `date`;
+chomp $FILEDATE;
+
 print "/* This file is automat";
 print "ically generated, do not chan";
 print "ge manually. */\n";
@@ -401,6 +408,25 @@ print << "DOCU";
  ** You should probably never include this file directly but through
  ** other P99 header files that define macros that are of direct use.
  **/
+
+/** \@brief The version of the P99 collection indicated by the commit date.
+ **
+ ** This should appear as an RFC2822 style date as you encounter e.g in emails.
+ ** If this doesn't contain a date but a bizarre `format' with \$ signs
+ ** you have a version that is directly taken from the git repostitory.
+ **/
+#define P99_VERSION_DATE "\$Format:\%cd\$"
+
+/** \@brief The version of the P99 collection indicated by a unique commit ID.
+ **
+ ** This should appear as a long string of hexadecimal digits.
+ ** If this contains but a bizarre "format" with \$ signs
+ ** you have a version that is directly taken from the git repostitory.
+ **/
+#define P99_VERSION_ID "\$Format:\%H\$"
+
+#define P99__VERSION_DATE "$FILEDATE"
+#define P99__VERSION_ID "$FILEID"
 
 /** \@brief The maximal number of arguments the P99 macros can handle.
  **
