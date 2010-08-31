@@ -14,6 +14,8 @@
 
 #define P99__PREFIX0(N) P99__PREFIX0_(N)
 #define P99__PREFIX0_(N) 0 ## N
+#define P99__STRINGIFY_(X) #X
+#define P99__STRINGIFY(X) P99__STRINGIFY_(X)
 
 /* This long list of compilers does not mean that we tested P99, nor
    does it even imply that there is a C99 mode for them. We just list
@@ -22,64 +24,108 @@
    They are listed in alphabetic order, and their numbering is
    nothing that is supposed to stay fixed, reliable or anything. */
 
-#define P99_COMPILER_BORLAND	0x00001U
-#define P99_COMPILER_CLANG	0x00002U
-#define P99_COMPILER_COMEAU	0x00004U
-#define P99_COMPILER_CRAY	0x00008U
-#define P99_COMPILER_DEC	0x00010U
-#define P99_COMPILER_GNU	0x00020U
-#define P99_COMPILER_HP		0x00040U
-#define P99_COMPILER_IBM	0x00080U
-#define P99_COMPILER_INTEL	0x00100U
-#define P99_COMPILER_KAI	0x00200U
-#define P99_COMPILER_LCC	0x00400U
-#define P99_COMPILER_METROWERKS	0x00800U
-#define P99_COMPILER_MICROSOFT	0x01000U
-#define P99_COMPILER_PORTLAND	0x02000U
-#define P99_COMPILER_SGI	0x04000U
-#define P99_COMPILER_SUN	0x08000U
-#define P99_COMPILER_WATCOM	0x10000U
+#define P99_COMPILER_BORLAND	(1u << 0)
+#define P99_COMPILER_CLANG	(1u << 1)
+#define P99_COMPILER_COMEAU	(1u << 2)
+#define P99_COMPILER_CRAY	(1u << 3)
+#define P99_COMPILER_DEC	(1u << 4)
+#define P99_COMPILER_GNU	(1u << 5)
+#define P99_COMPILER_HP		(1u << 6)
+#define P99_COMPILER_IBM	(1u << 7)
+#define P99_COMPILER_INTEL	(1u << 8)
+#define P99_COMPILER_KAI	(1u << 9)
+#define P99_COMPILER_LCC	(1u << 10)
+#define P99_COMPILER_METROWERKS	(1u << 11)
+#define P99_COMPILER_MICROSOFT	(1u << 12)
+#define P99_COMPILER_PORTLAND	(1u << 13)
+#define P99_COMPILER_SGI	(1u << 14)
+#define P99_COMPILER_SUN	(1u << 15)
+#define P99_COMPILER_WATCOM	(1u << 16)
+#define P99_COMPILER_OPEN64	(1u << 17)
 
 /* be sure to put all compilers that are faking gcc before gcc itself */
 #if defined(__clang__)
 # define P99_COMPILER P99_COMPILER_CLANG
-#elif defined(__ICC)
+# define P99_COMPILER_VERSION                   \
+ "clang " P99__STRINGIFY(__clang__)             \
+ "; gnu "                                       \
+ P99__STRINGIFY(__GNUC__) "."                   \
+ P99__STRINGIFY(__GNUC_MINOR__) "."             \
+ P99__STRINGIFY(__GNUC_PATCHLEVEL__)
+
+#elif defined(__INTEL_COMPILER)
 # define P99_COMPILER P99_COMPILER_INTEL
+# define P99_COMPILER_VERSION                   \
+ "intel " __INTEL_COMPILER                      \
+ "; gnu "                                       \
+ P99__STRINGIFY(__GNUC__) "."                   \
+ P99__STRINGIFY(__GNUC_MINOR__) "."             \
+ P99__STRINGIFY(__GNUC_PATCHLEVEL__)
+
+#elif defined(__OPEN64__)
+# define P99_COMPILER P99_COMPILER_OPEN64
+# define P99_COMPILER_VERSION                   \
+ "open64 " __OPEN64__                           \
+ "; gnu "                                       \
+ P99__STRINGIFY(__GNUC__) "."                   \
+ P99__STRINGIFY(__GNUC_MINOR__) "."             \
+ P99__STRINGIFY(__GNUC_PATCHLEVEL__)
+
 /* compilers that (as far as we know) don't pretend to be gcc */
 #elif defined(__BORLANDC__)
 # define P99_COMPILER P99_COMPILER_BORLAND
-#elif defined( __clang__)
-# define P99_COMPILER P99_COMPILER_CLANG
+# define P99_COMPILER_VERSION "borland "
 #elif defined(__COMO__)
 # define P99_COMPILER P99_COMPILER_COMEAU
+# define P99_COMPILER_VERSION "comeau "
 #elif defined(_CRAYC)
 # define P99_COMPILER P99_COMPILER_CRAY
+# define P99_COMPILER_VERSION "cray "
 #elif defined(__DECC_VER)
 # define P99_COMPILER P99_COMPILER_DEC
+# define P99_COMPILER_VERSION "dec "
 #elif defined(__HP_cc)
 # define P99_COMPILER P99_COMPILER_HP
+# define P99_COMPILER_VERSION "hp "
 #elif defined(__IBMC__)
 # define P99_COMPILER P99_COMPILER_IBM
+# define P99_COMPILER_VERSION "ibm "
 #elif defined(__KCC)
 # define P99_COMPILER P99_COMPILER_KAI
+# define P99_COMPILER_VERSION "kai "
 #elif defined(__LCC__)
 # define P99_COMPILER P99_COMPILER_LCC
+# define P99_COMPILER_VERSION "lcc "
 #elif defined(__MWERKS__)
 # define P99_COMPILER P99_COMPILER_METROWERKS
+# define P99_COMPILER_VERSION "metrowerks "
 #elif defined(_MSC_VER)
 # define P99_COMPILER P99_COMPILER_MICROSOFT
+# define P99_COMPILER_VERSION "microsoft "
 #elif defined(__PGI)
 # define P99_COMPILER P99_COMPILER_PORTLAND
+# define P99_COMPILER_VERSION "portland "
 #elif defined(__sgi)
 # define P99_COMPILER P99_COMPILER_SGI
+# define P99_COMPILER_VERSION "sgi "
 #elif defined(__SUNPRO_C)
 # define P99_COMPILER P99_COMPILER_SUN
+# define P99_COMPILER_VERSION "sun "
 #elif defined(__WATCOMC__)
 # define P99_COMPILER P99_COMPILER_WATCOM
+# define P99_COMPILER_VERSION "watcom "
+
+/* put gcc last */
 #elif defined(__GNUC__)
 # define P99_COMPILER P99_COMPILER_GNU
+# define P99_COMPILER_VERSION                   \
+ "gnu "                                         \
+ P99__STRINGIFY(__GNUC__) "."                   \
+ P99__STRINGIFY(__GNUC_MINOR__) "."             \
+ P99__STRINGIFY(__GNUC_PATCHLEVEL__)
+
 #else
-# define P99_COMPILER 0x00000U
+# define P99_COMPILER 0x0U
 #endif
 
 # ifdef __GNUC__
@@ -135,7 +181,7 @@ signed p99__trailing_comma_in_initializer__(void) {
 #if P99_COMPILER & P99_COMPILER_CLANG
 # define inline __attribute__((always_inline)) __inline__
 # define force_inline __attribute__((always_inline)) __inline__
-#elif P99_COMPILER & P99_COMPILER_GNU
+#elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 /* gcc prior to version 4.3 has the inline keyword but with slightly
    different semantics.
    Be sure to allways inline functions in this cases.
@@ -162,7 +208,7 @@ signed p99__trailing_comma_in_initializer__(void) {
 #  define force_inline static inline
 # endif
 
-#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL)
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
 # if P99_GCC_VERSION >= 30000UL
 #  define P99_EXPECT(EXP, VAL) __builtin_expect((EXP), (VAL))
 # endif
@@ -182,7 +228,7 @@ signed p99__trailing_comma_in_initializer__(void) {
 # define P99_EXPECT(EXP, VAL) (EXP)
 #endif
 
-#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU)
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 # if defined(__LONG_MAX__) && defined(__LONG_LONG_MAX__) && (P99_GCC_VERSION >= 30000UL)
 #  if (__LONG_MAX__ == 9223372036854775807) && (__LONG_LONG_MAX__ == 9223372036854775807)
 #   define p99x_uintmax p99x_uintmax

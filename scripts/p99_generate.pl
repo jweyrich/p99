@@ -393,7 +393,7 @@ my $fileid = '$Id$';
 
 my ($FILEID) = $fileid =~ m/[\$]Id:[ ]*([^\$ ]+)/;
 
-my $FILEDATE = `date`;
+my $FILEDATE = `date -R`;
 chomp $FILEDATE;
 
 print "/* This file is automat";

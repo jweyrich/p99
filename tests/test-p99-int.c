@@ -118,6 +118,18 @@ typedef enum { a4 = -1, b4, c4 } enum4;
 //typedef enum { a5 = (unsigned)-1, b5, c5 } enum5;
 
 int main(int argc, char** argv) {
+  char const versionDate[] = { P99_VERSION_DATE };
+  char const versionID[] = { P99_VERSION_ID };
+  char const version_Date[] = { P99__VERSION_DATE };
+  char const version_ID[] = { P99__VERSION_ID };
+  bool const unreleased = versionDate[0] == '$';
+  printf("P99 date:\t%40s %s\n",
+         unreleased ? version_Date : versionDate,
+         unreleased ?  "(unreleased)" : "");
+  printf("P99 identifier:\t%40s %s\n",
+         unreleased ? version_ID : versionID,
+         unreleased ?  "(unreleased)" : "");
+  printf("P99 compiler:\t%40s\n", P99_COMPILER_VERSION);
   printf("%20s:\t%2s\t%2s\t%2s\t%20s\t%20s,\t%3ssigned%15s\n",
          "type", "prec", "width", "pad", "min", "max", "{un}", "sign repr");
   printf("--------------------------- proper types ---------------------------------\n");
