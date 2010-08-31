@@ -14,7 +14,6 @@
 #include "orwl_auth_sock_functions.h"
 
 orwl_mirror *orwl_mirror_init(orwl_mirror *rq, orwl_endpoint h, orwl_endpoint t);
-P99_DEFINE_DEFARG(orwl_mirror_init, , (orwl_endpoint){{0}}, (orwl_endpoint){{0}});
 
 void orwl_mirror_destroy(orwl_mirror *rq);
 

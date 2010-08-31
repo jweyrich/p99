@@ -26,8 +26,8 @@ char* print_uintmax(p99x_uintmax x, char* tmp) {
       char buf[] = { "18446744073709551615" };
       sprintf(buf, "%" PRIu64, low);
       size_t l = strlen(buf);
-      memcpy(tmp - l, buf, l);
       tmp -= l;
+      memcpy(tmp, buf, l);
       x -= low;
       x /= d19;
     } else {
@@ -61,10 +61,12 @@ const char* print_intmax(p99x_intmax x, char* tmp) {
 #endif
 
 #define print_uintmax(...) P99_CALL_DEFARG(print_uintmax, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(print_uintmax, , ((char[40]){ "1844674407370955161518446744073709551615" })+39);
+P99_DECLARE_DEFARG(print_uintmax, ,);
+#define print_uintmax_defarg_1() ((char[40]){ 0 }+39)
 
 #define print_intmax(...) P99_CALL_DEFARG(print_intmax, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(print_intmax, , ((char[40]){ "1844674407370955161518446744073709551615" })+39);
+P99_DECLARE_DEFARG(print_intmax, , );
+#define print_intmax_defarg_1() ((char[40]){ 0 }+39)
 
 #define PRINT_LARGE(X)                                          \
 (P99_SIGNED(X) ? print_intmax((X)) : print_uintmax((X)))

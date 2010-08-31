@@ -66,7 +66,9 @@ orwl_mirror *orwl_mirror_init(orwl_mirror *rq, /*!< [out] the object to iniializ
   return rq;
 }
 
-P99_DECLARE_DEFARG(orwl_mirror_init, , (orwl_endpoint){ .index = 0 }, (orwl_endpoint){ .index = 0 });
+P99_DECLARE_DEFARG(orwl_mirror_init, , , );
+#define orwl_mirror_init_defarg_1() ((orwl_endpoint){ .index = 0 })
+#define orwl_mirror_init_defarg_2() ((orwl_endpoint){ .index = 0 })
 
 inline
 void orwl_mirror_destroy(orwl_mirror *rq) {
