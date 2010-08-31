@@ -7,6 +7,25 @@
  ** other P99 header files that define macros that are of direct use.
  **/
 
+/** @brief The version of the P99 collection indicated by the commit date.
+ **
+ ** This should appear as an RFC2822 style date as you encounter e.g in emails.
+ ** If this doesn't contain a date but a bizarre `format' with $ signs
+ ** you have a version that is directly taken from the git repostitory.
+ **/
+#define P99_VERSION_DATE "$Format:%cd$"
+
+/** @brief The version of the P99 collection indicated by a unique commit ID.
+ **
+ ** This should appear as a long string of hexadecimal digits.
+ ** If this contains but a bizarre "format" with $ signs
+ ** you have a version that is directly taken from the git repostitory.
+ **/
+#define P99_VERSION_ID "$Format:%H$"
+
+#define P99__VERSION_DATE "Tue Aug 31 14:27:24 CEST 2010"
+#define P99__VERSION_ID "eb534f1d31aa3a23309b77734f874d521c3cb3a2"
+
 /** @brief The maximal number of arguments the P99 macros can handle.
  **
  ** This limit applies also to the integer arithmetic that is
