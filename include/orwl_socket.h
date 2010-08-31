@@ -196,7 +196,7 @@ DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
 
 #define AUTH_SOCK_READ(A, F, ...)                               \
 (void)((void (*)(__VA_ARGS__)){P99_PASTE2(F, _signature)});     \
-P99_VASSIGNS((A)->mes, __VA_ARGS__);                                \
+P99_VASSIGNS((A)->mes, __VA_ARGS__);                            \
 (A)->len -= P99_NARG(__VA_ARGS__);                              \
 (A)->mes += P99_NARG(__VA_ARGS__)
 
@@ -205,22 +205,29 @@ addr_t getpeer(auth_sock *Arg);
 
 
 #ifndef DOXYGEN
-inline
-P99_PROTOTYPE(char const*, hostname, char *, size_t);
-P99_DECLARE_DEFARG(hostname, , );
 #define hostname(...) P99_CALL_DEFARG(hostname, 2, __VA_ARGS__)
-#define hostname_defarg_0() ((char[64]){ 0 })
-#define hostname_defarg_1() (64)
+#define hostname_defarg_0() ((char[HOST_NAME_MAX]){ 0 })
+#define hostname_defarg_1() HOST_NAME_MAX
 #endif
 
+/**
+ ** @brief Obtain the %hostname of the execution host
+ **
+ ** This is a wrapper to the POSIX function @c gethostname,
+ ** the difference is the signature.
+ ** @return @a buffer if the call to @c gethostname was successful, @c
+ ** NULL otherwise.
+ **/
 P99_DEFARG_DOCU(hostname)
 inline
 char const*
-hostname(char buffer[static 64], /*!< [out] defaults to a temporary */
-         size_t len              /*!< [in] maximum length of the name (64) */
+hostname(char buffer[],   /*!< [out] defaults to a temporary */
+         size_t len       /*!< [in] maximum length of the name (HOST_NAME_MAX) */
          ) {
-  gethostname(buffer, len);
-  return buffer;
+  return
+    gethostname(buffer, len)
+    ? NULL
+    : buffer;
 }
 
 #endif 	    /* !ORWL_SOCKET_H_ */

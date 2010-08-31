@@ -19,6 +19,8 @@
 /**
  ** @mainpage P99 - Preprocessor macros and functions for c99
  **
+ ** @section introduction Macros and inline functions working together
+ **
  ** In C, functions (whether @c inline or not) and macros fulfill
  ** different purposes. Their difference should not be seen as
  ** ideological as some seem to take it, and what is even more
@@ -130,14 +132,16 @@
  ** is hereby granted. No representations are made about the
  ** suitability of this software for any purpose. It is provided "as
  ** is" without express or implied warranty.
- **
- ** @section conventions Programming conventions
+ **/
+
+/**
+ ** @page conventions Programming conventions
  **
  **  - @ref prefixes
  **  - @ref variableInit
  **  - @ref temporaries
  **
- ** @subsection prefixes Defining identifiers
+ ** @section prefixes Defining identifiers
  **
  ** Macro names that implement a functionality of P99 are generally
  ** uppercase. Exceptions from that rule are @ref hide.
@@ -154,7 +158,7 @@
  ** doxygen documentation.
  **
  **
- ** @subsection variableInit Variable initialization
+ ** @section variableInit Variable initialization
  **
  ** Where possible, P99 uses initializers to initialize variables. For
  ** each type @c T where such an initialization is possible, there
@@ -189,7 +193,7 @@
  ** }
  ** @endcode
  **
- ** @subsection temporaries Use of temporary lvalues
+ ** @section temporaries Use of temporary lvalues
  **
  ** Often when programming utilities for C that are supposed to return
  ** a pointer to an array or structure the question arises who is
@@ -199,9 +203,18 @@
  ** that burden mostly from the programmer of both, caller and callee.
  ** Let us look at the hypothetical function
  ** @code
- ** char const* get_hostname(char* buffer);
+ ** char const* hostname(char buffer[], size_t len);
  ** @endcode
  **
+ ** which could be defined as being similar to the POSIX @c
+ ** gethostname function, only that it doesn't return an error
+ ** indicator but a pointer to the name or @c NULL if it fails. An old
+ ** time (and dangerous!) calling convention for such a function would
+ ** perhaps have been to return a statically allocated buffer in case
+ ** that the @c buffer argument is @a NULL.
+ **
+ ** P99 lets you define more convenient and less dangerous calling
+ ** conventions:
  ** @ref defaults
  ** allows us to define a
  ** @ref hide "macro of the same name"
@@ -210,52 +223,89 @@
  ** if no argument is given to the same function.
  **
  ** @code
- ** P99_PROTOTYPE(char const*, get_hostname, char *);
- ** P99_DEFARG_DOCU(get_hostname)
- ** #define get_hostname(...) P99_CALL_DEFARG(get_hostname, 1, __VA_ARGS__)
- ** P99_DECLARE_DEFARG(get_hostname, (char[HOSTNAME_MAX]){ 0 });
+ ** #define hostname(...) P99_CALL_DEFARG(hostname, 2, __VA_ARGS__)
+ ** #define hostname_defarg_0() (char[HOSTNAME_MAX]){ 0 }
+ ** #define hostname_defarg_1() HOST_NAME_MAX
  ** @endcode
  **
- ** Now @c get_hostname can be used in three different ways.
+ ** This defines three different macros. One that is used in the place
+ ** the programmer places a call to @c hostname. The other two, @c
+ ** hostname_defarg_0 and @c hostname_defarg_1, are used by the macro
+ ** @c hostname when the respective arguments are left out.
+ **
+ ** Now @c hostname can be used in three different ways.
  ** <ol>
  ** <li>Such that
  ** the caller is responsible and obtains space on the heap:
  ** @code
- ** char const * host = get_hostname(malloc(HOSTNAME_MAX));
+ ** char const*const host = hostname(malloc(mylen), mylen);
+ ** .
+ ** free(host);
  ** @endcode
  ** </li>
  ** <li>Such that the caller initializes its own variable that has a
  ** storage class that fits best to the needs:
  ** @code
- ** char const host[HOSTNAME_MAX];
+ ** char host[mylen];
  ** .
- ** get_hostname(host);
+ ** hostname(host, mylen);
  ** @endcode
  ** </li>
  ** <li>
  ** Or such that the space is allocated on the stack of the current
  ** scope of the call:
  ** @code
- ** char const * host = get_hostname();
+ ** char const*const host = hostname();
  ** @endcode
  ** </li>
  ** </ol>
- ** The later has the advantage of being simple to use, but without
- ** the callee exposing a static buffer.
+ ** @endcode
  **
- ** @section utilities Implemented utilities
- ** @subsection defaults Default arguments to functions
- ** @subsection blocks Guarded blocks
- ** @subsection condi Preprocessor conditionals and loops
- ** @subsection alloc Allocation and initialization facilities
+ ** The later is then equivalent to
+ ** @code
+ ** char tmp[HOSTNAME_MAX] = { 0 };
+ ** char const*const host = hostname(tmp, HOSTNAME_MAX);
+ ** @endcode
+ ** but without leaving a non-const access to the contents of @c tmp.
  **
- ** @section programming Macro programming with P99
  **
- ** @section c99 C99 features
- ** @subsection variadic Variadic macros
- ** @subsection inline Inline functions
- ** @subsection initializers Named initializers
- ** @subsection compound Compound literals
+ ** It uses a temporary value that is only valid inside the block in
+ ** which the @c get_hostname macro is expanded. The handling of this
+ ** temporary is implicit, neither the caller nor the callee have to
+ ** worry of allocating or deallocating it.  On the calling side this
+ ** convention is simple to use without having the callee expose a
+ ** static buffer.
+ **/
+
+/**
+ ** @page utilities Implemented utilities
+ **
+ ** @section defaults Default arguments to functions
+ **
+ ** In section @ref temporaries we have seen a way to provide default
+ ** arguments to functions by overloading them with macros. Other than
+ ** this would be in C++, the initial value of the temporary (here a
+ ** local compound literal) is computed in the context of the caller.
+ **
+ ** To obtain the same behavior as for C++, namely to provide a
+ ** default argument that is evaluated at the place of declaration and
+ ** not at the place of use we have to apply some more machinery...
+ **
+ ** @section blocks Guarded blocks
+ ** @section condi Preprocessor conditionals and loops
+ ** @section alloc Allocation and initialization facilities
+ **/
+
+/**
+ ** @page programming Macro programming with P99
+ **/
+
+/**
+ ** @page c99 C99 features
+ ** @section variadic Variadic macros
+ ** @section inline Inline functions
+ ** @section initializers Named initializers
+ ** @section compound Compound literals
  **
  ** A compound literal is syntactically given as a compound
  ** initializer and a cast such as
@@ -291,7 +341,7 @@
  ** Using the compound literal here has the advantage that no other
  ** non-const reference to the temporary is exposed.
  **
- ** @subsection hide Macros that hide a function
+ ** @section hide Macros that hide a function
  **
  ** Per se, this is not a new feature of C99 but had been present
  ** before. The preprocessor has two special rules, one that applies
@@ -300,7 +350,7 @@
  **  -# If during expansion of a macro XXX the token XXX is found, it
  **    is not expanded. So there is no recursion in C macros.
  **  -# If a functional macro YYY is found without a following
- **    parenthesis it is not expanded.
+ **    opening parenthesis it is not expanded.
  **
  ** Theses features can be used to define a macro and another
  ** identifier that have the same name. It is sometimes used to all
