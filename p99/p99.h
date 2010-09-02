@@ -283,13 +283,80 @@
  ** @section defaults Default arguments to functions
  **
  ** In section @ref temporaries we have seen a way to provide default
- ** arguments to functions by overloading them with macros. Other than
- ** this would be in C++, the initial value of the temporary (here a
- ** local compound literal) is computed in the context of the caller.
+ ** arguments to functions by overloading them with macros. The
+ ** general declaration pattern here is as follows
+ **
+ ** @code
+ ** #define NAME(...) P99_CALL_DEFARG(NAME, N, __VA_ARGS__)
+ ** @endcode
+ **
+ ** Where @c NAME becomes the name of a macro and where we also
+ ** suppose that there is already a function of the same name @c NAME.
+ **
+ ** Other than this would be in C++, the default value for the
+ ** ::hostname macro that we had given was itself produced by a macro,
+ ** namely @c hostname_defarg_0. The convention here is as simple as that:
+ **  - when called, ::P99_CALL_DEFARG replaces each argument M
+ **    (counting starts at 0) that is not
+ **    provided by the tokens
+ **    @code
+ **    NAME ## _defarg_ ## M ()
+ **    @endcode
+ **    that is a concatenation of @c NAME with the token @c _defarg_
+ **    and the decimal number @c M
+ **  - "not provided" here meaning either
+ **     - leaving an empty place in an argument list
+ **     - giving less arguments than @c N
+ **  - to be valid C code this name must then either
+ **      -# itself be a macro that is then expanded
+ **      -# be a valid function call that can be interpreted by the
+ **        compiler
+ **
+ ** As we have seen in the example (a) is computed in the context of
+ ** the caller. This let us simply use a temporary (here a local
+ ** compound literal) that was thus valid in that context.
  **
  ** To obtain the same behavior as for C++, namely to provide a
  ** default argument that is evaluated at the place of declaration and
- ** not at the place of use we have to apply some more machinery...
+ ** not at the place of the call we have to use (b), a function call.
+ ** This will be as efficient as macro call if we use @ref inline for
+ ** that purpose.
+ **
+ ** To ease the programming of this functional approach P99 provides
+ ** some machinery. We need three things as in the following example:
+ ** @code
+ ** P99_PROTOTYPE(int, pthread_mutex_init, pthread_mutex_t*, pthread_mutexattr_t const*);
+ ** #define pthread_mutex_init(...) P99_CALL_DEFARG(pthread_mutex_init, 2, __VA_ARGS__)
+ ** P99_DECLARE_DEFARG(pthread_mutex_init, , NULL);
+ ** @endcode
+ **
+ ** That are
+ **  - a "prototype" of the underlying function, such that P99
+ **    knows of the name of the function, the return type and the types
+ **    of the arguments.
+ **  - the macro definition as we have already seen
+ **  - a declaration of the default arguments.
+ **
+ ** Here in the example there is no default argument for position 0
+ ** but one for position 1. It has a type of @c pthread_mutexattr_t
+ ** const* and defaults to the value @c NULL. The above leads to the
+ ** automatic generation of an @c inline function that looks something like:
+ **
+ ** @code
+ ** inline
+ ** pthread_mutexattr_t const*
+ ** pthread_mutex_init_defarg_1(void) {
+ **   return NULL;
+ ** }
+ ** @endcode
+ **
+ ** This declaration and definition is placed in the context of the
+ ** above declaration and @em not in the context of the caller. Thus
+ ** the expression is evaluated in that context, and not in the
+ ** context of the caller. In the example the expression is just @c
+ ** NULL for which it is not such an interesting distinction. But it
+ ** could e.g also evaluate a global variable, call another function
+ ** or whatever pleases.
  **
  ** @section blocks Guarded blocks
  ** @section condi Preprocessor conditionals and loops
