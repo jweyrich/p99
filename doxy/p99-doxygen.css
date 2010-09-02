@@ -1,6 +1,7 @@
 /* A customized CSS for formating doxygen output of P99 */
 
-body, table, div, p, dl {
+html, html *, body, table, div, p, dt, dd, dl {
+	background-color: /* #d8dde0 */ #f8f8ff;
 	font-family: Lucida Grande, Verdana, Geneva, Arial, sans-serif;
 	font-size: 12px;
 }
@@ -84,7 +85,7 @@ div.navtab {
 
 a {
 	color: #153788;
-	font-weight: normal;
+        /* font-weight: normal; */
 	text-decoration: none;
 }
 
@@ -112,7 +113,7 @@ a.qindexHL {
 }
 
 a.el {
-	font-weight: bold;
+	/*font-weight: bold; */
 }
 
 a.elRef {
@@ -369,9 +370,20 @@ hr.footer {
 }
 
 .memname {
+        background-color: #d5e1e8;
         white-space: nowrap;
         font-weight: bold;
         margin-left: 6px;
+        /* firefox specific markup */
+        background-image: -moz-linear-gradient(rgba(228, 233, 245, 1.0) 0%, rgba(193, 205, 232, 1.0) 100%);
+        -moz-box-shadow: rgba(0, 0, 0, 0.15) 5px 5px 5px;
+        -moz-border-radius-topright: 8px;
+        -moz-border-radius-topleft: 8px;
+        /* webkit specific markup */
+        background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(228, 233, 245, 1.0)), to(rgba(193, 205, 232, 1.0)));
+        -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.15);
+        -webkit-border-top-right-radius: 8px;
+        -webkit-border-top-left-radius: 8px;
 }
 
 .memproto {
@@ -394,6 +406,16 @@ hr.footer {
 
 }
 
+.memproto .memname, .memproto * {
+        padding: 0;
+        background-color: #d5e1e8;
+        font-weight: bold;
+        /* firefox specific markup */
+        background-image: -moz-linear-gradient(rgba(228, 233, 245, 1.0) 0%, rgba(193, 205, 232, 1.0) 100%);
+        /* webkit specific markup */
+        background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(228, 233, 245, 1.0)), to(rgba(193, 205, 232, 1.0)));
+}
+
 .memdoc {
         border-bottom: 1px solid #84b0c7;      
         border-left: 1px solid #84b0c7;      
@@ -410,6 +432,10 @@ hr.footer {
         -webkit-border-bottom-right-radius: 8px;
         -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.15);
 }
+
+.memdoc * {
+        background-color: #eef3f5;
+ }
 
 .paramkey {
 	text-align: right;
