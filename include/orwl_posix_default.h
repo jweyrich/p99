@@ -24,7 +24,7 @@
  **/
 P99_DEFARG_DOCU(pthread_barrier_init)
 #define pthread_barrier_init(...) P99_CALL_DEFARG(pthread_barrier_init, 3, __VA_ARGS__)
-#define pthread_barrier_init_defarg_1() NULL
+#define pthread_barrier_init_defarg_1() 0
 #define pthread_barrier_init_defarg_2() (pthread_barrier_init must have a count argument)
 
 /**
@@ -36,7 +36,7 @@ P99_DEFARG_DOCU(pthread_barrier_init)
  **/
 P99_DEFARG_DOCU(pthread_cond_init)
 #define pthread_cond_init(...) P99_CALL_DEFARG(pthread_cond_init, 2, __VA_ARGS__)
-#define pthread_cond_init_defarg_1() NULL
+#define pthread_cond_init_defarg_1() 0
 
 /**
  ** @brief Default arguments for pthread_mutex_init (3posix) - destroy and initialize a mutex
@@ -46,7 +46,7 @@ P99_DEFARG_DOCU(pthread_cond_init)
  **/
 P99_DEFARG_DOCU(pthread_mutex_init)
 #define pthread_mutex_init(...) P99_CALL_DEFARG(pthread_mutex_init, 2, __VA_ARGS__)
-#define pthread_mutex_init_defarg_1 NULL
+#define pthread_mutex_init_defarg_1 0
 
 /**
  ** @brief Default arguments for pthread_rwlock_init (3posix) - destroy and initialize a read-write lock object
@@ -56,7 +56,7 @@ P99_DEFARG_DOCU(pthread_mutex_init)
  **/
 P99_DEFARG_DOCU(pthread_rwlock_init)
 #define pthread_rwlock_init(...) P99_CALL_DEFARG(pthread_rwlock_init, 2, __VA_ARGS__)
-#define pthread_rwlock_init_defarg_1 NULL
+#define pthread_rwlock_init_defarg_1 0
 
 /**
  ** @brief Default arguments for pthread_spin_init (3posix) - destroy or initialize a spin lock object (ADVANCED REALTIME THREADS)
@@ -85,7 +85,7 @@ P99_DEFARG_DOCU(sem_init)
  **/
 P99_DEFARG_DOCU(pthread_key_create)
 #define pthread_key_create(...) P99_CALL_DEFARG(pthread_key_create, 2, __VA_ARGS__)
-#define pthread_key_create_defarg_1() NULL
+#define pthread_key_create_defarg_1() 0
 
 
 /**
@@ -93,7 +93,7 @@ P99_DEFARG_DOCU(pthread_key_create)
  **/
 P99_DEFARG_DOCU(strtol)
 #define strtol(...) P99_CALL_DEFARG(strtol, 3, __VA_ARGS__)
-#define strtol_defarg_1() NULL
+#define strtol_defarg_1() 0
 #define strtol_defarg_2() 0
 
 /**
@@ -101,7 +101,7 @@ P99_DEFARG_DOCU(strtol)
  **/
 P99_DEFARG_DOCU(strtoll)
 #define strtoll(...) P99_CALL_DEFARG(strtoll, 3, __VA_ARGS__)
-#define strtoll_defarg_1() NULL
+#define strtoll_defarg_1() 0
 #define strtoll_defarg_2() 0
 
 /**
@@ -109,7 +109,7 @@ P99_DEFARG_DOCU(strtoll)
  **/
 P99_DEFARG_DOCU(strtoul)
 #define strtoul(...) P99_CALL_DEFARG(strtoul, 3, __VA_ARGS__)
-#define strtoul_defarg_1() NULL
+#define strtoul_defarg_1() 0
 #define strtoul_defarg_2() 0
 
 /**
@@ -117,7 +117,7 @@ P99_DEFARG_DOCU(strtoul)
  **/
 P99_DEFARG_DOCU(strtoull)
 #define strtoull(...) P99_CALL_DEFARG(strtoull, 3, __VA_ARGS__)
-#define strtoull_defarg_1() NULL
+#define strtoull_defarg_1() 0
 #define strtoull_defarg_2() 0
 
 /**
@@ -125,21 +125,21 @@ P99_DEFARG_DOCU(strtoull)
  **/
 P99_DEFARG_DOCU(strtof)
 #define strtof(...) P99_CALL_DEFARG(strtof, 2, __VA_ARGS__)
-#define strtof_defarg_1() NULL
+#define strtof_defarg_1() 0
 
 /**
  ** @brief Default arguments for @c strtod
  **/
 P99_DEFARG_DOCU(strtod)
 #define strtod(...) P99_CALL_DEFARG(strtod, 2, __VA_ARGS__)
-#define strtod_defarg_1() NULL
+#define strtod_defarg_1() 0
 
 /**
  ** @brief Default arguments for @c strtold
  **/
 P99_DEFARG_DOCU(strtold)
 #define strtold(...) P99_CALL_DEFARG(strtold, 2, __VA_ARGS__)
-#define strtold_defarg_1() NULL
+#define strtold_defarg_1() 0
 
 /**
  ** @brief Default arguments for @c calloc
@@ -161,7 +161,7 @@ P99_DEFARG_DOCU(calloc)
  **/
 P99_DEFARG_DOCU(accept)
 #define accept(...) P99_CALL_DEFARG(accept, 3, __VA_ARGS__)
-#define accept_defarg_1() NULL
+#define accept_defarg_1() 0
 #define accept_defarg_2() &P99_LVAL(socklen_t)
 
 /**
@@ -189,7 +189,7 @@ P99_DEFARG_DOCU(inet_ntop)
  **/
 P99_DEFARG_DOCU(realpath)
 #define realpath(...) P99_CALL_DEFARG(realpath, 2, __VA_ARGS__)
-#define realpath_defarg_1() NULL
+#define realpath_defarg_1() 0
 
 
 #endif 	    /* !ORWL_POSIX_DEFAULT_H_ */
