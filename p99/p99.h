@@ -325,9 +325,14 @@
  ** To ease the programming of this functional approach P99 provides
  ** some machinery. We need three things as in the following example:
  ** @code
- ** P99_PROTOTYPE(int, pthread_mutex_init, pthread_mutex_t*, pthread_mutexattr_t const*);
- ** #define pthread_mutex_init(...) P99_CALL_DEFARG(pthread_mutex_init, 2, __VA_ARGS__)
- ** P99_DECLARE_DEFARG(pthread_mutex_init, , NULL);
+ ** P99_PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
+ ** #define rand48_t_init(...) P99_CALL_DEFARG(rand48_t_init, 4, __VA_ARGS__)
+ ** P99_DECLARE_DEFARG(rand48_t_init,
+ **                    ,
+ **                    useconds(),
+ **                    getpid(),
+ **                    (atomic_counter_inc(&rand48_counter), atomic_counter_getvalue(&rand48_counter))
+ **                    );
  ** @endcode
  **
  ** That are
@@ -338,25 +343,34 @@
  **  - a declaration of the default arguments.
  **
  ** Here in the example there is no default argument for position 0
- ** but one for position 1. It has a type of @c pthread_mutexattr_t
- ** const* and defaults to the value @c NULL. The above leads to the
- ** automatic generation of an @c inline function that looks something like:
+ ** but one for positions 1 to 3. All three have the type @c
+ ** unsigned. The above leads to the automatic generation of three @c
+ ** inline function that looks something like:
  **
  ** @code
  ** inline
  ** pthread_mutexattr_t const*
  ** pthread_mutex_init_defarg_1(void) {
- **   return NULL;
+ **   return useconds();
+ ** }
+ ** inline
+ ** pthread_mutexattr_t const*
+ ** pthread_mutex_init_defarg_2(void) {
+ **   return getpid();
+ ** }
+ ** inline
+ ** pthread_mutexattr_t const*
+ ** pthread_mutex_init_defarg_3(void) {
+ **   return (atomic_counter_inc(&rand48_counter), atomic_counter_getvalue(&rand48_counter));
  ** }
  ** @endcode
  **
  ** This declaration and definition is placed in the context of the
- ** above declaration and @em not in the context of the caller. Thus
+ ** above declaration and not in the context of the caller. Thus
  ** the expression is evaluated in that context, and not in the
- ** context of the caller. In the example the expression is just @c
- ** NULL for which it is not such an interesting distinction. But it
- ** could e.g also evaluate a global variable, call another function
- ** or whatever pleases.
+ ** context of the caller. In particular for the third function, this
+ ** fixes the variable @c rand48_counter to the one that is visible at
+ ** the point of declaration.
  **
  ** @section blocks Guarded blocks
  ** @section condi Preprocessor conditionals and loops
