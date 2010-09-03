@@ -52,7 +52,9 @@ struct rand48_t {
 inline
 P99_PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
 #define rand48_t_init(...) P99_CALL_DEFARG(rand48_t_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(rand48_t_init, , useconds(), getpid(), pthread_self());
+#define rand48_t_init_defarg_1 useconds
+#define rand48_t_init_defarg_2 getpid
+#define rand48_t_init_defarg_3 pthread_self
 #endif
 
 DOCUMENT_INIT(rand48_t)

@@ -39,7 +39,8 @@ DECLARE_ONCE(atomic_counter);
 P99_PROTOTYPE(atomic_counter*, atomic_counter_init, atomic_counter*, int, unsigned);
 P99_DEFARG_DOCU(atomic_counter_init)
 #define atomic_counter_init(...) P99_CALL_DEFARG(atomic_counter_init, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(atomic_counter_init, , PTHREAD_PROCESS_PRIVATE, 0u);
+#define atomic_counter_init_defarg_1() (PTHREAD_PROCESS_PRIVATE)
+#define atomic_counter_init_defarg_2() (0u)
 
 inline
 P99_PROTOTYPE(void, atomic_counter_inc, atomic_counter*);
