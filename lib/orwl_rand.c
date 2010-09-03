@@ -10,7 +10,8 @@
 */
 
 #include "orwl_rand.h"
-#include "orwl_posix_default.h"
+#include "orwl_posix.h"
+#include "p99_posix_default.h"
 
 rand48_t *rand48_t_init(rand48_t*, unsigned short, unsigned short, unsigned short);
 

@@ -112,7 +112,7 @@ external_symbols.c : liborwl.so Makefile
 	@printf '/** @file external_symbols.c\n' > external_symbols.c
 	@printf ' ** @brief External refferences in the library\n' >> external_symbols.c
 	@printf ' **/\n' >> external_symbols.c
-	@printf '#include "orwl_posix_default.h"\n' >> external_symbols.c
+	@printf '#include "orwl_posix.h"\n' >> external_symbols.c
 	@printf 'typedef void* (*orwl__FT)(void*);\n' >> external_symbols.c
 	@printf 'void* (*const external_functions[])(void*) = {\n${CASTS}};\n' >> external_symbols.c
 	@printf '#ifdef DOXYGEN\n' >> external_symbols.c

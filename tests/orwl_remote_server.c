@@ -8,13 +8,13 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include "orwl_posix_default.h"
+#include "orwl_posix.h"
 #include "orwl_thread.h"
 #include "orwl_rand.h"
 #include "orwl_remote_queue.h"
 #include "orwl_callback.h"
 #include "orwl_server.h"
-
+#include "p99_posix_default.h"
 
 static char address[256] = "";
 static uint64_t con = 20;

@@ -12,7 +12,8 @@
 
 #include "orwl_server.h"
 #include "orwl_header.h"
-#include "orwl_posix_default.h"
+#include "orwl_posix.h"
+#include "p99_posix_default.h"
 
 static uint32_t mycode = 0;
 
