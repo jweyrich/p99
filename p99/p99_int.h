@@ -489,6 +489,10 @@ uintmax_t p99__abs_signed(intmax_t a) {
  ** @c -INTMAX_MIN is not representable in @c intmax_t.
  **
  ** @a EXPR is guaranteed to be evaluated exactly once.
+ **
+ ** This macro is preferable to the C99 function @c imaxabs. That
+ ** function forcibly returns a value of type @c intmax_t, and might
+ ** thus fail for @c INTMAX_MIN.
  **/
 #define P99_ABS(EXPR) (P99_SIGNED(EXPR) ? p99__abs_signed(EXPR) : (EXPR))
 
@@ -684,6 +688,30 @@ P99_CHOOSE5(xT,                                 \
  ** uintmax_t but keep signedness if possible.
  **/
 #define P99__J(x) (0 ? P99_0(uintmax_t) : (x))
+
+#define strtoL strtol
+#define strtouL strtoul
+#define strtoUL strtoul
+#define strtoUl strtoul
+
+#define strtoLL strtoll
+#define strtouLL strtoull
+#define strtoULL strtoull
+#define strtoUlL strtoull
+
+#define strtoLl strtoll
+#define strtouLl strtoull
+#define strtoULl strtoull
+#define strtoUll strtoull
+
+#define strtou8 UINT8_C(strto)
+#define strtou16 UINT16_C(strto)
+#define strtou32 UINT32_C(strto)
+#define strtou64 UINT64_C(strto)
+#define strtoi8 UINT8_C(strto)
+#define strtoi16 UINT16_C(strto)
+#define strtoi32 UINT32_C(strto)
+#define strtoi64 UINT64_C(strto)
 
 /**
  ** @}

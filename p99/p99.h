@@ -407,7 +407,7 @@
  **     of such a variable is modifiable.
  **
  ** Example: The following returns the pointer to a character array
- ** that is initialized with all @c `a', a terminating @c '\0' and
+ ** that is initialized with all @c `a', a terminating @c 0 character and
  ** that is a valid objet until the program leaves the current block.
  ** @code
  ** char const*const hui = memset((char[256]){0}, 'a', 255);
@@ -496,7 +496,7 @@
  ** }
  ** @endcode
  **
- ** This will simply explode since the preprocessor will expand the @i
+ ** This will simply explode since the preprocessor will expand the
  ** functional reference to @c putc. This can be explicitly avoided
  ** by undefining the macro before the definition, but for this the
  ** implementor of @c putc has to know that it is also a macro.

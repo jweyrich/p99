@@ -35,10 +35,10 @@ void process_opt(int argc, char **argv) {
       strcpy(address, optarg);
       break;
     case 'c':
-      con = str2uint64_t(optarg);
+      con = strtou64(optarg);
       break;
     case 'l':
-      len = str2uint64_t(optarg);
+      len = strtou64(optarg);
       break;
     case 'b':
       block = !block;
