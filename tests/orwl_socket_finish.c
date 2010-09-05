@@ -8,11 +8,12 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include "orwl_posix_default.h"
+#include "orwl_posix.h"
 #include "orwl_socket.h"
 #include "orwl_server.h"
 #include "orwl_register.h"
 #include "orwl_wait_queue.h"
+#include "p99_posix_default.h"
 
 inline void F_(int a) { }
 

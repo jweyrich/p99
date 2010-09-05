@@ -12,7 +12,8 @@
 #include "orwl_server.h"
 #include "orwl_register.h"
 #include "orwl_wait_queue.h"
-#include "orwl_posix_default.h"
+#include "orwl_posix.h"
+#include "p99_posix_default.h"
 #include "orwl_auth_sock_functions.h"
 
 int main(int argc, char **argv) {

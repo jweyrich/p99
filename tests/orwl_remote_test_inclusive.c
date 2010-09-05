@@ -8,12 +8,13 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include "orwl_posix_default.h"
+#include "orwl_posix.h"
 #include "orwl_handle2.h"
 #include "orwl_callback.h"
 #include "orwl_server.h"
 #include "orwl_socket.h"
 #include "orwl_auth_sock_functions.h"
+#include "p99_posix_default.h"
 
 static orwl_mirror* location_back = NULL;
 static orwl_mirror* location = NULL;
