@@ -39,9 +39,15 @@ orwl_wq* orwl_wq_init(orwl_wq *wq,
 
 P99_DEFINE_DEFARG(orwl_wq_init, , NULL);
 
+#define ORWL__WQ_CHECK(EL)                      \
+do {                                            \
+  assert((EL) != TGARB(orwl_wh*));              \
+  assert(!(EL));                                \
+ } while(0)
+
 void orwl_wq_destroy(orwl_wq *wq) {
-  assert(!wq->head);
-  assert(!wq->tail);
+  ORWL__WQ_CHECK(wq->head);
+  ORWL__WQ_CHECK(wq->tail);
   if (wq->data) free(wq->data);
   pthread_mutex_destroy(&wq->mut);
   wq->head = TGARB(orwl_wh*);
