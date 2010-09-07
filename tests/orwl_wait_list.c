@@ -12,6 +12,7 @@
 #include "orwl_rand.h"
 #include "orwl_wait_queue.h"
 #include "orwl_callback.h"
+#include "p99_c99_default.h"
 
 static orwl_wq location = ORWL_WQ_INITIALIZER;
 static orwl_wh *handle = NULL;
@@ -118,8 +119,8 @@ DEFINE_THREAD(arg_t) {
 
 
 int main(int argc, char **argv) {
-  if (argc > 1) phases = str2size_t(argv[1], NULL, 0);
-  if (argc > 2) orwl_np = str2size_t(argv[2], NULL, 0);
+  if (argc > 1) phases = strtouz(argv[1], NULL, 0);
+  if (argc > 2) orwl_np = strtouz(argv[2], NULL, 0);
 
   report(1, "%s: starting with %zu phases and %zu threads",
           argv[0], phases, orwl_np);

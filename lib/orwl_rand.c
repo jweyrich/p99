@@ -12,6 +12,7 @@
 #include "orwl_rand.h"
 #include "orwl_posix.h"
 #include "p99_posix_default.h"
+#include "p99_c99_default.h"
 
 rand48_t *rand48_t_init(rand48_t*, unsigned short, unsigned short, unsigned short);
 
@@ -55,7 +56,7 @@ static char const ENVVAR[] = "ORWL_SECRET";
 DECLARE_ONCE_UPON(secret);
 DEFINE_ONCE_UPON(secret) {
   char const *str = getenv(ENVVAR);
-  if (str) secret = str2uint64_t(str);
+  if (str) secret = strtou64(str);
 }
 
 uint64_t orwl_challenge(uint64_t a) {

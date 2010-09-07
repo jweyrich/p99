@@ -10,6 +10,7 @@
 
 #include "orwl_posix.h"
 #include "p99_posix_default.h"
+#include "p99_c99_default.h"
 #include "orwl_socket.h"
 #include "orwl_header.h"
 
@@ -59,7 +60,7 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
     if (name[0]) {
       if (name[0] != ':') return NULL;
       ++name;
-      port_t_init(&port, str2uint16_t(name));
+      port_t_init(&port, strtou16(name));
       size_t len = strcspn(name, "/");
       if (!len) return NULL;
       name += len;
@@ -67,7 +68,7 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
     if (name[0]) {
       if (name[0] != '/') return NULL;
       ++name;
-      index = str2uint64_t(name);
+      index = strtou64(name);
     }
     ep->addr = addr;
     ep->port = port;

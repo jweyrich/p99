@@ -59,7 +59,7 @@ struct p99__strcat_state {
   size_t pos;
 };
 
-static_inline
+p99_inline
 p99__strcat_state* p99__strcat(p99__strcat_state *restrict dest, char const*src) {
   if (!dest->pos) dest->pos = strlen(dest->buffer);
   size_t len = strlen(src);
@@ -68,7 +68,7 @@ p99__strcat_state* p99__strcat(p99__strcat_state *restrict dest, char const*src)
   return dest;
 }
 
-static_inline
+p99_inline
 char* p99__strcat_terminate(p99__strcat_state *restrict dest) {
   dest->buffer[dest->pos] = '\0';
   return dest->buffer;

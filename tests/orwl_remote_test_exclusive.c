@@ -15,6 +15,7 @@
 #include "orwl_socket.h"
 #include "orwl_auth_sock_functions.h"
 #include "p99_posix_default.h"
+#include "p99_c99_default.h"
 
 static orwl_mirror location;
 static orwl_handle *handle = NULL;
@@ -132,8 +133,8 @@ DEFINE_THREAD(arg_t) {
 
 int main(int argc, char **argv) {
   int ret = 0;
-  if (argc > 1) phases = str2size_t(argv[1]);
-  if (argc > 2) orwl_np = str2size_t(argv[2]);
+  if (argc > 1) phases = strtouz(argv[1]);
+  if (argc > 2) orwl_np = strtouz(argv[2]);
 
   report(1, "%s: starting with %zu phases and %zu threads",
           argv[0], phases, orwl_np);

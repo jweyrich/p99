@@ -180,7 +180,7 @@ signed p99__trailing_comma_in_initializer__(void) {
 
 #if P99_COMPILER & P99_COMPILER_CLANG
 # define inline __attribute__((always_inline)) __inline__
-# define force_inline __attribute__((always_inline)) __inline__
+# define p99_inline __attribute__((always_inline)) __inline__
 #elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 /* gcc prior to version 4.3 has the inline keyword but with slightly
    different semantics.
@@ -197,15 +197,24 @@ signed p99__trailing_comma_in_initializer__(void) {
 #  endif
 #  define static_inline inline
 # endif
-# define force_inline __attribute__((always_inline)) __inline__
+# define p99_inline __attribute__((always_inline)) __inline__
 #endif
 
 
 # ifndef static_inline
 #  define static_inline static inline
 # endif
-# ifndef force_inline
-#  define force_inline static inline
+# ifndef p99_inline
+/**
+ ** @brief Try to force a function to be always inlined
+ **
+ ** Since there is no default language construct to ensure this, this
+ ** will always only be an approximation depending on the compiler.
+ **
+ ** The functions that are defined by P99 itself are declared/defined
+ ** with this.
+ **/
+#  define p99_inline static inline
 # endif
 
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)

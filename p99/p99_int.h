@@ -472,7 +472,7 @@ P99__SEE_PROMOTE
 #define P99_SIGNED(EXPR) (P99_PROMOTE_M1(EXPR) < P99_PROMOTE_0(EXPR))
 
 
-inline
+p99_inline
 uintmax_t p99__abs_signed(intmax_t a) {
   uintmax_t aa = a;
   /* The minus is taken on the unsigned value, so it gives the
@@ -497,7 +497,7 @@ uintmax_t p99__abs_signed(intmax_t a) {
 #define P99_ABS(EXPR) (P99_SIGNED(EXPR) ? p99__abs_signed(EXPR) : (EXPR))
 
 #if defined(p99x_uintmax) && defined(p99x_intmax)
-inline
+p99_inline
 p99x_uintmax p99x__abs_signed(p99x_intmax a) {
   p99x_uintmax aa = a;
   /* The minus is taken on the unsigned value, so it gives the
@@ -689,29 +689,6 @@ P99_CHOOSE5(xT,                                 \
  **/
 #define P99__J(x) (0 ? P99_0(uintmax_t) : (x))
 
-#define strtoL strtol
-#define strtouL strtoul
-#define strtoUL strtoul
-#define strtoUl strtoul
-
-#define strtoLL strtoll
-#define strtouLL strtoull
-#define strtoULL strtoull
-#define strtoUlL strtoull
-
-#define strtoLl strtoll
-#define strtouLl strtoull
-#define strtoULl strtoull
-#define strtoUll strtoull
-
-#define strtou8 UINT8_C(strto)
-#define strtou16 UINT16_C(strto)
-#define strtou32 UINT32_C(strto)
-#define strtou64 UINT64_C(strto)
-#define strtoi8 UINT8_C(strto)
-#define strtoi16 UINT16_C(strto)
-#define strtoi32 UINT32_C(strto)
-#define strtoi64 UINT64_C(strto)
 
 /**
  ** @}

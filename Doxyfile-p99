@@ -1271,6 +1271,8 @@ PREDEFINED += P99_MACRO_END(x)=
 
 PREDEFINED += static_inline="inline"
 
+PREDEFINED += p99_inline="inline"
+
 PREDEFINED += P99_COMPILETIME_ASSERT(x)=
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
@@ -1290,6 +1292,8 @@ P99_PASTE3					\
 P99_PASTE4					\
 P99_PROTOTYPE					\
 P99__DECLARE_ARI2STR				\
+P99__DECLARE_STRTO				\
+P99__DECLARE_STRTOU				\
 P99__DOCUMENT_ID                                \
 P99__DOCUMENT_PROMOTE				\
 P99__DOCUMENT_SIGNED				\
