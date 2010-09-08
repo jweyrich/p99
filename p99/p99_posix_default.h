@@ -40,13 +40,13 @@ P99__POSIX_DEFARG_DOCU(pthread_mutex_init, int, pthread_mutex_t* objp, pthread_m
 /*! @param objp is required */
 /*! @param attr defaults to 0, such that is @a objp is initialized with default velues */
 #define pthread_mutex_init(...) P99_CALL_DEFARG(pthread_mutex_init, 2, __VA_ARGS__)
-#define pthread_mutex_init_defarg_1 0
+#define pthread_mutex_init_defarg_1() 0
 
 P99__POSIX_DEFARG_DOCU(pthread_rwlock_init, int, pthread_rwlock_t* objp, pthread_rwlockattr_t const* attr)
 /*! @param objp is required */
 /*! @param attr defaults to 0, such that is @a objp is initialized with default velues */
 #define pthread_rwlock_init(...) P99_CALL_DEFARG(pthread_rwlock_init, 2, __VA_ARGS__)
-#define pthread_rwlock_init_defarg_1 0
+#define pthread_rwlock_init_defarg_1() 0
 
 P99__POSIX_DEFARG_DOCU(pthread_spin_init, int, pthread_spinlock_t* objp, int pshared)
 /*! @param objp is required */
