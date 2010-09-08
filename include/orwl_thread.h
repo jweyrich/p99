@@ -110,10 +110,13 @@ extern pthread_mutexattr_t const*const pthread_mutexattr_thread;
 extern pthread_mutexattr_t const*const pthread_mutexattr_process;
 extern pthread_condattr_t const*const pthread_condattr_thread;
 extern pthread_condattr_t const*const pthread_condattr_process;
+extern pthread_rwlockattr_t const*const pthread_rwlockattr_thread;
+extern pthread_rwlockattr_t const*const pthread_rwlockattr_process;
 
 DECLARE_ONCE(orwl_thread);
 DECLARE_ONCE(pthread_mutex_t);
 DECLARE_ONCE(pthread_cond_t);
+DECLARE_ONCE(pthread_rwlock_t);
 
 /**
  ** @brief Internal interface to pthread_create() for joinable threads.

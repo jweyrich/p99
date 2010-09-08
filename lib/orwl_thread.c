@@ -9,11 +9,25 @@
 */
 
 #include "orwl_thread.h"
-#include "atomic_counter.h"
+#include "p99_posix_default.h"
 
 size_t const orwl_mynum = ~(size_t)0;
 size_t orwl_np = ~(size_t)0;
 size_t orwl_phase = 0;
+
+/**
+ ** @brief Account the @c pthread_rwlock_t @a COUNT during execution of a
+ ** dependent block or statement.
+ **/
+P99_BLOCK_DOCUMENT
+#define ACCOUNT(COUNT)                          \
+P99_GUARDED_BLOCK(                              \
+           pthread_rwlock_t*,                   \
+           _count,                              \
+           &(COUNT),                            \
+           pthread_rwlock_rdlock(_count),       \
+           pthread_rwlock_unlock(_count))
+
 
 void orwl_report(size_t mynum, size_t np, size_t phase, char const* format, ...) {
   static char const form0[] = "%s:%zX: %s\n";
@@ -70,6 +84,8 @@ static pthread_mutexattr_t pthread_mutexattr_thread_;
 static pthread_mutexattr_t pthread_mutexattr_process_;
 static pthread_condattr_t pthread_condattr_thread_;
 static pthread_condattr_t pthread_condattr_process_;
+static pthread_rwlockattr_t pthread_rwlockattr_thread_;
+static pthread_rwlockattr_t pthread_rwlockattr_process_;
 
 pthread_attr_t  const*const pthread_attr_detached = &pthread_attr_detached_;
 pthread_attr_t  const*const pthread_attr_joinable = &pthread_attr_joinable_;
@@ -77,6 +93,8 @@ pthread_mutexattr_t const*const pthread_mutexattr_thread = &pthread_mutexattr_th
 pthread_mutexattr_t const*const pthread_mutexattr_process = &pthread_mutexattr_process_;
 pthread_condattr_t const*const pthread_condattr_thread = &pthread_condattr_thread_;
 pthread_condattr_t const*const pthread_condattr_process = &pthread_condattr_process_;
+pthread_rwlockattr_t const*const pthread_rwlockattr_thread = &pthread_rwlockattr_thread_;
+pthread_rwlockattr_t const*const pthread_rwlockattr_process = &pthread_rwlockattr_process_;
 
 /* The following is needed to communicate termination of
  * detached threads.
@@ -90,7 +108,7 @@ pthread_condattr_t const*const pthread_condattr_process = &pthread_condattr_proc
  * wait on just using the semaphore. Thus we use a mutex / cond pair
  * to use pthread signaling through conditions.
  */
-static atomic_counter count;
+static pthread_rwlock_t count;
 
 DEFINE_ONCE(pthread_mutex_t) {
   pthread_mutexattr_init(&pthread_mutexattr_process_);
@@ -106,12 +124,18 @@ DEFINE_ONCE(pthread_cond_t) {
   pthread_condattr_setpshared(&pthread_condattr_thread_, PTHREAD_PROCESS_PRIVATE);
 }
 
+DEFINE_ONCE(pthread_rwlock_t) {
+  pthread_rwlockattr_init(&pthread_rwlockattr_process_);
+  pthread_rwlockattr_setpshared(&pthread_rwlockattr_process_, PTHREAD_PROCESS_SHARED);
+  pthread_rwlockattr_init(&pthread_rwlockattr_thread_);
+  pthread_rwlockattr_setpshared(&pthread_rwlockattr_thread_, PTHREAD_PROCESS_PRIVATE);
+}
+
 DEFINE_ONCE(orwl_thread) {
-  INIT_ONCE(atomic_counter);
   INIT_ONCE(pthread_mutex_t);
   INIT_ONCE(pthread_cond_t);
-  atomic_counter_init(&count);
-  //sem_init(&create_sem);
+  INIT_ONCE(pthread_rwlock_t);
+  pthread_rwlock_init(&count);
   pthread_attr_init(&pthread_attr_detached_);
   pthread_attr_setdetachstate(&pthread_attr_detached_, PTHREAD_CREATE_DETACHED);
   pthread_attr_init(&pthread_attr_joinable_);
@@ -208,9 +232,9 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
 }
 
 void orwl_pthread_wait_detached(void) {
-  INIT_ONCE(atomic_counter);
   INIT_ONCE(orwl_thread);
-  atomic_counter_wait(&count);
+  pthread_rwlock_wrlock(&count);
+  pthread_rwlock_unlock(&count);
 }
 
 pthread_t* pthread_t_init(pthread_t *id);

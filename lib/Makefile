@@ -12,7 +12,6 @@
 ##############################
 NAME 	=	liborwl.a liborwl.so	# Name of executable file
 SRC	=					\
-	atomic_counter.c	                \
 	orwl_auth_sock_functions.c		\
 	orwl_endpoint.c				\
 	orwl_enum.c				\
