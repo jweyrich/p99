@@ -54,12 +54,12 @@
  ** #define P99__SEP(NAME, I, REC, RES) REC; RES
  ** #define P99__VASSIGN(NAME, X, I) X = (NAME)[I]
  **
- ** P99_FOR(A, 2, P99__SEQ, P99__ACCESSOR, toto, tutu);
+ ** P99_FOR(A, 2, P99__SEQ, P99__VASSIGN, toto, tutu);
  ** @endcode
  **
  ** Will result in
  ** @code
- ** toto = A[0]; tutu[1];
+ ** toto = (A)[0]; tutu = (A)[1];
  ** @endcode
  **
  ** To understand the associativity of the @a OP argument 

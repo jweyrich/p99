@@ -137,9 +137,66 @@
 /**
  ** @page conventions Programming conventions
  **
- **  - @ref prefixes
- **  - @ref variableInit
- **  - @ref temporaries
+ ** P99 uses some programming conventions that might be interesting
+ ** for projects that include its header files.
+ **
+ **  -# @ref standardconformance
+ **  -# @ref OSindependence
+ **  -# @ref prefixes
+ **  -# @ref variableInit
+ **  -# @ref temporaries
+ **
+ ** @section standardconformance Standard conformance
+ **
+ ** Where we can, we try to be conforming to the C99 standard and to
+ ** clearly mark extensions, if we use them.
+ **
+ ** @subsection UB Undefined behavior
+ **
+ ** The C specification has many places where it explicitly says that
+ ** under certain circumstances the behavior of the resulting code is
+ ** undefined. Generally this means that a conforming C implementation
+ ** is not obliged to capture such circumstances and for code that
+ ** uses such undefined behavior might do anything, from
+ ** do-the-right-thing, crashing to eating your hard drive.
+ **
+ ** P99 should not produce any such undefined behavior.
+ **
+ ** @subsection IB Implementation specific behavior
+ **
+ ** In other places the standard leaves room for C implementations to
+ ** specify certain behavior.
+ **
+ ** P99 tries not use any special feature that might be the result of
+ ** such implementation specific behavior. This concerns in particular
+ ** arithmetic on integer types. Here the standard allows certain
+ ** variations:
+ **
+ **  - padding bits: integer types may have padding bits that do not
+ **    count into their width (# of significant bits) but into their
+ **    size (storage requirement). So generally we have to be careful
+ **    to not use expressions that use @c sizeof expressions for
+ **    shifts.
+ **
+ **  - encoding of signed types: C99 allows three different encodings
+ **    for signed integers. We do not assume any of these encodings
+ **    but build macros that are valid for all of them.
+ **
+ **  - signed under- and overflow: arithmetic on signed integer types
+ **    may under- or overflow and C99 leaves it to the implementation
+ **    of whether or not this silently wraps around or triggers a
+ **    signal. All expressions that involve signed types should be
+ **    such that they avoid this implementation specific behavior. E.g
+ **    to compute the absolute value of a negative @c int @c a we
+ **    would use @c -(unsigned)a. This expression guarantees
+ **    that the result is well defined even for corner cases (here @c
+ **    a being @c INT_MIN in two's complement representation) and will
+ **    never trigger a range error.
+ **
+ **  - We do not suppose the presence of the @c typedefs @c uintptr_t
+ **    or @c intptr_t since they are optional in C. In particular we
+ **    may not assume that there is any sensible conversion between
+ **    pointers and integer types.
  **
  ** @section prefixes Defining identifiers
  **
@@ -157,6 +214,23 @@
  ** be documented by themselves. Such identifiers are ignored in the
  ** doxygen documentation.
  **
+ ** @section OSindependence Operating system independence
+ **
+ ** The P99 macros and functions as such should be independent of the
+ ** execution system and compiler. Nevertheless, for the time being
+ ** they are only tested on POSIX systems, namely linux. So if there
+ ** is a pitfall for other systems that we didn't see, yet, please let
+ ** us know.
+ **
+ ** In contrast to that general policy, there is @em one file that is
+ ** dependent on the system, p99_posix_default.h. As the name
+ ** indicates it is designed for POSIX systems and provides default
+ ** arguments for some POSIX functions.
+ **
+ ** Also, some of the examples throughout this documentation are taken
+ ** from programs that would typically run on POSIX systems. We hope
+ ** that they easily may stand as such and don't need much
+ ** explanations for programmers of other systems.
  **
  ** @section variableInit Variable initialization
  **
@@ -275,6 +349,10 @@
  ** worry of allocating or deallocating it.  On the calling side this
  ** convention is simple to use without having the callee expose a
  ** static buffer.
+ **
+ ** In P99, is currently applied in a few places, in particular in the
+ ** header file p99_posix_defauult.h. The usage of it will probably
+ ** grow in future releases.
  **/
 
 /**
@@ -372,8 +450,172 @@
  ** fixes the variable @c rand48_counter to the one that is visible at
  ** the point of declaration.
  **
- ** @section blocks Guarded blocks
+ ** @section blocks Scope bound resource management with for scopes
+ **
+ ** Resource management can be tedious in C. <em>E.g</em> to protect a
+ ** critical block from simultaneous execution in a threaded
+ ** environment you'd have to place a lock / unlock pair before and
+ ** after that block:
+ ** @code
+ ** pthread_mutex_t guard = PTHREAD_MUTEX_INTIALIZER;
+ **
+ ** pthread_mutex_lock(&amp;guard);
+ ** // critical block comes here
+ ** pthread_mutex_unlock(&amp;guard);
+ ** @endcode
+ ** This is very much error prone since you have to provide such calls
+ ** every time you have such a block. If the block is longer than some
+ ** lines it is difficult to keep track of that, since the lock /
+ ** unlock calls are spread on the same level as the other code.
+ **
+ ** Within C99 (and equally in C++, BTW) it is possible to extend the
+ ** language of some sorts such that you may make this easier visible
+ ** and guarantee that your lock / unlock calls are matching. Below,
+ ** we will give an example of a macro that will help us to write
+ ** something like
+ ** @code
+ ** P99_PROTECTED_BLOCK(pthread_mutex_lock(&guard),
+ **                     pthread_mutex_unlock(&guard)) {
+ **        // critical block comes here
+ ** }
+ ** @endcode
+ ** If we want to make this even a bit more comfortable for cases that
+ ** we still need to know the mutex variable we may have something
+ ** like:
+ ** @code
+ ** PROTECT_IT(guard) {
+ **        // critical block comes here
+ ** }
+ ** @endcode
+ ** For cases where the mutex variable is specific to the block:
+ **  @code
+ ** CRITICAL {
+ **        // critical block comes here
+ ** }
+ ** @endcode
+ **
+ ** Please look into the documentation of
+ ** ::P99_PROTECTED_BLOCK(BEFORE, AFTER) to see how it is defined.  As
+ ** you may see there, it uses two <code>for</code> statements. The
+ ** first defines a auxiliary variable @c_one1_ that is used to
+ ** control that the dependent code is only executed exactly once. The
+ ** arguments @c BEFORE and @c AFTER are then placed such that they
+ ** will be executed before and after the dependent code,
+ ** respectively.
+ **
+ **
+ ** The second @c for is just there to ensure that @c AFTER is even
+ ** executed when the dependent code executes a @c break or @c
+ ** continue statement. For other preliminary exits such as @c return
+ ** or @c exit() there is unfortunately no such cure. When programming
+ ** the dependent statement we have to be careful about these, but
+ ** this problem is just the same as it had been in the ``plain'' C
+ ** version.
+ **
+ ** Generally there is no run time performance cost for using such a
+ ** macro. Any decent compiler will detect that the dependent code is
+ ** executed exactly once, and thus optimize out all the control that
+ ** has to do with our variable @c _one1_.
+ **
+ ** The PROTECT_IT macro could now be realized as:
+ ** @code
+ ** #define PROTECT_IT(NAME)                           \
+ ** P99_PROTECTED_BLOCK(pthread_mutex_lock(&(NAME)),   \
+ **                     pthread_mutex_unlock(&(NAME)))
+ ** @endcode
+ **
+ ** To have more specific control about the mutex variable we may use
+ ** another P99 macro,
+ ** P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)
+ **
+ ** This is a bit more complex than the previous one since in addition
+ ** it declares a local variable @c NAME of type
+ ** @c T and initializes it. The @c CRITICAL macro
+ ** can then be defined as follows
+ ** @code
+ ** #define CRITICAL                             \
+ ** P99_GUARDED_BLOCK(                           \
+ **     static pthread_mutex_t,                  \
+ **     _critical_guard_,                        \
+ **     PTHREAD_MUTEX_INITIALIZER,               \
+ **     pthread_mutex_lock(&_critical_guard_),   \
+ **     pthread_mutex_unlock(&_critical_guard_))
+ ** @endcode
+ ** Observe the use of @c static for the declaration of
+ ** @c _critical_guard_. This guarantees that any thread
+ ** that runs through this code uses the same variable and that this
+ ** variable is properly initialized at compile time.
+ **
+ **
+ ** Other such block macros that can be implemented with such a technique:
+ **   - pre- and postconditions
+ **   - ensure that some dynamic initialization of a static variable is performed exactly once
+ **   - code instrumentation
+ **
  ** @section condi Preprocessor conditionals and loops
+ **
+ ** P99 provides you with macro features that can become handy if you
+ ** have to generate code repetition that might be subject to changes, later.
+ ** As examples suppose that you'd have to code something like
+ **
+ ** @code
+ ** tata = A[0]; tete = A[1]; titi = A[2]; toto = A[3];
+ ** typedef int hui_0; typedef unsigned hui_1; typedef double hui_2;
+ ** @endcode
+ **
+ ** If over time there are many additions and removals to these lists,
+ ** maintaining such a code will not really be a pleasure. In P99 you
+ ** may write equivalent statements and declarations just as
+ **
+ ** @code
+ ** P99_VASSIGNS(A, tata, tete, titi, toto);
+ ** P99_TYPEDEFS(hui, int, unsigned, double);
+ ** @endcode
+ **
+ ** There are a handful of such predefined macros that you may look up
+ ** under @ref statement_lists. Under the hood they all use a more
+ ** general macro that you may yourself use to define your own macros:
+ ** ::P99_FOR. The use of this will be described more in detail under
+ ** @ref programming.
+ **
+ ** The predefined macros from above usually are also able a nasty
+ ** special case if the variadic part of the argument list is
+ ** empty. Something like
+ **
+ ** @code
+ ** P99_VASSIGNS(A);
+ ** P99_TYPEDEFS(hui);
+ ** @endcode
+ **
+ ** would at least cause a warning with conforming preprocessors if
+ ** the macros were implemented directly with something like
+ **
+ ** @code
+ ** #define P99_VASSIGNS(NAME, ...) do_something_here
+ ** #define P99_TYPEDEFS(NAME, ...) do_something_else_here
+ ** @endcode
+ **
+ ** since the variable length part should not be empty, according to
+ ** the standard. With P99 you don't have these sort of problems, the
+ ** above should just result in empty statements or declarations, that
+ ** are even capable to swallow the then superfluent semicolon at the
+ ** end.
+ **
+ ** P99 avoids this by testing for the length of the argument list as
+ ** a whole with ::P99_NARG and by using a macro conditional
+ ** controlled by that length. Such conditionals like ::P99_IF_EMPTY
+ ** ensure that the preprocessor decides which code of two different
+ ** variants the compiler will see. The fragment
+ **
+ ** @code
+ ** P99_IF_EMPTY(BLA)(special_version)(general_version)
+ ** @endcode
+ **
+ ** will expand to either @c special_version or @c general_version
+ ** according to @c BLA. If it expands to an empty token, the first
+ ** variant is produced, if it is at least one non-empty token the
+ ** second one results.
+ **
  ** @section alloc Allocation and initialization facilities
  **/
 
@@ -448,7 +690,7 @@
  **   // Do something for an hosted environment
  **   // Use stdin as usual
  ** #else
- **   // Do something for an embedded environment
+ **   // Do something for a free standing environment
  **   // We don't have stdin at all, write to a log file or so.
  ** #endif
  ** @endcode

@@ -30,12 +30,13 @@
 /**
  ** @brief A meta-macro to protect a dependent block or statement by
  ** statement @a BEFORE that is executed before the block and @a AFTER
- ** that is executed afterwards.
+ ** that is executed afterward.
  **
- ** Preliminary exit of the block is possible with @c break.
+ ** Preliminary exit of the block is possible with @c break or @c continue.
  **
- ** @warning @c continue and @c return inside the dependent block will
- ** not execute @a AFTER, so be careful.
+ ** @warning @c return, @c exit() or other functions that don't return
+ ** to the caller inside the dependent block will result in not
+ ** executing @a AFTER, so be careful.
  **
  ** An example of a potential use is
  ** @code
@@ -70,10 +71,11 @@ for (int _one1_ = 1;                                                    \
  ** statement @a BEFORE and @a AFTER are executed before and after the
  ** block, respectively.
  **
- ** Preliminary exit of the block is possible with @c break.
+ ** Preliminary exit of the block is possible with @c break or @c continue.
  **
- ** @warning @c continue and @c return inside the dependent block will
- ** not execute @a AFTER, so be careful.
+ ** @warning @c return, @c exit() or other functions that don't return
+ ** to the caller inside the dependent block will result in not
+ ** executing @a AFTER, so be careful.
  **
  ** An example of a potential use would be a pointer to a mutex
  ** variable. It can be initialized with the address of a mutex as

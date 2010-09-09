@@ -6,6 +6,43 @@ html, html *, body, table, div, p, dt, dd, dl {
 	font-size: 12px;
 }
 
+
+/* counters */
+
+h1
+{
+counter-reset:section;
+}
+
+h2
+{
+counter-reset:subsection;
+}
+
+h3
+{
+counter-reset:subsubsection;
+}
+
+h2:before
+{
+counter-increment:section;
+content: counter(section) " ";
+}
+
+h3:before
+{
+counter-increment:subsection;
+content:counter(section) "." counter(subsection) " ";
+}
+
+h4:before
+{
+counter-increment:subsubsection;
+content:counter(section) "." counter(subsection) "." counter(subsubsection) " ";
+}
+
+
 /* @group Heading Levels */
 
 h1 {
@@ -14,7 +51,7 @@ h1 {
 }
 
 h2 {
-	font-size: 150%;
+	font-size: 160%;
 }
 
 h3 {
@@ -119,10 +156,6 @@ a.el {
 a.elRef {
 }
 
-a.code {
-	color: #3030f0;
-}
-
 a.codeRef {
 	color: #3030f0;
 }
@@ -133,20 +166,35 @@ dl.el {
 	margin-left: -1cm;
 }
 
-.fragment {
+.fragment, .fragment *, code {
 	font-family: monospace, fixed;
+}
+
+pre.fragment, code {
+	border: 1px solid #CCCCCC;
+	background-color: #f5f5f5;
+}
+
+.fragment {
 	font-size: 105%;
 }
 
 pre.fragment {
-	border: 1px solid #CCCCCC;
-	background-color: #f5f5f5;
 	padding: 4px 6px;
 	margin: 4px 8px 4px 2px;
 	overflow: auto;
 	word-wrap: break-word;
 	font-size:  9pt;
 	line-height: 125%;
+}
+
+pre.code {
+	padding: 1px 2px;
+	margin: 1px 2px 1px 1px;
+	overflow: auto;
+	word-wrap: break-word;
+	/* font-size:  9pt; */
+	/* line-height: 125%; */
 }
 
 div.ah {
@@ -242,6 +290,7 @@ span.comment {
 }
 
 span.preprocessor {
+	font-family: monospace, fixed;
 	color: #806020
 }
 
