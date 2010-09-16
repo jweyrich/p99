@@ -23,7 +23,7 @@
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P99__VERSION_DATE "Tue, 31 Aug 2010 14:45:54 +0200"
+#define P99__VERSION_DATE "Thu, 16 Sep 2010 23:05:23 +0200"
 #define P99__VERSION_ID "eb534f1d31aa3a23309b77734f874d521c3cb3a2"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -31,7 +31,7 @@
  ** This limit applies also to the integer arithmetic that is
  ** performed by the macros in @ref preprocessor_arithmetic.
  **/
-#define P99_MAX_NUMBER 81
+#define P99_MAX_NUMBER 121
 #define P99__ARG(\
 	_1,	_2,	_3,	_4,	_5,	_6,	_7,	_8,\
 	_9,	_10,	_11,	_12,	_13,	_14,	_15,	_16,\
@@ -43,9 +43,19 @@
 	_57,	_58,	_59,	_60,	_61,	_62,	_63,	_64,\
 	_65,	_66,	_67,	_68,	_69,	_70,	_71,	_72,\
 	_73,	_74,	_75,	_76,	_77,	_78,	_79,	_80,\
-	_81,\
-	...) _81
-#define P99__NARG_1(...) P99__ARG(__VA_ARGS__, 	80,\
+	_81,	_82,	_83,	_84,	_85,	_86,	_87,	_88,\
+	_89,	_90,	_91,	_92,	_93,	_94,	_95,	_96,\
+	_97,	_98,	_99,	_100,	_101,	_102,	_103,	_104,\
+	_105,	_106,	_107,	_108,	_109,	_110,	_111,	_112,\
+	_113,	_114,	_115,	_116,	_117,	_118,	_119,	_120,\
+	_121,\
+	...) _121
+#define P99__NARG_1(...) P99__ARG(__VA_ARGS__, 	120,\
+	119,	118,	117,	116,	115,	114,	113,	112,\
+	111,	110,	109,	108,	107,	106,	105,	104,\
+	103,	102,	101,	100,	99,	98,	97,	96,\
+	95,	94,	93,	92,	91,	90,	89,	88,\
+	87,	86,	85,	84,	83,	82,	81,	80,\
 	79,	78,	77,	76,	75,	74,	73,	72,\
 	71,	70,	69,	68,	67,	66,	65,	64,\
 	63,	62,	61,	60,	59,	58,	57,	56,\
@@ -56,7 +66,12 @@
 	23,	22,	21,	20,	19,	18,	17,	16,\
 	15,	14,	13,	12,	11,	10,	9,	8,\
 	7,	6,	5,	4,	3,	2,	1,	0,)
-#define P99__NARG_2(...) P99__ARG(__VA_ARGS__, 	40,\
+#define P99__NARG_2(...) P99__ARG(__VA_ARGS__, 	60,\
+	P99__INV(2),	59,	P99__INV(2),	58,	P99__INV(2),	57,	P99__INV(2),	56,\
+	P99__INV(2),	55,	P99__INV(2),	54,	P99__INV(2),	53,	P99__INV(2),	52,\
+	P99__INV(2),	51,	P99__INV(2),	50,	P99__INV(2),	49,	P99__INV(2),	48,\
+	P99__INV(2),	47,	P99__INV(2),	46,	P99__INV(2),	45,	P99__INV(2),	44,\
+	P99__INV(2),	43,	P99__INV(2),	42,	P99__INV(2),	41,	P99__INV(2),	40,\
 	P99__INV(2),	39,	P99__INV(2),	38,	P99__INV(2),	37,	P99__INV(2),	36,\
 	P99__INV(2),	35,	P99__INV(2),	34,	P99__INV(2),	33,	P99__INV(2),	32,\
 	P99__INV(2),	31,	P99__INV(2),	30,	P99__INV(2),	29,	P99__INV(2),	28,\
@@ -67,7 +82,12 @@
 	P99__INV(2),	11,	P99__INV(2),	10,	P99__INV(2),	9,	P99__INV(2),	8,\
 	P99__INV(2),	7,	P99__INV(2),	6,	P99__INV(2),	5,	P99__INV(2),	4,\
 	P99__INV(2),	3,	P99__INV(2),	2,	P99__INV(2),	1,	P99__INV(2),	0,)
-#define P99__NARG_3(...) P99__ARG(__VA_ARGS__, 	P99__INV(3),\
+#define P99__NARG_3(...) P99__ARG(__VA_ARGS__, 	40,\
+	P99__INV(3),	P99__INV(3),	39,	P99__INV(3),	P99__INV(3),	38,	P99__INV(3),	P99__INV(3),\
+	37,	P99__INV(3),	P99__INV(3),	36,	P99__INV(3),	P99__INV(3),	35,	P99__INV(3),\
+	P99__INV(3),	34,	P99__INV(3),	P99__INV(3),	33,	P99__INV(3),	P99__INV(3),	32,\
+	P99__INV(3),	P99__INV(3),	31,	P99__INV(3),	P99__INV(3),	30,	P99__INV(3),	P99__INV(3),\
+	29,	P99__INV(3),	P99__INV(3),	28,	P99__INV(3),	P99__INV(3),	27,	P99__INV(3),\
 	P99__INV(3),	26,	P99__INV(3),	P99__INV(3),	25,	P99__INV(3),	P99__INV(3),	24,\
 	P99__INV(3),	P99__INV(3),	23,	P99__INV(3),	P99__INV(3),	22,	P99__INV(3),	P99__INV(3),\
 	21,	P99__INV(3),	P99__INV(3),	20,	P99__INV(3),	P99__INV(3),	19,	P99__INV(3),\
@@ -78,7 +98,12 @@
 	P99__INV(3),	P99__INV(3),	7,	P99__INV(3),	P99__INV(3),	6,	P99__INV(3),	P99__INV(3),\
 	5,	P99__INV(3),	P99__INV(3),	4,	P99__INV(3),	P99__INV(3),	3,	P99__INV(3),\
 	P99__INV(3),	2,	P99__INV(3),	P99__INV(3),	1,	P99__INV(3),	P99__INV(3),	0,)
-#define P99__NARG_4(...) P99__ARG(__VA_ARGS__, 	20,\
+#define P99__NARG_4(...) P99__ARG(__VA_ARGS__, 	30,\
+	P99__INV(4),	P99__INV(4),	P99__INV(4),	29,	P99__INV(4),	P99__INV(4),	P99__INV(4),	28,\
+	P99__INV(4),	P99__INV(4),	P99__INV(4),	27,	P99__INV(4),	P99__INV(4),	P99__INV(4),	26,\
+	P99__INV(4),	P99__INV(4),	P99__INV(4),	25,	P99__INV(4),	P99__INV(4),	P99__INV(4),	24,\
+	P99__INV(4),	P99__INV(4),	P99__INV(4),	23,	P99__INV(4),	P99__INV(4),	P99__INV(4),	22,\
+	P99__INV(4),	P99__INV(4),	P99__INV(4),	21,	P99__INV(4),	P99__INV(4),	P99__INV(4),	20,\
 	P99__INV(4),	P99__INV(4),	P99__INV(4),	19,	P99__INV(4),	P99__INV(4),	P99__INV(4),	18,\
 	P99__INV(4),	P99__INV(4),	P99__INV(4),	17,	P99__INV(4),	P99__INV(4),	P99__INV(4),	16,\
 	P99__INV(4),	P99__INV(4),	P99__INV(4),	15,	P99__INV(4),	P99__INV(4),	P99__INV(4),	14,\
@@ -93,6 +118,11 @@
 /** @brief Determine of the argument list has a comma, i.e at least two arguments. */
 #define P99_HAS_COMMA(...) P99__ARG(__VA_ARGS__,\
 	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
@@ -181,6 +211,46 @@
 #define P99__SKP78(_0, ...) P99__SKP77(__VA_ARGS__)
 #define P99__SKP79(_0, ...) P99__SKP78(__VA_ARGS__)
 #define P99__SKP80(_0, ...) P99__SKP79(__VA_ARGS__)
+#define P99__SKP81(_0, ...) P99__SKP80(__VA_ARGS__)
+#define P99__SKP82(_0, ...) P99__SKP81(__VA_ARGS__)
+#define P99__SKP83(_0, ...) P99__SKP82(__VA_ARGS__)
+#define P99__SKP84(_0, ...) P99__SKP83(__VA_ARGS__)
+#define P99__SKP85(_0, ...) P99__SKP84(__VA_ARGS__)
+#define P99__SKP86(_0, ...) P99__SKP85(__VA_ARGS__)
+#define P99__SKP87(_0, ...) P99__SKP86(__VA_ARGS__)
+#define P99__SKP88(_0, ...) P99__SKP87(__VA_ARGS__)
+#define P99__SKP89(_0, ...) P99__SKP88(__VA_ARGS__)
+#define P99__SKP90(_0, ...) P99__SKP89(__VA_ARGS__)
+#define P99__SKP91(_0, ...) P99__SKP90(__VA_ARGS__)
+#define P99__SKP92(_0, ...) P99__SKP91(__VA_ARGS__)
+#define P99__SKP93(_0, ...) P99__SKP92(__VA_ARGS__)
+#define P99__SKP94(_0, ...) P99__SKP93(__VA_ARGS__)
+#define P99__SKP95(_0, ...) P99__SKP94(__VA_ARGS__)
+#define P99__SKP96(_0, ...) P99__SKP95(__VA_ARGS__)
+#define P99__SKP97(_0, ...) P99__SKP96(__VA_ARGS__)
+#define P99__SKP98(_0, ...) P99__SKP97(__VA_ARGS__)
+#define P99__SKP99(_0, ...) P99__SKP98(__VA_ARGS__)
+#define P99__SKP100(_0, ...) P99__SKP99(__VA_ARGS__)
+#define P99__SKP101(_0, ...) P99__SKP100(__VA_ARGS__)
+#define P99__SKP102(_0, ...) P99__SKP101(__VA_ARGS__)
+#define P99__SKP103(_0, ...) P99__SKP102(__VA_ARGS__)
+#define P99__SKP104(_0, ...) P99__SKP103(__VA_ARGS__)
+#define P99__SKP105(_0, ...) P99__SKP104(__VA_ARGS__)
+#define P99__SKP106(_0, ...) P99__SKP105(__VA_ARGS__)
+#define P99__SKP107(_0, ...) P99__SKP106(__VA_ARGS__)
+#define P99__SKP108(_0, ...) P99__SKP107(__VA_ARGS__)
+#define P99__SKP109(_0, ...) P99__SKP108(__VA_ARGS__)
+#define P99__SKP110(_0, ...) P99__SKP109(__VA_ARGS__)
+#define P99__SKP111(_0, ...) P99__SKP110(__VA_ARGS__)
+#define P99__SKP112(_0, ...) P99__SKP111(__VA_ARGS__)
+#define P99__SKP113(_0, ...) P99__SKP112(__VA_ARGS__)
+#define P99__SKP114(_0, ...) P99__SKP113(__VA_ARGS__)
+#define P99__SKP115(_0, ...) P99__SKP114(__VA_ARGS__)
+#define P99__SKP116(_0, ...) P99__SKP115(__VA_ARGS__)
+#define P99__SKP117(_0, ...) P99__SKP116(__VA_ARGS__)
+#define P99__SKP118(_0, ...) P99__SKP117(__VA_ARGS__)
+#define P99__SKP119(_0, ...) P99__SKP118(__VA_ARGS__)
+#define P99__SKP120(_0, ...) P99__SKP119(__VA_ARGS__)
 #define P99__PRE2(_0, ...) _0, P99__PRE1(__VA_ARGS__)
 #define P99__PRE3(_0, ...) _0, P99__PRE2(__VA_ARGS__)
 #define P99__PRE4(_0, ...) _0, P99__PRE3(__VA_ARGS__)
@@ -260,6 +330,46 @@
 #define P99__PRE78(_0, ...) _0, P99__PRE77(__VA_ARGS__)
 #define P99__PRE79(_0, ...) _0, P99__PRE78(__VA_ARGS__)
 #define P99__PRE80(_0, ...) _0, P99__PRE79(__VA_ARGS__)
+#define P99__PRE81(_0, ...) _0, P99__PRE80(__VA_ARGS__)
+#define P99__PRE82(_0, ...) _0, P99__PRE81(__VA_ARGS__)
+#define P99__PRE83(_0, ...) _0, P99__PRE82(__VA_ARGS__)
+#define P99__PRE84(_0, ...) _0, P99__PRE83(__VA_ARGS__)
+#define P99__PRE85(_0, ...) _0, P99__PRE84(__VA_ARGS__)
+#define P99__PRE86(_0, ...) _0, P99__PRE85(__VA_ARGS__)
+#define P99__PRE87(_0, ...) _0, P99__PRE86(__VA_ARGS__)
+#define P99__PRE88(_0, ...) _0, P99__PRE87(__VA_ARGS__)
+#define P99__PRE89(_0, ...) _0, P99__PRE88(__VA_ARGS__)
+#define P99__PRE90(_0, ...) _0, P99__PRE89(__VA_ARGS__)
+#define P99__PRE91(_0, ...) _0, P99__PRE90(__VA_ARGS__)
+#define P99__PRE92(_0, ...) _0, P99__PRE91(__VA_ARGS__)
+#define P99__PRE93(_0, ...) _0, P99__PRE92(__VA_ARGS__)
+#define P99__PRE94(_0, ...) _0, P99__PRE93(__VA_ARGS__)
+#define P99__PRE95(_0, ...) _0, P99__PRE94(__VA_ARGS__)
+#define P99__PRE96(_0, ...) _0, P99__PRE95(__VA_ARGS__)
+#define P99__PRE97(_0, ...) _0, P99__PRE96(__VA_ARGS__)
+#define P99__PRE98(_0, ...) _0, P99__PRE97(__VA_ARGS__)
+#define P99__PRE99(_0, ...) _0, P99__PRE98(__VA_ARGS__)
+#define P99__PRE100(_0, ...) _0, P99__PRE99(__VA_ARGS__)
+#define P99__PRE101(_0, ...) _0, P99__PRE100(__VA_ARGS__)
+#define P99__PRE102(_0, ...) _0, P99__PRE101(__VA_ARGS__)
+#define P99__PRE103(_0, ...) _0, P99__PRE102(__VA_ARGS__)
+#define P99__PRE104(_0, ...) _0, P99__PRE103(__VA_ARGS__)
+#define P99__PRE105(_0, ...) _0, P99__PRE104(__VA_ARGS__)
+#define P99__PRE106(_0, ...) _0, P99__PRE105(__VA_ARGS__)
+#define P99__PRE107(_0, ...) _0, P99__PRE106(__VA_ARGS__)
+#define P99__PRE108(_0, ...) _0, P99__PRE107(__VA_ARGS__)
+#define P99__PRE109(_0, ...) _0, P99__PRE108(__VA_ARGS__)
+#define P99__PRE110(_0, ...) _0, P99__PRE109(__VA_ARGS__)
+#define P99__PRE111(_0, ...) _0, P99__PRE110(__VA_ARGS__)
+#define P99__PRE112(_0, ...) _0, P99__PRE111(__VA_ARGS__)
+#define P99__PRE113(_0, ...) _0, P99__PRE112(__VA_ARGS__)
+#define P99__PRE114(_0, ...) _0, P99__PRE113(__VA_ARGS__)
+#define P99__PRE115(_0, ...) _0, P99__PRE114(__VA_ARGS__)
+#define P99__PRE116(_0, ...) _0, P99__PRE115(__VA_ARGS__)
+#define P99__PRE117(_0, ...) _0, P99__PRE116(__VA_ARGS__)
+#define P99__PRE118(_0, ...) _0, P99__PRE117(__VA_ARGS__)
+#define P99__PRE119(_0, ...) _0, P99__PRE118(__VA_ARGS__)
+#define P99__PRE120(_0, ...) _0, P99__PRE119(__VA_ARGS__)
 #define P99__ASCENDING() \
 	0,	1,	2,	3,	4,	5,	6,	7,\
 	8,	9,	10,	11,	12,	13,	14,	15,\
@@ -271,8 +381,18 @@
 	56,	57,	58,	59,	60,	61,	62,	63,\
 	64,	65,	66,	67,	68,	69,	70,	71,\
 	72,	73,	74,	75,	76,	77,	78,	79,\
-	80,
+	80,	81,	82,	83,	84,	85,	86,	87,\
+	88,	89,	90,	91,	92,	93,	94,	95,\
+	96,	97,	98,	99,	100,	101,	102,	103,\
+	104,	105,	106,	107,	108,	109,	110,	111,\
+	112,	113,	114,	115,	116,	117,	118,	119,\
+	120,
 #define P99__ALL_ZEROES() \
+	0,	0,	0,	0,	0,	0,	0,	0,\
+	0,	0,	0,	0,	0,	0,	0,	0,\
+	0,	0,	0,	0,	0,	0,	0,	0,\
+	0,	0,	0,	0,	0,	0,	0,	0,\
+	0,	0,	0,	0,	0,	0,	0,	0,\
 	0,	0,	0,	0,	0,	0,	0,	0,\
 	0,	0,	0,	0,	0,	0,	0,	0,\
 	0,	0,	0,	0,	0,	0,	0,	0,\
@@ -285,6 +405,11 @@
 	0,	0,	0,	0,	0,	0,	0,	0,\
 	0,
 #define P99__ALL_ONES() \
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,\
+	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
 	1,	1,	1,	1,	1,	1,	1,	1,\
@@ -518,13 +643,133 @@
 /** @brief Paste 80 arguments at their boundary.*/
 #define P99_PASTE80(...) P99__PASTE80(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE80(L, ...) P99_PASTE2(P99_PASTE79(__VA_ARGS__), L)
+/** @brief Paste 81 arguments at their boundary.*/
+#define P99_PASTE81(...) P99__PASTE81(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE81(L, ...) P99_PASTE2(P99_PASTE80(__VA_ARGS__), L)
+/** @brief Paste 82 arguments at their boundary.*/
+#define P99_PASTE82(...) P99__PASTE82(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE82(L, ...) P99_PASTE2(P99_PASTE81(__VA_ARGS__), L)
+/** @brief Paste 83 arguments at their boundary.*/
+#define P99_PASTE83(...) P99__PASTE83(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE83(L, ...) P99_PASTE2(P99_PASTE82(__VA_ARGS__), L)
+/** @brief Paste 84 arguments at their boundary.*/
+#define P99_PASTE84(...) P99__PASTE84(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE84(L, ...) P99_PASTE2(P99_PASTE83(__VA_ARGS__), L)
+/** @brief Paste 85 arguments at their boundary.*/
+#define P99_PASTE85(...) P99__PASTE85(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE85(L, ...) P99_PASTE2(P99_PASTE84(__VA_ARGS__), L)
+/** @brief Paste 86 arguments at their boundary.*/
+#define P99_PASTE86(...) P99__PASTE86(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE86(L, ...) P99_PASTE2(P99_PASTE85(__VA_ARGS__), L)
+/** @brief Paste 87 arguments at their boundary.*/
+#define P99_PASTE87(...) P99__PASTE87(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE87(L, ...) P99_PASTE2(P99_PASTE86(__VA_ARGS__), L)
+/** @brief Paste 88 arguments at their boundary.*/
+#define P99_PASTE88(...) P99__PASTE88(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE88(L, ...) P99_PASTE2(P99_PASTE87(__VA_ARGS__), L)
+/** @brief Paste 89 arguments at their boundary.*/
+#define P99_PASTE89(...) P99__PASTE89(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE89(L, ...) P99_PASTE2(P99_PASTE88(__VA_ARGS__), L)
+/** @brief Paste 90 arguments at their boundary.*/
+#define P99_PASTE90(...) P99__PASTE90(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE90(L, ...) P99_PASTE2(P99_PASTE89(__VA_ARGS__), L)
+/** @brief Paste 91 arguments at their boundary.*/
+#define P99_PASTE91(...) P99__PASTE91(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE91(L, ...) P99_PASTE2(P99_PASTE90(__VA_ARGS__), L)
+/** @brief Paste 92 arguments at their boundary.*/
+#define P99_PASTE92(...) P99__PASTE92(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE92(L, ...) P99_PASTE2(P99_PASTE91(__VA_ARGS__), L)
+/** @brief Paste 93 arguments at their boundary.*/
+#define P99_PASTE93(...) P99__PASTE93(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE93(L, ...) P99_PASTE2(P99_PASTE92(__VA_ARGS__), L)
+/** @brief Paste 94 arguments at their boundary.*/
+#define P99_PASTE94(...) P99__PASTE94(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE94(L, ...) P99_PASTE2(P99_PASTE93(__VA_ARGS__), L)
+/** @brief Paste 95 arguments at their boundary.*/
+#define P99_PASTE95(...) P99__PASTE95(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE95(L, ...) P99_PASTE2(P99_PASTE94(__VA_ARGS__), L)
+/** @brief Paste 96 arguments at their boundary.*/
+#define P99_PASTE96(...) P99__PASTE96(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE96(L, ...) P99_PASTE2(P99_PASTE95(__VA_ARGS__), L)
+/** @brief Paste 97 arguments at their boundary.*/
+#define P99_PASTE97(...) P99__PASTE97(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE97(L, ...) P99_PASTE2(P99_PASTE96(__VA_ARGS__), L)
+/** @brief Paste 98 arguments at their boundary.*/
+#define P99_PASTE98(...) P99__PASTE98(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE98(L, ...) P99_PASTE2(P99_PASTE97(__VA_ARGS__), L)
+/** @brief Paste 99 arguments at their boundary.*/
+#define P99_PASTE99(...) P99__PASTE99(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE99(L, ...) P99_PASTE2(P99_PASTE98(__VA_ARGS__), L)
+/** @brief Paste 100 arguments at their boundary.*/
+#define P99_PASTE100(...) P99__PASTE100(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE100(L, ...) P99_PASTE2(P99_PASTE99(__VA_ARGS__), L)
+/** @brief Paste 101 arguments at their boundary.*/
+#define P99_PASTE101(...) P99__PASTE101(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE101(L, ...) P99_PASTE2(P99_PASTE100(__VA_ARGS__), L)
+/** @brief Paste 102 arguments at their boundary.*/
+#define P99_PASTE102(...) P99__PASTE102(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE102(L, ...) P99_PASTE2(P99_PASTE101(__VA_ARGS__), L)
+/** @brief Paste 103 arguments at their boundary.*/
+#define P99_PASTE103(...) P99__PASTE103(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE103(L, ...) P99_PASTE2(P99_PASTE102(__VA_ARGS__), L)
+/** @brief Paste 104 arguments at their boundary.*/
+#define P99_PASTE104(...) P99__PASTE104(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE104(L, ...) P99_PASTE2(P99_PASTE103(__VA_ARGS__), L)
+/** @brief Paste 105 arguments at their boundary.*/
+#define P99_PASTE105(...) P99__PASTE105(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE105(L, ...) P99_PASTE2(P99_PASTE104(__VA_ARGS__), L)
+/** @brief Paste 106 arguments at their boundary.*/
+#define P99_PASTE106(...) P99__PASTE106(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE106(L, ...) P99_PASTE2(P99_PASTE105(__VA_ARGS__), L)
+/** @brief Paste 107 arguments at their boundary.*/
+#define P99_PASTE107(...) P99__PASTE107(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE107(L, ...) P99_PASTE2(P99_PASTE106(__VA_ARGS__), L)
+/** @brief Paste 108 arguments at their boundary.*/
+#define P99_PASTE108(...) P99__PASTE108(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE108(L, ...) P99_PASTE2(P99_PASTE107(__VA_ARGS__), L)
+/** @brief Paste 109 arguments at their boundary.*/
+#define P99_PASTE109(...) P99__PASTE109(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE109(L, ...) P99_PASTE2(P99_PASTE108(__VA_ARGS__), L)
+/** @brief Paste 110 arguments at their boundary.*/
+#define P99_PASTE110(...) P99__PASTE110(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE110(L, ...) P99_PASTE2(P99_PASTE109(__VA_ARGS__), L)
+/** @brief Paste 111 arguments at their boundary.*/
+#define P99_PASTE111(...) P99__PASTE111(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE111(L, ...) P99_PASTE2(P99_PASTE110(__VA_ARGS__), L)
+/** @brief Paste 112 arguments at their boundary.*/
+#define P99_PASTE112(...) P99__PASTE112(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE112(L, ...) P99_PASTE2(P99_PASTE111(__VA_ARGS__), L)
+/** @brief Paste 113 arguments at their boundary.*/
+#define P99_PASTE113(...) P99__PASTE113(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE113(L, ...) P99_PASTE2(P99_PASTE112(__VA_ARGS__), L)
+/** @brief Paste 114 arguments at their boundary.*/
+#define P99_PASTE114(...) P99__PASTE114(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE114(L, ...) P99_PASTE2(P99_PASTE113(__VA_ARGS__), L)
+/** @brief Paste 115 arguments at their boundary.*/
+#define P99_PASTE115(...) P99__PASTE115(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE115(L, ...) P99_PASTE2(P99_PASTE114(__VA_ARGS__), L)
+/** @brief Paste 116 arguments at their boundary.*/
+#define P99_PASTE116(...) P99__PASTE116(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE116(L, ...) P99_PASTE2(P99_PASTE115(__VA_ARGS__), L)
+/** @brief Paste 117 arguments at their boundary.*/
+#define P99_PASTE117(...) P99__PASTE117(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE117(L, ...) P99_PASTE2(P99_PASTE116(__VA_ARGS__), L)
+/** @brief Paste 118 arguments at their boundary.*/
+#define P99_PASTE118(...) P99__PASTE118(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE118(L, ...) P99_PASTE2(P99_PASTE117(__VA_ARGS__), L)
+/** @brief Paste 119 arguments at their boundary.*/
+#define P99_PASTE119(...) P99__PASTE119(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE119(L, ...) P99_PASTE2(P99_PASTE118(__VA_ARGS__), L)
+/** @brief Paste 120 arguments at their boundary.*/
+#define P99_PASTE120(...) P99__PASTE120(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
+#define P99__PASTE120(L, ...) P99_PASTE2(P99_PASTE119(__VA_ARGS__), L)
 /**
  ** @addtogroup preprocessor_text
  **
  ** @brief These macros allow the handling of small texts and tokens.
  **
  ** For the following tokens, the macro ::P99_TOK_EQ will work.
- ** - decimal numbers: 0 ... 81
+ ** - decimal numbers: 0 ... 121
  ** - keywords:
  **     @c _Bool
  **     @c _Complex
@@ -969,6 +1214,46 @@
 #define P99__IS_79_EQ_79(...) ,
 #define P99__IS_80_EQ_80(...) ,
 #define P99__IS_81_EQ_81(...) ,
+#define P99__IS_82_EQ_82(...) ,
+#define P99__IS_83_EQ_83(...) ,
+#define P99__IS_84_EQ_84(...) ,
+#define P99__IS_85_EQ_85(...) ,
+#define P99__IS_86_EQ_86(...) ,
+#define P99__IS_87_EQ_87(...) ,
+#define P99__IS_88_EQ_88(...) ,
+#define P99__IS_89_EQ_89(...) ,
+#define P99__IS_90_EQ_90(...) ,
+#define P99__IS_91_EQ_91(...) ,
+#define P99__IS_92_EQ_92(...) ,
+#define P99__IS_93_EQ_93(...) ,
+#define P99__IS_94_EQ_94(...) ,
+#define P99__IS_95_EQ_95(...) ,
+#define P99__IS_96_EQ_96(...) ,
+#define P99__IS_97_EQ_97(...) ,
+#define P99__IS_98_EQ_98(...) ,
+#define P99__IS_99_EQ_99(...) ,
+#define P99__IS_100_EQ_100(...) ,
+#define P99__IS_101_EQ_101(...) ,
+#define P99__IS_102_EQ_102(...) ,
+#define P99__IS_103_EQ_103(...) ,
+#define P99__IS_104_EQ_104(...) ,
+#define P99__IS_105_EQ_105(...) ,
+#define P99__IS_106_EQ_106(...) ,
+#define P99__IS_107_EQ_107(...) ,
+#define P99__IS_108_EQ_108(...) ,
+#define P99__IS_109_EQ_109(...) ,
+#define P99__IS_110_EQ_110(...) ,
+#define P99__IS_111_EQ_111(...) ,
+#define P99__IS_112_EQ_112(...) ,
+#define P99__IS_113_EQ_113(...) ,
+#define P99__IS_114_EQ_114(...) ,
+#define P99__IS_115_EQ_115(...) ,
+#define P99__IS_116_EQ_116(...) ,
+#define P99__IS_117_EQ_117(...) ,
+#define P99__IS_118_EQ_118(...) ,
+#define P99__IS_119_EQ_119(...) ,
+#define P99__IS_120_EQ_120(...) ,
+#define P99__IS_121_EQ_121(...) ,
 #define P99__IS__Bool_EQ__Bool(...) ,
 #define P99__IS__Complex_EQ__Complex(...) ,
 #define P99__IS__Exit_EQ__Exit(...) ,
@@ -1306,6 +1591,465 @@
 #define P99__IS_wmemset_EQ_wmemset(...) ,
 #define P99__IS_wprintf_EQ_wprintf(...) ,
 #define P99__IS_wscanf_EQ_wscanf(...) ,
+#define P99__TOK_0_STARTS_0 ,
+#define P99__TOK_1_STARTS_1 ,
+#define P99__TOK_2_STARTS_2 ,
+#define P99__TOK_3_STARTS_3 ,
+#define P99__TOK_4_STARTS_4 ,
+#define P99__TOK_5_STARTS_5 ,
+#define P99__TOK_6_STARTS_6 ,
+#define P99__TOK_7_STARTS_7 ,
+#define P99__TOK_8_STARTS_8 ,
+#define P99__TOK_9_STARTS_9 ,
+#define P99__TOK_10_STARTS_10 ,
+#define P99__TOK_11_STARTS_11 ,
+#define P99__TOK_12_STARTS_12 ,
+#define P99__TOK_13_STARTS_13 ,
+#define P99__TOK_14_STARTS_14 ,
+#define P99__TOK_15_STARTS_15 ,
+#define P99__TOK_16_STARTS_16 ,
+#define P99__TOK_17_STARTS_17 ,
+#define P99__TOK_18_STARTS_18 ,
+#define P99__TOK_19_STARTS_19 ,
+#define P99__TOK_20_STARTS_20 ,
+#define P99__TOK_21_STARTS_21 ,
+#define P99__TOK_22_STARTS_22 ,
+#define P99__TOK_23_STARTS_23 ,
+#define P99__TOK_24_STARTS_24 ,
+#define P99__TOK_25_STARTS_25 ,
+#define P99__TOK_26_STARTS_26 ,
+#define P99__TOK_27_STARTS_27 ,
+#define P99__TOK_28_STARTS_28 ,
+#define P99__TOK_29_STARTS_29 ,
+#define P99__TOK_30_STARTS_30 ,
+#define P99__TOK_31_STARTS_31 ,
+#define P99__TOK_32_STARTS_32 ,
+#define P99__TOK_33_STARTS_33 ,
+#define P99__TOK_34_STARTS_34 ,
+#define P99__TOK_35_STARTS_35 ,
+#define P99__TOK_36_STARTS_36 ,
+#define P99__TOK_37_STARTS_37 ,
+#define P99__TOK_38_STARTS_38 ,
+#define P99__TOK_39_STARTS_39 ,
+#define P99__TOK_40_STARTS_40 ,
+#define P99__TOK_41_STARTS_41 ,
+#define P99__TOK_42_STARTS_42 ,
+#define P99__TOK_43_STARTS_43 ,
+#define P99__TOK_44_STARTS_44 ,
+#define P99__TOK_45_STARTS_45 ,
+#define P99__TOK_46_STARTS_46 ,
+#define P99__TOK_47_STARTS_47 ,
+#define P99__TOK_48_STARTS_48 ,
+#define P99__TOK_49_STARTS_49 ,
+#define P99__TOK_50_STARTS_50 ,
+#define P99__TOK_51_STARTS_51 ,
+#define P99__TOK_52_STARTS_52 ,
+#define P99__TOK_53_STARTS_53 ,
+#define P99__TOK_54_STARTS_54 ,
+#define P99__TOK_55_STARTS_55 ,
+#define P99__TOK_56_STARTS_56 ,
+#define P99__TOK_57_STARTS_57 ,
+#define P99__TOK_58_STARTS_58 ,
+#define P99__TOK_59_STARTS_59 ,
+#define P99__TOK_60_STARTS_60 ,
+#define P99__TOK_61_STARTS_61 ,
+#define P99__TOK_62_STARTS_62 ,
+#define P99__TOK_63_STARTS_63 ,
+#define P99__TOK_64_STARTS_64 ,
+#define P99__TOK_65_STARTS_65 ,
+#define P99__TOK_66_STARTS_66 ,
+#define P99__TOK_67_STARTS_67 ,
+#define P99__TOK_68_STARTS_68 ,
+#define P99__TOK_69_STARTS_69 ,
+#define P99__TOK_70_STARTS_70 ,
+#define P99__TOK_71_STARTS_71 ,
+#define P99__TOK_72_STARTS_72 ,
+#define P99__TOK_73_STARTS_73 ,
+#define P99__TOK_74_STARTS_74 ,
+#define P99__TOK_75_STARTS_75 ,
+#define P99__TOK_76_STARTS_76 ,
+#define P99__TOK_77_STARTS_77 ,
+#define P99__TOK_78_STARTS_78 ,
+#define P99__TOK_79_STARTS_79 ,
+#define P99__TOK_80_STARTS_80 ,
+#define P99__TOK_81_STARTS_81 ,
+#define P99__TOK_82_STARTS_82 ,
+#define P99__TOK_83_STARTS_83 ,
+#define P99__TOK_84_STARTS_84 ,
+#define P99__TOK_85_STARTS_85 ,
+#define P99__TOK_86_STARTS_86 ,
+#define P99__TOK_87_STARTS_87 ,
+#define P99__TOK_88_STARTS_88 ,
+#define P99__TOK_89_STARTS_89 ,
+#define P99__TOK_90_STARTS_90 ,
+#define P99__TOK_91_STARTS_91 ,
+#define P99__TOK_92_STARTS_92 ,
+#define P99__TOK_93_STARTS_93 ,
+#define P99__TOK_94_STARTS_94 ,
+#define P99__TOK_95_STARTS_95 ,
+#define P99__TOK_96_STARTS_96 ,
+#define P99__TOK_97_STARTS_97 ,
+#define P99__TOK_98_STARTS_98 ,
+#define P99__TOK_99_STARTS_99 ,
+#define P99__TOK_100_STARTS_100 ,
+#define P99__TOK_101_STARTS_101 ,
+#define P99__TOK_102_STARTS_102 ,
+#define P99__TOK_103_STARTS_103 ,
+#define P99__TOK_104_STARTS_104 ,
+#define P99__TOK_105_STARTS_105 ,
+#define P99__TOK_106_STARTS_106 ,
+#define P99__TOK_107_STARTS_107 ,
+#define P99__TOK_108_STARTS_108 ,
+#define P99__TOK_109_STARTS_109 ,
+#define P99__TOK_110_STARTS_110 ,
+#define P99__TOK_111_STARTS_111 ,
+#define P99__TOK_112_STARTS_112 ,
+#define P99__TOK_113_STARTS_113 ,
+#define P99__TOK_114_STARTS_114 ,
+#define P99__TOK_115_STARTS_115 ,
+#define P99__TOK_116_STARTS_116 ,
+#define P99__TOK_117_STARTS_117 ,
+#define P99__TOK_118_STARTS_118 ,
+#define P99__TOK_119_STARTS_119 ,
+#define P99__TOK_120_STARTS_120 ,
+#define P99__TOK_121_STARTS_121 ,
+#define P99__TOK__Bool_STARTS__Bool ,
+#define P99__TOK__Complex_STARTS__Complex ,
+#define P99__TOK__Exit_STARTS__Exit ,
+#define P99__TOK__Imaginary_STARTS__Imaginary ,
+#define P99__TOK_abort_STARTS_abort ,
+#define P99__TOK_abs_STARTS_abs ,
+#define P99__TOK_acos_STARTS_acos ,
+#define P99__TOK_asctime_STARTS_asctime ,
+#define P99__TOK_asin_STARTS_asin ,
+#define P99__TOK_assert_STARTS_assert ,
+#define P99__TOK_atan_STARTS_atan ,
+#define P99__TOK_atan2_STARTS_atan2 ,
+#define P99__TOK_atexit_STARTS_atexit ,
+#define P99__TOK_atof_STARTS_atof ,
+#define P99__TOK_atof_STARTS_atof ,
+#define P99__TOK_atoi_STARTS_atoi ,
+#define P99__TOK_atol_STARTS_atol ,
+#define P99__TOK_auto_STARTS_auto ,
+#define P99__TOK_break_STARTS_break ,
+#define P99__TOK_bsearch_STARTS_bsearch ,
+#define P99__TOK_btowc_STARTS_btowc ,
+#define P99__TOK_cabs_STARTS_cabs ,
+#define P99__TOK_cacos_STARTS_cacos ,
+#define P99__TOK_cacosh_STARTS_cacosh ,
+#define P99__TOK_calloc_STARTS_calloc ,
+#define P99__TOK_carg_STARTS_carg ,
+#define P99__TOK_case_STARTS_case ,
+#define P99__TOK_casin_STARTS_casin ,
+#define P99__TOK_casinh_STARTS_casinh ,
+#define P99__TOK_catan_STARTS_catan ,
+#define P99__TOK_catanh_STARTS_catanh ,
+#define P99__TOK_ccos_STARTS_ccos ,
+#define P99__TOK_ccosh_STARTS_ccosh ,
+#define P99__TOK_ceil_STARTS_ceil ,
+#define P99__TOK_cexp_STARTS_cexp ,
+#define P99__TOK_char_STARTS_char ,
+#define P99__TOK_cimag_STARTS_cimag ,
+#define P99__TOK_clearerr_STARTS_clearerr ,
+#define P99__TOK_clock_STARTS_clock ,
+#define P99__TOK_clock_t_STARTS_clock_t ,
+#define P99__TOK_clog_STARTS_clog ,
+#define P99__TOK_conj_STARTS_conj ,
+#define P99__TOK_const_STARTS_const ,
+#define P99__TOK_continue_STARTS_continue ,
+#define P99__TOK_cos_STARTS_cos ,
+#define P99__TOK_cosh_STARTS_cosh ,
+#define P99__TOK_cpow_STARTS_cpow ,
+#define P99__TOK_cproj_STARTS_cproj ,
+#define P99__TOK_creal_STARTS_creal ,
+#define P99__TOK_csin_STARTS_csin ,
+#define P99__TOK_csinh_STARTS_csinh ,
+#define P99__TOK_csqrt_STARTS_csqrt ,
+#define P99__TOK_ctan_STARTS_ctan ,
+#define P99__TOK_ctanh_STARTS_ctanh ,
+#define P99__TOK_ctime_STARTS_ctime ,
+#define P99__TOK_default_STARTS_default ,
+#define P99__TOK_difftime_STARTS_difftime ,
+#define P99__TOK_div_STARTS_div ,
+#define P99__TOK_div_t_STARTS_div_t ,
+#define P99__TOK_do_STARTS_do ,
+#define P99__TOK_double_STARTS_double ,
+#define P99__TOK_double_t_STARTS_double_t ,
+#define P99__TOK_else_STARTS_else ,
+#define P99__TOK_enum_STARTS_enum ,
+#define P99__TOK_exit_STARTS_exit ,
+#define P99__TOK_exp_STARTS_exp ,
+#define P99__TOK_extern_STARTS_extern ,
+#define P99__TOK_fabs_STARTS_fabs ,
+#define P99__TOK_fclose_STARTS_fclose ,
+#define P99__TOK_fdopen_STARTS_fdopen ,
+#define P99__TOK_fenv_t_STARTS_fenv_t ,
+#define P99__TOK_feof_STARTS_feof ,
+#define P99__TOK_ferror_STARTS_ferror ,
+#define P99__TOK_fexcept_t_STARTS_fexcept_t ,
+#define P99__TOK_fflush_STARTS_fflush ,
+#define P99__TOK_fgetc_STARTS_fgetc ,
+#define P99__TOK_fgetpos_STARTS_fgetpos ,
+#define P99__TOK_fgets_STARTS_fgets ,
+#define P99__TOK_fgetwc_STARTS_fgetwc ,
+#define P99__TOK_fgetws_STARTS_fgetws ,
+#define P99__TOK_float_STARTS_float ,
+#define P99__TOK_float_t_STARTS_float_t ,
+#define P99__TOK_floor_STARTS_floor ,
+#define P99__TOK_fopen_STARTS_fopen ,
+#define P99__TOK_for_STARTS_for ,
+#define P99__TOK_fpos_t_STARTS_fpos_t ,
+#define P99__TOK_fprintf_STARTS_fprintf ,
+#define P99__TOK_fprintf_STARTS_fprintf ,
+#define P99__TOK_fputc_STARTS_fputc ,
+#define P99__TOK_fputchar_STARTS_fputchar ,
+#define P99__TOK_fputs_STARTS_fputs ,
+#define P99__TOK_fputwc_STARTS_fputwc ,
+#define P99__TOK_fputws_STARTS_fputws ,
+#define P99__TOK_fread_STARTS_fread ,
+#define P99__TOK_free_STARTS_free ,
+#define P99__TOK_freopen_STARTS_freopen ,
+#define P99__TOK_frexp_STARTS_frexp ,
+#define P99__TOK_fscanf_STARTS_fscanf ,
+#define P99__TOK_fscanf_STARTS_fscanf ,
+#define P99__TOK_fseek_STARTS_fseek ,
+#define P99__TOK_fsetpos_STARTS_fsetpos ,
+#define P99__TOK_ftell_STARTS_ftell ,
+#define P99__TOK_fwide_STARTS_fwide ,
+#define P99__TOK_fwprintf_STARTS_fwprintf ,
+#define P99__TOK_fwrite_STARTS_fwrite ,
+#define P99__TOK_fwscanf_STARTS_fwscanf ,
+#define P99__TOK_getaddrinfo_STARTS_getaddrinfo ,
+#define P99__TOK_getc_STARTS_getc ,
+#define P99__TOK_getchar_STARTS_getchar ,
+#define P99__TOK_getenv_STARTS_getenv ,
+#define P99__TOK_getnameinfo_STARTS_getnameinfo ,
+#define P99__TOK_gets_STARTS_gets ,
+#define P99__TOK_getwc_STARTS_getwc ,
+#define P99__TOK_getwchar_STARTS_getwchar ,
+#define P99__TOK_gmtime_STARTS_gmtime ,
+#define P99__TOK_goto_STARTS_goto ,
+#define P99__TOK_if_STARTS_if ,
+#define P99__TOK_imaxabs_STARTS_imaxabs ,
+#define P99__TOK_imaxdiv_STARTS_imaxdiv ,
+#define P99__TOK_imaxdiv_t_STARTS_imaxdiv_t ,
+#define P99__TOK_inline_STARTS_inline ,
+#define P99__TOK_int_STARTS_int ,
+#define P99__TOK_int16_t_STARTS_int16_t ,
+#define P99__TOK_int32_t_STARTS_int32_t ,
+#define P99__TOK_int64_t_STARTS_int64_t ,
+#define P99__TOK_int8_t_STARTS_int8_t ,
+#define P99__TOK_intfast16_t_STARTS_intfast16_t ,
+#define P99__TOK_intfast32_t_STARTS_intfast32_t ,
+#define P99__TOK_intfast64_t_STARTS_intfast64_t ,
+#define P99__TOK_intfast8_t_STARTS_intfast8_t ,
+#define P99__TOK_intleast16_t_STARTS_intleast16_t ,
+#define P99__TOK_intleast32_t_STARTS_intleast32_t ,
+#define P99__TOK_intleast64_t_STARTS_intleast64_t ,
+#define P99__TOK_intleast8_t_STARTS_intleast8_t ,
+#define P99__TOK_intmax_t_STARTS_intmax_t ,
+#define P99__TOK_intptr_t_STARTS_intptr_t ,
+#define P99__TOK_isalnum_STARTS_isalnum ,
+#define P99__TOK_isalpha_STARTS_isalpha ,
+#define P99__TOK_isblank_STARTS_isblank ,
+#define P99__TOK_iscntrl_STARTS_iscntrl ,
+#define P99__TOK_isdigit_STARTS_isdigit ,
+#define P99__TOK_isgraph_STARTS_isgraph ,
+#define P99__TOK_islower_STARTS_islower ,
+#define P99__TOK_isprint_STARTS_isprint ,
+#define P99__TOK_ispunct_STARTS_ispunct ,
+#define P99__TOK_isspace_STARTS_isspace ,
+#define P99__TOK_isupper_STARTS_isupper ,
+#define P99__TOK_iswalnum_STARTS_iswalnum ,
+#define P99__TOK_iswalpha_STARTS_iswalpha ,
+#define P99__TOK_iswcntrl_STARTS_iswcntrl ,
+#define P99__TOK_iswctype_STARTS_iswctype ,
+#define P99__TOK_iswdigit_STARTS_iswdigit ,
+#define P99__TOK_iswgraph_STARTS_iswgraph ,
+#define P99__TOK_iswlower_STARTS_iswlower ,
+#define P99__TOK_iswprint_STARTS_iswprint ,
+#define P99__TOK_iswpunct_STARTS_iswpunct ,
+#define P99__TOK_iswspace_STARTS_iswspace ,
+#define P99__TOK_iswupper_STARTS_iswupper ,
+#define P99__TOK_iswxdigit_STARTS_iswxdigit ,
+#define P99__TOK_isxdigit_STARTS_isxdigit ,
+#define P99__TOK_labs_STARTS_labs ,
+#define P99__TOK_ldexp_STARTS_ldexp ,
+#define P99__TOK_ldiv_STARTS_ldiv ,
+#define P99__TOK_ldiv_STARTS_ldiv ,
+#define P99__TOK_ldiv_t_STARTS_ldiv_t ,
+#define P99__TOK_lldiv_t_STARTS_lldiv_t ,
+#define P99__TOK_localeconv_STARTS_localeconv ,
+#define P99__TOK_localtime_STARTS_localtime ,
+#define P99__TOK_log_STARTS_log ,
+#define P99__TOK_log10_STARTS_log10 ,
+#define P99__TOK_long_STARTS_long ,
+#define P99__TOK_longjmp_STARTS_longjmp ,
+#define P99__TOK_malloc_STARTS_malloc ,
+#define P99__TOK_mbrlen_STARTS_mbrlen ,
+#define P99__TOK_mbrtowc_STARTS_mbrtowc ,
+#define P99__TOK_mbsinit_STARTS_mbsinit ,
+#define P99__TOK_mbsrtowcs_STARTS_mbsrtowcs ,
+#define P99__TOK_mbstate_t_STARTS_mbstate_t ,
+#define P99__TOK_memchr_STARTS_memchr ,
+#define P99__TOK_memcmp_STARTS_memcmp ,
+#define P99__TOK_memcpy_STARTS_memcpy ,
+#define P99__TOK_memmove_STARTS_memmove ,
+#define P99__TOK_memset_STARTS_memset ,
+#define P99__TOK_mktime_STARTS_mktime ,
+#define P99__TOK_modf_STARTS_modf ,
+#define P99__TOK_off_t_STARTS_off_t ,
+#define P99__TOK_offsetof_STARTS_offsetof ,
+#define P99__TOK_perror_STARTS_perror ,
+#define P99__TOK_pow_STARTS_pow ,
+#define P99__TOK_printf_STARTS_printf ,
+#define P99__TOK_ptrdiff_t_STARTS_ptrdiff_t ,
+#define P99__TOK_putc_STARTS_putc ,
+#define P99__TOK_putchar_STARTS_putchar ,
+#define P99__TOK_puts_STARTS_puts ,
+#define P99__TOK_putwc_STARTS_putwc ,
+#define P99__TOK_putwchar_STARTS_putwchar ,
+#define P99__TOK_qsort_STARTS_qsort ,
+#define P99__TOK_raise_STARTS_raise ,
+#define P99__TOK_rand_STARTS_rand ,
+#define P99__TOK_realloc_STARTS_realloc ,
+#define P99__TOK_register_STARTS_register ,
+#define P99__TOK_remove_STARTS_remove ,
+#define P99__TOK_rename_STARTS_rename ,
+#define P99__TOK_restrict_STARTS_restrict ,
+#define P99__TOK_return_STARTS_return ,
+#define P99__TOK_rewind_STARTS_rewind ,
+#define P99__TOK_scanf_STARTS_scanf ,
+#define P99__TOK_setbuf_STARTS_setbuf ,
+#define P99__TOK_setjmp_STARTS_setjmp ,
+#define P99__TOK_setlocale_STARTS_setlocale ,
+#define P99__TOK_setvbuf_STARTS_setvbuf ,
+#define P99__TOK_short_STARTS_short ,
+#define P99__TOK_sig_atomic_t_STARTS_sig_atomic_t ,
+#define P99__TOK_signed_STARTS_signed ,
+#define P99__TOK_sin_STARTS_sin ,
+#define P99__TOK_sinh_STARTS_sinh ,
+#define P99__TOK_size_t_STARTS_size_t ,
+#define P99__TOK_sizeof_STARTS_sizeof ,
+#define P99__TOK_snprintf_STARTS_snprintf ,
+#define P99__TOK_sprintf_STARTS_sprintf ,
+#define P99__TOK_sqrt_STARTS_sqrt ,
+#define P99__TOK_srand_STARTS_srand ,
+#define P99__TOK_sscanf_STARTS_sscanf ,
+#define P99__TOK_ssize_t_STARTS_ssize_t ,
+#define P99__TOK_static_STARTS_static ,
+#define P99__TOK_strcat_STARTS_strcat ,
+#define P99__TOK_strchr_STARTS_strchr ,
+#define P99__TOK_strcmp_STARTS_strcmp ,
+#define P99__TOK_strcoll_STARTS_strcoll ,
+#define P99__TOK_strcpy_STARTS_strcpy ,
+#define P99__TOK_strcspn_STARTS_strcspn ,
+#define P99__TOK_strerror_STARTS_strerror ,
+#define P99__TOK_strftime_STARTS_strftime ,
+#define P99__TOK_strlen_STARTS_strlen ,
+#define P99__TOK_strncat_STARTS_strncat ,
+#define P99__TOK_strncmp_STARTS_strncmp ,
+#define P99__TOK_strncpy_STARTS_strncpy ,
+#define P99__TOK_strpbrk_STARTS_strpbrk ,
+#define P99__TOK_strrchr_STARTS_strrchr ,
+#define P99__TOK_strspn_STARTS_strspn ,
+#define P99__TOK_strstr_STARTS_strstr ,
+#define P99__TOK_strtod_STARTS_strtod ,
+#define P99__TOK_strtoimax_STARTS_strtoimax ,
+#define P99__TOK_strtok_STARTS_strtok ,
+#define P99__TOK_strtol_STARTS_strtol ,
+#define P99__TOK_strtoul_STARTS_strtoul ,
+#define P99__TOK_strtoumax_STARTS_strtoumax ,
+#define P99__TOK_struct_STARTS_struct ,
+#define P99__TOK_strxfrm_STARTS_strxfrm ,
+#define P99__TOK_switch_STARTS_switch ,
+#define P99__TOK_swprintf_STARTS_swprintf ,
+#define P99__TOK_swscanf_STARTS_swscanf ,
+#define P99__TOK_system_STARTS_system ,
+#define P99__TOK_tan_STARTS_tan ,
+#define P99__TOK_tanh_STARTS_tanh ,
+#define P99__TOK_time_STARTS_time ,
+#define P99__TOK_time_t_STARTS_time_t ,
+#define P99__TOK_tmpfile_STARTS_tmpfile ,
+#define P99__TOK_tmpnam_STARTS_tmpnam ,
+#define P99__TOK_tolower_STARTS_tolower ,
+#define P99__TOK_toupper_STARTS_toupper ,
+#define P99__TOK_towctrans_STARTS_towctrans ,
+#define P99__TOK_towlower_STARTS_towlower ,
+#define P99__TOK_towupper_STARTS_towupper ,
+#define P99__TOK_typedef_STARTS_typedef ,
+#define P99__TOK_uint16_t_STARTS_uint16_t ,
+#define P99__TOK_uint32_t_STARTS_uint32_t ,
+#define P99__TOK_uint64_t_STARTS_uint64_t ,
+#define P99__TOK_uint8_t_STARTS_uint8_t ,
+#define P99__TOK_uintfast16_t_STARTS_uintfast16_t ,
+#define P99__TOK_uintfast32_t_STARTS_uintfast32_t ,
+#define P99__TOK_uintfast64_t_STARTS_uintfast64_t ,
+#define P99__TOK_uintfast8_t_STARTS_uintfast8_t ,
+#define P99__TOK_uintleast16_t_STARTS_uintleast16_t ,
+#define P99__TOK_uintleast32_t_STARTS_uintleast32_t ,
+#define P99__TOK_uintleast64_t_STARTS_uintleast64_t ,
+#define P99__TOK_uintleast8_t_STARTS_uintleast8_t ,
+#define P99__TOK_uintmax_t_STARTS_uintmax_t ,
+#define P99__TOK_uintptr_t_STARTS_uintptr_t ,
+#define P99__TOK_ungetc_STARTS_ungetc ,
+#define P99__TOK_ungetwc_STARTS_ungetwc ,
+#define P99__TOK_union_STARTS_union ,
+#define P99__TOK_unsigned_STARTS_unsigned ,
+#define P99__TOK_va_arg_STARTS_va_arg ,
+#define P99__TOK_va_copy_STARTS_va_copy ,
+#define P99__TOK_va_end_STARTS_va_end ,
+#define P99__TOK_va_start_STARTS_va_start ,
+#define P99__TOK_vfprintf_STARTS_vfprintf ,
+#define P99__TOK_vfscanf_STARTS_vfscanf ,
+#define P99__TOK_vfwprintf_STARTS_vfwprintf ,
+#define P99__TOK_void_STARTS_void ,
+#define P99__TOK_volatile_STARTS_volatile ,
+#define P99__TOK_vprintf_STARTS_vprintf ,
+#define P99__TOK_vscanf_STARTS_vscanf ,
+#define P99__TOK_vsprintf_STARTS_vsprintf ,
+#define P99__TOK_vsscanf_STARTS_vsscanf ,
+#define P99__TOK_vswprintf_STARTS_vswprintf ,
+#define P99__TOK_vwprintf_STARTS_vwprintf ,
+#define P99__TOK_wchar_t_STARTS_wchar_t ,
+#define P99__TOK_wcrtomb_STARTS_wcrtomb ,
+#define P99__TOK_wcscat_STARTS_wcscat ,
+#define P99__TOK_wcschr_STARTS_wcschr ,
+#define P99__TOK_wcscmp_STARTS_wcscmp ,
+#define P99__TOK_wcscoll_STARTS_wcscoll ,
+#define P99__TOK_wcscpy_STARTS_wcscpy ,
+#define P99__TOK_wcscspn_STARTS_wcscspn ,
+#define P99__TOK_wcsftime_STARTS_wcsftime ,
+#define P99__TOK_wcslen_STARTS_wcslen ,
+#define P99__TOK_wcsncat_STARTS_wcsncat ,
+#define P99__TOK_wcsncmp_STARTS_wcsncmp ,
+#define P99__TOK_wcsncpy_STARTS_wcsncpy ,
+#define P99__TOK_wcspbrk_STARTS_wcspbrk ,
+#define P99__TOK_wcsrchr_STARTS_wcsrchr ,
+#define P99__TOK_wcsrtombs_STARTS_wcsrtombs ,
+#define P99__TOK_wcsspn_STARTS_wcsspn ,
+#define P99__TOK_wcsstr_STARTS_wcsstr ,
+#define P99__TOK_wcstod_STARTS_wcstod ,
+#define P99__TOK_wcstoimax_STARTS_wcstoimax ,
+#define P99__TOK_wcstok_STARTS_wcstok ,
+#define P99__TOK_wcstol_STARTS_wcstol ,
+#define P99__TOK_wcstoul_STARTS_wcstoul ,
+#define P99__TOK_wcstoumax_STARTS_wcstoumax ,
+#define P99__TOK_wcsxfrm_STARTS_wcsxfrm ,
+#define P99__TOK_wctob_STARTS_wctob ,
+#define P99__TOK_wctrans_STARTS_wctrans ,
+#define P99__TOK_wctrans_t_STARTS_wctrans_t ,
+#define P99__TOK_wctype_STARTS_wctype ,
+#define P99__TOK_wctype_t_STARTS_wctype_t ,
+#define P99__TOK_while_STARTS_while ,
+#define P99__TOK_wint_t_STARTS_wint_t ,
+#define P99__TOK_wmemchr_STARTS_wmemchr ,
+#define P99__TOK_wmemcmp_STARTS_wmemcmp ,
+#define P99__TOK_wmemcpy_STARTS_wmemcpy ,
+#define P99__TOK_wmemmove_STARTS_wmemmove ,
+#define P99__TOK_wmemset_STARTS_wmemset ,
+#define P99__TOK_wprintf_STARTS_wprintf ,
+#define P99__TOK_wscanf_STARTS_wscanf ,
 /*! @brief Test if the argument consists of exactly the token @c 0 */
 #define P99_IS_EQ_0(...) P99_TOK_EQ(0, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 1 */
@@ -1470,6 +2214,86 @@
 #define P99_IS_EQ_80(...) P99_TOK_EQ(80, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 81 */
 #define P99_IS_EQ_81(...) P99_TOK_EQ(81, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 82 */
+#define P99_IS_EQ_82(...) P99_TOK_EQ(82, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 83 */
+#define P99_IS_EQ_83(...) P99_TOK_EQ(83, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 84 */
+#define P99_IS_EQ_84(...) P99_TOK_EQ(84, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 85 */
+#define P99_IS_EQ_85(...) P99_TOK_EQ(85, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 86 */
+#define P99_IS_EQ_86(...) P99_TOK_EQ(86, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 87 */
+#define P99_IS_EQ_87(...) P99_TOK_EQ(87, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 88 */
+#define P99_IS_EQ_88(...) P99_TOK_EQ(88, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 89 */
+#define P99_IS_EQ_89(...) P99_TOK_EQ(89, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 90 */
+#define P99_IS_EQ_90(...) P99_TOK_EQ(90, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 91 */
+#define P99_IS_EQ_91(...) P99_TOK_EQ(91, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 92 */
+#define P99_IS_EQ_92(...) P99_TOK_EQ(92, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 93 */
+#define P99_IS_EQ_93(...) P99_TOK_EQ(93, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 94 */
+#define P99_IS_EQ_94(...) P99_TOK_EQ(94, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 95 */
+#define P99_IS_EQ_95(...) P99_TOK_EQ(95, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 96 */
+#define P99_IS_EQ_96(...) P99_TOK_EQ(96, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 97 */
+#define P99_IS_EQ_97(...) P99_TOK_EQ(97, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 98 */
+#define P99_IS_EQ_98(...) P99_TOK_EQ(98, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 99 */
+#define P99_IS_EQ_99(...) P99_TOK_EQ(99, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 100 */
+#define P99_IS_EQ_100(...) P99_TOK_EQ(100, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 101 */
+#define P99_IS_EQ_101(...) P99_TOK_EQ(101, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 102 */
+#define P99_IS_EQ_102(...) P99_TOK_EQ(102, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 103 */
+#define P99_IS_EQ_103(...) P99_TOK_EQ(103, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 104 */
+#define P99_IS_EQ_104(...) P99_TOK_EQ(104, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 105 */
+#define P99_IS_EQ_105(...) P99_TOK_EQ(105, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 106 */
+#define P99_IS_EQ_106(...) P99_TOK_EQ(106, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 107 */
+#define P99_IS_EQ_107(...) P99_TOK_EQ(107, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 108 */
+#define P99_IS_EQ_108(...) P99_TOK_EQ(108, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 109 */
+#define P99_IS_EQ_109(...) P99_TOK_EQ(109, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 110 */
+#define P99_IS_EQ_110(...) P99_TOK_EQ(110, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 111 */
+#define P99_IS_EQ_111(...) P99_TOK_EQ(111, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 112 */
+#define P99_IS_EQ_112(...) P99_TOK_EQ(112, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 113 */
+#define P99_IS_EQ_113(...) P99_TOK_EQ(113, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 114 */
+#define P99_IS_EQ_114(...) P99_TOK_EQ(114, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 115 */
+#define P99_IS_EQ_115(...) P99_TOK_EQ(115, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 116 */
+#define P99_IS_EQ_116(...) P99_TOK_EQ(116, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 117 */
+#define P99_IS_EQ_117(...) P99_TOK_EQ(117, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 118 */
+#define P99_IS_EQ_118(...) P99_TOK_EQ(118, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 119 */
+#define P99_IS_EQ_119(...) P99_TOK_EQ(119, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 120 */
+#define P99_IS_EQ_120(...) P99_TOK_EQ(120, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 121 */
+#define P99_IS_EQ_121(...) P99_TOK_EQ(121, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c _Bool */
 #define P99_IS_EQ__Bool(...) P99_TOK_EQ(_Bool, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c _Complex */
@@ -2144,6 +2968,1941 @@
 #define P99_IS_EQ_wprintf(...) P99_TOK_EQ(wprintf, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c wscanf */
 #define P99_IS_EQ_wscanf(...) P99_TOK_EQ(wscanf, __VA_ARGS__)
+#define P99__EAT_0 
+#define P99__EAT_1 
+#define P99__EAT_2 
+#define P99__EAT_3 
+#define P99__EAT_4 
+#define P99__EAT_5 
+#define P99__EAT_6 
+#define P99__EAT_7 
+#define P99__EAT_8 
+#define P99__EAT_9 
+#define P99__EAT_10 
+#define P99__EAT_11 
+#define P99__EAT_12 
+#define P99__EAT_13 
+#define P99__EAT_14 
+#define P99__EAT_15 
+#define P99__EAT_16 
+#define P99__EAT_17 
+#define P99__EAT_18 
+#define P99__EAT_19 
+#define P99__EAT_20 
+#define P99__EAT_21 
+#define P99__EAT_22 
+#define P99__EAT_23 
+#define P99__EAT_24 
+#define P99__EAT_25 
+#define P99__EAT_26 
+#define P99__EAT_27 
+#define P99__EAT_28 
+#define P99__EAT_29 
+#define P99__EAT_30 
+#define P99__EAT_31 
+#define P99__EAT_32 
+#define P99__EAT_33 
+#define P99__EAT_34 
+#define P99__EAT_35 
+#define P99__EAT_36 
+#define P99__EAT_37 
+#define P99__EAT_38 
+#define P99__EAT_39 
+#define P99__EAT_40 
+#define P99__EAT_41 
+#define P99__EAT_42 
+#define P99__EAT_43 
+#define P99__EAT_44 
+#define P99__EAT_45 
+#define P99__EAT_46 
+#define P99__EAT_47 
+#define P99__EAT_48 
+#define P99__EAT_49 
+#define P99__EAT_50 
+#define P99__EAT_51 
+#define P99__EAT_52 
+#define P99__EAT_53 
+#define P99__EAT_54 
+#define P99__EAT_55 
+#define P99__EAT_56 
+#define P99__EAT_57 
+#define P99__EAT_58 
+#define P99__EAT_59 
+#define P99__EAT_60 
+#define P99__EAT_61 
+#define P99__EAT_62 
+#define P99__EAT_63 
+#define P99__EAT_64 
+#define P99__EAT_65 
+#define P99__EAT_66 
+#define P99__EAT_67 
+#define P99__EAT_68 
+#define P99__EAT_69 
+#define P99__EAT_70 
+#define P99__EAT_71 
+#define P99__EAT_72 
+#define P99__EAT_73 
+#define P99__EAT_74 
+#define P99__EAT_75 
+#define P99__EAT_76 
+#define P99__EAT_77 
+#define P99__EAT_78 
+#define P99__EAT_79 
+#define P99__EAT_80 
+#define P99__EAT_81 
+#define P99__EAT_82 
+#define P99__EAT_83 
+#define P99__EAT_84 
+#define P99__EAT_85 
+#define P99__EAT_86 
+#define P99__EAT_87 
+#define P99__EAT_88 
+#define P99__EAT_89 
+#define P99__EAT_90 
+#define P99__EAT_91 
+#define P99__EAT_92 
+#define P99__EAT_93 
+#define P99__EAT_94 
+#define P99__EAT_95 
+#define P99__EAT_96 
+#define P99__EAT_97 
+#define P99__EAT_98 
+#define P99__EAT_99 
+#define P99__EAT_100 
+#define P99__EAT_101 
+#define P99__EAT_102 
+#define P99__EAT_103 
+#define P99__EAT_104 
+#define P99__EAT_105 
+#define P99__EAT_106 
+#define P99__EAT_107 
+#define P99__EAT_108 
+#define P99__EAT_109 
+#define P99__EAT_110 
+#define P99__EAT_111 
+#define P99__EAT_112 
+#define P99__EAT_113 
+#define P99__EAT_114 
+#define P99__EAT_115 
+#define P99__EAT_116 
+#define P99__EAT_117 
+#define P99__EAT_118 
+#define P99__EAT_119 
+#define P99__EAT_120 
+#define P99__EAT_121 
+#define P99__EAT__Bool 
+#define P99__EAT__Complex 
+#define P99__EAT__Exit 
+#define P99__EAT__Imaginary 
+#define P99__EAT_abort 
+#define P99__EAT_abs 
+#define P99__EAT_acos 
+#define P99__EAT_asctime 
+#define P99__EAT_asin 
+#define P99__EAT_assert 
+#define P99__EAT_atan 
+#define P99__EAT_atan2 
+#define P99__EAT_atexit 
+#define P99__EAT_atof 
+#define P99__EAT_atof 
+#define P99__EAT_atoi 
+#define P99__EAT_atol 
+#define P99__EAT_auto 
+#define P99__EAT_break 
+#define P99__EAT_bsearch 
+#define P99__EAT_btowc 
+#define P99__EAT_cabs 
+#define P99__EAT_cacos 
+#define P99__EAT_cacosh 
+#define P99__EAT_calloc 
+#define P99__EAT_carg 
+#define P99__EAT_case 
+#define P99__EAT_casin 
+#define P99__EAT_casinh 
+#define P99__EAT_catan 
+#define P99__EAT_catanh 
+#define P99__EAT_ccos 
+#define P99__EAT_ccosh 
+#define P99__EAT_ceil 
+#define P99__EAT_cexp 
+#define P99__EAT_char 
+#define P99__EAT_cimag 
+#define P99__EAT_clearerr 
+#define P99__EAT_clock 
+#define P99__EAT_clock_t 
+#define P99__EAT_clog 
+#define P99__EAT_conj 
+#define P99__EAT_const 
+#define P99__EAT_continue 
+#define P99__EAT_cos 
+#define P99__EAT_cosh 
+#define P99__EAT_cpow 
+#define P99__EAT_cproj 
+#define P99__EAT_creal 
+#define P99__EAT_csin 
+#define P99__EAT_csinh 
+#define P99__EAT_csqrt 
+#define P99__EAT_ctan 
+#define P99__EAT_ctanh 
+#define P99__EAT_ctime 
+#define P99__EAT_default 
+#define P99__EAT_difftime 
+#define P99__EAT_div 
+#define P99__EAT_div_t 
+#define P99__EAT_do 
+#define P99__EAT_double 
+#define P99__EAT_double_t 
+#define P99__EAT_else 
+#define P99__EAT_enum 
+#define P99__EAT_exit 
+#define P99__EAT_exp 
+#define P99__EAT_extern 
+#define P99__EAT_fabs 
+#define P99__EAT_fclose 
+#define P99__EAT_fdopen 
+#define P99__EAT_fenv_t 
+#define P99__EAT_feof 
+#define P99__EAT_ferror 
+#define P99__EAT_fexcept_t 
+#define P99__EAT_fflush 
+#define P99__EAT_fgetc 
+#define P99__EAT_fgetpos 
+#define P99__EAT_fgets 
+#define P99__EAT_fgetwc 
+#define P99__EAT_fgetws 
+#define P99__EAT_float 
+#define P99__EAT_float_t 
+#define P99__EAT_floor 
+#define P99__EAT_fopen 
+#define P99__EAT_for 
+#define P99__EAT_fpos_t 
+#define P99__EAT_fprintf 
+#define P99__EAT_fprintf 
+#define P99__EAT_fputc 
+#define P99__EAT_fputchar 
+#define P99__EAT_fputs 
+#define P99__EAT_fputwc 
+#define P99__EAT_fputws 
+#define P99__EAT_fread 
+#define P99__EAT_free 
+#define P99__EAT_freopen 
+#define P99__EAT_frexp 
+#define P99__EAT_fscanf 
+#define P99__EAT_fscanf 
+#define P99__EAT_fseek 
+#define P99__EAT_fsetpos 
+#define P99__EAT_ftell 
+#define P99__EAT_fwide 
+#define P99__EAT_fwprintf 
+#define P99__EAT_fwrite 
+#define P99__EAT_fwscanf 
+#define P99__EAT_getaddrinfo 
+#define P99__EAT_getc 
+#define P99__EAT_getchar 
+#define P99__EAT_getenv 
+#define P99__EAT_getnameinfo 
+#define P99__EAT_gets 
+#define P99__EAT_getwc 
+#define P99__EAT_getwchar 
+#define P99__EAT_gmtime 
+#define P99__EAT_goto 
+#define P99__EAT_if 
+#define P99__EAT_imaxabs 
+#define P99__EAT_imaxdiv 
+#define P99__EAT_imaxdiv_t 
+#define P99__EAT_inline 
+#define P99__EAT_int 
+#define P99__EAT_int16_t 
+#define P99__EAT_int32_t 
+#define P99__EAT_int64_t 
+#define P99__EAT_int8_t 
+#define P99__EAT_intfast16_t 
+#define P99__EAT_intfast32_t 
+#define P99__EAT_intfast64_t 
+#define P99__EAT_intfast8_t 
+#define P99__EAT_intleast16_t 
+#define P99__EAT_intleast32_t 
+#define P99__EAT_intleast64_t 
+#define P99__EAT_intleast8_t 
+#define P99__EAT_intmax_t 
+#define P99__EAT_intptr_t 
+#define P99__EAT_isalnum 
+#define P99__EAT_isalpha 
+#define P99__EAT_isblank 
+#define P99__EAT_iscntrl 
+#define P99__EAT_isdigit 
+#define P99__EAT_isgraph 
+#define P99__EAT_islower 
+#define P99__EAT_isprint 
+#define P99__EAT_ispunct 
+#define P99__EAT_isspace 
+#define P99__EAT_isupper 
+#define P99__EAT_iswalnum 
+#define P99__EAT_iswalpha 
+#define P99__EAT_iswcntrl 
+#define P99__EAT_iswctype 
+#define P99__EAT_iswdigit 
+#define P99__EAT_iswgraph 
+#define P99__EAT_iswlower 
+#define P99__EAT_iswprint 
+#define P99__EAT_iswpunct 
+#define P99__EAT_iswspace 
+#define P99__EAT_iswupper 
+#define P99__EAT_iswxdigit 
+#define P99__EAT_isxdigit 
+#define P99__EAT_labs 
+#define P99__EAT_ldexp 
+#define P99__EAT_ldiv 
+#define P99__EAT_ldiv 
+#define P99__EAT_ldiv_t 
+#define P99__EAT_lldiv_t 
+#define P99__EAT_localeconv 
+#define P99__EAT_localtime 
+#define P99__EAT_log 
+#define P99__EAT_log10 
+#define P99__EAT_long 
+#define P99__EAT_longjmp 
+#define P99__EAT_malloc 
+#define P99__EAT_mbrlen 
+#define P99__EAT_mbrtowc 
+#define P99__EAT_mbsinit 
+#define P99__EAT_mbsrtowcs 
+#define P99__EAT_mbstate_t 
+#define P99__EAT_memchr 
+#define P99__EAT_memcmp 
+#define P99__EAT_memcpy 
+#define P99__EAT_memmove 
+#define P99__EAT_memset 
+#define P99__EAT_mktime 
+#define P99__EAT_modf 
+#define P99__EAT_off_t 
+#define P99__EAT_offsetof 
+#define P99__EAT_perror 
+#define P99__EAT_pow 
+#define P99__EAT_printf 
+#define P99__EAT_ptrdiff_t 
+#define P99__EAT_putc 
+#define P99__EAT_putchar 
+#define P99__EAT_puts 
+#define P99__EAT_putwc 
+#define P99__EAT_putwchar 
+#define P99__EAT_qsort 
+#define P99__EAT_raise 
+#define P99__EAT_rand 
+#define P99__EAT_realloc 
+#define P99__EAT_register 
+#define P99__EAT_remove 
+#define P99__EAT_rename 
+#define P99__EAT_restrict 
+#define P99__EAT_return 
+#define P99__EAT_rewind 
+#define P99__EAT_scanf 
+#define P99__EAT_setbuf 
+#define P99__EAT_setjmp 
+#define P99__EAT_setlocale 
+#define P99__EAT_setvbuf 
+#define P99__EAT_short 
+#define P99__EAT_sig_atomic_t 
+#define P99__EAT_signed 
+#define P99__EAT_sin 
+#define P99__EAT_sinh 
+#define P99__EAT_size_t 
+#define P99__EAT_sizeof 
+#define P99__EAT_snprintf 
+#define P99__EAT_sprintf 
+#define P99__EAT_sqrt 
+#define P99__EAT_srand 
+#define P99__EAT_sscanf 
+#define P99__EAT_ssize_t 
+#define P99__EAT_static 
+#define P99__EAT_strcat 
+#define P99__EAT_strchr 
+#define P99__EAT_strcmp 
+#define P99__EAT_strcoll 
+#define P99__EAT_strcpy 
+#define P99__EAT_strcspn 
+#define P99__EAT_strerror 
+#define P99__EAT_strftime 
+#define P99__EAT_strlen 
+#define P99__EAT_strncat 
+#define P99__EAT_strncmp 
+#define P99__EAT_strncpy 
+#define P99__EAT_strpbrk 
+#define P99__EAT_strrchr 
+#define P99__EAT_strspn 
+#define P99__EAT_strstr 
+#define P99__EAT_strtod 
+#define P99__EAT_strtoimax 
+#define P99__EAT_strtok 
+#define P99__EAT_strtol 
+#define P99__EAT_strtoul 
+#define P99__EAT_strtoumax 
+#define P99__EAT_struct 
+#define P99__EAT_strxfrm 
+#define P99__EAT_switch 
+#define P99__EAT_swprintf 
+#define P99__EAT_swscanf 
+#define P99__EAT_system 
+#define P99__EAT_tan 
+#define P99__EAT_tanh 
+#define P99__EAT_time 
+#define P99__EAT_time_t 
+#define P99__EAT_tmpfile 
+#define P99__EAT_tmpnam 
+#define P99__EAT_tolower 
+#define P99__EAT_toupper 
+#define P99__EAT_towctrans 
+#define P99__EAT_towlower 
+#define P99__EAT_towupper 
+#define P99__EAT_typedef 
+#define P99__EAT_uint16_t 
+#define P99__EAT_uint32_t 
+#define P99__EAT_uint64_t 
+#define P99__EAT_uint8_t 
+#define P99__EAT_uintfast16_t 
+#define P99__EAT_uintfast32_t 
+#define P99__EAT_uintfast64_t 
+#define P99__EAT_uintfast8_t 
+#define P99__EAT_uintleast16_t 
+#define P99__EAT_uintleast32_t 
+#define P99__EAT_uintleast64_t 
+#define P99__EAT_uintleast8_t 
+#define P99__EAT_uintmax_t 
+#define P99__EAT_uintptr_t 
+#define P99__EAT_ungetc 
+#define P99__EAT_ungetwc 
+#define P99__EAT_union 
+#define P99__EAT_unsigned 
+#define P99__EAT_va_arg 
+#define P99__EAT_va_copy 
+#define P99__EAT_va_end 
+#define P99__EAT_va_start 
+#define P99__EAT_vfprintf 
+#define P99__EAT_vfscanf 
+#define P99__EAT_vfwprintf 
+#define P99__EAT_void 
+#define P99__EAT_volatile 
+#define P99__EAT_vprintf 
+#define P99__EAT_vscanf 
+#define P99__EAT_vsprintf 
+#define P99__EAT_vsscanf 
+#define P99__EAT_vswprintf 
+#define P99__EAT_vwprintf 
+#define P99__EAT_wchar_t 
+#define P99__EAT_wcrtomb 
+#define P99__EAT_wcscat 
+#define P99__EAT_wcschr 
+#define P99__EAT_wcscmp 
+#define P99__EAT_wcscoll 
+#define P99__EAT_wcscpy 
+#define P99__EAT_wcscspn 
+#define P99__EAT_wcsftime 
+#define P99__EAT_wcslen 
+#define P99__EAT_wcsncat 
+#define P99__EAT_wcsncmp 
+#define P99__EAT_wcsncpy 
+#define P99__EAT_wcspbrk 
+#define P99__EAT_wcsrchr 
+#define P99__EAT_wcsrtombs 
+#define P99__EAT_wcsspn 
+#define P99__EAT_wcsstr 
+#define P99__EAT_wcstod 
+#define P99__EAT_wcstoimax 
+#define P99__EAT_wcstok 
+#define P99__EAT_wcstol 
+#define P99__EAT_wcstoul 
+#define P99__EAT_wcstoumax 
+#define P99__EAT_wcsxfrm 
+#define P99__EAT_wctob 
+#define P99__EAT_wctrans 
+#define P99__EAT_wctrans_t 
+#define P99__EAT_wctype 
+#define P99__EAT_wctype_t 
+#define P99__EAT_while 
+#define P99__EAT_wint_t 
+#define P99__EAT_wmemchr 
+#define P99__EAT_wmemcmp 
+#define P99__EAT_wmemcpy 
+#define P99__EAT_wmemmove 
+#define P99__EAT_wmemset 
+#define P99__EAT_wprintf 
+#define P99__EAT_wscanf 
+#define P99__TOKEN_0 ,
+#define P99__TOKEN_1 ,
+#define P99__TOKEN_2 ,
+#define P99__TOKEN_3 ,
+#define P99__TOKEN_4 ,
+#define P99__TOKEN_5 ,
+#define P99__TOKEN_6 ,
+#define P99__TOKEN_7 ,
+#define P99__TOKEN_8 ,
+#define P99__TOKEN_9 ,
+#define P99__TOKEN_10 ,
+#define P99__TOKEN_11 ,
+#define P99__TOKEN_12 ,
+#define P99__TOKEN_13 ,
+#define P99__TOKEN_14 ,
+#define P99__TOKEN_15 ,
+#define P99__TOKEN_16 ,
+#define P99__TOKEN_17 ,
+#define P99__TOKEN_18 ,
+#define P99__TOKEN_19 ,
+#define P99__TOKEN_20 ,
+#define P99__TOKEN_21 ,
+#define P99__TOKEN_22 ,
+#define P99__TOKEN_23 ,
+#define P99__TOKEN_24 ,
+#define P99__TOKEN_25 ,
+#define P99__TOKEN_26 ,
+#define P99__TOKEN_27 ,
+#define P99__TOKEN_28 ,
+#define P99__TOKEN_29 ,
+#define P99__TOKEN_30 ,
+#define P99__TOKEN_31 ,
+#define P99__TOKEN_32 ,
+#define P99__TOKEN_33 ,
+#define P99__TOKEN_34 ,
+#define P99__TOKEN_35 ,
+#define P99__TOKEN_36 ,
+#define P99__TOKEN_37 ,
+#define P99__TOKEN_38 ,
+#define P99__TOKEN_39 ,
+#define P99__TOKEN_40 ,
+#define P99__TOKEN_41 ,
+#define P99__TOKEN_42 ,
+#define P99__TOKEN_43 ,
+#define P99__TOKEN_44 ,
+#define P99__TOKEN_45 ,
+#define P99__TOKEN_46 ,
+#define P99__TOKEN_47 ,
+#define P99__TOKEN_48 ,
+#define P99__TOKEN_49 ,
+#define P99__TOKEN_50 ,
+#define P99__TOKEN_51 ,
+#define P99__TOKEN_52 ,
+#define P99__TOKEN_53 ,
+#define P99__TOKEN_54 ,
+#define P99__TOKEN_55 ,
+#define P99__TOKEN_56 ,
+#define P99__TOKEN_57 ,
+#define P99__TOKEN_58 ,
+#define P99__TOKEN_59 ,
+#define P99__TOKEN_60 ,
+#define P99__TOKEN_61 ,
+#define P99__TOKEN_62 ,
+#define P99__TOKEN_63 ,
+#define P99__TOKEN_64 ,
+#define P99__TOKEN_65 ,
+#define P99__TOKEN_66 ,
+#define P99__TOKEN_67 ,
+#define P99__TOKEN_68 ,
+#define P99__TOKEN_69 ,
+#define P99__TOKEN_70 ,
+#define P99__TOKEN_71 ,
+#define P99__TOKEN_72 ,
+#define P99__TOKEN_73 ,
+#define P99__TOKEN_74 ,
+#define P99__TOKEN_75 ,
+#define P99__TOKEN_76 ,
+#define P99__TOKEN_77 ,
+#define P99__TOKEN_78 ,
+#define P99__TOKEN_79 ,
+#define P99__TOKEN_80 ,
+#define P99__TOKEN_81 ,
+#define P99__TOKEN_82 ,
+#define P99__TOKEN_83 ,
+#define P99__TOKEN_84 ,
+#define P99__TOKEN_85 ,
+#define P99__TOKEN_86 ,
+#define P99__TOKEN_87 ,
+#define P99__TOKEN_88 ,
+#define P99__TOKEN_89 ,
+#define P99__TOKEN_90 ,
+#define P99__TOKEN_91 ,
+#define P99__TOKEN_92 ,
+#define P99__TOKEN_93 ,
+#define P99__TOKEN_94 ,
+#define P99__TOKEN_95 ,
+#define P99__TOKEN_96 ,
+#define P99__TOKEN_97 ,
+#define P99__TOKEN_98 ,
+#define P99__TOKEN_99 ,
+#define P99__TOKEN_100 ,
+#define P99__TOKEN_101 ,
+#define P99__TOKEN_102 ,
+#define P99__TOKEN_103 ,
+#define P99__TOKEN_104 ,
+#define P99__TOKEN_105 ,
+#define P99__TOKEN_106 ,
+#define P99__TOKEN_107 ,
+#define P99__TOKEN_108 ,
+#define P99__TOKEN_109 ,
+#define P99__TOKEN_110 ,
+#define P99__TOKEN_111 ,
+#define P99__TOKEN_112 ,
+#define P99__TOKEN_113 ,
+#define P99__TOKEN_114 ,
+#define P99__TOKEN_115 ,
+#define P99__TOKEN_116 ,
+#define P99__TOKEN_117 ,
+#define P99__TOKEN_118 ,
+#define P99__TOKEN_119 ,
+#define P99__TOKEN_120 ,
+#define P99__TOKEN_121 ,
+#define P99__TOKEN__Bool ,
+#define P99__TOKEN__Complex ,
+#define P99__TOKEN__Exit ,
+#define P99__TOKEN__Imaginary ,
+#define P99__TOKEN_abort ,
+#define P99__TOKEN_abs ,
+#define P99__TOKEN_acos ,
+#define P99__TOKEN_asctime ,
+#define P99__TOKEN_asin ,
+#define P99__TOKEN_assert ,
+#define P99__TOKEN_atan ,
+#define P99__TOKEN_atan2 ,
+#define P99__TOKEN_atexit ,
+#define P99__TOKEN_atof ,
+#define P99__TOKEN_atof ,
+#define P99__TOKEN_atoi ,
+#define P99__TOKEN_atol ,
+#define P99__TOKEN_auto ,
+#define P99__TOKEN_break ,
+#define P99__TOKEN_bsearch ,
+#define P99__TOKEN_btowc ,
+#define P99__TOKEN_cabs ,
+#define P99__TOKEN_cacos ,
+#define P99__TOKEN_cacosh ,
+#define P99__TOKEN_calloc ,
+#define P99__TOKEN_carg ,
+#define P99__TOKEN_case ,
+#define P99__TOKEN_casin ,
+#define P99__TOKEN_casinh ,
+#define P99__TOKEN_catan ,
+#define P99__TOKEN_catanh ,
+#define P99__TOKEN_ccos ,
+#define P99__TOKEN_ccosh ,
+#define P99__TOKEN_ceil ,
+#define P99__TOKEN_cexp ,
+#define P99__TOKEN_char ,
+#define P99__TOKEN_cimag ,
+#define P99__TOKEN_clearerr ,
+#define P99__TOKEN_clock ,
+#define P99__TOKEN_clock_t ,
+#define P99__TOKEN_clog ,
+#define P99__TOKEN_conj ,
+#define P99__TOKEN_const ,
+#define P99__TOKEN_continue ,
+#define P99__TOKEN_cos ,
+#define P99__TOKEN_cosh ,
+#define P99__TOKEN_cpow ,
+#define P99__TOKEN_cproj ,
+#define P99__TOKEN_creal ,
+#define P99__TOKEN_csin ,
+#define P99__TOKEN_csinh ,
+#define P99__TOKEN_csqrt ,
+#define P99__TOKEN_ctan ,
+#define P99__TOKEN_ctanh ,
+#define P99__TOKEN_ctime ,
+#define P99__TOKEN_default ,
+#define P99__TOKEN_difftime ,
+#define P99__TOKEN_div ,
+#define P99__TOKEN_div_t ,
+#define P99__TOKEN_do ,
+#define P99__TOKEN_double ,
+#define P99__TOKEN_double_t ,
+#define P99__TOKEN_else ,
+#define P99__TOKEN_enum ,
+#define P99__TOKEN_exit ,
+#define P99__TOKEN_exp ,
+#define P99__TOKEN_extern ,
+#define P99__TOKEN_fabs ,
+#define P99__TOKEN_fclose ,
+#define P99__TOKEN_fdopen ,
+#define P99__TOKEN_fenv_t ,
+#define P99__TOKEN_feof ,
+#define P99__TOKEN_ferror ,
+#define P99__TOKEN_fexcept_t ,
+#define P99__TOKEN_fflush ,
+#define P99__TOKEN_fgetc ,
+#define P99__TOKEN_fgetpos ,
+#define P99__TOKEN_fgets ,
+#define P99__TOKEN_fgetwc ,
+#define P99__TOKEN_fgetws ,
+#define P99__TOKEN_float ,
+#define P99__TOKEN_float_t ,
+#define P99__TOKEN_floor ,
+#define P99__TOKEN_fopen ,
+#define P99__TOKEN_for ,
+#define P99__TOKEN_fpos_t ,
+#define P99__TOKEN_fprintf ,
+#define P99__TOKEN_fprintf ,
+#define P99__TOKEN_fputc ,
+#define P99__TOKEN_fputchar ,
+#define P99__TOKEN_fputs ,
+#define P99__TOKEN_fputwc ,
+#define P99__TOKEN_fputws ,
+#define P99__TOKEN_fread ,
+#define P99__TOKEN_free ,
+#define P99__TOKEN_freopen ,
+#define P99__TOKEN_frexp ,
+#define P99__TOKEN_fscanf ,
+#define P99__TOKEN_fscanf ,
+#define P99__TOKEN_fseek ,
+#define P99__TOKEN_fsetpos ,
+#define P99__TOKEN_ftell ,
+#define P99__TOKEN_fwide ,
+#define P99__TOKEN_fwprintf ,
+#define P99__TOKEN_fwrite ,
+#define P99__TOKEN_fwscanf ,
+#define P99__TOKEN_getaddrinfo ,
+#define P99__TOKEN_getc ,
+#define P99__TOKEN_getchar ,
+#define P99__TOKEN_getenv ,
+#define P99__TOKEN_getnameinfo ,
+#define P99__TOKEN_gets ,
+#define P99__TOKEN_getwc ,
+#define P99__TOKEN_getwchar ,
+#define P99__TOKEN_gmtime ,
+#define P99__TOKEN_goto ,
+#define P99__TOKEN_if ,
+#define P99__TOKEN_imaxabs ,
+#define P99__TOKEN_imaxdiv ,
+#define P99__TOKEN_imaxdiv_t ,
+#define P99__TOKEN_inline ,
+#define P99__TOKEN_int ,
+#define P99__TOKEN_int16_t ,
+#define P99__TOKEN_int32_t ,
+#define P99__TOKEN_int64_t ,
+#define P99__TOKEN_int8_t ,
+#define P99__TOKEN_intfast16_t ,
+#define P99__TOKEN_intfast32_t ,
+#define P99__TOKEN_intfast64_t ,
+#define P99__TOKEN_intfast8_t ,
+#define P99__TOKEN_intleast16_t ,
+#define P99__TOKEN_intleast32_t ,
+#define P99__TOKEN_intleast64_t ,
+#define P99__TOKEN_intleast8_t ,
+#define P99__TOKEN_intmax_t ,
+#define P99__TOKEN_intptr_t ,
+#define P99__TOKEN_isalnum ,
+#define P99__TOKEN_isalpha ,
+#define P99__TOKEN_isblank ,
+#define P99__TOKEN_iscntrl ,
+#define P99__TOKEN_isdigit ,
+#define P99__TOKEN_isgraph ,
+#define P99__TOKEN_islower ,
+#define P99__TOKEN_isprint ,
+#define P99__TOKEN_ispunct ,
+#define P99__TOKEN_isspace ,
+#define P99__TOKEN_isupper ,
+#define P99__TOKEN_iswalnum ,
+#define P99__TOKEN_iswalpha ,
+#define P99__TOKEN_iswcntrl ,
+#define P99__TOKEN_iswctype ,
+#define P99__TOKEN_iswdigit ,
+#define P99__TOKEN_iswgraph ,
+#define P99__TOKEN_iswlower ,
+#define P99__TOKEN_iswprint ,
+#define P99__TOKEN_iswpunct ,
+#define P99__TOKEN_iswspace ,
+#define P99__TOKEN_iswupper ,
+#define P99__TOKEN_iswxdigit ,
+#define P99__TOKEN_isxdigit ,
+#define P99__TOKEN_labs ,
+#define P99__TOKEN_ldexp ,
+#define P99__TOKEN_ldiv ,
+#define P99__TOKEN_ldiv ,
+#define P99__TOKEN_ldiv_t ,
+#define P99__TOKEN_lldiv_t ,
+#define P99__TOKEN_localeconv ,
+#define P99__TOKEN_localtime ,
+#define P99__TOKEN_log ,
+#define P99__TOKEN_log10 ,
+#define P99__TOKEN_long ,
+#define P99__TOKEN_longjmp ,
+#define P99__TOKEN_malloc ,
+#define P99__TOKEN_mbrlen ,
+#define P99__TOKEN_mbrtowc ,
+#define P99__TOKEN_mbsinit ,
+#define P99__TOKEN_mbsrtowcs ,
+#define P99__TOKEN_mbstate_t ,
+#define P99__TOKEN_memchr ,
+#define P99__TOKEN_memcmp ,
+#define P99__TOKEN_memcpy ,
+#define P99__TOKEN_memmove ,
+#define P99__TOKEN_memset ,
+#define P99__TOKEN_mktime ,
+#define P99__TOKEN_modf ,
+#define P99__TOKEN_off_t ,
+#define P99__TOKEN_offsetof ,
+#define P99__TOKEN_perror ,
+#define P99__TOKEN_pow ,
+#define P99__TOKEN_printf ,
+#define P99__TOKEN_ptrdiff_t ,
+#define P99__TOKEN_putc ,
+#define P99__TOKEN_putchar ,
+#define P99__TOKEN_puts ,
+#define P99__TOKEN_putwc ,
+#define P99__TOKEN_putwchar ,
+#define P99__TOKEN_qsort ,
+#define P99__TOKEN_raise ,
+#define P99__TOKEN_rand ,
+#define P99__TOKEN_realloc ,
+#define P99__TOKEN_register ,
+#define P99__TOKEN_remove ,
+#define P99__TOKEN_rename ,
+#define P99__TOKEN_restrict ,
+#define P99__TOKEN_return ,
+#define P99__TOKEN_rewind ,
+#define P99__TOKEN_scanf ,
+#define P99__TOKEN_setbuf ,
+#define P99__TOKEN_setjmp ,
+#define P99__TOKEN_setlocale ,
+#define P99__TOKEN_setvbuf ,
+#define P99__TOKEN_short ,
+#define P99__TOKEN_sig_atomic_t ,
+#define P99__TOKEN_signed ,
+#define P99__TOKEN_sin ,
+#define P99__TOKEN_sinh ,
+#define P99__TOKEN_size_t ,
+#define P99__TOKEN_sizeof ,
+#define P99__TOKEN_snprintf ,
+#define P99__TOKEN_sprintf ,
+#define P99__TOKEN_sqrt ,
+#define P99__TOKEN_srand ,
+#define P99__TOKEN_sscanf ,
+#define P99__TOKEN_ssize_t ,
+#define P99__TOKEN_static ,
+#define P99__TOKEN_strcat ,
+#define P99__TOKEN_strchr ,
+#define P99__TOKEN_strcmp ,
+#define P99__TOKEN_strcoll ,
+#define P99__TOKEN_strcpy ,
+#define P99__TOKEN_strcspn ,
+#define P99__TOKEN_strerror ,
+#define P99__TOKEN_strftime ,
+#define P99__TOKEN_strlen ,
+#define P99__TOKEN_strncat ,
+#define P99__TOKEN_strncmp ,
+#define P99__TOKEN_strncpy ,
+#define P99__TOKEN_strpbrk ,
+#define P99__TOKEN_strrchr ,
+#define P99__TOKEN_strspn ,
+#define P99__TOKEN_strstr ,
+#define P99__TOKEN_strtod ,
+#define P99__TOKEN_strtoimax ,
+#define P99__TOKEN_strtok ,
+#define P99__TOKEN_strtol ,
+#define P99__TOKEN_strtoul ,
+#define P99__TOKEN_strtoumax ,
+#define P99__TOKEN_struct ,
+#define P99__TOKEN_strxfrm ,
+#define P99__TOKEN_switch ,
+#define P99__TOKEN_swprintf ,
+#define P99__TOKEN_swscanf ,
+#define P99__TOKEN_system ,
+#define P99__TOKEN_tan ,
+#define P99__TOKEN_tanh ,
+#define P99__TOKEN_time ,
+#define P99__TOKEN_time_t ,
+#define P99__TOKEN_tmpfile ,
+#define P99__TOKEN_tmpnam ,
+#define P99__TOKEN_tolower ,
+#define P99__TOKEN_toupper ,
+#define P99__TOKEN_towctrans ,
+#define P99__TOKEN_towlower ,
+#define P99__TOKEN_towupper ,
+#define P99__TOKEN_typedef ,
+#define P99__TOKEN_uint16_t ,
+#define P99__TOKEN_uint32_t ,
+#define P99__TOKEN_uint64_t ,
+#define P99__TOKEN_uint8_t ,
+#define P99__TOKEN_uintfast16_t ,
+#define P99__TOKEN_uintfast32_t ,
+#define P99__TOKEN_uintfast64_t ,
+#define P99__TOKEN_uintfast8_t ,
+#define P99__TOKEN_uintleast16_t ,
+#define P99__TOKEN_uintleast32_t ,
+#define P99__TOKEN_uintleast64_t ,
+#define P99__TOKEN_uintleast8_t ,
+#define P99__TOKEN_uintmax_t ,
+#define P99__TOKEN_uintptr_t ,
+#define P99__TOKEN_ungetc ,
+#define P99__TOKEN_ungetwc ,
+#define P99__TOKEN_union ,
+#define P99__TOKEN_unsigned ,
+#define P99__TOKEN_va_arg ,
+#define P99__TOKEN_va_copy ,
+#define P99__TOKEN_va_end ,
+#define P99__TOKEN_va_start ,
+#define P99__TOKEN_vfprintf ,
+#define P99__TOKEN_vfscanf ,
+#define P99__TOKEN_vfwprintf ,
+#define P99__TOKEN_void ,
+#define P99__TOKEN_volatile ,
+#define P99__TOKEN_vprintf ,
+#define P99__TOKEN_vscanf ,
+#define P99__TOKEN_vsprintf ,
+#define P99__TOKEN_vsscanf ,
+#define P99__TOKEN_vswprintf ,
+#define P99__TOKEN_vwprintf ,
+#define P99__TOKEN_wchar_t ,
+#define P99__TOKEN_wcrtomb ,
+#define P99__TOKEN_wcscat ,
+#define P99__TOKEN_wcschr ,
+#define P99__TOKEN_wcscmp ,
+#define P99__TOKEN_wcscoll ,
+#define P99__TOKEN_wcscpy ,
+#define P99__TOKEN_wcscspn ,
+#define P99__TOKEN_wcsftime ,
+#define P99__TOKEN_wcslen ,
+#define P99__TOKEN_wcsncat ,
+#define P99__TOKEN_wcsncmp ,
+#define P99__TOKEN_wcsncpy ,
+#define P99__TOKEN_wcspbrk ,
+#define P99__TOKEN_wcsrchr ,
+#define P99__TOKEN_wcsrtombs ,
+#define P99__TOKEN_wcsspn ,
+#define P99__TOKEN_wcsstr ,
+#define P99__TOKEN_wcstod ,
+#define P99__TOKEN_wcstoimax ,
+#define P99__TOKEN_wcstok ,
+#define P99__TOKEN_wcstol ,
+#define P99__TOKEN_wcstoul ,
+#define P99__TOKEN_wcstoumax ,
+#define P99__TOKEN_wcsxfrm ,
+#define P99__TOKEN_wctob ,
+#define P99__TOKEN_wctrans ,
+#define P99__TOKEN_wctrans_t ,
+#define P99__TOKEN_wctype ,
+#define P99__TOKEN_wctype_t ,
+#define P99__TOKEN_while ,
+#define P99__TOKEN_wint_t ,
+#define P99__TOKEN_wmemchr ,
+#define P99__TOKEN_wmemcmp ,
+#define P99__TOKEN_wmemcpy ,
+#define P99__TOKEN_wmemmove ,
+#define P99__TOKEN_wmemset ,
+#define P99__TOKEN_wprintf ,
+#define P99__TOKEN_wscanf ,
+#define P99__QUALIFIER_const ,
+#define P99__QUALIFIER_restrict ,
+#define P99__QUALIFIER_volatile ,
+#define P99__VOID_void ,
+#define P99__BOOL__Bool ,
+#define P99__BOOL_bool ,
+#define P99__INTEGER_char ,
+#define P99__INTEGER_int ,
+#define P99__INTEGER_long ,
+#define P99__INTEGER_short ,
+#define P99__INTEGER_signed ,
+#define P99__INTEGER_unsigned ,
+#define P99__REAL_double ,
+#define P99__REAL_float ,
+#define P99__REAL_long ,
+#define P99__FLOAT__Complex ,
+#define P99__FLOAT__Imaginary ,
+#define P99__FLOAT_double ,
+#define P99__FLOAT_float ,
+#define P99__FLOAT_long ,
+#define P99__TYPE__Bool ,
+#define P99__TYPE__Complex ,
+#define P99__TYPE__Imaginary ,
+#define P99__TYPE_char ,
+#define P99__TYPE_const ,
+#define P99__TYPE_double ,
+#define P99__TYPE_float ,
+#define P99__TYPE_int ,
+#define P99__TYPE_long ,
+#define P99__TYPE_restrict ,
+#define P99__TYPE_short ,
+#define P99__TYPE_signed ,
+#define P99__TYPE_unsigned ,
+#define P99__TYPE_void ,
+#define P99__TYPE_volatile ,
+#define P99__VOID_QUAL_void ,
+#define P99__VOID_QUAL_const ,
+#define P99__VOID_QUAL_restrict ,
+#define P99__VOID_QUAL_volatile ,
+#define P99__BOOL_QUAL__Bool ,
+#define P99__BOOL_QUAL_bool ,
+#define P99__BOOL_QUAL_const ,
+#define P99__BOOL_QUAL_restrict ,
+#define P99__BOOL_QUAL_volatile ,
+#define P99__INTEGER_QUAL_char ,
+#define P99__INTEGER_QUAL_int ,
+#define P99__INTEGER_QUAL_long ,
+#define P99__INTEGER_QUAL_short ,
+#define P99__INTEGER_QUAL_signed ,
+#define P99__INTEGER_QUAL_unsigned ,
+#define P99__INTEGER_QUAL_const ,
+#define P99__INTEGER_QUAL_restrict ,
+#define P99__INTEGER_QUAL_volatile ,
+#define P99__REAL_QUAL_double ,
+#define P99__REAL_QUAL_float ,
+#define P99__REAL_QUAL_long ,
+#define P99__REAL_QUAL_const ,
+#define P99__REAL_QUAL_restrict ,
+#define P99__REAL_QUAL_volatile ,
+#define P99__FLOAT_QUAL__Complex ,
+#define P99__FLOAT_QUAL__Imaginary ,
+#define P99__FLOAT_QUAL_double ,
+#define P99__FLOAT_QUAL_float ,
+#define P99__FLOAT_QUAL_long ,
+#define P99__FLOAT_QUAL_const ,
+#define P99__FLOAT_QUAL_restrict ,
+#define P99__FLOAT_QUAL_volatile ,
+#define P99__TYPE_QUAL__Bool ,
+#define P99__TYPE_QUAL__Complex ,
+#define P99__TYPE_QUAL__Imaginary ,
+#define P99__TYPE_QUAL_char ,
+#define P99__TYPE_QUAL_const ,
+#define P99__TYPE_QUAL_double ,
+#define P99__TYPE_QUAL_float ,
+#define P99__TYPE_QUAL_int ,
+#define P99__TYPE_QUAL_long ,
+#define P99__TYPE_QUAL_restrict ,
+#define P99__TYPE_QUAL_short ,
+#define P99__TYPE_QUAL_signed ,
+#define P99__TYPE_QUAL_unsigned ,
+#define P99__TYPE_QUAL_void ,
+#define P99__TYPE_QUAL_volatile ,
+#define P99__TYPE_QUAL_const ,
+#define P99__TYPE_QUAL_restrict ,
+#define P99__TYPE_QUAL_volatile ,
+#define P99__KEYWORD__Bool ,
+#define P99__KEYWORD__Complex ,
+#define P99__KEYWORD__Imaginary ,
+#define P99__KEYWORD_auto ,
+#define P99__KEYWORD_break ,
+#define P99__KEYWORD_case ,
+#define P99__KEYWORD_char ,
+#define P99__KEYWORD_const ,
+#define P99__KEYWORD_continue ,
+#define P99__KEYWORD_default ,
+#define P99__KEYWORD_do ,
+#define P99__KEYWORD_double ,
+#define P99__KEYWORD_else ,
+#define P99__KEYWORD_enum ,
+#define P99__KEYWORD_extern ,
+#define P99__KEYWORD_float ,
+#define P99__KEYWORD_for ,
+#define P99__KEYWORD_goto ,
+#define P99__KEYWORD_if ,
+#define P99__KEYWORD_inline ,
+#define P99__KEYWORD_int ,
+#define P99__KEYWORD_long ,
+#define P99__KEYWORD_register ,
+#define P99__KEYWORD_restrict ,
+#define P99__KEYWORD_return ,
+#define P99__KEYWORD_short ,
+#define P99__KEYWORD_signed ,
+#define P99__KEYWORD_sizeof ,
+#define P99__KEYWORD_static ,
+#define P99__KEYWORD_struct ,
+#define P99__KEYWORD_switch ,
+#define P99__KEYWORD_typedef ,
+#define P99__KEYWORD_union ,
+#define P99__KEYWORD_unsigned ,
+#define P99__KEYWORD_void ,
+#define P99__KEYWORD_volatile ,
+#define P99__KEYWORD_while ,
+#define P99__RESERVED__Bool ,
+#define P99__RESERVED__Complex ,
+#define P99__RESERVED__Exit ,
+#define P99__RESERVED__Imaginary ,
+#define P99__RESERVED_abort ,
+#define P99__RESERVED_abs ,
+#define P99__RESERVED_acos ,
+#define P99__RESERVED_asctime ,
+#define P99__RESERVED_asin ,
+#define P99__RESERVED_assert ,
+#define P99__RESERVED_atan ,
+#define P99__RESERVED_atan2 ,
+#define P99__RESERVED_atexit ,
+#define P99__RESERVED_atof ,
+#define P99__RESERVED_atof ,
+#define P99__RESERVED_atoi ,
+#define P99__RESERVED_atol ,
+#define P99__RESERVED_auto ,
+#define P99__RESERVED_break ,
+#define P99__RESERVED_bsearch ,
+#define P99__RESERVED_btowc ,
+#define P99__RESERVED_cabs ,
+#define P99__RESERVED_cacos ,
+#define P99__RESERVED_cacosh ,
+#define P99__RESERVED_calloc ,
+#define P99__RESERVED_carg ,
+#define P99__RESERVED_case ,
+#define P99__RESERVED_casin ,
+#define P99__RESERVED_casinh ,
+#define P99__RESERVED_catan ,
+#define P99__RESERVED_catanh ,
+#define P99__RESERVED_ccos ,
+#define P99__RESERVED_ccosh ,
+#define P99__RESERVED_ceil ,
+#define P99__RESERVED_cexp ,
+#define P99__RESERVED_char ,
+#define P99__RESERVED_cimag ,
+#define P99__RESERVED_clearerr ,
+#define P99__RESERVED_clock ,
+#define P99__RESERVED_clock_t ,
+#define P99__RESERVED_clog ,
+#define P99__RESERVED_conj ,
+#define P99__RESERVED_const ,
+#define P99__RESERVED_continue ,
+#define P99__RESERVED_cos ,
+#define P99__RESERVED_cosh ,
+#define P99__RESERVED_cpow ,
+#define P99__RESERVED_cproj ,
+#define P99__RESERVED_creal ,
+#define P99__RESERVED_csin ,
+#define P99__RESERVED_csinh ,
+#define P99__RESERVED_csqrt ,
+#define P99__RESERVED_ctan ,
+#define P99__RESERVED_ctanh ,
+#define P99__RESERVED_ctime ,
+#define P99__RESERVED_default ,
+#define P99__RESERVED_difftime ,
+#define P99__RESERVED_div ,
+#define P99__RESERVED_div_t ,
+#define P99__RESERVED_do ,
+#define P99__RESERVED_double ,
+#define P99__RESERVED_double_t ,
+#define P99__RESERVED_else ,
+#define P99__RESERVED_enum ,
+#define P99__RESERVED_exit ,
+#define P99__RESERVED_exp ,
+#define P99__RESERVED_extern ,
+#define P99__RESERVED_fabs ,
+#define P99__RESERVED_fclose ,
+#define P99__RESERVED_fdopen ,
+#define P99__RESERVED_fenv_t ,
+#define P99__RESERVED_feof ,
+#define P99__RESERVED_ferror ,
+#define P99__RESERVED_fexcept_t ,
+#define P99__RESERVED_fflush ,
+#define P99__RESERVED_fgetc ,
+#define P99__RESERVED_fgetpos ,
+#define P99__RESERVED_fgets ,
+#define P99__RESERVED_fgetwc ,
+#define P99__RESERVED_fgetws ,
+#define P99__RESERVED_float ,
+#define P99__RESERVED_float_t ,
+#define P99__RESERVED_floor ,
+#define P99__RESERVED_fopen ,
+#define P99__RESERVED_for ,
+#define P99__RESERVED_fpos_t ,
+#define P99__RESERVED_fprintf ,
+#define P99__RESERVED_fprintf ,
+#define P99__RESERVED_fputc ,
+#define P99__RESERVED_fputchar ,
+#define P99__RESERVED_fputs ,
+#define P99__RESERVED_fputwc ,
+#define P99__RESERVED_fputws ,
+#define P99__RESERVED_fread ,
+#define P99__RESERVED_free ,
+#define P99__RESERVED_freopen ,
+#define P99__RESERVED_frexp ,
+#define P99__RESERVED_fscanf ,
+#define P99__RESERVED_fscanf ,
+#define P99__RESERVED_fseek ,
+#define P99__RESERVED_fsetpos ,
+#define P99__RESERVED_ftell ,
+#define P99__RESERVED_fwide ,
+#define P99__RESERVED_fwprintf ,
+#define P99__RESERVED_fwrite ,
+#define P99__RESERVED_fwscanf ,
+#define P99__RESERVED_getaddrinfo ,
+#define P99__RESERVED_getc ,
+#define P99__RESERVED_getchar ,
+#define P99__RESERVED_getenv ,
+#define P99__RESERVED_getnameinfo ,
+#define P99__RESERVED_gets ,
+#define P99__RESERVED_getwc ,
+#define P99__RESERVED_getwchar ,
+#define P99__RESERVED_gmtime ,
+#define P99__RESERVED_goto ,
+#define P99__RESERVED_if ,
+#define P99__RESERVED_imaxabs ,
+#define P99__RESERVED_imaxdiv ,
+#define P99__RESERVED_imaxdiv_t ,
+#define P99__RESERVED_inline ,
+#define P99__RESERVED_int ,
+#define P99__RESERVED_int16_t ,
+#define P99__RESERVED_int32_t ,
+#define P99__RESERVED_int64_t ,
+#define P99__RESERVED_int8_t ,
+#define P99__RESERVED_intfast16_t ,
+#define P99__RESERVED_intfast32_t ,
+#define P99__RESERVED_intfast64_t ,
+#define P99__RESERVED_intfast8_t ,
+#define P99__RESERVED_intleast16_t ,
+#define P99__RESERVED_intleast32_t ,
+#define P99__RESERVED_intleast64_t ,
+#define P99__RESERVED_intleast8_t ,
+#define P99__RESERVED_intmax_t ,
+#define P99__RESERVED_intptr_t ,
+#define P99__RESERVED_isalnum ,
+#define P99__RESERVED_isalpha ,
+#define P99__RESERVED_isblank ,
+#define P99__RESERVED_iscntrl ,
+#define P99__RESERVED_isdigit ,
+#define P99__RESERVED_isgraph ,
+#define P99__RESERVED_islower ,
+#define P99__RESERVED_isprint ,
+#define P99__RESERVED_ispunct ,
+#define P99__RESERVED_isspace ,
+#define P99__RESERVED_isupper ,
+#define P99__RESERVED_iswalnum ,
+#define P99__RESERVED_iswalpha ,
+#define P99__RESERVED_iswcntrl ,
+#define P99__RESERVED_iswctype ,
+#define P99__RESERVED_iswdigit ,
+#define P99__RESERVED_iswgraph ,
+#define P99__RESERVED_iswlower ,
+#define P99__RESERVED_iswprint ,
+#define P99__RESERVED_iswpunct ,
+#define P99__RESERVED_iswspace ,
+#define P99__RESERVED_iswupper ,
+#define P99__RESERVED_iswxdigit ,
+#define P99__RESERVED_isxdigit ,
+#define P99__RESERVED_labs ,
+#define P99__RESERVED_ldexp ,
+#define P99__RESERVED_ldiv ,
+#define P99__RESERVED_ldiv ,
+#define P99__RESERVED_ldiv_t ,
+#define P99__RESERVED_lldiv_t ,
+#define P99__RESERVED_localeconv ,
+#define P99__RESERVED_localtime ,
+#define P99__RESERVED_log ,
+#define P99__RESERVED_log10 ,
+#define P99__RESERVED_long ,
+#define P99__RESERVED_longjmp ,
+#define P99__RESERVED_malloc ,
+#define P99__RESERVED_mbrlen ,
+#define P99__RESERVED_mbrtowc ,
+#define P99__RESERVED_mbsinit ,
+#define P99__RESERVED_mbsrtowcs ,
+#define P99__RESERVED_mbstate_t ,
+#define P99__RESERVED_memchr ,
+#define P99__RESERVED_memcmp ,
+#define P99__RESERVED_memcpy ,
+#define P99__RESERVED_memmove ,
+#define P99__RESERVED_memset ,
+#define P99__RESERVED_mktime ,
+#define P99__RESERVED_modf ,
+#define P99__RESERVED_off_t ,
+#define P99__RESERVED_offsetof ,
+#define P99__RESERVED_perror ,
+#define P99__RESERVED_pow ,
+#define P99__RESERVED_printf ,
+#define P99__RESERVED_ptrdiff_t ,
+#define P99__RESERVED_putc ,
+#define P99__RESERVED_putchar ,
+#define P99__RESERVED_puts ,
+#define P99__RESERVED_putwc ,
+#define P99__RESERVED_putwchar ,
+#define P99__RESERVED_qsort ,
+#define P99__RESERVED_raise ,
+#define P99__RESERVED_rand ,
+#define P99__RESERVED_realloc ,
+#define P99__RESERVED_register ,
+#define P99__RESERVED_remove ,
+#define P99__RESERVED_rename ,
+#define P99__RESERVED_restrict ,
+#define P99__RESERVED_return ,
+#define P99__RESERVED_rewind ,
+#define P99__RESERVED_scanf ,
+#define P99__RESERVED_setbuf ,
+#define P99__RESERVED_setjmp ,
+#define P99__RESERVED_setlocale ,
+#define P99__RESERVED_setvbuf ,
+#define P99__RESERVED_short ,
+#define P99__RESERVED_sig_atomic_t ,
+#define P99__RESERVED_signed ,
+#define P99__RESERVED_sin ,
+#define P99__RESERVED_sinh ,
+#define P99__RESERVED_size_t ,
+#define P99__RESERVED_sizeof ,
+#define P99__RESERVED_snprintf ,
+#define P99__RESERVED_sprintf ,
+#define P99__RESERVED_sqrt ,
+#define P99__RESERVED_srand ,
+#define P99__RESERVED_sscanf ,
+#define P99__RESERVED_ssize_t ,
+#define P99__RESERVED_static ,
+#define P99__RESERVED_strcat ,
+#define P99__RESERVED_strchr ,
+#define P99__RESERVED_strcmp ,
+#define P99__RESERVED_strcoll ,
+#define P99__RESERVED_strcpy ,
+#define P99__RESERVED_strcspn ,
+#define P99__RESERVED_strerror ,
+#define P99__RESERVED_strftime ,
+#define P99__RESERVED_strlen ,
+#define P99__RESERVED_strncat ,
+#define P99__RESERVED_strncmp ,
+#define P99__RESERVED_strncpy ,
+#define P99__RESERVED_strpbrk ,
+#define P99__RESERVED_strrchr ,
+#define P99__RESERVED_strspn ,
+#define P99__RESERVED_strstr ,
+#define P99__RESERVED_strtod ,
+#define P99__RESERVED_strtoimax ,
+#define P99__RESERVED_strtok ,
+#define P99__RESERVED_strtol ,
+#define P99__RESERVED_strtoul ,
+#define P99__RESERVED_strtoumax ,
+#define P99__RESERVED_struct ,
+#define P99__RESERVED_strxfrm ,
+#define P99__RESERVED_switch ,
+#define P99__RESERVED_swprintf ,
+#define P99__RESERVED_swscanf ,
+#define P99__RESERVED_system ,
+#define P99__RESERVED_tan ,
+#define P99__RESERVED_tanh ,
+#define P99__RESERVED_time ,
+#define P99__RESERVED_time_t ,
+#define P99__RESERVED_tmpfile ,
+#define P99__RESERVED_tmpnam ,
+#define P99__RESERVED_tolower ,
+#define P99__RESERVED_toupper ,
+#define P99__RESERVED_towctrans ,
+#define P99__RESERVED_towlower ,
+#define P99__RESERVED_towupper ,
+#define P99__RESERVED_typedef ,
+#define P99__RESERVED_uint16_t ,
+#define P99__RESERVED_uint32_t ,
+#define P99__RESERVED_uint64_t ,
+#define P99__RESERVED_uint8_t ,
+#define P99__RESERVED_uintfast16_t ,
+#define P99__RESERVED_uintfast32_t ,
+#define P99__RESERVED_uintfast64_t ,
+#define P99__RESERVED_uintfast8_t ,
+#define P99__RESERVED_uintleast16_t ,
+#define P99__RESERVED_uintleast32_t ,
+#define P99__RESERVED_uintleast64_t ,
+#define P99__RESERVED_uintleast8_t ,
+#define P99__RESERVED_uintmax_t ,
+#define P99__RESERVED_uintptr_t ,
+#define P99__RESERVED_ungetc ,
+#define P99__RESERVED_ungetwc ,
+#define P99__RESERVED_union ,
+#define P99__RESERVED_unsigned ,
+#define P99__RESERVED_va_arg ,
+#define P99__RESERVED_va_copy ,
+#define P99__RESERVED_va_end ,
+#define P99__RESERVED_va_start ,
+#define P99__RESERVED_vfprintf ,
+#define P99__RESERVED_vfscanf ,
+#define P99__RESERVED_vfwprintf ,
+#define P99__RESERVED_void ,
+#define P99__RESERVED_volatile ,
+#define P99__RESERVED_vprintf ,
+#define P99__RESERVED_vscanf ,
+#define P99__RESERVED_vsprintf ,
+#define P99__RESERVED_vsscanf ,
+#define P99__RESERVED_vswprintf ,
+#define P99__RESERVED_vwprintf ,
+#define P99__RESERVED_wchar_t ,
+#define P99__RESERVED_wcrtomb ,
+#define P99__RESERVED_wcscat ,
+#define P99__RESERVED_wcschr ,
+#define P99__RESERVED_wcscmp ,
+#define P99__RESERVED_wcscoll ,
+#define P99__RESERVED_wcscpy ,
+#define P99__RESERVED_wcscspn ,
+#define P99__RESERVED_wcsftime ,
+#define P99__RESERVED_wcslen ,
+#define P99__RESERVED_wcsncat ,
+#define P99__RESERVED_wcsncmp ,
+#define P99__RESERVED_wcsncpy ,
+#define P99__RESERVED_wcspbrk ,
+#define P99__RESERVED_wcsrchr ,
+#define P99__RESERVED_wcsrtombs ,
+#define P99__RESERVED_wcsspn ,
+#define P99__RESERVED_wcsstr ,
+#define P99__RESERVED_wcstod ,
+#define P99__RESERVED_wcstoimax ,
+#define P99__RESERVED_wcstok ,
+#define P99__RESERVED_wcstol ,
+#define P99__RESERVED_wcstoul ,
+#define P99__RESERVED_wcstoumax ,
+#define P99__RESERVED_wcsxfrm ,
+#define P99__RESERVED_wctob ,
+#define P99__RESERVED_wctrans ,
+#define P99__RESERVED_wctrans_t ,
+#define P99__RESERVED_wctype ,
+#define P99__RESERVED_wctype_t ,
+#define P99__RESERVED_while ,
+#define P99__RESERVED_wint_t ,
+#define P99__RESERVED_wmemchr ,
+#define P99__RESERVED_wmemcmp ,
+#define P99__RESERVED_wmemcpy ,
+#define P99__RESERVED_wmemmove ,
+#define P99__RESERVED_wmemset ,
+#define P99__RESERVED_wprintf ,
+#define P99__RESERVED_wscanf ,
+#define P99__CONST7(SEQ) P99_IF_ELSE(P99_IS_CONST_TOK(SEQ))(8)(7)
+#define P99__CONST6(SEQ) P99_IF_ELSE(P99_IS_CONST_TOK(SEQ))(P99__CONST7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__CONST5(SEQ) P99_IF_ELSE(P99_IS_CONST_TOK(SEQ))(P99__CONST6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__CONST4(SEQ) P99_IF_ELSE(P99_IS_CONST_TOK(SEQ))(P99__CONST5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__CONST3(SEQ) P99_IF_ELSE(P99_IS_CONST_TOK(SEQ))(P99__CONST4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__CONST2(SEQ) P99_IF_ELSE(P99_IS_CONST_TOK(SEQ))(P99__CONST3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__CONST1(SEQ) P99_IF_ELSE(P99_IS_CONST_TOK(SEQ))(P99__CONST2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__CONST_CLASSIFY_7(SEQ) P99_PASTE2(P99__CONST_CLASSIFY_, SEQ) P99__CONST_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__CONST_CLASSIFY_6(SEQ) P99_PASTE2(P99__CONST_CLASSIFY_, SEQ) P99__CONST_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__CONST_CLASSIFY_5(SEQ) P99_PASTE2(P99__CONST_CLASSIFY_, SEQ) P99__CONST_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__CONST_CLASSIFY_4(SEQ) P99_PASTE2(P99__CONST_CLASSIFY_, SEQ) P99__CONST_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__CONST_CLASSIFY_3(SEQ) P99_PASTE2(P99__CONST_CLASSIFY_, SEQ) P99__CONST_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__CONST_CLASSIFY_2(SEQ) P99_PASTE2(P99__CONST_CLASSIFY_, SEQ) P99__CONST_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__CONST_CLASSIFY_1(SEQ) P99_PASTE2(P99__CONST_CLASSIFY_, SEQ)
+#define P99__CONST_CLASSIFY___(CODE) P99_IF_ELSE(P99__CONST_VALIDATE(CODE))(P99_PASTE2(P99__CONST_CLASSIFY__, CODE))(INVALID_CONST_TYPE_EXPRESSION[CODE])
+#define P99__CONST_CLASSIFY__(N, ...) P99__CONST_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__CONST_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__CONST_CLASSIFY__(N, P99_PASTE2(P99__CONST_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind CONST */
+#define P99__CONST_CLASSIFY(SEQ) P99__CONST_CLASSIFY_(P99_CONST_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind CONST */
+#define P99__CONST_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__CONST_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind CONST */
+#define P99_CONST_LEN(SEQ) P99_IF_ELSE(P99_IS_CONST_TOK(SEQ))(P99__CONST1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind CONST */
+#define P99_IS_CONST_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__CONST_, SEQ))
+#define P99__VOLATILE7(SEQ) P99_IF_ELSE(P99_IS_VOLATILE_TOK(SEQ))(8)(7)
+#define P99__VOLATILE6(SEQ) P99_IF_ELSE(P99_IS_VOLATILE_TOK(SEQ))(P99__VOLATILE7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__VOLATILE5(SEQ) P99_IF_ELSE(P99_IS_VOLATILE_TOK(SEQ))(P99__VOLATILE6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__VOLATILE4(SEQ) P99_IF_ELSE(P99_IS_VOLATILE_TOK(SEQ))(P99__VOLATILE5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__VOLATILE3(SEQ) P99_IF_ELSE(P99_IS_VOLATILE_TOK(SEQ))(P99__VOLATILE4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__VOLATILE2(SEQ) P99_IF_ELSE(P99_IS_VOLATILE_TOK(SEQ))(P99__VOLATILE3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__VOLATILE1(SEQ) P99_IF_ELSE(P99_IS_VOLATILE_TOK(SEQ))(P99__VOLATILE2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__VOLATILE_CLASSIFY_7(SEQ) P99_PASTE2(P99__VOLATILE_CLASSIFY_, SEQ) P99__VOLATILE_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__VOLATILE_CLASSIFY_6(SEQ) P99_PASTE2(P99__VOLATILE_CLASSIFY_, SEQ) P99__VOLATILE_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__VOLATILE_CLASSIFY_5(SEQ) P99_PASTE2(P99__VOLATILE_CLASSIFY_, SEQ) P99__VOLATILE_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__VOLATILE_CLASSIFY_4(SEQ) P99_PASTE2(P99__VOLATILE_CLASSIFY_, SEQ) P99__VOLATILE_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__VOLATILE_CLASSIFY_3(SEQ) P99_PASTE2(P99__VOLATILE_CLASSIFY_, SEQ) P99__VOLATILE_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__VOLATILE_CLASSIFY_2(SEQ) P99_PASTE2(P99__VOLATILE_CLASSIFY_, SEQ) P99__VOLATILE_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__VOLATILE_CLASSIFY_1(SEQ) P99_PASTE2(P99__VOLATILE_CLASSIFY_, SEQ)
+#define P99__VOLATILE_CLASSIFY___(CODE) P99_IF_ELSE(P99__VOLATILE_VALIDATE(CODE))(P99_PASTE2(P99__VOLATILE_CLASSIFY__, CODE))(INVALID_VOLATILE_TYPE_EXPRESSION[CODE])
+#define P99__VOLATILE_CLASSIFY__(N, ...) P99__VOLATILE_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__VOLATILE_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__VOLATILE_CLASSIFY__(N, P99_PASTE2(P99__VOLATILE_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind VOLATILE */
+#define P99__VOLATILE_CLASSIFY(SEQ) P99__VOLATILE_CLASSIFY_(P99_VOLATILE_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind VOLATILE */
+#define P99__VOLATILE_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__VOLATILE_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind VOLATILE */
+#define P99_VOLATILE_LEN(SEQ) P99_IF_ELSE(P99_IS_VOLATILE_TOK(SEQ))(P99__VOLATILE1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind VOLATILE */
+#define P99_IS_VOLATILE_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__VOLATILE_, SEQ))
+#define P99__RESTRICT7(SEQ) P99_IF_ELSE(P99_IS_RESTRICT_TOK(SEQ))(8)(7)
+#define P99__RESTRICT6(SEQ) P99_IF_ELSE(P99_IS_RESTRICT_TOK(SEQ))(P99__RESTRICT7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__RESTRICT5(SEQ) P99_IF_ELSE(P99_IS_RESTRICT_TOK(SEQ))(P99__RESTRICT6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__RESTRICT4(SEQ) P99_IF_ELSE(P99_IS_RESTRICT_TOK(SEQ))(P99__RESTRICT5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__RESTRICT3(SEQ) P99_IF_ELSE(P99_IS_RESTRICT_TOK(SEQ))(P99__RESTRICT4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__RESTRICT2(SEQ) P99_IF_ELSE(P99_IS_RESTRICT_TOK(SEQ))(P99__RESTRICT3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__RESTRICT1(SEQ) P99_IF_ELSE(P99_IS_RESTRICT_TOK(SEQ))(P99__RESTRICT2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__RESTRICT_CLASSIFY_7(SEQ) P99_PASTE2(P99__RESTRICT_CLASSIFY_, SEQ) P99__RESTRICT_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__RESTRICT_CLASSIFY_6(SEQ) P99_PASTE2(P99__RESTRICT_CLASSIFY_, SEQ) P99__RESTRICT_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__RESTRICT_CLASSIFY_5(SEQ) P99_PASTE2(P99__RESTRICT_CLASSIFY_, SEQ) P99__RESTRICT_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__RESTRICT_CLASSIFY_4(SEQ) P99_PASTE2(P99__RESTRICT_CLASSIFY_, SEQ) P99__RESTRICT_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__RESTRICT_CLASSIFY_3(SEQ) P99_PASTE2(P99__RESTRICT_CLASSIFY_, SEQ) P99__RESTRICT_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__RESTRICT_CLASSIFY_2(SEQ) P99_PASTE2(P99__RESTRICT_CLASSIFY_, SEQ) P99__RESTRICT_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__RESTRICT_CLASSIFY_1(SEQ) P99_PASTE2(P99__RESTRICT_CLASSIFY_, SEQ)
+#define P99__RESTRICT_CLASSIFY___(CODE) P99_IF_ELSE(P99__RESTRICT_VALIDATE(CODE))(P99_PASTE2(P99__RESTRICT_CLASSIFY__, CODE))(INVALID_RESTRICT_TYPE_EXPRESSION[CODE])
+#define P99__RESTRICT_CLASSIFY__(N, ...) P99__RESTRICT_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__RESTRICT_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__RESTRICT_CLASSIFY__(N, P99_PASTE2(P99__RESTRICT_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind RESTRICT */
+#define P99__RESTRICT_CLASSIFY(SEQ) P99__RESTRICT_CLASSIFY_(P99_RESTRICT_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind RESTRICT */
+#define P99__RESTRICT_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__RESTRICT_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind RESTRICT */
+#define P99_RESTRICT_LEN(SEQ) P99_IF_ELSE(P99_IS_RESTRICT_TOK(SEQ))(P99__RESTRICT1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind RESTRICT */
+#define P99_IS_RESTRICT_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__RESTRICT_, SEQ))
+#define P99__BOOL7(SEQ) P99_IF_ELSE(P99_IS_BOOL_TOK(SEQ))(8)(7)
+#define P99__BOOL6(SEQ) P99_IF_ELSE(P99_IS_BOOL_TOK(SEQ))(P99__BOOL7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__BOOL5(SEQ) P99_IF_ELSE(P99_IS_BOOL_TOK(SEQ))(P99__BOOL6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__BOOL4(SEQ) P99_IF_ELSE(P99_IS_BOOL_TOK(SEQ))(P99__BOOL5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__BOOL3(SEQ) P99_IF_ELSE(P99_IS_BOOL_TOK(SEQ))(P99__BOOL4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__BOOL2(SEQ) P99_IF_ELSE(P99_IS_BOOL_TOK(SEQ))(P99__BOOL3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__BOOL1(SEQ) P99_IF_ELSE(P99_IS_BOOL_TOK(SEQ))(P99__BOOL2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__BOOL_CLASSIFY_7(SEQ) P99_PASTE2(P99__BOOL_CLASSIFY_, SEQ) P99__BOOL_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__BOOL_CLASSIFY_6(SEQ) P99_PASTE2(P99__BOOL_CLASSIFY_, SEQ) P99__BOOL_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__BOOL_CLASSIFY_5(SEQ) P99_PASTE2(P99__BOOL_CLASSIFY_, SEQ) P99__BOOL_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__BOOL_CLASSIFY_4(SEQ) P99_PASTE2(P99__BOOL_CLASSIFY_, SEQ) P99__BOOL_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__BOOL_CLASSIFY_3(SEQ) P99_PASTE2(P99__BOOL_CLASSIFY_, SEQ) P99__BOOL_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__BOOL_CLASSIFY_2(SEQ) P99_PASTE2(P99__BOOL_CLASSIFY_, SEQ) P99__BOOL_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__BOOL_CLASSIFY_1(SEQ) P99_PASTE2(P99__BOOL_CLASSIFY_, SEQ)
+#define P99__BOOL_CLASSIFY___(CODE) P99_IF_ELSE(P99__BOOL_VALIDATE(CODE))(P99_PASTE2(P99__BOOL_CLASSIFY__, CODE))(INVALID_BOOL_TYPE_EXPRESSION[CODE])
+#define P99__BOOL_CLASSIFY__(N, ...) P99__BOOL_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__BOOL_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__BOOL_CLASSIFY__(N, P99_PASTE2(P99__BOOL_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind BOOL */
+#define P99__BOOL_CLASSIFY(SEQ) P99__BOOL_CLASSIFY_(P99_BOOL_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind BOOL */
+#define P99__BOOL_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__BOOL_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind BOOL */
+#define P99_BOOL_LEN(SEQ) P99_IF_ELSE(P99_IS_BOOL_TOK(SEQ))(P99__BOOL1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind BOOL */
+#define P99_IS_BOOL_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__BOOL_, SEQ))
+#define P99__VOID7(SEQ) P99_IF_ELSE(P99_IS_VOID_TOK(SEQ))(8)(7)
+#define P99__VOID6(SEQ) P99_IF_ELSE(P99_IS_VOID_TOK(SEQ))(P99__VOID7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__VOID5(SEQ) P99_IF_ELSE(P99_IS_VOID_TOK(SEQ))(P99__VOID6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__VOID4(SEQ) P99_IF_ELSE(P99_IS_VOID_TOK(SEQ))(P99__VOID5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__VOID3(SEQ) P99_IF_ELSE(P99_IS_VOID_TOK(SEQ))(P99__VOID4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__VOID2(SEQ) P99_IF_ELSE(P99_IS_VOID_TOK(SEQ))(P99__VOID3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__VOID1(SEQ) P99_IF_ELSE(P99_IS_VOID_TOK(SEQ))(P99__VOID2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__VOID_CLASSIFY_7(SEQ) P99_PASTE2(P99__VOID_CLASSIFY_, SEQ) P99__VOID_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__VOID_CLASSIFY_6(SEQ) P99_PASTE2(P99__VOID_CLASSIFY_, SEQ) P99__VOID_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__VOID_CLASSIFY_5(SEQ) P99_PASTE2(P99__VOID_CLASSIFY_, SEQ) P99__VOID_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__VOID_CLASSIFY_4(SEQ) P99_PASTE2(P99__VOID_CLASSIFY_, SEQ) P99__VOID_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__VOID_CLASSIFY_3(SEQ) P99_PASTE2(P99__VOID_CLASSIFY_, SEQ) P99__VOID_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__VOID_CLASSIFY_2(SEQ) P99_PASTE2(P99__VOID_CLASSIFY_, SEQ) P99__VOID_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__VOID_CLASSIFY_1(SEQ) P99_PASTE2(P99__VOID_CLASSIFY_, SEQ)
+#define P99__VOID_CLASSIFY___(CODE) P99_IF_ELSE(P99__VOID_VALIDATE(CODE))(P99_PASTE2(P99__VOID_CLASSIFY__, CODE))(INVALID_VOID_TYPE_EXPRESSION[CODE])
+#define P99__VOID_CLASSIFY__(N, ...) P99__VOID_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__VOID_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__VOID_CLASSIFY__(N, P99_PASTE2(P99__VOID_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind VOID */
+#define P99__VOID_CLASSIFY(SEQ) P99__VOID_CLASSIFY_(P99_VOID_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind VOID */
+#define P99__VOID_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__VOID_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind VOID */
+#define P99_VOID_LEN(SEQ) P99_IF_ELSE(P99_IS_VOID_TOK(SEQ))(P99__VOID1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind VOID */
+#define P99_IS_VOID_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__VOID_, SEQ))
+#define P99__INTEGER7(SEQ) P99_IF_ELSE(P99_IS_INTEGER_TOK(SEQ))(8)(7)
+#define P99__INTEGER6(SEQ) P99_IF_ELSE(P99_IS_INTEGER_TOK(SEQ))(P99__INTEGER7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__INTEGER5(SEQ) P99_IF_ELSE(P99_IS_INTEGER_TOK(SEQ))(P99__INTEGER6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__INTEGER4(SEQ) P99_IF_ELSE(P99_IS_INTEGER_TOK(SEQ))(P99__INTEGER5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__INTEGER3(SEQ) P99_IF_ELSE(P99_IS_INTEGER_TOK(SEQ))(P99__INTEGER4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__INTEGER2(SEQ) P99_IF_ELSE(P99_IS_INTEGER_TOK(SEQ))(P99__INTEGER3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__INTEGER1(SEQ) P99_IF_ELSE(P99_IS_INTEGER_TOK(SEQ))(P99__INTEGER2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__INTEGER_CLASSIFY_7(SEQ) P99_PASTE2(P99__INTEGER_CLASSIFY_, SEQ) P99__INTEGER_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__INTEGER_CLASSIFY_6(SEQ) P99_PASTE2(P99__INTEGER_CLASSIFY_, SEQ) P99__INTEGER_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__INTEGER_CLASSIFY_5(SEQ) P99_PASTE2(P99__INTEGER_CLASSIFY_, SEQ) P99__INTEGER_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__INTEGER_CLASSIFY_4(SEQ) P99_PASTE2(P99__INTEGER_CLASSIFY_, SEQ) P99__INTEGER_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__INTEGER_CLASSIFY_3(SEQ) P99_PASTE2(P99__INTEGER_CLASSIFY_, SEQ) P99__INTEGER_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__INTEGER_CLASSIFY_2(SEQ) P99_PASTE2(P99__INTEGER_CLASSIFY_, SEQ) P99__INTEGER_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__INTEGER_CLASSIFY_1(SEQ) P99_PASTE2(P99__INTEGER_CLASSIFY_, SEQ)
+#define P99__INTEGER_CLASSIFY___(CODE) P99_IF_ELSE(P99__INTEGER_VALIDATE(CODE))(P99_PASTE2(P99__INTEGER_CLASSIFY__, CODE))(INVALID_INTEGER_TYPE_EXPRESSION[CODE])
+#define P99__INTEGER_CLASSIFY__(N, ...) P99__INTEGER_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__INTEGER_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__INTEGER_CLASSIFY__(N, P99_PASTE2(P99__INTEGER_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind INTEGER */
+#define P99__INTEGER_CLASSIFY(SEQ) P99__INTEGER_CLASSIFY_(P99_INTEGER_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind INTEGER */
+#define P99__INTEGER_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__INTEGER_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind INTEGER */
+#define P99_INTEGER_LEN(SEQ) P99_IF_ELSE(P99_IS_INTEGER_TOK(SEQ))(P99__INTEGER1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind INTEGER */
+#define P99_IS_INTEGER_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__INTEGER_, SEQ))
+#define P99__REAL7(SEQ) P99_IF_ELSE(P99_IS_REAL_TOK(SEQ))(8)(7)
+#define P99__REAL6(SEQ) P99_IF_ELSE(P99_IS_REAL_TOK(SEQ))(P99__REAL7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__REAL5(SEQ) P99_IF_ELSE(P99_IS_REAL_TOK(SEQ))(P99__REAL6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__REAL4(SEQ) P99_IF_ELSE(P99_IS_REAL_TOK(SEQ))(P99__REAL5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__REAL3(SEQ) P99_IF_ELSE(P99_IS_REAL_TOK(SEQ))(P99__REAL4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__REAL2(SEQ) P99_IF_ELSE(P99_IS_REAL_TOK(SEQ))(P99__REAL3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__REAL1(SEQ) P99_IF_ELSE(P99_IS_REAL_TOK(SEQ))(P99__REAL2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__REAL_CLASSIFY_7(SEQ) P99_PASTE2(P99__REAL_CLASSIFY_, SEQ) P99__REAL_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__REAL_CLASSIFY_6(SEQ) P99_PASTE2(P99__REAL_CLASSIFY_, SEQ) P99__REAL_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__REAL_CLASSIFY_5(SEQ) P99_PASTE2(P99__REAL_CLASSIFY_, SEQ) P99__REAL_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__REAL_CLASSIFY_4(SEQ) P99_PASTE2(P99__REAL_CLASSIFY_, SEQ) P99__REAL_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__REAL_CLASSIFY_3(SEQ) P99_PASTE2(P99__REAL_CLASSIFY_, SEQ) P99__REAL_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__REAL_CLASSIFY_2(SEQ) P99_PASTE2(P99__REAL_CLASSIFY_, SEQ) P99__REAL_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__REAL_CLASSIFY_1(SEQ) P99_PASTE2(P99__REAL_CLASSIFY_, SEQ)
+#define P99__REAL_CLASSIFY___(CODE) P99_IF_ELSE(P99__REAL_VALIDATE(CODE))(P99_PASTE2(P99__REAL_CLASSIFY__, CODE))(INVALID_REAL_TYPE_EXPRESSION[CODE])
+#define P99__REAL_CLASSIFY__(N, ...) P99__REAL_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__REAL_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__REAL_CLASSIFY__(N, P99_PASTE2(P99__REAL_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind REAL */
+#define P99__REAL_CLASSIFY(SEQ) P99__REAL_CLASSIFY_(P99_REAL_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind REAL */
+#define P99__REAL_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__REAL_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind REAL */
+#define P99_REAL_LEN(SEQ) P99_IF_ELSE(P99_IS_REAL_TOK(SEQ))(P99__REAL1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind REAL */
+#define P99_IS_REAL_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__REAL_, SEQ))
+#define P99__FLOAT7(SEQ) P99_IF_ELSE(P99_IS_FLOAT_TOK(SEQ))(8)(7)
+#define P99__FLOAT6(SEQ) P99_IF_ELSE(P99_IS_FLOAT_TOK(SEQ))(P99__FLOAT7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__FLOAT5(SEQ) P99_IF_ELSE(P99_IS_FLOAT_TOK(SEQ))(P99__FLOAT6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__FLOAT4(SEQ) P99_IF_ELSE(P99_IS_FLOAT_TOK(SEQ))(P99__FLOAT5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__FLOAT3(SEQ) P99_IF_ELSE(P99_IS_FLOAT_TOK(SEQ))(P99__FLOAT4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__FLOAT2(SEQ) P99_IF_ELSE(P99_IS_FLOAT_TOK(SEQ))(P99__FLOAT3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__FLOAT1(SEQ) P99_IF_ELSE(P99_IS_FLOAT_TOK(SEQ))(P99__FLOAT2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__FLOAT_CLASSIFY_7(SEQ) P99_PASTE2(P99__FLOAT_CLASSIFY_, SEQ) P99__FLOAT_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__FLOAT_CLASSIFY_6(SEQ) P99_PASTE2(P99__FLOAT_CLASSIFY_, SEQ) P99__FLOAT_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__FLOAT_CLASSIFY_5(SEQ) P99_PASTE2(P99__FLOAT_CLASSIFY_, SEQ) P99__FLOAT_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__FLOAT_CLASSIFY_4(SEQ) P99_PASTE2(P99__FLOAT_CLASSIFY_, SEQ) P99__FLOAT_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__FLOAT_CLASSIFY_3(SEQ) P99_PASTE2(P99__FLOAT_CLASSIFY_, SEQ) P99__FLOAT_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__FLOAT_CLASSIFY_2(SEQ) P99_PASTE2(P99__FLOAT_CLASSIFY_, SEQ) P99__FLOAT_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__FLOAT_CLASSIFY_1(SEQ) P99_PASTE2(P99__FLOAT_CLASSIFY_, SEQ)
+#define P99__FLOAT_CLASSIFY___(CODE) P99_IF_ELSE(P99__FLOAT_VALIDATE(CODE))(P99_PASTE2(P99__FLOAT_CLASSIFY__, CODE))(INVALID_FLOAT_TYPE_EXPRESSION[CODE])
+#define P99__FLOAT_CLASSIFY__(N, ...) P99__FLOAT_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__FLOAT_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__FLOAT_CLASSIFY__(N, P99_PASTE2(P99__FLOAT_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind FLOAT */
+#define P99__FLOAT_CLASSIFY(SEQ) P99__FLOAT_CLASSIFY_(P99_FLOAT_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind FLOAT */
+#define P99__FLOAT_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__FLOAT_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind FLOAT */
+#define P99_FLOAT_LEN(SEQ) P99_IF_ELSE(P99_IS_FLOAT_TOK(SEQ))(P99__FLOAT1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind FLOAT */
+#define P99_IS_FLOAT_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__FLOAT_, SEQ))
+#define P99__TYPE7(SEQ) P99_IF_ELSE(P99_IS_TYPE_TOK(SEQ))(8)(7)
+#define P99__TYPE6(SEQ) P99_IF_ELSE(P99_IS_TYPE_TOK(SEQ))(P99__TYPE7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__TYPE5(SEQ) P99_IF_ELSE(P99_IS_TYPE_TOK(SEQ))(P99__TYPE6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__TYPE4(SEQ) P99_IF_ELSE(P99_IS_TYPE_TOK(SEQ))(P99__TYPE5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__TYPE3(SEQ) P99_IF_ELSE(P99_IS_TYPE_TOK(SEQ))(P99__TYPE4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__TYPE2(SEQ) P99_IF_ELSE(P99_IS_TYPE_TOK(SEQ))(P99__TYPE3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__TYPE1(SEQ) P99_IF_ELSE(P99_IS_TYPE_TOK(SEQ))(P99__TYPE2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__TYPE_CLASSIFY_7(SEQ) P99_PASTE2(P99__TYPE_CLASSIFY_, SEQ) P99__TYPE_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__TYPE_CLASSIFY_6(SEQ) P99_PASTE2(P99__TYPE_CLASSIFY_, SEQ) P99__TYPE_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__TYPE_CLASSIFY_5(SEQ) P99_PASTE2(P99__TYPE_CLASSIFY_, SEQ) P99__TYPE_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__TYPE_CLASSIFY_4(SEQ) P99_PASTE2(P99__TYPE_CLASSIFY_, SEQ) P99__TYPE_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__TYPE_CLASSIFY_3(SEQ) P99_PASTE2(P99__TYPE_CLASSIFY_, SEQ) P99__TYPE_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__TYPE_CLASSIFY_2(SEQ) P99_PASTE2(P99__TYPE_CLASSIFY_, SEQ) P99__TYPE_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__TYPE_CLASSIFY_1(SEQ) P99_PASTE2(P99__TYPE_CLASSIFY_, SEQ)
+#define P99__TYPE_CLASSIFY___(CODE) P99_IF_ELSE(P99__TYPE_VALIDATE(CODE))(P99_PASTE2(P99__TYPE_CLASSIFY__, CODE))(INVALID_TYPE_TYPE_EXPRESSION[CODE])
+#define P99__TYPE_CLASSIFY__(N, ...) P99__TYPE_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__TYPE_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__TYPE_CLASSIFY__(N, P99_PASTE2(P99__TYPE_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind TYPE */
+#define P99__TYPE_CLASSIFY(SEQ) P99__TYPE_CLASSIFY_(P99_TYPE_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind TYPE */
+#define P99__TYPE_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__TYPE_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind TYPE */
+#define P99_TYPE_LEN(SEQ) P99_IF_ELSE(P99_IS_TYPE_TOK(SEQ))(P99__TYPE1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind TYPE */
+#define P99_IS_TYPE_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__TYPE_, SEQ))
+#define P99__BOOL_QUAL7(SEQ) P99_IF_ELSE(P99_IS_BOOL_QUAL_TOK(SEQ))(8)(7)
+#define P99__BOOL_QUAL6(SEQ) P99_IF_ELSE(P99_IS_BOOL_QUAL_TOK(SEQ))(P99__BOOL_QUAL7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__BOOL_QUAL5(SEQ) P99_IF_ELSE(P99_IS_BOOL_QUAL_TOK(SEQ))(P99__BOOL_QUAL6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__BOOL_QUAL4(SEQ) P99_IF_ELSE(P99_IS_BOOL_QUAL_TOK(SEQ))(P99__BOOL_QUAL5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__BOOL_QUAL3(SEQ) P99_IF_ELSE(P99_IS_BOOL_QUAL_TOK(SEQ))(P99__BOOL_QUAL4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__BOOL_QUAL2(SEQ) P99_IF_ELSE(P99_IS_BOOL_QUAL_TOK(SEQ))(P99__BOOL_QUAL3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__BOOL_QUAL1(SEQ) P99_IF_ELSE(P99_IS_BOOL_QUAL_TOK(SEQ))(P99__BOOL_QUAL2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__BOOL_QUAL_CLASSIFY_7(SEQ) P99_PASTE2(P99__BOOL_QUAL_CLASSIFY_, SEQ) P99__BOOL_QUAL_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__BOOL_QUAL_CLASSIFY_6(SEQ) P99_PASTE2(P99__BOOL_QUAL_CLASSIFY_, SEQ) P99__BOOL_QUAL_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__BOOL_QUAL_CLASSIFY_5(SEQ) P99_PASTE2(P99__BOOL_QUAL_CLASSIFY_, SEQ) P99__BOOL_QUAL_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__BOOL_QUAL_CLASSIFY_4(SEQ) P99_PASTE2(P99__BOOL_QUAL_CLASSIFY_, SEQ) P99__BOOL_QUAL_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__BOOL_QUAL_CLASSIFY_3(SEQ) P99_PASTE2(P99__BOOL_QUAL_CLASSIFY_, SEQ) P99__BOOL_QUAL_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__BOOL_QUAL_CLASSIFY_2(SEQ) P99_PASTE2(P99__BOOL_QUAL_CLASSIFY_, SEQ) P99__BOOL_QUAL_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__BOOL_QUAL_CLASSIFY_1(SEQ) P99_PASTE2(P99__BOOL_QUAL_CLASSIFY_, SEQ)
+#define P99__BOOL_QUAL_CLASSIFY___(CODE) P99_IF_ELSE(P99__BOOL_QUAL_VALIDATE(CODE))(P99_PASTE2(P99__BOOL_QUAL_CLASSIFY__, CODE))(INVALID_BOOL_QUAL_TYPE_EXPRESSION[CODE])
+#define P99__BOOL_QUAL_CLASSIFY__(N, ...) P99__BOOL_QUAL_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__BOOL_QUAL_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__BOOL_QUAL_CLASSIFY__(N, P99_PASTE2(P99__BOOL_QUAL_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind BOOL_QUAL */
+#define P99__BOOL_QUAL_CLASSIFY(SEQ) P99__BOOL_QUAL_CLASSIFY_(P99_BOOL_QUAL_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind BOOL_QUAL */
+#define P99__BOOL_QUAL_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__BOOL_QUAL_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind BOOL_QUAL */
+#define P99_BOOL_QUAL_LEN(SEQ) P99_IF_ELSE(P99_IS_BOOL_QUAL_TOK(SEQ))(P99__BOOL_QUAL1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind BOOL_QUAL */
+#define P99_IS_BOOL_QUAL_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__BOOL_QUAL_, SEQ))
+#define P99__VOID_QUAL7(SEQ) P99_IF_ELSE(P99_IS_VOID_QUAL_TOK(SEQ))(8)(7)
+#define P99__VOID_QUAL6(SEQ) P99_IF_ELSE(P99_IS_VOID_QUAL_TOK(SEQ))(P99__VOID_QUAL7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__VOID_QUAL5(SEQ) P99_IF_ELSE(P99_IS_VOID_QUAL_TOK(SEQ))(P99__VOID_QUAL6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__VOID_QUAL4(SEQ) P99_IF_ELSE(P99_IS_VOID_QUAL_TOK(SEQ))(P99__VOID_QUAL5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__VOID_QUAL3(SEQ) P99_IF_ELSE(P99_IS_VOID_QUAL_TOK(SEQ))(P99__VOID_QUAL4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__VOID_QUAL2(SEQ) P99_IF_ELSE(P99_IS_VOID_QUAL_TOK(SEQ))(P99__VOID_QUAL3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__VOID_QUAL1(SEQ) P99_IF_ELSE(P99_IS_VOID_QUAL_TOK(SEQ))(P99__VOID_QUAL2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__VOID_QUAL_CLASSIFY_7(SEQ) P99_PASTE2(P99__VOID_QUAL_CLASSIFY_, SEQ) P99__VOID_QUAL_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__VOID_QUAL_CLASSIFY_6(SEQ) P99_PASTE2(P99__VOID_QUAL_CLASSIFY_, SEQ) P99__VOID_QUAL_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__VOID_QUAL_CLASSIFY_5(SEQ) P99_PASTE2(P99__VOID_QUAL_CLASSIFY_, SEQ) P99__VOID_QUAL_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__VOID_QUAL_CLASSIFY_4(SEQ) P99_PASTE2(P99__VOID_QUAL_CLASSIFY_, SEQ) P99__VOID_QUAL_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__VOID_QUAL_CLASSIFY_3(SEQ) P99_PASTE2(P99__VOID_QUAL_CLASSIFY_, SEQ) P99__VOID_QUAL_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__VOID_QUAL_CLASSIFY_2(SEQ) P99_PASTE2(P99__VOID_QUAL_CLASSIFY_, SEQ) P99__VOID_QUAL_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__VOID_QUAL_CLASSIFY_1(SEQ) P99_PASTE2(P99__VOID_QUAL_CLASSIFY_, SEQ)
+#define P99__VOID_QUAL_CLASSIFY___(CODE) P99_IF_ELSE(P99__VOID_QUAL_VALIDATE(CODE))(P99_PASTE2(P99__VOID_QUAL_CLASSIFY__, CODE))(INVALID_VOID_QUAL_TYPE_EXPRESSION[CODE])
+#define P99__VOID_QUAL_CLASSIFY__(N, ...) P99__VOID_QUAL_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__VOID_QUAL_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__VOID_QUAL_CLASSIFY__(N, P99_PASTE2(P99__VOID_QUAL_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind VOID_QUAL */
+#define P99__VOID_QUAL_CLASSIFY(SEQ) P99__VOID_QUAL_CLASSIFY_(P99_VOID_QUAL_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind VOID_QUAL */
+#define P99__VOID_QUAL_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__VOID_QUAL_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind VOID_QUAL */
+#define P99_VOID_QUAL_LEN(SEQ) P99_IF_ELSE(P99_IS_VOID_QUAL_TOK(SEQ))(P99__VOID_QUAL1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind VOID_QUAL */
+#define P99_IS_VOID_QUAL_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__VOID_QUAL_, SEQ))
+#define P99__INTEGER_QUAL7(SEQ) P99_IF_ELSE(P99_IS_INTEGER_QUAL_TOK(SEQ))(8)(7)
+#define P99__INTEGER_QUAL6(SEQ) P99_IF_ELSE(P99_IS_INTEGER_QUAL_TOK(SEQ))(P99__INTEGER_QUAL7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__INTEGER_QUAL5(SEQ) P99_IF_ELSE(P99_IS_INTEGER_QUAL_TOK(SEQ))(P99__INTEGER_QUAL6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__INTEGER_QUAL4(SEQ) P99_IF_ELSE(P99_IS_INTEGER_QUAL_TOK(SEQ))(P99__INTEGER_QUAL5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__INTEGER_QUAL3(SEQ) P99_IF_ELSE(P99_IS_INTEGER_QUAL_TOK(SEQ))(P99__INTEGER_QUAL4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__INTEGER_QUAL2(SEQ) P99_IF_ELSE(P99_IS_INTEGER_QUAL_TOK(SEQ))(P99__INTEGER_QUAL3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__INTEGER_QUAL1(SEQ) P99_IF_ELSE(P99_IS_INTEGER_QUAL_TOK(SEQ))(P99__INTEGER_QUAL2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__INTEGER_QUAL_CLASSIFY_7(SEQ) P99_PASTE2(P99__INTEGER_QUAL_CLASSIFY_, SEQ) P99__INTEGER_QUAL_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__INTEGER_QUAL_CLASSIFY_6(SEQ) P99_PASTE2(P99__INTEGER_QUAL_CLASSIFY_, SEQ) P99__INTEGER_QUAL_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__INTEGER_QUAL_CLASSIFY_5(SEQ) P99_PASTE2(P99__INTEGER_QUAL_CLASSIFY_, SEQ) P99__INTEGER_QUAL_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__INTEGER_QUAL_CLASSIFY_4(SEQ) P99_PASTE2(P99__INTEGER_QUAL_CLASSIFY_, SEQ) P99__INTEGER_QUAL_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__INTEGER_QUAL_CLASSIFY_3(SEQ) P99_PASTE2(P99__INTEGER_QUAL_CLASSIFY_, SEQ) P99__INTEGER_QUAL_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__INTEGER_QUAL_CLASSIFY_2(SEQ) P99_PASTE2(P99__INTEGER_QUAL_CLASSIFY_, SEQ) P99__INTEGER_QUAL_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__INTEGER_QUAL_CLASSIFY_1(SEQ) P99_PASTE2(P99__INTEGER_QUAL_CLASSIFY_, SEQ)
+#define P99__INTEGER_QUAL_CLASSIFY___(CODE) P99_IF_ELSE(P99__INTEGER_QUAL_VALIDATE(CODE))(P99_PASTE2(P99__INTEGER_QUAL_CLASSIFY__, CODE))(INVALID_INTEGER_QUAL_TYPE_EXPRESSION[CODE])
+#define P99__INTEGER_QUAL_CLASSIFY__(N, ...) P99__INTEGER_QUAL_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__INTEGER_QUAL_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__INTEGER_QUAL_CLASSIFY__(N, P99_PASTE2(P99__INTEGER_QUAL_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind INTEGER_QUAL */
+#define P99__INTEGER_QUAL_CLASSIFY(SEQ) P99__INTEGER_QUAL_CLASSIFY_(P99_INTEGER_QUAL_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind INTEGER_QUAL */
+#define P99__INTEGER_QUAL_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__INTEGER_QUAL_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind INTEGER_QUAL */
+#define P99_INTEGER_QUAL_LEN(SEQ) P99_IF_ELSE(P99_IS_INTEGER_QUAL_TOK(SEQ))(P99__INTEGER_QUAL1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind INTEGER_QUAL */
+#define P99_IS_INTEGER_QUAL_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__INTEGER_QUAL_, SEQ))
+#define P99__REAL_QUAL7(SEQ) P99_IF_ELSE(P99_IS_REAL_QUAL_TOK(SEQ))(8)(7)
+#define P99__REAL_QUAL6(SEQ) P99_IF_ELSE(P99_IS_REAL_QUAL_TOK(SEQ))(P99__REAL_QUAL7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__REAL_QUAL5(SEQ) P99_IF_ELSE(P99_IS_REAL_QUAL_TOK(SEQ))(P99__REAL_QUAL6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__REAL_QUAL4(SEQ) P99_IF_ELSE(P99_IS_REAL_QUAL_TOK(SEQ))(P99__REAL_QUAL5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__REAL_QUAL3(SEQ) P99_IF_ELSE(P99_IS_REAL_QUAL_TOK(SEQ))(P99__REAL_QUAL4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__REAL_QUAL2(SEQ) P99_IF_ELSE(P99_IS_REAL_QUAL_TOK(SEQ))(P99__REAL_QUAL3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__REAL_QUAL1(SEQ) P99_IF_ELSE(P99_IS_REAL_QUAL_TOK(SEQ))(P99__REAL_QUAL2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__REAL_QUAL_CLASSIFY_7(SEQ) P99_PASTE2(P99__REAL_QUAL_CLASSIFY_, SEQ) P99__REAL_QUAL_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__REAL_QUAL_CLASSIFY_6(SEQ) P99_PASTE2(P99__REAL_QUAL_CLASSIFY_, SEQ) P99__REAL_QUAL_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__REAL_QUAL_CLASSIFY_5(SEQ) P99_PASTE2(P99__REAL_QUAL_CLASSIFY_, SEQ) P99__REAL_QUAL_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__REAL_QUAL_CLASSIFY_4(SEQ) P99_PASTE2(P99__REAL_QUAL_CLASSIFY_, SEQ) P99__REAL_QUAL_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__REAL_QUAL_CLASSIFY_3(SEQ) P99_PASTE2(P99__REAL_QUAL_CLASSIFY_, SEQ) P99__REAL_QUAL_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__REAL_QUAL_CLASSIFY_2(SEQ) P99_PASTE2(P99__REAL_QUAL_CLASSIFY_, SEQ) P99__REAL_QUAL_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__REAL_QUAL_CLASSIFY_1(SEQ) P99_PASTE2(P99__REAL_QUAL_CLASSIFY_, SEQ)
+#define P99__REAL_QUAL_CLASSIFY___(CODE) P99_IF_ELSE(P99__REAL_QUAL_VALIDATE(CODE))(P99_PASTE2(P99__REAL_QUAL_CLASSIFY__, CODE))(INVALID_REAL_QUAL_TYPE_EXPRESSION[CODE])
+#define P99__REAL_QUAL_CLASSIFY__(N, ...) P99__REAL_QUAL_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__REAL_QUAL_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__REAL_QUAL_CLASSIFY__(N, P99_PASTE2(P99__REAL_QUAL_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind REAL_QUAL */
+#define P99__REAL_QUAL_CLASSIFY(SEQ) P99__REAL_QUAL_CLASSIFY_(P99_REAL_QUAL_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind REAL_QUAL */
+#define P99__REAL_QUAL_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__REAL_QUAL_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind REAL_QUAL */
+#define P99_REAL_QUAL_LEN(SEQ) P99_IF_ELSE(P99_IS_REAL_QUAL_TOK(SEQ))(P99__REAL_QUAL1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind REAL_QUAL */
+#define P99_IS_REAL_QUAL_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__REAL_QUAL_, SEQ))
+#define P99__FLOAT_QUAL7(SEQ) P99_IF_ELSE(P99_IS_FLOAT_QUAL_TOK(SEQ))(8)(7)
+#define P99__FLOAT_QUAL6(SEQ) P99_IF_ELSE(P99_IS_FLOAT_QUAL_TOK(SEQ))(P99__FLOAT_QUAL7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__FLOAT_QUAL5(SEQ) P99_IF_ELSE(P99_IS_FLOAT_QUAL_TOK(SEQ))(P99__FLOAT_QUAL6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__FLOAT_QUAL4(SEQ) P99_IF_ELSE(P99_IS_FLOAT_QUAL_TOK(SEQ))(P99__FLOAT_QUAL5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__FLOAT_QUAL3(SEQ) P99_IF_ELSE(P99_IS_FLOAT_QUAL_TOK(SEQ))(P99__FLOAT_QUAL4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__FLOAT_QUAL2(SEQ) P99_IF_ELSE(P99_IS_FLOAT_QUAL_TOK(SEQ))(P99__FLOAT_QUAL3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__FLOAT_QUAL1(SEQ) P99_IF_ELSE(P99_IS_FLOAT_QUAL_TOK(SEQ))(P99__FLOAT_QUAL2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__FLOAT_QUAL_CLASSIFY_7(SEQ) P99_PASTE2(P99__FLOAT_QUAL_CLASSIFY_, SEQ) P99__FLOAT_QUAL_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__FLOAT_QUAL_CLASSIFY_6(SEQ) P99_PASTE2(P99__FLOAT_QUAL_CLASSIFY_, SEQ) P99__FLOAT_QUAL_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__FLOAT_QUAL_CLASSIFY_5(SEQ) P99_PASTE2(P99__FLOAT_QUAL_CLASSIFY_, SEQ) P99__FLOAT_QUAL_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__FLOAT_QUAL_CLASSIFY_4(SEQ) P99_PASTE2(P99__FLOAT_QUAL_CLASSIFY_, SEQ) P99__FLOAT_QUAL_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__FLOAT_QUAL_CLASSIFY_3(SEQ) P99_PASTE2(P99__FLOAT_QUAL_CLASSIFY_, SEQ) P99__FLOAT_QUAL_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__FLOAT_QUAL_CLASSIFY_2(SEQ) P99_PASTE2(P99__FLOAT_QUAL_CLASSIFY_, SEQ) P99__FLOAT_QUAL_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__FLOAT_QUAL_CLASSIFY_1(SEQ) P99_PASTE2(P99__FLOAT_QUAL_CLASSIFY_, SEQ)
+#define P99__FLOAT_QUAL_CLASSIFY___(CODE) P99_IF_ELSE(P99__FLOAT_QUAL_VALIDATE(CODE))(P99_PASTE2(P99__FLOAT_QUAL_CLASSIFY__, CODE))(INVALID_FLOAT_QUAL_TYPE_EXPRESSION[CODE])
+#define P99__FLOAT_QUAL_CLASSIFY__(N, ...) P99__FLOAT_QUAL_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__FLOAT_QUAL_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__FLOAT_QUAL_CLASSIFY__(N, P99_PASTE2(P99__FLOAT_QUAL_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind FLOAT_QUAL */
+#define P99__FLOAT_QUAL_CLASSIFY(SEQ) P99__FLOAT_QUAL_CLASSIFY_(P99_FLOAT_QUAL_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind FLOAT_QUAL */
+#define P99__FLOAT_QUAL_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__FLOAT_QUAL_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind FLOAT_QUAL */
+#define P99_FLOAT_QUAL_LEN(SEQ) P99_IF_ELSE(P99_IS_FLOAT_QUAL_TOK(SEQ))(P99__FLOAT_QUAL1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind FLOAT_QUAL */
+#define P99_IS_FLOAT_QUAL_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__FLOAT_QUAL_, SEQ))
+#define P99__TYPE_QUAL7(SEQ) P99_IF_ELSE(P99_IS_TYPE_QUAL_TOK(SEQ))(8)(7)
+#define P99__TYPE_QUAL6(SEQ) P99_IF_ELSE(P99_IS_TYPE_QUAL_TOK(SEQ))(P99__TYPE_QUAL7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__TYPE_QUAL5(SEQ) P99_IF_ELSE(P99_IS_TYPE_QUAL_TOK(SEQ))(P99__TYPE_QUAL6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__TYPE_QUAL4(SEQ) P99_IF_ELSE(P99_IS_TYPE_QUAL_TOK(SEQ))(P99__TYPE_QUAL5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__TYPE_QUAL3(SEQ) P99_IF_ELSE(P99_IS_TYPE_QUAL_TOK(SEQ))(P99__TYPE_QUAL4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__TYPE_QUAL2(SEQ) P99_IF_ELSE(P99_IS_TYPE_QUAL_TOK(SEQ))(P99__TYPE_QUAL3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__TYPE_QUAL1(SEQ) P99_IF_ELSE(P99_IS_TYPE_QUAL_TOK(SEQ))(P99__TYPE_QUAL2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__TYPE_QUAL_CLASSIFY_7(SEQ) P99_PASTE2(P99__TYPE_QUAL_CLASSIFY_, SEQ) P99__TYPE_QUAL_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__TYPE_QUAL_CLASSIFY_6(SEQ) P99_PASTE2(P99__TYPE_QUAL_CLASSIFY_, SEQ) P99__TYPE_QUAL_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__TYPE_QUAL_CLASSIFY_5(SEQ) P99_PASTE2(P99__TYPE_QUAL_CLASSIFY_, SEQ) P99__TYPE_QUAL_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__TYPE_QUAL_CLASSIFY_4(SEQ) P99_PASTE2(P99__TYPE_QUAL_CLASSIFY_, SEQ) P99__TYPE_QUAL_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__TYPE_QUAL_CLASSIFY_3(SEQ) P99_PASTE2(P99__TYPE_QUAL_CLASSIFY_, SEQ) P99__TYPE_QUAL_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__TYPE_QUAL_CLASSIFY_2(SEQ) P99_PASTE2(P99__TYPE_QUAL_CLASSIFY_, SEQ) P99__TYPE_QUAL_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__TYPE_QUAL_CLASSIFY_1(SEQ) P99_PASTE2(P99__TYPE_QUAL_CLASSIFY_, SEQ)
+#define P99__TYPE_QUAL_CLASSIFY___(CODE) P99_IF_ELSE(P99__TYPE_QUAL_VALIDATE(CODE))(P99_PASTE2(P99__TYPE_QUAL_CLASSIFY__, CODE))(INVALID_TYPE_QUAL_TYPE_EXPRESSION[CODE])
+#define P99__TYPE_QUAL_CLASSIFY__(N, ...) P99__TYPE_QUAL_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__TYPE_QUAL_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__TYPE_QUAL_CLASSIFY__(N, P99_PASTE2(P99__TYPE_QUAL_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind TYPE_QUAL */
+#define P99__TYPE_QUAL_CLASSIFY(SEQ) P99__TYPE_QUAL_CLASSIFY_(P99_TYPE_QUAL_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind TYPE_QUAL */
+#define P99__TYPE_QUAL_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__TYPE_QUAL_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind TYPE_QUAL */
+#define P99_TYPE_QUAL_LEN(SEQ) P99_IF_ELSE(P99_IS_TYPE_QUAL_TOK(SEQ))(P99__TYPE_QUAL1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind TYPE_QUAL */
+#define P99_IS_TYPE_QUAL_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__TYPE_QUAL_, SEQ))
+#define P99__KEYWORD7(SEQ) P99_IF_ELSE(P99_IS_KEYWORD_TOK(SEQ))(8)(7)
+#define P99__KEYWORD6(SEQ) P99_IF_ELSE(P99_IS_KEYWORD_TOK(SEQ))(P99__KEYWORD7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__KEYWORD5(SEQ) P99_IF_ELSE(P99_IS_KEYWORD_TOK(SEQ))(P99__KEYWORD6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__KEYWORD4(SEQ) P99_IF_ELSE(P99_IS_KEYWORD_TOK(SEQ))(P99__KEYWORD5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__KEYWORD3(SEQ) P99_IF_ELSE(P99_IS_KEYWORD_TOK(SEQ))(P99__KEYWORD4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__KEYWORD2(SEQ) P99_IF_ELSE(P99_IS_KEYWORD_TOK(SEQ))(P99__KEYWORD3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__KEYWORD1(SEQ) P99_IF_ELSE(P99_IS_KEYWORD_TOK(SEQ))(P99__KEYWORD2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__KEYWORD_CLASSIFY_7(SEQ) P99_PASTE2(P99__KEYWORD_CLASSIFY_, SEQ) P99__KEYWORD_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__KEYWORD_CLASSIFY_6(SEQ) P99_PASTE2(P99__KEYWORD_CLASSIFY_, SEQ) P99__KEYWORD_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__KEYWORD_CLASSIFY_5(SEQ) P99_PASTE2(P99__KEYWORD_CLASSIFY_, SEQ) P99__KEYWORD_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__KEYWORD_CLASSIFY_4(SEQ) P99_PASTE2(P99__KEYWORD_CLASSIFY_, SEQ) P99__KEYWORD_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__KEYWORD_CLASSIFY_3(SEQ) P99_PASTE2(P99__KEYWORD_CLASSIFY_, SEQ) P99__KEYWORD_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__KEYWORD_CLASSIFY_2(SEQ) P99_PASTE2(P99__KEYWORD_CLASSIFY_, SEQ) P99__KEYWORD_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__KEYWORD_CLASSIFY_1(SEQ) P99_PASTE2(P99__KEYWORD_CLASSIFY_, SEQ)
+#define P99__KEYWORD_CLASSIFY___(CODE) P99_IF_ELSE(P99__KEYWORD_VALIDATE(CODE))(P99_PASTE2(P99__KEYWORD_CLASSIFY__, CODE))(INVALID_KEYWORD_TYPE_EXPRESSION[CODE])
+#define P99__KEYWORD_CLASSIFY__(N, ...) P99__KEYWORD_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__KEYWORD_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__KEYWORD_CLASSIFY__(N, P99_PASTE2(P99__KEYWORD_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind KEYWORD */
+#define P99__KEYWORD_CLASSIFY(SEQ) P99__KEYWORD_CLASSIFY_(P99_KEYWORD_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind KEYWORD */
+#define P99__KEYWORD_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__KEYWORD_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind KEYWORD */
+#define P99_KEYWORD_LEN(SEQ) P99_IF_ELSE(P99_IS_KEYWORD_TOK(SEQ))(P99__KEYWORD1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind KEYWORD */
+#define P99_IS_KEYWORD_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__KEYWORD_, SEQ))
+#define P99__RESERVED7(SEQ) P99_IF_ELSE(P99_IS_RESERVED_TOK(SEQ))(8)(7)
+#define P99__RESERVED6(SEQ) P99_IF_ELSE(P99_IS_RESERVED_TOK(SEQ))(P99__RESERVED7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__RESERVED5(SEQ) P99_IF_ELSE(P99_IS_RESERVED_TOK(SEQ))(P99__RESERVED6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__RESERVED4(SEQ) P99_IF_ELSE(P99_IS_RESERVED_TOK(SEQ))(P99__RESERVED5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__RESERVED3(SEQ) P99_IF_ELSE(P99_IS_RESERVED_TOK(SEQ))(P99__RESERVED4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__RESERVED2(SEQ) P99_IF_ELSE(P99_IS_RESERVED_TOK(SEQ))(P99__RESERVED3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__RESERVED1(SEQ) P99_IF_ELSE(P99_IS_RESERVED_TOK(SEQ))(P99__RESERVED2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__RESERVED_CLASSIFY_7(SEQ) P99_PASTE2(P99__RESERVED_CLASSIFY_, SEQ) P99__RESERVED_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__RESERVED_CLASSIFY_6(SEQ) P99_PASTE2(P99__RESERVED_CLASSIFY_, SEQ) P99__RESERVED_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__RESERVED_CLASSIFY_5(SEQ) P99_PASTE2(P99__RESERVED_CLASSIFY_, SEQ) P99__RESERVED_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__RESERVED_CLASSIFY_4(SEQ) P99_PASTE2(P99__RESERVED_CLASSIFY_, SEQ) P99__RESERVED_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__RESERVED_CLASSIFY_3(SEQ) P99_PASTE2(P99__RESERVED_CLASSIFY_, SEQ) P99__RESERVED_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__RESERVED_CLASSIFY_2(SEQ) P99_PASTE2(P99__RESERVED_CLASSIFY_, SEQ) P99__RESERVED_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__RESERVED_CLASSIFY_1(SEQ) P99_PASTE2(P99__RESERVED_CLASSIFY_, SEQ)
+#define P99__RESERVED_CLASSIFY___(CODE) P99_IF_ELSE(P99__RESERVED_VALIDATE(CODE))(P99_PASTE2(P99__RESERVED_CLASSIFY__, CODE))(INVALID_RESERVED_TYPE_EXPRESSION[CODE])
+#define P99__RESERVED_CLASSIFY__(N, ...) P99__RESERVED_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__RESERVED_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__RESERVED_CLASSIFY__(N, P99_PASTE2(P99__RESERVED_CLASSIFY_, N)(SEQ)))
+/*! @brief Classify the tokens in sequence @a SEQ that all are of kind RESERVED */
+#define P99__RESERVED_CLASSIFY(SEQ) P99__RESERVED_CLASSIFY_(P99_RESERVED_QUAL_LEN(SEQ), SEQ)
+/*! @brief Check if @a CODE corresponds to a valid combination of tokens of kind RESERVED */
+#define P99__RESERVED_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__RESERVED_VALIDATE__, CODE)))
+/*! @brief Count the number of tokens in sequence @a SEQ that all are of kind RESERVED */
+#define P99_RESERVED_LEN(SEQ) P99_IF_ELSE(P99_IS_RESERVED_TOK(SEQ))(P99__RESERVED1(P99__EAT_FIRST(SEQ)))(0)
+/*! @brief Test if the token sequence @a SEQ starts with a token of kind RESERVED */
+#define P99_IS_RESERVED_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__RESERVED_, SEQ))
+#define P99__CONST_CLASSIFY_const	/* 1 */	,
+#define P99__CONST_CLASSIFY__1	
+#define P99__CONST_VALIDATE__1	,
+#define P99__CONST_CLASSIFY__2	const
+#define P99__CONST_VALIDATE__2	,
+#define P99__CONST_CLASSIFY__3	const
+#define P99__CONST_VALIDATE__3	,
+#define P99__CONST_CLASSIFY__4	const
+#define P99__CONST_VALIDATE__4	,
+#define P99__CONST_CLASSIFY__5	const
+#define P99__CONST_VALIDATE__5	,
+#define P99__CONST_CLASSIFY__6	const
+#define P99__CONST_VALIDATE__6	,
+#define P99__CONST_CLASSIFY__7	const
+#define P99__CONST_VALIDATE__7	,
+#define P99__VOLATILE_CLASSIFY_volatile	/* 1 */	,
+#define P99__VOLATILE_CLASSIFY__1	
+#define P99__VOLATILE_VALIDATE__1	,
+#define P99__VOLATILE_CLASSIFY__2	volatile
+#define P99__VOLATILE_VALIDATE__2	,
+#define P99__VOLATILE_CLASSIFY__3	volatile
+#define P99__VOLATILE_VALIDATE__3	,
+#define P99__VOLATILE_CLASSIFY__4	volatile
+#define P99__VOLATILE_VALIDATE__4	,
+#define P99__VOLATILE_CLASSIFY__5	volatile
+#define P99__VOLATILE_VALIDATE__5	,
+#define P99__VOLATILE_CLASSIFY__6	volatile
+#define P99__VOLATILE_VALIDATE__6	,
+#define P99__VOLATILE_CLASSIFY__7	volatile
+#define P99__VOLATILE_VALIDATE__7	,
+#define P99__VOID_CLASSIFY_void	/* 1 */	,
+#define P99__VOID_CLASSIFY__1	
+#define P99__VOID_VALIDATE__1	,
+#define P99__VOID_CLASSIFY__2	v
+#define P99__VOID_VALIDATE__2	,
+#define P99__BOOL_CLASSIFY__Bool	/* 1 */	,
+#define P99__BOOL_CLASSIFY__1	
+#define P99__BOOL_VALIDATE__1	,
+#define P99__BOOL_CLASSIFY__2	b
+#define P99__BOOL_VALIDATE__2	,
+#define P99__INTEGER_CLASSIFY_long	/* 1 */	,
+#define P99__INTEGER_CLASSIFY_short	/* 4 */	,,,,
+#define P99__INTEGER_CLASSIFY_char	/* 8 */	,,,,,,,,
+#define P99__INTEGER_CLASSIFY_signed	/* 16 */	,,,,,,,,,,,,,,,,
+#define P99__INTEGER_CLASSIFY_unsigned	/* 32 */	,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+#define P99__INTEGER_CLASSIFY_int	/* 64 */	,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+#define P99__INTEGER_CLASSIFY__2	l
+#define P99__INTEGER_VALIDATE__2	,
+#define P99__INTEGER_CLASSIFY__3	ll
+#define P99__INTEGER_VALIDATE__3	,
+#define P99__INTEGER_CLASSIFY__5	h
+#define P99__INTEGER_VALIDATE__5	,
+#define P99__INTEGER_CLASSIFY__9	c
+#define P99__INTEGER_VALIDATE__9	,
+#define P99__INTEGER_CLASSIFY__17	i
+#define P99__INTEGER_VALIDATE__17	,
+#define P99__INTEGER_CLASSIFY__18	l
+#define P99__INTEGER_VALIDATE__18	,
+#define P99__INTEGER_CLASSIFY__19	ll
+#define P99__INTEGER_VALIDATE__19	,
+#define P99__INTEGER_CLASSIFY__21	h
+#define P99__INTEGER_VALIDATE__21	,
+#define P99__INTEGER_CLASSIFY__25	hh
+#define P99__INTEGER_VALIDATE__25	,
+#define P99__INTEGER_CLASSIFY__33	u
+#define P99__INTEGER_VALIDATE__33	,
+#define P99__INTEGER_CLASSIFY__34	ul
+#define P99__INTEGER_VALIDATE__34	,
+#define P99__INTEGER_CLASSIFY__35	ull
+#define P99__INTEGER_VALIDATE__35	,
+#define P99__INTEGER_CLASSIFY__37	uh
+#define P99__INTEGER_VALIDATE__37	,
+#define P99__INTEGER_CLASSIFY__41	uhh
+#define P99__INTEGER_VALIDATE__41	,
+#define P99__INTEGER_CLASSIFY__65	i
+#define P99__INTEGER_VALIDATE__65	,
+#define P99__INTEGER_CLASSIFY__66	l
+#define P99__INTEGER_VALIDATE__66	,
+#define P99__INTEGER_CLASSIFY__67	ll
+#define P99__INTEGER_VALIDATE__67	,
+#define P99__INTEGER_CLASSIFY__69	h
+#define P99__INTEGER_VALIDATE__69	,
+#define P99__INTEGER_CLASSIFY__81	i
+#define P99__INTEGER_VALIDATE__81	,
+#define P99__INTEGER_CLASSIFY__82	l
+#define P99__INTEGER_VALIDATE__82	,
+#define P99__INTEGER_CLASSIFY__83	ll
+#define P99__INTEGER_VALIDATE__83	,
+#define P99__INTEGER_CLASSIFY__85	h
+#define P99__INTEGER_VALIDATE__85	,
+#define P99__INTEGER_CLASSIFY__97	u
+#define P99__INTEGER_VALIDATE__97	,
+#define P99__INTEGER_CLASSIFY__98	ul
+#define P99__INTEGER_VALIDATE__98	,
+#define P99__INTEGER_CLASSIFY__99	ull
+#define P99__INTEGER_VALIDATE__99	,
+#define P99__INTEGER_CLASSIFY__101	uh
+#define P99__INTEGER_VALIDATE__101	,
+#define P99__FLOAT_CLASSIFY_long	/* 1 */	,
+#define P99__FLOAT_CLASSIFY_double	/* 4 */	,,,,
+#define P99__FLOAT_CLASSIFY_float	/* 16 */	,,,,,,,,,,,,,,,,
+#define P99__FLOAT_CLASSIFY__Complex	/* 32 */	,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+#define P99__FLOAT_CLASSIFY__5	d
+#define P99__FLOAT_VALIDATE__5	,
+#define P99__FLOAT_CLASSIFY__6	ld
+#define P99__FLOAT_VALIDATE__6	,
+#define P99__FLOAT_CLASSIFY__17	f
+#define P99__FLOAT_VALIDATE__17	,
+#define P99__FLOAT_CLASSIFY__37	dc
+#define P99__FLOAT_VALIDATE__37	,
+#define P99__FLOAT_CLASSIFY__38	ldc
+#define P99__FLOAT_VALIDATE__38	,
+#define P99__FLOAT_CLASSIFY__49	fc
+#define P99__FLOAT_VALIDATE__49	,
+#define P99__BUILTIN_TYPE_b	_Bool
+#define P99__BUILTIN_TYPE_c	char
+#define P99__BUILTIN_TYPE_d	double
+#define P99__BUILTIN_TYPE_dc	double _Complex
+#define P99__BUILTIN_TYPE_f	float
+#define P99__BUILTIN_TYPE_fc	float _Complex
+#define P99__BUILTIN_TYPE_h	short
+#define P99__BUILTIN_TYPE_hh	signed char
+#define P99__BUILTIN_TYPE_i	signed
+#define P99__BUILTIN_TYPE_l	signed long
+#define P99__BUILTIN_TYPE_ld	long double
+#define P99__BUILTIN_TYPE_ldc	long double _Complex
+#define P99__BUILTIN_TYPE_ll	signed long long
+#define P99__BUILTIN_TYPE_u	unsigned
+#define P99__BUILTIN_TYPE_uh	unsigned short
+#define P99__BUILTIN_TYPE_uhh	unsigned char
+#define P99__BUILTIN_TYPE_ul	unsigned long
+#define P99__BUILTIN_TYPE_ull	unsigned long long
+#define P99__BUILTIN_TYPE_v	void
 /**
  ** @}
  **/
@@ -2229,6 +4988,46 @@
 #define P99__DEC_PRED_80 79
 #define P99__DEC_PRED_81 80
 #define P99__DEC_PRED_82 81
+#define P99__DEC_PRED_83 82
+#define P99__DEC_PRED_84 83
+#define P99__DEC_PRED_85 84
+#define P99__DEC_PRED_86 85
+#define P99__DEC_PRED_87 86
+#define P99__DEC_PRED_88 87
+#define P99__DEC_PRED_89 88
+#define P99__DEC_PRED_90 89
+#define P99__DEC_PRED_91 90
+#define P99__DEC_PRED_92 91
+#define P99__DEC_PRED_93 92
+#define P99__DEC_PRED_94 93
+#define P99__DEC_PRED_95 94
+#define P99__DEC_PRED_96 95
+#define P99__DEC_PRED_97 96
+#define P99__DEC_PRED_98 97
+#define P99__DEC_PRED_99 98
+#define P99__DEC_PRED_100 99
+#define P99__DEC_PRED_101 100
+#define P99__DEC_PRED_102 101
+#define P99__DEC_PRED_103 102
+#define P99__DEC_PRED_104 103
+#define P99__DEC_PRED_105 104
+#define P99__DEC_PRED_106 105
+#define P99__DEC_PRED_107 106
+#define P99__DEC_PRED_108 107
+#define P99__DEC_PRED_109 108
+#define P99__DEC_PRED_110 109
+#define P99__DEC_PRED_111 110
+#define P99__DEC_PRED_112 111
+#define P99__DEC_PRED_113 112
+#define P99__DEC_PRED_114 113
+#define P99__DEC_PRED_115 114
+#define P99__DEC_PRED_116 115
+#define P99__DEC_PRED_117 116
+#define P99__DEC_PRED_118 117
+#define P99__DEC_PRED_119 118
+#define P99__DEC_PRED_120 119
+#define P99__DEC_PRED_121 120
+#define P99__DEC_PRED_122 121
 #define P99__DEC_PRED_minus_0 minus_1
 #define P99__DEC_PRED_minus_1 minus_2
 #define P99__DEC_PRED_minus_2 minus_3
@@ -2311,6 +5110,46 @@
 #define P99__DEC_PRED_minus_79 minus_80
 #define P99__DEC_PRED_minus_80 minus_81
 #define P99__DEC_PRED_minus_81 minus_82
+#define P99__DEC_PRED_minus_82 minus_83
+#define P99__DEC_PRED_minus_83 minus_84
+#define P99__DEC_PRED_minus_84 minus_85
+#define P99__DEC_PRED_minus_85 minus_86
+#define P99__DEC_PRED_minus_86 minus_87
+#define P99__DEC_PRED_minus_87 minus_88
+#define P99__DEC_PRED_minus_88 minus_89
+#define P99__DEC_PRED_minus_89 minus_90
+#define P99__DEC_PRED_minus_90 minus_91
+#define P99__DEC_PRED_minus_91 minus_92
+#define P99__DEC_PRED_minus_92 minus_93
+#define P99__DEC_PRED_minus_93 minus_94
+#define P99__DEC_PRED_minus_94 minus_95
+#define P99__DEC_PRED_minus_95 minus_96
+#define P99__DEC_PRED_minus_96 minus_97
+#define P99__DEC_PRED_minus_97 minus_98
+#define P99__DEC_PRED_minus_98 minus_99
+#define P99__DEC_PRED_minus_99 minus_100
+#define P99__DEC_PRED_minus_100 minus_101
+#define P99__DEC_PRED_minus_101 minus_102
+#define P99__DEC_PRED_minus_102 minus_103
+#define P99__DEC_PRED_minus_103 minus_104
+#define P99__DEC_PRED_minus_104 minus_105
+#define P99__DEC_PRED_minus_105 minus_106
+#define P99__DEC_PRED_minus_106 minus_107
+#define P99__DEC_PRED_minus_107 minus_108
+#define P99__DEC_PRED_minus_108 minus_109
+#define P99__DEC_PRED_minus_109 minus_110
+#define P99__DEC_PRED_minus_110 minus_111
+#define P99__DEC_PRED_minus_111 minus_112
+#define P99__DEC_PRED_minus_112 minus_113
+#define P99__DEC_PRED_minus_113 minus_114
+#define P99__DEC_PRED_minus_114 minus_115
+#define P99__DEC_PRED_minus_115 minus_116
+#define P99__DEC_PRED_minus_116 minus_117
+#define P99__DEC_PRED_minus_117 minus_118
+#define P99__DEC_PRED_minus_118 minus_119
+#define P99__DEC_PRED_minus_119 minus_120
+#define P99__DEC_PRED_minus_120 minus_121
+#define P99__DEC_PRED_minus_121 minus_122
 #define P99__minus_minus_0 0
 #define P99__minus_minus_1 1
 #define P99__minus_minus_2 2
@@ -2393,6 +5232,46 @@
 #define P99__minus_minus_79 79
 #define P99__minus_minus_80 80
 #define P99__minus_minus_81 81
+#define P99__minus_minus_82 82
+#define P99__minus_minus_83 83
+#define P99__minus_minus_84 84
+#define P99__minus_minus_85 85
+#define P99__minus_minus_86 86
+#define P99__minus_minus_87 87
+#define P99__minus_minus_88 88
+#define P99__minus_minus_89 89
+#define P99__minus_minus_90 90
+#define P99__minus_minus_91 91
+#define P99__minus_minus_92 92
+#define P99__minus_minus_93 93
+#define P99__minus_minus_94 94
+#define P99__minus_minus_95 95
+#define P99__minus_minus_96 96
+#define P99__minus_minus_97 97
+#define P99__minus_minus_98 98
+#define P99__minus_minus_99 99
+#define P99__minus_minus_100 100
+#define P99__minus_minus_101 101
+#define P99__minus_minus_102 102
+#define P99__minus_minus_103 103
+#define P99__minus_minus_104 104
+#define P99__minus_minus_105 105
+#define P99__minus_minus_106 106
+#define P99__minus_minus_107 107
+#define P99__minus_minus_108 108
+#define P99__minus_minus_109 109
+#define P99__minus_minus_110 110
+#define P99__minus_minus_111 111
+#define P99__minus_minus_112 112
+#define P99__minus_minus_113 113
+#define P99__minus_minus_114 114
+#define P99__minus_minus_115 115
+#define P99__minus_minus_116 116
+#define P99__minus_minus_117 117
+#define P99__minus_minus_118 118
+#define P99__minus_minus_119 119
+#define P99__minus_minus_120 120
+#define P99__minus_minus_121 121
 #define P99__IS_0_GE_0 ,
 #define P99__IS_1_GE_0 ,
 #define P99__IS_2_GE_0 ,
@@ -2475,6 +5354,46 @@
 #define P99__IS_79_GE_0 ,
 #define P99__IS_80_GE_0 ,
 #define P99__IS_81_GE_0 ,
+#define P99__IS_82_GE_0 ,
+#define P99__IS_83_GE_0 ,
+#define P99__IS_84_GE_0 ,
+#define P99__IS_85_GE_0 ,
+#define P99__IS_86_GE_0 ,
+#define P99__IS_87_GE_0 ,
+#define P99__IS_88_GE_0 ,
+#define P99__IS_89_GE_0 ,
+#define P99__IS_90_GE_0 ,
+#define P99__IS_91_GE_0 ,
+#define P99__IS_92_GE_0 ,
+#define P99__IS_93_GE_0 ,
+#define P99__IS_94_GE_0 ,
+#define P99__IS_95_GE_0 ,
+#define P99__IS_96_GE_0 ,
+#define P99__IS_97_GE_0 ,
+#define P99__IS_98_GE_0 ,
+#define P99__IS_99_GE_0 ,
+#define P99__IS_100_GE_0 ,
+#define P99__IS_101_GE_0 ,
+#define P99__IS_102_GE_0 ,
+#define P99__IS_103_GE_0 ,
+#define P99__IS_104_GE_0 ,
+#define P99__IS_105_GE_0 ,
+#define P99__IS_106_GE_0 ,
+#define P99__IS_107_GE_0 ,
+#define P99__IS_108_GE_0 ,
+#define P99__IS_109_GE_0 ,
+#define P99__IS_110_GE_0 ,
+#define P99__IS_111_GE_0 ,
+#define P99__IS_112_GE_0 ,
+#define P99__IS_113_GE_0 ,
+#define P99__IS_114_GE_0 ,
+#define P99__IS_115_GE_0 ,
+#define P99__IS_116_GE_0 ,
+#define P99__IS_117_GE_0 ,
+#define P99__IS_118_GE_0 ,
+#define P99__IS_119_GE_0 ,
+#define P99__IS_120_GE_0 ,
+#define P99__IS_121_GE_0 ,
 #define P99__dec_eval_0 0
 #define P99__dec_eval_1 1
 #define P99__dec_eval_2 2
@@ -2557,6 +5476,46 @@
 #define P99__dec_eval_79 79
 #define P99__dec_eval_80 80
 #define P99__dec_eval_81 81
+#define P99__dec_eval_82 82
+#define P99__dec_eval_83 83
+#define P99__dec_eval_84 84
+#define P99__dec_eval_85 85
+#define P99__dec_eval_86 86
+#define P99__dec_eval_87 87
+#define P99__dec_eval_88 88
+#define P99__dec_eval_89 89
+#define P99__dec_eval_90 90
+#define P99__dec_eval_91 91
+#define P99__dec_eval_92 92
+#define P99__dec_eval_93 93
+#define P99__dec_eval_94 94
+#define P99__dec_eval_95 95
+#define P99__dec_eval_96 96
+#define P99__dec_eval_97 97
+#define P99__dec_eval_98 98
+#define P99__dec_eval_99 99
+#define P99__dec_eval_100 100
+#define P99__dec_eval_101 101
+#define P99__dec_eval_102 102
+#define P99__dec_eval_103 103
+#define P99__dec_eval_104 104
+#define P99__dec_eval_105 105
+#define P99__dec_eval_106 106
+#define P99__dec_eval_107 107
+#define P99__dec_eval_108 108
+#define P99__dec_eval_109 109
+#define P99__dec_eval_110 110
+#define P99__dec_eval_111 111
+#define P99__dec_eval_112 112
+#define P99__dec_eval_113 113
+#define P99__dec_eval_114 114
+#define P99__dec_eval_115 115
+#define P99__dec_eval_116 116
+#define P99__dec_eval_117 117
+#define P99__dec_eval_118 118
+#define P99__dec_eval_119 119
+#define P99__dec_eval_120 120
+#define P99__dec_eval_121 121
 #define P99__dec_eval_minus_0 0
 #define P99__dec_eval_minus_1 -1
 #define P99__dec_eval_minus_2 -2
@@ -2639,6 +5598,46 @@
 #define P99__dec_eval_minus_79 -79
 #define P99__dec_eval_minus_80 -80
 #define P99__dec_eval_minus_81 -81
+#define P99__dec_eval_minus_82 -82
+#define P99__dec_eval_minus_83 -83
+#define P99__dec_eval_minus_84 -84
+#define P99__dec_eval_minus_85 -85
+#define P99__dec_eval_minus_86 -86
+#define P99__dec_eval_minus_87 -87
+#define P99__dec_eval_minus_88 -88
+#define P99__dec_eval_minus_89 -89
+#define P99__dec_eval_minus_90 -90
+#define P99__dec_eval_minus_91 -91
+#define P99__dec_eval_minus_92 -92
+#define P99__dec_eval_minus_93 -93
+#define P99__dec_eval_minus_94 -94
+#define P99__dec_eval_minus_95 -95
+#define P99__dec_eval_minus_96 -96
+#define P99__dec_eval_minus_97 -97
+#define P99__dec_eval_minus_98 -98
+#define P99__dec_eval_minus_99 -99
+#define P99__dec_eval_minus_100 -100
+#define P99__dec_eval_minus_101 -101
+#define P99__dec_eval_minus_102 -102
+#define P99__dec_eval_minus_103 -103
+#define P99__dec_eval_minus_104 -104
+#define P99__dec_eval_minus_105 -105
+#define P99__dec_eval_minus_106 -106
+#define P99__dec_eval_minus_107 -107
+#define P99__dec_eval_minus_108 -108
+#define P99__dec_eval_minus_109 -109
+#define P99__dec_eval_minus_110 -110
+#define P99__dec_eval_minus_111 -111
+#define P99__dec_eval_minus_112 -112
+#define P99__dec_eval_minus_113 -113
+#define P99__dec_eval_minus_114 -114
+#define P99__dec_eval_minus_115 -115
+#define P99__dec_eval_minus_116 -116
+#define P99__dec_eval_minus_117 -117
+#define P99__dec_eval_minus_118 -118
+#define P99__dec_eval_minus_119 -119
+#define P99__dec_eval_minus_120 -120
+#define P99__dec_eval_minus_121 -121
 #define P99_DUPL2(...) __VA_ARGS__, P99_DUPL1(__VA_ARGS__)
 #define P99_DUPL3(...) __VA_ARGS__, P99_DUPL2(__VA_ARGS__)
 #define P99_DUPL4(...) __VA_ARGS__, P99_DUPL3(__VA_ARGS__)
@@ -2719,6 +5718,46 @@
 #define P99_DUPL79(...) __VA_ARGS__, P99_DUPL78(__VA_ARGS__)
 #define P99_DUPL80(...) __VA_ARGS__, P99_DUPL79(__VA_ARGS__)
 #define P99_DUPL81(...) __VA_ARGS__, P99_DUPL80(__VA_ARGS__)
+#define P99_DUPL82(...) __VA_ARGS__, P99_DUPL81(__VA_ARGS__)
+#define P99_DUPL83(...) __VA_ARGS__, P99_DUPL82(__VA_ARGS__)
+#define P99_DUPL84(...) __VA_ARGS__, P99_DUPL83(__VA_ARGS__)
+#define P99_DUPL85(...) __VA_ARGS__, P99_DUPL84(__VA_ARGS__)
+#define P99_DUPL86(...) __VA_ARGS__, P99_DUPL85(__VA_ARGS__)
+#define P99_DUPL87(...) __VA_ARGS__, P99_DUPL86(__VA_ARGS__)
+#define P99_DUPL88(...) __VA_ARGS__, P99_DUPL87(__VA_ARGS__)
+#define P99_DUPL89(...) __VA_ARGS__, P99_DUPL88(__VA_ARGS__)
+#define P99_DUPL90(...) __VA_ARGS__, P99_DUPL89(__VA_ARGS__)
+#define P99_DUPL91(...) __VA_ARGS__, P99_DUPL90(__VA_ARGS__)
+#define P99_DUPL92(...) __VA_ARGS__, P99_DUPL91(__VA_ARGS__)
+#define P99_DUPL93(...) __VA_ARGS__, P99_DUPL92(__VA_ARGS__)
+#define P99_DUPL94(...) __VA_ARGS__, P99_DUPL93(__VA_ARGS__)
+#define P99_DUPL95(...) __VA_ARGS__, P99_DUPL94(__VA_ARGS__)
+#define P99_DUPL96(...) __VA_ARGS__, P99_DUPL95(__VA_ARGS__)
+#define P99_DUPL97(...) __VA_ARGS__, P99_DUPL96(__VA_ARGS__)
+#define P99_DUPL98(...) __VA_ARGS__, P99_DUPL97(__VA_ARGS__)
+#define P99_DUPL99(...) __VA_ARGS__, P99_DUPL98(__VA_ARGS__)
+#define P99_DUPL100(...) __VA_ARGS__, P99_DUPL99(__VA_ARGS__)
+#define P99_DUPL101(...) __VA_ARGS__, P99_DUPL100(__VA_ARGS__)
+#define P99_DUPL102(...) __VA_ARGS__, P99_DUPL101(__VA_ARGS__)
+#define P99_DUPL103(...) __VA_ARGS__, P99_DUPL102(__VA_ARGS__)
+#define P99_DUPL104(...) __VA_ARGS__, P99_DUPL103(__VA_ARGS__)
+#define P99_DUPL105(...) __VA_ARGS__, P99_DUPL104(__VA_ARGS__)
+#define P99_DUPL106(...) __VA_ARGS__, P99_DUPL105(__VA_ARGS__)
+#define P99_DUPL107(...) __VA_ARGS__, P99_DUPL106(__VA_ARGS__)
+#define P99_DUPL108(...) __VA_ARGS__, P99_DUPL107(__VA_ARGS__)
+#define P99_DUPL109(...) __VA_ARGS__, P99_DUPL108(__VA_ARGS__)
+#define P99_DUPL110(...) __VA_ARGS__, P99_DUPL109(__VA_ARGS__)
+#define P99_DUPL111(...) __VA_ARGS__, P99_DUPL110(__VA_ARGS__)
+#define P99_DUPL112(...) __VA_ARGS__, P99_DUPL111(__VA_ARGS__)
+#define P99_DUPL113(...) __VA_ARGS__, P99_DUPL112(__VA_ARGS__)
+#define P99_DUPL114(...) __VA_ARGS__, P99_DUPL113(__VA_ARGS__)
+#define P99_DUPL115(...) __VA_ARGS__, P99_DUPL114(__VA_ARGS__)
+#define P99_DUPL116(...) __VA_ARGS__, P99_DUPL115(__VA_ARGS__)
+#define P99_DUPL117(...) __VA_ARGS__, P99_DUPL116(__VA_ARGS__)
+#define P99_DUPL118(...) __VA_ARGS__, P99_DUPL117(__VA_ARGS__)
+#define P99_DUPL119(...) __VA_ARGS__, P99_DUPL118(__VA_ARGS__)
+#define P99_DUPL120(...) __VA_ARGS__, P99_DUPL119(__VA_ARGS__)
+#define P99_DUPL121(...) __VA_ARGS__, P99_DUPL120(__VA_ARGS__)
 #define P99__FOR2(NAME, OP, FUNC, ...) \
 	OP(NAME, 1, P99__FOR1(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 1))
 #define P99__FOR3(NAME, OP, FUNC, ...) \
@@ -2877,6 +5916,86 @@
 	OP(NAME, 78, P99__FOR78(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 78))
 #define P99__FOR80(NAME, OP, FUNC, ...) \
 	OP(NAME, 79, P99__FOR79(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 79))
+#define P99__FOR81(NAME, OP, FUNC, ...) \
+	OP(NAME, 80, P99__FOR80(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 80))
+#define P99__FOR82(NAME, OP, FUNC, ...) \
+	OP(NAME, 81, P99__FOR81(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 81))
+#define P99__FOR83(NAME, OP, FUNC, ...) \
+	OP(NAME, 82, P99__FOR82(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 82))
+#define P99__FOR84(NAME, OP, FUNC, ...) \
+	OP(NAME, 83, P99__FOR83(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 83))
+#define P99__FOR85(NAME, OP, FUNC, ...) \
+	OP(NAME, 84, P99__FOR84(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 84))
+#define P99__FOR86(NAME, OP, FUNC, ...) \
+	OP(NAME, 85, P99__FOR85(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 85))
+#define P99__FOR87(NAME, OP, FUNC, ...) \
+	OP(NAME, 86, P99__FOR86(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 86))
+#define P99__FOR88(NAME, OP, FUNC, ...) \
+	OP(NAME, 87, P99__FOR87(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 87))
+#define P99__FOR89(NAME, OP, FUNC, ...) \
+	OP(NAME, 88, P99__FOR88(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 88))
+#define P99__FOR90(NAME, OP, FUNC, ...) \
+	OP(NAME, 89, P99__FOR89(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 89))
+#define P99__FOR91(NAME, OP, FUNC, ...) \
+	OP(NAME, 90, P99__FOR90(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 90))
+#define P99__FOR92(NAME, OP, FUNC, ...) \
+	OP(NAME, 91, P99__FOR91(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 91))
+#define P99__FOR93(NAME, OP, FUNC, ...) \
+	OP(NAME, 92, P99__FOR92(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 92))
+#define P99__FOR94(NAME, OP, FUNC, ...) \
+	OP(NAME, 93, P99__FOR93(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 93))
+#define P99__FOR95(NAME, OP, FUNC, ...) \
+	OP(NAME, 94, P99__FOR94(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 94))
+#define P99__FOR96(NAME, OP, FUNC, ...) \
+	OP(NAME, 95, P99__FOR95(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 95))
+#define P99__FOR97(NAME, OP, FUNC, ...) \
+	OP(NAME, 96, P99__FOR96(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 96))
+#define P99__FOR98(NAME, OP, FUNC, ...) \
+	OP(NAME, 97, P99__FOR97(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 97))
+#define P99__FOR99(NAME, OP, FUNC, ...) \
+	OP(NAME, 98, P99__FOR98(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 98))
+#define P99__FOR100(NAME, OP, FUNC, ...) \
+	OP(NAME, 99, P99__FOR99(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 99))
+#define P99__FOR101(NAME, OP, FUNC, ...) \
+	OP(NAME, 100, P99__FOR100(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 100))
+#define P99__FOR102(NAME, OP, FUNC, ...) \
+	OP(NAME, 101, P99__FOR101(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 101))
+#define P99__FOR103(NAME, OP, FUNC, ...) \
+	OP(NAME, 102, P99__FOR102(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 102))
+#define P99__FOR104(NAME, OP, FUNC, ...) \
+	OP(NAME, 103, P99__FOR103(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 103))
+#define P99__FOR105(NAME, OP, FUNC, ...) \
+	OP(NAME, 104, P99__FOR104(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 104))
+#define P99__FOR106(NAME, OP, FUNC, ...) \
+	OP(NAME, 105, P99__FOR105(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 105))
+#define P99__FOR107(NAME, OP, FUNC, ...) \
+	OP(NAME, 106, P99__FOR106(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 106))
+#define P99__FOR108(NAME, OP, FUNC, ...) \
+	OP(NAME, 107, P99__FOR107(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 107))
+#define P99__FOR109(NAME, OP, FUNC, ...) \
+	OP(NAME, 108, P99__FOR108(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 108))
+#define P99__FOR110(NAME, OP, FUNC, ...) \
+	OP(NAME, 109, P99__FOR109(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 109))
+#define P99__FOR111(NAME, OP, FUNC, ...) \
+	OP(NAME, 110, P99__FOR110(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 110))
+#define P99__FOR112(NAME, OP, FUNC, ...) \
+	OP(NAME, 111, P99__FOR111(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 111))
+#define P99__FOR113(NAME, OP, FUNC, ...) \
+	OP(NAME, 112, P99__FOR112(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 112))
+#define P99__FOR114(NAME, OP, FUNC, ...) \
+	OP(NAME, 113, P99__FOR113(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 113))
+#define P99__FOR115(NAME, OP, FUNC, ...) \
+	OP(NAME, 114, P99__FOR114(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 114))
+#define P99__FOR116(NAME, OP, FUNC, ...) \
+	OP(NAME, 115, P99__FOR115(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 115))
+#define P99__FOR117(NAME, OP, FUNC, ...) \
+	OP(NAME, 116, P99__FOR116(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 116))
+#define P99__FOR118(NAME, OP, FUNC, ...) \
+	OP(NAME, 117, P99__FOR117(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 117))
+#define P99__FOR119(NAME, OP, FUNC, ...) \
+	OP(NAME, 118, P99__FOR118(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 118))
+#define P99__FOR120(NAME, OP, FUNC, ...) \
+	OP(NAME, 119, P99__FOR119(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 119))
 
 /* The preprocessor always computes with the precision of uintmax_t */
 /* so for the preprocessor this is equivalent to UINITMAX_MAX       */
@@ -3781,6 +6900,14 @@
 
 
 #define P99__double_constants
+
+//! @}
+
+//! @addtogroup classification
+//! @{
+
+
+#define P99__classification
 
 //! @}
 
