@@ -6,14 +6,36 @@ if 0;               #### for this magic, see findSvnAuthors ####
 #
 #
 
-my $maxnumber = 81;
+my $maxnumber = 121;
+
+my @qualpar_C99
+    = sort qw(const restrict volatile);
+
+my @intpar_C99
+    = sort qw(char int long short signed unsigned);
+
+my @realpar2_C99
+    = sort qw(double float);
+
+my @realpar_C99
+    = sort(qw(long), @realpar2_C99);
+
+my @complpar_C99
+    = qw(_Complex _Imaginary);
+
+my @floatpar_C99
+    = sort(@complpar_C99, @realpar_C99);
+
+my @typepar_C99
+    = sort(qw(_Bool void), @intpar_C99, @realpar2_C99, @complpar_C99, @qualpar_C99);
+
 
 # these are the normative keywords in C99
 my @keywords_C99
-    = sort qw( _Bool _Complex _Imaginary auto break case char
-         const continue default do double else enum extern float for goto if
-         inline int long register restrict return short signed sizeof static
-         struct switch typedef union unsigned void volatile while );
+    = sort(qw(auto break case continue default do else enum extern for goto if
+              inline register return sizeof static
+              struct switch typedef union while),
+           @typepar_C99);
 
 # these are macros that are usually defined by C99
 my @macros_C99
@@ -565,9 +587,234 @@ PREPRO2
 
 print "#define P99__IS_${_}_EQ_${_}(...) ,\n"
     foreach (0.. $maxnumber, @token_C99);
+print "#define P99__TOK_${_}_STARTS_${_} ,\n"
+    foreach (0.. $maxnumber, @token_C99);
 print "/*! \@brief Test if the argument consists of exactly the token \@c ${_} */\
 #define P99_IS_EQ_${_}(...) P99_TOK_EQ(${_}, __VA_ARGS__)\n"
     foreach (0.. $maxnumber, @token_C99);
+print "#define P99__EAT_${_} \n"
+    foreach (0.. $maxnumber, @token_C99);
+print "#define P99__TOKEN_${_} ,\n"
+    foreach (0.. $maxnumber, @token_C99);
+print "#define P99__QUALIFIER_${_} ,\n"
+    foreach (@qualpar_C99);
+
+
+print "#define P99__VOID_void ,\n";
+print "#define P99__BOOL__Bool ,\n";
+print "#define P99__BOOL_bool ,\n";
+print "#define P99__INTEGER_${_} ,\n"
+    foreach (@intpar_C99);
+print "#define P99__REAL_${_} ,\n"
+    foreach (@realpar_C99);
+print "#define P99__FLOAT_${_} ,\n"
+    foreach (@floatpar_C99);
+print "#define P99__TYPE_${_} ,\n"
+    foreach (@typepar_C99);
+
+
+print "#define P99__VOID_QUAL_${_} ,\n"
+    foreach ("void", @qualpar_C99);
+print "#define P99__BOOL_QUAL_${_} ,\n"
+    foreach ("_Bool", "bool", @qualpar_C99);
+print "#define P99__INTEGER_QUAL_${_} ,\n"
+    foreach (@intpar_C99, @qualpar_C99);
+print "#define P99__REAL_QUAL_${_} ,\n"
+    foreach (@realpar_C99, @qualpar_C99);
+print "#define P99__FLOAT_QUAL_${_} ,\n"
+    foreach (@floatpar_C99, @qualpar_C99);
+print "#define P99__TYPE_QUAL_${_} ,\n"
+    foreach (@typepar_C99, @qualpar_C99);
+
+print "#define P99__KEYWORD_${_} ,\n"
+    foreach (@keywords_C99);
+print "#define P99__RESERVED_${_} ,\n"
+    foreach (@token_C99);
+
+foreach my $kind (
+    # the three different type qualifiers
+    "CONST", "VOLATILE", "RESTRICT",
+    # the unqualified type classifiers
+    "BOOL", "VOID", "INTEGER", "REAL", "FLOAT", "TYPE",
+    # the qualified type classifiers
+    "BOOL_QUAL", "VOID_QUAL", "INTEGER_QUAL", "REAL_QUAL", "FLOAT_QUAL", "TYPE_QUAL",
+    # general keyword and reserved words
+    "KEYWORD", "RESERVED"
+    ) {
+    print << "KINDS";
+#define P99__${kind}7(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(8)(7)
+#define P99__${kind}6(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}7(P99__EAT_FIRST(SEQ)))(6)
+#define P99__${kind}5(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}6(P99__EAT_FIRST(SEQ)))(5)
+#define P99__${kind}4(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}5(P99__EAT_FIRST(SEQ)))(4)
+#define P99__${kind}3(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}4(P99__EAT_FIRST(SEQ)))(3)
+#define P99__${kind}2(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}3(P99__EAT_FIRST(SEQ)))(2)
+#define P99__${kind}1(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}2(P99__EAT_FIRST(SEQ)))(1)
+#define P99__${kind}_CLASSIFY_7(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ) P99__${kind}_CLASSIFY_6(P99__EAT_FIRST(SEQ))
+#define P99__${kind}_CLASSIFY_6(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ) P99__${kind}_CLASSIFY_5(P99__EAT_FIRST(SEQ))
+#define P99__${kind}_CLASSIFY_5(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ) P99__${kind}_CLASSIFY_4(P99__EAT_FIRST(SEQ))
+#define P99__${kind}_CLASSIFY_4(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ) P99__${kind}_CLASSIFY_3(P99__EAT_FIRST(SEQ))
+#define P99__${kind}_CLASSIFY_3(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ) P99__${kind}_CLASSIFY_2(P99__EAT_FIRST(SEQ))
+#define P99__${kind}_CLASSIFY_2(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ) P99__${kind}_CLASSIFY_1(P99__EAT_FIRST(SEQ))
+#define P99__${kind}_CLASSIFY_1(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ)
+#define P99__${kind}_CLASSIFY___(CODE) P99_IF_ELSE(P99__${kind}_VALIDATE(CODE))(P99_PASTE2(P99__${kind}_CLASSIFY__, CODE))(INVALID_${kind}_TYPE_EXPRESSION[CODE])
+#define P99__${kind}_CLASSIFY__(N, ...) P99__${kind}_CLASSIFY___(P99__NARG(__VA_ARGS__))
+#define P99__${kind}_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__${kind}_CLASSIFY__(N, P99_PASTE2(P99__${kind}_CLASSIFY_, N)(SEQ)))
+/*! \@brief Classify the tokens in sequence \@a SEQ that all are of kind ${kind} */
+#define P99__${kind}_CLASSIFY(SEQ) P99__${kind}_CLASSIFY_(P99_${kind}_QUAL_LEN(SEQ), SEQ)
+/*! \@brief Check if \@a CODE corresponds to a valid combination of tokens of kind ${kind} */
+#define P99__${kind}_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__${kind}_VALIDATE__, CODE)))
+/*! \@brief Count the number of tokens in sequence \@a SEQ that all are of kind ${kind} */
+#define P99_${kind}_LEN(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}1(P99__EAT_FIRST(SEQ)))(0)
+/*! \@brief Test if the token sequence \@a SEQ starts with a token of kind ${kind} */
+#define P99_IS_${kind}_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__${kind}_, SEQ))
+KINDS
+}
+
+# const is the only keyword that classifies as const qualifier
+my @constClass = ("const");
+# several occurrences just map to const again
+my %constClass = (
+    1 =>   "",
+    2 =>	"const",
+    3 =>	"const",
+    4 =>	"const",
+    5 =>	"const",
+    6 =>	"const",
+    7 =>	"const",
+    );
+
+# volatile is the only keyword that classifies as volatile qualifier
+my @volatileClass = ("volatile");
+# several occurrences just map to volatile again
+my %volatileClass = (
+    1 =>   "",
+    2 =>	"volatile",
+    3 =>	"volatile",
+    4 =>	"volatile",
+    5 =>	"volatile",
+    6 =>	"volatile",
+    7 =>	"volatile",
+    );
+
+# void is the only keyword that classifies as void type
+my @voidClass = ("void");
+# only allowed once
+my %voidClass = (
+    1 =>   "",
+    2 =>	"v",
+    );
+
+# _Bool is the only keyword that classifies as _Bool type
+# bool is only a macro and will be replaced, anyhow
+my @boolClass = ("_Bool");
+# only allowed once
+my %boolClass = (
+    1 =>   "",
+    2 =>	"b",
+    );
+
+# several keyword that classify as integer types
+my @integerClass = ("long", "", "short", "char", "signed", "unsigned", "int");
+# they are allowed only once but long which might appear twice
+my %integerClass = (
+    2 => "l",
+    3 => "ll",
+    5 => "h",
+    9 => "c",
+
+    17 => "i",
+    18 => "l",
+    19 => "ll",
+    21 => "h",
+    25 => "hh",
+
+    33 => "u",
+    34 => "ul",
+    35 => "ull",
+    37 => "uh",
+    41 => "uhh",
+
+    65 => "i",
+    66 => "l",
+    67 => "ll",
+    69 => "h",
+
+    81 => "i",
+    82 => "l",
+    83 => "ll",
+    85 => "h",
+
+    97 => "u",
+    98 => "ul",
+    99 => "ull",
+    101 => "uh",
+    );
+
+# several keyword that classify as float types
+my @floatClass = ("long", "", "double", "", "float", "_Complex");
+# they are allowed only once but long which might appear twice
+my %floatClass = (
+    5 => "d",
+    6 => "ld",
+    17 => "f",
+    37 => "dc",
+    38 => "ldc",
+    49 => "fc",
+    );
+
+sub classify ($\@\%) {
+    my ($Class, $toks, $keys) = (@_);
+    my @toks = @$toks;
+    my %keys = %{$keys};
+    my $mult = 1;
+    my $prev = "";
+    foreach my $tok (@toks) {
+        if ($tok) {
+            print "#define P99__${Class}_CLASSIFY_${tok}\t/* ${mult} */\t" . "," x $mult . "\n";
+        } else {
+            print STDERR "found empty token\n";
+        }
+        $mult *= 2;
+    }
+    foreach my $key (sort {$a <=> $b} keys %keys) {
+        print "#define P99__${Class}_CLASSIFY__${key}\t" . $keys{$key}  . "\n";
+        print "#define P99__${Class}_VALIDATE__${key}\t,\n";
+    }
+}
+
+classify("CONST", @constClass, %constClass);
+classify("VOLATILE", @volatileClass, %volatileClass);
+classify("VOID", @voidClass, %voidClass);
+classify("BOOL", @boolClass, %boolClass);
+classify("INTEGER", @integerClass, %integerClass);
+classify("FLOAT", @floatClass, %floatClass);
+
+
+my %builtinType = (
+    "b" => "_Bool",
+    "c" => "char",
+    "h" => "short",
+    "hh" => "signed char",
+    "i" => "signed",
+    "l" => "signed long",
+    "ll" => "signed long long",
+    "u" => "unsigned",
+    "uh" => "unsigned short",
+    "uhh" => "unsigned char",
+    "ul" => "unsigned long",
+    "ull" => "unsigned long long",
+    "v"	=> "void",
+    "d" => "double",
+    "ld" => "long double",
+    "f" => "float",
+    "dc" => "double _Complex",
+    "ldc" => "long double _Complex",
+    "fc" => "float _Complex",
+    );
+
+print "#define P99__BUILTIN_TYPE_${_}\t" . $builtinType{${_}} . "\n"
+    foreach sort keys(%builtinType);
+
 
 print <<'PREPRO3';
 /**
@@ -697,6 +944,7 @@ my @groups =
         [ "preprocessor_for" ],
         [ "preprocessor_blocks" ],
         [ "double_constants" ],
+        [ "classification" ],
       ],
       [ "list_processing",
         [ "basic_list_operations" ],
