@@ -358,6 +358,17 @@
 /**
  ** @page utilities Implemented utilities
  **
+ ** P99 implements a lot of different features through macros and
+ ** functions, too much to mention explicitly in such an overview. You
+ ** will find a structured hierarchy of descriptions below the
+ ** "Modules" tag and the documentation of the individual items under
+ ** "Files" -> "Globals". Here we will introduce some main features:
+ **
+ **  -# @ref defaults
+ **  -# @ref blocks
+ **  -# @ref condi
+ **  -# @ref alloc
+ **
  ** @section defaults Default arguments to functions
  **
  ** In section @ref temporaries we have seen a way to provide default
@@ -615,6 +626,19 @@
  ** according to @c BLA. If it expands to an empty token, the first
  ** variant is produced, if it is at least one non-empty token the
  ** second one results.
+ **
+ ** P99 also implements logical and arithmetic operations in the
+ ** preprocessor. Logical operations just evaluate to the tokens @c 0
+ ** or @c 1. Arithmetic is restricted to small decimal numbers, less
+ ** than ::P99_MAX_NUMBER. Just some examples
+ **
+ ** @code
+ ** P99_IS_EQ(int, double)    ==> 0
+ ** P99_IS_EQ(static, static) ==> 1
+ ** P99_DEC_ADD(4, 5)         ==> 9
+ ** @endcode
+ **
+ ** See @ref preprocessor_operators for more about that.
  **
  ** @section alloc Allocation and initialization facilities
  **/
