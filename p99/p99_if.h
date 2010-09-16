@@ -142,7 +142,7 @@
  **
  ** Observe the parenthesis around tokens_A and tokens_B.
  **/
-#define P99_IF_ELSE(...) P99_IF_EQ_1(P99_IS_EQ_0(__VA_ARGS__))
+#define P99_IF_ELSE(...) P99_IF_EQ_0(P99_IS_EQ_0(__VA_ARGS__))
 
 #define P99_IF_void(...) P99_IF_EQ_1(P99_IS_EQ_void(__VA_ARGS__))
 
