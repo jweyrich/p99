@@ -1,19 +1,21 @@
-
-/*
-** p99_c99_default.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Mon Sep  6 10:40:09 2010 Jens Gustedt
-** Last update Mon Sep  6 10:40:09 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	P99_C99_DEFAULT_H_
 # define   	P99_C99_DEFAULT_H_
 
-#define P99__C99_DEFARG_DOCU(NAME, RET, ...)                            \
-/*! @brief Default arguments for C99 function NAME */                   \
+#define P99__C99_DEFARG_DOCU(NAME, RET, ...)                              \
+/*! @brief Default arguments for C99 function NAME */                     \
 /*! This macro hides the function @code RET NAME(__VA_ARGS__) @endcode */ \
 /*! @see P99_CALL_DEFARG */
 P99_MACRO_END(C99_DEFARG_DOCU);
@@ -226,33 +228,33 @@ P99__C99_DEFARG_DOCU(strtold, long double, char const *nptr, char **endptr)
 #define strtold(...) P99_CALL_DEFARG(strtold, 2, __VA_ARGS__)
 #define strtold_defarg_1() 0
 
-#define P99__DECLARE_STRTO(SUFF, RET, MIN, MAX)                         \
-/*! @brief A type safe wrapper for string to RET conversion */          \
-/*! @see stringconversion */                                            \
-p99_inline                                                              \
+#define P99__DECLARE_STRTO(SUFF, RET, MIN, MAX)                              \
+/*! @brief A type safe wrapper for string to RET conversion */               \
+/*! @see stringconversion */                                                 \
+p99_inline                                                                   \
 RET P99_PASTE2(p99_strto, SUFF)(char const *nptr, char **endptr, int base) { \
-  long long ret = strtoll(nptr, endptr, base);                          \
-  if ((ret > MAX || ret < MIN)                                          \
-      && (!errno)) errno = ERANGE;                                      \
-  if (ret > MAX) ret = MAX;                                             \
-  if (ret < MIN) ret = MIN;                                             \
-  return ret;                                                           \
-}                                                                       \
+  long long ret = strtoll(nptr, endptr, base);                               \
+  if ((ret > MAX || ret < MIN)                                               \
+      && (!errno)) errno = ERANGE;                                           \
+  if (ret > MAX) ret = MAX;                                                  \
+  if (ret < MIN) ret = MIN;                                                  \
+  return ret;                                                                \
+}                                                                            \
 P99_MACRO_END(p99_strto, SUFF)
 
 
-#define P99__DECLARE_STRTOU(SUFF, RET, MAX)                             \
-/*! @brief A type safe wrapper for string to RET conversion */          \
-/*! @see stringconversion */                                            \
-p99_inline                                                              \
+#define P99__DECLARE_STRTOU(SUFF, RET, MAX)                                   \
+/*! @brief A type safe wrapper for string to RET conversion */                \
+/*! @see stringconversion */                                                  \
+p99_inline                                                                    \
 RET P99_PASTE2(p99_strtou, SUFF)(char const *nptr, char **endptr, int base) { \
-  unsigned long long ret = strtoull(nptr, endptr, base);                \
-  if (ret > MAX) {                                                      \
-    if (!errno) errno = ERANGE;                                         \
-    ret = MAX;                                                          \
-  }                                                                     \
-  return ret;                                                           \
-}                                                                       \
+  unsigned long long ret = strtoull(nptr, endptr, base);                      \
+  if (ret > MAX) {                                                            \
+    if (!errno) errno = ERANGE;                                               \
+    ret = MAX;                                                                \
+  }                                                                           \
+  return ret;                                                                 \
+}                                                                             \
 P99_MACRO_END(p99_strtou, SUFF)
 
 P99__DECLARE_STRTO(c, char, SCHAR_MIN, SCHAR_MAX);

@@ -1,13 +1,16 @@
-/*
-** p99_double.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Mon Aug 23 22:58:44 2010 Jens Gustedt
-** Last update Mon Aug 23 22:58:44 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	P99_DOUBLE_H_
 # define   	P99_DOUBLE_H_
 
@@ -28,14 +31,14 @@
  ** @{
  */
 
-#define P99__DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)       \
-  P99_IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(              \
-  P99_IF_EMPTY(INT)(0)(INT),                                    \
-  .,                                                            \
-  P99_IF_EMPTY(FRAC)(0)(FRAC),                                  \
-  E,                                                            \
-  P99_IF_EMPTY(ESIGN)(+)(ESIGN),                                \
-  P99_IF_EMPTY(EXP)(0)(EXP),                                    \
+#define P99__DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)      \
+  P99_IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(             \
+  P99_IF_EMPTY(INT)(0)(INT),                                   \
+  .,                                                           \
+  P99_IF_EMPTY(FRAC)(0)(FRAC),                                 \
+  E,                                                           \
+  P99_IF_EMPTY(ESIGN)(+)(ESIGN),                               \
+  P99_IF_EMPTY(EXP)(0)(EXP),                                   \
   __VA_ARGS__)
 
 #ifdef DOXYGEN
@@ -57,22 +60,22 @@
  **/
 #define P99_DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP)
 #else
-#define P99_DEC_DOUBLE(...)                     \
-  P99_IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)       \
-  (P99__DEC_DOUBLE(__VA_ARGS__))                \
+#define P99_DEC_DOUBLE(...)                                    \
+  P99_IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)                      \
+  (P99__DEC_DOUBLE(__VA_ARGS__))                               \
   (P99__DEC_DOUBLE(__VA_ARGS__,,,,,))
 #endif
 
 
-#define P99__HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP, ...)      \
-  P99_IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(                      \
-  0x,                                                                   \
-  P99_IF_EMPTY(HEXINT)(0)(HEXINT),                                      \
-  .,                                                                    \
-  P99_IF_EMPTY(HEXFRAC)(0)(HEXFRAC),                                    \
-  P,                                                                    \
-  P99_IF_EMPTY(ESIGN)(+)(ESIGN),                                        \
-  P99_IF_EMPTY(BINEXP)(0)(BINEXP),                                      \
+#define P99__HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP, ...) \
+  P99_IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(                 \
+  0x,                                                              \
+  P99_IF_EMPTY(HEXINT)(0)(HEXINT),                                 \
+  .,                                                               \
+  P99_IF_EMPTY(HEXFRAC)(0)(HEXFRAC),                               \
+  P,                                                               \
+  P99_IF_EMPTY(ESIGN)(+)(ESIGN),                                   \
+  P99_IF_EMPTY(BINEXP)(0)(BINEXP),                                 \
   __VA_ARGS__)
 
 #ifdef DOXYGEN
@@ -83,9 +86,9 @@
  **/
 #define P99_HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP)
 #else
-#define P99_HEX_DOUBLE(...)                     \
-  P99_IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)       \
-  (P99__HEX_DOUBLE(__VA_ARGS__))                \
+#define P99_HEX_DOUBLE(...)                                    \
+  P99_IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)                      \
+  (P99__HEX_DOUBLE(__VA_ARGS__))                               \
   (P99__HEX_DOUBLE(__VA_ARGS__,,,,,))
 #endif
 

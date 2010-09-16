@@ -1,3 +1,16 @@
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef P99_COMPILER_H
 #define P99_COMPILER_H
 
@@ -46,29 +59,29 @@
 /* be sure to put all compilers that are faking gcc before gcc itself */
 #if defined(__clang__)
 # define P99_COMPILER P99_COMPILER_CLANG
-# define P99_COMPILER_VERSION                   \
- "clang " P99__STRINGIFY(__clang__)             \
- "; gnu "                                       \
- P99__STRINGIFY(__GNUC__) "."                   \
- P99__STRINGIFY(__GNUC_MINOR__) "."             \
+# define P99_COMPILER_VERSION                                  \
+ "clang " P99__STRINGIFY(__clang__)                            \
+ "; gnu "                                                      \
+ P99__STRINGIFY(__GNUC__) "."                                  \
+ P99__STRINGIFY(__GNUC_MINOR__) "."                            \
  P99__STRINGIFY(__GNUC_PATCHLEVEL__)
 
 #elif defined(__INTEL_COMPILER)
 # define P99_COMPILER P99_COMPILER_INTEL
-# define P99_COMPILER_VERSION                   \
- "intel " __INTEL_COMPILER                      \
- "; gnu "                                       \
- P99__STRINGIFY(__GNUC__) "."                   \
- P99__STRINGIFY(__GNUC_MINOR__) "."             \
+# define P99_COMPILER_VERSION                                  \
+ "intel " __INTEL_COMPILER                                     \
+ "; gnu "                                                      \
+ P99__STRINGIFY(__GNUC__) "."                                  \
+ P99__STRINGIFY(__GNUC_MINOR__) "."                            \
  P99__STRINGIFY(__GNUC_PATCHLEVEL__)
 
 #elif defined(__OPEN64__)
 # define P99_COMPILER P99_COMPILER_OPEN64
-# define P99_COMPILER_VERSION                   \
- "open64 " __OPEN64__                           \
- "; gnu "                                       \
- P99__STRINGIFY(__GNUC__) "."                   \
- P99__STRINGIFY(__GNUC_MINOR__) "."             \
+# define P99_COMPILER_VERSION                                  \
+ "open64 " __OPEN64__                                          \
+ "; gnu "                                                      \
+ P99__STRINGIFY(__GNUC__) "."                                  \
+ P99__STRINGIFY(__GNUC_MINOR__) "."                            \
  P99__STRINGIFY(__GNUC_PATCHLEVEL__)
 
 /* compilers that (as far as we know) don't pretend to be gcc */
@@ -118,10 +131,10 @@
 /* put gcc last */
 #elif defined(__GNUC__)
 # define P99_COMPILER P99_COMPILER_GNU
-# define P99_COMPILER_VERSION                   \
- "gnu "                                         \
- P99__STRINGIFY(__GNUC__) "."                   \
- P99__STRINGIFY(__GNUC_MINOR__) "."             \
+# define P99_COMPILER_VERSION                                  \
+ "gnu "                                                        \
+ P99__STRINGIFY(__GNUC__) "."                                  \
+ P99__STRINGIFY(__GNUC_MINOR__) "."                            \
  P99__STRINGIFY(__GNUC_PATCHLEVEL__)
 
 #else

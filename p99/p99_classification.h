@@ -1,13 +1,16 @@
-/*
-** p99_classification.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Thu Sep 16 11:48:55 2010 Jens Gustedt
-** Last update Thu Sep 16 11:48:55 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	P99_CLASSIFICATION_H_
 # define   	P99_CLASSIFICATION_H_
 
@@ -108,19 +111,19 @@
  **/
 #define  P99_BUILTIN_TYPE(CODE)  P99_PASTE2(P99__BUILTIN, P99_PASTE2(_TYPE_, CODE))
 
-#define P99__TYPE_NORMALIZE_(CODE, CONS, VOLA, SEQ)     \
-P99_IF_EMPTY(CODE)                                      \
-  (P99_IF_EMPTY(SEQ)(void)(SEQ))                        \
-  (P99_BUILTIN_TYPE(CODE)                               \
-   CONS                                                 \
-   VOLA                                                 \
+#define P99__TYPE_NORMALIZE_(CODE, CONS, VOLA, SEQ)            \
+P99_IF_EMPTY(CODE)                                             \
+  (P99_IF_EMPTY(SEQ)(void)(SEQ))                               \
+  (P99_BUILTIN_TYPE(CODE)                                      \
+   CONS                                                        \
+   VOLA                                                        \
   )
 
-#define P99__TYPE_NORMALIZE(N, CODE, SEQ)               \
-P99__TYPE_NORMALIZE_(CODE,                              \
-                     P99__CONST_CLASSIFY_(N, SEQ),      \
-                     P99__VOLATILE_CLASSIFY_(N, SEQ),   \
-                     SEQ                                \
+#define P99__TYPE_NORMALIZE(N, CODE, SEQ)                      \
+P99__TYPE_NORMALIZE_(CODE,                                     \
+                     P99__CONST_CLASSIFY_(N, SEQ),             \
+                     P99__VOLATILE_CLASSIFY_(N, SEQ),          \
+                     SEQ                                       \
                      )
 /**
  ** @brief Normalize a @c void type expression.
@@ -129,7 +132,7 @@ P99__TYPE_NORMALIZE_(CODE,                              \
  ** void type expression
  ** @return @c void, followed by the qualifiers
  **/
-#define P99_VOID_NORMALIZE(SEQ)                                        \
+#define P99_VOID_NORMALIZE(SEQ)                                             \
   P99__TYPE_NORMALIZE(P99_VOID_QUAL_LEN(SEQ), P99__VOID_CLASSIFY(SEQ), SEQ)
 
 /**
@@ -139,7 +142,7 @@ P99__TYPE_NORMALIZE_(CODE,                              \
  ** Boolean type expression
  ** @return @c _Bool followed by the qualifiers
  **/
-#define P99_BOOL_NORMALIZE(SEQ)                                        \
+#define P99_BOOL_NORMALIZE(SEQ)                                             \
   P99__TYPE_NORMALIZE(P99_BOOL_QUAL_LEN(SEQ), P99__BOOL_CLASSIFY(SEQ), SEQ)
 
 /**
@@ -152,7 +155,7 @@ P99__TYPE_NORMALIZE_(CODE,                              \
  **
  ** @return the normalized unqualified type, followed by the qualifiers
  **/
-#define P99_INTEGER_NORMALIZE(SEQ)                                        \
+#define P99_INTEGER_NORMALIZE(SEQ)                                                \
   P99__TYPE_NORMALIZE(P99_INTEGER_QUAL_LEN(SEQ), P99__INTEGER_CLASSIFY(SEQ), SEQ)
 
 /**
@@ -166,7 +169,7 @@ P99__TYPE_NORMALIZE_(CODE,                              \
  **
  ** @return the normalized unqualified type, followed by the qualifiers
  **/
-#define P99_FLOAT_NORMALIZE(SEQ)                                        \
+#define P99_FLOAT_NORMALIZE(SEQ)                                              \
   P99__TYPE_NORMALIZE(P99_FLOAT_QUAL_LEN(SEQ), P99__FLOAT_CLASSIFY(SEQ), SEQ)
 
 

@@ -1,13 +1,16 @@
-/*
-** orwl_macro.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Sun Feb 28 18:48:25 2010 Jens Gustedt
-** Last update Sun Feb 28 18:48:25 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	P99_PASTE_H_
 # define   	P99_PASTE_H_
 
@@ -69,13 +72,13 @@
  ** @endcode
  **/
 #define P99_PASTE2(_1, _2) P99_CAT2(_1, _2)
-#define P99_PASTE3(_1,	_2,	_3)	\
+#define P99_PASTE3(_1,	_2,	_3)                                 \
 	P99_PASTE2(P99_PASTE2(_1,	_2), _3)
-#define P99_PASTE4(_1,	_2,	_3,	_4)	\
+#define P99_PASTE4(_1,	_2,	_3,	_4)                             \
 	P99_PASTE2(P99_PASTE3(_1,	_2,	_3), _4)
-#define P99_PASTE5(_1,	_2,	_3,	_4,	_5)	\
+#define P99_PASTE5(_1,	_2,	_3,	_4,	_5)                         \
 	P99_PASTE2(P99_PASTE4(_1,	_2,	_3,	_4), _5)
-#define P99_PASTE6(_1,	_2,	_3,	_4,	_5,	_6)	\
+#define P99_PASTE6(_1,	_2,	_3,	_4,	_5,	_6)                     \
 	P99_PASTE2(P99_PASTE5(_1,	_2,	_3,	_4,	_5), _6)
 
 

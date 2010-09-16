@@ -1,13 +1,16 @@
-/*
-** p99_block.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Wed Jul 14 10:07:54 2010 Jens Gustedt
-** Last update Wed Jul 14 10:07:54 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	P99_BLOCK_H_
 # define   	P99_BLOCK_H_
 
@@ -54,13 +57,13 @@
  ** and this would trigger an assertion whenever the condition is not
  ** fulfilled when entering or leaving the block.
  **/
-#define P99_PROTECTED_BLOCK(BEFORE, AFTER)                              \
-for (int _one1_ = 1;                                                    \
-     /* be sure to execute BEFORE only at the first evaluation */       \
-     (_one1_ ? ((void)(BEFORE), _one1_) : _one1_);                      \
-     /* run AFTER exactly once */                                       \
-     ((void)(AFTER), _one1_ = 0))                                       \
-  /* Ensure that a `break' will still execute AFTER */                  \
+#define P99_PROTECTED_BLOCK(BEFORE, AFTER)                        \
+for (int _one1_ = 1;                                              \
+     /* be sure to execute BEFORE only at the first evaluation */ \
+     (_one1_ ? ((void)(BEFORE), _one1_) : _one1_);                \
+     /* run AFTER exactly once */                                 \
+     ((void)(AFTER), _one1_ = 0))                                 \
+  /* Ensure that a `break' will still execute AFTER */            \
   for (; _one1_; _one1_ = 0)
 
 /**
@@ -82,14 +85,14 @@ for (int _one1_ = 1;                                                    \
  ** argument to @a INITIAL. @a BEFORE and @a AFTER may then lock resp
  ** unlock that mutex.
  **/
-#define P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)              \
-for (int _one1_ = 1; _one1_; _one1_ = 0)                                \
-  for (T NAME = (INITIAL);                                              \
-       /* be sure to execute BEFORE only at the first evaluation */     \
-       (_one1_ ? ((void)(BEFORE), _one1_) : _one1_);                    \
-       /* run AFTER exactly once */                                     \
-       ((void)(AFTER), _one1_ = 0))                                     \
-    /* Ensure that a `break' will still execute AFTER */                \
+#define P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)          \
+for (int _one1_ = 1; _one1_; _one1_ = 0)                            \
+  for (T NAME = (INITIAL);                                          \
+       /* be sure to execute BEFORE only at the first evaluation */ \
+       (_one1_ ? ((void)(BEFORE), _one1_) : _one1_);                \
+       /* run AFTER exactly once */                                 \
+       ((void)(AFTER), _one1_ = 0))                                 \
+    /* Ensure that a `break' will still execute AFTER */            \
     for (; _one1_; _one1_ = 0)
 
 
@@ -97,9 +100,9 @@ for (int _one1_ = 1; _one1_; _one1_ = 0)                                \
  ** @brief Add some default documentation and links to the following
  ** block macro.
  **/
-#define P99_BLOCK_DOCUMENT                                              \
+#define P99_BLOCK_DOCUMENT                                                                      \
 /*! @warning Restrictions on preliminary exits from the dependent block or statement apply. **/ \
-/*! @see P99_PROTECTED_BLOCK **/                                        \
+/*! @see P99_PROTECTED_BLOCK **/                                                                \
 /*! @see P99_GUARDED_BLOCK **/
 
 /** @}

@@ -1,13 +1,16 @@
-/*
-** p99_choice.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Fri Aug 13 09:51:36 2010 Jens Gustedt
-** Last update Fri Aug 13 09:51:36 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	P99_CHOICE_H_
 # define   	P99_CHOICE_H_
 
@@ -24,18 +27,18 @@
 
 #define P99_CASE_RETURN(...) P99_FOR(,P99_NARG(__VA_ARGS__), P99__SEP, P99__CASE_RETURN, __VA_ARGS__)
 
-#define P99_CHOICE_FUNCTION(TYPE, NAME, DEFAULT, ...)                   \
+#define P99_CHOICE_FUNCTION(TYPE, NAME, DEFAULT, ...)                                \
 /*! This is a function implementing a ``@c static @c inline'' case table          */ \
 /*! Default value if @a x is out of range is DEFAULT.                             */ \
 /*! The table values are __VA_ARGS__.                                             */ \
 /*! @param x indicates the value to choose, it must be compatible with @c size_t. */ \
-p99_inline                                                              \
-TYPE NAME(size_t x) {                                                   \
-  switch (x) {                                                          \
-    P99_CASE_RETURN(__VA_ARGS__);                                       \
-  default: return DEFAULT;                                              \
-  }                                                                     \
-}                                                                       \
+p99_inline                                                                           \
+TYPE NAME(size_t x) {                                                                \
+  switch (x) {                                                                       \
+    P99_CASE_RETURN(__VA_ARGS__);                                                    \
+  default: return DEFAULT;                                                           \
+  }                                                                                  \
+}                                                                                    \
 P99_MACRO_END(_choice_function_, NAME)
 
 /** @brief Return a small prime number or 0 if @a x is too big **/
@@ -52,12 +55,12 @@ P99_CHOICE_FUNCTION(uint8_t, p99_small_primes, 0,
 #define P99__UNIQUE_BIT_MULT_(WIDTH, MULT) P99_PASTE3(UINT, WIDTH, _C)(MULT)
 #define P99__UNIQUE_BIT_MULT(BITS, WIDTH) P99__UNIQUE_BIT_MULT_(WIDTH, P99_PASTE2(P99__UNIQUE_BIT_MULT_, BITS))
 
-#define P99__UNIQUE_BIT__(BIT, BITS, WIDTH, MULT)       \
-(((P99_PASTE3(UINT, WIDTH, _C)(1) << BIT)               \
-  * MULT)                                               \
+#define P99__UNIQUE_BIT__(BIT, BITS, WIDTH, MULT)              \
+(((P99_PASTE3(UINT, WIDTH, _C)(1) << BIT)                      \
+  * MULT)                                                      \
  >> (WIDTH - BITS))
 
-#define P99__UNIQUE_BIT_(BIT, BITS, WIDTH)                       \
+#define P99__UNIQUE_BIT_(BIT, BITS, WIDTH)                             \
 P99__UNIQUE_BIT__(BIT, BITS, WIDTH, P99__UNIQUE_BIT_MULT(BITS, WIDTH))
 
 
@@ -66,18 +69,18 @@ P99__UNIQUE_BIT__(BIT, BITS, WIDTH, P99__UNIQUE_BIT_MULT(BITS, WIDTH))
 
 #ifdef DOXYGEN
 /* doxygen can't handle the P99_FOR */
-#define P99__UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH)      \
-p99_inline                                                              \
+#define P99__UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH) \
+p99_inline                                                         \
 TYPE P99_PASTE2(NAME, BITS)(size_t x)
 #else
-#define P99__UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH)      \
-p99_inline                                                              \
-TYPE P99_PASTE2(NAME, BITS)(size_t x) {                                 \
-  switch (x) {                                                          \
+#define P99__UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH)                  \
+p99_inline                                                                          \
+TYPE P99_PASTE2(NAME, BITS)(size_t x) {                                             \
+  switch (x) {                                                                      \
     P99_FOR(WIDTH, WIDTH, P99__SEP, P99__UNIQUE_BIT_RETURN, P99_DUPL(WIDTH, BITS)); \
-  default: return DEFAULT;                                              \
-  }                                                                     \
-}                                                                       \
+  default: return DEFAULT;                                                          \
+  }                                                                                 \
+}                                                                                   \
 P99_MACRO_END(_unique_bit)
 #endif
 
@@ -92,27 +95,27 @@ P99__UNIQUE_BIT_FUNCTION(unsigned, p99__unique_bit_hash_, -1, 6, 64);
  ** question on stackoverflow:
  ** http://stackoverflow.com/questions/3465098/bit-twiddling-which-bit-is-set
  **/
-#define P99__UNIQUE_BIT(BITS, WIDTH)                                    \
-/*! @brief Find the one unique bit that is set in @a x                     */ \
-/*! @warning this function doesn't check if the precondition is fulfilled. */ \
-/*! @see p99_unique_bit_checked ## WIDTH                                   */ \
-p99_inline                                                              \
- unsigned P99_PASTE2(p99_unique_bit_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) x) { \
-  /* the index now only has BITS significant bits, so the default case of \
-     P99_PASTE2(p99__unique_bit_hash_, BITS) will never trigger.*/      \
-  return                                                                \
-    P99_PASTE2(p99__unique_bit_hash_, BITS)                             \
-    ((x * P99__UNIQUE_BIT_MULT(BITS, WIDTH))                            \
-     >> (WIDTH - BITS));                                                \
-}                                                                       \
-/*! @brief Find the one unique bit that is set in @a x                 */ \
-/*! if @a x has 0 or more than one bits set this returns a big number. */ \
-/*! @see p99_unique_bit_ ## WIDTH                                      */ \
-p99_inline                                                              \
+#define P99__UNIQUE_BIT(BITS, WIDTH)                                                 \
+/*! @brief Find the one unique bit that is set in @a x                     */        \
+/*! @warning this function doesn't check if the precondition is fulfilled. */        \
+/*! @see p99_unique_bit_checked ## WIDTH                                   */        \
+p99_inline                                                                           \
+ unsigned P99_PASTE2(p99_unique_bit_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) x) {        \
+  /* the index now only has BITS significant bits, so the default case of            \
+     P99_PASTE2(p99__unique_bit_hash_, BITS) will never trigger.*/                   \
+  return                                                                             \
+    P99_PASTE2(p99__unique_bit_hash_, BITS)                                          \
+    ((x * P99__UNIQUE_BIT_MULT(BITS, WIDTH))                                         \
+     >> (WIDTH - BITS));                                                             \
+}                                                                                    \
+/*! @brief Find the one unique bit that is set in @a x                 */            \
+/*! if @a x has 0 or more than one bits set this returns a big number. */            \
+/*! @see p99_unique_bit_ ## WIDTH                                      */            \
+p99_inline                                                                           \
 unsigned P99_PASTE2(p99_unique_bit_checked_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) x) { \
-  unsigned ret = P99_PASTE2(p99_unique_bit_, WIDTH)(x);                 \
-  return ((P99_PASTE3(UINT, WIDTH, _C)(1) << ret) == x) ? ret : -1;     \
-}                                                                       \
+  unsigned ret = P99_PASTE2(p99_unique_bit_, WIDTH)(x);                              \
+  return ((P99_PASTE3(UINT, WIDTH, _C)(1) << ret) == x) ? ret : -1;                  \
+}                                                                                    \
 P99_MACRO_END(_unique_bit)
 
 P99__UNIQUE_BIT(3, 8);

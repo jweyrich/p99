@@ -1,14 +1,16 @@
-/*
-** test-prepro.c
-** 
-** Made by (Jens Gustedt)
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Mon Jul 19 10:00:06 2010 Jens Gustedt
-** Last update Sun May 12 01:17:25 2002 Speed Blue
-*/
-
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #include "orwl_posix.h"
 #include "p99_id.h"
 #include "p99_args.h"
@@ -47,14 +49,14 @@ unsigned tutu_fixed(void) {
   return tutu(3, 1, 3, 5, 7);
 }
 
-#define P99__ARR_OP_MINMAX(NAME, TYPE, SUFF, OP)                        \
-static_inline                                                           \
+#define P99__ARR_OP_MINMAX(NAME, TYPE, SUFF, OP)                                        \
+static_inline                                                                           \
  TYPE P99_FSYMB(P99_PASTE4(p99_, NAME, _, SUFF))(size_t number, TYPE const*const arr) { \
-    TYPE ret = arr[0];                                                  \
-    for (size_t i = 1; i < number; ++i)                                 \
-      if (arr[i] OP ret) ret = arr[i];                                  \
-    return ret;                                                         \
-}                                                                       \
+    TYPE ret = arr[0];                                                                  \
+    for (size_t i = 1; i < number; ++i)                                                 \
+      if (arr[i] OP ret) ret = arr[i];                                                  \
+    return ret;                                                                         \
+}                                                                                       \
 P99_MACRO_END(_arr_op_minmax_, NAME, _, SUFF)
 
 
@@ -172,34 +174,34 @@ P99__ARR_OP_MINMAX(max, long double, l, >);
 #define p99_max_d(...) P99_FSYMB(p99_max_d)(P99_LENGTH_ARR_ARG(double, __VA_ARGS__))
 #define p99_max_l(...) P99_FSYMB(p99_max_l)(P99_LENGTH_ARR_ARG(long double, __VA_ARGS__))
 
-#define P99__ARR_GCD(TYPE, SUFF)                                        \
-static_inline                                                           \
-TYPE P99_PASTE3(p99__, gcd_, SUFF)(TYPE a, TYPE b) {                    \
-  if (!a) return b;                                                     \
-  if (b)                                                                \
-    for (TYPE mod = b % a; mod; mod = b % a) {                          \
-      b = a;                                                            \
-      a = mod;                                                          \
-    }                                                                   \
-  return a;                                                             \
-}                                                                       \
-static_inline                                                           \
+#define P99__ARR_GCD(TYPE, SUFF)                                                    \
+static_inline                                                                       \
+TYPE P99_PASTE3(p99__, gcd_, SUFF)(TYPE a, TYPE b) {                                \
+  if (!a) return b;                                                                 \
+  if (b)                                                                            \
+    for (TYPE mod = b % a; mod; mod = b % a) {                                      \
+      b = a;                                                                        \
+      a = mod;                                                                      \
+    }                                                                               \
+  return a;                                                                         \
+}                                                                                   \
+static_inline                                                                       \
 TYPE P99_FSYMB(P99_PASTE3(p99_, gcd_, SUFF))(size_t number, TYPE const*const arr) { \
-  if (number == 1) return arr[0];                                       \
-  TYPE ret = P99_PASTE3(p99__, gcd_, SUFF)(arr[0], arr[1]);             \
-  for (size_t i = 2; i < number; ++i)                                   \
-    ret = P99_PASTE3(p99__, gcd_, SUFF)(ret, arr[i]);                   \
-  return ret;                                                           \
-}                                                                       \
-static_inline                                                           \
+  if (number == 1) return arr[0];                                                   \
+  TYPE ret = P99_PASTE3(p99__, gcd_, SUFF)(arr[0], arr[1]);                         \
+  for (size_t i = 2; i < number; ++i)                                               \
+    ret = P99_PASTE3(p99__, gcd_, SUFF)(ret, arr[i]);                               \
+  return ret;                                                                       \
+}                                                                                   \
+static_inline                                                                       \
 TYPE P99_FSYMB(P99_PASTE3(p99_, lcm_, SUFF))(size_t number, TYPE const*const arr) { \
-  if (number == 1) return arr[0];                                       \
-  TYPE gcd = P99_FSYMB(P99_PASTE3(p99_, gcd_, SUFF))(number, arr);      \
-  TYPE ret = arr[0];                                                    \
-  for (size_t i = 1; i < number; ++i)                                   \
-    ret *= (arr[i] / gcd);                                              \
-  return ret;                                                           \
-}                                                                       \
+  if (number == 1) return arr[0];                                                   \
+  TYPE gcd = P99_FSYMB(P99_PASTE3(p99_, gcd_, SUFF))(number, arr);                  \
+  TYPE ret = arr[0];                                                                \
+  for (size_t i = 1; i < number; ++i)                                               \
+    ret *= (arr[i] / gcd);                                                          \
+  return ret;                                                                       \
+}                                                                                   \
 P99_MACRO_END(_arr_gcd_, SUFF)
 
 
@@ -242,28 +244,28 @@ P99__ARR_GCD(uint64_t, 64u);
 
 
 
-#define P99__ARR_OP_MINMAX_FIXED(NAME, TYPE, SUFF)                      \
-TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed2)(void) {                   \
-  return P99_PASTE4(p99_, NAME, _, SUFF)(5, 7);                         \
-}                                                                       \
-TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed3)(void) {                   \
-  return P99_PASTE4(p99_, NAME, _, SUFF)(3, 5, 7);                      \
-}                                                                       \
-TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed4)(void) {                   \
-  return P99_PASTE4(p99_, NAME, _, SUFF)(1, 3, 5, 7);                   \
-}                                                                       \
-TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed5)(void) {                   \
-  return P99_PASTE4(p99_, NAME, _, SUFF)(3, 1, 3, 5, 7);                \
-}                                                                       \
-TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed6)(void) {                   \
-  return P99_PASTE4(p99_, NAME, _, SUFF)(3, 1, 3, 5, 7, 3);             \
-}                                                                       \
-TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed7)(void) {                   \
-  return P99_PASTE4(p99_, NAME, _, SUFF)(3, 1, 3, 5, 7, 3, 1);          \
-}                                                                       \
-TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed15)(void) {                  \
+#define P99__ARR_OP_MINMAX_FIXED(NAME, TYPE, SUFF)                                        \
+TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed2)(void) {                                     \
+  return P99_PASTE4(p99_, NAME, _, SUFF)(5, 7);                                           \
+}                                                                                         \
+TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed3)(void) {                                     \
+  return P99_PASTE4(p99_, NAME, _, SUFF)(3, 5, 7);                                        \
+}                                                                                         \
+TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed4)(void) {                                     \
+  return P99_PASTE4(p99_, NAME, _, SUFF)(1, 3, 5, 7);                                     \
+}                                                                                         \
+TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed5)(void) {                                     \
+  return P99_PASTE4(p99_, NAME, _, SUFF)(3, 1, 3, 5, 7);                                  \
+}                                                                                         \
+TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed6)(void) {                                     \
+  return P99_PASTE4(p99_, NAME, _, SUFF)(3, 1, 3, 5, 7, 3);                               \
+}                                                                                         \
+TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed7)(void) {                                     \
+  return P99_PASTE4(p99_, NAME, _, SUFF)(3, 1, 3, 5, 7, 3, 1);                            \
+}                                                                                         \
+TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed15)(void) {                                    \
   return P99_PASTE4(p99_, NAME, _, SUFF)(3, 1, 3, 5, 7, 3, 1, 3, 5, 0, 7, 3, 1, 3, 5, 7); \
-}                                                                       \
+}                                                                                         \
 P99_MACRO_END(_arr_op_minmax_fixed_, NAME, _, SUFF)
 
 

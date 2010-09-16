@@ -1,14 +1,16 @@
-/*
-** test-prepro.c
-** 
-** Made by (Jens Gustedt)
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Mon Jul 19 10:00:06 2010 Jens Gustedt
-** Last update Sun May 12 01:17:25 2002 Speed Blue
-*/
-
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #include "p99_c99.h"
 #include "p99_int.h"
 #include "p99_defarg.h"
@@ -68,7 +70,7 @@ P99_DECLARE_DEFARG(print_uintmax, ,);
 P99_DECLARE_DEFARG(print_intmax, , );
 #define print_intmax_defarg_1() ((char[40]){ 0 }+39)
 
-#define PRINT_LARGE(X)                                          \
+#define PRINT_LARGE(X)                                         \
 (P99_SIGNED(X) ? print_intmax((X)) : print_uintmax((X)))
 
 static
@@ -83,30 +85,30 @@ char const* representation[4] = {
   = "two's compl",
 };
 
-#define SAYIT(T)                                                \
-printf("%20s:\t%4u\t%5u\t%3zu\t%20s\t%20s,\t%3ssigned%15s\n",   \
-       #T,                                                      \
-       P99_TPREC(T),                                            \
-       P99_TWIDTH(T),                                           \
-       P99_TPADDING(T),                                         \
-       PRINT_LARGE(P99_TMIN(T)),                                \
-       PRINT_LARGE(P99_TMAX(T)),                                \
-       (P99_ISSIGNED(T) ? "" : "un"),                           \
-       (!P99_ISSIGNED(T)                                        \
-        ? ""                                                    \
+#define SAYIT(T)                                               \
+printf("%20s:\t%4u\t%5u\t%3zu\t%20s\t%20s,\t%3ssigned%15s\n",  \
+       #T,                                                     \
+       P99_TPREC(T),                                           \
+       P99_TWIDTH(T),                                          \
+       P99_TPADDING(T),                                        \
+       PRINT_LARGE(P99_TMIN(T)),                               \
+       PRINT_LARGE(P99_TMAX(T)),                               \
+       (P99_ISSIGNED(T) ? "" : "un"),                          \
+       (!P99_ISSIGNED(T)                                       \
+        ? ""                                                   \
         : representation[P99_SIGNED_REPRESENTATION(T)]))
 
-#define SAYIT3(EXPR)                                            \
-printf("%20s:\t%4u\t%5u\t%3zu\t%20s\t%20s,\t%3ssigned%15s\n",   \
-       #EXPR,                                                   \
-       P99_EPREC(EXPR),                                         \
-       P99_EWIDTH(EXPR),                                        \
-       P99_EPADDING(EXPR),                                      \
-       PRINT_LARGE(P99_EMIN(EXPR)),                             \
-       PRINT_LARGE(P99_EMAX(EXPR)),                             \
-       (P99_SIGNED(EXPR) ? "" : "un"),                          \
-       (!P99_SIGNED(EXPR)                                       \
-        ? ""                                                    \
+#define SAYIT3(EXPR)                                           \
+printf("%20s:\t%4u\t%5u\t%3zu\t%20s\t%20s,\t%3ssigned%15s\n",  \
+       #EXPR,                                                  \
+       P99_EPREC(EXPR),                                        \
+       P99_EWIDTH(EXPR),                                       \
+       P99_EPADDING(EXPR),                                     \
+       PRINT_LARGE(P99_EMIN(EXPR)),                            \
+       PRINT_LARGE(P99_EMAX(EXPR)),                            \
+       (P99_SIGNED(EXPR) ? "" : "un"),                         \
+       (!P99_SIGNED(EXPR)                                      \
+        ? ""                                                   \
         : representation[P99_E_REPRESENTATION(EXPR)]))
 
 typedef enum { a1, b1 } enum1;

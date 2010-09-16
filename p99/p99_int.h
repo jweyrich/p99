@@ -1,13 +1,16 @@
-/*
-** p99_int.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Mon Jul 26 09:03:21 2010 Jens Gustedt
-** Last update Mon Jul 26 09:03:21 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	P99_INT_H_
 # define   	P99_INT_H_
 
@@ -132,35 +135,35 @@ typedef extendedInt p99x_int128;
 
 #ifdef p99x_uintmax
 
-#define P99X__SIGN_PROMOTE(EXPR)                                        \
+#define P99X__SIGN_PROMOTE(EXPR)                                              \
 ((p99x_uintmax)P99_SIGN_PROMOTE(P99_UE_MAX(EXPR), (p99x_uintmax)UINTMAX_MAX))
 
-#define P99X__SHIFT(EXPR)                                               \
+#define P99X__SHIFT(EXPR)                                                      \
 ((P99_SIGN_PROMOTE(P99_UE_MAX(EXPR), UINTMAX_MAX) > (p99x_uintmax)UINTMAX_MAX) \
- ? 64u                                                                  \
+ ? 64u                                                                         \
  : 0u)
 #endif
 
 #ifndef P99_HIGH2
 # if P99_UINTMAX_WIDTH == 64
-#  define P99_HIGH2(X)                          \
-((((X) & P99__B0) ? P99__S0 : 0u)               \
- | (((X) & P99__B1) ? P99__S1 : 0u)             \
- | (((X) & P99__B2) ? P99__S2 : 0u)             \
- | (((X) & P99__B3) ? P99__S3 : 0u)             \
- | (((X) & P99__B4) ? P99__S4 : 0u)             \
+#  define P99_HIGH2(X)                                         \
+((((X) & P99__B0) ? P99__S0 : 0u)                              \
+ | (((X) & P99__B1) ? P99__S1 : 0u)                            \
+ | (((X) & P99__B2) ? P99__S2 : 0u)                            \
+ | (((X) & P99__B3) ? P99__S3 : 0u)                            \
+ | (((X) & P99__B4) ? P99__S4 : 0u)                            \
  | (((X) & P99__B5) ? P99__S5 : 0u))
 # endif
 #endif
 #ifndef P99_HIGH2
 # if P99_UINTMAX_WIDTH <= 128
-#  define P99_HIGH2(X)                          \
-((((X) & P99__B0) ? P99__S0 : 0u)               \
- | (((X) & P99__B1) ? P99__S1 : 0u)             \
- | (((X) & P99__B2) ? P99__S2 : 0u)             \
- | (((X) & P99__B3) ? P99__S3 : 0u)             \
- | (((X) & P99__B4) ? P99__S4 : 0u)             \
- | (((X) & P99__B5) ? P99__S5 : 0u)             \
+#  define P99_HIGH2(X)                                         \
+((((X) & P99__B0) ? P99__S0 : 0u)                              \
+ | (((X) & P99__B1) ? P99__S1 : 0u)                            \
+ | (((X) & P99__B2) ? P99__S2 : 0u)                            \
+ | (((X) & P99__B3) ? P99__S3 : 0u)                            \
+ | (((X) & P99__B4) ? P99__S4 : 0u)                            \
+ | (((X) & P99__B5) ? P99__S5 : 0u)                            \
  | (((X) & P99__B6) ? P99__S6 : 0u))
 # endif
 #endif
@@ -181,16 +184,16 @@ typedef extendedInt p99x_int128;
  **
  ** The returning expression is of type @c uintmax_t
  **/
-#define P99_TO_UNSIGNED(T, MACRO)               \
-((uintmax_t)                                    \
- (sizeof(T) < sizeof(signed)                    \
-  ? (sizeof(T) == 1u                            \
-     ? MACRO(unsigned char)                     \
-     : MACRO(unsigned short))                   \
-  : (sizeof(T) < sizeof(unsigned long)          \
-     ? MACRO(unsigned)                          \
-     : (sizeof(T) < sizeof(unsigned long long)  \
-        ? MACRO(unsigned long)                  \
+#define P99_TO_UNSIGNED(T, MACRO)                              \
+((uintmax_t)                                                   \
+ (sizeof(T) < sizeof(signed)                                   \
+  ? (sizeof(T) == 1u                                           \
+     ? MACRO(unsigned char)                                    \
+     : MACRO(unsigned short))                                  \
+  : (sizeof(T) < sizeof(unsigned long)                         \
+     ? MACRO(unsigned)                                         \
+     : (sizeof(T) < sizeof(unsigned long long)                 \
+        ? MACRO(unsigned long)                                 \
         : MACRO(unsigned long long)))))
 
 /**
@@ -395,10 +398,10 @@ P99__SEE_PROMOTE
  ** @see P99_EPADDING
  **/
 P99__SEE_PROMOTE
-#define P99_EWIDTH(EXPR)                                                \
-  (P99X__SHIFT(EXPR)                                                    \
+#define P99_EWIDTH(EXPR)                                                               \
+  (P99X__SHIFT(EXPR)                                                                   \
  ? (P99_HIGH2_1((uintmax_t)(P99_UE_MAX(EXPR)>>P99X__SHIFT(EXPR))) + P99X__SHIFT(EXPR)) \
- : P99_HIGH2_1(P99_UE_MAX(EXPR))                                        \
+ : P99_HIGH2_1(P99_UE_MAX(EXPR))                                                       \
  )
 
 /**
@@ -432,11 +435,11 @@ P99__SEE_PROMOTE
 P99__SEE_PROMOTE
 #define P99_EPADDING(EXPR) (sizeof(P99_PROMOTE_0(EXPR))*CHAR_BIT - P99_EWIDTH(EXPR))
 
-#define P99_SE_MAX(EXPR)                        \
-((((P99_PROMOTE_1(EXPR)                         \
-    << (P99_EWIDTH(EXPR) - 2U))                 \
-   - P99_PROMOTE_1(EXPR))                       \
-  << 1U)                                        \
+#define P99_SE_MAX(EXPR)                                       \
+((((P99_PROMOTE_1(EXPR)                                        \
+    << (P99_EWIDTH(EXPR) - 2U))                                \
+   - P99_PROMOTE_1(EXPR))                                      \
+  << 1U)                                                       \
  + P99_PROMOTE_1(EXPR))
 
 
@@ -565,9 +568,9 @@ typedef enum {
 /**
  ** @brief Give the minimum representable value of type @a T
  **/
-#define P99_TMIN(T)                                                     \
-((T)                                                                    \
- (P99X__SHIFT((T)0)                                                     \
+#define P99_TMIN(T)                                                                   \
+((T)                                                                                  \
+ (P99X__SHIFT((T)0)                                                                   \
   ? (P99_ISSIGNED(T) ? (-(P99X__SIGN_PROMOTE((T)-1)/2u)) - P99_2COMPLEMENT(T) : (T)0) \
   : (P99_ISSIGNED(T) ? (P99__ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T))))
 
@@ -590,7 +593,7 @@ typedef enum {
  ** the type has no @em negative zero and can thus represent one more
  ** value.
  **/
-#define P99_E_2COMPLEMENT(EXPR)                                         \
+#define P99_E_2COMPLEMENT(EXPR)                                                        \
 P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (EXPR))
 
 /**
@@ -615,9 +618,9 @@ P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (
  ** @see P99_TWIDTH
  ** @see P99_TPADDING
  **/
-#define P99_TPREC(T)                            \
-(P99X__SHIFT((T)-1)                             \
- ? P99_EPREC((T)-1)                             \
+#define P99_TPREC(T)                                           \
+(P99X__SHIFT((T)-1)                                            \
+ ? P99_EPREC((T)-1)                                            \
  : P99_HIGH2_1(P99_TMAX(T)))
 
   //(P99_HIGH2_1(P99_TMAX(T)))
@@ -664,23 +667,23 @@ P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (
 #define P99_LVAL(...) P99_IF_DEC_LE(P99_NARG(__VA_ARGS__),1)(P99__LVAL(__VA_ARGS__, { 0 }))(P99__LVAL(__VA_ARGS__))
 
 
-#define P99_CHOOSE5(xT, cc, cs, ci, cl, cll)    \
-((sizeof(xT) < sizeof(int))                     \
- ? ((sizeof(xT) < sizeof(short))                \
-    ? cc                                        \
-    : cs)                                       \
- : ((sizeof(xT) <= sizeof(long))                \
-    ? ((sizeof(xT) == sizeof(int))              \
-       ? ci                                     \
-       : cl)                                    \
+#define P99_CHOOSE5(xT, cc, cs, ci, cl, cll)                   \
+((sizeof(xT) < sizeof(int))                                    \
+ ? ((sizeof(xT) < sizeof(short))                               \
+    ? cc                                                       \
+    : cs)                                                      \
+ : ((sizeof(xT) <= sizeof(long))                               \
+    ? ((sizeof(xT) == sizeof(int))                             \
+       ? ci                                                    \
+       : cl)                                                   \
     : cll))
 
-#define P99_PRI(xT, F, ...)                     \
-P99_CHOOSE5(xT,                                 \
-        "%" #__VA_ARGS__ "hh" #F,               \
-        "%" #__VA_ARGS__ "h" #F,                \
-        "%" #__VA_ARGS__ "" #F,                 \
-        "%" #__VA_ARGS__ "l" #F,                \
+#define P99_PRI(xT, F, ...)                                    \
+P99_CHOOSE5(xT,                                                \
+        "%" #__VA_ARGS__ "hh" #F,                              \
+        "%" #__VA_ARGS__ "h" #F,                               \
+        "%" #__VA_ARGS__ "" #F,                                \
+        "%" #__VA_ARGS__ "l" #F,                               \
         "%" #__VA_ARGS__ "ll" #F)
 
 /**

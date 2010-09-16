@@ -1,13 +1,16 @@
-/*
-** p99_defarg.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Tue Jul 13 22:50:40 2010 Jens Gustedt
-** Last update Tue Jul 13 22:50:40 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	P99_DEFARG_H_
 # define   	P99_DEFARG_H_
 
@@ -59,13 +62,13 @@
 #ifdef DOXYGEN
 # define P99_CALL_DEFARG(NAME, M, ...) NAME(__VA_ARGS__)
 #else
-# define P99_CALL_DEFARG(NAME, M, ...)                          \
-NAME(P99_IF_EQ(0,M)                                             \
-     (__VA_ARGS__)                                              \
-     (P99_IF_EMPTY(__VA_ARGS__)                                 \
-      (P99__DEFARGS(NAME, M, P99_PASTE2(NAME,_defarg_0)()))     \
-      (P99__DEFARGS(NAME, M, __VA_ARGS__))                      \
-      )                                                         \
+# define P99_CALL_DEFARG(NAME, M, ...)                         \
+NAME(P99_IF_EQ(0,M)                                            \
+     (__VA_ARGS__)                                             \
+     (P99_IF_EMPTY(__VA_ARGS__)                                \
+      (P99__DEFARGS(NAME, M, P99_PASTE2(NAME,_defarg_0)()))    \
+      (P99__DEFARGS(NAME, M, __VA_ARGS__))                     \
+      )                                                        \
      )
 #endif
 
@@ -153,19 +156,19 @@ NAME(P99_IF_EQ(0,M)                                             \
  **/
 
 #ifdef DOXYGEN
-#define P99__PROTOTYPE(RT, NAME, ...)                                       \
+#define P99__PROTOTYPE(RT, NAME, ...)                                                    \
 /*! @remark This function might be hidden behind a macro :: ## NAME of the same name. */ \
 RT NAME(__VA_ARGS__)
 #define P99_PROTOTYPE(RT, NAME, ...) P99__PROTOTYPE(__VA_ARGS__)
 #else
-#define P99__PROTOTYPE(RT, NAME, ...)                           \
-  RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));        \
-  typedef RT P99_CAT2(NAME, _prototype_ret);                    \
+#define P99__PROTOTYPE(RT, NAME, ...)                          \
+  RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));       \
+  typedef RT P99_CAT2(NAME, _prototype_ret);                   \
   P99_TYPEDEFS(P99_CAT2(NAME, _prototype_), __VA_ARGS__)
 
-#define P99_PROTOTYPE(...)                          \
-P99_IF_EQ_2(P99_NARG(__VA_ARGS__))              \
-(P99__PROTOTYPE(__VA_ARGS__, void))             \
+#define P99_PROTOTYPE(...)                                     \
+P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
+(P99__PROTOTYPE(__VA_ARGS__, void))                            \
 (P99__PROTOTYPE(__VA_ARGS__))
 #endif
 
@@ -181,13 +184,13 @@ P99_IF_EMPTY(X)                                                         \
  }                                                                      \
 )
 
-#define P99__DAFE(NAME, X, N)                                           \
-P99_IF_EMPTY(X)                                                         \
-(P99_MACRO_END(NAME, _boring_, N))                                      \
+#define P99__DAFE(NAME, X, N)                                          \
+P99_IF_EMPTY(X)                                                        \
+(P99_MACRO_END(NAME, _boring_, N))                                     \
 (P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void))
 
-#define P99__DECLARE_DEFARG(NAME, N, ...)                       \
-P99_FOR(NAME, N, P99__SER, P99__EXPR_FUNCTION, __VA_ARGS__)     \
+#define P99__DECLARE_DEFARG(NAME, N, ...)                      \
+P99_FOR(NAME, N, P99__SER, P99__EXPR_FUNCTION, __VA_ARGS__)    \
 P99_MACRO_END(NAME, _declare_defarg)
 
 #ifdef DOXYGEN
@@ -216,7 +219,7 @@ P99_MACRO_END(NAME, _declare_defarg)
 #define P99_DECLARE_DEFARG(NAME, ...) P99__DECLARE_DEFARG(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 #endif
 
-#define P99__DEFINE_DEFARG(NAME, N, ...)                \
+#define P99__DEFINE_DEFARG(NAME, N, ...)                       \
   P99_FOR(NAME, N, P99__SEP, P99__DAFE, __VA_ARGS__)
 
 #ifdef DOXYGEN
@@ -240,9 +243,9 @@ P99_MACRO_END(NAME, _declare_defarg)
 /**
  ** @brief Provide a documentation section to a function defined with ::P99_CALL_DEFARG
  **/
-#define P99_DEFARG_DOCU(NAME)                                       \
-/*! @see P99_CALL_DEFARG */                                          \
-/*! @see P99_DECLARE_DEFARG */                                              \
+#define P99_DEFARG_DOCU(NAME)                                                                                          \
+/*! @see P99_CALL_DEFARG */                                                                                            \
+/*! @see P99_DECLARE_DEFARG */                                                                                         \
 /*! @see NAME This is actually implemented as a macro that helps to provide default arguments to the real function. */
 
 

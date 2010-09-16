@@ -1,13 +1,16 @@
-/**
- ** p99.h
- **
- ** Made by Jens Gustedt
- ** Login   <gustedt@damogran.loria.fr>
- **
- ** Started on  Mon Aug 23 15:59:41 2010 Jens Gustedt
- ** Last update Mon Aug 23 15:59:41 2010 Jens Gustedt
- **/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	P99_H_
 # define   	P99_H_
 
@@ -530,8 +533,8 @@
  **
  ** The PROTECT_IT macro could now be realized as:
  ** @code
- ** #define PROTECT_IT(NAME)                           \
- ** P99_PROTECTED_BLOCK(pthread_mutex_lock(&(NAME)),   \
+ ** #define PROTECT_IT(NAME)                                   \
+ ** P99_PROTECTED_BLOCK(pthread_mutex_lock(&(NAME)),           \
  **                     pthread_mutex_unlock(&(NAME)))
  ** @endcode
  **
@@ -544,12 +547,12 @@
  ** @c T and initializes it. The @c CRITICAL macro
  ** can then be defined as follows
  ** @code
- ** #define CRITICAL                             \
- ** P99_GUARDED_BLOCK(                           \
- **     static pthread_mutex_t,                  \
- **     _critical_guard_,                        \
- **     PTHREAD_MUTEX_INITIALIZER,               \
- **     pthread_mutex_lock(&_critical_guard_),   \
+ ** #define CRITICAL                                           \
+ ** P99_GUARDED_BLOCK(                                         \
+ **     static pthread_mutex_t,                                \
+ **     _critical_guard_,                                      \
+ **     PTHREAD_MUTEX_INITIALIZER,                             \
+ **     pthread_mutex_lock(&_critical_guard_),                 \
  **     pthread_mutex_unlock(&_critical_guard_))
  ** @endcode
  ** Observe the use of @c static for the declaration of

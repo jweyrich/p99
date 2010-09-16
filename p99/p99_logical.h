@@ -1,13 +1,16 @@
-/*
-** orwl_macro.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Sun Feb 28 18:48:25 2010 Jens Gustedt
-** Last update Sun Feb 28 18:48:25 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	P99_LOGICAL_H_
 # define   	P99_LOGICAL_H_
 
@@ -197,12 +200,12 @@
  **/
 
 /** @brief add two decimal numbers **/
-#define P99_DEC_ADD(_0, _1)                             \
-P99__DEC_ADD(_0, _1,                                    \
-             P99_IS_EQ_0(_0),                           \
-             P99_IS_EQ_0(_1),                           \
-             P99_NARG(                                  \
-                  P99_SELS(_0, P99__ALL_ZEROES()),      \
+#define P99_DEC_ADD(_0, _1)                                    \
+P99__DEC_ADD(_0, _1,                                           \
+             P99_IS_EQ_0(_0),                                  \
+             P99_IS_EQ_0(_1),                                  \
+             P99_NARG(                                         \
+                  P99_SELS(_0, P99__ALL_ZEROES()),             \
                   P99_SELS(_1, P99__ALL_ZEROES())))
 
 

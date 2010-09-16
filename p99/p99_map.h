@@ -1,13 +1,16 @@
-/*
-** p99_map.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Tue Jul 13 22:46:49 2010 Jens Gustedt
-** Last update Tue Jul 13 22:46:49 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	P99_MAP_H_
 # define   	P99_MAP_H_
 
@@ -99,12 +102,12 @@ char* p99__strcat_terminate(p99__strcat_state *restrict dest) {
  ** The resulting replacement that is produced by this macro evaluates
  ** each of the arguments at most once.
  **/
-#define P99_STRCATS(TARG, ...)                                  \
-p99__strcat_terminate                                           \
-(P99_BIGFUNC                                                    \
- (p99__strcat,                                                  \
-  P99_NARG(TARG, __VA_ARGS__),                                  \
-  (&(p99__strcat_state){ .buffer = (TARG), .pos = 0  }),        \
+#define P99_STRCATS(TARG, ...)                                 \
+p99__strcat_terminate                                          \
+(P99_BIGFUNC                                                   \
+ (p99__strcat,                                                 \
+  P99_NARG(TARG, __VA_ARGS__),                                 \
+  (&(p99__strcat_state){ .buffer = (TARG), .pos = 0  }),       \
    __VA_ARGS__))
 
 /**
@@ -153,14 +156,14 @@ p99__strcat_terminate                                           \
  ** NAME[0], @c V1 = @a NAME[1], ..., @c VN-1 = @a NAME[@a N-1], where
  ** V0, etc are the remaining arguments.
  **/
-#define P99_VASSIGNS(NAME, ...)                                             \
-P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                  \
-(P99_IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))            \
+#define P99_VASSIGNS(NAME, ...)                                               \
+P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                        \
+(P99_IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))                  \
   (P99_FOR(NAME, P99__NARG(__VA_ARGS__),P99__SEP, P99__VASSIGN, __VA_ARGS__))
 
-#define P99__TYPEDEFS(NAME, N, ...)                             \
-  P99_IF_VOID(__VA_ARGS__)                                      \
-  (P99_MACRO_END(NAME, _eat_the_semicolon_, N))                 \
+#define P99__TYPEDEFS(NAME, N, ...)                            \
+  P99_IF_VOID(__VA_ARGS__)                                     \
+  (P99_MACRO_END(NAME, _eat_the_semicolon_, N))                \
   (P99_FOR(NAME, N, P99__SEP, P99__TYPD, __VA_ARGS__))
 
 /**
@@ -170,7 +173,7 @@ P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                  \
  ** Because of syntax problems this can't be used for function or
  ** array type derivatives.
  **/
-#define P99_TYPEDEFS(NAME, ...)                             \
+#define P99_TYPEDEFS(NAME, ...)                                \
 P99__TYPEDEFS(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
 
