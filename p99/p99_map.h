@@ -36,9 +36,11 @@
 #define P99__STRLEN(NAME, X, I) strlen(X)
 #define P99__SIZEOF(NAME, X, I) sizeof(X)
 #define P99__TYPD(NAME, X, I) typedef X P99_PASTE2(NAME, I)
+#define P99__ADD(NAME, I, REC, RES) P99_DEC_ADD(RES, REC)
 
 #define P99__STRLENS(N, ...) P99_FOR(,N, P99__SUM, P99__STRLEN, __VA_ARGS__)
 #define P99__SIZEOFS(N, ...) P99_FOR(,N, P99__SUM, P99__SIZEOF, __VA_ARGS__)
+#define P99__ADDS(N, ...) P99_FOR(, N, P99__ADD, P99__IDT, __VA_ARGS__)
 
 /**
  ** @brief Return an expression that returns the sum of the lengths of
@@ -48,9 +50,14 @@
 
 /**
  ** @brief Return an expression that returns the sum of the size of
- ** all starguments.
+ ** all arguments.
  **/
 #define P99_SIZEOFS(...) P99__SIZEOFS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
+
+/**
+ ** @brief Return a token that is the sum of all arguments.
+ **/
+#define P99_ADDS(...) P99__ADDS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
 typedef struct p99__strcat_state p99__strcat_state;
 

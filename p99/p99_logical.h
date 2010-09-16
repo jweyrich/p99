@@ -339,6 +339,11 @@ P99__DEC_ADD(_0, _1,                                    \
  **/
 #define P99_PASTE(...) P99__PASTE(P99__NARG(__VA_ARGS__), __VA_ARGS__)
 
+#define P99__EAT_FIRST(SEQ) P99__EAT_ ## SEQ
+
+#define P99__STARTS(TOK, SEQ) P99_IS_EQ(2, P99_NARG(P99_PASTE4(P99__TOK_, TOK, _STARTS_, SEQ)))
+
+
 /** @}
  **/
 
