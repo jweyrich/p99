@@ -41,7 +41,8 @@ void orwl_host_disconnect(orwl_host *th);
 inline
 P99_PROTOTYPE(orwl_host*, orwl_host_init, orwl_host *, in_addr_t, in_port_t);
 #define orwl_host_init(...) P99_CALL_DEFARG(orwl_host_init, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_host_init, , P99_0(in_addr_t), P99_0(in_port_t));
+#define orwl_host_init_defarg_1() P99_0(in_addr_t)
+#define orwl_host_init_defarg_2() P99_0(in_port_t)
 #endif
 
 P99_DEFARG_DOCU(orwl_host_init)

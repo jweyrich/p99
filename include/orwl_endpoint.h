@@ -72,7 +72,7 @@ struct orwl_endpoint {
 inline
 P99_PROTOTYPE(addr_t*, addr_t_init, addr_t *, in_addr_t);
 #define addr_t_init(...) P99_CALL_DEFARG(addr_t_init, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(addr_t_init, , P99_0(in_addr_t));
+#define addr_t_init_defarg_1() P99_0(in_addr_t)
 #endif
 
 DOCUMENT_INIT(addr_t)
@@ -142,7 +142,7 @@ port_t host2port(uint64_t A) {
 inline
 P99_PROTOTYPE(port_t*, port_t_init, port_t *, in_port_t);
 #define port_t_init(...) P99_CALL_DEFARG(port_t_init, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(port_t_init, , P99_0(in_port_t));
+#define port_t_init_defarg_1() P99_0(in_port_t)
 #endif
 
 DOCUMENT_INIT(port_t)
@@ -160,7 +160,9 @@ port_t* port_t_init(port_t *A,   /*!< the object to initialize */
 inline
 P99_PROTOTYPE(orwl_endpoint*, orwl_endpoint_init, orwl_endpoint*, in_addr_t, in_port_t, uint64_t);
 #define orwl_endpoint_init(...) P99_CALL_DEFARG(orwl_endpoint_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_endpoint_init, , P99_0(in_addr_t), P99_0(in_port_t), P99_0(uint64_t));
+#define orwl_endpoint_init_defarg_1() P99_0(in_addr_t)
+#define orwl_endpoint_init_defarg_2() P99_0(in_port_t)
+#define orwl_endpoint_init_defarg_3() P99_0(uint64_t)
 #endif
 
 DOCUMENT_INIT(orwl_endpoint)

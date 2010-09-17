@@ -18,7 +18,7 @@
 inline
 P99_PROTOTYPE(void, orwl_hton, uint32_t *, uint64_t const *, size_t);
 #define orwl_hton(...) P99_CALL_DEFARG(orwl_hton, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_hton, , , 1);
+#define orwl_hton_defarg_2() 1
 #endif
 
 P99_DEFARG_DOCU(orwl_hton)
@@ -40,7 +40,7 @@ orwl_hton(uint32_t *n,        /*!< [out] array of length 2 @a l */
 inline
 P99_PROTOTYPE(void, orwl_ntoh, uint64_t*, uint32_t const *, size_t);
 #define orwl_ntoh(...) P99_CALL_DEFARG(orwl_ntoh, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_ntoh, , , 1);
+#define orwl_ntoh_defarg_2() 1
 #endif
 
 P99_DEFARG_DOCU(orwl_ntoh)
@@ -142,8 +142,10 @@ struct auth_sock {
 #ifndef DOXYGEN
 inline
 P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t);
-P99_DECLARE_DEFARG(auth_sock_init, , -1, NULL, P99_0(size_t));
 #define auth_sock_init(...) P99_CALL_DEFARG(auth_sock_init, 4, __VA_ARGS__)
+#define auth_sock_init_defarg_1() -1
+#define auth_sock_init_defarg_2() NULL
+#define auth_sock_init_defarg_3() P99_0(size_t)
 #endif
 
 DOCUMENT_INIT(auth_sock)

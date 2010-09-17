@@ -57,6 +57,9 @@ struct orwl_handle2 {
 inline
 P99_PROTOTYPE(orwl_handle2 *, orwl_handle2_init, orwl_handle2 *, orwl_mirror*, bool);
 #define orwl_handle2_init(...) P99_CALL_DEFARG(orwl_handle2_init, 3, __VA_ARGS__)
+#define orwl_handle2_init_defarg_1() NULL
+#define orwl_handle2_init_defarg_2() false
+
 
 P99_DEFARG_DOCU(orwl_handle2_init)
 DOCUMENT_INIT(orwl_handle2)
@@ -82,8 +85,6 @@ void orwl_handle2_destroy(orwl_handle2 *rh2) {
   //rh2->location = NULL;
 }
 
-
-P99_DECLARE_DEFARG(orwl_handle2_init, , NULL, false);
 
 DECLARE_NEW_DELETE(orwl_handle2);
 
@@ -145,27 +146,27 @@ void orwl_resize2(orwl_handle2* rh2,   /*!< [in,out] the handle whos
 #ifndef DOXYGEN
 P99_PROTOTYPE(orwl_state, orwl_write_request2, orwl_mirror*, orwl_handle2*, rand48_t*);
 #define orwl_write_request2(...)  P99_CALL_DEFARG(orwl_write_request2, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_write_request2, , , seed_get());
+#define orwl_write_request2_defarg_2() seed_get()
 
 P99_PROTOTYPE(orwl_state, orwl_read_request2, orwl_mirror*, orwl_handle2*, rand48_t*);
 #define orwl_read_request2(...)  P99_CALL_DEFARG(orwl_read_request2, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_read_request2, , , seed_get());
+#define orwl_read_request2_defarg_2() seed_get()
 
 P99_PROTOTYPE(orwl_state, orwl_release2, orwl_handle2*, rand48_t*);
 #define orwl_release2(...)  P99_CALL_DEFARG(orwl_release2, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_release2, , seed_get());
+#define orwl_release2_defarg_1() seed_get()
 
 P99_PROTOTYPE(orwl_state, orwl_cancel2, orwl_handle2*, rand48_t*);
 #define orwl_cancel2(...)  P99_CALL_DEFARG(orwl_cancel2, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_cancel2, , seed_get());
+#define orwl_cancel2_defarg_1() seed_get()
 
 P99_PROTOTYPE(orwl_state, orwl_acquire2, orwl_handle2*, rand48_t*);
 #define orwl_acquire2(...)  P99_CALL_DEFARG(orwl_acquire2, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_acquire2, , seed_get());
+#define orwl_acquire2_defarg_1() seed_get()
 
 P99_PROTOTYPE(orwl_state, orwl_test2, orwl_handle2*, rand48_t*);
 #define orwl_test2(...)  P99_CALL_DEFARG(orwl_test2, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_test2, , seed_get());
+#define orwl_test2_defarg_1() seed_get()
 
 #endif
 

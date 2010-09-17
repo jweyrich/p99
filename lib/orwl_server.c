@@ -31,8 +31,6 @@ orwl_server* orwl_server_init(orwl_server *serv,
   return serv;
 }
 
-P99_DEFINE_DEFARG(orwl_server_init, , (size_t)20u, P99_0(size_t), P99_0(in_addr_t), P99_0(in_port_t));
-
 void orwl_server_close(orwl_server *serv) {
   MUTUAL_EXCLUDE(serv->host.mut)
     if (serv->fd_listen != -1) {
@@ -46,9 +44,6 @@ void orwl_server_close(orwl_server *serv) {
 void orwl_server_terminate(orwl_server *serv, rand48_t *seed) {
   orwl_send(&serv->host.ep, seed, 0, NULL);
 }
-
-P99_DEFINE_DEFARG(orwl_server_terminate, , seed_get());
-
 
 void orwl_server_destroy(orwl_server *serv) {
   orwl_server_close(serv);

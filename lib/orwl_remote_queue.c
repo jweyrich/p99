@@ -255,12 +255,6 @@ orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
 void orwl_map(orwl_handle* rh, uint64_t** data, size_t* data_len);
 void orwl_resize(orwl_handle* rh, size_t data_len);
 
-
-P99_DEFINE_DEFARG(orwl_write_request, , , seed_get());
-P99_DEFINE_DEFARG(orwl_read_request, , , seed_get());
-P99_DEFINE_DEFARG(orwl_release, , seed_get());
-P99_DEFINE_DEFARG(orwl_cancel, , seed_get());
-
 DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire, orwl_handle);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_release, orwl_handle);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_cancel, orwl_handle);

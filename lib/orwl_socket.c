@@ -67,10 +67,7 @@ bool same_endianess(uint32_t c) {
 }
 
 void orwl_hton(uint32_t *n, uint64_t const *h, size_t l);
-P99_DEFINE_DEFARG(orwl_hton, , , 1);
 void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l);
-P99_DEFINE_DEFARG(orwl_ntoh, , , 1);
-
 
 in_addr_t p99__inet4_addr = P99_0(in_addr_t);
 
@@ -168,8 +165,6 @@ auth_sock* auth_sock_init(auth_sock *sock,
                                   int fd,
                                   orwl_server* srv,
                                   size_t len);
-
-P99_DEFINE_DEFARG(auth_sock_init, , -1, NULL, P99_0(size_t));
 
 void auth_sock_close(auth_sock *sock) {
   /* Ack the termination of the call */

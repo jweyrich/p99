@@ -48,8 +48,11 @@ orwl_server_init(orwl_server *serv,       /*!< [out] the object to iniialize */
 
 #ifndef DOXYGEN
 P99_PROTOTYPE(orwl_server*, orwl_server_init, orwl_server *, size_t, size_t, in_addr_t, in_port_t);
-P99_DECLARE_DEFARG(orwl_server_init, , (size_t)20u, P99_0(size_t), P99_0(in_addr_t), P99_0(in_port_t));
 #define orwl_server_init(...) P99_CALL_DEFARG(orwl_server_init, 5, __VA_ARGS__)
+#define orwl_server_init_defarg_1() (size_t)20u
+#define orwl_server_init_defarg_2() P99_0(size_t)
+#define orwl_server_init_defarg_3() P99_0(in_addr_t)
+#define orwl_server_init_defarg_4() P99_0(in_port_t)
 #endif
 
 
@@ -89,8 +92,8 @@ void orwl_server_unblock(orwl_server *serv);
 
 #ifndef DOXYGEN
 P99_PROTOTYPE(void, orwl_server_terminate, orwl_server *, rand48_t *);
-P99_DECLARE_DEFARG(orwl_server_terminate, , seed_get());
 #define orwl_server_terminate(...) P99_CALL_DEFARG(orwl_server_terminate, 2, __VA_ARGS__)
+#define orwl_server_terminate_defarg_1() seed_get()
 #endif
 
 

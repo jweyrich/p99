@@ -153,19 +153,19 @@ orwl_state orwl_cancel(orwl_handle* rh,   /*!< [in,out] the handle to be cancele
 #ifndef DOXYGEN
 P99_PROTOTYPE(orwl_state, orwl_write_request, orwl_mirror*, orwl_handle*, rand48_t*);
 #define orwl_write_request(...)  P99_CALL_DEFARG(orwl_write_request, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_write_request, , , seed_get());
+#define orwl_write_request_defarg_2() seed_get()
 
 P99_PROTOTYPE(orwl_state, orwl_read_request, orwl_mirror*, orwl_handle*, rand48_t*);
 #define orwl_read_request(...)  P99_CALL_DEFARG(orwl_read_request, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_read_request, , , seed_get());
+#define orwl_read_request_defarg_2() seed_get()
 
 P99_PROTOTYPE(orwl_state, orwl_release, orwl_handle*, rand48_t*);
 #define orwl_release(...)  P99_CALL_DEFARG(orwl_release, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_release, , seed_get());
+#define orwl_release_defarg_1() seed_get()
 
 P99_PROTOTYPE(orwl_state, orwl_cancel, orwl_handle*, rand48_t*);
 #define orwl_cancel(...)  P99_CALL_DEFARG(orwl_cancel, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_cancel, , seed_get());
+#define orwl_cancel_defarg_1() seed_get()
 #endif
 
 inline

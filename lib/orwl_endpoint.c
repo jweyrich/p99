@@ -24,8 +24,6 @@ orwl_endpoint* orwl_endpoint_init
 void orwl_endpoint_destroy(orwl_endpoint *endpoint);
 
 
-P99_DEFINE_DEFARG(orwl_endpoint_init, , P99_0(in_addr_t), P99_0(in_port_t), P99_0(uint64_t));
-
 DEFINE_NEW_DELETE(orwl_endpoint);
 
 
@@ -216,15 +214,11 @@ bool orwl_recv_(int fd, uint64_t *const mess, size_t len) {
 
 addr_t* addr_t_init(addr_t *A, in_addr_t I0);
 
-P99_DEFINE_DEFARG(addr_t_init, , P99_0(in_addr_t));
-
 struct in_addr addr2net(addr_t const*A);
 
 struct in6_addr addr2net6(addr_t const*A);
 
 port_t* port_t_init(port_t *A, in_port_t P);
-
-P99_DEFINE_DEFARG(port_t_init, , P99_0(in_port_t));
 
 in_port_t port2net(port_t const*A);
 uint64_t port2host(port_t const*A);

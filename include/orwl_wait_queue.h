@@ -62,7 +62,7 @@ DECLARE_ENUM(orwl_state,
 inline
 P99_PROTOTYPE(orwl_state*, orwl_state_init, orwl_state *, orwl_state);
 #define orwl_state_init(...) P99_CALL_DEFARG(orwl_state_init, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_state_init, , orwl_invalid);
+#define orwl_state_init_defarg_1() orwl_invalid
 #endif
 
 DOCUMENT_INIT(orwl_state)
@@ -183,8 +183,7 @@ orwl_wq* orwl_wq_init
 #ifndef DOXYGEN
   P99_PROTOTYPE(orwl_wq*, orwl_wq_init, orwl_wq*, const pthread_mutexattr_t*);
 #define orwl_wq_init(...) P99_CALL_DEFARG(orwl_wq_init, 2, __VA_ARGS__)
-
-P99_DECLARE_DEFARG(orwl_wq_init, , NULL);
+#define orwl_wq_init_defarg_1() NULL
 #endif
 
   DOCUMENT_DESTROY(orwl_wq)
@@ -259,8 +258,7 @@ orwl_wh* orwl_wh_init
 #ifndef DOXYGEN
   P99_PROTOTYPE(orwl_wh*, orwl_wh_init, orwl_wh *, const pthread_condattr_t *);
 #define orwl_wh_init(...) P99_CALL_DEFARG(orwl_wh_init, 2, __VA_ARGS__)
-
-P99_DECLARE_DEFARG(orwl_wh_init, , NULL);
+#define orwl_wh_init_defarg_1() NULL
 #endif
 
   DOCUMENT_DESTROY(orwl_wh)
@@ -345,7 +343,7 @@ orwl_state orwl_wh_acquire
 #ifndef DOXYGEN
   P99_PROTOTYPE(orwl_state, orwl_wh_acquire, orwl_wh*, uint64_t);
 #define orwl_wh_acquire(...) P99_CALL_DEFARG(orwl_wh_acquire, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_wh_acquire, , 1);
+#define orwl_wh_acquire_defarg_1() 1
 #endif
 
 /**
@@ -376,7 +374,7 @@ orwl_state orwl_wh_test
 #ifndef DOXYGEN
   P99_PROTOTYPE(orwl_state, orwl_wh_test, orwl_wh*, uint64_t);
 #define orwl_wh_test(...) P99_CALL_DEFARG(orwl_wh_test, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_wh_test, , 0);
+#define orwl_wh_test_defarg_1() 0
 #endif
 
 /**
@@ -392,7 +390,7 @@ orwl_state orwl_wh_release(orwl_wh *wh /*!< the handle to act upon */);
 inline
 P99_PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
 #define orwl_wh_load(...) P99_CALL_DEFARG(orwl_wh_load, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_wh_load, , 1);
+#define orwl_wh_load_defarg_1() 1
 #endif
 
   /** @brief load @a howmuch additional tokens on @a wh.
@@ -414,7 +412,7 @@ uint64_t orwl_wh_load
 inline
 P99_PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
 #define orwl_wh_unload(...) P99_CALL_DEFARG(orwl_wh_unload, 2, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_wh_unload, , 1);
+#define orwl_wh_unload_defarg_1() UINT64_C(1)
 #endif
 
   /** @brief unload @a howmuch additional tokens from @a wh.
