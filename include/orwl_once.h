@@ -1,13 +1,16 @@
-/*
-** orwl_once.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Mon Feb 22 21:20:33 2010 Jens Gustedt
-** Last update Mon Feb 22 21:20:33 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	ORWL_ONCE_H_
 # define   	ORWL_ONCE_H_
 
@@ -35,19 +38,19 @@ struct orwl__once_cont {
  ** @see INIT_ONCE
  ** @see DEFINE_ONCE
  **/
-#define DECLARE_ONCE(T)                                         \
+#define DECLARE_ONCE(T)                                        \
 extern struct orwl__once_cont P99_PASTE3(orwl__, T, _once)
 
 #define DECLARE_ONCE_UPON(T)                                    \
 extern struct orwl__once_upon_cont P99_PASTE3(orwl__, T, _once)
 
 
-#define DEFINE_ONCE_UPON(T)                                     \
-static void P99_PASTE3(orwl__, T, _once_init)(void);            \
-struct orwl__once_upon_cont P99_PASTE3(orwl__, T, _once) = {    \
-  .mut = PTHREAD_MUTEX_INITIALIZER,                             \
-  .init = P99_PASTE3(orwl__, T, _once_init),                    \
-};                                                              \
+#define DEFINE_ONCE_UPON(T)                                    \
+static void P99_PASTE3(orwl__, T, _once_init)(void);           \
+struct orwl__once_upon_cont P99_PASTE3(orwl__, T, _once) = {   \
+  .mut = PTHREAD_MUTEX_INITIALIZER,                            \
+  .init = P99_PASTE3(orwl__, T, _once_init),                   \
+};                                                             \
 static void P99_PASTE3(orwl__, T, _once_init)(void)
 
 
@@ -59,13 +62,13 @@ static void P99_PASTE3(orwl__, T, _once_init)(void)
  **
  ** @see DECLARE_ONCE
  **/
-#define DEFINE_ONCE(T)                                  \
-static void P99_PASTE3(orwl__, T, _once_init)(void);    \
-struct orwl__once_cont P99_PASTE3(orwl__, T, _once) = { \
-  .mut = PTHREAD_MUTEX_INITIALIZER,                     \
-  .cond = false,                                        \
-  .init = P99_PASTE3(orwl__, T, _once_init),            \
-};                                                      \
+#define DEFINE_ONCE(T)                                         \
+static void P99_PASTE3(orwl__, T, _once_init)(void);           \
+struct orwl__once_cont P99_PASTE3(orwl__, T, _once) = {        \
+  .mut = PTHREAD_MUTEX_INITIALIZER,                            \
+  .cond = false,                                               \
+  .init = P99_PASTE3(orwl__, T, _once_init),                   \
+};                                                             \
 static void P99_PASTE3(orwl__, T, _once_init)(void)
 
 /**
@@ -73,11 +76,11 @@ static void P99_PASTE3(orwl__, T, _once_init)(void)
  ** pthread_mutex_t @a mut.
  **/
 P99_BLOCK_DOCUMENT
-#define MUTUAL_EXCLUDE(MUT)                     \
-P99_GUARDED_BLOCK(pthread_mutex_t*,             \
-      mut,                                      \
-      &(MUT),                                   \
-      pthread_mutex_lock(mut),                  \
+#define MUTUAL_EXCLUDE(MUT)                                    \
+P99_GUARDED_BLOCK(pthread_mutex_t*,                            \
+      mut,                                                     \
+      &(MUT),                                                  \
+      pthread_mutex_lock(mut),                                 \
       pthread_mutex_unlock(mut))
 
 /**
@@ -94,11 +97,11 @@ P99_GUARDED_BLOCK(pthread_mutex_t*,             \
  **    otherwise new threads that arrive while the function is
  **    executed will continue processing too early.
  **/
-#define INIT_ONCE_UPON(T, N)                            \
-do {                                                    \
-  if (P99_EXPECT(!(N), false))                       \
-    MUTUAL_EXCLUDE(P99_PASTE3(orwl__, T, _once).mut)    \
-      if (!(N)) P99_PASTE3(orwl__, T, _once).init();    \
+#define INIT_ONCE_UPON(T, N)                                   \
+do {                                                           \
+  if (P99_EXPECT(!(N), false))                                 \
+    MUTUAL_EXCLUDE(P99_PASTE3(orwl__, T, _once).mut)           \
+      if (!(N)) P99_PASTE3(orwl__, T, _once).init();           \
  } while(0)
 
 /**
@@ -106,14 +109,14 @@ do {                                                    \
  ** DEFINE_ONCE() has been called exactly once before further
  ** proceeding.
  **/
-#define INIT_ONCE(T)                                                    \
-do {                                                                    \
-  if (P99_EXPECT(!(P99_PASTE3(orwl__, T, _once).cond), false))          \
-    MUTUAL_EXCLUDE(P99_PASTE3(orwl__, T, _once).mut)                    \
-      if (!(P99_PASTE3(orwl__, T, _once).cond)) {                       \
-        P99_PASTE3(orwl__, T, _once).init();                            \
-        P99_PASTE3(orwl__, T, _once).cond = true;                       \
-      }                                                                 \
+#define INIT_ONCE(T)                                           \
+do {                                                           \
+  if (P99_EXPECT(!(P99_PASTE3(orwl__, T, _once).cond), false)) \
+    MUTUAL_EXCLUDE(P99_PASTE3(orwl__, T, _once).mut)           \
+      if (!(P99_PASTE3(orwl__, T, _once).cond)) {              \
+        P99_PASTE3(orwl__, T, _once).init();                   \
+        P99_PASTE3(orwl__, T, _once).cond = true;              \
+      }                                                        \
  } while(0)
 
 /**
@@ -152,13 +155,13 @@ do {                                                                    \
 
 
 #if (defined(__GNUC__) && (__GNUC__ > 3))
-# define DECLARE_ONCE_STATIC(NAME)              \
-extern                                          \
-__attribute__((constructor))                    \
+# define DECLARE_ONCE_STATIC(NAME)                             \
+extern                                                         \
+__attribute__((constructor))                                   \
 void P99_PASTE3(orwl__, NAME, _once_static)(void)
 
-# define DEFINE_ONCE_STATIC(NAME)               \
-__attribute__((constructor))                    \
+# define DEFINE_ONCE_STATIC(NAME)                              \
+__attribute__((constructor))                                   \
 void P99_PASTE3(orwl__, NAME, _once_static)(void)
 
 # define INIT_ONCE_STATIC(NAME)

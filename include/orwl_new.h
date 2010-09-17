@@ -1,13 +1,16 @@
-/*
-** orwl_new.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Mon Feb 22 14:37:07 2010 Jens Gustedt
-** Last update Mon Feb 22 14:37:07 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	ORWL_NEW_H_
 # define   	ORWL_NEW_H_
 
@@ -31,17 +34,17 @@
  ** variable that you have such allocated.
  ** @see DECLARE_NEW_DELETE
  **/
-#define DECLARE_DELETE(T)                                               \
-/*! @brief Operator @c delete for type T   **/                          \
+#define DECLARE_DELETE(T)                                                                                  \
+/*! @brief Operator @c delete for type T   **/                                                             \
   /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
-  /*! @attention @a el show have been allocated through @ref P99_NEW */ \
-inline                                                                  \
-void P99_PASTE2(T, _delete)(T const*el) {                               \
-  if (el) {                                                             \
-    T* e = (T*)el;                                                      \
-    P99_PASTE2(T, _destroy)(e);                                         \
-    free((void*)e);                                                     \
-  }                                                                     \
+  /*! @attention @a el show have been allocated through @ref P99_NEW */                                    \
+inline                                                                                                     \
+void P99_PASTE2(T, _delete)(T const*el) {                                                                  \
+  if (el) {                                                                                                \
+    T* e = (T*)el;                                                                                         \
+    P99_PASTE2(T, _destroy)(e);                                                                            \
+    free((void*)e);                                                                                        \
+  }                                                                                                        \
 }
 
 inline
@@ -85,50 +88,50 @@ void p99__vdelete(void const*p) {
  ** function, that just takes a pointer to the element that is to be
  ** initialized.
  **/
-#define DECLARE_VNEW(T)                                                 \
-/*! @brief Operator @c new[] for type T   **/                           \
+#define DECLARE_VNEW(T)                                                                                 \
+/*! @brief Operator @c new[] for type T   **/                                                           \
   /*! @attention @ref T ## _init  is supposed to exist and to be callable with just one T* argument **/ \
-  /*! @attention @ref T ## _vdelete @b must be used to de-allocate such a variable **/ \
-inline                                                                  \
-T *P99_PASTE2(T, _vnew)(size_t n) {                                     \
-  size_t N = n*sizeof(T);                                               \
-  T *ret = p99__vnew(N);                                                \
-  if (ret) {                                                            \
-    for (size_t i = 0; i < n; ++i) {                                    \
-      P99_PASTE2(T, _init)(ret + i);                                    \
-    }                                                                   \
-  }                                                                     \
-  return ret;                                                           \
+  /*! @attention @ref T ## _vdelete @b must be used to de-allocate such a variable **/                  \
+inline                                                                                                  \
+T *P99_PASTE2(T, _vnew)(size_t n) {                                                                     \
+  size_t N = n*sizeof(T);                                                                               \
+  T *ret = p99__vnew(N);                                                                                \
+  if (ret) {                                                                                            \
+    for (size_t i = 0; i < n; ++i) {                                                                    \
+      P99_PASTE2(T, _init)(ret + i);                                                                    \
+    }                                                                                                   \
+  }                                                                                                     \
+  return ret;                                                                                           \
 }
 
-#define DECLARE_VDELETE(T)                                              \
-/*! @brief Operator @c delete[] for type T **/                          \
+#define DECLARE_VDELETE(T)                                                                                 \
+/*! @brief Operator @c delete[] for type T **/                                                             \
   /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
-  /*! @attention @ref T ## _vnew @b must have been used to allocate this variable **/ \
-inline                                                                  \
-void P99_PASTE2(T, _vdelete)(T const*vec) {                             \
-  if (vec) {                                                            \
-    size_t n = p99__vlen(vec) / sizeof(T);                              \
-    for (T *ve = (T*)vec, *stop = ve + n; ve < stop; ++ve) {            \
-      P99_PASTE2(T, _destroy)(ve);                                      \
-    }                                                                   \
-    p99__vdelete(vec);                                                  \
-  }                                                                     \
+  /*! @attention @ref T ## _vnew @b must have been used to allocate this variable **/                      \
+inline                                                                                                     \
+void P99_PASTE2(T, _vdelete)(T const*vec) {                                                                \
+  if (vec) {                                                                                               \
+    size_t n = p99__vlen(vec) / sizeof(T);                                                                 \
+    for (T *ve = (T*)vec, *stop = ve + n; ve < stop; ++ve) {                                               \
+      P99_PASTE2(T, _destroy)(ve);                                                                         \
+    }                                                                                                      \
+    p99__vdelete(vec);                                                                                     \
+  }                                                                                                        \
 }
 
-#define DECLARE_NEW_DELETE(T)                                    \
-DECLARE_DELETE(T)                                                \
-DECLARE_VDELETE(T)                                               \
-DECLARE_VNEW(T)                                                  \
+#define DECLARE_NEW_DELETE(T)                                                                \
+DECLARE_DELETE(T)                                                                            \
+DECLARE_VDELETE(T)                                                                           \
+DECLARE_VNEW(T)                                                                              \
  enum P99_PASTE2(p99__tame_ansi_c_semicolon_message_, T) { P99_PASTE2(p99__new_delete_, T) }
 
 #define DEFINE_DELETE(T) void P99_PASTE2(T, _delete)(T const*el)
 #define DEFINE_VNEW(T) T * P99_PASTE2(T, _vnew)(size_t n)
 #define DEFINE_VDELETE(T) void P99_PASTE2(T, _vdelete)(T const*vec)
 
-#define DEFINE_NEW_DELETE(T)                   \
-DEFINE_VNEW(T);                                \
-DEFINE_DELETE(T);                              \
+#define DEFINE_NEW_DELETE(T)                                   \
+DEFINE_VNEW(T);                                                \
+DEFINE_DELETE(T);                                              \
 DEFINE_VDELETE(T)
 
 

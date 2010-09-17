@@ -1,13 +1,16 @@
-/*
-** orwl_handle2.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Fri May 21 22:22:06 2010 Jens Gustedt
-** Last update Fri May 21 22:22:06 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	ORWL_HANDLE2_H_
 # define   	ORWL_HANDLE2_H_
 
@@ -43,15 +46,15 @@ struct orwl_handle2 {
   orwl_handle pair[2];
 };
 
-#define ORWL_HANDLE2_INITIALIZER                                \
-{                                                               \
-  .inclusive = false,                                           \
-    .clock = 1,                                                 \
-    .state = { [0] = orwl_invalid, [1] = orwl_invalid },        \
-    .pair = {                                                   \
-    [0] = ORWL_HANDLE_INITIALIZER,                              \
-    [1] = ORWL_HANDLE_INITIALIZER,                              \
-  }                                                             \
+#define ORWL_HANDLE2_INITIALIZER                               \
+{                                                              \
+  .inclusive = false,                                          \
+    .clock = 1,                                                \
+    .state = { [0] = orwl_invalid, [1] = orwl_invalid },       \
+    .pair = {                                                  \
+    [0] = ORWL_HANDLE_INITIALIZER,                             \
+    [1] = ORWL_HANDLE_INITIALIZER,                             \
+  }                                                            \
 }
 
 inline

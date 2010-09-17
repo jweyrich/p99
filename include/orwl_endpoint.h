@@ -1,13 +1,16 @@
-/*
-** orwl_endpoint.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Fri May  7 19:52:37 2010 Jens Gustedt
-** Last update Fri May  7 19:52:37 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	ORWL_ENDPOINT_H_
 # define   	ORWL_ENDPOINT_H_
 
@@ -63,9 +66,9 @@ struct orwl_endpoint {
 
 #define ADDR_T_INITIALIZER(NADDR) { .a[2] = htonl(0x0000FFFF), .a[3] = NADDR }
 #define PORT_T_INITIALIZER(NPORT) { .p = NPORT }
-#define ORWL_ENDPOINT_INITIALIZER(NADDR,  NPORT) {      \
-    .addr = ADDR_T_INITIALIZER(NADDR),                  \
-      .port = PORT_T_INITIALIZER(NPORT),                \
+#define ORWL_ENDPOINT_INITIALIZER(NADDR,  NPORT) {             \
+    .addr = ADDR_T_INITIALIZER(NADDR),                         \
+      .port = PORT_T_INITIALIZER(NPORT),                       \
       }
 
 #ifndef DOXYGEN
@@ -226,7 +229,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t
  **   thread->main [label="pthread_exit()"];
  ** @endmsc
  **/
-#define orwl_rpc(EP, SEED, F, ...)                                      \
+#define orwl_rpc(EP, SEED, F, ...)                                            \
 orwl_send(EP, SEED, P99_LENGTH_ARR_ARG(uint64_t, ORWL_OBJID(F), __VA_ARGS__))
 
 #endif 	    /* !ORWL_ENDPOINT_H_ */

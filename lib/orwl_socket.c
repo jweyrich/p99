@@ -1,13 +1,16 @@
-/*
-** orwl_socket.c
-** 
-** Made by (Jens Gustedt)
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Sun Mar 21 22:00:19 2010 Jens Gustedt
-** Last update Sun May 12 01:17:25 2002 Speed Blue
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #include "orwl_socket.h"
 
 #include "orwl_server.h"
@@ -19,13 +22,13 @@ static uint32_t mycode = 0;
 
 #define if_code(C0, C1, C2, C3) ((((uint32_t)C0) << 0) | (((uint32_t)C1) << 8) | (((uint32_t)C2) << 16) | (((uint32_t)C3) << 24))
 
-#define orwl_if_code(C0, C1, C2, C3)                    \
-do {                                                    \
-  static uint32_t const c = if_code(C0, C1, C2, C3);    \
-  if (ntohl(c) == if_code(0, 1, 2, 3)) {                \
-    mycode = c;                                         \
-    goto END;                                           \
-  }                                                     \
+#define orwl_if_code(C0, C1, C2, C3)                           \
+do {                                                           \
+  static uint32_t const c = if_code(C0, C1, C2, C3);           \
+  if (ntohl(c) == if_code(0, 1, 2, 3)) {                       \
+    mycode = c;                                                \
+    goto END;                                                  \
+  }                                                            \
  } while (false)
 
 

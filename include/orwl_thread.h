@@ -1,13 +1,16 @@
-/*
-** orwl_thread.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Tue Feb 23 21:32:15 2010 Jens Gustedt
-** Last update Tue Feb 23 21:32:15 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	ORWL_THREAD_H_
 # define   	ORWL_THREAD_H_
 
@@ -79,11 +82,11 @@ extern void orwl_progress(size_t t, size_t mynum, size_t np, size_t phase, char 
  ** of the global variable #orwl_phase or of a local variable with the
  ** same name.
  **/
-#define report(exp, ...)                                        \
-do {                                                            \
-  if ((bool)exp) {                                              \
-    orwl_report(orwl_mynum, orwl_np, orwl_phase, __VA_ARGS__);  \
-  }                                                             \
+#define report(exp, ...)                                       \
+do {                                                           \
+  if ((bool)exp) {                                             \
+    orwl_report(orwl_mynum, orwl_np, orwl_phase, __VA_ARGS__); \
+  }                                                            \
  } while(0)
 
 
@@ -93,11 +96,11 @@ do {                                                            \
  **
  ** @a t modulo 4 is used to print a spinning \.
  **/
-#define progress(exp, t, ...)                                           \
-do {                                                                    \
-  if ((bool)exp) {                                                      \
-    orwl_progress(t, orwl_mynum, orwl_np, orwl_phase, __VA_ARGS__);     \
-  }                                                                     \
+#define progress(exp, t, ...)                                       \
+do {                                                                \
+  if ((bool)exp) {                                                  \
+    orwl_progress(t, orwl_mynum, orwl_np, orwl_phase, __VA_ARGS__); \
+  }                                                                 \
  } while(0)
 
 
@@ -241,44 +244,44 @@ extern void orwl_pthread_wait_detached(void);
 #ifdef DOXYGEN
 #define DECLARE_THREAD(T)
 
-#define DEFINE_THREAD(T)                                                \
-/*! This is the callback procedure for type T */                        \
-/*! @see T */                                                           \
-/*! @see DECLARE_THREAD */                                              \
-/*! @param arg the object for this call */                              \
-/*! @param id if non-NULL, the thread can be joined on this @a id */    \
+#define DEFINE_THREAD(T)                                             \
+/*! This is the callback procedure for type T */                     \
+/*! @see T */                                                        \
+/*! @see DECLARE_THREAD */                                           \
+/*! @param arg the object for this call */                           \
+/*! @param id if non-NULL, the thread can be joined on this @a id */ \
   int P99_PASTE2(T, _create)(T* arg, pthread_t *id)
 #else
-#define DECLARE_THREAD(T)                                               \
-  inline T * P99_PASTE2(T, _join)(pthread_t id) {                       \
-  void *ret = NULL;                                                     \
-  pthread_join(id, &ret);                                               \
-  return ret;                                                           \
-}                                                                       \
-extern void * P99_PASTE2(T, _start_joinable)(void* arg);                \
-extern void * P99_PASTE2(T, _start_detached)(void* arg);                \
-inline int P99_PASTE2(T, _create)(T* arg, pthread_t *id) {              \
-  if (id)                                                               \
+#define DECLARE_THREAD(T)                                                         \
+  inline T * P99_PASTE2(T, _join)(pthread_t id) {                                 \
+  void *ret = NULL;                                                               \
+  pthread_join(id, &ret);                                                         \
+  return ret;                                                                     \
+}                                                                                 \
+extern void * P99_PASTE2(T, _start_joinable)(void* arg);                          \
+extern void * P99_PASTE2(T, _start_detached)(void* arg);                          \
+inline int P99_PASTE2(T, _create)(T* arg, pthread_t *id) {                        \
+  if (id)                                                                         \
     return orwl_pthread_create_joinable(id, P99_PASTE2(T, _start_joinable), arg); \
-  else                                                                  \
-    return orwl_pthread_create_detached(P99_PASTE2(T, _start_detached), arg); \
-}                                                                       \
+  else                                                                            \
+    return orwl_pthread_create_detached(P99_PASTE2(T, _start_detached), arg);     \
+}                                                                                 \
 extern void * P99_PASTE2(T, _start_joinable)(void* arg)
-#define DEFINE_THREAD(T)                                \
-T *P99_PASTE2(T, _join)(pthread_t id);                  \
-int P99_PASTE2(T, _create)(T* arg, pthread_t *id);      \
-void P99_PASTE2(T, _start)(T* Arg);                     \
-void *P99_PASTE2(T, _start_joinable)(void* arg) {       \
-  T *Arg = (T*)arg;                                     \
-  P99_PASTE2(T, _start)(Arg);                           \
-  return arg;                                           \
-}                                                       \
-void *P99_PASTE2(T, _start_detached)(void* arg) {       \
-  T *Arg = (T*)arg;                                     \
-  P99_PASTE2(T, _start)(Arg);                           \
-  P99_PASTE2(T, _delete)(Arg);                          \
-  return NULL;                                          \
-}                                                       \
+#define DEFINE_THREAD(T)                                       \
+T *P99_PASTE2(T, _join)(pthread_t id);                         \
+int P99_PASTE2(T, _create)(T* arg, pthread_t *id);             \
+void P99_PASTE2(T, _start)(T* Arg);                            \
+void *P99_PASTE2(T, _start_joinable)(void* arg) {              \
+  T *Arg = (T*)arg;                                            \
+  P99_PASTE2(T, _start)(Arg);                                  \
+  return arg;                                                  \
+}                                                              \
+void *P99_PASTE2(T, _start_detached)(void* arg) {              \
+  T *Arg = (T*)arg;                                            \
+  P99_PASTE2(T, _start)(Arg);                                  \
+  P99_PASTE2(T, _delete)(Arg);                                 \
+  return NULL;                                                 \
+}                                                              \
 void P99_PASTE2(T, _start)(T *const Arg)
 #endif
 
@@ -304,12 +307,12 @@ extern void sleepfor(double t);
  ** block or statement.
  **/
 P99_BLOCK_DOCUMENT
-#define SEM_RELAX(SEM)                          \
-P99_GUARDED_BLOCK(                              \
-           sem_t*,                              \
-           sem,                                 \
-           &(SEM),                              \
-           sem_post(sem),                       \
+#define SEM_RELAX(SEM)                                         \
+P99_GUARDED_BLOCK(                                             \
+           sem_t*,                                             \
+           sem,                                                \
+           &(SEM),                                             \
+           sem_post(sem),                                      \
            sem_wait_nointr(sem))
 
 /**
@@ -325,12 +328,12 @@ P99_GUARDED_BLOCK(                              \
  ** @see MUTUAL_EXCLUDE
  **/
 P99_BLOCK_DOCUMENT
-#define SEM_CRITICAL(SEM)                       \
-P99_GUARDED_BLOCK(                              \
-           sem_t*,                              \
-           sem,                                 \
-           &(SEM),                              \
-           sem_wait_nointr(sem),                \
+#define SEM_CRITICAL(SEM)                                      \
+P99_GUARDED_BLOCK(                                             \
+           sem_t*,                                             \
+           sem,                                                \
+           &(SEM),                                             \
+           sem_wait_nointr(sem),                               \
            sem_post(sem))
 
 inline
@@ -345,26 +348,26 @@ char const* pthread2str(char *buf, pthread_t id) {
 
 #define PTHREAD2STR(ID) pthread2str((char[1 + sizeof(pthread_t) * 2]){0}, ID)
 
-#define P99__DECLARE_THREAD_VAR(T, NAME, KEY)   \
-extern pthread_key_t KEY;                       \
-DECLARE_ONCE_STATIC(KEY);                       \
-inline T* NAME(void) {                          \
-  INIT_ONCE_STATIC(KEY);                        \
-  T* ret = pthread_getspecific(KEY);            \
-  if (P99_EXPECT(!ret, false)) {             \
-    ret = P99_NEW(T);                           \
-    (void)pthread_setspecific(KEY, ret);        \
-  }                                             \
-  return ret;                                   \
-}                                               \
-inline void P99_PASTE2(NAME, _clear)(void) {    \
-  INIT_ONCE_STATIC(KEY);                        \
-  T* ret = pthread_getspecific(KEY);            \
-  if (P99_EXPECT(!!ret, true)) {             \
-    (void)pthread_setspecific(KEY, NULL);       \
-    P99_PASTE2(T, _delete)(ret);                \
-  }                                             \
-}                                               \
+#define P99__DECLARE_THREAD_VAR(T, NAME, KEY)                  \
+extern pthread_key_t KEY;                                      \
+DECLARE_ONCE_STATIC(KEY);                                      \
+inline T* NAME(void) {                                         \
+  INIT_ONCE_STATIC(KEY);                                       \
+  T* ret = pthread_getspecific(KEY);                           \
+  if (P99_EXPECT(!ret, false)) {                               \
+    ret = P99_NEW(T);                                          \
+    (void)pthread_setspecific(KEY, ret);                       \
+  }                                                            \
+  return ret;                                                  \
+}                                                              \
+inline void P99_PASTE2(NAME, _clear)(void) {                   \
+  INIT_ONCE_STATIC(KEY);                                       \
+  T* ret = pthread_getspecific(KEY);                           \
+  if (P99_EXPECT(!!ret, true)) {                               \
+    (void)pthread_setspecific(KEY, NULL);                      \
+    P99_PASTE2(T, _delete)(ret);                               \
+  }                                                            \
+}                                                              \
 extern pthread_key_t KEY
 
 
@@ -374,12 +377,12 @@ inline T* NAME(void);                                           \
 P99__DECLARE_THREAD_VAR(T, NAME, P99_PASTE3(p99__, NAME, _key))
 
 
-#define P99___DEFINE_THREAD_VAR(T, NAME, KEY)                           \
-pthread_key_t KEY;                                                      \
-DEFINE_ONCE_STATIC(KEY) {                                               \
+#define P99___DEFINE_THREAD_VAR(T, NAME, KEY)                                \
+pthread_key_t KEY;                                                           \
+DEFINE_ONCE_STATIC(KEY) {                                                    \
   (void) pthread_key_create(&KEY, (void (*)(void *))P99_PASTE2(T, _delete)); \
-}                                                                       \
-void P99_PASTE2(NAME, _clear)(void);                                    \
+}                                                                            \
+void P99_PASTE2(NAME, _clear)(void);                                         \
 T* NAME(void)
 
 #define P99__DEFINE_THREAD_VAR(T, NAME, KEY) P99___DEFINE_THREAD_VAR(T, NAME, KEY)

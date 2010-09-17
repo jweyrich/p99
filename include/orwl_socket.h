@@ -1,13 +1,16 @@
-/*
-** orwl_socket.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Sun Mar 21 21:46:01 2010 Jens Gustedt
-** Last update Sun Mar 21 21:46:01 2010 Jens Gustedt
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	ORWL_SOCKET_H_
 # define   	ORWL_SOCKET_H_
 
@@ -61,14 +64,14 @@ extern in_addr_t orwl_inet_addr(char const *name);
 
 extern void orwl_ntoa(struct sockaddr_in const* addr, char *name);
 
-#define diagnose(fd, form, ...)                                         \
-do {                                                                    \
-  struct sockaddr_in addr = SOCKADDR_IN_INIIALIZER;                     \
+#define diagnose(fd, form, ...)                                                                   \
+do {                                                                                              \
+  struct sockaddr_in addr = SOCKADDR_IN_INIIALIZER;                                               \
   if (getpeername(fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)}) != -1) { \
-    char name[256] = "";                                                \
-    orwl_ntoa(&addr, name);                                             \
-    report(stderr, "connection from %s " form, name, __VA_ARGS__);      \
-  }                                                                     \
+    char name[256] = "";                                                                          \
+    orwl_ntoa(&addr, name);                                                                       \
+    report(stderr, "connection from %s " form, name, __VA_ARGS__);                                \
+  }                                                                                               \
  } while (0)
 
 
@@ -174,32 +177,32 @@ DECLARE_THREAD(auth_sock);
 void auth_sock_close(auth_sock *sock);
 
 #ifdef DOXYGEN
-#define DEFINE_AUTH_SOCK_FUNC(F, ...)                                   \
+#define DEFINE_AUTH_SOCK_FUNC(F, ...)                                       \
 /*! An ::auth_sock function interpreting a message received on a socket. */ \
-/*! It interprets the message it receives as if it where declared*/     \
-/*! @code uint64_t F(__VA_ARGS__) @endcode */                           \
-/*! @see AUTH_SOCK_READ is used to interpret the message as specified */ \
+/*! It interprets the message it receives as if it where declared*/         \
+/*! @code uint64_t F(__VA_ARGS__) @endcode */                               \
+/*! @see AUTH_SOCK_READ is used to interpret the message as specified */    \
 void F(auth_sock *Arg)
 #define DECLARE_AUTH_SOCK_FUNC(F, ...) void F(auth_sock *Arg)
 #else
-#define DEFINE_AUTH_SOCK_FUNC(F, ...)                   \
-void (*P99_PASTE2(F, _signature))(__VA_ARGS__) = NULL;  \
-DEFINE_ORWL_REGISTER_ALIAS(F, auth_sock);               \
+#define DEFINE_AUTH_SOCK_FUNC(F, ...)                          \
+void (*P99_PASTE2(F, _signature))(__VA_ARGS__) = NULL;         \
+DEFINE_ORWL_REGISTER_ALIAS(F, auth_sock);                      \
 void F(auth_sock *Arg)
 
-#define DECLARE_AUTH_SOCK_FUNC(F, ...)                  \
-extern void (*P99_PASTE2(F, _signature))(__VA_ARGS__);  \
-DECLARE_ORWL_REGISTER_ALIAS(F, auth_sock);              \
+#define DECLARE_AUTH_SOCK_FUNC(F, ...)                         \
+extern void (*P99_PASTE2(F, _signature))(__VA_ARGS__);         \
+DECLARE_ORWL_REGISTER_ALIAS(F, auth_sock);                     \
 void F(auth_sock *Arg)
 #endif
 
 DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
 
 
-#define AUTH_SOCK_READ(A, F, ...)                               \
-(void)((void (*)(__VA_ARGS__)){P99_PASTE2(F, _signature)});     \
-P99_VASSIGNS((A)->mes, __VA_ARGS__);                            \
-(A)->len -= P99_NARG(__VA_ARGS__);                              \
+#define AUTH_SOCK_READ(A, F, ...)                              \
+(void)((void (*)(__VA_ARGS__)){P99_PASTE2(F, _signature)});    \
+P99_VASSIGNS((A)->mes, __VA_ARGS__);                           \
+(A)->len -= P99_NARG(__VA_ARGS__);                             \
 (A)->mes += P99_NARG(__VA_ARGS__)
 
 /* some helper */

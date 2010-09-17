@@ -1,40 +1,43 @@
-/*
-** orwl_int.c
-** 
-** Made by (Jens Gustedt)
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Sat Mar 20 13:17:50 2010 Jens Gustedt
-** Last update Sun May 12 01:17:25 2002 Speed Blue
-*/
-
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #include "orwl_int.h"
 #include "p99_map.h"
 
-#define DEFINE_BASIC(T)                         \
-T* P99_PASTE2(T, _init)(T *id);                 \
-void P99_PASTE2(T, _destroy)(T* id);            \
+#define DEFINE_BASIC(T)                                        \
+T* P99_PASTE2(T, _init)(T *id);                                \
+void P99_PASTE2(T, _destroy)(T* id);                           \
 DEFINE_NEW_DELETE(T)
 
-#define DEFINE_BASIC_TYPE(T)                    \
-DEFINE_BASIC(T);                                \
-DEFINE_BASIC(P99_PASTE2(T, _cptr));                 \
+#define DEFINE_BASIC_TYPE(T)                                   \
+DEFINE_BASIC(T);                                               \
+DEFINE_BASIC(P99_PASTE2(T, _cptr));                            \
 DEFINE_BASIC(P99_PASTE2(T, _ptr))
 
-#define P99__DEFINE_ARI2STR(T, X, S, P)                 \
-char const* P99_PASTE3(T, 2, X)(char* buf, T x) {       \
-  char* form = P99_STRDUP(#P, P99_PRI(T,X,S));          \
-  sprintf(buf, form, x);                                \
-  free(form);                                           \
-  return buf;                                           \
-}                                                       \
+#define P99__DEFINE_ARI2STR(T, X, S, P)                        \
+char const* P99_PASTE3(T, 2, X)(char* buf, T x) {              \
+  char* form = P99_STRDUP(#P, P99_PRI(T,X,S));                 \
+  sprintf(buf, form, x);                                       \
+  free(form);                                                  \
+  return buf;                                                  \
+}                                                              \
 char const* P99_PASTE3(T, 2, X)(char* buf, T x)
 
-#define DEFINE_ARI2STR(T)                       \
-  P99__DEFINE_ARI2STR(T, d, , );                \
-  P99__DEFINE_ARI2STR(T, o, 0, 0);              \
-  P99__DEFINE_ARI2STR(T, u, , );                \
-  P99__DEFINE_ARI2STR(T, x, , 0x);              \
+#define DEFINE_ARI2STR(T)                                      \
+  P99__DEFINE_ARI2STR(T, d, , );                               \
+  P99__DEFINE_ARI2STR(T, o, 0, 0);                             \
+  P99__DEFINE_ARI2STR(T, u, , );                               \
+  P99__DEFINE_ARI2STR(T, x, , 0x);                             \
   P99__DEFINE_ARI2STR(T, X, , 0x)
 
 DEFINE_BASIC(void_ptr);
