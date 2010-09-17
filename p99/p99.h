@@ -264,8 +264,10 @@
  ** exactly the same pointer
  ** @code
  ** tutu* tutu_init(tutu* t, bool val) {
- **   t->A = (toto)TOTO_INITIALIZER;
- **   t->c = val;
+ **   if (t) {
+ **     t->A = (toto)TOTO_INITIALIZER;
+ **     t->c = val;
+ **   }
  **   return t;
  ** }
  ** @endcode
@@ -644,6 +646,112 @@
  ** See @ref preprocessor_operators for more about that.
  **
  ** @section alloc Allocation and initialization facilities
+ **
+ ** Consistent initialization of variables is an important issue in
+ ** C. P99 provides some tools to help you on that, most importantly a
+ ** macro ::P99_NEW. Therefore we have to relay on some assumptions
+ ** that are specified in @ref variableInit, in particular that there
+ ** is an `init' function for each type that we want to use with ::P99_NEW.
+ **
+ ** For the example type of a circular list element
+ **
+ ** @code
+ ** // Forward declare struct elem and elem
+ ** typedef struct elem elem;
+ ** .
+ ** .
+ ** .
+ ** struct elem { elem* pred; elem* succ; };
+ ** @endcode
+ **
+ ** we might want to ensure that the fields @c pred and @c succ are
+ ** always properly initialized. An `init' function could look as follows:
+ ** @code
+ ** #define ELEM_INITIALIZER(HERE, PRED, SUCC) {
+ **  .pred = (PRED) ? (PRED) : (HERE),
+ **  .succ = (SUCC) ? (SUCC) ; (HERE),
+ ** }
+ ** @endcode
+ **
+ ** A static initialization of a 4 element list in file scope can then be done as
+ ** @code
+ ** extern elem * head;
+ ** .
+ ** .
+ ** static elem L0;
+ ** static elem L1;
+ ** static elem L2;
+ ** static elem L3;
+ ** static elem L0 = ELEM_INITIALIZER(&L0, &L1, &L3);
+ ** static elem L1 = ELEM_INITIALIZER(&L1, &L0, &L2);
+ ** static elem L2 = ELEM_INITIALIZER(&L2, &L1, &L3);
+ ** static elem L3 = ELEM_INITIALIZER(&L3, &L2, &L0);
+ ** head = &L0;
+ ** @endcode
+ **
+ ** Dynamic initialization of a 4 element list on the stack in function scope
+ ** @code
+ ** elem L[4] = {
+ **   [0] = ELEM_INITIALIZER(&L[0], &L[1], &L[3]),
+ **   [1] = ELEM_INITIALIZER(&L[1], &L[0], &L[2]),
+ **   [2] = ELEM_INITIALIZER(&L[2], &L[1], &L[3]),
+ **   [3] = ELEM_INITIALIZER(&L[3], &L[2], &L[0]),
+ ** };
+ ** @endcode
+ **
+ ** To do dynamic initialization we would then define something like this:
+ ** @code
+ ** elem * elem_init(elem* here, elem* there) {
+ **   if (here) {
+ **     if (there) {
+ **        here->pred = there;
+ **        here->succ = there->succ;
+ **        there->succ = here;
+ **        here->succ->pred = here;
+ **     } else {
+ **        here->pred = here;
+ **        here->succ = here;
+ **     }
+ **   }
+ **   return here;
+ ** }
+ ** @endcode
+ **
+ ** Initializations of this type of heap variables in function scope
+ ** can now simply look like this
+ ** @code
+ ** elem * a = P99_NEW(elem, NULL);
+ ** elem * b = P99_NEW(elem, a);
+ ** elem * c = P99_NEW(elem, b);
+ ** @endcode
+ ** or
+ ** @code
+ ** elem * head = P99_NEW(elem, P99_NEW(elem, P99_NEW(elem, NULL)));
+ ** @endcode
+ **
+ ** These define cyclic lists of 3 elements, well initialized and
+ ** ready to go.
+ **
+ ** In fact, the ::P99_NEW macro takes a list of arguments that may be
+ ** arbitrarily long. It just needs the first, which is supposed to be
+ ** the type of the object that is to be created. The other are then
+ ** passed as supplementary arguments to the `init' function, here the
+ ** parameter @c there.
+ **
+ ** If the `init' function accepts default arguments to some
+ ** parameters, so will ::P99_NEW. With @ref default_arguments, calls
+ ** to ::P99_NEW may then omit the second argument:
+ **
+ ** @code
+ ** #define elem_init(...) P99_CALL_DEFARG(elem_init, 2, __VA_ARGS__)
+ ** #define elem_init_defarg_1() NULL
+ ** .
+ ** .
+ ** .
+ ** elem * a = P99_NEW(elem);
+ ** elem * head = P99_NEW(elem, P99_NEW(elem, P99_NEW(elem)));
+ ** @endcode
+ **
  **/
 
 /**
