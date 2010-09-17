@@ -103,14 +103,6 @@
 #define P99__BUILTIN_TYPE_ulL	P99__BUILTIN_TYPE_ull
 
 
-/**
- ** @brief Find a builtin type according to a code such as `ull' or `ld'
- **
- ** E.g ::P99_BUILTIN_TYPE(ull) should expand to @c unsigned @c long
- ** @c long.
- **/
-#define  P99_BUILTIN_TYPE(CODE)  P99_PASTE2(P99__BUILTIN, P99_PASTE2(_TYPE_, CODE))
-
 #define P99__TYPE_NORMALIZE_(CODE, CONS, VOLA, SEQ)            \
 P99_IF_EMPTY(CODE)                                             \
   (P99_IF_EMPTY(SEQ)(void)(SEQ))                               \

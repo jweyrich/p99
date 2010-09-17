@@ -34,7 +34,7 @@
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P99__VERSION_DATE "Thu, 16 Sep 2010 23:05:23 +0200"
+#define P99__VERSION_DATE "Fri, 17 Sep 2010 19:46:18 +0200"
 #define P99__VERSION_ID "eb534f1d31aa3a23309b77734f874d521c3cb3a2"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -4901,7 +4901,7 @@
 #define P99__BUILTIN_TYPE_dc	double _Complex
 #define P99__BUILTIN_TYPE_f	float
 #define P99__BUILTIN_TYPE_fc	float _Complex
-#define P99__BUILTIN_TYPE_h	short
+#define P99__BUILTIN_TYPE_h	signed short
 #define P99__BUILTIN_TYPE_hh	signed char
 #define P99__BUILTIN_TYPE_i	signed
 #define P99__BUILTIN_TYPE_l	signed long
@@ -4914,6 +4914,34 @@
 #define P99__BUILTIN_TYPE_ul	unsigned long
 #define P99__BUILTIN_TYPE_ull	unsigned long long
 #define P99__BUILTIN_TYPE_v	void
+/**
+ ** @brief Find a builtin type according to a code such as `ull' or `ld'
+ **
+ ** E.g ::P99_BUILTIN_TYPE(ull) should expand to @c unsigned @c long
+ ** @c long. The complete list for the 19 builtin types:
+ ** <table>
+ ** <tr><td>b</td><td><code>_Bool</code></td></tr>
+ ** <tr><td>c</td><td><code>char</code></td></tr>
+ ** <tr><td>d</td><td><code>double</code></td></tr>
+ ** <tr><td>dc</td><td><code>double _Complex</code></td></tr>
+ ** <tr><td>f</td><td><code>float</code></td></tr>
+ ** <tr><td>fc</td><td><code>float _Complex</code></td></tr>
+ ** <tr><td>ld</td><td><code>long double</code></td></tr>
+ ** <tr><td>ldc</td><td><code>long double _Complex</code></td></tr>
+ ** <tr><td>i</td><td><code>signed</code></td></tr>
+ ** <tr><td>hh</td><td><code>signed char</code></td></tr>
+ ** <tr><td>l</td><td><code>signed long</code></td></tr>
+ ** <tr><td>ll</td><td><code>signed long long</code></td></tr>
+ ** <tr><td>h</td><td><code>signed short</code></td></tr>
+ ** <tr><td>u</td><td><code>unsigned</code></td></tr>
+ ** <tr><td>uhh</td><td><code>unsigned char</code></td></tr>
+ ** <tr><td>ul</td><td><code>unsigned long</code></td></tr>
+ ** <tr><td>ull</td><td><code>unsigned long long</code></td></tr>
+ ** <tr><td>uh</td><td><code>unsigned short</code></td></tr>
+ ** <tr><td>v</td><td><code>void</code></td></tr>
+ ** </table>
+ **/
+#define  P99_BUILTIN_TYPE(CODE)  P99_PASTE2(P99__BUILTIN, P99_PASTE2(_TYPE_, CODE))
 /**
  ** @}
  **/

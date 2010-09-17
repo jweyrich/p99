@@ -793,7 +793,7 @@ classify("FLOAT", @floatClass, %floatClass);
 my %builtinType = (
     "b" => "_Bool",
     "c" => "char",
-    "h" => "short",
+    "h" => "signed short",
     "hh" => "signed char",
     "i" => "signed",
     "l" => "signed long",
@@ -815,6 +815,27 @@ my %builtinType = (
 print "#define P99__BUILTIN_TYPE_${_}\t" . $builtinType{${_}} . "\n"
     foreach sort keys(%builtinType);
 
+my $types = scalar keys %builtinType;
+my %builtinTypeRev = reverse(%builtinType);
+
+print << "BUILTIN0";
+/**
+ ** \@brief Find a builtin type according to a code such as `ull' or `ld'
+ **
+ ** E.g ::P99_BUILTIN_TYPE(ull) should expand to \@c unsigned \@c long
+ ** \@c long. The complete list for the $types builtin types:
+ ** <table>
+BUILTIN0
+
+foreach my $type (sort keys %builtinTypeRev) {
+    print " ** <tr><td>$builtinTypeRev{$type}</td><td><code>$type</code></td></tr>\n"
+}
+
+print << 'BUILTIN1';
+ ** </table>
+ **/
+#define  P99_BUILTIN_TYPE(CODE)  P99_PASTE2(P99__BUILTIN, P99_PASTE2(_TYPE_, CODE))
+BUILTIN1
 
 print <<'PREPRO3';
 /**
