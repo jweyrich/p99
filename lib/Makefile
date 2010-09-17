@@ -56,6 +56,9 @@ NM	= nm
 NM_UNDEF_FILTER	= sed -n "/^[ ]*U [a-z]/s|.* \([a-z0-9_]*\).*|\1|g p"
 CFLAGS  = -fPIC $(OBJOPT) $(IPATH)
 LDFLAGS = $(EXEOPT) $(LPATH)
+COPY = "all rights reserved, "
+LICENSE = SHORTLICENCE-closed.txt
+TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile
 
 .SUFFIXES: .h.Z .c.Z .h.gz .c.gz .c.z .h.z
 
@@ -118,3 +121,6 @@ external_symbols.c : liborwl.so Makefile
 	@printf 'void call_externals(void) {\n${CALLS}}\n' >> external_symbols.c
 	@printf '${PROTS}\n' >> external_symbols.c
 	@printf '#endif\n' >> external_symbols.c
+
+tidy :
+	for f in ${SRC} ; do  ${TIDY} $$f ; done

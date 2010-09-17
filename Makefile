@@ -8,8 +8,9 @@ P99DISTRI = p99.tgz p99.zip p99-html.tgz p99-html.zip p99-refman.pdf
 
 CLEAN = ${patsubst %,%/clean,${DIRS}}
 DISTCLEAN = ${patsubst %,%/distclean,${DIRS}}
+TIDY = ${patsubst %,%/tidy,${DIRS}}
 
-.PHONY : target clean ${DIRS} doxygen ${CLEAN} ${DISTCLEAN}
+.PHONY : target clean ${DIRS} doxygen ${CLEAN} ${DISTCLEAN} ${TIDY}
 
 all : ${DIRS}
 
@@ -18,6 +19,8 @@ clean : ${CLEAN}
 
 distclean : ${DISTCLEAN}
 	-$(RM) doxygen.log *~
+
+tidy : ${TIDY}
 
 tests : lib
 	$(MAKE) -C $@
@@ -74,4 +77,13 @@ p99-html.tgz p99-html.zip p99-refman.pdf : doxygen-p99
 
 ./include/distclean :
 	$(MAKE) -C include distclean
+
+./tests/tidy :
+	$(MAKE) -C tests tidy
+
+./lib/tidy :
+	$(MAKE) -C lib tidy
+
+./include/tidy :
+	$(MAKE) -C include tidy
 

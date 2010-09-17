@@ -44,6 +44,9 @@ IPATH   = -I. -I../include -I../p99
 OBJOPT  = -std=c99 -pedantic -Wall -Wstrict-prototypes ${OPT}
 EXEOPT  = -lorwl
 LPATH   = -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR}
+COPY = "all rights reserved, "
+LICENSE = SHORTLICENCE-closed.txt
+TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile
 
 #####################
 # Macro Definitions #
@@ -90,6 +93,11 @@ ucomp:
 
 .c.o:
 	$(CC) $(CFLAGS) -c $< 
+
+
+tidy :
+	for f in ${SRC} ; do  ${TIDY} $$f ; done
+
 ################
 # Dependencies #
 ################
