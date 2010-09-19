@@ -111,6 +111,20 @@ printf("%20s:\t%4u\t%5u\t%3zu\t%20s\t%20s,\t%3ssigned%15s\n",  \
         ? ""                                                   \
         : representation[P99_E_REPRESENTATION(EXPR)]))
 
+static unsigned strangeness = 0;
+
+#define IFSTRANGENESS(MIN, MAX, UMAX, T)                                                                                 \
+do {                                                                                                                     \
+  if (MAX == UMAX) {                                                                                                     \
+    printf("P99 strangeness:\tprecisions of signed and unsigned %s are equal\n", #T);                                    \
+    ++strangeness;                                                                                                       \
+    if (MIN < -MAX) {                                                                                                    \
+      printf("P99 strangeness:\tnegative of minimum value for signed %s is not representable in unsigned %s\n", #T, #T); \
+      ++strangeness;                                                                                                     \
+    }                                                                                                                    \
+  }                                                                                                                      \
+ } while(0)
+
 typedef enum { a1, b1 } enum1;
 typedef enum { a2 = -1, b2 } enum2;
 typedef enum { a3, b3, c3 } enum3;
@@ -132,6 +146,137 @@ int main(int argc, char** argv) {
          unreleased ? version_ID : versionID,
          unreleased ?  "(unreleased)" : "");
   printf("P99 compiler:\t%40s\n", P99_COMPILER_VERSION);
+#ifdef __DATE__
+  printf("P99 compiler: compile date was %s\n", __DATE__);
+#else
+  printf("P99 warning: compile date is not available\n");
+#endif
+#ifdef __FILE__
+  printf("P99 compiler: %s\n", __FILE__);
+#else
+  printf("P99 warning: source file name not available\n");
+#endif
+#ifdef __STDC__
+  printf("P99 compiler: %s\n",
+         __STDC__
+         ? "standard C compiler"
+         : "doesn't pretend to follow standard C");
+#else
+  printf("P99 compiler: doesn't know of standard C\n");
+#endif
+#ifdef __STDC_HOSTED__
+  printf("P99 compiler: %s\n",
+         __STDC_HOSTED__
+         ? "hosted environment"
+         : "free standing environment");
+#else
+  printf("P99 compiler: unknown environment type\n");
+#endif
+#ifdef __STDC_VERSION__
+  printf("P99 compiler: C standard version %s\n", P99__STRINGIFY(__STDC_VERSION__));
+#else
+  printf("P99 compiler: C standard version number is not available\n");
+#endif
+#ifdef __STDC_IEC_559__
+  printf("P99 compiler: conforming to IEC 60559, floating-point arithmetic\n");
+# ifdef __STDC_IEC_559_COMPLEX__
+  printf("P99 compiler: conforming to IEC 60559, compatible complex arithmetic\n");
+# else
+  printf("P99 compiler: not conforming to IEC 60559, compatible complex arithmetic\n");
+# endif
+#else
+  printf("P99 compiler: not conforming to IEC 60559, floating-point arithmetic\n");
+#endif
+#ifdef __STDC_ISO_10646__
+  static bool unicode = true;
+  printf("P99 compiler: ISO/IEC 10646 Unicode standard version as of %ld, %ld\n",
+         __STDC_ISO_10646__ % 100L,
+         __STDC_ISO_10646__ / 100L);
+#else
+  static bool unicode = false;
+  printf("P99 compiler: ISO/IEC 10646 Unicode standard version is not available\n");
+#endif
+  enum { UINT_WIDTH = P99_TWIDTH(unsigned) };
+  /* signed and unsigned int have the same size, but they may have
+     different width. */
+  typedef union bitfield {
+    signed s:UINT_WIDTH;
+    unsigned u:UINT_WIDTH;
+    int i:UINT_WIDTH;
+    signed S;
+    unsigned U;
+    unsigned char C[sizeof(int)];
+  } bitfield;
+  /* use minus 256 since this can never lead to a trap representation */
+  bitfield m_256 = { .C = { 0 }};
+  m_256.U = (0u - 256u);
+  printf("P99 diagnostic:\t\t\t int in bitfield is %s\n", (m_256.i < 0 ? "signed" : "unsigned"));
+  printf("P99 diagnostic:\t\t  signed int in bitfield is %s\n", (m_256.s < 0 ? "signed" : "unsigned"));
+  printf("P99 diagnostic:\t\tunsigned int in bitfield is %s\n", (m_256.u < 0 ? "signed" : "unsigned"));
+  /* Check to see which bit is the sign bit. */
+  size_t signbit = 0;
+  bool signincluded = false;
+  /* To do that we have to be careful not to generate a trap
+     representation. Therefore we generate bit patterns that always
+     have at least one bit on and off in each byte. */
+  for (unsigned i = 0; i < CHAR_BIT; ++i) {
+    unsigned char pattern = UCHAR_MAX;
+    unsigned char mask = (1u << i);
+    pattern ^= mask;
+    memset(&m_256.C, pattern, sizeof(int));
+    unsigned Uback = m_256.U;
+    if (m_256.S > 0) {
+      /* The ith bit in one of the bytes is the sign bit. Search for
+         the byte */
+      for (size_t j = 0; j < sizeof(int); ++j) {
+        m_256.C[j] = UCHAR_MAX;
+        if (m_256.S < 0) {
+          /* this is it */
+          signbit = j * CHAR_BIT + i;
+          signincluded = (Uback < m_256.U);
+          /* Reset the bit pattern to have just that sign bit on */
+          memset(&m_256.C, 0, sizeof(int));
+          m_256.C[j] = mask;
+          break;
+        }
+        m_256.C[j] = pattern;
+      }
+    }
+  }
+  printf("P99 diagnostic:\tsign bit of signed int is in position %zu\n", signbit);
+  printf("P99 diagnostic:\tsign bit of signed int %s value bit for unsigned int\n",
+         signincluded ? "is a" : "is no");
+  if (signincluded) {
+    //m_256.S = -256;
+    unsigned u_256 = m_256.U;
+    u_256 -= 1u;
+    u_256 <<= 1u;
+    u_256 |= 1u;
+    if (u_256 < UINT_MAX) {
+      ++strangeness;
+      printf("P99 strangeness:\twidth of signed int < width of unsigned int\n");
+      printf("P99 strangeness:\tbit pattern of all ones signed int seen as an unsigned: 0x%X\n",
+             u_256);
+    } else {
+      printf("P99 diagnostic:\twidth of signed int %s width of unsigned int\n",
+             unicode ? "\u2243" : "=");
+    }
+  } else {
+    printf("P99 strangeness:\twidth of signed int > width of unsigned int\n");
+    ++strangeness;
+  }
+  /* uncomment the following two lines to test the strangeness detection */
+  // IFSTRANGENESS(-1, 1, 1, bogus);
+  // IFSTRANGENESS(-2, 1, 1, embararssing);
+  IFSTRANGENESS(SCHAR_MIN, SCHAR_MAX, UCHAR_MAX, char);
+  IFSTRANGENESS(SHRT_MIN, SHRT_MAX, USHRT_MAX, short);
+  IFSTRANGENESS(INT_MIN, INT_MAX, UINT_MAX, int);
+  IFSTRANGENESS(LONG_MIN, LONG_MAX, ULONG_MAX, long);
+  IFSTRANGENESS(LLONG_MIN, LLONG_MAX, ULLONG_MAX, long long);
+  if (strangeness) {
+    printf("P99 warning: Because of the strangeness %u of this platform, some of the following computations may be incorrect\n",
+           strangeness);
+  }
   printf("%20s:\t%2s\t%2s\t%2s\t%20s\t%20s,\t%3ssigned%15s\n",
          "type", "prec", "width", "pad", "min", "max", "{un}", "sign repr");
   printf("--------------------------- proper types ---------------------------------\n");
