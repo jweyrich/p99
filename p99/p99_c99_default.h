@@ -14,18 +14,18 @@
 #ifndef   	P99_C99_DEFAULT_H_
 # define   	P99_C99_DEFAULT_H_
 
-#define P99__C99_DEFARG_DOCU(NAME, RET, ...)                              \
+#define P00_C99_DEFARG_DOCU(NAME, RET, ...)                              \
 /*! @brief Default arguments for C99 function NAME */                     \
 /*! This macro hides the function @code RET NAME(__VA_ARGS__) @endcode */ \
 /*! @see P99_CALL_DEFARG */
 P99_MACRO_END(C99_DEFARG_DOCU);
 
-P99__C99_DEFARG_DOCU(strerror, char*, int errnum)
+P00_C99_DEFARG_DOCU(strerror, char*, int errnum)
 /*! @param errnum defaults to errno */
 #define strerror(...) P99_CALL_DEFARG(strerror, 1, __VA_ARGS__)
 #define strerror_defarg_0() 0
 
-P99__C99_DEFARG_DOCU(calloc, void*, size_t rec_num, size_t rec_size)
+P00_C99_DEFARG_DOCU(calloc, void*, size_t rec_num, size_t rec_size)
 /** @param rec_num is required
  ** @param rec_size defaults to 1, thus @c calloc(rec_num) is
  ** equivalent to @c malloc(rec_num) only that it also initializes the
@@ -34,7 +34,7 @@ P99__C99_DEFARG_DOCU(calloc, void*, size_t rec_num, size_t rec_size)
 #define calloc(...) P99_CALL_DEFARG(calloc, 2, __VA_ARGS__)
 #define calloc_defarg_1() 1u
 
-P99__C99_DEFARG_DOCU(longjmp, void, jmp_buf env, int val)
+P00_C99_DEFARG_DOCU(longjmp, void, jmp_buf env, int val)
 /** @param jmp_buf is required
  ** @param val defaults to 1
  **/
@@ -85,7 +85,7 @@ P99__C99_DEFARG_DOCU(longjmp, void, jmp_buf env, int val)
  ** @{
  **/
 
-P99__C99_DEFARG_DOCU(wcstol, long, wchar_t const *nptr, wchar_t **endptr, int base)
+P00_C99_DEFARG_DOCU(wcstol, long, wchar_t const *nptr, wchar_t **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -93,7 +93,7 @@ P99__C99_DEFARG_DOCU(wcstol, long, wchar_t const *nptr, wchar_t **endptr, int ba
 #define wcstol_defarg_1() 0
 #define wcstol_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(wcstoll, long long, wchar_t const *nptr, wchar_t **endptr, int base)
+P00_C99_DEFARG_DOCU(wcstoll, long long, wchar_t const *nptr, wchar_t **endptr, int base)
 
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
@@ -102,7 +102,7 @@ P99__C99_DEFARG_DOCU(wcstoll, long long, wchar_t const *nptr, wchar_t **endptr, 
 #define wcstoll_defarg_1() 0
 #define wcstoll_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(wcstoimax, intmax_t, wchar_t const *nptr, wchar_t **endptr, int base)
+P00_C99_DEFARG_DOCU(wcstoimax, intmax_t, wchar_t const *nptr, wchar_t **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -110,7 +110,7 @@ P99__C99_DEFARG_DOCU(wcstoimax, intmax_t, wchar_t const *nptr, wchar_t **endptr,
 #define wcstoimax_defarg_1() 0
 #define wcstoimax_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(wcstoul, unsigned long, wchar_t const *nptr, wchar_t **endptr, int base)
+P00_C99_DEFARG_DOCU(wcstoul, unsigned long, wchar_t const *nptr, wchar_t **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -118,7 +118,7 @@ P99__C99_DEFARG_DOCU(wcstoul, unsigned long, wchar_t const *nptr, wchar_t **endp
 #define wcstoul_defarg_1() 0
 #define wcstoul_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(wcstoull, unsigned long long, wchar_t const *nptr, wchar_t **endptr, int base)
+P00_C99_DEFARG_DOCU(wcstoull, unsigned long long, wchar_t const *nptr, wchar_t **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -126,7 +126,7 @@ P99__C99_DEFARG_DOCU(wcstoull, unsigned long long, wchar_t const *nptr, wchar_t 
 #define wcstoull_defarg_1() 0
 #define wcstoull_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(wcstoumax, uintmax_t, wchar_t const *nptr, wchar_t **endptr, int base)
+P00_C99_DEFARG_DOCU(wcstoumax, uintmax_t, wchar_t const *nptr, wchar_t **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -134,25 +134,25 @@ P99__C99_DEFARG_DOCU(wcstoumax, uintmax_t, wchar_t const *nptr, wchar_t **endptr
 #define wcstoumax_defarg_1() 0
 #define wcstoumax_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(wcstof, float, wchar_t const *nptr, wchar_t **endptr)
+P00_C99_DEFARG_DOCU(wcstof, float, wchar_t const *nptr, wchar_t **endptr)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 #define wcstof(...) P99_CALL_DEFARG(wcstof, 2, __VA_ARGS__)
 #define wcstof_defarg_1() 0
 
-P99__C99_DEFARG_DOCU(wcstod, double, wchar_t const *nptr, wchar_t **endptr)
+P00_C99_DEFARG_DOCU(wcstod, double, wchar_t const *nptr, wchar_t **endptr)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 #define wcstod(...) P99_CALL_DEFARG(wcstod, 2, __VA_ARGS__)
 #define wcstod_defarg_1() 0
 
-P99__C99_DEFARG_DOCU(wcstold, long double, wchar_t const *nptr, wchar_t **endptr)
+P00_C99_DEFARG_DOCU(wcstold, long double, wchar_t const *nptr, wchar_t **endptr)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 #define wcstold(...) P99_CALL_DEFARG(wcstold, 2, __VA_ARGS__)
 #define wcstold_defarg_1() 0
 
-P99__C99_DEFARG_DOCU(strtol, long, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(strtol, long, char const *nptr, char **endptr, int base)
 /** This macro is preferable to the @c atol function. The default
  ** arguments make it functionally equivalent but add two features:
  **  - overflow and underflow handling
@@ -165,7 +165,7 @@ P99__C99_DEFARG_DOCU(strtol, long, char const *nptr, char **endptr, int base)
 #define strtol_defarg_1() 0
 #define strtol_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(strtoll, long long, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(strtoll, long long, char const *nptr, char **endptr, int base)
 /** This macro is preferable to the @c atoll function. The default
  ** arguments make it functionally equivalent but add two features:
  **  - overflow and underflow handling
@@ -178,7 +178,7 @@ P99__C99_DEFARG_DOCU(strtoll, long long, char const *nptr, char **endptr, int ba
 #define strtoll_defarg_1() 0
 #define strtoll_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(strtoimax, intmax_t, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(strtoimax, intmax_t, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -186,7 +186,7 @@ P99__C99_DEFARG_DOCU(strtoimax, intmax_t, char const *nptr, char **endptr, int b
 #define strtoimax_defarg_1() 0
 #define strtoimax_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(strtoul, unsigned long, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(strtoul, unsigned long, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -194,7 +194,7 @@ P99__C99_DEFARG_DOCU(strtoul, unsigned long, char const *nptr, char **endptr, in
 #define strtoul_defarg_1() 0
 #define strtoul_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(strtoull, unsigned long long, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(strtoull, unsigned long long, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -202,7 +202,7 @@ P99__C99_DEFARG_DOCU(strtoull, unsigned long long, char const *nptr, char **endp
 #define strtoull_defarg_1() 0
 #define strtoull_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(strtoumax, uintmax_t, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(strtoumax, uintmax_t, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -210,25 +210,25 @@ P99__C99_DEFARG_DOCU(strtoumax, uintmax_t, char const *nptr, char **endptr, int 
 #define strtoumax_defarg_1() 0
 #define strtoumax_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(strtof, float, char const *nptr, char **endptr)
+P00_C99_DEFARG_DOCU(strtof, float, char const *nptr, char **endptr)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 #define strtof(...) P99_CALL_DEFARG(strtof, 2, __VA_ARGS__)
 #define strtof_defarg_1() 0
 
-P99__C99_DEFARG_DOCU(strtod, double, char const *nptr, char **endptr)
+P00_C99_DEFARG_DOCU(strtod, double, char const *nptr, char **endptr)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 #define strtod(...) P99_CALL_DEFARG(strtod, 2, __VA_ARGS__)
 #define strtod_defarg_1() 0
 
-P99__C99_DEFARG_DOCU(strtold, long double, char const *nptr, char **endptr)
+P00_C99_DEFARG_DOCU(strtold, long double, char const *nptr, char **endptr)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 #define strtold(...) P99_CALL_DEFARG(strtold, 2, __VA_ARGS__)
 #define strtold_defarg_1() 0
 
-#define P99__DECLARE_STRTO(SUFF, RET, MIN, MAX)                              \
+#define P00_DECLARE_STRTO(SUFF, RET, MIN, MAX)                              \
 /*! @brief A type safe wrapper for string to RET conversion */               \
 /*! @see stringconversion */                                                 \
 p99_inline                                                                   \
@@ -243,7 +243,7 @@ RET P99_PASTE2(p99_strto, SUFF)(char const *nptr, char **endptr, int base) { \
 P99_MACRO_END(p99_strto, SUFF)
 
 
-#define P99__DECLARE_STRTOU(SUFF, RET, MAX)                                   \
+#define P00_DECLARE_STRTOU(SUFF, RET, MAX)                                   \
 /*! @brief A type safe wrapper for string to RET conversion */                \
 /*! @see stringconversion */                                                  \
 p99_inline                                                                    \
@@ -257,30 +257,30 @@ RET P99_PASTE2(p99_strtou, SUFF)(char const *nptr, char **endptr, int base) { \
 }                                                                             \
 P99_MACRO_END(p99_strtou, SUFF)
 
-P99__DECLARE_STRTO(c, char, SCHAR_MIN, SCHAR_MAX);
-P99__DECLARE_STRTO(hh, signed char, SCHAR_MIN, SCHAR_MAX);
-P99__DECLARE_STRTOU(hh, unsigned char, UCHAR_MAX);
+P00_DECLARE_STRTO(c, char, SCHAR_MIN, SCHAR_MAX);
+P00_DECLARE_STRTO(hh, signed char, SCHAR_MIN, SCHAR_MAX);
+P00_DECLARE_STRTOU(hh, unsigned char, UCHAR_MAX);
 
-P99__DECLARE_STRTO(, signed, INT_MIN, INT_MAX);
-P99__DECLARE_STRTOU(, unsigned, UINT_MAX);
+P00_DECLARE_STRTO(, signed, INT_MIN, INT_MAX);
+P00_DECLARE_STRTOU(, unsigned, UINT_MAX);
 
-P99__DECLARE_STRTO(h, signed short, SHRT_MIN, SHRT_MAX);
-P99__DECLARE_STRTOU(h, unsigned short, USHRT_MAX);
+P00_DECLARE_STRTO(h, signed short, SHRT_MIN, SHRT_MAX);
+P00_DECLARE_STRTOU(h, unsigned short, USHRT_MAX);
 
-P99__DECLARE_STRTO(t, ptrdiff_t, PTRDIFF_MIN, PTRDIFF_MAX);
-P99__DECLARE_STRTOU(z, size_t, SIZE_MAX);
+P00_DECLARE_STRTO(t, ptrdiff_t, PTRDIFF_MIN, PTRDIFF_MAX);
+P00_DECLARE_STRTOU(z, size_t, SIZE_MAX);
 
-P99__DECLARE_STRTO(i8, int_least8_t, INT8_MIN, INT8_MAX);
-P99__DECLARE_STRTOU(8, int_least8_t, UINT8_MAX);
+P00_DECLARE_STRTO(i8, int_least8_t, INT8_MIN, INT8_MAX);
+P00_DECLARE_STRTOU(8, int_least8_t, UINT8_MAX);
 
-P99__DECLARE_STRTO(i16, int_least16_t, INT16_MIN, INT16_MAX);
-P99__DECLARE_STRTOU(16, int_least16_t, UINT16_MAX);
+P00_DECLARE_STRTO(i16, int_least16_t, INT16_MIN, INT16_MAX);
+P00_DECLARE_STRTOU(16, int_least16_t, UINT16_MAX);
 
-P99__DECLARE_STRTO(i32, int_least32_t, INT32_MIN, INT32_MAX);
-P99__DECLARE_STRTOU(32, int_least32_t, UINT32_MAX);
+P00_DECLARE_STRTO(i32, int_least32_t, INT32_MIN, INT32_MAX);
+P00_DECLARE_STRTOU(32, int_least32_t, UINT32_MAX);
 
-P99__DECLARE_STRTO(i64, int_least64_t, INT64_MIN, INT64_MAX);
-P99__DECLARE_STRTOU(64, int_least64_t, UINT64_MAX);
+P00_DECLARE_STRTO(i64, int_least64_t, INT64_MIN, INT64_MAX);
+P00_DECLARE_STRTOU(64, int_least64_t, UINT64_MAX);
 
 
 /** This macro is preferable to the @c atoi function. The default
@@ -288,7 +288,7 @@ P99__DECLARE_STRTOU(64, int_least64_t, UINT64_MAX);
  **  - overflow and underflow handling
  **  - flexible base, namely octal, decimal or hexadecimal conversion
  **/
-P99__C99_DEFARG_DOCU(p99_strto, signed, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strto, signed, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -297,7 +297,7 @@ P99__C99_DEFARG_DOCU(p99_strto, signed, char const *nptr, char **endptr, int bas
 #define p99_strto_defarg_2() 0
 
 
-P99__C99_DEFARG_DOCU(p99_strtoc, char, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtoc, char, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -305,7 +305,7 @@ P99__C99_DEFARG_DOCU(p99_strtoc, char, char const *nptr, char **endptr, int base
 #define p99_strtoc_defarg_1() 0
 #define p99_strtoc_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(p99_strtohh, signed char, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtohh, signed char, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -313,7 +313,7 @@ P99__C99_DEFARG_DOCU(p99_strtohh, signed char, char const *nptr, char **endptr, 
 #define p99_strtohh_defarg_1() 0
 #define p99_strtohh_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(p99_strtouhh, unsigned char, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtouhh, unsigned char, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -322,7 +322,7 @@ P99__C99_DEFARG_DOCU(p99_strtouhh, unsigned char, char const *nptr, char **endpt
 #define p99_strtouhh_defarg_2() 0
 
 
-P99__C99_DEFARG_DOCU(p99_strtoh, signed short, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtoh, signed short, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -330,7 +330,7 @@ P99__C99_DEFARG_DOCU(p99_strtoh, signed short, char const *nptr, char **endptr, 
 #define p99_strtoh_defarg_1() 0
 #define p99_strtoh_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(p99_strtouh, unsigned short, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtouh, unsigned short, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -346,7 +346,7 @@ P99__C99_DEFARG_DOCU(p99_strtouh, unsigned short, char const *nptr, char **endpt
  **  - overflow handling
  **  - flexible base, namely octal, decimal or hexadecimal conversion
  **/
-P99__C99_DEFARG_DOCU(p99_strtou, unsinged, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtou, unsinged, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -354,7 +354,7 @@ P99__C99_DEFARG_DOCU(p99_strtou, unsinged, char const *nptr, char **endptr, int 
 #define p99_strtou_defarg_1() 0
 #define p99_strtou_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(p99_strtoi8, int_least8_t, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtoi8, int_least8_t, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -362,7 +362,7 @@ P99__C99_DEFARG_DOCU(p99_strtoi8, int_least8_t, char const *nptr, char **endptr,
 #define p99_strtoi8_defarg_1() 0
 #define p99_strtoi8_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(p99_strtot, ptrdiff_t, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtot, ptrdiff_t, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -370,7 +370,7 @@ P99__C99_DEFARG_DOCU(p99_strtot, ptrdiff_t, char const *nptr, char **endptr, int
 #define p99_strtot_defarg_1() 0
 #define p99_strtot_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(p99_strtouz, size_t, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtouz, size_t, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -379,7 +379,7 @@ P99__C99_DEFARG_DOCU(p99_strtouz, size_t, char const *nptr, char **endptr, int b
 #define p99_strtouz_defarg_2() 0
 
 
-P99__C99_DEFARG_DOCU(p99_strtou8, uint_least8_t, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtou8, uint_least8_t, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -387,7 +387,7 @@ P99__C99_DEFARG_DOCU(p99_strtou8, uint_least8_t, char const *nptr, char **endptr
 #define p99_strtou8_defarg_1() 0
 #define p99_strtou8_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(p99_strtoi16, int_least16_t, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtoi16, int_least16_t, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -396,7 +396,7 @@ P99__C99_DEFARG_DOCU(p99_strtoi16, int_least16_t, char const *nptr, char **endpt
 #define p99_strtoi16_defarg_2() 0
 
 
-P99__C99_DEFARG_DOCU(p99_strtou16, uint_least16_t, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtou16, uint_least16_t, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -404,7 +404,7 @@ P99__C99_DEFARG_DOCU(p99_strtou16, uint_least16_t, char const *nptr, char **endp
 #define p99_strtou16_defarg_1() 0
 #define p99_strtou16_defarg_2() 0
 
-P99__C99_DEFARG_DOCU(p99_strtoi32, int_least32_t, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtoi32, int_least32_t, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -413,7 +413,7 @@ P99__C99_DEFARG_DOCU(p99_strtoi32, int_least32_t, char const *nptr, char **endpt
 #define p99_strtoi32_defarg_2() 0
 
 
-P99__C99_DEFARG_DOCU(p99_strtou32, uint_least32_t, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtou32, uint_least32_t, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -422,7 +422,7 @@ P99__C99_DEFARG_DOCU(p99_strtou32, uint_least32_t, char const *nptr, char **endp
 #define p99_strtou32_defarg_2() 0
 
 
-P99__C99_DEFARG_DOCU(p99_strtoi64, int_least64_t, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtoi64, int_least64_t, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */
@@ -431,7 +431,7 @@ P99__C99_DEFARG_DOCU(p99_strtoi64, int_least64_t, char const *nptr, char **endpt
 #define p99_strtoi64_defarg_2() 0
 
 
-P99__C99_DEFARG_DOCU(p99_strtou64, uint_least64_t, char const *nptr, char **endptr, int base)
+P00_C99_DEFARG_DOCU(p99_strtou64, uint_least64_t, char const *nptr, char **endptr, int base)
 /*! @param nptr is required */
 /*! @param endptr defaults to 0, meaning that the successfully parsed string is not kept track */
 /*! @param base is 0, numbers are hex if they start with 0x, octal if they start with 0 and decimal otherwise */

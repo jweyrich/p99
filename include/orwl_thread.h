@@ -348,7 +348,7 @@ char const* pthread2str(char *buf, pthread_t id) {
 
 #define PTHREAD2STR(ID) pthread2str((char[1 + sizeof(pthread_t) * 2]){0}, ID)
 
-#define P99__DECLARE_THREAD_VAR(T, NAME, KEY)                  \
+#define P00_DECLARE_THREAD_VAR(T, NAME, KEY)                   \
 extern pthread_key_t KEY;                                      \
 DECLARE_ONCE_STATIC(KEY);                                      \
 inline T* NAME(void) {                                         \
@@ -371,13 +371,13 @@ inline void P99_PASTE2(NAME, _clear)(void) {                   \
 extern pthread_key_t KEY
 
 
-#define DECLARE_THREAD_VAR(T, NAME)                             \
-/*! An accessor function to a thread local variable */          \
-inline T* NAME(void);                                           \
-P99__DECLARE_THREAD_VAR(T, NAME, P99_PASTE3(p99__, NAME, _key))
+#define DECLARE_THREAD_VAR(T, NAME)                            \
+/*! An accessor function to a thread local variable */         \
+inline T* NAME(void);                                          \
+P00_DECLARE_THREAD_VAR(T, NAME, P99_PASTE3(p00_, NAME, _key))
 
 
-#define P99___DEFINE_THREAD_VAR(T, NAME, KEY)                                \
+#define P00__DEFINE_THREAD_VAR(T, NAME, KEY)                                 \
 pthread_key_t KEY;                                                           \
 DEFINE_ONCE_STATIC(KEY) {                                                    \
   (void) pthread_key_create(&KEY, (void (*)(void *))P99_PASTE2(T, _delete)); \
@@ -385,9 +385,9 @@ DEFINE_ONCE_STATIC(KEY) {                                                    \
 void P99_PASTE2(NAME, _clear)(void);                                         \
 T* NAME(void)
 
-#define P99__DEFINE_THREAD_VAR(T, NAME, KEY) P99___DEFINE_THREAD_VAR(T, NAME, KEY)
+#define P00_DEFINE_THREAD_VAR(T, NAME, KEY) P00__DEFINE_THREAD_VAR(T, NAME, KEY)
 
-#define DEFINE_THREAD_VAR(T, NAME) P99__DEFINE_THREAD_VAR(T, NAME, P99_PASTE3(p99__, NAME, _key))
+#define DEFINE_THREAD_VAR(T, NAME) P00_DEFINE_THREAD_VAR(T, NAME, P99_PASTE3(p00_, NAME, _key))
 
 
 

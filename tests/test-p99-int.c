@@ -136,8 +136,8 @@ typedef enum { a4 = -1, b4, c4 } enum4;
 int main(int argc, char** argv) {
   char const versionDate[] = { P99_VERSION_DATE };
   char const versionID[] = { P99_VERSION_ID };
-  char const version_Date[] = { P99__VERSION_DATE };
-  char const version_ID[] = { P99__VERSION_ID };
+  char const version_Date[] = { P00_VERSION_DATE };
+  char const version_ID[] = { P00_VERSION_ID };
   bool const unreleased = versionDate[0] == '$';
   printf("P99 date:\t%40s %s\n",
          unreleased ? version_Date : versionDate,
@@ -173,7 +173,7 @@ int main(int argc, char** argv) {
   printf("P99 compiler: unknown environment type\n");
 #endif
 #ifdef __STDC_VERSION__
-  printf("P99 compiler: C standard version %s\n", P99__STRINGIFY(__STDC_VERSION__));
+  printf("P99 compiler: C standard version %s\n", P00_STRINGIFY(__STDC_VERSION__));
 #else
   printf("P99 compiler: C standard version number is not available\n");
 #endif

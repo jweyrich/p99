@@ -49,7 +49,7 @@
  **
  ** @code
  ** inline
- ** uintmax_t p99__abs_signed(intmax_t a) {
+ ** uintmax_t p00_abs_signed(intmax_t a) {
  **  return (a < 0) ? -(uintmax_t)a : (uintmax_t)a;
  ** }
  ** @endcode
@@ -59,7 +59,7 @@
  ** unsigned. This has to be so, since otherwise not all valid values
  ** could be necessarily be realized.
  **
- ** ::p99__abs_signed would not be a good candidate for a macro, since
+ ** ::p00_abs_signed would not be a good candidate for a macro, since
  ** @c a is evaluated twice; once in the controlling expression and
  ** once for returning its value or its negation.
  **
@@ -78,7 +78,7 @@
  ** combining the macro and the function:
  **
  ** @code
- ** #define P99_ABS(EXPR) (P99_SIGNED(EXPR) ? p99__abs_signed(EXPR) : (EXPR))
+ ** #define P99_ABS(EXPR) (P99_SIGNED(EXPR) ? p00_abs_signed(EXPR) : (EXPR))
  ** @endcode
  **
  ** This has the following properties
@@ -212,10 +212,10 @@
  ** files future version could use any new identifier with one of
  ** those prefixes, so don't define some of them your own.
  **
- ** The extended prefixes @c P99__ and @c p99__ (with two underscores)
- ** are used for identifiers that are only auxiliary and that need not
- ** be documented by themselves. Such identifiers are ignored in the
- ** doxygen documentation.
+ ** The same rule holds for the prefixes @c P00_and @c p00_ are used
+ ** for identifiers, only that they are auxiliary and that need not be
+ ** documented. Such identifiers are ignored in the doxygen
+ ** documentation.
  **
  ** @section OSindependence Operating system independence
  **

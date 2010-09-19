@@ -29,8 +29,8 @@
  ** @{
  **/
 
-#define P99__FOR0(NAME, OP, FUNC, ...)
-#define P99__FOR1(NAME, OP, FUNC, ...) FUNC(NAME, P99__PRE1(__VA_ARGS__,), 0)
+#define P00_FOR0(NAME, OP, FUNC, ...)
+#define P00_FOR1(NAME, OP, FUNC, ...) FUNC(NAME, P00_PRE1(__VA_ARGS__,), 0)
 
 /**
  ** @brief A preprocessor pseudo iterator.
@@ -54,10 +54,10 @@
  ** RES is the result of the current iteration.
  **
  ** @code
- ** #define P99__SEP(NAME, I, REC, RES) REC; RES
- ** #define P99__VASSIGN(NAME, X, I) X = (NAME)[I]
+ ** #define P00_SEP(NAME, I, REC, RES) REC; RES
+ ** #define P00_VASSIGN(NAME, X, I) X = (NAME)[I]
  **
- ** P99_FOR(A, 2, P99__SEQ, P99__VASSIGN, toto, tutu);
+ ** P99_FOR(A, 2, P00_SEQ, P00_VASSIGN, toto, tutu);
  ** @endcode
  **
  ** Will result in
@@ -67,38 +67,38 @@
  **
  ** To understand the associativity of the @a OP argument 
  ** @code
- ** #define P99__SUM(NAME, I, REC, RES) ((REC) + (RES))
- ** #define P99__IDT(NAME, X, I) X
+ ** #define P00_SUM(NAME, I, REC, RES) ((REC) + (RES))
+ ** #define P00_IDT(NAME, X, I) X
  **
- ** P99_FOR(A, 2, P99__SUM, P99__IDT, a, b, c)
+ ** P99_FOR(A, 2, P00_SUM, P00_IDT, a, b, c)
  ** @endcode
  ** Will result in
  ** @code
  ** ((((a) + (b))) + (c))
  ** @endcode
  **/
-#define P99_FOR(NAME, N, OP, FUNC, ...) P99_PASTE2(P99__FOR, N)(NAME, OP, FUNC, __VA_ARGS__)
+#define P99_FOR(NAME, N, OP, FUNC, ...) P99_PASTE2(P00_FOR, N)(NAME, OP, FUNC, __VA_ARGS__)
 
-#define P99__IGN(NAME, X, I)
-#define P99__IDT(NAME, X, I) X
-#define P99__POS(NAME, X, I) I
-#define P99__NAM(NAME, X, I) NAME
+#define P00_IGN(NAME, X, I)
+#define P00_IDT(NAME, X, I) X
+#define P00_POS(NAME, X, I) I
+#define P00_NAM(NAME, X, I) NAME
 
-#define P99__SUM(NAME, I, X, Y) ((X) + (Y))
-#define P99__PROD(NAME, I, X, Y) ((X) * (Y))
-#define P99__QUOT(NAME, I, X, Y) ((X) / (Y))
-#define P99__XOR(NAME, I, X, Y) ((X) ^ (Y))
-#define P99__BOR(NAME, I, X, Y) ((X) | (Y))
-#define P99__BAND(NAME, I, X, Y) ((X) & (Y))
-#define P99__OR(NAME, I, X, Y) ((X) || (Y))
-#define P99__AND(NAME, I, X, Y) ((X) && (Y))
+#define P00_SUM(NAME, I, X, Y) ((X) + (Y))
+#define P00_PROD(NAME, I, X, Y) ((X) * (Y))
+#define P00_QUOT(NAME, I, X, Y) ((X) / (Y))
+#define P00_XOR(NAME, I, X, Y) ((X) ^ (Y))
+#define P00_BOR(NAME, I, X, Y) ((X) | (Y))
+#define P00_BAND(NAME, I, X, Y) ((X) & (Y))
+#define P00_OR(NAME, I, X, Y) ((X) || (Y))
+#define P00_AND(NAME, I, X, Y) ((X) && (Y))
 
-#define P99__SEQ(NAME, I, REC, X) REC, X
-#define P99__SEP(NAME, I, REC, X) REC; X
-#define P99__SER(NAME, I, REC, X) REC X
-#define P99__REV(NAME, I, REC, X) X, REC
+#define P00_SEQ(NAME, I, REC, X) REC, X
+#define P00_SEP(NAME, I, REC, X) REC; X
+#define P00_SER(NAME, I, REC, X) REC X
+#define P00_REV(NAME, I, REC, X) X, REC
 
-#define P99__FUNC(NAME, I, REC, X) NAME(REC, X)
+#define P00_FUNC(NAME, I, REC, X) NAME(REC, X)
 
 /**
  ** @brief Realize the right associative operation @a OP of all the arguments.
@@ -110,7 +110,7 @@
  **
  ** @a M is the length of the list that follows it.
  **/
-#define P99_BIGOP(OP, M, ...) P99_FOR( , M, OP, P99__IDT, __VA_ARGS__)
+#define P99_BIGOP(OP, M, ...) P99_FOR( , M, OP, P00_IDT, __VA_ARGS__)
 
 /**
  ** @brief Realize the right associative call of binary function @a FUNC of all the arguments.
@@ -119,7 +119,7 @@
  **
  ** @a M is the length of the list that follows it.
  **/
-#define P99_BIGFUNC(FUNC, M, ...) P99_FOR(FUNC, M, P99__FUNC, P99__IDT, __VA_ARGS__)
+#define P99_BIGFUNC(FUNC, M, ...) P99_FOR(FUNC, M, P00_FUNC, P00_IDT, __VA_ARGS__)
 
 /**
  ** @}
@@ -134,35 +134,35 @@
 /**
  ** @brief Realize the right associative sum of all the arguments.
  **/
-#define P99_SUMS(...) P99_BIGOP(P99__SUM, P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_SUMS(...) P99_BIGOP(P00_SUM, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative product of all the arguments.
  **/
-#define P99_PRODS(...) P99_BIGOP(P99__PROD, P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_PRODS(...) P99_BIGOP(P00_PROD, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative quotient of all the arguments.
  **/
-#define P99_QUOTS(...) P99_BIGOP(P99__QUOT, P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_QUOTS(...) P99_BIGOP(P00_QUOT, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative bitwise exclusive or of all the arguments.
  **/
-#define P99_XORS(...) P99_BIGOP(P99__XOR, P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_XORS(...) P99_BIGOP(P00_XOR, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative bitwise or of all the arguments.
  **/
-#define P99_BORS(...) P99_BIGOP(P99__BOR, P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_BORS(...) P99_BIGOP(P00_BOR, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative bitwise and of all the arguments.
  **/
-#define P99_BANDS(...) P99_BIGOP(P99__BAND, P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_BANDS(...) P99_BIGOP(P00_BAND, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative logical or of all the arguments.
  **/
-#define P99_ORS(...) P99_BIGOP(P99__OR, P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_ORS(...) P99_BIGOP(P00_OR, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 /**
  ** @brief Realize the right associative logical and of all the arguments.
  **/
-#define P99_ANDS(...) P99_BIGOP(P99__AND, P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_ANDS(...) P99_BIGOP(P00_AND, P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
 /**
  ** @}
@@ -173,15 +173,15 @@
  ** @ingroup preprocessor_for
  ** @brief Revert the argument list
  **/
-#define P99_REVS(...) P99__REVS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_REVS(...) P00_REVS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define P99__REVS(N, ...) P99_PASTE2(P99__REVS_, P99_IS_DEC_LT(N, 2))(N, __VA_ARGS__)
+#define P00_REVS(N, ...) P99_PASTE2(P00_REVS_, P99_IS_DEC_LT(N, 2))(N, __VA_ARGS__)
 
-#define P99__REVS_0(N, ...) P99__REVS_(N,__VA_ARGS__)
-#define P99__REVS_1(N, ...) __VA_ARGS__
+#define P00_REVS_0(N, ...) P00_REVS_(N,__VA_ARGS__)
+#define P00_REVS_1(N, ...) __VA_ARGS__
 
 /* the general case for an argument list of at least two elements */
-#define P99__REVS_(N, ...) P99_FOR(,N, P99__REV, P99__IDT, __VA_ARGS__)
+#define P00_REVS_(N, ...) P99_FOR(,N, P00_REV, P00_IDT, __VA_ARGS__)
 
 /**
  ** @ingroup preprocessor_arithmetic 
@@ -191,9 +191,9 @@
  ** @warning Both arguments must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define P99_DEC_DIV(A, B) P99_CHS(A, P99_FOR(B, 32, P99__SEQ, P99__IDI, P99__ALL_ONES()))
+#define P99_DEC_DIV(A, B) P99_CHS(A, P99_FOR(B, 32, P00_SEQ, P00_IDI, P00_ALL_ONES()))
 
-#define P99__IDI(B, X, I) P99_DUPL(B, I)
+#define P00_IDI(B, X, I) P99_DUPL(B, I)
 
 
 

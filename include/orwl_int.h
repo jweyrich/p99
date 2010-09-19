@@ -39,22 +39,22 @@ extern char **environ;
 #define TGARB(T) ((T)(void*)environ)
 
 /* For each one word integer type have a signed and unsigned variant. */
-#define P99__ONE_TOK_(T, NAME)                                                  \
+#define P00_ONE_TOK_(T, NAME)                                                   \
 /*! @brief a `one token' abreviation for @c T */                                \
 /*! These type names are needed to have a valid naming scheme for functions. */ \
 typedef T NAME
 
-P99__ONE_TOK_(unsigned long, ulong);
-P99__ONE_TOK_(signed long, slong);
-P99__ONE_TOK_(unsigned int, uint);
-P99__ONE_TOK_(signed int, sint);
-P99__ONE_TOK_(unsigned short, ushort);
-P99__ONE_TOK_(signed short, sshort);
-P99__ONE_TOK_(unsigned char, uchar);
-P99__ONE_TOK_(signed char, schar);
-P99__ONE_TOK_(long long, llong);
-P99__ONE_TOK_(signed long long, sllong);
-P99__ONE_TOK_(unsigned long long, ullong);
+P00_ONE_TOK_(unsigned long, ulong);
+P00_ONE_TOK_(signed long, slong);
+P00_ONE_TOK_(unsigned int, uint);
+P00_ONE_TOK_(signed int, sint);
+P00_ONE_TOK_(unsigned short, ushort);
+P00_ONE_TOK_(signed short, sshort);
+P00_ONE_TOK_(unsigned char, uchar);
+P00_ONE_TOK_(signed char, schar);
+P00_ONE_TOK_(long long, llong);
+P00_ONE_TOK_(signed long long, sllong);
+P00_ONE_TOK_(unsigned long long, ullong);
 
 #define DECLARE_POINTER_TYPE(T)                                \
 /*! @brief a pointer to T */                                   \
@@ -165,21 +165,21 @@ char const* void_cptr2p(char* buf, void_cptr x) {
 }
 
 #ifdef DOXYGEN
-#define P99__DECLARE_ARI2STR(T, X, S, P)                                                            \
+#define P00_DECLARE_ARI2STR(T, X, S, P)                                                             \
 /*! @brief Return a `X' representation of @a x in @a buf. */                                        \
 /*! Here `X' is taken as a format specifier as for @c printf. The output is eventually prefixed. */ \
   char const* P99_PASTE3(T, 2, X)(char* buf, T x);
 #else
-#define P99__DECLARE_ARI2STR(T, X, S, P)                       \
+#define P00_DECLARE_ARI2STR(T, X, S, P)                        \
   char const* P99_PASTE3(T, 2, X)(char* buf, T x)
 #endif
 
 #define DECLARE_ARI2STR(T)                                     \
-  P99__DECLARE_ARI2STR(T, d, , );                              \
-  P99__DECLARE_ARI2STR(T, o, 0, 0);                            \
-  P99__DECLARE_ARI2STR(T, u, , );                              \
-  P99__DECLARE_ARI2STR(T, x, , 0x);                            \
-  P99__DECLARE_ARI2STR(T, X, , 0x)
+  P00_DECLARE_ARI2STR(T, d, , );                               \
+  P00_DECLARE_ARI2STR(T, o, 0, 0);                             \
+  P00_DECLARE_ARI2STR(T, u, , );                               \
+  P00_DECLARE_ARI2STR(T, x, , 0x);                             \
+  P00_DECLARE_ARI2STR(T, X, , 0x)
 
 
 DECLARE_ARI2STR(schar);
@@ -195,57 +195,57 @@ DECLARE_ARI2STR(sllong);
 DECLARE_ARI2STR(ullong);
 
 
-#define P99__ALLO(N) ((char[N]){0})
+#define P00_ALLO(N) ((char[N]){0})
 
 /**
  ** @brief convert @a x to unsigned decimal
  */
 #define PRIu(x)                                                \
 P99_CHOOSE5(x,                                                 \
-        uchar2u(P99__ALLO(3*sizeof(sllong)),x),                \
-        ushort2u(P99__ALLO(3*sizeof(sllong)),x),               \
-        unsigned2u(P99__ALLO(3*sizeof(sllong)),x),             \
-        ulong2u(P99__ALLO(3*sizeof(sllong)),x),                \
-        ullong2u(P99__ALLO(3*sizeof(sllong)),x))
+        uchar2u(P00_ALLO(3*sizeof(sllong)),x),                 \
+        ushort2u(P00_ALLO(3*sizeof(sllong)),x),                \
+        unsigned2u(P00_ALLO(3*sizeof(sllong)),x),              \
+        ulong2u(P00_ALLO(3*sizeof(sllong)),x),                 \
+        ullong2u(P00_ALLO(3*sizeof(sllong)),x))
 
 /*! @brief convert @a x to decimal, possibly signed */
 #define PRId(x)                                                \
 P99_CHOOSE5(x,                                                 \
-        schar2d(P99__ALLO(3*sizeof(sllong)),x),                \
-        short2d(P99__ALLO(3*sizeof(sllong)),x),                \
-        signed2d(P99__ALLO(3*sizeof(sllong)),x),               \
-        long2d(P99__ALLO(3*sizeof(sllong)),x),                 \
-        llong2d(P99__ALLO(3*sizeof(sllong)),x))
+        schar2d(P00_ALLO(3*sizeof(sllong)),x),                 \
+        short2d(P00_ALLO(3*sizeof(sllong)),x),                 \
+        signed2d(P00_ALLO(3*sizeof(sllong)),x),                \
+        long2d(P00_ALLO(3*sizeof(sllong)),x),                  \
+        llong2d(P00_ALLO(3*sizeof(sllong)),x))
 
 /*! @brief convert @a x to octal */
 #define PRIo(x)                                                \
 P99_CHOOSE5(x,                                                 \
-        uchar2o(P99__ALLO(3*sizeof(sllong)),x),                \
-        ushort2o(P99__ALLO(3*sizeof(sllong)),x),               \
-        unsigned2o(P99__ALLO(3*sizeof(sllong)),x),             \
-        ulong2o(P99__ALLO(3*sizeof(sllong)),x),                \
-        ullong2o(P99__ALLO(3*sizeof(sllong)),x))
+        uchar2o(P00_ALLO(3*sizeof(sllong)),x),                 \
+        ushort2o(P00_ALLO(3*sizeof(sllong)),x),                \
+        unsigned2o(P00_ALLO(3*sizeof(sllong)),x),              \
+        ulong2o(P00_ALLO(3*sizeof(sllong)),x),                 \
+        ullong2o(P00_ALLO(3*sizeof(sllong)),x))
 
 /*! @brief convert @a x to hexadecimal using a...f for 10 to 15 */
 #define PRIx(x)                                                \
 P99_CHOOSE5(x,                                                 \
-        uchar2x(P99__ALLO(2*sizeof(sllong)),x),                \
-        ushort2x(P99__ALLO(2*sizeof(sllong)),x),               \
-        unsigned2x(P99__ALLO(2*sizeof(sllong)),x),             \
-        ulong2x(P99__ALLO(2*sizeof(sllong)),x),                \
-        ullong2x(P99__ALLO(2*sizeof(sllong)),x))
+        uchar2x(P00_ALLO(2*sizeof(sllong)),x),                 \
+        ushort2x(P00_ALLO(2*sizeof(sllong)),x),                \
+        unsigned2x(P00_ALLO(2*sizeof(sllong)),x),              \
+        ulong2x(P00_ALLO(2*sizeof(sllong)),x),                 \
+        ullong2x(P00_ALLO(2*sizeof(sllong)),x))
 
 /*! @brief convert @a x to hexadecimal using A...F for 10 to 15 */
 #define PRIX(x)                                                \
 P99_CHOOSE5(x,                                                 \
-        uchar2X(P99__ALLO(2*sizeof(sllong)),x),                \
-        ushort2X(P99__ALLO(2*sizeof(sllong)),x),               \
-        unsigned2X(P99__ALLO(2*sizeof(sllong)),x),             \
-        ulong2X(P99__ALLO(2*sizeof(sllong)),x),                \
-        ullong2X(P99__ALLO(2*sizeof(sllong)),x))
+        uchar2X(P00_ALLO(2*sizeof(sllong)),x),                 \
+        ushort2X(P00_ALLO(2*sizeof(sllong)),x),                \
+        unsigned2X(P00_ALLO(2*sizeof(sllong)),x),              \
+        ulong2X(P00_ALLO(2*sizeof(sllong)),x),                 \
+        ullong2X(P00_ALLO(2*sizeof(sllong)),x))
 
 /*! @brief convert pointer @a x to hexadecimal */
-#define PRIp(x) void_cptr2p(P99__ALLO(2*sizeof(void*) + 3), x)
+#define PRIp(x) void_cptr2p(P00_ALLO(2*sizeof(void*) + 3), x)
 
 /**
  ** @brief Output a series of @a n strings to file @a f.
@@ -271,7 +271,7 @@ int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A) {
   return ret;
 }
 
-#define P99__mfputs(F, ...) P99_FSYMB(mfputs)(F, P99_LENGTH_ARR_ARG(char const*const, __VA_ARGS__))
+#define P00_mfputs(F, ...) P99_FSYMB(mfputs)(F, P99_LENGTH_ARR_ARG(char const*const, __VA_ARGS__))
 
 /**
  ** @brief Output a series of strings to a @c FILE* given as first argument.
@@ -285,7 +285,7 @@ int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A) {
  ** string arguments in one go, undisturbed by the eventual output
  ** coming from another thread.
  **/
-#define mfputs(...) P99__mfputs(__VA_ARGS__)
+#define mfputs(...) P00_mfputs(__VA_ARGS__)
 
 
 

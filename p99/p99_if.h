@@ -54,15 +54,15 @@
  ** @{
  **/
 
-#define P99__IGNORE(...)
-#define P99__IDENT(...) __VA_ARGS__
-#define P99__SKIP_
-#define P99__CLAUSE1(...) __VA_ARGS__ P99__IGNORE
-#define P99__CLAUSE2(...) P99__IDENT
+#define P00_IGNORE(...)
+#define P00_IDENT(...) __VA_ARGS__
+#define P00_SKIP_
+#define P00_CLAUSE1(...) __VA_ARGS__ P00_IGNORE
+#define P00_CLAUSE2(...) P00_IDENT
 
-#define P99___IF_CLAUSE(A,B,C,...) C
-#define P99__IF_CLAUSE(EXP) P99___IF_CLAUSE(EXP, P99__CLAUSE1, P99__CLAUSE2, ~)
-#define P99__IF_NOT_CLAUSE(EXP) P99___IF_CLAUSE(EXP, P99__CLAUSE2, P99__CLAUSE1, ~)
+#define P00__IF_CLAUSE(A,B,C,...) C
+#define P00_IF_CLAUSE(EXP) P00__IF_CLAUSE(EXP, P00_CLAUSE1, P00_CLAUSE2, ~)
+#define P00_IF_NOT_CLAUSE(EXP) P00__IF_CLAUSE(EXP, P00_CLAUSE2, P00_CLAUSE1, ~)
 
 /**
  ** @brief Test two words @a A and @a B if they are equal.
@@ -70,7 +70,7 @@
  ** @a A and @a B must be just one word, i.e composed of
  ** alpha-numerical characters and underscores.
  **
- ** For such a test to work properly a corresponding macro @c P99__IS_A_EQ_A
+ ** For such a test to work properly a corresponding macro @c P00_IS_A_EQ_A
  ** must exist for all @a A such that @a B may be the same word as @a
  ** A. E.g for the test
  **
@@ -78,18 +78,18 @@
  ** P99_IF_EQ(0, X)(expand_when_equal)(expand_when_unequal)
  ** @endcode
  **
- ** the macro ::P99__IF_0_EQ_0 must exist. (Which it does in that case).
+ ** the macro ::P00_IF_0_EQ_0 must exist. (Which it does in that case).
  **
  ** @see P99_IF_DEC_EQ for equality of not too large decimal numbers
  **/
-#define P99_IF_EQ(A, B) P99__IF_CLAUSE(P99_PASTE4(P99__IS_,A,_EQ_,B)())
+#define P99_IF_EQ(A, B) P00_IF_CLAUSE(P99_PASTE4(P00_IS_,A,_EQ_,B)())
 
 /**
  ** @brief Test two words @a A and @a B if they are unequal.
  **
  ** @see P99_IF_EQ
  **/
-#define P99_IF_NE(A, B) P99__IF_NOT_CLAUSE(P99_PASTE4(P99__IS_,A,_EQ_,B)())
+#define P99_IF_NE(A, B) P00_IF_NOT_CLAUSE(P99_PASTE4(P00_IS_,A,_EQ_,B)())
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if they are equal.
@@ -101,8 +101,8 @@
  **/
 #define P99_IF_DEC_NE(A, B) P99_IF_EQ_0(P99_IS_DEC_EQ(A,B))
 
-#define P99_IF_GE_0(A) P99__IF_CLAUSE(P99_PASTE4(P99__IS_,A,_GE_,0)())
-#define P99_IF_LT_0(A) P99__IF_NOT_CLAUSE(P99_PASTE4(P99__IS_,A,_GE_,0)())
+#define P99_IF_GE_0(A) P00_IF_CLAUSE(P99_PASTE4(P00_IS_,A,_GE_,0)())
+#define P99_IF_LT_0(A) P00_IF_NOT_CLAUSE(P99_PASTE4(P00_IS_,A,_GE_,0)())
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is greater

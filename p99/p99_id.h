@@ -27,66 +27,66 @@
  ** wraps around.
  **/
 
-#define P99__DOCUMENT_ID(x) /*! @brief counting the number of inclusions of "p99_id.h" mod x */
+#define P00_DOCUMENT_ID(x) /*! @brief counting the number of inclusions of "p99_id.h" mod x */
 
-P99__DOCUMENT_ID(11)
+P00_DOCUMENT_ID(11)
 #define P99_ID_11 0
 
-P99__DOCUMENT_ID(13)
+P00_DOCUMENT_ID(13)
 #define P99_ID_13 0
 
-P99__DOCUMENT_ID(15)
+P00_DOCUMENT_ID(15)
 #define P99_ID_15 0
 
-P99__DOCUMENT_ID(16)
+P00_DOCUMENT_ID(16)
 #define P99_ID_16 0
 
-#define P99__ALPH_0 0
-#define P99__ALPH_1 1
-#define P99__ALPH_2 2
-#define P99__ALPH_3 3
-#define P99__ALPH_4 4
-#define P99__ALPH_5 5
-#define P99__ALPH_6 6
-#define P99__ALPH_7 7
-#define P99__ALPH_8 8
-#define P99__ALPH_9 9
-#define P99__ALPH_10 A
-#define P99__ALPH_11 B
-#define P99__ALPH_12 C
-#define P99__ALPH_13 D
-#define P99__ALPH_14 E
-#define P99__ALPH_15 F
-#define P99__ALPH_16 G
-#define P99__ALPH_17 H
-#define P99__ALPH_18 I
-#define P99__ALPH_19 J
-#define P99__ALPH_20 K
-#define P99__ALPH_21 L
-#define P99__ALPH_22 M
-#define P99__ALPH_23 N
-#define P99__ALPH_24 O
-#define P99__ALPH_25 P
-#define P99__ALPH_26 Q
-#define P99__ALPH_27 R
-#define P99__ALPH_28 S
-#define P99__ALPH_29 T
-#define P99__ALPH_30 U
-#define P99__ALPH_31 V
-#define P99__ALPH_32 W
-#define P99__ALPH_33 X
-#define P99__ALPH_34 Y
-#define P99__ALPH_35 Z
+#define P00_ALPH_0 0
+#define P00_ALPH_1 1
+#define P00_ALPH_2 2
+#define P00_ALPH_3 3
+#define P00_ALPH_4 4
+#define P00_ALPH_5 5
+#define P00_ALPH_6 6
+#define P00_ALPH_7 7
+#define P00_ALPH_8 8
+#define P00_ALPH_9 9
+#define P00_ALPH_10 A
+#define P00_ALPH_11 B
+#define P00_ALPH_12 C
+#define P00_ALPH_13 D
+#define P00_ALPH_14 E
+#define P00_ALPH_15 F
+#define P00_ALPH_16 G
+#define P00_ALPH_17 H
+#define P00_ALPH_18 I
+#define P00_ALPH_19 J
+#define P00_ALPH_20 K
+#define P00_ALPH_21 L
+#define P00_ALPH_22 M
+#define P00_ALPH_23 N
+#define P00_ALPH_24 O
+#define P00_ALPH_25 P
+#define P00_ALPH_26 Q
+#define P00_ALPH_27 R
+#define P00_ALPH_28 S
+#define P00_ALPH_29 T
+#define P00_ALPH_30 U
+#define P00_ALPH_31 V
+#define P00_ALPH_32 W
+#define P00_ALPH_33 X
+#define P00_ALPH_34 Y
+#define P00_ALPH_35 Z
 
 
 
-#define P99__ALPH_(A, X) P99_PASTE2(A, X)
-#define P99__ALPH(X) P99__ALPH_(P99__ALPH_, X)
+#define P00_ALPH_(A, X) P99_PASTE2(A, X)
+#define P00_ALPH(X) P00_ALPH_(P00_ALPH_, X)
 
-#define P99_ID_11_ P99__ALPH(P99_ID_11)
-#define P99_ID_13_ P99__ALPH(P99_ID_13)
-#define P99_ID_15_ P99__ALPH(P99_ID_15)
-#define P99_ID_16_ P99__ALPH(P99_ID_16)
+#define P99_ID_11_ P00_ALPH(P99_ID_11)
+#define P99_ID_13_ P00_ALPH(P99_ID_13)
+#define P99_ID_15_ P00_ALPH(P99_ID_15)
+#define P99_ID_16_ P00_ALPH(P99_ID_16)
 
 #define P99_ID() P99_PASTE4(P99_ID_11_, P99_ID_13_, P99_ID_15_, P99_ID_16_)
 
@@ -104,7 +104,7 @@ P99__DOCUMENT_ID(16)
  **
  ** The argument may contain a token that is appended to the id.
  **/
-#define P99_FILEID(...) P99_PASTE(p99__fileid_, P99_ID(), __VA_ARGS__)
+#define P99_FILEID(...) P99_PASTE(p00_fileid_, P99_ID(), __VA_ARGS__)
 
 /**
  ** @brief A number that identifies different lines in an include
@@ -129,7 +129,7 @@ P99__DOCUMENT_ID(16)
  ** to your executable you should reconsider the offending lines that
  ** use this macro more thoroughly.
  **/
-#define P99_LINEID(...) P99_PASTE(p99__lineid_, __LINE__, P99_ID(), __VA_ARGS__)
+#define P99_LINEID(...) P99_PASTE(p00_lineid_, __LINE__, P99_ID(), __VA_ARGS__)
 
 /**
  ** @brief A meta macro that forces the addition of a semicolon after

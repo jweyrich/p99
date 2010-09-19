@@ -49,7 +49,7 @@ unsigned tutu_fixed(void) {
   return tutu(3, 1, 3, 5, 7);
 }
 
-#define P99__ARR_OP_MINMAX(NAME, TYPE, SUFF, OP)                                        \
+#define P00_ARR_OP_MINMAX(NAME, TYPE, SUFF, OP)                                         \
 static_inline                                                                           \
  TYPE P99_FSYMB(P99_PASTE4(p99_, NAME, _, SUFF))(size_t number, TYPE const*const arr) { \
     TYPE ret = arr[0];                                                                  \
@@ -60,61 +60,61 @@ static_inline                                                                   
 P99_MACRO_END(_arr_op_minmax_, NAME, _, SUFF)
 
 
-P99__ARR_OP_MINMAX(min, unsigned char, hhu, <);
-P99__ARR_OP_MINMAX(min, unsigned short, hu, <);
-P99__ARR_OP_MINMAX(min, unsigned, u, <);
-P99__ARR_OP_MINMAX(min, unsigned long, lu, <);
-P99__ARR_OP_MINMAX(min, unsigned long long, llu, <);
-P99__ARR_OP_MINMAX(min, uintmax_t, ju, <);
-P99__ARR_OP_MINMAX(min, size_t, zu, <);
-P99__ARR_OP_MINMAX(min, uint8_t, 8u, <);
-P99__ARR_OP_MINMAX(min, uint16_t, 16u, <);
-P99__ARR_OP_MINMAX(min, uint32_t, 32u, <);
-P99__ARR_OP_MINMAX(min, uint64_t, 64u, <);
+P00_ARR_OP_MINMAX(min, unsigned char, hhu, <);
+P00_ARR_OP_MINMAX(min, unsigned short, hu, <);
+P00_ARR_OP_MINMAX(min, unsigned, u, <);
+P00_ARR_OP_MINMAX(min, unsigned long, lu, <);
+P00_ARR_OP_MINMAX(min, unsigned long long, llu, <);
+P00_ARR_OP_MINMAX(min, uintmax_t, ju, <);
+P00_ARR_OP_MINMAX(min, size_t, zu, <);
+P00_ARR_OP_MINMAX(min, uint8_t, 8u, <);
+P00_ARR_OP_MINMAX(min, uint16_t, 16u, <);
+P00_ARR_OP_MINMAX(min, uint32_t, 32u, <);
+P00_ARR_OP_MINMAX(min, uint64_t, 64u, <);
 
-P99__ARR_OP_MINMAX(min, signed char, hhi, <);
-P99__ARR_OP_MINMAX(min, signed short, hi, <);
-P99__ARR_OP_MINMAX(min, signed, i, <);
-P99__ARR_OP_MINMAX(min, signed long, li, <);
-P99__ARR_OP_MINMAX(min, signed long long, lli, <);
-P99__ARR_OP_MINMAX(min, intmax_t, ji, <);
-P99__ARR_OP_MINMAX(min, ptrdiff_t, ti, <);
-P99__ARR_OP_MINMAX(min, int8_t, 8i, <);
-P99__ARR_OP_MINMAX(min, int16_t, 16i, <);
-P99__ARR_OP_MINMAX(min, int32_t, 32i, <);
-P99__ARR_OP_MINMAX(min, int64_t, 64i, <);
+P00_ARR_OP_MINMAX(min, signed char, hhi, <);
+P00_ARR_OP_MINMAX(min, signed short, hi, <);
+P00_ARR_OP_MINMAX(min, signed, i, <);
+P00_ARR_OP_MINMAX(min, signed long, li, <);
+P00_ARR_OP_MINMAX(min, signed long long, lli, <);
+P00_ARR_OP_MINMAX(min, intmax_t, ji, <);
+P00_ARR_OP_MINMAX(min, ptrdiff_t, ti, <);
+P00_ARR_OP_MINMAX(min, int8_t, 8i, <);
+P00_ARR_OP_MINMAX(min, int16_t, 16i, <);
+P00_ARR_OP_MINMAX(min, int32_t, 32i, <);
+P00_ARR_OP_MINMAX(min, int64_t, 64i, <);
 
-P99__ARR_OP_MINMAX(min, float, f, <);
-P99__ARR_OP_MINMAX(min, double, d, <);
-P99__ARR_OP_MINMAX(min, long double, l, <);
+P00_ARR_OP_MINMAX(min, float, f, <);
+P00_ARR_OP_MINMAX(min, double, d, <);
+P00_ARR_OP_MINMAX(min, long double, l, <);
 
-P99__ARR_OP_MINMAX(max, unsigned char, hhu, >);
-P99__ARR_OP_MINMAX(max, unsigned short, hu, >);
-P99__ARR_OP_MINMAX(max, unsigned, u, >);
-P99__ARR_OP_MINMAX(max, unsigned long, lu, >);
-P99__ARR_OP_MINMAX(max, unsigned long long, llu, >);
-P99__ARR_OP_MINMAX(max, uintmax_t, ju, >);
-P99__ARR_OP_MINMAX(max, size_t, zu, >);
-P99__ARR_OP_MINMAX(max, uint8_t, 8u, >);
-P99__ARR_OP_MINMAX(max, uint16_t, 16u, >);
-P99__ARR_OP_MINMAX(max, uint32_t, 32u, >);
-P99__ARR_OP_MINMAX(max, uint64_t, 64u, >);
+P00_ARR_OP_MINMAX(max, unsigned char, hhu, >);
+P00_ARR_OP_MINMAX(max, unsigned short, hu, >);
+P00_ARR_OP_MINMAX(max, unsigned, u, >);
+P00_ARR_OP_MINMAX(max, unsigned long, lu, >);
+P00_ARR_OP_MINMAX(max, unsigned long long, llu, >);
+P00_ARR_OP_MINMAX(max, uintmax_t, ju, >);
+P00_ARR_OP_MINMAX(max, size_t, zu, >);
+P00_ARR_OP_MINMAX(max, uint8_t, 8u, >);
+P00_ARR_OP_MINMAX(max, uint16_t, 16u, >);
+P00_ARR_OP_MINMAX(max, uint32_t, 32u, >);
+P00_ARR_OP_MINMAX(max, uint64_t, 64u, >);
 
-P99__ARR_OP_MINMAX(max, signed char, hhi, >);
-P99__ARR_OP_MINMAX(max, signed short, hi, >);
-P99__ARR_OP_MINMAX(max, signed, i, >);
-P99__ARR_OP_MINMAX(max, signed long, li, >);
-P99__ARR_OP_MINMAX(max, signed long long, lli, >);
-P99__ARR_OP_MINMAX(max, intmax_t, ji, >);
-P99__ARR_OP_MINMAX(max, ptrdiff_t, ti, >);
-P99__ARR_OP_MINMAX(max, int8_t, 8i, >);
-P99__ARR_OP_MINMAX(max, int16_t, 16i, >);
-P99__ARR_OP_MINMAX(max, int32_t, 32i, >);
-P99__ARR_OP_MINMAX(max, int64_t, 64i, >);
+P00_ARR_OP_MINMAX(max, signed char, hhi, >);
+P00_ARR_OP_MINMAX(max, signed short, hi, >);
+P00_ARR_OP_MINMAX(max, signed, i, >);
+P00_ARR_OP_MINMAX(max, signed long, li, >);
+P00_ARR_OP_MINMAX(max, signed long long, lli, >);
+P00_ARR_OP_MINMAX(max, intmax_t, ji, >);
+P00_ARR_OP_MINMAX(max, ptrdiff_t, ti, >);
+P00_ARR_OP_MINMAX(max, int8_t, 8i, >);
+P00_ARR_OP_MINMAX(max, int16_t, 16i, >);
+P00_ARR_OP_MINMAX(max, int32_t, 32i, >);
+P00_ARR_OP_MINMAX(max, int64_t, 64i, >);
 
-P99__ARR_OP_MINMAX(max, float, f, >);
-P99__ARR_OP_MINMAX(max, double, d, >);
-P99__ARR_OP_MINMAX(max, long double, l, >);
+P00_ARR_OP_MINMAX(max, float, f, >);
+P00_ARR_OP_MINMAX(max, double, d, >);
+P00_ARR_OP_MINMAX(max, long double, l, >);
 
 #define p99_min_hhu(...) P99_FSYMB(p99_min_hhu)(P99_LENGTH_ARR_ARG(unsigned char, __VA_ARGS__))
 #define p99_min_hu(...) P99_FSYMB(p99_min_hu)(P99_LENGTH_ARR_ARG(unsigned short, __VA_ARGS__))
@@ -174,9 +174,9 @@ P99__ARR_OP_MINMAX(max, long double, l, >);
 #define p99_max_d(...) P99_FSYMB(p99_max_d)(P99_LENGTH_ARR_ARG(double, __VA_ARGS__))
 #define p99_max_l(...) P99_FSYMB(p99_max_l)(P99_LENGTH_ARR_ARG(long double, __VA_ARGS__))
 
-#define P99__ARR_GCD(TYPE, SUFF)                                                    \
+#define P00_ARR_GCD(TYPE, SUFF)                                                     \
 static_inline                                                                       \
-TYPE P99_PASTE3(p99__, gcd_, SUFF)(TYPE a, TYPE b) {                                \
+TYPE P99_PASTE3(p00_, gcd_, SUFF)(TYPE a, TYPE b) {                                 \
   if (!a) return b;                                                                 \
   if (b)                                                                            \
     for (TYPE mod = b % a; mod; mod = b % a) {                                      \
@@ -188,9 +188,9 @@ TYPE P99_PASTE3(p99__, gcd_, SUFF)(TYPE a, TYPE b) {                            
 static_inline                                                                       \
 TYPE P99_FSYMB(P99_PASTE3(p99_, gcd_, SUFF))(size_t number, TYPE const*const arr) { \
   if (number == 1) return arr[0];                                                   \
-  TYPE ret = P99_PASTE3(p99__, gcd_, SUFF)(arr[0], arr[1]);                         \
+  TYPE ret = P99_PASTE3(p00_, gcd_, SUFF)(arr[0], arr[1]);                          \
   for (size_t i = 2; i < number; ++i)                                               \
-    ret = P99_PASTE3(p99__, gcd_, SUFF)(ret, arr[i]);                               \
+    ret = P99_PASTE3(p00_, gcd_, SUFF)(ret, arr[i]);                                \
   return ret;                                                                       \
 }                                                                                   \
 static_inline                                                                       \
@@ -230,21 +230,21 @@ P99_MACRO_END(_arr_gcd_, SUFF)
 #define p99_lcm_64u(...) P99_FSYMB(p99_lcm_64u)(P99_LENGTH_ARR_ARG(uint64_t, __VA_ARGS__))
 
 
-P99__ARR_GCD(unsigned char, hhu);
-P99__ARR_GCD(unsigned short, hu);
-P99__ARR_GCD(unsigned, u);
-P99__ARR_GCD(unsigned long, lu);
-P99__ARR_GCD(unsigned long long, llu);
-P99__ARR_GCD(uintmax_t, ju);
-P99__ARR_GCD(size_t, zu);
-P99__ARR_GCD(uint8_t, 8u);
-P99__ARR_GCD(uint16_t, 16u);
-P99__ARR_GCD(uint32_t, 32u);
-P99__ARR_GCD(uint64_t, 64u);
+P00_ARR_GCD(unsigned char, hhu);
+P00_ARR_GCD(unsigned short, hu);
+P00_ARR_GCD(unsigned, u);
+P00_ARR_GCD(unsigned long, lu);
+P00_ARR_GCD(unsigned long long, llu);
+P00_ARR_GCD(uintmax_t, ju);
+P00_ARR_GCD(size_t, zu);
+P00_ARR_GCD(uint8_t, 8u);
+P00_ARR_GCD(uint16_t, 16u);
+P00_ARR_GCD(uint32_t, 32u);
+P00_ARR_GCD(uint64_t, 64u);
 
 
 
-#define P99__ARR_OP_MINMAX_FIXED(NAME, TYPE, SUFF)                                        \
+#define P00_ARR_OP_MINMAX_FIXED(NAME, TYPE, SUFF)                                         \
 TYPE P99_PASTE5(p99_, NAME, _, SUFF, _fixed2)(void) {                                     \
   return P99_PASTE4(p99_, NAME, _, SUFF)(5, 7);                                           \
 }                                                                                         \
@@ -270,20 +270,20 @@ P99_MACRO_END(_arr_op_minmax_fixed_, NAME, _, SUFF)
 
 
 
-P99__ARR_OP_MINMAX_FIXED(min, uintmax_t, ju);
-P99__ARR_OP_MINMAX_FIXED(min, intmax_t, ji);
-P99__ARR_OP_MINMAX_FIXED(min, float, f);
-P99__ARR_OP_MINMAX_FIXED(min, double, d);
-P99__ARR_OP_MINMAX_FIXED(min, long double, l);
+P00_ARR_OP_MINMAX_FIXED(min, uintmax_t, ju);
+P00_ARR_OP_MINMAX_FIXED(min, intmax_t, ji);
+P00_ARR_OP_MINMAX_FIXED(min, float, f);
+P00_ARR_OP_MINMAX_FIXED(min, double, d);
+P00_ARR_OP_MINMAX_FIXED(min, long double, l);
 
-P99__ARR_OP_MINMAX_FIXED(max, uintmax_t, ju);
-P99__ARR_OP_MINMAX_FIXED(max, intmax_t, ji);
-P99__ARR_OP_MINMAX_FIXED(max, float, f);
-P99__ARR_OP_MINMAX_FIXED(max, double, d);
-P99__ARR_OP_MINMAX_FIXED(max, long double, l);
+P00_ARR_OP_MINMAX_FIXED(max, uintmax_t, ju);
+P00_ARR_OP_MINMAX_FIXED(max, intmax_t, ji);
+P00_ARR_OP_MINMAX_FIXED(max, float, f);
+P00_ARR_OP_MINMAX_FIXED(max, double, d);
+P00_ARR_OP_MINMAX_FIXED(max, long double, l);
 
-P99__ARR_OP_MINMAX_FIXED(gcd, unsigned, u);
-P99__ARR_OP_MINMAX_FIXED(lcm, unsigned, u);
+P00_ARR_OP_MINMAX_FIXED(gcd, unsigned, u);
+P00_ARR_OP_MINMAX_FIXED(lcm, unsigned, u);
 
 #define SAYIT(...) printf("gcd is %ju\n", p99_gcd_ju(__VA_ARGS__))
 

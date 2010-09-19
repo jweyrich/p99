@@ -34,43 +34,43 @@
  **/
 
 
-#define P99__ACCESSOR(NAME, X, I) (NAME)[I]
-#define P99__VASSIGN(NAME, X, I) X = P99__ACCESSOR(NAME, X, I)
-#define P99__STRLEN(NAME, X, I) strlen(X)
-#define P99__SIZEOF(NAME, X, I) sizeof(X)
-#define P99__TYPD(NAME, X, I) typedef X P99_PASTE2(NAME, I)
-#define P99__ADD(NAME, I, REC, RES) P99_DEC_ADD(RES, REC)
+#define P00_ACCESSOR(NAME, X, I) (NAME)[I]
+#define P00_VASSIGN(NAME, X, I) X = P00_ACCESSOR(NAME, X, I)
+#define P00_STRLEN(NAME, X, I) strlen(X)
+#define P00_SIZEOF(NAME, X, I) sizeof(X)
+#define P00_TYPD(NAME, X, I) typedef X P99_PASTE2(NAME, I)
+#define P00_ADD(NAME, I, REC, RES) P99_DEC_ADD(RES, REC)
 
-#define P99__STRLENS(N, ...) P99_FOR(,N, P99__SUM, P99__STRLEN, __VA_ARGS__)
-#define P99__SIZEOFS(N, ...) P99_FOR(,N, P99__SUM, P99__SIZEOF, __VA_ARGS__)
-#define P99__ADDS(N, ...) P99_FOR(, N, P99__ADD, P99__IDT, __VA_ARGS__)
+#define P00_STRLENS(N, ...) P99_FOR(,N, P00_SUM, P00_STRLEN, __VA_ARGS__)
+#define P00_SIZEOFS(N, ...) P99_FOR(,N, P00_SUM, P00_SIZEOF, __VA_ARGS__)
+#define P00_ADDS(N, ...) P99_FOR(, N, P00_ADD, P00_IDT, __VA_ARGS__)
 
 /**
  ** @brief Return an expression that returns the sum of the lengths of
  ** all strings that are given as arguments.
  **/
-#define P99_STRLENS(...) P99__STRLENS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_STRLENS(...) P00_STRLENS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
 /**
  ** @brief Return an expression that returns the sum of the size of
  ** all arguments.
  **/
-#define P99_SIZEOFS(...) P99__SIZEOFS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_SIZEOFS(...) P00_SIZEOFS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
 /**
  ** @brief Return a token that is the sum of all arguments.
  **/
-#define P99_ADDS(...) P99__ADDS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
+#define P99_ADDS(...) P00_ADDS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
-typedef struct p99__strcat_state p99__strcat_state;
+typedef struct p00_strcat_state p00_strcat_state;
 
-struct p99__strcat_state {
+struct p00_strcat_state {
   char* buffer;
   size_t pos;
 };
 
 p99_inline
-p99__strcat_state* p99__strcat(p99__strcat_state *restrict dest, char const*src) {
+p00_strcat_state* p00_strcat(p00_strcat_state *restrict dest, char const*src) {
   if (!dest->pos) dest->pos = strlen(dest->buffer);
   size_t len = strlen(src);
   memcpy(dest->buffer + dest->pos, src, len);
@@ -79,7 +79,7 @@ p99__strcat_state* p99__strcat(p99__strcat_state *restrict dest, char const*src)
 }
 
 p99_inline
-char* p99__strcat_terminate(p99__strcat_state *restrict dest) {
+char* p00_strcat_terminate(p00_strcat_state *restrict dest) {
   dest->buffer[dest->pos] = '\0';
   return dest->buffer;
 }
@@ -103,11 +103,11 @@ char* p99__strcat_terminate(p99__strcat_state *restrict dest) {
  ** each of the arguments at most once.
  **/
 #define P99_STRCATS(TARG, ...)                                 \
-p99__strcat_terminate                                          \
+p00_strcat_terminate                                          \
 (P99_BIGFUNC                                                   \
- (p99__strcat,                                                 \
+ (p00_strcat,                                                 \
   P99_NARG(TARG, __VA_ARGS__),                                 \
-  (&(p99__strcat_state){ .buffer = (TARG), .pos = 0  }),       \
+  (&(p00_strcat_state){ .buffer = (TARG), .pos = 0  }),       \
    __VA_ARGS__))
 
 /**
@@ -139,14 +139,14 @@ p99__strcat_terminate                                          \
  ** @brief Produce a list of length @a N that has the contents of 0,
  ** 1, , @a N-1
  **/
-#define P99_POSS(N) P99_FOR(,N, P99__SEQ, P99__POS,)
+#define P99_POSS(N) P99_FOR(,N, P00_SEQ, P00_POS,)
 
 /**
  ** Produce a list of length @a N that has the contents of @a X[0], @a
  ** X [1], ,
  ** @a X[@a N-1]
  **/
-#define P99_ACCESSORS(X, N) P99_FOR(X, N, P99__SEQ, P99__ACCESSOR, )
+#define P99_ACCESSORS(X, N) P99_FOR(X, N, P00_SEQ, P00_ACCESSOR, )
 
 
 /**
@@ -159,12 +159,12 @@ p99__strcat_terminate                                          \
 #define P99_VASSIGNS(NAME, ...)                                               \
 P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                        \
 (P99_IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))                  \
-  (P99_FOR(NAME, P99__NARG(__VA_ARGS__),P99__SEP, P99__VASSIGN, __VA_ARGS__))
+  (P99_FOR(NAME, P00_NARG(__VA_ARGS__),P00_SEP, P00_VASSIGN, __VA_ARGS__))
 
-#define P99__TYPEDEFS(NAME, N, ...)                            \
+#define P00_TYPEDEFS(NAME, N, ...)                            \
   P99_IF_VOID(__VA_ARGS__)                                     \
   (P99_MACRO_END(NAME, _eat_the_semicolon_, N))                \
-  (P99_FOR(NAME, N, P99__SEP, P99__TYPD, __VA_ARGS__))
+  (P99_FOR(NAME, N, P00_SEP, P00_TYPD, __VA_ARGS__))
 
 /**
  ** @brief Take each argument of the list and transform it into a
@@ -174,7 +174,7 @@ P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                        \
  ** array type derivatives.
  **/
 #define P99_TYPEDEFS(NAME, ...)                                \
-P99__TYPEDEFS(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
+P00_TYPEDEFS(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
 
 

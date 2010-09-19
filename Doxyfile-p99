@@ -619,7 +619,7 @@ EXCLUDE_PATTERNS       =
 # wildcard * is used, a substring. Examples: ANamespace, AClass,
 # AClass::ANamespace, ANamespace::*Test
 
-EXCLUDE_SYMBOLS        = P99__* p99__* P99X__* p99x__*
+EXCLUDE_SYMBOLS        = P00_* p00_* P99X__* p99x__*
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or
 # directories that contain example code fragments that are included (see
@@ -1265,7 +1265,7 @@ PREDEFINED += DECLARE_THREAD(T):="int T ## _create(T* arg, pthread_t *id);	\
 T *T ## _join(pthread_t id);							\
 int T ## _create(T* arg, pthread_t *id)"
 
-PREDEFINED += P99_LINEID(x):="p99__unique_id ## x"
+PREDEFINED += P99_LINEID(x):="p00_unique_id ## x"
 
 PREDEFINED += P99_MACRO_END(x)=
 
@@ -1291,17 +1291,17 @@ P99_PASTE2					\
 P99_PASTE3					\
 P99_PASTE4					\
 P99_PROTOTYPE					\
-P99__DECLARE_ARI2STR				\
-P99__DECLARE_STRTO				\
-P99__DECLARE_STRTOU				\
-P99__DOCUMENT_ID                                \
-P99__DOCUMENT_PROMOTE				\
-P99__DOCUMENT_SIGNED				\
-P99__DOCUMENT_UNSIGNED				\
-P99__ORWL_ALIAS					\
-P99__POSIX_DEFARG_DOCU                          \
-P99__PROTOTYPE                                  \
-P99__UNIQUE_BIT                                 \
+P00_DECLARE_ARI2STR				\
+P00_DECLARE_STRTO				\
+P00_DECLARE_STRTOU				\
+P00_DOCUMENT_ID                                 \
+P00_DOCUMENT_PROMOTE				\
+P00_DOCUMENT_SIGNED				\
+P00_DOCUMENT_UNSIGNED				\
+P00_ORWL_ALIAS					\
+P00_POSIX_DEFARG_DOCU                           \
+P00_PROTOTYPE                                   \
+P00_UNIQUE_BIT                                  \
 P99_VA_ARGS					\
 P99_VA_ARGS_DOCUMENTATION
 

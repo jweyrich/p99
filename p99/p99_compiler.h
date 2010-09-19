@@ -25,10 +25,10 @@
  ** simple branch prediction feature.
  **/
 
-#define P99__PREFIX0(N) P99__PREFIX0_(N)
-#define P99__PREFIX0_(N) 0 ## N
-#define P99__STRINGIFY_(X) #X
-#define P99__STRINGIFY(X) P99__STRINGIFY_(X)
+#define P00_PREFIX0(N) P00_PREFIX0_(N)
+#define P00_PREFIX0_(N) 0 ## N
+#define P00_STRINGIFY_(X) #X
+#define P00_STRINGIFY(X) P00_STRINGIFY_(X)
 
 /* This long list of compilers does not mean that we tested P99, nor
    does it even imply that there is a C99 mode for them. We just list
@@ -60,29 +60,29 @@
 #if defined(__clang__)
 # define P99_COMPILER P99_COMPILER_CLANG
 # define P99_COMPILER_VERSION                                  \
- "clang " P99__STRINGIFY(__clang__)                            \
+ "clang " P00_STRINGIFY(__clang__)                            \
  "; gnu "                                                      \
- P99__STRINGIFY(__GNUC__) "."                                  \
- P99__STRINGIFY(__GNUC_MINOR__) "."                            \
- P99__STRINGIFY(__GNUC_PATCHLEVEL__)
+ P00_STRINGIFY(__GNUC__) "."                                  \
+ P00_STRINGIFY(__GNUC_MINOR__) "."                            \
+ P00_STRINGIFY(__GNUC_PATCHLEVEL__)
 
 #elif defined(__INTEL_COMPILER)
 # define P99_COMPILER P99_COMPILER_INTEL
 # define P99_COMPILER_VERSION                                  \
  "intel " __INTEL_COMPILER                                     \
  "; gnu "                                                      \
- P99__STRINGIFY(__GNUC__) "."                                  \
- P99__STRINGIFY(__GNUC_MINOR__) "."                            \
- P99__STRINGIFY(__GNUC_PATCHLEVEL__)
+ P00_STRINGIFY(__GNUC__) "."                                  \
+ P00_STRINGIFY(__GNUC_MINOR__) "."                            \
+ P00_STRINGIFY(__GNUC_PATCHLEVEL__)
 
 #elif defined(__OPEN64__)
 # define P99_COMPILER P99_COMPILER_OPEN64
 # define P99_COMPILER_VERSION                                  \
  "open64 " __OPEN64__                                          \
  "; gnu "                                                      \
- P99__STRINGIFY(__GNUC__) "."                                  \
- P99__STRINGIFY(__GNUC_MINOR__) "."                            \
- P99__STRINGIFY(__GNUC_PATCHLEVEL__)
+ P00_STRINGIFY(__GNUC__) "."                                  \
+ P00_STRINGIFY(__GNUC_MINOR__) "."                            \
+ P00_STRINGIFY(__GNUC_PATCHLEVEL__)
 
 /* compilers that (as far as we know) don't pretend to be gcc */
 #elif defined(__BORLANDC__)
@@ -133,32 +133,32 @@
 # define P99_COMPILER P99_COMPILER_GNU
 # define P99_COMPILER_VERSION                                  \
  "gnu "                                                        \
- P99__STRINGIFY(__GNUC__) "."                                  \
- P99__STRINGIFY(__GNUC_MINOR__) "."                            \
- P99__STRINGIFY(__GNUC_PATCHLEVEL__)
+ P00_STRINGIFY(__GNUC__) "."                                  \
+ P00_STRINGIFY(__GNUC_MINOR__) "."                            \
+ P00_STRINGIFY(__GNUC_PATCHLEVEL__)
 
 #else
 # define P99_COMPILER 0x0U
 #endif
 
 # ifdef __GNUC__
-#  define P99__GCC_VERSION(A, B, C) P99__GCC_VERSION_(A, B, C)
-#  define P99__GCC_VERSION_(A, B, C) A ## B ## C ## UL
+#  define P00_GCC_VERSION(A, B, C) P00_GCC_VERSION_(A, B, C)
+#  define P00_GCC_VERSION_(A, B, C) A ## B ## C ## UL
 #  ifdef __GNUC_PATCHLEVEL__
 #   if __GNUC_PATCHLEVEL__ < 10
-#    define P99__GNUC_PATCHLEVEL__ P99__PREFIX0(__GNUC_PATCHLEVEL__)
+#    define P00_GNUC_PATCHLEVEL__ P00_PREFIX0(__GNUC_PATCHLEVEL__)
 #   else
-#    define P99__GNUC_PATCHLEVEL__ __GNUC_PATCHLEVEL__
+#    define P00_GNUC_PATCHLEVEL__ __GNUC_PATCHLEVEL__
 #   endif
 #  else
-#    define P99__GNUC_PATCHLEVEL__ 00
+#    define P00_GNUC_PATCHLEVEL__ 00
 #  endif
 #  if __GNUC_MINOR__ < 10
-#   define P99__GNUC_MINOR__ P99__PREFIX0(__GNUC_MINOR__)
+#   define P00_GNUC_MINOR__ P00_PREFIX0(__GNUC_MINOR__)
 #  else
-#   define P99__GNUC_MINOR__ __GNUC_MINOR__
+#   define P00_GNUC_MINOR__ __GNUC_MINOR__
 #  endif
-#  define P99_GCC_VERSION P99__GCC_VERSION(__GNUC__, P99__GNUC_MINOR__, P99__GNUC_PATCHLEVEL__)
+#  define P99_GCC_VERSION P00_GCC_VERSION(__GNUC__, P00_GNUC_MINOR__, P00_GNUC_PATCHLEVEL__)
 # endif
 
 
@@ -172,11 +172,11 @@
    we test for some of this to see if we have any chance to pass this
    through. Otherwise this should error out early.
  */
-# define P99__VA_ARGS__(...) __VA_ARGS__
-enum { p99__trailing_comma_in_enum__ = -1, };
+# define P00_VA_ARGS__(...) __VA_ARGS__
+enum { p00_trailing_comma_in_enum__ = -1, };
 inline
-signed p99__trailing_comma_in_initializer__(void) {
-  signed a[] = { p99__trailing_comma_in_enum__ , };
+signed p00_trailing_comma_in_initializer__(void) {
+  signed a[] = { p00_trailing_comma_in_enum__ , };
   return a[0];
 }
 #else

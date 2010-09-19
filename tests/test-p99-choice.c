@@ -16,34 +16,34 @@
 
 P99_CHOICE_FUNCTION(unsigned, toto, -1, 4, 5, 6, 7, 8, 1, 2, 3, 4, 99, 3, 88 );
 
-#define P99__FIXED(TYPE, NAME, VAL)                            \
+#define P00_FIXED(TYPE, NAME, VAL)                             \
 TYPE P99_PASTE3(NAME, _fixed, VAL)(void) {                     \
   return NAME(VAL);                                            \
 }                                                              \
 P99_MACRO_END(_fixed)
 
-P99__FIXED(unsigned, toto, 0);
-P99__FIXED(unsigned, toto, 5);
-P99__FIXED(unsigned, toto, 10);
-P99__FIXED(unsigned, toto, 10000);
+P00_FIXED(unsigned, toto, 0);
+P00_FIXED(unsigned, toto, 5);
+P00_FIXED(unsigned, toto, 10);
+P00_FIXED(unsigned, toto, 10000);
 
 unsigned toto_toto(size_t x) {
   return toto(x);
 }
 
-P99__FIXED(unsigned, p99_unique_bit_32, 0);
-P99__FIXED(unsigned, p99_unique_bit_32, 1);
-P99__FIXED(unsigned, p99_unique_bit_32, 2);
-P99__FIXED(unsigned, p99_unique_bit_32, 4);
-P99__FIXED(unsigned, p99_unique_bit_32, 8);
-P99__FIXED(unsigned, p99_unique_bit_32, 16);
-P99__FIXED(unsigned, p99_unique_bit_32, 32);
-P99__FIXED(unsigned, p99_unique_bit_32, 64);
-P99__FIXED(unsigned, p99_unique_bit_32, 128);
-P99__FIXED(unsigned, p99_unique_bit_32, 1024);
+P00_FIXED(unsigned, p99_unique_bit_32, 0);
+P00_FIXED(unsigned, p99_unique_bit_32, 1);
+P00_FIXED(unsigned, p99_unique_bit_32, 2);
+P00_FIXED(unsigned, p99_unique_bit_32, 4);
+P00_FIXED(unsigned, p99_unique_bit_32, 8);
+P00_FIXED(unsigned, p99_unique_bit_32, 16);
+P00_FIXED(unsigned, p99_unique_bit_32, 32);
+P00_FIXED(unsigned, p99_unique_bit_32, 64);
+P00_FIXED(unsigned, p99_unique_bit_32, 128);
+P00_FIXED(unsigned, p99_unique_bit_32, 1024);
 
-unsigned p99__unique_bit_hash_6_(size_t x) {
-  return p99__unique_bit_hash_6(x);
+unsigned p00_unique_bit_hash_6_(size_t x) {
+  return p00_unique_bit_hash_6(x);
 }
 
 

@@ -447,8 +447,8 @@ print << "DOCU";
  **/
 #define P99_VERSION_ID "\$Format:\%H\$"
 
-#define P99__VERSION_DATE "$FILEDATE"
-#define P99__VERSION_ID "$FILEID"
+#define P00_VERSION_DATE "$FILEDATE"
+#define P00_VERSION_ID "$FILEID"
 
 /** \@brief The maximal number of arguments the P99 macros can handle.
  **
@@ -458,7 +458,7 @@ print << "DOCU";
 #define P99_MAX_NUMBER $maxnumber
 DOCU
 
-print "#define P99__ARG(";
+print "#define P00_ARG(";
 for (my $i = 1; $i <= $maxnumber; ++$i) {
     if ($i % 8 != 1) {
         print " _$i,";
@@ -469,9 +469,9 @@ for (my $i = 1; $i <= $maxnumber; ++$i) {
 print "\\\n ...) _$maxnumber\n";
 
 for (my $m = 1; $m < 5; ++$m) {
-    print "#define P99__NARG_$m(...) P99__ARG(__VA_ARGS__, ";
+    print "#define P00_NARG_$m(...) P00_ARG(__VA_ARGS__, ";
     for (my $i = ($maxnumber - 1); $i >= 0; --$i) {
-        my $val = ($i % $m) ? "P99__INV($m)" : ($i / $m);
+        my $val = ($i % $m) ? "P00_INV($m)" : ($i / $m);
         if ($i % 8 != 7) {
             print " $val,";
         } else {
@@ -483,7 +483,7 @@ for (my $m = 1; $m < 5; ++$m) {
 
 print "/** \@ingroup basic_list_operations                                                 */\n";
 print "/** \@brief Determine of the argument list has a comma, i.e at least two arguments. */\n";
-print "#define P99_HAS_COMMA(...) P99__ARG(__VA_ARGS__,\\\n";
+print "#define P99_HAS_COMMA(...) P00_ARG(__VA_ARGS__,\\\n";
 for (my $i = 2; $i < $maxnumber; ++$i) {
     if ($i % 8 != 1) {
         print " 1,";
@@ -496,15 +496,15 @@ print " 0, ...)\n";
 
 for (my $arg = 2; $arg < $maxnumber; ++$arg) {
     my $arg1 = ${arg} - 1;
-    print "#define P99__SKP${arg}(_0, ...) P99__SKP${arg1}(__VA_ARGS__)\n";
+    print "#define P00_SKP${arg}(_0, ...) P00_SKP${arg1}(__VA_ARGS__)\n";
 }
 
 for (my $arg = 2; $arg < $maxnumber; ++$arg) {
     my $arg1 = ${arg} - 1;
-    print "#define P99__PRE${arg}(_0, ...) _0, P99__PRE${arg1}(__VA_ARGS__)\n";
+    print "#define P00_PRE${arg}(_0, ...) _0, P00_PRE${arg1}(__VA_ARGS__)\n";
 }
 
-print "#define P99__ASCENDING() ";
+print "#define P00_ASCENDING() ";
 for (my $i = 0; $i < $maxnumber; ++$i) {
     if ($i % 8 != 0) {
         print " $i,";
@@ -514,7 +514,7 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
 }
 print STDOUT "\n";
 
-print "#define P99__ALL_ZEROES() ";
+print "#define P00_ALL_ZEROES() ";
 for (my $i = 0; $i < $maxnumber; ++$i) {
     if ($i % 8 != 0) {
         print " 0,";
@@ -524,7 +524,7 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
 }
 print STDOUT "\n";
 
-print "#define P99__ALL_ONES() ";
+print "#define P00_ALL_ONES() ";
 for (my $i = 0; $i < $maxnumber; ++$i) {
     if ($i % 8 != 0) {
         print " 1,";
@@ -537,8 +537,8 @@ print STDOUT "\n";
 for (my $m = 7; $m < $maxnumber; ++$m) {
     my $m1 = $m - 1;
     print "/** \@brief Paste $m arguments at their boundary.*/\n";
-    print "#define P99_PASTE$m(...) P99__PASTE$m(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))\n";
-    print "#define P99__PASTE$m(L, ...) P99_PASTE2(P99_PASTE${m1}(__VA_ARGS__), L)\n";
+    print "#define P99_PASTE$m(...) P00_PASTE$m(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))\n";
+    print "#define P00_PASTE$m(L, ...) P99_PASTE2(P99_PASTE${m1}(__VA_ARGS__), L)\n";
 }
 
 print <<"PREPRO1";
@@ -585,50 +585,50 @@ print <<'PREPRO2';
 PREPRO2
 
 
-print "#define P99__IS_${_}_EQ_${_}(...) ,\n"
+print "#define P00_IS_${_}_EQ_${_}(...) ,\n"
     foreach (0.. $maxnumber, @token_C99);
-print "#define P99__TOK_${_}_STARTS_${_} ,\n"
+print "#define P00_TOK_${_}_STARTS_${_} ,\n"
     foreach (0.. $maxnumber, @token_C99);
 print "/*! \@brief Test if the argument consists of exactly the token \@c ${_} */\
 #define P99_IS_EQ_${_}(...) P99_TOK_EQ(${_}, __VA_ARGS__)\n"
     foreach (0.. $maxnumber, @token_C99);
-print "#define P99__EAT_${_} \n"
+print "#define P00_EAT_${_} \n"
     foreach (0.. $maxnumber, @token_C99);
-print "#define P99__TOKEN_${_} ,\n"
+print "#define P00_TOKEN_${_} ,\n"
     foreach (0.. $maxnumber, @token_C99);
-print "#define P99__QUALIFIER_${_} ,\n"
+print "#define P00_QUALIFIER_${_} ,\n"
     foreach (@qualpar_C99);
 
 
-print "#define P99__VOID_void ,\n";
-print "#define P99__BOOL__Bool ,\n";
-print "#define P99__BOOL_bool ,\n";
-print "#define P99__INTEGER_${_} ,\n"
+print "#define P00_VOID_void ,\n";
+print "#define P00_BOOL__Bool ,\n";
+print "#define P00_BOOL_bool ,\n";
+print "#define P00_INTEGER_${_} ,\n"
     foreach (@intpar_C99);
-print "#define P99__REAL_${_} ,\n"
+print "#define P00_REAL_${_} ,\n"
     foreach (@realpar_C99);
-print "#define P99__FLOAT_${_} ,\n"
+print "#define P00_FLOAT_${_} ,\n"
     foreach (@floatpar_C99);
-print "#define P99__TYPE_${_} ,\n"
+print "#define P00_TYPE_${_} ,\n"
     foreach (@typepar_C99);
 
 
-print "#define P99__VOID_QUAL_${_} ,\n"
+print "#define P00_VOID_QUAL_${_} ,\n"
     foreach ("void", @qualpar_C99);
-print "#define P99__BOOL_QUAL_${_} ,\n"
+print "#define P00_BOOL_QUAL_${_} ,\n"
     foreach ("_Bool", "bool", @qualpar_C99);
-print "#define P99__INTEGER_QUAL_${_} ,\n"
+print "#define P00_INTEGER_QUAL_${_} ,\n"
     foreach (@intpar_C99, @qualpar_C99);
-print "#define P99__REAL_QUAL_${_} ,\n"
+print "#define P00_REAL_QUAL_${_} ,\n"
     foreach (@realpar_C99, @qualpar_C99);
-print "#define P99__FLOAT_QUAL_${_} ,\n"
+print "#define P00_FLOAT_QUAL_${_} ,\n"
     foreach (@floatpar_C99, @qualpar_C99);
-print "#define P99__TYPE_QUAL_${_} ,\n"
+print "#define P00_TYPE_QUAL_${_} ,\n"
     foreach (@typepar_C99, @qualpar_C99);
 
-print "#define P99__KEYWORD_${_} ,\n"
+print "#define P00_KEYWORD_${_} ,\n"
     foreach (@keywords_C99);
-print "#define P99__RESERVED_${_} ,\n"
+print "#define P00_RESERVED_${_} ,\n"
     foreach (@token_C99);
 
 foreach my $kind (
@@ -642,31 +642,31 @@ foreach my $kind (
     "KEYWORD", "RESERVED"
     ) {
     print << "KINDS";
-#define P99__${kind}7(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(8)(7)
-#define P99__${kind}6(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}7(P99__EAT_FIRST(SEQ)))(6)
-#define P99__${kind}5(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}6(P99__EAT_FIRST(SEQ)))(5)
-#define P99__${kind}4(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}5(P99__EAT_FIRST(SEQ)))(4)
-#define P99__${kind}3(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}4(P99__EAT_FIRST(SEQ)))(3)
-#define P99__${kind}2(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}3(P99__EAT_FIRST(SEQ)))(2)
-#define P99__${kind}1(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}2(P99__EAT_FIRST(SEQ)))(1)
-#define P99__${kind}_CLASSIFY_7(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ) P99__${kind}_CLASSIFY_6(P99__EAT_FIRST(SEQ))
-#define P99__${kind}_CLASSIFY_6(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ) P99__${kind}_CLASSIFY_5(P99__EAT_FIRST(SEQ))
-#define P99__${kind}_CLASSIFY_5(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ) P99__${kind}_CLASSIFY_4(P99__EAT_FIRST(SEQ))
-#define P99__${kind}_CLASSIFY_4(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ) P99__${kind}_CLASSIFY_3(P99__EAT_FIRST(SEQ))
-#define P99__${kind}_CLASSIFY_3(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ) P99__${kind}_CLASSIFY_2(P99__EAT_FIRST(SEQ))
-#define P99__${kind}_CLASSIFY_2(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ) P99__${kind}_CLASSIFY_1(P99__EAT_FIRST(SEQ))
-#define P99__${kind}_CLASSIFY_1(SEQ) P99_PASTE2(P99__${kind}_CLASSIFY_, SEQ)
-#define P99__${kind}_CLASSIFY___(CODE) P99_IF_ELSE(P99__${kind}_VALIDATE(CODE))(P99_PASTE2(P99__${kind}_CLASSIFY__, CODE))(INVALID_${kind}_TYPE_EXPRESSION[CODE])
-#define P99__${kind}_CLASSIFY__(N, ...) P99__${kind}_CLASSIFY___(P99__NARG(__VA_ARGS__))
-#define P99__${kind}_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P99__${kind}_CLASSIFY__(N, P99_PASTE2(P99__${kind}_CLASSIFY_, N)(SEQ)))
+#define P00_${kind}7(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(8)(7)
+#define P00_${kind}6(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P00_${kind}7(P00_EAT_FIRST(SEQ)))(6)
+#define P00_${kind}5(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P00_${kind}6(P00_EAT_FIRST(SEQ)))(5)
+#define P00_${kind}4(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P00_${kind}5(P00_EAT_FIRST(SEQ)))(4)
+#define P00_${kind}3(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P00_${kind}4(P00_EAT_FIRST(SEQ)))(3)
+#define P00_${kind}2(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P00_${kind}3(P00_EAT_FIRST(SEQ)))(2)
+#define P00_${kind}1(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P00_${kind}2(P00_EAT_FIRST(SEQ)))(1)
+#define P00_${kind}_CLASSIFY_7(SEQ) P99_PASTE2(P00_${kind}_CLASSIFY_, SEQ) P00_${kind}_CLASSIFY_6(P00_EAT_FIRST(SEQ))
+#define P00_${kind}_CLASSIFY_6(SEQ) P99_PASTE2(P00_${kind}_CLASSIFY_, SEQ) P00_${kind}_CLASSIFY_5(P00_EAT_FIRST(SEQ))
+#define P00_${kind}_CLASSIFY_5(SEQ) P99_PASTE2(P00_${kind}_CLASSIFY_, SEQ) P00_${kind}_CLASSIFY_4(P00_EAT_FIRST(SEQ))
+#define P00_${kind}_CLASSIFY_4(SEQ) P99_PASTE2(P00_${kind}_CLASSIFY_, SEQ) P00_${kind}_CLASSIFY_3(P00_EAT_FIRST(SEQ))
+#define P00_${kind}_CLASSIFY_3(SEQ) P99_PASTE2(P00_${kind}_CLASSIFY_, SEQ) P00_${kind}_CLASSIFY_2(P00_EAT_FIRST(SEQ))
+#define P00_${kind}_CLASSIFY_2(SEQ) P99_PASTE2(P00_${kind}_CLASSIFY_, SEQ) P00_${kind}_CLASSIFY_1(P00_EAT_FIRST(SEQ))
+#define P00_${kind}_CLASSIFY_1(SEQ) P99_PASTE2(P00_${kind}_CLASSIFY_, SEQ)
+#define P00_${kind}_CLASSIFY___(CODE) P99_IF_ELSE(P00_${kind}_VALIDATE(CODE))(P99_PASTE2(P00_${kind}_CLASSIFY__, CODE))(INVALID_${kind}_TYPE_EXPRESSION[CODE])
+#define P00_${kind}_CLASSIFY__(N, ...) P00_${kind}_CLASSIFY___(P00_NARG(__VA_ARGS__))
+#define P00_${kind}_CLASSIFY_(N, SEQ) P99_IF_ELSE(P99_IS_EQ_0(N))()(P00_${kind}_CLASSIFY__(N, P99_PASTE2(P00_${kind}_CLASSIFY_, N)(SEQ)))
 /*! \@brief Classify the tokens in sequence \@a SEQ that all are of kind ${kind} */
-#define P99__${kind}_CLASSIFY(SEQ) P99__${kind}_CLASSIFY_(P99_${kind}_QUAL_LEN(SEQ), SEQ)
+#define P00_${kind}_CLASSIFY(SEQ) P00_${kind}_CLASSIFY_(P99_${kind}_QUAL_LEN(SEQ), SEQ)
 /*! \@brief Check if \@a CODE corresponds to a valid combination of tokens of kind ${kind} */
-#define P99__${kind}_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P99__${kind}_VALIDATE__, CODE)))
+#define P00_${kind}_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P00_${kind}_VALIDATE__, CODE)))
 /*! \@brief Count the number of tokens in sequence \@a SEQ that all are of kind ${kind} */
-#define P99_${kind}_LEN(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P99__${kind}1(P99__EAT_FIRST(SEQ)))(0)
+#define P99_${kind}_LEN(SEQ) P99_IF_ELSE(P99_IS_${kind}_TOK(SEQ))(P00_${kind}1(P00_EAT_FIRST(SEQ)))(0)
 /*! \@brief Test if the token sequence \@a SEQ starts with a token of kind ${kind} */
-#define P99_IS_${kind}_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__${kind}_, SEQ))
+#define P99_IS_${kind}_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P00_${kind}_, SEQ))
 KINDS
 }
 
@@ -770,15 +770,15 @@ sub classify ($\@\%) {
     my $prev = "";
     foreach my $tok (@toks) {
         if ($tok) {
-            print "#define P99__${Class}_CLASSIFY_${tok} /* ${mult} */ " . "," x $mult . "\n";
+            print "#define P00_${Class}_CLASSIFY_${tok} /* ${mult} */ " . "," x $mult . "\n";
         } else {
             print STDERR "found empty token\n";
         }
         $mult *= 2;
     }
     foreach my $key (sort {$a <=> $b} keys %keys) {
-        print "#define P99__${Class}_CLASSIFY__${key} " . $keys{$key}  . "\n";
-        print "#define P99__${Class}_VALIDATE__${key} ,\n";
+        print "#define P00_${Class}_CLASSIFY__${key} " . $keys{$key}  . "\n";
+        print "#define P00_${Class}_VALIDATE__${key} ,\n";
     }
 }
 
@@ -919,8 +919,8 @@ sub signedOf($) {
 sub printHash($\%) {
     my ($pref, $keys) = (@_);
     my %keys = %{$keys};
-    print "#define  P99_${pref}(CODE)  P99_PASTE2(P99__, P99_PASTE2(${pref}_, CODE))\n";
-    print "#define P99__${pref}_${_} " . $keys{${_}} . "\n"
+    print "#define  P99_${pref}(CODE)  P99_PASTE2(P00_, P99_PASTE2(${pref}_, CODE))\n";
+    print "#define P00_${pref}_${_} " . $keys{${_}} . "\n"
         foreach sort keys(%keys);
 }
 
@@ -964,17 +964,17 @@ print <<'PREPRO3';
 PREPRO3
 
 
-printf "#define P99__DEC_PRED_%d %d\n", $_ + 1, $_
+printf "#define P00_DEC_PRED_%d %d\n", $_ + 1, $_
     foreach (0.. $maxnumber);
-printf "#define P99__DEC_PRED_minus_%d minus_%d\n", $_, $_ + 1
+printf "#define P00_DEC_PRED_minus_%d minus_%d\n", $_, $_ + 1
     foreach (0.. $maxnumber);
-printf "#define P99__minus_minus_%d %d\n", $_, $_
+printf "#define P00_minus_minus_%d %d\n", $_, $_
     foreach (0.. $maxnumber);
-printf "#define P99__IS_%d_GE_0 ,\n", $_
+printf "#define P00_IS_%d_GE_0 ,\n", $_
     foreach (0.. $maxnumber);
-printf "#define P99__dec_eval_%d %d\n", $_, $_
+printf "#define P00_dec_eval_%d %d\n", $_, $_
     foreach (0.. $maxnumber);
-printf "#define P99__dec_eval_minus_%d %d\n", $_, -$_
+printf "#define P00_dec_eval_minus_%d %d\n", $_, -$_
     foreach (0.. $maxnumber);
 print "#define P99_DUPL${_}(...) __VA_ARGS__, P99_DUPL", ($_ - 1), "(__VA_ARGS__)\n"
     foreach (2 .. $maxnumber);
@@ -982,23 +982,23 @@ print "#define P99_DUPL${_}(...) __VA_ARGS__, P99_DUPL", ($_ - 1), "(__VA_ARGS__
 
 for (my $i = 2; $i < $maxnumber; ++$i) {
     my $i1 = $i - 1;
-    print "#define P99__FOR${i}(NAME, OP, FUNC, ...) \\\n",
-    " OP(NAME, $i1, P99__FOR${i1}(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), $i1))\n";
+    print "#define P00_FOR${i}(NAME, OP, FUNC, ...) \\\n",
+    " OP(NAME, $i1, P00_FOR${i1}(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), $i1))\n";
 }
 
 print << 'MAXHEAD';
 
 /* The preprocessor always computes with the precision of uintmax_t */
 /* so for the preprocessor this is equivalent to UINITMAX_MAX       */
-#define P99__UNSIGNED_MAX ~0u
+#define P00_UNSIGNED_MAX ~0u
 
-#define P99__S0 0x01
-#define P99__S1 0x02
-#define P99__S2 0x04
-#define P99__S3 0x08
-#define P99__S4 0x10
-#define P99__S5 0x20
-#define P99__S6 0x40
+#define P00_S0 0x01
+#define P00_S1 0x02
+#define P00_S2 0x04
+#define P00_S3 0x08
+#define P00_S4 0x10
+#define P00_S5 0x20
+#define P00_S6 0x40
 
 
 
@@ -1054,17 +1054,17 @@ sub printnumber {
     sub printout($) {
         my ($width) = @_;
         print "#ifndef P99_UINTMAX_MAX\n";
-        printf "# if P99__UNSIGNED_MAX == 0x%s\n", printnumber(@maxval);
+        printf "# if P00_UNSIGNED_MAX == 0x%s\n", printnumber(@maxval);
         printf "#  define P99_UINTMAX_WIDTH %u\n", $width;
         printf "#  define P99_UINTMAX_MAX 0x%sU\n", printnumber(@maxval);
-        printf "#  define P99__B0 0x%sU\n", printnumber(@B0);
-        printf "#  define P99__B1 0x%sU\n", printnumber(@B1);
-        printf "#  define P99__B2 0x%sU\n", printnumber(@B2);
-        printf "#  define P99__B3 0x%sU\n", printnumber(@B3);
-        printf "#  define P99__B4 0x%sU\n", printnumber(@B4);
-        printf "#  define P99__B5 0x%sU\n", printnumber(@B5);
-        printf "#  define P99__B6 0x%sU\n", printnumber(@B6);
-        print "# endif /* P99__UNSIGNED_MAX */\n";
+        printf "#  define P00_B0 0x%sU\n", printnumber(@B0);
+        printf "#  define P00_B1 0x%sU\n", printnumber(@B1);
+        printf "#  define P00_B2 0x%sU\n", printnumber(@B2);
+        printf "#  define P00_B3 0x%sU\n", printnumber(@B3);
+        printf "#  define P00_B4 0x%sU\n", printnumber(@B4);
+        printf "#  define P00_B5 0x%sU\n", printnumber(@B5);
+        printf "#  define P00_B6 0x%sU\n", printnumber(@B6);
+        print "# endif /* P00_UNSIGNED_MAX */\n";
         print "#endif /* P99_UINTMAX_MAX */\n";
     }
 
@@ -1112,7 +1112,7 @@ sub printGroups(@) {
     my ($name, @rest) = (@{$_[0]});
     print "\n//! \@addtogroup $name\n";
     print "//! \@{\n\n";
-    print "\n#define P99__$name\n";
+    print "\n#define P00_$name\n";
     foreach my $arr (@rest) {
         printGroups($arr);
     }

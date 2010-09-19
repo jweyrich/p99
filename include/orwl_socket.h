@@ -75,15 +75,15 @@ do {                                                                            
  } while (0)
 
 
-extern in_addr_t p99__inet4_addr;
+extern in_addr_t p00_inet4_addr;
 
 DECLARE_ONCE_UPON(inet4_addr);
 
 
 inline
 in_addr_t inet4_addr(void) {
-  INIT_ONCE_UPON(inet4_addr, p99__inet4_addr);
-  return p99__inet4_addr;
+  INIT_ONCE_UPON(inet4_addr, p00_inet4_addr);
+  return p00_inet4_addr;
 }
 
 #ifndef DOXYGEN

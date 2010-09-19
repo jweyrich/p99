@@ -72,13 +72,13 @@ bool same_endianess(uint32_t c) {
 void orwl_hton(uint32_t *n, uint64_t const *h, size_t l);
 void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l);
 
-in_addr_t p99__inet4_addr = P99_0(in_addr_t);
+in_addr_t p00_inet4_addr = P99_0(in_addr_t);
 
 DEFINE_ONCE_UPON(inet4_addr) {
   char const* str = getenv("INET4");
   struct in_addr inaddr = IN_ADDR_INITIALIZER;
   if (inet_aton(str, &inaddr)) {
-    p99__inet4_addr = inaddr.s_addr;
+    p00_inet4_addr = inaddr.s_addr;
   }
 }
 

@@ -31,8 +31,8 @@
  ** @{
  */
 
-#define P99__DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)      \
-  P99_IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(             \
+#define P00_DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP, ...)      \
+  P99_IF_EMPTY(SIGN)(+)(SIGN)P00_SKIP_ P99_PASTE(             \
   P99_IF_EMPTY(INT)(0)(INT),                                   \
   .,                                                           \
   P99_IF_EMPTY(FRAC)(0)(FRAC),                                 \
@@ -62,13 +62,13 @@
 #else
 #define P99_DEC_DOUBLE(...)                                    \
   P99_IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)                      \
-  (P99__DEC_DOUBLE(__VA_ARGS__))                               \
-  (P99__DEC_DOUBLE(__VA_ARGS__,,,,,))
+  (P00_DEC_DOUBLE(__VA_ARGS__))                               \
+  (P00_DEC_DOUBLE(__VA_ARGS__,,,,,))
 #endif
 
 
-#define P99__HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP, ...) \
-  P99_IF_EMPTY(SIGN)(+)(SIGN)P99__SKIP_ P99_PASTE(                 \
+#define P00_HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP, ...) \
+  P99_IF_EMPTY(SIGN)(+)(SIGN)P00_SKIP_ P99_PASTE(                 \
   0x,                                                              \
   P99_IF_EMPTY(HEXINT)(0)(HEXINT),                                 \
   .,                                                               \
@@ -88,8 +88,8 @@
 #else
 #define P99_HEX_DOUBLE(...)                                    \
   P99_IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)                      \
-  (P99__HEX_DOUBLE(__VA_ARGS__))                               \
-  (P99__HEX_DOUBLE(__VA_ARGS__,,,,,))
+  (P00_HEX_DOUBLE(__VA_ARGS__))                               \
+  (P00_HEX_DOUBLE(__VA_ARGS__,,,,,))
 #endif
 
 /**

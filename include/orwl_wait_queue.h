@@ -274,7 +274,7 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_wh);
 typedef struct {
   orwl_wh *wh;
   uint64_t howmuch;
-} p99__orwl_wh_pair;
+} p00_orwl_wh_pair;
 
 /**
  ** @brief Insert a request of @c howmuch tokens on @c wh into location

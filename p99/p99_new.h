@@ -66,9 +66,9 @@
  **/
 
 
-#define P99__NEW(T) P99_PASTE2(T, _init)((T*)malloc(sizeof(T)))
+#define P00_NEW(T) P99_PASTE2(T, _init)((T*)malloc(sizeof(T)))
 
-#define P99__NEW_ARGS(T, ...) P99_PASTE2(T, _init)((T*)malloc(sizeof(T)), __VA_ARGS__)
+#define P00_NEW_ARGS(T, ...) P99_PASTE2(T, _init)((T*)malloc(sizeof(T)), __VA_ARGS__)
 
 
 /**
@@ -110,7 +110,7 @@
  ** @see P99_CALL_DEFARG if you want to provide default arguments to
  ** the @c T_init function.
  **/
-#define P99_NEW(...) P99_IF_DEC_LT(P99_NARG(__VA_ARGS__), 2)(P99__NEW(__VA_ARGS__))(P99__NEW_ARGS(__VA_ARGS__))
+#define P99_NEW(...) P99_IF_DEC_LT(P99_NARG(__VA_ARGS__), 2)(P00_NEW(__VA_ARGS__))(P00_NEW_ARGS(__VA_ARGS__))
 
 /**
  ** @}

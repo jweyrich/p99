@@ -48,37 +48,37 @@ void P99_PASTE2(T, _delete)(T const*el) {                                       
 }
 
 inline
-size_t p99__blocks(size_t n, size_t stride) {
+size_t p00_blocks(size_t n, size_t stride) {
   return (n / stride) + ((n % stride) ? 1u : 0u);
 }
 
 inline
-size_t p99__vnew_size_len(size_t n) {
-  return p99__blocks(n, sizeof(size_t));
+size_t p00_vnew_size_len(size_t n) {
+  return p00_blocks(n, sizeof(size_t));
 }
 
 inline
-void *p99__vnew(size_t n) {
+void *p00_vnew(size_t n) {
   /* add one for the header */
-  size_t *ret = (size_t*)calloc(p99__vnew_size_len(n) + 1, sizeof(size_t));
+  size_t *ret = (size_t*)calloc(p00_vnew_size_len(n) + 1, sizeof(size_t));
   if (!ret) return NULL;
   ret[0] = n;
   return ret + 1;
 }
 
 inline
-size_t const*p99__vfind(void const*p) {
+size_t const*p00_vfind(void const*p) {
   return ((size_t const*)p) - 1;
 }
 
 inline
-size_t p99__vlen(void const*p) {
-  return (p99__vfind(p))[0];
+size_t p00_vlen(void const*p) {
+  return (p00_vfind(p))[0];
 }
 
 inline
-void p99__vdelete(void const*p) {
-  free((void*)p99__vfind(p));
+void p00_vdelete(void const*p) {
+  free((void*)p00_vfind(p));
 }
 
 /**
@@ -95,7 +95,7 @@ void p99__vdelete(void const*p) {
 inline                                                                                                  \
 T *P99_PASTE2(T, _vnew)(size_t n) {                                                                     \
   size_t N = n*sizeof(T);                                                                               \
-  T *ret = p99__vnew(N);                                                                                \
+  T *ret = p00_vnew(N);                                                                                 \
   if (ret) {                                                                                            \
     for (size_t i = 0; i < n; ++i) {                                                                    \
       P99_PASTE2(T, _init)(ret + i);                                                                    \
@@ -111,19 +111,19 @@ T *P99_PASTE2(T, _vnew)(size_t n) {                                             
 inline                                                                                                     \
 void P99_PASTE2(T, _vdelete)(T const*vec) {                                                                \
   if (vec) {                                                                                               \
-    size_t n = p99__vlen(vec) / sizeof(T);                                                                 \
+    size_t n = p00_vlen(vec) / sizeof(T);                                                                  \
     for (T *ve = (T*)vec, *stop = ve + n; ve < stop; ++ve) {                                               \
       P99_PASTE2(T, _destroy)(ve);                                                                         \
     }                                                                                                      \
-    p99__vdelete(vec);                                                                                     \
+    p00_vdelete(vec);                                                                                      \
   }                                                                                                        \
 }
 
-#define DECLARE_NEW_DELETE(T)                                                                \
-DECLARE_DELETE(T)                                                                            \
-DECLARE_VDELETE(T)                                                                           \
-DECLARE_VNEW(T)                                                                              \
- enum P99_PASTE2(p99__tame_ansi_c_semicolon_message_, T) { P99_PASTE2(p99__new_delete_, T) }
+#define DECLARE_NEW_DELETE(T)                                                              \
+DECLARE_DELETE(T)                                                                          \
+DECLARE_VDELETE(T)                                                                         \
+DECLARE_VNEW(T)                                                                            \
+ enum P99_PASTE2(p00_tame_ansi_c_semicolon_message_, T) { P99_PASTE2(p00_new_delete_, T) }
 
 #define DEFINE_DELETE(T) void P99_PASTE2(T, _delete)(T const*el)
 #define DEFINE_VNEW(T) T * P99_PASTE2(T, _vnew)(size_t n)
