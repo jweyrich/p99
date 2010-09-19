@@ -26,9 +26,31 @@
  **
  ** @brief This provides different types of if-else clauses for the preprocessor.
  **
+ ** The macros in this group work all analogous to ::P99_IF_EQ
+ ** @code
+ ** P99_IF_EQ(INT_MAX, 10000)(long)(short) a;
+ ** P99_IF_EQ(8, CHAR_BIT)(uint8_t)(uint_least8_t) c;
+ ** @endcode
+ **
+ ** which would normally be textually replaced by
+ ** @code
+ ** long int a;
+ ** uint8_t c;
+ ** @endcode
+ **
+ ** (@c INT_MAX can never be 10000, because is it at least
+ ** 2<sup>15</sup>-1. @c CHAR_BIT isn't 8 only on special hardware
+ ** such as DSP.)
+ **
+ ** That is, all these macros expect @em three pairs of parentheses
+ ** after their keyword token:
+ **  -# containing the condition
+ **  -# containing the if-clause
+ **  -# containing the else-clause
+ **
  ** For the underlying logical and arithmetical operations
- ** @see preprocessor_logic
- ** @see preprocessor_arithmetic
+ ** @ref preprocessor_logic
+ ** @ref preprocessor_arithmetic
  ** @{
  **/
 

@@ -756,6 +756,22 @@
 
 /**
  ** @page programming Macro programming with P99
+ **
+ ** Most macros and features for macro programming with P99 are
+ ** defined in @ref meta_programming. This allows to do things like
+ ** <dl>
+ **  <dt>argument list counting</dt>
+ **  <dt>rudimentary argument list processing</dt>
+ **     <dd>to obtain e.g a sublist of the argument list (::P99_NARG) or revert an
+ **     argument (::P99_REVS)</dd>
+ **  <dt>code unroling</dt>
+ **     <dd>not restricted to usual @c for loops but also e.g to produce a
+ **     sequence of declarations with initializers (::P99_VASSIGNS)</dd>
+ **  <dt>constant generation</dt>
+ **     <dd>to compose @c double constants</dd>
+ **  <dt>type and keyword classification</dt>
+ **  <dt>scope bound resource management</dt>
+ ** </dl>
  **/
 
 /**
