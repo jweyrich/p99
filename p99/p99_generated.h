@@ -34,7 +34,7 @@
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P99__VERSION_DATE "Fri, 17 Sep 2010 19:46:18 +0200"
+#define P99__VERSION_DATE "Sun, 19 Sep 2010 17:15:28 +0200"
 #define P99__VERSION_ID "eb534f1d31aa3a23309b77734f874d521c3cb3a2"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -44,105 +44,105 @@
  **/
 #define P99_MAX_NUMBER 121
 #define P99__ARG(                                              \
-	_1,	_2,	_3,	_4,	_5,	_6,	_7,	_8,                               \
-	_9,	_10,	_11,	_12,	_13,	_14,	_15,	_16,                        \
-	_17,	_18,	_19,	_20,	_21,	_22,	_23,	_24,                       \
-	_25,	_26,	_27,	_28,	_29,	_30,	_31,	_32,                       \
-	_33,	_34,	_35,	_36,	_37,	_38,	_39,	_40,                       \
-	_41,	_42,	_43,	_44,	_45,	_46,	_47,	_48,                       \
-	_49,	_50,	_51,	_52,	_53,	_54,	_55,	_56,                       \
-	_57,	_58,	_59,	_60,	_61,	_62,	_63,	_64,                       \
-	_65,	_66,	_67,	_68,	_69,	_70,	_71,	_72,                       \
-	_73,	_74,	_75,	_76,	_77,	_78,	_79,	_80,                       \
-	_81,	_82,	_83,	_84,	_85,	_86,	_87,	_88,                       \
-	_89,	_90,	_91,	_92,	_93,	_94,	_95,	_96,                       \
-	_97,	_98,	_99,	_100,	_101,	_102,	_103,	_104,                  \
-	_105,	_106,	_107,	_108,	_109,	_110,	_111,	_112,               \
-	_113,	_114,	_115,	_116,	_117,	_118,	_119,	_120,               \
-	_121,                                                         \
-	...) _121
-#define P99__NARG_1(...) P99__ARG(__VA_ARGS__, 	120,           \
-	119,	118,	117,	116,	115,	114,	113,	112,                       \
-	111,	110,	109,	108,	107,	106,	105,	104,                       \
-	103,	102,	101,	100,	99,	98,	97,	96,                           \
-	95,	94,	93,	92,	91,	90,	89,	88,                               \
-	87,	86,	85,	84,	83,	82,	81,	80,                               \
-	79,	78,	77,	76,	75,	74,	73,	72,                               \
-	71,	70,	69,	68,	67,	66,	65,	64,                               \
-	63,	62,	61,	60,	59,	58,	57,	56,                               \
-	55,	54,	53,	52,	51,	50,	49,	48,                               \
-	47,	46,	45,	44,	43,	42,	41,	40,                               \
-	39,	38,	37,	36,	35,	34,	33,	32,                               \
-	31,	30,	29,	28,	27,	26,	25,	24,                               \
-	23,	22,	21,	20,	19,	18,	17,	16,                               \
-	15,	14,	13,	12,	11,	10,	9,	8,                                 \
-	7,	6,	5,	4,	3,	2,	1,	0,)
-#define P99__NARG_2(...) P99__ARG(__VA_ARGS__, 	60,                  \
-	P99__INV(2),	59,	P99__INV(2),	58,	P99__INV(2),	57,	P99__INV(2),	56, \
-	P99__INV(2),	55,	P99__INV(2),	54,	P99__INV(2),	53,	P99__INV(2),	52, \
-	P99__INV(2),	51,	P99__INV(2),	50,	P99__INV(2),	49,	P99__INV(2),	48, \
-	P99__INV(2),	47,	P99__INV(2),	46,	P99__INV(2),	45,	P99__INV(2),	44, \
-	P99__INV(2),	43,	P99__INV(2),	42,	P99__INV(2),	41,	P99__INV(2),	40, \
-	P99__INV(2),	39,	P99__INV(2),	38,	P99__INV(2),	37,	P99__INV(2),	36, \
-	P99__INV(2),	35,	P99__INV(2),	34,	P99__INV(2),	33,	P99__INV(2),	32, \
-	P99__INV(2),	31,	P99__INV(2),	30,	P99__INV(2),	29,	P99__INV(2),	28, \
-	P99__INV(2),	27,	P99__INV(2),	26,	P99__INV(2),	25,	P99__INV(2),	24, \
-	P99__INV(2),	23,	P99__INV(2),	22,	P99__INV(2),	21,	P99__INV(2),	20, \
-	P99__INV(2),	19,	P99__INV(2),	18,	P99__INV(2),	17,	P99__INV(2),	16, \
-	P99__INV(2),	15,	P99__INV(2),	14,	P99__INV(2),	13,	P99__INV(2),	12, \
-	P99__INV(2),	11,	P99__INV(2),	10,	P99__INV(2),	9,	P99__INV(2),	8,   \
-	P99__INV(2),	7,	P99__INV(2),	6,	P99__INV(2),	5,	P99__INV(2),	4,     \
-	P99__INV(2),	3,	P99__INV(2),	2,	P99__INV(2),	1,	P99__INV(2),	0,)
-#define P99__NARG_3(...) P99__ARG(__VA_ARGS__, 	40,                                    \
-	P99__INV(3),	P99__INV(3),	39,	P99__INV(3),	P99__INV(3),	38,	P99__INV(3),	P99__INV(3), \
-	37,	P99__INV(3),	P99__INV(3),	36,	P99__INV(3),	P99__INV(3),	35,	P99__INV(3),          \
-	P99__INV(3),	34,	P99__INV(3),	P99__INV(3),	33,	P99__INV(3),	P99__INV(3),	32,          \
-	P99__INV(3),	P99__INV(3),	31,	P99__INV(3),	P99__INV(3),	30,	P99__INV(3),	P99__INV(3), \
-	29,	P99__INV(3),	P99__INV(3),	28,	P99__INV(3),	P99__INV(3),	27,	P99__INV(3),          \
-	P99__INV(3),	26,	P99__INV(3),	P99__INV(3),	25,	P99__INV(3),	P99__INV(3),	24,          \
-	P99__INV(3),	P99__INV(3),	23,	P99__INV(3),	P99__INV(3),	22,	P99__INV(3),	P99__INV(3), \
-	21,	P99__INV(3),	P99__INV(3),	20,	P99__INV(3),	P99__INV(3),	19,	P99__INV(3),          \
-	P99__INV(3),	18,	P99__INV(3),	P99__INV(3),	17,	P99__INV(3),	P99__INV(3),	16,          \
-	P99__INV(3),	P99__INV(3),	15,	P99__INV(3),	P99__INV(3),	14,	P99__INV(3),	P99__INV(3), \
-	13,	P99__INV(3),	P99__INV(3),	12,	P99__INV(3),	P99__INV(3),	11,	P99__INV(3),          \
-	P99__INV(3),	10,	P99__INV(3),	P99__INV(3),	9,	P99__INV(3),	P99__INV(3),	8,            \
-	P99__INV(3),	P99__INV(3),	7,	P99__INV(3),	P99__INV(3),	6,	P99__INV(3),	P99__INV(3),   \
-	5,	P99__INV(3),	P99__INV(3),	4,	P99__INV(3),	P99__INV(3),	3,	P99__INV(3),             \
-	P99__INV(3),	2,	P99__INV(3),	P99__INV(3),	1,	P99__INV(3),	P99__INV(3),	0,)
-#define P99__NARG_4(...) P99__ARG(__VA_ARGS__, 	30,                                    \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	29,	P99__INV(4),	P99__INV(4),	P99__INV(4),	28, \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	27,	P99__INV(4),	P99__INV(4),	P99__INV(4),	26, \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	25,	P99__INV(4),	P99__INV(4),	P99__INV(4),	24, \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	23,	P99__INV(4),	P99__INV(4),	P99__INV(4),	22, \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	21,	P99__INV(4),	P99__INV(4),	P99__INV(4),	20, \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	19,	P99__INV(4),	P99__INV(4),	P99__INV(4),	18, \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	17,	P99__INV(4),	P99__INV(4),	P99__INV(4),	16, \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	15,	P99__INV(4),	P99__INV(4),	P99__INV(4),	14, \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	13,	P99__INV(4),	P99__INV(4),	P99__INV(4),	12, \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	11,	P99__INV(4),	P99__INV(4),	P99__INV(4),	10, \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	9,	P99__INV(4),	P99__INV(4),	P99__INV(4),	8,   \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	7,	P99__INV(4),	P99__INV(4),	P99__INV(4),	6,   \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	5,	P99__INV(4),	P99__INV(4),	P99__INV(4),	4,   \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	3,	P99__INV(4),	P99__INV(4),	P99__INV(4),	2,   \
-	P99__INV(4),	P99__INV(4),	P99__INV(4),	1,	P99__INV(4),	P99__INV(4),	P99__INV(4),	0,)
+ _1, _2, _3, _4, _5, _6, _7, _8,                               \
+ _9, _10, _11, _12, _13, _14, _15, _16,                        \
+ _17, _18, _19, _20, _21, _22, _23, _24,                       \
+ _25, _26, _27, _28, _29, _30, _31, _32,                       \
+ _33, _34, _35, _36, _37, _38, _39, _40,                       \
+ _41, _42, _43, _44, _45, _46, _47, _48,                       \
+ _49, _50, _51, _52, _53, _54, _55, _56,                       \
+ _57, _58, _59, _60, _61, _62, _63, _64,                       \
+ _65, _66, _67, _68, _69, _70, _71, _72,                       \
+ _73, _74, _75, _76, _77, _78, _79, _80,                       \
+ _81, _82, _83, _84, _85, _86, _87, _88,                       \
+ _89, _90, _91, _92, _93, _94, _95, _96,                       \
+ _97, _98, _99, _100, _101, _102, _103, _104,                  \
+ _105, _106, _107, _108, _109, _110, _111, _112,               \
+ _113, _114, _115, _116, _117, _118, _119, _120,               \
+ _121,                                                         \
+ ...) _121
+#define P99__NARG_1(...) P99__ARG(__VA_ARGS__,  120,           \
+ 119, 118, 117, 116, 115, 114, 113, 112,                       \
+ 111, 110, 109, 108, 107, 106, 105, 104,                       \
+ 103, 102, 101, 100, 99, 98, 97, 96,                           \
+ 95, 94, 93, 92, 91, 90, 89, 88,                               \
+ 87, 86, 85, 84, 83, 82, 81, 80,                               \
+ 79, 78, 77, 76, 75, 74, 73, 72,                               \
+ 71, 70, 69, 68, 67, 66, 65, 64,                               \
+ 63, 62, 61, 60, 59, 58, 57, 56,                               \
+ 55, 54, 53, 52, 51, 50, 49, 48,                               \
+ 47, 46, 45, 44, 43, 42, 41, 40,                               \
+ 39, 38, 37, 36, 35, 34, 33, 32,                               \
+ 31, 30, 29, 28, 27, 26, 25, 24,                               \
+ 23, 22, 21, 20, 19, 18, 17, 16,                               \
+ 15, 14, 13, 12, 11, 10, 9, 8,                                 \
+ 7, 6, 5, 4, 3, 2, 1, 0,)
+#define P99__NARG_2(...) P99__ARG(__VA_ARGS__,  60,                  \
+ P99__INV(2), 59, P99__INV(2), 58, P99__INV(2), 57, P99__INV(2), 56, \
+ P99__INV(2), 55, P99__INV(2), 54, P99__INV(2), 53, P99__INV(2), 52, \
+ P99__INV(2), 51, P99__INV(2), 50, P99__INV(2), 49, P99__INV(2), 48, \
+ P99__INV(2), 47, P99__INV(2), 46, P99__INV(2), 45, P99__INV(2), 44, \
+ P99__INV(2), 43, P99__INV(2), 42, P99__INV(2), 41, P99__INV(2), 40, \
+ P99__INV(2), 39, P99__INV(2), 38, P99__INV(2), 37, P99__INV(2), 36, \
+ P99__INV(2), 35, P99__INV(2), 34, P99__INV(2), 33, P99__INV(2), 32, \
+ P99__INV(2), 31, P99__INV(2), 30, P99__INV(2), 29, P99__INV(2), 28, \
+ P99__INV(2), 27, P99__INV(2), 26, P99__INV(2), 25, P99__INV(2), 24, \
+ P99__INV(2), 23, P99__INV(2), 22, P99__INV(2), 21, P99__INV(2), 20, \
+ P99__INV(2), 19, P99__INV(2), 18, P99__INV(2), 17, P99__INV(2), 16, \
+ P99__INV(2), 15, P99__INV(2), 14, P99__INV(2), 13, P99__INV(2), 12, \
+ P99__INV(2), 11, P99__INV(2), 10, P99__INV(2), 9, P99__INV(2), 8,   \
+ P99__INV(2), 7, P99__INV(2), 6, P99__INV(2), 5, P99__INV(2), 4,     \
+ P99__INV(2), 3, P99__INV(2), 2, P99__INV(2), 1, P99__INV(2), 0,)
+#define P99__NARG_3(...) P99__ARG(__VA_ARGS__,  40,                                    \
+ P99__INV(3), P99__INV(3), 39, P99__INV(3), P99__INV(3), 38, P99__INV(3), P99__INV(3), \
+ 37, P99__INV(3), P99__INV(3), 36, P99__INV(3), P99__INV(3), 35, P99__INV(3),          \
+ P99__INV(3), 34, P99__INV(3), P99__INV(3), 33, P99__INV(3), P99__INV(3), 32,          \
+ P99__INV(3), P99__INV(3), 31, P99__INV(3), P99__INV(3), 30, P99__INV(3), P99__INV(3), \
+ 29, P99__INV(3), P99__INV(3), 28, P99__INV(3), P99__INV(3), 27, P99__INV(3),          \
+ P99__INV(3), 26, P99__INV(3), P99__INV(3), 25, P99__INV(3), P99__INV(3), 24,          \
+ P99__INV(3), P99__INV(3), 23, P99__INV(3), P99__INV(3), 22, P99__INV(3), P99__INV(3), \
+ 21, P99__INV(3), P99__INV(3), 20, P99__INV(3), P99__INV(3), 19, P99__INV(3),          \
+ P99__INV(3), 18, P99__INV(3), P99__INV(3), 17, P99__INV(3), P99__INV(3), 16,          \
+ P99__INV(3), P99__INV(3), 15, P99__INV(3), P99__INV(3), 14, P99__INV(3), P99__INV(3), \
+ 13, P99__INV(3), P99__INV(3), 12, P99__INV(3), P99__INV(3), 11, P99__INV(3),          \
+ P99__INV(3), 10, P99__INV(3), P99__INV(3), 9, P99__INV(3), P99__INV(3), 8,            \
+ P99__INV(3), P99__INV(3), 7, P99__INV(3), P99__INV(3), 6, P99__INV(3), P99__INV(3),   \
+ 5, P99__INV(3), P99__INV(3), 4, P99__INV(3), P99__INV(3), 3, P99__INV(3),             \
+ P99__INV(3), 2, P99__INV(3), P99__INV(3), 1, P99__INV(3), P99__INV(3), 0,)
+#define P99__NARG_4(...) P99__ARG(__VA_ARGS__,  30,                                    \
+ P99__INV(4), P99__INV(4), P99__INV(4), 29, P99__INV(4), P99__INV(4), P99__INV(4), 28, \
+ P99__INV(4), P99__INV(4), P99__INV(4), 27, P99__INV(4), P99__INV(4), P99__INV(4), 26, \
+ P99__INV(4), P99__INV(4), P99__INV(4), 25, P99__INV(4), P99__INV(4), P99__INV(4), 24, \
+ P99__INV(4), P99__INV(4), P99__INV(4), 23, P99__INV(4), P99__INV(4), P99__INV(4), 22, \
+ P99__INV(4), P99__INV(4), P99__INV(4), 21, P99__INV(4), P99__INV(4), P99__INV(4), 20, \
+ P99__INV(4), P99__INV(4), P99__INV(4), 19, P99__INV(4), P99__INV(4), P99__INV(4), 18, \
+ P99__INV(4), P99__INV(4), P99__INV(4), 17, P99__INV(4), P99__INV(4), P99__INV(4), 16, \
+ P99__INV(4), P99__INV(4), P99__INV(4), 15, P99__INV(4), P99__INV(4), P99__INV(4), 14, \
+ P99__INV(4), P99__INV(4), P99__INV(4), 13, P99__INV(4), P99__INV(4), P99__INV(4), 12, \
+ P99__INV(4), P99__INV(4), P99__INV(4), 11, P99__INV(4), P99__INV(4), P99__INV(4), 10, \
+ P99__INV(4), P99__INV(4), P99__INV(4), 9, P99__INV(4), P99__INV(4), P99__INV(4), 8,   \
+ P99__INV(4), P99__INV(4), P99__INV(4), 7, P99__INV(4), P99__INV(4), P99__INV(4), 6,   \
+ P99__INV(4), P99__INV(4), P99__INV(4), 5, P99__INV(4), P99__INV(4), P99__INV(4), 4,   \
+ P99__INV(4), P99__INV(4), P99__INV(4), 3, P99__INV(4), P99__INV(4), P99__INV(4), 2,   \
+ P99__INV(4), P99__INV(4), P99__INV(4), 1, P99__INV(4), P99__INV(4), P99__INV(4), 0,)
 /** @ingroup basic_list_operations                                                 */
 /** @brief Determine of the argument list has a comma, i.e at least two arguments. */
 #define P99_HAS_COMMA(...) P99__ARG(__VA_ARGS__,               \
-	1,	1,	1,	1,	1,	1,	1,                                          \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,	0, ...)
+ 1, 1, 1, 1, 1, 1, 1,                                          \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1, 0, ...)
 #define P99__SKP2(_0, ...) P99__SKP1(__VA_ARGS__)
 #define P99__SKP3(_0, ...) P99__SKP2(__VA_ARGS__)
 #define P99__SKP4(_0, ...) P99__SKP3(__VA_ARGS__)
@@ -382,56 +382,56 @@
 #define P99__PRE119(_0, ...) _0, P99__PRE118(__VA_ARGS__)
 #define P99__PRE120(_0, ...) _0, P99__PRE119(__VA_ARGS__)
 #define P99__ASCENDING()                                       \
-	0,	1,	2,	3,	4,	5,	6,	7,                                       \
-	8,	9,	10,	11,	12,	13,	14,	15,                                 \
-	16,	17,	18,	19,	20,	21,	22,	23,                               \
-	24,	25,	26,	27,	28,	29,	30,	31,                               \
-	32,	33,	34,	35,	36,	37,	38,	39,                               \
-	40,	41,	42,	43,	44,	45,	46,	47,                               \
-	48,	49,	50,	51,	52,	53,	54,	55,                               \
-	56,	57,	58,	59,	60,	61,	62,	63,                               \
-	64,	65,	66,	67,	68,	69,	70,	71,                               \
-	72,	73,	74,	75,	76,	77,	78,	79,                               \
-	80,	81,	82,	83,	84,	85,	86,	87,                               \
-	88,	89,	90,	91,	92,	93,	94,	95,                               \
-	96,	97,	98,	99,	100,	101,	102,	103,                           \
-	104,	105,	106,	107,	108,	109,	110,	111,                       \
-	112,	113,	114,	115,	116,	117,	118,	119,                       \
-	120,
+ 0, 1, 2, 3, 4, 5, 6, 7,                                       \
+ 8, 9, 10, 11, 12, 13, 14, 15,                                 \
+ 16, 17, 18, 19, 20, 21, 22, 23,                               \
+ 24, 25, 26, 27, 28, 29, 30, 31,                               \
+ 32, 33, 34, 35, 36, 37, 38, 39,                               \
+ 40, 41, 42, 43, 44, 45, 46, 47,                               \
+ 48, 49, 50, 51, 52, 53, 54, 55,                               \
+ 56, 57, 58, 59, 60, 61, 62, 63,                               \
+ 64, 65, 66, 67, 68, 69, 70, 71,                               \
+ 72, 73, 74, 75, 76, 77, 78, 79,                               \
+ 80, 81, 82, 83, 84, 85, 86, 87,                               \
+ 88, 89, 90, 91, 92, 93, 94, 95,                               \
+ 96, 97, 98, 99, 100, 101, 102, 103,                           \
+ 104, 105, 106, 107, 108, 109, 110, 111,                       \
+ 112, 113, 114, 115, 116, 117, 118, 119,                       \
+ 120,
 #define P99__ALL_ZEROES()                                      \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,	0,	0,	0,	0,	0,	0,	0,                                       \
-	0,
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0, 0, 0, 0, 0, 0, 0, 0,                                       \
+ 0,
 #define P99__ALL_ONES()                                        \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,	1,	1,	1,	1,	1,	1,	1,                                       \
-	1,
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1, 1, 1, 1, 1, 1, 1, 1,                                       \
+ 1,
 /** @brief Paste 7 arguments at their boundary.*/
 #define P99_PASTE7(...) P99__PASTE7(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99__PASTE7(L, ...) P99_PASTE2(P99_PASTE6(__VA_ARGS__), L)
@@ -4781,167 +4781,229 @@
 #define P99_RESERVED_LEN(SEQ) P99_IF_ELSE(P99_IS_RESERVED_TOK(SEQ))(P99__RESERVED1(P99__EAT_FIRST(SEQ)))(0)
 /*! @brief Test if the token sequence @a SEQ starts with a token of kind RESERVED */
 #define P99_IS_RESERVED_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P99__RESERVED_, SEQ))
-#define P99__CONST_CLASSIFY_const	/* 1 */	,
-#define P99__CONST_CLASSIFY__1	
-#define P99__CONST_VALIDATE__1	,
-#define P99__CONST_CLASSIFY__2	const
-#define P99__CONST_VALIDATE__2	,
-#define P99__CONST_CLASSIFY__3	const
-#define P99__CONST_VALIDATE__3	,
-#define P99__CONST_CLASSIFY__4	const
-#define P99__CONST_VALIDATE__4	,
-#define P99__CONST_CLASSIFY__5	const
-#define P99__CONST_VALIDATE__5	,
-#define P99__CONST_CLASSIFY__6	const
-#define P99__CONST_VALIDATE__6	,
-#define P99__CONST_CLASSIFY__7	const
-#define P99__CONST_VALIDATE__7	,
-#define P99__VOLATILE_CLASSIFY_volatile	/* 1 */	,
-#define P99__VOLATILE_CLASSIFY__1	
-#define P99__VOLATILE_VALIDATE__1	,
-#define P99__VOLATILE_CLASSIFY__2	volatile
-#define P99__VOLATILE_VALIDATE__2	,
-#define P99__VOLATILE_CLASSIFY__3	volatile
-#define P99__VOLATILE_VALIDATE__3	,
-#define P99__VOLATILE_CLASSIFY__4	volatile
-#define P99__VOLATILE_VALIDATE__4	,
-#define P99__VOLATILE_CLASSIFY__5	volatile
-#define P99__VOLATILE_VALIDATE__5	,
-#define P99__VOLATILE_CLASSIFY__6	volatile
-#define P99__VOLATILE_VALIDATE__6	,
-#define P99__VOLATILE_CLASSIFY__7	volatile
-#define P99__VOLATILE_VALIDATE__7	,
-#define P99__VOID_CLASSIFY_void	/* 1 */	,
-#define P99__VOID_CLASSIFY__1	
-#define P99__VOID_VALIDATE__1	,
-#define P99__VOID_CLASSIFY__2	v
-#define P99__VOID_VALIDATE__2	,
-#define P99__BOOL_CLASSIFY__Bool	/* 1 */	,
-#define P99__BOOL_CLASSIFY__1	
-#define P99__BOOL_VALIDATE__1	,
-#define P99__BOOL_CLASSIFY__2	b
-#define P99__BOOL_VALIDATE__2	,
-#define P99__INTEGER_CLASSIFY_long	/* 1 */	,
-#define P99__INTEGER_CLASSIFY_short	/* 4 */	,,,,
-#define P99__INTEGER_CLASSIFY_char	/* 8 */	,,,,,,,,
-#define P99__INTEGER_CLASSIFY_signed	/* 16 */	,,,,,,,,,,,,,,,,
-#define P99__INTEGER_CLASSIFY_unsigned	/* 32 */	,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-#define P99__INTEGER_CLASSIFY_int	/* 64 */	,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-#define P99__INTEGER_CLASSIFY__2	l
-#define P99__INTEGER_VALIDATE__2	,
-#define P99__INTEGER_CLASSIFY__3	ll
-#define P99__INTEGER_VALIDATE__3	,
-#define P99__INTEGER_CLASSIFY__5	h
-#define P99__INTEGER_VALIDATE__5	,
-#define P99__INTEGER_CLASSIFY__9	c
-#define P99__INTEGER_VALIDATE__9	,
-#define P99__INTEGER_CLASSIFY__17	i
-#define P99__INTEGER_VALIDATE__17	,
-#define P99__INTEGER_CLASSIFY__18	l
-#define P99__INTEGER_VALIDATE__18	,
-#define P99__INTEGER_CLASSIFY__19	ll
-#define P99__INTEGER_VALIDATE__19	,
-#define P99__INTEGER_CLASSIFY__21	h
-#define P99__INTEGER_VALIDATE__21	,
-#define P99__INTEGER_CLASSIFY__25	hh
-#define P99__INTEGER_VALIDATE__25	,
-#define P99__INTEGER_CLASSIFY__33	u
-#define P99__INTEGER_VALIDATE__33	,
-#define P99__INTEGER_CLASSIFY__34	ul
-#define P99__INTEGER_VALIDATE__34	,
-#define P99__INTEGER_CLASSIFY__35	ull
-#define P99__INTEGER_VALIDATE__35	,
-#define P99__INTEGER_CLASSIFY__37	uh
-#define P99__INTEGER_VALIDATE__37	,
-#define P99__INTEGER_CLASSIFY__41	uhh
-#define P99__INTEGER_VALIDATE__41	,
-#define P99__INTEGER_CLASSIFY__65	i
-#define P99__INTEGER_VALIDATE__65	,
-#define P99__INTEGER_CLASSIFY__66	l
-#define P99__INTEGER_VALIDATE__66	,
-#define P99__INTEGER_CLASSIFY__67	ll
-#define P99__INTEGER_VALIDATE__67	,
-#define P99__INTEGER_CLASSIFY__69	h
-#define P99__INTEGER_VALIDATE__69	,
-#define P99__INTEGER_CLASSIFY__81	i
-#define P99__INTEGER_VALIDATE__81	,
-#define P99__INTEGER_CLASSIFY__82	l
-#define P99__INTEGER_VALIDATE__82	,
-#define P99__INTEGER_CLASSIFY__83	ll
-#define P99__INTEGER_VALIDATE__83	,
-#define P99__INTEGER_CLASSIFY__85	h
-#define P99__INTEGER_VALIDATE__85	,
-#define P99__INTEGER_CLASSIFY__97	u
-#define P99__INTEGER_VALIDATE__97	,
-#define P99__INTEGER_CLASSIFY__98	ul
-#define P99__INTEGER_VALIDATE__98	,
-#define P99__INTEGER_CLASSIFY__99	ull
-#define P99__INTEGER_VALIDATE__99	,
-#define P99__INTEGER_CLASSIFY__101	uh
-#define P99__INTEGER_VALIDATE__101	,
-#define P99__FLOAT_CLASSIFY_long	/* 1 */	,
-#define P99__FLOAT_CLASSIFY_double	/* 4 */	,,,,
-#define P99__FLOAT_CLASSIFY_float	/* 16 */	,,,,,,,,,,,,,,,,
-#define P99__FLOAT_CLASSIFY__Complex	/* 32 */	,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-#define P99__FLOAT_CLASSIFY__5	d
-#define P99__FLOAT_VALIDATE__5	,
-#define P99__FLOAT_CLASSIFY__6	ld
-#define P99__FLOAT_VALIDATE__6	,
-#define P99__FLOAT_CLASSIFY__17	f
-#define P99__FLOAT_VALIDATE__17	,
-#define P99__FLOAT_CLASSIFY__37	dc
-#define P99__FLOAT_VALIDATE__37	,
-#define P99__FLOAT_CLASSIFY__38	ldc
-#define P99__FLOAT_VALIDATE__38	,
-#define P99__FLOAT_CLASSIFY__49	fc
-#define P99__FLOAT_VALIDATE__49	,
-#define P99__BUILTIN_TYPE_b	_Bool
-#define P99__BUILTIN_TYPE_c	char
-#define P99__BUILTIN_TYPE_d	double
-#define P99__BUILTIN_TYPE_dc	double _Complex
-#define P99__BUILTIN_TYPE_f	float
-#define P99__BUILTIN_TYPE_fc	float _Complex
-#define P99__BUILTIN_TYPE_h	signed short
-#define P99__BUILTIN_TYPE_hh	signed char
-#define P99__BUILTIN_TYPE_i	signed
-#define P99__BUILTIN_TYPE_l	signed long
-#define P99__BUILTIN_TYPE_ld	long double
-#define P99__BUILTIN_TYPE_ldc	long double _Complex
-#define P99__BUILTIN_TYPE_ll	signed long long
-#define P99__BUILTIN_TYPE_u	unsigned
-#define P99__BUILTIN_TYPE_uh	unsigned short
-#define P99__BUILTIN_TYPE_uhh	unsigned char
-#define P99__BUILTIN_TYPE_ul	unsigned long
-#define P99__BUILTIN_TYPE_ull	unsigned long long
-#define P99__BUILTIN_TYPE_v	void
+#define P99__CONST_CLASSIFY_const /* 1 */ ,
+#define P99__CONST_CLASSIFY__1 
+#define P99__CONST_VALIDATE__1 ,
+#define P99__CONST_CLASSIFY__2 const
+#define P99__CONST_VALIDATE__2 ,
+#define P99__CONST_CLASSIFY__3 const
+#define P99__CONST_VALIDATE__3 ,
+#define P99__CONST_CLASSIFY__4 const
+#define P99__CONST_VALIDATE__4 ,
+#define P99__CONST_CLASSIFY__5 const
+#define P99__CONST_VALIDATE__5 ,
+#define P99__CONST_CLASSIFY__6 const
+#define P99__CONST_VALIDATE__6 ,
+#define P99__CONST_CLASSIFY__7 const
+#define P99__CONST_VALIDATE__7 ,
+#define P99__VOLATILE_CLASSIFY_volatile /* 1 */ ,
+#define P99__VOLATILE_CLASSIFY__1 
+#define P99__VOLATILE_VALIDATE__1 ,
+#define P99__VOLATILE_CLASSIFY__2 volatile
+#define P99__VOLATILE_VALIDATE__2 ,
+#define P99__VOLATILE_CLASSIFY__3 volatile
+#define P99__VOLATILE_VALIDATE__3 ,
+#define P99__VOLATILE_CLASSIFY__4 volatile
+#define P99__VOLATILE_VALIDATE__4 ,
+#define P99__VOLATILE_CLASSIFY__5 volatile
+#define P99__VOLATILE_VALIDATE__5 ,
+#define P99__VOLATILE_CLASSIFY__6 volatile
+#define P99__VOLATILE_VALIDATE__6 ,
+#define P99__VOLATILE_CLASSIFY__7 volatile
+#define P99__VOLATILE_VALIDATE__7 ,
+#define P99__VOID_CLASSIFY_void /* 1 */ ,
+#define P99__VOID_CLASSIFY__1 
+#define P99__VOID_VALIDATE__1 ,
+#define P99__VOID_CLASSIFY__2 v
+#define P99__VOID_VALIDATE__2 ,
+#define P99__BOOL_CLASSIFY__Bool /* 1 */ ,
+#define P99__BOOL_CLASSIFY__1 
+#define P99__BOOL_VALIDATE__1 ,
+#define P99__BOOL_CLASSIFY__2 b
+#define P99__BOOL_VALIDATE__2 ,
+#define P99__INTEGER_CLASSIFY_long /* 1 */ ,
+#define P99__INTEGER_CLASSIFY_short /* 4 */ ,,,,
+#define P99__INTEGER_CLASSIFY_char /* 8 */ ,,,,,,,,
+#define P99__INTEGER_CLASSIFY_signed /* 16 */ ,,,,,,,,,,,,,,,,
+#define P99__INTEGER_CLASSIFY_unsigned /* 32 */ ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+#define P99__INTEGER_CLASSIFY_int /* 64 */ ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+#define P99__INTEGER_CLASSIFY__2 l
+#define P99__INTEGER_VALIDATE__2 ,
+#define P99__INTEGER_CLASSIFY__3 ll
+#define P99__INTEGER_VALIDATE__3 ,
+#define P99__INTEGER_CLASSIFY__5 h
+#define P99__INTEGER_VALIDATE__5 ,
+#define P99__INTEGER_CLASSIFY__9 c
+#define P99__INTEGER_VALIDATE__9 ,
+#define P99__INTEGER_CLASSIFY__17 i
+#define P99__INTEGER_VALIDATE__17 ,
+#define P99__INTEGER_CLASSIFY__18 l
+#define P99__INTEGER_VALIDATE__18 ,
+#define P99__INTEGER_CLASSIFY__19 ll
+#define P99__INTEGER_VALIDATE__19 ,
+#define P99__INTEGER_CLASSIFY__21 h
+#define P99__INTEGER_VALIDATE__21 ,
+#define P99__INTEGER_CLASSIFY__25 hh
+#define P99__INTEGER_VALIDATE__25 ,
+#define P99__INTEGER_CLASSIFY__33 u
+#define P99__INTEGER_VALIDATE__33 ,
+#define P99__INTEGER_CLASSIFY__34 ul
+#define P99__INTEGER_VALIDATE__34 ,
+#define P99__INTEGER_CLASSIFY__35 ull
+#define P99__INTEGER_VALIDATE__35 ,
+#define P99__INTEGER_CLASSIFY__37 uh
+#define P99__INTEGER_VALIDATE__37 ,
+#define P99__INTEGER_CLASSIFY__41 uhh
+#define P99__INTEGER_VALIDATE__41 ,
+#define P99__INTEGER_CLASSIFY__65 i
+#define P99__INTEGER_VALIDATE__65 ,
+#define P99__INTEGER_CLASSIFY__66 l
+#define P99__INTEGER_VALIDATE__66 ,
+#define P99__INTEGER_CLASSIFY__67 ll
+#define P99__INTEGER_VALIDATE__67 ,
+#define P99__INTEGER_CLASSIFY__69 h
+#define P99__INTEGER_VALIDATE__69 ,
+#define P99__INTEGER_CLASSIFY__81 i
+#define P99__INTEGER_VALIDATE__81 ,
+#define P99__INTEGER_CLASSIFY__82 l
+#define P99__INTEGER_VALIDATE__82 ,
+#define P99__INTEGER_CLASSIFY__83 ll
+#define P99__INTEGER_VALIDATE__83 ,
+#define P99__INTEGER_CLASSIFY__85 h
+#define P99__INTEGER_VALIDATE__85 ,
+#define P99__INTEGER_CLASSIFY__97 u
+#define P99__INTEGER_VALIDATE__97 ,
+#define P99__INTEGER_CLASSIFY__98 ul
+#define P99__INTEGER_VALIDATE__98 ,
+#define P99__INTEGER_CLASSIFY__99 ull
+#define P99__INTEGER_VALIDATE__99 ,
+#define P99__INTEGER_CLASSIFY__101 uh
+#define P99__INTEGER_VALIDATE__101 ,
+#define P99__FLOAT_CLASSIFY_long /* 1 */ ,
+#define P99__FLOAT_CLASSIFY_double /* 4 */ ,,,,
+#define P99__FLOAT_CLASSIFY_float /* 16 */ ,,,,,,,,,,,,,,,,
+#define P99__FLOAT_CLASSIFY__Complex /* 32 */ ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+#define P99__FLOAT_CLASSIFY__5 d
+#define P99__FLOAT_VALIDATE__5 ,
+#define P99__FLOAT_CLASSIFY__6 ld
+#define P99__FLOAT_VALIDATE__6 ,
+#define P99__FLOAT_CLASSIFY__17 f
+#define P99__FLOAT_VALIDATE__17 ,
+#define P99__FLOAT_CLASSIFY__37 dc
+#define P99__FLOAT_VALIDATE__37 ,
+#define P99__FLOAT_CLASSIFY__38 ldc
+#define P99__FLOAT_VALIDATE__38 ,
+#define P99__FLOAT_CLASSIFY__49 fc
+#define P99__FLOAT_VALIDATE__49 ,
 /**
  ** @brief Find a builtin type according to a code such as `ull' or `ld'
  **
  ** E.g ::P99_BUILTIN_TYPE(ull) should expand to @c unsigned @c long
  ** @c long. The complete list for the 19 builtin types:
  ** <table>
- ** <tr><td>b</td><td><code>_Bool</code></td></tr>
- ** <tr><td>c</td><td><code>char</code></td></tr>
- ** <tr><td>d</td><td><code>double</code></td></tr>
- ** <tr><td>dc</td><td><code>double _Complex</code></td></tr>
- ** <tr><td>f</td><td><code>float</code></td></tr>
- ** <tr><td>fc</td><td><code>float _Complex</code></td></tr>
- ** <tr><td>ld</td><td><code>long double</code></td></tr>
- ** <tr><td>ldc</td><td><code>long double _Complex</code></td></tr>
- ** <tr><td>i</td><td><code>signed</code></td></tr>
- ** <tr><td>hh</td><td><code>signed char</code></td></tr>
- ** <tr><td>l</td><td><code>signed long</code></td></tr>
- ** <tr><td>ll</td><td><code>signed long long</code></td></tr>
- ** <tr><td>h</td><td><code>signed short</code></td></tr>
- ** <tr><td>u</td><td><code>unsigned</code></td></tr>
- ** <tr><td>uhh</td><td><code>unsigned char</code></td></tr>
- ** <tr><td>ul</td><td><code>unsigned long</code></td></tr>
- ** <tr><td>ull</td><td><code>unsigned long long</code></td></tr>
- ** <tr><td>uh</td><td><code>unsigned short</code></td></tr>
- ** <tr><td>v</td><td><code>void</code></td></tr>
+ ** <tr><th>code</th><th>type</th><th>is signed</th><th>signed</th><th>unsigned</th><th>integer rank</th></tr>
+ ** <tr><td>b</td><td><code>_Bool</code></td><td>0</td><td></td><td>b</td><td>0</td></tr>
+ ** <tr><td>c</td><td><code>char</code></td><td></td><td>hh</td><td>uhh</td><td>1</td></tr>
+ ** <tr><td>d</td><td><code>double</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>dc</td><td><code>double _Complex</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>f</td><td><code>float</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>fc</td><td><code>float _Complex</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>ld</td><td><code>long double</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>ldc</td><td><code>long double _Complex</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>i</td><td><code>signed</code></td><td>1</td><td>i</td><td>u</td><td>3</td></tr>
+ ** <tr><td>hh</td><td><code>signed char</code></td><td>1</td><td>hh</td><td>uhh</td><td>1</td></tr>
+ ** <tr><td>l</td><td><code>signed long</code></td><td>1</td><td>l</td><td>ul</td><td>4</td></tr>
+ ** <tr><td>ll</td><td><code>signed long long</code></td><td>1</td><td>ll</td><td>ull</td><td>5</td></tr>
+ ** <tr><td>h</td><td><code>signed short</code></td><td>1</td><td>h</td><td>uh</td><td>2</td></tr>
+ ** <tr><td>u</td><td><code>unsigned</code></td><td>0</td><td>i</td><td>u</td><td>3</td></tr>
+ ** <tr><td>uhh</td><td><code>unsigned char</code></td><td>0</td><td>hh</td><td>uhh</td><td>1</td></tr>
+ ** <tr><td>ul</td><td><code>unsigned long</code></td><td>0</td><td>l</td><td>ul</td><td>4</td></tr>
+ ** <tr><td>ull</td><td><code>unsigned long long</code></td><td>0</td><td>ll</td><td>ull</td><td>5</td></tr>
+ ** <tr><td>uh</td><td><code>unsigned short</code></td><td>0</td><td>h</td><td>uh</td><td>2</td></tr>
+ ** <tr><td>v</td><td><code>void</code></td><td></td><td></td><td></td><td></td></tr>
  ** </table>
  **/
-#define  P99_BUILTIN_TYPE(CODE)  P99_PASTE2(P99__BUILTIN, P99_PASTE2(_TYPE_, CODE))
+#define  P99_BUILTIN_TYPE(CODE)  P99_PASTE2(P99__, P99_PASTE2(BUILTIN_TYPE_, CODE))
+#define P99__BUILTIN_TYPE_b _Bool
+#define P99__BUILTIN_TYPE_c char
+#define P99__BUILTIN_TYPE_d double
+#define P99__BUILTIN_TYPE_dc double _Complex
+#define P99__BUILTIN_TYPE_f float
+#define P99__BUILTIN_TYPE_fc float _Complex
+#define P99__BUILTIN_TYPE_h signed short
+#define P99__BUILTIN_TYPE_hh signed char
+#define P99__BUILTIN_TYPE_i signed
+#define P99__BUILTIN_TYPE_l signed long
+#define P99__BUILTIN_TYPE_ld long double
+#define P99__BUILTIN_TYPE_ldc long double _Complex
+#define P99__BUILTIN_TYPE_ll signed long long
+#define P99__BUILTIN_TYPE_u unsigned
+#define P99__BUILTIN_TYPE_uh unsigned short
+#define P99__BUILTIN_TYPE_uhh unsigned char
+#define P99__BUILTIN_TYPE_ul unsigned long
+#define P99__BUILTIN_TYPE_ull unsigned long long
+#define P99__BUILTIN_TYPE_v void
+#define  P99_INTEGER_RANK(CODE)  P99_PASTE2(P99__, P99_PASTE2(INTEGER_RANK_, CODE))
+#define P99__INTEGER_RANK_b 0
+#define P99__INTEGER_RANK_c 1
+#define P99__INTEGER_RANK_h 2
+#define P99__INTEGER_RANK_hh 1
+#define P99__INTEGER_RANK_i 3
+#define P99__INTEGER_RANK_l 4
+#define P99__INTEGER_RANK_ll 5
+#define P99__INTEGER_RANK_u 3
+#define P99__INTEGER_RANK_uh 2
+#define P99__INTEGER_RANK_uhh 1
+#define P99__INTEGER_RANK_ul 4
+#define P99__INTEGER_RANK_ull 5
+#define  P99_INTEGER_SIGN(CODE)  P99_PASTE2(P99__, P99_PASTE2(INTEGER_SIGN_, CODE))
+#define P99__INTEGER_SIGN_b 0
+#define P99__INTEGER_SIGN_h 1
+#define P99__INTEGER_SIGN_hh 1
+#define P99__INTEGER_SIGN_i 1
+#define P99__INTEGER_SIGN_l 1
+#define P99__INTEGER_SIGN_ll 1
+#define P99__INTEGER_SIGN_u 0
+#define P99__INTEGER_SIGN_uh 0
+#define P99__INTEGER_SIGN_uhh 0
+#define P99__INTEGER_SIGN_ul 0
+#define P99__INTEGER_SIGN_ull 0
+#define  P99_INTEGER_SIGNED(CODE)  P99_PASTE2(P99__, P99_PASTE2(INTEGER_SIGNED_, CODE))
+#define P99__INTEGER_SIGNED_1 hh
+#define P99__INTEGER_SIGNED_2 h
+#define P99__INTEGER_SIGNED_3 i
+#define P99__INTEGER_SIGNED_4 l
+#define P99__INTEGER_SIGNED_5 ll
+#define P99__INTEGER_SIGNED_c hh
+#define P99__INTEGER_SIGNED_h h
+#define P99__INTEGER_SIGNED_hh hh
+#define P99__INTEGER_SIGNED_i i
+#define P99__INTEGER_SIGNED_l l
+#define P99__INTEGER_SIGNED_ll ll
+#define P99__INTEGER_SIGNED_u i
+#define P99__INTEGER_SIGNED_uh h
+#define P99__INTEGER_SIGNED_uhh hh
+#define P99__INTEGER_SIGNED_ul l
+#define P99__INTEGER_SIGNED_ull ll
+#define  P99_INTEGER_UNSIGNED(CODE)  P99_PASTE2(P99__, P99_PASTE2(INTEGER_UNSIGNED_, CODE))
+#define P99__INTEGER_UNSIGNED_0 b
+#define P99__INTEGER_UNSIGNED_1 uhh
+#define P99__INTEGER_UNSIGNED_2 uh
+#define P99__INTEGER_UNSIGNED_3 u
+#define P99__INTEGER_UNSIGNED_4 ul
+#define P99__INTEGER_UNSIGNED_5 ull
+#define P99__INTEGER_UNSIGNED_b b
+#define P99__INTEGER_UNSIGNED_c uhh
+#define P99__INTEGER_UNSIGNED_h uh
+#define P99__INTEGER_UNSIGNED_hh uhh
+#define P99__INTEGER_UNSIGNED_i u
+#define P99__INTEGER_UNSIGNED_l ul
+#define P99__INTEGER_UNSIGNED_ll ull
+#define P99__INTEGER_UNSIGNED_u u
+#define P99__INTEGER_UNSIGNED_uh uh
+#define P99__INTEGER_UNSIGNED_uhh uhh
+#define P99__INTEGER_UNSIGNED_ul ul
+#define P99__INTEGER_UNSIGNED_ull ull
 /**
  ** @}
  **/
@@ -5798,243 +5860,243 @@
 #define P99_DUPL120(...) __VA_ARGS__, P99_DUPL119(__VA_ARGS__)
 #define P99_DUPL121(...) __VA_ARGS__, P99_DUPL120(__VA_ARGS__)
 #define P99__FOR2(NAME, OP, FUNC, ...)                                                                     \
-	OP(NAME, 1, P99__FOR1(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 1))
+ OP(NAME, 1, P99__FOR1(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 1))
 #define P99__FOR3(NAME, OP, FUNC, ...)                                                                     \
-	OP(NAME, 2, P99__FOR2(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 2))
+ OP(NAME, 2, P99__FOR2(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 2))
 #define P99__FOR4(NAME, OP, FUNC, ...)                                                                     \
-	OP(NAME, 3, P99__FOR3(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 3))
+ OP(NAME, 3, P99__FOR3(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 3))
 #define P99__FOR5(NAME, OP, FUNC, ...)                                                                     \
-	OP(NAME, 4, P99__FOR4(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 4))
+ OP(NAME, 4, P99__FOR4(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 4))
 #define P99__FOR6(NAME, OP, FUNC, ...)                                                                     \
-	OP(NAME, 5, P99__FOR5(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 5))
+ OP(NAME, 5, P99__FOR5(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 5))
 #define P99__FOR7(NAME, OP, FUNC, ...)                                                                     \
-	OP(NAME, 6, P99__FOR6(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 6))
+ OP(NAME, 6, P99__FOR6(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 6))
 #define P99__FOR8(NAME, OP, FUNC, ...)                                                                     \
-	OP(NAME, 7, P99__FOR7(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 7))
+ OP(NAME, 7, P99__FOR7(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 7))
 #define P99__FOR9(NAME, OP, FUNC, ...)                                                                     \
-	OP(NAME, 8, P99__FOR8(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 8))
+ OP(NAME, 8, P99__FOR8(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 8))
 #define P99__FOR10(NAME, OP, FUNC, ...)                                                                    \
-	OP(NAME, 9, P99__FOR9(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 9))
+ OP(NAME, 9, P99__FOR9(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 9))
 #define P99__FOR11(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 10, P99__FOR10(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 10))
+ OP(NAME, 10, P99__FOR10(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 10))
 #define P99__FOR12(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 11, P99__FOR11(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 11))
+ OP(NAME, 11, P99__FOR11(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 11))
 #define P99__FOR13(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 12, P99__FOR12(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 12))
+ OP(NAME, 12, P99__FOR12(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 12))
 #define P99__FOR14(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 13, P99__FOR13(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 13))
+ OP(NAME, 13, P99__FOR13(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 13))
 #define P99__FOR15(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 14, P99__FOR14(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 14))
+ OP(NAME, 14, P99__FOR14(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 14))
 #define P99__FOR16(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 15, P99__FOR15(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 15))
+ OP(NAME, 15, P99__FOR15(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 15))
 #define P99__FOR17(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 16, P99__FOR16(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 16))
+ OP(NAME, 16, P99__FOR16(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 16))
 #define P99__FOR18(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 17, P99__FOR17(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 17))
+ OP(NAME, 17, P99__FOR17(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 17))
 #define P99__FOR19(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 18, P99__FOR18(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 18))
+ OP(NAME, 18, P99__FOR18(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 18))
 #define P99__FOR20(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 19, P99__FOR19(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 19))
+ OP(NAME, 19, P99__FOR19(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 19))
 #define P99__FOR21(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 20, P99__FOR20(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 20))
+ OP(NAME, 20, P99__FOR20(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 20))
 #define P99__FOR22(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 21, P99__FOR21(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 21))
+ OP(NAME, 21, P99__FOR21(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 21))
 #define P99__FOR23(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 22, P99__FOR22(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 22))
+ OP(NAME, 22, P99__FOR22(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 22))
 #define P99__FOR24(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 23, P99__FOR23(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 23))
+ OP(NAME, 23, P99__FOR23(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 23))
 #define P99__FOR25(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 24, P99__FOR24(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 24))
+ OP(NAME, 24, P99__FOR24(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 24))
 #define P99__FOR26(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 25, P99__FOR25(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 25))
+ OP(NAME, 25, P99__FOR25(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 25))
 #define P99__FOR27(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 26, P99__FOR26(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 26))
+ OP(NAME, 26, P99__FOR26(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 26))
 #define P99__FOR28(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 27, P99__FOR27(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 27))
+ OP(NAME, 27, P99__FOR27(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 27))
 #define P99__FOR29(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 28, P99__FOR28(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 28))
+ OP(NAME, 28, P99__FOR28(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 28))
 #define P99__FOR30(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 29, P99__FOR29(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 29))
+ OP(NAME, 29, P99__FOR29(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 29))
 #define P99__FOR31(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 30, P99__FOR30(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 30))
+ OP(NAME, 30, P99__FOR30(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 30))
 #define P99__FOR32(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 31, P99__FOR31(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 31))
+ OP(NAME, 31, P99__FOR31(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 31))
 #define P99__FOR33(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 32, P99__FOR32(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 32))
+ OP(NAME, 32, P99__FOR32(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 32))
 #define P99__FOR34(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 33, P99__FOR33(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 33))
+ OP(NAME, 33, P99__FOR33(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 33))
 #define P99__FOR35(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 34, P99__FOR34(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 34))
+ OP(NAME, 34, P99__FOR34(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 34))
 #define P99__FOR36(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 35, P99__FOR35(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 35))
+ OP(NAME, 35, P99__FOR35(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 35))
 #define P99__FOR37(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 36, P99__FOR36(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 36))
+ OP(NAME, 36, P99__FOR36(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 36))
 #define P99__FOR38(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 37, P99__FOR37(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 37))
+ OP(NAME, 37, P99__FOR37(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 37))
 #define P99__FOR39(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 38, P99__FOR38(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 38))
+ OP(NAME, 38, P99__FOR38(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 38))
 #define P99__FOR40(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 39, P99__FOR39(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 39))
+ OP(NAME, 39, P99__FOR39(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 39))
 #define P99__FOR41(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 40, P99__FOR40(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 40))
+ OP(NAME, 40, P99__FOR40(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 40))
 #define P99__FOR42(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 41, P99__FOR41(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 41))
+ OP(NAME, 41, P99__FOR41(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 41))
 #define P99__FOR43(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 42, P99__FOR42(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 42))
+ OP(NAME, 42, P99__FOR42(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 42))
 #define P99__FOR44(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 43, P99__FOR43(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 43))
+ OP(NAME, 43, P99__FOR43(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 43))
 #define P99__FOR45(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 44, P99__FOR44(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 44))
+ OP(NAME, 44, P99__FOR44(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 44))
 #define P99__FOR46(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 45, P99__FOR45(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 45))
+ OP(NAME, 45, P99__FOR45(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 45))
 #define P99__FOR47(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 46, P99__FOR46(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 46))
+ OP(NAME, 46, P99__FOR46(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 46))
 #define P99__FOR48(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 47, P99__FOR47(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 47))
+ OP(NAME, 47, P99__FOR47(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 47))
 #define P99__FOR49(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 48, P99__FOR48(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 48))
+ OP(NAME, 48, P99__FOR48(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 48))
 #define P99__FOR50(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 49, P99__FOR49(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 49))
+ OP(NAME, 49, P99__FOR49(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 49))
 #define P99__FOR51(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 50, P99__FOR50(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 50))
+ OP(NAME, 50, P99__FOR50(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 50))
 #define P99__FOR52(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 51, P99__FOR51(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 51))
+ OP(NAME, 51, P99__FOR51(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 51))
 #define P99__FOR53(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 52, P99__FOR52(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 52))
+ OP(NAME, 52, P99__FOR52(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 52))
 #define P99__FOR54(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 53, P99__FOR53(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 53))
+ OP(NAME, 53, P99__FOR53(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 53))
 #define P99__FOR55(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 54, P99__FOR54(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 54))
+ OP(NAME, 54, P99__FOR54(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 54))
 #define P99__FOR56(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 55, P99__FOR55(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 55))
+ OP(NAME, 55, P99__FOR55(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 55))
 #define P99__FOR57(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 56, P99__FOR56(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 56))
+ OP(NAME, 56, P99__FOR56(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 56))
 #define P99__FOR58(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 57, P99__FOR57(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 57))
+ OP(NAME, 57, P99__FOR57(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 57))
 #define P99__FOR59(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 58, P99__FOR58(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 58))
+ OP(NAME, 58, P99__FOR58(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 58))
 #define P99__FOR60(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 59, P99__FOR59(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 59))
+ OP(NAME, 59, P99__FOR59(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 59))
 #define P99__FOR61(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 60, P99__FOR60(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 60))
+ OP(NAME, 60, P99__FOR60(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 60))
 #define P99__FOR62(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 61, P99__FOR61(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 61))
+ OP(NAME, 61, P99__FOR61(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 61))
 #define P99__FOR63(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 62, P99__FOR62(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 62))
+ OP(NAME, 62, P99__FOR62(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 62))
 #define P99__FOR64(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 63, P99__FOR63(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 63))
+ OP(NAME, 63, P99__FOR63(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 63))
 #define P99__FOR65(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 64, P99__FOR64(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 64))
+ OP(NAME, 64, P99__FOR64(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 64))
 #define P99__FOR66(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 65, P99__FOR65(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 65))
+ OP(NAME, 65, P99__FOR65(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 65))
 #define P99__FOR67(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 66, P99__FOR66(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 66))
+ OP(NAME, 66, P99__FOR66(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 66))
 #define P99__FOR68(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 67, P99__FOR67(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 67))
+ OP(NAME, 67, P99__FOR67(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 67))
 #define P99__FOR69(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 68, P99__FOR68(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 68))
+ OP(NAME, 68, P99__FOR68(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 68))
 #define P99__FOR70(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 69, P99__FOR69(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 69))
+ OP(NAME, 69, P99__FOR69(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 69))
 #define P99__FOR71(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 70, P99__FOR70(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 70))
+ OP(NAME, 70, P99__FOR70(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 70))
 #define P99__FOR72(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 71, P99__FOR71(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 71))
+ OP(NAME, 71, P99__FOR71(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 71))
 #define P99__FOR73(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 72, P99__FOR72(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 72))
+ OP(NAME, 72, P99__FOR72(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 72))
 #define P99__FOR74(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 73, P99__FOR73(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 73))
+ OP(NAME, 73, P99__FOR73(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 73))
 #define P99__FOR75(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 74, P99__FOR74(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 74))
+ OP(NAME, 74, P99__FOR74(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 74))
 #define P99__FOR76(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 75, P99__FOR75(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 75))
+ OP(NAME, 75, P99__FOR75(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 75))
 #define P99__FOR77(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 76, P99__FOR76(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 76))
+ OP(NAME, 76, P99__FOR76(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 76))
 #define P99__FOR78(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 77, P99__FOR77(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 77))
+ OP(NAME, 77, P99__FOR77(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 77))
 #define P99__FOR79(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 78, P99__FOR78(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 78))
+ OP(NAME, 78, P99__FOR78(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 78))
 #define P99__FOR80(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 79, P99__FOR79(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 79))
+ OP(NAME, 79, P99__FOR79(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 79))
 #define P99__FOR81(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 80, P99__FOR80(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 80))
+ OP(NAME, 80, P99__FOR80(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 80))
 #define P99__FOR82(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 81, P99__FOR81(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 81))
+ OP(NAME, 81, P99__FOR81(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 81))
 #define P99__FOR83(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 82, P99__FOR82(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 82))
+ OP(NAME, 82, P99__FOR82(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 82))
 #define P99__FOR84(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 83, P99__FOR83(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 83))
+ OP(NAME, 83, P99__FOR83(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 83))
 #define P99__FOR85(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 84, P99__FOR84(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 84))
+ OP(NAME, 84, P99__FOR84(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 84))
 #define P99__FOR86(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 85, P99__FOR85(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 85))
+ OP(NAME, 85, P99__FOR85(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 85))
 #define P99__FOR87(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 86, P99__FOR86(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 86))
+ OP(NAME, 86, P99__FOR86(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 86))
 #define P99__FOR88(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 87, P99__FOR87(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 87))
+ OP(NAME, 87, P99__FOR87(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 87))
 #define P99__FOR89(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 88, P99__FOR88(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 88))
+ OP(NAME, 88, P99__FOR88(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 88))
 #define P99__FOR90(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 89, P99__FOR89(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 89))
+ OP(NAME, 89, P99__FOR89(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 89))
 #define P99__FOR91(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 90, P99__FOR90(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 90))
+ OP(NAME, 90, P99__FOR90(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 90))
 #define P99__FOR92(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 91, P99__FOR91(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 91))
+ OP(NAME, 91, P99__FOR91(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 91))
 #define P99__FOR93(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 92, P99__FOR92(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 92))
+ OP(NAME, 92, P99__FOR92(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 92))
 #define P99__FOR94(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 93, P99__FOR93(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 93))
+ OP(NAME, 93, P99__FOR93(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 93))
 #define P99__FOR95(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 94, P99__FOR94(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 94))
+ OP(NAME, 94, P99__FOR94(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 94))
 #define P99__FOR96(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 95, P99__FOR95(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 95))
+ OP(NAME, 95, P99__FOR95(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 95))
 #define P99__FOR97(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 96, P99__FOR96(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 96))
+ OP(NAME, 96, P99__FOR96(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 96))
 #define P99__FOR98(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 97, P99__FOR97(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 97))
+ OP(NAME, 97, P99__FOR97(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 97))
 #define P99__FOR99(NAME, OP, FUNC, ...)                                                                       \
-	OP(NAME, 98, P99__FOR98(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 98))
+ OP(NAME, 98, P99__FOR98(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 98))
 #define P99__FOR100(NAME, OP, FUNC, ...)                                                                      \
-	OP(NAME, 99, P99__FOR99(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 99))
+ OP(NAME, 99, P99__FOR99(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 99))
 #define P99__FOR101(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 100, P99__FOR100(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 100))
+ OP(NAME, 100, P99__FOR100(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 100))
 #define P99__FOR102(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 101, P99__FOR101(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 101))
+ OP(NAME, 101, P99__FOR101(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 101))
 #define P99__FOR103(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 102, P99__FOR102(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 102))
+ OP(NAME, 102, P99__FOR102(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 102))
 #define P99__FOR104(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 103, P99__FOR103(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 103))
+ OP(NAME, 103, P99__FOR103(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 103))
 #define P99__FOR105(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 104, P99__FOR104(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 104))
+ OP(NAME, 104, P99__FOR104(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 104))
 #define P99__FOR106(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 105, P99__FOR105(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 105))
+ OP(NAME, 105, P99__FOR105(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 105))
 #define P99__FOR107(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 106, P99__FOR106(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 106))
+ OP(NAME, 106, P99__FOR106(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 106))
 #define P99__FOR108(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 107, P99__FOR107(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 107))
+ OP(NAME, 107, P99__FOR107(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 107))
 #define P99__FOR109(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 108, P99__FOR108(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 108))
+ OP(NAME, 108, P99__FOR108(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 108))
 #define P99__FOR110(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 109, P99__FOR109(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 109))
+ OP(NAME, 109, P99__FOR109(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 109))
 #define P99__FOR111(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 110, P99__FOR110(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 110))
+ OP(NAME, 110, P99__FOR110(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 110))
 #define P99__FOR112(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 111, P99__FOR111(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 111))
+ OP(NAME, 111, P99__FOR111(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 111))
 #define P99__FOR113(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 112, P99__FOR112(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 112))
+ OP(NAME, 112, P99__FOR112(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 112))
 #define P99__FOR114(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 113, P99__FOR113(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 113))
+ OP(NAME, 113, P99__FOR113(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 113))
 #define P99__FOR115(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 114, P99__FOR114(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 114))
+ OP(NAME, 114, P99__FOR114(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 114))
 #define P99__FOR116(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 115, P99__FOR115(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 115))
+ OP(NAME, 115, P99__FOR115(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 115))
 #define P99__FOR117(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 116, P99__FOR116(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 116))
+ OP(NAME, 116, P99__FOR116(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 116))
 #define P99__FOR118(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 117, P99__FOR117(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 117))
+ OP(NAME, 117, P99__FOR117(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 117))
 #define P99__FOR119(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 118, P99__FOR118(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 118))
+ OP(NAME, 118, P99__FOR118(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 118))
 #define P99__FOR120(NAME, OP, FUNC, ...)                                                                         \
-	OP(NAME, 119, P99__FOR119(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 119))
+ OP(NAME, 119, P99__FOR119(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), 119))
 
 /* The preprocessor always computes with the precision of uintmax_t */
 /* so for the preprocessor this is equivalent to UINITMAX_MAX       */
@@ -6950,8 +7012,6 @@
 
 //! @}
 
-//! @}
-
 //! @addtogroup list_processing
 //! @{
 
@@ -6971,6 +7031,8 @@
 
 
 #define P99__statement_lists
+
+//! @}
 
 //! @}
 
@@ -7043,6 +7105,22 @@
 
 
 #define P99__variadic
+
+//! @}
+
+//! @addtogroup stringconversion
+//! @{
+
+
+#define P99__stringconversion
+
+//! @}
+
+//! @addtogroup integers
+//! @{
+
+
+#define P99__integers
 
 //! @}
 

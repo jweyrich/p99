@@ -418,7 +418,7 @@ my ($FILEID) = $fileid =~ m/[\$]Id:[ ]*([^\$ ]+)/;
 my $FILEDATE = `date -R`;
 chomp $FILEDATE;
 
-print "/* This file is automat";
+print "\n\n/* This file is automat";
 print "ically generated, do not chan";
 print "ge manually. */\n";
 print "\n";
@@ -461,21 +461,21 @@ DOCU
 print "#define P99__ARG(";
 for (my $i = 1; $i <= $maxnumber; ++$i) {
     if ($i % 8 != 1) {
-        print "\t_$i,";
+        print " _$i,";
     } else {
-        print "\\\n\t_$i,";
+        print "\\\n _$i,";
     }
 }
-print "\\\n\t...) _$maxnumber\n";
+print "\\\n ...) _$maxnumber\n";
 
 for (my $m = 1; $m < 5; ++$m) {
     print "#define P99__NARG_$m(...) P99__ARG(__VA_ARGS__, ";
     for (my $i = ($maxnumber - 1); $i >= 0; --$i) {
         my $val = ($i % $m) ? "P99__INV($m)" : ($i / $m);
         if ($i % 8 != 7) {
-            print "\t$val,";
+            print " $val,";
         } else {
-            print "\\\n\t$val,";
+            print "\\\n $val,";
         }
     }
     print ")\n";
@@ -486,12 +486,12 @@ print "/** \@brief Determine of the argument list has a comma, i.e at least two 
 print "#define P99_HAS_COMMA(...) P99__ARG(__VA_ARGS__,\\\n";
 for (my $i = 2; $i < $maxnumber; ++$i) {
     if ($i % 8 != 1) {
-        print "\t1,";
+        print " 1,";
     } else {
-        print "\\\n\t1,";
+        print "\\\n 1,";
     }
 }
-print "\t0, ...)\n";
+print " 0, ...)\n";
 
 
 for (my $arg = 2; $arg < $maxnumber; ++$arg) {
@@ -507,9 +507,9 @@ for (my $arg = 2; $arg < $maxnumber; ++$arg) {
 print "#define P99__ASCENDING() ";
 for (my $i = 0; $i < $maxnumber; ++$i) {
     if ($i % 8 != 0) {
-        print "\t$i,";
+        print " $i,";
     } else {
-        print "\\\n\t$i,";
+        print "\\\n $i,";
     }
 }
 print STDOUT "\n";
@@ -517,9 +517,9 @@ print STDOUT "\n";
 print "#define P99__ALL_ZEROES() ";
 for (my $i = 0; $i < $maxnumber; ++$i) {
     if ($i % 8 != 0) {
-        print "\t0,";
+        print " 0,";
     } else {
-        print "\\\n\t0,";
+        print "\\\n 0,";
     }
 }
 print STDOUT "\n";
@@ -527,9 +527,9 @@ print STDOUT "\n";
 print "#define P99__ALL_ONES() ";
 for (my $i = 0; $i < $maxnumber; ++$i) {
     if ($i % 8 != 0) {
-        print "\t1,";
+        print " 1,";
     } else {
-        print "\\\n\t1,";
+        print "\\\n 1,";
     }
 }
 print STDOUT "\n";
@@ -770,15 +770,15 @@ sub classify ($\@\%) {
     my $prev = "";
     foreach my $tok (@toks) {
         if ($tok) {
-            print "#define P99__${Class}_CLASSIFY_${tok}\t/* ${mult} */\t" . "," x $mult . "\n";
+            print "#define P99__${Class}_CLASSIFY_${tok} /* ${mult} */ " . "," x $mult . "\n";
         } else {
             print STDERR "found empty token\n";
         }
         $mult *= 2;
     }
     foreach my $key (sort {$a <=> $b} keys %keys) {
-        print "#define P99__${Class}_CLASSIFY__${key}\t" . $keys{$key}  . "\n";
-        print "#define P99__${Class}_VALIDATE__${key}\t,\n";
+        print "#define P99__${Class}_CLASSIFY__${key} " . $keys{$key}  . "\n";
+        print "#define P99__${Class}_VALIDATE__${key} ,\n";
     }
 }
 
@@ -812,8 +812,117 @@ my %builtinType = (
     "fc" => "float _Complex",
     );
 
-print "#define P99__BUILTIN_TYPE_${_}\t" . $builtinType{${_}} . "\n"
-    foreach sort keys(%builtinType);
+my %integerRank = (
+    "b" => 0,
+    "c" => 1,
+    "h" => 2,
+    "hh" => 1,
+    "i" => 3,
+    "l" => 4,
+    "ll" => 5,
+    "u" => 3,
+    "uh" => 2,
+    "uhh" => 1,
+    "ul" => 4,
+    "ull" => 5,
+    );
+
+sub rank($) {
+    my ($code) = @_;
+    return
+        defined($integerRank{$code})
+        ? "$integerRank{$code}"
+        : "";
+}
+
+
+my %integerSigned = (
+    "b" => 0,
+    "h" => 1,
+    "hh" => 1,
+    "i" => 1,
+    "l" => 1,
+    "ll" => 1,
+    "u" => 0,
+    "uh" => 0,
+    "uhh" => 0,
+    "ul" => 0,
+    "ull" => 0,
+    );
+
+sub isSigned($) {
+    my ($code) = @_;
+    return
+        defined($integerSigned{$code})
+        ? "$integerSigned{$code}"
+        : "";
+}
+
+my %integer2unsigned = (
+    "0" => "b",
+    "1" => "uhh",
+    "2" => "uh",
+    "3" => "u",
+    "4" => "ul",
+    "5" => "ull",
+    "b" => "b",
+    "c" => "uhh",
+    "h" => "uh",
+    "hh" => "uhh",
+    "i" => "u",
+    "l" => "ul",
+    "ll" => "ull",
+    "u" => "u",
+    "uh" => "uh",
+    "uhh" => "uhh",
+    "ul" => "ul",
+    "ull" => "ull",
+    );
+
+sub unsignedOf($) {
+    my ($code) = @_;
+    return
+        defined($integer2unsigned{$code})
+        ? "$integer2unsigned{$code}"
+        : "";
+}
+
+
+
+my %integer2signed = (
+    "1" => "hh",
+    "2" => "h",
+    "3" => "i",
+    "4" => "l",
+    "5" => "ll",
+    "c" => "hh",
+    "h" => "h",
+    "hh" => "hh",
+    "i" => "i",
+    "l" => "l",
+    "ll" => "ll",
+    "u" => "i",
+    "uh" => "h",
+    "uhh" => "hh",
+    "ul" => "l",
+    "ull" => "ll",
+    );
+
+sub signedOf($) {
+    my ($code) = @_;
+    return
+        defined($integer2signed{$code})
+        ? "$integer2signed{$code}"
+        : "";
+}
+
+sub printHash($\%) {
+    my ($pref, $keys) = (@_);
+    my %keys = %{$keys};
+    print "#define  P99_${pref}(CODE)  P99_PASTE2(P99__, P99_PASTE2(${pref}_, CODE))\n";
+    print "#define P99__${pref}_${_} " . $keys{${_}} . "\n"
+        foreach sort keys(%keys);
+}
 
 my $types = scalar keys %builtinType;
 my %builtinTypeRev = reverse(%builtinType);
@@ -825,17 +934,28 @@ print << "BUILTIN0";
  ** E.g ::P99_BUILTIN_TYPE(ull) should expand to \@c unsigned \@c long
  ** \@c long. The complete list for the $types builtin types:
  ** <table>
+ ** <tr><th>code</th><th>type</th><th>is signed</th><th>signed</th><th>unsigned</th><th>integer rank</th></tr>
 BUILTIN0
 
 foreach my $type (sort keys %builtinTypeRev) {
-    print " ** <tr><td>$builtinTypeRev{$type}</td><td><code>$type</code></td></tr>\n"
+    my $code = $builtinTypeRev{$type};
+    my $rank = rank($code);
+    my $isSigned = isSigned($code);
+    my $signed = signedOf($code);
+    my $unsigned = unsignedOf($code);
+    print " ** <tr><td>${code}</td><td><code>$type</code></td><td>${isSigned}</td><td>${signed}</td><td>${unsigned}</td><td>${rank}</td></tr>\n";
 }
 
 print << 'BUILTIN1';
  ** </table>
  **/
-#define  P99_BUILTIN_TYPE(CODE)  P99_PASTE2(P99__BUILTIN, P99_PASTE2(_TYPE_, CODE))
 BUILTIN1
+
+printHash("BUILTIN_TYPE", %builtinType);
+printHash("INTEGER_RANK", %integerRank);
+printHash("INTEGER_SIGN", %integerSigned);
+printHash("INTEGER_SIGNED", %integer2signed);
+printHash("INTEGER_UNSIGNED", %integer2unsigned);
 
 print <<'PREPRO3';
 /**
@@ -863,7 +983,7 @@ print "#define P99_DUPL${_}(...) __VA_ARGS__, P99_DUPL", ($_ - 1), "(__VA_ARGS__
 for (my $i = 2; $i < $maxnumber; ++$i) {
     my $i1 = $i - 1;
     print "#define P99__FOR${i}(NAME, OP, FUNC, ...) \\\n",
-    "\tOP(NAME, $i1, P99__FOR${i1}(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), $i1))\n";
+    " OP(NAME, $i1, P99__FOR${i1}(NAME, OP, FUNC, P99_ALLBUTLAST(__VA_ARGS__)), FUNC(NAME, P99_LAST(__VA_ARGS__), $i1))\n";
 }
 
 print << 'MAXHEAD';
@@ -966,10 +1086,10 @@ my @groups =
         [ "preprocessor_blocks" ],
         [ "double_constants" ],
         [ "classification" ],
-      ],
-      [ "list_processing",
-        [ "basic_list_operations" ],
-        [ "statement_lists" ],
+        [ "list_processing",
+          [ "basic_list_operations" ],
+          [ "statement_lists" ],
+        ],
       ],
       [ "preprocessor_operators",
         [ "preprocessor_logic" ],
@@ -981,6 +1101,8 @@ my @groups =
         [ "preprocessor_initialization" ],
         [ "default_arguments" ],
         [ "variadic" ],
+        [ "stringconversion" ],
+        [ "integers" ],
       ],
     ];
 
