@@ -210,7 +210,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 #  endif
 #  define static_inline inline
 # endif
-# define p99_inline __attribute__((always_inline)) __inline__
+# define p99_inline __attribute__((always_inline)) inline
 #endif
 
 
