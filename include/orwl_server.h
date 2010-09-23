@@ -60,14 +60,21 @@ P99_PROTOTYPE(orwl_server*, orwl_server_init, orwl_server *, size_t, size_t, in_
 
 
 
+DOCUMENT_DESTROY(orwl_server)
 void orwl_server_destroy(orwl_server *serv);
 
 DECLARE_NEW_DELETE(orwl_server);
 
 DECLARE_THREAD(orwl_server);
 
+/**
+ ** @memberof orwl_server
+ **/
 void orwl_server_close(orwl_server *serv);
 
+/**
+ ** @memberof orwl_server
+ **/
 P99_DEFARG_DOCU(orwl_server_terminate)
 void
 orwl_server_terminate(orwl_server *serv,   /*!< the server to terminate */
@@ -79,6 +86,8 @@ orwl_server_terminate(orwl_server *serv,   /*!< the server to terminate */
  **
  ** Use this to first insert all handles in their queues and then kick
  ** off the system with ::orwl_server_unblock.
+ **
+ ** @memberof orwl_server
  **/
 void orwl_server_block(orwl_server *serv);
 
@@ -88,7 +97,8 @@ void orwl_server_block(orwl_server *serv);
  ** Use this to kick off the system after having inserted all handles
  ** in their queues.
  **
- ** @see orwl_server_unblock.
+ ** @see orwl_server_block.
+ ** @memberof orwl_server
  **/
 void orwl_server_unblock(orwl_server *serv);
 

@@ -63,9 +63,17 @@ struct orwl_endpoint {
   addr_t addr;
 };
 
-
+/**
+ ** @memberof addr_t
+ **/
 #define ADDR_T_INITIALIZER(NADDR) { .a[2] = htonl(0x0000FFFF), .a[3] = NADDR }
+/**
+ ** @memberof port_t
+ **/
 #define PORT_T_INITIALIZER(NPORT) { .p = NPORT }
+/**
+ ** @memberof orwl_endpoint
+ **/
 #define ORWL_ENDPOINT_INITIALIZER(NADDR,  NPORT) {             \
     .addr = ADDR_T_INITIALIZER(NADDR),                         \
       .port = PORT_T_INITIALIZER(NPORT),                       \
@@ -96,6 +104,8 @@ addr_t* addr_t_init(addr_t *A,  /*!< the object to initialize */
  ** @brief Return the IPv4 address stored in @a A.
  **
  ** If this is not an IPv4 address return all bit ones.
+ **
+ ** @memberof addr_t
  **/
 inline
 struct in_addr addr2net(addr_t const*A) {
@@ -111,6 +121,8 @@ struct in_addr addr2net(addr_t const*A) {
 
 /**
  ** @brief Return the IPv6 address stored in @a A.
+ **
+ ** @memberof addr_t
  **/
 inline
 struct in6_addr addr2net6(addr_t const*A) {
@@ -119,11 +131,17 @@ struct in6_addr addr2net6(addr_t const*A) {
   return ret;
 }
 
+/**
+ ** @memberof port_t
+ **/
 inline
 in_port_t port2net(port_t const*A) {
   return A->p;
 }
 
+/**
+ ** @memberof port_t
+ **/
 inline
 uint64_t port2host(port_t const*A) {
   return ntohs(A->p);
@@ -213,6 +231,9 @@ P99_DECLARE_DEFARG(orwl_endpoint_print, , );
 bool orwl_send_(int fd, uint64_t const*mess, size_t len);
 bool orwl_recv_(int fd, uint64_t *mess, size_t len);
 
+/**
+ ** @memberof orwl_endpoint
+ **/
 uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t*const mess);
 
 /**

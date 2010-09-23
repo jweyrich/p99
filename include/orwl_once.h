@@ -58,7 +58,7 @@ static void P99_PASTE3(orwl__, T, _once_init)(void)
  ** @brief Define the function that will be exactly called once by the
  ** macro INIT_ONCE().
  **
- ** The function has a prototype of void (*name)(void).
+ ** The function has a prototype of <code>void (*name)(void)</code>.
  **
  ** @see DECLARE_ONCE
  **/

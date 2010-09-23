@@ -38,6 +38,7 @@
 /*! @brief Operator @c delete for type T   **/                                                             \
   /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @attention @a el show have been allocated through @ref P99_NEW */                                    \
+  /*! @memberof T */                                                                                       \
 inline                                                                                                     \
 void P99_PASTE2(T, _delete)(T const*el) {                                                                  \
   if (el) {                                                                                                \
@@ -92,6 +93,7 @@ void p00_vdelete(void const*p) {
 /*! @brief Operator @c new[] for type T   **/                                                           \
   /*! @attention @ref T ## _init  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @attention @ref T ## _vdelete @b must be used to de-allocate such a variable **/                  \
+  /*! @memberof T */                                                                                    \
 inline                                                                                                  \
 T *P99_PASTE2(T, _vnew)(size_t n) {                                                                     \
   size_t N = n*sizeof(T);                                                                               \
@@ -108,6 +110,7 @@ T *P99_PASTE2(T, _vnew)(size_t n) {                                             
 /*! @brief Operator @c delete[] for type T **/                                                             \
   /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @attention @ref T ## _vnew @b must have been used to allocate this variable **/                      \
+  /*! @memberof T */                                                                                       \
 inline                                                                                                     \
 void P99_PASTE2(T, _vdelete)(T const*vec) {                                                                \
   if (vec) {                                                                                               \

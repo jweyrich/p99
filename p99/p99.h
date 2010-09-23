@@ -22,6 +22,11 @@
 /**
  ** @mainpage P99 - Preprocessor macros and functions for c99
  **
+ ** P99 is a suite of macro and function definitions that ease the
+ ** programming in C99, aka C 1999. By using new tools from C99 we
+ ** implement default arguments for functions, scope bound resource
+ ** management, transparent allocation and initialization, ...
+ **
  ** @section introduction Macros and inline functions working together
  **
  ** In C, functions (whether @c inline or not) and macros fulfill
@@ -60,19 +65,21 @@
  ** could be necessarily be realized.
  **
  ** ::p00_abs_signed would not be a good candidate for a macro, since
- ** @c a is evaluated twice; once in the controlling expression and
- ** once for returning its value or its negation.
+ ** @c a is evaluated twice in the expression; once in the controlling
+ ** expression and once for returning its value or its negation.
  **
  ** We may use this function with any integral type, but then the
- ** argument will be promoted to @c intmax_t. In case that the value
- ** @c A that is passed to the call is positive and greater than @c
- ** INTMAX_MAX = 2<sup>N-1</sup> -1, the result is probably not what
- ** we'd expect. (Here @c N is the width of @c uintmax_t). If the
- ** conversion doesn't result in the run time system throwing a range
- ** error (it would be permitted to do so), the argument @a a would
- ** receive the negative value @c -C where @c C is @c 2<sup>N</sup> -
- ** A.  The result of the function call would then be @c C and not @c
- ** A.
+ ** result would probably not what a naive programmer would expect if
+ ** the argument is a large unsigned value. The argument will be
+ ** promoted to @c intmax_t. In case that the value @c A that is
+ ** passed to the call is positive and greater than <code> INTMAX_MAX
+ ** = 2<sup>N</sup> -1</code>, the result is probably not what we'd
+ ** expect.@fntm 1@efntm If the conversion to
+ ** @c intmax_t doesn't result in a range error thrown by the run time
+ ** system (it would be permitted to do so), the argument @a a of the
+ ** function would receive the negative value @c -C where @c C is @c
+ ** 2<sup>N</sup> - A.  The result of the function call would then be
+ ** @c C and not @c A.
  **
  ** With the following macro we get rid of these restrictions by
  ** combining the macro and the function:
@@ -84,7 +91,10 @@
  ** This has the following properties
  **
  ** <ul>
- **     <li>For any integral type it returns the correct result.</li>
+ **     <li>For any integral type it returns the correct result.
+ **     @fntm 2
+ **     @efntm
+ **     </li>
  **     <li>The argument @c EXPR is evaluated exactly once.</li>
  **     <li>Any recent and decent compiler will create
  **         @ref inline "optimal code" for that combined macro.
@@ -121,6 +131,13 @@
  **  - There is nothing to configure, P99 include files should work
  **    out of the box with any conforming C99 compiler.
  **
+ ** @fnt 1 @efnt
+ ** Here <code>N+1</code> is the width of @c uintmax_t,
+ ** assuming most common representations of signed integers.
+ ** @fnt 2 @efnt
+ ** Well, there is exactly one exception to that: on systems where @c
+ ** -INTMAX_MIN is not representable in @c uintmax_t, this same value
+ ** may cause problems.
  **
  ** @section credits Credits and Rights
  ** @subsection author Author and Maintainer
@@ -338,7 +355,6 @@
  ** @endcode
  ** </li>
  ** </ol>
- ** @endcode
  **
  ** The later is then equivalent to
  ** @code
@@ -513,7 +529,7 @@
  ** Please look into the documentation of
  ** ::P99_PROTECTED_BLOCK(BEFORE, AFTER) to see how it is defined.  As
  ** you may see there, it uses two <code>for</code> statements. The
- ** first defines a auxiliary variable @c_one1_ that is used to
+ ** first defines a auxiliary variable @c _one1_ that is used to
  ** control that the dependent code is only executed exactly once. The
  ** arguments @c BEFORE and @c AFTER are then placed such that they
  ** will be executed before and after the dependent code,
@@ -733,7 +749,8 @@
  ** ready to go.
  **
  ** In fact, the ::P99_NEW macro takes a list of arguments that may be
- ** arbitrarily long. It just needs the first, which is supposed to be
+ ** arbitrarily@fntm 3@efntm
+ ** long. It just needs the first, which is supposed to be
  ** the type of the object that is to be created. The other are then
  ** passed as supplementary arguments to the `init' function, here the
  ** parameter @c there.
@@ -751,6 +768,11 @@
  ** elem * a = P99_NEW(elem);
  ** elem * head = P99_NEW(elem, P99_NEW(elem, P99_NEW(elem)));
  ** @endcode
+ **
+ ** @fnt 3@efnt
+ ** The number of arguments might be restricted by your compiler
+ ** implementation. Also most of the P99 macros are limited to
+ ** ::P99_MAX_NUMBER.
  **
  **/
 

@@ -1240,7 +1240,7 @@ SEARCH_INCLUDES        = YES
 # contain include files that are not input files but should be processed by
 # the preprocessor.
 
-INCLUDE_PATH           =
+INCLUDE_PATH           = p99
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the
@@ -1258,7 +1258,7 @@ INCLUDE_FILE_PATTERNS  = *.h
 # instead of the = operator.
 
 PREDEFINED = DOXYGEN
-PREDEFINED += FSYMB(x):=x
+PREDEFINED += P99_FSYMB(x):="x ## _fsymb"
 PREDEFINED += DECLARE_THREAD(T):="int T ## _create(T* arg, pthread_t *id);	\
 /*! \brief Join a callback procedure of type T that has been launched with \ref T ## _create. */ \
 /*! \param id the thread that is to be joined */				\

@@ -17,6 +17,7 @@
 #include "orwl_int.h"
 #include "orwl_enum.h"
 #include "p99_id.h"
+#include "orwl_document.h"
 
 DECLARE_STRUCT(orwl_register);
 typedef orwl_register const*const orwl_domain;
@@ -34,9 +35,12 @@ struct orwl_register {
 
 #define ORWL_REGISTER_INITIALIZER { .start = NULL, .regptr = NULL, .fptr = NULL, .dptr = NULL }
 
-
+DOCUMENT_INIT(orwl_register)
 orwl_register const* orwl_register_init(orwl_register const* field);
 
+/**
+ ** @memberof orwl_register
+ **/
 inline size_t orwl_register_id(orwl_register const* field) {
   if (!(field->regptr))
     orwl_register_init(field);
@@ -44,17 +48,26 @@ inline size_t orwl_register_id(orwl_register const* field) {
   return ret;
 }
 
+/**
+ ** @memberof orwl_register
+ **/
 inline
 void *orwl_register_get(orwl_register const* field) {
   return field->dptr;
 }
 
+/**
+ ** @memberof orwl_register
+ **/
 inline
 void orwl_register_call(orwl_register const* field, void* arg) {
   orwl_plain fptr= field->fptr;
   if (fptr) fptr(arg);
 }
 
+/**
+ ** @memberof orwl_register
+ **/
 inline
 void orwl_domain_call(orwl_domain domain, size_t id, void *arg) {
   orwl_register const* field = domain + id;

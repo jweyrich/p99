@@ -30,7 +30,7 @@
 /**
  ** @brief Return the length of the variate argument list.
  **
- ** This supposes that the length is less than 64.
+ ** This supposes that the length is less than ::P99_MAX_NUMBER.
  **
  ** Idea is due to Laurent Deniau, CERN, and taken from a discussion
  ** in comp.lang.c.
@@ -198,7 +198,7 @@ P00_ISEMPTY(                                                           \
  ** @brief Meta-macro to generate calls to functions with variable
  ** argument list.
  **
- ** This supposes that the length is less than 64. It prefixes the
+ ** This supposes that the length is less than ::P99_MAX_NUMBER. It prefixes the
  ** list of arguments by an integer constant containing the length of
  ** the list.
  ** @see P99_VA_ARGS

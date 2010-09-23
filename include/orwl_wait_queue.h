@@ -201,6 +201,8 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_wq);
    **
    ** This is just a simple test that @a wh has not just been
    ** destroyed.
+   **
+   ** @memberof orwl_wh
    **/
 inline
 int orwl_wh_valid(orwl_wh *wh) {
@@ -214,6 +216,8 @@ int orwl_wh_valid(orwl_wh *wh) {
    **
    ** This is just a simple test that @a wh doesn't link to any
    ** location.
+   **
+   ** @memberof orwl_wh
    **/
 inline
 int orwl_wh_idle(orwl_wh *wh) {
@@ -227,6 +231,8 @@ int orwl_wh_idle(orwl_wh *wh) {
    ** destroyed.
    **
    ** This supposes that @a wq != NULL.
+   **
+   ** @memberof orwl_wq
    **/
 inline
 int orwl_wq_valid(orwl_wq *wq) {
@@ -241,6 +247,8 @@ int orwl_wq_valid(orwl_wq *wq) {
    ** of this location.
    **
    ** This supposes that wq != NULL
+   **
+   ** @memberof orwl_wq
    **/
 inline
 int orwl_wq_idle(orwl_wq *wq) {
@@ -277,11 +285,21 @@ typedef struct {
 } p00_orwl_wh_pair;
 
 /**
- ** @brief Insert a request of @c howmuch tokens on @c wh into location
+ ** @brief Insert a list of request pairs of <code>(wh, howmuch)</code> into location
  ** @a wq. Blocking if one of the @c wh is already requested.
  **
- ** The argument @a number gives the number of pairs (@c wh, @c
- ** howmuch) of orwl_wh** (pointer-to-pointer of orwl_wh) and token
+ ** This function can usually not be called directly since there is a
+ ** macro of the same name that hides it. You call it by something like
+ ** @code
+ ** orwl_state state = orwl_wq_request(wq, wh0, howmuch0, wh1, howmuch1, ...)
+ ** @endcode
+ **
+ ** The macro magic behind then ensures that the number of argument
+ ** pairs is computed at compile time and fed into the @a number
+ ** argument of the real function.
+ **
+ ** The argument @a number gives the number of pairs <code>(wh,
+ ** howmuch)</code> of orwl_wh** (pointer-to-pointer of orwl_wh) and token
  ** number pairs that are to be inserted consequently in the FIFO of
  ** @a wq.
  **
@@ -306,6 +324,8 @@ typedef struct {
  **
  ** The tokens are only considered to be loaded on @a wh if the call is
  ** successful.
+ **
+ ** @memberof orwl_wq
  **/
   P99_VA_ARGS_DOCUMENTATION(orwl_wq_request)
   orwl_state P99_FSYMB(orwl_wq_request)(orwl_wq *wq, /*!< the queue to act on */
@@ -320,6 +340,8 @@ VA_TYPES(orwl_wq_request, orwl_wh**, int64_t);
   /**
    ** @brief Insert a handle into the queue where we know that the
    ** lock is already held.
+   **
+   ** @memberof orwl_wq
    **/
 void orwl_wq_request_locked(orwl_wq *wq,  /*!< the locked queue to act on */
                             orwl_wh *wh,  /*!< the handle to be inserted */
@@ -336,6 +358,8 @@ void orwl_wq_request_locked(orwl_wq *wq,  /*!< the locked queue to act on */
  **
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
+ **
+ ** @memberof orwl_wh
  **/
   P99_DEFARG_DOCU(orwl_wh_acquire)
 orwl_state orwl_wh_acquire
@@ -368,6 +392,8 @@ orwl_state orwl_wh_acquire
  **
  ** The tokens are considered to be removed frome @a wh iff the call
  ** returns orwl_acquired.
+ **
+ ** @memberof orwl_wh
  **/
   P99_DEFARG_DOCU(orwl_wh_test)
 orwl_state orwl_wh_test
@@ -386,6 +412,8 @@ orwl_state orwl_wh_test
  **
  ** @return @c orwl_invalid if @a wh was invalid, or if there was no
  ** request acquired for @a wh. Otherwise it returns @c orwl_valid.
+ **
+ ** @memberof orwl_wh
  **/
 orwl_state orwl_wh_release(orwl_wh *wh /*!< the handle to act upon */);
 
@@ -396,12 +424,15 @@ P99_PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
 #define orwl_wh_load_defarg_1() 1
 #endif
 
-  /** @brief load @a howmuch additional tokens on @a wh.
-   ** 
+  /**
+   ** @brief load @a howmuch additional tokens on @a wh.
+   **
    ** This supposes that the corresponding @c wq != NULL and that @c
    ** wq is already locked.
    ** @see orwl_wh_unload
-   */
+   **
+   ** @memberof orwl_wh
+   **/
   P99_DEFARG_DOCU(orwl_wh_load)
 inline
 uint64_t orwl_wh_load
@@ -418,12 +449,15 @@ P99_PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
 #define orwl_wh_unload_defarg_1() UINT64_C(1)
 #endif
 
-  /** @brief unload @a howmuch additional tokens from @a wh.
+  /**
+   ** @brief unload @a howmuch additional tokens from @a wh.
    **
    ** This supposes that the corresponding @c wq != NULL and that @c
    ** wq is already locked. If by this action the token count drops to
    ** zero, eventual waiters for this @a wh are notified.
    ** @see orwl_wh_load
+   **
+   ** @memberof orwl_wh
    */
   P99_DEFARG_DOCU(orwl_wh_unload)
 inline

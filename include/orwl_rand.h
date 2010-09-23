@@ -75,6 +75,7 @@ rand48_t *rand48_t_init(rand48_t *seed,     /*!< [out] the object to iniialize *
   return seed;
 }
 
+DOCUMENT_DESTROY(rand48_t)
 inline
 void rand48_t_destroy(rand48_t* seed){
   /* empty */
@@ -89,16 +90,25 @@ DECLARE_NEW_DELETE(rand48_t);
 DECLARE_THREAD_VAR(rand48_t, seed_get);
 
 
+/**
+ ** @memberof rand48_t
+ **/
 inline
 uint32_t orwl_rand(rand48_t *xsubi) {
   return jrand48(xsubi->x);
 }
 
+/**
+ ** @memberof rand48_t
+ **/
 inline
 double orwl_drand(rand48_t *xsubi) {
   return erand48(xsubi->x);
 }
 
+/**
+ ** @memberof rand48_t
+ **/
 inline
 uint64_t orwl_rand64(rand48_t *xsubi) {
   double ret = ldexp(orwl_drand(xsubi), 48);

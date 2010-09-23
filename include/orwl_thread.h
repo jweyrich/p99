@@ -140,7 +140,7 @@ extern int orwl_pthread_create_detached(start_routine_t start_routine,
 extern void orwl_pthread_wait_detached(void);
 
 /**
- ** @def DECLARE_THREAD
+ ** @def DECLARE_THREAD(T)
  ** @brief Some simple thread launching mechanism.
  **
  ** This declares two functions to create and join a thread that
@@ -180,7 +180,7 @@ extern void orwl_pthread_wait_detached(void);
 
 
 /**
- ** @def DEFINE_THREAD
+ ** @def DEFINE_THREAD(T)
  ** @brief Define the function that is to be executed by a thread
  ** creation for type @a T.
  **
@@ -246,7 +246,7 @@ extern void orwl_pthread_wait_detached(void);
 
 #define DEFINE_THREAD(T)                                             \
 /*! This is the callback procedure for type T */                     \
-/*! @see T */                                                        \
+/*! @memberof T */                                                   \
 /*! @see DECLARE_THREAD */                                           \
 /*! @param arg the object for this call */                           \
 /*! @param id if non-NULL, the thread can be joined on this @a id */ \

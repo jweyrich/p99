@@ -37,7 +37,14 @@ struct orwl_host {
       .refs = 2                                                \
       }
 
+/**
+ ** @memberof orwl_host
+ **/
 void orwl_host_connect(orwl_host *th, orwl_host *q);
+
+/**
+ ** @memberof orwl_host
+ **/
 void orwl_host_disconnect(orwl_host *th);
 
 #ifndef DOXYGEN
@@ -48,6 +55,7 @@ P99_PROTOTYPE(orwl_host*, orwl_host_init, orwl_host *, in_addr_t, in_port_t);
 #define orwl_host_init_defarg_2() P99_0(in_port_t)
 #endif
 
+DOCUMENT_INIT(orwl_host_init)
 P99_DEFARG_DOCU(orwl_host_init)
 inline
 orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
@@ -63,6 +71,7 @@ orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
   return th;
 }
 
+DOCUMENT_DESTROY(orwl_host_init)
 inline
 void orwl_host_destroy(orwl_host *th) {
   orwl_host_disconnect(th);

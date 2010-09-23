@@ -179,7 +179,10 @@ TAB_SIZE               = 8
 # will result in a user-defined paragraph with heading "Side Effects:".
 # You can put \n's in the value part of an alias to insert newlines.
 
-ALIASES                =
+ALIASES                += "fnt=\xrefitem footnotes \"Footnotes\" \"Footnotes\" <sup>"
+ALIASES                += "efnt=</sup>"
+ALIASES                += "fntm=\link footnotes <sup>"
+ALIASES                += "efntm=</sup>\endlink"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C
 # sources only. Doxygen will then generate output that is more tailored for C.
@@ -1275,12 +1278,17 @@ PREDEFINED += p99_inline="inline"
 
 PREDEFINED += P99_COMPILETIME_ASSERT(x)=
 
+PREDEFINED += FOOTNOTE(x)="/*! @footnote <sup>x</sup> */"
+
+
+
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
 # this tag can be used to specify a list of macro names that should be expanded.
 # The macro definition that is found in the sources will be used.
 # Use the PREDEFINED tag if you want to use a different macro definition.
 
 EXPAND_AS_DEFINED      =			\
+FOOTNOTE                                        \
 P99_BLOCK_DOCUMENT                              \
 P99_CALL_DEFARG                                 \
 P99_CAT2                                        \

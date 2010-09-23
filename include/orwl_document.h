@@ -14,6 +14,8 @@
 #ifndef   	ORWL_DOCUMENT_H_
 # define   	ORWL_DOCUMENT_H_
 
+#include "p99_defarg.h"
+
 #define P99_VA_ARGS_DOCUMENTATION(NAME)                                                                                               \
                                                                                                                                       \
 /*! @see P99_VA_ARGS */                                                                                                               \
@@ -23,14 +25,18 @@
 /**
  ** @brief Add some indications to a @c _init documentation.
  */
-#define DOCUMENT_INIT(T)                                                        \
-/*! @brief Initialize a variable of type T */                                   \
-/*! @see P99_NEW needs a version of this that takes just the T* as argument. */
+#define DOCUMENT_INIT(T)                                                \
+/*! @brief Initialize a variable of type T                                   */ \
+/*! @see P99_NEW needs a version of this that takes just the T* as argument. */ \
+/*! @memberof T                                                              */
+
+P99_MACRO_END(DOCUMENT_INIT);
 
 /**
  ** @brief Add some indications to a @c _destroy documentation.
  */
-#define DOCUMENT_DESTROY(T) /*! @brief Destroy a variable of type T @see T ## _delete needs this. */
-
+#define DOCUMENT_DESTROY(T)                                             \
+/*! @brief Destroy a variable of type T @see T ## _delete needs this. */ \
+/*! @memberof T                                                       */
 
 #endif 	    /* !ORWL_DOCUMENT_H_ */

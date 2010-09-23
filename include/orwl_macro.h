@@ -32,8 +32,6 @@
  ** @see P99_VA_ARGS
  **/
 
-#define P99_INVARIANT(EXPR) P99_PROTECTED_BLOCK(assert(EXPR), assert(EXPR))
-
 #define ARRAYSIZE(A) (sizeof(A)/sizeof(A[0]))
 
 #define ARRAY2SIZE(A) A, ARRAY2SIZE(A)

@@ -43,7 +43,7 @@
  **
  ** An example of a potential use is
  ** @code
- ** #define INVARIANT(EXPR) P99_PROTECTED_BLOCK(assert((EXPR) && "failed on entry"), assert((EXPR) && "failed on leave"))
+ ** #define P99_INVARIANT(EXPR) P99_PROTECTED_BLOCK(assert((EXPR) && "failed on entry"), assert((EXPR) && "failed on leave"))
  ** @endcode
  **
  ** Such a construct may then be used like this
@@ -104,6 +104,16 @@ for (int _one1_ = 1; _one1_; _one1_ = 0)                            \
 /*! @warning Restrictions on preliminary exits from the dependent block or statement apply. **/ \
 /*! @see P99_PROTECTED_BLOCK **/                                                                \
 /*! @see P99_GUARDED_BLOCK **/
+
+/**
+ ** @brief Assert runtime condition @a EXPR on entry and on leave of the
+ ** dependent block.
+ ** @headerfile p99_c99.h "p99_c99.h"
+ **/
+P99_BLOCK_DOCUMENT
+#define P99_INVARIANT(EXPR)                                             \
+P99_PROTECTED_BLOCK(assert((EXPR) && "failed on entry"), assert((EXPR) && "failed on leave"))
+
 
 /** @}
  **/

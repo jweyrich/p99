@@ -55,6 +55,7 @@ P99_PROTOTYPE(orwl_mirror *, orwl_mirror_init, orwl_mirror *, orwl_endpoint, orw
 #define orwl_mirror_init(...) P99_CALL_DEFARG(orwl_mirror_init, 3, __VA_ARGS__)
 #endif
 
+DOCUMENT_INIT(orwl_mirror)
 P99_DEFARG_DOCU(orwl_mirror_init)
 inline
 orwl_mirror *orwl_mirror_init(orwl_mirror *rq, /*!< [out] the object to iniialize */
@@ -73,6 +74,7 @@ P99_DECLARE_DEFARG(orwl_mirror_init, , , );
 #define orwl_mirror_init_defarg_1() ((orwl_endpoint){ .index = 0 })
 #define orwl_mirror_init_defarg_2() ((orwl_endpoint){ .index = 0 })
 
+DOCUMENT_DESTROY(orwl_mirror)
 inline
 void orwl_mirror_destroy(orwl_mirror *rq) {
   orwl_wq_destroy(&rq->local);
@@ -114,6 +116,7 @@ struct orwl_handle {
 
 #define ORWL_HANDLE_INITIALIZER { .rq = NULL, .wh = NULL, .svrID = P99_0(uint64_t) }
 
+DOCUMENT_INIT(orwl_handle)
 inline
 orwl_handle *orwl_handle_init(orwl_handle *rh) {
   if (!rh) return NULL;
@@ -121,6 +124,7 @@ orwl_handle *orwl_handle_init(orwl_handle *rh) {
   return rh;
 }
 
+DOCUMENT_DESTROY(orwl_handle)
 inline
 void orwl_handle_destroy(orwl_handle *rh) {
   orwl_handle_init(rh);
@@ -131,23 +135,35 @@ DECLARE_NEW_DELETE(orwl_handle);
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
 
 
+/**
+ ** @memberof orwl_mirror
+ **/
 P99_DEFARG_DOCU(orwl_write_request)
 orwl_state orwl_write_request(orwl_mirror* rq, /*!< [in,out] the location for the request */
                               orwl_handle* rh,   /*!< [in,out] the handle for the request */
                               rand48_t* seed         /*!< [in] defaults to a thread local seed */
                               );
 
+/**
+ ** @memberof orwl_mirror
+ **/
 P99_DEFARG_DOCU(orwl_read_request)
 orwl_state orwl_read_request(orwl_mirror* rq, /*!< [in,out] the location for the request */
                              orwl_handle* rh,   /*!< [in,out] the handle for the request */
                              rand48_t* seed         /*!< [in] defaults to a thread local seed */
                              );
 
+/**
+ ** @memberof orwl_handle
+ **/
 P99_DEFARG_DOCU(orwl_release)
 orwl_state orwl_release(orwl_handle* rh,   /*!< [in,out] the handle to be released */
                         rand48_t* seed         /*!< [in] defaults to a thread local seed */
                         );
 
+/**
+ ** @memberof orwl_handle
+ **/
 P99_DEFARG_DOCU(orwl_cancel)
 orwl_state orwl_cancel(orwl_handle* rh,   /*!< [in,out] the handle to be canceled */
                        rand48_t* seed         /*!< [in] defaults to a thread local seed */
@@ -171,16 +187,25 @@ P99_PROTOTYPE(orwl_state, orwl_cancel, orwl_handle*, rand48_t*);
 #define orwl_cancel_defarg_1() seed_get()
 #endif
 
+/**
+ ** @memberof orwl_handle
+ **/
 inline
 orwl_state orwl_acquire(orwl_handle* rh) {
   return orwl_wh_acquire(rh->wh, 0);
 }
 
+/**
+ ** @memberof orwl_handle
+ **/
 inline
 orwl_state orwl_test(orwl_handle* rh) {
   return orwl_wh_test(rh->wh, 0);
 }
 
+/**
+ ** @memberof orwl_handle
+ **/
 inline
 void orwl_map(orwl_handle* rh, uint64_t** data, size_t* data_len) {
   if (orwl_test(rh) > orwl_valid) {
@@ -189,6 +214,9 @@ void orwl_map(orwl_handle* rh, uint64_t** data, size_t* data_len) {
   }
 }
 
+/**
+ ** @memberof orwl_handle
+ **/
 inline
 void orwl_resize(orwl_handle* rh, size_t data_len) {
   if (orwl_test(rh) > orwl_valid) {
