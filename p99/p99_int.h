@@ -105,7 +105,7 @@ typedef uintmax_t p99x_uintmax;
 typedef intmax_t p99x_intmax;
 #endif
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 /**
  ** @brief An unsigned integer type of width 128 that extends the
  ** C99 specifications.

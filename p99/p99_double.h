@@ -41,7 +41,7 @@
   P99_IF_EMPTY(EXP)(0)(EXP),                                   \
   __VA_ARGS__)
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 /**
  ** @brief construct a @c double constant in decimal representation.
  **
@@ -78,7 +78,7 @@
   P99_IF_EMPTY(BINEXP)(0)(BINEXP),                                 \
   __VA_ARGS__)
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 /**
  ** @brief construct a @c double constant in hexadecimal representation.
  **

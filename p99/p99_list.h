@@ -68,7 +68,7 @@
  **/
 #define P99_CHS(N, ...) P99_SUB(N, 1, __VA_ARGS__)
 
-#ifndef DOXYGEN
+#ifndef P00_DOXYGEN
 #define P99_DUPL0(...)
 #define P99_DUPL1(...) __VA_ARGS__
 #endif

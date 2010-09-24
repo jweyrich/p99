@@ -48,7 +48,7 @@
  **
  ** Such a construct may then be used like this
  ** @code
- ** INVARIANT(x > 5) {
+ ** P99_INVARIANT(x > 5) {
  **   // do something with x that changes it but ensures that
  **   // it will be strictly less than 5 at the end
  ** }

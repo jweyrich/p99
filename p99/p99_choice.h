@@ -67,7 +67,7 @@ P00_UNIQUE_BIT__(BIT, BITS, WIDTH, P00_UNIQUE_BIT_MULT(BITS, WIDTH))
 #define P00_UNIQUE_BIT_RETURN(NAME, X, I) case P00_UNIQUE_BIT_(I, X, NAME): return I
 
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 /* doxygen can't handle the P99_FOR */
 #define P00_UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH) \
 p99_inline                                                         \

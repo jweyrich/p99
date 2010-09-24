@@ -59,7 +59,7 @@
  **/
 
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 # define P99_CALL_DEFARG(NAME, M, ...) NAME(__VA_ARGS__)
 #else
 # define P99_CALL_DEFARG(NAME, M, ...)                         \
@@ -155,7 +155,7 @@ NAME(P99_IF_EQ(0,M)                                            \
  ** names to the individual parameters.
  **/
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 #define P00_PROTOTYPE(RT, NAME, ...)                                                    \
 /*! @remark This function might be hidden behind a macro :: ## NAME of the same name. */ \
 RT NAME(__VA_ARGS__)
@@ -193,7 +193,7 @@ P99_IF_EMPTY(X)                                                        \
 P99_FOR(NAME, N, P00_SER, P00_EXPR_FUNCTION, __VA_ARGS__)    \
 P99_MACRO_END(NAME, _declare_defarg)
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 /**
  ** @brief Provide default arguments for macro @a NAME
  **
@@ -222,7 +222,7 @@ P99_MACRO_END(NAME, _declare_defarg)
 #define P00_DEFINE_DEFARG(NAME, N, ...)                       \
   P99_FOR(NAME, N, P00_SEP, P00_DAFE, __VA_ARGS__)
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 /**
  ** @brief Define the symbols that are declared through a
  ** corresponding call ::P99_DECLARE_DEFARG.
