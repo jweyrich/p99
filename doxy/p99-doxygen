@@ -25,6 +25,7 @@ EXCLUDE_SYMBOLS        += P00_* p00_* P99X__* p99x__*
 # something reasonable out of them.
 PREDEFINED += P99_COMPILETIME_ASSERT(x)=
 PREDEFINED += P99_DOXYGEN
+PREDEFINED += P99_FSYMB(x):="x ## _symbol"
 PREDEFINED += P99_LINEID(x):="p00_unique_id ## x"
 PREDEFINED += P99_MACRO_END(x)=
 PREDEFINED += p99_inline="inline"
