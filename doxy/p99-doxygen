@@ -1,0 +1,56 @@
+#     -*- mode: makefile; comment-start: "# "; -*-
+#
+# This file is meant to ease the documentation with doxygen of code
+# that uses P99.  It just defines some macros and watches that doxygen
+# interprets them well.  Include this file here into your "Doxyfile"
+# with the following
+#
+# @INCLUDE = doxy/p99-doxygen
+#
+# Additionally you should probably also set something like
+#
+# INCLUDE_PATH           += /your/path/to/p99/
+#
+# to ensure that your run of doxygen also actually see the P99 include
+# files.
+#
+# Please share your experience of using P99 together with doxygen with
+# us and in particular
+
+
+# Prefixes that P99 uses for internal use
+EXCLUDE_SYMBOLS        += P00_* p00_* P99X__* p99x__*
+
+# A set of macros that are just too complicated that doxygen can make
+# something reasonable out of them.
+PREDEFINED += P99_COMPILETIME_ASSERT(x)=
+PREDEFINED += P99_DOXYGEN
+PREDEFINED += P99_LINEID(x):="p00_unique_id ## x"
+PREDEFINED += P99_MACRO_END(x)=
+PREDEFINED += p99_inline="inline"
+PREDEFINED += static_inline="inline"
+
+# macros that should be forcably exanded to produce good documentation
+EXPAND_AS_DEFINED += P00_DECLARE_ARI2STR
+EXPAND_AS_DEFINED += P00_DECLARE_STRTO
+EXPAND_AS_DEFINED += P00_DECLARE_STRTOU
+EXPAND_AS_DEFINED += P00_DOCUMENT_ID
+EXPAND_AS_DEFINED += P00_DOCUMENT_PROMOTE
+EXPAND_AS_DEFINED += P00_DOCUMENT_SIGNED
+EXPAND_AS_DEFINED += P00_DOCUMENT_UNSIGNED
+EXPAND_AS_DEFINED += P00_ORWL_ALIAS
+EXPAND_AS_DEFINED += P00_POSIX_DEFARG_DOCU
+EXPAND_AS_DEFINED += P00_PROTOTYPE
+EXPAND_AS_DEFINED += P00_UNIQUE_BIT
+EXPAND_AS_DEFINED += P99_BLOCK_DOCUMENT
+EXPAND_AS_DEFINED += P99_CALL_DEFARG
+EXPAND_AS_DEFINED += P99_CAT2
+EXPAND_AS_DEFINED += P99_DECLARE_DEFARG
+EXPAND_AS_DEFINED += P99_DEFARG_DOCU
+EXPAND_AS_DEFINED += P99_DEFINE_DELETE
+EXPAND_AS_DEFINED += P99_PASTE2
+EXPAND_AS_DEFINED += P99_PASTE3
+EXPAND_AS_DEFINED += P99_PASTE4
+EXPAND_AS_DEFINED += P99_PROTOTYPE
+EXPAND_AS_DEFINED += P99_VA_ARGS
+EXPAND_AS_DEFINED += P99_VA_ARGS_DOCUMENTATION

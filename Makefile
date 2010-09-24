@@ -1,7 +1,10 @@
 
 DIRS = ./include ./p99 ./lib ./tests
 
-P99FILES = ./p99/*.h ./tests/p99*.c
+P99_SOURCES = ./p99/*.h ./tests/p99*.c
+P99_DOXY = ./doxy/p99-doxygen
+
+P99FILES =  ${P99_SOURCES} ${P99_DOXY}
 
 P99DISTRI = p99.tgz p99.zip p99-html.tgz p99-html.zip p99-refman.pdf
 
