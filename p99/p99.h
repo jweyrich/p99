@@ -147,11 +147,7 @@
  ** @subsection copyright Copyright
  ** Copyright &copy; 2010 Jens Gustedt, INRIA, France, http://www.inria.fr/
  **
- ** Permission to use, copy, modify, and distribute this software and
- ** its documentation under the terms as provided in the file LICENSE
- ** is hereby granted. No representations are made about the
- ** suitability of this software for any purpose. It is provided "as
- ** is" without express or implied warranty.
+ ** @htmlinclude SHORTLICENCE-closed.txt
  **/
 
 /**
@@ -782,11 +778,11 @@
  ** Most macros and features for macro programming with P99 are
  ** defined in @ref meta_programming. This allows to do things like
  ** <dl>
- **  <dt>argument list counting</dt>
+ **  <dt>@ref arg_counting</dt>
  **  <dt>rudimentary argument list processing</dt>
  **     <dd>to obtain e.g a sublist of the argument list (::P99_NARG) or revert an
  **     argument (::P99_REVS)</dd>
- **  <dt>code unroling</dt>
+ **  <dt>code unrolling</dt>
  **     <dd>not restricted to usual @c for loops but also e.g to produce a
  **     sequence of declarations with initializers (::P99_VASSIGNS)</dd>
  **  <dt>constant generation</dt>
@@ -794,6 +790,193 @@
  **  <dt>type and keyword classification</dt>
  **  <dt>scope bound resource management</dt>
  ** </dl>
+ **
+ ** @section arg_counting Argument List Counting
+ **
+ ** To implement macros that evaluate conditionally on the number of
+ ** arguments that they receive we will need to determine how many
+ ** arguments it receives. This can be achieved with something like
+ ** the following:
+ **
+ ** @code
+ ** #define P00_ARG2(_0, _1, _2, ...) _2
+ ** #define NARG2(...) P00_ARG2(__VA_ARGS__, 2, 1, 0)
+ ** @endcode
+ **
+ ** If NARG2 is called with two arguments the @c 2 of its expansion is in
+ ** third position and we will see this @c 2. If it is called with just
+ ** one argument the 1 will be in that place and thus be the result of
+ ** the expansion. You probably easily imagine an extension of that
+ ** macro to treat more arguments, look into the P99 sources to see a
+ ** version for ::P99_MAX_NUMBER.
+ **
+ ** The toy macro @c NARG2 has an important property, namely that it
+ ** swallows @i all its arguments when called correctly (say with 0,
+ ** 1 or 2 arguments) and just returns a token that corresponds to the
+ ** number. Such a property is important for macro programming since
+ ** we don't want to have the compiler itself see the same expressions
+ ** multiple times.
+ **
+ ** The @c NARG2 has a major disadvantage, it will not be able to
+ ** detect an empty argument list. This is due to a fundamental
+ ** difference between C and its preprocessor. For C a parenthesis @c ()
+ ** is empty and contains no argument. For the preprocessor it
+ ** contains just one argument, and this argument is the empty token
+ ** <code>&nbsp;</code>.
+ **
+ ** So in fact @c NARG2 is cheating. It doesn't count the number of
+ ** arguments that it receives, but returns the number of commas plus
+ ** one. In particular, even if it receives an empty argument list it
+ ** will return @c 1. The macro ::P99_NARG deals with that and returns
+ ** the token @c 0, if the list is empty.
+ **
+ ** Other macros are then programmed with similar tricks as for @c
+ ** NARG2, here: the variable argument list is positioned at the
+ ** beginning of a new macro list that is then completed by a list of
+ ** values that contain the different tokens that are returned conditionally.
+ **
+ ** A second trick is then to paste the name of another macro with
+ ** that number together. Look e.g at ::P99_DUPL. When called as follows
+ **
+ ** @code
+ ** (P99_DUPL(3, A))  ==> (P00_DUPL3(A))
+ ** @endcode
+ **
+ ** this then is replaced @fntm 4@efntm
+ ** as follow
+ ** @code
+ ** (P00_DUPL3(A)) ==> (A, P00_DUPL2(A)) ==> (A, A, P00_DUPL1(A)) ==> (A, A, A)
+ ** @endcode
+ **
+ ** The example of ::P99_DUPL together with ::P00_DUPL1, ... in file
+ ** p99_generated.h shows a general strategy to overcome the lack of
+ ** control structures or recursion in the preprocessor. But generally
+ ** it would be tedious and error prone to have to copy similar
+ ** definitions over and over again. Therefore P99 implements some of
+ ** these with a script and collects them in the above mentioned
+ ** include file. This is probably not something you should or
+ ** want to do yourself. Section @ref unrolling will show how to
+ ** avoid this with higher level preprocessor programming constructs.
+ **
+ **
+ ** The next step in macro programming is then to use ::P99_NARG to
+ ** obtain the length of a list and to use this number token to
+ ** derive a macro name with the number in it
+ **
+ ** @code
+ ** P99_PASTE(t, o, k, e, n)
+ ** ==>
+ ** P00_PASTE(P00_NARG(t, o, k, e, n), t, o, k, e, n)
+ ** ==>
+ ** P00_PASTE(5, t, o, k, e, n)
+ ** ==>
+ ** P00__PASTE(P99_PASTE, 5, t, o, k, e, n)
+ ** ==>
+ ** P99_PASTE ## 5(t, o, k, e, n)
+ ** ==>
+ ** P99_PASTE5(t, o, k, e, n)
+ ** ==>
+ ** .
+ ** ==>
+ ** token
+ ** @endcode
+ **
+ ** @fnt 4 @efnt
+ ** The actual definition is a by more complicated to capture special
+ ** cases.
+ **
+ ** @section unrolling Code Unrolling
+ **
+ ** Code unrolling is a generalization of what classicaly would be
+ ** left to the compiler (and not the preprocessor): loop
+ ** unrolling. Suppose that in some context you have a loop of fixed
+ ** length
+ **
+ ** @code
+ ** for (unsigned i = 0; i < 4; ++i)
+ **    a[i] = b[i];
+ ** @endcode
+ **
+ ** There are good chances that an optimizing compiler would unroll
+ ** this loop
+ **
+ ** @code
+ ** a[0] = b[0];
+ ** a[1] = b[1];
+ ** a[2] = b[2];
+ ** a[3] = b[3];
+ ** @endcode
+ **
+ ** This would have the advantage to spoil a CPU register for the
+ ** variable @c i and also that the addressing of the individual
+ ** elements now can be done with constant offsets from the
+ ** basepointers of @c a and @c b.
+ **
+ ** We will see below how to achieve such a loop unrolling directly
+ ** with the preprocessor, avoiding to rely on the compiler to do so.
+ **
+ ** But code unrolling can do more than that. It may be helpful where
+ ** we have repeated pieces of code for which there is no loop
+ ** construct in C, for example in a declaration:
+ ** @code
+ ** signed a[4] = { b[0], b[1], b[2], b[3] };
+ ** @endcode
+ **
+ ** With P99 you can write this simply as
+ ** @code
+ ** signed a[4] = { P99_ACCESSORS(b, 4) };
+ ** @endcode
+ **
+ ** If the length of your vectors might perhaps change during the
+ ** development of your program, you can have the length of the
+ ** array as a compile time parameter
+ ** @code
+ ** #define N 4
+ ** .
+ ** signed a[N] = { P99_ACCESSORS(b, N) };
+ ** @endcode
+ **
+ ** You'd later just change @c N and the rest of your code remains consistent.
+ **
+ ** As another example of flexibility take another assignment example,
+ ** namely some "deserialization" of a @c struct. Suppose that we have
+ ** a variable of a @c struct type to which we want to assign values
+ ** that we receive through an array @c b:
+ ** @code
+ ** A.x = b[0];
+ ** A.y0 = b[1];
+ ** A.o7 = b[2];
+ ** A.k = b[3];
+ ** @endcode
+ **
+ ** Here the pattern is somewhat regular, you assign the elements of
+ ** @c b in order, but the left hand sides are arbitrary. P99 can do
+ ** that for you
+ ** @code
+ ** P99_VASSIGNS(b, A.x, A.y0, A.o7, A.k);
+ ** @endcode
+ **
+ ** BTW, with the two P99 macros that we just introduced we can now
+ ** perform the loop unrolling from the beginning:
+ ** @code
+ ** P99_VASSIGNS(b, P99_ACCESSORS(a, 4));
+ ** @endcode
+ **
+ ** The "control structure" that is behind these two macros is called
+ ** ::P99_FOR. This is by itself a macro that at least 4 parameters,
+ ** named @c NAME, @c N, @c OP, @c FUNC, but generally will have more,
+ ** namely a list <code>A0, A1, ... , A{N-1}</code> of extra
+ ** arguments. The idea behind is simple:
+ **  - the argument @c FUNC is supposed to be a macro name that is
+ **    going to be applied to each of the @c A{i}
+ **  - argument @c OP in turn is a macro that is called to control the
+ **    "glue" between the different occurrences of the @c FUNC invocations.
+ **
+ ** An example of @c FUNC would be something like <code>NAME[i]</code>
+ ** for an accessor. For @c OP we provide simple choices as ::P00_SEQ
+ ** which just puts commas between the occurrences or ::P00_SEP to do
+ ** so with semicolons. For more exact examples and the syntax for @c
+ ** OP and @c FUNC please refer to the documentation of ::P99_FOR.
  **/
 
 /**

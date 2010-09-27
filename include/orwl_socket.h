@@ -181,12 +181,12 @@ DECLARE_THREAD(auth_sock);
 void auth_sock_close(auth_sock *sock);
 
 #ifdef DOXYGEN
-#define DEFINE_AUTH_SOCK_FUNC(F, ...)                                   \
+#define DEFINE_AUTH_SOCK_FUNC(F, ...)                                       \
 /*! An ::auth_sock function interpreting a message received on a socket. */ \
-/*! It interprets the message it receives as if it where declared*/     \
-/*! @code uint64_t F(__VA_ARGS__) @endcode */                           \
-/*! @see AUTH_SOCK_READ is used to interpret the message as specified */ \
-/*! @memberof auth_sock */                                              \
+/*! It interprets the message it receives as if it where declared*/         \
+/*! @code uint64_t F(__VA_ARGS__) @endcode */                               \
+/*! @see AUTH_SOCK_READ is used to interpret the message as specified */    \
+/*! @memberof auth_sock */                                                  \
 void F(auth_sock *Arg)
 #define DECLARE_AUTH_SOCK_FUNC(F, ...) void F(auth_sock *Arg)
 #else

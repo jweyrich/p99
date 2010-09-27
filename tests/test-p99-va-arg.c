@@ -14,6 +14,7 @@
 #include "orwl_posix.h"
 #include "p99_id.h"
 #include "p99_args.h"
+#include "p99_map.h"
 
 unsigned P99_FSYMB(toto)(unsigned a, P99_VA_ARGS(number));
 #define toto(A, ...) P99_FSYMB(toto)(A, P99_LENGTH_VA_ARG(__VA_ARGS__))
@@ -296,4 +297,12 @@ int main(int argc, char** argv) {
   SAYIT(998u, 1112u);
   SAYIT(2397u, 7191u);
   SAYIT(2397u, 7191u, 2703u);
+  int Y[17] = {  P99_DUPL(17, 1) };
+  int Z[22] = {  P99_POSS(22) };
+  P99_VASSIGNS(Z, int x, double k, int y, bool r);
+  P99_VASSIGNS(Y, int s);
+  P99_VASSIGNS(Y, int i, float o);
+  P99_VASSIGNS(Y, void);
+  P99_VASSIGNS(Y,);
+  P99_VASSIGNS(Z, P99_ACCESSORS(Y, 17));
 }
