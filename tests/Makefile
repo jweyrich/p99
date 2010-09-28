@@ -10,28 +10,34 @@
 ##############################
 # Complete this to make it ! #
 ##############################
-NAME 	=	orwl_wait_list			\
+NAME 	=					\
 		orwl_remote_server		\
-		orwl_remote_test_inclusive	\
 		orwl_remote_test_exclusive	\
+		orwl_remote_test_inclusive	\
+		orwl_socket_finish		\
 		orwl_socket_test		\
-		orwl_socket_finish              \
-		test-p99-choice                 \
-		test-p99-classification         \
-		test-p99-int                    \
-		test-p99-double                 \
+		orwl_wait_list			\
+		test-p99-block			\
+		test-p99-choice			\
+		test-p99-classification		\
+		test-p99-compound		\
+		test-p99-double			\
+		test-p99-int			\
 		test-p99-va-arg
 
-SRC	=	orwl_wait_list.c		\
+SRC	=					\
 		orwl_remote_server.c		\
-		orwl_remote_test_inclusive.c	\
 		orwl_remote_test_exclusive.c	\
+		orwl_remote_test_inclusive.c	\
+		orwl_socket_finish.c		\
 		orwl_socket_test.c		\
-		orwl_socket_finish.c            \
-		test-p99-choice.c               \
-		test-p99-classification.c       \
-		test-p99-int.c                  \
-		test-p99-double.c               \
+		orwl_wait_list.c		\
+		test-p99-block.c		\
+		test-p99-choice.c		\
+		test-p99-classification.c	\
+		test-p99-compound.c		\
+		test-p99-double.c		\
+		test-p99-int.c			\
 		test-p99-va-arg.c
 
 INCL  	=		# List of *.h

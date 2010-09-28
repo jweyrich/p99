@@ -95,6 +95,175 @@ for (int _one1_ = 1; _one1_; _one1_ = 0)                            \
     /* Ensure that a `break' will still execute AFTER */            \
     for (; _one1_; _one1_ = 0)
 
+/**
+ ** @brief Do nothing
+ **
+ ** This may be placed everywhere where a C statement can be placed.
+ **/
+#define P99_NOP ((void)0)
+
+/**
+ ** @brief Prefer the statements in the argument list over the
+ ** statement or block that follows.
+ **
+ ** The argument list should consist of a possibly empty list of
+ ** statements, exactly as you would put them inside a <code>{
+ ** ... }</code>. There is no restriction on the statements that you
+ ** may put in the list: @c break, @c continue, @c return or @c goto
+ ** should work as expected, and the list may even contain commas.
+ **
+ ** The dependent statement or block will in general not be executed
+ ** unless they contain a valid jump target that is jumped to. Such a
+ ** jump target may be a normal label or a case label.
+ **
+ ** @code
+ ** char *str = malloc(25);
+ ** if (!str) goto CLEANUP;
+ ** .
+ ** .
+ ** P99_PREFER(fprintf(stderr, "Happy: all allocation went well!\n");)
+ **   CLEANUP: {
+ **      // Do some repair work and exit gracefully
+ **      fprintf(stderr, "Unhappy: something went wrong!\n");
+ **   }
+ ** @endcode
+ ** @see P99_AVOID
+ **/
+#define P99_PREFER(...) if (1) { __VA_ARGS__ } else
+
+/**
+ ** @brief Only execute the depending statement or block if it is
+ ** jumped into explicitly from the outer block.
+ **
+ ** This can be used to comment out code temporarily on source
+ ** level. This macro is preferable over the common <code>if
+ ** (0)</code> dialect that is used for the same purpose, since it has
+ ** no problem with a dangling @c else.
+ **
+ ** This can also be used to handle some exceptional cases to which
+ ** you want to jump to explicitly, either by a @c goto or as a @c
+ ** switch @c case.
+ **
+ ** With this the example from ::P99_PREFER reads simply
+ ** @code
+ ** char *str = malloc(25);
+ ** if (!str) goto CLEANUP;
+ ** .
+ ** .
+ ** P99_AVOID
+ **   CLEANUP: {
+ **     // Do some repair work and exit gracefully
+ **     fprintf(stderr, "Unhappy: something went wrong!\n");
+ **   }
+ ** @endcode
+ ** @see P99_PREFER
+ **/
+#define P99_AVOID P99_PREFER(/* NOP */)
+
+/**
+ ** @brief Execute the statements in the argument list.
+ **
+ ** This is to have several statements executed in a place where
+ ** syntactically only one statement (and not a <code>{ ... }</code>
+ ** block) is allowed.
+ **
+ ** The argument list should consist of a possibly empty list of
+ ** statements, exactly as you would put them inside a <code>{
+ ** ... }</code>. There is no restriction on the statements that you
+ ** may put in the list: @c break, @c continue, @c return or @c goto
+ ** should work as expected, and the list may even contain commas.
+ **
+ ** Traditionally this would be done with a construction like
+ ** @code
+ ** do { __VA_ARGS__ } while(0)
+ ** @endcode
+ **
+ ** That traditional construction changes the control flow in that @c
+ ** break and @c continue statements would change their meaning inside
+ ** the list.
+ **
+ ** @see P99_PREFER
+ ** @see P99_AVOID
+ **/
+#define P99_BLOCK(...) P99_PREFER(__VA_ARGS__) P99_NOP
+
+/**
+ ** @brief An exclusive @c case for a @c switch statement
+ **
+ ** This @c case will @em only be executed when the @c switch value is
+ ** triggered and not if we fall through from a previous case.
+ **
+ ** @code
+ ** switch(errno) {
+ **  case 0: break; // everything works fine
+ **  P99_XCASE EINTR : {
+ **    fprintf(stderr, "Autsch: call to schnoeck was interrupted!\n");
+ **    // do something else in that case
+ **  }
+ **  P99_XCASE ENOMEM :
+ **    fprintf(stderr, "Autsch: call to schnoeck didn't have enough memory!\n");
+ **  P99_XDEFAULT : {
+ **    fprintf(stderr, "AUTSCH: call to schnoeck failed with unhandled case!\n");
+ **    perror("AUTSCH");
+ **  }
+ **  // common clean up code comes here
+ **  errno = 0;
+ ** }
+ ** @endcode
+ **/
+#define P99_XCASE P99_AVOID case
+
+/**
+ ** @brief The default case analogous to ::P99_XCASE
+ **/
+#define P99_XDEFAULT P99_AVOID default
+
+typedef enum p00_uncase_enum {
+  p00_uncase = 0,
+} p00_uncase_enum;
+
+/**
+ ** @brief A command prefixed with this cannot be a case target from
+ ** surrounding scopes.
+ **
+ ** Actually this might not produce errors but just spoofy warnings,
+ ** but well then you have been warned...
+ **/
+#define P99_UNCASE switch((p00_uncase_enum)0) P99_XCASE 0:
+
+/**
+ ** @brief Handle and reset @c errno.
+ **
+ ** This is will inspect @c errno (which is expesive) exactly once.
+ ** If @c errno is @c 0, it will do nothing as efficient as
+ ** possible. Otherwise it will execute the dependent block much as a
+ ** @c switch statement:
+ **
+ ** @code
+ ** P99_HANDLE_ERRNO {
+ **   fprintf(stderr, "The compiler should tell us that this fprintf here is unreachable.\n");
+ **   P99_XCASE EINTR : {
+ **     fprintf(stderr, "Autsch: call to schnoeck was interrupted!\n");
+ **     // do something else in that case
+ **   }
+ **   P99_XCASE ENOMEM :
+ **       fprintf(stderr, "Autsch: call to schnoeck didn't have enough memory!\n");
+ **   P99_XDEFAULT : {
+ **       fprintf(stderr, "AUTSCH: call to schnoeck failed with unhandled case!\n");
+ **       perror("AUTSCH");
+ **     }
+ **   fprintf(stderr, "We are doing some common cleanup for the errno handling code.\n");
+ **   }
+ ** @endcode
+ **/
+#define P99_HANDLE_ERRNO                                                \
+for (int p00_handle_errno = 0; p00_handle_errno < 1; ++p00_handle_errno) \
+  for (int const p00_errno = errno; p00_handle_errno < 1; ++p00_handle_errno) \
+    if (!p00_errno) { } else                                            \
+      for (; p00_handle_errno < 1; errno = 0, ++p00_handle_errno)       \
+        switch (p00_errno) case 0:
+
+
 
 /**
  ** @brief Add some default documentation and links to the following

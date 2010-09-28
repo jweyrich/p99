@@ -11,6 +11,7 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
+
 /**
  ** @file
  ** @brief Test the behavior of compound literals
@@ -30,7 +31,8 @@
  ** valgrind detects this misshavior at run time
  **/
 
-
+#include "p99.h"
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 
