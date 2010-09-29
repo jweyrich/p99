@@ -83,7 +83,7 @@ DEFINE_THREAD(P00_CALLBACK_PAIR(T)) {                                           
   T *arg = Arg->Arg;                                                                   \
   orwl_wh *wh = Arg->Wh;                                                               \
   orwl_wq *wq = Arg->Wq;                                                               \
-  orwl_state state;                                                                    \
+  orwl_state state = orwl_invalid;                                                     \
   MUTUAL_EXCLUDE(wq->mut) {                                                            \
     pthread_cond_signal(&Arg->cond);                                                   \
     /* Afterwards Arg might already be deleted by the caller */                        \
