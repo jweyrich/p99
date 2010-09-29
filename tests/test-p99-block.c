@@ -102,24 +102,21 @@ int main(int argc, char *argv[]) {
 
   fprintf(stderr, "now errno is set to %d\n", errno);
 
-  P99_UNWIND_PROTECT(cleanRet1) {
+  P99_UNWIND_PROTECT {
     char *volatile a = malloc(32);
-    P99_UNWIND_PROTECT(cleanRet2) {
+    P99_UNWIND_PROTECT {
       char *volatile b = malloc(32);
-      if (argv[1]) P99_UNWIND(argv[1][0]);
+      if (argc > 1) P99_UNWIND(argv[1][0] - 'a');
+      printf("before cleanup level %u, code %d\n", p99_unwind_level, p99_unwind_code);
     P99_PROTECT: {
-      printf("cleanup line %d, 0x%x\n", __LINE__, cleanRet2);
-      free(b);
+        printf("cleanup level %u, code %d\n", p99_unwind_level, p99_unwind_code);
+        free(b);
       }
     }
-    /* This should only be printed if there is a first argument to
-       the executable and is first character is NUL, i.e that the
-       argument is the empty string. */
-    printf("before cleanup line %d, 0x%x\n", __LINE__, cleanRet1);
-  P99_PROTECT: {
-      printf("cleanup line %d, 0x%x\n", __LINE__, cleanRet1);
-      free(a);
-    }
+    printf("before cleanup level %u, code %d\n", p99_unwind_level, p99_unwind_code);
+  P99_PROTECT:
+    printf("cleanup level %u, code %d\n", p99_unwind_level, p99_unwind_code);
+    free(a);
   }
   /* this should cause no harm */
   P99_UNWIND(99);
