@@ -9,8 +9,12 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
 #include <errno.h>
+#include <setjmp.h>
 #include "p99_block.h"
+
 
 
 /************** the try/catch implementation ***********************/
@@ -40,6 +44,7 @@ for (int _try_int = 0; _try_int < 1; ++_try_int)                        \
 #define CATCHALL P99_XDEFAULT: TRY_DERIVED
 
 #define RETHROW P99_BLOCK(p99_rethrow_errno = p99_throw_errno; break;)
+
 
 
 int main(int argc, char *argv[]) {
@@ -96,4 +101,26 @@ int main(int argc, char *argv[]) {
   }
 
   fprintf(stderr, "now errno is set to %d\n", errno);
+
+  P99_UNWIND_PROTECT(cleanRet1) {
+    char *volatile a = malloc(32);
+    P99_UNWIND_PROTECT(cleanRet2) {
+      char *volatile b = malloc(32);
+      if (argv[1]) P99_UNWIND(argv[1][0]);
+    P99_PROTECT: {
+      printf("cleanup line %d, 0x%x\n", __LINE__, cleanRet2);
+      free(b);
+      }
+    }
+    /* This should only be printed if there is a first argument to
+       the executable and is first character is NUL, i.e that the
+       argument is the empty string. */
+    printf("before cleanup line %d, 0x%x\n", __LINE__, cleanRet1);
+  P99_PROTECT: {
+      printf("cleanup line %d, 0x%x\n", __LINE__, cleanRet1);
+      free(a);
+    }
+  }
+  /* this should cause no harm */
+  P99_UNWIND(99);
 }
