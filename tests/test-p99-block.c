@@ -16,73 +16,7 @@
 #include "p99_block.h"
 
 
-
-/************** the try/catch implementation ***********************/
-
-
-typedef enum {
-  p99_try_level = 0,
-  p99_throw_errno = 0,
-  p99_rethrow_errno = 0,
-} p99_throw_enum;
-
-
-#define TRY_SETJUMP /* tous ce qu'il faut */
-
-#define TRY_INTERNAL(EXPR)                                              \
-for (int _try_int = 0; _try_int < 1; ++_try_int)                        \
-  for (int p99_rethrow_errno = 0; _try_int < 1; ++_try_int)             \
-    for (int const p99_throw_errno = (EXPR); _try_int < 1; ++_try_int)  \
-      for (int const p99_try_level0 = p99_try_level + 1; _try_int < 1; ++_try_int) \
-        for (int const p99_try_level = p99_try_level0; p99_try_level && (_try_int < 1); ++_try_int) \
-          TRY_SETJUMP switch(p99_throw_errno) case 0:
-
-#define TRY_DERIVED TRY_SETJUMP P99_UNCASE
-
-#define CATCH(N) P99_XCASE (N): TRY_DERIVED
-
-#define CATCHALL P99_XDEFAULT: TRY_DERIVED
-
-#define RETHROW P99_BLOCK(p99_rethrow_errno = p99_throw_errno; break;)
-
-
-
 int main(int argc, char *argv[]) {
-  TRY_INTERNAL(argc - 1) {
-    printf("general case\n");
-    CATCH(1) {
-      printf("caught 1\n");
-    }
-    CATCH(2) {
-      printf("caught 2\n");
-      if (argv[1][0] == 'a') RETHROW;
-      else printf("caught 2, passed\n");
-    }
-    CATCH(3) {
-      if (argv[1][0] == 'b') goto CLEANUP;
-      printf("caught 3\n");
-    }
-    CATCHALL {
-      /* Error: CATCH that is inside another CATCH block without
-         intermediate TRY */
-      // CATCH(0) printf("caught 3\n");
-      // CATCH(1) printf("caught 3\n");
-    default: printf("catch all\n");
-    }
-    /* Error: rethrow that is not inside a catch block */
-    //RETHROW;
-    printf("clean up, rethrow has %d\n", p99_rethrow_errno);
-  }
-  /* Error: CATCH that is not inside a TRY block */
-  //CATCH(3) printf("caught 3\n");
-  /* Error: rethrow that is not inside a catch block */
-  //RETHROW;
-  P99_PREFER(fprintf(stderr, "Happy: all allocation went well!\n");)
-    CLEANUP: {
-    // Do some repair work and exit gracefully
-    fprintf(stderr, "Unhappy: something went wrong!\n");
-  }
-
 
   errno = 42;
 
@@ -106,7 +40,8 @@ int main(int argc, char *argv[]) {
     char *volatile a = malloc(32);
     P99_UNWIND_PROTECT {
       char *volatile b = malloc(32);
-      if (argc > 1) P99_UNWIND(argv[1][0] - 'a');
+      if (argc > 2) P99_UNWIND(argv[1][0] - 'a');
+      else if (argc > 1) P99_UNWIND_RETURN argv[1][0];
       printf("before cleanup level %u, code %d\n", p99_unwind_level, p99_unwind_code);
     P99_PROTECT: {
         printf("cleanup level %u, code %d\n", p99_unwind_level, p99_unwind_code);

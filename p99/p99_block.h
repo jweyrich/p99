@@ -278,6 +278,7 @@ enum p99_unwind {
    **/
   p99_unwind_level = 0,
   p00_unwind_top = 0,
+  p00_unwind_bottom = 0,
   /**
    ** @brief The code an eventual call to ::P99_UNWIND
    **
@@ -291,14 +292,24 @@ enum p99_unwind {
    ** an address of it will produce an error.
    **/
   p99_unwind_code = 0,
+  p99_unwind_return = INT_MAX,
 };
 
+
+typedef struct p00_jmp_buf p00_jmp_buf;
+
+struct p00_jmp_buf {
+  bool volatile returning;
+  jmp_buf buf;
+};
+
+#define P00_JMP_BUF_INITIALIZER { .returning = 0 }
 
 /**
  ** @brief Unwind execution from several levels of nesting inside a
  ** function.
  **
- ** This macro allows to return from inside of several levels of block
+ ** This macro allows to safely unwind several levels of block
  ** statements.
  **
  ** @code
@@ -323,56 +334,63 @@ enum p99_unwind {
  ** The argument to ::P99_UNWIND controls how many levels are
  ** unwound. If it is positive at most that number of level is
  ** unwound, but never more levels than there are on the call stack of
- ** the enclosing function. If it is negative, all levels on the
- ** stack of the enclosing function are unwound and during that
- ** process the code that is passed to ::P99_UNWIND is accessible
+ ** the enclosing function. If it is negative, all levels on the stack
+ ** of the enclosing function are unwound and during that process this
+ ** negative value that is passed to ::P99_UNWIND is accessible
  ** through ::p99_unwind_code.
  **
  ** @warning Variables that are modified before the call to
  ** ::P99_UNWIND are only guaranteed to have their new value in the
  ** protected part if they are declared @c volatile.
  **
- ** @see test-p99-block.c for a more sophisticated example of nested
+ ** @see "test-p99-block.c" for a more sophisticated example of nested
  ** ::P99_UNWIND_PROTECT.
  ** @see ::P99_UNWIND
+ ** @see ::P99_UNWIND_RETURN for a replacement of @c return that
+ **      respects the protected parts
  ** @see ::p99_unwind_code
  ** @see ::p99_unwind_level
  **/
 #define P99_UNWIND_PROTECT                                              \
 /* the control variable for the syntax */                               \
 for (register _Bool p00 = 1; p00; p00 = 0)                              \
-  /* are we unwinding or not? */                                        \
-  for (register _Bool p00_unw = 0; p00;)                                \
-    /* The return code from the longjmp to which we apply the special   \
-       convention concerning the value 0. */                            \
-    for (register int p00_code = 0;                                     \
-         p00;                                                           \
-         /* An eventual continuation of the unwind process is decided   \
-            here, since here the p00_unwind_top variable that is        \
-            visible is that of the enclosing scope, but the unwind      \
-            code variable is ours.  If the enclosing scope is the       \
-            outer scope, p00_unwind_top is a integer with value         \
-            zero. So even then the P99_UNWIND is syntactically          \
-            correct, but fortunately the underlying call to longjmp     \
-            will not be issued. */                                      \
-         (p00_unw                                                       \
-          ? P99_UNWIND(p00_code < 0 ? p00_code : p00_code - 1)          \
-          : P99_NOP))                                                   \
-      /* maintain the level of nesting of different calls to            \
-         P99_UNWIND_PROTECT */                                          \
-      for (register unsigned const p00_level = p99_unwind_level + 1; p00;) \
-        for (register unsigned const p99_unwind_level = p00_level; p00; (void)p99_unwind_level) \
-          /* the buffer variable for setjmp/longjump */                 \
-          for (jmp_buf p00_unwind_top; p00;)                            \
-            for (p00_code = setjmp(p00_unwind_top); p00;)               \
-              /* detect whether or not we are unwinding */              \
-              for (p00_unw = !!p00_code; p00;)                          \
-                for (register int const p99_unwind_code = p00_code; p00; (void)p99_unwind_code) \
-                  for (;p00; p00 = 0)                                   \
-                  /* dispatch. cast the _Bool to int since this is      \
-                     what happens anyhow and some compilers will issue  \
-                     strange warnings. */                               \
-                  switch ((int)p00_unw) case 0:
+  for (auto p00_jmp_buf p00_unwind_return = P00_JMP_BUF_INITIALIZER;    \
+       p00;                                                             \
+       p00_unwind_return.returning ? longjmp(p00_unwind_return.buf, 1) : P99_NOP) \
+    for (register p00_jmp_buf *const p00_unwind_bottom0 = p00_unwind_bottom ? p00_unwind_bottom : &p00_unwind_return; p00;) \
+      for (register p00_jmp_buf *const p00_unwind_bottom = p00_unwind_bottom0; p00_unwind_bottom && p00;) \
+        /* are we unwinding or not? */                                  \
+        for (register _Bool p00_unw = 0; p00;)                          \
+          /* The return code from the longjmp to which we apply the     \
+             special convention concerning the value 0. */              \
+          for (register int p00_code = 0;                               \
+               p00;                                                     \
+               /* An eventual continuation of the unwind process is     \
+                  decided here, since here the p00_unwind_top variable  \
+                  that is visible is that of the enclosing scope, but   \
+                  the unwind code variable is ours.  If the enclosing   \
+                  scope is the outer scope, p00_unwind_top is a         \
+                  integer with value zero. So even then the P99_UNWIND  \
+                  is syntactically correct, but fortunately the         \
+                  underlying call to longjmp will not be issued. */     \
+               (p00_unw                                                 \
+                ? P99_UNWIND(p00_code < 0 ? p00_code : p00_code - 1)    \
+                : P99_NOP))                                             \
+            /* maintain the level of nesting of different calls to      \
+               P99_UNWIND_PROTECT */                                    \
+            for (register unsigned const p00_level = p99_unwind_level + 1; p00;) \
+              for (register unsigned const p99_unwind_level = p00_level; p99_unwind_level && p00;) \
+                /* the buffer variable for setjmp/longjump */           \
+                for (auto jmp_buf p00_unwind_top; p00;)                 \
+                  for (p00_code = setjmp(p00_unwind_top); p00;)         \
+                    /* detect whether or not we are unwinding */        \
+                    for (p00_unw = !!p00_code; p00;)                    \
+                      for (register int const p99_unwind_code = p00_code; p00; (void)p99_unwind_code) \
+                        for (;p00; p00 = 0)                             \
+                          /* dispatch. cast the _Bool to int since      \
+                             this is what happens anyhow and some       \
+                             compilers will issue strange warnings. */  \
+                          switch ((int)p00_unw) case 0:
 
 p99_inline
 void p00_unwind(void* top, unsigned level, int cond) {
@@ -384,20 +402,52 @@ void p00_unwind(void* top, unsigned level, int cond) {
  ** ::P99_UNWIND_PROTECT
  **
  ** @param x If this is evaluates to @c 0 nothing is done. If the
- ** result is positive as most as many levels
- ** of ::P99_UNWIND_PROTECT will be
- ** unwound. Otherwise all levels on the stack will be unwound and the
- ** control variables of these will be set to the value of @a x.
+ ** result is positive as most as many levels of ::P99_UNWIND_PROTECT
+ ** will be unwound. Otherwise all levels on the stack will be unwound
+ ** and the control variables ::p99_unwind_code of these will be set
+ ** to the value of @a x.
  **/
 /* This uses a very special trick, such that this a valid call to
    longjmp at the end. On the lowest level p00_unwind_top is an
    integer of value 0 that converts to a void* that can be passed to
-   longjmp. On higher recursion levels this will be the variable of
+   longjmp as a formal parameter just such that the syntax is
+   correct. On higher recursion levels this will be the variable of
    type jmp_buf that sits on the stack. jmp_buf is guaranteed to be an
    array type, so the expression here evaluates to a pointer that then
    is passed to the function. */
 #define P99_UNWIND(x) p00_unwind(p00_unwind_top, p99_unwind_level, (x))
 
+/**
+ ** @brief Return from the enclosing function after unwinding all
+ ** levels of nested ::P99_UNWIND_PROTECT.
+ **
+ ** By this you can guarantee that all eventually existing
+ ** ::P99_PROTECT parts of enclosing ::P99_UNWIND_PROTECT are properly
+ ** executed. This is in some similar to the guarantee of C++ to call
+ ** destructors before returning from a function.
+ **
+ ** There is one important difference, though: the @c return
+ ** expression (if any) is evaluated @em after the protected parts are
+ ** unwound. So if these modify parts of that @c return expression you
+ ** might not get what you expect. So instead of
+ **
+ ** @code
+ ** P99_UNWIND_RETURN expr;
+ ** @endcode
+ **
+ ** You might want do something like
+ ** @code
+ ** volatile retType myret = expr;
+ ** P99_UNWIND_RETURN myret;
+ ** @endcode
+ **/
+#define P99_UNWIND_RETURN                               \
+if (p00_unwind_bottom                                   \
+    && !setjmp(p00_unwind_bottom->buf)) {               \
+  /* assign before we unwind all the way down */        \
+  p00_unwind_bottom->returning = 1;                     \
+  P99_UNWIND(-p99_unwind_return);                       \
+ } else return
 
 /**
  ** @brief The pseudo label to which we jump when we unwind the stack
