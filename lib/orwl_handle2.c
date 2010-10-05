@@ -13,6 +13,9 @@
 /*                                                                           */
 #include "orwl_handle2.h"
 
+orwl_handle2 *orwl_handle2_init(orwl_handle2 *rh2);
+void orwl_handle2_destroy(orwl_handle2 *rh2);
+
 DEFINE_NEW_DELETE(orwl_handle2);
 
 DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire2, orwl_handle2);
