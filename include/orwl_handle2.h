@@ -57,24 +57,19 @@ struct orwl_handle2 {
   }                                                            \
 }
 
-inline
-P99_PROTOTYPE(orwl_handle2 *, orwl_handle2_init, orwl_handle2 *, orwl_mirror*, bool);
-#define orwl_handle2_init(...) P99_CALL_DEFARG(orwl_handle2_init, 3, __VA_ARGS__)
-#define orwl_handle2_init_defarg_1() NULL
-#define orwl_handle2_init_defarg_2() false
-
-
-P99_DEFARG_DOCU(orwl_handle2_init)
+/**
+ ** @brief Dynamically initialize a ::orwl_handle2
+ **
+ ** @param rh2 is the handle to be initialized
+ ** @param m is an ::orwl_mirror that designates the location of the
+ **        handle. It defaults to @c NULL, i.e no link.
+ **/
+//P99_DEFARG_DOCU(orwl_handle2_init)
 DOCUMENT_INIT(orwl_handle2)
 inline
-orwl_handle2 *orwl_handle2_init(orwl_handle2 *rh2, orwl_mirror* m, bool inc) {
+orwl_handle2 *orwl_handle2_init(orwl_handle2 *rh2) {
   if (!rh2) return NULL;
-  orwl_handle_init(&rh2->pair[0]);
-  orwl_handle_init(&rh2->pair[1]);
-  rh2->state[0] = orwl_invalid;
-  rh2->state[1] = orwl_invalid;
-  rh2->inclusive = false;
-  rh2->clock = 1;
+  *rh2 = (orwl_handle2 const)ORWL_HANDLE2_INITIALIZER;
   return rh2;
 }
 
@@ -85,7 +80,6 @@ void orwl_handle2_destroy(orwl_handle2 *rh2) {
   orwl_handle_destroy(&rh2->pair[1]);
   rh2->inclusive = false;
   rh2->clock = 0;
-  //rh2->location = NULL;
 }
 
 

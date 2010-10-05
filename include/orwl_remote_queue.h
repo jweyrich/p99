@@ -20,6 +20,15 @@
 /**
  ** @brief A structure to regulate queues between different servers.
  **
+ ** An orwl_mirror is a local data structure that represents an
+ ** abstract @em %location in a ORWL (ordered read-write lock)
+ ** system. It is initialized with two ::orwl_endpoint
+ ** specifications. One corresponds to the address of the location
+ ** that is to be mirrored, it may be local in the same process or
+ ** remote on another host. The other ::orwl_endpoint corresponds to
+ ** the address of the current process and will be used by others to
+ ** connect to this host here to reply to requests.
+ **
  ** @msc
  **   orwl_server,orwl_mirror,cli_wh,orwl_handle;
  **   cli_wh<-orwl_handle [label="orwl_request()", URL="\ref orwl_request()", ID="1"];
@@ -89,6 +98,46 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_mirror);
 /**
  ** @brief An ORWL lock handle for remote locations.
  **
+ ** In an ORWL (ordered read-write lock) system an ::orwl_handle is
+ ** used to control locks that an application process issues on a
+ ** local or remote lock location. As the rw in ORWL indicates, locks
+ ** can be shared-read or exclusive-write. With ORWL a typical locking
+ ** sequence is to
+ ** -# announce a future locking by issuing a @em request, via
+ **   ::orwl_read_request or ::orwl_write_request
+ ** -# do some other work
+ ** -# ensure that the lock is obtained by a blocking call to ::orwl_acquire
+ ** -# do the work that is critical and that now is protected by the lock
+ ** -# release the lock by means of ::orwl_release.
+ **
+ ** Obtaining a read (=shared) lock on a remote location means that
+ ** other handles may have read locks simultaneously on the same
+ ** location, but that a write lock is attributed to at most one
+ ** handle at a time.
+ **
+ ** ORWL imposes a strict first come first serve (FIFO) policy for
+ ** obtaining the locks:
+ **
+ ** - The earlier a @em request arrives at a location the earlier the
+ **   corresponding acquire will succeed.
+ ** - An acquire will block as long as there is an earlier
+ **   incompatible lock on the same location.
+ **
+ ** All calls to the ORWL functions (but ::orwl_acquire) in such a
+ ** sequence should be immediate and consume only few resources: the
+ ** idea that most of the lock administration is done asynchronously
+ ** behind the scenes and that the application only has to wait (in
+ ** ::orwl_acquire) if this is unavoidable since the lock is hold by
+ ** another handle.
+ **
+ ** Deviations from the above sequence are possible. ::orwl_test can
+ ** be used to know if the lock can be obtained without
+ ** blocking. ::orwl_cancel can be used to cancel a request that had
+ ** been placed previously.
+ **
+ ** The application may associate data to each location of which it
+ ** also may control the size, ::orwl_map and ::orwl_resize.
+ **
  ** @see orwl_mirror
  ** @see orwl_read_request
  ** @see orwl_write_request
@@ -96,6 +145,8 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_mirror);
  ** @see orwl_test
  ** @see orwl_release
  ** @see orwl_cancel
+ ** @see orwl_map
+ ** @see orwl_resize
  **/
 struct orwl_handle {
   /**
@@ -120,7 +171,7 @@ DOCUMENT_INIT(orwl_handle)
 inline
 orwl_handle *orwl_handle_init(orwl_handle *rh) {
   if (!rh) return NULL;
-  P99_TZERO(*rh);
+  *rh = (orwl_handle const)ORWL_HANDLE_INITIALIZER;
   return rh;
 }
 
@@ -136,7 +187,12 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
 
 
 /**
+ ** @brief Insert a write request in the FIFO at the location of @a rq
  ** @memberof orwl_mirror
+ **
+ ** Once such a write request will be achieved
+ ** this will be the only lock (read or write) that can be hold by any
+ ** handle simultaneously.
  **/
 P99_DEFARG_DOCU(orwl_write_request)
 orwl_state orwl_write_request(orwl_mirror* rq, /*!< [in,out] the location for the request */
@@ -145,7 +201,11 @@ orwl_state orwl_write_request(orwl_mirror* rq, /*!< [in,out] the location for th
                               );
 
 /**
+ ** @brief Insert a write request in the FIFO at the location of @a rq
  ** @memberof orwl_mirror
+ **
+ ** Once such a read request will be achieved other @em read request
+ ** can be granted to other handles simultaneously.
  **/
 P99_DEFARG_DOCU(orwl_read_request)
 orwl_state orwl_read_request(orwl_mirror* rq, /*!< [in,out] the location for the request */
@@ -154,7 +214,11 @@ orwl_state orwl_read_request(orwl_mirror* rq, /*!< [in,out] the location for the
                              );
 
 /**
+ ** Release the lock that @a rh has obtained on its location
  ** @memberof orwl_handle
+ **
+ ** This also invalidates any data address that might have been
+ ** obtained through a call to ::orwl_map.
  **/
 P99_DEFARG_DOCU(orwl_release)
 orwl_state orwl_release(orwl_handle* rh,   /*!< [in,out] the handle to be released */
@@ -162,6 +226,7 @@ orwl_state orwl_release(orwl_handle* rh,   /*!< [in,out] the handle to be releas
                         );
 
 /**
+ ** Release the lock that @a rh has requested on its location
  ** @memberof orwl_handle
  **/
 P99_DEFARG_DOCU(orwl_cancel)
@@ -188,6 +253,8 @@ P99_PROTOTYPE(orwl_state, orwl_cancel, orwl_handle*, rand48_t*);
 #endif
 
 /**
+ ** @brief Block until a previously issued read or write request can
+ ** be fulfilled
  ** @memberof orwl_handle
  **/
 inline
@@ -196,6 +263,8 @@ orwl_state orwl_acquire(orwl_handle* rh) {
 }
 
 /**
+ ** @brief Test if a previously issued read or write request can
+ ** be fulfilled
  ** @memberof orwl_handle
  **/
 inline
@@ -204,7 +273,27 @@ orwl_state orwl_test(orwl_handle* rh) {
 }
 
 /**
+ ** @brief Obtain address and size of the data that is associated to a
+ ** handle
  ** @memberof orwl_handle
+ ** The application may associate data to each location of which it
+ ** also may control the size. Once the lock is acquired for a given
+ ** handle, this data is available through ::orwl_map, returning a
+ ** pointer to the data and to its size. The pointer to the data will
+ ** be invalid, as soon as the lock is again released.
+ **
+ ** @pre The handle @a rh must hold a lock on the location to which it
+ ** is linked.
+ **
+ ** @warning If this lock is a read lock (inclusive) the address
+ ** that is return via @a data @em must only be used for
+ ** reading. The result of a write to such data is undefined and will
+ ** lead to data inconsistencies.
+ **
+ ** If the lock that is hold is a write lock the data may also be
+ ** written to. The new content of the data will be visible for other
+ ** lock handles once they obtain a lock after this handle releases
+ ** its write lock.
  **/
 inline
 void orwl_map(orwl_handle* rh, uint64_t** data, size_t* data_len) {
@@ -215,7 +304,16 @@ void orwl_map(orwl_handle* rh, uint64_t** data, size_t* data_len) {
 }
 
 /**
+ ** @brief Shrink or extend the data that is associated to a location.
  ** @memberof orwl_handle
+ ** Initially, the data of a location is empty, i.e of 0 size. If the
+ ** lock that a handle holds is exclusive ::orwl_resize can be used to
+ ** resize the data to a new length. If such a resize operation
+ ** is an extension of existing data that data is preserved and the
+ ** newly appended area is filled with zero bytes.
+ **
+ ** @pre The handle @a rh must hold a write (exclusive) lock on the
+ ** location to which it is linked. 
  **/
 inline
 void orwl_resize(orwl_handle* rh, size_t data_len) {

@@ -36,8 +36,9 @@
  **/
 #define DECLARE_DELETE(T)                                                                                  \
 /*! @brief Operator @c delete for type T   **/                                                             \
-  /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
-  /*! @attention @a el show have been allocated through @ref P99_NEW */                                    \
+  /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T * argument **/ \
+  /*! @attention @a el show have been allocated through P99_NEW */                                         \
+  /*! @see P99_NEW */                                                                                      \
   /*! @memberof T */                                                                                       \
 inline                                                                                                     \
 void P99_PASTE2(T, _delete)(T const*el) {                                                                  \

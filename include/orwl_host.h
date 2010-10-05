@@ -55,7 +55,7 @@ P99_PROTOTYPE(orwl_host*, orwl_host_init, orwl_host *, in_addr_t, in_port_t);
 #define orwl_host_init_defarg_2() P99_0(in_port_t)
 #endif
 
-DOCUMENT_INIT(orwl_host_init)
+DOCUMENT_INIT(orwl_host)
 P99_DEFARG_DOCU(orwl_host_init)
 inline
 orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */

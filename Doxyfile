@@ -272,7 +272,7 @@ SUBGROUPING            = YES
 # be useful for C code in case the coding convention dictates that all compound
 # types are typedef'ed and only the typedef is referenced, never the tag name.
 
-TYPEDEF_HIDES_STRUCT   = NO
+TYPEDEF_HIDES_STRUCT   = YES
 
 # The SYMBOL_CACHE_SIZE determines the size of the internal cache use to
 # determine which symbols to keep in memory and which to flush to disk.
@@ -570,7 +570,7 @@ WARN_LOGFILE           = doxygen-orwl.log
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = include lib
+INPUT                  = include lib doxy
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -599,7 +599,7 @@ RECURSIVE              = YES
 # excluded from the INPUT source files. This way you can easily exclude a
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
-EXCLUDE                =
+EXCLUDE                = .git
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or
 # directories that are symbolic links (a Unix filesystem feature) are excluded
@@ -627,7 +627,7 @@ EXCLUDE_SYMBOLS        = P00_* p00_* orwl__*
 # directories that contain example code fragments that are included (see
 # the \include command).
 
-EXAMPLE_PATH           =
+EXAMPLE_PATH           = .
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp
@@ -1242,7 +1242,7 @@ SEARCH_INCLUDES        = YES
 # contain include files that are not input files but should be processed by
 # the preprocessor.
 
-INCLUDE_PATH           += p99
+INCLUDE_PATH           += p99 doxy
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the
@@ -1279,6 +1279,7 @@ EXPAND_AS_DEFINED += DECLARE_DELETE
 EXPAND_AS_DEFINED += DECLARE_ENUM
 EXPAND_AS_DEFINED += DECLARE_NEW_DELETE
 EXPAND_AS_DEFINED += DECLARE_ONCE
+EXPAND_AS_DEFINED += DECLARE_ONCE_UPON
 EXPAND_AS_DEFINED += DECLARE_ORWL_DOMAIN
 EXPAND_AS_DEFINED += DECLARE_ORWL_REGISTER
 EXPAND_AS_DEFINED += DECLARE_ORWL_REGISTER_ALIAS
@@ -1295,10 +1296,12 @@ EXPAND_AS_DEFINED += DEFINE_AUTH_SOCK_FUNC
 EXPAND_AS_DEFINED += DEFINE_BASIC
 EXPAND_AS_DEFINED += DEFINE_BASIC_TYPE
 EXPAND_AS_DEFINED += DEFINE_DEFARG
+EXPAND_AS_DEFINED += DEFINE_DELETE
 EXPAND_AS_DEFINED += DEFINE_ENUM
 EXPAND_AS_DEFINED += DEFINE_NEW_DELETE
 EXPAND_AS_DEFINED += DEFINE_ONCE
 EXPAND_AS_DEFINED += DEFINE_ONCE_UPON
+EXPAND_AS_DEFINED += DEFINE_ORWL_DOMAIN
 EXPAND_AS_DEFINED += DEFINE_ORWL_REGISTER
 EXPAND_AS_DEFINED += DEFINE_ORWL_REGISTER_ALIAS
 EXPAND_AS_DEFINED += DEFINE_ORWL_TYPE_DYNAMIC
@@ -1313,6 +1316,8 @@ EXPAND_AS_DEFINED += MAYBE_EXTERNAL
 EXPAND_AS_DEFINED += ORWL_ALIAS
 EXPAND_AS_DEFINED += ORWL_FTAB
 EXPAND_AS_DEFINED += ORWL_REGISTER
+EXPAND_AS_DEFINED += ORWL_REGISTER_ALIAS
+EXPAND_AS_DEFINED += ORWL_REGISTER_DATA
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then
 # doxygen's preprocessor will remove all function-like macros that are alone
@@ -1344,17 +1349,18 @@ SKIP_FUNCTION_MACROS   = NO
 # is run, you must also specify the path to the tagfile here.
 
 TAGFILES               += "doxy/p99-tagfile = http://p99.gforge.inria.fr/p99-html/"
+#TAGFILES               += "doxy/p99-tagfile"
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
 
-GENERATE_TAGFILE       =
+GENERATE_TAGFILE       = "doxy/orwl-tagfile"
 
 # If the ALLEXTERNALS tag is set to YES all external classes will be listed
 # in the class index. If set to NO only the inherited external classes
 # will be listed.
 
-ALLEXTERNALS           = NO
+ALLEXTERNALS           = YES
 
 # If the EXTERNAL_GROUPS tag is set to YES all external groups will be listed
 # in the modules index. If set to NO, only the current project's groups will
