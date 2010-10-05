@@ -153,6 +153,18 @@ void orwl_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
 /**
  ** @memberof orwl_handle2
  **/
+P99_DEFARG_DOCU(orwl_mapro2)
+void orwl_mapro2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
+               uint64_t const** data,         /*!< [out] place a pointer to the
+                                       data, here */
+               size_t* data_len,    /*!< [out] length of @a data in
+                                       number of elements */
+               rand48_t* seed       /*!< [in,out] defaults to a thread local seed */
+               );
+
+/**
+ ** @memberof orwl_handle2
+ **/
 P99_DEFARG_DOCU(orwl_resize2)
 void orwl_resize2(orwl_handle2* rh2,   /*!< [in,out] the handle whos
                                           data to resize */

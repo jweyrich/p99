@@ -253,12 +253,25 @@ P99_PROTOTYPE(orwl_state, orwl_cancel, orwl_handle*, rand48_t*);
 #endif
 
 /**
+ ** @brief Check if handle @a rh has been requested for an inclusive lock.
+ **
+ ** @a rh may be in a state of being requested or having already
+ ** acquired.
+ ** @memberof orwl_handle
+ **/
+inline
+bool orwl_inclusive(orwl_handle* rh) {
+  return (rh && rh->wh && rh->wh->svrID);
+}
+
+/**
  ** @brief Block until a previously issued read or write request can
  ** be fulfilled
  ** @memberof orwl_handle
  **/
 inline
 orwl_state orwl_acquire(orwl_handle* rh) {
+  if (!rh) return orwl_invalid;
   return orwl_wh_acquire(rh->wh, 0);
 }
 
@@ -269,12 +282,13 @@ orwl_state orwl_acquire(orwl_handle* rh) {
  **/
 inline
 orwl_state orwl_test(orwl_handle* rh) {
+  if (!rh) return orwl_invalid;
   return orwl_wh_test(rh->wh, 0);
 }
 
 /**
  ** @brief Obtain address and size of the data that is associated to a
- ** handle
+ ** handle for reading and writing
  ** @memberof orwl_handle
  ** The application may associate data to each location of which it
  ** also may control the size. Once the lock is acquired for a given
@@ -282,25 +296,53 @@ orwl_state orwl_test(orwl_handle* rh) {
  ** pointer to the data and to its size. The pointer to the data will
  ** be invalid, as soon as the lock is again released.
  **
- ** @pre The handle @a rh must hold a lock on the location to which it
- ** is linked.
+ ** @pre The handle @a rh must hold a write lock on the location to
+ ** which it is linked.
  **
- ** @warning If this lock is a read lock (inclusive) the address
- ** that is return via @a data @em must only be used for
- ** reading. The result of a write to such data is undefined and will
- ** lead to data inconsistencies.
+ ** @warning The new content of the data will only be visible for
+ ** other lock handles once they obtain a lock after this handle
+ ** releases its write lock.
  **
- ** If the lock that is hold is a write lock the data may also be
- ** written to. The new content of the data will be visible for other
- ** lock handles once they obtain a lock after this handle releases
- ** its write lock.
+ ** @see orwl_mapro for the case that the lock that is hold is a read
+ ** lock and / or the data should only be read.
+ **
  **/
 inline
 void orwl_map(orwl_handle* rh, uint64_t** data, size_t* data_len) {
-  if (orwl_test(rh) > orwl_valid) {
-    assert(rh->wh);
-    orwl_wh_map(rh->wh, data, data_len);
-  }
+  if (rh)
+    switch (orwl_test(rh)) {
+    case orwl_acquired: ;
+      if (orwl_inclusive(rh)) break;
+    case orwl_write_acquired: ;
+      assert(rh->wh);
+      orwl_wh_map(rh->wh, data, data_len);
+    default:;
+    }
+}
+
+/**
+ ** @brief Obtain address and size of the data that is associated to a
+ ** handle for reading
+ ** @memberof orwl_handle
+ ** @pre The handle @a rh must hold a read lock on the location to
+ ** which it is linked.
+ **
+ ** @see orwl_map for the case that the lock that is hold is a write
+ ** lock the data and should also be written to.
+ **/
+inline
+void orwl_mapro(orwl_handle* rh, uint64_t const** data, size_t* data_len) {
+  if (rh)
+    switch (orwl_test(rh)) {
+    case orwl_acquired: ;
+    case orwl_write_acquired: ;
+    case orwl_read_acquired: ;
+      assert(rh->wh);
+      uint64_t* data0 = NULL;
+      orwl_wh_map(rh->wh, &data0, data_len);
+      *data = data0;
+    default:;
+    }
 }
 
 /**

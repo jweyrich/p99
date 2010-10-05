@@ -55,16 +55,17 @@ orwl_state orwl__request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* se
   if (!mirror_location(rh2)) {
     rh2->inclusive = inclusive;
     orwl__new_request2(location, rh2, seed, par);
-    //rh2->location = location;
   }
   return rh2->state[par];
 }
 
 orwl_state orwl_write_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed) {
+  if (!location && !rh2) return orwl_invalid;
   return orwl__request2(location, rh2, seed, false);
 }
 
 orwl_state orwl_read_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed) {
+  if (!location && !rh2) return orwl_invalid;
   return orwl__request2(location, rh2, seed, true);
 }
 
@@ -121,6 +122,13 @@ void orwl_map2(orwl_handle2* rh2, uint64_t** data, size_t* data_len, rand48_t* s
   if (orwl_acquire2(rh2, seed) == orwl_acquired) {
     bool par = (rh2->clock % 2);
     orwl_map(&rh2->pair[par], data, data_len);
+  }
+}
+
+void orwl_mapro2(orwl_handle2* rh2, uint64_t const** data, size_t* data_len, rand48_t* seed) {
+  if (orwl_acquire2(rh2, seed) == orwl_acquired) {
+    bool par = (rh2->clock % 2);
+    orwl_mapro(&rh2->pair[par], data, data_len);
   }
 }
 
