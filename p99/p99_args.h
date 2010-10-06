@@ -209,22 +209,20 @@ P00_ISEMPTY(                                                           \
 /**
  ** @brief Helper macro to declare a variable length parameter list.
  **
- ** Inside the declared function @a X will of @c size_t and should
- ** hold the actual length of the list. It can be used as the argument
- ** to @c va_start.
- **
  ** Wrap your function into a macro that uses P99_LENGTH_ARR_ARG. If used through
- ** that macro, the correct value for @a X will always be provided at
- ** compile time. Declare such a function as this:
+ ** that macro, the correct value for @c number for the length of the
+ ** array @c arr as in the following
+ ** example will always be provided at
+ ** compile time:
  ** @code
- ** unsigned P99_FSYMB(tutu)(unsigned a, size_t number, unsigned *arr);
- ** #define tutu(A, ...) P99_FSYMB(tutu)(A, P99_LENGTH_ARR_ARG(unsigned, __VA_ARGS__))
+ ** unsigned P99_FSYMB(tutu)(unsigned a, size_t number, unsigned const*arr);
+ ** #define tutu(A, ...) P99_FSYMB(tutu)(A, P99_LENGTH_ARR_ARG(unsigned const, __VA_ARGS__))
  ** @endcode
  **
  ** In the definition of the function you then may use an array of the
  ** arguments in the obvious way.
  ** @code
- ** unsigned P99_FSYMB(tutu)(unsigned a, size_t number, unsigned *arr) {
+ ** unsigned P99_FSYMB(tutu)(unsigned a, size_t number, unsigned const*arr) {
  **   unsigned ret = 0;
  **   for (size_t i = 0; i < number; ++i) {
  **     ret += arr[i];
