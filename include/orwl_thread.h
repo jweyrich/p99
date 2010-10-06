@@ -348,6 +348,50 @@ char const* pthread2str(char *buf, pthread_t id) {
 
 #define PTHREAD2STR(ID) pthread2str((char[1 + sizeof(pthread_t) * 2]){0}, ID)
 
+#ifdef __GNUC__
+
+#define DECLARE_THREAD_VAR(T, NAME)                                     \
+/* guarantee that the thread variable is properly initialized */        \
+/* var is first in the struct to have a quick return on the fast path */ \
+typedef struct P99_PASTE2(NAME, _type) { T var; bool initialized; } P99_PASTE2(NAME, _type); \
+extern __thread P99_PASTE2(NAME, _type) P99_PASTE2(NAME, _var);         \
+/* The initialization is not inlined to take it out of the optimizers   \
+   view */                                                              \
+extern T* P99_PASTE2(NAME, _init)(void);                                \
+/* In the function itself everything is done to privilege the fast      \
+   path */                                                              \
+inline T* NAME(void) {                                                  \
+  register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var); \
+  register bool*const initialized = &ret->initialized;                  \
+  register T*const var = &ret->var;                                     \
+  if (P99_EXPECT(!*initialized, true))                                  \
+    return var;                                                         \
+  else                                                                  \
+    return P99_PASTE2(NAME, _init)();                                   \
+}                                                                       \
+inline void P99_PASTE2(NAME, _clear)(void) {                            \
+}                                                                       \
+P99_MACRO_END(DECLARE_THREAD_VAR)
+
+#define DEFINE_THREAD_VAR(T, NAME)                                      \
+__thread P99_PASTE2(NAME, _type) P99_PASTE2(NAME, _var) = { .initialized = false }; \
+void P99_PASTE2(NAME, _clear)(void);                                    \
+T* P99_PASTE2(NAME, _init)(void) {                                      \
+  register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var); \
+  register bool*const initialized = &ret->initialized;                  \
+  register T* const var = &ret->var;                                    \
+  P99_PASTE2(T, _init)(var);                                            \
+  *initialized = true;                                                  \
+  return var;                                                           \
+}                                                                       \
+T* NAME(void)
+
+#endif
+
+
+/* The default implementation of thread local storage */
+#ifndef DECLARE_THREAD_VAR
+
 #define P00_DECLARE_THREAD_VAR(T, NAME, KEY)                   \
 extern pthread_key_t KEY;                                      \
 DECLARE_ONCE_STATIC(KEY);                                      \
@@ -390,5 +434,6 @@ T* NAME(void)
 #define DEFINE_THREAD_VAR(T, NAME) P00_DEFINE_THREAD_VAR(T, NAME, P99_PASTE3(p00_, NAME, _key))
 
 
+#endif /* end of default implementation */
 
 #endif 	    /* !ORWL_THREAD_H_ */
