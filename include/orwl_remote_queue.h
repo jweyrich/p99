@@ -186,6 +186,9 @@ DECLARE_NEW_DELETE(orwl_handle);
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
 
 
+#define P00_DOCUMENT_SEED                                               \
+/*! @remark Because this function might open a socket it needs an additional parameter @a seed for a random generator. This argument is provided by default, so usually you don't have to worry and may simply omit it. */
+
 /**
  ** @brief Insert a write request in the FIFO at the location of @a rq
  ** @memberof orwl_mirror
@@ -194,6 +197,7 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
  ** this will be the only lock (read or write) that can be hold by any
  ** handle simultaneously.
  **/
+P00_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_write_request)
 orwl_state orwl_write_request(orwl_mirror* rq, /*!< [in,out] the location for the request */
                               orwl_handle* rh,   /*!< [in,out] the handle for the request */
@@ -207,6 +211,7 @@ orwl_state orwl_write_request(orwl_mirror* rq, /*!< [in,out] the location for th
  ** Once such a read request will be achieved other @em read request
  ** can be granted to other handles simultaneously.
  **/
+P00_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_read_request)
 orwl_state orwl_read_request(orwl_mirror* rq, /*!< [in,out] the location for the request */
                              orwl_handle* rh,   /*!< [in,out] the handle for the request */
@@ -220,6 +225,7 @@ orwl_state orwl_read_request(orwl_mirror* rq, /*!< [in,out] the location for the
  ** This also invalidates any data address that might have been
  ** obtained through a call to ::orwl_map.
  **/
+P00_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_release)
 orwl_state orwl_release(orwl_handle* rh,   /*!< [in,out] the handle to be released */
                         rand48_t* seed         /*!< [in] defaults to a thread local seed */
@@ -229,6 +235,7 @@ orwl_state orwl_release(orwl_handle* rh,   /*!< [in,out] the handle to be releas
  ** Release the lock that @a rh has requested on its location
  ** @memberof orwl_handle
  **/
+P00_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_cancel)
 orwl_state orwl_cancel(orwl_handle* rh,   /*!< [in,out] the handle to be canceled */
                        rand48_t* seed         /*!< [in] defaults to a thread local seed */

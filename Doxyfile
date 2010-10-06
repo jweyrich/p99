@@ -1318,6 +1318,7 @@ EXPAND_AS_DEFINED += ORWL_FTAB
 EXPAND_AS_DEFINED += ORWL_REGISTER
 EXPAND_AS_DEFINED += ORWL_REGISTER_ALIAS
 EXPAND_AS_DEFINED += ORWL_REGISTER_DATA
+EXPAND_AS_DEFINED += P00_DOCUMENT_SEED
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then
 # doxygen's preprocessor will remove all function-like macros that are alone

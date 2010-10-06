@@ -243,10 +243,10 @@ P99_MACRO_END(NAME, _declare_defarg)
 /**
  ** @brief Provide a documentation section to a function defined with ::P99_CALL_DEFARG
  **/
-#define P99_DEFARG_DOCU(NAME)                                                                                          \
-/*! @see P99_CALL_DEFARG */                                                                                            \
-/*! @see P99_DECLARE_DEFARG */                                                                                         \
-/*! @see NAME This is actually implemented as a macro that helps to provide default arguments to the real function. */
+#define P99_DEFARG_DOCU(NAME)                                           \
+/*! @remark NAME is actually implemented as a macro that helps to provide default arguments to the real function. */ \
+/*! @see P99_CALL_DEFARG */                                             \
+/*! @see P99_DECLARE_DEFARG */
 
 
 
