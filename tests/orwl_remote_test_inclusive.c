@@ -116,8 +116,8 @@ DEFINE_THREAD(arg_t) {
     report(false, "request, handle %zu, %s",
            (orwl_np + orwl_mynum + (i - 1)) % orwl_np, orwl_state_getname(ostate));
     ostate = (i % 2
-              ? orwl_write_request2(&left[i], &leh[i], seed)
-              : orwl_read_request2(&left[i], &leh[i], seed)
+              ? orwl_write_request2(&left[i], &leh[i])
+              : orwl_read_request2(&left[i], &leh[i])
               );
     report(false, "request, handle %zu, %s",
            (orwl_np + orwl_mynum + (i - 1)) % orwl_np, orwl_state_getname(ostate));
@@ -133,12 +133,12 @@ DEFINE_THREAD(arg_t) {
     /**/
     sleepfor(await);
     for (size_t i = 0; i < 3; ++i) {
-      ostate = orwl_acquire2(&leh[i], seed);
+      ostate = orwl_acquire2(&leh[i]);
       report(false,  "acq, handle %zu, state %s                            ",
              (orwl_mynum + (i - 1) + orwl_np) % orwl_np, orwl_state_getname(ostate));
     }
     if (!orwl_phase) {
-      orwl_resize2(&leh[1], 1, seed);
+      orwl_resize2(&leh[1], 1);
       report(true, "handle resized");
     }
 
@@ -146,7 +146,7 @@ DEFINE_THREAD(arg_t) {
     if (info) {
       {
         size_t data_len = 0;
-        uint64_t* data = orwl_map2(&leh[1], &data_len, seed);
+        uint64_t* data = orwl_map2(&leh[1], &data_len);
         if (data) {
           assert(data_len);
           data[0] = orwl_phase;
@@ -200,12 +200,12 @@ DEFINE_THREAD(arg_t) {
         info[2] = (abs(diff[2]) <= 2 ? ((char[]){ '<', '.', '>', '+', '!'})[diff[2] + 2] : '!');
     }
     for (size_t i = 0; i < 3; ++i) {
-      ostate = orwl_release2(&leh[i], seed);
+      ostate = orwl_release2(&leh[i]);
       report(false,  "rel, handle %zu", (orwl_mynum + (i - 1) + orwl_np) % orwl_np);
     }
   }
   for (size_t i = 0; i < 3; ++i) {
-    ostate = orwl_cancel2(&leh[i], seed);
+    ostate = orwl_cancel2(&leh[i]);
     report(false,  "can, handle %zu", (orwl_mynum + (i - 1) + orwl_np) % orwl_np);
   }
   pthread_barrier_wait(&init_barr);
@@ -312,7 +312,7 @@ int main(int argc, char **argv) {
   }
   orwl_pthread_wait_detached();
   report(1, "%s: killing server", argv[0]);
-  orwl_server_terminate(srv, seed);
+  orwl_server_terminate(srv);
   orwl_server_join(srv_id);
   report(1, "host %p and next %p", (void*)srv->host.next, (void*)&srv->host);
   orwl_server_delete(srv);

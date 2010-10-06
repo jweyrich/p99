@@ -102,7 +102,7 @@ DEFINE_THREAD(arg_t) {
     size_t preq = threadof(orwl_mynum + (orwl_phase>>1)) + (orwl_phase % 2)*orwl_np;
     /* the postion where we put the callback and that we acquire */
     size_t pacq = orwl_mynum + (orwl_phase % 2)*orwl_np;
-    orwl_state ostate = orwl_write_request(&location, handle + preq, seed);
+    orwl_state ostate = orwl_write_request(&location, handle + preq);
     report(false,  "req, handle %zu, %s",
            preq, orwl_state_getname(ostate));
     /**/
@@ -127,7 +127,7 @@ DEFINE_THREAD(arg_t) {
       memcpy(info, num + strlen(num) - 2, 2);
     }
     sleepfor(rwait);
-    orwl_release(handle + pacq, seed);
+    orwl_release(handle + pacq);
     report(false,  "rel, handle %zu", pacq);
   }
   report(true, "finished");
@@ -205,7 +205,7 @@ int main(int argc, char **argv) {
     }
     orwl_pthread_wait_detached();
     report(1, "%s: killing server", argv[0]);
-    orwl_server_terminate(srv, seed);
+    orwl_server_terminate(srv);
     orwl_server_join(srv_id);
     report(1, "host %p and next %p", (void*)srv->host.next, (void*)&srv->host);
     orwl_server_delete(srv);
