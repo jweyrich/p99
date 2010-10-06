@@ -142,9 +142,7 @@ orwl_state orwl_test2(orwl_handle2* rh2,   /*!< [in,out] the handle to be tested
  ** @memberof orwl_handle2
  **/
 P99_DEFARG_DOCU(orwl_map2)
-void orwl_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
-               uint64_t** data,         /*!< [out] place a pointer to the
-                                       data, here */
+uint64_t* orwl_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
                size_t* data_len,    /*!< [out] length of @a data in
                                        number of elements */
                rand48_t* seed       /*!< [in,out] defaults to a thread local seed */
@@ -154,9 +152,7 @@ void orwl_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
  ** @memberof orwl_handle2
  **/
 P99_DEFARG_DOCU(orwl_mapro2)
-void orwl_mapro2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
-               uint64_t const** data,         /*!< [out] place a pointer to the
-                                       data, here */
+uint64_t const* orwl_mapro2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
                size_t* data_len,    /*!< [out] length of @a data in
                                        number of elements */
                rand48_t* seed       /*!< [in,out] defaults to a thread local seed */
@@ -200,6 +196,20 @@ P99_PROTOTYPE(orwl_state, orwl_acquire2, orwl_handle2*, rand48_t*);
 P99_PROTOTYPE(orwl_state, orwl_test2, orwl_handle2*, rand48_t*);
 #define orwl_test2(...)  P99_CALL_DEFARG(orwl_test2, 2, __VA_ARGS__)
 #define orwl_test2_defarg_1() seed_get()
+
+P99_PROTOTYPE(uint64_t*, orwl_map2, orwl_handle2*, size_t*, rand48_t*);
+#define orwl_map2(...)  P99_CALL_DEFARG(orwl_map2, 3, __VA_ARGS__)
+#define orwl_map2_defarg_1() 0
+#define orwl_map2_defarg_2() seed_get()
+
+P99_PROTOTYPE(uint64_t const*, orwl_mapro2, orwl_handle2*, size_t*, rand48_t*);
+#define orwl_mapro2(...)  P99_CALL_DEFARG(orwl_mapro2, 3, __VA_ARGS__)
+#define orwl_mapro2_defarg_1() 0
+#define orwl_mapro2_defarg_2() seed_get()
+
+P99_PROTOTYPE(void, orwl_resize2, orwl_handle2*, size_t, rand48_t*);
+#define orwl_resize2(...)  P99_CALL_DEFARG(orwl_resize2, 3, __VA_ARGS__)
+#define orwl_resize2_defarg_2() seed_get()
 
 #endif
 

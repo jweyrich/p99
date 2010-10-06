@@ -140,30 +140,23 @@ DEFINE_THREAD(arg_t) {
     if (!orwl_phase) {
       orwl_resize2(&leh[1], 1, seed);
       report(true, "handle resized");
-      uint64_t* data;
-      size_t data_len;
-      orwl_map2(&leh[1], &data, &data_len, seed);
-      memset(data, 0, data_len * sizeof(uint64_t));
-      report(true, "handle mapped");
     }
 
     int64_t diff[3] = { P99_TMIN(int64_t), P99_0(int64_t), P99_TMIN(int64_t) };
     if (info) {
-      for (size_t i = 1; i == 1; ++i) {
-        uint64_t* data = NULL;
+      {
         size_t data_len = 0;
-        orwl_map2(&leh[i], &data, &data_len, seed);
-        if (data_len) {
+        uint64_t* data = orwl_map2(&leh[1], &data_len, seed);
+        if (data) {
+          assert(data_len);
           data[0] = orwl_phase;
-          report(false, "%zu found suplement of length %zu, says %" PRIX64 " we are at %zu",
-                 i, data_len, data[0], orwl_phase);
+          report(false, "1 found supplement of length %zu, says %" PRIX64 " we are at %zu",
+                 data_len, data[0], orwl_phase);
         }
       }
       for (size_t i = 0; i < 3; i += 2) {
-        uint64_t const* data = NULL;
-        size_t data_len = 0;
-        orwl_mapro2(&leh[i], &data, &data_len, seed);
-        if (data_len) {
+        uint64_t const* data = orwl_mapro2(&leh[i]);
+        if (data) {
           switch (i) {
           case 0:
             diff[0] = data[0] - (orwl_phase - 1);
@@ -174,8 +167,8 @@ DEFINE_THREAD(arg_t) {
           default:
             break;
           }
-          report(false, "%zu found suplement of length %zu, says %" PRIX64 " we are at %zu",
-                 i, data_len, data[0], orwl_phase);
+          /* report(false, "%zu found supplement of length %zu, says %" PRIX64 " we are at %zu", */
+          /*        i, data_len, data[0], orwl_phase); */
         }
       }
       char num[10];

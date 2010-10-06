@@ -118,18 +118,22 @@ orwl_state orwl_test2(orwl_handle2* rh2, rand48_t* seed) {
   return rh2->state[par];
 }
 
-void orwl_map2(orwl_handle2* rh2, uint64_t** data, size_t* data_len, rand48_t* seed) {
+uint64_t* orwl_map2(orwl_handle2* rh2, size_t* data_len, rand48_t* seed) {
+  uint64_t* ret = NULL;
   if (orwl_acquire2(rh2, seed) == orwl_acquired) {
     bool par = (rh2->clock % 2);
-    orwl_map(&rh2->pair[par], data, data_len);
+    ret = orwl_map(&rh2->pair[par], data_len);
   }
+  return ret;
 }
 
-void orwl_mapro2(orwl_handle2* rh2, uint64_t const** data, size_t* data_len, rand48_t* seed) {
+uint64_t const* orwl_mapro2(orwl_handle2* rh2, size_t* data_len, rand48_t* seed) {
+  uint64_t const* ret = NULL;
   if (orwl_acquire2(rh2, seed) == orwl_acquired) {
     bool par = (rh2->clock % 2);
-    orwl_mapro(&rh2->pair[par], data, data_len);
+    ret = orwl_mapro(&rh2->pair[par], data_len);
   }
+  return ret;
 }
 
 void orwl_resize2(orwl_handle2* rh2, size_t data_len, rand48_t* seed) {

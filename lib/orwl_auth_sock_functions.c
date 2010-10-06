@@ -176,12 +176,11 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
     if (len) {
       report(false, "found suplementary message of length %zu", len);
       Arg->len = 0;
-      uint64_t* data;
       size_t data_len;
-      orwl_wq_map_locked(wq, &data, &data_len);
+      uint64_t* data = orwl_wq_map_locked(wq, &data_len);
       if (data_len != len) {
         orwl_wq_resize_locked(wq, len);
-        orwl_wq_map_locked(wq, &data, &data_len);
+        data = orwl_wq_map_locked(wq, &data_len);
       }
       memcpy(data, Arg->mes, len * sizeof(uint64_t));
       report(false, "copied suplementary message of length %zu", len);

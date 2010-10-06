@@ -255,8 +255,8 @@ orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
   return state;
 }
 
-void orwl_map(orwl_handle* rh, uint64_t** data, size_t* data_len);
-void orwl_mapro(orwl_handle* rh, uint64_t const** data, size_t* data_len);
+uint64_t* orwl_map(orwl_handle* rh, size_t* data_len);
+uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len);
 void orwl_resize(orwl_handle* rh, size_t data_len);
 
 DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire, orwl_handle);

@@ -308,16 +308,18 @@ orwl_state orwl_test(orwl_handle* rh) {
  **
  **/
 inline
-void orwl_map(orwl_handle* rh, uint64_t** data, size_t* data_len) {
+uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
+  uint64_t* ret = NULL;
   if (rh)
     switch (orwl_test(rh)) {
     case orwl_acquired: ;
       if (orwl_inclusive(rh)) break;
     case orwl_write_acquired: ;
       assert(rh->wh);
-      orwl_wh_map(rh->wh, data, data_len);
+      ret = orwl_wh_map(rh->wh, data_len);
     default:;
     }
+  return ret;
 }
 
 /**
@@ -331,18 +333,18 @@ void orwl_map(orwl_handle* rh, uint64_t** data, size_t* data_len) {
  ** lock the data and should also be written to.
  **/
 inline
-void orwl_mapro(orwl_handle* rh, uint64_t const** data, size_t* data_len) {
+uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len) {
+  uint64_t* ret = NULL;
   if (rh)
     switch (orwl_test(rh)) {
     case orwl_acquired: ;
     case orwl_write_acquired: ;
     case orwl_read_acquired: ;
       assert(rh->wh);
-      uint64_t* data0 = NULL;
-      orwl_wh_map(rh->wh, &data0, data_len);
-      *data = data0;
+      ret = orwl_wh_map(rh->wh, data_len);
     default:;
     }
+  return ret;
 }
 
 /**

@@ -246,23 +246,22 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
   return ret;
 }
 
-void orwl_wq_map_locked(orwl_wq* wq, uint64_t** datap, size_t* data_len) {
-  *datap = wq->data;
-  *data_len = wq->data_len;
+uint64_t* orwl_wq_map_locked(orwl_wq* wq, size_t* data_len) {
+  if (data_len) *data_len = wq->data_len;
+  return wq->data;
 }
 
-void orwl_wh_map(orwl_wh* wh, uint64_t** datap, size_t* data_len) {
-  if (datap && data_len) {
-    if (orwl_wh_acquire(wh, 0) == orwl_acquired) {
-      orwl_wq *wq = wh->location;
-      assert(wq);
-      MUTUAL_EXCLUDE(wq->mut)
-        orwl_wq_map_locked(wq, datap, data_len);
-    } else {
-      *datap = NULL;
-      *data_len = 0;
-    }
+uint64_t* orwl_wh_map(orwl_wh* wh, size_t* data_len) {
+  uint64_t* ret = NULL;
+  if (orwl_wh_acquire(wh, 0) == orwl_acquired) {
+    orwl_wq *wq = wh->location;
+    assert(wq);
+    MUTUAL_EXCLUDE(wq->mut)
+      ret = orwl_wq_map_locked(wq, data_len);
+  } else {
+    if (data_len) *data_len = 0;
   }
+  return ret;
 }
 
 void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
