@@ -1,2 +1,3 @@
 p99/p99_generated.h	export-subst
 scripts/p99_generate.pl	ident
+include/orwl_document.h	export-subst
