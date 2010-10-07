@@ -270,6 +270,9 @@ P00_DECLARE_STRTOU(h, unsigned short, USHRT_MAX);
 P00_DECLARE_STRTO(t, ptrdiff_t, PTRDIFF_MIN, PTRDIFF_MAX);
 P00_DECLARE_STRTOU(z, size_t, SIZE_MAX);
 
+P00_DECLARE_STRTO(j, intmax_t, INTMAX_MIN, INTMAX_MAX);
+P00_DECLARE_STRTOU(j, uintmax_t, UINTMAX_MAX);
+
 P00_DECLARE_STRTO(i8, int_least8_t, INT8_MIN, INT8_MAX);
 P00_DECLARE_STRTOU(8, int_least8_t, UINT8_MAX);
 
@@ -455,6 +458,9 @@ P00_C99_DEFARG_DOCU(p99_strtou64, uint_least64_t, char const *nptr, char **endpt
 #ifndef strtot
 # define strtot p99_strtot
 #endif
+#ifndef strtoj
+# define strtoj p99_strtoj
+#endif
 
 #ifndef strtouhh
 # define strtouhh p99_strtouhh
@@ -467,6 +473,9 @@ P00_C99_DEFARG_DOCU(p99_strtou64, uint_least64_t, char const *nptr, char **endpt
 #endif
 #ifndef strtouz
 # define strtouz p99_strtouz
+#endif
+#ifndef strtouj
+# define strtouj p99_strtouj
 #endif
 
 #ifndef strtoi8

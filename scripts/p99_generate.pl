@@ -803,6 +803,10 @@ my %builtinType = (
     "uhh" => "unsigned char",
     "ul" => "unsigned long",
     "ull" => "unsigned long long",
+    "j" => "intmax_t",
+    "uj" => "uintmax_t",
+    "uz" => "size_t",
+    "t" => "ptrdiff_t",
     "v"	=> "void",
     "d" => "double",
     "ld" => "long double",
@@ -932,7 +936,7 @@ print << "BUILTIN0";
  ** \@brief Find a builtin type according to a code such as `ull' or `ld'
  **
  ** E.g ::P99_BUILTIN_TYPE(ull) should expand to \@c unsigned \@c long
- ** \@c long. The complete list for the $types builtin types:
+ ** \@c long. The complete list for the $types builtin types (+ required typedefs):
  ** <table>
  ** <tr><th>code</th><th>type</th><th>is signed</th><th>signed</th><th>unsigned</th><th>integer rank</th></tr>
 BUILTIN0

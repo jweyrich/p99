@@ -25,7 +25,7 @@
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Sun, 19 Sep 2010 17:59:30 +0200"
+#define P00_VERSION_DATE "Thu, 07 Oct 2010 23:26:30 +0200"
 #define P00_VERSION_ID "eb534f1d31aa3a23309b77734f874d521c3cb3a2"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -4890,7 +4890,7 @@
  ** @brief Find a builtin type according to a code such as `ull' or `ld'
  **
  ** E.g ::P99_BUILTIN_TYPE(ull) should expand to @c unsigned @c long
- ** @c long. The complete list for the 19 builtin types:
+ ** @c long. The complete list for the 23 builtin types (+ required typedefs):
  ** <table>
  ** <tr><th>code</th><th>type</th><th>is signed</th><th>signed</th><th>unsigned</th><th>integer rank</th></tr>
  ** <tr><td>b</td><td><code>_Bool</code></td><td>0</td><td></td><td>b</td><td>0</td></tr>
@@ -4899,13 +4899,17 @@
  ** <tr><td>dc</td><td><code>double _Complex</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>f</td><td><code>float</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>fc</td><td><code>float _Complex</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>j</td><td><code>intmax_t</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>ld</td><td><code>long double</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>ldc</td><td><code>long double _Complex</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>t</td><td><code>ptrdiff_t</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>i</td><td><code>signed</code></td><td>1</td><td>i</td><td>u</td><td>3</td></tr>
  ** <tr><td>hh</td><td><code>signed char</code></td><td>1</td><td>hh</td><td>uhh</td><td>1</td></tr>
  ** <tr><td>l</td><td><code>signed long</code></td><td>1</td><td>l</td><td>ul</td><td>4</td></tr>
  ** <tr><td>ll</td><td><code>signed long long</code></td><td>1</td><td>ll</td><td>ull</td><td>5</td></tr>
  ** <tr><td>h</td><td><code>signed short</code></td><td>1</td><td>h</td><td>uh</td><td>2</td></tr>
+ ** <tr><td>uz</td><td><code>size_t</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>uj</td><td><code>uintmax_t</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>u</td><td><code>unsigned</code></td><td>0</td><td>i</td><td>u</td><td>3</td></tr>
  ** <tr><td>uhh</td><td><code>unsigned char</code></td><td>0</td><td>hh</td><td>uhh</td><td>1</td></tr>
  ** <tr><td>ul</td><td><code>unsigned long</code></td><td>0</td><td>l</td><td>ul</td><td>4</td></tr>
@@ -4924,15 +4928,19 @@
 #define P00_BUILTIN_TYPE_h signed short
 #define P00_BUILTIN_TYPE_hh signed char
 #define P00_BUILTIN_TYPE_i signed
+#define P00_BUILTIN_TYPE_j intmax_t
 #define P00_BUILTIN_TYPE_l signed long
 #define P00_BUILTIN_TYPE_ld long double
 #define P00_BUILTIN_TYPE_ldc long double _Complex
 #define P00_BUILTIN_TYPE_ll signed long long
+#define P00_BUILTIN_TYPE_t ptrdiff_t
 #define P00_BUILTIN_TYPE_u unsigned
 #define P00_BUILTIN_TYPE_uh unsigned short
 #define P00_BUILTIN_TYPE_uhh unsigned char
+#define P00_BUILTIN_TYPE_uj uintmax_t
 #define P00_BUILTIN_TYPE_ul unsigned long
 #define P00_BUILTIN_TYPE_ull unsigned long long
+#define P00_BUILTIN_TYPE_uz size_t
 #define P00_BUILTIN_TYPE_v void
 #define  P99_INTEGER_RANK(CODE)  P99_PASTE2(P00_, P99_PASTE2(INTEGER_RANK_, CODE))
 #define P00_INTEGER_RANK_b 0
