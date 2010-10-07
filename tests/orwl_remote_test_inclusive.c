@@ -19,6 +19,7 @@
 #include "orwl_auth_sock_functions.h"
 #include "p99_posix_default.h"
 #include "p99_c99_default.h"
+#include "p99_str.h"
 
 static orwl_mirror* location_back = NULL;
 static orwl_mirror* location = NULL;
@@ -235,10 +236,10 @@ int main(int argc, char **argv) {
   orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(0, 0);
   orwl_endpoint_parse(&other, argv[1]);
 
-  phases = strtouz(argv[2]);
-  number = strtouz(argv[3]);
-  orwl_np = strtouz(argv[4]);
-  offset = strtouz(argv[5]);
+  phases = str2uz(argv[2]);
+  number = str2uz(argv[3]);
+  orwl_np = str2uz(argv[4]);
+  offset = str2uz(argv[5]);
 
   /* info has one suplementary char in front such that we may always
      address field -1 from the threads. */
