@@ -8,6 +8,13 @@ P99FILES =  ${P99_SOURCES} ${P99_DOXY}
 
 P99DISTRI = p99.tgz p99.zip p99-html.tgz p99-html.zip p99-refman.pdf
 
+ORWL_SOURCES = ./include/*.h ./lib/*.c ./lib/Makefile ./tests/orwl*.c ./tests/Makefile 
+#ORWL_DOXY = ./doxy/orwl-doxygen
+ORWL_DOXY =
+
+ORWLFILES =  ${ORWL_SOURCES} ${ORWL_DOXY}
+
+ORWLDISTRI = orwl.tgz orwl.zip orwl-html.tgz orwl-html.zip orwl-refman.pdf
 
 CLEAN = ${patsubst %,%/clean,${DIRS}}
 DISTCLEAN = ${patsubst %,%/distclean,${DIRS}}
@@ -39,7 +46,8 @@ doxygen-orwl :
 doxygen-p99 :
 	doxygen Doxyfile-p99
 
-.PHONY : ${P99DISTRI}
+.PHONY : ${P99DISTRI} ${ORWLDISTRI}
+
 p99-distribution : ${P99DISTRI}
 
 p99.tgz :
@@ -53,6 +61,20 @@ p99-html.tgz p99-html.zip p99-refman.pdf : doxygen-p99
 	cp p99-latex/refman.pdf p99-refman.pdf
 	tar -czf p99-html.tgz p99-html
 	zip -q -r p99-html p99-html/
+
+orwl-distribution : ${ORWLDISTRI}
+
+orwl.tgz :
+	git archive --format=tar HEAD ${ORWLFILES} | gzip -9 > $@
+
+orwl.zip :
+	git archive --format=zip -9 -o $@ HEAD ${ORWLFILES}
+
+orwl-html.tgz orwl-html.zip orwl-refman.pdf : doxygen-orwl
+	make -C orwl-latex refman.pdf
+	cp orwl-latex/refman.pdf orwl-refman.pdf
+	tar -czf orwl-html.tgz orwl-html
+	zip -q -r orwl-html orwl-html/
 
 
 ./include :

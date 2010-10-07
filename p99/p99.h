@@ -273,8 +273,10 @@
  ** macro or a function like macro.
  **
  ** For dynamic initialization we assume that an `init' function
- ** exists that takes a pointer as a first argument and returns
- ** exactly the same pointer
+ ** exists that
+ ** - takes a pointer as a first argument
+ ** - tests for the validity of that pointer, and
+ ** - returns exactly the same pointer
  ** @code
  ** tutu* tutu_init(tutu* t, bool val) {
  **   if (t) {
@@ -368,7 +370,7 @@
  ** static buffer.
  **
  ** In P99, is currently applied in a few places, in particular in the
- ** header file p99_posix_defauult.h. The usage of it will probably
+ ** header file "p99_posix_default.h". The usage of it will probably
  ** grow in future releases.
  **/
 

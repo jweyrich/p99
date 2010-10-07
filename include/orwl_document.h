@@ -16,6 +16,23 @@
 
 #include "p99_defarg.h"
 
+/** @brief The version of the ORWL library indicated by the commit date.
+ **
+ ** This should appear as an RFC2822 style date as you encounter e.g in emails.
+ ** If this doesn't contain a date but a bizarre `format' with $ signs
+ ** you have a version that is directly taken from the git repostitory.
+ **/
+#define ORWL_VERSION_DATE "$Format:%cd$"
+
+/** @brief The version of the ORWL library indicated by a unique commit ID.
+ **
+ ** This should appear as a long string of hexadecimal digits.
+ ** If this contains but a bizarre "format" with $ signs
+ ** you have a version that is directly taken from the git repostitory.
+ **/
+#define ORWL_VERSION_ID "$Format:%H$"
+
+
 #define P99_VA_ARGS_DOCUMENTATION(NAME)                                                                                               \
                                                                                                                                       \
 /*! @see P99_VA_ARGS */                                                                                                               \
