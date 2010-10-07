@@ -784,13 +784,13 @@
  **  <dt>rudimentary argument list processing</dt>
  **     <dd>to obtain e.g a sublist of the argument list (::P99_NARG) or revert an
  **     argument (::P99_REVS)</dd>
- **  <dt>code unrolling</dt>
+ **  <dt>@ref unrolling</dt>
  **     <dd>not restricted to usual @c for loops but also e.g to produce a
  **     sequence of declarations with initializers (::P99_VASSIGNS)</dd>
  **  <dt>constant generation</dt>
  **     <dd>to compose @c double constants</dd>
  **  <dt>type and keyword classification</dt>
- **  <dt>scope bound resource management</dt>
+ **  <dt>@ref blocks</dt>
  ** </dl>
  **
  ** @section arg_counting Argument List Counting
@@ -983,9 +983,96 @@
 
 /**
  ** @page c99 C99 features
+ **
+ ** As extensions to C89, C99 offers some features that largely
+ ** improve its possibilities of programming efficiently and portable
+ ** at the same time. There are four of these new concepts that are
+ ** particularly important for P99, without them P99 wouldn't be
+ ** possible.
+ ** - @ref variadic
+ ** - @ref inline
+ ** - @ref initializers
+ ** - @ref compound
+ **
  ** @section variadic Variadic macros
+ **
+ ** The preprocessor now has a feature that previously already C
+ ** functions could have: a macro may accept an argument list that may
+ ** vary in size. As for functions such a macro is defined with `...'
+ ** in the argument list to indicate a list following the initial,
+ ** named, arguments:
+ **
+ ** @code
+ ** #define TOTO(NAME, ...)  NAME[__VA_ARGS__]
+ ** @endcode
+ **
+ ** The variable length list then is referred by the reserved
+ ** identifier @c __VA_ARGS__.
+ **
+ ** This functionality of C99 allows us e.g to implement macros for
+ ** @ref defaults and to do @ref unrolling.
+ **
  ** @section inline Inline functions
- ** @section initializers Named initializers
+ **
+ ** The new keyword @c inline is a borrow from C++ with some slightly
+ ** changed semantics. The important part for P99 is that functions
+ ** can be @em defined in a header file (an not only declared) when
+ ** specified as @c inline.
+ **
+ ** This allows us to define small wrappers in include files through
+ ** macros, without generating conflicts in different compilation
+ ** units. By that we can avoid one of the major drawbacks of C macro
+ ** programming: a macro cannot @em define another macro. In addition
+ ** functions, compared to macros, have other advantages
+ ** - they are typesafe
+ ** - their arguments are evaluated exactly once
+ **
+ **
+ ** @section initializers Designated initializers
+ **
+ ** In C89, initialization of structures can be tedious and error prone:
+ ** @code
+ ** typedef struct toto toto;
+ ** struct toto {
+ **   unsigned a;
+ **   double b;
+ ** };
+ ** .
+ ** .
+ ** toto A = { 0, 1 };
+ ** @endcode
+ **
+ ** Components are initialized in the order of the type
+ ** declaration. Here the @c 0 in the initializer is used to
+ ** initialize the component @c A.a and the @c 1 for A.b.
+ **
+ ** Whenever the structure @c toto changes during a development
+ ** process, we would have to revisit @em all initializations to see
+ ** whether or not the are still consistent:
+ ** - if the order of components @c a and @c b changes, the order of
+ **   the expressions must be inversed
+ ** - if we insert an element before @c a or @c b, the initialization
+ **   of @c b by @c 1 in the example is replaced by the default
+ **   initialization, namely @c 0.0.
+ **
+ ** Keeping track of these may be particularly difficult if the
+ ** components are of similar types, such that an initializer for one
+ ** is valid for the other.
+ **
+ ** With designated initializers this situation changes substantially:
+ ** @code
+ ** toto A = { .a = 0, .b = 1 };
+ ** @endcode
+ **
+ ** By that we avoid all of the problems that are mentioned
+ ** above. This scheme is robust against reordering and insertion of
+ ** components. In a certain sense it is also robust against the
+ ** renaming of components: all initializations will then simply fail
+ ** at compile time, so it is easy to identify the problem spots.
+ **
+ ** For a more detailed discussion of initialization and P99 see @ref
+ ** variableInit.
+ **
  ** @section compound Compound literals
  **
  ** A compound literal is syntactically given as a compound
