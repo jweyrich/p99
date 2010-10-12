@@ -18,8 +18,8 @@
  ** @file
  ** @brief Group compiler dependencies together in one file
  **
- ** This has been tested with different versions of gcc (versions 4.0
- ** to 4.4) and clang.
+ ** This has been tested with different versions of gcc (GNU, versions 4.0
+ ** to 4.4), clang, opencc (OPEN64) and icc (INTEL).
  **
  ** The problem makers that are handled the @c inline keyword and some
  ** simple branch prediction feature.
@@ -69,7 +69,7 @@
 #elif defined(__INTEL_COMPILER)
 # define P99_COMPILER P99_COMPILER_INTEL
 # define P99_COMPILER_VERSION                                  \
- "intel " __INTEL_COMPILER                                     \
+ "intel " P00_STRINGIFY(__INTEL_COMPILER)                      \
  "; gnu "                                                      \
  P00_STRINGIFY(__GNUC__) "."                                  \
  P00_STRINGIFY(__GNUC_MINOR__) "."                            \
