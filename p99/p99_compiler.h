@@ -237,6 +237,34 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 
 /**
+ ** @brief Declare a @c for loop for which all iterations can be run
+ ** independently and out of order.
+ **
+ ** This can be used syntactically exactly as the keyword @c for,
+ ** except that the programmer asserts with this that the depending
+ ** statement or block can be executed out of order for all instances.
+ **
+ ** @code
+ ** P99_PARALLEL_FOR (unsigned i = 0; i < limit; ++i) {
+ **    unsigned sum = a[i] + b[i];
+ **    a[i] *= sum;
+ ** }
+ ** @endcode
+ **
+ ** The resulting code then may be parallelized and (if the platform
+ ** supports this) multiple threads may be used to speed up the
+ ** execution. This will only be effective if your compiler supports
+ ** the <a href="http://openmp.org/wp/">Open Multi-Processing</a>
+ ** extension (OpenMP for short, or OMP even shorter) and you told him
+ ** to use it.
+ **/
+#ifdef _OPENMP
+#define P99_PARALLEL_FOR _Pragma("omp parallel for") for
+#else
+#define P99_PARALLEL_FOR for
+#endif
+
+/**
  ** @def P99_EXPECT
  ** @brief Provide a compiler hint concerning the likelihood of a
  ** certain value in an expression @a EXP.
