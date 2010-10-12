@@ -184,7 +184,7 @@
 #define P00_REVS_(N, ...) P99_FOR(,N, P00_REV, P00_IDT, __VA_ARGS__)
 
 /**
- ** @ingroup preprocessor_arithmetic 
+ ** @ingroup preprocessor_arithmetic
  ** @brief Generate the quotient of non-negative decimal numbers @a A and @a B at
  ** preprocessing time.
  **
@@ -195,6 +195,92 @@
 
 #define P00_IDI(B, X, I) P99_DUPL(B, I)
 
+
+#define P00_CDIM_OP(NAME, I, REC, X) (X + ((NAME)[I] * REC))
+#define P00_CDIM_FUNC(NAME, X, I) (X)
+#define P00_CDIM(N, NAME, ...) P99_FOR(NAME, N, P00_CDIM_OP, P00_CDIM_FUNC, __VA_ARGS__)
+
+/**
+ ** @ingroup preprocessor_arithmetic
+ ** @brief Compute an absolute index in a multidimensional array with
+ ** the same function as C would do that.
+ **
+ ** If we have @c N arguments after @a NAME, @a NAME must be an array
+ ** of type
+ ** @code
+ ** size_t NAME[N];
+ ** @endcode
+ ** that hold the side lengths of an @c N dimensional cube. E.g
+ ** @code
+ ** size_t const D[] = { 3, 4, 7 };
+ ** @endcode
+ ** corresponds to a cube of side length 3 in dimension 0, 4 in
+ ** dimension 1 and 7 in dimension 2, with in total 84 elements.
+ ** With that, we get
+ ** @code
+ ** P99_CDIM(D, 1, 2, 3)  =>  ((3) + ((D)[2] * ((2) + ((D)[1] * (1)))))
+ ** P99_CDIM(D, k0, k1, k2)  =>  ((k2) + ((D)[2] * ((k1) + ((D)[1] * (k0)))))
+ ** @endcode
+ **/
+#define P99_CDIM(NAME, ...) P00_CDIM(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
+
+#define P00_FORALL_OP(NAME, I, REC, X) REC X
+#define P00_FORALL_FUNC(NAME, X, I) for (register unsigned X = 0; X < (NAME)[I]; ++X)
+#define P00_FORALL(N, NAME, ...) P99_FOR(NAME, N, P00_FORALL_OP, P00_FORALL_FUNC, __VA_ARGS__)
+
+/**
+ ** @ingroup preprocessor_blocks
+ ** @brief A multi-index @c for loop
+ **
+ ** Given the names of @c N identifiers after @a NAME, @a NAME must
+ ** correspond to an array of lengths with dimension at least @c N.
+ ** @code
+ ** size_t NAME[N];
+ ** @endcode
+ ** For @c N = 3 this could e.g be
+ ** @code
+ ** size_t const D[] = { 3, 4, 7 };
+ ** @endcode
+ ** Then, the macro in the following
+ ** @code
+ ** P99_FORALL(D, i0, i1, i2) {
+ **   A[i0][i1][i2] *= B[i0][i1][i2]
+ ** }
+ ** @endcode
+ ** would expand to something similar to
+ ** @code
+ ** for (register unsigned i0 = 0; i0 < D[0]; ++i0)
+ **   for (register unsigned i1 = 0; i1 < D[1]; ++i1)
+ **     for (register unsigned i2 = 0; i2 < D[2]; ++i2) {
+ **        A[i0][i1][i2] *= B[i0][i1][i2]
+ **     }
+ ** @endcode
+ **
+ ** @see P99_PARALLEL_FORALL for a variant that uses OpenMp to parallelize the loop.
+ ** @see P99_CDIM for a macro that computes the absolute position of a
+ **   index N-tuple in a multi-dimensional array.
+ **/
+#define P99_FORALL(NAME, ...) P00_FORALL(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
+
+#define P00_PARALLEL_FORALL_FUNC(NAME, X, I) P99_PARALLEL_FOR (register unsigned X = 0; X < (NAME)[I]; ++X)
+#define P00_PARALLEL_FORALL(N, NAME, ...) P99_FOR(NAME, N, P00_FORALL_OP, P00_PARALLEL_FORALL_FUNC, __VA_ARGS__)
+
+/**
+ ** @ingroup preprocessor_blocks
+ ** @brief A multi-index @c for loop who's dependent statement or
+ ** block may be executed out of order.
+ **
+ ** This has the same semantics as ::P99_FORALL only that it assumes
+ ** the independence of the of each execution of the statement from
+ ** the others.
+ **
+ ** @see P99_FORALL for a variant that doesn't need that assumption,
+ ** i.e where the statements should be executed sequentially in order.
+ ** @see P99_PARALLEL_FOR for a simple parallel replacement of @c for
+ ** @see P99_CDIM for a macro that computes the absolute position of a
+ **   index N-tuple in a multi-dimensional array.
+ **/
+#define P99_PARALLEL_FORALL(NAME, ...) P00_PARALLEL_FORALL(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
 
 
 #endif 	    /* !P99_FOR_H_ */
