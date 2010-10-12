@@ -23,7 +23,7 @@
  ** @mainpage P99 - Preprocessor macros and functions for c99
  **
  ** P99 is a suite of macro and function definitions that ease the
- ** programming in C99, aka C 1999. By using new tools from C99 we
+ ** programming in modern C, aka C99. By using new tools from C99 we
  ** implement default arguments for functions, scope bound resource
  ** management, transparent allocation and initialization, ...
  **
@@ -111,6 +111,7 @@
  **  - @ref initializers
  **  - @ref compound
  **  - @ref hide
+ **  - @ref pragma
  **
  ** With these it implements @ref utilities "utilities" that
  ** previously had not been possible to program in C (or C macros) or
@@ -385,6 +386,7 @@
  **
  **  -# @ref defaults
  **  -# @ref blocks
+ **  -# @ref for
  **  -# @ref condi
  **  -# @ref alloc
  **
@@ -581,6 +583,59 @@
  **   - pre- and postconditions
  **   - ensure that some dynamic initialization of a static variable is performed exactly once
  **   - code instrumentation
+ **
+ ** An even more sophisticated tool for scope bound resources
+ ** management is provided by the macro ::P99_UNWIND_PROTECT
+ ** @code
+ ** double toto(double x) {
+ **  P99_UNWIND_PROTECT {
+ **    // do something
+ **    while (cond0) {
+ **      for (;cond1;) {
+ **         if (cond2) P99_UNWIND(-1);
+ **         // preliminary return
+ **         if (cond3) P99_UNWIND_RETURN 5.7777E-30;
+ **      }
+ **    }
+ **   P99_PROTECT :
+ **    // do some cleanup here
+ **    // if everything went well ::p99_unwind_code has value 0 otherwise it
+ **    // receives a value from P99_UNWIND
+ **  }
+ **  // regular return
+ **  return x * x;
+ ** }
+ ** @endcode
+ **
+ ** In this code fragment the statement ::P99_UNWIND will ensure that
+ ** the two levels of loops are broken and that the execution
+ ** continues at the special label ::P99_PROTECT.
+ **
+ ** ::P99_UNWIND_RETURN goes one step further. As for ::P99_UNWIND, it
+ ** executes the clause after ::P99_PROTECT, but when it reaches the
+ ** end of the ::P99_UNWIND_PROTECT scope it will return to the caller
+ ** with a return value as specified after ::P99_UNWIND_RETURN, here
+ ** the value @c 5.7777E-30.
+ **
+ ** @section for Multidimensional arrays and parallel loops
+ **
+ ** We provide some utilities to ease the programming in multiple
+ ** dimensions. ::P99_FORALL allows to generate nested for loops over
+ ** arbitrary many dimensions:
+ ** @code
+ ** size_t const D[3] = { 20, 17, 31 };
+ ** ::P99_FORALL(D, i, j, k) {
+ **      A[i][j][k] *= B[i][j][k];
+ ** }
+ ** @endcode
+ **
+ ** will iterate over all combinations of @c i, @c j, @c k in the
+ ** bounds specified by @c D.
+ **
+ ** ::P99_PARALLEL_FOR, where available, will provide a parallelized
+ ** version of a simple @c for loop, and ::P99_PARALLEL_FORALL
+ ** implements nested parallel loops with otherwise the same semantics
+ ** as for ::P99_FORALL.
  **
  ** @section condi Preprocessor conditionals and loops
  **
@@ -813,7 +868,7 @@
  ** version for ::P99_MAX_NUMBER.
  **
  ** The toy macro @c NARG2 has an important property, namely that it
- ** swallows @i all its arguments when called correctly (say with 0,
+ ** swallows @em all its arguments when called correctly (say with 0,
  ** 1 or 2 arguments) and just returns a token that corresponds to the
  ** number. Such a property is important for macro programming since
  ** we don't want to have the compiler itself see the same expressions
@@ -993,6 +1048,7 @@
  ** - @ref inline
  ** - @ref initializers
  ** - @ref compound
+ ** - @ref pragma
  **
  ** @section variadic Variadic macros
  **
@@ -1193,6 +1249,31 @@
  ** avoid this pitfall: if it is called with the same number of
  ** arguments (or more) that all are non-empty, it will produce the
  ** same token sequence as if the macro had not been defined.
+ **
+ ** @subsection pragma Pragmas inside macros
+ **
+ ** The traditional approach of C had been to specify meta information
+ ** for the compiler in so called pragmas:
+ ** @code
+ ** #pragma omp parallel for
+ ** for (size_t i = 0; i < n; ++i) c[i] += a[i] * b[i];
+ ** @endcode
+ **
+ ** The inconvenience of such a construct is that it has always to be
+ ** on a line of its own and could not be placed in a macro. For that
+ ** reason most compilers provided extensions that let the programmer
+ ** place meta information more precisely at some specific point of
+ ** the code, e.g gcc has an @c __attribute__ extension for that.
+ **
+ ** C99 adds a keyword to overcome that difficulty and to normalize
+ ** the link between macros and @c #pragma: @c _Pragma.
+ ** @code
+ ** _Pragma("omp parallel for") for (size_t i = 0; i < n; ++i) c[i] += a[i] * b[i];
+ ** @endcode
+ ** P99 uses this feature for extensions concerning OpenMP, in
+ ** particular the ::P99_PARALLEL_FOR and ::P99_PARALLEL_FORALL
+ ** macros.
+ **
  **/
 
 
