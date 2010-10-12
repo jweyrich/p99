@@ -27,6 +27,7 @@ void orwl_handle_destroy(orwl_handle *rh);
 
 DEFINE_NEW_DELETE(orwl_handle);
 
+bool orwl_inclusive(orwl_handle* rh);
 orwl_state orwl_acquire(orwl_handle* rh);
 orwl_state orwl_test(orwl_handle* rh);
 
