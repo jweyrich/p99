@@ -23,6 +23,7 @@ NAME 	=					\
 		test-p99-compound		\
 		test-p99-double			\
 		test-p99-int			\
+		test-p99-ndim			\
 		test-p99-va-arg
 
 SRC	=					\
@@ -38,6 +39,7 @@ SRC	=					\
 		test-p99-compound.c		\
 		test-p99-double.c		\
 		test-p99-int.c			\
+		test-p99-ndim.c			\
 		test-p99-va-arg.c
 
 INCL  	=		# List of *.h
@@ -48,7 +50,7 @@ LIBDIR	:= $(join $(dir ${CURDIR}),lib)
 OPT     = -O0
 IPATH   = -I. -I../include -I../p99
 OBJOPT  = -std=c99 -pedantic -Wall -Wstrict-prototypes ${OPT}
-EXEOPT  = -lorwl
+EXEOPT  = -lorwl ${OPT}
 LPATH   = -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR}
 COPY = "all rights reserved, "
 LICENSE = SHORTLICENCE-closed.txt

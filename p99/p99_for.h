@@ -224,8 +224,86 @@
  **/
 #define P99_CDIM(NAME, ...) P00_CDIM(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
 
+#define P00_DO_0(FOR, TYPE, VAR, LOW, LEN, INCR)                        \
+for (register _Bool p00 = 1; p00; p00 = 0)                              \
+  for (register TYPE                                                    \
+         P99_PASTE2(p00_start_, VAR) = (LOW),                           \
+         P99_PASTE2(p00_stop_, VAR) = P99_PASTE2(p00_start_, VAR) + (LEN), \
+         P99_PASTE2(p00_incr_, VAR) = (INCR);                           \
+       p00; p00 = 0)                                                    \
+    P99_IF_ELSE(FOR)(P99_PARALLEL_FOR)(for)                             \
+     (TYPE P99_PASTE2(p00_i_, VAR) = P99_PASTE2(p00_start_, VAR);       \
+         P99_PASTE2(p00_i_, VAR) < P99_PASTE2(p00_stop_, VAR);          \
+         P99_PASTE2(p00_i_, VAR) += P99_PASTE2(p00_incr_, VAR))         \
+      for (register _Bool p00 = 1; p00; p00 = 0)                        \
+        for (TYPE const VAR = P99_PASTE2(p00_i_, VAR); p00; p00 = 0)
+
+#define P00_DO(...)                             \
+P99_IF_EQ(P99_NARG(__VA_ARGS__), 5)             \
+(P00_DO_0(__VA_ARGS__, 1))                      \
+(P00_DO_0(__VA_ARGS__))
+
+#ifdef DOXYGEN
+/**
+ ** @ingroup preprocessor_blocks
+ ** @brief A fortran like do-loop with bounds that are fixed at the
+ ** beginning
+ **
+ ** @param TYPE is the type of the control variable. It must be an
+ ** arithmetic type.
+ **
+ ** @param VAR is the name of the control variable. It is not mutable
+ ** inside the loop as if it where declared <code>TYPE const
+ ** VAR</code>.
+ **
+ ** @param LOW is the start value of VAR for the first iteration. Only
+ ** evaluated once before all iterations. Must be assignment
+ ** compatible to type @a TYPE.
+ **
+ ** @param LEN is the length of the iteration and is
+ ** non-inclusive. Only evaluated once before all iterations. Must be
+ ** assignment compatible to type @a TYPE.
+ **
+ ** @param INCR is the increment of VAR after each iteration. Only
+ ** evaluated once before all iterations. @a INCR defaults to @c 1 if
+ ** omitted. Must be assignment compatible to type @a TYPE.
+ **
+ ** @code
+ ** P99_DO(size_t, i, a, n, inc) {
+ **   A[i] *= B[i-1]
+ ** }
+ ** @endcode
+ ** would expand to something similar to
+ ** @code
+ ** for (size_t i = a; i < (a + n); i += inc) {
+ **   A[i] *= B[i-1]
+ ** }
+ ** @endcode
+ **
+ ** only that
+ ** -  the bounds of the loop (involving @c a and @c n) and the
+ ** increment @c inc are fixed once when entering this construct
+ ** - the loop variable @c i is not modifiable within the block
+ **
+ ** @see P99_PARALLEL_DO for a parallel variant of this
+ **/
+#define P99_DO(TYPE, VAR, LOW, LEN, INCR) for(;;)
+/**
+ ** @ingroup preprocessor_blocks
+ ** @brief as ::P99_DO but performs the iterations out of order
+ ** @see P99_DO for an explanation of the arguments
+ ** @see P99_FOR for a more general parallel iteration construct
+ **/
+#define P99_PARALLEL_DO(TYPE, VAR, LOW, LEN, INCR) for(;;)
+#else
+#define P99_DO(...) P00_DO(0, __VA_ARGS__)
+#define P99_PARALLEL_DO(...) P00_DO(1, __VA_ARGS__)
+#endif
+
 #define P00_FORALL_OP(NAME, I, REC, X) REC X
-#define P00_FORALL_FUNC(NAME, X, I) for (register unsigned X = 0; X < (NAME)[I]; ++X)
+
+#define P00_FORALL_FUNC(NAME, X, I) P99_DO(size_t, X, 0, (NAME)[I])
+
 #define P00_FORALL(N, NAME, ...) P99_FOR(NAME, N, P00_FORALL_OP, P00_FORALL_FUNC, __VA_ARGS__)
 
 /**
@@ -249,20 +327,27 @@
  ** @endcode
  ** would expand to something similar to
  ** @code
- ** for (register unsigned i0 = 0; i0 < D[0]; ++i0)
- **   for (register unsigned i1 = 0; i1 < D[1]; ++i1)
- **     for (register unsigned i2 = 0; i2 < D[2]; ++i2) {
+ ** for (size_t i0 = 0; i0 < D[0]; ++i0)
+ **   for (size_t i1 = 0; i1 < D[1]; ++i1)
+ **     for (size_t i2 = 0; i2 < D[2]; ++i2) {
  **        A[i0][i1][i2] *= B[i0][i1][i2]
  **     }
  ** @endcode
  **
+ ** only that
+ ** - the bounds of the loops (involving @c D[0], @c D[1] and @c
+ **    D[2]) are fixed once when entering this construct
+ ** - the loop variables @c i0, @c i1 and @c i2 are not modifiable
+ **    within the block
+ **
  ** @see P99_PARALLEL_FORALL for a variant that uses OpenMp to parallelize the loop.
+ ** @see P99_DO for a simple fortran like iteration
  ** @see P99_CDIM for a macro that computes the absolute position of a
  **   index N-tuple in a multi-dimensional array.
  **/
 #define P99_FORALL(NAME, ...) P00_FORALL(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
 
-#define P00_PARALLEL_FORALL_FUNC(NAME, X, I) P99_PARALLEL_FOR (register unsigned X = 0; X < (NAME)[I]; ++X)
+#define P00_PARALLEL_FORALL_FUNC(NAME, X, I)  P99_PARALLEL_DO(size_t, X, 0, (NAME)[I])
 #define P00_PARALLEL_FORALL(N, NAME, ...) P99_FOR(NAME, N, P00_FORALL_OP, P00_PARALLEL_FORALL_FUNC, __VA_ARGS__)
 
 /**
@@ -276,7 +361,8 @@
  **
  ** @see P99_FORALL for a variant that doesn't need that assumption,
  ** i.e where the statements should be executed sequentially in order.
- ** @see P99_PARALLEL_FOR for a simple parallel replacement of @c for
+ ** @see P99_PARALLEL_DO for a simple fortran like parallel iteration
+ ** @see P99_PARALLEL_FOR for a parallel replacement of @c for
  ** @see P99_CDIM for a macro that computes the absolute position of a
  **   index N-tuple in a multi-dimensional array.
  **/
