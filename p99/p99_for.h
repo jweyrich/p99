@@ -224,24 +224,44 @@
  **/
 #define P99_CDIM(NAME, ...) P00_CDIM(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
 
-#define P00_DO_0(FOR, TYPE, VAR, LOW, LEN, INCR)                        \
+
+/**
+ ** @brief Declare a @c for loop for which all iterations can be run
+ ** independently and out of order.
+ **
+ ** This can be used syntactically exactly as the keyword @c for,
+ ** except that the programmer asserts with this that the depending
+ ** statement or block can be executed independently and out of order for all instances.
+ **
+ ** @code
+ ** P99_PARALLEL_FOR (unsigned i = 0; i < limit; ++i) {
+ **    unsigned sum = a[i] + b[i];
+ **    a[i] *= sum;
+ ** }
+ ** @endcode
+ **
+ ** The resulting code then may be parallelized and (if the platform
+ ** supports this) multiple threads may be used to speed up the
+ ** execution.
+ ** @see P99_PARALLEL_PRAGMA for the conditions under which this will
+ ** result in a parallel execution.
+ **/
+#define P99_PARALLEL_FOR _Pragma(P99_PARALLEL_PRAGMA) for
+
+
+#define P00_PRAGMA_DO(PRAG, TYPE, VAR, LOW, LEN, INCR)                  \
 for (register _Bool p00 = 1; p00; p00 = 0)                              \
   for (register TYPE                                                    \
          P99_PASTE2(p00_start_, VAR) = (LOW),                           \
          P99_PASTE2(p00_stop_, VAR) = P99_PASTE2(p00_start_, VAR) + (LEN), \
          P99_PASTE2(p00_incr_, VAR) = (INCR);                           \
        p00; p00 = 0)                                                    \
-    P99_IF_ELSE(FOR)(P99_PARALLEL_FOR)(for)                             \
-     (TYPE P99_PASTE2(p00_i_, VAR) = P99_PASTE2(p00_start_, VAR);       \
-         P99_PASTE2(p00_i_, VAR) < P99_PASTE2(p00_stop_, VAR);          \
-         P99_PASTE2(p00_i_, VAR) += P99_PASTE2(p00_incr_, VAR))         \
-      for (register _Bool p00 = 1; p00; p00 = 0)                        \
-        for (TYPE const VAR = P99_PASTE2(p00_i_, VAR); p00; p00 = 0)
-
-#define P00_DO(...)                             \
-P99_IF_EQ(P99_NARG(__VA_ARGS__), 5)             \
-(P00_DO_0(__VA_ARGS__, 1))                      \
-(P00_DO_0(__VA_ARGS__))
+    P99_PRAGMA(PRAG)                                                    \
+      for (TYPE P99_PASTE2(p00_i_, VAR) = P99_PASTE2(p00_start_, VAR);  \
+           P99_PASTE2(p00_i_, VAR) < P99_PASTE2(p00_stop_, VAR);        \
+           P99_PASTE2(p00_i_, VAR) += P99_PASTE2(p00_incr_, VAR))       \
+        for (register _Bool p00 = 1; p00; p00 = 0)                      \
+          for (TYPE const VAR = P99_PASTE2(p00_i_, VAR); p00; p00 = 0)
 
 #ifdef DOXYGEN
 /**
@@ -285,7 +305,12 @@ P99_IF_EQ(P99_NARG(__VA_ARGS__), 5)             \
  ** increment @c inc are fixed once when entering this construct
  ** - the loop variable @c i is not modifiable within the block
  **
+ ** @warning Placing a @c #pragma directive directly in front of
+ ** ::P99_DO will not work because of syntactic restrictions. Use
+ ** ::P99_PRAGMA_DO instead.
  ** @see P99_PARALLEL_DO for a parallel variant of this
+ ** @see P99_PRAGMA_DO for a variant of this that can be controlled
+ ** with an arbitrary @c #pragma directive.
  **/
 #define P99_DO(TYPE, VAR, LOW, LEN, INCR) for(;;)
 /**
@@ -295,9 +320,21 @@ P99_IF_EQ(P99_NARG(__VA_ARGS__), 5)             \
  ** @see P99_FOR for a more general parallel iteration construct
  **/
 #define P99_PARALLEL_DO(TYPE, VAR, LOW, LEN, INCR) for(;;)
+/**
+ ** @brief as ::P99_DO but allows you to additionally place a pragma
+ ** directive in front of the generated @c for loop
+ **
+ ** @warning Just placing a @c #pragma directive directly in front of
+ ** ::P99_DO will not work because of syntactic restrictions
+ **/
+#define P99_PRAGMA_DO(PRAG, TYPE, VAR, LOW, LEN, INCR) for(;;)
 #else
-#define P99_DO(...) P00_DO(0, __VA_ARGS__)
-#define P99_PARALLEL_DO(...) P00_DO(1, __VA_ARGS__)
+#define P99_DO(...) P99_PRAGMA_DO(, __VA_ARGS__)
+#define P99_PARALLEL_DO(...) P99_PRAGMA_DO(P99_PARALLEL_PRAGMA, __VA_ARGS__)
+#define P99_PRAGMA_DO(...)                      \
+P99_IF_EQ(P99_NARG(__VA_ARGS__), 5)             \
+(P00_PRAGMA_DO(__VA_ARGS__, 1))                 \
+(P00_PRAGMA_DO(__VA_ARGS__))
 #endif
 
 #define P00_FORALL_OP(NAME, I, REC, X) REC X

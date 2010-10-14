@@ -174,6 +174,18 @@
 #define P99_IF_VOID(...) P99_IF_EQ_1(P99_IS_VOID(__VA_ARGS__))
 
 
+#define P00_PRAGMA_(STR) _Pragma(STR)
+#define P00_PRAGMA(...) P00_PRAGMA_(#__VA_ARGS__)
+
+/**
+ ** @brief An wrapper of the _Pragma keyword
+ **
+ ** All arguments are wrapped into a string that is passed as one
+ ** argument to @c _Pragma. If the argument list is empty, this
+ ** evaporates and is ignored.
+ **/
+#define P99_PRAGMA(...) P99_IF_EMPTY(__VA_ARGS__)()(P00_PRAGMA(__VA_ARGS__))
+
 /**
  ** @}
  **/
