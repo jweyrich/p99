@@ -692,6 +692,190 @@ P99_CHOOSE5(xT,                                                \
  **/
 #define P00_J(x) (0 ? P99_0(uintmax_t) : (x))
 
+/**
+ ** @addtogroup bitfiddling
+ ** @brief Bit fiddling of low order bits
+ **
+ ** The smart expression that are used in this group are taken as
+ ** where summarized on <a
+ ** href="http://realtimecollisiondetection.net/blog/?p=78"> Christer
+ ** Ericson's blog</a>.
+ **
+ ** They work because of the special features of unsigned integer
+ ** arithmetic that is an arithmetic modulo a power of @c 2.
+ **
+ ** The notation of the macro and function names has some menomics:
+ **
+ ** - @c low2 stands for the least significant bit resulting in the
+ **   corresponding power of 2, something like <code>1 <<
+ **   bitposition</code>
+ ** - @c mask stands for a mask that is constructed from this, that is
+ **   a sequence of bits that are all one. When @c mask comes after @c
+ **   low as in @c low2mask it means that the bit mask follows that
+ **   least significant bit. When @c mask comes before @c low as in @c
+ **   mask2low it means that the bit mask precedes that least
+ **   significant bit.
+ ** - The last digit of @c 0 or @c 1 tells if that least significant
+ **   bit is cleared or left untouched.
+ **
+ ** Be careful when using one of the macros in this group:
+ ** - they may evaluate their arguments several times
+ ** - they @b must be only used with expressions that can be
+ **   guaranteed to be unsigned
+ **
+ ** On the other hand prefer the macro when you known that you have
+ ** compile time expressions. Then you may even use them as part of an
+ ** @c #if preprocessing conditional.
+ **
+ ** @{
+ **/
+
+/**
+ ** @brief extract the least significant bit that is non zero
+ **
+ ** Example: 01001110 ->  00000010
+ **/
+#define P99_LOW2(X) ((X) & -(X))
+
+/**
+ ** @brief function equivalent to ::P99_LOW2
+ **/
+p99_inline
+uintmax_t p99_low2(uintmax_t x) { return P99_LOW2(x); }
+
+/**
+ ** @brief mask consisting of bits strictly below the least
+ ** significant bit that is non zero
+ **
+ ** Example: 10011100 ->  00000011
+ **/
+#define P99_LOW2MASK1(X) ((X) ^ ((X) - 1))
+
+/**
+ ** @brief function equivalent to ::P99_LOW2MASK1
+ **/
+p99_inline
+uintmax_t p99_low2mask1(uintmax_t x) { return P99_LOW2MASK1(x); }
+
+/**
+ ** @brief mask consisting of bits below and including the least
+ ** significant bit that is non zero
+ **
+ ** Example: 10011100 ->  00000111
+ **/
+#define P99_LOW2MASK0(X) (~(X) & ((X) - 1))
+
+/**
+ ** @brief function equivalent to ::P99_LOW2MASK0
+ **/
+p99_inline
+uintmax_t p99_low2mask0(uintmax_t x) { return P99_LOW2MASK0(x); }
+
+/**
+ ** @brief mask consisting of bits above and including the least
+ ** significant bit that is non zero
+ **
+ ** Example: 10011100 ->  11111100
+ **/
+#define P99_MASK2LOW1(X) ((X) | -(X))
+
+/**
+ ** @brief function equivalent to ::P99_MASK2LOW1
+ **/
+p99_inline
+uintmax_t p99_mask2low1(uintmax_t x) { return P99_MASK2LOW1(x); }
+
+/**
+ ** @brief mask consisting of bits strictly above the least
+ ** significant bit that is non zero
+ **
+ ** Example: 10011100 ->  11111000
+ **/
+#define P99_MASK2LOW0(X) ((X) ^ -(X))
+
+/**
+ ** @brief function equivalent to ::P99_MASK2LOW0
+ **/
+p99_inline
+uintmax_t p99_mask2low0(uintmax_t x) { return P99_MASK2LOW0(x); }
+
+/**
+ ** @brief clear the least significant bit that is non zero
+ **
+ ** Example: 01001110 ->  01001100
+ **/
+#define P99_LOW2CLEAR(X) ((X) & ((X) - 1))
+
+/**
+ ** @brief function equivalent to ::P99_LOW2CLEAR
+ **/
+p99_inline
+uintmax_t p99_low2clear(uintmax_t x) { return P99_LOW2CLEAR(x); }
+
+/**
+ ** @brief fill all bits below least significant bit that is non zero
+ **
+ ** Example: 01001100 ->  01001111
+ **/
+#define P99_LOW2FILL(X) ((X) | ((X) - 1))
+
+/**
+ ** @brief function equivalent to ::P99_LOW2FILL
+ **/
+p99_inline
+uintmax_t p99_low2fill(uintmax_t x) { return P99_LOW2FILL(x); }
+
+/**
+ ** @brief set least significant zero bit
+ **
+ ** Example: 01001011 ->  01001111
+ **/
+#define P99_LOW0SET(X) ((X) | ((X) + 1))
+
+/**
+ ** @brief function equivalent to ::P99_LOW0SET
+ **/
+p99_inline
+uintmax_t p99_low0set(uintmax_t x) { return P99_LOW0SET(x); }
+
+/**
+ ** @brief shift number right such that the least significant bit
+ ** that is non zero ends up at bit position 0
+ **
+ ** Example: 10011100 ->  00100111
+ **/
+#define P99_LOW2SHIFT(X) ((X) ? ((X) / ((X) & -(X))) : 0u)
+
+/**
+ ** @brief function equivalent to ::P99_LOW2SHIFT
+ **/
+p99_inline
+uintmax_t p99_low2shift(uintmax_t x) { return P99_LOW2SHIFT(x); }
+
+/**
+ ** @brief function that returns the next higher value that has
+ ** exactly the same popcount as @a x.
+ **
+ ** That is if @a x has @c K bits set in total, the result will be the
+ ** smallest number that also has @c K bits set and that is greater
+ ** than @a x.
+ **/
+p99_inline
+uintmax_t p99_next_popcount(uintmax_t x) {
+  uintmax_t ret = 0;
+  if (x) {
+    uintmax_t b = P99_LOW2(x);
+    uintmax_t t = x + b;
+    uintmax_t c = x ^ t;
+    uintmax_t m = (c >> 2) / b;
+    ret = t | m;
+  }
+  return ret;
+}
+
+/**
+ ** @}
+ **/
 
 /**
  ** @}
