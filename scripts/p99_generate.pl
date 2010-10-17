@@ -796,17 +796,29 @@ my %builtinType = (
     "h" => "signed short",
     "hh" => "signed char",
     "i" => "signed",
+    "" => "signed",
     "l" => "signed long",
     "ll" => "signed long long",
     "u" => "unsigned",
     "uh" => "unsigned short",
     "uhh" => "unsigned char",
+    "uc" => "unsigned char",
     "ul" => "unsigned long",
     "ull" => "unsigned long long",
     "j" => "intmax_t",
     "uj" => "uintmax_t",
     "uz" => "size_t",
     "t" => "ptrdiff_t",
+    "i8" => "int_least8_t",
+    "i16" => "int_least16_t",
+    "i32" => "int_least32_t",
+    "i64" => "int_least64_t",
+    "i128" => "int_least128_t",
+    "u8" => "uint_least8_t",
+    "u16" => "uint_least16_t",
+    "u32" => "uint_least32_t",
+    "u64" => "uint_least64_t",
+    "u128" => "uint_least128_t",
     "v"	=> "void",
     "d" => "double",
     "ld" => "long double",
@@ -815,6 +827,71 @@ my %builtinType = (
     "ldc" => "long double _Complex",
     "fc" => "float _Complex",
     );
+
+my %builtinMax = (
+    "b" => "1",
+    "c" => "CHAR_MAX",
+    "h" => "SHRT_MAX",
+    "hh" => "SCHAR_MAX",
+    "i" => "INT_MAX",
+    "" => "INT_MAX",
+    "l" => "LONG_MAX",
+    "ll" => "LLONG_MAX",
+    "u" => "UINT_MAX",
+    "uh" => "USHRT_MAX",
+    "uhh" => "UCHAR_MAX",
+    "uc" => "UCHAR_MAX",
+    "ul" => "ULONG_MAX",
+    "ull" => "ULLONG_MAX",
+    "j" => "INTMAX_MAX",
+    "uj" => "UINTMAX_MAX",
+    "uz" => "SIZE_MAX",
+    "t" => "PTRDIFF_MAX",
+    "j" => "INTMAX_MAX",
+    "i8" => "INT8_MAX",
+    "i16" => "INT16_MAX",
+    "i32" => "INT32_MAX",
+    "i64" => "INT64_MAX",
+    "i128" => "INT128_MAX",
+    "u8" => "UINT8_MAX",
+    "u16" => "UINT16_MAX",
+    "u32" => "UINT32_MAX",
+    "u64" => "UINT64_MAX",
+    "u128" => "UINT128_MAX",
+    );
+
+my %builtinMin = (
+    "b" => "0",
+    "c" => "CHAR_MIN",
+    "h" => "SHRT_MIN",
+    "hh" => "SCHAR_MIN",
+    "i" => "INT_MIN",
+    "" => "INT_MIN",
+    "l" => "LONG_MIN",
+    "ll" => "LLONG_MIN",
+    "u" => "0",
+    "uh" => "0",
+    "uhh" => "0",
+    "uc" => "0",
+    "ul" => "0UL",
+    "ull" => "0ULL",
+    "j" => "INTMAX_MIN",
+    "uj" => "0ULL",
+    "uz" => "0",
+    "t" => "PTRDIFF_MIN",
+    "i8" => "INT8_MIN",
+    "i16" => "INT16_MIN",
+    "i32" => "INT32_MIN",
+    "i64" => "INT64_MIN",
+    "i128" => "INT128_MIN",
+    "u8" => "UINT8_C(0)",
+    "u16" => "UINT16_C(0)",
+    "u32" => "UINT32_C(0)",
+    "u64" => "UINT64_C(0)",
+    "u128" => "UINT128_C(0)",
+    );
+
+
 
 my %integerRank = (
     "b" => 0,
@@ -923,7 +1000,7 @@ sub signedOf($) {
 sub printHash($\%) {
     my ($pref, $keys) = (@_);
     my %keys = %{$keys};
-    print "#define  P99_${pref}(CODE)  P99_PASTE2(P00_, P99_PASTE2(${pref}_, CODE))\n";
+    print "#define  P99_${pref}(...)  P99_PASTE2(P00_, P99_PASTE(${pref}_, __VA_ARGS__))\n";
     print "#define P00_${pref}_${_} " . $keys{${_}} . "\n"
         foreach sort keys(%keys);
 }
@@ -956,6 +1033,8 @@ print << 'BUILTIN1';
 BUILTIN1
 
 printHash("BUILTIN_TYPE", %builtinType);
+printHash("BUILTIN_MAX", %builtinMax);
+printHash("BUILTIN_MIN", %builtinMin);
 printHash("INTEGER_RANK", %integerRank);
 printHash("INTEGER_SIGN", %integerSigned);
 printHash("INTEGER_SIGNED", %integer2signed);

@@ -25,7 +25,7 @@
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Thu, 07 Oct 2010 23:26:30 +0200"
+#define P00_VERSION_DATE "Sun, 17 Oct 2010 00:58:48 +0200"
 #define P00_VERSION_ID "eb534f1d31aa3a23309b77734f874d521c3cb3a2"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -4890,7 +4890,7 @@
  ** @brief Find a builtin type according to a code such as `ull' or `ld'
  **
  ** E.g ::P99_BUILTIN_TYPE(ull) should expand to @c unsigned @c long
- ** @c long. The complete list for the 23 builtin types (+ required typedefs):
+ ** @c long. The complete list for the 35 builtin types (+ required typedefs):
  ** <table>
  ** <tr><th>code</th><th>type</th><th>is signed</th><th>signed</th><th>unsigned</th><th>integer rank</th></tr>
  ** <tr><td>b</td><td><code>_Bool</code></td><td>0</td><td></td><td>b</td><td>0</td></tr>
@@ -4899,16 +4899,26 @@
  ** <tr><td>dc</td><td><code>double _Complex</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>f</td><td><code>float</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>fc</td><td><code>float _Complex</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>i128</td><td><code>int_least128_t</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>i16</td><td><code>int_least16_t</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>i32</td><td><code>int_least32_t</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>i64</td><td><code>int_least64_t</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>i8</td><td><code>int_least8_t</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>j</td><td><code>intmax_t</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>ld</td><td><code>long double</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>ldc</td><td><code>long double _Complex</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>t</td><td><code>ptrdiff_t</code></td><td></td><td></td><td></td><td></td></tr>
- ** <tr><td>i</td><td><code>signed</code></td><td>1</td><td>i</td><td>u</td><td>3</td></tr>
+ ** <tr><td></td><td><code>signed</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>hh</td><td><code>signed char</code></td><td>1</td><td>hh</td><td>uhh</td><td>1</td></tr>
  ** <tr><td>l</td><td><code>signed long</code></td><td>1</td><td>l</td><td>ul</td><td>4</td></tr>
  ** <tr><td>ll</td><td><code>signed long long</code></td><td>1</td><td>ll</td><td>ull</td><td>5</td></tr>
  ** <tr><td>h</td><td><code>signed short</code></td><td>1</td><td>h</td><td>uh</td><td>2</td></tr>
  ** <tr><td>uz</td><td><code>size_t</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>u128</td><td><code>uint_least128_t</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>u16</td><td><code>uint_least16_t</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>u32</td><td><code>uint_least32_t</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>u64</td><td><code>uint_least64_t</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td>u8</td><td><code>uint_least8_t</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>uj</td><td><code>uintmax_t</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>u</td><td><code>unsigned</code></td><td>0</td><td>i</td><td>u</td><td>3</td></tr>
  ** <tr><td>uhh</td><td><code>unsigned char</code></td><td>0</td><td>hh</td><td>uhh</td><td>1</td></tr>
@@ -4918,7 +4928,8 @@
  ** <tr><td>v</td><td><code>void</code></td><td></td><td></td><td></td><td></td></tr>
  ** </table>
  **/
-#define  P99_BUILTIN_TYPE(CODE)  P99_PASTE2(P00_, P99_PASTE2(BUILTIN_TYPE_, CODE))
+#define  P99_BUILTIN_TYPE(...)  P99_PASTE2(P00_, P99_PASTE(BUILTIN_TYPE_, __VA_ARGS__))
+#define P00_BUILTIN_TYPE_ signed
 #define P00_BUILTIN_TYPE_b _Bool
 #define P00_BUILTIN_TYPE_c char
 #define P00_BUILTIN_TYPE_d double
@@ -4928,6 +4939,11 @@
 #define P00_BUILTIN_TYPE_h signed short
 #define P00_BUILTIN_TYPE_hh signed char
 #define P00_BUILTIN_TYPE_i signed
+#define P00_BUILTIN_TYPE_i128 int_least128_t
+#define P00_BUILTIN_TYPE_i16 int_least16_t
+#define P00_BUILTIN_TYPE_i32 int_least32_t
+#define P00_BUILTIN_TYPE_i64 int_least64_t
+#define P00_BUILTIN_TYPE_i8 int_least8_t
 #define P00_BUILTIN_TYPE_j intmax_t
 #define P00_BUILTIN_TYPE_l signed long
 #define P00_BUILTIN_TYPE_ld long double
@@ -4935,6 +4951,12 @@
 #define P00_BUILTIN_TYPE_ll signed long long
 #define P00_BUILTIN_TYPE_t ptrdiff_t
 #define P00_BUILTIN_TYPE_u unsigned
+#define P00_BUILTIN_TYPE_u128 uint_least128_t
+#define P00_BUILTIN_TYPE_u16 uint_least16_t
+#define P00_BUILTIN_TYPE_u32 uint_least32_t
+#define P00_BUILTIN_TYPE_u64 uint_least64_t
+#define P00_BUILTIN_TYPE_u8 uint_least8_t
+#define P00_BUILTIN_TYPE_uc unsigned char
 #define P00_BUILTIN_TYPE_uh unsigned short
 #define P00_BUILTIN_TYPE_uhh unsigned char
 #define P00_BUILTIN_TYPE_uj uintmax_t
@@ -4942,7 +4964,65 @@
 #define P00_BUILTIN_TYPE_ull unsigned long long
 #define P00_BUILTIN_TYPE_uz size_t
 #define P00_BUILTIN_TYPE_v void
-#define  P99_INTEGER_RANK(CODE)  P99_PASTE2(P00_, P99_PASTE2(INTEGER_RANK_, CODE))
+#define  P99_BUILTIN_MAX(...)  P99_PASTE2(P00_, P99_PASTE(BUILTIN_MAX_, __VA_ARGS__))
+#define P00_BUILTIN_MAX_ INT_MAX
+#define P00_BUILTIN_MAX_b 1
+#define P00_BUILTIN_MAX_c CHAR_MAX
+#define P00_BUILTIN_MAX_h SHRT_MAX
+#define P00_BUILTIN_MAX_hh SCHAR_MAX
+#define P00_BUILTIN_MAX_i INT_MAX
+#define P00_BUILTIN_MAX_i128 INT128_MAX
+#define P00_BUILTIN_MAX_i16 INT16_MAX
+#define P00_BUILTIN_MAX_i32 INT32_MAX
+#define P00_BUILTIN_MAX_i64 INT64_MAX
+#define P00_BUILTIN_MAX_i8 INT8_MAX
+#define P00_BUILTIN_MAX_j INTMAX_MAX
+#define P00_BUILTIN_MAX_l LONG_MAX
+#define P00_BUILTIN_MAX_ll LLONG_MAX
+#define P00_BUILTIN_MAX_t PTRDIFF_MAX
+#define P00_BUILTIN_MAX_u UINT_MAX
+#define P00_BUILTIN_MAX_u128 UINT128_MAX
+#define P00_BUILTIN_MAX_u16 UINT16_MAX
+#define P00_BUILTIN_MAX_u32 UINT32_MAX
+#define P00_BUILTIN_MAX_u64 UINT64_MAX
+#define P00_BUILTIN_MAX_u8 UINT8_MAX
+#define P00_BUILTIN_MAX_uc UCHAR_MAX
+#define P00_BUILTIN_MAX_uh USHRT_MAX
+#define P00_BUILTIN_MAX_uhh UCHAR_MAX
+#define P00_BUILTIN_MAX_uj UINTMAX_MAX
+#define P00_BUILTIN_MAX_ul ULONG_MAX
+#define P00_BUILTIN_MAX_ull ULLONG_MAX
+#define P00_BUILTIN_MAX_uz SIZE_MAX
+#define  P99_BUILTIN_MIN(...)  P99_PASTE2(P00_, P99_PASTE(BUILTIN_MIN_, __VA_ARGS__))
+#define P00_BUILTIN_MIN_ INT_MIN
+#define P00_BUILTIN_MIN_b 0
+#define P00_BUILTIN_MIN_c CHAR_MIN
+#define P00_BUILTIN_MIN_h SHRT_MIN
+#define P00_BUILTIN_MIN_hh SCHAR_MIN
+#define P00_BUILTIN_MIN_i INT_MIN
+#define P00_BUILTIN_MIN_i128 INT128_MIN
+#define P00_BUILTIN_MIN_i16 INT16_MIN
+#define P00_BUILTIN_MIN_i32 INT32_MIN
+#define P00_BUILTIN_MIN_i64 INT64_MIN
+#define P00_BUILTIN_MIN_i8 INT8_MIN
+#define P00_BUILTIN_MIN_j INTMAX_MIN
+#define P00_BUILTIN_MIN_l LONG_MIN
+#define P00_BUILTIN_MIN_ll LLONG_MIN
+#define P00_BUILTIN_MIN_t PTRDIFF_MIN
+#define P00_BUILTIN_MIN_u 0
+#define P00_BUILTIN_MIN_u128 UINT128_C(0)
+#define P00_BUILTIN_MIN_u16 UINT16_C(0)
+#define P00_BUILTIN_MIN_u32 UINT32_C(0)
+#define P00_BUILTIN_MIN_u64 UINT64_C(0)
+#define P00_BUILTIN_MIN_u8 UINT8_C(0)
+#define P00_BUILTIN_MIN_uc 0
+#define P00_BUILTIN_MIN_uh 0
+#define P00_BUILTIN_MIN_uhh 0
+#define P00_BUILTIN_MIN_uj 0ULL
+#define P00_BUILTIN_MIN_ul 0UL
+#define P00_BUILTIN_MIN_ull 0ULL
+#define P00_BUILTIN_MIN_uz 0
+#define  P99_INTEGER_RANK(...)  P99_PASTE2(P00_, P99_PASTE(INTEGER_RANK_, __VA_ARGS__))
 #define P00_INTEGER_RANK_b 0
 #define P00_INTEGER_RANK_c 1
 #define P00_INTEGER_RANK_h 2
@@ -4955,7 +5035,7 @@
 #define P00_INTEGER_RANK_uhh 1
 #define P00_INTEGER_RANK_ul 4
 #define P00_INTEGER_RANK_ull 5
-#define  P99_INTEGER_SIGN(CODE)  P99_PASTE2(P00_, P99_PASTE2(INTEGER_SIGN_, CODE))
+#define  P99_INTEGER_SIGN(...)  P99_PASTE2(P00_, P99_PASTE(INTEGER_SIGN_, __VA_ARGS__))
 #define P00_INTEGER_SIGN_b 0
 #define P00_INTEGER_SIGN_h 1
 #define P00_INTEGER_SIGN_hh 1
@@ -4967,7 +5047,7 @@
 #define P00_INTEGER_SIGN_uhh 0
 #define P00_INTEGER_SIGN_ul 0
 #define P00_INTEGER_SIGN_ull 0
-#define  P99_INTEGER_SIGNED(CODE)  P99_PASTE2(P00_, P99_PASTE2(INTEGER_SIGNED_, CODE))
+#define  P99_INTEGER_SIGNED(...)  P99_PASTE2(P00_, P99_PASTE(INTEGER_SIGNED_, __VA_ARGS__))
 #define P00_INTEGER_SIGNED_1 hh
 #define P00_INTEGER_SIGNED_2 h
 #define P00_INTEGER_SIGNED_3 i
@@ -4984,7 +5064,7 @@
 #define P00_INTEGER_SIGNED_uhh hh
 #define P00_INTEGER_SIGNED_ul l
 #define P00_INTEGER_SIGNED_ull ll
-#define  P99_INTEGER_UNSIGNED(CODE)  P99_PASTE2(P00_, P99_PASTE2(INTEGER_UNSIGNED_, CODE))
+#define  P99_INTEGER_UNSIGNED(...)  P99_PASTE2(P00_, P99_PASTE(INTEGER_UNSIGNED_, __VA_ARGS__))
 #define P00_INTEGER_UNSIGNED_0 b
 #define P00_INTEGER_UNSIGNED_1 uhh
 #define P00_INTEGER_UNSIGNED_2 uh
