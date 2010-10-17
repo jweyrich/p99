@@ -15,6 +15,33 @@
 #include "p99_int.h"
 #include "p99_defarg.h"
 
+signed char p99_twoshh(unsigned char a);
+signed short p99_twosh(unsigned short a);
+signed p99_twos(unsigned a);
+signed long p99_twosl(unsigned long a);
+signed long long p99_twosll(unsigned long long a);
+
+unsigned char p00_add0hh(signed char a, signed char b);
+unsigned short p00_add0h(signed short a, signed short b);
+unsigned p00_add0(signed a, signed b);
+unsigned long p00_add0l(signed long a, signed long b);
+unsigned long long p00_add0ll(signed long long a, signed long long b);
+
+signed char p00_addhh(signed char a, signed char b, int* err);
+signed short p00_addh(signed short a, signed short b, int* err);
+signed p00_add(signed a, signed b, int* err);
+signed long p00_addl(signed long a, signed long b, int* err);
+signed long long p00_addll(signed long long a, signed long long b, int* err);
+
+signed char p99_addhh(signed char a, signed char b, int* err);
+signed short p99_addh(signed short a, signed short b, int* err);
+signed p99_add(signed a, signed b, int* err);
+signed long p99_addl(signed long a, signed long b, int* err);
+signed long long p99_addll(signed long long a, signed long long b, int* err);
+
+
+uintmax_t p99_low2shift(uintmax_t x);
+
 P99_PROTOTYPE(char*, print_uintmax, p99x_uintmax, char*);
 P99_PROTOTYPE(const char*, print_intmax, p99x_intmax, char*);
 

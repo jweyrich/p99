@@ -20,6 +20,7 @@
  **/
 
 #include "p99_c99.h"
+#include "p99_id.h"
 #include "p99_if.h"
 
 /**
@@ -574,9 +575,6 @@ typedef enum {
   ? (P99_ISSIGNED(T) ? (-(P99X__SIGN_PROMOTE((T)-1)/2u)) - P99_2COMPLEMENT(T) : (T)0) \
   : (P99_ISSIGNED(T) ? (P00_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T))))
 
-//#define P99_TMIN(T) ((T)(P99_ISSIGNED(T) ? (P00_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T)))
-
-
 /**
  ** @brief C99 allows for exactly three different possibilities to
  ** encode negative values of integer types.
@@ -623,8 +621,6 @@ P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (
  ? P99_EPREC((T)-1)                                            \
  : P99_HIGH2_1(P99_TMAX(T)))
 
-  //(P99_HIGH2_1(P99_TMAX(T)))
-
 /**
  ** @brief The width of integral type @a T.
  **
@@ -653,6 +649,83 @@ P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (
  ** @see P99_TPREC
  **/
 #define P99_TPADDING(T) ((sizeof(T)*CHAR_BIT) - P99_TWIDTH(T))
+
+#ifdef DOXYGEN
+#define P00_DECLARE_OVERFLOW(SUFF)                                      \
+/*! @brief Cast an unsigned type into a signed one as would do a two's complement representation of the signed type. */ \
+/*! If the signed type is in usual two's complement this should be the identity. */ \
+/*! For other cases this is supposed to do the best possible. */        \
+/*! @warning: For bizarrely encoded cases this might result in a negative zero or so. */ \
+p99_inline                                                              \
+P99_BUILTIN_TYPE(SUFF,)                                                 \
+P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) a);                \
+p99_inline                                                              \
+P99_BUILTIN_TYPE(SUFF,)                                                  \
+P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF,) a, P99_BUILTIN_TYPE(SUFF,) b, int* err); \
+P99_MACRO_END(p99_overflow_, SUFF)
+#else
+#define P00_DECLARE_OVERFLOW(SUFF)                                      \
+p99_inline                                                              \
+P99_BUILTIN_TYPE(SUFF)                                                  \
+P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) a) {               \
+  P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);     \
+  P99_BUILTIN_TYPE(u, SUFF) const type_min1 = type_max + 1;             \
+  /* the unsigned max, as if it had just one value bit more */          \
+  P99_BUILTIN_TYPE(u, SUFF) const utype_max = (2 * type_max) + 1;       \
+  return                                                                \
+    /* for positive values there is nothing to do, this includes the    \
+       case where the unsigned type has the same number of value bits   \
+       as the signed type */                                            \
+    (a <= type_max)                                                     \
+    ? a                                                                 \
+    /* Capture the special case where type_min1 is a trap               \
+       representation for the signed type */                            \
+    : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (a == type_min1)) \
+       ? -0                                                             \
+       /* otherwise compute the negative modulo utype_max + 1. for      \
+          the case that the unsigned type is much wider than the        \
+          signed type we mask the higher order bits away. */            \
+       : (-(P99_BUILTIN_TYPE(SUFF))(utype_max - (utype_max & a))) - 1); \
+}                                                                       \
+p99_inline                                                              \
+P99_BUILTIN_TYPE(u, SUFF)                                               \
+P99_PASTE2(p00_add0, SUFF)(P99_BUILTIN_TYPE(SUFF) a, P99_BUILTIN_TYPE(SUFF) b) { \
+  register P99_BUILTIN_TYPE(u, SUFF) ua = a;                            \
+  register P99_BUILTIN_TYPE(u, SUFF) ub = b;                            \
+  register P99_BUILTIN_TYPE(u, SUFF) res = ua + ub;                     \
+  return res;                                                           \
+}                                                                       \
+p99_inline                                                              \
+P99_BUILTIN_TYPE(SUFF)                                                  \
+P99_PASTE2(p00_add, SUFF)(P99_BUILTIN_TYPE(SUFF) a, P99_BUILTIN_TYPE(SUFF) b, int* err) { \
+  _Bool a0 = (a < 0);                                                   \
+  _Bool b0 = (b < 0);                                                   \
+  register P99_BUILTIN_TYPE(SUFF) c                                     \
+    = P99_PASTE2(p99_twos, SUFF)(P99_PASTE2(p00_add0, SUFF)(a, b));     \
+  _Bool c0 = (c < 0);                                                   \
+  if ((a0 == b0) && P99_EXPECT((a0 != c0), 0))                          \
+    if (err) *err = ERANGE;                                             \
+  return c;                                                             \
+}                                                                       \
+p99_inline                                                              \
+P99_BUILTIN_TYPE(SUFF)                                                  \
+P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF) a, P99_BUILTIN_TYPE(SUFF) b, int* err) { \
+  return                                                                \
+    (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF))                  \
+    ? P99_PASTE2(p00_add, SUFF)(a, b, err)                              \
+    : ((a >= 0)                                                         \
+       ? (P99_BUILTIN_MAX(SUFF) - a < b)                                \
+       : (P99_BUILTIN_MIN(SUFF) - a > b));                              \
+}                                                                       \
+P99_MACRO_END(p99_overflow_, SUFF)
+#endif
+
+P00_DECLARE_OVERFLOW(c);
+P00_DECLARE_OVERFLOW(hh);
+P00_DECLARE_OVERFLOW(h);
+P00_DECLARE_OVERFLOW();
+P00_DECLARE_OVERFLOW(l);
+P00_DECLARE_OVERFLOW(ll);
 
 #define P00_LVAL(T, ...) ((T)__VA_ARGS__)
 
@@ -844,7 +917,7 @@ uintmax_t p99_low0set(uintmax_t x) { return P99_LOW0SET(x); }
  **
  ** Example: 10011100 ->  00100111
  **/
-#define P99_LOW2SHIFT(X) ((X) ? ((X) / ((X) & -(X))) : 0u)
+#define P99_LOW2SHIFT(X) (P99_EXPECT((X), 1) ? ((X) / ((X) & -(X))) : 0u)
 
 /**
  ** @brief function equivalent to ::P99_LOW2SHIFT
