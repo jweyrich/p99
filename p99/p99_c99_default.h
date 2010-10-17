@@ -228,63 +228,43 @@ P00_C99_DEFARG_DOCU(strtold, long double, char const *nptr, char **endptr)
 #define strtold(...) P99_CALL_DEFARG(strtold, 2, __VA_ARGS__)
 #define strtold_defarg_1() 0
 
-#define P00_DECLARE_STRTO(SUFF, RET, MIN, MAX)                              \
-/*! @brief A type safe wrapper for string to RET conversion */               \
-/*! @see stringconversion */                                                 \
-p99_inline                                                                   \
-RET P99_PASTE2(p99_strto, SUFF)(char const *nptr, char **endptr, int base) { \
-  long long ret = strtoll(nptr, endptr, base);                               \
-  if ((ret > MAX || ret < MIN)                                               \
-      && (!errno)) errno = ERANGE;                                           \
-  if (ret > MAX) ret = MAX;                                                  \
-  if (ret < MIN) ret = MIN;                                                  \
-  return ret;                                                                \
-}                                                                            \
+#define P00_DECLARE_STRTO(NAME, SUFF, I)                                \
+/*! @brief A type safe wrapper for string to RET conversion */          \
+/*! @see stringconversion */                                            \
+p99_inline                                                              \
+P99_BUILTIN_TYPE(SUFF)                                                  \
+P99_PASTE2(p99_strto, SUFF)(char const *nptr, char **endptr, int base) { \
+  long long ret = (strtoll)(nptr, endptr, base);                        \
+  if ((ret > P99_BUILTIN_MAX(SUFF) || ret < P99_BUILTIN_MIN(SUFF))      \
+      && (!errno)) errno = ERANGE;                                      \
+  if (ret > P99_BUILTIN_MAX(SUFF)) ret = P99_BUILTIN_MAX(SUFF);         \
+  if (ret < P99_BUILTIN_MIN(SUFF)) ret = P99_BUILTIN_MIN(SUFF);         \
+  return ret;                                                           \
+}                                                                       \
 P99_MACRO_END(p99_strto, SUFF)
 
 
-#define P00_DECLARE_STRTOU(SUFF, RET, MAX)                                   \
-/*! @brief A type safe wrapper for string to RET conversion */                \
-/*! @see stringconversion */                                                  \
-p99_inline                                                                    \
-RET P99_PASTE2(p99_strtou, SUFF)(char const *nptr, char **endptr, int base) { \
-  unsigned long long ret = strtoull(nptr, endptr, base);                      \
-  if (ret > MAX) {                                                            \
-    if (!errno) errno = ERANGE;                                               \
-    ret = MAX;                                                                \
-  }                                                                           \
-  return ret;                                                                 \
-}                                                                             \
-P99_MACRO_END(p99_strtou, SUFF)
+#define P00_DECLARE_STRTOU(NAME, SUFF, I)                               \
+/*! @brief A type safe wrapper for string to RET conversion */          \
+/*! @see stringconversion */                                            \
+p99_inline                                                              \
+P99_BUILTIN_TYPE(SUFF)                                                  \
+P99_PASTE2(p99_strto, SUFF)(char const *nptr, char **endptr, int base) { \
+  unsigned long long ret = (strtoull)(nptr, endptr, base);              \
+  if (ret > P99_BUILTIN_MAX(SUFF)) {                                    \
+    if (!errno) errno = ERANGE;                                         \
+    ret = P99_BUILTIN_MAX(SUFF);                                        \
+  }                                                                     \
+  return ret;                                                           \
+}                                                                       \
+P99_MACRO_END(p99_strto, SUFF)
 
-P00_DECLARE_STRTO(c, char, SCHAR_MIN, SCHAR_MAX);
-P00_DECLARE_STRTO(hh, signed char, SCHAR_MIN, SCHAR_MAX);
-P00_DECLARE_STRTOU(hh, unsigned char, UCHAR_MAX);
+#define P00_I_LIST c, hh, , h, t, j, i8, i16, i32, i64
 
-P00_DECLARE_STRTO(, signed, INT_MIN, INT_MAX);
-P00_DECLARE_STRTOU(, unsigned, UINT_MAX);
+P99_FOR(, P99_NARG(P00_I_LIST), P00_SEP, P00_DECLARE_STRTO, P00_I_LIST);
 
-P00_DECLARE_STRTO(h, signed short, SHRT_MIN, SHRT_MAX);
-P00_DECLARE_STRTOU(h, unsigned short, USHRT_MAX);
-
-P00_DECLARE_STRTO(t, ptrdiff_t, PTRDIFF_MIN, PTRDIFF_MAX);
-P00_DECLARE_STRTOU(z, size_t, SIZE_MAX);
-
-P00_DECLARE_STRTO(j, intmax_t, INTMAX_MIN, INTMAX_MAX);
-P00_DECLARE_STRTOU(j, uintmax_t, UINTMAX_MAX);
-
-P00_DECLARE_STRTO(i8, int_least8_t, INT8_MIN, INT8_MAX);
-P00_DECLARE_STRTOU(8, int_least8_t, UINT8_MAX);
-
-P00_DECLARE_STRTO(i16, int_least16_t, INT16_MIN, INT16_MAX);
-P00_DECLARE_STRTOU(16, int_least16_t, UINT16_MAX);
-
-P00_DECLARE_STRTO(i32, int_least32_t, INT32_MIN, INT32_MAX);
-P00_DECLARE_STRTOU(32, int_least32_t, UINT32_MAX);
-
-P00_DECLARE_STRTO(i64, int_least64_t, INT64_MIN, INT64_MAX);
-P00_DECLARE_STRTOU(64, int_least64_t, UINT64_MAX);
-
+#define P00_U_LIST uhh, u, uh, uz, uj, u8, u16, u32, u64
+P99_FOR(, P99_NARG(P00_U_LIST), P00_SEP, P00_DECLARE_STRTOU, P00_U_LIST);
 
 /** This macro is preferable to the @c atoi function. The default
  ** arguments make it functionally equivalent but add two features:
