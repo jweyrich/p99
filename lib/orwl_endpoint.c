@@ -200,19 +200,61 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t
 }
 
 bool orwl_send_(int fd, uint64_t const*const mess, size_t len) {
+  bool ret = false;
   uint32_t *buf = uint32_t_vnew(2 * len);
   orwl_hton(buf, mess, len);
-  ssize_t ret = send(fd, buf, sizeof(uint64_t) * len, MSG_WAITALL);
+  char * bbuf = (void*)buf;
+  size_t blen = sizeof(uint64_t) * len;
+  while (blen) {
+    ssize_t res = send(fd, bbuf, blen, MSG_WAITALL);
+    if (res < 0) {
+      P99_HANDLE_ERRNO {
+      P99_XCASE EINTR: {
+          perror("orwl_send_ was interrupted, retrying");
+          sleepfor(1E-6);
+        }
+      P99_XDEFAULT : {
+          ret = true;
+          blen = 0;
+          perror("orwl_send_ had problems, aborting");
+        }
+      }
+    } else {
+      bbuf += res;
+      blen -= res;
+    }
+  }
   uint32_t_vdelete(buf);
-  return ret != sizeof(uint64_t) * len;
+  return ret;
 }
 
 bool orwl_recv_(int fd, uint64_t *const mess, size_t len) {
+  bool ret = false;
   uint32_t *buf = uint32_t_vnew(2 * len);
-  ssize_t ret = recv(fd, buf, sizeof(uint64_t) * len, MSG_WAITALL);
+  char * bbuf = (void*)buf;
+  size_t blen = sizeof(uint64_t) * len;
+  while (blen) {
+    ssize_t res = recv(fd, bbuf, blen, MSG_WAITALL);
+    if (res < 0) {
+      P99_HANDLE_ERRNO {
+      P99_XCASE EINTR: {
+          perror("orwl_recv_ was interrupted, retrying");
+          sleepfor(1E-6);
+        }
+      P99_XDEFAULT : {
+          ret = true;
+          blen = 0;
+          perror("orwl_send had problems, aborting");
+        }
+      }
+    } else {
+      bbuf += res;
+      blen -= res;
+    }
+  }
   orwl_ntoh(mess, buf , len);
   uint32_t_vdelete(buf);
-  return ret != sizeof(uint64_t) * len;
+  return ret;
 }
 
 addr_t* addr_t_init(addr_t *A, in_addr_t I0);
