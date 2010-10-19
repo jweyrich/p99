@@ -239,7 +239,7 @@ typedef enum p00_uncase_enum {
 /**
  ** @brief Handle and reset @c errno.
  **
- ** This is will inspect @c errno (which is expesive) exactly once.
+ ** This is will inspect @c errno (which is expensive) exactly once.
  ** If @c errno is @c 0, it will do nothing as efficient as
  ** possible. Otherwise it will execute the dependent block much as a
  ** @c switch statement:
@@ -262,11 +262,11 @@ typedef enum p00_uncase_enum {
  ** @endcode
  **/
 #define P99_HANDLE_ERRNO                                                \
-for (int p00_handle_errno = 0; p00_handle_errno < 1; ++p00_handle_errno) \
-  for (int const p00_errno = errno; p00_handle_errno < 1; ++p00_handle_errno) \
-    if (!p00_errno) { } else                                            \
-      for (; p00_handle_errno < 1; errno = 0, ++p00_handle_errno)       \
-        switch (p00_errno) case 0:
+for (_Bool p00_handle_errno = 1; p00_handle_errno; p00_handle_errno = 0) \
+  for (int const p99_errno = errno; p00_handle_errno; p00_handle_errno = 0) \
+    if (!p99_errno) { } else                                            \
+      for (; p00_handle_errno; errno = 0, p00_handle_errno = 0)         \
+        switch (p99_errno) case 0:
 
 
 enum p99_unwind {

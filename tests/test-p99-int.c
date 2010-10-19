@@ -12,14 +12,23 @@
 /* particular purpose.                                                       */
 /*                                                                           */
 #include "p99_c99.h"
+#undef p99_inline
+#define p99_inline
 #include "p99_int.h"
 #include "p99_defarg.h"
+
 
 signed char p99_twoshh(unsigned char a);
 signed short p99_twosh(unsigned short a);
 signed p99_twos(unsigned a);
 signed long p99_twosl(unsigned long a);
 signed long long p99_twosll(unsigned long long a);
+
+unsigned char p99_unsighh(signed char a);
+unsigned short p99_unsigh(signed short a);
+unsigned p99_unsig(signed a);
+unsigned long p99_unsigl(signed long a);
+unsigned long long p99_unsigll(signed long long a);
 
 unsigned char p00_add0hh(signed char a, signed char b);
 unsigned short p00_add0h(signed short a, signed short b);
