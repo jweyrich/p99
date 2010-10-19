@@ -206,13 +206,20 @@ bool orwl_send_(int fd, uint64_t const*const mess, size_t len) {
   char * bbuf = (void*)buf;
   size_t blen = sizeof(uint64_t) * len;
   while (blen) {
-    ssize_t res = send(fd, bbuf, blen, MSG_WAITALL);
-    if (res < 0) {
+    /* Don't stress the network layer by sending too large messages
+       at a time. */
+    size_t const mlen = ((size_t)1 << 24);
+    size_t clen = blen;
+    if (clen > mlen) clen = mlen;
+    ssize_t res = send(fd, bbuf, clen, 0);
+    if (res <= 0) {
       P99_HANDLE_ERRNO {
-      P99_XCASE EINTR: {
+        /* There has been no progress but no error code either. */
+        perror("orwl_send_ did not make any progress, retrying");
+        P99_XCASE EINTR : {
           perror("orwl_send_ was interrupted, retrying");
-          sleepfor(1E-6);
         }
+        sleepfor(1E-6);
       P99_XDEFAULT : {
           ret = true;
           blen = 0;
@@ -220,6 +227,8 @@ bool orwl_send_(int fd, uint64_t const*const mess, size_t len) {
         }
       }
     } else {
+      if (res != clen) report(true, "orwl_send_ only succeeded partially (%zd / %zu), retrying\n",
+                              res, clen);
       bbuf += res;
       blen -= res;
     }
@@ -234,13 +243,20 @@ bool orwl_recv_(int fd, uint64_t *const mess, size_t len) {
   char * bbuf = (void*)buf;
   size_t blen = sizeof(uint64_t) * len;
   while (blen) {
-    ssize_t res = recv(fd, bbuf, blen, MSG_WAITALL);
-    if (res < 0) {
+    /* Don't stress the network layer by receiving too large messages
+       at a time. */
+    size_t const mlen = ((size_t)1 << 24);
+    size_t clen = blen;
+    if (clen > mlen) clen = mlen;
+    ssize_t res = recv(fd, bbuf, clen, MSG_WAITALL);
+    if (res <= 0) {
       P99_HANDLE_ERRNO {
-      P99_XCASE EINTR: {
+        /* There has been no progress but no error code either. */
+        perror("orwl_recv_ did not make any progress, retrying");
+        P99_XCASE EINTR : {
           perror("orwl_recv_ was interrupted, retrying");
-          sleepfor(1E-6);
         }
+        sleepfor(1E-6);
       P99_XDEFAULT : {
           ret = true;
           blen = 0;
@@ -248,6 +264,8 @@ bool orwl_recv_(int fd, uint64_t *const mess, size_t len) {
         }
       }
     } else {
+      if (res != clen) report(true, "orwl_recv_ only succeeded partially (%zd / %zu), retrying\n",
+                              res, clen);
       bbuf += res;
       blen -= res;
     }

@@ -139,8 +139,15 @@ DEFINE_THREAD(arg_t) {
              (orwl_mynum + (i - 1) + orwl_np) % orwl_np, orwl_state_getname(ostate));
     }
     if (!orwl_phase) {
-      orwl_resize2(&leh[1], 1);
-      report(true, "handle resized");
+      size_t len = 1;
+      char const* env = getenv("ORWL_HANDLE_SIZE");
+      if (env) {
+        size_t len2 = strtouz(env) / sizeof(uint64_t);
+        if (len2) len = len2;
+      }
+      orwl_resize2(&leh[1], len);
+      report(true, "handle resized to %zu byte                                             \n",
+             len * sizeof(uint64_t));
     }
 
     int64_t diff[3] = { P99_TMIN(int64_t), P99_0(int64_t), P99_TMIN(int64_t) };
