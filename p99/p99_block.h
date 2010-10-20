@@ -131,7 +131,10 @@ for (int _one1_ = 1; _one1_; _one1_ = 0)                            \
  ** @endcode
  ** @see P99_AVOID
  **/
-#define P99_PREFER(...) if (1) { __VA_ARGS__ } else
+#define P99_PREFER(...)                                                 \
+/* The for is just there to prevent spurious dangling else warnings */  \
+for (_Bool p00 = 1; p00; p00 = 0)                                       \
+  if (1) { __VA_ARGS__ } else
 
 /**
  ** @brief Only execute the depending statement or block if it is
@@ -261,12 +264,14 @@ typedef enum p00_uncase_enum {
  **   }
  ** @endcode
  **/
-#define P99_HANDLE_ERRNO                                                \
-for (_Bool p00_handle_errno = 1; p00_handle_errno; p00_handle_errno = 0) \
-  for (int const p99_errno = errno; p00_handle_errno; p00_handle_errno = 0) \
-    if (!p99_errno) { } else                                            \
-      for (; p00_handle_errno; errno = 0, p00_handle_errno = 0)         \
-        switch (p99_errno) case 0:
+#define P99_HANDLE_ERRNO                                \
+for (_Bool p00 = 1; p00; p00 = 0)                       \
+  for (int const p99_errno = errno; p00; p00 = 0)       \
+    if (P99_LIKELY(!p99_errno)) { } else                \
+      P99_UNWIND_PROTECT                                \
+        if (0) { P99_PROTECT: errno = 0; } else         \
+          for (; p00; errno = 0, p00 = 0)               \
+            switch (p99_errno) case 0:
 
 
 enum p99_unwind {
@@ -441,13 +446,15 @@ void p00_unwind(void* top, unsigned level, int cond) {
  ** P99_UNWIND_RETURN myret;
  ** @endcode
  **/
-#define P99_UNWIND_RETURN                               \
-if (p00_unwind_bottom                                   \
-    && !setjmp(p00_unwind_bottom->buf)) {               \
-  /* assign before we unwind all the way down */        \
-  p00_unwind_bottom->returning = 1;                     \
-  P99_UNWIND(-p99_unwind_return);                       \
- } else return
+#define P99_UNWIND_RETURN                                               \
+/* The for is just there to prevent spurious dangling else warnings */  \
+for (_Bool p00 = 1; p00; p00 = 0)                                       \
+  if (p00_unwind_bottom                                                 \
+      && !setjmp(p00_unwind_bottom->buf)) {                             \
+    /* assign before we unwind all the way down */                      \
+    p00_unwind_bottom->returning = 1;                                   \
+    P99_UNWIND(-p99_unwind_return);                                     \
+  } else return
 
 /**
  ** @brief The pseudo label to which we jump when we unwind the stack
