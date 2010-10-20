@@ -90,8 +90,9 @@ DEFINE_NEW_DELETE(orwl_server);
  **/
 DEFINE_THREAD(orwl_server) {
   report(0, "starting server");
+  char const* volatile errorstr = NULL;
   Arg->fd_listen = socket(AF_INET);
-  if (Arg->fd_listen != -1) {
+  if (P99_LIKELY(Arg->fd_listen >= 0)) {
     rand48_t seed = RAND48_T_INITIALIZER;
     struct sockaddr_in addr = {
       .sin_addr = addr2net(&Arg->host.ep.addr),
@@ -99,75 +100,85 @@ DEFINE_THREAD(orwl_server) {
       .sin_family = AF_INET,
     };
     socklen_t len = sizeof(addr);
-    if (bind(Arg->fd_listen, (struct sockaddr*) &addr, sizeof(addr)) == -1)
-      goto TERMINATE;
-    /* If the port was not yet specified find and store it. */
-    if (!addr.sin_port) {
-      if (getsockname(Arg->fd_listen, (struct sockaddr*)&addr, &len) == -1)
-        goto TERMINATE;
-      port_t_init(&Arg->host.ep.port, addr.sin_port);
-    }
-    char const* server_name = orwl_endpoint_print(&Arg->host.ep);
-    report(0, "server listening at %s", server_name);
-    if (listen(Arg->fd_listen, Arg->max_connections) == -1)
-      goto TERMINATE;
-    for (uint64_t t = 1; Arg->fd_listen != -1; ++t) {
-      /* Do this work before being connected */
-      uint64_t chal = orwl_rand64(&seed);
-      uint64_t repl = orwl_challenge(chal);
-      header_t header = HEADER_T_INITIALIZER;
 
-      if (Arg->info && Arg->info_len) progress(1, t, "%s", Arg->info);
+    /* Now that we have a valid file descriptor, protect its closing. */
+    P99_UNWIND_PROTECT {
 
-      if (!repl) {
-        report(1, "cannot serve without a secret");
-        close(Arg->fd_listen);
-        Arg->fd_listen = -1;
-        goto TERMINATE;
+      if (P99_UNLIKELY(bind(Arg->fd_listen, (struct sockaddr*) &addr, sizeof(addr)))) {
+        errorstr = "orwl_server could not bind";
+        P99_UNWIND_RETURN;
       }
-      int fd = -1;
-      do {
-        fd = accept(Arg->fd_listen);
-      } while(fd == -1);
-
-      /* Receive a challenge from the new connection */
-      if (orwl_recv_(fd, header, header_t_els))
-        goto FINISH;
-      header[1] = orwl_challenge(header[0]);
-      header[0] = chal;
-      /* Send the reply and a new challenge to the new connection */
-      if (orwl_send_(fd, header, header_t_els))
-        goto FINISH;
-      /* Receive the reply and the message length from the new connection */
-      if (orwl_recv_(fd, header, header_t_els))
-        goto FINISH;
-      if (header[1] == repl) {
-        size_t len = header[0];
-        if (len) {
-          auth_sock *sock = P99_NEW(auth_sock, fd, Arg, len);
-          auth_sock_create(sock, NULL);
-          /* The spawned thread will close the fd. */
-          continue;
-        } else {
-          /* The authorized empty message indicates termination */
-          diagnose(fd, "Received termination message, closing fd %d", fd);
-          close(fd);
-          close(Arg->fd_listen);
-          Arg->fd_listen = -1;
-          break;
+      /* If the port was not yet specified find and store it. */
+      if (!addr.sin_port) {
+        if (P99_UNLIKELY(getsockname(Arg->fd_listen, (struct sockaddr*)&addr, &len))) {
+          errorstr = "orwl_server could not find listening address";
+          P99_UNWIND_RETURN;
         }
-      } else {
-        diagnose(fd, "You are not authorized to to talk on fd %d", fd);
+        port_t_init(&Arg->host.ep.port, addr.sin_port);
       }
-    FINISH:
-      close(fd);
+      char const* server_name = orwl_endpoint_print(&Arg->host.ep);
+      report(0, "server listening at %s", server_name);
+      if (P99_UNLIKELY(listen(Arg->fd_listen, Arg->max_connections))) {
+        errorstr = "orwl_server could not listen";
+        P99_UNWIND_RETURN;
+      }
+      for (uint64_t t = 1; Arg->fd_listen != -1; ++t) {
+        /* Do this work before being connected */
+        uint64_t const chal = orwl_rand64(&seed);
+        uint64_t const repl = orwl_challenge(chal);
+        header_t header = HEADER_T_INITIALIZER;
+
+        if (Arg->info && Arg->info_len) progress(1, t, "%s", Arg->info);
+
+        if (P99_UNLIKELY(!repl)) {
+          errorstr = "orwl_server cannot serve without a secret";
+          P99_UNWIND_RETURN;
+        }
+        int fd = -1;
+        for (;fd < 0;) {
+          fd = accept(Arg->fd_listen);
+          if (fd >= 0) break;
+          perror("orwl_server encountered error in accept, retrying");
+          errno = 0;
+        }
+
+        /* Now that we have a valid file descriptor, protect its closing. */
+        P99_UNWIND_PROTECT {
+          /* Receive a challenge from the new connection */
+          if (P99_UNLIKELY(orwl_recv_(fd, header, header_t_els)))
+            P99_UNWIND(1);
+          header[1] = orwl_challenge(header[0]);
+          header[0] = chal;
+          /* challenge / reply of the new connection */
+          if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els)
+                           || orwl_recv_(fd, header, header_t_els)))
+            P99_UNWIND(1);
+          if (header[1] == repl) {
+            size_t len = header[0];
+            if (len) {
+              auth_sock *sock = P99_NEW(auth_sock, fd, Arg, len);
+              auth_sock_create(sock, NULL);
+              /* The spawned thread will close the fd. */
+              fd = -1;
+            } else {
+              /* The authorized empty message indicates termination */
+              errorstr = "orwl_server received termination message";
+              P99_UNWIND_RETURN;
+            }
+          } else {
+            diagnose(fd, "You are not authorized to to talk on fd %d", fd);
+          }
+        P99_PROTECT:
+          if (fd != -1) close(fd);
+        }
+      }
+    P99_PROTECT:
+      report(1, "\n");
+      perror(errorstr ? errorstr : "orwl_server cannot proceed");
+      errno = 0;
+      if (Arg->fd_listen != -1) close(Arg->fd_listen);
     }
   }
- TERMINATE:
-  if (errno) {
-    perror("cannot proceed");
-  }
-  if (Arg->fd_listen != -1) close(Arg->fd_listen);
 }
 
 void orwl_server_block(orwl_server *srv) {

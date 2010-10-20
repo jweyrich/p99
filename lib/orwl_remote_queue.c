@@ -50,7 +50,7 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
                              (uintptr_t)cli_wh,
                              port2host(&rq->here.port)
                              );
-        if (rh->svrID) {
+        if (rh->svrID && (rh->svrID != ORWL_SEND_ERROR)) {
           /* Link us to rq */
           rh->rq = rq;
         } else {

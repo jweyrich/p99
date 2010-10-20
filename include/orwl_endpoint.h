@@ -232,6 +232,11 @@ bool orwl_send_(int fd, uint64_t const*mess, size_t len);
 bool orwl_recv_(int fd, uint64_t *mess, size_t len);
 
 /**
+ ** @brief Error value returned by ::orwl_send.
+ **/
+#define ORWL_SEND_ERROR UINT64_MAX
+
+/**
  ** @memberof orwl_endpoint
  **/
 uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t*const mess);

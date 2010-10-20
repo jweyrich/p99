@@ -136,143 +136,152 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
  ** @endmsc
  **/
 uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t*const mess) {
-  uint64_t ret = P99_TMAX(uint64_t);
-  int fd = -1;
+  uint64_t ret = 0;
   /* do all this work before opening the socket */
-  uint64_t chal = orwl_rand64(seed);
-  uint64_t repl = orwl_challenge(chal);
+  uint64_t const chal = orwl_rand64(seed);
+  uint64_t const repl = orwl_challenge(chal);
   header_t header = { [0] = chal };
   struct sockaddr_in addr = {
     .sin_addr = addr2net(&ep->addr),
     .sin_port = port2net(&ep->port),
     .sin_family = AF_INET
   };
-  if (!repl) {
-    report(1, "cannot send without a secret");
-    goto FINISH;
+  if (P99_UNLIKELY(!repl)) {
+    report(1, "cannot send without a secret\n");
+    return ORWL_SEND_ERROR;
   }
 
-  fd = socket(PF_INET, SOCK_STREAM, 0);
-  if (fd == -1) return ret;
-
-  if (connect(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1)
-    goto FINISH;
-  /* Send a challenge to the other side */
-  if (orwl_send_(fd, header, header_t_els))
-    goto FINISH;
-  /* Receive the answer and another challenge from the other side */
-  if (orwl_recv_(fd, header, header_t_els))
-    goto FINISH;
-  if (header[1] == repl) {
-    /* The other side is authorized. Send the answer and the size of
-       the message to the other side. */
-    header[1] = orwl_challenge(header[0]);
-    header[0] = len;
-    if (orwl_send_(fd, header, header_t_els))
-      goto FINISH;
-    /* The authorized empty message indicates termination.
-       If not so, we now send the real message. */
-    if (len) {
-      if (orwl_send_(fd, mess, len))
-        goto FINISH;
-      /* Receive a final message, until the other end closes the
-         connection. */
-      if (!orwl_recv_(fd, header, header_t_els)) {
-        ret = header[0];
-        goto FINISH;
-      } else {
-        report(1, "terminal reception not successful");
-      }
+  int const fd = socket(PF_INET, SOCK_STREAM, 0);
+  if (P99_UNLIKELY(fd < 0)) {
+    P99_HANDLE_ERRNO {
+    default:
+      perror("orwl_send could not open socket");
     }
-    ret = 0;
-  } else  {
-    /* The other side is not authorized. Terminate. */
-    diagnose(fd, "fd %d, you are not who you pretend to be", fd);
-    header[1] = 0;
-    header[0] = 0;
-    if (orwl_send_(fd, header, header_t_els))
-      goto FINISH;
+    return ORWL_SEND_ERROR;
   }
- FINISH:
-  close(fd);
-  if (ret == P99_TMAX(uint64_t) && len) report(1, "send request didn't succeed");
+
+  /* Now that we have a valid file descriptor, protect its closing. */
+  P99_UNWIND_PROTECT {
+    bool volatile success = false;
+    /* connect and do a challenge / receive authentication with the
+       other side */
+    if (P99_UNLIKELY(connect(fd, (struct sockaddr*)&addr, sizeof(addr))
+                     || orwl_send_(fd, header, header_t_els)
+                     || orwl_recv_(fd, header, header_t_els))) {
+      P99_HANDLE_ERRNO {
+      default:
+        perror("orwl_send could not connect socket");
+      }
+      P99_UNWIND_RETURN ORWL_SEND_ERROR;
+    }
+
+    /* The communication was successful */
+    if (P99_LIKELY(header[1] == repl)) {
+      /* The other side is authorized. Send the answer and the size of
+         the message to the other side. */
+      header[1] = orwl_challenge(header[0]);
+      header[0] = len;
+      if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+      /* The authorized empty message indicates termination.
+         If not so, we now send the real message. */
+      if (len) {
+        if (P99_UNLIKELY(orwl_send_(fd, mess, len))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+        /* Receive a final message, until the other end closes the
+           connection. */
+        if (P99_UNLIKELY(orwl_recv_(fd, header, header_t_els)))
+          report(1, "terminal reception not successful\n");
+        else
+          ret = header[0];
+      }
+      success = true;
+    } else  {
+      /* The other side is not authorized. Terminate. */
+      diagnose(fd, "fd %d, you are not who you pretend to be", fd);
+      header[1] = 0;
+      header[0] = 0;
+      if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+    }
+  P99_PROTECT:
+    close(fd);
+    if (!success) report(1, "send request didn't succeed");
+  }
   return ret;
 }
 
+enum { maxlen = 1 << 24 };
+
 bool orwl_send_(int fd, uint64_t const*const mess, size_t len) {
-  bool ret = false;
-  uint32_t *buf = uint32_t_vnew(2 * len);
-  orwl_hton(buf, mess, len);
+  uint32_t *const buf = uint32_t_vnew(2 * len);
   char * bbuf = (void*)buf;
-  size_t blen = sizeof(uint64_t) * len;
-  while (blen) {
-    /* Don't stress the network layer by sending too large messages
-       at a time. */
-    size_t const mlen = ((size_t)1 << 24);
-    size_t clen = blen;
-    if (clen > mlen) clen = mlen;
-    ssize_t res = send(fd, bbuf, clen, 0);
-    if (res <= 0) {
-      P99_HANDLE_ERRNO {
-        /* There has been no progress but no error code either. */
-        perror("orwl_send_ did not make any progress, retrying");
-        P99_XCASE EINTR : {
-          perror("orwl_send_ was interrupted, retrying");
+
+  P99_UNWIND_PROTECT {
+    orwl_hton(buf, mess, len);
+    for (size_t blen = sizeof(uint64_t) * len; blen;) {
+      /* Don't stress the network layer by sending too large messages
+         at a time. */
+      size_t const clen = (blen > maxlen) ? maxlen : blen;
+      ssize_t const res = send(fd, bbuf, clen, 0);
+      if (P99_LIKELY(res > 0)) {
+        bbuf += res;
+        blen -= res;
+        if (res != clen)
+          report(true, "orwl_send_ only succeeded partially (%zd / %zu), retrying\n",
+                 res, clen);
+      } else {
+        report(1, "orwl_send_ did not make any progress\n");
+        P99_HANDLE_ERRNO {
+          P99_XCASE EINTR : {
+            perror("orwl_send_ was interrupted, retrying");
+          }
+        P99_XDEFAULT : {
+            perror("orwl_send_ had problems, aborting");
+            P99_UNWIND_RETURN true;
+          }
         }
         sleepfor(1E-6);
-      P99_XDEFAULT : {
-          ret = true;
-          blen = 0;
-          perror("orwl_send_ had problems, aborting");
-        }
       }
-    } else {
-      if (res != clen) report(true, "orwl_send_ only succeeded partially (%zd / %zu), retrying\n",
-                              res, clen);
-      bbuf += res;
-      blen -= res;
     }
+  P99_PROTECT:
+    uint32_t_vdelete(buf);
   }
-  uint32_t_vdelete(buf);
-  return ret;
+  return false;
 }
 
 bool orwl_recv_(int fd, uint64_t *const mess, size_t len) {
-  bool ret = false;
-  uint32_t *buf = uint32_t_vnew(2 * len);
+  uint32_t *const buf = uint32_t_vnew(2 * len);
   char * bbuf = (void*)buf;
-  size_t blen = sizeof(uint64_t) * len;
-  while (blen) {
-    /* Don't stress the network layer by receiving too large messages
-       at a time. */
-    size_t const mlen = ((size_t)1 << 24);
-    size_t clen = blen;
-    if (clen > mlen) clen = mlen;
-    ssize_t res = recv(fd, bbuf, clen, MSG_WAITALL);
-    if (res <= 0) {
-      P99_HANDLE_ERRNO {
-        /* There has been no progress but no error code either. */
-        perror("orwl_recv_ did not make any progress, retrying");
-        P99_XCASE EINTR : {
-          perror("orwl_recv_ was interrupted, retrying");
+
+  P99_UNWIND_PROTECT {
+    for (size_t blen = sizeof(uint64_t) * len; blen;) {
+      /* Don't stress the network layer by receiving too large messages
+         at a time. */
+      size_t const clen = (blen > maxlen) ? maxlen : blen;
+      ssize_t const res = recv(fd, bbuf, clen, MSG_WAITALL);
+      if (P99_LIKELY(res > 0)) {
+        bbuf += res;
+        blen -= res;
+        if (res != clen)
+          report(true, "orwl_recv_ only succeeded partially (%zd / %zu), retrying\n",
+                 res, clen);
+      } else {
+        report(1, "orwl_recv_ did not make any progress\n");
+        P99_HANDLE_ERRNO {
+          P99_XCASE EINTR : {
+            perror("orwl_recv_ was interrupted, retrying");
+          }
+        P99_XDEFAULT : {
+            perror("orwl_recv_ had problems, aborting");
+            P99_UNWIND_RETURN true;
+          }
         }
         sleepfor(1E-6);
-      P99_XDEFAULT : {
-          ret = true;
-          blen = 0;
-          perror("orwl_send had problems, aborting");
-        }
       }
-    } else {
-      if (res != clen) report(true, "orwl_recv_ only succeeded partially (%zd / %zu), retrying\n",
-                              res, clen);
-      bbuf += res;
-      blen -= res;
     }
+    orwl_ntoh(mess, buf , len);
+  P99_PROTECT:
+    uint32_t_vdelete(buf);
   }
-  orwl_ntoh(mess, buf , len);
-  uint32_t_vdelete(buf);
-  return ret;
+  return false;
 }
 
 addr_t* addr_t_init(addr_t *A, in_addr_t I0);
