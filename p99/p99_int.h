@@ -653,16 +653,14 @@ P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (
 #ifdef DOXYGEN
 #define P00_DECLARE_OVERFLOW(SUFF)                                      \
 /*! @brief Cast an unsigned type into a signed one as would do a two's complement representation of the signed type. */ \
-/*! If the signed type is in usual two's complement this should be the identity. */ \
-/*! For other cases this is supposed to do the best possible. */        \
-/*! @warning: For bizarrely encoded cases this might result in a negative zero or so. */ \
+/*! If the signed type is in usual two's complement this should be the identity. For other cases this is supposed to do the best possible. */ \
+/*! @warning For bizarrely encoded cases this might result in a negative zero or so. */ \
 p99_inline                                                              \
 P99_BUILTIN_TYPE(SUFF,)                                                 \
 P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) a);                \
 p99_inline                                                              \
-P99_BUILTIN_TYPE(SUFF,)                                                  \
-P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF,) a, P99_BUILTIN_TYPE(SUFF,) b, int* err); \
-P99_MACRO_END(p99_overflow_, SUFF)
+P99_BUILTIN_TYPE(SUFF,)                                                 \
+P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF,) a, P99_BUILTIN_TYPE(SUFF,) b, int* err)
 #else
 #define P00_DECLARE_OVERFLOW(SUFF)                                      \
 p99_inline                                                              \
@@ -722,7 +720,7 @@ P99_PASTE2(p00_add, SUFF)(P99_BUILTIN_TYPE(SUFF) a, P99_BUILTIN_TYPE(SUFF) b, in
   register P99_BUILTIN_TYPE(SUFF) c                                     \
     = P99_PASTE2(p99_twos, SUFF)(uc);                                   \
   _Bool c0 = (c < 0);                                                   \
-  if ((a0 == b0) && P99_EXPECT((a0 != c0), 0))                          \
+  if ((a0 == b0) && P99_UNLIKELY(a0 != c0))                             \
     if (err) *err = ERANGE;                                             \
   return c;                                                             \
 }                                                                       \
@@ -936,7 +934,7 @@ uintmax_t p99_low0set(uintmax_t x) { return P99_LOW0SET(x); }
  **
  ** Example: 10011100 ->  00100111
  **/
-#define P99_LOW2SHIFT(X) (P99_EXPECT((X), 1) ? ((X) / ((X) & -(X))) : 0u)
+#define P99_LOW2SHIFT(X) (P99_LIKELY(!!(X)) ? ((X) / ((X) & -(X))) : 0u)
 
 /**
  ** @brief function equivalent to ::P99_LOW2SHIFT

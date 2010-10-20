@@ -364,7 +364,7 @@ inline T* NAME(void) {                                                  \
   register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var); \
   register bool*const initialized = &ret->initialized;                  \
   register T*const var = &ret->var;                                     \
-  if (P99_EXPECT(!*initialized, true))                                  \
+  if (P99_LIKELY(*initialized))                                         \
     return var;                                                         \
   else                                                                  \
     return P99_PASTE2(NAME, _init)();                                   \
@@ -398,7 +398,7 @@ DECLARE_ONCE_STATIC(KEY);                                      \
 inline T* NAME(void) {                                         \
   INIT_ONCE_STATIC(KEY);                                       \
   T* ret = pthread_getspecific(KEY);                           \
-  if (P99_EXPECT(!ret, false)) {                               \
+  if (P99_UNLIKELY(!ret)) {                                    \
     ret = P99_NEW(T);                                          \
     (void)pthread_setspecific(KEY, ret);                       \
   }                                                            \
@@ -407,7 +407,7 @@ inline T* NAME(void) {                                         \
 inline void P99_PASTE2(NAME, _clear)(void) {                   \
   INIT_ONCE_STATIC(KEY);                                       \
   T* ret = pthread_getspecific(KEY);                           \
-  if (P99_EXPECT(!!ret, true)) {                               \
+  if (P99_LIKELY(!!ret)) {                                     \
     (void)pthread_setspecific(KEY, NULL);                      \
     P99_PASTE2(T, _delete)(ret);                               \
   }                                                            \
