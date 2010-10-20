@@ -268,6 +268,41 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define P99_EXPECT(EXP, VAL) (EXP)
 #endif
 
+/**
+ ** @brief Mark the conditional expression as being unlikely
+ **
+ ** This can e.g be useful to test returns of system functions. Many
+ ** of these return @c 0 if everything goes well and something else
+ ** otherwise.
+ **
+ ** Use with care, humans are particularly bad concerning branch
+ ** prediction. If unsure, first test your conditional for some time
+ **
+ ** to see that the case is really as unlikely as you think.
+ ** @see P99_EXPECT
+ ** @see P99_LIKELY
+ **/
+#ifndef P99_UNLIKELY
+# define P99_UNLIKELY(...) P99_EXPECT((__VA_ARGS__), 0)
+#endif
+
+/**
+ ** @brief Mark the conditional expression as being likely
+ **
+ ** This can e.g be useful to test the return value of @c printf.
+ **
+ ** Use with care, humans are particularly bad concerning branch
+ ** prediction. If unsure, first test your conditional for some time
+ ** to see that the case is really as likely as you think.
+ **
+ ** @see P99_EXPECT
+ ** @see P99_UNLIKELY
+ **/
+#ifndef P99_LIKELY
+# define P99_LIKELY(...) P99_EXPECT((__VA_ARGS__), 1)
+#endif
+
+
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 # if defined(__LONG_MAX__) && defined(__LONG_LONG_MAX__) && (P99_GCC_VERSION >= 30000UL)
 #  if (__LONG_MAX__ == 9223372036854775807) && (__LONG_LONG_MAX__ == 9223372036854775807)
