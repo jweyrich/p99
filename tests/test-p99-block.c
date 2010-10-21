@@ -1,3 +1,16 @@
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 /*
 ** test-case.c
 ** 
@@ -14,6 +27,14 @@
 #include <errno.h>
 #include <setjmp.h>
 #include "p99_block.h"
+#include "p99_swap.h"
+
+double ad = 1.0, bd = 2.0;
+uint64_t a4 = 3, b4 = -1;
+char ac = 'a', bc = 'b';
+struct big { uintmax_t B[1024]; } ab = { .B = { [0] = 7 }}, bb = { .B = { [0] = 1 }};
+struct mimic { char B[sizeof(double)]; } am = { .B = { [0] = 7 }}, bm = { .B = { [0] = 1 }};
+
 
 
 int main(int argc, char *argv[]) {
@@ -55,4 +76,17 @@ int main(int argc, char *argv[]) {
   }
   /* this should cause no harm */
   P99_UNWIND(99);
+
+  P99_SWAP(ad, bd);
+  P99_SWAP(a4, b4);
+  P99_SWAP(ac, bc);
+  P99_SWAP(ab, bb);
+  P99_SWAP(am, bm);
+  /* This one is bogus but we can't avoid it */
+  P99_SWAP(ad, b4);
+  P99_SWAP(a4, bd);
+  /* Use this to test failure */
+  /* P99_SWAP(ac, bd); */
+  /* P99_SWAP(bd, ac); */
+  /* P99_SWAP(ad, bm); */
 }
