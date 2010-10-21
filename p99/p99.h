@@ -1284,5 +1284,6 @@
 #include "p99_int.h"
 #include "p99_new.h"
 #include "p99_double.h"
+#include "p99_swap.h"
 
 #endif 	    /* !P99_H_ */
