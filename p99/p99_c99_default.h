@@ -14,7 +14,7 @@
 #ifndef   	P99_C99_DEFAULT_H_
 # define   	P99_C99_DEFAULT_H_
 
-#define P00_C99_DEFARG_DOCU(NAME, RET, ...)                              \
+#define P00_C99_DEFARG_DOCU(NAME, RET, ...)                               \
 /*! @brief Default arguments for C99 function NAME */                     \
 /*! This macro hides the function @code RET NAME(__VA_ARGS__) @endcode */ \
 /*! @see P99_CALL_DEFARG */
@@ -228,35 +228,35 @@ P00_C99_DEFARG_DOCU(strtold, long double, char const *nptr, char **endptr)
 #define strtold(...) P99_CALL_DEFARG(strtold, 2, __VA_ARGS__)
 #define strtold_defarg_1() 0
 
-#define P00_DECLARE_STRTO(NAME, SUFF, I)                                \
-/*! @brief A type safe wrapper for string to RET conversion */          \
-/*! @see stringconversion */                                            \
-p99_inline                                                              \
-P99_BUILTIN_TYPE(SUFF)                                                  \
+#define P00_DECLARE_STRTO(NAME, SUFF, I)                                 \
+/*! @brief A type safe wrapper for string to RET conversion */           \
+/*! @see stringconversion */                                             \
+p99_inline                                                               \
+P99_BUILTIN_TYPE(SUFF)                                                   \
 P99_PASTE2(p99_strto, SUFF)(char const *nptr, char **endptr, int base) { \
-  long long ret = (strtoll)(nptr, endptr, base);                        \
-  if ((ret > P99_BUILTIN_MAX(SUFF) || ret < P99_BUILTIN_MIN(SUFF))      \
-      && (!errno)) errno = ERANGE;                                      \
-  if (ret > P99_BUILTIN_MAX(SUFF)) ret = P99_BUILTIN_MAX(SUFF);         \
-  if (ret < P99_BUILTIN_MIN(SUFF)) ret = P99_BUILTIN_MIN(SUFF);         \
-  return ret;                                                           \
-}                                                                       \
+  long long ret = (strtoll)(nptr, endptr, base);                         \
+  if ((ret > P99_BUILTIN_MAX(SUFF) || ret < P99_BUILTIN_MIN(SUFF))       \
+      && (!errno)) errno = ERANGE;                                       \
+  if (ret > P99_BUILTIN_MAX(SUFF)) ret = P99_BUILTIN_MAX(SUFF);          \
+  if (ret < P99_BUILTIN_MIN(SUFF)) ret = P99_BUILTIN_MIN(SUFF);          \
+  return ret;                                                            \
+}                                                                        \
 P99_MACRO_END(p99_strto, SUFF)
 
 
-#define P00_DECLARE_STRTOU(NAME, SUFF, I)                               \
-/*! @brief A type safe wrapper for string to RET conversion */          \
-/*! @see stringconversion */                                            \
-p99_inline                                                              \
-P99_BUILTIN_TYPE(SUFF)                                                  \
+#define P00_DECLARE_STRTOU(NAME, SUFF, I)                                \
+/*! @brief A type safe wrapper for string to RET conversion */           \
+/*! @see stringconversion */                                             \
+p99_inline                                                               \
+P99_BUILTIN_TYPE(SUFF)                                                   \
 P99_PASTE2(p99_strto, SUFF)(char const *nptr, char **endptr, int base) { \
-  unsigned long long ret = (strtoull)(nptr, endptr, base);              \
-  if (ret > P99_BUILTIN_MAX(SUFF)) {                                    \
-    if (!errno) errno = ERANGE;                                         \
-    ret = P99_BUILTIN_MAX(SUFF);                                        \
-  }                                                                     \
-  return ret;                                                           \
-}                                                                       \
+  unsigned long long ret = (strtoull)(nptr, endptr, base);               \
+  if (ret > P99_BUILTIN_MAX(SUFF)) {                                     \
+    if (!errno) errno = ERANGE;                                          \
+    ret = P99_BUILTIN_MAX(SUFF);                                         \
+  }                                                                      \
+  return ret;                                                            \
+}                                                                        \
 P99_MACRO_END(p99_strto, SUFF)
 
 #define P00_I_LIST c, hh, , h, t, j, i8, i16, i32, i64

@@ -350,40 +350,40 @@ char const* pthread2str(char *buf, pthread_t id) {
 
 #ifdef __GNUC__
 
-#define DECLARE_THREAD_VAR(T, NAME)                                     \
-/* guarantee that the thread variable is properly initialized */        \
-/* var is first in the struct to have a quick return on the fast path */ \
+#define DECLARE_THREAD_VAR(T, NAME)                                                          \
+/* guarantee that the thread variable is properly initialized */                             \
+/* var is first in the struct to have a quick return on the fast path */                     \
 typedef struct P99_PASTE2(NAME, _type) { T var; bool initialized; } P99_PASTE2(NAME, _type); \
-extern __thread P99_PASTE2(NAME, _type) P99_PASTE2(NAME, _var);         \
-/* The initialization is not inlined to take it out of the optimizers   \
-   view */                                                              \
-extern T* P99_PASTE2(NAME, _init)(void);                                \
-/* In the function itself everything is done to privilege the fast      \
-   path */                                                              \
-inline T* NAME(void) {                                                  \
-  register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var); \
-  register bool*const initialized = &ret->initialized;                  \
-  register T*const var = &ret->var;                                     \
-  if (P99_LIKELY(*initialized))                                         \
-    return var;                                                         \
-  else                                                                  \
-    return P99_PASTE2(NAME, _init)();                                   \
-}                                                                       \
-inline void P99_PASTE2(NAME, _clear)(void) {                            \
-}                                                                       \
+extern __thread P99_PASTE2(NAME, _type) P99_PASTE2(NAME, _var);                              \
+/* The initialization is not inlined to take it out of the optimizers                        \
+   view */                                                                                   \
+extern T* P99_PASTE2(NAME, _init)(void);                                                     \
+/* In the function itself everything is done to privilege the fast                           \
+   path */                                                                                   \
+inline T* NAME(void) {                                                                       \
+  register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var);                      \
+  register bool*const initialized = &ret->initialized;                                       \
+  register T*const var = &ret->var;                                                          \
+  if (P99_LIKELY(*initialized))                                                              \
+    return var;                                                                              \
+  else                                                                                       \
+    return P99_PASTE2(NAME, _init)();                                                        \
+}                                                                                            \
+inline void P99_PASTE2(NAME, _clear)(void) {                                                 \
+}                                                                                            \
 P99_MACRO_END(DECLARE_THREAD_VAR)
 
-#define DEFINE_THREAD_VAR(T, NAME)                                      \
+#define DEFINE_THREAD_VAR(T, NAME)                                                  \
 __thread P99_PASTE2(NAME, _type) P99_PASTE2(NAME, _var) = { .initialized = false }; \
-void P99_PASTE2(NAME, _clear)(void);                                    \
-T* P99_PASTE2(NAME, _init)(void) {                                      \
-  register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var); \
-  register bool*const initialized = &ret->initialized;                  \
-  register T* const var = &ret->var;                                    \
-  P99_PASTE2(T, _init)(var);                                            \
-  *initialized = true;                                                  \
-  return var;                                                           \
-}                                                                       \
+void P99_PASTE2(NAME, _clear)(void);                                                \
+T* P99_PASTE2(NAME, _init)(void) {                                                  \
+  register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var);             \
+  register bool*const initialized = &ret->initialized;                              \
+  register T* const var = &ret->var;                                                \
+  P99_PASTE2(T, _init)(var);                                                        \
+  *initialized = true;                                                              \
+  return var;                                                                       \
+}                                                                                   \
 T* NAME(void)
 
 #endif

@@ -18,7 +18,7 @@
 #include P99_ADVANCE_ID
 
 
-#define P00_POSIX_DEFARG_DOCU(NAME, RET, ...)                            \
+#define P00_POSIX_DEFARG_DOCU(NAME, RET, ...)                             \
 /*! @brief Default arguments for POSIX function NAME */                   \
 /*! This macro hides the function @code RET NAME(__VA_ARGS__) @endcode */ \
 /*! @see P99_CALL_DEFARG */

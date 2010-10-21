@@ -201,11 +201,11 @@
 
 /** @brief add two decimal numbers **/
 #define P99_DEC_ADD(_0, _1)                                    \
-P00_DEC_ADD(_0, _1,                                           \
+P00_DEC_ADD(_0, _1,                                            \
              P99_IS_EQ_0(_0),                                  \
              P99_IS_EQ_0(_1),                                  \
              P99_NARG(                                         \
-                  P99_SELS(_0, P00_ALL_ZEROES()),             \
+                  P99_SELS(_0, P00_ALL_ZEROES()),              \
                   P99_SELS(_1, P00_ALL_ZEROES())))
 
 

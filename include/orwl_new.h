@@ -34,19 +34,19 @@
  ** variable that you have such allocated.
  ** @see DECLARE_NEW_DELETE
  **/
-#define DECLARE_DELETE(T)                                                                                  \
-/*! @brief Operator @c delete for type T   **/                                                             \
+#define DECLARE_DELETE(T)                                                                                   \
+/*! @brief Operator @c delete for type T   **/                                                              \
   /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T * argument **/ \
-  /*! @attention @a el show have been allocated through P99_NEW */                                         \
-  /*! @see P99_NEW */                                                                                      \
-  /*! @memberof T */                                                                                       \
-inline                                                                                                     \
-void P99_PASTE2(T, _delete)(T const*el) {                                                                  \
-  if (el) {                                                                                                \
-    T* e = (T*)el;                                                                                         \
-    P99_PASTE2(T, _destroy)(e);                                                                            \
-    free((void*)e);                                                                                        \
-  }                                                                                                        \
+  /*! @attention @a el show have been allocated through P99_NEW */                                          \
+  /*! @see P99_NEW */                                                                                       \
+  /*! @memberof T */                                                                                        \
+inline                                                                                                      \
+void P99_PASTE2(T, _delete)(T const*el) {                                                                   \
+  if (el) {                                                                                                 \
+    T* e = (T*)el;                                                                                          \
+    P99_PASTE2(T, _destroy)(e);                                                                             \
+    free((void*)e);                                                                                         \
+  }                                                                                                         \
 }
 
 inline

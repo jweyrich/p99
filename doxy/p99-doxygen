@@ -24,7 +24,13 @@
 # definitions to make the result of doxygen look nicer.
 
 # Prefixes that P99 uses for internal use
-EXCLUDE_SYMBOLS        += P00_* p00_* P99X__* p99x__*
+EXCLUDE_SYMBOLS        += P00_*
+EXCLUDE_SYMBOLS        += p00_*
+EXCLUDE_SYMBOLS        += P99X__*
+EXCLUDE_SYMBOLS        += p99x__*
+EXCLUDE_SYMBOLS        += *_defarg_[0-9]
+EXCLUDE_SYMBOLS        += P99_DUPL_*
+EXCLUDE_SYMBOLS        += P99_IS_EQ_*
 
 # A set of macros that are just too complicated that doxygen can make
 # something reasonable out of them.
@@ -78,6 +84,7 @@ EXPAND_AS_DEFINED += P00_BUILTIN_TYPE_ul
 EXPAND_AS_DEFINED += P00_BUILTIN_TYPE_ull
 EXPAND_AS_DEFINED += P00_BUILTIN_TYPE_uz
 EXPAND_AS_DEFINED += P00_BUILTIN_TYPE_v
+EXPAND_AS_DEFINED += P00_C99_DEFARG_DOCU
 EXPAND_AS_DEFINED += P00_DECLARE_ARI2STR
 EXPAND_AS_DEFINED += P00_DECLARE_STRTO
 EXPAND_AS_DEFINED += P00_DECLARE_STRTOU

@@ -57,19 +57,19 @@
  ** @return tokens 0 or 1
  **/
 #define P99_IS_EMPTY(...)                                               \
-P00_ISEMPTY(                                                           \
+P00_ISEMPTY(                                                            \
              /* test if there is just one argument, eventually an empty \
                 one */                                                  \
              P99_HAS_COMMA(__VA_ARGS__),                                \
              /* test if P99_IS__EQ__ together with the argument         \
                 adds a comma */                                         \
-             P99_HAS_COMMA(P00_IS__EQ__ __VA_ARGS__),                  \
+             P99_HAS_COMMA(P00_IS__EQ__ __VA_ARGS__),                   \
              /* test if the argument together with a parenthesis        \
                 adds a comma */                                         \
              P99_HAS_COMMA(__VA_ARGS__ (~)),                            \
              /* test if placing it between P99_IS__EQ__ and the         \
                 parenthesis adds a comma */                             \
-             P99_HAS_COMMA(P00_IS__EQ__ __VA_ARGS__ (~))               \
+             P99_HAS_COMMA(P00_IS__EQ__ __VA_ARGS__ (~))                \
              )
 
 #define P00_ISEMPTY(_0, _1, _2, _3) P99_HAS_COMMA(P99_PASTE5(P00_IS_EMPTY_CASE_, _0, _1, _2, _3))

@@ -60,10 +60,10 @@
 #if defined(__clang__)
 # define P99_COMPILER P99_COMPILER_CLANG
 # define P99_COMPILER_VERSION                                  \
- "clang " P00_STRINGIFY(__clang__)                            \
+ "clang " P00_STRINGIFY(__clang__)                             \
  "; gnu "                                                      \
- P00_STRINGIFY(__GNUC__) "."                                  \
- P00_STRINGIFY(__GNUC_MINOR__) "."                            \
+ P00_STRINGIFY(__GNUC__) "."                                   \
+ P00_STRINGIFY(__GNUC_MINOR__) "."                             \
  P00_STRINGIFY(__GNUC_PATCHLEVEL__)
 
 #elif defined(__INTEL_COMPILER)
@@ -71,8 +71,8 @@
 # define P99_COMPILER_VERSION                                  \
  "intel " P00_STRINGIFY(__INTEL_COMPILER)                      \
  "; gnu "                                                      \
- P00_STRINGIFY(__GNUC__) "."                                  \
- P00_STRINGIFY(__GNUC_MINOR__) "."                            \
+ P00_STRINGIFY(__GNUC__) "."                                   \
+ P00_STRINGIFY(__GNUC_MINOR__) "."                             \
  P00_STRINGIFY(__GNUC_PATCHLEVEL__)
 
 #elif defined(__OPEN64__)
@@ -80,8 +80,8 @@
 # define P99_COMPILER_VERSION                                  \
  "open64 " __OPEN64__                                          \
  "; gnu "                                                      \
- P00_STRINGIFY(__GNUC__) "."                                  \
- P00_STRINGIFY(__GNUC_MINOR__) "."                            \
+ P00_STRINGIFY(__GNUC__) "."                                   \
+ P00_STRINGIFY(__GNUC_MINOR__) "."                             \
  P00_STRINGIFY(__GNUC_PATCHLEVEL__)
 
 /* compilers that (as far as we know) don't pretend to be gcc */
@@ -133,8 +133,8 @@
 # define P99_COMPILER P99_COMPILER_GNU
 # define P99_COMPILER_VERSION                                  \
  "gnu "                                                        \
- P00_STRINGIFY(__GNUC__) "."                                  \
- P00_STRINGIFY(__GNUC_MINOR__) "."                            \
+ P00_STRINGIFY(__GNUC__) "."                                   \
+ P00_STRINGIFY(__GNUC_MINOR__) "."                             \
  P00_STRINGIFY(__GNUC_PATCHLEVEL__)
 
 #else

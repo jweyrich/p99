@@ -103,11 +103,11 @@ char* p00_strcat_terminate(p00_strcat_state *restrict dest) {
  ** each of the arguments at most once.
  **/
 #define P99_STRCATS(TARG, ...)                                 \
-p00_strcat_terminate                                          \
+p00_strcat_terminate                                           \
 (P99_BIGFUNC                                                   \
- (p00_strcat,                                                 \
+ (p00_strcat,                                                  \
   P99_NARG(TARG, __VA_ARGS__),                                 \
-  (&(p00_strcat_state){ .buffer = (TARG), .pos = 0  }),       \
+  (&(p00_strcat_state){ .buffer = (TARG), .pos = 0  }),        \
    __VA_ARGS__))
 
 /**
@@ -156,12 +156,12 @@ p00_strcat_terminate                                          \
  ** NAME[0], @c V1 = @a NAME[1], ..., @c VN-1 = @a NAME[@a N-1], where
  ** V0, etc are the remaining arguments.
  **/
-#define P99_VASSIGNS(NAME, ...)                                               \
-P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                        \
-(P99_IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))                  \
+#define P99_VASSIGNS(NAME, ...)                                            \
+P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                     \
+(P99_IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))               \
   (P99_FOR(NAME, P00_NARG(__VA_ARGS__),P00_SEP, P00_VASSIGN, __VA_ARGS__))
 
-#define P00_TYPEDEFS(NAME, N, ...)                            \
+#define P00_TYPEDEFS(NAME, N, ...)                             \
   P99_IF_VOID(__VA_ARGS__)                                     \
   (P99_MACRO_END(NAME, _eat_the_semicolon_, N))                \
   (P99_FOR(NAME, N, P00_SEP, P00_TYPD, __VA_ARGS__))

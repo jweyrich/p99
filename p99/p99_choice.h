@@ -55,12 +55,12 @@ P99_CHOICE_FUNCTION(uint8_t, p99_small_primes, 0,
 #define P00_UNIQUE_BIT_MULT_(WIDTH, MULT) P99_PASTE3(UINT, WIDTH, _C)(MULT)
 #define P00_UNIQUE_BIT_MULT(BITS, WIDTH) P00_UNIQUE_BIT_MULT_(WIDTH, P99_PASTE2(P00_UNIQUE_BIT_MULT_, BITS))
 
-#define P00_UNIQUE_BIT__(BIT, BITS, WIDTH, MULT)              \
+#define P00_UNIQUE_BIT__(BIT, BITS, WIDTH, MULT)               \
 (((P99_PASTE3(UINT, WIDTH, _C)(1) << BIT)                      \
   * MULT)                                                      \
  >> (WIDTH - BITS))
 
-#define P00_UNIQUE_BIT_(BIT, BITS, WIDTH)                             \
+#define P00_UNIQUE_BIT_(BIT, BITS, WIDTH)                            \
 P00_UNIQUE_BIT__(BIT, BITS, WIDTH, P00_UNIQUE_BIT_MULT(BITS, WIDTH))
 
 
@@ -70,17 +70,17 @@ P00_UNIQUE_BIT__(BIT, BITS, WIDTH, P00_UNIQUE_BIT_MULT(BITS, WIDTH))
 #ifdef P00_DOXYGEN
 /* doxygen can't handle the P99_FOR */
 #define P00_UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH) \
-p99_inline                                                         \
+p99_inline                                                        \
 TYPE P99_PASTE2(NAME, BITS)(size_t x)
 #else
-#define P00_UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH)                  \
-p99_inline                                                                          \
-TYPE P99_PASTE2(NAME, BITS)(size_t x) {                                             \
-  switch (x) {                                                                      \
+#define P00_UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH)                 \
+p99_inline                                                                        \
+TYPE P99_PASTE2(NAME, BITS)(size_t x) {                                           \
+  switch (x) {                                                                    \
     P99_FOR(WIDTH, WIDTH, P00_SEP, P00_UNIQUE_BIT_RETURN, P99_DUPL(WIDTH, BITS)); \
-  default: return DEFAULT;                                                          \
-  }                                                                                 \
-}                                                                                   \
+  default: return DEFAULT;                                                        \
+  }                                                                               \
+}                                                                                 \
 P99_MACRO_END(_unique_bit)
 #endif
 
@@ -95,17 +95,17 @@ P00_UNIQUE_BIT_FUNCTION(unsigned, p00_unique_bit_hash_, -1, 6, 64);
  ** question on stackoverflow:
  ** http://stackoverflow.com/questions/3465098/bit-twiddling-which-bit-is-set
  **/
-#define P00_UNIQUE_BIT(BITS, WIDTH)                                                 \
+#define P00_UNIQUE_BIT(BITS, WIDTH)                                                  \
 /*! @brief Find the one unique bit that is set in @a x                     */        \
 /*! @warning this function doesn't check if the precondition is fulfilled. */        \
 /*! @see p99_unique_bit_checked ## WIDTH                                   */        \
 p99_inline                                                                           \
  unsigned P99_PASTE2(p99_unique_bit_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) x) {        \
   /* the index now only has BITS significant bits, so the default case of            \
-     P99_PASTE2(p00_unique_bit_hash_, BITS) will never trigger.*/                   \
+     P99_PASTE2(p00_unique_bit_hash_, BITS) will never trigger.*/                    \
   return                                                                             \
-    P99_PASTE2(p00_unique_bit_hash_, BITS)                                          \
-    ((x * P00_UNIQUE_BIT_MULT(BITS, WIDTH))                                         \
+    P99_PASTE2(p00_unique_bit_hash_, BITS)                                           \
+    ((x * P00_UNIQUE_BIT_MULT(BITS, WIDTH))                                          \
      >> (WIDTH - BITS));                                                             \
 }                                                                                    \
 /*! @brief Find the one unique bit that is set in @a x                 */            \

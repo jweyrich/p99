@@ -1,3 +1,16 @@
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 /*
 ** p99_str.h
 ** 
@@ -21,20 +34,22 @@
 #include "p99_classification.h"
 #include "p99_for.h"
 
-#define P00_DEFINE_STR3(CODE)                                           \
-p99_inline                                                              \
+#define P00_DEFINE_STR3(CODE)                                                                 \
+p99_inline                                                                                    \
 P99_BUILTIN_TYPE(CODE) P99_PASTE2(str2, CODE)(char const* nptr, size_t* pos, unsigned base) { \
-  char *endptr;                                                         \
-  P99_BUILTIN_TYPE(CODE) ret = (strto ## CODE)(nptr, (pos ? &endptr : NULL), base); \
-  if (pos) *pos = endptr - nptr;                                        \
-  return ret;                                                           \
-}                                                                       \
+  char *endptr;                                                                               \
+  P99_BUILTIN_TYPE(CODE) ret = (strto ## CODE)(nptr, (pos ? &endptr : NULL), base);           \
+  if (pos) *pos = endptr - nptr;                                                              \
+  return ret;                                                                                 \
+}                                                                                             \
 P99_MACRO_END(P00_DEFINE_STR3, CODE)
 
 #define P00_STR3_0(NAME, X, I) P00_DEFINE_STR3(X)
 #define P00_STR3_1(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_STR3_0, __VA_ARGS__)
 
+#ifndef DOXYGEN
 P00_STR3_1(l, ll, ul, ull, uz, t, j, uj);
+#endif
 
 P00_C99_DEFARG_DOCU(str2l, long, char const *nptr, size_t *pos, unsigned base)
 /*! @param nptr is required */
@@ -100,14 +115,14 @@ P00_C99_DEFARG_DOCU(str2uj, uintmax_t, char const *nptr, size_t *pos, unsigned b
 #define str2uj_defarg_1() 0
 #define str2uj_defarg_2() 0
 
-#define P00_DEFINE_STR2(CODE)                                           \
-p99_inline                                                              \
+#define P00_DEFINE_STR2(CODE)                                                  \
+p99_inline                                                                     \
 P99_BUILTIN_TYPE(CODE) P99_PASTE2(str2, CODE)(char const* nptr, size_t* pos) { \
-  char *endptr;                                                         \
-  P99_BUILTIN_TYPE(CODE) ret = (strto ## CODE)(nptr, (pos ? &endptr : NULL)); \
-  if (pos) *pos = endptr - nptr;                                        \
-  return ret;                                                           \
-}                                                                       \
+  char *endptr;                                                                \
+  P99_BUILTIN_TYPE(CODE) ret = (strto ## CODE)(nptr, (pos ? &endptr : NULL));  \
+  if (pos) *pos = endptr - nptr;                                               \
+  return ret;                                                                  \
+}                                                                              \
 P99_MACRO_END(P00_DEFINE_STR2, CODE)
 
 #define P00_STR2_0(NAME, X, I) P00_DEFINE_STR2(X)

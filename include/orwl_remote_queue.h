@@ -186,7 +186,7 @@ DECLARE_NEW_DELETE(orwl_handle);
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
 
 
-#define P00_DOCUMENT_SEED                                               \
+#define P00_DOCUMENT_SEED                                                                                                                                                                                                  \
 /*! @remark Because this function might open a socket it needs an additional parameter @a seed for a random generator. This argument is provided by default, so usually you don't have to worry and may simply omit it. */
 
 /**

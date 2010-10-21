@@ -102,7 +102,7 @@
 #define P00_BUILTIN_TYPE_ulL	P00_BUILTIN_TYPE_ull
 
 
-#define P00_TYPE_NORMALIZE_(CODE, CONS, VOLA, SEQ)            \
+#define P00_TYPE_NORMALIZE_(CODE, CONS, VOLA, SEQ)             \
 P99_IF_EMPTY(CODE)                                             \
   (P99_IF_EMPTY(SEQ)(void)(SEQ))                               \
   (P99_BUILTIN_TYPE(CODE)                                      \
@@ -110,10 +110,10 @@ P99_IF_EMPTY(CODE)                                             \
    VOLA                                                        \
   )
 
-#define P00_TYPE_NORMALIZE(N, CODE, SEQ)                      \
-P00_TYPE_NORMALIZE_(CODE,                                     \
-                     P00_CONST_CLASSIFY_(N, SEQ),             \
-                     P00_VOLATILE_CLASSIFY_(N, SEQ),          \
+#define P00_TYPE_NORMALIZE(N, CODE, SEQ)                       \
+P00_TYPE_NORMALIZE_(CODE,                                      \
+                     P00_CONST_CLASSIFY_(N, SEQ),              \
+                     P00_VOLATILE_CLASSIFY_(N, SEQ),           \
                      SEQ                                       \
                      )
 /**
@@ -123,7 +123,7 @@ P00_TYPE_NORMALIZE_(CODE,                                     \
  ** void type expression
  ** @return @c void, followed by the qualifiers
  **/
-#define P99_VOID_NORMALIZE(SEQ)                                             \
+#define P99_VOID_NORMALIZE(SEQ)                                           \
   P00_TYPE_NORMALIZE(P99_VOID_QUAL_LEN(SEQ), P00_VOID_CLASSIFY(SEQ), SEQ)
 
 /**
@@ -133,7 +133,7 @@ P00_TYPE_NORMALIZE_(CODE,                                     \
  ** Boolean type expression
  ** @return @c _Bool followed by the qualifiers
  **/
-#define P99_BOOL_NORMALIZE(SEQ)                                             \
+#define P99_BOOL_NORMALIZE(SEQ)                                           \
   P00_TYPE_NORMALIZE(P99_BOOL_QUAL_LEN(SEQ), P00_BOOL_CLASSIFY(SEQ), SEQ)
 
 /**
@@ -146,7 +146,7 @@ P00_TYPE_NORMALIZE_(CODE,                                     \
  **
  ** @return the normalized unqualified type, followed by the qualifiers
  **/
-#define P99_INTEGER_NORMALIZE(SEQ)                                                \
+#define P99_INTEGER_NORMALIZE(SEQ)                                              \
   P00_TYPE_NORMALIZE(P99_INTEGER_QUAL_LEN(SEQ), P00_INTEGER_CLASSIFY(SEQ), SEQ)
 
 /**
@@ -160,7 +160,7 @@ P00_TYPE_NORMALIZE_(CODE,                                     \
  **
  ** @return the normalized unqualified type, followed by the qualifiers
  **/
-#define P99_FLOAT_NORMALIZE(SEQ)                                              \
+#define P99_FLOAT_NORMALIZE(SEQ)                                            \
   P00_TYPE_NORMALIZE(P99_FLOAT_QUAL_LEN(SEQ), P00_FLOAT_CLASSIFY(SEQ), SEQ)
 
 

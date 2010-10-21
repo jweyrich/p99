@@ -66,8 +66,8 @@
 NAME(P99_IF_EQ(0,M)                                            \
      (__VA_ARGS__)                                             \
      (P99_IF_EMPTY(__VA_ARGS__)                                \
-      (P00_DEFARGS(NAME, M, P99_PASTE2(NAME,_defarg_0)()))    \
-      (P00_DEFARGS(NAME, M, __VA_ARGS__))                     \
+      (P00_DEFARGS(NAME, M, P99_PASTE2(NAME,_defarg_0)()))     \
+      (P00_DEFARGS(NAME, M, __VA_ARGS__))                      \
       )                                                        \
      )
 #endif
@@ -156,24 +156,24 @@ NAME(P99_IF_EQ(0,M)                                            \
  **/
 
 #ifdef P00_DOXYGEN
-#define P00_PROTOTYPE(RT, NAME, ...)                                                    \
+#define P00_PROTOTYPE(RT, NAME, ...)                                                     \
 /*! @remark This function might be hidden behind a macro :: ## NAME of the same name. */ \
 RT NAME(__VA_ARGS__)
 #define P99_PROTOTYPE(RT, NAME, ...) P00_PROTOTYPE(__VA_ARGS__)
 #else
-#define P00_PROTOTYPE(RT, NAME, ...)                          \
+#define P00_PROTOTYPE(RT, NAME, ...)                           \
   RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));       \
   typedef RT P99_CAT2(NAME, _prototype_ret);                   \
   P99_TYPEDEFS(P99_CAT2(NAME, _prototype_), __VA_ARGS__)
 
 #define P99_PROTOTYPE(...)                                     \
 P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
-(P00_PROTOTYPE(__VA_ARGS__, void))                            \
+(P00_PROTOTYPE(__VA_ARGS__, void))                             \
 (P00_PROTOTYPE(__VA_ARGS__))
 #endif
 
 
-#define P00_EXPR_FUNCTION(NAME, X, N)                                  \
+#define P00_EXPR_FUNCTION(NAME, X, N)                                   \
 P99_IF_EMPTY(X)                                                         \
 ()                                                                      \
 (                                                                       \
@@ -184,13 +184,13 @@ P99_IF_EMPTY(X)                                                         \
  }                                                                      \
 )
 
-#define P00_DAFE(NAME, X, N)                                          \
+#define P00_DAFE(NAME, X, N)                                           \
 P99_IF_EMPTY(X)                                                        \
 (P99_MACRO_END(NAME, _boring_, N))                                     \
 (P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void))
 
-#define P00_DECLARE_DEFARG(NAME, N, ...)                      \
-P99_FOR(NAME, N, P00_SER, P00_EXPR_FUNCTION, __VA_ARGS__)    \
+#define P00_DECLARE_DEFARG(NAME, N, ...)                       \
+P99_FOR(NAME, N, P00_SER, P00_EXPR_FUNCTION, __VA_ARGS__)      \
 P99_MACRO_END(NAME, _declare_defarg)
 
 #ifdef P00_DOXYGEN
@@ -219,7 +219,7 @@ P99_MACRO_END(NAME, _declare_defarg)
 #define P99_DECLARE_DEFARG(NAME, ...) P00_DECLARE_DEFARG(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 #endif
 
-#define P00_DEFINE_DEFARG(NAME, N, ...)                       \
+#define P00_DEFINE_DEFARG(NAME, N, ...)                        \
   P99_FOR(NAME, N, P00_SEP, P00_DAFE, __VA_ARGS__)
 
 #ifdef P00_DOXYGEN
@@ -243,9 +243,9 @@ P99_MACRO_END(NAME, _declare_defarg)
 /**
  ** @brief Provide a documentation section to a function defined with ::P99_CALL_DEFARG
  **/
-#define P99_DEFARG_DOCU(NAME)                                           \
+#define P99_DEFARG_DOCU(NAME)                                                                                        \
 /*! @remark NAME is actually implemented as a macro that helps to provide default arguments to the real function. */ \
-/*! @see P99_CALL_DEFARG */                                             \
+/*! @see P99_CALL_DEFARG */                                                                                          \
 /*! @see P99_DECLARE_DEFARG */
 
 
