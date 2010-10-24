@@ -22,6 +22,7 @@
  **/
 
 #include "p99_logical.h"
+#include "p99_block.h"
 
 
 
@@ -249,19 +250,18 @@
 #define P99_PARALLEL_FOR _Pragma(P99_PARALLEL_PRAGMA) for
 
 
-#define P00_PRAGMA_DO(PRAG, TYPE, VAR, LOW, LEN, INCR)                     \
-for (register _Bool p00 = 1; p00; p00 = 0)                                 \
-  for (register TYPE                                                       \
-         P99_PASTE2(p00_start_, VAR) = (LOW),                              \
-         P99_PASTE2(p00_stop_, VAR) = P99_PASTE2(p00_start_, VAR) + (LEN), \
-         P99_PASTE2(p00_incr_, VAR) = (INCR);                              \
-       p00; p00 = 0)                                                       \
-    P99_PRAGMA(PRAG)                                                       \
-      for (TYPE P99_PASTE2(p00_i_, VAR) = P99_PASTE2(p00_start_, VAR);     \
-           P99_PASTE2(p00_i_, VAR) < P99_PASTE2(p00_stop_, VAR);           \
-           P99_PASTE2(p00_i_, VAR) += P99_PASTE2(p00_incr_, VAR))          \
-        for (register _Bool p00 = 1; p00; p00 = 0)                         \
-          for (TYPE const VAR = P99_PASTE2(p00_i_, VAR); p00; p00 = 0)
+#define P00_PRAGMA_DO(PRAG, TYPE, VAR, LOW, LEN, INCR)                  \
+P00_BLK_START                                                           \
+P00_BLK_BEFORE(register TYPE                                            \
+               P99_PASTE2(p00_start_, VAR) = (LOW),                     \
+               P99_PASTE2(p00_stop_, VAR) = P99_PASTE2(p00_start_, VAR) + (LEN), \
+               P99_PASTE2(p00_incr_, VAR) = (INCR))                     \
+P99_PRAGMA(PRAG)                                                        \
+     for (TYPE P99_PASTE2(p00_i_, VAR) = P99_PASTE2(p00_start_, VAR);   \
+          P99_PASTE2(p00_i_, VAR) < P99_PASTE2(p00_stop_, VAR);         \
+          P99_PASTE2(p00_i_, VAR) += P99_PASTE2(p00_incr_, VAR))        \
+       P00_BLK_START                                                    \
+         P00_BLK_BEFORE(TYPE const VAR = P99_PASTE2(p00_i_, VAR))
 
 #ifdef DOXYGEN
 /**

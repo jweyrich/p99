@@ -34,6 +34,7 @@ uint64_t a4 = 3, b4 = -1;
 char ac = 'a', bc = 'b';
 struct big { uintmax_t B[1024]; } ab = { .B = { [0] = 7 }}, bb = { .B = { [0] = 1 }};
 struct mimic { char B[sizeof(double)]; } am = { .B = { [0] = 7 }}, bm = { .B = { [0] = 1 }};
+void const *av = &av, *bv = &bv;
 
 
 
@@ -82,6 +83,7 @@ int main(int argc, char *argv[]) {
   P99_SWAP(ac, bc);
   P99_SWAP(ab, bb);
   P99_SWAP(am, bm);
+  P99_SWAP(av, bv);
   /* This one is bogus but we can't avoid it */
   P99_SWAP(ad, b4);
   P99_SWAP(a4, bd);

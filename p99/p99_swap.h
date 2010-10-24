@@ -103,22 +103,14 @@ p00_swap1(                                                      \
 /**
  ** @brief Swap the contents of the arguments.
  **
- ** @warning Both arguments must be lvalue expressions @b and it must
- ** be permitted to take their addresses. So variables that have the
- ** @c register storage class will not work with this macro.
- **
- ** @warning The types of the arguments are only checked that they
- ** have the same size @em and that the two lvalues are assignment
- ** compatible. If both are of the same size @em and are assignment
- ** compatible @em and have different semantics, you are in
- ** trouble. This may e.g happen with a @c double and a @c uint64_t.
- **
  ** This macro has the following properties:
  **  - It evaluates each of @a _0 and @a _1 only once.
  **  - It has a compile time check for the correct sizes.
+ **  - It checks if the two expressions are assignment compatible in
+ **    both ways
  **  - It has no naming issue with a hidden variable.
  **  - The size of the temporary variable is computed at compile
- **    time, so the compound literal is not a dynamic array.
+ **    time. So we may use a compound literal and not a dynamic array.
  **
  ** @remark This implementation is a follow up of a <a
  ** href="http://stackoverflow.com/questions/3982348/implement-generic-swap-macro-in-c/3983089#3983089">
@@ -129,6 +121,36 @@ p00_swap1(                                                      \
  ** temporaries in the hope that the loads into registers can be done
  ** simultaneously. The other one, @c P00_SWAP1(_0, _1), uses only one
  ** temporary but is then forced to do serialized copy operations.
+ **
+ ** @warning Both arguments
+ ** - must be lvalue expressions
+ ** - it must be permitted to take their addresses.
+ **
+ ** So variables that have the @c register storage class will not work
+ ** with this macro.
+ **
+ ** @warning The types of the arguments are only checked that they
+ ** have the same size @em and that the two lvalues are assignment
+ ** compatible. If both at the same time are
+ ** - of the same size,
+ ** - are assignment compatible,
+ ** - have different semantics,
+ **
+ ** you are in trouble. This may happen in the following cases:
+ ** - A signed and unsigned type of same size, e.g <code>signed int</code> and
+ **   <code>unsigned int</code>
+ ** - Two integer types that by coincidence have the same size, e.g on
+ **   a platform <code>long</code> and <code>long long</code> may
+ **   both 8 byte. This may work ok for a long time and then fail when
+ **   you move to another platform.
+ ** - If one type is a floating point type and the other an integral
+ **   type, e.g @c double and a @c uint64_t may be of the same size.
+ ** - Two types that have the same size but not the same width. A @c
+ **   bool will usually be stored in one byte, but memcpy from a @c
+ **   char is not equivalent of assigning it with @c =. Padding bits
+ **   may have the effect that the value stored in a @c bool is a trap
+ **   representation.
+ **
  **/
 #define P99_SWAP(_0, _1) ((sizeof(_0) > sizeof(uintmax_t)) ? P00_SWAP1(_0, _1) : P00_SWAP2(_0, _1))
 
