@@ -126,7 +126,7 @@ DEFINE_THREAD(orwl_server) {
         /* Do this work before being connected */
         uint64_t const chal = orwl_rand64(&seed);
         uint64_t const repl = orwl_challenge(chal);
-        header_t header = HEADER_T_INITIALIZER;
+        header_t header = HEADER_T_INITIALIZER(0);
 
         if (Arg->info && Arg->info_len) progress(1, t, "%s", Arg->info);
 
@@ -145,18 +145,18 @@ DEFINE_THREAD(orwl_server) {
         /* Now that we have a valid file descriptor, protect its closing. */
         P99_UNWIND_PROTECT {
           /* Receive a challenge from the new connection */
-          if (P99_UNLIKELY(orwl_recv_(fd, header, header_t_els)))
+          if (P99_UNLIKELY(orwl_recv_(fd, header, header_t_els, 0)))
             P99_UNWIND(1);
           header[1] = orwl_challenge(header[0]);
           header[0] = chal;
           /* challenge / reply of the new connection */
-          if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els)
-                           || orwl_recv_(fd, header, header_t_els)))
+          if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0)
+                           || orwl_recv_(fd, header, header_t_els, 0)))
             P99_UNWIND(1);
           if (header[1] == repl) {
             size_t len = header[0];
             if (len) {
-              auth_sock *sock = P99_NEW(auth_sock, fd, Arg, len);
+              auth_sock *sock = P99_NEW(auth_sock, fd, Arg, len, header[2]);
               auth_sock_create(sock, NULL);
               /* The spawned thread will close the fd. */
               fd = -1;

@@ -140,7 +140,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t
   /* do all this work before opening the socket */
   uint64_t const chal = orwl_rand64(seed);
   uint64_t const repl = orwl_challenge(chal);
-  header_t header = { [0] = chal };
+  header_t header = HEADER_T_INITIALIZER(chal);
   struct sockaddr_in addr = {
     .sin_addr = addr2net(&ep->addr),
     .sin_port = port2net(&ep->port),
@@ -165,9 +165,17 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t
     bool volatile success = false;
     /* connect and do a challenge / receive authentication with the
        other side */
-    if (P99_UNLIKELY(connect(fd, (struct sockaddr*)&addr, sizeof(addr))
-                     || orwl_send_(fd, header, header_t_els)
-                     || orwl_recv_(fd, header, header_t_els))) {
+    for (unsigned tries = 0; tries < 10; ++tries) {
+      if (P99_UNLIKELY(connect(fd, (struct sockaddr*)&addr, sizeof(addr)))) {
+        P99_HANDLE_ERRNO {
+        default:
+          perror("orwl_send could not connect socket");
+        }
+        if (tries < 10) sleepfor(1E-2);
+        else P99_UNWIND_RETURN ORWL_SEND_ERROR;
+      } else break;
+    }
+    if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0) || orwl_recv_(fd, header, header_t_els, 0))) {
       P99_HANDLE_ERRNO {
       default:
         perror("orwl_send could not connect socket");
@@ -181,14 +189,14 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t
          the message to the other side. */
       header[1] = orwl_challenge(header[0]);
       header[0] = len;
-      if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+      if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
       /* The authorized empty message indicates termination.
          If not so, we now send the real message. */
       if (len) {
-        if (P99_UNLIKELY(orwl_send_(fd, mess, len))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+        if (P99_UNLIKELY(orwl_send_(fd, mess, len, header[2]))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
         /* Receive a final message, until the other end closes the
            connection. */
-        if (P99_UNLIKELY(orwl_recv_(fd, header, header_t_els)))
+        if (P99_UNLIKELY(orwl_recv_(fd, header, header_t_els, header[2])))
           report(1, "terminal reception not successful\n");
         else
           ret = header[0];
@@ -199,7 +207,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t
       diagnose(fd, "fd %d, you are not who you pretend to be", fd);
       header[1] = 0;
       header[0] = 0;
-      if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+      if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
     }
   P99_PROTECT:
     close(fd);
@@ -210,12 +218,21 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t
 
 enum { maxlen = 1 << 24 };
 
-bool orwl_send_(int fd, uint64_t const*const mess, size_t len) {
-  uint32_t *const buf = uint32_t_vnew(2 * len);
-  char * bbuf = (void*)buf;
+bool orwl_send_(int fd, uint64_t const*const mess, size_t len, uint64_t remo) {
+  /* We only have to translate the message buffer, if we have an
+     order that is different from network order and different from
+     the order of the remote host. */
+  uint64_t *const buf = ((ORWL_HOSTORDER != ORWL_NETWORDER)
+                         && (remo != ORWL_NETWORDER))
+    ? uint64_t_vnew(len)
+    : NULL;
+  if (buf) {
+    orwl_hton(buf, mess, len);
+  }
+
+  char * bbuf = (void*)(buf ? buf : mess);
 
   P99_UNWIND_PROTECT {
-    orwl_hton(buf, mess, len);
     for (size_t blen = sizeof(uint64_t) * len; blen;) {
       /* Don't stress the network layer by sending too large messages
          at a time. */
@@ -242,14 +259,13 @@ bool orwl_send_(int fd, uint64_t const*const mess, size_t len) {
       }
     }
   P99_PROTECT:
-    uint32_t_vdelete(buf);
+    if (buf) uint64_t_vdelete(buf);
   }
   return false;
 }
 
-bool orwl_recv_(int fd, uint64_t *const mess, size_t len) {
-  uint32_t *const buf = uint32_t_vnew(2 * len);
-  char * bbuf = (void*)buf;
+bool orwl_recv_(int fd, uint64_t *const mess, size_t len, uint64_t remo) {
+  char * bbuf = (void*)mess;
 
   P99_UNWIND_PROTECT {
     for (size_t blen = sizeof(uint64_t) * len; blen;) {
@@ -277,9 +293,13 @@ bool orwl_recv_(int fd, uint64_t *const mess, size_t len) {
         sleepfor(1E-6);
       }
     }
-    orwl_ntoh(mess, buf , len);
-  P99_PROTECT:
-    uint32_t_vdelete(buf);
+  /* We only have to translate the message buffer, if we have an
+     order that is different from network order and different from
+     the order of the remote host. */
+    if ((ORWL_HOSTORDER != ORWL_NETWORDER)
+        && (remo != ORWL_NETWORDER)) {
+      orwl_ntoh(mess, NULL, len);
+    }
   }
   return false;
 }

@@ -69,8 +69,8 @@ bool same_endianess(uint32_t c) {
   return c == mycode;
 }
 
-void orwl_hton(uint32_t *n, uint64_t const *h, size_t l);
-void orwl_ntoh(uint64_t* h, uint32_t const *n, size_t l);
+void orwl_hton(uint64_t *n, uint64_t const *h, size_t l);
+void orwl_ntoh(uint64_t* h, uint64_t const *n, size_t l);
 
 in_addr_t p00_inet4_addr = P99_0(in_addr_t);
 
@@ -167,12 +167,13 @@ in_addr_t orwl_inet_addr(char const *name) {
 auth_sock* auth_sock_init(auth_sock *sock,
                                   int fd,
                                   orwl_server* srv,
-                                  size_t len);
+                          size_t len,
+                          uint64_t remo);
 
 void auth_sock_close(auth_sock *sock) {
   /* Ack the termination of the call */
-  header_t header = { sock->ret };
-  orwl_send_(sock->fd, header, header_t_els);
+  header_t header = HEADER_T_INITIALIZER(sock->ret);
+  orwl_send_(sock->fd, header, header_t_els, sock->remoteorder);
   close(sock->fd);
   sock->fd = -1;
 }
@@ -194,7 +195,7 @@ DEFINE_AUTH_SOCK_FUNC(server_callback, uint64_t funcID) {
 
 DEFINE_THREAD(auth_sock) {
   assert(Arg->mes);
-  if (!orwl_recv_(Arg->fd, Arg->mes, Arg->len))
+  if (!orwl_recv_(Arg->fd, Arg->mes, Arg->len, Arg->remoteorder))
     if (Arg->srv) {
       /* do something with mess here */
       server_callback(Arg);

@@ -228,8 +228,8 @@ P99_DECLARE_DEFARG(orwl_endpoint_print, , );
 #define orwl_endpoint_print_defarg_1() (P99_LVAL(char[128]))
 #endif
 
-bool orwl_send_(int fd, uint64_t const*mess, size_t len);
-bool orwl_recv_(int fd, uint64_t *mess, size_t len);
+bool orwl_send_(int fd, uint64_t const*mess, size_t len, uint64_t remo);
+bool orwl_recv_(int fd, uint64_t *mess, size_t len, uint64_t remo);
 
 /**
  ** @brief Error value returned by ::orwl_send.

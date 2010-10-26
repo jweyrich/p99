@@ -16,10 +16,11 @@
 
 #include "orwl_register.h"
 #include "orwl_host.h"
+#include "orwl_header.h"
 
 #ifndef DOXYGEN
 inline
-P99_PROTOTYPE(void, orwl_hton, uint32_t *, uint64_t const *, size_t);
+P99_PROTOTYPE(void, orwl_hton, uint64_t *, uint64_t const *, size_t);
 #define orwl_hton(...) P99_CALL_DEFARG(orwl_hton, 3, __VA_ARGS__)
 #define orwl_hton_defarg_2() 1
 #endif
@@ -27,21 +28,19 @@ P99_PROTOTYPE(void, orwl_hton, uint32_t *, uint64_t const *, size_t);
 P99_DEFARG_DOCU(orwl_hton)
 inline
 void
-orwl_hton(uint32_t *n,        /*!< [out] array of length 2 @a l */
+orwl_hton(uint64_t *n,        /*!< [out] array of length @a l */
           uint64_t const *h,  /*!< [in] array of length @a l */
           size_t l            /*!< [in] defaults to 1 */
           ) {
+  uint64_t const* hv = h ? h : n;
   for (size_t i = 0; i < l; ++i) {
-    n[0] = htonl((uint32_t)h[0]);
-    n[1] = htonl((uint32_t)(h[0] >> 32));
-    h += 1;
-    n += 2;
+    n[i] = orwl_hton64(hv[i]);
   }
 }
 
 #ifndef DOXYGEN
 inline
-P99_PROTOTYPE(void, orwl_ntoh, uint64_t*, uint32_t const *, size_t);
+P99_PROTOTYPE(void, orwl_ntoh, uint64_t*, uint64_t const *, size_t);
 #define orwl_ntoh(...) P99_CALL_DEFARG(orwl_ntoh, 3, __VA_ARGS__)
 #define orwl_ntoh_defarg_2() 1
 #endif
@@ -50,13 +49,12 @@ P99_DEFARG_DOCU(orwl_ntoh)
 inline
 void
 orwl_ntoh(uint64_t* h,       /*!< [out] array of length @a l */
-          uint32_t const *n, /*!< [in] array of length 2 @a l */
+          uint64_t const *n, /*!< [in] array of length @a l */
           size_t l           /*!< [in] defaults to 1 */
           ) {
+  uint64_t const *nv = n ? n : h;
   for (size_t i = 0; i < l; ++i) {
-    h[0] = ((uint64_t)ntohl(n[0])) | (((uint64_t)ntohl(n[1])) << 32);
-    n += 2;
-    h += 1;
+    h[i] = orwl_ntoh64(nv[i]);
   }
 }
 
@@ -140,15 +138,17 @@ struct auth_sock {
   uint64_t const* back;    /*!< a backup of the message */
   uint64_t ret;            /*!< a place to store the return value of
                              the call */
+  uint64_t remoteorder;   /*!< the byte order on the remote host */
 };
 
 #ifndef DOXYGEN
 inline
-P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t);
-#define auth_sock_init(...) P99_CALL_DEFARG(auth_sock_init, 4, __VA_ARGS__)
+P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t, uint64_t);
+#define auth_sock_init(...) P99_CALL_DEFARG(auth_sock_init, 5, __VA_ARGS__)
 #define auth_sock_init_defarg_1() -1
 #define auth_sock_init_defarg_2() NULL
 #define auth_sock_init_defarg_3() P99_0(size_t)
+#define auth_sock_init_defarg_4() 0
 #endif
 
 DOCUMENT_INIT(auth_sock)
@@ -158,13 +158,15 @@ auth_sock*
 auth_sock_init(auth_sock *sock,         /*!< [out] */
                int fd,                  /*!< [in] file descriptor, defaults to -1 */
                struct orwl_server* srv, /*!< [in,out] defaults to @c NULL */
-               size_t len               /*!< [in] the length of the message 0 */
+               size_t len,              /*!< [in] the length of the message 0 */
+               uint64_t remo            /*!< [in] the byte order on remote */
                ) {
   if (!sock) return NULL;
   P99_TZERO(*sock);
   sock->fd = fd;
   sock->srv = srv;
   sock->len = len;
+  sock->remoteorder = remo;
   sock->mes = len ? uint64_t_vnew(len) : NULL;
   sock->back = sock->mes;
   return sock;
