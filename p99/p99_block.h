@@ -96,16 +96,22 @@ P00_BLK_END
  **
  ** @warning @c return, @c exit() or other functions that don't return
  ** to the caller inside the dependent block will result in not
- ** executing @a AFTER, so be careful.
+ ** executing @a AFTER, so be careful. Use ::P99_UNWIND_RETURN instead.
  **
  ** An example of a potential use would be a pointer to a mutex
  ** variable. It can be initialized with the address of a mutex as
  ** argument to @a INITIAL. @a BEFORE and @a AFTER may then lock resp
  ** unlock that mutex.
+ **
+ ** @see P99_UNWIND_PROTECT is used internally to protect the
+ ** execution of @a AFTER
+ ** @see P99_UNWIND to break through one or several nested guarded blocks
+ ** @see P99_UNWIND_RETURN to return from the enclosing function
  **/
 #define P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)      \
 P00_BLK_START                                                   \
 P00_BLK_DECL(T, NAME, INITIAL)                                  \
+P99_UNWIND_PROTECT if (0) { P99_PROTECT: AFTER; } else          \
 P00_BLK_BEFAFT(BEFORE, AFTER)                                   \
 /* Ensure that a `break' will still execute AFTER */            \
 P00_BLK_END
