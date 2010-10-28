@@ -140,6 +140,7 @@ DEFINE_THREAD(orwl_server) {
           if (fd >= 0) break;
           perror("orwl_server encountered error in accept, retrying");
           errno = 0;
+          sleepfor(1E-2);
         }
 
         /* Now that we have a valid file descriptor, protect its closing. */

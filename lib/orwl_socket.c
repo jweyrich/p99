@@ -174,7 +174,24 @@ void auth_sock_close(auth_sock *sock) {
   /* Ack the termination of the call */
   header_t header = HEADER_T_INITIALIZER(sock->ret);
   orwl_send_(sock->fd, header, header_t_els, sock->remoteorder);
-  close(sock->fd);
+  /* Since we are doing blocking send / receive the probability that
+     we have a walking duplicate of an ancient package is
+     minimal. Thus allow the reuse of ports. */
+  if (setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, &(int const){ 1 }, sizeof(int)) < 0)
+    P99_HANDLE_ERRNO {
+    P99_XDEFAULT :
+      perror("setting socket to SO_REUSEADDR failed");
+    }
+  if (setsockopt(sock->fd, SOL_SOCKET, SO_LINGER, &(struct linger){ .l_onoff = 1, .l_linger = 1 }, sizeof(struct linger)) < 0)
+    P99_HANDLE_ERRNO {
+    P99_XDEFAULT :
+      perror("setting socket to linger failed");
+    }
+  if (close(sock->fd) < 0)
+    P99_HANDLE_ERRNO {
+    P99_XDEFAULT :
+      perror("close on socket failed");
+    }
   sock->fd = -1;
 }
 

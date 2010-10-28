@@ -151,7 +151,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t
     return ORWL_SEND_ERROR;
   }
 
-  int const fd = socket(PF_INET, SOCK_STREAM, 0);
+  int const fd = socket(AF_INET, SOCK_STREAM, 0);
   if (P99_UNLIKELY(fd < 0)) {
     P99_HANDLE_ERRNO {
     default:
@@ -171,14 +171,14 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t
         default:
           perror("orwl_send could not connect socket");
         }
-        if (tries < 10) sleepfor(1E-2);
+        if (tries < 10) sleepfor(1E0);
         else P99_UNWIND_RETURN ORWL_SEND_ERROR;
       } else break;
     }
     if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0) || orwl_recv_(fd, header, header_t_els, 0))) {
       P99_HANDLE_ERRNO {
       default:
-        perror("orwl_send could not connect socket");
+        perror("orwl_send could not exchange challenge");
       }
       P99_UNWIND_RETURN ORWL_SEND_ERROR;
     }
