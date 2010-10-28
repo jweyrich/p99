@@ -234,7 +234,12 @@ int main(int argc, char **argv) {
 
   orwl_types_init();
 
-  orwl_server* srv = P99_NEW(orwl_server, 4, 10);
+  phases = str2uz(argv[2]);
+  number = str2uz(argv[3]);
+  orwl_np = str2uz(argv[4]);
+  offset = str2uz(argv[5]);
+
+  orwl_server* srv = P99_NEW(orwl_server, SOMAXCONN, number * 2);
   pthread_t srv_id;
   orwl_server_create(srv, &srv_id);
   rand48_t* seed = seed_get();
@@ -242,11 +247,6 @@ int main(int argc, char **argv) {
   report(1, "connecting to %s", argv[1]);
   orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(0, 0);
   orwl_endpoint_parse(&other, argv[1]);
-
-  phases = str2uz(argv[2]);
-  number = str2uz(argv[3]);
-  orwl_np = str2uz(argv[4]);
-  offset = str2uz(argv[5]);
 
   /* info has one suplementary char in front such that we may always
      address field -1 from the threads. */
