@@ -1,8 +1,10 @@
 ## -*- Makefile -*-
 
 
-COPY = "all rights reserved, "
-LICENSE = SHORTLICENCE-closed.txt
+COPYCLOSED = "all rights reserved, "
+LICENSECLOSED = SHORTLICENCE-closed.txt
+COPY = "(C) copyright "
+LICENSE = SHORTLICENCE-open.txt
 TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile
 
 p99_generated.h : ../scripts/p99_generate.pl

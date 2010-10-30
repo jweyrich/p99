@@ -2,13 +2,12 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* (C) copyright  2010 Jens Gustedt, INRIA, France                           */
 /*                                                                           */
-/* This file is part of the P99 project. You received this file as as        */
-/* part of a confidential agreement and you may generally not                */
-/* redistribute it and/or modify it, unless under the terms as given in      */
-/* the file LICENSE.  It is distributed without any warranty; without        */
-/* even the implied warranty of merchantability or fitness for a             */
+/* This file is free software; it is part of the P99 project.                */
+/* You can redistribute it and/or modify it under the terms of the QPL as    */
+/* given in the file LICENSE. It is distributed without any warranty;        */
+/* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
 #ifndef   	P99_H_
@@ -148,7 +147,13 @@
  ** @subsection copyright Copyright
  ** Copyright &copy; 2010 Jens Gustedt, INRIA, France, http://www.inria.fr/
  **
- ** @htmlinclude SHORTLICENCE-closed.txt
+ ** @htmlinclude SHORTLICENCE-open.txt
+ **
+ ** @subsection license License
+ **
+ ** <pre>
+ **@htmlinclude LICENSE-QPL.txt
+ ** </pre>
  **/
 
 /**
@@ -619,12 +624,24 @@
  **
  ** @section for Multidimensional arrays and parallel loops
  **
- ** We provide some utilities to ease the programming in multiple
- ** dimensions. ::P99_FORALL allows to generate nested for loops over
+ ** We provide some utilities to ease the programming of loop
+ ** iterations in one or multiple dimensions. The simplest to use
+ ** is ::P99_DO, that resembles much to a @c do loop in fortran. It
+ ** fixes the bounds of the iteration once, before entering the
+ ** iteration itself.
+ **
+ ** @code
+ ** P99_DO(size_t, i, a, n, inc) {
+ **   A[i] *= B[i-1]
+ ** }
+ ** @endcode
+ **
+ **
+ ** ::P99_FORALL allows to generate nested for loops over
  ** arbitrary many dimensions:
  ** @code
  ** size_t const D[3] = { 20, 17, 31 };
- ** ::P99_FORALL(D, i, j, k) {
+ ** P99_FORALL(D, i, j, k) {
  **      A[i][j][k] *= B[i][j][k];
  ** }
  ** @endcode
@@ -633,9 +650,10 @@
  ** bounds specified by @c D.
  **
  ** ::P99_PARALLEL_FOR, where available, will provide a parallelized
- ** version of a simple @c for loop, and ::P99_PARALLEL_FORALL
- ** implements nested parallel loops with otherwise the same semantics
- ** as for ::P99_FORALL.
+ ** version of a simple @c for loop, and ::P99_PARALLEL_DO and
+ ** ::P99_PARALLEL_FORALL implements nested parallel loops with
+ ** otherwise the same semantics as for ::P99_DO or ::P99_FORALL,
+ ** respectively.
  **
  ** @section condi Preprocessor conditionals and loops
  **

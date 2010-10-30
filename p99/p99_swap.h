@@ -2,13 +2,12 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* (C) copyright  2010 Jens Gustedt, INRIA, France                           */
 /*                                                                           */
-/* This file is part of the P99 project. You received this file as as        */
-/* part of a confidential agreement and you may generally not                */
-/* redistribute it and/or modify it, unless under the terms as given in      */
-/* the file LICENSE.  It is distributed without any warranty; without        */
-/* even the implied warranty of merchantability or fitness for a             */
+/* This file is free software; it is part of the P99 project.                */
+/* You can redistribute it and/or modify it under the terms of the QPL as    */
+/* given in the file LICENSE. It is distributed without any warranty;        */
+/* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
 /*
@@ -73,30 +72,30 @@ void p99_swap1(void* p0, void* p1, size_t pSize) {
   free(t0);
 }
 
-#define P00_SWAP2(_0, _1)                                       \
-p00_swap2(                                                      \
-          /* check if the two are assignment compatible */      \
-          P99_SIGN_PROMOTE(&(_0), ((_0) = (_1), NULL)),         \
-          P99_SIGN_PROMOTE(&(_1), ((_1) = (_0), NULL)),         \
-          sizeof(_0),                                           \
-          /* only works if sizeof(_0) >= sizeof(_1) */          \
-          (char[sizeof(_0)]){                                   \
-            [(intmax_t)sizeof(_0) - sizeof(_1)] = 0,            \
-              },                                                \
-          /* only works if sizeof(_0) <= sizeof(_1) */          \
-          (char[sizeof(_0)]){                                   \
-            [(intmax_t)sizeof(_1) - sizeof(_0)] = 0,            \
+#define P00_SWAP2(_0, _1)                                      \
+p00_swap2(                                                     \
+          /* check if the two are assignment compatible */     \
+          P99_SIGN_PROMOTE(&(_0), ((_0) = (_1), NULL)),        \
+          P99_SIGN_PROMOTE(&(_1), ((_1) = (_0), NULL)),        \
+          sizeof(_0),                                          \
+          /* only works if sizeof(_0) >= sizeof(_1) */         \
+          (char[sizeof(_0)]){                                  \
+            [(intmax_t)sizeof(_0) - sizeof(_1)] = 0,           \
+              },                                               \
+          /* only works if sizeof(_0) <= sizeof(_1) */         \
+          (char[sizeof(_0)]){                                  \
+            [(intmax_t)sizeof(_1) - sizeof(_0)] = 0,           \
               })
 
-#define P00_SWAP1(_0, _1)                                       \
-p00_swap1(                                                      \
-          /* check if the two are assignment compatible */      \
-          P99_SIGN_PROMOTE(&(_0), ((_0) = (_1), NULL)),         \
-          P99_SIGN_PROMOTE(&(_1), ((_1) = (_0), NULL)),         \
-          sizeof(_0),                                           \
-          /* only works if sizeof(_0) <= sizeof(_1) */          \
-          (char[sizeof(_0)]){                                   \
-            [(intmax_t)sizeof(_1) - sizeof(_0)] = 0,            \
+#define P00_SWAP1(_0, _1)                                      \
+p00_swap1(                                                     \
+          /* check if the two are assignment compatible */     \
+          P99_SIGN_PROMOTE(&(_0), ((_0) = (_1), NULL)),        \
+          P99_SIGN_PROMOTE(&(_1), ((_1) = (_0), NULL)),        \
+          sizeof(_0),                                          \
+          /* only works if sizeof(_0) <= sizeof(_1) */         \
+          (char[sizeof(_0)]){                                  \
+            [(intmax_t)sizeof(_1) - sizeof(_0)] = 0,           \
               })
 
 

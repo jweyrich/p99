@@ -418,9 +418,9 @@ my ($FILEID) = $fileid =~ m/[\$]Id:[ ]*([^\$ ]+)/;
 my $FILEDATE = `date -R`;
 chomp $FILEDATE;
 
-print "\n\n/* This file is automat";
+print "/*  -*- C -*- */\n/***********************************************\nautomat";
 print "ically generated, do not chan";
-print "ge manually. */\n";
+print "ge manually.\n***********************************************/\n";
 print "\n";
 
 print << "DOCU";

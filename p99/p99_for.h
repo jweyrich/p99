@@ -2,13 +2,12 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* (C) copyright  2010 Jens Gustedt, INRIA, France                           */
 /*                                                                           */
-/* This file is part of the P99 project. You received this file as as        */
-/* part of a confidential agreement and you may generally not                */
-/* redistribute it and/or modify it, unless under the terms as given in      */
-/* the file LICENSE.  It is distributed without any warranty; without        */
-/* even the implied warranty of merchantability or fitness for a             */
+/* This file is free software; it is part of the P99 project.                */
+/* You can redistribute it and/or modify it under the terms of the QPL as    */
+/* given in the file LICENSE. It is distributed without any warranty;        */
+/* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
 #ifndef   	P99_FOR_H_
@@ -250,17 +249,17 @@
 #define P99_PARALLEL_FOR _Pragma(P99_PARALLEL_PRAGMA) for
 
 
-#define P00_PRAGMA_DO(PRAG, TYPE, VAR, LOW, LEN, INCR)                  \
-P00_BLK_START                                                           \
-P00_BLK_BEFORE(register TYPE                                            \
-               P99_PASTE2(p00_start_, VAR) = (LOW),                     \
+#define P00_PRAGMA_DO(PRAG, TYPE, VAR, LOW, LEN, INCR)                           \
+P00_BLK_START                                                                    \
+P00_BLK_BEFORE(register TYPE                                                     \
+               P99_PASTE2(p00_start_, VAR) = (LOW),                              \
                P99_PASTE2(p00_stop_, VAR) = P99_PASTE2(p00_start_, VAR) + (LEN), \
-               P99_PASTE2(p00_incr_, VAR) = (INCR))                     \
-P99_PRAGMA(PRAG)                                                        \
-     for (TYPE P99_PASTE2(p00_i_, VAR) = P99_PASTE2(p00_start_, VAR);   \
-          P99_PASTE2(p00_i_, VAR) < P99_PASTE2(p00_stop_, VAR);         \
-          P99_PASTE2(p00_i_, VAR) += P99_PASTE2(p00_incr_, VAR))        \
-       P00_BLK_START                                                    \
+               P99_PASTE2(p00_incr_, VAR) = (INCR))                              \
+P99_PRAGMA(PRAG)                                                                 \
+     for (TYPE P99_PASTE2(p00_i_, VAR) = P99_PASTE2(p00_start_, VAR);            \
+          P99_PASTE2(p00_i_, VAR) < P99_PASTE2(p00_stop_, VAR);                  \
+          P99_PASTE2(p00_i_, VAR) += P99_PASTE2(p00_incr_, VAR))                 \
+       P00_BLK_START                                                             \
          P00_BLK_BEFORE(TYPE const VAR = P99_PASTE2(p00_i_, VAR))
 
 #ifdef DOXYGEN

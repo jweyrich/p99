@@ -2,15 +2,18 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* (C) copyright  2010 Jens Gustedt, INRIA, France                           */
 /*                                                                           */
-/* This file is part of the P99 project. You received this file as as        */
-/* part of a confidential agreement and you may generally not                */
-/* redistribute it and/or modify it, unless under the terms as given in      */
-/* the file LICENSE.  It is distributed without any warranty; without        */
-/* even the implied warranty of merchantability or fitness for a             */
+/* This file is free software; it is part of the P99 project.                */
+/* You can redistribute it and/or modify it under the terms of the QPL as    */
+/* given in the file LICENSE. It is distributed without any warranty;        */
+/* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
+/***********************************************
+automatically generated, do not change manually.
+***********************************************/
+
 /** @file
  ** @brief automatically generated macros to handle variadic macros.
  **
@@ -34,7 +37,7 @@
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Wed, 20 Oct 2010 23:05:35 +0200"
+#define P00_VERSION_DATE "Sun, 31 Oct 2010 00:37:36 +0200"
 #define P00_VERSION_ID "eb534f1d31aa3a23309b77734f874d521c3cb3a2"
 
 /** @brief The maximal number of arguments the P99 macros can handle.

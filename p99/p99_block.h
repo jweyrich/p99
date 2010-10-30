@@ -2,13 +2,12 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* (C) copyright  2010 Jens Gustedt, INRIA, France                           */
 /*                                                                           */
-/* This file is part of the P99 project. You received this file as as        */
-/* part of a confidential agreement and you may generally not                */
-/* redistribute it and/or modify it, unless under the terms as given in      */
-/* the file LICENSE.  It is distributed without any warranty; without        */
-/* even the implied warranty of merchantability or fitness for a             */
+/* This file is free software; it is part of the P99 project.                */
+/* You can redistribute it and/or modify it under the terms of the QPL as    */
+/* given in the file LICENSE. It is distributed without any warranty;        */
+/* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
 #ifndef   	P99_BLOCK_H_
@@ -46,8 +45,8 @@
    declaration of NAME. Therefore we may then push a variable on the
    stack with the same name as a variable of an enclosing scope, and
    use its value of inside the expression. */
-#define P00_BLK_DECL(TYPE, NAME, INIT)                                  \
-P00_BLK_BEFORE(TYPE P99_PASTE2(p00_decl_, NAME) = (INIT))               \
+#define P00_BLK_DECL(TYPE, NAME, INIT)                              \
+P00_BLK_BEFORE(TYPE P99_PASTE2(p00_decl_, NAME) = (INIT))           \
 P00_BLK_BEFAFT(TYPE NAME = P99_PASTE2(p00_decl_, NAME), (void)NAME)
 
 
@@ -78,10 +77,10 @@ P00_BLK_BEFAFT(TYPE NAME = P99_PASTE2(p00_decl_, NAME), (void)NAME)
  ** and this would trigger an assertion whenever the condition is not
  ** fulfilled when entering or leaving the block.
  **/
-#define P99_PROTECTED_BLOCK(BEFORE, AFTER)              \
-P00_BLK_START                                           \
-P00_BLK_BEFAFT(BEFORE, AFTER)                           \
-/* Ensure that a `break' will still execute AFTER */    \
+#define P99_PROTECTED_BLOCK(BEFORE, AFTER)                     \
+P00_BLK_START                                                  \
+P00_BLK_BEFAFT(BEFORE, AFTER)                                  \
+/* Ensure that a `break' will still execute AFTER */           \
 P00_BLK_END
 
 /**
@@ -108,12 +107,12 @@ P00_BLK_END
  ** @see P99_UNWIND to break through one or several nested guarded blocks
  ** @see P99_UNWIND_RETURN to return from the enclosing function
  **/
-#define P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)      \
-P00_BLK_START                                                   \
-P00_BLK_DECL(T, NAME, INITIAL)                                  \
-P99_UNWIND_PROTECT if (0) { P99_PROTECT: AFTER; } else          \
-P00_BLK_BEFAFT(BEFORE, AFTER)                                   \
-/* Ensure that a `break' will still execute AFTER */            \
+#define P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)     \
+P00_BLK_START                                                  \
+P00_BLK_DECL(T, NAME, INITIAL)                                 \
+P99_UNWIND_PROTECT if (0) { P99_PROTECT: AFTER; } else         \
+P00_BLK_BEFAFT(BEFORE, AFTER)                                  \
+/* Ensure that a `break' will still execute AFTER */           \
 P00_BLK_END
 
 /**
@@ -150,7 +149,7 @@ P00_BLK_END
  ** @endcode
  ** @see P99_AVOID
  **/
-#define P99_PREFER(...)                                                \
+#define P99_PREFER(...)                                        \
   if (1) { __VA_ARGS__ } else
 
 /**
@@ -281,13 +280,13 @@ typedef enum p00_uncase_enum {
  **   }
  ** @endcode
  **/
-#define P99_HANDLE_ERRNO                        \
-P00_BLK_START                                   \
-P00_BLK_DECL(int const, p99_errno, errno)       \
-  if (P99_LIKELY(!p99_errno)) { } else          \
-    P99_UNWIND_PROTECT                          \
-      if (0) { P99_PROTECT: errno = 0; } else   \
-        P00_BLK_AFTER(errno = 0)                \
+#define P99_HANDLE_ERRNO                                       \
+P00_BLK_START                                                  \
+P00_BLK_DECL(int const, p99_errno, errno)                      \
+  if (P99_LIKELY(!p99_errno)) { } else                         \
+    P99_UNWIND_PROTECT                                         \
+      if (0) { P99_PROTECT: errno = 0; } else                  \
+        P00_BLK_AFTER(errno = 0)                               \
           switch (p99_errno) case 0:
 
 
@@ -379,54 +378,54 @@ struct p00_inhibitor {
  ** @see ::p99_unwind_code
  ** @see ::p99_unwind_level
  **/
-#define P99_UNWIND_PROTECT                                              \
-P00_BLK_START                                                           \
-/* The jump buffer for the case that P99_UNWIND_RETURN is launched      \
-   inside this construct. Only the lowest level variable will be        \
-   needed but since we don't know our level yet, we have to declare     \
-   this at every level. */                                              \
-P00_BLK_BEFAFT(auto p00_jmp_buf p00_unwind_return = P00_JMP_BUF_INITIALIZER, \
-               /* returning can only be on because it was set by        \
-                  P99_UNWIND_RETURN and we fell of the edge after all   \
-                  P99_PROTECT clauses */                                \
-               p00_unwind_return.returning ? longjmp(p00_unwind_return.buf, 1) : P99_NOP) \
-/* Detect the bottom of enclosing other P99_UNWIND_PROTECT. If it       \
-   exists set it to that one, otherwise set it to our newly allocated   \
-   jump buffer. We have to do this in two steps such that the           \
-   initializer of the variable is not the variable itself. */           \
-P00_BLK_DECL(register p00_jmp_buf *const, p00_unwind_bottom,            \
-             (p00_unwind_bottom ? p00_unwind_bottom : &p00_unwind_return)) \
-  /* inhibit further access of the p00_unwind_return variable */        \
+#define P99_UNWIND_PROTECT                                                                  \
+P00_BLK_START                                                                               \
+/* The jump buffer for the case that P99_UNWIND_RETURN is launched                          \
+   inside this construct. Only the lowest level variable will be                            \
+   needed but since we don't know our level yet, we have to declare                         \
+   this at every level. */                                                                  \
+P00_BLK_BEFAFT(auto p00_jmp_buf p00_unwind_return = P00_JMP_BUF_INITIALIZER,                \
+               /* returning can only be on because it was set by                            \
+                  P99_UNWIND_RETURN and we fell of the edge after all                       \
+                  P99_PROTECT clauses */                                                    \
+               p00_unwind_return.returning ? longjmp(p00_unwind_return.buf, 1) : P99_NOP)   \
+/* Detect the bottom of enclosing other P99_UNWIND_PROTECT. If it                           \
+   exists set it to that one, otherwise set it to our newly allocated                       \
+   jump buffer. We have to do this in two steps such that the                               \
+   initializer of the variable is not the variable itself. */                               \
+P00_BLK_DECL(register p00_jmp_buf *const, p00_unwind_bottom,                                \
+             (p00_unwind_bottom ? p00_unwind_bottom : &p00_unwind_return))                  \
+  /* inhibit further access of the p00_unwind_return variable */                            \
   P00_BLK_DECL(register p00_inhibitor const, p00_unwind_return, (p00_inhibitor){ INT_MAX }) \
-/* are we unwinding or not? */                                          \
-  P00_BLK_BEFORE(register _Bool p00_unw = 0)                            \
-/* The return code from the longjmp to which we apply the               \
-   special convention concerning the value 0. */                        \
-  P00_BLK_BEFAFT(register int p00_code = 0,                             \
-                 /* An eventual continuation of the unwind process is   \
-                    decided here, since here the p00_unwind_top         \
-                    variable that is visible is that of the enclosing   \
-                    scope, but the unwind code variable is ours.  If    \
-                    the enclosing scope is the outer scope,             \
-                    p00_unwind_top is a integer with value zero. So     \
-                    even then the P99_UNWIND is syntactically correct,  \
-                    but fortunately the underlying call to longjmp      \
-                    will not be issued. */                              \
-                 (p00_unw                                               \
-                  ? P99_UNWIND(p00_code < 0 ? p00_code : p00_code - 1)  \
-                  : P99_NOP))                                           \
-/* maintain the level of nesting of different calls to                  \
-   P99_UNWIND_PROTECT */                                                \
-  P00_BLK_DECL(register unsigned const, p99_unwind_level, p99_unwind_level + 1) \
-/* the buffer variable for setjmp/longjump */                           \
-  P00_BLK_BEFORE(auto jmp_buf p00_unwind_top)                           \
-  P00_BLK_BEFORE(p00_code = setjmp(p00_unwind_top))                     \
-  /* detect whether or not we are unwinding */                          \
-  P00_BLK_BEFORE(p00_unw = !!p00_code)                                  \
-  P00_BLK_DECL(register int const, p99_unwind_code, p00_code)           \
-  P00_BLK_END                                                           \
-/* dispatch. cast the _Bool to int since this is what happens anyhow    \
-   and some compilers will issue strange warnings. */                   \
+/* are we unwinding or not? */                                                              \
+  P00_BLK_BEFORE(register _Bool p00_unw = 0)                                                \
+/* The return code from the longjmp to which we apply the                                   \
+   special convention concerning the value 0. */                                            \
+  P00_BLK_BEFAFT(register int p00_code = 0,                                                 \
+                 /* An eventual continuation of the unwind process is                       \
+                    decided here, since here the p00_unwind_top                             \
+                    variable that is visible is that of the enclosing                       \
+                    scope, but the unwind code variable is ours.  If                        \
+                    the enclosing scope is the outer scope,                                 \
+                    p00_unwind_top is a integer with value zero. So                         \
+                    even then the P99_UNWIND is syntactically correct,                      \
+                    but fortunately the underlying call to longjmp                          \
+                    will not be issued. */                                                  \
+                 (p00_unw                                                                   \
+                  ? P99_UNWIND(p00_code < 0 ? p00_code : p00_code - 1)                      \
+                  : P99_NOP))                                                               \
+/* maintain the level of nesting of different calls to                                      \
+   P99_UNWIND_PROTECT */                                                                    \
+  P00_BLK_DECL(register unsigned const, p99_unwind_level, p99_unwind_level + 1)             \
+/* the buffer variable for setjmp/longjump */                                               \
+  P00_BLK_BEFORE(auto jmp_buf p00_unwind_top)                                               \
+  P00_BLK_BEFORE(p00_code = setjmp(p00_unwind_top))                                         \
+  /* detect whether or not we are unwinding */                                              \
+  P00_BLK_BEFORE(p00_unw = !!p00_code)                                                      \
+  P00_BLK_DECL(register int const, p99_unwind_code, p00_code)                               \
+  P00_BLK_END                                                                               \
+/* dispatch. cast the _Bool to int since this is what happens anyhow                        \
+   and some compilers will issue strange warnings. */                                       \
   switch ((int)p00_unw) case 0:
 
 p99_inline
@@ -478,14 +477,14 @@ void p00_unwind(void* top, unsigned level, int cond) {
  ** P99_UNWIND_RETURN myret;
  ** @endcode
  **/
-#define P99_UNWIND_RETURN                                               \
-/* This is just there to prevent spurious dangling else warnings */     \
-P00_BLK_START                                                           \
-  if (p00_unwind_bottom                                                 \
-      && !setjmp(p00_unwind_bottom->buf)) {                             \
-    /* assign before we unwind all the way down */                      \
-    p00_unwind_bottom->returning = 1;                                   \
-    P99_UNWIND(-p99_unwind_return);                                     \
+#define P99_UNWIND_RETURN                                           \
+/* This is just there to prevent spurious dangling else warnings */ \
+P00_BLK_START                                                       \
+  if (p00_unwind_bottom                                             \
+      && !setjmp(p00_unwind_bottom->buf)) {                         \
+    /* assign before we unwind all the way down */                  \
+    p00_unwind_bottom->returning = 1;                               \
+    P99_UNWIND(-p99_unwind_return);                                 \
   } else return
 
 /**
