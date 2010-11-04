@@ -28,12 +28,12 @@ static bool background = false;
 static bool block = false;
 static int verbose = -1;
 
-#define P99_ERROR_RETURN(INFO)                          \
-  P99_HANDLE_ERRNO {                                    \
-  P99_XDEFAULT : {                                      \
-      perror("error when reading from stdin");          \
-      P99_UNWIND_RETURN p99_errno;                      \
-    }                                                   \
+#define P99_ERROR_RETURN(INFO)                                 \
+  P99_HANDLE_ERRNO {                                           \
+  P99_XDEFAULT : {                                             \
+      perror("error when reading from stdin");                 \
+      P99_UNWIND_RETURN p99_errno;                             \
+    }                                                          \
   }
 
 static char const options[] = "a:c:l:L:hvbf";
@@ -105,115 +105,115 @@ int main(int argc, char **argv) {
   }
 
   P99_UNWIND_PROTECT {
-  if (!pid)
-    P99_UNWIND_PROTECT {
-    if (background) {
-      fclose(stdin);
-      if (block)
-        stdin = fdopen(fd[0], "r");
-    }
-    orwl_server* srv = P99_NEW(orwl_server, con, len);
-    if (address[0]) orwl_endpoint_parse(&srv->host.ep, address);
-    pthread_t srv_id;
-    orwl_server_create(srv, &srv_id);
-    /* give the server the chance to fire things up */
-    while (!port2net(&srv->host.ep.port)) sleepfor(0.01);
-    char const* server_name = orwl_endpoint_print(&srv->host.ep);
-    if (verbose) {
-      size_t ilen = 3 * len + 1;
-      if (ilen < 256) ilen = 256;
-      char* info = calloc(ilen + 1);
-      snprintf(info, ilen, "server at %s                                               ", server_name);
-      srv->info = info;
-      srv->info_len = ilen;
-    }
-
-    if (lockfilename) {
-      char* tlf = P99_STRDUP(lockfilename, "XXXXXX");
-      mode_t oldmask = umask(077);
+    if (!pid)
       P99_UNWIND_PROTECT {
-        int lockfd = mkstemp(tlf);
-        if (lockfd < 0)
-          P99_ERROR_RETURN("could not open lockfile");
-        size_t len = strlen(server_name);
-        if (write(lockfd, server_name, len) != len) {
-          free((void*)lockfilename);
-          lockfilename = NULL;
-          P99_ERROR_RETURN("could not write to lockfile");
+        if (background) {
+          fclose(stdin);
+          if (block)
+            stdin = fdopen(fd[0], "r");
         }
-        if (link(tlf, lockfilename))
-          P99_ERROR_RETURN("could not link to lockfile, another server might be running");
-      P99_PROTECT:
-        umask(oldmask);
-        if (lockfd >= 0) {
-          unlink(tlf);
-          close(lockfd);
+        orwl_server* srv = P99_NEW(orwl_server, con, len);
+        if (address[0]) orwl_endpoint_parse(&srv->host.ep, address);
+        pthread_t srv_id;
+        orwl_server_create(srv, &srv_id);
+        /* give the server the chance to fire things up */
+        while (!port2net(&srv->host.ep.port)) sleepfor(0.01);
+        char const* server_name = orwl_endpoint_print(&srv->host.ep);
+        if (verbose) {
+          size_t ilen = 3 * len + 1;
+          if (ilen < 256) ilen = 256;
+          char* info = calloc(ilen + 1);
+          snprintf(info, ilen, "server at %s                                               ", server_name);
+          srv->info = info;
+          srv->info_len = ilen;
         }
-        if (tlf) free(tlf);
-      }
-    }
-    if (block)
-      P99_UNWIND_PROTECT {
-      orwl_server_block(srv);
-      progress(1, 0, "%s waiting for kick off                                           ",
-               server_name);
-      if (!fgets((char[32]){0}, 32, stdin))
-        P99_ERROR_RETURN("error when reading from stdin");
-      P99_PROTECT:
-      orwl_server_unblock(srv);
-      if (background)
-        fclose(stdin);
-      }
 
-    if (verbose) {
-      size_t ilen = 3 * len + 1;
-      char* info = memset(srv->info, ' ', ilen);
-      for (size_t i = 0; i < ilen; i += 3)
-        info[i] = '|';
-      for (size_t t = 0; ; ++t) {
-        ret = pthread_kill(srv_id, 0);
-        if (ret) break;
-        sleepfor(0.1);
-        size_t have_data = 0;
-        for (size_t i = 0; i < len; ++i) {
-          if (srv->wqs[i].data) {
-            ++have_data;
-            uint8_t val = *(srv->wqs[i].data);
-            char buf[3];
-            snprintf(buf, 3, "%.2" PRIX8 "|", val);
-            memcpy(info + (3 * i) + 1, buf, 2);
+        if (lockfilename) {
+          char* tlf = P99_STRDUP(lockfilename, "XXXXXX");
+          mode_t oldmask = umask(077);
+          P99_UNWIND_PROTECT {
+            int lockfd = mkstemp(tlf);
+            if (lockfd < 0)
+              P99_ERROR_RETURN("could not open lockfile");
+            size_t len = strlen(server_name);
+            if (write(lockfd, server_name, len) != len) {
+              free((void*)lockfilename);
+              lockfilename = NULL;
+              P99_ERROR_RETURN("could not write to lockfile");
+            }
+            if (link(tlf, lockfilename))
+              P99_ERROR_RETURN("could not link to lockfile, another server might be running");
+          P99_PROTECT:
+            umask(oldmask);
+            if (lockfd >= 0) {
+              unlink(tlf);
+              close(lockfd);
+            }
+            if (tlf) free(tlf);
           }
         }
-        if (!have_data)
-          progress(1, t, "%s idle                                           ",
-                   server_name);
-      }
-    }
-    P99_PROTECT:
-    orwl_server_join(srv_id);
-    orwl_server_delete(srv);
-  } else {
-    if (block)
-      P99_UNWIND_PROTECT {
-      close(fd[0]);
-      char mess[32] = {0};
-      FILE* out = fdopen(fd[1], "w");
-      if (!fgets(mess, 32, stdin)) {
-        kill(pid, SIGKILL);
-        P99_ERROR_RETURN("error when reading from stdin");
-      }
-      report(verbose, "ORWL server is launched");
-      fputs(mess, out);
+        if (block)
+          P99_UNWIND_PROTECT {
+            orwl_server_block(srv);
+            progress(1, 0, "%s waiting for kick off                                           ",
+                     server_name);
+            if (!fgets((char[32]){0}, 32, stdin))
+              P99_ERROR_RETURN("error when reading from stdin");
+          P99_PROTECT:
+            orwl_server_unblock(srv);
+            if (background)
+              fclose(stdin);
+          }
+
+        if (verbose) {
+          size_t ilen = 3 * len + 1;
+          char* info = memset(srv->info, ' ', ilen);
+          for (size_t i = 0; i < ilen; i += 3)
+            info[i] = '|';
+          for (size_t t = 0; ; ++t) {
+            ret = pthread_kill(srv_id, 0);
+            if (ret) break;
+            sleepfor(0.1);
+            size_t have_data = 0;
+            for (size_t i = 0; i < len; ++i) {
+              if (srv->wqs[i].data) {
+                ++have_data;
+                uint8_t val = *(srv->wqs[i].data);
+                char buf[3];
+                snprintf(buf, 3, "%.2" PRIX8 "|", val);
+                memcpy(info + (3 * i) + 1, buf, 2);
+              }
+            }
+            if (!have_data)
+              progress(1, t, "%s idle                                           ",
+                       server_name);
+          }
+        }
       P99_PROTECT:
-      fclose(out);
+        orwl_server_join(srv_id);
+        orwl_server_delete(srv);
+      } else {
+      if (block)
+        P99_UNWIND_PROTECT {
+          close(fd[0]);
+          char mess[32] = {0};
+          FILE* out = fdopen(fd[1], "w");
+          if (!fgets(mess, 32, stdin)) {
+            kill(pid, SIGKILL);
+            P99_ERROR_RETURN("error when reading from stdin");
+          }
+          report(verbose, "ORWL server is launched");
+          fputs(mess, out);
+        P99_PROTECT:
+          fclose(out);
+        }
     }
-  }
   P99_PROTECT:
-  if (lockfilename) {
-    report(verbose, "ORWL server trying to remove %s", lockfilename);
-    unlink(lockfilename);
-    free((void*)lockfilename);
-  }
+    if (lockfilename) {
+      report(verbose, "ORWL server trying to remove %s", lockfilename);
+      unlink(lockfilename);
+      free((void*)lockfilename);
+    }
   }
 
 
