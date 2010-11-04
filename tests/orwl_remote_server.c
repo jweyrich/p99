@@ -21,13 +21,22 @@
 #include "p99_c99_default.h"
 
 static char address[256] = "";
+static char const* lockfilename = NULL;
 static uint64_t con = 20;
 static uint64_t len = 10;
 static bool background = false;
 static bool block = false;
 static int verbose = -1;
 
-static char const options[] = "a:c:l:hvbf";
+#define P99_ERROR_RETURN(INFO)                          \
+  P99_HANDLE_ERRNO {                                    \
+  P99_XDEFAULT : {                                      \
+      perror("error when reading from stdin");          \
+      P99_UNWIND_RETURN p99_errno;                      \
+    }                                                   \
+  }
+
+static char const options[] = "a:c:l:L:hvbf";
 
 static
 void process_opt(int argc, char **argv) {
@@ -43,6 +52,9 @@ void process_opt(int argc, char **argv) {
       break;
     case 'l':
       len = strtou64(optarg);
+      break;
+    case 'L':
+      lockfilename = strdup(optarg);
       break;
     case 'b':
       block = !block;
@@ -92,7 +104,9 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  if (!pid) {
+  P99_UNWIND_PROTECT {
+  if (!pid)
+    P99_UNWIND_PROTECT {
     if (background) {
       fclose(stdin);
       if (block)
@@ -114,18 +128,42 @@ int main(int argc, char **argv) {
       srv->info_len = ilen;
     }
 
-    if (block) {
+    if (lockfilename) {
+      char* tlf = P99_STRDUP(lockfilename, "XXXXXX");
+      mode_t oldmask = umask(077);
+      P99_UNWIND_PROTECT {
+        int lockfd = mkstemp(tlf);
+        if (lockfd < 0)
+          P99_ERROR_RETURN("could not open lockfile");
+        size_t len = strlen(server_name);
+        if (write(lockfd, server_name, len) != len) {
+          free((void*)lockfilename);
+          lockfilename = NULL;
+          P99_ERROR_RETURN("could not write to lockfile");
+        }
+        if (link(tlf, lockfilename))
+          P99_ERROR_RETURN("could not link to lockfile, another server might be running");
+      P99_PROTECT:
+        umask(oldmask);
+        if (lockfd >= 0) {
+          unlink(tlf);
+          close(lockfd);
+        }
+        if (tlf) free(tlf);
+      }
+    }
+    if (block)
+      P99_UNWIND_PROTECT {
       orwl_server_block(srv);
       progress(1, 0, "%s waiting for kick off                                           ",
                server_name);
-      if (!fgets((char[32]){0}, 32, stdin)) {
-        perror("error when reading from stdin");
-        exit(1);
-      }
+      if (!fgets((char[32]){0}, 32, stdin))
+        P99_ERROR_RETURN("error when reading from stdin");
+      P99_PROTECT:
       orwl_server_unblock(srv);
       if (background)
         fclose(stdin);
-    }
+      }
 
     if (verbose) {
       size_t ilen = 3 * len + 1;
@@ -151,20 +189,31 @@ int main(int argc, char **argv) {
                    server_name);
       }
     }
+    P99_PROTECT:
     orwl_server_join(srv_id);
     orwl_server_delete(srv);
   } else {
-    if (block) {
+    if (block)
+      P99_UNWIND_PROTECT {
       close(fd[0]);
       char mess[32] = {0};
       FILE* out = fdopen(fd[1], "w");
       if (!fgets(mess, 32, stdin)) {
-        perror("error when reading from stdin");
-        exit(1);
+        kill(pid, SIGKILL);
+        P99_ERROR_RETURN("error when reading from stdin");
       }
+      report(verbose, "ORWL server is launched");
       fputs(mess, out);
+      P99_PROTECT:
       fclose(out);
     }
+  }
+  P99_PROTECT:
+  if (lockfilename) {
+    report(verbose, "ORWL server trying to remove %s", lockfilename);
+    unlink(lockfilename);
+    free((void*)lockfilename);
+  }
   }
 
 
