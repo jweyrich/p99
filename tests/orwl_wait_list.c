@@ -18,7 +18,7 @@
 #include "p99_c99_default.h"
 
 static orwl_wq location = ORWL_WQ_INITIALIZER;
-static orwl_wh *handle = NULL;
+static orwl_wh *handle = 0;
 static size_t phases = 4;
 
 #define threadof(x) ((((size_t)x) + orwl_np) % orwl_np)
@@ -122,8 +122,8 @@ DEFINE_THREAD(arg_t) {
 
 
 int main(int argc, char **argv) {
-  if (argc > 1) phases = strtouz(argv[1], NULL, 0);
-  if (argc > 2) orwl_np = strtouz(argv[2], NULL, 0);
+  if (argc > 1) phases = strtouz(argv[1]);
+  if (argc > 2) orwl_np = strtouz(argv[2]);
 
   report(1, "%s: starting with %zu phases and %zu threads",
           argv[0], phases, orwl_np);
@@ -140,7 +140,7 @@ int main(int argc, char **argv) {
     if (i%2)
       arg_t_create(myarg, id + (i/2));
     else
-      arg_t_create(myarg, NULL);
+      arg_t_create(myarg, P99_0(pthread_t*));
   }
 
 

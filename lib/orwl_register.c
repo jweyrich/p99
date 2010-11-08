@@ -18,12 +18,12 @@ static
 pthread_mutex_t orwl__reg_mut = PTHREAD_MUTEX_INITIALIZER;
 
 orwl_register const* orwl_register_init(orwl_register const* field) {
-  if (!field) return NULL;
+  if (!field) return 0;
   if (!*(field->regptr)) {
     MUTUAL_EXCLUDE(orwl__reg_mut) {
       if (!*(field->regptr)) {
         orwl_register const*base = (field->start);
-        for (size_t i = 0; base[i].fptr != NULL || base[i].dptr != NULL; ++i)
+        for (size_t i = 0; base[i].fptr || base[i].dptr; ++i)
           *(base[i].regptr) = &(base[i]);
       }
     }

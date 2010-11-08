@@ -84,7 +84,7 @@ enum P99_PASTE2(p00_decl_enum_, T) { P99_PASTE3(p00_, T, _concat_len) = sizeof(P
  **/
 #define DEFINE_ENUM(T)                                                      \
 /* Ensure that the table is generated in this object file */                \
-char const* P99_PASTE3(p00_, T, _names)[P99_PASTE2(T, _amount)] = { NULL }; \
+char const* P99_PASTE3(p00_, T, _names)[P99_PASTE2(T, _amount)] = { 0 };    \
 DEFINE_ONCE(T) {                                                            \
   char *head = P99_PASTE3(p00_, T, _concat);                                \
   for (T i = P99_PASTE2(T, _min); i < P99_PASTE2(T, _max); ++i) {           \

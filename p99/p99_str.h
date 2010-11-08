@@ -37,7 +37,7 @@
 p99_inline                                                                                    \
 P99_BUILTIN_TYPE(CODE) P99_PASTE2(str2, CODE)(char const* nptr, size_t* pos, unsigned base) { \
   char *endptr;                                                                               \
-  P99_BUILTIN_TYPE(CODE) ret = (strto ## CODE)(nptr, (pos ? &endptr : NULL), base);           \
+  P99_BUILTIN_TYPE(CODE) ret = (strto ## CODE)(nptr, (pos ? &endptr : 0), base);              \
   if (pos) *pos = endptr - nptr;                                                              \
   return ret;                                                                                 \
 }                                                                                             \
@@ -118,7 +118,7 @@ P00_C99_DEFARG_DOCU(str2uj, uintmax_t, char const *nptr, size_t *pos, unsigned b
 p99_inline                                                                     \
 P99_BUILTIN_TYPE(CODE) P99_PASTE2(str2, CODE)(char const* nptr, size_t* pos) { \
   char *endptr;                                                                \
-  P99_BUILTIN_TYPE(CODE) ret = (strto ## CODE)(nptr, (pos ? &endptr : NULL));  \
+  P99_BUILTIN_TYPE(CODE) ret = (strto ## CODE)(nptr, (pos ? &endptr : 0));     \
   if (pos) *pos = endptr - nptr;                                               \
   return ret;                                                                  \
 }                                                                              \

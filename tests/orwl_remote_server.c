@@ -21,7 +21,7 @@
 #include "p99_c99_default.h"
 
 static char address[256] = "";
-static char const* lockfilename = NULL;
+static char const* lockfilename = 0;
 static uint64_t con = 20;
 static uint64_t len = 10;
 static bool background = false;
@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
             size_t len = strlen(server_name);
             if (write(lockfd, server_name, len) != len) {
               free((void*)lockfilename);
-              lockfilename = NULL;
+              lockfilename = 0;
               P99_ERROR_RETURN("could not write to lockfile");
             }
             if (link(tlf, lockfilename))

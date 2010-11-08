@@ -40,18 +40,18 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
       name += 7;
     }
     {
-      char const* name1 = NULL;
+      char const* name1 = 0;
       size_t len = 0;
       if (name[0] == '[') {
         ++name;
         len = strcspn(name, "]");
-        if (name[len] != ']') return NULL;
+        if (name[len] != ']') return 0;
         name1 = name + (len + 1);
       } else {
         len = strcspn(name, ":");
         name1 = name + len;
       }
-      if (!len) return NULL;
+      if (!len) return 0;
       assert(len);
       char * host = memcpy(calloc(len + 1u, 1), name, len);
       addr_t_init(&addr, orwl_inet_addr(host));
@@ -59,15 +59,15 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
       free(host);
     }
     if (name[0]) {
-      if (name[0] != ':') return NULL;
+      if (name[0] != ':') return 0;
       ++name;
       port_t_init(&port, strtou16(name));
       size_t len = strcspn(name, "/");
-      if (!len) return NULL;
+      if (!len) return 0;
       name += len;
     }
     if (name[0]) {
-      if (name[0] != '/') return NULL;
+      if (name[0] != '/') return 0;
       ++name;
       index = strtou64(name);
     }
@@ -225,7 +225,7 @@ bool orwl_send_(int fd, uint64_t const*const mess, size_t len, uint64_t remo) {
   uint64_t *const buf = ((ORWL_HOSTORDER != ORWL_NETWORDER)
                          && (remo != ORWL_NETWORDER))
     ? uint64_t_vnew(len)
-    : NULL;
+    : (void*)0;
   if (buf) {
     orwl_hton(buf, mess, len);
   }
@@ -298,7 +298,7 @@ bool orwl_recv_(int fd, uint64_t *const mess, size_t len, uint64_t remo) {
      the order of the remote host. */
     if ((ORWL_HOSTORDER != ORWL_NETWORDER)
         && (remo != ORWL_NETWORDER)) {
-      orwl_ntoh(mess, NULL, len);
+      orwl_ntoh(mess, 0, len);
     }
   }
   return false;

@@ -103,7 +103,7 @@ char const* orwl_inet_ntop(struct sockaddr const* addr,
      ? (void const*)&(((struct sockaddr_in const*)(addr))->sin_addr)
      :  ((addr->sa_family) == AF_INET6
          ? (void const*)&(((struct sockaddr_in6 const*)(addr))->sin6_addr)
-         : NULL)
+         : (void const*)0)
      );
   if (src) inet_ntop(addr->sa_family, src, buf, size);
   else strncpy(buf, "<invalid addr>", size);
@@ -146,9 +146,9 @@ inline
 P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t, uint64_t);
 #define auth_sock_init(...) P99_CALL_DEFARG(auth_sock_init, 5, __VA_ARGS__)
 #define auth_sock_init_defarg_1() -1
-#define auth_sock_init_defarg_2() NULL
+#define auth_sock_init_defarg_2() P99_0(struct orwl_server*)
 #define auth_sock_init_defarg_3() P99_0(size_t)
-#define auth_sock_init_defarg_4() 0
+#define auth_sock_init_defarg_4() P99_0(uint64_t)
 #endif
 
 DOCUMENT_INIT(auth_sock)
@@ -157,17 +157,17 @@ inline
 auth_sock*
 auth_sock_init(auth_sock *sock,         /*!< [out] */
                int fd,                  /*!< [in] file descriptor, defaults to -1 */
-               struct orwl_server* srv, /*!< [in,out] defaults to @c NULL */
+               struct orwl_server* srv, /*!< [in,out] defaults to a null pointer */
                size_t len,              /*!< [in] the length of the message 0 */
                uint64_t remo            /*!< [in] the byte order on remote */
                ) {
-  if (!sock) return NULL;
+  if (!sock) return 0;
   P99_TZERO(*sock);
   sock->fd = fd;
   sock->srv = srv;
   sock->len = len;
   sock->remoteorder = remo;
-  sock->mes = len ? uint64_t_vnew(len) : NULL;
+  sock->mes = len ? uint64_t_vnew(len) : P99_0(uint64_t*);
   sock->back = sock->mes;
   return sock;
 }
@@ -176,6 +176,9 @@ DOCUMENT_DESTROY(auth_sock)
 void auth_sock_destroy(auth_sock *sock);
 DECLARE_NEW_DELETE(auth_sock);
 DECLARE_THREAD(auth_sock);
+
+#define auth_sock_create(...) P99_CALL_DEFARG(auth_sock_create, 2, __VA_ARGS__)
+#define auth_sock_create_defarg_1() P99_0(pthread_t*)
 
 /**
  ** @memberof auth_sock
@@ -193,7 +196,7 @@ void F(auth_sock *Arg)
 #define DECLARE_AUTH_SOCK_FUNC(F, ...) void F(auth_sock *Arg)
 #else
 #define DEFINE_AUTH_SOCK_FUNC(F, ...)                          \
-void (*P99_PASTE2(F, _signature))(__VA_ARGS__) = NULL;         \
+void (*P99_PASTE2(F, _signature))(__VA_ARGS__) = 0;            \
 DEFINE_ORWL_REGISTER_ALIAS(F, auth_sock);                      \
 void F(auth_sock *Arg)
 
@@ -227,8 +230,8 @@ addr_t getpeer(auth_sock *Arg);
  **
  ** This is a wrapper to the POSIX function @c gethostname,
  ** the difference is the signature.
- ** @return @a buffer if the call to @c gethostname was successful, @c
- ** NULL otherwise.
+ ** @return @a buffer if the call to @c gethostname was successful, a
+ ** null pointer otherwise.
  **/
 P99_DEFARG_DOCU(hostname)
 inline
@@ -238,7 +241,7 @@ hostname(char buffer[],   /*!< [out] defaults to a temporary */
          ) {
   return
     gethostname(buffer, len)
-    ? NULL
+    ? P99_0(char*)
     : buffer;
 }
 

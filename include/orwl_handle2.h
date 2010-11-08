@@ -62,12 +62,12 @@ struct orwl_handle2 {
  **
  ** @param rh2 is the handle to be initialized
  ** @param m is an ::orwl_mirror that designates the location of the
- **        handle. It defaults to @c NULL, i.e no link.
+ **        handle. It defaults to a null pointer, i.e no link.
  **/
 DOCUMENT_INIT(orwl_handle2)
 inline
 orwl_handle2 *orwl_handle2_init(orwl_handle2 *rh2) {
-  if (!rh2) return NULL;
+  if (!rh2) return 0;
   *rh2 = (orwl_handle2 const)ORWL_HANDLE2_INITIALIZER;
   return rh2;
 }

@@ -31,7 +31,7 @@ uint64_t orwl_challenge(uint64_t a);
 inline
 uint64_t useconds(void) {
   struct timeval t;
-  gettimeofday(&t, NULL);
+  gettimeofday(&t, P99_0(struct timezone*));
   uint64_t ret = t.tv_sec;
   ret *= 1000000;
   ret += t.tv_usec;
@@ -68,7 +68,7 @@ rand48_t *rand48_t_init(rand48_t *seed,     /*!< [out] the object to iniialize *
                         unsigned short x1,  /*!< [in] defaults to the process id */
                         unsigned short x2   /*!< [in] defaults to the thread id */
                         ) {
-  if (!seed) return NULL;
+  if (!seed) return 0;
   seed->x[0] = x0;
   seed->x[1] = x1;
   seed->x[2] = x2;

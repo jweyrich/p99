@@ -56,7 +56,7 @@ P99_PASTE2(P00_CALLBACK_PAIR(T), _init)(P00_CALLBACK_PAIR(T) *arg,            \
                                    orwl_wh *Wh,                               \
                                    orwl_wq *Wq                                \
                                    ) {                                        \
-   pthread_cond_init(&arg->cond, NULL);                                       \
+   pthread_cond_init(&arg->cond, P99_0(pthread_condattr_t*));                 \
    arg->Arg = Arg;                                                            \
    arg->Wh = Wh;                                                              \
    arg->Wq = Wq;                                                              \
@@ -109,11 +109,11 @@ int P99_PASTE2(orwl_callback_attach_, T)(T *arg, orwl_wh *wh) {                 
           = P99_NEW(P00_CALLBACK_PAIR(T), arg, wh, wq);                                \
         /* the subthread will take care of arg, we should not touch */                 \
         /* it anymore */                                                               \
-        arg = NULL;                                                                    \
+        arg = P99_0(T*);                                                               \
         /* One token for ourselves, one for our child */                               \
         orwl_wh_load(wh, 2);                                                           \
         /* create thread detached */                                                   \
-        ret = P99_PASTE2(P00_CALLBACK_PAIR(T), _create)(pair, NULL);                   \
+        ret = P99_PASTE2(P00_CALLBACK_PAIR(T), _create)(pair, P99_0(pthread_t*));      \
         /* wait until we know that the client thread has attached to */                \
         /* wh                                                        */                \
         pthread_cond_wait(&pair->cond, &wq->mut);                                      \

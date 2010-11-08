@@ -107,7 +107,7 @@ SYMBOLS=${filter-out ${GLOBVARS}, ${sort ${shell ${NM} liborwl.so | ${NM_UNDEF_F
 COMMA=,
 
 CASTS=${patsubst %,\t(orwl__FT)%${COMMA}\n,${SYMBOLS}}
-CALLS=${patsubst %,\t((orwl__FT)%)(NULL);\n,${SYMBOLS}}
+CALLS=${patsubst %,\t((orwl__FT)%)((void*)0);\n,${SYMBOLS}}
 PROTS=${patsubst %,\tvoid* %(void*);\n,${SYMBOLS}}
 
 external_symbols.c : liborwl.so Makefile

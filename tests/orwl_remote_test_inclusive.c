@@ -21,8 +21,8 @@
 #include "p99_c99_default.h"
 #include "p99_str.h"
 
-static orwl_mirror* location_back = NULL;
-static orwl_mirror* location = NULL;
+static orwl_mirror* location_back = 0;
+static orwl_mirror* location = 0;
 static size_t phases = 4;
 static size_t offset = 0;
 static size_t number = 0;
@@ -45,8 +45,8 @@ cb_t* cb_t_init(cb_t *cb, size_t m, size_t p, char* i) {
 P99_PROTOTYPE(cb_t*, cb_t_init, cb_t*, size_t, size_t, char*);
 P99_DEFARG_DOCU(cb_t_init)
 #define cb_t_init(...) P99_CALL_DEFARG(cb_t_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), NULL);
-P99_DEFINE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), NULL);
+P99_DECLARE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), P99_0(char*));
+P99_DEFINE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), P99_0(char*));
 
 void cb_t_destroy(cb_t *cb) {
   /* empty */
@@ -74,14 +74,14 @@ arg_t* arg_t_init(arg_t *arg, size_t m, size_t ph, orwl_mirror* le) {
   arg->mynum = m;
   arg->phases = ph;
   arg->left = le;
-  arg->info = NULL;
+  arg->info = 0;
   return arg;
 }
 
 P99_PROTOTYPE(arg_t*, arg_t_init, arg_t *, size_t, size_t, orwl_mirror*);
 #define arg_t_init(...) P99_CALL_DEFARG(arg_t_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(arg_t_init, , P99_0(size_t), P99_0(size_t), NULL);
-P99_DEFINE_DEFARG(arg_t_init, , P99_0(size_t), P99_0(size_t), NULL);
+P99_DECLARE_DEFARG(arg_t_init, , P99_0(size_t), P99_0(size_t), P99_0(orwl_mirror*));
+P99_DEFINE_DEFARG(arg_t_init, , P99_0(size_t), P99_0(size_t), P99_0(orwl_mirror*));
 
 
 void arg_t_destroy(arg_t *arg) {
@@ -261,7 +261,7 @@ int main(int argc, char **argv) {
   report(1, "%s: starting %zu phases, %zu/%zu threads, offset %zu",
          argv[0], phases, number, orwl_np, offset);
 
-  pthread_barrier_init(&init_barr, NULL, number);
+  pthread_barrier_init(&init_barr, , number);
 
   /* Initialization of the static location */
   location_back = orwl_mirror_vnew(number + 2);
@@ -301,7 +301,7 @@ int main(int argc, char **argv) {
     if (i%2)
       arg_t_create(myarg, id + (i/2));
     else
-      arg_t_create(myarg, NULL);
+      arg_t_create(myarg, P99_0(pthread_t*));
   }
 
 

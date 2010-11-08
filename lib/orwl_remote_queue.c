@@ -60,7 +60,7 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
         }
       } else {
         /* roll back */
-        orwl_wh_delete(rh->wh); rh->wh = NULL;
+        orwl_wh_delete(rh->wh); rh->wh = 0;
         orwl_wh_delete(cli_wh);
         state = orwl_invalid;
       }
@@ -75,7 +75,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   MUTUAL_EXCLUDE(rq->mut) {
     if (!rh->wh) {
       orwl_wh* cli_wh = P99_NEW(orwl_wh);
-      orwl_wh* wh_inc = NULL;
+      orwl_wh* wh_inc = 0;
       /* first try to piggyback the latest wh in the local list */
       state = orwl_wq_request(&rq->local, &wh_inc, 1);
       assert(!wh_inc || wh_inc->svrID);
@@ -119,10 +119,10 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
             assert(wh_inc->location == &rq->local);
             assert(wh_inc->next == cli_wh);
             assert(wh_inc->location->tail == cli_wh);
-            wh_inc->next = NULL;
+            wh_inc->next = 0;
             wh_inc->location->tail = wh_inc;
             cli_wh->tokens = 0;
-            cli_wh->location = NULL;
+            cli_wh->location = 0;
             orwl_wh_delete(cli_wh);
           }
         } else {
@@ -183,7 +183,7 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   orwl_wq* wq = wh->location;
   /* If we are the last that holds this handle we have to prepare the
      buffer for the return message while we hold the inner lock. */
-  uint64_t* mess = NULL;
+  uint64_t* mess = 0;
   size_t len = 2;
   /* Detect if we are the last user of this handle */
   bool last = false;
@@ -226,7 +226,7 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
 typedef orwl_handle orwl_handle_cancel;
 
 orwl_handle_cancel* orwl_handle_cancel_init(orwl_handle_cancel* H) {
-  if (!H) return NULL;
+  if (!H) return 0;
   return orwl_handle_init(H);
 }
 
@@ -251,7 +251,7 @@ orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_valid;
   if (!rh || !rh->wh) return orwl_valid;
   orwl_handle_cancel* rhcp = memcpy(P99_NEW(orwl_handle_cancel), rh, sizeof(*rh));
-  orwl_handle_cancel_create(rhcp, NULL);
+  orwl_handle_cancel_create(rhcp, P99_0(pthread_t*));
   orwl_handle_destroy(rh);
   return state;
 }

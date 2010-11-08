@@ -88,18 +88,19 @@ NAME(P99_IF_EQ(0,M)                                            \
  **
  ** Here the second argument is used to eventually specify an
  ** `attribute' to the mutex @c mut. Most people don't use that
- ** functionality and therefore @c pthread_mutex_init accepts @c NULL
+ ** functionality and therefore @c pthread_mutex_init accepts a null
+ ** pointer constant
  ** as a replacement for @c attr. This might be annoying since the
  ** focus of the syntax is on the exception than on the main use: the
  ** programmer always has to remember this particular special case and
- ** give explicit @c NULL's.
+ ** give explicit @c 0's.
  **
  ** The following lines heal this.
  **
  ** @code
  ** P99_PROTOTYPE(int, pthread_mutex_init, pthread_mutex_t*, pthread_mutexattr_t const*);
  ** #define pthread_mutex_init(...) P99_CALL_DEFARG(pthread_mutex_init, 2, __VA_ARGS__)
- ** P99_DECLARE_DEFARG(pthread_mutex_init, , NULL);
+ ** P99_DECLARE_DEFARG(pthread_mutex_init, , (pthread_mutexattr_t*)0);
  ** @endcode
  **
  ** This declares a macro @c pthread_mutex_init that resolves to the call of
@@ -108,14 +109,14 @@ NAME(P99_IF_EQ(0,M)                                            \
  ** the usual call to the function.
  **
  ** If this initialization value for argument 1 is omitted (arguments
- ** count from 0) the default value of @c NULL is used. Valid use is
+ ** count from 0) the default value of a null pointer constant is used. Valid use is
  **
  ** @code
  ** static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
  ** static pthread_mutexattr_t attr;
  ** .
  ** pthread_mutex_init(&mut, &attr); // full specification with attributes
- ** pthread_mutex_init(&mut, NULL);  // still a valid form
+ ** pthread_mutex_init(&mut, 0);     // still a valid form
  **
  ** // easy variant for everyday use, equivalent to the previous one
  ** pthread_mutex_init(&mut);
@@ -198,8 +199,7 @@ P99_MACRO_END(NAME, _declare_defarg)
  **
  ** Each element in the list must correspond to an expression that can
  ** be evaluated in the outer scope, just where this call is placed.
- ** In many cases this will be constant expressions such as @c 0 or @c
- ** NULL, but they must not necessarily be so.
+ ** In many cases this will be constant expressions such as @c 0, but they must not necessarily be so.
  **
  ** An empty argument, i.e nothing but an eventual comment, produces
  ** nothing. So no default argument will be provided for the

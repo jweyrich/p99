@@ -30,7 +30,7 @@ orwl_server* orwl_server_init(orwl_server *serv,
   serv->host.refs = 1;
   serv->max_connections = max_connections;
   serv->max_queues = max_queues;
-  serv->wqs = max_queues ? orwl_wq_vnew(max_queues) : NULL;
+  serv->wqs = max_queues ? orwl_wq_vnew(max_queues) : P99_0(void*);
   return serv;
 }
 
@@ -45,12 +45,12 @@ void orwl_server_close(orwl_server *serv) {
 
 
 void orwl_server_terminate(orwl_server *serv, rand48_t *seed) {
-  orwl_send(&serv->host.ep, seed, 0, NULL);
+  orwl_send(&serv->host.ep, seed, 0, P99_0(uint64_t*));
 }
 
 void orwl_server_destroy(orwl_server *serv) {
   orwl_server_close(serv);
-  orwl_host *n = NULL;
+  orwl_host *n = 0;
   MUTUAL_EXCLUDE(serv->host.mut)
     n = serv->host.next;
   for (orwl_host *h = n; h != &serv->host; ) {
@@ -90,7 +90,7 @@ DEFINE_NEW_DELETE(orwl_server);
  **/
 DEFINE_THREAD(orwl_server) {
   report(0, "starting server");
-  char const* volatile errorstr = NULL;
+  char const* volatile errorstr = 0;
   Arg->fd_listen = socket(AF_INET);
   if (P99_LIKELY(Arg->fd_listen >= 0)) {
     rand48_t seed = RAND48_T_INITIALIZER;
@@ -158,7 +158,7 @@ DEFINE_THREAD(orwl_server) {
             size_t len = header[0];
             if (len) {
               auth_sock *sock = P99_NEW(auth_sock, fd, Arg, len, header[2]);
-              auth_sock_create(sock, NULL);
+              auth_sock_create(sock);
               /* The spawned thread will close the fd. */
               fd = -1;
             } else {
@@ -198,5 +198,5 @@ void orwl_server_unblock(orwl_server *srv) {
     orwl_wh_release(&srv->whs[i]);
   }
   orwl_wh_vdelete(srv->whs);
-  srv->whs = NULL;
+  srv->whs = 0;
 }

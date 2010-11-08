@@ -31,7 +31,7 @@ DEFINE_ORWL_TYPE_DYNAMIC(orwl_handle2,
 
 static
 orwl_mirror* mirror_location(orwl_handle2* rh2) {
-  orwl_mirror* ret = NULL;
+  orwl_mirror* ret = 0;
   if (rh2) {
     bool par = (rh2->clock % 2);
     ret = rh2->pair[par].rq;
@@ -119,7 +119,7 @@ orwl_state orwl_test2(orwl_handle2* rh2, rand48_t* seed) {
 }
 
 uint64_t* orwl_map2(orwl_handle2* rh2, size_t* data_len, rand48_t* seed) {
-  uint64_t* ret = NULL;
+  uint64_t* ret = 0;
   if (orwl_acquire2(rh2, seed) == orwl_acquired) {
     bool par = (rh2->clock % 2);
     ret = orwl_map(&rh2->pair[par], data_len);
@@ -128,7 +128,7 @@ uint64_t* orwl_map2(orwl_handle2* rh2, size_t* data_len, rand48_t* seed) {
 }
 
 uint64_t const* orwl_mapro2(orwl_handle2* rh2, size_t* data_len, rand48_t* seed) {
-  uint64_t const* ret = NULL;
+  uint64_t const* ret = 0;
   if (orwl_acquire2(rh2, seed) == orwl_acquired) {
     bool par = (rh2->clock % 2);
     ret = orwl_mapro(&rh2->pair[par], data_len);

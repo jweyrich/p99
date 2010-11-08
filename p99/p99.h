@@ -308,10 +308,10 @@
  **
  ** which could be defined as being similar to the POSIX @c
  ** gethostname function, only that it doesn't return an error
- ** indicator but a pointer to the name or @c NULL if it fails. An old
+ ** indicator but a pointer to the name or a null pointer if it fails. An old
  ** time (and dangerous!) calling convention for such a function would
  ** perhaps have been to return a statically allocated buffer in case
- ** that the @c buffer argument is @a NULL.
+ ** that the @c buffer argument is a null pointer.
  **
  ** P99 lets you define more convenient and less dangerous calling
  ** conventions:
@@ -807,13 +807,13 @@
  ** Initializations of this type of heap variables in function scope
  ** can now simply look like this
  ** @code
- ** elem * a = P99_NEW(elem, NULL);
+ ** elem * a = P99_NEW(elem, P99_0(elem*));
  ** elem * b = P99_NEW(elem, a);
  ** elem * c = P99_NEW(elem, b);
  ** @endcode
  ** or
  ** @code
- ** elem * head = P99_NEW(elem, P99_NEW(elem, P99_NEW(elem, NULL)));
+ ** elem * head = P99_NEW(elem, P99_NEW(elem, P99_NEW(elem, P99_0(elem*))));
  ** @endcode
  **
  ** These define cyclic lists of 3 elements, well initialized and
@@ -832,7 +832,7 @@
  **
  ** @code
  ** #define elem_init(...) P99_CALL_DEFARG(elem_init, 2, __VA_ARGS__)
- ** #define elem_init_defarg_1() NULL
+ ** #define elem_init_defarg_1() P99_0(elem*)
  ** .
  ** .
  ** .

@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
       if (ret) break;
       sleepfor(1.0);
       report(1, "looping %zd", t);
-      orwl_host *n = NULL;
+      orwl_host *n = 0;
       MUTUAL_EXCLUDE(srv.host.mut)
         n = srv.host.next;
       report(1, "%p -- %p", (void*)&srv.host, (void*)n);

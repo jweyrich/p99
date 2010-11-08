@@ -180,13 +180,13 @@ struct orwl_wh {
 P99_DEFARG_DOCU(orwl_wq_init)
 orwl_wq* orwl_wq_init
 (orwl_wq *wq,                    /*!< wait queue to initialize */
- const pthread_mutexattr_t *attr /*!< defaults to @c NULL */
+ const pthread_mutexattr_t *attr /*!< defaults to a null pointer */
 );
 
 #ifndef DOXYGEN
   P99_PROTOTYPE(orwl_wq*, orwl_wq_init, orwl_wq*, const pthread_mutexattr_t*);
 #define orwl_wq_init(...) P99_CALL_DEFARG(orwl_wq_init, 2, __VA_ARGS__)
-#define orwl_wq_init_defarg_1() NULL
+#define orwl_wq_init_defarg_1() P99_0(const pthread_mutexattr_t*)
 #endif
 
   DOCUMENT_DESTROY(orwl_wq)
@@ -230,7 +230,7 @@ int orwl_wh_idle(orwl_wh *wh) {
    ** This is just a simple test that @a wq has not just been
    ** destroyed.
    **
-   ** This supposes that @a wq != NULL.
+   ** This supposes that @a wq is not a null pointer.
    **
    ** @memberof orwl_wq
    **/
@@ -246,7 +246,7 @@ int orwl_wq_valid(orwl_wq *wq) {
    ** Idleness here means that there is no ::orwl_wh in the FIFO queue
    ** of this location.
    **
-   ** This supposes that wq != NULL
+   ** This supposes that @a wq is not a null pointer.
    **
    ** @memberof orwl_wq
    **/
@@ -263,13 +263,13 @@ int orwl_wq_idle(orwl_wq *wq) {
   P99_DEFARG_DOCU(orwl_wh_init)
 orwl_wh* orwl_wh_init
   (orwl_wh *wh, /*!< the handle to be initialized */
-   const pthread_condattr_t *attr /*!< [in] defaults to @c NULL */
+   const pthread_condattr_t *attr /*!< [in] defaults to a null pointer */
    );
 
 #ifndef DOXYGEN
   P99_PROTOTYPE(orwl_wh*, orwl_wh_init, orwl_wh *, const pthread_condattr_t *);
 #define orwl_wh_init(...) P99_CALL_DEFARG(orwl_wh_init, 2, __VA_ARGS__)
-#define orwl_wh_init_defarg_1() NULL
+#define orwl_wh_init_defarg_1() P99_0(const pthread_condattr_t *)
 #endif
 
   DOCUMENT_DESTROY(orwl_wh)
@@ -307,14 +307,14 @@ typedef struct {
  ** invalid. Otherwise returns ::orwl_requested. Blocking until it is
  ** detected that none of the @c wh is already requested.
  **
- ** For @c wh arguments that are not NULL, this inserts the
+ ** For @c wh arguments that are not a null pointer, this inserts the
  ** handle into the queue and places @c howmuch tokens on each @c
  ** wh. Any of the @c wh will only be possible to be released if,
  ** first, it is acquired (that is it moves front in the FIFO) and
  ** then if all tokens are unloaded ::with orwl_wh_acquire or
  ** ::orwl_wh_test.
  **
- ** A @c wh that points to @c NULL is considered to relate to the last
+ ** A @c wh that is a null pointer is considered to relate to the last
  ** such handle that is at the tail of the queue, if such a handle
  ** exists. Such a NULL-request will check if this trailing handle is
  ** in inclusive state and if so will place the tokens on that handle
@@ -427,7 +427,7 @@ P99_PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
   /**
    ** @brief load @a howmuch additional tokens on @a wh.
    **
-   ** This supposes that the corresponding @c wq != NULL and that @c
+   ** This supposes that the corresponding @c wq is not a null pointer and that @c
    ** wq is already locked.
    ** @see orwl_wh_unload
    **
@@ -452,7 +452,7 @@ P99_PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
   /**
    ** @brief unload @a howmuch additional tokens from @a wh.
    **
-   ** This supposes that the corresponding @c wq != NULL and that @c
+   ** This supposes that the corresponding @c wq is not a null pointer and that @c
    ** wq is already locked. If by this action the token count drops to
    ** zero, eventual waiters for this @a wh are notified.
    ** @see orwl_wh_load

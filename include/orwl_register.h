@@ -33,7 +33,7 @@ struct orwl_register {
   void *const dptr;
 };
 
-#define ORWL_REGISTER_INITIALIZER { .start = NULL, .regptr = NULL, .fptr = NULL, .dptr = NULL }
+#define ORWL_REGISTER_INITIALIZER { .start = 0, .regptr = 0, .fptr = 0, .dptr = 0 }
 
 DOCUMENT_INIT(orwl_register)
 orwl_register const* orwl_register_init(orwl_register const* field);
@@ -90,7 +90,7 @@ void orwl_domain_call(orwl_domain domain, size_t id, void *arg) {
 extern orwl_register const*ORWL_REGISTER(NAME)
 
 #define DEFINE_ORWL_REGISTER(NAME)                             \
-orwl_register const*ORWL_REGISTER(NAME) = NULL
+orwl_register const*ORWL_REGISTER(NAME) = 0
 
 #define DECLARE_ORWL_REGISTER_ALIAS(NAME, T)                   \
 extern void ORWL_ALIAS(NAME)(T *x);                            \
@@ -98,7 +98,7 @@ extern orwl_register const*ORWL_REGISTER(NAME)
 
 #define DEFINE_ORWL_REGISTER_ALIAS(NAME, T)                    \
 void ORWL_ALIAS(NAME)(T *x) {  NAME(x); }                      \
-orwl_register const*ORWL_REGISTER(NAME) = NULL
+orwl_register const*ORWL_REGISTER(NAME) = 0
 
 #define ORWL_REGISTER_FUNCTION(NAME, T) {                      \
 .start = ORWL_DOMAIN_TABLE(ORWL_FTAB(T)),                      \

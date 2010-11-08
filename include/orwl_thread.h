@@ -171,7 +171,7 @@ extern void orwl_pthread_wait_detached(void);
  ** T *const Arg;
  ** @endcode
  **
- ** -  worker_create may be called with @c id set to @c NULL. The
+ ** -  worker_create may be called with @c id set to a null pointer. The
  **    thread is then created detached, as obviously you don't know
  **    any thread id to join to. All threads that are created this way
  **    should be awaited for at the end of the main program. Use
@@ -224,8 +224,8 @@ extern void orwl_pthread_wait_detached(void);
  ** @endcode
  **
  ** Another case occurs when you want the thread to be created in a
- ** detached state. This can simply be achieved by passing @c NULL
- ** instead of a pointer to an @c id. In such a case you don't have
+ ** detached state. This can simply be achieved by passing a null pointer
+ ** to an @c id. In such a case you don't have
  ** much control on when the thread is finished so you @b must
  ** use calls to @c worker_new to allocate the memory.
  ** After your thread has terminated, @c worker_delete will
@@ -233,7 +233,7 @@ extern void orwl_pthread_wait_detached(void);
  ** @code
  ** worker *work = worker_new();
  ** worker->val = 37;
- ** worker_create(&work, NULL);
+ ** worker_create(&work, P99_0(pthread_t*));
  ** ... do something in parallel ...
  ** ... maybe return from the calling function ...
  ** ... at the very end of your main, wait for all detached threads ...
@@ -249,12 +249,12 @@ extern void orwl_pthread_wait_detached(void);
 /*! @memberof T */                                                   \
 /*! @see DECLARE_THREAD */                                           \
 /*! @param arg the object for this call */                           \
-/*! @param id if non-NULL, the thread can be joined on this @a id */ \
+/*! @param id if not a null pointer, the thread can be joined on this @a id */ \
   int P99_PASTE2(T, _create)(T* arg, pthread_t *id)
 #else
 #define DECLARE_THREAD(T)                                                         \
   inline T * P99_PASTE2(T, _join)(pthread_t id) {                                 \
-  void *ret = NULL;                                                               \
+  void *ret = 0;                                                                  \
   pthread_join(id, &ret);                                                         \
   return ret;                                                                     \
 }                                                                                 \
@@ -280,13 +280,13 @@ void *P99_PASTE2(T, _start_detached)(void* arg) {              \
   T *Arg = (T*)arg;                                            \
   P99_PASTE2(T, _start)(Arg);                                  \
   P99_PASTE2(T, _delete)(Arg);                                 \
-  return NULL;                                                 \
+  return 0;                                                    \
 }                                                              \
 void P99_PASTE2(T, _start)(T *const Arg)
 #endif
 
 inline pthread_t* pthread_t_init(pthread_t *id) {
-  if (!id) return NULL;
+  if (!id) return 0;
   P99_TZERO(*id);
   return id;
 }
@@ -408,7 +408,7 @@ inline void P99_PASTE2(NAME, _clear)(void) {                   \
   INIT_ONCE_STATIC(KEY);                                       \
   T* ret = pthread_getspecific(KEY);                           \
   if (P99_LIKELY(!!ret)) {                                     \
-    (void)pthread_setspecific(KEY, NULL);                      \
+    (void)pthread_setspecific(KEY, P99_0(void*));              \
     P99_PASTE2(T, _delete)(ret);                               \
   }                                                            \
 }                                                              \

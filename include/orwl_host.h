@@ -62,12 +62,12 @@ orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
                           in_addr_t addr, /*!< [in] defaults to the null address */
                           in_port_t port  /*!< [in] defaults to 0 */
                           ) {
-  if (!th) return NULL;
+  if (!th) return 0;
   th->next = th;
   th->prev = th;
   th->refs = 0;
   orwl_endpoint_init(&th->ep, addr, port);
-  pthread_mutex_init(&th->mut, NULL);
+  pthread_mutex_init(&th->mut, P99_0(pthread_mutexattr_t*));
   return th;
 }
 

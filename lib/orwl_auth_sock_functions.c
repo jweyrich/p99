@@ -96,7 +96,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
        when it acquires below, the other one to block until the remote
        issues a release */
     bool piggyback = false;
-    orwl_wh *srv_wh = NULL;
+    orwl_wh *srv_wh = 0;
     report(0, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
     state = orwl_wq_request(srv_wq, &srv_wh, 2);
     if (srv_wh) {

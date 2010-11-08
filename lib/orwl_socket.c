@@ -133,13 +133,13 @@ P99_DEFINE_DEFARG(orwl_inet_ntop, , , );
 
 in_addr_t orwl_inet_addr(char const *name) {
   in_addr_t ret = P99_0(in_addr_t);
-  struct addrinfo *res = NULL;
+  struct addrinfo *res = 0;
   struct addrinfo hints = {
     .ai_family = AF_UNSPEC,
     .ai_flags = AI_V4MAPPED | AI_ADDRCONFIG | AI_CANONNAME | (name ? 0 : AI_PASSIVE),
     .ai_socktype = SOCK_STREAM,
   };
-  getaddrinfo(name, NULL, &hints, &res);
+  getaddrinfo(name, P99_0(char*), &hints, &res);
   report(0, "%s's canonical name is %s",
          (name ? name : "<unspecific>"),
          (res ? res->ai_canonname : "unknonwn"));

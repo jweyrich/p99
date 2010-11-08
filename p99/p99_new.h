@@ -97,14 +97,14 @@
  ** @endcode
  **
  ** - it must accept a pointer to @c T as a first argument
- ** - it must be robust to the fact of receiving NULL through that
+ ** - it must be robust to the fact of receiving a null pointer through that
  **     first argument (indicating an error condition)
  ** - it should return the @em same pointer @c p
  ** - it may accept additional arguments which may then be passed
  **     through from the call to ::P99_NEW
  **
  ** @return value is a pointer to a newly allocated and initialized object of type
- ** @c T, or @c NULL if the allocation failed.
+ ** @c T, or @c (T*)0 if the allocation failed.
  **
  ** @see P99_CALL_DEFARG if you want to provide default arguments to
  ** the @c T_init function.

@@ -71,8 +71,8 @@ orwl_mirror *orwl_mirror_init(orwl_mirror *rq, /*!< [out] the object to iniializ
                               orwl_endpoint h, /*!< [in] local, defaults to a temp variable */
                               orwl_endpoint t  /*!< [in] remote, defaults to a temp variable */
                               ) {
-  if (!rq) return NULL;
-  pthread_mutex_init(&rq->mut, NULL);
+  if (!rq) return 0;
+  pthread_mutex_init(&rq->mut, P99_0(pthread_mutexattr_t*));
   orwl_wq_init(&rq->local);
   rq->here = h;
   rq->there = t;
@@ -165,12 +165,12 @@ struct orwl_handle {
   uint64_t svrID;
 };
 
-#define ORWL_HANDLE_INITIALIZER { .rq = NULL, .wh = NULL, .svrID = P99_0(uint64_t) }
+#define ORWL_HANDLE_INITIALIZER { .rq = 0, .wh = 0, .svrID = P99_0(uint64_t) }
 
 DOCUMENT_INIT(orwl_handle)
 inline
 orwl_handle *orwl_handle_init(orwl_handle *rh) {
-  if (!rh) return NULL;
+  if (!rh) return 0;
   *rh = (orwl_handle const)ORWL_HANDLE_INITIALIZER;
   return rh;
 }
@@ -316,7 +316,7 @@ orwl_state orwl_test(orwl_handle* rh) {
  **/
 inline
 uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
-  uint64_t* ret = NULL;
+  uint64_t* ret = 0;
   if (rh)
     switch (orwl_test(rh)) {
     case orwl_acquired: ;
@@ -341,7 +341,7 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
  **/
 inline
 uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len) {
-  uint64_t* ret = NULL;
+  uint64_t* ret = 0;
   if (rh)
     switch (orwl_test(rh)) {
     case orwl_acquired: ;

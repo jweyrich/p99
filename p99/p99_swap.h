@@ -75,8 +75,8 @@ void p99_swap1(void* p0, void* p1, size_t pSize) {
 #define P00_SWAP2(_0, _1)                                      \
 p00_swap2(                                                     \
           /* check if the two are assignment compatible */     \
-          P99_SIGN_PROMOTE(&(_0), ((_0) = (_1), NULL)),        \
-          P99_SIGN_PROMOTE(&(_1), ((_1) = (_0), NULL)),        \
+          P99_SIGN_PROMOTE(&(_0), ((_0) = (_1), (void*)0)),    \
+          P99_SIGN_PROMOTE(&(_1), ((_1) = (_0), (void*)0)),    \
           sizeof(_0),                                          \
           /* only works if sizeof(_0) >= sizeof(_1) */         \
           (char[sizeof(_0)]){                                  \
@@ -90,8 +90,8 @@ p00_swap2(                                                     \
 #define P00_SWAP1(_0, _1)                                      \
 p00_swap1(                                                     \
           /* check if the two are assignment compatible */     \
-          P99_SIGN_PROMOTE(&(_0), ((_0) = (_1), NULL)),        \
-          P99_SIGN_PROMOTE(&(_1), ((_1) = (_0), NULL)),        \
+          P99_SIGN_PROMOTE(&(_0), ((_0) = (_1), (void*)0)),    \
+          P99_SIGN_PROMOTE(&(_1), ((_1) = (_0), (void*)0)),    \
           sizeof(_0),                                          \
           /* only works if sizeof(_0) <= sizeof(_1) */         \
           (char[sizeof(_0)]){                                  \

@@ -48,12 +48,12 @@ char const* myStillBuggyFunction(void) {
 }
 
 char const* myLessBuggyFunction(void) {
-  char tmp[len + 1] = { "aaaaaaaaa" };
+  char const tmp[len + 1] = { "aaaaaaaaa" };
   return tmp;
 }
 
 char const* myBuggyFunction(void) {
-  return (char[len + 1]){ 0 };
+  return (char const[len + 1]){ 0 };
 }
 
 int main(int argc, char*argv[]) {

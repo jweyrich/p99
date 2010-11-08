@@ -21,7 +21,7 @@
 #include "p99_c99_default.h"
 
 static orwl_mirror location;
-static orwl_handle *handle = NULL;
+static orwl_handle *handle = 0;
 static size_t phases = 4;
 
 #define threadof(x) ((((size_t)x) + orwl_np) % orwl_np)
@@ -42,8 +42,8 @@ cb_t* cb_t_init(cb_t *cb, size_t m, size_t p, char* i) {
 P99_PROTOTYPE(cb_t*, cb_t_init, cb_t*, size_t, size_t, char*);
 P99_DEFARG_DOCU(cb_t_init)
 #define cb_t_init(...) P99_CALL_DEFARG(cb_t_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), NULL);
-P99_DEFINE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), NULL);
+P99_DECLARE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), P99_0(char*));
+P99_DEFINE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), P99_0(char*));
 
 
 void cb_t_destroy(cb_t *cb) {
@@ -186,7 +186,7 @@ int main(int argc, char **argv) {
       if (i%2)
         arg_t_create(myarg, id + (i/2));
       else
-        arg_t_create(myarg, NULL);
+        arg_t_create(myarg, P99_0(pthread_t*));
     }
 
 

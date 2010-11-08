@@ -24,12 +24,12 @@ DEFINE_ONCE(orwl_wq) {
 orwl_wq* orwl_wq_init(orwl_wq *wq,
                                 const pthread_mutexattr_t *attr) {
   INIT_ONCE(orwl_wq);
-  if (!wq) return NULL;
+  if (!wq) return 0;
   if (!attr) attr = &smattr;
   pthread_mutex_init(&wq->mut, attr);
-  wq->head = NULL;
-  wq->tail = NULL;
-  wq->data = NULL;
+  wq->head = 0;
+  wq->tail = 0;
+  wq->data = 0;
   wq->data_len = 0;
   wq->clock = 1;
   return wq;
@@ -64,11 +64,11 @@ DEFINE_ONCE(orwl_wh) {
 orwl_wh* orwl_wh_init(orwl_wh *wh,
                   const pthread_condattr_t *attr) {
   INIT_ONCE(orwl_wh);
-  if (!wh) return NULL;
+  if (!wh) return 0;
   if (!attr) attr = &scattr;
   pthread_cond_init(&wh->cond, attr);
-  wh->location = NULL;
-  wh->next = NULL;
+  wh->location = 0;
+  wh->next = 0;
   wh->tokens = 0;
   wh->priority = 0;
   wh->svrID = 0;
@@ -88,14 +88,14 @@ DEFINE_NEW_DELETE(orwl_wh);
 
 int orwl_wh_valid(orwl_wh *wh);
 int orwl_wh_idle(orwl_wh *wh);
-/* This supposes that wq != NULL */
+/* This supposes that wq != 0 */
 int orwl_wq_valid(orwl_wq *wq);
-/* This supposes that wq != NULL */
+/* This supposes that wq != 0 */
 int orwl_wq_idle(orwl_wq *wq);
 
-/* This supposes that the corresponding wq != NULL */
+/* This supposes that the corresponding wq != 0 */
 uint64_t orwl_wh_load(orwl_wh *wh, uint64_t howmuch);
-/* This supposes that the corresponding wq != NULL */
+/* This supposes that the corresponding wq != 0 */
 uint64_t orwl_wh_unload(orwl_wh *wh, uint64_t howmuch);
 
 void orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
@@ -146,7 +146,7 @@ orwl_state P99_FSYMB(orwl_wq_request)(orwl_wq *wq, P99_VA_ARGS(number)) {
                 && wq->tail->svrID) {
               report(false, "request for augmenting an inclusive lock %p, succes", (void*)wq->tail);
               assert(hm >= P99_0(int64_t));
-              /* if the wh is NULL, take this as a request to add to the
+              /* if the wh is a null pointer, take this as a request to add to the
                  last handle if it exists */
               orwl_wh_load(wq->tail, howmuch);
               *wh = wq->tail;
@@ -226,10 +226,10 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
       MUTUAL_EXCLUDE(wq->mut) {
         while (orwl_wq_valid(wq)) {
           if (wq->head == wh && !wh->tokens) {
-            wh->location = NULL;
-            if (!wh->next) wq->tail = NULL;
+            wh->location = 0;
+            if (!wh->next) wq->tail = 0;
             wq->head = wh->next;
-            wh->next = NULL;
+            wh->next = 0;
             ret = orwl_valid;
             /* Unlock potential acquirers */
             if (wq->head) pthread_cond_broadcast(&wq->head->cond);
@@ -252,7 +252,7 @@ uint64_t* orwl_wq_map_locked(orwl_wq* wq, size_t* data_len) {
 }
 
 uint64_t* orwl_wh_map(orwl_wh* wh, size_t* data_len) {
-  uint64_t* ret = NULL;
+  uint64_t* ret = 0;
   if (orwl_wh_acquire(wh, 0) == orwl_acquired) {
     orwl_wq *wq = wh->location;
     assert(wq);
@@ -266,7 +266,7 @@ uint64_t* orwl_wh_map(orwl_wh* wh, size_t* data_len) {
 
 void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
   size_t data_len = wq->data_len;
-  /* realloc is allowed to return something non-NULL if len is
+  /* realloc is allowed to return something non-0 if len is
      0. Avoid that. */
   if (len) {
     size_t const blen = len * sizeof(uint64_t);
@@ -284,7 +284,7 @@ void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
     }
   } else {
     if (wq->data) free(wq->data);
-    wq->data = NULL;
+    wq->data = 0;
     wq->data_len = 0;
   }
 }

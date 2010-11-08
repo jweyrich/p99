@@ -63,7 +63,7 @@ inline
 void *p00_vnew(size_t n) {
   /* add one for the header */
   size_t *ret = (size_t*)calloc(p00_vnew_size_len(n) + 1, sizeof(size_t));
-  if (!ret) return NULL;
+  if (!ret) return 0;
   ret[0] = n;
   return ret + 1;
 }

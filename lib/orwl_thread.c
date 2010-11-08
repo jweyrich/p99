@@ -172,7 +172,7 @@ typedef struct {
 orwl__routine_arg* orwl__routine_arg_init(orwl__routine_arg *rt,
                                               start_routine_t start_routine,
                                               void* arg) {
-  if (!rt) return NULL;
+  if (!rt) return 0;
   sem_init(&rt->semCaller, 0, 0);
   sem_init(&rt->semCalled, 0, 0);
   rt->start_routine = start_routine;
@@ -183,8 +183,8 @@ orwl__routine_arg* orwl__routine_arg_init(orwl__routine_arg *rt,
 P99_PROTOTYPE(orwl__routine_arg*, orwl__routine_arg_init, orwl__routine_arg *, start_routine_t, void*);
 #define orwl__routine_arg_init(...) P99_CALL_DEFARG(orwl__routine_arg_init, 3, __VA_ARGS__)
 
-P99_DECLARE_DEFARG(orwl__routine_arg_init, , NULL, NULL);
-P99_DEFINE_DEFARG(orwl__routine_arg_init, , NULL, NULL);
+P99_DECLARE_DEFARG(orwl__routine_arg_init, , P99_0(start_routine_t), P99_0(void*));
+P99_DEFINE_DEFARG(orwl__routine_arg_init, , P99_0(start_routine_t), P99_0(void*));
 
 void orwl__routine_arg_destroy(orwl__routine_arg *rt) {
   /* empty */
@@ -200,7 +200,7 @@ void *detached_wrapper(void *routine_arg) {
   void *restrict arg = Routine_Arg->arg;
   /* This should be fast since usually there should never be a waiter
      blocked on this semaphore. */
-  void *ret = NULL;
+  void *ret = 0;
   ACCOUNT(count) {
     /* tell the creator that we are in charge */
     sem_post(&Routine_Arg->semCalled);
@@ -211,8 +211,8 @@ void *detached_wrapper(void *routine_arg) {
   /* Be careful to eliminate all garbage that the wrapping has
      generated. */
   orwl__routine_arg_delete(Routine_Arg);
-  Routine_Arg = NULL;
-  routine_arg = NULL;
+  Routine_Arg = 0;
+  routine_arg = 0;
   return ret;
 }
 
