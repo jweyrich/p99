@@ -756,6 +756,32 @@ P00_DECLARE_OVERFLOW(ll);
 #define P99_LVAL(...) P99_IF_DEC_LE(P99_NARG(__VA_ARGS__),1)(P00_LVAL(__VA_ARGS__, { 0 }))(P00_LVAL(__VA_ARGS__))
 
 
+/**
+ ** @brief Define an rvalue of type @a T and value @a VAL
+ **
+ ** In a way this is a "safer" cast operation. E.g
+ ** @code
+ ** void f(double* x);
+ ** void f(double x);
+ ** int a = 32;
+ **
+ ** g((double)a);
+ ** g(P99_RVAL(double, a));   // essentially the same as previous
+ **
+ ** f((double*)&a);           // no warning is produced
+ ** f(P99_RVAL(double*, &a)); // warning: assignment from incompatible pointer type
+ ** @endcode
+ **
+ ** @pre @a T must be a type that can be initialized with @c
+ ** {0}. These are all the built-in types (integral, floating point,
+ ** pointers, enumerations, ...) plus all composite types for which
+ ** the first element can be initialized with @c 0.
+ **
+ ** @pre @a VAL must not necessarily be of type @a T, but it must be
+ ** of a type that is assignment compatible with @a T.
+ **/
+#define P99_RVAL(T, VAL) (P99_LVAL(T) = (VAL))
+
 #define P99_CHOOSE5(xT, cc, cs, ci, cl, cll)                   \
 ((sizeof(xT) < sizeof(int))                                    \
  ? ((sizeof(xT) < sizeof(short))                               \

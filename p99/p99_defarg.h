@@ -20,6 +20,7 @@
  **/
 
 #include "p99_map.h"
+#include "p99_int.h"
 #include P99_ADVANCE_ID
 
 /**
@@ -248,6 +249,84 @@ P99_MACRO_END(NAME, _declare_defarg)
 /*! @see P99_DECLARE_DEFARG */
 
 
+
+#define P00_VAARG(NAME, X, I) P99_RVAL(NAME, X)
+
+#define P00_CALL_VA_ARG(T, ...) P99_FOR(T, P99_NARG(__VA_ARGS__), P00_SEQ, P00_VAARG, __VA_ARGS__)
+
+#ifdef DOXYGEN
+/**
+ ** @brief Assure type safety for variadic functions
+ **
+ ** Variadic functions in C have a big loop hole in that they don't
+ ** enforce a type for parameters that are given to the ... list. This
+ ** may have severe consequences when you pass constants as arguments
+ ** to such a function that result in a different type than you think.
+ **
+ ** A classical example is @c NULL, which may be an integral 0 of any
+ ** type @em or @c (void*)0. Suppose a function
+ ** @code
+ ** void toto_raw(size_t len, ...);
+ ** @endcode
+ **
+ ** that handles the number of arguments that it expects with the
+ ** parameter @c len, and then all other arguments are expected be @c
+ ** void*. Consider the following three calls to @c toto_raw:
+ ** @code
+ ** toto_raw(2, NULL, malloc(23));
+ ** toto_raw(2, 0, malloc(23));
+ ** toto_raw(2, (void*)0, malloc(23));
+ ** @endcode
+ **
+ ** Depending on the compiler, the first two might both result in an
+ ** <code>(int)0</code> that is put on the stack. @c sizeof(int) might
+ ** for example be 4 and @c sizeof(void*) be 8, so the program would
+ ** crash. C has no possibility to detect that automatically since the
+ ** interface of @c toto_raw simply can't specify what type the function
+ ** expects.
+ **
+ ** ::P99_CALL_VA_ARG allows you to "declare" the type of the ... arguments.
+ ** @code
+ ** #define toto(...) P99_CALL_VA_ARG(toto_raw, 1, void*, __VA_ARGS__)
+ ** @endcode
+ ** @param NAME is the name of the variadic function that is to be called
+ ** @param M is the number of arguments of @a NAME before the ...
+ ** @param T is the conversion type of the ... arguments
+ **
+ ** All the following calls of @c toto result in valid calls of @c
+ ** toto_raw and only put @c void* values in the variadic list:
+ ** @code
+ ** toto(0);
+ ** toto(1, NULL);
+ ** toto(1, 0);
+ ** toto(1, (void*)0);
+ ** toto(2, NULL, malloc(23));
+ ** toto(2, 0, malloc(23));
+ ** toto(2, (void*)0, malloc(23));
+ ** @endcode
+ **
+ ** The conversion of the arguments to type @a T is done with
+ ** ::P99_RVAL. So all values passed in the variadic list must be
+ ** assignment compatible with type @a T.
+ **
+ ** This macro also allows you to declare default values for the @a
+ ** M first arguments. We could for example do
+ ** @code
+ ** #define toto_defarg_0() 0
+ ** @endcode
+ **
+ ** Then even calling @c toto without arguments would be valid:
+ ** @code
+ ** toto();
+ ** @endcode
+ **/
+#define P99_CALL_VA_ARG(NAME, M, T, ...) NAME(__VA_ARGS__)
+#else
+#define P99_CALL_VA_ARG(NAME, M, T, ...)                                \
+P99_IF_DEC_GT(P99_NARG(__VA_ARGS__), M)                                 \
+(NAME(P00__DEFARGS(NAME, M, P99_SELS(M, __VA_ARGS__)), P00_CALL_VA_ARG(T, P99_SKP(M, __VA_ARGS__)))) \
+(P99_CALL_DEFARG(NAME, M, __VA_ARGS__))
+#endif
 
 /** @}
  **/

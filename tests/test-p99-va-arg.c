@@ -15,6 +15,7 @@
 #include "p99_id.h"
 #include "p99_args.h"
 #include "p99_map.h"
+#include "p99_defarg.h"
 
 unsigned P99_FSYMB(toto)(unsigned a, P99_VA_ARGS(number));
 #define toto(A, ...) P99_FSYMB(toto)(A, P99_LENGTH_VA_ARG(__VA_ARGS__))
@@ -288,6 +289,14 @@ P00_ARR_OP_MINMAX_FIXED(lcm, unsigned, u);
 
 #define SAYIT(...) printf("gcd is %ju\n", p99_gcd_ju(__VA_ARGS__))
 
+void va_arg_func(int a, double b, ...) {
+  /* empty */
+}
+
+#define va_arg_func(...) P99_CALL_VA_ARG(va_arg_func, 2, double, __VA_ARGS__)
+#define va_arg_func_defarg_0() 9
+#define va_arg_func_defarg_1() 1.E-4
+
 int main(int argc, char** argv) {
   assert(toto(3, 1, 3, 5, 7) == 1u);
   assert(tutu(3, 1, 3, 5, 7) == 1u);
@@ -305,4 +314,10 @@ int main(int argc, char** argv) {
   P99_VASSIGNS(Y, void);
   P99_VASSIGNS(Y,);
   P99_VASSIGNS(Z, P99_ACCESSORS(Y, 17));
+
+  va_arg_func();
+  va_arg_func(1);
+  va_arg_func(1, 2);
+  va_arg_func(1, 2, 3);
+  va_arg_func(1, , 3, 4);
 }
