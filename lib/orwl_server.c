@@ -24,13 +24,15 @@ orwl_server* orwl_server_init(orwl_server *serv,
                               size_t max_queues,
                               in_addr_t addr,
                               in_port_t port) {
-  memset(serv, 0, sizeof(orwl_server));
-  serv->fd_listen = -1;
-  orwl_host_init(&serv->host, addr, port);
-  serv->host.refs = 1;
-  serv->max_connections = max_connections;
-  serv->max_queues = max_queues;
-  serv->wqs = max_queues ? orwl_wq_vnew(max_queues) : P99_0(void*);
+  if (serv) {
+    *serv = (orwl_server) {
+      .fd_listen = -1,
+      .max_connections = max_connections,
+      .max_queues = max_queues,
+      .wqs = max_queues ? orwl_wq_vnew(max_queues) : P99_0(void*),
+    };
+    orwl_host_init(&serv->host, addr, port, 1);
+  }
   return serv;
 }
 

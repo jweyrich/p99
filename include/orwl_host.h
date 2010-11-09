@@ -49,10 +49,11 @@ void orwl_host_disconnect(orwl_host *th);
 
 #ifndef DOXYGEN
 inline
-P99_PROTOTYPE(orwl_host*, orwl_host_init, orwl_host *, in_addr_t, in_port_t);
-#define orwl_host_init(...) P99_CALL_DEFARG(orwl_host_init, 3, __VA_ARGS__)
+P99_PROTOTYPE(orwl_host*, orwl_host_init, orwl_host *, in_addr_t, in_port_t, size_t);
+#define orwl_host_init(...) P99_CALL_DEFARG(orwl_host_init, 4, __VA_ARGS__)
 #define orwl_host_init_defarg_1() P99_0(in_addr_t)
 #define orwl_host_init_defarg_2() P99_0(in_port_t)
+#define orwl_host_init_defarg_3() P99_0(size_t)
 #endif
 
 DOCUMENT_INIT(orwl_host)
@@ -60,14 +61,18 @@ P99_DEFARG_DOCU(orwl_host_init)
 inline
 orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
                           in_addr_t addr, /*!< [in] defaults to the null address */
-                          in_port_t port  /*!< [in] defaults to 0 */
+                          in_port_t port, /*!< [in] defaults to 0 */
+                          size_t    refs  /*!< [in] defaults to 0 */
                           ) {
-  if (!th) return 0;
-  th->next = th;
-  th->prev = th;
-  th->refs = 0;
-  orwl_endpoint_init(&th->ep, addr, port);
-  pthread_mutex_init(&th->mut, P99_0(pthread_mutexattr_t*));
+  if (th) {
+    *th = (orwl_host){
+      .next = th,
+      .prev = th,
+      .refs = refs,
+      .mut = PTHREAD_MUTEX_INITIALIZER,
+    };
+    orwl_endpoint_init(&th->ep, addr, port);
+  }
   return th;
 }
 

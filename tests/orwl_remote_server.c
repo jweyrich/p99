@@ -67,14 +67,14 @@ void process_opt(int argc, char **argv) {
       else ++verbose;
       break;
     case 'h':
-      fprintf(stderr, "Usage: %s [-bfv] [-a ORWL_ADDR] [-c MAXCONN] [-l LOCATIONS]\n", argv[0]);
+      fprintf(stderr, "Usage: %s [-bfv] [-a ORWL_ADDR] [-c MAXCONN] [-l LOCATIONS] [-L LOCKFILE]\n", argv[0]);
       fprintf(stderr, "    -b block initially\n");
       fprintf(stderr, "    -f fork into background\n");
       fprintf(stderr, "    -v be verbose (off with -f)\n");
       exit(EXIT_FAILURE);
       break;
     default:
-      fprintf(stderr, "Usage: %s [-b] [-a ORWL_ADDR] [-c MAXCONN] [-l LOCATIONS]\n", argv[0]);
+      fprintf(stderr, "Usage: %s [-b] [-a ORWL_ADDR] [-c MAXCONN] [-l LOCATIONS] [-L LOCKFILE]\n", argv[0]);
       exit(EXIT_FAILURE);
     }
   }
