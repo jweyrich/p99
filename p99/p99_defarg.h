@@ -42,10 +42,11 @@
 
 
 /**
- ** @addtogroup default_arguments Default arguments for functions
+ ** @addtogroup default_arguments Default arguments and types for functions
  **
  ** @brief As a C++ like feature, this series of macros can be used to
- ** provide default arguments to functions.
+ ** provide default arguments to functions and also to improve type
+ ** safety for variadic functions.
  **
  ** This goes in several parts.
  **
@@ -54,7 +55,13 @@
  **       replacement for your function
  **   - declare the default arguments with ::P99_DECLARE_DEFARG
  **   - generate the necessary external symbols with
- **       ::P99_DEFINE_DEFARG 
+ **       ::P99_DEFINE_DEFARG
+ **
+ ** Another feature that is provided here is a macro that allows you
+ ** to prescribe a certain type to the arguments of a variadic
+ ** function. In plain C these are dangerous, since C cannot guess the
+ ** type that the implementation of the function
+ ** expects. ::P99_CALL_VA_ARG may be used to overcome this problem.
  ** @{
  **/
 
@@ -249,10 +256,12 @@ P99_MACRO_END(NAME, _declare_defarg)
 /*! @see P99_DECLARE_DEFARG */
 
 
+#define P00_VAARG_0(NAME, T) NAME
+#define P00_VAARG_1(NAME, T) T
 
-#define P00_VAARG(NAME, X, I) P99_RVAL(NAME, X)
+#define P00_VAARG(NAMET, X, I) P99_RVAL(P00_VAARG_1 NAMET, P99_IF_EMPTY(X)(P99_PASTE2(P00_VAARG_0 NAMET, _defarg)())(X))
 
-#define P00_CALL_VA_ARG(T, ...) P99_FOR(T, P99_NARG(__VA_ARGS__), P00_SEQ, P00_VAARG, __VA_ARGS__)
+#define P00_CALL_VA_ARG(NAME, T, ...) P99_FOR((NAME, T), P99_NARG(__VA_ARGS__), P00_SEQ, P00_VAARG, __VA_ARGS__)
 
 #ifdef DOXYGEN
 /**
@@ -270,7 +279,7 @@ P99_MACRO_END(NAME, _declare_defarg)
  ** @endcode
  **
  ** that handles the number of arguments that it expects with the
- ** parameter @c len, and then all other arguments are expected be @c
+ ** parameter @c len, and then all other arguments are expected to be @c
  ** void*. Consider the following three calls to @c toto_raw:
  ** @code
  ** toto_raw(2, NULL, malloc(23));
@@ -315,16 +324,43 @@ P99_MACRO_END(NAME, _declare_defarg)
  ** #define toto_defarg_0() 0
  ** @endcode
  **
- ** Then even calling @c toto without arguments would be valid:
+ ** Then calling @c toto without arguments would be valid:
  ** @code
  ** toto();
  ** @endcode
+ **
+ ** The convention for these symbol are that the number at the end
+ ** corresponds to the position of the argument, starting from 0. This
+ ** may be a macro, as above, or a function. We could have achieved
+ ** the same effect by declaring
+ ** @code
+ ** inline size_t toto_defarg_0(void) { return 0; }
+ ** @endcode
+ **
+ ** The arguments in the variadic list may not only have a
+ ** default type but may have a default value, too.
+ ** @code
+ ** #define toto_defarg() ((void*)0)
+ ** @endcode
+ **
+ ** By that
+ ** @code
+ ** toto(1,);
+ ** @endcode
+ ** would expand to something equivalent to
+ ** @code
+ ** toto(1, (void*)0);
+ ** @endcode
+ **
+ ** The naming convention is similar to what is stated above for the
+ ** numbered arguments, only that the suffix "_N" is omitted from the
+ ** name of the function or macro.
  **/
 #define P99_CALL_VA_ARG(NAME, M, T, ...) NAME(__VA_ARGS__)
 #else
 #define P99_CALL_VA_ARG(NAME, M, T, ...)                                \
 P99_IF_DEC_GT(P99_NARG(__VA_ARGS__), M)                                 \
-(NAME(P00__DEFARGS(NAME, M, P99_SELS(M, __VA_ARGS__)), P00_CALL_VA_ARG(T, P99_SKP(M, __VA_ARGS__)))) \
+(NAME(P00__DEFARGS(NAME, M, P99_SELS(M, __VA_ARGS__)), P00_CALL_VA_ARG(NAME, T, P99_SKP(M, __VA_ARGS__)))) \
 (P99_CALL_DEFARG(NAME, M, __VA_ARGS__))
 #endif
 

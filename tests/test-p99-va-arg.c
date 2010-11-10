@@ -296,6 +296,7 @@ void va_arg_func(int a, double b, ...) {
 #define va_arg_func(...) P99_CALL_VA_ARG(va_arg_func, 2, double, __VA_ARGS__)
 #define va_arg_func_defarg_0() 9
 #define va_arg_func_defarg_1() 1.E-4
+#define va_arg_func_defarg() 7.1
 
 int main(int argc, char** argv) {
   assert(toto(3, 1, 3, 5, 7) == 1u);
@@ -319,5 +320,5 @@ int main(int argc, char** argv) {
   va_arg_func(1);
   va_arg_func(1, 2);
   va_arg_func(1, 2, 3);
-  va_arg_func(1, , 3, 4);
+  va_arg_func(1, , , 4);
 }
