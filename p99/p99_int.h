@@ -687,12 +687,14 @@ P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) a) {                       
 p99_inline                                                                                \
 P99_BUILTIN_TYPE(u, SUFF)                                                                 \
 P99_PASTE2(p99_unsig, SUFF)(P99_BUILTIN_TYPE(SUFF) a) {                                   \
-  P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);                       \
-  P99_BUILTIN_TYPE(u, SUFF) const type_max1 = type_max + 1;                               \
+  /* needed to avoid spurious compiler warnings */                                        \
+  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                                    \
+  register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);              \
+  register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = type_max + 1;                      \
   /* the unsigned max, as if it had just one value bit more */                            \
-  P99_BUILTIN_TYPE(u, SUFF) const utype_max = (2 * type_max) + 1;                         \
+  register P99_BUILTIN_TYPE(u, SUFF) const utype_max = (2 * type_max) + 1;                \
   return                                                                                  \
-    (a >= 0)                                                                              \
+    a >= type_null                                                                        \
     ? a                                                                                   \
     /* Capture the special case where -INTMAX_MIN can not represented                     \
        in the signed type */                                                              \
@@ -712,13 +714,15 @@ P99_PASTE2(p00_add0, SUFF)(P99_BUILTIN_TYPE(SUFF) a, P99_BUILTIN_TYPE(SUFF) b) {
 p99_inline                                                                                \
 P99_BUILTIN_TYPE(SUFF)                                                                    \
 P99_PASTE2(p00_add, SUFF)(P99_BUILTIN_TYPE(SUFF) a, P99_BUILTIN_TYPE(SUFF) b, int* err) { \
-  _Bool a0 = (a < 0);                                                                     \
-  _Bool b0 = (b < 0);                                                                     \
+  /* needed to avoid spurious compiler warnings */                                        \
+  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                                    \
+  register _Bool const a0 = (a < type_null);                                              \
+  register _Bool const b0 = (b < type_null);                                              \
   register P99_BUILTIN_TYPE(u, SUFF) uc                                                   \
     = P99_PASTE2(p00_add0, SUFF)(a, b);                                                   \
   register P99_BUILTIN_TYPE(SUFF) c                                                       \
     = P99_PASTE2(p99_twos, SUFF)(uc);                                                     \
-  _Bool c0 = (c < 0);                                                                     \
+  register _Bool const c0 = (c < type_null);                                              \
   if ((a0 == b0) && P99_UNLIKELY(a0 != c0))                                               \
     if (err) *err = ERANGE;                                                               \
   return c;                                                                               \
@@ -726,10 +730,12 @@ P99_PASTE2(p00_add, SUFF)(P99_BUILTIN_TYPE(SUFF) a, P99_BUILTIN_TYPE(SUFF) b, in
 p99_inline                                                                                \
 P99_BUILTIN_TYPE(SUFF)                                                                    \
 P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF) a, P99_BUILTIN_TYPE(SUFF) b, int* err) { \
+  /* needed to avoid spurious compiler warnings */                                        \
+  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                                    \
   return                                                                                  \
     (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF))                                    \
     ? P99_PASTE2(p00_add, SUFF)(a, b, err)                                                \
-    : ((a >= 0)                                                                           \
+    : ((a >= type_null)                                                                   \
        ? (P99_BUILTIN_MAX(SUFF) - a < b)                                                  \
        : (P99_BUILTIN_MIN(SUFF) - a > b));                                                \
 }                                                                                         \
