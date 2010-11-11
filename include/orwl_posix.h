@@ -50,5 +50,6 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <nl_types.h>
 
 #endif 	    /* !ORWL_POSIX_H_ */
