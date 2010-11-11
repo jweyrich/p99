@@ -82,7 +82,10 @@ DEFINE_ONCE_UPON(inet4_addr) {
   }
 }
 
-in_addr_t inet4_addr(void);
+in_addr_t inet4_addr(void) {
+  INIT_ONCE_UPON(inet4_addr, p00_inet4_addr);
+  return p00_inet4_addr;
+}
 
 void orwl_ntoa(struct sockaddr_in const* addr, char *name) {
   sprintf(name, "orwl://%s:%" PRIu32 "/",

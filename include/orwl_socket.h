@@ -77,12 +77,7 @@ extern in_addr_t p00_inet4_addr;
 
 DECLARE_ONCE_UPON(inet4_addr);
 
-
-inline
-in_addr_t inet4_addr(void) {
-  INIT_ONCE_UPON(inet4_addr, p00_inet4_addr);
-  return p00_inet4_addr;
-}
+in_addr_t inet4_addr(void);
 
 #ifndef DOXYGEN
 inline
