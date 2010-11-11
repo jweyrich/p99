@@ -49,15 +49,15 @@ struct rand48_t {
   unsigned short x[3];
 };
 
-#define RAND48_T_INITIALIZER { { useconds(), getpid(), pthread_self() } }
+#define RAND48_T_INITIALIZER { { (unsigned short)useconds(), (unsigned short)getpid(), (unsigned short)pthread_self() } }
 
 #ifndef DOXYGEN
 inline
 P99_PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
 #define rand48_t_init(...) P99_CALL_DEFARG(rand48_t_init, 4, __VA_ARGS__)
-#define rand48_t_init_defarg_1 useconds
-#define rand48_t_init_defarg_2 getpid
-#define rand48_t_init_defarg_3 pthread_self
+#define rand48_t_init_defarg_1() ((unsigned short)useconds())
+#define rand48_t_init_defarg_2() ((unsigned short)getpid())
+#define rand48_t_init_defarg_3() ((unsigned short)pthread_self())
 #endif
 
 DOCUMENT_INIT(rand48_t)
@@ -78,7 +78,8 @@ rand48_t *rand48_t_init(rand48_t *seed,     /*!< [out] the object to iniialize *
 DOCUMENT_DESTROY(rand48_t)
 inline
 void rand48_t_destroy(rand48_t* seed){
-  /* empty */
+  /* special care for bogus warning given by icc */
+  (void)seed;
 }
 
 DECLARE_NEW_DELETE(rand48_t);

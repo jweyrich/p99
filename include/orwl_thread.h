@@ -291,7 +291,8 @@ inline pthread_t* pthread_t_init(pthread_t *id) {
   return id;
 }
 inline void pthread_t_destroy(pthread_t *id) {
-  /* empty */
+  /* special care for bogus warning given by icc */
+  (void)id;
 }
 
 DECLARE_NEW_DELETE(pthread_t);

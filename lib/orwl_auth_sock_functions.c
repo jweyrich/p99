@@ -21,7 +21,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
   orwl_host *h = P99_NEW(orwl_host);
   /* mes and addr_t is already in host order */
   h->ep.addr = getpeer(Arg);
-  h->ep.port.p = htons(port);
+  h->ep.port.p = htons((uint16_t)port);
   report(Arg->srv->info, "inserting peer %s", orwl_endpoint_print(&h->ep));
   orwl_host_connect(h, &Arg->srv->host);
 }
@@ -36,7 +36,8 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port) {
 }
 
 DEFINE_AUTH_SOCK_FUNC(auth_sock_do_nothing, void) {
-  /* empty */
+  /* special care for bogus warning given by icc */
+  (void)Arg;
 }
 
 DEFINE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port) {

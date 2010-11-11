@@ -82,7 +82,8 @@ orwl_state* orwl_state_init
 DOCUMENT_DESTROY(orwl_state)
 inline
 void orwl_state_destroy(orwl_state *el) {
-  /* empty */
+  /* special care for bogus warning given by icc */
+  (void)el;
 }
 
 DECLARE_NEW_DELETE(orwl_state);

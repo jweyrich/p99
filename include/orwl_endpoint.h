@@ -144,7 +144,7 @@ in_port_t port2net(port_t const*A) {
  **/
 inline
 uint64_t port2host(port_t const*A) {
-  return ntohs(A->p);
+  return ntohs((uint16_t)(A->p));
 }
 
 inline

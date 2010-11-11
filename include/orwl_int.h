@@ -111,6 +111,7 @@ inline T* P99_PASTE2(T, _init)(T *id) {                        \
 /*! @brief destroy the object that @a id points to. */         \
  inline void P99_PASTE2(T, _destroy)(T*  id) {                 \
   /* empty */                                                  \
+  (void)id;                                                    \
 }                                                              \
 DECLARE_NEW_DELETE(T)
 
