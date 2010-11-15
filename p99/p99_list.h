@@ -67,11 +67,6 @@
  **/
 #define P99_CHS(N, ...) P99_SUB(N, 1, __VA_ARGS__)
 
-#ifndef P00_DOXYGEN
-#define P99_DUPL_0(...)
-#define P99_DUPL_1(...) __VA_ARGS__
-#endif
-
 /**
  ** @brief Construct a list that repeats the argument list @a N times
  **
@@ -81,14 +76,59 @@
  ** - If the argument list has just one element which is empty, the
  **   result will just be a sequence of @a N - 1 commas.
  **/
-#define P99_DUPL(...) P99_PASTE2(P00_DUPL_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 2))(__VA_ARGS__)
+#define P99_DUPL(...) P99_PASTE2(P00_DUPL_0_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 2))(__VA_ARGS__)
 
-#define P00_DUPL_0(...) P00_DUPL(__VA_ARGS__)
-#define P00_DUPL_1(...)
+#define P00_DUPL_0_0(...) P00_DUPL(__VA_ARGS__)
+#define P00_DUPL_0_1(...)
 
+#define P00_DUPL_1(...) __VA_ARGS__
 
-#define P00_DUPL(N, ...) P99_DUPL_ ## N(__VA_ARGS__)
+#define P00_DUPL(N, ...) P00_DUPL_ ## N(__VA_ARGS__)
 
+/**
+ ** @brief Construct a space separated sequence that repeats the argument list @a N times
+ **
+ ** The corner cases should work as expected:
+ ** - If @a N is 0 the empty token is produced.
+ ** - If the argument list is empty, the empty token is produced.
+ ** - If the argument list has just one element which is empty, the
+ **    token is produced.
+ **/
+#define P99_REP(...) P99_PASTE2(P00_REP_0_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 2))(__VA_ARGS__)
+
+#define P00_REP_0_0(...) P00_REP(__VA_ARGS__)
+#define P00_REP_0_1(...)
+
+#define P00_REP_1(...) __VA_ARGS__
+
+#define P00_REP(N, ...) P00_REP_ ## N(__VA_ARGS__)
+
+#define P99_BRACKETS(...) P99_PASTE2(P00_BRACKETS_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 1))(P99_NARG(__VA_ARGS__), __VA_ARGS__)
+
+#define P00_BRACKETS_0(...) P00_BRACKET(__VA_ARGS__)
+#define P00_BRACKETS_1(...)
+
+#define P00_BRACKET_1(...) [__VA_ARGS__]
+
+#define P00_BRACKET(N, ...) P00_BRACKET_ ## N(__VA_ARGS__)
+
+#define P99_PARENS(...) P99_PASTE2(P00_PARENS_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 1))(P99_NARG(__VA_ARGS__), __VA_ARGS__)
+
+#define P00_PARENS_0(...) P00_PAREN(__VA_ARGS__)
+#define P00_PARENS_1(...)
+
+#define P00_PAREN_1(...) [__VA_ARGS__]
+
+#define P00_PAREN(N, ...) P00_PAREN_ ## N(__VA_ARGS__)
+
+#define P99_BRACES(...) P99_PASTE2(P00_BRACES_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 1))(P99_NARG(__VA_ARGS__), __VA_ARGS__)
+
+#define P00_BRACES_0(...) P00_BRACE(__VA_ARGS__)
+#define P00_BRACES_1(...)
+
+#define P00_BRACE_1(...) [__VA_ARGS__]
+
+#define P00_BRACE(N, ...) P00_BRACE_ ## N(__VA_ARGS__)
 
 /** @}
  **/

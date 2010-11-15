@@ -1059,7 +1059,15 @@ printf "#define P00_dec_eval_%d %d\n", $_, $_
     foreach (0.. $maxnumber);
 printf "#define P00_dec_eval_minus_%d %d\n", $_, -$_
     foreach (0.. $maxnumber);
-print "#define P99_DUPL_${_}(...) __VA_ARGS__, P99_DUPL_", ($_ - 1), "(__VA_ARGS__)\n"
+print "#define P00_DUPL_${_}(...) __VA_ARGS__, P00_DUPL_", ($_ - 1), "(__VA_ARGS__)\n"
+    foreach (2 .. $maxnumber);
+print "#define P00_REP_${_}(...) P00_REP_", ($_ - 1), "(__VA_ARGS__)__VA_ARGS__\n"
+    foreach (2 .. $maxnumber);
+print "#define P00_BRACKET_${_}(X, ...) [X]P00_BRACKET_", ($_ - 1), "(__VA_ARGS__)\n"
+    foreach (2 .. $maxnumber);
+print "#define P00_BRACE_${_}(X, ...) {X}, P00_BRACE_", ($_ - 1), "(__VA_ARGS__)\n"
+    foreach (2 .. $maxnumber);
+print "#define P00_PAREN_${_}(X, ...) (X)P00_PAREN_", ($_ - 1), "(__VA_ARGS__)\n"
     foreach (2 .. $maxnumber);
 
 
