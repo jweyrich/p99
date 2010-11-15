@@ -72,7 +72,7 @@ P00_POSIX_DEFARG_DOCU(pthread_key_create, int, pthread_key_t *key, void (*destr_
 
 #define SOCKADDR_IN_INIIALIZER { .sin_family = AF_INET }
 
-#define IN_ADDR_INITIALIZER  { .s_addr = 0 }
+#define IN_ADDR_INITIALIZER  P99_INIT
 
 P00_POSIX_DEFARG_DOCU(accept, int, int sockfd, struct sockaddr *addr, socklen_t *addrlen)
 /**
@@ -102,7 +102,7 @@ P00_POSIX_DEFARG_DOCU(inet_ntop, char const*, int af, const void *src, char *dst
  ** @param  size defaults to INET6_ADDRSTRLEN
  **/
 #define inet_ntop(...) P99_CALL_DEFARG(inet_ntop, 4, __VA_ARGS__)
-#define inet_ntop_defarg_2() (char[INET6_ADDRSTRLEN]){ 0 }
+#define inet_ntop_defarg_2() P99_LVAL(char[INET6_ADDRSTRLEN])
 #define inet_ntop_defarg_3() INET6_ADDRSTRLEN
 
 
@@ -113,7 +113,7 @@ P00_POSIX_DEFARG_DOCU(realpath, char*, char const *path, char *resolved_path)
  ** @note to have realpath allocate its return value with @c malloc, @a resolved_path should be set to 0
  **/
 #define realpath(...) P99_CALL_DEFARG(realpath, 2, __VA_ARGS__)
-#define realpath_defarg_1() (char[PATH_MAX]){ 0 }
+#define realpath_defarg_1() P99_LVAL(char[PATH_MAX])
 
 
 #endif 	    /* !P99_POSIX_DEFAULT_H_ */

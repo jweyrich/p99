@@ -31,6 +31,8 @@
  **/
 
 #include "p99.h"
+#include "p99_for.h"
+#include "p99_if.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -56,6 +58,11 @@ char const* myBuggyFunction(void) {
   return (char const[len + 1]){ 0 };
 }
 
+struct toto {
+  int a;
+};
+
+
 int main(int argc, char*argv[]) {
   printf("return %u 'a's: %s\n", len, myVerryBuggyFunction());
   printf("return %u 'a's: %s\n", len, myStillBuggyFunction());
@@ -63,5 +70,11 @@ int main(int argc, char*argv[]) {
   printf("return two temporaries? %p ?= %p\n",
          (void*)myBuggyFunction(),
          (void*)myBuggyFunction());
-  return 0;
+  int * ip = P99_INIT;
+  int * ipp[2] = P99_INIT;
+  int (*ippp)[2] = P99_LVAL(int (*)[2]);
+  struct toto j = P99_INIT;
+  struct toto jj[4][5] = P99_INIT;
+  struct toto (*jjj)[4][5] = &P99_LVAL(struct toto[4][5]);
+  return P99_LVAL(struct toto[3][4])[0][0].a;
 }

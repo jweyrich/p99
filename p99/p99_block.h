@@ -324,7 +324,7 @@ struct p00_jmp_buf {
   jmp_buf buf;
 };
 
-#define P00_JMP_BUF_INITIALIZER { .returning = 0 }
+#define P00_JMP_BUF_INITIALIZER P99_INIT
 
 typedef struct p00_inhibitor p00_inhibitor;
 
