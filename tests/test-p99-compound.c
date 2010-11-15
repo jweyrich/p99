@@ -37,6 +37,11 @@
 #include <stdio.h>
 #include <string.h>
 
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
+#pragma GCC diagnostic ignored "-Wunused-value"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
+
 enum { len = 9 };
 
 

@@ -244,53 +244,53 @@ extern void orwl_pthread_wait_detached(void);
 #ifdef DOXYGEN
 #define DECLARE_THREAD(T)
 
-#define DEFINE_THREAD(T)                                             \
-/*! This is the callback procedure for type T */                     \
-/*! @memberof T */                                                   \
-/*! @see DECLARE_THREAD */                                           \
-/*! @param arg the object for this call */                           \
+#define DEFINE_THREAD(T)                                                       \
+/*! This is the callback procedure for type T */                               \
+/*! @memberof T */                                                             \
+/*! @see DECLARE_THREAD */                                                     \
+/*! @param arg the object for this call */                                     \
 /*! @param id if not a null pointer, the thread can be joined on this @a id */ \
   int P99_PASTE2(T, _create)(T* arg, pthread_t *id)
 #else
 #define DECLARE_THREAD(T)                                                         \
-  inline T * P99_PASTE2(T, _join)(pthread_t id) {                                 \
+void P99_PASTE2(T, _start)(T* Arg);                                               \
+static_inline T * P99_PASTE2(T, _join)(pthread_t id) {                            \
   void *ret = 0;                                                                  \
   pthread_join(id, &ret);                                                         \
   return ret;                                                                     \
 }                                                                                 \
-extern void * P99_PASTE2(T, _start_joinable)(void* arg);                          \
-extern void * P99_PASTE2(T, _start_detached)(void* arg);                          \
-inline int P99_PASTE2(T, _create)(T* arg, pthread_t *id) {                        \
+static_inline void *P99_PASTE2(T, _start_joinable)(void* arg) {                   \
+  T *Arg = (T*)arg;                                                               \
+  P99_PASTE2(T, _start)(Arg);                                                     \
+  return arg;                                                                     \
+}                                                                                 \
+static_inline void *P99_PASTE2(T, _start_detached)(void* arg) {                   \
+  T *Arg = (T*)arg;                                                               \
+  P99_PASTE2(T, _start)(Arg);                                                     \
+  P99_PASTE2(T, _delete)(Arg);                                                    \
+  return 0;                                                                       \
+}                                                                                 \
+static_inline int P99_PASTE2(T, _create)(T* arg, pthread_t *id) {                 \
   if (id)                                                                         \
     return orwl_pthread_create_joinable(id, P99_PASTE2(T, _start_joinable), arg); \
   else                                                                            \
     return orwl_pthread_create_detached(P99_PASTE2(T, _start_detached), arg);     \
 }                                                                                 \
-extern void * P99_PASTE2(T, _start_joinable)(void* arg)
+P99_MACRO_END(declare_thread)
 #define DEFINE_THREAD(T)                                       \
 T *P99_PASTE2(T, _join)(pthread_t id);                         \
 int P99_PASTE2(T, _create)(T* arg, pthread_t *id);             \
-void P99_PASTE2(T, _start)(T* Arg);                            \
-void *P99_PASTE2(T, _start_joinable)(void* arg) {              \
-  T *Arg = (T*)arg;                                            \
-  P99_PASTE2(T, _start)(Arg);                                  \
-  return arg;                                                  \
-}                                                              \
-void *P99_PASTE2(T, _start_detached)(void* arg) {              \
-  T *Arg = (T*)arg;                                            \
-  P99_PASTE2(T, _start)(Arg);                                  \
-  P99_PASTE2(T, _delete)(Arg);                                 \
-  return 0;                                                    \
-}                                                              \
+void *P99_PASTE2(T, _start_joinable)(void* arg);               \
+void *P99_PASTE2(T, _start_detached)(void* arg);               \
 void P99_PASTE2(T, _start)(T *const Arg)
 #endif
 
-inline pthread_t* pthread_t_init(pthread_t *id) {
+static_inline pthread_t* pthread_t_init(pthread_t *id) {
   if (!id) return 0;
   P99_TZERO(*id);
   return id;
 }
-inline void pthread_t_destroy(pthread_t *id) {
+static_inline void pthread_t_destroy(pthread_t *id) {
   /* special care for bogus warning given by icc */
   (void)id;
 }
@@ -337,7 +337,7 @@ P99_GUARDED_BLOCK(                                             \
            sem_wait_nointr(sem),                               \
            sem_post(sem))
 
-inline
+static_inline
 char const* pthread2str(char *buf, pthread_t id) {
   uchar *p = (uchar*)&id;
   for (unsigned i = 0; i < sizeof(pthread_t); ++i) {
@@ -352,16 +352,16 @@ char const* pthread2str(char *buf, pthread_t id) {
 #ifdef __GNUC__
 
 #define DECLARE_THREAD_VAR(T, NAME)                                                          \
+T* P99_PASTE2(NAME, _init)(void);                                                            \
 /* guarantee that the thread variable is properly initialized */                             \
 /* var is first in the struct to have a quick return on the fast path */                     \
 typedef struct P99_PASTE2(NAME, _type) { T var; bool initialized; } P99_PASTE2(NAME, _type); \
 extern __thread P99_PASTE2(NAME, _type) P99_PASTE2(NAME, _var);                              \
 /* The initialization is not inlined to take it out of the optimizers                        \
    view */                                                                                   \
-extern T* P99_PASTE2(NAME, _init)(void);                                                     \
 /* In the function itself everything is done to privilege the fast                           \
    path */                                                                                   \
-inline T* NAME(void) {                                                                       \
+static_inline T* NAME(void) {                                                                \
   register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var);                      \
   register bool*const initialized = &ret->initialized;                                       \
   register T*const var = &ret->var;                                                          \
@@ -370,7 +370,7 @@ inline T* NAME(void) {                                                          
   else                                                                                       \
     return P99_PASTE2(NAME, _init)();                                                        \
 }                                                                                            \
-inline void P99_PASTE2(NAME, _clear)(void) {                                                 \
+static_inline void P99_PASTE2(NAME, _clear)(void) {                                          \
 }                                                                                            \
 P99_MACRO_END(DECLARE_THREAD_VAR)
 
@@ -396,7 +396,7 @@ T* NAME(void)
 #define P00_DECLARE_THREAD_VAR(T, NAME, KEY)                   \
 extern pthread_key_t KEY;                                      \
 DECLARE_ONCE_STATIC(KEY);                                      \
-inline T* NAME(void) {                                         \
+static_inline T* NAME(void) {                                  \
   INIT_ONCE_STATIC(KEY);                                       \
   T* ret = pthread_getspecific(KEY);                           \
   if (P99_UNLIKELY(!ret)) {                                    \
@@ -405,7 +405,7 @@ inline T* NAME(void) {                                         \
   }                                                            \
   return ret;                                                  \
 }                                                              \
-inline void P99_PASTE2(NAME, _clear)(void) {                   \
+static_inline void P99_PASTE2(NAME, _clear)(void) {            \
   INIT_ONCE_STATIC(KEY);                                       \
   T* ret = pthread_getspecific(KEY);                           \
   if (P99_LIKELY(!!ret)) {                                     \
@@ -418,7 +418,7 @@ extern pthread_key_t KEY
 
 #define DECLARE_THREAD_VAR(T, NAME)                            \
 /*! An accessor function to a thread local variable */         \
-inline T* NAME(void);                                          \
+static_inline T* NAME(void);                                   \
 P00_DECLARE_THREAD_VAR(T, NAME, P99_PASTE3(p00_, NAME, _key))
 
 

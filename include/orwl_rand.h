@@ -28,7 +28,7 @@ uint64_t orwl_challenge(uint64_t a);
 /**
  ** @brief Get the micro seconds since epoch.
  **/
-inline
+static_inline
 uint64_t useconds(void) {
   struct timeval t;
   gettimeofday(&t, P99_0(struct timezone*));
@@ -52,7 +52,7 @@ struct rand48_t {
 #define RAND48_T_INITIALIZER { { (unsigned short)useconds(), (unsigned short)getpid(), (unsigned short)pthread_self() } }
 
 #ifndef DOXYGEN
-inline
+static_inline
 P99_PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
 #define rand48_t_init(...) P99_CALL_DEFARG(rand48_t_init, 4, __VA_ARGS__)
 #define rand48_t_init_defarg_1() ((unsigned short)useconds())
@@ -62,7 +62,7 @@ P99_PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned sho
 
 DOCUMENT_INIT(rand48_t)
 P99_DEFARG_DOCU(rand48_t)
-inline
+static_inline
 rand48_t *rand48_t_init(rand48_t *seed,     /*!< [out] the object to iniialize */
                         unsigned short x0,  /*!< [in] defaults to a time value */
                         unsigned short x1,  /*!< [in] defaults to the process id */
@@ -76,7 +76,7 @@ rand48_t *rand48_t_init(rand48_t *seed,     /*!< [out] the object to iniialize *
 }
 
 DOCUMENT_DESTROY(rand48_t)
-inline
+static_inline
 void rand48_t_destroy(rand48_t* seed){
   /* special care for bogus warning given by icc */
   (void)seed;
@@ -94,7 +94,7 @@ DECLARE_THREAD_VAR(rand48_t, seed_get);
 /**
  ** @memberof rand48_t
  **/
-inline
+static_inline
 uint32_t orwl_rand(rand48_t *xsubi) {
   return jrand48(xsubi->x);
 }
@@ -102,7 +102,7 @@ uint32_t orwl_rand(rand48_t *xsubi) {
 /**
  ** @memberof rand48_t
  **/
-inline
+static_inline
 double orwl_drand(rand48_t *xsubi) {
   return erand48(xsubi->x);
 }
@@ -110,7 +110,7 @@ double orwl_drand(rand48_t *xsubi) {
 /**
  ** @memberof rand48_t
  **/
-inline
+static_inline
 uint64_t orwl_rand64(rand48_t *xsubi) {
   double ret = ldexp(orwl_drand(xsubi), 48);
   return (uint64_t)ret;

@@ -50,6 +50,7 @@ typedef struct {                                                              \
   orwl_wq *Wq;                                                                \
 } P00_CALLBACK_PAIR(T);                                                       \
  DOCUMENT_INIT(P00_CALLBACK_PAIR(T))                                          \
+static_inline                                                                 \
 P00_CALLBACK_PAIR(T) *                                                        \
 P99_PASTE2(P00_CALLBACK_PAIR(T), _init)(P00_CALLBACK_PAIR(T) *arg,            \
                                    T* Arg,                                    \
@@ -63,6 +64,7 @@ P99_PASTE2(P00_CALLBACK_PAIR(T), _init)(P00_CALLBACK_PAIR(T) *arg,            \
    return arg;                                                                \
 }                                                                             \
  DOCUMENT_DESTROY(P00_CALLBACK_PAIR(T))                                       \
+static_inline                                                                 \
  void P99_PASTE2(P00_CALLBACK_PAIR(T), _destroy)(P00_CALLBACK_PAIR(T) *arg) { \
   if (!arg) return;                                                           \
   pthread_cond_destroy(&arg->cond);                                           \

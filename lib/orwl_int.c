@@ -13,6 +13,7 @@
 /*                                                                           */
 #include "orwl_int.h"
 #include "p99_map.h"
+#include "p99_id.h"
 
 #define DEFINE_BASIC(T)                                        \
 T* P99_PASTE2(T, _init)(T *id);                                \
@@ -31,7 +32,7 @@ char const* P99_PASTE3(T, 2, X)(char* buf, T x) {              \
   free(form);                                                  \
   return buf;                                                  \
 }                                                              \
-char const* P99_PASTE3(T, 2, X)(char* buf, T x)
+P99_MACRO_END(define_ari2str, T, X)
 
 #define DEFINE_ARI2STR(T)                                      \
   P00_DEFINE_ARI2STR(T, d, , );                                \

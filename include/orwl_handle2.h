@@ -65,7 +65,7 @@ struct orwl_handle2 {
  **        handle. It defaults to a null pointer, i.e no link.
  **/
 DOCUMENT_INIT(orwl_handle2)
-inline
+static_inline
 orwl_handle2 *orwl_handle2_init(orwl_handle2 *rh2) {
   if (!rh2) return 0;
   *rh2 = (orwl_handle2 const)ORWL_HANDLE2_INITIALIZER;
@@ -73,7 +73,7 @@ orwl_handle2 *orwl_handle2_init(orwl_handle2 *rh2) {
 }
 
 DOCUMENT_DESTROY(orwl_handle2)
-inline
+static_inline
 void orwl_handle2_destroy(orwl_handle2 *rh2) {
   orwl_handle_destroy(&rh2->pair[0]);
   orwl_handle_destroy(&rh2->pair[1]);
@@ -222,6 +222,9 @@ P99_PROTOTYPE(void, orwl_resize2, orwl_handle2*, size_t, rand48_t*);
 #endif
 
 
+DECLARE_ORWL_REGISTER_ALIAS(orwl_acquire2, orwl_handle2);
+DECLARE_ORWL_REGISTER_ALIAS(orwl_release2, orwl_handle2);
+DECLARE_ORWL_REGISTER_ALIAS(orwl_cancel2, orwl_handle2);
 
 
 #endif 	    /* !ORWL_HANDLE2_H_ */

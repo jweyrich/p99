@@ -32,7 +32,6 @@ do {                                                           \
  } while (false)
 
 
-DECLARE_ONCE_UPON(mycode);
 DEFINE_ONCE_UPON(mycode) {
     orwl_if_code(0, 1, 2, 3);
     orwl_if_code(0, 1, 3, 2);
@@ -62,11 +61,6 @@ DEFINE_ONCE_UPON(mycode) {
     orwl_if_code(3, 2, 0, 1);
     orwl_if_code(3, 2, 1, 0);
  END:;
-}
-
-bool same_endianess(uint32_t c) {
-  INIT_ONCE_UPON(mycode, mycode);
-  return c == mycode;
 }
 
 void orwl_hton(uint64_t *n, uint64_t const *h, size_t l);
@@ -206,9 +200,8 @@ void auth_sock_destroy(auth_sock *sock) {
 
 DEFINE_NEW_DELETE(auth_sock);
 
-DECLARE_AUTH_SOCK_FUNC(server_callback, uint64_t funcID);
-
-DEFINE_AUTH_SOCK_FUNC(server_callback, uint64_t funcID) {
+static
+void server_callback(auth_sock* Arg) {
   AUTH_SOCK_READ(Arg, server_callback, uint64_t funcID);
   orwl_domain_call(ORWL_FTAB(auth_sock), funcID, Arg);
 }

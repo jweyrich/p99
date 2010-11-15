@@ -55,7 +55,6 @@ static uint64_t secret = P99_0(uint64_t);
 
 static char const ENVVAR[] = "ORWL_SECRET";
 
-DECLARE_ONCE_UPON(secret);
 DEFINE_ONCE_UPON(secret) {
   char const *str = getenv(ENVVAR);
   if (str) secret = strtou64(str);

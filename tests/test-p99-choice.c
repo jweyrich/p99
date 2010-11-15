@@ -13,6 +13,13 @@
 /*                                                                           */
 #include "p99_choice.h"
 #include "p99_c99.h"
+#include "p99_compiler.h"
+
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
+#pragma GCC diagnostic ignored "-Wunused-value"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-function"
+#endif
 
 P99_CHOICE_FUNCTION(unsigned, toto, -1, 4, 5, 6, 7, 8, 1, 2, 3, 4, 99, 3, 88 );
 
@@ -22,26 +29,28 @@ TYPE P99_PASTE3(NAME, _fixed, VAL)(void) {                     \
 }                                                              \
 P99_MACRO_END(_fixed)
 
-P00_FIXED(unsigned, toto, 0);
-P00_FIXED(unsigned, toto, 5);
-P00_FIXED(unsigned, toto, 10);
-P00_FIXED(unsigned, toto, 10000);
+static P00_FIXED(unsigned, toto, 0);
+static P00_FIXED(unsigned, toto, 5);
+static P00_FIXED(unsigned, toto, 10);
+static P00_FIXED(unsigned, toto, 10000);
 
+static
 unsigned toto_toto(size_t x) {
   return toto(x);
 }
 
-P00_FIXED(unsigned, p99_unique_bit_32, 0);
-P00_FIXED(unsigned, p99_unique_bit_32, 1);
-P00_FIXED(unsigned, p99_unique_bit_32, 2);
-P00_FIXED(unsigned, p99_unique_bit_32, 4);
-P00_FIXED(unsigned, p99_unique_bit_32, 8);
-P00_FIXED(unsigned, p99_unique_bit_32, 16);
-P00_FIXED(unsigned, p99_unique_bit_32, 32);
-P00_FIXED(unsigned, p99_unique_bit_32, 64);
-P00_FIXED(unsigned, p99_unique_bit_32, 128);
-P00_FIXED(unsigned, p99_unique_bit_32, 1024);
+static P00_FIXED(unsigned, p99_unique_bit_32, 0);
+static P00_FIXED(unsigned, p99_unique_bit_32, 1);
+static P00_FIXED(unsigned, p99_unique_bit_32, 2);
+static P00_FIXED(unsigned, p99_unique_bit_32, 4);
+static P00_FIXED(unsigned, p99_unique_bit_32, 8);
+static P00_FIXED(unsigned, p99_unique_bit_32, 16);
+static P00_FIXED(unsigned, p99_unique_bit_32, 32);
+static P00_FIXED(unsigned, p99_unique_bit_32, 64);
+static P00_FIXED(unsigned, p99_unique_bit_32, 128);
+static P00_FIXED(unsigned, p99_unique_bit_32, 1024);
 
+static
 unsigned p00_unique_bit_hash_6_(size_t x) {
   return p00_unique_bit_hash_6(x);
 }

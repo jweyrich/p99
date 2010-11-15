@@ -17,6 +17,11 @@
 #include "p99_map.h"
 #include "p99_defarg.h"
 
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
+#pragma GCC diagnostic ignored "-Wunused-value"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
+
 unsigned P99_FSYMB(toto)(unsigned a, P99_VA_ARGS(number));
 #define toto(A, ...) P99_FSYMB(toto)(A, P99_LENGTH_VA_ARG(__VA_ARGS__))
 

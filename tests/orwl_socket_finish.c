@@ -18,10 +18,11 @@
 #include "orwl_wait_queue.h"
 #include "p99_posix_default.h"
 
-inline void F_(int a) { }
+static_inline void F_(int a) { }
 
 void F_(int a);
 
+static
 P99_PROTOTYPE(void, ftoaster);
 
 /* It makes not much sense to define a macro with 0 arguments by
@@ -35,7 +36,7 @@ void ftoaster (void) {
   report(1, "ftoaster has is called");
 }
 
-
+static
 P99_PROTOTYPE(void, ftaster, int);
 
 P99_DECLARE_DEFARG(ftaster, -1);
@@ -48,6 +49,7 @@ void ftaster(int A) {
   report(1, "ftaster has %d", A);
 }
 
+static
 P99_PROTOTYPE(void, ftister, int, unsigned);
 
 void ftister(int A, unsigned B) {
@@ -60,6 +62,7 @@ P99_DEFINE_DEFARG(ftister, -2, 1);
 
 typedef struct { int x; } test_t;
 
+static
 P99_PROTOTYPE(void, ftester, test_t, unsigned, double);
 void ftester(test_t A, unsigned B, double C) {
   report(1, "ftester has %d %u %g", A.x, B, C);

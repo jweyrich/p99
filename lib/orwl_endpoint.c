@@ -16,6 +16,7 @@
 #include "p99_c99_default.h"
 #include "orwl_socket.h"
 #include "orwl_header.h"
+#include "orwl_endpoint.h"
 
 orwl_endpoint* orwl_endpoint_init
      (orwl_endpoint *endpoint,

@@ -12,6 +12,12 @@
 /* particular purpose.                                                       */
 /*                                                                           */
 #include "p99_double.h"
+#include "p99_compiler.h"
+
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
+#pragma GCC diagnostic ignored "-Wunused-value"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
 
 long double const a0 = +0.5L;
 long double const a1 = P99_DEC_DOUBLE();

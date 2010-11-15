@@ -28,12 +28,14 @@ typedef struct {
   size_t phase;
 } cb_t;
 
+static
 cb_t* cb_t_init(cb_t *cb) {
   cb->mynum = 0;
   cb->phase = 0;
   return cb;
 }
 
+static
 void cb_t_destroy(cb_t *cb) {
   /* empty */
 }
@@ -54,18 +56,20 @@ typedef struct _arg_t {
   size_t phases;
 } arg_t;
 
+static
 arg_t* arg_t_init(arg_t *arg, size_t def) {
   arg->mynum = def;
   arg->phases = def;
   return arg;
 }
 
+static
 P99_PROTOTYPE(arg_t*, arg_t_init, arg_t *, size_t);
 #define arg_t_init(...) P99_CALL_DEFARG(arg_t_init, 2, __VA_ARGS__)
 P99_DECLARE_DEFARG(arg_t_init, , P99_0(size_t));
 P99_DEFINE_DEFARG(arg_t_init, , P99_0(size_t));
 
-
+static
 void arg_t_destroy(arg_t *arg) {
 }
 

@@ -19,14 +19,14 @@
 #include "orwl_header.h"
 
 #ifndef DOXYGEN
-inline
+static_inline
 P99_PROTOTYPE(void, orwl_hton, uint64_t *, uint64_t const *, size_t);
 #define orwl_hton(...) P99_CALL_DEFARG(orwl_hton, 3, __VA_ARGS__)
 #define orwl_hton_defarg_2() 1
 #endif
 
 P99_DEFARG_DOCU(orwl_hton)
-inline
+static_inline
 void
 orwl_hton(uint64_t *n,        /*!< [out] array of length @a l */
           uint64_t const *h,  /*!< [in] array of length @a l */
@@ -39,14 +39,14 @@ orwl_hton(uint64_t *n,        /*!< [out] array of length @a l */
 }
 
 #ifndef DOXYGEN
-inline
+static_inline
 P99_PROTOTYPE(void, orwl_ntoh, uint64_t*, uint64_t const *, size_t);
 #define orwl_ntoh(...) P99_CALL_DEFARG(orwl_ntoh, 3, __VA_ARGS__)
 #define orwl_ntoh_defarg_2() 1
 #endif
 
 P99_DEFARG_DOCU(orwl_ntoh)
-inline
+static_inline
 void
 orwl_ntoh(uint64_t* h,       /*!< [out] array of length @a l */
           uint64_t const *n, /*!< [in] array of length @a l */
@@ -80,7 +80,7 @@ DECLARE_ONCE_UPON(inet4_addr);
 in_addr_t inet4_addr(void);
 
 #ifndef DOXYGEN
-inline
+static_inline
 P99_PROTOTYPE(char const*, orwl_inet_ntop, struct sockaddr const*, char*, size_t);
 P99_DECLARE_DEFARG(orwl_inet_ntop, , , );
 #define orwl_inet_ntop(...) P99_CALL_DEFARG(orwl_inet_ntop, 3, __VA_ARGS__)
@@ -90,7 +90,7 @@ P99_DECLARE_DEFARG(orwl_inet_ntop, , , );
 
 
 P99_DEFARG_DOCU(orwl_inet_ntop)
-inline
+static_inline
 char const* orwl_inet_ntop(struct sockaddr const* addr,
                            char* buf, size_t size) {
   void const* src =
@@ -137,7 +137,7 @@ struct auth_sock {
 };
 
 #ifndef DOXYGEN
-inline
+static_inline
 P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t, uint64_t);
 #define auth_sock_init(...) P99_CALL_DEFARG(auth_sock_init, 5, __VA_ARGS__)
 #define auth_sock_init_defarg_1() -1
@@ -148,7 +148,7 @@ P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*,
 
 DOCUMENT_INIT(auth_sock)
 P99_DEFARG_DOCU(auth_sock_init)
-inline
+static_inline
 auth_sock*
 auth_sock_init(auth_sock *sock,         /*!< [out] */
                int fd,                  /*!< [in] file descriptor, defaults to -1 */
@@ -191,21 +191,19 @@ void F(auth_sock *Arg)
 #define DECLARE_AUTH_SOCK_FUNC(F, ...) void F(auth_sock *Arg)
 #else
 #define DEFINE_AUTH_SOCK_FUNC(F, ...)                          \
-void (*P99_PASTE2(F, _signature))(__VA_ARGS__) = 0;            \
 DEFINE_ORWL_REGISTER_ALIAS(F, auth_sock);                      \
 void F(auth_sock *Arg)
 
 #define DECLARE_AUTH_SOCK_FUNC(F, ...)                         \
-extern void (*P99_PASTE2(F, _signature))(__VA_ARGS__);         \
-DECLARE_ORWL_REGISTER_ALIAS(F, auth_sock);                     \
-void F(auth_sock *Arg)
+void F(auth_sock *Arg);                                        \
+DECLARE_ORWL_REGISTER_ALIAS(F, auth_sock)
 #endif
 
 DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
 
 
 #define AUTH_SOCK_READ(A, F, ...)                              \
-(void)((void (*)(__VA_ARGS__)){P99_PASTE2(F, _signature)});    \
+(void)((void (*)(auth_sock*)){ F });                           \
 P99_VASSIGNS((A)->mes, __VA_ARGS__);                           \
 (A)->len -= P99_NARG(__VA_ARGS__);                             \
 (A)->mes += P99_NARG(__VA_ARGS__)
@@ -229,7 +227,7 @@ addr_t getpeer(auth_sock *Arg);
  ** null pointer otherwise.
  **/
 P99_DEFARG_DOCU(hostname)
-inline
+static_inline
 char const*
 hostname(char buffer[],   /*!< [out] defaults to a temporary */
          size_t len       /*!< [in] maximum length of the name (HOST_NAME_MAX) */

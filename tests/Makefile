@@ -49,7 +49,7 @@ LIBDIR	:= $(join $(dir ${CURDIR}),lib)
 ################
 OPT     = -O0
 IPATH   = -I. -I../include -I../p99
-OBJOPT  = -std=c99 -pedantic -Wall -Wstrict-prototypes ${OPT}
+OBJOPT  = -std=c99 -Wall -Wstrict-prototypes ${OPT}
 EXEOPT  = -lorwl ${OPT}
 LPATH   = -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR}
 COPY = "all rights reserved, "

@@ -48,7 +48,7 @@ void orwl_host_connect(orwl_host *th, orwl_host *q);
 void orwl_host_disconnect(orwl_host *th);
 
 #ifndef DOXYGEN
-inline
+static_inline
 P99_PROTOTYPE(orwl_host*, orwl_host_init, orwl_host *, in_addr_t, in_port_t, size_t);
 #define orwl_host_init(...) P99_CALL_DEFARG(orwl_host_init, 4, __VA_ARGS__)
 #define orwl_host_init_defarg_1() P99_0(in_addr_t)
@@ -58,7 +58,7 @@ P99_PROTOTYPE(orwl_host*, orwl_host_init, orwl_host *, in_addr_t, in_port_t, siz
 
 DOCUMENT_INIT(orwl_host)
 P99_DEFARG_DOCU(orwl_host_init)
-inline
+static_inline
 orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
                           in_addr_t addr, /*!< [in] defaults to the null address */
                           in_port_t port, /*!< [in] defaults to 0 */
@@ -77,7 +77,7 @@ orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
 }
 
 DOCUMENT_DESTROY(orwl_host_init)
-inline
+static_inline
 void orwl_host_destroy(orwl_host *th) {
   orwl_host_disconnect(th);
 }

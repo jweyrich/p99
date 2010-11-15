@@ -58,7 +58,7 @@ struct orwl_mirror {
 #define ORWL_MIRROR_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .local = ORWL_WQ_INITIALIZER }
 
 #ifndef DOXYGEN
-inline
+static_inline
 P99_PROTOTYPE(orwl_mirror *, orwl_mirror_init, orwl_mirror *, orwl_endpoint, orwl_endpoint);
 
 #define orwl_mirror_init(...) P99_CALL_DEFARG(orwl_mirror_init, 3, __VA_ARGS__)
@@ -66,7 +66,7 @@ P99_PROTOTYPE(orwl_mirror *, orwl_mirror_init, orwl_mirror *, orwl_endpoint, orw
 
 DOCUMENT_INIT(orwl_mirror)
 P99_DEFARG_DOCU(orwl_mirror_init)
-inline
+static_inline
 orwl_mirror *orwl_mirror_init(orwl_mirror *rq, /*!< [out] the object to iniialize */
                               orwl_endpoint h, /*!< [in] local, defaults to a temp variable */
                               orwl_endpoint t  /*!< [in] remote, defaults to a temp variable */
@@ -84,7 +84,7 @@ P99_DECLARE_DEFARG(orwl_mirror_init, , , );
 #define orwl_mirror_init_defarg_2() ((orwl_endpoint){ .index = 0 })
 
 DOCUMENT_DESTROY(orwl_mirror)
-inline
+static_inline
 void orwl_mirror_destroy(orwl_mirror *rq) {
   orwl_wq_destroy(&rq->local);
   orwl_endpoint_destroy(&rq->here);
@@ -168,7 +168,7 @@ struct orwl_handle {
 #define ORWL_HANDLE_INITIALIZER { .rq = 0, .wh = 0, .svrID = P99_0(uint64_t) }
 
 DOCUMENT_INIT(orwl_handle)
-inline
+static_inline
 orwl_handle *orwl_handle_init(orwl_handle *rh) {
   if (!rh) return 0;
   *rh = (orwl_handle const)ORWL_HANDLE_INITIALIZER;
@@ -176,7 +176,7 @@ orwl_handle *orwl_handle_init(orwl_handle *rh) {
 }
 
 DOCUMENT_DESTROY(orwl_handle)
-inline
+static_inline
 void orwl_handle_destroy(orwl_handle *rh) {
   orwl_handle_init(rh);
 }
@@ -266,7 +266,7 @@ P99_PROTOTYPE(orwl_state, orwl_cancel, orwl_handle*, rand48_t*);
  ** acquired.
  ** @memberof orwl_handle
  **/
-inline
+static_inline
 bool orwl_inclusive(orwl_handle* rh) {
   return (rh && rh->wh && rh->wh->svrID);
 }
@@ -276,7 +276,7 @@ bool orwl_inclusive(orwl_handle* rh) {
  ** be fulfilled
  ** @memberof orwl_handle
  **/
-inline
+static_inline
 orwl_state orwl_acquire(orwl_handle* rh) {
   if (!rh) return orwl_invalid;
   return orwl_wh_acquire(rh->wh, 0);
@@ -287,7 +287,7 @@ orwl_state orwl_acquire(orwl_handle* rh) {
  ** be fulfilled
  ** @memberof orwl_handle
  **/
-inline
+static_inline
 orwl_state orwl_test(orwl_handle* rh) {
   if (!rh) return orwl_invalid;
   return orwl_wh_test(rh->wh, 0);
@@ -314,7 +314,7 @@ orwl_state orwl_test(orwl_handle* rh) {
  ** lock and / or the data should only be read.
  **
  **/
-inline
+static_inline
 uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
   uint64_t* ret = 0;
   if (rh)
@@ -339,7 +339,7 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
  ** @see orwl_map for the case that the lock that is hold is a write
  ** lock the data and should also be written to.
  **/
-inline
+static_inline
 uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len) {
   uint64_t* ret = 0;
   if (rh)
@@ -366,7 +366,7 @@ uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len) {
  ** @pre The handle @a rh must hold a write (exclusive) lock on the
  ** location to which it is linked. 
  **/
-inline
+static_inline
 void orwl_resize(orwl_handle* rh, size_t data_len) {
   if (orwl_test(rh) > orwl_valid) {
     assert(rh->wh);
@@ -374,9 +374,14 @@ void orwl_resize(orwl_handle* rh, size_t data_len) {
   }
 }
 
+DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
+
 DECLARE_ORWL_REGISTER(orwl_wh_acquire);
 DECLARE_ORWL_REGISTER(orwl_wh_release);
 DECLARE_ORWL_REGISTER(orwl_wh_cancel);
 
+DECLARE_ORWL_REGISTER_ALIAS(orwl_acquire, orwl_handle);
+DECLARE_ORWL_REGISTER_ALIAS(orwl_release, orwl_handle);
+DECLARE_ORWL_REGISTER_ALIAS(orwl_cancel, orwl_handle);
 
 #endif 	    /* !ORWL_REMOTE_QUEUE_H_ */

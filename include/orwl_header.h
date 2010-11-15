@@ -20,12 +20,12 @@ enum { header_t_els = 3 };
 
 typedef uint64_t header_t[header_t_els];
 
-#define ORWL_HTON64(VAL)                                \
-(((uint64_t)htonl((uint32_t)(VAL)))                     \
+#define ORWL_HTON64(VAL)                                       \
+(((uint64_t)htonl((uint32_t)(VAL)))                            \
  | (((uint64_t)htonl((uint32_t)((VAL) >> 32))) << 32))
 
-#define ORWL_NTOH64(VAL)                                \
-(((uint64_t)ntohl((uint32_t)(VAL)))                     \
+#define ORWL_NTOH64(VAL)                                       \
+(((uint64_t)ntohl((uint32_t)(VAL)))                            \
  | (((uint64_t)ntohl((uint32_t)((VAL) >> 32))) << 32))
 
 

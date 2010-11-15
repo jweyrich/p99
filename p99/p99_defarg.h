@@ -185,7 +185,7 @@ P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
 P99_IF_EMPTY(X)                                                         \
 ()                                                                      \
 (                                                                       \
- inline                                                                 \
+ static_inline                                                          \
  P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void) { \
    P99_PASTE3(NAME, _prototype_, N) ret = (X);                          \
    return ret;                                                          \
@@ -358,8 +358,8 @@ P99_MACRO_END(NAME, _declare_defarg)
  **/
 #define P99_CALL_VA_ARG(NAME, M, T, ...) NAME(__VA_ARGS__)
 #else
-#define P99_CALL_VA_ARG(NAME, M, T, ...)                                \
-P99_IF_DEC_GT(P99_NARG(__VA_ARGS__), M)                                 \
+#define P99_CALL_VA_ARG(NAME, M, T, ...)                                                                   \
+P99_IF_DEC_GT(P99_NARG(__VA_ARGS__), M)                                                                    \
 (NAME(P00__DEFARGS(NAME, M, P99_SELS(M, __VA_ARGS__)), P00_CALL_VA_ARG(NAME, T, P99_SKP(M, __VA_ARGS__)))) \
 (P99_CALL_DEFARG(NAME, M, __VA_ARGS__))
 #endif

@@ -37,7 +37,7 @@ GLOBVARS=environ stderr stdout stdin in6addr_any
 ################
 IPATH   = -I.  -I../include -I../p99
 OPT	= -O3
-OBJOPT  = -std=c99 -pedantic -Wall -Wstrict-prototypes ${OPT}
+OBJOPT  = -std=c99 -Wall -Wstrict-prototypes ${OPT}
 EXEOPT  = -lpthread -lm
 LPATH   = -L.
 

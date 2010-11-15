@@ -80,7 +80,7 @@ struct orwl_endpoint {
       }
 
 #ifndef DOXYGEN
-inline
+static_inline
 P99_PROTOTYPE(addr_t*, addr_t_init, addr_t *, in_addr_t);
 #define addr_t_init(...) P99_CALL_DEFARG(addr_t_init, 2, __VA_ARGS__)
 #define addr_t_init_defarg_1() P99_0(in_addr_t)
@@ -88,7 +88,7 @@ P99_PROTOTYPE(addr_t*, addr_t_init, addr_t *, in_addr_t);
 
 DOCUMENT_INIT(addr_t)
 P99_DEFARG_DOCU(addr_t)
-inline
+static_inline
 addr_t* addr_t_init(addr_t *A,  /*!< the object to initialize */
                     in_addr_t I0 /*!< defaults to the null address */
                     ) {
@@ -107,7 +107,7 @@ addr_t* addr_t_init(addr_t *A,  /*!< the object to initialize */
  **
  ** @memberof addr_t
  **/
-inline
+static_inline
 struct in_addr addr2net(addr_t const*A) {
   struct in_addr ret = {
     .s_addr = ((!A->a[0]
@@ -124,7 +124,7 @@ struct in_addr addr2net(addr_t const*A) {
  **
  ** @memberof addr_t
  **/
-inline
+static_inline
 struct in6_addr addr2net6(addr_t const*A) {
   struct in6_addr ret = { .s6_addr[0] = 0 };
   memcpy(ret.s6_addr, A->aaaa, 16);
@@ -134,7 +134,7 @@ struct in6_addr addr2net6(addr_t const*A) {
 /**
  ** @memberof port_t
  **/
-inline
+static_inline
 in_port_t port2net(port_t const*A) {
   return A->p;
 }
@@ -142,25 +142,25 @@ in_port_t port2net(port_t const*A) {
 /**
  ** @memberof port_t
  **/
-inline
+static_inline
 uint64_t port2host(port_t const*A) {
   return ntohs((uint16_t)(A->p));
 }
 
-inline
+static_inline
 port_t net2port(in_port_t P) {
   port_t ret = { .p = P };
   return ret;
 }
 
-inline
+static_inline
 port_t host2port(uint64_t A) {
   port_t ret = { .p = htons(A) };
   return ret;
 }
 
 #ifndef DOXYGEN
-inline
+static_inline
 P99_PROTOTYPE(port_t*, port_t_init, port_t *, in_port_t);
 #define port_t_init(...) P99_CALL_DEFARG(port_t_init, 2, __VA_ARGS__)
 #define port_t_init_defarg_1() P99_0(in_port_t)
@@ -168,7 +168,7 @@ P99_PROTOTYPE(port_t*, port_t_init, port_t *, in_port_t);
 
 DOCUMENT_INIT(port_t)
 P99_DEFARG_DOCU(port_t)
-inline
+static_inline
 port_t* port_t_init(port_t *A,   /*!< the object to initialize */
                     in_port_t P  /*!< defaults to 0 */
                     ) {
@@ -178,7 +178,7 @@ port_t* port_t_init(port_t *A,   /*!< the object to initialize */
 }
 
 #ifndef DOXYGEN
-inline
+static_inline
 P99_PROTOTYPE(orwl_endpoint*, orwl_endpoint_init, orwl_endpoint*, in_addr_t, in_port_t, uint64_t);
 #define orwl_endpoint_init(...) P99_CALL_DEFARG(orwl_endpoint_init, 4, __VA_ARGS__)
 #define orwl_endpoint_init_defarg_1() P99_0(in_addr_t)
@@ -188,7 +188,7 @@ P99_PROTOTYPE(orwl_endpoint*, orwl_endpoint_init, orwl_endpoint*, in_addr_t, in_
 
 DOCUMENT_INIT(orwl_endpoint)
 P99_DEFARG_DOCU(orwl_endpoint_init)
-inline
+static_inline
 orwl_endpoint* orwl_endpoint_init
 (orwl_endpoint *endpoint, /*!< the object to initialize */
  in_addr_t addr,          /*!< defaults to the null address */
@@ -203,7 +203,7 @@ orwl_endpoint* orwl_endpoint_init
 }
 
 DOCUMENT_DESTROY(orwl_endpoint)
-inline
+static_inline
 void orwl_endpoint_destroy(orwl_endpoint *endpoint) {
   P99_TZERO(*endpoint);
   endpoint->index = P99_TMAX(uint64_t);
@@ -225,7 +225,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, /*!< [in] the object to
 P99_PROTOTYPE(char const*, orwl_endpoint_print, orwl_endpoint const*, char*);
 #define orwl_endpoint_print(...) P99_CALL_DEFARG(orwl_endpoint_print, 2, __VA_ARGS__)
 P99_DECLARE_DEFARG(orwl_endpoint_print, , );
-#define orwl_endpoint_print_defarg_1() (P99_LVAL(char[128]))
+#define orwl_endpoint_print_defarg_1() P99_LVAL(char[128])
 #endif
 
 bool orwl_send_(int fd, uint64_t const*mess, size_t len, uint64_t remo);

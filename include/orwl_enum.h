@@ -77,26 +77,25 @@ enum P99_PASTE2(p00_decl_enum_, T) { P99_PASTE3(p00_, T, _concat_len) = sizeof(P
  **
  ** Use this with DECLARE_ENUM(), which see.
  **/
-#define DEFINE_ENUM(T)                                                  \
-char const* P99_PASTE2(T, _getname)(T x) {                              \
-  unsigned pos = x;                                                     \
-  INIT_ONCE(T);                                                         \
+#define DEFINE_ENUM(T)                                                                                  \
+char const* P99_PASTE2(T, _getname)(T x) {                                                              \
+  unsigned pos = x;                                                                                     \
+  INIT_ONCE(T);                                                                                         \
   return (pos < P99_PASTE2(T, _amount)) ? P99_PASTE3(p00_, T, _names)[pos] : "((" #T ")unknown value)"; \
-}                                                                       \
-/* Ensure that the table is generated in this object file */            \
-char const* P99_PASTE3(p00_, T, _names)[P99_PASTE2(T, _amount)] = { 0 }; \
-DEFINE_ONCE(T) {                                                        \
-  char *head = P99_PASTE3(p00_, T, _concat);                            \
-  for (T i = P99_PASTE2(T, _min); i < P99_PASTE2(T, _max); ++i) {       \
-    P99_PASTE3(p00_, T, _names)[i] = head;                              \
-    head = index(head, ',');                                            \
-    for (; *head == ',' || *head == ' '; ++head)                        \
-      *head = '\0';                                                     \
-  }                                                                     \
-  P99_PASTE3(p00_, T, _names)[P99_PASTE2(T, _max)] = head;              \
-}                                                                       \
-/* Ensure that the function symbol is generated in this object file */  \
-char const* P99_PASTE2(T, _getname)(T x)
+}                                                                                                       \
+/* Ensure that the table is generated in this object file */                                            \
+char const* P99_PASTE3(p00_, T, _names)[P99_PASTE2(T, _amount)] = { 0 };                                \
+DEFINE_ONCE(T) {                                                                                        \
+  char *head = P99_PASTE3(p00_, T, _concat);                                                            \
+  for (T i = P99_PASTE2(T, _min); i < P99_PASTE2(T, _max); ++i) {                                       \
+    P99_PASTE3(p00_, T, _names)[i] = head;                                                              \
+    head = index(head, ',');                                                                            \
+    for (; *head == ',' || *head == ' '; ++head)                                                        \
+      *head = '\0';                                                                                     \
+  }                                                                                                     \
+  P99_PASTE3(p00_, T, _names)[P99_PASTE2(T, _max)] = head;                                              \
+}                                                                                                       \
+P99_MACRO_END(define_enum_, T)
 
 
 /**

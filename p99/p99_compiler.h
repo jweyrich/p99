@@ -140,6 +140,17 @@
 # define P99_COMPILER 0x0U
 #endif
 
+/* intel is cheating about the gcc abi they support */
+#if P99_COMPILER & P99_COMPILER_INTEL
+# if (__ICC < 1300) && (__GNUC__ == 4) && (__GNUC_MINOR__ > 2)
+#  undef __GNUC_MINOR__
+#  define __GNUC_MINOR__ 2
+#  undef __GNUC_PATCHLEVEL__
+#  define __GNUC_PATCHLEVEL__ 0
+# endif
+#endif
+
+
 # ifdef __GNUC__
 #  define P00_GCC_VERSION(A, B, C) P00_GCC_VERSION_(A, B, C)
 #  define P00_GCC_VERSION_(A, B, C) A ## B ## C ## UL
@@ -193,7 +204,10 @@ signed p00_trailing_comma_in_initializer__(void) {
 #if P99_COMPILER & P99_COMPILER_CLANG
 # define inline __attribute__((always_inline)) __inline__
 # define p99_inline __attribute__((always_inline)) __inline__
-#elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64 | P99_COMPILER_INTEL)
+#elif P99_COMPILER & P99_COMPILER_INTEL
+# define p99_inline static __inline__
+# define inline __inline__
+#elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 /* gcc prior to version 4.3 has the inline keyword but with slightly
    different semantics.
    Be sure to allways inline functions in this cases.

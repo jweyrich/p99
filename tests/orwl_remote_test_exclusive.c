@@ -32,6 +32,7 @@ typedef struct {
   char* info;
 } cb_t;
 
+static
 cb_t* cb_t_init(cb_t *cb, size_t m, size_t p, char* i) {
   cb->mynum = m;
   cb->phase = p;
@@ -39,6 +40,7 @@ cb_t* cb_t_init(cb_t *cb, size_t m, size_t p, char* i) {
   return cb;
 }
 
+static
 P99_PROTOTYPE(cb_t*, cb_t_init, cb_t*, size_t, size_t, char*);
 P99_DEFARG_DOCU(cb_t_init)
 #define cb_t_init(...) P99_CALL_DEFARG(cb_t_init, 4, __VA_ARGS__)
@@ -46,6 +48,7 @@ P99_DECLARE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), P99_0(char*));
 P99_DEFINE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), P99_0(char*));
 
 
+static
 void cb_t_destroy(cb_t *cb) {
   /* empty */
 }
@@ -66,24 +69,28 @@ typedef struct _arg_t {
   char* info;
 } arg_t;
 
+static
 arg_t* arg_t_init(arg_t *arg, size_t def) {
   arg->mynum = def;
   arg->phases = def;
   return arg;
 }
 
+static
 P99_PROTOTYPE(arg_t*, arg_t_init, arg_t *, size_t);
 #define arg_t_init(...) P99_CALL_DEFARG(arg_t_init, 2, __VA_ARGS__)
 P99_DECLARE_DEFARG(arg_t_init, , P99_0(size_t));
 P99_DEFINE_DEFARG(arg_t_init, , P99_0(size_t));
 
 
+static
 void arg_t_destroy(arg_t *arg) {
 }
 
 DECLARE_NEW_DELETE(arg_t);
 DEFINE_NEW_DELETE(arg_t);
 
+static
 DECLARE_THREAD(arg_t);
 
 DEFINE_THREAD(arg_t) {

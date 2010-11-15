@@ -16,6 +16,11 @@
 #include "p99_for.h"
 #include "p99_int.h"
 
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
+#pragma GCC diagnostic ignored "-Wunused-value"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
+
 int main(int argc, char **argv) {
   P99_INTEGER_NORMALIZE(long int) aa = P99_INIT;
   P99_INTEGER_NORMALIZE(long long int volatile) bb = P99_INIT;
