@@ -144,6 +144,13 @@
  ** @author <a href="http://www.loria.fr/~gustedt/">Jens Gustedt</a>
  ** @date 2010
  **
+ ** @subsection version Version
+ **
+ ** The version that this documentation describes can be identified
+ ** via the macros ::P99_VERSION_DATE, namely $Format:%cd$. It also is
+ ** tagged with an hexadecimal ID tag that is given in
+ ** ::P99_VERSION_ID, namely $Format:%H$.
+ **
  ** @subsection copyright Copyright
  ** Copyright &copy; 2010 Jens Gustedt, INRIA, France, http://www.inria.fr/
  **
@@ -152,7 +159,7 @@
  ** @subsection license License
  **
  ** <pre>
- **@htmlinclude LICENSE-QPL.txt
+ **@verbinclude LICENSE-QPL.txt
  ** </pre>
  **/
 
@@ -268,6 +275,14 @@
  ** #define TOTO_INITIALIZER { .a = 0.0; .b = 0u }
  ** @endcode
  **
+ ** In case that you want just the default behavior of C, namely that
+ ** all fields are recursively initialized with @c 0 then you could
+ ** just use
+ ** @code
+ ** #define TOTO_INITIALIZER P99_INIT
+ ** @endcode
+ ** to make this choice explicit.
+ **
  ** Such initializers can be easily assembled together
  ** @code
  ** typedef struct tutu tutu;
@@ -275,7 +290,7 @@
  ** #define TUTU_INITIALIZER(VAL) { .A = TOTO_INITIALIZER, .c = (VAL) }
  ** @endcode
  **
- ** As you can see in this example, INITIALIZER can be a `normal'
+ ** As you can see in this example, @c INITIALIZER can be a `normal'
  ** macro or a function like macro.
  **
  ** For dynamic initialization we assume that an `init' function
@@ -284,9 +299,14 @@
  ** - tests for the validity of that pointer, and
  ** - returns exactly the same pointer
  ** @code
+ ** toto* toto_init(toto* t) {
+ **          // assign from a compound literal
+ **   if (t) *t = (toto)TOTO_INITIALIZER;
+ **   return t;
+ ** }
  ** tutu* tutu_init(tutu* t, bool val) {
  **   if (t) {
- **     t->A = (toto)TOTO_INITIALIZER;
+ **     toto_init(&(t->A));
  **     t->c = val;
  **   }
  **   return t;
@@ -324,7 +344,7 @@
  **
  ** @code
  ** #define hostname(...) P99_CALL_DEFARG(hostname, 2, __VA_ARGS__)
- ** #define hostname_defarg_0() (char[HOSTNAME_MAX]){ 0 }
+ ** #define hostname_defarg_0() P99_LVAL(char[HOSTNAME_MAX])
  ** #define hostname_defarg_1() HOST_NAME_MAX
  ** @endcode
  **
@@ -429,7 +449,7 @@
  **
  ** As we have seen in the example (a) is computed in the context of
  ** the caller. This let us simply use a temporary (here a local
- ** compound literal) that was thus valid in that context.
+ ** @ref compound "compound literal") that was thus valid in that context.
  **
  ** To obtain the same behavior as for C++, namely to provide a
  ** default argument that is evaluated at the place of declaration and
@@ -1182,6 +1202,15 @@
  **
  ** Using the compound literal here has the advantage that no other
  ** non-const reference to the temporary is exposed.
+ **
+ ** The compound literal syntax is not always very easy to read in
+ ** fact it might even hurt your eyes. P99 gives you a shortcut for
+ ** compound literals that are initialized from the all @c 0
+ ** initializer. With that the above could have been written:
+ **
+ ** @code
+ ** char const*const hui = memset(P99_LVAL(char[256]), 'a', 255);
+ ** @endcode
  **
  ** @section hide Macros that hide a function
  **

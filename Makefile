@@ -1,12 +1,10 @@
 
 DIRS = ./include ./p99 ./lib ./tests
 
-P99_SOURCES = ./p99/*.h ./p99/LICENSE ./tests/p99*.c
+P99_SOURCES = ./p99/*.h ./tests/test-p99*.c
 P99_DOXY = ./doxy/p99-doxygen
 
 P99FILES =  ${P99_SOURCES} ${P99_DOXY}
-
-P99DISTRI = p99.tgz p99.zip p99-html.tgz p99-html.zip p99-refman.pdf
 
 ORWL_SOURCES = ./include/*.h ./lib/*.c ./lib/Makefile ./tests/orwl*.c ./tests/Makefile 
 #ORWL_DOXY = ./doxy/orwl-doxygen
@@ -19,6 +17,18 @@ ORWLDISTRI = orwl.tgz orwl.zip orwl-html.tgz orwl-html.zip orwl-refman.pdf
 CLEAN = ${patsubst %,%/clean,${DIRS}}
 DISTCLEAN = ${patsubst %,%/distclean,${DIRS}}
 TIDY = ${patsubst %,%/tidy,${DIRS}}
+
+DATE := ${shell date --rfc-3339=date}
+P99_RELEASE := p99-${DATE}
+P99_ARCHIVE := gforge-p99
+P99_PREFIX := ${P99_ARCHIVE}/versions/${P99_RELEASE}
+
+P99DISTRI = ${P99_PREFIX}.tgz ${P99_PREFIX}.zip ${P99_PREFIX}-html.tgz ${P99_PREFIX}-html.zip ${P99_PREFIX}-refman.pdf p99-links
+
+P99_GFORGE = shell.gforge.inria.fr
+P99_HTDOCS = /home/groups/p99/htdocs
+
+TAROPT := --dereference --owner=root --group=root --transform 's|^|${P99_RELEASE}/|'
 
 .PHONY : target clean ${DIRS} doxygen ${CLEAN} ${DISTCLEAN} ${TIDY}
 
@@ -46,21 +56,35 @@ doxygen-orwl :
 doxygen-p99 :
 	doxygen Doxyfile-p99
 
-.PHONY : ${P99DISTRI} ${ORWLDISTRI}
+.PHONY : ${P99DISTRI} ${ORWLDISTRI} 
 
 p99-distribution : ${P99DISTRI}
 
-p99.tgz :
-	git archive --format=tar HEAD ${P99FILES} | gzip -9 > $@
+${P99_PREFIX}.tar :
+	git archive -v --format=tar --prefix=${P99_RELEASE}/ HEAD ${P99FILES} -o $@
+	tar --label ${P99_RELEASE} ${TAROPT} -rf $@ p99/LICENSE
 
-p99.zip :
-	git archive --format=zip -9 -o $@ HEAD ${P99FILES}
+${P99_PREFIX}.tgz : ${P99_PREFIX}.tar
+	gzip -9 $<
+	mv $<.gz $@
 
-p99-html.tgz p99-html.zip p99-refman.pdf : doxygen-p99
+${P99_PREFIX}.zip : ${P99_PREFIX}.tgz
+	tar xzf $<
+	zip -r $@ --move ${P99_RELEASE}
+
+${P99_PREFIX}-html.tgz ${P99_PREFIX}-html.zip ${P99_PREFIX}-refman.pdf : doxygen-p99
 	make -C p99-latex refman.pdf
-	cp p99-latex/refman.pdf p99-refman.pdf
-	tar -czf p99-html.tgz p99-html
-	zip -q -r p99-html p99-html/
+	cp p99-latex/refman.pdf ${P99_PREFIX}-refman.pdf
+	tar -czf ${P99_PREFIX}-html.tgz ${TAROPT} p99-html
+	tar xzf ${P99_PREFIX}-html.tgz
+	zip -r ${P99_PREFIX}-html.zip --move ${P99_RELEASE}
+
+p99-links :
+	ln -fs  versions/${P99_RELEASE}.tgz ${P99_ARCHIVE}/p99.tgz
+	ln -fs  versions/${P99_RELEASE}.zip ${P99_ARCHIVE}/p99.zip
+	ln -fs  versions/${P99_RELEASE}-htlm.tgz ${P99_ARCHIVE}/p99-html.tgz
+	ln -fs  versions/${P99_RELEASE}-html.zip ${P99_ARCHIVE}/p99-html.zip
+	ln -fs  versions/${P99_RELEASE}-refman.pdf ${P99_ARCHIVE}/p99-refman.pdf
 
 orwl-distribution : ${ORWLDISTRI}
 
@@ -76,6 +100,14 @@ orwl-html.tgz orwl-html.zip orwl-refman.pdf : doxygen-orwl
 	tar -czf orwl-html.tgz orwl-html
 	zip -q -r orwl-html orwl-html/
 
+p99-transfer :
+	-rsync -az --no-g --no-p --progress -e 'ssh -ax' ${P99_ARCHIVE}/ ${P99_GFORGE}:${P99_HTDOCS}
+
+p99-html-transfer :
+	-rsync -az --no-g --no-p --progress -e 'ssh -ax' p99-html/ ${P99_GFORGE}:${P99_HTDOCS}/p99-html-new
+	ssh ${P99_GFORGE} mv ${P99_HTDOCS}/p99-html ${P99_HTDOCS}/p99-html-bak
+	ssh ${P99_GFORGE} mv ${P99_HTDOCS}/p99-html-new ${P99_HTDOCS}/p99-html
+	ssh ${P99_GFORGE} rm -rf ${P99_HTDOCS}/p99-html-bak
 
 ./include :
 
