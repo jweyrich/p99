@@ -12,6 +12,7 @@
 /* particular purpose.                                                       */
 /*                                                                           */
 #include "orwl_thread.h"
+#include "orwl_sem.h"
 #include "p99_posix_default.h"
 
 size_t const orwl_mynum = ~(size_t)0;
@@ -161,8 +162,8 @@ int orwl_pthread_create_joinable(pthread_t *restrict thread,
  */
 
 typedef struct {
-  sem_t semCaller;
-  sem_t semCalled;
+  orwl_sem semCaller;
+  orwl_sem semCalled;
   start_routine_t start_routine;
   void *arg;
 } orwl__routine_arg;
@@ -173,8 +174,8 @@ orwl__routine_arg* orwl__routine_arg_init(orwl__routine_arg *rt,
                                               start_routine_t start_routine,
                                               void* arg) {
   if (!rt) return 0;
-  sem_init(&rt->semCaller, 0, 0);
-  sem_init(&rt->semCalled, 0, 0);
+  orwl_sem_init(&rt->semCaller, 0u);
+  orwl_sem_init(&rt->semCalled, 0u);
   rt->start_routine = start_routine;
   rt->arg = arg;
   return rt;
@@ -205,11 +206,11 @@ void *detached_wrapper(void *routine_arg) {
   void *ret = 0;
   ACCOUNT(count) {
     /* tell the creator that we are in charge */
-    sem_post(&Routine_Arg->semCalled);
+    orwl_sem_post(&Routine_Arg->semCalled);
     ret = start_routine(arg);
   }
   /* wait if the creator might still be needing the semaphore */
-  sem_wait_nointr(&Routine_Arg->semCaller);
+  orwl_sem_wait(&Routine_Arg->semCaller);
   /* Be careful to eliminate all garbage that the wrapping has
      generated. */
   orwl__routine_arg_delete(Routine_Arg);
@@ -230,9 +231,9 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
                            detached_wrapper,
                            Routine_Arg);
   /* Wait until the routine is accounted for */
-  sem_wait_nointr(&Routine_Arg->semCalled);
+  orwl_sem_wait(&Routine_Arg->semCalled);
   /* Notify that Routine_Arg may safely be deleted thereafter */
-  sem_post(&Routine_Arg->semCaller);
+  orwl_sem_post(&Routine_Arg->semCaller);
   return ret;
 }
 
