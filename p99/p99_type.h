@@ -1,3 +1,15 @@
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* (C) copyright  2010 Jens Gustedt, INRIA, France                           */
+/*                                                                           */
+/* This file is free software; it is part of the P99 project.                */
+/* You can redistribute it and/or modify it under the terms of the QPL as    */
+/* given in the file LICENSE. It is distributed without any warranty;        */
+/* without even the implied warranty of merchantability or fitness for a     */
+/* particular purpose.                                                       */
+/*                                                                           */
 /*
 ** p99_type.h
 ** 
@@ -21,7 +33,7 @@
  ** This declaration should also be suitable to be included into a C++
  ** source.
  **/
-#define DECLARE_STRUCT(NAME) typedef struct NAME NAME
+#define P99_DECLARE_STRUCT(NAME) typedef struct NAME NAME
 
 
 /**
@@ -34,7 +46,7 @@
  ** This declaration should also be suitable to be included into a C++
  ** source.
  **/
-#define DECLARE_UNION(NAME) typedef union NAME NAME
+#define P99_DECLARE_UNION(NAME) typedef union NAME NAME
 
 
 #endif 	    /* !P99_TYPE_H_ */

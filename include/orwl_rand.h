@@ -19,7 +19,7 @@
 #include "orwl_enum.h"
 
 
-DECLARE_STRUCT(rand48_t);
+P99_DECLARE_STRUCT(rand48_t);
 
 uint64_t orwl_mix(uint64_t a, uint64_t b);
 

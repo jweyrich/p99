@@ -16,17 +16,17 @@
 
 #include "orwl_rand.h"
 
-DECLARE_STRUCT(orwl_server);
-DECLARE_STRUCT(auth_sock);
-DECLARE_STRUCT(orwl_mirror);
-DECLARE_STRUCT(orwl_wq);
-DECLARE_STRUCT(orwl_endpoint);
-DECLARE_STRUCT(orwl_host);
-DECLARE_UNION(addr_t);
-DECLARE_UNION(port_t);
-DECLARE_STRUCT(orwl_wh);
-DECLARE_STRUCT(orwl_handle2);
-DECLARE_STRUCT(orwl_handle);
+P99_DECLARE_STRUCT(orwl_server);
+P99_DECLARE_STRUCT(auth_sock);
+P99_DECLARE_STRUCT(orwl_mirror);
+P99_DECLARE_STRUCT(orwl_wq);
+P99_DECLARE_STRUCT(orwl_endpoint);
+P99_DECLARE_STRUCT(orwl_host);
+P99_DECLARE_UNION(addr_t);
+P99_DECLARE_UNION(port_t);
+P99_DECLARE_STRUCT(orwl_wh);
+P99_DECLARE_STRUCT(orwl_handle2);
+P99_DECLARE_STRUCT(orwl_handle);
 
 /**
  ** @brief Store IPv4 and IPv6 addresses in the same structure.

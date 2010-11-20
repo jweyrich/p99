@@ -19,7 +19,7 @@
 #include "p99_id.h"
 #include "orwl_document.h"
 
-DECLARE_STRUCT(orwl_register);
+P99_DECLARE_STRUCT(orwl_register);
 typedef orwl_register const*const orwl_domain;
 typedef  void (*orwl_plain)(void*);
 
