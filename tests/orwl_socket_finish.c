@@ -108,4 +108,6 @@ int main(int argc, char **argv) {
   report(1, "%s %s %s %s %s", P99_PRI(char, X,), P99_PRI(short, X,), P99_PRI(signed, X,), P99_PRI(long, X,), P99_PRI(long long, X,));
   report(1, "%zu %zu %zu %zu %zu", sizeof(char), sizeof(short), sizeof(signed), sizeof(long), sizeof(long long));
   mfputs(stderr, P99_JOIN("aa", "BB", "CC "), PRIX(37ull), " ", PRId(37), " ", PRIo(37), " ", PRIp(argv), "\n");
+  orwl_posix_init();
+  orwl_posix_print();
 }

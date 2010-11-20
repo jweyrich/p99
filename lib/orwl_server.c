@@ -92,6 +92,7 @@ DEFINE_NEW_DELETE(orwl_server);
  **/
 DEFINE_THREAD(orwl_server) {
   report(0, "starting server");
+  orwl_posix_init();
   char const* volatile errorstr = 0;
   Arg->fd_listen = socket(AF_INET);
   if (P99_LIKELY(Arg->fd_listen >= 0)) {
