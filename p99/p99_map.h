@@ -20,6 +20,7 @@
  **/
 
 #include "p99_c99.h"
+#include "p99_type.h"
 
 /** @addtogroup statement_lists Produce C99 statements or expression lists
  **
@@ -59,7 +60,7 @@
  **/
 #define P99_ADDS(...) P00_ADDS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
-typedef struct p00_strcat_state p00_strcat_state;
+P99_DECLARE_STRUCT(p00_strcat_state);
 
 struct p00_strcat_state {
   char* buffer;

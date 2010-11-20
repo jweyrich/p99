@@ -16,6 +16,9 @@
 
 #include "orwl_posix.h"
 
+P99_DECLARE_STRUCT(orwl__once_upon_cont);
+P99_DECLARE_STRUCT(orwl__once_cont);
+
 struct orwl__once_upon_cont {
   void (*const init)(void);
   pthread_mutex_t mut;

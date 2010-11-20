@@ -13,6 +13,7 @@
 #ifndef   	P99_BLOCK_H_
 # define   	P99_BLOCK_H_
 
+#include "p99_type.h"
 #include "p99_int.h"
 
 /**
@@ -317,7 +318,7 @@ enum p99_unwind {
 };
 
 
-typedef struct p00_jmp_buf p00_jmp_buf;
+P99_DECLARE_STRUCT(p00_jmp_buf);
 
 struct p00_jmp_buf {
   bool volatile returning;
@@ -326,7 +327,7 @@ struct p00_jmp_buf {
 
 #define P00_JMP_BUF_INITIALIZER P99_INIT
 
-typedef struct p00_inhibitor p00_inhibitor;
+P99_DECLARE_STRUCT(p00_inhibitor);
 
 struct p00_inhibitor {
   int a;
