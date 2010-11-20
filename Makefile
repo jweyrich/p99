@@ -21,14 +21,14 @@ TIDY = ${patsubst %,%/tidy,${DIRS}}
 DATE := ${shell date --rfc-3339=date}
 P99_RELEASE := p99-${DATE}
 P99_ARCHIVE := gforge-p99
-P99_PREFIX := ${P99_ARCHIVE}/versions/${P99_RELEASE}
+P99_PREFIX := ${shell pwd}/${P99_ARCHIVE}/versions/${P99_RELEASE}
 
 P99DISTRI = ${P99_PREFIX}.tgz ${P99_PREFIX}.zip ${P99_PREFIX}-html.tgz ${P99_PREFIX}-html.zip ${P99_PREFIX}-refman.pdf p99-links
 
 P99_GFORGE = shell.gforge.inria.fr
 P99_HTDOCS = /home/groups/p99/htdocs
 
-TAROPT := --dereference --owner=root --group=root --transform 's|^|${P99_RELEASE}/|'
+TAROPT := --dereference --owner=root --group=root
 
 .PHONY : target clean ${DIRS} doxygen ${CLEAN} ${DISTCLEAN} ${TIDY}
 
@@ -62,7 +62,7 @@ p99-distribution : ${P99DISTRI}
 
 ${P99_PREFIX}.tar :
 	git archive -v --format=tar --prefix=${P99_RELEASE}/ HEAD ${P99FILES} -o $@
-	tar --label ${P99_RELEASE} ${TAROPT} -rf $@ p99/LICENSE
+	tar --label ${P99_RELEASE} ${TAROPT} --transform 's|^|${P99_RELEASE}/|' -rf $@ p99/LICENSE
 
 ${P99_PREFIX}.tgz : ${P99_PREFIX}.tar
 	gzip -9 $<
@@ -72,12 +72,11 @@ ${P99_PREFIX}.zip : ${P99_PREFIX}.tgz
 	tar xzf $<
 	zip -r $@ --move ${P99_RELEASE}
 
-${P99_PREFIX}-html.tgz ${P99_PREFIX}-html.zip ${P99_PREFIX}-refman.pdf : doxygen-p99
-	make -C p99-latex refman.pdf
-	cp p99-latex/refman.pdf ${P99_PREFIX}-refman.pdf
-	tar -czf ${P99_PREFIX}-html.tgz ${TAROPT} p99-html
-	tar xzf ${P99_PREFIX}-html.tgz
-	zip -r ${P99_PREFIX}-html.zip --move ${P99_RELEASE}
+${P99_PREFIX}-html.tgz ${P99_PREFIX}-html.zip ${P99_PREFIX}-refman.pdf : ${P99_PREFIX}
+	-make -C ${P99_RELEASE}/p99-latex refman.pdf
+	-cp ${P99_RELEASE}/p99-latex/refman.pdf ${P99_PREFIX}-refman.pdf
+	tar -czf ${P99_PREFIX}-html.tgz ${TAROPT} ${P99_RELEASE}/p99-html
+	zip -r ${P99_PREFIX}-html.zip ${P99_RELEASE}/p99-html
 
 p99-links :
 	ln -fs  versions/${P99_RELEASE}.tgz ${P99_ARCHIVE}/p99.tgz
@@ -103,11 +102,17 @@ orwl-html.tgz orwl-html.zip orwl-refman.pdf : doxygen-orwl
 p99-transfer :
 	-rsync -az --no-g --no-p --progress -e 'ssh -ax' ${P99_ARCHIVE}/ ${P99_GFORGE}:${P99_HTDOCS}
 
-p99-html-transfer :
-	-rsync -az --no-g --no-p --progress -e 'ssh -ax' p99-html/ ${P99_GFORGE}:${P99_HTDOCS}/p99-html-new
+p99-html-transfer : ${P99_RELEASE}/p99-html
+	-cd ${P99_RELEASE}; rsync -az --no-g --no-p --progress -e 'ssh -ax' p99-html/ ${P99_GFORGE}:${P99_HTDOCS}/p99-html-new
 	ssh ${P99_GFORGE} mv ${P99_HTDOCS}/p99-html ${P99_HTDOCS}/p99-html-bak
 	ssh ${P99_GFORGE} mv ${P99_HTDOCS}/p99-html-new ${P99_HTDOCS}/p99-html
 	ssh ${P99_GFORGE} rm -rf ${P99_HTDOCS}/p99-html-bak
+
+${P99_PREFIX} : ${P99_PREFIX}.tgz
+	rm -rf ${P99_PREFIX}
+	tar xzf ${P99_PREFIX}.tgz
+	cp Doxyfile-p99 ${P99_RELEASE}
+	cd ${P99_RELEASE}; doxygen Doxyfile-p99
 
 ./include :
 
