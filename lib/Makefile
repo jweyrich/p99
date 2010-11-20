@@ -20,15 +20,17 @@ SRC	=					\
 	orwl_int.c				\
 	orwl_new.c				\
 	orwl_once.c				\
+	orwl_posix.c				\
 	orwl_rand.c				\
 	orwl_register.c				\
 	orwl_remote_queue.c			\
+	orwl_sem.c				\
 	orwl_server.c				\
 	orwl_socket.c				\
 	orwl_thread.c				\
 	orwl_types.c				\
-	orwl_wait_queue.c			\
-	semaphore_nointr.c
+	orwl_wait_queue.c
+
 INCL  	=	# List of *.h
 # The global variables that are used and that are external
 GLOBVARS=environ stderr stdout stdin in6addr_any
@@ -40,6 +42,12 @@ OPT	= -O3
 OBJOPT  = -std=c99 -Wall -Wstrict-prototypes ${OPT}
 EXEOPT  = -lpthread -lm
 LPATH   = -L.
+
+ifndef SEM_PROBLEM
+SRC += semaphore_nointr.c
+else
+OPT += -DSEM_PROBLEM
+endif
 
 #####################
 # Macro Definitions #
