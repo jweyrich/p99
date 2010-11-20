@@ -1325,6 +1325,7 @@
 
 
 
+#include "p99_type.h"
 #include "p99_block.h"
 #include "p99_choice.h"
 #include "p99_defarg.h"

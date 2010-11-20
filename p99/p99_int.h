@@ -33,7 +33,6 @@
 
 #include "p99_c99.h"
 #include "p99_id.h"
-#include "p99_if.h"
 
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 #pragma GCC diagnostic ignored "-Wmissing-braces"

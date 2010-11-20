@@ -20,8 +20,6 @@
  **/
 
 #include "p99_c99.h"
-#include "p99_id.h"
-#include "p99_for.h"
 
 /** @addtogroup statement_lists Produce C99 statements or expression lists
  **

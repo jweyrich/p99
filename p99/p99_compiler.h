@@ -26,8 +26,8 @@
 
 #define P00_PREFIX0(N) P00_PREFIX0_(N)
 #define P00_PREFIX0_(N) 0 ## N
-#define P00_STRINGIFY_(X) #X
-#define P00_STRINGIFY(X) P00_STRINGIFY_(X)
+#define P00_STRINGIFY(X) #X
+#define P99_STRINGIFY(X) P00_STRINGIFY(X)
 
 /* This long list of compilers does not mean that we tested P99, nor
    does it even imply that there is a C99 mode for them. We just list
