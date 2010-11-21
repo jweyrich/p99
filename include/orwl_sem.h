@@ -27,6 +27,11 @@
 #ifndef _XOPEN_SOURCE
 # define _XOPEN_SOURCE 600
 #endif
+#ifndef POSIX_SEMAPHORES
+# warning "No value for POSIX_SEMAPHORES found, assuming 200112L"
+# define POSIX_SEMAPHORES 200112L
+#endif
+
 #include "p99_c99.h"
 #include "p99_type.h"
 #include <pthread.h>
@@ -79,7 +84,7 @@ inline int    orwl_sem_wait(orwl_sem *);
 inline unsigned orwl_sem_assert(orwl_sem* s);
 
 #ifndef DOXYGEN
-#ifdef SEM_PROBLEM
+#if POSIX_SEMAPHORES < 199800L
 
 #define ORWL_SEM_VALUE_MAX INT_MAX
 
@@ -184,6 +189,6 @@ inline int    orwl_sem_wait(orwl_sem *s)                   { return sem_wait_noi
 inline unsigned orwl_sem_assert(orwl_sem* s)                  { return sem_assert(&s->sem); }
 
 
-#endif      /* SEM_PROBLEM  */
+#endif      /* POSIX_SEMAPHORES */
 #endif      /* !DOXYGEN     */
 #endif 	    /* !ORWL_SEM_H_ */

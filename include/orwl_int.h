@@ -255,6 +255,10 @@ P99_CHOOSE5(x,                                                 \
  ** instead.
  **/
 static_inline
+int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A);
+
+#if defined(POSIX_THREAD_SAFE_FUNCTIONS) && (POSIX_THREAD_SAFE_FUNCTIONS > 0)
+static_inline
 int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A) {
   int ret = 0;
   flockfile(f);
@@ -271,6 +275,23 @@ int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A) {
   funlockfile(f);
   return ret;
 }
+#else
+static_inline
+int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A) {
+  int ret = 0;
+  for (size_t i = 0; i < n && ret != EOF; ++i)
+    if (A[i]) {
+      char const* p = A[i];
+      char c;
+      while ((c = *p)) {
+        putc(c, f);
+        ++p;
+      }
+      ret += (p - A[i]);
+    }
+  return ret;
+}
+#endif
 
 #define P00_mfputs(F, ...) P99_FSYMB(mfputs)(F, P99_LENGTH_ARR_ARG(char const*const, __VA_ARGS__))
 

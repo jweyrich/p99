@@ -7,9 +7,9 @@
 ## Started on  Sat Feb 20 21:57:30 2010 Jens Gustedt
 ## Last update Sat Feb 20 21:57:30 2010 Jens Gustedt
 ## 
-##############################
-# Complete this to make it ! #
-##############################
+
+include ../scripts/Makefile-getconf-orwl
+
 NAME 	=					\
 		orwl_remote_server		\
 		orwl_remote_test_exclusive	\
@@ -47,19 +47,26 @@ LIBDIR	:= $(join $(dir ${CURDIR}),lib)
 ################
 # Optional add #
 ################
-OPT     = -O0
-IPATH   = -I. -I../include -I../p99
-OBJOPT  = -std=c99 -Wall -Wstrict-prototypes ${OPT}
-EXEOPT  = -lorwl ${OPT}
-LPATH   = -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR}
+OPT     += -O0
+IPATH   += -I. -I../include -I../p99
+OBJOPT  += -std=c99 -Wall -Wstrict-prototypes ${OPT}
+EXEOPT  += -lorwl ${OPT}
+LPATH   += -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR}
 COPY = "all rights reserved, "
 LICENSE = SHORTLICENCE-closed.txt
 TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile
 
+
+ifndef SEM_PROBLEM
+EXEOPT += -lrt
+else
+OPT += -DSEM_PROBLEM
+endif
+
 #####################
 # Macro Definitions #
 #####################
-CC 	= cc
+CC 	= c99
 MAKE 	= make
 SHELL	= /bin/sh
 OBJS 	= $(SRC:.c=.o) 

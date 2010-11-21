@@ -91,10 +91,14 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
   char host[256] = "";
   struct in_addr in4_addr = addr2net(&ep->addr);
   if (!in4_addr.s_addr
+#if defined(POSIX_IPV6) && (POSIX_IPV6 > 0)
       || ((in4_addr.s_addr == P99_TMAX(in_addr_t))
-          && !memcmp(ep->addr.aaaa, &in6addr_any, 16))) {
+          && !memcmp(ep->addr.aaaa, &in6addr_any, 16))
+#endif
+      ) {
     hostname(host);
   } else {
+#if defined(POSIX_IPV6) && (POSIX_IPV6 > 0)
     if (in4_addr.s_addr == P99_TMAX(in_addr_t)) {
       union _sockaddr_alias addr6 = { .in6 = { .sin6_family = AF_INET6 } };
       memcpy(addr6.in6.sin6_addr.s6_addr, ep->addr.aaaa, 16);
@@ -104,18 +108,20 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
       strcat(host, "[");
       orwl_inet_ntop(&addr6.in46, host + 1);
       strcat(host, "]");
-    } else {
-      union _sockaddr_alias addr4 = {
-        .in4 = {
-          .sin_family = AF_INET,
-          .sin_addr = in4_addr
-        }
-      };
-      /* We need this, since sa_family is not necessarily atop of
-         sin_family */
-      addr4.in46.sa_family = AF_INET;
-      orwl_inet_ntop(&addr4.in46, host);
-    }
+    } else
+#endif
+      {
+        union _sockaddr_alias addr4 = {
+          .in4 = {
+            .sin_family = AF_INET,
+            .sin_addr = in4_addr
+          }
+        };
+        /* We need this, since sa_family is not necessarily atop of
+           sin_family */
+        addr4.in46.sa_family = AF_INET;
+        orwl_inet_ntop(&addr4.in46, host);
+      }
   }
   P99_STRCATS(name, "orwl://", host, ":", PRIu(port2net(&ep->port)), "/");
   if (ep->index) P99_STRCATS(name, PRIu(ep->index));

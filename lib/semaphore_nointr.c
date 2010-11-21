@@ -15,7 +15,7 @@
 
 int sem_wait_nointr(sem_t *sem);
 int sem_trywait_nointr(sem_t *sem);
-#if _XOPEN_SOURCE >= 600
+#if POSIX_SEMAPHORES >= 200112L
 int sem_timedwait_nointr(sem_t *sem, const struct timespec *abs_timeout);
 #endif
 int sem_getvalue0(sem_t* p, unsigned* val);

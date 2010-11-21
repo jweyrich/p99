@@ -116,21 +116,33 @@ static pthread_rwlock_t count;
 
 DEFINE_ONCE(pthread_mutex_t) {
   pthread_mutexattr_init(&pthread_mutexattr_process_);
+#if defined(POSIX_THREAD_PROCESS_SHARED) && (POSIX_THREAD_PROCESS_SHARED > 0)
   pthread_mutexattr_setpshared(&pthread_mutexattr_process_, PTHREAD_PROCESS_SHARED);
+#else
+  pthread_mutexattr_setpshared(&pthread_mutexattr_process_, PTHREAD_PROCESS_PRIVATE);
+#endif
   pthread_mutexattr_init(&pthread_mutexattr_thread_);
   pthread_mutexattr_setpshared(&pthread_mutexattr_thread_, PTHREAD_PROCESS_PRIVATE);
 }
 
 DEFINE_ONCE(pthread_cond_t) {
   pthread_condattr_init(&pthread_condattr_process_);
+#if defined(POSIX_THREAD_PROCESS_SHARED) && (POSIX_THREAD_PROCESS_SHARED > 0)
   pthread_condattr_setpshared(&pthread_condattr_process_, PTHREAD_PROCESS_SHARED);
+#else
+  pthread_condattr_setpshared(&pthread_condattr_process_, PTHREAD_PROCESS_PRIVATE);
+#endif
   pthread_condattr_init(&pthread_condattr_thread_);
   pthread_condattr_setpshared(&pthread_condattr_thread_, PTHREAD_PROCESS_PRIVATE);
 }
 
 DEFINE_ONCE(pthread_rwlock_t) {
   pthread_rwlockattr_init(&pthread_rwlockattr_process_);
+#if defined(POSIX_THREAD_PROCESS_SHARED) && (POSIX_THREAD_PROCESS_SHARED > 0)
   pthread_rwlockattr_setpshared(&pthread_rwlockattr_process_, PTHREAD_PROCESS_SHARED);
+#else
+  pthread_rwlockattr_setpshared(&pthread_rwlockattr_process_, PTHREAD_PROCESS_PRIVATE);
+#endif
   pthread_rwlockattr_init(&pthread_rwlockattr_thread_);
   pthread_rwlockattr_setpshared(&pthread_rwlockattr_thread_, PTHREAD_PROCESS_PRIVATE);
 }

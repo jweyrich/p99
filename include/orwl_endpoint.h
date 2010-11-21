@@ -119,9 +119,11 @@ struct in_addr addr2net(addr_t const*A) {
   return ret;
 }
 
+#if (POSIX_IPV6 > 0) || DOXYGEN
 /**
  ** @brief Return the IPv6 address stored in @a A.
  **
+ ** This is only present if the platform supports IPv6. 
  ** @memberof addr_t
  **/
 static_inline
@@ -130,6 +132,7 @@ struct in6_addr addr2net6(addr_t const*A) {
   memcpy(ret.s6_addr, A->aaaa, 16);
   return ret;
 }
+#endif
 
 /**
  ** @memberof port_t

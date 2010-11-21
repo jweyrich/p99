@@ -19,6 +19,11 @@
 #elif _XOPEN_SOURCE < 600
 # error "Need at least XOPEN specification 6 to compile this file"
 #endif
+
+#ifndef POSIX_SEMAPHORES
+# warning "No value for POSIX_SEMAPHORES found, assuming 200112L"
+# define POSIX_SEMAPHORES 200112L
+#endif
 #include "p99_c99.h"
 #include <semaphore.h>
 
@@ -52,7 +57,7 @@ int sem_trywait_nointr(sem_t *sem) {
   return 0;
 }
 
-#if _XOPEN_SOURCE >= 600
+#if (defined(POSIX_TIMEOUTS) && (POSIX_TIMEOUTS >= 200112L)) || defined(DOXYGEN)
 
 /**
  ** @brief An interrupt safe wrapper for @c sem_timedwait.
@@ -69,7 +74,7 @@ int sem_timedwait_nointr(sem_t *sem, const struct timespec *abs_timeout) {
   return 0;
 }
 
-#endif /* _XOPEN_SOURCE < 600 */
+#endif /* POSIX_TIMEOUTS */
 
 /**
  ** @brief Return the value of the semaphore object in @a val if it is

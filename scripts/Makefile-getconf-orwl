@@ -1,0 +1,53 @@
+# -*- makefile-gmake -*-
+
+GETCONF = getconf
+
+## @brief POSIX features that are required to compile and run ORWL
+POSIX_IMPERATIVES +=				\
+	READER_WRITER_LOCKS			\
+	THREADS
+
+## @brief POSIX features that are optional to compile and run ORWL
+POSIX_FEATURES +=				\
+	BARRIERS				\
+	IPV6					\
+	SEMAPHORES				\
+	THREAD_PROCESS_SHARED			\
+	THREAD_SAFE_FUNCTIONS			\
+	TIMEOUTS
+
+
+## @brief Test a feature with getconf
+##
+## We try to guess the getconf parameter name from a list of
+## possibilities.
+define POSIX_CONF
+POSIX_$(1) = $${shell ${GETCONF} $(1) || ${GETCONF} _$(1) || ${GETCONF} _POSIX_$(1) || ${GETCONF} _SC_$(1)}
+ifeq ($${POSIX_$(1)},)
+override POSIX_$(1) := -1L
+endif
+ifeq ($${POSIX_$(1)},undefined)
+override POSIX_$(1) := -1L
+endif
+OBJOPT += -DPOSIX_$(1)=$${POSIX_$(1)}
+endef
+
+${foreach FEATURE, ${sort ${POSIX_FEATURES} ${POSIX_IMPERATIVES}}, ${eval ${call POSIX_CONF,${FEATURE}}}}
+
+define POSIX_IMPERATIVES_CHECK
+ifeq ($${POSIX_$(1)},-1L)
+$$(error The POSIX $(1) feature was not detected on this system. It is imperative for ORWL. Aborting.)
+endif
+endef
+
+${foreach FEATURE, ${sort ${POSIX_IMPERATIVES}}, ${eval ${call POSIX_IMPERATIVES_CHECK,${FEATURE}}}}
+
+define POSIX_FEATURE_CHECK
+ifeq ($${POSIX_$(1)},-1L)
+$$(warning The POSIX $(1) feature was not detected on this system. Trying without.)
+endif
+endef
+
+$(warning ${POSIX_FEATURE_CHECK})
+
+${foreach FEATURE, ${sort ${POSIX_FEATURES}}, ${eval ${call POSIX_FEATURE_CHECK,${FEATURE}}}}

@@ -7,9 +7,9 @@
 ## Started on  Fri Feb 19 12:12:22 2010 Jens Gustedt
 ## Last update Fri Feb 19 12:12:22 2010 Jens Gustedt
 ## 
-##############################
-# Complete this to make it ! #
-##############################
+
+include ../scripts/Makefile-getconf-orwl
+
 NAME 	=	liborwl.a liborwl.so	# Name of executable file
 SRC	=					\
 	orwl_auth_sock_functions.c		\
@@ -37,22 +37,23 @@ GLOBVARS=environ stderr stdout stdin in6addr_any
 ################
 # Optional add #
 ################
-IPATH   = -I.  -I../include -I../p99
-OPT	= -O3
-OBJOPT  = -std=c99 -Wall -Wstrict-prototypes ${OPT}
-EXEOPT  = -lpthread -lm
-LPATH   = -L.
+IPATH   += -I.  -I../include -I../p99
+OPT	+= -O3
+OBJOPT  += -std=c99 -Wall -Wstrict-prototypes ${OPT}
+EXEOPT  += -lpthread -lm
+LPATH   += -L.
 
-ifndef SEM_PROBLEM
-SRC += semaphore_nointr.c
+ifeq (${POSIX_SEMAPHORES},-1L)
+$(warning No POSIX semaphores were detected on this system. Replacing them by a stub)
 else
-OPT += -DSEM_PROBLEM
+SRC += semaphore_nointr.c
+EXEOPT += -lrt
 endif
 
 #####################
 # Macro Definitions #
 #####################
-CC 	= cc
+CC 	= c99
 MAKE 	= make
 SHELL	= /bin/sh
 OBJS 	= $(SRC:.c=.o)
