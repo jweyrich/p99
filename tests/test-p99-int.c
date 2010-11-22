@@ -294,8 +294,9 @@ int main(int argc, char** argv) {
       printf("P99 strangeness:\tbit pattern of all ones signed int seen as an unsigned: 0x%X\n",
              u_256);
     } else {
-      printf("P99 diagnostic:\twidth of signed int %s width of unsigned int\n",
-             unicode ? "\u2243" : "=");
+      setlocale(LC_ALL, "");
+      printf("P99 diagnostic:\twidth of signed int %lc width of unsigned int\n",
+             unicode ? L'\x2243' : L'=');
     }
   } else {
     printf("P99 strangeness:\twidth of signed int > width of unsigned int\n");
