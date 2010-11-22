@@ -59,29 +59,29 @@
 #if defined(__clang__)
 # define P99_COMPILER P99_COMPILER_CLANG
 # define P99_COMPILER_VERSION                                  \
- "clang " P00_STRINGIFY(__clang__)                             \
+ "clang " P99_STRINGIFY(__clang__)                             \
  "; gnu "                                                      \
- P00_STRINGIFY(__GNUC__) "."                                   \
- P00_STRINGIFY(__GNUC_MINOR__) "."                             \
- P00_STRINGIFY(__GNUC_PATCHLEVEL__)
+ P99_STRINGIFY(__GNUC__) "."                                   \
+ P99_STRINGIFY(__GNUC_MINOR__) "."                             \
+ P99_STRINGIFY(__GNUC_PATCHLEVEL__)
 
 #elif defined(__INTEL_COMPILER)
 # define P99_COMPILER P99_COMPILER_INTEL
 # define P99_COMPILER_VERSION                                  \
- "intel " P00_STRINGIFY(__INTEL_COMPILER)                      \
+ "intel " P99_STRINGIFY(__INTEL_COMPILER)                      \
  "; gnu "                                                      \
- P00_STRINGIFY(__GNUC__) "."                                   \
- P00_STRINGIFY(__GNUC_MINOR__) "."                             \
- P00_STRINGIFY(__GNUC_PATCHLEVEL__)
+ P99_STRINGIFY(__GNUC__) "."                                   \
+ P99_STRINGIFY(__GNUC_MINOR__) "."                             \
+ P99_STRINGIFY(__GNUC_PATCHLEVEL__)
 
 #elif defined(__OPEN64__)
 # define P99_COMPILER P99_COMPILER_OPEN64
 # define P99_COMPILER_VERSION                                  \
  "open64 " __OPEN64__                                          \
  "; gnu "                                                      \
- P00_STRINGIFY(__GNUC__) "."                                   \
- P00_STRINGIFY(__GNUC_MINOR__) "."                             \
- P00_STRINGIFY(__GNUC_PATCHLEVEL__)
+ P99_STRINGIFY(__GNUC__) "."                                   \
+ P99_STRINGIFY(__GNUC_MINOR__) "."                             \
+ P99_STRINGIFY(__GNUC_PATCHLEVEL__)
 
 /* compilers that (as far as we know) don't pretend to be gcc */
 #elif defined(__BORLANDC__)
@@ -132,9 +132,9 @@
 # define P99_COMPILER P99_COMPILER_GNU
 # define P99_COMPILER_VERSION                                  \
  "gnu "                                                        \
- P00_STRINGIFY(__GNUC__) "."                                   \
- P00_STRINGIFY(__GNUC_MINOR__) "."                             \
- P00_STRINGIFY(__GNUC_PATCHLEVEL__)
+ P99_STRINGIFY(__GNUC__) "."                                   \
+ P99_STRINGIFY(__GNUC_MINOR__) "."                             \
+ P99_STRINGIFY(__GNUC_PATCHLEVEL__)
 
 #else
 # define P99_COMPILER 0x0U
