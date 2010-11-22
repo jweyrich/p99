@@ -48,6 +48,4 @@ $$(warning The POSIX $(1) feature was not detected on this system. Trying withou
 endif
 endef
 
-$(warning ${POSIX_FEATURE_CHECK})
-
 ${foreach FEATURE, ${sort ${POSIX_FEATURES}}, ${eval ${call POSIX_FEATURE_CHECK,${FEATURE}}}}
