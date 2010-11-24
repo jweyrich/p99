@@ -1,6 +1,6 @@
 # -*- makefile-gmake -*-
 
-GETCONF = getconf
+GETCONF = getconf 2>/dev/null
 
 ## @brief POSIX features that are required to compile and run ORWL
 POSIX_IMPERATIVES +=				\
@@ -23,7 +23,7 @@ POSIX_FEATURES +=				\
 ## We try to guess the getconf parameter name from a list of
 ## possibilities.
 define POSIX_CONF
-POSIX_$(1) = $${shell ${GETCONF} $(1) || ${GETCONF} _$(1) || ${GETCONF} _POSIX_$(1) || ${GETCONF} _SC_$(1)}
+POSIX_$(1) := $${shell ${GETCONF} _POSIX_$(1) || ${GETCONF} $(1) || ${GETCONF} _$(1) || ${GETCONF} _SC_$(1)}
 ifeq ($${POSIX_$(1)},)
 override POSIX_$(1) := -1L
 endif
