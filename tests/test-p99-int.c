@@ -209,7 +209,7 @@ int main(int argc, char** argv) {
   printf("P99 compiler: unknown environment type\n");
 #endif
 #ifdef __STDC_VERSION__
-  printf("P99 compiler: C standard version %s\n", P00_STRINGIFY(__STDC_VERSION__));
+  printf("P99 compiler: C standard version %s\n", P99_STRINGIFY(__STDC_VERSION__));
 #else
   printf("P99 compiler: C standard version number is not available\n");
 #endif

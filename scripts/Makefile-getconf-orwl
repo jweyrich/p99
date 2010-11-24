@@ -10,6 +10,7 @@ POSIX_IMPERATIVES +=				\
 ## @brief POSIX features that are optional to compile and run ORWL
 POSIX_FEATURES +=				\
 	BARRIERS				\
+        HOST_NAME_MAX                           \
 	IPV6					\
 	SEMAPHORES				\
 	THREAD_PROCESS_SHARED			\

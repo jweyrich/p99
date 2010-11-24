@@ -217,11 +217,10 @@ signed p00_trailing_comma_in_initializer__(void) {
 #   undef inline
 #  endif
 #  ifdef __GNUC_GNU_INLINE__
-#   define inline __attribute__((gnu_inline,always_inline)) static __inline__
+#   define inline __attribute__((gnu_inline,always_inline)) __inline__
 #  else
-#   define inline __attribute__((always_inline)) static __inline__
+#   define inline __attribute__((always_inline)) __inline__
 #  endif
-#  define static_inline inline
 # endif
 # define p99_inline __attribute__((always_inline)) inline
 #endif

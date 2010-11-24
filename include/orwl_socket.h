@@ -25,6 +25,11 @@ P99_PROTOTYPE(void, orwl_hton, uint64_t *, uint64_t const *, size_t);
 #define orwl_hton_defarg_2() 1
 #endif
 
+#ifndef HOST_NAME_MAX
+# ifdef POSIX_HOST_NAME_MAX
+#  define HOST_NAME_MAX POSIX_HOST_NAME_MAX
+# endif
+#endif
 P99_DEFARG_DOCU(orwl_hton)
 static_inline
 void

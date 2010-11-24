@@ -57,10 +57,8 @@ LICENSE = SHORTLICENCE-closed.txt
 TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile
 
 
-ifndef SEM_PROBLEM
+ifneq (${POSIX_SEMAPHORES}, -1L)
 EXEOPT += -lrt
-else
-OPT += -DSEM_PROBLEM
 endif
 
 #####################

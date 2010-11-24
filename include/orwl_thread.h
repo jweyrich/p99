@@ -349,7 +349,7 @@ char const* pthread2str(char *buf, pthread_t id) {
 
 #define PTHREAD2STR(ID) pthread2str((char[1 + sizeof(pthread_t) * 2]){0}, ID)
 
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__GNUC_NO_TLS__)
 
 #define DECLARE_THREAD_VAR(T, NAME)                                                          \
 T* P99_PASTE2(NAME, _init)(void);                                                            \

@@ -49,7 +49,7 @@ struct rand48_t {
   unsigned short x[3];
 };
 
-#define RAND48_T_INITIALIZER { { (unsigned short)useconds(), (unsigned short)getpid(), (unsigned short)pthread_self() } }
+#define RAND48_T_INITIALIZER { { (unsigned short)useconds(), (unsigned short)getpid(), (unsigned short)(uintptr_t)pthread_self() } }
 
 #ifndef DOXYGEN
 static_inline
@@ -57,7 +57,7 @@ P99_PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned sho
 #define rand48_t_init(...) P99_CALL_DEFARG(rand48_t_init, 4, __VA_ARGS__)
 #define rand48_t_init_defarg_1() ((unsigned short)useconds())
 #define rand48_t_init_defarg_2() ((unsigned short)getpid())
-#define rand48_t_init_defarg_3() ((unsigned short)pthread_self())
+#define rand48_t_init_defarg_3() ((unsigned short)(uintptr_t)pthread_self())
 #endif
 
 DOCUMENT_INIT(rand48_t)
