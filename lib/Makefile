@@ -13,6 +13,7 @@ include ../scripts/Makefile-getconf-orwl
 NAME 	=	liborwl.a liborwl.so	# Name of executable file
 SRC	=					\
 	orwl_auth_sock_functions.c		\
+	orwl_barrier.c				\
 	orwl_endpoint.c				\
 	orwl_enum.c				\
 	orwl_handle2.c				\

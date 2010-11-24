@@ -39,6 +39,7 @@
   and semaphore.h if available.
    */
 #include "orwl_sem.h"
+#include "orwl_barrier.h"
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <netdb.h>

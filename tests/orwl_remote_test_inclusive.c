@@ -97,7 +97,7 @@ DEFINE_NEW_DELETE(arg_t);
 
 DECLARE_THREAD(arg_t);
 
-static pthread_barrier_t init_barr;
+static orwl_barrier init_barr;
 
 DEFINE_THREAD(arg_t) {
   size_t const offset = Arg->offset;
@@ -129,7 +129,7 @@ DEFINE_THREAD(arg_t) {
            (orwl_np + orwl_mynum + (i - 1)) % orwl_np, orwl_state_getname(ostate));
   }
 
-  pthread_barrier_wait(&init_barr);
+  orwl_barrier_wait(&init_barr);
   report(1, "initial barrier passed");
 
   for (size_t orwl_phase = 0; orwl_phase < phases; ++orwl_phase) {
@@ -221,7 +221,7 @@ DEFINE_THREAD(arg_t) {
     ostate = orwl_cancel2(&leh[i]);
     report(false,  "can, handle %zu", (orwl_mynum + (i - 1) + orwl_np) % orwl_np);
   }
-  pthread_barrier_wait(&init_barr);
+  orwl_barrier_wait(&init_barr);
   report(true, "final barrier passed");
   report(true, "finished");
 
@@ -266,7 +266,7 @@ int main(int argc, char **argv) {
   report(1, "%s: starting %zu phases, %zu/%zu threads, offset %zu",
          argv[0], phases, number, orwl_np, offset);
 
-  pthread_barrier_init(&init_barr, , number);
+  orwl_barrier_init(&init_barr, number);
 
   /* Initialization of the static location */
   location_back = orwl_mirror_vnew(number + 2);
