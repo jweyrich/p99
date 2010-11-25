@@ -43,27 +43,25 @@ int orwl_barrier_init(orwl_barrier* barrier, unsigned count) {
 int orwl_barrier_wait(orwl_barrier* barrier) {
   int ret = 0;
   MUTUAL_EXCLUDE(barrier->mut) {
-    --(barrier->outside);
-    if (!barrier->outside) {
-      /* this is the last thread that enters the barrier */
-      pthread_cond_broadcast(&barrier->enter);
-    } else {
-      pthread_cond_wait(&barrier->enter, &barrier->mut);
+    P99_PROTECTED_BLOCK(--(barrier->outside), ++(barrier->outside)) {
+      P99_PROTECTED_BLOCK(++(barrier->inside), --(barrier->inside)) {
+        if (!barrier->outside) {
+          /* this is the last thread that enters the barrier */
+          pthread_cond_broadcast(&barrier->enter);
+        } else {
+          pthread_cond_wait(&barrier->enter, &barrier->mut);
+        }
+      }
+      if (!barrier->inside) {
+        /* this is the last thread that leaves the barrier */
+        pthread_cond_broadcast(&barrier->leave);
+        /* this one will have a head start before the others, so he
+           should do any specific task, if necessary. */
+        ret = PTHREAD_BARRIER_SERIAL_THREAD;
+      } else {
+        pthread_cond_wait(&barrier->leave, &barrier->mut);
+      }
     }
-    ++(barrier->inside);
-  }
-  MUTUAL_EXCLUDE(barrier->mut) {
-    --(barrier->inside);
-    if (!barrier->inside) {
-      /* this is the last thread that leaves the barrier */
-      pthread_cond_broadcast(&barrier->leave);
-      /* this one will have a head start before the others, so he
-         should do any specific task, if necessary. */
-      ret = PTHREAD_BARRIER_SERIAL_THREAD;
-    } else {
-      pthread_cond_wait(&barrier->leave, &barrier->mut);
-    }
-    ++(barrier->outside);
   }
   return ret;
 }
