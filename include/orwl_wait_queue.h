@@ -62,7 +62,7 @@ DECLARE_ENUM(orwl_state,
 
 
 #ifndef DOXYGEN
-static_inline
+inline
 P99_PROTOTYPE(orwl_state*, orwl_state_init, orwl_state *, orwl_state);
 #define orwl_state_init(...) P99_CALL_DEFARG(orwl_state_init, 2, __VA_ARGS__)
 #define orwl_state_init_defarg_1() orwl_invalid
@@ -70,7 +70,7 @@ P99_PROTOTYPE(orwl_state*, orwl_state_init, orwl_state *, orwl_state);
 
 DOCUMENT_INIT(orwl_state)
 P99_DEFARG_DOCU(orwl_state_init)
-static_inline
+inline
 orwl_state* orwl_state_init
 (orwl_state *el,                    /*!< wait queue to initialize */
  orwl_state val                     /*!< defaults to orwl_invalid */
@@ -80,7 +80,7 @@ orwl_state* orwl_state_init
 }
 
 DOCUMENT_DESTROY(orwl_state)
-static_inline
+inline
 void orwl_state_destroy(orwl_state *el) {
   /* special care for bogus warning given by icc */
   (void)el;
@@ -205,7 +205,7 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_wq);
    **
    ** @memberof orwl_wh
    **/
-static_inline
+inline
 int orwl_wh_valid(orwl_wh *wh) {
   return wh
     && wh->location != TGARB(orwl_wq*)
@@ -220,7 +220,7 @@ int orwl_wh_valid(orwl_wh *wh) {
    **
    ** @memberof orwl_wh
    **/
-static_inline
+inline
 int orwl_wh_idle(orwl_wh *wh) {
   return wh && !wh->location && !wh->next;
 }
@@ -235,7 +235,7 @@ int orwl_wh_idle(orwl_wh *wh) {
    **
    ** @memberof orwl_wq
    **/
-static_inline
+inline
 int orwl_wq_valid(orwl_wq *wq) {
   return wq->head != TGARB(orwl_wh*)
     && wq->tail != TGARB(orwl_wh*);
@@ -251,7 +251,7 @@ int orwl_wq_valid(orwl_wq *wq) {
    **
    ** @memberof orwl_wq
    **/
-static_inline
+inline
 int orwl_wq_idle(orwl_wq *wq) {
   return !wq->head && !wq->tail;
 }
@@ -419,7 +419,7 @@ orwl_state orwl_wh_test
 orwl_state orwl_wh_release(orwl_wh *wh /*!< the handle to act upon */);
 
 #ifndef DOXYGEN
-static_inline
+inline
 P99_PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
 #define orwl_wh_load(...) P99_CALL_DEFARG(orwl_wh_load, 2, __VA_ARGS__)
 #define orwl_wh_load_defarg_1() 1
@@ -435,7 +435,7 @@ P99_PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
    ** @memberof orwl_wh
    **/
   P99_DEFARG_DOCU(orwl_wh_load)
-static_inline
+inline
 uint64_t orwl_wh_load
   (orwl_wh *wh /*!< the handle to act upon */,
    uint64_t howmuch  /*!< defaults to 1 */) {
@@ -444,7 +444,7 @@ uint64_t orwl_wh_load
   }
 
 #ifndef DOXYGEN
-static_inline
+inline
 P99_PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
 #define orwl_wh_unload(...) P99_CALL_DEFARG(orwl_wh_unload, 2, __VA_ARGS__)
 #define orwl_wh_unload_defarg_1() UINT64_C(1)
@@ -461,7 +461,7 @@ P99_PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
    ** @memberof orwl_wh
    */
   P99_DEFARG_DOCU(orwl_wh_unload)
-static_inline
+inline
 uint64_t orwl_wh_unload
   (orwl_wh *wh /*!< the handle to act upon */,
    uint64_t howmuch  /*!< defaults to 1 */) {

@@ -104,12 +104,12 @@ DECLARE_POINTER_TYPE(uint64_t);
 
 #define DECLARE_BASIC(T)                                       \
 /*! @brief initialize the object that @a id points to by 0. */ \
-static_inline T* P99_PASTE2(T, _init)(T *id) {                 \
+inline T* P99_PASTE2(T, _init)(T *id) {                        \
   if (id) *id = P99_0(T);                                      \
   return id;                                                   \
 }                                                              \
 /*! @brief destroy the object that @a id points to. */         \
-static_inline void P99_PASTE2(T, _destroy)(T*  id) {           \
+inline void P99_PASTE2(T, _destroy)(T*  id) {                  \
   /* empty */                                                  \
   (void)id;                                                    \
 }                                                              \
@@ -159,7 +159,7 @@ DECLARE_BASIC_TYPE(uint32_t);
 DECLARE_BASIC_TYPE(int64_t);
 DECLARE_BASIC_TYPE(uint64_t);
 
-static_inline
+inline
 char const* void_cptr2p(char* buf, void_cptr x) {
   sprintf(buf, "%p", x);
   return buf;
@@ -254,11 +254,11 @@ P99_CHOOSE5(x,                                                 \
  ** This here only is a helper @ref mfputs which you should use
  ** instead.
  **/
-static_inline
+inline
 int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A);
 
 #if defined(POSIX_THREAD_SAFE_FUNCTIONS) && (POSIX_THREAD_SAFE_FUNCTIONS > 0)
-static_inline
+inline
 int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A) {
   int ret = 0;
   flockfile(f);
@@ -276,7 +276,7 @@ int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A) {
   return ret;
 }
 #else
-static_inline
+inline
 int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A) {
   int ret = 0;
   for (size_t i = 0; i < n && ret != EOF; ++i)

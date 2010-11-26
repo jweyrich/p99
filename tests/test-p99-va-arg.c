@@ -57,7 +57,6 @@ unsigned tutu_fixed(void) {
 }
 
 #define P00_ARR_OP_MINMAX(NAME, TYPE, SUFF, OP)                                         \
-static_inline                                                                           \
  TYPE P99_FSYMB(P99_PASTE4(p99_, NAME, _, SUFF))(size_t number, TYPE const*const arr) { \
     TYPE ret = arr[0];                                                                  \
     for (size_t i = 1; i < number; ++i)                                                 \
@@ -182,7 +181,6 @@ P00_ARR_OP_MINMAX(max, long double, l, >);
 #define p99_max_l(...) P99_FSYMB(p99_max_l)(P99_LENGTH_ARR_ARG(long double, __VA_ARGS__))
 
 #define P00_ARR_GCD(TYPE, SUFF)                                                     \
-static_inline                                                                       \
 TYPE P99_PASTE3(p00_, gcd_, SUFF)(TYPE a, TYPE b) {                                 \
   if (!a) return b;                                                                 \
   if (b)                                                                            \
@@ -192,7 +190,6 @@ TYPE P99_PASTE3(p00_, gcd_, SUFF)(TYPE a, TYPE b) {                             
     }                                                                               \
   return a;                                                                         \
 }                                                                                   \
-static_inline                                                                       \
 TYPE P99_FSYMB(P99_PASTE3(p99_, gcd_, SUFF))(size_t number, TYPE const*const arr) { \
   if (number == 1) return arr[0];                                                   \
   TYPE ret = P99_PASTE3(p00_, gcd_, SUFF)(arr[0], arr[1]);                          \
@@ -200,7 +197,6 @@ TYPE P99_FSYMB(P99_PASTE3(p99_, gcd_, SUFF))(size_t number, TYPE const*const arr
     ret = P99_PASTE3(p00_, gcd_, SUFF)(ret, arr[i]);                                \
   return ret;                                                                       \
 }                                                                                   \
-static_inline                                                                       \
 TYPE P99_FSYMB(P99_PASTE3(p99_, lcm_, SUFF))(size_t number, TYPE const*const arr) { \
   if (number == 1) return arr[0];                                                   \
   TYPE gcd = P99_FSYMB(P99_PASTE3(p99_, gcd_, SUFF))(number, arr);                  \

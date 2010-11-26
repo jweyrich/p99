@@ -225,21 +225,25 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
 
 typedef orwl_handle orwl_handle_cancel;
 
-static
+inline
 orwl_handle_cancel* orwl_handle_cancel_init(orwl_handle_cancel* H) {
   if (!H) return 0;
   return orwl_handle_init(H);
 }
 
-static
+orwl_handle_cancel* orwl_handle_cancel_init(orwl_handle_cancel* H);
+
+inline
 void orwl_handle_cancel_destroy(orwl_handle_cancel* H) {
   orwl_handle_destroy(H);
 }
 
+void orwl_handle_cancel_destroy(orwl_handle_cancel* H);
+
 DECLARE_NEW_DELETE(orwl_handle_cancel);
 DEFINE_NEW_DELETE(orwl_handle_cancel);
 
-static
+inline
 DECLARE_THREAD(orwl_handle_cancel);
 
 

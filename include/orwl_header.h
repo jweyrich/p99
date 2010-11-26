@@ -30,12 +30,12 @@ typedef uint64_t header_t[header_t_els];
 
 
 
-p99_inline
+inline
 uint64_t orwl_hton64(uint64_t val) {
   return ORWL_HTON64(val);
 }
 
-p99_inline
+inline
 uint64_t orwl_ntoh64(uint64_t val) {
   return ORWL_NTOH64(val);
 }

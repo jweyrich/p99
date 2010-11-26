@@ -88,8 +88,11 @@ $(NAME) : ${OBJS}
 	$(CC) $< $(LDFLAGS) -o $@
 #	$(STRIP) ./$(NAME) # if you debug ,don't strip ...
 
+test-p99-inline : test-p99-inline.o test-p99-inline-empty.o
+	$(CC) $^ $(LDFLAGS) -o $@
+
 depend Makefile.inc:
-	${CC} $(CFLAGS) $(IPATH) -MM $(SRC) > Makefile.inc
+	${CC} $(CFLAGS) $(IPATH) -MM $(SRC)  test-p99-inline.c test-p99-inline-empty.c > Makefile.inc
 clean:
 	-$(RM) $(NAME) $(OBJS) *~
 distclean: clean

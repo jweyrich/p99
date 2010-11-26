@@ -40,7 +40,7 @@
   /*! @attention @a el show have been allocated through P99_NEW */                                          \
   /*! @see P99_NEW */                                                                                       \
   /*! @memberof T */                                                                                        \
-static_inline                                                                                               \
+inline                                                                                                      \
 void P99_PASTE2(T, _delete)(T const*el) {                                                                   \
   if (el) {                                                                                                 \
     T* e = (T*)el;                                                                                          \
@@ -49,17 +49,17 @@ void P99_PASTE2(T, _delete)(T const*el) {                                       
   }                                                                                                         \
 }
 
-static_inline
+inline
 size_t p00_blocks(size_t n, size_t stride) {
   return (n / stride) + ((n % stride) ? 1u : 0u);
 }
 
-static_inline
+inline
 size_t p00_vnew_size_len(size_t n) {
   return p00_blocks(n, sizeof(size_t));
 }
 
-static_inline
+inline
 void *p00_vnew(size_t n) {
   /* add one for the header */
   size_t *ret = (size_t*)calloc(p00_vnew_size_len(n) + 1, sizeof(size_t));
@@ -68,17 +68,17 @@ void *p00_vnew(size_t n) {
   return ret + 1;
 }
 
-static_inline
+inline
 size_t const*p00_vfind(void const*p) {
   return ((size_t const*)p) - 1;
 }
 
-static_inline
+inline
 size_t p00_vlen(void const*p) {
   return (p00_vfind(p))[0];
 }
 
-static_inline
+inline
 void p00_vdelete(void const*p) {
   free((void*)p00_vfind(p));
 }
@@ -95,7 +95,7 @@ void p00_vdelete(void const*p) {
   /*! @attention @ref T ## _init  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @attention @ref T ## _vdelete @b must be used to de-allocate such a variable **/                  \
   /*! @memberof T */                                                                                    \
-static_inline                                                                                           \
+inline                                                                                                  \
 T *P99_PASTE2(T, _vnew)(size_t n) {                                                                     \
   size_t N = n*sizeof(T);                                                                               \
   T *ret = p00_vnew(N);                                                                                 \
@@ -112,7 +112,7 @@ T *P99_PASTE2(T, _vnew)(size_t n) {                                             
   /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T* argument **/ \
   /*! @attention @ref T ## _vnew @b must have been used to allocate this variable **/                      \
   /*! @memberof T */                                                                                       \
-static_inline                                                                                              \
+inline                                                                                                     \
 void P99_PASTE2(T, _vdelete)(T const*vec) {                                                                \
   if (vec) {                                                                                               \
     size_t n = p00_vlen(vec) / sizeof(T);                                                                  \

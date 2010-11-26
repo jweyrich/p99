@@ -18,6 +18,9 @@
 #include "orwl_posix.h"
 #include "p99_posix_default.h"
 
+uint64_t orwl_hton64(uint64_t val);
+uint64_t orwl_ntoh64(uint64_t val);
+
 static uint32_t mycode = 0;
 
 #define if_code(C0, C1, C2, C3) ((((uint32_t)C0) << 0) | (((uint32_t)C1) << 8) | (((uint32_t)C2) << 16) | (((uint32_t)C3) << 24))

@@ -181,7 +181,6 @@ typedef struct {
 } orwl__routine_arg;
 
 
-static
 orwl__routine_arg* orwl__routine_arg_init(orwl__routine_arg *rt,
                                               start_routine_t start_routine,
                                               void* arg) {
@@ -193,14 +192,12 @@ orwl__routine_arg* orwl__routine_arg_init(orwl__routine_arg *rt,
   return rt;
 }
 
-static
 P99_PROTOTYPE(orwl__routine_arg*, orwl__routine_arg_init, orwl__routine_arg *, start_routine_t, void*);
 #define orwl__routine_arg_init(...) P99_CALL_DEFARG(orwl__routine_arg_init, 3, __VA_ARGS__)
 
 P99_DECLARE_DEFARG(orwl__routine_arg_init, , P99_0(start_routine_t), P99_0(void*));
 P99_DEFINE_DEFARG(orwl__routine_arg_init, , P99_0(start_routine_t), P99_0(void*));
 
-static
 void orwl__routine_arg_destroy(orwl__routine_arg *rt) {
   /* empty */
 }

@@ -41,7 +41,7 @@ orwl_register const* orwl_register_init(orwl_register const* field);
 /**
  ** @memberof orwl_register
  **/
-static_inline size_t orwl_register_id(orwl_register const* field) {
+inline size_t orwl_register_id(orwl_register const* field) {
   if (!(field->regptr))
     orwl_register_init(field);
   ptrdiff_t ret = field - field->start;
@@ -51,7 +51,7 @@ static_inline size_t orwl_register_id(orwl_register const* field) {
 /**
  ** @memberof orwl_register
  **/
-static_inline
+inline
 void *orwl_register_get(orwl_register const* field) {
   return field->dptr;
 }
@@ -59,7 +59,7 @@ void *orwl_register_get(orwl_register const* field) {
 /**
  ** @memberof orwl_register
  **/
-static_inline
+inline
 void orwl_register_call(orwl_register const* field, void* arg) {
   orwl_plain fptr= field->fptr;
   if (fptr) fptr(arg);
@@ -68,7 +68,7 @@ void orwl_register_call(orwl_register const* field, void* arg) {
 /**
  ** @memberof orwl_register
  **/
-static_inline
+inline
 void orwl_domain_call(orwl_domain domain, size_t id, void *arg) {
   orwl_register const* field = domain + id;
   orwl_register_call(field, arg);

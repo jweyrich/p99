@@ -185,7 +185,7 @@ P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
 P99_IF_EMPTY(X)                                                         \
 ()                                                                      \
 (                                                                       \
- static_inline                                                          \
+ inline                                                                 \
  P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void) { \
    P99_PASTE3(NAME, _prototype_, N) ret = (X);                          \
    return ret;                                                          \

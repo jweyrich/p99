@@ -1,3 +1,16 @@
+/* This may look like nonsense, but it really is -*- C -*-                   */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 /*
 ** orwl_posix.c
 ** 
@@ -22,6 +35,13 @@ static long p00_sc_constant_[P00_POS_SC_MAX] = {
 
 long const*const p00_sc_constant = p00_sc_constant_;
 
+#define P00_DEFINE_SC_(NAME, X, I) long P99_PASTE2(P99_S, X)(void)
+
+#define P00_DEFINE_SC(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_DEFINE_SC_, __VA_ARGS__);
+
+P00_DEFINE_SC(P00_POSIX_SC_1);
+P00_DEFINE_SC(P00_POSIX_SC_2);
+
 #define P00_DEFINE_SC_NAME_(NAME, X, I) "_S" P99_STRINGIFY(X)
 
 #define P00_DEFINE_SC_NAME(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_DEFINE_SC_NAME_, __VA_ARGS__)
@@ -45,7 +65,7 @@ long p00_sysconf(int name) {
   return ret;
 }
 
-#define P00_DEFINE_SC_INIT_(NAME, X, I)                                 \
+#define P00_DEFINE_SC_INIT_(NAME, X, I)                                    \
 p00_sc_constant_[P99_PASTE2(P00_POS_S, X)] = p00_sysconf(P99_PASTE(_S, X))
 
 #define P00_DEFINE_SC_INIT(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_DEFINE_SC_INIT_, __VA_ARGS__)

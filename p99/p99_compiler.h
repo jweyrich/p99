@@ -202,27 +202,31 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 
 #if P99_COMPILER & P99_COMPILER_CLANG
-# define inline __attribute__((always_inline)) __inline__
-# define p99_inline __attribute__((always_inline)) __inline__
+# define inline __attribute__((weak)) __inline__
+# define static_inline static __inline__
+# define p99_inline __attribute__((weak)) __inline__
 #elif P99_COMPILER & P99_COMPILER_INTEL
 # define p99_inline static __inline__
-# define inline __inline__
+# define inline __attribute__((weak,always_inline)) __inline__
+# define static_inline static __inline__
 #elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 /* gcc prior to version 4.3 has the inline keyword but with slightly
    different semantics.
-   Be sure to allways inline functions in this cases.
+   Be sure to always inline functions in this cases.
    */
 # if P99_GCC_VERSION < 40300UL
 #  ifdef inline
 #   undef inline
 #  endif
 #  ifdef __GNUC_GNU_INLINE__
-#   define inline __attribute__((gnu_inline,always_inline)) __inline__
+#   define inline __attribute__((gnu_inline,weak)) __inline__
 #  else
-#   define inline __attribute__((always_inline)) __inline__
+#   define inline __attribute__((weak)) __inline__
+#   define static_inline static __inline__
 #  endif
 # endif
-# define p99_inline __attribute__((always_inline)) inline
+# define p99_inline static __attribute__((always_inline)) __inline__
+# define static_inline static __inline__
 #endif
 
 

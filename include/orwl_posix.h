@@ -199,14 +199,14 @@ enum {
   P00_POS_SC_MAX
 };
 
-#define P00_DECLARE_SC_(NAME, X, I)                             \
-/** @brief return the POSIX system config feature X */          \
-static_inline long P99_PASTE2(P99_S, X)(void) {                 \
-  switch (P99_PASTE2(_S, X)) {                                  \
-    /* OPEN_MAX can be changed with setrlimit */                \
-  case _SC_OPEN_MAX: return sysconf(_SC_OPEN_MAX);              \
-  default: return p00_sc_constant[P99_PASTE2(P00_POS_S, X)];    \
-  }                                                             \
+#define P00_DECLARE_SC_(NAME, X, I)                            \
+/** @brief return the POSIX system config feature X */         \
+inline long P99_PASTE2(P99_S, X)(void) {                       \
+  switch (P99_PASTE2(_S, X)) {                                 \
+    /* OPEN_MAX can be changed with setrlimit */               \
+  case _SC_OPEN_MAX: return sysconf(_SC_OPEN_MAX);             \
+  default: return p00_sc_constant[P99_PASTE2(P00_POS_S, X)];   \
+  }                                                            \
 }
 
 #define P00_DECLARE_SC(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SER, P00_DECLARE_SC_, __VA_ARGS__);
