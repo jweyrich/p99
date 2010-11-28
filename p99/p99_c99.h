@@ -45,7 +45,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <tgmath.h>
+#ifdef P00_NO_HAVE_TGMATH
+# warning It seems that your current compiler version does not support type generic math in "tgmath.h"
+#else
+# include <tgmath.h>
+#endif
 #include <time.h>
 #include <wchar.h>
 #include <wctype.h>

@@ -203,6 +203,10 @@ signed p00_trailing_comma_in_initializer__(void) {
 
 #if P99_COMPILER & P99_COMPILER_INTEL
 # define p99_inline inline
+# define p99_instantiate extern inline
+#ifndef __GNUC__
+# define P00_NO_HAVE_TGMATH
+#endif
 #elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64 | P99_COMPILER_CLANG)
 /* gcc prior to version 4.3 has the inline keyword but with slightly
    different semantics.

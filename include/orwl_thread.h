@@ -428,7 +428,7 @@ DEFINE_ONCE_STATIC(KEY) {                                                    \
   (void) pthread_key_create(&KEY, (void (*)(void *))P99_PASTE2(T, _delete)); \
 }                                                                            \
 p99_instantiate void P99_PASTE2(NAME, _clear)(void);                                         \
-T* NAME(void)
+p99_instantiate T* NAME(void)
 
 #define P00_DEFINE_THREAD_VAR(T, NAME, KEY) P00__DEFINE_THREAD_VAR(T, NAME, KEY)
 
