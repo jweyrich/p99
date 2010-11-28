@@ -66,8 +66,8 @@ DEFINE_ONCE_UPON(mycode) {
  END:;
 }
 
-void orwl_hton(uint64_t *n, uint64_t const *h, size_t l);
-void orwl_ntoh(uint64_t* h, uint64_t const *n, size_t l);
+p99_instantiate void orwl_hton(uint64_t *n, uint64_t const *h, size_t l);
+p99_instantiate void orwl_ntoh(uint64_t* h, uint64_t const *n, size_t l);
 
 in_addr_t p00_inet4_addr = P99_0(in_addr_t);
 
@@ -128,7 +128,7 @@ unsigned importance(in_addr_t a) {
   return ret;
 }
 
-char const* orwl_inet_ntop(struct sockaddr const* addr, char* buf, size_t size);
+p99_instantiate char const* orwl_inet_ntop(struct sockaddr const* addr, char* buf, size_t size);
 P99_DEFINE_DEFARG(orwl_inet_ntop, , , );
 
 in_addr_t orwl_inet_addr(char const *name) {
@@ -164,7 +164,7 @@ in_addr_t orwl_inet_addr(char const *name) {
   return ret;
 }
 
-auth_sock* auth_sock_init(auth_sock *sock,
+p99_instantiate auth_sock* auth_sock_init(auth_sock *sock,
                                   int fd,
                                   orwl_server* srv,
                           size_t len,
@@ -229,4 +229,4 @@ addr_t getpeer(auth_sock *Arg) {
 }
 
 
-char const* hostname(char *buffer, size_t len);
+p99_instantiate char const* hostname(char *buffer, size_t len);

@@ -201,15 +201,9 @@ signed p00_trailing_comma_in_initializer__(void) {
 # endif
 #endif
 
-#if P99_COMPILER & P99_COMPILER_CLANG
-# define inline __attribute__((weak)) __inline__
-# define static_inline static __inline__
-# define p99_inline __attribute__((weak)) __inline__
-#elif P99_COMPILER & P99_COMPILER_INTEL
-# define p99_inline static __inline__
-# define inline __attribute__((weak,always_inline)) __inline__
-# define static_inline static __inline__
-#elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
+#if P99_COMPILER & P99_COMPILER_INTEL
+# define p99_inline inline
+#elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64 | P99_COMPILER_CLANG)
 /* gcc prior to version 4.3 has the inline keyword but with slightly
    different semantics.
    Be sure to always inline functions in this cases.
@@ -222,17 +216,15 @@ signed p00_trailing_comma_in_initializer__(void) {
 #   define inline __attribute__((gnu_inline,weak)) __inline__
 #  else
 #   define inline __attribute__((weak)) __inline__
-#   define static_inline static __inline__
 #  endif
+#  define p99_instantiate
+# else
+#  define inline __inline__
+#  define p99_instantiate extern __inline__
 # endif
-# define p99_inline static __attribute__((always_inline)) __inline__
-# define static_inline static __inline__
+# define p99_inline __attribute__((always_inline,weak)) __inline__
 #endif
 
-
-# ifndef static_inline
-#  define static_inline static inline
-# endif
 # ifndef p99_inline
 /**
  ** @brief Try to force a function to be always inlined
@@ -245,6 +237,21 @@ signed p00_trailing_comma_in_initializer__(void) {
  **/
 #  define p99_inline static inline
 # endif
+
+# ifndef p99_instantiate
+/**
+ ** @brief Force a function symbol to be emitted.
+ **
+ ** The default that is used for this is to add the keywords
+ ** <code>extern inline</code>. By that the definition that has been
+ ** seen in this unit is not an @c inline definition and thus the
+ ** function is generated and a symbol is emitted.
+ **/
+# define p99_instantiate extern inline
+# endif
+
+
+
 
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
 # if P99_GCC_VERSION >= 30000UL

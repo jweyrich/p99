@@ -252,8 +252,8 @@ void orwl_pthread_wait_detached(void) {
   pthread_rwlock_unlock(&count);
 }
 
-pthread_t* pthread_t_init(pthread_t *id);
-void pthread_t_destroy(pthread_t *id);
+p99_instantiate pthread_t* pthread_t_init(pthread_t *id);
+p99_instantiate void pthread_t_destroy(pthread_t *id);
 
 DEFINE_NEW_DELETE(pthread_t);
 
@@ -277,4 +277,4 @@ void sleepfor(double t) {
   }
 }
 
-char const* pthread2str(char *buf, pthread_t id);
+p99_instantiate char const* pthread2str(char *buf, pthread_t id);

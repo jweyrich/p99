@@ -35,7 +35,9 @@
 #include "p99_id.h"
 
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
-#pragma GCC diagnostic ignored "-Wmissing-braces"
+# if P99_GCC_VERSION >= 40200UL
+#   pragma GCC diagnostic ignored "-Wmissing-braces"
+# endif
 #endif
 
 /**

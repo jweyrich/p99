@@ -27,6 +27,9 @@ extern inline void p00_einl(void) BODY
 /* extern inline function with other declaration, must be emitted */
 extern inline void p00_einl_p(void) BODY
 
+/* extern inline function with inline declaration, must be emitted */
+extern inline void p00_einl_inl(void) BODY
+
 /* inline function with other extern inline declaration, must be emitted */
 inline void p00_inl_einl(void) BODY
 

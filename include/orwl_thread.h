@@ -278,10 +278,10 @@ inline int P99_PASTE2(T, _create)(T* arg, pthread_t *id) {                      
 }                                                                                 \
 P99_MACRO_END(declare_thread)
 #define DEFINE_THREAD(T)                                       \
-T *P99_PASTE2(T, _join)(pthread_t id);                         \
-int P99_PASTE2(T, _create)(T* arg, pthread_t *id);             \
-void *P99_PASTE2(T, _start_joinable)(void* arg);               \
-void *P99_PASTE2(T, _start_detached)(void* arg);               \
+p99_instantiate T *P99_PASTE2(T, _join)(pthread_t id);                         \
+p99_instantiate int P99_PASTE2(T, _create)(T* arg, pthread_t *id);             \
+p99_instantiate void *P99_PASTE2(T, _start_joinable)(void* arg);               \
+p99_instantiate void *P99_PASTE2(T, _start_detached)(void* arg);               \
 void P99_PASTE2(T, _start)(T *const Arg)
 #endif
 
@@ -376,7 +376,7 @@ P99_MACRO_END(DECLARE_THREAD_VAR)
 
 #define DEFINE_THREAD_VAR(T, NAME)                                                  \
 __thread P99_PASTE2(NAME, _type) P99_PASTE2(NAME, _var) = { .initialized = false }; \
-void P99_PASTE2(NAME, _clear)(void);                                                \
+p99_instantiate void P99_PASTE2(NAME, _clear)(void);                                                \
 T* P99_PASTE2(NAME, _init)(void) {                                                  \
   register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var);             \
   register bool*const initialized = &ret->initialized;                              \
@@ -427,7 +427,7 @@ pthread_key_t KEY;                                                           \
 DEFINE_ONCE_STATIC(KEY) {                                                    \
   (void) pthread_key_create(&KEY, (void (*)(void *))P99_PASTE2(T, _delete)); \
 }                                                                            \
-void P99_PASTE2(NAME, _clear)(void);                                         \
+p99_instantiate void P99_PASTE2(NAME, _clear)(void);                                         \
 T* NAME(void)
 
 #define P00_DEFINE_THREAD_VAR(T, NAME, KEY) P00__DEFINE_THREAD_VAR(T, NAME, KEY)

@@ -195,7 +195,7 @@ P99_IF_EMPTY(X)                                                         \
 #define P00_DAFE(NAME, X, N)                                           \
 P99_IF_EMPTY(X)                                                        \
 (P99_MACRO_END(NAME, _boring_, N))                                     \
-(P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void))
+(p99_instantiate P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void))
 
 #define P00_DECLARE_DEFARG(NAME, N, ...)                       \
 P99_FOR(NAME, N, P00_SER, P00_EXPR_FUNCTION, __VA_ARGS__)      \
