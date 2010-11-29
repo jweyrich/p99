@@ -246,6 +246,7 @@ int main(int argc, char** argv) {
   /* use minus 256 since this can never lead to a trap representation */
   bitfield m_256 = { .C = { 0 }};
   m_256.U = (0u - 256u);
+  P99_IF_COMPILER(INTEL, warning(disable: 186)) /* pointless comparison of unsigned integer with zero */
   printf("P99 diagnostic:\t\t\t int in bitfield is %s\n", (m_256.i < 0 ? "signed" : "unsigned"));
   printf("P99 diagnostic:\t\t  signed int in bitfield is %s\n", (m_256.s < 0 ? "signed" : "unsigned"));
   printf("P99 diagnostic:\t\tunsigned int in bitfield is %s\n", (m_256.u < 0 ? "signed" : "unsigned"));

@@ -46,7 +46,7 @@
 #include <stdlib.h>
 #include <string.h>
 #ifdef P00_NO_HAVE_TGMATH
-# warning It seems that your current compiler version does not support type generic math in "tgmath.h"
+# pragma message "warning: it seems that your current compiler version does not support type generic math with \"tgmath.h\". Trying without."
 #else
 # include <tgmath.h>
 #endif

@@ -25,8 +25,8 @@ inline void p00_inl_p(void);
 
 
 int main(void) {
-  // missing symbol:      gcc-4.3 clang
-  // multiple definition: gcc-4.2 opencc
+  // missing symbol:      gcc-4.3- clang
+  // multiple definition: -gcc-4.2 opencc
   p00_inl();
   // missing symbol:      
   // multiple definition: 
