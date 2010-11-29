@@ -60,9 +60,9 @@ doxygen-p99 :
 
 p99-distribution : ${P99DISTRI}
 
-${P99_PREFIX}.tar :
+${P99_PREFIX}.tar : p99/ChangeLog
 	git archive -v --format=tar --prefix=${P99_RELEASE}/ HEAD ${P99FILES} -o $@
-	tar --label ${P99_RELEASE} ${TAROPT} --transform 's|^|${P99_RELEASE}/|' -rf $@ p99/LICENSE
+	tar --label ${P99_RELEASE} ${TAROPT} --transform 's|^|${P99_RELEASE}/|' -rf $@ p99/LICENSE p99/ChangeLog
 
 ${P99_PREFIX}.tgz : ${P99_PREFIX}.tar
 	gzip -9 $<
@@ -81,7 +81,7 @@ ${P99_PREFIX}-html.tgz ${P99_PREFIX}-html.zip ${P99_PREFIX}-refman.pdf : ${P99_P
 p99-links :
 	ln -fs  versions/${P99_RELEASE}.tgz ${P99_ARCHIVE}/p99.tgz
 	ln -fs  versions/${P99_RELEASE}.zip ${P99_ARCHIVE}/p99.zip
-	ln -fs  versions/${P99_RELEASE}-htlm.tgz ${P99_ARCHIVE}/p99-html.tgz
+	ln -fs  versions/${P99_RELEASE}-html.tgz ${P99_ARCHIVE}/p99-html.tgz
 	ln -fs  versions/${P99_RELEASE}-html.zip ${P99_ARCHIVE}/p99-html.zip
 	ln -fs  versions/${P99_RELEASE}-refman.pdf ${P99_ARCHIVE}/p99-refman.pdf
 
@@ -98,6 +98,9 @@ orwl-html.tgz orwl-html.zip orwl-refman.pdf : doxygen-orwl
 	cp orwl-latex/refman.pdf orwl-refman.pdf
 	tar -czf orwl-html.tgz orwl-html
 	zip -q -r orwl-html orwl-html/
+
+p99/ChangeLog :
+	git log --since=2010-11-20 -- p99 tests/test-p99-*.c > $@
 
 p99-transfer :
 	-rsync -az --no-g --no-p --progress -e 'ssh -ax' ${P99_ARCHIVE}/ ${P99_GFORGE}:${P99_HTDOCS}
