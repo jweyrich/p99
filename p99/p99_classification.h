@@ -102,12 +102,20 @@
 
 
 #define P00_DETECT_PAREN(...) ,
-#define P99_HAS_NO_PAREN(...)                                              \
-  P99_IS_EQ(P99_NARG(__VA_ARGS__), P99_NARG(P00_DETECT_PAREN __VA_ARGS__))
+
+/**
+ ** @brief Detect if the argument list has an extra pair of of () around.
+ **/
+#define P99_HAS_NO_PAREN(...)                                           \
+  /* Use of P00_NARG is important to avoid false trigger when __VA_ARGS__ is empty */ \
+P99_IS_EQ(P00_NARG(__VA_ARGS__), P00_NARG(P00_DETECT_PAREN __VA_ARGS__))
 #define P00_REMOVE_PAREN_(...) __VA_ARGS__
 
 #define P00_REMOVE_PAREN(ARG) P00_REMOVE_PAREN_ ARG
 
+/**
+ ** @brief Remove an extra pair of of () around the argument, if any.
+ **/
 #define P99_REMOVE_PAREN(...)                                              \
   P99_IF_ELSE(P99_HAS_NO_PAREN(__VA_ARGS__))(__VA_ARGS__)(P00_REMOVE_PAREN(__VA_ARGS__))
 
