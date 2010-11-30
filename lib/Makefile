@@ -9,6 +9,7 @@
 ## 
 
 include ../scripts/Makefile-getconf-orwl
+include ../scripts/Makefile-__thread
 
 NAME 	=	liborwl.a liborwl.so	# Name of executable file
 SRC	=					\
@@ -45,7 +46,7 @@ EXEOPT  += -lpthread -lm
 LPATH   += -L.
 
 ifeq (${POSIX_SEMAPHORES},-1L)
-$(warning No POSIX semaphores were detected on this system. Replacing them by a stub)
+$(warning No POSIX semaphores were detected on this system. Replacing them by a wrapper)
 else
 SRC += semaphore_nointr.c
 EXEOPT += -lrt
@@ -64,8 +65,8 @@ UNCOMP	= gzip -df
 STRIP	= strip
 NM	= nm
 NM_UNDEF_FILTER	= sed -n "/^[ ]*U [a-z]/s|.* \([a-z0-9_]*\).*|\1|g p"
-CFLAGS  = -fPIC $(OBJOPT) $(IPATH)
-LDFLAGS = $(EXEOPT) $(LPATH)
+CFLAGS  += -fPIC $(OBJOPT) $(IPATH)
+LDFLAGS += $(EXEOPT) $(LPATH)
 COPY = "all rights reserved, "
 LICENSE = SHORTLICENCE-closed.txt
 TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile

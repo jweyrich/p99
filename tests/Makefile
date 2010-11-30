@@ -9,6 +9,7 @@
 ## 
 
 include ../scripts/Makefile-getconf-orwl
+include ../scripts/Makefile-__thread
 
 NAME 	=					\
 		orwl_remote_server		\
@@ -67,16 +68,16 @@ endif
 CC 	= c99
 MAKE 	= make
 SHELL	= /bin/sh
-OBJS 	= $(SRC:.c=.o) 
-RM 	= /bin/rm -f 	
+OBJS 	= $(SRC:.c=.o)
+RM 	= /bin/rm -f
 COMP	= gzip -9v
 UNCOMP	= gzip -df
 STRIP	= strip
 
-CFLAGS  = $(OBJOPT) $(IPATH)
-LDFLAGS = $(EXEOPT) $(LPATH)
+CFLAGS  += $(OBJOPT) $(IPATH)
+LDFLAGS += $(EXEOPT) $(LPATH)
 
-.SUFFIXES: .h.Z .c.Z .h.gz .c.gz .c.z .h.z 
+.SUFFIXES: .h.Z .c.Z .h.gz .c.gz .c.z .h.z
 
 ##############################
 # Basic Compile Instructions #
@@ -101,14 +102,14 @@ fclean:
 	-$(RM) $(NAME)
 comp: clean
 	$(COMP) $(INCL) $(SRC)
-ucomp: 
+ucomp:
 	$(UNCOMP) $(SRC) $(INCL)
 
 .c.Z.c .h.Z.h .c.gz.c .h.gz.h .c.z.c .h.z.h :
 	 -$(UNCOMP) $<
 
 .c.o:
-	$(CC) $(CFLAGS) -c $< 
+	$(CC) $(CFLAGS) -c $<
 
 
 tidy :

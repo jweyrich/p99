@@ -281,11 +281,11 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define P00_NO_HAVE_TGMATH
 #endif
 #elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64 | P99_COMPILER_CLANG)
-/* gcc prior to version 4.3 has the inline keyword but with slightly
+/* gcc prior to version 4.2.1 has the inline keyword but with slightly
    different semantics.
    Be sure to always inline functions in this cases.
    */
-# if P99_GCC_VERSION < 40300UL
+# if P99_GCC_VERSION < 40201UL
 #  ifdef inline
 #   undef inline
 #  endif

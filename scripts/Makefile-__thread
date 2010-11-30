@@ -1,0 +1,8 @@
+# -*- makefile-gmake -*-
+
+__THREAD := $(shell echo '__thread int i;' | ${CC} ${CFLAGS} -xc -c -o /dev/null - 2> /dev/null || echo "NO")
+
+ifeq (${__THREAD},NO)
+${warning thread local storage (TLS) with '__thread' is not supported, switching to pthread_getkey}
+CFLAGS += -D__GNUC_NO_TLS__
+endif
