@@ -101,6 +101,16 @@
 #define P00_BUILTIN_TYPE_ulL	P00_BUILTIN_TYPE_ull
 
 
+#define P00_DETECT_PAREN(...) ,
+#define P99_HAS_NO_PAREN(...)                                              \
+  P99_IS_EQ(P99_NARG(__VA_ARGS__), P99_NARG(P00_DETECT_PAREN __VA_ARGS__))
+#define P00_REMOVE_PAREN_(...) __VA_ARGS__
+
+#define P00_REMOVE_PAREN(ARG) P00_REMOVE_PAREN_ ARG
+
+#define P99_REMOVE_PAREN(...)                                              \
+  P99_IF_ELSE(P99_HAS_NO_PAREN(__VA_ARGS__))(__VA_ARGS__)(P00_REMOVE_PAREN(__VA_ARGS__))
+
 #define P00_TYPE_NORMALIZE_(CODE, CONS, VOLA, SEQ)             \
 P99_IF_EMPTY(CODE)                                             \
   (P99_IF_EMPTY(SEQ)(void)(SEQ))                               \
@@ -110,7 +120,7 @@ P99_IF_EMPTY(CODE)                                             \
   )
 
 #define P00_TYPE_NORMALIZE(N, CODE, SEQ)                       \
-P00_TYPE_NORMALIZE_(CODE,                                      \
+P00_TYPE_NORMALIZE_(CODE,                    \
                      P00_CONST_CLASSIFY_(N, SEQ),              \
                      P00_VOLATILE_CLASSIFY_(N, SEQ),           \
                      SEQ                                       \
