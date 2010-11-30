@@ -18,7 +18,9 @@ CLEAN = ${patsubst %,%/clean,${DIRS}}
 DISTCLEAN = ${patsubst %,%/distclean,${DIRS}}
 TIDY = ${patsubst %,%/tidy,${DIRS}}
 
+ifndef DATE
 DATE := ${shell date --rfc-3339=date}
+endif
 P99_RELEASE := p99-${DATE}
 P99_ARCHIVE := gforge-p99
 P99_PREFIX := ${shell pwd}/${P99_ARCHIVE}/versions/${P99_RELEASE}
@@ -30,7 +32,7 @@ P99_HTDOCS = /home/groups/p99/htdocs
 
 TAROPT := --dereference --owner=root --group=root
 
-.PHONY : target clean ${DIRS} doxygen ${CLEAN} ${DISTCLEAN} ${TIDY}
+.PHONY : target clean ${DIRS} doxygen p99/ChangeLog ${CLEAN} ${DISTCLEAN} ${TIDY}
 
 all : ${DIRS}
 
