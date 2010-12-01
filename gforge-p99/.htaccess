@@ -1,0 +1,7 @@
+AddDescription "P99 code documentation" p99-html*
+AddDescription "current version" p99.zip
+AddDescription "current version" p99.tgz
+AddDescription "reference manual" p99-refman.pdf
+AddDescription "previous versions" versions
+IndexOptions   +FancyIndexing +FoldersFirst +SuppressHTMLPreamble
+IndexIgnore    *~ *bak *new *orig *.php log */HEADER* */README* */RCS*
