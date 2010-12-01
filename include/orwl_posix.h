@@ -138,7 +138,6 @@ C_SIGQUEUE_MAX,                                                \
 C_SPAWN,                                                       \
 C_SPIN_LOCKS,                                                  \
 C_SPORADIC_SERVER,                                             \
-C_SS_REPL_MAX,                                                 \
 C_STREAM_MAX,                                                  \
 C_SYMLOOP_MAX,                                                 \
 C_SYNCHRONIZED_IO,                                             \
@@ -161,12 +160,8 @@ C_TIMER_MAX,                                                   \
 C_TIMERS,                                                      \
 C_TRACE,                                                       \
 C_TRACE_EVENT_FILTER,                                          \
-C_TRACE_EVENT_NAME_MAX,                                        \
 C_TRACE_INHERIT,                                               \
 C_TRACE_LOG,                                                   \
-C_TRACE_NAME_MAX,                                              \
-C_TRACE_SYS_MAX,                                               \
-C_TRACE_USER_EVENT_MAX,                                        \
 C_TTY_NAME_MAX,                                                \
 C_TYPED_MEMORY_OBJECTS,                                        \
 C_TZNAME_MAX,                                                  \
@@ -185,9 +180,16 @@ C_XOPEN_LEGACY,                                                \
 C_XOPEN_REALTIME,                                              \
 C_XOPEN_REALTIME_THREADS,                                      \
 C_XOPEN_SHM,                                                   \
-C_XOPEN_STREAMS,                                               \
 C_XOPEN_UNIX,                                                  \
 C_XOPEN_VERSION
+
+#define P00_POSIX_SC_6                          \
+C_SS_REPL_MAX,                                  \
+C_TRACE_EVENT_NAME_MAX,                         \
+C_TRACE_NAME_MAX,                               \
+C_TRACE_SYS_MAX,                                \
+C_TRACE_USER_EVENT_MAX,                         \
+C_XOPEN_STREAMS
 
 #define P00_DECLARE_SC_ENUM_(NAME, X, I) P99_PASTE2(P00_POS_S, X)
 
@@ -196,6 +198,9 @@ C_XOPEN_VERSION
 enum {
   P00_DECLARE_SC_ENUM(P00_POSIX_SC_1),
   P00_DECLARE_SC_ENUM(P00_POSIX_SC_2),
+#ifdef _SC_TRACE_USER_EVENT_MAX
+  P00_DECLARE_SC_ENUM(P00_POSIX_SC_6),
+#endif
   P00_POS_SC_MAX
 };
 
@@ -213,6 +218,9 @@ inline long P99_PASTE2(P99_S, X)(void) {                       \
 
 P00_DECLARE_SC(P00_POSIX_SC_1)
 P00_DECLARE_SC(P00_POSIX_SC_2)
+#ifdef _SC_TRACE_USER_EVENT_MAX
+ P00_DECLARE_SC(P00_POSIX_SC_6)
+#endif
 
 #undef P00_DECLARE_SC_ENUM_
 #undef P00_DECLARE_SC_ENUM

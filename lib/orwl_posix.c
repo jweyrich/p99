@@ -31,6 +31,9 @@
 static long p00_sc_constant_[P00_POS_SC_MAX] = {
   P00_DEFINE_SC_1(P00_POSIX_SC_1),
   P00_DEFINE_SC_1(P00_POSIX_SC_2),
+#ifdef _SC_TRACE_USER_EVENT_MAX
+  P00_DEFINE_SC_1(P00_POSIX_SC_6),
+#endif
 };
 
 long const*const p00_sc_constant = p00_sc_constant_;
@@ -41,6 +44,9 @@ long const*const p00_sc_constant = p00_sc_constant_;
 
 P00_DEFINE_SC(P00_POSIX_SC_1);
 P00_DEFINE_SC(P00_POSIX_SC_2);
+#ifdef _SC_TRACE_USER_EVENT_MAX
+P00_DEFINE_SC(P00_POSIX_SC_6);
+#endif
 
 #define P00_DEFINE_SC_NAME_(NAME, X, I) "_S" P99_STRINGIFY(X)
 
@@ -49,6 +55,9 @@ P00_DEFINE_SC(P00_POSIX_SC_2);
 static char const*const p00_sc_name[P00_POS_SC_MAX] = {
   P00_DEFINE_SC_NAME(P00_POSIX_SC_1),
   P00_DEFINE_SC_NAME(P00_POSIX_SC_2),
+#ifdef _SC_TRACE_USER_EVENT_MAX
+  P00_DEFINE_SC_NAME(P00_POSIX_SC_6),
+#endif
 };
 
 static
@@ -73,6 +82,9 @@ p00_sc_constant_[P99_PASTE2(P00_POS_S, X)] = p00_sysconf(P99_PASTE(_S, X))
 void orwl_posix_init(void) {
   P00_DEFINE_SC_INIT(P00_POSIX_SC_1);
   P00_DEFINE_SC_INIT(P00_POSIX_SC_2);
+#ifdef _SC_TRACE_USER_EVENT_MAX
+  P00_DEFINE_SC_INIT(P00_POSIX_SC_6);
+#endif
 }
 
 void orwl_posix_print(void) {
