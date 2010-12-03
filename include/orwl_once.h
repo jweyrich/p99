@@ -79,10 +79,10 @@ static void P99_PASTE3(orwl__, T, _once_init)(void)
 P99_BLOCK_DOCUMENT
 #define MUTUAL_EXCLUDE(MUT)                                    \
 P99_GUARDED_BLOCK(pthread_mutex_t*,                            \
-      mut,                                                     \
+      P99_FILEID(mut),                                         \
       &(MUT),                                                  \
-      pthread_mutex_lock(mut),                                 \
-      pthread_mutex_unlock(mut))
+      pthread_mutex_lock(P99_FILEID(mut)),                     \
+      pthread_mutex_unlock(P99_FILEID(mut)))
 
 /**
  ** @brief Ensure that the function that was defined with
