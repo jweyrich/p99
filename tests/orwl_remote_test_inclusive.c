@@ -27,41 +27,6 @@ static size_t phases = 4;
 static size_t offset = 0;
 static size_t number = 0;
 
-#define threadof(x) ((((size_t)x) + orwl_np) % orwl_np)
-
-typedef struct {
-  size_t mynum;
-  size_t phase;
-  char* info;
-} cb_t;
-
-cb_t* cb_t_init(cb_t *cb, size_t m, size_t p, char* i) {
-  cb->mynum = m;
-  cb->phase = p;
-  cb->info = i;
-  return cb;
-}
-
-P99_PROTOTYPE(cb_t*, cb_t_init, cb_t*, size_t, size_t, char*);
-P99_DEFARG_DOCU(cb_t_init)
-#define cb_t_init(...) P99_CALL_DEFARG(cb_t_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), P99_0(char*));
-P99_DEFINE_DEFARG(cb_t_init, , P99_0(size_t), P99_0(size_t), P99_0(char*));
-
-void cb_t_destroy(cb_t *cb) {
-  /* empty */
-}
-
-DECLARE_NEW_DELETE(cb_t);
-DEFINE_NEW_DELETE(cb_t);
-
-DECLARE_CALLBACK(cb_t);
-
-DEFINE_CALLBACK(cb_t) {
-  if (Arg->info)
-    memset(Arg->info, ' ', 2);
-}
-
 typedef struct _arg_t {
   size_t offset;
   size_t mynum;
@@ -192,10 +157,6 @@ DEFINE_THREAD(arg_t) {
           info[-1] = (abs(diff[0]) <= 2 ? ((char[]){ '-', '<', '.', '>', '+'})[diff[0] + 2] : '!');
       }
     }
-    /* if (orwl_phase < phases - 1) { */
-    /*   cb_t *cb = NEW(cb_t, orwl_mynum, orwl_phase, info); */
-    /*   orwl_callback_attach_cb_t(cb, ((leh[1])[!parity]).wh); */
-    /* } */
     sleepfor(rwait);
     if (info) {
       char num[10];
