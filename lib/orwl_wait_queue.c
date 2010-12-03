@@ -15,23 +15,23 @@
 
 DEFINE_ENUM(orwl_state);
 
-static pthread_mutexattr_t smattr;
-
 DEFINE_ONCE(orwl_wq) {
-  pthread_mutexattr_init(&smattr);
+  INIT_ONCE(orwl_thread);
 }
 
 orwl_wq* orwl_wq_init(orwl_wq *wq,
                                 const pthread_mutexattr_t *attr) {
   INIT_ONCE(orwl_wq);
   if (!wq) return 0;
-  if (!attr) attr = &smattr;
-  pthread_mutex_init(&wq->mut, attr);
-  wq->head = 0;
-  wq->tail = 0;
-  wq->data = 0;
-  wq->data_len = 0;
-  wq->clock = 1;
+  *wq = (orwl_wq const){
+    .mut = PTHREAD_MUTEX_INITIALIZER,
+    .head = 0,
+    .tail = 0,
+    .data = 0,
+    .data_len = 0,
+    .clock = 1,
+  };
+  if (attr) pthread_mutex_init(&wq->mut, attr);
   return wq;
 }
 
@@ -46,32 +46,34 @@ void orwl_wq_destroy(orwl_wq *wq) {
   ORWL__WQ_CHECK(wq->tail);
   if (wq->data) free(wq->data);
   pthread_mutex_destroy(&wq->mut);
-  wq->head = TGARB(orwl_wh*);
-  wq->tail = TGARB(orwl_wh*);
-  wq->data = TGARB(void*);
-  wq->clock = P99_TMAX(uint64_t);
-  wq->data_len = P99_TMAX(size_t);
+  *wq = (orwl_wq const){
+    .head = TGARB(orwl_wh*),
+    .tail = TGARB(orwl_wh*),
+    .data = TGARB(void*),
+    .clock = P99_TMAX(uint64_t),
+    .data_len = P99_TMAX(size_t),
+  };
 }
 
 DEFINE_NEW_DELETE(orwl_wq);
 
-static pthread_condattr_t scattr;
-
 DEFINE_ONCE(orwl_wh) {
-  pthread_condattr_init(&scattr);
+  INIT_ONCE(orwl_thread);
 }
 
 orwl_wh* orwl_wh_init(orwl_wh *wh,
                   const pthread_condattr_t *attr) {
   INIT_ONCE(orwl_wh);
   if (!wh) return 0;
-  if (!attr) attr = &scattr;
-  pthread_cond_init(&wh->cond, attr);
-  wh->location = 0;
-  wh->next = 0;
-  wh->tokens = 0;
-  wh->priority = 0;
-  wh->svrID = 0;
+  *wh = (orwl_wh const){
+    .cond = PTHREAD_COND_INITIALIZER,
+    .location = 0,
+    .next = 0,
+    .tokens = 0,
+    .priority = 0,
+    .svrID = 0,
+  };
+  if (attr) pthread_cond_init(&wh->cond, attr);
   return wh;
 }
 
@@ -79,9 +81,11 @@ void orwl_wh_destroy(orwl_wh *wh) {
   assert(!wh->location);
   assert(!wh->next);
   pthread_cond_destroy(&wh->cond);
-  wh->location = TGARB(orwl_wq*);
-  wh->next = TGARB(orwl_wh*);
-  wh->priority = P99_TMAX(int64_t);
+  *wh = (orwl_wh const){
+    .location = TGARB(orwl_wq*),
+    .next = TGARB(orwl_wh*),
+    .priority = P99_TMAX(int64_t),
+  };
 }
 
 DEFINE_NEW_DELETE(orwl_wh);
