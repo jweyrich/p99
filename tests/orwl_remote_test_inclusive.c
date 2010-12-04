@@ -36,10 +36,13 @@ typedef struct _arg_t {
 } arg_t;
 
 arg_t* arg_t_init(arg_t *arg, size_t m, size_t ph, orwl_mirror* le) {
-  arg->mynum = m;
-  arg->phases = ph;
-  arg->left = le;
-  arg->info = 0;
+  if (arg)
+    *arg = P99_LVAL(arg_t const,
+                    .mynum = m,
+                    .phases = ph,
+                    .left = le,
+                    .info = 0,
+                    );
   return arg;
 }
 

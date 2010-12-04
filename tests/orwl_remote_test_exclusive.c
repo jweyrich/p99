@@ -33,9 +33,12 @@ typedef struct {
 } cb_t;
 
 cb_t* cb_t_init(cb_t *cb, size_t m, size_t p, char* i) {
-  cb->mynum = m;
-  cb->phase = p;
-  cb->info = i;
+  if (cb) 
+    *cb = P99_LVAL(cb_t const,
+                   .mynum = m,
+                   .phase = p,
+                   .info = i,
+                   );
   return cb;
 }
 
@@ -66,8 +69,11 @@ typedef struct _arg_t {
 } arg_t;
 
 arg_t* arg_t_init(arg_t *arg, size_t def) {
-  arg->mynum = def;
-  arg->phases = def;
+  if (arg)
+    *arg = P99_LVAL(arg_t const,
+                    arg->mynum = def,
+                    arg->phases = def,
+                    );
   return arg;
 }
 

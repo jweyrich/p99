@@ -287,7 +287,7 @@ void P99_PASTE2(T, _start)(T *const Arg)
 
 inline pthread_t* pthread_t_init(pthread_t *id) {
   if (!id) return 0;
-  P99_TZERO(*id);
+  *id = P99_LVAL(pthread_t const);
   return id;
 }
 inline void pthread_t_destroy(pthread_t *id) {
@@ -376,7 +376,7 @@ P99_MACRO_END(DECLARE_THREAD_VAR)
 
 #define DEFINE_THREAD_VAR(T, NAME)                                                  \
 __thread P99_PASTE2(NAME, _type) P99_PASTE2(NAME, _var) = { .initialized = false }; \
-p99_instantiate void P99_PASTE2(NAME, _clear)(void);                                                \
+p99_instantiate void P99_PASTE2(NAME, _clear)(void);                                \
 T* P99_PASTE2(NAME, _init)(void) {                                                  \
   register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var);             \
   register bool*const initialized = &ret->initialized;                              \

@@ -112,11 +112,11 @@ inline int orwl_sem_getvalue(orwl_sem *s, int *p) {
 
 inline int orwl_sem_init(orwl_sem *s, unsigned int val) {
   if (!s || val > ORWL_SEM_VALUE_MAX) return EINVAL;
-  int ret = pthread_cond_init(&s->cond, 0);
-  if (ret) return ret;
-  ret = pthread_mutex_init(&s->mut, 0);
-  if (ret) return ret;
-  s->val = val;
+  *s = P99_LVAL(orwl_sem const,
+                .mut = PTHREAD_MUTEX_INITIALIZER,
+                .cond = PTHREAD_COND_INITIALIZER,
+                .val = val,
+                );
   return 0;
 }
 

@@ -80,8 +80,8 @@ orwl_mirror *orwl_mirror_init(orwl_mirror *rq, /*!< [out] the object to iniializ
 }
 
 P99_DECLARE_DEFARG(orwl_mirror_init, , , );
-#define orwl_mirror_init_defarg_1() ((orwl_endpoint){ .index = 0 })
-#define orwl_mirror_init_defarg_2() ((orwl_endpoint){ .index = 0 })
+#define orwl_mirror_init_defarg_1() P99_LVAL(orwl_endpoint, .index = 0 )
+#define orwl_mirror_init_defarg_2() P99_LVAL(orwl_endpoint, .index = 0 )
 
 DOCUMENT_DESTROY(orwl_mirror)
 inline
