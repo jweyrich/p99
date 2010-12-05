@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
           if (block)
             stdin = fdopen(fd[0], "r");
         }
-        orwl_server* srv = P99_NEW(orwl_server, con, len);
+        orwl_server*volatile srv = P99_NEW(orwl_server, con, len);
         if (address[0]) orwl_endpoint_parse(&srv->host.ep, address);
         pthread_t srv_id;
         orwl_server_create(srv, &srv_id);
@@ -132,7 +132,7 @@ int main(int argc, char **argv) {
           char* tlf = P99_STRDUP(lockfilename, "XXXXXX");
           mode_t oldmask = umask(077);
           P99_UNWIND_PROTECT {
-            int lockfd = mkstemp(tlf);
+            int volatile lockfd = mkstemp(tlf);
             if (lockfd < 0)
               P99_ERROR_RETURN("could not open lockfile");
             size_t len = strlen(server_name);
@@ -197,7 +197,7 @@ int main(int argc, char **argv) {
         P99_UNWIND_PROTECT {
           close(fd[0]);
           char mess[32] = {0};
-          FILE* out = fdopen(fd[1], "w");
+          FILE*volatile out = fdopen(fd[1], "w");
           if (!fgets(mess, 32, stdin)) {
             kill(pid, SIGKILL);
             P99_ERROR_RETURN("error when reading from stdin");
