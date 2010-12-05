@@ -24,14 +24,7 @@ size_t orwl_phase = 0;
  ** dependent block or statement.
  **/
 P99_BLOCK_DOCUMENT
-#define ACCOUNT(COUNT)                                         \
-P99_GUARDED_BLOCK(                                             \
-           pthread_rwlock_t*,                                  \
-           _count,                                             \
-           &(COUNT),                                           \
-           pthread_rwlock_rdlock(_count),                      \
-           pthread_rwlock_unlock(_count))
-
+#define ACCOUNT(COUNT) P99_PROTECTED_BLOCK(lock(), unlock())
 
 void orwl_report(size_t mynum, size_t np, size_t phase, char const* format, ...) {
   static char const form0[] = "%s:%zX: %s\n";
@@ -112,7 +105,56 @@ pthread_rwlockattr_t const*const pthread_rwlockattr_process = &pthread_rwlockatt
  * wait on just using the semaphore. Thus we use a mutex / cond pair
  * to use pthread signaling through conditions.
  */
-static pthread_rwlock_t count;
+static size_t count;
+static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
+
+#if defined(__GNUC__) && (P99_GCC_VERSION > 40101L)
+
+static
+void lock(void) {
+  __sync_add_and_fetch(&count, (size_t)1);
+}
+
+static
+void unlock(void) {
+  size_t val = __sync_sub_and_fetch(&count, (size_t)1);
+  /* if we are the last notify the waiters */
+  if (P99_UNLIKELY(!val))
+    MUTUAL_EXCLUDE(mut)
+      pthread_cond_broadcast(&cnd);
+}
+
+static
+void wait(void) {
+  MUTUAL_EXCLUDE(mut)
+    while (__sync_add_and_fetch(&count, (size_t)0)) pthread_cond_wait(&cnd, &mut);
+}
+
+#else
+
+static
+void lock(void) {
+  MUTUAL_EXCLUDE(mut) {
+    ++count;
+  }
+}
+
+static
+void unlock(void) {
+  MUTUAL_EXCLUDE(mut) {
+    --count;
+    if (!count) pthread_cond_broadcast(&cnd);
+  }
+}
+
+static
+void wait(void) {
+  MUTUAL_EXCLUDE(mut) {
+    while (count) pthread_cond_wait(&cnd, &mut);
+  }
+}
+#endif
 
 DEFINE_ONCE(pthread_mutex_t) {
   pthread_mutexattr_init(&pthread_mutexattr_process_);
@@ -151,7 +193,6 @@ DEFINE_ONCE(orwl_thread) {
   INIT_ONCE(pthread_mutex_t);
   INIT_ONCE(pthread_cond_t);
   INIT_ONCE(pthread_rwlock_t);
-  pthread_rwlock_init(&count);
   pthread_attr_init(&pthread_attr_detached_);
   pthread_attr_setdetachstate(&pthread_attr_detached_, PTHREAD_CREATE_DETACHED);
   pthread_attr_init(&pthread_attr_joinable_);
@@ -235,7 +276,7 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
   /* Be sure to allocate the pair on the heap to leave full control
      to detached_wrapper() of what to do with it. */
   orwl__routine_arg *Routine_Arg = P99_NEW(orwl__routine_arg, start_routine, arg);
-  int ret = pthread_create(&(pthread_t){0},
+  int ret = pthread_create(&P99_LVAL(pthread_t),
                            pthread_attr_detached,
                            detached_wrapper,
                            Routine_Arg);
@@ -248,8 +289,7 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
 
 void orwl_pthread_wait_detached(void) {
   INIT_ONCE(orwl_thread);
-  pthread_rwlock_wrlock(&count);
-  pthread_rwlock_unlock(&count);
+  wait();
 }
 
 p99_instantiate pthread_t* pthread_t_init(pthread_t *id);
@@ -262,10 +302,7 @@ void sleepfor(double t) {
   double const nano = 1E-9;
   while (t > 0.0) {
     double sec = trunc(t);
-    struct timespec rem = {
-      .tv_sec = 0,
-      .tv_nsec = 0
-    };
+    struct timespec rem = P99_INIT;
     struct timespec req = {
       .tv_sec = (time_t)sec,
       .tv_nsec = (time_t)((t - sec) * mega)
