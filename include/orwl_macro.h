@@ -66,11 +66,11 @@
  **/
 #define VA_MODARG(AP, ...) P00_VA_MODARG(AP, __VA_ARGS__, 0, ~)
 
-#define P00_CAS1(NAME, X, N) (P99_PASTE2(NAME, _mod_type_0){ X }
-#define P00_CAS2(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 2))){ X }
-#define P00_CAS3(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 3))){ X }
-#define P00_CAS4(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 4))){ X }
-#define P00_CAS5(NAME, X, N) (P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 5))){ X }
+#define P00_CAS1(NAME, X, N) P99_LVAL(P99_PASTE2(NAME, _mod_type_0), X)
+#define P00_CAS2(NAME, X, N) P99_LVAL(P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 2)), X)
+#define P00_CAS3(NAME, X, N) P99_LVAL(P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 3)), X)
+#define P00_CAS4(NAME, X, N) P99_LVAL(P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 4)), X )
+#define P00_CAS5(NAME, X, N) P99_LVAL(P99_PASTE3(NAME, _mod_type_, P99_DEC_MOD(N, 5)), X )
 #define P00_MODARG_LIST(NAME, F, N, ...) P99_FOR(NAME, N, P00_SEQ, F, __VA_ARGS__)
 
 #define LEN_MODARG(NAME, M, ...) P00_MODARG_(M)(__VA_ARGS__), P00_MODARG_LIST(NAME, P99_PASTE2(P00_CAS, M), P99_NARG(__VA_ARGS__), __VA_ARGS__)

@@ -24,6 +24,9 @@ orwl_server* orwl_server_init(orwl_server *serv,
                               size_t max_queues,
                               in_addr_t addr,
                               in_port_t port) {
+  INIT_ONCE(orwl_thread);
+  INIT_ONCE(orwl_wq);
+  INIT_ONCE(orwl_wh);
   if (serv) {
     *serv = (orwl_server) {
       .fd_listen = -1,

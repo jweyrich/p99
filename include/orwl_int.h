@@ -196,7 +196,7 @@ DECLARE_ARI2STR(sllong);
 DECLARE_ARI2STR(ullong);
 
 
-#define P00_ALLO(N) ((char[N]){0})
+#define P00_ALLO(N) (P99_LVAL(char[N]))
 
 /**
  ** @brief convert @a x to unsigned decimal

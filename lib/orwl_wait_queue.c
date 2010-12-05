@@ -23,14 +23,7 @@ orwl_wq* orwl_wq_init(orwl_wq *wq,
                                 const pthread_mutexattr_t *attr) {
   INIT_ONCE(orwl_wq);
   if (!wq) return 0;
-  *wq = P99_LVAL(orwl_wq const,
-                 .mut = PTHREAD_MUTEX_INITIALIZER,
-                 .head = 0,
-                 .tail = 0,
-                 .data = 0,
-                 .data_len = 0,
-                 .clock = 1,
-                 );
+  *wq = (orwl_wq const)ORWL_WQ_INITIALIZER;
   if (attr) pthread_mutex_init(&wq->mut, attr);
   return wq;
 }

@@ -55,7 +55,12 @@ struct orwl_mirror {
                            remote */
 };
 
-#define ORWL_MIRROR_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .local = ORWL_WQ_INITIALIZER }
+#define ORWL_MIRROR_INITIALIZER(HERE, THERE) {  \
+.mut = PTHREAD_MUTEX_INITIALIZER,               \
+  .local = ORWL_WQ_INITIALIZER,                 \
+  .here = HERE,                                 \
+  .there = THERE,                               \
+  }
 
 #ifndef DOXYGEN
 inline
@@ -71,11 +76,8 @@ orwl_mirror *orwl_mirror_init(orwl_mirror *rq, /*!< [out] the object to iniializ
                               orwl_endpoint h, /*!< [in] local, defaults to a temp variable */
                               orwl_endpoint t  /*!< [in] remote, defaults to a temp variable */
                               ) {
-  if (!rq) return 0;
-  pthread_mutex_init(&rq->mut, P99_0(pthread_mutexattr_t*));
-  orwl_wq_init(&rq->local);
-  rq->here = h;
-  rq->there = t;
+  if (rq)
+    *rq = (orwl_mirror const)ORWL_MIRROR_INITIALIZER(h, t);
   return rq;
 }
 

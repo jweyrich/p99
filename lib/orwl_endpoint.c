@@ -33,8 +33,8 @@ DEFINE_NEW_DELETE(orwl_endpoint);
 
 orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
   if (ep && name && name[0]) {
-    addr_t addr = ADDR_T_INITIALIZER(0);
-    port_t port = PORT_T_INITIALIZER(0);
+    addr_t addr = P99_INIT;
+    port_t port = P99_INIT;
     uint64_t index = 0;
     char const prefix[7 + 1] = "orwl://";
     if (strstr(name, prefix) == name) {
@@ -273,7 +273,7 @@ bool orwl_send_(int fd, uint64_t const*const mess, size_t len, uint64_t remo) {
 
 bool orwl_recv_(int fd, uint64_t *const mess, size_t len, uint64_t remo) {
   char * bbuf = (void*)mess;
-
+  if (!len) report(1, "orwl_recv_ with len 0, skipping\n");
   P99_UNWIND_PROTECT {
     for (size_t blen = sizeof(uint64_t) * len; blen;) {
       /* Don't stress the network layer by receiving too large messages

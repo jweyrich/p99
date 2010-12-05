@@ -110,14 +110,15 @@ do {                                                           \
  ** DEFINE_ONCE() has been called exactly once before further
  ** proceeding.
  **/
-#define INIT_ONCE(T)                                           \
-do {                                                           \
-  if (P99_UNLIKELY(!(P99_PASTE3(orwl__, T, _once).cond)))      \
-    MUTUAL_EXCLUDE(P99_PASTE3(orwl__, T, _once).mut)           \
-      if (!(P99_PASTE3(orwl__, T, _once).cond)) {              \
-        P99_PASTE3(orwl__, T, _once).init();                   \
-        P99_PASTE3(orwl__, T, _once).cond = true;              \
-      }                                                        \
+#define INIT_ONCE(T)                                            \
+do {                                                            \
+  if (P99_UNLIKELY(!(P99_PASTE3(orwl__, T, _once).cond)))       \
+    MUTUAL_EXCLUDE(P99_PASTE3(orwl__, T, _once).mut)            \
+      if (!(P99_PASTE3(orwl__, T, _once).cond)) {               \
+        fprintf(stderr, "Initializing %s for once\n", # T);     \
+        P99_PASTE3(orwl__, T, _once).init();                    \
+        P99_PASTE3(orwl__, T, _once).cond = true;               \
+      }                                                         \
  } while(0)
 
 /**

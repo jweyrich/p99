@@ -65,12 +65,12 @@ orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
                           size_t    refs  /*!< [in] defaults to 0 */
                           ) {
   if (th) {
-    *th = (orwl_host){
-      .next = th,
-      .prev = th,
-      .refs = refs,
-      .mut = PTHREAD_MUTEX_INITIALIZER,
-    };
+    *th = P99_LVAL(orwl_host,
+                   .next = th,
+                   .prev = th,
+                   .refs = refs,
+                   .mut = PTHREAD_MUTEX_INITIALIZER,
+                   );
     orwl_endpoint_init(&th->ep, addr, port);
   }
   return th;

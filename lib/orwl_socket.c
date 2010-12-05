@@ -177,12 +177,12 @@ void auth_sock_close(auth_sock *sock) {
   /* Since we are doing blocking send / receive the probability that
      we have a walking duplicate of an ancient package is
      minimal. Thus allow the reuse of ports. */
-  if (setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, &(int const){ 1 }, sizeof(int)) < 0)
+  if (setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, &P99_LVAL(int const, 1), sizeof(int)) < 0)
     P99_HANDLE_ERRNO {
     P99_XDEFAULT :
       perror("setting socket to SO_REUSEADDR failed");
     }
-  if (setsockopt(sock->fd, SOL_SOCKET, SO_LINGER, &(struct linger){ .l_onoff = 1, .l_linger = 1 }, sizeof(struct linger)) < 0)
+  if (setsockopt(sock->fd, SOL_SOCKET, SO_LINGER, &P99_LVAL(struct linger, .l_onoff = 1, .l_linger = 1), sizeof(struct linger)) < 0)
     P99_HANDLE_ERRNO {
     P99_XDEFAULT :
       perror("setting socket to linger failed");
@@ -224,7 +224,7 @@ DEFINE_THREAD(auth_sock) {
 
 addr_t getpeer(auth_sock *Arg) {
   struct sockaddr_in addr = SOCKADDR_IN_INIIALIZER;
-  int ret = getpeername(Arg->fd, (struct sockaddr*)&addr, &(socklen_t){sizeof(struct sockaddr_in)});
+  int ret = getpeername(Arg->fd, (struct sockaddr*)&addr, &P99_LVAL(socklen_t, sizeof(struct sockaddr_in)));
   return  (addr_t)ADDR_T_INITIALIZER((ret == -1) ? P99_0(in_addr_t) : addr.sin_addr.s_addr);
 }
 
