@@ -21,68 +21,8 @@
 uint64_t orwl_hton64(uint64_t val);
 uint64_t orwl_ntoh64(uint64_t val);
 
-static uint32_t mycode = 0;
-
-#define if_code(C0, C1, C2, C3) ((((uint32_t)C0) << 0) | (((uint32_t)C1) << 8) | (((uint32_t)C2) << 16) | (((uint32_t)C3) << 24))
-
-#define orwl_if_code(C0, C1, C2, C3)                           \
-do {                                                           \
-  static uint32_t const c = if_code(C0, C1, C2, C3);           \
-  if (ntohl(c) == if_code(0, 1, 2, 3)) {                       \
-    mycode = c;                                                \
-    goto END;                                                  \
-  }                                                            \
- } while (false)
-
-
-DEFINE_ONCE_UPON(mycode) {
-    orwl_if_code(0, 1, 2, 3);
-    orwl_if_code(0, 1, 3, 2);
-    orwl_if_code(0, 2, 1, 3);
-    orwl_if_code(0, 2, 3, 1);
-    orwl_if_code(0, 3, 1, 2);
-    orwl_if_code(0, 3, 2, 1);
-
-    orwl_if_code(1, 0, 2, 3);
-    orwl_if_code(1, 0, 3, 2);
-    orwl_if_code(1, 2, 0, 3);
-    orwl_if_code(1, 2, 3, 0);
-    orwl_if_code(1, 3, 0, 2);
-    orwl_if_code(1, 3, 2, 0);
-
-    orwl_if_code(2, 0, 1, 3);
-    orwl_if_code(2, 0, 3, 1);
-    orwl_if_code(2, 1, 0, 3);
-    orwl_if_code(2, 1, 3, 0);
-    orwl_if_code(2, 3, 0, 1);
-    orwl_if_code(2, 3, 1, 0);
-
-    orwl_if_code(3, 0, 1, 2);
-    orwl_if_code(3, 0, 2, 1);
-    orwl_if_code(3, 1, 0, 2);
-    orwl_if_code(3, 1, 2, 0);
-    orwl_if_code(3, 2, 0, 1);
-    orwl_if_code(3, 2, 1, 0);
- END:;
-}
-
 p99_instantiate void orwl_hton(uint64_t *n, uint64_t const *h, size_t l);
 p99_instantiate void orwl_ntoh(uint64_t* h, uint64_t const *n, size_t l);
-
-in_addr_t p00_inet4_addr = P99_0(in_addr_t);
-
-DEFINE_ONCE_UPON(inet4_addr) {
-  char const* str = getenv("INET4");
-  struct in_addr inaddr = IN_ADDR_INITIALIZER;
-  if (inet_aton(str, &inaddr)) {
-    p00_inet4_addr = inaddr.s_addr;
-  }
-}
-
-in_addr_t inet4_addr(void) {
-  INIT_ONCE_UPON(inet4_addr, p00_inet4_addr);
-  return p00_inet4_addr;
-}
 
 void orwl_ntoa(struct sockaddr_in const* addr, char *name) {
   sprintf(name, "orwl://%s:%" PRIu32 "/",

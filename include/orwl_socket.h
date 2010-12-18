@@ -78,12 +78,6 @@ do {                                                                            
  } while (0)
 
 
-extern in_addr_t p00_inet4_addr;
-
-DECLARE_ONCE_UPON(inet4_addr);
-
-in_addr_t inet4_addr(void);
-
 #ifndef DOXYGEN
 inline
 P99_PROTOTYPE(char const*, orwl_inet_ntop, struct sockaddr const*, char*, size_t);
