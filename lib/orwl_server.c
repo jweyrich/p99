@@ -40,17 +40,20 @@ orwl_server* orwl_server_init(orwl_server *serv,
 }
 
 void orwl_server_close(orwl_server *serv) {
-  MUTUAL_EXCLUDE(serv->host.mut)
-    if (serv->fd_listen != -1) {
-      int fd = serv->fd_listen;
-      serv->fd_listen = -1;
-      close(fd);
+  if (serv) {
+    MUTUAL_EXCLUDE(serv->host.mut) {
+      if (serv->fd_listen != -1) {
+        int fd = serv->fd_listen;
+        serv->fd_listen = -1;
+        close(fd);
+      }
     }
+  }
 }
 
 
-void orwl_server_terminate(orwl_server *serv, rand48_t *seed) {
-  orwl_send(&serv->host.ep, seed, 0, P99_0(uint64_t*));
+void orwl_server_terminate(orwl_server *serv) {
+  if (serv) orwl_send(&serv->host.ep, seed_get(), 0, P99_0(uint64_t*));
 }
 
 void orwl_server_destroy(orwl_server *serv) {
@@ -99,7 +102,7 @@ DEFINE_THREAD(orwl_server) {
   char const* volatile errorstr = 0;
   Arg->fd_listen = socket(AF_INET);
   if (P99_LIKELY(Arg->fd_listen >= 0)) {
-    rand48_t seed = RAND48_T_INITIALIZER;
+    rand48_t* seed = seed_get();
     struct sockaddr_in addr = {
       .sin_addr = addr2net(&Arg->host.ep.addr),
       .sin_port = port2net(&Arg->host.ep.port),
@@ -130,7 +133,7 @@ DEFINE_THREAD(orwl_server) {
       }
       for (uint64_t t = 1; Arg->fd_listen != -1; ++t) {
         /* Do this work before being connected */
-        uint64_t const chal = orwl_rand64(&seed);
+        uint64_t const chal = orwl_rand64(seed);
         uint64_t const repl = orwl_challenge(chal);
         header_t header = HEADER_T_INITIALIZER(0);
 

@@ -76,8 +76,7 @@ void orwl_server_close(orwl_server *serv);
  **/
 P99_DEFARG_DOCU(orwl_server_terminate)
 void
-orwl_server_terminate(orwl_server *serv,   /*!< the server to terminate */
-                       rand48_t* seed  /*!< [in] defaults to a thread local seed */
+orwl_server_terminate(orwl_server *serv   /*!< the server to terminate */
                       );
 
 /**
@@ -100,13 +99,6 @@ void orwl_server_block(orwl_server *serv);
  ** @memberof orwl_server
  **/
 void orwl_server_unblock(orwl_server *serv);
-
-
-#ifndef DOXYGEN
-P99_PROTOTYPE(void, orwl_server_terminate, orwl_server *, rand48_t *);
-#define orwl_server_terminate(...) P99_CALL_DEFARG(orwl_server_terminate, 2, __VA_ARGS__)
-#define orwl_server_terminate_defarg_1() seed_get()
-#endif
 
 
 void
