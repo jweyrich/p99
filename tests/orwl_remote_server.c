@@ -113,10 +113,7 @@ int main(int argc, char **argv) {
             stdin = fdopen(fd[0], "r");
         }
         orwl_server srv;
-        orwl_server_init(&srv, con, len, address);
-        orwl_server_create(&srv, &srv.id);
-        /* give the server the chance to fire things up */
-        while (!port2net(&srv.host.ep.port)) sleepfor(0.01);
+        orwl_start(&srv, con, len, address);
         char const* server_name = orwl_endpoint_print(&srv.host.ep);
         if (verbose) {
           size_t ilen = 3 * len + 1;
@@ -189,8 +186,7 @@ int main(int argc, char **argv) {
           }
         }
       P99_PROTECT:
-        orwl_server_join(srv.id);
-        orwl_server_destroy(&srv);
+        orwl_stop(&srv);
       } else {
       if (block)
         P99_UNWIND_PROTECT {

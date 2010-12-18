@@ -40,7 +40,7 @@ struct orwl_server {
 DOCUMENT_INIT(orwl_server)
 P99_DEFARG_DOCU(orwl_server_init)
 orwl_server*
-orwl_server_init(orwl_server *serv,       /*!< [out] the object to iniialize */
+orwl_server_init(orwl_server *serv,       /*!< [out] the object to initialize */
                  size_t max_connections,  /*!< [in] maximum socket queue length,
                                             defaults to 20 */
                  size_t max_queues,       /*!< [in] the maximum number of locations,
@@ -107,6 +107,28 @@ P99_PROTOTYPE(void, orwl_server_terminate, orwl_server *, rand48_t *);
 #define orwl_server_terminate(...) P99_CALL_DEFARG(orwl_server_terminate, 2, __VA_ARGS__)
 #define orwl_server_terminate_defarg_1() seed_get()
 #endif
+
+
+void
+orwl_start(orwl_server *serv,       /*!< [out] the server object to initialize */
+           size_t max_connections,  /*!< [in] maximum socket queue length,
+                                      defaults to 20 */
+           size_t max_queues,       /*!< [in] the maximum number of locations,
+                                      defaults to 0 */
+           char const* endp         /*!< [in] defaults to the
+                                      null address */
+           );
+
+#ifndef DOXYGEN
+P99_PROTOTYPE(void, orwl_start, orwl_server *, size_t, size_t, char const*);
+#define orwl_start(...) P99_CALL_DEFARG(orwl_start, 4, __VA_ARGS__)
+#define orwl_start_defarg_1() (size_t)20u
+#define orwl_start_defarg_2() P99_0(size_t)
+#define orwl_start_defarg_3() P99_0(char const*)
+#endif
+
+void
+orwl_stop(orwl_server *serv);
 
 
 #endif 	    /* !ORWL_SERVER_H_ */

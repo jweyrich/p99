@@ -206,3 +206,25 @@ void orwl_server_unblock(orwl_server *srv) {
   orwl_wh_vdelete(srv->whs);
   srv->whs = 0;
 }
+
+
+void
+orwl_start(orwl_server *serv,       /*!< [out] the server object to initialize */
+           size_t max_connections,  /*!< [in] maximum socket queue length,
+                                      defaults to 20 */
+           size_t max_queues,       /*!< [in] the maximum number of locations,
+                                      defaults to 0 */
+           char const* endp         /*!< [in] defaults to the
+                                      null address */
+           ) {
+  orwl_server_init(serv, max_connections, max_queues, endp);
+  orwl_server_create(serv, &serv->id);
+  /* give the server the chance to fire things up */
+  while (!port2net(&serv->host.ep.port)) sleepfor(0.01);
+}
+
+void
+orwl_stop(orwl_server *serv) {
+  orwl_server_join(serv->id);
+  orwl_server_destroy(serv);
+}

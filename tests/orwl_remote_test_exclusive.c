@@ -149,8 +149,7 @@ int main(int argc, char **argv) {
   orwl_types_init();
 
   orwl_server srv;
-  orwl_server_init(&srv, 4, 10);
-  orwl_server_create(&srv, &srv.id);
+  orwl_start(&srv, 4, 10);
   rand48_t* seed = seed_get();
 
   size_t info_len = 3*orwl_np;
@@ -211,8 +210,7 @@ int main(int argc, char **argv) {
     orwl_pthread_wait_detached();
     report(1, "%s: killing server", argv[0]);
     orwl_server_terminate(&srv);
-    orwl_server_join(srv.id);
-    orwl_server_destroy(&srv);
+    orwl_stop(&srv);
     report(1, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
 
     report(1, "freeing arg");
@@ -230,8 +228,7 @@ int main(int argc, char **argv) {
       sleepfor(0.1);
       progress(1, t, " server idle                                           ");
     }
-    orwl_server_join(srv.id);
-    orwl_server_destroy(&srv);
+    orwl_stop(&srv);
   }
 
   seed_get_clear();

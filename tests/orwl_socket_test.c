@@ -24,15 +24,8 @@ int main(int argc, char **argv) {
   int ret = 0;
 
   orwl_types_init();
-  orwl_server srv
-    = ORWL_SERVER_INITIALIZER(
-                              srv,
-                              4,
-                              P99_0(in_addr_t),
-                              0);
-  report(1, "starting %s ", orwl_endpoint_print(&srv.host.ep));
-  pthread_t id;
-  orwl_server_create(&srv, &id);
+  orwl_server srv;
+  orwl_start(&srv, 4, P99_0(in_addr_t));
   report(1, "started %s" PRIX64, orwl_endpoint_print(&srv.host.ep));
 
   rand48_t seed = RAND48_T_INITIALIZER;
@@ -46,13 +39,13 @@ int main(int argc, char **argv) {
     /* ep.port is already in host order */
     while (orwl_rpc(&other, &seed, auth_sock_insert_peer, port2host(&srv.host.ep.port))
            == P99_TMAX(uint64_t)) {
-      ret = pthread_kill(id, 0);
+      ret = pthread_kill(srv.id, 0);
       if (ret) break;
       sleepfor(0.2);
     }
   } else {
     for (size_t t = 0; t < 1000; ++t) {
-      ret = pthread_kill(id, 0);
+      ret = pthread_kill(srv.id, 0);
       if (ret) break;
       sleepfor(1.0);
       report(1, "looping %zd", t);
@@ -75,7 +68,6 @@ int main(int argc, char **argv) {
     }
   }
 
-  orwl_server_join(id);
   if (ret) {
     char mesg[256] = "";
     strerror_r(ret, mesg, 256);
@@ -83,5 +75,5 @@ int main(int argc, char **argv) {
   }
   orwl_pthread_wait_detached();
   report(1, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
-  orwl_server_destroy(&srv);
+  orwl_stop(&srv);
 }

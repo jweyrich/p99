@@ -204,11 +204,7 @@ int main(int argc, char **argv) {
 
   rand48_t* seed = seed_get();
   orwl_server srv;
-  orwl_server_init(&srv, SOMAXCONN, number * 2);
-  orwl_server_create(&srv, &srv.id);
-  while (!(srv.host.ep.port.p)) {
-    sleepfor(0.01);
-  }
+  orwl_start(&srv, SOMAXCONN, number * 2);
 
   report(1, "connecting to %s", argv[1]);
   orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(0, 0);
@@ -287,9 +283,7 @@ int main(int argc, char **argv) {
   orwl_pthread_wait_detached();
   report(1, "%s: killing server", argv[0]);
   orwl_server_terminate(&srv);
-  orwl_server_join(srv.id);
-  report(1, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
-  orwl_server_destroy(&srv);
+  orwl_stop(&srv);
 
   report(1, "freeing arg");
   arg_t_vdelete(arg);
