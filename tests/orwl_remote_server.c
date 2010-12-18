@@ -82,7 +82,6 @@ void process_opt(int argc, char **argv) {
 
 
 int main(int argc, char **argv) {
-  int ret = 0;
   orwl_types_init();
   process_opt(argc, argv);
   if (verbose < 0) verbose = background ? 0 : 1;
@@ -167,8 +166,7 @@ int main(int argc, char **argv) {
           for (size_t i = 0; i < ilen; i += 3)
             info[i] = '|';
           for (size_t t = 0; ; ++t) {
-            ret = pthread_kill(srv.id, 0);
-            if (ret) break;
+            if (!orwl_alive(&srv)) break;
             sleepfor(0.1);
             size_t have_data = 0;
             for (size_t i = 0; i < len; ++i) {

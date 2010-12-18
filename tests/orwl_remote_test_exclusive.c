@@ -172,8 +172,7 @@ int main(int argc, char **argv) {
     /* ep.port is already in host order */
     while (orwl_rpc(&other, seed, auth_sock_insert_peer, port2host(&srv.host.ep.port))
            == P99_TMAX(uint64_t)) {
-      ret = pthread_kill(srv.id, 0);
-      if (ret) break;
+      if (!orwl_alive(&srv)) break;
       sleepfor(0.2);
     }
     handle = orwl_handle_vnew(2 * orwl_np);
@@ -223,8 +222,7 @@ int main(int argc, char **argv) {
     orwl_mirror_destroy(&location);
   }  else {
     for (size_t t = 0; ; ++t) {
-      ret = pthread_kill(srv.id, 0);
-      if (ret) break;
+      if (!orwl_alive(&srv)) break;
       sleepfor(0.1);
       progress(1, t, " server idle                                           ");
     }

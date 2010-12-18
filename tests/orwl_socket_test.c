@@ -39,14 +39,12 @@ int main(int argc, char **argv) {
     /* ep.port is already in host order */
     while (orwl_rpc(&other, &seed, auth_sock_insert_peer, port2host(&srv.host.ep.port))
            == P99_TMAX(uint64_t)) {
-      ret = pthread_kill(srv.id, 0);
-      if (ret) break;
+      if (!orwl_alive(&srv)) break;
       sleepfor(0.2);
     }
   } else {
     for (size_t t = 0; t < 1000; ++t) {
-      ret = pthread_kill(srv.id, 0);
-      if (ret) break;
+      if (!orwl_alive(&srv)) break;
       sleepfor(1.0);
       report(1, "looping %zd", t);
       orwl_host *n = 0;

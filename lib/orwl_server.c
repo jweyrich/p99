@@ -228,3 +228,6 @@ orwl_stop(orwl_server *serv) {
   orwl_server_join(serv->id);
   orwl_server_destroy(serv);
 }
+
+bool
+orwl_alive(orwl_server *serv);

@@ -130,5 +130,10 @@ P99_PROTOTYPE(void, orwl_start, orwl_server *, size_t, size_t, char const*);
 void
 orwl_stop(orwl_server *serv);
 
+inline
+bool
+orwl_alive(orwl_server *serv) {
+  return !pthread_kill(serv->id, 0);
+}
 
 #endif 	    /* !ORWL_SERVER_H_ */
