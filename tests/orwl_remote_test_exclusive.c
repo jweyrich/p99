@@ -150,7 +150,6 @@ int main(int argc, char **argv) {
 
   orwl_server srv;
   orwl_start(&srv, 4, 10);
-  rand48_t* seed = seed_get();
 
   size_t info_len = 3*orwl_np;
   char* info = calloc(info_len + 1);
@@ -166,15 +165,7 @@ int main(int argc, char **argv) {
     orwl_endpoint_parse(&other, argv[3]);
 
     /* Initialization of the static location */
-    orwl_mirror_init(&location, srv.host.ep, other);
-
-    /* wait until the other side is up. */
-    /* ep.port is already in host order */
-    while (orwl_rpc(&other, seed, auth_sock_insert_peer, port2host(&srv.host.ep.port))
-           == P99_TMAX(uint64_t)) {
-      if (!orwl_alive(&srv)) break;
-      sleepfor(0.2);
-    }
+    orwl_mirror_connect(&location, &srv, other);
     handle = orwl_handle_vnew(2 * orwl_np);
 
     /* Half of the threads are created detached and half joinable */

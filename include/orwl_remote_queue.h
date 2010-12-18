@@ -97,6 +97,9 @@ DECLARE_NEW_DELETE(orwl_mirror);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_mirror);
 
+void orwl_mirror_connect(orwl_mirror *rq, orwl_server* srv, orwl_endpoint endp);
+
+
 /**
  ** @brief An ORWL lock handle for remote locations.
  **

@@ -22,6 +22,17 @@ void orwl_mirror_destroy(orwl_mirror *rq);
 
 DEFINE_NEW_DELETE(orwl_mirror);
 
+void orwl_mirror_connect(orwl_mirror *rq, orwl_server* srv, orwl_endpoint endp) {
+  orwl_mirror_init(rq, srv->host.ep, endp);
+  /* wait until the other side is up. */
+  /* ep.port is already in host order */
+  while (orwl_rpc(&endp, seed_get(), auth_sock_insert_peer, port2host(&srv->host.ep.port))
+         == P99_TMAX(uint64_t)) {
+    if (!orwl_alive(srv)) break;
+    sleepfor(0.02);
+  }
+}
+
 orwl_handle *orwl_handle_init(orwl_handle *rh);
 void orwl_handle_destroy(orwl_handle *rh);
 

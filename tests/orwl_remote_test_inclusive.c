@@ -202,7 +202,6 @@ int main(int argc, char **argv) {
   orwl_np = str2uz(argv[4]);
   offset = str2uz(argv[5]);
 
-  rand48_t* seed = seed_get();
   orwl_server srv;
   orwl_start(&srv, SOMAXCONN, number * 2);
 
@@ -236,15 +235,7 @@ int main(int argc, char **argv) {
     orwl_endpoint there = other;
     there.index = gpos;
 
-    orwl_mirror_init(&location[i], srv.host.ep, there);
-
-    /* wait until the other side is up. */
-    /* ep.port is already in host order */
-    while (orwl_rpc(&there, seed, auth_sock_insert_peer, port2host(&srv.host.ep.port))
-           == P99_TMAX(uint64_t)) {
-      if (!orwl_alive(&srv)) break;
-      sleepfor(0.2);
-    }
+    orwl_mirror_connect(&location[i], &srv, there);
     report(1, "connected to %s", orwl_endpoint_print(&there));
   }
 
