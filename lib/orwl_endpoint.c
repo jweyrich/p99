@@ -177,6 +177,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t
         P99_HANDLE_ERRNO {
         default:
           perror("orwl_send could not connect socket");
+          report(1, "address is %s", orwl_endpoint_print(ep));
         }
         if (tries < 10) sleepfor(1E0);
         else P99_UNWIND_RETURN ORWL_SEND_ERROR;

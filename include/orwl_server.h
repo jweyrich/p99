@@ -27,12 +27,13 @@ struct orwl_server {
   char* info;              /*!< an informative string that is
                              presented in the terminal */
   size_t info_len;         /*!< the length of #info */
+  pthread_t id;
 };
 
 #define ORWL_SERVER_INITIALIZER(NAME, MAXC, ADDR, PORT)        \
 {                                                              \
   .fd_listen = -1,                                             \
-  .host = ORWL_HOST_INITIALIZER(NAME.host, ADDR, PORT),        \
+  .host = ORWL_HOST_INITIALIZER(NAME.host, ADDR, PORT, 2),     \
   .max_connections = MAXC                                      \
 }
 
@@ -44,18 +45,16 @@ orwl_server_init(orwl_server *serv,       /*!< [out] the object to iniialize */
                                             defaults to 20 */
                  size_t max_queues,       /*!< [in] the maximum number of locations,
                                             defaults to 0 */
-                 in_addr_t addr,          /*!< [in] defaults to the
-                                             null address */
-                 in_port_t port           /*!< [in] defaults to 0 */
+                 char const* endp         /*!< [in] defaults to the
+                                            null address */
                  );
 
 #ifndef DOXYGEN
-P99_PROTOTYPE(orwl_server*, orwl_server_init, orwl_server *, size_t, size_t, in_addr_t, in_port_t);
-#define orwl_server_init(...) P99_CALL_DEFARG(orwl_server_init, 5, __VA_ARGS__)
+P99_PROTOTYPE(orwl_server*, orwl_server_init, orwl_server *, size_t, size_t, char const*);
+#define orwl_server_init(...) P99_CALL_DEFARG(orwl_server_init, 4, __VA_ARGS__)
 #define orwl_server_init_defarg_1() (size_t)20u
 #define orwl_server_init_defarg_2() P99_0(size_t)
-#define orwl_server_init_defarg_3() P99_0(in_addr_t)
-#define orwl_server_init_defarg_4() P99_0(in_port_t)
+#define orwl_server_init_defarg_3() P99_0(char const*)
 #endif
 
 

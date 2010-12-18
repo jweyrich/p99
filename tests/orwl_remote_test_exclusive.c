@@ -148,9 +148,9 @@ int main(int argc, char **argv) {
           argv[0], phases, orwl_np);
   orwl_types_init();
 
-  orwl_server* srv = P99_NEW(orwl_server, 4, 10);
-  pthread_t srv_id;
-  orwl_server_create(srv, &srv_id);
+  orwl_server srv;
+  orwl_server_init(&srv, 4, 10);
+  orwl_server_create(&srv, &srv.id);
   rand48_t* seed = seed_get();
 
   size_t info_len = 3*orwl_np;
@@ -158,8 +158,8 @@ int main(int argc, char **argv) {
   memset(info, ' ', info_len);
   for (size_t i = 2; i < info_len; i += 3)
     info[i] = '|';
-  srv->info = info;
-  srv->info_len = info_len;
+  srv.info = info;
+  srv.info_len = info_len;
 
   if (argc > 1) {
     report(1, "connecting to %s", argv[3]);
@@ -167,13 +167,13 @@ int main(int argc, char **argv) {
     orwl_endpoint_parse(&other, argv[3]);
 
     /* Initialization of the static location */
-    orwl_mirror_init(&location, srv->host.ep, other);
+    orwl_mirror_init(&location, srv.host.ep, other);
 
     /* wait until the other side is up. */
     /* ep.port is already in host order */
-    while (orwl_rpc(&other, seed, auth_sock_insert_peer, port2host(&srv->host.ep.port))
+    while (orwl_rpc(&other, seed, auth_sock_insert_peer, port2host(&srv.host.ep.port))
            == P99_TMAX(uint64_t)) {
-      ret = pthread_kill(srv_id, 0);
+      ret = pthread_kill(srv.id, 0);
       if (ret) break;
       sleepfor(0.2);
     }
@@ -187,7 +187,7 @@ int main(int argc, char **argv) {
       arg_t *myarg = (i%2 ? arg + (i/2) : P99_NEW(arg_t));
       myarg->mynum = i;
       myarg->phases = phases;
-      myarg->info = srv->info;
+      myarg->info = srv.info;
       if (i%2)
         arg_t_create(myarg, id + (i/2));
       else
@@ -210,10 +210,10 @@ int main(int argc, char **argv) {
     }
     orwl_pthread_wait_detached();
     report(1, "%s: killing server", argv[0]);
-    orwl_server_terminate(srv);
-    orwl_server_join(srv_id);
-    report(1, "host %p and next %p", (void*)srv->host.next, (void*)&srv->host);
-    orwl_server_delete(srv);
+    orwl_server_terminate(&srv);
+    orwl_server_join(srv.id);
+    orwl_server_destroy(&srv);
+    report(1, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
 
     report(1, "freeing arg");
     arg_t_vdelete(arg);
@@ -225,13 +225,13 @@ int main(int argc, char **argv) {
     orwl_mirror_destroy(&location);
   }  else {
     for (size_t t = 0; ; ++t) {
-      ret = pthread_kill(srv_id, 0);
+      ret = pthread_kill(srv.id, 0);
       if (ret) break;
       sleepfor(0.1);
       progress(1, t, " server idle                                           ");
     }
-    orwl_server_join(srv_id);
-    orwl_server_delete(srv);
+    orwl_server_join(srv.id);
+    orwl_server_destroy(&srv);
   }
 
   seed_get_clear();

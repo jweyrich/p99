@@ -202,10 +202,13 @@ int main(int argc, char **argv) {
   orwl_np = str2uz(argv[4]);
   offset = str2uz(argv[5]);
 
-  orwl_server* srv = P99_NEW(orwl_server, SOMAXCONN, number * 2);
-  pthread_t srv_id;
-  orwl_server_create(srv, &srv_id);
   rand48_t* seed = seed_get();
+  orwl_server srv;
+  orwl_server_init(&srv, SOMAXCONN, number * 2);
+  orwl_server_create(&srv, &srv.id);
+  while (!(srv.host.ep.port.p)) {
+    sleepfor(0.01);
+  }
 
   report(1, "connecting to %s", argv[1]);
   orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(0, 0);
@@ -218,8 +221,8 @@ int main(int argc, char **argv) {
   memset(info, ' ', info_len + 1);
   for (size_t i = 3; i < info_len; i += 3)
     info[i] = '|';
-  srv->info = info;
-  srv->info_len = info_len;
+  srv.info = info;
+  srv.info_len = info_len;
 
   report(1, "%s: starting %zu phases, %zu/%zu threads, offset %zu",
          argv[0], phases, number, orwl_np, offset);
@@ -237,13 +240,13 @@ int main(int argc, char **argv) {
     orwl_endpoint there = other;
     there.index = gpos;
 
-    orwl_mirror_init(&location[i], srv->host.ep, there);
+    orwl_mirror_init(&location[i], srv.host.ep, there);
 
     /* wait until the other side is up. */
     /* ep.port is already in host order */
-    while (orwl_rpc(&there, seed, auth_sock_insert_peer, port2host(&srv->host.ep.port))
+    while (orwl_rpc(&there, seed, auth_sock_insert_peer, port2host(&srv.host.ep.port))
            == P99_TMAX(uint64_t)) {
-      ret = pthread_kill(srv_id, 0);
+      ret = pthread_kill(srv.id, 0);
       if (ret) break;
       sleepfor(0.2);
     }
@@ -283,10 +286,10 @@ int main(int argc, char **argv) {
   }
   orwl_pthread_wait_detached();
   report(1, "%s: killing server", argv[0]);
-  orwl_server_terminate(srv);
-  orwl_server_join(srv_id);
-  report(1, "host %p and next %p", (void*)srv->host.next, (void*)&srv->host);
-  orwl_server_delete(srv);
+  orwl_server_terminate(&srv);
+  orwl_server_join(srv.id);
+  report(1, "host %p and next %p", (void*)srv.host.next, (void*)&srv.host);
+  orwl_server_destroy(&srv);
 
   report(1, "freeing arg");
   arg_t_vdelete(arg);

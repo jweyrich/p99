@@ -22,8 +22,7 @@
 orwl_server* orwl_server_init(orwl_server *serv,
                               size_t max_connections,
                               size_t max_queues,
-                              in_addr_t addr,
-                              in_port_t port) {
+                              char const* endp) {
   INIT_ONCE(orwl_thread);
   INIT_ONCE(orwl_wq);
   INIT_ONCE(orwl_wh);
@@ -33,8 +32,9 @@ orwl_server* orwl_server_init(orwl_server *serv,
       .max_connections = max_connections,
       .max_queues = max_queues,
       .wqs = max_queues ? orwl_wq_vnew(max_queues) : P99_0(void*),
+      .host = ORWL_HOST_INITIALIZER(serv->host, 0, 0, 1),
     };
-    orwl_host_init(&serv->host, addr, port, 1);
+    if (endp && endp[0]) orwl_endpoint_parse(&serv->host.ep, endp);
   }
   return serv;
 }
@@ -123,7 +123,7 @@ DEFINE_THREAD(orwl_server) {
         port_t_init(&Arg->host.ep.port, addr.sin_port);
       }
       char const* server_name = orwl_endpoint_print(&Arg->host.ep);
-      report(0, "server listening at %s", server_name);
+      report(1, "server listening at %s", server_name);
       if (P99_UNLIKELY(listen(Arg->fd_listen, Arg->max_connections))) {
         errorstr = "orwl_server could not listen";
         P99_UNWIND_RETURN;

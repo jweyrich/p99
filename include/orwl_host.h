@@ -29,12 +29,12 @@ struct orwl_host {
   size_t refs;
 };
 
-#define ORWL_HOST_INITIALIZER(NAME, NADDR,  NPORT) {           \
+#define ORWL_HOST_INITIALIZER(NAME, NADDR,  NPORT, REFS) {     \
     .mut = PTHREAD_MUTEX_INITIALIZER,                          \
-    .ep = ORWL_ENDPOINT_INITIALIZER(NADDR, NPORT),             \
-      .prev = &NAME,                                           \
-      .next = &NAME,                                           \
-      .refs = 2                                                \
+      .ep = ORWL_ENDPOINT_INITIALIZER((NADDR), (NPORT)),       \
+      .prev = &(NAME),                                         \
+      .next = &(NAME),                                         \
+      .refs = (REFS)                                           \
       }
 
 /**

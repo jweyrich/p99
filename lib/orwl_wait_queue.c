@@ -12,6 +12,7 @@
 /* particular purpose.                                                       */
 /*                                                                           */
 #include "orwl_wait_queue.h"
+#include "orwl_socket.h"
 
 DEFINE_ENUM(orwl_state);
 

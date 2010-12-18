@@ -105,7 +105,7 @@ pthread_rwlockattr_t const*const pthread_rwlockattr_process = &pthread_rwlockatt
  * wait on just using the semaphore. Thus we use a mutex / cond pair
  * to use pthread signaling through conditions.
  */
-static size_t count;
+static size_t volatile count;
 static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
 
