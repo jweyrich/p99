@@ -13,6 +13,7 @@ include ../scripts/Makefile-__thread
 
 NAME 	=	liborwl.a liborwl.so	# Name of executable file
 SRC	=					\
+	orwl_atomic.c           		\
 	orwl_auth_sock_functions.c		\
 	orwl_barrier.c				\
 	orwl_endpoint.c				\

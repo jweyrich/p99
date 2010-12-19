@@ -13,6 +13,7 @@
 /*                                                                           */
 #include "orwl_thread.h"
 #include "orwl_sem.h"
+#include "orwl_atomic.h"
 #include "p99_posix_default.h"
 
 size_t const orwl_mynum = ~(size_t)0;
@@ -105,7 +106,7 @@ pthread_rwlockattr_t const*const pthread_rwlockattr_process = &pthread_rwlockatt
  * wait on just using the semaphore. Thus we use a mutex / cond pair
  * to use pthread signaling through conditions.
  */
-static size_t volatile count;
+static atomic_size_t volatile count;
 static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
 
@@ -113,22 +114,26 @@ static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
 
 static
 void lock(void) {
-  __sync_add_and_fetch(&count, (size_t)1);
+  atomic_fetch_add(&count, (size_t)1);
 }
 
 static
 void unlock(void) {
-  size_t val = __sync_sub_and_fetch(&count, (size_t)1);
+  size_t val = atomic_fetch_sub(&count, (size_t)1);
   /* if we are the last notify the waiters */
-  if (P99_UNLIKELY(!val))
+  if (P99_UNLIKELY(val == 1))
     MUTUAL_EXCLUDE(mut)
       pthread_cond_broadcast(&cnd);
 }
 
 static
 void wait(void) {
-  MUTUAL_EXCLUDE(mut)
-    while (__sync_add_and_fetch(&count, (size_t)0)) pthread_cond_wait(&cnd, &mut);
+  MUTUAL_EXCLUDE(mut) {
+    if (atomic_load(&count)) pthread_cond_wait(&cnd, &mut);
+    /* Once the count has fallen to 1 before an unlock operation, no
+       other thread should be launched. */
+    assert(!atomic_load(&count));
+  }
 }
 
 #else
