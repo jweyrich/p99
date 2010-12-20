@@ -9,7 +9,6 @@
 ## 
 
 include ../scripts/Makefile-getconf-orwl
-include ../scripts/Makefile-__thread
 
 NAME 	=					\
 		orwl_remote_server		\
@@ -57,9 +56,12 @@ COPY = "all rights reserved, "
 LICENSE = SHORTLICENCE-closed.txt
 TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile
 
+include ../scripts/Makefile-DEFINE
+include ../scripts/Makefile-__thread
+include ../scripts/Makefile-atomic
 
 ifneq (${POSIX_SEMAPHORES}, -1L)
-EXEOPT += -lrt
+LDFLAGS += -lrt
 endif
 
 #####################

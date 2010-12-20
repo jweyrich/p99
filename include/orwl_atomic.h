@@ -39,7 +39,7 @@
  **/
 
 
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ > 201000) && !defined(__STDC_NO_THREADS__)
+#ifdef ATOMIC_OPS
 # include <stdatomic.h>
 #else
 
@@ -145,9 +145,7 @@ size_t atomic_fetch_xor(atomic_size_t volatile *object, size_t operand);
 inline
 size_t atomic_fetch_and(atomic_size_t volatile *object, size_t operand);
 
-#if defined(__GNUC__) && (P99_GCC_VERSION > 40101L)
-
-#define ORWL_ATOMIC 1
+#if defined(__GNUC__) && !defined(GNUC_NO_SYNC)
 
 inline
 _Bool atomic_compare_exchange_weak(atomic_size_t volatile *object, size_t *expected, size_t desired) {

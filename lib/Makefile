@@ -9,11 +9,9 @@
 ## 
 
 include ../scripts/Makefile-getconf-orwl
-include ../scripts/Makefile-__thread
 
 NAME 	=	liborwl.a liborwl.so	# Name of executable file
 SRC	=					\
-	orwl_atomic.c           		\
 	orwl_auth_sock_functions.c		\
 	orwl_barrier.c				\
 	orwl_endpoint.c				\
@@ -46,13 +44,6 @@ OBJOPT  += -std=c99 -Wall -Wstrict-prototypes ${OPT}
 EXEOPT  += -lpthread -lm
 LPATH   += -L.
 
-ifeq (${POSIX_SEMAPHORES},-1L)
-$(warning No POSIX semaphores were detected on this system. Replacing them by a wrapper)
-else
-SRC += semaphore_nointr.c
-EXEOPT += -lrt
-endif
-
 #####################
 # Macro Definitions #
 #####################
@@ -71,6 +62,26 @@ LDFLAGS += $(EXEOPT) $(LPATH)
 COPY = "all rights reserved, "
 LICENSE = SHORTLICENCE-closed.txt
 TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile
+
+include ../scripts/Makefile-DEFINE
+include ../scripts/Makefile-__thread
+include ../scripts/Makefile-atomic
+
+ifeq (${POSIX_SEMAPHORES},-1L)
+$(warning No POSIX semaphores were detected on this system. Replacing them by a wrapper)
+else
+SRC += semaphore_nointr.c
+LDFLAGS += -lrt
+endif
+
+ifeq (${ATOMIC_OPS},)
+ifeq (${DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4},1)
+${warning atomic operations with 'atomic_...' are not supported natively, implementing them with compiler extensions}
+SRC += orwl_atomic.c
+else
+${warning atomic operations with 'atomic_...' are not supported, using a suboptimal counter implementation}
+endif
+endif
 
 .SUFFIXES: .h.Z .c.Z .h.gz .c.gz .c.z .h.z
 

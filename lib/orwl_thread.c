@@ -110,7 +110,7 @@ static atomic_size_t volatile count;
 static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
 
-#if defined(__GNUC__) && (P99_GCC_VERSION > 40101L)
+#if defined(ATOMIC_OPS) || (defined(__GNUC__) && !defined(GNUC_NO_SYNC))
 
 static
 void lock(void) {

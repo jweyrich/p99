@@ -1,0 +1,49 @@
+# -*- makefile-gmake -*-
+
+# Try to capture just all #define if the compiler supports the -dM -E
+# flags
+${eval ${shell ${CC} ${CFLAGS} -xc -dM -E /dev/null | sed -n '/\#define/s/\#define *\([^ ]*\) *\(.*\)/\$${eval DEFINE\1 := \2}/g p' 2>/dev/null}}
+
+# A list of macros defined by the standard. You can add to that list
+# before including this particular makefile, here.
+DEF_DEFINES +=					\
+	__STDC_ANALYZABLE__			\
+	__STDC_HOSTED__				\
+	__STDC_IEC_559_COMPLEX__		\
+	__STDC_IEC_559__			\
+	__STDC_ISO_10646__			\
+	__STDC_LIB_EXT1__			\
+	__STDC_MB_MIGHT_NEQ_WC__		\
+	__STDC_NO_COMPLEX__			\
+	__STDC_NO_THREADS__			\
+	__STDC_NO_VLA__				\
+	__STDC_UTF_16__				\
+	__STDC_UTF_32__				\
+	__STDC_VERSION__			\
+	__STDC__
+
+
+# define a C macro that will be used to ask the preprocessor about the
+# macros that he knows. The result of the expansion of the EXPAND
+# macro is an evaluation command for make of the form:
+#
+# ${eval DEFINE_TOTO = VALUE_OF_TOTO}
+#
+# Here VALUE_OF_TOTO will either be TOTO if the macro doesn't exist or
+# the preprocessor expansion of it.
+#
+# This uses the trigraph sequences ??< and ??> as replacements for {
+# and } such that the resulting text will not irritate make too much.
+DEF_MACRO := \#define EXPAND(NAME) $$??<eval DEFINE \#\# NAME = NAME??>
+
+# The result of all that will be filtered by sed, such that names for
+# which the macro wasn't expanded will be filtered out.
+DEF_FILTER := /DEFINE\([^ ]*\) :*= \1/d;/^\#/d
+
+# Create a list of calls to EXPAND
+DEF_EXPANSION := ${foreach M,${DEF_DEFINES},\nEXPAND($M)}
+
+${eval ${shell /bin/echo -e '${DEF_MACRO}${DEF_EXPANSION}' | ${CC} ${CFLAGS} -xc -E - 2>/dev/null | sed '${DEF_FILTER}'}}
+
+# The C version without eventual L suffixes
+STDC_VERSION := ${subst L,,${DEFINE__STDC_VERSION__}}

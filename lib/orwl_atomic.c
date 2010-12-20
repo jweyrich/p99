@@ -10,7 +10,7 @@
 
 #include "orwl_atomic.h"
 
-#ifdef ORWL_ATOMIC
+#if defined(__GNUC__) && !defined(GNUC_NO_SYNC)
 
 p99_instantiate
 size_t atomic_load(atomic_size_t volatile *object);
