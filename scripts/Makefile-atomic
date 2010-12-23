@@ -1,5 +1,18 @@
 # -*- makefile-gmake -*-
 
+ifeq (${DEFINE__LP64__},1)
+ATOMIC_TYPE := uint64_t
+ATOMIC_SIZE := 8
+DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP := ${DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8}
+else
+ATOMIC_TYPE := uint32_t
+ATOMIC_SIZE := 4
+DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP := ${DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4}
+endif
+
+CFLAGS += -DATOMIC_SIZE=${ATOMIC_SIZE}
+CFLAGS += -DATOMIC_TYPE=${ATOMIC_TYPE}
+
 
 # First test if this is perhaps a compiler that implements standard
 # atomic operations as of C1x.
@@ -15,7 +28,7 @@ endif
 # If this is not the case, test if the compiler implements the gcc
 # extensions for atomic operations.
 ifeq (${ATOMIC_OPS},)
-ifneq (${DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4},1)
+ifneq (${DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP},1)
 CFLAGS += -DGNUC_NO_SYNC
 endif
 endif

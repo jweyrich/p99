@@ -75,7 +75,7 @@ LDFLAGS += -lrt
 endif
 
 ifeq (${ATOMIC_OPS},)
-ifeq (${DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4},1)
+ifeq (${DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP},1)
 ${warning atomic operations with 'atomic_...' are not supported natively, implementing them with compiler extensions}
 SRC += orwl_atomic.c
 else

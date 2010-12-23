@@ -46,4 +46,8 @@ DEF_EXPANSION := ${foreach M,${DEF_DEFINES},\nEXPAND($M)}
 ${eval ${shell /bin/echo -e '${DEF_MACRO}${DEF_EXPANSION}' | ${CC} ${CFLAGS} -xc -E - 2>/dev/null | sed '${DEF_FILTER}'}}
 
 # The C version without eventual L suffixes
+ifeq (${DEFINE__STDC_VERSION__},)
+${warning No indication about the C standard found, setting to 199901}
+DEFINE__STDC_VERSION__ := 199901L
+endif
 STDC_VERSION := ${subst L,,${DEFINE__STDC_VERSION__}}
