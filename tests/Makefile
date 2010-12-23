@@ -56,10 +56,6 @@ COPY = "all rights reserved, "
 LICENSE = SHORTLICENCE-closed.txt
 TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile
 
-include ../scripts/Makefile-DEFINE
-include ../scripts/Makefile-__thread
-include ../scripts/Makefile-atomic
-
 ifneq (${POSIX_SEMAPHORES}, -1L)
 LDFLAGS += -lrt
 endif
@@ -80,6 +76,10 @@ CFLAGS  += $(OBJOPT) $(IPATH)
 LDFLAGS += $(EXEOPT) $(LPATH)
 
 .SUFFIXES: .h.Z .c.Z .h.gz .c.gz .c.z .h.z
+
+include ../scripts/Makefile-DEFINE
+include ../scripts/Makefile-__thread
+include ../scripts/Makefile-atomic
 
 ##############################
 # Basic Compile Instructions #
