@@ -281,6 +281,8 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 #elif P99_COMPILER & P99_COMPILER_CLANG
 # define p99_inline __attribute__((always_inline)) inline
+/* clang can't nail a variable to a register, yet */
+# define P99_FIXED_REGISTER(REG)
 #elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 /* gcc prior to version 4.2.1 has the inline keyword but with slightly
    different semantics.
@@ -330,7 +332,18 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_instantiate extern inline
 # endif
 
-
+#ifndef P99_FIXED_REGISTER
+# ifdef __GNUC__
+#  define P99_FIXED_REGISTER(REG) __asm__(P99_STRINGIFY(REG))
+# else
+/**
+ ** @brief Fix a variable to a specific register, if the platform
+ ** supports this.
+ **
+ **/
+#  define P99_FIXED_REGISTER(REG)
+# endif
+#endif
 
 
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
