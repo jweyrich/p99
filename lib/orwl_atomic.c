@@ -9,31 +9,24 @@
 */
 
 #include "orwl_atomic.h"
+#include "p99_defarg.h"
 
-#if defined(__GNUC__) && !defined(GNUC_NO_SYNC)
+#if defined(__GNUC__)
 
-p99_instantiate
-size_t atomic_load(atomic_size_t volatile *object);
+P99_INSTANTIATE(size_t, atomic_load, atomic_size_t volatile*);
 
-p99_instantiate
-void atomic_store(atomic_size_t volatile *object, size_t desired);
+P99_INSTANTIATE(void, atomic_store, atomic_size_t volatile *object, size_t desired);
 
-p99_instantiate
-_Bool atomic_compare_exchange_weak(atomic_size_t volatile *object, size_t *expected, size_t desired);
+P99_INSTANTIATE(_Bool, atomic_compare_exchange_weak, atomic_size_t volatile *object, size_t *expected, size_t desired);
 
-p99_instantiate
-size_t atomic_fetch_add(atomic_size_t volatile *object, size_t operand);
+P99_INSTANTIATE(size_t, atomic_fetch_add, atomic_size_t volatile *object, size_t operand);
 
-p99_instantiate
-size_t atomic_fetch_sub(atomic_size_t volatile *object, size_t operand);
+P99_INSTANTIATE(size_t, atomic_fetch_sub, atomic_size_t volatile *object, size_t operand);
 
-p99_instantiate
-size_t atomic_fetch_or(atomic_size_t volatile *object, size_t operand);
+P99_INSTANTIATE(size_t, atomic_fetch_or, atomic_size_t volatile *object, size_t operand);
 
-p99_instantiate
-size_t atomic_fetch_xor(atomic_size_t volatile *object, size_t operand);
+P99_INSTANTIATE(size_t, atomic_fetch_xor, atomic_size_t volatile *object, size_t operand);
 
-p99_instantiate
-size_t atomic_fetch_and(atomic_size_t volatile *object, size_t operand);
+P99_INSTANTIATE(size_t, atomic_fetch_and, atomic_size_t volatile *object, size_t operand);
 
 #endif

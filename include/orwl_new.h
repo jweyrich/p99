@@ -22,6 +22,7 @@
  */
 
 #include "p99_new.h"
+#include "p99_defarg.h"
 
 /**
  ** @brief Declare a `delete' operator for type @a T.
@@ -129,9 +130,9 @@ DECLARE_VDELETE(T)                                                              
 DECLARE_VNEW(T)                                                                            \
  enum P99_PASTE2(p00_tame_ansi_c_semicolon_message_, T) { P99_PASTE2(p00_new_delete_, T) }
 
-#define DEFINE_DELETE(T) p99_instantiate void P99_PASTE2(T, _delete)(T const*el)
-#define DEFINE_VNEW(T) p99_instantiate T * P99_PASTE2(T, _vnew)(size_t n)
-#define DEFINE_VDELETE(T) p99_instantiate void P99_PASTE2(T, _vdelete)(T const*vec)
+#define DEFINE_DELETE(T) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)
+#define DEFINE_VNEW(T) P99_INSTANTIATE(T*, P99_PASTE2(T, _vnew), size_t)
+#define DEFINE_VDELETE(T) P99_INSTANTIATE(void, P99_PASTE2(T, _vdelete), T const*)
 
 #define DEFINE_NEW_DELETE(T)                                   \
 DEFINE_VNEW(T);                                                \

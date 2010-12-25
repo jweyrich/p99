@@ -16,20 +16,18 @@
 #include "p99_posix_default.h"
 #include "p99_c99_default.h"
 
-rand48_t *rand48_t_init(rand48_t*, unsigned short, unsigned short, unsigned short);
-
-void rand48_t_destroy(rand48_t* seed);
+P99_INSTANTIATE(rand48_t*, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
+P99_INSTANTIATE(void, rand48_t_destroy, rand48_t*);
+P99_INSTANTIATE(uint32_t, orwl_rand, rand48_t*);
+P99_INSTANTIATE(double, orwl_drand, rand48_t*);
+P99_INSTANTIATE(uint64_t, orwl_rand64, rand48_t*);
+P99_INSTANTIATE(uint64_t, useconds);
 
 DEFINE_NEW_DELETE(rand48_t);
 
 DEFINE_THREAD_VAR(rand48_t, seed_get);
 
 
-uint32_t orwl_rand(rand48_t *xsubi);
-double orwl_drand(rand48_t *xsubi);
-uint64_t orwl_rand64(rand48_t *xsubi);
-
-uint64_t useconds(void);
 
 uint64_t orwl_mix(uint64_t a, uint64_t b) {
   uint16_t a0 = a >> 0;

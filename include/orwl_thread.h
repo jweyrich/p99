@@ -17,6 +17,7 @@
 #include "orwl_once.h"
 #include "orwl_int.h"
 #include "orwl_macro.h"
+#include "p99_defarg.h"
 
 /**
  ** @brief A default (global!) version of something like a
@@ -278,10 +279,10 @@ inline int P99_PASTE2(T, _create)(T* arg, pthread_t *id) {                      
 }                                                                                 \
 P99_MACRO_END(declare_thread)
 #define DEFINE_THREAD(T)                                       \
-p99_instantiate T *P99_PASTE2(T, _join)(pthread_t id);                         \
-p99_instantiate int P99_PASTE2(T, _create)(T* arg, pthread_t *id);             \
-p99_instantiate void *P99_PASTE2(T, _start_joinable)(void* arg);               \
-p99_instantiate void *P99_PASTE2(T, _start_detached)(void* arg);               \
+  P99_INSTANTIATE(T*, P99_PASTE2(T, _join), pthread_t);                  \
+  P99_INSTANTIATE(int, P99_PASTE2(T, _create), T*, pthread_t*);   \
+  P99_INSTANTIATE(void*, P99_PASTE2(T, _start_joinable), void*);     \
+  P99_INSTANTIATE(void*, P99_PASTE2(T, _start_detached), void*);     \
 void P99_PASTE2(T, _start)(T *const Arg)
 #endif
 
@@ -376,7 +377,7 @@ P99_MACRO_END(DECLARE_THREAD_VAR)
 
 #define DEFINE_THREAD_VAR(T, NAME)                                                  \
 __thread P99_PASTE2(NAME, _type) P99_PASTE2(NAME, _var) = { .initialized = false }; \
-p99_instantiate void P99_PASTE2(NAME, _clear)(void);                                \
+ P99_INSTANTIATE(void, P99_PASTE2(NAME, _clear));                  \
 T* P99_PASTE2(NAME, _init)(void) {                                                  \
   register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var);             \
   register bool*const initialized = &ret->initialized;                              \
@@ -385,7 +386,7 @@ T* P99_PASTE2(NAME, _init)(void) {                                              
   *initialized = true;                                                              \
   return var;                                                                       \
 }                                                                                   \
-T* NAME(void)
+P99_INSTANTIATE(T*, NAME)
 
 #endif
 
@@ -427,8 +428,8 @@ pthread_key_t KEY;                                                           \
 DEFINE_ONCE_STATIC(KEY) {                                                    \
   (void) pthread_key_create(&KEY, (void (*)(void *))P99_PASTE2(T, _delete)); \
 }                                                                            \
-p99_instantiate void P99_PASTE2(NAME, _clear)(void);                                         \
-p99_instantiate T* NAME(void)
+P99_INSTANTIATE(void, P99_PASTE2(NAME, _clear));                             \
+P99_INSTANTIATE(T*, NAME)
 
 #define P00_DEFINE_THREAD_VAR(T, NAME, KEY) P00__DEFINE_THREAD_VAR(T, NAME, KEY)
 

@@ -110,7 +110,7 @@ static atomic_size_t volatile count;
 static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
 
-#if defined(ATOMIC_OPS) || (defined(__GNUC__) && !defined(GNUC_NO_SYNC))
+#if defined(ATOMIC_OPS) || (defined(__GNUC__) && (!defined(GNUC_NO_SYNC) || defined(GNUC_SYNC_REPLACE)))
 
 static
 void lock(void) {
@@ -297,8 +297,8 @@ void orwl_pthread_wait_detached(void) {
   wait();
 }
 
-p99_instantiate pthread_t* pthread_t_init(pthread_t *id);
-p99_instantiate void pthread_t_destroy(pthread_t *id);
+P99_INSTANTIATE(pthread_t*, pthread_t_init, pthread_t *);
+P99_INSTANTIATE(void, pthread_t_destroy, pthread_t *);
 
 DEFINE_NEW_DELETE(pthread_t);
 
@@ -319,4 +319,4 @@ void sleepfor(double t) {
   }
 }
 
-p99_instantiate char const* pthread2str(char *buf, pthread_t id);
+P99_INSTANTIATE(char const*, pthread2str, char*, pthread_t);

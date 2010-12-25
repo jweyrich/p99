@@ -16,9 +16,8 @@
 #include "orwl_server.h"
 #include "orwl_auth_sock_functions.h"
 
-orwl_mirror *orwl_mirror_init(orwl_mirror *rq, orwl_endpoint h, orwl_endpoint t);
-
-void orwl_mirror_destroy(orwl_mirror *rq);
+P99_INSTANTIATE(orwl_mirror*, orwl_mirror_init, orwl_mirror*, orwl_endpoint, orwl_endpoint);
+P99_INSTANTIATE(void, orwl_mirror_destroy, orwl_mirror*);
 
 DEFINE_NEW_DELETE(orwl_mirror);
 
@@ -33,14 +32,14 @@ void orwl_mirror_connect(orwl_mirror *rq, orwl_server* srv, orwl_endpoint endp) 
   }
 }
 
-orwl_handle *orwl_handle_init(orwl_handle *rh);
-void orwl_handle_destroy(orwl_handle *rh);
+P99_INSTANTIATE(orwl_handle*, orwl_handle_init, orwl_handle*);
+P99_INSTANTIATE(void, orwl_handle_destroy, orwl_handle*);
 
 DEFINE_NEW_DELETE(orwl_handle);
 
-bool orwl_inclusive(orwl_handle* rh);
-orwl_state orwl_acquire(orwl_handle* rh);
-orwl_state orwl_test(orwl_handle* rh);
+P99_INSTANTIATE(bool, orwl_inclusive, orwl_handle*);
+P99_INSTANTIATE(orwl_state, orwl_acquire, orwl_handle*);
+P99_INSTANTIATE(orwl_state, orwl_test, orwl_handle*);
 
 orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_invalid;
@@ -242,14 +241,14 @@ orwl_handle_cancel* orwl_handle_cancel_init(orwl_handle_cancel* H) {
   return orwl_handle_init(H);
 }
 
-orwl_handle_cancel* orwl_handle_cancel_init(orwl_handle_cancel* H);
+P99_INSTANTIATE(orwl_handle_cancel*, orwl_handle_cancel_init, orwl_handle_cancel*);
 
 inline
 void orwl_handle_cancel_destroy(orwl_handle_cancel* H) {
   orwl_handle_destroy(H);
 }
 
-void orwl_handle_cancel_destroy(orwl_handle_cancel* H);
+P99_INSTANTIATE(void, orwl_handle_cancel_destroy, orwl_handle_cancel*);
 
 DECLARE_NEW_DELETE(orwl_handle_cancel);
 DEFINE_NEW_DELETE(orwl_handle_cancel);
@@ -274,9 +273,9 @@ orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
   return state;
 }
 
-uint64_t* orwl_map(orwl_handle* rh, size_t* data_len);
-uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len);
-void orwl_resize(orwl_handle* rh, size_t data_len);
+P99_INSTANTIATE(uint64_t*, orwl_map, orwl_handle*, size_t*);
+P99_INSTANTIATE(uint64_t const*, orwl_mapro, orwl_handle*, size_t*);
+P99_INSTANTIATE(void, orwl_resize, orwl_handle*, size_t);
 
 DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire, orwl_handle);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_release, orwl_handle);

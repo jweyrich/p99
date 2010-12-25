@@ -296,8 +296,10 @@ void orwl_wh_resize(orwl_wh* wh, size_t len) {
   }
 }
 
-void orwl_state_destroy(orwl_state *el);
-orwl_state* orwl_state_init (orwl_state *el, orwl_state val);
+P99_INSTANTIATE(void, orwl_state_destroy, orwl_state*);
+P99_INSTANTIATE(orwl_state*, orwl_state_init, orwl_state *, orwl_state);
+
+DEFINE_NEW_DELETE(orwl_state);
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_state, {0});
 

@@ -16,8 +16,8 @@
 #include "p99_id.h"
 
 #define DEFINE_BASIC(T)                                        \
-T* P99_PASTE2(T, _init)(T *id);                                \
-void P99_PASTE2(T, _destroy)(T* id);                           \
+  P99_INSTANTIATE(T*, P99_PASTE2(T, _init), T *);              \
+  P99_INSTANTIATE(void, P99_PASTE2(T, _destroy), T*);        \
 DEFINE_NEW_DELETE(T)
 
 #define DEFINE_BASIC_TYPE(T)                                   \
@@ -49,6 +49,9 @@ DEFINE_BASIC_TYPE(float);
 DEFINE_BASIC_TYPE(ulong);
 DEFINE_BASIC_TYPE(slong);
 DEFINE_BASIC_TYPE(long);
+DEFINE_BASIC_TYPE(llong);
+DEFINE_BASIC_TYPE(ullong);
+DEFINE_BASIC_TYPE(sllong);
 DEFINE_BASIC_TYPE(uint);
 DEFINE_BASIC_TYPE(sint);
 DEFINE_BASIC_TYPE(int);
@@ -89,6 +92,5 @@ DEFINE_ARI2STR(llong);
 DEFINE_ARI2STR(sllong);
 DEFINE_ARI2STR(ullong);
 
-char const* void_cptr2p(char* buf, void_cptr x);
-
-int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A);
+P99_INSTANTIATE(char const*, void_cptr2p, char*, void_cptr);
+P99_INSTANTIATE(int, P99_FSYMB(mfputs), FILE*, size_t, char const*const*const);

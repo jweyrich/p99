@@ -56,7 +56,8 @@ COMP	= gzip -9v
 UNCOMP	= gzip -df
 STRIP	= strip
 NM	= nm
-NM_UNDEF_FILTER	= sed -n "/^[ ]*U [a-z]/s|.* \([a-z0-9_]*\).*|\1|g p"
+NM_UNDEF_FILTER	= sed -n "/^[ ]*U [a-z]/s|.* \([a-zA-Z0-9_]*\).*|\1|g p"
+NM_DEF_FILTER	= sed -n "/^[0-9a-fA-F]*[ ]*[TW] [a-z]/s|.* \([a-zA-Z0-9_]*\).*|\1|g p"
 CFLAGS  += -fPIC $(OBJOPT) $(IPATH)
 LDFLAGS += $(EXEOPT) $(LPATH)
 COPY = "all rights reserved, "
@@ -89,7 +90,7 @@ endif
 # Basic Compile Instructions #
 ##############################
 
-all:	$(NAME) external_symbols.o
+all:	$(NAME) external_symbols.o orwl_symbols.o orwl_symbols
 
 ${NAME} : ${OBJS}
 
@@ -125,13 +126,14 @@ liborwl.so : liborwl.a # ${OBJS}
 
 include Makefile.inc
 
-SYMBOLS=${filter-out ${GLOBVARS}, ${sort ${shell ${NM} liborwl.so | ${NM_UNDEF_FILTER}}}}
+EXTERNAL_SYMBOLS := ${filter-out ${GLOBVARS}, ${sort ${shell ${NM} liborwl.so | ${NM_UNDEF_FILTER}}}}
+ORWL_SYMBOLS := ${filter-out ${GLOBVARS}, ${sort ${shell ${NM} liborwl.so | ${NM_DEF_FILTER}}}}
 
 COMMA=,
 
-CASTS=${patsubst %,\t(orwl__FT)%${COMMA}\n,${SYMBOLS}}
-CALLS=${patsubst %,\t((orwl__FT)%)((void*)0);\n,${SYMBOLS}}
-PROTS=${patsubst %,\tvoid* %(void*);\n,${SYMBOLS}}
+EXTERNAL_CASTS := ${patsubst %,\t(orwl__FT)%${COMMA}\n,${EXTERNAL_SYMBOLS}}
+EXTERNAL_CALLS := ${patsubst %,\t((orwl__FT)%)((void*)0);\n,${EXTERNAL_SYMBOLS}}
+EXTERNAL_PROTS := ${patsubst %,\tvoid* %(void*);\n,${EXTERNAL_SYMBOLS}}
 
 external_symbols.c : liborwl.so Makefile
 	@printf '/** @file external_symbols.c\n' > external_symbols.c
@@ -139,11 +141,28 @@ external_symbols.c : liborwl.so Makefile
 	@printf ' **/\n' >> external_symbols.c
 	@printf '#include "orwl_posix.h"\n' >> external_symbols.c
 	@printf 'typedef void* (*orwl__FT)(void*);\n' >> external_symbols.c
-	@printf 'void* (*const external_functions[])(void*) = {\n${CASTS}};\n' >> external_symbols.c
+	@printf 'void* (*const external_functions[])(void*) = {\n${EXTERNAL_CASTS}};\n' >> external_symbols.c
 	@printf '#ifdef DOXYGEN\n' >> external_symbols.c
-	@printf 'void call_externals(void) {\n${CALLS}}\n' >> external_symbols.c
-	@printf '${PROTS}\n' >> external_symbols.c
+	@printf 'void call_externals(void) {\n${EXTERNAL_CALLS}}\n' >> external_symbols.c
+	@printf '${EXTERNAL_PROTS}\n' >> external_symbols.c
 	@printf '#endif\n' >> external_symbols.c
 
+ORWL_CASTS := ${patsubst %,\t(orwl__FT)%${COMMA}\n,${ORWL_SYMBOLS}}
+ORWL_PROTS := ${patsubst %,\tvoid* %(void*);\n,${ORWL_SYMBOLS}}
+
+orwl_symbols.c :
+	@printf '/** @file orwl_symbols.c\n' > orwl_symbols.c
+	@printf ' ** @brief Orwl refferences in the library\n' >> orwl_symbols.c
+	@printf ' **/\n' >> orwl_symbols.c
+	@printf '#ifndef DOXYGEN\n' >> orwl_symbols.c
+	@printf 'typedef void* (*orwl__FT)(void*);\n' >> orwl_symbols.c
+	@printf '${ORWL_PROTS}\n' >> orwl_symbols.c
+	@printf 'void* (*const orwl_functions[])(void*) = {\n${ORWL_CASTS}};\n' >> orwl_symbols.c
+	@printf 'int main(void) {\n' >> orwl_symbols.c
+	@printf 'return sizeof(orwl_functions)/sizeof(orwl_functions[0]);\n}\n' >> orwl_symbols.c
+	@printf '#endif\n' >> orwl_symbols.c
+
+orwl_symbols : orwl_symbols.o liborwl.so Makefile
+	${CC} -o $@ orwl_symbols.o -L. -Wl,-rpath,. -L. -lorwl
 tidy :
 	for f in ${SRC} ; do  ${TIDY} $$f ; done

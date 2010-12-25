@@ -12,11 +12,12 @@
 /* particular purpose.                                                       */
 /*                                                                           */
 #include "semaphore_nointr.h"
+#include "p99_defarg.h"
 
-int sem_wait_nointr(sem_t *sem);
-int sem_trywait_nointr(sem_t *sem);
+P99_INSTANTIATE(int, sem_wait_nointr, sem_t *);
+P99_INSTANTIATE(int, sem_trywait_nointr, sem_t *);
 #if POSIX_SEMAPHORES >= 200112L
-int sem_timedwait_nointr(sem_t *sem, const struct timespec *abs_timeout);
+P99_INSTANTIATE(int, sem_timedwait_nointr, sem_t*, const struct timespec*);
 #endif
-int sem_getvalue0(sem_t* p, unsigned* val);
-unsigned sem_assert(sem_t* p);
+P99_INSTANTIATE(int, sem_getvalue0, sem_t*, unsigned*);
+P99_INSTANTIATE(unsigned, sem_assert, sem_t*);

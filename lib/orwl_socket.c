@@ -21,8 +21,8 @@
 uint64_t orwl_hton64(uint64_t val);
 uint64_t orwl_ntoh64(uint64_t val);
 
-p99_instantiate void orwl_hton(uint64_t *n, uint64_t const *h, size_t l);
-p99_instantiate void orwl_ntoh(uint64_t* h, uint64_t const *n, size_t l);
+P99_INSTANTIATE(void, orwl_hton, uint64_t*, uint64_t const*, size_t);
+P99_INSTANTIATE(void, orwl_ntoh, uint64_t*, uint64_t const*, size_t);
 
 void orwl_ntoa(struct sockaddr_in const* addr, char *name) {
   sprintf(name, "orwl://%s:%" PRIu32 "/",
@@ -68,7 +68,7 @@ unsigned importance(in_addr_t a) {
   return ret;
 }
 
-p99_instantiate char const* orwl_inet_ntop(struct sockaddr const* addr, char* buf, size_t size);
+P99_INSTANTIATE(char const*, orwl_inet_ntop, struct sockaddr const* addr, char* buf, size_t size);
 P99_DEFINE_DEFARG(orwl_inet_ntop, , , );
 
 in_addr_t orwl_inet_addr(char const *name) {
@@ -104,11 +104,11 @@ in_addr_t orwl_inet_addr(char const *name) {
   return ret;
 }
 
-p99_instantiate auth_sock* auth_sock_init(auth_sock *sock,
-                                  int fd,
-                                  orwl_server* srv,
-                          size_t len,
-                          uint64_t remo);
+P99_INSTANTIATE(auth_sock*, auth_sock_init, auth_sock *,
+                                  int,
+                                  orwl_server*,
+                          size_t,
+                          uint64_t);
 
 void auth_sock_close(auth_sock *sock) {
   /* Ack the termination of the call */
@@ -169,4 +169,4 @@ addr_t getpeer(auth_sock *Arg) {
 }
 
 
-p99_instantiate char const* hostname(char *buffer, size_t len);
+P99_INSTANTIATE(char const*, hostname, char *, size_t);

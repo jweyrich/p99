@@ -232,5 +232,4 @@ orwl_stop(orwl_server *serv) {
   orwl_server_destroy(serv);
 }
 
-bool
-orwl_alive(orwl_server *serv);
+P99_INSTANTIATE(bool, orwl_alive, orwl_server *);

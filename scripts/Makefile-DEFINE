@@ -22,6 +22,13 @@ DEF_DEFINES +=					\
 	__STDC_VERSION__			\
 	__STDC__
 
+# A list of macros defining different processor types.
+DEF_DEFINES +=					\
+	__amd64__				\
+	__arm__					\
+	__i386_					\
+	__ia64___				\
+	__x86_64__
 
 # define a C macro that will be used to ask the preprocessor about the
 # macros that he knows. The result of the expansion of the EXPAND

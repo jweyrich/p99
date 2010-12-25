@@ -22,12 +22,12 @@
 */
 
 #include "orwl_sem.h"
+#include "p99_defarg.h"
 
-int    orwl_sem_destroy(orwl_sem *);
-int    orwl_sem_getvalue(orwl_sem *, int *);
-int    orwl_sem_init(orwl_sem *, unsigned int);
-int    orwl_sem_post(orwl_sem *);
-int    orwl_sem_trywait(orwl_sem *);
-int    orwl_sem_wait(orwl_sem *);
-
-unsigned orwl_sem_assert(orwl_sem* s);
+P99_INSTANTIATE(int, orwl_sem_destroy, orwl_sem *);
+P99_INSTANTIATE(int, orwl_sem_getvalue, orwl_sem *, int *);
+P99_INSTANTIATE(int, orwl_sem_init, orwl_sem *, unsigned int);
+P99_INSTANTIATE(int, orwl_sem_post, orwl_sem *);
+P99_INSTANTIATE(int, orwl_sem_trywait, orwl_sem *);
+P99_INSTANTIATE(int, orwl_sem_wait, orwl_sem *);
+P99_INSTANTIATE(unsigned, orwl_sem_assert, orwl_sem* s);

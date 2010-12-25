@@ -180,6 +180,15 @@ P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
 (P00_PROTOTYPE(__VA_ARGS__))
 #endif
 
+#define P00_INSTANTIATE(RT, NAME, ...)                                  \
+p00_instantiate RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));  \
+__attribute__((unused)) static RT (*P99_PASTE3(p00_, NAME, _pointer)[])(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__)) = { NAME }
+
+#define P99_INSTANTIATE(...)                    \
+P99_IF_EQ_2(P99_NARG(__VA_ARGS__))              \
+(P00_INSTANTIATE(__VA_ARGS__, void))            \
+(P00_INSTANTIATE(__VA_ARGS__))
+
 
 #define P00_EXPR_FUNCTION(NAME, X, N)                                   \
 P99_IF_EMPTY(X)                                                         \
@@ -195,7 +204,7 @@ P99_IF_EMPTY(X)                                                         \
 #define P00_DAFE(NAME, X, N)                                           \
 P99_IF_EMPTY(X)                                                        \
 (P99_MACRO_END(NAME, _boring_, N))                                     \
-(p99_instantiate P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void))
+(P99_INSTANTIATE(P99_PASTE3(NAME, _prototype_, N), P99_PASTE3(NAME, _defarg_, N)))
 
 #define P00_DECLARE_DEFARG(NAME, N, ...)                       \
 P99_FOR(NAME, N, P00_SER, P00_EXPR_FUNCTION, __VA_ARGS__)      \

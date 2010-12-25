@@ -22,12 +22,13 @@
 */
 
 #include "orwl_posix.h"
+#include "p99_defarg.h"
 
 #if defined(POSIX_BARRIERS) && (POSIX_BARRIERS > 0)
 
-int orwl_barrier_destroy(orwl_barrier* barrier);
-int orwl_barrier_init(orwl_barrier* barrier, unsigned count);
-int orwl_barrier_wait(orwl_barrier* barrier);
+P99_INSTANTIATE(int, orwl_barrier_destroy, orwl_barrier*);
+P99_INSTANTIATE(int, orwl_barrier_init, orwl_barrier*, unsigned);
+P99_INSTANTIATE(int, orwl_barrier_wait, orwl_barrier*);
 
 #else
 

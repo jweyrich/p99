@@ -275,17 +275,18 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 
 #if P99_COMPILER & P99_COMPILER_INTEL
-# define p99_inline inline
-# define p99_instantiate extern inline
+# define p99_inline __attribute__((always_inline)) inline
 #ifndef __GNUC__
 # define P00_NO_HAVE_TGMATH
 #endif
-#elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64 | P99_COMPILER_CLANG)
+#elif P99_COMPILER & P99_COMPILER_CLANG
+# define p99_inline __attribute__((always_inline)) inline
+#elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 /* gcc prior to version 4.2.1 has the inline keyword but with slightly
    different semantics.
    Be sure to always inline functions in this cases.
    */
-# if P99_GCC_VERSION < 40201UL
+# if !defined(__GNUC_STDC_INLINE__) && P99_GCC_VERSION < 40300UL
 #  ifdef inline
 #   undef inline
 #  endif
@@ -296,10 +297,10 @@ signed p00_trailing_comma_in_initializer__(void) {
 #   define inline __attribute__((weak)) __inline__
 #   define p99_inline __attribute__((always_inline,weak)) __inline__
 #  endif
-#  define p99_instantiate
+#  define p00_instantiate
 # else
 #  define inline __inline__
-#  define p99_instantiate extern __inline__
+#  define p00_instantiate extern __inline__
 #  define p99_inline __attribute__((always_inline)) __inline__
 # endif
 #endif
@@ -317,7 +318,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 #  define p99_inline static inline
 # endif
 
-# ifndef p99_instantiate
+# ifndef p00_instantiate
 /**
  ** @brief Force a function symbol to be emitted.
  **
@@ -326,7 +327,7 @@ signed p00_trailing_comma_in_initializer__(void) {
  ** seen in this unit is not an @c inline definition and thus the
  ** function is generated and a symbol is emitted.
  **/
-# define p99_instantiate extern inline
+# define p00_instantiate extern inline
 # endif
 
 

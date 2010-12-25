@@ -80,15 +80,15 @@ extern void P99_PASTE2(orwl_callback_, T)(T *Arg, orwl_wh *Wh)
  ** @see DECLARE_CALLBACK
  **/
 #define DEFINE_CALLBACK(T)                                                             \
-p99_instantiate                                                                        \
-P00_CALLBACK_PAIR(T) *                                                                 \
-P99_PASTE2(P00_CALLBACK_PAIR(T), _init)(P00_CALLBACK_PAIR(T) *arg,                     \
-                                   T* Arg,                                             \
-                                   orwl_wh *Wh,                                        \
-                                   orwl_wq *Wq                                         \
+  P99_INSTANTIATE(                                                      \
+  P00_CALLBACK_PAIR(T)*,                                                \
+  P99_PASTE2(P00_CALLBACK_PAIR(T), _init), P00_CALLBACK_PAIR(T)*,       \
+                                   T*,                                             \
+                                   orwl_wh*,                                        \
+                                   orwl_wq*                                         \
                                         );                                             \
-p99_instantiate                                                                        \
-void P99_PASTE2(P00_CALLBACK_PAIR(T), _destroy)(P00_CALLBACK_PAIR(T) *arg);            \
+                      P99_INSTANTIATE(                                  \
+                                      void, P99_PASTE2(P00_CALLBACK_PAIR(T), _destroy), P00_CALLBACK_PAIR(T)*); \
 DEFINE_DELETE(P00_CALLBACK_PAIR(T));                                                   \
 DEFINE_THREAD(P00_CALLBACK_PAIR(T)) {                                                  \
   T *arg = Arg->Arg;                                                                   \
@@ -106,7 +106,9 @@ DEFINE_THREAD(P00_CALLBACK_PAIR(T)) {                                           
   if (state == orwl_acquired)                                                          \
     P99_PASTE2(orwl_callback_, T)(arg, wh);                                            \
 }                                                                                      \
-p99_instantiate                                                                        \
+P99_INSTANTIATE(                                                       \
+                 int, P99_PASTE2(orwl_callback_attach_, T), T*, orwl_wh*); \
+inline                                                                        \
 int P99_PASTE2(orwl_callback_attach_, T)(T *arg, orwl_wh *wh) {                        \
   int ret = 0;                                                                         \
   if (orwl_wh_valid(wh)) {                                                             \
@@ -140,7 +142,8 @@ int P99_PASTE2(orwl_callback_attach_, T)(T *arg, orwl_wh *wh) {                 
   if (arg) P99_PASTE2(T, _delete)(arg);                                                \
   return ret;                                                                          \
 }                                                                                      \
-p99_instantiate                                                                        \
+ P99_INSTANTIATE(void, P99_PASTE2(orwl_callback_, T), T*, orwl_wh*); \
+inline                                                                        \
 void P99_PASTE2(orwl_callback_, T)(T *Arg, orwl_wh *Wh)
 
 #endif 	    /* !ORWL_CALLBACK_H_ */
