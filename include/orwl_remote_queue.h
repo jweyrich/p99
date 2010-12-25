@@ -55,11 +55,11 @@ struct orwl_mirror {
                            remote */
 };
 
-#define ORWL_MIRROR_INITIALIZER(HERE, THERE) {  \
-.mut = PTHREAD_MUTEX_INITIALIZER,               \
-  .local = ORWL_WQ_INITIALIZER,                 \
-  .here = HERE,                                 \
-  .there = THERE,                               \
+#define ORWL_MIRROR_INITIALIZER(HERE, THERE) {                 \
+.mut = PTHREAD_MUTEX_INITIALIZER,                              \
+  .local = ORWL_WQ_INITIALIZER,                                \
+  .here = HERE,                                                \
+  .there = THERE,                                              \
   }
 
 #ifndef DOXYGEN

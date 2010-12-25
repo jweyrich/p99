@@ -183,12 +183,12 @@ C_XOPEN_SHM,                                                   \
 C_XOPEN_UNIX,                                                  \
 C_XOPEN_VERSION
 
-#define P00_POSIX_SC_6                          \
-C_SS_REPL_MAX,                                  \
-C_TRACE_EVENT_NAME_MAX,                         \
-C_TRACE_NAME_MAX,                               \
-C_TRACE_SYS_MAX,                                \
-C_TRACE_USER_EVENT_MAX,                         \
+#define P00_POSIX_SC_6                                         \
+C_SS_REPL_MAX,                                                 \
+C_TRACE_EVENT_NAME_MAX,                                        \
+C_TRACE_NAME_MAX,                                              \
+C_TRACE_SYS_MAX,                                               \
+C_TRACE_USER_EVENT_MAX,                                        \
 C_XOPEN_STREAMS
 
 #define P00_DECLARE_SC_ENUM_(NAME, X, I) P99_PASTE2(P00_POS_S, X)

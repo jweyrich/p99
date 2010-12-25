@@ -16,8 +16,8 @@
 #include "p99_id.h"
 
 #define DEFINE_BASIC(T)                                        \
-  P99_INSTANTIATE(T*, P99_PASTE2(T, _init), T *);              \
-  P99_INSTANTIATE(void, P99_PASTE2(T, _destroy), T*);        \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _init), T *);                \
+P99_INSTANTIATE(void, P99_PASTE2(T, _destroy), T*);            \
 DEFINE_NEW_DELETE(T)
 
 #define DEFINE_BASIC_TYPE(T)                                   \

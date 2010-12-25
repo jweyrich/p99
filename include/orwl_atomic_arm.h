@@ -11,7 +11,6 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-
 /**
  ** @file
  ** @brief ARM specific code for atomic operations.

@@ -278,11 +278,11 @@ inline int P99_PASTE2(T, _create)(T* arg, pthread_t *id) {                      
     return orwl_pthread_create_detached(P99_PASTE2(T, _start_detached), arg);     \
 }                                                                                 \
 P99_MACRO_END(declare_thread)
-#define DEFINE_THREAD(T)                                       \
-  P99_INSTANTIATE(T*, P99_PASTE2(T, _join), pthread_t);                  \
-  P99_INSTANTIATE(int, P99_PASTE2(T, _create), T*, pthread_t*);   \
-  P99_INSTANTIATE(void*, P99_PASTE2(T, _start_joinable), void*);     \
-  P99_INSTANTIATE(void*, P99_PASTE2(T, _start_detached), void*);     \
+#define DEFINE_THREAD(T)                                        \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _join), pthread_t);           \
+P99_INSTANTIATE(int, P99_PASTE2(T, _create), T*, pthread_t*);   \
+P99_INSTANTIATE(void*, P99_PASTE2(T, _start_joinable), void*);  \
+P99_INSTANTIATE(void*, P99_PASTE2(T, _start_detached), void*);  \
 void P99_PASTE2(T, _start)(T *const Arg)
 #endif
 
@@ -377,7 +377,7 @@ P99_MACRO_END(DECLARE_THREAD_VAR)
 
 #define DEFINE_THREAD_VAR(T, NAME)                                                  \
 __thread P99_PASTE2(NAME, _type) P99_PASTE2(NAME, _var) = { .initialized = false }; \
- P99_INSTANTIATE(void, P99_PASTE2(NAME, _clear));                  \
+ P99_INSTANTIATE(void, P99_PASTE2(NAME, _clear));                                   \
 T* P99_PASTE2(NAME, _init)(void) {                                                  \
   register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var);             \
   register bool*const initialized = &ret->initialized;                              \
