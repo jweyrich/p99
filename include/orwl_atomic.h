@@ -145,7 +145,8 @@ size_t atomic_fetch_xor(atomic_size_t volatile *object, size_t operand);
 inline
 size_t atomic_fetch_and(atomic_size_t volatile *object, size_t operand);
 
-#if defined(__GNUC__) && !defined(GNUC_NO_SYNC)
+#ifdef __GNUC__
+#ifndef GNUC_NO_SYNC
 
 inline
 _Bool atomic_compare_exchange_weak(atomic_size_t volatile *object, size_t *expected, size_t desired) {
@@ -194,11 +195,15 @@ size_t atomic_load(atomic_size_t volatile *object) {
   return atomic_fetch_xor(object, 0);
 }
 
-
-
+#else
+#ifdef __arm__
+#include "orwl_atomic_arm.h"
+#else
+#if defined(__x86_64__) || defined(__i386__)
+#include "orwl_atomic_x86.h"
 #endif
-
-
 #endif
-
+#endif
+#endif
+#endif
 #endif 	    /* !ORWL_ATOMIC_H_ */
