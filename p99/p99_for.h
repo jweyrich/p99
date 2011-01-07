@@ -82,6 +82,7 @@
 #define P00_IDT(NAME, X, I) X
 #define P00_POS(NAME, X, I) I
 #define P00_NAM(NAME, X, I) NAME
+#define P00_NAME_I(NAME, X, I) P99_PASTE2(NAME, I)
 
 #define P00_SUM(NAME, I, X, Y) ((X) + (Y))
 #define P00_PROD(NAME, I, X, Y) ((X) * (Y))
@@ -96,6 +97,11 @@
 #define P00_SEP(NAME, I, REC, X) REC; X
 #define P00_SER(NAME, I, REC, X) REC X
 #define P00_REV(NAME, I, REC, X) X, REC
+
+/**
+ ** @brief generate lists of names of the form NAME0, NAME1, ...
+ ** */
+#define P99_NAME(N, NAME) P99_FOR(NAME, N, P00_SEQ, P00_NAME_I, P99_REP(N,))
 
 #define P00_FUNC(NAME, I, REC, X) NAME(REC, X)
 
@@ -224,6 +230,101 @@
 #define P99_CDIM(NAME, ...) P00_CDIM(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
 
 
+#define P00_SUBSCRIPT(NAME, X, I) [X]
+
+/**
+ ** @brief Transform the list of arguments x0, x1, ... to array
+ ** subscripts [x0][x1]...
+ **/
+#define P99_SUBSCRIPT(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SER, P00_SUBSCRIPT, __VA_ARGS__)
+
+#define P99_ARRAY(ARR, ...) (ARR)P99_SUBSCRIPT(__VA_ARGS__)
+#define P99_AREF(T, ARR, ...) T P99_ARRAY(*const ARR, __VA_ARGS__)
+
+#define P00_ALEN0(NAME) (sizeof((NAME))/sizeof((NAME)[0]))
+#define P00_ALEN(NAME, _1, I) P99_IF_EQ_0(I)(P00_ALEN0(NAME))(P00_ALEN0((NAME)P99_REP(I,[0])))
+#define P00_ALEN2(NAME, I) P00_ALEN(NAME,,I)
+
+#define P00_ALENS0(NAME, I, REC, _3) REC, P00_ALEN(NAME,,I)
+/**
+ ** @brief Produce a list of the lengths of the argument array @a ARR in terms of number
+ ** of elements in the first @a N dimensions.
+ **/
+#define P99_ALENS(X, N) P99_FOR(X, N, P00_ALENS0, P00_ALEN, P99_REP(N,))
+
+#define P00_ACALL(ARR, N) P99_ALENS(*ARR, N), (ARR)
+
+/* transform a list of names into size_t declarations */
+#define P00_AARG_DECL(NAME, X, I) size_t const X
+#define P00_AARG_LIST(N, ...) P99_FOR(, N, P00_SEQ, P00_AARG_DECL, __VA_ARGS__)
+
+/* generate a list of size_t's and the declaration of the array
+   pointer */
+#define P00_AARG_0(T, ARR, DIM, ...) P00_AARG_LIST(DIM, __VA_ARGS__), P99_AREF(T, ARR, __VA_ARGS__)
+#define P00_AARG(T, ARR, DIM, INAME) P00_AARG_0(T, ARR, DIM, P99_NAME(DIM, INAME))
+
+/* capture the special cases do implement default arguments */
+#define P00_AARG_3(T, ARR, DIM) P00_AARG(T, ARR, DIM, P99_PASTE(p00_aarg_, ARR))
+#define P00_AARG_2(T, ARR) P00_AARG_3(T, ARR, 1)
+
+#ifdef DOXYGEN
+/**
+ ** @brief Produce the length of the argument array @a ARR in terms of number
+ ** of elements.
+ **
+ ** If a second argument @a N is given, it refers to the size of the
+ ** Nth dimension of the array.
+ **
+ ** If @a ARR is actually just a pointer to an array, P99_ALEN(ARR, 0)
+ ** is meaningless.
+ **/
+#define P99_ALEN(ARR, N)
+
+/**
+ ** @brief Pass a pointer to an @a N dimensional array @a ARR to a function.
+ **
+ ** This is not supposed to be used directly but for defining a macro
+ ** interface to a function:
+ ** @code
+ ** double dotproductFunc(P99_AARG(double, A),
+ **                   P99_AARG(double, B));
+ ** #define dotproduct(VA, VB) dotproductFunc(P99_ACALL(VA), P99_ACALL(VB))
+ ** .
+ ** double Ar[5];
+ ** double Br[5];
+ ** .
+ ** double result = dotproduct(&Ar, &Br);
+ ** @endcode
+ ** Here the expression with @c dotproduct in the last line will
+ ** first result in a macro expansion that will place the pointers as
+ ** well as the array sizes to a call of the function @c
+ ** dotproductFunc.
+ **
+ ** If the argument @a N is omitted it will default to 1, supposing
+ ** that the array is just one dimensional. If it is greater than 1, a
+ ** list of length in the first @a N dimension of @a ARR is
+ ** transmitted to the function call.
+ ** @see P99_AARG
+ **/
+#define P99_ACALL(ARR, N)
+
+/**
+ ** @brief Declare a pointer to array function argument of basetype @a
+ ** TYPE, with name @a NAME, dimension @a DIM and naming scheme for
+ ** the length variables @a VAR{0}, ... @a VAR{@a DIM - 1}.
+ **
+ ** Parameter @a VAR may be omitted. @a DIM defaults to @c 1.
+ ** @see P99_ACALL
+ **/
+#define P99_AARG(TYPE, NAME, DIM, VAR)
+
+#else
+#define P99_ALEN(...) P99_IF_EQ_1(P99_NARG(__VA_ARGS__))(P00_ALEN(__VA_ARGS__, ,0))(P00_ALEN2(__VA_ARGS__))
+#define P99_ACALL(...) P99_IF_EQ_1(P99_NARG(__VA_ARGS__))(P00_ACALL(__VA_ARGS__, 1))(P00_ACALL(__VA_ARGS__))
+#define P99_AARG(...) P99_IF_DEC_GT(P99_NARG(__VA_ARGS__),3)(P00_AARG(__VA_ARGS__))(P99_PASTE2(P00_AARG_, P99_NARG(__VA_ARGS__))(__VA_ARGS__))
+
+#endif
+
 /**
  ** @brief Declare a @c for loop for which all iterations can be run
  ** independently and out of order.
@@ -255,8 +356,8 @@ P00_BLK_BEFORE(register TYPE                                                    
                P99_PASTE2(p00_stop_, VAR) = P99_PASTE2(p00_start_, VAR) + (LEN), \
                P99_PASTE2(p00_incr_, VAR) = (INCR))                              \
 P99_PRAGMA(PRAG)                                                                 \
-     for (TYPE P99_PASTE2(p00_i_, VAR) = P99_PASTE2(p00_start_, VAR);            \
-          P99_PASTE2(p00_i_, VAR) < P99_PASTE2(p00_stop_, VAR);                  \
+     for (register TYPE P99_PASTE2(p00_i_, VAR) = P99_PASTE2(p00_start_, VAR);   \
+          P99_LIKELY(P99_PASTE2(p00_i_, VAR) < P99_PASTE2(p00_stop_, VAR));      \
           P99_PASTE2(p00_i_, VAR) += P99_PASTE2(p00_incr_, VAR))                 \
        P00_BLK_START                                                             \
          P00_BLK_BEFORE(TYPE const VAR = P99_PASTE2(p00_i_, VAR))
