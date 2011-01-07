@@ -13,6 +13,8 @@
 #ifndef   	P99_C99_DEFAULT_H_
 # define   	P99_C99_DEFAULT_H_
 
+#include "p99_defarg.h"
+
 #define P00_C99_DEFARG_DOCU(NAME, RET, ...)                               \
 /*! @brief Default arguments for C99 function NAME */                     \
 /*! This macro hides the function @code RET NAME(__VA_ARGS__) @endcode */ \
