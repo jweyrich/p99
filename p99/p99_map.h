@@ -21,6 +21,7 @@
 
 #include "p99_c99.h"
 #include "p99_type.h"
+#include "p99_for.h"
 
 /** @addtogroup statement_lists Produce C99 statements or expression lists
  **
@@ -42,6 +43,20 @@
 #define P00_STRLENS(N, ...) P99_FOR(,N, P00_SUM, P00_STRLEN, __VA_ARGS__)
 #define P00_SIZEOFS(N, ...) P99_FOR(,N, P00_SUM, P00_SIZEOF, __VA_ARGS__)
 #define P00_ADDS(N, ...) P99_FOR(, N, P00_ADD, P00_IDT, __VA_ARGS__)
+
+#define P00_POW0(X, _1, _2) (X)
+#define P00_POW(X, _1, REC, _3) (X) * REC
+
+/**
+ ** @brief Compute the @a N<sup>th</sup> multiplicative integer power of @a X.
+ **
+ ** @a N must be a decimal constant without suffixes. The value @c 0
+ ** is special in that it evaluates to a @c 1 that is promoted to the
+ ** promoted type of @a X.
+ **
+ ** @warning @a X is evaluated @a N times, so it should not have side effects.
+ **/
+#define P99_IPOW(N, X) P99_IF_EQ(N,0)(P99_SIGN_PROMOTE(1, X))((P99_FOR(X, N, P00_POW, P00_POW0, P99_REP(N,))))
 
 /**
  ** @brief Return an expression that returns the sum of the lengths of
