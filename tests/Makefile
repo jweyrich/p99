@@ -24,6 +24,7 @@ NAME 	=					\
 		test-p99-double			\
 		test-p99-int			\
 		test-p99-ndim			\
+		test-p99-pow			\
 		test-p99-va-arg
 
 SRC	=					\
@@ -40,6 +41,7 @@ SRC	=					\
 		test-p99-double.c		\
 		test-p99-int.c			\
 		test-p99-ndim.c			\
+		test-p99-pow.c			\
 		test-p99-va-arg.c
 
 INCL  	=		# List of *.h
