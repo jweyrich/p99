@@ -23,7 +23,7 @@
 #include "orwl_new.h"
 #include "p99_int.h"
 
-extern char **environ;
+extern unsigned char const orwl_garb[16];
 
 /**
  ** @brief Invalidated pointer
@@ -36,7 +36,7 @@ extern char **environ;
  ** enough. In contrast of using @c -1 or something similar, this is
  ** guaranteed to not point to user allocated space on any platform.
  **/
-#define TGARB(T) ((T)(void*)environ)
+#define TGARB(T) ((T)(void*)orwl_garb)
 
 /* For each one word integer type have a signed and unsigned variant. */
 #define P00_ONE_TOK_(T, NAME)                                                   \

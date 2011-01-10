@@ -15,6 +15,8 @@
 #include "p99_map.h"
 #include "p99_id.h"
 
+unsigned char const orwl_garb[16];
+
 #define DEFINE_BASIC(T)                                        \
 P99_INSTANTIATE(T*, P99_PASTE2(T, _init), T *);                \
 P99_INSTANTIATE(void, P99_PASTE2(T, _destroy), T*);            \
