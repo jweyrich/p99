@@ -48,9 +48,9 @@ DEF_MACRO := \#define EXPAND(NAME) $$??<eval DEFINE \#\# NAME = NAME??>
 DEF_FILTER := /DEFINE\([^ ]*\) :*= \1/d;/^\#/d
 
 # Create a list of calls to EXPAND
-DEF_EXPANSION := ${foreach M,${DEF_DEFINES},\nEXPAND($M)}
+DEF_EXPANSION := ${foreach M,${DEF_DEFINES},|EXPAND($M)}
 
-${eval ${shell /bin/echo -e '${DEF_MACRO}${DEF_EXPANSION}' | ${CC} ${CFLAGS} -xc -E - 2>/dev/null | sed '${DEF_FILTER}'}}
+${eval ${shell /bin/echo '${DEF_MACRO}${DEF_EXPANSION}' | tr '|' '\n' | ${CC} ${CFLAGS} -xc -E - 2>/dev/null | sed '${DEF_FILTER}'}}
 
 # The C version without eventual L suffixes
 ifeq (${DEFINE__STDC_VERSION__},)
