@@ -34,6 +34,7 @@
 
 #include "p99_c99.h"
 #include "p99_type.h"
+#include "p99_int.h"
 #include <pthread.h>
 
 P99_DECLARE_STRUCT(orwl_sem);
