@@ -25,7 +25,7 @@ size_t orwl_phase = 0;
  ** dependent block or statement.
  **/
 P99_BLOCK_DOCUMENT
-#define ACCOUNT(COUNT) P99_PROTECTED_BLOCK(lock(), unlock())
+#define ACCOUNT(COUNT) P99_PROTECTED_BLOCK(orwl_count_lock(), orwl_count_unlock())
 
 void orwl_report(size_t mynum, size_t np, size_t phase, char const* format, ...) {
   static char const form0[] = "%s:%zX: %s\n";
@@ -113,12 +113,12 @@ static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
 #if defined(ATOMIC_OPS) || (defined(__GNUC__) && (!defined(GNUC_NO_SYNC) || defined(GNUC_SYNC_REPLACE)))
 
 static
-void lock(void) {
+void orwl_count_lock(void) {
   atomic_fetch_add(&count, (size_t)1);
 }
 
 static
-void unlock(void) {
+void orwl_count_unlock(void) {
   size_t val = atomic_fetch_sub(&count, (size_t)1);
   /* if we are the last notify the waiters */
   if (P99_UNLIKELY(val == 1))
@@ -127,7 +127,7 @@ void unlock(void) {
 }
 
 static
-void wait(void) {
+void orwl_count_wait(void) {
   MUTUAL_EXCLUDE(mut) {
     if (atomic_load(&count)) pthread_cond_wait(&cnd, &mut);
     /* Once the count has fallen to 1 before an unlock operation, no
@@ -139,14 +139,14 @@ void wait(void) {
 #else
 
 static
-void lock(void) {
+void orwl_count_lock(void) {
   MUTUAL_EXCLUDE(mut) {
     ++count;
   }
 }
 
 static
-void unlock(void) {
+void orwl_count_unlock(void) {
   MUTUAL_EXCLUDE(mut) {
     --count;
     if (!count) pthread_cond_broadcast(&cnd);
@@ -154,7 +154,7 @@ void unlock(void) {
 }
 
 static
-void wait(void) {
+void orwl_count_wait(void) {
   MUTUAL_EXCLUDE(mut) {
     while (count) pthread_cond_wait(&cnd, &mut);
   }
@@ -294,7 +294,7 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
 
 void orwl_pthread_wait_detached(void) {
   INIT_ONCE(orwl_thread);
-  wait();
+  orwl_count_wait();
 }
 
 P99_INSTANTIATE(pthread_t*, pthread_t_init, pthread_t *);

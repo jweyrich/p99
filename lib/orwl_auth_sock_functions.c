@@ -133,7 +133,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
           orwl_wh_delete(srv_wh);
         }
       } else {
-        report(0, "waiting to acquire server handle %p 0x%jx (0x%jX)", (void*)srv_wh, cliID, (uintmax_t)svrID);
+        report(0, "waiting to acquire server handle %p 0x%jx (0x%jX)", (void*)srv_wh, (uintmax_t)cliID, (uintmax_t)svrID);
         // wait until the lock on wh is obtained
         state = orwl_wh_acquire(srv_wh);
         report(0, "acquired server handle %p (0x%jX)", (void*)srv_wh, (uintmax_t)svrID);
