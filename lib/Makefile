@@ -122,7 +122,7 @@ ucomp:
 liborwl.a : liborwl.a(${OBJS})
 
 liborwl.so : liborwl.a # ${OBJS}
-	${CC} --shared  ${OBJS} $(LDFLAGS) $(TARGET_ARCH) -o liborwl.so
+	${CC} --shared ${OBJS} $(LDFLAGS) $(TARGET_ARCH) -o `pwd`/liborwl.so
 
 include Makefile.inc
 
