@@ -62,7 +62,7 @@
  ** If you need a signed type use this one here and then do an
  ** appropriate conversion to @c ptrdiff_t.
  **/
-typedef size_t atomic_size_t;
+typedef ATOMIC_TYPE atomic_size_t;
 
 /**
  ** @brief Return a consistent value of @a object.
