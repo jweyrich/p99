@@ -30,6 +30,12 @@ DEF_DEFINES +=					\
 	__ia64___				\
 	__x86_64__
 
+# A list of macros defining different OS types.
+DEF_DEFINES +=						\
+	__linux__					\
+	__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__	\
+	__MACH__
+
 # define a C macro that will be used to ask the preprocessor about the
 # macros that he knows. The result of the expansion of the EXPAND
 # macro is an evaluation command for make of the form:

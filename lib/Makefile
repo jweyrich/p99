@@ -84,6 +84,13 @@ ${warning atomic operations with 'atomic_...' are not supported, using a subopti
 endif
 endif
 
+
+ifeq (${DEFINE__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__},)
+LDSHARED := -shared
+else
+LDSHARED := -dynamiclib
+endif
+
 .SUFFIXES: .h.Z .c.Z .h.gz .c.gz .c.z .h.z
 
 ##############################
@@ -122,7 +129,7 @@ ucomp:
 liborwl.a : liborwl.a(${OBJS})
 
 liborwl.so : liborwl.a # ${OBJS}
-	${CC} --shared ${OBJS} $(LDFLAGS) $(TARGET_ARCH) -o `pwd`/liborwl.so
+	${CC} ${LDSHARED} ${OBJS} $(LDFLAGS) $(TARGET_ARCH) -o `pwd`/liborwl.so
 
 include Makefile.inc
 
