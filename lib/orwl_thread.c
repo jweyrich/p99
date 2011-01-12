@@ -15,29 +15,46 @@
 #include "orwl_sem.h"
 #include "orwl_atomic.h"
 #include "p99_posix_default.h"
+
 #ifdef __linux__
 # include <linux/futex.h>
 # include <sys/time.h>
 # include <sys/syscall.h>
 inline
-int orwl_futex_wait(int* uaddr, int val) {
-  int ret = syscall(SYS_futex, uaddr, FUTEX_WAIT, val, 0, 0, 0);
+int orwl_futex_wait(int* uaddr, int expected) {
+  int ret = 0;
+  for (int val = *uaddr; true;) {
+    if (val == expected) break;
+    ret = syscall(SYS_futex, uaddr, FUTEX_WAIT, val, 0, 0, 0);
+    val = *uaddr;
+    if (ret < 0)
+      switch (errno) {
+      case EWOULDBLOCK: break;
+      case EINTR: break;
+      default: ret = errno; errno = 0;
+      }
+  }
   return ret;
 }
+
 inline
 int orwl_futex_wake(int* uaddr, int wakeup) {
   int ret = syscall(SYS_futex, uaddr, FUTEX_WAKE, wakeup, 0, 0, 0);
   return ret;
 }
+inline
+int orwl_futex_signal(int* uaddr) {
+  return orwl_futex_wake(uaddr, 1);
+}
+inline
+int orwl_futex_broadcast(int* uaddr) {
+  return orwl_futex_wake(uaddr, INT_MAX);
+}
 
-extern inline int orwl_futex_wait(int* uaddr, int val);
+extern inline int orwl_futex_wait(int* uaddr, int expected);
 extern inline int orwl_futex_wake(int* uaddr, int wakeup);
-
-static
-volatile union {
-  atomic_size_t large;
-  int narrow;
-} counter;
+extern inline int orwl_futex_signal(int* uaddr);
+extern inline int orwl_futex_broadcast(int* uaddr);
 
 #define HAVE_FUTEX 1
 #endif
@@ -139,56 +156,67 @@ static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
 #endif
 
 #if defined(ATOMIC_OPS) || (defined(__GNUC__) && (!defined(GNUC_NO_SYNC) || defined(GNUC_SYNC_REPLACE)))
+#ifndef HAVE_FUTEX
 
 static
 void orwl_count_lock(void) {
-#ifndef HAVE_FUTEX
   atomic_fetch_add(&count, (size_t)1);
-#else
-  atomic_fetch_add(&counter.large, (size_t)1);
-#endif
 }
 
 static
 void orwl_count_unlock(void) {
   /* if we are the last notify the waiters */
-#ifndef HAVE_FUTEX
   size_t val = atomic_fetch_sub(&count, (size_t)1);
   if (P99_UNLIKELY(val == 1))
     MUTUAL_EXCLUDE(mut)
       pthread_cond_broadcast(&cnd);
-#else
-  register int val = atomic_fetch_sub(&counter.large, (size_t)1);
-  if (P99_UNLIKELY(val == 1))
-    orwl_futex_wake((int*)&counter.narrow, INT_MAX);
-#endif
 }
 
 static
 int orwl_count_wait(void) {
-#ifndef HAVE_FUTEX
   MUTUAL_EXCLUDE(mut) {
     while (atomic_load(&count)) pthread_cond_wait(&cnd, &mut);
   }
-#else
-  for (register int val; true;) {
-    val = atomic_load(&counter.large);
-    if (!val) break;
-    /* futexes unfortunately only work on int */
-    /* we chose the least significant one to be sure to capture an
-       intermittent change of the value */
-    int ret = orwl_futex_wait((int*)&counter.narrow, counter.narrow);
-    if (ret < 0)
-      switch (-ret) {
-      case EWOULDBLOCK: break;
-      case EINTR: break;
-      default: return -ret;
-      }
-  }
-#endif
   return 0;
 }
 
+# else
+
+static
+volatile union {
+  atomic_size_t large;
+  int narrow;
+} counter;
+
+
+static
+void orwl_count_lock(void) {
+  atomic_fetch_add(&counter.large, (size_t)1);
+}
+
+static
+void orwl_count_unlock(void) {
+  /* if we are the last notify the waiters */
+  register int val = atomic_fetch_sub(&counter.large, (size_t)1);
+  if (P99_UNLIKELY(val == 1))
+    orwl_futex_broadcast((int*)&counter.narrow);
+}
+
+static
+int orwl_count_wait(void) {
+  int ret = 0;
+  while (true) {
+    if (!atomic_load(&counter.large)) break;
+    /* futexes unfortunately only work on int */
+    /* we chose the least significant one to be sure to capture an
+       intermittent change of the value */
+    ret = orwl_futex_wait((int*)&counter.narrow, 0);
+    if (ret) break;
+    /* Check if really the whole counter is 0, so we iterate. */
+  }
+  return ret;
+}
+#endif
 #else
 
 static
