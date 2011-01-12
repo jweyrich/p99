@@ -25,13 +25,20 @@ int orwl_futex_wait(int* uaddr, int val) {
   return ret;
 }
 inline
-int orwl_futex_wake(int* uaddr, int val) {
-  int ret = syscall(SYS_futex, uaddr, FUTEX_WAKE, val, 0, 0, 0);
+int orwl_futex_wake(int* uaddr, int wakeup) {
+  int ret = syscall(SYS_futex, uaddr, FUTEX_WAKE, wakeup, 0, 0, 0);
   return ret;
 }
 
 extern inline int orwl_futex_wait(int* uaddr, int val);
-extern inline int orwl_futex_wake(int* uaddr, int val);
+extern inline int orwl_futex_wake(int* uaddr, int wakeup);
+
+static
+volatile union {
+  atomic_size_t large;
+  int narrow;
+} counter;
+
 #define HAVE_FUTEX 1
 #endif
 
@@ -125,11 +132,8 @@ pthread_rwlockattr_t const*const pthread_rwlockattr_process = &pthread_rwlockatt
  * wait on just using the semaphore. Thus we use a mutex / cond pair
  * to use pthread signaling through conditions.
  */
-static union {
-  atomic_size_t volatile full;
-  int volatile parts[sizeof(atomic_size_t)/sizeof(int)];
-} count;
 #ifndef HAVE_FUTEX
+static atomic_size_t volatile count;
 static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
 #endif
@@ -138,20 +142,25 @@ static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
 
 static
 void orwl_count_lock(void) {
-  atomic_fetch_add(&count.full, (size_t)1);
+#ifndef HAVE_FUTEX
+  atomic_fetch_add(&count, (size_t)1);
+#else
+  atomic_fetch_add(&counter.large, (size_t)1);
+#endif
 }
 
 static
 void orwl_count_unlock(void) {
-  size_t val = atomic_fetch_sub(&count.full, (size_t)1);
   /* if we are the last notify the waiters */
 #ifndef HAVE_FUTEX
+  size_t val = atomic_fetch_sub(&count, (size_t)1);
   if (P99_UNLIKELY(val == 1))
     MUTUAL_EXCLUDE(mut)
       pthread_cond_broadcast(&cnd);
 #else
+  register int val = atomic_fetch_sub(&counter.large, (size_t)1);
   if (P99_UNLIKELY(val == 1))
-    orwl_futex_wake((int*)&count.parts[0], INT_MAX);
+    orwl_futex_wake((int*)&counter.narrow, INT_MAX);
 #endif
 }
 
@@ -162,13 +171,13 @@ int orwl_count_wait(void) {
     while (atomic_load(&count)) pthread_cond_wait(&cnd, &mut);
   }
 #else
-  for (atomic_size_t val; true;) {
-    val = atomic_load(&count.full);
+  for (register int val; true;) {
+    val = atomic_load(&counter.large);
     if (!val) break;
     /* futexes unfortunately only work on int */
     /* we chose the least significant one to be sure to capture an
        intermittent change of the value */
-    int ret = orwl_futex_wait((int*)&count.parts[0], count.parts[0]);
+    int ret = orwl_futex_wait((int*)&counter.narrow, counter.narrow);
     if (ret < 0)
       switch (-ret) {
       case EWOULDBLOCK: break;
