@@ -15,6 +15,25 @@
 #include "orwl_sem.h"
 #include "orwl_atomic.h"
 #include "p99_posix_default.h"
+#ifdef __linux__
+# include <linux/futex.h>
+# include <sys/time.h>
+# include <sys/syscall.h>
+inline
+int orwl_futex_wait(int* uaddr, int val) {
+  int ret = syscall(SYS_futex, uaddr, FUTEX_WAIT, val, 0, 0, 0);
+  return ret;
+}
+inline
+int orwl_futex_wake(int* uaddr, int val) {
+  int ret = syscall(SYS_futex, uaddr, FUTEX_WAKE, val, 0, 0, 0);
+  return ret;
+}
+
+extern inline int orwl_futex_wait(int* uaddr, int val);
+extern inline int orwl_futex_wake(int* uaddr, int val);
+#define HAVE_FUTEX 1
+#endif
 
 size_t const orwl_mynum = ~(size_t)0;
 size_t orwl_np = ~(size_t)0;
@@ -106,34 +125,59 @@ pthread_rwlockattr_t const*const pthread_rwlockattr_process = &pthread_rwlockatt
  * wait on just using the semaphore. Thus we use a mutex / cond pair
  * to use pthread signaling through conditions.
  */
-static atomic_size_t volatile count;
+static union {
+  atomic_size_t volatile full;
+  int volatile parts[sizeof(atomic_size_t)/sizeof(int)];
+} count;
+#ifndef HAVE_FUTEX
 static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
+#endif
 
 #if defined(ATOMIC_OPS) || (defined(__GNUC__) && (!defined(GNUC_NO_SYNC) || defined(GNUC_SYNC_REPLACE)))
 
 static
 void orwl_count_lock(void) {
-  atomic_fetch_add(&count, (size_t)1);
+  atomic_fetch_add(&count.full, (size_t)1);
 }
 
 static
 void orwl_count_unlock(void) {
-  size_t val = atomic_fetch_sub(&count, (size_t)1);
+  size_t val = atomic_fetch_sub(&count.full, (size_t)1);
   /* if we are the last notify the waiters */
+#ifndef HAVE_FUTEX
   if (P99_UNLIKELY(val == 1))
     MUTUAL_EXCLUDE(mut)
       pthread_cond_broadcast(&cnd);
+#else
+  if (P99_UNLIKELY(val == 1))
+    orwl_futex_wake((int*)&count.parts[0], INT_MAX);
+#endif
 }
 
 static
-void orwl_count_wait(void) {
+int orwl_count_wait(void) {
+#ifndef HAVE_FUTEX
   MUTUAL_EXCLUDE(mut) {
-    if (atomic_load(&count)) pthread_cond_wait(&cnd, &mut);
-    /* Once the count has fallen to 1 before an unlock operation, no
-       other thread should be launched. */
-    assert(!atomic_load(&count));
+    while (atomic_load(&count)) pthread_cond_wait(&cnd, &mut);
   }
+#else
+  for (atomic_size_t val; true;) {
+    val = atomic_load(&count.full);
+    if (!val) break;
+    /* futexes unfortunately only work on int */
+    /* we chose the least significant one to be sure to capture an
+       intermittent change of the value */
+    int ret = orwl_futex_wait((int*)&count.parts[0], count.parts[0]);
+    if (ret < 0)
+      switch (-ret) {
+      case EWOULDBLOCK: break;
+      case EINTR: break;
+      default: return -ret;
+      }
+  }
+#endif
+  return 0;
 }
 
 #else
