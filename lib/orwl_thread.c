@@ -149,8 +149,9 @@ pthread_rwlockattr_t const*const pthread_rwlockattr_process = &pthread_rwlockatt
  * wait on just using the semaphore. Thus we use a mutex / cond pair
  * to use pthread signaling through conditions.
  */
+volatile union { atomic_size_t large; int narrow; } overl;
+static atomic_size_t volatile* count = &overl.large;
 #ifndef HAVE_FUTEX
-static atomic_size_t volatile count;
 static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
 #endif
@@ -160,13 +161,13 @@ static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
 
 static
 void orwl_count_lock(void) {
-  atomic_fetch_add(&count, (size_t)1);
+  atomic_fetch_add(count, (size_t)1);
 }
 
 static
 void orwl_count_unlock(void) {
   /* if we are the last notify the waiters */
-  size_t val = atomic_fetch_sub(&count, (size_t)1);
+  size_t val = atomic_fetch_sub(count, (size_t)1);
   if (P99_UNLIKELY(val == 1))
     MUTUAL_EXCLUDE(mut)
       pthread_cond_broadcast(&cnd);
@@ -175,7 +176,7 @@ void orwl_count_unlock(void) {
 static
 int orwl_count_wait(void) {
   MUTUAL_EXCLUDE(mut) {
-    while (atomic_load(&count)) pthread_cond_wait(&cnd, &mut);
+    while (atomic_load(count)) pthread_cond_wait(&cnd, &mut);
   }
   return 0;
 }
@@ -191,26 +192,28 @@ volatile union {
 
 static
 void orwl_count_lock(void) {
-  atomic_fetch_add(&counter.large, (size_t)1);
+  atomic_fetch_add(count, (size_t)1);
 }
+
+static int * uaddr = (int*)&(overl.narrow);
 
 static
 void orwl_count_unlock(void) {
   /* if we are the last notify the waiters */
-  register int val = atomic_fetch_sub(&counter.large, (size_t)1);
+  register int val = atomic_fetch_sub(count, (size_t)1);
   if (P99_UNLIKELY(val == 1))
-    orwl_futex_broadcast((int*)&counter.narrow);
+    orwl_futex_broadcast(uaddr);
 }
 
 static
 int orwl_count_wait(void) {
   int ret = 0;
   while (true) {
-    if (!atomic_load(&counter.large)) break;
+    if (!atomic_load(count)) break;
     /* futexes unfortunately only work on int */
     /* we chose the least significant one to be sure to capture an
        intermittent change of the value */
-    ret = orwl_futex_wait((int*)&counter.narrow, 0);
+    ret = orwl_futex_wait(uaddr, 0);
     if (ret) break;
     /* Check if really the whole counter is 0, so we iterate. */
   }
@@ -222,22 +225,22 @@ int orwl_count_wait(void) {
 static
 void orwl_count_lock(void) {
   MUTUAL_EXCLUDE(mut) {
-    ++count;
+    ++count[0];
   }
 }
 
 static
 void orwl_count_unlock(void) {
   MUTUAL_EXCLUDE(mut) {
-    --count;
-    if (!count) pthread_cond_broadcast(&cnd);
+    --count[0];
+    if (!count[0]) pthread_cond_broadcast(&cnd);
   }
 }
 
 static
 void orwl_count_wait(void) {
   MUTUAL_EXCLUDE(mut) {
-    while (count) pthread_cond_wait(&cnd, &mut);
+    while (count[0]) pthread_cond_wait(&cnd, &mut);
   }
 }
 #endif
