@@ -106,7 +106,7 @@ DEFINE_THREAD(P00_CALLBACK_PAIR(T)) {                                           
     else                                                                          \
       fprintf(stderr,                                                             \
               "thread %lu|%p failed to acquire\n",                                \
-              pthread_self(),                                                     \
+              (ulong)pthread_self(),                                         \
               (void*)wh);                                                         \
   }                                                                               \
   if (state == orwl_acquired)                                                     \
@@ -114,7 +114,7 @@ DEFINE_THREAD(P00_CALLBACK_PAIR(T)) {                                           
 }                                                                                 \
 P99_INSTANTIATE(                                                                  \
                  int, P99_PASTE2(orwl_callback_attach_, T), T*, orwl_wh*);        \
-inline                                                                            \
+ /* inline  */                                                          \
 int P99_PASTE2(orwl_callback_attach_, T)(T *arg, orwl_wh *wh) {                   \
   int ret = 0;                                                                    \
   if (orwl_wh_valid(wh)) {                                                        \
@@ -149,7 +149,7 @@ int P99_PASTE2(orwl_callback_attach_, T)(T *arg, orwl_wh *wh) {                 
   return ret;                                                                     \
 }                                                                                 \
  P99_INSTANTIATE(void, P99_PASTE2(orwl_callback_, T), T*, orwl_wh*);              \
-inline                                                                            \
-void P99_PASTE2(orwl_callback_, T)(T *Arg, orwl_wh *Wh)
+ /* inline  */                                                          \
+    void P99_PASTE2(orwl_callback_, T)(T *Arg, orwl_wh *Wh)
 
 #endif 	    /* !ORWL_CALLBACK_H_ */
