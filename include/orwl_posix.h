@@ -62,6 +62,16 @@ extern void orwl_posix_print(void);
 
 extern long const*const p00_sc_constant;
 
+/*
+  Some lists of configuration parameters:
+  - The first two are those which we'd expect on every POSIX
+    system. They are split into because otherwise the list would be
+    too long for the macro processing.
+  - The others are optional features or extension depending on newer
+    versions of the standard. They may or may not be present on a
+    system.
+*/
+
 #define P00_POSIX_SC_1                                         \
 C_2_C_BIND,                                                    \
 C_2_C_DEV,                                                     \
@@ -141,6 +151,19 @@ C_SPORADIC_SERVER,                                             \
 C_STREAM_MAX,                                                  \
 C_SYMLOOP_MAX,                                                 \
 C_SYNCHRONIZED_IO,                                             \
+C_TIMEOUTS,                                                    \
+C_TIMER_MAX,                                                   \
+C_TIMERS,                                                      \
+C_TRACE,                                                       \
+C_TRACE_EVENT_FILTER,                                          \
+C_TRACE_INHERIT,                                               \
+C_TRACE_LOG,                                                   \
+C_TTY_NAME_MAX,                                                \
+C_TYPED_MEMORY_OBJECTS,                                        \
+C_TZNAME_MAX,                                                  \
+C_VERSION
+
+#define P00_POSIX_SC_THREAD                                    \
 C_THREAD_ATTR_STACKADDR,                                       \
 C_THREAD_ATTR_STACKSIZE,                                       \
 C_THREAD_CPUTIME,                                              \
@@ -154,26 +177,15 @@ C_THREAD_SAFE_FUNCTIONS,                                       \
 C_THREAD_SPORADIC_SERVER,                                      \
 C_THREAD_STACK_MIN,                                            \
 C_THREAD_THREADS_MAX,                                          \
-C_THREADS,                                                     \
-C_TIMEOUTS,                                                    \
-C_TIMER_MAX,                                                   \
-C_TIMERS,                                                      \
-C_TRACE,                                                       \
-C_TRACE_EVENT_FILTER,                                          \
-C_TRACE_INHERIT,                                               \
-C_TRACE_LOG,                                                   \
-C_TTY_NAME_MAX,                                                \
-C_TYPED_MEMORY_OBJECTS,                                        \
-C_TZNAME_MAX,                                                  \
+C_THREADS
+
+#define P00_POSIX_SC_V6                                        \
 C_V6_ILP32_OFF32,                                              \
 C_V6_ILP32_OFFBIG,                                             \
 C_V6_LP64_OFF64,                                               \
-C_V6_LPBIG_OFFBIG,                                             \
-C_VERSION,                                                     \
-C_XBS5_ILP32_OFF32,                                            \
-C_XBS5_ILP32_OFFBIG,                                           \
-C_XBS5_LP64_OFF64,                                             \
-C_XBS5_LPBIG_OFFBIG,                                           \
+C_V6_LPBIG_OFFBIG
+
+#define P00_POSIX_SC_XOPEN                                     \
 C_XOPEN_CRYPT,                                                 \
 C_XOPEN_ENH_I18N,                                              \
 C_XOPEN_LEGACY,                                                \
@@ -182,6 +194,13 @@ C_XOPEN_REALTIME_THREADS,                                      \
 C_XOPEN_SHM,                                                   \
 C_XOPEN_UNIX,                                                  \
 C_XOPEN_VERSION
+
+#define P00_POSIX_SC_XBS5                                      \
+C_XBS5_ILP32_OFF32,                                            \
+C_XBS5_ILP32_OFFBIG,                                           \
+C_XBS5_LP64_OFF64,                                             \
+C_XBS5_LPBIG_OFFBIG
+
 
 #define P00_POSIX_SC_6                                         \
 C_SS_REPL_MAX,                                                 \
@@ -198,6 +217,18 @@ C_XOPEN_STREAMS
 enum {
   P00_DECLARE_SC_ENUM(P00_POSIX_SC_1),
   P00_DECLARE_SC_ENUM(P00_POSIX_SC_2),
+#ifdef _SC_XOPEN_THREADS
+  P00_DECLARE_SC_ENUM(P00_POSIX_SC_THREAD),
+#endif
+#ifdef _SC_XOPEN_VERSION
+  P00_DECLARE_SC_ENUM(P00_POSIX_SC_XOPEN),
+#endif
+#ifdef _SC_XBS5_ILP32_OFF32
+  P00_DECLARE_SC_ENUM(P00_POSIX_SC_XBS5),
+#endif
+#ifdef _SC_V6_ILP32_OFF32
+  P00_DECLARE_SC_ENUM(P00_POSIX_SC_V6),
+#endif
 #ifdef _SC_TRACE_USER_EVENT_MAX
   P00_DECLARE_SC_ENUM(P00_POSIX_SC_6),
 #endif
@@ -218,6 +249,18 @@ inline long P99_PASTE2(P99_S, X)(void) {                       \
 
 P00_DECLARE_SC(P00_POSIX_SC_1)
 P00_DECLARE_SC(P00_POSIX_SC_2)
+#ifdef _SC_XOPEN_THREADS
+  P00_DECLARE_SC(P00_POSIX_SC_THREAD)
+#endif
+#ifdef _SC_XOPEN_VERSION
+  P00_DECLARE_SC(P00_POSIX_SC_XOPEN)
+#endif
+#ifdef _SC_XBS5_ILP32_OFF32
+ P00_DECLARE_SC(P00_POSIX_SC_XBS5)
+#endif
+#ifdef _SC_V6_ILP32_OFF32
+  P00_DECLARE_SC(P00_POSIX_SC_V6)
+#endif
 #ifdef _SC_TRACE_USER_EVENT_MAX
  P00_DECLARE_SC(P00_POSIX_SC_6)
 #endif
