@@ -100,7 +100,7 @@ in_addr_t orwl_inet_addr(char const *name) {
     default:;
     }
   }
-  freeaddrinfo(res);
+  if (res) freeaddrinfo(res);
   return ret;
 }
 
