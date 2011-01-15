@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -16,7 +16,7 @@
 
 #include "orwl_thread.h"
 #include P99_ADVANCE_ID
-#include "orwl_enum.h"
+#include "p99_enum.h"
 
 
 P99_DECLARE_STRUCT(rand48_t);

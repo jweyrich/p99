@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2010 Jens Gustedt, INRIA, France                           */
+/* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -181,17 +181,17 @@ P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
 #endif
 
 #if P99_COMPILER & P99_COMPILER_CLANG
-#define P00_INSTANTIATE(RT, NAME, ...)                                  \
+#define P00_INSTANTIATE(RT, NAME, ...)                                                                   \
 RT (*const P99_PASTE3(p00_, NAME, _pointer)[])(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__)) = { NAME }; \
 p00_instantiate RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
 #else
-#define P00_INSTANTIATE(RT, NAME, ...)                                  \
+#define P00_INSTANTIATE(RT, NAME, ...)                                \
 p00_instantiate RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
 #endif
 
-#define P99_INSTANTIATE(...)                    \
-P99_IF_EQ_2(P99_NARG(__VA_ARGS__))              \
-(P00_INSTANTIATE(__VA_ARGS__, void))            \
+#define P99_INSTANTIATE(...)                                   \
+P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
+(P00_INSTANTIATE(__VA_ARGS__, void))                           \
 (P00_INSTANTIATE(__VA_ARGS__))
 
 
@@ -206,9 +206,9 @@ P99_IF_EMPTY(X)                                                         \
  }                                                                      \
 )
 
-#define P00_DAFE(NAME, X, N)                                           \
-P99_IF_EMPTY(X)                                                        \
-(P99_MACRO_END(NAME, _boring_, N))                                     \
+#define P00_DAFE(NAME, X, N)                                                       \
+P99_IF_EMPTY(X)                                                                    \
+(P99_MACRO_END(NAME, _boring_, N))                                                 \
 (P99_INSTANTIATE(P99_PASTE3(NAME, _prototype_, N), P99_PASTE3(NAME, _defarg_, N)))
 
 #define P00_DECLARE_DEFARG(NAME, N, ...)                       \

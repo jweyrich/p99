@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2010 Jens Gustedt, INRIA, France                           */
+/* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -1329,6 +1329,7 @@
 #include "p99_block.h"
 #include "p99_choice.h"
 #include "p99_defarg.h"
+#include "p99_enum.h"
 #include "p99_int.h"
 #include "p99_new.h"
 #include "p99_double.h"

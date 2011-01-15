@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -15,7 +15,7 @@
 # define   	ORWL_REGISTER_H_
 
 #include "orwl_int.h"
-#include "orwl_enum.h"
+#include "p99_enum.h"
 #include "p99_id.h"
 #include "orwl_document.h"
 

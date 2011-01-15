@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2010 Jens Gustedt, INRIA, France                           */
+/* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -106,7 +106,7 @@
 /**
  ** @brief Detect if the argument list has an extra pair of of () around.
  **/
-#define P99_HAS_NO_PAREN(...)                                           \
+#define P99_HAS_NO_PAREN(...)                                                         \
   /* Use of P00_NARG is important to avoid false trigger when __VA_ARGS__ is empty */ \
 P99_IS_EQ(P00_NARG(__VA_ARGS__), P00_NARG(P00_DETECT_PAREN __VA_ARGS__))
 #define P00_REMOVE_PAREN_(...) __VA_ARGS__
@@ -116,7 +116,7 @@ P99_IS_EQ(P00_NARG(__VA_ARGS__), P00_NARG(P00_DETECT_PAREN __VA_ARGS__))
 /**
  ** @brief Remove an extra pair of of () around the argument, if any.
  **/
-#define P99_REMOVE_PAREN(...)                                              \
+#define P99_REMOVE_PAREN(...)                                                            \
   P99_IF_ELSE(P99_HAS_NO_PAREN(__VA_ARGS__))(__VA_ARGS__)(P00_REMOVE_PAREN(__VA_ARGS__))
 
 #define P00_TYPE_NORMALIZE_(CODE, CONS, VOLA, SEQ)             \
@@ -128,7 +128,7 @@ P99_IF_EMPTY(CODE)                                             \
   )
 
 #define P00_TYPE_NORMALIZE(N, CODE, SEQ)                       \
-P00_TYPE_NORMALIZE_(CODE,                    \
+P00_TYPE_NORMALIZE_(CODE,                                      \
                      P00_CONST_CLASSIFY_(N, SEQ),              \
                      P00_VOLATILE_CLASSIFY_(N, SEQ),           \
                      SEQ                                       \
