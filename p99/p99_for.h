@@ -83,6 +83,7 @@
 #define P00_POS(NAME, X, I) I
 #define P00_NAM(NAME, X, I) NAME
 #define P00_NAME_I(NAME, X, I) P99_PASTE2(NAME, I)
+#define P00_STR(NAME, X, I) P99_STRINGIFY(X)
 
 #define P00_SUM(NAME, I, X, Y) ((X) + (Y))
 #define P00_PROD(NAME, I, X, Y) ((X) * (Y))
@@ -240,6 +241,7 @@
 
 #define P99_ARRAY(ARR, ...) (ARR)P99_SUBSCRIPT(__VA_ARGS__)
 #define P99_AREF(T, ARR, ...) T P99_ARRAY(*const ARR, __VA_ARGS__)
+#define P99_AREF1(T, ARR, ...) T P99_ARRAY(ARR, static const 1, __VA_ARGS__)
 
 #define P00_ALEN0(NAME) (sizeof((NAME))/sizeof((NAME)[0]))
 #define P00_ALEN(NAME, _1, I) P99_IF_EQ_0(I)(P00_ALEN0(NAME))(P00_ALEN0((NAME)P99_REP(I,[0])))
@@ -260,7 +262,7 @@
 
 /* generate a list of size_t's and the declaration of the array
    pointer */
-#define P00_AARG_0(T, ARR, DIM, ...) P00_AARG_LIST(DIM, __VA_ARGS__), P99_AREF(T, ARR, __VA_ARGS__)
+#define P00_AARG_0(T, ARR, DIM, ...) P00_AARG_LIST(DIM, __VA_ARGS__), P99_AREF1(T, ARR, __VA_ARGS__)
 #define P00_AARG(T, ARR, DIM, INAME) P00_AARG_0(T, ARR, DIM, P99_NAME(DIM, INAME))
 
 /* capture the special cases do implement default arguments */
