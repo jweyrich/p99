@@ -76,7 +76,7 @@ _Bool atomic_compare_exchange_weak(register atomic_size_t volatile *object, regi
   }
 }
 
-p99_inline
+inline
 size_t atomic_load(register atomic_size_t volatile *object) {
   return *object;
 }
