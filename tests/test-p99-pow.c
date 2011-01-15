@@ -22,7 +22,7 @@ size_t A3 = P99_IPOW(3, A);
 size_t A4 = P99_IPOW(4, A);
 
 void
-print(P99_AARG(double, A, 2, a)) {
+printFunc(P99_AARG(double, A, 2, a)) {
   P99_DO(size_t, i, 0, a0) {
     P99_DO(size_t, j, 0, a1) {
       printf("%g\t", (*A)[i][j]);
@@ -33,16 +33,16 @@ print(P99_AARG(double, A, 2, a)) {
   fflush(stdout);
 }
 
-#define print(ARR) print(P99_ACALL(ARR, 2))
+#define print(ARR) printFunc(P99_ACALL(ARR, 2))
 
 extern inline
 double
-dotproduct(P99_AARG(register double, A),
+dotproductFunc(P99_AARG(register double, A),
            P99_AARG(register double, B));
 
 inline
 double
-dotproduct(P99_AARG(register double, A),
+dotproductFunc(P99_AARG(register double, A),
            P99_AARG(register double, B)) {
   register double ret = 0.0;
   P99_DO(size_t, i, 0, P99_ALEN(A, 1))
@@ -50,16 +50,16 @@ dotproduct(P99_AARG(register double, A),
   return ret;
 }
 
-#define dotproduct(VA, VB) dotproduct(P99_ACALL(VA), P99_ACALL(VB))
+#define dotproduct(VA, VB) dotproductFunc(P99_ACALL(VA), P99_ACALL(VB))
 
 extern inline
 void
-transpose(P99_AARG(double, A, 2),
+transposeFunc(P99_AARG(double, A, 2),
           P99_AARG(double, B, 2));
 
 inline
 void
-transpose(P99_AARG(double, A, 2),
+transposeFunc(P99_AARG(double, A, 2),
           P99_AARG(double, B, 2)) {
   P99_DO(size_t, j, 0, P99_ALEN(*B)) {
     /* sequentialize access to the rows of B */
@@ -70,17 +70,17 @@ transpose(P99_AARG(double, A, 2),
   }
 }
 
-#define transpose(VA, VB) transpose(P99_ACALL(VA, 2), P99_ACALL(VB, 2))
+#define transpose(VA, VB) transposeFunc(P99_ACALL(VA, 2), P99_ACALL(VB, 2))
 
 extern inline
 void
-mult(P99_AARG(double, C, 2),
+multFunc(P99_AARG(double, C, 2),
      P99_AARG(double, A, 2),
      P99_AARG(double, B, 2));
 
 inline
 void
-mult(P99_AARG(double, C, 2),
+multFunc(P99_AARG(double, C, 2),
      P99_AARG(double, A, 2),
      P99_AARG(double, B, 2)) {
   /* check that the dimensions of the matrices fit */
@@ -104,7 +104,7 @@ mult(P99_AARG(double, C, 2),
   free(BS);
 }
 
-#define mult(CRR, ARR, BRR) mult(P99_ACALL(CRR, 2), P99_ACALL(ARR, 2), P99_ACALL(BRR, 2))
+#define mult(CRR, ARR, BRR) multFunc(P99_ACALL(CRR, 2), P99_ACALL(ARR, 2), P99_ACALL(BRR, 2))
 
 
 int main(int argc, char*argv[]) {

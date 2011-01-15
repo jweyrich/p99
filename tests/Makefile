@@ -88,7 +88,6 @@ include ../scripts/Makefile-atomic
 ##############################
 
 all:	$(NAME)
-$(NAME) : ${OBJS}
 % : %.o
 	$(CC) $< $(LDFLAGS) -o $@
 #	$(STRIP) ./$(NAME) # if you debug ,don't strip ...
