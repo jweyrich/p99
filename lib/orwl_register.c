@@ -13,6 +13,7 @@
 /*                                                                           */
 #include "orwl_register.h"
 #include "orwl_macro.h"
+#include "orwl_once.h"
 
 static
 pthread_mutex_t orwl__reg_mut = PTHREAD_MUTEX_INITIALIZER;
