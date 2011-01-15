@@ -24,7 +24,7 @@ extern "C" {
 
 /** @brief Return type for @c orwl functions
  **/
-DECLARE_ENUM(orwl_state,
+P99_DECLARE_ENUM(orwl_state,
              orwl_invalid,
              orwl_valid,
              orwl_requested,

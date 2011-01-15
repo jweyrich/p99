@@ -16,6 +16,9 @@
 
 #include "p99_for.h"
 
+
+#define P00_ENUM_CASE(NAME, X, I) case X: return P99_STRINGIFY(X)
+
 /**
  ** @brief Declare a simple enumeration type.
  **
@@ -23,7 +26,7 @@
  ** assignments to the constants. To define an enumeration type @c
  ** color Use it in something as
  ** @code
- ** DECLARE_ENUM(color, red, green, blue);
+ ** P99_DECLARE_ENUM(color, red, green, blue);
  ** @endcode
  **
  ** As additional benefits you obtain:
@@ -35,7 +38,7 @@
  **
  ** To have this functional, you have to put an line
  ** @code
- ** DEFINE_ENUM(color);
+ ** P99_DEFINE_ENUM(color);
  ** @endcode
  **
  ** in one of your object files.
@@ -53,35 +56,32 @@
  ** to prefix it with `color' such that the documentation lands inside
  ** the one for `color'.
  **/
-#define DECLARE_ENUM(T, ...)                                                   \
-/*! @see DECLARE_ENUM was used for the declaration of this enumeration type */ \
-/*! @see T ## _getname for access to the names of the constants as strings */  \
-typedef enum { __VA_ARGS__ ,                                                   \
-               /*! upper bound of the @ref T constants */                      \
-               P99_PASTE2(T, _amount),                                         \
-               /*! the largest @ref T constant */                              \
-               P99_PASTE2(T, _max) = ((size_t)(P99_PASTE2(T, _amount)) - 1u),  \
-               /*! the smallest @ref T constant */                             \
-               P99_PASTE2(T, _min) = 0                                         \
-} T;                                                                           \
-/*! @brief Get a string with the name of constant @a x of type @ref T */       \
-inline                                                                         \
-char const* P99_PASTE2(T, _getname)(T x) {                                     \
-  switch (x) {                                                                 \
-    P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, DECL_ENUM_CASE, __VA_ARGS__);    \
-  default: return "((" #T ")unknown value)";                                   \
-  }                                                                            \
-}                                                                              \
+#define P99_DECLARE_ENUM(T, ...)                                                   \
+/*! @see P99_DECLARE_ENUM was used for the declaration of this enumeration type */ \
+/*! @see T ## _getname for access to the names of the constants as strings */      \
+typedef enum T { __VA_ARGS__ ,                                                     \
+               /*! upper bound of the @ref T constants */                          \
+               P99_PASTE2(T, _amount),                                             \
+               /*! the largest @ref T constant */                                  \
+               P99_PASTE2(T, _max) = ((size_t)(P99_PASTE2(T, _amount)) - 1u),      \
+               /*! the smallest @ref T constant */                                 \
+               P99_PASTE2(T, _min) = 0                                             \
+} T;                                                                               \
+/*! @brief Get a string with the name of constant @a x of type @ref T */           \
+p99_inline                                                                         \
+char const* P99_PASTE2(T, _getname)(T x) {                                         \
+  switch (x) {                                                                     \
+    P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_ENUM_CASE, __VA_ARGS__);         \
+  default: return "((" #T ")unknown value)";                                       \
+  }                                                                                \
+}                                                                                  \
 P99_MACRO_END(declare_enum_, T)
-
-#define DECL_ENUM_CASE(NAME, X, I) case X: return P99_STRINGIFY(X)
-
 
 /**
  ** @brief Define the necessary symbols for a simple enumeration type.
  **
- ** Use this with DECLARE_ENUM(), which see.
+ ** Use this with P99_DECLARE_ENUM(), which see.
  **/
-#define DEFINE_ENUM(T) P99_INSTANTIATE(char const*, P99_PASTE2(T, _getname), T)
+#define P99_DEFINE_ENUM(T) P99_INSTANTIATE(char const*, P99_PASTE2(T, _getname), T)
 
 #endif 	    /* !ORWL_ENUM_H_ */

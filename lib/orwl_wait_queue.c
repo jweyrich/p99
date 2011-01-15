@@ -14,7 +14,7 @@
 #include "orwl_wait_queue.h"
 #include "orwl_socket.h"
 
-DEFINE_ENUM(orwl_state);
+P99_DEFINE_ENUM(orwl_state);
 
 DEFINE_ONCE(orwl_wq) {
   INIT_ONCE(orwl_thread);
