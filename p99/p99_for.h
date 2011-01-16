@@ -231,6 +231,11 @@
 #define P99_CDIM(NAME, ...) P00_CDIM(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
 
 
+/**
+ ** @addtogroup VLA Variable Length Arrays
+ ** @{
+ **/
+
 #define P00_SUBSCRIPT(NAME, X, I) [X]
 
 /**
@@ -327,7 +332,12 @@
 
 #endif
 
+/** @}
+ **/
+
+
 /**
+ ** @ingroup preprocessor_blocks
  ** @brief Declare a @c for loop for which all iterations can be run
  ** independently and out of order.
  **

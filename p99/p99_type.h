@@ -24,6 +24,14 @@
 # define   	P99_TYPE_H_
 
 /**
+ ** @addtogroup types Type facilities
+ ** @brief Macros that help you handle different kind of types,
+ ** forward declaring @c struct of @c union, and handle @c enum.
+ ** @{
+ **/
+
+
+/**
  ** @brief forward declaration of a @c struct @a NAME
  **
  ** This combines a @c struct forward declaration and a @c typedef
@@ -48,5 +56,7 @@
  **/
 #define P99_DECLARE_UNION(NAME) typedef union NAME NAME
 
+/** @}
+ **/
 
 #endif 	    /* !P99_TYPE_H_ */

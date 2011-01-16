@@ -37,8 +37,8 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Sun, 14 Nov 2010 22:38:32 +0100"
-#define P00_VERSION_ID "eb534f1d31aa3a23309b77734f874d521c3cb3a2"
+#define P00_VERSION_DATE "Sun, 16 Jan 2011 01:00:29 +0100"
+#define P00_VERSION_ID "288f8ccf58be4a6c23e66cffb321d4a936c8a01e"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
  **
@@ -7676,6 +7676,22 @@ automatically generated, do not change manually.
 
 
 #define P00_variadic
+
+//! @}
+
+//! @addtogroup VLA
+//! @{
+
+
+#define P00_VLA
+
+//! @}
+
+//! @addtogroup types
+//! @{
+
+
+#define P00_types
 
 //! @}
 

@@ -1192,6 +1192,8 @@ my @groups =
         [ "preprocessor_initialization" ],
         [ "default_arguments" ],
         [ "variadic" ],
+        [ "VLA" ],
+        [ "types" ],
         [ "stringconversion" ],
         [ "integers" ],
       ],

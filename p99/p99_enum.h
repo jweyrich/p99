@@ -15,6 +15,10 @@
 
 #include "p99_for.h"
 
+/**
+ ** @addtogroup types Type facilities
+ ** @{
+ **/
 
 #define P00_ENUM_CASE(NAME, X, I) case X: return P99_STRINGIFY(X)
 
@@ -82,5 +86,9 @@ P99_MACRO_END(declare_enum_, T)
  ** Use this with P99_DECLARE_ENUM(), which see.
  **/
 #define P99_DEFINE_ENUM(T) P99_INSTANTIATE(char const*, P99_PASTE2(T, _getname), T)
+
+/** @}
+ **/
+
 
 #endif 	    /* !P99_ENUM_H_ */
