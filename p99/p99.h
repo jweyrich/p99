@@ -977,7 +977,7 @@
  ** @endcode
  **
  ** @fnt 4 @efnt
- ** The actual definition is a by more complicated to capture special
+ ** The actual definition is a bit more complicated to capture special
  ** cases.
  **
  ** @section unrolling Code Unrolling

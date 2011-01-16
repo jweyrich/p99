@@ -100,8 +100,8 @@
 #define P00_REV(NAME, I, REC, X) X, REC
 
 /**
- ** @brief generate lists of names of the form NAME0, NAME1, ...
- ** */
+ ** @brief generate lists of names of the form <code>NAME0, NAME1, ...</code>
+ **/
 #define P99_NAME(N, NAME) P99_FOR(NAME, N, P00_SEQ, P00_NAME_I, P99_REP(N,))
 
 #define P00_FUNC(NAME, I, REC, X) NAME(REC, X)
@@ -239,8 +239,8 @@
 #define P00_SUBSCRIPT(NAME, X, I) [X]
 
 /**
- ** @brief Transform the list of arguments x0, x1, ... to array
- ** subscripts [x0][x1]...
+ ** @brief Transform the list of arguments <code>x0, x1, ...</code> to array
+ ** subscripts <code>[x0][x1]...</code>
  **/
 #define P99_SUBSCRIPT(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SER, P00_SUBSCRIPT, __VA_ARGS__)
 
