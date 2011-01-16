@@ -37,7 +37,7 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Sun, 16 Jan 2011 11:30:06 +0100"
+#define P00_VERSION_DATE "Sun, 16 Jan 2011 12:13:28 +0100"
 #define P00_VERSION_ID "288f8ccf58be4a6c23e66cffb321d4a936c8a01e"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -4940,7 +4940,7 @@ automatically generated, do not change manually.
  ** <tr><td>v</td><td><code>void</code></td><td></td><td></td><td></td><td></td></tr>
  ** </table>
  **/
-#define  P99_BUILTIN_TYPE(...)  P99_PASTE2(P00_, P99_PASTE(BUILTIN_TYPE_, __VA_ARGS__))
+#define P99_BUILTIN_TYPE(...) P99_PASTE2(P00_, P99_PASTE(BUILTIN_TYPE_, __VA_ARGS__))
 #define P00_BUILTIN_TYPE_ signed
 #define P00_BUILTIN_TYPE_b _Bool
 #define P00_BUILTIN_TYPE_c char
@@ -4976,7 +4976,7 @@ automatically generated, do not change manually.
 #define P00_BUILTIN_TYPE_ull unsigned long long
 #define P00_BUILTIN_TYPE_uz size_t
 #define P00_BUILTIN_TYPE_v void
-#define  P99_BUILTIN_MAX(...)  P99_PASTE2(P00_, P99_PASTE(BUILTIN_MAX_, __VA_ARGS__))
+#define P99_BUILTIN_MAX(...) P99_PASTE2(P00_, P99_PASTE(BUILTIN_MAX_, __VA_ARGS__))
 #define P00_BUILTIN_MAX_ INT_MAX
 #define P00_BUILTIN_MAX_b 1
 #define P00_BUILTIN_MAX_c CHAR_MAX
@@ -5005,7 +5005,7 @@ automatically generated, do not change manually.
 #define P00_BUILTIN_MAX_ul ULONG_MAX
 #define P00_BUILTIN_MAX_ull ULLONG_MAX
 #define P00_BUILTIN_MAX_uz SIZE_MAX
-#define  P99_BUILTIN_MIN(...)  P99_PASTE2(P00_, P99_PASTE(BUILTIN_MIN_, __VA_ARGS__))
+#define P99_BUILTIN_MIN(...) P99_PASTE2(P00_, P99_PASTE(BUILTIN_MIN_, __VA_ARGS__))
 #define P00_BUILTIN_MIN_ INT_MIN
 #define P00_BUILTIN_MIN_b 0
 #define P00_BUILTIN_MIN_c CHAR_MIN
@@ -5034,7 +5034,7 @@ automatically generated, do not change manually.
 #define P00_BUILTIN_MIN_ul 0UL
 #define P00_BUILTIN_MIN_ull 0ULL
 #define P00_BUILTIN_MIN_uz 0
-#define  P99_INTEGER_RANK(...)  P99_PASTE2(P00_, P99_PASTE(INTEGER_RANK_, __VA_ARGS__))
+#define P99_INTEGER_RANK(...) P99_PASTE2(P00_, P99_PASTE(INTEGER_RANK_, __VA_ARGS__))
 #define P00_INTEGER_RANK_b 0
 #define P00_INTEGER_RANK_c 1
 #define P00_INTEGER_RANK_h 2
@@ -5047,7 +5047,7 @@ automatically generated, do not change manually.
 #define P00_INTEGER_RANK_uhh 1
 #define P00_INTEGER_RANK_ul 4
 #define P00_INTEGER_RANK_ull 5
-#define  P99_INTEGER_SIGN(...)  P99_PASTE2(P00_, P99_PASTE(INTEGER_SIGN_, __VA_ARGS__))
+#define P99_INTEGER_SIGN(...) P99_PASTE2(P00_, P99_PASTE(INTEGER_SIGN_, __VA_ARGS__))
 #define P00_INTEGER_SIGN_b 0
 #define P00_INTEGER_SIGN_h 1
 #define P00_INTEGER_SIGN_hh 1
@@ -5059,7 +5059,7 @@ automatically generated, do not change manually.
 #define P00_INTEGER_SIGN_uhh 0
 #define P00_INTEGER_SIGN_ul 0
 #define P00_INTEGER_SIGN_ull 0
-#define  P99_INTEGER_SIGNED(...)  P99_PASTE2(P00_, P99_PASTE(INTEGER_SIGNED_, __VA_ARGS__))
+#define P99_INTEGER_SIGNED(...) P99_PASTE2(P00_, P99_PASTE(INTEGER_SIGNED_, __VA_ARGS__))
 #define P00_INTEGER_SIGNED_1 hh
 #define P00_INTEGER_SIGNED_2 h
 #define P00_INTEGER_SIGNED_3 i
@@ -5076,7 +5076,7 @@ automatically generated, do not change manually.
 #define P00_INTEGER_SIGNED_uhh hh
 #define P00_INTEGER_SIGNED_ul l
 #define P00_INTEGER_SIGNED_ull ll
-#define  P99_INTEGER_UNSIGNED(...)  P99_PASTE2(P00_, P99_PASTE(INTEGER_UNSIGNED_, __VA_ARGS__))
+#define P99_INTEGER_UNSIGNED(...) P99_PASTE2(P00_, P99_PASTE(INTEGER_UNSIGNED_, __VA_ARGS__))
 #define P00_INTEGER_UNSIGNED_0 b
 #define P00_INTEGER_UNSIGNED_1 uhh
 #define P00_INTEGER_UNSIGNED_2 uh

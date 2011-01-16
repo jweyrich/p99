@@ -674,7 +674,7 @@ KINDS
 my @constClass = ("const");
 # several occurrences just map to const again
 my %constClass = (
-    1 =>   "",
+    1 =>	"",
     2 =>	"const",
     3 =>	"const",
     4 =>	"const",
@@ -687,7 +687,7 @@ my %constClass = (
 my @volatileClass = ("volatile");
 # several occurrences just map to volatile again
 my %volatileClass = (
-    1 =>   "",
+    1 =>	"",
     2 =>	"volatile",
     3 =>	"volatile",
     4 =>	"volatile",
@@ -700,7 +700,7 @@ my %volatileClass = (
 my @voidClass = ("void");
 # only allowed once
 my %voidClass = (
-    1 =>   "",
+    1 =>	"",
     2 =>	"v",
     );
 
@@ -709,7 +709,7 @@ my %voidClass = (
 my @boolClass = ("_Bool");
 # only allowed once
 my %boolClass = (
-    1 =>   "",
+    1 =>	"",
     2 =>	"b",
     );
 
@@ -1000,7 +1000,7 @@ sub signedOf($) {
 sub printHash($\%) {
     my ($pref, $keys) = (@_);
     my %keys = %{$keys};
-    print "#define  P99_${pref}(...)  P99_PASTE2(P00_, P99_PASTE(${pref}_, __VA_ARGS__))\n";
+    print "#define P99_${pref}(...) P99_PASTE2(P00_, P99_PASTE(${pref}_, __VA_ARGS__))\n";
     print "#define P00_${pref}_${_} " . $keys{${_}} . "\n"
         foreach sort keys(%keys);
 }
