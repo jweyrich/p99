@@ -38,7 +38,7 @@
 #define P00_STRLEN(NAME, X, I) strlen(X)
 #define P00_SIZEOF(NAME, X, I) sizeof(X)
 #define P00_TYPD(NAME, X, I) typedef X P99_PASTE2(NAME, I)
-#define P00_ADD(NAME, I, REC, RES) P99_DEC_ADD(RES, REC)
+#define P00_ADD(NAME, I, REC, RES) P99_ADD(RES, REC)
 
 #define P00_STRLENS(N, ...) P99_FOR(,N, P00_SUM, P00_STRLEN, __VA_ARGS__)
 #define P00_SIZEOFS(N, ...) P99_FOR(,N, P00_SUM, P00_SIZEOF, __VA_ARGS__)
@@ -170,7 +170,7 @@ p00_strcat_terminate                                           \
  ** V0, etc are the remaining arguments.
  **/
 #define P99_VASSIGNS(NAME, ...)                                            \
-P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),2)                                     \
+P99_IF_LT(P99_NARG(__VA_ARGS__),2)                                         \
 (P99_IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))               \
   (P99_FOR(NAME, P00_NARG(__VA_ARGS__),P00_SEP, P00_VASSIGN, __VA_ARGS__))
 

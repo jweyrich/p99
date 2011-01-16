@@ -799,7 +799,7 @@ P00_DECLARE_OVERFLOW(ll);
  ** initialize the lvalue. Otherwise the remaining parameters are used
  ** for initialization.
  **/
-#define P99_LVAL(...) P99_IF_DEC_LE(P99_NARG(__VA_ARGS__),1)(P00_LVAL(__VA_ARGS__, 0))(P00_LVAL(__VA_ARGS__))
+#define P99_LVAL(...) P99_IF_LE(P99_NARG(__VA_ARGS__),1)(P00_LVAL(__VA_ARGS__, 0))(P00_LVAL(__VA_ARGS__))
 
 
 /**

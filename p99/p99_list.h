@@ -76,7 +76,7 @@
  ** - If the argument list has just one element which is empty, the
  **   result will just be a sequence of @a N - 1 commas.
  **/
-#define P99_DUPL(...) P99_PASTE2(P00_DUPL_0_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 2))(__VA_ARGS__)
+#define P99_DUPL(...) P99_PASTE2(P00_DUPL_0_, P99_IS_LT(P99_NARG(__VA_ARGS__), 2))(__VA_ARGS__)
 
 #define P00_DUPL_0_0(...) P00_DUPL(__VA_ARGS__)
 #define P00_DUPL_0_1(...)
@@ -94,7 +94,7 @@
  ** - If the argument list has just one element which is empty, the
  **    token is produced.
  **/
-#define P99_REP(...) P99_PASTE2(P00_REP_0_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 2))(__VA_ARGS__)
+#define P99_REP(...) P99_PASTE2(P00_REP_0_, P99_IS_LT(P99_NARG(__VA_ARGS__), 2))(__VA_ARGS__)
 
 #define P00_REP_0_0(...) P00_REP(__VA_ARGS__)
 #define P00_REP_0_1(...)
@@ -103,7 +103,7 @@
 
 #define P00_REP(N, ...) P00_REP_ ## N(__VA_ARGS__)
 
-#define P99_BRACKETS(...) P99_PASTE2(P00_BRACKETS_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 1))(P99_NARG(__VA_ARGS__), __VA_ARGS__)
+#define P99_BRACKETS(...) P99_PASTE2(P00_BRACKETS_, P99_IS_LT(P99_NARG(__VA_ARGS__), 1))(P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
 #define P00_BRACKETS_0(...) P00_BRACKET(__VA_ARGS__)
 #define P00_BRACKETS_1(...)
@@ -112,7 +112,7 @@
 
 #define P00_BRACKET(N, ...) P00_BRACKET_ ## N(__VA_ARGS__)
 
-#define P99_PARENS(...) P99_PASTE2(P00_PARENS_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 1))(P99_NARG(__VA_ARGS__), __VA_ARGS__)
+#define P99_PARENS(...) P99_PASTE2(P00_PARENS_, P99_IS_LT(P99_NARG(__VA_ARGS__), 1))(P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
 #define P00_PARENS_0(...) P00_PAREN(__VA_ARGS__)
 #define P00_PARENS_1(...)
@@ -121,7 +121,7 @@
 
 #define P00_PAREN(N, ...) P00_PAREN_ ## N(__VA_ARGS__)
 
-#define P99_BRACES(...) P99_PASTE2(P00_BRACES_, P99_IS_DEC_LT(P99_NARG(__VA_ARGS__), 1))(P99_NARG(__VA_ARGS__), __VA_ARGS__)
+#define P99_BRACES(...) P99_PASTE2(P00_BRACES_, P99_IS_LT(P99_NARG(__VA_ARGS__), 1))(P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
 #define P00_BRACES_0(...) P00_BRACE(__VA_ARGS__)
 #define P00_BRACES_1(...)

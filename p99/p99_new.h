@@ -109,7 +109,7 @@
  ** @see P99_CALL_DEFARG if you want to provide default arguments to
  ** the @c T_init function.
  **/
-#define P99_NEW(...) P99_IF_DEC_LT(P99_NARG(__VA_ARGS__), 2)(P00_NEW(__VA_ARGS__))(P00_NEW_ARGS(__VA_ARGS__))
+#define P99_NEW(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2)(P00_NEW(__VA_ARGS__))(P00_NEW_ARGS(__VA_ARGS__))
 
 /**
  ** @}

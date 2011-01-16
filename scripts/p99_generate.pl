@@ -1047,9 +1047,9 @@ print <<'PREPRO3';
 PREPRO3
 
 
-printf "#define P00_DEC_PRED_%d %d\n", $_ + 1, $_
+printf "#define P00_PRED_%d %d\n", $_ + 1, $_
     foreach (0.. $maxnumber);
-printf "#define P00_DEC_PRED_minus_%d minus_%d\n", $_, $_ + 1
+printf "#define P00_PRED_minus_%d minus_%d\n", $_, $_ + 1
     foreach (0.. $maxnumber);
 printf "#define P00_minus_minus_%d %d\n", $_, $_
     foreach (0.. $maxnumber);

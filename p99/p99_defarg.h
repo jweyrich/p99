@@ -258,7 +258,7 @@ P99_MACRO_END(NAME, _declare_defarg)
 
 #define P00_DARG(NAME, X, N) P99_IF_EMPTY(X)(P99_PASTE3(NAME, _defarg_, N)())(X)
 #define P00__DEFARGS(NAME, N, ...) P99_FOR(NAME, N, P00_SEQ, P00_DARG, __VA_ARGS__)
-#define P00_DEFARGS(NAME, N, ...) P00__DEFARGS(NAME, N, P99_IF_DEC_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, P99_DUPL(P99_DEC_MINUS(N,P99_NARG(__VA_ARGS__)),)) (__VA_ARGS__))
+#define P00_DEFARGS(NAME, N, ...) P00__DEFARGS(NAME, N, P99_IF_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, P99_DUPL(P99_MINUS(N,P99_NARG(__VA_ARGS__)),)) (__VA_ARGS__))
 
 
 /**
@@ -373,7 +373,7 @@ P99_MACRO_END(NAME, _declare_defarg)
 #define P99_CALL_VA_ARG(NAME, M, T, ...) NAME(__VA_ARGS__)
 #else
 #define P99_CALL_VA_ARG(NAME, M, T, ...)                                                                   \
-P99_IF_DEC_GT(P99_NARG(__VA_ARGS__), M)                                                                    \
+P99_IF_GT(P99_NARG(__VA_ARGS__), M)                                                                        \
 (NAME(P00__DEFARGS(NAME, M, P99_SELS(M, __VA_ARGS__)), P00_CALL_VA_ARG(NAME, T, P99_SKP(M, __VA_ARGS__)))) \
 (P99_CALL_DEFARG(NAME, M, __VA_ARGS__))
 #endif

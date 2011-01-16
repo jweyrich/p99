@@ -181,7 +181,7 @@
  **/
 #define P99_REVS(...) P00_REVS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
-#define P00_REVS(N, ...) P99_PASTE2(P00_REVS_, P99_IS_DEC_LT(N, 2))(N, __VA_ARGS__)
+#define P00_REVS(N, ...) P99_PASTE2(P00_REVS_, P99_IS_LT(N, 2))(N, __VA_ARGS__)
 
 #define P00_REVS_0(N, ...) P00_REVS_(N,__VA_ARGS__)
 #define P00_REVS_1(N, ...) __VA_ARGS__
@@ -197,7 +197,7 @@
  ** @warning Both arguments must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define P99_DEC_DIV(A, B) P99_CHS(A, P99_FOR(B, 32, P00_SEQ, P00_IDI, P00_ALL_ONES()))
+#define P99_DIV(A, B) P99_CHS(A, P99_FOR(B, 32, P00_SEQ, P00_IDI, P00_ALL_ONES()))
 
 #define P00_IDI(B, X, I) P99_DUPL(B, I)
 
@@ -328,7 +328,7 @@
 #else
 #define P99_ALEN(...) P99_IF_EQ_1(P99_NARG(__VA_ARGS__))(P00_ALEN(__VA_ARGS__, ,0))(P00_ALEN2(__VA_ARGS__))
 #define P99_ACALL(...) P99_IF_EQ_1(P99_NARG(__VA_ARGS__))(P00_ACALL(__VA_ARGS__, 1))(P00_ACALL(__VA_ARGS__))
-#define P99_AARG(...) P99_IF_DEC_GT(P99_NARG(__VA_ARGS__),3)(P00_AARG(__VA_ARGS__))(P99_PASTE2(P00_AARG_, P99_NARG(__VA_ARGS__))(__VA_ARGS__))
+#define P99_AARG(...) P99_IF_GT(P99_NARG(__VA_ARGS__),3)(P00_AARG(__VA_ARGS__))(P99_PASTE2(P00_AARG_, P99_NARG(__VA_ARGS__))(__VA_ARGS__))
 
 #endif
 

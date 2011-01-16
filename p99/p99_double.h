@@ -60,7 +60,7 @@
 #define P99_DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP)
 #else
 #define P99_DEC_DOUBLE(...)                                    \
-  P99_IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)                      \
+  P99_IF_GE(P99_NARG(__VA_ARGS__), 6)                          \
   (P00_DEC_DOUBLE(__VA_ARGS__))                                \
   (P00_DEC_DOUBLE(__VA_ARGS__,,,,,))
 #endif
@@ -86,7 +86,7 @@
 #define P99_HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP)
 #else
 #define P99_HEX_DOUBLE(...)                                    \
-  P99_IF_DEC_GE(P99_NARG(__VA_ARGS__), 6)                      \
+  P99_IF_GE(P99_NARG(__VA_ARGS__), 6)                          \
   (P00_HEX_DOUBLE(__VA_ARGS__))                                \
   (P00_HEX_DOUBLE(__VA_ARGS__,,,,,))
 #endif

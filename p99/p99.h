@@ -747,7 +747,7 @@
  ** @code
  ** P99_IS_EQ(int, double)    ==> 0
  ** P99_IS_EQ(static, static) ==> 1
- ** P99_DEC_ADD(4, 5)         ==> 9
+ ** P99_ADD(4, 5)         ==> 9
  ** @endcode
  **
  ** See @ref preprocessor_operators for more about that.

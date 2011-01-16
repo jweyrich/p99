@@ -158,30 +158,23 @@
 #define P00_IS_VOID_11 WEIRD_VOID_ARG_ERROR
 
 /** @brief a decimal less than operator **/
-#define P99_IS_DEC_LT(_0, _1)  P00_DEC_LT( P99_IS_EQ_0(_1), P99_CHS(_0, P99_SELS(_1, P00_ALL_ONES()), P00_ALL_ZEROES()))
-#define P00_DEC_LT(_0, _1)  P99_PASTE2(P00_DEC_LT_, _0)(_1)
+#define P99_IS_LT(_0, _1)  P00_LT( P99_IS_EQ_0(_1), P99_CHS(_0, P99_SELS(_1, P00_ALL_ONES()), P00_ALL_ZEROES()))
+#define P00_LT(_0, _1)  P99_PASTE2(P00_LT_, _0)(_1)
 
-#define P00_DEC_LT_0(_0) _0
-#define P00_DEC_LT_1(_0) 0
+#define P00_LT_0(_0) _0
+#define P00_LT_1(_0) 0
 
 /** @brief a decimal greater or equal operator **/
-#define P99_IS_DEC_GE(_0, _1)  P00_DEC_GE( P99_IS_EQ_0(_1), P99_CHS(_0, P99_SELS(_1, P00_ALL_ZEROES()), P00_ALL_ONES()))
-#define P00_DEC_GE(_0, _1)  P99_PASTE2(P00_DEC_GE_, _0)(_1)
+#define P99_IS_GE(_0, _1)  P00_GE( P99_IS_EQ_0(_1), P99_CHS(_0, P99_SELS(_1, P00_ALL_ZEROES()), P00_ALL_ONES()))
+#define P00_GE(_0, _1)  P99_PASTE2(P00_GE_, _0)(_1)
 
-#define P00_DEC_GE_0(_0) _0
-#define P00_DEC_GE_1(_0) 1
+#define P00_GE_0(_0) _0
+#define P00_GE_1(_0) 1
 
 /** @brief a decimal greater than operator **/
-#define P99_IS_DEC_GT(_0, _1)  P99_IS_DEC_LT(_1, _0)
+#define P99_IS_GT(_0, _1)  P99_IS_LT(_1, _0)
 /** @brief a decimal less or equal operator **/
-#define P99_IS_DEC_LE(_0, _1)  P99_IS_DEC_GE(_1, _0)
-
-/** @brief a decimal equal operator **/
-#define P99_IS_DEC_EQ(_0, _1)  P99_IS_EQ(_0, _1)
-
-/** @brief a decimal unequal operator **/
-#define P99_IS_DEC_NE(_0, _1)  P99_LOGIC_NOT(P99_IS_EQ(_0, _1))
-
+#define P99_IS_LE(_0, _1)  P99_IS_GE(_1, _0)
 
 /**
  ** @}
@@ -198,22 +191,24 @@
  ** @{
  **/
 
-/** @brief add two decimal numbers **/
-#define P99_DEC_ADD(_0, _1)                                    \
-P00_DEC_ADD(_0, _1,                                            \
-             P99_IS_EQ_0(_0),                                  \
-             P99_IS_EQ_0(_1),                                  \
-             P99_NARG(                                         \
+/**
+ ** @brief add two decimal numbers
+ **/
+#define P99_ADD(_0, _1)                                        \
+P00_ADD_(_0, _1,                                               \
+         P99_IS_EQ_0(_0),                                      \
+         P99_IS_EQ_0(_1),                                      \
+         P99_NARG(                                             \
                   P99_SELS(_0, P00_ALL_ZEROES()),              \
                   P99_SELS(_1, P00_ALL_ZEROES())))
 
 
-#define P00_DEC_ADD(_0, _1, _2, _3, _4) P99_PASTE3(P00_DEC_ADD_, _2, _3)(_0, _1, _4)
+#define P00_ADD_(_0, _1, _2, _3, _4) P99_PASTE3(P00_ADD_, _2, _3)(_0, _1, _4)
 
-#define P00_DEC_ADD_00(_0, _1, _2) _2
-#define P00_DEC_ADD_01(_0, _1, _2) _0
-#define P00_DEC_ADD_10(_0, _1, _2) _1
-#define P00_DEC_ADD_11(_0, _1, _2) 0
+#define P00_ADD_00(_0, _1, _2) _2
+#define P00_ADD_01(_0, _1, _2) _0
+#define P00_ADD_10(_0, _1, _2) _1
+#define P00_ADD_11(_0, _1, _2) 0
 
 
 /**
@@ -222,49 +217,49 @@ P00_DEC_ADD(_0, _1,                                            \
  ** If the result is negative, a token of the form @c minus_NNN is
  ** returned where @c NNN would be the result of
  ** @code
- ** P99_DEC_MINUS(_1, _0)
+ ** P99_MINUS(_1, _0)
  ** @endcode
  **/
-#define P99_DEC_MINUS(_0, _1) P00_DEC_MINUS(_0, _1, P99_IS_EQ(_0, _1), P99_IS_EQ_0(_0), P99_IS_EQ_0(_1))
-#define P00_DEC_MINUS(_0, _1, _2, _3, _4) P99_PASTE4(P00_DEC_MINUS_, _2, _3, _4)(_0, _1)
+#define P99_MINUS(_0, _1) P00_MINUS(_0, _1, P99_IS_EQ(_0, _1), P99_IS_EQ_0(_0), P99_IS_EQ_0(_1))
+#define P00_MINUS(_0, _1, _2, _3, _4) P99_PASTE4(P00_MINUS_, _2, _3, _4)(_0, _1)
 
-#define P00_DEC_MINUS_000(_0, _1) P00_DEC_MINUS_(_0, _1, P99_IS_DEC_LT(_0, _1))
+#define P00_MINUS_000(_0, _1) P00_MINUS_(_0, _1, P99_IS_LT(_0, _1))
 /* if one of _0 or _1 is 0, there is not much to do */
-#define P00_DEC_MINUS_001(_0, _1) _0
-#define P00_DEC_MINUS_010(_0, _1) P99_PASTE2(minus_, _1)
+#define P00_MINUS_001(_0, _1) _0
+#define P00_MINUS_010(_0, _1) P99_PASTE2(minus_, _1)
 /* should not occur */
-#define P00_DEC_MINUS_011(_0, _1) P99_WEIRD_MINUS_ARG_ERROR
+#define P00_MINUS_011(_0, _1) P99_WEIRD_MINUS_ARG_ERROR
 /* whenever _0 and _1 are equal there is nothing to do */
-#define P00_DEC_MINUS_100(_0, _1) 0
-#define P00_DEC_MINUS_101(_0, _1) 0
-#define P00_DEC_MINUS_110(_0, _1) 0
-#define P00_DEC_MINUS_111(_0, _1) 0
+#define P00_MINUS_100(_0, _1) 0
+#define P00_MINUS_101(_0, _1) 0
+#define P00_MINUS_110(_0, _1) 0
+#define P00_MINUS_111(_0, _1) 0
 
-#define P00_DEC_MINUS_(_0, _1, _2) P99_PASTE2(P00_DEC_MINUS_, _2)(_0, _1)
+#define P00_MINUS_(_0, _1, _2) P99_PASTE2(P00_MINUS_, _2)(_0, _1)
 
-#define P00_DEC_MINUS_0(_0, _1) P00_DEC_MINUS__(_0, _1)
-#define P00_DEC_MINUS_1(_0, _1) P99_PASTE2(minus_, P00_DEC_MINUS__(_1, _0))
+#define P00_MINUS_0(_0, _1) P00_MINUS__(_0, _1)
+#define P00_MINUS_1(_0, _1) P99_PASTE2(minus_, P00_MINUS__(_1, _0))
 
 
 
 /* The general case both are non-zero and _0 is strictly greater than _1 */
-#define P00_DEC_MINUS__(_0, _1) P99_NARG(P99_SKP(_1, P99_SELS(_0, P00_ALL_ZEROES())))
+#define P00_MINUS__(_0, _1) P99_NARG(P99_SKP(_1, P99_SELS(_0, P00_ALL_ZEROES())))
 
 
 /**
  ** @brief Macro that expands to the predecessor of decimal constant
  ** @a N
  **/
-#define P99_DEC_PRED(N) P00_DEC_PRED(N)
-#define P00_DEC_PRED(N) P00__DEC_PRED(P00_DEC_PRED_ , N)
-#define P00__DEC_PRED(P, N) P ## N
+#define P99_PRED(N) P00_PRED(N)
+#define P00_PRED(N) P00__PRED(P00_PRED_ , N)
+#define P00__PRED(P, N) P ## N
 
-#define P00_DEC_PRED_0 minus_1
+#define P00_PRED_0 minus_1
 
 /**
  ** @brief evaluate the result of one of the arithmetic preprocessor 
  **/
-#define P99_DEC_EVAL(EDEC) P99_PASTE2(P00_dec_eval_, EDEC)
+#define P99_EVAL(EDEC) P99_PASTE2(P00_dec_eval_, EDEC)
 
 
 /**
@@ -274,12 +269,12 @@ P00_DEC_ADD(_0, _1,                                            \
  ** @warning The result must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define P99_DEC_MUL(A, B) P99_PASTE3(P00_DEC_MUL_, P99_IS_EQ_0(A), P99_IS_EQ_0(B))(A, B)
+#define P99_MUL(A, B) P99_PASTE3(P00_MUL_, P99_IS_EQ_0(A), P99_IS_EQ_0(B))(A, B)
 
-#define P00_DEC_MUL_00(A, B) P99_NARG(P99_DUPL(A, P99_SELS(B, P00_ALL_ONES())))
-#define P00_DEC_MUL_01(A, B) 0
-#define P00_DEC_MUL_10(A, B) 0
-#define P00_DEC_MUL_11(A, B) 0
+#define P00_MUL_00(A, B) P99_NARG(P99_DUPL(A, P99_SELS(B, P00_ALL_ONES())))
+#define P00_MUL_01(A, B) 0
+#define P00_MUL_10(A, B) 0
+#define P00_MUL_11(A, B) 0
 
 
 /**
@@ -289,8 +284,8 @@ P00_DEC_ADD(_0, _1,                                            \
  ** @warning Both arguments must be less than the maximum argument list number that
  ** is supported, currently 64.
  **/
-#define P99_DEC_MOD(A, B) P00_DEC_MOD(A, P99_DUPL(32, P99_SELS(B, P00_ASCENDING())))
-#define P00_DEC_MOD(A, ...) P99_CHS(A, __VA_ARGS__)
+#define P99_MOD(A, B) P00_MOD(A, P99_DUPL(32, P99_SELS(B, P00_ASCENDING())))
+#define P00_MOD(A, ...) P99_CHS(A, __VA_ARGS__)
 
 /**
  ** @}
@@ -306,12 +301,12 @@ P00_DEC_ADD(_0, _1,                                            \
 /**
  ** @brief Obtain the last element of a list.
  **/
-#define P99_LAST(...) P99_CHS(P99_DEC_PRED(P00_NARG(__VA_ARGS__)), __VA_ARGS__,)
+#define P99_LAST(...) P99_CHS(P99_PRED(P00_NARG(__VA_ARGS__)), __VA_ARGS__,)
 
 /**
  ** @brief Obtain all elements but the last of a list.
  **/
-#define P99_ALLBUTLAST(...) P99_PASTE2(P00_PRE,P99_DEC_PRED(P00_NARG(__VA_ARGS__)))(__VA_ARGS__,)
+#define P99_ALLBUTLAST(...) P99_PASTE2(P00_PRE,P99_PRED(P00_NARG(__VA_ARGS__)))(__VA_ARGS__,)
 
 #define P00__PASTE(F, N, ...) F ## N(__VA_ARGS__)
 #define P00_PASTE(N, ...) P00__PASTE(P99_PASTE, N, __VA_ARGS__)

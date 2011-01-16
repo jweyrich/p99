@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2010 Jens Gustedt, INRIA, France                           */
+/* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -79,8 +79,6 @@
  ** @endcode
  **
  ** the macro ::P00_IF_0_EQ_0 must exist. (Which it does in that case).
- **
- ** @see P99_IF_DEC_EQ for equality of not too large decimal numbers
  **/
 #define P99_IF_EQ(A, B) P00_IF_CLAUSE(P99_PASTE4(P00_IS_,A,_EQ_,B)())
 
@@ -98,25 +96,25 @@
  ** @brief Test two decimal numbers @a A and @a B if @a A is greater
  ** or equal to @a B.
  **/
-#define P99_IF_DEC_GE(A, B) P99_IF_EQ_1(P99_IS_DEC_GE(A, B))
+#define P99_IF_GE(A, B) P99_IF_EQ_1(P99_IS_GE(A, B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is less
  ** or equal to @a B.
  **/
-#define P99_IF_DEC_LE(A, B) P99_IF_EQ_1(P99_IS_DEC_LE(A, B))
+#define P99_IF_LE(A, B) P99_IF_EQ_1(P99_IS_LE(A, B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
  ** less than @a B.
  **/
-#define P99_IF_DEC_LT(A, B) P99_IF_EQ_1(P99_IS_DEC_LT(A, B))
+#define P99_IF_LT(A, B) P99_IF_EQ_1(P99_IS_LT(A, B))
 
 /**
  ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
  ** greater than @a B.
  **/
-#define P99_IF_DEC_GT(A, B) P99_IF_EQ_1(P99_IS_DEC_GT(A, B))
+#define P99_IF_GT(A, B) P99_IF_EQ_1(P99_IS_GT(A, B))
 
 /**
  ** @brief Test if token N is the token 0.
