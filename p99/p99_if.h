@@ -27,19 +27,15 @@
  **
  ** The macros in this group work all analogous to ::P99_IF_EQ
  ** @code
- ** P99_IF_EQ(INT_MAX, 10000)(long)(short) a;
+ ** P99_IF_EQ(INT_MAX, 10000)(short)(long) a;
  ** P99_IF_EQ(8, CHAR_BIT)(uint8_t)(uint_least8_t) c;
  ** @endcode
  **
- ** which would normally be textually replaced by
+ ** which would normally@fntm 5@efntm be textually replaced by
  ** @code
- ** long int a;
+ ** long a;
  ** uint8_t c;
  ** @endcode
- **
- ** (@c INT_MAX can never be 10000, because is it at least
- ** 2<sup>15</sup>-1. @c CHAR_BIT isn't 8 only on special hardware
- ** such as DSP.)
  **
  ** That is, all these macros expect @em three pairs of parentheses
  ** after their keyword token:
@@ -48,8 +44,13 @@
  **  -# containing the else-clause
  **
  ** For the underlying logical and arithmetical operations
- ** @ref preprocessor_logic
- ** @ref preprocessor_arithmetic
+ ** @see preprocessor_logic
+ ** @see preprocessor_arithmetic
+ **
+ ** @fnt 5 @efnt
+ ** @c INT_MAX can never be 10000, because is it at least
+ ** 2<sup>15</sup>-1. @c CHAR_BIT isn't 8 only on special hardware
+ ** such as DSP, and if is is 8, the typedef @c uint8_t must exist.
  ** @{
  **/
 
@@ -89,16 +90,6 @@
  ** @see P99_IF_EQ
  **/
 #define P99_IF_NE(A, B) P00_IF_NOT_CLAUSE(P99_PASTE4(P00_IS_,A,_EQ_,B)())
-
-/**
- ** @brief Test two decimal numbers @a A and @a B if they are equal.
- **/
-#define P99_IF_DEC_EQ(A, B) P99_IF_EQ_1(P99_IS_DEC_EQ(A,B))
-
-/**
- ** @brief Test two decimal numbers @a A and @a B if they are unequal.
- **/
-#define P99_IF_DEC_NE(A, B) P99_IF_EQ_0(P99_IS_DEC_EQ(A,B))
 
 #define P99_IF_GE_0(A) P00_IF_CLAUSE(P99_PASTE4(P00_IS_,A,_GE_,0)())
 #define P99_IF_LT_0(A) P00_IF_NOT_CLAUSE(P99_PASTE4(P00_IS_,A,_GE_,0)())
