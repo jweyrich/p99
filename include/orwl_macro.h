@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -31,17 +31,6 @@
  ** the number of X-tuples in the following list of arguments.
  ** @see P99_VA_ARGS
  **/
-
-#define ARRAYSIZE(A) (sizeof(A)/sizeof(A[0]))
-
-#define ARRAY2SIZE(A) A, ARRAY2SIZE(A)
-
-/**
- ** @brief Promote integer expression @a x to the width of @c
- ** size_t but keep signedness if possible.
- **/
-#define P00_Z(x) (0 ? P99_0(size_t) : (x))
-
 
 /**
  ** @brief Declare the types that are going to be used with a
