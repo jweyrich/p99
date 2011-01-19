@@ -22,6 +22,26 @@
 
 #define P00_ENUM_CASE(NAME, X, I) case X: return P99_STRINGIFY(X)
 
+#ifdef DOXYGEN
+/**
+ ** @brief Declare a simple inline function to return strings
+ ** containing the names of enumeration constants.
+ **/
+#define P99_DECLARE_ENUM_GETNAME(T, ...)                                \
+/*! @brief Get a string with the name of constant @a x of type T */     \
+inline char const* P99_PASTE2(T, _getname)(T x)...
+#else
+#define P99_DECLARE_ENUM_GETNAME(T, ...)                                           \
+p99_inline                                                                         \
+char const* P99_PASTE2(T, _getname)(T x) {                                         \
+  switch (x) {                                                                     \
+    P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_ENUM_CASE, __VA_ARGS__);         \
+  default: return "((" #T ")unknown value)";                                       \
+  }                                                                                \
+}                                                                                  \
+P99_MACRO_END(declare_enum_getname, T)
+#endif
+
 /**
  ** @brief Declare a simple enumeration type.
  **
@@ -70,14 +90,7 @@ typedef enum T { __VA_ARGS__ ,                                                  
                /*! the smallest @ref T constant */                                 \
                P99_PASTE2(T, _min) = 0                                             \
 } T;                                                                               \
-/*! @brief Get a string with the name of constant @a x of type @ref T */           \
-p99_inline                                                                         \
-char const* P99_PASTE2(T, _getname)(T x) {                                         \
-  switch (x) {                                                                     \
-    P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_ENUM_CASE, __VA_ARGS__);         \
-  default: return "((" #T ")unknown value)";                                       \
-  }                                                                                \
-}                                                                                  \
+P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__);                                          \
 P99_MACRO_END(declare_enum_, T)
 
 /**
@@ -86,6 +99,8 @@ P99_MACRO_END(declare_enum_, T)
  ** Use this with P99_DECLARE_ENUM(), which see.
  **/
 #define P99_DEFINE_ENUM(T) P99_INSTANTIATE(char const*, P99_PASTE2(T, _getname), T)
+
+P99_DECLARE_ENUM_GETNAME(bool, false, true);
 
 /** @}
  **/
