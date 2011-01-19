@@ -18,6 +18,7 @@ NAME 	=					\
 		orwl_socket_test		\
 		orwl_wait_list			\
 		test-p99-block			\
+		test-p99-cases			\
 		test-p99-choice			\
 		test-p99-classification		\
 		test-p99-compound		\
@@ -35,6 +36,7 @@ SRC	=					\
 		orwl_socket_test.c		\
 		orwl_wait_list.c		\
 		test-p99-block.c		\
+		test-p99-cases.c		\
 		test-p99-choice.c		\
 		test-p99-classification.c	\
 		test-p99-compound.c		\

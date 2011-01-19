@@ -517,4 +517,62 @@ P99_IF_EQ(P99_NARG(__VA_ARGS__), 5)                            \
 #define P99_PARALLEL_FORALL(NAME, ...) P00_PARALLEL_FORALL(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
 
 
+#define P00_CASERANGE0(NAME, X, I) case ((NAME)+I):
+#define P00_CASERANGE(START, LEN, ...)                                  \
+if (0) {                                                                \
+  /* Let this be empty if LEN evaluates to 0. In that case we'd         \
+     probably encounter a warning about an unused label. */             \
+  P99_IF_EQ_0(LEN)()                                                    \
+    /* Execution will only go here if one of the cases is chosen. */    \
+    (P99_FOR(START, LEN, P00_SEP, P00_CASERANGE0, P99_REP(LEN,))        \
+     /* Then it just continues with the else part */                    \
+     goto P99_LINEID(__VA_ARGS__);)                                     \
+    } else                                                              \
+  /* execution will just fall through, here, if a previous case         \
+     matched */                                                         \
+  P99_LINEID(__VA_ARGS__)
+
+#ifdef DOXYGEN
+/**
+ ** @ingroup preprocessor_blocks
+ ** @brief implement a range syntax for case labels.
+ **
+ ** gcc has an analogous extension to the C syntax. Something like
+ ** @code
+ ** case '0'..'9': return 23;
+ ** @endcode
+ ** This here implements such a thing with macros and should as such
+ ** be more portable.
+ ** @code
+ ** switch (argv[0][0]) {
+ **   P99_CASERANGE('\0', 0): return -1;
+ **   P99_CASERANGE('0', 10): return 0;
+ **   P99_CASERANGE('A', 25): return 1;
+ **   P99_CASERANGE('a', 25, oioi): return 2;
+ **   default: return 3;
+ ** }
+ ** @endcode
+ **
+ ** @param START must evaluate to an expression that can be used as a case label
+ **
+ ** @param LEN must evaluate to a decimal number. If this is 0 the
+ ** entire depending statement is skipped and a warning about an
+ ** unused label might result. (For me this is e.g the case for the
+ ** first range in the above example.)
+ **
+ ** The additional variable argument list is optional and is used to
+ ** "name" the range. This is only necessary if you have more than one
+ ** P99_CASERANGE on the same logical line of code.
+ **
+ ** This is intended to have the same flow control rules as if there
+ ** were just @em one case label in front of @em one statement. In
+ ** particular, the dependent statement may just be a @c break to
+ ** break out of the enclosing @c switch.
+ **/
+#define P99_CASERANGE(START, LEN, ...)
+#else
+#define P99_CASERANGE(START, ...) P00_CASERANGE(START, __VA_ARGS__, _caselabel)
+#endif
+
+
 #endif 	    /* !P99_FOR_H_ */
