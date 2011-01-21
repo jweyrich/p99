@@ -27,18 +27,18 @@
  ** @brief Declare a simple inline function to return strings
  ** containing the names of enumeration constants.
  **/
-#define P99_DECLARE_ENUM_GETNAME(T, ...)                                \
-/*! @brief Get a string with the name of constant @a x of type T */     \
+#define P99_DECLARE_ENUM_GETNAME(T, ...)                            \
+/*! @brief Get a string with the name of constant @a x of type T */ \
 inline char const* P99_PASTE2(T, _getname)(T x)...
 #else
-#define P99_DECLARE_ENUM_GETNAME(T, ...)                                           \
-p99_inline                                                                         \
-char const* P99_PASTE2(T, _getname)(T x) {                                         \
-  switch (x) {                                                                     \
-    P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_ENUM_CASE, __VA_ARGS__);         \
-  default: return "((" #T ")unknown value)";                                       \
-  }                                                                                \
-}                                                                                  \
+#define P99_DECLARE_ENUM_GETNAME(T, ...)                                   \
+p99_inline                                                                 \
+char const* P99_PASTE2(T, _getname)(T x) {                                 \
+  switch (x) {                                                             \
+    P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_ENUM_CASE, __VA_ARGS__); \
+  default: return "((" #T ")unknown value)";                               \
+  }                                                                        \
+}                                                                          \
 P99_MACRO_END(declare_enum_getname, T)
 #endif
 

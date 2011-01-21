@@ -518,18 +518,18 @@ P99_IF_EQ(P99_NARG(__VA_ARGS__), 5)                            \
 
 
 #define P00_CASERANGE0(NAME, X, I) case ((NAME)+I):
-#define P00_CASERANGE(START, LEN, ...)                                  \
-if (0) {                                                                \
-  /* Let this be empty if LEN evaluates to 0. In that case we'd         \
-     probably encounter a warning about an unused label. */             \
-  P99_IF_EQ_0(LEN)()                                                    \
-    /* Execution will only go here if one of the cases is chosen. */    \
-    (P99_FOR(START, LEN, P00_SEP, P00_CASERANGE0, P99_REP(LEN,))        \
-     /* Then it just continues with the else part */                    \
-     goto P99_LINEID(__VA_ARGS__);)                                     \
-    } else                                                              \
-  /* execution will just fall through, here, if a previous case         \
-     matched */                                                         \
+#define P00_CASERANGE(START, LEN, ...)                               \
+if (0) {                                                             \
+  /* Let this be empty if LEN evaluates to 0. In that case we'd      \
+     probably encounter a warning about an unused label. */          \
+  P99_IF_EQ_0(LEN)()                                                 \
+    /* Execution will only go here if one of the cases is chosen. */ \
+    (P99_FOR(START, LEN, P00_SEP, P00_CASERANGE0, P99_REP(LEN,))     \
+     /* Then it just continues with the else part */                 \
+     goto P99_LINEID(__VA_ARGS__);)                                  \
+    } else                                                           \
+  /* execution will just fall through, here, if a previous case      \
+     matched */                                                      \
   P99_LINEID(__VA_ARGS__)
 
 #ifdef DOXYGEN
