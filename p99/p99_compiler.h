@@ -13,15 +13,14 @@
 #ifndef P99_COMPILER_H
 #define P99_COMPILER_H
 
+#include "p99_generated.h"
+
 /**
  ** @file
  ** @brief Group compiler dependencies together in one file
  **
  ** This has been tested with different versions of gcc (GNU, versions 4.0
  ** to 4.4), clang, opencc (OPEN64) and icc (INTEL).
- **
- ** The problem makers that are handled the @c inline keyword and some
- ** simple branch prediction feature.
  **/
 
 #define P00_PREFIX0(N) P00_PREFIX0_(N)
@@ -29,36 +28,11 @@
 #define P00_STRINGIFY(X) #X
 #define P99_STRINGIFY(X) P00_STRINGIFY(X)
 
-/* This long list of compilers does not mean that we tested P99, nor
-   does it even imply that there is a C99 mode for them. We just list
-   compilers and detection macros for them for completeness. The
-   information for that detection was wildly collected from the web.
-   They are listed in alphabetic order, and their numbering is
-   nothing that is supposed to stay fixed, reliable or anything. */
-
-#define P99_COMPILER_BORLAND	(1u << 0)
-#define P99_COMPILER_CLANG	(1u << 1)
-#define P99_COMPILER_COMEAU	(1u << 2)
-#define P99_COMPILER_CRAY	(1u << 3)
-#define P99_COMPILER_DEC	(1u << 4)
-#define P99_COMPILER_GNU	(1u << 5)
-#define P99_COMPILER_HP		(1u << 6)
-#define P99_COMPILER_IBM	(1u << 7)
-#define P99_COMPILER_INTEL	(1u << 8)
-#define P99_COMPILER_KAI	(1u << 9)
-#define P99_COMPILER_LCC	(1u << 10)
-#define P99_COMPILER_METROWERKS	(1u << 11)
-#define P99_COMPILER_MICROSOFT	(1u << 12)
-#define P99_COMPILER_PORTLAND	(1u << 13)
-#define P99_COMPILER_SGI	(1u << 14)
-#define P99_COMPILER_SUN	(1u << 15)
-#define P99_COMPILER_WATCOM	(1u << 16)
-#define P99_COMPILER_OPEN64	(1u << 17)
-
 /* be sure to put all compilers that are faking gcc before gcc itself */
-#if defined(__clang__)
-# define P99_COMPILER P99_COMPILER_CLANG
-#define P00_COMPILER_PRAGMA_CLANG(STR) _Pragma(STR)
+#if P99_COMPILER & P99_COMPILER_CLANG
+# undef P00_COMPILER_PRAGMA_CLANG
+# define P00_COMPILER_PRAGMA_CLANG(STR) _Pragma(STR)
+# undef P99_COMPILER_VERSION
 # define P99_COMPILER_VERSION                                  \
  "clang " P99_STRINGIFY(__clang__)                             \
  "; gnu "                                                      \
@@ -66,9 +40,8 @@
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
  P99_STRINGIFY(__GNUC_PATCHLEVEL__)
 
-#elif defined(__INTEL_COMPILER)
-# define P99_COMPILER P99_COMPILER_INTEL
-#define P00_COMPILER_PRAGMA_INTEL(...) _Pragma(__VA_ARGS__)
+#elif P99_COMPILER & P99_COMPILER_INTEL
+# undef P99_COMPILER_VERSION
 # define P99_COMPILER_VERSION                                  \
  "intel " P99_STRINGIFY(__INTEL_COMPILER)                      \
  "; gnu "                                                      \
@@ -76,9 +49,8 @@
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
  P99_STRINGIFY(__GNUC_PATCHLEVEL__)
 
-#elif defined(__OPEN64__)
-# define P99_COMPILER P99_COMPILER_OPEN64
-#define P00_COMPILER_PRAGMA_OPEN64(...) _Pragma(__VA_ARGS__)
+#elif P99_COMPILER & P99_COMPILER_OPEN64
+# undef P99_COMPILER_VERSION
 # define P99_COMPILER_VERSION                                  \
  "open64 " __OPEN64__                                          \
  "; gnu "                                                      \
@@ -86,131 +58,13 @@
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
  P99_STRINGIFY(__GNUC_PATCHLEVEL__)
 
-/* compilers that (as far as we know) don't pretend to be gcc */
-#elif defined(__BORLANDC__)
-# define P99_COMPILER P99_COMPILER_BORLAND
-# define P00_COMPILER_PRAGMA_BORLAND(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "borland "
-#elif defined(__COMO__)
-# define P99_COMPILER P99_COMPILER_COMEAU
-# define P00_COMPILER_PRAGMA_COMEAU(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "comeau "
-#elif defined(_CRAYC)
-# define P99_COMPILER P99_COMPILER_CRAY
-# define P00_COMPILER_PRAGMA_CRAY(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "cray "
-#elif defined(__DECC_VER)
-# define P99_COMPILER P99_COMPILER_DEC
-# define P00_COMPILER_PRAGMA_DEC(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "dec "
-#elif defined(__HP_cc)
-# define P99_COMPILER P99_COMPILER_HP
-# define P00_COMPILER_PRAGMA_HP(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "hp "
-#elif defined(__IBMC__)
-# define P99_COMPILER P99_COMPILER_IBM
-# define P00_COMPILER_PRAGMA_IBM(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "ibm "
-#elif defined(__KCC)
-# define P99_COMPILER P99_COMPILER_KAI
-# define P00_COMPILER_PRAGMA_KAI(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "kai "
-#elif defined(__LCC__)
-# define P99_COMPILER P99_COMPILER_LCC
-# define P00_COMPILER_PRAGMA_LCC(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "lcc "
-#elif defined(__MWERKS__)
-# define P99_COMPILER P99_COMPILER_METROWERKS
-# define P00_COMPILER_PRAGMA_METROWERKS(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "metrowerks "
-#elif defined(_MSC_VER)
-# define P99_COMPILER P99_COMPILER_MICROSOFT
-# define P00_COMPILER_PRAGMA_MICROSOFT(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "microsoft "
-#elif defined(__PGI)
-# define P99_COMPILER P99_COMPILER_PORTLAND
-# define P00_COMPILER_PRAGMA_PORTLAND(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "portland "
-#elif defined(__sgi)
-# define P99_COMPILER P99_COMPILER_SGI
-# define P00_COMPILER_PRAGMA_SGI(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "sgi "
-#elif defined(__SUNPRO_C)
-# define P99_COMPILER P99_COMPILER_SUN
-# define P00_COMPILER_PRAGMA_SUN(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "sun "
-#elif defined(__WATCOMC__)
-# define P99_COMPILER P99_COMPILER_WATCOM
-# define P00_COMPILER_PRAGMA_WATCOM(...) _Pragma(__VA_ARGS__)
-# define P99_COMPILER_VERSION "watcom "
-
-/* put gcc last */
-#elif defined(__GNUC__)
-# define P99_COMPILER P99_COMPILER_GNU
-# define P00_COMPILER_PRAGMA_GNU(...) _Pragma(__VA_ARGS__)
+#elif P99_COMPILER & P99_COMPILER_GNU
+# undef P99_COMPILER_VERSION
 # define P99_COMPILER_VERSION                                  \
  "gnu "                                                        \
  P99_STRINGIFY(__GNUC__) "."                                   \
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
  P99_STRINGIFY(__GNUC_PATCHLEVEL__)
-
-#else
-# define P99_COMPILER 0x0U
-#endif
-
-#ifndef P00_COMPILER_PRAGMA_BORLAND
-# define P00_COMPILER_PRAGMA_BORLAND(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_CLANG
-# define P00_COMPILER_PRAGMA_CLANG(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_COMEAU
-# define P00_COMPILER_PRAGMA_COMEAU(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_CRAY
-# define P00_COMPILER_PRAGMA_CRAY(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_DEC
-# define P00_COMPILER_PRAGMA_DEC(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_GNU
-# define P00_COMPILER_PRAGMA_GNU(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_HP
-# define P00_COMPILER_PRAGMA_HP(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_IBM
-# define P00_COMPILER_PRAGMA_IBM(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_INTEL
-# define P00_COMPILER_PRAGMA_INTEL(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_KAI
-# define P00_COMPILER_PRAGMA_KAI(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_LCC
-# define P00_COMPILER_PRAGMA_LCC(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_METROWERKS
-# define P00_COMPILER_PRAGMA_METROWERKS(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_MICROSOFT
-# define P00_COMPILER_PRAGMA_MICROSOFT(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_PORTLAND
-# define P00_COMPILER_PRAGMA_PORTLAND(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_SGI
-# define P00_COMPILER_PRAGMA_SGI(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_SUN
-# define P00_COMPILER_PRAGMA_SUN(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_WATCOM
-# define P00_COMPILER_PRAGMA_WATCOM(...)
-#endif
-#ifndef P00_COMPILER_PRAGMA_OPEN64
-# define P00_COMPILER_PRAGMA_OPEN64(...)
 #endif
 
 /* intel is cheating about the gcc abi they support */
@@ -276,9 +130,9 @@ signed p00_trailing_comma_in_initializer__(void) {
 
 #if P99_COMPILER & P99_COMPILER_INTEL
 # define p99_inline __attribute__((always_inline)) inline
-#ifndef __GNUC__
-# define P00_NO_HAVE_TGMATH
-#endif
+# ifndef __GNUC__
+#  define P00_NO_HAVE_TGMATH
+# endif
 #elif P99_COMPILER & P99_COMPILER_CLANG
 # define p99_inline __attribute__((always_inline)) inline
 /* clang can't nail a variable to a register, yet */
@@ -434,14 +288,18 @@ typedef __int128_t p99x_int128;
 # endif
 #endif
 
-#define P99_IF_COMPILER(COMP, ...) P00_COMPILER_PRAGMA_ ## COMP(P99_STRINGIFY(__VA_ARGS__))
-
 /* special repair work for non-compliant compilers */
 #if P99_COMPILER & P99_COMPILER_INTEL
 # ifndef __GNUC__
 #  define P00_NO_HAVE_TGMATH
 # endif
 #endif
+
+/**
+ ** @brief Issue the pragma that is given as supplementary argument
+ ** iff the actual compiler is @a COMP.
+ **/
+#define P99_IF_COMPILER(COMP, ...) P00_COMPILER_PRAGMA_ ## COMP(P99_STRINGIFY(__VA_ARGS__))
 
 /* Disable bogus warnings that are provoked by the code in this file. */
 

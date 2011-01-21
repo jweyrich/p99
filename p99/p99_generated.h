@@ -41,7 +41,7 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Fri, 21 Jan 2011 11:08:21 +0100"
+#define P00_VERSION_DATE "Fri, 21 Jan 2011 15:00:53 +0100"
 #define P00_VERSION_ID "288f8ccf58be4a6c23e66cffb321d4a936c8a01e"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -1609,6 +1609,62 @@ automatically generated, do not change manually.
 #define P00_IS_wmemset_EQ_wmemset(...) ,
 #define P00_IS_wprintf_EQ_wprintf(...) ,
 #define P00_IS_wscanf_EQ_wscanf(...) ,
+#define P00_IS_256_EQ_256(...) ,
+#define P00_IS_512_EQ_512(...) ,
+#define P00_IS_1024_EQ_1024(...) ,
+#define P00_IS_2048_EQ_2048(...) ,
+#define P00_IS_4096_EQ_4096(...) ,
+#define P00_IS_8192_EQ_8192(...) ,
+#define P00_IS_16384_EQ_16384(...) ,
+#define P00_IS_32768_EQ_32768(...) ,
+#define P00_IS_65536_EQ_65536(...) ,
+#define P00_IS_131072_EQ_131072(...) ,
+#define P00_IS_262144_EQ_262144(...) ,
+#define P00_IS_524288_EQ_524288(...) ,
+#define P00_IS_1048576_EQ_1048576(...) ,
+#define P00_IS_2097152_EQ_2097152(...) ,
+#define P00_IS_4194304_EQ_4194304(...) ,
+#define P00_IS_8388608_EQ_8388608(...) ,
+#define P00_IS_16777216_EQ_16777216(...) ,
+#define P00_IS_33554432_EQ_33554432(...) ,
+#define P00_IS_67108864_EQ_67108864(...) ,
+#define P00_IS_134217728_EQ_134217728(...) ,
+#define P00_IS_268435456_EQ_268435456(...) ,
+#define P00_IS_536870912_EQ_536870912(...) ,
+#define P00_IS_1073741824_EQ_1073741824(...) ,
+#define P00_IS_2147483648_EQ_2147483648(...) ,
+#define P00_IS_4294967296_EQ_4294967296(...) ,
+#define P00_IS_8589934592_EQ_8589934592(...) ,
+#define P00_IS_17179869184_EQ_17179869184(...) ,
+#define P00_IS_34359738368_EQ_34359738368(...) ,
+#define P00_IS_68719476736_EQ_68719476736(...) ,
+#define P00_IS_137438953472_EQ_137438953472(...) ,
+#define P00_IS_274877906944_EQ_274877906944(...) ,
+#define P00_IS_549755813888_EQ_549755813888(...) ,
+#define P00_IS_1099511627776_EQ_1099511627776(...) ,
+#define P00_IS_2199023255552_EQ_2199023255552(...) ,
+#define P00_IS_4398046511104_EQ_4398046511104(...) ,
+#define P00_IS_8796093022208_EQ_8796093022208(...) ,
+#define P00_IS_17592186044416_EQ_17592186044416(...) ,
+#define P00_IS_35184372088832_EQ_35184372088832(...) ,
+#define P00_IS_70368744177664_EQ_70368744177664(...) ,
+#define P00_IS_140737488355328_EQ_140737488355328(...) ,
+#define P00_IS_281474976710656_EQ_281474976710656(...) ,
+#define P00_IS_562949953421312_EQ_562949953421312(...) ,
+#define P00_IS_1125899906842624_EQ_1125899906842624(...) ,
+#define P00_IS_2251799813685248_EQ_2251799813685248(...) ,
+#define P00_IS_4503599627370496_EQ_4503599627370496(...) ,
+#define P00_IS_9007199254740992_EQ_9007199254740992(...) ,
+#define P00_IS_18014398509481984_EQ_18014398509481984(...) ,
+#define P00_IS_36028797018963968_EQ_36028797018963968(...) ,
+#define P00_IS_72057594037927936_EQ_72057594037927936(...) ,
+#define P00_IS_144115188075855872_EQ_144115188075855872(...) ,
+#define P00_IS_288230376151711744_EQ_288230376151711744(...) ,
+#define P00_IS_576460752303423488_EQ_576460752303423488(...) ,
+#define P00_IS_1152921504606846976_EQ_1152921504606846976(...) ,
+#define P00_IS_2305843009213693952_EQ_2305843009213693952(...) ,
+#define P00_IS_4611686018427387904_EQ_4611686018427387904(...) ,
+#define P00_IS_9223372036854775808_EQ_9223372036854775808(...) ,
 #define P00_TOK_0_STARTS_0 ,
 #define P00_TOK_1_STARTS_1 ,
 #define P00_TOK_2_STARTS_2 ,
@@ -2068,6 +2124,62 @@ automatically generated, do not change manually.
 #define P00_TOK_wmemset_STARTS_wmemset ,
 #define P00_TOK_wprintf_STARTS_wprintf ,
 #define P00_TOK_wscanf_STARTS_wscanf ,
+#define P00_TOK_256_STARTS_256 ,
+#define P00_TOK_512_STARTS_512 ,
+#define P00_TOK_1024_STARTS_1024 ,
+#define P00_TOK_2048_STARTS_2048 ,
+#define P00_TOK_4096_STARTS_4096 ,
+#define P00_TOK_8192_STARTS_8192 ,
+#define P00_TOK_16384_STARTS_16384 ,
+#define P00_TOK_32768_STARTS_32768 ,
+#define P00_TOK_65536_STARTS_65536 ,
+#define P00_TOK_131072_STARTS_131072 ,
+#define P00_TOK_262144_STARTS_262144 ,
+#define P00_TOK_524288_STARTS_524288 ,
+#define P00_TOK_1048576_STARTS_1048576 ,
+#define P00_TOK_2097152_STARTS_2097152 ,
+#define P00_TOK_4194304_STARTS_4194304 ,
+#define P00_TOK_8388608_STARTS_8388608 ,
+#define P00_TOK_16777216_STARTS_16777216 ,
+#define P00_TOK_33554432_STARTS_33554432 ,
+#define P00_TOK_67108864_STARTS_67108864 ,
+#define P00_TOK_134217728_STARTS_134217728 ,
+#define P00_TOK_268435456_STARTS_268435456 ,
+#define P00_TOK_536870912_STARTS_536870912 ,
+#define P00_TOK_1073741824_STARTS_1073741824 ,
+#define P00_TOK_2147483648_STARTS_2147483648 ,
+#define P00_TOK_4294967296_STARTS_4294967296 ,
+#define P00_TOK_8589934592_STARTS_8589934592 ,
+#define P00_TOK_17179869184_STARTS_17179869184 ,
+#define P00_TOK_34359738368_STARTS_34359738368 ,
+#define P00_TOK_68719476736_STARTS_68719476736 ,
+#define P00_TOK_137438953472_STARTS_137438953472 ,
+#define P00_TOK_274877906944_STARTS_274877906944 ,
+#define P00_TOK_549755813888_STARTS_549755813888 ,
+#define P00_TOK_1099511627776_STARTS_1099511627776 ,
+#define P00_TOK_2199023255552_STARTS_2199023255552 ,
+#define P00_TOK_4398046511104_STARTS_4398046511104 ,
+#define P00_TOK_8796093022208_STARTS_8796093022208 ,
+#define P00_TOK_17592186044416_STARTS_17592186044416 ,
+#define P00_TOK_35184372088832_STARTS_35184372088832 ,
+#define P00_TOK_70368744177664_STARTS_70368744177664 ,
+#define P00_TOK_140737488355328_STARTS_140737488355328 ,
+#define P00_TOK_281474976710656_STARTS_281474976710656 ,
+#define P00_TOK_562949953421312_STARTS_562949953421312 ,
+#define P00_TOK_1125899906842624_STARTS_1125899906842624 ,
+#define P00_TOK_2251799813685248_STARTS_2251799813685248 ,
+#define P00_TOK_4503599627370496_STARTS_4503599627370496 ,
+#define P00_TOK_9007199254740992_STARTS_9007199254740992 ,
+#define P00_TOK_18014398509481984_STARTS_18014398509481984 ,
+#define P00_TOK_36028797018963968_STARTS_36028797018963968 ,
+#define P00_TOK_72057594037927936_STARTS_72057594037927936 ,
+#define P00_TOK_144115188075855872_STARTS_144115188075855872 ,
+#define P00_TOK_288230376151711744_STARTS_288230376151711744 ,
+#define P00_TOK_576460752303423488_STARTS_576460752303423488 ,
+#define P00_TOK_1152921504606846976_STARTS_1152921504606846976 ,
+#define P00_TOK_2305843009213693952_STARTS_2305843009213693952 ,
+#define P00_TOK_4611686018427387904_STARTS_4611686018427387904 ,
+#define P00_TOK_9223372036854775808_STARTS_9223372036854775808 ,
 /*! @brief Test if the argument consists of exactly the token @c 0 */
 #define P99_IS_EQ_0(...) P99_TOK_EQ(0, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c 1 */
@@ -2986,6 +3098,118 @@ automatically generated, do not change manually.
 #define P99_IS_EQ_wprintf(...) P99_TOK_EQ(wprintf, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c wscanf */
 #define P99_IS_EQ_wscanf(...) P99_TOK_EQ(wscanf, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 256 */
+#define P99_IS_EQ_256(...) P99_TOK_EQ(256, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 512 */
+#define P99_IS_EQ_512(...) P99_TOK_EQ(512, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 1024 */
+#define P99_IS_EQ_1024(...) P99_TOK_EQ(1024, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 2048 */
+#define P99_IS_EQ_2048(...) P99_TOK_EQ(2048, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 4096 */
+#define P99_IS_EQ_4096(...) P99_TOK_EQ(4096, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 8192 */
+#define P99_IS_EQ_8192(...) P99_TOK_EQ(8192, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 16384 */
+#define P99_IS_EQ_16384(...) P99_TOK_EQ(16384, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 32768 */
+#define P99_IS_EQ_32768(...) P99_TOK_EQ(32768, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 65536 */
+#define P99_IS_EQ_65536(...) P99_TOK_EQ(65536, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 131072 */
+#define P99_IS_EQ_131072(...) P99_TOK_EQ(131072, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 262144 */
+#define P99_IS_EQ_262144(...) P99_TOK_EQ(262144, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 524288 */
+#define P99_IS_EQ_524288(...) P99_TOK_EQ(524288, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 1048576 */
+#define P99_IS_EQ_1048576(...) P99_TOK_EQ(1048576, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 2097152 */
+#define P99_IS_EQ_2097152(...) P99_TOK_EQ(2097152, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 4194304 */
+#define P99_IS_EQ_4194304(...) P99_TOK_EQ(4194304, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 8388608 */
+#define P99_IS_EQ_8388608(...) P99_TOK_EQ(8388608, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 16777216 */
+#define P99_IS_EQ_16777216(...) P99_TOK_EQ(16777216, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 33554432 */
+#define P99_IS_EQ_33554432(...) P99_TOK_EQ(33554432, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 67108864 */
+#define P99_IS_EQ_67108864(...) P99_TOK_EQ(67108864, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 134217728 */
+#define P99_IS_EQ_134217728(...) P99_TOK_EQ(134217728, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 268435456 */
+#define P99_IS_EQ_268435456(...) P99_TOK_EQ(268435456, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 536870912 */
+#define P99_IS_EQ_536870912(...) P99_TOK_EQ(536870912, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 1073741824 */
+#define P99_IS_EQ_1073741824(...) P99_TOK_EQ(1073741824, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 2147483648 */
+#define P99_IS_EQ_2147483648(...) P99_TOK_EQ(2147483648, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 4294967296 */
+#define P99_IS_EQ_4294967296(...) P99_TOK_EQ(4294967296, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 8589934592 */
+#define P99_IS_EQ_8589934592(...) P99_TOK_EQ(8589934592, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 17179869184 */
+#define P99_IS_EQ_17179869184(...) P99_TOK_EQ(17179869184, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 34359738368 */
+#define P99_IS_EQ_34359738368(...) P99_TOK_EQ(34359738368, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 68719476736 */
+#define P99_IS_EQ_68719476736(...) P99_TOK_EQ(68719476736, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 137438953472 */
+#define P99_IS_EQ_137438953472(...) P99_TOK_EQ(137438953472, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 274877906944 */
+#define P99_IS_EQ_274877906944(...) P99_TOK_EQ(274877906944, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 549755813888 */
+#define P99_IS_EQ_549755813888(...) P99_TOK_EQ(549755813888, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 1099511627776 */
+#define P99_IS_EQ_1099511627776(...) P99_TOK_EQ(1099511627776, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 2199023255552 */
+#define P99_IS_EQ_2199023255552(...) P99_TOK_EQ(2199023255552, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 4398046511104 */
+#define P99_IS_EQ_4398046511104(...) P99_TOK_EQ(4398046511104, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 8796093022208 */
+#define P99_IS_EQ_8796093022208(...) P99_TOK_EQ(8796093022208, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 17592186044416 */
+#define P99_IS_EQ_17592186044416(...) P99_TOK_EQ(17592186044416, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 35184372088832 */
+#define P99_IS_EQ_35184372088832(...) P99_TOK_EQ(35184372088832, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 70368744177664 */
+#define P99_IS_EQ_70368744177664(...) P99_TOK_EQ(70368744177664, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 140737488355328 */
+#define P99_IS_EQ_140737488355328(...) P99_TOK_EQ(140737488355328, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 281474976710656 */
+#define P99_IS_EQ_281474976710656(...) P99_TOK_EQ(281474976710656, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 562949953421312 */
+#define P99_IS_EQ_562949953421312(...) P99_TOK_EQ(562949953421312, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 1125899906842624 */
+#define P99_IS_EQ_1125899906842624(...) P99_TOK_EQ(1125899906842624, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 2251799813685248 */
+#define P99_IS_EQ_2251799813685248(...) P99_TOK_EQ(2251799813685248, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 4503599627370496 */
+#define P99_IS_EQ_4503599627370496(...) P99_TOK_EQ(4503599627370496, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 9007199254740992 */
+#define P99_IS_EQ_9007199254740992(...) P99_TOK_EQ(9007199254740992, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 18014398509481984 */
+#define P99_IS_EQ_18014398509481984(...) P99_TOK_EQ(18014398509481984, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 36028797018963968 */
+#define P99_IS_EQ_36028797018963968(...) P99_TOK_EQ(36028797018963968, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 72057594037927936 */
+#define P99_IS_EQ_72057594037927936(...) P99_TOK_EQ(72057594037927936, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 144115188075855872 */
+#define P99_IS_EQ_144115188075855872(...) P99_TOK_EQ(144115188075855872, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 288230376151711744 */
+#define P99_IS_EQ_288230376151711744(...) P99_TOK_EQ(288230376151711744, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 576460752303423488 */
+#define P99_IS_EQ_576460752303423488(...) P99_TOK_EQ(576460752303423488, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 1152921504606846976 */
+#define P99_IS_EQ_1152921504606846976(...) P99_TOK_EQ(1152921504606846976, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 2305843009213693952 */
+#define P99_IS_EQ_2305843009213693952(...) P99_TOK_EQ(2305843009213693952, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 4611686018427387904 */
+#define P99_IS_EQ_4611686018427387904(...) P99_TOK_EQ(4611686018427387904, __VA_ARGS__)
+/*! @brief Test if the argument consists of exactly the token @c 9223372036854775808 */
+#define P99_IS_EQ_9223372036854775808(...) P99_TOK_EQ(9223372036854775808, __VA_ARGS__)
 #define P00_EAT_0 
 #define P00_EAT_1 
 #define P00_EAT_2 
@@ -3445,6 +3669,62 @@ automatically generated, do not change manually.
 #define P00_EAT_wmemset 
 #define P00_EAT_wprintf 
 #define P00_EAT_wscanf 
+#define P00_EAT_256 
+#define P00_EAT_512 
+#define P00_EAT_1024 
+#define P00_EAT_2048 
+#define P00_EAT_4096 
+#define P00_EAT_8192 
+#define P00_EAT_16384 
+#define P00_EAT_32768 
+#define P00_EAT_65536 
+#define P00_EAT_131072 
+#define P00_EAT_262144 
+#define P00_EAT_524288 
+#define P00_EAT_1048576 
+#define P00_EAT_2097152 
+#define P00_EAT_4194304 
+#define P00_EAT_8388608 
+#define P00_EAT_16777216 
+#define P00_EAT_33554432 
+#define P00_EAT_67108864 
+#define P00_EAT_134217728 
+#define P00_EAT_268435456 
+#define P00_EAT_536870912 
+#define P00_EAT_1073741824 
+#define P00_EAT_2147483648 
+#define P00_EAT_4294967296 
+#define P00_EAT_8589934592 
+#define P00_EAT_17179869184 
+#define P00_EAT_34359738368 
+#define P00_EAT_68719476736 
+#define P00_EAT_137438953472 
+#define P00_EAT_274877906944 
+#define P00_EAT_549755813888 
+#define P00_EAT_1099511627776 
+#define P00_EAT_2199023255552 
+#define P00_EAT_4398046511104 
+#define P00_EAT_8796093022208 
+#define P00_EAT_17592186044416 
+#define P00_EAT_35184372088832 
+#define P00_EAT_70368744177664 
+#define P00_EAT_140737488355328 
+#define P00_EAT_281474976710656 
+#define P00_EAT_562949953421312 
+#define P00_EAT_1125899906842624 
+#define P00_EAT_2251799813685248 
+#define P00_EAT_4503599627370496 
+#define P00_EAT_9007199254740992 
+#define P00_EAT_18014398509481984 
+#define P00_EAT_36028797018963968 
+#define P00_EAT_72057594037927936 
+#define P00_EAT_144115188075855872 
+#define P00_EAT_288230376151711744 
+#define P00_EAT_576460752303423488 
+#define P00_EAT_1152921504606846976 
+#define P00_EAT_2305843009213693952 
+#define P00_EAT_4611686018427387904 
+#define P00_EAT_9223372036854775808 
 #define P00_TOKEN_0 ,
 #define P00_TOKEN_1 ,
 #define P00_TOKEN_2 ,
@@ -3904,6 +4184,62 @@ automatically generated, do not change manually.
 #define P00_TOKEN_wmemset ,
 #define P00_TOKEN_wprintf ,
 #define P00_TOKEN_wscanf ,
+#define P00_TOKEN_256 ,
+#define P00_TOKEN_512 ,
+#define P00_TOKEN_1024 ,
+#define P00_TOKEN_2048 ,
+#define P00_TOKEN_4096 ,
+#define P00_TOKEN_8192 ,
+#define P00_TOKEN_16384 ,
+#define P00_TOKEN_32768 ,
+#define P00_TOKEN_65536 ,
+#define P00_TOKEN_131072 ,
+#define P00_TOKEN_262144 ,
+#define P00_TOKEN_524288 ,
+#define P00_TOKEN_1048576 ,
+#define P00_TOKEN_2097152 ,
+#define P00_TOKEN_4194304 ,
+#define P00_TOKEN_8388608 ,
+#define P00_TOKEN_16777216 ,
+#define P00_TOKEN_33554432 ,
+#define P00_TOKEN_67108864 ,
+#define P00_TOKEN_134217728 ,
+#define P00_TOKEN_268435456 ,
+#define P00_TOKEN_536870912 ,
+#define P00_TOKEN_1073741824 ,
+#define P00_TOKEN_2147483648 ,
+#define P00_TOKEN_4294967296 ,
+#define P00_TOKEN_8589934592 ,
+#define P00_TOKEN_17179869184 ,
+#define P00_TOKEN_34359738368 ,
+#define P00_TOKEN_68719476736 ,
+#define P00_TOKEN_137438953472 ,
+#define P00_TOKEN_274877906944 ,
+#define P00_TOKEN_549755813888 ,
+#define P00_TOKEN_1099511627776 ,
+#define P00_TOKEN_2199023255552 ,
+#define P00_TOKEN_4398046511104 ,
+#define P00_TOKEN_8796093022208 ,
+#define P00_TOKEN_17592186044416 ,
+#define P00_TOKEN_35184372088832 ,
+#define P00_TOKEN_70368744177664 ,
+#define P00_TOKEN_140737488355328 ,
+#define P00_TOKEN_281474976710656 ,
+#define P00_TOKEN_562949953421312 ,
+#define P00_TOKEN_1125899906842624 ,
+#define P00_TOKEN_2251799813685248 ,
+#define P00_TOKEN_4503599627370496 ,
+#define P00_TOKEN_9007199254740992 ,
+#define P00_TOKEN_18014398509481984 ,
+#define P00_TOKEN_36028797018963968 ,
+#define P00_TOKEN_72057594037927936 ,
+#define P00_TOKEN_144115188075855872 ,
+#define P00_TOKEN_288230376151711744 ,
+#define P00_TOKEN_576460752303423488 ,
+#define P00_TOKEN_1152921504606846976 ,
+#define P00_TOKEN_2305843009213693952 ,
+#define P00_TOKEN_4611686018427387904 ,
+#define P00_TOKEN_9223372036854775808 ,
 #define P00_QUALIFIER_const ,
 #define P00_QUALIFIER_restrict ,
 #define P00_QUALIFIER_volatile ,
@@ -4363,6 +4699,62 @@ automatically generated, do not change manually.
 #define P00_RESERVED_wmemset ,
 #define P00_RESERVED_wprintf ,
 #define P00_RESERVED_wscanf ,
+#define P00_RESERVED_256 ,
+#define P00_RESERVED_512 ,
+#define P00_RESERVED_1024 ,
+#define P00_RESERVED_2048 ,
+#define P00_RESERVED_4096 ,
+#define P00_RESERVED_8192 ,
+#define P00_RESERVED_16384 ,
+#define P00_RESERVED_32768 ,
+#define P00_RESERVED_65536 ,
+#define P00_RESERVED_131072 ,
+#define P00_RESERVED_262144 ,
+#define P00_RESERVED_524288 ,
+#define P00_RESERVED_1048576 ,
+#define P00_RESERVED_2097152 ,
+#define P00_RESERVED_4194304 ,
+#define P00_RESERVED_8388608 ,
+#define P00_RESERVED_16777216 ,
+#define P00_RESERVED_33554432 ,
+#define P00_RESERVED_67108864 ,
+#define P00_RESERVED_134217728 ,
+#define P00_RESERVED_268435456 ,
+#define P00_RESERVED_536870912 ,
+#define P00_RESERVED_1073741824 ,
+#define P00_RESERVED_2147483648 ,
+#define P00_RESERVED_4294967296 ,
+#define P00_RESERVED_8589934592 ,
+#define P00_RESERVED_17179869184 ,
+#define P00_RESERVED_34359738368 ,
+#define P00_RESERVED_68719476736 ,
+#define P00_RESERVED_137438953472 ,
+#define P00_RESERVED_274877906944 ,
+#define P00_RESERVED_549755813888 ,
+#define P00_RESERVED_1099511627776 ,
+#define P00_RESERVED_2199023255552 ,
+#define P00_RESERVED_4398046511104 ,
+#define P00_RESERVED_8796093022208 ,
+#define P00_RESERVED_17592186044416 ,
+#define P00_RESERVED_35184372088832 ,
+#define P00_RESERVED_70368744177664 ,
+#define P00_RESERVED_140737488355328 ,
+#define P00_RESERVED_281474976710656 ,
+#define P00_RESERVED_562949953421312 ,
+#define P00_RESERVED_1125899906842624 ,
+#define P00_RESERVED_2251799813685248 ,
+#define P00_RESERVED_4503599627370496 ,
+#define P00_RESERVED_9007199254740992 ,
+#define P00_RESERVED_18014398509481984 ,
+#define P00_RESERVED_36028797018963968 ,
+#define P00_RESERVED_72057594037927936 ,
+#define P00_RESERVED_144115188075855872 ,
+#define P00_RESERVED_288230376151711744 ,
+#define P00_RESERVED_576460752303423488 ,
+#define P00_RESERVED_1152921504606846976 ,
+#define P00_RESERVED_2305843009213693952 ,
+#define P00_RESERVED_4611686018427387904 ,
+#define P00_RESERVED_9223372036854775808 ,
 #define P00_CONST7(SEQ) P99_IF_ELSE(P99_IS_CONST_TOK(SEQ))(8)(7)
 #define P00_CONST6(SEQ) P99_IF_ELSE(P99_IS_CONST_TOK(SEQ))(P00_CONST7(P00_EAT_FIRST(SEQ)))(6)
 #define P00_CONST5(SEQ) P99_IF_ELSE(P99_IS_CONST_TOK(SEQ))(P00_CONST6(P00_EAT_FIRST(SEQ)))(5)
@@ -7718,5 +8110,141 @@ automatically generated, do not change manually.
 //! @}
 
 //! @}
+
+/* This long list of compilers does not mean that we tested P99, nor
+   does it even imply that there is a C99 mode for them. We just list
+   compilers and detection macros for them for completeness. The
+   information for that detection was wildly collected from the web.
+   They are listed in alphabetic order, and their numbering is
+   nothing that is supposed to stay fixed, reliable or anything. */
+#define P99_COMPILER_BORLAND 1
+#define P00_COMPILER_PRAGMA_BORLAND(...)
+#define P99_COMPILER_CLANG 2
+#define P00_COMPILER_PRAGMA_CLANG(...)
+#define P99_COMPILER_COMEAU 4
+#define P00_COMPILER_PRAGMA_COMEAU(...)
+#define P99_COMPILER_CRAY 8
+#define P00_COMPILER_PRAGMA_CRAY(...)
+#define P99_COMPILER_DEC 16
+#define P00_COMPILER_PRAGMA_DEC(...)
+#define P99_COMPILER_GNU 32
+#define P00_COMPILER_PRAGMA_GNU(...)
+#define P99_COMPILER_HP 64
+#define P00_COMPILER_PRAGMA_HP(...)
+#define P99_COMPILER_IBM 128
+#define P00_COMPILER_PRAGMA_IBM(...)
+#define P99_COMPILER_INTEL 256
+#define P00_COMPILER_PRAGMA_INTEL(...)
+#define P99_COMPILER_KAI 512
+#define P00_COMPILER_PRAGMA_KAI(...)
+#define P99_COMPILER_LCC 1024
+#define P00_COMPILER_PRAGMA_LCC(...)
+#define P99_COMPILER_METROWERKS 2048
+#define P00_COMPILER_PRAGMA_METROWERKS(...)
+#define P99_COMPILER_MICROSOFT 4096
+#define P00_COMPILER_PRAGMA_MICROSOFT(...)
+#define P99_COMPILER_OPEN64 8192
+#define P00_COMPILER_PRAGMA_OPEN64(...)
+#define P99_COMPILER_PORTLAND 16384
+#define P00_COMPILER_PRAGMA_PORTLAND(...)
+#define P99_COMPILER_SGI 32768
+#define P00_COMPILER_PRAGMA_SGI(...)
+#define P99_COMPILER_SUN 65536
+#define P00_COMPILER_PRAGMA_SUN(...)
+#define P99_COMPILER_WATCOM 131072
+#define P00_COMPILER_PRAGMA_WATCOM(...)
+#if defined(__BORLANDC__)
+# define P99_COMPILER 1
+# define P99_COMPILER_VERSION "borland "
+# undef P00_COMPILER_PRAGMA_BORLAND
+# define P00_COMPILER_PRAGMA_BORLAND(...) _Pragma(__VA_ARGS__)
+#elif defined(__clang__)
+# define P99_COMPILER 2
+# define P99_COMPILER_VERSION "clang "
+# undef P00_COMPILER_PRAGMA_CLANG
+# define P00_COMPILER_PRAGMA_CLANG(...) _Pragma(__VA_ARGS__)
+#elif defined(__COMO__)
+# define P99_COMPILER 4
+# define P99_COMPILER_VERSION "comeau "
+# undef P00_COMPILER_PRAGMA_COMEAU
+# define P00_COMPILER_PRAGMA_COMEAU(...) _Pragma(__VA_ARGS__)
+#elif defined(_CRAYC)
+# define P99_COMPILER 8
+# define P99_COMPILER_VERSION "cray "
+# undef P00_COMPILER_PRAGMA_CRAY
+# define P00_COMPILER_PRAGMA_CRAY(...) _Pragma(__VA_ARGS__)
+#elif defined(__DECC_VER)
+# define P99_COMPILER 16
+# define P99_COMPILER_VERSION "dec "
+# undef P00_COMPILER_PRAGMA_DEC
+# define P00_COMPILER_PRAGMA_DEC(...) _Pragma(__VA_ARGS__)
+#elif defined(__HP_cc)
+# define P99_COMPILER 64
+# define P99_COMPILER_VERSION "hp "
+# undef P00_COMPILER_PRAGMA_HP
+# define P00_COMPILER_PRAGMA_HP(...) _Pragma(__VA_ARGS__)
+#elif defined(__IBMC__)
+# define P99_COMPILER 128
+# define P99_COMPILER_VERSION "ibm "
+# undef P00_COMPILER_PRAGMA_IBM
+# define P00_COMPILER_PRAGMA_IBM(...) _Pragma(__VA_ARGS__)
+#elif defined(__INTEL_COMPILER)
+# define P99_COMPILER 256
+# define P99_COMPILER_VERSION "intel "
+# undef P00_COMPILER_PRAGMA_INTEL
+# define P00_COMPILER_PRAGMA_INTEL(...) _Pragma(__VA_ARGS__)
+#elif defined(__KCC)
+# define P99_COMPILER 512
+# define P99_COMPILER_VERSION "kai "
+# undef P00_COMPILER_PRAGMA_KAI
+# define P00_COMPILER_PRAGMA_KAI(...) _Pragma(__VA_ARGS__)
+#elif defined(__LCC__)
+# define P99_COMPILER 1024
+# define P99_COMPILER_VERSION "lcc "
+# undef P00_COMPILER_PRAGMA_LCC
+# define P00_COMPILER_PRAGMA_LCC(...) _Pragma(__VA_ARGS__)
+#elif defined(__MWERKS__)
+# define P99_COMPILER 2048
+# define P99_COMPILER_VERSION "metrowerks "
+# undef P00_COMPILER_PRAGMA_METROWERKS
+# define P00_COMPILER_PRAGMA_METROWERKS(...) _Pragma(__VA_ARGS__)
+#elif defined(_MSC_VER)
+# define P99_COMPILER 4096
+# define P99_COMPILER_VERSION "microsoft "
+# undef P00_COMPILER_PRAGMA_MICROSOFT
+# define P00_COMPILER_PRAGMA_MICROSOFT(...) _Pragma(__VA_ARGS__)
+#elif defined(__OPEN64__)
+# define P99_COMPILER 8192
+# define P99_COMPILER_VERSION "open64 "
+# undef P00_COMPILER_PRAGMA_OPEN64
+# define P00_COMPILER_PRAGMA_OPEN64(...) _Pragma(__VA_ARGS__)
+#elif defined(__PGI)
+# define P99_COMPILER 16384
+# define P99_COMPILER_VERSION "portland "
+# undef P00_COMPILER_PRAGMA_PORTLAND
+# define P00_COMPILER_PRAGMA_PORTLAND(...) _Pragma(__VA_ARGS__)
+#elif defined(__sgi)
+# define P99_COMPILER 32768
+# define P99_COMPILER_VERSION "sgi "
+# undef P00_COMPILER_PRAGMA_SGI
+# define P00_COMPILER_PRAGMA_SGI(...) _Pragma(__VA_ARGS__)
+#elif defined(__SUNPRO_C)
+# define P99_COMPILER 65536
+# define P99_COMPILER_VERSION "sun "
+# undef P00_COMPILER_PRAGMA_SUN
+# define P00_COMPILER_PRAGMA_SUN(...) _Pragma(__VA_ARGS__)
+#elif defined(__WATCOMC__)
+# define P99_COMPILER 131072
+# define P99_COMPILER_VERSION "watcom "
+# undef P00_COMPILER_PRAGMA_WATCOM
+# define P00_COMPILER_PRAGMA_WATCOM(...) _Pragma(__VA_ARGS__)
+#elif defined(__GNUC__)
+# define P99_COMPILER 32
+# define P99_COMPILER_VERSION "gnu "
+# undef P00_COMPILER_PRAGMA_GNU
+# define P00_COMPILER_PRAGMA_GNU(...) _Pragma(__VA_ARGS__)
+#else
+# define P99_COMPILER 0
+#endif
 
 #endif /* P99_GENERATED_H */

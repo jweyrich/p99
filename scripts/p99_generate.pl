@@ -409,7 +409,37 @@ my @functions_C99 = sort(
     )
     );
 
+## this list here is not thought to be alphabetic. In particular
+## compilers that are faked by other compilers should come at the end.
+my @compilers = (
+    "borland" => "__BORLANDC__",
+    "clang" => "__clang__",
+    "comeau" => "__COMO__",
+    "cray" => "_CRAYC",
+    "dec" => "__DECC_VER",
+    "hp" => "__HP_cc",
+    "ibm" => "__IBMC__",
+    "intel" => "__INTEL_COMPILER",
+    "kai" => "__KCC",
+    "lcc" => "__LCC__",
+    "metrowerks" => "__MWERKS__",
+    "microsoft" => "_MSC_VER",
+    "open64" => "__OPEN64__",
+    "portland" => "__PGI",
+    "sgi" => "__sgi",
+    "sun" => "__SUNPRO_C",
+    "watcom" => "__WATCOMC__",
+## put gcc last
+    "gnu" => "__GNUC__",
+    );
+
 my @token_C99 = sort(@keywords_C99, @typedefs_C99, @functions_C99);
+
+foreach my $i (8..63) {
+    my $num = (1 << $i);
+    push(@token_C99, $num)
+        if ($num > $maxnumber);
+}
 
 my $fileid = '$Id$';
 
@@ -1214,5 +1244,44 @@ sub printGroups(@) {
 }
 
 printGroups(@groups);
+
+sub printCompilers(@);
+
+print << "COMPILERS";
+
+/* This long list of compilers does not mean that we tested P99, nor
+   does it even imply that there is a C99 mode for them. We just list
+   compilers and detection macros for them for completeness. The
+   information for that detection was wildly collected from the web.
+   They are listed in alphabetic order, and their numbering is
+   nothing that is supposed to stay fixed, reliable or anything. */
+COMPILERS
+
+sub printCompilers(@) {
+    my @compilers = (@_);
+    my %compilers = (@_);
+    my %numbers = ();
+    my $num = 1;
+    foreach my $comp (sort(keys %compilers)) {
+        print "#define P99_COMPILER_\U${comp}\E ${num}\n";
+        print "#define P00_COMPILER_PRAGMA_\U${comp}\E(...)\n";
+        $numbers{$comp} = $num;
+        $num *= 2;
+    }
+    my $start = "if";
+    while (my ($comp, $mac) = (splice(@compilers, 0, 2))) {
+        print "#$start defined($mac)\n";
+        print "# define P99_COMPILER $numbers{$comp}\n";
+        print "# define P99_COMPILER_VERSION \"${comp} \"\n";
+        print "# undef P00_COMPILER_PRAGMA_\U${comp}\E\n";
+        print "# define P00_COMPILER_PRAGMA_\U${comp}\E(...) _Pragma(__VA_ARGS__)\n";
+        $start = "elif";
+    }
+    print "#else\n";
+    print "# define P99_COMPILER 0\n";
+    print "#endif\n";
+}
+
+printCompilers(@compilers);
 
 print "\n#endif /* P99_GENERATED_H */\n";
