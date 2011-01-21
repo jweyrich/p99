@@ -422,6 +422,7 @@ print "/*  -*- C -*- */\n/***********************************************\nautom
 print "ically generated, do not chan";
 print "ge manually.\n***********************************************/\n";
 print "\n";
+print "\n#ifndef P99_GENERATED_H\n#define P99_GENERATED_H\n\n";
 
 print << "DOCU";
 /** \@file
@@ -1213,3 +1214,5 @@ sub printGroups(@) {
 }
 
 printGroups(@groups);
+
+print "\n#endif /* P99_GENERATED_H */\n";

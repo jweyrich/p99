@@ -14,6 +14,10 @@
 automatically generated, do not change manually.
 ***********************************************/
 
+
+#ifndef P99_GENERATED_H
+#define P99_GENERATED_H
+
 /** @file
  ** @brief automatically generated macros to handle variadic macros.
  **
@@ -37,7 +41,7 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Sun, 16 Jan 2011 12:13:28 +0100"
+#define P00_VERSION_DATE "Fri, 21 Jan 2011 11:08:21 +0100"
 #define P00_VERSION_ID "288f8ccf58be4a6c23e66cffb321d4a936c8a01e"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -7714,3 +7718,5 @@ automatically generated, do not change manually.
 //! @}
 
 //! @}
+
+#endif /* P99_GENERATED_H */
