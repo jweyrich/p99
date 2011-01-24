@@ -162,6 +162,7 @@ int main(int argc, char **argv) {
 
         if (verbose) {
           size_t ilen = 3 * len + 1;
+          srv.info[ilen] = '\0';
           char* info = memset(srv.info, ' ', ilen);
           for (size_t i = 0; i < ilen; i += 3)
             info[i] = '|';
