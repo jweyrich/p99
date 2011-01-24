@@ -163,6 +163,22 @@ C_TYPED_MEMORY_OBJECTS,                                        \
 C_TZNAME_MAX,                                                  \
 C_VERSION
 
+#define P00_POSIX_SC_XBS5                                      \
+C_XBS5_ILP32_OFF32,                                            \
+C_XBS5_ILP32_OFFBIG,                                           \
+C_XBS5_LP64_OFF64,                                             \
+C_XBS5_LPBIG_OFFBIG
+
+#define P00_POSIX_SC_XOPEN                                     \
+C_XOPEN_CRYPT,                                                 \
+C_XOPEN_ENH_I18N,                                              \
+C_XOPEN_LEGACY,                                                \
+C_XOPEN_REALTIME,                                              \
+C_XOPEN_REALTIME_THREADS,                                      \
+C_XOPEN_SHM,                                                   \
+C_XOPEN_UNIX,                                                  \
+C_XOPEN_VERSION
+
 #define P00_POSIX_SC_THREAD                                    \
 C_THREAD_ATTR_STACKADDR,                                       \
 C_THREAD_ATTR_STACKSIZE,                                       \
@@ -184,23 +200,6 @@ C_V6_ILP32_OFF32,                                              \
 C_V6_ILP32_OFFBIG,                                             \
 C_V6_LP64_OFF64,                                               \
 C_V6_LPBIG_OFFBIG
-
-#define P00_POSIX_SC_XOPEN                                     \
-C_XOPEN_CRYPT,                                                 \
-C_XOPEN_ENH_I18N,                                              \
-C_XOPEN_LEGACY,                                                \
-C_XOPEN_REALTIME,                                              \
-C_XOPEN_REALTIME_THREADS,                                      \
-C_XOPEN_SHM,                                                   \
-C_XOPEN_UNIX,                                                  \
-C_XOPEN_VERSION
-
-#define P00_POSIX_SC_XBS5                                      \
-C_XBS5_ILP32_OFF32,                                            \
-C_XBS5_ILP32_OFFBIG,                                           \
-C_XBS5_LP64_OFF64,                                             \
-C_XBS5_LPBIG_OFFBIG
-
 
 #define P00_POSIX_SC_6                                         \
 C_SS_REPL_MAX,                                                 \
