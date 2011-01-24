@@ -20,41 +20,68 @@
 # include <linux/futex.h>
 # include <sys/time.h>
 # include <sys/syscall.h>
+
+/* syscall is a va_arg function, so we would never be sure of the
+   type conversions that could take place. Clearly specify the
+   interface. */
+inline
+int orwl_futex(int *uaddr, int op, int val, const struct timespec *timeout,
+          int *uaddr2, int val3) {
+  return syscall(SYS_futex, uaddr, op, val, timeout, uaddr2, val3);
+}
+
+#define orwl_futex(...) P99_CALL_DEFARG(orwl_futex, 6, __VA_ARGS__)
+#define orwl_futex_defarg_3() ((void*)0)
+#define orwl_futex_defarg_4() 0
+#define orwl_futex_defarg_5() 0
+
+/* Wait until the value to which @a uaddr points to is equal to @a
+   expected. */
 inline
 int orwl_futex_wait(int* uaddr, int expected) {
-  int ret = 0;
-  for (int val = *uaddr; true;) {
-    if (val == expected) break;
-    ret = syscall(SYS_futex, uaddr, FUTEX_WAIT, val, 0, 0, 0);
-    val = *uaddr;
-    if (ret < 0)
+  for (;;) {
+    int val = *uaddr;
+    if (val == expected) return 0;
+    if (orwl_futex(uaddr, FUTEX_WAIT, val) < 0) {
       switch (errno) {
-      case EWOULDBLOCK: break;
-      case EINTR: break;
-      default: ret = errno; errno = 0;
+      case EWOULDBLOCK: continue;
+      case EINTR: continue;
       }
+      int ret = errno;
+      errno = 0;
+      return ret;
+    }
   }
+}
+
+/* Wakeup waiters for address @a uaddr.
+
+   If there are @a wakeup waiters, as much waiters are woke up. If
+   there are less, all waiters are woken up. */
+inline
+int orwl_futex_wake(int* uaddr, int wakeup) {
+  int ret = orwl_futex(uaddr, FUTEX_WAKE, wakeup);
   return ret;
 }
 
-inline
-int orwl_futex_wake(int* uaddr, int wakeup) {
-  int ret = syscall(SYS_futex, uaddr, FUTEX_WAKE, wakeup, 0, 0, 0);
-  return ret;
-}
+/* Wakeup one waiter for address @a uaddr, if there is any. */
 inline
 int orwl_futex_signal(int* uaddr) {
   return orwl_futex_wake(uaddr, 1);
 }
+
+/* Wakeup all waiters for address @a uaddr, if there are any. */
 inline
 int orwl_futex_broadcast(int* uaddr) {
   return orwl_futex_wake(uaddr, INT_MAX);
 }
 
-extern inline int orwl_futex_wait(int* uaddr, int expected);
-extern inline int orwl_futex_wake(int* uaddr, int wakeup);
-extern inline int orwl_futex_signal(int* uaddr);
-extern inline int orwl_futex_broadcast(int* uaddr);
+P99_INSTANTIATE(int, orwl_futex, int *uaddr, int op, int val, const struct timespec *timeout,
+                int *uaddr2, int val3);
+P99_INSTANTIATE(int, orwl_futex_wait, int* uaddr, int expected);
+P99_INSTANTIATE(int, orwl_futex_wake, int* uaddr, int wakeup);
+P99_INSTANTIATE(int, orwl_futex_signal, int* uaddr);
+P99_INSTANTIATE(int, orwl_futex_broadcast, int* uaddr);
 
 #define HAVE_FUTEX 1
 #endif
