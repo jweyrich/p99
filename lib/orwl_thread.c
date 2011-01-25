@@ -16,7 +16,7 @@
 #include "orwl_atomic.h"
 #include "p99_posix_default.h"
 
-#ifdef __linux__
+#if defined(__linux__) && !defined(NO_FUTEX)
 # include <linux/futex.h>
 # include <sys/time.h>
 # include <sys/syscall.h>
@@ -95,7 +95,7 @@ size_t orwl_phase = 0;
  ** dependent block or statement.
  **/
 P99_BLOCK_DOCUMENT
-#define ACCOUNT(COUNT) P99_PROTECTED_BLOCK(orwl_count_lock(), orwl_count_unlock())
+#define ACCOUNT(COUNT) P99_PROTECTED_BLOCK(orwl_count_lock(&COUNT), orwl_count_unlock(&COUNT))
 
 void orwl_report(size_t mynum, size_t np, size_t phase, char const* format, ...) {
   static char const form0[] = "%s:%zX: %s\n";
@@ -164,6 +164,10 @@ pthread_condattr_t const*const pthread_condattr_process = &pthread_condattr_proc
 pthread_rwlockattr_t const*const pthread_rwlockattr_thread = &pthread_rwlockattr_thread_;
 pthread_rwlockattr_t const*const pthread_rwlockattr_process = &pthread_rwlockattr_process_;
 
+#if (defined(ATOMIC_OPS) && ATOMIC_OPS > 0) || (defined(__GNUC__) && (!defined(GNUC_NO_SYNC) || defined(GNUC_SYNC_REPLACE)))
+# define HAVE_ATOMIC
+#endif
+
 /* The following is needed to communicate termination of
  * detached threads.
  *
@@ -176,71 +180,85 @@ pthread_rwlockattr_t const*const pthread_rwlockattr_process = &pthread_rwlockatt
  * wait on just using the semaphore. Thus we use a mutex / cond pair
  * to use pthread signaling through conditions.
  */
-volatile union { atomic_size_t large; int narrow; } overl;
-static atomic_size_t volatile* count = &overl.large;
-#ifndef HAVE_FUTEX
-static pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
-static pthread_cond_t cnd = PTHREAD_COND_INITIALIZER;
+typedef struct orwl_count orwl_count;
+struct orwl_count {
+  volatile union { atomic_size_t large; int narrow; } overl;
+#if !defined(HAVE_FUTEX) || !defined(HAVE_ATOMIC)
+  pthread_mutex_t mut;
+  pthread_cond_t cnd;
+#endif
+};
+
+#if !defined(HAVE_FUTEX) || !defined(HAVE_ATOMIC)
+# define ORWL_COUNT_INITIALIZER                 \
+{                                               \
+  .overl = { .large = 0 },                      \
+    .mut = PTHREAD_MUTEX_INITIALIZER,           \
+       .cnd = PTHREAD_COND_INITIALIZER          \
+}
+#else
+# define ORWL_COUNT_INITIALIZER                 \
+{                                               \
+  .overl = { .large = 0 },                      \
+}
 #endif
 
-#if defined(ATOMIC_OPS) || (defined(__GNUC__) && (!defined(GNUC_NO_SYNC) || defined(GNUC_SYNC_REPLACE)))
+inline void orwl_count_lock(orwl_count* counter);
+inline void orwl_count_unlock(orwl_count* counter);
+inline int orwl_count_wait(orwl_count* counter);
+
+static orwl_count counter = ORWL_COUNT_INITIALIZER;
+
+
+
+#ifdef HAVE_ATOMIC
 #ifndef HAVE_FUTEX
-
-static
-void orwl_count_lock(void) {
-  atomic_fetch_add(count, (size_t)1);
+inline
+void orwl_count_lock(orwl_count* counter) {
+  atomic_fetch_add(&counter->overl.large, (size_t)1);
 }
 
-static
-void orwl_count_unlock(void) {
+inline
+void orwl_count_unlock(orwl_count* counter) {
   /* if we are the last notify the waiters */
-  size_t val = atomic_fetch_sub(count, (size_t)1);
+  size_t val = atomic_fetch_sub(&counter->overl.large, (size_t)1);
   if (P99_UNLIKELY(val == 1))
-    MUTUAL_EXCLUDE(mut)
-      pthread_cond_broadcast(&cnd);
+    MUTUAL_EXCLUDE(counter->mut)
+      pthread_cond_broadcast(&counter->cnd);
 }
 
-static
-int orwl_count_wait(void) {
-  MUTUAL_EXCLUDE(mut) {
-    while (atomic_load(count)) pthread_cond_wait(&cnd, &mut);
+inline
+int orwl_count_wait(orwl_count* counter) {
+  MUTUAL_EXCLUDE(counter->mut) {
+    while (atomic_load(&counter->overl.large)) pthread_cond_wait(&counter->cnd, &counter->mut);
   }
   return 0;
 }
 
 # else
 
-static
-volatile union {
-  atomic_size_t large;
-  int narrow;
-} counter;
-
-
-static
-void orwl_count_lock(void) {
-  atomic_fetch_add(count, (size_t)1);
+inline
+void orwl_count_lock(orwl_count* counter) {
+  atomic_fetch_add(&counter->overl.large, (size_t)1);
 }
 
-static int * uaddr = (int*)&(overl.narrow);
-
-static
-void orwl_count_unlock(void) {
+inline
+void orwl_count_unlock(orwl_count* counter) {
   /* if we are the last notify the waiters */
-  register int val = atomic_fetch_sub(count, (size_t)1);
+  register int val = atomic_fetch_sub(&counter->overl.large, (size_t)1);
   if (P99_UNLIKELY(val == 1))
-    orwl_futex_broadcast(uaddr);
+    orwl_futex_broadcast((int*)&(counter->overl.narrow));
 }
 
-static
-int orwl_count_wait(void) {
+inline
+int orwl_count_wait(orwl_count* counter) {
   int ret = 0;
   while (true) {
-    if (!atomic_load(count)) break;
+    if (!atomic_load(&counter->overl.large)) break;
     /* futexes unfortunately only work on int */
     /* we chose the least significant one to be sure to capture an
        intermittent change of the value */
-    ret = orwl_futex_wait(uaddr, 0);
+    ret = orwl_futex_wait((int*)&(counter->overl.narrow), 0);
     if (ret) break;
     /* Check if really the whole counter is 0, so we iterate. */
   }
@@ -249,28 +267,34 @@ int orwl_count_wait(void) {
 #endif
 #else
 
-static
-void orwl_count_lock(void) {
-  MUTUAL_EXCLUDE(mut) {
-    ++count[0];
+inline
+void orwl_count_lock(orwl_count* counter) {
+  MUTUAL_EXCLUDE(counter->mut) {
+    ++(counter->overl.large);
   }
 }
 
-static
-void orwl_count_unlock(void) {
-  MUTUAL_EXCLUDE(mut) {
-    --count[0];
-    if (!count[0]) pthread_cond_broadcast(&cnd);
+inline
+void orwl_count_unlock(orwl_count* counter) {
+  MUTUAL_EXCLUDE(counter->mut) {
+    --(counter->overl.large);
+    if (!(counter->overl.large)) pthread_cond_broadcast(&counter->cnd);
   }
 }
 
-static
-void orwl_count_wait(void) {
-  MUTUAL_EXCLUDE(mut) {
-    while (count[0]) pthread_cond_wait(&cnd, &mut);
+inline
+int orwl_count_wait(orwl_count* counter) {
+  MUTUAL_EXCLUDE(counter->mut) {
+    while (counter->overl.large) pthread_cond_wait(&counter->cnd, &counter->mut);
   }
+  return 0;
 }
 #endif
+
+P99_INSTANTIATE(void, orwl_count_lock, orwl_count*);
+P99_INSTANTIATE(void, orwl_count_unlock, orwl_count*);
+P99_INSTANTIATE(int, orwl_count_wait, orwl_count*);
+
 
 DEFINE_ONCE(pthread_mutex_t) {
   pthread_mutexattr_init(&pthread_mutexattr_process_);
@@ -370,7 +394,7 @@ void *detached_wrapper(void *routine_arg) {
   /* This should be fast since usually there should never be a waiter
      blocked on this semaphore. */
   void *ret = 0;
-  ACCOUNT(count) {
+  ACCOUNT(counter) {
     /* tell the creator that we are in charge */
     orwl_sem_post(&Routine_Arg->semCalled);
     ret = start_routine(arg);
@@ -405,7 +429,7 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
 
 void orwl_pthread_wait_detached(void) {
   INIT_ONCE(orwl_thread);
-  orwl_count_wait();
+  orwl_count_wait(&counter);
 }
 
 P99_INSTANTIATE(pthread_t*, pthread_t_init, pthread_t *);
