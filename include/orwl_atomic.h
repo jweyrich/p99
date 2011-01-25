@@ -52,7 +52,7 @@
  **/
 
 
-#ifdef ATOMIC_OPS
+#if defined(ATOMIC_OPS) && ATOMIC_OPS > 0
 # include <stdatomic.h>
 #else
 

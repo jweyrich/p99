@@ -20,7 +20,6 @@ ifeq (${ATOMIC_OPS},)
 ifeq (${shell test ${STDC_VERSION} -gt 201000 && echo YES},YES)
 ifneq (${DEFINE__STDC_NO_THREAD__},1)
 ATOMIC_OPS := 1
-CFLAGS += -DATOMIC_OPS
 endif
 endif
 endif
@@ -43,4 +42,8 @@ DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP = 1
 CFLAGS += -DGNUC_SYNC_REPLACE
 endif
 endif
+endif
+
+ifneq (${ATOMIC_OPS},)
+CFLAGS += -DATOMIC_OPS=${ATOMIC_OPS}
 endif
