@@ -248,7 +248,10 @@
 #define P99_AREF(T, ARR, ...) T P99_ARRAY(*const ARR, __VA_ARGS__)
 #define P99_AREF1(T, ARR, ...) T P99_ARRAY(ARR, static const 1, __VA_ARGS__)
 
-#define P00_ALEN0(NAME) (sizeof((NAME))/sizeof((NAME)[0]))
+#define P00_ALEN0(NAME)                                         \
+  ((sizeof(NAME)/sizeof((NAME)[0]))                             \
+   /sizeof(char[((!(sizeof(NAME) % sizeof((NAME)[0])))<<1)-1]))
+
 #define P00_ALEN(NAME, _1, I) P99_IF_EQ_0(I)(P00_ALEN0(NAME))(P00_ALEN0((NAME)P99_REP(I,[0])))
 #define P00_ALEN2(NAME, I) P00_ALEN(NAME,,I)
 

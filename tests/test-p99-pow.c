@@ -132,4 +132,8 @@ int main(int argc, char*argv[]) {
   P99_AREF(double, CP, 3, 4) = &C;
   mult(CP, AP, BP);
   print(CP);
+  /* captured by the checks inside the macro: */
+  // struct {double a[2];} * p; P99_ALEN(p);
+  /* not captured:                            */
+  // char * q; P99_ALEN(q);
 }
