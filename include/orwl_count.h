@@ -34,8 +34,9 @@ P99_DECLARE_STRUCT(orwl_count);
  ** interface.
  **
  ** @warning This is probably nothing that should be called directly.
+ ** @see ORWL_FUTEX_WAIT
  ** @see orwl_futex_wake
- ** @see orwl_futex_wait
+ ** @see orwl_futex_wait_once
  ** @see orwl_futex_signal
  ** @see orwl_futex_broadcast
  **/
@@ -47,10 +48,10 @@ int orwl_futex(int *uaddr, /*!< the base address to be used */
                              expects when going into wait, or the
                              number of tasks to wake up */
                const struct timespec
-               *timeout, /*!< a time out for wait, not yet defaults to
+               *timeout, /*!< a time out for wait, unused by ORWL, defaults to
                             0. */
-               int *uaddr2, /*!< unused, defaults to 0 */
-               int val3     /*!< unused, defaults to 0 */
+               int *uaddr2, /*!< unused by ORWL, defaults to 0 */
+               int val3     /*!< unused by ORWL, defaults to 0 */
                ) {
   return syscall(SYS_futex, uaddr, op, val, timeout, uaddr2, val3);
 }
@@ -61,31 +62,110 @@ int orwl_futex(int *uaddr, /*!< the base address to be used */
 #define orwl_futex_defarg_5() 0
 
 /**
- ** @brief Wait until the value to which @a uaddr points to is equal
- ** to @a expected.
+ ** @brief Wait until a wake up event is received on address @a uaddr.
+ **
+ ** This will return under three different circumstances:
+ ** - the value @c (*uaddr) is initially not equal to @a val
+ ** - a wake up event is triggered by some other task or process
+ ** - an interrupt is received.
+ **
+ ** This later type of event is called a "spurious wakeup".
+ **
+ ** In any of these cases it is up to the application to check for the
+ ** condition that it wanted to be satisfied while waiting.
+ **
+ ** @warning Generally this is not the function that you'd want to use
+ ** directly in an application.
+ ** @see ORWL_FUTEX_WAIT for a macro that is better suited for an
+ ** application usage.
+ ** @see orwl_futex_wake
+ ** @see orwl_futex_signal
+ ** @see orwl_futex_broadcast
  **/
 inline
-int orwl_futex_wait(int* uaddr, int expected) {
-  for (;;) {
-    int val = *uaddr;
-    if (val == expected) return 0;
-    if (orwl_futex(uaddr, FUTEX_WAIT, val) < 0) {
-      switch (errno) {
-      case EWOULDBLOCK: continue;
-      case EINTR: continue;
-      }
-      int ret = errno;
-      errno = 0;
-      return ret;
+int orwl_futex_wait_once(int* uaddr, int val) {
+  int ret = 0;
+  if (P99_UNLIKELY(orwl_futex(uaddr, FUTEX_WAIT, val) < 0)) {
+    int errn = errno;
+    if (P99_UNLIKELY(errn != EWOULDBLOCK && errn != EINTR)) {
+      ret = errn;
     }
+    errno = 0;
   }
+  return ret;
 }
+
+/**
+ ** @brief Wait until the value to which @a ADDR points to fulfills
+ ** expression @a EXPECTED.
+ **
+ ** @param ADDR is a valid address that is interpreted as pointing to
+ ** an @c int object.
+ **
+ ** @param NAME must be an identifier. It serves to declare an
+ ** internal variable
+ ** that will hold @c (*ADDR) and which should be used in expression
+ ** @a EXPECTED.
+ **
+ ** @param EXPECTED is a expression that evaluates @a NAME and that
+ ** should not have side effects.
+ **
+ ** If it is not fulfilled initially, this macro blocks execution of
+ ** the calling thread until the thread is woken up @em and @a
+ ** EXPECTED is fulfilled. That is if each occurence of @a NAME in @a
+ ** EXPECTED is replaced by the current value of @c (*ADDR) and then
+ ** the evaluation of the resulting expression returns a truth value.
+ **
+ ** It is the responsibility of the application to issue the
+ ** corresponding calls to wake up potential waiters whenever the
+ ** value of @c (*ADDR) is changed.
+ **
+ ** Take the following example of a counter implementation:
+ ** @code
+ ** enum { why = 42 };
+ ** int count = 0;
+ **
+ ** // some thread waiting for the count to become more than why.
+ ** ORWL_FUTEX_WAIT(&count, x, x > why);
+ **
+ ** // some thread augmenting the count. wake up potential
+ ** // waiters.
+ ** atomic_fetch_add(&count, 1);
+ ** orwl_futex_broadcast(&count);
+ **
+ ** // some thread reducing the count. no need to wake up potential
+ ** // waiters.
+ ** atomic_fetch_sub(&count, 1);
+ ** @endcode
+ **
+ ** @warning It is probably not a good idea to have the evaluation of
+ ** a variable (other than @a NAME) inside expression @a EXPRESSION
+ ** that is subject to changes.
+ ** @see orwl_futex_wake
+ ** @see orwl_futex_signal
+ ** @see orwl_futex_broadcast
+ **/
+#define ORWL_FUTEX_WAIT(ADDR, NAME, EXPECTED)                   \
+do {                                                            \
+  register int volatile*const p = (int volatile*)(ADDR);        \
+  for (;;) {                                                    \
+    register int NAME = *p;                                     \
+    if (EXPECTED) break;                                        \
+    register int ret = orwl_futex_wait_once((int*)p, NAME);     \
+    if (P99_UNLIKELY(ret)) {                                    \
+      assert(!ret);                                             \
+    }                                                           \
+  }                                                             \
+ } while (false)
 
 /**
  ** @brief Wakeup waiters for address @a uaddr.
  **
  ** If there are @a wakeup waiters, as much waiters are woke up. If
  ** there are less, all waiters are woken up.
+ ** @see ORWL_FUTEX_WAIT
+ ** @see orwl_futex_signal
+ ** @see orwl_futex_broadcast
  **/
 inline
 int orwl_futex_wake(int* uaddr, int wakeup) {
@@ -95,6 +175,9 @@ int orwl_futex_wake(int* uaddr, int wakeup) {
 
 /**
  ** @brief Wakeup one waiter for address @a uaddr, if there is any.
+ ** @see ORWL_FUTEX_WAIT
+ ** @see orwl_futex_wake
+ ** @see orwl_futex_broadcast
  **/
 inline
 int orwl_futex_signal(int* uaddr) {
@@ -104,6 +187,9 @@ int orwl_futex_signal(int* uaddr) {
 /**
  ** @brief Wakeup all waiters for address @a uaddr, if there are
  ** any.
+ ** @see ORWL_FUTEX_WAIT
+ ** @see orwl_futex_wake
+ ** @see orwl_futex_signal
  **/
 inline
 int orwl_futex_broadcast(int* uaddr) {
@@ -190,12 +276,9 @@ inline size_t orwl_count_inc(orwl_count* counter);
 inline size_t orwl_count_dec(orwl_count* counter);
 /**
  ** @brief wait until the counter @a counter falls to 0.
- **
- ** @return 0 if the waiting was successful, an error indication otherwise.
- **
  ** @memberof orwl_count
  **/
-inline int orwl_count_wait(orwl_count* counter);
+inline void orwl_count_wait(orwl_count* counter);
 
 #ifdef HAVE_ATOMIC
 
@@ -218,11 +301,10 @@ size_t orwl_count_dec(orwl_count* counter) {
 }
 
 inline
-int orwl_count_wait(orwl_count* counter) {
+void orwl_count_wait(orwl_count* counter) {
   MUTUAL_EXCLUDE(counter->mut) {
     while (atomic_load(&counter->overl.large)) pthread_cond_wait(&counter->cnd, &counter->mut);
   }
-  return 0;
 }
 
 # else
@@ -236,18 +318,15 @@ size_t orwl_count_dec(orwl_count* counter) {
 }
 
 inline
-int orwl_count_wait(orwl_count* counter) {
-  int ret = 0;
+void orwl_count_wait(orwl_count* counter) {
   while (true) {
     if (!atomic_load(&counter->overl.large)) break;
     /* futexes unfortunately only work on int */
     /* we chose the least significant one to be sure to capture an
        intermittent change of the value */
-    ret = orwl_futex_wait((int*)&(counter->overl.narrow), 0);
-    if (ret) break;
+    ORWL_FUTEX_WAIT(&(counter->overl.narrow), x, !x);
     /* Check if really the whole counter is 0, so we iterate. */
   }
-  return ret;
 }
 #endif
 #else
@@ -274,11 +353,10 @@ size_t orwl_count_dec(orwl_count* counter) {
 }
 
 inline
-int orwl_count_wait(orwl_count* counter) {
+void orwl_count_wait(orwl_count* counter) {
   MUTUAL_EXCLUDE(counter->mut) {
     while (counter->overl.large) pthread_cond_wait(&counter->cnd, &counter->mut);
   }
-  return 0;
 }
 #endif
 
