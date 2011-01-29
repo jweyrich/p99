@@ -34,7 +34,7 @@ inline char const* P99_PASTE2(T, _getname)(T x)...
 #define P99_DECLARE_ENUM_GETNAME(T, ...)                                   \
 p99_inline                                                                 \
 char const* P99_PASTE2(T, _getname)(T x) {                                 \
-  switch (x) {                                                             \
+  switch ((uintmax_t)x) {                                                  \
     P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_ENUM_CASE, __VA_ARGS__); \
   default: return "((" #T ")unknown value)";                               \
   }                                                                        \
