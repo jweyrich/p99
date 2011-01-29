@@ -57,7 +57,7 @@
  ** This is a macro not a function, but anyhow @a X is evaluated only
  ** once.
  **/
-#define P99_TZERO(X) (memset(&(X), 0, sizeof(X)))
+#define P99_TZERO(...) (memset(&(__VA_ARGS__), 0, sizeof(__VA_ARGS__)))
 
 
 /**

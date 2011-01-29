@@ -28,7 +28,7 @@
  ** This provides tools to produce a list of declarations (e.g @c
  ** typedef), list of initializers or perform a sequence of additions
  ** or other operations. The input usually is just a list of names, e.g.
- ** 
+ **
  ** @{
  **/
 

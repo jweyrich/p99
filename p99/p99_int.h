@@ -826,7 +826,7 @@ P00_DECLARE_OVERFLOW(ll);
  ** @pre @a VAL must not necessarily be of type @a T, but it must be
  ** of a type that is assignment compatible with @a T.
  **/
-#define P99_RVAL(T, VAL) (P99_LVAL(T) = (VAL))
+#define P99_RVAL(T, ...) (P99_LVAL(T) = (__VA_ARGS__))
 
 #define P99_CHOOSE5(xT, cc, cs, ci, cl, cll)                   \
 ((sizeof(xT) < sizeof(int))                                    \

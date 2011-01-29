@@ -142,7 +142,7 @@ P00_DOCUMENT_ID(16)
  **
  **
  **/
-#define P99_COMPILETIME_ASSERT(expr) typedef char P99_LINEID(_compiletime_assert)[!!(expr)]
+#define P99_COMPILETIME_ASSERT(...) typedef char P99_LINEID(_compiletime_assert)[!!(__VA_ARGS__)]
 
 P99_COMPILETIME_ASSERT(1);
 
