@@ -161,6 +161,9 @@ NAME(P99_IF_EQ(0,M)                                            \
  **
  ** @warning the list should only contain types and should not give
  ** names to the individual parameters.
+ **
+ ** @see P99_INSTANTIATE if your function is @c inline and thus you
+ ** also have to provide an external symbol for the function.
  **/
 
 #ifdef P00_DOXYGEN
@@ -189,6 +192,22 @@ p00_instantiate RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
 p00_instantiate RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
 #endif
 
+/**
+ ** @brief Instantiate an inline function.
+ **
+ ** Functions that are declared inline in C99 don't generate an
+ ** external symbol unless the compiler is told so explicitly. But
+ ** often you will need such an external symbol, e.g if you switch on
+ ** debugging or if you pass a function pointer as a callback to
+ ** another function.
+ **
+ ** The syntax for this feature is a bit crude and not all compilers
+ ** agree upon the interpretation. Therefore we provide a wrapper that
+ ** does just this.  Put such a call to ::P99_INSTANTIATE in exactly
+ ** one .c file (compilation unit) of you liking. The external symbol
+ ** will then be generated there.  @see P99_PROTOTYPE for the syntax
+ ** of this macro.
+ **/
 #define P99_INSTANTIATE(...)                                   \
 P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
 (P00_INSTANTIATE(__VA_ARGS__, void))                           \
