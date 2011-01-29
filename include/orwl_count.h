@@ -58,7 +58,7 @@ int orwl_futex(int *uaddr, /*!< the base address to be used */
 
 #define orwl_futex(...) P99_CALL_DEFARG(orwl_futex, 6, __VA_ARGS__)
 #define orwl_futex_defarg_3() ((void*)0)
-#define orwl_futex_defarg_4() 0
+#define orwl_futex_defarg_4() ((void*)0)
 #define orwl_futex_defarg_5() 0
 
 /**
