@@ -228,21 +228,4 @@ P99_INSTANTIATE(void, pthread_t_destroy, pthread_t *);
 
 DEFINE_NEW_DELETE(pthread_t);
 
-void sleepfor(double t) {
-  double const mega = 1E+9;
-  double const nano = 1E-9;
-  while (t > 0.0) {
-    double sec = trunc(t);
-    struct timespec rem = P99_INIT;
-    struct timespec req = {
-      .tv_sec = (time_t)sec,
-      .tv_nsec = (time_t)((t - sec) * mega)
-    };
-    if (!nanosleep(&req, &rem)) return;
-    sec = (double)rem.tv_sec + nano*rem.tv_nsec;
-    if (sec >= t) return;
-    t = sec;
-  }
-}
-
 P99_INSTANTIATE(char const*, pthread2str, char*, pthread_t);

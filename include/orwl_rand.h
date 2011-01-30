@@ -26,20 +26,6 @@ uint64_t orwl_mix(uint64_t a, uint64_t b);
 uint64_t orwl_challenge(uint64_t a);
 
 /**
- ** @brief Get the micro seconds since epoch.
- **/
-inline
-uint64_t useconds(void) {
-  struct timeval t;
-  gettimeofday(&t, P99_0(struct timezone*));
-  uint64_t ret = t.tv_sec;
-  ret *= 1000000;
-  ret += t.tv_usec;
-  return ret;
-}
-
-
-/**
  ** @brief A seed class that is compatible with the @c rand48 family
  ** of pseudo random generators
  **

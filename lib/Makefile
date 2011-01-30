@@ -29,6 +29,7 @@ SRC	=					\
 	orwl_server.c				\
 	orwl_socket.c				\
 	orwl_thread.c				\
+	orwl_time.c				\
 	orwl_types.c				\
 	orwl_wait_queue.c
 

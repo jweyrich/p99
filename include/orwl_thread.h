@@ -17,6 +17,7 @@
 #include "orwl_once.h"
 #include "orwl_int.h"
 #include "orwl_macro.h"
+#include "orwl_time.h"
 #include "p99_defarg.h"
 
 /**
@@ -298,10 +299,6 @@ inline void pthread_t_destroy(pthread_t *id) {
 
 DECLARE_NEW_DELETE(pthread_t);
 
-/**
- ** @brief Let the calling thread rest for @a t seconds
- **/
-extern void sleepfor(double t);
 
 
 /**

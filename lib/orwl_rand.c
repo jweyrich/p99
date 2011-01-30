@@ -21,7 +21,6 @@ P99_INSTANTIATE(void, rand48_t_destroy, rand48_t*);
 P99_INSTANTIATE(uint32_t, orwl_rand, rand48_t*);
 P99_INSTANTIATE(double, orwl_drand, rand48_t*);
 P99_INSTANTIATE(uint64_t, orwl_rand64, rand48_t*);
-P99_INSTANTIATE(uint64_t, useconds);
 
 DEFINE_NEW_DELETE(rand48_t);
 
