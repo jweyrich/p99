@@ -11,15 +11,6 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-/*
-** orwl_time.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Sun Jan 30 15:29:34 2011 Jens Gustedt
-** Last update Sun Jan 30 15:29:34 2011 Jens Gustedt
-*/
 
 #ifndef   	ORWL_TIME_H_
 # define   	ORWL_TIME_H_

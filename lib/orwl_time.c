@@ -11,15 +11,6 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-/*
-** orwl_time.c
-** 
-** Made by (Jens Gustedt)
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Sun Jan 30 15:38:54 2011 Jens Gustedt
-** Last update Sun May 12 01:17:25 2002 Speed Blue
-*/
 
 #include "orwl_time.h"
 #include "p99_defarg.h"
