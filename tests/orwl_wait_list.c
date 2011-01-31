@@ -11,10 +11,7 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#include "orwl_thread.h"
-#include "orwl_rand.h"
-#include "orwl_wait_queue.h"
-#include "orwl_callback.h"
+#include "orwl.h"
 #include "p99_c99_default.h"
 
 static orwl_wq location = ORWL_WQ_INITIALIZER;

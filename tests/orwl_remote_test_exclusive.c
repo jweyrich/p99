@@ -11,13 +11,7 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#include "orwl_posix.h"
-#include "orwl_remote_queue.h"
-#include "orwl_callback.h"
-#include "orwl_server.h"
-#include "orwl_socket.h"
-#include "orwl_auth_sock_functions.h"
-#include "p99_posix_default.h"
+#include "orwl.h"
 #include "p99_c99_default.h"
 
 static orwl_mirror location;

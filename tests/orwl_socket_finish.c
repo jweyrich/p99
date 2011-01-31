@@ -11,12 +11,7 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#include "orwl_posix.h"
-#include "orwl_socket.h"
-#include "orwl_server.h"
-#include "orwl_register.h"
-#include "orwl_wait_queue.h"
-#include "p99_posix_default.h"
+#include "orwl.h"
 
 inline void F_(int a) { }
 
