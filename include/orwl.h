@@ -27,5 +27,206 @@
 #include "orwl_socket.h"
 #include "orwl_thread.h"
 
+/**
+ ** @file
+ ** @brief Use this to include all of ORWL.
+ **/
+
+/**
+ ** @mainpage ORWL - Ordered Read-Write Locks
+ **
+ ** @section credits Credits and Rights
+ ** @subsection author Author and Maintainer
+ ** @author <a href="http://www.loria.fr/~gustedt/">Jens Gustedt</a>
+ ** @date 2010 - 2011
+ **
+ ** @subsection version Version
+ **
+ ** The version that this documentation describes can be identified
+ ** via the macros ::ORWL_VERSION_DATE, namely $Format:%cd$. It also is
+ ** tagged with an hexadecimal ID tag that is given in
+ ** ::ORWL_VERSION_ID, namely $Format:%H$.
+ **
+ ** @subsection copyright Copyright
+ ** Copyright &copy; 2010-2011 Jens Gustedt, INRIA, France, http://www.inria.fr/
+ **
+ ** @htmlinclude SHORTLICENCE-closed.txt
+ **
+ ** @subsection license License
+ **
+ ** <pre>
+ ** License is still to be defined.
+ ** </pre>
+ **/
+
+/**
+ ** @page configuration Configuration
+ **
+ ** This library currently uses
+ **
+ ** - GNU <code>make</code>
+ ** - <code>getconf</code>
+ ** - <code>tr</code>
+ ** - <code>sed</code>
+ ** - and your C compiler
+ **
+ ** to determine most of its configuration automatically at compile
+ ** time. Relatively recent POSIX systems should not have any
+ ** particular problem with that.
+ **
+ ** Your C compiler should be complying to the C99 standard. ORWL uses
+ ** P99 under the hood, so you will probably not get away with a
+ ** compiler that only has C89 with no extension gearing towards
+ ** C99. It can be fine-tuned by the following @c make parameters
+ ** - CC the name of the compiler
+ ** - OPT additional options that you want to pass to the compilation phase
+ ** example
+ ** @code
+ ** make CC=clang OPT='-march=native'
+ ** @endcode
+ **
+ ** @see ATOMIC_OPS
+ ** @see DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP
+ ** @see GNUC_NO_SYNC
+ ** @see GNUC_SYNC_REPLACE
+ ** @see HAVE_ATOMIC
+ ** @see NO_FUTEX
+ ** @see NO_NANOSLEEP
+ ** @see NO_USLEEP
+ ** @see POSIX_BARRIERS
+ ** @see POSIX_IPV6
+ ** @see POSIX_SEMAPHORES
+ ** @see POSIX_THREAD_PROCESS_SHARED
+ ** @see POSIX_THREAD_SAFE_FUNCTIONS
+ ** @see POSIX_TIMEOUTS
+ **/
+
+#ifdef DOXYGEN
+
+#define ORWL__DOCUMENT_CONFIG(NAME)                                     \
+/*! @brief Configuration option */                                      \
+/*! Generally configuration options are determined at compile time, see @ref configuration "configuration". */
+
+/**
+ ** @addtogroup configuration_parameters Configuration parameters
+ ** @{
+ **/
+
+/**
+ ** @addtogroup atomic_configuration Configuration of atomic operations
+ ** @{
+ **/
+
+ORWL__DOCUMENT_CONFIG(ATOMIC_OPS)
+#define ATOMIC_OPS
+
+
+ORWL__DOCUMENT_CONFIG(DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP)
+#define DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP
+
+
+ORWL__DOCUMENT_CONFIG(GNUC_NO_SYNC)
+#define GNUC_NO_SYNC
+
+
+ORWL__DOCUMENT_CONFIG(GNUC_SYNC_REPLACE)
+#define GNUC_SYNC_REPLACE
+
+
+ORWL__DOCUMENT_CONFIG(HAVE_ATOMIC)
+#define HAVE_ATOMIC
+
+
+/**
+ ** @}
+ **/
+
+/**
+ ** @addtogroup linux_configuration Linux specific configuration
+ ** @{
+ **/
+
+ORWL__DOCUMENT_CONFIG(NO_FUTEX)
+/**
+ ** Define this macro to compile the library without futex
+ ** support. This is probably only useful for testing code coverage.
+ **/
+#define NO_FUTEX
+
+/**
+ ** @}
+ **/
+
+/**
+ ** @addtogroup time_configuration Configuration parameters that concern measurement etc of time.
+ ** @{
+ **/
+
+ORWL__DOCUMENT_CONFIG(NO_NANOSLEEP)
+/**
+ ** Define this macro to compile the library without @c nanosleep. @c
+ ** usleep will be used instead. This is probably only useful for
+ ** testing code coverage.
+ ** @see NO_USLEEP
+ **/
+#define NO_NANOSLEEP
+
+
+ORWL__DOCUMENT_CONFIG(NO_USLEEP)
+/**
+ ** Define this macro to compile the library without @c usleep. If @c
+ ** nanosleep isn't available, too, a hack using @c select will be
+ ** used instead. This is probably only useful for testing code
+ ** coverage.  @see NO_NANOSLEEP
+ **/
+#define NO_USLEEP
+
+/**
+ ** @}
+ **/
+
+
+/**
+ ** @addtogroup posix_configuration POSIX configuration parameters
+ ** @brief ORWL uses a lot of different POSIX features
+ **
+ ** Some of these features are optional and can be replaced when this
+ ** is detected at compile time.
+ ** @{
+ **/
+
+
+ORWL__DOCUMENT_CONFIG(POSIX_BARRIERS)
+#define POSIX_BARRIERS
+
+
+ORWL__DOCUMENT_CONFIG(POSIX_IPV6)
+#define POSIX_IPV6
+
+
+ORWL__DOCUMENT_CONFIG(POSIX_SEMAPHORES)
+#define POSIX_SEMAPHORES
+
+
+ORWL__DOCUMENT_CONFIG(POSIX_THREAD_PROCESS_SHARED)
+#define POSIX_THREAD_PROCESS_SHARED
+
+
+ORWL__DOCUMENT_CONFIG(POSIX_THREAD_SAFE_FUNCTIONS)
+#define POSIX_THREAD_SAFE_FUNCTIONS
+
+
+ORWL__DOCUMENT_CONFIG(POSIX_TIMEOUTS)
+#define POSIX_TIMEOUTS
+
+/**
+ ** @}
+ **/
+
+/**
+ ** @}
+ **/
+
+#endif /* configuration options */
 
 #endif 	    /* !ORWL_H_ */

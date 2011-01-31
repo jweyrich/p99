@@ -32,6 +32,7 @@
  **/
 #define ORWL_VERSION_ID "$Format:%H$"
 
+#define ORWL__VERSION_ID "$Id$"
 
 #define P99_VA_ARGS_DOCUMENTATION(NAME)                                                                                               \
                                                                                                                                       \
