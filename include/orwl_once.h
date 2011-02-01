@@ -75,6 +75,8 @@ static void P99_PASTE3(orwl__, T, _once_init)(void)
 /**
  ** @brief Protect the following block or statement with @c
  ** pthread_mutex_t @a mut.
+ ** @see ORWL_CRITICAL for a tool where you don't have to allocate the
+ ** mutex yourself.
  **/
 P99_BLOCK_DOCUMENT
 #define MUTUAL_EXCLUDE(MUT)                                    \
@@ -83,6 +85,25 @@ P99_GUARDED_BLOCK(pthread_mutex_t*,                            \
       &(MUT),                                                  \
       pthread_mutex_lock(P99_FILEID(mut)),                     \
       pthread_mutex_unlock(P99_FILEID(mut)))
+
+/**
+ ** @brief Protect the following block or statement as a critical
+ ** section of the program.
+ **
+ ** Internally this places a <code>static pthread_mutex_t</code>
+ ** here. Don't ask.
+ **
+ ** Such a critical section is only protected against threads that try
+ ** to enter this same critical section. Threads may well be
+ ** simultaneously be in different critical sections.
+ ** @see MUTUAL_EXCLUDE to protect several critical sections against
+ ** each other.
+ **/
+P99_BLOCK_DOCUMENT
+#define ORWL_CRITICAL                                                   \
+P00_BLK_START                                                           \
+P00_BLK_DECL_STATIC(pthread_mutex_t, orwl__crit, PTHREAD_MUTEX_INITIALIZER) \
+MUTUAL_EXCLUDE((*orwl__crit))
 
 /**
  ** @brief Ensure that the function that was defined with

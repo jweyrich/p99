@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -11,7 +11,6 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-
 #include "orwl.h"
 #include "p99_c99_default.h"
 #include "p99_str.h"
@@ -83,8 +82,7 @@ DEFINE_THREAD(arg_t) {
     orwl_barrier_wait(init_barr);
     /* Randomize, so the system will always be initialized differently. */
     sleepfor(orwl_drand(seed) * 1E-3);
-    static pthread_mutex_t muti = PTHREAD_MUTEX_INITIALIZER;
-    MUTUAL_EXCLUDE(muti) {
+    ORWL_CRITICAL {
       orwl_read_request2(&left[0], &leh[0]);
       orwl_write_request2(&left[1], &leh[1]);
       orwl_read_request2(&left[2], &leh[2]);
