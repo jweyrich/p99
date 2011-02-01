@@ -141,52 +141,12 @@ extern int orwl_pthread_create_detached(start_routine_t start_routine,
  **/
 extern void orwl_pthread_wait_detached(void);
 
+#ifdef DOXYGEN
 /**
- ** @def DECLARE_THREAD(T)
- ** @brief Some simple thread launching mechanism.
- **
- ** This declares two functions to create and join a thread that
- ** receives an argument of type @a T.
- ** @code
- ** typedef worker {
- **    int val;
- **    int ret;
- ** } worker;
- ** DECLARE_THREAD(worker);
- ** @endcode
- **
- ** This declares two functions that are accessible by the program and
- ** can be seen as declared as
- ** @code
- ** int worker_create(worker* arg, pthread_t *id);
- ** worker *worker_join(pthread_t id)
- ** @endcode
- ** Here the semantics are similar to pthread_create()  and
- ** pthread_join() with the following differences:
- **
- ** - The argument that the thread receives and returns is of type @a T*
- ** - The return value of @c worker_join will normally be the same as
- **   the input value @c arg for the corresponding call to @c worker_create.
- ** - The worker thread function itself must be created with the macro DEFINE_THREAD().
- ** - Inside the worker thread the argument to the thread is visible as
- ** @code
- ** T *const Arg;
- ** @endcode
- **
- ** -  worker_create may be called with @c id set to a null pointer. The
- **    thread is then created detached, as obviously you don't know
- **    any thread id to join to. All threads that are created this way
- **    should be awaited for at the end of the main program. Use
- **    orwl_pthread_wait_detached() for that purpose.
- **/
-
-
-/**
- ** @def DEFINE_THREAD(T)
  ** @brief Define the function that is to be executed by a thread
  ** creation for type @a T.
  **
- ** For details see DECLARE_THREAD(). With the example from there we
+ ** For more details see also ::DECLARE_THREAD. With the example from there we
  ** should use this in the corresponding .c file as
  ** @code
  ** DEFINE_THREAD(worker) {
@@ -199,7 +159,7 @@ extern void orwl_pthread_wait_detached(void);
  ** @code
  ** worker work = { .val = 37 };
  ** pthread_t id;
- ** worker_create(&work, &id);
+ ** worker_create_joinable(&work, &id);
  ** ... do something in parallel ...
  ** worker *reply = worker_join(id);
  ** ... do something with reply->ret ...
@@ -215,7 +175,7 @@ extern void orwl_pthread_wait_detached(void);
  ** worker *work = worker_new();
  ** worker->val = 37;
  ** pthread_t id;
- ** worker_create(&work, &id);
+ ** worker_create_joinable(&work, &id);
  ** ... do something in parallel ...
  ** ... maybe return from the calling function ...
  ** ... but keep the `id' handy ...
@@ -226,8 +186,7 @@ extern void orwl_pthread_wait_detached(void);
  ** @endcode
  **
  ** Another case occurs when you want the thread to be created in a
- ** detached state. This can simply be achieved by passing a null pointer
- ** to an @c id. In such a case you don't have
+ ** detached state. In such a case you don't have
  ** much control on when the thread is finished so you @b must
  ** use calls to @c worker_new to allocate the memory.
  ** After your thread has terminated, @c worker_delete will
@@ -235,24 +194,79 @@ extern void orwl_pthread_wait_detached(void);
  ** @code
  ** worker *work = worker_new();
  ** worker->val = 37;
- ** worker_create(&work, P99_0(pthread_t*));
+ ** worker_create_detached(work);
  ** ... do something in parallel ...
  ** ... maybe return from the calling function ...
  ** ... at the very end of your main, wait for all detached threads ...
  ** orwl_pthread_wait_detached();
  ** @endcode
  **/
+#define DEFINE_THREAD(T)
 
-#ifdef DOXYGEN
-#define DECLARE_THREAD(T)
-
-#define DEFINE_THREAD(T)                                                       \
-/*! This is the callback procedure for type T */                               \
-/*! @memberof T */                                                             \
-/*! @see DECLARE_THREAD */                                                     \
-/*! @param arg the object for this call */                                     \
-/*! @param id if not a null pointer, the thread can be joined on this @a id */ \
-  int P99_PASTE2(T, _create)(T* arg, pthread_t *id)
+/**
+ ** @brief Some simple thread launching mechanism.
+ **
+ ** This declares two functions to create and join a thread that
+ ** receives an argument of type @a T.
+ ** @code
+ ** typedef worker {
+ **    int val;
+ **    int ret;
+ ** } worker;
+ ** DECLARE_THREAD(worker);
+ ** @endcode
+ **
+ ** This declares functions that are accessible by the program and
+ ** can be seen as declared as
+ ** @code
+ ** int worker_create(worker* arg, pthread_t *id);
+ ** int worker_create_joinable(worker* arg, pthread_t *id);
+ ** worker *worker_join(pthread_t id);
+ ** int worker_create_detached(worker* arg);
+ ** void worker_start(worker*const arg);
+ ** @endcode
+ ** Here the semantics are similar to pthread_create()  and
+ ** pthread_join() with the following differences:
+ **
+ ** - The argument that the thread receives and returns is of type @a T*
+ ** - The return value of @c worker_join will normally be the same as
+ **   the input value @c arg for the corresponding call to @c worker_create.
+ ** - The worker thread callback function itself is @c worker_start
+ **    and must be created with the macro ::DEFINE_THREAD.
+ ** - @c worker_create may be called with @c id set to a null pointer,
+ **    this then is equivalent to calling @c worker_create_detached. The
+ **    thread is then created detached, as obviously you don't know
+ **    any thread id to join to. All threads that are created this way
+ **    should be awaited for at the end of the main program. Use
+ **    ::orwl_pthread_wait_detached() for that purpose.
+ **/
+#define DECLARE_THREAD(T)                                                                                 \
+/*! @note This is the callback for each thread of type T */                                               \
+/*! @see DEFINE_THREAD for details on how to launch threads */                                            \
+/*! @memberof T */                                                                                        \
+/*! @param Arg the T object for this call */                                                              \
+void P99_PASTE2(T, _start)(T *const Arg);                                                                 \
+/*! @brief Launch a thread for type T */                                                                  \
+/*! @memberof T */                                                                                        \
+/*! @param arg the T object for this call that will be passed to \ref T ## _start */                      \
+/*! @param id if not a null pointer, the thread can be joined on this @a id */                            \
+int P99_PASTE2(T, _create)(T* arg, pthread_t *id);                                                        \
+/*! @brief Launch a joinable thread for type T */                                                         \
+/*! @memberof T */                                                                                        \
+/*! @param arg the T object for this call that will be passed to \ref T ## _start */                      \
+/*! @param id must not be a null pointer, the thread can be joined on this @a id */                       \
+/*! @warning The arguments @a arg and @a id remain under the responsability of the caller. */             \
+int P99_PASTE2(T, _create_joinable)(T* arg, pthread_t *id);                                               \
+/*! @brief Join a callback procedure of type T that has been launched with \ref T ## _create_joinable. */ \
+/*! @memberof T */                                                                                        \
+/*! @param id the thread that is to be joined */                                                          \
+/*! @return the original argument for which this thread was created */                                    \
+T* P99_PASTE2(T, _join)(pthread_t id);                                                                    \
+/*! @brief Launch a detached thread for type T */                                                         \
+/*! @memberof T */                                                                                        \
+/*! @param arg the T object for this call that will be passed to \ref T ## _start */                      \
+/*! @warning The argument @a arg should not be modified by the caller, hereafter. */                      \
+int P99_PASTE2(T, _create_detached)(T* arg)
 #else
 #define DECLARE_THREAD(T)                                                         \
 void P99_PASTE2(T, _start)(T* Arg);                                               \
@@ -272,6 +286,12 @@ inline void *P99_PASTE2(T, _start_detached)(void* arg) {                        
   P99_PASTE2(T, _delete)(Arg);                                                    \
   return 0;                                                                       \
 }                                                                                 \
+inline int P99_PASTE2(T, _create_joinable)(T* arg, pthread_t *id) {               \
+  return orwl_pthread_create_joinable(id, P99_PASTE2(T, _start_joinable), arg);   \
+}                                                                                 \
+inline int P99_PASTE2(T, _create_detached)(T* arg) {                              \
+  return orwl_pthread_create_detached(P99_PASTE2(T, _start_detached), arg);       \
+}                                                                                 \
 inline int P99_PASTE2(T, _create)(T* arg, pthread_t *id) {                        \
   if (id)                                                                         \
     return orwl_pthread_create_joinable(id, P99_PASTE2(T, _start_joinable), arg); \
@@ -279,11 +299,13 @@ inline int P99_PASTE2(T, _create)(T* arg, pthread_t *id) {                      
     return orwl_pthread_create_detached(P99_PASTE2(T, _start_detached), arg);     \
 }                                                                                 \
 P99_MACRO_END(declare_thread)
-#define DEFINE_THREAD(T)                                       \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _join), pthread_t);          \
-P99_INSTANTIATE(int, P99_PASTE2(T, _create), T*, pthread_t*);  \
-P99_INSTANTIATE(void*, P99_PASTE2(T, _start_joinable), void*); \
-P99_INSTANTIATE(void*, P99_PASTE2(T, _start_detached), void*); \
+#define DEFINE_THREAD(T)                                               \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _join), pthread_t);                  \
+P99_INSTANTIATE(int, P99_PASTE2(T, _create), T*, pthread_t*);          \
+P99_INSTANTIATE(int, P99_PASTE2(T, _create_joinable), T*, pthread_t*); \
+P99_INSTANTIATE(int, P99_PASTE2(T, _create_detached), T*);             \
+P99_INSTANTIATE(void*, P99_PASTE2(T, _start_joinable), void*);         \
+P99_INSTANTIATE(void*, P99_PASTE2(T, _start_detached), void*);         \
 void P99_PASTE2(T, _start)(T *const Arg)
 #endif
 

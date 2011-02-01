@@ -1260,11 +1260,6 @@ INCLUDE_FILE_PATTERNS  = *.h
 # instead of the = operator.
 
 PREDEFINED += DOXYGEN
-PREDEFINED += DECLARE_THREAD(T):="int T ## _create(T* arg, pthread_t *id);	\
-/*! \brief Join a callback procedure of type T that has been launched with \ref T ## _create. */ \
-/*! \param id the thread that is to be joined */				\
-T *T ## _join(pthread_t id);							\
-int T ## _create(T* arg, pthread_t *id)"
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
 # this tag can be used to specify a list of macro names that should be expanded.
