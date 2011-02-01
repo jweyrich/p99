@@ -30,6 +30,7 @@ void orwl_endpoint_destroy(orwl_endpoint *endpoint);
 
 DEFINE_NEW_DELETE(orwl_endpoint);
 
+P99_INSTANTIATE(orwl_endpoint, orwl_endpoint_get, char const* name);
 
 orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
   if (ep && name && name[0]) {

@@ -219,6 +219,14 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, /*!< [out] the object to i
                                    char const* name   /*!< [in] the string to parse */
                                    );
 
+inline
+orwl_endpoint orwl_endpoint_get(char const* name   /*!< [in] the string to parse */
+                                ) {
+  orwl_endpoint ret = P99_INIT;
+  orwl_endpoint_parse(&ret, name);
+  return ret;
+}
+
 P99_DEFARG_DOCU(orwl_endpoint_print)
 char const* orwl_endpoint_print(orwl_endpoint const* ep, /*!< [in] the object to interpret */
                                 char name[static 128]    /*!< [out] the string to initialize */
