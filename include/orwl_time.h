@@ -11,7 +11,6 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-
 #ifndef   	ORWL_TIME_H_
 # define   	ORWL_TIME_H_
 

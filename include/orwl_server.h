@@ -64,6 +64,26 @@ void orwl_server_destroy(orwl_server *serv);
 
 DECLARE_NEW_DELETE(orwl_server);
 
+/**
+ ** @brief lauch a server that fulfills rpc requests
+ ** @msc
+ **   caller1,procedure1,thread1,main,server,thread2,procedure2,caller2;
+ **   main -> server [label="orwl_server_create()", URL="\ref orwl_server_create()"];
+ **   caller1 -> server [label="orwl_send(procedure1, ...)", URL="\ref orwl_send()"];
+ **   caller2 -> server [label="orwl_send(procedure2, ...)", URL="\ref orwl_send()"];
+ **   server->thread1 [label="auth_sock_create(procedure1, ...)", URL="\ref auth_sock_create()"];
+ **   thread1->procedure1 [label="procedure1(...)"];
+ **   server->thread2 [label="auth_sock_create(procedure2, ...)", URL="\ref auth_sock_create()"];
+ **   procedure1->caller1 [label="auth_sock_close()", URL="\ref auth_sock_close()"];
+ **   thread2->procedure2 [label="procedure2(...)"];
+ **   procedure1->thread1 [label="return"];
+ **   procedure2->caller2 [label="auth_sock_close()", URL="\ref auth_sock_close()"];
+ **   thread1->main [label="pthread_exit()"];
+ **   procedure2->thread2 [label="return"];
+ **   thread2->main [label="pthread_exit()"];
+ **   server->main [label="pthread_exit()"];
+ ** @endmsc
+ **/
 DECLARE_THREAD(orwl_server);
 
 /**
@@ -101,6 +121,9 @@ void orwl_server_block(orwl_server *serv);
 void orwl_server_unblock(orwl_server *serv);
 
 
+/**
+ ** @memberof orwl_server
+ **/
 void
 orwl_start(orwl_server *serv,       /*!< [out] the server object to initialize */
            size_t max_connections,  /*!< [in] maximum socket queue length,
@@ -119,9 +142,15 @@ P99_PROTOTYPE(void, orwl_start, orwl_server *, size_t, size_t, char const*);
 #define orwl_start_defarg_3() P99_0(char const*)
 #endif
 
+/**
+ ** @memberof orwl_server
+ **/
 void
 orwl_stop(orwl_server *serv);
 
+/**
+ ** @memberof orwl_server
+ **/
 inline
 bool
 orwl_alive(orwl_server *serv) {

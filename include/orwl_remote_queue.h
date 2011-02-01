@@ -55,6 +55,9 @@ struct orwl_mirror {
                            remote */
 };
 
+/**
+ ** @memberof orwl_mirror
+ **/
 #define ORWL_MIRROR_INITIALIZER(HERE, THERE) {                 \
 .mut = PTHREAD_MUTEX_INITIALIZER,                              \
   .local = ORWL_WQ_INITIALIZER,                                \
@@ -97,6 +100,11 @@ DECLARE_NEW_DELETE(orwl_mirror);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_mirror);
 
+/**
+ ** @brief Initialize and connect a ::orwl_mirror @a rq with local
+ ** server @a srv to the endpoint @a endp
+ ** @memberof orwl_mirror
+ **/
 void orwl_mirror_connect(orwl_mirror *rq, orwl_server* srv, orwl_endpoint endp);
 
 

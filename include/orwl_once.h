@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -100,8 +100,8 @@ P99_GUARDED_BLOCK(pthread_mutex_t*,                            \
  ** each other.
  **/
 P99_BLOCK_DOCUMENT
-#define ORWL_CRITICAL                                                   \
-P00_BLK_START                                                           \
+#define ORWL_CRITICAL                                                       \
+P00_BLK_START                                                               \
 P00_BLK_DECL_STATIC(pthread_mutex_t, orwl__crit, PTHREAD_MUTEX_INITIALIZER) \
 MUTUAL_EXCLUDE((*orwl__crit))
 

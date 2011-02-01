@@ -145,17 +145,17 @@ int orwl_futex_wait_once(int* uaddr, int val) {
  ** @see orwl_futex_signal
  ** @see orwl_futex_broadcast
  **/
-#define ORWL_FUTEX_WAIT(ADDR, NAME, EXPECTED)                   \
-do {                                                            \
-  register int volatile*const p = (int volatile*)(ADDR);        \
-  for (;;) {                                                    \
-    register int NAME = *p;                                     \
-    if (EXPECTED) break;                                        \
-    register int ret = orwl_futex_wait_once((int*)p, NAME);     \
-    if (P99_UNLIKELY(ret)) {                                    \
-      assert(!ret);                                             \
-    }                                                           \
-  }                                                             \
+#define ORWL_FUTEX_WAIT(ADDR, NAME, EXPECTED)                  \
+do {                                                           \
+  register int volatile*const p = (int volatile*)(ADDR);       \
+  for (;;) {                                                   \
+    register int NAME = *p;                                    \
+    if (EXPECTED) break;                                       \
+    register int ret = orwl_futex_wait_once((int*)p, NAME);    \
+    if (P99_UNLIKELY(ret)) {                                   \
+      assert(!ret);                                            \
+    }                                                          \
+  }                                                            \
  } while (false)
 
 /**

@@ -103,8 +103,8 @@
 
 #ifdef DOXYGEN
 
-#define ORWL__DOCUMENT_CONFIG(NAME)                                     \
-/*! @brief Configuration option */                                      \
+#define ORWL__DOCUMENT_CONFIG(NAME)                                                                            \
+/*! @brief Configuration option */                                                                             \
 /*! Generally configuration options are determined at compile time, see @ref configuration "configuration". */
 
 /**

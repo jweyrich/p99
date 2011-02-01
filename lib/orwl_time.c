@@ -11,7 +11,6 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-
 #include "orwl_time.h"
 #include "p99_defarg.h"
 
