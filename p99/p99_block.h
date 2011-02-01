@@ -63,6 +63,17 @@ P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
 
 #define P00_BLK_DECL_2(TYPE, NAME) P00_BLK_DECL_3(TYPE, NAME, P99_INIT)
 
+/* Declare @a NAME to be a pointer to a static variable of type @a
+ * TYPE for the depending block. */
+#define P00_BLK_DECL_STATIC(TYPE, NAME, ...)                            \
+P00_BLK_BEFORE(TYPE* NAME = 0)                                          \
+if (1) {                                                                \
+  static TYPE P99_PASTE2(p00_static_, NAME) = P00_ROBUST(__VA_ARGS__);  \
+  NAME = &P99_PASTE2(p00_static_, NAME);                                \
+  goto P99_FILEID(p00_label_, NAME); } else P99_FILEID(p00_label_, NAME):
+
+
+
 #ifdef DOXYGEN
 /**
  ** @brief A meta-macro to protect a dependent block or statement by
