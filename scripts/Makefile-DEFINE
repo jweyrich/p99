@@ -45,13 +45,14 @@ DEF_DEFINES +=						\
 # Here VALUE_OF_TOTO will either be TOTO if the macro doesn't exist or
 # the preprocessor expansion of it.
 #
-# This uses the trigraph sequences ??< and ??> as replacements for {
-# and } such that the resulting text will not irritate make too much.
-DEF_MACRO := \#define EXPAND(NAME) $$??<eval DEFINE \#\# NAME = NAME??>
+# This uses the digraph sequences <%, %> and %: as replacements of {,
+# } and # such that the resulting text will not irritate make too
+# much.
+DEF_MACRO := %:define EXPAND(NAME) $$<%eval DEFINE %:%: NAME = NAME%>
 
 # The result of all that will be filtered by sed, such that names for
 # which the macro wasn't expanded will be filtered out.
-DEF_FILTER := /DEFINE\([^ ]*\) :*= \1/d;/^\#/d
+DEF_FILTER := /DEFINE\([^ ]*\) :*= \1/d;/^%:/d
 
 # Create a list of calls to EXPAND
 DEF_EXPANSION := ${foreach M,${DEF_DEFINES},|EXPAND($M)}
