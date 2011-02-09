@@ -67,10 +67,10 @@ P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
  * TYPE for the depending block. */
 #define P00_BLK_DECL_STATIC(TYPE, NAME, ...)                            \
 P00_BLK_BEFORE(TYPE* NAME = 0)                                          \
-if (1) {                                                                \
+P99_PREFER(                                                            \
   static TYPE P99_PASTE2(p00_static_, NAME) = P00_ROBUST(__VA_ARGS__);  \
   NAME = &P99_PASTE2(p00_static_, NAME);                                \
-  goto P99_FILEID(p00_label_, NAME); } else P99_FILEID(p00_label_, NAME):
+  goto P99_FILEID(p00_label_, NAME); ) P99_FILEID(p00_label_, NAME):
 
 
 
@@ -245,20 +245,31 @@ P00_BLK_END
  ** @code
  ** switch(errno) {
  **  case 0: break; // everything works fine
- **  P99_XCASE EINTR : {
- **    fprintf(stderr, "Autsch: call to schnoeck was interrupted!\n");
- **    // do something else in that case
- **  }
- **  P99_XCASE ENOMEM :
- **    fprintf(stderr, "Autsch: call to schnoeck didn't have enough memory!\n");
  **  P99_XDEFAULT : {
  **    fprintf(stderr, "AUTSCH: call to schnoeck failed with unhandled case!\n");
  **    perror("AUTSCH");
+ **  }
+ **  P99_XCASE ENOMEM :
+ **    fprintf(stderr, "Autsch: call to schnoeck didn't have enough memory!\n");
+ **  severe_error_occured = true;
+ **  P99_XCASE EINTR : {
+ **    fprintf(stderr, "Autsch: call to schnoeck was interrupted!\n");
+ **    // do something else in that case
  **  }
  **  // common clean up code comes here
  **  errno = 0;
  ** }
  ** @endcode
+ **
+ ** Please observe that these macros prefix exactly one statement or
+ ** block and not a series of statements as a normal @c case would
+ ** do and none of them has the semantic of a @c break. In particular:
+ ** - @c EINTR and the default cases have <code>{ .. }</code> around their statements
+ **   such that they may execute several statements.
+ ** - The @c severe_error_occured assignment is executed for the
+ **   default and @c ENOMEM case.
+ ** - The final cleanup code is executed by everybody but <code>case
+ **   0:</code>.
  **/
 #define P99_XCASE P99_AVOID case
 
