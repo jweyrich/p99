@@ -262,7 +262,13 @@
  **/
 #define P99_ALENS(X, N) P99_FOR(X, N, P00_ALENS0, P00_ALEN, P99_REP(N,))
 
-#define P00_ACALL(ARR, N) P99_ALENS(*ARR, N), (ARR)
+#define P00_ACALL1(ARR) P99_ALENS(*ARR, 1), (ARR)
+#define P00_ACALL2(ARR, N) P99_ALENS(*ARR, N), (ARR)
+/* The three argument form asserts that pointers to the elements of
+   the matrix are assignment compatible to pointers of the indicated type.
+   Then we do the cast to the pointer to matrix type that would
+   otherwise be dangerous and could hide incompatibilities. */
+#define P00_ACALL3(ARR, N, TYPE) P99_ALENS(*ARR, N), ((void)(TYPE*){ &((*ARR)P99_REP(N,[0])) }, (TYPE (*)P99_REP(N,[1]))(ARR))
 
 /* transform a list of names into size_t declarations */
 #define P00_AARG_DECL(NAME, X, I) size_t const X
@@ -296,9 +302,12 @@
  ** This is not supposed to be used directly but for defining a macro
  ** interface to a function:
  ** @code
- ** double dotproductFunc(P99_AARG(double, A),
- **                   P99_AARG(double, B));
- ** #define dotproduct(VA, VB) dotproductFunc(P99_ACALL(VA), P99_ACALL(VB))
+ ** double dotproductFunc(P99_AARG(double const, A, 1),
+ **                       P99_AARG(double const, B, 1));
+ **
+ ** #define dotproduct(VA, VB)                       \
+ **   dotproductFunc(P99_ACALL(VA, 1, double const), \
+ **                  P99_ACALL(VB, 1, double const))
  ** .
  ** double Ar[5];
  ** double Br[5];
@@ -314,23 +323,49 @@
  ** that the array is just one dimensional. If it is greater than 1, a
  ** list of length in the first @a N dimension of @a ARR is
  ** transmitted to the function call.
+ **
+ ** @a TYPE can be omitted in which case no attempt to conform types
+ ** will be made. Specifying @a TYPE is particularly helpful if the
+ ** type is qualified, that is has a @c const or @c volatile
+ ** qualification as in the above example. If you don't use the tool
+ ** that is provided here, ensuring <code>const</code>ness of multidimensional
+ ** arrays is particularly tedious.
+ **
+ ** To be more precise, the three argument form asserts that pointers
+ ** to the elements of the matrix are assignment compatible to
+ ** pointers of the indicated type.  Then we do the cast to the
+ ** pointer to matrix type that would otherwise be dangerous and could
+ ** hide incompatibilities.
  ** @see P99_AARG
  **/
-#define P99_ACALL(ARR, N)
+#define P99_ACALL(ARR, N, TYPE)
 
 /**
  ** @brief Declare a pointer to array function argument of basetype @a
  ** TYPE, with name @a NAME, dimension @a DIM and naming scheme for
  ** the length variables @a VAR{0}, ... @a VAR{@a DIM - 1}.
  **
- ** Parameter @a VAR may be omitted. @a DIM defaults to @c 1.
+ ** Parameter @a VAR may be omitted such that you will not have access
+ ** to the length variables. But you most probably don't need them
+ ** since you may use ::P99_ALEN to have these values.
+ **
+ ** @a DIM defaults to @c 1.
+ **
+ ** @warning The pointer such declared has the @c const attribute
+ ** and may thus not be modified.
+ **
+ ** If @a TYPE has qualifiers (@c const, @c volatile, @c restrict or
+ ** @c _Atomic), the corresponding call to ::P99_ACALL @em must
+ ** contain the same qualifiers in the 3rd argument.
+ **
  ** @see P99_ACALL
+ ** @see P99_ALEN
  **/
 #define P99_AARG(TYPE, NAME, DIM, VAR)
 
 #else
 #define P99_ALEN(...) P99_IF_EQ_1(P99_NARG(__VA_ARGS__))(P00_ALEN(__VA_ARGS__, ,0))(P00_ALEN2(__VA_ARGS__))
-#define P99_ACALL(...) P99_IF_EQ_1(P99_NARG(__VA_ARGS__))(P00_ACALL(__VA_ARGS__, 1))(P00_ACALL(__VA_ARGS__))
+#define P99_ACALL(...)  P99_PASTE2(P00_ACALL, P99_NARG(__VA_ARGS__))(__VA_ARGS__)
 #define P99_AARG(...) P99_IF_GT(P99_NARG(__VA_ARGS__),3)(P00_AARG(__VA_ARGS__))(P99_PASTE2(P00_AARG_, P99_NARG(__VA_ARGS__))(__VA_ARGS__))
 
 #endif

@@ -25,7 +25,7 @@ size_t A3 = P99_IPOW(3, A);
 size_t A4 = P99_IPOW(4, A);
 
 void
-printFunc(P99_AARG(double, A, 2, a)) {
+printFunc(P99_AARG(double const, A, 2, a)) {
   P99_DO(size_t, i, 0, a0) {
     P99_DO(size_t, j, 0, a1) {
       printf("%g\t", (*A)[i][j]);
@@ -36,56 +36,56 @@ printFunc(P99_AARG(double, A, 2, a)) {
   fflush(stdout);
 }
 
-#define print(ARR) printFunc(P99_ACALL(ARR, 2))
+#define print(ARR) printFunc(P99_ACALL(ARR, 2, double const))
 
 extern inline
 double
-dotproductFunc(P99_AARG(register double, A),
-           P99_AARG(register double, B));
+dotproductFunc(P99_AARG(register double const, A, 1),
+               P99_AARG(register double const, B, 1));
 
 inline
 double
-dotproductFunc(P99_AARG(register double, A),
-           P99_AARG(register double, B)) {
+dotproductFunc(P99_AARG(register double const, A),
+           P99_AARG(register double const, B)) {
   register double ret = 0.0;
   P99_DO(size_t, i, 0, P99_ALEN(A, 1))
     ret += (*A)[i] * (*B)[i];
   return ret;
 }
 
-#define dotproduct(VA, VB) dotproductFunc(P99_ACALL(VA), P99_ACALL(VB))
+#define dotproduct(VA, VB) dotproductFunc(P99_ACALL(VA, 1, double const), P99_ACALL(VB, 1, double const))
 
 extern inline
 void
 transposeFunc(P99_AARG(double, A, 2),
-          P99_AARG(double, B, 2));
+          P99_AARG(double const, B, 2));
 
 inline
 void
 transposeFunc(P99_AARG(double, A, 2),
-          P99_AARG(double, B, 2)) {
+          P99_AARG(double const, B, 2)) {
   P99_DO(size_t, j, 0, P99_ALEN(*B)) {
     /* sequentialize access to the rows of B */
-    P99_AREF(double, BV, P99_ALEN(A, 1)) = &(*B)[j];
+    P99_AREF(double const, BV, P99_ALEN(A, 1)) = &(*B)[j];
     P99_DO(size_t, i, 0, P99_ALEN(A, 1)) {
       (*A)[i][j] = (*BV)[i];
     }
   }
 }
 
-#define transpose(VA, VB) transposeFunc(P99_ACALL(VA, 2), P99_ACALL(VB, 2))
+#define transpose(VA, VB) transposeFunc(P99_ACALL(VA, 2), P99_ACALL(VB, 2, double const))
 
 extern inline
 void
 multFunc(P99_AARG(double, C, 2),
-     P99_AARG(double, A, 2),
-     P99_AARG(double, B, 2));
+     P99_AARG(double const, A, 2),
+     P99_AARG(double const, B, 2));
 
 inline
 void
 multFunc(P99_AARG(double, C, 2),
-     P99_AARG(double, A, 2),
-     P99_AARG(double, B, 2)) {
+     P99_AARG(double const, A, 2),
+     P99_AARG(double const, B, 2)) {
   /* check that the dimensions of the matrices fit */
   assert(P99_ALEN(C, 1) == P99_ALEN(A, 1));
   assert(P99_ALEN(C, 2) == P99_ALEN(B, 2));
@@ -97,7 +97,7 @@ multFunc(P99_AARG(double, C, 2),
 
   P99_PARALLEL_DO(size_t, i, 0, P99_ALEN(A, 1)) {
     /* Obtain the current row of A */
-    P99_AREF(double, AV, P99_ALEN(A, 2)) = &(*A)[i];
+    P99_AREF(double const, AV, P99_ALEN(A, 2)) = &(*A)[i];
     P99_DO(size_t, j, 0, P99_ALEN(BS, 1)) {
       /* Obtain the current row of BS, which is actually the current
          column of B */
@@ -107,22 +107,22 @@ multFunc(P99_AARG(double, C, 2),
   free(BS);
 }
 
-#define mult(CRR, ARR, BRR) multFunc(P99_ACALL(CRR, 2), P99_ACALL(ARR, 2), P99_ACALL(BRR, 2))
+#define mult(CRR, ARR, BRR) multFunc(P99_ACALL(CRR, 2, double), P99_ACALL(ARR, 2, double const), P99_ACALL(BRR, 2, double const))
 
 
 int main(int argc, char*argv[]) {
-  double P99_ARRAY(A, 3, 2) = {
+  double const P99_ARRAY(A, 3, 2) = {
     {2, 3 },
     {1, 1 },
     {-1, 0}
   };
-  P99_AREF(double, AP, 3, 2) = &A;
+  P99_AREF(double const, AP, 3, 2) = &A;
   print(AP);
-  double P99_ARRAY(B, 2, 4) = {
+  double const P99_ARRAY(B, 2, 4) = {
     {2, 3, -1, 0},
     {1, 1, 2, 1},
   };
-  P99_AREF(double, BP, 2, 4) = &B;
+  P99_AREF(double const, BP, 2, 4) = &B;
   print(BP);
   double P99_ARRAY(C, 3, 4) = {
     {0, 0, 0, 0},
