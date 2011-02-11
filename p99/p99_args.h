@@ -104,7 +104,7 @@ P00_ISEMPTY(                                                            \
 /**
  ** @brief Detect if two tokens are equal.
  **
- ** These must be alphanumerical tokens composed of [_a-zA-Z_] and to
+ ** These must be alphanumerical tokens composed of [_a-zA-Z0-9] and to
  ** be able to test for equality of token @c X the macro @c
  ** P00_IS_X_EQ_X(...) must be defined to expand to a comma.
  **
