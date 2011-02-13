@@ -5,6 +5,17 @@ if 0;               #### for this magic, see findSvnAuthors ####
 #!perl
 #
 #
+# Except of parts copied from previous work and as explicitly stated below,
+# the author and copyright holder for this work is
+# all rights reserved,  2010-2011 Jens Gustedt, INRIA, France
+#
+# This file is part of the P99 project. You received this file as as
+# part of a confidential agreement and you may generally not
+# redistribute it and/or modify it, unless under the terms as given in
+# the file LICENSE.  It is distributed without any warranty; without
+# even the implied warranty of merchantability or fitness for a
+# particular purpose.
+#
 
 my $maxnumber = 121;
 
@@ -620,7 +631,7 @@ print "#define P00_IS_${_}_EQ_${_}(...) ,\n"
     foreach (0.. $maxnumber, @token_C99);
 print "#define P00_TOK_${_}_STARTS_${_} ,\n"
     foreach (0.. $maxnumber, @token_C99);
-print "/*! \@brief Test if the argument consists of exactly the token \@c ${_} */\
+print "/*! \@brief Test if the argument consists of exactly the token \@c ${_} */ \
 #define P99_IS_EQ_${_}(...) P99_TOK_EQ(${_}, __VA_ARGS__)\n"
     foreach (0.. $maxnumber, @token_C99);
 print "#define P00_EAT_${_} \n"
