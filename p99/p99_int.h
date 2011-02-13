@@ -202,6 +202,7 @@ typedef extendedInt p99x_int128;
  **
  ** The returning expression is of type @c uintmax_t
  **/
+P00_DOCUMENT_MACRO_ARGUMENT(P99_TO_UNSIGNED, 1)
 #define P99_TO_UNSIGNED(T, MACRO)                              \
 ((uintmax_t)                                                   \
  (sizeof(T) < sizeof(signed)                                   \
@@ -312,6 +313,7 @@ P00_DOCUMENT_UNSIGNED(3)
  ** @see P99_SIGNED for a similar macro that takes an expression as an
  ** argument
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_ISSIGNED, 0)
 #define P99_ISSIGNED(T) (P99_M1(T) < P99_0(T))
 
 /**
@@ -564,6 +566,7 @@ typedef enum {
  ** significant bits of -1 represented in @a T.
  ** @see ::p99_signed_representation
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_SIGNED_REPRESENTATION, 0)
 #define P99_SIGNED_REPRESENTATION(T) ((p99_signed_representation)(P99_M1(T) & P99_3(T)))
 
 
@@ -577,6 +580,7 @@ typedef enum {
 /**
  ** @brief Give the maximum representable value of type @a T
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TMAX, 0)
 #define P99_TMAX(T)                                                     \
 ((T)                                                                    \
  (P99X__SHIFT((T)0)                                                     \
@@ -586,6 +590,7 @@ typedef enum {
 /**
  ** @brief Give the minimum representable value of type @a T
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TMIN, 0)
 #define P99_TMIN(T)                                                                   \
 ((T)                                                                                  \
  (P99X__SHIFT((T)0)                                                                   \
@@ -667,7 +672,7 @@ P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (
  **/
 #define P99_TPADDING(T) ((sizeof(T)*CHAR_BIT) - P99_TWIDTH(T))
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 #define P00_DECLARE_OVERFLOW(SUFF)                                                                                                            \
 /*! @brief Cast an unsigned type into a signed one as would do a two's complement representation of the signed type. */                       \
 /*! If the signed type is in usual two's complement this should be the identity. For other cases this is supposed to do the best possible. */ \
@@ -839,13 +844,13 @@ P00_DECLARE_OVERFLOW(ll);
        : cl)                                                   \
     : cll))
 
-#define P99_PRI(xT, F, ...)                                    \
+#define P99_PRI(xT, F, LEN)                                    \
 P99_CHOOSE5(xT,                                                \
-        "%" #__VA_ARGS__ "hh" #F,                              \
-        "%" #__VA_ARGS__ "h" #F,                               \
-        "%" #__VA_ARGS__ "" #F,                                \
-        "%" #__VA_ARGS__ "l" #F,                               \
-        "%" #__VA_ARGS__ "ll" #F)
+            "%" #LEN "hh" #F,                                  \
+            "%" #LEN "h" #F,                                   \
+            "%" #LEN "" #F,                                    \
+            "%" #LEN "l" #F,                                   \
+            "%" #LEN "ll" #F)
 
 /**
  ** @brief Promote integer expression @a x to the width of @c

@@ -76,6 +76,9 @@
  ** ((((a) + (b))) + (c))
  ** @endcode
  **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_FOR, 0)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_FOR, 1)
+P00_DOCUMENT_MACRO_ARGUMENT(P99_FOR, 3)
 #define P99_FOR(NAME, N, OP, FUNC, ...) P99_PASTE2(P00_FOR, N)(NAME, OP, FUNC, __VA_ARGS__)
 
 #define P00_IGN(NAME, X, I)
@@ -102,6 +105,7 @@
 /**
  ** @brief generate lists of names of the form <code>NAME0, NAME1, ...</code>
  **/
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_NAME, 0)
 #define P99_NAME(N, NAME) P99_FOR(NAME, N, P00_SEQ, P00_NAME_I, P99_REP(N,))
 
 #define P00_FUNC(NAME, I, REC, X) NAME(REC, X)
@@ -116,6 +120,7 @@
  **
  ** @a M is the length of the list that follows it.
  **/
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_BIGOP, 1)
 #define P99_BIGOP(OP, M, ...) P99_FOR( , M, OP, P00_IDT, __VA_ARGS__)
 
 /**
@@ -125,6 +130,7 @@
  **
  ** @a M is the length of the list that follows it.
  **/
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_BIGFUNC, 1)
 #define P99_BIGFUNC(FUNC, M, ...) P99_FOR(FUNC, M, P00_FUNC, P00_IDT, __VA_ARGS__)
 
 /**
@@ -228,6 +234,7 @@
  ** P99_CDIM(D, k0, k1, k2)  =>  ((k2) + ((D)[2] * ((k1) + ((D)[1] * (k0)))))
  ** @endcode
  **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_CDIM, 0)
 #define P99_CDIM(NAME, ...) P00_CDIM(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
 
 
@@ -253,13 +260,15 @@
    /sizeof(char[((!(sizeof(NAME) % sizeof((NAME)[0])))<<1)-1]))
 
 #define P00_ALEN(NAME, _1, I) P99_IF_EQ_0(I)(P00_ALEN0(NAME))(P00_ALEN0((NAME)P99_REP(I,[0])))
-#define P00_ALEN2(NAME, I) P00_ALEN(NAME,,I)
+#define P00_ALEN2_(NAME, I, ...) P00_ALEN(NAME,,I)
+#define P00_ALEN2(NAME, ...) P00_ALEN2_(NAME, __VA_ARGS__,)
 
 #define P00_ALENS0(NAME, I, REC, _3) REC, P00_ALEN(NAME,,I)
 /**
  ** @brief Produce a list of the lengths of the argument array @a ARR in terms of number
  ** of elements in the first @a N dimensions.
  **/
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
 #define P99_ALENS(X, N) P99_FOR(X, N, P00_ALENS0, P00_ALEN, P99_REP(N,))
 
 #define P00_ACALL1(ARR) P99_ALENS(*ARR, 1), (ARR)
@@ -268,7 +277,7 @@
    the matrix are assignment compatible to pointers of the indicated type.
    Then we do the cast to the pointer to matrix type that would
    otherwise be dangerous and could hide incompatibilities. */
-#define P00_ACALL3(ARR, N, TYPE) P99_ALENS(*ARR, N), ((void)(TYPE*){ &((*ARR)P99_REP(N,[0])) }, (TYPE (*)P99_REP(N,[1]))(ARR))
+#define P00_ACALL3(ARR, N, TYPE) P99_ALENS(*ARR, N), ((TYPE (*const)P99_REP(N,[1]))(TYPE*const){ &((*ARR)P99_REP(N,[0])) })
 
 /* transform a list of names into size_t declarations */
 #define P00_AARG_DECL(NAME, X, I) size_t const X
@@ -283,7 +292,7 @@
 #define P00_AARG_3(T, ARR, DIM) P00_AARG(T, ARR, DIM, P99_PASTE(p00_aarg_, ARR))
 #define P00_AARG_2(T, ARR) P00_AARG_3(T, ARR, 1)
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 /**
  ** @brief Produce the length of the argument array @a ARR in terms of number
  ** of elements.
@@ -364,8 +373,13 @@
 #define P99_AARG(TYPE, NAME, DIM, VAR)
 
 #else
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
 #define P99_ALEN(...) P99_IF_EQ_1(P99_NARG(__VA_ARGS__))(P00_ALEN(__VA_ARGS__, ,0))(P00_ALEN2(__VA_ARGS__))
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_ACALL, 1)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_ACALL, 2)
 #define P99_ACALL(...)  P99_PASTE2(P00_ACALL, P99_NARG(__VA_ARGS__))(__VA_ARGS__)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_AARG, 0)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_AARG, 2)
 #define P99_AARG(...) P99_IF_GT(P99_NARG(__VA_ARGS__),3)(P00_AARG(__VA_ARGS__))(P99_PASTE2(P00_AARG_, P99_NARG(__VA_ARGS__))(__VA_ARGS__))
 
 #endif
@@ -412,7 +426,7 @@ P99_PRAGMA(PRAG)                                                                
        P00_BLK_START                                                             \
          P00_BLK_BEFORE(TYPE const VAR = P99_PASTE2(p00_i_, VAR))
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 /**
  ** @ingroup preprocessor_blocks
  ** @brief A fortran like do-loop with bounds that are fixed at the
@@ -478,12 +492,15 @@ P99_PRAGMA(PRAG)                                                                
  **/
 #define P99_PRAGMA_DO(PRAG, TYPE, VAR, LOW, LEN, INCR) for(;;)
 #else
-#define P99_DO(...) P99_PRAGMA_DO(, __VA_ARGS__)
-#define P99_PARALLEL_DO(...) P99_PRAGMA_DO(P99_PARALLEL_PRAGMA, __VA_ARGS__)
-#define P99_PRAGMA_DO(...)                                     \
-P99_IF_EQ(P99_NARG(__VA_ARGS__), 5)                            \
-(P00_PRAGMA_DO(__VA_ARGS__, 1))                                \
-(P00_PRAGMA_DO(__VA_ARGS__))
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DO, 0)
+#define P99_DO(TYPE, VAR, ...) P99_PRAGMA_DO(, TYPE, VAR, __VA_ARGS__)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_PARALLEL_DO, 0)
+#define P99_PARALLEL_DO(TYPE, VAR, ...) P99_PRAGMA_DO(P99_PARALLEL_PRAGMA, TYPE, VAR, __VA_ARGS__)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_PRAGMA_DO, 1)
+#define P99_PRAGMA_DO(PRAG, TYPE, VAR, ...)                    \
+P99_IF_EQ(P99_NARG(__VA_ARGS__), 2)                            \
+(P00_PRAGMA_DO(PRAG, TYPE, VAR, __VA_ARGS__, 1))               \
+(P00_PRAGMA_DO(PRAG, TYPE, VAR, __VA_ARGS__))
 #endif
 
 #define P00_FORALL_OP(NAME, I, REC, X) REC X
@@ -531,6 +548,7 @@ P99_IF_EQ(P99_NARG(__VA_ARGS__), 5)                            \
  ** @see P99_CDIM for a macro that computes the absolute position of a
  **   index N-tuple in a multi-dimensional array.
  **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_FORALL, 0)
 #define P99_FORALL(NAME, ...) P00_FORALL(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
 
 #define P00_PARALLEL_FORALL_FUNC(NAME, X, I)  P99_PARALLEL_DO(size_t, X, 0, (NAME)[I])
@@ -552,6 +570,7 @@ P99_IF_EQ(P99_NARG(__VA_ARGS__), 5)                            \
  ** @see P99_CDIM for a macro that computes the absolute position of a
  **   index N-tuple in a multi-dimensional array.
  **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_PARALLEL_FORALL, 0)
 #define P99_PARALLEL_FORALL(NAME, ...) P00_PARALLEL_FORALL(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
 
 
@@ -570,7 +589,7 @@ if (0) {                                                             \
      matched */                                                      \
   P99_LINEID(__VA_ARGS__)
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 /**
  ** @ingroup preprocessor_blocks
  ** @brief implement a range syntax for case labels.
@@ -609,6 +628,8 @@ if (0) {                                                             \
  **/
 #define P99_CASERANGE(START, LEN, ...)
 #else
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_CASERANGE, 0)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_CASERANGE, 1)
 #define P99_CASERANGE(START, ...) P00_CASERANGE(START, __VA_ARGS__, _caselabel)
 #endif
 

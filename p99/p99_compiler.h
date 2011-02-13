@@ -25,8 +25,8 @@
 
 #define P00_PREFIX0(N) P00_PREFIX0_(N)
 #define P00_PREFIX0_(N) 0 ## N
-#define P00_STRINGIFY(X) #X
-#define P99_STRINGIFY(X) P00_STRINGIFY(X)
+#define P00_STRINGIFY(...) #__VA_ARGS__
+#define P99_STRINGIFY(...) P00_STRINGIFY(__VA_ARGS__)
 
 /* be sure to put all compilers that are faking gcc before gcc itself */
 #if P99_COMPILER & P99_COMPILER_CLANG

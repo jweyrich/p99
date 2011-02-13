@@ -94,6 +94,9 @@
  ** - If the argument list has just one element which is empty, the
  **    token is produced.
  **/
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_REP, 0)
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_REP, 1)
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_REP, 2)
 #define P99_REP(...) P99_PASTE2(P00_REP_0_, P99_IS_LT(P99_NARG(__VA_ARGS__), 2))(__VA_ARGS__)
 
 #define P00_REP_0_0(...) P00_REP(__VA_ARGS__)

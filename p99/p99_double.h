@@ -59,6 +59,9 @@
  **/
 #define P99_DEC_DOUBLE(SIGN, INT, FRAC, ESIGN, EXP)
 #else
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_DEC_DOUBLE, 1)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_DEC_DOUBLE, 2)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_DEC_DOUBLE, 4)
 #define P99_DEC_DOUBLE(...)                                    \
   P99_IF_GE(P99_NARG(__VA_ARGS__), 6)                          \
   (P00_DEC_DOUBLE(__VA_ARGS__))                                \
@@ -85,6 +88,9 @@
  **/
 #define P99_HEX_DOUBLE(SIGN, HEXINT, HEXFRAC, ESIGN, BINEXP)
 #else
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_HEX_DOUBLE, 1)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_HEX_DOUBLE, 2)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_HEX_DOUBLE, 4)
 #define P99_HEX_DOUBLE(...)                                    \
   P99_IF_GE(P99_NARG(__VA_ARGS__), 6)                          \
   (P00_HEX_DOUBLE(__VA_ARGS__))                                \

@@ -53,9 +53,9 @@
  ** @a N must be a decimal constant without suffixes. The value @c 0
  ** is special in that it evaluates to a @c 1 that is promoted to the
  ** promoted type of @a X.
- **
- ** @warning @a X is evaluated @a N times, so it should not have side effects.
  **/
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_IPOW, 0)
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_IPOW, 1)
 #define P99_IPOW(N, X) P99_IF_EQ(N,0)(P99_SIGN_PROMOTE(1, X))((P99_FOR(X, N, P00_POW, P00_POW0, P99_REP(N,))))
 
 /**
@@ -146,12 +146,16 @@ p00_strcat_terminate                                           \
  ** each of the arguments twice; once to compute the overall length of
  ** the new string and then for the duplication operation.
  **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_STRDUP, 0)
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_STRDUP, 1)
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_STRDUP, 2)
 #define P99_STRDUP(...) P99_STRCATS(memset(malloc(P99_STRLENS(__VA_ARGS__) + 1), 0, 1), __VA_ARGS__)
 
 /**
  ** @brief Produce a list of length @a N that has the contents of 0,
  ** 1, , @a N-1
  **/
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_POSS, 0)
 #define P99_POSS(N) P99_FOR(,N, P00_SEQ, P00_POS,)
 
 /**
@@ -159,6 +163,8 @@ p00_strcat_terminate                                           \
  ** X [1], ,
  ** @a X[@a N-1]
  **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_ACCESSORS, 0)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_ACCESSORS, 1)
 #define P99_ACCESSORS(X, N) P99_FOR(X, N, P00_SEQ, P00_ACCESSOR, )
 
 
@@ -169,6 +175,7 @@ p00_strcat_terminate                                           \
  ** NAME[0], @c V1 = @a NAME[1], ..., @c VN-1 = @a NAME[@a N-1], where
  ** V0, etc are the remaining arguments.
  **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_VASSIGNS, 0)
 #define P99_VASSIGNS(NAME, ...)                                            \
 P99_IF_LT(P99_NARG(__VA_ARGS__),2)                                         \
 (P99_IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0]))               \

@@ -23,6 +23,8 @@
 #ifndef   	P99_TYPE_H_
 # define   	P99_TYPE_H_
 
+#include "p99_paste.h"
+
 /**
  ** @addtogroup types Type facilities
  ** @brief Macros that help you handle different kind of types,
@@ -41,6 +43,7 @@
  ** This declaration should also be suitable to be included into a C++
  ** source.
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_STRUCT, 0)
 #define P99_DECLARE_STRUCT(NAME) typedef struct NAME NAME
 
 
@@ -54,6 +57,7 @@
  ** This declaration should also be suitable to be included into a C++
  ** source.
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_UNION, 0)
 #define P99_DECLARE_UNION(NAME) typedef union NAME NAME
 
 /** @}

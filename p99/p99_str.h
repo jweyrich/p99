@@ -46,7 +46,7 @@ P99_MACRO_END(P00_DEFINE_STR3, CODE)
 #define P00_STR3_0(NAME, X, I) P00_DEFINE_STR3(X)
 #define P00_STR3_1(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_STR3_0, __VA_ARGS__)
 
-#ifndef DOXYGEN
+#ifndef P00_DOXYGEN
 P00_STR3_1(l, ll, ul, ull, uz, t, j, uj);
 #endif
 

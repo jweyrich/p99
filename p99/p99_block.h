@@ -74,7 +74,7 @@ P99_PREFER(                                                            \
 
 
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 /**
  ** @brief A meta-macro to protect a dependent block or statement by
  ** statement @a BEFORE that is executed before the block and @a AFTER
@@ -135,6 +135,9 @@ P00_BLK_END
  ** @see P99_UNWIND to break through one or several nested guarded blocks
  ** @see P99_UNWIND_RETURN to return from the enclosing function
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_GUARDED_BLOCK, 0)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_GUARDED_BLOCK, 1)
+P00_DOCUMENT_STATEMENT_ARGUMENT(P99_GUARDED_BLOCK, 4)
 #define P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)     \
 P00_BLK_START                                                  \
 P00_BLK_DECL_REC(T, NAME, P00_ROBUST(INITIAL))                 \
@@ -553,6 +556,7 @@ P00_BLK_START                                                       \
  ** dependent block.
  ** @headerfile p99_c99.h "p99_c99.h"
  **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_INVARIANT, 0)
 P99_BLOCK_DOCUMENT
 #define P99_INVARIANT(EXPR)                                                                   \
 P99_PROTECTED_BLOCK(assert((EXPR) && "failed on entry"), assert((EXPR) && "failed on leave"))

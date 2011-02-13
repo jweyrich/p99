@@ -80,6 +80,15 @@
 #define P99_PASTE6(_1,	_2,	_3,	_4,	_5,	_6)                     \
 	P99_PASTE2(P99_PASTE5(_1,	_2,	_3,	_4,	_5), _6)
 
+#ifndef P00_DOCUMENT_MULTIPLE_ARGUMENT
+#define P00_DOCUMENT_TYPE_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO should correspond to a type */
+#define P00_DOCUMENT_MULTIPLE_ARGUMENT(MACRO, N) /*! @warning argument N of MACRO may be evaluated multiple times */
+#define P00_DOCUMENT_PERMITTED_ARGUMENT(MACRO, N)
+#define P00_DOCUMENT_STATEMENT_ARGUMENT(MACRO, N)
+#define P00_DOCUMENT_DECLARATION_ARGUMENT(MACRO, N)
+#define P00_DOCUMENT_MACRO_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO should correspond to a macro name */
+#define P00_DOCUMENT_NUMBER_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO must expand to a decimal number */
+#endif
 
 /**
  ** @}

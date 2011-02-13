@@ -69,6 +69,7 @@
 #ifdef P00_DOXYGEN
 # define P99_CALL_DEFARG(NAME, M, ...) NAME(__VA_ARGS__)
 #else
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_CALL_DEFARG, 1)
 # define P99_CALL_DEFARG(NAME, M, ...)                         \
 NAME(P99_IF_EQ(0,M)                                            \
      (__VA_ARGS__)                                             \
@@ -165,6 +166,8 @@ NAME(P99_IF_EQ(0,M)                                            \
  ** @see P99_INSTANTIATE if your function is @c inline and thus you
  ** also have to provide an external symbol for the function.
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_PROTOTYPE, 0)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_PROTOTYPE, 2)
 
 #ifdef P00_DOXYGEN
 #define P00_PROTOTYPE(RT, NAME, ...)                                                     \
@@ -391,6 +394,7 @@ P99_MACRO_END(NAME, _declare_defarg)
  **/
 #define P99_CALL_VA_ARG(NAME, M, T, ...) NAME(__VA_ARGS__)
 #else
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_CALL_VA_ARG, 1)
 #define P99_CALL_VA_ARG(NAME, M, T, ...)                                                                   \
 P99_IF_GT(P99_NARG(__VA_ARGS__), M)                                                                        \
 (NAME(P00__DEFARGS(NAME, M, P99_SELS(M, __VA_ARGS__)), P00_CALL_VA_ARG(NAME, T, P99_SKP(M, __VA_ARGS__)))) \

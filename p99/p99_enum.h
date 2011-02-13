@@ -22,7 +22,7 @@
 
 #define P00_ENUM_CASE(NAME, X, I) case X: return P99_STRINGIFY(X)
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 /**
  ** @brief Declare a simple inline function to return strings
  ** containing the names of enumeration constants.
@@ -31,6 +31,10 @@
 /*! @brief Get a string with the name of constant @a x of type T */ \
 inline char const* P99_PASTE2(T, _getname)(T x)...
 #else
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 0)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 1)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 2)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 3)
 #define P99_DECLARE_ENUM_GETNAME(T, ...)                                   \
 p99_inline                                                                 \
 char const* P99_PASTE2(T, _getname)(T x) {                                 \
@@ -79,6 +83,10 @@ P99_MACRO_END(declare_enum_getname, T)
  ** to prefix it with `color' such that the documentation lands inside
  ** the one for `color'.
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_ENUM, 0)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 1)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 2)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 3)
 #define P99_DECLARE_ENUM(T, ...)                                                   \
 /*! @see P99_DECLARE_ENUM was used for the declaration of this enumeration type */ \
 /*! @see T ## _getname for access to the names of the constants as strings */      \
