@@ -436,6 +436,7 @@ my @compilers = (
     "metrowerks" => "__MWERKS__",
     "microsoft" => "_MSC_VER",
     "open64" => "__OPEN64__",
+    "pcc" => "__PCC__",
     "portland" => "__PGI",
     "sgi" => "__sgi",
     "sun" => "__SUNPRO_C",

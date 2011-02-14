@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -44,6 +44,18 @@
 # undef P99_COMPILER_VERSION
 # define P99_COMPILER_VERSION                                  \
  "intel " P99_STRINGIFY(__INTEL_COMPILER)                      \
+ "; gnu "                                                      \
+ P99_STRINGIFY(__GNUC__) "."                                   \
+ P99_STRINGIFY(__GNUC_MINOR__) "."                             \
+ P99_STRINGIFY(__GNUC_PATCHLEVEL__)
+
+#elif P99_COMPILER & P99_COMPILER_PCC
+# undef P99_COMPILER_VERSION
+# define P99_COMPILER_VERSION                                  \
+"pcc "                                                         \
+ P99_STRINGIFY(__PCC__)                                        \
+ P99_STRINGIFY(__PCC_MINOR__)                                  \
+ P99_STRINGIFY(__PCC_MINORMINOR__)                             \
  "; gnu "                                                      \
  P99_STRINGIFY(__GNUC__) "."                                   \
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
@@ -133,6 +145,8 @@ signed p00_trailing_comma_in_initializer__(void) {
 # ifndef __GNUC__
 #  define P00_NO_HAVE_TGMATH
 # endif
+#elif P99_COMPILER & P99_COMPILER_PCC
+# error "The P99 preprocessor files can't work with the pcc compiler, yet"
 #elif P99_COMPILER & P99_COMPILER_CLANG
 # define p99_inline __attribute__((always_inline)) inline
 /* clang can't nail a variable to a register, yet */

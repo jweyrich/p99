@@ -1,8 +1,8 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2010 Jens Gustedt, INRIA, France                           */
+/* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -65,11 +65,11 @@ P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
 
 /* Declare @a NAME to be a pointer to a static variable of type @a
  * TYPE for the depending block. */
-#define P00_BLK_DECL_STATIC(TYPE, NAME, ...)                            \
-P00_BLK_BEFORE(TYPE* NAME = 0)                                          \
+#define P00_BLK_DECL_STATIC(TYPE, NAME, ...)                           \
+P00_BLK_BEFORE(TYPE* NAME = 0)                                         \
 P99_PREFER(                                                            \
-  static TYPE P99_PASTE2(p00_static_, NAME) = P00_ROBUST(__VA_ARGS__);  \
-  NAME = &P99_PASTE2(p00_static_, NAME);                                \
+  static TYPE P99_PASTE2(p00_static_, NAME) = P00_ROBUST(__VA_ARGS__); \
+  NAME = &P99_PASTE2(p00_static_, NAME);                               \
   goto P99_FILEID(p00_label_, NAME); ) P99_FILEID(p00_label_, NAME):
 
 

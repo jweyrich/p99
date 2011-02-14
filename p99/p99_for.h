@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -314,8 +314,8 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
  ** double dotproductFunc(P99_AARG(double const, A, 1),
  **                       P99_AARG(double const, B, 1));
  **
- ** #define dotproduct(VA, VB)                       \
- **   dotproductFunc(P99_ACALL(VA, 1, double const), \
+ ** #define dotproduct(VA, VB)                                 \
+ **   dotproductFunc(P99_ACALL(VA, 1, double const),           \
  **                  P99_ACALL(VB, 1, double const))
  ** .
  ** double Ar[5];
