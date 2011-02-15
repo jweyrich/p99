@@ -54,8 +54,8 @@
 # define P99_COMPILER_VERSION                                  \
 "pcc "                                                         \
  P99_STRINGIFY(__PCC__)                                        \
- P99_STRINGIFY(__PCC_MINOR__)                                  \
- P99_STRINGIFY(__PCC_MINORMINOR__)                             \
+ "." P99_STRINGIFY(__PCC_MINOR__)                              \
+ "." P99_STRINGIFY(__PCC_MINORMINOR__)                         \
  "; gnu "                                                      \
  P99_STRINGIFY(__GNUC__) "."                                   \
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
@@ -146,7 +146,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 #  define P00_NO_HAVE_TGMATH
 # endif
 #elif P99_COMPILER & P99_COMPILER_PCC
-# error "The P99 preprocessor files can't work with the pcc compiler, yet"
+//# error "The P99 preprocessor files can't work with the pcc compiler, yet"
 #elif P99_COMPILER & P99_COMPILER_CLANG
 # define p99_inline __attribute__((always_inline)) inline
 /* clang can't nail a variable to a register, yet */
