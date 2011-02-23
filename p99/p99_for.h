@@ -415,13 +415,13 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_AARG, 2)
 
 #define P00_PRAGMA_DO(PRAG, TYPE, VAR, LOW, LEN, INCR)                           \
 P00_BLK_START                                                                    \
-P00_BLK_BEFORE(register TYPE                                                     \
+P00_BLK_BEFORE(const TYPE                                                        \
                P99_PASTE2(p00_start_, VAR) = (LOW),                              \
                P99_PASTE2(p00_stop_, VAR) = P99_PASTE2(p00_start_, VAR) + (LEN), \
                P99_PASTE2(p00_incr_, VAR) = (INCR))                              \
 P99_PRAGMA(PRAG)                                                                 \
      for (register TYPE P99_PASTE2(p00_i_, VAR) = P99_PASTE2(p00_start_, VAR);   \
-          P99_LIKELY(P99_PASTE2(p00_i_, VAR) < P99_PASTE2(p00_stop_, VAR));      \
+          P99_PASTE2(p00_i_, VAR) < P99_PASTE2(p00_stop_, VAR);                  \
           P99_PASTE2(p00_i_, VAR) += P99_PASTE2(p00_incr_, VAR))                 \
        P00_BLK_START                                                             \
          P00_BLK_BEFORE(TYPE const VAR = P99_PASTE2(p00_i_, VAR))
