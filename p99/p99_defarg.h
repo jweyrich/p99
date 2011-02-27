@@ -68,16 +68,19 @@
 
 #ifdef P00_DOXYGEN
 # define P99_CALL_DEFARG(NAME, M, ...) NAME(__VA_ARGS__)
+# define P99_CALL_DEFARG_LIST(NAME, M, ...) __VA_ARGS__
 #else
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_CALL_DEFARG, 1)
-# define P99_CALL_DEFARG(NAME, M, ...)                         \
-NAME(P99_IF_EQ(0,M)                                            \
-     (__VA_ARGS__)                                             \
-     (P99_IF_EMPTY(__VA_ARGS__)                                \
-      (P00_DEFARGS(NAME, M, P99_PASTE2(NAME,_defarg_0)()))     \
-      (P00_DEFARGS(NAME, M, __VA_ARGS__))                      \
-      )                                                        \
-     )
+# define P99_CALL_DEFARG(NAME, M, ...) NAME(P99_CALL_DEFARG_LIST(NAME, M, __VA_ARGS__))
+
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_CALL_DEFARG_LIST, 1)
+# define P99_CALL_DEFARG_LIST(NAME, M, ...)             \
+P99_IF_EQ(0,M)                                          \
+(__VA_ARGS__)                                           \
+(P99_IF_EMPTY(__VA_ARGS__)                              \
+ (P00_DEFARGS(NAME, M, P99_PASTE2(NAME,_defarg_0)()))   \
+ (P00_DEFARGS(NAME, M, __VA_ARGS__))                    \
+ )
 #endif
 
 
@@ -149,6 +152,15 @@ NAME(P99_IF_EQ(0,M)                                            \
  ** be declare at the point of its definition. For the second case,
  ** the macro is evaluate at the place of the call and could refer to
  ** local variables or anything you like.
+ **/
+
+/**
+ ** @def P99_CALL_DEFARG_LIST
+ ** @brief Expand an argument list with default arguments.
+ **
+ ** @see P99_CALL_DEFARG for how this mechanism works. This macro here
+ ** just expands the argument list but doesn't add the function call
+ ** itself.
  **/
 
 /**
