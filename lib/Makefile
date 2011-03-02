@@ -69,6 +69,8 @@ TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICE
 include ../scripts/Makefile-DEFINE
 include ../scripts/Makefile-__thread
 include ../scripts/Makefile-atomic
+include ../scripts/Makefile-complex
+include ../scripts/Makefile-tgmath
 
 ifeq (${POSIX_SEMAPHORES},-1L)
 $(warning No POSIX semaphores were detected on this system. Replacing them by a wrapper)
@@ -172,6 +174,6 @@ orwl_symbols.c :
 	@printf '#endif\n' >> orwl_symbols.c
 
 orwl_symbols : orwl_symbols.o liborwl.so Makefile
-	${CC} -o $@ orwl_symbols.o -L. -Wl,-rpath,. -L. -lorwl
+	${CC} -o $@ orwl_symbols.o $(LDFLAGS) $(TARGET_ARCH) -L. -Wl,-rpath,. -L. -lorwl
 tidy :
 	for f in ${SRC} ; do  ${TIDY} $$f ; done

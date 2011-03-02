@@ -84,6 +84,8 @@ LDFLAGS += $(EXEOPT) $(LPATH)
 include ../scripts/Makefile-DEFINE
 include ../scripts/Makefile-__thread
 include ../scripts/Makefile-atomic
+include ../scripts/Makefile-complex
+include ../scripts/Makefile-tgmath
 
 ##############################
 # Basic Compile Instructions #

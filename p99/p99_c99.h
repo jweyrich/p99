@@ -26,7 +26,9 @@
 #include "p99_compiler.h"
 
 #include <assert.h>
-#include <complex.h>
+#ifndef P00_NO_HAVE_COMPLEX_H
+# include <complex.h>
+#endif
 #include <ctype.h>
 #include <errno.h>
 #include <fenv.h>
@@ -45,9 +47,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef P00_NO_HAVE_TGMATH
-# pragma message "warning: it seems that your current compiler version does not support type generic math with \"tgmath.h\". Trying without."
-#else
+#ifndef P00_NO_HAVE_TGMATH_H
 # include <tgmath.h>
 #endif
 #include <time.h>

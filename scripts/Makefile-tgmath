@@ -1,0 +1,8 @@
+# -*- makefile-gmake -*-
+
+__TGMATH := $(shell echo '%:include <tgmath.h>' | ${CC} ${CFLAGS} -xc -c -o /dev/null - 2> /dev/null || echo "NO")
+
+ifeq (${__TGMATH},NO)
+${warning header tgmath.h is not supported}
+CFLAGS += -DP00_NO_HAVE_TGMATH_H
+endif

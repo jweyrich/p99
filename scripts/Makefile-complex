@@ -1,0 +1,8 @@
+# -*- makefile-gmake -*-
+
+__COMPLEX := $(shell echo '%:include <complex.h>' | ${CC} ${CFLAGS} -xc -c -o /dev/null - 2> /dev/null || echo "NO")
+
+ifeq (${__COMPLEX},NO)
+${warning header complex.h is not supported}
+CFLAGS += -DP00_NO_HAVE_COMPLEX_H
+endif
