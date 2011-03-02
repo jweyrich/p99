@@ -39,9 +39,12 @@ P00_C99_DEFARG_DOCU(longjmp, void, jmp_buf env, int val)
 /** @param jmp_buf is required
  ** @param val defaults to 1
  **/
-#define longjmp(...) P99_CALL_DEFARG(longjmp, 2, __VA_ARGS__)
-#define longjmp_defarg_1() 1
-
+#ifdef longjmp
+# pragma message "warning longjmp defined as a macro, overwriting"
+# undef longjmp
+#endif
+# define longjmp(...) P99_CALL_DEFARG(longjmp, 2, __VA_ARGS__)
+# define longjmp_defarg_1() 1
 
 
 /**
