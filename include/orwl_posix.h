@@ -29,10 +29,9 @@
 # define _BSD_SOURCE 1
 #endif
 
-#ifdef __gnu_linux__
-#include <features.h>
-#endif
-
+/* This must come first such that we include the necessary feature
+   macros */
+#include <unistd.h>
 /*
   semaphores are an extension and must not be provided so we include
   them via our own file, if available. This then includes pthread.h
