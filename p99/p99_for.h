@@ -384,6 +384,14 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_AARG, 2)
 
 #endif
 
+/**
+ ** @example test-p99-pow.c
+ ** @brief an example for computations with large matrices
+ **
+ ** This uses the VLA array passing macros, ::P99_DO and ::P99_PARALLEL_DO
+ **/
+
+
 /** @}
  **/
 
