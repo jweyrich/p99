@@ -102,9 +102,9 @@ int main(int argc, char **argv) {
     if (!pid)
       P99_UNWIND_PROTECT {
         if (background) {
-          fclose(stdin);
-          if (block)
-            stdin = fdopen(fd[0], "r");
+          int fdin = fileno(stdin);
+          if (block) dup2(fdin, fd[0]);
+          else close(fdin);
         }
         orwl_server srv;
         orwl_start(&srv, con, len, address);
