@@ -15,15 +15,15 @@
 #include "p99_map.h"
 #include "p99_map.h"
 #include "p99_c99_default.h"
-#include <omp.h>
 
-enum { A = 3 };
-
-size_t A0 = P99_IPOW(0, A);
-size_t A1 = P99_IPOW(1, A);
-size_t A2 = P99_IPOW(2, A);
-size_t A3 = P99_IPOW(3, A);
-size_t A4 = P99_IPOW(4, A);
+#ifdef _OPENMP
+# include <omp.h>
+#else
+/* If this is not compiled with OpenMP support, just ignore the two
+   functions that we borrowed from them. */
+#define omp_get_wtime(...) 0.0;
+#define omp_set_num_threads(...) P99_NOP
+#endif
 
 /* Print a 2D double array, the (more or less) hidden function. */
 /* The array is called A, the length in the two dimensions are called
@@ -137,6 +137,50 @@ enum {
   kstep = (blocksize - istep*jstep)/(istep + jstep)
 };
 
+/* Compute the product of two 2D matrices. The (more or less) hidden
+   function. */
+/* The input matrices are called A and B, the length in the two
+   dimensions are called na0, na1, nb0 and nb1, respectively. */
+/* The matrix C receives the result. */
+/* This function is not declared as inline. It will be way to big that
+   this would make sense. */
+void
+multFunc(P99_AARG(double, C, 2, nc),
+         P99_AARG(double const, A, 2, na),
+         P99_AARG(double const, B, 2, nb));
+
+/* The user interface. It receives just the three pointers to
+   the matrix as arguments. */
+#define mult(CRR, ARR, BRR)                     \
+multFunc(P99_ACALL(CRR, 2, double),             \
+         P99_ACALL(ARR, 2, double const),       \
+         P99_ACALL(BRR, 2, double const))
+
+/* All above would typically be written in a header (.h) file ***/
+/****************************************************************/
+/*************** end of interface section ***********************/
+/****************************************************************/
+/* From here on are only things that concern the implementation */
+/* This starts with instantiations of for the inline function. **/
+
+P99_INSTANTIATE(void, zeroOutFunc,
+                P99_AARG(double, C, 2));
+
+P99_INSTANTIATE(double, dotproductFunc,
+                double,
+                P99_AARG(double const, A, 1),
+                P99_AARG(double const, B, 1));
+
+P99_INSTANTIATE(void*, transposeFunc,
+                P99_AARG(double const, B, 2),
+                void*);
+
+
+P99_INSTANTIATE(void, multFunc,
+                P99_AARG(double, C, 2),
+                P99_AARG(double const, A, 2),
+                P99_AARG(double const, B, 2));
+
 /* Matrix multiplication has three nested for loops. One for each
    dimension and on for the dotproduct between the rows of A and the
    columns of B. We split all these loops in two. One with a longer
@@ -170,12 +214,7 @@ P99_DO(size_t, i0, ISTART, ILEN) {                                      \
   }                                                                     \
 }
 
-/* Compute the product of two 2D matrices. The (more or less) hidden
-   function. */
-/* The input matrices are called A and B, the length in the two
-   dimensions are called na0, na1, nb0 and nb1, respectively. */
-/* The matrix C receives the result. */
-inline
+/* The implementation of the function itself. */
 void
 multFunc(P99_AARG(double, C, 2, nc),
          P99_AARG(double const, A, 2, na),
@@ -254,26 +293,6 @@ multFunc(P99_AARG(double, C, 2, nc),
   free(BS);
 }
 
-#define mult(CRR, ARR, BRR) multFunc(P99_ACALL(CRR, 2, double), P99_ACALL(ARR, 2, double const), P99_ACALL(BRR, 2, double const))
-
-P99_INSTANTIATE(void, zeroOutFunc,
-                P99_AARG(double, C, 2));
-
-P99_INSTANTIATE(double, dotproductFunc,
-                double,
-                P99_AARG(double const, A, 1),
-                P99_AARG(double const, B, 1));
-
-P99_INSTANTIATE(void*, transposeFunc,
-                P99_AARG(double const, B, 2),
-                void*);
-
-
-P99_INSTANTIATE(void, multFunc,
-                P99_AARG(double, C, 2),
-                P99_AARG(double const, A, 2),
-                P99_AARG(double const, B, 2));
-
 int main(int argc, char*argv[]) {
   size_t p = 1;
   if (argc > 4)
@@ -329,3 +348,14 @@ int main(int argc, char*argv[]) {
   free(BR);
   free(CR);
 }
+
+/* follow just some arbitrary compile tests */
+
+enum { A = 3 };
+
+size_t A0 = P99_IPOW(0, A);
+size_t A1 = P99_IPOW(1, A);
+size_t A2 = P99_IPOW(2, A);
+size_t A3 = P99_IPOW(3, A);
+size_t A4 = P99_IPOW(4, A);
+
