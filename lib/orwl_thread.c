@@ -121,6 +121,7 @@ DEFINE_ONCE(pthread_rwlock_t) {
 }
 
 DEFINE_ONCE(orwl_thread) {
+  INIT_ONCE(orwl_gettime);
   INIT_ONCE(pthread_mutex_t);
   INIT_ONCE(pthread_cond_t);
   INIT_ONCE(pthread_rwlock_t);

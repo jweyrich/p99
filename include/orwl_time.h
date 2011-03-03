@@ -15,6 +15,7 @@
 # define   	ORWL_TIME_H_
 
 #include "orwl_posix.h"
+#include "orwl_once.h"
 
 /**
  ** @file "orwl_time.h"
@@ -157,7 +158,19 @@ struct timeval timespec2timeval(struct timespec t) {
  ** If that is not available fall back to microsecond precision.
  ** @see orwl_time.h for more information about time values and functions.
  **/
+#ifdef CLOCK_REALTIME
+inline
+struct timespec orwl_gettime(void) {
+  struct timespec t;
+  clock_gettime(CLOCK_REALTIME, &t);
+  return t;
+}
+#else
 struct timespec orwl_gettime(void);
+#endif
+
+DECLARE_ONCE(orwl_gettime);
+
 
 /**
  ** @brief Get the micro-seconds since epoch.
@@ -165,8 +178,7 @@ struct timespec orwl_gettime(void);
  **/
 inline
 uint64_t useconds(void) {
-  struct timespec t;
-  clock_gettime(CLOCK_REALTIME, &t);
+  struct timespec t = orwl_gettime();
   return timespec2useconds(t);
 }
 
@@ -176,11 +188,9 @@ uint64_t useconds(void) {
  **/
 inline
 double seconds(void) {
-  struct timespec t;
-  clock_gettime(CLOCK_REALTIME, &t);
+  struct timespec t = orwl_gettime();
   return timespec2seconds(t);
 }
-
 
 /**
  ** @brief Let the calling thread rest for @a t seconds

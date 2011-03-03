@@ -29,14 +29,30 @@ P99_INSTANTIATE(struct timespec, timeval2timespec, struct timeval);
 P99_INSTANTIATE(double, useconds2seconds, uint64_t);
 P99_INSTANTIATE(uint64_t, seconds2useconds, double t);
 
-P99_INSTANTIATE(struct timespec, orwl_gettime);
 P99_INSTANTIATE(uint64_t, useconds);
 P99_INSTANTIATE(double, seconds);
 
-#if defined(_POSIX_C_SOURCE) && (_POSIX_C_SOURCE >= 199309L)
+#if defined(CLOCK_REALTIME)
+P99_INSTANTIATE(struct timespec, orwl_gettime);
+DEFINE_ONCE(orwl_gettime) {
+}
+#elif defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__)
+#include <mach/mach_time.h>
+static double orwl_timebase = 0.0;
+static uint64_t orwl_timestart = 0;
+
+DEFINE_ONCE(orwl_gettime) {
+  mach_timebase_info_data_t tb = P99_INIT;
+  mach_timebase_info(&tb);
+  orwl_timebase = tb.numer;
+  orwl_timebase /= tb.denom;
+  orwl_timestart = mach_absolute_time();
+}
 struct timespec orwl_gettime(void) {
   struct timespec t;
-  clock_gettime(CLOCK_REALTIME, &t);
+  double diff = (mach_absolute_time() - orwl_timestart) * orwl_timebase;
+  t.tv_sec = diff * 1E-9;
+  t.tv_nsec = diff - (t.tv_sec * UINT64_C(1000000000));
   return t;
 }
 #else
@@ -45,6 +61,8 @@ struct timespec orwl_gettime(void) {
   struct timeval t;
   gettimeofday(&t, P99_0(struct timezone*));
   return timeval2timespec(t);
+}
+DEFINE_ONCE(orwl_gettime) {
 }
 #endif
 
