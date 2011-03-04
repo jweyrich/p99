@@ -16,7 +16,7 @@
 #include "orwl_server.h"
 #include "orwl_auth_sock_functions.h"
 
-DEFINE_ONCE(orwl_mirror, orwl_wq, orwl_rand) {
+DEFINE_ONCE(orwl_mirror, orwl_wq, orwl_rand, orwl_handle) {
   // empty
 }
 

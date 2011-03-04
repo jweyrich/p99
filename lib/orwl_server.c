@@ -18,12 +18,14 @@
 #include "orwl_header.h"
 #include "orwl_socket.h"
 #include "orwl_wait_queue.h"
+#include "orwl_remote_queue.h"
 
 DEFINE_ONCE(orwl_server,
             orwl_thread,
             auth_sock,
             orwl_wq,
             orwl_wh,
+            orwl_handle,
             orwl_rand) {
 }
 

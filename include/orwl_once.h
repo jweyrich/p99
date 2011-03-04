@@ -22,6 +22,7 @@ struct orwl__once_cont {
   void (*const init)(void);
   bool volatile cond;
   pthread_mutex_t mut;
+  pthread_t id;
 };
 
 
@@ -141,12 +142,16 @@ MUTUAL_EXCLUDE((*orwl__crit))
  **/
 inline
 void orwl_once_init(orwl__once_cont* o, char const name[]) {
-  MUTUAL_EXCLUDE(o->mut)
-    if (!o->cond) {
-      fprintf(stderr, "Initializing %s for once\n", name);
-      o->init();
-      o->cond = true;
-    }
+  if (pthread_equal(o->id, pthread_self())) {
+    fprintf(stderr, "Initializing %s has a cycle!\n", name);
+  } else
+    MUTUAL_EXCLUDE(o->mut)
+      if (!o->cond) {
+        fprintf(stderr, "Initializing %s for once\n", name);
+        o->id = pthread_self();
+        o->init();
+        o->cond = true;
+      }
 }
 
 /**
