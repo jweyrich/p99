@@ -37,12 +37,14 @@ my $diff = 1;
 my $metoo = 0;
 my $beauty = "astyle";
 my $copyright = "Copyright (c)";
+my $authorsFile;
 my $licenceFile;
 my @beautyArgs = ("-aNoO", "-s2", "--convert-tabs");
 my $result = GetOptions ("ifile=s"      => \${ifile},      # string
                          "ofile=s"       => \${ofile},      # string
                          "copyright=s"   => \${copyright},  # string
                          "licenceFile=s" => \${licenceFile},# string
+                         "authorsFile=s" => \${authorsFile},# string
                          "spaces=i"      => \${spaces},     # integer
                          "type=s"        => \${type},       # string
                          "metoo!"        => \${metoo},      # flag
@@ -75,9 +77,11 @@ $spaces = " " x ${spaces};
 my ($scriptdir, $execname) = ${PROGRAM_NAME} =~ m{^(.*/)?(.+)$}o;
 $scriptdir = "." if (!defined($scriptdir) || ${scriptdir} eq "");
 
-my $authorsFile = "${scriptdir}/AUTHORS.txt";
+$authorsFile = "${scriptdir}/AUTHORS.txt"
+    if (!defined($authorsFile));
+print STDERR "reading $authorsFile\n";
 my %names = slurp { m{^(\S+)\s+(.*?)\s*$}o } ${authorsFile};
-
+print STDERR "$authorsFile: $_\n" foreach (keys %names);
 my %fnames = map { (fullname($_), $_) } values(%names);
 
 foreach my $name (keys(%fnames)) {
@@ -711,8 +715,9 @@ sub slurp (&;@) {
         $fn .= "|";
       }
     }
-    open(my $fh, "${fn}")
-      or next FILES;
+    open(my $fh, "${fn}") or die "cannot open ${fn}";
+        #or next FILES;
+    print STDERR "file $fn\n";
     push(@ret, map(&{${re}}, <$fh>));
     close($fh);
   }
@@ -723,7 +728,7 @@ sub slurp (&;@) {
 
 sub fullname($) {
     my $fname = shift;
-    $fname =~ s{^([[:alnum:]][- _[:alnum:][:space:]]*[[:alnum:]]).*}{$1}o;
+    $fname =~ s{^([[:alnum:]][-_[:alnum:][:space:]]*[[:alnum:]]).*}{$1}o;
     $fname;
 }
 
