@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */

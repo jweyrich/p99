@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -151,9 +151,9 @@ multFunc(P99_AARG(double, C, 2, nc),
 
 /* The user interface. It receives just the three pointers to
    the matrix as arguments. */
-#define mult(CRR, ARR, BRR)                     \
-multFunc(P99_ACALL(CRR, 2, double),             \
-         P99_ACALL(ARR, 2, double const),       \
+#define mult(CRR, ARR, BRR)                                    \
+multFunc(P99_ACALL(CRR, 2, double),                            \
+         P99_ACALL(ARR, 2, double const),                      \
          P99_ACALL(BRR, 2, double const))
 
 /* All above would typically be written in a header (.h) file ***/
@@ -195,23 +195,23 @@ P99_INSTANTIATE(void, multFunc,
    ILEN, JLEN and KLEN are the length of the steps in the 3
    dimensions. Generally they will be equal to istep, jstep and kstep,
    respectively, but will be less than that for the last iteration. */
-#define INNER_CASE(C, A, B, ISTART, ILEN, JSTART, JLEN, KSTART, KLEN)   \
-/* The local type that handles a partial line. Two of these will be     \
-   created below and then be used for the dot product. */               \
-typedef double const kLineFrag[KLEN];                                   \
-/* The local type for the partial line in the result matrix C. */       \
-typedef double cLine[JLEN];                                             \
-/* None of the loops are parallelized at this level. All threads        \
-   should have enough work to do such that they may reuse their         \
-   caches well. */                                                      \
-P99_DO(size_t, i0, ISTART, ILEN) {                                      \
-  register kLineFrag* AF = (kLineFrag*)&((*A)[i0][KSTART]);             \
-  register cLine*restrict CL = (cLine*)&(*C)[i0][JSTART];               \
-  P99_DO(size_t, j0, JSTART, JLEN) {                                    \
-    register kLineFrag* BF = (kLineFrag*)&((*B)[j0][KSTART]);           \
-    register double*restrict c = &(*CL)[j0-JSTART];                     \
-    *c = dotproduct(AF, BF, *c);                                        \
-  }                                                                     \
+#define INNER_CASE(C, A, B, ISTART, ILEN, JSTART, JLEN, KSTART, KLEN) \
+/* The local type that handles a partial line. Two of these will be   \
+   created below and then be used for the dot product. */             \
+typedef double const kLineFrag[KLEN];                                 \
+/* The local type for the partial line in the result matrix C. */     \
+typedef double cLine[JLEN];                                           \
+/* None of the loops are parallelized at this level. All threads      \
+   should have enough work to do such that they may reuse their       \
+   caches well. */                                                    \
+P99_DO(size_t, i0, ISTART, ILEN) {                                    \
+  register kLineFrag* AF = (kLineFrag*)&((*A)[i0][KSTART]);           \
+  register cLine*restrict CL = (cLine*)&(*C)[i0][JSTART];             \
+  P99_DO(size_t, j0, JSTART, JLEN) {                                  \
+    register kLineFrag* BF = (kLineFrag*)&((*B)[j0][KSTART]);         \
+    register double*restrict c = &(*CL)[j0-JSTART];                   \
+    *c = dotproduct(AF, BF, *c);                                      \
+  }                                                                   \
 }
 
 /* The implementation of the function itself. */

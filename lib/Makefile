@@ -64,7 +64,8 @@ CFLAGS  += -fPIC $(OBJOPT) $(IPATH)
 LDFLAGS += $(EXEOPT) $(LPATH)
 COPY = "all rights reserved, "
 LICENSE = SHORTLICENCE-closed.txt
-TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile
+AUTH = ../scripts/AUTHORS.txt
+TIDY = ../../parxxl/scripts/findSvnAuthors --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
 
 include ../scripts/Makefile-DEFINE
 include ../scripts/Makefile-__thread

@@ -2,7 +2,8 @@
 
 COPY = "all rights reserved, "
 LICENSE = SHORTLICENCE-closed.txt
-TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile
+AUTH = ../scripts/AUTHORS.txt
+TIDY = ../../parxxl/scripts/findSvnAuthors --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
 
 TAGS : *.h
 	etags *.h

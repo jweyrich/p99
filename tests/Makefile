@@ -58,7 +58,8 @@ EXEOPT  += -lorwl ${OPT}
 LPATH   += -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR}
 COPY = "all rights reserved, "
 LICENSE = SHORTLICENCE-closed.txt
-TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile
+AUTH = ../scripts/AUTHORS.txt
+TIDY = ../../parxxl/scripts/findSvnAuthors --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
 
 ifneq (${POSIX_SEMAPHORES}, -1L)
 LDFLAGS += -lrt
