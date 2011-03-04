@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -15,6 +15,14 @@
 #include "orwl_socket.h"
 #include "orwl_server.h"
 #include "orwl_auth_sock_functions.h"
+
+DEFINE_ONCE(orwl_mirror, orwl_wq, orwl_rand) {
+  // empty
+}
+
+DEFINE_ONCE(orwl_handle, orwl_mirror, orwl_wh) {
+  // empty
+}
 
 P99_INSTANTIATE(orwl_mirror*, orwl_mirror_init, orwl_mirror*, orwl_endpoint, orwl_endpoint);
 P99_INSTANTIATE(void, orwl_mirror_destroy, orwl_mirror*);

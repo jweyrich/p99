@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -15,6 +15,7 @@
 # define   	ORWL_REGISTER_H_
 
 #include "orwl_int.h"
+#include "orwl_once.h"
 #include "p99_enum.h"
 #include "p99_id.h"
 #include "orwl_document.h"
@@ -192,7 +193,7 @@ DEFINE_ORWL_DOMAIN(ORWL_FTAB(T),                                    \
 DECLARE_ORWL_DOMAIN(orwl_types);
 void orwl_types_init(void);
 
-#define ORWL_REGISTER_TYPE(T) ORWL_REGISTER_DATA(ORWL_FTAB(T), orwl_types)
+#define ORWL_REGISTER_TYPE(_0, T, _1) ORWL_REGISTER_DATA(ORWL_FTAB(T), orwl_types)
 
 /**
  ** @brief Register all types that are to be accessible through the
@@ -200,16 +201,20 @@ void orwl_types_init(void);
  **
  ** This should look something like
  ** @code
- ** DEFINE_ORWL_TYPES(ORWL_REGISTER_TYPE(orwl_wq),
- **                   ORWL_REGISTER_TYPE(orwl_wh));
+ ** DEFINE_ORWL_TYPES(orwl_wq, orwl_wh);
  ** @endcode
  ** The effect of this is that all the types mentioned here get a
  ** unique ID that makes them identifiable remotely.
  ** @see DECLARE_ORWL_TYPE_DYNAMIC and ::DEFINE_ORWL_TYPE_DYNAMIC on
  ** how to prepare a type to be visible through this system.
  **/
-#define DEFINE_ORWL_TYPES(...)                                 \
-  DEFINE_ORWL_DOMAIN(ORWL_FTAB(orwl_types), __VA_ARGS__)
+#define DEFINE_ORWL_TYPES(...)                                                                \
+DEFINE_ORWL_DOMAIN(ORWL_FTAB(orwl_types),                                                     \
+                   P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, ORWL_REGISTER_TYPE, __VA_ARGS__) \
+                   );                                                                         \
+DEFINE_ONCE(orwl_types, __VA_ARGS__) { }
+
+DECLARE_ONCE(orwl_types);
 
 DECLARE_ORWL_DOMAIN(ORWL_FTAB(orwl_types));
 

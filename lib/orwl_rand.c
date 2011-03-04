@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -52,14 +52,13 @@ static uint64_t secret = P99_0(uint64_t);
 
 static char const ENVVAR[] = "ORWL_SECRET";
 
-DEFINE_ONCE(secret) {
+DEFINE_ONCE(orwl_rand, seed_get) {
   char const *str = getenv(ENVVAR);
   if (str) secret = strtou64(str);
 }
 
 uint64_t orwl_challenge(uint64_t a) {
   uint64_t ret = 0;
-  INIT_ONCE(secret);
   if (secret) {
     for (; !ret; ++a)
       ret = orwl_mix(a, secret);

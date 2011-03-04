@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -24,9 +24,11 @@
 
 DECLARE_ORWL_DOMAIN(ORWL_FTAB(orwl_state));
 
-DEFINE_ORWL_TYPES(ORWL_REGISTER_TYPE(orwl_state),
-                  ORWL_REGISTER_TYPE(orwl_wq),
-                  ORWL_REGISTER_TYPE(orwl_wh),
-                  ORWL_REGISTER_TYPE(auth_sock)
+DEFINE_ONCE(orwl_state) { }
+
+DEFINE_ORWL_TYPES(orwl_state,
+                  orwl_wq,
+                  orwl_wh,
+                  auth_sock
                   );
 

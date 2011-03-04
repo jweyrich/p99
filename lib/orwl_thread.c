@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -120,11 +120,11 @@ DEFINE_ONCE(pthread_rwlock_t) {
   pthread_rwlockattr_setpshared(&pthread_rwlockattr_thread_, PTHREAD_PROCESS_PRIVATE);
 }
 
-DEFINE_ONCE(orwl_thread) {
-  INIT_ONCE(orwl_gettime);
-  INIT_ONCE(pthread_mutex_t);
-  INIT_ONCE(pthread_cond_t);
-  INIT_ONCE(pthread_rwlock_t);
+DEFINE_ONCE(orwl_thread,
+            orwl_gettime,
+            pthread_mutex_t,
+            pthread_cond_t,
+            pthread_rwlock_t) {
   pthread_attr_init(&pthread_attr_detached_);
   pthread_attr_setdetachstate(&pthread_attr_detached_, PTHREAD_CREATE_DETACHED);
   pthread_attr_init(&pthread_attr_joinable_);
@@ -134,7 +134,6 @@ DEFINE_ONCE(orwl_thread) {
 int orwl_pthread_create_joinable(pthread_t *restrict thread,
                                  start_routine_t start_routine,
                                  void *restrict arg) {
-  INIT_ONCE(orwl_thread);
   return pthread_create(thread, pthread_attr_joinable, start_routine, arg);
 }
 
@@ -204,7 +203,6 @@ void *detached_wrapper(void *routine_arg) {
 
 int orwl_pthread_create_detached(start_routine_t start_routine,
                                  void *restrict arg) {
-  INIT_ONCE(orwl_thread);
   /* Be sure to allocate the pair on the heap to leave full control
      to detached_wrapper() of what to do with it. */
   orwl__routine_arg *Routine_Arg = P99_NEW(orwl__routine_arg, start_routine, arg);
@@ -220,7 +218,6 @@ int orwl_pthread_create_detached(start_routine_t start_routine,
 }
 
 void orwl_pthread_wait_detached(void) {
-  INIT_ONCE(orwl_thread);
   orwl_count_wait(&counter);
 }
 

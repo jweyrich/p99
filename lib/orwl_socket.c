@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -103,6 +103,11 @@ in_addr_t orwl_inet_addr(char const *name) {
   if (res) freeaddrinfo(res);
   return ret;
 }
+
+DEFINE_ONCE(auth_sock,
+            orwl_rand) {
+}
+
 
 P99_INSTANTIATE(auth_sock*, auth_sock_init, auth_sock *,
                                   int,

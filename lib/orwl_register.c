@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -14,6 +14,7 @@
 #include "orwl_register.h"
 #include "orwl_macro.h"
 #include "orwl_once.h"
+#include "orwl_thread.h"
 
 static
 pthread_mutex_t orwl__reg_mut = PTHREAD_MUTEX_INITIALIZER;
@@ -44,4 +45,5 @@ void orwl_types_init(void) {
     if (!R) break;
     orwl_register_init(*(orwl_register**)R);
   }
+  INIT_ONCE(orwl_types);
 }

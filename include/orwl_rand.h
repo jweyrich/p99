@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -17,6 +17,8 @@
 #include "orwl_thread.h"
 #include P99_ADVANCE_ID
 #include "p99_enum.h"
+
+DECLARE_ONCE(orwl_rand);
 
 
 P99_DECLARE_STRUCT(rand48_t);

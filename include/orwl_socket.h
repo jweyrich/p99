@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -134,6 +134,8 @@ struct auth_sock {
                              the call */
   uint64_t remoteorder;   /*!< the byte order on the remote host */
 };
+
+DECLARE_ONCE(auth_sock);
 
 #ifndef DOXYGEN
 inline

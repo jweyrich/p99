@@ -1,8 +1,8 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -19,13 +19,19 @@
 #include "orwl_socket.h"
 #include "orwl_wait_queue.h"
 
+DEFINE_ONCE(orwl_server,
+            orwl_thread,
+            auth_sock,
+            orwl_wq,
+            orwl_wh,
+            orwl_rand) {
+}
+
 orwl_server* orwl_server_init(orwl_server *serv,
                               size_t max_connections,
                               size_t max_queues,
                               char const* endp) {
-  INIT_ONCE(orwl_thread);
-  INIT_ONCE(orwl_wq);
-  INIT_ONCE(orwl_wh);
+  INIT_ONCE(orwl_server);
   if (serv) {
     *serv = (orwl_server) {
       .fd_listen = -1,
@@ -95,12 +101,14 @@ DEFINE_THREAD(orwl_server) {
 
       if (P99_UNLIKELY(bind(Arg->fd_listen, (struct sockaddr*) &addr, sizeof(addr)))) {
         errorstr = "orwl_server could not bind";
+        if (!errno) errno = EINVAL;
         P99_UNWIND_RETURN;
       }
       /* If the port was not yet specified find and store it. */
       if (!addr.sin_port) {
         if (P99_UNLIKELY(getsockname(Arg->fd_listen, (struct sockaddr*)&addr, &len))) {
           errorstr = "orwl_server could not find listening address";
+          if (!errno) errno = EINVAL;
           P99_UNWIND_RETURN;
         }
         port_t_init(&Arg->host.ep.port, addr.sin_port);
@@ -109,6 +117,7 @@ DEFINE_THREAD(orwl_server) {
       report(1, "server listening at %s", server_name);
       if (P99_UNLIKELY(listen(Arg->fd_listen, Arg->max_connections))) {
         errorstr = "orwl_server could not listen";
+        if (!errno) errno = EINVAL;
         P99_UNWIND_RETURN;
       }
       for (uint64_t t = 1; Arg->fd_listen != -1; ++t) {
@@ -121,6 +130,7 @@ DEFINE_THREAD(orwl_server) {
 
         if (P99_UNLIKELY(!repl)) {
           errorstr = "orwl_server cannot serve without a secret";
+          if (!errno) errno = EINVAL;
           P99_UNWIND_RETURN;
         }
         int fd = -1;
@@ -164,9 +174,16 @@ DEFINE_THREAD(orwl_server) {
       }
     P99_PROTECT:
       report(1, "\n");
-      perror(errorstr ? errorstr : "orwl_server cannot proceed");
-      errno = 0;
-      if (Arg->fd_listen != -1) close(Arg->fd_listen);
+      if (!errorstr) errorstr = "orwl_server finished";
+      if (errno) {
+        perror(errorstr);
+        errno = 0;
+      } else fprintf(stderr, "%s.\n", errorstr);
+      if (Arg->fd_listen != -1) {
+        close(Arg->fd_listen);
+        Arg->fd_listen = -1;
+      }
+      Arg->host.ep.port.p = P99_TMAX(in_port_t);
     }
   }
 }

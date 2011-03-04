@@ -1,8 +1,8 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -54,6 +54,8 @@ struct orwl_mirror {
   orwl_wq local;        /**< the local queue that interfaces the
                            remote */
 };
+
+DECLARE_ONCE(orwl_mirror);
 
 /**
  ** @memberof orwl_mirror
@@ -177,6 +179,8 @@ struct orwl_handle {
    **/
   uint64_t svrID;
 };
+
+DECLARE_ONCE(orwl_handle);
 
 #define ORWL_HANDLE_INITIALIZER { .rq = 0, .wh = 0, .svrID = P99_0(uint64_t) }
 

@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -36,15 +36,47 @@ struct orwl__once_cont {
 #define DECLARE_ONCE(T)                                        \
 extern struct orwl__once_cont P99_PASTE3(orwl__, T, _once)
 
+#ifdef DOXYGEN
 /**
- ** @brief Define the function that will be exactly called once by the
- ** macro INIT_ONCE().
+ ** @def DEFINE_ONCE
+ ** @brief Define the function that will be exactly called once by
+ ** <code>INIT_ONCE(NAME)</code>.
  **
- ** The function has a prototype of <code>void (*name)(void)</code>.
+ ** The function has a prototype of <code>void
+ ** (*someFunctionName)(void)</code>.
  **
+ ** @a NAME can be any valid identifier, the real function name will
+ ** be mangled such that this will not clash with an existing one.
+ **
+ ** The ... list (optional) can be used to give a list of dependencies
+ ** from other ::INIT_ONCE functions.
+ ** @code
+ ** DEFINE_ONCE(toto) {
+ **  // initialize some share ressource
+ ** }
+ **
+ ** DEFINE_ONCE(tutu, toto) {
+ **   // empty
+ ** }
+ ** @endcode
+ **
+ ** This will ensure that <code>INIT_ONCE(toto)</code> is always
+ ** triggered by <code>INIT_ONCE(tutu)</code> and run before we run
+ ** the function of @c tutu itself. As in this case many functions
+ ** will be empty and serve just to ensure that all dynamic
+ ** dependencies are initialized in the right order.
  ** @see DECLARE_ONCE
+ ** @see INIT_ONCE
  **/
-#define DEFINE_ONCE(T)                                         \
+#define DEFINE_ONCE(NAME, ...)
+#else
+#define DEFINE_ONCE(...)                                       \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
+ (P00_DEFINE_ONCE_0(__VA_ARGS__))                              \
+ (P00_DEFINE_ONCE_1(__VA_ARGS__))
+#endif
+
+#define P00_DEFINE_ONCE_0(T)                                   \
 static void P99_PASTE3(orwl__, T, _once_init)(void);           \
 struct orwl__once_cont P99_PASTE3(orwl__, T, _once) = {        \
   .mut = PTHREAD_MUTEX_INITIALIZER,                            \
@@ -52,6 +84,22 @@ struct orwl__once_cont P99_PASTE3(orwl__, T, _once) = {        \
   .init = P99_PASTE3(orwl__, T, _once_init),                   \
 };                                                             \
 static void P99_PASTE3(orwl__, T, _once_init)(void)
+
+#define P00_ONCE_INIT(_0, T, _2) INIT_ONCE(T)
+
+#define P00_DEFINE_ONCE_1(T, ...)                                        \
+static void P99_PASTE3(orwl__, T, _once_init0)(void);                    \
+static void P99_PASTE3(orwl__, T, _once_init)(void) {                    \
+  P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_ONCE_INIT, __VA_ARGS__); \
+  P99_PASTE3(orwl__, T, _once_init0)();                                  \
+ }                                                                       \
+struct orwl__once_cont P99_PASTE3(orwl__, T, _once) = {                  \
+  .mut = PTHREAD_MUTEX_INITIALIZER,                                      \
+  .cond = false,                                                         \
+  .init = P99_PASTE3(orwl__, T, _once_init),                             \
+};                                                                       \
+static void P99_PASTE3(orwl__, T, _once_init0)(void)
+
 
 /**
  ** @brief Protect the following block or statement with @c
@@ -86,6 +134,11 @@ P00_BLK_START                                                               \
 P00_BLK_DECL_STATIC(pthread_mutex_t, orwl__crit, PTHREAD_MUTEX_INITIALIZER) \
 MUTUAL_EXCLUDE((*orwl__crit))
 
+/**
+ ** @brief Utility function used by ::INIT_ONCE.
+ **
+ ** You should not use this directly.
+ **/
 inline
 void orwl_once_init(orwl__once_cont* o, char const name[]) {
   MUTUAL_EXCLUDE(o->mut)
@@ -98,59 +151,19 @@ void orwl_once_init(orwl__once_cont* o, char const name[]) {
 
 /**
  ** @brief Ensure that the function that was defined with
- ** DEFINE_ONCE() has been called exactly once before further
+ ** ::DEFINE_ONCE has been called exactly once before further
  ** proceeding.
- **/
-#define INIT_ONCE(T)                                            \
-if (P99_LIKELY(P99_PASTE3(orwl__, T, _once).cond))              \
-  P99_NOP;                                                      \
- else orwl_once_init(&P99_PASTE3(orwl__, T, _once), # T);
-
-/**
- ** @def DECLARE_ONCE_STATIC
- ** @brief Almost the same as ::DECLARE_ONCE, with the difference that
- ** the once-function might be called at any point before a call to
- ** ::INIT_ONCE_STATIC, even if no such call is issued at all
  **
+ ** Such a call could be place at the beginning of a user function to
+ ** ensure that a shared resource is always initialized before its
+ ** use. A better strategy though would be to call ::INIT_ONCE from @c
+ ** main, e.g., before any threads of the application are started.
  ** @see DECLARE_ONCE
- ** @see DEFINE_ONCE_STATIC
- ** @see INIT_ONCE_STATIC
- **/
-
-
-/**
- ** @def DEFINE_ONCE_STATIC
- ** @brief Almost the same as ::DEFINE_ONCE, with the difference that
- ** the once-function might be called at any point before a call to
- ** ::INIT_ONCE_STATIC, even if no such call is issued at all
- **
- ** @see DECLARE_ONCE_STATIC
  ** @see DEFINE_ONCE
- ** @see INIT_ONCE_STATIC
  **/
-
-/**
- ** @def INIT_ONCE_STATIC
- ** @brief Almost the same as ::INIT_ONCE, with the difference that
- ** the once-function might be called at any point before a call to
- ** ::INIT_ONCE_STATIC, even if no such call is issued at all
- **
- ** @see DECLARE_ONCE_STATIC
- ** @see DEFINE_ONCE_STATIC
- ** @see INIT_ONCE
- **/
-
-
-#if (defined(__GNUC__) && (__GNUC__ > 3))
-# define DEFINE_ONCE_STATIC(NAME)                              \
-__attribute__((constructor))                                   \
-DEFINE_ONCE(NAME)
-#else
-# define DEFINE_ONCE_STATIC(NAME) DEFINE_ONCE(NAME)
-#endif
-
-# define DECLARE_ONCE_STATIC(NAME) DECLARE_ONCE(NAME)
-# define INIT_ONCE_STATIC(NAME) INIT_ONCE(NAME)
-
+#define INIT_ONCE(T)                                           \
+if (P99_LIKELY(P99_PASTE3(orwl__, T, _once).cond))             \
+  P99_NOP;                                                     \
+ else orwl_once_init(&P99_PASTE3(orwl__, T, _once), # T);
 
 #endif 	    /* !ORWL_ONCE_H_ */

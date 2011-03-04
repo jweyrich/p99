@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -16,13 +16,11 @@
 
 P99_DEFINE_ENUM(orwl_state);
 
-DEFINE_ONCE(orwl_wq) {
-  INIT_ONCE(orwl_thread);
+DEFINE_ONCE(orwl_wq, orwl_thread) {
 }
 
 orwl_wq* orwl_wq_init(orwl_wq *wq,
                                 const pthread_mutexattr_t *attr) {
-  INIT_ONCE(orwl_wq);
   if (!wq) return 0;
   *wq = (orwl_wq const)ORWL_WQ_INITIALIZER;
   if (attr) pthread_mutex_init(&wq->mut, attr);
@@ -51,13 +49,12 @@ void orwl_wq_destroy(orwl_wq *wq) {
 
 DEFINE_NEW_DELETE(orwl_wq);
 
-DEFINE_ONCE(orwl_wh) {
-  INIT_ONCE(orwl_thread);
+DEFINE_ONCE(orwl_wh,
+            orwl_thread) {
 }
 
 orwl_wh* orwl_wh_init(orwl_wh *wh,
                   const pthread_condattr_t *attr) {
-  INIT_ONCE(orwl_wh);
   if (!wh) return 0;
   *wh = P99_LVAL(orwl_wh const,
                  .cond = PTHREAD_COND_INITIALIZER,

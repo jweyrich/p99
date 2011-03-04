@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -372,6 +372,7 @@ char const* pthread2str(char *buf, pthread_t id) {
 #if defined(__GNUC__) && !defined(__GNUC_NO_TLS__)
 
 #define DECLARE_THREAD_VAR(T, NAME)                                                          \
+DECLARE_ONCE(NAME);                                                                          \
 T* P99_PASTE2(NAME, _init)(void);                                                            \
 /* guarantee that the thread variable is properly initialized */                             \
 /* var is first in the struct to have a quick return on the fast path */                     \
@@ -397,6 +398,9 @@ P99_MACRO_END(DECLARE_THREAD_VAR)
 #define DEFINE_THREAD_VAR(T, NAME)                                                  \
 __thread P99_PASTE2(NAME, _type) P99_PASTE2(NAME, _var) = { .initialized = false }; \
  P99_INSTANTIATE(void, P99_PASTE2(NAME, _clear));                                   \
+DEFINE_ONCE(NAME)              {                                                    \
+  /* empty */                                                                       \
+}                                                                                   \
 T* P99_PASTE2(NAME, _init)(void) {                                                  \
   register P99_PASTE2(NAME, _type)*const ret = &P99_PASTE2(NAME, _var);             \
   register bool*const initialized = &ret->initialized;                              \
@@ -413,36 +417,34 @@ P99_INSTANTIATE(T*, NAME)
 /* The default implementation of thread local storage */
 #ifndef DECLARE_THREAD_VAR
 
-#define P00_DECLARE_THREAD_VAR(T, NAME, KEY)            \
-extern pthread_key_t KEY;                               \
-DECLARE_ONCE_STATIC(KEY);                               \
-inline T* NAME(void) {                                  \
-  INIT_ONCE_STATIC(KEY);                                \
-  T* ret = pthread_getspecific(KEY);                    \
-  if (P99_UNLIKELY(!ret)) {                             \
-    ret = P99_NEW(T);                                   \
-    int err = pthread_setspecific(KEY, ret);            \
-    if (err) {                                          \
-      errno = err;                                      \
-      perror(__func__);                                 \
-      errno = 0;                                        \
-    }                                                   \
-  }                                                     \
-  return ret;                                           \
-}                                                       \
-inline void P99_PASTE2(NAME, _clear)(void) {            \
-  INIT_ONCE_STATIC(KEY);                                \
-  T* ret = pthread_getspecific(KEY);                    \
-  if (P99_LIKELY(!!ret)) {                              \
-    int err = pthread_setspecific(KEY, P99_0(void*));   \
-    if (err) {                                          \
-      errno = err;                                      \
-      perror(__func__);                                 \
-      errno = 0;                                        \
-    }                                                   \
-    P99_PASTE2(T, _delete)(ret);                        \
-  }                                                     \
-}                                                       \
+#define P00_DECLARE_THREAD_VAR(T, NAME, KEY)                   \
+extern pthread_key_t KEY;                                      \
+DECLARE_ONCE(NAME);                                            \
+inline T* NAME(void) {                                         \
+  T* ret = pthread_getspecific(KEY);                           \
+  if (P99_UNLIKELY(!ret)) {                                    \
+    ret = P99_NEW(T);                                          \
+    int err = pthread_setspecific(KEY, ret);                   \
+    if (err) {                                                 \
+      errno = err;                                             \
+      perror(__func__);                                        \
+      errno = 0;                                               \
+    }                                                          \
+  }                                                            \
+  return ret;                                                  \
+}                                                              \
+inline void P99_PASTE2(NAME, _clear)(void) {                   \
+  T* ret = pthread_getspecific(KEY);                           \
+  if (P99_LIKELY(!!ret)) {                                     \
+    int err = pthread_setspecific(KEY, P99_0(void*));          \
+    if (err) {                                                 \
+      errno = err;                                             \
+      perror(__func__);                                        \
+      errno = 0;                                               \
+    }                                                          \
+    P99_PASTE2(T, _delete)(ret);                               \
+  }                                                            \
+}                                                              \
 extern pthread_key_t KEY
 
 
@@ -454,7 +456,7 @@ P00_DECLARE_THREAD_VAR(T, NAME, P99_PASTE3(p00_, NAME, _key))
 
 #define P00__DEFINE_THREAD_VAR(T, NAME, KEY)                                 \
 pthread_key_t KEY;                                                           \
-DEFINE_ONCE_STATIC(KEY) {                                                    \
+DEFINE_ONCE(NAME) {                                                          \
   (void) pthread_key_create(&KEY, (void (*)(void *))P99_PASTE2(T, _delete)); \
 }                                                                            \
 P99_INSTANTIATE(void, P99_PASTE2(NAME, _clear));                             \
