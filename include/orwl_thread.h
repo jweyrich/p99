@@ -413,26 +413,36 @@ P99_INSTANTIATE(T*, NAME)
 /* The default implementation of thread local storage */
 #ifndef DECLARE_THREAD_VAR
 
-#define P00_DECLARE_THREAD_VAR(T, NAME, KEY)                   \
-extern pthread_key_t KEY;                                      \
-DECLARE_ONCE_STATIC(KEY);                                      \
-inline T* NAME(void) {                                         \
-  INIT_ONCE_STATIC(KEY);                                       \
-  T* ret = pthread_getspecific(KEY);                           \
-  if (P99_UNLIKELY(!ret)) {                                    \
-    ret = P99_NEW(T);                                          \
-    (void)pthread_setspecific(KEY, ret);                       \
-  }                                                            \
-  return ret;                                                  \
-}                                                              \
-inline void P99_PASTE2(NAME, _clear)(void) {                   \
-  INIT_ONCE_STATIC(KEY);                                       \
-  T* ret = pthread_getspecific(KEY);                           \
-  if (P99_LIKELY(!!ret)) {                                     \
-    (void)pthread_setspecific(KEY, P99_0(void*));              \
-    P99_PASTE2(T, _delete)(ret);                               \
-  }                                                            \
-}                                                              \
+#define P00_DECLARE_THREAD_VAR(T, NAME, KEY)            \
+extern pthread_key_t KEY;                               \
+DECLARE_ONCE_STATIC(KEY);                               \
+inline T* NAME(void) {                                  \
+  INIT_ONCE_STATIC(KEY);                                \
+  T* ret = pthread_getspecific(KEY);                    \
+  if (P99_UNLIKELY(!ret)) {                             \
+    ret = P99_NEW(T);                                   \
+    int err = pthread_setspecific(KEY, ret);            \
+    if (err) {                                          \
+      errno = err;                                      \
+      perror(__func__);                                 \
+      errno = 0;                                        \
+    }                                                   \
+  }                                                     \
+  return ret;                                           \
+}                                                       \
+inline void P99_PASTE2(NAME, _clear)(void) {            \
+  INIT_ONCE_STATIC(KEY);                                \
+  T* ret = pthread_getspecific(KEY);                    \
+  if (P99_LIKELY(!!ret)) {                              \
+    int err = pthread_setspecific(KEY, P99_0(void*));   \
+    if (err) {                                          \
+      errno = err;                                      \
+      perror(__func__);                                 \
+      errno = 0;                                        \
+    }                                                   \
+    P99_PASTE2(T, _delete)(ret);                        \
+  }                                                     \
+}                                                       \
 extern pthread_key_t KEY
 
 

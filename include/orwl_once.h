@@ -16,13 +16,7 @@
 
 #include "orwl_posix.h"
 
-P99_DECLARE_STRUCT(orwl__once_upon_cont);
 P99_DECLARE_STRUCT(orwl__once_cont);
-
-struct orwl__once_upon_cont {
-  void (*const init)(void);
-  pthread_mutex_t mut;
-};
 
 struct orwl__once_cont {
   void (*const init)(void);
@@ -41,19 +35,6 @@ struct orwl__once_cont {
  **/
 #define DECLARE_ONCE(T)                                        \
 extern struct orwl__once_cont P99_PASTE3(orwl__, T, _once)
-
-#define DECLARE_ONCE_UPON(T)                                    \
-extern struct orwl__once_upon_cont P99_PASTE3(orwl__, T, _once)
-
-
-#define DEFINE_ONCE_UPON(T)                                    \
-static void P99_PASTE3(orwl__, T, _once_init)(void);           \
-struct orwl__once_upon_cont P99_PASTE3(orwl__, T, _once) = {   \
-  .mut = PTHREAD_MUTEX_INITIALIZER,                            \
-  .init = P99_PASTE3(orwl__, T, _once_init),                   \
-};                                                             \
-static void P99_PASTE3(orwl__, T, _once_init)(void)
-
 
 /**
  ** @brief Define the function that will be exactly called once by the
@@ -109,27 +90,6 @@ MUTUAL_EXCLUDE((*orwl__crit))
  ** @brief Ensure that the function that was defined with
  ** DEFINE_ONCE() has been called exactly once before further
  ** proceeding.
- **
- ** The condition to determine whether or not the function has been
- ** called is given by expression @a N. In most cases @a N will just
- ** be a variable. Be careful:
- **  - @a N should have  no side effects since it is evaluated at
- **    least twice.
- **  - @a N @b must be changed at the very end of the function, since
- **    otherwise new threads that arrive while the function is
- **    executed will continue processing too early.
- **/
-#define INIT_ONCE_UPON(T, N)                                   \
-do {                                                           \
-  if (P99_UNLIKELY(!(N)))                                      \
-    MUTUAL_EXCLUDE(P99_PASTE3(orwl__, T, _once).mut)           \
-      if (!(N)) P99_PASTE3(orwl__, T, _once).init();           \
- } while(0)
-
-/**
- ** @brief Ensure that the function that was defined with
- ** DEFINE_ONCE() has been called exactly once before further
- ** proceeding.
  **/
 #define INIT_ONCE(T)                                           \
 do {                                                           \
@@ -178,22 +138,15 @@ do {                                                           \
 
 
 #if (defined(__GNUC__) && (__GNUC__ > 3))
-# define DECLARE_ONCE_STATIC(NAME)                             \
-extern                                                         \
-__attribute__((constructor))                                   \
-void P99_PASTE3(orwl__, NAME, _once_static)(void)
-
 # define DEFINE_ONCE_STATIC(NAME)                              \
 __attribute__((constructor))                                   \
-void P99_PASTE3(orwl__, NAME, _once_static)(void)
-
-# define INIT_ONCE_STATIC(NAME)
+DEFINE_ONCE(NAME)
 #else
-# define DECLARE_ONCE_STATIC(NAME) DECLARE_ONCE(NAME)
 # define DEFINE_ONCE_STATIC(NAME) DEFINE_ONCE(NAME)
-# define INIT_ONCE_STATIC(NAME) INIT_ONCE(NAME)
 #endif
 
+# define DECLARE_ONCE_STATIC(NAME) DECLARE_ONCE(NAME)
+# define INIT_ONCE_STATIC(NAME) INIT_ONCE(NAME)
 
 
 #endif 	    /* !ORWL_ONCE_H_ */
