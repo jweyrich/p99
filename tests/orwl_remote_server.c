@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -108,6 +108,7 @@ int main(int argc, char **argv) {
         }
         orwl_server srv;
         orwl_start(&srv, con, len, address);
+        if (!orwl_alive(&srv)) P99_UNWIND_RETURN EXIT_FAILURE;
         char const* server_name = orwl_endpoint_print(&srv.host.ep);
         if (verbose) {
           size_t ilen = 3 * len + 1;

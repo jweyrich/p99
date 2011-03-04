@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
   orwl_types_init();
   orwl_server srv;
   orwl_start(&srv, 4, P99_0(in_addr_t));
+  if (!orwl_alive(&srv)) return EXIT_FAILURE;
   report(1, "started %s" PRIX64, orwl_endpoint_print(&srv.host.ep));
 
   rand48_t seed = RAND48_T_INITIALIZER;

@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- C -*-                   */
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -144,6 +144,7 @@ int main(int argc, char **argv) {
 
   orwl_server srv;
   orwl_start(&srv, 4, 10);
+  if (!orwl_alive(&srv)) return EXIT_FAILURE;
 
   size_t info_len = 3*orwl_np;
   char* info = calloc(info_len + 1);
