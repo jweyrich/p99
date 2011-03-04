@@ -20,7 +20,7 @@ P99_DECLARE_STRUCT(orwl__once_cont);
 
 struct orwl__once_cont {
   void (*const init)(void);
-  bool cond;
+  bool volatile cond;
   pthread_mutex_t mut;
 };
 
@@ -86,21 +86,25 @@ P00_BLK_START                                                               \
 P00_BLK_DECL_STATIC(pthread_mutex_t, orwl__crit, PTHREAD_MUTEX_INITIALIZER) \
 MUTUAL_EXCLUDE((*orwl__crit))
 
+inline
+void orwl_once_init(orwl__once_cont* o, char const name[]) {
+  MUTUAL_EXCLUDE(o->mut)
+    if (!o->cond) {
+      fprintf(stderr, "Initializing %s for once\n", name);
+      o->init();
+      o->cond = true;
+    }
+}
+
 /**
  ** @brief Ensure that the function that was defined with
  ** DEFINE_ONCE() has been called exactly once before further
  ** proceeding.
  **/
-#define INIT_ONCE(T)                                           \
-do {                                                           \
-  if (P99_UNLIKELY(!(P99_PASTE3(orwl__, T, _once).cond)))      \
-    MUTUAL_EXCLUDE(P99_PASTE3(orwl__, T, _once).mut)           \
-      if (!(P99_PASTE3(orwl__, T, _once).cond)) {              \
-        fprintf(stderr, "Initializing %s for once\n", # T);    \
-        P99_PASTE3(orwl__, T, _once).init();                   \
-        P99_PASTE3(orwl__, T, _once).cond = true;              \
-      }                                                        \
- } while(0)
+#define INIT_ONCE(T)                                            \
+if (P99_LIKELY(P99_PASTE3(orwl__, T, _once).cond))              \
+  P99_NOP;                                                      \
+ else orwl_once_init(&P99_PASTE3(orwl__, T, _once), # T);
 
 /**
  ** @def DECLARE_ONCE_STATIC
