@@ -1,6 +1,8 @@
 # -*- makefile-gmake -*-
 
-__COMPLEX := $(shell echo '%:include <complex.h>' | ${CC} ${CFLAGS} -xc -c -o /dev/null - 2> /dev/null || echo "NO")
+FORCEC = -xc
+
+__COMPLEX := $(shell echo '%:include <complex.h>' | ${CC} ${CFLAGS} ${FORCEC} -c -o /dev/null - 2> /dev/null || echo "NO")
 
 ifeq (${__COMPLEX},NO)
 ${warning header complex.h is not supported}

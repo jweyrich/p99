@@ -1,8 +1,10 @@
 # -*- makefile-gmake -*-
 
+FORCEC = -xc
+
 # Try to capture just all #define if the compiler supports the -dM -E
 # flags
-${eval ${shell ${CC} ${CFLAGS} -xc -dM -E /dev/null | sed -n '/\#define/s/\#define *\([^ ]*\) *\(.*\)/\$${eval DEFINE\1 := \2}/g p' 2>/dev/null}}
+${eval ${shell ${CC} ${CFLAGS} ${FORCEC} -dM -E /dev/null | sed -n '/\#define/s/\#define *\([^ ]*\) *\(.*\)/\$${eval DEFINE\1 := \2}/g p' 2>/dev/null}}
 
 # A list of macros defined by the standard. You can add to that list
 # before including this particular makefile, here.
