@@ -74,12 +74,12 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_CALL_DEFARG, 1)
 # define P99_CALL_DEFARG(NAME, M, ...) NAME(P99_CALL_DEFARG_LIST(NAME, M, __VA_ARGS__))
 
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_CALL_DEFARG_LIST, 1)
-# define P99_CALL_DEFARG_LIST(NAME, M, ...)             \
-P99_IF_EQ(0,M)                                          \
-(__VA_ARGS__)                                           \
-(P99_IF_EMPTY(__VA_ARGS__)                              \
- (P00_DEFARGS(NAME, M, P99_PASTE2(NAME,_defarg_0)()))   \
- (P00_DEFARGS(NAME, M, __VA_ARGS__))                    \
+# define P99_CALL_DEFARG_LIST(NAME, M, ...)                    \
+P99_IF_EQ(0,M)                                                 \
+(__VA_ARGS__)                                                  \
+(P99_IF_EMPTY(__VA_ARGS__)                                     \
+ (P00_DEFARGS(NAME, M, P99_PASTE2(NAME,_defarg_0)()))          \
+ (P00_DEFARGS(NAME, M, __VA_ARGS__))                           \
  )
 #endif
 

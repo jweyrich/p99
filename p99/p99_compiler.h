@@ -61,6 +61,12 @@
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
  P99_STRINGIFY(__GNUC_PATCHLEVEL__)
 
+#elif P99_COMPILER & P99_COMPILER_TINYC
+# undef P99_COMPILER_VERSION
+# define P99_COMPILER_VERSION                                  \
+  "tinyc "                                                     \
+  P99_STRINGIFY(__TINYC__)
+
 #elif P99_COMPILER & P99_COMPILER_OPEN64
 # undef P99_COMPILER_VERSION
 # define P99_COMPILER_VERSION                                  \

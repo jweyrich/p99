@@ -440,6 +440,7 @@ my @compilers = (
     "portland" => "__PGI",
     "sgi" => "__sgi",
     "sun" => "__SUNPRO_C",
+    "tinyc" => "__TINYC__",
     "watcom" => "__WATCOMC__",
 ## put gcc last
     "gnu" => "__GNUC__",

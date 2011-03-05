@@ -41,7 +41,7 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Mon, 14 Feb 2011 20:53:01 +0100"
+#define P00_VERSION_DATE "Sat, 05 Mar 2011 11:59:30 +0100"
 #define P00_VERSION_ID "288f8ccf58be4a6c23e66cffb321d4a936c8a01e"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -8153,7 +8153,9 @@ automatically generated, do not change manually.
 #define P00_COMPILER_PRAGMA_SGI(...)
 #define P99_COMPILER_SUN 131072
 #define P00_COMPILER_PRAGMA_SUN(...)
-#define P99_COMPILER_WATCOM 262144
+#define P99_COMPILER_TINYC 262144
+#define P00_COMPILER_PRAGMA_TINYC(...)
+#define P99_COMPILER_WATCOM 524288
 #define P00_COMPILER_PRAGMA_WATCOM(...)
 #if defined(__BORLANDC__)
 # define P99_COMPILER 1
@@ -8240,8 +8242,13 @@ automatically generated, do not change manually.
 # define P99_COMPILER_VERSION "sun "
 # undef P00_COMPILER_PRAGMA_SUN
 # define P00_COMPILER_PRAGMA_SUN(...) _Pragma(__VA_ARGS__)
-#elif defined(__WATCOMC__)
+#elif defined(__TINYC__)
 # define P99_COMPILER 262144
+# define P99_COMPILER_VERSION "tinyc "
+# undef P00_COMPILER_PRAGMA_TINYC
+# define P00_COMPILER_PRAGMA_TINYC(...) _Pragma(__VA_ARGS__)
+#elif defined(__WATCOMC__)
+# define P99_COMPILER 524288
 # define P99_COMPILER_VERSION "watcom "
 # undef P00_COMPILER_PRAGMA_WATCOM
 # define P00_COMPILER_PRAGMA_WATCOM(...) _Pragma(__VA_ARGS__)
