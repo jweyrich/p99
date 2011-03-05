@@ -403,6 +403,7 @@ P00_SEE_PROMOTE
 #define P99_UE_MAX1(EXPR) (P99_UE_MAX(EXPR)/P99_PROMOTE_2U(EXPR))
 
 
+#ifdef DOXYGEN
 /**
  ** @brief The width of the integral type of expression @a EXPR.
  **
@@ -418,11 +419,31 @@ P00_SEE_PROMOTE
  ** @see P99_EPADDING
  **/
 P00_SEE_PROMOTE
+#define P99_EWIDTH(EXPR)
+
+/**
+ ** @brief Give the maximum representable value of type @a T
+ **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TMAX, 0)
+#define P99_TMAX(T)
+
+/**
+ ** @brief Give the minimum representable value of type @a T
+ **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TMIN, 0)
+#define P99_TMIN(T)
+
+#endif
+
+#ifdef p99x_uintmax
 #define P99_EWIDTH(EXPR)                                                               \
   (P99X__SHIFT(EXPR)                                                                   \
  ? (P99_HIGH2_1((uintmax_t)(P99_UE_MAX(EXPR)>>P99X__SHIFT(EXPR))) + P99X__SHIFT(EXPR)) \
  : P99_HIGH2_1(P99_UE_MAX(EXPR))                                                       \
  )
+#else
+#define P99_EWIDTH(EXPR) P99_HIGH2_1(P99_UE_MAX(EXPR))
+#endif
 
 /**
  ** @brief The precision, i.e the number of significant bits the
@@ -577,25 +598,23 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_SIGNED_REPRESENTATION, 0)
  **/
 #define P99_2COMPLEMENT(T) ((T)(P99_SIGNED_REPRESENTATION(T) == p99_signed_representation_twos))
 
-/**
- ** @brief Give the maximum representable value of type @a T
- **/
-P00_DOCUMENT_TYPE_ARGUMENT(P99_TMAX, 0)
+#ifdef p99x_uintmax
 #define P99_TMAX(T)                                                     \
 ((T)                                                                    \
  (P99X__SHIFT((T)0)                                                     \
   ? (P99_ISSIGNED(T) ? P99X__SIGN_PROMOTE((T)-1)/2u : P99_UE_MAX((T)0)) \
   : (P99_ISSIGNED(T) ? P99_UT_MAX1(T) : P99_UT_MAX(T))))
 
-/**
- ** @brief Give the minimum representable value of type @a T
- **/
-P00_DOCUMENT_TYPE_ARGUMENT(P99_TMIN, 0)
 #define P99_TMIN(T)                                                                   \
 ((T)                                                                                  \
  (P99X__SHIFT((T)0)                                                                   \
   ? (P99_ISSIGNED(T) ? (-(P99X__SIGN_PROMOTE((T)-1)/2u)) - P99_2COMPLEMENT(T) : (T)0) \
   : (P99_ISSIGNED(T) ? (P00_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T))))
+#else
+#define P99_TMAX(T) (P99_ISSIGNED(T) ? P99_UT_MAX1(T) : P99_UT_MAX(T))
+#define P99_TMIN(T) (P99_ISSIGNED(T) ? (P00_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T))
+#endif
+
 
 /**
  ** @brief C99 allows for exactly three different possibilities to
