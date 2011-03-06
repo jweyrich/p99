@@ -14,6 +14,7 @@
 #define P99_COMPILER_H
 
 #include "p99_generated.h"
+#include "p99_args.h"
 
 /**
  ** @file
@@ -143,6 +144,14 @@ signed p00_trailing_comma_in_initializer__(void) {
    You still might be able to use P99, but you would have to cheat on
    that value. You are on your own. */
 #  error "The P99 preprocessor files need a C99 compliant compiler"
+# endif
+# if  (!P99_TOK_EQ(1, 1) || P99_TOK_EQ(1, 0))
+/* If you come here your preprocessor is not able to expand P99 macros
+   correctly. Most probably this is a bug in your preprocessor
+   implementation, but it could also be that your implementation just
+   interprets the standard different. In any case, we can't
+   proceed. */
+#  error "The preprocessor is not P99 compatible"
 # endif
 #endif
 
