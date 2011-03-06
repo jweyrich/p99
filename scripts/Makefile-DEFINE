@@ -55,7 +55,7 @@ DEF_FILTER := /DEFINE\([^ ]*\) :*= \1/d;/^%:/d
 # Create a list of calls to EXPAND
 DEF_EXPANSION := ${foreach M,${DEF_DEFINES},|EXPAND($M)}
 
-${eval ${shell /bin/echo '${DEF_MACRO}${DEF_EXPANSION}' | tr '|' '\n' | sed 's/_DOLLAR_/$$/g;s/_H_/#/g;s/_HH_/##/g' | ${CC} ${CFLAGS} ${FORCEC} -E - 2>/dev/null | sed '${DEF_FILTER}' | sed 's/#.*//g'}}
+${eval ${shell /bin/echo '${DEF_MACRO}${DEF_EXPANSION}' | tr '|' '\n' | sed 's/_DOLLAR_/$$/g' | sed 's/_H_/\#/g' | sed 's/_HH_/\#\#/g' | ${CC} ${CFLAGS} ${FORCEC} -E - 2>/dev/null | sed '${DEF_FILTER}' | sed 's/\#.*//g'}}
 
 # The C version without eventual L suffixes
 ifeq (${DEFINE__STDC_VERSION__},)
