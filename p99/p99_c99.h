@@ -34,7 +34,9 @@
 #include <fenv.h>
 #include <float.h>
 #include <inttypes.h>
-#include <iso646.h>
+#ifndef P00_NO_HAVE_ISO646_H
+# include <iso646.h>
+#endif
 #include <limits.h>
 #include <locale.h>
 #include <math.h>

@@ -72,6 +72,7 @@ include ../scripts/Makefile-__thread
 include ../scripts/Makefile-atomic
 include ../scripts/Makefile-complex
 include ../scripts/Makefile-tgmath
+include ../scripts/Makefile-iso646
 
 ifeq (${POSIX_SEMAPHORES},-1L)
 $(warning No POSIX semaphores were detected on this system. Replacing them by a wrapper)

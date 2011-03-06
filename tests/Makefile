@@ -87,6 +87,7 @@ include ../scripts/Makefile-__thread
 include ../scripts/Makefile-atomic
 include ../scripts/Makefile-complex
 include ../scripts/Makefile-tgmath
+include ../scripts/Makefile-iso646
 
 ##############################
 # Basic Compile Instructions #
