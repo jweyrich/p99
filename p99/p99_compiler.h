@@ -24,9 +24,37 @@
  ** to 4.4), clang, opencc (OPEN64) and icc (INTEL).
  **/
 
+
+/** @addtogroup compiler Compiler Requirements
+ ** @{
+ **/
+
+
+/**
+ ** @example test-p99-conformance.c
+ ** @brief That file provides a test for C99 conformance.
+ **
+ ** It only tests the "compiler" part of C, that is without any
+ ** include files. Any C implementation, whether hosted or
+ ** freestanding should comply to this.
+ **
+ ** To convince your compiler to compile this you have perhaps to
+ ** provide some additional parameters on the command line. E.g for
+ ** the gcc family of compilers (including third party pretenders) you
+ ** usually have to give "-std=c99" to switch to C99 mode. But other
+ ** parameters may be in order, consult your compiler documentation.
+ **
+ ** This file is split into several parts that hopefully are
+ ** self explaining. Each of the parts has a macro @c SKIP_... that
+ ** lets you skip a test.
+ **/
+
 #define P00_PREFIX0(N) P00_PREFIX0_(N)
 #define P00_PREFIX0_(N) 0 ## N
 #define P00_STRINGIFY(...) #__VA_ARGS__
+/**
+ ** @brief Transform the argument list into one string.
+ **/
 #define P99_STRINGIFY(...) P00_STRINGIFY(__VA_ARGS__)
 
 /* be sure to put all compilers that are faking gcc before gcc itself */
@@ -330,9 +358,16 @@ typedef __int128_t p99x_int128;
  **/
 #define P99_IF_COMPILER(COMP, ...) P00_COMPILER_PRAGMA_ ## COMP(P99_STRINGIFY(__VA_ARGS__))
 
+#ifndef P00_DOXYGEN
+
 /* Disable bogus warnings that are provoked by the code in this file. */
 
 P99_IF_COMPILER(INTEL, warning(disable: 1418)) /* external function definition with no prior declaration */
 P99_IF_COMPILER(INTEL, warning(disable: 1419)) /* external declaration in primary source file */
+
+#endif
+
+/** @}
+ **/
 
 #endif

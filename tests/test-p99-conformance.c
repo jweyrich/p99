@@ -38,57 +38,6 @@
 # endif
 #endif
 
-#ifndef SKIP_DIGRAPH
-
-/* check for the four "language" digraphs */
-double has_punctuation_digraph <::> = <% 0 %>;
-
-%: define HAS_HASH_DIGRAPH 1
-enum { hasHashDigraph = !!HAS_HASH_DIGRAPH };
-%: define DIGRAPH_STRINGIFY(X) %:X
-char const has_digraph_stringify[] = DIGRAPH_STRINGIFY(digraph);
-# if !defined(HAS_HASH_DIGRAPH)
-#  error "The preprocessor lacks digraph %: support. Run test with -DSKIP_DIGRAPH to be able to see the other tests."
-# endif
-
-%: define HAS_HASH_HASH_DIGRAPH_(a, b) a %:%: b
-%: define HAS_HASH_HASH_DIGRAPH HAS_HASH_HASH_DIGRAPH_(0, 1)
-enum { hasHashHashDigraph = !!HAS_HASH_HASH_DIGRAPH};
-/* This one here and the one in the trigraph section should be merged
-   into one symbol. */
-double has_hash_hash_interpretedCorrectly[hasHashHashDigraph];
-# if !defined(HAS_HASH_HASH_DIGRAPH) || (HAS_HASH_HASH_DIGRAPH != 1)
-#  error "The preprocessor lacks quadgraph %:%: support. Run test with -DSKIP_DIGRAPH to be able to see the other tests."
-# endif
-
-#endif
-
-
-#ifndef SKIP_TRIGRAPH
-
-/* check for the eight "language" trigraphs */
-int has_punctuation_trigraph ??(??) = ??< (0 ??' 1), (0 ??! 1), ??-0,  '??/0' ??>;
-/* don't get confused by the syntax highlighting the ??' aint't too bad for that */
-
-??= define HAS_HASH_TRIGRAPH 1
-enum { hasHashTrigraph = !!HAS_HASH_TRIGRAPH };
-??= define TRIGRAPH_STRINGIFY(X) ??=X
-char const has_trigraph_stringfy[] = TRIGRAPH_STRINGIFY(trigraph);
-# if !defined(HAS_HASH_TRIGRAPH)
-#  error "The preprocessor lacks trigraph ??= support. Run test with -DSKIP_TRIGRAPH to be able to see the other tests."
-# endif
-
-??= define HAS_HASH_HASH_TRIGRAPH_(a, b) a ??=??= b
-??= define HAS_HASH_HASH_TRIGRAPH HAS_HASH_HASH_TRIGRAPH_(0, 1)
-enum { hasHashHashTrigraph = !!HAS_HASH_HASH_TRIGRAPH};
-/* This one here and the one in the digraph section should be merged
-   into one symbol. */
-double has_hash_hash_interpretedCorrectly[hasHashHashTrigraph];
-# if !defined(HAS_HASH_HASH_TRIGRAPH) || (HAS_HASH_HASH_TRIGRAPH != 1)
-#  error "The preprocessor lacks hexgraph ??=??= support. Run test with -DSKIP_TRIGRAPH to be able to see the other tests."
-# endif
-
-#endif
 
 #ifndef SKIP_BOOL
 enum { hasTrue = (_Bool)127, hasFalse = (_Bool)0 };
@@ -329,7 +278,7 @@ void has_func_macro(char const* where[]) {
 
 #ifndef SKIP_LONG_LONG
 long long has_long_long = 0;
-long long has_ullong_max[-1 + 2*((0ULL - 1) >= 18446744073709551615ULL)];
+unsigned long long has_ullong_max[-1 + 2*((0ULL - 1) >= 18446744073709551615ULL)];
 #endif
 
 #ifndef SKIP_LONG_DOUBLE
@@ -366,4 +315,62 @@ int has_universal_character_8 = L'\U00000401';
 int const* has_universal_string_4 = L"\u2018\u03A7\u2060X\u2019";
 int const* has_universal_string_8 = L"\U00002018\U000003A7\U00002060X\U00002019";
 int has_\u03BA\u03B1\u03B8\u03BF\u03BB\u03B9\u03BA\u03CC\u03C2_\u03c7\u03B1\u03C1\u03B1\u03BA\u03C4\u03AE\u03C1 = 1;
+#endif
+
+
+/* Have checks for digraphs and trigraphs at the end, since they may
+   mix up the pretty printing. */
+
+#ifndef SKIP_DIGRAPH
+
+/* check for the four "language" digraphs */
+double has_punctuation_digraph <::> = <% 0 %>;
+
+%: define HAS_HASH_DIGRAPH 1
+enum { hasHashDigraph = !!HAS_HASH_DIGRAPH };
+%: define DIGRAPH_STRINGIFY(X) %:X
+char const has_digraph_stringify[] = DIGRAPH_STRINGIFY(digraph);
+# if !defined(HAS_HASH_DIGRAPH)
+#  error "The preprocessor lacks digraph %: support. Run test with -DSKIP_DIGRAPH to be able to see the other tests."
+# endif
+
+%: define HAS_HASH_HASH_DIGRAPH_(a, b) a %:%: b
+%: define HAS_HASH_HASH_DIGRAPH HAS_HASH_HASH_DIGRAPH_(0, 1)
+enum { hasHashHashDigraph = !!HAS_HASH_HASH_DIGRAPH};
+/* This one here and the one in the trigraph section should be merged
+   into one symbol. */
+double has_hash_hash_interpretedCorrectly[hasHashHashDigraph];
+# if !defined(HAS_HASH_HASH_DIGRAPH) || (HAS_HASH_HASH_DIGRAPH != 1)
+#  error "The preprocessor lacks quadgraph %:%: support. Run test with -DSKIP_DIGRAPH to be able to see the other tests."
+# endif
+
+#endif
+
+
+#ifndef SKIP_TRIGRAPH
+
+/* Check for the eight "language" trigraphs. If this works and you
+   run this through your preprocessor phase (usually with -E) this
+   should, all of a sudden look like valid C code. */
+int has_punctuation_trigraph ??(??) = ??< (0 ??' 1), (0 ??! 1), ??-0,  '??/0' ??>;
+/* don't get confused by the syntax highlighting the ??' aint't too bad for that */
+
+??= define HAS_HASH_TRIGRAPH 1
+enum { hasHashTrigraph = !!HAS_HASH_TRIGRAPH };
+??= define TRIGRAPH_STRINGIFY(X) ??=X
+char const has_trigraph_stringfy[] = TRIGRAPH_STRINGIFY(trigraph);
+# if !defined(HAS_HASH_TRIGRAPH)
+#  error "The preprocessor lacks trigraph ??= support. Run test with -DSKIP_TRIGRAPH to be able to see the other tests."
+# endif
+
+??= define HAS_HASH_HASH_TRIGRAPH_(a, b) a ??=??= b
+??= define HAS_HASH_HASH_TRIGRAPH HAS_HASH_HASH_TRIGRAPH_(0, 1)
+enum { hasHashHashTrigraph = !!HAS_HASH_HASH_TRIGRAPH};
+/* This one here and the one in the digraph section should be merged
+   into one symbol. */
+double has_hash_hash_interpretedCorrectly[hasHashHashTrigraph];
+# if !defined(HAS_HASH_HASH_TRIGRAPH) || (HAS_HASH_HASH_TRIGRAPH != 1)
+#  error "The preprocessor lacks hexgraph ??=??= support. Run test with -DSKIP_TRIGRAPH to be able to see the other tests."
+# endif
+
 #endif
