@@ -19,13 +19,21 @@
           <th>variant</th>
           <th>processor</th>
           <th>compiler</th>
+          <th>remarks</th>
         </tr>
         <tr>
           <!-- one of (TD TH) -->
           <td>Linux</td>
-          <td>ubuntu 9.04</td>
+          <td>ubuntu 9.04/Gnu LibC</td>
           <td>x86_64</td>
           <td>gcc 4.1 -- 4.4</td>
+        </tr>
+        <tr>
+          <!-- one of (TD TH) -->
+          <td>Linux</td>
+          <td>ubuntu 9.04/<a href="http://www.etalabs.net/musl/">musl</a></td>
+          <td>x86_64</td>
+          <td>gcc 4.4</td>
         </tr>
         <tr>
           <!-- one of (TD TH) -->
@@ -33,6 +41,7 @@
           <td>ubuntu 9.04</td>
           <td>x86_64</td>
           <td>clang 1.1</td>
+          <td style="background: #FF0">VLA crash the compiler (bug resolved upstream)</td>
         </tr>
         <tr>
           <!-- one of (TD TH) -->
@@ -40,6 +49,7 @@
           <td>ubuntu 9.04</td>
           <td>x86_64</td>
           <td>opencc 4.2</td>
+          <td style="background: #DDA">work arround for <code>inline</code></td>
         </tr>
         <tr>
           <!-- one of (TD TH) -->
@@ -47,6 +57,7 @@
           <td>ubuntu 9.04</td>
           <td>x86_64</td>
           <td>icc 12.0.0</td>
+          <td style="background: #DDA">work arround for <code>inline</code></td>
         </tr>
         <tr>
           <!-- one of (TD TH) -->
@@ -54,6 +65,7 @@
           <td>maemo</td>
           <td>arm</td>
           <td>gcc 4.2</td>
+          <td style="background: #DDA">work arround for <code>inline</code></td>
         </tr>
         <tr>
           <!-- one of (TD TH) -->
@@ -61,6 +73,7 @@
           <td>redhat 5.0</td>
           <td>ia64</td>
           <td>icc 4.1.2</td>
+          <td style="background: #DDA">work arround for <code>inline</code></td>
         </tr>
         <tr>
           <!-- one of (TD TH) -->
@@ -68,6 +81,7 @@
           <td>OS X</td>
           <td>x86_64</td>
           <td>gcc 4.2.1</td>
+          <td style="background: #DDA">work arround for <code>inline</code></td>
         </tr>
         <tr>
           <!-- one of (TD TH) -->
@@ -75,6 +89,23 @@
           <td>7.2-RELEASE-p7</td>
           <td>amd64</td>
           <td>gcc 4.2.1</td>
+          <td style="background: #DDA">work arround for <code>inline</code></td>
+        </tr>
+        <tr style="background: #F00">
+          <!-- one of (TD TH) -->
+          <td>Linux</td>
+          <td>ubuntu 9.04</td>
+          <td>x86_64</td>
+          <td>TinyC</td>
+          <td>preprocessor not conforming</td>
+        </tr>
+        <tr style="background: #F00">
+          <!-- one of (TD TH) -->
+          <td>Linux</td>
+          <td>ubuntu 9.04</td>
+          <td>x86_64</td>
+          <td>pcc</td>
+          <td>compiler crashes</td>
         </tr>
       </tbody>
     </table>
