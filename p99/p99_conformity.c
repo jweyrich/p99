@@ -1,42 +1,65 @@
-/*
-** p99_conformity.c
-** 
-** Made by (Jens Gustedt)
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Sun Mar  6 13:52:57 2011 Jens Gustedt
-** Last update Sun May 12 01:17:25 2002 Speed Blue
-*/
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* (C) copyright  2011 Jens Gustedt, INRIA, France                           */
+/*                                                                           */
+/* This file is free software; it is part of the P99 project.                */
+/* You can redistribute it and/or modify it under the terms of the QPL as    */
+/* given in the file LICENSE. It is distributed without any warranty;        */
+/* without even the implied warranty of merchantability or fitness for a     */
+/* particular purpose.                                                       */
+/*                                                                           */
+
+/**
+ ** @file
+ ** @brief conformance test for C99
+ **
+ ** This file only tests the "compiler" part of C, that is without any
+ ** include files. Any C implementation, whether hosted or
+ ** freestanding should comply to this.
+ **
+ ** To convince your compiler to compile this you have perhaps to
+ ** provide some additional parameters on the command line. E.g for
+ ** the gcc family of compilers (including third party pretenders) you
+ ** usually have to give "-std=c99" to switch to C99 mode. But other
+ ** parameters may be in order, consult your compiler documentation.
+ **
+ ** This file is split into several parts that hopefully are
+ ** self explaining. Each of the parts has a macro @c SKIP_... that
+ ** lets you skip a test.
+ **/
+
 
 #ifndef SKIP_VA_ARGS_MACRO
-#define FIRST(X, ...) X
-#if FIRST(0, something)
-# error "The preprocessor lacks variable argument list support. Run test with -DSKIP_VA_ARGS_MACRO to be able to see the other tests."
-#endif
+# define FIRST(X, ...) X
+# if FIRST(0, something)
+#  error "The preprocessor lacks variable argument list support. Run test with -DSKIP_VA_ARGS_MACRO to be able to see the other tests."
+# endif
 #endif
 
 #ifndef SKIP_DIGRAPH
 
 /* check for the four "language" digraphs */
-double digraph <::> = <% 0 %>;
+double has_punctuation_digraph <::> = <% 0 %>;
 
 %: define HAS_HASH_DIGRAPH 1
-enum { has_hash_digraph = !!HAS_HASH_DIGRAPH };
+enum { hasHashDigraph = !!HAS_HASH_DIGRAPH };
 %: define DIGRAPH_STRINGIFY(X) %:X
-char const digraph_string[] = DIGRAPH_STRINGIFY(digraph);
-#if !defined(HAS_HASH_DIGRAPH)
-# error "The preprocessor lacks digraph %: support. Run test with -DSKIP_DIGRAPH to be able to see the other tests."
-#endif
+char const has_digraph_stringify[] = DIGRAPH_STRINGIFY(digraph);
+# if !defined(HAS_HASH_DIGRAPH)
+#  error "The preprocessor lacks digraph %: support. Run test with -DSKIP_DIGRAPH to be able to see the other tests."
+# endif
 
 %: define HAS_HASH_HASH_DIGRAPH_(a, b) a %:%: b
 %: define HAS_HASH_HASH_DIGRAPH HAS_HASH_HASH_DIGRAPH_(0, 1)
-enum { has_hash_hash_digraph = !!HAS_HASH_HASH_DIGRAPH};
+enum { hasHashHashDigraph = !!HAS_HASH_HASH_DIGRAPH};
 /* This one here and the one in the trigraph section should be merged
    into one symbol. */
-double hash_hash_interpretedCorrectly[has_hash_hash_digraph];
-#if !defined(HAS_HASH_HASH_DIGRAPH) || (HAS_HASH_HASH_DIGRAPH != 1)
-# error "The preprocessor lacks quadgraph %:%: support. Run test with -DSKIP_DIGRAPH to be able to see the other tests."
-#endif
+double has_hash_hash_interpretedCorrectly[hasHashHashDigraph];
+# if !defined(HAS_HASH_HASH_DIGRAPH) || (HAS_HASH_HASH_DIGRAPH != 1)
+#  error "The preprocessor lacks quadgraph %:%: support. Run test with -DSKIP_DIGRAPH to be able to see the other tests."
+# endif
 
 #endif
 
@@ -44,26 +67,26 @@ double hash_hash_interpretedCorrectly[has_hash_hash_digraph];
 #ifndef SKIP_TRIGRAPH
 
 /* check for the eight "language" trigraphs */
-int trigraph ??(??) = ??< (0 ??' 1), (0 ??! 1), ??-0,  '??/0' ??>;
+int has_punctuation_trigraph ??(??) = ??< (0 ??' 1), (0 ??! 1), ??-0,  '??/0' ??>;
 /* don't get confused by the syntax highlighting the ??' aint't too bad for that */
 
 ??= define HAS_HASH_TRIGRAPH 1
-enum { has_hash_trigraph = !!HAS_HASH_TRIGRAPH };
+enum { hasHashTrigraph = !!HAS_HASH_TRIGRAPH };
 ??= define TRIGRAPH_STRINGIFY(X) ??=X
-char const trigraph_string[] = TRIGRAPH_STRINGIFY(trigraph);
-#if !defined(HAS_HASH_TRIGRAPH)
-# error "The preprocessor lacks trigraph ??= support. Run test with -DSKIP_TRIGRAPH to be able to see the other tests."
-#endif
+char const has_trigraph_stringfy[] = TRIGRAPH_STRINGIFY(trigraph);
+# if !defined(HAS_HASH_TRIGRAPH)
+#  error "The preprocessor lacks trigraph ??= support. Run test with -DSKIP_TRIGRAPH to be able to see the other tests."
+# endif
 
 ??= define HAS_HASH_HASH_TRIGRAPH_(a, b) a ??=??= b
 ??= define HAS_HASH_HASH_TRIGRAPH HAS_HASH_HASH_TRIGRAPH_(0, 1)
-enum { has_hash_hash_trigraph = !!HAS_HASH_HASH_TRIGRAPH};
+enum { hasHashHashTrigraph = !!HAS_HASH_HASH_TRIGRAPH};
 /* This one here and the one in the digraph section should be merged
    into one symbol. */
-double hash_hash_interpretedCorrectly[has_hash_hash_trigraph];
-#if !defined(HAS_HASH_HASH_TRIGRAPH) || (HAS_HASH_HASH_TRIGRAPH != 1)
-# error "The preprocessor lacks hexgraph ??=??= support. Run test with -DSKIP_TRIGRAPH to be able to see the other tests."
-#endif
+double has_hash_hash_interpretedCorrectly[hasHashHashTrigraph];
+# if !defined(HAS_HASH_HASH_TRIGRAPH) || (HAS_HASH_HASH_TRIGRAPH != 1)
+#  error "The preprocessor lacks hexgraph ??=??= support. Run test with -DSKIP_TRIGRAPH to be able to see the other tests."
+# endif
 
 #endif
 
@@ -74,7 +97,7 @@ _Bool has_Bool[hasTrue] = { hasFalse };
 #endif
 
 #ifndef SKIP_VLA
-double VLA_function(unsigned n, double A[n][n]) {
+double has_VLA_function(unsigned n, double A[n][n]) {
   double ret = 0.0;
   unsigned i, j;
   for (i = 0; i < n; ++i)
@@ -82,9 +105,9 @@ double VLA_function(unsigned n, double A[n][n]) {
       ret += A[i][j];
   return ret;
 }
-_Bool has_VLA(unsigned n) {
+double has_VLA(unsigned n) {
   double VLA[n][n];
-  return VLA_function(n, VLA) >= 0.0;
+  return has_VLA_function(n, VLA);
 }
 
 
@@ -93,61 +116,72 @@ _Bool has_VLA(unsigned n) {
 #ifndef SKIP_INLINE
 typedef void (*func)(void);
 
-/* This alone should not result in a generation of a symbol */
-/* undefined_symbol but leave an undefined reference to such a function. */
+/* This alone should not result in a generation of a symbol
+   "has_undefined_symbol1". It should even not have an entry as
+   "undefined" in the symbol table, but such an entry would be
+   tolerable. */
 inline
 void
-undefined_symbol(void) {
+has_undefined_symbol1(void) {
   /* empty */
 }
-func undefined_symbol_tester[] = { undefined_symbol };
 
-/* This should result in a generation of a symbol mandatory_symbol1 */
+/* This alone should not result in a generation of a symbol
+   "undefined_symbol2" but insert an "undefined" symbol to such a
+   function in the symbol table. */
 inline
 void
-mandatory_symbol1(void) {
+has_undefined_symbol2(void) {
+  /* empty */
+}
+func undefined_symbol2_tester[] = { has_undefined_symbol2 };
+
+/* This should result in a generation of a symbol has_mandatory_symbol1 */
+inline
+void
+has_mandatory_symbol1(void) {
   /* empty */
 }
 extern inline
 void
-mandatory_symbol1(void);
+has_mandatory_symbol1(void);
 
-/* This should result in a generation of a symbol mandatory_symbol2 */
+/* This should result in a generation of a symbol has_mandatory_symbol2 */
 inline
 void
-mandatory_symbol2(void) {
+has_mandatory_symbol2(void) {
   /* empty */
 }
-func mandatory_symbol2_tester[] = { mandatory_symbol2 };
+func mandatory_symbol2_tester[] = { has_mandatory_symbol2 };
 extern inline
 void
-mandatory_symbol2(void);
+has_mandatory_symbol2(void);
 
-/* This should result in a generation of a symbol mandatory_symbol3 */
+/* This should result in a generation of a symbol has_mandatory_symbol3 */
 inline
 void
-mandatory_symbol3(void) {
+has_mandatory_symbol3(void) {
   /* empty */
 }
 void
-mandatory_symbol3(void);
+has_mandatory_symbol3(void);
 
-/* This should result in a generation of a symbol mandatory_symbol4 */
+/* This should result in a generation of a symbol has_mandatory_symbol4 */
 inline
 void
-mandatory_symbol4(void) {
+has_mandatory_symbol4(void) {
   /* empty */
 }
-func mandatory_symbol4_tester[] = { mandatory_symbol4 };
+func mandatory_symbol4_tester[] = { has_mandatory_symbol4 };
 extern inline
 void
-mandatory_symbol4(void);
+has_mandatory_symbol4(void);
 
 #endif
 
 #ifndef SKIP_HEXDOUBLE
-enum { has_hexdouble = (0x1P2 > 10) };
-double hasHexdouble[has_hexdouble];
+enum { hasHexdouble = (0x1P2 > 10) };
+double has_hexdouble[hasHexdouble];
 #endif
 
 #ifndef SKIP_COMPOUND
@@ -157,37 +191,51 @@ unsigned has_compound_literal(void) {
 #endif
 
 #ifndef SKIP_INITIALIZERS
-unsigned A0[4] = { [3] = 1u };
+unsigned has_designated_array_initializer[4] = { [3] = 1u };
 unsigned A1[] = { [3] = 1u };
-unsigned gets_length_from_initializer[sizeof(A0) == sizeof(A1)];
+unsigned has_length_from_initializer[sizeof(has_designated_array_initializer) == sizeof(A1)];
 struct {
   unsigned first;
   double second;
-} Struct = { .second = 1, .first = 2 };
+} has_designated_struct_initializer = { .second = 1, .first = 2 };
+#endif
+
+#define GLUE2(A, B) A ## B
+#define CONCAT2(A, B) GLUE2(A, B)
+#define STRINGIFY(A) STRINGIFY_(A)
+#define STRINGIFY_(A) #A
+
+#ifndef SKIP_TOKEN_CONCAT
+double has_concat_of_floats_1E = CONCAT2(1E, 3);
+double has_concat_of_floats_1Ep = CONCAT2(1E+, 3);
+/* This one should iteratively compose a double value from left to
+   right. */
+double has_concat_of_floats_iterative = CONCAT2(CONCAT2(CONCAT2(1, E), +), 3);
+/* These ones are tricky. The terms inside the STRINGIFY should lead to
+   valid preprocessing tokens but which are invalid tokens for the
+   following phases. */
+char const has_concat_of_floats_1Ep3Em[] = STRINGIFY(CONCAT2(1E+3E-, 3));
+char const has_concat_of_hash_hash[] = STRINGIFY(CONCAT2(#, #));
 #endif
 
 #ifndef SKIP_EXPANDS
-#define GLUE2(A, B) A ## B
-#define GLUE2_(A, B) GLUE2(A, B)
-#define GLUE4(A, B, C, D) GLUE2_(GLUE2(A, B),GLUE2(C, D));
-unsigned thousand = GLUE4(1, 0, 0, 0);
 
 /* expand arguments after assigment, but before call */
-#define COMMA ,
-#define GLUE1(X) GLUE2(X)
-unsigned determines_macro_arguments_first[GLUE1(0 COMMA 1)];
+# define COMMA ,
+# define GLUE1(X) GLUE2(X)
+unsigned has_determines_macro_arguments_first[GLUE1(0 COMMA 1)];
 
 /* Expand args before ## concatenation */
-#define EATEAT 0
-#define EAT 1
-enum { GLUE2_(eat, GLUE2(EAT, EAT)) = GLUE2(EAT, EAT),
-       GLUE2_(eat, GLUE2_(EAT, EAT)) = GLUE2_(EAT, EAT)};
-unsigned expands_args_before_concatenation[eat11] = { eat0 };
+# define EATEAT 0
+# define EAT 1
+enum { CONCAT2(eat, GLUE2(EAT, EAT)) = GLUE2(EAT, EAT),
+       CONCAT2(eat, CONCAT2(EAT, EAT)) = CONCAT2(EAT, EAT)};
+unsigned has_expands_args_before_concatenation[eat11] = { eat0 };
 #endif
 
 #ifndef SKIP_TRAILING_COMMA
-enum { enumConstant, };
-unsigned allows_trailing_commas[] = { enumConstant, };
+enum { enumConstant, } has_enum_trailing_commas;
+unsigned has_initializer_trailing_commas[] = { 0, };
 #endif
 
 #ifndef SKIP_FLEXIBLE
@@ -199,7 +247,12 @@ typedef union {
   flexible flex;
   char buffer[sizeof(flexible) + 10*sizeof(double)];
 } flex10;
-flex10 flexArray = { .flex.len = 10 };
+flex10 has_flexible_array = { .flex.len = 10 };
+#endif
+
+#ifndef SKIP_RESTRICT
+char restrict_buffer[25];
+char *restrict has_restrict_keyword = restrict_buffer;
 #endif
 
 #ifndef SKIP_STATIC_PARAMETER
@@ -212,30 +265,33 @@ void has_const_parameter(double A[const 10]){
 void has_volatile_parameter(double A[volatile 10]){
  /* empty */
 }
+# ifndef SKIP_RESTRICT
 void has_restrict_parameter(double A[restrict 10]){
  /* empty */
 }
+# endif
 #endif
 
 #ifndef SKIP_COMMENTS
-enum { has_cpp_comment = 2
-       //* all of this is a comment to the end of the line */ 2
-       - 1
+enum { hasCppComment = -2
+       + 3
+       //* for C99 all of this is a comment to the end of the line */ 3
+       /* for C89 this resolves in division by 3 */
 };
-unsigned allows_cpp_comment[has_cpp_comment];
+unsigned has_cpp_comment[hasCppComment];
 #endif
 
 #ifndef SKIP_MIXED
-unsigned allows_arbitrary_declaration(void) {
+unsigned has_mixed_declaration(void) {
   /* infinite recursion, but who cares */
-  allows_arbitrary_declaration();
+  has_mixed_declaration();
   unsigned a = 10;
   return a;
 }
 #endif
 
 #ifndef SKIP_FOR_DECLARATION
-unsigned allows_for_declaration(void) {
+unsigned has_for_declaration(void) {
   unsigned a = 10;
   for (unsigned i = 0; i < a; ++i) {
     a -= i;
@@ -252,28 +308,62 @@ unsigned allows_for_declaration(void) {
 #endif
 
 #ifndef SKIP_IDEM
-unsigned const const has_idempotent_qualifiers = 1;
+unsigned const const has_idempotent_const = 1;
+unsigned volatile volatile has_idempotent_volatile = 1;
+# ifndef SKIP_RESTRICT
+unsigned *restrict restrict has_idempotent_restrict = 0;
+# endif
 #endif
 
 #ifndef SKIP_PRAGMA
-#pragma STDC FP_CONTRACT ON
-#define PRAGMA(MESS) _Pragma(# MESS)
+# pragma STDC FP_CONTRACT ON
+# define PRAGMA(MESS) _Pragma(# MESS)
 PRAGMA(STDC FP_CONTRACT OFF)
 #endif
 
 #ifndef SKIP_FUNC
-void has_func_macro(char const** where) {
+void has_func_macro(char const* where[]) {
   *where = __func__;
  }
 #endif
 
 #ifndef SKIP_LONG_LONG
-long long has_long_long = 1;
+long long has_long_long = 0;
+long long has_ullong_max[-1 + 2*((0ULL - 1) >= 18446744073709551615ULL)];
+#endif
+
+#ifndef SKIP_LONG_DOUBLE
+long double has_long_double = 1.0L;
+#endif
+
+#ifndef SKIP_PREPRO_ARITH
+# if (0 - 1) >= 0
+#  error "this should be a negative value"
+# endif
+/* Unsigned arithmetic should be done in the type that corresponds to
+   uintmax_t and it should use modulo arithmetic. */
+# if ~0U < 0
+#  error "this should be a large positive value"
+# endif
+# if ~0U != (0U - 1)
+#  error "the preprocessor should do modulo arithmetic on unsigned values"
+# endif
+# if (~0U < 65535)
+#  error "this should be a large positive value, at least UINT_MAX >= 2^{16} - 1"
+# endif
+# if (~0U < 4294967295)
+#  error "this should be a large positive value, at least ULONG_MAX >= 2^{32} - 1"
+# endif
+# if (~0U < 18446744073709551615ULL)
+#  error "this should be a large positive value, at least ULLONG_MAX >= 2^{64} - 1"
+# endif
 #endif
 
 #ifndef SKIP_UNIVERSAL
-int has_extended_character = L'\x0401';
-int has_universal_character = L'\u0401';
-int has_Universal_character = L'\U00000401';
-int has_\u0401 = 1;
+int has_hex_character = L'\x0401';
+int has_universal_character_4 = L'\u2118';
+int has_universal_character_8 = L'\U00000401';
+int const* has_universal_string_4 = L"\u2018\u03A7\u2060X\u2019";
+int const* has_universal_string_8 = L"\U00002018\U000003A7\U00002060X\U00002019";
+int has_\u03BA\u03B1\u03B8\u03BF\u03BB\u03B9\u03BA\u03CC\u03C2_\u03c7\u03B1\u03C1\u03B1\u03BA\u03C4\u03AE\u03C1 = 1;
 #endif

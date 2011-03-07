@@ -25,4 +25,4 @@ clean:
 distclean : clean
 
 tidy :
-	for f in *.h ; do  ${TIDY} $$f ; done
+	for f in *.h p99_conformity.c ; do  ${TIDY} $$f ; done
