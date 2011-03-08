@@ -4,7 +4,14 @@ FORCEC = -xc
 
 __THREAD := $(shell echo '__thread int i;' | ${CC} ${CFLAGS} ${FORCEC} -c -o /dev/null - 2> /dev/null || echo "NO")
 
+__TLS := $(shell echo 'extern void *__tls_get_addr (void *ti); int main(void) { __tls_get_addr(0); }' | ${CC} ${CFLAGS} ${FORCEC} -o /dev/null - 2> /dev/null || echo "NO")
+
 ifeq (${__THREAD},NO)
 ${warning thread local storage (TLS) with '__thread' is not supported, switching to pthread_getkey}
 CFLAGS += -D__GNUC_NO_TLS__
+else
+ifeq (${__TLS},NO)
+${warning thread local storage (TLS) is not supported by C library, switching to pthread_getkey}
+CFLAGS += -D__GNUC_NO_TLS__
+endif
 endif
