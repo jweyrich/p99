@@ -63,7 +63,8 @@
 # define P00_COMPILER_PRAGMA_CLANG(STR) _Pragma(STR)
 # undef P99_COMPILER_VERSION
 # define P99_COMPILER_VERSION                                  \
- "clang " P99_STRINGIFY(__clang__)                             \
+ "clang "                                                      \
+ __clang_version__                                             \
  "; gnu "                                                      \
  P99_STRINGIFY(__GNUC__) "."                                   \
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
