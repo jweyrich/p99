@@ -83,7 +83,7 @@ struct p00_vheader {
 inline                                                                                                  \
 T *P99_PASTE2(T, _vnew)(size_t n) {                                                                     \
   size_t N = n*sizeof(T);                                                                               \
-  p00_vheader *head = calloc(sizeof(p00_vheader) + N, 1);                                               \
+  p00_vheader *head = malloc(sizeof(p00_vheader) + N);                                                  \
   T* ret = 0;                                                                                           \
   if (head) {                                                                                           \
     *head = (p00_vheader){ .len = N };                                                                  \
