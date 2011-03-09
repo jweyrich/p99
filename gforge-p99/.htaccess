@@ -1,3 +1,4 @@
+AddDescription "C99 conformance tests" c99-conformance*
 AddDescription "P99 code documentation" p99-html*
 AddDescription "current version" p99.zip
 AddDescription "current version" p99.tgz
