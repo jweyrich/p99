@@ -159,12 +159,16 @@ double has_concat_of_floats_1E = CONCAT2(1E, 3);
 double has_concat_of_floats_1Ep = CONCAT2(1E+, 3);
 /* This one should iteratively compose a double value from left to
    right. */
+# ifndef SKIP_TOKEN_CONCAT_ITERATIVE
 double has_concat_of_floats_iterative = CONCAT2(CONCAT2(CONCAT2(1, E), +), 3);
+# endif
 /* These ones are tricky. The terms inside the STRINGIFY should lead to
    valid preprocessing tokens but which are invalid tokens for the
    following phases. */
-char const has_concat_of_floats_1Ep3Em[] = STRINGIFY(CONCAT2(1E+3E-, 3));
+char const has_concat_of_floats_1Ep3Em[] = STRINGIFY(CONCAT2(CONCAT2(1E+, 3E-), 3));
+# ifndef SKIP_TOKEN_CONCAT_HASH_HASH
 char const has_concat_of_hash_hash[] = STRINGIFY(CONCAT2(#, #));
+# endif
 #endif
 
 #ifndef SKIP_EXPANDS
@@ -208,12 +212,18 @@ char *restrict has_restrict_keyword = restrict_buffer;
 void has_static_parameter(double A[static 10]){
  /* empty */
 }
+#endif
+#ifndef SKIP_CONST_PARAMETER
 void has_const_parameter(double A[const 10]){
  /* empty */
 }
+#endif
+#ifndef SKIP_VOLATILE_PARAMETER
 void has_volatile_parameter(double A[volatile 10]){
  /* empty */
 }
+#endif
+#ifndef SKIP_RESTRICT_PARAMETER
 # ifndef SKIP_RESTRICT
 void has_restrict_parameter(double A[restrict 10]){
  /* empty */
@@ -306,6 +316,7 @@ long double has_long_double = 1.0L;
 # if (~0U < 18446744073709551615ULL)
 #  error "this should be a large positive value, at least ULLONG_MAX >= 2^{64} - 1"
 # endif
+unsigned has_preprocessor_uintmax;
 #endif
 
 #ifndef SKIP_UNIVERSAL
