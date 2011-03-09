@@ -13,9 +13,3 @@
 /*                                                                           */
 #include "orwl_new.h"
 
-P99_INSTANTIATE(size_t, p00_blocks, size_t, size_t);
-P99_INSTANTIATE(size_t, p00_vnew_size_len, size_t);
-P99_INSTANTIATE(void*, p00_vnew, size_t);
-P99_INSTANTIATE(size_t, p00_vlen, void const*);
-P99_INSTANTIATE(void, p00_vdelete, void const*);
-P99_INSTANTIATE(size_t const*, p00_vfind, void const*);

@@ -50,39 +50,23 @@ void P99_PASTE2(T, _delete)(T const*el) {                                       
   }                                                                                                         \
 }
 
-inline
-size_t p00_blocks(size_t n, size_t stride) {
-  return (n / stride) + ((n % stride) ? 1u : 0u);
-}
+P99_DECLARE_STRUCT(p00_vheader);
+P99_DECLARE_UNION(p00_maxalign);
 
-inline
-size_t p00_vnew_size_len(size_t n) {
-  return p00_blocks(n, sizeof(size_t));
-}
+/* A union type to assure the largest possible alignment. */
+union p00_maxalign {
+  void* v;
+  void (*f)(void);
+  double d;
+  uintmax_t u;
+};
 
-inline
-void *p00_vnew(size_t n) {
-  /* add one for the header */
-  size_t *ret = (size_t*)calloc(p00_vnew_size_len(n) + 1, sizeof(size_t));
-  if (!ret) return 0;
-  ret[0] = n;
-  return ret + 1;
-}
-
-inline
-size_t const*p00_vfind(void const*p) {
-  return ((size_t const*)p) - 1;
-}
-
-inline
-size_t p00_vlen(void const*p) {
-  return (p00_vfind(p))[0];
-}
-
-inline
-void p00_vdelete(void const*p) {
-  free((void*)p00_vfind(p));
-}
+/* A header structure for vector allocations. Align the flexible array
+   to the largest possible alignment. */
+struct p00_vheader {
+  size_t len;
+  p00_maxalign data[];
+};
 
 /**
  ** @brief Declare a `new[]' operator for type @a T.
@@ -99,8 +83,11 @@ void p00_vdelete(void const*p) {
 inline                                                                                                  \
 T *P99_PASTE2(T, _vnew)(size_t n) {                                                                     \
   size_t N = n*sizeof(T);                                                                               \
-  T *ret = p00_vnew(N);                                                                                 \
-  if (ret) {                                                                                            \
+  p00_vheader *head = calloc(sizeof(p00_vheader) + N, 1);                                               \
+  T* ret = 0;                                                                                           \
+  if (head) {                                                                                           \
+    *head = (p00_vheader){ .len = N };                                                                  \
+    ret = (T*)head->data;                                                                               \
     for (size_t i = 0; i < n; ++i) {                                                                    \
       P99_PASTE2(T, _init)(ret + i);                                                                    \
     }                                                                                                   \
@@ -116,11 +103,13 @@ T *P99_PASTE2(T, _vnew)(size_t n) {                                             
 inline                                                                                                     \
 void P99_PASTE2(T, _vdelete)(T const*vec) {                                                                \
   if (vec) {                                                                                               \
-    size_t n = p00_vlen(vec) / sizeof(T);                                                                  \
+    p00_vheader* header = (void*)((char*)vec - offsetof(p00_vheader, data));                               \
+    size_t n = header->len / sizeof(T);                                                                    \
     for (T *ve = (T*)vec, *stop = ve + n; ve < stop; ++ve) {                                               \
       P99_PASTE2(T, _destroy)(ve);                                                                         \
     }                                                                                                      \
-    p00_vdelete(vec);                                                                                      \
+    header->len = SIZE_MAX;                                                                                \
+    free(header);                                                                                          \
   }                                                                                                        \
 }
 
