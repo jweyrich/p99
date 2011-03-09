@@ -32,7 +32,7 @@ SRC	=					\
 	orwl_time.c				\
 	orwl_types.c				\
 	orwl_wait_queue.c                       \
-	orwl_graph.c
+	orwl_helpers.c
 
 INCL  	=	# List of *.h
 # The global variables that are used and that are external
