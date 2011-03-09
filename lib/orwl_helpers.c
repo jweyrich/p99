@@ -312,3 +312,19 @@ bool orwl_wait_and_load_init_files(orwl_address_book *ab,
     return false;
   return true;
 }
+
+void orwl_make_connections(size_t id, 
+			   orwl_server *server,
+			   orwl_graph *graph, 
+			   orwl_address_book *ab,
+			   orwl_mirror* locations) {
+  orwl_vertex * me = orwl_graph_find_vertex(graph, id);
+  for (size_t i = 0 ; i < me->nb_neighbors ; i++) {
+    orwl_id * neighbor_id = orwl_address_book_find_id(ab, me->neighbors[i].id);
+    for (size_t j = 0 ; j < me->neighbors[i].nb_locations ; j++) {      
+      orwl_endpoint there = neighbor_id->ep;
+      there.index = me->neighbors[i].locations[j].distant;
+      orwl_mirror_connect(&locations[me->neighbors[i].locations[j].local], server, there);
+    }
+  }
+}

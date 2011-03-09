@@ -4,6 +4,7 @@
 
 #include "orwl_endpoint.h"
 #include "orwl_server.h"
+#include "orwl_remote_queue.h"
 #include "orwl_int.h"
 
 P99_DECLARE_STRUCT(orwl_locations);
@@ -212,5 +213,11 @@ bool orwl_wait_and_load_init_files(orwl_address_book *ab,
 				   size_t nb_id,
 				   size_t *list_id,
 				   const char *lock_filename);
+
+void orwl_make_connections(size_t id, 
+			   orwl_server *server,
+			   orwl_graph *graph, 
+			   orwl_address_book *ab,
+			   orwl_mirror* locations);
 
 #endif
