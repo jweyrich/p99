@@ -4,6 +4,13 @@
 
 #define MAX_LINE_SIZE 2048
 
+DEFINE_NEW_DELETE(orwl_locations);
+DEFINE_NEW_DELETE(orwl_neighbor);
+DEFINE_NEW_DELETE(orwl_vertex);
+DEFINE_NEW_DELETE(orwl_graph);
+DEFINE_NEW_DELETE(orwl_id);
+DEFINE_NEW_DELETE(orwl_address_book);
+
 unsigned strcountchr(char *str, char chr) {
   unsigned count = 0;
   char *ptr = str;

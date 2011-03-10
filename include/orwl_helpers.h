@@ -40,8 +40,6 @@ void orwl_locations_destroy(orwl_locations *locations) {
 }
 
 DECLARE_NEW_DELETE(orwl_locations);
-DEFINE_NEW_DELETE(orwl_locations);
-
 
 struct orwl_neighbor {
   size_t id;
@@ -77,8 +75,6 @@ void orwl_neighbor_destroy(orwl_neighbor *neighbor) {
 }
 
 DECLARE_NEW_DELETE(orwl_neighbor);
-DEFINE_NEW_DELETE(orwl_neighbor);
-
 
 struct orwl_vertex {
   size_t id;
@@ -116,8 +112,6 @@ void orwl_vertex_destroy(orwl_vertex *vertex) {
 }
 
 DECLARE_NEW_DELETE(orwl_vertex);
-DEFINE_NEW_DELETE(orwl_vertex);
-
 
 struct orwl_graph {
   size_t nb_vertices;
@@ -140,8 +134,6 @@ void orwl_graph_destroy(orwl_graph *graph) {
 }
 
 DECLARE_NEW_DELETE(orwl_graph);
-DEFINE_NEW_DELETE(orwl_graph);
-
 
 orwl_graph * orwl_graph_read(orwl_graph * graph, char const* file);
 
@@ -171,7 +163,6 @@ void orwl_id_destroy(orwl_id *id) {
 }
 
 DECLARE_NEW_DELETE(orwl_id);
-DEFINE_NEW_DELETE(orwl_id);
 
 struct orwl_address_book {
   size_t nb_ids;
@@ -200,7 +191,6 @@ void orwl_address_book_destroy(orwl_address_book *ab) {
 }
 
 DECLARE_NEW_DELETE(orwl_address_book);
-DEFINE_NEW_DELETE(orwl_address_book);
 
 orwl_address_book* orwl_address_book_read(orwl_address_book *ab, char const *file);
 
