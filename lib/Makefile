@@ -164,7 +164,7 @@ EXTERNAL_CALLS := ${patsubst %,\t((orwl__FT)%)((void*)0);\n,${EXTERNAL_SYMBOLS}}
 EXTERNAL_PROTS := ${patsubst %,\tvoid* %(void*);\n,${EXTERNAL_SYMBOLS}}
 recurse : liborwl.so
 
-external_symbols.c : Makefile
+external_symbols.c : liborwl.so Makefile
 	@echo "regenerating source file \"external_symbols.c\" with all symbols that ORWL imports"
 	@printf '/** @file external_symbols.c\n' > external_symbols.c
 	@printf ' ** @brief External refferences in the library\n' >> external_symbols.c
@@ -180,7 +180,7 @@ external_symbols.c : Makefile
 ORWL_CASTS := ${patsubst %,\t(orwl__FT)%${COMMA}\n,${ORWL_SYMBOLS}}
 ORWL_PROTS := ${patsubst %,\tvoid* %(void*);\n,${ORWL_SYMBOLS}}
 
-orwl_symbols.c : Makefile
+orwl_symbols.c : liborwl.so Makefile
 	@echo "regenerating source file \"orwl_symbols.c\" with all symbols that OWRL exports"
 	@printf '/** @file orwl_symbols.c\n' > orwl_symbols.c
 	@printf ' ** @brief Orwl refferences in the library\n' >> orwl_symbols.c
