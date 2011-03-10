@@ -32,7 +32,7 @@ unsigned strsplit(char const *str, char str_array[][MAX_LINE_SIZE], char delim) 
   if (strcountchr(tmp, delim) > 0) {
     token = strtok_r(tmp, &delim, &saveptr);
     while (token != NULL) {
-      snprintf(str_array[count], MAX_LINE_SIZE, "%s", token);
+      strncpy(str_array[count], token, MAX_LINE_SIZE);
       token = strtok_r(NULL, &delim, &saveptr);
       count++;
     }
