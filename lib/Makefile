@@ -35,7 +35,10 @@ SRC	=					\
 	orwl_helpers.c
 
 INCL  	=	# List of *.h
-# The global variables that are used and that are external
+
+# The global variables that are used and that are external. These are
+# excluded from the symbols that we require to be resolved at link
+# time.
 GLOBVARS=environ stderr stdout stdin in6addr_any
 ################
 # Optional add #
@@ -134,21 +137,35 @@ ucomp:
 
 liborwl.a : liborwl.a(${OBJS})
 
-liborwl.so : liborwl.a # ${OBJS}
+liborwl.so : liborwl.a
 	${CC} ${LDSHARED} ${OBJS} $(LDFLAGS) $(TARGET_ARCH) -o `pwd`/liborwl.so
+
+orwl_symbols : orwl_symbols.o
+	${CC} -o $@ orwl_symbols.o $(LDFLAGS) $(TARGET_ARCH) -L. -Wl,-rpath,. -L. -lorwl
 
 include Makefile.inc
 
-EXTERNAL_SYMBOLS := ${filter-out ${GLOBVARS}, ${sort ${shell ${NM} liborwl.so | ${NM_UNDEF_FILTER}}}}
-ORWL_SYMBOLS := ${filter-out ${GLOBVARS}, ${sort ${shell ${NM} liborwl.so | ${NM_DEF_FILTER}}}}
+# The symbols that orwl produces (or not) can only be determined once
+# the library is effectively created. Therefore we use recursion for
+# the generation of the two source files. Down in the recursion these
+# symbols can then be determined from liborwl.so and kept inside make
+# variables.
+ifeq (${MAKELEVEL},0)
+external_symbols.c orwl_symbols.c : Makefile liborwl.so
+	${MAKE}	external_symbols.c orwl_symbols.c
+else
 
 COMMA=,
 
+EXTERNAL_SYMBOLS := ${filter-out ${GLOBVARS}, ${sort ${shell ${NM} liborwl.so | ${NM_UNDEF_FILTER}}}}
+ORWL_SYMBOLS := ${filter-out ${GLOBVARS}, ${sort ${shell ${NM} liborwl.so | ${NM_DEF_FILTER}}}}
 EXTERNAL_CASTS := ${patsubst %,\t(orwl__FT)%${COMMA}\n,${EXTERNAL_SYMBOLS}}
 EXTERNAL_CALLS := ${patsubst %,\t((orwl__FT)%)((void*)0);\n,${EXTERNAL_SYMBOLS}}
 EXTERNAL_PROTS := ${patsubst %,\tvoid* %(void*);\n,${EXTERNAL_SYMBOLS}}
+recurse : liborwl.so
 
-external_symbols.c : liborwl.so Makefile
+external_symbols.c : Makefile
+	@echo "regenerating source file \"external_symbols.c\" with all symbols that ORWL imports"
 	@printf '/** @file external_symbols.c\n' > external_symbols.c
 	@printf ' ** @brief External refferences in the library\n' >> external_symbols.c
 	@printf ' **/\n' >> external_symbols.c
@@ -163,7 +180,8 @@ external_symbols.c : liborwl.so Makefile
 ORWL_CASTS := ${patsubst %,\t(orwl__FT)%${COMMA}\n,${ORWL_SYMBOLS}}
 ORWL_PROTS := ${patsubst %,\tvoid* %(void*);\n,${ORWL_SYMBOLS}}
 
-orwl_symbols.c :
+orwl_symbols.c : Makefile
+	@echo "regenerating source file \"orwl_symbols.c\" with all symbols that OWRL exports"
 	@printf '/** @file orwl_symbols.c\n' > orwl_symbols.c
 	@printf ' ** @brief Orwl refferences in the library\n' >> orwl_symbols.c
 	@printf ' **/\n' >> orwl_symbols.c
@@ -175,7 +193,7 @@ orwl_symbols.c :
 	@printf 'return sizeof(orwl_functions)/sizeof(orwl_functions[0]);\n}\n' >> orwl_symbols.c
 	@printf '#endif\n' >> orwl_symbols.c
 
-orwl_symbols : orwl_symbols.o liborwl.so Makefile
-	${CC} -o $@ orwl_symbols.o $(LDFLAGS) $(TARGET_ARCH) -L. -Wl,-rpath,. -L. -lorwl
+endif
+
 tidy :
 	for f in ${SRC} ; do  ${TIDY} $$f ; done
