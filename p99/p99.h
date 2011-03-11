@@ -142,7 +142,7 @@
  ** @section credits Credits and Rights
  ** @subsection author Author and Maintainer
  ** @author <a href="http://www.loria.fr/~gustedt/">Jens Gustedt</a>
- ** @date 2010
+ ** @date 2010 - 2011
  **
  ** @subsection version Version
  **
@@ -152,7 +152,7 @@
  ** ::P99_VERSION_ID, namely $Format:%H$.
  **
  ** @subsection copyright Copyright
- ** Copyright &copy; 2010 Jens Gustedt, INRIA, France, http://www.inria.fr/
+ ** Copyright &copy; 2010-2011 Jens Gustedt, INRIA, France, http://www.inria.fr/
  **
  ** @htmlinclude SHORTLICENCE-open.txt
  **
