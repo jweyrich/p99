@@ -60,6 +60,27 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_STRUCT, 0)
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_UNION, 0)
 #define P99_DECLARE_UNION(NAME) typedef union NAME NAME
 
+
+#define P99_FHEAD(T, F, P) ((T*)(((char*)P) - offsetof(T, F)))
+
+/*
+inline
+void* p00_frealloc(void* p, size_t N, size_t shead, size_t odata, size_t sdata) {
+  if (P99_UNLIKELY(!p && !N)) return 0;
+  size_t len = 0;
+  if (N) {
+    len = odata + N * sdata;
+    if (len < shead) len = shead;
+  }
+  void* h = (p ? (char*)p - sdata : 0);
+  return realloc(h, len);
+}
+*/
+
+#define P99_FMALLOC(T, F, N) malloc(sizeof(T) + sizeof(((T){0}).F) * N)
+#define P99_FREALLOC(T, F, P, N) realloc(P99_FHEAD(T, F, P), sizeof(T) + sizeof(((T){0}).F) * N)
+#define P99_FFREE(T, F, P) free(P99_FHEAD(P))
+
 /** @}
  **/
 

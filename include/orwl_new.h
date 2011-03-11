@@ -68,6 +68,10 @@ struct p00_vheader {
   p00_maxalign data[];
 };
 
+#define P00_VHEAD(P) P99_FHEAD(p00_vheader, data, P)
+#define P00_VDATA(H) ((void*)((H)->data))
+#define P00_VLENG(H) ((H)->len)
+
 /**
  ** @brief Declare vector (de)allocation operators for type @a T.
  **
@@ -102,8 +106,8 @@ T *P99_PASTE2(T, _vrealloc)(T* p, size_t const n) {                             
   size_t o = 0;                                                                                                      \
   p00_vheader* head = 0;                                                                                             \
   if (p) {                                                                                                           \
-    head = (p00_vheader*)((char*)p - offsetof(p00_vheader, data));                                                   \
-    o = head->len / sizeof(T);                                                                                       \
+    head = P00_VHEAD(p);                                                                                             \
+    o = P00_VLENG(head) / sizeof(T);                                                                                 \
     for (size_t i = n; i < o; ++i)                                                                                   \
       P99_PASTE2(T, _destroy)(p + i);                                                                                \
     if (P99_LIKELY(!n)) {                                                                                            \
@@ -113,12 +117,20 @@ T *P99_PASTE2(T, _vrealloc)(T* p, size_t const n) {                             
   }                                                                                                                  \
   /* From here on n is not 0. */                                                                                     \
   size_t N = n*sizeof(T);                                                                                            \
-  head = realloc(head, sizeof(p00_vheader) + N);                                                                     \
-  if (P99_UNLIKELY(!head)) return 0;                                                                                 \
-  head->len = N;                                                                                                     \
-  p = (T*)head->data;                                                                                                \
-  for (size_t i = o; i < n; ++i)                                                                                     \
-    P99_PASTE2(T, _init)(p + i);                                                                                     \
+  size_t R = offsetof(p00_vheader, data) + N;                                                                        \
+  if (offsetof(p00_vheader, data) < sizeof(p00_vheader)                                                              \
+      && R < sizeof(p00_vheader))                                                                                    \
+    R = sizeof(p00_vheader);                                                                                         \
+  p00_vheader* headn = realloc(head, R);                                                                             \
+  if (P99_LIKELY(!!headn)) {                                                                                         \
+    head = headn;                                                                                                    \
+    p = P00_VDATA(head);                                                                                             \
+    for (size_t i = o; i < n; ++i)                                                                                   \
+      P99_PASTE2(T, _init)(p + i);                                                                                   \
+  } else                                                                                                             \
+    /* even if realloc fails we still might have a good value for p if we were trying to shorten the array. */       \
+    if (o < n) return 0;                                                                                             \
+  P00_VLENG(head) = N;                                                                                               \
   return p;                                                                                                          \
 }                                                                                                                    \
 /*! @brief Operator @c new[] for type T   **/                                                                        \
