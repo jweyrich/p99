@@ -11,6 +11,27 @@ DEFINE_NEW_DELETE(orwl_graph);
 DEFINE_NEW_DELETE(orwl_id);
 DEFINE_NEW_DELETE(orwl_address_book);
 
+P99_DEFINE_DEFARG(orwl_locations_init, , P99_0(size_t), P99_0(size_t));
+P99_DEFINE_DEFARG(orwl_neighbor_init, , P99_0(size_t), P99_0(size_t));
+P99_DEFINE_DEFARG(orwl_vertex_init, , P99_0(size_t), P99_0(size_t), P99_0(size_t));
+P99_DEFINE_DEFARG(orwl_graph_init, , P99_0(size_t));
+P99_DEFINE_DEFARG(orwl_id_init, , P99_0(size_t), P99_0(char const*));
+P99_DEFINE_DEFARG(orwl_address_book_init, , P99_0(size_t));
+
+P99_INSTANTIATE(orwl_locations*, orwl_locations_init, orwl_locations*, size_t, size_t);
+P99_INSTANTIATE(void, orwl_locations_destroy, orwl_locations*);
+P99_INSTANTIATE(orwl_neighbor*, orwl_neighbor_init, orwl_neighbor*, size_t, size_t);
+P99_INSTANTIATE(void, orwl_neighbor_destroy, orwl_neighbor*);
+P99_INSTANTIATE(orwl_vertex*, orwl_vertex_init, orwl_vertex*, size_t, size_t, size_t);
+P99_INSTANTIATE(void, orwl_vertex_destroy, orwl_vertex*);
+P99_INSTANTIATE(orwl_graph*, orwl_graph_init, orwl_graph *, size_t);
+P99_INSTANTIATE(void, orwl_graph_destroy, orwl_graph *);
+P99_INSTANTIATE(orwl_id*, orwl_id_init, orwl_id*, size_t, char const*);
+P99_INSTANTIATE(void, orwl_id_destroy, orwl_id*);
+P99_INSTANTIATE(orwl_address_book*, orwl_address_book_init, orwl_address_book *, size_t);
+P99_INSTANTIATE(void, orwl_address_book_destroy, orwl_address_book *);
+
+
 unsigned strcountchr(char *str, char chr) {
   unsigned count = 0;
   char *ptr = str;

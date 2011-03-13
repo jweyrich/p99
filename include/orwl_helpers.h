@@ -19,6 +19,7 @@ struct orwl_locations {
   size_t distant;
 };
 
+inline
 orwl_locations* orwl_locations_init(orwl_locations *locations,
 				    size_t local,
 				    size_t distant) {
@@ -31,11 +32,12 @@ orwl_locations* orwl_locations_init(orwl_locations *locations,
   return locations;
 }
 
+inline
 P99_PROTOTYPE(orwl_locations*, orwl_locations_init, orwl_locations*, size_t, size_t);
 #define orwl_locations_init(...) P99_CALL_DEFARG(orwl_locations_init, 3, __VA_ARGS__)
 P99_DECLARE_DEFARG(orwl_locations_init, , P99_0(size_t), P99_0(size_t));
-P99_DEFINE_DEFARG(orwl_locations_init, , P99_0(size_t), P99_0(size_t));
 
+inline
 void orwl_locations_destroy(orwl_locations *locations) {
 }
 
@@ -47,6 +49,7 @@ struct orwl_neighbor {
   orwl_locations * locations;
 };
 
+inline
 orwl_neighbor* orwl_neighbor_init(orwl_neighbor *neighbor,
 				  size_t id,
 				  size_t nb_locations) {
@@ -62,14 +65,12 @@ orwl_neighbor* orwl_neighbor_init(orwl_neighbor *neighbor,
   return neighbor;
 }
 
+inline
 P99_PROTOTYPE(orwl_neighbor*, orwl_neighbor_init, orwl_neighbor*, size_t, size_t);
 #define orwl_neighbor_init(...) P99_CALL_DEFARG(orwl_neighbor_init, 3, __VA_ARGS__)
 P99_DECLARE_DEFARG(orwl_neighbor_init, , P99_0(size_t), P99_0(size_t));
-P99_DEFINE_DEFARG(orwl_neighbor_init, , P99_0(size_t), P99_0(size_t));
 
-
-
-
+inline
 void orwl_neighbor_destroy(orwl_neighbor *neighbor) {
   orwl_locations_vdelete(neighbor->locations);
 }
@@ -83,6 +84,7 @@ struct orwl_vertex {
   struct orwl_neighbor * neighbors;
 };
 
+inline
 orwl_vertex* orwl_vertex_init(orwl_vertex *vertex,
 			      size_t id,
 			      size_t color,
@@ -101,12 +103,12 @@ orwl_vertex* orwl_vertex_init(orwl_vertex *vertex,
   return vertex;
 }
 
+inline
 P99_PROTOTYPE(orwl_vertex*, orwl_vertex_init, orwl_vertex*, size_t, size_t, size_t);
 #define orwl_vertex_init(...) P99_CALL_DEFARG(orwl_vertex_init, 4, __VA_ARGS__)
 P99_DECLARE_DEFARG(orwl_vertex_init, , P99_0(size_t), P99_0(size_t), P99_0(size_t));
-P99_DEFINE_DEFARG(orwl_vertex_init, , P99_0(size_t), P99_0(size_t), P99_0(size_t));
 
-
+inline
 void orwl_vertex_destroy(orwl_vertex *vertex) {
   orwl_neighbor_vdelete(vertex->neighbors);
 }
@@ -118,17 +120,19 @@ struct orwl_graph {
   orwl_vertex *vertices;
 };
 
+inline
 orwl_graph * orwl_graph_init(orwl_graph * graph, size_t nb_vertices) {
   graph->nb_vertices = nb_vertices;
   graph->vertices = orwl_vertex_vnew(nb_vertices);
   return graph;
 }
 
+inline
 P99_PROTOTYPE(orwl_graph*, orwl_graph_init, orwl_graph *, size_t);
 #define orwl_graph_init(...) P99_CALL_DEFARG(orwl_graph_init, 2, __VA_ARGS__)
 P99_DECLARE_DEFARG(orwl_graph_init, , P99_0(size_t));
-P99_DEFINE_DEFARG(orwl_graph_init, , P99_0(size_t));
 
+inline
 void orwl_graph_destroy(orwl_graph *graph) {
   orwl_vertex_vdelete(graph->vertices);
 }
@@ -142,6 +146,7 @@ struct orwl_id {
   orwl_endpoint ep;
 };
 
+inline
 orwl_id* orwl_id_init(orwl_id *id,
 		      size_t num_id,
 		      char const *host) {
@@ -153,12 +158,12 @@ orwl_id* orwl_id_init(orwl_id *id,
   return id;
 }
 
+inline
 P99_PROTOTYPE(orwl_id*, orwl_id_init, orwl_id*, size_t, char const*);
 #define orwl_id_init(...) P99_CALL_DEFARG(orwl_id_init, 3, __VA_ARGS__)
 P99_DECLARE_DEFARG(orwl_id_init, , P99_0(size_t), P99_0(char const*));
-P99_DEFINE_DEFARG(orwl_id_init, , P99_0(size_t), P99_0(char const*));
 
-
+inline
 void orwl_id_destroy(orwl_id *id) {
 }
 
@@ -169,6 +174,7 @@ struct orwl_address_book {
   orwl_id * ids;
 };
 
+inline
 orwl_address_book* orwl_address_book_init(orwl_address_book *ab,
 					  size_t nb_ids) {
   if (ab) {
@@ -181,11 +187,12 @@ orwl_address_book* orwl_address_book_init(orwl_address_book *ab,
   return ab;
 }
 
+inline
 P99_PROTOTYPE(orwl_address_book*, orwl_address_book_init, orwl_address_book *, size_t);
 #define orwl_address_book_init(...) P99_CALL_DEFARG(orwl_address_book_init, 2, __VA_ARGS__)
 P99_DECLARE_DEFARG(orwl_address_book_init, , P99_0(size_t));
-P99_DEFINE_DEFARG(orwl_address_book_init, , P99_0(size_t));
 
+inline
 void orwl_address_book_destroy(orwl_address_book *ab) {
   orwl_id_vdelete(ab->ids);
 }
