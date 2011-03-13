@@ -68,7 +68,6 @@ struct p00_vheader {
   p00_maxalign data[];
 };
 
-#define P00_VHEAD(P) P99_FHEAD(p00_vheader, data, P)
 #define P00_VDATA(H) ((void*)((H)->data))
 #define P00_VLENG(H) ((H)->len)
 
@@ -106,7 +105,7 @@ T *P99_PASTE2(T, _vrealloc)(T* p, size_t const n) {                             
   size_t o = 0;                                                                                                      \
   p00_vheader* head = 0;                                                                                             \
   if (p) {                                                                                                           \
-    head = P00_VHEAD(p);                                                                                             \
+    head = P99_FHEAD(p00_vheader, data, p);                                                                          \
     o = P00_VLENG(head) / sizeof(T);                                                                                 \
     for (size_t i = n; i < o; ++i)                                                                                   \
       P99_PASTE2(T, _destroy)(p + i);                                                                                \
@@ -117,11 +116,7 @@ T *P99_PASTE2(T, _vrealloc)(T* p, size_t const n) {                             
   }                                                                                                                  \
   /* From here on n is not 0. */                                                                                     \
   size_t N = n*sizeof(T);                                                                                            \
-  size_t R = offsetof(p00_vheader, data) + N;                                                                        \
-  if (offsetof(p00_vheader, data) < sizeof(p00_vheader)                                                              \
-      && R < sizeof(p00_vheader))                                                                                    \
-    R = sizeof(p00_vheader);                                                                                         \
-  p00_vheader* headn = realloc(head, R);                                                                             \
+  p00_vheader* headn = P00_FREALLOC(head, p00_vheader, data, N);                                                     \
   if (P99_LIKELY(!!headn)) {                                                                                         \
     head = headn;                                                                                                    \
     p = P00_VDATA(head);                                                                                             \
