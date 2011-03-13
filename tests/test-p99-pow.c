@@ -290,7 +290,7 @@ multFunc(P99_AARG(double, C, 2, nc),
   double times2 = omp_get_wtime();
   printf("%s time:\t%g\n", "setup", times1 - times0);
   printf("%s time:\t%g\n", "mult", times2 - times1);
-  free(BS);
+  free((void*)BS);
 }
 
 int main(int argc, char*argv[]) {
