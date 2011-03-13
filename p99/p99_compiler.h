@@ -146,7 +146,7 @@
 #  define P99_GCC_VERSION P00_GCC_VERSION(__GNUC__, P00_GNUC_MINOR__, P00_GNUC_PATCHLEVEL__)
 # endif
 
-
+#ifndef P00_DOXYGEN
 #ifdef __cplusplus
 /* C++ as of 1998 is currently not compatible with the macros here. It
    is missing:
@@ -182,6 +182,7 @@ signed p00_trailing_comma_in_initializer__(void) {
    proceed. */
 #  error "The preprocessor is not P99 compatible"
 # endif
+#endif
 #endif
 
 #if P99_COMPILER & P99_COMPILER_INTEL
