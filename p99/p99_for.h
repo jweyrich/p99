@@ -96,6 +96,7 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_FOR, 3)
 #define P00_BAND(NAME, I, X, Y) ((X) & (Y))
 #define P00_OR(NAME, I, X, Y) ((X) || (Y))
 #define P00_AND(NAME, I, X, Y) ((X) && (Y))
+#define P00_TOKJOIN(NAME, I, X, Y) X NAME Y
 
 #define P00_SEQ(NAME, I, REC, X) REC, X
 #define P00_SEP(NAME, I, REC, X) REC; X
@@ -180,6 +181,20 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_BIGFUNC, 1)
  ** @}
  **/
 
+/**
+ ** @brief join a list with a specific token given as first argument
+ **
+ ** Examples
+ ** @code
+ ** P99_TOKJOIN(+, 1, 2, 3)  ->  1+2+3
+ ** P99_TOKJOIN(., f(), a, length)  ->  f().a.length
+ ** @endcode
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_TOKJOIN, 0)
+#define P99_TOKJOIN(TOK, ...)                                           \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                     \
+(__VA_ARGS__)                                                           \
+(P99_FOR(TOK, P99_NARG(__VA_ARGS__), P00_TOKJOIN, P00_IDT, __VA_ARGS__))
 
 /**
  ** @ingroup preprocessor_for
