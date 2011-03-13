@@ -23,7 +23,7 @@
  **/
 
 /**
- ** @addtogroup preprocessor_initialization Iniitalization facilities throught the preprocessor
+ ** @addtogroup preprocessor_initialization Initialization facilities throught the preprocessor
  **
  ** @{
  **/
@@ -110,6 +110,152 @@
  ** the @c T_init function.
  **/
 #define P99_NEW(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2)(P00_NEW(__VA_ARGS__))(P00_NEW_ARGS(__VA_ARGS__))
+
+
+p99_inline
+size_t p99_maxof(size_t m, size_t n) {
+  return m < n ? n : m;
+}
+
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_MINOF, 0)
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_MINOF, 1)
+#define P99_MAXOF(A, B) ((A) < (B) ? (B) : (A))
+
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_MAXOF, 0)
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_MAXOF, 1)
+#define P99_MINOF(A, B) ((A) < (B) ? (A) : (B))
+
+#define P00_SIZEOF2(T, ...) sizeof(P99_TOKJOIN(., ((const T){0}), __VA_ARGS__))
+
+#ifdef P00_DOXYGEN
+/**
+ ** @brief Determine the size of field @a F in structure @a T.
+ **
+ ** Additional parameters in the argument list are joined to @a F with dots.
+ **/
+#define P99_SIZEOF(T, F, ...) P99_IF_EQ(P99_NARG(__VA_ARGS__), 1)(sizeof(__VA_ARGS__))(P00_SIZEOF2(__VA_ARGS__))
+#else
+#define P99_SIZEOF(...) P99_IF_EQ(P99_NARG(__VA_ARGS__), 1)(sizeof(__VA_ARGS__))(P00_SIZEOF2(__VA_ARGS__))
+#endif
+
+/**
+ ** @addtogroup flexible Flexible array members
+ **
+ ** C99 allows to define a flexible array member as the last member of
+ ** a @c struct, namely an array of undetermined length.
+ ** @code
+ ** P99_DECLARE_STRUCT(package_head);
+ ** struct package_head {
+ **   char name[20];
+ **   size_t len;
+ **   uint64_t data[];
+ ** };
+ ** @endcode
+ ** Such a @c struct can then allocated on the heap with a suitable
+ ** size such that the field @c data has as much elements as fit in
+ ** the allocated space from the start of @c data onward. Usually one
+ ** would allocate such @c struct with
+ ** @code
+ ** package_head *a = malloc(sizeof(package_head) + 10 * sizeof(uint64_t));
+ ** package_head *b = malloc(sizeof(*b) + 12 * sizeof(b->data[0]));
+ ** @endcode
+ ** This has several disadvantages. First the syntax is clumsy, we
+ ** have to use a relatively complicated expression that uses two
+ ** elements of the specification of @c a or @c b.
+ **
+ ** Then this is wasting space. Due to packing of the @c struct the
+ ** offset of @c data "inside" the @c struct may be less than
+ ** <code>sizeof(package_head)</code>. In most cases the real size of
+ ** the object that we want to construct is
+ ** @code
+ ** offsetof(package_head, data) + N * sizeof(uint64_t)
+ ** @endcode
+ ** so we are wasting
+ ** @code
+ ** sizeof(package_head) - offsetof(package_head, data)
+ ** @endcode
+ ** bytes.
+ **
+ ** The above formula for the exact size is only valid for larger
+ ** values of @c N. We must also ensure that we allocate at least @c
+ ** sizeof(package_head) bytes. So the complete formula for looks
+ ** something like
+ ** @code
+ ** #define P99_FSIZEOF(T, F, N) P99_MAXOF(sizeof(T), offsetof(T, F) + P99_SIZEOF(T, F[0]) * N)
+ ** @endcode
+ ** which is probably not something that you want to write on a daily base.
+ **
+ ** We provide several interfaces to allocate @c struct with flexible members
+ ** @see P99_FCALLOC
+ ** @see P99_FMALLOC
+ ** @see P99_FREALLOC
+ ** @{
+ **/
+
+/**
+ ** @def P99_FHEAD
+ ** @brief For a pointer @a P to a flexible @c struct member @a F in
+ ** @c struct T find the start address of the container.
+ **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_FHEAD, 0)
+#define P99_FHEAD(T, F, P) ((T*)(((char*)P) - offsetof(T, F)))
+
+/**
+ ** @def P99_FSIZEOF
+ ** @brief Compute the size for an instance of @c struct T that is
+ ** able to hold @a N items in flexible @c struct member @a F.
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_FSIZEOF, 2)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_FSIZEOF, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FSIZEOF, 1)
+#define P99_FSIZEOF(T, F, N) P99_MAXOF(sizeof(T), offsetof(T, F) + P99_SIZEOF(T, F[0]) * N)
+#define P00_FSIZEOF(T, F, M) p99_maxof(sizeof(T), offsetof(T, F) + M)
+
+#define P00_FREALLOC(P, T, F, M) realloc(P, P00_FSIZEOF(T, F, M))
+/**
+ ** @def P99_FREALLOC
+ ** @brief Reallocate an instance @a P of @c struct T such that it is
+ ** able to hold @a N items in flexible @c struct member @a F.
+ **
+ ** No initialization of the instance is performed.
+ **
+ ** This behaves analogous to @c realloc. In particular, the object
+ ** can be moved to a different location, and therefore the return
+ ** value must always be checked.
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_FREALLOC, 3)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_FREALLOC, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FREALLOC, 2)
+#define P99_FREALLOC(P, T, F, N) realloc(P, P99_FSIZEOF(T, F, N))
+
+/**
+ ** @def P99_FMALLOC 
+ ** @brief Allocate an instance of @c struct T that is able to hold @a
+ ** N items in flexible @c struct member @a F.
+ **
+ ** No initialization of the instance is performed.
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_FMALLOC, 2)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_FMALLOC, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FMALLOC, 1)
+#define P99_FMALLOC(T, F, N) malloc(P99_FSIZEOF(T, F, N))
+#define P00_FMALLOC(T, F, M) malloc(P00_FSIZEOF(T, F, M))
+/**
+ ** @def P99_FCALLOC
+ ** @brief Allocate an instance of @c struct T that is able to hold @a
+ ** N items in flexible @c struct member @a F
+ **
+ ** Initialization of the instance is performed as for @c calloc.
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_FCALLOC, 2)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_FCALLOC, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FCALLOC, 1)
+#define P99_FCALLOC(T, F, N) calloc(P99_FSIZEOF(T, F, N),1)
+#define P00_FCALLOC(T, F, M) calloc(P00_FSIZEOF(T, F, M),1)
+
+/**
+ ** @}
+ **/
 
 /**
  ** @}
