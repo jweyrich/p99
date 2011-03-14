@@ -62,6 +62,17 @@ unsigned strsplit(char const *str, char str_array[][MAX_LINE_SIZE], char delim) 
   return count;
 }
 
+unsigned pow2(unsigned exp) {
+  if (exp > 0) {
+    unsigned n = 1;
+    for (unsigned i = 1 ; i < exp ; i++)
+      n <<= 1;
+    return n;
+  } else {
+    return 0;
+  }
+}
+
 orwl_neighbor * orwl_graph_find_neighbor(orwl_vertex *vertex, size_t id) {
   if (vertex != NULL)
     for (size_t i = 0 ; i < vertex->nb_neighbors ; i++)
@@ -355,4 +366,108 @@ void orwl_make_connections(size_t id,
       orwl_mirror_connect(&locations[me->neighbors[i].locations[j].local], server, there);
     }
   }
+}
+
+
+bool rpc_check_colored_init_finished(void) {
+  /* TODO something here */
+
+  return true;
+}
+
+
+size_t orwl_get_neighbors_in_undirected_graph(orwl_vertex **my_neighbors,
+					      orwl_vertex * me,
+					      size_t max_neighbors,
+					      orwl_graph *graph) {
+  size_t current = 0;
+  /* first we add the neighbors where I request locks */
+  for (size_t i = 0 ; i < me->nb_neighbors ; i++)
+    my_neighbors[current++] = orwl_graph_find_vertex(graph, me->neighbors[i].id);
+  /* then we add the neighbors that request my locks */
+  for (size_t i = 0 ; i < graph->nb_vertices ; i++) {
+    if (orwl_graph_find_neighbor(&graph->vertices[i], me->id) != NULL) {
+      bool found = false;
+      for (size_t j = 0 ; j < current ; j++) {
+	if (&graph->vertices[i] == my_neighbors[j]) {
+	  found = true;
+	  break;
+	}
+      }
+      if (!found) {
+	my_neighbors[current++] = &graph->vertices[i];
+      }
+    }
+  }
+  return current;
+}
+
+void orwl_wait_to_initialize_locks(size_t id,
+				   orwl_graph *graph,
+				   orwl_server *server,
+				   orwl_mirror *my_locations,
+				   orwl_handle *h,
+				   size_t nb_locations) {
+  orwl_vertex * me = orwl_graph_find_vertex(graph, id);
+  orwl_vertex * my_neighbors[graph->nb_vertices];
+  for (size_t i = 0 ; i < graph->nb_vertices ; i++)
+    my_neighbors[i] = NULL;
+
+  size_t nb = orwl_get_neighbors_in_undirected_graph(my_neighbors,
+						     me,
+						     graph->nb_vertices,
+						     graph);
+  bool should_wait;
+  do { 
+    should_wait = false;
+    for (size_t i = 0 ; i < nb ; i++) {
+      if (my_neighbors[i]->color < me->color) {
+	//is it already finished ? if yes, we can go
+	if (!rpc_check_colored_init_finished()) {
+	  should_wait = true;
+	  sleepfor(0.5);
+	  break;
+	}
+      }
+    }
+  } while (should_wait);
+
+  for (size_t i = 0 ; i < nb_locations ; i++) {
+    orwl_write_request(my_locations, &h[i]);
+    orwl_acquire(&h[i]);
+  }
+
+  ORWL_CRITICAL {
+    server->id_initialized = server->id_initialized | pow2(id);
+  }
+}
+
+void orwl_wait_to_start(size_t id,
+			orwl_graph *graph,
+			orwl_server *server,
+			orwl_handle *h,
+			size_t nb_locations) {
+  orwl_vertex * me = orwl_graph_find_vertex(graph, id);
+  orwl_vertex * my_neighbors[graph->nb_vertices];
+  for (size_t i = 0 ; i < graph->nb_vertices ; i++)
+    my_neighbors[i] = NULL;
+  
+  size_t nb = orwl_get_neighbors_in_undirected_graph(my_neighbors,
+						     me,
+						     graph->nb_vertices,
+						     graph);
+  bool should_wait;
+  do {
+    should_wait = false;
+    for (size_t i = 0 ; i < nb ; i++) {
+      if (!rpc_check_colored_init_finished()) {
+	should_wait = true;
+	sleepfor(0.5);
+	break;
+      }
+    }
+  } while (should_wait);
+
+  for (size_t i = 0 ; i < nb_locations ; i++)
+    orwl_release(&h[i]);
 }

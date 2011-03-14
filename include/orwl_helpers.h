@@ -217,4 +217,17 @@ void orwl_make_connections(size_t id,
 			   orwl_address_book *ab,
 			   orwl_mirror* locations);
 
+void orwl_wait_to_initialize_locks(size_t id,
+				   orwl_graph *graph,
+				   orwl_server *server,
+				   orwl_mirror *my_locations,
+				   orwl_handle *h,
+				   size_t nb_locations);
+
+void orwl_wait_to_start(size_t id,
+			orwl_graph *graph,
+			orwl_server *server,
+			orwl_handle *h,
+			size_t nb_locations);
+
 #endif

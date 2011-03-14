@@ -41,6 +41,7 @@ orwl_server* orwl_server_init(orwl_server *serv,
       .max_queues = max_queues,
       .wqs = max_queues ? orwl_wq_vnew(max_queues) : P99_0(void*),
       .host = ORWL_HOST_INITIALIZER(serv->host, 0, 0, 1),
+      .id_initialized = 0,
     };
     if (endp && endp[0]) orwl_endpoint_parse(&serv->host.ep, endp);
   }
