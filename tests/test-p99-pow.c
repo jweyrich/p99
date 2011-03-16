@@ -13,7 +13,7 @@
 /*                                                                           */
 #include "p99_for.h"
 #include "p99_map.h"
-#include "p99_map.h"
+#include "p99_new.h"
 #include "p99_c99_default.h"
 
 #ifdef _OPENMP
@@ -59,6 +59,24 @@ zeroOutFunc(P99_AARG(double, C, 2)) {
 /* The user interface. It receives just one argument the pointer to
    the matrix. */
 #define zeroOut(VC) zeroOutFunc(P99_ACALL(VC, 2))
+
+/* Check a 2D double array if it is all 0.0, the (more or less) hidden function. */
+/* The array is called C. The lengths are not accessible through a
+   name, but only trough the ::P99_ALEN macro. */
+inline
+bool
+checkZeroFunc(P99_AARG(double, C, 2)) {
+  P99_PARALLEL_DO(size_t, i, 0, P99_ALEN(*C, 0)) {
+    P99_PARALLEL_DO(size_t, j, 0, P99_ALEN(*C, 1)) {
+      if ((*C)[i][j] != 0.0) return false;
+    }
+  }
+  return true;
+}
+
+/* The user interface. It receives just one argument the pointer to
+   the matrix. */
+#define checkZero(VC) checkZeroFunc(P99_ACALL(VC, 2))
 
 /* Compute the dot-product of two double vectors, the (more or less) hidden function. */
 /* The two vectors are called A and B. Their length are not accessible
@@ -166,6 +184,9 @@ multFunc(P99_ACALL(CRR, 2, double),                            \
 P99_INSTANTIATE(void, zeroOutFunc,
                 P99_AARG(double, C, 2));
 
+P99_INSTANTIATE(bool, checkZeroFunc,
+                P99_AARG(double, C, 2));
+
 P99_INSTANTIATE(double, dotproductFunc,
                 double,
                 P99_AARG(double const, A, 1),
@@ -227,7 +248,7 @@ multFunc(P99_AARG(double, C, 2, nc),
   double times0 = omp_get_wtime();
   /* transpose B to have its columns consecutive in memory */
   double const P99_ARRAY(*BS, nb1, nb0) = transpose(B);
-  zeroOut(C);
+  assert(checkZero(C));
   double times1 = omp_get_wtime();
 
   /* The loop for the dot product cannot be easily parallelized
@@ -342,7 +363,7 @@ int main(int argc, char*argv[]) {
   size_t const E[2] = {k, m};
   P99_FORALL(E, i, j)
     (*BR)[i][j] = j + i;
-  P99_AREF(double, CR, n, m) = malloc(sizeof(*CR));
+  P99_AREF(double, CR, n, m) = P99_CALLOC(double, n*m);
   mult(CR, AR, BR);
   free(AR);
   free(BR);

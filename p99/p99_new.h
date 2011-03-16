@@ -45,6 +45,8 @@
  **
  ** This is a macro not a function, but anyhow @a X is evaluated only
  ** once.
+ ** @see P99_MEMZERO for a macro that initializes to a default value
+ ** that is guaranteed to correspond to the type.
  **/
 #define P99_PZERO(X, N) (memset((X), 0, sizeof(X[0]) * N))
 
@@ -56,25 +58,127 @@
  **
  ** This is a macro not a function, but anyhow @a X is evaluated only
  ** once.
+ ** @see P99_MEMZERO for a macro that initializes to a default value
+ ** that is guaranteed to correspond to the type.
  **/
 #define P99_TZERO(...) (memset(&(__VA_ARGS__), 0, sizeof(__VA_ARGS__)))
 
 
+p99_inline
+void* p00_memset(void* target, void const* source, size_t size, size_t number) {
+  register char *p = target;
+  for (size_t i = 0; i < number; ++i, p += size)
+    memcpy(p, source, size);
+  return target;
+}
+
+/**
+ ** @brief A type oriented replacement for @c memset
+ **
+ ** Initialize the object to which @a TA points with @a N copies of
+ ** object @a SO. Generally the idea is that @c TA is a pointer to an
+ ** object of the type of @a SO.
+ **
+ ** This similar to @c memset with the extra feature that @a SO may be
+ ** of any type.
+ **
+ ** @warning @c *TA must be large enough to hold the @a N copies,
+ ** otherwise the behavior is undefined.
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MEMSET, 1)
+#define P99_MEMSET(TA, SO, N) p00_memset((TA), (void const*)&(SO), sizeof(SO), N)
+
+/**
+ ** @brief A type oriented replacement for @c memset with argument @c 0.
+ **
+ ** Initialize the object to which @a TA points with @a N copies of a
+ ** default object of type @a T. Generally the idea is that @c TA is a
+ ** pointer to an object of type @a T.
+ **
+ ** @warning @c *TA must be large enough to hold the @a N copies,
+ ** otherwise the behavior is undefined.
+ **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_MEMZERO, 0)
+#define P99_MEMZERO(T, TA, N) p00_memset((TA), (void const*)&P99_LVAL(const T), sizeof(T), N)
+
 /**
  ** @}
  **/
-
-
-#define P00_NEW(T) P99_PASTE2(T, _init)((T*)malloc(sizeof(T)))
-
-#define P00_NEW_ARGS(T, ...) P99_PASTE2(T, _init)((T*)malloc(sizeof(T)), __VA_ARGS__)
-
 
 /**
  ** @addtogroup preprocessor_allocation Allocation facilities throught the preprocessor
  **
  ** @{
  **/
+
+#define P00_MALLOC0(T, N) malloc(sizeof(T)*N)
+#define P00_MALLOC(...) P00_MALLOC0(__VA_ARGS__)
+
+/**
+ ** @brief A type oriented @c malloc wrapper
+ **
+ ** This macro receives one or two arguments. The first is an
+ ** expression that is evaluated for its size. The second is optional
+ ** and controls how may objects of the type of the expression should
+ ** be created.
+ ** @code
+ ** double * a = P99_MALLOC(*a, 10); // allocate an array of 10 double
+ ** node * n = P99_MALLOC(node);     // allocate a new node
+ ** @endcode
+ ** @warning As for the C library routine the allocated space is
+ ** uninitialized. Better use ::P99_CALLOC wherever possible. In
+ ** particular as in the second example, when you might have a dynamic
+ ** data structure with pointers.
+ **/
+#define P99_MALLOC(...)  P00_MALLOC(P99_CALL_DEFARG_LIST(P00_MALLOC, 2, __VA_ARGS__))
+
+#define P00_MALLOC_defarg_1() 1
+
+p99_inline
+void* p00_calloc(void const* source, size_t size, size_t number) {
+  return p00_memset(malloc(size*number), source, size, number);
+}
+
+#define P00_CALLOC0(T, N) p00_calloc((void const*)&P99_LVAL(const T), sizeof(T), N)
+#define P00_CALLOC(...) P00_CALLOC0(__VA_ARGS__)
+
+/**
+ ** @brief A type oriented replacement for @c calloc
+ **
+ ** This similar to ::P99_MALLOC with the extra feature that the
+ ** allocated space is initialized with the default as if the variable
+ ** or array would have been declared static.
+ **
+ ** This macro receives one or two arguments. The first is a @em type
+ ** expression that is evaluated for the size of the type and used to
+ ** construct a default initializer for the type. The second is
+ ** optional and controls how may objects of the type should be
+ ** created.
+ ** @code
+ ** double * a = P99_CALLOC(double, 10); // allocate and initialize an array of 10 double
+ ** node * n = P99_CALLOC(node);     // allocate and initialize a new node
+ ** @endcode
+ **
+ ** Observe that here the @c double array @c a is initialized with the
+ ** default initializer @c 0.0 for doubles. As on a given platform @c
+ ** 0.0 might be represented differently than an all-zero-bit object
+ ** this might or might not be different from using plain @c calloc.
+ **
+ ** For @c n the advantage might be that the type @c node has pointer
+ ** fields. These then are correctly initialized to null pointers. As
+ ** on a given platform null pointers might be represented differently
+ ** than an all-zero-bit object this might or might not be different
+ ** from using plain @c calloc.
+ **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_CALLOC, 0)
+#define P99_CALLOC(...) P00_CALLOC(P99_CALL_DEFARG_LIST(P00_CALLOC, 2, __VA_ARGS__))
+
+#define P00_CALLOC_defarg_1() 1
+
+#define P00_NEW(T) P99_PASTE2(T, _init)(P99_MALLOC(T))
+
+#define P00_NEW_ARGS(T, ...) P99_PASTE2(T, _init)(P99_MALLOC(T), __VA_ARGS__)
+
 
 /**
  ** @brief Allocate an element of type @c T as given by the first
