@@ -56,7 +56,7 @@
  ** #define P00_SEP(NAME, I, REC, RES) REC; RES
  ** #define P00_VASSIGN(NAME, X, I) X = (NAME)[I]
  **
- ** P99_FOR(A, 2, P00_SEQ, P00_VASSIGN, toto, tutu);
+ ** P99_FOR(A, 2, P00_SEP, P00_VASSIGN, toto, tutu);
  ** @endcode
  **
  ** Will result in
