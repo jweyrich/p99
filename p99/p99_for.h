@@ -87,6 +87,7 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_FOR, 3)
 #define P00_NAM(NAME, X, I) NAME
 #define P00_NAME_I(NAME, X, I) P99_PASTE2(NAME, I)
 #define P00_STR(NAME, X, I) P99_STRINGIFY(X)
+#define P00_ISIT(WHAT, X, I) (X) WHAT
 
 #define P00_SUM(NAME, I, X, Y) ((X) + (Y))
 #define P00_PROD(NAME, I, X, Y) ((X) * (Y))
@@ -176,6 +177,136 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_BIGFUNC, 1)
  ** @brief Realize the right associative logical and of all the arguments.
  **/
 #define P99_ANDS(...) P99_BIGOP(P00_AND, P99_NARG(__VA_ARGS__),__VA_ARGS__)
+
+
+/**
+ ** @brief Check if argument @a FIRST is equal to one of the other
+ ** elements in the list
+ **
+ ** Use this as the following:
+ ** @code
+ ** if (P99_IS_ONE(23, b, c, d, e, f)) {
+ **   // one of the guys is 23, do something special
+ ** } else {
+ **   // handle the base case
+ ** }
+ ** @endcode
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_IS_ONE, 0)
+#define P99_IS_ONE(FIRST, ...) P99_FOR(== (FIRST), P99_NARG(__VA_ARGS__), P00_OR, P00_ISIT, __VA_ARGS__)
+
+/**
+ ** @brief Check if the arguments in the list are all equal
+ **
+ ** Use this as the following:
+ ** @code
+ ** if (P99_ARE_EQ(a, b, c, d, e, f)) {
+ **   // all are equal, do something special
+ ** } else {
+ **   // handle the base case
+ ** }
+ ** @endcode
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_ARE_EQ, 0)
+#define P99_ARE_EQ(FIRST, ...) P99_FOR(== (FIRST), P99_NARG(__VA_ARGS__), P00_AND, P00_ISIT, __VA_ARGS__)
+
+/**
+ ** @brief Check if argument @a FIRST is less than the other elements in the list
+ **
+ ** Use this as the following:
+ ** @code
+ ** if (P99_IS_MIN(a, b, c, d, e, f)) {
+ **   // a is smallest, do something special
+ ** } else {
+ **   // handle the base case
+ ** }
+ ** @endcode
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_IS_MIN, 0)
+#define P99_IS_MIN(FIRST, ...) P99_FOR(>= (FIRST), P99_NARG(__VA_ARGS__), P00_AND, P00_ISIT, __VA_ARGS__)
+
+/**
+ ** @brief Check if argument @a FIRST is less or equal than the other elements in the list
+ **
+ ** Use this as the following:
+ ** @code
+ ** if (P99_IS_INF(a, b, c, d, e, f)) {
+ **   // a is smallest, do something special
+ ** } else {
+ **   // handle the base case
+ ** }
+ ** @endcode
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_IS_INF, 0)
+#define P99_IS_INF(FIRST, ...) P99_FOR(> (FIRST), P99_NARG(__VA_ARGS__), P00_AND, P00_ISIT, __VA_ARGS__)
+
+/**
+ ** @brief Check if argument @a FIRST is strictly greater than the other elements in the list
+ **
+ ** Use this as the following:
+ ** @code
+ ** if (P99_IS_MAX(a, b, c, d, e, f)) {
+ **   // a is largest, do something special
+ ** } else {
+ **   // handle the base case
+ ** }
+ ** @endcode
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_IS_MAX, 0)
+#define P99_IS_MAX(FIRST, ...) P99_FOR(<= (FIRST), P99_NARG(__VA_ARGS__), P00_AND, P00_ISIT, __VA_ARGS__)
+
+/**
+ ** @brief Check if argument @a FIRST is greater or equal the other elements in the list
+ **
+ ** Use this as the following:
+ ** @code
+ ** if (P99_IS_SUP(a, b, c, d, e, f)) {
+ **   // a is largest, do something special
+ ** } else {
+ **   // handle the base case
+ ** }
+ ** @endcode
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_IS_SUP, 0)
+#define P99_IS_SUP(FIRST, ...) P99_FOR(< (FIRST), P99_NARG(__VA_ARGS__), P00_AND, P00_ISIT, __VA_ARGS__)
+
+/**
+ ** @brief Check if the arguments in the list are ordered according to
+ ** the operation @a OP.
+ **
+ ** Use this as the following:
+ ** @code
+ ** if (P99_ARE_ORDERED(<=, a, b, c, d, e, f)) {
+ **   // all are in order, do something special
+ ** } else {
+ **   // handle the base case
+ ** }
+ ** @endcode
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_ARE_ORDERED, 0)
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_ARE_ORDERED, 1)
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_ARE_ORDERED, 2)
+#define P99_ARE_ORDERED(OP, ...) P00_ARE_ORDERED(OP, P99_NARG(__VA_ARGS__), __VA_ARGS__)
+
+#define P00_ARE_ORDERED(OP, N, ...)                     \
+P99_IF_LT(N, 3)                                         \
+(P00_ARE_ORDERED2(OP,__VA_ARGS__))                      \
+(P00_ARE_ORDERED3(OP, P99_PRED(N), __VA_ARGS__))
+
+#define P00_ARE_ORDERED2(OP, X, Y) (X) OP (Y)
+
+#define P00_ARE_ORDERED3(OP, N, ...)                    \
+((P99_SUB(0, 1, __VA_ARGS__))                           \
+ OP P00_ARE_ORDERED_MID(OP, P99_PRED(N), __VA_ARGS__)   \
+ OP (P99_SUB(N, 1, __VA_ARGS__)))
+
+#define P00_ARE_ORDERED_MID(OP, N, ...)                                     \
+P99_FOR(OP, N, P00_ARE_ORDERED_OP, P00_ARE_ORDERED_AND, P99_SUB(1, N, __VA_ARGS__))
+
+#define P00_ARE_ORDERED_AND(_0, X, _2) (X)) && ((X)
+#define P00_ARE_ORDERED_OP(OP, _1, X, Y) X OP Y
+
+
 
 /**
  ** @}

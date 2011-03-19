@@ -75,7 +75,9 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_IPOW, 1)
  **/
 #define P99_ADDS(...) P00_ADDS(P99_NARG(__VA_ARGS__),__VA_ARGS__)
 
+#ifndef P00_DOXYGEN
 P99_DECLARE_STRUCT(p00_strcat_state);
+#endif
 
 struct p00_strcat_state {
   char* buffer;
