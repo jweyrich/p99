@@ -194,12 +194,27 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
   Arg->ret = ret;
 }
 
+DEFINE_AUTH_SOCK_FUNC(auth_sock_check_initialization, uint64_t id_pow2) {
+  AUTH_SOCK_READ(Arg, auth_sock_check_initialization, uint64_t id_pow2);
+  bool finished = false;
+
+  while (!finished) {
+    ORWL_CRITICAL {
+      if ((Arg->srv->id_initialized & id_pow2) == id_pow2)
+	finished = true;
+    }
+    sleepfor(0.5);
+  }
+  Arg->ret = 1;
+}
+
 DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
                          ORWL_REGISTER_ALIAS(auth_sock_insert_peer, auth_sock),
                          ORWL_REGISTER_ALIAS(auth_sock_insert_host, auth_sock),
                          ORWL_REGISTER_ALIAS(auth_sock_do_nothing, auth_sock),
                          ORWL_REGISTER_ALIAS(auth_sock_write_request, auth_sock),
                          ORWL_REGISTER_ALIAS(auth_sock_read_request, auth_sock),
-                         ORWL_REGISTER_ALIAS(auth_sock_release, auth_sock)
+                         ORWL_REGISTER_ALIAS(auth_sock_release, auth_sock),
+			 ORWL_REGISTER_ALIAS(auth_sock_check_initialization, auth_sock)
                          );
 

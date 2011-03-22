@@ -23,6 +23,7 @@ DECLARE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID);
 DECLARE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port);
 DECLARE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port);
 DECLARE_AUTH_SOCK_FUNC(auth_sock_do_nothing, void);
+DECLARE_AUTH_SOCK_FUNC(auth_sock_check_initialization, uint64_t id_pow2);
 
 
 #endif 	    /* !ORWL_AUTH_SOCK_FUNCTIONS_H_ */
