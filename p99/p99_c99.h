@@ -40,6 +40,7 @@
 #include <limits.h>
 #include <locale.h>
 #include <math.h>
+#include <regex.h>
 #include <setjmp.h>
 #include <signal.h>
 #include <stdarg.h>
