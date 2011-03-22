@@ -5,7 +5,8 @@ COPYCLOSED = "all rights reserved, "
 LICENSECLOSED = SHORTLICENCE-closed.txt
 COPY = "(C) copyright "
 LICENSE = SHORTLICENCE-open.txt
-TIDY = ../../parxxl/scripts/findSvnAuthors --type c --copy ${COPY} --lice ${LICENSE} --ofile
+AUTH = ../scripts/AUTHORS.txt
+TIDY = ../../parxxl/scripts/findSvnAuthors --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
 
 target : p99_generated.h check
 
@@ -13,7 +14,11 @@ p99_generated.h : ../scripts/p99_generate.pl
 	../scripts/p99_generate.pl > $@
 
 check : *.h
-	../scripts/p99_find_macros.pl p99_*.h | ../scripts/p99_find_ternary.pl | ../scripts/p99_find_args.pl
+	../scripts/p99_find_macros.pl p99_*.h | ../scripts/p99_find_ternary.pl | ../scripts/p99_find_args.pl --prefix="non VM types: "
+	../scripts/p99_find_macros.pl p99_*.h | ../scripts/p99_find_ternary.pl --sizeof | ../scripts/p99_find_args.pl --prefix="possible VLA: "
+
+check-vla : *.h
+	../scripts/p99_find_macros.pl p99_*.h --sizeof | ../scripts/p99_find_ternary.pl --sizeof | ../scripts/p99_find_args.pl  --prefix="watch for VLA: "
 
 TAGS : *.h
 	etags *.h
@@ -25,4 +30,4 @@ clean:
 distclean : clean
 
 tidy :
-	for f in *.h p99_conformity.c ; do  ${TIDY} $$f ; done
+	for f in *.h p99_conformity.c p99_special.c ; do  ${TIDY} $$f ; done

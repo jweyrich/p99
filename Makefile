@@ -1,7 +1,7 @@
 
 DIRS = ./include ./p99 ./lib ./tests
 
-P99_SOURCES = ./p99/*.h ./tests/test-p99*.c
+P99_SOURCES = ./p99/*.h ./p99/p99_special.c ./tests/test-p99*.c
 P99_DOXY = ./doxy/p99-doxygen
 
 P99FILES =  ${P99_SOURCES} ${P99_DOXY}

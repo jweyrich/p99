@@ -43,7 +43,7 @@
  ** This declaration should also be suitable to be included into a C++
  ** source.
  **/
-P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_STRUCT, 0)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_STRUCT, 0)
 #define P99_DECLARE_STRUCT(NAME) typedef struct NAME NAME
 
 
@@ -57,7 +57,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_STRUCT, 0)
  ** This declaration should also be suitable to be included into a C++
  ** source.
  **/
-P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_UNION, 0)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_UNION, 0)
 #define P99_DECLARE_UNION(NAME) typedef union NAME NAME
 
 /** @}

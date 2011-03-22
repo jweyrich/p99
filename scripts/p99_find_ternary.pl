@@ -18,6 +18,13 @@ if 0;               #### for this magic, see findSvnAuthors ####
 #
 
 use English;
+use Getopt::Long;
+
+my $sizeof;
+
+my $result = GetOptions ("sizeof!"        => \${sizeof},      # flag
+    );
+
 
 open(PIPE, ">-");
 
@@ -32,10 +39,8 @@ while (<STDIN>) {
         my $i = 0;
         s/[:]/,/go;
         s/_Pragma//go;
-        #s|COMMENTSTART|/*|go;
-        #s|COMMENTEND|*/|go;
         s|MACRODEFINE|#define |go;
-        s|sizeof|P00_IGNORE|go;
+        s|sizeof|P00_IGNORE|go if (!defined($sizeof));
         while (m/\(1 \?/) {
             s/\(1 \?/"P00FIRST".++$i."("/e;
         }
