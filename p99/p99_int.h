@@ -202,6 +202,7 @@ typedef extendedInt p99x_int128;
  **
  ** The returning expression is of type @c uintmax_t
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TO_UNSIGNED, 0)
 P00_DOCUMENT_MACRO_ARGUMENT(P99_TO_UNSIGNED, 1)
 #define P99_TO_UNSIGNED(T, MACRO)                              \
 ((uintmax_t)                                                   \
@@ -270,6 +271,7 @@ P00_DOCUMENT_UNSIGNED(3)
  **
  ** The returning expression is of type @c uintmax_t
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_UT_MAX, 0)
 #define P99_UT_MAX(T) (P99_M1U(T))
 
 /**
@@ -854,6 +856,7 @@ P00_DECLARE_OVERFLOW(ll);
  **/
 #define P99_RVAL(T, ...) (P99_LVAL(T) = (__VA_ARGS__))
 
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_CHOOSE5, 0)
 #define P99_CHOOSE5(xT, cc, cs, ci, cl, cll)                   \
 ((sizeof(xT) < sizeof(int))                                    \
  ? ((sizeof(xT) < sizeof(short))                               \
@@ -865,6 +868,8 @@ P00_DECLARE_OVERFLOW(ll);
        : cl)                                                   \
     : cll))
 
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_PRI, 0)
 #define P99_PRI(xT, F, LEN)                                    \
 P99_CHOOSE5(xT,                                                \
             "%" #LEN "hh" #F,                                  \

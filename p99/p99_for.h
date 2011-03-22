@@ -288,19 +288,19 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_ARE_ORDERED, 1)
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_ARE_ORDERED, 2)
 #define P99_ARE_ORDERED(OP, ...) P00_ARE_ORDERED(OP, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
-#define P00_ARE_ORDERED(OP, N, ...)                     \
-P99_IF_LT(N, 3)                                         \
-(P00_ARE_ORDERED2(OP,__VA_ARGS__))                      \
+#define P00_ARE_ORDERED(OP, N, ...)                            \
+P99_IF_LT(N, 3)                                                \
+(P00_ARE_ORDERED2(OP,__VA_ARGS__))                             \
 (P00_ARE_ORDERED3(OP, P99_PRED(N), __VA_ARGS__))
 
 #define P00_ARE_ORDERED2(OP, X, Y) (X) OP (Y)
 
-#define P00_ARE_ORDERED3(OP, N, ...)                    \
-((P99_SUB(0, 1, __VA_ARGS__))                           \
- OP P00_ARE_ORDERED_MID(OP, P99_PRED(N), __VA_ARGS__)   \
+#define P00_ARE_ORDERED3(OP, N, ...)                           \
+((P99_SUB(0, 1, __VA_ARGS__))                                  \
+ OP P00_ARE_ORDERED_MID(OP, P99_PRED(N), __VA_ARGS__)          \
  OP (P99_SUB(N, 1, __VA_ARGS__)))
 
-#define P00_ARE_ORDERED_MID(OP, N, ...)                                     \
+#define P00_ARE_ORDERED_MID(OP, N, ...)                                             \
 P99_FOR(OP, N, P00_ARE_ORDERED_OP, P00_ARE_ORDERED_AND, P99_SUB(1, N, __VA_ARGS__))
 
 #define P00_ARE_ORDERED_AND(_0, X, _2) (X)) && ((X)
@@ -322,9 +322,9 @@ P99_FOR(OP, N, P00_ARE_ORDERED_OP, P00_ARE_ORDERED_AND, P99_SUB(1, N, __VA_ARGS_
  ** @endcode
  **/
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_TOKJOIN, 0)
-#define P99_TOKJOIN(TOK, ...)                                           \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                     \
-(__VA_ARGS__)                                                           \
+#define P99_TOKJOIN(TOK, ...)                                            \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                      \
+(__VA_ARGS__)                                                            \
 (P99_FOR(TOK, P99_NARG(__VA_ARGS__), P00_TOKJOIN, P00_IDT, __VA_ARGS__))
 
 /**
@@ -414,8 +414,9 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_CDIM, 0)
  ** @brief Produce a list of the lengths of the argument array @a ARR in terms of number
  ** of elements in the first @a N dimensions.
  **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_ALENS, 0)
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
-#define P99_ALENS(X, N) P99_FOR(X, N, P00_ALENS0, P00_ALEN, P99_REP(N,))
+#define P99_ALENS(ARR, N) P99_FOR(ARR, N, P00_ALENS0, P00_ALEN, P99_REP(N,))
 
 #define P00_ACALL1(ARR) P99_ALENS(*ARR, 1), (ARR)
 #define P00_ACALL2(ARR, N) P99_ALENS(*ARR, N), (ARR)
@@ -449,6 +450,8 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
  ** If @a ARR is actually just a pointer to an array, P99_ALEN(ARR, 0)
  ** is meaningless.
  **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_ALEN, 0)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALEN, 1)
 #define P99_ALEN(ARR, N)
 
 /**
@@ -493,6 +496,9 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
  ** hide incompatibilities.
  ** @see P99_AARG
  **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_ACALL, 0)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_ACALL, 1)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_ACALL, 2)
 #define P99_ACALL(ARR, N, TYPE)
 
 /**
@@ -516,11 +522,15 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
  ** @see P99_ACALL
  ** @see P99_ALEN
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_AARG, 0)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_AARG, 2)
 #define P99_AARG(TYPE, NAME, DIM, VAR)
 
 #else
-P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_ALEN, 0)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALEN, 1)
 #define P99_ALEN(...) P99_IF_EQ_1(P99_NARG(__VA_ARGS__))(P00_ALEN(__VA_ARGS__, ,0))(P00_ALEN2(__VA_ARGS__))
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_ACALL, 0)
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_ACALL, 1)
 P00_DOCUMENT_TYPE_ARGUMENT(P99_ACALL, 2)
 #define P99_ACALL(...)  P99_PASTE2(P00_ACALL, P99_NARG(__VA_ARGS__))(__VA_ARGS__)

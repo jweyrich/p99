@@ -48,6 +48,7 @@
  ** @see P99_MEMZERO for a macro that initializes to a default value
  ** that is guaranteed to correspond to the type.
  **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_PZERO, 0)
 #define P99_PZERO(X, N) (memset((X), 0, sizeof(X[0]) * N))
 
 /**
@@ -61,7 +62,8 @@
  ** @see P99_MEMZERO for a macro that initializes to a default value
  ** that is guaranteed to correspond to the type.
  **/
-#define P99_TZERO(...) (memset(&(__VA_ARGS__), 0, sizeof(__VA_ARGS__)))
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TZERO, 0)
+#define P99_TZERO(X) (memset(&(X), 0, sizeof(X)))
 
 
 p99_inline
@@ -142,6 +144,7 @@ void* p00_calloc(void const* source, size_t size, size_t number) {
 #define P00_CALLOC0(T, N) p00_calloc((void const*)&P99_LVAL(const T), sizeof(T), N)
 #define P00_CALLOC(...) P00_CALLOC0(__VA_ARGS__)
 
+#ifdef P00_DOXYGEN
 /**
  ** @brief A type oriented replacement for @c calloc
  **
@@ -171,7 +174,11 @@ void* p00_calloc(void const* source, size_t size, size_t number) {
  ** from using plain @c calloc.
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_CALLOC, 0)
+#define P99_CALLOC(T, N)
+#else
+P00_DOCUMENT_TYPE_ARGUMENT(P99_CALLOC, 0)
 #define P99_CALLOC(...) P00_CALLOC(P99_CALL_DEFARG_LIST(P00_CALLOC, 2, __VA_ARGS__))
+#endif
 
 #define P00_CALLOC_defarg_1() 1
 

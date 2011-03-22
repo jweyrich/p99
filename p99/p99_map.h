@@ -137,6 +137,9 @@ p00_strcat_terminate                                           \
  ** @see P99_STRDUP for a variant that returns a @c malloc'ed string and
  ** thus can be called with any type of @c char* arguments.
  **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_JOIN, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_JOIN, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_JOIN, 2)
 #define P99_JOIN(...) P99_STRCATS((char[P99_SIZEOFS(__VA_ARGS__) + 1]){ 0 }, __VA_ARGS__)
 
 /**
