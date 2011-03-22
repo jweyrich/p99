@@ -18,6 +18,12 @@ if 0;               #### for this magic, see findSvnAuthors ####
 #
 
 use English;
+use Getopt::Long;
+
+my $prefix = "";
+
+my $result = GetOptions ("prefix=s"        => \${prefix},      # flag
+    );
 
 my %name;
 
@@ -38,10 +44,10 @@ my $exit = 0;
 foreach my $name (sort(keys(%name))) {
     if ($name{$name} > 1) {
         my ($macro, $number) = $name =~ m/(\w*)_ARG_(\d*)/;
-        print "Argument $number of macro $macro is evaluated $name{$name} times.\n";
+        print "${prefix}Argument $number of macro $macro is evaluated $name{$name} times.\n";
         $exit = 1;
     }
 }
 
 exit($exit) if ($exit);
-print "No macro that has undesired multiple evaluation of arguments found.\n";
+print "${prefix}No macro that has undesired multiple evaluation of arguments found.\n";
