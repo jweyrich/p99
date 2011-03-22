@@ -43,6 +43,7 @@
 #include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#include <regex.h>
 #include <strings.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
