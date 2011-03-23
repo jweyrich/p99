@@ -153,22 +153,16 @@ orwl_graph * orwl_graph_read(orwl_graph * graph, char const* file, size_t nb_ver
   }
   P99_UNWIND_PROTECT {
     for (size_t pass = 0 ; pass < 2 ; pass++) {
-      fseek(f, 0, SEEK_SET);
-      P99_HANDLE_ERRNO {
-      P99_XDEFAULT : {
-	  perror("error when seeking the begin of the file");
-	  orwl_graph_delete(graph);
-	  P99_UNWIND_RETURN NULL;
-	}
-      }
-      while (fgets(msg, LINE_MAX, f) != NULL) {
+      if (fseek(f, 0, SEEK_SET) != 0) {
 	P99_HANDLE_ERRNO {
 	P99_XDEFAULT : {
-	    perror("error when reading a line in graph file");
+	    perror("error when seeking the begin of the file");
 	    orwl_graph_delete(graph);
 	    P99_UNWIND_RETURN NULL;
 	  }
 	}
+      }
+      while (fgets(msg, LINE_MAX, f) != NULL) {
 	if (!orwl_graph_extract_line(graph, remove_eol(msg), pass, nb_neighbors, &re_connection, &re_attributes)) {
 	  printf("error while extracting a line in the graph file\n");
 	  orwl_graph_delete(graph);
