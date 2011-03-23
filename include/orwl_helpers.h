@@ -9,7 +9,6 @@
 
 P99_DECLARE_STRUCT(orwl_vertex);
 P99_DECLARE_STRUCT(orwl_graph);
-P99_DECLARE_STRUCT(orwl_id);
 P99_DECLARE_STRUCT(orwl_address_book);
 
 
@@ -74,48 +73,20 @@ DECLARE_NEW_DELETE(orwl_graph);
 
 orwl_graph * orwl_graph_read(orwl_graph * graph, char const* file, size_t nb_vertices);
 
-struct orwl_id {
-  size_t num_id;
-  orwl_endpoint ep;
-};
-
-inline
-orwl_id* orwl_id_init(orwl_id *id,
-		      size_t num_id,
-		      char const *host) {
-  if (id)
-    *id = P99_LVAL(orwl_id,
-		   .num_id = num_id,
-		   );
-  orwl_endpoint_parse(&id->ep, host);
-  return id;
-}
-
-inline
-P99_PROTOTYPE(orwl_id*, orwl_id_init, orwl_id*, size_t, char const*);
-#define orwl_id_init(...) P99_CALL_DEFARG(orwl_id_init, 3, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_id_init, , P99_0(size_t), P99_0(char const*));
-
-inline
-void orwl_id_destroy(orwl_id *id) {
-}
-
-DECLARE_NEW_DELETE(orwl_id);
-
 struct orwl_address_book {
-  size_t nb_ids;
-  orwl_id * ids;
+  size_t nb_vertices;
+  orwl_endpoint *eps;
 };
 
 inline
 orwl_address_book* orwl_address_book_init(orwl_address_book *ab,
-					  size_t nb_ids) {
+					  size_t nb_vertices) {
   if (ab) {
     *ab = P99_LVAL(orwl_address_book,
-		   .nb_ids = nb_ids,
+		   .nb_vertices = nb_vertices,
 		   );
-    if (nb_ids > 0)
-      ab->ids = orwl_id_vnew(nb_ids);
+    if (nb_vertices > 0)
+      ab->eps = orwl_endpoint_vnew(nb_vertices);
   }
   return ab;
 }
@@ -127,12 +98,12 @@ P99_DECLARE_DEFARG(orwl_address_book_init, , P99_0(size_t));
 
 inline
 void orwl_address_book_destroy(orwl_address_book *ab) {
-  orwl_id_vdelete(ab->ids);
+  orwl_endpoint_vdelete(ab->eps);
 }
 
 DECLARE_NEW_DELETE(orwl_address_book);
 
-orwl_address_book* orwl_address_book_read(orwl_address_book *ab, char const *file);
+orwl_address_book* orwl_address_book_read(orwl_address_book *ab, char const *file, size_t nb_vertices);
 
 bool orwl_wait_and_load_init_files(orwl_address_book **ab,
 				   const char *ab_filename,
