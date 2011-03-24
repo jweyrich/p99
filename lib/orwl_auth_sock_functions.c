@@ -203,7 +203,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_check_initialization, uint64_t id_pow2) {
       if ((Arg->srv->id_initialized & id_pow2) == id_pow2)
 	finished = true;
     }
-    sleepfor(0.5);
+    sleepfor(0.1);
   }
   Arg->ret = 1;
 }
