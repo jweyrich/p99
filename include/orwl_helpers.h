@@ -124,16 +124,14 @@ void orwl_make_connection(size_t dest_id,
 			  orwl_server *server,
 			  orwl_graph *graph, 
 			  orwl_address_book *ab,
-			  orwl_mirror *location,
-			  size_t dest_location_pos);
+			  orwl_mirror *location);
 
 bool orwl_wait_to_initialize_locks(size_t id,
 				   orwl_graph *graph,
 				   orwl_address_book *ab,
 				   orwl_server *server,
-				   orwl_mirror *my_locations,
+				   orwl_mirror *my_location,
 				   orwl_handle *h,
-				   size_t nb_locations,
 				   rand48_t *seed);
 
 bool orwl_wait_to_start(size_t id,
@@ -141,7 +139,6 @@ bool orwl_wait_to_start(size_t id,
 			orwl_address_book *ab,
 			orwl_server *server,
 			orwl_handle *h,
-			size_t nb_locations,
 			rand48_t *seed);
 
 #endif

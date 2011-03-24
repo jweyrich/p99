@@ -193,7 +193,7 @@ bool orwl_address_book_extract_line(orwl_address_book *ab, char const *str, rege
     A line pattern is as follow:
     id-location-host
    */
-  regmatch_t match[3]= {0};
+  regmatch_t match[4]= {0};
 
   /* matching a connection line */
   if (regexec(re, str, 4, match, 0) == 0) {
@@ -317,11 +317,11 @@ void orwl_make_connection(size_t dest_id,
 			  orwl_server *server,
 			  orwl_graph *graph, 
 			  orwl_address_book *ab,
-			  orwl_mirror *location,
-			  size_t dest_location_pos) {
+			  orwl_mirror *location) {
   orwl_endpoint there = ab->eps[dest_id];
-  there.index = dest_location_pos;
+  there.index = ab->locations[dest_id];
   orwl_mirror_connect(location, server, there);
+  report(0, "connected to %s", orwl_endpoint_print(&there));
 }
 
 
@@ -372,10 +372,13 @@ bool orwl_wait_to_initialize_locks(size_t id,
 				   orwl_graph *graph,
 				   orwl_address_book *ab,
 				   orwl_server *server,
-				   orwl_mirror *my_locations,
+				   orwl_mirror *my_location,
 				   orwl_handle *h,
-				   size_t nb_locations,
 				   rand48_t *seed) {
+  /* locking the location */
+  orwl_write_request(my_location, h);
+  orwl_acquire(h);
+
   orwl_vertex * me = &graph->vertices[id];
   orwl_vertex * my_neighbors[graph->nb_vertices]; /* upper limit */
   for (size_t i = 0 ; i < graph->nb_vertices ; i++)
@@ -385,8 +388,9 @@ bool orwl_wait_to_initialize_locks(size_t id,
   						     id,
   						     graph->nb_vertices,
   						     graph);
-
+  
   for (size_t i = 0 ; i < nb ; i++) {
+    orwl_endpoint there = ab->eps[orwl_get_id_from_vertex(graph, my_neighbors[i])];
     /* we ensure that the neighbors with a lower color are initialized */
     if (my_neighbors[i]->color < me->color) {
       size_t vertex_id = orwl_get_id_from_vertex(graph, my_neighbors[i]);
@@ -397,12 +401,6 @@ bool orwl_wait_to_initialize_locks(size_t id,
       rpc_check_colored_init_finished(vertex_id, graph, ab, seed);
     }
   }
-  
-  /* locking all the locations */
-  for (size_t i = 0 ; i < nb_locations ; i++) {
-    orwl_write_request(my_locations, &h[i]);
-    orwl_acquire(&h[i]);
-  }
   return true;
 }
 
@@ -411,7 +409,6 @@ bool orwl_wait_to_start(size_t id,
 			orwl_address_book *ab,
 			orwl_server *server,
 			orwl_handle *h,
-			size_t nb_locations,
 			rand48_t *seed) {
 
   ORWL_CRITICAL {
@@ -436,9 +433,8 @@ bool orwl_wait_to_start(size_t id,
       rpc_check_colored_init_finished(vertex_id, graph, ab, seed);
   }
 
-  /* unlocking the locations */
-  for (size_t i = 0 ; i < nb_locations ; i++)
-    orwl_release(&h[i]);
+  /* unlocking the location */
+  orwl_release(h);
   
   return true;
 }
