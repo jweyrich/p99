@@ -76,6 +76,7 @@ orwl_graph * orwl_graph_read(orwl_graph * graph, char const* file, size_t nb_ver
 struct orwl_address_book {
   size_t nb_vertices;
   orwl_endpoint *eps;
+  size_t *locations;
 };
 
 inline
@@ -85,8 +86,10 @@ orwl_address_book* orwl_address_book_init(orwl_address_book *ab,
     *ab = P99_LVAL(orwl_address_book,
 		   .nb_vertices = nb_vertices,
 		   );
-    if (nb_vertices > 0)
+    if (nb_vertices > 0) {
       ab->eps = orwl_endpoint_vnew(nb_vertices);
+      ab->locations = size_t_vnew(nb_vertices);
+    }
   }
   return ab;
 }
@@ -99,6 +102,7 @@ P99_DECLARE_DEFARG(orwl_address_book_init, , P99_0(size_t));
 inline
 void orwl_address_book_destroy(orwl_address_book *ab) {
   orwl_endpoint_vdelete(ab->eps);
+  size_t_vdelete(ab->locations);
 }
 
 DECLARE_NEW_DELETE(orwl_address_book);
@@ -113,6 +117,7 @@ bool orwl_wait_and_load_init_files(orwl_address_book **ab,
 				   const char *id_filename,
 				   size_t nb_id,
 				   size_t *list_id,
+				   size_t *list_locations,
 				   size_t nb_vertices);
 
 void orwl_make_connection(size_t dest_id,

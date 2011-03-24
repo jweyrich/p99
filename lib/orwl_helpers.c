@@ -140,7 +140,7 @@ orwl_graph * orwl_graph_read(orwl_graph * graph, char const* file, size_t nb_ver
     nb_neighbors[i] = 0;
 
   const char *connection = "^[[:blank:]]*([[:digit:]]+)[[:blank:]]*->[[:blank:]]*([[:digit:]]+)[[:blank:]]*$";
-  const char *attributes = "^[[:blank:]]*([[:digit:]]+) \\[color=\"([[:digit:]]+)\",[[:blank:]]*label=\"([[:digit:]]+-[[:alpha:]])\"\\]$";
+  const char *attributes = "^[[:blank:]]*([[:digit:]]+) \\[color=\"([[:digit:]]+)\",[[:blank:]]*label=\"([[:digit:]]+-[[:alpha:]]+)\"\\]$";
   regex_t re_connection, re_attributes;
 
   if (regcomp(&re_connection, connection, REG_EXTENDED)) {
@@ -180,29 +180,35 @@ orwl_graph * orwl_graph_read(orwl_graph * graph, char const* file, size_t nb_ver
 
 void orwl_address_book_insert_id(orwl_address_book *ab,
 				 size_t id,
+				 size_t location,
 				 char const *address) {
-  if (ab != NULL)
+  if (ab != NULL) {
     orwl_endpoint_parse(&ab->eps[id], address);
+    ab->locations[id] = location;
+  }
 }
 
 bool orwl_address_book_extract_line(orwl_address_book *ab, char const *str, regex_t *re) {
     /*
     A line pattern is as follow:
-    id-host
+    id-location-host
    */
   regmatch_t match[3]= {0};
 
   /* matching a connection line */
-  if (regexec(re, str, 3, match, 0) == 0) {
+  if (regexec(re, str, 4, match, 0) == 0) {
     size_t id = extract_size_t_from_str(match[1].rm_so,
 					match[1].rm_eo,
-					str);    
+					str);
+    size_t location = extract_size_t_from_str(match[2].rm_so,
+					      match[2].rm_eo,
+					      str);
     char host[16] = {0};
-    extract_str_from_str(match[2].rm_so,
-			 match[2].rm_eo,
+    extract_str_from_str(match[3].rm_so,
+			 match[3].rm_eo,
 			 str,
 			 &host[0]);
-    orwl_address_book_insert_id(ab, id, host);
+    orwl_address_book_insert_id(ab, id, location, host);
   }
   return true;
 }
@@ -219,7 +225,7 @@ orwl_address_book* orwl_address_book_read(orwl_address_book *ab, char const *fil
   }
   P99_UNWIND_PROTECT {
     ab = P99_NEW(orwl_address_book, nb_vertices);
-    const char *pattern = "^([[:digit:]]+)-(.+)$";
+    const char *pattern = "^([[:digit:]]+)-([[:digit:]]+)-(.+)$";
     regex_t re;
     if (regcomp(&re, pattern, REG_EXTENDED)) {
       printf("Pattern did not compile.\n");
@@ -252,7 +258,8 @@ orwl_address_book* orwl_address_book_read(orwl_address_book *ab, char const *fil
 bool orwl_dump_id(orwl_server *serv,
 		  const char *filename,
 		  size_t nb_id,
-		  size_t *list_id) {
+		  size_t *list_id,
+		  size_t *list_locations) {
   char name[256] = {0};
   FILE*volatile out = fopen(filename, "w");
   if (out == NULL) {
@@ -263,7 +270,7 @@ bool orwl_dump_id(orwl_server *serv,
     for (size_t i = 0 ; i < nb_id ; i++) {
       orwl_endpoint_print(&serv->host.ep, name);
       char str[256];
-      snprintf(str, 256, "%zu-%s\n", list_id[i], name);
+      snprintf(str, 256, "%zu-%zu-%s\n", list_id[i], list_locations[i], name);
       if (fprintf(out, "%s", str) != strlen(str)) {
 	perror("error when writing to file");
 	P99_UNWIND_RETURN false;
@@ -292,8 +299,9 @@ bool orwl_wait_and_load_init_files(orwl_address_book **ab,
 				   const char *id_filename,
 				   size_t nb_id,
 				   size_t *list_id,
+				   size_t *list_locations,
 				   size_t nb_vertices) {
-  if (!orwl_dump_id(serv, id_filename, nb_id, list_id))
+  if (!orwl_dump_id(serv, id_filename, nb_id, list_id, list_locations))
     return false;
   orwl_wait_until_file_is_here(id_filename);
   *ab = orwl_address_book_read(*ab, ab_filename, nb_vertices);
