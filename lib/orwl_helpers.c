@@ -390,7 +390,6 @@ bool orwl_wait_to_initialize_locks(size_t id,
   						     graph);
   
   for (size_t i = 0 ; i < nb ; i++) {
-    orwl_endpoint there = ab->eps[orwl_get_id_from_vertex(graph, my_neighbors[i])];
     /* we ensure that the neighbors with a lower color are initialized */
     if (my_neighbors[i]->color < me->color) {
       size_t vertex_id = orwl_get_id_from_vertex(graph, my_neighbors[i]);
