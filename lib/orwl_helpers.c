@@ -331,7 +331,7 @@ bool rpc_check_colored_init_finished(size_t id,
 				     rand48_t *seed) {
   orwl_endpoint there = ab->eps[id];
   /* warning, this is a blocking operation */
-  return (orwl_rpc(&there, seed, auth_sock_check_initialization, pow2(id)) == 1);
+  return (orwl_rpc(&there, seed, auth_sock_check_initialization, pow2(id + 1)) == 1);
 }
 
 size_t orwl_get_neighbors_in_undirected_graph(orwl_vertex **my_neighbors,
@@ -411,7 +411,7 @@ bool orwl_wait_to_start(size_t id,
 			rand48_t *seed) {
 
   ORWL_CRITICAL {
-    server->id_initialized = server->id_initialized | pow2(id);
+    server->id_initialized = server->id_initialized | pow2(id + 1);
   }
 
   orwl_vertex * my_neighbors[graph->nb_vertices];
