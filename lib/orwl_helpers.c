@@ -140,7 +140,7 @@ orwl_graph * orwl_graph_read(orwl_graph * graph, char const* file, size_t nb_ver
     nb_neighbors[i] = 0;
 
   const char *connection = "^[[:blank:]]*([[:digit:]]+)[[:blank:]]*->[[:blank:]]*([[:digit:]]+)[[:blank:]]*$";
-  const char *attributes = "^[[:blank:]]*([[:digit:]]+) \\[color=\"([[:digit:]]+)\",[[:blank:]]*label=\"([[:alnum:]]+)\"\\]$";
+  const char *attributes = "^[[:blank:]]*([[:digit:]]+) \\[color=\"([[:digit:]]+)\",[[:blank:]]*label=\"([[:digit:]]+-[[:alpha:]])\"\\]$";
   regex_t re_connection, re_attributes;
 
   if (regcomp(&re_connection, connection, REG_EXTENDED)) {
