@@ -1,5 +1,5 @@
 #!/bin/sh -f
-#  This may look like complete nonsense, but it really is -*- perl -*-
+#  This may look like complete nonsense, but it really is -*- mode: perl; coding: utf-8 -*-
 eval 'exec perl -wS -x $0 ${1+"$@"}'
 if 0;               #### for this magic, see findSvnAuthors ####
 #!perl
