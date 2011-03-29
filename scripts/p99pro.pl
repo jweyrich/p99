@@ -19,6 +19,7 @@ if 0;               #### for this magic, see findSvnAuthors ####
 
 no warnings 'portable';  # Support for 64-bit ints required
 use English;
+use strict;
 use Getopt::Long;
 Getopt::Long::Configure ("bundling");
 
@@ -494,12 +495,12 @@ sub openfile($) {
                     $line = $1;
                     #print STDERR "found define directive $line\n";
                     if ($line =~ m/^([a-zA-Z_]\w*)(.*)/o) {
-                        $name = $1;
+                        my $name = $1;
                         warn "redefinition of macro $name" if (defined($macro{$name}));
                         $line = $2;
                         #print STDERR "found define directive for $name to $line\n";
                         if ($line =~ m/^\([ \t]*([^()]*)[ \t]*\)[ \t]*(.*)/o) {
-                            $params = $1;
+                            my $params = $1;
                             $line = $2;
                             #print STDERR "found define directive for $name|$params| to $line\n";
                             $macro{$name} = [ split(/,[ \t]*/, $params), $line ];
