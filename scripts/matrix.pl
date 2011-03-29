@@ -17,25 +17,18 @@ if 0;               #### for this magic, see findSvnAuthors ####
 # particular purpose.
 #
 
+# Usage: matrix.pl [rows] [colums]
 #
-# matrix.pl
-#
-# Use: matrix.pl [rows] [colums]
-# 
-# [rows] is the rows of the  big matrix. 
+# [rows] is the rows of the  big matrix.
 # [colums] is the number of colums of the big matrix.
 #
-# Make a graph corresponding of the Matrix regions connections. Take into consideration that every (i,j) is a submatrix and it has
-# nine regions called: N, S, W, E, NW, NE, SE, SW and the central point.
-# 
-# 23.03.2011. First version by Matias E. Vara, matiasvara@hotmail.com
-#
-# !/usr/bin/perl
+# Make a graph corresponding of the Matrix regions connections. Take
+# into consideration that every (i,j) is a submatrix and it has nine
+# regions called: N, S, W, E, NW, NE, SE, SW and the central point.
 
-
-if ($#ARGV < 1) 
- { 
-   print "Use matrix.pl [rows] [colums]\n"; 
+if ($#ARGV < 1)
+ {
+   print "Usage matrix.pl [rows] [colums]\n";
    exit;
  }
 
@@ -47,11 +40,11 @@ $row = $ARGV[0];
 $row--;
 
 # creating the nodes identificator
-for ($i = 0; $i <= $row; $i++) 
+for ($i = 0; $i <= $row; $i++)
  {
   for ($j = 0; $j <= $col; $j++)
    {
-    $hash_nodes{ $i.$j } = $node_count++; 
+    $hash_nodes{ $i.$j } = $node_count++;
     $hash_nodes{ $i.$j.'N' } = $node_count++;
     $hash_nodes{ $i.$j.'S' } = $node_count++;
     $hash_nodes{ $i.$j.'W' } = $node_count++;
@@ -59,14 +52,14 @@ for ($i = 0; $i <= $row; $i++)
     $hash_nodes{ $i.$j.'NE' } = $node_count++;
     $hash_nodes{ $i.$j.'NW' } = $node_count++;
     $hash_nodes{ $i.$j.'SE' } = $node_count++;
-    $hash_nodes{ $i.$j.'SW' } = $node_count++; 
+    $hash_nodes{ $i.$j.'SW' } = $node_count++;
    }
  }
 
 # create the conections
 #open(my $out, ">",  "output.dot");
 print "digraph G {\n";
-for ($i = 0; $i <= $row; $i++) 
+for ($i = 0; $i <= $row; $i++)
  {
   for ($j = 0; $j <= $col; $j++)
    {
@@ -79,48 +72,48 @@ for ($i = 0; $i <= $row; $i++)
      print  $hash_nodes{ $i.$j.'SW' }." -> ".$hash_nodes{ $i.$j }."\n";
      print  $hash_nodes{ $i.$j.'SE' }." -> ".$hash_nodes{ $i.$j }."\n";
 
-     if ($j != 0) 
+     if ($j != 0)
       {
        $cl = $j;
-       $cl--; 
+       $cl--;
        print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $i.$cl.'E' }."\n";
        print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $i.$cl.'NE' }."\n";
-       print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $i.$cl.'SE' }."\n"; 	
+       print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $i.$cl.'SE' }."\n";
       }
-     if ($j != $col) 
+     if ($j != $col)
       {
        $cl = $j;
-       $cl++; 
+       $cl++;
        print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $i.$cl.'W' }."\n";
        print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $i.$cl.'NW' }."\n";
-       print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $i.$cl.'SW' }."\n";  
+       print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $i.$cl.'SW' }."\n";
       }
-     if ($i != $row) 
+     if ($i != $row)
       {
        $rw = $i;
-       $rw++; 
+       $rw++;
        print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$j.'N' }."\n";
        print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$j.'NE' }."\n";
        print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$j.'NW' }."\n";
-       if ($j != $col) {$cl=$j;$cl++;print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$cl.'NW' }."\n";}	     
-       if ($j != 0) {$cl=$j;$cl--;print     $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$cl.'NE' }."\n";} 
+       if ($j != $col) {$cl=$j;$cl++;print  $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$cl.'NW' }."\n";}
+       if ($j != 0) {$cl=$j;$cl--;print     $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$cl.'NE' }."\n";}
       }
-     if ($i != 0) 
+     if ($i != 0)
       {
        $rw = $i;
-       $rw--; 
+       $rw--;
        print $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$j.'S' }."\n";
-       print $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$j.'SE' }."\n";   
-       print $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$j.'SW' }."\n"; 	
+       print $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$j.'SE' }."\n";
+       print $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$j.'SW' }."\n";
        if ($j != $col) {$cl=$j;$cl++;print $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$cl.'SW' }."\n"; ;}
-       if ($j != 0) {$cl=$j;$cl--;print $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$cl.'SE' }."\n"; ;}     
+       if ($j != 0) {$cl=$j;$cl--;print $hash_nodes{ $i.$j }." -> ".$hash_nodes{ $rw.$cl.'SE' }."\n"; ;}
       }
-      
+
    }
  }
 
 # putting node names as labels
-for ($i = 0; $i <= $row; $i++) 
+for ($i = 0; $i <= $row; $i++)
  {
   for ($j = 0; $j <= $col; $j++)
    {
