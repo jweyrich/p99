@@ -26,7 +26,7 @@
  **/
 
 
-/* This was inspired by BOOT's PP_CAT macro. Using such a thing avoid
+/* This was inspired by BOOST's PP_CAT macro. Using such a thing avoids
    to define multiple levels of expansion for each macro. */
 #define P99_PASTE0()
 #define P99_PASTE1(_1) _1
