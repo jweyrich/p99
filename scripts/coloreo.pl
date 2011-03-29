@@ -7,6 +7,7 @@ if 0;               #### for this magic, see findSvnAuthors ####
 #
 # Except of parts copied from previous work and as explicitly stated below,
 # the authors and copyright holders for this work are as follows:
+# all rights reserved,  2011 Jens Gustedt, INRIA, France
 # all rights reserved,  2011 Matias E. Vara, INRIA, France
 #
 # This file is part of the P99 project. You received this file as as
@@ -38,6 +39,23 @@ if 0;               #### for this magic, see findSvnAuthors ####
 # Example:
 # > perl coloreo.pl gen.dot -d -c  // Coloring gen.dot, using direct format and outputing using colours
 
+use English;
+use strict;
+
+
+my @nom;
+
+# colors[X] is an array which every entry is a list of vertex that they are coloring with X colour.
+# It is filled in running time
+my @colors;
+
+# graph[X] is an array which every entry is a list of vertex that they connected with X vertex.
+# It is filled when the application starts
+my @graph;
+
+# assignment uses a simple counter
+my $last_color_used = 0;
+
 # has_color:
 #
 # $_[0]: vertex ID.
@@ -46,10 +64,9 @@ if 0;               #### for this magic, see findSvnAuthors ####
 #
 sub has_color
  {
-  local ($j,$i);
-  for ($i = 0; $i <= $#colors; $i++)
+  for (my $i = 0; $i <= $#colors; $i++)
    {
-   for ($j = 0; $j <= $#{ $colors[$i] }; $j++)
+   for (my $j = 0; $j <= $#{ $colors[$i] }; $j++)
     {
      if ($colors[$i]->[$j] == $_[0])
      {
@@ -67,10 +84,9 @@ sub has_color
 #
 sub get_colorID
  {
-  local ($j,$i);
-  for ($i = 0; $i <= $#colors; $i++)
+  for (my $i = 0; $i <= $#colors; $i++)
    {
-   for ($j = 0; $j <= $#{ $colors[$i] }; $j++)
+   for (my $j = 0; $j <= $#{ $colors[$i] }; $j++)
     {
      if ($colors[$i]->[$j] == $_[0])
      {
@@ -89,9 +105,8 @@ sub get_colorID
 #
 sub is_my_neighbor
  {
-  local ($j);
   # checking in one way
-  for ($j = 0; $j <= $#{ $graph[$_[0]] }; $j++)
+  for (my $j = 0; $j <= $#{ $graph[$_[0]] }; $j++)
    {
     if ($graph[$_[0]]->[$j] == $_[1])
      {
@@ -99,7 +114,7 @@ sub is_my_neighbor
      }
    }
   # checking in the other way
-  for ($j = 0; $j <= $#{ $graph[$_[1]] }; $j++)
+  for (my $j = 0; $j <= $#{ $graph[$_[1]] }; $j++)
    {
     if ($graph[$_[1]]->[$j] == $_[0])
      {
@@ -118,8 +133,7 @@ sub is_my_neighbor
 #
 sub is_good_color
  {
-  local ($j);
-  for ($j = 0; $j <= $#{ $colors[$_[0]] }; $j++)
+  for (my $j = 0; $j <= $#{ $colors[$_[0]] }; $j++)
      {
       if (is_my_neighbor($_[1],$colors[$_[0]]->[$j])){return 1;}
      }
@@ -133,8 +147,7 @@ sub is_good_color
 # Return the selected Color ID.
 sub get_color
  {
-  local ($j);
-  for ($j = 0; $j <= $last_color_used; $j++)
+  for (my $j = 0; $j <= $last_color_used; $j++)
    {
     # we found a good color, return with it
     if (!(is_good_color($j,$_[0]))) {return $j;}
@@ -154,7 +167,7 @@ sub get_color
 #
 sub make_graph
   {
-   local($sp,$name,$ID,$comment,$temp);
+   my $sp;
    # opening dot file
    open(my $in,  "<",  $ARGV[0]);
    if (!(index($ARGV[1],"-d")==-1)) {$sp = " -> "; } else {$sp = " -- ";}
@@ -163,13 +176,16 @@ sub make_graph
     # first look for the separator: " -- " or " -> " -> "
     if (!(index($_,$sp)==-1))
      {
+      my @temp;
       # have we got comments?
       if (!(index($_,"//")==-1))
        {
         # yes, remove it
-        @comment = split ("//",$_);
+        my @comment = split ("//",$_);
         @temp = split ($sp,$comment[0]);
-       }else{ @temp = split ($sp,$_);}
+       } else {
+        @temp = split ($sp,$_);
+       }
       # make the graph
       # node source ---> node destination
       push @{ $graph[$temp[0]] }, $temp[1];
@@ -178,9 +194,9 @@ sub make_graph
      } elsif (!(index($_,"label")==-1))
        {
           # node name
-          @name = split ('"',$_);
+          my @name = split ('"',$_);
           # node ID
-          @ID = split (' ',$_);
+          my @ID = split (' ',$_);
           # saving the pairs "ID" --> "NAME
           $nom[ $ID[0] ]  = $name[1];
        }
@@ -194,7 +210,7 @@ sub make_graph
 #
 sub make_output
  {
-  local ($j,$i,$data,$node);
+  my $data = "";
   # store the data
   open(my $out, "<",  $ARGV[0]);
   while (<$out>)
@@ -203,16 +219,16 @@ sub make_output
     if ((index($_,"}")==-1) && (index($_,"label")==-1)) {$data = $data.$_;}
    }
   close $out;
-  open(my $out, ">",  $ARGV[0]);
+  open($out, ">-");
   # store again, removing the last character
   print $out $data;
-  for ($j = 0; $j <= $#colors; $j++)
+  for (my $j = 0; $j <= $#colors; $j++)
    {
     # color random combination
-    $red   =   int(rand(255));
-    $green =   int(rand(255));
-    $blue  =   int(rand(255));
-    for ($i = 0; $i <= $#{ $colors[$j] }; $i++)
+    my $red   =   int(rand(255));
+    my $green =   int(rand(255));
+    my $blue  =   int(rand(255));
+    for (my $i = 0; $i <= $#{ $colors[$j] }; $i++)
      {
         # output colors
         # TODO: Node "0" is not identificable
@@ -258,11 +274,10 @@ sub make_output
 #
 sub check_coloring
  {
- local ($i,$j);
  # looking for the graph
- for ($i = 0; $i <= $#graph; $i++)
+ for (my $i = 0; $i <= $#graph; $i++)
   {
-   for ($j = 0; $j <= $#{ $graph[$i] }; $j++)
+   for (my $j = 0; $j <= $#{ $graph[$i] }; $j++)
     {
     if (get_colorID($i) == get_colorID($graph[$i]->[$j]))
      {
@@ -280,13 +295,6 @@ sub check_coloring
 #
 #
 
-# colors[X] is an array which every entry is a list of vertex that they are coloring with X colour.
-# It is filled in running time
-my $colors = 0;
-# graph[X] is an array which every entry is a list of vertex that they connected with X vertex.
-# It is filled when the application starts
-my $graph = 0;
-
 if ($#ARGV < 2)
  {
    print "Use coloreo.pl [file] [Input format] [Output format]\n";
@@ -296,12 +304,9 @@ if ($#ARGV < 2)
 # open .dot file and fill the graph structure
 make_graph;
 
-# assignation uses a simple counter
-$last_color_used = 0;
-
 # each graph[X] has a list of connections from vertex X to others guys
 # we start with Node 0.
-for ($i = 0; $i <= $#graph; $i++)
+for (my $i = 0; $i <= $#graph; $i++)
  {
   # If the element was defined then I can work with it
   if (!($graph[$i] == undef))
@@ -309,17 +314,17 @@ for ($i = 0; $i <= $#graph; $i++)
     # Has the location been colored?
     if (!(has_color($i)))
      {
-      $color = get_color($i);
+      my $color = get_color($i);
       # coloring the vertex
       push @{ $colors[$color] }, $i;
      }
     # looking for the conections
-    for ($j = 0; $j <= $#{ $graph[$i] }; $j++)
+    for (my $j = 0; $j <= $#{ $graph[$i] }; $j++)
      {
       # Has the location been colored?
       if  (!(has_color($graph[$i]->[$j])))
        {
-        $color = get_color($graph[$i]->[$j]);
+        my $color = get_color($graph[$i]->[$j]);
         # coloring the vertex
         push @{ $colors[$color] }, $graph[$i]->[$j];
        }
