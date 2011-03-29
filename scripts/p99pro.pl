@@ -19,15 +19,21 @@ if 0;               #### for this magic, see findSvnAuthors ####
 
 no warnings 'portable';  # Support for 64-bit ints required
 use English;
+use POSIX;
 use strict;
 use Getopt::Long;
 Getopt::Long::Configure ("bundling");
 
+## Variables that hold commandline arguments.
+## include directories
 my @dirs = ("/usr/include");
-
+## defines
 my @defs;
+## undefines
 my @undefs;
+## whether or not to output a list of all #define
 my $show;
+## use as a separator to tokens for debugging
 my $sep = "";
 
 my $result = GetOptions (
@@ -62,6 +68,7 @@ my @tokens;
 ## did we locally change line numbering?
 my $skipedLines = 0;
 
+## integrate the defines that we received on the command line
 foreach my $def (@defs) {
     my ($name, $val) = $def =~ m/^([^=]+)=?(.*)/o;
     $val = "" if (!defined($val));
@@ -134,11 +141,15 @@ my @punct = (
     );
 
 ## a regexp for all punctuation operators
-my $punct = join("|", @punct);
+my $punct = "(?:".join("|", @punct).")";
 ## a regexp to detect string literals
-my $isstring = '"(?:[^"\\\\]++|\\\\.)*+"';
+my $isstring = '(?:L?"(?:[^"\\\\]++|\\\\.)*+")';
 ## a regexp to detect character constants
-my $ischar = "'(?:[^'\\\\]++|\\\\.)*+'";
+my $ischar = "(?:L?'(?:[^'\\\\]++|\\\\.)*+')";
+## a regexp to detect preprocessor number token
+my $isnumber = "(?:[.]?[0-9](?:[eEpP][-+]|[.a-zA-Z0-9]+)*)";
+## a regexp to detect preprocessor identifier token
+my $isidentifier = "(?:[_a-zA-Z][_a-zA-Z0-9]+)";
 
 
 ## all third characters that may appear in a trigraph
@@ -146,19 +157,25 @@ my $trigraph = "-!'/=()<>";
 ## all replacements for trigraphs, in the corresponding order
 my $onegraph = "~|^\\#[]{}";
 
-sub readln($\$);
-sub openfile($);
-sub findfile($);
-sub tokrep($$$@);
 sub compList($\@);
-
-my $big = ~0;
-my $big2 = $big >> 1;
+sub escPre(@);
+sub evalExpr($@);
+sub expandDefined(@);
+sub findfile($);
+sub openfile($);
+sub rawtokenize($);
+sub readlln($\$);
+sub readln($\$);
+sub skipcomments($$\$);
+sub tokenize($);
+sub tokrep($$$@);
+sub unescPre(@);
+sub untokenize(@);
 
 sub evalExpr($@) {
     my ($isUn, @list) = @_;
     my $res = eval("@list");
-    $res = ($big - -$res +1) if ($isUn && $res < 0);
+    $res = (ULONG_MAX - -$res +1) while ($isUn && $res < 0);
     if (defined($res) && length($res) == 0) {
         $res = $res ? 1 : 0;
     }
@@ -195,13 +212,13 @@ sub compList($\@) {
         } elsif ($tok eq ")") {
             goto FINISH;
         } else {
-            if ($tok =~ m/^(0x)?[0-9]+[lL]*([uU]*)[lL]*$/o) {
+            if ($tok =~ m/^(?:0[xX]?[0-9a-fA-F]|[0-9]+)[lL]*([uU]*)[lL]*$/o) {
                 ## a number with an 'U' is unsigned
-                $isUn ||= (defined($2) && length($2)) ? 1 : 0;
+                $isUn ||= (defined($1) && length($1)) ? 1 : 0;
                 $tok =~ s/[lLuU]//go;
                 ## a number that is greater than INTMAX_MAX must be
                 ## unsigned
-                $isUn ||= ($tok > $big2) ? 1 : 0;
+                $isUn ||= ($tok > LONG_MAX) ? 1 : 0;
                 #print STDERR "processing number \"$tok\"\n";
                 push(@list, $tok);
             } elsif ($tok =~ m/^\w+/o) {
@@ -231,34 +248,30 @@ sub compList($\@) {
     return ($isUn, $res);
 }
 
+## read one physical input line and perform the trigraph replacement
 sub readln($\$) {
     my ($fd, $lineno) = @_;
     my $line = <$fd>;
     ++${$lineno};
     return 0 if (!defined($line));
     chomp $line;
-    my $ret = " ";
-    while ($line =~ m/^([^?]*)[?](.*)/o) {
-        $ret .= $1;
-        $line = $2;
-        if ($line =~ m/^[?]([$trigraph])(.*)/o) {
-            my $c = $1;
-            $line = $2;
+    my @chunks = split(/([?][?][$trigraph])/o, $line);
+    @chunks = map {
+        my $c = $_;
+        if (m/^[?][?]([$trigraph])$/o) {
+            $c = $1;
             $c =~ tr:-!'/=()<>:~|^\\#[]{}:;
-            $ret .= $c;
-        } else {
-            $ret .= "?";
         }
-    }
-    $ret .= $line;
-    return $ret;
+        $c;
+    } @chunks;
+    return " ".join("", @chunks);
 }
 
+## Scan the list of include directories for a file
 sub findfile($) {
     my $name = shift;
     foreach my $dir (@dirs) {
         my $fname = "$dir/$name";
-        print STDERR "looking for $fname\n";
         return $fname if (-e $fname);
     }
     return "./$name";
@@ -268,9 +281,10 @@ sub tokenize($) {
     my $ltok = shift;
     my @ret;
     ## first find strings
-    my @ltok = split(/($isstring|$ischar)/, $ltok);
+    my @ltok = split(/($isstring|$ischar|$isidentifier|$isnumber)/, $ltok);
+    #print STDERR join("|", @ltok), "\n";
     foreach my $ltok (@ltok) {
-        if ($ltok !~ m/^(["']).*\1$/o) {
+        if ($ltok !~ m/^$isstring|$ischar|$isidentifier|$isnumber$/o) {
             my @ltok = split(/[ \t]+/o, $ltok);
             foreach my $ltok (@ltok) {
                 my @ltok = split(/($punct)/, $ltok);
