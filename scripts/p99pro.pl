@@ -146,8 +146,6 @@ my @escPunct = map { "\Q$_\E" } @punct;
 
 ## a regexp for all punctuation operators
 my $punct = "(?:".join("|", @escPunct).")";
-print STDERR "array: @punct\n";
-print STDERR "string: $punct\n";
 $punct = qr/$punct/;
 
 ## all digraph tokens. put the longest first, so they will match first.
@@ -270,60 +268,61 @@ sub evalExpr($@) {
 ## here. Suffixes 'U' or 'L' will be peeled of.
 ##
 ## Special care is taken to detect unsigned numbers among the tokens
-## and to evaluate the subexpressions to which they contribute with the
-## correct modulus. Therefore this function returns a tuple. The first
-## value states if this is an unsigned number (or not) and the second
-## is the result of the computation.
+## and to evaluate the subexpressions to which they contribute with
+## the correct modulus. Therefore this function returns a tuple if it
+## is evaluated in an array context. The first value states if this is
+## an unsigned number (or not) and the second is the result of the
+## computation.
 sub compList($\@) {
     my ($level, $toks) = @_;
     #print STDERR "compList, $level: @{$toks}\n";
-    my $isUn = 0;
+    my $type = 0;
     my @logic;
     my @list;
+  LOOP:
     while (@{$toks}) {
         my $tok = shift(@{$toks});
         #print STDERR "processing \"$tok\"\n";
         if ($tok eq "(") {
             my @subexp = compList($level + 1, @{$toks});
-            $isUn ||=  $subexp[0];
+            $type ||=  $subexp[0];
             push(@list, $subexp[1]);
         } elsif ($tok eq ")") {
-            goto FINISH;
+            $level = 0;
+            last LOOP;
         } else {
             if ($tok =~ m/^(?:0[xX]?[0-9a-fA-F]|[0-9]+)[lL]*([uU]*)[lL]*$/o) {
                 ## a number with an 'U' is unsigned
-                $isUn ||= (defined($1) && length($1)) ? 1 : 0;
+                $type ||= $1 ? 1 : 0;
                 $tok =~ s/[lLuU]//go;
                 ## a number that is greater than INTMAX_MAX must be
                 ## unsigned
-                $isUn ||= ($tok > LONG_MAX) ? 1 : 0;
+                $type ||= ($tok > LONG_MAX) ? 1 : 0;
                 #print STDERR "processing number \"$tok\"\n";
                 push(@list, $tok);
             } elsif ($tok =~ m/^\w+/o) {
                 push(@list, "0");
             } elsif ($tok =~ m/^&&|[|][|]$/o) {
-                my $res = evalExpr($isUn, @list);
+                my $res = evalExpr($type, splice(@list));
                 $res = $res ? 1 : 0;
                 push(@logic, $res, $tok);
-                @list = ();
-                $isUn = 0;
+                $type = 0;
             } else {
                 push(@list, $tok);
             }
         }
     }
     warn "preliminary end of regular expression, missing ')'" if ($level > 0);
-  FINISH:
     warn "preliminary end of regular expression, missing operand" if (!@list);
-    my $res = evalExpr($isUn, @list);
+    my $res = evalExpr($type, @list);
     if (@logic) {
         $res = $res ? 1 : 0;
         push(@logic, $res);
         $res = eval("@logic");
-        $isUn = 0;
+        $type = 0;
     }
     #print STDERR "compList $level: result is $res\n";
-    return ($isUn, $res);
+    return wantarray ? ($type, $res) : $res;
 }
 
 ## read one physical input line and perform the trigraph replacement
@@ -512,6 +511,7 @@ sub expandDefined(@) {
 sub openfile($) {
     my $file = shift;
     my $fd;
+    print STDERR "including file $file\n";
     if (!open($fd, "<$file")) {
         warn "couldn't open $file";
         return ();
@@ -528,119 +528,84 @@ sub openfile($) {
         if ($line =~ m/^\s*$ishash\s*(.*)/o) {
             $line = $1;
             $line =~ s/\s\s+/ /go;
-            #print STDERR "found directive $line\n";
             if ($line =~ m/^(el)?if\s+(.*)/o) {
-                my $ifcont = (defined($1) && (length($1) == 2)) ? 1 : 0;
-                my $possible = 0;
-                #print STDERR "possible: $possible, $ifcont\n";
+                my $ifcont = $1;
                 if ($ifcont) {
-                    if ($aclevel == $iflevel) {
-                        --$aclevel;
-                    } elsif ($aclevel == $iflevel - 1
-                             && !$iffound[$iflevel]) {
-                        $possible = 1;
-                    }
+                    warn "#elif without preceeding #if"
+                        if (!$iflevel);
+                    ## this #elsif terminates the preceeding #if or #elsif
+                    --$aclevel
+                        if ($aclevel == $iflevel);
                 } else {
-                    if ($aclevel == $iflevel) {
-                        $possible = 1;
-                    }
-                    $iffound[$iflevel + 1] = 0;
+                    ++$iflevel;
                 }
-                #print STDERR "possible: $possible\n";
-                if ($possible) {
-                    #print STDERR "eval: $2\n";
+                if (($aclevel == ($iflevel - 1))
+                    && !($ifcont && $iffound[$iflevel])) {
                     my @toks = tokrep(0, $lineno, $file, expandDefined(tokenize($2)));
-                    #print STDERR "eval: @toks\n";
-                    my @copy = (@toks);
-                    my @res2 = compList(0, @copy);
-                    my $res2 = $res2[1];
-                    #print STDERR "eval: @toks  => $res2\n";
-                    if ($res2) {
+                    if (compList(0, @toks)) {
                         ++$aclevel;
                         $iffound[$aclevel] = 1;
-                    } else {
-                        $iffound[$aclevel] = 0;
                     }
                 }
-                ++$iflevel if (!$ifcont);
                 #print STDERR "IF $aclevel <= $iflevel : (el)if $line\n";
             } elsif ($line =~ m/^if(n?)def\s+(\w+)/o) {
                 if ($aclevel == $iflevel) {
-                    my $ndef = length($1);
-                    my $def = defined($macro{$2});
-                    $def = $ndef ? !$def : $def;
-                    if ($def) {
+                    if ($1 xor defined($macro{$2})) {
                         ++$aclevel;
                         $iffound[$aclevel] = 1;
-                    } else {
-                        $iffound[$aclevel] = 0;
                     }
                 }
                 ++$iflevel;
                 #print STDERR "IF $aclevel <= $iflevel : ifdef $line\n";
-            } elsif ($line =~ m/^else(.*)/o) {
+            } elsif ($line =~ m/^else\s*(.*)/o) {
+                warn "garbage at the end of an #else directive: $1" if ($1);
                 if ($aclevel == $iflevel) {
                     --$aclevel;
                 } elsif ($aclevel == $iflevel - 1
                          && !$iffound[$iflevel]) {
                     ++$aclevel;
-                    $iffound[$aclevel] = 1;
                 }
                 #print STDERR "IF $aclevel <= $iflevel : else $line\n";
             } elsif ($line =~ m/^endif\s*(.*)/o) {
+                warn "garbage at the end of an #endif directive: $1" if ($1);
                 --$aclevel if ($aclevel == $iflevel);
                 --$iflevel;
-                warn "garbage at the end of an #else directive: $1" if (length($1));
+                pop(@iffound);
                 #print STDERR "IF $aclevel <= $iflevel : endif $line\n";
             } elsif ($iflevel == $aclevel) {
                 if ($line =~ m/^include\s+(.*)/o) {
                     $line = $1;
-                    my $tries = 0;
-                    my $name;
+                    my $tried;
                   RETRY:
-                    if ($line =~ m/<(.+)>/o) {
-                        $name = $1;
-                    } elsif ($line =~ m/"(.+)"/o) {
-                        $name = $1;
-                    }
-                    if (!defined($name)) {
-                        ++$tries;
-                        if ($tries < 2) {
+                    my ($name) = $line =~ m/[<"](.+)[">]/o;
+                    if (!$name) {
+                        if ($tried) {
+                            warn "#include directive incorrect: $line";
+                        } else {
                             my @toks = tokrep(0, $lineno, $file, expandDefined(tokenize($line)));
                             $line = untokenize(@toks);
+                            $tried = 1;
                             goto RETRY;
-                        } else {
-                            warn "#include directive incorrect: $line";
                         }
                     } else {
-                        $name = findfile($name);
-                        print STDERR "including file $name\n";
-                        openfile($name);
-                        print STDERR "end including file $name\n";
+                        openfile(findfile($name));
                     }
                 } elsif ($line =~ m/^define\s+(.*)/o) {
-                    $line = $1;
-                    #print STDERR "found define directive $line\n";
-                    if ($line =~ m/^([a-zA-Z_]\w*)(.*)/o) {
-                        my $name = $1;
+                    my ($name, $rest) = $1 =~ m/^([a-zA-Z_]\w*)(.*)/o;
+                    if ($name) {
                         warn "redefinition of macro $name" if (defined($macro{$name}));
-                        $line = $2;
-                        #print STDERR "found define directive for $name to $line\n";
-                        if ($line =~ m/^\(\s*([^()]*)\s*\)\s*(.*)/o) {
-                            my $params = $1;
-                            $line = $2;
-                            #print STDERR "found define directive for $name|$params| to $line\n";
-                            $macro{$name} = [ split(/,\s*/, $params), $line ];
-                        } else {
-                            $macro{$name} = [ $line ];
-                        }
+                        #print STDERR "found define directive for $name to $rest\n";
+                        my ($params, $dfn) = $rest =~ m/^\(\s*([^()]*)\s*\)\s*(.*)/o;
+                        $macro{$name} =
+                            $params
+                            ? [ split(/,\s*/o, $params), $dfn ]
+                            : [ $rest ];
                     }
                 } elsif ($line =~ m/^undef\s+([a-zA-Z_]\w*)\s*(.*)/o) {
-                    my $name = $1;
-                    warn "garbage at end of undef for macro $name" if (length($2));
-                    delete $macro{$name};
+                    warn "garbage at end of undef for macro $1" if ($2);
+                    delete $macro{$1};
                 } elsif ($line =~ m/^error\s+(.*)/o) {
-                    die "$file:$lineno: Error $1";
+                    die "$file:$lineno: error $1";
                 } elsif ($line =~ m/^pragma\s+message\s+(.*)/o) {
                     warn "$file:$lineno: message $1";
                 } else {
@@ -679,6 +644,7 @@ sub openfile($) {
         }
     }
     warn "unbalanced #if / #endif" if ($iflevel);
+    print STDERR "end including file $file\n";
 }
 
 sub escPre(@) {
