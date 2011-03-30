@@ -19,15 +19,25 @@ if 0;               #### for this magic, see findSvnAuthors ####
 
 no warnings 'portable';  # Support for 64-bit ints required
 use English;
+use POSIX;
+use strict;
 use Getopt::Long;
 Getopt::Long::Configure ("bundling");
 
+## Variables that hold commandline arguments.
+## include directories
 my @dirs = ("/usr/include");
-
+## defines
 my @defs;
+## undefines
 my @undefs;
+## whether or not to output a list of all #define
 my $show;
+## use as a separator to tokens for debugging
 my $sep = "";
+## request output with special character sets: without digraphs (0),
+## unchanged (1, default), digraphs (2) or trigraphs (3).
+my $graphs = 1;
 
 my $result = GetOptions (
     "include|I=s"        => \@{dirs},      # list of strings
@@ -35,6 +45,7 @@ my $result = GetOptions (
     "undef|U=s"        => \@{undefs},    # list of strings
     "dM!"        => \${show},    # flag
     "separator=s"        => \${sep},    # string
+    "graphs=i"        => \${graphs},
     );
 
 
@@ -44,13 +55,17 @@ my $result = GetOptions (
 my $unstring = "%%";
 ## This is a special operator that serves to insert line information
 ## in the output.
-my $liner = "^^";
+my $liner = "??";
+## This is a special operator that serves to insert a # character in the output
+my $escHash = "\@\@";
+## This is a special operator that serves to insert a %: sequence in the output
+my $escHash2 = "//";
 
 ## holds all defined macros
 my %macro = (
     ## The special "macro" _Pragma that we never could do with #define.
     ## The spaces in the expansion are essential such that this is tokenized correctly.
-    "_Pragma" => ["X", "$liner #pragma ${unstring}X $liner"],
+    "_Pragma" => ["X", "$liner \@\@ pragma ${unstring}X $liner"],
     ## Mark our presence by setting a special macro.
     "__P99PRO__" => ["1"],
     );
@@ -61,6 +76,7 @@ my @tokens;
 ## did we locally change line numbering?
 my $skipedLines = 0;
 
+## integrate the defines that we received on the command line
 foreach my $def (@defs) {
     my ($name, $val) = $def =~ m/^([^=]+)=?(.*)/o;
     $val = "" if (!defined($val));
@@ -71,93 +87,183 @@ foreach my $def (@defs) {
 
 ## all punctuation tokens. put the longest first, so they will match first.
 my @punct = (
+    "%:%:",
+
+    "...",
+    "<<=",
+    ">>=",
+
+    "!=",
+    "##",
+    "%:",
+    "%=",
+    "%>",
+    "&&",
+    "&=",
+    "*=",
+    "++",
+    "+=",
+    "--",
+    "-=",
+    "->",
+    "/=",
+    ":>",
+    "<%",
+    "<:",
+    "<<",
+    "<=",
+    "==",
+    ">=",
+    ">>",
+    "^=",
+    "|=",
+    "||",
+    $liner,
+    $unstring,
+    $escHash . $escHash,
+    $escHash2 . $escHash2,
+
+    $escHash,
+    $escHash2,
+
+    "!",
+    "#",
+    "%",
+    "&",
+    "(",
+    ")",
+    "*",
+    "+",
+    ",",
+    "-",
+    ".",
+    "/",
+    ":",
+    ";",
+    "<",
+    "=",
+    ">",
+    "?",
+    "^",
+    "{",
+    "|",
+    "}",
+    "~",
+    "[",
+    "]",
+    );
+
+@punct = sort { length($b) <=> length($a) } @punct;
+my @escPunct = map { "\Q$_\E" } @punct;
+
+## a regexp for all punctuation operators
+my $punct = "(?:".join("|", @escPunct).")";
+$punct = qr/$punct/;
+
+## all digraph tokens. put the longest first, so they will match first.
+my @digraph = (
     "[%]:[%]:",
-
-    "[.][.][.]",
-    "[<][<]=",
-    "[>][>]=",
-
-    "[!]=",
-    "[#][#]",
     "[%]:",
-    "[%]=",
     "[%][>]",
-    "[&][&]",
-    "[&]=",
-    "[*]=",
-    "[+][+]",
-    "[+]=",
-    "[-][-]",
-    "[-]=",
-    "[-][>]",
-    "[/]=",
     ":[>]",
     "[<][%]",
     "[<]:",
-    "[<][<]",
-    "[<]=",
-    "==",
-    "[>]=",
-    "[>][>]",
-    "^=",
-    "[|]=",
-    "[|][|]",
-    $liner,
-    $unstring,
-
-    "[!]",
-    "[#]",
-    "[%]",
-    "[&]",
-    "[(]",
-    "[)]",
-    "[*]",
-    "[+]",
-    "[,]",
-    "[-]",
-    "[.]",
-    "[/]",
-    ":",
-    "[;]",
-    "[<]",
-    "=",
-    "[>]",
-    "[?]",
-    "^",
-    "[{]",
-    "[|]",
-    "[}]",
-    "[~]",
-    "[\\[]",
-    "[\\]]",
     );
 
-## a regexp for all punctuation operators
-my $punct = join("|", @punct);
-## a regexp to detect string literals
-my $isstring = '"(?:[^"\\\\]++|\\\\.)*+"';
-## a regexp to detect character constants
-my $ischar = "'(?:[^'\\\\]++|\\\\.)*+'";
+my $digraph = "(?:".join("|", @digraph).")";
+$digraph = qr/$digraph/;
 
+## all idgraph tokens. put the longest first, so they will match first.
+my @idgraph = (
+    "[#][#]",
+    "[#]",
+    "[}]",
+    "[\]]",
+    "[{]",
+    "[\[]",
+    );
+
+my $idgraph = "(?:".join("|", @idgraph).")";
+$idgraph = qr/$idgraph/;
+
+my %digraph = (
+    "%:%:" => "##",
+    "%:" => "#",
+    "%>" => "}",
+    ":>" => "]",
+    "<%" => "{",
+    "<:" => "[",
+    );
+
+my %idgraph = map {
+    $digraph{$_} => $_
+} keys(%digraph);
+
+
+## a regexp to detect string literals
+my $isstring = qr/(?:L?"(?:[^"\\\\]++|\\\\.)*+")/;
+## a regexp to detect character constants
+my $ischar = qr/(?:L?'(?:[^'\\\\]++|\\\\.)*+')/;
+## a regexp to detect preprocessor number token
+my $isnumber = qr/(?:[.]?[0-9](?:[eEpP][-+]|[.a-zA-Z0-9]+)*)/;
+## a regexp to detect preprocessor identifier token
+my $isidentifier = qr/(?:[_a-zA-Z][_a-zA-Z0-9]+)/;
+
+my $ishash = qr/(?:[#]|[%][:])/;
+my $ishhash = qr/(?:[#][#]|[%][:][%][:])/;
 
 ## all third characters that may appear in a trigraph
 my $trigraph = "-!'/=()<>";
 ## all replacements for trigraphs, in the corresponding order
 my $onegraph = "~|^\\#[]{}";
 
-sub readln($\$);
-sub openfile($);
-sub findfile($);
-sub tokrep($$$@);
-sub compList($\@);
+my %onegraph;
 
-my $big = ~0;
-my $big2 = $big >> 1;
+my @trigraph = split(//, $trigraph);
+my @onegraph = split(//, $onegraph);
+
+for (my $i = 0; $i <= $#onegraph; ++$i) {
+    $onegraph{$onegraph[$i]} = "??$trigraph[$i]";
+}
+
+$trigraph = "(?:[\Q$trigraph\E])";
+$onegraph = "(?:[\Q$onegraph\E])";
+$trigraph = qr@$trigraph@;
+$onegraph = qr@$onegraph@;
+
+sub compList($\@);
+sub escPre(@);
+sub evalExpr($@);
+sub expandDefined(@);
+sub findfile($);
+sub openfile($);
+sub rawtokenize($);
+sub readlln($\$);
+sub readln($\$);
+sub skipcomments($$\$);
+sub tokenize($);
+sub tokrep($$$@);
+sub toktrans($$\%);
+sub unescPre(@);
+sub untokenize(@);
+
+sub toktrans($$\%) {
+    my ($inp, $reg, $hash) = @_;
+    my %hash = %{$hash};
+    my @tokens = map {
+        if ($_ && $_ =~ m/$reg/) {
+            $hash{$_}
+        } else {
+            $_
+        }
+    } split(/($reg)/so, $inp);
+    return join("", @tokens);
+}
 
 sub evalExpr($@) {
     my ($isUn, @list) = @_;
     my $res = eval("@list");
-    $res = ($big - -$res +1) if ($isUn && $res < 0);
+    $res = (ULONG_MAX - -$res +1) while ($isUn && $res < 0);
     if (defined($res) && length($res) == 0) {
         $res = $res ? 1 : 0;
     }
@@ -194,13 +300,13 @@ sub compList($\@) {
         } elsif ($tok eq ")") {
             goto FINISH;
         } else {
-            if ($tok =~ m/^(0x)?[0-9]+[lL]*([uU]*)[lL]*$/o) {
+            if ($tok =~ m/^(?:0[xX]?[0-9a-fA-F]|[0-9]+)[lL]*([uU]*)[lL]*$/o) {
                 ## a number with an 'U' is unsigned
-                $isUn ||= (defined($2) && length($2)) ? 1 : 0;
+                $isUn ||= (defined($1) && length($1)) ? 1 : 0;
                 $tok =~ s/[lLuU]//go;
                 ## a number that is greater than INTMAX_MAX must be
                 ## unsigned
-                $isUn ||= ($tok > $big2) ? 1 : 0;
+                $isUn ||= ($tok > LONG_MAX) ? 1 : 0;
                 #print STDERR "processing number \"$tok\"\n";
                 push(@list, $tok);
             } elsif ($tok =~ m/^\w+/o) {
@@ -230,34 +336,30 @@ sub compList($\@) {
     return ($isUn, $res);
 }
 
+## read one physical input line and perform the trigraph replacement
 sub readln($\$) {
     my ($fd, $lineno) = @_;
     my $line = <$fd>;
     ++${$lineno};
     return 0 if (!defined($line));
     chomp $line;
-    my $ret = " ";
-    while ($line =~ m/^([^?]*)[?](.*)/o) {
-        $ret .= $1;
-        $line = $2;
-        if ($line =~ m/^[?]([$trigraph])(.*)/o) {
-            my $c = $1;
-            $line = $2;
-            $c =~ tr:-!'/=()<>:~|^\\#[]{}:;
-            $ret .= $c;
-        } else {
-            $ret .= "?";
+    my @chunks = split(/([?][?]$trigraph)/o, $line);
+    @chunks = map {
+        my $c = $_;
+        if (m/^[?][?]($trigraph)$/o) {
+            $c = $1;
+            $c =~ tr@-!'/=()<>@~|^\\#[]{}@;
         }
-    }
-    $ret .= $line;
-    return $ret;
+        $c;
+    } @chunks;
+    return " ".join("", @chunks);
 }
 
+## Scan the list of include directories for a file
 sub findfile($) {
     my $name = shift;
     foreach my $dir (@dirs) {
         my $fname = "$dir/$name";
-        print STDERR "looking for $fname\n";
         return $fname if (-e $fname);
     }
     return "./$name";
@@ -267,10 +369,11 @@ sub tokenize($) {
     my $ltok = shift;
     my @ret;
     ## first find strings
-    my @ltok = split(/($isstring|$ischar)/, $ltok);
+    my @ltok = split(/($isstring|$ischar|$isidentifier|$isnumber)/o, $ltok);
+    #print STDERR join("|", @ltok), "\n";
     foreach my $ltok (@ltok) {
-        if ($ltok !~ m/^(["']).*\1$/o) {
-            my @ltok = split(/[ \t]+/o, $ltok);
+        if ($ltok !~ m/^$isstring|$ischar|$isidentifier|$isnumber$/o) {
+            my @ltok = split(/\s+/o, $ltok);
             foreach my $ltok (@ltok) {
                 my @ltok = split(/($punct)/, $ltok);
                 push(@ret, @ltok);
@@ -285,14 +388,13 @@ sub tokenize($) {
 sub rawtokenize($) {
     my @ret;
     my $ltok = shift;
-    my @toks = split(/($isstring|$ischar)/, $ltok);
+    my @toks = split(/($isstring|$ischar)/o, $ltok);
     while (@toks) {
         my $toks = "";
       NONSTR:
         while (@toks) {
             my $tok = shift(@toks);
             if (length($tok) > 1) {
-                #print STDERR "long: |$tok|\n";
                 push(@ret, $toks) if (length($toks));
                 push(@ret, $tok);
                 last NONSTR;
@@ -309,15 +411,42 @@ sub untokenize(@) {
     my $prev = $ret;
     foreach my $tok (@toks) {
         my $comb = $prev . $tok;
+        my $space = $sep;
+
+        ## Don't add spaces before and after newlines
         if ($tok eq "\n") {
-            $ret .= $tok;
-        } elsif ($prev =~ m/^($punct)$/o && $tok =~ m/^($punct)$/o && $comb =~ m/^($punct)$/o) {
-            $ret .= " " . $tok;
-        } elsif ($prev =~ m/\w$/o && $tok =~ m/^\w/o) {
-            $ret .= " " . $tok;
-        } else {
-            $ret .= $sep . $tok;
+            $space = "";
+        } elsif ($prev =~ m/\s$/so) {
+            $space = "";
+
+            ## imperative, don't create tokens that weren't there before
+        } elsif ($comb =~ m/^$punct$/o) {
+            $space = "$sep ";
+        } elsif ($comb =~ m/^$isnumber$/o) {
+            $space = "$sep ";
+        } elsif ($comb =~ m/^$isidentifier$/o) {
+            $space = "$sep ";
+
+            ## this shouldn't occur, but might be important to
+            ## visually mark a clash such as 199901L"my string" where
+            ## the L could have been meant for making a long int or
+            ## for creating a wide character string.
+        } elsif ($tok =~ m/^$isstring|$ischar$/o && $prev =~ m/^$isidentifier|$isnumber$/o) {
+            $space = "$sep ";
+
+            ## visual enhancement for some single character tokens
+        } elsif ($prev =~ m/^[=,;?:{]$/o) {
+            $space = "$sep ";
+        } elsif ($tok =~ m/^[=}]$/o) {
+            $space = "$sep ";
+
+            ## most two character tokens get spaces surrounding them
+        } elsif ($prev =~ m/^$punct$/o && length($prev) > 1 && $prev !~ m/^[-][-]|[+][+]$/o) {
+            $space = "$sep ";
+        } elsif ($tok =~ m/^$punct$/o && length($tok) > 1 && $tok !~ m/^[-][-]|[+][+]$/o) {
+            $space = "$sep ";
         }
+        $ret .= $space . $tok;
         $prev = $tok;
     }
     return $ret;
@@ -340,7 +469,6 @@ sub skipcomments($$\$) {
     my @raw = rawtokenize($line);
   SCAN:
     while (@raw) {
-        #print STDERR "raw: @raw\n";
         my $raw = shift(@raw);
         if ($raw =~ m/^["']/o) {
             $ret .= $raw;
@@ -407,11 +535,11 @@ sub openfile($) {
         $line = skipcomments($line, $fd, $lineno);
         ############################################################
         ## First check if this is starting a preprocessing directive.
-        if ($line =~ m/^[ \t]*(#|%:)[ \t]*(.*)/o) {
-            $line = $2;
-            $line =~ s/[ \t][ \t]+/ /go;
+        if ($line =~ m/^\s*$ishash\s*(.*)/o) {
+            $line = $1;
+            $line =~ s/\s\s+/ /go;
             #print STDERR "found directive $line\n";
-            if ($line =~ m/^(el)?if[ \t]+(.*)/o) {
+            if ($line =~ m/^(el)?if\s+(.*)/o) {
                 my $ifcont = (defined($1) && (length($1) == 2)) ? 1 : 0;
                 my $possible = 0;
                 #print STDERR "possible: $possible, $ifcont\n";
@@ -446,7 +574,7 @@ sub openfile($) {
                 }
                 ++$iflevel if (!$ifcont);
                 #print STDERR "IF $aclevel <= $iflevel : (el)if $line\n";
-            } elsif ($line =~ m/^if(n?)def[ \t]+(\w+)/o) {
+            } elsif ($line =~ m/^if(n?)def\s+(\w+)/o) {
                 if ($aclevel == $iflevel) {
                     my $ndef = length($1);
                     my $def = defined($macro{$2});
@@ -469,65 +597,92 @@ sub openfile($) {
                     $iffound[$aclevel] = 1;
                 }
                 #print STDERR "IF $aclevel <= $iflevel : else $line\n";
-            } elsif ($line =~ m/^endif[ \t]*(.*)/o) {
+            } elsif ($line =~ m/^endif\s*(.*)/o) {
                 --$aclevel if ($aclevel == $iflevel);
                 --$iflevel;
                 warn "garbage at the end of an #else directive: $1" if (length($1));
                 #print STDERR "IF $aclevel <= $iflevel : endif $line\n";
             } elsif ($iflevel == $aclevel) {
-                if ($line =~ m/^include[ \t]+(.*)/o) {
-                    my @toks = tokrep(0, $lineno, $file, expandDefined(tokenize($1)));
-                    $line = untokenize(@toks);
+                if ($line =~ m/^include\s+(.*)/o) {
+                    $line = $1;
+                    my $tries = 0;
                     my $name;
+                  RETRY:
                     if ($line =~ m/<(.+)>/o) {
                         $name = $1;
                     } elsif ($line =~ m/"(.+)"/o) {
                         $name = $1;
                     }
-                    if (defined($name)) {
+                    if (!defined($name)) {
+                        ++$tries;
+                        if ($tries < 2) {
+                            my @toks = tokrep(0, $lineno, $file, expandDefined(tokenize($line)));
+                            $line = untokenize(@toks);
+                            goto RETRY;
+                        } else {
+                            warn "#include directive incorrect: $line";
+                        }
+                    } else {
                         $name = findfile($name);
                         print STDERR "including file $name\n";
                         openfile($name);
                         print STDERR "end including file $name\n";
                     }
-                } elsif ($line =~ m/^define[ \t]+(.*)/o) {
+                } elsif ($line =~ m/^define\s+(.*)/o) {
                     $line = $1;
                     #print STDERR "found define directive $line\n";
                     if ($line =~ m/^([a-zA-Z_]\w*)(.*)/o) {
-                        $name = $1;
+                        my $name = $1;
                         warn "redefinition of macro $name" if (defined($macro{$name}));
                         $line = $2;
                         #print STDERR "found define directive for $name to $line\n";
-                        if ($line =~ m/^\([ \t]*([^()]*)[ \t]*\)[ \t]*(.*)/o) {
-                            $params = $1;
+                        if ($line =~ m/^\(\s*([^()]*)\s*\)\s*(.*)/o) {
+                            my $params = $1;
                             $line = $2;
                             #print STDERR "found define directive for $name|$params| to $line\n";
-                            $macro{$name} = [ split(/,[ \t]*/, $params), $line ];
+                            $macro{$name} = [ split(/,\s*/, $params), $line ];
                         } else {
                             $macro{$name} = [ $line ];
                         }
                     }
-                } elsif ($line =~ m/^undef[ \t]+([a-zA-Z_]\w*)[ \t]*(.*)/o) {
+                } elsif ($line =~ m/^undef\s+([a-zA-Z_]\w*)\s*(.*)/o) {
                     my $name = $1;
                     warn "garbage at end of undef for macro $name" if (length($2));
                     delete $macro{$name};
-                } elsif ($line =~ m/^error[ \t]+(.*)/o) {
+                } elsif ($line =~ m/^error\s+(.*)/o) {
                     die "$file:$lineno: Error $1";
-                } elsif ($line =~ m/^pragma[ \t]+message[ \t]+(.*)/o) {
+                } elsif ($line =~ m/^pragma\s+message\s+(.*)/o) {
                     warn "$file:$lineno: message $1";
                 } else {
-                    push(@tokens, "#$line", "\n");
+                    push(@tokens, "# $line");
                 }
             }
+            ## Ensure that our line numbering stays close to the original
+            push(@tokens, "\n");
         }
         ## End of preprocessing directives
         ############################################################
         elsif ($iflevel != $aclevel) {
             ## a blob that is protected by #if
+            push(@tokens, "\n");
         } else {
-            $line =~ s/[ \t][ \t]+/ /go;
+            ## Glue a leading sequence of white space to a preceding one, if any.  This
+            ## ensures that indentation stays about the same for the preprocessed file
+            if ($line =~ m/^(\s+)(.*)$/o) {
+                my $next = $1;
+                $line = $2;
+                if (@tokens && $tokens[$#tokens] =~ /^\s+$/so) {
+                    $tokens[$#tokens] .= $next;
+                } else {
+                    push(@tokens, $next);
+                }
+            }
+            ## Remaining white space is less significant.
+            $line =~ s/\s\s+/ /go;
+            ## Trailing white space is no good.
+            $line =~ s/\s+$//o;
             if ($skipedLines) {
-                push(@tokens, "# $lineno \"$file\"\n");
+                push(@tokens, "\@\@ $lineno \"$file\"\n");
                 $skipedLines = 0;
             }
             push(@tokens, tokrep(0, $lineno, $file, escPre(tokenize($line))), "\n");
@@ -542,13 +697,13 @@ sub escPre(@) {
     while (@toks) {
         my $tok = shift(@toks);
         if ($tok eq "#") {
-            $tok = "\20";
+            $tok = $escHash;
         } elsif ($tok eq "##") {
-            $tok = "\21";
+            $tok = $escHash.$escHash;
         } elsif ($tok eq "%:") {
-            $tok = "\22";
+            $tok = $escHash2;
         } elsif ($tok eq "%:%:") {
-            $tok = "\23";
+            $tok = $escHash2.$escHash2;
         }
         push(@ret, $tok);
     }
@@ -557,19 +712,16 @@ sub escPre(@) {
 
 sub unescPre(@) {
     my @toks = @_;
-    my @ret = ();
+    my @ret;
     while (@toks) {
         my $tok = shift(@toks);
         if ($tok eq "$unstring") {
-            #print STDERR "unesc @toks\n";
             $tok = shift(@toks);
             $tok =~ s/^L?"(.*)"$/$1/so;
             $tok =~ s/[\\](["\\])/$1/sog;
         }
-        $tok =~ s/\20/#/go;
-        $tok =~ s/\21/##/go;
-        $tok =~ s/\22/%:/go;
-        $tok =~ s/\23/%:%:/go;
+        $tok =~ s/^(?:$escHash)+$/#/go;
+        $tok =~ s/^(?:$escHash2)+$/%:/go;
         push(@ret, $tok);
     }
     return @ret;
@@ -681,17 +833,34 @@ sub tokrep($$$@) {
                             ## Do the stringification
                             while (@repl) {
                                 my $repl = shift(@repl);
-                                if ($repl =~ m/^[#]$|^[%][:]$/o) {
+                                if ($repl =~ m/^$ishash$/o) {
                                     my $repl2 = shift(@repl);
                                     if (defined($def{$repl2})) {
                                         #print STDERR "stringifying argument $repl $repl2\n";
                                         my $str = untokenize(@{$args[$def{$repl2}]});
-                                        $str =~ s/^[ \t]+//o;
-                                        $str =~ s/[ \t]+$//o;
+
+                                        ## White space before the first preprocessing token
+                                        ## and after the last preprocessing token composing
+                                        ## the argument is deleted.
+                                        $str =~ s/^\s*(\w++)\s*$/$1/o;
+
+                                        ## Each occurrence of white space between the
+                                        ## argument’s preprocessing tokens becomes a single
+                                        ## space character in the character string literal.
+                                        $str =~ s/^\s+//o;
+
+                                        ## a \ character is inserted before each " and \
+                                        ## character of a character constant or string
+                                        ## literal
                                         $str =~ s/(["\\])/\\$1/go;
+
                                         push(@exp, '"'.$str.'"');
                                     } else {
-                                        #print STDERR "not stringifying argument $repl $repl2\n";
+                                        ## Each # preprocessing token in the replacement
+                                        ## list for a function-like macro shall be followed
+                                        ## by a parameter as the next preprocessing token
+                                        ## in the replacement list.
+                                        warn "invalid stringify sequence $repl $repl2, not a parameter name";
                                         unshift(@repl, $repl2);
                                         push(@exp, $repl);
                                     }
@@ -719,16 +888,26 @@ sub tokrep($$$@) {
                 ## an object like macro
             }
             ## Join on ##
-            @exp = (shift(@repl));
+            @exp = (); #(shift(@repl));
             while (@repl) {
-                my $repl = shift @repl;
-                if ($repl =~ m/^##|%:%:$/o) {
-                    $repl = shift @repl;
-                    #print STDERR "token concated $exp[$#exp] and $repl\n";
-                    $exp[$#exp] .= $repl;
+                if ($#repl && $repl[1] =~ m/^$ishhash$/o) {
+                    if ($#repl > 1) {
+                        my @parts = splice(@repl, 0, 3);
+                        my $joined = $parts[0] . $parts[2];
+                        if ($joined =~ m/^$isstring|$ischar|$isidentifier|$isnumber|$punct$/o) {
+                            push(@exp, $joined);
+                        } else {
+                            warn "'$joined' is not a valid preprocessor token";
+                            push(@exp, $parts[0], $parts[2]);
+                        }
+                    } else {
+                        warn "'$repl[0]$repl[1]' at the end of a preprocessing directive";
+                        push(@exp, shift(@repl));
+                        ## skip the hash hash
+                        shift(@repl);
+                    }
                 } else {
-                    # print STDERR "token $repl\n";
-                    push(@exp, $repl);
+                    push(@exp, shift(@repl));
                 }
             }
             #print STDERR "$replev: tokens replacement1: ".join("|", @exp)."\n";
@@ -784,6 +963,14 @@ if ($show) {
 
 @tokens = grep { length($_) } @tokens;
 @tokens = unescPre(@tokens);
+my $output = untokenize(@tokens);
+if (!$graphs) {
+    $output = toktrans($output, $digraph, %digraph);
+} elsif ($graphs == 2) {
+    $output = toktrans($output, $idgraph, %idgraph);
+} elsif ($graphs == 3) {
+    $output = toktrans($output, $onegraph, %onegraph);
+}
 
-print STDOUT untokenize(@tokens);
+print STDOUT $output;
 
