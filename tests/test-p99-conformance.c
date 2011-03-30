@@ -166,6 +166,11 @@ double has_concat_of_floats_iterative = CONCAT2(CONCAT2(CONCAT2(1, E), +), 3);
    valid preprocessing tokens but which are invalid tokens for the
    following phases. */
 char const has_concat_of_floats_1Ep3Em[] = STRINGIFY(CONCAT2(CONCAT2(1E+, 3E-), 3));
+# ifndef SKIP_TOKEN_HASH_HASH_AS_ARGUMENT
+#define DONT_CONCAT_(X) A X B
+#define DONT_CONCAT(X) DONT_CONCAT_(X)
+char const has_hash_hash_as_argument[] = STRINGIFY(DONT_CONCAT(##));
+# endif
 # ifndef SKIP_TOKEN_CONCAT_HASH_HASH
 char const has_concat_of_hash_hash[] = STRINGIFY(CONCAT2(#, #));
 # endif
