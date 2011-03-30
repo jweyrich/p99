@@ -16,6 +16,7 @@ NAME 	=					\
 		orwl_remote_test_inclusive	\
 		orwl_socket_finish		\
 		orwl_socket_test		\
+		orwl_benchmark_kernel23		\
 		orwl_wait_list			\
 		test-p99-block			\
 		test-p99-cases			\
@@ -34,6 +35,7 @@ SRC	=					\
 		orwl_remote_test_inclusive.c	\
 		orwl_socket_finish.c		\
 		orwl_socket_test.c		\
+		orwl_benchmark_kernel23.c	\
 		orwl_wait_list.c		\
 		test-p99-block.c		\
 		test-p99-cases.c		\
