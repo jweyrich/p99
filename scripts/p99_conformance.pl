@@ -1,5 +1,5 @@
 #!/bin/sh -f
-#  This may look like complete nonsense, but it really is -*- perl; coding: utf-8 -*-
+#  This may look like complete nonsense, but it really is -*- mode: perl; coding: utf-8 -*-
 eval 'exec perl -wS -x $0 ${1+"$@"}'
 if 0;               #### for this magic, see findSvnAuthors ####
 #!perl
@@ -7,7 +7,7 @@ if 0;               #### for this magic, see findSvnAuthors ####
 #
 # Except of parts copied from previous work and as explicitly stated below,
 # the author and copyright holder for this work is
-# all rights reserved,  2010-2011 Jens Gustedt, INRIA, France
+# all rights reserved,  2011 Jens Gustedt, INRIA, France
 #
 # This file is part of the P99 project. You received this file as as
 # part of a confidential agreement and you may generally not

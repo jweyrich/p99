@@ -169,6 +169,9 @@ char const has_concat_of_floats_1Ep3Em[] = STRINGIFY(CONCAT2(CONCAT2(1E+, 3E-), 
 # ifndef SKIP_TOKEN_CONCAT_HASH_HASH
 char const has_concat_of_hash_hash[] = STRINGIFY(CONCAT2(#, #));
 # endif
+# ifndef SKIP_STRINGIFY_EMPTY
+char const has_stringify_empty[] = STRINGIFY();
+# endif
 #endif
 
 #ifndef SKIP_EXPANDS
