@@ -288,23 +288,26 @@ sub check_coloring
     {
     if (get_colorID($i) == get_colorID($graph[$i]->[$j]))
      {
-      print "// Checking coloring ... Fault\n";
+      print STDERR "Checking coloring ... Fault\n";
       return;
      }
     }
   }
-  print "// // Checking coloring ... Well done\n";
+  print STDERR "Checking coloring ... Well done\n";
  }
 
 
 # getting the parameters
-if ($#ARGV == -1) 
+if ($#ARGV == -1)
  {
-  print "Usage: coloreo.pl [file] [Parameters]\n";
+  print STDERR "Usage: coloreo.pl [file] [Parameters]\n";
   exit;
  }
-$ifile = $ARGV[0];
+
 GetOptions ('number'=>\ $number,'indirect'=>\ $ind, 'check'=>\ $check);
+
+# the remaining argument after option processing is the input file
+$ifile = $ARGV[0];
 
 # open .dot file and fill the graph structure
 make_graph;
