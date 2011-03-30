@@ -65,7 +65,7 @@ my $escHash2 = "//";
 my %macro = (
     ## The special "macro" _Pragma that we never could do with #define.
     ## The spaces in the expansion are essential such that this is tokenized correctly.
-    "_Pragma" => ["X", "$liner \@\@ pragma ${unstring}X $liner"],
+    "_Pragma" => ["X", "$liner $escHash pragma ${unstring}X $liner"],
     ## Mark our presence by setting a special macro.
     "__P99PRO__" => ["1"],
     );
@@ -85,79 +85,69 @@ foreach my $def (@defs) {
 }
 
 
-## all punctuation tokens. put the longest first, so they will match first.
-my @punct = (
-    "%:%:",
-
-    "...",
-    "<<=",
-    ">>=",
-
-    "!=",
-    "##",
-    "%:",
-    "%=",
-    "%>",
-    "&&",
-    "&=",
-    "*=",
-    "++",
-    "+=",
-    "--",
-    "-=",
-    "->",
-    "/=",
-    ":>",
-    "<%",
-    "<:",
-    "<<",
-    "<=",
-    "==",
-    ">=",
-    ">>",
-    "^=",
-    "|=",
-    "||",
-    $liner,
-    $unstring,
-    $escHash . $escHash,
-    $escHash2 . $escHash2,
-
-    $escHash,
-    $escHash2,
-
-    "!",
-    "#",
-    "%",
-    "&",
-    "(",
-    ")",
-    "*",
-    "+",
-    ",",
-    "-",
-    ".",
-    "/",
-    ":",
-    ";",
-    "<",
-    "=",
-    ">",
-    "?",
-    "^",
-    "{",
-    "|",
-    "}",
-    "~",
-    "[",
-    "]",
+my @punctPri = (
+    ## highest priority, left-to-right
+    ["(", ")", "[", "<:", "]", ":>", ".", "->", "++", "--"],
+    ##
+    ["!", "~"],
+    ##
+     ["*", "/", "%"],
+    ##
+    ["+", "-"],
+    ##
+    ["<<", ">>"],
+    ##
+    [">", "<", "<=", ">="],
+    ##
+    ["==", "!="],
+    ##
+    ["&"],
+    ##
+    ["^"],
+    ##
+    ["|"],
+    ##
+    ["&&"],
+    ##
+    ["||"],
+    ##
+    ["?", ":"],
+    ##
+    ["=", "%=", "&=", "*=", "+=", "-=", "/=", "^=", "|=", "<<=", ">>="],
+    ##
+    [","],
+    ## code punctuation
+    [";", "{", "<%", "}", "%>", "..."],
+    ## preprocessor
+    ["#", "##", "%:", "%:%:"],
+    ## internal
+    [$liner, $unstring, $escHash, $escHash2, "$escHash$escHash", "$escHash2$escHash2"],
     );
 
-@punct = sort { length($b) <=> length($a) } @punct;
+my %punctPri;
+
+{
+    my @tmp;
+    for (my $i = 0; $i <= $#punctPri; ++$i) {
+        my @pairs = map { $_ => $i } $punctPri[$i];
+        push(@tmp, @pairs);
+    }
+    %punctPri = @tmp;
+}
+
+## all punctuation tokens. put the longest first, so they will match first.
+my @punct = sort {
+    length($b) <=> length($a)
+} map {
+    @{$_}
+} @punctPri;
+
 my @escPunct = map { "\Q$_\E" } @punct;
 
 ## a regexp for all punctuation operators
 my $punct = "(?:".join("|", @escPunct).")";
+print STDERR "array: @punct\n";
+print STDERR "string: $punct\n";
 $punct = qr/$punct/;
 
 ## all digraph tokens. put the longest first, so they will match first.
@@ -682,7 +672,7 @@ sub openfile($) {
             ## Trailing white space is no good.
             $line =~ s/\s+$//o;
             if ($skipedLines) {
-                push(@tokens, "\@\@ $lineno \"$file\"\n");
+                push(@tokens, "$escHash $lineno \"$file\"\n");
                 $skipedLines = 0;
             }
             push(@tokens, tokrep(0, $lineno, $file, escPre(tokenize($line))), "\n");
@@ -717,11 +707,11 @@ sub unescPre(@) {
         my $tok = shift(@toks);
         if ($tok eq "$unstring") {
             $tok = shift(@toks);
-            $tok =~ s/^L?"(.*)"$/$1/so;
+            $tok =~ s/^L?"(.*)"$/ $1/so;
             $tok =~ s/[\\](["\\])/$1/sog;
         }
-        $tok =~ s/^(?:$escHash)+$/#/go;
-        $tok =~ s/^(?:$escHash2)+$/%:/go;
+        $tok =~ s/\Q$escHash\E/#/go;
+        $tok =~ s/\Q$escHash2\E/%:/go;
         push(@ret, $tok);
     }
     return @ret;
