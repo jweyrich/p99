@@ -66,8 +66,6 @@ for (my $i = 0; $i <= $row; $i++)
  }
 
 # create the conections
-#open(my $out, ">",  "output.dot");
-
 my $cl;
 my $rw;
 
