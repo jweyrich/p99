@@ -188,7 +188,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 #if P99_COMPILER & P99_COMPILER_INTEL
 # define p99_inline __attribute__((always_inline)) inline
 # ifndef __GNUC__
-#  define P00_NO_HAVE_TGMATH
+#  define P00_NO_HAVE_TGMATH_H
 # endif
 #elif P99_COMPILER & P99_COMPILER_PCC
 //# error "The P99 preprocessor files can't work with the pcc compiler, yet"
@@ -350,7 +350,7 @@ typedef __int128_t p99x_int128;
 /* special repair work for non-compliant compilers */
 #if P99_COMPILER & P99_COMPILER_INTEL
 # ifndef __GNUC__
-#  define P00_NO_HAVE_TGMATH
+#  define P00_NO_HAVE_TGMATH_H
 # endif
 #endif
 
