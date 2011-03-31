@@ -248,7 +248,6 @@ my @functions_C99 = sort(
         gets
         perror
         printf
-        fprintf
         sprintf
         snprintf
         putc
@@ -259,7 +258,6 @@ my @functions_C99 = sort(
         rename
         rewind
         scanf
-        fscanf
         sscanf
         vfscanf
         vscanf
@@ -281,7 +279,6 @@ my @functions_C99 = sort(
         abs
         labs
         atexit
-        atof
         atoi
         atol
         bsearch
@@ -290,7 +287,6 @@ my @functions_C99 = sort(
         exit
         free
         getenv
-        ldiv
         malloc
         calloc
         realloc
@@ -668,7 +664,7 @@ print "#define P00_REAL_QUAL_${_} ,\n"
 print "#define P00_FLOAT_QUAL_${_} ,\n"
     foreach (@floatpar_C99, @qualpar_C99);
 print "#define P00_TYPE_QUAL_${_} ,\n"
-    foreach (@typepar_C99, @qualpar_C99);
+    foreach (@typepar_C99);
 
 print "#define P00_KEYWORD_${_} ,\n"
     foreach (@keywords_C99);

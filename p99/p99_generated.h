@@ -41,8 +41,8 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Sat, 05 Mar 2011 11:59:30 +0100"
-#define P00_VERSION_ID "288f8ccf58be4a6c23e66cffb321d4a936c8a01e"
+#define P00_VERSION_DATE "Thu, 31 Mar 2011 12:11:25 +0200"
+#define P00_VERSION_ID "6ddaaec75f6bbb164ce296b5d0afbf031d7be062"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
  **
@@ -888,7 +888,6 @@ automatically generated, do not change manually.
  **     @c atan2
  **     @c atexit
  **     @c atof
- **     @c atof
  **     @c atoi
  **     @c atol
  **     @c bsearch
@@ -940,7 +939,6 @@ automatically generated, do not change manually.
  **     @c floor
  **     @c fopen
  **     @c fprintf
- **     @c fprintf
  **     @c fputc
  **     @c fputchar
  **     @c fputs
@@ -950,7 +948,6 @@ automatically generated, do not change manually.
  **     @c free
  **     @c freopen
  **     @c frexp
- **     @c fscanf
  **     @c fscanf
  **     @c fseek
  **     @c fsetpos
@@ -996,7 +993,6 @@ automatically generated, do not change manually.
  **     @c isxdigit
  **     @c labs
  **     @c ldexp
- **     @c ldiv
  **     @c ldiv
  **     @c localeconv
  **     @c localtime
@@ -1286,7 +1282,6 @@ automatically generated, do not change manually.
 #define P00_IS_atan2_EQ_atan2(...) ,
 #define P00_IS_atexit_EQ_atexit(...) ,
 #define P00_IS_atof_EQ_atof(...) ,
-#define P00_IS_atof_EQ_atof(...) ,
 #define P00_IS_atoi_EQ_atoi(...) ,
 #define P00_IS_atol_EQ_atol(...) ,
 #define P00_IS_auto_EQ_auto(...) ,
@@ -1359,7 +1354,6 @@ automatically generated, do not change manually.
 #define P00_IS_for_EQ_for(...) ,
 #define P00_IS_fpos_t_EQ_fpos_t(...) ,
 #define P00_IS_fprintf_EQ_fprintf(...) ,
-#define P00_IS_fprintf_EQ_fprintf(...) ,
 #define P00_IS_fputc_EQ_fputc(...) ,
 #define P00_IS_fputchar_EQ_fputchar(...) ,
 #define P00_IS_fputs_EQ_fputs(...) ,
@@ -1369,7 +1363,6 @@ automatically generated, do not change manually.
 #define P00_IS_free_EQ_free(...) ,
 #define P00_IS_freopen_EQ_freopen(...) ,
 #define P00_IS_frexp_EQ_frexp(...) ,
-#define P00_IS_fscanf_EQ_fscanf(...) ,
 #define P00_IS_fscanf_EQ_fscanf(...) ,
 #define P00_IS_fseek_EQ_fseek(...) ,
 #define P00_IS_fsetpos_EQ_fsetpos(...) ,
@@ -1434,7 +1427,6 @@ automatically generated, do not change manually.
 #define P00_IS_isxdigit_EQ_isxdigit(...) ,
 #define P00_IS_labs_EQ_labs(...) ,
 #define P00_IS_ldexp_EQ_ldexp(...) ,
-#define P00_IS_ldiv_EQ_ldiv(...) ,
 #define P00_IS_ldiv_EQ_ldiv(...) ,
 #define P00_IS_ldiv_t_EQ_ldiv_t(...) ,
 #define P00_IS_lldiv_t_EQ_lldiv_t(...) ,
@@ -1801,7 +1793,6 @@ automatically generated, do not change manually.
 #define P00_TOK_atan2_STARTS_atan2 ,
 #define P00_TOK_atexit_STARTS_atexit ,
 #define P00_TOK_atof_STARTS_atof ,
-#define P00_TOK_atof_STARTS_atof ,
 #define P00_TOK_atoi_STARTS_atoi ,
 #define P00_TOK_atol_STARTS_atol ,
 #define P00_TOK_auto_STARTS_auto ,
@@ -1874,7 +1865,6 @@ automatically generated, do not change manually.
 #define P00_TOK_for_STARTS_for ,
 #define P00_TOK_fpos_t_STARTS_fpos_t ,
 #define P00_TOK_fprintf_STARTS_fprintf ,
-#define P00_TOK_fprintf_STARTS_fprintf ,
 #define P00_TOK_fputc_STARTS_fputc ,
 #define P00_TOK_fputchar_STARTS_fputchar ,
 #define P00_TOK_fputs_STARTS_fputs ,
@@ -1884,7 +1874,6 @@ automatically generated, do not change manually.
 #define P00_TOK_free_STARTS_free ,
 #define P00_TOK_freopen_STARTS_freopen ,
 #define P00_TOK_frexp_STARTS_frexp ,
-#define P00_TOK_fscanf_STARTS_fscanf ,
 #define P00_TOK_fscanf_STARTS_fscanf ,
 #define P00_TOK_fseek_STARTS_fseek ,
 #define P00_TOK_fsetpos_STARTS_fsetpos ,
@@ -1949,7 +1938,6 @@ automatically generated, do not change manually.
 #define P00_TOK_isxdigit_STARTS_isxdigit ,
 #define P00_TOK_labs_STARTS_labs ,
 #define P00_TOK_ldexp_STARTS_ldexp ,
-#define P00_TOK_ldiv_STARTS_ldiv ,
 #define P00_TOK_ldiv_STARTS_ldiv ,
 #define P00_TOK_ldiv_t_STARTS_ldiv_t ,
 #define P00_TOK_lldiv_t_STARTS_lldiv_t ,
@@ -2452,8 +2440,6 @@ automatically generated, do not change manually.
 #define P99_IS_EQ_atexit(...) P99_TOK_EQ(atexit, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c atof */ 
 #define P99_IS_EQ_atof(...) P99_TOK_EQ(atof, __VA_ARGS__)
-/*! @brief Test if the argument consists of exactly the token @c atof */ 
-#define P99_IS_EQ_atof(...) P99_TOK_EQ(atof, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c atoi */ 
 #define P99_IS_EQ_atoi(...) P99_TOK_EQ(atoi, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c atol */ 
@@ -2598,8 +2584,6 @@ automatically generated, do not change manually.
 #define P99_IS_EQ_fpos_t(...) P99_TOK_EQ(fpos_t, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c fprintf */ 
 #define P99_IS_EQ_fprintf(...) P99_TOK_EQ(fprintf, __VA_ARGS__)
-/*! @brief Test if the argument consists of exactly the token @c fprintf */ 
-#define P99_IS_EQ_fprintf(...) P99_TOK_EQ(fprintf, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c fputc */ 
 #define P99_IS_EQ_fputc(...) P99_TOK_EQ(fputc, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c fputchar */ 
@@ -2618,8 +2602,6 @@ automatically generated, do not change manually.
 #define P99_IS_EQ_freopen(...) P99_TOK_EQ(freopen, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c frexp */ 
 #define P99_IS_EQ_frexp(...) P99_TOK_EQ(frexp, __VA_ARGS__)
-/*! @brief Test if the argument consists of exactly the token @c fscanf */ 
-#define P99_IS_EQ_fscanf(...) P99_TOK_EQ(fscanf, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c fscanf */ 
 #define P99_IS_EQ_fscanf(...) P99_TOK_EQ(fscanf, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c fseek */ 
@@ -2748,8 +2730,6 @@ automatically generated, do not change manually.
 #define P99_IS_EQ_labs(...) P99_TOK_EQ(labs, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c ldexp */ 
 #define P99_IS_EQ_ldexp(...) P99_TOK_EQ(ldexp, __VA_ARGS__)
-/*! @brief Test if the argument consists of exactly the token @c ldiv */ 
-#define P99_IS_EQ_ldiv(...) P99_TOK_EQ(ldiv, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c ldiv */ 
 #define P99_IS_EQ_ldiv(...) P99_TOK_EQ(ldiv, __VA_ARGS__)
 /*! @brief Test if the argument consists of exactly the token @c ldiv_t */ 
@@ -3346,7 +3326,6 @@ automatically generated, do not change manually.
 #define P00_EAT_atan2 
 #define P00_EAT_atexit 
 #define P00_EAT_atof 
-#define P00_EAT_atof 
 #define P00_EAT_atoi 
 #define P00_EAT_atol 
 #define P00_EAT_auto 
@@ -3419,7 +3398,6 @@ automatically generated, do not change manually.
 #define P00_EAT_for 
 #define P00_EAT_fpos_t 
 #define P00_EAT_fprintf 
-#define P00_EAT_fprintf 
 #define P00_EAT_fputc 
 #define P00_EAT_fputchar 
 #define P00_EAT_fputs 
@@ -3429,7 +3407,6 @@ automatically generated, do not change manually.
 #define P00_EAT_free 
 #define P00_EAT_freopen 
 #define P00_EAT_frexp 
-#define P00_EAT_fscanf 
 #define P00_EAT_fscanf 
 #define P00_EAT_fseek 
 #define P00_EAT_fsetpos 
@@ -3494,7 +3471,6 @@ automatically generated, do not change manually.
 #define P00_EAT_isxdigit 
 #define P00_EAT_labs 
 #define P00_EAT_ldexp 
-#define P00_EAT_ldiv 
 #define P00_EAT_ldiv 
 #define P00_EAT_ldiv_t 
 #define P00_EAT_lldiv_t 
@@ -3861,7 +3837,6 @@ automatically generated, do not change manually.
 #define P00_TOKEN_atan2 ,
 #define P00_TOKEN_atexit ,
 #define P00_TOKEN_atof ,
-#define P00_TOKEN_atof ,
 #define P00_TOKEN_atoi ,
 #define P00_TOKEN_atol ,
 #define P00_TOKEN_auto ,
@@ -3934,7 +3909,6 @@ automatically generated, do not change manually.
 #define P00_TOKEN_for ,
 #define P00_TOKEN_fpos_t ,
 #define P00_TOKEN_fprintf ,
-#define P00_TOKEN_fprintf ,
 #define P00_TOKEN_fputc ,
 #define P00_TOKEN_fputchar ,
 #define P00_TOKEN_fputs ,
@@ -3944,7 +3918,6 @@ automatically generated, do not change manually.
 #define P00_TOKEN_free ,
 #define P00_TOKEN_freopen ,
 #define P00_TOKEN_frexp ,
-#define P00_TOKEN_fscanf ,
 #define P00_TOKEN_fscanf ,
 #define P00_TOKEN_fseek ,
 #define P00_TOKEN_fsetpos ,
@@ -4009,7 +3982,6 @@ automatically generated, do not change manually.
 #define P00_TOKEN_isxdigit ,
 #define P00_TOKEN_labs ,
 #define P00_TOKEN_ldexp ,
-#define P00_TOKEN_ldiv ,
 #define P00_TOKEN_ldiv ,
 #define P00_TOKEN_ldiv_t ,
 #define P00_TOKEN_lldiv_t ,
@@ -4322,9 +4294,6 @@ automatically generated, do not change manually.
 #define P00_TYPE_QUAL_unsigned ,
 #define P00_TYPE_QUAL_void ,
 #define P00_TYPE_QUAL_volatile ,
-#define P00_TYPE_QUAL_const ,
-#define P00_TYPE_QUAL_restrict ,
-#define P00_TYPE_QUAL_volatile ,
 #define P00_KEYWORD__Bool ,
 #define P00_KEYWORD__Complex ,
 #define P00_KEYWORD__Imaginary ,
@@ -4375,7 +4344,6 @@ automatically generated, do not change manually.
 #define P00_RESERVED_atan ,
 #define P00_RESERVED_atan2 ,
 #define P00_RESERVED_atexit ,
-#define P00_RESERVED_atof ,
 #define P00_RESERVED_atof ,
 #define P00_RESERVED_atoi ,
 #define P00_RESERVED_atol ,
@@ -4449,7 +4417,6 @@ automatically generated, do not change manually.
 #define P00_RESERVED_for ,
 #define P00_RESERVED_fpos_t ,
 #define P00_RESERVED_fprintf ,
-#define P00_RESERVED_fprintf ,
 #define P00_RESERVED_fputc ,
 #define P00_RESERVED_fputchar ,
 #define P00_RESERVED_fputs ,
@@ -4459,7 +4426,6 @@ automatically generated, do not change manually.
 #define P00_RESERVED_free ,
 #define P00_RESERVED_freopen ,
 #define P00_RESERVED_frexp ,
-#define P00_RESERVED_fscanf ,
 #define P00_RESERVED_fscanf ,
 #define P00_RESERVED_fseek ,
 #define P00_RESERVED_fsetpos ,
@@ -4524,7 +4490,6 @@ automatically generated, do not change manually.
 #define P00_RESERVED_isxdigit ,
 #define P00_RESERVED_labs ,
 #define P00_RESERVED_ldexp ,
-#define P00_RESERVED_ldiv ,
 #define P00_RESERVED_ldiv ,
 #define P00_RESERVED_ldiv_t ,
 #define P00_RESERVED_lldiv_t ,

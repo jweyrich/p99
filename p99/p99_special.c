@@ -103,7 +103,7 @@
  ** @see P99_ARE_ORDERED(OP, ...) for arguments <code>OP</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>.
  ** @see P99_BIGFUNC(FUNC, M, ...) for argument <code>M</code>.
  ** @see P99_BIGOP(OP, M, ...) for argument <code>M</code>.
- ** @see P99_CALLOC(...) for argument <code>__VA_ARG__[0]</code>.
+ ** @see P99_CALLOC(T, N) for argument <code>T</code>.
  ** @see P99_CALL_DEFARG(NAME, M, ...) for argument <code>M</code>.
  ** @see P99_CALL_DEFARG_LIST(NAME, M, ...) for argument <code>M</code>.
  ** @see P99_CALL_VA_ARG(NAME, M, T, ...) for argument <code>M</code>.
