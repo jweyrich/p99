@@ -31,6 +31,8 @@ my @dirs = ("/usr/include");
 my @defs;
 ## undefines
 my @undefs;
+## the standard we are operating with
+my $std = "c99";
 ## whether or not to output a list of all #define
 my $show;
 ## use as a separator to tokens for debugging
@@ -45,6 +47,7 @@ my $result = GetOptions (
     "undef|U=s"        => \@{undefs},    # list of strings
     "dM!"        => \${show},    # flag
     "separator=s"        => \${sep},    # string
+    "std|standard=s"        => \${std},    # string
     "graphs=i"        => \${graphs},
     );
 
@@ -61,6 +64,10 @@ my $escHash = "\@\@";
 ## This is a special operator that serves to insert a %: sequence in the output
 my $escHash2 = "//";
 
+my %standards = (
+    "c99" => "199901",
+    );
+
 ## holds all defined macros
 my %macro = (
     ## The special "macro" _Pragma that we never could do with #define.
@@ -68,6 +75,7 @@ my %macro = (
     "_Pragma" => ["X", "$liner $escHash pragma ${unstring}X $liner"],
     ## Mark our presence by setting a special macro.
     "__P99PRO__" => ["1"],
+    "__STDC_VERSION__" => [$standards{$std}],
     );
 
 ## collects all tokens
@@ -248,13 +256,21 @@ sub toktrans($$\%) {
     return join("", @tokens);
 }
 
+local $SIG{__WARN__};
+
 sub evalExpr($@) {
     my ($isUn, @list) = @_;
+    my $back = $SIG{__WARN__};
+    $SIG{__WARN__} = sub {
+        &{$back}(@_);
+        print STDERR "   expression is '@list'\n";
+    };
     my $res = eval("@list");
     $res = (ULONG_MAX - -$res +1) while ($isUn && $res < 0);
     if (defined($res) && length($res) == 0) {
         $res = $res ? 1 : 0;
     }
+    $SIG{__WARN__} = $back;
     return $res;
 }
 
@@ -303,7 +319,13 @@ sub compList($\@) {
             } elsif ($tok =~ m/^\w+/o) {
                 push(@list, "0");
             } elsif ($tok =~ m/^&&|[|][|]$/o) {
+                my $back = $SIG{__WARN__};
+                $SIG{__WARN__} = sub {
+                    &{$back}(@_);
+                    print STDERR "   expression is '@list'\n";
+                };
                 my $res = evalExpr($type, splice(@list));
+                $SIG{__WARN__} = $back;
                 $res = $res ? 1 : 0;
                 push(@logic, $res, $tok);
                 $type = 0;
@@ -318,7 +340,13 @@ sub compList($\@) {
     if (@logic) {
         $res = $res ? 1 : 0;
         push(@logic, $res);
+        my $back = $SIG{__WARN__};
+        $SIG{__WARN__} = sub {
+            &{$back}(@_);
+            print STDERR "   expression is '@logic'\n";
+        };
         $res = eval("@logic");
+        $SIG{__WARN__} = $back;
         $type = 0;
     }
     #print STDERR "compList $level: result is $res\n";
@@ -511,7 +539,6 @@ sub expandDefined(@) {
 sub openfile($) {
     my $file = shift;
     my $fd;
-    print STDERR "including file $file\n";
     if (!open($fd, "<$file")) {
         warn "couldn't open $file";
         return ();
@@ -519,6 +546,8 @@ sub openfile($) {
     my $iflevel = 0;
     my $aclevel = 0;
     my $lineno = 0;
+    my $back = $SIG{__WARN__};
+    $SIG{__WARN__} = sub { print STDERR "$file:$lineno: warning: $_[0]"; };
     my @iffound;
     push(@tokens, "$escHash 1 \"$file\"", "\n");
     while (my $line = readlln($fd, $lineno)) {
@@ -593,15 +622,31 @@ sub openfile($) {
                         push(@tokens, "$escHash $lineno \"$file\"", "\n");
                     }
                 } elsif ($line =~ m/^define\s+(.*)/o) {
+                    $line = $1;
                     my ($name, $rest) = $1 =~ m/^([a-zA-Z_]\w*)(.*)/o;
                     if ($name) {
-                        warn "redefinition of macro $name" if (defined($macro{$name}));
-                        #print STDERR "found define directive for $name to $rest\n";
-                        my ($params, $dfn) = $rest =~ m/^\(\s*([^()]*)\s*\)\s*(.*)/o;
-                        $macro{$name} =
-                            $params
-                            ? [ split(/,\s*/o, $params), $dfn ]
+                        my ($params, $dfn) = $rest =~ m/^\(([^()]*)\)\s*(.*)$/ox;
+                        my $definition =
+                            defined($params)
+                            ? (($params =~ m/^\s*$/o)
+                               ? [ "", $dfn ]
+                               : [ split(/,\s*/o, $params), $dfn ])
                             : [ $rest ];
+                        # An identifier currently defined as an object-like macro
+                        # shall not be redefined by another #define preprocessing
+                        # directive unless the second definition is an
+                        # object-like macro definition and the two replacement
+                        # lists are identical. Likewise, ...
+                        if (defined($macro{$name})) {
+                            my $sep = int(rand(1000000));
+                            my $old = join("|$sep|", @{$macro{$name}});
+                            my $new = join("|$sep|", @{$definition});
+                            warn "redefinition of macro $name"
+                                if ($old ne $new);
+                        }
+                        $macro{$name} = $definition;
+                    } else {
+                        warn "define directive without a name: $line"
                     }
                 } elsif ($line =~ m/^undef\s+([a-zA-Z_]\w*)\s*(.*)/o) {
                     warn "garbage at end of undef for macro $1" if ($2);
@@ -609,7 +654,7 @@ sub openfile($) {
                 } elsif ($line =~ m/^error\s+(.*)/o) {
                     die "$file:$lineno: error $1";
                 } elsif ($line =~ m/^pragma\s+message\s+(.*)/o) {
-                    warn "$file:$lineno: message $1";
+                    warn "message $1";
                 } else {
                     push(@tokens, "# $line");
                 }
@@ -646,7 +691,7 @@ sub openfile($) {
         }
     }
     warn "unbalanced #if / #endif" if ($iflevel);
-    print STDERR "end including file $file\n";
+    $SIG{__WARN__} = $back;
 }
 
 sub escPre(@) {
@@ -702,145 +747,175 @@ sub tokrep($$$@) {
         if (defined($tok) && defined($macro{$tok})) {
             my @def = (@{$macro{$tok}});
             my @repl = tokenize(pop(@def));
-            #print STDERR "$replev: tokens orig: ".join("|", @repl)." @def\n";
+            #print STDERR "$replev: $#def @def :: ".length($def[0])." :: ".join("|", @repl)."\n";
             my @exp;
             if (@def) {
-                ## a function like macro
-                my $next;
-                if (@toks) {
-                    $next = shift(@toks);
-                    ++$lineno if ($next eq "\n");
-                    push(@curr, $next);
-                }
-                if (defined($next) && ($next eq "(")) {
-                    my @args;
-                    my $level = 1;
-                    my @arg;
-                    while ($level && @toks) {
-                        my $tok = shift(@toks);
-                        ++$lineno if ($tok eq "\n");
-                        push(@curr, $tok);
-                        if ($tok eq "," && $level == 1) {
-                            my @cp = @arg;
-                            push(@args, \@cp);
-                            @arg = ();
-                        } elsif ($tok eq ")") {
-                            if ($level != 1) {
+                ## be careful with those that receive 0 arguments
+                if ($def[0] && length($def[0])) {
+                    ## a function like macro
+                    my $next;
+                    if (@toks) {
+                        $next = shift(@toks);
+                        ++$lineno if ($next eq "\n");
+                        push(@curr, $next);
+                    }
+                    if (defined($next) && ($next eq "(")) {
+                        my @args;
+                        my $level = 1;
+                        my @arg;
+                        while ($level && @toks) {
+                            my $tok = shift(@toks);
+                            ++$lineno if ($tok eq "\n");
+                            push(@curr, $tok);
+                            if ($tok eq "," && $level == 1) {
+                                my @cp = @arg;
+                                push(@args, \@cp);
+                                @arg = ();
+                            } elsif ($tok eq ")") {
+                                if ($level != 1) {
+                                    push(@arg, $tok);
+                                }
+                                --$level;
+                            } else {
+                                if ($tok eq "(") {
+                                    ++$level;
+                                }
                                 push(@arg, $tok);
                             }
-                            --$level;
-                        } else {
-                            if ($tok eq "(") {
-                                ++$level;
-                            }
-                            push(@arg, $tok);
                         }
-                    }
-                    push(@args, \@arg);
-                    my $args = scalar @args;
-                    my $defs = scalar @def;
+                        push(@args, \@arg);
+                        my $args = scalar @args;
+                        my $defs = scalar @def;
 
-                    ## Before being substituted, each argument's preprocessing tokens are
-                    ## completely macro replaced as if they formed the rest of the
-                    ## preprocessing file; no other preprocessing tokens are available.
-                    foreach my $arg (@args) {
-                        #print STDERR "$replev: argument before: ".join("|", @{$arg})."\n";
-                        my @arg = tokrep($replev + 1, $lineno, $file, @{$arg});
-                        #print STDERR "$replev: argument after: ".join("|", @arg)."\n";
-                        ## however, if an argument consists of no preprocessing tokens, the
-                        ## parameter is replaced by a placemarker preprocessing token
-                        ## instead.
-                        @arg = ("") if (!@arg);
-                        $arg = \@arg;
-                    }
+                        ## Before being substituted, each argument's preprocessing tokens are
+                        ## completely macro replaced as if they formed the rest of the
+                        ## preprocessing file; no other preprocessing tokens are available.
+                        foreach my $arg (@args) {
+                            #print STDERR "$replev: argument before: ".join("|", @{$arg})."\n";
+                            my @arg = tokrep($replev + 1, $lineno, $file, @{$arg});
+                            # warn "level $replev: argument ".join("|", @arg)."++++".join(":", @{$arg})
+                            #     if ($args < $defs);
+                            ## however, if an argument consists of no preprocessing tokens, the
+                            ## parameter is replaced by a placemarker preprocessing token
+                            ## instead.
+                            @arg = ("") if (!@arg);
+                            $arg = \@arg;
+                        }
 
-                    if ($args < $defs) {
-                        warn "macro $tok called with $args arguments, takes $defs";
-                        unshift(@toks,
-                                map { @{$_} } @args
-                            );
-                        @repl = ($tok);
-                    } else {
-                        my %def;
-                        for (my $i = 0; $i <= $#def; ++$i) {
-                            $def{$def[$i]} = $i;
-                        }
-                        if ($def[$#def] eq "...") {
-                            my @last = splice(@args, $#def);
-                            #print STDERR "$replev: arguments @args, starting at $#def: @last\n";
-                            my @combined = @{shift(@last)};
-                            if (@last) {
-                                push(@combined, map { (",", @{$_}) } @last);
-                            }
-                            #print STDERR "arguments concated to @combined\n";
-                            push(@args, \@combined);
-                            $def{"__VA_ARGS__"} = $def{"..."};
-                            delete $def{"..."};
-                            $args = $defs;
-                        }
-                        if ($args > $defs) {
-                            warn "macro $tok called with $args arguments, takes $defs";
+                        if ($args < $defs) {
+                            warn "macro $tok called with $args arguments, takes $defs.";
                             unshift(@toks,
                                     map { @{$_} } @args
                                 );
                             @repl = ($tok);
                         } else {
-                            my @exp;
-                            #print STDERR "$replev: tokens before: ".join("|", @repl)."\n";
+                            my %def;
+                            for (my $i = 0; $i <= $#def; ++$i) {
+                                $def{$def[$i]} = $i;
+                            }
+                            if ($def[$#def] eq "...") {
+                                my @last = splice(@args, $#def);
+                                #print STDERR "$replev: arguments @args, starting at $#def: @last\n";
+                                my @combined = @{shift(@last)};
+                                if (@last) {
+                                    push(@combined, map { (",", @{$_}) } @last);
+                                }
+                                #print STDERR "arguments concated to @combined\n";
+                                push(@args, \@combined);
+                                $def{"__VA_ARGS__"} = $def{"..."};
+                                delete $def{"..."};
+                                $args = $defs;
+                            }
+                            if ($args > $defs) {
+                                warn "macro $tok called with $args arguments, takes $defs";
+                                unshift(@toks,
+                                        map { @{$_} } @args
+                                    );
+                                @repl = ($tok);
+                            } else {
+                                my @exp;
+                                #print STDERR "$replev: tokens before: ".join("|", @repl)."\n";
 
-                            ## Do the stringification
-                            while (@repl) {
-                                my $repl = shift(@repl);
-                                if ($repl =~ m/^$ishash$/o) {
-                                    my $repl2 = shift(@repl);
-                                    if (defined($def{$repl2})) {
-                                        #print STDERR "stringifying argument $repl $repl2\n";
-                                        my $str = untokenize(@{$args[$def{$repl2}]});
+                                ## Do the stringification
+                                while (@repl) {
+                                    my $repl = shift(@repl);
+                                    if ($repl =~ m/^$ishash$/o) {
+                                        my $repl2 = shift(@repl);
+                                        if (defined($def{$repl2})) {
+                                            #print STDERR "stringifying argument $repl $repl2\n";
+                                            my $str = untokenize(@{$args[$def{$repl2}]});
 
-                                        ## White space before the first preprocessing token
-                                        ## and after the last preprocessing token composing
-                                        ## the argument is deleted.
-                                        $str =~ s/^\s*(\w++)\s*$/$1/o;
+                                            ## White space before the first preprocessing token
+                                            ## and after the last preprocessing token composing
+                                            ## the argument is deleted.
+                                            $str =~ s/^\s*(\w++)\s*$/$1/o;
 
-                                        ## Each occurrence of white space between the
-                                        ## argument's preprocessing tokens becomes a single
-                                        ## space character in the character string literal.
-                                        $str =~ s/^\s+//o;
+                                            ## Each occurrence of white space between the
+                                            ## argument's preprocessing tokens becomes a single
+                                            ## space character in the character string literal.
+                                            $str =~ s/^\s+//o;
 
-                                        ## a \ character is inserted before each " and \
-                                        ## character of a character constant or string
-                                        ## literal
-                                        $str =~ s/(["\\])/\\$1/go;
+                                            ## a \ character is inserted before each " and \
+                                            ## character of a character constant or string
+                                            ## literal
+                                            $str =~ s/(["\\])/\\$1/go;
 
-                                        push(@exp, '"'.$str.'"');
+                                            push(@exp, '"'.$str.'"');
+                                        } else {
+                                            ## Each # preprocessing token in the replacement
+                                            ## list for a function-like macro shall be followed
+                                            ## by a parameter as the next preprocessing token
+                                            ## in the replacement list.
+                                            warn "invalid stringify sequence $repl $repl2, not a parameter name";
+                                            unshift(@repl, $repl2);
+                                            push(@exp, $repl);
+                                        }
+                                    } elsif (defined($def{$repl})) {
+                                        # print STDERR "found argument $repl\n";
+                                        push(@exp, @{$args[$def{$repl}]});
                                     } else {
-                                        ## Each # preprocessing token in the replacement
-                                        ## list for a function-like macro shall be followed
-                                        ## by a parameter as the next preprocessing token
-                                        ## in the replacement list.
-                                        warn "invalid stringify sequence $repl $repl2, not a parameter name";
-                                        unshift(@repl, $repl2);
                                         push(@exp, $repl);
                                     }
-                                } elsif (defined($def{$repl})) {
-                                    # print STDERR "found argument $repl\n";
-                                    push(@exp, @{$args[$def{$repl}]});
-                                } else {
-                                    push(@exp, $repl);
                                 }
+                                @repl = @exp;
+                                #print STDERR "$replev: tokens after: ".join("|", @repl)."\n";
                             }
-                            @repl = @exp;
-                            #print STDERR "$replev: tokens after: ".join("|", @repl)."\n";
                         }
+                    } else {
+                        ## a is function like macro without ()
+                        if (defined($next)) {
+                            unshift(@toks, $next);
+                            --$lineno if ($next eq "\n");
+                            pop(@curr);
+                        }
+                        @repl = ($tok);
                     }
                 } else {
-                    ## a is function like macro without ()
-                    if (defined($next)) {
-                        unshift(@toks, $next);
-                        --$lineno if ($next eq "\n");
-                        pop(@curr);
+                    my $olineno = $lineno;
+                    ## a function like macro that expects 0 arguments
+                    while (@toks && $toks[0] =~ m/^\s+$/so) {
+                        ++$lineno if $toks[0] =~ m/\n/o;
+                        shift(@toks);
                     }
-                    @repl = ($tok);
+                    if (@toks && ($toks[0] eq "(")) {
+                        shift(@toks);
+                        while (@toks && $toks[0] =~ m/^\s+$/so) {
+                            ++$lineno if $toks[0] =~ m/\n/o;
+                            shift(@toks);
+                        }
+                        if (!@toks) {
+                            warn "missing closing parenthesis in call of $tok";
+                        } elsif ($toks[0] ne ")") {
+                            warn "$tok expects 0 arguments, found $toks[0]";
+                            unshift(@toks, "(");
+                        } else {
+                            shift(@toks);
+                        }
+                    } else {
+                        ## invocation without the parenthesis, ok
+                        @repl = ($tok);
+                    }
+                    $skipedLines = 1 if ($olineno != $lineno);
                 }
             } else {
                 ## an object like macro
@@ -929,6 +1004,29 @@ if (!$graphs) {
 } elsif ($graphs == 3) {
     $output = toktrans($output, $onegraph, %onegraph);
 }
+
+my @lines = split(/\n/, $output);
+
+$output = "";
+
+my @lineS;
+while (@lines) {
+    my $lastTok;
+    while (defined($lines[0]) && $lines[0] =~ m/^\s*(?:#|%:)\s+(\d+)/o) {
+        my $ln = $1;
+        $lastTok = shift(@lines);
+        while (@lines && defined($lines[0]) && $lines[0] =~ m/^\s*$/o) {
+            ++$ln;
+            shift(@lines);
+        }
+        --$ln;
+        $lastTok =~ s/^\s*(#|%:)\s+(?:\d+)(.*)$/$1 $ln$2/;
+    }
+    push(@lineS, $lastTok) if ($lastTok);
+    push(@lineS, shift(@lines)) if (@lines);
+}
+
+$output = join("\n", @lineS, "");
 
 print STDOUT $output;
 
