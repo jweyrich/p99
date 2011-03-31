@@ -520,6 +520,7 @@ sub openfile($) {
     my $aclevel = 0;
     my $lineno = 0;
     my @iffound;
+    push(@tokens, "$escHash 1 \"$file\"", "\n");
     while (my $line = readlln($fd, $lineno)) {
         my $mult = 0;
         $line = skipcomments($line, $fd, $lineno);
@@ -589,6 +590,7 @@ sub openfile($) {
                         }
                     } else {
                         openfile(findfile($name));
+                        push(@tokens, "$escHash $lineno \"$file\"", "\n");
                     }
                 } elsif ($line =~ m/^define\s+(.*)/o) {
                     my ($name, $rest) = $1 =~ m/^([a-zA-Z_]\w*)(.*)/o;
@@ -637,7 +639,7 @@ sub openfile($) {
             ## Trailing white space is no good.
             $line =~ s/\s+$//o;
             if ($skipedLines) {
-                push(@tokens, "$escHash $lineno \"$file\"\n");
+                push(@tokens, "$escHash $lineno \"$file\"", "\n");
                 $skipedLines = 0;
             }
             push(@tokens, tokrep(0, $lineno, $file, escPre(tokenize($line))), "\n");
@@ -801,7 +803,7 @@ sub tokrep($$$@) {
                                         $str =~ s/^\s*(\w++)\s*$/$1/o;
 
                                         ## Each occurrence of white space between the
-                                        ## argument’s preprocessing tokens becomes a single
+                                        ## argument's preprocessing tokens becomes a single
                                         ## space character in the character string literal.
                                         $str =~ s/^\s+//o;
 
