@@ -78,8 +78,20 @@ my %macro = (
     "__STDC_VERSION__" => [$standards{$std}],
     );
 
+## per include file a hash of macros that were used by that file
+my %usedMac;
+
+## Per include file a hash of macros of tokens that are to be
+## substituted for that file if the macros used by that file have not
+## changed. This is only used when the file generates no side effects,
+## that is, it has no active defines of its own.
+my %fileHash;
+
+## How many times have we processed this file.
+my %fileInc;
+
 ## collects all tokens
-my @tokens;
+my @tokensGlobal;
 
 ## did we locally change line numbering?
 my $skipedLines = 0;
@@ -228,17 +240,19 @@ $trigraph = qr@$trigraph@;
 $onegraph = qr@$onegraph@;
 
 sub compList($\@);
+sub containedHashtables(\%\%);
+sub eqHashtables(\%\%);
 sub escPre(@);
 sub evalExpr($@);
-sub expandDefined(@);
+sub expandDefined(\%@);
 sub findfile($);
-sub openfile($);
+sub openfile($;\%);
 sub rawtokenize($);
 sub readlln($\$);
 sub readln($\$);
 sub skipcomments($$\$);
 sub tokenize($);
-sub tokrep($$$@);
+sub tokrep($$$\%@);
 sub toktrans($$\%);
 sub unescPre(@);
 sub untokenize(@);
@@ -516,8 +530,8 @@ sub skipcomments($$\$) {
     return $ret;
 }
 
-sub expandDefined(@) {
-    my @toks = @_;
+sub expandDefined(\%@) {
+    my ($used, @toks) = @_;
     my @ret;
     while (@toks) {
         my $tok = shift(@toks);
@@ -529,26 +543,66 @@ sub expandDefined(@) {
                     if (shift(@toks) ne ")");
             }
             #print STDERR "searching for $tok\n";
-            $tok = defined($macro{$tok}) ? 1 : 0;
+            my $val = defined($macro{$tok});
+            if ($val) {
+                $used->{$tok} = $val;
+                $tok = 1;
+            } else {
+                $tok = 0;
+            }
         }
         push(@ret, $tok);
     }
     return @ret;
 }
 
-sub openfile($) {
-    my $file = shift;
-    my $fd;
-    if (!open($fd, "<$file")) {
-        warn "couldn't open $file";
-        return ();
+## Receives a filename and a reference to he used macros.
+## Returns a tuple ($defines, \tokens).
+sub openfile($;\%) {
+    my ($file, $used) = shift;
+    ## keep track of the number of defines in this file and below
+    my $defines = 0;
+    ## keep track of the tokens produced by this file and below
+    my @tokens;
+
+    my %used;
+    $used = \%used if (!$used);
+
+    if (defined($usedMac{$file})) {
+        if (containedHashtables(%{$usedMac{$file}}, %macro)) {
+            print STDERR "reusing contents of $file\n";
+            push(@tokens, "# REUSE $file", "\n", @{$fileHash{$file}}, "# END REUSE $file", "\n");
+            goto SHORTCUT;
+        } else {
+            print STDERR "context for $file has changed, not reusing content.\n";
+            delete $fileHash{$file};
+            delete $usedMac{$file};
+        }
+    } else {
+        if (!defined($fileInc{$file})) {
+            my $dummy = 1;
+            $fileInc{$file} = \$dummy;
+        } else {
+            ++${$fileInc{$file}};
+        }
+        print STDERR "$file must be processed (${$fileInc{$file}})\n";
     }
+
     my $iflevel = 0;
     my $aclevel = 0;
     my $lineno = 0;
+
+    ## Install a warning handler.
     my $back = $SIG{__WARN__};
     $SIG{__WARN__} = sub { print STDERR "$file:$lineno: warning: $_[0]"; };
     my @iffound;
+
+    my $fd;
+    if (!open($fd, "<$file")) {
+        warn "couldn't open $file";
+        return (1, []);
+    }
+
     push(@tokens, "$escHash 1 \"$file\"", "\n");
     while (my $line = readlln($fd, $lineno)) {
         my $mult = 0;
@@ -571,7 +625,7 @@ sub openfile($) {
                 }
                 if (($aclevel == ($iflevel - 1))
                     && !($ifcont && $iffound[$iflevel])) {
-                    my @toks = tokrep(0, $lineno, $file, expandDefined(tokenize($2)));
+                    my @toks = tokrep(0, $lineno, $file, %used, expandDefined(%used, tokenize($2)));
                     if (compList(0, @toks)) {
                         ++$aclevel;
                         $iffound[$aclevel] = 1;
@@ -580,7 +634,9 @@ sub openfile($) {
                 #print STDERR "IF $aclevel <= $iflevel : (el)if $line\n";
             } elsif ($line =~ m/^if(n?)def\s+(\w+)/o) {
                 if ($aclevel == $iflevel) {
-                    if ($1 xor defined($macro{$2})) {
+                    my $val = defined($macro{$2});
+                    $used{$2} = $val;
+                    if ($1 xor $val) {
                         ++$aclevel;
                         $iffound[$aclevel] = 1;
                     }
@@ -612,14 +668,15 @@ sub openfile($) {
                         if ($tried) {
                             warn "#include directive incorrect: $line";
                         } else {
-                            my @toks = tokrep(0, $lineno, $file, expandDefined(tokenize($line)));
+                            my @toks = tokrep(0, $lineno, $file, %used, tokenize($line));
                             $line = untokenize(@toks);
                             $tried = 1;
                             goto RETRY;
                         }
                     } else {
-                        openfile(findfile($name));
-                        push(@tokens, "$escHash $lineno \"$file\"", "\n");
+                        my ($recdef, $ret) = openfile(findfile($name));
+                        $defines += $recdef;
+                        push(@tokens, @{$ret}, "$escHash $lineno \"$file\"", "\n");
                     }
                 } elsif ($line =~ m/^define\s+(.*)/o) {
                     $line = $1;
@@ -641,16 +698,22 @@ sub openfile($) {
                             my $sep = int(rand(1000000));
                             my $old = join("|$sep|", @{$macro{$name}});
                             my $new = join("|$sep|", @{$definition});
-                            warn "redefinition of macro $name"
-                                if ($old ne $new);
+                            if ($old ne $new) {
+                                warn "redefinition of macro $name";
+                                $macro{$name} = $definition;
+                                ++$defines;
+                            }
+                        } else {
+                            $macro{$name} = $definition;
+                            ++$defines;
                         }
-                        $macro{$name} = $definition;
                     } else {
                         warn "define directive without a name: $line"
                     }
                 } elsif ($line =~ m/^undef\s+([a-zA-Z_]\w*)\s*(.*)/o) {
                     warn "garbage at end of undef for macro $1" if ($2);
                     delete $macro{$1};
+                    ++$defines;
                 } elsif ($line =~ m/^error\s+(.*)/o) {
                     die "$file:$lineno: error $1";
                 } elsif ($line =~ m/^pragma\s+message\s+(.*)/o) {
@@ -687,11 +750,39 @@ sub openfile($) {
                 push(@tokens, "$escHash $lineno \"$file\"", "\n");
                 $skipedLines = 0;
             }
-            push(@tokens, tokrep(0, $lineno, $file, escPre(tokenize($line))), "\n");
+            push(@tokens, tokrep(0, $lineno, $file, %used, escPre(tokenize($line))), "\n");
         }
     }
     warn "unbalanced #if / #endif" if ($iflevel);
+
+    my $tokProduced = scalar @tokens;
+    if (!$defines) {
+        print STDERR "$file is candidate for content hashing\n";
+        if (!defined($usedMac{$file}) || !eqHashtables(%{$usedMac{$file}}, %used)) {
+            $usedMac{$file} = \%used;
+            if ($tokProduced > 0) {
+                $fileHash{$file} = \@tokens;
+            }
+        }
+    }
+
     $SIG{__WARN__} = $back;
+
+  SHORTCUT:
+    if (defined($used)) {
+        ## Only update the hash of used macros if we know that the
+        ## upper level can use them. Otherwise we can simply empty it.
+        if ($defines) {
+            %{$used} = ();
+        } else {
+            my @used = %{$used};
+            push(@used, %{$usedMac{$file}})
+                if (defined($usedMac{$file}));
+            %{$used} = @used;
+        }
+    }
+    print STDERR "$file has been processed\n";
+    return ($defines, \@tokens);
 }
 
 sub escPre(@) {
@@ -730,9 +821,9 @@ sub unescPre(@) {
     return @ret;
 }
 
-sub tokrep($$$@) {
+sub tokrep($$$\%@) {
     my @ret;
-    my ($replev, $lineno, $file, @toks) = @_;
+    my ($replev, $lineno, $file, $used, @toks) = @_;
   LOOP:
     while (@toks) {
         my $tok;
@@ -745,6 +836,7 @@ sub tokrep($$$@) {
         ++$lineno if ($tok eq "\n");
         my @curr = ($tok);
         if (defined($tok) && defined($macro{$tok})) {
+            $used->{$tok} = $macro{$tok};
             my @def = (@{$macro{$tok}});
             my @repl = tokenize(pop(@def));
             #print STDERR "$replev: $#def @def :: ".length($def[0])." :: ".join("|", @repl)."\n";
@@ -792,7 +884,7 @@ sub tokrep($$$@) {
                         ## preprocessing file; no other preprocessing tokens are available.
                         foreach my $arg (@args) {
                             #print STDERR "$replev: argument before: ".join("|", @{$arg})."\n";
-                            my @arg = tokrep($replev + 1, $lineno, $file, @{$arg});
+                            my @arg = tokrep($replev + 1, $lineno, $file, %{$used}, @{$arg});
                             # warn "level $replev: argument ".join("|", @arg)."++++".join(":", @{$arg})
                             #     if ($args < $defs);
                             ## however, if an argument consists of no preprocessing tokens, the
@@ -804,6 +896,12 @@ sub tokrep($$$@) {
 
                         if ($args < $defs) {
                             warn "macro $tok called with $args arguments, takes $defs.";
+                            warn "macro $tok expected arguments are @def.";
+                            my $allargs = join(", ",
+                                               map {
+                                                   @{$_}
+                                               } @args);
+                            warn "macro $tok received arguments are $allargs.";
                             unshift(@toks,
                                     map { @{$_} } @args
                                 );
@@ -921,7 +1019,7 @@ sub tokrep($$$@) {
                 ## an object like macro
             }
             ## Join on ##
-            @exp = (); #(shift(@repl));
+            @exp = ();
             while (@repl) {
                 if ($#repl && $repl[1] =~ m/^$ishhash$/o) {
                     if ($#repl > 1) {
@@ -952,7 +1050,7 @@ sub tokrep($$$@) {
             ## Switch of macro $tok for the recursive call
             my $backup = $macro{$tok};
             delete $macro{$tok};
-            @repl = tokrep($replev + 1, $lineno, $file, @exp);
+            @repl = tokrep($replev + 1, $lineno, $file, %{$used}, @exp);
             $macro{$tok} = $backup;
             #@repl = grep { length($_) } @repl;
             #print STDERR "$replev: tokens replacement3: ".join("|", @repl)."\n";
@@ -978,8 +1076,38 @@ sub tokrep($$$@) {
 }
 
 
+sub eqHashtables(\%\%) {
+    my ($a, $b) = @_;
+    return 1 if (!defined($a) && !defined($b));
+    return 0 if (defined($a) != defined($b));
+    my ($na, $nb) = (scalar keys %{$a}, scalar keys %{$b});
+    if ($na != $nb) {
+        print STDERR "hash table contents changed $na -> $nb\n";
+        return 0;
+    }
+    return containedHashtables(%{$a}, %{$b});
+}
+
+
+sub containedHashtables(\%\%) {
+    my ($a, $b) = @_;
+    return 1 if (!defined($a) && !defined($b));
+    return 0 if (defined($a) != defined($b));
+    foreach my $key (scalar keys %{$a}) {
+        if (!defined($a->{$key}) && !defined($a->{$key})) {
+        } elsif (defined($a->{$key}) != defined($a->{$key})
+                 || ($a->{$key} ne $b->{$key})) {
+            print STDERR "value of $key changed\n";
+            return 0;
+        }
+    }
+    return 1;
+}
+
+
 foreach my $file (@ARGV) {
-    openfile($file);
+    my ($defines, $ret) = openfile($file);
+    push(@tokensGlobal, @{$ret});
 }
 
 if ($show) {
@@ -994,9 +1122,9 @@ if ($show) {
     }
 }
 
-@tokens = grep { length($_) } @tokens;
-@tokens = unescPre(@tokens);
-my $output = untokenize(@tokens);
+@tokensGlobal = grep { length($_) } @tokensGlobal;
+@tokensGlobal = unescPre(@tokensGlobal);
+my $output = untokenize(@tokensGlobal);
 if (!$graphs) {
     $output = toktrans($output, $digraph, %digraph);
 } elsif ($graphs == 2) {
