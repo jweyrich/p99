@@ -686,6 +686,7 @@ sub openfile($;\%) {
                         }
                         my ($recdef, $ret) = openfile(findfile($name));
                         $defines += $recdef;
+                        $output .= $ret;
                         push(@tokens, "$escHash ".($lineno+2)." \"$file\"", "\n");
                     }
                 } elsif ($line =~ m/^define\s+(.*)/o) {
