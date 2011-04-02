@@ -910,13 +910,13 @@ sub tokrep($$$\%@) {
                         }
 
                         if ($args < $defs) {
-                            warn "macro $tok called with $args arguments, takes $defs.";
+                            warn "not enough arguments for $tok: $args takes $defs";
                             warn "macro $tok expected arguments are @def.";
-                            my $allargs = join(", ",
+                            my $allargs = join("| ",
                                                map {
                                                    @{$_}
                                                } @args);
-                            warn "macro $tok received arguments are $allargs.";
+                            warn "received |$allargs|.";
                             unshift(@toks,
                                     map { @{$_} } @args
                                 );
@@ -940,10 +940,12 @@ sub tokrep($$$\%@) {
                                 $args = $defs;
                             }
                             if ($args > $defs) {
-                                warn "macro $tok called with $args arguments, takes $defs";
-                                unshift(@toks,
-                                        map { @{$_} } @args
-                                    );
+                                warn "to many arguments for $tok: $args takes $defs";
+                                warn "macro $tok expected arguments are @def.";
+                                my @allargs = map { @{$_} } @args;
+                                my $allargs = join("| ", @allargs);
+                                warn "received |$allargs|.";
+                                unshift(@toks, @allargs);
                                 @repl = ($tok);
                             } else {
                                 my @exp;
