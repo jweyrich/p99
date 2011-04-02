@@ -692,7 +692,9 @@ sub openfile($;\%) {
                     $line = $1;
                     my ($name, $rest) = $1 =~ m/^([a-zA-Z_]\w*)(.*)/o;
                     if ($name) {
-                        my ($params, $dfn) = $rest =~ m/^\(([^()]*)\)\s*(.*)$/ox;
+                        my ($params, $dfn) = $rest =~ m/^\(([^()]*)\)\s*(.*)$/o;
+                        $params =~ s/[.][.][.]\s*$/__VA_ARGS__/o
+                            if ($params);
                         my $definition =
                             defined($params)
                             ? (($params =~ m/^\s*$/o)
@@ -926,7 +928,7 @@ sub tokrep($$$\%@) {
                             for (my $i = 0; $i <= $#def; ++$i) {
                                 $def{$def[$i]} = $i;
                             }
-                            if ($def[$#def] eq "...") {
+                            if ($def[$#def] eq "__VA_ARGS__") {
                                 my @last = splice(@args, $#def);
                                 #print STDERR "$replev: arguments @args, starting at $#def: @last\n";
                                 my @combined = @{shift(@last)};
@@ -935,12 +937,12 @@ sub tokrep($$$\%@) {
                                 }
                                 #print STDERR "arguments concated to @combined\n";
                                 push(@args, \@combined);
-                                $def{"__VA_ARGS__"} = $def{"..."};
-                                delete $def{"..."};
+                                # $def{"__VA_ARGS__"} = $def{"..."};
+                                # delete $def{"..."};
                                 $args = $defs;
                             }
                             if ($args > $defs) {
-                                warn "to many arguments for $tok: $args takes $defs";
+                                warn "too many arguments for $tok: $args takes $defs";
                                 warn "macro $tok expected arguments are @def.";
                                 my @allargs = map { @{$_} } @args;
                                 my $allargs = join("| ", @allargs);
