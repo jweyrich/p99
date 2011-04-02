@@ -261,6 +261,23 @@ sub tokrep($$$\%@);
 sub toktrans($$\%);
 sub unescPre(@);
 sub untokenize(@);
+sub printArray(\@;$);
+
+sub printArray(\@;$) {
+    my ($arg, $par) = @_;
+    $par = "(,)[|]"x10 if (!$par);
+    return
+        substr($par, 0, 1).
+        join(substr($par, 1, 1)." ",
+             map {
+                 if (ref($_) eq "ARRAY") {
+                     printArray(@{$_}, substr($par, 3));
+                 } else {
+                     $_;
+                 }
+             } @{$arg})
+        .substr($par, 2, 1);
+}
 
 sub toktrans($$\%) {
     my ($inp, $reg, $hash) = @_;
