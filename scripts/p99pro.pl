@@ -93,6 +93,8 @@ my %fileInc;
 ## collects all tokens
 my @tokensGlobal;
 
+my $output = "";
+
 ## did we locally change line numbering?
 my $skipedLines = 0;
 
@@ -239,13 +241,16 @@ $onegraph = "(?:[\Q$onegraph\E])";
 $trigraph = qr@$trigraph@;
 $onegraph = qr@$onegraph@;
 
+sub compactLines($);
 sub compList($\@);
 sub containedHashtables(\%\%);
+sub eqArrays(\@\@);
 sub eqHashtables(\%\%);
 sub escPre(@);
 sub evalExpr($@);
 sub expandDefined(\%@);
 sub findfile($);
+sub flushOut(\@);
 sub openfile($;\%);
 sub rawtokenize($);
 sub readlln($\$);
@@ -564,6 +569,7 @@ sub openfile($;\%) {
     my $defines = 0;
     ## keep track of the tokens produced by this file and below
     my @tokens;
+    my $output = "";
 
     my %used;
     $used = \%used if (!$used);
@@ -571,7 +577,7 @@ sub openfile($;\%) {
     if (defined($usedMac{$file})) {
         if (containedHashtables(%{$usedMac{$file}}, %macro)) {
             print STDERR "reusing contents of $file\n";
-            push(@tokens, "# REUSE $file", "\n", @{$fileHash{$file}}, "# END REUSE $file", "\n");
+            $output .= $fileHash{$file};
             goto SHORTCUT;
         } else {
             print STDERR "context for $file has changed, not reusing content.\n";
@@ -663,7 +669,7 @@ sub openfile($;\%) {
                     $line = $1;
                     my $tried;
                   RETRY:
-                    my ($name) = $line =~ m/[<"](.+)[">]/o;
+                    my ($type, $name) = $line =~ m/([<"])(.+)[">]/o;
                     if (!$name) {
                         if ($tried) {
                             warn "#include directive incorrect: $line";
@@ -674,9 +680,13 @@ sub openfile($;\%) {
                             goto RETRY;
                         }
                     } else {
+                        $output .= flushOut(@tokens);
+                        if ($name =~ m{($type|[']|[\\]|/[/*])}) {
+                            warn "illegal character sequence $1 in file name: $name";
+                        }
                         my ($recdef, $ret) = openfile(findfile($name));
                         $defines += $recdef;
-                        push(@tokens, @{$ret}, "$escHash $lineno \"$file\"", "\n");
+                        push(@tokens, "$escHash ".($lineno+2)." \"$file\"", "\n");
                     }
                 } elsif ($line =~ m/^define\s+(.*)/o) {
                     $line = $1;
@@ -755,14 +765,19 @@ sub openfile($;\%) {
     }
     warn "unbalanced #if / #endif" if ($iflevel);
 
-    my $tokProduced = scalar @tokens;
+    $output .= flushOut(@tokens);
+    $output = compactLines($output);
+
+    if ($output =~ m/^\s*(?:#|%:)\s+(\d+).*\n*$/o) {
+        ## The file only produced line number information
+        $output = "";
+    }
+
     if (!$defines) {
         print STDERR "$file is candidate for content hashing\n";
         if (!defined($usedMac{$file}) || !eqHashtables(%{$usedMac{$file}}, %used)) {
             $usedMac{$file} = \%used;
-            if ($tokProduced > 0) {
-                $fileHash{$file} = \@tokens;
-            }
+            $fileHash{$file} = $output;
         }
     }
 
@@ -782,7 +797,7 @@ sub openfile($;\%) {
         }
     }
     print STDERR "$file has been processed\n";
-    return ($defines, \@tokens);
+    return ($defines, $output);
 }
 
 sub escPre(@) {
@@ -1055,7 +1070,7 @@ sub tokrep($$$\%@) {
             #@repl = grep { length($_) } @repl;
             #print STDERR "$replev: tokens replacement3: ".join("|", @repl)."\n";
             if (@repl) {
-                if (untokenize(@repl) eq untokenize(@curr)) {
+                if (eqArrays(@repl, @curr)) {
                     push(@ret, @repl);
                 } else {
                     unshift(@toks, @repl);
@@ -1075,6 +1090,18 @@ sub tokrep($$$\%@) {
     return @ret;
 }
 
+
+sub eqArrays(\@\@) {
+    my ($a, $b) = @_;
+    return 1 if (!defined($a) && !defined($b));
+    return 0 if (defined($a) != defined($b));
+    my ($na, $nb) = (scalar @{$a}, scalar @{$b});
+    return 0 if ($na != $nb);
+    for (my $i = 0; $i < $na; ++$i) {
+        return 0 if ($a->[$i] ne $b->[$i]);
+    }
+    return 1;
+}
 
 sub eqHashtables(\%\%) {
     my ($a, $b) = @_;
@@ -1105,9 +1132,52 @@ sub containedHashtables(\%\%) {
 }
 
 
+sub flushOut(\@) {
+    my ($tokens) = @_;
+    my @tokens = grep { length($_) } @{$tokens};
+    @{$tokens} = ();
+    @tokens = unescPre(@tokens);
+    my $output = untokenize(@tokens);
+    if (!$graphs) {
+        $output = toktrans($output, $digraph, %digraph);
+    } elsif ($graphs == 2) {
+        $output = toktrans($output, $idgraph, %idgraph);
+    } elsif ($graphs == 3) {
+        $output = toktrans($output, $onegraph, %onegraph);
+    }
+    return compactLines($output);
+}
+
+sub compactLines($) {
+    my ($output) = @_;
+    my @lines = split(/\n/, $output);
+
+    $output = "";
+
+    my @lineS;
+    while (@lines) {
+        my $lastTok;
+        while (defined($lines[0]) && $lines[0] =~ m/^\s*(?:#|%:)\s+(\d+)/o) {
+            my $ln = $1;
+            $lastTok = shift(@lines);
+            while (@lines && defined($lines[0]) && $lines[0] =~ m/^\s*$/o) {
+                ++$ln;
+                shift(@lines);
+            }
+            --$ln;
+            $lastTok =~ s/^\s*(#|%:)\s+(?:\d+)(.*)$/$1 $ln$2/;
+        }
+        push(@lineS, $lastTok) if ($lastTok);
+        push(@lineS, shift(@lines)) if (@lines);
+    }
+
+    $output = join("\n", @lineS, "");
+    return $output;
+}
+
 foreach my $file (@ARGV) {
     my ($defines, $ret) = openfile($file);
-    push(@tokensGlobal, @{$ret});
+    $output .= $ret;
 }
 
 if ($show) {
@@ -1122,39 +1192,7 @@ if ($show) {
     }
 }
 
-@tokensGlobal = grep { length($_) } @tokensGlobal;
-@tokensGlobal = unescPre(@tokensGlobal);
-my $output = untokenize(@tokensGlobal);
-if (!$graphs) {
-    $output = toktrans($output, $digraph, %digraph);
-} elsif ($graphs == 2) {
-    $output = toktrans($output, $idgraph, %idgraph);
-} elsif ($graphs == 3) {
-    $output = toktrans($output, $onegraph, %onegraph);
-}
 
-my @lines = split(/\n/, $output);
-
-$output = "";
-
-my @lineS;
-while (@lines) {
-    my $lastTok;
-    while (defined($lines[0]) && $lines[0] =~ m/^\s*(?:#|%:)\s+(\d+)/o) {
-        my $ln = $1;
-        $lastTok = shift(@lines);
-        while (@lines && defined($lines[0]) && $lines[0] =~ m/^\s*$/o) {
-            ++$ln;
-            shift(@lines);
-        }
-        --$ln;
-        $lastTok =~ s/^\s*(#|%:)\s+(?:\d+)(.*)$/$1 $ln$2/;
-    }
-    push(@lineS, $lastTok) if ($lastTok);
-    push(@lineS, shift(@lines)) if (@lines);
-}
-
-$output = join("\n", @lineS, "");
 
 print STDOUT $output;
 
