@@ -41,8 +41,8 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Thu, 31 Mar 2011 12:11:25 +0200"
-#define P00_VERSION_ID "6ddaaec75f6bbb164ce296b5d0afbf031d7be062"
+#define P00_VERSION_DATE "Sun, 03 Apr 2011 01:41:15 +0200"
+#define P00_VERSION_ID "c9e2e9667aecbd8931cb7ea223fb251b83a1267e"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
  **
@@ -149,7 +149,7 @@ automatically generated, do not change manually.
  1, 1, 1, 1, 1, 1, 1, 1,                                       \
  1, 1, 1, 1, 1, 1, 1, 1,                                       \
  1, 1, 1, 1, 1, 1, 1, 1,                                       \
- 1, 1, 1, 1, 1, 1, 1, 1, 0, ...)
+ 1, 1, 1, 1, 1, 1, 1, 1, 0, 0)
 #define P00_SKP2(_0, ...) P00_SKP1(__VA_ARGS__)
 #define P00_SKP3(_0, ...) P00_SKP2(__VA_ARGS__)
 #define P00_SKP4(_0, ...) P00_SKP3(__VA_ARGS__)

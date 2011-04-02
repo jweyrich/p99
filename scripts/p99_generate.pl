@@ -531,7 +531,7 @@ for (my $i = 2; $i < $maxnumber; ++$i) {
         print "\\\n 1,";
     }
 }
-print " 0, ...)\n";
+print " 0, 0)\n";
 
 
 for (my $arg = 2; $arg < $maxnumber; ++$arg) {
