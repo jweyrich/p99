@@ -188,8 +188,10 @@ my @punct = sort {
 my @escPunct = map { "\Q$_\E" } @punct;
 
 ## a regexp for all punctuation operators
-my $punct = "(?:".join("|", @escPunct).")";
-$punct = qr/$punct/;
+my $punctStr = "(?:".join("|", @escPunct).")";
+my $punct = qr/$punctStr/;
+my $punctSplit = qr/($punctStr)/;
+my $punctToken = qr/^$punctStr$/;
 
 ## all digraph tokens. put the longest first, so they will match first.
 my @digraph = (
@@ -242,6 +244,10 @@ my $isidentifier = qr/(?:[_a-zA-Z][_a-zA-Z0-9]+)/;
 
 my $ishash = qr/(?:[#]|[%][:])/;
 my $ishhash = qr/(?:[#][#]|[%][:][%][:])/;
+
+my $tokenizer = qr/(?:$isstring|$ischar|$isidentifier|$isnumber)/;
+my $tokenizerSplit = qr/($isstring|$ischar|$isidentifier|$isnumber)/;
+my $tokenizerToken = qr/^$isstring|$ischar|$isidentifier|$isnumber$/;
 
 ## all third characters that may appear in a trigraph
 my $trigraph = "-!'/=()<>";
@@ -502,13 +508,13 @@ sub tokenize($) {
     my $ltok = shift;
     my @ret;
     ## first find strings
-    my @ltok = split(/($isstring|$ischar|$isidentifier|$isnumber)/o, $ltok);
+    my @ltok = split($tokenizerSplit, $ltok);
     #print STDERR join("|", @ltok), "\n";
     foreach my $ltok (@ltok) {
-        if ($ltok !~ m/^$isstring|$ischar|$isidentifier|$isnumber$/o) {
+        if ($ltok !~ $tokenizerToken) {
             my @ltok = split(/\s+/o, $ltok);
             foreach my $ltok (@ltok) {
-                my @ltok = split(/($punct)/, $ltok);
+                my @ltok = split($punctSplit, $ltok);
                 push(@ret, @ltok);
             }
         } else {
@@ -581,7 +587,7 @@ sub untokenize(@) {
                 $space = "";
 
                 ## imperative, don't create tokens that weren't there before
-            } elsif ($comb =~ m/^$punct$/o) {
+            } elsif ($comb =~ $punctToken) {
                 $space = "$sep ";
             } elsif ($comb =~ m/^$isnumber$/o) {
                 $space = "$sep ";
@@ -602,9 +608,9 @@ sub untokenize(@) {
                 $space = "$sep ";
 
                 ## most two character tokens get spaces surrounding them
-            } elsif ($prev =~ m/^$punct$/o && length($prev) > 1 && $prev !~ m/^[-][-]|[+][+]$/o) {
+            } elsif ($prev =~ $punctToken && length($prev) > 1 && $prev !~ m/^[-][-]|[+][+]$/o) {
                 $space = "$sep ";
-            } elsif ($tok =~ m/^$punct$/o && length($tok) > 1 && $tok !~ m/^[-][-]|[+][+]$/o) {
+            } elsif ($tok =~ $punctToken && length($tok) > 1 && $tok !~ m/^[-][-]|[+][+]$/o) {
                 $space = "$sep ";
             }
         }
@@ -1153,7 +1159,7 @@ sub tokrep($$$\%\@) {
                     if ($#repl > 1) {
                         my @parts = splice(@repl, 0, 3);
                         my $joined = $parts[0] . $parts[2];
-                        if ($joined =~ m/^$isstring|$ischar|$isidentifier|$isnumber|$punct$/o) {
+                        if ($joined =~ m/^$tokenizer|$punct$/o) {
                             push(@exp, $joined);
                         } else {
                             warn "'$joined' is not a valid preprocessor token";
