@@ -281,7 +281,7 @@ sub readln($\$);
 sub skipcomments($$\$);
 sub substituteArray(\@\%\@);
 sub tokenize($);
-sub tokrep($$$\%@);
+sub tokrep($$$\%\@);
 sub toktrans($$\%);
 sub unescPre(@);
 sub untokenize(@);
@@ -306,10 +306,20 @@ sub substituteArray(\@\%\@) {
     my ($arr, $def, $args) = @_;
     my @ret;
     my @repl = (@{$arr});
+    my @counts = ();
     while (@repl) {
         my $repl = shift(@repl);
         if (defined($def->{$repl})) {
-            push(@ret, @{clone($args->[$def->{$repl}])});
+            my $i = $def->{$repl};
+            my $count = defined($counts[$i]) ? ${$counts[$i]} : 0;
+            ++$count;
+            push(@ret,
+                 ## only clone an argument if and when it is used more than once
+                 $count == 1
+                 ? @{$args->[$def->{$repl}]}
+                 : @{clone($args->[$def->{$repl}])}
+                );
+            $counts[$i] = \$count;
         } elsif ($repl =~ m/^$ishash$/o) {
             my $repl2 = shift(@repl);
             if (defined($def->{$repl2})) {
@@ -714,7 +724,7 @@ sub openfile($;\%) {
 
     my $iflevel = 0;
     my $aclevel = 0;
-    my $lineno = 0;
+    my $lineno = 1;
 
     ## Install a warning handler.
     my $back = $SIG{__WARN__};
@@ -749,8 +759,9 @@ sub openfile($;\%) {
                 }
                 if (($aclevel == ($iflevel - 1))
                     && !($ifcont && $iffound[$iflevel])) {
-                    my @toks = tokrep(0, $lineno, $file, %used, expandDefined(%used, tokenize($2)));
-                    if (compList(0, @toks)) {
+                    my @expDef =  expandDefined(%used, tokenize($2));
+                    my $toks = tokrep(0, $lineno, $file, %used, @expDef);
+                    if (compList(0, @{$toks})) {
                         ++$aclevel;
                         $iffound[$aclevel] = 1;
                     }
@@ -792,8 +803,9 @@ sub openfile($;\%) {
                         if ($tried) {
                             warn "#include directive incorrect: $line";
                         } else {
-                            my @toks = tokrep(0, $lineno, $file, %used, tokenize($line));
-                            $line = untokenize(@toks);
+                            my @inToks = tokenize($line);
+                            my $toks = tokrep(0, $lineno, $file, %used, @inToks);
+                            $line = untokenize(@{$toks});
                             $tried = 1;
                             goto RETRY;
                         }
@@ -805,7 +817,7 @@ sub openfile($;\%) {
                         my ($recdef, $ret) = openfile(findfile($name));
                         push(@defines, @{$recdef});
                         $output .= $ret;
-                        push(@tokens, "$escHash ".($lineno+2)." \"$file\"", "\n");
+                        push(@tokens, "$escHash ".($lineno+1)." \"$file\"", "\n");
                     }
                 } elsif ($line =~ m/^define\s+(.*)/o) {
                     $line = $1;
@@ -886,7 +898,8 @@ sub openfile($;\%) {
                 push(@tokens, "$escHash $lineno \"$file\"", "\n");
                 $skipedLines = 0;
             }
-            push(@tokens, tokrep(0, $lineno, $file, %used, escPre(tokenize($line))), "\n");
+            my @escPre = escPre(tokenize($line));
+            push(@tokens, @{tokrep(0, $lineno, $file, %used, @escPre)}, "\n");
         }
     }
     warn "unbalanced #if / #endif" if ($iflevel);
@@ -973,17 +986,17 @@ sub unescPre(@) {
     return @ret;
 }
 
-sub tokrep($$$\%@) {
+sub tokrep($$$\%\@) {
     my @ret;
-    my ($replev, $lineno, $file, $used, @toks) = @_;
+    my ($replev, $lineno, $file, $used, $toks) = @_;
   LOOP:
-    while (@toks) {
+    while (@{$toks}) {
         my $tok;
       DEF:
-        while (@toks) {
-            $tok = shift(@toks);
+        while (@{$toks}) {
+            $tok = shift(@{$toks});
             last DEF while (defined($tok) && length($tok));
-            last LOOP if (!@toks);
+            last LOOP if (!@{$toks});
         }
         ++$lineno if ($tok eq "\n");
         my @curr = ($tok);
@@ -1000,13 +1013,13 @@ sub tokrep($$$\%@) {
                 if ($def[0] && length($def[0])) {
                     ## a function like macro
                     my $next;
-                    if (@toks) {
-                        $next = shift(@toks);
+                    if (@{$toks}) {
+                        $next = shift(@{$toks});
                         ++$lineno if ($next eq "\n");
                         push(@curr, $next);
                     }
                     if (defined($next) && ($next eq "(")) {
-                        $next = parenRec(@toks, @curr, $lineno);
+                        $next = parenRec(@{$toks}, @curr, $lineno);
                     }
                     if (ref($next) eq "ARRAY") {
                         my @args = @{$next};
@@ -1019,17 +1032,17 @@ sub tokrep($$$\%@) {
                         foreach my $arg (@args) {
                             if (ref($arg)) {
                                 #print STDERR "$replev: argument before: ".join("|", @{$arg})."\n";
-                                my @arg = tokrep($replev + 1, $lineno, $file, %{$used}, @{$arg});
+                                my $reparg = tokrep($replev + 1, $lineno, $file, %{$used}, @{$arg});
                                 # warn "level $replev: argument ".join("|", @arg)."++++".join(":", @{$arg})
                                 #     if ($args < $defs);
                                 ## however, if an argument consists of no preprocessing tokens, the
                                 ## parameter is replaced by a placemarker preprocessing token
                                 ## instead.
-                                if (!@arg) {
-                                    @arg = ("");
+                                if (!@{$reparg}) {
+                                    @{$reparg} = ("");
                                     $args = 0 if ($args == 1 && $defs == 0);
                                 }
-                                $arg = \@arg;
+                                $arg = $reparg;
                             }
                         }
 
@@ -1038,7 +1051,7 @@ sub tokrep($$$\%@) {
                             warn "macro $tok expected arguments are @def.";
                             my $allargs = printArray(@args, "(,)[|](,)[|](,)[|](,)[|]");
                             warn "received |$allargs|.";
-                            unshift(@toks,
+                            unshift(@{$toks},
                                     map { @{$_} } @args
                                 );
                             @repl = ($tok);
@@ -1080,7 +1093,7 @@ sub tokrep($$$\%@) {
                                 } @args;
                                 my $allargs = printArray(@allargs, "(,)[|](,)[|](,)[|](,)[|]");
                                 warn "received |$allargs|.";
-                                unshift(@toks, @allargs);
+                                unshift(@{$toks}, @allargs);
                                 @repl = ($tok);
                             } else {
                                 #print STDERR "$replev: tokens before: ".join("|", @repl)."\n";
@@ -1091,7 +1104,7 @@ sub tokrep($$$\%@) {
                     } else {
                         ## a is function like macro without ()
                         if (defined($next)) {
-                            unshift(@toks, $next);
+                            unshift(@{$toks}, $next);
                             --$lineno if ($next eq "\n");
                             pop(@curr);
                         }
@@ -1100,26 +1113,26 @@ sub tokrep($$$\%@) {
                 } else {
                     my $olineno = $lineno;
                     ## a function like macro that expects 0 arguments
-                    while (@toks && $toks[0] =~ m/^\s+$/so) {
-                        ++$lineno if $toks[0] =~ m/\n/o;
-                        shift(@toks);
+                    while (@{$toks} && $toks->[0] =~ m/^\s+$/so) {
+                        ++$lineno if $toks->[0] =~ m/\n/o;
+                        shift(@{$toks});
                     }
-                    if (@toks && ($toks[0] eq "(")) {
-                        shift(@toks);
-                        while (@toks && $toks[0] =~ m/^\s+$/so) {
-                            ++$lineno if $toks[0] =~ m/\n/o;
-                            shift(@toks);
+                    if (@{$toks} && ($toks->[0] eq "(")) {
+                        shift(@{$toks});
+                        while (@{$toks} && $toks->[0] =~ m/^\s+$/so) {
+                            ++$lineno if $toks->[0] =~ m/\n/o;
+                            shift(@{$toks});
                         }
-                        if (!@toks) {
+                        if (!@{$toks}) {
                             warn "missing closing parenthesis in call of $tok";
-                        } elsif ($toks[0] ne ")") {
-                            warn "$tok expects 0 arguments, found $toks[0]";
-                            unshift(@toks, "(");
+                        } elsif ($toks->[0] ne ")") {
+                            warn "$tok expects 0 arguments, found $toks->[0]";
+                            unshift(@{$toks}, "(");
                         } else {
-                            shift(@toks);
+                            shift(@{$toks});
                         }
-                    } elsif (@toks && (ref($toks[0]) eq "ARRAY")) {
-                        my $args = shift(@toks);
+                    } elsif (@{$toks} && (ref($toks->[0]) eq "ARRAY")) {
+                        my $args = shift(@{$toks});
                         if (@{$args} && @{$args->[0]} && length($args->[0]->[0])) {
                             warn "$tok expects 0 arguments, found @{$args->[0]}";
                         }
@@ -1165,15 +1178,14 @@ sub tokrep($$$\%@) {
             ## Switch of macro $tok for the recursive call
             my $backup = $macro{$tok};
             delete $macro{$tok};
-            @repl = tokrep($replev + 1, $lineno, $file, %{$used}, @exp);
+            my $repl = tokrep($replev + 1, $lineno, $file, %{$used}, @exp);
             $macro{$tok} = $backup;
-            #@repl = grep { length($_) } @repl;
-            #print STDERR "$replev: tokens replacement3: ".join("|", @repl)."\n";
-            if (@repl) {
-                if (eqArrays(@repl, @curr)) {
-                    push(@ret, @repl);
+            #print STDERR "$replev: tokens replacement3: ".join("|", @{$repl})."\n";
+            if (@{$repl}) {
+                if (eqArrays(@{$repl}, @curr)) {
+                    push(@ret, @{$repl});
                 } else {
-                    unshift(@toks, @repl);
+                    unshift(@{$toks}, @{$repl});
                 }
             }
         } else {
@@ -1187,7 +1199,7 @@ sub tokrep($$$\%@) {
             push(@ret, $tok);
         }
     }
-    return @ret;
+    return \@ret;
 }
 
 
