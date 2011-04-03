@@ -1,10 +1,9 @@
 #!/bin/sh -f
-#  This may look like complete nonsense, but it really is -*- mode: perl; coding: utf-8 -*-
+#!perl     ##  This may look like complete nonsense, but it really is -*- mode: perl; coding: utf-8 -*- ##
+#          ##  Exec to perl if started from /bin/sh. Do nothing if already executed by perl.            ##
+# line 5
 eval 'exec perl -wS -x $0 ${1+"$@"}'
-if 0;               #### for this magic, see findSvnAuthors ####
-#!perl
-#
-#
+if 0;
 # Except of parts copied from previous work and as explicitly stated below,
 # the author and copyright holder for this work is
 # all rights reserved,  2011 Jens Gustedt, INRIA, France
@@ -21,6 +20,7 @@ no warnings 'portable';  # Support for 64-bit ints required
 use English;
 use POSIX;
 use strict;
+use Clone qw(clone);
 use Getopt::Long;
 Getopt::Long::Configure ("bundling");
 
@@ -40,12 +40,15 @@ my $sep = "";
 ## request output with special character sets: without digraphs (0),
 ## unchanged (1, default), digraphs (2) or trigraphs (3).
 my $graphs = 1;
+## indicate a hosted environment
+my $hosted = 1;
 
 my $result = GetOptions (
     "include|I=s"        => \@{dirs},      # list of strings
     "define|D=s"        => \@{defs},      # list of strings
     "undef|U=s"        => \@{undefs},    # list of strings
     "dM!"        => \${show},    # flag
+    "hosted!"        => \${hosted},    # flag
     "separator=s"        => \${sep},    # string
     "std|standard=s"        => \${std},    # string
     "graphs=i"        => \${graphs},
@@ -65,20 +68,38 @@ my $escHash = "\@\@";
 my $escHash2 = "//";
 
 my %standards = (
-    "c99" => "199901",
+    "c99" => "199901L",
     );
 
 ## holds all defined macros
-my %macro = (
-    ## The special "macro" _Pragma that we never could do with #define.
-    ## The spaces in the expansion are essential such that this is tokenized correctly.
-    "_Pragma" => ["X", "$liner $escHash pragma ${unstring}X $liner"],
-    ## Mark our presence by setting a special macro.
-    "__P99PRO__" => ["1"],
-    "__STDC_VERSION__" => [$standards{$std}],
-    );
+my %macro;
 
-## per include file a hash of macros that were used by that file
+{
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) =
+        localtime(time);
+    my @abbr = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec );
+
+    %macro = (
+        ## The special "macro" _Pragma that we never could do with #define.
+        ## The spaces in the expansion are essential such that this is tokenized correctly.
+        "_Pragma" => ["X", "$liner $escHash pragma ${unstring}X $liner"],
+        ## Mark our presence by setting a special macro.
+        "__P99PRO__" => ["1"],
+        ## Provide the macros that are required by the standard. __LINE__ and __FILE__ are
+        ## implemented differently.
+        "__DATE__" => [sprintf("%s % 2u %u", $abbr[$mon], $mday, $year + 1900)],
+        "__TIME__" => [sprintf("%02u:%02u:%02u", $hour, $min, $sec)],
+        "__STDC_VERSION__" => [$standards{$std}],
+        "__STDC__" => ["1"],
+        "__STDC_HOSTED__" => ["$hosted"],
+        ## None of these macro names, nor the identifier defined, shall be the subject of a
+        ## #define or a #undef preprocessing directive.
+        "defined" => ["(== abuse of keyword defined ==)"],
+        );
+}
+
+## per include file a hash of macros that were used by that file. This is only set if the
+## include file did not define macros by itself.
 my %usedMac;
 
 ## Per include file a hash of macros of tokens that are to be
@@ -241,8 +262,8 @@ $onegraph = "(?:[\Q$onegraph\E])";
 $trigraph = qr@$trigraph@;
 $onegraph = qr@$onegraph@;
 
-sub compactLines($);
 sub compList($\@);
+sub compactLines($);
 sub containedHashtables(\%\%);
 sub eqArrays(\@\@);
 sub eqHashtables(\%\%);
@@ -252,20 +273,22 @@ sub expandDefined(\%@);
 sub findfile($);
 sub flushOut(\@);
 sub openfile($;\%);
+sub parenRec(\@\@\$);
+sub printArray(\@;$);
 sub rawtokenize($);
 sub readlln($\$);
 sub readln($\$);
 sub skipcomments($$\$);
+sub substituteArray(\@\%\@);
 sub tokenize($);
 sub tokrep($$$\%@);
 sub toktrans($$\%);
 sub unescPre(@);
 sub untokenize(@);
-sub printArray(\@;$);
 
 sub printArray(\@;$) {
     my ($arg, $par) = @_;
-    $par = "(,)[|]"x10 if (!$par);
+    $par = "(,)" if (!$par);
     return
         substr($par, 0, 1).
         join(substr($par, 1, 1)." ",
@@ -278,6 +301,53 @@ sub printArray(\@;$) {
              } @{$arg})
         .substr($par, 2, 1);
 }
+
+sub substituteArray(\@\%\@) {
+    my ($arr, $def, $args) = @_;
+    my @ret;
+    my @repl = (@{$arr});
+    while (@repl) {
+        my $repl = shift(@repl);
+        if (defined($def->{$repl})) {
+            push(@ret, @{clone($args->[$def->{$repl}])});
+        } elsif ($repl =~ m/^$ishash$/o) {
+            my $repl2 = shift(@repl);
+            if (defined($def->{$repl2})) {
+                #print STDERR "stringifying argument $repl $repl2\n";
+                my $str = untokenize(@{$args->[$def->{$repl2}]});
+
+                ## White space before the first preprocessing token
+                ## and after the last preprocessing token composing
+                ## the argument is deleted.
+                $str =~ s/^\s*(\w++)\s*$/$1/o;
+
+                ## Each occurrence of white space between the
+                ## argument's preprocessing tokens becomes a single
+                ## space character in the character string literal.
+                $str =~ s/^\s+//o;
+
+                ## a \ character is inserted before each " and \
+                ## character of a character constant or string
+                ## literal
+                $str =~ s/(["\\])/\\$1/go;
+
+                push(@ret, '"'.$str.'"');
+            } else {
+                ## Each # preprocessing token in the replacement
+                ## list for a function-like macro shall be followed
+                ## by a parameter as the next preprocessing token
+                ## in the replacement list.
+                warn "invalid stringify sequence $repl $repl2, not a parameter name";
+                unshift(@repl, $repl2);
+                push(@ret, $repl);
+            }
+        } else {
+            push(@ret, $repl);
+        }
+    }
+    return @ret;
+}
+
 
 sub toktrans($$\%) {
     my ($inp, $reg, $hash) = @_;
@@ -461,47 +531,78 @@ sub rawtokenize($) {
 sub untokenize(@) {
     my @toks = @_;
     my $ret = shift(@toks);
+    if (ref($ret) eq "ARRAY") {
+        $ret = "$sep(".
+            join("$sep,$sep ",
+                 map {
+                     if (ref($_) eq "ARRAY") {
+                         untokenize(@{$_});
+                     } else {
+                         $_;
+                     }
+                 } @{$ret}
+            )
+            ."$sep) ";
+        #print STDERR "untokenize array: $ret\n";
+    }
     my $prev = $ret;
     foreach my $tok (@toks) {
-        my $comb = $prev . $tok;
         my $space = $sep;
 
-        ## Don't add spaces before and after newlines
-        if ($tok eq "\n") {
-            $space = "";
-        } elsif ($prev =~ m/\s$/so) {
-            $space = "";
+        if (ref($tok) eq "ARRAY") {
+        $tok = "$sep(".
+            join("$sep,$sep ",
+                 map {
+                     if (ref($_) eq "ARRAY") {
+                         untokenize(@{$_});
+                     } else {
+                         $_;
+                     }
+                 } @{$tok}
+            )
+            ."$sep) ";
+        #print STDERR "untokenize array: $tok\n";
+        } else {
+            my $comb = $prev . $tok;
+            ## Don't add spaces before and after newlines
+            if ($tok eq "\n") {
+                $space = "";
+            } elsif ($prev =~ m/\s$/so) {
+                $space = "";
 
-            ## imperative, don't create tokens that weren't there before
-        } elsif ($comb =~ m/^$punct$/o) {
-            $space = "$sep ";
-        } elsif ($comb =~ m/^$isnumber$/o) {
-            $space = "$sep ";
-        } elsif ($comb =~ m/^$isidentifier$/o) {
-            $space = "$sep ";
+                ## imperative, don't create tokens that weren't there before
+            } elsif ($comb =~ m/^$punct$/o) {
+                $space = "$sep ";
+            } elsif ($comb =~ m/^$isnumber$/o) {
+                $space = "$sep ";
+            } elsif ($comb =~ m/^$isidentifier$/o) {
+                $space = "$sep ";
 
-            ## this shouldn't occur, but might be important to
-            ## visually mark a clash such as 199901L"my string" where
-            ## the L could have been meant for making a long int or
-            ## for creating a wide character string.
-        } elsif ($tok =~ m/^$isstring|$ischar$/o && $prev =~ m/^$isidentifier|$isnumber$/o) {
-            $space = "$sep ";
+                ## this shouldn't occur, but might be important to
+                ## visually mark a clash such as 199901L"my string" where
+                ## the L could have been meant for making a long int or
+                ## for creating a wide character string.
+            } elsif ($tok =~ m/^$isstring|$ischar$/o && $prev =~ m/^$isidentifier|$isnumber$/o) {
+                $space = "$sep ";
 
-            ## visual enhancement for some single character tokens
-        } elsif ($prev =~ m/^[=,;?:{]$/o) {
-            $space = "$sep ";
-        } elsif ($tok =~ m/^[=}]$/o) {
-            $space = "$sep ";
+                ## visual enhancement for some single character tokens
+            } elsif ($prev =~ m/^[=,;?:{]$/o) {
+                $space = "$sep ";
+            } elsif ($tok =~ m/^[=}]$/o) {
+                $space = "$sep ";
 
-            ## most two character tokens get spaces surrounding them
-        } elsif ($prev =~ m/^$punct$/o && length($prev) > 1 && $prev !~ m/^[-][-]|[+][+]$/o) {
-            $space = "$sep ";
-        } elsif ($tok =~ m/^$punct$/o && length($tok) > 1 && $tok !~ m/^[-][-]|[+][+]$/o) {
-            $space = "$sep ";
+                ## most two character tokens get spaces surrounding them
+            } elsif ($prev =~ m/^$punct$/o && length($prev) > 1 && $prev !~ m/^[-][-]|[+][+]$/o) {
+                $space = "$sep ";
+            } elsif ($tok =~ m/^$punct$/o && length($tok) > 1 && $tok !~ m/^[-][-]|[+][+]$/o) {
+                $space = "$sep ";
+            }
         }
         $ret .= $space . $tok;
+        #print STDERR "untokenize step: $ret\n";
         $prev = $tok;
     }
+    #print STDERR "untokenize final: $ret\n";
     return $ret;
 }
 
@@ -565,7 +666,7 @@ sub expandDefined(\%@) {
                     if (shift(@toks) ne ")");
             }
             #print STDERR "searching for $tok\n";
-            my $val = defined($macro{$tok});
+            my $val = $macro{$tok};
             if ($val) {
                 $used->{$tok} = $val;
                 $tok = 1;
@@ -583,7 +684,7 @@ sub expandDefined(\%@) {
 sub openfile($;\%) {
     my ($file, $used) = shift;
     ## keep track of the number of defines in this file and below
-    my $defines = 0;
+    my @defines;
     ## keep track of the tokens produced by this file and below
     my @tokens;
     my $output = "";
@@ -657,7 +758,7 @@ sub openfile($;\%) {
                 #print STDERR "IF $aclevel <= $iflevel : (el)if $line\n";
             } elsif ($line =~ m/^if(n?)def\s+(\w+)/o) {
                 if ($aclevel == $iflevel) {
-                    my $val = defined($macro{$2});
+                    my $val = $macro{$2};
                     $used{$2} = $val;
                     if ($1 xor $val) {
                         ++$aclevel;
@@ -702,17 +803,22 @@ sub openfile($;\%) {
                             warn "illegal character sequence $1 in file name: $name";
                         }
                         my ($recdef, $ret) = openfile(findfile($name));
-                        $defines += $recdef;
+                        push(@defines, @{$recdef});
                         $output .= $ret;
                         push(@tokens, "$escHash ".($lineno+2)." \"$file\"", "\n");
                     }
                 } elsif ($line =~ m/^define\s+(.*)/o) {
                     $line = $1;
                     my ($name, $rest) = $1 =~ m/^([a-zA-Z_]\w*)(.*)/o;
+                    $rest = "" if (!defined($rest));
                     if ($name) {
                         my ($params, $dfn) = $rest =~ m/^\(([^()]*)\)\s*(.*)$/o;
-                        $params =~ s/[.][.][.]\s*$/__VA_ARGS__/o
-                            if ($params);
+                        $dfn = "" if (!defined($dfn));
+                        if ($params) {
+                            #print STDERR "params before $params\n";
+                            $params =~ s/[.][.][.]\s*$/__VA_ARGS__/o;
+                            #print STDERR "params after $params\n";
+                        }
                         my $definition =
                             defined($params)
                             ? (($params =~ m/^\s*$/o)
@@ -731,11 +837,11 @@ sub openfile($;\%) {
                             if ($old ne $new) {
                                 warn "redefinition of macro $name";
                                 $macro{$name} = $definition;
-                                ++$defines;
+                                push(@defines, $name);
                             }
                         } else {
                             $macro{$name} = $definition;
-                            ++$defines;
+                            push(@defines, $name);
                         }
                     } else {
                         warn "define directive without a name: $line"
@@ -743,7 +849,7 @@ sub openfile($;\%) {
                 } elsif ($line =~ m/^undef\s+([a-zA-Z_]\w*)\s*(.*)/o) {
                     warn "garbage at end of undef for macro $1" if ($2);
                     delete $macro{$1};
-                    ++$defines;
+                    push(@defines, $1);
                 } elsif ($line =~ m/^error\s+(.*)/o) {
                     die "$file:$lineno: error $1";
                 } elsif ($line =~ m/^pragma\s+message\s+(.*)/o) {
@@ -793,12 +899,14 @@ sub openfile($;\%) {
         $output = "";
     }
 
-    if (!$defines) {
+    if (!@defines) {
         print STDERR "$file is candidate for content hashing\n";
         if (!defined($usedMac{$file}) || !eqHashtables(%{$usedMac{$file}}, %used)) {
             $usedMac{$file} = \%used;
             $fileHash{$file} = $output;
         }
+    } elsif (${$fileInc{$file}} > 1) {
+        print STDERR "$file can not be hashed, define changes on: @defines\n";
     }
 
     $SIG{__WARN__} = $back;
@@ -807,7 +915,7 @@ sub openfile($;\%) {
     if (defined($used)) {
         ## Only update the hash of used macros if we know that the
         ## upper level can use them. Otherwise we can simply empty it.
-        if ($defines) {
+        if (@defines) {
             %{$used} = ();
         } else {
             my @used = %{$used};
@@ -817,7 +925,7 @@ sub openfile($;\%) {
         }
     }
     print STDERR "$file has been processed\n";
-    return ($defines, $output);
+    return (\@defines, $output);
 }
 
 sub escPre(@) {
@@ -844,6 +952,15 @@ sub unescPre(@) {
     my @ret;
     while (@toks) {
         my $tok = shift(@toks);
+        if (ref($tok)) {
+            foreach my $part (@{$tok}) {
+                if (ref($part)) {
+                    $part = [ unescPre(@{$part}) ];
+                } else {
+                    $part = unescPre($part);
+                }
+            }
+        }
         if ($tok eq "$unstring") {
             $tok = shift(@toks);
             $tok =~ s/^L?"(.*)"$/ $1/so;
@@ -872,6 +989,8 @@ sub tokrep($$$\%@) {
         my @curr = ($tok);
         if (defined($tok) && defined($macro{$tok})) {
             $used->{$tok} = $macro{$tok};
+            my $macroname = $tok;
+            # we need a copy of the macro definition
             my @def = (@{$macro{$tok}});
             my @repl = tokenize(pop(@def));
             #print STDERR "$replev: $#def @def :: ".length($def[0])." :: ".join("|", @repl)."\n";
@@ -887,30 +1006,10 @@ sub tokrep($$$\%@) {
                         push(@curr, $next);
                     }
                     if (defined($next) && ($next eq "(")) {
-                        my @args;
-                        my $level = 1;
-                        my @arg;
-                        while ($level && @toks) {
-                            my $tok = shift(@toks);
-                            ++$lineno if ($tok eq "\n");
-                            push(@curr, $tok);
-                            if ($tok eq "," && $level == 1) {
-                                my @cp = @arg;
-                                push(@args, \@cp);
-                                @arg = ();
-                            } elsif ($tok eq ")") {
-                                if ($level != 1) {
-                                    push(@arg, $tok);
-                                }
-                                --$level;
-                            } else {
-                                if ($tok eq "(") {
-                                    ++$level;
-                                }
-                                push(@arg, $tok);
-                            }
-                        }
-                        push(@args, \@arg);
+                        $next = parenRec(@toks, @curr, $lineno);
+                    }
+                    if (ref($next) eq "ARRAY") {
+                        my @args = @{$next};
                         my $args = scalar @args;
                         my $defs = scalar @def;
 
@@ -918,24 +1017,26 @@ sub tokrep($$$\%@) {
                         ## completely macro replaced as if they formed the rest of the
                         ## preprocessing file; no other preprocessing tokens are available.
                         foreach my $arg (@args) {
-                            #print STDERR "$replev: argument before: ".join("|", @{$arg})."\n";
-                            my @arg = tokrep($replev + 1, $lineno, $file, %{$used}, @{$arg});
-                            # warn "level $replev: argument ".join("|", @arg)."++++".join(":", @{$arg})
-                            #     if ($args < $defs);
-                            ## however, if an argument consists of no preprocessing tokens, the
-                            ## parameter is replaced by a placemarker preprocessing token
-                            ## instead.
-                            @arg = ("") if (!@arg);
-                            $arg = \@arg;
+                            if (ref($arg)) {
+                                #print STDERR "$replev: argument before: ".join("|", @{$arg})."\n";
+                                my @arg = tokrep($replev + 1, $lineno, $file, %{$used}, @{$arg});
+                                # warn "level $replev: argument ".join("|", @arg)."++++".join(":", @{$arg})
+                                #     if ($args < $defs);
+                                ## however, if an argument consists of no preprocessing tokens, the
+                                ## parameter is replaced by a placemarker preprocessing token
+                                ## instead.
+                                if (!@arg) {
+                                    @arg = ("");
+                                    $args = 0 if ($args == 1 && $defs == 0);
+                                }
+                                $arg = \@arg;
+                            }
                         }
 
                         if ($args < $defs) {
                             warn "not enough arguments for $tok: $args takes $defs";
                             warn "macro $tok expected arguments are @def.";
-                            my $allargs = join("| ",
-                                               map {
-                                                   @{$_}
-                                               } @args);
+                            my $allargs = printArray(@args, "(,)[|](,)[|](,)[|](,)[|]");
                             warn "received |$allargs|.";
                             unshift(@toks,
                                     map { @{$_} } @args
@@ -949,9 +1050,17 @@ sub tokrep($$$\%@) {
                             if ($def[$#def] eq "__VA_ARGS__") {
                                 my @last = splice(@args, $#def);
                                 #print STDERR "$replev: arguments @args, starting at $#def: @last\n";
-                                my @combined = @{shift(@last)};
+                                my $last = shift(@last);
+                                my @combined = $last && ref($last) ? @{$last} : ($last);
                                 if (@last) {
-                                    push(@combined, map { (",", @{$_}) } @last);
+                                    push(@combined, 
+                                         map {
+                                             if (ref($_) eq "ARRAY") {
+                                                 (",", @{$_});
+                                             } else {
+                                                 (",", $_);
+                                             }
+                                         } @last);
                                 }
                                 #print STDERR "arguments concated to @combined\n";
                                 push(@args, \@combined);
@@ -962,57 +1071,20 @@ sub tokrep($$$\%@) {
                             if ($args > $defs) {
                                 warn "too many arguments for $tok: $args takes $defs";
                                 warn "macro $tok expected arguments are @def.";
-                                my @allargs = map { @{$_} } @args;
-                                my $allargs = join("| ", @allargs);
+                                my @allargs = map {
+                                    if (ref($_->[0])) {
+                                        @{$_->[0]}
+                                    } else {
+                                        ($_->[0])
+                                    }
+                                } @args;
+                                my $allargs = printArray(@allargs, "(,)[|](,)[|](,)[|](,)[|]");
                                 warn "received |$allargs|.";
                                 unshift(@toks, @allargs);
                                 @repl = ($tok);
                             } else {
-                                my @exp;
                                 #print STDERR "$replev: tokens before: ".join("|", @repl)."\n";
-
-                                ## Do the stringification
-                                while (@repl) {
-                                    my $repl = shift(@repl);
-                                    if ($repl =~ m/^$ishash$/o) {
-                                        my $repl2 = shift(@repl);
-                                        if (defined($def{$repl2})) {
-                                            #print STDERR "stringifying argument $repl $repl2\n";
-                                            my $str = untokenize(@{$args[$def{$repl2}]});
-
-                                            ## White space before the first preprocessing token
-                                            ## and after the last preprocessing token composing
-                                            ## the argument is deleted.
-                                            $str =~ s/^\s*(\w++)\s*$/$1/o;
-
-                                            ## Each occurrence of white space between the
-                                            ## argument's preprocessing tokens becomes a single
-                                            ## space character in the character string literal.
-                                            $str =~ s/^\s+//o;
-
-                                            ## a \ character is inserted before each " and \
-                                            ## character of a character constant or string
-                                            ## literal
-                                            $str =~ s/(["\\])/\\$1/go;
-
-                                            push(@exp, '"'.$str.'"');
-                                        } else {
-                                            ## Each # preprocessing token in the replacement
-                                            ## list for a function-like macro shall be followed
-                                            ## by a parameter as the next preprocessing token
-                                            ## in the replacement list.
-                                            warn "invalid stringify sequence $repl $repl2, not a parameter name";
-                                            unshift(@repl, $repl2);
-                                            push(@exp, $repl);
-                                        }
-                                    } elsif (defined($def{$repl})) {
-                                        # print STDERR "found argument $repl\n";
-                                        push(@exp, @{$args[$def{$repl}]});
-                                    } else {
-                                        push(@exp, $repl);
-                                    }
-                                }
-                                @repl = @exp;
+                                @repl = substituteArray(@repl, %def, @args);
                                 #print STDERR "$replev: tokens after: ".join("|", @repl)."\n";
                             }
                         }
@@ -1046,6 +1118,12 @@ sub tokrep($$$\%@) {
                         } else {
                             shift(@toks);
                         }
+                    } elsif (@toks && (ref($toks[0]) eq "ARRAY")) {
+                        my $args = shift(@toks);
+                        if (@{$args} && @{$args->[0]} && length($args->[0]->[0])) {
+                            warn "$tok expects 0 arguments, found @{$args->[0]}";
+                        }
+                        #print STDERR "$tok: 0 arguments macro |$args|@{$args}|@{$args->[0]}|\n";
                     } else {
                         ## invocation without the parenthesis, ok
                         @repl = ($tok);
@@ -1120,7 +1198,11 @@ sub eqArrays(\@\@) {
     my ($na, $nb) = (scalar @{$a}, scalar @{$b});
     return 0 if ($na != $nb);
     for (my $i = 0; $i < $na; ++$i) {
-        return 0 if ($a->[$i] ne $b->[$i]);
+        if (ref($a->[$i]) eq "ARRAY" && ref($b->[$i]) eq "ARRAY") {
+            return 0 if (!eqArrays(@{$a->[$i]}, @{$b->[$i]}));
+        } else {
+            return 0 if ($a->[$i] ne $b->[$i]);
+        }
     }
     return 1;
 }
@@ -1129,24 +1211,32 @@ sub eqHashtables(\%\%) {
     my ($a, $b) = @_;
     return 1 if (!defined($a) && !defined($b));
     return 0 if (defined($a) != defined($b));
-    my ($na, $nb) = (scalar keys %{$a}, scalar keys %{$b});
-    if ($na != $nb) {
-        print STDERR "hash table contents changed $na -> $nb\n";
-        return 0;
-    }
+    return 0 if (scalar keys %{$a} != scalar keys %{$b});
     return containedHashtables(%{$a}, %{$b});
 }
 
 
 sub containedHashtables(\%\%) {
     my ($a, $b) = @_;
-    return 1 if (!defined($a) && !defined($b));
-    return 0 if (defined($a) != defined($b));
-    foreach my $key (scalar keys %{$a}) {
-        if (!defined($a->{$key}) && !defined($a->{$key})) {
-        } elsif (defined($a->{$key}) != defined($a->{$key})
-                 || ($a->{$key} ne $b->{$key})) {
-            print STDERR "value of $key changed\n";
+    ## a null reference is considered empty and is contained in any
+    ## other hash
+    return 1 if (!defined($a));
+    ## an empty hash can only enclose another empty hash and nothing else
+    return 0 if (!defined($b));
+    ## to be a superset the cardinality must not be smaller
+    return 0 if (scalar keys %{$a} > scalar keys %{$b});
+    foreach my $key (keys %{$a}) {
+        next if (!defined($a->{$key}) && !defined($b->{$key}));
+        if (!defined($a->{$key})) {
+            warn "$key has changed? value is undefined";
+            return 0;
+        }
+        if (!defined($b->{$key}) || ($a->{$key} ne $b->{$key})) {
+            warn "$key has changed: $a->{$key} ne $b->{$key}";
+            warn "$key has changed: @{$a->{$key}}"
+                if (ref($a->{$key}));
+            warn "$key has changed: @{$b->{$key}}"
+                if (ref($b->{$key}));
             return 0;
         }
     }
@@ -1195,6 +1285,32 @@ sub compactLines($) {
 
     $output = join("\n", @lineS, "");
     return $output;
+}
+
+
+sub parenRec(\@\@\$) {
+    my ($toks, $curr, $lineno) = @_;
+    my @args;
+    my @arg;
+    while (@{$toks}) {
+        my $tok = shift(@{$toks});
+        ++${$lineno} if ($tok eq "\n");
+        push(@{$curr}, $tok);
+        if ($tok eq ",") {
+            push(@args, [ @arg ]);
+            @arg = ();
+        } elsif ($tok eq ")") {
+            last;
+        } else {
+            if ($tok eq "(") {
+                $tok = parenRec(@{$toks}, @{$curr}, ${$lineno});
+            }
+            push(@arg, $tok);
+        }
+    }
+    @arg = ("") if (!@arg);
+    push(@args, \@arg);
+    return \@args;
 }
 
 foreach my $file (@ARGV) {
