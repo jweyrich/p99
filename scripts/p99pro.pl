@@ -71,15 +71,44 @@ my %standards = (
     "c99" => "199901L",
     );
 
-## holds all defined macros
-my %macro;
+sub compList($\@);
+sub compactLines($);
+sub containedHashtables(\%\%);
+sub eqArrays(\@\@);
+sub eqHashtables(\%\%);
+sub escPre(@);
+sub evalExpr($@);
+sub expandDefined(\%@);
+sub findfile($);
+sub flushOut(\@);
+sub macro($);
+sub macroContained(\%);
+sub macroDefine($\@;\@);
+sub macroHide($);
+sub macroList();
+sub macroUndefine($;\@);
+sub macroUnhide($);
+sub openfile($;\%);
+sub parenRec(\@\@\$);
+sub printArray(\@;$);
+sub rawtokenize($);
+sub readlln($\$);
+sub readln($\$);
+sub skipcomments($$\$);
+sub substituteArray(\@\%\@);
+sub tokenize($);
+sub tokrep($$$\%\@);
+sub toktrans($$\%);
+sub unescPre(@);
+sub untokenize(@);
 
+## holds all defined macros
 {
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) =
         localtime(time);
     my @abbr = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec );
 
-    %macro = (
+    my %macro = (
         ## The special "macro" _Pragma that we never could do with #define.
         ## The spaces in the expansion are essential such that this is tokenized correctly.
         "_Pragma" => ["X", "$liner $escHash pragma ${unstring}X $liner"],
@@ -96,6 +125,73 @@ my %macro;
         ## #define or a #undef preprocessing directive.
         "defined" => ["(== abuse of keyword defined ==)"],
         );
+
+    my %hidden;
+
+    sub macro($) {
+        my ($name) = @_;
+        return undef if ($hidden{$name});
+        return $macro{$name};
+    }
+
+    sub macroDefine($\@;\@) {
+        my ($name, $val, $defines) = @_;
+        # An identifier currently defined as an object-like macro
+        # shall not be redefined by another #define preprocessing
+        # directive unless the second definition is an
+        # object-like macro definition and the two replacement
+        # lists are identical. Likewise, ...
+        my $todo = !defined($macro{$name});
+        if (!$todo) {
+            my $sep = int(rand(1000000));
+            my $old = join("|$sep|", @{$macro{$name}});
+            my $new = join("|$sep|", @{$val});
+            $todo = $old ne $new;
+            warn "redefinition of macro $name"
+                if ($todo);
+        }
+        if ($todo) {
+            $macro{$name} = $val;
+            push(@{$defines}, $name) if (defined($defines));
+        }
+    }
+
+    sub macroUndefine($;\@) {
+        my ($name, $defines) = @_;
+        if (defined($macro{$name})) {
+            delete $macro{$name};
+            push(@{$defines}, $name)
+                if (defined($defines));
+        }
+    }
+
+    sub macroHide($) {
+        my ($name) = @_;
+        $hidden{$name} = 1;
+    }
+
+    sub macroUnhide($) {
+        my ($name) = @_;
+        delete $hidden{$name};
+    }
+
+    sub macroContained(\%) {
+        my ($hash) = @_;
+        return containedHashtables(%{$hash}, %macro)
+    }
+
+    sub macroList() {
+        foreach my $name (sort keys %macro) {
+            print STDERR "#define $name";
+            my @def = @{$macro{$name}};
+            my $repl = pop @def;
+            if (@def) {
+                print STDERR "(", join(", ", @def), ")";
+            }
+            print STDERR " $repl\n";
+        }
+    }
+
 }
 
 ## per include file a hash of macros that were used by that file. This is only set if the
@@ -123,8 +219,8 @@ my $skipedLines = 0;
 foreach my $def (@defs) {
     my ($name, $val) = $def =~ m/^([^=]+)=?(.*)/o;
     $val = "" if (!defined($val));
-    warn "redefinition of macro $name" if (defined($macro{$name}));
-    $macro{$name} = [$val];
+    my @val = ($val);
+    macroDefine($name, @val);
 }
 
 
@@ -268,29 +364,6 @@ $onegraph = "(?:[\Q$onegraph\E])";
 $trigraph = qr@$trigraph@;
 $onegraph = qr@$onegraph@;
 
-sub compList($\@);
-sub compactLines($);
-sub containedHashtables(\%\%);
-sub eqArrays(\@\@);
-sub eqHashtables(\%\%);
-sub escPre(@);
-sub evalExpr($@);
-sub expandDefined(\%@);
-sub findfile($);
-sub flushOut(\@);
-sub openfile($;\%);
-sub parenRec(\@\@\$);
-sub printArray(\@;$);
-sub rawtokenize($);
-sub readlln($\$);
-sub readln($\$);
-sub skipcomments($$\$);
-sub substituteArray(\@\%\@);
-sub tokenize($);
-sub tokrep($$$\%\@);
-sub toktrans($$\%);
-sub unescPre(@);
-sub untokenize(@);
 
 sub printArray(\@;$) {
     my ($arg, $par) = @_;
@@ -682,7 +755,7 @@ sub expandDefined(\%@) {
                     if (shift(@toks) ne ")");
             }
             #print STDERR "searching for $tok\n";
-            my $val = $macro{$tok};
+            my $val = macro($tok);
             if ($val) {
                 $used->{$tok} = $val;
                 $tok = 1;
@@ -709,7 +782,7 @@ sub openfile($;\%) {
     $used = \%used if (!$used);
 
     if (defined($usedMac{$file})) {
-        if (containedHashtables(%{$usedMac{$file}}, %macro)) {
+        if (macroContained(%{$usedMac{$file}})) {
             print STDERR "reusing contents of $file\n";
             $output .= $fileHash{$file};
             goto SHORTCUT;
@@ -775,7 +848,7 @@ sub openfile($;\%) {
                 #print STDERR "IF $aclevel <= $iflevel : (el)if $line\n";
             } elsif ($line =~ m/^if(n?)def\s+(\w+)/o) {
                 if ($aclevel == $iflevel) {
-                    my $val = $macro{$2};
+                    my $val = macro($2);
                     $used{$2} = $val;
                     if ($1 xor $val) {
                         ++$aclevel;
@@ -843,31 +916,13 @@ sub openfile($;\%) {
                                ? [ "", $dfn ]
                                : [ split(/,\s*/o, $params), $dfn ])
                             : [ $rest ];
-                        # An identifier currently defined as an object-like macro
-                        # shall not be redefined by another #define preprocessing
-                        # directive unless the second definition is an
-                        # object-like macro definition and the two replacement
-                        # lists are identical. Likewise, ...
-                        if (defined($macro{$name})) {
-                            my $sep = int(rand(1000000));
-                            my $old = join("|$sep|", @{$macro{$name}});
-                            my $new = join("|$sep|", @{$definition});
-                            if ($old ne $new) {
-                                warn "redefinition of macro $name";
-                                $macro{$name} = $definition;
-                                push(@defines, $name);
-                            }
-                        } else {
-                            $macro{$name} = $definition;
-                            push(@defines, $name);
-                        }
+                        macroDefine($name, @{$definition}, @defines);
                     } else {
                         warn "define directive without a name: $line"
                     }
                 } elsif ($line =~ m/^undef\s+([a-zA-Z_]\w*)\s*(.*)/o) {
                     warn "garbage at end of undef for macro $1" if ($2);
-                    delete $macro{$1};
-                    push(@defines, $1);
+                    macroUndefine($1, @defines);
                 } elsif ($line =~ m/^error\s+(.*)/o) {
                     die "$file:$lineno: error $1";
                 } elsif ($line =~ m/^pragma\s+message\s+(.*)/o) {
@@ -1006,11 +1061,12 @@ sub tokrep($$$\%\@) {
         }
         ++$lineno if ($tok eq "\n");
         my @curr = ($tok);
-        if (defined($tok) && defined($macro{$tok})) {
-            $used->{$tok} = $macro{$tok};
+        my $tokDef = macro($tok);
+        if (defined($tokDef)) {
+            $used->{$tok} = $tokDef;
             my $macroname = $tok;
             # we need a copy of the macro definition
-            my @def = (@{$macro{$tok}});
+            my @def = (@{$tokDef});
             my @repl = tokenize(pop(@def));
             #print STDERR "$replev: $#def @def :: ".length($def[0])." :: ".join("|", @repl)."\n";
             my @exp;
@@ -1182,10 +1238,9 @@ sub tokrep($$$\%\@) {
             #print STDERR "$replev: tokens replacement2: ".join("|", @repl)."\n";
 
             ## Switch of macro $tok for the recursive call
-            my $backup = $macro{$tok};
-            delete $macro{$tok};
+            macroHide($tok);
             my $repl = tokrep($replev + 1, $lineno, $file, %{$used}, @exp);
-            $macro{$tok} = $backup;
+            macroUnhide($tok);
             #print STDERR "$replev: tokens replacement3: ".join("|", @{$repl})."\n";
             if (@{$repl}) {
                 if (eqArrays(@{$repl}, @curr)) {
@@ -1336,17 +1391,7 @@ foreach my $file (@ARGV) {
     $output .= $ret;
 }
 
-if ($show) {
-    foreach my $name (sort keys %macro) {
-        print STDERR "#define $name";
-        my @def = @{$macro{$name}};
-        my $repl = pop @def;
-        if (@def) {
-            print STDERR "(", join(", ", @def), ")";
-        }
-        print STDERR " $repl\n";
-    }
-}
+macroList() if ($show);
 
 
 
