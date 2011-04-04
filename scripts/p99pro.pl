@@ -208,9 +208,6 @@ my %fileHash;
 ## How many times have we processed this file.
 my %fileInc;
 
-## collects all tokens
-my @tokensGlobal;
-
 my $output = "";
 
 ## did we locally change line numbering?
@@ -776,7 +773,7 @@ sub openfile($;\%) {
     ## keep track of the number of defines in this file and below
     my @defines;
     ## keep track of the tokens produced by this file and below
-    my @tokens;
+    my @outTok;
     my $output = "";
 
     my %used;
@@ -817,7 +814,7 @@ sub openfile($;\%) {
         return (1, []);
     }
 
-    push(@tokens, "$escHash 1 \"$file\"", "\n");
+    push(@outTok, "$escHash 1 \"$file\"", "\n");
     while (my $line = readlln($fd, $lineno)) {
         my $mult = 0;
         $line = skipcomments($line, $fd, $lineno);
@@ -890,14 +887,14 @@ sub openfile($;\%) {
                             goto RETRY;
                         }
                     } else {
-                        $output .= flushOut(@tokens);
+                        $output .= flushOut(@outTok);
                         if ($name =~ m{($type|[']|[\\]|/[/*])}) {
                             warn "illegal character sequence $1 in file name: $name";
                         }
                         my ($recdef, $ret) = openfile(findfile($name));
                         push(@defines, @{$recdef});
                         $output .= $ret;
-                        push(@tokens, "$escHash ".($lineno+1)." \"$file\"", "\n");
+                        push(@outTok, "$escHash ".($lineno+1)." \"$file\"", "\n");
                     }
                 } elsif ($line =~ m/^define\s+(.*)/o) {
                     $line = $1;
@@ -929,27 +926,27 @@ sub openfile($;\%) {
                 } elsif ($line =~ m/^pragma\s+message\s+(.*)/o) {
                     warn "message $1";
                 } else {
-                    push(@tokens, "# $line");
+                    push(@outTok, "# $line");
                 }
             }
             ## Ensure that our line numbering stays close to the original
-            push(@tokens, "\n");
+            push(@outTok, "\n");
         }
         ## End of preprocessing directives
         ############################################################
         elsif ($iflevel != $aclevel) {
             ## a blob that is protected by #if
-            push(@tokens, "\n");
+            push(@outTok, "\n");
         } else {
             ## Glue a leading sequence of white space to a preceding one, if any.  This
             ## ensures that indentation stays about the same for the preprocessed file
             if ($line =~ m/^(\s+)(.*)$/o) {
                 my $next = $1;
                 $line = $2;
-                if (@tokens && $tokens[$#tokens] =~ /^\s+$/so) {
-                    $tokens[$#tokens] .= $next;
+                if (@outTok && $outTok[$#outTok] =~ /^\s+$/so) {
+                    $outTok[$#outTok] .= $next;
                 } else {
-                    push(@tokens, $next);
+                    push(@outTok, $next);
                 }
             }
             ## Remaining white space is less significant.
@@ -957,16 +954,16 @@ sub openfile($;\%) {
             ## Trailing white space is no good.
             $line =~ s/\s+$//o;
             if ($skipedLines) {
-                push(@tokens, "$escHash $lineno \"$file\"", "\n");
+                push(@outTok, "$escHash $lineno \"$file\"", "\n");
                 $skipedLines = 0;
             }
             my @escPre = escPre(tokenize($line));
-            push(@tokens, @{tokrep(0, $lineno, $file, %used, @escPre)}, "\n");
+            push(@outTok, @{tokrep(0, $lineno, $file, %used, @escPre)}, "\n");
         }
     }
     warn "unbalanced #if / #endif" if ($iflevel);
 
-    $output .= flushOut(@tokens);
+    $output .= flushOut(@outTok);
     $output = compactLines($output);
 
     if ($output =~ m/^\s*(?:#|%:)\s+(\d+).*\n*$/o) {
@@ -1027,6 +1024,7 @@ sub unescPre(@) {
     my @ret;
     while (@toks) {
         my $tok = shift(@toks);
+        next if (!length($tok));
         if (ref($tok)) {
             foreach my $part (@{$tok}) {
                 if (ref($part)) {
@@ -1037,7 +1035,7 @@ sub unescPre(@) {
             }
         }
         if ($tok eq "$unstring") {
-            $tok = shift(@toks);
+            $tok = shift(@toks) until length($tok);
             $tok =~ s/^L?"(.*)"$/ $1/so;
             $tok =~ s/[\\](["\\])/$1/sog;
         }
@@ -1057,7 +1055,7 @@ sub tokrep($$$\%\@) {
       DEF:
         while (@{$toks}) {
             $tok = shift(@{$toks});
-            last DEF while (defined($tok) && length($tok));
+            last DEF if (defined($tok) && length($tok));
             last LOOP if (!@{$toks});
         }
         ++$lineno if ($tok eq "\n");
@@ -1156,9 +1154,9 @@ sub tokrep($$$\%\@) {
                                 unshift(@{$toks}, @allargs);
                                 @repl = ($tok);
                             } else {
-                                #print STDERR "$replev: tokens before: ".join("|", @repl)."\n";
+                                #print STDERR "$replev: outTok before: ".join("|", @repl)."\n";
                                 @repl = substituteArray(@repl, %def, @args);
-                                #print STDERR "$replev: tokens after: ".join("|", @repl)."\n";
+                                #print STDERR "$replev: outTok after: ".join("|", @repl)."\n";
                             }
                         }
                     } else {
@@ -1229,7 +1227,7 @@ sub tokrep($$$\%\@) {
                     push(@exp, shift(@repl));
                 }
             }
-            #print STDERR "$replev: tokens replacement1: ".join("|", @exp)."\n";
+            #print STDERR "$replev: outTok replacement1: ".join("|", @exp)."\n";
             ## After all parameters in the replacement list have been substituted and # and ##
             ## processing has taken place, all placemarker preprocessing tokens are removed
             @repl = grep { defined($_) && length($_) } @exp;
@@ -1316,11 +1314,8 @@ sub containedHashtables(\%\%) {
 
 
 sub flushOut(\@) {
-    my ($tokens) = @_;
-    my @tokens = grep { length($_) } @{$tokens};
-    @{$tokens} = ();
-    @tokens = unescPre(@tokens);
-    my $output = untokenize(@tokens);
+    my ($outTok) = @_;
+    my $output = untokenize(unescPre(@{$outTok}));
     if (!$graphs) {
         $output = toktrans($output, $digraph, %digraph);
     } elsif ($graphs == 2) {
