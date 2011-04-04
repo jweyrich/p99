@@ -17,6 +17,7 @@ if 0;
 #
 
 no warnings 'portable';  # Support for 64-bit ints required
+use integer;
 use English;
 use POSIX;
 use strict;
@@ -1064,15 +1065,12 @@ sub tokrep($$$\%\@) {
         my $tokDef = macro($tok);
         if (defined($tokDef)) {
             $used->{$tok} = $tokDef;
-            my $macroname = $tok;
-            # we need a copy of the macro definition
-            my @def = (@{$tokDef});
-            my @repl = tokenize(pop(@def));
+            my @repl = tokenize($tokDef->[$#{$tokDef}]);
             #print STDERR "$replev: $#def @def :: ".length($def[0])." :: ".join("|", @repl)."\n";
             my @exp;
-            if (@def) {
+            if ($#{$tokDef}) {
                 ## be careful with those that receive 0 arguments
-                if ($def[0] && length($def[0])) {
+                if ($tokDef->[0] && length($tokDef->[0])) {
                     ## a function like macro
                     my $next;
                     if (@{$toks}) {
@@ -1086,7 +1084,7 @@ sub tokrep($$$\%\@) {
                     if (ref($next) eq "ARRAY") {
                         my @args = @{$next};
                         my $args = scalar @args;
-                        my $defs = scalar @def;
+                        my $defs = $#{$tokDef};
 
                         ## Before being substituted, each argument's preprocessing tokens are
                         ## completely macro replaced as if they formed the rest of the
@@ -1110,7 +1108,7 @@ sub tokrep($$$\%\@) {
 
                         if ($args < $defs) {
                             warn "not enough arguments for $tok: $args takes $defs";
-                            warn "macro $tok expected arguments are @def.";
+                            warn "macro $tok definition @{$tokDef}.";
                             my $allargs = printArray(@args, "(,)[|](,)[|](,)[|](,)[|]");
                             warn "received |$allargs|.";
                             unshift(@{$toks},
@@ -1119,11 +1117,11 @@ sub tokrep($$$\%\@) {
                             @repl = ($tok);
                         } else {
                             my %def;
-                            for (my $i = 0; $i <= $#def; ++$i) {
-                                $def{$def[$i]} = $i;
+                            for (my $i = 0; $i < $defs; ++$i) {
+                                $def{$tokDef->[$i]} = $i;
                             }
-                            if ($def[$#def] eq "__VA_ARGS__") {
-                                my @last = splice(@args, $#def);
+                            if ($tokDef->[$defs - 1] eq "__VA_ARGS__") {
+                                my @last = splice(@args, $defs-1);
                                 #print STDERR "$replev: arguments @args, starting at $#def: @last\n";
                                 my $last = shift(@last);
                                 my @combined = $last && ref($last) ? @{$last} : ($last);
@@ -1145,7 +1143,7 @@ sub tokrep($$$\%\@) {
                             }
                             if ($args > $defs) {
                                 warn "too many arguments for $tok: $args takes $defs";
-                                warn "macro $tok expected arguments are @def.";
+                                warn "macro $tok definition is @{$tokDef}.";
                                 my @allargs = map {
                                     if (ref($_->[0])) {
                                         @{$_->[0]}
