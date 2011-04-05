@@ -33,16 +33,6 @@ P99_INSTANTIATE(void, orwl_graph_destroy, orwl_graph *);
 P99_INSTANTIATE(orwl_address_book*, orwl_address_book_init, orwl_address_book *, size_t);
 P99_INSTANTIATE(void, orwl_address_book_destroy, orwl_address_book *);
 
-unsigned pow2(unsigned exp) {
-  if (exp > 0) {
-    unsigned n = 1;
-    for (unsigned i = 1 ; i < exp ; i++)
-      n <<= 1;
-    return n;
-  } else {
-    return 0;
-  }
-}
 
 char * remove_eol(char *str) {
   if (str[strlen(str) - 1] == '\n')
@@ -331,7 +321,7 @@ bool rpc_check_colored_init_finished(size_t id,
 				     rand48_t *seed) {
   orwl_endpoint there = ab->eps[id];
   /* warning, this is a blocking operation */
-  return (orwl_rpc(&there, seed, auth_sock_check_initialization, pow2(id + 1)) == 1);
+  return (orwl_rpc(&there, seed, auth_sock_check_initialization, (uint64_t)exp2(id)) == 1);
 }
 
 size_t orwl_get_neighbors_in_undirected_graph(orwl_vertex **my_neighbors,
@@ -411,7 +401,7 @@ bool orwl_wait_to_start(size_t id,
 			rand48_t *seed) {
 
   ORWL_CRITICAL {
-    server->id_initialized = server->id_initialized | pow2(id + 1);
+    server->id_initialized = server->id_initialized | (uint64_t)exp2(id);
   }
 
   orwl_vertex * my_neighbors[graph->nb_vertices];
