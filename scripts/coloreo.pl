@@ -138,10 +138,12 @@ sub is_good_color
  {
   for (my $j = 0; $j <= $#{ $colors[$_[0]] }; $j++)
      {
-      if (is_my_neighbor($_[1],$colors[$_[0]]->[$j])){return 1;}
+      if (is_my_neighbor($_[1],$colors[$_[0]]->[$j]))
+       {
+        return 1;
+       }
      }
  }
-
 # get_color:
 #
 # $_[0] : Vertex ID.
@@ -153,7 +155,10 @@ sub get_color
   for (my $j = 0; $j <= $last_color_used; $j++)
    {
     # we found a good color, return with it
-    if (!(is_good_color($j,$_[0]))) {return $j;}
+    if (!(is_good_color($j,$_[0])))
+    {
+     return $j;
+    }
    }
  $last_color_used++,
  return $last_color_used;
@@ -174,13 +179,13 @@ sub make_graph
    # opening dot file
    open(my $in,  "<",  $ifile);
    # checking the input format
-   if ($ind) 
+   if ($ind)
     {
-     $sp = " -- "; 
+     $sp = " -- ";
     } else {
     # default is direct
      $sp = " -> ";
-    }  
+    }
    while (<$in>)
     {
     # first look for the separator: " -- " or " -> " -> "
@@ -237,44 +242,51 @@ sub make_output
     my $red   =   int(rand(255));
     my $green =   int(rand(255));
     my $blue  =   int(rand(255));
-    for (my $i = 0; $i <= $#{ $colors[$j] }; $i++)
+    foreach ( @{ $colors[$j] } )
      {
-        # output colors
+       # output colors
        if (!($number))
         {  # if we dont have metadata, we dont add it
-           if ( $nom[ $colors[$j]->[$i] ] )
+           if ($nom[$_])
             {
-             printf "%d [color=\"#%2x%2x%2x\", label=\"%s\", style=filled]\n",$colors[$j]->[$i] ,$red ,$green ,$blue ,$nom[ $colors[$j]->[$i] ];
+             printf "%d [color=\"#%2x%2x%2x\", label=\"%s\", style=filled]\n",$_,$red ,$green ,$blue ,$nom[$_];
             } else
             {
               # little bug in perl
-              if($colors[$j]->[$i] == 0)
-               { printf "%d [color=\"#%2x%2x%2x\", label=\"0\", style=filled]\n",$colors[$j]->[$i],$red,$green,$blue; }
+              if($_ == 0)
+               {
+                printf "%d [color=\"#%2x%2x%2x\", label=\"0\", style=filled]\n",$_,$red,$green,$blue;
+               }
               else
-               { printf "%d [color=\"#%2x%2x%2x\", style=filled]\n",$colors[$j]->[$i] ,$red ,$green ,$blue; }
+               {
+                printf "%d [color=\"#%2x%2x%2x\", style=filled]\n",$_ ,$red ,$green ,$blue;
+               }
             }
         }
         # Or output with numbers
         else
         {
           # if we dont have metadata, we dont add it
-           if ( $nom[ $colors[$j]->[$i] ] )
+           if ($nom[$_])
             {
-             printf "%d [color=\"%d\", label=\"%s\"]\n",$colors[$j]->[$i], $j, $nom[ $colors[$j]->[$i] ];
+             printf "%d [color=\"%d\", label=\"%s\"]\n",$_ , $j, $nom[$_];
             } else
             {
              # little bug in perl
-             if($colors[$j]->[$i] == 0)
-              { printf "%d [color=\"%d\", label=\"0\"]\n",$colors[$j]->[$i], $j; }
+             if($_==0)
+              {
+               printf "%d [color=\"%d\", label=\"0\"]\n",$_, $j;
+              }
              else
-              { printf "%d [color=\"%d\"]\n",$colors[$j]->[$i], $j; }
+              {
+               printf "%d [color=\"%d\"]\n",$_, $j;
+              }
             }
         }
      }
    }
   print "}\n";
  }
-
 # check_coloring:
 #
 # Check if the coloring is correctly.
@@ -295,18 +307,15 @@ sub check_coloring
   }
   print STDERR "Checking coloring ... Well done\n";
  }
-
-
 # getting the parameters
-if ($#ARGV == -1)
- {
-  print STDERR "Usage: coloreo.pl [file] [Parameters]\n";
-  exit;
- }
-
 GetOptions ('number'=>\ $number,'indirect'=>\ $ind, 'check'=>\ $check);
 
 # the remaining argument after option processing is the input file
+if ($#ARGV == -1)
+ {
+  print STDERR "Usage: coloreo.pl [Parameters] [file]\n";
+  exit;
+ }
 $ifile = $ARGV[0];
 
 # open .dot file and fill the graph structure
@@ -343,7 +352,4 @@ for (my $i = 0; $i <= $#graph; $i++)
 make_output;
 
 # simple runtime to check if the coloring was Ok
-if ($check) 
- {
-  check_coloring;
- }
+check_coloring if $check;
