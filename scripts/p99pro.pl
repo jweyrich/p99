@@ -82,6 +82,7 @@ sub evalExpr($@);
 sub expandDefined(\%@);
 sub findfile($);
 sub flushOut(\@);
+sub joinToks(\@);
 sub macro($);
 sub macroContained(\%);
 sub macroDefine($\@;\@);
@@ -1046,17 +1047,51 @@ sub unescPre(@) {
     return @ret;
 }
 
+
+sub joinToks(\@) {
+    my ($inToks) = @_;
+    my @exp;
+    while (@{$inToks}) {
+        if ($#{$inToks} && $inToks->[1] =~ m/^$ishhash$/o) {
+            if ($#{$inToks} > 1) {
+                my @parts = splice(@{$inToks}, 0, 3);
+                my $joined = $parts[0] . $parts[2];
+                if ($joined =~ m/^$tokenizer|$punct$/o) {
+                    push(@exp, $joined);
+                } else {
+                    warn "'$joined' is not a valid preprocessor token";
+                    push(@exp, $parts[0], $parts[2]);
+                }
+            } else {
+                warn "'$inToks->[0]$inToks->[1]' at the end of a preprocessing directive";
+                my $tok = shift(@{$inToks});
+                push(@exp, $tok) if (defined($tok) && length($tok));
+                ## skip the hash hash
+                shift(@{$inToks});
+            }
+        } else {
+            my $tok = shift(@{$inToks});
+            push(@exp, $tok) if (defined($tok) && length($tok));
+        }
+    }
+    #print STDERR "$level: outTok replacement1: ".join("|", @exp)."\n";
+    ## After all parameters in the replacement list have been substituted and # and ##
+    ## processing has taken place, all placemarker preprocessing tokens are removed
+    return \@exp;
+}
+
+
 sub tokrep($$$\%\@) {
-    my @ret;
-    my ($replev, $lineno, $file, $used, $toks) = @_;
+    my @outToks;
+    my ($level, $lineno, $file, $used, $inToks) = @_;
   LOOP:
-    while (@{$toks}) {
+    while (@{$inToks}) {
         my $tok;
       DEF:
-        while (@{$toks}) {
-            $tok = shift(@{$toks});
+        while (@{$inToks}) {
+            $tok = shift(@{$inToks});
             last DEF if (defined($tok) && length($tok));
-            last LOOP if (!@{$toks});
+            last LOOP if (!@{$inToks});
         }
         ++$lineno if ($tok eq "\n");
         my @curr = ($tok);
@@ -1064,20 +1099,20 @@ sub tokrep($$$\%\@) {
         if (defined($tokDef)) {
             $used->{$tok} = $tokDef;
             my @repl = tokenize($tokDef->[$#{$tokDef}]);
-            #print STDERR "$replev: $#def @def :: ".length($def[0])." :: ".join("|", @repl)."\n";
-            my @exp;
+            #print STDERR "$level: $#def @def :: ".length($def[0])." :: ".join("|", @repl)."\n";
+            #my @exp;
             if ($#{$tokDef}) {
                 ## be careful with those that receive 0 arguments
                 if ($tokDef->[0] && length($tokDef->[0])) {
                     ## a function like macro
                     my $next;
-                    if (@{$toks}) {
-                        $next = shift(@{$toks});
+                    if (@{$inToks}) {
+                        $next = shift(@{$inToks});
                         ++$lineno if ($next eq "\n");
                         push(@curr, $next);
                     }
                     if (defined($next) && ($next eq "(")) {
-                        $next = parenRec(@{$toks}, @curr, $lineno);
+                        $next = parenRec(@{$inToks}, @curr, $lineno);
                     }
                     if (ref($next) eq "ARRAY") {
                         my @args = @{$next};
@@ -1089,10 +1124,8 @@ sub tokrep($$$\%\@) {
                         ## preprocessing file; no other preprocessing tokens are available.
                         foreach my $arg (@args) {
                             if (ref($arg)) {
-                                #print STDERR "$replev: argument before: ".join("|", @{$arg})."\n";
-                                my $reparg = tokrep($replev + 1, $lineno, $file, %{$used}, @{$arg});
-                                # warn "level $replev: argument ".join("|", @arg)."++++".join(":", @{$arg})
-                                #     if ($args < $defs);
+                                #print STDERR "$level: argument before: ".join("|", @{$arg})."\n";
+                                my $reparg = tokrep($level + 1, $lineno, $file, %{$used}, @{$arg});
                                 ## however, if an argument consists of no preprocessing tokens, the
                                 ## parameter is replaced by a placemarker preprocessing token
                                 ## instead.
@@ -1109,7 +1142,7 @@ sub tokrep($$$\%\@) {
                             warn "macro $tok definition @{$tokDef}.";
                             my $allargs = printArray(@args, "(,)[|](,)[|](,)[|](,)[|]");
                             warn "received |$allargs|.";
-                            unshift(@{$toks},
+                            unshift(@{$inToks},
                                     map { @{$_} } @args
                                 );
                             @repl = ($tok);
@@ -1120,7 +1153,7 @@ sub tokrep($$$\%\@) {
                             }
                             if ($tokDef->[$defs - 1] eq "__VA_ARGS__") {
                                 my @last = splice(@args, $defs-1);
-                                #print STDERR "$replev: arguments @args, starting at $#def: @last\n";
+                                #print STDERR "$level: arguments @args, starting at $#def: @last\n";
                                 my $last = shift(@last);
                                 my @combined = $last && ref($last) ? @{$last} : ($last);
                                 if (@last) {
@@ -1135,8 +1168,6 @@ sub tokrep($$$\%\@) {
                                 }
                                 #print STDERR "arguments concated to @combined\n";
                                 push(@args, \@combined);
-                                # $def{"__VA_ARGS__"} = $def{"..."};
-                                # delete $def{"..."};
                                 $args = $defs;
                             }
                             if ($args > $defs) {
@@ -1151,18 +1182,18 @@ sub tokrep($$$\%\@) {
                                 } @args;
                                 my $allargs = printArray(@allargs, "(,)[|](,)[|](,)[|](,)[|]");
                                 warn "received |$allargs|.";
-                                unshift(@{$toks}, @allargs);
+                                unshift(@{$inToks}, @allargs);
                                 @repl = ($tok);
                             } else {
-                                #print STDERR "$replev: outTok before: ".join("|", @repl)."\n";
+                                #print STDERR "$level: outTok before: ".join("|", @repl)."\n";
                                 @repl = substituteArray(@repl, %def, @args);
-                                #print STDERR "$replev: outTok after: ".join("|", @repl)."\n";
+                                #print STDERR "$level: outTok after: ".join("|", @repl)."\n";
                             }
                         }
                     } else {
                         ## a is function like macro without ()
                         if (defined($next)) {
-                            unshift(@{$toks}, $next);
+                            unshift(@{$inToks}, $next);
                             --$lineno if ($next eq "\n");
                             pop(@curr);
                         }
@@ -1171,26 +1202,26 @@ sub tokrep($$$\%\@) {
                 } else {
                     my $olineno = $lineno;
                     ## a function like macro that expects 0 arguments
-                    while (@{$toks} && $toks->[0] =~ m/^\s+$/so) {
-                        ++$lineno if $toks->[0] =~ m/\n/o;
-                        shift(@{$toks});
+                    while (@{$inToks} && $inToks->[0] =~ m/^\s+$/so) {
+                        ++$lineno if $inToks->[0] =~ m/\n/o;
+                        shift(@{$inToks});
                     }
-                    if (@{$toks} && ($toks->[0] eq "(")) {
-                        shift(@{$toks});
-                        while (@{$toks} && $toks->[0] =~ m/^\s+$/so) {
-                            ++$lineno if $toks->[0] =~ m/\n/o;
-                            shift(@{$toks});
+                    if (@{$inToks} && ($inToks->[0] eq "(")) {
+                        shift(@{$inToks});
+                        while (@{$inToks} && $inToks->[0] =~ m/^\s+$/so) {
+                            ++$lineno if $inToks->[0] =~ m/\n/o;
+                            shift(@{$inToks});
                         }
-                        if (!@{$toks}) {
+                        if (!@{$inToks}) {
                             warn "missing closing parenthesis in call of $tok";
-                        } elsif ($toks->[0] ne ")") {
-                            warn "$tok expects 0 arguments, found $toks->[0]";
-                            unshift(@{$toks}, "(");
+                        } elsif ($inToks->[0] ne ")") {
+                            warn "$tok expects 0 arguments, found $inToks->[0]";
+                            unshift(@{$inToks}, "(");
                         } else {
-                            shift(@{$toks});
+                            shift(@{$inToks});
                         }
-                    } elsif (@{$toks} && (ref($toks->[0]) eq "ARRAY")) {
-                        my $args = shift(@{$toks});
+                    } elsif (@{$inToks} && (ref($inToks->[0]) eq "ARRAY")) {
+                        my $args = shift(@{$inToks});
                         if (@{$args} && @{$args->[0]} && length($args->[0]->[0])) {
                             warn "$tok expects 0 arguments, found @{$args->[0]}";
                         }
@@ -1205,44 +1236,17 @@ sub tokrep($$$\%\@) {
                 ## an object like macro
             }
             ## Join on ##
-            @exp = ();
-            while (@repl) {
-                if ($#repl && $repl[1] =~ m/^$ishhash$/o) {
-                    if ($#repl > 1) {
-                        my @parts = splice(@repl, 0, 3);
-                        my $joined = $parts[0] . $parts[2];
-                        if ($joined =~ m/^$tokenizer|$punct$/o) {
-                            push(@exp, $joined);
-                        } else {
-                            warn "'$joined' is not a valid preprocessor token";
-                            push(@exp, $parts[0], $parts[2]);
-                        }
-                    } else {
-                        warn "'$repl[0]$repl[1]' at the end of a preprocessing directive";
-                        push(@exp, shift(@repl));
-                        ## skip the hash hash
-                        shift(@repl);
-                    }
-                } else {
-                    push(@exp, shift(@repl));
-                }
-            }
-            #print STDERR "$replev: outTok replacement1: ".join("|", @exp)."\n";
-            ## After all parameters in the replacement list have been substituted and # and ##
-            ## processing has taken place, all placemarker preprocessing tokens are removed
-            @repl = grep { defined($_) && length($_) } @exp;
-            #print STDERR "$replev: tokens replacement2: ".join("|", @repl)."\n";
-
+            my $joinedToks = joinToks(@repl);
             ## Switch of macro $tok for the recursive call
             macroHide($tok);
-            my $repl = tokrep($replev + 1, $lineno, $file, %{$used}, @exp);
+            my $repl = tokrep($level + 1, $lineno, $file, %{$used}, @{$joinedToks});
             macroUnhide($tok);
-            #print STDERR "$replev: tokens replacement3: ".join("|", @{$repl})."\n";
+            #print STDERR "$level: tokens replacement3: ".join("|", @{$repl})."\n";
             if (@{$repl}) {
                 if (eqArrays(@{$repl}, @curr)) {
-                    push(@ret, @{$repl});
+                    push(@outToks, @{$repl});
                 } else {
-                    unshift(@{$toks}, @{$repl});
+                    unshift(@{$inToks}, @{$repl});
                 }
             }
         } else {
@@ -1253,10 +1257,10 @@ sub tokrep($$$\%\@) {
             } elsif ($tok eq $liner) {
                 $tok = "\n# $lineno \"$file\"\n";
             }
-            push(@ret, $tok);
+            push(@outToks, $tok);
         }
     }
-    return \@ret;
+    return \@outToks;
 }
 
 
@@ -1355,11 +1359,11 @@ sub compactLines($) {
 
 
 sub parenRec(\@\@\$) {
-    my ($toks, $curr, $lineno) = @_;
+    my ($inToks, $curr, $lineno) = @_;
     my @args;
     my @arg;
-    while (@{$toks}) {
-        my $tok = shift(@{$toks});
+    while (@{$inToks}) {
+        my $tok = shift(@{$inToks});
         ++${$lineno} if ($tok eq "\n");
         push(@{$curr}, $tok);
         if ($tok eq ",") {
@@ -1369,7 +1373,7 @@ sub parenRec(\@\@\$) {
             last;
         } else {
             if ($tok eq "(") {
-                $tok = parenRec(@{$toks}, @{$curr}, ${$lineno});
+                $tok = parenRec(@{$inToks}, @{$curr}, ${$lineno});
             }
             push(@arg, $tok);
         }
