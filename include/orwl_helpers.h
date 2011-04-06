@@ -120,18 +120,19 @@ bool orwl_wait_and_load_init_files(orwl_address_book **ab,
 				   size_t *list_locations,
 				   size_t nb_vertices);
 
-void orwl_make_connection(size_t dest_id,
-			  orwl_server *server,
-			  orwl_graph *graph, 
-			  orwl_address_book *ab,
-			  orwl_mirror *location);
+void orwl_make_distant_connection(size_t dest_id,
+				  orwl_server *server,
+				  orwl_graph *graph, 
+				  orwl_address_book *ab,
+				  orwl_mirror *location);
+
+void orwl_make_local_connection(size_t dest_id,
+				orwl_server *server,
+				orwl_mirror *location);
 
 bool orwl_wait_to_initialize_locks(size_t id,
 				   orwl_graph *graph,
 				   orwl_address_book *ab,
-				   orwl_server *server,
-				   orwl_mirror *my_location,
-				   orwl_handle *h,
 				   rand48_t *seed);
 
 bool orwl_wait_to_start(size_t id,
@@ -140,5 +141,9 @@ bool orwl_wait_to_start(size_t id,
 			orwl_server *server,
 			orwl_handle *h,
 			rand48_t *seed);
+
+void orwl_lock_locations(size_t start, size_t nb_tasks, 
+			 orwl_handle *initialization_handle,
+			 orwl_mirror *locations);
 
 #endif
