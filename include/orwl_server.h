@@ -28,7 +28,8 @@ struct orwl_server {
                              presented in the terminal */
   size_t info_len;         /*!< the length of #info */
   pthread_t id;
-  unsigned id_initialized;
+  pthread_rwlock_t lock;
+  uint64_t id_initialized;
 };
 
 #define ORWL_SERVER_INITIALIZER(NAME, MAXC, ADDR, PORT)        \

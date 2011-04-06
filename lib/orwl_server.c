@@ -44,6 +44,7 @@ orwl_server* orwl_server_init(orwl_server *serv,
       .host = ORWL_HOST_INITIALIZER(serv->host, 0, 0, 1),
       .id_initialized = 0,
     };
+    pthread_rwlock_init(&serv->lock, NULL);
     if (endp && endp[0]) orwl_endpoint_parse(&serv->host.ep, endp);
   }
   return serv;
@@ -170,7 +171,7 @@ DEFINE_THREAD(orwl_server) {
               P99_UNWIND_RETURN;
             }
           } else {
-            diagnose(fd, "You are not authorized to to talk on fd %d", fd);
+            diagnose(fd, "You are not authorized to talk on fd %d", fd);
           }
         P99_PROTECT:
           if (fd != -1) close(fd);

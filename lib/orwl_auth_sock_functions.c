@@ -197,15 +197,14 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
 DEFINE_AUTH_SOCK_FUNC(auth_sock_check_initialization, uint64_t id_pow2) {
   AUTH_SOCK_READ(Arg, auth_sock_check_initialization, uint64_t id_pow2);
   bool finished = false;
-
   while (!finished) {
-    ORWL_CRITICAL {
-      if ((Arg->srv->id_initialized & id_pow2) == id_pow2)
-	finished = true;
-    }
+    pthread_rwlock_rdlock(&Arg->srv->lock);
+    if ((Arg->srv->id_initialized & id_pow2) == id_pow2)
+      finished = true;
+    pthread_rwlock_unlock(&Arg->srv->lock);
     sleepfor(0.1);
   }
-  Arg->ret = 1;
+  auth_sock_close(Arg);
 }
 
 DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
