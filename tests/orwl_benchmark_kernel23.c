@@ -13,6 +13,8 @@ static size_t sub_matrix_size = 0;
 static size_t iterations = 0;
 static float **main_task_matrix = NULL;
 static size_t nb_main_tasks = 0;
+static size_t global_nb_tasks = 0;
+static orwl_handle *initialization_handle = NULL;
 
 #define MAIN 0
 #define NORTH 1
@@ -66,7 +68,7 @@ size_t convert_sub_task(char const *str) {
 
 size_t distant_main_task_pos_from_me(size_t omy_mt, size_t odistant_mt) {
   size_t x_my_mt, y_my_mt, x_distant_mt, y_distant_mt;
-  size_t task_per_line = (size_t)sqrt(nb_main_tasks);
+  size_t task_per_line = (size_t)sqrt(global_nb_tasks / 9);
   size_t my_mt = omy_mt / 9;
   size_t distant_mt = odistant_mt / 9;
   x_my_mt = my_mt % task_per_line;
@@ -235,31 +237,25 @@ DECLARE_THREAD(arg_t);
 
 
 DEFINE_THREAD(arg_t) {
-  /* First, I mirror my location on myself */
-  orwl_make_connection(Arg->id, &srv, graph, ab, &locations[Arg->my_location_pos]);
-
   /* Only the main task takes locks on distant guys */
   if (Arg->sub_task == MAIN) {
     for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++) {
       size_t neighbor_sub_task = get_sub_task_from_label(graph->vertices[Arg->vertex->neighbors[i]].label);
       size_t neighbor_main_task = get_main_task_from_label(graph->vertices[Arg->vertex->neighbors[i]].label);
       size_t location_pos = shift_local_locations + (Arg->main_task_pos * 8) + distant_task_to_local_pos(neighbor_sub_task, Arg->main_task, neighbor_main_task);
-      orwl_make_connection(Arg->vertex->neighbors[i], &srv, graph, ab, &locations[location_pos]);
-      report(0, "Connected %zu to %zu on location %zu", Arg->id, Arg->vertex->neighbors[i] , location_pos);    
+      orwl_make_distant_connection(Arg->vertex->neighbors[i], &srv, graph, ab, &locations[location_pos]);
     }
   }
 
-  /* Resize the locations of the sub tasks */
-  orwl_handle handle_my_pos = ORWL_HANDLE_INITIALIZER;
+  /* Resize the locations of the sub tasks, the handle is supposed to be taken */
   if (Arg->sub_task != MAIN) {
-    orwl_write_request(&locations[Arg->my_location_pos], &handle_my_pos);
-    orwl_acquire(&handle_my_pos);
     size_t size = (Arg->sub_task < 5) ? sub_matrix_size - 2 : 1;
-    orwl_resize(&handle_my_pos, size);
-    orwl_release(&handle_my_pos);
+    orwl_resize(&initialization_handle[Arg->my_location_pos], size);
   }
 
-  orwl_wait_to_initialize_locks(Arg->id, graph, ab, &srv, &locations[Arg->my_location_pos], &handle_my_pos, seed);
+  /* Wait to take all the distant locks */
+  orwl_wait_to_initialize_locks(Arg->id, graph, ab,  seed);
+
   orwl_handle2 main_task_handle = ORWL_HANDLE2_INITIALIZER;
   orwl_handle2 my_task_handle = ORWL_HANDLE2_INITIALIZER;
   orwl_handle2 handle_distant_pos[12] = {ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER, 
@@ -272,12 +268,12 @@ DEFINE_THREAD(arg_t) {
   for (size_t i = 0 ; i < 4 ; i++)
     has_neighbor[i] = false;
 
-    float * za = NULL;
-    float * zb = NULL;
-    float * zu = NULL;
-    float * zr = NULL;
-    float * zv = NULL;
-    float * zz = NULL;
+  float * za = NULL;
+  float * zb = NULL;
+  float * zu = NULL;
+  float * zr = NULL;
+  float * zv = NULL;
+  float * zz = NULL;
 
   if (Arg->sub_task == MAIN) {
     /* Data initialization */
@@ -291,15 +287,14 @@ DEFINE_THREAD(arg_t) {
     main_task_matrix[Arg->main_task_pos] = za;
 
     /* Za, Zb, Zu, Zr, Zv, and Zz initialization (should use random_r()) */
-    for (size_t i = 0; i < sub_matrix_size * sub_matrix_size; i++)
-      {
-	za[i] = (float)(10.0 * random()/(RAND_MAX - 1));
-	zb[i] = (float)(10.0 * random()/(RAND_MAX - 1));
-	zu[i] = (float)(10.0 * random()/(RAND_MAX - 1));
-	zr[i] = (float)(10.0 * random()/(RAND_MAX - 1));
-	zv[i] = (float)(10.0 * random()/(RAND_MAX - 1));
-	zz[i] = (float)(10.0 * random()/(RAND_MAX - 1));
-      }
+    for (size_t i = 0; i < sub_matrix_size * sub_matrix_size; i++) {
+      za[i] = (float)(10.0 * random()/(RAND_MAX - 1));
+      zb[i] = (float)(10.0 * random()/(RAND_MAX - 1));
+      zu[i] = (float)(10.0 * random()/(RAND_MAX - 1));
+      zr[i] = (float)(10.0 * random()/(RAND_MAX - 1));
+      zv[i] = (float)(10.0 * random()/(RAND_MAX - 1));
+      zz[i] = (float)(10.0 * random()/(RAND_MAX - 1));
+    }
 
 
     /* Take the local lock in write mode */
@@ -312,8 +307,7 @@ DEFINE_THREAD(arg_t) {
       if ((handle_pos == POS_NORTH) || (handle_pos == POS_SOUTH) ||
 	  (handle_pos == POS_EAST) || (handle_pos == POS_WEST))
 	has_neighbor[handle_pos] = true;
-      size_t location_pos = shift_local_locations + (Arg->main_task_pos * 8) + handle_pos;
-
+      size_t location_pos = shift_local_locations + (Arg->main_task_pos * 8) + handle_pos;      
       orwl_read_request2(&locations[location_pos], &handle_distant_pos[handle_pos]);
     }
   } else {
@@ -322,7 +316,9 @@ DEFINE_THREAD(arg_t) {
     size_t pos = (Arg->my_location_pos - Arg->sub_task);
     orwl_read_request2(&locations[pos], &main_task_handle);
   }
-  orwl_wait_to_start(Arg->id, graph, ab, &srv, &handle_my_pos, seed);
+
+  /* Check if my neighbors are ready before starting, then realease the handle on my location */
+  orwl_wait_to_start(Arg->id, graph, ab, &srv, &initialization_handle[Arg->my_location_pos], seed);
 
   /* Fire ! */
   float qa;
@@ -405,11 +401,10 @@ DEFINE_THREAD(arg_t) {
       float * shared_corner1 = NULL;
       float * shared_corner2 = NULL;
       size_t corner_frontier_size = 1;
-      orwl_state ostate;
 
       /* North east computation */
       if (has_neighbor[NORTH - 1] && has_neighbor[EAST - 1]) {
-      	ostate = orwl_acquire2(&handle_distant_pos[POS_NORTHEASTNORTH]);
+      	orwl_acquire2(&handle_distant_pos[POS_NORTHEASTNORTH]);
       	orwl_acquire2(&handle_distant_pos[POS_NORTHEASTEAST]);
 	shared_corner1 = (float*)orwl_mapro2(&handle_distant_pos[POS_NORTHEASTNORTH], &corner_frontier_size);
 	shared_corner2 = (float*)orwl_mapro2(&handle_distant_pos[POS_NORTHEASTEAST], &corner_frontier_size);
@@ -422,7 +417,7 @@ DEFINE_THREAD(arg_t) {
 
       /* North west computation */
       if (has_neighbor[NORTH - 1] && has_neighbor[WEST - 1]) {
-	ostate = orwl_acquire2(&handle_distant_pos[POS_NORTHWESTNORTH]);
+	orwl_acquire2(&handle_distant_pos[POS_NORTHWESTNORTH]);
       	orwl_acquire2(&handle_distant_pos[POS_NORTHWESTWEST]);
 	shared_corner1 = (float*)orwl_mapro2(&handle_distant_pos[POS_NORTHWESTNORTH], &corner_frontier_size);
 	shared_corner2 = (float*)orwl_mapro2(&handle_distant_pos[POS_NORTHWESTWEST], &corner_frontier_size);
@@ -435,7 +430,7 @@ DEFINE_THREAD(arg_t) {
 
       /* South east computation */
       if (has_neighbor[SOUTH - 1] && has_neighbor[EAST - 1]) {
-	ostate = orwl_acquire2(&handle_distant_pos[POS_SOUTHEASTSOUTH]);
+	orwl_acquire2(&handle_distant_pos[POS_SOUTHEASTSOUTH]);
       	orwl_acquire2(&handle_distant_pos[POS_SOUTHEASTEAST]);
 	shared_corner1 = (float*)orwl_mapro2(&handle_distant_pos[POS_SOUTHEASTSOUTH], &corner_frontier_size);
 	shared_corner2 = (float*)orwl_mapro2(&handle_distant_pos[POS_SOUTHEASTEAST], &corner_frontier_size);
@@ -448,7 +443,7 @@ DEFINE_THREAD(arg_t) {
 
       /* South west computation */
       if (has_neighbor[SOUTH - 1] && has_neighbor[WEST - 1]) {
-	ostate = orwl_acquire2(&handle_distant_pos[POS_SOUTHWESTSOUTH]);
+	orwl_acquire2(&handle_distant_pos[POS_SOUTHWESTSOUTH]);
       	orwl_acquire2(&handle_distant_pos[POS_SOUTHWESTWEST]);
 	shared_corner1 = (float*)orwl_mapro2(&handle_distant_pos[POS_SOUTHWESTSOUTH], &corner_frontier_size);
 	shared_corner2 = (float*)orwl_mapro2(&handle_distant_pos[POS_SOUTHWESTWEST], &corner_frontier_size);
@@ -519,8 +514,10 @@ DEFINE_THREAD(arg_t) {
   
   ORWL_CRITICAL {
     count++;
-    if (count == (nb_main_tasks * 9))
+    if (count == (nb_main_tasks * 9)) {
+      sleep(2);
       report(1, "Everybody has finished");
+    }
   }
 }
 
@@ -559,7 +556,6 @@ unsigned get_task(char const *str, size_t list_id[], char delim) {
 }
 
 int main(int argc, char **argv) {
-
   if (argc < 6) {
     report(1, "only %d commandline arguments, this ain't enough", argc);
     return 1;
@@ -571,7 +567,7 @@ int main(int argc, char **argv) {
   char main_tasks[256] = {0};
   sub_matrix_size = strtouz(argv[1]);
   iterations = strtouz(argv[2]);
-  size_t global_nb_tasks = strtouz(argv[3]);
+  global_nb_tasks = strtouz(argv[3]);
   strncpy(graph_file, argv[4], 256);
   strncpy(global_ab_file, argv[5], 256);
   strncpy(local_ab_file, argv[6], 256);
@@ -582,7 +578,6 @@ int main(int argc, char **argv) {
    */
   nb_main_tasks = strcountchr(main_tasks, ',') + 1;
   const size_t nb_tasks = nb_main_tasks * 9;
-
   const size_t nb_locations = nb_main_tasks * 21;
  
   size_t list_tasks[nb_tasks];
@@ -599,8 +594,16 @@ int main(int argc, char **argv) {
   orwl_types_init();
   orwl_start(&srv, SOMAXCONN, nb_locations);
 
-    if (!orwl_alive(&srv)) return EXIT_FAILURE;
-  
+  if (!orwl_alive(&srv)) return EXIT_FAILURE;
+
+  locations = orwl_mirror_vnew(nb_locations);
+  initialization_handle = orwl_handle_vnew(nb_tasks);
+
+  for (size_t i = 0 ; i < nb_tasks ; i++)
+    orwl_make_local_connection(i, &srv, &locations[i]);
+
+  /* Locking all the local locations */
+  orwl_lock_locations(0, nb_tasks, initialization_handle, locations);
 
   if (!orwl_wait_and_load_init_files(&ab, global_ab_file,
   				     &graph, graph_file,
@@ -614,7 +617,6 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 
-  locations = orwl_mirror_vnew(nb_locations);
   main_task_matrix = (float **)malloc(sizeof(float*) * nb_main_tasks);
 
   pthread_t *tid = pthread_t_vnew(nb_tasks);
