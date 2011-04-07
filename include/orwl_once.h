@@ -132,8 +132,8 @@ P99_GUARDED_BLOCK(pthread_mutex_t*,                            \
 P99_BLOCK_DOCUMENT
 #define ORWL_CRITICAL                                                       \
 P00_BLK_START                                                               \
-P00_BLK_DECL_STATIC(pthread_mutex_t, orwl__crit, PTHREAD_MUTEX_INITIALIZER) \
-MUTUAL_EXCLUDE((*orwl__crit))
+ P00_BLK_DECL_STATIC(pthread_mutex_t, P99_LINEID(orwl_crit), PTHREAD_MUTEX_INITIALIZER) \
+MUTUAL_EXCLUDE((*P99_LINEID(orwl_crit)))
 
 /**
  ** @brief Utility function used by ::INIT_ONCE.
