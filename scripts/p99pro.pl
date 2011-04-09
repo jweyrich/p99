@@ -333,20 +333,20 @@ my %idgraph = map {
 
 
 ## a regexp to detect string literals
-my $isstring = qr/(?:L?"(?:[^"\\\\]++|\\\\.)*+")/;
+my $isstring = qr/(?:L?+"(?:\\.)*+(?:[^"\\]*+\\.++)*[^"\\]*+")/;
 ## a regexp to detect character constants
-my $ischar = qr/(?:L?'(?:[^'\\\\]++|\\\\.)*+')/;
+my $ischar = qr/(?:L?+'(?:\\.)*+(?:[^'\\]*+\\.++)*+[^'\\]*+')/;
 ## a regexp to detect preprocessor number token
-my $isnumber = qr/(?:[.]?[0-9](?:[eEpP][-+]|[.a-zA-Z0-9]+)*)/;
+my $isnumber = qr/(?:[.]?+[0-9](?:[eEpP][-+]|[.a-zA-Z0-9]++)*+)/;
 ## a regexp to detect preprocessor identifier token
-my $isidentifier = qr/(?:[_a-zA-Z][_a-zA-Z0-9]+)/;
+my $isidentifier = qr/(?:[_a-zA-Z][_a-zA-Z0-9]++)/;
 
 my $ishash = qr/(?:[#]|[%][:])/;
 my $ishhash = qr/(?:[#][#]|[%][:][%][:])/;
 
 my $tokenizer = qr/(?:$isstring|$ischar|$isidentifier|$isnumber)/;
 my $tokenizerSplit = qr/($isstring|$ischar|$isidentifier|$isnumber)/;
-my $tokenizerToken = qr/^L?(?:".*"|'.*')|$isidentifier|$isnumber$/;
+my $tokenizerToken = qr/^L?+(?:".*+"|'.*+')|$isidentifier|$isnumber$/;
 
 ## all third characters that may appear in a trigraph
 my $trigraph = "-!'/=()<>";
