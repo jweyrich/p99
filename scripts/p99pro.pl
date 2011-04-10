@@ -102,7 +102,7 @@ sub rawtokenize($);
 sub readlln($);
 sub readln($);
 sub skipcomments($$);
-sub substituteArray(\@\%\@\@);
+sub substituteArray(\@\%\@);
 sub tokenize($);
 sub tokrep($$\%\@);
 sub toktrans($$\%);
@@ -139,9 +139,26 @@ my %counters;
     my %hidden;
 
     sub macro($) {
-        #my ($name) = @_;
-        return undef if ($hidden{$_[0]});
-        return $macro{$_[0]};
+        my ($name) = @_;
+        return undef if ($hidden{$name});
+        my $tokDef = $macro{$name};
+        if (!defined($counters{$name}) && defined($tokDef)) {
+            my %def;
+            for (my $i = 0; $i < $#{$tokDef}; ++$i) {
+                $def{$tokDef->[$i]} = $i;
+            }
+            my @counts;
+            my @repl = getTokDef(@{$tokDef});
+            foreach my $repl (@repl) {
+                if (defined($def{$repl})) {
+                    my $i = $def{$repl};
+                    my $count = defined($counts[$i]) ? $counts[$i] : 0;
+                    $counts[$i] = $count + 1;
+                }
+            }
+            $counters{$name} = \@counts;
+        }
+        return $tokDef;
     }
 
     sub macroDefine($\@;\@) {
@@ -405,23 +422,23 @@ sub printArray(\@;$) {
         .substr($par, 2, 1);
 }
 
-sub substituteArray(\@\%\@\@) {
-    my ($arr, $def, $args, $counts) = @_;
+sub substituteArray(\@\%\@) {
+    my ($arr, $def, $args) = @_;
     my @ret;
     my @repl = (@{$arr});
+    my @counts;
     while (@repl) {
         my $repl = shift(@repl);
         if (defined($def->{$repl})) {
             my $i = $def->{$repl};
-            my $count = defined($counts->[$i]) ? $counts->[$i] : 0;
-            ++$count;
+            my $count = defined($counts[$i]) ? $counts[$i] : 0;
             push(@ret,
                  ## only clone an argument if and when it is used more than once
-                 $count == 1
+                 $count == 0
                  ? @{$args->[$def->{$repl}]}
                  : @{clone($args->[$def->{$repl}])}
                 );
-            $counts->[$i] = $count;
+            $counts[$i] = $count + 1;
         } elsif ($repl =~ m/^$ishash$/o) {
             my $repl2 = shift(@repl);
             if (defined($def->{$repl2})) {
@@ -1203,7 +1220,7 @@ sub tokrep($$\%\@) {
         if (defined($tokDef)) {
             $used->{$tok} = $tokDef;
             my @repl = getTokDef(@{$tokDef});
-            #print STDERR "$level: $#def @def :: ".length($def[0])." :: ".join("|", @repl)."\n";
+            #print STDERR "$level: $#{$tokDef} @{$tokDef} :: ".length($tokDef->[0])." :: ".join("|", @repl)."\n";
             if ($#{$tokDef}) {
                 ## be careful with those that receive 0 arguments
                 if ($tokDef->[0] && length($tokDef->[0])) {
@@ -1227,20 +1244,34 @@ sub tokrep($$\%\@) {
                         ## Before being substituted, each argument's preprocessing tokens are
                         ## completely macro replaced as if they formed the rest of the
                         ## preprocessing file; no other preprocessing tokens are available.
-                        for (my $i = 0; $i < $args; ++$i) {
-                            my $arg = $args[$i];
+                        my $counts = $counters{$tok};
+                        my $i = 0;
+                      ARGS:
+                        foreach my $arg (@args) {
+                            last ARGS if ($i >= scalar @{$counts});
+                            my $count =
+                                ($i < $defs ?  $counts->[$i] : $counts->[$defs-1]);
                             if (ref($arg)) {
-                                #print STDERR "$level: argument before: ".join("|", @{$arg})."\n";
-                                my @reparg = tokrep($level + 1, $file, %{$used}, @{$arg});
-                                ## however, if an argument consists of no preprocessing tokens, the
-                                ## parameter is replaced by a placemarker preprocessing token
-                                ## instead.
-                                if (!@{reparg}) {
-                                    @{reparg} = ("");
-                                    $args = 0 if ($args == 1 && $defs == 0);
+                                if ($count) {
+                                    if (@{$arg}) {
+                                        #print STDERR "$level: argument before: ".join("|", @{$arg})."\n";
+                                        my @reparg = tokrep($level + 1, $file, %{$used}, @{$arg});
+                                        ## however, if an argument consists of no preprocessing tokens, the
+                                        ## parameter is replaced by a placemarker preprocessing token
+                                        ## instead.
+                                        if (!@{reparg}) {
+                                            @{$arg} = ("");
+                                            ## The empty argument can in fact be 
+                                            $args = 0 if ($args == 1 && $defs == 0);
+                                        } else {
+                                            $arg = \@reparg;
+                                        }
+                                    } else {
+                                        push(@{$arg}, "");
+                                    }
                                 }
-                                $arg = \@reparg;
                             }
+                            ++$i;
                         }
 
                         if ($args < $defs) {
@@ -1292,8 +1323,7 @@ sub tokrep($$\%\@) {
                                 @repl = ($tok);
                             } else {
                                 #print STDERR "$level: outTok before: ".join("|", @repl)."\n";
-                                my @counter;
-                                @repl = substituteArray(@repl, %def, @args, @counter);
+                                @repl = substituteArray(@repl, %def, @args);
                                 #print STDERR "$level: outTok after: ".join("|", @repl)."\n";
                             }
                         }
@@ -1469,27 +1499,29 @@ sub compactLines($) {
     return $output;
 }
 
-
+## Recursively parse a parenthesis expression.
+## This supposes that the opening parenthesis has already been seen.
+## It returns an array of arrays:
+## '(' 'a' ',' 'b' '(' 'c' ',' 'd' ')' ')'
+## is transformed into
+## [['a'], ['b', [['c'], ['d']]]]
 sub parenRec(\@) {
     my ($inToks) = @_;
-    my @args;
-    my @arg;
+    my @args = ([]);
     while (@{$inToks}) {
         my $tok = shift(@{$inToks});
         if ($tok eq ",") {
-            push(@args, [ @arg ]);
-            @arg = ();
+            push(@args, []);
         } elsif ($tok eq ")") {
-            last;
+            return \@args;
         } else {
             if ($tok eq "(") {
                 $tok = parenRec(@{$inToks});
             }
-            push(@arg, $tok);
+            push(@{$args[-1]}, $tok);
         }
     }
-    @arg = ("") if (!@arg);
-    push(@args, \@arg);
+    warn "unbalanced parenthesis";
     return \@args;
 }
 
