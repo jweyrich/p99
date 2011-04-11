@@ -111,6 +111,10 @@ sub untokenize(@);
 
 ## Each entry holds a list of usage values for the arguments of the macro.
 my %counters;
+## Each entry holds a list of used arguments of the macro.
+my %positions;
+## Each entry holds a hash that gives the position for each macro argument name.
+my %argPosition;
 
 ## holds all defined macros
 {
@@ -147,16 +151,21 @@ my %counters;
             for (my $i = 0; $i < $#{$tokDef}; ++$i) {
                 $def{$tokDef->[$i]} = $i;
             }
+            $argPosition{$name} = \%def;
             my @counts;
+            my %pos;
             my @repl = getTokDef(@{$tokDef});
             foreach my $repl (@repl) {
                 if (defined($def{$repl})) {
                     my $i = $def{$repl};
                     my $count = defined($counts[$i]) ? $counts[$i] : 0;
                     $counts[$i] = $count + 1;
+                    $pos{$i} = 1;
                 }
             }
             $counters{$name} = \@counts;
+            my @pos = sort { $a <=> $b } keys %pos;
+            $positions{$name} = \@pos;
         }
         return $tokDef;
     }
@@ -188,6 +197,8 @@ my %counters;
         if (defined($macro{$name})) {
             delete $macro{$name};
             delete $counters{$name};
+            delete $positions{$name};
+            delete $argPosition{$name};
             push(@{$defines}, $name)
                 if (defined($defines));
         }
@@ -477,13 +488,12 @@ sub substituteArray(\@\%\@) {
     return @ret;
 }
 
-
+## translate token sequences to digraph or trigraph representation
 sub toktrans($$\%) {
     my ($inp, $reg, $hash) = @_;
-    my %hash = %{$hash};
     my @tokens = map {
         if ($_ && $_ =~ m/$reg/) {
-            $hash{$_}
+            $hash->{$_}
         } else {
             $_
         }
@@ -1218,173 +1228,130 @@ sub tokrep($$\%\@) {
         last LOOP if (!defined($tok));
         my $tokDef = macro($tok);
         if (defined($tokDef)) {
+            ## The token corresponds to the name of an active macro
             $used->{$tok} = $tokDef;
             my @repl = getTokDef(@{$tokDef});
-            #print STDERR "$level: $#{$tokDef} @{$tokDef} :: ".length($tokDef->[0])." :: ".join("|", @repl)."\n";
             if ($#{$tokDef}) {
-                ## be careful with those that receive 0 arguments
-                if ($tokDef->[0] && length($tokDef->[0])) {
-                    ## a function like macro
-                    my $next = viewTok(@{$inToks});
-                    if (defined($next)) {
-                        if (isNL($next)) {
-                            shiftTok(@{$inToks});
-                        } elsif ($next eq "(") {
-                            shiftTok(@{$inToks});
-                            $next = parenRec(@{$inToks});
-                            unshift(@{$inToks}, $next);
+                ## a function like macro
+                my $next = viewTok(@{$inToks});
+                if (defined($next)) {
+                    if (isNL($next)) {
+                        shiftTok(@{$inToks});
+                    } elsif ($next eq "(") {
+                        shiftTok(@{$inToks});
+                        $next = parenRec(@{$inToks});
+                        unshift(@{$inToks}, $next);
+                    }
+                }
+                if (ref($next) eq "ARRAY") {
+                    shiftTok(@{$inToks});
+                    my @args = @{$next};
+                    my $args = scalar @args;
+                    my $defs = $#{$tokDef};
+
+                    ## The empty argument is interpreted different. If a macro takes one argument
+                    ## it is interpreted as the empty argument. If it takes zero arguments it is
+                    ## the empty list.
+                    if ($defs == 0) {
+                        warn "macro $tok should receive 0 arguments, found @{$args[0]}"
+                            if ($args
+                                && ref($args[0]) == "ARRAY"
+                                && @{$args[0]}
+                                && (($args[0]->[0] ne "")
+                                    || @{$args[0]} > 1));
+                        $args = 0;
+                    }
+
+                    ## Before being substituted, each argument's preprocessing tokens are
+                    ## completely macro replaced as if they formed the rest of the
+                    ## preprocessing file; no other preprocessing tokens are available.
+                    ##
+                    ## Since this argument processing cannot have a side effect on the preprocessor
+                    ## state, we only have to perform this token replacement for those arguments
+                    ## that are effectively used. We have the list of the argument positions in the
+                    ## hash %positions.
+                    my @pos = (@{$positions{$tok}});
+
+                    ## The only valid case that the effective number of arguments can be greater
+                    ## than in the definition is when the last argument is '...'. Add these
+                    ## position s to the list if necessary.
+                    if ($args > $defs && $counters{$tok}->[$defs-1]) {
+                        push(@pos, ($defs ... ($args-1)));
+                    }
+                    foreach my $i (@pos) {
+                        if (ref($args[$i])) {
+                            if (@{$args[$i]}) {
+                                my @reparg = tokrep($level + 1, $file, %{$used}, @{$args[$i]});
+                                if (@{reparg}) {
+                                    $args[$i] = \@reparg;
+                                    next;
+                                }
+                            }
+                                ## however, if an argument consists of no preprocessing tokens, the
+                                ## parameter is replaced by a placemarker preprocessing token instead.
+                            @{$args[$i]} = ("");
                         }
                     }
-                    if (ref($next) eq "ARRAY") {
-                        shiftTok(@{$inToks});
-                        my @args = @{$next};
-                        my $args = scalar @args;
-                        my $defs = $#{$tokDef};
 
-                        ## Before being substituted, each argument's preprocessing tokens are
-                        ## completely macro replaced as if they formed the rest of the
-                        ## preprocessing file; no other preprocessing tokens are available.
-                        my $counts = $counters{$tok};
-                        my $i = 0;
-                      ARGS:
-                        foreach my $arg (@args) {
-                            last ARGS if ($i >= scalar @{$counts});
-                            my $count =
-                                ($i < $defs ?  $counts->[$i] : $counts->[$defs-1]);
-                            if (ref($arg)) {
-                                if ($count) {
-                                    if (@{$arg}) {
-                                        #print STDERR "$level: argument before: ".join("|", @{$arg})."\n";
-                                        my @reparg = tokrep($level + 1, $file, %{$used}, @{$arg});
-                                        ## however, if an argument consists of no preprocessing tokens, the
-                                        ## parameter is replaced by a placemarker preprocessing token
-                                        ## instead.
-                                        if (!@{reparg}) {
-                                            @{$arg} = ("");
-                                            ## The empty argument can in fact be 
-                                            $args = 0 if ($args == 1 && $defs == 0);
-                                        } else {
-                                            $arg = \@reparg;
-                                        }
-                                    } else {
-                                        push(@{$arg}, "");
-                                    }
-                                }
-                            }
-                            ++$i;
+                    ## If there is a ... in the identifier-list in the macro definition, then the
+                    ## trailing arguments, including any separating comma preprocessing tokens, are
+                    ## merged to form a single item: the variable arguments. The number of
+                    ## arguments so combined is such that, following merger, the number of
+                    ## arguments is one more than the number of parameters in the macro definition
+                    ## (excluding the ...).
+                    if ($args > $defs && $tokDef->[$defs - 1] eq "__VA_ARGS__") {
+                        my @last = splice(@args, $defs-1);
+                        my $last = shift(@last);
+                        my @combined = $last && ref($last) ? @{$last} : ($last);
+                        if (@last) {
+                            push(@combined,
+                                 map {
+                                     if (ref($_) eq "ARRAY") {
+                                         (",", @{$_});
+                                     } else {
+                                         (",", $_);
+                                     }
+                                 } @last);
                         }
+                        push(@args, \@combined);
+                        $args = $defs;
+                    }
 
-                        if ($args < $defs) {
-                            warn "not enough arguments for $tok: $args takes $defs";
-                            warn "macro $tok definition @{$tokDef}.";
-                            my $allargs = printArray(@args, "(,)[|](,)[|](,)[|](,)[|]");
-                            warn "received |$allargs|.";
-                            unshift(@{$inToks},
-                                    map { @{$_} } @args
-                                );
-                            @repl = ($tok);
-                        } else {
-                            my %def;
-                            for (my $i = 0; $i < $defs; ++$i) {
-                                $def{$tokDef->[$i]} = $i;
-                            }
-                            if ($tokDef->[$defs - 1] eq "__VA_ARGS__") {
-                                my @last = splice(@args, $defs-1);
-                                #print STDERR "$level: arguments @args, starting at $#def: @last\n";
-                                my $last = shift(@last);
-                                my @combined = $last && ref($last) ? @{$last} : ($last);
-                                if (@last) {
-                                    push(@combined, 
-                                         map {
-                                             if (ref($_) eq "ARRAY") {
-                                                 (",", @{$_});
-                                             } else {
-                                                 (",", $_);
-                                             }
-                                         } @last);
-                                }
-                                #print STDERR "arguments concated to @combined\n";
-                                push(@args, \@combined);
-                                $args = $defs;
-                            }
-                            if ($args > $defs) {
-                                warn "too many arguments for $tok: $args takes $defs";
-                                warn "macro $tok definition is @{$tokDef}.";
-                                my @allargs = map {
-                                    if (ref($_->[0])) {
-                                        @{$_->[0]}
-                                    } else {
-                                        ($_->[0])
-                                    }
-                                } @args;
-                                my $allargs = printArray(@allargs, "(,)[|](,)[|](,)[|](,)[|]");
-                                warn "received |$allargs|.";
-                                unshift(@{$inToks}, @allargs);
-                                @repl = ($tok);
-                            } else {
-                                #print STDERR "$level: outTok before: ".join("|", @repl)."\n";
-                                @repl = substituteArray(@repl, %def, @args);
-                                #print STDERR "$level: outTok after: ".join("|", @repl)."\n";
-                            }
-                        }
-                    } else {
-                        ## a is function like macro without ()
+                    if ($args == $defs) {
+                        @repl = substituteArray(@repl, %{$argPosition{$tok}}, @args);
+                    } else  {
+                        warn "macro $tok argument mismatch, has $args takes $defs";
+                        warn "macro $tok definition is @{$tokDef}";
+                        my $allargs = printArray(@args, "(,)[|](,)[|](,)[|](,)[|]");
+                        warn "macro $tok received |$allargs|.";
+                        unshift(@{$inToks},
+                                map { @{$_} } @args
+                            );
                         @repl = ($tok);
                     }
                 } else {
-                    my $olineno = $NR;
-                    ## a function like macro that expects 0 arguments
-                    my $next = viewTok(@{$inToks});
-                    if (defined($next) && ($next eq "(")) {
-                        shiftTok(@{$inToks});
-                        while (@{$inToks} && viewTok(@{$inToks}) =~ m/^\s+$/so) {
-                            shiftTok(@{$inToks});
-                        }
-                        $next = viewTok(@{$inToks});
-                        if (!defined($next)) {
-                            warn "missing closing parenthesis in call of $tok";
-                        } elsif ($next ne ")") {
-                            warn "$tok expects 0 arguments, found $next";
-                            unshift(@{$inToks}, "(");
-                        } else {
-                            shiftTok(@{$inToks});
-                        }
-                    } elsif (@{$inToks} && (ref($next) eq "ARRAY")) {
-                        if (@{$next} && @{$next->[0]} && length($next->[0]->[0])) {
-                            warn "$tok expects 0 arguments, found @{$next->[0]}";
-                        } else {
-                            shiftTok(@{$inToks});
-                        }
-                        #print STDERR "$tok: 0 arguments macro |$next|@{$next}|@{$next->[0]}|\n";
-                    } else {
-                        ## invocation without the parenthesis, ok
-                        @repl = ($tok);
-                    }
-                    $skipedLines = 1 if ($olineno != $NR);
+                    ## a is function like macro without ()
+                    @repl = ($tok);
                 }
             } else {
                 ## an object like macro
             }
-            ## Join on ##
+            ## For both object-like and function-like macro invocations, before the replacement list is
+            ## reexamined for more macro names to replace, each instance of a ## preprocessing token in
+            ## the replacement list (not from an argument) is deleted and the preceding preprocessing
+            ## token is concatenated with the following preprocessing token.
             my $joinedToks = joinToks(@repl);
-            {
-                ## Switch of macro $tok for the recursive call
-                macroHide($tok);
-                my %used;
-                @repl = tokrep($level + 1, $file, %used, @{$joinedToks});
-                if (%used) {
-                    $used->{$_} = $used{$_} foreach (keys %used);
-                    my $cop = $tok;
-                    unshift(@{$inToks}, @{repl}, \$cop);
-                } else {
-                    push(@outToks, @{repl});
-                    macroUnhide($tok);
-                }
-            }
-            #     }
-            # }
+
+            ## Then, the resulting preprocessing token sequence is rescanned, along with all subsequent
+            ## preprocessing tokens of the source file, for more macro names to replace.
+
+            ## If the name of the macro being replaced is found during this scan of the replacement
+            ## list (not including the rest of the source file’s preprocessing tokens), it is not
+            ## replaced.
+            macroHide($tok);
+            my $cop = $tok;
+            unshift(@{$inToks}, @{$joinedToks}, \$cop);
         } else {
-            ## any other non macro token
             ## handle the pseudo macros
             if ($tok eq "__LINE__") {
                 ## This is the number of this line. We already
@@ -1398,6 +1365,7 @@ sub tokrep($$\%\@) {
                 ## This is the number of the following line
                 insertLine(@outToks, $file);
             } else {
+                ## any other non macro token
                 push(@outToks, $tok);
             }
         }
