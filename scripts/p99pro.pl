@@ -125,7 +125,7 @@ my %argPosition;
     my %macro = (
         ## The special "macro" _Pragma that we never could do with #define.
         ## The spaces in the expansion are essential such that this is tokenized correctly.
-        "_Pragma" => ["X", [$liner, "_Pragma", $unstring, "X", $liner]],
+        "_Pragma" => ["X", [$liner, "#pragma", $unstring, "X", $liner]],
         ## Mark our presence by setting a special macro.
         "__P99PRO__" => ["1"],
         ## Provide the macros that are required by the standard. __LINE__ and __FILE__ are
@@ -206,12 +206,19 @@ my %argPosition;
 
     sub macroHide($) {
         my ($name) = @_;
-        $hidden{$name} = 1;
+        if (defined($hidden{$name})) {
+            ++$hidden{$name};
+        } else {
+            $hidden{$name} = 1;
+        }
     }
 
     sub macroUnhide($) {
         my ($name) = @_;
-        delete $hidden{$name};
+        if (defined($hidden{$name})) {
+            --$hidden{$name};
+            delete $hidden{$name} if ($hidden{$name} < 1);
+        }
     }
 
     sub macroContained(\%) {
@@ -1278,6 +1285,7 @@ sub tokrep($$\%\@) {
                     if ($args > $defs && $counters{$tok}->[$defs-1]) {
                         push(@pos, ($defs ... ($args-1)));
                     }
+                    macroHide("_Pragma");
                     foreach my $i (@pos) {
                         if (ref($args[$i])) {
                             if (@{$args[$i]}) {
@@ -1292,6 +1300,7 @@ sub tokrep($$\%\@) {
                             @{$args[$i]} = ("");
                         }
                     }
+                    macroUnhide("_Pragma");
 
                     ## If there is a ... in the identifier-list in the macro definition, then the
                     ## trailing arguments, including any separating comma preprocessing tokens, are
