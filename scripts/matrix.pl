@@ -87,33 +87,60 @@ for (my $i = 0; $i <= $row; $i++)
       {
        $cl = $j - 1;
        print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($i, $cl).'E' }."\n";
-       print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($i, $cl).'NE' }."\n";
-       print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($i, $cl).'SE' }."\n";
+       # checking if I have neighbor
+       if ($i != 0) 
+        {
+         print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($i, $cl).'NE' }."\n";
+        }
+       if ($i != $row) 
+        { 
+         print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($i, $cl).'SE' }."\n";
+        }
       }
      if ($j != $col)
       {
        $cl = $j + 1;
        print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($i, $cl).'W' }."\n";
-       print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($i, $cl).'NW' }."\n";
-       print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($i, $cl).'SW' }."\n";
+       # checking if I have neighbor
+       if ($i != 0) 
+        {
+         print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($i, $cl).'NW' }."\n";
+        }
+       if ( $i != $row) 
+        {
+         print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($i, $cl).'SW' }."\n";
+        }
       }
      if ($i != $row)
       {
        $rw = $i + 1;
        print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $j).'N' }."\n";
-       print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $j).'NE' }."\n";
-       print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $j).'NW' }."\n";
-       if ($j != $col) {$cl=$j;$cl++;print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $cl).'NW' }."\n";}
-       if ($j != 0) {$cl=$j;$cl--;print     $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $cl).'NE' }."\n";}
+       if ($j != $col)
+        {
+         print $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $j).'NE' }."\n";
+        }
+       if ($j != 0)
+        {
+         print $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $j).'NW' }."\n";
+        }
+       #if ($j != $col) {$cl=$j;$cl++;print  $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $cl).'NW' }."\n";}
+       #if ($j != 0) {$cl=$j;$cl--;print     $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $cl).'NE' }."\n";}
       }
      if ($i != 0)
       {
        $rw = $i - 1;
+       # checking if I have neighbor
        print $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $j).'S' }."\n";
-       print $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $j).'SE' }."\n";
-       print $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $j).'SW' }."\n";
-       if ($j != $col) {$cl=$j;$cl++;print $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $cl).'SW' }."\n"; ;}
-       if ($j != 0) {$cl=$j;$cl--;print $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $cl).'SE' }."\n"; ;}
+       if ($j != $col)
+        {
+         print $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $j).'SE' }."\n";
+        }
+       if ($j != 0)
+        {
+         print $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $j).'SW' }."\n";
+        }
+       #if ($j != $col) {$cl=$j;$cl++;print $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $cl).'SW' }."\n"; ;}
+       #if ($j != 0) {$cl=$j;$cl--;print $hash_nodes{ nodeName($i, $j) }." -> ".$hash_nodes{ nodeName($rw, $cl).'SE' }."\n"; ;}
       }
 
    }
