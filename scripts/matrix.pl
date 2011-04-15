@@ -38,8 +38,8 @@ if ($#ARGV < 1)
 
 my $node_count = 0;
 
-my $col = $ARGV[1] - 1;
-my $row = $ARGV[0] - 1;
+my $row = $ARGV[1] - 1;
+my $col = $ARGV[0] - 1;
 
 my %hash_nodes;
 
