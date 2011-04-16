@@ -69,6 +69,9 @@ my $escHash = "\27";
 ## This is a special operator that serves to insert a %: sequence in the output
 my $escHash2 = "\26";
 
+my $intervalOpen = "\23";
+my $intervalClose = "\24";
+
 my %standards = (
     "c99" => "199901L",
     );
@@ -90,6 +93,7 @@ sub macro($);
 sub macroContained(\%);
 sub macroDefine($\@;\@);
 sub macroHide($);
+sub macroHidden();
 sub macroList();
 sub macroUndefine($;\@);
 sub macroUnhide($);
@@ -158,8 +162,7 @@ my %argPosition;
             foreach my $repl (@repl) {
                 if (defined($def{$repl})) {
                     my $i = $def{$repl};
-                    my $count = defined($counts[$i]) ? $counts[$i] : 0;
-                    $counts[$i] = $count + 1;
+                    $counts[$i] = ($counts[$i] // 0) + 1;
                     $pos{$i} = 1;
                 }
             }
@@ -206,19 +209,17 @@ my %argPosition;
 
     sub macroHide($) {
         my ($name) = @_;
-        if (defined($hidden{$name})) {
-            ++$hidden{$name};
-        } else {
-            $hidden{$name} = 1;
-        }
+        $hidden{$name} = ($hidden{$name} // 0) + 1;
     }
 
     sub macroUnhide($) {
         my ($name) = @_;
-        if (defined($hidden{$name})) {
-            --$hidden{$name};
-            delete $hidden{$name} if ($hidden{$name} < 1);
-        }
+        --$hidden{$name};
+        delete $hidden{$name} if ($hidden{$name} < 1);
+    }
+
+    sub macroHidden() {
+        return keys %hidden;
     }
 
     sub macroContained(\%) {
@@ -262,7 +263,7 @@ my $skipedLines = 0;
 ## integrate the defines that we received on the command line
 foreach my $def (@defs) {
     my ($name, $val) = $def =~ m/^([^=]++)=?+(.*+)/o;
-    $val = "" if (!defined($val));
+    $val //= "";
     my @val = ($val);
     macroDefine($name, @val);
 }
@@ -382,7 +383,7 @@ my $ischarToken = qr/(?:L?'.*')/;
 ## a regexp to detect preprocessor number token
 my $isnumber = qr/(?:[.]?+[0-9](?:[eEpP][-+]|[.a-zA-Z0-9]++)*+)/;
 ## a regexp to detect preprocessor identifier token
-my $isidentifier = qr/(?:[_a-zA-Z][_a-zA-Z0-9]++)/;
+my $isidentifier = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*+)/;
 
 my $ishash = qr/(?:[#]|[%][:])/;
 my $ishhash = qr/(?:[#][#]|[%][:][%][:])/;
@@ -426,7 +427,7 @@ sub isNL($) {
 
 sub printArray(\@;$) {
     my ($arg, $par) = @_;
-    $par = "(,)" if (!$par);
+    $par = "(,)[,]" x 10 if (!$par);
     return
         substr($par, 0, 1).
         join(substr($par, 1, 1)." ",
@@ -449,14 +450,14 @@ sub substituteArray(\@\%\@) {
         my $repl = shift(@repl);
         if (defined($def->{$repl})) {
             my $i = $def->{$repl};
-            my $count = defined($counts[$i]) ? $counts[$i] : 0;
+            $counts[$i] //= 0;
             push(@ret,
                  ## only clone an argument if and when it is used more than once
-                 $count == 0
-                 ? @{$args->[$def->{$repl}]}
-                 : @{clone($args->[$def->{$repl}])}
+                 $counts[$i]
+                 ? @{clone($args->[$def->{$repl}])}
+                 : @{$args->[$def->{$repl}]}
                 );
-            $counts[$i] = $count + 1;
+            ++$counts[$i];
         } elsif ($repl =~ m/^$ishash$/o) {
             my $repl2 = shift(@repl);
             if (defined($def->{$repl2})) {
@@ -550,7 +551,7 @@ sub compList($\@) {
   LOOP:
     while (@{$toks}) {
         my $tok = shift(@{$toks});
-        #print STDERR "processing \"$tok\"\n";
+        #print STDERR "list @list, processing \"$tok\"\n";
         if ($tok eq "(") {
             my @subexp = compList($level + 1, @{$toks});
             $type ||=  $subexp[0];
@@ -558,6 +559,8 @@ sub compList($\@) {
         } elsif ($tok eq ")") {
             $level = 0;
             last LOOP;
+        } elsif (ord($tok) < ord(" ")) {
+            next LOOP;
         } else {
             if ($tok =~ m/^(?:0[xX]?[0-9a-fA-F]|[0-9]+)[lL]*([uU]*)[lL]*$/o) {
                 ## a number with an 'U' is unsigned
@@ -676,7 +679,11 @@ sub rawtokenize($) {
 }
 
 sub untokenize(@) {
-    my @inToks = @_;
+    my @inToks =
+        grep {
+            ord($_) != ord($intervalOpen)
+                && ord($_) != ord($intervalClose)
+    } @_;
     my $ret = shift(@inToks);
     if (ref($ret) eq "ARRAY") {
         $ret = "$sep(".
@@ -804,23 +811,30 @@ sub metaTok($) {
     my ($tok) = @_;
     return
         !defined($tok)
-        || !length($tok)
         || isNL($tok)
-        || ref($tok) eq "SCALAR";
+        || ord($tok) == ord($intervalOpen)
+        || ord($tok) == ord($intervalClose);
 }
 
 sub tokCallback($) {
-    my ($tok) = @_;
-    if ($tok && ref($tok) eq "SCALAR") {
-        #print "found $tok\n";
-        macroUnhide(${$tok});
+    my ($cont) = @_;
+    if ($cont) {
+        my $tok = substr($cont, 1);
+        if (ord($cont) == ord($intervalOpen)) {
+            macroHide($tok);
+            return 1;
+        } elsif (ord($cont) == ord($intervalClose)) {
+            macroUnhide($tok);
+            return 1;
+        }
     }
+    return 0;
 }
 
 sub viewTok(\@;$) {
     my ($inToks, $pos) = @_;
     return undef if !@{$inToks};
-    $pos = 0 if (!defined($pos));
+    $pos = $pos // 0;
     for (my $i = 0; $i <= $#{$inToks}; ++$i) {
         #print STDERR "$i/$#{$inToks}|$inToks->[$i] $inToks->[$i+1]|\n";
         next if metaTok($inToks->[$i]);
@@ -905,7 +919,7 @@ sub openfile($;\%) {
     my $fd;
     if (!open($fd, "<$file")) {
         warn "couldn't open $file";
-        return (1, []);
+        return ([], []);
     }
 
     ## Install a warning handler.
@@ -921,6 +935,10 @@ sub openfile($;\%) {
         ############################################################
         ## First check if this is starting a preprocessing directive.
         if ($line =~ m/^\s*+$ishash\s*+(.*+)/o) {
+            if (scalar macroHidden()) {
+                my $str = join(", ", macroHidden());
+                warn "Macros hidden at the start of preprocessing directive: $str";
+            }
             $skipedLines = 1;
             $line = $1;
             $line =~ s/\s\s+/ /go;
@@ -1000,10 +1018,10 @@ sub openfile($;\%) {
                 } elsif ($line =~ m/^define\s++(.*+)/o) {
                     $line = $1;
                     my ($name, $rest) = $1 =~ m/^([a-zA-Z_]\w*+)(.*+)/o;
-                    $rest = "" if (!defined($rest));
+                    $rest //= "";
                     if ($name) {
                         my ($params, $dfn) = $rest =~ m/^\(([^()]*)\)\s*+(.*+)$/o;
-                        $dfn = "" if (!defined($dfn));
+                        $dfn //= "";
                         if ($params) {
                             #print STDERR "params before $params\n";
                             $params =~ s/[.][.][.]\s*$/__VA_ARGS__/o;
@@ -1080,6 +1098,10 @@ sub openfile($;\%) {
         print STDERR "$file can not be hashed, define changes on: @defines\n";
     }
 
+    if (scalar macroHidden()) {
+        my $str = join(", ", macroHidden());
+        warn "Macros still hidden at the end of input: $str";
+    }
     $SIG{__WARN__} = $back;
 
   SHORTCUT:
@@ -1171,31 +1193,43 @@ sub unescPre(\@) {
 sub joinToks(\@) {
     my ($inToks) = @_;
     my @outToks;
-    while ($#{$inToks} > 0) {
-        my $mid = $inToks->[1];
-        if ($mid eq "##") {
-            if ($#{$inToks} > 1) {
-                my @parts = splice(@{$inToks}, 0, 3);
-                my $joined = $parts[0] . $parts[2];
-                if ($joined =~ m/^$tokenizer|$punct$/o) {
-                    push(@outToks, $joined);
-                } else {
-                    warn "'$joined' is not a valid preprocessor token";
-                    push(@outToks, $parts[0], $parts[2]);
+    while (@{$inToks}) {
+        my $left = shift(@{$inToks});
+        if (!metaTok($left)) {
+            my $mid = viewTok(@{$inToks}); #$inToks->[1];
+            if (defined($mid) && $mid eq "##") {
+                my @op;
+                my @cl;
+                my $right = shift @{$inToks};
+                ## If there are meta tokens in the range between the left and the right token of the
+                ## join we move the closing hide intervals behind and the other ones in front.
+                while (defined($right) && (metaTok($right) || $right eq "##")) {
+                    if (ord($right) == ord($intervalClose)) {
+                        push(@cl, $right);
+                    } elsif ($right eq "##") {
+                        # just drop it
+                    } else {
+                        push(@op, $right);
+                    }
+                    $right = shift @{$inToks};
                 }
-            } else {
-                warn "'@{$inToks}' at the end of a preprocessing directive";
-                my $tok = shift(@{$inToks});
-                push(@outToks, $tok) if (defined($tok) && length($tok));
-                ## skip the hash hash
-                shift(@{$inToks});
+                if (defined($right)) {
+                    my $joined = $left . $right;
+                    if (!length($joined) || $joined =~ m/^$tokenizer|$punct$/o) {
+                        push(@outToks, @op, $joined, @cl);
+                    } else {
+                        warn "'$joined' is not a valid preprocessor token";
+                        push(@outToks, @op, $left, $right, @cl);
+                    }
+                } else {
+                    warn "'$left ##' at the end of a preprocessing directive";
+                    push(@outToks, $left) if (defined($left) && length($left));
+                }
+                next;
             }
-        } else {
-            my $tok = shift(@{$inToks});
-            push(@outToks, $tok) if (defined($tok));
         }
+        push(@outToks, $left) if (defined($left));
     }
-    push(@outToks, splice(@{$inToks})) if (@{$inToks});
     ## After all parameters in the replacement list have been substituted and # and ##
     ## processing has taken place, all placemarker preprocessing tokens are removed
     @outToks = grep { defined($_) && length($_) } @outToks;
@@ -1226,13 +1260,25 @@ sub getTokDef(\@) {
     return @tokRet;
 }
 
+## recursively replace macros in a list of tokens
+## $level is the recursion level
+## $file is the current input file name
+## $used is a reference to hash that collects the macros that are used
+## $inToks is a reference to the token list that is to be scanned
 sub tokrep($$\%\@) {
     my @outToks;
     my ($level, $file, $used, $inToks) = @_;
   LOOP:
     while (@{$inToks}) {
-        my $tok = shiftTok(@{$inToks});
-        last LOOP if (!defined($tok));
+        my $tok = shift(@{$inToks});
+        next LOOP if (!defined($tok));
+        if (tokCallback($tok)) {
+            #print STDERR "callback on $tok\n";
+            if ($level > 0) {
+                push(@outToks, $tok);
+            }
+            next LOOP;
+        }
         my $tokDef = macro($tok);
         if (defined($tokDef)) {
             ## The token corresponds to the name of an active macro
@@ -1240,18 +1286,26 @@ sub tokrep($$\%\@) {
             my @repl = getTokDef(@{$tokDef});
             if ($#{$tokDef}) {
                 ## a function like macro
-                my $next = viewTok(@{$inToks});
+                my @metaToks;
+                my $next = $inToks->[0];
+                while (defined($next) && metaTok($next)) {
+                    tokCallback($next);
+                    push(@metaToks, shift(@{$inToks}));
+                    $next = $inToks->[0];
+                }
                 if (defined($next)) {
-                    if (isNL($next)) {
-                        shiftTok(@{$inToks});
-                    } elsif ($next eq "(") {
-                        shiftTok(@{$inToks});
+                    if ($next eq "(") {
+                        shift(@{$inToks});
                         $next = parenRec(@{$inToks});
                         unshift(@{$inToks}, $next);
                     }
                 }
                 if (ref($next) eq "ARRAY") {
-                    shiftTok(@{$inToks});
+                    ## insert the meta tokens that we found between the macro name and its parameter
+                    ## list
+                    push(@outToks, @metaToks) if ($level);
+
+                    shift(@{$inToks});
                     my @args = @{$next};
                     my $args = scalar @args;
                     my $defs = $#{$tokDef};
@@ -1340,7 +1394,9 @@ sub tokrep($$\%\@) {
                     }
                 } else {
                     ## a is function like macro without ()
-                    @repl = ($tok);
+                    push(@outToks, $tok);
+                    push(@outToks, @metaToks) if ($level);
+                    next LOOP;
                 }
             } else {
                 ## an object like macro
@@ -1357,9 +1413,9 @@ sub tokrep($$\%\@) {
             ## If the name of the macro being replaced is found during this scan of the replacement
             ## list (not including the rest of the source file’s preprocessing tokens), it is not
             ## replaced.
-            macroHide($tok);
-            my $cop = $tok;
-            unshift(@{$inToks}, @{$joinedToks}, \$cop);
+            tokCallback("$intervalOpen$tok");
+            push(@outToks,  "$intervalOpen$tok") if ($level);
+            unshift(@{$inToks}, @{$joinedToks}, "$intervalClose$tok");
         } else {
             ## handle the pseudo macros
             if ($tok eq "__LINE__") {
@@ -1378,6 +1434,11 @@ sub tokrep($$\%\@) {
                 push(@outToks, $tok);
             }
         }
+    }
+    #print STDERR "$level: returning ".printArray(@outToks)."\n";
+    if (!$level && scalar macroHidden()) {
+        my $str = join(", ", macroHidden());
+        warn "Macros still hidden at the end of token replacement: $str";
     }
     return @outToks;
 }
@@ -1485,15 +1546,34 @@ sub compactLines($) {
 sub parenRec(\@) {
     my ($inToks) = @_;
     my @args = ([]);
+    my %hid;
     while (@{$inToks}) {
         my $tok = shift(@{$inToks});
         if ($tok eq ",") {
-            push(@args, []);
+            my $op = [];
+            ## The hiding intervals must be split along with commas.
+            foreach my $mac (keys %hid) {
+                for (my $i = 0; $i < $hid{$mac}; ++$i) {
+                    push(@{$args[-1]}, "$intervalClose$mac");
+                    push(@{$op}, "$intervalOpen$mac");
+                }
+            }
+            push(@args, $op);
         } elsif ($tok eq ")") {
+            if (%hid) {
+                warn "parenthesis with unbalanced hide/unhide: ", join(", ", keys %hid), "\n";
+            }
             return \@args;
         } else {
             if ($tok eq "(") {
                 $tok = parenRec(@{$inToks});
+            } elsif (ord($tok) == ord($intervalOpen)) {
+                my $name = substr($tok, 1);
+                $hid{$name} = ($hid{$name} // 0) + 1;
+            } elsif (ord($tok) == ord($intervalClose)) {
+                my $name = substr($tok, 1);
+                $hid{$name} = ($hid{$name} // 0) - 1;
+                delete $hid{$name} if (!$hid{$name});
             }
             push(@{$args[-1]}, $tok);
         }
