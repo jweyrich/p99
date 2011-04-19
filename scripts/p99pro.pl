@@ -119,7 +119,7 @@ sub macroHidden();
 sub macroList();
 sub macroUndefine($;\@);
 sub macroUnhide(_);
-sub openfile($;\%);
+sub openfile(_);
 sub parenRec(\@);
 sub printArray(\@;$);
 sub rawtokenize($);
@@ -301,8 +301,6 @@ my %fileHash;
 ## How many times have we processed this file.
 my %fileInc;
 
-
-my $output = "";
 
 ## did we locally change line numbering?
 my $skipedLines = 0;
@@ -856,8 +854,8 @@ sub expandDefined(\%@) {
 
 ## Receives a filename and a reference to he used macros.
 ## Returns a tuple ($defines, \tokens).
-sub openfile($;\%) {
-    my ($file, $used) = shift;
+sub openfile(_) {
+    my ($file) = shift;
     ## keep track of the number of defines in this file and below
     my @defines;
     ## keep track of the tokens produced by this file and below
@@ -865,7 +863,6 @@ sub openfile($;\%) {
     my $output = "";
 
     my %used;
-    $used = \%used if (!$used);
 
     if (defined($usedMac{$file})) {
         if (macroContained(%{$usedMac{$file}})) {
@@ -1079,18 +1076,6 @@ sub openfile($;\%) {
     $SIG{__WARN__} = $back;
 
   SHORTCUT:
-    if (defined($used)) {
-        ## Only update the hash of used macros if we know that the
-        ## upper level can use them. Otherwise we can simply empty it.
-        if (@defines) {
-            %{$used} = ();
-        } else {
-            my @used = %{$used};
-            push(@used, %{$usedMac{$file}})
-                if (defined($usedMac{$file}));
-            %{$used} = @used;
-        }
-    }
     print STDERR "$file has been processed\n";
     return (\@defines, $output);
 }
@@ -1584,9 +1569,8 @@ sub compactLines(_) {
 sub parenRec(\@) {
     my @args = ([]);
     my %hid;
-    my $_;
     while (@{$_[0]}) {
-        $_ = shift(@{$_[0]});
+        my $_ = shift(@{$_[0]});
         if (ord == PARENOPEN) {
             push(@{$args[-1]}, parenRec(@{$_[0]}));
         } elsif (ord == PARENCLOSE) {
@@ -1624,14 +1608,9 @@ sub parenRec(\@) {
     return \@args;
 }
 
-foreach my $file (@ARGV) {
-    my ($defines, $ret) = openfile($file);
-    $output .= $ret;
+foreach (@ARGV) {
+    my ($defines, $ret) = openfile;
+    print STDOUT $ret;
 }
 
 macroList() if ($show);
-
-
-
-print STDOUT $output;
-
