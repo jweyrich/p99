@@ -99,35 +99,35 @@ my %standards = (
     );
 
 sub compList($\@);
-sub compactLines($);
+sub compactLines(_);
 sub containedHashtables(\%\%);
 sub eqArrays(\@\@);
 sub eqHashtables(\%\%);
 sub escPre(@);
 sub evalExpr($@);
 sub expandDefined(\%@);
-sub findfile($);
+sub findfile(_);
 sub flushOut(\@);
 sub getTokDef(\@);
-sub isNL($);
+#sub isNL(_);
 sub joinToks(@);
-sub macro($);
+sub macro(_);
 sub macroContained(\%);
 sub macroDefine($\@;\@);
-sub macroHide($);
+sub macroHide(_);
 sub macroHidden();
 sub macroList();
 sub macroUndefine($;\@);
-sub macroUnhide($);
+sub macroUnhide(_);
 sub openfile($;\%);
 sub parenRec(\@);
 sub printArray(\@;$);
 sub rawtokenize($);
-sub readlln($);
-sub readln($);
+sub readlln(_);
+sub readln(_);
 sub skipcomments($$);
 sub substituteArray(\%\@@);
-sub tokenize($);
+sub tokenize(_);
 sub tokrep($$\%@);
 sub toktrans($$\%);
 sub unescPre(@);
@@ -175,7 +175,7 @@ my %argPosition;
     ## In the case that there is actually a visible definition, there are two cases. The first is that
     ## the macro has already been called once, so just the value is returned. Otherwise some
     ## precomputation for the macro is done.
-    sub macro($) {
+    sub macro(_) {
         ## values in %macro and %counters are references so they are either undef or non-zero.
         if ($macro{$_[0]}) {
             if ($counters{$_[0]}) {
@@ -248,13 +248,13 @@ my %argPosition;
         }
     }
 
-    sub macroHide($) {
+    sub macroHide(_) {
         ## Pre-increment to be sure to always return a non-zero value.
         ## This is magic for undef values.
         ++$hidden{$_[0]};
     }
 
-    sub macroUnhide($) {
+    sub macroUnhide(_) {
         ## Post-increment to be sure to always return a non-zero value.
         ## This isn't magic for undef values, but there must always have been an increment before a
         ## decrement.
@@ -466,9 +466,9 @@ sub insertLine(\@$;$) {
          " \"$file\"\n");
 }
 
-sub isNL($) {
-    ord($_[0]) == NEWLINE;
-}
+# sub isNL($) {
+#     ord($_[0]) == NEWLINE;
+# }
 
 
 sub printArray(\@;$) {
@@ -491,7 +491,7 @@ sub substituteArray(\%\@@) {
     my ($def, $args) = (shift, shift);
     my @ret;
     my @counts;
-    local $_;
+    my $_;
     while (@_) {
         $_ = shift;
         if (defined($def->{$_})) {
@@ -653,9 +653,9 @@ sub compList($\@) {
 }
 
 ## read one physical input line and perform the trigraph replacement
-sub readln($) {
+sub readln(_) {
     my ($fd) = @_;
-    local $_ = <$fd>;
+    my $_ = <$fd>;
     return 0 if (!defined);
     chomp;
     " ".join("",
@@ -672,7 +672,7 @@ sub readln($) {
 }
 
 ## Scan the list of include directories for a file
-sub findfile($) {
+sub findfile(_) {
     my $name = shift;
     foreach my $dir (@dirs) {
         my $fname = "$dir/$name";
@@ -681,7 +681,7 @@ sub findfile($) {
     return "./$name";
 }
 
-sub tokenize($) {
+sub tokenize(_) {
     my $ltok = shift;
     my @ret;
     ## first find strings
@@ -704,19 +704,18 @@ sub tokenize($) {
 
 sub rawtokenize($) {
     my @ret;
-    my $ltok = shift;
-    my @toks = split(/($isstring|$ischar)/o, $ltok);
-    while (@toks) {
+    #my $ltok = shift;
+    @ARG = split(/($isstring|$ischar)/o, shift);
+    while (@ARG) {
         my $toks = "";
       NONSTR:
-        while (@toks) {
-            my $tok = shift(@toks);
-            if (length($tok) > 1) {
+        while (my $_ = shift) {
+            if (length > 1) {
                 push(@ret, $toks) if (length($toks));
-                push(@ret, $tok);
+                push(@ret, $_);
                 last NONSTR;
             }
-            $toks .= $tok;
+            $toks .= $_;
         }
     }
     return @ret;
@@ -771,7 +770,7 @@ sub untokenize(@) {
     return $ret;
 }
 
-sub readlln($) {
+sub readlln(_) {
     my $line = readln($_[0]);
     while (ord(substr($line, -1, 1)) == BSLASH) {
         $line = substr($line, 0, -1);
@@ -784,10 +783,8 @@ sub readlln($) {
 sub skipcomments($$) {
     my $ret = "";
     my @raw = rawtokenize(shift);
-    local $_;
   SCAN:
-    while (@raw) {
-        $_ = shift(@raw);
+    while ($_ = shift(@raw)) {
         if (m/^["']/o) {
             $ret .= $_;
         } else {
@@ -823,7 +820,7 @@ sub metaTok($) {
 
 ## Test if the token is a callback marker and run the corresponding hide or unhide function.  Returns
 ## some true value if a callback has been performed and a false value (undef) otherwise.
-sub tokCallback($) {
+sub tokCallback(_) {
     if (ord($_[0]) == INTERVALOPEN) {
         macroHide(substr($_[0], 1));
     } elsif (ord($_[0]) == INTERVALCLOSE) {
@@ -905,21 +902,21 @@ sub openfile($;\%) {
     my @iffound;
 
     push(@outTok, "# 1 \"$file\"\n");
-    while (my $line = readlln($fd)) {
+    while (my $_ = readlln($fd)) {
         my $mult = 0;
-        $line = skipcomments($line, $fd);
-        #print STDERR "line: "."." x $aclevel."!" x ($iflevel - $aclevel)."$line\n";
+        $_ = skipcomments($_, $fd);
+        #print STDERR "line: "."." x $aclevel."!" x ($iflevel - $aclevel)."$_\n";
         ############################################################
         ## First check if this is starting a preprocessing directive.
-        if ($line =~ m/^\s*+$ishash\s*+(.*+)/o) {
+        if (m/^\s*+$ishash\s*+(.*+)/o) {
             if (scalar macroHidden()) {
                 my $str = join(", ", macroHidden());
                 warn "Macros hidden at the start of preprocessing directive: $str";
             }
             $skipedLines = 1;
-            $line = $1;
-            $line =~ s/\s\s+/ /go;
-            if ($line =~ m/^(el)?+if\s++(.*+)/o) {
+            $_ = $1;
+            s/\s\s+/ /go;
+            if (m/^(el)?+if\s++(.*+)/o) {
                 my $ifcont = $1;
                 if ($ifcont) {
                     warn "#elif without preceeding #if"
@@ -939,8 +936,8 @@ sub openfile($;\%) {
                         $iffound[$aclevel] = 1;
                     }
                 }
-                #print STDERR "IF $aclevel <= $iflevel : (el)if $line\n";
-            } elsif ($line =~ m/^if(n?+)def\s++(\w++)/o) {
+                #print STDERR "IF $aclevel <= $iflevel : (el)if $_\n";
+            } elsif (m/^if(n?+)def\s++(\w++)/o) {
                 if ($aclevel == $iflevel) {
                     my $val = macro($2);
                     $used{$2} = $val;
@@ -950,8 +947,8 @@ sub openfile($;\%) {
                     }
                 }
                 ++$iflevel;
-                #print STDERR "IF $aclevel <= $iflevel : ifdef $line\n";
-            } elsif ($line =~ m/^else\s*+(.*+)/o) {
+                #print STDERR "IF $aclevel <= $iflevel : ifdef $_\n";
+            } elsif (m/^else\s*+(.*+)/o) {
                 warn "garbage at the end of an #else directive: $1" if ($1);
                 if ($aclevel == $iflevel) {
                     --$aclevel;
@@ -959,26 +956,26 @@ sub openfile($;\%) {
                          && !$iffound[$iflevel]) {
                     ++$aclevel;
                 }
-                #print STDERR "IF $aclevel <= $iflevel : else $line\n";
-            } elsif ($line =~ m/^endif\s*+(.*+)/o) {
+                #print STDERR "IF $aclevel <= $iflevel : else $_\n";
+            } elsif (m/^endif\s*+(.*+)/o) {
                 warn "garbage at the end of an #endif directive: $1" if ($1);
                 --$aclevel if ($aclevel == $iflevel);
                 --$iflevel;
                 pop(@iffound);
-                #print STDERR "IF $aclevel <= $iflevel : endif $line\n";
+                #print STDERR "IF $aclevel <= $iflevel : endif $_\n";
             } elsif ($iflevel == $aclevel) {
-                if ($line =~ m/^include\s++(.*+)/o) {
-                    $line = $1;
+                if (m/^include\s++(.*+)/o) {
+                    $_ = $1;
                     my $tried;
                   RETRY:
-                    my ($type, $name) = $line =~ m/([<"])(.+)[">]/o;
+                    my ($type, $name) = m/([<"])(.+)[">]/o;
                     if (!$name) {
                         if ($tried) {
-                            warn "#include directive incorrect: $line";
+                            warn "#include directive incorrect: $_";
                         } else {
-                            my @inToks = tokenize($line);
+                            my @inToks = tokenize;
                             my @toks = tokrep(0, $file, %used, @inToks);
-                            $line = untokenize(@{toks});
+                            $_ = untokenize(@{toks});
                             $tried = 1;
                             goto RETRY;
                         }
@@ -992,9 +989,9 @@ sub openfile($;\%) {
                         $output .= $ret;
                         insertLine(@outTok, $file, $fd);
                     }
-                } elsif ($line =~ m/^define\s++(.*+)/o) {
-                    $line = $1;
-                    my ($name, $rest) = $1 =~ m/^([a-zA-Z_]\w*+)(.*+)/o;
+                } elsif (m/^define\s++(.*+)/o) {
+                    $_ = $1;
+                    my ($name, $rest) = m/^([a-zA-Z_]\w*+)(.*+)/o;
                     $rest //= "";
                     if ($name) {
                         my ($params, $dfn) = $rest =~ m/^\(([^()]*)\)\s*+(.*+)$/o;
@@ -1012,17 +1009,17 @@ sub openfile($;\%) {
                             : [ $rest ];
                         macroDefine($name, @{$definition}, @defines);
                     } else {
-                        warn "define directive without a name: $line"
+                        warn "define directive without a name: $_"
                     }
-                } elsif ($line =~ m/^undef\s++([a-zA-Z_]\w*+)\s*+(.*+)/o) {
+                } elsif (m/^undef\s++([a-zA-Z_]\w*+)\s*+(.*+)/o) {
                     warn "garbage at end of undef for macro $1" if ($2);
                     macroUndefine($1, @defines);
-                } elsif ($line =~ m/^error\s++(.*+)/o) {
+                } elsif (m/^error\s++(.*+)/o) {
                     die "$file:$NR: error $1";
-                } elsif ($line =~ m/^pragma\s++message\s+(.*+)/o) {
+                } elsif (m/^pragma\s++message\s+(.*+)/o) {
                     warn "message $1";
                 } else {
-                    push(@outTok, "# $line");
+                    push(@outTok, "# $_");
                 }
             }
             ## Ensure that our line numbering stays close to the original
@@ -1036,9 +1033,9 @@ sub openfile($;\%) {
         } else {
             ## Glue a leading sequence of white space to a preceding one, if any.  This
             ## ensures that indentation stays about the same for the preprocessed file
-            if ($line =~ m/^(\s++)(.*+)$/o) {
+            if (m/^(\s++)(.*+)$/o) {
                 my $next = $1;
-                $line = $2;
+                $_ = $2;
                 if (@outTok && $outTok[-1] =~ /^\s++$/so) {
                     $outTok[-1] .= $next;
                 } else {
@@ -1046,12 +1043,12 @@ sub openfile($;\%) {
                 }
             }
             ## Trailing white space is no good.
-            $line =~ s/\s+$//o;
+            s/\s+$//o;
             if ($skipedLines) {
                 insertLine(@outTok, $file, $fd);
                 $skipedLines = 0;
             }
-            my @escPre = escPre(tokenize($line));
+            my @escPre = escPre(tokenize($_));
             push(@outTok, tokrep(0, $file, %used, @escPre), "\n");
         }
     }
@@ -1120,13 +1117,13 @@ sub escPre(@) {
 
 sub unescPre(@) {
     my @outToks;
-    local $_;
+    my $_;
   OUTER:
     while (@_) {
         $_ = shift;
         if (ref) {
             foreach (@{$_}) {
-                unshift(@_, (ref($_) ? @{$_} : ($_)));
+                unshift(@_, (ref($_) ? ("(", @{$_}, ")") : ($_)));
             }
             next OUTER;
         } elsif (!length) {
@@ -1158,72 +1155,115 @@ sub unescPre(@) {
     return @outToks;
 }
 
-sub compactMeta(@) {
-    my %hid;
-    foreach (@_) {
+sub countMeta(\@\%) {
+    if (my $_ = $ARG[0]->[0]) {
         if (ord == INTERVALOPEN) {
             $_ = substr($_, 1);
             ## increment is magic on undef values.
-            ++$hid{$_};
-            undef $_;
+            ++$ARG[1]->{$_};
+            shift @{$ARG[0]};
         } elsif (ord == INTERVALCLOSE) {
             $_ = substr($_, 1);
             ## decrement isn't magic on undef values.
-            $hid{$_} = ($hid{$_} // 0) - 1;
-            undef $_;
+            $ARG[1]->{$_} = ($ARG[1]->{$_} // 0) - 1;
+            shift @{$ARG[0]};
+        } elsif (ord == NEWLINE) {
+            ++$ARG[1]->{$_};
+            shift @{$ARG[0]};
+        } else {
+            return 0;
+        }
+    } else {
+        return 0;
+    }
+    while (my $_ = $ARG[0]->[0]) {
+        if (ord == INTERVALOPEN) {
+            $_ = substr($_, 1);
+            ## increment is magic on undef values.
+            ++$ARG[1]->{$_};
+            shift @{$ARG[0]};
+        } elsif (ord == INTERVALCLOSE) {
+            $_ = substr($_, 1);
+            ## decrement isn't magic on undef values.
+            $ARG[1]->{$_} = ($ARG[1]->{$_} // 0) - 1;
+            shift @{$ARG[0]};
+        } elsif (ord == NEWLINE) {
+            ++$ARG[1]->{$_};
+            shift @{$ARG[0]};
+        } else {
+            return 1;
         }
     }
-    (
-     [grep { defined } @_],
-     [map { ( $intervalClose.$_) x -$hid{$_} } grep { $hid{$_} < 0 } keys %hid],
-     [map { ( $intervalOpen.$_ ) x +$hid{$_} } grep { $hid{$_} > 0 } keys %hid],
-    );
+    return 1;
 }
 
+
+sub compactMeta(\%) {
+    my $hid = shift;
+    @ARG = (
+        [("\n") x delete $hid->{"\n"}],
+        [map { ( $intervalClose.$_) x -$hid->{$_} } grep { $hid->{$_} < 0 } keys %{$hid}],
+        [map { ( $intervalOpen.$_ ) x +$hid->{$_} } grep { $hid->{$_} > 0 } keys %{$hid}],
+        );
+    %{$hid} = ();
+    @ARG;
+}
+
+sub outputMeta(\%\@) {
+    my $hid = shift;
+    push(@{$ARG[0]}, ("\n") x delete $hid->{"\n"});
+    push(@{$ARG[0]},
+         map {
+             if ($hid->{$_} < 0) {
+                 ( $intervalClose.$_) x -delete $hid->{$_};
+             } else {
+                 ( $intervalOpen.$_ ) x +delete $hid->{$_};
+             }
+         }  keys %{$hid}
+        );
+}
 
 ## Join tokens surrounding a ## directive. These can only be real
 ## tokens or placeholders (no callback or newline) to we may just use
 ## normal shift operations.
 sub joinToks(@) {
-    my @outToks;
-    while (@_) {
-        my $left = shift;
-        if (!metaTok($left)) {
-            my @met;
-            push (@met, shift) while (@_ && metaTok($_[0]));
-            if (@_) {
-                if (defined($_[0]) && $_[0] eq "##") {
-                    ## just drop it
-                    shift;
-                    push (@met, shift) while (@_ && metaTok($_[0]));
-                    my $right = shift;
+    my (@outToks, %hid, $nl, $cl, $op, $right, $joined, $meta);
+    $meta = countMeta(@ARG, %hid);
+    outputMeta(%hid, @outToks) if ($meta);
+    while (@ARG) {
+        ## This assumes that @ARG doesn't start with a meta token once we come here.
+        my ($_, $meta) = (shift, countMeta(@ARG, %hid));
+        if (@ARG && $ARG[0] eq "##") {
+            ## just drop it
+            shift;
+            ## accumulate
+            $meta += countMeta(@ARG, %hid);
 
-                    ## If there are meta tokens in the range between the left and the right token of the
-                    ## join we move the closing hide intervals behind and the other ones in front.
-                    my ($met, $cl, $op) = compactMeta(@met);
+            ## If there are meta tokens in the range between the left and the right token of the
+            ## join we move the closing hide intervals behind and the other ones in front.
+            ($nl, $cl, $op) = compactMeta(%hid);
 
-                    if (defined($right)) {
-                        my $joined = $left . $right;
-                        if (!length($joined) || $joined =~ m/^$tokenizer|$punct$/o) {
-                            push(@outToks, @{$met}, @{$op}, $joined, @{$cl});
-                        } else {
-                            warn "'$joined' is not a valid preprocessor token";
-                            push(@outToks, @{$met}, $left, $right, @{$cl}, @{$op});
-                        }
-                    } else {
-                        warn "'$left ##' at the end of a preprocessing directive";
-                        push(@outToks, @{$met}, $left, @{$cl}, @{$op}) if (defined($left) && length($left));
-                    }
-                    next;
+            if (@ARG) {
+                $joined = $_ . $ARG[0];
+                if (!length($joined)
+                    || $joined =~ $tokenizerToken
+                    || $joined =~ $punctToken
+                    ) {
+                    push(@outToks, @{$nl}, @{$op}, $joined, @{$cl});
+                } else {
+                    warn "'$joined' is not a valid preprocessor token";
+                    push(@outToks, @{$nl}, $_, $ARG[0], @{$cl}, @{$op});
                 }
-            }
-            push(@outToks, $left) if (length($left));
-            if (@met) {
-                my ($met, $cl, $op) = compactMeta(@met);
-                push(@outToks, @{$met}, @{$cl}, @{$op});
+                shift;
+                $meta = countMeta(@ARG, %hid);
+                outputMeta(%hid, @outToks) if ($meta);
+            } else {
+                warn "'$_ ##' at the end of a preprocessing directive";
+                push(@outToks, @{$nl}, $_, @{$cl}, @{$op}) if (defined && length);
             }
         } else {
-            push(@outToks, $left) if (length($left));
+            push(@outToks, $_) if (length);
+            outputMeta(%hid, @outToks) if ($meta);
         }
     }
     ## After all parameters in the replacement list have been substituted and # and ##
@@ -1263,25 +1303,25 @@ sub tokrep($$\%@) {
     @_ = grep { defined } @_;
   LOOP:
     while (@_) {
-        if (tokCallback($_[0])) {
+        my $_ = $_[0];
+        if (tokCallback) {
             push(@outToks, shift);
             next LOOP;
         }
         ## For the majority of the tokens that we pass through this, they will not define a macro. So
         ## we hide all the fancy stuff inside the if clause.
-        if (defined(macro($_[0]))) {
-            my $tok = shift;
-            my $tokDef = macro($tok);
+        if (defined(macro)) {
+            shift;
+            my $tokDef = macro;
             my @repl = getTokDef(@{$tokDef});
             ## The token corresponds to the name of an active macro
-            $used->{$tok} = $tokDef;
+            $used->{$_} = $tokDef;
             if ($#{$tokDef}) {
                 ## a function like macro
                 my @metaToks;
                 while (defined($_[0]) && metaTok($_[0])) {
                     tokCallback($_[0]);
                     push(@metaToks, shift);
-                    #$next = $_[0];
                 }
                 if (defined($_[0])) {
                     if ($_[0] eq "(") {
@@ -1302,7 +1342,7 @@ sub tokrep($$\%@) {
                     ## it is interpreted as the empty argument. If it takes zero arguments it is
                     ## the empty list.
                     if ($defs == 0) {
-                        warn "macro $tok should receive 0 arguments, found @{$args[0]}"
+                        warn "macro $_ should receive 0 arguments, found @{$args[0]}"
                             if ($args
                                 && ref($args[0]) == "ARRAY"
                                 && @{$args[0]}
@@ -1319,12 +1359,12 @@ sub tokrep($$\%@) {
                     ## state, we only have to perform this token replacement for those arguments
                     ## that are effectively used. We have the list of the argument positions in the
                     ## hash %positions.
-                    my @pos = (@{$positions{$tok}});
+                    my @pos = (@{$positions{$_}});
 
                     ## The only valid case that the effective number of arguments can be greater
                     ## than in the definition is when the last argument is '...'. Add these
                     ## position s to the list if necessary.
-                    if ($args > $defs && $counters{$tok}->[$defs-1]) {
+                    if ($args > $defs && $counters{$_}->[$defs-1]) {
                         push(@pos, ($defs ... ($args-1)));
                     }
                     macroHide("_Pragma");
@@ -1353,7 +1393,7 @@ sub tokrep($$\%@) {
                     if ($args > $defs && $tokDef->[$defs - 1] eq "__VA_ARGS__") {
                         my @last = splice(@args, $defs-1);
                         my $last = shift(@last);
-                        my @combined = $last && ref($last) ? @{$last} : ($last);
+                        my @combined = ($last && ref($last)) ? @{$last} : ($last);
                         if (@last) {
                             push(@combined,
                                  map {
@@ -1369,23 +1409,23 @@ sub tokrep($$\%@) {
                     }
 
                     if ($args == $defs) {
-                        @repl = substituteArray(%{$argPosition{$tok}}, @args, @repl);
+                        @repl = substituteArray(%{$argPosition{$_}}, @args, @repl);
                     } else  {
-                        warn "macro $tok argument mismatch, has $args takes $defs";
-                        warn "macro $tok definition is @{$tokDef}";
+                        warn "macro $_ argument mismatch, has $args takes $defs";
+                        warn "macro $_ definition is @{$tokDef}";
                         my $allargs = printArray(@args, "(,)[|](,)[|](,)[|](,)[|]");
-                        warn "macro $tok received |$allargs|.";
+                        warn "macro $_ received |$allargs|.";
                         unshift(@_,
                                 map { @{$_} } @args
                             );
-                        @repl = ($tok);
+                        @repl = ($_);
                     }
                 } else {
                     ## a is function like macro without ()
                     if ($level) {
-                        push(@outToks, $tok, @metaToks);
+                        push(@outToks, $_, @metaToks);
                     } else {
-                        push(@outToks, $tok);
+                        push(@outToks, $_);
                     }
                     next LOOP;
                 }
@@ -1408,9 +1448,9 @@ sub tokrep($$\%@) {
                     ## If the name of the macro being replaced is found during this scan of the replacement
                     ## list (not including the rest of the source file’s preprocessing tokens), it is not
                     ## replaced.
-                    tokCallback("$intervalOpen$tok");
-                    push(@outToks,  "$intervalOpen$tok") if ($level);
-                    unshift(@_, @repl, "$intervalClose$tok");
+                    macroHide;
+                    push(@outToks,  "$intervalOpen$_") if ($level);
+                    unshift(@_, @repl, "$intervalClose$_");
                 }
             }
         } else {
@@ -1508,7 +1548,7 @@ sub flushOut(\@) {
     return compactLines($output);
 }
 
-sub compactLines($) {
+sub compactLines(_) {
     my ($output) = @_;
     my @lines = split(/\n/, $output);
 
@@ -1544,7 +1584,7 @@ sub compactLines($) {
 sub parenRec(\@) {
     my @args = ([]);
     my %hid;
-    local $_;
+    my $_;
     while (@{$_[0]}) {
         $_ = shift(@{$_[0]});
         if (ord == PARENOPEN) {
