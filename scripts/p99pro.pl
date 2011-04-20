@@ -125,7 +125,7 @@ sub printArray(\@;$);
 sub rawtokenize($);
 sub readlln(_);
 sub readln(_);
-sub skipcomments($$);
+sub logicalLine($);
 sub substituteArray(\%\@@);
 sub tokenize(_);
 sub tokrep($$\%@);
@@ -177,10 +177,10 @@ my %argPosition;
     ## precomputation for the macro is done.
     sub macro(_) {
         ## values in %macro and %counters are references so they are either undef or non-zero.
-        if ($macro{$_[0]}) {
-            if ($counters{$_[0]}) {
-                if (!$hidden{$_[0]}) {
-                    $macro{$_[0]};
+        if ($macro{$ARG[0]}) {
+            if ($counters{$ARG[0]}) {
+                if (!$hidden{$ARG[0]}) {
+                    $macro{$ARG[0]};
                 } else {
                     undef;
                 }
@@ -188,13 +188,13 @@ my %argPosition;
                 ## A macro can only be hidden if it has been evaluated at least once. So in this path
                 ## we don't need to question hidden. In the contrary we can initialize it so we don't
                 ## have to question if it is defined hereafter.
-                $hidden{$_[0]} = 0;
-                my $tokDef = $macro{$_[0]};
+                $hidden{$ARG[0]} = 0;
+                my $tokDef = $macro{$ARG[0]};
                 my %def;
                 for (my $i = 0; $i < $#{$tokDef}; ++$i) {
                     $def{$tokDef->[$i]} = $i;
                 }
-                $argPosition{$_[0]} = \%def;
+                $argPosition{$ARG[0]} = \%def;
                 my @counts;
                 my %pos;
                 my @repl = getTokDef(@{$tokDef});
@@ -205,9 +205,9 @@ my %argPosition;
                         $pos{$i} = 1;
                     }
                 }
-                $counters{$_[0]} = \@counts;
+                $counters{$ARG[0]} = \@counts;
                 my @pos = sort { $a <=> $b } keys %pos;
-                $positions{$_[0]} = \@pos;
+                $positions{$ARG[0]} = \@pos;
                 $tokDef;
             }
         }
@@ -215,7 +215,7 @@ my %argPosition;
 
 
     sub macroDefine($\@;\@) {
-        my ($name, $val, $defines) = @_;
+        my ($name, $val, $defines) = @ARG;
         # An identifier currently defined as an object-like macro
         # shall not be redefined by another #define preprocessing
         # directive unless the second definition is an
@@ -237,7 +237,7 @@ my %argPosition;
     }
 
     sub macroUndefine($;\@) {
-        my ($name, $defines) = @_;
+        my ($name, $defines) = @ARG;
         if (defined($macro{$name})) {
             delete $macro{$name};
             delete $counters{$name};
@@ -251,14 +251,14 @@ my %argPosition;
     sub macroHide(_) {
         ## Pre-increment to be sure to always return a non-zero value.
         ## This is magic for undef values.
-        ++$hidden{$_[0]};
+        ++$hidden{$ARG[0]};
     }
 
     sub macroUnhide(_) {
         ## Post-increment to be sure to always return a non-zero value.
         ## This isn't magic for undef values, but there must always have been an increment before a
         ## decrement.
-        $hidden{$_[0]}--;
+        $hidden{$ARG[0]}--;
     }
 
     sub macroHidden() {
@@ -270,8 +270,7 @@ my %argPosition;
     }
 
     sub macroContained(\%) {
-        my ($hash) = @_;
-        return containedHashtables(%{$hash}, %macro)
+        return containedHashtables(%{$ARG[0]}, %macro)
     }
 
     sub macroList() {
@@ -457,20 +456,14 @@ $trigraph = qr@$trigraph@;
 $onegraph = qr@$onegraph@;
 
 sub insertLine(\@$;$) {
-    my ($outTok, $file, $fd) = @_;
-    push(@{$outTok},
-         "# ",
-         $fd ? $fd->input_line_number() : $NR,
-         " \"$file\"\n");
+    my ($outTok, $file, $fd) = @ARG;
+    my $nr = $fd ? $fd->input_line_number() : $NR;
+    $nr = 0 if ($nr < 0);
+    push(@{$outTok}, "# $nr \"$file\"\n");
 }
 
-# sub isNL($) {
-#     ord($_[0]) == NEWLINE;
-# }
-
-
 sub printArray(\@;$) {
-    my ($arg, $par) = @_;
+    my ($arg, $par) = @ARG;
     $par = "(,)[,]" x 10 if (!$par);
     return
         substr($par, 0, 1).
@@ -490,7 +483,7 @@ sub substituteArray(\%\@@) {
     my @ret;
     my @counts;
     my $_;
-    while (@_) {
+    while (@ARG) {
         $_ = shift;
         if (defined($def->{$_})) {
             my $i = $def->{$_};
@@ -503,8 +496,8 @@ sub substituteArray(\%\@@) {
             ## The increment operation is magic on undef values.
             ++$counts[$i];
         } elsif ($_ eq "#") {
-            if (defined($def->{$_[0]})) {
-                #print STDERR "stringifying argument $_ $_[0]\n";
+            if (defined($def->{$ARG[0]})) {
+                #print STDERR "stringifying argument $_ $ARG[0]\n";
                 $_ = untokenize(@{$args->[$def->{shift}]});
 
                 ## White space before the first preprocessing token
@@ -528,7 +521,7 @@ sub substituteArray(\%\@@) {
                 ## list for a function-like macro shall be followed
                 ## by a parameter as the next preprocessing token
                 ## in the replacement list.
-                warn "invalid stringify sequence $_ $_[0], not a parameter name";
+                warn "invalid stringify sequence $_ $ARG[0], not a parameter name";
                 push(@ret, $_);
             }
         } else {
@@ -540,7 +533,7 @@ sub substituteArray(\%\@@) {
 
 ## translate token sequences to digraph or trigraph representation
 sub toktrans($$\%) {
-    my ($inp, $reg, $hash) = @_;
+    my ($inp, $reg, $hash) = @ARG;
     my @tokens = map {
         if ($_ && $_ =~ m/$reg/) {
             $hash->{$_}
@@ -554,13 +547,13 @@ sub toktrans($$\%) {
 local $SIG{__WARN__};
 
 sub evalExpr($@) {
-    my ($isUn, @list) = @_;
+    my $isUn = shift;
     my $back = $SIG{__WARN__};
     $SIG{__WARN__} = sub {
-        &{$back}(@_);
-        print STDERR "   expression is '@list'\n";
+        &{$back}(@ARG);
+        print STDERR "   expression is '@ARG'\n";
     };
-    my $res = eval("@list");
+    my $res = eval("@ARG");
     $res = (ULONG_MAX - -$res +1) while ($isUn && $res < 0);
     if (defined($res) && length($res) == 0) {
         $res = $res ? 1 : 0;
@@ -585,49 +578,49 @@ sub evalExpr($@) {
 ## an unsigned number (or not) and the second is the result of the
 ## computation.
 sub compList($\@) {
-    my ($level, $toks) = @_;
+    my ($level, $toks) = @ARG;
     #print STDERR "compList, $level: @{$toks}\n";
     my $type = 0;
     my @logic;
     my @list;
   LOOP:
     while (@{$toks}) {
-        my $tok = shift(@{$toks});
-        #print STDERR "list @list, processing \"$tok\"\n";
-        if ($tok eq "(") {
+        my $_ = shift(@{$toks});
+        #print STDERR "list @list, processing \"$_\"\n";
+        if (ord == PARENOPEN) {
             my @subexp = compList($level + 1, @{$toks});
             $type ||=  $subexp[0];
             push(@list, $subexp[1]);
-        } elsif ($tok eq ")") {
+        } elsif (ord == PARENCLOSE) {
             $level = 0;
             last LOOP;
-        } elsif (ord($tok) < ord(" ")) {
+        } elsif ((ord) < ord(" ")) {
             next LOOP;
         } else {
-            if ($tok =~ m/^(?:0[xX]?[0-9a-fA-F]|[0-9]+)[lL]*([uU]*)[lL]*$/o) {
+            if (m/^(?:0[xX]?[0-9a-fA-F]|[0-9]+)[lL]*([uU]*)[lL]*$/o) {
                 ## a number with an 'U' is unsigned
                 $type ||= $1 ? 1 : 0;
-                $tok =~ s/[lLuU]//go;
+                s/[lLuU]//go;
                 ## a number that is greater than INTMAX_MAX must be
                 ## unsigned
-                $type ||= ($tok > LONG_MAX) ? 1 : 0;
-                #print STDERR "processing number \"$tok\"\n";
-                push(@list, $tok);
-            } elsif ($tok =~ m/^\w+/o) {
+                $type ||= ($_ > LONG_MAX) ? 1 : 0;
+                #print STDERR "processing number \"$_\"\n";
+                push(@list, $_);
+            } elsif (m/^\w+/o) {
                 push(@list, "0");
-            } elsif ($tok =~ m/^&&|[|][|]$/o) {
+            } elsif (m/^&&|[|][|]$/o) {
                 my $back = $SIG{__WARN__};
                 $SIG{__WARN__} = sub {
-                    &{$back}(@_);
+                    &{$back}(@ARG);
                     print STDERR "   expression is '@list'\n";
                 };
                 my $res = evalExpr($type, splice(@list));
                 $SIG{__WARN__} = $back;
                 $res = $res ? 1 : 0;
-                push(@logic, $res, $tok);
+                push(@logic, $res, $_);
                 $type = 0;
             } else {
-                push(@list, $tok);
+                push(@list, $_);
             }
         }
     }
@@ -639,7 +632,7 @@ sub compList($\@) {
         push(@logic, $res);
         my $back = $SIG{__WARN__};
         $SIG{__WARN__} = sub {
-            &{$back}(@_);
+            &{$back}(@ARG);
             print STDERR "   expression is '@logic'\n";
         };
         $res = eval("@logic");
@@ -652,78 +645,74 @@ sub compList($\@) {
 
 ## read one physical input line and perform the trigraph replacement
 sub readln(_) {
-    my ($fd) = @_;
-    my $_ = <$fd>;
-    return 0 if (!defined);
-    chomp;
-    " ".join("",
-             map {
-                 if (length == 3
-                     && m/^[?][?]($trigraph)$/o) {
-                     $_ = $1;
-                     tr@-!'/=()<>@~|^\\#[]{}@;
-                 } else {
-                     $_;
-                 }
-             }  split /([?][?]$trigraph)/o
-        );
+    my $_ = readline(shift);
+    if (defined) {
+        chomp;
+        " ".join("",
+                 map {
+                     if (length == 3
+                         && m/^[?][?]($trigraph)$/o) {
+                         $_ = $1;
+                         tr:-!'/=()<>:~|^\\#[]{}:;
+                     } else {
+                         $_;
+                     }
+                 }  split /([?][?]$trigraph)/o
+            );
+    } else {
+        undef;
+    }
 }
 
 ## Scan the list of include directories for a file
 sub findfile(_) {
-    my $name = shift;
-    foreach my $dir (@dirs) {
-        my $fname = "$dir/$name";
+    foreach (@dirs) {
+        my $fname = $_."/".$ARG[0];
         return $fname if (-e $fname);
     }
-    return "./$name";
+    return "./$ARG[0]";
 }
 
 sub tokenize(_) {
-    my $ltok = shift;
-    my @ret;
-    ## first find strings
-    #print STDERR "ltok $ltok\n";
-    my @ltok = split($tokenizerSplit, $ltok);
-    #print STDERR join("|", @ltok), "\n";
-    foreach my $ltok (@ltok) {
-        if ($ltok !~ $tokenizerToken) {
-            my @ltok = split(/\s+/o, $ltok);
-            foreach my $ltok (@ltok) {
-                my @ltok = split($punctSplit, $ltok);
-                push(@ret, @ltok);
-            }
+    grep {
+        length
+    } map {
+        ## keep it if it is already a "long" token such as strings,
+        ## char, identifier or number.
+        if (m/$tokenizerToken/o) {
+            $_;
         } else {
-            push(@ret, $ltok);
+            ## Other tokens are first split at white space and then
+            ## with maximum match rule according to the valid
+            ## punctuation tokens.
+            map {
+                split m/$punctSplit/o;
+            } split /\s+/o;
         }
-    }
-    return grep { length($_) } @ret;
+    } split($tokenizerSplit, shift);
 }
 
 sub rawtokenize($) {
-    my @ret;
-    #my $ltok = shift;
     @ARG = split(/($isstring|$ischar)/o, shift);
-    while (@ARG) {
-        my $toks = "";
-      NONSTR:
-        while (my $_ = shift) {
-            if (length > 1) {
-                push(@ret, $toks) if (length($toks));
-                push(@ret, $_);
-                last NONSTR;
-            }
-            $toks .= $_;
+    ## The split only has more than one element if there is a string
+    ## literal or character constant in the line. So the inner part of
+    ## the while loop will only be executed rarely.
+    my @ret = (shift);
+    while (my $_ = shift) {
+        if (length > 1 || $ret[-1] =~ m/["']$/o) {
+            push(@ret, $_);
+        } else {
+            $ret[-1] .= $_;
         }
     }
-    return @ret;
+    @ret;
 }
 
 sub untokenize(@) {
-    @_ = grep { ord != INTERVALOPEN && ord != INTERVALCLOSE } @_;
+    @ARG = grep { ord != INTERVALOPEN && ord != INTERVALCLOSE } @ARG;
     my $ret = shift;
     my $prev = $ret;
-    foreach (@_) {
+    foreach (@ARG) {
         my $space = $sep;
         my $comb = $prev . $_;
         ## Don't add spaces before and after newlines
@@ -769,105 +758,123 @@ sub untokenize(@) {
 }
 
 sub readlln(_) {
-    my $line = readln($_[0]);
-    while (ord(substr($line, -1, 1)) == BSLASH) {
-        $line = substr($line, 0, -1);
-        $line .= readln($_[0]);
+    my $_ = readln($ARG[0]);
+    while (ord(substr($_, -1, 1)) == BSLASH) {
+        chop;
+        $_ .= readln($ARG[0]);
         $skipedLines = 1;
     }
-    return $line;
+    $_;
 }
 
-sub skipcomments($$) {
-    my $ret = "";
-    my @raw = rawtokenize(shift);
+sub logicalLine($) {
+    my ($fd, $ret) = (shift, "");
+    @ARG = rawtokenize(readlln($fd));
   SCAN:
-    while ($_ = shift(@raw)) {
-        if (m/^["']/o) {
-            $ret .= $_;
-        } else {
-            if (m|(.*?)/([*/])(.*)|o) {
-                $ret .= $1;
-                if (ord($2) == SLASH) {
-                    last SCAN;
-                } else {
-                    $_ = untokenize($3, @raw);
-                    while (!m|(.*?)[*]/(.*)|o) {
-                        if ($_[0] && ($skipedLines = 1, my $cont = readlln($_[0]))) {
-                            $_ .= " " . $cont;
-                        } else {
-                            warn "unterminated /* comment at end of input";
-                            last SCAN;
-                        }
-                    }
-                    my ($fwd) = m|(?:.*?)[*]/(.*)|so;
-                    @raw = rawtokenize($fwd);
-                }
+    while ($_ = shift) {
+        if (!m/^["']/o && m|(.*?)/([*/])(.*)|o) {
+            $ret .= $1;
+            if (ord($2) == SLASH) {
+                last SCAN;
             } else {
-                $ret .= $_;
+                $_ = untokenize($3, @ARG);
+              MATCH:
+                while (1) {
+                    if (m|(?:.*?)[*]/(.*)|so) {
+                        @ARG = rawtokenize($1);
+                        last MATCH;
+                    } elsif ($fd && (my $cont = readlln($fd))) {
+                        $skipedLines = 1;
+                        $_ .= " " . $cont;
+                    } else {
+                        warn "unterminated /* comment at end of input";
+                        last SCAN;
+                    }
+                }
             }
+        } else {
+            $ret .= $_;
         }
     }
     $ret;
 }
 
 sub metaTok($) {
-    ord($_[0]) >= NEWLINE
-        && ord($_[0]) <= INTERVALCLOSE;
+    ord($ARG[0]) >= NEWLINE
+        && ord($ARG[0]) <= INTERVALCLOSE;
 }
 
 ## Test if the token is a callback marker and run the corresponding hide or unhide function.  Returns
 ## some true value if a callback has been performed and a false value (undef) otherwise.
 sub tokCallback(_) {
-    if (ord($_[0]) == INTERVALOPEN) {
-        macroHide(substr($_[0], 1));
-    } elsif (ord($_[0]) == INTERVALCLOSE) {
-        macroUnhide(substr($_[0], 1));
+    my $_ = $ARG[0];
+    if (ord == INTERVALOPEN) {
+        macroHide(substr($_, 1));
+    } elsif (ord == INTERVALCLOSE) {
+        macroUnhide(substr($_, 1));
     }
 }
 
 sub expandDefined(\%@) {
-    my ($used, @inToks) = @_;
+    my $used = shift;
     my @outToks;
-    while (@inToks) {
-        my $tok = shift(@inToks);
-        if ($tok eq "defined") {
-            $tok = shift(@inToks);
-            if ($tok eq "(") {
-                $tok = shift(@inToks);
-                warn "unbalanced \"defined\" expression near $tok"
-                    if (shift(@inToks) ne ")");
+    while (@ARG) {
+        my $_ = shift;
+        if ($_ eq "defined") {
+            $_ = shift;
+            if (ord == PARENOPEN) {
+                $_ = shift;
+                warn "unbalanced \"defined\" expression near $_"
+                    if (ord(shift) != PARENCLOSE);
             }
-            #print STDERR "searching for $tok\n";
-            my $val = macro($tok);
+            my $val = macro;
             if ($val) {
-                $used->{$tok} = $val;
-                $tok = 1;
+                $used->{$_} = $val;
+                $_ = 1;
             } else {
-                $tok = 0;
+                $_ = 0;
             }
         }
-        push(@outToks, $tok);
+        push(@outToks, $_);
     }
     return @outToks;
 }
 
 ## Receives a filename and a reference to he used macros.
-## Returns a tuple ($defines, \tokens).
+##
+## Returns a triple (defines, output, input) where
+## - defines points to a list of macro names that where change by
+##   recursively scanning the preprocessing directives in file. A file
+##   will be candidate for shortcut replacement if this list is empty,
+##   i.e this file didn't change the state of the preprocessor.
+## - input is the input after lines protected by #if/#else constructs
+##   etc have been removed. This will be the starting point for
+##   shortcut replacement if the file will be visited again, defines
+##   had been empty and the macros that are used by preprocessor are
+##   unchanged.
+## - output is the output generated from input by doing macro replacement
+
 sub openfile(_) {
     my ($file) = shift;
     ## keep track of the number of defines in this file and below
     my @defines;
     ## keep track of the tokens produced by this file and below
-    my @outTok;
     my $output = "";
+    my $input = "";
 
     my %used;
 
     if (defined($usedMac{$file})) {
         if (macroContained(%{$usedMac{$file}})) {
-            print STDERR "reusing contents of $file\n";
-            $output .= $fileHash{$file};
+            if (length($fileHash{$file})) {
+                print STDERR "reusing contents of $file\n";
+                @ARG = map {
+                    (tokrep(0, $file, %used, escPre(tokenize)), "\n");
+                } split("\n", $fileHash{$file});
+            } else {
+                print STDERR "reusing contents of $file: empty\n";
+                @ARG = "\n";
+            }
             goto SHORTCUT;
         } else {
             print STDERR "context for $file has changed, not reusing content.\n";
@@ -875,12 +882,8 @@ sub openfile(_) {
             delete $usedMac{$file};
         }
     } else {
-        if (!defined($fileInc{$file})) {
-            my $dummy = 1;
-            $fileInc{$file} = \$dummy;
-        } else {
-            ++${$fileInc{$file}};
-        }
+        ## the increment operator is magic on undef values.
+        ++${$fileInc{$file}};
         print STDERR "$file must be processed (${$fileInc{$file}})\n";
     }
 
@@ -895,13 +898,11 @@ sub openfile(_) {
 
     ## Install a warning handler.
     my $back = $SIG{__WARN__};
-    $SIG{__WARN__} = sub { print STDERR "$file:".$fd->input_line_number().": warning: $_[0]"; };
+    $SIG{__WARN__} = sub { print STDERR "$file:".$fd->input_line_number().": warning: $ARG[0]"; };
     my @iffound;
 
-    push(@outTok, "# 1 \"$file\"\n");
-    while (my $_ = readlln($fd)) {
-        my $mult = 0;
-        $_ = skipcomments($_, $fd);
+    insertLine(@ARG, $file, $fd);
+    while (my $_ = logicalLine($fd)) {
         #print STDERR "line: "."." x $aclevel."!" x ($iflevel - $aclevel)."$_\n";
         ############################################################
         ## First check if this is starting a preprocessing directive.
@@ -977,14 +978,16 @@ sub openfile(_) {
                             goto RETRY;
                         }
                     } else {
-                        $output .= flushOut(@outTok);
+                        $output .= flushOut(@ARG);
                         if ($name =~ m{($type|[']|[\\]|/[/*])}) {
                             warn "illegal character sequence $1 in file name: $name";
                         }
-                        my ($recdef, $ret) = openfile(findfile($name));
+                        my ($recdef, $outret, $inret) = openfile(findfile($name));
                         push(@defines, @{$recdef});
-                        $output .= $ret;
-                        insertLine(@outTok, $file, $fd);
+                        $output .= $outret;
+                        insertLine(@ARG, $file, $fd);
+                        $input .= $inret;
+                        $input .= $ARG[-1];
                     }
                 } elsif (m/^define\s++(.*+)/o) {
                     $_ = $1;
@@ -994,9 +997,7 @@ sub openfile(_) {
                         my ($params, $dfn) = $rest =~ m/^\(([^()]*)\)\s*+(.*+)$/o;
                         $dfn //= "";
                         if ($params) {
-                            #print STDERR "params before $params\n";
                             $params =~ s/[.][.][.]\s*$/__VA_ARGS__/o;
-                            #print STDERR "params after $params\n";
                         }
                         my $definition =
                             defined($params)
@@ -1016,56 +1017,64 @@ sub openfile(_) {
                 } elsif (m/^pragma\s++message\s+(.*+)/o) {
                     warn "message $1";
                 } else {
-                    push(@outTok, "# $_");
+                    push(@ARG, "# $_");
                 }
             }
             ## Ensure that our line numbering stays close to the original
-            push(@outTok, "\n");
+            push(@ARG, "\n");
         }
         ## End of preprocessing directives
         ############################################################
         elsif ($iflevel != $aclevel) {
             ## a blob that is protected by #if
-            push(@outTok, "\n");
+            push(@ARG, "\n");
         } else {
             ## Glue a leading sequence of white space to a preceding one, if any.  This
             ## ensures that indentation stays about the same for the preprocessed file
             if (m/^(\s++)(.*+)$/o) {
                 my $next = $1;
                 $_ = $2;
-                if (@outTok && $outTok[-1] =~ /^\s++$/so) {
-                    $outTok[-1] .= $next;
+                if (@ARG && $ARG[-1] =~ /^\s++$/so) {
+                    $ARG[-1] .= $next;
                 } else {
-                    push(@outTok, $next);
+                    push(@ARG, $next);
                 }
             }
             ## Trailing white space is no good.
             s/\s+$//o;
+            ## Store this input line for eventual reuse when we see
+            ## this file again.  We have to do this before macro
+            ## replacement since the next time some macro might have
+            ## changed and so the expansion will be different.
+            $input .= $_."\n";
             if ($skipedLines) {
-                insertLine(@outTok, $file, $fd);
+                insertLine(@ARG, $file, $fd);
                 $skipedLines = 0;
+                $input .= $ARG[-1];
             }
-            my @escPre = escPre(tokenize($_));
-            push(@outTok, tokrep(0, $file, %used, @escPre), "\n");
+            ## usage of macros in the C text itself are not accounted.
+            my %used;
+            push(@ARG, tokrep(0, $file, %used, escPre(tokenize)), "\n");
         }
     }
     warn "unbalanced #if / #endif" if ($iflevel);
-
-    $output .= flushOut(@outTok);
-    $output = compactLines($output);
-
-    if ($output =~ m/^\s*(?:#|%:)\s+(\d+).*\n*$/o) {
-        ## The file only produced line number information
-        $output = "";
-    }
 
     if (!@defines) {
         print STDERR "$file is candidate for content hashing\n";
         if (!defined($usedMac{$file}) || !eqHashtables(%{$usedMac{$file}}, %used)) {
             $usedMac{$file} = \%used;
-            $fileHash{$file} = $output;
+            if ($input =~ m/^(?:\s*+(?:#|%:)\s++\d++[^\n]++\n*+)*+$/so) {
+                ## The file only contained line number information
+                print STDERR "$file only contained line number information\n";
+                $input = "";
+            } else {
+                print STDERR "$file has more: $input\n";
+            }
+            $fileHash{$file} = $input;
         }
     } elsif (${$fileInc{$file}} > 1) {
+        my %defines = map { $_ => 1 } @defines;
+        @defines = sort keys %defines;
         print STDERR "$file can not be hashed, define changes on: @defines\n";
     }
 
@@ -1076,66 +1085,69 @@ sub openfile(_) {
     $SIG{__WARN__} = $back;
 
   SHORTCUT:
+    $output .= flushOut(@ARG);
+    $output = compactLines($output);
+
+    if ($output =~ m/^(?:\s*+(?:#|%:)\s++\d++[^\n]++\n*+)*+$/so) {
+        ## The file only produced line number information
+        print STDERR "$file only produced line number information\n";
+        $output = "";
+    }
+
     print STDERR "$file has been processed\n";
-    return (\@defines, $output);
+    return (\@defines, $output, $input);
 }
 
 sub escPre(@) {
-    my @toks = @_;
-    my @ret = ();
-    while (@toks) {
-        my $tok = shift(@toks);
-        if ($tok eq "#") {
-            $tok = $escHash;
-        } elsif ($tok eq "##") {
-            $tok = $escHash.$escHash;
-        } elsif ($tok eq "%:") {
-            $tok = $escHash2;
-        } elsif ($tok eq "%:%:") {
-            $tok = $escHash2.$escHash2;
+    map {
+        if ($_ eq "#") {
+            $escHash;
+        } elsif ($_ eq "##") {
+            $escHash.$escHash;
+        } elsif ($_ eq "%:") {
+            $escHash2;
+        } elsif ($_ eq "%:%:") {
+            $escHash2.$escHash2;
+        } else {
+            $_;
         }
-        push(@ret, $tok);
-    }
-    return @ret;
+    } @ARG;
 }
 
 
 sub unescPre(@) {
     my @outToks;
-    my $_;
   OUTER:
-    while (@_) {
-        $_ = shift;
+    while (@ARG) {
+        my $_ = shift;
         if (ref) {
             foreach (@{$_}) {
-                unshift(@_, (ref($_) ? ("(", @{$_}, ")") : ($_)));
+                unshift(@ARG, (ref($_) ? ("(", @{$_}, ")") : ($_)));
             }
-            next OUTER;
-        } elsif (!length) {
-            next OUTER;
-        }
-        if (ord == UNSTRING) {
-            $_ = shift;
-            print STDERR "unstringing $_\n";
-            s/^L?"(.*)"$/ $1/so;
-            s/[\\](["\\])/$1/sog;
-        } elsif (ord == ESCHASH) {
-            $_ = "#".substr($_, 1);
-        } elsif (ord == HASH) {
-            $_ = "\n#".substr($_, 1);
-        } elsif (ord == DQUOTE) {
-            s/$escHash/#/go;
-            s/\Q$escHash2\E/%:/go;
-        } elsif (ord == QUOTE) {
-            s/$escHash/#/go;
-            s/\Q$escHash2\E/%:/go;
-        } elsif (ord ==  ELL) {
-            if (m/^L[\"\']/o) {
+        } elsif (length) {
+            if (ord == UNSTRING) {
+                $_ = shift;
+                print STDERR "unstringing $_\n";
+                s/^L?"(.*)"$/ $1/so;
+                s/[\\](["\\])/$1/sog;
+            } elsif (ord == ESCHASH) {
+                $_ = "#".substr($_, 1);
+            } elsif (ord == HASH) {
+                $_ = "\n#".substr($_, 1);
+            } elsif (ord == DQUOTE) {
                 s/$escHash/#/go;
                 s/\Q$escHash2\E/%:/go;
+            } elsif (ord == QUOTE) {
+                s/$escHash/#/go;
+                s/\Q$escHash2\E/%:/go;
+            } elsif (ord ==  ELL) {
+                if (m/^L[\"\']/o) {
+                    s/$escHash/#/go;
+                    s/\Q$escHash2\E/%:/go;
+                }
             }
+            push(@outToks, $_);
         }
-        push(@outToks, $_);
     }
     return @outToks;
 }
@@ -1257,12 +1269,12 @@ sub joinToks(@) {
 }
 
 sub getTokDef(\@) {
-    if (ref($_[0]->[-1]) ne "ARRAY") {
+    if (ref($ARG[0]->[-1]) ne "ARRAY") {
         ## watch that %: and %:%: are translated to # and ## these are
         ## replaced later, anyhow, so the original spelling is not
         ## relevant for the preprocessor output. So we might as well
         ## speed up the replacement later.
-        $_[0]->[-1] = [
+        $ARG[0]->[-1] = [
             map {
                 if (m/^$ishash$/o) {
                     "#";
@@ -1271,10 +1283,10 @@ sub getTokDef(\@) {
                 } else {
                     $_;
                 }
-            } tokenize($_[0]->[-1])
+            } tokenize($ARG[0]->[-1])
             ];
     }
-    (@{$_[0]->[-1]});
+    (@{$ARG[0]->[-1]});
 }
 
 ## recursively replace macros in a list of tokens
@@ -1285,18 +1297,17 @@ sub getTokDef(\@) {
 sub tokrep($$\%@) {
     my @outToks;
     my ($level, $file, $used) = (shift, shift, shift);
-    @_ = grep { defined } @_;
+    @ARG = grep { defined } @ARG;
   LOOP:
-    while (@_) {
-        my $_ = $_[0];
+    while (@ARG) {
+        my $_ = shift;
         if (tokCallback) {
-            push(@outToks, shift);
+            push(@outToks, $_);
             next LOOP;
         }
         ## For the majority of the tokens that we pass through this, they will not define a macro. So
         ## we hide all the fancy stuff inside the if clause.
         if (defined(macro)) {
-            shift;
             my $tokDef = macro;
             my @repl = getTokDef(@{$tokDef});
             ## The token corresponds to the name of an active macro
@@ -1304,17 +1315,17 @@ sub tokrep($$\%@) {
             if ($#{$tokDef}) {
                 ## a function like macro
                 my @metaToks;
-                while (defined($_[0]) && metaTok($_[0])) {
-                    tokCallback($_[0]);
+                while (defined($ARG[0]) && metaTok($ARG[0])) {
+                    tokCallback($ARG[0]);
                     push(@metaToks, shift);
                 }
-                if (defined($_[0])) {
-                    if ($_[0] eq "(") {
+                if (defined($ARG[0])) {
+                    if ($ARG[0] eq "(") {
                         shift;
-                        unshift(@_, parenRec(@_));
+                        unshift(@ARG, parenRec(@ARG));
                     }
                 }
-                if (ref($_[0]) eq "ARRAY") {
+                if (ref($ARG[0]) eq "ARRAY") {
                     ## insert the meta tokens that we found between the macro name and its parameter
                     ## list
                     push(@outToks, @metaToks) if ($level);
@@ -1382,7 +1393,7 @@ sub tokrep($$\%@) {
                         if (@last) {
                             push(@combined,
                                  map {
-                                     if (ref($_) eq "ARRAY") {
+                                     if (ref eq "ARRAY") {
                                          (",", @{$_});
                                      } else {
                                          (",", $_);
@@ -1400,7 +1411,7 @@ sub tokrep($$\%@) {
                         warn "macro $_ definition is @{$tokDef}";
                         my $allargs = printArray(@args, "(,)[|](,)[|](,)[|](,)[|]");
                         warn "macro $_ received |$allargs|.";
-                        unshift(@_,
+                        unshift(@ARG,
                                 map { @{$_} } @args
                             );
                         @repl = ($_);
@@ -1435,27 +1446,26 @@ sub tokrep($$\%@) {
                     ## replaced.
                     macroHide;
                     push(@outToks,  "$intervalOpen$_") if ($level);
-                    unshift(@_, @repl, "$intervalClose$_");
+                    unshift(@ARG, @repl, "$intervalClose$_");
                 }
             }
         } else {
             ## handle the pseudo macros
-            if ($_[0] eq "__LINE__") {
+            if ($_ eq "__LINE__") {
                 ## This is the number of this line. We already
                 ## advanced the counter.
                 push(@outToks, $NR);
-            } elsif ($_[0] eq "__FILE__") {
+            } elsif ($_ eq "__FILE__") {
                 push(@outToks, "\"$file\"");
-            } elsif ($_[0] eq "_Pragma") {
+            } elsif ($_ eq "_Pragma") {
                 push(@outToks, "#pragma");
-            } elsif ($_[0] eq $liner) {
+            } elsif ($_ eq $liner) {
                 ## This is the number of the following line
                 insertLine(@outToks, $file);
             } else {
                 ## any other non macro token
-                push(@outToks, $_[0]);
+                push(@outToks, $_);
             }
-            shift;
         }
     }
     #print STDERR "$level: returning ".printArray(@outToks)."\n";
@@ -1468,7 +1478,7 @@ sub tokrep($$\%@) {
 
 
 sub eqArrays(\@\@) {
-    my ($a, $b) = @_;
+    my ($a, $b) = @ARG;
     return 1 if (!defined($a) && !defined($b));
     return 0 if (defined($a) != defined($b));
     my ($na, $nb) = (scalar @{$a}, scalar @{$b});
@@ -1484,7 +1494,7 @@ sub eqArrays(\@\@) {
 }
 
 sub eqHashtables(\%\%) {
-    my ($a, $b) = @_;
+    my ($a, $b) = @ARG;
     return 1 if (!defined($a) && !defined($b));
     return 0 if (defined($a) != defined($b));
     return 0 if (scalar keys %{$a} != scalar keys %{$b});
@@ -1493,7 +1503,7 @@ sub eqHashtables(\%\%) {
 
 
 sub containedHashtables(\%\%) {
-    my ($a, $b) = @_;
+    my ($a, $b) = @ARG;
     ## a null reference is considered empty and is contained in any
     ## other hash
     return 1 if (!defined($a));
@@ -1521,7 +1531,7 @@ sub containedHashtables(\%\%) {
 
 
 sub flushOut(\@) {
-    my ($outTok) = @_;
+    my ($outTok) = @ARG;
     my $output = untokenize(unescPre(@{$outTok}));
     if (!$graphs) {
         $output = toktrans($output, $digraph, %digraph);
@@ -1534,30 +1544,53 @@ sub flushOut(\@) {
 }
 
 sub compactLines(_) {
-    my ($output) = @_;
-    my @lines = split(/\n/, $output);
-
-    $output = "";
+    @ARG = split(/\n/, shift);
 
     my @lineS;
-    while (@lines) {
-        my $lastTok;
-        while (defined($lines[0]) && $lines[0] =~ m/^\s*(?:#|%:)\s+(\d+)/o) {
+    while (@ARG) {
+        my $_;
+        while (defined($ARG[0]) && $ARG[0] =~ m/^\s*(?:#|%:)\s+(\d+)/o) {
             my $ln = $1;
-            $lastTok = shift(@lines);
-            while (@lines && defined($lines[0]) && $lines[0] =~ m/^\s*$/o) {
+            $_ = shift;
+            while (defined($ARG[0]) && $ARG[0] =~ m/^\s*$/o) {
                 ++$ln;
-                shift(@lines);
+                shift;
             }
-            --$ln;
-            $lastTok =~ s/^\s*(#|%:)\s+(?:\d+)(.*)$/$1 $ln$2/;
+            s/^\s*(#|%:)\s+(?:\d+)(.*)$/$1 $ln$2/;
         }
-        push(@lineS, $lastTok) if ($lastTok);
-        push(@lineS, shift(@lines)) if (@lines);
+        push(@lineS, $_) if ($_);
+        push(@lineS, shift) if (@ARG);
     }
-
-    $output = join("\n", @lineS, "");
-    return $output;
+    my $ln = 0;
+    @ARG = map {
+        if (m/^\s*$/o) {
+            ++$ln;
+            ();
+        } elsif (m/^\s*(?:#|%:)\s+\d+/o) {
+            $ln = 0;
+            ($_);
+        } else {
+            my @tmp = ($_, ("") x $ln);
+            $ln = 0;
+            (@tmp);
+        }
+    } @lineS;
+    my $last;
+    @ARG = map {
+        if (m/^\s*(?:#|%:)\s+\d+/o) {
+            $last = $_;
+            ();
+        } else {
+            if ($last) {
+                my @tmp = ("", $last, $_);
+                undef $last;
+                @tmp;
+            } else {
+                ($_);
+            }
+        }
+    } @ARG;
+    join("\n", @ARG, "");
 }
 
 ## Recursively parse a parenthesis expression.
@@ -1569,10 +1602,10 @@ sub compactLines(_) {
 sub parenRec(\@) {
     my @args = ([]);
     my %hid;
-    while (@{$_[0]}) {
-        my $_ = shift(@{$_[0]});
+    while (@{$ARG[0]}) {
+        my $_ = shift(@{$ARG[0]});
         if (ord == PARENOPEN) {
-            push(@{$args[-1]}, parenRec(@{$_[0]}));
+            push(@{$args[-1]}, parenRec(@{$ARG[0]}));
         } elsif (ord == PARENCLOSE) {
             if (%hid) {
                 warn "parenthesis with unbalanced hide/unhide: ", join(", ", keys %hid), "\n";
