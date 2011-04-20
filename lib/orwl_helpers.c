@@ -113,17 +113,17 @@ bool orwl_graph_extract_line(orwl_graph *graph,
   return true;
 }
 
-orwl_graph * orwl_graph_read(orwl_graph * graph, char const* file, size_t nb_vertices) {
+bool orwl_graph_read(orwl_graph ** graph, char const* file, size_t nb_vertices) {
   FILE*volatile f = fopen(file, "r");
   if (f == NULL) {
     P99_HANDLE_ERRNO {
     P99_XDEFAULT : {
 	perror("error when opening graph file");
-	return NULL;
+	return false;
       }
     }
   }
-  graph = P99_NEW(orwl_graph, nb_vertices);
+  *graph = P99_NEW(orwl_graph, nb_vertices);
   char msg[LINE_MAX] = {0};
   size_t nb_neighbors[nb_vertices];
   for (size_t i = 0 ; i < nb_vertices ; i++)
@@ -135,11 +135,11 @@ orwl_graph * orwl_graph_read(orwl_graph * graph, char const* file, size_t nb_ver
 
   if (regcomp(&re_connection, connection, REG_EXTENDED)) {
     printf("Connection pattern did not compile.\n");
-    return NULL;
+    return false;
   }
   if (regcomp(&re_attributes, attributes, REG_EXTENDED)) {
     printf("Attributes pattern did not compile.\n");
-    return NULL;
+    return false;
   }
   P99_UNWIND_PROTECT {
     for (size_t pass = 0 ; pass < 2 ; pass++) {
@@ -147,16 +147,16 @@ orwl_graph * orwl_graph_read(orwl_graph * graph, char const* file, size_t nb_ver
 	P99_HANDLE_ERRNO {
 	P99_XDEFAULT : {
 	    perror("error when seeking the begin of the file");
-	    orwl_graph_delete(graph);
-	    P99_UNWIND_RETURN NULL;
+	    orwl_graph_delete(*graph);
+	    P99_UNWIND_RETURN false;
 	  }
 	}
       }
       while (fgets(msg, LINE_MAX, f) != NULL) {
-	if (!orwl_graph_extract_line(graph, remove_eol(msg), pass, nb_neighbors, &re_connection, &re_attributes)) {
+	if (!orwl_graph_extract_line(*graph, remove_eol(msg), pass, nb_neighbors, &re_connection, &re_attributes)) {
 	  printf("error while extracting a line in the graph file\n");
-	  orwl_graph_delete(graph);
-	  P99_UNWIND_RETURN NULL;
+	  orwl_graph_delete(*graph);
+	  P99_UNWIND_RETURN false;
 	}
       }
     }
@@ -165,7 +165,7 @@ orwl_graph * orwl_graph_read(orwl_graph * graph, char const* file, size_t nb_ver
     regfree(&re_connection);
     regfree(&re_attributes);
   }
-  return graph;
+  return true;
 }
 
 void orwl_address_book_insert_id(orwl_address_book *ab,
@@ -193,7 +193,7 @@ bool orwl_address_book_extract_line(orwl_address_book *ab, char const *str, rege
     size_t location = extract_size_t_from_str(match[2].rm_so,
 					      match[2].rm_eo,
 					      str);
-    char host[16] = {0};
+    char host[256] = {0};
     extract_str_from_str(match[3].rm_so,
 			 match[3].rm_eo,
 			 str,
@@ -203,18 +203,18 @@ bool orwl_address_book_extract_line(orwl_address_book *ab, char const *str, rege
   return true;
 }
 
-orwl_address_book* orwl_address_book_read(orwl_address_book *ab, char const *file, size_t nb_vertices) {
+bool orwl_address_book_read(orwl_address_book **ab, char const *file, size_t nb_vertices) {
   FILE*volatile f = fopen(file, "r");
   if (f == NULL) {
     P99_HANDLE_ERRNO {
     P99_XDEFAULT : {
 	perror("error when opening address book file");
-	return NULL;
+	return false;
       }
     }
   }
   P99_UNWIND_PROTECT {
-    ab = P99_NEW(orwl_address_book, nb_vertices);
+    *ab = P99_NEW(orwl_address_book, nb_vertices);
     const char *pattern = "^([[:digit:]]+)-([[:digit:]]+)-(.+)$";
     regex_t re;
     if (regcomp(&re, pattern, REG_EXTENDED)) {
@@ -227,22 +227,22 @@ orwl_address_book* orwl_address_book_read(orwl_address_book *ab, char const *fil
 	P99_HANDLE_ERRNO {
 	P99_XDEFAULT : {
 	    perror("error when reading a line in the address book file");
-	    orwl_address_book_delete(ab);
-	    P99_UNWIND_RETURN NULL;
+	    orwl_address_book_delete(*ab);
+	    P99_UNWIND_RETURN false;
 	  }
 	}
       }
-      if (!orwl_address_book_extract_line(ab, remove_eol(msg), &re)) {
+      if (!orwl_address_book_extract_line(*ab, remove_eol(msg), &re)) {
 	printf("error when extracting a line in the address book file\n");
-	orwl_address_book_delete(ab);
-	P99_UNWIND_RETURN NULL;
+	orwl_address_book_delete(*ab);
+	P99_UNWIND_RETURN false;
       }
     }
   P99_PROTECT:
     regfree(&re);
     fclose(f);
   }
-  return ab;
+  return true;
 }
 
 bool orwl_dump_id(orwl_server *serv,
@@ -282,23 +282,22 @@ void orwl_wait_until_file_is_here(const char *filename) {
 }
 
 bool orwl_wait_and_load_init_files(orwl_address_book **ab,
-				   const char *ab_filename,
+				   char const *ab_filename,
 				   orwl_graph **graph,
-				   const char *graph_filename,
+				   char const *graph_filename,
 				   orwl_server *serv,
-				   const char *id_filename,
+				   char const *id_filename,
 				   size_t nb_id,
 				   size_t *list_id,
 				   size_t *list_locations,
 				   size_t nb_vertices) {
+
   if (!orwl_dump_id(serv, id_filename, nb_id, list_id, list_locations))
     return false;
   orwl_wait_until_file_is_here(id_filename);
-  *ab = orwl_address_book_read(*ab, ab_filename, nb_vertices);
-  if (*ab == NULL)
+  if (!orwl_address_book_read(ab, ab_filename, nb_vertices))
     return false;
-  *graph = orwl_graph_read(*graph, graph_filename, nb_vertices);
-  if (*graph == NULL)
+  if (!orwl_graph_read(graph, graph_filename, nb_vertices))
     return false;
   return true;
 }

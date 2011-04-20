@@ -71,7 +71,7 @@ void orwl_graph_destroy(orwl_graph *graph) {
 
 DECLARE_NEW_DELETE(orwl_graph);
 
-orwl_graph * orwl_graph_read(orwl_graph * graph, char const* file, size_t nb_vertices);
+bool orwl_graph_read(orwl_graph ** graph, char const* file, size_t nb_vertices);
 
 struct orwl_address_book {
   size_t nb_vertices;
@@ -107,7 +107,7 @@ void orwl_address_book_destroy(orwl_address_book *ab) {
 
 DECLARE_NEW_DELETE(orwl_address_book);
 
-orwl_address_book* orwl_address_book_read(orwl_address_book *ab, char const *file, size_t nb_vertices);
+bool orwl_address_book_read(orwl_address_book **ab, char const *file, size_t nb_vertices);
 
 bool orwl_wait_and_load_init_files(orwl_address_book **ab,
 				   const char *ab_filename,
