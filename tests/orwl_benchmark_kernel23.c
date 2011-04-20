@@ -593,7 +593,7 @@ unsigned get_task(char const *str, size_t list_id[], const char *delim) {
   char *token = NULL;
   char *tmp = strdup(str);
   char *saveptr = NULL;
-  if (strcountchr(tmp, delim) > 1) {
+  if (strcountchr(tmp, delim) > 0) {
     token = strtok_r(tmp, &delim[0], &saveptr);
     while (token != NULL) {
       size_t main_task = str2uz(token);
