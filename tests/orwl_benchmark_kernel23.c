@@ -575,11 +575,11 @@ DEFINE_THREAD(arg_t) {
   }
 }
 
-unsigned strcountchr(char *str, char chr) {
+unsigned strcountchr(char *str, const char *chr) {
   unsigned count = 0;
   char *ptr = str;
   while (ptr != NULL) {
-    ptr = strchr(ptr, chr);
+    ptr = strchr(ptr, chr[0]);
     if (ptr != NULL) {
       count++;
       ptr = ptr + 1;
@@ -588,20 +588,20 @@ unsigned strcountchr(char *str, char chr) {
   return count;
 }
 
-unsigned get_task(char const *str, size_t list_id[], char delim) {
+unsigned get_task(char const *str, size_t list_id[], const char *delim) {
   unsigned count = 0;
   char *token = NULL;
   char *tmp = strdup(str);
   char *saveptr = NULL;
   if (strcountchr(tmp, delim) > 1) {
-    token = strtok_r(tmp, &delim, &saveptr);
+    token = strtok_r(tmp, &delim[0], &saveptr);
     while (token != NULL) {
       size_t main_task = str2uz(token);
       for (size_t i = 0 ; i < 9 ; i++) {
 	list_id[count] = main_task + i;	
 	count++;
       }
-      token = strtok_r(NULL, &delim, &saveptr);
+      token = strtok_r(NULL, &delim[0], &saveptr);
     }
   } else {
     /* if no separator is found, there is only one main task */
@@ -638,12 +638,12 @@ int main(int argc, char **argv) {
   /*
     ./orwl_benchmark_kernel23 100 10 2 2 graph2.txt global_ab.txt local_ab.txt 0,9,18,27
    */
-  nb_main_tasks = strcountchr(main_tasks, ',') + 1;
+  nb_main_tasks = strcountchr(main_tasks, ",") + 1;
   const size_t nb_tasks = nb_main_tasks * 9;
   const size_t nb_locations = nb_main_tasks * 21;
   orwl_barrier_init(&init_barr, nb_tasks);
   size_t list_tasks[nb_tasks];
-  get_task(main_tasks, list_tasks, ',');
+  get_task(main_tasks, list_tasks, ",");
   size_t list_locations[nb_tasks];
   for (int i = 0 ; i < nb_tasks ; i++)
     list_locations[i] = i;
