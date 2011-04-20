@@ -842,7 +842,19 @@ sub expandDefined(\%@) {
 }
 
 ## Receives a filename and a reference to he used macros.
-## Returns a tuple ($defines, \tokens).
+##
+## Returns a triple (defines, output, input) where
+## - defines points to a list of macro names that where change by
+##   recursively scanning the preprocessing directives in file. A file
+##   will be candidate for shortcut replacement if this list is empty,
+##   i.e this file didn't change the state of the preprocessor.
+## - input is the input after lines protected by #if/#else constructs
+##   etc have been removed. This will be the starting point for
+##   shortcut replacement if the file will be visited again, defines
+##   had been empty and the macros that are used by preprocessor are
+##   unchanged.
+## - output is the output generated from input by doing macro replacement
+
 sub openfile(_) {
     my ($file) = shift;
     ## keep track of the number of defines in this file and below
@@ -850,13 +862,16 @@ sub openfile(_) {
     ## keep track of the tokens produced by this file and below
     my @outTok;
     my $output = "";
+    my $input = "";
 
     my %used;
 
     if (defined($usedMac{$file})) {
         if (macroContained(%{$usedMac{$file}})) {
             print STDERR "reusing contents of $file\n";
-            $output .= $fileHash{$file};
+            @outTok = map {
+                (tokrep(0, $file, %used, escPre(tokenize)), "\n");
+            } split("\n", $fileHash{$file});
             goto SHORTCUT;
         } else {
             print STDERR "context for $file has changed, not reusing content.\n";
@@ -970,10 +985,12 @@ sub openfile(_) {
                         if ($name =~ m{($type|[']|[\\]|/[/*])}) {
                             warn "illegal character sequence $1 in file name: $name";
                         }
-                        my ($recdef, $ret) = openfile(findfile($name));
+                        my ($recdef, $outret, $inret) = openfile(findfile($name));
                         push(@defines, @{$recdef});
-                        $output .= $ret;
+                        $output .= $outret;
                         insertLine(@outTok, $file, $fd);
+                        $input .= $inret;
+                        $input .= $outTok[-1];
                     }
                 } elsif (m/^define\s++(.*+)/o) {
                     $_ = $1;
@@ -1030,29 +1047,32 @@ sub openfile(_) {
             }
             ## Trailing white space is no good.
             s/\s+$//o;
+            ## Store this input line for eventual reuse when we see
+            ## this file again.  We have to do this before macro
+            ## replacement since the next time some macro might have
+            ## changed and so the expansion will be different.
+            $input .= $_."\n";
             if ($skipedLines) {
                 insertLine(@outTok, $file, $fd);
                 $skipedLines = 0;
+                $input .= $outTok[-1];
             }
-            my @escPre = escPre(tokenize($_));
-            push(@outTok, tokrep(0, $file, %used, @escPre), "\n");
+            ## usage of macros in the C text itself are not accounted.
+            my %used;
+            push(@outTok, tokrep(0, $file, %used, escPre(tokenize)), "\n");
         }
     }
     warn "unbalanced #if / #endif" if ($iflevel);
-
-    $output .= flushOut(@outTok);
-    $output = compactLines($output);
-
-    if ($output =~ m/^\s*(?:#|%:)\s+(\d+).*\n*$/o) {
-        ## The file only produced line number information
-        $output = "";
-    }
 
     if (!@defines) {
         print STDERR "$file is candidate for content hashing\n";
         if (!defined($usedMac{$file}) || !eqHashtables(%{$usedMac{$file}}, %used)) {
             $usedMac{$file} = \%used;
-            $fileHash{$file} = $output;
+            if ($input =~ m/^\s*(?:#|%:)\s+(\d+).*\n*$/o) {
+                ## The file only produced line number information
+                $input = "";
+            }
+            $fileHash{$file} = $input;
         }
     } elsif (${$fileInc{$file}} > 1) {
         print STDERR "$file can not be hashed, define changes on: @defines\n";
@@ -1065,8 +1085,16 @@ sub openfile(_) {
     $SIG{__WARN__} = $back;
 
   SHORTCUT:
+    $output .= flushOut(@outTok);
+    $output = compactLines($output);
+
+    if ($output =~ m/^\s*(?:#|%:)\s+(\d+).*\n*$/o) {
+        ## The file only produced line number information
+        $output = "";
+    }
+
     print STDERR "$file has been processed\n";
-    return (\@defines, $output);
+    return (\@defines, $output, $input);
 }
 
 sub escPre(@) {
