@@ -125,7 +125,7 @@ sub printArray(\@;$);
 sub rawtokenize($);
 sub readlln(_);
 sub readln(_);
-sub skipcomments($_);
+sub logicalLine($);
 sub substituteArray(\%\@@);
 sub tokenize(_);
 sub tokrep($$\%@);
@@ -457,10 +457,9 @@ $onegraph = qr@$onegraph@;
 
 sub insertLine(\@$;$) {
     my ($outTok, $file, $fd) = @ARG;
-    push(@{$outTok},
-         "# ",
-         $fd ? $fd->input_line_number() : $NR,
-         " \"$file\"\n");
+    my $nr = $fd ? $fd->input_line_number() : $NR;
+    $nr = 0 if ($nr < 0);
+    push(@{$outTok}, "# $nr \"$file\"\n");
 }
 
 sub printArray(\@;$) {
@@ -768,9 +767,9 @@ sub readlln(_) {
     $_;
 }
 
-sub skipcomments($_) {
+sub logicalLine($) {
     my ($fd, $ret) = (shift, "");
-    @ARG = rawtokenize(shift);
+    @ARG = rawtokenize(readlln($fd));
   SCAN:
     while ($_ = shift) {
         if (!m/^["']/o && m|(.*?)/([*/])(.*)|o) {
@@ -860,7 +859,6 @@ sub openfile(_) {
     ## keep track of the number of defines in this file and below
     my @defines;
     ## keep track of the tokens produced by this file and below
-    my @outTok;
     my $output = "";
     my $input = "";
 
@@ -868,10 +866,15 @@ sub openfile(_) {
 
     if (defined($usedMac{$file})) {
         if (macroContained(%{$usedMac{$file}})) {
-            print STDERR "reusing contents of $file\n";
-            @outTok = map {
-                (tokrep(0, $file, %used, escPre(tokenize)), "\n");
-            } split("\n", $fileHash{$file});
+            if (length($fileHash{$file})) {
+                print STDERR "reusing contents of $file\n";
+                @ARG = map {
+                    (tokrep(0, $file, %used, escPre(tokenize)), "\n");
+                } split("\n", $fileHash{$file});
+            } else {
+                print STDERR "reusing contents of $file: empty\n";
+                @ARG = "\n";
+            }
             goto SHORTCUT;
         } else {
             print STDERR "context for $file has changed, not reusing content.\n";
@@ -879,12 +882,8 @@ sub openfile(_) {
             delete $usedMac{$file};
         }
     } else {
-        if (!defined($fileInc{$file})) {
-            my $dummy = 1;
-            $fileInc{$file} = \$dummy;
-        } else {
-            ++${$fileInc{$file}};
-        }
+        ## the increment operator is magic on undef values.
+        ++${$fileInc{$file}};
         print STDERR "$file must be processed (${$fileInc{$file}})\n";
     }
 
@@ -902,10 +901,8 @@ sub openfile(_) {
     $SIG{__WARN__} = sub { print STDERR "$file:".$fd->input_line_number().": warning: $ARG[0]"; };
     my @iffound;
 
-    push(@outTok, "# 1 \"$file\"\n");
-    while (my $_ = readlln($fd)) {
-        my $mult = 0;
-        $_ = skipcomments($fd, $_);
+    insertLine(@ARG, $file, $fd);
+    while (my $_ = logicalLine($fd)) {
         #print STDERR "line: "."." x $aclevel."!" x ($iflevel - $aclevel)."$_\n";
         ############################################################
         ## First check if this is starting a preprocessing directive.
@@ -981,16 +978,16 @@ sub openfile(_) {
                             goto RETRY;
                         }
                     } else {
-                        $output .= flushOut(@outTok);
+                        $output .= flushOut(@ARG);
                         if ($name =~ m{($type|[']|[\\]|/[/*])}) {
                             warn "illegal character sequence $1 in file name: $name";
                         }
                         my ($recdef, $outret, $inret) = openfile(findfile($name));
                         push(@defines, @{$recdef});
                         $output .= $outret;
-                        insertLine(@outTok, $file, $fd);
+                        insertLine(@ARG, $file, $fd);
                         $input .= $inret;
-                        $input .= $outTok[-1];
+                        $input .= $ARG[-1];
                     }
                 } elsif (m/^define\s++(.*+)/o) {
                     $_ = $1;
@@ -1000,9 +997,7 @@ sub openfile(_) {
                         my ($params, $dfn) = $rest =~ m/^\(([^()]*)\)\s*+(.*+)$/o;
                         $dfn //= "";
                         if ($params) {
-                            #print STDERR "params before $params\n";
                             $params =~ s/[.][.][.]\s*$/__VA_ARGS__/o;
-                            #print STDERR "params after $params\n";
                         }
                         my $definition =
                             defined($params)
@@ -1022,27 +1017,27 @@ sub openfile(_) {
                 } elsif (m/^pragma\s++message\s+(.*+)/o) {
                     warn "message $1";
                 } else {
-                    push(@outTok, "# $_");
+                    push(@ARG, "# $_");
                 }
             }
             ## Ensure that our line numbering stays close to the original
-            push(@outTok, "\n");
+            push(@ARG, "\n");
         }
         ## End of preprocessing directives
         ############################################################
         elsif ($iflevel != $aclevel) {
             ## a blob that is protected by #if
-            push(@outTok, "\n");
+            push(@ARG, "\n");
         } else {
             ## Glue a leading sequence of white space to a preceding one, if any.  This
             ## ensures that indentation stays about the same for the preprocessed file
             if (m/^(\s++)(.*+)$/o) {
                 my $next = $1;
                 $_ = $2;
-                if (@outTok && $outTok[-1] =~ /^\s++$/so) {
-                    $outTok[-1] .= $next;
+                if (@ARG && $ARG[-1] =~ /^\s++$/so) {
+                    $ARG[-1] .= $next;
                 } else {
-                    push(@outTok, $next);
+                    push(@ARG, $next);
                 }
             }
             ## Trailing white space is no good.
@@ -1053,13 +1048,13 @@ sub openfile(_) {
             ## changed and so the expansion will be different.
             $input .= $_."\n";
             if ($skipedLines) {
-                insertLine(@outTok, $file, $fd);
+                insertLine(@ARG, $file, $fd);
                 $skipedLines = 0;
-                $input .= $outTok[-1];
+                $input .= $ARG[-1];
             }
             ## usage of macros in the C text itself are not accounted.
             my %used;
-            push(@outTok, tokrep(0, $file, %used, escPre(tokenize)), "\n");
+            push(@ARG, tokrep(0, $file, %used, escPre(tokenize)), "\n");
         }
     }
     warn "unbalanced #if / #endif" if ($iflevel);
@@ -1068,13 +1063,18 @@ sub openfile(_) {
         print STDERR "$file is candidate for content hashing\n";
         if (!defined($usedMac{$file}) || !eqHashtables(%{$usedMac{$file}}, %used)) {
             $usedMac{$file} = \%used;
-            if ($input =~ m/^\s*(?:#|%:)\s+(\d+).*\n*$/o) {
-                ## The file only produced line number information
+            if ($input =~ m/^(?:\s*+(?:#|%:)\s++\d++[^\n]++\n*+)*+$/so) {
+                ## The file only contained line number information
+                print STDERR "$file only contained line number information\n";
                 $input = "";
+            } else {
+                print STDERR "$file has more: $input\n";
             }
             $fileHash{$file} = $input;
         }
     } elsif (${$fileInc{$file}} > 1) {
+        my %defines = map { $_ => 1 } @defines;
+        @defines = sort keys %defines;
         print STDERR "$file can not be hashed, define changes on: @defines\n";
     }
 
@@ -1085,11 +1085,12 @@ sub openfile(_) {
     $SIG{__WARN__} = $back;
 
   SHORTCUT:
-    $output .= flushOut(@outTok);
+    $output .= flushOut(@ARG);
     $output = compactLines($output);
 
-    if ($output =~ m/^\s*(?:#|%:)\s+(\d+).*\n*$/o) {
+    if ($output =~ m/^(?:\s*+(?:#|%:)\s++\d++[^\n]++\n*+)*+$/so) {
         ## The file only produced line number information
+        print STDERR "$file only produced line number information\n";
         $output = "";
     }
 
@@ -1543,30 +1544,53 @@ sub flushOut(\@) {
 }
 
 sub compactLines(_) {
-    my ($output) = @ARG;
-    my @lines = split(/\n/, $output);
-
-    $output = "";
+    @ARG = split(/\n/, shift);
 
     my @lineS;
-    while (@lines) {
-        my $lastTok;
-        while (defined($lines[0]) && $lines[0] =~ m/^\s*(?:#|%:)\s+(\d+)/o) {
+    while (@ARG) {
+        my $_;
+        while (defined($ARG[0]) && $ARG[0] =~ m/^\s*(?:#|%:)\s+(\d+)/o) {
             my $ln = $1;
-            $lastTok = shift(@lines);
-            while (@lines && defined($lines[0]) && $lines[0] =~ m/^\s*$/o) {
+            $_ = shift;
+            while (defined($ARG[0]) && $ARG[0] =~ m/^\s*$/o) {
                 ++$ln;
-                shift(@lines);
+                shift;
             }
-            --$ln;
-            $lastTok =~ s/^\s*(#|%:)\s+(?:\d+)(.*)$/$1 $ln$2/;
+            s/^\s*(#|%:)\s+(?:\d+)(.*)$/$1 $ln$2/;
         }
-        push(@lineS, $lastTok) if ($lastTok);
-        push(@lineS, shift(@lines)) if (@lines);
+        push(@lineS, $_) if ($_);
+        push(@lineS, shift) if (@ARG);
     }
-
-    $output = join("\n", @lineS, "");
-    return $output;
+    my $ln = 0;
+    @ARG = map {
+        if (m/^\s*$/o) {
+            ++$ln;
+            ();
+        } elsif (m/^\s*(?:#|%:)\s+\d+/o) {
+            $ln = 0;
+            ($_);
+        } else {
+            my @tmp = ($_, ("") x $ln);
+            $ln = 0;
+            (@tmp);
+        }
+    } @lineS;
+    my $last;
+    @ARG = map {
+        if (m/^\s*(?:#|%:)\s+\d+/o) {
+            $last = $_;
+            ();
+        } else {
+            if ($last) {
+                my @tmp = ("", $last, $_);
+                undef $last;
+                @tmp;
+            } else {
+                ($_);
+            }
+        }
+    } @ARG;
+    join("\n", @ARG, "");
 }
 
 ## Recursively parse a parenthesis expression.
