@@ -329,7 +329,7 @@ void rpc_check_colored_init_finished(size_t id,
 				     rand48_t *seed) {
   orwl_endpoint there = ab->eps[id];
   /* warning, this is a blocking operation */
-  orwl_rpc(&there, seed, auth_sock_check_initialization, (uint64_t)exp2(id));
+  orwl_rpc(&there, seed, auth_sock_check_initialization, id);
 }
 
 size_t orwl_get_neighbors_in_undirected_graph(orwl_vertex **my_neighbors,
@@ -381,6 +381,7 @@ bool orwl_wait_to_initialize_locks(size_t id,
   						     graph);
   
   for (size_t i = 0 ; i < nb ; i++) {
+    assert(my_neighbors[i]->color != me->color);
     /* we ensure that the neighbors with a lower color are initialized */
     if (my_neighbors[i]->color < me->color) {
       size_t vertex_id = orwl_get_id_from_vertex(graph, my_neighbors[i]);
@@ -399,27 +400,17 @@ bool orwl_wait_to_start(size_t id,
 			orwl_graph *graph,
 			orwl_address_book *ab,
 			orwl_server *server,
-			orwl_handle *h,
+			size_t pos,
+			size_t nb_local_tasks,
 			rand48_t *seed) {
   pthread_rwlock_wrlock(&server->lock);
-  server->id_initialized = server->id_initialized | (uint64_t)exp2(id);
+  server->id_initialized[id] = true;
   pthread_rwlock_unlock(&server->lock);
-
   orwl_vertex * me = &graph->vertices[id];
   for (size_t i = 0 ; i < me->nb_neighbors ; i++)
-    rpc_check_colored_init_finished(me->neighbors[i], graph, ab, seed);
+    if (graph->vertices[me->neighbors[i]].color > me->color)
+      rpc_check_colored_init_finished(me->neighbors[i], graph, ab, seed);
 
-  /* unlocking the location */
-  orwl_release(h);
-  
+  orwl_server_delayed_unblock(server, nb_local_tasks);
   return true;
-}
-
-void orwl_lock_locations(size_t start, size_t nb_tasks, 
-			 orwl_handle *initialization_handle,
-			 orwl_mirror *locations) {
-  for (size_t i = start ; i < nb_tasks ; i++) {
-    orwl_write_request(&locations[i], &initialization_handle[i]);
-    orwl_acquire(&initialization_handle[i]);
-  }
 }

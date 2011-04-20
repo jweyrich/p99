@@ -4,7 +4,7 @@
 
 #include "orwl_endpoint.h"
 #include "orwl_server.h"
-#include "orwl_remote_queue.h"
+#include "orwl_handle2.h"
 #include "orwl_int.h"
 
 P99_DECLARE_STRUCT(orwl_vertex);
@@ -139,11 +139,8 @@ bool orwl_wait_to_start(size_t id,
 			orwl_graph *graph,
 			orwl_address_book *ab,
 			orwl_server *server,
-			orwl_handle *h,
+			size_t pos,
+			size_t nb_local_tasks,
 			rand48_t *seed);
-
-void orwl_lock_locations(size_t start, size_t nb_tasks, 
-			 orwl_handle *initialization_handle,
-			 orwl_mirror *locations);
 
 #endif

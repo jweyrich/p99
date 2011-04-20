@@ -42,7 +42,8 @@ orwl_server* orwl_server_init(orwl_server *serv,
       .max_queues = max_queues,
       .wqs = max_queues ? orwl_wq_vnew(max_queues) : P99_0(void*),
       .host = ORWL_HOST_INITIALIZER(serv->host, 0, 0, 1),
-      .id_initialized = 0,
+      .id_initialized = (bool*)calloc(sizeof(bool), max_queues),
+      .unblocked_locations = 0,
     };
     pthread_rwlock_init(&serv->lock, NULL);
     if (endp && endp[0]) orwl_endpoint_parse(&serv->host.ep, endp);
@@ -212,6 +213,13 @@ void orwl_server_unblock(orwl_server *srv) {
   srv->whs = 0;
 }
 
+void orwl_server_delayed_unblock(orwl_server *srv, size_t nb_tasks) {
+  ORWL_CRITICAL {
+    srv->unblocked_locations++;
+  }
+  if (srv->unblocked_locations == nb_tasks)
+    orwl_server_unblock(srv);
+}
 
 void
 orwl_start(orwl_server *serv,       /*!< [out] the server object to initialize */

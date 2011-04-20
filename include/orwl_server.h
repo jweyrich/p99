@@ -29,7 +29,8 @@ struct orwl_server {
   size_t info_len;         /*!< the length of #info */
   pthread_t id;
   pthread_rwlock_t lock;
-  uint64_t id_initialized;
+  bool* id_initialized;
+  size_t unblocked_locations;
 };
 
 #define ORWL_SERVER_INITIALIZER(NAME, MAXC, ADDR, PORT)        \
@@ -122,6 +123,7 @@ void orwl_server_block(orwl_server *serv);
  **/
 void orwl_server_unblock(orwl_server *serv);
 
+void orwl_server_delayed_unblock(orwl_server *srv, size_t nb_tasks);
 
 /**
  ** @memberof orwl_server

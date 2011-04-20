@@ -111,6 +111,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
       report(0, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
       state = orwl_wq_request(srv_wq, &srv_wh, 2);
     }
+    
     if (state != orwl_requested) {
       if (!piggyback) orwl_wh_delete(srv_wh);
       auth_sock_close(Arg);
@@ -194,13 +195,12 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
   Arg->ret = ret;
 }
 
-DEFINE_AUTH_SOCK_FUNC(auth_sock_check_initialization, uint64_t id_pow2) {
-  AUTH_SOCK_READ(Arg, auth_sock_check_initialization, uint64_t id_pow2);
+DEFINE_AUTH_SOCK_FUNC(auth_sock_check_initialization, uint64_t id) {
+  AUTH_SOCK_READ(Arg, auth_sock_check_initialization, uint64_t id);
   bool finished = false;
   while (!finished) {
     pthread_rwlock_rdlock(&Arg->srv->lock);
-    if ((Arg->srv->id_initialized & id_pow2) == id_pow2)
-      finished = true;
+    finished = Arg->srv->id_initialized[id];
     pthread_rwlock_unlock(&Arg->srv->lock);
     sleepfor(0.1);
   }
