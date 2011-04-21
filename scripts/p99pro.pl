@@ -1109,8 +1109,6 @@ sub openfile(_) {
                 ## The file only contained line number information
                 print STDERR "$file only contained line number information\n";
                 $input = "";
-            } else {
-                print STDERR "$file has more: $input\n";
             }
             $fileHash{$file} = $input;
         }
@@ -1156,17 +1154,33 @@ sub escPre(@) {
     } @ARG;
 }
 
+sub expandComma(@) {
+    if (@ARG) {
+        @ARG = map {
+            (",", expandPar(ref($_) ? @{$_} : ($_)));
+        } @ARG;
+        shift;
+    }
+    @ARG;
+}
+
+sub expandPar(@) {
+    map {
+        if (ref) {
+            ("(", expandComma(@{$_}), ")");
+        } else {
+            ($_);
+        }
+    } @ARG;
+}
 
 sub unescPre(@) {
     my @outToks;
+    @ARG = expandPar(@ARG);
   OUTER:
     while (@ARG) {
         my $_ = shift;
-        if (ref) {
-            foreach (@{$_}) {
-                unshift(@ARG, (ref($_) ? ("(", @{$_}, ")") : ($_)));
-            }
-        } elsif (length) {
+        if (length) {
             if (ord == UNSTRING) {
                 $_ = shift;
                 print STDERR "unstringing $_\n";
