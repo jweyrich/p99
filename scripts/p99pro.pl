@@ -192,29 +192,37 @@ my %undefMacros;
                     undef;
                 }
             } else {
-                ## A macro can only be hidden if it has been evaluated at least once. So in this path
-                ## we don't need to question hidden. In the contrary we can initialize it so we don't
-                ## have to question if it is defined hereafter.
-                $hidden{$ARG[0]} = 0;
-                my $tokDef = $macro{$ARG[0]};
-                my %def;
-                for (my $i = 0; $i < $#{$tokDef}; ++$i) {
-                    $def{$tokDef->[$i]} = $i;
+                my $_ = shift;
+                my ($tokDef, %def, %pos) = ($macro{$_});
+
+                ## For each name in the parameter list, hash its
+                ## position in that list
+                foreach (0 .. $#{$tokDef}-1) {
+                    $def{$tokDef->[$_]} = $_;
                 }
-                $argPosition{$ARG[0]} = \%def;
-                my @counts;
-                my %pos;
-                my @repl = getTokDef(@{$tokDef});
-                foreach my $repl (@repl) {
-                    if (defined($def{$repl})) {
-                        my $i = $def{$repl};
-                        $counts[$i] = ($counts[$i] // 0) + 1;
-                        $pos{$i} = 1;
-                    }
+                $argPosition{$_} = \%def;
+
+                ## For each token in the replacement list, look up if
+                ## it is a parameter, hash the positions that are
+                ## being used and count its usage.
+                map {
+                    ++$pos{$_};
+                } grep {
+                    defined;
+                } map {
+                    $def{$_};
+                } getTokDef(@{$tokDef});
+                $positions{$_} = [sort { $a <=> $b } keys %pos];
+
+                ## Linearlize the hash to an array. Macros will only
+                ## have at most some hundred arguments so hopefully
+                ## lookup will be more efficient when using an array.
+                foreach (keys %pos) {
+                    $ARG[$_] = $pos{$_};
                 }
-                $counters{$ARG[0]} = \@counts;
-                my @pos = sort { $a <=> $b } keys %pos;
-                $positions{$ARG[0]} = \@pos;
+                $counters{$_} = \@ARG;
+
+                ## return the value
                 $tokDef;
             }
         }
@@ -328,7 +336,6 @@ my %fileHash;
 
 ## How many times have we processed this file.
 my %fileInc;
-
 
 ## did we locally change line numbering?
 my $skipedLines = 0;
@@ -1100,6 +1107,8 @@ sub openfile(_) {
                 ## The file only contained line number information
                 print STDERR "$file only contained line number information\n";
                 $input = "";
+            } else {
+                print STDERR "$file has more: $input\n";
             }
             $fileHash{$file} = $input;
         }
@@ -1300,7 +1309,7 @@ sub joinToks(@) {
 }
 
 sub getTokDef(\@) {
-    if (ref($ARG[0]->[-1]) ne "ARRAY") {
+    if (!ref($ARG[0]->[-1])) {
         ## watch that %: and %:%: are translated to # and ## these are
         ## replaced later, anyhow, so the original spelling is not
         ## relevant for the preprocessor output. So we might as well
@@ -1473,7 +1482,7 @@ sub tokrep($$\%@) {
                     push(@outToks,  "");
                 } else {
                     ## If the name of the macro being replaced is found during this scan of the replacement
-                    ## list (not including the rest of the source file's preprocessing tokens), it is not
+                    ## list (not including the rest of the source file’s preprocessing tokens), it is not
                     ## replaced.
                     macroHide;
                     push(@outToks,  "$intervalOpen$_") if ($level);
