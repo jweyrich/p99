@@ -36,7 +36,9 @@ my @undefs;
 ## the standard we are operating with
 my $std = "c99";
 ## whether or not to output a list of all #define
-my $show;
+my $dM;
+## whether or not to output a list of all used #define
+my $dU;
 ## use as a separator to tokens for debugging
 my $sep = "";
 ## request output with special character sets: without digraphs (0),
@@ -49,7 +51,8 @@ my $result = GetOptions (
     "include|I=s"        => \@{dirs},      # list of strings
     "define|D=s"        => \@{defs},      # list of strings
     "undef|U=s"        => \@{undefs},    # list of strings
-    "dM!"        => \${show},    # flag
+    "dM!"        => \${dM},    # flag
+    "dU!"        => \${dU},    # flag
     "hosted!"        => \${hosted},    # flag
     "separator=s"        => \${sep},    # string
     "std|standard=s"        => \${std},    # string
@@ -116,7 +119,7 @@ sub macroContained(\%);
 sub macroDefine($\@;\@);
 sub macroHide(_);
 sub macroHidden();
-sub macroList();
+sub macroList(;$);
 sub macroUndefine($;\@);
 sub macroUnhide(_);
 sub openfile(_);
@@ -139,6 +142,10 @@ my %counters;
 my %positions;
 ## Each entry holds a hash that gives the position for each macro argument name.
 my %argPosition;
+
+## All the potential macros that have been queried and that have not
+## been defined, then.
+my %undefMacros;
 
 ## holds all defined macros
 {
@@ -273,15 +280,37 @@ my %argPosition;
         return containedHashtables(%{$ARG[0]}, %macro)
     }
 
-    sub macroList() {
-        foreach my $name (sort keys %macro) {
-            print STDERR "#define $name";
-            my @def = @{$macro{$name}};
-            my $repl = pop @def;
-            if (@def) {
-                print STDERR "(", join(", ", @def), ")";
+    sub macroList(;$) {
+        my ($restricted) = shift;
+        my %interesting = ($restricted
+                           ? (%undefMacros, %macro)
+                           : (%macro));
+        foreach my $name (sort keys %interesting) {
+            if (ref $macro{$name}) {
+                my @def = @{$macro{$name}};
+                my $repl = pop @def;
+
+                if (ref($repl)) {
+                    $repl = untokenize(@{$repl});
+                } elsif ($restricted) {
+                    next;
+                }
+                $def[-1] = "..." if ($def[-1] eq "__VA_ARGS__");
+
+                if ($restricted && $undefMacros{$name}) {
+                    print STDERR
+                        "#undef\t$name ",
+                        " " x (30 - length($name)),
+                        "/** has been redefined later **/\n";
+                }
+                print STDERR "#define\t$name";
+                if (@def) {
+                    print STDERR "(", join(", ", @def), ")";
+                }
+                print STDERR " $repl\n";
+            } else {
+                print STDERR "#undef\t$name\n";
             }
-            print STDERR " $repl\n";
         }
     }
 
@@ -832,6 +861,7 @@ sub expandDefined(\%@) {
                 $used->{$_} = $val;
                 $_ = 1;
             } else {
+                $undefMacros{$_} = 1;
                 $_ = 0;
             }
         }
@@ -939,6 +969,9 @@ sub openfile(_) {
                 if ($aclevel == $iflevel) {
                     my $val = macro($2);
                     $used{$2} = $val;
+                    if (!defined($val)) {
+                        $undefMacros{$2} = 1;
+                    }
                     if ($1 xor $val) {
                         ++$aclevel;
                         $iffound[$aclevel] = 1;
@@ -1067,8 +1100,6 @@ sub openfile(_) {
                 ## The file only contained line number information
                 print STDERR "$file only contained line number information\n";
                 $input = "";
-            } else {
-                print STDERR "$file has more: $input\n";
             }
             $fileHash{$file} = $input;
         }
@@ -1442,7 +1473,7 @@ sub tokrep($$\%@) {
                     push(@outToks,  "");
                 } else {
                     ## If the name of the macro being replaced is found during this scan of the replacement
-                    ## list (not including the rest of the source file’s preprocessing tokens), it is not
+                    ## list (not including the rest of the source file's preprocessing tokens), it is not
                     ## replaced.
                     macroHide;
                     push(@outToks,  "$intervalOpen$_") if ($level);
@@ -1646,4 +1677,5 @@ foreach (@ARGV) {
     print STDOUT $ret;
 }
 
-macroList() if ($show);
+macroList() if ($dM);
+macroList(1) if ($dU);
