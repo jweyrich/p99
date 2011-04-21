@@ -108,7 +108,9 @@ sub eqArrays(\@\@);
 sub eqHashtables(\%\%);
 sub escPre(@);
 sub evalExpr($@);
+sub expandComma(@);
 sub expandDefined(\%@);
+sub expandPar(@);
 sub findfile(_);
 sub flushOut(\@);
 sub getTokDef(\@);
@@ -1154,16 +1156,21 @@ sub escPre(@) {
     } @ARG;
 }
 
+sub expandPar(@);
+
+## This auxiliary supposes that the list is non empty and that each
+## element is a reference to an array of tokens.
 sub expandComma(@) {
-    if (@ARG) {
-        @ARG = map {
-            (",", expandPar(ref($_) ? @{$_} : ($_)));
-        } @ARG;
-        shift;
-    }
-    @ARG;
+    @ARG = map {
+        (",", expandPar(@{$_}));
+    } @ARG;
+    splice(@ARG, 1);
 }
 
+## Receives a list of tokens that are either plain or of the form
+## [[]...] where the outer array represents a parenthesized token
+## sequence and the inner parts are token sequences that are separated
+## by commas.
 sub expandPar(@) {
     map {
         if (ref) {
