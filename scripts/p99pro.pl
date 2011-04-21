@@ -533,8 +533,10 @@ sub substituteArray(\%\@@) {
             ++$counts[$i];
         } elsif ($_ eq "#") {
             if (defined($def->{$ARG[0]})) {
-                #print STDERR "stringifying argument $_ $ARG[0]\n";
-                $_ = untokenize(@{$args->[$def->{shift}]});
+                $_ = untokenize(@{$args->[$def->{$ARG[0]}]});
+                # for some reason that I don't understand this shift
+                # can't just be put in-place in the previous line.
+                shift;
 
                 ## White space before the first preprocessing token
                 ## and after the last preprocessing token composing
@@ -1482,7 +1484,7 @@ sub tokrep($$\%@) {
                     push(@outToks,  "");
                 } else {
                     ## If the name of the macro being replaced is found during this scan of the replacement
-                    ## list (not including the rest of the source file’s preprocessing tokens), it is not
+                    ## list (not including the rest of the source file's preprocessing tokens), it is not
                     ## replaced.
                     macroHide;
                     push(@outToks,  "$intervalOpen$_") if ($level);
