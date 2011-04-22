@@ -1368,6 +1368,46 @@ sub tokrep($$\%@) {
             push(@outToks, $_);
             next LOOP;
         }
+        if (ref) {
+            ## An reference represents an parenthesized expression
+            ## that already has been parsed. Do the token replacement
+            ## recursively. This will not work if the replacement
+            ## produces new parenthesis that are unbalanced on a
+            ## particular level. In such a case we have to backtrack.
+            my $backtrack;
+            my @repl = map {
+                my @ret = ([]);
+                my $paren = 0;
+                if (!$backtrack) {
+                    foreach (tokrep($level + 1, $file, %{$used}, @{$_})) {
+                        if (ord == COMMA) {
+                            if (!$paren) {
+                                $backtrack = 1;
+                                last;
+                            } else {
+                                push(@ret, []);
+                            }
+                        } elsif (ord == PARENOPEN) {
+                            ++$paren;
+                            push(@{$ret[-1]}, $_);
+                        } elsif (ord == PARENCLOSE) {
+                            --$paren;
+                            push(@{$ret[-1]}, $_);
+                        } else {
+                            push(@{$ret[-1]}, $_);
+                        }
+                    }
+                }
+                @ret;
+            } @{$_};
+            if ($backtrack) {
+                warn "unbalanced parenthesis when replacing: backtracking";
+                @repl = expandPar(($_));
+                @repl = tokrep($level + 1, $file, %{$used}, @repl);
+            }
+            push(@outToks, \@repl);
+            next LOOP;
+        }
         ## For the majority of the tokens that we pass through this, they will not define a macro. So
         ## we hide all the fancy stuff inside the if clause.
         if (defined(macro)) {
