@@ -118,7 +118,7 @@ sub getTokDef(\@);
 sub joinToks(@);
 sub macro(_);
 sub macroContained(\%);
-sub macroDefine($\@;\@);
+sub macroDefine($\@;\@\%);
 sub macroHide(_);
 sub macroHidden();
 sub macroList(;$);
@@ -231,8 +231,8 @@ my %undefMacros;
     }
 
 
-    sub macroDefine($\@;\@) {
-        my ($name, $val, $defines) = @ARG;
+    sub macroDefine($\@;\@\%) {
+        my ($name, $val, $defines, $used) = @ARG;
         # An identifier currently defined as an object-like macro
         # shall not be redefined by another #define preprocessing
         # directive unless the second definition is an
@@ -240,12 +240,18 @@ my %undefMacros;
         # lists are identical. Likewise, ...
         my $todo = !defined($macro{$name});
         if (!$todo) {
-            my $sep = int(rand(1000000));
-            my $old = join("|$sep|", @{$macro{$name}});
-            my $new = join("|$sep|", @{$val});
-            $todo = $old ne $new;
-            warn "redefinition of macro $name"
-                if ($todo);
+            ## Enforce the tokenized representation of both
+            ## definitions.
+            getTokDef(@{$macro{$name}});
+            getTokDef(@{$val});
+            $todo = !eqArrays(@{$macro{$name}}, @{$val});
+            if ($todo) {
+                warn "redefinition of macro $name:";
+                warn "old: ".printArray(@{$macro{$name}});
+                warn "new: ".printArray(@{$val});
+            } else {
+                $used->{$name} = $macro{$name};
+            }
         }
         if ($todo) {
             $macro{$name} = $val;
@@ -1049,7 +1055,7 @@ sub openfile(_) {
                                ? [ "", $dfn ]
                                : [ split(/,\s*/o, $params), $dfn ])
                             : [ $rest ];
-                        macroDefine($name, @{$definition}, @defines);
+                        macroDefine($name, @{$definition}, @defines, %used);
                     } else {
                         warn "define directive without a name: $_"
                     }
