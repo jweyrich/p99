@@ -1663,40 +1663,42 @@ sub flushOut(\@) {
 }
 
 sub compactLines(_) {
-    @ARG = split(/\n/, shift);
-
+    @ARG = split(/\n/, shift, -1);
     my @lineS;
     while (@ARG) {
         my $_;
-        while (defined($ARG[0]) && $ARG[0] =~ m/^\s*(?:#|%:)\s+(\d+)/o) {
+        while (defined($ARG[0]) && $ARG[0] =~ m/^\s*(?:#|%:)\s*(\d+)/o) {
             my $ln = $1;
             $_ = shift;
             while (defined($ARG[0]) && $ARG[0] =~ m/^\s*$/o) {
                 ++$ln;
                 shift;
             }
-            s/^\s*(#|%:)\s+(?:\d+)(.*)$/$1 $ln$2/;
+            s/^\s*(#|%:)\s*(?:\d+)(.*)$/$1 $ln$2/;
         }
-        push(@lineS, $_) if ($_);
-        push(@lineS, shift) if (@ARG);
+        if (defined($_)) {
+            push(@lineS, $_);
+        } else {
+            push(@lineS, shift);
+        }
     }
     my $ln = 0;
     @ARG = map {
         if (m/^\s*$/o) {
             ++$ln;
             ();
-        } elsif (m/^\s*(?:#|%:)\s+\d+/o) {
+        } elsif (m/^\s*(?:#|%:)\s*\d+/o) {
             $ln = 0;
             ($_);
         } else {
-            my @tmp = ($_, ("") x $ln);
+            my @tmp = (("") x $ln, $_);
             $ln = 0;
             (@tmp);
         }
     } @lineS;
     my $last;
     @ARG = map {
-        if (m/^\s*(?:#|%:)\s+\d+/o) {
+        if (m/^\s*(?:#|%:)\s*\d+/o) {
             $last = $_;
             ();
         } else {
