@@ -469,7 +469,7 @@ my $isstringToken = qr/(?:L?".*")/;
 my $ischar = qr/(?:L?'(?:[^'\\]|[\\].)*+')/;
 my $ischarToken = qr/(?:L?'.*')/;
 ## a regexp to detect preprocessor number token
-my $isnumber = qr/(?:[.]?+[0-9](?:[eEpP][-+]|[.a-zA-Z0-9]++)*+)/;
+my $isnumber = qr/(?:[.]?+[0-9](?:(?:[eEpP][-+])|(?:[.a-zA-Z0-9]+))*)/;
 ## a regexp to detect preprocessor identifier token
 my $isidentifier = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*+)/;
 
@@ -478,7 +478,7 @@ my $ishhash = qr/(?:[#][#]|[%][:][%][:])/;
 
 my $tokenizer = qr/(?:$isstring|$ischar|$isidentifier|$isnumber)/;
 my $tokenizerSplit = qr/($isstring|$ischar|$isidentifier|$isnumber)/;
-my $tokenizerToken = qr/^$isstringToken|$ischarToken|$isidentifier|$isnumber$/;
+my $tokenizerToken = qr/^(?:$isstringToken|$ischarToken|$isidentifier|$isnumber)$/;
 
 ## all third characters that may appear in a trigraph
 my $trigraph = "-!'/=()<>";
@@ -784,7 +784,7 @@ sub untokenize(@) {
             ## visually mark a clash such as 199901L"my string" where
             ## the L could have been meant for making a long int or
             ## for creating a wide character string.
-        } elsif (m/^$isstring|$ischar$/o && $prev =~ m/^$isidentifier|$isnumber$/o) {
+        } elsif (m/^(?:$isstring|$ischar)$/o && $prev =~ m/^(?:$isidentifier|$isnumber)$/o) {
             $space = "$sep ";
 
             ## most two character tokens get spaces surrounding them
@@ -1293,39 +1293,49 @@ sub outputMeta(\%\@) {
 ## tokens or placeholders (no callback or newline) to we may just use
 ## normal shift operations.
 sub joinToks(@) {
-    my (@outToks, %hid, $nl, $cl, $op, $right, $joined, $meta);
+    my (@outToks, %hid, $nl, $cl, $op, $right, $joined, $meta, @ops);
     $meta = countMeta(@ARG, %hid);
     outputMeta(%hid, @outToks) if ($meta);
     while (@ARG) {
         ## This assumes that @ARG doesn't start with a meta token once we come here.
         my ($_, $meta) = (shift, countMeta(@ARG, %hid));
         if (@ARG && $ARG[0] eq "##") {
+            $joined = $_;
+            @ops = ($_);
+          JOIN:
             ## just drop it
             shift;
             ## accumulate
             $meta += countMeta(@ARG, %hid);
 
-            ## If there are meta tokens in the range between the left and the right token of the
-            ## join we move the closing hide intervals behind and the other ones in front.
-            ($nl, $cl, $op) = compactMeta(%hid);
-
             if (@ARG) {
-                $joined = $_ . $ARG[0];
+                $joined .= $ARG[0];
                 if (!length($joined)
                     || $joined =~ $tokenizerToken
                     || $joined =~ $punctToken
                     ) {
-                    push(@outToks, @{$nl}, @{$op}, $joined, @{$cl});
+                    $_ = $joined;
+                    push(@ops, shift);
+                    if (@ARG && $ARG[0] eq "##") {
+                        goto JOIN;
+                    }
+                    if ($#ops > 1) {
+                        warn "Multiple join by the ## operator for \"$joined\" (@ops) may be implementation dependent."
+                            if (($joined =~ m/\w/o) && ($joined =~ m/[-+]/o));
+                    }
                 } else {
                     warn "'$joined' is not a valid preprocessor token";
-                    push(@outToks, @{$nl}, $_, $ARG[0], @{$cl}, @{$op});
                 }
-                shift;
-                $meta = countMeta(@ARG, %hid);
-                outputMeta(%hid, @outToks) if ($meta);
             } else {
                 warn "'$_ ##' at the end of a preprocessing directive";
-                push(@outToks, @{$nl}, $_, @{$cl}, @{$op}) if (defined && length);
+            }
+            ## If there are meta tokens in the range between the left and the right token of the
+            ## join we move the closing hide intervals behind and the other ones in front.
+            ($nl, $cl, $op) = compactMeta(%hid);
+            push(@outToks, @{$nl}, @{$op}, $_, @{$cl});
+            if (@ARG) {
+                $meta = countMeta(@ARG, %hid);
+                outputMeta(%hid, @outToks) if ($meta);
             }
         } else {
             push(@outToks, $_) if (length);
