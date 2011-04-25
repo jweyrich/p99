@@ -149,6 +149,17 @@ my %argPosition;
 ## been defined, then.
 my %undefMacros;
 
+## The amount of join operators in a macro expansion, if any.
+my %joins;
+
+## The amount of stringify operators in a macro expansion, if any.
+my %stringifies;
+
+
+## a regexp to detect preprocessor identifier token
+my $isidentifier = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*+)/;
+
+
 ## holds all defined macros
 {
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) =
@@ -194,15 +205,15 @@ my %undefMacros;
                     undef;
                 }
             } else {
-                my $_ = shift;
-                my ($tokDef, %def, %pos) = ($macro{$_});
+                my $name = shift;
+                my ($tokDef, %def, %pos) = ($macro{$name});
 
                 ## For each name in the parameter list, hash its
                 ## position in that list
                 foreach (0 .. $#{$tokDef}-1) {
                     $def{$tokDef->[$_]} = $_;
                 }
-                $argPosition{$_} = \%def;
+                $argPosition{$name} = \%def;
 
                 ## For each token in the replacement list, look up if
                 ## it is a parameter, hash the positions that are
@@ -212,9 +223,14 @@ my %undefMacros;
                 } grep {
                     defined;
                 } map {
+                    if ($_ eq "#") {
+                        ++$stringifies{$name};
+                    } elsif ($_ eq "##") {
+                        ++$joins{$name};
+                    }
                     $def{$_};
                 } getTokDef(@{$tokDef});
-                $positions{$_} = [sort { $a <=> $b } keys %pos];
+                $positions{$name} = [sort { $a <=> $b } keys %pos];
 
                 ## Linearlize the hash to an array. Macros will only
                 ## have at most some hundred arguments so hopefully
@@ -222,7 +238,7 @@ my %undefMacros;
                 foreach (keys %pos) {
                     $ARG[$_] = $pos{$_};
                 }
-                $counters{$_} = \@ARG;
+                $counters{$name} = \@ARG;
 
                 ## return the value
                 $tokDef;
@@ -266,6 +282,8 @@ my %undefMacros;
             delete $counters{$name};
             delete $positions{$name};
             delete $argPosition{$name};
+            delete $joins{$name};
+            delete $stringifies{$name};
             push(@{$defines}, $name)
                 if (defined($defines));
         }
@@ -470,8 +488,6 @@ my $ischar = qr/(?:L?'(?:[^'\\]|[\\].)*+')/;
 my $ischarToken = qr/(?:L?'.*')/;
 ## a regexp to detect preprocessor number token
 my $isnumber = qr/(?:[.]?+[0-9](?:(?:[eEpP][-+])|(?:[.a-zA-Z0-9]+))*)/;
-## a regexp to detect preprocessor identifier token
-my $isidentifier = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*+)/;
 
 my $ishash = qr/(?:[#]|[%][:])/;
 my $ishhash = qr/(?:[#][#]|[%][:][%][:])/;
@@ -1222,45 +1238,33 @@ sub unescPre(@) {
 }
 
 sub countMeta(\@\%) {
-    if (my $_ = $ARG[0]->[0]) {
+    if (metaTok($ARG[0]->[0])) {
+        my $_ = shift @{$ARG[0]};
         if (ord == INTERVALOPEN) {
-            $_ = substr($_, 1);
             ## increment is magic on undef values.
-            ++$ARG[1]->{$_};
-            shift @{$ARG[0]};
+            ++$ARG[1]->{substr($_, 1)};
         } elsif (ord == INTERVALCLOSE) {
-            $_ = substr($_, 1);
             ## decrement isn't magic on undef values.
-            $ARG[1]->{$_} = ($ARG[1]->{$_} // 0) - 1;
-            shift @{$ARG[0]};
+            $ARG[1]->{substr($_, 1)} = ($ARG[1]->{substr($_, 1)} // 0) - 1;
         } elsif (ord == NEWLINE) {
             ++$ARG[1]->{$_};
-            shift @{$ARG[0]};
-        } else {
-            return 0;
         }
-    } else {
-        return 0;
-    }
-    while (my $_ = $ARG[0]->[0]) {
-        if (ord == INTERVALOPEN) {
-            $_ = substr($_, 1);
-            ## increment is magic on undef values.
-            ++$ARG[1]->{$_};
+        while ($_ = $ARG[0]->[0]) {
+            if (ord == INTERVALOPEN) {
+                ## increment is magic on undef values.
+                ++$ARG[1]->{substr($_, 1)};
+            } elsif (ord == INTERVALCLOSE) {
+                ## decrement isn't magic on undef values.
+                $ARG[1]->{substr($_, 1)} = ($ARG[1]->{substr($_, 1)} // 0) - 1;
+            } elsif (ord == NEWLINE) {
+                ++$ARG[1]->{$_};
+            } else {
+                last;
+            }
             shift @{$ARG[0]};
-        } elsif (ord == INTERVALCLOSE) {
-            $_ = substr($_, 1);
-            ## decrement isn't magic on undef values.
-            $ARG[1]->{$_} = ($ARG[1]->{$_} // 0) - 1;
-            shift @{$ARG[0]};
-        } elsif (ord == NEWLINE) {
-            ++$ARG[1]->{$_};
-            shift @{$ARG[0]};
-        } else {
-            return 1;
         }
+        1;
     }
-    return 1;
 }
 
 
@@ -1551,7 +1555,7 @@ sub tokrep($$\%@) {
             ## reexamined for more macro names to replace, each instance of a ## preprocessing token in
             ## the replacement list (not from an argument) is deleted and the preceding preprocessing
             ## token is concatenated with the following preprocessing token.
-            @repl = joinToks(@repl);
+            @repl = joinToks(@repl) if ($joins{$_});
 
             ## Then, the resulting preprocessing token sequence is rescanned, along with all subsequent
             ## preprocessing tokens of the source file, for more macro names to replace.
