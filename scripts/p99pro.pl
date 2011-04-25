@@ -241,6 +241,11 @@ my $isidentifier = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*+)/;
                 }
                 $counters{$name} = \@ARG;
 
+                ## Remove the parameters that are not used from the hash.
+                foreach (keys %def) {
+                    delete $def{$_} if (!$pos{$def{$_}});
+                }
+
                 ## return the value
                 $tokDef;
             }
@@ -595,8 +600,7 @@ sub substituteArrayStringify(\%\@@) {
 }
 
 sub substituteArray(\%\@@) {
-    my ($def, $args) = (shift, shift);
-    my @mustClone;
+    my ($def, $args, @mustClone) = (shift, shift);
     map {
         if (defined($def->{$_})) {
             $_ = $def->{$_};
@@ -1398,14 +1402,11 @@ sub getTokDef(\@) {
 ## $used is a reference to hash that collects the macros that are used
 ## $inToks is a reference to the token list that is to be scanned
 sub tokrep($$\%@) {
-    my @outToks;
-    my ($level, $file, $used) = (shift, shift, shift);
-    @ARG = grep { defined } @ARG;
+    my ($level, $file, $used, $_, @outToks) = (shift, shift, shift);
   LOOP:
-    while (@ARG) {
-        my $_ = shift;
+    while (defined($_ = shift)) {
         if (tokCallback) {
-            push(@outToks, $_);
+            push(@outToks, $_) if ($level);
             next LOOP;
         }
         if (ref) {
@@ -1548,9 +1549,8 @@ sub tokrep($$\%@) {
                     }
 
                     if ($args == $defs) {
-                        @repl =
-                            $stringifies{$_}
-                        ? substituteArrayStringify(%{$argPosition{$_}}, @args, @repl)
+                        @repl = defined($stringifies{$_})
+                            ? substituteArrayStringify(%{$argPosition{$_}}, @args, @repl)
                             : substituteArray(%{$argPosition{$_}}, @args, @repl);
                     } else  {
                         warn "macro $_ argument mismatch, has $args takes $defs";
