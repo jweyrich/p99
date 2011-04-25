@@ -132,6 +132,7 @@ sub readlln(_);
 sub readln(_);
 sub logicalLine($);
 sub substituteArray(\%\@@);
+sub substituteArrayStringify(\%\@@);
 sub tokenize(_);
 sub tokrep($$\%@);
 sub toktrans($$\%);
@@ -538,7 +539,7 @@ sub printArray(\@;$) {
         .substr($par, 2, 1);
 }
 
-sub substituteArray(\%\@@) {
+sub substituteArrayStringify(\%\@@) {
     my ($def, $args) = (shift, shift);
     my @ret;
     my @counts;
@@ -591,6 +592,25 @@ sub substituteArray(\%\@@) {
         }
     }
     @ret;
+}
+
+sub substituteArray(\%\@@) {
+    my ($def, $args) = (shift, shift);
+    my @mustClone;
+    map {
+        if (defined($def->{$_})) {
+            $_ = $def->{$_};
+            ## only clone an argument if and when it is used more than once
+            if ($mustClone[$_]) {
+                @{clone($args->[$_])};
+            } else {
+                $mustClone[$_] = 1;
+                @{$args->[$_]};
+            }
+        } else {
+            $_;
+        }
+    } @ARG;
 }
 
 ## translate token sequences to digraph or trigraph representation
@@ -1528,7 +1548,10 @@ sub tokrep($$\%@) {
                     }
 
                     if ($args == $defs) {
-                        @repl = substituteArray(%{$argPosition{$_}}, @args, @repl);
+                        @repl =
+                            $stringifies{$_}
+                        ? substituteArrayStringify(%{$argPosition{$_}}, @args, @repl)
+                            : substituteArray(%{$argPosition{$_}}, @args, @repl);
                     } else  {
                         warn "macro $_ argument mismatch, has $args takes $defs";
                         warn "macro $_ definition is @{$tokDef}";
