@@ -749,8 +749,6 @@ sub readln(_) {
         } else {
             " ".$_;
         }
-    } else {
-        undef;
     }
 }
 
@@ -898,7 +896,8 @@ sub logicalLine($) {
 }
 
 sub metaTok($) {
-    ord($ARG[0]) >= NEWLINE
+    defined($ARG[0])
+        && ord($ARG[0]) >= NEWLINE
         && ord($ARG[0]) <= INTERVALCLOSE;
 }
 
@@ -1306,6 +1305,7 @@ sub countMeta(\@\%) {
 
 sub compactMeta(\%) {
     my $hid = shift;
+    $hid->{$_} //= 0 foreach (keys %{$hid}, "\n");
     @ARG = (
         [("\n") x delete $hid->{"\n"}],
         [map { ( $intervalClose.$_) x -$hid->{$_} } grep { $hid->{$_} < 0 } keys %{$hid}],
@@ -1317,8 +1317,9 @@ sub compactMeta(\%) {
 
 sub outputMeta(\%\@) {
     my $hid = shift;
-    push(@{$ARG[0]}, ("\n") x delete $hid->{"\n"});
+    $hid->{$_} //= 0 foreach (keys %{$hid}, "\n");
     push(@{$ARG[0]},
+         ("\n") x delete $hid->{"\n"},
          map {
              if ($hid->{$_} < 0) {
                  ( $intervalClose.$_) x -delete $hid->{$_};
