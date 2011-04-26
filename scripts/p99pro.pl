@@ -734,17 +734,21 @@ sub readln(_) {
     my $_ = readline(shift);
     if (defined) {
         chomp;
-        " ".join("",
-                 map {
-                     if (length == 3
-                         && m/^[?][?]($trigraph)$/o) {
-                         $_ = $1;
-                         tr:-!'/=()<>:~|^\\#[]{}:;
-                     } else {
-                         $_;
-                     }
-                 }  split /([?][?]$trigraph)/o
-            );
+        if (m/[?][?]/o) {
+            " ".join("",
+                     map {
+                         if (length == 3
+                             && m/^[?][?]($trigraph)$/o) {
+                             $_ = $1;
+                           tr:-!'/=()<>:~|^\\#[]{}:;
+                         } else {
+                             $_;
+                         }
+                     }  split /([?][?]$trigraph)/o
+                );
+        } else {
+            " ".$_;
+        }
     } else {
         undef;
     }
@@ -854,11 +858,18 @@ sub readlln(_) {
 }
 
 sub logicalLine($) {
-    my ($fd, $ret) = (shift, "");
+    my ($fd, $ret, $cont) = (shift, "");
     @ARG = rawtokenize(readlln($fd));
   SCAN:
     while ($_ = shift) {
-        if (!m/^["']/o && m|(.*?)/([*/])(.*)|o) {
+        if (!m/["']$/o    ## String or char tokens are better
+                          ## characterized by their terminating
+                          ## character.
+            && m|/[*/]|o  ## Find a simple match for a comment start,
+                          ## first, and only dissect it if we found
+                          ## one.
+            ) {
+            m|(.*?)/([*/])(.*)|o;
             $ret .= $1;
             if (ord($2) == SLASH) {
                 last SCAN;
@@ -866,10 +877,11 @@ sub logicalLine($) {
                 $_ = untokenize($3, @ARG);
               MATCH:
                 while (1) {
-                    if (m|(?:.*?)[*]/(.*)|so) {
+                    if (m|[*]/|so) {
+                        m|(?:.*?)[*]/(.*)|so;
                         @ARG = rawtokenize($1);
                         last MATCH;
-                    } elsif ($fd && (my $cont = readlln($fd))) {
+                    } elsif ($fd && ($cont = readlln($fd))) {
                         $skipedLines = 1;
                         $_ .= " " . $cont;
                     } else {
