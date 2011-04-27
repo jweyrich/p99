@@ -46,6 +46,12 @@ my $sep = "";
 my $graphs = 1;
 ## indicate a hosted environment
 my $hosted = 1;
+## The number of bits in an uintmax_t. By the standard it must be at
+## least 64.
+my $ubits = 64;
+## The number of bits in an intmax_t. By the standard it must be at
+## least 63.
+my $sbits;
 
 my $result = GetOptions (
     "include|I=s"        => \@{dirs},      # list of strings
@@ -57,8 +63,24 @@ my $result = GetOptions (
     "separator=s"        => \${sep},    # string
     "std|standard=s"        => \${std},    # string
     "graphs=i"        => \${graphs},
+    "ubits=i"        => \${ubits},
+    "sbits=i"        => \${sbits},
     );
 
+$sbits = $ubits - 1 if (!$sbits);
+
+sub UINTMAX_MAX();
+sub INTMAX_MAX();
+
+{
+    ## Only use bigint where we can not avoid it, namely when we
+    ## really have to compute values in the preprocessor.
+    use bigint;
+    my $ubig = (1 << $ubits) - 1;
+    sub UINTMAX_MAX() { $ubig; }
+    my $sbig = (1 << $sbits) - 1;
+    sub INTMAX_MAX() { $sbig; }
+}
 
 use constant NEWLINE => ord("\n");
 
@@ -88,6 +110,8 @@ use constant ESCHASH => NEWLINE + 6;
 my $escHash = chr(ESCHASH);
 
 use constant COMMA => ord(",");
+use constant COLON => ord(":");
+use constant QUESTIONMARK => ord("?");
 use constant PARENOPEN => ord("(");
 use constant PARENCLOSE => ord(")");
 use constant SLASH => ord("/");
@@ -125,6 +149,7 @@ sub macroList(;$);
 sub macroUndefine($;\@);
 sub macroUnhide(_);
 sub openfile(_);
+sub opRec(\@);
 sub parenRec(\@);
 sub printArray(\@;$);
 sub rawtokenize($);
@@ -425,7 +450,7 @@ my %punctPri;
 {
     my @tmp;
     for (my $i = 0; $i <= $#punctPri; ++$i) {
-        my @pairs = map { $_ => $i } $punctPri[$i];
+        my @pairs = map { $_ => $i } @{$punctPri[$i]};
         push(@tmp, @pairs);
     }
     %punctPri = @tmp;
@@ -445,6 +470,17 @@ my $punctStr = "(?:".join("|", @escPunct).")";
 my $punct = qr/$punctStr/;
 my $punctSplit = qr/($punctStr)/;
 my $punctToken = qr/^$punctStr$/;
+
+## Binary operators that have boolean value as result.
+my @logicalOp = map { "\Q$_\E" } (
+    ">", "<", "<=", ">=",
+    "==", "!=",
+    "&&", "||",
+);
+
+## a regexp for all binary operators that return bool
+my $logicalOpStr = "(?:".join("|", @logicalOp).")";
+my $logicalOp = qr/$logicalOpStr/;
 
 ## all digraph tokens. put the longest first, so they will match first.
 my @digraph = (
@@ -633,6 +669,7 @@ sub toktrans($$\%) {
 local $SIG{__WARN__};
 
 sub evalExpr($@) {
+    use bigint;
     my $isUn = shift;
     my $back = $SIG{__WARN__};
     $SIG{__WARN__} = sub {
@@ -640,12 +677,17 @@ sub evalExpr($@) {
         print STDERR "   expression is '@ARG'\n";
     };
     my $res = eval("@ARG");
-    $res = (ULONG_MAX - -$res +1) while ($isUn && $res < 0);
-    if (defined($res) && length($res) == 0) {
+    if ($ARG[0] eq "!" 
+        || (defined($ARG[1]) && $ARG[1] =~ m/^$logicalOp$/o)) {
         $res = $res ? 1 : 0;
+        $isUn = 0;
+    }
+    while ($isUn && $res < 0) {
+        $res = (UINTMAX_MAX - -$res + 1);
+        #print STDERR "type $isUn expression is '@ARG', corrected result $res\n";
     }
     $SIG{__WARN__} = $back;
-    return $res;
+    return ($isUn, $res);
 }
 
 ## This function evaluates an expression given in the token list as
@@ -665,18 +707,35 @@ sub evalExpr($@) {
 ## computation.
 sub compList($\@) {
     my ($level, $toks) = @ARG;
-    #print STDERR "compList, $level: @{$toks}\n";
     my $type = 0;
-    my @logic;
     my @list;
   LOOP:
     while (@{$toks}) {
         my $_ = shift(@{$toks});
-        #print STDERR "list @list, processing \"$_\"\n";
         if (ord == PARENOPEN) {
             my @subexp = compList($level + 1, @{$toks});
             $type ||=  $subexp[0];
             push(@list, $subexp[1]);
+        } elsif (ord == QUESTIONMARK) {
+            my @subexp = compList($level + 1, @{$toks});
+            ## The type of the controlling expression is irrelevant
+            ## for ternary, so we overwrite the previous value.
+            $type = $subexp[0];
+            push(@list, $_, $subexp[1]);
+            $_  = shift(@{$toks});
+            if (ord == COLON) {
+                my @subexp = compList($level + 1, @{$toks});
+                $type ||= $subexp[0];
+                push(@list, $_, $subexp[1]);
+            } else {
+                warn "missing ':' in ternary expression before @{$toks}";
+            }
+        } elsif (ord == COLON) {
+            ## This should be a colon of a ternary expression. Unshift
+            ## it such that we may do an error check upwards.
+            unshift(@{$toks}, $_);
+            $level = 0;
+            last LOOP;
         } elsif (ord == PARENCLOSE) {
             $level = 0;
             last LOOP;
@@ -688,23 +747,14 @@ sub compList($\@) {
                 $type ||= $1 ? 1 : 0;
                 s/[lLuU]//go;
                 ## a number that is greater than INTMAX_MAX must be
-                ## unsigned
-                $type ||= ($_ > LONG_MAX) ? 1 : 0;
-                #print STDERR "processing number \"$_\"\n";
+                ## unsigned. Only check large numbers for that.
+                if (length > 7) {
+                    use bigint;
+                    $type ||= ($_ > INTMAX_MAX) ? 1 : 0;
+                }
                 push(@list, $_);
             } elsif (m/^\w+/o) {
                 push(@list, "0");
-            } elsif (m/^&&|[|][|]$/o) {
-                my $back = $SIG{__WARN__};
-                $SIG{__WARN__} = sub {
-                    &{$back}(@ARG);
-                    print STDERR "   expression is '@list'\n";
-                };
-                my $res = evalExpr($type, splice(@list));
-                $SIG{__WARN__} = $back;
-                $res = $res ? 1 : 0;
-                push(@logic, $res, $_);
-                $type = 0;
             } else {
                 push(@list, $_);
             }
@@ -712,21 +762,8 @@ sub compList($\@) {
     }
     warn "preliminary end of regular expression, missing ')'" if ($level > 0);
     warn "preliminary end of regular expression, missing operand" if (!@list);
-    my $res = evalExpr($type, @list);
-    if (@logic) {
-        $res = $res ? 1 : 0;
-        push(@logic, $res);
-        my $back = $SIG{__WARN__};
-        $SIG{__WARN__} = sub {
-            &{$back}(@ARG);
-            print STDERR "   expression is '@logic'\n";
-        };
-        $res = eval("@logic");
-        $SIG{__WARN__} = $back;
-        $type = 0;
-    }
-    #print STDERR "compList $level: result is $res\n";
-    return wantarray ? ($type, $res) : $res;
+    my ($rtype, $res) = evalExpr($type, @list);
+    return wantarray ? ($rtype, $res) : $res;
 }
 
 ## read one physical input line and perform the trigraph replacement
@@ -741,9 +778,8 @@ sub readln(_) {
                              && m/^[?][?]($trigraph)$/o) {
                              $_ = $1;
                            tr:-!'/=()<>:~|^\\#[]{}:;
-                         } else {
-                             $_;
                          }
+                         $_;
                      }  split /([?][?]$trigraph)/o
                 );
         } else {
@@ -1027,6 +1063,11 @@ sub openfile(_) {
                     && !($ifcont && $iffound[$iflevel])) {
                     my @expDef =  expandDefined(%used, tokenize($2));
                     my @toks = tokrep(0, $file, %used, @expDef);
+                    push(@toks, ")");
+                    my $toks = parenRec(@toks);
+                    opRec(@{$toks});
+                    @toks = ($toks);
+                    @toks = expandPar(@toks);
                     if (compList(0, @{toks})) {
                         ++$aclevel;
                         $iffound[$aclevel] = 1;
@@ -1800,6 +1841,50 @@ sub parenRec(\@) {
     }
     warn "unbalanced parenthesis";
     return \@args;
+}
+
+
+sub opRec(\@) {
+    my $toks = shift;
+    if ($#{$toks} > 0) {
+        warn "comma expression in preprocessor directive";
+        @{$toks} = ($toks->[-1]);
+    }
+    my $oplev = 0;
+    my $npref = 1;
+    my $pref = 0;
+    my @proc =
+        map {
+            if (ref) {
+                map {
+                    if (defined($punctPri{$_})) {
+                        if (!$npref) {
+                            my $lev = $punctPri{$_};
+                            $npref = 1;
+                            $oplev = $lev if ($lev > $oplev);
+                            ((")") x $lev, $_, ("(") x $lev);
+                        } else {
+                            ++$pref;
+                            ($_, ("("));
+                        }
+                    } else {
+                        $npref = 0;
+                        if (ref) {
+                            opRec(@{$_});
+                        } else {
+                            $_;
+                        }
+                    }
+                } @{$_};
+            } else {
+                $_;
+            }
+    } @{$toks};
+    push(@proc, (")") x ($oplev + $pref));
+    unshift(@proc, ("(") x $oplev);
+    #print STDERR "expr @proc\n";
+    @{$toks} = (\@proc);
+    return $toks;
 }
 
 foreach (@ARGV) {
