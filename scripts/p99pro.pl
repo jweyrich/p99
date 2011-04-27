@@ -668,7 +668,7 @@ sub toktrans($$\%) {
 
 local $SIG{__WARN__};
 
-sub evalExpr($@) {
+sub evalExprBigint($@) {
     use bigint;
     my $isUn = shift;
     my $back = $SIG{__WARN__};
@@ -685,6 +685,30 @@ sub evalExpr($@) {
     while ($isUn && $res < 0) {
         $res = (UINTMAX_MAX - -$res + 1);
         #print STDERR "type $isUn expression is '@ARG', corrected result $res\n";
+    }
+    $SIG{__WARN__} = $back;
+    return ($isUn, $res);
+}
+
+sub evalExpr($@) {
+    my $isUn = shift;
+    my $back = $SIG{__WARN__};
+    $SIG{__WARN__} = sub {
+        &{$back}(@ARG);
+        print STDERR "   expression is '@ARG'\n";
+    };
+    my $res = eval("@ARG");
+    if ($ARG[0] eq "!"
+        || (defined($ARG[1]) && $ARG[1] =~ m/^$logicalOp$/o)) {
+        $res = $res ? 1 : 0;
+        $isUn = 0;
+    }
+    if ($isUn && $res < 0) {
+        use bigint;
+        while ($isUn && $res < 0) {
+            $res = (UINTMAX_MAX - -$res + 1);
+            #print STDERR "type $isUn expression is '@ARG', corrected result $res\n";
+        }
     }
     $SIG{__WARN__} = $back;
     return ($isUn, $res);
@@ -747,8 +771,12 @@ sub compList($\@) {
                 $type ||= $1 ? 1 : 0;
                 s/[lLuU]//go;
                 ## a number that is greater than INTMAX_MAX must be
-                ## unsigned. Only check large numbers for that.
-                if (length > 7) {
+                ## unsigned. Only check large numbers for that. Large
+                ## here is larger than
+                ## 0xFFFFFFF (=268435455) for hexadecimal numbers
+                ## 999999999              for     decimal numbers
+                ## 077777777 (= 16777215) for       octal numbers
+                if (length > 9) {
                     use bigint;
                     $type ||= ($_ > INTMAX_MAX) ? 1 : 0;
                 }
@@ -762,7 +790,12 @@ sub compList($\@) {
     }
     warn "preliminary end of regular expression, missing ')'" if ($level > 0);
     warn "preliminary end of regular expression, missing operand" if (!@list);
-    my ($rtype, $res) = evalExpr($type, @list);
+    my ($rtype, $res);
+    if (length("@list") > 9) {
+        ($rtype, $res) = evalExprBigint($type, @list);
+    } else {
+        ($rtype, $res) = evalExpr($type, @list);
+    }
     return wantarray ? ($rtype, $res) : $res;
 }
 
@@ -1068,6 +1101,7 @@ sub openfile(_) {
                     opRec(@{$toks});
                     @toks = ($toks);
                     @toks = expandPar(@toks);
+                    local $LIST_SEPARATOR = "";
                     if (compList(0, @{toks})) {
                         ++$aclevel;
                         $iffound[$aclevel] = 1;
