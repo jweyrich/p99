@@ -107,8 +107,8 @@ sub INTMAX_MAX();
     ## Only use bigint where we can not avoid it, namely when we
     ## really have to compute values in the preprocessor.
     use bigint;
-    my $ubig = (1 << $ubits) - 1;
-    sub UINTMAX_MAX() { $ubig; }
+    my $ubig = (1 << $ubits);
+    sub UINTMAX_MOD() { $ubig; }
     my $sbig = (1 << $sbits) - 1;
     sub INTMAX_MAX() { $sbig; }
 }
@@ -772,9 +772,8 @@ sub evalExprBigint($@) {
         $res = $res ? 1 : 0;
         $isUn = 0;
     }
-    while ($isUn && $res < 0) {
-        $res = (UINTMAX_MAX - -$res + 1);
-        #print STDERR "type $isUn expression is '@ARG', corrected result $res\n";
+    if ($isUn && $res < 0) {
+        $res %= UINTMAX_MOD
     }
     $SIG{__WARN__} = $back;
     return ($isUn, $res);
@@ -795,10 +794,7 @@ sub evalExpr($@) {
     }
     if ($isUn && $res < 0) {
         use bigint;
-        while ($isUn && $res < 0) {
-            $res = (UINTMAX_MAX - -$res + 1);
-            #print STDERR "type $isUn expression is '@ARG', corrected result $res\n";
-        }
+        $res %= UINTMAX_MOD
     }
     $SIG{__WARN__} = $back;
     return ($isUn, $res);
