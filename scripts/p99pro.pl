@@ -48,25 +48,56 @@ my $graphs = 1;
 my $hosted = 1;
 ## The number of bits in an uintmax_t. By the standard it must be at
 ## least 64.
-my $ubits = 64;
+my $ubits;
 ## The number of bits in an intmax_t. By the standard it must be at
 ## least 63.
 my $sbits;
+## Forbid to shortcut expressions of the form ((X)) to (X)
+my $noshortcut;
+##
+my $help;
 
-my $result = GetOptions (
-    "include|I=s"        => \@{dirs},      # list of strings
-    "define|D=s"        => \@{defs},      # list of strings
-    "undef|U=s"        => \@{undefs},    # list of strings
-    "dM!"        => \${dM},    # flag
-    "dU!"        => \${dU},    # flag
-    "hosted!"        => \${hosted},    # flag
-    "separator=s"        => \${sep},    # string
-    "std|standard=s"        => \${std},    # string
-    "graphs=i"        => \${graphs},
-    "ubits=i"        => \${ubits},
-    "sbits=i"        => \${sbits},
+my %options = (
+    "include|I=s"	=> \@{dirs},		# list of strings
+    "define|D=s"        => \@{defs},		# list of strings
+    "undef|U=s"		=> \@{undefs},		# list of strings
+    "dM!"		=> \${dM},		# flag
+    "dU!"        	=> \${dU},		# flag
+    "noshortcut!"	=> \${noshortcut},	# flag
+    "hosted!"		=> \${hosted},		# flag
+    "help|h!"		=> \${help},		# flag
+    "separator=s"	=> \${sep},		# string
+    "std|standard=s"	=> \${std},		# string
+    "graphs=i"		=> \${graphs},
+    "ubits|bits=i"	=> \${ubits},
+    "sbits=i"		=> \${sbits},
     );
 
+my $result = GetOptions (%options);
+
+if ($help) {
+    print STDERR "$PROGRAM_NAME: [options] file ...\n";
+    my $max = 0;
+    $max = (length > $max) ? length : $max foreach(keys %options);
+    $max += 2;
+    foreach (sort keys %options) {
+        print STDERR $_.(" " x ($max - length));
+        local $LIST_SEPARATOR = ":";
+        if (ref($options{$_}) eq "ARRAY") {
+            print STDERR "@{$options{$_}}";
+        } elsif (ref($options{$_}) eq "SCALAR") {
+            if (defined(${$options{$_}})) {
+                print STDERR "${$options{$_}}";
+            } else {
+                print STDERR "<undefined>";
+            }
+        }
+        print STDERR "\n";
+    }
+    exit 0;
+}
+
+$ubits = 64 if (!$ubits);
 $sbits = $ubits - 1 if (!$sbits);
 
 sub UINTMAX_MAX();
@@ -1841,7 +1872,20 @@ sub parenRec(\@) {
     while (@{$ARG[0]}) {
         my $_ = shift(@{$ARG[0]});
         if (ord == PARENOPEN) {
-            push(@{$args[-1]}, parenRec(@{$ARG[0]}));
+            $_ =  parenRec(@{$ARG[0]});
+            if (
+                !$noshortcut
+                ## this parenthesis expression has no arguments
+                ## separated by commas
+                && $#{$_} == 0
+                ## the token list in that part consists of exactly one
+                ## element
+                && $#{$_->[0]} == 0
+                ## that element is again a parenthesis expression
+                && ref($_->[0]->[0])) {
+                $_ = $_->[0]->[0];
+            }
+            push(@{$args[-1]}, $_);
         } elsif (ord == PARENCLOSE) {
             if (%hid) {
                 warn "parenthesis with unbalanced hide/unhide: ", join(", ", keys %hid), "\n";
@@ -1883,6 +1927,11 @@ sub opRec(\@) {
     if ($#{$toks} > 0) {
         warn "comma expression in preprocessor directive";
         @{$toks} = ($toks->[-1]);
+    }
+    if (!$noshortcut) {
+        while ($#{$toks->[0]} == 0 && ref($toks->[0]->[0])) {
+            $toks = $toks->[0]->[0];
+        }
     }
     my $oplev = 0;
     my $npref = 1;
