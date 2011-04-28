@@ -152,6 +152,8 @@ use constant DQUOTE => ord('"');
 use constant QUOTE => ord("'");
 use constant ELL => ord("L");
 
+use constant SEP => $sep;
+
 my %standards = (
     "c99" => "199901L",
     );
@@ -214,7 +216,7 @@ my %stringifies;
 
 
 ## a regexp to detect preprocessor identifier token
-my $isidentifier = qr/(?:[_a-zA-Z][_a-zA-Z0-9]*+)/;
+my $isidentifier = qr/(?:[_[:alpha:]]\w*+)/;
 
 
 ## holds all defined macros
@@ -572,12 +574,34 @@ my %idgraph = map {
 
 ## a regexp to detect string literals
 my $isstring = qr/(?:L?"(?:[^"\\]|[\\].)*+")/;
-my $isstringToken = qr/^(?:L?".*")$/;
+my $isstringToken = qr/^(?:L?".*+")$/;
 ## a regexp to detect character constants
 my $ischar = qr/(?:L?'(?:[^'\\]|[\\].)*+')/;
-my $ischarToken = qr/(?:L?'.*')/;
+my $ischarToken = qr/(?:L?'.*+')/;
 ## a regexp to detect preprocessor number token
-my $isnumber = qr/(?:[.]?+[0-9](?:(?:[eEpP][-+])|(?:[.a-zA-Z0-9]+))*)/;
+my $isnumber = qr/(?:[.]?+\d(?:(?:[eEpP][-+])|\w|[.])*+)/;
+
+
+my $integer =
+    qr/^
+    (?:
+     (?:
+      # a number starting with 0 is hex or octal
+      # and can never be decimal
+      (?:0{1}+
+       # if there is 0x must be hex, don't allow the parser to
+       # backtrack
+       (?:[xX]{1}+
+        # there must be at least one digit after the 0x
+        [[:xdigit:]]++)
+       # an octal constant
+       |(?:[0-7]*+))
+      # a decimal constant now is forced to start with a non-zero digit
+      |(?:[[:digit:]]++))
+     # all of this may be followed by an integer suffix
+     (?:(?:(?:l{0,2}+|L{0,2}+)[uU]?+)
+      |(?:[uU](?:l{0,2}+|L{0,2}+)))?+
+    $)/x;
 
 my $ishash = qr/(?:[#]|[%][:])/;
 my $ishhash = qr/(?:[#][#]|[%][:][%][:])/;
@@ -588,7 +612,7 @@ my $tokenizerToken = qr/^(?:$isstringToken|$ischarToken|$isidentifier|$isnumber)
 
 ## regexp that we need when untokenizing
 ## imperative, don't create tokens that weren't there before
-my $clash = qr/^(?:$punctStr|$isnumber|$isidentifier)$/;
+my $clash = qr/^(?:$isnumber|$isidentifier|$punctStr)$/;
 
 my $spaceAfter = qr/(?:
     ## visual enhancement for some single character token
@@ -832,7 +856,8 @@ sub compList($\@) {
         } elsif ((ord) < ord(" ")) {
             next LOOP;
         } else {
-            if (m/^(?:0[xX]?[0-9a-fA-F]|[0-9]+)[lL]*([uU]*)[lL]*$/o) {
+            if (m/$integer/o) {
+                m/([uU])/o;
                 ## a number with an 'U' is unsigned
                 $type ||= $1 ? 1 : 0;
                 s/[lLuU]//go;
@@ -933,29 +958,58 @@ sub rawtokenize($) {
 
 sub untokenize(@) {
     @ARG = grep { ord != INTERVALOPEN && ord != INTERVALCLOSE } @ARG;
-    my $ret = "";
-    my $prev = $ret;
-    foreach (@ARG) {
-        ## Don't add spaces before and after newlines
-        if (ord == NEWLINE
-            || $prev =~ m/\s$/so) {
-            $ret .= $_;
-        } else {
-            $ret .= $sep;
-            my $comb = $prev . $_;
-            if (
-                $comb =~ $clash
-                || $_ = ~ $spaceBefore/
-                || $prev =~ $spaceAfter
-                ) {
-                $ret .= " ".$_;
-            } else {
-                $ret .= $_;
-            }
-        }
-        $prev = $_;
+    my $prev = "";
+    if (SEP) {
+        join("",
+             map {
+                 ## Don't add spaces before and after newlines
+                 if (ord == NEWLINE
+                     || $prev =~ m/\s$/so) {
+                     $prev = $_;
+                     $_;
+                 } else {
+                     my $comb = $prev . $_;
+                     if (
+                         $comb =~ $clash
+                         || $_ =~ $spaceBefore
+                         || $prev =~ $spaceAfter
+                         ) {
+                         $prev = $_;
+                         $sep." ".$_;
+                     } else {
+                         $prev = $_;
+                         $sep.$_;
+                     }
+                 }
+             } @ARG
+            );
+    } else {
+        join("",
+             map {
+                 if (ord != NEWLINE) {
+                     my $comb = $prev . $_;
+                     if ($comb =~ $clash) {
+                         $prev = $_;
+                         " ".$_;
+                     } else {
+                         if ($_ =~ $spaceBefore) {
+                             $prev = $_;
+                             " ".$_;
+                         } else {
+                             if ($prev =~ $spaceAfter) {
+                                 $prev = $_;
+                                 " ".$_;
+                             } else {
+                                 $prev = $_;
+                             }
+                         }
+                     }
+                 } else {
+                     $prev = $_;
+                 }
+             } @ARG
+            );
     }
-    return $ret;
 }
 
 sub readlln(_) {
