@@ -502,6 +502,23 @@ my $punct = qr/$punctStr/;
 my $punctSplit = qr/($punctStr)/;
 my $punctToken = qr/^$punctStr$/;
 
+my @punct2 = grep { defined } map {
+    if (2 > length || m/[+][+]|[-][-]/o) {
+        undef;
+    } else {
+        $_
+    }
+} @punct;
+
+my @escPunct2 = map { "\Q$_\E" } @punct2;
+
+## a regexp for all punctuation operators with more than two
+## characters, excluding ++ and --.
+my $punct2Str = "(?:".join("|", @escPunct2).")";
+my $punct2 = qr/$punct2Str/;
+my $punct2Split = qr/($punct2Str)/;
+my $punct2Token = qr/^$punct2Str$/;
+
 ## Binary operators that have boolean value as result.
 my @logicalOp = map { "\Q$_\E" } (
     ">", "<", "<=", ">=",
@@ -555,7 +572,7 @@ my %idgraph = map {
 
 ## a regexp to detect string literals
 my $isstring = qr/(?:L?"(?:[^"\\]|[\\].)*+")/;
-my $isstringToken = qr/(?:L?".*")/;
+my $isstringToken = qr/^(?:L?".*")$/;
 ## a regexp to detect character constants
 my $ischar = qr/(?:L?'(?:[^'\\]|[\\].)*+')/;
 my $ischarToken = qr/(?:L?'.*')/;
@@ -568,6 +585,24 @@ my $ishhash = qr/(?:[#][#]|[%][:][%][:])/;
 my $tokenizer = qr/(?:$isstring|$ischar|$isidentifier|$isnumber)/;
 my $tokenizerSplit = qr/($isstring|$ischar|$isidentifier|$isnumber)/;
 my $tokenizerToken = qr/^(?:$isstringToken|$ischarToken|$isidentifier|$isnumber)$/;
+
+## regexp that we need when untokenizing
+## imperative, don't create tokens that weren't there before
+my $clash = qr/^(?:$punctStr|$isnumber|$isidentifier)$/;
+
+my $spaceAfter = qr/(?:
+    ## visual enhancement for some single character token
+    [=,;?:{]
+    |$punct2Token
+    |$isstringToken
+    )$/x;
+
+my $spaceBefore = qr/(?:
+    ## visual enhancement for some single character token
+    [=}]
+    |$punct2Token
+    |$isstringToken
+    )$/x;
 
 ## all third characters that may appear in a trigraph
 my $trigraph = "-!'/=()<>";
@@ -898,50 +933,28 @@ sub rawtokenize($) {
 
 sub untokenize(@) {
     @ARG = grep { ord != INTERVALOPEN && ord != INTERVALCLOSE } @ARG;
-    my $ret = shift;
+    my $ret = "";
     my $prev = $ret;
     foreach (@ARG) {
-        my $space = $sep;
-        my $comb = $prev . $_;
         ## Don't add spaces before and after newlines
-        if (ord == NEWLINE) {
-            $space = "";
-        } elsif ($prev =~ m/\s$/so) {
-            $space = "";
-
-            ## imperative, don't create tokens that weren't there before
-        } elsif ($comb =~ $punctToken) {
-            $space = "$sep ";
-        } elsif ($comb =~ m/^$isnumber$/o) {
-            $space = "$sep ";
-        } elsif ($comb =~ m/^$isidentifier$/o) {
-            $space = "$sep ";
-
-        } elsif (m/$punctToken/o && length > 1 && !m/^[-][-]|[+][+]$/o) {
-            $space = "$sep ";
-        } elsif (m/^[=}]$/o) {
-            $space = "$sep ";
-
-            ## this shouldn't occur, but might be important to
-            ## visually mark a clash such as 199901L"my string" where
-            ## the L could have been meant for making a long int or
-            ## for creating a wide character string.
-        } elsif (m/^(?:$isstring|$ischar)$/o && $prev =~ m/^(?:$isidentifier|$isnumber)$/o) {
-            $space = "$sep ";
-
-            ## most two character tokens get spaces surrounding them
-        } elsif (length($prev) > 1 && $prev =~ $punctToken && $prev !~ m/^[-][-]|[+][+]$/o) {
-            $space = "$sep ";
-
-            ## visual enhancement for some single character tokens
-        } elsif ($prev =~ m/^[=,;?:{]$/o) {
-            $space = "$sep ";
+        if (ord == NEWLINE
+            || $prev =~ m/\s$/so) {
+            $ret .= $_;
+        } else {
+            $ret .= $sep;
+            my $comb = $prev . $_;
+            if (
+                $comb =~ $clash
+                || $_ = ~ $spaceBefore/
+                || $prev =~ $spaceAfter
+                ) {
+                $ret .= " ".$_;
+            } else {
+                $ret .= $_;
+            }
         }
-        $ret .= $space . $_;
-        #print STDERR "untokenize step: $ret\n";
         $prev = $_;
     }
-    #print STDERR "untokenize final: $ret\n";
     return $ret;
 }
 
