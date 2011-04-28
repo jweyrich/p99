@@ -35,10 +35,8 @@ my @defs;
 my @undefs;
 ## the standard we are operating with
 my $std = "c99";
-## whether or not to output a list of all #define
-my $dM;
-## whether or not to output a list of all used #define
-my $dU;
+## whether or not to output a list of all (used) #define
+my @dM;
 ## use as a separator to tokens for debugging
 my $sep = "";
 ## request output with special character sets: without digraphs (0),
@@ -56,13 +54,14 @@ my $sbits;
 my $noshortcut;
 ##
 my $help;
+my $verbose;
 
 my %options = (
     "include|I=s"	=> \@{dirs},		# list of strings
     "define|D=s"        => \@{defs},		# list of strings
     "undef|U=s"		=> \@{undefs},		# list of strings
-    "dM!"		=> \${dM},		# flag
-    "dU!"        	=> \${dU},		# flag
+    "d=s"		=> \@{dM},		# flag
+    #"dU!"        	=> \${dU},		# flag
     "noshortcut!"	=> \${noshortcut},	# flag
     "hosted!"		=> \${hosted},		# flag
     "help|h!"		=> \${help},		# flag
@@ -71,6 +70,7 @@ my %options = (
     "graphs=i"		=> \${graphs},
     "ubits|bits=i"	=> \${ubits},
     "sbits=i"		=> \${sbits},
+    "verbose|v+"	=> \${verbose},
     );
 
 my $result = GetOptions (%options);
@@ -378,37 +378,72 @@ my $isidentifier = qr/(?:[_[:alpha:]]\w*+)/;
         return containedHashtables(%{$ARG[0]}, %macro)
     }
 
+    sub macroDump($;$) {
+        my ($name, $restricted) = @_;
+        if (ref $macro{$name}) {
+            my @def = @{$macro{$name}};
+            my $repl = pop @def;
+
+            if (ref($repl)) {
+                $repl = untokenize(@{$repl});
+            } elsif ($restricted) {
+                return;
+            }
+            $def[-1] = "..." if (@def && $def[-1] eq "__VA_ARGS__");
+
+            if ($restricted && $undefMacros{$name}) {
+                print STDERR
+                    "#undef\t$name ",
+                    " " x (30 - length($name)),
+                    "/** has been redefined later **/\n";
+            }
+            if (@def && length($def[0]) && $positions{$name}) {
+                my $args = scalar @def;
+                $args .= " (or more)" if (@def && $def[-1] eq "...");
+                if (@{$positions{$name}} == 0) {
+                    if (@def > 1) {
+                        print STDERR "//*****\t$name uses none of its $args arguments\n";
+                    } else  {
+                        print STDERR "//*****\t$name doesn't use its $args argument\n";
+                    }
+                } elsif (@{$positions{$name}} == @def) {
+                    if (@{$positions{$name}} == 1 && $def[-1] ne "...") {
+                        print STDERR "//*****\t$name uses its argument\n";
+                    } else {
+                        print STDERR "//*****\t$name uses all its $args arguments\n";
+                    }
+                } else {
+                    if (@{$positions{$name}} == 1) {
+                        print STDERR "//*****\t$name uses argument $def[$positions{$name}[0]]\n";
+                    } else {
+                        print STDERR "//*****\t$name uses arguments ".
+                            join(" ",
+                                 map {
+                                     $def[$_];
+                                 } @{$positions{$name}}
+                            )."\n";
+                    }
+                }
+            }
+            print STDERR "//*****\t$name uses the ## operator to join tokens\n" if (defined($joins{$name}));
+            print STDERR "//*****\t$name uses the # operator for stringification\n" if (defined($stringifies{$name}));
+            print STDERR "#define\t$name";
+            if (@def) {
+                print STDERR "(", join(", ", @def), ")";
+            }
+            print STDERR " $repl\n";
+        } else {
+            print STDERR "#undef\t$name\n";
+        }
+    }
+
     sub macroList(;$) {
         my ($restricted) = shift;
         my %interesting = ($restricted
                            ? (%undefMacros, %macro)
                            : (%macro));
         foreach my $name (sort keys %interesting) {
-            if (ref $macro{$name}) {
-                my @def = @{$macro{$name}};
-                my $repl = pop @def;
-
-                if (ref($repl)) {
-                    $repl = untokenize(@{$repl});
-                } elsif ($restricted) {
-                    next;
-                }
-                $def[-1] = "..." if ($def[-1] eq "__VA_ARGS__");
-
-                if ($restricted && $undefMacros{$name}) {
-                    print STDERR
-                        "#undef\t$name ",
-                        " " x (30 - length($name)),
-                        "/** has been redefined later **/\n";
-                }
-                print STDERR "#define\t$name";
-                if (@def) {
-                    print STDERR "(", join(", ", @def), ")";
-                }
-                print STDERR " $repl\n";
-            } else {
-                print STDERR "#undef\t$name\n";
-            }
+            macroDump($name, $restricted);
         }
     }
 
@@ -1128,24 +1163,20 @@ sub openfile(_) {
     if (defined($usedMac{$file})) {
         if (macroContained(%{$usedMac{$file}})) {
             if (length($fileHash{$file})) {
-                print STDERR "reusing contents of $file\n";
                 @ARG = map {
                     (tokrep(0, $file, %used, escPre(tokenize)), "\n");
                 } split("\n", $fileHash{$file});
             } else {
-                print STDERR "reusing contents of $file: empty\n";
                 @ARG = "\n";
             }
             goto SHORTCUT;
         } else {
-            print STDERR "context for $file has changed, not reusing content.\n";
             delete $fileHash{$file};
             delete $usedMac{$file};
         }
     } else {
         ## the increment operator is magic on undef values.
         ++${$fileInc{$file}};
-        print STDERR "$file must be processed (${$fileInc{$file}})\n";
     }
 
     my $iflevel = 0;
@@ -1330,12 +1361,11 @@ sub openfile(_) {
     warn "unbalanced #if / #endif" if ($iflevel);
 
     if (!@defines) {
-        print STDERR "$file is candidate for content hashing\n";
+        ## The file is candidate for content hashing
         if (!defined($usedMac{$file}) || !eqHashtables(%{$usedMac{$file}}, %used)) {
             $usedMac{$file} = \%used;
             if ($input =~ m/^(?:\s*+(?:#|%:)\s++\d++[^\n]++\n*+)*+$/so) {
                 ## The file only contained line number information
-                print STDERR "$file only contained line number information\n";
                 $input = "";
             }
             $fileHash{$file} = $input;
@@ -1343,7 +1373,8 @@ sub openfile(_) {
     } elsif (${$fileInc{$file}} > 1) {
         my %defines = map { $_ => 1 } @defines;
         @defines = sort keys %defines;
-        print STDERR "$file can not be hashed, define changes on: @defines\n";
+        print STDERR "$file can not be hashed, define changes on: @defines\n"
+            if ($verbose);
     }
 
     if (scalar macroHidden()) {
@@ -1358,11 +1389,9 @@ sub openfile(_) {
 
     if ($output =~ m/^(?:\s*+(?:#|%:)\s++\d++[^\n]++\n*+)*+$/so) {
         ## The file only produced line number information
-        print STDERR "$file only produced line number information\n";
         $output = "";
     }
 
-    print STDERR "$file has been processed\n";
     return (\@defines, $output, $input);
 }
 
@@ -2038,5 +2067,6 @@ foreach (@ARGV) {
     print STDOUT $ret;
 }
 
-macroList() if ($dM);
-macroList(1) if ($dU);
+my $dM = join("", @dM);
+macroList() if ($dM =~ m/M/o);
+macroList(1) if ($dM =~ m/U/o);
