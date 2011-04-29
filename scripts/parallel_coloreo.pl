@@ -1,10 +1,9 @@
 #!/bin/sh -f
-#  This may look like complete nonsense, but it really is -*- mode: perl; coding: utf-8 -*-
+#!perl     ##  This may look like complete nonsense, but it really is -*- mode: perl; coding: utf-8 -*- ##
+#          ##  Exec to perl if started from /bin/sh. Do nothing if already executed by perl.            ##
+# line 5
 eval 'exec perl -wS -x $0 ${1+"$@"}'
-if 0;               #### for this magic, see findSvnAuthors ####
-#!perl
-#
-#
+if 0;
 # Except of parts copied from previous work and as explicitly stated below,
 # the authors and copyright holders for this work are as follows:
 # all rights reserved,  2011 Jens Gustedt, INRIA, France
@@ -62,6 +61,10 @@ my $number = '';
 my $check = '';
 my $ths = 0;
 my $VxperTh;
+
+
+# the information as found in the graph
+my $graphhead = "";
 
 # Maximun number of color used, at the moment this paramter is fixed.
 # Using: < Delta + 1 as a limited.
@@ -653,17 +656,8 @@ sub check_conflicts
 #
 sub make_output
  {
-  my $data = "";
-  # store the data
-  open(my $out, "<",  $ARGV[0]);
-  while (<$out>)
-   {
-    #  char "}" and node metadata will be ignored, rest of information will be saved
-    if ((index($_,"}")==-1) && (index($_,"label")==-1)) {$data = $data.$_;}
-   }
-  close $out;
-  # store again, removing the last character
-  print $data;
+  print $graphhead;
+  local $OUTPUT_FIELD_SEPARATOR = ", ";
   # a little patch to re-use coloreo.pl source, not very eficient but it is just for the output
   # colors[] is emply for the main task
   for (my $j = 0; $j <= $#colored_vertex; $j++)
@@ -682,47 +676,26 @@ sub make_output
      my $red   =   int(rand(255));
      my $green =   int(rand(255));
      my $blue  =   int(rand(255));
-     foreach ( @{ $colors[$j] } )
+     foreach my $node ( @{ $colors[$j] } )
       {
+          if (!$nom[$node]) {
+              my %ndata;
+              $nom[$node] = \%ndata;
+          }
         # output colors
         if (!($number))
          {  # if we don't have metadata, we don't add it
-            if ($nom[$_])
-             {
-              printf "%d [color=\"#%2x%2x%2x\", label=\"%s\", style=filled]\n",$_,$red ,$green ,$blue ,$nom[$_];
-             } else
-             {
-               # little bug in perl
-               if($_ == 0)
-                {
-                 printf "%d [color=\"#%2x%2x%2x\", label=\"0\", style=filled]\n",$_,$red,$green,$blue;
-                }
-               else
-                {
-                 printf "%d [color=\"#%2x%2x%2x\", style=filled]\n",$_ ,$red ,$green ,$blue;
-                }
-             }
+             $nom[$node]->{color} = sprintf("#%2x%2x%2x", $red ,$green ,$blue);
+             $nom[$node]->{style} = "filled";
          }
          # Or output with numbers
          else
          {
-           # if we dont have metadata, we dont add it
-            if ($nom[$_])
-             {
-              printf "%d [color=\"%d\", label=\"%s\"]\n",$_ , $j, $nom[$_];
-             } else
-             {
-              # little bug in perl
-              if($_==0)
-               {
-                printf "%d [color=\"%d\", label=\"0\"]\n",$_, $j;
-               }
-              else
-               {
-                printf "%d [color=\"%d\"]\n",$_, $j;
-               }
-             }
+             $nom[$node]->{color} = $j;
          }
+          print "$node [";
+          print map { "$_=\"$nom[$node]->{$_}\"" } keys %{$nom[$node]};
+          print "]\n";
       }
     }
    }
@@ -741,40 +714,39 @@ sub make_graph
    # checking the input format
    if ($ind)
     {
-     $sp = " -- ";
+     $sp = "--";
     } else {
     # default is direct
-     $sp = " -> ";
+     $sp = "->";
     }
    while (<$in>)
     {
-    # first look for the separator: " -- " or " -> " -> "
-    if (!(index($_,$sp)==-1))
+    # first look for the separator: " -- " or " -> "
+    if (m/$sp/o)
      {
-      my @temp;
-      # have we got comments?
-      if (!(index($_,"//")==-1))
-       {
-        # yes, remove it
-        my @comment = split ("//",$_);
-        @temp = split ($sp,$comment[0]);
-       } else {
-        @temp = split ($sp,$_);
-       }
+      my @temp = m/^(\d+)\s*$sp\s*(\d+)/o;
       # make the graph
       # node source ---> node destination
       push @{ $graph[$temp[0]] }, $temp[1];
       if ($ind) {push @{ $graph[$temp[1]] }, $temp[0];}
+      $graphhead .= $_;
       # node metadata, saving that information
-     } elsif (!(index($_,"label")==-1))
+     } elsif (m/\s*(\d+)\s*\[(.+)\]/o)
        {
-          # node name
-          my @name = split ('"',$_);
-          # node ID
-          my @ID = split (' ',$_);
-          # saving the pairs "ID" --> "NAME
-          $nom[ $ID[0] ]  = $name[1];
-       }
+           my $id = $1;
+           my @ndata = split(/, /, $2);
+           my %ndata = map {
+               if (m/(\w+)\s*=\s*"([^"]+)"/o) {
+                   ($1 => $2);
+               } else {
+                   undef;
+               }
+           } @ndata;
+           $nom[ $id ]  = \%ndata;
+           #$graphhead .= $_;
+    }  elsif (!m/}/o) {
+        $graphhead .= $_;
+    }
     }
    close $in;
    # we have to look for solitary guys
@@ -797,11 +769,11 @@ sub make_graph
 # getting the parameters
 if ($#ARGV == -1)
  {
-  print "Usage: parallel_color.pl [file] [Parameters]\n";
+  print "Usage: $PROGRAM_NAME [Parameters] [file]\n";
   exit;
  }
-$ifile = $ARGV[0];
 GetOptions ('number'=>\ $number,'indirect'=>\ $ind, 'check'=>\ $check, 'thread=i' =>\ $ths);
+$ifile = $ARGV[0];
 # default number of threads
 $ths = 2 if ($ths eq 0);
 # open .dot file and fill the graph structure
