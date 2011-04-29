@@ -84,7 +84,7 @@ my $color_palette = 18;
 # Return true if the thread has the Vertex.
 # TODO: This procedure must be re-written in a distributed environment.
 #
-sub is_local {
+sub is_local($$$) {
     if (($ARG[2] <= $ARG[1]) && ($ARG[0] <= $ARG[2])) {
         return 1;
     }
@@ -95,7 +95,7 @@ sub is_local {
 #
 # return true if a vertex has been colored
 #
-sub has_color
+sub has_color($)
 {
     for (my $i = 0; $i <= $#colors; $i++)
     {
@@ -806,25 +806,31 @@ make_graph;
 # Vertex per threads
 $VxperTh = int (($#graph+1) / $ths);
 # Scheduling the threads
-for (my $j = 0; $j < $ths; $j++)
-{
-    my $start_i = $j*$VxperTh;
-    my $end_i   = ($start_i + $VxperTh)-1;
-    # Am I the last?
-    if (($j+1) == $ths)
+if ($ths > 1) {
+    print STDERR "running $ths parallel threads\n";
+    for (my $j = 0; $j < $ths; $j++)
     {
-        if ((($#graph+1) % $ths) != 0)
+        my $start_i = $j*$VxperTh;
+        my $end_i   = ($start_i + $VxperTh)-1;
+        # Am I the last?
+        if (($j+1) == $ths)
         {
-            $end_i = $end_i + (($#graph+1) % $ths);
+            if ((($#graph+1) % $ths) != 0)
+            {
+                $end_i = $end_i + (($#graph+1) % $ths);
+            }
         }
+        $t[$j] = Thread->new( \&do_coloring, $start_i, $end_i,$j);
     }
-    $t[$j] = Thread->new( \&do_coloring, $start_i, $end_i,$j);
-}
-# wait for threads
-# run in parallel
-for (my $j = 0; $j < $ths; $j++)
-{
-    my $retval = $t[$j]->join();
+    # wait for threads
+    # run in parallel
+    for (my $j = 0; $j < $ths; $j++)
+    {
+        my $retval = $t[$j]->join();
+    }
+} else {
+    print STDERR "only 1 thread, doing it sequentially\n";
+    do_coloring(0, $#graph, 0);
 }
 # fix the problems
 fix_conflics;
