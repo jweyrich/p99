@@ -55,11 +55,12 @@ my $last_color_used = 0;
 my @t;
 
 # parameter passing
-my $ifile = '';
-my $undirected = '';
-my $number = '';
-my $check = '';
-my $ths = 0;
+my $ifile;
+my $ofile;
+my $undirected;
+my $number;
+my $check;
+my $ths;
 my $VxperTh;
 
 
@@ -76,21 +77,21 @@ my $color_palette = 18;
 #
 # is_local:
 #
-# $_[0]: Counter start.
-# $_[1]: Counter end.
-# $_[2]: Vertex ID.
+# $ARG[0]: Counter start.
+# $ARG[1]: Counter end.
+# $ARG[2]: Vertex ID.
 #
 # Return true if the thread has the Vertex.
 # TODO: This procedure must be re-written in a distributed environment.
 #
 sub is_local {
-    if (($_[2] <= $_[1]) && ($_[0] <= $_[2])) {
+    if (($ARG[2] <= $ARG[1]) && ($ARG[0] <= $ARG[2])) {
         return 1;
     }
 }
 # has_color:
 #
-# $_[0]: vertex ID.
+# $ARG[0]: vertex ID.
 #
 # return true if a vertex has been colored
 #
@@ -100,7 +101,7 @@ sub has_color
     {
         for (my $j = 0; $j <= $#{ $colors[$i] }; $j++)
         {
-            if ($colors[$i]->[$j] == $_[0])
+            if ($colors[$i]->[$j] == $ARG[0])
             {
                 return 1;
             }
@@ -110,7 +111,7 @@ sub has_color
 
 # get_colorID:
 #
-# $_[0]: vertex ID.
+# $ARG[0]: vertex ID.
 #
 # return vertex's color
 #
@@ -124,7 +125,7 @@ sub get_colorID
             {
                 if (defined($colors[$i]->[$j]))
                 {
-                    if ($colors[$i]->[$j] == $_[0])
+                    if ($colors[$i]->[$j] == $ARG[0])
                     {
                         return $i;
                     }
@@ -144,7 +145,7 @@ sub get_colorID2
             {
                 if (defined($colors[$i]->[$j]))
                 {
-                    if ($colors[$i]->[$j] == $_[0])
+                    if ($colors[$i]->[$j] == $ARG[0])
                     {
                         return $j;
                     }
@@ -156,25 +157,26 @@ sub get_colorID2
 
 # is_my_neighbor:
 #
-# $_[0] : Vertex ID.
-# $_[1] : Vertex ID.
+# $ARG[0] : Vertex ID.
+# $ARG[1] : Vertex ID.
 #
 # Return TRUE is they are neighbor.
 #
-sub is_my_neighbor
+sub is_my_neighbor($$)
 {
+    my ($here, $there) = @_;
     # checking in one way
-    for (my $j = 0; $j <= $#{ $graph[$_[0]] }; $j++)
+    for (my $j = 0; $j <= $#{ $graph[$here] }; $j++)
     {
-        if ($graph[$_[0]]->[$j] == $_[1])
+        if ($graph[$here]->[$j] == $there)
         {
             return 1;
         }
     }
     # checking in the other way
-    for (my $j = 0; $j <= $#{ $graph[$_[1]] }; $j++)
+    for (my $j = 0; $j <= $#{ $graph[$there] }; $j++)
     {
-        if ($graph[$_[1]]->[$j] == $_[0])
+        if ($graph[$there]->[$j] == $here)
         {
             return 1;
         }
@@ -182,47 +184,52 @@ sub is_my_neighbor
 }
 # similar that is_my_neighbor() but in this case just check in one direction cause
 # the other direction can be in other processor.
-sub is_my_neighbor2
+sub is_my_neighbor2($$)
 {
+    my ($here, $there) = @_;
     # checking in one way
-    for (my $j = 0; $j <= $#{ $graph[$_[0]] }; $j++)
+    for (my $j = 0; $j <= $#{ $graph[$here] }; $j++)
     {
-        if ($graph[$_[0]]->[$j] == $_[1])
+        if ($graph[$here]->[$j] == $there)
         {
             return 1;
         }
     }
 }
-# is_good_color:
+# is_bad_color:
 #
-# $_[0] : Color ID.
-# $_[1] : Vertex ID.
+# $ARG[0] : Color ID.
+# $ARG[1] : Vertex ID.
 #
 # Supposing a COLOR, check if there are a neighbor guy with the same color.
 # Return TRUE if it is not a good color
 # NOTE: As colors[] is local for every thread then there aren't external vertex in the list.
 #
-sub is_good_color
+sub is_bad_color
 {
-    for (my $j = 0; $j <= $#{ $colors[$_[0]] }; $j++)
+    my ($color, $node) = @_;
+    return 1 if (!defined($color));
+    for (my $j = 0; $j <= $#{ $colors[$color] }; $j++)
     {
-        if (defined($colors[$_[0]]->[$j]))
+        if (defined($colors[$color]->[$j]))
         {
-            if (is_my_neighbor($_[1],$colors[$_[0]]->[$j]))
+            if (is_my_neighbor($node,$colors[$color]->[$j]))
             {
                 return 1;
             }
         }
     }
 }
-# similar that is_good_color() the only diference is is_my_neighbor2()
-sub is_good_color2
+# similar that is_bad_color() the only diference is is_my_neighbor2()
+sub is_bad_color2
 {
-    for (my $j = 0; $j <= $#{ $colors[$_[0]] }; $j++)
+    my ($color, $node) = @_;
+    return 1 if (!defined($color));
+    for (my $j = 0; $j <= $#{ $colors[$color] }; $j++)
     {
-        if (defined($colors[$_[0]]->[$j]))
+        if (defined($colors[$color]->[$j]))
         {
-            if (is_my_neighbor2($_[1],$colors[$_[0]]->[$j]))
+            if (is_my_neighbor2($node,$colors[$color]->[$j]))
             {
                 return 1;
             }
@@ -231,65 +238,65 @@ sub is_good_color2
 }
 # get_color:
 #
-# $_[0] : Vertex ID.
+# $ARG[0] : Vertex ID.
 # For a given vertex return the best color, checking the neighbor guys.
 #
 # Return the selected Color ID.
-sub get_color
+sub get_color($)
 {
+    my ($node) = @_;
     # first option, tray a USED color
     foreach (@colors_defined)
     {
-        if (!(is_good_color($_,$_[0])))
+        if (!(is_bad_color($_,$node)))
         {
             return $_;
         }
     }
     # second option,tray a UN-USED color
-    $last_color_used = int(rand($color_palette));
+    my $color;
     # looking for the first GOOD COLOR randonly
     # if we don't do that we could have local problems
-    while (is_good_color($last_color_used,$_[0]))
-    {
-        $last_color_used = int(rand($color_palette))
-    }
-    push @colors_defined, $last_color_used;
+    $color = int(rand($color_palette))
+        while (is_bad_color($color, $node));
+    push @colors_defined, $color;
+    $last_color_used = $color;
     return $last_color_used;
 }
 
 # similar than get_color just it uses "2" functions
-sub get_color2
+sub get_color2($)
 {
+    my ($node) = @_;
     # first option, tray a USED color
     foreach (@colors_defined)
     {
-        if (!(is_good_color2($_,$_[0])))
+        if (!(is_bad_color2($_,$node)))
         {
             return $_;
         }
     }
     # second option,tray a UN-USED color
-    $last_color_used = int(rand($color_palette));
+    # second option,tray a UN-USED color
+    my $color;
     # looking for the first GOOD COLOR randonly
     # if we don't do that we could have local problems
-    while (is_good_color2($last_color_used,$_[0]))
-    {
-        $last_color_used = int(rand($color_palette))
-    }
+    $color = int(rand($color_palette))
+        while (is_bad_color2($color, $node));
     push @colors_defined, $last_color_used;
     return $last_color_used;
 }
 # comunicate_color:
 #
-# $_[0] : Vertex.
-# $_[1] : Color.
+# $ARG[0] : Vertex.
+# $ARG[1] : Color.
 #
 # Comunicate vertex's using shared memory.
 # That procedures must be re-written for a distributed environment.
 #
-sub comunicate_coloring
+sub comunicate_coloring($$)
 {
-    $colored_vertex[$_[0]] = $_[1];
+    $colored_vertex[$ARG[0]] = $ARG[1];
 }
 
 # Colors-Vertex to be sent
@@ -301,7 +308,8 @@ my @color_receiver;
 #
 # Send The information to others threads. At the moment i am using shared memory.
 # TODO: Use sockets for distributed system.
-sub send_colors
+# TODO: why is this called with the thread ID?
+sub send_colors($)
 {
     for (my $i = 0; $i <= $#color_dispacher; $i++)
     {
@@ -316,7 +324,8 @@ sub send_colors
 #
 # Receiv information to others threads using shared memory.
 # TODO: Use sockets for distributed system.
-sub receiv_colors
+# TODO: why is this called with the thread ID?
+sub receiv_colors($)
 {
     for (my $i = 0; $i <= $#color_receiver; $i++)
     {
@@ -334,22 +343,21 @@ sub receiv_colors
 # Procedure that runs in every thread and makes the local-coloring. The procedures with number "2" are used in phase 2
 # of the algorithm. It is passing the range of the vertex that the thread has to coloring.
 #
-# $_[0]: Counter start.
-# $_[1]: Counter end.
-# $_[2]: Thread ID.
+# $ARG[0]: Counter start.
+# $ARG[1]: Counter end.
+# $ARG[2]: Thread ID.
 #
-sub do_coloring
+sub do_coloring($$$)
 {
     # graph index
-    my $start_i = $_[0];
-    my $end_i = $_[1];
+    my ($start_i, $end_i, $threadID) = @ARG;
     my $color_hd = '';
     my $color ='';
     # each graph[X] has a list of connections from vertex X to others guys
     for (my $i = $start_i; $i <= $end_i; $i++)
     {
         # If the element was defined then I can work with it
-        # we don't work with solitary guys here
+        # we don't work with isolated guys here
         if ( (defined($graph[$i])) && ($graph[$i]->[0] != -1) )
         {
             # Has the location been colored?
@@ -359,7 +367,7 @@ sub do_coloring
                 $color_hd = $color;
                 # coloring the vertex
                 push @{ $colors[$color] }, $i;
-                print  STDERR "Thread $_[2], coloring $i with color $color\n" if $check;
+                print  STDERR "Thread $threadID, coloring $i with color $color\n" if $check;
             }
             # looking for the conections
             for (my $j = 0; $j <= $#{ $graph[$i] }; $j++)
@@ -373,7 +381,7 @@ sub do_coloring
                         my $color = get_color($graph[$i]->[$j]);
                         # coloring the vertex
                         push @{ $colors[$color] }, $graph[$i]->[$j];
-                        printf  STDERR "Thread $_[2], coloring %d with color %d\n",$graph[$i]->[$j],$color if $check;
+                        printf  STDERR "Thread $threadID, coloring %d with color %d\n",$graph[$i]->[$j],$color if $check;
                     }
                 } else
                     # we have a non-local element
@@ -386,8 +394,8 @@ sub do_coloring
             }
         }
     }
-    # Looking for a solitary vertex
-    # It importants to coloring now because it is not always a solitary vertex is a not colored guy
+    # Looking for a isolated vertex
+    # It importants to coloring now because it is not always a isolated vertex is a not colored guy
     #
     for (my $i = $start_i; $i <= $end_i; $i++)
     {
@@ -406,9 +414,9 @@ sub do_coloring
     #
 
     # send the information of color_dispacher
-    send_colors($_[2]);
+    send_colors($threadID);
     # receiv information from others threads
-    receiv_colors($_[2]);
+    receiv_colors($threadID);
 
     # if a vertex is in a color_dispacher then it has a non-local guy
     for (my $i = 0; $i <= $#color_dispacher; $i++)
@@ -440,7 +448,7 @@ sub do_coloring
                 $color = get_color2($i);
                 # save it
                 push @{ $colors[$color] }, $i;
-                print STDERR "Thread $_[2], Recoloring $i with $color\n" if $check;
+                print STDERR "Thread $threadID, Recoloring $i with $color\n" if $check;
             }
         }
     }
@@ -472,43 +480,45 @@ sub do_coloring
 # Just one guy can call to fix_conflics()
 #
 
-# is_good_color_main:
+# is_bad_color_main:
 #
-# $_[0] : Color ID.
-# $_[1] : Vertex ID.
+# $ARG[0] : Color ID.
+# $ARG[1] : Vertex ID.
 #
 # Supposing a COLOR, check if there are a neighbor guy with the same color.
 # Return TRUE if it is not a good color.
 # Don't used with threads just for Main task.
 #
-sub is_good_color_main
+sub is_bad_color_main($$)
 {
+    my ($color, $node) = @ARG;
     for (my $i = 0; $i <= $#colored_vertex; $i++)
     {
         if (defined($colored_vertex[$i]))
         {
             # a guy with same color
-            if ($colored_vertex[$i] == $_[0])
+            if ($colored_vertex[$i] == $color)
             {
                 # if it is a neighbor we have a conflic
-                if (is_my_neighbor($i,$_[1])) {return 1;}
+                if (is_my_neighbor($i, $node)) {return 1;}
             }
         }
     }
 }
 # get_color_main:
 #
-# $_[0] : Vertex ID.
+# $ARG[0] : Vertex ID.
 # For a given vertex return the best color, checking the neighbor guys.
 #
 # Return the selected Color ID. Don't call from threads just from main task.
 #
-sub get_color_main
+sub get_color_main($)
 {
+    my ($node) = @ARG;
     # first option, tray a USED color
     foreach (@colors_defined)
     {
-        if (!(is_good_color_main($_,$_[0])))
+        if (!(is_bad_color_main($_,$node)))
         {
             return $_;
         }
@@ -517,7 +527,7 @@ sub get_color_main
     $last_color_used = int(rand($color_palette));
     # looking for the first GOOD COLOR randonly
     # if we don't do that we could have local problems
-    while (is_good_color_main($last_color_used,$_[0]))
+    while (is_bad_color_main($last_color_used,$node))
     {
         $last_color_used = int(rand($color_palette))
     }
@@ -531,7 +541,7 @@ sub get_color_main
 # Coloring Algorithm, phase 2.
 # Just called from Main task.
 #
-sub fix_conflics
+sub fix_conflics()
 {
     # looking for the graph
     for (my $i = 0; $i <= $#graph; $i++)
@@ -588,7 +598,7 @@ sub fix_conflics
 #
 # Count the number of conflics
 #
-sub check_conflicts
+sub check_conflicts()
 {
     my $conflics_count = 0;
     # looking for the graph
@@ -596,12 +606,12 @@ sub check_conflicts
     {
         if (defined($graph[$i]))
         {
-            # it is a solitary guy, check coloring
+            # it is a isolated guy, check coloring
             if ($graph[$i]->[0] == -1)
             {
                 if (!(defined($colored_vertex[$i])))
                 {
-                    print STDERR "Vertex $i solitary not colored!\n" if $check;
+                    print STDERR "Vertex $i isolated not colored!\n" if $check;
                 }
             }
             else
@@ -650,11 +660,12 @@ sub check_conflicts
 
 # make_output:
 #
-# Show the graph coloring using STDOUT
+# Show the graph coloring
 #
-sub make_output
+sub make_output($)
 {
-    print $graphhead;
+    my ($fd) = @ARG;
+    print $fd $graphhead;
     local $OUTPUT_FIELD_SEPARATOR = ", ";
     # a little patch to re-use coloreo.pl source, not very eficient but it is just for the output
     # colors[] is emply for the main task
@@ -691,20 +702,20 @@ sub make_output
                 {
                     $nom[$node]->{color} = $j;
                 }
-                print "$node [";
-                print map { "$_=\"$nom[$node]->{$_}\"" } keys %{$nom[$node]};
-                print "]\n";
+                print $fd "$node [";
+                print $fd map { "$_=\"$nom[$node]->{$_}\"" } keys %{$nom[$node]};
+                print $fd "]\n";
             }
         }
     }
-    print "}\n";
+    print $fd "}\n";
 }
 
 # make_graph:
 #
 # Read from dotty file and fill the graph structure.
 #
-sub make_graph
+sub make_graph()
 {
     my $sp;
     # opening dot file
@@ -747,7 +758,7 @@ sub make_graph
         }
     }
     close $in;
-    # we have to look for solitary guys
+    # we have to look for isolated guys
     for (my $i = 0; $i <= $#graph; $i++)
     {
         if (defined($graph[$i]))
@@ -764,16 +775,32 @@ sub make_graph
         }
     }
 }
+
+#######################################################################
+### real execution starts here
+
 # getting the parameters
-if ($#ARGV == -1)
+GetOptions (
+    'number'=> \$number,
+    'undirected'=> \$undirected,
+    'check'=> \$check,
+    'threads=i' => \$ths,
+    'ifile|i=s' => \$ifile,
+    'ofile|o=s' => \$ofile,
+    );
+
+if (!$ifile) {
+    $ifile = $ARGV[0];
+}
+
+if (!$ifile)
 {
     print "Usage: $PROGRAM_NAME [Parameters] [file]\n";
     exit;
 }
-GetOptions ('number'=>\ $number,'undirected'=>\ $undirected, 'check'=>\ $check, 'thread=i' =>\ $ths);
-$ifile = $ARGV[0];
+
 # default number of threads
-$ths = 2 if ($ths eq 0);
+$ths = 2 if (!$ths);
 # open .dot file and fill the graph structure
 make_graph;
 # Vertex per threads
@@ -802,6 +829,11 @@ for (my $j = 0; $j < $ths; $j++)
 # fix the problems
 fix_conflics;
 # show the coloring in dotty format
-make_output;
+if ($ofile) {
+    open(my $fd, ">$ofile") || die "unable to write to file $ofile";
+    make_output($fd);
+} else {
+    make_output(\*STDOUT);
+}
 # internal runtime to check the coloring
 check_conflicts if $check;
