@@ -34,6 +34,10 @@ use Thread;
 # colors[X] is an array which every entry is a list of vertex that they are coloring with X color.
 # It is filled at run time.
 my @colors;
+
+# The hash holds the same (local) data, but just ... hashed.
+my %colors;
+
 # List of colors already used
 my @colors_defined;
 
@@ -60,8 +64,28 @@ my $ofile;
 my $undirected;
 my $number;
 my $check;
-my $ths;
+my $ths = 2;
 my $VxperTh;
+
+# getting the parameters
+GetOptions (
+    'number'=> \$number,
+    'undirected'=> \$undirected,
+    'check'=> \$check,
+    'threads=i' => \$ths,
+    'ifile|i=s' => \$ifile,
+    'ofile|o=s' => \$ofile,
+    );
+
+if (!$ifile) {
+    $ifile = $ARGV[0];
+}
+
+if (!$ifile)
+{
+    print "Usage: $PROGRAM_NAME [Parameters] [file]\n";
+    exit;
+}
 
 
 # the information as found in the graph
@@ -89,24 +113,28 @@ sub is_local($$$) {
         return 1;
     }
 }
+
+## color a node
+sub color_node($$) {
+    my ($color, $node) = @ARG;
+    push @{ $colors[$color] }, $node;
+    $colors{$node} = $color;
+}
+
+sub uncolor_node($$) {
+    my ($color, $node) = @ARG;
+    delete $colors[$color]->[$node];
+    delete $colors{$node};
+}
+
 # has_color:
 #
 # $ARG[0]: vertex ID.
 #
 # return true if a vertex has been colored
 #
-sub has_color($)
-{
-    for (my $i = 0; $i <= $#colors; $i++)
-    {
-        for (my $j = 0; $j <= $#{ $colors[$i] }; $j++)
-        {
-            if ($colors[$i]->[$j] == $ARG[0])
-            {
-                return 1;
-            }
-        }
-    }
+sub has_color($) {
+    defined($colors{$ARG[0]});
 }
 
 # get_colorID:
@@ -115,41 +143,23 @@ sub has_color($)
 #
 # return vertex's color
 #
-sub get_colorID
-{
-    for (my $i = 0; $i <= $#colors; $i++)
-    {
-        if (defined($colors[$i]))
-        {
-            for (my $j = 0; $j <= $#{ $colors[$i] }; $j++)
-            {
-                if (defined($colors[$i]->[$j]))
-                {
-                    if ($colors[$i]->[$j] == $ARG[0])
-                    {
-                        return $i;
-                    }
-                }
-            }
-        }
+sub get_colorID($) {
+    if (defined($colors{$ARG[0]})) {
+        $colors{$ARG[0]};
+    } else {
+        -1;
     }
 }
 # similar than get_colorID, this one returns $j (position into the color queue) while the other return $i (color)
-sub get_colorID2
+sub get_colorID2($)
 {
-    for (my $i = 0; $i <= $#colors; $i++)
-    {
-        if (defined($colors[$i]))
-        {
-            for (my $j = 0; $j <= $#{ $colors[$i] }; $j++)
-            {
-                if (defined($colors[$i]->[$j]))
-                {
-                    if ($colors[$i]->[$j] == $ARG[0])
-                    {
+    if (defined($colors{$ARG[0]})) {
+        my $color = $colors{$ARG[0]};
+        for (my $j = 0; $j <= $#{ $colors[$color] }; $j++) {
+            if (defined($colors[$color]->[$j])) {
+                    if ($colors[$color]->[$j] == $ARG[0]) {
                         return $j;
                     }
-                }
             }
         }
     }
@@ -161,10 +171,8 @@ sub get_colorID2
 # $ARG[1] : Vertex ID.
 #
 # Return TRUE is they are neighbor.
-#
-sub is_my_neighbor($$)
-{
-    my ($here, $there) = @_;
+sub is_my_neighbor($$) {
+    my ($here, $there) = @ARG;
     # checking in one way
     for (my $j = 0; $j <= $#{ $graph[$here] }; $j++)
     {
@@ -173,6 +181,7 @@ sub is_my_neighbor($$)
             return 1;
         }
     }
+    return 0 if ($undirected);
     # checking in the other way
     for (my $j = 0; $j <= $#{ $graph[$there] }; $j++)
     {
@@ -182,11 +191,13 @@ sub is_my_neighbor($$)
         }
     }
 }
+
+
 # similar that is_my_neighbor() but in this case just check in one direction cause
 # the other direction can be in other processor.
 sub is_my_neighbor2($$)
 {
-    my ($here, $there) = @_;
+    my ($here, $there) = @ARG;
     # checking in one way
     for (my $j = 0; $j <= $#{ $graph[$here] }; $j++)
     {
@@ -205,10 +216,11 @@ sub is_my_neighbor2($$)
 # Return TRUE if it is not a good color
 # NOTE: As colors[] is local for every thread then there aren't external vertex in the list.
 #
-sub is_bad_color
+sub is_bad_color($$)
 {
-    my ($color, $node) = @_;
+    my ($color, $node) = @ARG;
     return 1 if (!defined($color));
+    return is_bad_color2($color, $node) if ($undirected);
     for (my $j = 0; $j <= $#{ $colors[$color] }; $j++)
     {
         if (defined($colors[$color]->[$j]))
@@ -221,20 +233,14 @@ sub is_bad_color
     }
 }
 # similar that is_bad_color() the only diference is is_my_neighbor2()
-sub is_bad_color2
+sub is_bad_color2($$)
 {
-    my ($color, $node) = @_;
+    my ($color, $node) = @ARG;
     return 1 if (!defined($color));
-    for (my $j = 0; $j <= $#{ $colors[$color] }; $j++)
-    {
-        if (defined($colors[$color]->[$j]))
-        {
-            if (is_my_neighbor2($node,$colors[$color]->[$j]))
-            {
-                return 1;
-            }
-        }
+    foreach my $neigh (@{$graph[$node]}) {
+        return 1 if (get_colorID($neigh) == $color);
     }
+    return 0;
 }
 # get_color:
 #
@@ -244,7 +250,7 @@ sub is_bad_color2
 # Return the selected Color ID.
 sub get_color($)
 {
-    my ($node) = @_;
+    my ($node) = @ARG;
     # first option, tray a USED color
     foreach (@colors_defined)
     {
@@ -267,7 +273,7 @@ sub get_color($)
 # similar than get_color just it uses "2" functions
 sub get_color2($)
 {
-    my ($node) = @_;
+    my ($node) = @ARG;
     # first option, tray a USED color
     foreach (@colors_defined)
     {
@@ -366,7 +372,7 @@ sub do_coloring($$$)
                 $color = get_color($i);
                 $color_hd = $color;
                 # coloring the vertex
-                push @{ $colors[$color] }, $i;
+                color_node($color, $i);
                 print  STDERR "Thread $threadID, coloring $i with color $color\n" if $check;
             }
             # looking for the conections
@@ -380,7 +386,7 @@ sub do_coloring($$$)
                     {
                         my $color = get_color($graph[$i]->[$j]);
                         # coloring the vertex
-                        push @{ $colors[$color] }, $graph[$i]->[$j];
+                        color_node($color, $graph[$i]->[$j]);
                         printf  STDERR "Thread $threadID, coloring %d with color %d\n",$graph[$i]->[$j],$color if $check;
                     }
                 } else
@@ -404,7 +410,7 @@ sub do_coloring($$$)
             if ( ($graph[$i]->[0] == -1) && (!(has_color($i))) )
             {
                 my $color = get_color($i);
-                push @{ $colors[$color] }, $i;
+                color_node($color, $i);
             }
         }
     }
@@ -432,7 +438,7 @@ sub do_coloring($$$)
                 {
                     $color = $color_receiver[$graph[$i]->[$j]];
                     # I need that information to solve a future conflict
-                    push @{ $colors[$color] }, $graph[$i]->[$j];
+                    color_node($color, $graph[$i]->[$j]);
                     # we have a conflict, just one guy fix the conflict
                     if ( ($color_dispacher[$i] == $color) && ($i>$graph[$i]->[$j]) ) {$cf=1}
                 }
@@ -442,12 +448,12 @@ sub do_coloring($$$)
             {
                 $color = $color_dispacher[$i];
                 my $ID = get_colorID2($i);
-                # I need to remove it from the aray
-                delete $colors[$color]->[$ID];
+                # I need to remove it from the array
+                uncolor_node($color, $ID);
                 # get  a new color using external information
                 $color = get_color2($i);
                 # save it
-                push @{ $colors[$color] }, $i;
+                color_node($color, $i);
                 print STDERR "Thread $threadID, Recoloring $i with $color\n" if $check;
             }
         }
@@ -673,7 +679,7 @@ sub make_output($)
     {
         if (defined($colored_vertex[$j]))
         {
-            push @{ $colors[$colored_vertex[$j]] }, $j;
+            color_node($colored_vertex[$j], $j);
         }
     }
     # then we can use colors[] again as in coloreo.pl
@@ -681,6 +687,8 @@ sub make_output($)
     {
         if (defined($colors[$j]))
         {
+            # cleanup a bit
+            @{ $colors[$j] } = grep { defined } @{ $colors[$j] };
             # color random combination
             my $red   =   int(rand(255));
             my $green =   int(rand(255));
@@ -779,33 +787,13 @@ sub make_graph()
 #######################################################################
 ### real execution starts here
 
-# getting the parameters
-GetOptions (
-    'number'=> \$number,
-    'undirected'=> \$undirected,
-    'check'=> \$check,
-    'threads=i' => \$ths,
-    'ifile|i=s' => \$ifile,
-    'ofile|o=s' => \$ofile,
-    );
 
-if (!$ifile) {
-    $ifile = $ARGV[0];
-}
-
-if (!$ifile)
-{
-    print "Usage: $PROGRAM_NAME [Parameters] [file]\n";
-    exit;
-}
-
-# default number of threads
-$ths = 2 if (!$ths);
 # open .dot file and fill the graph structure
 make_graph;
 # Vertex per threads
 $VxperTh = int (($#graph+1) / $ths);
-# Scheduling the threads
+
+# Schedule the threads
 if ($ths > 1) {
     print STDERR "running $ths parallel threads\n";
     for (my $j = 0; $j < $ths; $j++)
@@ -820,20 +808,26 @@ if ($ths > 1) {
                 $end_i = $end_i + (($#graph+1) % $ths);
             }
         }
-        $t[$j] = Thread->new( \&do_coloring, $start_i, $end_i,$j);
+        if ($j == $ths-1) {
+            # do the last thread ourself
+            do_coloring($start_i, $end_i, $j);
+        } else {
+            $t[$j] = Thread->new( \&do_coloring, $start_i, $end_i, $j);
+        }
     }
     # wait for threads
     # run in parallel
-    for (my $j = 0; $j < $ths; $j++)
+    for (my $j = 0; $j < ($ths-1); $j++)
     {
         my $retval = $t[$j]->join();
     }
+    # fix the problems
+    fix_conflics;
 } else {
     print STDERR "only 1 thread, doing it sequentially\n";
     do_coloring(0, $#graph, 0);
 }
-# fix the problems
-fix_conflics;
+
 # show the coloring in dotty format
 if ($ofile) {
     open(my $fd, ">$ofile") || die "unable to write to file $ofile";
