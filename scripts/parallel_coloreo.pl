@@ -395,55 +395,41 @@ sub do_coloring($$$)
     my $color_hd = '';
     my $color ='';
     # each graph[X] has a list of connections from vertex X to others guys
-    for (my $i = $start_i; $i <= $end_i; $i++)
-    {
-        # If the element was defined then I can work with it
-        # we don't work with isolated guys here
-        if ( (defined($graph[$i])) && @{$graph[$i]} )
-        {
-            # Has the location been colored?
-            if (!(has_color($i)))
-            {
-                $color = get_color($i);
-                $color_hd = $color;
-                # coloring the vertex
-                color_node($color, $i);
-                print  STDERR "Thread $threadID, coloring $i with color $color\n" if $check;
-            }
-            # looking for the conections
-            for (my $j = 0; $j <= $#{ $graph[$i] }; $j++)
-            {
-                # only coloring on local vertex
-                if (is_local($start_i,$end_i,$graph[$i]->[$j]))
-                {
-                    # Has the location been colored?
-                    if  (!(has_color($graph[$i]->[$j])))
-                    {
-                        my $color = get_color($graph[$i]->[$j]);
-                        # coloring the vertex
-                        color_node($color, $graph[$i]->[$j]);
-                        printf  STDERR "Thread $threadID, coloring %d with color %d\n",$graph[$i]->[$j],$color if $check;
+    for (my $i = $start_i; $i <= $end_i; $i++) {
+        if (defined($graph[$i])) {
+            # we don't work with isolated guys here
+            if (@{$graph[$i]}) {
+                # Has the location been colored?
+                if (!(has_color($i))) {
+                    $color = get_color($i);
+                    $color_hd = $color;
+                    # coloring the vertex
+                    color_node($color, $i);
+                    print  STDERR "Thread $threadID, coloring $i with color $color\n" if $check;
+                }
+                # looking for the conections
+                for my $neig (@{ $graph[$i] }) {
+                    # only coloring on local vertex
+                    if (is_local($start_i, $end_i, $neig)) {
+                        # Has the location been colored?
+                        if  (!has_color($neig)) {
+                            my $color = get_color($neig);
+                            # coloring the vertex
+                            color_node($color, $neig);
+                            printf  STDERR "Thread $threadID, coloring %d with color %d\n", $neig, $color if $check;
+                        }
+                    } else {
+                        # we have a non-local element
+                        # we have to send this information in the next phase
+                        $color_dispacher [$i] = get_colorID($i);
+                        # we have to receiv this information in the next phase
+                        $color_receiver [$neig] = '';
                     }
-                } else
-                    # we have a non-local element
-                {
-                    # we have to send this information in the next phase
-                    $color_dispacher [$i] = get_colorID($i);
-                    # we have to receiv this information in the next phase
-                    $color_receiver [$graph[$i]->[$j]] = '';
                 }
             }
-        }
-    }
-    # Looking for a isolated vertex
-    # It importants to coloring now because it is not always a isolated vertex is a not colored guy
-    #
-    for (my $i = $start_i; $i <= $end_i; $i++)
-    {
-        if (defined($graph[$i]))
-        {
-            if ( !@{$graph[$i]} && (!(has_color($i))) )
-            {
+        } else {
+            # Looking for an isolated vertex
+            if (!has_color($i)) {
                 my $color = get_color($i);
                 color_node($color, $i);
             }
@@ -460,27 +446,22 @@ sub do_coloring($$$)
     receiv_colors($threadID);
 
     # if a vertex is in a color_dispacher then it has a non-local guy
-    for (my $i = 0; $i <= $#color_dispacher; $i++)
-    {
-        if (defined($color_dispacher[$i]))
-        {
-            my $cf = 0;
+    for (my $i = 0; $i <= $#color_dispacher; $i++) {
+        if (defined($color_dispacher[$i])) {
+            my $cf;
             # we have the vertex in $i
-            for (my $j = 0; $j <= $#{ $graph[$i] }; $j++)
-            {
+            foreach my $neigh (@{ $graph[$i] }) {
                 # we can only have problem with non-local guys
-                if (!(is_local($start_i,$end_i,$graph[$i]->[$j])))
-                {
-                    $color = $color_receiver[$graph[$i]->[$j]];
+                if (!is_local($start_i, $end_i, $neigh)) {
+                    $color = $color_receiver[$neigh];
                     # I need that information to solve a future conflict
-                    color_node($color, $graph[$i]->[$j]);
+                    color_node($color, $neigh);
                     # we have a conflict, just one guy fix the conflict
-                    if ( ($color_dispacher[$i] == $color) && ($i>$graph[$i]->[$j]) ) {$cf=1}
+                    $cf = 1 if (($color_dispacher[$i] == $color) && ($i > $neigh));
                 }
             }
             # I have a conflict! recolor the vertex
-            if ($cf==1)
-            {
+            if ($cf) {
                 $color = $color_dispacher[$i];
                 my $ID = get_colorID2($i);
                 # I need to remove it from the array
@@ -495,10 +476,8 @@ sub do_coloring($$$)
     }
     # write the data to shared memory region
     # this procedure must be rewritten in a distributed environment
-    for (my $i = 0; $i <= $#colors; $i++)
-    {
-        if (defined($colors[$i]))
-        {
+    for (my $i = 0; $i <= $#colors; $i++) {
+        if (defined($colors[$i])) {
             foreach (@{ $colors[$i] }) {
                 if (defined) {
                     # only send the information about local coloring
@@ -513,7 +492,7 @@ sub do_coloring($$$)
 
 
 #
-# The following subrutines are used only for fix the conflic coloring.
+# The following subroutines are used only for fix the conflic coloring.
 # Just one guy can call to fix_conflics()
 #
 
@@ -698,27 +677,26 @@ sub make_output($)
     my $colors = scalar @colors;
     print $fd "/* Total number of colors $colors */\n";
     my $col = int(rand(0xFFFFFF));
+    my $dif =
+        ((0xFF / $colors) << 16)
+        | ((0xFF - (0xFF / $colors)) << 8)
+        | (0xFF / $colors);
     my $j = 0;
-    foreach my $color (@colors) {
+    foreach my $class (@colors) {
         # cleanup a bit
-        my %color = map { $_ => 1 } grep { defined } @{ $color };
-        @{ $color } = sort { $a <=> $ b } keys %color;
-        print $fd "/* ".scalar @{ $color }." vertices with color $j */\n";
-        $col += (0xFFFFFF / $colors);
+        my %color = map { $_ => 1 } grep { defined } @{ $class };
+        @{ $class } = sort { $a <=> $ b } keys %color;
+        print $fd "/* ".scalar @{ $class }." vertices with color $j */\n";
+        $col += $dif;
         $col %= 0xFFFFFF;
         # color random combination
-        foreach my $node ( @{ $color } ) {
-            if (!$nom[$node]) {
-                my %ndata;
-                $nom[$node] = \%ndata;
-            }
-            # output colors
-            if (!($number)) {
-                $nom[$node]->{color} = sprintf("#%06x", $col);
-                $nom[$node]->{style} = "filled";
-            } else {
+        foreach my $node ( @{ $class } ) {
+            if ($number) {
                 # Or output with numbers
                 $nom[$node]->{color} = $j;
+            } else {
+                $nom[$node]->{color} = sprintf("#%06x", $col);
+                $nom[$node]->{style} = "filled";
             }
             print $fd "$node\t[";
             print $fd map { "$_=\"$nom[$node]->{$_}\"" } keys %{$nom[$node]};
@@ -750,40 +728,42 @@ sub make_graph()
     while (<$in>)
     {
         # first look for the separator: " -- " or " -> "
-        if (m/$sp/o)
-        {
-            my @temp = m/^(\d+)\s*$sp\s*(\d+)/o;
+        if (m/$sp/o) {
+            my ($id, $neigh) = m/^\s*(\d+)\s*$sp\s*(\d+)/o;
+            $graph[ $id ] = [] if (!defined($graph[ $id ]));
             # make the graph
             # node source ---> node destination
-            push @{ $graph[$temp[0]] }, $temp[1];
-            if (UNDIRECTED) {push @{ $graph[$temp[1]] }, $temp[0];}
+            push @{ $graph[$id] }, $neigh;
+            if (UNDIRECTED) {
+                $graph[$neigh] = [] if (!defined($graph[$neigh]));
+                push @{ $graph[$neigh] }, $id;
+            }
             $graphlist .= $_;
             # node metadata, saving that information
-        } elsif (m/\s*(\d+)\s*\[(.+)\]/o)
-        {
+        } elsif (m/^\s*(\d+)\s*(?:\[(.+)\])?/o) {
             my $id = $1;
-            my @ndata = split(/, /, $2);
-            my %ndata = map {
-                if (m/(\w+)\s*=\s*"([^"]+)"/o) {
-                    ($1 => $2);
-                } else {
-                    undef;
-                }
-            } @ndata;
+            $graph[ $id ] = [] if (!defined($graph[ $id ]));
+            my %ndata;
+            if (defined($2)) {
+                my @ndata = split(/, /, $2);
+                my %ndata = map {
+                    if (m/(\w+)\s*=\s*"([^"]+)"/o) {
+                        ($1 => $2);
+                    } else {
+                        undef;
+                    }
+                } @ndata;
+            }
             $nom[ $id ]  = \%ndata;
-            #$graphhead .= $_;
         }  elsif (!m/}/o) {
             $graphhead .= $_;
         }
     }
     close $in;
     # we have to look for isolated guys
-    for (my $i = 0; $i <= $#graph; $i++)
-    {
-        if (defined($graph[$i]))
-        {
-            for (my $j = 0; $j <= $#{ $graph[$i] }; $j++)
-            {
+    for (my $i = 0; $i <= $#graph; $i++) {
+        if (defined($graph[$i])) {
+            for (my $j = 0; $j <= $#{ $graph[$i] }; $j++) {
                 my $vertex_sol = $graph[$i]->[$j];
                 # we have conection in one way so we must to defined the vertex
                 if (!(defined($graph[$vertex_sol]))) {
