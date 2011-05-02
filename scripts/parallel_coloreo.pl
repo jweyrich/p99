@@ -39,7 +39,7 @@ my @colors;
 my @colors_defined;
 
 # vertex' names
-my @nom;
+my %nom;
 
 # colored_vertex[X] holds the color of vertex X.
 my @colored_vertex : shared;
@@ -61,7 +61,6 @@ my @t;
 # parameter passing
 my $ifile;
 my $ofile;
-my $undirected;
 my $number;
 my $check;
 my $ths = 2;
@@ -77,7 +76,6 @@ my $color_palette = 18;
 # getting the parameters
 GetOptions (
     'number'=> \$number,
-    'undirected'=> \$undirected,
     'check'=> \$check,
     'threads=i' => \$ths,
     'colors|c=i' => \$color_palette,
@@ -94,7 +92,6 @@ if (!$ifile) {
     exit;
 }
 
-sub UNDIRECTED() { $undirected; }
 sub is_local($$$);
 sub color_node($$);
 sub uncolor_node($$);
@@ -102,10 +99,7 @@ sub has_color($);
 sub get_colorID($);
 sub get_colorID2($);
 sub is_my_neighbor($$);
-sub is_my_neighbor2($$);
-sub is_bad_color2($$);
 sub is_bad_color($$);
-sub is_bad_color2($$);
 sub get_color($);
 sub get_color2($);
 sub comunicate_coloring($$);
@@ -114,10 +108,32 @@ sub receiv_colors($);
 sub do_coloring($$$);
 sub is_bad_color_main($$);
 sub get_color_main($);
-sub fix_conflics();
+sub fix_conflicts();
 sub check_conflicts();
 sub make_output($);
 sub make_graph();
+sub create_vertex(@);
+sub create_edge($$);
+
+
+
+sub create_vertex(@) {
+    foreach (@ARG) {
+        if (!defined($graph[$_])) {
+            $graph[$_] = [];
+            my %ndata;
+            $nom{$_}  = \%ndata;
+        }
+    }
+}
+
+sub create_edge($$) {
+    create_vertex(@ARG);
+    my ($id, $neigh) = @ARG;
+    push @{$graph[$id]}, $neigh;
+    push @{$graph[$neigh]}, $id;
+}
+
 
 # the information as found in the graph
 my $graphhead = "";
@@ -204,29 +220,10 @@ sub is_my_neighbor($$) {
             return 1;
         }
     }
-    return 0 if (UNDIRECTED);
-    # checking in the other way
-    foreach (@{ $graph[$there] }) {
-        if ($_ == $here) {
-            return 1;
-        }
-    }
+    0;
 }
 
 
-# similar that is_my_neighbor() but in this case just check in one direction cause
-# the other direction can be in other processor.
-sub is_my_neighbor2($$)
-{
-    my ($here, $there) = @ARG;
-    # checking in one way
-    foreach (@{ $graph[$here] }) {
-        if ($_ == $there) {
-            return 1;
-        }
-    }
-}
-sub is_bad_color2($$);
 # is_bad_color:
 #
 # $ARG[0] : Color ID.
@@ -235,26 +232,7 @@ sub is_bad_color2($$);
 # Supposing a COLOR, check if there are a neighbor guy with the same color.
 # Return TRUE if it is not a good color
 # NOTE: As colors[] is local for every thread then there aren't external vertex in the list.
-#
-sub is_bad_color($$)
-{
-    my ($color, $node) = @ARG;
-    if (UNDIRECTED) {
-        is_bad_color2($color, $node);
-    } else {
-        return 1 if (is_bad_color2($color, $node));
-        foreach (@{ $colors[$color] }) {
-            if (defined) {
-                if (is_my_neighbor($node, $_)) {
-                    return 1;
-                }
-            }
-        }
-        0;
-    }
-}
-# similar that is_bad_color() the only diference is is_my_neighbor2()
-sub is_bad_color2($$) {
+sub is_bad_color($$) {
     my ($color, $node) = @ARG;
     foreach (@{$graph[$node]}) {
         return 1 if (get_colorID($_) == $color);
@@ -274,24 +252,18 @@ sub get_color($)
     my $cols = @colors_defined;
     # first shuffle them a bit
     if ($cols > 1) {
-        push(@colors_defined, splice(@colors_defined, 0, rand($cols)));
+        push(@colors_defined, splice(@colors_defined, 0, int(rand($cols))));
     }
-    if (UNDIRECTED) {
-        my %used =
-            map {
-                if ($colored_vertex[$_]) {
-                    ($colored_vertex[$_] => 1);
-                }
-        } @{$graph[$node]};
-        foreach (@colors_defined) {
-            return $_ if (!defined($used{$_}));
-        }
-    } else {
-        foreach (@colors_defined) {
-            if (!is_bad_color($_,$node)) {
-                return $_;
+    my %used =
+        map {
+            if (defined($colored_vertex{$_})) {
+                ($colored_vertex{$_} => 1);
+            } else {
+                ();
             }
-        }
+    } @{$graph[$node]};
+    foreach (@colors_defined) {
+        return $_ if (!defined($used{$_}));
     }
     # second option,tray a UN-USED color
     my $color;
@@ -317,12 +289,14 @@ sub get_color2($)
     my $cols = @colors_defined;
     # first shuffle them a bit
     if ($cols > 1) {
-        push(@colors_defined, splice(@colors_defined, 0, rand($cols)));
+        push(@colors_defined, splice(@colors_defined, 0, int(rand($cols))));
     }
     my %used =
         map {
-            if ($colored_vertex[$_]) {
-                ($colored_vertex[$_] => 1);
+            if ($colored_vertex{$_}) {
+                ($colored_vertex{$_} => 1);
+            } else {
+                ();
             }
     } @{$graph[$node]};
     foreach (@colors_defined) {
@@ -338,7 +312,7 @@ sub get_color2($)
         ++$color_palette;
     }
     $color = int(rand($color_palette));
-    goto REDO if (is_bad_color2($color, $node));
+    goto REDO if (is_bad_color($color, $node));
     push @colors_defined, $color;
     $last_color_used = $color;
     return $last_color_used;
@@ -357,9 +331,9 @@ sub comunicate_coloring($$)
 }
 
 # Colors-Vertex to be sent
-my @color_dispacher;
+my %color_dispacher;
 # Colors-Vertex to be receiv
-my @color_receiver;
+my %color_receiver;
 
 # send_colors:
 #
@@ -368,12 +342,9 @@ my @color_receiver;
 # TODO: why is this called with the thread ID?
 sub send_colors($)
 {
-    for (my $i = 0; $i <= $#color_dispacher; $i++)
+    foreach (keys %color_dispacher)
     {
-        if (defined($color_dispacher[$i]))
-        {
-            $colored_vertex[$i] = $color_dispacher[$i];
-        }
+        $colored_vertex[$_] = $color_dispacher{$_};
     }
 }
 
@@ -384,14 +355,11 @@ sub send_colors($)
 # TODO: why is this called with the thread ID?
 sub receiv_colors($)
 {
-    for (my $i = 0; $i <= $#color_receiver; $i++)
+    foreach (keys %color_receiver)
     {
-        if (defined($color_receiver[$i]))
-        {
-            # wait for the remote thread
-            while (!(defined($colored_vertex[$i]))){}
-            $color_receiver[$i] = $colored_vertex[$i];
-        }
+        # wait for the remote thread
+        while (!(defined($colored_vertex[$_]))){}
+        $color_receiver{$_} = $colored_vertex[$_];
     }
 }
 #
@@ -435,9 +403,9 @@ sub do_coloring($$$)
                     } else {
                         # we have a non-local element
                         # we have to send this information in the next phase
-                        $color_dispacher [$i] = get_colorID($i);
+                        $color_dispacher{$i} = get_colorID($i);
                         # we have to receiv this information in the next phase
-                        $color_receiver [$neig] = '';
+                        $color_receiver{$neig} = '';
                     }
                 }
             }
@@ -454,32 +422,30 @@ sub do_coloring($$$)
     receiv_colors($threadID);
 
     # if a vertex is in a color_dispacher then it has a non-local guy
-    for (my $i = 0; $i <= $#color_dispacher; $i++) {
-        if (defined($color_dispacher[$i])) {
-            my $cf;
-            # we have the vertex in $i
-            foreach my $neigh (@{ $graph[$i] }) {
-                # we can only have problem with non-local guys
-                if (!is_local($start_i, $end_i, $neigh)) {
-                    $color = $color_receiver[$neigh];
-                    # I need that information to solve a future conflict
-                    color_node($color, $neigh);
-                    # we have a conflict, just one guy fix the conflict
-                    $cf = 1 if (($color_dispacher[$i] == $color) && ($i > $neigh));
-                }
+    foreach my $i (keys %color_dispacher) {
+        my $cf;
+        # we have the vertex in $i
+        foreach my $neigh (@{ $graph[$i] }) {
+            # we can only have problem with non-local guys
+            if (!is_local($start_i, $end_i, $neigh)) {
+                $color = $color_receiver{$neigh};
+                # I need that information to solve a future conflict
+                color_node($color, $neigh);
+                # we have a conflict, just one guy fix the conflict
+                $cf = 1 if (($color_dispacher{$i} == $color) && ($i > $neigh));
             }
-            # I have a conflict! recolor the vertex
-            if ($cf) {
-                $color = $color_dispacher[$i];
-                my $ID = get_colorID2($i);
-                # I need to remove it from the array
-                uncolor_node($color, $ID);
-                # get  a new color using external information
-                $color = get_color2($i);
-                # save it
-                color_node($color, $i);
-                print STDERR "Thread $threadID, Recoloring $i with $color\n" if $check;
-            }
+        }
+        # I have a conflict! recolor the vertex
+        if ($cf) {
+            $color = $color_dispacher{$i};
+            my $ID = get_colorID2($i);
+            # I need to remove it from the array
+            uncolor_node($color, $ID);
+            # get  a new color using external information
+            $color = get_color2($i);
+            # save it
+            color_node($color, $i);
+            print STDERR "Thread $threadID, Recoloring $i with $color\n" if $check;
         }
     }
     # write the data to shared memory region
@@ -501,7 +467,7 @@ sub do_coloring($$$)
 
 #
 # The following subroutines are used only for fix the conflic coloring.
-# Just one guy can call to fix_conflics()
+# Just one guy can call to fix_conflicts()
 #
 
 # is_bad_color_main:
@@ -543,12 +509,14 @@ sub get_color_main($)
     my $cols = @colors_defined;
     # first shuffle them a bit
     if ($cols > 1) {
-        push(@colors_defined, splice(@colors_defined, 0, rand($cols)));
+        push(@colors_defined, splice(@colors_defined, 0, int(rand($cols))));
     }
     my %used =
         map {
             if (defined($colored_vertex[$_])) {
                 ($colored_vertex[$_] => 1);
+            } else {
+                ();
             }
     } @{$graph[$node]};
     foreach (@colors_defined) {
@@ -569,42 +537,40 @@ sub get_color_main($)
 }
 
 #
-# fix_conflics:
+# fix_conflicts:
 #
 # Coloring Algorithm, phase 2.
 # Just called from Main task.
 #
-sub fix_conflics()
+sub fix_conflicts()
 {
     # looking for the graph
-    for (my $i = 0; $i <= $#graph; $i++) {
-        if (defined($graph[$i])) {
-            if (@{$graph[$i]}) {
-                # it has connections ---> check coloring
-                my $color1 = $colored_vertex[$i];
-                # looking for in the neigboard tail
-                foreach my $neig (@{ $graph[$i] }) {
-                    my $color2 = $colored_vertex[$neig];
-                    # same color --> conflic!
-                    if ($color1 == $color2) {
-                        # 1 conflic per connection
-                        if ($i > $neig) {
-                            my $tr;
-                            foreach (@{ $graph[$neig] }) {
-                                if ($_ == $i) {
-                                    $tr = 1;
-                                    last;
-                                }
+    foreach my $i (keys %nom) {
+        if (@{$graph[$i]}) {
+            # it has connections ---> check coloring
+            my $color1 = $colored_vertex[$i];
+            # looking for in the neigboard tail
+            foreach my $neig (@{ $graph[$i] }) {
+                my $color2 = $colored_vertex[$neig];
+                # same color --> conflic!
+                if ($color1 == $color2) {
+                    # 1 conflic per connection
+                    if ($i > $neig) {
+                        my $tr;
+                        foreach (@{ $graph[$neig] }) {
+                            if ($_ == $i) {
+                                $tr = 1;
+                                last;
                             }
-                            #  neig --> i connection doesn't exist then we have to increment the conflict counter
-                            if (!$tr) {
+                        }
+                        #  neig --> i connection doesn't exist then we have to increment the conflict counter
+                        if (!$tr) {
                                 # change the color
-                                $colored_vertex[$neig] = get_color_main($neig);
-                            }
-                        } else {
-                            # change the color
                             $colored_vertex[$neig] = get_color_main($neig);
                         }
+                    } else {
+                        # change the color
+                        $colored_vertex[$neig] = get_color_main($neig);
                     }
                 }
             }
@@ -619,53 +585,51 @@ sub fix_conflics()
 
 # check_conflicts:
 #
-# Count the number of conflics
+# Count the number of conflicts
 #
 sub check_conflicts()
 {
-    my $conflics_count = 0;
+    my $conflicts_count = 0;
     # looking for the graph
-    for (my $i = 0; $i <= $#graph; $i++) {
-        if (defined($graph[$i])) {
-            # it is a isolated guy, check coloring
-            if (!@{$graph[$i]}) {
-                if (!(defined($colored_vertex[$i]))) {
-                    print STDERR "Vertex $i isolated not colored!\n" if $check;
-                }
-            } else {
-                # it has conections ---> check cloring
-                my $color1 = $colored_vertex[$i];
-                # looking for in the neigboard tail
-                for my $neig (@{ $graph[$i] }) {
-                    my $color2 = $colored_vertex[$neig];
-                    # same color --> conflic!
-                    if ($color1 == $color2) {
-                        # 1 conflic per conection
-                        if ($i > $neig) {
-                            my $tr;
-                            for (@{ $graph[$neig] }) {
-                                if ($_ == $i) {
-                                    $tr = 1;
-                                    last;
-                                }
+    foreach my $i (keys %nom) {
+        # it is a isolated guy, check coloring
+        if (!@{$graph[$i]}) {
+            if (!(defined($colored_vertex[$i]))) {
+                print STDERR "Vertex $i isolated not colored!\n" if $check;
+            }
+        } else {
+            # it has conections ---> check cloring
+            my $color1 = $colored_vertex[$i];
+            # looking for in the neigboard tail
+            for my $neig (@{ $graph[$i] }) {
+                my $color2 = $colored_vertex[$neig];
+                # same color --> conflic!
+                if ($color1 == $color2) {
+                    # 1 conflic per conection
+                    if ($i > $neig) {
+                        my $tr;
+                        for (@{ $graph[$neig] }) {
+                            if ($_ == $i) {
+                                $tr = 1;
+                                last;
                             }
-                            #  neig --> i connection doesn't exist then we have to increment the conflict counter
-                            if (!$tr) {
-                                printf STDERR "Conflic between %d and %d\n", $i, $neig if $check;
-                                # change the color
-                                $conflics_count++;
-                            }
-                        } else {
-                            printf STDERR "Conflic between %d and %d\n", $i, $neig if $check;
-                            # change the color
-                            $conflics_count++;
                         }
+                        #  neig --> i connection doesn't exist then we have to increment the conflict counter
+                        if (!$tr) {
+                            printf STDERR "Conflic between %d and %d\n", $i, $neig if $check;
+                                # change the color
+                            $conflicts_count++;
+                        }
+                    } else {
+                        printf STDERR "Conflic between %d and %d\n", $i, $neig if $check;
+                        # change the color
+                        $conflicts_count++;
                     }
                 }
             }
         }
     }
-    print STDERR "Number of conflics ---> $conflics_count\n" if $check;
+    print STDERR "Number of conflicts ---> $conflicts_count\n" if $check;
 }
 
 # make_output:
@@ -689,7 +653,7 @@ sub make_output($)
     print $fd "/* Total number of colors originally: $colors */\n";
     my $col = int(rand(0xFFFFFF));
     my @rgb = (($col >> 16) & 0xFF, ($col >> 8) & 0xFF, $col & 0xFF);
-    my @dif = ((rand(0x80) + 0x40), (rand(0x80) + 0x40), (rand(0x80) + 0x40));
+    my @dif = ((int(rand(0x40)) + 0x80), (int(rand(0x40)) + 0x80), (int(rand(0x40)) + 0x80));
     my $j = 0;
     my $nj = 0;
     my %ncols;
@@ -711,17 +675,17 @@ sub make_output($)
         }
         ++$j;
     }
-    for (my $node = 0; $node <= $#graph; ++$node) {
+    foreach my $node (keys %nom) {
         if ($number) {
             # Or output with numbers
-            $nom[$node]->{color} = $ncols{$colored_vertex[$node]};
+            $nom{$node}->{color} = $ncols{$colored_vertex[$node]};
         } else {
-            $nom[$node]->{color} = "$cols{$colored_vertex[$node]}";
-            $nom[$node]->{style} = "filled";
-            $nom[$node]->{label} = "$ncols{$colored_vertex[$node]}";
+            $nom{$node}->{color} = "$cols{$colored_vertex[$node]}";
+            $nom{$node}->{style} = "filled";
+            $nom{$node}->{label} = "$ncols{$colored_vertex[$node]}";
         }
         print $fd "$node\t[";
-        print $fd map { "$_=\"$nom[$node]->{$_}\"" } keys %{$nom[$node]};
+        print $fd map { "$_=\"$nom{$node}->{$_}\"" } keys %{$nom{$node}};
         print $fd "]\n";
     }
     print $fd $graphlist;
@@ -737,36 +701,21 @@ sub make_graph()
     my $sp;
     # opening dot file
     open(my $in,  "<",  $ifile);
-    # checking the input format
-    if (UNDIRECTED)
-    {
-        $sp = "--";
-    } else {
-        # default is direct
-        $sp = "->";
-    }
+    $sp = "-[->]";
     while (<$in>)
     {
         # first look for the separator: " -- " or " -> "
         if (m/$sp/o) {
             my ($id, $neigh) = m/^\s*(\d+)\s*$sp\s*(\d+)/o;
-            $graph[ $id ] = [] if (!defined($graph[ $id ]));
-            # make the graph
-            # node source ---> node destination
-            push @{ $graph[$id] }, $neigh;
-            if (UNDIRECTED) {
-                $graph[$neigh] = [] if (!defined($graph[$neigh]));
-                push @{ $graph[$neigh] }, $id;
-            }
+            create_edge($id, $neigh);
             $graphlist .= $_;
             # node metadata, saving that information
         } elsif (m/^\s*(\d+)\s*(?:\[(.+)\])?/o) {
             my $id = $1;
-            $graph[ $id ] = [] if (!defined($graph[ $id ]));
-            my %ndata;
+            create_vertex($id);
             if (defined($2)) {
                 my @ndata = split(/, /, $2);
-                my %ndata = map {
+                %{$nom{$id}} = map {
                     if (m/(\w+)\s*=\s*"([^"]+)"/o) {
                         ($1 => $2);
                     } else {
@@ -774,23 +723,15 @@ sub make_graph()
                     }
                 } @ndata;
             }
-            $nom[ $id ]  = \%ndata;
         }  elsif (!m/}/o) {
             $graphhead .= $_;
         }
     }
     close $in;
-    # we have to look for isolated guys
-    for (my $i = 0; $i <= $#graph; $i++) {
-        if (defined($graph[$i])) {
-            for (my $j = 0; $j <= $#{ $graph[$i] }; $j++) {
-                my $vertex_sol = $graph[$i]->[$j];
-                # we have conection in one way so we must to defined the vertex
-                if (!(defined($graph[$vertex_sol]))) {
-                    $graph[$vertex_sol] = [];
-                }
-            }
-        }
+    ## Eliminate eventual duplicates from the lists
+    foreach my $nl (@graph) {
+        my %tmp = map { $_ => 1 } @{$nl};
+        @{$nl} = keys %tmp;
     }
 }
 
@@ -832,10 +773,10 @@ if ($ths > 1) {
         my $retval = $t[$j]->join();
     }
     # fix the problems
-    fix_conflics;
+    fix_conflicts;
 } else {
     print STDERR "only 1 thread, doing it sequentially\n";
-    do_coloring(0, $#graph, 0);
+    do_coloring(0, (scalar keys %nom)-1, 0);
 }
 
 # show the coloring in dotty format
