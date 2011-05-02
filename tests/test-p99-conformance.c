@@ -304,8 +304,15 @@ long double has_long_double = 1.0L;
 #endif
 
 #ifndef SKIP_PREPRO_ARITH
+# if (0, 1, -1) > 0
+#  error "this should be a negative value"
+# else
+unsigned const has_preprocessor_comma = 1;
+# endif
 # if (0 - 1) >= 0
 #  error "this should be a negative value"
+# else
+unsigned const has_preprocessor_minus = 1;
 # endif
 /* Unsigned arithmetic should be done in the type that corresponds to
    uintmax_t and it should use modulo arithmetic. */
@@ -315,6 +322,7 @@ long double has_long_double = 1.0L;
 # if ~0U != (0U - 1)
 #  error "the preprocessor should do modulo arithmetic on unsigned values"
 # endif
+unsigned const has_preprocessor_bitneg = 1;
 # if (~0U < 65535)
 #  error "this should be a large positive value, at least UINT_MAX >= 2^{16} - 1"
 # endif
@@ -325,6 +333,27 @@ long double has_long_double = 1.0L;
 #  error "this should be a large positive value, at least ULLONG_MAX >= 2^{64} - 1"
 # endif
 unsigned has_preprocessor_uintmax;
+# if (1 ? -1 : 0U) < 0
+#  error "ternary operator should promote to unsigned value"
+#endif
+# if (1 ? -1 : 0) > 0
+#  error "ternary operator should result in signed value"
+#endif
+unsigned const has_preprocessor_ternary_unsigned = 1;
+/* Bool operation should return a signed integer */
+# if (1 ? -1 : (0 && 0)) > 0
+#  error "logical operations should return signed values"
+#endif
+# if (1 ? -1 : (0U && 0)) > 0
+#  error "logical operations should return signed values"
+#endif
+# if (1 ? -1 : (0 && 0U)) > 0
+#  error "logical operations should return signed values"
+#endif
+# if (1 ? -1 : (0U && 0U)) > 0
+#  error "logical operations should return signed values"
+#endif
+unsigned const has_preprocessor_logical_signed = 1;
 #endif
 
 #ifndef SKIP_UNIVERSAL
