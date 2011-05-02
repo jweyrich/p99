@@ -242,6 +242,7 @@ sub is_bad_color($$)
     if (UNDIRECTED) {
         is_bad_color2($color, $node);
     } else {
+        return 1 if (is_bad_color2($color, $node));
         foreach (@{ $colors[$color] }) {
             if (defined) {
                 if (is_my_neighbor($node, $_)) {
@@ -275,9 +276,21 @@ sub get_color($)
     if ($cols > 1) {
         push(@colors_defined, splice(@colors_defined, 0, rand($cols)));
     }
-    foreach (@colors_defined) {
-        if (!is_bad_color($_,$node)) {
-            return $_;
+    if (UNDIRECTED) {
+        my %used =
+            map {
+                if ($colored_vertex[$_]) {
+                    ($colored_vertex[$_] => 1);
+                }
+        } @{$graph[$node]};
+        foreach (@colors_defined) {
+            return $_ if (!defined($used{$_}));
+        }
+    } else {
+        foreach (@colors_defined) {
+            if (!is_bad_color($_,$node)) {
+                return $_;
+            }
         }
     }
     # second option,tray a UN-USED color
@@ -306,13 +319,16 @@ sub get_color2($)
     if ($cols > 1) {
         push(@colors_defined, splice(@colors_defined, 0, rand($cols)));
     }
+    my %used =
+        map {
+            if ($colored_vertex[$_]) {
+                ($colored_vertex[$_] => 1);
+            }
+    } @{$graph[$node]};
     foreach (@colors_defined) {
-        if (!is_bad_color2($_,$node)) {
-            return $_;
-        }
+        return $_ if (!defined($used{$_}));
     }
-    # second option,tray a UN-USED color
-    # second option,tray a UN-USED color
+    # second option,try a UN-USED color
     my $color;
     # looking for the first GOOD COLOR randonly
     # if we don't do that we could have local problems
@@ -397,16 +413,14 @@ sub do_coloring($$$)
     # each graph[X] has a list of connections from vertex X to others guys
     for (my $i = $start_i; $i <= $end_i; $i++) {
         if (defined($graph[$i])) {
-            # we don't work with isolated guys here
+            if (!has_color($i)) {
+                my $color = get_color($i);
+                # coloring the vertex
+                color_node($color, $i);
+                print  STDERR "Thread $threadID, coloring $i with color $color\n" if $check;
+            }
             if (@{$graph[$i]}) {
                 # Has the location been colored?
-                if (!(has_color($i))) {
-                    $color = get_color($i);
-                    $color_hd = $color;
-                    # coloring the vertex
-                    color_node($color, $i);
-                    print  STDERR "Thread $threadID, coloring $i with color $color\n" if $check;
-                }
                 # looking for the conections
                 for my $neig (@{ $graph[$i] }) {
                     # only coloring on local vertex
@@ -426,12 +440,6 @@ sub do_coloring($$$)
                         $color_receiver [$neig] = '';
                     }
                 }
-            }
-        } else {
-            # Looking for an isolated vertex
-            if (!has_color($i)) {
-                my $color = get_color($i);
-                color_node($color, $i);
             }
         }
     }
@@ -537,10 +545,14 @@ sub get_color_main($)
     if ($cols > 1) {
         push(@colors_defined, splice(@colors_defined, 0, rand($cols)));
     }
+    my %used =
+        map {
+            if (defined($colored_vertex[$_])) {
+                ($colored_vertex[$_] => 1);
+            }
+    } @{$graph[$node]};
     foreach (@colors_defined) {
-        if (!is_bad_color_main($_,$node)) {
-            return $_;
-        }
+        return $_ if (!defined($used{$_}));
     }
     # second option,tray a UN-USED color
   REDO:
@@ -673,36 +685,44 @@ sub make_output($)
         }
     }
     # then we can use colors[] again as in coloreo.pl
-    @colors = grep { defined } @colors;
     my $colors = scalar @colors;
-    print $fd "/* Total number of colors $colors */\n";
+    print $fd "/* Total number of colors originally: $colors */\n";
     my $col = int(rand(0xFFFFFF));
-    my $dif =
-        ((0xFF / $colors) << 16)
-        | ((0xFF - (0xFF / $colors)) << 8)
-        | (0xFF / $colors);
+    my @rgb = (($col >> 16) & 0xFF, ($col >> 8) & 0xFF, $col & 0xFF);
+    my @dif = ((rand(0x80) + 0x40), (rand(0x80) + 0x40), (rand(0x80) + 0x40));
     my $j = 0;
+    my $nj = 0;
+    my %ncols;
+    my %cols;
     foreach my $class (@colors) {
         # cleanup a bit
-        my %color = map { $_ => 1 } grep { defined } @{ $class };
-        @{ $class } = sort { $a <=> $ b } keys %color;
-        print $fd "/* ".scalar @{ $class }." vertices with color $j */\n";
-        $col += $dif;
-        $col %= 0xFFFFFF;
-        # color random combination
-        foreach my $node ( @{ $class } ) {
-            if ($number) {
-                # Or output with numbers
-                $nom[$node]->{color} = $j;
-            } else {
-                $nom[$node]->{color} = sprintf("#%06x", $col);
-                $nom[$node]->{style} = "filled";
+        if (defined($class)) {
+            my %color = map { $_ => 1 } grep { defined } @{ $class };
+            @{ $class } = sort { $a <=> $ b } keys %color;
+            # color random combination
+            for (my $i; $i < 3; ++$i) {
+                $rgb[$i] += $dif[$i];
+                $rgb[$i] &= 0xFF;
             }
-            print $fd "$node\t[";
-            print $fd map { "$_=\"$nom[$node]->{$_}\"" } keys %{$nom[$node]};
-            print $fd "]\n";
+            $ncols{$j} = $nj;
+            $cols{$j} = sprintf("#%02X%02X%02X", "$rgb[0]", "$rgb[1]", "$rgb[2]");
+            print $fd "/* ".scalar @{ $class }." vertices with color $nj. Color $cols{$j}. */\n";
+            ++$nj;
         }
         ++$j;
+    }
+    for (my $node = 0; $node <= $#graph; ++$node) {
+        if ($number) {
+            # Or output with numbers
+            $nom[$node]->{color} = $ncols{$colored_vertex[$node]};
+        } else {
+            $nom[$node]->{color} = "$cols{$colored_vertex[$node]}";
+            $nom[$node]->{style} = "filled";
+            $nom[$node]->{label} = "$ncols{$colored_vertex[$node]}";
+        }
+        print $fd "$node\t[";
+        print $fd map { "$_=\"$nom[$node]->{$_}\"" } keys %{$nom[$node]};
+        print $fd "]\n";
     }
     print $fd $graphlist;
     print $fd "}\n";
