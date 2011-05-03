@@ -377,21 +377,21 @@ sub do_coloring($$$)
     # graph index
     my ($start_i, $end_i, $threadID) = @ARG;
     my @nodes = grep { defined{$graph[$_]} } ($start_i .. $end_i);
-    foreach my $i (
+    foreach my $node (
         sort {
             scalar @{$graph[$b]}
             <=>
                 scalar @{$graph[$a]}
         } @nodes) {
-        if (!has_color($i)) {
-            my $color = get_color($i);
+        if (!has_color($node)) {
+            my $color = get_color($node);
             # coloring the vertex
-            color_node($color, $i);
-            print  STDERR "Thread $threadID, coloring $i with color $color\n" if $check;
+            color_node($color, $node);
+            print  STDERR "Thread $threadID, coloring $node with color $color\n" if $check;
         }
         # Has the location been colored?
         # looking for the conections
-        for my $neig (@{$graph[$i]}) {
+        for my $neig (@{$graph[$node]}) {
             # only coloring on local vertex
             if (is_local($start_i, $end_i, $neig)) {
                 # Has the location been colored?
@@ -404,7 +404,7 @@ sub do_coloring($$$)
             } else {
                 # we have a non-local element
                 # we have to send this information in the next phase
-                $color_dispacher{$i} = get_colorID($i);
+                $color_dispacher{$node} = get_colorID($node);
                 # we have to receiv this information in the next phase
                 $color_receiver{$neig} = '';
             }
@@ -422,9 +422,7 @@ sub do_coloring($$$)
 
     # store the boundary information into the local structures
     foreach my $node (keys %color_receiver) {
-        my $color = $color_receiver{$node};
-        # I need that information to solve a future conflict
-        color_node($color, $node);
+        color_node($color_receiver{$node}, $node);
     }
     # if a vertex is in a color_dispacher then it has a non-local guy
     foreach my $node (keys %color_dispacher) {
@@ -455,10 +453,8 @@ sub do_coloring($$$)
     }
     # write the data to shared memory region
     # this procedure must be rewritten in a distributed environment
-    foreach (keys %colored_vertex) {
-        if (is_local($start_i, $end_i, $_)) {
-            communicate_coloring($_, $colored_vertex{$_});
-        }
+    foreach my $node (@nodes) {
+        communicate_coloring($node, $colored_vertex{$node});
     }
 }
 
@@ -480,18 +476,10 @@ sub do_coloring($$$)
 sub is_bad_color_main($$)
 {
     my ($color, $node) = @ARG;
-    for (my $i = 0; $i <= $#colored_vertex; $i++)
-    {
-        if (defined($colored_vertex[$i]))
-        {
-            # a guy with same color
-            if ($colored_vertex[$i] == $color)
-            {
-                # if it is a neighbor we have a conflic
-                if (is_my_neighbor($i, $node)) {return 1;}
-            }
-        }
+    foreach (@{$graph[$node]}) {
+        return 1 if ($colored_vertex[$_] == $color);
     }
+    0;
 }
 # get_color_main:
 #
