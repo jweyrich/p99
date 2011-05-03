@@ -33,7 +33,7 @@ use Thread;
 
 # colors[X] is an array which every entry is a list of vertex that they are coloring with X color.
 # It is filled at run time.
-my @colors;
+my %colors;
 
 # List of colors already used
 my @colors_defined;
@@ -102,7 +102,7 @@ sub is_my_neighbor($$);
 sub is_bad_color($$);
 sub get_color($);
 sub get_color2($);
-sub comunicate_coloring($$);
+sub communicate_coloring($$);
 sub send_colors($);
 sub receiv_colors($);
 sub do_coloring($$$);
@@ -158,13 +158,13 @@ sub is_local($$$) {
 ## color a node
 sub color_node($$) {
     my ($color, $node) = @ARG;
-    push @{ $colors[$color] }, $node;
+    push @{ $colors{$color} }, $node;
     $colored_vertex{$node} = $color;
 }
 
 sub uncolor_node($$) {
     my ($color, $node) = @ARG;
-    delete $colors[$color]->[$node];
+    delete $colors{$color}->[$node];
     delete $colored_vertex{$node};
 }
 
@@ -196,9 +196,9 @@ sub get_colorID2($)
 {
     if (defined($colored_vertex{$ARG[0]})) {
         my $color = $colored_vertex{$ARG[0]};
-        for (my $j = 0; $j <= $#{ $colors[$color] }; $j++) {
-            if (defined($colors[$color]->[$j])) {
-                    if ($colors[$color]->[$j] == $ARG[0]) {
+        for (my $j = 0; $j <= $#{ $colors{$color} }; $j++) {
+            if (defined($colors{$color}->[$j])) {
+                    if ($colors{$color}->[$j] == $ARG[0]) {
                         return $j;
                     }
             }
@@ -317,15 +317,15 @@ sub get_color2($)
     $last_color_used = $color;
     return $last_color_used;
 }
-# comunicate_color:
+# communicate_color:
 #
 # $ARG[0] : Vertex.
 # $ARG[1] : Color.
 #
-# Comunicate vertex's using shared memory.
+# Communicate vertex's using shared memory.
 # That procedures must be re-written for a distributed environment.
 #
-sub comunicate_coloring($$)
+sub communicate_coloring($$)
 {
     $colored_vertex[$ARG[0]] = $ARG[1];
 }
@@ -376,38 +376,37 @@ sub do_coloring($$$)
 {
     # graph index
     my ($start_i, $end_i, $threadID) = @ARG;
-    my $color_hd = '';
-    my $color ='';
-    # each graph[X] has a list of connections from vertex X to others guys
-    for (my $i = $start_i; $i <= $end_i; $i++) {
-        if (defined($graph[$i])) {
-            if (!has_color($i)) {
-                my $color = get_color($i);
-                # coloring the vertex
-                color_node($color, $i);
-                print  STDERR "Thread $threadID, coloring $i with color $color\n" if $check;
-            }
-            if (@{$graph[$i]}) {
+    my @nodes = grep { defined{$graph[$_]} } ($start_i .. $end_i);
+    foreach my $i (
+        sort {
+            scalar @{$graph[$b]}
+            <=>
+                scalar @{$graph[$a]}
+        } @nodes) {
+        if (!has_color($i)) {
+            my $color = get_color($i);
+            # coloring the vertex
+            color_node($color, $i);
+            print  STDERR "Thread $threadID, coloring $i with color $color\n" if $check;
+        }
+        # Has the location been colored?
+        # looking for the conections
+        for my $neig (@{$graph[$i]}) {
+            # only coloring on local vertex
+            if (is_local($start_i, $end_i, $neig)) {
                 # Has the location been colored?
-                # looking for the conections
-                for my $neig (@{ $graph[$i] }) {
-                    # only coloring on local vertex
-                    if (is_local($start_i, $end_i, $neig)) {
-                        # Has the location been colored?
-                        if  (!has_color($neig)) {
-                            my $color = get_color($neig);
-                            # coloring the vertex
-                            color_node($color, $neig);
-                            printf  STDERR "Thread $threadID, coloring %d with color %d\n", $neig, $color if $check;
-                        }
-                    } else {
-                        # we have a non-local element
-                        # we have to send this information in the next phase
-                        $color_dispacher{$i} = get_colorID($i);
-                        # we have to receiv this information in the next phase
-                        $color_receiver{$neig} = '';
-                    }
+                if  (!has_color($neig)) {
+                    my $color = get_color($neig);
+                    # coloring the vertex
+                    color_node($color, $neig);
+                    printf  STDERR "Thread $threadID, coloring %d with color %d\n", $neig, $color if $check;
                 }
+            } else {
+                # we have a non-local element
+                # we have to send this information in the next phase
+                $color_dispacher{$i} = get_colorID($i);
+                # we have to receiv this information in the next phase
+                $color_receiver{$neig} = '';
             }
         }
     }
@@ -421,45 +420,44 @@ sub do_coloring($$$)
     # receiv information from others threads
     receiv_colors($threadID);
 
+    # store the boundary information into the local structures
+    foreach my $node (keys %color_receiver) {
+        my $color = $color_receiver{$node};
+        # I need that information to solve a future conflict
+        color_node($color, $node);
+    }
     # if a vertex is in a color_dispacher then it has a non-local guy
-    foreach my $i (keys %color_dispacher) {
+    foreach my $node (keys %color_dispacher) {
         my $cf;
-        # we have the vertex in $i
-        foreach my $neigh (@{ $graph[$i] }) {
+        my $color = get_colorID{$node};
+        foreach my $neigh (@{ $graph[$node] }) {
             # we can only have problem with non-local guys
-            if (!is_local($start_i, $end_i, $neigh)) {
-                $color = $color_receiver{$neigh};
-                # I need that information to solve a future conflict
-                color_node($color, $neigh);
+            if (
+                (@{$graph[$node]} > @{$graph[$neigh]})
+                && ($node < $neigh)
+                && !is_local($start_i, $end_i, $neigh)
+                && ($color == get_colorID($neigh))) {
                 # we have a conflict, just one guy fix the conflict
-                $cf = 1 if (($color_dispacher{$i} == $color) && ($i > $neigh));
+                $cf = 1;
             }
         }
         # I have a conflict! recolor the vertex
         if ($cf) {
-            $color = $color_dispacher{$i};
-            my $ID = get_colorID2($i);
+            my $ID = get_colorID2($node);
             # I need to remove it from the array
             uncolor_node($color, $ID);
             # get  a new color using external information
-            $color = get_color2($i);
+            $color = get_color($node);
             # save it
-            color_node($color, $i);
-            print STDERR "Thread $threadID, Recoloring $i with $color\n" if $check;
+            color_node($color, $node);
+            print STDERR "Thread $threadID, Recoloring $node with $color\n" if $check;
         }
     }
     # write the data to shared memory region
     # this procedure must be rewritten in a distributed environment
-    for (my $i = 0; $i <= $#colors; $i++) {
-        if (defined($colors[$i])) {
-            foreach (@{ $colors[$i] }) {
-                if (defined) {
-                    # only send the information about local coloring
-                    if (is_local($start_i, $end_i, $_)) {
-                        comunicate_coloring($_, $i);
-                    }
-                }
-            }
+    foreach (keys %colored_vertex) {
+        if (is_local($start_i, $end_i, $_)) {
+            communicate_coloring($_, $colored_vertex{$_});
         }
     }
 }
@@ -648,34 +646,26 @@ sub make_output($)
             color_node($colored_vertex[$j], $j);
         }
     }
-    # then we can use colors[] again as in coloreo.pl
-    my $colors = scalar @colors;
-    print $fd "/* Total number of colors originally: $colors */\n";
+    my $colors = scalar keys %colors;
+    print $fd "/* Total number of colors: $colors */\n";
     my $col = int(rand(0xFFFFFF));
     my @rgb = (($col >> 16) & 0xFF, ($col >> 8) & 0xFF, $col & 0xFF);
     my @dif = ((int(rand(0x40)) + 0x80), (int(rand(0x40)) + 0x80), (int(rand(0x40)) + 0x80));
-    my $j = 0;
     my $nj = 0;
     my %ncols;
     my %cols;
-    foreach my $class (@colors) {
-        # cleanup a bit
-        if (defined($class)) {
-            my %color = map { $_ => 1 } grep { defined } @{ $class };
-            @{ $class } = sort { $a <=> $ b } keys %color;
-            # color random combination
-            for (my $i; $i < 3; ++$i) {
-                $rgb[$i] += $dif[$i];
-                $rgb[$i] &= 0xFF;
-            }
-            $ncols{$j} = $nj;
-            $cols{$j} = sprintf("#%02X%02X%02X", "$rgb[0]", "$rgb[1]", "$rgb[2]");
-            print $fd "/* ".scalar @{ $class }." vertices with color $nj. Color $cols{$j}. */\n";
-            ++$nj;
+    foreach my $class (sort { $a <=> $b } keys %colors) {
+        @{$colors{$class}} = sort { $a <=> $b } @{$colors{$class}};
+        for (my $i; $i < 3; ++$i) {
+            $rgb[$i] += $dif[$i];
+            $rgb[$i] &= 0xFF;
         }
-        ++$j;
+        $ncols{$class} = $nj;
+        $cols{$class} = sprintf("#%02X%02X%02X", "$rgb[0]", "$rgb[1]", "$rgb[2]");
+        print $fd "/* ".scalar @{ $colors{$class} }." vertices with color $nj. Color $cols{$class}. */\n";
+        ++$nj;
     }
-    foreach my $node (keys %nom) {
+    foreach my $node (sort { $a <=> $b } keys %nom) {
         if ($number) {
             # Or output with numbers
             $nom{$node}->{color} = $ncols{$colored_vertex[$node]};
