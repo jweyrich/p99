@@ -367,7 +367,8 @@ DEFINE_THREAD(arg_t) {
   /*                       Initialization iteration                          */
   /***************************************************************************/
   if (Arg->sub_task == MAIN) {
-    report(1, "Main task %zu: intialization iteration", Arg->id / 9);
+    //report(1, "Main task %zu: intialization iteration", Arg->id / 9);
+    printf("Main task %zu: intialization iteration\n", Arg->id / 9);
     /* Data initialization */
     za = float_vnew(sub_matrix_size * sub_matrix_size);
     zb = float_vnew(sub_matrix_size * sub_matrix_size);
@@ -419,7 +420,8 @@ DEFINE_THREAD(arg_t) {
   /***************************************************************************/
   for (size_t iter = 0 ; iter < iterations ; iter++) {
     if (Arg->sub_task == MAIN) {
-      report(1, "Main task %zu: iteration %zu", Arg->id / 9, iter);
+      //report(1, "Main task %zu: iteration %zu", Arg->id / 9, iter);
+      printf("Main task %zu: iteration %zu\n", Arg->id / 9, iter);
       memcpy(old_za, za, sub_matrix_size * sub_matrix_size * sizeof(float));
 
       /* Inner computation */
@@ -619,7 +621,7 @@ int main(int argc, char **argv) {
     report(1, "only %d commandline arguments, this ain't enough", argc);
     return 1;
   }
-  
+
   char graph_file[256] = {0};
   char global_ab_file[256] = {0};
   char local_ab_file[256] = {0};
