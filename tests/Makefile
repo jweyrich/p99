@@ -11,6 +11,7 @@
 include ../scripts/Makefile-getconf-orwl
 
 NAME 	=					\
+		orwl_local_test_inclusive	\
 		orwl_remote_server		\
 		orwl_remote_test_exclusive	\
 		orwl_remote_test_inclusive	\
@@ -30,6 +31,7 @@ NAME 	=					\
 		test-p99-va-arg
 
 SRC	=					\
+		orwl_local_test_inclusive.c	\
 		orwl_remote_server.c		\
 		orwl_remote_test_exclusive.c	\
 		orwl_remote_test_inclusive.c	\
