@@ -17,12 +17,23 @@
 
 P99_DECLARE_STRUCT(arg_t);
 
+
+/**
+ ** Struct that contains the information that we want to pass on to
+ ** each individual thread.
+ **/
 struct arg_t {
   size_t offset;
+  /** The thread id. **/
   size_t mynum;
+  /** The number of iterations. **/
   size_t phases;
+  /** An array of orwl_np locations. **/
   orwl_mirror* left;
+  /** A barrier that is used for initialization purposes. **/
   orwl_barrier* init_barr;
+  /** A character array in the "server" thread that is used to show
+   ** the progress of the application. **/
   char* info;
 };
 
@@ -53,6 +64,8 @@ DEFINE_NEW_DELETE(arg_t);
 
 DECLARE_THREAD(arg_t);
 
+
+/** Define the function that each thread runs. **/
 DEFINE_THREAD(arg_t) {
   /* Lift all thread context fields to local variables of this thread */
   size_t const offset = Arg->offset;
@@ -62,13 +75,17 @@ DEFINE_THREAD(arg_t) {
   orwl_barrier*const init_barr = Arg->init_barr;
   char* info = Arg->info;
 
+  /**
+   ** Initialization of some variables.
+   **/
+
   /* Shift the info pointer to the position that this thread here is
    * due to manipulate. */
   if (info) info += 3*orwl_mynum + 1;
 
   /* Each thread holds 3 orwl_handle2. One for his own location and
    * one each for the location to the left and to the right. */
-  orwl_handle2 leh[3] = { ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER };
+  orwl_handle2 handle[3] = { ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER };
 
   /* The buffer for the reentrant pseudo random generator */
   rand48_t* seed = seed_get();
@@ -81,44 +98,56 @@ DEFINE_THREAD(arg_t) {
   {
     orwl_barrier_wait(init_barr);
     /* Randomize, so the system will always be initialized differently. */
-    sleepfor(orwl_drand(seed) * 1E-3);
+    sleepfor(orwl_drand(seed) * 1E-1);
+    /* We have to be sure that the insertion into the three request
+       queues is not mixed up. For the moment this is just guaranteed
+       by holding a global mutex. */
     ORWL_CRITICAL {
-      orwl_read_request2(&left[0], &leh[0]);
-      orwl_write_request2(&left[1], &leh[1]);
-      orwl_read_request2(&left[2], &leh[2]);
+      orwl_read_request2(&left[0], &handle[0]);
+      orwl_write_request2(&left[1], &handle[1]);
+      orwl_read_request2(&left[2], &handle[2]);
     }
     orwl_barrier_wait(init_barr);
-    report(1, "initial barrier passed");
+    report(0, "initial barrier passed");
   }
 
 
   /* Do some resizing, but only in the initial phase. */
  {
    for (size_t i = 0; i < 3; ++i)
-     orwl_acquire2(&leh[i]);
+     orwl_acquire2(&handle[i]);
    size_t len = 1;
    char const* env = getenv("ORWL_HANDLE_SIZE");
    if (env) {
      size_t len2 = strtouz(env) / sizeof(uint64_t);
      if (len2) len = len2;
    }
-   orwl_resize2(&leh[1], len);
+   orwl_resize2(&handle[1], len);
    report(true, "handle resized to %zu byte                                             \n",
           len * sizeof(uint64_t));
    for (size_t i = 0; i < 3; ++i)
-     orwl_release2(&leh[i]);
+     orwl_release2(&handle[i]);
  }
 
 
   for (size_t orwl_phase = 1; orwl_phase < phases; ++orwl_phase) {
-    double const twait = 0.1;
+
+    /** Initial Phase: do something having requested the lock but not
+     ** necessarily having it obtained.
+     **/
+    double const twait = 0.3;
     double const rwait = twait * orwl_drand(seed);
     double const await = twait - rwait;
 
-    /* Acquire all the three handles. */
+    /** Here for this dummy application we just take a nap **/
     sleepfor(await);
+
+
+    /** Acquire all the three handles, our own and the two neighboring ones.
+     ** This will block until the locks are obtained.
+     **/
     for (size_t i = 0; i < 3; ++i)
-      ostate = orwl_acquire2(&leh[i]);
+      ostate = orwl_acquire2(&handle[i]);
 
     /* Now work on our data. */
     int64_t diff[3] = { P99_TMIN(int64_t), P99_0(int64_t), P99_TMIN(int64_t) };
@@ -127,25 +156,30 @@ DEFINE_THREAD(arg_t) {
        * shared data for the whole application. */
       size_t data_len = 0;
       {
-        uint64_t* data = orwl_map2(&leh[1], &data_len);
+        uint64_t* data = orwl_map2(&handle[1], &data_len);
         assert(data && data_len);
-        data[0] = orwl_phase;
+        *data = orwl_phase;
       }
       /* For handle 0 and 2 we have read access. */
       {
-        uint64_t const* data = orwl_mapro2(&leh[0], &data_len);
+        uint64_t const* data = orwl_mapro2(&handle[0], &data_len);
         assert(data && data_len);
-        diff[0] = data[0] - (orwl_phase - 1);
+        diff[0] = *data - (orwl_phase - 1);
       }
       {
-        uint64_t const* data = orwl_mapro2(&leh[2], &data_len);
+        uint64_t const* data = orwl_mapro2(&handle[2], &data_len);
         assert(data && data_len);
-        diff[2] = (orwl_phase - 1) - data[0];
+        diff[2] = (orwl_phase - 1) - *data;
       }
     }
 
-    /* Now write some data that keeps track only of the local state
-     * of all threads that are launched within the same process. */
+    /** take another nap where a real application would do its work
+     ** that needs access to the shared resource.
+     **/
+    sleepfor(rwait);
+
+    /** Now write some data that keeps track of the local state of all
+     ** threads. */
     if (info) {
       char num[10];
       sprintf(num, "  %zX", orwl_phase);
@@ -164,19 +198,19 @@ DEFINE_THREAD(arg_t) {
 
     /* At the end of the phase, release our locks and launch the next
      * phase by placing a new request in the end of the queue. */
-    sleepfor(rwait);
     for (size_t i = 0; i < 3; ++i)
-      ostate = orwl_release2(&leh[i]);
+      ostate = orwl_release2(&handle[i]);
   }
 
-  /* And at the very end cancel all locks such that we may return. */
+  /** And at the very end of the lifetime of the thread cancel all
+   ** locks such that no other thread is blocked and return.
+   **/
   for (size_t i = 0; i < 3; ++i)
-    ostate = orwl_cancel2(&leh[i]);
-  report(true, "finished");
+    ostate = orwl_cancel2(&handle[i]);
+  report(false, "finished");
 }
 
 int main(int argc, char **argv) {
-  int ret = 0;
   if (argc < 6) {
     report(1, "Usage: %s URL PHASES LOCAl GLOBAL OFFSET",
            argv[0]);
@@ -204,8 +238,12 @@ int main(int argc, char **argv) {
   {
     orwl_start(&srv, SOMAXCONN, number * 2);
     if (!orwl_alive(&srv)) return EXIT_FAILURE;
-    /* info has one suplementary char in front such that we may always
-       address field -1 from the threads. */
+
+    /** The string "info" will be used as sort of common black board by
+     ** the threads such that we can visualize their state. It has one
+     ** suplementary char in front such that we may always address
+     ** field -1 from the threads.
+     */
     size_t info_len = 3*orwl_np;
     char* info = calloc(info_len + 2);
     memset(info, ' ', info_len + 1);
@@ -232,47 +270,57 @@ int main(int argc, char **argv) {
       size_t gpos = (orwl_np + i + offset) % orwl_np;
       there.index = gpos;
       orwl_mirror_connect(&location[i], &srv, there);
-      report(1, "connected to %s", orwl_endpoint_print(&there));
+      report(0, "connected to %s", orwl_endpoint_print(&there));
     }
   }
 
   /* Fire up the worker threads. */
-  for (size_t i = 0; i < number; ++i) {
-    if (i%2) {
+  for (size_t thread = 0; thread < number; ++thread) {
+    if (thread%2) {
       /* The odd numbered ones are joinable and use an arg_t that is
        * managed by this main thread, here. */
+      size_t thread2 = thread/2;
       arg_t_create_joinable(
-                            arg_t_init(&arg[i/2], &init_barr,
-                                       offset, i + offset, phases,
-                                       &location[i - 1], srv.info),
-                            &id[i/2]
+                            arg_t_init(&arg[thread2],
+                                       &init_barr,
+                                       offset,
+                                       thread + offset,
+                                       phases,
+                                       /* give it the starting
+                                        * position of the location on
+                                        * the left. */
+                                       &location[thread - 1],
+                                       srv.info),
+                            &id[thread2]
                             );
     } else {
       /* The even numbered ones are created detached and receive a
        * freshly created arg_t for which they are responsible. */
       arg_t_create_detached(
-                   P99_NEW(arg_t, &init_barr,
-                           offset, i + offset, phases,
-                           &location[i - 1], srv.info)
+                   P99_NEW(arg_t,
+                           &init_barr,
+                           offset,
+                           thread + offset,
+                           phases,
+                           /* give it the starting
+                            * position of the location on
+                            * the left. */
+                           &location[thread - 1],
+                           srv.info)
                    );
     }
   }
 
-  report(1, "%s: waiting for %zu joinable threads",
-         argv[0], number/2);
-  for (size_t i = 0; i < number/2; ++i) {
-    arg_t_join(id[i]);
+  /* wait for even numbered threads, that have been started joinable. */
+  for (size_t thread2 = 0; thread2 < orwl_np/2; ++thread2) {
+    arg_t_join(id[thread2]);
   }
 
-  report(1, "%s: waiting for %zu detached threads",
-         argv[0], number - number/2);
-  if (ret) {
-    char mesg[256] = "";
-    strerror_r(ret, mesg, 256);
-    report(1, "Server already terminated: %s", mesg);
-  }
+  /* wait for the remaining threads, if any are still alive */
   orwl_pthread_wait_detached();
-  report(1, "%s: killing server", argv[0]);
+
+  /* now we can safely destruct ourselves */
+  report(0, "%s: killing server", argv[0]);
   orwl_server_terminate(&srv);
   orwl_stop(&srv);
 
