@@ -291,7 +291,7 @@ bool orwl_wait_and_load_init_files(orwl_address_book **ab,
 				   size_t *list_id,
 				   size_t *list_locations,
 				   size_t nb_vertices) {
-  serv->id_initialized = (bool*)calloc(sizeof(bool), nb_vertices);
+  serv->id_initialized = bool_vrealloc(serv->id_initialized, nb_vertices);
   if (!orwl_dump_id(serv, id_filename, nb_id, list_id, list_locations))
     return false;
   orwl_wait_until_file_is_here(id_filename);
