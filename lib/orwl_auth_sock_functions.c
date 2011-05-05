@@ -22,7 +22,6 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
   /* mes and addr_t is already in host order */
   h->ep.addr = getpeer(Arg);
   h->ep.port.p = htons((uint16_t)port);
-  report(Arg->srv->info, "inserting peer %s", orwl_endpoint_print(&h->ep));
   orwl_host_connect(h, &Arg->srv->host);
 }
 
