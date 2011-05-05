@@ -159,6 +159,35 @@ DECLARE_BASIC_TYPE(uint32_t);
 DECLARE_BASIC_TYPE(int64_t);
 DECLARE_BASIC_TYPE(uint64_t);
 
+/** @addtogroup bool_specials @c bool specials
+ ** @brief @c bool must be handled specially since it is not a @c
+ ** typedef but a macro
+ ** @{
+ **/
+DECLARE_POINTER_TYPE(_Bool);
+DECLARE_BASIC_TYPE(_Bool);
+#define bool_cptr_delete _Bool_cptr_delete
+#define bool_cptr_destroy _Bool_cptr_destroy
+#define bool_cptr_init _Bool_cptr_init
+#define bool_cptr_vdelete _Bool_cptr_vdelete
+#define bool_cptr_vnew _Bool_cptr_vnew
+#define bool_cptr_vrealloc _Bool_cptr_vrealloc
+#define bool_delete _Bool_delete
+#define bool_destroy _Bool_destroy
+#define bool_init _Bool_init
+#define bool_ptr_delete _Bool_ptr_delete
+#define bool_ptr_destroy _Bool_ptr_destroy
+#define bool_ptr_init _Bool_ptr_init
+#define bool_ptr_vdelete _Bool_ptr_vdelete
+#define bool_ptr_vnew _Bool_ptr_vnew
+#define bool_ptr_vrealloc _Bool_ptr_vrealloc
+#define bool_vdelete _Bool_vdelete
+#define bool_vnew _Bool_vnew
+#define bool_vrealloc _Bool_vrealloc
+/**
+ ** @}
+ **/
+
 inline
 char const* void_cptr2p(char* buf, void_cptr x) {
   sprintf(buf, "%p", x);
