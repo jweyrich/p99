@@ -171,7 +171,7 @@ sub expandPar(@);
 sub findfile(_);
 sub flushOut(\@);
 sub getTokDef(\@);
-#sub isNL(_);
+sub handlePragma(_);
 sub joinToks(@);
 sub macro(_);
 sub macroContained(\%);
@@ -227,8 +227,7 @@ my $isidentifier = qr/(?:[_[:alpha:]]\w*+)/;
 
     my %macro = (
         ## The special "macro" _Pragma that we never could do with #define.
-        ## The spaces in the expansion are essential such that this is tokenized correctly.
-        "_Pragma" => ["X", [$liner, "#pragma", $unstring, "X", $liner]],
+        "_Pragma" => ["X", [$liner, "_Pragma", "X", $liner]],
         ## Mark our presence by setting a special macro.
         "__P99PRO__" => ["1"],
         ## Provide the macros that are required by the standard. __LINE__ and __FILE__ are
@@ -242,6 +241,8 @@ my $isidentifier = qr/(?:[_[:alpha:]]\w*+)/;
         ## #define or a #undef preprocessing directive.
         "defined" => ["(== abuse of keyword defined ==)"],
         );
+
+    my $predefMacros = scalar keys %macro;
 
     my %hidden;
 
@@ -437,6 +438,20 @@ my $isidentifier = qr/(?:[_[:alpha:]]\w*+)/;
         }
     }
 
+    sub macroState() {
+        my $defs = scalar keys %macro;
+        $defs -= $predefMacros;
+        my @hids = grep { $hidden{$_} } keys %hidden;
+        if (!@hids) {
+            @hids = ("none", "are");
+        } elsif (scalar @hids == 1) {
+            push(@hids, "is");
+        } else {
+            push(@hids, "are");
+        }
+        warn "/* There are $defs macros, of which @hids hidden. */";
+    }
+
     sub macroList(;$) {
         my ($restricted) = shift;
         my %interesting = ($restricted
@@ -464,6 +479,9 @@ my %fileInc;
 
 ## did we locally change line numbering?
 my $skipedLines = 0;
+
+## has pragma once been called?
+my $pragmaOnce;
 
 ## integrate the defines that we received on the command line
 foreach my $def (@defs) {
@@ -643,7 +661,7 @@ my $ishhash = qr/(?:[#][#]|[%][:][%][:])/;
 
 my $tokenizer = qr/(?:$isstring|$ischar|$isidentifier|$isnumber)/;
 my $tokenizerSplit = qr/($isstring|$ischar|$isidentifier|$isnumber)/;
-my $tokenizerToken = qr/^(?:$isstringToken|$ischarToken|$isidentifier|$isnumber)$/;
+my $tokenizerToken = qr/^(?:$isstring|$ischarToken|$isidentifier|$isnumber)$/;
 
 ## regexp that we need when untokenizing
 ## imperative, don't create tokens that weren't there before
@@ -791,6 +809,41 @@ sub toktrans($$\%) {
     return join("", @tokens);
 }
 
+sub handlePragma(_) {
+    my $_ = shift;
+    s/^L?"(.+)"$/$1/o;
+    s/\\(.)/$1/go;
+    @ARG = tokenize;
+    $_ = shift;
+    if ($_ eq "message") {
+        warn "message @ARG";
+        @ARG = ();
+    } elsif ($_ eq "once") {
+        $pragmaOnce = 1;
+    } elsif ($_ eq "P99") {
+        $_ = shift;
+        if ($_ eq "dump") {
+            $_ = shift;
+            if (!m/^["]/) {
+                macroDump($_);
+            } else {
+                if (m/M/) {
+                    macroList();
+                }
+                if (m/U/) {
+                    macroList(1);
+                }
+                if (m/S/) {
+                    macroState();
+                }
+            }
+        }
+    } else {
+        unshift(@ARG, "#pragma ", $_);
+    }
+    @ARG;
+}
+
 local $SIG{__WARN__};
 
 sub evalExprBigint($@) {
@@ -802,7 +855,7 @@ sub evalExprBigint($@) {
         print STDERR "   expression is '@ARG'\n";
     };
     my $res = eval("@ARG");
-    if ($ARG[0] eq "!" 
+    if ($ARG[0] eq "!"
         || (defined($ARG[1]) && $ARG[1] =~ m/^$logicalOp$/o)) {
         $res = $res ? 1 : 0;
         $isUn = 0;
@@ -1315,8 +1368,11 @@ sub openfile(_) {
                     macroUndefine($1, @defines);
                 } elsif (m/^error\s++(.*+)/o) {
                     die "$file:$NR: error $1";
-                } elsif (m/^pragma\s++message\s+(.*+)/o) {
-                    warn "message $1";
+                } elsif (m/^pragma\s++(.*+)/o) {
+                    $_ = $1;
+                    s/(["\\])/\\$1/go;
+                    $_ = "\"$_\"";
+                    push(@ARG, handlePragma);
                 } else {
                     push(@ARG, "# $_");
                 }
@@ -1360,7 +1416,13 @@ sub openfile(_) {
     }
     warn "unbalanced #if / #endif" if ($iflevel);
 
-    if (!@defines) {
+    if ($pragmaOnce) {
+        print STDERR "$file is only read once, enforced by #pragma\n";
+        my %tmp;
+        $usedMac{$file} = \%tmp;
+        $fileHash{$file} = "";
+        undef $pragmaOnce;
+    } elsif (!@defines) {
         ## The file is candidate for content hashing
         if (!defined($usedMac{$file}) || !eqHashtables(%{$usedMac{$file}}, %used)) {
             $usedMac{$file} = \%used;
@@ -1815,7 +1877,7 @@ sub tokrep($$\%@) {
             } elsif ($_ eq "__FILE__") {
                 push(@outToks, "\"$file\"");
             } elsif ($_ eq "_Pragma") {
-                push(@outToks, "#pragma");
+                push(@outToks, handlePragma(shift));
             } elsif ($_ eq $liner) {
                 ## This is the number of the following line
                 insertLine(@outToks, $file);
