@@ -232,8 +232,8 @@ my $isidentifier = qr/(?:[_[:alpha:]]\w*+)/;
         "__P99PRO__" => ["1"],
         ## Provide the macros that are required by the standard. __LINE__ and __FILE__ are
         ## implemented differently.
-        "__DATE__" => [sprintf("%s % 2u %u", $abbr[$mon], $mday, $year + 1900)],
-        "__TIME__" => [sprintf("%02u:%02u:%02u", $hour, $min, $sec)],
+        "__DATE__" => [sprintf("\"%s % 2u %u\"", $abbr[$mon], $mday, $year + 1900)],
+        "__TIME__" => [sprintf("\"%02u:%02u:%02u\"", $hour, $min, $sec)],
         "__STDC_VERSION__" => [$standards{$std}],
         "__STDC__" => ["1"],
         "__STDC_HOSTED__" => ["$hosted"],
@@ -671,14 +671,14 @@ my $spaceAfter = qr/(?:
     ## visual enhancement for some single character token
     [=,;?:{]
     |$punct2Token
-    |$isstringToken
+    |$isstring
     )$/x;
 
 my $spaceBefore = qr/(?:
     ## visual enhancement for some single character token
     [=}]
     |$punct2Token
-    |$isstringToken
+    |$isstring
     )$/x;
 
 ## all third characters that may appear in a trigraph
@@ -1205,6 +1205,8 @@ sub expandDefined(\%@) {
 
 sub openfile(_) {
     my ($file) = shift;
+    warn "opening $file"
+        if ($verbose);
     ## keep track of the number of defines in this file and below
     my @defines;
     ## keep track of the tokens produced by this file and below
@@ -1215,6 +1217,8 @@ sub openfile(_) {
 
     if (defined($usedMac{$file})) {
         if (macroContained(%{$usedMac{$file}})) {
+            warn "reusing previously read file $file"
+                if ($verbose);
             if (length($fileHash{$file})) {
                 @ARG = map {
                     (tokrep(0, $file, %used, escPre(tokenize)), "\n");
@@ -1245,6 +1249,9 @@ sub openfile(_) {
     my $back = $SIG{__WARN__};
     $SIG{__WARN__} = sub { print STDERR "$file:".$fd->input_line_number().": warning: $ARG[0]"; };
     my @iffound;
+
+    warn "opening $file"
+        if ($verbose);
 
     insertLine(@ARG, $file, $fd);
     while (my $_ = logicalLine($fd)) {
@@ -1287,6 +1294,8 @@ sub openfile(_) {
                 }
                 #print STDERR "IF $aclevel <= $iflevel : (el)if $_\n";
             } elsif (m/^if(n?+)def\s++(\w++)/o) {
+                warn "if$1def for macro $2"
+                    if ($verbose);
                 if ($aclevel == $iflevel) {
                     my $val = macro($2);
                     $used{$2} = $val;
@@ -1294,6 +1303,8 @@ sub openfile(_) {
                         $undefMacros{$2} = 1;
                     }
                     if ($1 xor $val) {
+                        warn "if$1def for macro $2: yes"
+                            if ($verbose);
                         ++$aclevel;
                         $iffound[$aclevel] = 1;
                     }
@@ -1431,6 +1442,8 @@ sub openfile(_) {
                 $input = "";
             }
             $fileHash{$file} = $input;
+            warn "saved stripped contents of $file, length is ".length($input)
+                if ($verbose);
         }
     } elsif (${$fileInc{$file}} > 1) {
         my %defines = map { $_ => 1 } @defines;
