@@ -16,6 +16,7 @@
 
 #include "orwl_register.h"
 #include "orwl_endpoint.h"
+#include "orwl_atomic.h"
 #include P99_ADVANCE_ID
 
 #ifdef __cplusplus
@@ -151,6 +152,8 @@ struct orwl_wq {
  **
  **/
 struct orwl_wh {
+  /** Mutex used to control the access to the wh, it is used for acquires. */
+  pthread_mutex_t mut;
   /** A wh will wait on that condition for requests and acquires. */
   pthread_cond_t cond;
   /** The location to which this wh links. */
@@ -237,8 +240,10 @@ int orwl_wh_idle(orwl_wh *wh) {
    **/
 inline
 int orwl_wq_valid(orwl_wq *wq) {
-  return wq->head != TGARB(orwl_wh*)
-    && wq->tail != TGARB(orwl_wh*);
+  orwl_wh *wq_head = (orwl_wh *)atomic_load((atomic_size_t *)&wq->head);
+  orwl_wh *wq_tail = (orwl_wh *)atomic_load((atomic_size_t *)&wq->tail);
+  return  wq_head != TGARB(orwl_wh*)
+    && wq_tail != TGARB(orwl_wh*);
 }
 
   /**
@@ -429,7 +434,7 @@ P99_PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
    ** @brief load @a howmuch additional tokens on @a wh.
    **
    ** This supposes that the corresponding @c wq is not a null pointer and that @c
-   ** wq is already locked.
+   ** wh is already locked.
    ** @see orwl_wh_unload
    **
    ** @memberof orwl_wh
@@ -454,7 +459,7 @@ P99_PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
    ** @brief unload @a howmuch additional tokens from @a wh.
    **
    ** This supposes that the corresponding @c wq is not a null pointer and that @c
-   ** wq is already locked. If by this action the token count drops to
+   ** wh is already locked. If by this action the token count drops to
    ** zero, eventual waiters for this @a wh are notified.
    ** @see orwl_wh_load
    **

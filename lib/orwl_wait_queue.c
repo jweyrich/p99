@@ -13,6 +13,7 @@
 /*                                                                           */
 #include "orwl_wait_queue.h"
 #include "orwl_socket.h"
+#include "orwl_atomic.h"
 
 P99_DEFINE_ENUM(orwl_state);
 
@@ -161,20 +162,21 @@ orwl_state P99_FSYMB(orwl_wq_request)(orwl_wq *wq, P99_VA_ARGS(number)) {
 
 orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
   orwl_state ret = orwl_invalid;
-  if (orwl_wq_valid(wq) && wq->head) {
+  if (orwl_wq_valid(wq) && atomic_load((atomic_size_t *)&wq->head)) {
     /* We are on the fast path */
-    if (wq->head == wh) ret = orwl_acquired;
+    if ((orwl_wh *)atomic_load((atomic_size_t *)&wq->head) == wh) ret = orwl_acquired;
     /* We are on the slow path */
     else {
       uint64_t loaded;
     RETRY:
       loaded = orwl_wh_load(wh, 1);
-      pthread_cond_wait(&wh->cond, &wq->mut);
+      /* We wait on the local orwl_wh mutex */
+      pthread_cond_wait(&wh->cond, &wh->mut);
       orwl_wh_unload(wh, loaded);
       /* Check everything again, somebody might have destroyed
          our wq */
       if (orwl_wq_valid(wq)) {
-        if (wq->head == wh)
+        if ((orwl_wh *)atomic_load((atomic_size_t *)&wq->head) == wh)
           ret = orwl_acquired;
         else goto RETRY;
       }
@@ -188,7 +190,8 @@ orwl_state orwl_wh_acquire(orwl_wh *wh, uint64_t howmuch) {
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
     if (wq) {
-      MUTUAL_EXCLUDE(wq->mut) {
+      /* using the mutex in orwl_wh */
+      MUTUAL_EXCLUDE(wh->mut) {
         ret = orwl_wh_acquire_locked(wh, wq);
         if (ret == orwl_acquired)
           orwl_wh_unload(wh, howmuch);
@@ -202,13 +205,15 @@ orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
-    if (wq) MUTUAL_EXCLUDE(wq->mut) {
-        if (orwl_wq_valid(wq) && wq->head)
-          ret = wq->head == wh ? orwl_acquired : orwl_requested;
-        if (ret == orwl_acquired) orwl_wh_unload(wh, howmuch);
+        /* orwl_wq_valid uses atomic operations internaly */
+        if (orwl_wq_valid(wq) && atomic_load((atomic_size_t *)&wq->head))
+         ret = (orwl_wh *)atomic_load((atomic_size_t *)&wq->head) == wh ? orwl_acquired : orwl_requested;
+        /* orwl_wh_unload supposes that the wh is locked */
+        if (ret == orwl_acquired)
+          MUTUAL_EXCLUDE(wh->mut)
+            orwl_wh_unload(wh, howmuch);
       } else {
-      if (!wh->next) ret = orwl_valid;
-    }
+    if (!wh->next) ret = orwl_valid;
   }
   return ret;
 }
@@ -227,7 +232,8 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
             wh->next = 0;
             ret = orwl_valid;
             /* Unlock potential acquirers */
-            if (wq->head) pthread_cond_broadcast(&wq->head->cond);
+            /* wake up the first one in the queue */
+            if (wq->head) MUTUAL_EXCLUDE(wq->head->mut) pthread_cond_broadcast(&wq->head->cond);
             /* Unlock potential requesters */
             pthread_cond_broadcast(&wh->cond);
             break;
