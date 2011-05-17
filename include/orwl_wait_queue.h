@@ -93,9 +93,10 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_state);
 
 DECLARE_ONCE(orwl_wq);
 
-struct orwl_wh;
-
 DECLARE_ONCE(orwl_wh);
+
+typedef orwl_wh* orwl_wh_ptr;
+DECLARE_ATOMIC_OPS(orwl_wh_ptr);
 
 /**
  ** @brief A proactive locking object with FIFO policy.
@@ -240,8 +241,8 @@ int orwl_wh_idle(orwl_wh *wh) {
    **/
 inline
 int orwl_wq_valid(orwl_wq *wq) {
-  orwl_wh *wq_head = (orwl_wh *)atomic_load((atomic_size_t *)&wq->head);
-  orwl_wh *wq_tail = (orwl_wh *)atomic_load((atomic_size_t *)&wq->tail);
+  orwl_wh *wq_head = atomic_load_orwl_wh_ptr(&wq->head);
+  orwl_wh *wq_tail = atomic_load_orwl_wh_ptr(&wq->tail);
   return  wq_head != TGARB(orwl_wh*)
     && wq_tail != TGARB(orwl_wh*);
 }

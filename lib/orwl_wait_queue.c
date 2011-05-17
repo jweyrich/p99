@@ -54,6 +54,9 @@ DEFINE_ONCE(orwl_wh,
             orwl_thread) {
 }
 
+DEFINE_ATOMIC_OPS(orwl_wh_ptr);
+
+
 orwl_wh* orwl_wh_init(orwl_wh *wh,
                   const pthread_condattr_t *attr) {
   if (!wh) return 0;
@@ -162,9 +165,10 @@ orwl_state P99_FSYMB(orwl_wq_request)(orwl_wq *wq, P99_VA_ARGS(number)) {
 
 orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
   orwl_state ret = orwl_invalid;
-  if (orwl_wq_valid(wq) && atomic_load((atomic_size_t *)&wq->head)) {
+  orwl_wh* wq_head = atomic_load_orwl_wh_ptr(&wq->head);
+  if (orwl_wq_valid(wq) && wq_head) {
     /* We are on the fast path */
-    if ((orwl_wh *)atomic_load((atomic_size_t *)&wq->head) == wh) ret = orwl_acquired;
+    if (wq_head == wh) ret = orwl_acquired;
     /* We are on the slow path */
     else {
       uint64_t loaded;
@@ -176,7 +180,7 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
       /* Check everything again, somebody might have destroyed
          our wq */
       if (orwl_wq_valid(wq)) {
-        if ((orwl_wh *)atomic_load((atomic_size_t *)&wq->head) == wh)
+        if (atomic_load_orwl_wh_ptr(&wq->head) == wh)
           ret = orwl_acquired;
         else goto RETRY;
       }
@@ -205,14 +209,15 @@ orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
-        /* orwl_wq_valid uses atomic operations internaly */
-        if (orwl_wq_valid(wq) && atomic_load((atomic_size_t *)&wq->head))
-         ret = (orwl_wh *)atomic_load((atomic_size_t *)&wq->head) == wh ? orwl_acquired : orwl_requested;
-        /* orwl_wh_unload supposes that the wh is locked */
-        if (ret == orwl_acquired)
-          MUTUAL_EXCLUDE(wh->mut)
-            orwl_wh_unload(wh, howmuch);
-      } else {
+    orwl_wh* wq_head = atomic_load_orwl_wh_ptr(&wq->head);
+    /* orwl_wq_valid uses atomic operations internaly */
+    if (orwl_wq_valid(wq) && wq_head)
+      ret = (wq_head == wh) ? orwl_acquired : orwl_requested;
+    /* orwl_wh_unload supposes that the wh is locked */
+    if (ret == orwl_acquired)
+      MUTUAL_EXCLUDE(wh->mut)
+        orwl_wh_unload(wh, howmuch);
+  } else {
     if (!wh->next) ret = orwl_valid;
   }
   return ret;
