@@ -346,6 +346,15 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
   return ret;
 }
 
+inline
+void* orwl_write_map(orwl_handle* rh, size_t* data_len) {
+  size_t len;
+  void* ret = orwl_map(rh, &len);
+  *data_len = len * sizeof(uint64_t);
+  return ret;
+}
+
+
 /**
  ** @brief Obtain address and size of the data that is associated to a
  ** handle for reading
@@ -371,6 +380,17 @@ uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len) {
   return ret;
 }
 
+inline
+void const* orwl_read_map(orwl_handle* rh, size_t* data_len) {
+  size_t len;
+  void const* ret = orwl_mapro(rh, &len);
+  *data_len = len * sizeof(uint64_t);
+  return ret;
+}
+
+
+
+
 /**
  ** @brief Shrink or extend the data that is associated to a location.
  ** @memberof orwl_handle
@@ -389,6 +409,13 @@ void orwl_resize(orwl_handle* rh, size_t data_len) {
     assert(rh->wh);
     orwl_wh_resize(rh->wh, data_len);
   }
+}
+
+inline
+void orwl_truncate(orwl_handle* rh, size_t data_len) {
+  size_t len = data_len / sizeof(uint64_t);
+  len += (data_len % sizeof(uint64_t)) ? 1 : 0;
+  orwl_resize(rh, len);
 }
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
