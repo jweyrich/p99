@@ -127,6 +127,13 @@ uint64_t* orwl_map2(orwl_handle2* rh2, size_t* data_len, rand48_t* seed) {
   return ret;
 }
 
+void* orwl_write_map2(orwl_handle2* rh2, size_t* data_len, rand48_t* seed) {
+  size_t len;
+  void* ret = orwl_map2(rh2, &len);
+  *data_len = len * sizeof(uint64_t);
+  return ret;
+}
+
 uint64_t const* orwl_mapro2(orwl_handle2* rh2, size_t* data_len, rand48_t* seed) {
   uint64_t const* ret = 0;
   if (orwl_acquire2(rh2, seed) == orwl_acquired) {
@@ -136,10 +143,23 @@ uint64_t const* orwl_mapro2(orwl_handle2* rh2, size_t* data_len, rand48_t* seed)
   return ret;
 }
 
+void const* orwl_read_map2(orwl_handle2* rh2, size_t* data_len, rand48_t* seed) {
+  size_t len;
+  void const* ret = orwl_mapro2(rh2, &len);
+  *data_len = len * sizeof(uint64_t);
+  return ret;
+}
+
 void orwl_resize2(orwl_handle2* rh2, size_t data_len, rand48_t* seed) {
   if (orwl_acquire2(rh2, seed) == orwl_acquired) {
     bool par = (rh2->clock % 2);
     orwl_resize(&rh2->pair[par], data_len);
   }
+}
+
+void orwl_truncate2(orwl_handle2* rh2, size_t data_len, rand48_t* seed) {
+  size_t len = data_len / sizeof(uint64_t);
+  len += (data_len % sizeof(uint64_t)) ? 1 : 0;
+  orwl_resize2(rh2, len, seed);
 }
 
