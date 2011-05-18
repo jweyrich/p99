@@ -211,6 +211,10 @@ void orwl_truncate2(orwl_handle2* rh2,   /*!< [in,out] the handle whos
                   rand48_t* seed       /*!< [in,out] defaults to a thread local seed */
                   );
 
+P99_DEPRECATED(uint64_t const* orwl_mapro2(orwl_handle2* rh2, size_t* data_len, rand48_t*));
+P99_DEPRECATED(uint64_t* orwl_map2(orwl_handle2* rh2, size_t* data_len, rand48_t*));
+P99_DEPRECATED(void orwl_resize2(orwl_handle2* rh2, size_t data_len, rand48_t*));
+
 
 
 #ifndef DOXYGEN
