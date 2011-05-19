@@ -189,8 +189,8 @@ sub rawtokenize($);
 sub readlln(_);
 sub readln(_);
 sub logicalLine($);
-sub substituteArray(\%\@@);
-sub substituteArrayStringify(\%\@@);
+sub substituteArray(\%\@\@@);
+sub substituteArrayStringify(\%\@\@@);
 sub tokenize(_);
 sub tokrep($$$\%@);
 sub toktrans($$\%);
@@ -291,6 +291,19 @@ my $isidentifier = qr/(?:[_[:alpha:]]\w*+)/;
                     $def{$_};
                 } getTokDef(@{$tokDef});
                 $positions{$name} = [sort { $a <=> $b } keys %pos];
+
+                if ($joins{$name}) {
+                    my $td = $tokDef->[-1];
+                    foreach my $i (0 .. $#{$td}) {
+                        if ($td->[$i] eq "##") {
+                            ## the parameters that are before or after
+                            ## the ## must not be expanded too early
+                            $td->[$i-1] = "#".$td->[$i-1] if (defined($def{$td->[$i-1]}));
+                            $td->[$i+1] = "#".$td->[$i+1] if (defined($def{$td->[$i+1]}));
+                        }
+                    }
+                }
+
 
                 ## Linearlize the hash to an array. Macros will only
                 ## have at most some hundred arguments so hopefully
@@ -723,26 +736,39 @@ sub printArray(\@;$) {
         .substr($par, 2, 1);
 }
 
-sub substituteArrayStringify(\%\@@) {
-    my ($def, $args) = (shift, shift);
+
+## same as substituteArray but also stringifies arguments where this
+## is necessary.
+sub substituteArrayStringify(\%\@\@@) {
+    my ($def, $args, $pargs) = (shift, shift, shift);
     my @ret;
     my @counts;
     my $_;
     while (@ARG) {
         $_ = shift;
+        my $protected;
+        if (m/^#\w/o) {
+            s/^#//o;
+            $protected = 1;
+        }
         if (defined($def->{$_})) {
             my $i = $def->{$_};
             push(@ret,
-                 ## only clone an argument if and when it is used more than once
-                 $counts[$i]
-                 ? @{clone($args->[$i])}
-                 : @{$args->[$i]}
+                 $protected
+                 ? @{clone($pargs->[$_])}
+                 : (
+                     ## only clone an argument if and when it is used more than once
+                     $counts[$i]
+                     ? @{clone($args->[$i])}
+                     : @{$args->[$i]}
+                 )
                 );
             ## The increment operation is magic on undef values.
             ++$counts[$i];
         } elsif ($_ eq "#") {
             if (defined($def->{$ARG[0]})) {
-                $_ = untokenize(@{$args->[$def->{$ARG[0]}]});
+                # stringification should use the unexpanded argument
+                $_ = untokenize(@{$pargs->[$def->{$ARG[0]}]});
                 # for some reason that I don't understand this shift
                 # can't just be put in-place in the previous line.
                 shift;
@@ -778,13 +804,26 @@ sub substituteArrayStringify(\%\@@) {
     @ret;
 }
 
-sub substituteArray(\%\@@) {
-    my ($def, $args, @mustClone) = (shift, shift);
+## Perform argument replacement for macros
+## $def holds the names of the arguments and gives back there position in the argument list
+## $args are the expanded arguments
+## $pargs are the unexpanded arguments
+##
+## $pargs may be empty if the macro in question will not perform a ## operation.
+sub substituteArray(\%\@\@@) {
+    my ($def, $args, $pargs, @mustClone) = (shift, shift, shift);
     map {
+        my $protected;
+        if (m/^#\w/o) {
+            s/^#//o;
+            $protected = 1;
+        }
         if (defined($def->{$_})) {
             $_ = $def->{$_};
-            ## only clone an argument if and when it is used more than once
-            if ($mustClone[$_]) {
+            if ($protected) {
+                @{clone($pargs->[$_])};
+            } elsif ($mustClone[$_]) {
+                ## only clone an argument if and when it is used more than once
                 @{clone($args->[$_])};
             } else {
                 $mustClone[$_] = 1;
@@ -1799,12 +1838,13 @@ sub tokrep($$$\%@) {
                         push(@pos, ($defs ... ($args-1)));
                     }
                     macroHide("_Pragma");
+                    my @pargs;
+                    @pargs = (@args) if ($joins{$_} || $stringifies{$_});
                     foreach my $i (@pos) {
                         if (ref($args[$i])) {
                             if (@{$args[$i]}) {
                                 $args[$i] = tokrep($level + 1, $file, $fd, %{$used}, @{$args[$i]});
                                 if (@{$args[$i]}) {
-                                    #$args[$i] = \@reparg;
                                     next;
                                 }
                             }
@@ -1841,8 +1881,8 @@ sub tokrep($$$\%@) {
 
                     if ($args == $defs) {
                         @repl = defined($stringifies{$_})
-                            ? substituteArrayStringify(%{$argPosition{$_}}, @args, @repl)
-                            : substituteArray(%{$argPosition{$_}}, @args, @repl);
+                            ? substituteArrayStringify(%{$argPosition{$_}}, @args, @pargs, @repl)
+                            : substituteArray(%{$argPosition{$_}}, @args, @pargs, @repl);
                     } else  {
                         warn "macro $_ argument mismatch, has $args takes $defs";
                         warn "macro $_ definition is @{$tokDef}";
