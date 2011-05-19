@@ -1296,18 +1296,23 @@ sub openfile(_) {
             } elsif (m/^if(n?+)def\s++(\w++)/o) {
                 warn "if$1def for macro $2"
                     if ($verbose);
+                my $neg = $1 ? 1 : 0;
+                my $name = $2;
                 if ($aclevel == $iflevel) {
-                    my $val = macro($2);
-                    $used{$2} = $val;
+                    my $val = macro($name);
+                    $used{$name} = $val;
                     if (!defined($val)) {
-                        $undefMacros{$2} = 1;
+                        $undefMacros{$name} = 1;
                     }
-                    if ($1 xor $val) {
-                        warn "if$1def for macro $2: yes"
-                            if ($verbose);
+                    my $doit = $val ? !$neg : $neg;
+                    warn "if$1def for macro $name: $neg => $doit"
+                        if ($verbose);
+                    if ($doit) {
                         ++$aclevel;
                         $iffound[$aclevel] = 1;
                     }
+                } elsif ($verbose) {
+                    warn "inactive";
                 }
                 ++$iflevel;
                 #print STDERR "IF $aclevel <= $iflevel : ifdef $_\n";
@@ -1460,7 +1465,6 @@ sub openfile(_) {
 
   SHORTCUT:
     $output .= flushOut(@ARG);
-    $output = compactLines($output);
 
     if ($output =~ m/^(?:\s*+(?:#|%:)\s++\d++[^\n]++\n*+)*+$/so) {
         ## The file only produced line number information
@@ -1965,6 +1969,7 @@ sub containedHashtables(\%\%) {
 sub flushOut(\@) {
     my ($outTok) = @ARG;
     my $output = untokenize(unescPre(@{$outTok}));
+    @{$outTok} = ();
     if (!$graphs) {
         $output = toktrans($output, $digraph, %digraph);
     } elsif ($graphs == 2) {
