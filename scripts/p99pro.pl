@@ -183,7 +183,7 @@ sub macroUndefine($;\@);
 sub macroUnhide(_);
 sub openfile(_);
 sub opRec(\@);
-sub parenRec(\@);
+sub parenRec(\@$);
 sub printArray(\@;$);
 sub rawtokenize($);
 sub readlln(_);
@@ -192,7 +192,7 @@ sub logicalLine($);
 sub substituteArray(\%\@@);
 sub substituteArrayStringify(\%\@@);
 sub tokenize(_);
-sub tokrep($$\%@);
+sub tokrep($$$\%@);
 sub toktrans($$\%);
 sub unescPre(@);
 sub untokenize(@);
@@ -1221,7 +1221,7 @@ sub openfile(_) {
                 if ($verbose);
             if (length($fileHash{$file})) {
                 @ARG = map {
-                    (tokrep(0, $file, %used, escPre(tokenize)), "\n");
+                    (tokrep(0, $file, undef, %used, escPre(tokenize)), "\n");
                 } split("\n", $fileHash{$file});
             } else {
                 @ARG = "\n";
@@ -1280,9 +1280,9 @@ sub openfile(_) {
                 if (($aclevel == ($iflevel - 1))
                     && !($ifcont && $iffound[$iflevel])) {
                     my @expDef =  expandDefined(%used, tokenize($2));
-                    my @toks = tokrep(0, $file, %used, @expDef);
+                    my @toks = tokrep(0, $file, $fd, %used, @expDef);
                     push(@toks, ")");
-                    my $toks = parenRec(@toks);
+                    my $toks = parenRec(@toks, $fd);
                     opRec(@{$toks});
                     @toks = ($toks);
                     @toks = expandPar(@toks);
@@ -1342,7 +1342,7 @@ sub openfile(_) {
                             warn "#include directive incorrect: $_";
                         } else {
                             my @inToks = tokenize;
-                            my @toks = tokrep(0, $file, %used, @inToks);
+                            my @toks = tokrep(0, $file, undef, %used, @inToks);
                             $_ = untokenize(@{toks});
                             $tried = 1;
                             goto RETRY;
@@ -1427,7 +1427,7 @@ sub openfile(_) {
             }
             ## usage of macros in the C text itself are not accounted.
             my %used;
-            push(@ARG, tokrep(0, $file, %used, escPre(tokenize)), "\n");
+            push(@ARG, tokrep(0, $file, $fd, %used, escPre(tokenize)), "\n");
         }
     }
     warn "unbalanced #if / #endif" if ($iflevel);
@@ -1689,10 +1689,11 @@ sub getTokDef(\@) {
 ## recursively replace macros in a list of tokens
 ## $level is the recursion level
 ## $file is the current input file name
+## $fd is a file descriptor where we may get more tokens if we need them
 ## $used is a reference to hash that collects the macros that are used
 ## $inToks is a reference to the token list that is to be scanned
-sub tokrep($$\%@) {
-    my ($level, $file, $used, $_, @outToks) = (shift, shift, shift);
+sub tokrep($$$\%@) {
+    my ($level, $file, $fd, $used, $_, @outToks) = (shift, shift, shift, shift);
   LOOP:
     while (defined($_ = shift)) {
         if (tokCallback) {
@@ -1710,7 +1711,7 @@ sub tokrep($$\%@) {
                 my @ret = ([]);
                 my $paren = 0;
                 if (!$backtrack) {
-                    foreach (tokrep($level + 1, $file, %{$used}, @{$_})) {
+                    foreach (tokrep($level + 1, $file, $fd, %{$used}, @{$_})) {
                         if (ord == COMMA) {
                             if (!$paren) {
                                 $backtrack = 1;
@@ -1734,7 +1735,7 @@ sub tokrep($$\%@) {
             if ($backtrack) {
                 warn "unbalanced parenthesis when replacing: backtracking";
                 @repl = expandPar(($_));
-                @repl = tokrep($level + 1, $file, %{$used}, @repl);
+                @repl = tokrep($level + 1, $file, $fd, %{$used}, @repl);
             }
             push(@outToks, \@repl);
             next LOOP;
@@ -1756,7 +1757,7 @@ sub tokrep($$\%@) {
                 if (defined($ARG[0])) {
                     if ($ARG[0] eq "(") {
                         shift;
-                        unshift(@ARG, parenRec(@ARG));
+                        unshift(@ARG, parenRec(@ARG, $fd));
                     }
                 }
                 if (ref($ARG[0]) eq "ARRAY") {
@@ -1801,7 +1802,7 @@ sub tokrep($$\%@) {
                     foreach my $i (@pos) {
                         if (ref($args[$i])) {
                             if (@{$args[$i]}) {
-                                $args[$i] = tokrep($level + 1, $file, %{$used}, @{$args[$i]});
+                                $args[$i] = tokrep($level + 1, $file, $fd, %{$used}, @{$args[$i]});
                                 if (@{$args[$i]}) {
                                     #$args[$i] = \@reparg;
                                     next;
@@ -2038,13 +2039,14 @@ sub compactLines(_) {
 ## '(' 'a' ',' 'b' '(' 'c' ',' 'd' ')' ')'
 ## is transformed into
 ## [['a'], ['b', [['c'], ['d']]]]
-sub parenRec(\@) {
+sub parenRec(\@$) {
     my @args = ([]);
     my %hid;
+  LOOP:
     while (@{$ARG[0]}) {
         my $_ = shift(@{$ARG[0]});
         if (ord == PARENOPEN) {
-            $_ =  parenRec(@{$ARG[0]});
+            $_ =  parenRec(@{$ARG[0]}, $ARG[1]);
             if (
                 !$noshortcut
                 ## this parenthesis expression has no arguments
@@ -2087,6 +2089,17 @@ sub parenRec(\@) {
             push(@{$args[-1]}, $_);
         } else {
             push(@{$args[-1]}, $_);
+        }
+    }
+    if ($ARG[1]) {
+        $skipedLines = 1;
+        warn "expression may extend over several lines"
+            if ($verbose);
+        my %used;
+        my @toks = tokrep(0, "", $ARG[1], %used, escPre(tokenize(logicalLine($ARG[1]))));
+        if (@toks) {
+            push(@{$ARG[0]}, @toks, "\n");
+            goto LOOP;
         }
     }
     warn "unbalanced parenthesis";
