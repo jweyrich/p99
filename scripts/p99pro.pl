@@ -755,7 +755,7 @@ sub substituteArrayStringify(\%\@\@@) {
             my $i = $def->{$_};
             push(@ret,
                  $protected
-                 ? @{clone($pargs->[$_])}
+                 ? @{clone($pargs->[$i])}
                  : (
                      ## only clone an argument if and when it is used more than once
                      $counts[$i]
@@ -1837,21 +1837,26 @@ sub tokrep($$$\%@) {
                     if ($args > $defs && $counters{$_}->[$defs-1]) {
                         push(@pos, ($defs ... ($args-1)));
                     }
-                    macroHide("_Pragma");
+                    ## There is the following exception of parameter expansion:
+                    ##
+                    ### A parameter in the replacement list, unless preceded by a # or ##
+                    ### preprocessing token or followed by a ## preprocessing token
+                    ##
+                    ## So if we know that we might need the unexpanded parameters we keep
+                    ## them in a separate array.
                     my @pargs;
-                    @pargs = (@args) if ($joins{$_} || $stringifies{$_});
-                    foreach my $i (@pos) {
-                        if (ref($args[$i])) {
-                            if (@{$args[$i]}) {
-                                $args[$i] = tokrep($level + 1, $file, $fd, %{$used}, @{$args[$i]});
-                                if (@{$args[$i]}) {
-                                    next;
-                                }
-                            }
+                    if ($joins{$_} || $stringifies{$_}) {
+                        @pargs = (@args);
+                        foreach my $i (@pos) {
                             ## however, if an argument consists of no preprocessing tokens, the
                             ## parameter is replaced by a placemarker preprocessing token instead.
-                            $args[$i] = [""];
+                            push(@{$pargs[$i]}, "") if (ref($pargs[$i]) && !@{$pargs[$i]});
                         }
+                    }
+                    macroHide("_Pragma");
+                    foreach my $i (@pos) {
+                        $args[$i] = tokrep($level + 1, $file, $fd, %{$used}, @{$args[$i]})
+                            if (ref($args[$i]) && @{$args[$i]});
                     }
                     macroUnhide("_Pragma");
 
