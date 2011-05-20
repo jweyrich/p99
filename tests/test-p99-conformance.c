@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
+/* This may look like nonsense, but it really is -*- mode: C; coding: utf-8 -*- */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -374,7 +374,12 @@ int has_universal_character_8 = L'\U00000401';
 int const* has_universal_string_4 = L"\u2018\u03A7\u2060X\u2019";
 int const* has_universal_string_8 = L"\U00002018\U000003A7\U00002060X\U00002019";
 int has_\u03BA\u03B1\u03B8\u03BF\u03BB\u03B9\u03BA\u03CC\u03C2_\u03c7\u03B1\u03C1\u03B1\u03BA\u03C4\u03AE\u03C1 = 1;
+# ifndef SKIP_UNIVERSAL_UTF8
+double const π = 3.14159265;
+double const* has_utf8 = &π;
+# endif
 #endif
+
 
 
 /* Have checks for digraphs and trigraphs at the end, since they may
