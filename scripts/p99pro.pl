@@ -1014,11 +1014,24 @@ sub compList($\@) {
     return wantarray ? ($rtype, $res) : $res;
 }
 
+sub transl(_) {
+    join(
+        "",
+        map(
+            (0x100 > ord)
+            ? $_
+            :((0xFFFF < ord)
+              ? sprintf("\\U%08X", ord)
+              : sprintf("\\u%04X", ord)),
+            split(//, $ARG[0])));
+}
+
 ## read one physical input line and perform the trigraph replacement
 sub readln(_) {
     my $_ = readline(shift);
     if (defined) {
         chomp;
+        $_ = transl;
         if (m/[?][?]/o) {
             " ".join("",
                      map {
@@ -1280,7 +1293,7 @@ sub openfile(_) {
     my $aclevel = 0;
 
     my $fd;
-    if (!open($fd, "<$file")) {
+    if (!open($fd,  "<:encoding(UTF-8)", "$file")) {
         warn "couldn't open $file";
         return ([], []);
     }
