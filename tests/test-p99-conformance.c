@@ -184,14 +184,25 @@ char const has_stringify_empty[] = STRINGIFY();
 /* expand arguments after assigment, but before call */
 # define COMMA ,
 # define GLUE1(X) GLUE2(X)
+# define CONCAT3(A, B, C) GLUE2(A, B C)
+# define GLUE3(A, B, C) A ## B ## C
 unsigned has_determines_macro_arguments_first[GLUE1(0 COMMA 1)];
 
-/* Expand args before ## concatenation */
+/* Expand args before ## concatenation? The rules for this are
+   subtle. */
 # define EATEAT 0
 # define EAT 1
 enum { CONCAT2(eat, GLUE2(EAT, EAT)) = GLUE2(EAT, EAT),
-       CONCAT2(eat, CONCAT2(EAT, EAT)) = CONCAT2(EAT, EAT)};
-unsigned has_expands_args_before_concatenation[eat11] = { eat0 };
+       CONCAT2(eat, CONCAT2(EAT, EAT)) = CONCAT2(EAT, EAT),
+       /* Only replace the empty argument by a placeholder if it is
+          preceded or followed by a ## in the replacement text. */
+       eat2 = CONCAT3(EAT,,EAT),
+       eat3 = GLUE3(EAT,,EAT),
+};
+unsigned has_preprocessor_expands_before_concatenation1[(eat0 == 0)*2 - 1] = { eat0 };
+unsigned has_preprocessor_expands_before_concatenation2[(eat11 == 11)*2 - 1] = { eat0 };
+unsigned has_preprocessor_no_placeholder_on_recursion[(eat2 == 11)*2 - 1] = { eat0 };
+unsigned has_preprocessor_placeholder[(eat3 == 0)*2 - 1] = { eat0 };
 #endif
 
 #ifndef SKIP_TRAILING_COMMA
