@@ -214,9 +214,10 @@ my %joins;
 ## The amount of stringify operators in a macro expansion, if any.
 my %stringifies;
 
+my $univ = qr/(?:\\u[[:xdigit:]]{4}|\\U[[:xdigit:]]{8})/;
 
 ## a regexp to detect preprocessor identifier token
-my $isidentifier = qr/(?:[_[:alpha:]]\w*+)/;
+my $isidentifier = qr/(?:(?:[_[:alpha:]]|$univ)(?:\w|$univ)*+)/;
 
 
 ## holds all defined macros
