@@ -19,7 +19,7 @@ This test is part of the <a href="http://p99.gforge.inria.fr/">P99</a>
 project. It has been automatically produced by "gustedt" with the commandline
 </p>
 <quote class="command">
-opencc -Wall -c -o test-p99-conformance.o -std=c99 -Wno-trigraphs -DSKIP_UNIVERSAL test-p99-conformance.c
+opencc -Wall -c -o test-p99-conformance.o -std=c99 -Wno-trigraphs -DSKIP_UNIVERSAL -DSKIP_EVALUATED_COMMA_ASSIGN test-p99-conformance.c
 </quote>
 <p>
 This conformance test is only for the preprocessor and compiler, not
@@ -50,6 +50,7 @@ such an error please let me know.
 <tr><td>+</td><td>concatenation of hash hash</td><tr>
 <tr><td>+</td><td>determines macro arguments first</td><tr>
 <tr><td>+</td><td>## is a valid token</td><tr>
+<tr><td>+</td><td>accepts non evaluated comma operator in preprocessor expressions</td><tr>
 <tr><td>+</td><td>-1 gives UINTMAX_MAX as unsigned</td><tr>
 <tr><td>+</td><td>doesn't expand macro arguments that are subject to ##</td><tr>
 <tr><td>+</td><td>expands macro arguments that are not subject to ##</td><tr>
@@ -65,6 +66,7 @@ such an error please let me know.
 <tr><td>+</td><td>designated struct initializer</td><tr>
 <tr><td>+</td><td>initializer with trailing commas</td><tr>
 <tr><td>+</td><td>length deduced from initializer</td><tr>
+<tr><td>+</td><td>accepts non evaluated comma operator in constant expression</td><tr>
 <tr><td></td><th>Trigraphs and digraphs</th>
 <tr><td>+</td><td>stringify with %: digraph</td><tr>
 <tr><td>+</td><td>hash hash interpretedCorrectly</td><tr>
@@ -108,8 +110,8 @@ such an error please let me know.
 <tr><td>+</td><td>generates symbol for inline with explicit extern, definition and reference</td><tr>
 <tr><td>+</td><td>generates symbol for inline with implicit extern, and reference</td><tr>
 <tr><td>+</td><td>generates symbol for inline with implicit extern, definition, and reference</td><tr>
-<tr class="optional"><td> </td><td>allows comma operator in preprocessor expressions</td><tr>
 <tr class="optional"><td> </td><td>generates undefined symbol for inline definition</td><tr>
+<tr class="optional"><td> </td><td>detects evaluated comma operator in constant expression</td><tr>
 <tr class="optional"><td> </td><td>generates undefined symbol for inline definition and reference</td><tr>
 </table>
 <hr />

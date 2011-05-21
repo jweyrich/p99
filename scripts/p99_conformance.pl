@@ -24,17 +24,17 @@ my @compilers = (
         ["VLA", "TOKEN_CONCAT_ITERATIVE", "TOKEN_CONCAT_HASH_HASH",
             "STATIC_PARAMETER", "CONST_PARAMETER", "VOLATILE_PARAMETER", "FOR_DECLARATION",
             "PRAGMA", "PREPRO_ARITH", "UNIVERSAL",
-            "DIGRAPH", "TRIGRAPH", ] ],
+            "DIGRAPH", "TRIGRAPH", "NON_EVALUATED_COMMA_ASSIGN"] ],
     "pcc" => [["-std=c99"],
         ["DIGRAPH", "TRIGRAPH",
-            "CONST_PARAMETER", "VOLATILE_PARAMETER", "UNIVERSAL"]],
+            "CONST_PARAMETER", "VOLATILE_PARAMETER", "UNIVERSAL", "EVALUATED_COMMA_ASSIGN"]],
     "clang" => [["-trigraphs", "-Wno-trigraphs"], ["UNIVERSAL", "TOKEN_HASH_HASH_AS_ARGUMENT"]],
-    "opencc" => [["-std=c99", "-Wno-trigraphs"], ["UNIVERSAL"]],
-    "icc" => [["-std=c99"], ["UNIVERSAL_UTF8", "PREPRO_COMMA"]],
-    "gcc-4.1" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8"]],
-    "gcc-4.2" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8"]],
-    "gcc-4.3" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8"]],
-    "gcc-4.4" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8"]],
+    "opencc" => [["-std=c99", "-Wno-trigraphs"], ["UNIVERSAL", "EVALUATED_COMMA_ASSIGN"]],
+    "icc" => [["-std=c99"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN", "EVALUATED_COMMA_PREPRO"]],
+    "gcc-4.1" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
+    "gcc-4.2" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
+    "gcc-4.3" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
+    "gcc-4.4" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
 );
 
 my $compiler = $ARGV[0];
@@ -60,6 +60,7 @@ my @args = (
 
 print STDERR "running ${compiler} with @args\n";
 
+unlink ${ofile};
 system($compiler, @args);
 
 
@@ -103,12 +104,14 @@ foreach my $line (<$NM>) {
         "has_stringify_empty" => "can stringify an empty argument",
         "has_preprocessor_minus" => "-1 is negative",
         "has_hash_hash_as_argument" => "## is a valid token",
+        "has_non_evaluated_comma_expression_prepro" => "accepts non evaluated comma operator in preprocessor expressions",
     ],
     "Initializers" => [
      "has_designated_array_initializer" => "designated array initializer",
      "has_designated_struct_initializer" => "designated struct initializer",
      "has_initializer_trailing_commas" => "initializer with trailing commas",
      "has_length_from_initializer" => "length deduced from initializer",
+     "has_non_evaluated_comma_expression_assign" => "accepts non evaluated comma operator in constant expression",
     ],
     "Trigraphs and digraphs" => [
      "has_digraph_stringify" => "stringify with %: digraph",
@@ -170,7 +173,8 @@ my %nonfeatures = (
 my %optionals = (
 "has_undefined_symbol1" => "generates undefined symbol for inline definition",
 "has_undefined_symbol2" => "generates undefined symbol for inline definition and reference",
-"has_preprocessor_comma" => "allows comma operator in preprocessor expressions",
+"has_evaluated_comma_expression_prepro" => "detects evaluated comma operator in preprocessor expressions",
+"has_evaluated_comma_expression_assign" => "detects evaluated comma operator in constant expression",
 );
 
 if (defined($symbol{"has_καθολικός_χαρακτήρ"})) {

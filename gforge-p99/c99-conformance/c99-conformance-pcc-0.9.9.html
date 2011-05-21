@@ -1,6 +1,6 @@
 <html>
 <header>
-<title>C99 Conformance test of clang 2.9</title>
+<title>C99 Conformance test of pcc 0.9.9</title>
 <style>
 html { background-color : #FFF }
 tr { frame : 2px solid black;}
@@ -13,13 +13,13 @@ th { background-color : #DDD }
 </style>
 </header>
 <body>
-<h1>C99 Conformance test of clang 2.9</h1>
+<h1>C99 Conformance test of pcc 0.9.9</h1>
 <p>
 This test is part of the <a href="http://p99.gforge.inria.fr/">P99</a>
 project. It has been automatically produced by "gustedt" with the commandline
 </p>
 <quote class="command">
-clang -Wall -c -o test-p99-conformance.o -trigraphs -Wno-trigraphs -DSKIP_UNIVERSAL -DSKIP_TOKEN_HASH_HASH_AS_ARGUMENT test-p99-conformance.c
+pcc -Wall -c -o test-p99-conformance.o -std=c99 -DSKIP_DIGRAPH -DSKIP_TRIGRAPH -DSKIP_CONST_PARAMETER -DSKIP_VOLATILE_PARAMETER -DSKIP_UNIVERSAL -DSKIP_EVALUATED_COMMA_ASSIGN test-p99-conformance.c
 </quote>
 <p>
 This conformance test is only for the preprocessor and compiler, not
@@ -49,8 +49,8 @@ such an error please let me know.
 <tr><td>+</td><td>iterative concatenation of floats</td><tr>
 <tr><td>+</td><td>concatenation of hash hash</td><tr>
 <tr><td>+</td><td>determines macro arguments first</td><tr>
-<tr class="missing"><td>-</td><td>## is a valid token</td><tr>
-<tr><td>+</td><td>accepts non evaluated comma operator in preprocessor expressions</td><tr>
+<tr><td>+</td><td>## is a valid token</td><tr>
+<tr class="missing"><td>-</td><td>accepts non evaluated comma operator in preprocessor expressions</td><tr>
 <tr><td>+</td><td>-1 gives UINTMAX_MAX as unsigned</td><tr>
 <tr><td>+</td><td>doesn't expand macro arguments that are subject to ##</td><tr>
 <tr><td>+</td><td>expands macro arguments that are not subject to ##</td><tr>
@@ -59,7 +59,7 @@ such an error please let me know.
 <tr><td>+</td><td>doesn't introduce placeholder if not immediately concatenated</td><tr>
 <tr><td>+</td><td>concatenates empty macro argument</td><tr>
 <tr><td>+</td><td>correct signed promotion in ternary operator</td><tr>
-<tr><td>+</td><td>correct unsigned promotion in ternary operator</td><tr>
+<tr class="missing"><td>-</td><td>correct unsigned promotion in ternary operator</td><tr>
 <tr><td>+</td><td>can stringify an empty argument</td><tr>
 <tr><td></td><th>Initializers</th>
 <tr><td>+</td><td>designated array initializer</td><tr>
@@ -68,11 +68,11 @@ such an error please let me know.
 <tr><td>+</td><td>length deduced from initializer</td><tr>
 <tr><td>+</td><td>accepts non evaluated comma operator in constant expression</td><tr>
 <tr><td></td><th>Trigraphs and digraphs</th>
-<tr><td>+</td><td>stringify with %: digraph</td><tr>
-<tr><td>+</td><td>hash hash interpretedCorrectly</td><tr>
-<tr><td>+</td><td>punctuation digraphs</td><tr>
-<tr><td>+</td><td>punctuation trigraphs</td><tr>
-<tr><td>+</td><td>stringfy with ??= trigraph</td><tr>
+<tr class="missing"><td>-</td><td>stringify with %: digraph</td><tr>
+<tr class="missing"><td>-</td><td>hash hash interpretedCorrectly</td><tr>
+<tr class="missing"><td>-</td><td>punctuation digraphs</td><tr>
+<tr class="missing"><td>-</td><td>punctuation trigraphs</td><tr>
+<tr class="missing"><td>-</td><td>stringfy with ??= trigraph</td><tr>
 <tr><td></td><th>Syntax</th>
 <tr><td>+</td><td>// comment</td><tr>
 <tr><td>+</td><td>enum allows trailing comma</td><tr>
@@ -82,14 +82,14 @@ such an error please let me know.
 <tr><td>+</td><td>hexdouble</td><tr>
 <tr><td>+</td><td>mixed statements and declaration</td><tr>
 <tr><td></td><th>Qualifiers</th>
-<tr><td>+</td><td>const in array function parameter</td><tr>
+<tr class="missing"><td>-</td><td>const in array function parameter</td><tr>
 <tr><td>+</td><td>idempotent const</td><tr>
 <tr><td>+</td><td>idempotent restrict</td><tr>
 <tr><td>+</td><td>idempotent volatile</td><tr>
 <tr><td>+</td><td>restrict keyword</td><tr>
 <tr><td>+</td><td>restrict in array function parameter</td><tr>
 <tr><td>+</td><td>static in array function parameter</td><tr>
-<tr><td>+</td><td>volatile in array function parameter</td><tr>
+<tr class="missing"><td>-</td><td>volatile in array function parameter</td><tr>
 <tr><td></td><th>Data types</th>
 <tr><td>+</td><td>_Bool type</td><tr>
 <tr><td>+</td><td>long double type</td><tr>
@@ -106,10 +106,11 @@ such an error please let me know.
 <tr class="missing"><td>-</td><td>universal string "\U12345678"</td><tr>
 <tr class="missing"><td>-</td><td>universal characters as is in linker symbol</td><tr>
 <tr><td></td><th>External symbols and inline</th>
-<tr class="missing"><td>-</td><td>generates symbol for inline with explicit extern and definition</td><tr>
+<tr><td>+</td><td>generates symbol for inline with explicit extern and definition</td><tr>
 <tr><td>+</td><td>generates symbol for inline with explicit extern, definition and reference</td><tr>
-<tr class="missing"><td>-</td><td>generates symbol for inline with implicit extern, and reference</td><tr>
+<tr><td>+</td><td>generates symbol for inline with implicit extern, and reference</td><tr>
 <tr><td>+</td><td>generates symbol for inline with implicit extern, definition, and reference</td><tr>
+<tr class="optional"><td> </td><td>detects evaluated comma operator in constant expression</td><tr>
 <tr class="optional"><td> </td><td>generates undefined symbol for inline definition and reference</td><tr>
 </table>
 <hr />

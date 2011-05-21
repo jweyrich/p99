@@ -315,13 +315,6 @@ long double has_long_double = 1.0L;
 #endif
 
 #ifndef SKIP_PREPRO_ARITH
-# ifndef SKIP_PREPRO_COMMA
-#  if (0, 1, -1) > 0
-#   error "this should be a negative value"
-#  else
-unsigned const has_preprocessor_comma = 1;
-#  endif
-# endif
 # if (0 - 1) >= 0
 #  error "this should be a negative value"
 # else
@@ -370,6 +363,42 @@ unsigned const has_preprocessor_ternary_signed = 1;
 #  error "logical operations should return signed values"
 #endif
 unsigned const has_preprocessor_logical_signed = 1;
+#endif
+
+/* A comma operator shall not appear in a constant expression, unless
+   it is not evaluated. First test for the good case: it isn't
+   evaluated. First this should be accepted by the compiler but also
+   it should do the correct type promotions. This test can have
+   different results when we try this for constant expressions in the
+   compiler phase or in the preprocessor phase. */
+#define GOOD ((1 ? -1 : (0, 0u)) < 0 )
+#ifndef SKIP_NON_EVALUATED_COMMA_ASSIGN
+unsigned const has_non_evaluated_comma_expression_assign[2*!GOOD - 1] = { 0 };
+#endif
+#ifndef SKIP_NON_EVALUATED_COMMA_PREPRO
+# if GOOD
+#  warning "non evaluated comma expression yields wrong result"
+# else
+unsigned const has_non_evaluated_comma_expression_prepro = GOOD;
+# endif
+#endif
+
+/* Now if it is in the evaluated part, this is undefined
+   behavior. This could lead to anything, but also to the nice
+   behavior that the compiler tells us. Some compilers do tell us in
+   fact, but only as a warning. Some just refuse to compile. */
+#define BAD ((0 ? -1 : (0, 0u)) > -1 )
+#ifndef SKIP_EVALUATED_COMMA_ASSIGN
+enum { bad = BAD };
+#else
+unsigned const has_evaluated_comma_expression_assign = 1;
+#endif
+#ifndef SKIP_EVALUATED_COMMA_PREPRO
+# if BAD
+#  warning "evaluated comma expression yields wrong result"
+# endif
+#else
+unsigned const has_evaluated_comma_expression_prepro = 1;
 #endif
 
 #ifndef SKIP_UNIVERSAL
