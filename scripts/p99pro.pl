@@ -115,29 +115,29 @@ sub INTMAX_MAX();
 
 use constant NEWLINE => ord("\n");
 
-use constant INTERVALOPEN => NEWLINE + 1;
+use constant INTERVALOPEN => 1;
 my $intervalOpen = chr(INTERVALOPEN);
 
-use constant INTERVALCLOSE => NEWLINE + 2;
+use constant INTERVALCLOSE => 2;
 my $intervalClose = chr(INTERVALCLOSE);
 
 ## This is a special unstring operator. It is not meant to be used in C
 ## code but just to implement the unstringing of the arguments of
 ## _Pragma directives.
-use constant UNSTRING => NEWLINE + 3;
+use constant UNSTRING => NEWLINE + 1;
 my $unstring = chr(UNSTRING);
 
 ## This is a special operator that serves to insert line information
 ## in the output.
-use constant LINER => NEWLINE + 4;
+use constant LINER => NEWLINE + 2;
 my $liner = chr(LINER);
 
 ## This is a special operator that serves to insert a %: sequence in the output
-use constant ESCHASH2 => NEWLINE + 5;
+use constant ESCHASH2 => NEWLINE + 3;
 my $escHash2 = chr(ESCHASH2);
 
 ## This is a special operator that serves to insert a # character in the output
-use constant ESCHASH => NEWLINE + 6;
+use constant ESCHASH => NEWLINE + 4;
 my $escHash = chr(ESCHASH);
 
 use constant COMMA => ord(",");
@@ -748,9 +748,11 @@ sub substituteArrayStringify(\%\@\@@) {
     while (@ARG) {
         $_ = shift;
         my $protected;
-        if (m/^#\w/o) {
-            s/^#//o;
-            $protected = 1;
+        if (ord == HASH) {
+            if (m/^#\w/o) {
+                s/^#//o;
+                $protected = 1;
+            }
         }
         if (defined($def->{$_})) {
             my $i = $def->{$_};
@@ -815,9 +817,11 @@ sub substituteArray(\%\@\@@) {
     my ($def, $args, $pargs, @mustClone) = (shift, shift, shift);
     map {
         my $protected;
-        if (m/^#\w/o) {
-            s/^#//o;
-            $protected = 1;
+        if (ord == HASH) {
+            if (m/^#\w/o) {
+                s/^#//o;
+                $protected = 1;
+            }
         }
         if (defined($def->{$_})) {
             $_ = $def->{$_};
@@ -1201,18 +1205,18 @@ sub logicalLine($) {
 
 sub metaTok($) {
     defined($ARG[0])
-        && ord($ARG[0]) >= NEWLINE
-        && ord($ARG[0]) <= INTERVALCLOSE;
+        && (ord($ARG[0]) == NEWLINE
+            || ord($ARG[0]) == INTERVALOPEN
+            || ord($ARG[0]) == INTERVALCLOSE);
 }
 
 ## Test if the token is a callback marker and run the corresponding hide or unhide function.  Returns
 ## some true value if a callback has been performed and a false value (undef) otherwise.
 sub tokCallback(_) {
-    my $_ = $ARG[0];
-    if (ord == INTERVALOPEN) {
-        macroHide(substr($_, 1));
-    } elsif (ord == INTERVALCLOSE) {
-        macroUnhide(substr($_, 1));
+    if (ord($ARG[0]) < INTERVALCLOSE) {
+        macroHide(substr($ARG[0], 1));
+    } else {
+        macroUnhide(substr($ARG[0], 1));
     }
 }
 
@@ -1749,11 +1753,10 @@ sub tokrep($$$\%@) {
     my ($level, $file, $fd, $used, $_, @outToks) = (shift, shift, shift, shift);
   LOOP:
     while (defined($_ = shift)) {
-        if (tokCallback) {
+        if (INTERVALCLOSE >= ord && length) {
+            tokCallback;
             push(@outToks, $_) if ($level);
-            next LOOP;
-        }
-        if (ref) {
+        } elsif (ref) {
             ## An reference represents an parenthesized expression
             ## that already has been parsed. Do the token replacement
             ## recursively. This will not work if the replacement
@@ -1791,11 +1794,9 @@ sub tokrep($$$\%@) {
                 @repl = tokrep($level + 1, $file, $fd, %{$used}, @repl);
             }
             push(@outToks, \@repl);
-            next LOOP;
-        }
         ## For the majority of the tokens that we pass through this, they will not define a macro. So
         ## we hide all the fancy stuff inside the if clause.
-        if (defined(macro)) {
+        } elsif (defined(macro)) {
             my $tokDef = macro;
             my @repl = getTokDef(@{$tokDef});
             ## The token corresponds to the name of an active macro
@@ -1803,8 +1804,8 @@ sub tokrep($$$\%@) {
             if ($#{$tokDef}) {
                 ## a function like macro
                 my @metaToks;
-                while (defined($ARG[0]) && metaTok($ARG[0])) {
-                    tokCallback($ARG[0]);
+                while ($ARG[0] && metaTok($ARG[0])) {
+                    tokCallback($ARG[0]) if (INTERVALCLOSE >= ord($ARG[0]));
                     push(@metaToks, shift);
                 }
                 if (defined($ARG[0])) {
