@@ -19,7 +19,7 @@ This test is part of the <a href="http://p99.gforge.inria.fr/">P99</a>
 project. It has been automatically produced by "gustedt" with the commandline
 </p>
 <quote class="command">
-icc -Wall -c -o test-p99-conformance.o -std=c99 test-p99-conformance.c
+icc -Wall -c -o test-p99-conformance.o -std=c99 -DSKIP_UNIVERSAL_UTF8 -DSKIP_PREPRO_COMMA test-p99-conformance.c
 </quote>
 <p>
 This conformance test is only for the preprocessor and compiler, not
@@ -49,7 +49,17 @@ such an error please let me know.
 <tr><td>+</td><td>iterative concatenation of floats</td><tr>
 <tr><td>+</td><td>concatenation of hash hash</td><tr>
 <tr><td>+</td><td>determines macro arguments first</td><tr>
-<tr><td>+</td><td>expands args before concatenation</td><tr>
+<tr><td>+</td><td>## is a valid token</td><tr>
+<tr><td>+</td><td>-1 gives UINTMAX_MAX as unsigned</td><tr>
+<tr><td>+</td><td>doesn't expand macro arguments that are subject to ##</td><tr>
+<tr><td>+</td><td>expands macro arguments that are not subject to ##</td><tr>
+<tr><td>+</td><td>logical operators return signed values</td><tr>
+<tr><td>+</td><td>-1 is negative</td><tr>
+<tr><td>+</td><td>doesn't introduce placeholder if not immediately concatenated</td><tr>
+<tr><td>+</td><td>concatenates empty macro argument</td><tr>
+<tr><td>+</td><td>correct signed promotion in ternary operator</td><tr>
+<tr><td>+</td><td>correct unsigned promotion in ternary operator</td><tr>
+<tr><td>+</td><td>can stringify an empty argument</td><tr>
 <tr><td></td><th>Initializers</th>
 <tr><td>+</td><td>designated array initializer</td><tr>
 <tr><td>+</td><td>designated struct initializer</td><tr>
@@ -87,6 +97,7 @@ such an error please let me know.
 <tr><td></td><th>Character set support</th>
 <tr><td>+</td><td>universal characters mangled in linker symbol</td><tr>
 <tr><td>+</td><td>hexadecimal character as '\x1234'</td><tr>
+<tr><td>+</td><td>respects token boundary when universal character starts an identifier</td><tr>
 <tr><td>+</td><td>universal character '\u1234'</td><tr>
 <tr><td>+</td><td>universal character '\U12345678'</td><tr>
 <tr><td>+</td><td>universal string "\u1234"</td><tr>
@@ -97,8 +108,8 @@ such an error please let me know.
 <tr><td>+</td><td>generates symbol for inline with explicit extern, definition and reference</td><tr>
 <tr><td>+</td><td>generates symbol for inline with implicit extern, and reference</td><tr>
 <tr><td>+</td><td>generates symbol for inline with implicit extern, definition, and reference</td><tr>
-<tr class="toomuch"><td>!</td><td>generates symbol for inline definition</td><tr>
-<tr class="toomuch"><td>!</td><td>generates symbol for inline definition and reference</td><tr>
+<tr class="optional"><td> </td><td>generates undefined symbol for inline definition</td><tr>
+<tr class="optional"><td> </td><td>generates undefined symbol for inline definition and reference</td><tr>
 </table>
 <hr />
 <table>

@@ -315,10 +315,12 @@ long double has_long_double = 1.0L;
 #endif
 
 #ifndef SKIP_PREPRO_ARITH
-# if (0, 1, -1) > 0
-#  error "this should be a negative value"
-# else
+# ifndef SKIP_PREPRO_COMMA
+#  if (0, 1, -1) > 0
+#   error "this should be a negative value"
+#  else
 unsigned const has_preprocessor_comma = 1;
+#  endif
 # endif
 # if (0 - 1) >= 0
 #  error "this should be a negative value"
@@ -345,12 +347,15 @@ unsigned const has_preprocessor_bitneg = 1;
 # endif
 unsigned has_preprocessor_uintmax;
 # if (1 ? -1 : 0U) < 0
-#  error "ternary operator should promote to unsigned value"
-#endif
-# if (1 ? -1 : 0) > 0
-#  error "ternary operator should result in signed value"
-#endif
+#  warn "ternary operator should promote to unsigned value"
+# else
 unsigned const has_preprocessor_ternary_unsigned = 1;
+# endif
+# if (1 ? -1 : 0) > 0
+#  warn "ternary operator should result in signed value"
+# else
+unsigned const has_preprocessor_ternary_signed = 1;
+# endif
 /* Bool operation should return a signed integer */
 # if (1 ? -1 : (0 && 0)) > 0
 #  error "logical operations should return signed values"

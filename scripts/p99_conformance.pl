@@ -28,13 +28,13 @@ my @compilers = (
     "pcc" => [["-std=c99"],
         ["DIGRAPH", "TRIGRAPH",
             "CONST_PARAMETER", "VOLATILE_PARAMETER", "UNIVERSAL"]],
-    "clang" => [["-trigraphs", "-Wno-trigraphs"], ["UNIVERSAL"]],
+    "clang" => [["-trigraphs", "-Wno-trigraphs"], ["UNIVERSAL", "TOKEN_HASH_HASH_AS_ARGUMENT"]],
     "opencc" => [["-std=c99", "-Wno-trigraphs"], ["UNIVERSAL"]],
-    "icc" => [["-std=c99"], []],
-    "gcc-4.1" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], []],
-    "gcc-4.2" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], []],
-    "gcc-4.3" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], []],
-    "gcc-4.4" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], []],
+    "icc" => [["-std=c99"], ["UNIVERSAL_UTF8", "PREPRO_COMMA"]],
+    "gcc-4.1" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8"]],
+    "gcc-4.2" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8"]],
+    "gcc-4.3" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8"]],
+    "gcc-4.4" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8"]],
 );
 
 my $compiler = $ARGV[0];
@@ -91,8 +91,18 @@ foreach my $line (<$NM>) {
      "has_concat_of_floats_1Ep3Em" => "concatenation of floats 1E- 3E-",
      "has_concat_of_floats_iterative" => "iterative concatenation of floats",
      "has_concat_of_hash_hash" => "concatenation of hash hash",
-     "has_expands_args_before_concatenation" => "expands args before concatenation",
+        "has_preprocessor_expands_before_concatenation1" => "doesn't expand macro arguments that are subject to ##",
+        "has_preprocessor_expands_before_concatenation2" => "expands macro arguments that are not subject to ##",
      "has_determines_macro_arguments_first" => "determines macro arguments first",
+        "has_preprocessor_ternary_unsigned" => "correct unsigned promotion in ternary operator",
+        "has_preprocessor_ternary_signed" => "correct signed promotion in ternary operator",
+        "has_preprocessor_placeholder" => "concatenates empty macro argument",
+        "has_preprocessor_no_placeholder_on_recursion" => "doesn't introduce placeholder if not immediately concatenated",
+        "has_preprocessor_bitneg" => "-1 gives UINTMAX_MAX as unsigned",
+        "has_preprocessor_logical_signed" => "logical operators return signed values",
+        "has_stringify_empty" => "can stringify an empty argument",
+        "has_preprocessor_minus" => "-1 is negative",
+        "has_hash_hash_as_argument" => "## is a valid token",
     ],
     "Initializers" => [
      "has_designated_array_initializer" => "designated array initializer",
@@ -142,6 +152,7 @@ foreach my $line (<$NM>) {
      "has_καθολικός_χαρακτήρ" => "universal characters as is in linker symbol",
      "has__u03ba_u03b1_u03b8_u03bf_u03bb_u03b9_u03ba_u03cc_u03c2__u03c7_u03b1_u03c1_u03b1_u03ba_u03c4_u03ae_u03c1"
      => "universal characters mangled in linker symbol",
+        "has_keeps_token_boundary_for_universal" => "respects token boundary when universal character starts an identifier"
     ],
     "External symbols and inline" => [
      "has_mandatory_symbol1" => "generates symbol for inline with explicit extern and definition",
@@ -159,6 +170,7 @@ my %nonfeatures = (
 my %optionals = (
 "has_undefined_symbol1" => "generates undefined symbol for inline definition",
 "has_undefined_symbol2" => "generates undefined symbol for inline definition and reference",
+"has_preprocessor_comma" => "allows comma operator in preprocessor expressions",
 );
 
 if (defined($symbol{"has_καθολικός_χαρακτήρ"})) {
@@ -240,13 +252,14 @@ for (my $i = 0; $i < scalar @features; $i += 2) {
 }
 
 foreach my $symb (keys %symbol) {
-    if ($symbol{$symb} ne "U") {
-            my $str = defined($nonfeatures{$symb}) ? $nonfeatures{$symb} : $symb;
-            print $HTML "<tr class=\"toomuch\"><td>!</td><td>$str</td><tr>\n";
-        } else {
-            my $str = defined($optionals{$symb}) ? $optionals{$symb} : $symb;
-            print $HTML "<tr class=\"optional\"><td> </td><td>$str</td><tr>\n";
-        }
+    # if ($symbol{$symb} ne "U") {
+    #     my $str = defined($nonfeatures{$symb}) ? $nonfeatures{$symb} : $symb;
+    #     print $HTML "<tr class=\"toomuch\"><td>!</td><td>$str</td><tr>\n";
+    #     print STDERR "undocumented symbol $symb\n";
+    # } else {
+        my $str = defined($optionals{$symb}) ? $optionals{$symb} : $symb;
+        print $HTML "<tr class=\"optional\"><td> </td><td>$str</td><tr>\n";
+    # }
 }
 
 print $HTML <<'EOF';
