@@ -23,8 +23,7 @@ use IO::Handle;
 use POSIX;
 use strict;
 use Clone qw(clone);
-use Getopt::Long;
-Getopt::Long::Configure ("bundling");
+use Getopt::Long qw(:config no_auto_abbrev no_ignore_case_always auto_version auto_help bundling);
 
 ## Variables that hold commandline arguments.
 ## include directories
@@ -58,10 +57,15 @@ my $outfile = "-";
 my $help;
 my $verbose;
 
+my @mtune;
+my @f;
+my @W;
+my $quiet;
+
 my %options = (
-    "include|I=s"	=> \@{dirs},		# list of strings
-    "define|D=s"        => \@{defs},		# list of strings
-    "undef|U=s"		=> \@{undefs},		# list of strings
+    "I=s"	=> \@{dirs},		# list of strings
+    "D=s"        => \@{defs},		# list of strings
+    "U=s"		=> \@{undefs},		# list of strings
     "d=s"		=> \@{dM},		# flag
     #"dU!"        	=> \${dU},		# flag
     "noshortcut!"	=> \${noshortcut},	# flag
@@ -74,7 +78,20 @@ my %options = (
     "ubits|bits=i"	=> \${ubits},
     "sbits=i"		=> \${sbits},
     "verbose|v+"	=> \${verbose},
+    "f=s"		=> \@{f},
+    "W=s"		=> \@{W},
+    "m=s"		=> \@{mtune},
+    "quiet!"		=> \${quiet},		# flag
     );
+
+## Ensure that all options that are seen as an assignment are treated as such
+@ARGV = map {
+    if (m/-[a-z].*[=].*$/o) {
+        "-$_";
+    } else {
+        $_;
+    }
+} @ARGV;
 
 my $result = GetOptions (%options);
 
@@ -235,17 +252,17 @@ my $isidentifier = qr/(?:(?:[_[:alpha:]]|$univ)(?:\w|$univ)*+)/;
         ## The special "macro" _Pragma that we never could do with #define.
         "_Pragma" => ["X", [$liner, "_Pragma", "X", $liner]],
         ## Mark our presence by setting a special macro.
-        "__P99PRO__" => ["1"],
+        "__P99PRO__" => [["1"]],
         ## Provide the macros that are required by the standard. __LINE__ and __FILE__ are
         ## implemented differently.
-        "__DATE__" => [sprintf("\"%s % 2u %u\"", $abbr[$mon], $mday, $year + 1900)],
-        "__TIME__" => [sprintf("\"%02u:%02u:%02u\"", $hour, $min, $sec)],
-        "__STDC_VERSION__" => [$standards{$std}],
-        "__STDC__" => ["1"],
-        "__STDC_HOSTED__" => ["$hosted"],
+        "__DATE__" => [[sprintf("\"%s % 2u %u\"", $abbr[$mon], $mday, $year + 1900)]],
+        "__TIME__" => [[sprintf("\"%02u:%02u:%02u\"", $hour, $min, $sec)]],
+        "__STDC_VERSION__" => [[$standards{$std}]],
+        "__STDC__" => [["1"]],
+        "__STDC_HOSTED__" => [["$hosted"]],
         ## None of these macro names, nor the identifier defined, shall be the subject of a
         ## #define or a #undef preprocessing directive.
-        "defined" => ["(== abuse of keyword defined ==)"],
+        "defined" => [["(== abuse of keyword defined ==)"]],
         );
 
     my $predefMacros = scalar keys %macro;
@@ -506,7 +523,7 @@ my $pragmaOnce;
 foreach my $def (@defs) {
     my ($name, $val) = $def =~ m/^([^=]++)=?+(.*+)/o;
     $val //= "";
-    my @val = ($val);
+    my @val = ([$val]);
     macroDefine($name, @val);
 }
 
