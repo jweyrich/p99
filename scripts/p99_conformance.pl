@@ -35,14 +35,24 @@ my @compilers = (
     "gcc-4.2" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
     "gcc-4.3" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
     "gcc-4.4" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
+    "p99-opencc" => [["-std=c99", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
+    "p99-icc" => [["-std=c99"], ["EVALUATED_COMMA_ASSIGN"]],
+    "p99-gcc-4.1" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
+    "p99-gcc-4.2" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
+    "p99-gcc-4.3" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
+    "p99-gcc-4.4" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
 );
 
-my $compiler = $ARGV[0];
-my $version = join("-", @ARGV);
+my $executable = $ARGV[0];
+my $version = $ARGV[0];
+$version =~ s|.*/||o;
+my $compiler = $version;
+$version .= "-$ARGV[1]" if (defined($ARGV[1]));
 my $hfile = join("-", @ARGV, "c99-support.html");
 my %compilers = @compilers;
 
-die "compiler ${compiler} unknown" if (!defined($compilers{$compiler}));
+$compiler =  $version if (!defined($compilers{$compiler}));
+die "compiler ${compiler} version ${version} unknown" if (!defined($compilers{$compiler}));
 my $dat = $compilers{$compiler};
 my @dat = @{$dat};
 my @defines = map { "-DSKIP_" . $_ } @{$dat[1]};
@@ -58,10 +68,10 @@ my @args = (
     "${file}.c",
 );
 
-print STDERR "running ${compiler} with @args\n";
+print STDERR "running ${compiler} as ${executable} with @args\n";
 
 unlink ${ofile};
-system($compiler, @args);
+system($executable, @args);
 
 
 open(my $NM, "nm ${ofile}|") or die "could not run nm";
