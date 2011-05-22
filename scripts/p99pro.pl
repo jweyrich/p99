@@ -52,6 +52,8 @@ my $ubits;
 my $sbits;
 ## Forbid to shortcut expressions of the form ((X)) to (X)
 my $noshortcut;
+## Chose an output file, defaults to stdout
+my $outfile = "-";
 ##
 my $help;
 my $verbose;
@@ -67,6 +69,7 @@ my %options = (
     "help|h!"		=> \${help},		# flag
     "separator=s"	=> \${sep},		# string
     "std|standard=s"	=> \${std},		# string
+    "outfile|o=s"	=> \${outfile},		# string
     "graphs=i"		=> \${graphs},
     "ubits|bits=i"	=> \${ubits},
     "sbits=i"		=> \${sbits},
@@ -96,6 +99,8 @@ if ($help) {
     }
     exit 0;
 }
+
+open(my $out, ">$outfile");
 
 $ubits = 64 if (!$ubits);
 $sbits = $ubits - 1 if (!$sbits);
@@ -2217,7 +2222,7 @@ sub opRec(\@) {
 
 foreach (@ARGV) {
     my ($defines, $ret) = openfile;
-    print STDOUT $ret;
+    print $out $ret;
 }
 
 my $dM = join("", @dM);
