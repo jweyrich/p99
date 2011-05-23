@@ -19,6 +19,12 @@ if 0;               #### for this magic, see findSvnAuthors ####
 
 use English;
 
+my $executable = $ARGV[0];
+my ($dir, $compiler) = $ARGV[0] =~ m|^(.*)/([^/]+)$|o;
+my $version = $compiler;
+$version .= "-$ARGV[1]" if (defined($ARGV[1]));
+my $hfile = join("-", @ARGV, "c99-support.html");
+
 my @compilers = (
     "tcc" => [ [],
         ["VLA", "TOKEN_CONCAT_ITERATIVE", "TOKEN_CONCAT_HASH_HASH",
@@ -35,6 +41,11 @@ my @compilers = (
     "gcc-4.2" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
     "gcc-4.3" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
     "gcc-4.4" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
+    "p99-pcc" => [["-std=c99", "-B$dir"],
+                  [#"DIGRAPH", "TRIGRAPH",
+                   "CONST_PARAMETER", "VOLATILE_PARAMETER",
+                   #"UNIVERSAL",
+                   "EVALUATED_COMMA_ASSIGN"]],
     "p99-opencc" => [["-std=c99", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
     "p99-icc" => [["-std=c99"], ["EVALUATED_COMMA_ASSIGN"]],
     "p99-gcc-4.1" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
@@ -43,12 +54,6 @@ my @compilers = (
     "p99-gcc-4.4" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
 );
 
-my $executable = $ARGV[0];
-my $version = $ARGV[0];
-$version =~ s|.*/||o;
-my $compiler = $version;
-$version .= "-$ARGV[1]" if (defined($ARGV[1]));
-my $hfile = join("-", @ARGV, "c99-support.html");
 my %compilers = @compilers;
 
 $compiler =  $version if (!defined($compilers{$compiler}));
