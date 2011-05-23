@@ -51,8 +51,10 @@ my $ubits;
 my $sbits;
 ## Forbid to shortcut expressions of the form ((X)) to (X)
 my $noshortcut;
+## Mangle universal character names in identifiers
+my $mangle;
 ## Chose an output file, defaults to stdout
-my $outfile = "-";
+my $outfile;
 ##
 my $help;
 my $verbose;
@@ -60,6 +62,7 @@ my $verbose;
 my @mtune;
 my @f;
 my @W;
+my @S;
 my $quiet;
 
 my %options = (
@@ -69,6 +72,7 @@ my %options = (
     "d=s"		=> \@{dM},		# flag
     #"dU!"        	=> \${dU},		# flag
     "noshortcut!"	=> \${noshortcut},	# flag
+    "mangle!"		=> \${mangle},		# flag
     "hosted!"		=> \${hosted},		# flag
     "help|h!"		=> \${help},		# flag
     "separator=s"	=> \${sep},		# string
@@ -80,6 +84,7 @@ my %options = (
     "verbose|v+"	=> \${verbose},
     "f=s"		=> \@{f},
     "W=s"		=> \@{W},
+    "S=s"		=> \@{S},
     "m=s"		=> \@{mtune},
     "quiet!"		=> \${quiet},		# flag
     );
@@ -93,7 +98,11 @@ my %options = (
     }
 } @ARGV;
 
+my ($directory, $program_name) = $PROGRAM_NAME =~ m|^(.*)/([^/]+)$|o;
+
 my $result = GetOptions (%options);
+print STDERR "called as $program_name: $PROGRAM_NAME @ARGV\n"
+    if ($verbose);
 
 if ($help) {
     print STDERR "$PROGRAM_NAME: [options] file ...\n";
@@ -116,8 +125,6 @@ if ($help) {
     }
     exit 0;
 }
-
-open(my $out, ">$outfile");
 
 $ubits = 64 if (!$ubits);
 $sbits = $ubits - 1 if (!$sbits);
@@ -525,6 +532,25 @@ foreach my $def (@defs) {
     $val //= "";
     my @val = ([$val]);
     macroDefine($name, @val);
+}
+
+my $out;
+if ($outfile) {
+    open($out, ">$outfile");
+} else {
+    if ($program_name eq "cpp"
+        && defined(macro("__PCC__"))
+        && defined(macro("__PCC_MINOR__"))
+        && defined(macro("__PCC_MINORMINOR__"))
+        && $#ARGV == 1) {
+        warn "assuming we are called as cpp for pcc, writing output to $ARGV[1]";
+        open($out, ">$ARGV[1]") || die "cannot open $ARGV[1] for writing";
+        $mangle = 1 if (!defined($mangle));
+        pop @ARGV;
+    } else {
+        warn "no output file given, writing to stdout";
+        $out = \*STDOUT;
+    }
 }
 
 
@@ -1150,6 +1176,9 @@ sub untokenize(@) {
         join("",
              map {
                  if (ord != NEWLINE) {
+                     if ($mangle && m/^$isidentifier$/o && m/$univ/o) {
+                         s/\\(u[[:xdigit:]]{4}|U[[:xdigit:]]{8})/_\L$1\E/go;
+                     }
                      my $comb = $prev . $_;
                      if ($comb =~ $clash) {
                          $prev = $_;
