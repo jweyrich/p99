@@ -25,30 +25,37 @@ use strict;
 use Clone qw(clone);
 use Getopt::Long qw(:config no_auto_abbrev no_ignore_case_always auto_version auto_help bundling);
 
-## Variables that hold commandline arguments.
+## Variables that hold commandline arguments. They are filled in early
+## within a BEGIN construct. Don't assign initial values here. Instead
+## use "use constant" with a default value. This is a bit of magic,
+## since the BEGIN block that is found below is executed between the
+## declaration of the variable and the "use" construct.
+
 ## include directories
-my @dirs = ("/usr/include");
+my @dirs;
 ## defines
 my @defs;
 ## undefines
 my @undefs;
 ## the standard we are operating with
-my $std = "c99";
+my $std;
 ## whether or not to output a list of all (used) #define
 my @dM;
 ## use as a separator to tokens for debugging
-my $sep = "";
+my $sep;
 ## request output with special character sets: without digraphs (0),
 ## unchanged (1, default), digraphs (2) or trigraphs (3).
-my $graphs = 1;
+my $graphs;
 ## indicate a hosted environment
-my $hosted = 1;
+my $hosted;
 ## The number of bits in an uintmax_t. By the standard it must be at
 ## least 64.
 my $ubits;
 ## The number of bits in an intmax_t. By the standard it must be at
 ## least 63.
 my $sbits;
+## A number of bits where to split of large integer constants
+my $bsplit;
 ## Forbid to shortcut expressions of the form ((X)) to (X)
 my $noshortcut;
 ## Mangle universal character names in identifiers
@@ -56,91 +63,171 @@ my $mangle;
 ## Chose an output file, defaults to stdout
 my $outfile;
 ##
-my $help;
 my $verbose;
 
+## A file handle to which all output will be pumped.
+my $out;
+
+## some variables needed for compatibility
 my @mtune;
 my @f;
 my @W;
 my @S;
 my $quiet;
 
-my %options = (
-    "I=s"	=> \@{dirs},		# list of strings
-    "D=s"        => \@{defs},		# list of strings
-    "U=s"		=> \@{undefs},		# list of strings
-    "d=s"		=> \@{dM},		# flag
-    #"dU!"        	=> \${dU},		# flag
-    "noshortcut!"	=> \${noshortcut},	# flag
-    "mangle!"		=> \${mangle},		# flag
-    "hosted!"		=> \${hosted},		# flag
-    "help|h!"		=> \${help},		# flag
-    "separator=s"	=> \${sep},		# string
-    "std|standard=s"	=> \${std},		# string
-    "outfile|o=s"	=> \${outfile},		# string
-    "graphs=i"		=> \${graphs},
-    "ubits|bits=i"	=> \${ubits},
-    "sbits=i"		=> \${sbits},
-    "verbose|v+"	=> \${verbose},
-    "f=s"		=> \@{f},
-    "W=s"		=> \@{W},
-    "S=s"		=> \@{S},
-    "m=s"		=> \@{mtune},
-    "quiet!"		=> \${quiet},		# flag
-    );
+my ($directory, $program_name);
 
-## Ensure that all options that are seen as an assignment are treated as such
-@ARGV = map {
-    if (m/-[a-z].*[=].*$/o) {
-        "-$_";
-    } else {
-        $_;
-    }
-} @ARGV;
+BEGIN {
 
-my ($directory, $program_name) = $PROGRAM_NAME =~ m|^(.*)/([^/]+)$|o;
+    ## setting help on the command line terminates the program early
+    my $help;
 
-my $result = GetOptions (%options);
-print STDERR "called as $program_name: $PROGRAM_NAME @ARGV\n"
-    if ($verbose);
+    @dirs = ("/usr/include");
 
-if ($help) {
-    print STDERR "$PROGRAM_NAME: [options] file ...\n";
-    my $max = 0;
-    $max = (length > $max) ? length : $max foreach(keys %options);
-    $max += 2;
-    foreach (sort keys %options) {
-        print STDERR $_.(" " x ($max - length));
-        local $LIST_SEPARATOR = ":";
-        if (ref($options{$_}) eq "ARRAY") {
-            print STDERR "@{$options{$_}}";
-        } elsif (ref($options{$_}) eq "SCALAR") {
-            if (defined(${$options{$_}})) {
-                print STDERR "${$options{$_}}";
-            } else {
-                print STDERR "<undefined>";
-            }
+    my %options = (
+        "I=s"	=> \@{dirs},               # list of strings
+        "D=s"        => \@{defs},          # list of strings
+        "U=s"		=> \@{undefs},     # list of strings
+        "d=s"		=> \@{dM},         # flag
+        "noshortcut!"	=> \${noshortcut}, # flag
+        "mangle!"		=> \${mangle}, # flag
+        "hosted!"		=> \${hosted}, # flag
+        "help|h!"		=> \${help},   # flag
+        "separator=s"	=> \${sep},            # string
+        "std|standard=s"	=> \${std},    # string
+        "outfile|o=s"	=> \${outfile},        # string
+        "graphs=i"		=> \${graphs},
+        "ubits|bits=i"	=> \${ubits},
+        "sbits=i"		=> \${sbits},
+        "bsplit=i"		=> \${bsplit},
+        "verbose|v+"	=> \${verbose},
+        "f=s"		=> \@{f},
+        "W=s"		=> \@{W},
+        "S=s"		=> \@{S},
+        "m=s"		=> \@{mtune},
+        "quiet!"		=> \${quiet}, # flag
+        );
+
+
+    my @argv = (@ARGV);
+
+    ## Ensure that all options that are seen as an assignment are treated as such
+    @ARGV = map {
+        if (m/-[a-z].*[=].*$/o) {
+            "-$_";
+        } else {
+            $_;
         }
-        print STDERR "\n";
+    } @ARGV;
+
+    ($directory, $program_name) = $PROGRAM_NAME =~ m|^(.*)/([^/]+)$|o;
+    my $result = GetOptions (%options);
+    print STDERR "called as $program_name: $PROGRAM_NAME @argv\n"
+        if ($verbose);
+
+    if ($help) {
+        print STDERR "$PROGRAM_NAME: [options] file ...\n";
+        my $max = 0;
+        $max = (length > $max) ? length : $max foreach(keys %options);
+        $max += 2;
+        foreach (sort keys %options) {
+            print STDERR $_.(" " x ($max - length));
+            local $LIST_SEPARATOR = ":";
+            if (ref($options{$_}) eq "ARRAY") {
+                print STDERR "@{$options{$_}}";
+            } elsif (ref($options{$_}) eq "SCALAR") {
+                if (defined(${$options{$_}})) {
+                    print STDERR "${$options{$_}}";
+                } else {
+                    print STDERR "<undefined>";
+                }
+            }
+            print STDERR "\n";
+        }
+        exit 0;
     }
-    exit 0;
+
+    if (!$outfile
+        && ($program_name eq "cpp")
+        && $#ARGV == 1) {
+        my %defs = map {
+            m/^([^=]*)=?(.*)$/o;
+            $1 => ($2 // "");
+        } @defs;
+        if (defined($defs{__PCC__})
+            && defined($defs{__PCC_MINOR__})
+            && defined($defs{__PCC_MINORMINOR__})) {
+            warn "assuming we are called as cpp for pcc, writing output to $ARGV[1]";
+            #open($out, ">$ARGV[1]") || die "cannot open $ARGV[1] for writing";
+            $mangle = 1 if (!defined($mangle));
+            $outfile = pop @ARGV;
+        }
+    }
+    if ($outfile) {
+        open($out, ">$outfile") || die "cannot open $outfile for writing";
+    }
 }
 
-$ubits = 64 if (!$ubits);
-$sbits = $ubits - 1 if (!$sbits);
+use constant STD => $std // "c99";
+use constant SEP => $sep // "";
+use constant GRAPHS => $graphs // 1;
+use constant HOSTED => $hosted // 1;
+use constant UBITS => $ubits // 64;
+use constant SBITS => $sbits // UBITS - 1;
+use constant BSPLIT => $bsplit // 0;
+use constant NOSHORTCUT => $noshortcut // 0;
+use constant MANGLE => $mangle // 0;
+use constant VERBOSE => $verbose // 0;
+$out //= \*STDOUT;
+
+warn "directories: @dirs, @defs. ".BSPLIT if (VERBOSE);
 
 sub UINTMAX_MAX();
 sub INTMAX_MAX();
+sub UINTSPLIT_MAX();
 
-{
+BEGIN {
     ## Only use bigint where we can not avoid it, namely when we
     ## really have to compute values in the preprocessor.
     use bigint;
-    my $ubig = (1 << $ubits);
+    my $ubig = (1 << UBITS);
     sub UINTMAX_MOD() { $ubig; }
-    my $sbig = (1 << $sbits) - 1;
+    my $sbig = (1 << SBITS) - 1;
     sub INTMAX_MAX() { $sbig; }
+    my $uintsplit_max = (1 << BSPLIT) - 1;
+    sub UINTSPLIT_MAX() { $uintsplit_max; }
 }
+
+sub splitInt(_) {
+    if (BSPLIT) {
+        use bigint;
+        ## numbers that we will see here will always be without sign.
+        my ($_, $spec) = $ARG[0] =~ m/([^uUlL]+)([uUlL]*)/o;
+        if (m/^0[xX]/) {
+            $_ = hex $_;
+        } elsif (m/^0/) {
+            $_ = oct $_;
+        }
+        warn "found $_";
+        if ($_ <= UINTSPLIT_MAX) {
+            return $_;
+        } else {
+            my $low = $_ & UINTSPLIT_MAX;
+            my $hig = $_ >> BSPLIT;
+            warn "found $hig  $low, ".(($hig << BSPLIT)|$low)." ?= $_";
+            if ($spec =~ /[uU]/o || $_ > INTMAX_MAX) {
+                #return sprintf("(((uintmax_t)0x%XULL << %d) | (uintmax_t)0x%XULL)", $hig, BSPLIT, $low);
+                return "(((uintmax_t)${hig}ULL << BSPLIT) | (uintmax_t)${low}ULL)";
+            } else {
+                return "(((intmax_t)${hig}LL << BSPLIT) | (intmax_t)${low}LL)";
+            }
+        }
+    } else {
+        return $_;
+    }
+}
+
+
 
 use constant NEWLINE => ord("\n");
 
@@ -181,8 +268,6 @@ use constant DQUOTE => ord('"');
 use constant QUOTE => ord("'");
 use constant ELL => ord("L");
 
-use constant SEP => $sep;
-
 my %standards = (
     "c99" => "199901L",
     );
@@ -218,6 +303,7 @@ sub rawtokenize($);
 sub readlln(_);
 sub readln(_);
 sub logicalLine($);
+sub splitInt(_);
 sub substituteArray(\%\@\@@);
 sub substituteArrayStringify(\%\@\@@);
 sub tokenize(_);
@@ -264,9 +350,9 @@ my $isidentifier = qr/(?:(?:[_[:alpha:]]|$univ)(?:\w|$univ)*+)/;
         ## implemented differently.
         "__DATE__" => [[sprintf("\"%s % 2u %u\"", $abbr[$mon], $mday, $year + 1900)]],
         "__TIME__" => [[sprintf("\"%02u:%02u:%02u\"", $hour, $min, $sec)]],
-        "__STDC_VERSION__" => [[$standards{$std}]],
+        "__STDC_VERSION__" => [[$standards{STD}]],
         "__STDC__" => [["1"]],
-        "__STDC_HOSTED__" => [["$hosted"]],
+        "__STDC_HOSTED__" => [[HOSTED]],
         ## None of these macro names, nor the identifier defined, shall be the subject of a
         ## #define or a #undef preprocessing directive.
         "defined" => [["(== abuse of keyword defined ==)"]],
@@ -533,26 +619,6 @@ foreach my $def (@defs) {
     my @val = ([$val]);
     macroDefine($name, @val);
 }
-
-my $out;
-if ($outfile) {
-    open($out, ">$outfile");
-} else {
-    if ($program_name eq "cpp"
-        && defined(macro("__PCC__"))
-        && defined(macro("__PCC_MINOR__"))
-        && defined(macro("__PCC_MINORMINOR__"))
-        && $#ARGV == 1) {
-        warn "assuming we are called as cpp for pcc, writing output to $ARGV[1]";
-        open($out, ">$ARGV[1]") || die "cannot open $ARGV[1] for writing";
-        $mangle = 1 if (!defined($mangle));
-        pop @ARGV;
-    } else {
-        warn "no output file given, writing to stdout";
-        $out = \*STDOUT;
-    }
-}
-
 
 my @punctPri = (
     ## highest priority, left-to-right
@@ -1164,10 +1230,10 @@ sub untokenize(@) {
                          || $prev =~ $spaceAfter
                          ) {
                          $prev = $_;
-                         $sep." ".$_;
+                         SEP." ".$_;
                      } else {
                          $prev = $_;
-                         $sep.$_;
+                         SEP.$_;
                      }
                  }
              } @ARG
@@ -1176,23 +1242,41 @@ sub untokenize(@) {
         join("",
              map {
                  if (ord != NEWLINE) {
-                     if ($mangle && m/^$isidentifier$/o && m/$univ/o) {
-                         s/\\(u[[:xdigit:]]{4}|U[[:xdigit:]]{8})/_\L$1\E/go;
+                     if (MANGLE && m/^$isidentifier$/o && m/$univ/o) {
+                         ## Transform the 'u' plus hex sequence to
+                         ## uppercase. By that we voluntarily use
+                         ## reserved identifiers starting with an
+                         ## underscore and a capital letter for cases
+                         ## that the input is just one universal
+                         ## character. Otherwise this could clash with
+                         ## a local variable of the form _u03ba, which
+                         ## is allowed by the standard.
+                         s/\\(u[[:xdigit:]]{4}|U[[:xdigit:]]{8})/_\U$1\E/go;
+                         ## This mangling might still not be enough if
+                         ## the symbol starts with a valid sequence of
+                         ## characters.
+                         $_ = "__".$_ if (!m/^_[A-Z_]/o);
                      }
-                     my $comb = $prev . $_;
-                     if ($comb =~ $clash) {
+                     if (BSPLIT && m/^(?:(?:(?:0[xX])[[:xdigit:]]+)|(?:0[0-7]*)|(?:\d+))[uUlL]*$/o) {
+                         $_ = splitInt($_);
+                         warn "here its $_";
                          $prev = $_;
-                         " ".$_;
                      } else {
-                         if ($_ =~ $spaceBefore) {
+                         my $comb = $prev . $_;
+                         if ($comb =~ $clash) {
                              $prev = $_;
                              " ".$_;
                          } else {
-                             if ($prev =~ $spaceAfter) {
+                             if ($_ =~ $spaceBefore) {
                                  $prev = $_;
                                  " ".$_;
                              } else {
-                                 $prev = $_;
+                                 if ($prev =~ $spaceAfter) {
+                                     $prev = $_;
+                                     " ".$_;
+                                 } else {
+                                     $prev = $_;
+                                 }
                              }
                          }
                      }
@@ -1314,7 +1398,7 @@ sub expandDefined(\%@) {
 sub openfile(_) {
     my ($file) = shift;
     warn "opening $file"
-        if ($verbose);
+        if (VERBOSE);
     ## keep track of the number of defines in this file and below
     my @defines;
     ## keep track of the tokens produced by this file and below
@@ -1326,7 +1410,7 @@ sub openfile(_) {
     if (defined($usedMac{$file})) {
         if (macroContained(%{$usedMac{$file}})) {
             warn "reusing previously read file $file"
-                if ($verbose);
+                if (VERBOSE);
             if (length($fileHash{$file})) {
                 @ARG = map {
                     (tokrep(0, $file, undef, %used, escPre(tokenize)), "\n");
@@ -1359,7 +1443,7 @@ sub openfile(_) {
     my @iffound;
 
     warn "opening $file"
-        if ($verbose);
+        if (VERBOSE);
 
     insertLine(@ARG, $file, $fd);
     while (my $_ = logicalLine($fd)) {
@@ -1403,7 +1487,7 @@ sub openfile(_) {
                 #print STDERR "IF $aclevel <= $iflevel : (el)if $_\n";
             } elsif (m/^if(n?+)def\s++(\w++)/o) {
                 warn "if$1def for macro $2"
-                    if ($verbose);
+                    if (VERBOSE);
                 my $neg = $1 ? 1 : 0;
                 my $name = $2;
                 if ($aclevel == $iflevel) {
@@ -1414,12 +1498,12 @@ sub openfile(_) {
                     }
                     my $doit = $val ? !$neg : $neg;
                     warn "if$1def for macro $name: $neg => $doit"
-                        if ($verbose);
+                        if (VERBOSE);
                     if ($doit) {
                         ++$aclevel;
                         $iffound[$aclevel] = 1;
                     }
-                } elsif ($verbose) {
+                } elsif (VERBOSE) {
                     warn "inactive";
                 }
                 ++$iflevel;
@@ -1556,13 +1640,13 @@ sub openfile(_) {
             }
             $fileHash{$file} = $input;
             warn "saved stripped contents of $file, length is ".length($input)
-                if ($verbose);
+                if (VERBOSE);
         }
     } elsif (${$fileInc{$file}} > 1) {
         my %defines = map { $_ => 1 } @defines;
         @defines = sort keys %defines;
         print STDERR "$file can not be hashed, define changes on: @defines\n"
-            if ($verbose);
+            if (VERBOSE);
     }
 
     if (scalar macroHidden()) {
@@ -2082,11 +2166,11 @@ sub flushOut(\@) {
     my ($outTok) = @ARG;
     my $output = untokenize(unescPre(@{$outTok}));
     @{$outTok} = ();
-    if (!$graphs) {
+    if (!GRAPHS) {
         $output = toktrans($output, $digraph, %digraph);
-    } elsif ($graphs == 2) {
+    } elsif (GRAPHS == 2) {
         $output = toktrans($output, $idgraph, %idgraph);
-    } elsif ($graphs == 3) {
+    } elsif (GRAPHS == 3) {
         $output = toktrans($output, $onegraph, %onegraph);
     }
     return compactLines($output);
@@ -2159,7 +2243,7 @@ sub parenRec(\@$) {
         if (ord == PARENOPEN) {
             $_ =  parenRec(@{$ARG[0]}, $ARG[1]);
             if (
-                !$noshortcut
+                !NOSHORTCUT
                 ## this parenthesis expression has no arguments
                 ## separated by commas
                 && $#{$_} == 0
@@ -2205,7 +2289,7 @@ sub parenRec(\@$) {
     if ($ARG[1]) {
         $skipedLines = 1;
         warn "expression may extend over several lines"
-            if ($verbose);
+            if (VERBOSE);
         my %used;
         my @toks = tokrep(0, "", $ARG[1], %used, escPre(tokenize(logicalLine($ARG[1]))));
         if (@toks) {
@@ -2224,7 +2308,7 @@ sub opRec(\@) {
         warn "comma expression in preprocessor directive";
         @{$toks} = ($toks->[-1]);
     }
-    if (!$noshortcut) {
+    if (!NOSHORTCUT) {
         while ($#{$toks->[0]} == 0 && ref($toks->[0]->[0])) {
             $toks = $toks->[0]->[0];
         }
