@@ -64,6 +64,8 @@ my $mangle;
 my $outfile;
 ##
 my $verbose;
+##
+my $noline;
 
 ## A file handle to which all output will be pumped.
 my $out;
@@ -88,6 +90,7 @@ BEGIN {
         "I=s"	=> \@{dirs},               # list of strings
         "D=s"        => \@{defs},          # list of strings
         "U=s"		=> \@{undefs},     # list of strings
+        "P!"		=> \${noline}, # flag
         "d=s"		=> \@{dM},         # flag
         "noshortcut!"	=> \${noshortcut}, # flag
         "mangle!"		=> \${mangle}, # flag
@@ -113,7 +116,7 @@ BEGIN {
 
     ## Ensure that all options that are seen as an assignment are treated as such
     @ARGV = map {
-        if (m/-[a-z].*[=].*$/o) {
+        if (m/-[a-ln-z].*[=].*$/o) {
             "-$_";
         } else {
             $_;
@@ -123,7 +126,7 @@ BEGIN {
     ($directory, $program_name) = $PROGRAM_NAME =~ m|^(.*)/([^/]+)$|o;
     my $result = GetOptions (%options);
     print STDERR "called as $program_name: $PROGRAM_NAME @argv\n"
-        if ($verbose);
+        ;#if ($verbose);
 
     if ($help) {
         print STDERR "$PROGRAM_NAME: [options] file ...\n";
@@ -175,6 +178,7 @@ use constant HOSTED => $hosted // 1;
 use constant UBITS => $ubits // 64;
 use constant SBITS => $sbits // UBITS - 1;
 use constant BSPLIT => $bsplit // 0;
+use constant NOLINE => $noline // 0;
 use constant NOSHORTCUT => $noshortcut // 0;
 use constant MANGLE => $mangle // 0;
 use constant VERBOSE => $verbose // 0;
@@ -343,19 +347,19 @@ my $isidentifier = qr/(?:(?:[_[:alpha:]]|$univ)(?:\w|$univ)*+)/;
 
     my %macro = (
         ## The special "macro" _Pragma that we never could do with #define.
-        "_Pragma" => ["X", [$liner, "_Pragma", "X", $liner]],
+        #"_Pragma" => ["X", [$liner, "_Pragma", "X", $liner]],
         ## Mark our presence by setting a special macro.
         "__P99PRO__" => [["1"]],
         ## Provide the macros that are required by the standard. __LINE__ and __FILE__ are
         ## implemented differently.
         "__DATE__" => [[sprintf("\"%s % 2u %u\"", $abbr[$mon], $mday, $year + 1900)]],
         "__TIME__" => [[sprintf("\"%02u:%02u:%02u\"", $hour, $min, $sec)]],
-        "__STDC_VERSION__" => [[$standards{STD}]],
+        "__STDC_VERSION__" => [[$standards{STD()}]],
         "__STDC__" => [["1"]],
-        "__STDC_HOSTED__" => [[HOSTED]],
+        "__STDC_HOSTED__" => [[HOSTED()]],
         ## None of these macro names, nor the identifier defined, shall be the subject of a
         ## #define or a #undef preprocessing directive.
-        "defined" => [["(== abuse of keyword defined ==)"]],
+        #"defined" => [["(== abuse of keyword defined ==)"]],
         );
 
     my $predefMacros = scalar keys %macro;
@@ -522,7 +526,7 @@ my $isidentifier = qr/(?:(?:[_[:alpha:]]|$univ)(?:\w|$univ)*+)/;
             $def[-1] = "..." if (@def && $def[-1] eq "__VA_ARGS__");
 
             if ($restricted && $undefMacros{$name}) {
-                print STDERR
+                print $out
                     "#undef\t$name ",
                     " " x (30 - length($name)),
                     "/** has been redefined later **/\n";
@@ -532,21 +536,21 @@ my $isidentifier = qr/(?:(?:[_[:alpha:]]|$univ)(?:\w|$univ)*+)/;
                 $args .= " (or more)" if (@def && $def[-1] eq "...");
                 if (@{$positions{$name}} == 0) {
                     if (@def > 1) {
-                        print STDERR "//*****\t$name uses none of its $args arguments\n";
+                        print $out "//*****\t$name uses none of its $args arguments\n";
                     } else  {
-                        print STDERR "//*****\t$name doesn't use its $args argument\n";
+                        print $out "//*****\t$name doesn't use its $args argument\n";
                     }
                 } elsif (@{$positions{$name}} == @def) {
                     if (@{$positions{$name}} == 1 && $def[-1] ne "...") {
-                        print STDERR "//*****\t$name uses its argument\n";
+                        print $out "//*****\t$name uses its argument\n";
                     } else {
-                        print STDERR "//*****\t$name uses all its $args arguments\n";
+                        print $out "//*****\t$name uses all its $args arguments\n";
                     }
                 } else {
                     if (@{$positions{$name}} == 1) {
-                        print STDERR "//*****\t$name uses argument $def[$positions{$name}[0]]\n";
+                        print $out "//*****\t$name uses argument $def[$positions{$name}[0]]\n";
                     } else {
-                        print STDERR "//*****\t$name uses arguments ".
+                        print $out "//*****\t$name uses arguments ".
                             join(" ",
                                  map {
                                      $def[$_];
@@ -555,15 +559,15 @@ my $isidentifier = qr/(?:(?:[_[:alpha:]]|$univ)(?:\w|$univ)*+)/;
                     }
                 }
             }
-            print STDERR "//*****\t$name uses the ## operator to join tokens\n" if (defined($joins{$name}));
-            print STDERR "//*****\t$name uses the # operator for stringification\n" if (defined($stringifies{$name}));
-            print STDERR "#define\t$name";
+            print $out "//*****\t$name uses the ## operator to join tokens\n" if (defined($joins{$name}));
+            print $out "//*****\t$name uses the # operator for stringification\n" if (defined($stringifies{$name}));
+            print $out "#define\t$name";
             if (@def) {
-                print STDERR "(", join(", ", @def), ")";
+                print $out "(", join(", ", @def), ")";
             }
-            print STDERR " $repl\n";
+            print $out " $repl\n";
         } else {
-            print STDERR "#undef\t$name\n";
+            print $out "#undef\t$name\n";
         }
     }
 
@@ -1432,7 +1436,9 @@ sub openfile(_) {
     my $aclevel = 0;
 
     my $fd;
-    if (!open($fd,  "<:encoding(UTF-8)", "$file")) {
+    if ($file eq "-") {
+        $fd = \*STDIN;
+    } elsif (!open($fd,  "<:encoding(UTF-8)", "$file")) {
         warn "couldn't open $file";
         return ([], []);
     }
@@ -1445,7 +1451,7 @@ sub openfile(_) {
     warn "opening $file"
         if (VERBOSE);
 
-    insertLine(@ARG, $file, $fd);
+    insertLine(@ARG, $file, $fd) if (!NOLINE);
     while (my $_ = logicalLine($fd)) {
         #print STDERR "line: "."." x $aclevel."!" x ($iflevel - $aclevel)."$_\n";
         ############################################################
@@ -1547,7 +1553,7 @@ sub openfile(_) {
                         my ($recdef, $outret, $inret) = openfile(findfile($name));
                         push(@defines, @{$recdef});
                         $output .= $outret;
-                        insertLine(@ARG, $file, $fd);
+                        insertLine(@ARG, $file, $fd)  if (!NOLINE);
                         $input .= $inret;
                         $input .= $ARG[-1];
                     }
@@ -1613,7 +1619,7 @@ sub openfile(_) {
             ## changed and so the expansion will be different.
             $input .= $_."\n";
             if ($skipedLines) {
-                insertLine(@ARG, $file, $fd);
+                insertLine(@ARG, $file, $fd) if (!NOLINE);
                 $skipedLines = 0;
                 $input .= $ARG[-1];
             }
@@ -2093,7 +2099,7 @@ sub tokrep($$$\%@) {
                 push(@outToks, handlePragma(shift));
             } elsif ($_ eq $liner) {
                 ## This is the number of the following line
-                insertLine(@outToks, $file);
+                insertLine(@outToks, $file) if (!NOLINE);
             } else {
                 ## any other non macro token
                 push(@outToks, $_);
