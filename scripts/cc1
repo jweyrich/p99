@@ -27,22 +27,25 @@ $ENV{COLLECT_GCC} //= "gcc";
 
 shift @ARGV while ($ARGV[0] eq "--");
 
+my $found;
+my $dir;
+{
+    open(my $prepro, "$ENV{COLLECT_GCC} -### -x c /dev/null 2>&1 |");
+    foreach (<$prepro>) {
+        chomp;
+        if (m/^COMPILER_PATH=(.*)$/) {
+            $ENV{PATH} = "$1:$ENV{PATH}";
+        } elsif (m|\s*"([^"]+)/cc1"|o) {
+            $found = "$1/cc1";
+            $dir = "$1/include";
+            warn "found $found";
+        }
+    }
+    close $prepro;
+}
+
 if ($ARGV[0] ne "-E") {
     shift @ARGV;
-    my $found;
-    {
-        open(my $prepro, "$ENV{COLLECT_GCC} -### -x c /dev/null 2>&1 |");
-        foreach (<$prepro>) {
-            chomp;
-            if (m/^COMPILER_PATH=(.*)$/) {
-                $ENV{PATH} = "$1:$ENV{PATH}";
-            } elsif (m|\s*"([^"]+/cc1)"|o) {
-                $found = $1;
-                warn "found $found";
-            }
-        }
-        close $prepro;
-    }
     $PROGRAM_NAME = $found // "cc1";
 } else {
     shift @ARGV;
@@ -56,6 +59,7 @@ if ($ARGV[0] ne "-E") {
                 } (<$prepro>));
         close $prepro;
     }
+    unshift(@ARGV, "-I", $dir);
     $PROGRAM_NAME =~ s|[^/]*$||o;
     $PROGRAM_NAME .= "p99pro.pl";
 }
