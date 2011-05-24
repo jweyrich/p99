@@ -410,6 +410,21 @@ int const* has_universal_string_8 = L"\U00002018\U000003A7\U00002060X\U00002019"
 int has_\u03BA\u03B1\u03B8\u03BF\u03BB\u03B9\u03BA\u03CC\u03C2_\u03c7\u03B1\u03C1\u03B1\u03BA\u03C4\u03AE\u03C1 = 1;
 const int \u03BA = 0;
 int const*const has_keeps_token_boundary_for_universal = &\u03BA;
+# ifndef SKIP_UNIVERSAL_MANGLE
+/* When compiled, the two static variables that are defined here must
+   result in two different symbols. There is no way to check this at
+   compile time, unfortunately. So we have to check the object file
+   by hand to determine this. */
+int has_universal_good_mangle(int a) {
+  static int volatile \u03ba;
+  static int volatile _u03ba;
+  \u03ba = !!a;
+  _u03ba = !a;
+  return \u03ba == _u03ba;
+}
+# else
+int has_universal_bad_mangle;
+# endif
 # ifndef SKIP_UNIVERSAL_UTF8
 double const π = 3.14159265;
 double const* has_utf8 = &π;

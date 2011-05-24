@@ -97,22 +97,24 @@ such an error please let me know.
 <tr><td>+</td><td>preprocessor computes at least in long long</td><tr>
 <tr><td>+</td><td>unsigned long long has at least 64 bit</td><tr>
 <tr><td></td><th>Character set support</th>
-<tr class="alternative"><td>-</td><td>universal characters mangled in linker symbol</td><tr>
 <tr><td>+</td><td>hexadecimal character as '\x1234'</td><tr>
 <tr><td>+</td><td>respects token boundary when universal character starts an identifier</td><tr>
 <tr><td>+</td><td>universal character '\u1234'</td><tr>
 <tr><td>+</td><td>universal character '\U12345678'</td><tr>
 <tr><td>+</td><td>universal string "\u1234"</td><tr>
 <tr><td>+</td><td>universal string "\U12345678"</td><tr>
-<tr><td>+</td><td>universal characters as is in linker symbol</td><tr>
 <tr><td></td><th>External symbols and inline</th>
 <tr><td>+</td><td>generates symbol for inline with explicit extern and definition</td><tr>
 <tr><td>+</td><td>generates symbol for inline with explicit extern, definition and reference</td><tr>
 <tr><td>+</td><td>generates symbol for inline with implicit extern, and reference</td><tr>
 <tr><td>+</td><td>generates symbol for inline with implicit extern, definition, and reference</td><tr>
+<tr><td></td><th>Other Features or Bugs</th>
+<tr class="optional"><td> </td><td>universal characters in linker symbol is mangled to reserved symbol</td><tr>
 <tr class="optional"><td> </td><td>detects evaluated comma operator in constant expression</td><tr>
-<tr class="optional"><td> </td><td>generates undefined symbol for inline definition</td><tr>
-<tr class="optional"><td> </td><td>generates undefined symbol for inline definition and reference</td><tr>
+<tr class="toomuch"><td>!</td><td>generates symbol for inline definition</td><tr>
+<tr class="toomuch"><td>!</td><td>generates symbol for inline definition and reference</td><tr>
+<tr class="optional"><td> </td><td>mangling of universal characters distinguishes local variables</td><tr>
+<tr class="optional"><td> </td><td>universal characters as is in linker symbol</td><tr>
 </table>
 <hr />
 <table>
