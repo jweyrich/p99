@@ -66,6 +66,8 @@ my $outfile;
 my $verbose;
 ##
 my $noline;
+##
+my $showincludes;
 
 ## A file handle to which all output will be pumped.
 my $out;
@@ -74,7 +76,7 @@ my $out;
 my @mtune;
 my @f;
 my @W;
-my @S;
+my @sdirs;
 my $quiet;
 
 my ($directory, $program_name);
@@ -84,13 +86,12 @@ BEGIN {
     ## setting help on the command line terminates the program early
     my $help;
 
-    @dirs = ("/usr/include");
-
     my %options = (
         "I=s"	=> \@{dirs},               # list of strings
         "D=s"        => \@{defs},          # list of strings
         "U=s"		=> \@{undefs},     # list of strings
         "P!"		=> \${noline}, # flag
+        "H!"		=> \${showincludes}, # flag
         "d=s"		=> \@{dM},         # flag
         "noshortcut!"	=> \${noshortcut}, # flag
         "mangle!"		=> \${mangle}, # flag
@@ -106,27 +107,38 @@ BEGIN {
         "verbose|v+"	=> \${verbose},
         "f=s"		=> \@{f},
         "W=s"		=> \@{W},
-        "S=s"		=> \@{S},
+        "isystem|S=s"	=> \@{sdirs},
         "m=s"		=> \@{mtune},
         "quiet!"		=> \${quiet}, # flag
         );
 
+    my %allopts = map {
+        s/=[^=]*$//o;
+        s/[-+!]$//o;
+        map {
+            ($_ => 1);
+        } split /[|]/;
+    } keys %options;
+    warn "we know about: ".join(" ", keys %allopts);
 
     my @argv = (@ARGV);
 
+    ($directory, $program_name) = $PROGRAM_NAME =~ m|^(.*)/([^/]+)$|o;
+    print STDERR "called as $program_name: $PROGRAM_NAME @argv\n";
     ## Ensure that all options that are seen as an assignment are treated as such
     @ARGV = map {
-        if (m/-[a-ln-z].*[=].*$/o) {
-            "-$_";
-        } else {
-            $_;
+        if (m/-([^-=]+)/o) {
+            $_ = "-$_" if (defined($allopts{$1}));
         }
+        $_;
     } @ARGV;
+    print STDERR "replaced for $program_name: $PROGRAM_NAME @ARGV\n";
 
-    ($directory, $program_name) = $PROGRAM_NAME =~ m|^(.*)/([^/]+)$|o;
     my $result = GetOptions (%options);
     print STDERR "called as $program_name: $PROGRAM_NAME @argv\n"
         ;#if ($verbose);
+
+    push(@sdirs, "/usr/include");
 
     if ($help) {
         print STDERR "$PROGRAM_NAME: [options] file ...\n";
@@ -179,6 +191,7 @@ use constant UBITS => $ubits // 64;
 use constant SBITS => $sbits // UBITS - 1;
 use constant BSPLIT => $bsplit // 0;
 use constant NOLINE => $noline // 0;
+use constant SHOWINCLUDES => $showincludes // 0;
 use constant NOSHORTCUT => $noshortcut // 0;
 use constant MANGLE => $mangle // 0;
 use constant VERBOSE => $verbose // 0;
@@ -286,7 +299,7 @@ sub evalExpr($@);
 sub expandComma(@);
 sub expandDefined(\%@);
 sub expandPar(@);
-sub findfile(_;$);
+sub findfile(_;$@);
 sub flushOut(\@);
 sub getTokDef(\@);
 sub handlePragma(_);
@@ -1172,9 +1185,11 @@ sub readln(_) {
 }
 
 ## Scan the list of include directories for a file
-sub findfile(_;$) {
-    my ($file, $next) = @ARG;
-    foreach (@dirs) {
+sub findfile(_;$@) {
+    my ($file, $next) = (shift, shift);
+    @ARG = (@dirs, @sdirs) if (!@ARG);
+    undef $next if ($next && $next !~ m|/$file$|);
+    foreach (@ARG) {
         if ($next) {
             if ($next =~ m|^$_/[^/]+$|) {
                 undef $next;
@@ -1184,6 +1199,7 @@ sub findfile(_;$) {
         my $fname = $_."/".$file;
         return $fname if (-e $fname);
     }
+    warn "didn't find $file in @ARG";
     return "./$file";
 }
 
@@ -1392,6 +1408,8 @@ sub expandDefined(\%@) {
     return @outToks;
 }
 
+my @files;
+
 ## Receives a filename and a reference to he used macros.
 ##
 ## Returns a triple (defines, output, input) where
@@ -1408,6 +1426,7 @@ sub expandDefined(\%@) {
 
 sub openfile(_) {
     my $file = shift;
+    push(@files, $file);
     warn "opening $file"
         if (VERBOSE);
     ## keep track of the number of defines in this file and below
@@ -1429,6 +1448,9 @@ sub openfile(_) {
             } else {
                 @ARG = "\n";
             }
+            if (SHOWINCLUDES) {
+                print STDERR "+" x $#files, " $file\n";
+            }
             goto SHORTCUT;
         } else {
             delete $fileHash{$file};
@@ -1447,6 +1469,7 @@ sub openfile(_) {
         $fd = \*STDIN;
     } elsif (!open($fd,  "<:encoding(UTF-8)", "$file")) {
         warn "couldn't open $file";
+        pop(@files);
         return ([], []);
     }
 
@@ -1457,6 +1480,11 @@ sub openfile(_) {
 
     warn "opening $file"
         if (VERBOSE);
+
+    if (SHOWINCLUDES) {
+        print STDERR "." x $#files, " $file\n";
+    }
+
 
     insertLine(@ARG, $file, $fd) if (!NOLINE);
     while (my $_ = logicalLine($fd)) {
@@ -1558,10 +1586,14 @@ sub openfile(_) {
                         if ($name =~ m{($type|[']|[\\]|/[/*])}) {
                             warn "illegal character sequence $1 in file name: $name";
                         }
+                        my @idirs =
+                            ($type eq "<")
+                            ? @sdirs
+                            : (@dirs, @sdirs);
                         my ($recdef, $outret, $inret) =
                             $next
-                            ? openfile(findfile($name, $file))
-                            : openfile(findfile($name));
+                            ? openfile(findfile($name, $file, @idirs))
+                            : openfile(findfile($name, undef, @idirs));
                         push(@defines, @{$recdef});
                         $output .= $outret;
                         insertLine(@ARG, $file, $fd)  if (!NOLINE);
@@ -1658,6 +1690,9 @@ sub openfile(_) {
             $fileHash{$file} = $input;
             warn "saved stripped contents of $file, length is ".length($input)
                 if (VERBOSE);
+            if (SHOWINCLUDES) {
+                print STDERR "-" x $#files, " $file\n";
+            }
         }
     } elsif (${$fileInc{$file}} > 1) {
         my %defines = map { $_ => 1 } @defines;
@@ -1680,6 +1715,7 @@ sub openfile(_) {
         $output = "";
     }
 
+    pop(@files);
     return (\@defines, $output, $input);
 }
 
