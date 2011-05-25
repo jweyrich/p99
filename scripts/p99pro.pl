@@ -286,7 +286,7 @@ sub evalExpr($@);
 sub expandComma(@);
 sub expandDefined(\%@);
 sub expandPar(@);
-sub findfile(_);
+sub findfile(_;$);
 sub flushOut(\@);
 sub getTokDef(\@);
 sub handlePragma(_);
@@ -1172,12 +1172,19 @@ sub readln(_) {
 }
 
 ## Scan the list of include directories for a file
-sub findfile(_) {
+sub findfile(_;$) {
+    my ($file, $next) = @ARG;
     foreach (@dirs) {
-        my $fname = $_."/".$ARG[0];
+        if ($next) {
+            if ($next =~ m|^$_/[^/]+$|) {
+                undef $next;
+            }
+            next;
+        }
+        my $fname = $_."/".$file;
         return $fname if (-e $fname);
     }
-    return "./$ARG[0]";
+    return "./$file";
 }
 
 sub tokenize(_) {
@@ -1400,7 +1407,7 @@ sub expandDefined(\%@) {
 ## - output is the output generated from input by doing macro replacement
 
 sub openfile(_) {
-    my ($file) = shift;
+    my $file = shift;
     warn "opening $file"
         if (VERBOSE);
     ## keep track of the number of defines in this file and below
@@ -1530,8 +1537,9 @@ sub openfile(_) {
                 pop(@iffound);
                 #print STDERR "IF $aclevel <= $iflevel : endif $_\n";
             } elsif ($iflevel == $aclevel) {
-                if (m/^include\s++(.*+)/o) {
-                    $_ = $1;
+                if (m/^include(_next)?\s++(.*+)/o) {
+                    my $next = $1;
+                    $_ = $2;
                     my $tried;
                   RETRY:
                     my ($type, $name) = m/([<"])(.+)[">]/o;
@@ -1550,7 +1558,10 @@ sub openfile(_) {
                         if ($name =~ m{($type|[']|[\\]|/[/*])}) {
                             warn "illegal character sequence $1 in file name: $name";
                         }
-                        my ($recdef, $outret, $inret) = openfile(findfile($name));
+                        my ($recdef, $outret, $inret) =
+                            $next
+                            ? openfile(findfile($name, $file))
+                            : openfile(findfile($name));
                         push(@defines, @{$recdef});
                         $output .= $outret;
                         insertLine(@ARG, $file, $fd)  if (!NOLINE);
