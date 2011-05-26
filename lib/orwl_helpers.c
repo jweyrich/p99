@@ -130,7 +130,7 @@ bool orwl_graph_read(orwl_graph ** graph, char const* file, size_t nb_vertices) 
     nb_neighbors[i] = 0;
 
   const char *connection = "^[[:blank:]]*([[:digit:]]+)[[:blank:]]*->[[:blank:]]*([[:digit:]]+)[[:blank:]]*$";
-  const char *attributes = "^[[:blank:]]*([[:digit:]]+) \\[color=\"([[:digit:]]+)\",[[:blank:]]*label=\"([[:digit:]]+-[[:alpha:]]+)\"\\]$";
+  const char *attributes = "^[[:blank:]]*([[:digit:]]+)[[:blank:]]*\\[color=\"([[:digit:]]+)\",[[:blank:]]*label=\"([[:digit:]]+-[[:alpha:]]+)\"\\]$";
   regex_t re_connection, re_attributes;
 
   if (regcomp(&re_connection, connection, REG_EXTENDED)) {
@@ -406,10 +406,28 @@ bool orwl_wait_to_start(size_t id,
   server->id_initialized[id] = true;
   pthread_rwlock_unlock(&server->lock);
   orwl_vertex * me = &graph->vertices[id];
-  for (size_t i = 0 ; i < me->nb_neighbors ; i++)
-    if (graph->vertices[me->neighbors[i]].color > me->color)
-      rpc_check_colored_init_finished(me->neighbors[i], graph, ab, seed);
+  orwl_vertex * my_neighbors[graph->nb_vertices]; /* upper limit */
+  size_t nb = orwl_get_neighbors_in_undirected_graph(my_neighbors,
+  						     id,
+  						     graph->nb_vertices,
+  						     graph);
+
+  for (size_t i = 0 ; i < nb ; i++) {
+    assert(my_neighbors[i]->color != me->color);
+    if (my_neighbors[i]->color > me->color) {
+      size_t vertex_id = orwl_get_id_from_vertex(graph, my_neighbors[i]);
+      if (vertex_id == SIZE_MAX) {
+  	printf("error when getting the id number of a vertex");
+  	return false;
+      }
+      rpc_check_colored_init_finished(vertex_id, graph, ab, seed);
+    }
+  }
 
   orwl_server_delayed_unblock(server, nb_local_tasks);
   return true;
+}
+
+void print_statistics(size_t id) {
+  printf("print_statistics does nothing\n");
 }
