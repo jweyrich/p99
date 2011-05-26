@@ -653,6 +653,7 @@ sub make_output($)
         print $fd "/* ".scalar @{ $colors{$class} }." vertices with color $nj. Color $cols{$class}. */\n";
         ++$nj;
     }
+    print $fd $graphlist;
     foreach my $node (sort { $a <=> $b } keys %nom) {
         if ($number) {
             # Or output with numbers
@@ -666,7 +667,6 @@ sub make_output($)
         print $fd map { "$_=\"$nom{$node}->{$_}\"" } keys %{$nom{$node}};
         print $fd "]\n";
     }
-    print $fd $graphlist;
     print $fd "}\n";
 }
 
