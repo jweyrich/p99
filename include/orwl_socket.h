@@ -158,7 +158,7 @@ auth_sock_init(auth_sock *sock,         /*!< [out] */
                uint64_t remo            /*!< [in] the byte order on remote */
                ) {
   if (!sock) return 0;
-  P99_TZERO(*sock);
+  *sock = P99_LVAL(auth_sock const);
   sock->fd = fd;
   sock->srv = srv;
   sock->len = len;
