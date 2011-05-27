@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -90,7 +90,7 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle2);
 /**
  ** @memberof orwl_mirror
  **/
-P00_DOCUMENT_SEED
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_write_request2)
 orwl_state orwl_write_request2(orwl_mirror* location, /*!< [in,out] the location for the request */
                               orwl_handle2* rh2,   /*!< [in,out] the handle for the request */
@@ -100,7 +100,7 @@ orwl_state orwl_write_request2(orwl_mirror* location, /*!< [in,out] the location
 /**
  ** @memberof orwl_mirror
  **/
-P00_DOCUMENT_SEED
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_read_request2)
 orwl_state orwl_read_request2(orwl_mirror* location, /*!< [in,out] the location for the request */
                              orwl_handle2* rh2,   /*!< [in,out] the handle for the request */
@@ -110,7 +110,7 @@ orwl_state orwl_read_request2(orwl_mirror* location, /*!< [in,out] the location 
 /**
  ** @memberof orwl_handle2
  **/
-P00_DOCUMENT_SEED
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_release2)
 orwl_state orwl_release2(orwl_handle2* rh2,   /*!< [in,out] the handle to be released */
                         rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
@@ -119,7 +119,7 @@ orwl_state orwl_release2(orwl_handle2* rh2,   /*!< [in,out] the handle to be rel
 /**
  ** @memberof orwl_handle2
  **/
-P00_DOCUMENT_SEED
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_cancel2)
 orwl_state orwl_cancel2(orwl_handle2* rh2,   /*!< [in,out] the handle to be canceled */
                        rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
@@ -128,7 +128,7 @@ orwl_state orwl_cancel2(orwl_handle2* rh2,   /*!< [in,out] the handle to be canc
 /**
  ** @memberof orwl_handle2
  **/
-P00_DOCUMENT_SEED
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_acquire2)
 orwl_state orwl_acquire2(orwl_handle2* rh2,   /*!< [in,out] the handle to be acquired */
                          rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
@@ -137,7 +137,7 @@ orwl_state orwl_acquire2(orwl_handle2* rh2,   /*!< [in,out] the handle to be acq
 /**
  ** @memberof orwl_handle2
  **/
-P00_DOCUMENT_SEED
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_test2)
 orwl_state orwl_test2(orwl_handle2* rh2,   /*!< [in,out] the handle to be tested */
                       rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
@@ -146,7 +146,7 @@ orwl_state orwl_test2(orwl_handle2* rh2,   /*!< [in,out] the handle to be tested
 /**
  ** @memberof orwl_handle2
  **/
-P00_DOCUMENT_SEED
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_map2)
 uint64_t* orwl_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
                size_t* data_len,    /*!< [out] length of @a data in
@@ -157,7 +157,7 @@ uint64_t* orwl_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried 
 /**
  ** @memberof orwl_handle2
  **/
-P00_DOCUMENT_SEED
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_mapro2)
 uint64_t const* orwl_mapro2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
                size_t* data_len,    /*!< [out] length of @a data in
@@ -168,7 +168,7 @@ uint64_t const* orwl_mapro2(orwl_handle2* rh2,   /*!< [in,out] the handle to be 
 /**
  ** @memberof orwl_handle2
  **/
-P00_DOCUMENT_SEED
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_resize2)
 void orwl_truncate2(orwl_handle2* rh2,   /*!< [in,out] the handle whos
                                           data to resize */
@@ -180,7 +180,7 @@ void orwl_truncate2(orwl_handle2* rh2,   /*!< [in,out] the handle whos
 /**
  ** @memberof orwl_handle2
  **/
-P00_DOCUMENT_SEED
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_write_map2)
 void* orwl_write_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
                size_t* data_len,    /*!< [out] length of @a data in
@@ -191,7 +191,7 @@ void* orwl_write_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be querie
 /**
  ** @memberof orwl_handle2
  **/
-P00_DOCUMENT_SEED
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_read_map2)
 void const* orwl_read_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
                size_t* data_len,    /*!< [out] length of @a data in
@@ -202,7 +202,7 @@ void const* orwl_read_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be q
 /**
  ** @memberof orwl_handle2
  **/
-P00_DOCUMENT_SEED
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_resize2)
 void orwl_truncate2(orwl_handle2* rh2,   /*!< [in,out] the handle whos
                                           data to resize */

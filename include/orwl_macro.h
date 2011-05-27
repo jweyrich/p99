@@ -18,9 +18,9 @@
 #include "p99_defarg.h"
 #include "orwl_document.h"
 
-#define P00_INV(N) P99_PASTE2(P00_variable_argument_list_must_be_divisible_by_, N)
+#define O_RWL_INV(N) P99_PASTE2(o_rwl_variable_argument_list_must_be_divisible_by_, N)
 
-#define P00_MODARG_(_X) P99_PASTE2(P00_NARG_,  _X)
+#define O_RWL_MODARG_(_X) P99_PASTE2(P00_NARG_,  _X)
 
 /**
  ** @def LEN_MODARG
@@ -38,7 +38,7 @@
  **/
 #define VA_TYPES(NAME, ...)   P99_TYPEDEFS(P99_PASTE2(NAME, _mod_type_), __VA_ARGS__)
 
-#define P00_VA_MODARG(AP, NAME, M, ...) va_arg(AP, P99_PASTE3(NAME, _mod_type_, M))
+#define O_RWL_VA_MODARG(AP, NAME, M, ...) va_arg(AP, P99_PASTE3(NAME, _mod_type_, M))
 
 /**
  ** @brief Obtain the next argument in the variable argument list of
@@ -53,15 +53,15 @@
  ** ::LEN_MODARG. @c R defaults to 0 if omitted.
  ** @see P99_VA_ARGS
  **/
-#define VA_MODARG(AP, ...) P00_VA_MODARG(AP, __VA_ARGS__, 0, ~)
+#define VA_MODARG(AP, ...) O_RWL_VA_MODARG(AP, __VA_ARGS__, 0, ~)
 
-#define P00_CAS1(NAME, X, N) P99_LVAL(P99_PASTE2(NAME, _mod_type_0), X)
-#define P00_CAS2(NAME, X, N) P99_LVAL(P99_PASTE3(NAME, _mod_type_, P99_MOD(N, 2)), X)
-#define P00_CAS3(NAME, X, N) P99_LVAL(P99_PASTE3(NAME, _mod_type_, P99_MOD(N, 3)), X)
-#define P00_CAS4(NAME, X, N) P99_LVAL(P99_PASTE3(NAME, _mod_type_, P99_MOD(N, 4)), X )
-#define P00_CAS5(NAME, X, N) P99_LVAL(P99_PASTE3(NAME, _mod_type_, P99_MOD(N, 5)), X )
-#define P00_MODARG_LIST(NAME, F, N, ...) P99_FOR(NAME, N, P00_SEQ, F, __VA_ARGS__)
+#define O_RWL_CAS1(NAME, X, N) P99_LVAL(P99_PASTE2(NAME, _mod_type_0), X)
+#define O_RWL_CAS2(NAME, X, N) P99_LVAL(P99_PASTE3(NAME, _mod_type_, P99_MOD(N, 2)), X)
+#define O_RWL_CAS3(NAME, X, N) P99_LVAL(P99_PASTE3(NAME, _mod_type_, P99_MOD(N, 3)), X)
+#define O_RWL_CAS4(NAME, X, N) P99_LVAL(P99_PASTE3(NAME, _mod_type_, P99_MOD(N, 4)), X )
+#define O_RWL_CAS5(NAME, X, N) P99_LVAL(P99_PASTE3(NAME, _mod_type_, P99_MOD(N, 5)), X )
+#define O_RWL_MODARG_LIST(NAME, F, N, ...) P99_FOR(NAME, N, P00_SEQ, F, __VA_ARGS__)
 
-#define LEN_MODARG(NAME, M, ...) P00_MODARG_(M)(__VA_ARGS__), P00_MODARG_LIST(NAME, P99_PASTE2(P00_CAS, M), P99_NARG(__VA_ARGS__), __VA_ARGS__)
+#define LEN_MODARG(NAME, M, ...) O_RWL_MODARG_(M)(__VA_ARGS__), O_RWL_MODARG_LIST(NAME, P99_PASTE2(O_RWL_CAS, M), P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
 #endif 	    /* !ORWL_MACRO_H_ */

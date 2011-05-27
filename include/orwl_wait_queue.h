@@ -1,8 +1,9 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
+/* the authors and copyright holders for this work are as follows:           */
 /* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
+/* all rights reserved,  2011 Matias E. Vara, INRIA, France                  */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -285,11 +286,6 @@ void orwl_wh_destroy(orwl_wh *wh);
 DECLARE_NEW_DELETE(orwl_wh);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_wh);
-
-typedef struct {
-  orwl_wh *wh;
-  uint64_t howmuch;
-} p00_orwl_wh_pair;
 
 /**
  ** @brief Insert a list of request pairs of <code>(wh, howmuch)</code> into location

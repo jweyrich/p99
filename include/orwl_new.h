@@ -50,11 +50,11 @@ void P99_PASTE2(T, _delete)(T const*el) {                                       
   }                                                                                                         \
 }
 
-P99_DECLARE_STRUCT(p00_vheader);
-P99_DECLARE_UNION(p00_maxalign);
+P99_DECLARE_STRUCT(o_rwl_vheader);
+P99_DECLARE_UNION(o_rwl_maxalign);
 
 /* A union type to assure the largest possible alignment. */
-union p00_maxalign {
+union o_rwl_maxalign {
   void* v;
   void (*f)(void);
   long double d;
@@ -63,13 +63,13 @@ union p00_maxalign {
 
 /* A header structure for vector allocations. Align the flexible array
    to the largest possible alignment. */
-struct p00_vheader {
+struct o_rwl_vheader {
   size_t len;
-  p00_maxalign data[];
+  o_rwl_maxalign data[];
 };
 
-#define P00_VDATA(H) ((void*)((H)->data))
-#define P00_VLENG(H) ((H)->len)
+#define O_RWL_VDATA(H) ((void*)((H)->data))
+#define O_RWL_VLENG(H) ((H)->len)
 
 /**
  ** @brief Declare vector (de)allocation operators for type @a T.
@@ -103,10 +103,10 @@ inline                                                                          
 T *P99_PASTE2(T, _vrealloc)(T* p, size_t const n) {                                                                  \
   if (P99_UNLIKELY(!p && !n)) return 0;                                                                              \
   size_t o = 0;                                                                                                      \
-  p00_vheader* head = 0;                                                                                             \
+  o_rwl_vheader* head = 0;                                                                                           \
   if (p) {                                                                                                           \
-    head = P99_FHEAD(p00_vheader, data, p);                                                                          \
-    o = P00_VLENG(head) / sizeof(T);                                                                                 \
+    head = P99_FHEAD(o_rwl_vheader, data, p);                                                                        \
+    o = O_RWL_VLENG(head) / sizeof(T);                                                                               \
     for (size_t i = n; i < o; ++i)                                                                                   \
       P99_PASTE2(T, _destroy)(p + i);                                                                                \
     if (P99_LIKELY(!n)) {                                                                                            \
@@ -115,17 +115,17 @@ T *P99_PASTE2(T, _vrealloc)(T* p, size_t const n) {                             
     }                                                                                                                \
   }                                                                                                                  \
   /* From here on n is not 0. */                                                                                     \
-  size_t p00_N = n*sizeof(T);                                                                                        \
-  p00_vheader* headn = P00_FREALLOC(head, p00_vheader, data, p00_N);                                                 \
+  size_t o_rwl_N = n*sizeof(T);                                                                                      \
+  o_rwl_vheader* headn = P00_FREALLOC(head, o_rwl_vheader, data, o_rwl_N);                                           \
   if (P99_LIKELY(!!headn)) {                                                                                         \
     head = headn;                                                                                                    \
-    p = P00_VDATA(head);                                                                                             \
+    p = O_RWL_VDATA(head);                                                                                           \
     for (size_t i = o; i < n; ++i)                                                                                   \
       P99_PASTE2(T, _init)(p + i);                                                                                   \
   } else                                                                                                             \
     /* even if realloc fails we still might have a good value for p if we were trying to shorten the array. */       \
     if (o < n) return 0;                                                                                             \
-  P00_VLENG(head) = p00_N;                                                                                           \
+  O_RWL_VLENG(head) = o_rwl_N;                                                                                       \
   return p;                                                                                                          \
 }                                                                                                                    \
 /*! @brief Operator @c new[] for type T   **/                                                                        \

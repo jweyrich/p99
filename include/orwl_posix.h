@@ -1,7 +1,8 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
+/* the authors and copyright holders for this work are as follows:           */
+/* all rights reserved,  2011 Emmanuel Jeanvoine, INRIA, France              */
 /* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
@@ -60,7 +61,7 @@ extern void orwl_posix_init(void);
     stderr */
 extern void orwl_posix_print(void);
 
-extern long const*const p00_sc_constant;
+extern long const*const o_rwl_sc_constant;
 
 /*
   Some lists of configuration parameters:
@@ -72,7 +73,7 @@ extern long const*const p00_sc_constant;
     system.
 */
 
-#define P00_POSIX_SC_1                                         \
+#define O_RWL_POSIX_SC_1                                       \
 C_2_C_BIND,                                                    \
 C_2_C_DEV,                                                     \
 C_2_CHAR_TERM,                                                 \
@@ -126,7 +127,7 @@ C_MQ_OPEN_MAX,                                                 \
 C_MQ_PRIO_MAX,                                                 \
 C_NGROUPS_MAX
 
-#define P00_POSIX_SC_2                                         \
+#define O_RWL_POSIX_SC_2                                       \
 C_OPEN_MAX,                                                    \
 C_PAGE_SIZE,                                                   \
 C_PAGESIZE,                                                    \
@@ -163,13 +164,13 @@ C_TYPED_MEMORY_OBJECTS,                                        \
 C_TZNAME_MAX,                                                  \
 C_VERSION
 
-#define P00_POSIX_SC_XBS5                                      \
+#define O_RWL_POSIX_SC_XBS5                                    \
 C_XBS5_ILP32_OFF32,                                            \
 C_XBS5_ILP32_OFFBIG,                                           \
 C_XBS5_LP64_OFF64,                                             \
 C_XBS5_LPBIG_OFFBIG
 
-#define P00_POSIX_SC_XOPEN                                     \
+#define O_RWL_POSIX_SC_XOPEN                                   \
 C_XOPEN_CRYPT,                                                 \
 C_XOPEN_ENH_I18N,                                              \
 C_XOPEN_LEGACY,                                                \
@@ -179,7 +180,7 @@ C_XOPEN_SHM,                                                   \
 C_XOPEN_UNIX,                                                  \
 C_XOPEN_VERSION
 
-#define P00_POSIX_SC_THREAD                                    \
+#define O_RWL_POSIX_SC_THREAD                                  \
 C_THREAD_ATTR_STACKADDR,                                       \
 C_THREAD_ATTR_STACKSIZE,                                       \
 C_THREAD_CPUTIME,                                              \
@@ -195,13 +196,13 @@ C_THREAD_STACK_MIN,                                            \
 C_THREAD_THREADS_MAX,                                          \
 C_THREADS
 
-#define P00_POSIX_SC_V6                                        \
+#define O_RWL_POSIX_SC_V6                                      \
 C_V6_ILP32_OFF32,                                              \
 C_V6_ILP32_OFFBIG,                                             \
 C_V6_LP64_OFF64,                                               \
 C_V6_LPBIG_OFFBIG
 
-#define P00_POSIX_SC_6                                         \
+#define O_RWL_POSIX_SC_6                                       \
 C_SS_REPL_MAX,                                                 \
 C_TRACE_EVENT_NAME_MAX,                                        \
 C_TRACE_NAME_MAX,                                              \
@@ -209,64 +210,64 @@ C_TRACE_SYS_MAX,                                               \
 C_TRACE_USER_EVENT_MAX,                                        \
 C_XOPEN_STREAMS
 
-#define P00_DECLARE_SC_ENUM_(NAME, X, I) P99_PASTE2(P00_POS_S, X)
+#define O_RWL_DECLARE_SC_ENUM_(NAME, X, I) P99_PASTE2(O_RWL_POS_S, X)
 
-#define P00_DECLARE_SC_ENUM(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_DECLARE_SC_ENUM_, __VA_ARGS__)
+#define O_RWL_DECLARE_SC_ENUM(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, O_RWL_DECLARE_SC_ENUM_, __VA_ARGS__)
 
 enum {
-  P00_DECLARE_SC_ENUM(P00_POSIX_SC_1),
-  P00_DECLARE_SC_ENUM(P00_POSIX_SC_2),
+  O_RWL_DECLARE_SC_ENUM(O_RWL_POSIX_SC_1),
+  O_RWL_DECLARE_SC_ENUM(O_RWL_POSIX_SC_2),
 #ifdef _SC_XOPEN_THREADS
-  P00_DECLARE_SC_ENUM(P00_POSIX_SC_THREAD),
+  O_RWL_DECLARE_SC_ENUM(O_RWL_POSIX_SC_THREAD),
 #endif
 #ifdef _SC_XOPEN_VERSION
-  P00_DECLARE_SC_ENUM(P00_POSIX_SC_XOPEN),
+  O_RWL_DECLARE_SC_ENUM(O_RWL_POSIX_SC_XOPEN),
 #endif
 #ifdef _SC_XBS5_ILP32_OFF32
-  P00_DECLARE_SC_ENUM(P00_POSIX_SC_XBS5),
+  O_RWL_DECLARE_SC_ENUM(O_RWL_POSIX_SC_XBS5),
 #endif
 #ifdef _SC_V6_ILP32_OFF32
-  P00_DECLARE_SC_ENUM(P00_POSIX_SC_V6),
+  O_RWL_DECLARE_SC_ENUM(O_RWL_POSIX_SC_V6),
 #endif
 #ifdef _SC_TRACE_USER_EVENT_MAX
-  P00_DECLARE_SC_ENUM(P00_POSIX_SC_6),
+  O_RWL_DECLARE_SC_ENUM(O_RWL_POSIX_SC_6),
 #endif
-  P00_POS_SC_MAX
+  O_RWL_POS_SC_MAX
 };
 
-#define P00_DECLARE_SC_(NAME, X, I)                            \
-/** @brief return the POSIX system config feature X */         \
-inline long P99_PASTE2(P99_S, X)(void) {                       \
-  switch (P99_PASTE2(_S, X)) {                                 \
-    /* OPEN_MAX can be changed with setrlimit */               \
-  case _SC_OPEN_MAX: return sysconf(_SC_OPEN_MAX);             \
-  default: return p00_sc_constant[P99_PASTE2(P00_POS_S, X)];   \
-  }                                                            \
+#define O_RWL_DECLARE_SC_(NAME, X, I)                            \
+/** @brief return the POSIX system config feature X */           \
+inline long P99_PASTE2(P99_S, X)(void) {                         \
+  switch (P99_PASTE2(_S, X)) {                                   \
+    /* OPEN_MAX can be changed with setrlimit */                 \
+  case _SC_OPEN_MAX: return sysconf(_SC_OPEN_MAX);               \
+  default: return o_rwl_sc_constant[P99_PASTE2(O_RWL_POS_S, X)]; \
+  }                                                              \
 }
 
-#define P00_DECLARE_SC(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SER, P00_DECLARE_SC_, __VA_ARGS__);
+#define O_RWL_DECLARE_SC(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SER, O_RWL_DECLARE_SC_, __VA_ARGS__);
 
-P00_DECLARE_SC(P00_POSIX_SC_1)
-P00_DECLARE_SC(P00_POSIX_SC_2)
+O_RWL_DECLARE_SC(O_RWL_POSIX_SC_1)
+O_RWL_DECLARE_SC(O_RWL_POSIX_SC_2)
 #ifdef _SC_XOPEN_THREADS
-  P00_DECLARE_SC(P00_POSIX_SC_THREAD)
+  O_RWL_DECLARE_SC(O_RWL_POSIX_SC_THREAD)
 #endif
 #ifdef _SC_XOPEN_VERSION
-  P00_DECLARE_SC(P00_POSIX_SC_XOPEN)
+  O_RWL_DECLARE_SC(O_RWL_POSIX_SC_XOPEN)
 #endif
 #ifdef _SC_XBS5_ILP32_OFF32
- P00_DECLARE_SC(P00_POSIX_SC_XBS5)
+ O_RWL_DECLARE_SC(O_RWL_POSIX_SC_XBS5)
 #endif
 #ifdef _SC_V6_ILP32_OFF32
-  P00_DECLARE_SC(P00_POSIX_SC_V6)
+  O_RWL_DECLARE_SC(O_RWL_POSIX_SC_V6)
 #endif
 #ifdef _SC_TRACE_USER_EVENT_MAX
- P00_DECLARE_SC(P00_POSIX_SC_6)
+ O_RWL_DECLARE_SC(O_RWL_POSIX_SC_6)
 #endif
 
-#undef P00_DECLARE_SC_ENUM_
-#undef P00_DECLARE_SC_ENUM
-#undef P00_DECLARE_SC_
-#undef P00_DECLARE_SC
+#undef O_RWL_DECLARE_SC_ENUM_
+#undef O_RWL_DECLARE_SC_ENUM
+#undef O_RWL_DECLARE_SC_
+#undef O_RWL_DECLARE_SC
 
 #endif 	    /* !ORWL_POSIX_H_ */
