@@ -180,6 +180,41 @@ port_t* port_t_init(port_t *A,   /*!< the object to initialize */
   return A;
 }
 
+/**
+ ** @memberof port_t
+ **/
+inline
+bool port_t_eq(port_t const* A, port_t const* B) {
+  return A ? (B ? (A->p == B->p) : false) : !B;
+}
+
+/**
+ ** @memberof addr_t
+ **/
+inline
+bool addr_t_eq(addr_t const* A, addr_t const* B) {
+  return A ? (B ? !memcmp(A, B, sizeof(*A)) : false) : !B;
+}
+
+/**
+ ** @memberof orwl_endpoint
+ **/
+inline
+bool orwl_endpoint_similar(orwl_endpoint const* A, orwl_endpoint const* B) {
+  return A ? (B ? (port_t_eq(&A->port, &B->port) && addr_t_eq(&A->addr, &B->addr)) : false) : !B;
+}
+
+/**
+ ** @memberof orwl_endpoint
+ **/
+inline
+bool orwl_endpoint_eq(orwl_endpoint const* A, orwl_endpoint const* B) {
+  return
+    orwl_endpoint_similar(A, B)
+    && &A->index == &B->index;
+}
+
+
 #ifndef DOXYGEN
 inline
 P99_PROTOTYPE(orwl_endpoint*, orwl_endpoint_init, orwl_endpoint*, in_addr_t, in_port_t, uint64_t);

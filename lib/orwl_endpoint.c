@@ -321,4 +321,8 @@ P99_INSTANTIATE(in_port_t, port2net, port_t const*);
 P99_INSTANTIATE(uint64_t, port2host, port_t const*);
 P99_INSTANTIATE(port_t, net2port, in_port_t);
 P99_INSTANTIATE(port_t, host2port, uint64_t);
+P99_INSTANTIATE(bool, port_t_eq, port_t const*, port_t const*);
+P99_INSTANTIATE(bool, addr_t_eq, addr_t const*, addr_t const*);
+P99_INSTANTIATE(bool, orwl_endpoint_eq, orwl_endpoint const*, orwl_endpoint const*);
+P99_INSTANTIATE(bool, orwl_endpoint_similar, orwl_endpoint const*, orwl_endpoint const*);
 
