@@ -107,7 +107,7 @@ char const* orwl_inet_ntop(struct sockaddr const* addr,
 /**
  ** @brief Negotiate a send request with remote endpoint @a ep.
  **/
-uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t*const mess);
+uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed, size_t len, uint64_t*const mess);
 
 /**
  ** @brief An open socket through which we may receive some
@@ -127,9 +127,11 @@ struct auth_sock {
   struct orwl_server* srv; /*!< the server through which we received
                              this socket */
   int fd;                  /*!< the open file descriptor */
+  bool is_detached;        /*!< auth_sock_close has been called once */
   size_t len;              /*!< the length of the message */
   uint64_t *mes;           /*!< the message itself */
   uint64_t const* back;    /*!< a backup of the message */
+  orwl_thread_cntrl* det;      /*!< non-null if we are local */
   uint64_t ret;            /*!< a place to store the return value of
                              the call */
   uint64_t remoteorder;   /*!< the byte order on the remote host */
@@ -139,12 +141,14 @@ DECLARE_ONCE(auth_sock);
 
 #ifndef DOXYGEN
 inline
-P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t, uint64_t);
-#define auth_sock_init(...) P99_CALL_DEFARG(auth_sock_init, 5, __VA_ARGS__)
+P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t, uint64_t, uint64_t*, orwl_thread_cntrl*);
+#define auth_sock_init(...) P99_CALL_DEFARG(auth_sock_init, 7, __VA_ARGS__)
 #define auth_sock_init_defarg_1() -1
 #define auth_sock_init_defarg_2() P99_0(struct orwl_server*)
 #define auth_sock_init_defarg_3() P99_0(size_t)
 #define auth_sock_init_defarg_4() P99_0(uint64_t)
+#define auth_sock_init_defarg_5() P99_0(uint64_t*)
+#define auth_sock_init_defarg_6() P99_0(orwl_thread_cntrl*)
 #endif
 
 DOCUMENT_INIT(auth_sock)
@@ -155,16 +159,20 @@ auth_sock_init(auth_sock *sock,         /*!< [out] */
                int fd,                  /*!< [in] file descriptor, defaults to -1 */
                struct orwl_server* srv, /*!< [in,out] defaults to a null pointer */
                size_t len,              /*!< [in] the length of the message 0 */
-               uint64_t remo            /*!< [in] the byte order on remote */
+               uint64_t remo,           /*!< [in] the byte order on remote */
+               uint64_t *m,             /*!< [in] the message or 0 */
+               orwl_thread_cntrl *det       /*!< [in] non 0 if a local connection */
                ) {
   if (!sock) return 0;
-  *sock = P99_LVAL(auth_sock const);
-  sock->fd = fd;
-  sock->srv = srv;
-  sock->len = len;
-  sock->remoteorder = remo;
-  sock->mes = len ? uint64_t_vnew(len) : P99_0(uint64_t*);
-  sock->back = sock->mes;
+  *sock = P99_LVAL(auth_sock const,
+                   .fd = fd,
+                   .srv = srv,
+                   .len = len,
+                   .remoteorder = remo,
+                   .mes = (!m && len) ? uint64_t_vnew(len) : m,
+                   .det = det,
+                   );
+  sock->back = (!m && len) ? sock->mes : 0;
   return sock;
 }
 

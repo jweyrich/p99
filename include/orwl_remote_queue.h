@@ -49,7 +49,7 @@
  **/
 struct orwl_mirror {
   pthread_mutex_t mut;  /**< control access during insertion */
-  orwl_endpoint here;   /**< the local endpoint to which we report */
+  orwl_server* srv;   /**< the local endpoint to which we report */
   orwl_endpoint there;  /**< the remote that centralizes the order */
   orwl_wq local;        /**< the local queue that interfaces the
                            remote */
@@ -60,16 +60,16 @@ DECLARE_ONCE(orwl_mirror);
 /**
  ** @memberof orwl_mirror
  **/
-#define ORWL_MIRROR_INITIALIZER(HERE, THERE) {                 \
+#define ORWL_MIRROR_INITIALIZER(SRV, THERE) {                 \
 .mut = PTHREAD_MUTEX_INITIALIZER,                              \
   .local = ORWL_WQ_INITIALIZER,                                \
-  .here = HERE,                                                \
+  .srv = SRV,                                                \
   .there = THERE,                                              \
   }
 
 #ifndef DOXYGEN
 inline
-P99_PROTOTYPE(orwl_mirror *, orwl_mirror_init, orwl_mirror *, orwl_endpoint, orwl_endpoint);
+P99_PROTOTYPE(orwl_mirror *, orwl_mirror_init, orwl_mirror *, orwl_server*, orwl_endpoint);
 
 #define orwl_mirror_init(...) P99_CALL_DEFARG(orwl_mirror_init, 3, __VA_ARGS__)
 #endif
@@ -78,23 +78,22 @@ DOCUMENT_INIT(orwl_mirror)
 P99_DEFARG_DOCU(orwl_mirror_init)
 inline
 orwl_mirror *orwl_mirror_init(orwl_mirror *rq, /*!< [out] the object to iniialize */
-                              orwl_endpoint h, /*!< [in] local, defaults to a temp variable */
+                              orwl_server *srv, /*!< [in] local, defaults to a temp variable */
                               orwl_endpoint t  /*!< [in] remote, defaults to a temp variable */
                               ) {
   if (rq)
-    *rq = (orwl_mirror const)ORWL_MIRROR_INITIALIZER(h, t);
+    *rq = (orwl_mirror const)ORWL_MIRROR_INITIALIZER(srv, t);
   return rq;
 }
 
 P99_DECLARE_DEFARG(orwl_mirror_init, , , );
-#define orwl_mirror_init_defarg_1() P99_LVAL(orwl_endpoint, .index = 0 )
+#define orwl_mirror_init_defarg_1() P99_0(orwl_server*)
 #define orwl_mirror_init_defarg_2() P99_LVAL(orwl_endpoint, .index = 0 )
 
 DOCUMENT_DESTROY(orwl_mirror)
 inline
 void orwl_mirror_destroy(orwl_mirror *rq) {
   orwl_wq_destroy(&rq->local);
-  orwl_endpoint_destroy(&rq->here);
   orwl_endpoint_destroy(&rq->there);
 }
 

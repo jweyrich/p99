@@ -65,7 +65,7 @@ void orwl_server_close(orwl_server *serv) {
 
 
 void orwl_server_terminate(orwl_server *serv) {
-  if (serv) orwl_send(&serv->host.ep, seed_get(), 0, P99_0(uint64_t*));
+  if (serv) orwl_send(0, &serv->host.ep, seed_get(), 0, P99_0(uint64_t*));
 }
 
 void orwl_server_destroy(orwl_server *serv) {

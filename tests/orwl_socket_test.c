@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 
     /* wait until the other side is up. */
     /* ep.port is already in host order */
-    while (orwl_rpc(&other, &seed, auth_sock_insert_peer, port2host(&srv.host.ep.port))
+    while (orwl_rpc(0, &other, &seed, auth_sock_insert_peer, port2host(&srv.host.ep.port))
            == P99_TMAX(uint64_t)) {
       if (!orwl_alive(&srv)) break;
       sleepfor(0.2);
@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
         }
         report(1, "sending to %s ", orwl_endpoint_print(&other));
         /* ep.addr and ep.port are already in host order */
-        orwl_rpc(&other, &seed, auth_sock_do_nothing,
+        orwl_rpc(0, &other, &seed, auth_sock_do_nothing,
                  srv.host.ep.addr.a[3], srv.host.ep.port.p, t);
       }
     }

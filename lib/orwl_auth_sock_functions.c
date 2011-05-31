@@ -19,11 +19,13 @@
 
 DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
   AUTH_SOCK_READ(Arg, auth_sock_insert_peer, uint64_t port);
-  orwl_host *h = P99_NEW(orwl_host);
-  /* mes and addr_t is already in host order */
-  h->ep.addr = getpeer(Arg);
-  h->ep.port.p = htons((uint16_t)port);
-  orwl_host_connect(h, &Arg->srv->host);
+  if (Arg->fd != -1) {
+    orwl_host *h = P99_NEW(orwl_host);
+    /* mes and addr_t is already in host order */
+    h->ep.addr = getpeer(Arg);
+    h->ep.port.p = htons((uint16_t)port);
+    orwl_host_connect(h, &Arg->srv->host);
+  }
 }
 
 DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port) {
@@ -73,7 +75,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, ui
           report(false, "adding suplement of length %zu", extend);
           memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
         }
-        orwl_send(&ep, seed_get(), len, mess);
+        orwl_send(Arg->srv, &ep, seed_get(), len, mess);
         uint64_t_vdelete(mess);
       }
     } else {
@@ -118,6 +120,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
     } else {
       orwl_endpoint ep = { .addr = getpeer(Arg), .port = host2port(port) };
       /* Acknowledge the creation of the wh and send back its ID. */
+      report(0, "inclusive request (%p) 0x%jx 0x%jx, detaching", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
       Arg->ret = (uintptr_t)srv_wh;
       auth_sock_close(Arg);
       /* If now the local handle is `requested' we only have to wait if
@@ -152,7 +155,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
             report(false, "adding suplement of length %zu", extend);
             memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
           }
-          orwl_send(&ep, seed_get(), len, mess);
+          orwl_send(Arg->srv, &ep, seed_get(), len, mess);
           uint64_t_vdelete(mess);
         }
       }

@@ -24,16 +24,16 @@ DEFINE_ONCE(orwl_handle, orwl_mirror, orwl_wh) {
   // empty
 }
 
-P99_INSTANTIATE(orwl_mirror*, orwl_mirror_init, orwl_mirror*, orwl_endpoint, orwl_endpoint);
+P99_INSTANTIATE(orwl_mirror*, orwl_mirror_init, orwl_mirror*, orwl_server*, orwl_endpoint);
 P99_INSTANTIATE(void, orwl_mirror_destroy, orwl_mirror*);
 
 DEFINE_NEW_DELETE(orwl_mirror);
 
 void orwl_mirror_connect(orwl_mirror *rq, orwl_server* srv, orwl_endpoint endp) {
-  orwl_mirror_init(rq, srv->host.ep, endp);
+  orwl_mirror_init(rq, srv, endp);
   /* wait until the other side is up. */
   /* ep.port is already in host order */
-  while (orwl_rpc(&endp, seed_get(), auth_sock_insert_peer, port2host(&srv->host.ep.port))
+  while (orwl_rpc(srv, &endp, seed_get(), auth_sock_insert_peer, port2host(&srv->host.ep.port))
          == P99_TMAX(uint64_t)) {
     if (!orwl_alive(srv)) break;
     sleepfor(0.02);
@@ -63,10 +63,10 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
         /* Send the insertion request with the id of cli_wh to the other
            side. As result retrieve the ID on the other side that is to be
            released when we release here. */
-        rh->svrID = orwl_rpc(&rq->there, seed, auth_sock_write_request,
+        rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, auth_sock_write_request,
                              rq->there.index,
                              (uintptr_t)cli_wh,
-                             port2host(&rq->here.port)
+                             port2host(&rq->srv->host.ep.port)
                              );
         if (rh->svrID && (rh->svrID != ORWL_SEND_ERROR)) {
           /* Link us to rq */
@@ -107,11 +107,11 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
          considered a new request, and the svrID that was memorized on
          wh_inc, if any. As result retrieve the ID on the other side
          that is to be released when we release here. */
-      rh->svrID = orwl_rpc(&rq->there, seed, auth_sock_read_request,
+      rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, auth_sock_read_request,
                            rq->there.index,
                            (uintptr_t)cli_wh,
                            wh_inc ? wh_inc->svrID : 0,
-                           port2host(&rq->here.port)
+                           port2host(&rq->srv->host.ep.port)
                            );
       if (!rh->svrID) {
         state = orwl_invalid;
@@ -194,11 +194,12 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   assert(rh->wh);
   /* To be able to re-initialize rh in the middle of the procedure,
      store all necessary data on the stack.*/
-  orwl_wh* wh = rh->wh;
-  orwl_mirror* rq = rh->rq;
-  uint64_t svrID = rh->svrID;
-  orwl_endpoint there = rq->there;
-  orwl_wq* wq = wh->location;
+  orwl_wh* const wh = rh->wh;
+  orwl_mirror*const rq = rh->rq;
+  uint64_t const svrID = rh->svrID;
+  orwl_server *srv = rq->srv;
+  orwl_endpoint const there = rq->there;
+  orwl_wq*const wq = wh->location;
   /* If we are the last that holds this handle we have to prepare the
      buffer for the return message while we hold the inner lock. */
   uint64_t* mess = 0;
@@ -232,7 +233,7 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     state = orwl_wh_release(wh);
     orwl_handle_init(rh);
     pthread_mutex_unlock(&rq->mut);
-    orwl_send(&there, seed, len, mess);
+    orwl_send(srv, &there, seed, len, mess);
     /* We should be the last to have a reference to this handle so
        we may destroy it. */
     orwl_wh_delete(wh);

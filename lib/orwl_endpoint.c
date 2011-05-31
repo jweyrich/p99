@@ -17,6 +17,7 @@
 #include "orwl_socket.h"
 #include "orwl_header.h"
 #include "orwl_endpoint.h"
+#include "orwl_server.h"
 
 orwl_endpoint* orwl_endpoint_init
      (orwl_endpoint *endpoint,
@@ -143,84 +144,105 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
  **   thread -> caller [label="orwl_recv_(ret)", URL="\ref orwl_recv_()"];
  ** @endmsc
  **/
-uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t*const mess) {
+uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed, size_t len, uint64_t*const mess) {
   uint64_t ret = 0;
-  /* do all this work before opening the socket */
-  uint64_t const chal = orwl_rand64(seed);
-  uint64_t const repl = orwl_challenge(chal);
-  header_t header = HEADER_T_INITIALIZER(chal);
-  struct sockaddr_in addr = {
-    .sin_addr = addr2net(&ep->addr),
-    .sin_port = port2net(&ep->port),
-    .sin_family = AF_INET
-  };
-  if (P99_UNLIKELY(!repl)) {
-    report(1, "cannot send without a secret\n");
-    return ORWL_SEND_ERROR;
-  }
-
-  int const fd = socket(AF_INET, SOCK_STREAM, 0);
-  if (P99_UNLIKELY(fd < 0)) {
-    P99_HANDLE_ERRNO {
-    default:
-      perror("orwl_send could not open socket");
+  /* We use a remote connection if either the local server address is
+     not known or we see that the endpoint "there" is actually on
+     server "srv" */
+  if (!srv || !orwl_endpoint_similar(&srv->host.ep, there)) {
+    /* do all this work before opening the socket */
+    uint64_t const chal = orwl_rand64(seed);
+    uint64_t const repl = orwl_challenge(chal);
+    header_t header = HEADER_T_INITIALIZER(chal);
+    struct sockaddr_in addr = {
+      .sin_addr = addr2net(&there->addr),
+      .sin_port = port2net(&there->port),
+      .sin_family = AF_INET
+    };
+    if (P99_UNLIKELY(!repl)) {
+      report(1, "cannot send without a secret\n");
+      return ORWL_SEND_ERROR;
     }
-    return ORWL_SEND_ERROR;
-  }
 
-  /* Now that we have a valid file descriptor, protect its closing. */
-  P99_UNWIND_PROTECT {
-    bool volatile success = false;
-    /* connect and do a challenge / receive authentication with the
-       other side */
-    for (unsigned tries = 0; tries < 10; ++tries) {
-      if (P99_UNLIKELY(connect(fd, (struct sockaddr*)&addr, sizeof(addr)))) {
-        P99_HANDLE_ERRNO {
-        default:
-          perror("orwl_send could not connect socket");
-          report(1, "address is %s", orwl_endpoint_print(ep));
-        }
-        if (tries < 10) sleepfor(1E0);
-        else P99_UNWIND_RETURN ORWL_SEND_ERROR;
-      } else break;
-    }
-    if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0) || orwl_recv_(fd, header, header_t_els, 0))) {
+    int const fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (P99_UNLIKELY(fd < 0)) {
       P99_HANDLE_ERRNO {
       default:
-        perror("orwl_send could not exchange challenge");
+        perror("orwl_send could not open socket");
       }
-      P99_UNWIND_RETURN ORWL_SEND_ERROR;
+      return ORWL_SEND_ERROR;
     }
 
-    /* The communication was successful */
-    if (P99_LIKELY(header[1] == repl)) {
-      /* The other side is authorized. Send the answer and the size of
-         the message to the other side. */
-      header[1] = orwl_challenge(header[0]);
-      header[0] = len;
-      if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
-      /* The authorized empty message indicates termination.
-         If not so, we now send the real message. */
-      if (len) {
-        if (P99_UNLIKELY(orwl_send_(fd, mess, len, header[2]))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
-        /* Receive a final message, until the other end closes the
-           connection. */
-        if (P99_UNLIKELY(orwl_recv_(fd, header, header_t_els, header[2])))
-          report(1, "terminal reception not successful\n");
-        else
-          ret = header[0];
+    /* Now that we have a valid file descriptor, protect its closing. */
+    P99_UNWIND_PROTECT {
+      bool volatile success = false;
+      /* connect and do a challenge / receive authentication with the
+         other side */
+      for (unsigned tries = 0; tries < 10; ++tries) {
+        if (P99_UNLIKELY(connect(fd, (struct sockaddr*)&addr, sizeof(addr)))) {
+          P99_HANDLE_ERRNO {
+          default:
+            perror("orwl_send could not connect socket");
+            report(1, "address is %s", orwl_endpoint_print(there));
+          }
+          if (tries < 10) sleepfor(1E0);
+          else P99_UNWIND_RETURN ORWL_SEND_ERROR;
+        } else break;
       }
-      success = true;
-    } else  {
-      /* The other side is not authorized. Terminate. */
-      diagnose(fd, "fd %d, you are not who you pretend to be", fd);
-      header[1] = 0;
-      header[0] = 0;
-      if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+      if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0) || orwl_recv_(fd, header, header_t_els, 0))) {
+        P99_HANDLE_ERRNO {
+        default:
+          perror("orwl_send could not exchange challenge");
+        }
+        P99_UNWIND_RETURN ORWL_SEND_ERROR;
+      }
+
+      /* The communication was successful */
+      if (P99_LIKELY(header[1] == repl)) {
+        /* The other side is authorized. Send the answer and the size of
+           the message to the other side. */
+        header[1] = orwl_challenge(header[0]);
+        header[0] = len;
+        if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+        /* The authorized empty message indicates termination.
+           If not so, we now send the real message. */
+        if (len) {
+          if (P99_UNLIKELY(orwl_send_(fd, mess, len, header[2]))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+          /* Receive a final message, until the other end closes the
+             connection. */
+          if (P99_UNLIKELY(orwl_recv_(fd, header, header_t_els, header[2])))
+            report(1, "terminal reception not successful\n");
+          else
+            ret = header[0];
+        }
+        success = true;
+      } else  {
+        /* The other side is not authorized. Terminate. */
+        diagnose(fd, "fd %d, you are not who you pretend to be", fd);
+        header[1] = 0;
+        header[0] = 0;
+        if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+      }
+    P99_PROTECT:
+      close(fd);
+      if (!success) report(1, "send request didn't succeed");
     }
-  P99_PROTECT:
-    close(fd);
-    if (!success) report(1, "send request didn't succeed");
+  } else {
+    /* This is supposed to be a local connection, directly create the
+       thread without going through the server socket. */
+    orwl_thread_cntrl* det =  P99_NEW(orwl_thread_cntrl);
+    auth_sock *sock = P99_NEW(auth_sock,
+                              -1, srv, len, ,
+                              mess,
+                              det);
+    auth_sock_launch(sock, det);
+    if (srv->info && srv->info_len) progress(1, (uintptr_t)sock, "%s", srv->info);
+    /* Wait that the caller has copied the message and returned the
+       control information, and tell him in turn that we have read the
+       result. */
+    orwl_thread_cntrl_wait_for_callee(det);
+    ret = sock->ret;
+    orwl_thread_cntrl_detach(det);
   }
   return ret;
 }

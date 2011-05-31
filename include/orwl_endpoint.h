@@ -285,7 +285,7 @@ bool orwl_recv_(int fd, uint64_t *mess, size_t len, uint64_t remo);
 /**
  ** @memberof orwl_endpoint
  **/
-uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t*const mess);
+uint64_t orwl_send(orwl_server* srv, orwl_endpoint const* there, rand48_t *seed, size_t len, uint64_t*const mess);
 
 /**
  ** @brief Lauch a remote procedure call with function @a F.
@@ -301,7 +301,7 @@ uint64_t orwl_send(orwl_endpoint const* ep, rand48_t *seed, size_t len, uint64_t
  **   thread->main [label="pthread_exit()"];
  ** @endmsc
  **/
-#define orwl_rpc(EP, SEED, F, ...)                                            \
-orwl_send(EP, SEED, P99_LENGTH_ARR_ARG(uint64_t, ORWL_OBJID(F), __VA_ARGS__))
+#define orwl_rpc(SRV, THERE, SEED, F, ...)                                   \
+orwl_send(SRV, THERE, SEED, P99_LENGTH_ARR_ARG(uint64_t, ORWL_OBJID(F), __VA_ARGS__))
 
 #endif 	    /* !ORWL_ENDPOINT_H_ */

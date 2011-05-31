@@ -328,7 +328,7 @@ void rpc_check_colored_init_finished(size_t id,
 				     rand48_t *seed) {
   orwl_endpoint there = ab->eps[id];
   /* warning, this is a blocking operation */
-  orwl_rpc(&there, seed, auth_sock_check_initialization, id);
+  orwl_rpc(0, &there, seed, auth_sock_check_initialization, id);
 }
 
 size_t orwl_get_neighbors_in_undirected_graph(orwl_vertex **my_neighbors,

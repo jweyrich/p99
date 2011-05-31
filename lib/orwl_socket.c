@@ -113,35 +113,49 @@ P99_INSTANTIATE(auth_sock*, auth_sock_init, auth_sock *,
                                   int,
                                   orwl_server*,
                           size_t,
-                          uint64_t);
+                uint64_t,
+                uint64_t*,
+                orwl_thread_cntrl*);
 
 void auth_sock_close(auth_sock *sock) {
-  /* Ack the termination of the call */
-  header_t header = HEADER_T_INITIALIZER(sock->ret);
-  orwl_send_(sock->fd, header, header_t_els, sock->remoteorder);
-  /* Since we are doing blocking send / receive the probability that
-     we have a walking duplicate of an ancient package is
-     minimal. Thus allow the reuse of ports. */
-  if (setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, &P99_LVAL(int const, 1), sizeof(int)) < 0)
-    P99_HANDLE_ERRNO {
-    P99_XDEFAULT :
-      perror("setting socket to SO_REUSEADDR failed");
-    }
-  if (setsockopt(sock->fd, SOL_SOCKET, SO_LINGER, &P99_LVAL(struct linger, .l_onoff = 1, .l_linger = 1), sizeof(struct linger)) < 0)
-    P99_HANDLE_ERRNO {
-    P99_XDEFAULT :
-      perror("setting socket to linger failed");
-    }
-  if (close(sock->fd) < 0)
-    P99_HANDLE_ERRNO {
-    P99_XDEFAULT :
-      perror("close on socket failed");
-    }
-  sock->fd = -1;
+  if (sock->is_detached) return;
+  report(0, "detaching %p", (void*)sock);
+  if (sock->det) {
+    /* This thread is launched locally. */
+    orwl_thread_cntrl_freeze(sock->det);
+  } else {
+    /* Ack the termination of the call */
+    header_t header = HEADER_T_INITIALIZER(sock->ret);
+    orwl_send_(sock->fd, header, header_t_els, sock->remoteorder);
+    /* Since we are doing blocking send / receive the probability that
+       we have a walking duplicate of an ancient package is
+       minimal. Thus allow the reuse of ports. */
+    if (setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, &P99_LVAL(int const, 1), sizeof(int)) < 0)
+      P99_HANDLE_ERRNO {
+      P99_XDEFAULT :
+        perror("setting socket to SO_REUSEADDR failed");
+      }
+    if (setsockopt(sock->fd, SOL_SOCKET, SO_LINGER, &P99_LVAL(struct linger, .l_onoff = 1, .l_linger = 1), sizeof(struct linger)) < 0)
+      P99_HANDLE_ERRNO {
+      P99_XDEFAULT :
+        perror("setting socket to linger failed");
+      }
+    if (close(sock->fd) < 0)
+      P99_HANDLE_ERRNO {
+      P99_XDEFAULT :
+        perror("close on socket failed");
+      }
+    sock->fd = -1;
+  }
+  sock->is_detached = true;
 }
 
 void auth_sock_destroy(auth_sock *sock) {
-  if (sock->fd != -1) auth_sock_close(sock);
+  auth_sock_close(sock);
+  if (sock->det) {
+    orwl_thread_cntrl_wait_for_caller(sock->det);
+    orwl_thread_cntrl_delete(sock->det);
+  }
   if (sock->back) uint64_t_vdelete(sock->back);
   auth_sock_init(sock);
 }
@@ -156,12 +170,15 @@ void server_callback(auth_sock* Arg) {
 
 DEFINE_THREAD(auth_sock) {
   assert(Arg->mes);
-  if (!orwl_recv_(Arg->fd, Arg->mes, Arg->len, Arg->remoteorder))
-    if (Arg->srv) {
-      /* do something with mess here */
-      server_callback(Arg);
-    }
-  if (Arg->fd != -1) auth_sock_close(Arg);
+  report(0, "starting %p", (void*)Arg);
+  if (Arg->fd == -1
+      || (!orwl_recv_(Arg->fd, Arg->mes, Arg->len, Arg->remoteorder)
+          && Arg->srv)) {
+    /* do something with mess here */
+    server_callback(Arg);
+  }
+  auth_sock_close(Arg);
+  report(0, "ending %p", (void*)Arg);
 }
 
 
