@@ -33,15 +33,23 @@
  **
  ** Use the corresponding function from ::DECLARE_NEW to free a
  ** variable that you have such allocated.
+ **
+ ** Other arguments after the type argument are interpreted as storage
+ ** class specifier for the functions. Default is @c inline.
  ** @see DECLARE_NEW_DELETE
  **/
-#define DECLARE_DELETE(T)                                                                                   \
+#define DECLARE_DELETE(...)                     \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
+(DECLARE_DELETE_(__VA_ARGS__, inline))          \
+(DECLARE_DELETE_(__VA_ARGS__))
+
+#define DECLARE_DELETE_(T, ...)                                                                             \
 /*! @brief Operator @c delete for type T   **/                                                              \
   /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T * argument **/ \
   /*! @attention @a el show have been allocated through P99_NEW */                                          \
   /*! @see P99_NEW */                                                                                       \
   /*! @memberof T */                                                                                        \
-inline                                                                                                      \
+__VA_ARGS__                                                                                                 \
 void P99_PASTE2(T, _delete)(T const*el) {                                                                   \
   if (el) {                                                                                                 \
     T* e = (T*)el;                                                                                          \
@@ -86,9 +94,17 @@ struct o_rwl_vheader {
  **  - ..._vrealloc that combines both in the spirit of @c realloc
  **  - ..._delete that deletes an individual item
  ** @see P99_NEW for a macro that allocates and intializes
+ **
+ ** Other arguments after the type argument are interpreted as storage
+ ** class specifier for the functions. Default is @c inline.
  **/
-#define DECLARE_NEW_DELETE(T)                                                                                        \
-DECLARE_DELETE(T)                                                                                                    \
+#define DECLARE_NEW_DELETE(...)                 \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
+(DECLARE_NEW_DELETE_(__VA_ARGS__, inline))      \
+(DECLARE_NEW_DELETE_(__VA_ARGS__))
+
+#define DECLARE_NEW_DELETE_(T, ...)                                                                                  \
+DECLARE_DELETE(T, __VA_ARGS__)                                                                                       \
 /*! @brief Reallocation operator for type T **/                                                                      \
 /*! Semantics are similar as for @c realloc. That is **/                                                             \
 /*!  - if @a n is @c 0, this frees the allocated space **/                                                           \
@@ -99,7 +115,7 @@ DECLARE_DELETE(T)                                                               
 /*! @attention @ref T ## _init  is supposed to exist and to be callable with just one T* argument **/                \
 /*! @attention @ref T ## _realloc @b must have been used to allocate @a p if it is non-null **/                      \
 /*! @memberof T */                                                                                                   \
-inline                                                                                                               \
+__VA_ARGS__                                                                                                          \
 T *P99_PASTE2(T, _vrealloc)(T* p, size_t const n) {                                                                  \
   if (P99_UNLIKELY(!p && !n)) return 0;                                                                              \
   size_t o = 0;                                                                                                      \
@@ -132,7 +148,7 @@ T *P99_PASTE2(T, _vrealloc)(T* p, size_t const n) {                             
   /*! @attention @ref T ## _init  is supposed to exist and to be callable with just one T* argument **/              \
   /*! @attention @ref T ## _vdelete @b must be used to de-allocate such a variable **/                               \
   /*! @memberof T */                                                                                                 \
-inline                                                                                                               \
+__VA_ARGS__                                                                                                          \
 T *P99_PASTE2(T, _vnew)(size_t n) {                                                                                  \
   return P99_PASTE2(T, _vrealloc)(0, n);                                                                             \
 }                                                                                                                    \
@@ -140,15 +156,18 @@ T *P99_PASTE2(T, _vnew)(size_t n) {                                             
   /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T* argument **/           \
   /*! @attention @ref T ## _vnew @b must have been used to allocate this variable **/                                \
   /*! @memberof T */                                                                                                 \
-inline                                                                                                               \
+__VA_ARGS__                                                                                                          \
 void P99_PASTE2(T, _vdelete)(T const*vec) {                                                                          \
   P99_PASTE2(T, _vrealloc)((T*)vec, 0);                                                                              \
 }                                                                                                                    \
 P99_MACRO_END(DECLARE_NEW_DELETE_, T)
 
-#define DEFINE_DELETE(T) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)
+#define DEFINE_DELETE(...) DEFINE_DELETE_(__VA_ARGS__,)
+#define DEFINE_DELETE_(T, ...) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)
 
-#define DEFINE_NEW_DELETE(T)                                     \
+#define DEFINE_NEW_DELETE(...) DEFINE_NEW_DELETE_(__VA_ARGS__,)
+
+#define DEFINE_NEW_DELETE_(T, ...)                               \
 P99_INSTANTIATE(T*, P99_PASTE2(T, _vnew), size_t);               \
 P99_INSTANTIATE(T*, P99_PASTE2(T, _vrealloc), T* old, size_t n); \
 P99_INSTANTIATE(void, P99_PASTE2(T, _vdelete), T const*);        \
