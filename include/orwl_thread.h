@@ -123,15 +123,107 @@ DECLARE_ONCE(pthread_mutex_t);
 DECLARE_ONCE(pthread_cond_t);
 DECLARE_ONCE(pthread_rwlock_t);
 
+P99_DECLARE_STRUCT(orwl_thread_cntrl);
+
 /**
- ** @brief Internal interface to pthread_create() for joinable threads.
+ ** @brief A structure that holds temporary state for detached threads.
+ **
+ ** This implements an execution model where a newly launched thread
+ ** will still interact with its launcher through some shared data D.
+ ** - When launched the callee has write access to D. It can use D to
+ **   communicate some information to the caller. Once it has finished
+ **   with that write access, it calls ::orwl_thread_cntrl_freeze to
+ **   tell the caller. After that D must only be considered readable
+ **   and not writable anymore.
+ ** - Before the caller can read the modified D it has to call
+ **   ::orwl_thread_cntrl_wait_for_callee which blocks until the
+ **   caller has given up the write access. Once it has read the
+ **   information from D that it needs it calls ::orwl_thread_cntrl_detach
+ **   to tell the caller that D can be safely destroyed.
+ ** - Before the callee destroys D and exits it has to call
+ **   ::orwl_thread_cntrl_wait_for_caller to be sure that D is not
+ **   needed anymore.
+ ** All these functions should mostly act asynchronously such that the
+ ** overhead of this procedure is minimized. Therefore the times
+ ** - of the callee between startup and freeze
+ ** - of the caller between wait and detach
+ ** should be held as short as possible.
+ **/
+struct orwl_thread_cntrl {
+  orwl_sem semCaller;
+  orwl_sem semCallee;
+};
+
+/**
+ ** @memberof orwl_thread_cntrl
+ **/
+inline
+orwl_thread_cntrl* orwl_thread_cntrl_init(orwl_thread_cntrl* det) {
+  if (det) {
+    orwl_sem_init(&det->semCaller, 0u);
+    orwl_sem_init(&det->semCallee, 0u);
+  }
+  return det;
+}
+
+/**
+ ** @memberof orwl_thread_cntrl
+ **/
+inline
+void orwl_thread_cntrl_destroy(orwl_thread_cntrl* det) {
+  /* empty */
+}
+
+/**
+ ** @memberof orwl_thread_cntrl
+ **/
+inline
+void orwl_thread_cntrl_freeze(orwl_thread_cntrl* det) {
+  orwl_sem_post(&det->semCallee);
+}
+
+/**
+ ** @memberof orwl_thread_cntrl
+ **/
+inline
+void orwl_thread_cntrl_detach(orwl_thread_cntrl* det) {
+  orwl_sem_post(&det->semCaller);
+}
+
+/**
+ ** @memberof orwl_thread_cntrl
+ **/
+inline
+void orwl_thread_cntrl_wait_for_caller(orwl_thread_cntrl* det) {
+  orwl_sem_wait(&det->semCaller);
+}
+
+/**
+ ** @memberof orwl_thread_cntrl
+ **/
+inline
+void orwl_thread_cntrl_wait_for_callee(orwl_thread_cntrl* det) {
+  orwl_sem_wait(&det->semCallee);
+}
+
+DECLARE_NEW_DELETE(orwl_thread_cntrl);
+
+/**
+ ** @brief Interface to pthread_create() for joinable threads.
  **/
 extern int orwl_pthread_create_joinable(pthread_t *restrict thread,
                                         start_routine_t start_routine,
                                         void *restrict arg);
 
 /**
- ** @brief Internal interface to pthread_create() for detached threads.
+ ** @brief Interface to pthread_create() for detached threads.
+ **/
+extern int orwl_pthread_launch(start_routine_t start_routine,
+                                      void *restrict arg,
+                                      orwl_thread_cntrl* det);
+
+/**
+ ** @brief Interface to pthread_create() for detached threads.
  **/
 extern int orwl_pthread_create_detached(start_routine_t start_routine,
                                         void *restrict arg);
@@ -266,7 +358,15 @@ T* P99_PASTE2(T, _join)(pthread_t id);                                          
 /*! @memberof T */                                                                                        \
 /*! @param arg the T object for this call that will be passed to \ref T ## _start */                      \
 /*! @warning The argument @a arg should not be modified by the caller, hereafter. */                      \
-int P99_PASTE2(T, _create_detached)(T* arg)
+int P99_PASTE2(T, _create_detached)(T* arg);                                                              \
+/*! @brief Launch a thread for type T and wait until it detaches */                                       \
+/*! @memberof T */                                                                                        \
+/*! @param arg the T object for this call that will be passed to \ref T ## _start */                      \
+/*! @param det is used by callee and caller to regulate the start up phase \ref T ## _start */            \
+/*! @warning The argument @a arg should not be modified by the caller. */                                 \
+/*! @warning It may be modified by the callee until he calls ::orwl_thread_cntrl_freeze. */               \
+/*! @see orwl_thread_cntrl */                                                                             \
+inline int P99_PASTE2(T, _launch)(T* arg, orwl_thread_cntrl* det)
 #else
 #define DECLARE_THREAD(T)                                                         \
 void P99_PASTE2(T, _start)(T* Arg);                                               \
@@ -292,6 +392,9 @@ inline int P99_PASTE2(T, _create_joinable)(T* arg, pthread_t *id) {             
 inline int P99_PASTE2(T, _create_detached)(T* arg) {                              \
   return orwl_pthread_create_detached(P99_PASTE2(T, _start_detached), arg);       \
 }                                                                                 \
+inline int P99_PASTE2(T, _launch)(T* arg, orwl_thread_cntrl* det) {               \
+  return orwl_pthread_launch(P99_PASTE2(T, _start_detached), arg, det);           \
+}                                                                                 \
 inline int P99_PASTE2(T, _create)(T* arg, pthread_t *id) {                        \
   if (id)                                                                         \
     return orwl_pthread_create_joinable(id, P99_PASTE2(T, _start_joinable), arg); \
@@ -304,6 +407,7 @@ P99_INSTANTIATE(T*, P99_PASTE2(T, _join), pthread_t);                  \
 P99_INSTANTIATE(int, P99_PASTE2(T, _create), T*, pthread_t*);          \
 P99_INSTANTIATE(int, P99_PASTE2(T, _create_joinable), T*, pthread_t*); \
 P99_INSTANTIATE(int, P99_PASTE2(T, _create_detached), T*);             \
+P99_INSTANTIATE(int, P99_PASTE2(T, _launch), T*, orwl_thread_cntrl*); \
 P99_INSTANTIATE(void*, P99_PASTE2(T, _start_joinable), void*);         \
 P99_INSTANTIATE(void*, P99_PASTE2(T, _start_detached), void*);         \
 void P99_PASTE2(T, _start)(T *const Arg)
