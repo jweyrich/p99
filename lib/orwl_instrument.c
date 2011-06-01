@@ -29,14 +29,14 @@ orwl_state instr_orwl_test2(orwl_handle2* rh2, size_t flag) {
   return orwl_test2(rh2);
 }
 
-uint64_t* instr_orwl_map2(orwl_handle2* rh2, size_t* data_len, size_t flag) {
-  return orwl_map2(rh2, data_len);
+void* instr_orwl_write_map2(orwl_handle2* rh2, size_t data_len, size_t flag) {
+  return orwl_write_map2(rh2);
 }
 
-uint64_t const* instr_orwl_mapro2(orwl_handle2* rh2, size_t* data_len, size_t flag) {
-  return orwl_mapro2(rh2, data_len);
+void const* instr_orwl_read_map2(orwl_handle2* rh2, size_t data_len, size_t flag) {
+  return orwl_read_map2(rh2);
 }
 
-void instr_orwl_resize2(orwl_handle2* rh2, size_t data_len, size_t flag) {
-  return orwl_resize2(rh2, data_len);
+void instr_orwl_truncate2(orwl_handle2* rh2, size_t data_len, size_t flag) {
+  return orwl_truncate2(rh2, data_len);
 }
