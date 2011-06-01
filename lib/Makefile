@@ -32,7 +32,8 @@ SRC	=					\
 	orwl_time.c				\
 	orwl_types.c				\
 	orwl_wait_queue.c                       \
-	orwl_helpers.c
+	orwl_helpers.c                          \
+	orwl_instrument.c
 
 INCL  	=	# List of *.h
 

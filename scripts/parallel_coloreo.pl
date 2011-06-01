@@ -376,7 +376,7 @@ sub do_coloring($$$)
 {
     # graph index
     my ($start_i, $end_i, $threadID) = @ARG;
-    my @nodes = grep { defined{$graph[$_]} } ($start_i .. $end_i);
+    my @nodes = grep { defined($graph[$_]) } ($start_i .. $end_i);
     foreach my $node (
         sort {
             scalar @{$graph[$b]}
@@ -427,7 +427,7 @@ sub do_coloring($$$)
     # if a vertex is in a color_dispacher then it has a non-local guy
     foreach my $node (keys %color_dispacher) {
         my $cf;
-        my $color = get_colorID{$node};
+        my $color = get_colorID($node);
         foreach my $neigh (@{ $graph[$node] }) {
             # we can only have problem with non-local guys
             if (
@@ -644,7 +644,7 @@ sub make_output($)
     my %cols;
     foreach my $class (sort { $a <=> $b } keys %colors) {
         @{$colors{$class}} = sort { $a <=> $b } @{$colors{$class}};
-        for (my $i; $i < 3; ++$i) {
+        for (my $i = 0; $i < 3; ++$i) {
             $rgb[$i] += $dif[$i];
             $rgb[$i] &= 0xFF;
         }
@@ -653,6 +653,7 @@ sub make_output($)
         print $fd "/* ".scalar @{ $colors{$class} }." vertices with color $nj. Color $cols{$class}. */\n";
         ++$nj;
     }
+    print $fd $graphlist;
     foreach my $node (sort { $a <=> $b } keys %nom) {
         if ($number) {
             # Or output with numbers
@@ -666,7 +667,6 @@ sub make_output($)
         print $fd map { "$_=\"$nom{$node}->{$_}\"" } keys %{$nom{$node}};
         print $fd "]\n";
     }
-    print $fd $graphlist;
     print $fd "}\n";
 }
 
