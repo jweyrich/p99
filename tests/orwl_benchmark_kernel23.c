@@ -4,15 +4,15 @@
 #include "orwl_instrument.h"
 
 static orwl_server srv = P99_INIT;
-static orwl_graph *graph = NULL;
-static orwl_address_book *ab = NULL;
-static orwl_mirror *locations = NULL;
+static orwl_graph *graph = 0;
+static orwl_address_book *ab = 0;
+static orwl_mirror *locations = 0;
 static size_t shift_local_locations = 0;
-static rand48_t *seed = NULL;
+static rand48_t *seed = 0;
 static size_t count = 0;
 static size_t sub_matrix_size = 0;
 static size_t iterations = 0;
-static float **main_task_matrix = NULL;
+static float **main_task_matrix = 0;
 static size_t nb_main_tasks = 0;
 static size_t global_nb_tasks = 0;
 static size_t global_rows;
@@ -20,7 +20,7 @@ static size_t global_lines;
 static orwl_barrier init_barr;
 static struct random_data *rand_states;
 static char *rand_statebufs;
-static size_t *list_tasks = NULL;
+static size_t *list_tasks = 0;
 
 #define MAIN 0
 #define NORTH 1
@@ -256,11 +256,11 @@ void update_frontier(size_t id,
 		     size_t sub_task, 
 		     size_t main_task_pos, 
 		     orwl_handle2 *my_task_handle) {
-  float * shared_data = NULL;
+  float * shared_data = 0;
   size_t frontier_size = (sub_task < 5) ? sub_matrix_size - 2 : 1;
   
   shared_data = (float*)instr_orwl_map2(my_task_handle, &frontier_size, 0);
-  if (shared_data == NULL) {
+  if (shared_data == 0) {
     report(1, "fail to map memory on task %zu, %zu, %zu", id, frontier_size, sub_task);
     assert(0);
   }
@@ -303,12 +303,12 @@ void update_frontier(size_t id,
 DEFINE_THREAD(arg_t) {
   /* Some data declarations */
   bool has_neighbor[4] = {false};
-  float * za = NULL;
-  float * zb = NULL;
-  float * zu = NULL;
-  float * zr = NULL;
-  float * zv = NULL;
-  float * zz = NULL;
+  float * za = 0;
+  float * zb = 0;
+  float * zu = 0;
+  float * zr = 0;
+  float * zv = 0;
+  float * zz = 0;
   orwl_handle2 main_task_handle = ORWL_HANDLE2_INITIALIZER;
   orwl_handle2 my_task_handle = ORWL_HANDLE2_INITIALIZER;
   orwl_handle2 handle_distant_pos[12] = {ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER,
@@ -464,7 +464,7 @@ DEFINE_THREAD(arg_t) {
       }
 
 
-      float * shared_edge = NULL;
+      float * shared_edge = 0;
       size_t edge_frontier_size = (sub_matrix_size - 2) / 2;
       /* North computation */
       if (has_neighbor[NORTH - 1]) {
@@ -510,8 +510,8 @@ DEFINE_THREAD(arg_t) {
 	  }
       }
 
-      float * shared_corner1 = NULL;
-      float * shared_corner2 = NULL;
+      float * shared_corner1 = 0;
+      float * shared_corner2 = 0;
       size_t corner_frontier_size = 1;
 
       /* North east computation */
@@ -596,9 +596,9 @@ DEFINE_THREAD(arg_t) {
 unsigned strcountchr(char *str, const char *chr) {
   unsigned count = 0;
   char *ptr = str;
-  while (ptr != NULL) {
+  while (ptr != 0) {
     ptr = strchr(ptr, chr[0]);
-    if (ptr != NULL) {
+    if (ptr != 0) {
       count++;
       ptr = ptr + 1;
     }
@@ -608,18 +608,18 @@ unsigned strcountchr(char *str, const char *chr) {
 
 unsigned get_task(char const *str, size_t list_id[], const char *delim) {
   unsigned count = 0;
-  char *token = NULL;
+  char *token = 0;
   char *tmp = strdup(str);
-  char *saveptr = NULL;
+  char *saveptr = 0;
   if (strcountchr(tmp, delim) > 0) {
     token = strtok_r(tmp, &delim[0], &saveptr);
-    while (token != NULL) {
+    while (token != 0) {
       size_t main_task = str2uz(token);
       for (size_t i = 0 ; i < 9 ; i++) {
 	list_id[count] = main_task + i;	
 	count++;
       }
-      token = strtok_r(NULL, &delim[0], &saveptr);
+      token = strtok_r(P99_0(char*), &delim[0], &saveptr);
     }
   } else {
     /* if no separator is found, there is only one main task */
