@@ -115,8 +115,8 @@ T *P99_PASTE2(T, _vrealloc)(T* p, size_t const n) {                             
     }                                                                                                                \
   }                                                                                                                  \
   /* From here on n is not 0. */                                                                                     \
-  size_t N = n*sizeof(T);                                                                                            \
-  p00_vheader* headn = P00_FREALLOC(head, p00_vheader, data, N);                                                     \
+  size_t p00_N = n*sizeof(T);                                                                                        \
+  p00_vheader* headn = P00_FREALLOC(head, p00_vheader, data, p00_N);                                                 \
   if (P99_LIKELY(!!headn)) {                                                                                         \
     head = headn;                                                                                                    \
     p = P00_VDATA(head);                                                                                             \
@@ -125,7 +125,7 @@ T *P99_PASTE2(T, _vrealloc)(T* p, size_t const n) {                             
   } else                                                                                                             \
     /* even if realloc fails we still might have a good value for p if we were trying to shorten the array. */       \
     if (o < n) return 0;                                                                                             \
-  P00_VLENG(head) = N;                                                                                               \
+  P00_VLENG(head) = p00_N;                                                                                           \
   return p;                                                                                                          \
 }                                                                                                                    \
 /*! @brief Operator @c new[] for type T   **/                                                                        \

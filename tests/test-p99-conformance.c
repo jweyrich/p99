@@ -1,4 +1,4 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
+/* This may look like nonsense, but it really is -*- mode: C; coding: utf-8 -*- */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
@@ -184,14 +184,25 @@ char const has_stringify_empty[] = STRINGIFY();
 /* expand arguments after assigment, but before call */
 # define COMMA ,
 # define GLUE1(X) GLUE2(X)
+# define CONCAT3(A, B, C) GLUE2(A, B C)
+# define GLUE3(A, B, C) A ## B ## C
 unsigned has_determines_macro_arguments_first[GLUE1(0 COMMA 1)];
 
-/* Expand args before ## concatenation */
+/* Expand args before ## concatenation? The rules for this are
+   subtle. */
 # define EATEAT 0
 # define EAT 1
 enum { CONCAT2(eat, GLUE2(EAT, EAT)) = GLUE2(EAT, EAT),
-       CONCAT2(eat, CONCAT2(EAT, EAT)) = CONCAT2(EAT, EAT)};
-unsigned has_expands_args_before_concatenation[eat11] = { eat0 };
+       CONCAT2(eat, CONCAT2(EAT, EAT)) = CONCAT2(EAT, EAT),
+       /* Only replace the empty argument by a placeholder if it is
+          preceded or followed by a ## in the replacement text. */
+       eat2 = CONCAT3(EAT,,EAT),
+       eat3 = GLUE3(EAT,,EAT),
+};
+unsigned has_preprocessor_expands_before_concatenation1[(eat0 == 0)*2 - 1] = { eat0 };
+unsigned has_preprocessor_expands_before_concatenation2[(eat11 == 11)*2 - 1] = { eat0 };
+unsigned has_preprocessor_no_placeholder_on_recursion[(eat2 == 11)*2 - 1] = { eat0 };
+unsigned has_preprocessor_placeholder[(eat3 == 0)*2 - 1] = { eat0 };
 #endif
 
 #ifndef SKIP_TRAILING_COMMA
@@ -304,11 +315,6 @@ long double has_long_double = 1.0L;
 #endif
 
 #ifndef SKIP_PREPRO_ARITH
-# if (0, 1, -1) > 0
-#  error "this should be a negative value"
-# else
-unsigned const has_preprocessor_comma = 1;
-# endif
 # if (0 - 1) >= 0
 #  error "this should be a negative value"
 # else
@@ -334,12 +340,15 @@ unsigned const has_preprocessor_bitneg = 1;
 # endif
 unsigned has_preprocessor_uintmax;
 # if (1 ? -1 : 0U) < 0
-#  error "ternary operator should promote to unsigned value"
-#endif
-# if (1 ? -1 : 0) > 0
-#  error "ternary operator should result in signed value"
-#endif
+#  warn "ternary operator should promote to unsigned value"
+# else
 unsigned const has_preprocessor_ternary_unsigned = 1;
+# endif
+# if (1 ? -1 : 0) > 0
+#  warn "ternary operator should result in signed value"
+# else
+unsigned const has_preprocessor_ternary_signed = 1;
+# endif
 /* Bool operation should return a signed integer */
 # if (1 ? -1 : (0 && 0)) > 0
 #  error "logical operations should return signed values"
@@ -356,6 +365,42 @@ unsigned const has_preprocessor_ternary_unsigned = 1;
 unsigned const has_preprocessor_logical_signed = 1;
 #endif
 
+/* A comma operator shall not appear in a constant expression, unless
+   it is not evaluated. First test for the good case: it isn't
+   evaluated. First this should be accepted by the compiler but also
+   it should do the correct type promotions. This test can have
+   different results when we try this for constant expressions in the
+   compiler phase or in the preprocessor phase. */
+#define GOOD ((1 ? -1 : (0, 0u)) < 0 )
+#ifndef SKIP_NON_EVALUATED_COMMA_ASSIGN
+unsigned const has_non_evaluated_comma_expression_assign[2*!GOOD - 1] = { 0 };
+#endif
+#ifndef SKIP_NON_EVALUATED_COMMA_PREPRO
+# if GOOD
+#  warning "non evaluated comma expression yields wrong result"
+# else
+unsigned const has_non_evaluated_comma_expression_prepro = GOOD;
+# endif
+#endif
+
+/* Now if it is in the evaluated part, this is undefined
+   behavior. This could lead to anything, but also to the nice
+   behavior that the compiler tells us. Some compilers do tell us in
+   fact, but only as a warning. Some just refuse to compile. */
+#define BAD ((0 ? -1 : (0, 0u)) > -1 )
+#ifndef SKIP_EVALUATED_COMMA_ASSIGN
+enum { bad = BAD };
+#else
+unsigned const has_evaluated_comma_expression_assign = 1;
+#endif
+#ifndef SKIP_EVALUATED_COMMA_PREPRO
+# if BAD
+#  warning "evaluated comma expression yields wrong result"
+# endif
+#else
+unsigned const has_evaluated_comma_expression_prepro = 1;
+#endif
+
 #ifndef SKIP_UNIVERSAL
 int has_hex_character = L'\x0401';
 int has_universal_character_4 = L'\u2118';
@@ -363,7 +408,29 @@ int has_universal_character_8 = L'\U00000401';
 int const* has_universal_string_4 = L"\u2018\u03A7\u2060X\u2019";
 int const* has_universal_string_8 = L"\U00002018\U000003A7\U00002060X\U00002019";
 int has_\u03BA\u03B1\u03B8\u03BF\u03BB\u03B9\u03BA\u03CC\u03C2_\u03c7\u03B1\u03C1\u03B1\u03BA\u03C4\u03AE\u03C1 = 1;
+const int \u03BA = 0;
+int const*const has_keeps_token_boundary_for_universal = &\u03BA;
+# ifndef SKIP_UNIVERSAL_MANGLE
+/* When compiled, the two static variables that are defined here must
+   result in two different symbols. There is no way to check this at
+   compile time, unfortunately. So we have to check the object file
+   by hand to determine this. */
+int has_universal_good_mangle(int a) {
+  static int volatile \u03ba;
+  static int volatile _u03ba;
+  \u03ba = !!a;
+  _u03ba = !a;
+  return \u03ba == _u03ba;
+}
+# else
+int has_universal_bad_mangle;
+# endif
+# ifndef SKIP_UNIVERSAL_UTF8
+double const π = 3.14159265;
+double const* has_utf8 = &π;
+# endif
 #endif
+
 
 
 /* Have checks for digraphs and trigraphs at the end, since they may

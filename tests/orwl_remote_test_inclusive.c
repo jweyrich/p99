@@ -116,15 +116,15 @@ DEFINE_THREAD(arg_t) {
  {
    for (size_t i = 0; i < 3; ++i)
      orwl_acquire2(&handle[i]);
-   size_t len = 1;
+   size_t len = sizeof(uint64_t);
    char const* env = getenv("ORWL_HANDLE_SIZE");
    if (env) {
-     size_t len2 = strtouz(env) / sizeof(uint64_t);
-     if (len2) len = len2;
+     size_t len2 = strtouz(env);
+     if (len2 > len) len = len2;
    }
-   orwl_resize2(&handle[1], len);
+   orwl_truncate2(&handle[1], len);
    report(true, "handle resized to %zu byte                                             \n",
-          len * sizeof(uint64_t));
+          len);
    for (size_t i = 0; i < 3; ++i)
      orwl_release2(&handle[i]);
  }
@@ -154,21 +154,20 @@ DEFINE_THREAD(arg_t) {
     {
       /* For handle 1 we have gained write access. Change the globally
        * shared data for the whole application. */
-      size_t data_len = 0;
       {
-        uint64_t* data = orwl_map2(&handle[1], &data_len);
-        assert(data && data_len);
+        uint64_t* data = orwl_write_map2(&handle[1]);
+        assert(data);
         *data = orwl_phase;
       }
       /* For handle 0 and 2 we have read access. */
       {
-        uint64_t const* data = orwl_mapro2(&handle[0], &data_len);
-        assert(data && data_len);
+        uint64_t const* data = orwl_read_map2(&handle[0]);
+        assert(data);
         diff[0] = *data - (orwl_phase - 1);
       }
       {
-        uint64_t const* data = orwl_mapro2(&handle[2], &data_len);
-        assert(data && data_len);
+        uint64_t const* data = orwl_read_map2(&handle[2]);
+        assert(data);
         diff[2] = (orwl_phase - 1) - *data;
       }
     }

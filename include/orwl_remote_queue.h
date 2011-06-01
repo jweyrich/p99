@@ -310,6 +310,11 @@ orwl_state orwl_test(orwl_handle* rh) {
   return orwl_wh_test(rh->wh, 0);
 }
 
+P99_DEPRECATED(inline uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len));
+P99_DEPRECATED(inline uint64_t* orwl_map(orwl_handle* rh, size_t* data_len));
+P99_DEPRECATED(inline void orwl_resize(orwl_handle* rh, size_t data_len));
+
+
 /**
  ** @brief Obtain address and size of the data that is associated to a
  ** handle for reading and writing
@@ -346,6 +351,23 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
   return ret;
 }
 
+inline
+void* orwl_write_map(orwl_handle* rh, size_t* data_len) {
+  void* ret = 0;
+  if (rh)
+    switch (orwl_test(rh)) {
+    case orwl_acquired: ;
+      if (orwl_inclusive(rh)) break;
+    case orwl_write_acquired: ;
+      assert(rh->wh);
+      ret = orwl_wh_map(rh->wh, data_len);
+      if (data_len) *data_len *= sizeof(uint64_t);
+    default:;
+    }
+  return ret;
+}
+
+
 /**
  ** @brief Obtain address and size of the data that is associated to a
  ** handle for reading
@@ -371,6 +393,25 @@ uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len) {
   return ret;
 }
 
+inline
+void const* orwl_read_map(orwl_handle* rh, size_t* data_len) {
+  void const* ret = 0;
+  if (rh)
+    switch (orwl_test(rh)) {
+    case orwl_acquired: ;
+    case orwl_write_acquired: ;
+    case orwl_read_acquired: ;
+      assert(rh->wh);
+      ret = orwl_wh_map(rh->wh, data_len);
+      if (data_len) *data_len *= sizeof(uint64_t);
+    default:;
+    }
+  return ret;
+}
+
+
+
+
 /**
  ** @brief Shrink or extend the data that is associated to a location.
  ** @memberof orwl_handle
@@ -388,6 +429,16 @@ void orwl_resize(orwl_handle* rh, size_t data_len) {
   if (orwl_test(rh) > orwl_valid) {
     assert(rh->wh);
     orwl_wh_resize(rh->wh, data_len);
+  }
+}
+
+inline
+void orwl_truncate(orwl_handle* rh, size_t data_len) {
+  if (orwl_test(rh) > orwl_valid) {
+    size_t len = data_len / sizeof(uint64_t);
+    len += (data_len % sizeof(uint64_t)) ? 1 : 0;
+    assert(rh->wh);
+    orwl_wh_resize(rh->wh, len);
   }
 }
 

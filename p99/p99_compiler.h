@@ -332,6 +332,18 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 
 
+/**
+ ** @def P99_DEPRECATED
+ ** @brief Depreciate a declaration that is given as the argument list.
+ **/
+#ifndef P99_DEPRECATED
+# ifdef __GNUC__
+#  define P99_DEPRECATED(...) __VA_ARGS__ __attribute__((deprecated))
+# else
+#  define P99_DEPRECATED(...) __VA_ARGS__
+# endif
+#endif
+
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 # if defined(__LONG_MAX__) && defined(__LONG_LONG_MAX__) && (P99_GCC_VERSION >= 30000UL)
 #  if (__LONG_MAX__ == 9223372036854775807) && (__LONG_LONG_MAX__ == 9223372036854775807)

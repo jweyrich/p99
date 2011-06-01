@@ -137,12 +137,16 @@ P00_DOCUMENT_ID(16)
 #define P99_MACRO_END(...) enum P99_LINEID(__VA_ARGS__, _enum) { P99_LINEID(__VA_ARGS__, _0) }
 
 /**
- ** @brief Evaluate expression @a expr at compile time and ensure that
+ ** @brief Evaluate expression @a EXPR at compile time and ensure that
  ** it is fulfilled.
  **
- **
+ ** The expression must be given as first argument. Additional arguments
+ ** are used to distinguish the generated code from other calls to the
+ ** same macro.
  **/
-#define P99_COMPILETIME_ASSERT(...) typedef char P99_LINEID(_compiletime_assert)[!!(__VA_ARGS__)]
+#define P99_COMPILETIME_ASSERT(...) P99_COMPILETIME_ASSERT_(__VA_ARGS__, _compiletime_assert)
+
+#define P99_COMPILETIME_ASSERT_(EXPR, ...) typedef char P99_LINEID(__VA_ARGS__)[2*(!!(EXPR)) - 1]
 
 P99_COMPILETIME_ASSERT(1);
 

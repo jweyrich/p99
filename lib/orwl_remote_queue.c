@@ -285,6 +285,10 @@ P99_INSTANTIATE(uint64_t*, orwl_map, orwl_handle*, size_t*);
 P99_INSTANTIATE(uint64_t const*, orwl_mapro, orwl_handle*, size_t*);
 P99_INSTANTIATE(void, orwl_resize, orwl_handle*, size_t);
 
+P99_INSTANTIATE(void*, orwl_write_map, orwl_handle*, size_t*);
+P99_INSTANTIATE(void const*, orwl_read_map, orwl_handle*, size_t*);
+P99_INSTANTIATE(void, orwl_truncate, orwl_handle*, size_t);
+
 DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire, orwl_handle);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_release, orwl_handle);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_cancel, orwl_handle);

@@ -170,13 +170,50 @@ uint64_t const* orwl_mapro2(orwl_handle2* rh2,   /*!< [in,out] the handle to be 
  **/
 P00_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_resize2)
-void orwl_resize2(orwl_handle2* rh2,   /*!< [in,out] the handle whos
+void orwl_truncate2(orwl_handle2* rh2,   /*!< [in,out] the handle whos
                                           data to resize */
                   size_t data_len,     /*!< [in] future length of @a data in
                                          number of elements */
                   rand48_t* seed       /*!< [in,out] defaults to a thread local seed */
                   );
 
+/**
+ ** @memberof orwl_handle2
+ **/
+P00_DOCUMENT_SEED
+P99_DEFARG_DOCU(orwl_write_map2)
+void* orwl_write_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
+               size_t* data_len,    /*!< [out] length of @a data in
+                                       number of bytes */
+               rand48_t* seed       /*!< [in,out] defaults to a thread local seed */
+               );
+
+/**
+ ** @memberof orwl_handle2
+ **/
+P00_DOCUMENT_SEED
+P99_DEFARG_DOCU(orwl_read_map2)
+void const* orwl_read_map2(orwl_handle2* rh2,   /*!< [in,out] the handle to be queried */
+               size_t* data_len,    /*!< [out] length of @a data in
+                                       number of bytes */
+               rand48_t* seed       /*!< [in,out] defaults to a thread local seed */
+               );
+
+/**
+ ** @memberof orwl_handle2
+ **/
+P00_DOCUMENT_SEED
+P99_DEFARG_DOCU(orwl_resize2)
+void orwl_truncate2(orwl_handle2* rh2,   /*!< [in,out] the handle whos
+                                          data to resize */
+                  size_t data_len,     /*!< [in] future length of @a data in
+                                         number of bytes */
+                  rand48_t* seed       /*!< [in,out] defaults to a thread local seed */
+                  );
+
+P99_DEPRECATED(uint64_t const* orwl_mapro2(orwl_handle2* rh2, size_t* data_len, rand48_t*));
+P99_DEPRECATED(uint64_t* orwl_map2(orwl_handle2* rh2, size_t* data_len, rand48_t*));
+P99_DEPRECATED(void orwl_resize2(orwl_handle2* rh2, size_t data_len, rand48_t*));
 
 
 
@@ -218,6 +255,20 @@ P99_PROTOTYPE(uint64_t const*, orwl_mapro2, orwl_handle2*, size_t*, rand48_t*);
 P99_PROTOTYPE(void, orwl_resize2, orwl_handle2*, size_t, rand48_t*);
 #define orwl_resize2(...)  P99_CALL_DEFARG(orwl_resize2, 3, __VA_ARGS__)
 #define orwl_resize2_defarg_2() seed_get()
+
+P99_PROTOTYPE(void*, orwl_write_map2, orwl_handle2*, size_t*, rand48_t*);
+#define orwl_write_map2(...)  P99_CALL_DEFARG(orwl_write_map2, 3, __VA_ARGS__)
+#define orwl_write_map2_defarg_1() 0
+#define orwl_write_map2_defarg_2() seed_get()
+
+P99_PROTOTYPE(void const*, orwl_read_map2, orwl_handle2*, size_t*, rand48_t*);
+#define orwl_read_map2(...)  P99_CALL_DEFARG(orwl_read_map2, 3, __VA_ARGS__)
+#define orwl_read_map2_defarg_1() 0
+#define orwl_read_map2_defarg_2() seed_get()
+
+P99_PROTOTYPE(void, orwl_truncate2, orwl_handle2*, size_t, rand48_t*);
+#define orwl_truncate2(...)  P99_CALL_DEFARG(orwl_truncate2, 3, __VA_ARGS__)
+#define orwl_truncate2_defarg_2() seed_get()
 
 #endif
 
