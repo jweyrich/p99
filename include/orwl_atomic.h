@@ -237,33 +237,33 @@ size_t atomic_load(atomic_size_t volatile *object) {
  ** @see DEFINE_ATOMIC_OPS for a macro that ensures that the
  ** corresponding functions are really emitted.
  **/
-#define DECLARE_ATOMIC_OPS(T)                                           \
-P99_COMPILETIME_ASSERT(sizeof(T) == sizeof(size_t), size_t);            \
-P99_COMPILETIME_ASSERT(sizeof(T) == sizeof(uintptr_t), uintptr_t);      \
-inline                                                                  \
-T P99_PASTE2(atomic_load_, T)(T volatile* object) {                     \
-  return (T)(uintptr_t)atomic_load((atomic_size_t volatile*)object);    \
-}                                                                       \
-inline                                                                  \
-void P99_PASTE2(atomic_store_, T)(T volatile *object, T desired) {      \
+#define DECLARE_ATOMIC_OPS(T)                                                \
+P99_COMPILETIME_ASSERT(sizeof(T) == sizeof(size_t), size_t);                 \
+P99_COMPILETIME_ASSERT(sizeof(T) == sizeof(uintptr_t), uintptr_t);           \
+inline                                                                       \
+T P99_PASTE2(atomic_load_, T)(T volatile* object) {                          \
+  return (T)(uintptr_t)atomic_load((atomic_size_t volatile*)object);         \
+}                                                                            \
+inline                                                                       \
+void P99_PASTE2(atomic_store_, T)(T volatile *object, T desired) {           \
   atomic_store((atomic_size_t volatile*)object, (size_t)(uintptr_t)desired); \
-}                                                                       \
-inline                                                                  \
-_Bool P99_PASTE2(atomic_compare_exchange_weak_, T)(T volatile *object,  \
-                                                   T *expected,         \
-                                                   T desired) {         \
-  return atomic_compare_exchange_weak((atomic_size_t volatile*)object,  \
-                                      (size_t *)expected,               \
-                                      (size_t)(uintptr_t)desired);      \
+}                                                                            \
+inline                                                                       \
+_Bool P99_PASTE2(atomic_compare_exchange_weak_, T)(T volatile *object,       \
+                                                   T *expected,              \
+                                                   T desired) {              \
+  return atomic_compare_exchange_weak((atomic_size_t volatile*)object,       \
+                                      (size_t *)expected,                    \
+                                      (size_t)(uintptr_t)desired);           \
 }
 
-#define DEFINE_ATOMIC_OPS(T)                                            \
-P99_INSTANTIATE(T, P99_PASTE2(atomic_load_, T), T volatile* object);    \
+#define DEFINE_ATOMIC_OPS(T)                                                        \
+P99_INSTANTIATE(T, P99_PASTE2(atomic_load_, T), T volatile* object);                \
 P99_INSTANTIATE(void, P99_PASTE2(atomic_store_, T), T volatile *object, T desired); \
-P99_INSTANTIATE(_Bool,                                                  \
-                P99_PASTE2(atomic_compare_exchange_weak_, T),           \
-                T volatile *object,                                     \
-                T *expected,                                            \
+P99_INSTANTIATE(_Bool,                                                              \
+                P99_PASTE2(atomic_compare_exchange_weak_, T),                       \
+                T volatile *object,                                                 \
+                T *expected,                                                        \
                 T desired)
 
 

@@ -16,9 +16,9 @@
 
 #include "orwl_posix.h"
 
-P99_DECLARE_STRUCT(orwl__once_cont);
+P99_DECLARE_STRUCT(o_rwl_once_cont);
 
-struct orwl__once_cont {
+struct o_rwl_once_cont {
   void (*const init)(void);
   bool volatile cond;
   pthread_mutex_t mut;
@@ -35,7 +35,7 @@ struct orwl__once_cont {
  ** @see DEFINE_ONCE
  **/
 #define DECLARE_ONCE(T)                                        \
-extern struct orwl__once_cont P99_PASTE3(orwl__, T, _once)
+extern struct o_rwl_once_cont P99_PASTE3(o_rwl_, T, _once)
 
 #ifdef DOXYGEN
 /**
@@ -73,33 +73,33 @@ extern struct orwl__once_cont P99_PASTE3(orwl__, T, _once)
 #else
 #define DEFINE_ONCE(...)                                       \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
- (P00_DEFINE_ONCE_0(__VA_ARGS__))                              \
- (P00_DEFINE_ONCE_1(__VA_ARGS__))
+ (O_RWL_DEFINE_ONCE_0(__VA_ARGS__))                            \
+ (O_RWL_DEFINE_ONCE_1(__VA_ARGS__))
 #endif
 
-#define P00_DEFINE_ONCE_0(T)                                   \
-static void P99_PASTE3(orwl__, T, _once_init)(void);           \
-struct orwl__once_cont P99_PASTE3(orwl__, T, _once) = {        \
+#define O_RWL_DEFINE_ONCE_0(T)                                 \
+static void P99_PASTE3(o_rwl_, T, _once_init)(void);           \
+struct o_rwl_once_cont P99_PASTE3(o_rwl_, T, _once) = {        \
   .mut = PTHREAD_MUTEX_INITIALIZER,                            \
   .cond = false,                                               \
-  .init = P99_PASTE3(orwl__, T, _once_init),                   \
+  .init = P99_PASTE3(o_rwl_, T, _once_init),                   \
 };                                                             \
-static void P99_PASTE3(orwl__, T, _once_init)(void)
+static void P99_PASTE3(o_rwl_, T, _once_init)(void)
 
-#define P00_ONCE_INIT(_0, T, _2) INIT_ONCE(T)
+#define O_RWL_ONCE_INIT(_0, T, _2) INIT_ONCE(T)
 
-#define P00_DEFINE_ONCE_1(T, ...)                                        \
-static void P99_PASTE3(orwl__, T, _once_init0)(void);                    \
-static void P99_PASTE3(orwl__, T, _once_init)(void) {                    \
-  P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_ONCE_INIT, __VA_ARGS__); \
-  P99_PASTE3(orwl__, T, _once_init0)();                                  \
- }                                                                       \
-struct orwl__once_cont P99_PASTE3(orwl__, T, _once) = {                  \
-  .mut = PTHREAD_MUTEX_INITIALIZER,                                      \
-  .cond = false,                                                         \
-  .init = P99_PASTE3(orwl__, T, _once_init),                             \
-};                                                                       \
-static void P99_PASTE3(orwl__, T, _once_init0)(void)
+#define O_RWL_DEFINE_ONCE_1(T, ...)                                        \
+static void P99_PASTE3(o_rwl_, T, _once_init0)(void);                      \
+static void P99_PASTE3(o_rwl_, T, _once_init)(void) {                      \
+  P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, O_RWL_ONCE_INIT, __VA_ARGS__); \
+  P99_PASTE3(o_rwl_, T, _once_init0)();                                    \
+ }                                                                         \
+struct o_rwl_once_cont P99_PASTE3(o_rwl_, T, _once) = {                    \
+  .mut = PTHREAD_MUTEX_INITIALIZER,                                        \
+  .cond = false,                                                           \
+  .init = P99_PASTE3(o_rwl_, T, _once_init),                               \
+};                                                                         \
+static void P99_PASTE3(o_rwl_, T, _once_init0)(void)
 
 
 /**
@@ -130,8 +130,8 @@ P99_GUARDED_BLOCK(pthread_mutex_t*,                            \
  ** each other.
  **/
 P99_BLOCK_DOCUMENT
-#define ORWL_CRITICAL                                                       \
-P00_BLK_START                                                               \
+#define ORWL_CRITICAL                                                                   \
+P00_BLK_START                                                                           \
  P00_BLK_DECL_STATIC(pthread_mutex_t, P99_LINEID(orwl_crit), PTHREAD_MUTEX_INITIALIZER) \
 MUTUAL_EXCLUDE((*P99_LINEID(orwl_crit)))
 
@@ -141,7 +141,7 @@ MUTUAL_EXCLUDE((*P99_LINEID(orwl_crit)))
  ** You should not use this directly.
  **/
 inline
-void orwl_once_init(orwl__once_cont* o, char const name[]) {
+void orwl_once_init(o_rwl_once_cont* o, char const name[]) {
   if (pthread_equal(o->id, pthread_self())) {
     fprintf(stderr, "Initializing %s has a cycle!\n", name);
   } else
@@ -167,8 +167,8 @@ void orwl_once_init(orwl__once_cont* o, char const name[]) {
  ** @see DEFINE_ONCE
  **/
 #define INIT_ONCE(T)                                           \
-if (P99_LIKELY(P99_PASTE3(orwl__, T, _once).cond))             \
+if (P99_LIKELY(P99_PASTE3(o_rwl_, T, _once).cond))             \
   P99_NOP;                                                     \
- else orwl_once_init(&P99_PASTE3(orwl__, T, _once), # T);
+ else orwl_once_init(&P99_PASTE3(o_rwl_, T, _once), # T);
 
 #endif 	    /* !ORWL_ONCE_H_ */

@@ -417,7 +417,7 @@ P99_INSTANTIATE(T*, NAME)
 /* The default implementation of thread local storage */
 #ifndef DECLARE_THREAD_VAR
 
-#define P00_DECLARE_THREAD_VAR(T, NAME, KEY)                   \
+#define O_RWL_DECLARE_THREAD_VAR(T, NAME, KEY)                 \
 extern pthread_key_t KEY;                                      \
 DECLARE_ONCE(NAME);                                            \
 inline T* NAME(void) {                                         \
@@ -448,13 +448,13 @@ inline void P99_PASTE2(NAME, _clear)(void) {                   \
 extern pthread_key_t KEY
 
 
-#define DECLARE_THREAD_VAR(T, NAME)                            \
-/*! An accessor function to a thread local variable */         \
-inline T* NAME(void);                                          \
-P00_DECLARE_THREAD_VAR(T, NAME, P99_PASTE3(p00_, NAME, _key))
+#define DECLARE_THREAD_VAR(T, NAME)                               \
+/*! An accessor function to a thread local variable */            \
+inline T* NAME(void);                                             \
+O_RWL_DECLARE_THREAD_VAR(T, NAME, P99_PASTE3(o_rwl_, NAME, _key))
 
 
-#define P00__DEFINE_THREAD_VAR(T, NAME, KEY)                                 \
+#define O_RWL__DEFINE_THREAD_VAR(T, NAME, KEY)                               \
 pthread_key_t KEY;                                                           \
 DEFINE_ONCE(NAME) {                                                          \
   (void) pthread_key_create(&KEY, (void (*)(void *))P99_PASTE2(T, _delete)); \
@@ -462,9 +462,9 @@ DEFINE_ONCE(NAME) {                                                          \
 P99_INSTANTIATE(void, P99_PASTE2(NAME, _clear));                             \
 P99_INSTANTIATE(T*, NAME)
 
-#define P00_DEFINE_THREAD_VAR(T, NAME, KEY) P00__DEFINE_THREAD_VAR(T, NAME, KEY)
+#define O_RWL_DEFINE_THREAD_VAR(T, NAME, KEY) O_RWL__DEFINE_THREAD_VAR(T, NAME, KEY)
 
-#define DEFINE_THREAD_VAR(T, NAME) P00_DEFINE_THREAD_VAR(T, NAME, P99_PASTE3(p00_, NAME, _key))
+#define DEFINE_THREAD_VAR(T, NAME) O_RWL_DEFINE_THREAD_VAR(T, NAME, P99_PASTE3(o_rwl_, NAME, _key))
 
 
 #endif /* end of default implementation */

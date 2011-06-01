@@ -80,7 +80,7 @@ COPY = "all rights reserved, "
 LICENSE = SHORTLICENCE-closed.txt
 SCRIPTS = ../scripts
 AUTH = ${SCRIPTS}/AUTHORS.txt
-TIDY = ${SCRIPTS}/findSvnAuthors --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
+TIDY = ../../parxxl/scripts/findSvnAuthors --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
 CONFORM = ${SCRIPTS}/p99_conformance.pl
 
 ifneq (${POSIX_SEMAPHORES}, -1L)

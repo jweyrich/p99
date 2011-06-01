@@ -27,7 +27,7 @@ DEFINE_BASIC(T);                                               \
 DEFINE_BASIC(P99_PASTE2(T, _cptr));                            \
 DEFINE_BASIC(P99_PASTE2(T, _ptr))
 
-#define P00_DEFINE_ARI2STR(T, X, S, P)                         \
+#define O_RWL_DEFINE_ARI2STR(T, X, S, P)                       \
 char const* P99_PASTE3(T, 2, X)(char* buf, T x) {              \
   char* form = P99_STRDUP(#P, P99_PRI(T,X,S));                 \
   sprintf(buf, form, x);                                       \
@@ -37,11 +37,11 @@ char const* P99_PASTE3(T, 2, X)(char* buf, T x) {              \
 P99_MACRO_END(define_ari2str, T, X)
 
 #define DEFINE_ARI2STR(T)                                      \
-  P00_DEFINE_ARI2STR(T, d, , );                                \
-  P00_DEFINE_ARI2STR(T, o, 0, 0);                              \
-  P00_DEFINE_ARI2STR(T, u, , );                                \
-  P00_DEFINE_ARI2STR(T, x, , 0x);                              \
-  P00_DEFINE_ARI2STR(T, X, , 0x)
+  O_RWL_DEFINE_ARI2STR(T, d, , );                              \
+  O_RWL_DEFINE_ARI2STR(T, o, 0, 0);                            \
+  O_RWL_DEFINE_ARI2STR(T, u, , );                              \
+  O_RWL_DEFINE_ARI2STR(T, x, , 0x);                            \
+  O_RWL_DEFINE_ARI2STR(T, X, , 0x)
 
 DEFINE_BASIC(void_ptr);
 DEFINE_BASIC(void_cptr);
