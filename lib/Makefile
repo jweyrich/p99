@@ -160,8 +160,8 @@ COMMA=,
 
 EXTERNAL_SYMBOLS := ${filter-out ${GLOBVARS}, ${sort ${shell ${NM} liborwl.so | ${NM_UNDEF_FILTER}}}}
 ORWL_SYMBOLS := ${filter-out ${GLOBVARS}, ${sort ${shell ${NM} liborwl.so | ${NM_DEF_FILTER}}}}
-EXTERNAL_CASTS := ${patsubst %,\t(orwl__FT)%${COMMA}\n,${EXTERNAL_SYMBOLS}}
-EXTERNAL_CALLS := ${patsubst %,\t((orwl__FT)%)((void*)0);\n,${EXTERNAL_SYMBOLS}}
+EXTERNAL_CASTS := ${patsubst %,\t(o_rwl_FT)%${COMMA}\n,${EXTERNAL_SYMBOLS}}
+EXTERNAL_CALLS := ${patsubst %,\t((o_rwl_FT)%)((void*)0);\n,${EXTERNAL_SYMBOLS}}
 EXTERNAL_PROTS := ${patsubst %,\tvoid* %(void*);\n,${EXTERNAL_SYMBOLS}}
 recurse : liborwl.so
 
@@ -171,14 +171,14 @@ external_symbols.c : liborwl.so Makefile
 	@printf ' ** @brief External refferences in the library\n' >> external_symbols.c
 	@printf ' **/\n' >> external_symbols.c
 	@printf '#include "orwl_posix.h"\n' >> external_symbols.c
-	@printf 'typedef void* (*orwl__FT)(void*);\n' >> external_symbols.c
+	@printf 'typedef void* (*o_rwl_FT)(void*);\n' >> external_symbols.c
 	@printf 'void* (*const external_functions[])(void*) = {\n${EXTERNAL_CASTS}};\n' >> external_symbols.c
 	@printf '#ifdef DOXYGEN\n' >> external_symbols.c
 	@printf 'void call_externals(void) {\n${EXTERNAL_CALLS}}\n' >> external_symbols.c
 	@printf '${EXTERNAL_PROTS}\n' >> external_symbols.c
 	@printf '#endif\n' >> external_symbols.c
 
-ORWL_CASTS := ${patsubst %,\t(orwl__FT)%${COMMA}\n,${ORWL_SYMBOLS}}
+ORWL_CASTS := ${patsubst %,\t(o_rwl_FT)%${COMMA}\n,${ORWL_SYMBOLS}}
 ORWL_PROTS := ${patsubst %,\tvoid* %(void*);\n,${ORWL_SYMBOLS}}
 
 orwl_symbols.c : liborwl.so Makefile
@@ -187,7 +187,7 @@ orwl_symbols.c : liborwl.so Makefile
 	@printf ' ** @brief Orwl refferences in the library\n' >> orwl_symbols.c
 	@printf ' **/\n' >> orwl_symbols.c
 	@printf '#ifndef DOXYGEN\n' >> orwl_symbols.c
-	@printf 'typedef void* (*orwl__FT)(void*);\n' >> orwl_symbols.c
+	@printf 'typedef void* (*o_rwl_FT)(void*);\n' >> orwl_symbols.c
 	@printf '${ORWL_PROTS}\n' >> orwl_symbols.c
 	@printf 'void* (*const orwl_functions[])(void*) = {\n${ORWL_CASTS}};\n' >> orwl_symbols.c
 	@printf 'int main(void) {\n' >> orwl_symbols.c

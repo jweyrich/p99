@@ -17,12 +17,12 @@
 #include "orwl_thread.h"
 
 static
-pthread_mutex_t orwl__reg_mut = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t o_rwl_reg_mut = PTHREAD_MUTEX_INITIALIZER;
 
 orwl_register const* orwl_register_init(orwl_register const* field) {
   if (!field) return 0;
   if (!*(field->regptr)) {
-    MUTUAL_EXCLUDE(orwl__reg_mut) {
+    ORWL_CRITICAL {
       if (!*(field->regptr)) {
         orwl_register const*base = (field->start);
         for (size_t i = 0; base[i].fptr || base[i].dptr; ++i)
