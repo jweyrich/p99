@@ -14,7 +14,7 @@
 #include "orwl_remote_queue.h"
 #include "orwl_socket.h"
 #include "orwl_server.h"
-#include "orwl_auth_sock_functions.h"
+#include "orwl_proc_symbols.h"
 
 DEFINE_ONCE(orwl_mirror, orwl_wq, orwl_rand, orwl_handle) {
   // empty

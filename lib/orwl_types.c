@@ -20,7 +20,7 @@
 
 #include "p99_id.h"
 #include "orwl_wait_queue.h"
-#include "orwl_socket.h"
+#include "orwl_proc.h"
 
 DECLARE_ORWL_DOMAIN(ORWL_FTAB(orwl_state));
 

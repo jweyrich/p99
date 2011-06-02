@@ -15,7 +15,7 @@
 #include "orwl_helpers.h"
 #include "p99_c99_default.h"
 #include "p99_str.h"
-#include "orwl_auth_sock_functions.h"
+#include "orwl_proc_symbols.h"
 #include "limits.h"
 
 DEFINE_NEW_DELETE(orwl_vertex);

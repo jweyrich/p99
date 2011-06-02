@@ -18,6 +18,7 @@
 
 #include "orwl_header.h"
 #include "orwl_socket.h"
+#include "orwl_proc.h"
 #include "orwl_wait_queue.h"
 #include "orwl_remote_queue.h"
 

@@ -15,6 +15,7 @@
 #include "p99_posix_default.h"
 #include "p99_c99_default.h"
 #include "orwl_socket.h"
+#include "orwl_proc.h"
 #include "orwl_header.h"
 #include "orwl_endpoint.h"
 #include "orwl_server.h"

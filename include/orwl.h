@@ -15,15 +15,12 @@
 #ifndef   	ORWL_H_
 # define   	ORWL_H_
 
-#include "orwl_auth_sock_functions.h"
-#include "orwl_callback.h"
 #include "orwl_callback.h"
 #include "orwl_handle2.h"
 #include "orwl_posix.h"
-#include "orwl_posix.h"
+#include "orwl_proc_symbols.h"
 #include "orwl_rand.h"
 #include "orwl_remote_queue.h"
-#include "orwl_server.h"
 #include "orwl_server.h"
 #include "orwl_socket.h"
 #include "orwl_thread.h"

@@ -12,10 +12,10 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_AUTH_SOCK_FUNCTIONS_H_
-# define   	ORWL_AUTH_SOCK_FUNCTIONS_H_
+#ifndef   	ORWL_PROC_SYMBOLS_H_
+# define   	ORWL_PROC_SYMBOLS_H_
 
-#include "orwl_socket.h"
+#include "orwl_proc.h"
 
 
 DECLARE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port);
@@ -27,4 +27,4 @@ DECLARE_ORWL_PROC_FUNC(orwl_proc_do_nothing, void);
 DECLARE_ORWL_PROC_FUNC(orwl_proc_check_initialization, uint64_t id_pow2);
 
 
-#endif 	    /* !ORWL_AUTH_SOCK_FUNCTIONS_H_ */
+#endif 	    /* !ORWL_PROC_SYMBOLS_H_ */

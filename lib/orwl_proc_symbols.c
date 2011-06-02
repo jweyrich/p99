@@ -12,7 +12,7 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#include "orwl_auth_sock_functions.h"
+#include "orwl_proc_symbols.h"
 #include "orwl_server.h"
 #include "orwl_wait_queue.h"
 #include "p99_id.h"
