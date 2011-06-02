@@ -18,13 +18,13 @@
 #include "orwl_socket.h"
 
 
-DECLARE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port);
-DECLARE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port);
-DECLARE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID);
-DECLARE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port);
-DECLARE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port);
-DECLARE_AUTH_SOCK_FUNC(auth_sock_do_nothing, void);
-DECLARE_AUTH_SOCK_FUNC(auth_sock_check_initialization, uint64_t id_pow2);
+DECLARE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port);
+DECLARE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port);
+DECLARE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID);
+DECLARE_ORWL_PROC_FUNC(orwl_proc_insert_peer, uint64_t port);
+DECLARE_ORWL_PROC_FUNC(orwl_proc_insert_host, uint64_t addr, uint64_t port);
+DECLARE_ORWL_PROC_FUNC(orwl_proc_do_nothing, void);
+DECLARE_ORWL_PROC_FUNC(orwl_proc_check_initialization, uint64_t id_pow2);
 
 
 #endif 	    /* !ORWL_AUTH_SOCK_FUNCTIONS_H_ */

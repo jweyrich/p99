@@ -17,19 +17,19 @@
 #include "orwl_wait_queue.h"
 #include "p99_id.h"
 
-DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
-  AUTH_SOCK_READ(Arg, auth_sock_insert_peer, uint64_t port);
+DEFINE_ORWL_PROC_FUNC(orwl_proc_insert_peer, uint64_t port) {
+  ORWL_PROC_READ(Arg, orwl_proc_insert_peer, uint64_t port);
   if (Arg->fd != -1) {
     orwl_host *h = P99_NEW(orwl_host);
     /* mes and orwl_addr is already in host order */
-    h->ep.addr = getpeer(Arg);
+    h->ep.addr = orwl_proc_getpeer(Arg);
     h->ep.port.p = htons((uint16_t)port);
     orwl_host_connect(h, &Arg->srv->host);
   }
 }
 
-DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port) {
-  AUTH_SOCK_READ(Arg, auth_sock_insert_host, uint64_t addr, uint64_t port);
+DEFINE_ORWL_PROC_FUNC(orwl_proc_insert_host, uint64_t addr, uint64_t port) {
+  ORWL_PROC_READ(Arg, orwl_proc_insert_host, uint64_t addr, uint64_t port);
   orwl_host *h = P99_NEW(orwl_host);
   /* mes is already in host order */
   orwl_addr_init(&h->ep.addr, addr);
@@ -37,13 +37,13 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port) {
   orwl_host_connect(h, &Arg->srv->host);
 }
 
-DEFINE_AUTH_SOCK_FUNC(auth_sock_do_nothing, void) {
+DEFINE_ORWL_PROC_FUNC(orwl_proc_do_nothing, void) {
   /* special care for bogus warning given by icc */
   (void)Arg;
 }
 
-DEFINE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port) {
-  AUTH_SOCK_READ(Arg, auth_sock_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port);
+DEFINE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port) {
+  ORWL_PROC_READ(Arg, orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port);
   Arg->ret = 0;
   if (wqPOS < Arg->srv->max_queues) {
     /* extract wq and the remote wh ID */
@@ -55,10 +55,10 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, ui
     orwl_state state = orwl_wq_request(srv_wq, &srv_wh, 2);
     if (state == orwl_requested) {
       /* mes is already in host order */
-      orwl_endpoint ep = { .addr = getpeer(Arg), .port = host2port(port) };
+      orwl_endpoint ep = { .addr = orwl_proc_getpeer(Arg), .port = host2port(port) };
       /* Acknowledge the creation of the wh and send back its id. */
       Arg->ret = (uintptr_t)srv_wh;
-      auth_sock_close(Arg);
+      orwl_proc_untie_caller(Arg);
       /* Wait until the lock on wh is obtained. */
       state = orwl_wh_acquire(srv_wh);
       /* Send a request to the other side to remove the remote wh ID
@@ -69,7 +69,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, ui
         size_t extend = wq->data_len;
         size_t len = 2 + extend;
         uint64_t* mess = uint64_t_vnew(len);
-        mess[0] = ORWL_OBJID(auth_sock_release);
+        mess[0] = ORWL_OBJID(orwl_proc_release);
         mess[1] = whID;
         if (extend) {
           report(false, "adding suplement of length %zu", extend);
@@ -85,10 +85,10 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_write_request, uint64_t wqPOS, uint64_t whID, ui
 }
 
 
-DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port) {
+DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port) {
   orwl_state state = orwl_invalid;
   /* Extract wq and the remote handle IDs from Arg */
-  AUTH_SOCK_READ(Arg, auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port);
+  ORWL_PROC_READ(Arg, orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port);
   Arg->ret = 0;
   if (wqPOS < Arg->srv->max_queues) {
     /* extract wq and the remote wh ID */
@@ -116,13 +116,13 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
     
     if (state != orwl_requested) {
       if (!piggyback) orwl_wh_delete(srv_wh);
-      auth_sock_close(Arg);
+      orwl_proc_untie_caller(Arg);
     } else {
-      orwl_endpoint ep = { .addr = getpeer(Arg), .port = host2port(port) };
+      orwl_endpoint ep = { .addr = orwl_proc_getpeer(Arg), .port = host2port(port) };
       /* Acknowledge the creation of the wh and send back its ID. */
       report(0, "inclusive request (%p) 0x%jx 0x%jx, detaching", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
       Arg->ret = (uintptr_t)srv_wh;
-      auth_sock_close(Arg);
+      orwl_proc_untie_caller(Arg);
       /* If now the local handle is `requested' we only have to wait if
          we establish a new pair of client-server handles. */
       if (piggyback) {
@@ -149,7 +149,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
           size_t extend = wq->data_len;
           size_t len = 2 + extend;
           uint64_t* mess = uint64_t_vnew(len);
-          mess[0] = ORWL_OBJID(auth_sock_release);
+          mess[0] = ORWL_OBJID(orwl_proc_release);
           mess[1] = cliID;
           if (extend) {
             report(false, "adding suplement of length %zu", extend);
@@ -165,8 +165,8 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_read_request, uint64_t wqPOS, uint64_t cliID, ui
 
 /* this is executed first on the client when the lock is acquired and */
 /* then on the server when the lock is released. */
-DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
-  AUTH_SOCK_READ(Arg, auth_sock_release, uintptr_t whID);
+DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID) {
+  ORWL_PROC_READ(Arg, orwl_proc_release, uintptr_t whID);
   orwl_state ret = orwl_valid;
   // extract the wh for Arg
   assert(whID);
@@ -198,8 +198,8 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_release, uintptr_t whID) {
   Arg->ret = ret;
 }
 
-DEFINE_AUTH_SOCK_FUNC(auth_sock_check_initialization, uint64_t id) {
-  AUTH_SOCK_READ(Arg, auth_sock_check_initialization, uint64_t id);
+DEFINE_ORWL_PROC_FUNC(orwl_proc_check_initialization, uint64_t id) {
+  ORWL_PROC_READ(Arg, orwl_proc_check_initialization, uint64_t id);
   bool finished = false;
   while (!finished) {
     pthread_rwlock_rdlock(&Arg->srv->lock);
@@ -207,16 +207,16 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_check_initialization, uint64_t id) {
     pthread_rwlock_unlock(&Arg->srv->lock);
     sleepfor(0.1);
   }
-  auth_sock_close(Arg);
+  orwl_proc_untie_caller(Arg);
 }
 
-DEFINE_ORWL_TYPE_DYNAMIC(auth_sock,
-                         ORWL_REGISTER_ALIAS(auth_sock_insert_peer, auth_sock),
-                         ORWL_REGISTER_ALIAS(auth_sock_insert_host, auth_sock),
-                         ORWL_REGISTER_ALIAS(auth_sock_do_nothing, auth_sock),
-                         ORWL_REGISTER_ALIAS(auth_sock_write_request, auth_sock),
-                         ORWL_REGISTER_ALIAS(auth_sock_read_request, auth_sock),
-                         ORWL_REGISTER_ALIAS(auth_sock_release, auth_sock),
-			 ORWL_REGISTER_ALIAS(auth_sock_check_initialization, auth_sock)
+DEFINE_ORWL_TYPE_DYNAMIC(orwl_proc,
+                         ORWL_REGISTER_ALIAS(orwl_proc_insert_peer, orwl_proc),
+                         ORWL_REGISTER_ALIAS(orwl_proc_insert_host, orwl_proc),
+                         ORWL_REGISTER_ALIAS(orwl_proc_do_nothing, orwl_proc),
+                         ORWL_REGISTER_ALIAS(orwl_proc_write_request, orwl_proc),
+                         ORWL_REGISTER_ALIAS(orwl_proc_read_request, orwl_proc),
+                         ORWL_REGISTER_ALIAS(orwl_proc_release, orwl_proc),
+			 ORWL_REGISTER_ALIAS(orwl_proc_check_initialization, orwl_proc)
                          );
 

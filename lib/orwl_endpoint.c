@@ -231,11 +231,11 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
     /* This is supposed to be a local connection, directly create the
        thread without going through the server socket. */
     orwl_thread_cntrl* det =  P99_NEW(orwl_thread_cntrl);
-    auth_sock *sock = P99_NEW(auth_sock,
+    orwl_proc *sock = P99_NEW(orwl_proc,
                               -1, srv, len, ,
                               mess,
                               det);
-    auth_sock_launch(sock, det);
+    orwl_proc_launch(sock, det);
     if (srv->info && srv->info_len) progress(1, (uintptr_t)sock, "%s", srv->info);
     /* Wait that the caller has copied the message and returned the
        control information, and tell him in turn that we have read the

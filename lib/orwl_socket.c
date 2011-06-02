@@ -104,12 +104,12 @@ in_addr_t orwl_inet_addr(char const *name) {
   return ret;
 }
 
-DEFINE_ONCE(auth_sock,
+DEFINE_ONCE(orwl_proc,
             orwl_rand) {
 }
 
 
-P99_INSTANTIATE(auth_sock*, auth_sock_init, auth_sock *,
+P99_INSTANTIATE(orwl_proc*, orwl_proc_init, orwl_proc *,
                                   int,
                                   orwl_server*,
                           size_t,
@@ -117,8 +117,8 @@ P99_INSTANTIATE(auth_sock*, auth_sock_init, auth_sock *,
                 uint64_t*,
                 orwl_thread_cntrl*);
 
-void auth_sock_close(auth_sock *sock) {
-  if (sock->is_detached) return;
+void orwl_proc_untie_caller(orwl_proc *sock) {
+  if (sock->is_untied) return;
   report(0, "detaching %p", (void*)sock);
   if (sock->det) {
     /* This thread is launched locally. */
@@ -147,28 +147,28 @@ void auth_sock_close(auth_sock *sock) {
       }
     sock->fd = -1;
   }
-  sock->is_detached = true;
+  sock->is_untied = true;
 }
 
-void auth_sock_destroy(auth_sock *sock) {
-  auth_sock_close(sock);
+void orwl_proc_destroy(orwl_proc *sock) {
+  orwl_proc_untie_caller(sock);
   if (sock->det) {
     orwl_thread_cntrl_wait_for_caller(sock->det);
     orwl_thread_cntrl_delete(sock->det);
   }
   if (sock->back) uint64_t_vdelete(sock->back);
-  auth_sock_init(sock);
+  orwl_proc_init(sock);
 }
 
-DEFINE_NEW_DELETE(auth_sock);
+DEFINE_NEW_DELETE(orwl_proc);
 
 static
-void server_callback(auth_sock* Arg) {
-  AUTH_SOCK_READ(Arg, server_callback, uint64_t funcID);
-  orwl_domain_call(ORWL_FTAB(auth_sock), funcID, Arg);
+void server_callback(orwl_proc* Arg) {
+  ORWL_PROC_READ(Arg, server_callback, uint64_t funcID);
+  orwl_domain_call(ORWL_FTAB(orwl_proc), funcID, Arg);
 }
 
-DEFINE_THREAD(auth_sock) {
+DEFINE_THREAD(orwl_proc) {
   assert(Arg->mes);
   report(0, "starting %p", (void*)Arg);
   if (Arg->fd == -1
@@ -177,14 +177,14 @@ DEFINE_THREAD(auth_sock) {
     /* do something with mess here */
     server_callback(Arg);
   }
-  auth_sock_close(Arg);
+  orwl_proc_untie_caller(Arg);
   report(0, "ending %p", (void*)Arg);
 }
 
 
 
 
-orwl_addr getpeer(auth_sock *Arg) {
+orwl_addr orwl_proc_getpeer(orwl_proc const*Arg) {
   struct sockaddr_in addr = SOCKADDR_IN_INIIALIZER;
   int ret = getpeername(Arg->fd, (struct sockaddr*)&addr, &P99_LVAL(socklen_t, sizeof(struct sockaddr_in)));
   return  (orwl_addr)ORWL_ADDR_INITIALIZER((ret == -1) ? P99_0(in_addr_t) : addr.sin_addr.s_addr);

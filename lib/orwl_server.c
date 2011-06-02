@@ -23,7 +23,7 @@
 
 DEFINE_ONCE(orwl_server,
             orwl_thread,
-            auth_sock,
+            orwl_proc,
             orwl_wq,
             orwl_wh,
             orwl_handle,
@@ -163,8 +163,8 @@ DEFINE_THREAD(orwl_server) {
           if (header[1] == repl) {
             size_t len = header[0];
             if (len) {
-              auth_sock *sock = P99_NEW(auth_sock, fd, Arg, len, header[2]);
-              auth_sock_create(sock);
+              orwl_proc *sock = P99_NEW(orwl_proc, fd, Arg, len, header[2]);
+              orwl_proc_create(sock);
               /* The spawned thread will close the fd. */
               fd = -1;
             } else {

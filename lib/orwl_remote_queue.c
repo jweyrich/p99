@@ -33,7 +33,7 @@ void orwl_mirror_connect(orwl_mirror *rq, orwl_server* srv, orwl_endpoint endp) 
   orwl_mirror_init(rq, srv, endp);
   /* wait until the other side is up. */
   /* ep.port is already in host order */
-  while (orwl_rpc(srv, &endp, seed_get(), auth_sock_insert_peer, port2host(&srv->host.ep.port))
+  while (orwl_rpc(srv, &endp, seed_get(), orwl_proc_insert_peer, port2host(&srv->host.ep.port))
          == P99_TMAX(uint64_t)) {
     if (!orwl_alive(srv)) break;
     sleepfor(0.02);
@@ -63,7 +63,7 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
         /* Send the insertion request with the id of cli_wh to the other
            side. As result retrieve the ID on the other side that is to be
            released when we release here. */
-        rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, auth_sock_write_request,
+        rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, orwl_proc_write_request,
                              rq->there.index,
                              (uintptr_t)cli_wh,
                              port2host(&rq->srv->host.ep.port)
@@ -107,7 +107,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
          considered a new request, and the svrID that was memorized on
          wh_inc, if any. As result retrieve the ID on the other side
          that is to be released when we release here. */
-      rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, auth_sock_read_request,
+      rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, orwl_proc_read_request,
                            rq->there.index,
                            (uintptr_t)cli_wh,
                            wh_inc ? wh_inc->svrID : 0,
@@ -217,7 +217,7 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
       report(false, "adding extend of length %zu?", extend);
       len += extend;
       mess = uint64_t_vnew(len);
-      mess[0] = ORWL_OBJID(auth_sock_release);
+      mess[0] = ORWL_OBJID(orwl_proc_release);
       mess[1] = svrID;
       if (extend) {
         report(false, "adding suplement of length %zu", extend);

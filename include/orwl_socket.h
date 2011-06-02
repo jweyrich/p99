@@ -110,61 +110,66 @@ char const* orwl_inet_ntop(struct sockaddr const* addr,
 uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed, size_t len, uint64_t*const mess);
 
 /**
- ** @brief An open socket through which we may receive some
- ** authenticated data and with which we may launch callbacks.
+ ** @brief Data for a procedure call
+ **
+ ** These can either be remote, with data that is authenticated
+ ** through the ::orwl_server mechanism. Or they are called locally
+ ** when during the processing of the call request that possibility is
+ ** detected.
  **
  ** @see orwl_server
  ** @see orwl_rpc
- ** @see auth_sock_init
- ** @see auth_sock_destroy
- ** @see auth_sock_close
- ** @see auth_sock_create
- ** @see auth_sock_join
- ** @see auth_sock_insert_peer
- ** @see auth_sock_insert_host
+ ** @see orwl_proc_init
+ ** @see orwl_proc_destroy
+ ** @see orwl_proc_untie_caller
+ ** @see orwl_proc_create
+ ** @see orwl_proc_join
+ ** @see orwl_proc_insert_peer
+ ** @see orwl_proc_insert_host
  **/
-struct auth_sock {
-  struct orwl_server* srv; /*!< the server through which we received
-                             this socket */
-  int fd;                  /*!< the open file descriptor */
-  bool is_detached;        /*!< auth_sock_close has been called once */
+struct orwl_proc {
+  uint64_t ret;            /*!< a place to store the return value of
+                             the call */
+  /* the message */
   size_t len;              /*!< the length of the message */
   uint64_t *mes;           /*!< the message itself */
   uint64_t const* back;    /*!< a backup of the message */
-  orwl_thread_cntrl* det;      /*!< non-null if we are local */
-  uint64_t ret;            /*!< a place to store the return value of
-                             the call */
-  uint64_t remoteorder;   /*!< the byte order on the remote host */
+  /* internal control fields */
+  struct orwl_server* srv; /*!< the server through which we received this socket */
+  bool is_untied;          /*!< orwl_proc_untie_caller has been called once */
+  orwl_thread_cntrl* det;  /*!< non-null if we are local */
+  int fd;                  /*!< the open file descriptor */
+  uint64_t remoteorder;    /*!< the byte order on the remote host */
 };
 
-DECLARE_ONCE(auth_sock);
+DECLARE_ONCE(orwl_proc);
 
 #ifndef DOXYGEN
 inline
-P99_PROTOTYPE(auth_sock*, auth_sock_init, auth_sock *, int, struct orwl_server*, size_t, uint64_t, uint64_t*, orwl_thread_cntrl*);
-#define auth_sock_init(...) P99_CALL_DEFARG(auth_sock_init, 7, __VA_ARGS__)
-#define auth_sock_init_defarg_1() -1
-#define auth_sock_init_defarg_2() P99_0(struct orwl_server*)
-#define auth_sock_init_defarg_3() P99_0(size_t)
-#define auth_sock_init_defarg_4() P99_0(uint64_t)
-#define auth_sock_init_defarg_5() P99_0(uint64_t*)
-#define auth_sock_init_defarg_6() P99_0(orwl_thread_cntrl*)
+P99_PROTOTYPE(orwl_proc*, orwl_proc_init, orwl_proc *, int, struct orwl_server*, size_t, uint64_t, uint64_t*, orwl_thread_cntrl*);
+#define orwl_proc_init(...) P99_CALL_DEFARG(orwl_proc_init, 7, __VA_ARGS__)
+#define orwl_proc_init_defarg_1() -1
+#define orwl_proc_init_defarg_2() P99_0(struct orwl_server*)
+#define orwl_proc_init_defarg_3() P99_0(size_t)
+#define orwl_proc_init_defarg_4() P99_0(uint64_t)
+#define orwl_proc_init_defarg_5() P99_0(uint64_t*)
+#define orwl_proc_init_defarg_6() P99_0(orwl_thread_cntrl*)
 #endif
 
-DOCUMENT_INIT(auth_sock)
-P99_DEFARG_DOCU(auth_sock_init)
+DOCUMENT_INIT(orwl_proc)
+P99_DEFARG_DOCU(orwl_proc_init)
 inline
-auth_sock*
-auth_sock_init(auth_sock *sock,         /*!< [out] */
+orwl_proc*
+orwl_proc_init(orwl_proc *sock,         /*!< [out] */
                int fd,                  /*!< [in] file descriptor, defaults to -1 */
                struct orwl_server* srv, /*!< [in,out] defaults to a null pointer */
                size_t len,              /*!< [in] the length of the message 0 */
                uint64_t remo,           /*!< [in] the byte order on remote */
                uint64_t *m,             /*!< [in] the message or 0 */
-               orwl_thread_cntrl *det       /*!< [in] non 0 if a local connection */
+               orwl_thread_cntrl *det   /*!< [in] non 0 if a local connection */
                ) {
   if (!sock) return 0;
-  *sock = P99_LVAL(auth_sock const,
+  *sock = P99_LVAL(orwl_proc const,
                    .fd = fd,
                    .srv = srv,
                    .len = len,
@@ -176,49 +181,50 @@ auth_sock_init(auth_sock *sock,         /*!< [out] */
   return sock;
 }
 
-DOCUMENT_DESTROY(auth_sock)
-void auth_sock_destroy(auth_sock *sock);
-DECLARE_NEW_DELETE(auth_sock);
-DECLARE_THREAD(auth_sock);
+DOCUMENT_DESTROY(orwl_proc)
+void orwl_proc_destroy(orwl_proc *sock);
+DECLARE_NEW_DELETE(orwl_proc);
+DECLARE_THREAD(orwl_proc);
 
-#define auth_sock_create(...) P99_CALL_DEFARG(auth_sock_create, 2, __VA_ARGS__)
-#define auth_sock_create_defarg_1() P99_0(pthread_t*)
+#define orwl_proc_create(...) P99_CALL_DEFARG(orwl_proc_create, 2, __VA_ARGS__)
+#define orwl_proc_create_defarg_1() P99_0(pthread_t*)
 
 /**
- ** @memberof auth_sock
+ ** @memberof orwl_proc
  **/
-void auth_sock_close(auth_sock *sock);
+void orwl_proc_untie_caller(orwl_proc *sock);
 
 #ifdef DOXYGEN
-#define DEFINE_AUTH_SOCK_FUNC(F, ...)                                       \
-/*! An ::auth_sock function interpreting a message received on a socket. */ \
+#define DEFINE_ORWL_PROC_FUNC(F, ...)                                       \
+/*! An ::orwl_proc function interpreting a message received on a socket. */ \
 /*! It interprets the message it receives as if it where declared*/         \
 /*! @code uint64_t F(__VA_ARGS__) @endcode */                               \
-/*! @see AUTH_SOCK_READ is used to interpret the message as specified */    \
-/*! @memberof auth_sock */                                                  \
-void F(auth_sock *Arg)
-#define DECLARE_AUTH_SOCK_FUNC(F, ...) void F(auth_sock *Arg)
+/*! @see ORWL_PROC_READ is used to interpret the message as specified */    \
+/*! @memberof orwl_proc */                                                  \
+void F(orwl_proc *Arg)
+#define DECLARE_ORWL_PROC_FUNC(F, ...) void F(orwl_proc *Arg)
 #else
-#define DEFINE_AUTH_SOCK_FUNC(F, ...)                          \
-DEFINE_ORWL_REGISTER_ALIAS(F, auth_sock);                      \
-void F(auth_sock *Arg)
+#define DEFINE_ORWL_PROC_FUNC(F, ...)                          \
+DEFINE_ORWL_REGISTER_ALIAS(F, orwl_proc);                      \
+void F(orwl_proc *Arg)
 
-#define DECLARE_AUTH_SOCK_FUNC(F, ...)                         \
-void F(auth_sock *Arg);                                        \
-DECLARE_ORWL_REGISTER_ALIAS(F, auth_sock)
+#define DECLARE_ORWL_PROC_FUNC(F, ...)                         \
+void F(orwl_proc *Arg);                                        \
+DECLARE_ORWL_REGISTER_ALIAS(F, orwl_proc)
 #endif
 
-DECLARE_ORWL_TYPE_DYNAMIC(auth_sock);
+DECLARE_ORWL_TYPE_DYNAMIC(orwl_proc);
 
 
-#define AUTH_SOCK_READ(A, F, ...)                              \
-(void)((void (*)(auth_sock*)){ F });                           \
+#define ORWL_PROC_READ(A, F, ...)                              \
+(void)((void (*)(orwl_proc*)){ F });                           \
 P99_VASSIGNS((A)->mes, __VA_ARGS__);                           \
 (A)->len -= P99_NARG(__VA_ARGS__);                             \
 (A)->mes += P99_NARG(__VA_ARGS__)
 
-/* some helper */
-orwl_addr getpeer(auth_sock *Arg);
+/*! @brief an accessor function */
+/*! @memberof orwl_proc */
+orwl_addr orwl_proc_getpeer(orwl_proc const*Arg);
 
 
 #ifndef DOXYGEN

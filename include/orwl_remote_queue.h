@@ -34,13 +34,13 @@
  **   cli_wh<-orwl_handle [label="orwl_request()", URL="\ref orwl_request()", ID="1"];
  **   orwl_mirror<-cli_wh [label="orwl_request()", URL="\ref orwl_request()", ID="1"];
  **   orwl_server<-orwl_mirror [label="orwl_rpc()"];
- **   orwl_auth_sock<-orwl_server [label="orwl_auth_sock_request()"];
- **   orwl_auth_sock;
- **   orwl_auth_sock->orwl_server [label="Ack"];
+ **   orwl_proc<-orwl_server [label="orwl_proc_request()"];
+ **   orwl_proc;
+ **   orwl_proc->orwl_server [label="Ack"];
  **   orwl_server->orwl_mirror [label="orwl_rpc()"];
  **   orwl_mirror->orwl_handle [label="Ack "];
  **   cli_wh<-orwl_handle [label="orwl_acquire"];
- **   orwl_auth_sock->cli_wh [label="acquired"];
+ **   orwl_proc->cli_wh [label="acquired"];
  **   cli_wh->orwl_handle [label="orwl_acquired"];
  **   cli_wh<-orwl_handle [label="orwl_release"];
  **   cli_wh<-orwl_handle [label="orwl_release"];

@@ -17,7 +17,7 @@
 #include "orwl_rand.h"
 
 P99_DECLARE_STRUCT(orwl_server);
-P99_DECLARE_STRUCT(auth_sock);
+P99_DECLARE_STRUCT(orwl_proc);
 P99_DECLARE_STRUCT(orwl_mirror);
 P99_DECLARE_STRUCT(orwl_wq);
 P99_DECLARE_STRUCT(orwl_endpoint);
@@ -294,9 +294,9 @@ uint64_t orwl_send(orwl_server* srv, orwl_endpoint const* there, rand48_t *seed,
  **   caller,main,server,thread,procedure;
  **   main -> server [label="orwl_server_create()", URL="\ref orwl_server_create()"];
  **   caller -> server [label="orwl_send(F, ...)", URL="\ref orwl_send()"];
- **   server->thread [label="auth_sock_create(F, ...)", URL="\ref auth_sock_create()"];
+ **   server->thread [label="orwl_proc_create(F, ...)", URL="\ref orwl_proc_create()"];
  **   thread->procedure [label="F(...)"];
- **   procedure->caller [label="auth_sock_close()", URL="\ref auth_sock_close()"];
+ **   procedure->caller [label="orwl_proc_release_caller()", URL="\ref orwl_proc_release_caller()"];
  **   procedure->thread [label="\c return"];
  **   thread->main [label="pthread_exit()"];
  ** @endmsc
