@@ -118,7 +118,7 @@ DEFINE_THREAD(orwl_server) {
           if (!errno) errno = EINVAL;
           P99_UNWIND_RETURN;
         }
-        port_t_init(&Arg->host.ep.port, addr.sin_port);
+        orwl_port_init(&Arg->host.ep.port, addr.sin_port);
       }
       char const* server_name = orwl_endpoint_print(&Arg->host.ep);
       report(1, "server listening at %s", server_name);

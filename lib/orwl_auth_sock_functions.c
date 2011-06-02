@@ -33,7 +33,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port) {
   orwl_host *h = P99_NEW(orwl_host);
   /* mes is already in host order */
   orwl_addr_init(&h->ep.addr, addr);
-  port_t_init(&h->ep.port, port);
+  orwl_port_init(&h->ep.port, port);
   orwl_host_connect(h, &Arg->srv->host);
 }
 

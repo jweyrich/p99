@@ -36,7 +36,7 @@ P99_INSTANTIATE(orwl_endpoint, orwl_endpoint_get, char const* name);
 orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
   if (ep && name && name[0]) {
     orwl_addr addr = P99_INIT;
-    port_t port = P99_INIT;
+    orwl_port port = P99_INIT;
     uint64_t index = 0;
     char const prefix[7 + 1] = "orwl://";
     if (strstr(name, prefix) == name) {
@@ -64,7 +64,7 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
     if (name[0]) {
       if (name[0] != ':') return 0;
       ++name;
-      port_t_init(&port, strtou16(name));
+      orwl_port_init(&port, strtou16(name));
       size_t len = strcspn(name, "/");
       if (!len) return 0;
       name += len;
@@ -338,12 +338,12 @@ bool orwl_recv_(int fd, uint64_t *const mess, size_t len, uint64_t remo) {
 P99_INSTANTIATE(orwl_addr*, orwl_addr_init, orwl_addr *, in_addr_t);
 P99_INSTANTIATE(struct in_addr, addr2net, orwl_addr const*);
 P99_INSTANTIATE(struct in6_addr, addr2net6, orwl_addr const*);
-P99_INSTANTIATE(port_t*, port_t_init, port_t *, in_port_t);
-P99_INSTANTIATE(in_port_t, port2net, port_t const*);
-P99_INSTANTIATE(uint64_t, port2host, port_t const*);
-P99_INSTANTIATE(port_t, net2port, in_port_t);
-P99_INSTANTIATE(port_t, host2port, uint64_t);
-P99_INSTANTIATE(bool, port_t_eq, port_t const*, port_t const*);
+P99_INSTANTIATE(orwl_port*, orwl_port_init, orwl_port *, in_port_t);
+P99_INSTANTIATE(in_port_t, port2net, orwl_port const*);
+P99_INSTANTIATE(uint64_t, port2host, orwl_port const*);
+P99_INSTANTIATE(orwl_port, net2port, in_port_t);
+P99_INSTANTIATE(orwl_port, host2port, uint64_t);
+P99_INSTANTIATE(bool, orwl_port_eq, orwl_port const*, orwl_port const*);
 P99_INSTANTIATE(bool, orwl_addr_eq, orwl_addr const*, orwl_addr const*);
 P99_INSTANTIATE(bool, orwl_endpoint_eq, orwl_endpoint const*, orwl_endpoint const*);
 P99_INSTANTIATE(bool, orwl_endpoint_similar, orwl_endpoint const*, orwl_endpoint const*);

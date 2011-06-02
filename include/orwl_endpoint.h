@@ -23,7 +23,7 @@ P99_DECLARE_STRUCT(orwl_wq);
 P99_DECLARE_STRUCT(orwl_endpoint);
 P99_DECLARE_STRUCT(orwl_host);
 P99_DECLARE_UNION(orwl_addr);
-P99_DECLARE_UNION(port_t);
+P99_DECLARE_UNION(orwl_port);
 P99_DECLARE_STRUCT(orwl_wh);
 P99_DECLARE_STRUCT(orwl_handle2);
 P99_DECLARE_STRUCT(orwl_handle);
@@ -49,7 +49,7 @@ union orwl_addr {
  ** This should be used as an opaque type, don't see port `ids' as
  ** numbers or so.
  **/
-union port_t {
+union orwl_port {
   in_port_t p;
   uint8_t pp[2];
 };
@@ -58,7 +58,7 @@ union port_t {
  ** @brief Represent a remote ORWL location.
  **/
 struct orwl_endpoint {
-  port_t port;
+  orwl_port port;
   uint64_t index;
   orwl_addr addr;
 };
@@ -68,15 +68,15 @@ struct orwl_endpoint {
  **/
 #define ORWL_ADDR_INITIALIZER(NADDR) { .a[2] = htonl(0x0000FFFF), .a[3] = NADDR }
 /**
- ** @memberof port_t
+ ** @memberof orwl_port
  **/
-#define PORT_T_INITIALIZER(NPORT) { .p = NPORT }
+#define ORWL_PORT_INITIALIZER(NPORT) { .p = NPORT }
 /**
  ** @memberof orwl_endpoint
  **/
 #define ORWL_ENDPOINT_INITIALIZER(NADDR,  NPORT) {             \
     .addr = ORWL_ADDR_INITIALIZER(NADDR),                         \
-      .port = PORT_T_INITIALIZER(NPORT),                       \
+      .port = ORWL_PORT_INITIALIZER(NPORT),                       \
       }
 
 #ifndef DOXYGEN
@@ -135,44 +135,44 @@ struct in6_addr addr2net6(orwl_addr const*A) {
 #endif
 
 /**
- ** @memberof port_t
+ ** @memberof orwl_port
  **/
 inline
-in_port_t port2net(port_t const*A) {
+in_port_t port2net(orwl_port const*A) {
   return A->p;
 }
 
 /**
- ** @memberof port_t
+ ** @memberof orwl_port
  **/
 inline
-uint64_t port2host(port_t const*A) {
+uint64_t port2host(orwl_port const*A) {
   return ntohs((uint16_t)(A->p));
 }
 
 inline
-port_t net2port(in_port_t P) {
-  port_t ret = { .p = P };
+orwl_port net2port(in_port_t P) {
+  orwl_port ret = { .p = P };
   return ret;
 }
 
 inline
-port_t host2port(uint64_t A) {
-  port_t ret = { .p = htons(A) };
+orwl_port host2port(uint64_t A) {
+  orwl_port ret = { .p = htons(A) };
   return ret;
 }
 
 #ifndef DOXYGEN
 inline
-P99_PROTOTYPE(port_t*, port_t_init, port_t *, in_port_t);
-#define port_t_init(...) P99_CALL_DEFARG(port_t_init, 2, __VA_ARGS__)
-#define port_t_init_defarg_1() P99_0(in_port_t)
+P99_PROTOTYPE(orwl_port*, orwl_port_init, orwl_port *, in_port_t);
+#define orwl_port_init(...) P99_CALL_DEFARG(orwl_port_init, 2, __VA_ARGS__)
+#define orwl_port_init_defarg_1() P99_0(in_port_t)
 #endif
 
-DOCUMENT_INIT(port_t)
-P99_DEFARG_DOCU(port_t)
+DOCUMENT_INIT(orwl_port)
+P99_DEFARG_DOCU(orwl_port)
 inline
-port_t* port_t_init(port_t *A,   /*!< the object to initialize */
+orwl_port* orwl_port_init(orwl_port *A,   /*!< the object to initialize */
                     in_port_t P  /*!< defaults to 0 */
                     ) {
   if (!A) return 0;
@@ -181,10 +181,10 @@ port_t* port_t_init(port_t *A,   /*!< the object to initialize */
 }
 
 /**
- ** @memberof port_t
+ ** @memberof orwl_port
  **/
 inline
-bool port_t_eq(port_t const* A, port_t const* B) {
+bool orwl_port_eq(orwl_port const* A, orwl_port const* B) {
   return A ? (B ? (A->p == B->p) : false) : !B;
 }
 
@@ -201,7 +201,7 @@ bool orwl_addr_eq(orwl_addr const* A, orwl_addr const* B) {
  **/
 inline
 bool orwl_endpoint_similar(orwl_endpoint const* A, orwl_endpoint const* B) {
-  return A ? (B ? (port_t_eq(&A->port, &B->port) && orwl_addr_eq(&A->addr, &B->addr)) : false) : !B;
+  return A ? (B ? (orwl_port_eq(&A->port, &B->port) && orwl_addr_eq(&A->addr, &B->addr)) : false) : !B;
 }
 
 /**
@@ -235,7 +235,7 @@ orwl_endpoint* orwl_endpoint_init
  ) {
   if (!endpoint) return 0;
   orwl_addr_init(&endpoint->addr, addr);
-  port_t_init(&endpoint->port, port);
+  orwl_port_init(&endpoint->port, port);
   endpoint->index = index;
   return endpoint;
 }
