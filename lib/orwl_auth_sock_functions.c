@@ -21,7 +21,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_peer, uint64_t port) {
   AUTH_SOCK_READ(Arg, auth_sock_insert_peer, uint64_t port);
   if (Arg->fd != -1) {
     orwl_host *h = P99_NEW(orwl_host);
-    /* mes and addr_t is already in host order */
+    /* mes and orwl_addr is already in host order */
     h->ep.addr = getpeer(Arg);
     h->ep.port.p = htons((uint16_t)port);
     orwl_host_connect(h, &Arg->srv->host);
@@ -32,7 +32,7 @@ DEFINE_AUTH_SOCK_FUNC(auth_sock_insert_host, uint64_t addr, uint64_t port) {
   AUTH_SOCK_READ(Arg, auth_sock_insert_host, uint64_t addr, uint64_t port);
   orwl_host *h = P99_NEW(orwl_host);
   /* mes is already in host order */
-  addr_t_init(&h->ep.addr, addr);
+  orwl_addr_init(&h->ep.addr, addr);
   port_t_init(&h->ep.port, port);
   orwl_host_connect(h, &Arg->srv->host);
 }

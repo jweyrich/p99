@@ -184,10 +184,10 @@ DEFINE_THREAD(auth_sock) {
 
 
 
-addr_t getpeer(auth_sock *Arg) {
+orwl_addr getpeer(auth_sock *Arg) {
   struct sockaddr_in addr = SOCKADDR_IN_INIIALIZER;
   int ret = getpeername(Arg->fd, (struct sockaddr*)&addr, &P99_LVAL(socklen_t, sizeof(struct sockaddr_in)));
-  return  (addr_t)ADDR_T_INITIALIZER((ret == -1) ? P99_0(in_addr_t) : addr.sin_addr.s_addr);
+  return  (orwl_addr)ORWL_ADDR_INITIALIZER((ret == -1) ? P99_0(in_addr_t) : addr.sin_addr.s_addr);
 }
 
 

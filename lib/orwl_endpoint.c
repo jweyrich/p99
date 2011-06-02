@@ -35,7 +35,7 @@ P99_INSTANTIATE(orwl_endpoint, orwl_endpoint_get, char const* name);
 
 orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
   if (ep && name && name[0]) {
-    addr_t addr = P99_INIT;
+    orwl_addr addr = P99_INIT;
     port_t port = P99_INIT;
     uint64_t index = 0;
     char const prefix[7 + 1] = "orwl://";
@@ -57,7 +57,7 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
       if (!len) return 0;
       assert(len);
       char * host = memcpy(calloc(len + 1u, 1), name, len);
-      addr_t_init(&addr, orwl_inet_addr(host));
+      orwl_addr_init(&addr, orwl_inet_addr(host));
       name = name1;
       free(host);
     }
@@ -335,16 +335,16 @@ bool orwl_recv_(int fd, uint64_t *const mess, size_t len, uint64_t remo) {
   return false;
 }
 
-P99_INSTANTIATE(addr_t*, addr_t_init, addr_t *, in_addr_t);
-P99_INSTANTIATE(struct in_addr, addr2net, addr_t const*);
-P99_INSTANTIATE(struct in6_addr, addr2net6, addr_t const*);
+P99_INSTANTIATE(orwl_addr*, orwl_addr_init, orwl_addr *, in_addr_t);
+P99_INSTANTIATE(struct in_addr, addr2net, orwl_addr const*);
+P99_INSTANTIATE(struct in6_addr, addr2net6, orwl_addr const*);
 P99_INSTANTIATE(port_t*, port_t_init, port_t *, in_port_t);
 P99_INSTANTIATE(in_port_t, port2net, port_t const*);
 P99_INSTANTIATE(uint64_t, port2host, port_t const*);
 P99_INSTANTIATE(port_t, net2port, in_port_t);
 P99_INSTANTIATE(port_t, host2port, uint64_t);
 P99_INSTANTIATE(bool, port_t_eq, port_t const*, port_t const*);
-P99_INSTANTIATE(bool, addr_t_eq, addr_t const*, addr_t const*);
+P99_INSTANTIATE(bool, orwl_addr_eq, orwl_addr const*, orwl_addr const*);
 P99_INSTANTIATE(bool, orwl_endpoint_eq, orwl_endpoint const*, orwl_endpoint const*);
 P99_INSTANTIATE(bool, orwl_endpoint_similar, orwl_endpoint const*, orwl_endpoint const*);
 

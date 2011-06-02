@@ -218,7 +218,7 @@ P99_VASSIGNS((A)->mes, __VA_ARGS__);                           \
 (A)->mes += P99_NARG(__VA_ARGS__)
 
 /* some helper */
-addr_t getpeer(auth_sock *Arg);
+orwl_addr getpeer(auth_sock *Arg);
 
 
 #ifndef DOXYGEN

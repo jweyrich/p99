@@ -22,7 +22,7 @@ P99_DECLARE_STRUCT(orwl_mirror);
 P99_DECLARE_STRUCT(orwl_wq);
 P99_DECLARE_STRUCT(orwl_endpoint);
 P99_DECLARE_STRUCT(orwl_host);
-P99_DECLARE_UNION(addr_t);
+P99_DECLARE_UNION(orwl_addr);
 P99_DECLARE_UNION(port_t);
 P99_DECLARE_STRUCT(orwl_wh);
 P99_DECLARE_STRUCT(orwl_handle2);
@@ -38,7 +38,7 @@ P99_DECLARE_STRUCT(orwl_handle);
  ** This should be used as an opaque type, don't use network addresses
  ** as numbers or so.
  **/
-union addr_t {
+union orwl_addr {
   in_addr_t a[4];
   uint8_t aaaa[16];
 };
@@ -60,13 +60,13 @@ union port_t {
 struct orwl_endpoint {
   port_t port;
   uint64_t index;
-  addr_t addr;
+  orwl_addr addr;
 };
 
 /**
- ** @memberof addr_t
+ ** @memberof orwl_addr
  **/
-#define ADDR_T_INITIALIZER(NADDR) { .a[2] = htonl(0x0000FFFF), .a[3] = NADDR }
+#define ORWL_ADDR_INITIALIZER(NADDR) { .a[2] = htonl(0x0000FFFF), .a[3] = NADDR }
 /**
  ** @memberof port_t
  **/
@@ -75,21 +75,21 @@ struct orwl_endpoint {
  ** @memberof orwl_endpoint
  **/
 #define ORWL_ENDPOINT_INITIALIZER(NADDR,  NPORT) {             \
-    .addr = ADDR_T_INITIALIZER(NADDR),                         \
+    .addr = ORWL_ADDR_INITIALIZER(NADDR),                         \
       .port = PORT_T_INITIALIZER(NPORT),                       \
       }
 
 #ifndef DOXYGEN
 inline
-P99_PROTOTYPE(addr_t*, addr_t_init, addr_t *, in_addr_t);
-#define addr_t_init(...) P99_CALL_DEFARG(addr_t_init, 2, __VA_ARGS__)
-#define addr_t_init_defarg_1() P99_0(in_addr_t)
+P99_PROTOTYPE(orwl_addr*, orwl_addr_init, orwl_addr *, in_addr_t);
+#define orwl_addr_init(...) P99_CALL_DEFARG(orwl_addr_init, 2, __VA_ARGS__)
+#define orwl_addr_init_defarg_1() P99_0(in_addr_t)
 #endif
 
-DOCUMENT_INIT(addr_t)
-P99_DEFARG_DOCU(addr_t)
+DOCUMENT_INIT(orwl_addr)
+P99_DEFARG_DOCU(orwl_addr)
 inline
-addr_t* addr_t_init(addr_t *A,  /*!< the object to initialize */
+orwl_addr* orwl_addr_init(orwl_addr *A,  /*!< the object to initialize */
                     in_addr_t I0 /*!< defaults to the null address */
                     ) {
   if (!A) return 0;
@@ -105,10 +105,10 @@ addr_t* addr_t_init(addr_t *A,  /*!< the object to initialize */
  **
  ** If this is not an IPv4 address return all bit ones.
  **
- ** @memberof addr_t
+ ** @memberof orwl_addr
  **/
 inline
-struct in_addr addr2net(addr_t const*A) {
+struct in_addr addr2net(orwl_addr const*A) {
   struct in_addr ret = {
     .s_addr = ((!A->a[0]
                 && !A->a[1]
@@ -124,10 +124,10 @@ struct in_addr addr2net(addr_t const*A) {
  ** @brief Return the IPv6 address stored in @a A.
  **
  ** This is only present if the platform supports IPv6. 
- ** @memberof addr_t
+ ** @memberof orwl_addr
  **/
 inline
-struct in6_addr addr2net6(addr_t const*A) {
+struct in6_addr addr2net6(orwl_addr const*A) {
   struct in6_addr ret = { .s6_addr[0] = 0 };
   memcpy(ret.s6_addr, A->aaaa, 16);
   return ret;
@@ -189,10 +189,10 @@ bool port_t_eq(port_t const* A, port_t const* B) {
 }
 
 /**
- ** @memberof addr_t
+ ** @memberof orwl_addr
  **/
 inline
-bool addr_t_eq(addr_t const* A, addr_t const* B) {
+bool orwl_addr_eq(orwl_addr const* A, orwl_addr const* B) {
   return A ? (B ? !memcmp(A, B, sizeof(*A)) : false) : !B;
 }
 
@@ -201,7 +201,7 @@ bool addr_t_eq(addr_t const* A, addr_t const* B) {
  **/
 inline
 bool orwl_endpoint_similar(orwl_endpoint const* A, orwl_endpoint const* B) {
-  return A ? (B ? (port_t_eq(&A->port, &B->port) && addr_t_eq(&A->addr, &B->addr)) : false) : !B;
+  return A ? (B ? (port_t_eq(&A->port, &B->port) && orwl_addr_eq(&A->addr, &B->addr)) : false) : !B;
 }
 
 /**
@@ -234,7 +234,7 @@ orwl_endpoint* orwl_endpoint_init
  uint64_t index           /*!< defaults to 0 */
  ) {
   if (!endpoint) return 0;
-  addr_t_init(&endpoint->addr, addr);
+  orwl_addr_init(&endpoint->addr, addr);
   port_t_init(&endpoint->port, port);
   endpoint->index = index;
   return endpoint;
