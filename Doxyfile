@@ -621,7 +621,7 @@ EXCLUDE_PATTERNS       =
 # wildcard * is used, a substring. Examples: ANamespace, AClass,
 # AClass::ANamespace, ANamespace::*Test
 
-EXCLUDE_SYMBOLS        = P00_* p00_* orwl__*
+EXCLUDE_SYMBOLS        = P00_* p00_* O_RWL_* o_rwl_*
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or
 # directories that contain example code fragments that are included (see
@@ -1313,6 +1313,7 @@ EXPAND_AS_DEFINED += ORWL_FTAB
 EXPAND_AS_DEFINED += ORWL_REGISTER
 EXPAND_AS_DEFINED += ORWL_REGISTER_ALIAS
 EXPAND_AS_DEFINED += ORWL_REGISTER_DATA
+EXPAND_AS_DEFINED += O_RWL_DOCUMENT_TIME
 EXPAND_AS_DEFINED += P00_DOCUMENT_SEED
 EXPAND_AS_DEFINED += P99_DECLARE_STRUCT
 EXPAND_AS_DEFINED += P99_DECLARE_UNION

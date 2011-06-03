@@ -83,7 +83,7 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
 }
 
 /* Needed to switch off alias testing by the compiler */
-union _sockaddr_alias {
+union o_rwl_sockaddr {
   struct sockaddr_in in4;
   struct sockaddr_in6 in6;
   struct sockaddr in46;
@@ -103,7 +103,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
   } else {
 #if defined(POSIX_IPV6) && (POSIX_IPV6 > 0)
     if (in4_addr.s_addr == P99_TMAX(in_addr_t)) {
-      union _sockaddr_alias addr6 = { .in6 = { .sin6_family = AF_INET6 } };
+      union o_rwl_sockaddr addr6 = { .in6 = { .sin6_family = AF_INET6 } };
       memcpy(addr6.in6.sin6_addr.s6_addr, ep->addr.aaaa, 16);
       /* We need this, since sa_family is not necessarily atop of
          sin6_family */
@@ -114,7 +114,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
     } else
 #endif
       {
-        union _sockaddr_alias addr4 = {
+        union o_rwl_sockaddr addr4 = {
           .in4 = {
             .sin_family = AF_INET,
             .sin_addr = in4_addr

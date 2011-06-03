@@ -31,10 +31,10 @@
  ** types.
  **/
 
-#define ORWL__DOCUMENT_TIME(S, T)                                                                                      \
+#define O_RWL_DOCUMENT_TIME(S, T)                                                                                      \
 /*! @brief Convert a time value from S to T. @see orwl_time.h for more information about time values and functions. */
 
-ORWL__DOCUMENT_TIME(seconds, timespec)
+O_RWL_DOCUMENT_TIME(seconds, timespec)
 inline
 struct timespec seconds2timespec(double t) {
   double const giga = 1E+9;
@@ -46,7 +46,7 @@ struct timespec seconds2timespec(double t) {
   return ret;
 }
 
-ORWL__DOCUMENT_TIME(timespec, seconds)
+O_RWL_DOCUMENT_TIME(timespec, seconds)
 inline
 double timespec2seconds(struct timespec t) {
   double const nano = 1E-9;
@@ -54,7 +54,7 @@ double timespec2seconds(struct timespec t) {
   return ret;
 }
 
-ORWL__DOCUMENT_TIME(seconds, timeval)
+O_RWL_DOCUMENT_TIME(seconds, timeval)
 inline
 struct timeval seconds2timeval(double t) {
   double const mega = 1E+6;
@@ -66,7 +66,7 @@ struct timeval seconds2timeval(double t) {
   return ret;
 }
 
-ORWL__DOCUMENT_TIME(timeval, seconds)
+O_RWL_DOCUMENT_TIME(timeval, seconds)
 inline
 double timeval2seconds(struct timeval t) {
   double const micro = 1E-6;
@@ -74,7 +74,7 @@ double timeval2seconds(struct timeval t) {
   return ret;
 }
 
-ORWL__DOCUMENT_TIME(useconds, timespec)
+O_RWL_DOCUMENT_TIME(useconds, timespec)
 inline
 struct timespec useconds2timespec(uint64_t t) {
   enum { mega = 1000000u };
@@ -87,7 +87,7 @@ struct timespec useconds2timespec(uint64_t t) {
   return ret;
 }
 
-ORWL__DOCUMENT_TIME(timespec, useconds)
+O_RWL_DOCUMENT_TIME(timespec, useconds)
 inline
 uint64_t timespec2useconds(struct timespec t) {
   enum { mega = 1000000u };
@@ -95,21 +95,21 @@ uint64_t timespec2useconds(struct timespec t) {
   return ret;
 }
 
-ORWL__DOCUMENT_TIME(useconds, seconds)
+O_RWL_DOCUMENT_TIME(useconds, seconds)
 inline
 double useconds2seconds(uint64_t t) {
   double const micro = 1E-6;
   return t * micro;
 }
 
-ORWL__DOCUMENT_TIME(seconds, useconds)
+O_RWL_DOCUMENT_TIME(seconds, useconds)
 inline
 uint64_t seconds2useconds(double t) {
   double mega = 1E+6;
   return (uint64_t)(t * mega);
 }
 
-ORWL__DOCUMENT_TIME(useconds, timeval)
+O_RWL_DOCUMENT_TIME(useconds, timeval)
 inline
 struct timeval useconds2timeval(uint64_t t) {
   enum { mega = 1000000u };
@@ -122,7 +122,7 @@ struct timeval useconds2timeval(uint64_t t) {
   return ret;
 }
 
-ORWL__DOCUMENT_TIME(timeval, useconds)
+O_RWL_DOCUMENT_TIME(timeval, useconds)
 inline
 uint64_t timeval2useconds(struct timeval t) {
   enum { mega = 1000000u };
@@ -130,7 +130,7 @@ uint64_t timeval2useconds(struct timeval t) {
   return ret;
 }
 
-ORWL__DOCUMENT_TIME(timeval, timespec)
+O_RWL_DOCUMENT_TIME(timeval, timespec)
 inline
 struct timespec timeval2timespec(struct timeval t) {
   const struct timespec ret = {
@@ -140,7 +140,7 @@ struct timespec timeval2timespec(struct timeval t) {
   return ret;
 }
 
-ORWL__DOCUMENT_TIME(timespec, timeval)
+O_RWL_DOCUMENT_TIME(timespec, timeval)
 inline
 struct timeval timespec2timeval(struct timespec t) {
   long usec = t.tv_nsec / 1000;

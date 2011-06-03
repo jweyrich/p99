@@ -102,7 +102,7 @@
 
 #ifdef DOXYGEN
 
-#define ORWL__DOCUMENT_CONFIG(NAME)                                                                            \
+#define O_RWL_DOCUMENT_CONFIG(NAME)                                                                            \
 /*! @brief Configuration option */                                                                             \
 /*! Generally configuration options are determined at compile time, see @ref configuration "configuration". */
 
@@ -116,23 +116,23 @@
  ** @{
  **/
 
-ORWL__DOCUMENT_CONFIG(ATOMIC_OPS)
+O_RWL_DOCUMENT_CONFIG(ATOMIC_OPS)
 #define ATOMIC_OPS
 
 
-ORWL__DOCUMENT_CONFIG(DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP)
+O_RWL_DOCUMENT_CONFIG(DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP)
 #define DEFINE__GCC_HAVE_SYNC_COMPARE_AND_SWAP
 
 
-ORWL__DOCUMENT_CONFIG(GNUC_NO_SYNC)
+O_RWL_DOCUMENT_CONFIG(GNUC_NO_SYNC)
 #define GNUC_NO_SYNC
 
 
-ORWL__DOCUMENT_CONFIG(GNUC_SYNC_REPLACE)
+O_RWL_DOCUMENT_CONFIG(GNUC_SYNC_REPLACE)
 #define GNUC_SYNC_REPLACE
 
 
-ORWL__DOCUMENT_CONFIG(HAVE_ATOMIC)
+O_RWL_DOCUMENT_CONFIG(HAVE_ATOMIC)
 #define HAVE_ATOMIC
 
 
@@ -145,7 +145,7 @@ ORWL__DOCUMENT_CONFIG(HAVE_ATOMIC)
  ** @{
  **/
 
-ORWL__DOCUMENT_CONFIG(NO_FUTEX)
+O_RWL_DOCUMENT_CONFIG(NO_FUTEX)
 /**
  ** Define this macro to compile the library without futex
  ** support. This is probably only useful for testing code coverage.
@@ -161,7 +161,7 @@ ORWL__DOCUMENT_CONFIG(NO_FUTEX)
  ** @{
  **/
 
-ORWL__DOCUMENT_CONFIG(NO_NANOSLEEP)
+O_RWL_DOCUMENT_CONFIG(NO_NANOSLEEP)
 /**
  ** Define this macro to compile the library without @c nanosleep. @c
  ** usleep will be used instead. This is probably only useful for
@@ -171,7 +171,7 @@ ORWL__DOCUMENT_CONFIG(NO_NANOSLEEP)
 #define NO_NANOSLEEP
 
 
-ORWL__DOCUMENT_CONFIG(NO_USLEEP)
+O_RWL_DOCUMENT_CONFIG(NO_USLEEP)
 /**
  ** Define this macro to compile the library without @c usleep. If @c
  ** nanosleep isn't available, too, a hack using @c select will be
@@ -195,27 +195,27 @@ ORWL__DOCUMENT_CONFIG(NO_USLEEP)
  **/
 
 
-ORWL__DOCUMENT_CONFIG(POSIX_BARRIERS)
+O_RWL_DOCUMENT_CONFIG(POSIX_BARRIERS)
 #define POSIX_BARRIERS
 
 
-ORWL__DOCUMENT_CONFIG(POSIX_IPV6)
+O_RWL_DOCUMENT_CONFIG(POSIX_IPV6)
 #define POSIX_IPV6
 
 
-ORWL__DOCUMENT_CONFIG(POSIX_SEMAPHORES)
+O_RWL_DOCUMENT_CONFIG(POSIX_SEMAPHORES)
 #define POSIX_SEMAPHORES
 
 
-ORWL__DOCUMENT_CONFIG(POSIX_THREAD_PROCESS_SHARED)
+O_RWL_DOCUMENT_CONFIG(POSIX_THREAD_PROCESS_SHARED)
 #define POSIX_THREAD_PROCESS_SHARED
 
 
-ORWL__DOCUMENT_CONFIG(POSIX_THREAD_SAFE_FUNCTIONS)
+O_RWL_DOCUMENT_CONFIG(POSIX_THREAD_SAFE_FUNCTIONS)
 #define POSIX_THREAD_SAFE_FUNCTIONS
 
 
-ORWL__DOCUMENT_CONFIG(POSIX_TIMEOUTS)
+O_RWL_DOCUMENT_CONFIG(POSIX_TIMEOUTS)
 #define POSIX_TIMEOUTS
 
 /**
