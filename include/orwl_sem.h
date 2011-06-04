@@ -69,19 +69,27 @@ P99_DECLARE_STRUCT(orwl_sem);
  **/
 
 /** @brief Destroy the semaphore **/
+/** @memberof orwl_sem **/
 inline int    orwl_sem_destroy(orwl_sem *);
 /** @brief Get the value of the semaphore a one point before
     returning from this functions **/
+/** @memberof orwl_sem **/
 inline int    orwl_sem_getvalue(orwl_sem *, int *);
 /** @brief Iniitalize the semaphore **/
+/** @memberof orwl_sem **/
 inline int    orwl_sem_init(orwl_sem *, unsigned int);
 /** @brief Increment the semaphore **/
+/** @memberof orwl_sem **/
 inline int    orwl_sem_post(orwl_sem *);
 /** @brief Test and decrement the semaphore **/
+/** @memberof orwl_sem **/
 inline int    orwl_sem_trywait(orwl_sem *);
 /** @brief Wait for a token to become available on the semaphore **/
+/** @memberof orwl_sem **/
 inline int    orwl_sem_wait(orwl_sem *);
 
+/** @memberof orwl_sem **/
+/** @see sem_assert **/
 inline unsigned orwl_sem_assert(orwl_sem* s);
 
 #ifndef DOXYGEN

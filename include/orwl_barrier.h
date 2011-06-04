@@ -54,10 +54,15 @@ int orwl_barrier_wait(orwl_barrier* barrier) {
 
 P99_DECLARE_STRUCT(orwl_barrier);
 
-/**
- ** @brief a simple replacement type for @c pthread_barrier_t in case
- ** that it is not available.
+/** @struct orwl_barrier
+ ** @brief a simple fallback type for @c pthread_barrier_t
+ **
+ ** In case that @c pthread_barrier_t is not available a homebrew
+ ** replacement is used.
  **/
+#ifdef DOXYGEN
+struct orwl_barrier;
+#else
 struct orwl_barrier {
   pthread_mutex_t mut;
   pthread_cond_t enter;
@@ -65,13 +70,17 @@ struct orwl_barrier {
   unsigned outside;
   unsigned inside;
 };
+#endif
 
 #ifndef PTHREAD_BARRIER_SERIAL_THREAD
 enum { PTHREAD_BARRIER_SERIAL_THREAD = INT_MAX };
 #endif
 
+/** @memberof orwl_barrier **/
 int orwl_barrier_destroy(orwl_barrier* barrier);
+/** @memberof orwl_barrier **/
 int orwl_barrier_init(orwl_barrier* barrier, unsigned count);
+/** @memberof orwl_barrier **/
 int orwl_barrier_wait(orwl_barrier* barrier);
 
 #endif
