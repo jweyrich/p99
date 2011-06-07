@@ -3,15 +3,15 @@
 
 #include "orwl.h"
 
-void instr_print_statistics(size_t id);
-orwl_state instr_orwl_write_request2(orwl_mirror* location, orwl_handle2* rh2, size_t flag);
-orwl_state instr_orwl_read_request2(orwl_mirror* location, orwl_handle2* rh2, size_t flag);
-orwl_state instr_orwl_acquire2(orwl_handle2* rh2, size_t flag);
-orwl_state instr_orwl_release2(orwl_handle2* rh2, size_t flag);
-orwl_state instr_orwl_cancel2(orwl_handle2* rh2, size_t flag);
-orwl_state instr_orwl_test2(orwl_handle2* rh2, size_t flag);
-void* instr_orwl_write_map2(orwl_handle2* rh2, size_t data_len, size_t flag);
-void const* instr_orwl_read_map2(orwl_handle2* rh2, size_t data_len, size_t flag);
-void instr_orwl_truncate2(orwl_handle2* rh2, size_t data_len, size_t flag);
+void print_statistics_instr(size_t id);
+orwl_state orwl_write_request2_instr(orwl_mirror* location, orwl_handle2* rh2, size_t flag);
+orwl_state orwl_read_request2_instr(orwl_mirror* location, orwl_handle2* rh2, size_t flag);
+orwl_state orwl_acquire2_instr(orwl_handle2* rh2, size_t flag);
+orwl_state orwl_release2_instr(orwl_handle2* rh2, size_t flag);
+orwl_state orwl_cancel2_instr(orwl_handle2* rh2, size_t flag);
+orwl_state orwl_test2_instr(orwl_handle2* rh2, size_t flag);
+void* orwl_write_map2_instr(orwl_handle2* rh2, size_t data_len, size_t flag);
+void const* orwl_read_map2_instr(orwl_handle2* rh2, size_t data_len, size_t flag);
+void orwl_truncate2_instr(orwl_handle2* rh2, size_t data_len, size_t flag);
 
 #endif
