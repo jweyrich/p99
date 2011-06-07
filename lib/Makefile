@@ -199,3 +199,14 @@ endif
 
 tidy :
 	for f in ${SRC} ; do  ${TIDY} $$f ; done
+
+
+################
+#    Addons    #
+################
+
+liborwl_timing_instrument.o :
+	$(CC) $(CFLAGS) -rdynamic -c orwl_timing_instrument.c
+
+liborwl_timing_instrument.so : liborwl_timing_instrument.o
+	${CC} -shared -Wl -o `pwd`/liborwl_timing_instrument.so orwl_timing_instrument.o -lc -ldl
