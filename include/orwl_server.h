@@ -124,6 +124,16 @@ void orwl_server_block(orwl_server *serv);
  **/
 void orwl_server_unblock(orwl_server *serv);
 
+/**
+ ** @brief Unblock the server once all the local tasks are correctly
+ **        initialized.
+ **
+ ** @param srv is a pointer on the local ::orwl_server
+ ** @param nb_tasks is the number of tasks to wait before unblocking
+ **        the server
+ ** @see orwl_server_block
+ ** @see orwl_server_unblock
+ **/
 void orwl_server_delayed_unblock(orwl_server *srv, size_t nb_tasks);
 
 /**
