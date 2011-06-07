@@ -399,7 +399,6 @@ bool orwl_wait_to_start(size_t id,
 			orwl_graph *graph,
 			orwl_address_book *ab,
 			orwl_server *server,
-			size_t pos,
 			size_t nb_local_tasks,
 			rand48_t *seed) {
   pthread_rwlock_wrlock(&server->lock);

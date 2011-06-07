@@ -364,7 +364,7 @@ DEFINE_THREAD(arg_t) {
   }
 
   /* Check if my neighbors are ready before starting, then realease the handle on my location */
-  orwl_wait_to_start(Arg->id, graph, ab, &srv, Arg->my_location_pos, nb_main_tasks * 9, seed);
+  orwl_wait_to_start(Arg->id, graph, ab, &srv, nb_main_tasks * 9, seed);
   if (Arg->sub_task == MAIN) {  
     report(0, "%zu is starting the init iteration", Arg->id);
   }
