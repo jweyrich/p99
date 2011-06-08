@@ -327,6 +327,9 @@ P99_DEPRECATED(inline void orwl_resize(orwl_handle* rh, size_t data_len));
  ** @pre The handle @a rh must hold a write lock on the location to
  ** which it is linked.
  **
+ ** @param rh the handle in question
+ ** @param data_len [out] the length of the data in number of elements
+ **
  ** @warning The new content of the data will only be visible for
  ** other lock handles once they obtain a lock after this handle
  ** releases its write lock.
@@ -350,6 +353,30 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
   return ret;
 }
 
+/**
+ ** @brief Obtain address and size of the data that is associated to a
+ ** handle for reading and writing
+ ** @memberof orwl_handle
+ ** The application may associate data to each location of which it
+ ** also may control the size. Once the lock is acquired for a given
+ ** handle, this data is available through ::orwl_map, returning a
+ ** pointer to the data and to its size. The pointer to the data will
+ ** be invalid, as soon as the lock is again released.
+ **
+ ** @param rh the handle in question
+ ** @param [out] data_len the length of the data in bytes
+ **
+ ** @pre The handle @a rh must hold a write lock on the location to
+ ** which it is linked.
+ **
+ ** @warning The new content of the data will only be visible for
+ ** other lock handles once they obtain a lock after this handle
+ ** releases its write lock.
+ **
+ ** @see orwl_mapro for the case that the lock that is hold is a read
+ ** lock and / or the data should only be read.
+ **
+ **/
 inline
 void* orwl_write_map(orwl_handle* rh, size_t* data_len) {
   void* ret = 0;
@@ -373,6 +400,8 @@ void* orwl_write_map(orwl_handle* rh, size_t* data_len) {
  ** @memberof orwl_handle
  ** @pre The handle @a rh must hold a read lock on the location to
  ** which it is linked.
+ ** @param rh the handle in question
+ ** @param [out] data_len the length of the data in number of elements
  **
  ** @see orwl_map for the case that the lock that is hold is a write
  ** lock the data and should also be written to.
@@ -392,6 +421,18 @@ uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len) {
   return ret;
 }
 
+/**
+ ** @brief Obtain address and size of the data that is associated to a
+ ** handle for reading
+ ** @memberof orwl_handle
+ ** @pre The handle @a rh must hold a read lock on the location to
+ ** which it is linked.
+ ** @param rh the handle in question
+ ** @param [out] data_len the length of the data in bytes
+ **
+ ** @see orwl_write_map for the case that the lock that is hold is a write
+ ** lock the data and should also be written to.
+ **/
 inline
 void const* orwl_read_map(orwl_handle* rh, size_t* data_len) {
   void const* ret = 0;
