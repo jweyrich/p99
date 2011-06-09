@@ -18,6 +18,7 @@ NAME 	=					\
 		orwl_socket_finish		\
 		orwl_socket_test		\
 		orwl_benchmark_kernel23		\
+		orwl_benchmark_synthetic	\
 		orwl_wait_list			\
 		test-p99-block			\
 		test-p99-cases			\
@@ -38,6 +39,7 @@ SRC	=					\
 		orwl_socket_finish.c		\
 		orwl_socket_test.c		\
 		orwl_benchmark_kernel23.c	\
+		orwl_benchmark_synthetic.c	\
 		orwl_wait_list.c		\
 		test-p99-block.c		\
 		test-p99-cases.c		\
