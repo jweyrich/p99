@@ -256,8 +256,8 @@ void update_frontier(size_t id,
 		     size_t sub_task, 
 		     size_t main_task_pos, 
 		     orwl_handle2 *my_task_handle) {
-  size_t frontier_size = (sub_task < 5) ? sub_matrix_size - 2 : 1;
-  
+  //size_t frontier_size = (sub_task < 5) ? sub_matrix_size - 2 : 1;
+  size_t frontier_size = 0;
   float * shared_data = orwl_write_map2_instr(my_task_handle, frontier_size * sizeof(float), 0);
   if (shared_data == 0) {
     report(1, "fail to map memory on task %zu, %zu, %zu", id, frontier_size, sub_task);
@@ -463,7 +463,8 @@ DEFINE_THREAD(arg_t) {
 	orwl_acquire2_instr(&handle_distant_pos[handle_pos], 1);
       }
 
-      size_t edge_frontier_size = (sub_matrix_size - 2) * sizeof(float);
+      //size_t edge_frontier_size = (sub_matrix_size - 2) * sizeof(float);
+      size_t edge_frontier_size = 0;
       /* North computation */
       if (has_neighbor[NORTH - 1]) {
 	float const* shared_edge = orwl_read_map2_instr(&handle_distant_pos[POS_NORTH], edge_frontier_size, 1);
@@ -508,7 +509,8 @@ DEFINE_THREAD(arg_t) {
 	  }
       }
       
-      size_t corner_frontier_size = 1 * sizeof(float);
+      //size_t corner_frontier_size = 1 * sizeof(float);
+      size_t corner_frontier_size = 0;
       /* North east computation */
       if (has_neighbor[NORTH - 1] && has_neighbor[EAST - 1]) {
 	float const* shared_corner1 = orwl_read_map2_instr(&handle_distant_pos[POS_NORTHEASTNORTH], corner_frontier_size, 1);
