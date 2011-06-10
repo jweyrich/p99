@@ -10,7 +10,7 @@ static orwl_graph *graph = 0;
 static orwl_address_book *ab = 0;
 static orwl_mirror *local_locations = 0;
 static rand48_t *seed = 0;
-static size_t shared_memory_size = 16 * MEGA;
+static size_t shared_memory_size = MEGA * 16;
 static size_t iterations = 0;
 static size_t nb_tasks = 0;
 static size_t global_nb_tasks = 0;
@@ -25,26 +25,30 @@ typedef struct _arg_t {
   orwl_vertex *vertex;
   size_t my_location_pos;
   size_t task_pos;
+  orwl_thread_cntrl *det;
 } arg_t;
 
-arg_t* arg_t_init(arg_t *arg, size_t id, orwl_vertex *v, size_t mlp, size_t tp) {
+arg_t* arg_t_init(arg_t *arg, size_t id, orwl_vertex *v, size_t mlp, size_t tp,
+		  orwl_thread_cntrl* det) {
   arg->id = id;
   arg->vertex = v;
   arg->my_location_pos = mlp;
   arg->task_pos = tp;
+  arg->det = det;
   return arg;
 }
 
-P99_PROTOTYPE(arg_t*, arg_t_init, arg_t*, size_t, orwl_vertex*, size_t, size_t);
-#define arg_t_init(...) P99_CALL_DEFARG(arg_t_init, 5, __VA_ARGS__)
-P99_DECLARE_DEFARG(arg_t_init,  , P99_0(size_t), P99_0(orwl_vertex*), P99_0(size_t), P99_0(size_t));
-P99_DEFINE_DEFARG(arg_t_init, , P99_0(size_t), P99_0(orwl_vertex*), P99_0(size_t), P99_0(size_t));
+P99_PROTOTYPE(arg_t*, arg_t_init, arg_t*, size_t, orwl_vertex*, size_t, size_t, orwl_thread_cntrl*);
+#define arg_t_init(...) P99_CALL_DEFARG(arg_t_init, 6, __VA_ARGS__)
+P99_DECLARE_DEFARG(arg_t_init,  , P99_0(size_t), P99_0(orwl_vertex*), P99_0(size_t), P99_0(size_t), P99_0(orwl_thread_cntrl*));
+P99_DEFINE_DEFARG(arg_t_init, , P99_0(size_t), P99_0(orwl_vertex*), P99_0(size_t), P99_0(size_t), P99_0(orwl_thread_cntrl*));
 
 void arg_t_destroy(arg_t *arg) {
 }
 
 DECLARE_NEW_DELETE(arg_t);
 DEFINE_NEW_DELETE(arg_t);
+
 DECLARE_THREAD(arg_t);
 
 DEFINE_THREAD(arg_t) {
@@ -64,7 +68,10 @@ DEFINE_THREAD(arg_t) {
 
   /* Take the local lock in write mode */
   orwl_write_request2(&local_locations[Arg->my_location_pos], &my_task_handle);
-  sleepfor(5); /* we need a distributed barrier here */
+
+  /* Do not continue until each thread has put its write request */
+  orwl_thread_cntrl_freeze(Arg->det);
+  orwl_thread_cntrl_wait_for_caller(Arg->det);
 
   /* Wait to take all the distant locks */
   orwl_wait_to_initialize_locks(Arg->id, graph, ab,  seed);
@@ -76,7 +83,6 @@ DEFINE_THREAD(arg_t) {
 
   /* Check if my neighbors are ready before starting, then realease the handle on my location */
   orwl_wait_to_start(Arg->id, graph, ab, &srv, nb_tasks, seed);
-
 
   /* Fire ! */
 
@@ -104,12 +110,12 @@ DEFINE_THREAD(arg_t) {
       double a,b,c;
       double * r = calloc(10000000, sizeof(double));
       for (size_t i = 0 ; i < 10000000 ; i++) {
-	b = (i + 1) / (sin((i + 2) / (i + 1)) + 1.01);
-	for (size_t j = 0 ; j < 10 ; j++) {
-	  c = (j + 3) / (cos((i + 4) / (i + 1)) + 1.02);
-	  a = (b * c) - (b / (i + (j * c)));
-	  r[i] += a;
-	}
+      	b = (i + 1) / (sin((i + 2) / (i + 1)) + 1.01);
+      	for (size_t j = 0 ; j < 1 ; j++) {
+      	  c = (j + 3) / (cos((i + 4) / (i + 1)) + 1.02);
+      	  a = (b * c) - (b / (i + (j * c)));
+      	  r[i] += a;
+      	}
       }
       free(r);
       /* Let's put anything in the shared memory */
@@ -129,6 +135,7 @@ DEFINE_THREAD(arg_t) {
   orwl_cancel2(&my_task_handle);
   for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
     orwl_cancel2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+
   orwl_handle2_vdelete(handle_distant_pos);
 }
 
@@ -223,24 +230,27 @@ int main(int argc, char **argv) {
 
   rand_states = (struct random_data*)calloc(nb_tasks, sizeof(struct random_data));
   rand_statebufs = (char*)calloc(nb_tasks, 32);
-  for (size_t i = 0 ; i < nb_tasks ; i++)
-    initstate_r(random(), &rand_statebufs[i], 32, &rand_states[i]);
-
-  pthread_t *tid = pthread_t_vnew(nb_tasks);
-  arg_t *arg = arg_t_vnew(nb_tasks);
+  arg_t ** arg = calloc(nb_tasks, sizeof(arg_t *));
+  orwl_thread_cntrl ** det = calloc(nb_tasks, sizeof(orwl_thread_cntrl *));
+  
   for (size_t i = 0 ; i < nb_tasks ; i++) {
-    arg_t *myarg = &arg[i];
+    initstate_r(random(), &rand_statebufs[i], 32, &rand_states[i]);
+    arg[i] = calloc(1, sizeof(arg_t));
+    det[i] = calloc(1, sizeof(orwl_thread_cntrl));
+    arg_t *myarg = arg[i];
     myarg->id = list_tasks[i];
     myarg->vertex = &graph->vertices[list_tasks[i]];
     myarg->my_location_pos = list_locations[i];
     myarg->task_pos = i;
-    arg_t_create(myarg, &tid[i]);
+    myarg->det = det[i];
+    arg_t_launch(myarg, det[i]);
   }
-
-  /* wait the threads */
+  
   for (size_t i = 0 ; i < nb_tasks ; i++) {
-    arg_t_join(tid[i]);
+    orwl_thread_cntrl_wait_for_callee(det[i]);
+    orwl_thread_cntrl_detach(det[i]);
   }
+  orwl_pthread_wait_detached();
   orwl_server_terminate(&srv);
   orwl_stop(&srv);
   seed_get_clear();
