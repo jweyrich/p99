@@ -16,9 +16,6 @@
 #include "orwl_once.h"
 #include "orwl_thread.h"
 
-static
-pthread_mutex_t o_rwl_reg_mut = PTHREAD_MUTEX_INITIALIZER;
-
 orwl_register const* orwl_register_init(orwl_register const* field) {
   if (!field) return 0;
   if (!*(field->regptr)) {
