@@ -156,6 +156,7 @@ int orwl_pthread_create_joinable(pthread_t *restrict thread,
 
 typedef struct {
   orwl_thread_cntrl *det;
+  bool own;
   start_routine_t start_routine;
   void *arg;
 } o_rwl_launch_arg;
@@ -166,9 +167,12 @@ o_rwl_launch_arg* o_rwl_launch_arg_init(o_rwl_launch_arg *rt,
                                         void* arg,
                                         orwl_thread_cntrl* det) {
   if (!rt) return 0;
-  *rt = (o_rwl_launch_arg){ .det = det,
-                            .start_routine = start_routine,
-                            .arg = arg };
+  *rt = (o_rwl_launch_arg){
+    .det = det ? det : P99_NEW(orwl_thread_cntrl),
+    .own = !det,
+    .start_routine = start_routine,
+    .arg = arg
+  };
   return rt;
 }
 
@@ -182,7 +186,12 @@ P99_PROTOTYPE(o_rwl_launch_arg*, o_rwl_launch_arg_init, o_rwl_launch_arg *, star
 
 static
 void o_rwl_launch_arg_destroy(o_rwl_launch_arg *rt) {
-  // empty
+  /* wait if the creator might still be needing the semaphore */
+  if (rt->own) {
+    orwl_thread_cntrl_wait_for_caller(rt->det);
+    orwl_thread_cntrl_delete(rt->det);
+    rt->det = 0;
+  }
 }
 
 DECLARE_NEW_DELETE(o_rwl_launch_arg, static);
@@ -191,6 +200,7 @@ DEFINE_NEW_DELETE(o_rwl_launch_arg, static);
 static
 void *o_rwl_launch_arg_wrapper(void *routine_arg) {
   o_rwl_launch_arg *Routine_Arg = routine_arg;
+  orwl_thread_cntrl *det = Routine_Arg->det;
   start_routine_t start_routine = Routine_Arg->start_routine;
   void *restrict arg = Routine_Arg->arg;
   /* This should be fast since usually there should never be a waiter
@@ -199,6 +209,7 @@ void *o_rwl_launch_arg_wrapper(void *routine_arg) {
   ORWL_ACCOUNT(counter) {
     /* The application routine must call orwl_thread_cntrl_freeze to unblock the
        caller. */
+    if (Routine_Arg->own) orwl_thread_cntrl_freeze(det);
     ret = start_routine(arg);
   }
   /* Be careful to eliminate all garbage that the wrapping has
@@ -220,80 +231,16 @@ int orwl_pthread_launch(start_routine_t start_routine,
                            pthread_attr_detached,
                            o_rwl_launch_arg_wrapper,
                            Routine_Arg);
-  return ret;
-}
-
-typedef struct {
-  orwl_thread_cntrl det;
-  start_routine_t start_routine;
-  void *arg;
-} o_rwl_detached_arg;
-
-static
-o_rwl_detached_arg* o_rwl_detached_arg_init(o_rwl_detached_arg *rt,
-                                              start_routine_t start_routine,
-                                              void* arg) {
-  if (!rt) return 0;
-  orwl_thread_cntrl_init(&rt->det);
-  rt->start_routine = start_routine;
-  rt->arg = arg;
-  return rt;
-}
-
-static
-P99_PROTOTYPE(o_rwl_detached_arg*, o_rwl_detached_arg_init, o_rwl_detached_arg *, start_routine_t, void*);
-#define o_rwl_detached_arg_init(...) P99_CALL_DEFARG(o_rwl_detached_arg_init, 3, __VA_ARGS__)
-
-#define o_rwl_detached_arg_init_defarg_1() P99_0(start_routine_t)
-#define o_rwl_detached_arg_init_defarg_2() P99_0(void*)
-
-static
-void o_rwl_detached_arg_destroy(o_rwl_detached_arg *rt) {
-  /* wait if the creator might still be needing the semaphore */
-  orwl_thread_cntrl_wait_for_caller(&rt->det);
-}
-
-DECLARE_NEW_DELETE(o_rwl_detached_arg, static);
-DEFINE_NEW_DELETE(o_rwl_detached_arg, static);
-
-static
-void *o_rwl_detached_arg_wrapper(void *routine_arg) {
-  o_rwl_detached_arg *Routine_Arg = routine_arg;
-  orwl_thread_cntrl *det = &Routine_Arg->det;
-  start_routine_t start_routine = Routine_Arg->start_routine;
-  void *restrict arg = Routine_Arg->arg;
-  /* This should be fast since usually there should never be a waiter
-     blocked on this semaphore. */
-  void *ret = 0;
-  ORWL_ACCOUNT(counter) {
-    /* tell the creator that we are in charge */
-    orwl_thread_cntrl_freeze(det);
-    ret = start_routine(arg);
+  if (!det) {
+    /* Wait until the routine is accounted for */
+    orwl_thread_cntrl_wait_for_callee(Routine_Arg->det);
+    /* Notify that Routine_Arg may safely be deleted thereafter */
+    orwl_thread_cntrl_detach(Routine_Arg->det);
   }
-  /* Be careful to eliminate all garbage that the wrapping has
-     generated. */
-  o_rwl_detached_arg_delete(Routine_Arg);
-  Routine_Arg = 0;
-  routine_arg = 0;
   return ret;
 }
 
-
-int orwl_pthread_create_detached(start_routine_t start_routine,
-                                 void *restrict arg) {
-  /* Be sure to allocate the pair on the heap to leave full control
-     to o_rwl_detached_arg_wrapper() of what to do with it. */
-  o_rwl_detached_arg *Routine_Arg = P99_NEW(o_rwl_detached_arg, start_routine, arg);
-  int ret = pthread_create(&P99_LVAL(pthread_t),
-                           pthread_attr_detached,
-                           o_rwl_detached_arg_wrapper,
-                           Routine_Arg);
-  /* Wait until the routine is accounted for */
-  orwl_thread_cntrl_wait_for_callee(&Routine_Arg->det);
-  /* Notify that Routine_Arg may safely be deleted thereafter */
-  orwl_thread_cntrl_detach(&Routine_Arg->det);
-  return ret;
-}
+P99_INSTANTIATE(int, orwl_pthread_create_detached, start_routine_t, void *restrict);
 
 void orwl_pthread_wait_detached(void) {
   orwl_count_wait(&counter);

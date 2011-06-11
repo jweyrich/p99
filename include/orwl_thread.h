@@ -222,11 +222,22 @@ extern int orwl_pthread_launch(start_routine_t start_routine,
                                       void *restrict arg,
                                       orwl_thread_cntrl* det);
 
+#define orwl_pthread_launch(...) P99_CALL_DEFARG(orwl_pthread_launch, 3, __VA_ARGS__)
+
+#define orwl_pthread_launch_init_defarg_0() P99_0(start_routine_t)
+#define orwl_pthread_launch_init_defarg_1() P99_0(void*)
+#define orwl_pthread_launch_init_defarg_2() P99_0(orwl_thread_cntrl*)
+
+
+
 /**
  ** @brief Interface to pthread_create() for detached threads.
  **/
-extern int orwl_pthread_create_detached(start_routine_t start_routine,
-                                        void *restrict arg);
+inline
+int orwl_pthread_create_detached(start_routine_t start_routine,
+                                 void *restrict arg) {
+  return orwl_pthread_launch(start_routine, arg, 0);
+}
 
 /**
  ** @brief Wait for all threads that have been created detached.
