@@ -25,7 +25,7 @@ orwl_wq* orwl_wq_init(orwl_wq *wq,
                                 const pthread_mutexattr_t *attr) {
   if (!wq) return 0;
   *wq = (orwl_wq const)ORWL_WQ_INITIALIZER;
-  if (attr) pthread_mutex_init(&wq->mut, attr);
+  pthread_mutex_init(&wq->mut, attr);
   return wq;
 }
 
@@ -61,15 +61,9 @@ DEFINE_ATOMIC_OPS(orwl_wh_ptr);
 orwl_wh* orwl_wh_init(orwl_wh *wh,
                   const pthread_condattr_t *attr) {
   if (!wh) return 0;
-  *wh = P99_LVAL(orwl_wh const,
-                 .cond = PTHREAD_COND_INITIALIZER,
-                 .location = 0,
-                 .next = 0,
-                 .tokens = 0,
-                 .priority = 0,
-                 .svrID = 0,
-                 );
-  if (attr) pthread_cond_init(&wh->cond, attr);
+  *wh =  (orwl_wh const)ORWL_WH_INITIALIZER;
+  pthread_cond_init(&wh->cond, attr);
+  pthread_mutex_init(&wh->mut, 0);
   return wh;
 }
 
