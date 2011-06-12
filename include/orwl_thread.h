@@ -143,6 +143,7 @@ P99_DECLARE_STRUCT(orwl_thread_cntrl);
  ** - Before the callee destroys D and exits it has to call
  **   ::orwl_thread_cntrl_wait_for_caller to be sure that D is not
  **   needed anymore.
+ **
  ** All these functions should mostly act asynchronously such that the
  ** overhead of this procedure is minimized. Therefore the times
  ** - of the callee between startup and freeze
@@ -206,7 +207,7 @@ void orwl_thread_cntrl_wait_for_callee(orwl_thread_cntrl* det) {
   orwl_sem_wait(&det->semCallee);
 }
 
-DECLARE_NEW_DELETE(orwl_thread_cntrl);
+DECLARE_DELETE(orwl_thread_cntrl);
 
 /**
  ** @brief Interface to pthread_create() for joinable threads.
@@ -217,15 +218,23 @@ extern int orwl_pthread_create_joinable(pthread_t *restrict thread,
 
 /**
  ** @brief Interface to pthread_create() for detached threads.
+ **
+ ** Launch a detached thread that runs @a start_routine with parameter
+ ** @a arg. @a arg completely passes in the responsibility of the
+ ** called thread. It should have been allocated by ::P99_NEW and
+ ** @a start_routine should use the correct @c typename_delete
+ ** function, where @c typename is the real type of @a arg.
+ **
+ ** The third parameter @a det allows for a finer control of the
+ ** execution, see ::orwl_thread_cntrl. If it is @c 0, the default,
+ ** the effect is that the thread is simply detached and no other
+ ** interaction between caller and callee takes place.
  **/
 extern int orwl_pthread_launch(start_routine_t start_routine,
                                       void *restrict arg,
                                       orwl_thread_cntrl* det);
 
 #define orwl_pthread_launch(...) P99_CALL_DEFARG(orwl_pthread_launch, 3, __VA_ARGS__)
-
-#define orwl_pthread_launch_init_defarg_0() P99_0(start_routine_t)
-#define orwl_pthread_launch_init_defarg_1() P99_0(void*)
 #define orwl_pthread_launch_init_defarg_2() P99_0(orwl_thread_cntrl*)
 
 

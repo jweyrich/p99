@@ -138,7 +138,7 @@ P99_INSTANTIATE(void, orwl_thread_cntrl_detach, orwl_thread_cntrl*);
 P99_INSTANTIATE(void, orwl_thread_cntrl_wait_for_caller, orwl_thread_cntrl*);
 P99_INSTANTIATE(void, orwl_thread_cntrl_wait_for_callee, orwl_thread_cntrl*);
 
-DEFINE_NEW_DELETE(orwl_thread_cntrl);
+DEFINE_DELETE(orwl_thread_cntrl);
 
 int orwl_pthread_create_joinable(pthread_t *restrict thread,
                                  start_routine_t start_routine,
