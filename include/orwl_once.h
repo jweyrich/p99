@@ -35,18 +35,18 @@ struct o_rwl_once_cont {
  ** @see DEFINE_ONCE
  **/
 #define DECLARE_ONCE(T)                                        \
-extern struct o_rwl_once_cont P99_PASTE3(o_rwl_, T, _once)
+extern o_rwl_once_cont P99_PASTE3(o_rwl_, T, _once)
 
 #ifdef DOXYGEN
 /**
  ** @def DEFINE_ONCE
  ** @brief Define the function that will be exactly called once by
- ** <code>INIT_ONCE(NAME)</code>.
+ ** <code>INIT_ONCE(T)</code>.
  **
  ** The function has a prototype of <code>void
  ** (*someFunctionName)(void)</code>.
  **
- ** @a NAME can be any valid identifier, the real function name will
+ ** @a T can be any valid identifier, the real function name will
  ** be mangled such that this will not clash with an existing one.
  **
  ** The ... list (optional) can be used to give a list of dependencies
@@ -69,7 +69,9 @@ extern struct o_rwl_once_cont P99_PASTE3(o_rwl_, T, _once)
  ** @see DECLARE_ONCE
  ** @see INIT_ONCE
  **/
-#define DEFINE_ONCE(NAME, ...)
+#define DEFINE_ONCE(T, ...)                     \
+o_rwl_once_cont o_rwl_ ## T ## _once);          \
+void o_rwl_ ## T ## _once_init(void)
 #else
 #define DEFINE_ONCE(...)                                       \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
@@ -79,7 +81,7 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
 
 #define O_RWL_DEFINE_ONCE_0(T)                                 \
 static void P99_PASTE3(o_rwl_, T, _once_init)(void);           \
-struct o_rwl_once_cont P99_PASTE3(o_rwl_, T, _once) = {        \
+o_rwl_once_cont P99_PASTE3(o_rwl_, T, _once) = {               \
   .mut = PTHREAD_MUTEX_INITIALIZER,                            \
   .cond = false,                                               \
   .init = P99_PASTE3(o_rwl_, T, _once_init),                   \

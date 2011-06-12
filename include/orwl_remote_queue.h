@@ -48,11 +48,21 @@
  ** @see orwl_handle
  **/
 struct orwl_mirror {
+
+  /** @privatesection
+   ** @{
+   **/
+
   pthread_mutex_t mut;  /**< control access during insertion */
   orwl_server* srv;   /**< the local endpoint to which we report */
   orwl_endpoint there;  /**< the remote that centralizes the order */
   orwl_wq local;        /**< the local queue that interfaces the
                            remote */
+
+  /**
+   ** @}
+   **/
+
 };
 
 DECLARE_ONCE(orwl_mirror);
@@ -163,6 +173,10 @@ void orwl_mirror_connect(orwl_mirror *rq, orwl_server* srv, orwl_endpoint endp);
  ** @see orwl_resize
  **/
 struct orwl_handle {
+  /** @privatesection
+   ** @{
+   **/
+
   /**
    ** @brief The queue that regulates the local accesses.
    **/
@@ -177,10 +191,18 @@ struct orwl_handle {
    ** This will be notified whence here locally we have released the lock.
    **/
   uint64_t svrID;
+
+  /**
+   ** @}
+   **/
+
 };
 
 DECLARE_ONCE(orwl_handle);
 
+/**
+ ** @memberof orwl_handle
+ **/
 #define ORWL_HANDLE_INITIALIZER { .rq = 0, .wh = 0, .svrID = P99_0(uint64_t) }
 
 DOCUMENT_INIT(orwl_handle)

@@ -57,9 +57,9 @@ O_RWL_ONE_TOK_(signed long long, sllong);
 O_RWL_ONE_TOK_(unsigned long long, ullong);
 
 #define DECLARE_POINTER_TYPE(T)                                \
-/*! @brief a pointer to T */                                   \
+/*! @brief a pointer to @c T */                                \
 typedef T *P99_PASTE2(T, _ptr);                                \
-/*! @brief a @c const pointer to T */                          \
+/*! @brief a @c const pointer to @c T */                       \
 typedef T const*P99_PASTE2(T, _cptr)
 
 DECLARE_POINTER_TYPE(void);

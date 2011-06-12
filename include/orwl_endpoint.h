@@ -296,7 +296,7 @@ uint64_t orwl_send(orwl_server* srv, orwl_endpoint const* there, rand48_t *seed,
  **   caller -> server [label="orwl_send(F, ...)", URL="\ref orwl_send()"];
  **   server->thread [label="orwl_proc_create(F, ...)", URL="\ref orwl_proc_create()"];
  **   thread->procedure [label="F(...)"];
- **   procedure->caller [label="orwl_proc_release_caller()", URL="\ref orwl_proc_release_caller()"];
+ **   procedure->caller [label="orwl_proc_untie_caller()", URL="\ref orwl_proc_untie_caller()"];
  **   procedure->thread [label="\c return"];
  **   thread->main [label="pthread_exit()"];
  ** @endmsc

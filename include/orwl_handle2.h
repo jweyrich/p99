@@ -30,6 +30,10 @@
  ** frees the front of it.
  **/
 struct orwl_handle2 {
+  /** @privatesection
+   ** @{
+   **/
+
   /** @brief is this an inclusive (read) request? */
   bool inclusive:1;
   /**
@@ -44,6 +48,11 @@ struct orwl_handle2 {
   orwl_state state[2];
   /** the two handles that are used in alternation */
   orwl_handle pair[2];
+
+  /**
+   ** @}
+   **/
+
 };
 
 #define ORWL_HANDLE2_INITIALIZER                               \

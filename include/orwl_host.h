@@ -76,7 +76,7 @@ orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
   return th;
 }
 
-DOCUMENT_DESTROY(orwl_host_init)
+DOCUMENT_DESTROY(orwl_host)
 inline
 void orwl_host_destroy(orwl_host *th) {
   orwl_host_disconnect(th);

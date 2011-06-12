@@ -24,6 +24,7 @@
 #include "p99_new.h"
 #include "p99_defarg.h"
 
+#ifdef DOXYGEN
 /**
  ** @brief Declare a `delete' operator for type @a T.
  **
@@ -38,10 +39,13 @@
  ** class specifier for the functions. Default is @c inline.
  ** @see DECLARE_NEW_DELETE
  **/
+#define DECLARE_DELETE(...) DECLARE_DELETE_(__VA_ARGS__,)
+#else
 #define DECLARE_DELETE(...)                     \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
 (DECLARE_DELETE_(__VA_ARGS__, inline))          \
 (DECLARE_DELETE_(__VA_ARGS__))
+#endif
 
 #define DECLARE_DELETE_(T, ...)                                                                             \
 /*! @brief Operator @c delete for type T   **/                                                              \
@@ -79,12 +83,13 @@ struct o_rwl_vheader {
 #define O_RWL_VDATA(H) ((void*)((H)->data))
 #define O_RWL_VLENG(H) ((H)->len)
 
+#ifdef DOXYGEN
 /**
  ** @brief Declare vector (de)allocation operators for type @a T.
  **
- ** @attention @ref A ..._destroy function is supposed to exist and to be
+ ** @attention A ..._destroy function is supposed to exist and to be
  ** callable with just one @a T* argument
- ** @attention @ref A ..._init function is supposed to exist and to be
+ ** @attention A ..._init function is supposed to exist and to be
  ** callable with just one @a T* argument.
  **
  ** This declares four functions for type @a T:
@@ -98,10 +103,13 @@ struct o_rwl_vheader {
  ** Other arguments after the type argument are interpreted as storage
  ** class specifier for the functions. Default is @c inline.
  **/
+#define DECLARE_NEW_DELETE(...) DECLARE_NEW_DELETE_(__VA_ARGS__,)
+#else
 #define DECLARE_NEW_DELETE(...)                 \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
 (DECLARE_NEW_DELETE_(__VA_ARGS__, inline))      \
 (DECLARE_NEW_DELETE_(__VA_ARGS__))
+#endif
 
 #define DECLARE_NEW_DELETE_(T, ...)                                                                                  \
 DECLARE_DELETE(T, __VA_ARGS__)                                                                                       \
@@ -113,7 +121,7 @@ DECLARE_DELETE(T, __VA_ARGS__)                                                  
 /*! In addition to @c realloc semantics newly allocated items are initialized and discarded items are destroyed. **/ \
 /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T* argument **/             \
 /*! @attention @ref T ## _init  is supposed to exist and to be callable with just one T* argument **/                \
-/*! @attention @ref T ## _realloc @b must have been used to allocate @a p if it is non-null **/                      \
+/*! @attention @ref T ## _vrealloc @b must have been used to allocate @a p if it is non-null **/                     \
 /*! @memberof T */                                                                                                   \
 __VA_ARGS__                                                                                                          \
 T *P99_PASTE2(T, _vrealloc)(T* p, size_t const n) {                                                                  \

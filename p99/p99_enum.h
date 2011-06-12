@@ -90,16 +90,16 @@ P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 3)
 #define P99_DECLARE_ENUM(T, ...)                                                   \
 /*! @see P99_DECLARE_ENUM was used for the declaration of this enumeration type */ \
 /*! @see T ## _getname for access to the names of the constants as strings */      \
-typedef enum T { __VA_ARGS__ ,                                                     \
+enum T { __VA_ARGS__ ,                                                             \
                /*! upper bound of the @ref T constants */                          \
                P99_PASTE2(T, _amount),                                             \
                /*! the largest @ref T constant */                                  \
                P99_PASTE2(T, _max) = ((size_t)(P99_PASTE2(T, _amount)) - 1u),      \
                /*! the smallest @ref T constant */                                 \
                P99_PASTE2(T, _min) = 0                                             \
-} T;                                                                               \
-P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__);                                          \
-P99_MACRO_END(declare_enum_, T)
+};                                                                                 \
+typedef enum T T;                                                                  \
+P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__)
 
 /**
  ** @brief Define the necessary symbols for a simple enumeration type.

@@ -240,14 +240,26 @@ size_t atomic_load(atomic_size_t volatile *object) {
 #define DECLARE_ATOMIC_OPS(T)                                                \
 P99_COMPILETIME_ASSERT(sizeof(T) == sizeof(size_t), size_t);                 \
 P99_COMPILETIME_ASSERT(sizeof(T) == sizeof(uintptr_t), uintptr_t);           \
+/*! @brief Load a variable of type T atomically. */                          \
+/*! @remark This supposes that T is of the same size as @c size_t */         \
+/*! @see atomic_load */                                                      \
+/*! @see T */                                                                \
 inline                                                                       \
 T P99_PASTE2(atomic_load_, T)(T volatile* object) {                          \
   return (T)(uintptr_t)atomic_load((atomic_size_t volatile*)object);         \
 }                                                                            \
+/*! @brief Store a variable of type T atomically. */                         \
+/*! @remark This supposes that T is of the same size as @c size_t */         \
+/*! @see atomic_store */                                                     \
+/*! @see T */                                                                \
 inline                                                                       \
 void P99_PASTE2(atomic_store_, T)(T volatile *object, T desired) {           \
   atomic_store((atomic_size_t volatile*)object, (size_t)(uintptr_t)desired); \
 }                                                                            \
+/*! @brief Comare and swap for type T. */                                    \
+/*! @remark This supposes that T is of the same size as @c size_t */         \
+/*! @see atomic_compare_exchange_weak */                                     \
+/*! @see T */                                                                \
 inline                                                                       \
 _Bool P99_PASTE2(atomic_compare_exchange_weak_, T)(T volatile *object,       \
                                                    T *expected,              \

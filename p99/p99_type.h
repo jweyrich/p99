@@ -10,15 +10,10 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-/*
-** p99_type.h
-** 
-** Made by Jens Gustedt
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Sat Nov 20 09:09:33 2010 Jens Gustedt
-** Last update Sat Nov 20 09:09:33 2010 Jens Gustedt
-*/
+
+/**
+ ** @file p99_type.h
+ */
 
 #ifndef   	P99_TYPE_H_
 # define   	P99_TYPE_H_
@@ -44,7 +39,9 @@
  ** source.
  **/
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_STRUCT, 0)
-#define P99_DECLARE_STRUCT(NAME) typedef struct NAME NAME
+#define P99_DECLARE_STRUCT(NAME)                \
+/*! @copydoc struct NAME */                     \
+typedef struct NAME NAME
 
 
 /**
@@ -58,7 +55,9 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_STRUCT, 0)
  ** source.
  **/
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_UNION, 0)
-#define P99_DECLARE_UNION(NAME) typedef union NAME NAME
+#define P99_DECLARE_UNION(NAME)                 \
+/*! @copydoc union NAME */                      \
+typedef union NAME NAME
 
 /** @}
  **/

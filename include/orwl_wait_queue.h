@@ -96,7 +96,7 @@ DECLARE_ONCE(orwl_wq);
 
 DECLARE_ONCE(orwl_wh);
 
-typedef orwl_wh* orwl_wh_ptr;
+DECLARE_POINTER_TYPE(orwl_wh);
 DECLARE_ATOMIC_OPS(orwl_wh_ptr);
 
 /**
@@ -110,6 +110,11 @@ DECLARE_ATOMIC_OPS(orwl_wh_ptr);
  ** additional sugar around it.
  **/
 struct orwl_wq {
+
+  /** @privatesection
+   ** @{
+   **/
+
   pthread_mutex_t mut;  /**< The mutex used to control the access to the queue **/
   orwl_wh *head;        /**< The head of the priority queue */
   orwl_wh *tail;        /**< The tail of the priority queue */
@@ -117,6 +122,11 @@ struct orwl_wq {
                            event that this queue encounters. */
   uint64_t* data;
   size_t data_len;
+
+  /**
+   ** @}
+   **/
+
 };
 
 
@@ -154,6 +164,11 @@ struct orwl_wq {
  **
  **/
 struct orwl_wh {
+
+  /** @privatesection
+   ** @{
+   **/
+
   /** Mutex used to control the access to the wh, it is used for acquires. */
   pthread_mutex_t mut;
   /** A wh will wait on that condition for requests and acquires. */
@@ -178,8 +193,16 @@ struct orwl_wh {
    ** orwl_wh represents an inclusive lock.
    **/
   uint64_t svrID;
+
+  /**
+   ** @}
+   **/
+
 };
 
+  /**
+   ** @memberof orwl_wq
+   **/
 #define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .clock = 1 }
 
   DOCUMENT_INIT(orwl_wq)
@@ -264,7 +287,9 @@ int orwl_wq_idle(orwl_wq *wq) {
 }
 
 
-
+  /**
+   ** @memberof orwl_wh
+   **/
 #define ORWL_WH_INITIALIZER { .cond = PTHREAD_COND_INITIALIZER }
 
   DOCUMENT_INIT(orwl_wh)
@@ -345,6 +370,7 @@ VA_TYPES(orwl_wq_request, orwl_wh**, int64_t);
    ** lock is already held.
    **
    ** @memberof orwl_wq
+   ** @private
    **/
 void orwl_wq_request_locked(orwl_wq *wq,  /*!< the locked queue to act on */
                             orwl_wh *wh,  /*!< the handle to be inserted */
@@ -379,9 +405,13 @@ orwl_state orwl_wh_acquire
 /**
  ** Of internal use. Supposes that @a wh is in the queue of @a wq and
  ** that the lock on @a wq is taken by this thread.
+ **
+   ** @memberof orwl_wh
+   ** @private
  **/
   orwl_state orwl_wh_acquire_locked(orwl_wh *wh, /*!< the handle to act upon */
-                                    orwl_wq *wq  /*!< the locked queue in which to insert */
+                                    orwl_wq *wq  /*!< the locked queue in which @a wh
+                                                    is already inserted */
                                     );
 
 
@@ -435,6 +465,7 @@ P99_PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
    ** @see orwl_wh_unload
    **
    ** @memberof orwl_wh
+   ** @private
    **/
   P99_DEFARG_DOCU(orwl_wh_load)
 inline
@@ -461,6 +492,7 @@ P99_PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
    ** @see orwl_wh_load
    **
    ** @memberof orwl_wh
+   ** @private
    */
   P99_DEFARG_DOCU(orwl_wh_unload)
 inline

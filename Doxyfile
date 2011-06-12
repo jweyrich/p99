@@ -304,12 +304,12 @@ EXTRACT_ALL            = YES
 # If the EXTRACT_PRIVATE tag is set to YES all private members of a class
 # will be included in the documentation.
 
-EXTRACT_PRIVATE        = NO
+EXTRACT_PRIVATE        = YES
 
 # If the EXTRACT_STATIC tag is set to YES all static members of a file
 # will be included in the documentation.
 
-EXTRACT_STATIC         = NO
+EXTRACT_STATIC         = YES
 
 # If the EXTRACT_LOCAL_CLASSES tag is set to YES classes (and structs)
 # defined locally in source files will be included in the documentation.
@@ -621,7 +621,7 @@ EXCLUDE_PATTERNS       =
 # wildcard * is used, a substring. Examples: ANamespace, AClass,
 # AClass::ANamespace, ANamespace::*Test
 
-EXCLUDE_SYMBOLS        = P00_* p00_* O_RWL_* o_rwl_*
+EXCLUDE_SYMBOLS        = P00_* p00_* P99_* p99_* O_RWL_* o_rwl_*
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or
 # directories that contain example code fragments that are included (see
@@ -1267,12 +1267,15 @@ PREDEFINED += DOXYGEN
 # Use the PREDEFINED tag if you want to use a different macro definition.
 
 EXPAND_AS_DEFINED += DECLARE_ARI2STR
+EXPAND_AS_DEFINED += DECLARE_ATOMIC_OPS
 EXPAND_AS_DEFINED += DECLARE_AUTH_SOCK_FUNC
 EXPAND_AS_DEFINED += DECLARE_BASIC
 EXPAND_AS_DEFINED += DECLARE_BASIC_TYPE
 EXPAND_AS_DEFINED += DECLARE_DELETE
+EXPAND_AS_DEFINED += DECLARE_DELETE_
 EXPAND_AS_DEFINED += DECLARE_ENUM
 EXPAND_AS_DEFINED += DECLARE_NEW_DELETE
+EXPAND_AS_DEFINED += DECLARE_NEW_DELETE_
 EXPAND_AS_DEFINED += DECLARE_ONCE
 EXPAND_AS_DEFINED += DECLARE_ONCE_UPON
 EXPAND_AS_DEFINED += DECLARE_ORWL_DOMAIN
@@ -1297,6 +1300,7 @@ EXPAND_AS_DEFINED += DEFINE_NEW_DELETE
 EXPAND_AS_DEFINED += DEFINE_ONCE
 EXPAND_AS_DEFINED += DEFINE_ONCE_UPON
 EXPAND_AS_DEFINED += DEFINE_ORWL_DOMAIN
+EXPAND_AS_DEFINED += DEFINE_ORWL_PROC_FUNC
 EXPAND_AS_DEFINED += DEFINE_ORWL_REGISTER
 EXPAND_AS_DEFINED += DEFINE_ORWL_REGISTER_ALIAS
 EXPAND_AS_DEFINED += DEFINE_ORWL_TYPE_DYNAMIC
@@ -1314,9 +1318,12 @@ EXPAND_AS_DEFINED += ORWL_REGISTER
 EXPAND_AS_DEFINED += ORWL_REGISTER_ALIAS
 EXPAND_AS_DEFINED += ORWL_REGISTER_DATA
 EXPAND_AS_DEFINED += O_RWL_DOCUMENT_TIME
+EXPAND_AS_DEFINED += O_RWL_ORWL_ALIAS
+EXPAND_AS_DEFINED += O_RWL_ONE_TOK_
 EXPAND_AS_DEFINED += P00_DOCUMENT_SEED
 EXPAND_AS_DEFINED += P99_DECLARE_STRUCT
 EXPAND_AS_DEFINED += P99_DECLARE_UNION
+EXPAND_AS_DEFINED += P99_PASTE2
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then
 # doxygen's preprocessor will remove all function-like macros that are alone
