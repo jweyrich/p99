@@ -115,10 +115,22 @@ inline void P99_PASTE2(T, _destroy)(T*  id) {                  \
 }                                                              \
 DECLARE_NEW_DELETE(T)
 
+#define DEFINE_BASIC(T)                                        \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _init), T *);                \
+P99_INSTANTIATE(void, P99_PASTE2(T, _destroy), T*);            \
+DEFINE_NEW_DELETE(T)
+
 #define DECLARE_BASIC_TYPE(T)                                  \
 DECLARE_BASIC(T);                                              \
 DECLARE_BASIC(P99_PASTE2(T, _cptr));                           \
 DECLARE_BASIC(P99_PASTE2(T, _ptr))
+
+#define DEFINE_BASIC_TYPE(T)                                   \
+DEFINE_BASIC(T);                                               \
+DEFINE_BASIC(P99_PASTE2(T, _cptr));                            \
+DEFINE_BASIC(P99_PASTE2(T, _ptr))
+
+
 
 DECLARE_BASIC(void_ptr);
 DECLARE_BASIC(void_cptr);
