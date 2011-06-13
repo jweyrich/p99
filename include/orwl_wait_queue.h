@@ -116,6 +116,7 @@ struct orwl_wq {
    **/
 
   pthread_mutex_t mut;  /**< The mutex used to control the access to the queue **/
+  pthread_cond_t  cond;
   orwl_wh *head;        /**< The head of the priority queue */
   orwl_wh *tail;        /**< The tail of the priority queue */
   uint64_t clock;       /**< A counter that is increased at each
@@ -183,7 +184,7 @@ struct orwl_wh {
    ** for this handle to be acquired. A wh can only be released when
    ** this has dropped to zero.
    **/
-  uint64_t tokens;
+  atomic_size_t tokens;
   /**
    ** @brief The historical position in the wait queue.
    **/
@@ -203,7 +204,7 @@ struct orwl_wh {
   /**
    ** @memberof orwl_wq
    **/
-#define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .clock = 1 }
+#define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .cond = PTHREAD_COND_INITIALIZER, .clock = 1 }
 
   DOCUMENT_INIT(orwl_wq)
 P99_DEFARG_DOCU(orwl_wq_init)
@@ -472,7 +473,7 @@ inline
 uint64_t orwl_wh_load
   (orwl_wh *wh /*!< the handle to act upon */,
    uint64_t howmuch  /*!< defaults to 1 */) {
-    wh->tokens += howmuch;
+    atomic_fetch_add(&wh->tokens, howmuch);
     return howmuch;
   }
 
@@ -499,11 +500,19 @@ inline
 uint64_t orwl_wh_unload
   (orwl_wh *wh /*!< the handle to act upon */,
    uint64_t howmuch  /*!< defaults to 1 */) {
-    if (wh->tokens < howmuch) howmuch = wh->tokens;
-    wh->tokens -= howmuch;
-    /* If the condition has changed, wake up all tokens */
-    if (howmuch) pthread_cond_broadcast(&wh->cond);
-    return howmuch;
+    size_t tokens = atomic_load(&wh->tokens);
+    while (true) {
+      size_t hm =
+        (tokens < howmuch)
+        ? tokens
+        : howmuch;
+      size_t nt = tokens - hm;
+      if (atomic_compare_exchange_weak(&wh->tokens, &tokens, nt)) {
+        /* If the condition has changed, wake up all tokens */
+        if (hm) pthread_cond_broadcast(&wh->cond);
+        return hm;
+      }
+    }
   }
 
 uint64_t* orwl_wq_map_locked(orwl_wq* wq, size_t* data_len);
