@@ -312,7 +312,7 @@ signed p00_trailing_comma_in_initializer__(void) {
  ** @see P99_LIKELY
  **/
 #ifndef P99_UNLIKELY
-# define P99_UNLIKELY(...) P99_EXPECT((__VA_ARGS__), 0)
+# define P99_UNLIKELY(...) P99_EXPECT(!!(__VA_ARGS__), 0)
 #endif
 
 /**
@@ -328,7 +328,7 @@ signed p00_trailing_comma_in_initializer__(void) {
  ** @see P99_UNLIKELY
  **/
 #ifndef P99_LIKELY
-# define P99_LIKELY(...) P99_EXPECT((__VA_ARGS__), 1)
+# define P99_LIKELY(...) P99_EXPECT(!!(__VA_ARGS__), 1)
 #endif
 
 
