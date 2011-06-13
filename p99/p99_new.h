@@ -222,6 +222,43 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_CALLOC, 0)
  **/
 #define P99_NEW(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2)(P00_NEW(__VA_ARGS__))(P00_NEW_ARGS(__VA_ARGS__))
 
+#ifdef DOXYGEN
+/**
+ ** @brief Declare a `delete' operator for type @a T.
+ **
+ ** This supposes that type @a T has a `destructor', i.e a destroy
+ ** function, that just takes a pointer to the element that is to be
+ ** initialized.
+ **
+ ** Other arguments after the type argument are interpreted as storage
+ ** class specifier for the functions. Default is @c inline.
+ ** @see DECLARE_NEW_DELETE
+ **/
+#define P99_DECLARE_DELETE(...) P00_DECLARE_DELETE(__VA_ARGS__,)
+#else
+#define P99_DECLARE_DELETE(...)                     \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                 \
+(P00_DECLARE_DELETE(__VA_ARGS__, p99_inline))       \
+(P00_DECLARE_DELETE(__VA_ARGS__))
+#endif
+
+#define P00_DECLARE_DELETE(T, ...)                                                                          \
+/*! @brief Operator @c delete for type T   **/                                                              \
+  /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T * argument **/ \
+  /*! @attention @a el show have been allocated through P99_NEW */                                          \
+  /*! @see P99_NEW */                                                                                       \
+  /*! @memberof T */                                                                                        \
+__VA_ARGS__                                                                                                 \
+void P99_PASTE2(T, _delete)(T const*el) {                                                                   \
+  if (el) {                                                                                                 \
+    T* e = (T*)el;                                                                                          \
+    P99_PASTE2(T, _destroy)(e);                                                                             \
+    free((void*)e);                                                                                         \
+  }                                                                                                         \
+}
+
+#define P99_DEFINE_DELETE(...) P00_DEFINE_DELETE(__VA_ARGS__,)
+#define P00_DEFINE_DELETE(T, ...) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)
 
 p99_inline
 size_t p99_maxof(size_t m, size_t n) {

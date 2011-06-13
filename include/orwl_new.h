@@ -24,44 +24,6 @@
 #include "p99_new.h"
 #include "p99_defarg.h"
 
-#ifdef DOXYGEN
-/**
- ** @brief Declare a `delete' operator for type @a T.
- **
- ** This supposes that type @a T has a `destructor', i.e a destroy
- ** function, that just takes a pointer to the element that is to be
- ** initialized.
- **
- ** Use the corresponding function from ::DECLARE_NEW to free a
- ** variable that you have such allocated.
- **
- ** Other arguments after the type argument are interpreted as storage
- ** class specifier for the functions. Default is @c inline.
- ** @see DECLARE_NEW_DELETE
- **/
-#define DECLARE_DELETE(...) DECLARE_DELETE_(__VA_ARGS__,)
-#else
-#define DECLARE_DELETE(...)                     \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
-(DECLARE_DELETE_(__VA_ARGS__, inline))          \
-(DECLARE_DELETE_(__VA_ARGS__))
-#endif
-
-#define DECLARE_DELETE_(T, ...)                                                                             \
-/*! @brief Operator @c delete for type T   **/                                                              \
-  /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T * argument **/ \
-  /*! @attention @a el show have been allocated through P99_NEW */                                          \
-  /*! @see P99_NEW */                                                                                       \
-  /*! @memberof T */                                                                                        \
-__VA_ARGS__                                                                                                 \
-void P99_PASTE2(T, _delete)(T const*el) {                                                                   \
-  if (el) {                                                                                                 \
-    T* e = (T*)el;                                                                                          \
-    P99_PASTE2(T, _destroy)(e);                                                                             \
-    free((void*)e);                                                                                         \
-  }                                                                                                         \
-}
-
 P99_DECLARE_STRUCT(o_rwl_vheader);
 P99_DECLARE_UNION(o_rwl_maxalign);
 
@@ -112,7 +74,7 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
 #endif
 
 #define DECLARE_NEW_DELETE_(T, ...)                                                                                  \
-DECLARE_DELETE(T, __VA_ARGS__)                                                                                       \
+P99_DECLARE_DELETE(T, __VA_ARGS__)                                                                                   \
 /*! @brief Reallocation operator for type T **/                                                                      \
 /*! Semantics are similar as for @c realloc. That is **/                                                             \
 /*!  - if @a n is @c 0, this frees the allocated space **/                                                           \
@@ -170,16 +132,13 @@ void P99_PASTE2(T, _vdelete)(T const*vec) {                                     
 }                                                                                                                    \
 P99_MACRO_END(DECLARE_NEW_DELETE_, T)
 
-#define DEFINE_DELETE(...) DEFINE_DELETE_(__VA_ARGS__,)
-#define DEFINE_DELETE_(T, ...) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)
-
 #define DEFINE_NEW_DELETE(...) DEFINE_NEW_DELETE_(__VA_ARGS__,)
 
 #define DEFINE_NEW_DELETE_(T, ...)                               \
 P99_INSTANTIATE(T*, P99_PASTE2(T, _vnew), size_t);               \
 P99_INSTANTIATE(T*, P99_PASTE2(T, _vrealloc), T* old, size_t n); \
 P99_INSTANTIATE(void, P99_PASTE2(T, _vdelete), T const*);        \
-DEFINE_DELETE(T)
+P99_DEFINE_DELETE(T)
 
 
 

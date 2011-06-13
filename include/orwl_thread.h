@@ -207,7 +207,7 @@ void orwl_thread_cntrl_wait_for_callee(orwl_thread_cntrl* det) {
   orwl_sem_wait(&det->semCallee);
 }
 
-DECLARE_DELETE(orwl_thread_cntrl);
+P99_DECLARE_DELETE(orwl_thread_cntrl);
 
 /**
  ** @brief Interface to pthread_create() for joinable threads.
