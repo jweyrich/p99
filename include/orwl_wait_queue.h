@@ -173,6 +173,7 @@ struct orwl_wh {
   pthread_mutex_t mut;
   /** A wh will wait on that condition for requests and acquires. */
   pthread_cond_t cond;
+  pthread_cond_t cond2;
   /** The location to which this wh links. */
   orwl_wq *location;
   /** The next wh in the priority queue. */
@@ -283,7 +284,9 @@ int orwl_wq_valid(orwl_wq *wq) {
    **/
 inline
 int orwl_wq_idle(orwl_wq *wq) {
-  return !wq->head && !wq->tail;
+  orwl_wh *wq_head = atomic_load_orwl_wh_ptr(&wq->head);
+  orwl_wh *wq_tail = atomic_load_orwl_wh_ptr(&wq->tail);
+  return !wq_head && !wq_tail;
 }
 
 

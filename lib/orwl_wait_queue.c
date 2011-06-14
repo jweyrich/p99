@@ -63,6 +63,7 @@ orwl_wh* orwl_wh_init(orwl_wh *wh,
   if (!wh) return 0;
   *wh =  (orwl_wh const)ORWL_WH_INITIALIZER;
   pthread_cond_init(&wh->cond, attr);
+  pthread_cond_init(&wh->cond2, attr);
   pthread_mutex_init(&wh->mut, 0);
   return wh;
 }
@@ -170,7 +171,7 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
     RETRY:
       loaded = orwl_wh_load(wh, 1);
       /* We wait on the local orwl_wh mutex */
-      pthread_cond_wait(&wh->cond, &wh->mut);
+      pthread_cond_wait(&wh->cond2, &wh->mut);
       orwl_wh_unload(wh, loaded);
       /* Check everything again, somebody might have destroyed
          our wq */
@@ -225,23 +226,38 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
     if (wq) {
       MUTUAL_EXCLUDE(wq->mut) {
         while (orwl_wq_valid(wq)) {
-          if (wq->head == wh && !wh->tokens) {
-            wh->location = 0;
-            if (!wh->next) wq->tail = 0;
-            wq->head = wh->next;
-            wh->next = 0;
-            ret = orwl_valid;
-            /* Unlock potential acquirers */
-            /* wake up the first one in the queue */
-            if (wq->head) MUTUAL_EXCLUDE(wq->head->mut) pthread_cond_broadcast(&wq->head->cond);
-            /* Unlock potential requesters */
-            pthread_cond_broadcast(&wh->cond);
+          if (atomic_load_orwl_wh_ptr(&wq->head) == wh && !wh->tokens) {
+            /** read the next one **/
+            orwl_wh* wh_next = atomic_load_orwl_wh_ptr(&wh->next);
+            /** if wh_next is not emply then blocked it **/  
+            if (wh_next)
+              MUTUAL_EXCLUDE (wh_next->mut) {
+               wh->location = 0;
+               wq->head = wh_next;
+               wh->next = 0;
+               ret = orwl_valid;
+               /* Unlock potential acquirers */
+               pthread_cond_broadcast(&wh_next->cond2);
+               /* Unlock potential requesters */
+               pthread_cond_broadcast(&wh->cond);
+              } 
+             /** if it is emply then take my own mutex **/
+             else    
+              MUTUAL_EXCLUDE (wh->mut) {
+               wh->location = 0;
+               wq->tail = 0;
+               wq->head = 0;
+               wh->next = 0;
+               ret = orwl_valid;
+               /* Unlock potential requesters */
+               pthread_cond_broadcast(&wh->cond);
+              } 
             break;
           } else pthread_cond_wait(&wh->cond, &wq->mut);
         }
       }
     } else {
-      if (!wh->next) ret = orwl_valid;
+      if (!(atomic_load_orwl_wh_ptr(&wh->next))) ret = orwl_valid;
     }
   }
   return ret;
