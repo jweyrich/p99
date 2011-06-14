@@ -28,10 +28,11 @@ struct orwl_server {
   char* info;              /*!< an informative string that is
                              presented in the terminal */
   size_t info_len;         /*!< the length of #info */
-  pthread_t id;
-  pthread_rwlock_t lock;
-  bool* id_initialized;
-  size_t unblocked_locations;
+  pthread_t id;            /*!< the ID of this server thread */
+  pthread_mutex_t launch;  /*!< serialize the launching of threads */
+  pthread_rwlock_t lock;   /*!< an initialization lock */
+  bool* id_initialized;    /*!< needed during initialization */
+  size_t unblocked_locations; /*!< needed during initialization */
 };
 
 #define ORWL_SERVER_INITIALIZER(NAME, MAXC, ADDR, PORT)        \

@@ -236,8 +236,10 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
                               -1, srv, len, ,
                               mess,
                               det);
-    orwl_proc_launch(sock, det);
-    if (srv->info && srv->info_len) progress(1, (uintptr_t)sock, "%s", srv->info);
+    MUTUAL_EXCLUDE(srv->launch) {
+      orwl_proc_launch(sock, det);
+      if (srv->info && srv->info_len) progress(1, (uintptr_t)sock, "%s", srv->info);
+    }
     /* Wait that the caller has copied the message and returned the
        control information, and tell him in turn that we have read the
        result. */
