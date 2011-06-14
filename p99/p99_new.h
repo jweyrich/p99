@@ -231,14 +231,16 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_CALLOC, 0)
  ** initialized.
  **
  ** Other arguments after the type argument are interpreted as storage
- ** class specifier for the functions. Default is @c inline.
+ ** class specifier for the functions. Default is ::p99_inline.
  ** @see DECLARE_NEW_DELETE
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_DELETE, 0)
 #define P99_DECLARE_DELETE(...) P00_DECLARE_DELETE(__VA_ARGS__,)
 #else
-#define P99_DECLARE_DELETE(...)                     \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                 \
-(P00_DECLARE_DELETE(__VA_ARGS__, p99_inline))       \
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_DELETE, 0)
+#define P99_DECLARE_DELETE(...)                                \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
+(P00_DECLARE_DELETE(__VA_ARGS__, p99_inline))                  \
 (P00_DECLARE_DELETE(__VA_ARGS__))
 #endif
 

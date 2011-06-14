@@ -96,7 +96,7 @@ DECLARE_ONCE(orwl_wq);
 
 DECLARE_ONCE(orwl_wh);
 
-DECLARE_POINTER_TYPE(orwl_wh);
+P99_POINTER_TYPE(orwl_wh);
 DECLARE_ATOMIC_OPS(orwl_wh_ptr);
 
 /**

@@ -1,7 +1,8 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
+/* the authors and copyright holders for this work are as follows:           */
+/* (C) copyright  2011 Emmanuel Jeanvoine, INRIA, France                     */
 /* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */

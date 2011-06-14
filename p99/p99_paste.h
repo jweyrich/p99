@@ -82,6 +82,7 @@
 
 #ifndef P00_DOCUMENT_MULTIPLE_ARGUMENT
 #define P00_DOCUMENT_TYPE_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO should correspond to a type that is not a VLA. */
+#define P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO should correspond to a type name (one token) that is not a VLA. */
 #define P00_DOCUMENT_MULTIPLE_ARGUMENT(MACRO, N) /*! @warning argument N of MACRO may be evaluated multiple times */
 #define P00_DOCUMENT_WARN_VLA_ARGUMENT(MACRO, N) /*! @warning argument N of MACRO may be evaluated multiple times if it is a VLA */
 #define P00_DOCUMENT_IDENTIFIER_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO must be an identifier */

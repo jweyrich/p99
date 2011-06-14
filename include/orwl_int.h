@@ -22,6 +22,7 @@
 #include "orwl_posix.h"
 #include "orwl_new.h"
 #include "p99_int.h"
+#include "p99_typenames.h"
 
 extern unsigned char const orwl_garb[16];
 
@@ -38,81 +39,9 @@ extern unsigned char const orwl_garb[16];
  **/
 #define TGARB(T) ((T)(void*)orwl_garb)
 
-/* For each one word integer type have a signed and unsigned variant. */
-#define O_RWL_ONE_TOK_(T, NAME)                                                 \
-/*! @brief a `one token' abreviation for @c T */                                \
-/*! These type names are needed to have a valid naming scheme for functions. */ \
-typedef T NAME
-
-O_RWL_ONE_TOK_(unsigned long, ulong);
-O_RWL_ONE_TOK_(signed long, slong);
-O_RWL_ONE_TOK_(unsigned int, uint);
-O_RWL_ONE_TOK_(signed int, sint);
-O_RWL_ONE_TOK_(unsigned short, ushort);
-O_RWL_ONE_TOK_(signed short, sshort);
-O_RWL_ONE_TOK_(unsigned char, uchar);
-O_RWL_ONE_TOK_(signed char, schar);
-O_RWL_ONE_TOK_(long long, llong);
-O_RWL_ONE_TOK_(signed long long, sllong);
-O_RWL_ONE_TOK_(unsigned long long, ullong);
-
-#define DECLARE_POINTER_TYPE(T)                                \
-/*! @brief a pointer to @c T */                                \
-typedef T *P99_PASTE2(T, _ptr);                                \
-/*! @brief a @c const pointer to @c T */                       \
-typedef T const*P99_PASTE2(T, _cptr)
-
-DECLARE_POINTER_TYPE(void);
-DECLARE_POINTER_TYPE(double);
-DECLARE_POINTER_TYPE(float);
-
-DECLARE_POINTER_TYPE(ullong);
-DECLARE_POINTER_TYPE(sllong);
-DECLARE_POINTER_TYPE(llong);
-DECLARE_POINTER_TYPE(long);
-DECLARE_POINTER_TYPE(ulong);
-DECLARE_POINTER_TYPE(slong);
-DECLARE_POINTER_TYPE(int);
-DECLARE_POINTER_TYPE(uint);
-DECLARE_POINTER_TYPE(sint);
-DECLARE_POINTER_TYPE(short);
-DECLARE_POINTER_TYPE(ushort);
-DECLARE_POINTER_TYPE(sshort);
-DECLARE_POINTER_TYPE(char);
-DECLARE_POINTER_TYPE(uchar);
-DECLARE_POINTER_TYPE(schar);
-
-DECLARE_POINTER_TYPE(signed);
-DECLARE_POINTER_TYPE(unsigned);
-
-DECLARE_POINTER_TYPE(size_t);
-DECLARE_POINTER_TYPE(ssize_t);
-DECLARE_POINTER_TYPE(intmax_t);
-DECLARE_POINTER_TYPE(uintmax_t);
-DECLARE_POINTER_TYPE(intptr_t);
-DECLARE_POINTER_TYPE(uintptr_t);
-DECLARE_POINTER_TYPE(ptrdiff_t);
-DECLARE_POINTER_TYPE(int8_t);
-DECLARE_POINTER_TYPE(uint8_t);
-DECLARE_POINTER_TYPE(int16_t);
-DECLARE_POINTER_TYPE(uint16_t);
-DECLARE_POINTER_TYPE(int32_t);
-DECLARE_POINTER_TYPE(uint32_t);
-DECLARE_POINTER_TYPE(int64_t);
-DECLARE_POINTER_TYPE(uint64_t);
 
 
 #define DECLARE_BASIC(T)                                       \
-/*! @brief initialize the object that @a id points to by 0. */ \
-inline T* P99_PASTE2(T, _init)(T *id) {                        \
-  if (id) *id = P99_LVAL(T);                                   \
-  return id;                                                   \
-}                                                              \
-/*! @brief destroy the object that @a id points to. */         \
-inline void P99_PASTE2(T, _destroy)(T*  id) {                  \
-  /* empty */                                                  \
-  (void)id;                                                    \
-}                                                              \
 DECLARE_NEW_DELETE(T)
 
 #define DEFINE_BASIC(T)                                        \
@@ -176,7 +105,6 @@ DECLARE_BASIC_TYPE(uint64_t);
  ** typedef but a macro
  ** @{
  **/
-DECLARE_POINTER_TYPE(_Bool);
 DECLARE_BASIC_TYPE(_Bool);
 #define bool_cptr_delete _Bool_cptr_delete
 #define bool_cptr_destroy _Bool_cptr_destroy
