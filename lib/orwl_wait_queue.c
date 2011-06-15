@@ -229,7 +229,7 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
           if (atomic_load_orwl_wh_ptr(&wq->head) == wh && !wh->tokens) {
             /** read the next one **/
             orwl_wh* wh_next = atomic_load_orwl_wh_ptr(&wh->next);
-            /** if wh_next is not emply then blocked it **/  
+            /** if wh_next is not empty then blocked it **/  
             if (wh_next)
               MUTUAL_EXCLUDE (wh_next->mut) {
                wh->location = 0;
@@ -241,7 +241,7 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
                /* Unlock potential requesters */
                pthread_cond_broadcast(&wh->cond);
               } 
-             /** if it is emply then take my own mutex **/
+             /** if it is empty then take my own mutex **/
              else    
               MUTUAL_EXCLUDE (wh->mut) {
                wh->location = 0;
