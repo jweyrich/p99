@@ -283,7 +283,12 @@ bool orwl_recv_(int fd, uint64_t *mess, size_t len, uint64_t remo);
 #define ORWL_SEND_ERROR UINT64_MAX
 
 /**
- ** @memberof orwl_endpoint
+ ** @brief The communication work horse of ORWL.
+ **
+ ** This contacts remote servers over IP or just launches a thread if
+ ** the communication is local.
+ **
+ ** @memberof orwl_server
  **/
 uint64_t orwl_send(orwl_server* srv, orwl_endpoint const* there, rand48_t *seed, size_t len, uint64_t*const mess);
 

@@ -261,7 +261,11 @@ orwl_state orwl_read_request(orwl_mirror* rq, /*!< [in,out] the location for the
  ** @memberof orwl_handle
  **
  ** This also invalidates any data address that might have been
- ** obtained through a call to ::orwl_map.
+ ** obtained through a call to ::orwl_map and sends the modified data
+ ** back to the local or remote server.
+ ** @todo Keep track if the data has been mapped and only send it back
+ ** in that case.
+ ** @todo Do the send back asynchronously.
  **/
 O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_release)
@@ -313,6 +317,8 @@ bool orwl_inclusive(orwl_handle* rh) {
  ** @brief Block until a previously issued read or write request can
  ** be fulfilled
  ** @memberof orwl_handle
+ ** @todo By means of a version counter avoid to copy data over the
+ ** wire that we know already.
  **/
 inline
 orwl_state orwl_acquire(orwl_handle* rh) {
@@ -398,6 +404,8 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
  ** @see orwl_mapro for the case that the lock that is hold is a read
  ** lock and / or the data should only be read.
  **
+ ** @todo Keep track if we have mapped this data for writing via a
+ ** "dirty" flag.
  **/
 inline
 void* orwl_write_map(orwl_handle* rh, size_t* data_len) {

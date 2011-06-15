@@ -40,6 +40,11 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
  ** @see orwl_proc_join
  ** @see orwl_proc_insert_peer
  ** @see orwl_proc_insert_host
+ **
+ ** @todo In case of a local server shortcut the copy operation by
+ ** just exchanging the address of the buffer.
+ ** @todo Avoid one copy operation by keeping track of a buffer that
+ ** has the meta information at its start and then the message itself.
  **/
 struct orwl_proc {
   uint64_t ret;            /*!< a place to store the return value of
