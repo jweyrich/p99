@@ -251,7 +251,8 @@ int orwl_wh_valid(orwl_wh *wh) {
    **/
 inline
 int orwl_wh_idle(orwl_wh *wh) {
-  return wh && !wh->location && !wh->next;
+  orwl_wh *wh_next = atomic_load_orwl_wh_ptr(&wh->next);
+  return wh && !wh->location && !wh_next;
 }
 
   /**
