@@ -236,9 +236,10 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_wq);
    **/
 inline
 int orwl_wh_valid(orwl_wh *wh) {
+  orwl_wh *wh_next = atomic_load_orwl_wh_ptr(&wh->next);
   return wh
     && wh->location != TGARB(orwl_wq*)
-    && wh->next != TGARB(orwl_wh*);
+    && wh_next != TGARB(orwl_wh*);
 }
 
   /**
