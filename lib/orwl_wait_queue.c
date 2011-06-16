@@ -222,10 +222,11 @@ orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
 orwl_state orwl_wh_release(orwl_wh *wh) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
+   /** protect myself **/
+   MUTUAL_EXCLUDE (wh->mut) {
     orwl_wq *wq = wh->location;
     if (wq) {
       MUTUAL_EXCLUDE(wq->mut) {
-      MUTUAL_EXCLUDE(wh->mut) {
         while (orwl_wq_valid(wq)) {
           if (atomic_load_orwl_wh_ptr(&wq->head) == wh && !wh->tokens) {
             /** read the next one **/
@@ -241,26 +242,24 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
                pthread_cond_broadcast(&wh_next->cond2);
                /* Unlock potential requesters */
                pthread_cond_broadcast(&wh->cond);
-              } 
-             /** if it is empty then take my own mutex **/
-             else {   
-            //  MUTUAL_EXCLUDE (wh->mut) {
+            /** i am along in the queue **/  
+            } else {   
                wh->location = 0;
                wq->tail = 0;
                wq->head = 0;
                wh->next = 0;
                ret = orwl_valid;
                /* Unlock potential requesters */
-               pthread_cond_broadcast(&wh->cond);}
-            //  } 
+               pthread_cond_broadcast(&wh->cond);
+            }
             break;
           } else pthread_cond_wait(&wh->cond, &wq->mut);
         }
       }
-      }
     } else {
       if (!(atomic_load_orwl_wh_ptr(&wh->next))) ret = orwl_valid;
     }
+   }
   }
   return ret;
 }
