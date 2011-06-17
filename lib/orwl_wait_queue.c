@@ -63,7 +63,6 @@ orwl_wh* orwl_wh_init(orwl_wh *wh,
   if (!wh) return 0;
   *wh =  (orwl_wh const)ORWL_WH_INITIALIZER;
   pthread_cond_init(&wh->cond, attr);
-  pthread_cond_init(&wh->cond2, attr);
   pthread_mutex_init(&wh->mut, 0);
   return wh;
 }
@@ -171,7 +170,7 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
     RETRY:
       loaded = orwl_wh_load(wh, 1);
       /* We wait on the local orwl_wh mutex */
-      pthread_cond_wait(&wh->cond2, &wh->mut);
+      pthread_cond_wait(&wh->cond, &wh->mut);
       orwl_wh_unload(wh, loaded);
       /* Check everything again, somebody might have destroyed
          our wq */
@@ -239,7 +238,7 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
                wh->next = 0;
                ret = orwl_valid;
                /* Unlock potential acquirers */
-               pthread_cond_broadcast(&wh_next->cond2);
+               pthread_cond_broadcast(&wh_next->cond);
                /* Unlock potential requesters */
                pthread_cond_broadcast(&wh->cond);
             /** i am along in the queue **/  

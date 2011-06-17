@@ -173,7 +173,6 @@ struct orwl_wh {
   pthread_mutex_t mut;
   /** A wh will wait on that condition for requests and acquires. */
   pthread_cond_t cond;
-  pthread_cond_t cond2;
   /** The location to which this wh links. */
   orwl_wq *location;
   /** The next wh in the priority queue. */
