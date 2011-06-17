@@ -265,7 +265,11 @@ orwl_state orwl_read_request(orwl_mirror* rq, /*!< [in,out] the location for the
  ** @memberof orwl_handle
  **
  ** This also invalidates any data address that might have been
- ** obtained through a call to ::orwl_map.
+ ** obtained through a call to ::orwl_map and sends the modified data
+ ** back to the local or remote server.
+ ** @todo Keep track if the data has been mapped and only send it back
+ ** in that case.
+ ** @todo Do the send back asynchronously.
  **/
 O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_release)
@@ -317,6 +321,8 @@ bool orwl_inclusive(orwl_handle* rh) {
  ** @brief Block until a previously issued read or write request can
  ** be fulfilled
  ** @memberof orwl_handle
+ ** @todo By means of a version counter avoid to copy data over the
+ ** wire that we know already.
  **/
 inline
 orwl_state orwl_acquire(orwl_handle* rh) {
@@ -346,11 +352,6 @@ orwl_state orwl_test(orwl_handle* rh) {
   return orwl_wh_test(rh->wh, 0);
 }
 
-P99_DEPRECATED(inline uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len));
-P99_DEPRECATED(inline uint64_t* orwl_map(orwl_handle* rh, size_t* data_len));
-P99_DEPRECATED(inline void orwl_resize(orwl_handle* rh, size_t data_len));
-
-
 /**
  ** @brief Obtain address and size of the data that is associated to a
  ** handle for reading and writing
@@ -374,6 +375,11 @@ P99_DEPRECATED(inline void orwl_resize(orwl_handle* rh, size_t data_len));
  ** @see orwl_mapro for the case that the lock that is hold is a read
  ** lock and / or the data should only be read.
  **
+ ** @todo Rename ::orwl_map to something like @c orwl_write_map64
+ ** @todo Keep track if we have mapped this data for writing via a
+ ** "dirty" flag.
+ ** @todo Make sure that only this interface (and ::orwl_mapro) does the endian
+ ** transformation, if necessary.
  **/
 inline
 uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
@@ -413,6 +419,12 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
  ** @see orwl_mapro for the case that the lock that is hold is a read
  ** lock and / or the data should only be read.
  **
+ ** @todo Keep track if we have mapped this data for writing via a
+ ** "dirty" flag.
+ **
+ ** @todo Make sure that this interface (and ::orwl_read_map) don't do
+ ** the endian transformation. They are supposed to work on
+ ** uninterpreted bytes.
  **/
 inline
 void* orwl_write_map(orwl_handle* rh, size_t* data_len) {
@@ -497,9 +509,14 @@ void const* orwl_read_map(orwl_handle* rh, size_t* data_len) {
  ** resize the data to a new length. If such a resize operation
  ** is an extension of existing data that data is preserved and the
  ** newly appended area is filled with zero bytes.
+ ** @warning @a data_len is accounted in elements of a width of 64 bits.
  **
  ** @pre The handle @a rh must hold a write (exclusive) lock on the
- ** location to which it is linked. 
+ ** location to which it is linked.
+ ** @todo Update a "dirty" flag.
+ ** @todo Rename this to something like @c orwl_resize64 to make it
+ ** clear that this acts on 64 bit elements.
+ ** @see orwl_truncate for a variant that only accounts for bytes
  **/
 inline
 void orwl_resize(orwl_handle* rh, size_t data_len) {
@@ -509,6 +526,23 @@ void orwl_resize(orwl_handle* rh, size_t data_len) {
   }
 }
 
+/**
+ ** @brief Shrink or extend the data that is associated to a location.
+ ** @memberof orwl_handle
+ ** Initially, the data of a location is empty, i.e of 0 size. If the
+ ** lock that a handle holds is exclusive ::orwl_truncate can be used to
+ ** resize the data to a new length. If such a resize operation
+ ** is an extension of existing data that data is preserved and the
+ ** newly appended area is filled with zero bytes.
+ ** @warning @a data_len is accounted in bytes but the real length
+ ** that is associated is the next multiple that can hold elements of
+ ** width 64 bit.
+ **
+ ** @pre The handle @a rh must hold a write (exclusive) lock on the
+ ** location to which it is linked.
+ ** @todo Update a "dirty" flag.
+ ** @see orwl_resize for a variant that accounts for 64 bit elements
+ **/
 inline
 void orwl_truncate(orwl_handle* rh, size_t data_len) {
   if (orwl_test(rh) > orwl_valid) {
