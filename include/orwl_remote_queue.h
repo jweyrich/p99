@@ -339,7 +339,7 @@ orwl_state orwl_test(orwl_handle* rh) {
 
 /**
  ** @brief Obtain address and size of the data that is associated to a
- ** handle for reading and writing
+ ** location for reading and writing
  ** @memberof orwl_handle
  ** The application may associate data to each location of which it
  ** also may control the size. Once the lock is acquired for a given
@@ -353,6 +353,13 @@ orwl_state orwl_test(orwl_handle* rh) {
  ** @param rh the handle in question
  ** @param data_len [out] the length of the data in number of elements
  **
+ ** @return An address to access the data that is associated with the
+ ** handle. If the request is invalid @c 0 is returned and if
+ ** applicable @c *data_len is set to @c 0, too.
+ ** @warning The return address is only valid until @a rh is
+ ** released.
+ ** @warning The return address may (and will) be different between
+ ** different calls to that function.
  ** @warning The new content of the data will only be visible for
  ** other lock handles once they obtain a lock after this handle
  ** releases its write lock.
@@ -369,6 +376,7 @@ orwl_state orwl_test(orwl_handle* rh) {
 inline
 uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
   uint64_t* ret = 0;
+  if (data_len) *data_len = 0;
   if (rh)
     switch (orwl_test(rh)) {
     case orwl_acquired: ;
@@ -383,7 +391,7 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
 
 /**
  ** @brief Obtain address and size of the data that is associated to a
- ** handle for reading and writing
+ ** location for reading and writing
  ** @memberof orwl_handle
  ** The application may associate data to each location of which it
  ** also may control the size. Once the lock is acquired for a given
@@ -397,6 +405,13 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
  ** @pre The handle @a rh must hold a write lock on the location to
  ** which it is linked.
  **
+ ** @return An address to access the data that is associated with the
+ ** location. If the request is invalid @c 0 is returned and if
+ ** applicable @c *data_len is set to @c 0, too.
+ ** @warning The return address is only valid until @a rh is
+ ** released.
+ ** @warning The return address may (and will) be different between
+ ** different calls to that function.
  ** @warning The new content of the data will only be visible for
  ** other lock handles once they obtain a lock after this handle
  ** releases its write lock.
@@ -414,6 +429,7 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
 inline
 void* orwl_write_map(orwl_handle* rh, size_t* data_len) {
   void* ret = 0;
+  if (data_len) *data_len = 0;
   if (rh)
     switch (orwl_test(rh)) {
     case orwl_acquired: ;
@@ -430,12 +446,19 @@ void* orwl_write_map(orwl_handle* rh, size_t* data_len) {
 
 /**
  ** @brief Obtain address and size of the data that is associated to a
- ** handle for reading
+ ** location for reading
  ** @memberof orwl_handle
  ** @pre The handle @a rh must hold a read lock on the location to
  ** which it is linked.
  ** @param rh the handle in question
  ** @param [out] data_len the length of the data in number of elements
+ ** @return An address to access the data that is associated with the
+ ** location. If the request is invalid @c 0 is returned and if
+ ** applicable @c *data_len is set to @c 0, too.
+ ** @warning The return address is only valid until @a rh is
+ ** released.
+ ** @warning The return address may (and will) be different between
+ ** different calls to that function.
  **
  ** @see orwl_map for the case that the lock that is hold is a write
  ** lock the data and should also be written to.
@@ -443,6 +466,7 @@ void* orwl_write_map(orwl_handle* rh, size_t* data_len) {
 inline
 uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len) {
   uint64_t* ret = 0;
+  if (data_len) *data_len = 0;
   if (rh)
     switch (orwl_test(rh)) {
     case orwl_acquired: ;
@@ -457,12 +481,19 @@ uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len) {
 
 /**
  ** @brief Obtain address and size of the data that is associated to a
- ** handle for reading
+ ** location for reading
  ** @memberof orwl_handle
  ** @pre The handle @a rh must hold a read lock on the location to
  ** which it is linked.
  ** @param rh the handle in question
  ** @param [out] data_len the length of the data in bytes
+ ** @return An address to access the data that is associated with the
+ ** location. If the request is invalid @c 0 is returned and if
+ ** applicable @c *data_len is set to @c 0, too.
+ ** @warning The return address is only valid until @a rh is
+ ** released.
+ ** @warning The return address may (and will) be different between
+ ** different calls to that function.
  **
  ** @see orwl_write_map for the case that the lock that is hold is a write
  ** lock the data and should also be written to.
@@ -470,6 +501,7 @@ uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len) {
 inline
 void const* orwl_read_map(orwl_handle* rh, size_t* data_len) {
   void const* ret = 0;
+  if (data_len) *data_len = 0;
   if (rh)
     switch (orwl_test(rh)) {
     case orwl_acquired: ;
