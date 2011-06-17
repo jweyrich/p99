@@ -50,6 +50,9 @@ P99_INSTANTIATE(orwl_state, orwl_acquire, orwl_handle*);
 P99_INSTANTIATE(orwl_state, orwl_test, orwl_handle*);
 
 orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
+#ifdef GETTIMING
+  struct timespec start1 = orwl_gettime();
+#endif /* !GETTIMING */
   orwl_state state = orwl_invalid;
   if (rq && rh)
   MUTUAL_EXCLUDE(rq->mut) {
@@ -63,11 +66,21 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
         /* Send the insertion request with the id of cli_wh to the other
            side. As result retrieve the ID on the other side that is to be
            released when we release here. */
+#ifdef GETTIMING
+	struct timespec start2 = orwl_gettime();
+#endif /* !GETTIMING */
         rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, orwl_proc_write_request,
                              rq->there.index,
                              (uintptr_t)cli_wh,
                              port2host(&rq->srv->host.ep.port)
                              );
+#ifdef GETTIMING
+	struct timespec end2 = orwl_gettime();
+	MUTUAL_EXCLUDE(orwl_timing_info()->mutex_rpc_write_request) {
+	  orwl_timing_info()->nb_rpc_write_request++;
+	  diff_and_add_tvspec(&start2, &end2, &orwl_timing_info()->time_rpc_write_request);
+	}
+#endif /* !GETTIMING */
         if (rh->svrID && (rh->svrID != ORWL_SEND_ERROR)) {
           /* Link us to rq */
           rh->rq = rq;
@@ -84,10 +97,20 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
       }
     }
   }
+#ifdef GETTIMING
+  struct timespec end1 = orwl_gettime();
+  MUTUAL_EXCLUDE(orwl_timing_info()->mutex_total_write_request) {
+    orwl_timing_info()->nb_total_write_request++;
+    diff_and_add_tvspec(&start1, &end1, &orwl_timing_info()->time_total_write_request);
+  }
+#endif /* !GETTIMING */
   return state;
 }
 
 orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
+#ifdef GETTIMING
+  struct timespec start1 = orwl_gettime();
+#endif /* !GETTIMING */
   orwl_state state = orwl_invalid;
   if (rq && rh)
   MUTUAL_EXCLUDE(rq->mut) {
@@ -107,12 +130,22 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
          considered a new request, and the svrID that was memorized on
          wh_inc, if any. As result retrieve the ID on the other side
          that is to be released when we release here. */
+#ifdef GETTIMING
+      struct timespec start2 = orwl_gettime();
+#endif /* !GETTIMING */
       rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, orwl_proc_read_request,
                            rq->there.index,
                            (uintptr_t)cli_wh,
                            wh_inc ? wh_inc->svrID : 0,
                            port2host(&rq->srv->host.ep.port)
                            );
+#ifdef GETTIMING
+      struct timespec end2 = orwl_gettime();
+      MUTUAL_EXCLUDE(orwl_timing_info()->mutex_rpc_read_request) {
+	orwl_timing_info()->nb_rpc_read_request++;
+	diff_and_add_tvspec(&start2, &end2, &orwl_timing_info()->time_rpc_read_request);
+      }
+#endif /* !GETTIMING */
       if (!rh->svrID) {
         state = orwl_invalid;
         report(1, "bad things happen: unable to get a read insertion request from the other side.");
@@ -185,10 +218,20 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
       }
     }
   }
+#ifdef GETTIMING
+  struct timespec end1 = orwl_gettime();
+  MUTUAL_EXCLUDE(orwl_timing_info()->mutex_total_read_request) {
+    orwl_timing_info()->nb_total_read_request++;
+    diff_and_add_tvspec(&start1, &end1, &orwl_timing_info()->time_total_read_request);
+  }
+#endif /* !GETTIMING */
   return state;
 }
 
 orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
+#ifdef GETTIMING
+  struct timespec start1 = orwl_gettime();
+#endif /* !GETTIMING */
   orwl_state state = orwl_valid;
   assert(rh);
   assert(rh->wh);
@@ -219,10 +262,20 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
       mess = uint64_t_vnew(len);
       mess[0] = ORWL_OBJID(orwl_proc_release);
       mess[1] = svrID;
+#ifdef GETTIMING
+    struct timespec start2 = orwl_gettime();
+#endif /* !GETTIMING */
       if (extend) {
         report(false, "adding suplement of length %zu", extend);
         memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
       }
+#ifdef GETTIMING
+    struct timespec end2 = orwl_gettime();
+    MUTUAL_EXCLUDE(orwl_timing_info()->mutex_copy_data_release) {
+      orwl_timing_info()->nb_copy_data_release++;
+      diff_and_add_tvspec(&start2, &end2, &orwl_timing_info()->time_copy_data_release);
+    }
+#endif /* !GETTIMING */
     } else {
       orwl_handle_init(rh);
       pthread_mutex_unlock(&rq->mut);
@@ -233,12 +286,29 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     state = orwl_wh_release(wh);
     orwl_handle_init(rh);
     pthread_mutex_unlock(&rq->mut);
+#ifdef GETTIMING
+    struct timespec start3 = orwl_gettime();
+#endif /* !GETTIMING */
     orwl_send(srv, &there, seed, len, mess);
+#ifdef GETTIMING
+    struct timespec end3 = orwl_gettime();
+    MUTUAL_EXCLUDE(orwl_timing_info()->mutex_send_data_release) {
+      orwl_timing_info()->nb_send_data_release++;
+      diff_and_add_tvspec(&start3, &end3, &orwl_timing_info()->time_send_data_release);
+    }
+#endif /* !GETTIMING */
     /* We should be the last to have a reference to this handle so
        we may destroy it. */
     orwl_wh_delete(wh);
     uint64_t_vdelete(mess);
   }
+#ifdef GETTIMING
+  struct timespec end1 = orwl_gettime();
+  MUTUAL_EXCLUDE(orwl_timing_info()->mutex_total_release) {
+    orwl_timing_info()->nb_total_release++;
+    diff_and_add_tvspec(&start1, &end1, &orwl_timing_info()->time_total_release);
+  }
+#endif /* !GETTIMING */
   return state;
 }
 

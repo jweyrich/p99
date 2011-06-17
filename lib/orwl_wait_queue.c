@@ -15,6 +15,7 @@
 #include "orwl_wait_queue.h"
 #include "orwl_socket.h"
 #include "orwl_atomic.h"
+#include "orwl_timing.h"
 
 P99_DEFINE_ENUM(orwl_state);
 
@@ -170,7 +171,17 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
     RETRY:
       loaded = orwl_wh_load(wh, 1);
       /* We wait on the local orwl_wh mutex */
+#ifdef GETTIMING
+  struct timespec start = orwl_gettime();
+#endif  /* !GETTIMING */
       pthread_cond_wait(&wh->cond, &wh->mut);
+#ifdef GETTIMING
+      struct timespec end = orwl_gettime();
+      MUTUAL_EXCLUDE(orwl_timing_info()->mutex_wait_on_cond_acquire) {
+	orwl_timing_info()->nb_wait_on_cond_acquire++;
+	diff_and_add_tvspec(&start, &end, &orwl_timing_info()->time_wait_on_cond_acquire);
+      }
+#endif /* !GETTIMING */
       orwl_wh_unload(wh, loaded);
       /* Check everything again, somebody might have destroyed
          our wq */
