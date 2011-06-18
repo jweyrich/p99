@@ -21,6 +21,9 @@
 #include "orwl_proc.h"
 #include "orwl_wait_queue.h"
 #include "orwl_remote_queue.h"
+#ifdef GETTIMING
+#include "orwl_timing.h"
+#endif /* !GETTIMING */
 
 DEFINE_ONCE(orwl_server,
             orwl_thread,
@@ -47,6 +50,7 @@ orwl_server* orwl_server_init(orwl_server *serv,
       .unblocked_locations = 0,
     };
     pthread_rwlock_init(&serv->lock);
+    pthread_mutex_init(&serv->launch);
     if (endp && endp[0]) orwl_endpoint_parse(&serv->host.ep, endp);
   }
   return serv;
@@ -86,6 +90,9 @@ void orwl_server_destroy(orwl_server *serv) {
   if (serv->id_initialized) bool_vdelete(serv->id_initialized);
   if (serv->info) free(serv->info);
   orwl_server_init(serv);
+#ifdef GETTIMING
+  orwl_timing_print_stats();
+#endif /* GETTIMING */
 }
 
 DEFINE_NEW_DELETE(orwl_server);
@@ -165,7 +172,8 @@ DEFINE_THREAD(orwl_server) {
             size_t len = header[0];
             if (len) {
               orwl_proc *sock = P99_NEW(orwl_proc, fd, Arg, len, header[2]);
-              orwl_proc_create(sock);
+              MUTUAL_EXCLUDE(Arg->launch)
+                orwl_proc_create(sock);
               /* The spawned thread will close the fd. */
               fd = -1;
             } else {

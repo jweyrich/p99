@@ -113,6 +113,10 @@ include ../scripts/Makefile-complex
 include ../scripts/Makefile-tgmath
 include ../scripts/Makefile-iso646
 
+ifeq (${GETTIMING},on)
+CFLAGS += -DGETTIMING
+endif
+
 ##############################
 # Basic Compile Instructions #
 ##############################

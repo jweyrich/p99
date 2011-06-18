@@ -34,10 +34,12 @@ struct arg_t {
   /** A character array in the "server" thread that is used to show
    ** the progress of the application. **/
   char* info;
+  /** The number of locations read **/
+  size_t readers;
 };
 
 arg_t* arg_t_init(arg_t *arg, orwl_barrier* ba, size_t m,
-                  size_t ph, orwl_mirror* le, char* inf) {
+                  size_t ph, orwl_mirror* le, char* inf, size_t reads) {
   if (arg)
     *arg = P99_LVAL(arg_t const,
                     .mynum = m,
@@ -45,14 +47,15 @@ arg_t* arg_t_init(arg_t *arg, orwl_barrier* ba, size_t m,
                     .left = le,
                     .init_barr = ba,
                     .info = inf,
+                    .readers = reads,
                     );
   return arg;
 }
 
-P99_PROTOTYPE(arg_t*, arg_t_init, arg_t *, orwl_barrier*, size_t, size_t, orwl_mirror*, char*);
-#define arg_t_init(...) P99_CALL_DEFARG(arg_t_init, 6, __VA_ARGS__)
-P99_DECLARE_DEFARG(arg_t_init, , P99_0(orwl_barrier*), P99_0(size_t), P99_0(size_t), P99_0(orwl_mirror*), P99_0(char*));
-P99_DEFINE_DEFARG(arg_t_init, , P99_0(orwl_barrier*), P99_0(size_t), P99_0(size_t), P99_0(orwl_mirror*), P99_0(char*));
+P99_PROTOTYPE(arg_t*, arg_t_init, arg_t *, orwl_barrier*, size_t, size_t, orwl_mirror*, char*, size_t);
+#define arg_t_init(...) P99_CALL_DEFARG(arg_t_init, 7, __VA_ARGS__)
+P99_DECLARE_DEFARG(arg_t_init, , P99_0(orwl_barrier*), P99_0(size_t), P99_0(size_t), P99_0(orwl_mirror*), P99_0(char*), P99_0(size_t));
+P99_DEFINE_DEFARG(arg_t_init, , P99_0(orwl_barrier*), P99_0(size_t), P99_0(size_t), P99_0(orwl_mirror*), P99_0(char*), P99_0(size_t));
 
 void arg_t_destroy(arg_t *arg) {
 }
@@ -71,6 +74,9 @@ DEFINE_THREAD(arg_t) {
   orwl_mirror*const left = Arg->left;
   orwl_barrier*const init_barr = Arg->init_barr;
   char* info = Arg->info;
+  size_t readers = Arg->readers;
+  size_t nb_hand;
+  struct timespec t;
 
   /**
    ** Initialization of some variables.
@@ -80,93 +86,133 @@ DEFINE_THREAD(arg_t) {
    * due to manipulate. */
   if (info) info += 3*orwl_mynum + 1;
 
-  /* Each thread holds 3 orwl_handle2. One for his own location and
-   * one each for the location to the left and to the right. */
-  orwl_handle2 handle[3] = { ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER };
+
+  /** Number of handlers, readers*2 for read and 1 for write **/
+  nb_hand = 2*readers + 1;
+
+  /* Each thread holds "nb_hand" orwl_handle2. One for his own location and for
+   * the locations to the left and to the right. */
+  orwl_handle2* handle = orwl_handle2_vnew(nb_hand);
 
   /* The buffer for the reentrant pseudo random generator */
   rand48_t* seed = seed_get();
-
   orwl_state ostate = orwl_invalid;
 
-  /* Insert the three handles into the request queues. Positions 0 and
-   * 2 are the neighbors, so these are only read requests. Position 1
+  /* Insert the handles into the request queues. Positions 0 to "readers-1" and
+   * "readers+1" to "2*readers" are the neighbors, so these are only read requests. Position "readers"
    * is our own location where we want to write. */
   {
     orwl_barrier_wait(init_barr);
     /* Randomize, so the system will always be initialized differently. */
     sleepfor(orwl_drand(seed) * 1E-1);
-    /* We have to be sure that the insertion into the three request
+    /* We have to be sure that the insertion into the request
        queues is not mixed up. For the moment this is just guaranteed
        by holding a global mutex. */
     ORWL_CRITICAL {
-      orwl_read_request2(&left[0], &handle[0]);
-      orwl_write_request2(&left[1], &handle[1]);
-      orwl_read_request2(&left[2], &handle[2]);
+      /* read request: left side   */
+      for (size_t i = 0; i < readers; ++i) {
+        t = orwl_gettime();
+        report(false, "%ld/read requesting: %p",t.tv_nsec,&left[i]);
+        orwl_read_request2(&left[i], &handle[i]);
+        t = orwl_gettime();
+        report(false, "%ld/read requested: %p",t.tv_nsec,&left[i]);
+      }
+      /* write request: to my own position*/
+      t = orwl_gettime();
+      report(false, "%ld/write requesting: %p",t.tv_nsec,&left[readers]);
+      orwl_write_request2(&left[readers], &handle[readers]);
+      t = orwl_gettime();
+      report(false, "%ld/write requested: %p",t.tv_nsec,&left[readers]);
+
+      /* read request: rigth side   */
+      for (size_t i =(readers+1) ; i <= (2*readers); ++i) {
+        t = orwl_gettime();
+        report(false, "%ld/read requesting: %p",t.tv_nsec,&left[i]);
+        orwl_read_request2(&left[i], &handle[i]);
+        t = orwl_gettime();
+        report(false, "%ld/read requested: %p",t.tv_nsec,&left[i]);
+      }
     }
     orwl_barrier_wait(init_barr);
-    report(0, "initial barrier passed");
+    report(false, "initial barrier passed");
   }
-
-
   /* Do some resizing = allocation, but only in an initial phase. */
   {
     /* Do some precomputation of the desired data size */
-    size_t len = sizeof(uint64_t);
+    size_t len = 1;
     char const* env = getenv("ORWL_HANDLE_SIZE");
     if (env) {
-      size_t len2 = strtouz(env);
-      if (len2 > len) len = len2;
+      size_t len2 = strtouz(env) / sizeof(uint64_t);
+      if (len2) len = len2;
+    }
+ 
+    /** Block until we haven't acquired all locks. **/
+    for (size_t i = 0; i < nb_hand; ++i){
+      t = orwl_gettime();
+      report(false, "%ld/acquiring: %p",t.tv_nsec,&left[i]);
+      orwl_acquire2(&handle[i]);
+      t = orwl_gettime();
+      report(false, "%ld/acquired: %p",t.tv_nsec,&left[i]);
     }
 
-    /** Block until we haven't acquired all three locks. **/
-    for (size_t i = 0; i < 3; ++i)
-      orwl_acquire2(&handle[i]);
+    t = orwl_gettime();
+    report(false, "%ld/truncating: %p",t.tv_nsec,&left[readers]);
+    orwl_truncate2(&handle[readers], len);
+    t = orwl_gettime();
+    report(false, "%ld/truncated: %p",t.tv_nsec,&left[readers]);
 
-    orwl_truncate2(&handle[1], len);
-
-    for (size_t i = 0; i < 3; ++i)
+    for (size_t i = 0; i < nb_hand; ++i){
+      t = orwl_gettime();
+      report(false, "%ld/releasing: %p",t.tv_nsec,&left[i]);
       orwl_release2(&handle[i]);
+      t = orwl_gettime();
+      report(false, "%ld/released: %p",t.tv_nsec,&left[i]);
+    }
   }
 
-
+  report(false, "starting phases");
   for (size_t orwl_phase = 1; orwl_phase < phases; ++orwl_phase) {
 
     /** Initial Phase: do something having requested the lock but not
      ** necessarily having it obtained.
      **/
-    double const twait = 0.3;
+    double const twait = 0.1;
     double const rwait = twait * orwl_drand(seed);
     double const await = twait - rwait;
 
     /** Here for this dummy application we just take a nap **/
     sleepfor(await);
 
-
-    /** Acquire all the three handles, our own and the two neighboring ones.
+    /** Acquire all the handles, our own and the neighboring ones.
      ** This will block until the locks are obtained.
      **/
-    for (size_t i = 0; i < 3; ++i)
-      ostate = orwl_acquire2(&handle[i]);
+    for (size_t i = 0; i < nb_hand; ++i) {
+       t = orwl_gettime();
+       report(false, "%ld/acquiring: %p",t.tv_nsec,&left[i]);
+       ostate = orwl_acquire2(&handle[i]);
+       t = orwl_gettime();
+       report(false, "%ld/acquired: %p",t.tv_nsec,&left[i]);
 
+    }
     /** Working Phase: we hold a write lock on our own location and
-     ** read locks on the two locations of the neighbors.
+     ** read locks on the locations of the neighbors.
      **/
     memcpy(info, "..", 2);
-
+    report(false, "working start");
     char diffLeft = P99_INIT;
     char diffRight = P99_INIT;
     {
-      /* For handle 1 we have gained write access. Change the globally
+      /* For handle [readers] we have gained write access. Change the globally
        * shared data for the whole application. */
+      size_t data_len = 0;
       {
-        uint64_t* data = orwl_write_map2(&handle[1]);
+        uint64_t* data =orwl_write_map2(&handle[readers]);
         assert(data);
         *data = orwl_phase;
       }
-      /* For handle 0 and 2 we have read access. */
+      /* For handle 0 and [readers+1] we have read access. */
       {
-        uint64_t const* data = orwl_read_map2(&handle[0]);
+        uint64_t const* data = orwl_read_map2(&handle[readers-1], &data_len);
         assert(data);
         uint64_t phaseRight = *data;
 
@@ -177,7 +223,7 @@ DEFINE_THREAD(arg_t) {
              : '!');
       }
       {
-        uint64_t const* data = orwl_read_map2(&handle[2]);
+        uint64_t const* data = orwl_read_map2(&handle[readers+1]);
         assert(data);
         uint64_t phaseLeft = *data;
 
@@ -188,7 +234,7 @@ DEFINE_THREAD(arg_t) {
              : '!');
       }
     }
-
+    report(false, "working end");
     /** take another nap where a real application would do its work
      ** that needs access to the shared resource.
      **/
@@ -208,21 +254,27 @@ DEFINE_THREAD(arg_t) {
 
     /* At the end of the phase, release our locks and launch the next
      * phase by placing a new request in the end of the queue. */
-    for (size_t i = 0; i < 3; ++i)
+    for (size_t i = 0; i < nb_hand; ++i){
+      report(false, "%ld/releasing: %p",t.tv_nsec,&left[i]);
       ostate = orwl_release2(&handle[i]);
+      report(false, "%ld/released: %p",t.tv_nsec,&left[i]);
+    }
   }
 
   /** And at the very end of the lifetime of the thread cancel all
    ** locks such that no other thread is blocked and return.
    **/
-  for (size_t i = 0; i < 3; ++i)
+  for (size_t i = 0; i < nb_hand; ++i)
     ostate = orwl_cancel2(&handle[i]);
   report(false, "finished");
+   
+  /** free handle **/
+  orwl_handle2_vdelete(handle);
 }
 
 int main(int argc, char **argv) {
   if (argc < 3) {
-    report(1, "Usage: %s PHASES LOCATIONS",
+    report(1, "Usage: %s PHASES LOCATIONS [READERS]",
            argv[0]);
     report(1, "only %d commandline arguments, this ain't enough",
            argc);
@@ -245,14 +297,16 @@ int main(int argc, char **argv) {
   /* condition the run */
   size_t phases = str2uz(argv[1]);
   orwl_np = str2uz(argv[2]);
+  /* number of orwl in both sides for read*/
+  size_t orwl_readers = (argc > 4) ? str2uz(argv[3]) : 1;
 
   /**
    ** "location" is a vector of locations with basically one location per
-   ** thread. The two extra ones are needed to model the wrap around
+   ** thread. The extra ones are needed to model the wrap around
    ** at the boundaries
    **/
-  orwl_mirror*const location_back = orwl_mirror_vnew(orwl_np + 2);
-  orwl_mirror* location = location_back + 1;
+  orwl_mirror*const location_back = orwl_mirror_vnew(orwl_np + 2*orwl_readers);
+  orwl_mirror* location = location_back + orwl_readers;
 
   orwl_barrier init_barr;
   orwl_barrier_init(&init_barr, orwl_np);
@@ -289,14 +343,13 @@ int main(int argc, char **argv) {
      * server thread. */
     orwl_endpoint there = srv.host.ep;
 
-    for (ssize_t i = -1; i <= (ssize_t)orwl_np; ++i) {
+    for (ssize_t i = (-orwl_readers); i < (ssize_t)(orwl_np+orwl_readers); ++i) {
       size_t gpos = (orwl_np + i) % orwl_np;
       there.index = gpos;
       orwl_mirror_connect(&location[i], &srv, there);
       report(0, "connected to %s", orwl_endpoint_print(&there));
     }
   }
-
   /* Fire up the worker threads. */
   for (size_t thread = 0; thread < orwl_np; ++thread) {
     if (thread%2) {
@@ -311,8 +364,8 @@ int main(int argc, char **argv) {
                                        /* give it the starting
                                         * position of the location on
                                         * the left. */
-                                       &location[thread - 1],
-                                       srv.info),
+                                       &location[thread - orwl_readers],
+                                       srv.info,orwl_readers),
                             &id[thread2]
                             );
     } else {
@@ -326,12 +379,11 @@ int main(int argc, char **argv) {
                            /* give it the starting
                             * position of the location on
                             * the left. */
-                           &location[thread - 1],
-                           srv.info)
+                           &location[thread - orwl_readers],
+                           srv.info,orwl_readers)
                    );
     }
   }
-
   /* wait for even numbered threads, that have been started joinable. */
   for (size_t thread2 = 0; thread2 < orwl_np/2; ++thread2) {
     arg_t_join(id[thread2]);

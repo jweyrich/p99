@@ -83,9 +83,11 @@ void atomic_store(atomic_size_t volatile *object, size_t desired);
  **
  ** If the operation fails, the actual value is not changed and that
  ** value is returned in @a expected.
+ ** @return @c true when value has successfully been stored, @c false
+ ** otherwise.
  **/
 inline
-_Bool atomic_compare_exchange_weak(atomic_size_t volatile *object, size_t *expected, size_t desired);
+_Bool atomic_compare_exchange_weak(atomic_size_t volatile *object, size_t *restrict expected, size_t desired);
 
 
 /**
@@ -162,7 +164,7 @@ size_t atomic_fetch_and(atomic_size_t volatile *object, size_t operand);
 #ifndef GNUC_NO_SYNC
 
 inline
-_Bool atomic_compare_exchange_weak(atomic_size_t volatile *object, size_t *expected, size_t desired) {
+_Bool atomic_compare_exchange_weak(atomic_size_t volatile *object, size_t *restrict expected, size_t desired) {
   size_t val = __sync_val_compare_and_swap(object, *expected, desired);
   _Bool ret = (val == *expected);
   if (!ret) *expected = val;
@@ -225,8 +227,8 @@ size_t atomic_load(atomic_size_t volatile *object) {
  ** @brief Declare atomic operations for type @a T, different from @c
  ** size_t.
  **
- ** This assumes that the size of @a T is the same as for @c size_t
- ** and @c uintptr_t.
+ ** This assumes that the size of @a T is less than or equal to that
+ ** of @c size_t.
  **
  ** Three @c inline functions are declared by this macro. They
  ** implement the analogs of ::atomic_load, ::atomic_store and
@@ -236,47 +238,91 @@ size_t atomic_load(atomic_size_t volatile *object) {
  **
  ** @see DEFINE_ATOMIC_OPS for a macro that ensures that the
  ** corresponding functions are really emitted.
+ ** @see DECLARE_ATOMIC_OP to define a concrete operation on a
+ ** specific type.
  **/
-#define DECLARE_ATOMIC_OPS(T)                                                \
-P99_COMPILETIME_ASSERT(sizeof(T) == sizeof(size_t), size_t);                 \
-P99_COMPILETIME_ASSERT(sizeof(T) == sizeof(uintptr_t), uintptr_t);           \
-/*! @brief Load a variable of type T atomically. */                          \
-/*! @remark This supposes that T is of the same size as @c size_t */         \
-/*! @see atomic_load */                                                      \
-/*! @see T */                                                                \
-inline                                                                       \
-T P99_PASTE2(atomic_load_, T)(T volatile* object) {                          \
-  return (T)(uintptr_t)atomic_load((atomic_size_t volatile*)object);         \
-}                                                                            \
-/*! @brief Store a variable of type T atomically. */                         \
-/*! @remark This supposes that T is of the same size as @c size_t */         \
-/*! @see atomic_store */                                                     \
-/*! @see T */                                                                \
-inline                                                                       \
-void P99_PASTE2(atomic_store_, T)(T volatile *object, T desired) {           \
-  atomic_store((atomic_size_t volatile*)object, (size_t)(uintptr_t)desired); \
-}                                                                            \
-/*! @brief Comare and swap for type T. */                                    \
-/*! @remark This supposes that T is of the same size as @c size_t */         \
-/*! @see atomic_compare_exchange_weak */                                     \
-/*! @see T */                                                                \
-inline                                                                       \
-_Bool P99_PASTE2(atomic_compare_exchange_weak_, T)(T volatile *object,       \
-                                                   T *expected,              \
-                                                   T desired) {              \
-  return atomic_compare_exchange_weak((atomic_size_t volatile*)object,       \
-                                      (size_t *)expected,                    \
-                                      (size_t)(uintptr_t)desired);           \
+P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(DECLARE_ATOMIC_OPS, 0)
+#define DECLARE_ATOMIC_OPS(T)                                           \
+P99_COMPILETIME_ASSERT(sizeof(T) <= sizeof(atomic_size_t), atomic_size_t); \
+/*! @brief Load a variable of type T atomically. */                     \
+/*! @remark This supposes that T is of the same size as @c size_t */    \
+/*! @see atomic_load */                                                 \
+/*! @see T */                                                           \
+inline                                                                  \
+T P99_PASTE2(atomic_load_, T)(T volatile* object) {                     \
+  union both { T t; atomic_size_t a; } ret;                             \
+  union both volatile *o = (union both volatile *)object;               \
+  ret.a = atomic_load(&o->a);                                           \
+  return ret.t;                                                         \
+}                                                                       \
+/*! @brief Store a variable of type T atomically. */                    \
+/*! @remark This supposes that T is of the same size as @c size_t */    \
+/*! @see atomic_store */                                                \
+/*! @see T */                                                           \
+inline                                                                  \
+void P99_PASTE2(atomic_store_, T)(T volatile *object, T desired) {      \
+  union both { T t; atomic_size_t a; } des = { .t = desired };          \
+  union both volatile *o = (union both volatile *)object;               \
+  atomic_store(&o->a, des.a);                                           \
+}                                                                       \
+/*! @brief Comare and swap for type T. */                               \
+/*! @remark This supposes that T is of the same size as @c size_t */    \
+/*! @see atomic_compare_exchange_weak */                                \
+/*! @see T */                                                           \
+inline                                                                  \
+_Bool P99_PASTE2(atomic_compare_exchange_weak_, T)(T volatile *object,  \
+                                                   T *restrict expected, \
+                                                   T desired) {         \
+  register union both { T t; atomic_size_t a; } des = { .t = desired }; \
+  register union both volatile *o = (union both volatile *)object;      \
+  register union both *restrict e = (union both*restrict)expected;      \
+  return atomic_compare_exchange_weak(&o->a, &e->a, des.a);             \
 }
 
+/**
+ ** @brief Macro to instantiate the functions declared through ::DECLARE_ATOMIC_OPS.
+ **/
 #define DEFINE_ATOMIC_OPS(T)                                                        \
 P99_INSTANTIATE(T, P99_PASTE2(atomic_load_, T), T volatile* object);                \
 P99_INSTANTIATE(void, P99_PASTE2(atomic_store_, T), T volatile *object, T desired); \
 P99_INSTANTIATE(_Bool,                                                              \
                 P99_PASTE2(atomic_compare_exchange_weak_, T),                       \
                 T volatile *object,                                                 \
-                T *expected,                                                        \
+                T *restrict expected,                                               \
                 T desired)
+
+DECLARE_ATOMIC_OPS(double);
+
+/**
+ ** @brief Declare an atomic operation on type @a T.
+ **
+ ** The naming convention here is "atomic_fetch_" followed by the type
+ ** name @a T, followed by an underscore character, followed by @a
+ ** NAME, e.g ::atomic_fetch_double_add.
+ **/
+P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(DECLARE_ATOMIC_OP, 0)
+#define DECLARE_ATOMIC_OP(T, NAME, OP)                                  \
+/*! @brief Perform an atomic NAME of @a operand to the object to which @a object points. */ \
+inline                                                                  \
+T P99_PASTE4(atomic_fetch_, T, _, NAME)(register T volatile *object, register T operand) { \
+  T expect = *object;                                                   \
+  for (register T oldval = expect;; oldval = expect) {                  \
+    register T desired = expect;                                        \
+    desired OP operand;                                                 \
+    if (P99_PASTE2(atomic_compare_exchange_weak_, T)(object, &expect, desired)) \
+      return oldval;                                                    \
+  }                                                                     \
+}                                                                       \
+P99_MACRO_END(DECLARE_ATOMIC_OP, T, NAME)
+
+#define DEFINE_ATOMIC_OP(T, NAME, OP)                                   \
+P99_INSTANTIATE(T, P99_PASTE4(atomic_fetch_, T, _, NAME), T volatile *, T operand)
+
+
+DECLARE_ATOMIC_OP(double, add, +=);
+DECLARE_ATOMIC_OP(double, minus, -=);
+DECLARE_ATOMIC_OP(double, mult, *=);
+DECLARE_ATOMIC_OP(double, div, /=);
 
 
 #endif 	    /* !ORWL_ATOMIC_H_ */

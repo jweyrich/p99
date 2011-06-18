@@ -17,16 +17,6 @@
 
 unsigned char const orwl_garb[16];
 
-#define DEFINE_BASIC(T)                                        \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _init), T *);                \
-P99_INSTANTIATE(void, P99_PASTE2(T, _destroy), T*);            \
-DEFINE_NEW_DELETE(T)
-
-#define DEFINE_BASIC_TYPE(T)                                   \
-DEFINE_BASIC(T);                                               \
-DEFINE_BASIC(P99_PASTE2(T, _cptr));                            \
-DEFINE_BASIC(P99_PASTE2(T, _ptr))
-
 #define O_RWL_DEFINE_ARI2STR(T, X, S, P)                       \
 char const* P99_PASTE3(T, 2, X)(char* buf, T x) {              \
   char* form = P99_STRDUP(#P, P99_PRI(T,X,S));                 \

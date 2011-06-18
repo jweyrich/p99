@@ -34,6 +34,7 @@ SRC	=					\
 	orwl_types.c				\
 	orwl_wait_queue.c                       \
 	orwl_helpers.c                          \
+	orwl_timing.c                           \
 	orwl_instrument.c
 
 INCL  	=	# List of *.h
@@ -100,6 +101,10 @@ ifeq (${DEFINE__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__},)
 LDSHARED := -shared
 else
 LDSHARED := -dynamiclib
+endif
+
+ifeq (${GETTIMING},on)
+CFLAGS += -DGETTIMING
 endif
 
 .SUFFIXES: .h.Z .c.Z .h.gz .c.gz .c.z .h.z

@@ -70,7 +70,7 @@ inline                                                                          
   pthread_cond_destroy(&arg->cond);                                               \
   if (arg->Arg) P99_PASTE2(T, _delete)(arg->Arg);                                 \
 }                                                                                 \
-DECLARE_DELETE(O_RWL_CALLBACK_PAIR(T))                                            \
+P99_DECLARE_DELETE(O_RWL_CALLBACK_PAIR(T))                                        \
 DECLARE_THREAD(O_RWL_CALLBACK_PAIR(T));                                           \
 extern int P99_PASTE2(orwl_callback_attach_, T)(T *Arg, orwl_wh *wh);             \
 extern void P99_PASTE2(orwl_callback_, T)(T *Arg, orwl_wh *Wh)
@@ -92,7 +92,7 @@ P99_INSTANTIATE(                                                                
                 void,                                                               \
                 P99_PASTE2(O_RWL_CALLBACK_PAIR(T), _destroy),                       \
                 O_RWL_CALLBACK_PAIR(T)*);                                           \
-DEFINE_DELETE(O_RWL_CALLBACK_PAIR(T));                                              \
+P99_DEFINE_DELETE(O_RWL_CALLBACK_PAIR(T));                                          \
 DEFINE_THREAD(O_RWL_CALLBACK_PAIR(T)) {                                             \
   T *arg = Arg->Arg;                                                                \
   orwl_wh *wh = Arg->Wh;                                                            \

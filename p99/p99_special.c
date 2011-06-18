@@ -110,11 +110,13 @@
  ** @see P99_CASERANGE(START, ...) for argument <code>START</code>, <code>__VA_ARG__[0]</code>.
  ** @see P99_CDIM(NAME, ...) for argument <code>NAME</code>.
  ** @see P99_CHOOSE5(xT, cc, cs, ci, cl, cll) for argument <code>xT</code>.
+ ** @see P99_DECLARE_DELETE(...) for argument <code>__VA_ARG__[0]</code>.
  ** @see P99_DECLARE_ENUM(T, ...) for arguments <code>T</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_DECLARE_ENUM_GETNAME(T, ...) for arguments <code>T</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_DECLARE_STRUCT(NAME) for argument <code>NAME</code>.
  ** @see P99_DECLARE_UNION(NAME) for argument <code>NAME</code>.
  ** @see P99_DEC_DOUBLE(...) for arguments <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[4]</code>.
+ ** @see P99_DERIVED_TYPES(T) for argument <code>T</code>.
  ** @see P99_DO(TYPE, VAR, ...) for argument <code>TYPE</code>.
  ** @see P99_FCALLOC(T, F, N) for arguments <code>T</code>, <code>F</code>, <code>N</code>.
  ** @see P99_FHEAD(T, F, P) for argument <code>T</code>.
@@ -141,6 +143,8 @@
  ** @see P99_NAME(N, NAME) for argument <code>N</code>.
  ** @see P99_PARALLEL_DO(TYPE, VAR, ...) for argument <code>TYPE</code>.
  ** @see P99_PARALLEL_FORALL(NAME, ...) for argument <code>NAME</code>.
+ ** @see P99_PLAIN_TYPE(T) for argument <code>T</code>.
+ ** @see P99_POINTER_TYPE(T) for argument <code>T</code>.
  ** @see P99_POSS(N) for argument <code>N</code>.
  ** @see P99_PRAGMA_DO(PRAG, TYPE, VAR, ...) for argument <code>TYPE</code>.
  ** @see P99_PRI(xT, F, LEN) for argument <code>xT</code>.
