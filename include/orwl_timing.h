@@ -6,36 +6,21 @@
 #include "orwl_document.h"
 #include "orwl_new.h"
 
-inline void diff_and_add_tvspec(struct timespec *start, 
-				struct timespec *end,
+/**
+ ** @brief Accumulate the time difference between @a start and @a end
+ ** in @result.
+ **
+ ** @todo Make ::diff_and_add_tvspec thread safe by using
+ ** ::atomic_fetch_add & Co. This would avoid the necessity to lock a
+ ** mutex around calls to this function. This may be critical, since
+ ** taking a mutex here could be of the same order of magnitude of the
+ ** times that we measure.
+ **/
+inline void diff_and_add_tvspec(struct timespec const *start,
+				struct timespec const *end,
 				struct timespec *result) {
-  struct timespec tmp;
-  tmp.tv_sec = end->tv_sec - start->tv_sec;
-  if (end->tv_nsec < start->tv_nsec) {
-    tmp.tv_nsec = end->tv_nsec + 1000000000L - start->tv_nsec;
-    tmp.tv_sec--;
-  } else {
-    tmp.tv_nsec = end->tv_nsec - start->tv_nsec;
-  }
-
-  result->tv_sec = result->tv_sec + tmp.tv_sec;
-  result->tv_nsec = result->tv_nsec + tmp.tv_nsec;
-  if (result->tv_nsec >= 1000000000L) {
-    result->tv_sec++;
-    result->tv_nsec = result->tv_nsec - 1000000000L;
-  }
-}
-
-inline struct timespec diff_tvspec(struct timespec *start, struct timespec *end) {
-  struct timespec result;
-  result.tv_sec = end->tv_sec - start->tv_sec;
-  if (end->tv_nsec < start->tv_nsec) {
-    result.tv_nsec = end->tv_nsec + 1000000000L - start->tv_nsec;
-    result.tv_sec--;
-  } else {
-    result.tv_nsec = end->tv_nsec - start->tv_nsec;
-  }
-  return result;
+  struct timespec tmp = timespec_diff(start, end);
+  timespec_add(result, &tmp);
 }
 
 P99_DECLARE_STRUCT(orwl_timing);
@@ -73,8 +58,6 @@ struct orwl_timing {
   pthread_mutex_t mutex_rpc_write_request;
 };
 
-
-static orwl_timing timing_info = {0};
 
 orwl_timing * orwl_timing_info(void);
 

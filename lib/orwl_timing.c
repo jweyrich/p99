@@ -4,8 +4,9 @@
 #include "p99_defarg.h"
 #include "p99_new.h"
 
-P99_INSTANTIATE(void, diff_and_add_tvspec, struct timespec*, struct timespec*, struct timespec*);
-P99_INSTANTIATE(struct timespec, diff_tvspec, struct timespec*, struct timespec*);
+static orwl_timing timing_info = P99_INIT;
+
+P99_INSTANTIATE(void, diff_and_add_tvspec, struct timespec const*, struct timespec const*, struct timespec*);
 
 orwl_timing * orwl_timing_info(void) {
   return &timing_info;
