@@ -45,7 +45,7 @@ PREDEFINED += P99_LINEID(x):="p00_unique_id ## x"
 PREDEFINED += P99_MACRO_END(x)=
 PREDEFINED += P99_PASTE2(_1, _2):="_1 ## _2"
 PREDEFINED += P99_PASTE3(_1, _2, _3):="_1 ## _2 ## _3"
-PREDEFINED += P99_PASTE3(_1, _2, _3, _4):="_1 ## _2 ## _3 ## _4"
+PREDEFINED += P99_PASTE4(_1, _2, _3, _4):="_1 ## _2 ## _3 ## _4"
 PREDEFINED += p99_inline="inline"
 PREDEFINED += static_inline="inline"
 
