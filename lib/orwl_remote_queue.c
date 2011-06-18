@@ -214,6 +214,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
             state = orwl_wh_release(cli_wh);
             orwl_wh_delete(cli_wh);
           }
+          state = orwl_requested;
         }
       }
     }
