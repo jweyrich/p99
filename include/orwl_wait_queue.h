@@ -509,9 +509,48 @@ uint64_t orwl_wh_unload
     return howmuch;
   }
 
+  /**
+   ** @memberof orwl_wq
+   ** @private
+   */
 uint64_t* orwl_wq_map_locked(orwl_wq* wq, size_t* data_len);
+
+  /**
+   ** @memberof orwl_wq
+   ** @private
+   */
 void orwl_wq_resize_locked(orwl_wq* wq, size_t len);
 
+/**
+ ** @brief Obtain address and size of the data that is associated to a
+ ** location for reading and writing
+ ** @memberof orwl_wh
+ ** The application may associate data to each location of which it
+ ** also may control the size. Once the lock is acquired for a given
+ ** handle, this data is available through ::orwl_wh_map, returning a
+ ** pointer to the data and to its size. The pointer to the data will
+ ** be invalid, as soon as the lock is again released.
+ **
+ ** @pre The handle @a wh must hold a lock on the location to
+ ** which it is linked.
+ **
+ ** @param wh the handle in question
+ ** @param data_len [out] the length of the data in number of elements
+ **
+ ** @return An address to access the data that is associated with the
+ ** location. If the request is invalid @c 0 is returned and if
+ ** applicable @c *data_len is set to @c 0, too.
+ ** @warning The return address is only valid until @a wh is
+ ** released.
+ ** @warning The return address may (and will) be different between
+ ** different calls to that function.
+ ** @warning The new content of the data will only be visible for
+ ** other lock handles once they obtain a lock after this handle
+ ** releases its lock.
+ **
+ ** @todo Keep track if we have mapped this data for writing via a
+ ** "dirty" flag.
+ **/
 uint64_t* orwl_wh_map(orwl_wh* wh, size_t* data_len);
 void orwl_wh_resize(orwl_wh* wh, size_t data_len);
 

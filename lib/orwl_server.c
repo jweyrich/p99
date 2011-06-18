@@ -21,6 +21,9 @@
 #include "orwl_proc.h"
 #include "orwl_wait_queue.h"
 #include "orwl_remote_queue.h"
+#ifdef GETTIMING
+#include "orwl_timing.h"
+#endif /* !GETTIMING */
 
 DEFINE_ONCE(orwl_server,
             orwl_thread,
@@ -87,6 +90,9 @@ void orwl_server_destroy(orwl_server *serv) {
   if (serv->id_initialized) bool_vdelete(serv->id_initialized);
   if (serv->info) free(serv->info);
   orwl_server_init(serv);
+#ifdef GETTIMING
+  orwl_timing_print_stats();
+#endif /* GETTIMING */
 }
 
 DEFINE_NEW_DELETE(orwl_server);

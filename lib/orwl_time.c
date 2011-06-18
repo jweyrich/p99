@@ -29,6 +29,11 @@ P99_INSTANTIATE(struct timespec, timeval2timespec, struct timeval);
 P99_INSTANTIATE(double, useconds2seconds, uint64_t);
 P99_INSTANTIATE(uint64_t, seconds2useconds, double t);
 
+P99_INSTANTIATE(struct timespec, timespec_diff, struct timespec const*, struct timespec const*);
+P99_INSTANTIATE(struct timespec, timespec_sum, struct timespec const*, struct timespec const*);
+P99_INSTANTIATE(void, timespec_minus, struct timespec*, struct timespec const*);
+P99_INSTANTIATE(void, timespec_add, struct timespec *, struct timespec const*);
+
 P99_INSTANTIATE(uint64_t, useconds);
 P99_INSTANTIATE(double, seconds);
 
