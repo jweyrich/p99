@@ -333,10 +333,9 @@ orwl_state orwl_acquire(orwl_handle* rh) {
   orwl_state ret = orwl_wh_acquire(rh->wh, 0);
 #ifdef GETTIMING
   struct timespec end = orwl_gettime();
-  MUTUAL_EXCLUDE(orwl_timing_info()->mutex_total_acquire) {
-    orwl_timing_info()->nb_total_acquire++;
-    diff_and_add_tvspec(&start, &end, &orwl_timing_info()->time_total_acquire);
-  }
+  timespec_minus(&end, &start);
+  atomic_fetch_add(&orwl_timing_info()->nb_total_acquire, 1);
+  atomic_fetch_add(&orwl_timing_info()->time_total_acquire, timespec2useconds(end));
 #endif /* !GETTIMING */
   return ret;
 }

@@ -76,10 +76,9 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
                              );
 #ifdef GETTIMING
 	struct timespec end2 = orwl_gettime();
-	MUTUAL_EXCLUDE(orwl_timing_info()->mutex_rpc_write_request) {
-	  orwl_timing_info()->nb_rpc_write_request++;
-	  diff_and_add_tvspec(&start2, &end2, &orwl_timing_info()->time_rpc_write_request);
-	}
+	timespec_minus(&end2, &start2);
+	atomic_fetch_add(&orwl_timing_info()->nb_rpc_write_request, 1);
+	atomic_fetch_add(&orwl_timing_info()->time_rpc_write_request, timespec2useconds(end2));
 #endif /* !GETTIMING */
         if (rh->svrID && (rh->svrID != ORWL_SEND_ERROR)) {
           /* Link us to rq */
@@ -99,10 +98,9 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
   }
 #ifdef GETTIMING
   struct timespec end1 = orwl_gettime();
-  MUTUAL_EXCLUDE(orwl_timing_info()->mutex_total_write_request) {
-    orwl_timing_info()->nb_total_write_request++;
-    diff_and_add_tvspec(&start1, &end1, &orwl_timing_info()->time_total_write_request);
-  }
+  timespec_minus(&end1, &start1);
+  atomic_fetch_add(&orwl_timing_info()->nb_total_write_request, 1);
+  atomic_fetch_add(&orwl_timing_info()->time_total_write_request, timespec2useconds(end1));
 #endif /* !GETTIMING */
   return state;
 }
@@ -141,10 +139,9 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
                            );
 #ifdef GETTIMING
       struct timespec end2 = orwl_gettime();
-      MUTUAL_EXCLUDE(orwl_timing_info()->mutex_rpc_read_request) {
-	orwl_timing_info()->nb_rpc_read_request++;
-	diff_and_add_tvspec(&start2, &end2, &orwl_timing_info()->time_rpc_read_request);
-      }
+      timespec_minus(&end2, &start2);
+      atomic_fetch_add(&orwl_timing_info()->nb_rpc_read_request, 1);
+      atomic_fetch_add(&orwl_timing_info()->time_rpc_read_request, timespec2useconds(end2));
 #endif /* !GETTIMING */
       if (!rh->svrID) {
         state = orwl_invalid;
@@ -221,10 +218,9 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   }
 #ifdef GETTIMING
   struct timespec end1 = orwl_gettime();
-  MUTUAL_EXCLUDE(orwl_timing_info()->mutex_total_read_request) {
-    orwl_timing_info()->nb_total_read_request++;
-    diff_and_add_tvspec(&start1, &end1, &orwl_timing_info()->time_total_read_request);
-  }
+  timespec_minus(&end1, &start1);
+  atomic_fetch_add(&orwl_timing_info()->nb_total_read_request, 1);
+  atomic_fetch_add(&orwl_timing_info()->time_total_read_request, timespec2useconds(end1));
 #endif /* !GETTIMING */
   return state;
 }
@@ -271,11 +267,10 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
         memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
       }
 #ifdef GETTIMING
-    struct timespec end2 = orwl_gettime();
-    MUTUAL_EXCLUDE(orwl_timing_info()->mutex_copy_data_release) {
-      orwl_timing_info()->nb_copy_data_release++;
-      diff_and_add_tvspec(&start2, &end2, &orwl_timing_info()->time_copy_data_release);
-    }
+      struct timespec end2 = orwl_gettime();
+      timespec_minus(&end2, &start2);
+      atomic_fetch_add(&orwl_timing_info()->nb_copy_data_release, 1);
+      atomic_fetch_add(&orwl_timing_info()->time_copy_data_release, timespec2useconds(end2));
 #endif /* !GETTIMING */
     } else {
       orwl_handle_init(rh);
@@ -293,10 +288,9 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     orwl_send(srv, &there, seed, len, mess);
 #ifdef GETTIMING
     struct timespec end3 = orwl_gettime();
-    MUTUAL_EXCLUDE(orwl_timing_info()->mutex_send_data_release) {
-      orwl_timing_info()->nb_send_data_release++;
-      diff_and_add_tvspec(&start3, &end3, &orwl_timing_info()->time_send_data_release);
-    }
+    timespec_minus(&end3, &start3);
+    atomic_fetch_add(&orwl_timing_info()->nb_send_data_release, 1);
+    atomic_fetch_add(&orwl_timing_info()->time_send_data_release, timespec2useconds(end3));
 #endif /* !GETTIMING */
     /* We should be the last to have a reference to this handle so
        we may destroy it. */
@@ -305,10 +299,9 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   }
 #ifdef GETTIMING
   struct timespec end1 = orwl_gettime();
-  MUTUAL_EXCLUDE(orwl_timing_info()->mutex_total_release) {
-    orwl_timing_info()->nb_total_release++;
-    diff_and_add_tvspec(&start1, &end1, &orwl_timing_info()->time_total_release);
-  }
+    timespec_minus(&end1, &start1);
+    atomic_fetch_add(&orwl_timing_info()->nb_total_release, 1);
+    atomic_fetch_add(&orwl_timing_info()->time_total_release, timespec2useconds(end1));
 #endif /* !GETTIMING */
   return state;
 }
