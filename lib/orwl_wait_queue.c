@@ -204,10 +204,9 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
         pthread_cond_wait(&wh->cond, &wh->mut);
 #ifdef GETTIMING
         struct timespec end = orwl_gettime();
-        MUTUAL_EXCLUDE(orwl_timing_info()->mutex_wait_on_cond_acquire) {
-          orwl_timing_info()->nb_wait_on_cond_acquire++;
-          diff_and_add_tvspec(&start, &end, &orwl_timing_info()->time_wait_on_cond_acquire);
-        }
+        timespec_minus(&end, &start);
+        atomic_fetch_add(&orwl_timing_info()->nb_wait_on_cond_acquire, 1);
+        atomic_fetch_add(&orwl_timing_info()->time_wait_on_cond_acquire, timespec2useconds(end));
 #endif /* !GETTIMING */
         orwl_wh_unload(wh, loaded);
         if  (wq != wh->location) break;
