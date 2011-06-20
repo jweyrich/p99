@@ -584,6 +584,37 @@ void orwl_truncate(orwl_handle* rh, size_t data_len) {
   }
 }
 
+/**
+ ** @brief Scale the size of the data that is associated to the
+ ** resource to which @a rq points to a size of @a data_len bytes.
+ ** @memberof orwl_mirror
+ ** @pre This supposes that no handle is yet inserted into the request
+ ** queue of @a rq.
+ ** @see orwl_truncate for the rules that hold about initialization of
+ ** newly allocated memory.
+ ** @see ORWL_SCALE for a macro that scales to the capacity of a specific type
+ **/
+inline
+void orwl_scale(orwl_mirror* rq, size_t data_len) {
+  orwl_handle first = ORWL_HANDLE_INITIALIZER;
+  orwl_write_request(rq, &first);
+  orwl_acquire(&first);
+  orwl_truncate(&first, data_len);
+  orwl_release(&first);
+}
+
+/**
+ ** @brief Scale the size of the data that is associated to the
+ ** resource @a RQ to a size of @a TYPE.
+ ** @memberof orwl_mirror
+ ** @pre This supposes that no handle is yet inserted into the request
+ ** queue of @a RQ.
+ ** @see orwl_truncate for the rules that hold about initialization of
+ ** newly allocated memory.
+ ** @see orwl_scale for a function that scales to a specific length
+ **/
+#define ORWL_SCALE(RQ, TYPE) orwl_scale(&(RQ), sizeof(TYPE))
+
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
 
 DECLARE_ORWL_REGISTER(orwl_wh_acquire);
