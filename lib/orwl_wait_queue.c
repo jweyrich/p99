@@ -222,8 +222,6 @@ orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
 orwl_state orwl_wh_release(orwl_wh *wh) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
-   /** protect myself **/
-   MUTUAL_EXCLUDE (wh->mut) {
     orwl_wq *wq = wh->location;
     if (wq) {
       MUTUAL_EXCLUDE(wq->mut) {
@@ -231,27 +229,19 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
           if (atomic_load_orwl_wh_ptr(&wq->head) == wh && !wh->tokens) {
             /** read the next one **/
             orwl_wh* wh_next = atomic_load_orwl_wh_ptr(&wh->next);
-            /** if wh_next is not empty then blocked it **/  
-            if (wh_next)
-              MUTUAL_EXCLUDE (wh_next->mut) {
-               wh->location = 0;
-               wq->head = wh_next;
-               wh->next = 0;
-               ret = orwl_valid;
-               /* Unlock potential acquirers */
-               pthread_cond_broadcast(&wh_next->cond);
-               /* Unlock potential requesters */
-               pthread_cond_broadcast(&wh->cond);
-            /** i am alone in the queue **/  
-            } else {   
-               wh->location = 0;
-               wq->tail = 0;
-               wq->head = 0;
-               wh->next = 0;
-               ret = orwl_valid;
-               /* Unlock potential requesters */
-               pthread_cond_broadcast(&wh->cond);
+            if (wh_next) MUTUAL_EXCLUDE (wh_next->mut) {
+              wq->head = wh_next;  
+              /* Unlock potential acquirers */
+              pthread_cond_broadcast(&wh_next->cond);
+            } else {
+              wq->tail = 0;
+              wq->head = 0;
             }
+            wh->location = 0;
+            wh->next = 0;
+            /* Unlock potential requesters */
+            pthread_cond_broadcast(&wh->cond);
+            ret = orwl_valid;
             break;
           } else pthread_cond_wait(&wh->cond, &wq->mut);
         }
@@ -259,7 +249,6 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
     } else {
       if (!(atomic_load_orwl_wh_ptr(&wh->next))) ret = orwl_valid;
     }
-   }
   }
   return ret;
 }
