@@ -205,15 +205,16 @@ orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
     orwl_wh* wq_head = atomic_load_orwl_wh_ptr(&wq->head);
-    /* orwl_wq_valid uses atomic operations internaly */
-    if (orwl_wq_valid(wq) && wq_head)
-      ret = (wq_head == wh) ? orwl_acquired : orwl_requested;
-    /* orwl_wh_unload supposes that the wh is locked */
-    if (ret == orwl_acquired)
-      MUTUAL_EXCLUDE(wh->mut)
-        orwl_wh_unload(wh, howmuch);
-  } else {
-    if (!wh->next) ret = orwl_valid;
+    if (wq) MUTUAL_EXCLUDE(wh->mut) {
+        /* orwl_wq_valid uses atomic operations internaly */
+        if (orwl_wq_valid(wq) && wq_head)
+        ret = (wq_head == wh) ? orwl_acquired : orwl_requested;
+        /* orwl_wh_unload supposes that the wh is locked */
+        if (ret == orwl_acquired)
+          orwl_wh_unload(wh, howmuch);
+      } else {
+      if (!wh->next) ret = orwl_valid;
+    }
   }
   return ret;
 }
@@ -241,7 +242,7 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
                pthread_cond_broadcast(&wh_next->cond);
                /* Unlock potential requesters */
                pthread_cond_broadcast(&wh->cond);
-            /** i am along in the queue **/  
+            /** i am alone in the queue **/  
             } else {   
                wh->location = 0;
                wq->tail = 0;
