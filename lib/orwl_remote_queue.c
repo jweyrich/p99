@@ -353,6 +353,7 @@ P99_INSTANTIATE(void, orwl_resize, orwl_handle*, size_t);
 P99_INSTANTIATE(void*, orwl_write_map, orwl_handle*, size_t*);
 P99_INSTANTIATE(void const*, orwl_read_map, orwl_handle*, size_t*);
 P99_INSTANTIATE(void, orwl_truncate, orwl_handle*, size_t);
+P99_INSTANTIATE(void, orwl_scale, orwl_mirror*, size_t);
 
 DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire, orwl_handle);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_release, orwl_handle);
