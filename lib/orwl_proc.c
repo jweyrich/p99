@@ -39,8 +39,8 @@ void orwl_proc_untie_caller(orwl_proc *sock) {
     orwl_thread_cntrl_freeze(sock->det);
   } else {
     /* Ack the termination of the call */
-    header_t header = HEADER_T_INITIALIZER(sock->ret);
-    orwl_send_(sock->fd, header, header_t_els, sock->remoteorder);
+    orwl_header header = ORWL_HEADER_INITIALIZER(sock->ret);
+    orwl_send_(sock->fd, header, orwl_header_els, sock->remoteorder);
     /* Since we are doing blocking send / receive the probability that
        we have a walking duplicate of an ancient package is
        minimal. Thus allow the reuse of ports. */

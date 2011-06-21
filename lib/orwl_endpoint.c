@@ -154,7 +154,7 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
     /* do all this work before opening the socket */
     uint64_t const chal = orwl_rand64(seed);
     uint64_t const repl = orwl_challenge(chal);
-    header_t header = HEADER_T_INITIALIZER(chal);
+    orwl_header header = ORWL_HEADER_INITIALIZER(chal);
     struct sockaddr_in addr = {
       .sin_addr = addr2net(&there->addr),
       .sin_port = port2net(&there->port),
@@ -190,7 +190,7 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
           else P99_UNWIND_RETURN ORWL_SEND_ERROR;
         } else break;
       }
-      if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0) || orwl_recv_(fd, header, header_t_els, 0))) {
+      if (P99_UNLIKELY(orwl_send_(fd, header, orwl_header_els, 0) || orwl_recv_(fd, header, orwl_header_els, 0))) {
         P99_HANDLE_ERRNO {
         default:
           perror("orwl_send could not exchange challenge");
@@ -204,14 +204,14 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
            the message to the other side. */
         header[1] = orwl_challenge(header[0]);
         header[0] = len;
-        if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+        if (P99_UNLIKELY(orwl_send_(fd, header, orwl_header_els, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
         /* The authorized empty message indicates termination.
            If not so, we now send the real message. */
         if (len) {
           if (P99_UNLIKELY(orwl_send_(fd, mess, len, header[2]))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
           /* Receive a final message, until the other end closes the
              connection. */
-          if (P99_UNLIKELY(orwl_recv_(fd, header, header_t_els, header[2])))
+          if (P99_UNLIKELY(orwl_recv_(fd, header, orwl_header_els, header[2])))
             report(1, "terminal reception not successful\n");
           else
             ret = header[0];
@@ -222,7 +222,7 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
         diagnose(fd, "fd %d, you are not who you pretend to be", fd);
         header[1] = 0;
         header[0] = 0;
-        if (P99_UNLIKELY(orwl_send_(fd, header, header_t_els, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+        if (P99_UNLIKELY(orwl_send_(fd, header, orwl_header_els, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
       }
     P99_PROTECT:
       close(fd);

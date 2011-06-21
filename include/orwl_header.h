@@ -16,9 +16,9 @@
 
 #include "orwl_int.h"
 
-enum { header_t_els = 3 };
+enum { orwl_header_els = 3 };
 
-typedef uint64_t header_t[header_t_els];
+typedef uint64_t orwl_header[orwl_header_els];
 
 #define ORWL_HTON64(VAL)                                       \
 (((uint64_t)htonl((uint32_t)(VAL)))                            \
@@ -43,7 +43,7 @@ uint64_t orwl_ntoh64(uint64_t val) {
 #define ORWL_HOSTORDER UINT64_C(0x0807060504030201)
 #define ORWL_NETWORDER ORWL_HTON64(ORWL_HOSTORDER)
 
-#define HEADER_T_INITIALIZER(CHAL) { [0] = CHAL, [1] = 0, [2] = ORWL_NETWORDER }
+#define ORWL_HEADER_INITIALIZER(CHAL) { [0] = CHAL, [1] = 0, [2] = ORWL_NETWORDER }
 
 
 #endif 	    /* !ORWL_HEADER_H_ */
