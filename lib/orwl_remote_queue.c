@@ -52,7 +52,7 @@ P99_INSTANTIATE(orwl_state, orwl_test, orwl_handle*);
 
 orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_invalid;
-  ORWL_TIMING(total_write_request) {
+  ORWL_TIMER(total_write_request) {
   if (rq && rh)
   MUTUAL_EXCLUDE(rq->mut) {
     if (!rh->wh) {
@@ -65,7 +65,7 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
         /* Send the insertion request with the id of cli_wh to the other
            side. As result retrieve the ID on the other side that is to be
            released when we release here. */
-        ORWL_TIMING(rpc_write_request)
+        ORWL_TIMER(rpc_write_request)
         rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, orwl_proc_write_request,
                              rq->there.index,
                              (uintptr_t)cli_wh,
@@ -93,7 +93,7 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
 
 orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_invalid;
-  ORWL_TIMING(total_read_request) {
+  ORWL_TIMER(total_read_request) {
   if (rq && rh)
   MUTUAL_EXCLUDE(rq->mut) {
     if (!rh->wh) {
@@ -112,7 +112,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
          considered a new request, and the svrID that was memorized on
          wh_inc, if any. As result retrieve the ID on the other side
          that is to be released when we release here. */
-      ORWL_TIMING(rpc_read_request)
+      ORWL_TIMER(rpc_read_request)
       rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, orwl_proc_read_request,
                            rq->there.index,
                            (uintptr_t)cli_wh,
@@ -198,7 +198,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
 
 orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_valid;
-  ORWL_TIMING(total_release) {
+  ORWL_TIMER(total_release) {
   assert(rh);
   assert(rh->wh);
   /* To be able to re-initialize rh in the middle of the procedure,
@@ -230,7 +230,7 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
       mess[1] = svrID;
       if (extend) {
         report(false, "adding suplement of length %zu", extend);
-        ORWL_TIMING(copy_data_release)
+        ORWL_TIMER(copy_data_release)
         memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
       }
     } else {
@@ -243,7 +243,7 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     state = orwl_wh_release(wh);
     orwl_handle_init(rh);
     pthread_mutex_unlock(&rq->mut);
-    ORWL_TIMING(send_data_release)
+    ORWL_TIMER(send_data_release)
     orwl_send(srv, &there, seed, len, mess);
     /* We should be the last to have a reference to this handle so
        we may destroy it. */
