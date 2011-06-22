@@ -156,46 +156,46 @@ struct timeval timespec2timeval(struct timespec t) {
  ** @brief Substract time @a b from @a a
  **/
 inline
-void timespec_minus(struct timespec *a, struct timespec const *b) {
+struct timespec* timespec_minus(struct timespec *a, struct timespec const *b) {
   a->tv_sec -= b->tv_sec;
   a->tv_nsec -= b->tv_nsec;
   if (a->tv_nsec < 0L) {
     a->tv_nsec += 1000000000L;
     a->tv_sec--;
   }
+  return a;
 }
 
 /**
  ** @brief Return the difference of times @a earlier and @a later.
  **/
 inline
-struct timespec timespec_diff(struct timespec const *earlier, struct timespec const *later) {
-  struct timespec result = *later;
-  timespec_minus(&result, earlier);
-  return result;
+struct timespec timespec_diff(struct timespec earlier, struct timespec later) {
+  timespec_minus(&later, &earlier);
+  return later;
 }
 
 /**
  ** @brief Add time @a b to @a a
  **/
 inline
-void timespec_add(struct timespec *a, struct timespec const *b) {
+struct timespec* timespec_add(struct timespec *a, struct timespec const *b) {
   a->tv_sec += b->tv_sec;
   a->tv_nsec += b->tv_nsec;
   if (a->tv_nsec >= 1000000000L) {
     a->tv_nsec -= 1000000000L;
     a->tv_sec++;
   }
+  return a;
 }
 
 /**
  ** @brief Return the sum of times @a a and @a b.
  **/
 inline
-struct timespec timespec_sum(struct timespec const *a, struct timespec const *b) {
-  struct timespec result = *a;
-  timespec_add(&result, b);
-  return result;
+struct timespec timespec_sum(struct timespec a, struct timespec b) {
+  timespec_add(&a, &b);
+  return a;
 }
 
 /**

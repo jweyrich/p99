@@ -120,6 +120,7 @@ struct orwl_wq {
   orwl_wh *tail;        /**< The tail of the priority queue */
   uint64_t clock;       /**< A counter that is increased at each
                            event that this queue encounters. */
+  uint64_t* data_plus;
   uint64_t* data;
   size_t data_len;
 

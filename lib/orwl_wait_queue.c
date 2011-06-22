@@ -172,16 +172,8 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
     RETRY:
       loaded = orwl_wh_load(wh, 1);
       /* We wait on the local orwl_wh mutex */
-#ifdef GETTIMING
-  struct timespec start = orwl_gettime();
-#endif  /* !GETTIMING */
-      pthread_cond_wait(&wh->cond2, &wh->mut);
-#ifdef GETTIMING
-      struct timespec end = orwl_gettime();
-      timespec_minus(&end, &start);
-      atomic_fetch_add(&orwl_timing_info()->nb_wait_on_cond_acquire, 1);
-      atomic_fetch_add(&orwl_timing_info()->time_wait_on_cond_acquire, timespec2useconds(end));
-#endif /* !GETTIMING */
+      ORWL_TIMING(wait_on_cond_acquire)
+      pthread_cond_wait(&wh->cond, &wh->mut);
       orwl_wh_unload(wh, loaded);
       /* Check everything again, somebody might have destroyed
          our wq */
