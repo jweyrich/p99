@@ -1,5 +1,3 @@
-#ifdef GETTIMING
-
 #include "orwl_timing.h"
 #include "p99_defarg.h"
 #include "p99_new.h"
@@ -39,5 +37,3 @@ void orwl_timing_print_stats(void) {
 	 timing_info.nb_rpc_write_request, 
 	 timing_info.time_rpc_write_request);
 }
-
-#endif /* !GETTIMING */

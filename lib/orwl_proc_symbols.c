@@ -42,6 +42,38 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_do_nothing, void) {
   (void)Arg;
 }
 
+/* Once the lock on the server side is achieved, acknowledge the
+   requesting side and push the associated data */
+static
+orwl_state orwl_proc_push(orwl_server *srv, orwl_endpoint *ep,
+                          orwl_wh *srv_wh, uint64_t whID,
+                          bool withdata) {
+  /* Wait until the lock on wh is obtained. */
+  orwl_state state = orwl_wh_acquire(srv_wh);
+  if (state == orwl_acquired) {
+    uint64_t* mess = 0;
+    size_t len = 2;
+    /* Send a request to the other side to remove the remote wh ID
+       and to transfer the data, if any. */
+    orwl_wq* wq = srv_wh->location;
+    assert(wq);
+    MUTUAL_EXCLUDE(wq->mut) {
+      size_t extend = (withdata ? wq->data_len : 0);
+      len += extend;
+      mess = uint64_t_vnew(len);
+      mess[0] = ORWL_OBJID(orwl_proc_release);
+      mess[1] = whID;
+      if (extend) {
+        report(false, "adding suplement of length %zu", extend);
+        memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
+      }
+    }
+    orwl_send(srv, ep, seed_get(), len, mess);
+    uint64_t_vdelete(mess);
+  }
+  return state;
+}
+
 DEFINE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port) {
   ORWL_PROC_READ(Arg, orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port);
   Arg->ret = 0;
@@ -60,24 +92,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, ui
       Arg->ret = (uintptr_t)srv_wh;
       orwl_proc_untie_caller(Arg);
       /* Wait until the lock on wh is obtained. */
-      state = orwl_wh_acquire(srv_wh);
-      /* Send a request to the other side to remove the remote wh ID
-         and to transfer the data, if any. */
-      orwl_wq* wq = srv_wh->location;
-      assert(wq);
-      MUTUAL_EXCLUDE(wq->mut) {
-        size_t extend = wq->data_len;
-        size_t len = 2 + extend;
-        uint64_t* mess = uint64_t_vnew(len);
-        mess[0] = ORWL_OBJID(orwl_proc_release);
-        mess[1] = whID;
-        if (extend) {
-          report(false, "adding suplement of length %zu", extend);
-          memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
-        }
-        orwl_send(Arg->srv, &ep, seed_get(), len, mess);
-        uint64_t_vdelete(mess);
-      }
+      state = orwl_proc_push(Arg->srv, &ep, srv_wh, whID, true);
     } else {
       orwl_wh_delete(srv_wh);
     }
@@ -137,27 +152,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
           orwl_wh_delete(srv_wh);
         }
       } else {
-        report(0, "waiting to acquire server handle %p 0x%jx (0x%jX)", (void*)srv_wh, (uintmax_t)cliID, (uintmax_t)svrID);
         // wait until the lock on wh is obtained
-        state = orwl_wh_acquire(srv_wh);
-        report(0, "acquired server handle %p (0x%jX)", (void*)srv_wh, (uintmax_t)svrID);
-        /* Send a request to the other side to remove the remote wh ID
-           and to transfer the data, if any. */
-        orwl_wq* wq = srv_wh->location;
-        assert(wq);
-        MUTUAL_EXCLUDE(wq->mut) {
-          size_t extend = wq->data_len;
-          size_t len = 2 + extend;
-          uint64_t* mess = uint64_t_vnew(len);
-          mess[0] = ORWL_OBJID(orwl_proc_release);
-          mess[1] = cliID;
-          if (extend) {
-            report(false, "adding suplement of length %zu", extend);
-            memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
-          }
-          orwl_send(Arg->srv, &ep, seed_get(), len, mess);
-          uint64_t_vdelete(mess);
-        }
+        state = orwl_proc_push(Arg->srv, &ep, srv_wh, cliID, true);
       }
     }
   }
