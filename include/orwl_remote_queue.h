@@ -16,10 +16,7 @@
 
 #include "orwl_wait_queue.h"
 #include P99_ADVANCE_ID
-
-#ifdef GETTIMING
 #include "orwl_timing.h"
-#endif /* !GETTIMING */
 
 /**
  ** @brief A structure to regulate queues between different servers.
@@ -326,17 +323,9 @@ bool orwl_inclusive(orwl_handle* rh) {
  **/
 inline
 orwl_state orwl_acquire(orwl_handle* rh) {
-#ifdef GETTIMING
-  struct timespec start = orwl_gettime();
-#endif /* !GETTIMING */
-  if (!rh) return orwl_invalid;
-  orwl_state ret = orwl_wh_acquire(rh->wh, 0);
-#ifdef GETTIMING
-  struct timespec end = orwl_gettime();
-  timespec_minus(&end, &start);
-  atomic_fetch_add(&orwl_timing_info()->nb_total_acquire, 1);
-  atomic_fetch_add(&orwl_timing_info()->time_total_acquire, timespec2useconds(end));
-#endif /* !GETTIMING */
+  orwl_state ret =  orwl_invalid;
+  ORWL_TIMING(total_acquire)
+    if (rh) ret = orwl_wh_acquire(rh->wh, 0);
   return ret;
 }
 
