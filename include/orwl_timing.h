@@ -5,30 +5,32 @@
 #include "orwl_document.h"
 #include "orwl_new.h"
 
+P99_DECLARE_STRUCT(orwl_timing_element);
+
+struct orwl_timing_element {
+  uint64_t time;
+  uint64_t nb;
+  orwl_timing_element* next;
+  char const* name;
+};
+
+void orwl_timing_element_insert(orwl_timing_element* );
+
 P99_DECLARE_STRUCT(orwl_timing);
 
 struct orwl_timing {
-  uint64_t time_total_acquire;
-  uint64_t nb_total_acquire;
-  uint64_t time_wait_on_cond_acquire;
-  uint64_t nb_wait_on_cond_acquire;
+  orwl_timing_element total_acquire;
+  orwl_timing_element wait_on_cond_acquire;
 
-  uint64_t time_total_release;
-  uint64_t nb_total_release;
-  uint64_t time_copy_data_release;
-  uint64_t nb_copy_data_release;
-  uint64_t time_send_data_release;
-  uint64_t nb_send_data_release;
+  orwl_timing_element total_release;
+  orwl_timing_element copy_data_release;
+  orwl_timing_element send_data_release;
 
-  uint64_t time_total_read_request;
-  uint64_t nb_total_read_request;
-  uint64_t time_rpc_read_request;
-  uint64_t nb_rpc_read_request;
+  orwl_timing_element total_read_request;
+  orwl_timing_element rpc_read_request;
 
-  uint64_t time_total_write_request;
-  uint64_t nb_total_write_request;
-  uint64_t time_rpc_write_request;
-  uint64_t nb_rpc_write_request;
+  orwl_timing_element total_write_request;
+  orwl_timing_element rpc_write_request;
 };
 
 
@@ -42,9 +44,12 @@ enum { orwl_timing_var = 0, orwl_timing_fetched = 0 };
  ** @def ORWL_TIMING(NAME)
  ** @brief Timing of a statement or block
  **
+ ** @remark Use this in inline functions that don't allow to declare
+ ** @c static variables. For other places use ::ORWL_TIMER.
+ **
  ** This macro is used as a prefix of a particular statement or block
  ** of code. @a NAME must correspond to one of the resources that are
- ** listed in the ::orwl_timing (without the "nb_" or "time_" prefix).
+ ** listed in the ::orwl_timing.
  **
  ** Care is taken that the function calls are optimized
  ** - ::orwl_timing_info is only called once per block. When timing is
@@ -74,13 +79,70 @@ P00_BLK_DECL(register orwl_timing*const, _timing,                       \
   P00_BLK_DECL(register bool const, orwl_timing_fetched, true)          \
   P00_BLK_DECL(struct timespec, p00_end)                                \
   P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())              \
-  P00_BLK_AFTER(atomic_fetch_add(&(orwl_timing_var->P99_PASTE2(nb_, NAME)), 1)) \
-  P00_BLK_AFTER(atomic_fetch_add(&(orwl_timing_var->P99_PASTE2(time_, NAME)), \
+  P00_BLK_AFTER(atomic_fetch_add(&(orwl_timing_var->NAME.nb), 1))       \
+  P00_BLK_AFTER(atomic_fetch_add(&(orwl_timing_var->NAME.time),         \
                                  timespec2useconds(timespec_diff(p00_start, p00_end)))) \
   P00_BLK_AFTER(p00_end = orwl_gettime())                               \
   P00_BLK_END
 #else
 # define ORWL_TIMING(NAME)
 #endif
+
+/**
+ ** @def ORWL_TIMER(NAME)
+ ** @brief Timing of a statement or block
+ **
+ ** @param NAME should be token but no identifier is declared or
+ ** supposed to exist with that name.
+ **
+ ** This macro is used as a prefix of a particular statement or block
+ ** of code.
+ **
+ ** Care is taken that the function calls are optimized
+ ** - A static initialization is only run the first time that this
+ **   place is encountered.
+ ** - the two calls to ::orwl_gettime are as close as possible to the
+ **   application code. I.e we have something like a sequence
+ **   (1) ::orwl_gettime()
+ **   (2) application code
+ **   (3) ::orwl_gettime()
+ **   (4) update of statistics
+ **
+ ** The update of the statistics are done with atomic operations such
+ ** that all of this can be done without danger in a threaded
+ ** environment.
+ **
+ ** @see ORWL_TIMING when the context doesn't allow to declare @c
+ ** static variables, in particular @c inline functions.
+ **/
+
+#ifdef GETTIMING
+# define ORWL_TIMER(NAME)                                               \
+P00_BLK_START                                                           \
+P00_BLK_BEFORE(register orwl_timing_element* elem = 0)                  \
+P99_PREFER(                                                             \
+           static orwl_timing_element p00_static_elem = { 0 };          \
+           if (P99_UNLIKELY(!p00_static_elem.name)) {                   \
+             ORWL_CRITICAL {                                            \
+               if (P99_UNLIKELY(!p00_static_elem.name)) {               \
+                 orwl_timing_element_insert(&p00_static_elem);          \
+                 p00_static_elem.name = #NAME;                          \
+               }                                                        \
+             }                                                          \
+           }                                                            \
+           elem = &p00_static_elem;                                     \
+           goto P99_LINEID(p00_label_, NAME);                           \
+         ) P99_LINEID(p00_label_, NAME):                                \
+  P00_BLK_DECL(struct timespec, p00_end)                                \
+  P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())              \
+  P00_BLK_AFTER(atomic_fetch_add(&(elem->nb), 1))                       \
+  P00_BLK_AFTER(atomic_fetch_add(&(elem->time),                         \
+                                 timespec2useconds(timespec_diff(p00_start, p00_end)))) \
+  P00_BLK_AFTER(p00_end = orwl_gettime())                               \
+  P00_BLK_END
+#else
+# define ORWL_TIMER(NAME)
+#endif
+
 
 #endif 	    /* !ORWL_TIMING_H_ */
