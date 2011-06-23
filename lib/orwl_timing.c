@@ -20,10 +20,12 @@ void orwl_timing_element_insert(orwl_timing_element* el) {
 static
 void orwl_timing_element_print(FILE *out, orwl_timing_element* el) {
   fprintf(out,
-          "__%s: %"PRIu64",%"PRIu64"\n",
+          "__%-30s%10"PRIu64" %-8ss %-8ss\n",
           el->name ? el->name : "<unamed>",
           el->nb,
-          el->time);
+          orwl_seconds2str(el->time),
+          orwl_seconds2str(el->time/el->nb)
+          );
 }
 
 
