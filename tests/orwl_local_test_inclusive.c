@@ -12,6 +12,7 @@
 /* particular purpose.                                                       */
 /*                                                                           */
 #include "orwl.h"
+#include "orwl_timing.h"
 #include "p99_c99_default.h"
 #include "p99_str.h"
 
@@ -101,6 +102,7 @@ DEFINE_THREAD(arg_t) {
   /* Insert the handles into the request queues. Positions 0 to "readers-1" and
    * "readers+1" to "2*readers" are the neighbors, so these are only read requests. Position "readers"
    * is our own location where we want to write. */
+  ORWL_TIMER(initialization)
   {
     orwl_barrier_wait(init_barr);
     /* Randomize, so the system will always be initialized differently. */
@@ -137,6 +139,7 @@ DEFINE_THREAD(arg_t) {
     report(false, "initial barrier passed");
   }
   /* Do some resizing = allocation, but only in an initial phase. */
+  ORWL_TIMER(allocation)
   {
     /* Do some precomputation of the desired data size */
     size_t len = 1;
@@ -186,6 +189,7 @@ DEFINE_THREAD(arg_t) {
     /** Acquire all the handles, our own and the neighboring ones.
      ** This will block until the locks are obtained.
      **/
+    ORWL_TIMER(work_loop)
     for (size_t i = 0; i < nb_hand; ++i) {
        t = orwl_gettime();
        report(false, "%ld/acquiring: %p",t.tv_nsec,&left[i]);
@@ -313,6 +317,7 @@ int main(int argc, char **argv) {
 
   /* start the server thread and initialize it properly */
   orwl_server srv = P99_INIT;
+  ORWL_TIMER(server_start)
   {
     orwl_start(&srv, SOMAXCONN, orwl_np * 2);
     if (!orwl_alive(&srv)) return EXIT_FAILURE;
@@ -339,6 +344,7 @@ int main(int argc, char **argv) {
   report(1, "%s: starting %zu phases, %zu locations and threads",
          argv[0], phases, orwl_np);
 
+  ORWL_TIMER(connecting)
   { /* set up the connections between the clients and the
      * server thread. */
     orwl_endpoint there = srv.host.ep;
@@ -351,6 +357,7 @@ int main(int argc, char **argv) {
     }
   }
   /* Fire up the worker threads. */
+  ORWL_TIMER(launching)
   for (size_t thread = 0; thread < orwl_np; ++thread) {
     if (thread%2) {
       /* The odd numbered ones are joinable and use an arg_t that is
@@ -385,11 +392,13 @@ int main(int argc, char **argv) {
     }
   }
   /* wait for even numbered threads, that have been started joinable. */
+  ORWL_TIMER(join)
   for (size_t thread2 = 0; thread2 < orwl_np/2; ++thread2) {
     arg_t_join(id[thread2]);
   }
 
   /* wait for the remaining threads, if any are still alive */
+  ORWL_TIMER(wait_detached)
   orwl_pthread_wait_detached();
 
   /* now we can safely destruct ourselves */
