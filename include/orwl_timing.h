@@ -20,19 +20,10 @@ void orwl_timing_element_insert(orwl_timing_element* );
 
 P99_DECLARE_STRUCT(orwl_timing);
 
+/* This struct is used to declare timing elements that are supposed to
+*  be used in inline functions */
 struct orwl_timing {
   orwl_timing_element total_acquire;
-  orwl_timing_element wait_on_cond_acquire;
-
-  orwl_timing_element total_release;
-  orwl_timing_element copy_data_release;
-  orwl_timing_element send_data_release;
-
-  orwl_timing_element total_read_request;
-  orwl_timing_element rpc_read_request;
-
-  orwl_timing_element total_write_request;
-  orwl_timing_element rpc_write_request;
 };
 
 

@@ -29,22 +29,8 @@ void orwl_timing_element_print(FILE *out, orwl_timing_element* el) {
 
 #define ORWL_TIMING_ELEMENT(NAME) .NAME = { .nb = 0, .name = #NAME }
 
-
-
 static orwl_timing timing_info = {
   ORWL_TIMING_ELEMENT(total_acquire),
-  ORWL_TIMING_ELEMENT(total_acquire),
-  ORWL_TIMING_ELEMENT(wait_on_cond_acquire),
-
-  ORWL_TIMING_ELEMENT(total_release),
-  ORWL_TIMING_ELEMENT(copy_data_release),
-  ORWL_TIMING_ELEMENT(send_data_release),
-
-  ORWL_TIMING_ELEMENT(total_read_request),
-  ORWL_TIMING_ELEMENT(rpc_read_request),
-
-  ORWL_TIMING_ELEMENT(total_write_request),
-  ORWL_TIMING_ELEMENT(rpc_write_request),
 };
 
 orwl_timing * orwl_timing_info(void) {
@@ -53,18 +39,6 @@ orwl_timing * orwl_timing_info(void) {
 
 void orwl_timing_print_stats(void) {
   orwl_timing_element_print(stderr, &timing_info.total_acquire);
-  orwl_timing_element_print(stderr, &timing_info.total_acquire);
-  orwl_timing_element_print(stderr, &timing_info.wait_on_cond_acquire);
-
-  orwl_timing_element_print(stderr, &timing_info.total_release);
-  orwl_timing_element_print(stderr, &timing_info.copy_data_release);
-  orwl_timing_element_print(stderr, &timing_info.send_data_release);
-
-  orwl_timing_element_print(stderr, &timing_info.total_read_request);
-  orwl_timing_element_print(stderr, &timing_info.rpc_read_request);
-
-  orwl_timing_element_print(stderr, &timing_info.total_write_request);
-  orwl_timing_element_print(stderr, &timing_info.rpc_write_request);
   for (orwl_timing_element* el = head; el; el = el->next)
     orwl_timing_element_print(stderr, el);
 }
