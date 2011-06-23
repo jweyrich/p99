@@ -237,9 +237,10 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_wq);
    **/
 inline
 int orwl_wh_valid(orwl_wh *wh) {
+  orwl_wh *wh_next = atomic_load_orwl_wh_ptr(&wh->next);
   return wh
     && wh->location != TGARB(orwl_wq*)
-    && wh->next != TGARB(orwl_wh*);
+    && wh_next != TGARB(orwl_wh*);
 }
 
   /**
@@ -252,7 +253,8 @@ int orwl_wh_valid(orwl_wh *wh) {
    **/
 inline
 int orwl_wh_idle(orwl_wh *wh) {
-  return wh && !wh->location && !wh->next;
+  orwl_wh *wh_next = atomic_load_orwl_wh_ptr(&wh->next);
+  return wh && !wh->location && !wh_next;
 }
 
   /**
@@ -285,7 +287,9 @@ int orwl_wq_valid(orwl_wq *wq) {
    **/
 inline
 int orwl_wq_idle(orwl_wq *wq) {
-  return !wq->head && !wq->tail;
+  orwl_wh *wq_head = atomic_load_orwl_wh_ptr(&wq->head);
+  orwl_wh *wq_tail = atomic_load_orwl_wh_ptr(&wq->tail);
+  return !wq_head && !wq_tail;
 }
 
 

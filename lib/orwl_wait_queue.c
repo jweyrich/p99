@@ -74,6 +74,7 @@ void orwl_wh_destroy(orwl_wh *wh) {
   assert(!wh->location);
   assert(!wh->next);
   pthread_cond_destroy(&wh->cond);
+  pthread_mutex_destroy(&wh->mut);
   *wh = P99_LVAL(orwl_wh const,
                  .location = TGARB(orwl_wq*),
                  .next = TGARB(orwl_wh*),
@@ -235,23 +236,18 @@ orwl_state orwl_wh_acquire(orwl_wh *wh, uint64_t howmuch) {
 
 orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
   orwl_state ret = orwl_invalid;
-  /* using the mutex in orwl_wh */
-  MUTUAL_EXCLUDE(wh->mut) {
-    if (orwl_wh_valid(wh)) {
-      orwl_wq *wq = wh->location;
-      /* orwl_wq_valid uses atomic operations internally */
-      if (wq) {
-        if (orwl_wq_valid(wq)) {
-          orwl_wh* wq_head = atomic_load_orwl_wh_ptr(&wq->head);
-          if (wq_head)
-            ret = (wq_head == wh) ? orwl_acquired : orwl_requested;
-          /* orwl_wh_unload supposes that the wh is locked */
-          if (ret == orwl_acquired)
-            orwl_wh_unload(wh, howmuch);
-        }
+  if (orwl_wh_valid(wh)) {
+    orwl_wq *wq = wh->location;
+    orwl_wh* wq_head = atomic_load_orwl_wh_ptr(&wq->head);
+    if (wq) MUTUAL_EXCLUDE(wh->mut) {
+        /* orwl_wq_valid uses atomic operations internaly */
+        if (orwl_wq_valid(wq) && wq_head)
+        ret = (wq_head == wh) ? orwl_acquired : orwl_requested;
+        /* orwl_wh_unload supposes that the wh is locked */
+        if (ret == orwl_acquired)
+          orwl_wh_unload(wh, howmuch);
       } else {
-        if (!wh->next) ret = orwl_valid;
-      }
+      if (!wh->next) ret = orwl_valid;
     }
   }
   return ret;
