@@ -8,11 +8,13 @@
 P99_DECLARE_STRUCT(orwl_timing_element);
 
 struct orwl_timing_element {
-  uint64_t time;
   uint64_t nb;
+  uint64_t time;
   orwl_timing_element* next;
-  char const* name;
+  char const*const name;
 };
+
+#define ORWL_TIMING_ELEMENT_INITIALIZER(NAME) { .nb = -1, .name = #NAME }
 
 void orwl_timing_element_insert(orwl_timing_element* );
 
@@ -121,12 +123,13 @@ P00_BLK_DECL(register orwl_timing*const, _timing,                       \
 P00_BLK_START                                                           \
 P00_BLK_BEFORE(register orwl_timing_element* elem = 0)                  \
 P99_PREFER(                                                             \
-           static orwl_timing_element p00_static_elem = { 0 };          \
-           if (P99_UNLIKELY(!p00_static_elem.name)) {                   \
+           static orwl_timing_element p00_static_elem                   \
+           = ORWL_TIMING_ELEMENT_INITIALIZER(NAME);                     \
+           if (P99_UNLIKELY(p00_static_elem.nb == -1)) {                \
              ORWL_CRITICAL {                                            \
-               if (P99_UNLIKELY(!p00_static_elem.name)) {               \
+               if (P99_UNLIKELY(p00_static_elem.nb == -1)) {            \
                  orwl_timing_element_insert(&p00_static_elem);          \
-                 p00_static_elem.name = #NAME;                          \
+                 p00_static_elem.nb = 0;                                \
                }                                                        \
              }                                                          \
            }                                                            \
