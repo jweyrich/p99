@@ -64,7 +64,6 @@ orwl_wh* orwl_wh_init(orwl_wh *wh,
   if (!wh) return 0;
   *wh =  (orwl_wh const)ORWL_WH_INITIALIZER;
   pthread_cond_init(&wh->cond, attr);
-  pthread_cond_init(&wh->cond2, attr);
   pthread_mutex_init(&wh->mut, 0);
   return wh;
 }
@@ -73,6 +72,7 @@ void orwl_wh_destroy(orwl_wh *wh) {
   assert(!wh->location);
   assert(!wh->next);
   pthread_cond_destroy(&wh->cond);
+  pthread_mutex_destroy(&wh->mut);
   *wh = P99_LVAL(orwl_wh const,
                  .location = TGARB(orwl_wq*),
                  .next = TGARB(orwl_wh*),
@@ -173,7 +173,7 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
       loaded = orwl_wh_load(wh, 1);
       /* We wait on the local orwl_wh mutex */
       ORWL_TIMER(wait_on_cond_acquire)
-        pthread_cond_wait(&wh->cond, &wh->mut);
+      pthread_cond_wait(&wh->cond, &wh->mut);
       orwl_wh_unload(wh, loaded);
       /* Check everything again, somebody might have destroyed
          our wq */
@@ -208,15 +208,16 @@ orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
     orwl_wh* wq_head = atomic_load_orwl_wh_ptr(&wq->head);
-    /* orwl_wq_valid uses atomic operations internaly */
-    if (orwl_wq_valid(wq) && wq_head)
-      ret = (wq_head == wh) ? orwl_acquired : orwl_requested;
-    /* orwl_wh_unload supposes that the wh is locked */
-    if (ret == orwl_acquired)
-      MUTUAL_EXCLUDE(wh->mut)
-        orwl_wh_unload(wh, howmuch);
-  } else {
-    if (!wh->next) ret = orwl_valid;
+    if (wq) MUTUAL_EXCLUDE(wh->mut) {
+        /* orwl_wq_valid uses atomic operations internaly */
+        if (orwl_wq_valid(wq) && wq_head)
+        ret = (wq_head == wh) ? orwl_acquired : orwl_requested;
+        /* orwl_wh_unload supposes that the wh is locked */
+        if (ret == orwl_acquired)
+          orwl_wh_unload(wh, howmuch);
+      } else {
+      if (!wh->next) ret = orwl_valid;
+    }
   }
   return ret;
 }
@@ -231,29 +232,19 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
           if (atomic_load_orwl_wh_ptr(&wq->head) == wh && !wh->tokens) {
             /** read the next one **/
             orwl_wh* wh_next = atomic_load_orwl_wh_ptr(&wh->next);
-            /** if wh_next is not emply then blocked it **/  
-            if (wh_next)
-              MUTUAL_EXCLUDE (wh_next->mut) {
-               wh->location = 0;
-               wq->head = wh_next;
-               wh->next = 0;
-               ret = orwl_valid;
-               /* Unlock potential acquirers */
-               pthread_cond_broadcast(&wh_next->cond2);
-               /* Unlock potential requesters */
-               pthread_cond_broadcast(&wh->cond);
-              } 
-             /** if it is emply then take my own mutex **/
-             else    
-              MUTUAL_EXCLUDE (wh->mut) {
-               wh->location = 0;
-               wq->tail = 0;
-               wq->head = 0;
-               wh->next = 0;
-               ret = orwl_valid;
-               /* Unlock potential requesters */
-               pthread_cond_broadcast(&wh->cond);
-              } 
+            if (wh_next) MUTUAL_EXCLUDE (wh_next->mut) {
+              wq->head = wh_next;  
+              /* Unlock potential acquirers */
+              pthread_cond_broadcast(&wh_next->cond);
+            } else {
+              wq->tail = 0;
+              wq->head = 0;
+            }
+            wh->location = 0;
+            wh->next = 0;
+            /* Unlock potential requesters */
+            pthread_cond_broadcast(&wh->cond);
+            ret = orwl_valid;
             break;
           } else pthread_cond_wait(&wh->cond, &wq->mut);
         }
