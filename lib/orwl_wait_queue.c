@@ -293,9 +293,9 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
         MUTUAL_EXCLUDE(wh->mut) {
           if (wq == wh->location) {
             if (wh->tokens) {
-              report(true, "release hindered by someone else on wh %p, waiting", (void*)wh);
+              report(false, "release hindered by someone else on wh %p, waiting", (void*)wh);
               pthread_cond_wait(&wh->cond, &wh->mut);
-              report(true, "release hindered by someone else on wh %p, done", (void*)wh);
+              report(false, "release hindered by someone else on wh %p, done", (void*)wh);
             }
           } else {
             report(true, "release by someone else on wh %p", (void*)wh);
