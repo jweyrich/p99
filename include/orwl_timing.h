@@ -10,6 +10,7 @@ P99_DECLARE_STRUCT(orwl_timing_element);
 struct orwl_timing_element {
   uint64_t nb;
   double time;
+  double time2;
   orwl_timing_element* next;
   char const*const name;
 };
@@ -81,9 +82,11 @@ P00_BLK_DECL(register orwl_timing*const, _timing,                       \
   P00_BLK_DECL(register bool const, orwl_timing_fetched, true)          \
   P00_BLK_DECL(struct timespec, p00_end)                                \
   P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())              \
-  P00_BLK_AFTER(atomic_fetch_add(&(orwl_timing_var->NAME.nb), 1))       \
-  P00_BLK_AFTER(atomic_fetch_double_add(&(orwl_timing_var->NAME.time),         \
-                                 timespec2seconds(timespec_diff(p00_start, p00_end)))) \
+  P00_BLK_DECL(double, p00_sec)                                         \
+  P00_BLK_AFTER(atomic_fetch_add(&(orwl_timing_var->NAME.nb), 1),       \
+                atomic_fetch_double_add(&(orwl_timing_var->NAME.time2), p00_sec * p00_sec), \
+                atomic_fetch_double_add(&(orwl_timing_var->NAME.time), p00_sec)) \
+  P00_BLK_AFTER(p00_sec = timespec2seconds(timespec_diff(p00_start, p00_end))) \
   P00_BLK_AFTER(p00_end = orwl_gettime())                               \
   P00_BLK_END
 #else
@@ -135,14 +138,16 @@ P99_PREFER(                                                             \
            }                                                            \
            elem = &p00_static_elem;                                     \
            goto P99_LINEID(p00_label_, NAME);                           \
-         ) P99_LINEID(p00_label_, NAME):                                \
-  P00_BLK_DECL(struct timespec, p00_end)                                \
-  P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())              \
-  P00_BLK_AFTER(atomic_fetch_add(&(elem->nb), 1))                       \
-  P00_BLK_AFTER(atomic_fetch_double_add(&(elem->time),                         \
-                                 timespec2seconds(timespec_diff(p00_start, p00_end)))) \
-  P00_BLK_AFTER(p00_end = orwl_gettime())                               \
-  P00_BLK_END
+           ) P99_LINEID(p00_label_, NAME):                              \
+            P00_BLK_DECL(struct timespec, p00_end)                      \
+            P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())    \
+            P00_BLK_DECL(double, p00_sec)                               \
+            P00_BLK_AFTER(atomic_fetch_add(&(elem->nb), 1),             \
+                          atomic_fetch_double_add(&(elem->time2), p00_sec * p00_sec), \
+                          atomic_fetch_double_add(&(elem->time), p00_sec)) \
+            P00_BLK_AFTER(p00_sec = timespec2seconds(timespec_diff(p00_start, p00_end))) \
+            P00_BLK_AFTER(p00_end = orwl_gettime())                     \
+            P00_BLK_END
 #else
 # define ORWL_TIMER(NAME)
 #endif

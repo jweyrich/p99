@@ -19,13 +19,23 @@ void orwl_timing_element_insert(orwl_timing_element* el) {
 
 static
 void orwl_timing_element_print(FILE *out, orwl_timing_element* el) {
-  fprintf(out,
-          "__%-30s%10"PRIu64" %-8ss %-8ss\n",
-          el->name ? el->name : "<unamed>",
-          el->nb,
-          orwl_seconds2str(el->time),
-          orwl_seconds2str(el->time/el->nb)
-          );
+  uint64_t nb = el->nb;
+  if (nb) {
+    double time = el->time;
+    double mu = time/nb;
+    double time2 = el->time2;
+    double var = (time2 - (time * mu)) / nb;
+    if (var < 0.0) var = 0.0;
+    char const* name = el->name ? el->name : "<unamed>";
+    fprintf(out,
+            "TIMING: %-20s%10"PRIu64"\t%-8ss\t%-8ss\t%-8ss\n",
+            name,
+            nb,
+            orwl_seconds2str(time),
+            orwl_seconds2str(mu),
+            orwl_seconds2str(sqrt(var))
+            );
+  }
 }
 
 
@@ -54,7 +64,14 @@ orwl_timing * orwl_timing_info(void) {
 }
 
 void orwl_timing_print_stats(void) {
-  orwl_timing_element_print(stderr, &timing_info.total_acquire);
+  fprintf(stderr,
+          "TIMING: %-20s%10s\t%-8ss\t%-8ss\t%-8ss\n",
+          "pt of measure",
+          "n",
+          "time",
+          "time/n",
+          "dev"
+          );
   orwl_timing_element_print(stderr, &timing_info.total_acquire);
   orwl_timing_element_print(stderr, &timing_info.wait_on_cond_acquire);
 
