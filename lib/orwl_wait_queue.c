@@ -72,6 +72,7 @@ void orwl_wh_destroy(orwl_wh *wh) {
   assert(!wh->location);
   assert(!wh->next);
   pthread_cond_destroy(&wh->cond);
+  pthread_mutex_destroy(&wh->mut);
   *wh = P99_LVAL(orwl_wh const,
                  .location = TGARB(orwl_wq*),
                  .next = TGARB(orwl_wh*),
@@ -207,15 +208,16 @@ orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
     orwl_wh* wq_head = atomic_load_orwl_wh_ptr(&wq->head);
-    /* orwl_wq_valid uses atomic operations internaly */
-    if (orwl_wq_valid(wq) && wq_head)
-      ret = (wq_head == wh) ? orwl_acquired : orwl_requested;
-    /* orwl_wh_unload supposes that the wh is locked */
-    if (ret == orwl_acquired)
-      MUTUAL_EXCLUDE(wh->mut)
-        orwl_wh_unload(wh, howmuch);
-  } else {
-    if (!wh->next) ret = orwl_valid;
+    if (wq) MUTUAL_EXCLUDE(wh->mut) {
+        /* orwl_wq_valid uses atomic operations internaly */
+        if (orwl_wq_valid(wq) && wq_head)
+        ret = (wq_head == wh) ? orwl_acquired : orwl_requested;
+        /* orwl_wh_unload supposes that the wh is locked */
+        if (ret == orwl_acquired)
+          orwl_wh_unload(wh, howmuch);
+      } else {
+      if (!wh->next) ret = orwl_valid;
+    }
   }
   return ret;
 }
@@ -227,23 +229,28 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
     if (wq) {
       MUTUAL_EXCLUDE(wq->mut) {
         while (orwl_wq_valid(wq)) {
-          if (wq->head == wh && !wh->tokens) {
+          if (atomic_load_orwl_wh_ptr(&wq->head) == wh && !wh->tokens) {
+            /** read the next one **/
+            orwl_wh* wh_next = atomic_load_orwl_wh_ptr(&wh->next);
+            if (wh_next) MUTUAL_EXCLUDE (wh_next->mut) {
+              wq->head = wh_next;  
+              /* Unlock potential acquirers */
+              pthread_cond_broadcast(&wh_next->cond);
+            } else {
+              wq->tail = 0;
+              wq->head = 0;
+            }
             wh->location = 0;
-            if (!wh->next) wq->tail = 0;
-            wq->head = wh->next;
             wh->next = 0;
-            ret = orwl_valid;
-            /* Unlock potential acquirers */
-            /* wake up the first one in the queue */
-            if (wq->head) MUTUAL_EXCLUDE(wq->head->mut) pthread_cond_broadcast(&wq->head->cond);
             /* Unlock potential requesters */
             pthread_cond_broadcast(&wh->cond);
+            ret = orwl_valid;
             break;
           } else pthread_cond_wait(&wh->cond, &wq->mut);
         }
       }
     } else {
-      if (!wh->next) ret = orwl_valid;
+      if (!(atomic_load_orwl_wh_ptr(&wh->next))) ret = orwl_valid;
     }
   }
   return ret;
