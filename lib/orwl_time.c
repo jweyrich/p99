@@ -34,6 +34,42 @@ P99_INSTANTIATE(struct timespec, timespec_sum, struct timespec, struct timespec)
 P99_INSTANTIATE(struct timespec*, timespec_minus, struct timespec*, struct timespec const*);
 P99_INSTANTIATE(struct timespec*, timespec_add, struct timespec *, struct timespec const*);
 
+char const* orwl_seconds2str(double sec, char tmp[static 32]) {
+  if (sec > 0.0) {
+    double dlog = log10(sec);
+    int ilog = dlog;
+    ilog += 300;
+    ilog -= ilog % 3;
+    ilog -= 300;
+    double factor = exp((double)ilog);
+    double scal  = sec / factor;
+    if (scal < 1.0) {
+      ilog -= 3;
+      scal *= 1000.0;
+    }
+    char const* str = 0;
+    switch (ilog) {
+    case -9 : str = "n"; break;
+    case -6 : str = "u"; break;
+    case -3 : str = "m"; break;
+    case  0 : str = ""; break;
+    case  3 : str = "k"; break;
+    case  6 : str = "M"; break;
+    case  9 : str = "G"; break;
+    case 12 : str = "T"; break;
+    }
+    if (str) {
+      sprintf(tmp, "%#7.3f%s", scal, str);
+    } else {
+      sprintf(tmp, "%e", sec);
+    }
+  } else {
+    sprintf(tmp, "%#7.3f", 0.0);
+  }
+  return tmp;
+}
+
+
 P99_INSTANTIATE(uint64_t, useconds);
 P99_INSTANTIATE(double, seconds);
 
