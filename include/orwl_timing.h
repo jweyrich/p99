@@ -9,7 +9,7 @@ P99_DECLARE_STRUCT(orwl_timing_element);
 
 struct orwl_timing_element {
   uint64_t nb;
-  uint64_t time;
+  double time;
   orwl_timing_element* next;
   char const*const name;
 };
@@ -82,8 +82,8 @@ P00_BLK_DECL(register orwl_timing*const, _timing,                       \
   P00_BLK_DECL(struct timespec, p00_end)                                \
   P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())              \
   P00_BLK_AFTER(atomic_fetch_add(&(orwl_timing_var->NAME.nb), 1))       \
-  P00_BLK_AFTER(atomic_fetch_add(&(orwl_timing_var->NAME.time),         \
-                                 timespec2useconds(timespec_diff(p00_start, p00_end)))) \
+  P00_BLK_AFTER(atomic_fetch_double_add(&(orwl_timing_var->NAME.time),         \
+                                 timespec2seconds(timespec_diff(p00_start, p00_end)))) \
   P00_BLK_AFTER(p00_end = orwl_gettime())                               \
   P00_BLK_END
 #else
@@ -139,8 +139,8 @@ P99_PREFER(                                                             \
   P00_BLK_DECL(struct timespec, p00_end)                                \
   P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())              \
   P00_BLK_AFTER(atomic_fetch_add(&(elem->nb), 1))                       \
-  P00_BLK_AFTER(atomic_fetch_add(&(elem->time),                         \
-                                 timespec2useconds(timespec_diff(p00_start, p00_end)))) \
+  P00_BLK_AFTER(atomic_fetch_double_add(&(elem->time),                         \
+                                 timespec2seconds(timespec_diff(p00_start, p00_end)))) \
   P00_BLK_AFTER(p00_end = orwl_gettime())                               \
   P00_BLK_END
 #else

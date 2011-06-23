@@ -198,6 +198,14 @@ struct timespec timespec_sum(struct timespec a, struct timespec b) {
   return a;
 }
 
+
+char const* orwl_seconds2str(double sec, char tmp[static 32]);
+
+#define orwl_seconds2str(...) P99_CALL_DEFARG(orwl_seconds2str, 2, __VA_ARGS__)
+#define orwl_seconds2str_defarg_1() (char[32])P99_INIT
+
+
+
 /**
  ** @brief get the current time (since) Epoch in nanosecond precision.
  **
