@@ -71,6 +71,7 @@ void orwl_wh_destroy(orwl_wh *wh) {
   assert(!wh->location);
   assert(!wh->next);
   pthread_cond_destroy(&wh->cond);
+  pthread_mutex_destroy(&wh->mut);
   *wh = P99_LVAL(orwl_wh const,
                  .location = TGARB(orwl_wq*),
                  .next = TGARB(orwl_wh*),
