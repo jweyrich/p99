@@ -42,10 +42,10 @@ P99_INSTANTIATE(size_t, atomic_fetch_xor, atomic_size_t volatile *object, size_t
 
 P99_INSTANTIATE(size_t, atomic_fetch_and, atomic_size_t volatile *object, size_t operand);
 
-DEFINE_ATOMIC_OPS(double);
-DEFINE_ATOMIC_OP(double, add, +=);
-DEFINE_ATOMIC_OP(double, minus, -=);
-DEFINE_ATOMIC_OP(double, mult, *=);
-DEFINE_ATOMIC_OP(double, div, /=);
+DEFINE_ATOMIC_OPS(atomic_float);
+DEFINE_ATOMIC_OP(atomic_float, add, +=);
+DEFINE_ATOMIC_OP(atomic_float, minus, -=);
+DEFINE_ATOMIC_OP(atomic_float, mult, *=);
+DEFINE_ATOMIC_OP(atomic_float, div, /=);
 
 #endif

@@ -4,13 +4,14 @@
 #include "orwl_time.h"
 #include "orwl_document.h"
 #include "orwl_new.h"
+#include "orwl_atomic.h"
 
 P99_DECLARE_STRUCT(orwl_timing_element);
 
 struct orwl_timing_element {
-  uint64_t nb;
-  double time;
-  double time2;
+  atomic_size_t nb;
+  atomic_float time;
+  atomic_float time2;
   orwl_timing_element* next;
   char const*const name;
 };
@@ -73,10 +74,10 @@ P00_BLK_DECL(register orwl_timing*const, _timing,                       \
   P00_BLK_DECL(register bool const, orwl_timing_fetched, true)          \
   P00_BLK_DECL(struct timespec, p00_end)                                \
   P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())              \
-  P00_BLK_DECL(double, p00_sec)                                         \
+  P00_BLK_DECL(atomic_float, p00_sec)                                         \
   P00_BLK_AFTER(atomic_fetch_add(&(orwl_timing_var->NAME.nb), 1),       \
-                atomic_fetch_double_add(&(orwl_timing_var->NAME.time2), p00_sec * p00_sec), \
-                atomic_fetch_double_add(&(orwl_timing_var->NAME.time), p00_sec)) \
+                atomic_fetch_atomic_float_add(&(orwl_timing_var->NAME.time2), p00_sec * p00_sec), \
+                atomic_fetch_atomic_float_add(&(orwl_timing_var->NAME.time), p00_sec)) \
   P00_BLK_AFTER(p00_sec = timespec2seconds(timespec_diff(p00_start, p00_end))) \
   P00_BLK_AFTER(p00_end = orwl_gettime())                               \
   P00_BLK_END
@@ -132,10 +133,10 @@ P99_PREFER(                                                             \
            ) P99_LINEID(p00_label_, NAME):                              \
             P00_BLK_DECL(struct timespec, p00_end)                      \
             P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())    \
-            P00_BLK_DECL(double, p00_sec)                               \
+            P00_BLK_DECL(atomic_float, p00_sec)                               \
             P00_BLK_AFTER(atomic_fetch_add(&(elem->nb), 1),             \
-                          atomic_fetch_double_add(&(elem->time2), p00_sec * p00_sec), \
-                          atomic_fetch_double_add(&(elem->time), p00_sec)) \
+                          atomic_fetch_atomic_float_add(&(elem->time2), p00_sec * p00_sec), \
+                          atomic_fetch_atomic_float_add(&(elem->time), p00_sec)) \
             P00_BLK_AFTER(p00_sec = timespec2seconds(timespec_diff(p00_start, p00_end))) \
             P00_BLK_AFTER(p00_end = orwl_gettime())                     \
             P00_BLK_END

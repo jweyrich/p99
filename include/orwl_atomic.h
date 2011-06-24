@@ -64,6 +64,24 @@
  **/
 typedef ATOMIC_TYPE atomic_size_t;
 
+#ifndef ATOMIC_FLOAT
+# if ATOMIC_SIZE >= 8
+#  define ATOMIC_FLOAT double
+# else
+#  define ATOMIC_FLOAT float
+# endif
+#endif
+
+/**
+ ** @brief An atomic floating point type
+ **
+ ** Usually this should correspond to @c double but for narrow
+ ** architectures it could be just @c float.
+ **/
+typedef ATOMIC_FLOAT atomic_float;
+
+
+
 /**
  ** @brief Return a consistent value of @a object.
  **/
@@ -291,7 +309,7 @@ P99_INSTANTIATE(_Bool,                                                          
                 T *restrict expected,                                               \
                 T desired)
 
-DECLARE_ATOMIC_OPS(double);
+DECLARE_ATOMIC_OPS(atomic_float);
 
 /**
  ** @brief Declare an atomic operation on type @a T.
@@ -319,10 +337,10 @@ P99_MACRO_END(DECLARE_ATOMIC_OP, T, NAME)
 P99_INSTANTIATE(T, P99_PASTE4(atomic_fetch_, T, _, NAME), T volatile *, T operand)
 
 
-DECLARE_ATOMIC_OP(double, add, +=);
-DECLARE_ATOMIC_OP(double, minus, -=);
-DECLARE_ATOMIC_OP(double, mult, *=);
-DECLARE_ATOMIC_OP(double, div, /=);
+DECLARE_ATOMIC_OP(atomic_float, add, +=);
+DECLARE_ATOMIC_OP(atomic_float, minus, -=);
+DECLARE_ATOMIC_OP(atomic_float, mult, *=);
+DECLARE_ATOMIC_OP(atomic_float, div, /=);
 
 
 #endif 	    /* !ORWL_ATOMIC_H_ */

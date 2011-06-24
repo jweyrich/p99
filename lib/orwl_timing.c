@@ -21,10 +21,10 @@ static
 void orwl_timing_element_print(FILE *out, orwl_timing_element* el) {
   uint64_t nb = el->nb;
   if (nb) {
-    double time = el->time;
-    double mu = time/nb;
-    double time2 = el->time2;
-    double var = (time2 - (time * mu)) / nb;
+    atomic_float time = el->time;
+    atomic_float mu = time/nb;
+    atomic_float time2 = el->time2;
+    atomic_float var = (time2 - (time * mu)) / nb;
     if (var < 0.0) var = 0.0;
     char const* name = el->name ? el->name : "<unamed>";
     fprintf(out,
