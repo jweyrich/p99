@@ -92,9 +92,9 @@ int orwl_wq_valid(orwl_wq *wq);
 int orwl_wq_idle(orwl_wq *wq);
 
 /* This supposes that the corresponding wq != 0 */
-uint64_t orwl_wh_load(orwl_wh *wh, uint64_t howmuch);
+P99_INSTANTIATE(uint64_t, orwl_wh_load, orwl_wh *wh, uint64_t howmuch);
 /* This supposes that the corresponding wq != 0 */
-uint64_t orwl_wh_unload(orwl_wh *wh, uint64_t howmuch);
+P99_INSTANTIATE(uint64_t, orwl_wh_unload, orwl_wh *wh, uint64_t howmuch);
 
 void orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
   wh->location = wq;
