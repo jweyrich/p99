@@ -149,7 +149,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 	if (piggyback) {
 	  report(0, "unloading server handle %p for existing pair", (void*)srv_wh);
 	  bool last = false;
-	  MUTUAL_EXCLUDE(srv_wq->mut) {
+	  MUTUAL_EXCLUDE(srv_wh->mut) {
 	    orwl_wh_unload(srv_wh, 2);
 	    last = (srv_wh->tokens == 0);
 	  }
