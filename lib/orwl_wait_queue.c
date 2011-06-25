@@ -292,10 +292,12 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
       else {
         MUTUAL_EXCLUDE(wh->mut) {
           if (wq == wh->location) {
+          RETRY:
             if (wh->tokens) {
               report(false, "release hindered by someone else on wh %p, waiting", (void*)wh);
               pthread_cond_wait(&wh->cond, &wh->mut);
               report(false, "release hindered by someone else on wh %p, done", (void*)wh);
+              goto RETRY;
             }
           } else {
             report(true, "release by someone else on wh %p", (void*)wh);
