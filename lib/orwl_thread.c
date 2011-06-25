@@ -85,7 +85,7 @@ pthread_condattr_t const*const pthread_condattr_process = &pthread_condattr_proc
 pthread_rwlockattr_t const*const pthread_rwlockattr_thread = &pthread_rwlockattr_thread_;
 pthread_rwlockattr_t const*const pthread_rwlockattr_process = &pthread_rwlockattr_process_;
 
-static orwl_count counter = ORWL_COUNT_INITIALIZER;
+static orwl_count counter = ORWL_COUNT_INITIALIZER(0);
 
 DEFINE_ONCE(pthread_mutex_t) {
   pthread_mutexattr_init(&pthread_mutexattr_process_);

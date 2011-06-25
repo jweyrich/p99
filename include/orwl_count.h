@@ -237,9 +237,9 @@ struct orwl_count {
 
 
 #if !defined(HAVE_FUTEX) || !defined(HAVE_ATOMIC)
-# define ORWL_COUNT_INITIALIZER                                \
+# define ORWL_COUNT_INITIALIZER(INITIAL)                       \
 {                                                              \
-  .overl = { .large = 0 },                                     \
+  .overl = { .large = INITIAL },                               \
     .mut = PTHREAD_MUTEX_INITIALIZER,                          \
        .cnd = PTHREAD_COND_INITIALIZER                         \
 }
@@ -247,11 +247,37 @@ struct orwl_count {
 /**
  ** @brief Initialize an ::orwl_count object.
  **/
-# define ORWL_COUNT_INITIALIZER                                \
+# define ORWL_COUNT_INITIALIZER(INITIAL)                       \
 {                                                              \
-  .overl = { .large = 0 },                                     \
+  .overl = { .large = INITIAL },                               \
 }
 #endif
+
+inline
+orwl_count* orwl_count_init(orwl_count* c, size_t initial) {
+  if (c) {
+    c->overl.large = initial;
+#if !defined(HAVE_FUTEX) || !defined(HAVE_ATOMIC)
+    pthread_mutex_init(&c->mut);
+    pthread_cond_init(&c->cnd);
+#endif
+  }
+  return c;
+}
+
+#define orwl_count_init(...) P99_CALL_DEFARG(orwl_count_init, 2, __VA_ARGS__)
+#define orwl_count_init_defarg_1() P99_0(size_t)
+
+inline
+void orwl_count_destroy(orwl_count* c) {
+  if (c) {
+    c->overl.large = 0;
+#if !defined(HAVE_FUTEX) || !defined(HAVE_ATOMIC)
+    pthread_mutex_destroy(&c->mut);
+    pthread_cond_destroy(&c->cnd);
+#endif
+  }
+}
 
 /**
  ** @brief Account the @c pthread_rwlock_t @a COUNT during execution

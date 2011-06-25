@@ -13,6 +13,8 @@
 /*                                                                           */
 #include "orwl_count.h"
 
+P99_INSTANTIATE(orwl_count*, orwl_count_init, orwl_count*, size_t);
+P99_INSTANTIATE(void, orwl_count_destroy, orwl_count*);
 P99_INSTANTIATE(size_t, orwl_count_inc, orwl_count*, size_t);
 P99_INSTANTIATE(size_t, orwl_count_dec, orwl_count*, size_t);
 P99_INSTANTIATE(void, orwl_count_wait, orwl_count*);
