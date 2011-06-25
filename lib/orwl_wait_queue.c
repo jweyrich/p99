@@ -197,11 +197,11 @@ orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
     if (wq_head == wh) ret = orwl_acquired;
     /* We are on the slow path */
     else while(true) {
-        uint64_t loaded = orwl_wh_load(wh, 1);
+        orwl_wh_load(wh);
         /* We wait on the local orwl_wh mutex */
         ORWL_TIMER(wait_on_cond_acquire)
         pthread_cond_wait(&wh->cond, &wh->mut);
-        orwl_wh_unload(wh, loaded);
+        orwl_wh_unload(wh);
         if  (wq != wh->location) break;
         /* Check everything again, somebody might have destroyed
            our wq */
@@ -243,7 +243,6 @@ orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
         /* orwl_wq_valid uses atomic operations internaly */
         if (orwl_wq_valid(wq) && wq_head)
         ret = (wq_head == wh) ? orwl_acquired : orwl_requested;
-        /* orwl_wh_unload supposes that the wh is locked */
         if (ret == orwl_acquired)
           orwl_wh_unload(wh, howmuch);
       } else {
@@ -257,52 +256,38 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
-    while (wq && orwl_wq_valid(wq)) {
-      MUTUAL_EXCLUDE(wq->mut) {
-        if (wq->head == wh) {
+    if (wq && orwl_wq_valid(wq)) {
+      ret = orwl_wh_acquire(wh, 0);
+      switch (ret) {
+      default:
+        report(true, "Inconsistency in queue %p when releasing %p, state is %s",
+               (void*)wq, (void*)wh, orwl_state_getname(ret));
+      case orwl_valid:
+        break;
+      case orwl_acquired:
+        orwl_count_wait(&wh->tokens);
+        MUTUAL_EXCLUDE(wq->mut)
           MUTUAL_EXCLUDE(wh->mut) {
-            if (!wh->tokens) {
-              orwl_wh  *wh_next = wh->next;
-              wh->location = 0;
-              wh->next = 0;
-              if (wh_next) pthread_mutex_lock(&wh_next->mut);
-              else {
-                if (wq->tail == wh) wq->tail = 0;
-                else report(true, "Inconsistency in queue %p when releasing %p, different tail %p",
-                            (void*)wq, (void*)wh, (void*)wq->tail);
-              }
-              wq->head = wh_next;
-              /* Unlock potential requesters */
-              pthread_cond_broadcast(&wq->cond);
-              pthread_cond_broadcast(&wh->cond);
-              /* Unlock potential acquirers */
-              /* wake up the first one in the queue */
-              if (wh_next) {
-                pthread_cond_broadcast(&wh_next->cond);
-                pthread_mutex_unlock(&wh_next->mut);
-              }
-              ret = orwl_valid;
-            }
+          orwl_wh  *wh_next = wh->next;
+          wh->location = 0;
+          wh->next = 0;
+          if (wh_next) pthread_mutex_lock(&wh_next->mut);
+          else {
+            if (wq->tail == wh) wq->tail = 0;
+            else report(true, "Inconsistency in queue %p when releasing %p, different tail %p",
+                        (void*)wq, (void*)wh, (void*)wq->tail);
           }
-        } else {
-          report(true, "release on wh %p while not acquired", (void*)wh);
-        }
-      }
-      if (ret == orwl_valid) break;
-      else {
-        MUTUAL_EXCLUDE(wh->mut) {
-          if (wq == wh->location) {
-          RETRY:
-            if (wh->tokens) {
-              report(false, "release hindered by someone else on wh %p, waiting", (void*)wh);
-              pthread_cond_wait(&wh->cond, &wh->mut);
-              report(false, "release hindered by someone else on wh %p, done", (void*)wh);
-              goto RETRY;
-            }
-          } else {
-            report(true, "release by someone else on wh %p", (void*)wh);
-            wq = 0;
+          wq->head = wh_next;
+          /* Unlock potential requesters */
+          pthread_cond_broadcast(&wq->cond);
+          pthread_cond_broadcast(&wh->cond);
+          /* Unlock potential acquirers */
+          /* wake up the first one in the queue */
+          if (wh_next) {
+            pthread_cond_broadcast(&wh_next->cond);
+            pthread_mutex_unlock(&wh_next->mut);
           }
+          ret = orwl_valid;
         }
       }
     }

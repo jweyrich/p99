@@ -185,7 +185,7 @@ struct orwl_wh {
    ** for this handle to be acquired. A wh can only be released when
    ** this has dropped to zero.
    **/
-  atomic_size_t tokens;
+  orwl_count tokens;
   orwl_count finalists;
   /**
    ** @brief The historical position in the wait queue.
@@ -479,8 +479,7 @@ inline
 uint64_t orwl_wh_load
   (orwl_wh *wh /*!< the handle to act upon */,
    uint64_t howmuch  /*!< defaults to 1 */) {
-    atomic_fetch_add(&wh->tokens, howmuch);
-    return howmuch;
+    return orwl_count_inc(&wh->tokens, howmuch);
   }
 
 #ifndef DOXYGEN
@@ -506,19 +505,7 @@ inline
 uint64_t orwl_wh_unload
   (orwl_wh *wh /*!< the handle to act upon */,
    uint64_t howmuch  /*!< defaults to 1 */) {
-    size_t tokens = atomic_load(&wh->tokens);
-    while (true) {
-      size_t hm =
-        (tokens < howmuch)
-        ? tokens
-        : howmuch;
-      size_t nt = tokens - hm;
-      if (atomic_compare_exchange_weak(&wh->tokens, &tokens, nt)) {
-        /* If the condition has changed, wake up all tokens */
-        if (hm) pthread_cond_broadcast(&wh->cond);
-        return hm;
-      }
-    }
+    return orwl_count_dec(&wh->tokens, howmuch);
   }
 
   /**

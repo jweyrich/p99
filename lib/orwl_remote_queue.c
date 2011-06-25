@@ -145,7 +145,6 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
             assert(wh_inc->location->tail == cli_wh);
             wh_inc->next = 0;
             wh_inc->location->tail = wh_inc;
-            cli_wh->tokens = 0;
             cli_wh->location = 0;
             orwl_wh_delete(cli_wh);
           }
@@ -167,8 +166,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
             // (because remotely there was something in between) we
             // have to unload this again.
             if (wh_inc) MUTUAL_EXCLUDE(wh_inc->mut) {
-              orwl_wh_unload(wh_inc, 1);
-              last_inc = (wh_inc->tokens == 0);
+              last_inc = !orwl_wh_unload(wh_inc, 1);
             }
             assert(rq->local.tail == cli_wh);
             orwl_wq_request_locked(&rq->local, wh, 1);
@@ -176,8 +174,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
             // inclusive.
             rh->wh = wh;
             MUTUAL_EXCLUDE(cli_wh->mut) {
-              orwl_wh_unload(cli_wh, 1);
-              last_cli = (cli_wh->tokens == 0);
+              last_cli = !orwl_wh_unload(cli_wh, 1);
             }
           }
           if (last_inc) {
@@ -222,7 +219,7 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   MUTUAL_EXCLUDE(wh->mut) {
     assert(wq == &rq->local);
     assert(wq->head == wh);
-    last = (wh->tokens == 1);
+    last = !orwl_wh_unload(wh);
     if (last) {
       bool inclusive = wh->svrID;
       size_t extend = (inclusive ? 0 : wq->data_len);
@@ -241,7 +238,6 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
       orwl_handle_init(rh);
       pthread_mutex_unlock(&rq->mut);
     }
-    orwl_wh_unload(wh);
   }
   if (last) {
     orwl_count_wait(&wh->finalists);

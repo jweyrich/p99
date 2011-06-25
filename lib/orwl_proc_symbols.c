@@ -147,10 +147,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 	if (piggyback) {
 	  report(0, "unloading server handle %p for existing pair", (void*)srv_wh);
 	  bool last = false;
-	  MUTUAL_EXCLUDE(srv_wh->mut) {
-	    orwl_wh_unload(srv_wh, 2);
-	    last = (srv_wh->tokens == 0);
-	  }
+          last = !orwl_wh_unload(srv_wh, 2);
 	  if (last) {
 	    state = orwl_wh_release(srv_wh);
 	    orwl_wh_delete(srv_wh);
@@ -179,11 +176,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID) {
     assert(wq);
     bool last = false;
     MUTUAL_EXCLUDE(wq->mut) {
-      MUTUAL_EXCLUDE(wh->mut) {
-        orwl_wh_unload(wh);
-        last = (wh->tokens == 0);
-        if (!last) orwl_count_inc(&wh->finalists);
-      }
+      last = !orwl_wh_unload(wh);
+      if (!last) orwl_count_inc(&wh->finalists);
       size_t len = Arg->len;
       if (len) {
 	report(false, "found suplementary message of length %zu", len);
