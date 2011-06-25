@@ -261,19 +261,29 @@ P99_BLOCK_DOCUMENT
 #define ORWL_ACCOUNT(COUNT) P99_PROTECTED_BLOCK(orwl_count_inc(&COUNT), orwl_count_dec(&COUNT))
 
 /**
- ** @brief increment the counter @a counter atomically.
+ ** @brief increment the counter @a counter atomically by @a howmuch.
  ** @return the value of the counter before the increment.
+ ** @remark @a howmuch defaults to 1 if omitted.
  ** @memberof orwl_count
  **/
-inline size_t orwl_count_inc(orwl_count* counter);
+inline size_t orwl_count_inc(orwl_count* counter, size_t howmuch);
+
+#define orwl_count_inc(...) P99_CALL_DEFARG(orwl_count_inc, 2, __VA_ARGS__)
+#define orwl_count_inc_defarg_1() ((size_t)1)
+
 /**
- ** @brief decrement the counter @a counter atomically.
+ ** @brief decrement the counter @a counter atomically by @a howmuch.
  **
  ** Also signals eventual waiters if the counter falls to 0.
  ** @return the value of the counter after the decrement.
+ ** @remark @a howmuch defaults to 1 if omitted.
  ** @memberof orwl_count
  **/
-inline size_t orwl_count_dec(orwl_count* counter);
+inline size_t orwl_count_dec(orwl_count* counter, size_t howmuch);
+
+#define orwl_count_dec(...) P99_CALL_DEFARG(orwl_count_dec, 2, __VA_ARGS__)
+#define orwl_count_dec_defarg_1() ((size_t)1)
+
 /**
  ** @brief wait until the counter @a counter falls to 0.
  ** @memberof orwl_count
@@ -283,21 +293,21 @@ inline void orwl_count_wait(orwl_count* counter);
 #ifdef HAVE_ATOMIC
 
 inline
-size_t orwl_count_inc(orwl_count* counter) {
-  size_t ret = atomic_fetch_add(&counter->overl.large, (size_t)1);
+size_t orwl_count_inc(orwl_count* counter, size_t howmuch) {
+  size_t ret = atomic_fetch_add(&counter->overl.large, howmuch);
   return ret;
 }
 
 #ifndef HAVE_FUTEX
 
 inline
-size_t orwl_count_dec(orwl_count* counter) {
+size_t orwl_count_dec(orwl_count* counter, size_t howmuch) {
   /* if we are the last notify the waiters */
-  size_t val = atomic_fetch_sub(&counter->overl.large, (size_t)1);
-  if (P99_UNLIKELY(val == 1))
+  size_t val = atomic_fetch_sub(&counter->overl.large, howmuch);
+  if (P99_UNLIKELY(val <= howmuch))
     MUTUAL_EXCLUDE(counter->mut)
       pthread_cond_broadcast(&counter->cnd);
-  return val - 1;
+  return val - howmuch;
 }
 
 inline
@@ -309,12 +319,12 @@ void orwl_count_wait(orwl_count* counter) {
 
 # else
 inline
-size_t orwl_count_dec(orwl_count* counter) {
+size_t orwl_count_dec(orwl_count* counter, size_t howmuch) {
   /* if we are the last notify the waiters */
-  register int val = atomic_fetch_sub(&counter->overl.large, (size_t)1);
-  if (P99_UNLIKELY(val == 1))
+  register int val = atomic_fetch_sub(&counter->overl.large, howmuch);
+  if (P99_UNLIKELY(val <= howmuch))
     orwl_futex_broadcast((int*)&(counter->overl.narrow));
-  return val - 1;
+  return val - howmuch;
 }
 
 inline
@@ -332,21 +342,21 @@ void orwl_count_wait(orwl_count* counter) {
 #else
 
 inline
-size_t orwl_count_inc(orwl_count* counter) {
+size_t orwl_count_inc(orwl_count* counter, size_t howmuch) {
   size_t ret = 0;
   MUTUAL_EXCLUDE(counter->mut) {
     ret = counter->overl.large;
-    counter->overl.large = ret + 1;
+    counter->overl.large = ret + howmuch;
   }
   return ret;
 }
 
 inline
-size_t orwl_count_dec(orwl_count* counter) {
+size_t orwl_count_dec(orwl_count* counter, size_t howmuch) {
   size_t ret = 0;
   MUTUAL_EXCLUDE(counter->mut) {
     ret = counter->overl.large;
-    counter->overl.large = ret - 1;
+    counter->overl.large = ret - howmuch;
     if (!(counter->overl.large)) pthread_cond_broadcast(&counter->cnd);
   }
   return ret;

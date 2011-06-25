@@ -13,8 +13,8 @@
 /*                                                                           */
 #include "orwl_count.h"
 
-P99_INSTANTIATE(size_t, orwl_count_inc, orwl_count*);
-P99_INSTANTIATE(size_t, orwl_count_dec, orwl_count*);
+P99_INSTANTIATE(size_t, orwl_count_inc, orwl_count*, size_t);
+P99_INSTANTIATE(size_t, orwl_count_dec, orwl_count*, size_t);
 P99_INSTANTIATE(void, orwl_count_wait, orwl_count*);
 
 #ifdef HAVE_FUTEX
