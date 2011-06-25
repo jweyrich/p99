@@ -180,8 +180,10 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID) {
     assert(wq);
     bool last = false;
     MUTUAL_EXCLUDE(wq->mut) {
-      orwl_wh_unload(wh);
-      last = (wh->tokens == 0);
+      MUTUAL_EXCLUDE(wh->mut) {
+        orwl_wh_unload(wh);
+        last = (wh->tokens == 0);
+      }
       size_t len = Arg->len;
       if (len) {
 	report(false, "found suplementary message of length %zu", len);
