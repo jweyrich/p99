@@ -13,14 +13,12 @@ include ../scripts/Makefile-getconf-orwl
 NAME 	=					\
 		orwl_local_test_inclusive	\
 		orwl_remote_server		\
-		orwl_remote_test_exclusive	\
 		orwl_remote_test_inclusive	\
 		orwl_socket_finish		\
 		orwl_socket_test		\
 		orwl_benchmark_kernel23		\
 		orwl_benchmark_synthetic	\
 		orwl_benchmark_timer            \
-		orwl_wait_list			\
 		test-p99-block			\
 		test-p99-cases			\
 		test-p99-choice			\
