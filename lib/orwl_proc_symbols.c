@@ -137,13 +137,11 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
       }
       if (state != orwl_requested) {
 	if (!piggyback) orwl_wh_delete(srv_wh);
-	orwl_proc_untie_caller(Arg);
       } else {
 	orwl_endpoint ep = { .addr = orwl_proc_getpeer(Arg), .port = host2port(port) };
 	/* Acknowledge the creation of the wh and send back its ID. */
 	report(0, "inclusive request (%p) 0x%jx 0x%jx, detaching", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
 	Arg->ret = (uintptr_t)srv_wh;
-	orwl_proc_untie_caller(Arg);
 	/* If now the local handle is `requested' we only have to wait if
 	   we establish a new pair of client-server handles. */
 	if (piggyback) {
@@ -158,6 +156,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 	    orwl_wh_delete(srv_wh);
 	  }
 	} else {
+          orwl_proc_untie_caller(Arg);
 	  // wait until the lock on wh is obtained
 	  ORWL_TIMER(push_read_request_server)
 	    state = orwl_proc_push(Arg->srv, &ep, srv_wh, cliID, true);
@@ -183,6 +182,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID) {
       MUTUAL_EXCLUDE(wh->mut) {
         orwl_wh_unload(wh);
         last = (wh->tokens == 0);
+        if (!last) orwl_count_inc(&wh->finalists);
       }
       size_t len = Arg->len;
       if (len) {
@@ -200,9 +200,18 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID) {
 	report(false, "copied suplementary message of length %zu", len);
       }
     }
+    orwl_proc_untie_caller(Arg);
+    if (Arg->det) {
+      orwl_thread_cntrl_wait_for_caller(Arg->det);
+      orwl_thread_cntrl_delete(Arg->det);
+      Arg->det = 0;
+    }
     if (last) {
+      orwl_count_wait(&wh->finalists);
       ret = orwl_wh_release(wh);
       orwl_wh_delete(wh);
+    } else {
+      orwl_count_dec(&wh->finalists);
     }
     Arg->ret = ret;
   }
@@ -217,7 +226,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_check_initialization, uint64_t id) {
     pthread_rwlock_unlock(&Arg->srv->lock);
     sleepfor(0.1);
   }
-  orwl_proc_untie_caller(Arg);
+  //orwl_proc_untie_caller(Arg);
 }
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_proc,

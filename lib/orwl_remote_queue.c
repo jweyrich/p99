@@ -237,12 +237,14 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
         memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
       }
     } else {
+      orwl_count_inc(&wh->finalists);
       orwl_handle_init(rh);
       pthread_mutex_unlock(&rq->mut);
     }
     orwl_wh_unload(wh);
   }
   if (last) {
+    orwl_count_wait(&wh->finalists);
     state = orwl_wh_release(wh);
     orwl_handle_init(rh);
     pthread_mutex_unlock(&rq->mut);
@@ -252,6 +254,8 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
        we may destroy it. */
     orwl_wh_delete(wh);
     uint64_t_vdelete(mess);
+  } else {
+    orwl_count_dec(&wh->finalists);
   }
   }
   return state;

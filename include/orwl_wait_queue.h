@@ -17,7 +17,7 @@
 
 #include "orwl_register.h"
 #include "orwl_endpoint.h"
-#include "orwl_atomic.h"
+#include "orwl_count.h"
 #include P99_ADVANCE_ID
 
 #ifdef __cplusplus
@@ -186,6 +186,7 @@ struct orwl_wh {
    ** this has dropped to zero.
    **/
   atomic_size_t tokens;
+  orwl_count finalists;
   /**
    ** @brief The historical position in the wait queue.
    **/
@@ -296,7 +297,7 @@ int orwl_wq_idle(orwl_wq *wq) {
   /**
    ** @memberof orwl_wh
    **/
-#define ORWL_WH_INITIALIZER { .cond = PTHREAD_COND_INITIALIZER, .mut = PTHREAD_MUTEX_INITIALIZER }
+#define ORWL_WH_INITIALIZER { .cond = PTHREAD_COND_INITIALIZER, .mut = PTHREAD_MUTEX_INITIALIZER, .finalists = ORWL_COUNT_INITIALIZER }
 
   DOCUMENT_INIT(orwl_wh)
   P99_DEFARG_DOCU(orwl_wh_init)
