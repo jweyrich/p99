@@ -11,10 +11,12 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#include "orwl_count.h"
+#include "orwl_futex.h"
 
-P99_INSTANTIATE(orwl_count*, orwl_count_init, orwl_count*, size_t);
-P99_INSTANTIATE(void, orwl_count_destroy, orwl_count*);
-P99_INSTANTIATE(size_t, orwl_count_inc, orwl_count*, size_t);
-P99_INSTANTIATE(size_t, orwl_count_dec, orwl_count*, size_t);
-P99_INSTANTIATE(void, orwl_count_wait, orwl_count*);
+#ifdef HAVE_FUTEX
+P99_INSTANTIATE(int, orwl_futex, int*, int, int, const struct timespec*, int*, int);
+P99_INSTANTIATE(int, orwl_futex_wait_once, int*, int);
+P99_INSTANTIATE(int, orwl_futex_wake, int*, int);
+P99_INSTANTIATE(int, orwl_futex_signal, int*);
+P99_INSTANTIATE(int, orwl_futex_broadcast, int*);
+#endif

@@ -15,6 +15,7 @@ SRC	=					\
 	orwl_barrier.c				\
 	orwl_count.c				\
 	orwl_endpoint.c				\
+	orwl_futex.c				\
 	orwl_handle2.c				\
 	orwl_host.c				\
 	orwl_int.c				\
