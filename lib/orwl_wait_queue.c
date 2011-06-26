@@ -65,6 +65,7 @@ orwl_wh* orwl_wh_init(orwl_wh *wh,
                   const pthread_condattr_t *attr) {
   if (!wh) return 0;
   *wh =  (orwl_wh const)ORWL_WH_INITIALIZER;
+  orwl_count_init(&wh->finalists, 0);
   pthread_cond_init(&wh->cond, attr);
   pthread_mutex_init(&wh->mut, 0);
   return wh;

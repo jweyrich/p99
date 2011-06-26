@@ -297,7 +297,7 @@ int orwl_wq_idle(orwl_wq *wq) {
   /**
    ** @memberof orwl_wh
    **/
-#define ORWL_WH_INITIALIZER { .cond = PTHREAD_COND_INITIALIZER, .mut = PTHREAD_MUTEX_INITIALIZER, .finalists = ORWL_COUNT_INITIALIZER }
+#define ORWL_WH_INITIALIZER { .cond = PTHREAD_COND_INITIALIZER, .mut = PTHREAD_MUTEX_INITIALIZER, .finalists = ORWL_COUNT_INITIALIZER(0) }
 
   DOCUMENT_INIT(orwl_wh)
   P99_DEFARG_DOCU(orwl_wh_init)
