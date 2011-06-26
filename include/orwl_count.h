@@ -113,6 +113,13 @@ inline size_t orwl_count_inc(orwl_count* counter, size_t howmuch);
 #define orwl_count_inc_defarg_1() ((size_t)1)
 
 /**
+ ** @brief Obtain the value of counter @a counter atomically.
+ ** @memberof orwl_count
+ **/
+inline size_t orwl_count_value(orwl_count* counter);
+
+
+/**
  ** @brief decrement the counter @a counter atomically by @a howmuch.
  **
  ** Also signals eventual waiters if the counter falls to 0.
@@ -136,6 +143,12 @@ inline void orwl_count_wait(orwl_count* counter);
 inline
 size_t orwl_count_inc(orwl_count* counter, size_t howmuch) {
   size_t ret = atomic_fetch_add(&counter->overl.large, howmuch);
+  return ret;
+}
+
+inline
+size_t orwl_count_value(orwl_count* counter) {
+  size_t ret = atomic_load(&counter->overl.large);
   return ret;
 }
 
@@ -188,6 +201,15 @@ size_t orwl_count_inc(orwl_count* counter, size_t howmuch) {
   MUTUAL_EXCLUDE(counter->mut) {
     ret = counter->overl.large;
     counter->overl.large = ret + howmuch;
+  }
+  return ret;
+}
+
+inline
+size_t orwl_count_value(orwl_count* counter) {
+  size_t ret = 0;
+  MUTUAL_EXCLUDE(counter->mut) {
+    ret = counter->overl.large;
   }
   return ret;
 }
