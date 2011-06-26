@@ -15,6 +15,7 @@
 #define ORWL_COUNT_H
 
 #include "orwl_futex.h"
+#include "orwl_thread.h"
 
 P99_DECLARE_STRUCT(orwl_count);
 
@@ -233,5 +234,78 @@ void orwl_count_wait(orwl_count* counter) {
 }
 #endif
 
+/**
+ ** @brief A restriction of ::orwl_count to set flag and notify
+ ** other threads that an event has occurred.
+ **
+ ** @see orwl_notifier_set
+ ** @see orwl_notifier_block
+ ** @see orwl_notifier_verify
+ **/
+typedef orwl_count orwl_notifier;
+
+#define ORWL_NOTIFIER_INITIALIZER ORWL_COUNT_INITIALIZER(1)
+
+/**
+ ** @memberof orwl_notifier
+ **/
+inline
+orwl_notifier* orwl_notifier_init(orwl_notifier* notifier) {
+  orwl_count_init(notifier, 1);
+  return notifier;
+}
+
+/**
+ ** @memberof orwl_notifier
+ **/
+inline
+void orwl_notifier_destroy(orwl_notifier* notifier) {
+  orwl_count_destroy(notifier);
+}
+
+/**
+ ** @brief Verify if the notification flag has been set. Non blocking. 
+ ** @memberof orwl_notifier
+ **/
+inline
+bool orwl_notifier_verify(orwl_notifier* notifier) {
+  return !orwl_count_value(notifier);
+}
+
+/**
+ ** @brief Set the notifier flag and wake up all potential waiters. 
+ ** @memberof orwl_notifier
+ **/
+inline
+void orwl_notifier_set(orwl_notifier* notifier) {
+  if (!orwl_notifier_verify(notifier)) {
+    if (orwl_count_dec(notifier, 1)) {
+      report(true, "duplicated notifier set for %p", (void*)notifier);
+    }
+  }
+}
+
+/**
+ ** @memberof orwl_notifier
+ **/
+inline
+void orwl_notifier_unset(orwl_notifier* notifier) {
+  if (orwl_notifier_verify(notifier)) {
+    if (orwl_count_inc(notifier, 1)) {
+      report(true, "duplicated notifier unset for %p", (void*)notifier);
+    }
+  }
+}
+
+/**
+ ** @brief Block the notification flag has been set.
+ **
+ ** Non blocking if the flag is already set.
+ ** @memberof orwl_notifier
+ **/
+inline
+void orwl_notifier_block(orwl_notifier* notifier) {
+  orwl_count_wait(notifier);
+}
 
 #endif
