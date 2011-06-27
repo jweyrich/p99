@@ -87,12 +87,12 @@ void orwl_wh_destroy(orwl_wh *wh) {
 
 DEFINE_NEW_DELETE(orwl_wh);
 
-int orwl_wh_valid(orwl_wh *wh);
-int orwl_wh_idle(orwl_wh *wh);
+P99_INSTANTIATE(int, orwl_wh_valid, orwl_wh*);
+P99_INSTANTIATE(int, orwl_wh_idle, orwl_wh*);
 /* This supposes that wq != 0 */
-int orwl_wq_valid(orwl_wq *wq);
+P99_INSTANTIATE(int, orwl_wq_valid, orwl_wq*);
 /* This supposes that wq != 0 */
-int orwl_wq_idle(orwl_wq *wq);
+P99_INSTANTIATE(int, orwl_wq_idle, orwl_wq*);
 
 /* This supposes that the corresponding wq != 0 */
 P99_INSTANTIATE(uint64_t, orwl_wh_load, orwl_wh *wh, uint64_t howmuch);
@@ -168,33 +168,26 @@ orwl_state orwl_wq_request_internal(orwl_wq *wq, size_t number, va_list ap0) {
           orwl_wh **wh = VA_MODARG(ap, orwl_wq_request, 0);
           int64_t hm = VA_MODARG(ap, orwl_wq_request, 1);
           uint64_t howmuch = (hm > P99_0(int64_t)) ? hm : -hm;
-          if (wh) {
-            if (*wh) {
-              orwl_wq_request_append(wq, *wh, howmuch);
+          if (wh && *wh)
+            orwl_wq_request_append(wq, *wh, howmuch);
+          else {
+            /* if the wh is a null pointer, take this as a request to add to the
+               last handle if it exists */
+            orwl_wh *wq_tail = wq->tail;
+            report(false, "request for augmenting an inclusive lock %p", (void*)wq_tail);
+            if (number == 1
+                && !orwl_wq_idle(wq)
+                && wq_tail
+                && wq_tail->svrID) {
+              report(false, "request for augmenting an inclusive lock %p, succes", (void*)wq_tail);
+              assert(hm >= P99_0(int64_t));
+              orwl_wh_load(wq_tail, howmuch);
+              *wh = wq_tail;
             } else {
-              /* if the wh is a null pointer, take this as a request to add to the
-                 last handle if it exists */
-              orwl_wh *wq_tail = wq->tail;
-              report(false, "request for augmenting an inclusive lock %p", (void*)wq_tail);
-              if (number == 1
-                  && !orwl_wq_idle(wq)
-                  && wq_tail) {
-                if (wq_tail->svrID) {
-                  report(false, "request for augmenting an inclusive lock %p, succes", (void*)wq_tail);
-                  assert(hm >= P99_0(int64_t));
-                  orwl_wh_load(wq_tail, howmuch);
-                  *wh = wq_tail;
-                } else {
-                  report(false, "request for augmenting an inclusive lock %p (%jX), failed",
-                         (void*)wq_tail, wq_tail ? wq_tail->svrID : P99_0(size_t));
-                  ret = orwl_invalid;
-                }
-              } else {
-                report(false, "request for augmenting an inclusive lock %p (%jX), failed",
-                       (void*)wq_tail, wq_tail ? wq_tail->svrID : P99_0(size_t));
-                ret = orwl_invalid;
-                break;
-              }
+              report(false, "request for augmenting an inclusive lock %p (%jX), failed",
+                     (void*)wq_tail, wq_tail ? wq_tail->svrID : P99_0(size_t));
+              ret = orwl_invalid;
+              break;
             }
           }
         }
@@ -216,17 +209,9 @@ orwl_state orwl_wh_acquire(orwl_wh *wh, uint64_t howmuch) {
 orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
-    orwl_wq *wq = wh->location;
-    orwl_wh* wq_head = atomic_load_orwl_wh_ptr(&wq->head);
-    if (wq) {
-      /* orwl_wq_valid uses atomic operations internaly */
-      if (orwl_wq_valid(wq) && wq_head)
-        ret = (orwl_notifier_verify(&wh->acq)) ? orwl_acquired : orwl_requested;
-      if (ret == orwl_acquired)
-        orwl_wh_unload(wh, howmuch);
-    } else {
-      if (!wh->next) ret = orwl_valid;
-    }
+    orwl_notifier_block(&wh->acq);
+    ret = (orwl_notifier_verify(&wh->acq)) ? orwl_acquired : orwl_requested;
+    orwl_wh_unload(wh, howmuch);
   }
   return ret;
 }
@@ -255,11 +240,11 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
             else report(true, "Inconsistency in queue %p when releasing %p, different tail %p",
                         (void*)wq, (void*)wh, (void*)wq->tail);
           } else {
-            /* Unlock potential acquirers */
-            /* wake up the first one in the queue */
+             /* wake up the next in the queue */
             wq->head = wh_next;
             assert(!orwl_notifier_verify(&wh_next->acq));
-            orwl_notifier_set(&wh_next->acq);
+            /* Unlock potential acquirers */
+           orwl_notifier_set(&wh_next->acq);
           }
           ret = orwl_valid;
         }

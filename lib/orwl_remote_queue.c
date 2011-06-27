@@ -54,40 +54,38 @@ P99_INSTANTIATE(orwl_state, orwl_test, orwl_handle*);
 orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_invalid;
   ORWL_TIMER(total_write_request) {
-  if (rq && rh)
-  MUTUAL_EXCLUDE(rq->mut) {
-    if (!rh->wh) {
-      // insert two wh in the local queue
-      rh->wh = P99_NEW(orwl_wh);
-      orwl_wh* cli_wh = P99_NEW(orwl_wh);
-      state = orwl_wq_request(&rq->local, &cli_wh, 1, &rh->wh, 1);
-      if (state == orwl_requested) {
-        assert(!rh->rq);
-        /* Send the insertion request with the id of cli_wh to the other
-           side. As result retrieve the ID on the other side that is to be
-           released when we release here. */
-        ORWL_TIMER(rpc_write_request)
-        rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, orwl_proc_write_request,
-                             rq->there.index,
-                             (uintptr_t)cli_wh,
-                             port2host(&rq->srv->host.ep.port)
-                             );
-        if (rh->svrID && (rh->svrID != ORWL_SEND_ERROR)) {
-          /* Link us to rq */
-          rh->rq = rq;
+    if (rq && rh && !rh->wh)
+      MUTUAL_EXCLUDE(rq->mut) {
+        // insert two wh in the local queue
+        rh->wh = P99_NEW(orwl_wh);
+        orwl_wh* cli_wh = P99_NEW(orwl_wh);
+        state = orwl_wq_request(&rq->local, &cli_wh, 1, &rh->wh, 1);
+        if (state == orwl_requested) {
+          assert(!rh->rq);
+          /* Send the insertion request with the id of cli_wh to the other
+             side. As result retrieve the ID on the other side that is to be
+             released when we release here. */
+          ORWL_TIMER(rpc_write_request)
+            rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, orwl_proc_write_request,
+                                 rq->there.index,
+                                 (uintptr_t)cli_wh,
+                                 port2host(&rq->srv->host.ep.port)
+                                 );
+          if (rh->svrID && (rh->svrID != ORWL_SEND_ERROR)) {
+            /* Link us to rq */
+            rh->rq = rq;
+          } else {
+            report(1, "bad things happen: unable to get a write insertion request from the other side.");
+            /* something went wrong */
+            state = orwl_invalid;
+          }
         } else {
-          report(1, "bad things happen: unable to get a write insertion request from the other side.");
-          /* something went wrong */
+          /* roll back */
+          orwl_wh_delete(rh->wh); rh->wh = 0;
+          orwl_wh_delete(cli_wh);
           state = orwl_invalid;
         }
-      } else {
-        /* roll back */
-        orwl_wh_delete(rh->wh); rh->wh = 0;
-        orwl_wh_delete(cli_wh);
-        state = orwl_invalid;
       }
-    }
-  }
   }
   return state;
 }
@@ -158,30 +156,26 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
               wh->svrID = rh->svrID;
               report(0, "new handle %p for remote %" PRIx64, (void*)wh, rh->svrID);
               assert(&rq->local == cli_wh->location);
-              // The handle on the remote side might have been acquired
-              // before we even woke up. In that case we may already have
-              // received the information and will have to release and delete
-              // cli_wh.
-              bool last_cli = false;
-              bool last_inc = false;
-              // If we added a token to an existing handle but now we
-              // see that this corresponds to a different priority
-              // (because remotely there was something in between) we
-              // have to unload this again.
-              if (wh_inc) last_inc = !orwl_wh_unload(wh_inc, 1);
               assert(rq->local.tail == cli_wh);
               orwl_wq_request_append(&rq->local, wh, 1);
               // Finally have rh point on wh and mark wh as being
               // inclusive.
               rh->wh = wh;
-              last_cli = !orwl_wh_unload(cli_wh, 1);
-              if (last_inc) {
+              // If we added a token to an existing handle but now we
+              // see that this corresponds to a different priority
+              // (because remotely there was something in between) we
+              // have to unload this again.
+              if (wh_inc && !orwl_wh_unload(wh_inc, 1)) {
                 assert(wh_inc);
-                state = orwl_wh_release(wh_inc);
+                orwl_wh_release(wh_inc);
                 orwl_wh_delete(wh_inc);
               }
-              if (last_cli) {
-                state = orwl_wh_release(cli_wh);
+              // The handle on the remote side might have been acquired
+              // before we even woke up. In that case we may already have
+              // received the information and will have to release and delete
+              // cli_wh.
+              if (!orwl_wh_unload(cli_wh, 1)) {
+                orwl_wh_release(cli_wh);
                 orwl_wh_delete(cli_wh);
               }
               state = orwl_requested;
@@ -212,8 +206,8 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     size_t len = 2;
     /* Detect if we are the last user of this handle */
     bool last = false;
-    pthread_mutex_lock(&rq->mut);
-    MUTUAL_EXCLUDE(wq->mut) {
+    MUTUAL_EXCLUDE(rq->mut)
+      MUTUAL_EXCLUDE(wq->mut) {
       assert(wq == &rq->local);
       assert(wq->head == wh);
       last = !orwl_wh_unload(wh);
@@ -233,14 +227,12 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
       } else {
         orwl_count_inc(&wh->finalists);
         orwl_handle_init(rh);
-        pthread_mutex_unlock(&rq->mut);
       }
     }
     if (last) {
       orwl_count_wait(&wh->finalists);
       state = orwl_wh_release(wh);
       orwl_handle_init(rh);
-      pthread_mutex_unlock(&rq->mut);
       ORWL_TIMER(send_data_release)
         orwl_send(srv, &there, seed, len, mess);
       /* We should be the last to have a reference to this handle so
