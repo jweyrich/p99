@@ -123,7 +123,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
       bool piggyback = false;
       orwl_wh *srv_wh = 0;
       report(0, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
-      state = orwl_wq_request(srv_wq, &srv_wh, 2);
+      MUTUAL_EXCLUDE(srv_wq->mut) {
+      state = orwl_wq_request_locked(srv_wq, &srv_wh, 2);
       if (srv_wh) {
 	if (svrID) {
 	  piggyback = (svrID == (uintptr_t)srv_wh);
@@ -133,7 +134,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 	/* mark it as being inclusive */
 	srv_wh->svrID = (uintptr_t)srv_wh;
 	report(0, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
-	state = orwl_wq_request(srv_wq, &srv_wh, 2);
+	state = orwl_wq_request_locked(srv_wq, &srv_wh, 2);
+      }
       }
       if (state != orwl_requested) {
 	if (!piggyback) orwl_wh_delete(srv_wh);

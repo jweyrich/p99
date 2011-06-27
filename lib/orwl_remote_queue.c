@@ -99,15 +99,16 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
     if (!rh->wh) {
       orwl_wh* cli_wh = P99_NEW(orwl_wh);
       orwl_wh* wh_inc = 0;
+      MUTUAL_EXCLUDE(rq->local.mut) {
       /* first try to piggyback the latest wh in the local list */
-      state = orwl_wq_request(&rq->local, &wh_inc, 1);
+      state = orwl_wq_request_locked(&rq->local, &wh_inc, 1);
       assert(!wh_inc || wh_inc->svrID);
       assert(!wh_inc || (state == orwl_requested));
       /* Otherwise, the dummy handle is loaded with two tokens, one
          for the remote event of acquisition of the lock. The other is
          used here locally to ensure that cli_wh is not freed before
          we have finished our work, here. */
-      state = orwl_wq_request(&rq->local, &cli_wh, 2);
+      state = orwl_wq_request_locked(&rq->local, &cli_wh, 2);
       if (state != orwl_requested)
         report(1, "orwl_wh %p could not be requested, state is %s",
                (void*)cli_wh,
@@ -144,7 +145,6 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
           /* Clean up the queue by removing the dummy handle that we
              inserted. */
           assert(&rq->local == cli_wh->location);
-          MUTUAL_EXCLUDE(rq->local.mut) {
             assert(wh_inc->location == &rq->local);
             assert(wh_inc->next == cli_wh);
             assert(wh_inc->location->tail == cli_wh);
@@ -152,7 +152,6 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
             wh_inc->location->tail = wh_inc;
             cli_wh->location = 0;
             orwl_wh_delete(cli_wh);
-          }
         } else {
           // A new handle has to be inserted in the local queue
           orwl_wh* wh = P99_NEW(orwl_wh);
@@ -165,7 +164,6 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
           // cli_wh.
           bool last_cli = false;
           bool last_inc = false;
-          MUTUAL_EXCLUDE(rq->local.mut) {
             // If we added a token to an existing handle but now we
             // see that this corresponds to a different priority
             // (because remotely there was something in between) we
@@ -181,7 +179,6 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
             MUTUAL_EXCLUDE(cli_wh->mut) {
               last_cli = !orwl_wh_unload(cli_wh, 1);
             }
-          }
           if (last_inc) {
             assert(wh_inc);
             state = orwl_wh_release(wh_inc);
@@ -194,6 +191,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
           state = orwl_requested;
         }
       }
+    }
     }
   }
   }
