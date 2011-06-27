@@ -187,6 +187,7 @@ struct orwl_wh {
    **/
   orwl_count tokens;
   orwl_count finalists;
+  orwl_notifier acq;
   /**
    ** @brief The historical position in the wait queue.
    **/
@@ -297,7 +298,13 @@ int orwl_wq_idle(orwl_wq *wq) {
   /**
    ** @memberof orwl_wh
    **/
-#define ORWL_WH_INITIALIZER { .cond = PTHREAD_COND_INITIALIZER, .mut = PTHREAD_MUTEX_INITIALIZER, .finalists = ORWL_COUNT_INITIALIZER(0) }
+#define ORWL_WH_INITIALIZER {                   \
+  .cond = PTHREAD_COND_INITIALIZER,             \
+  .mut = PTHREAD_MUTEX_INITIALIZER,             \
+  .tokens = ORWL_COUNT_INITIALIZER(0),          \
+  .finalists = ORWL_COUNT_INITIALIZER(0),       \
+  .acq = ORWL_NOTIFIER_INITIALIZER              \
+  }
 
   DOCUMENT_INIT(orwl_wh)
   P99_DEFARG_DOCU(orwl_wh_init)

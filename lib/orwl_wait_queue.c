@@ -66,7 +66,9 @@ orwl_wh* orwl_wh_init(orwl_wh *wh,
                   const pthread_condattr_t *attr) {
   if (!wh) return 0;
   *wh =  (orwl_wh const)ORWL_WH_INITIALIZER;
+  orwl_count_init(&wh->tokens, 0);
   orwl_count_init(&wh->finalists, 0);
+  orwl_notifier_init(&wh->acq);
   pthread_cond_init(&wh->cond, attr);
   pthread_mutex_init(&wh->mut, 0);
   return wh;
@@ -75,6 +77,9 @@ orwl_wh* orwl_wh_init(orwl_wh *wh,
 void orwl_wh_destroy(orwl_wh *wh) {
   assert(!wh->location);
   assert(!wh->next);
+  orwl_count_destroy(&wh->tokens);
+  orwl_count_destroy(&wh->finalists);
+  orwl_notifier_destroy(&wh->acq);
   pthread_cond_destroy(&wh->cond);
   pthread_mutex_destroy(&wh->mut);
   *wh = P99_LVAL(orwl_wh const,
