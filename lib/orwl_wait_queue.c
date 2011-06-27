@@ -97,7 +97,7 @@ P99_INSTANTIATE(uint64_t, orwl_wh_load, orwl_wh *wh, uint64_t howmuch);
 /* This supposes that the corresponding wq != 0 */
 P99_INSTANTIATE(uint64_t, orwl_wh_unload, orwl_wh *wh, uint64_t howmuch);
 
-void orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
+void orwl_wq_request_append(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
   wh->location = wq;
   wh->priority = wq->clock;
   orwl_wh_load(wh, howmuch);
@@ -155,7 +155,7 @@ orwl_state P99_FSYMB(orwl_wq_request)(orwl_wq *wq, P99_VA_ARGS(number)) {
             if (*wh) {
               orwl_wh *whp = *wh;
               MUTUAL_EXCLUDE(whp->mut)
-                orwl_wq_request_locked(wq, whp, howmuch);
+                orwl_wq_request_append(wq, whp, howmuch);
             } else {
               /* if the wh is a null pointer, take this as a request to add to the
                  last handle if it exists */

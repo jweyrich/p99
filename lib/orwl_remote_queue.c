@@ -102,11 +102,16 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
       /* first try to piggyback the latest wh in the local list */
       state = orwl_wq_request(&rq->local, &wh_inc, 1);
       assert(!wh_inc || wh_inc->svrID);
+      assert(!wh_inc || (state == orwl_requested));
       /* Otherwise, the dummy handle is loaded with two tokens, one
          for the remote event of acquisition of the lock. The other is
          used here locally to ensure that cli_wh is not freed before
          we have finished our work, here. */
       state = orwl_wq_request(&rq->local, &cli_wh, 2);
+      if (state != orwl_requested)
+        report(1, "orwl_wh %p could not be requested, state is %s",
+               (void*)cli_wh,
+               orwl_state_getname(state));
       /* Send the insertion request to the other side. This consists
          of sending cli_wh, for the case that this is will be
          considered a new request, and the svrID that was memorized on
@@ -169,7 +174,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
               last_inc = !orwl_wh_unload(wh_inc, 1);
             }
             assert(rq->local.tail == cli_wh);
-            orwl_wq_request_locked(&rq->local, wh, 1);
+            orwl_wq_request_append(&rq->local, wh, 1);
             // Finally have rh point on wh and mark wh as being
             // inclusive.
             rh->wh = wh;

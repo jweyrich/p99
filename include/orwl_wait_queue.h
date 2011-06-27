@@ -379,7 +379,7 @@ VA_TYPES(orwl_wq_request, orwl_wh**, int64_t);
    ** @memberof orwl_wq
    ** @private
    **/
-void orwl_wq_request_locked(orwl_wq *wq,  /*!< the locked queue to act on */
+void orwl_wq_request_append(orwl_wq *wq,  /*!< the locked queue to act on */
                             orwl_wh *wh,  /*!< the handle to be inserted */
                             uint64_t howmuch /*!< the number of tokies to place */
                             );
