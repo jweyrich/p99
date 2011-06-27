@@ -75,8 +75,8 @@ struct orwl_endpoint {
  ** @memberof orwl_endpoint
  **/
 #define ORWL_ENDPOINT_INITIALIZER(NADDR,  NPORT) {             \
-    .addr = ORWL_ADDR_INITIALIZER(NADDR),                         \
-      .port = ORWL_PORT_INITIALIZER(NPORT),                       \
+    .addr = ORWL_ADDR_INITIALIZER(NADDR),                      \
+      .port = ORWL_PORT_INITIALIZER(NPORT),                    \
       }
 
 #ifndef DOXYGEN
@@ -306,7 +306,7 @@ uint64_t orwl_send(orwl_server* srv, orwl_endpoint const* there, rand48_t *seed,
  **   thread->main [label="pthread_exit()"];
  ** @endmsc
  **/
-#define orwl_rpc(SRV, THERE, SEED, F, ...)                                   \
+#define orwl_rpc(SRV, THERE, SEED, F, ...)                                            \
 orwl_send(SRV, THERE, SEED, P99_LENGTH_ARR_ARG(uint64_t, ORWL_OBJID(F), __VA_ARGS__))
 
 #endif 	    /* !ORWL_ENDPOINT_H_ */

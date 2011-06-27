@@ -67,9 +67,9 @@ struct o_rwl_vheader {
  **/
 #define DECLARE_NEW_DELETE(...) DECLARE_NEW_DELETE_(__VA_ARGS__,)
 #else
-#define DECLARE_NEW_DELETE(...)                 \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
-(DECLARE_NEW_DELETE_(__VA_ARGS__, inline))      \
+#define DECLARE_NEW_DELETE(...)                                \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
+(DECLARE_NEW_DELETE_(__VA_ARGS__, inline))                     \
 (DECLARE_NEW_DELETE_(__VA_ARGS__))
 #endif
 

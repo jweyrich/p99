@@ -2,6 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:           */
+/* all rights reserved,  2011 Emmanuel Jeanvoine, INRIA, France              */
 /* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /* all rights reserved,  2011 Matias E. Vara, INRIA, France                  */
 /*                                                                           */

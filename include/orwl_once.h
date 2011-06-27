@@ -69,8 +69,8 @@ extern o_rwl_once_cont P99_PASTE3(o_rwl_, T, _once)
  ** @see DECLARE_ONCE
  ** @see INIT_ONCE
  **/
-#define DEFINE_ONCE(T, ...)                     \
-o_rwl_once_cont o_rwl_ ## T ## _once);          \
+#define DEFINE_ONCE(T, ...)                                    \
+o_rwl_once_cont o_rwl_ ## T ## _once);                         \
 void o_rwl_ ## T ## _once_init(void)
 #else
 #define DEFINE_ONCE(...)                                       \

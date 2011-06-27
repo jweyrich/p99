@@ -1,7 +1,8 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
+/* the authors and copyright holders for this work are as follows:           */
+/* all rights reserved,  2011 Emmanuel Jeanvoine, INRIA, France              */
 /* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
@@ -94,106 +95,104 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
 orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_invalid;
   ORWL_TIMER(total_read_request) {
-  if (rq && rh)
-  MUTUAL_EXCLUDE(rq->mut) {
-    if (!rh->wh) {
-      orwl_wh* cli_wh = P99_NEW(orwl_wh);
-      orwl_wh* wh_inc = 0;
-      MUTUAL_EXCLUDE(rq->local.mut) {
-      /* first try to piggyback the latest wh in the local list */
-      state = orwl_wq_request_locked(&rq->local, &wh_inc, 1);
-      assert(!wh_inc || wh_inc->svrID);
-      assert(!wh_inc || (state == orwl_requested));
-      /* Otherwise, the dummy handle is loaded with two tokens, one
-         for the remote event of acquisition of the lock. The other is
-         used here locally to ensure that cli_wh is not freed before
-         we have finished our work, here. */
-      state = orwl_wq_request_locked(&rq->local, &cli_wh, 2);
-      if (state != orwl_requested)
-        report(1, "orwl_wh %p could not be requested, state is %s",
-               (void*)cli_wh,
-               orwl_state_getname(state));
-      /* Send the insertion request to the other side. This consists
-         of sending cli_wh, for the case that this is will be
-         considered a new request, and the svrID that was memorized on
-         wh_inc, if any. As result retrieve the ID on the other side
-         that is to be released when we release here. */
-      ORWL_TIMER(rpc_read_request)
-      rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, orwl_proc_read_request,
-                           rq->there.index,
-                           (uintptr_t)cli_wh,
-                           wh_inc ? wh_inc->svrID : 0,
-                           port2host(&rq->srv->host.ep.port)
-                           );
-      if (!rh->svrID) {
-        state = orwl_invalid;
-        report(1, "bad things happen: unable to get a read insertion request from the other side.");
-        orwl_wh_acquire(cli_wh, 2);
-        orwl_wh_release(cli_wh);
-        orwl_wh_delete(cli_wh);
-      } else {
-        /* Link us to rq */
-        rh->rq = rq;
-        if (state == orwl_requested
-            && wh_inc
-            && wh_inc->svrID == rh->svrID) {
-          report(0, "piggybacked on srvID %" PRIx64, rh->svrID);
-          /* remote and local queue have still the same last element, a
-             corresponding inclusive pair at the tail of the their
-             list. */
-          rh->wh = wh_inc;
-          /* Clean up the queue by removing the dummy handle that we
-             inserted. */
-          assert(&rq->local == cli_wh->location);
-            assert(wh_inc->location == &rq->local);
-            assert(wh_inc->next == cli_wh);
-            assert(wh_inc->location->tail == cli_wh);
-            wh_inc->next = 0;
-            wh_inc->location->tail = wh_inc;
-            cli_wh->location = 0;
+    if (rq && rh && !rh->wh)
+      MUTUAL_EXCLUDE(rq->mut) {
+        orwl_wh* cli_wh = P99_NEW(orwl_wh);
+        orwl_wh* wh_inc = 0;
+        MUTUAL_EXCLUDE(rq->local.mut) {
+          /* first try to piggyback the latest wh in the local list */
+          state = orwl_wq_request_locked(&rq->local, &wh_inc, 1);
+          assert(!wh_inc || wh_inc->svrID);
+          assert(!wh_inc || (state == orwl_requested));
+          /* Otherwise, the dummy handle is loaded with two tokens, one
+             for the remote event of acquisition of the lock. The other is
+             used here locally to ensure that cli_wh is not freed before
+             we have finished our work, here. */
+          state = orwl_wq_request_locked(&rq->local, &cli_wh, 2);
+          if (state != orwl_requested)
+            report(1, "orwl_wh %p could not be requested, state is %s",
+                   (void*)cli_wh,
+                   orwl_state_getname(state));
+          /* Send the insertion request to the other side. This consists
+             of sending cli_wh, for the case that this is will be
+             considered a new request, and the svrID that was memorized on
+             wh_inc, if any. As result retrieve the ID on the other side
+             that is to be released when we release here. */
+          ORWL_TIMER(rpc_read_request)
+            rh->svrID = orwl_rpc(rq->srv, &rq->there, seed, orwl_proc_read_request,
+                                 rq->there.index,
+                                 (uintptr_t)cli_wh,
+                                 wh_inc ? wh_inc->svrID : 0,
+                                 port2host(&rq->srv->host.ep.port)
+                                 );
+          if (!rh->svrID) {
+            state = orwl_invalid;
+            report(1, "bad things happen: unable to get a read insertion request from the other side.");
+            orwl_wh_acquire(cli_wh, 2);
+            orwl_wh_release(cli_wh);
             orwl_wh_delete(cli_wh);
-        } else {
-          // A new handle has to be inserted in the local queue
-          orwl_wh* wh = P99_NEW(orwl_wh);
-          wh->svrID = rh->svrID;
-          report(0, "new handle %p for remote %" PRIx64, (void*)wh, rh->svrID);
-          assert(&rq->local == cli_wh->location);
-          // The handle on the remote side might have been acquired
-          // before we even woke up. In that case we may already have
-          // received the information and will have to release and delete
-          // cli_wh.
-          bool last_cli = false;
-          bool last_inc = false;
-            // If we added a token to an existing handle but now we
-            // see that this corresponds to a different priority
-            // (because remotely there was something in between) we
-            // have to unload this again.
-            if (wh_inc) MUTUAL_EXCLUDE(wh_inc->mut) {
-              last_inc = !orwl_wh_unload(wh_inc, 1);
+          } else {
+            /* Link us to rq */
+            rh->rq = rq;
+            if (state == orwl_requested
+                && wh_inc
+                && wh_inc->svrID == rh->svrID) {
+              report(0, "piggybacked on srvID %" PRIx64, rh->svrID);
+              /* remote and local queue have still the same last element, a
+                 corresponding inclusive pair at the tail of the their
+                 list. */
+              rh->wh = wh_inc;
+              /* Clean up the queue by removing the dummy handle that we
+                 inserted. */
+              assert(&rq->local == cli_wh->location);
+              assert(wh_inc->location == &rq->local);
+              assert(wh_inc->next == cli_wh);
+              assert(wh_inc->location->tail == cli_wh);
+              wh_inc->next = 0;
+              wh_inc->location->tail = wh_inc;
+              cli_wh->location = 0;
+              orwl_wh_delete(cli_wh);
+            } else {
+              // A new handle has to be inserted in the local queue
+              orwl_wh* wh = P99_NEW(orwl_wh);
+              wh->svrID = rh->svrID;
+              report(0, "new handle %p for remote %" PRIx64, (void*)wh, rh->svrID);
+              assert(&rq->local == cli_wh->location);
+              // The handle on the remote side might have been acquired
+              // before we even woke up. In that case we may already have
+              // received the information and will have to release and delete
+              // cli_wh.
+              bool last_cli = false;
+              bool last_inc = false;
+              // If we added a token to an existing handle but now we
+              // see that this corresponds to a different priority
+              // (because remotely there was something in between) we
+              // have to unload this again.
+              if (wh_inc) MUTUAL_EXCLUDE(wh_inc->mut) {
+                  last_inc = !orwl_wh_unload(wh_inc, 1);
+                }
+              assert(rq->local.tail == cli_wh);
+              orwl_wq_request_append(&rq->local, wh, 1);
+              // Finally have rh point on wh and mark wh as being
+              // inclusive.
+              rh->wh = wh;
+              MUTUAL_EXCLUDE(cli_wh->mut) {
+                last_cli = !orwl_wh_unload(cli_wh, 1);
+              }
+              if (last_inc) {
+                assert(wh_inc);
+                state = orwl_wh_release(wh_inc);
+                orwl_wh_delete(wh_inc);
+              }
+              if (last_cli) {
+                state = orwl_wh_release(cli_wh);
+                orwl_wh_delete(cli_wh);
+              }
+              state = orwl_requested;
             }
-            assert(rq->local.tail == cli_wh);
-            orwl_wq_request_append(&rq->local, wh, 1);
-            // Finally have rh point on wh and mark wh as being
-            // inclusive.
-            rh->wh = wh;
-            MUTUAL_EXCLUDE(cli_wh->mut) {
-              last_cli = !orwl_wh_unload(cli_wh, 1);
-            }
-          if (last_inc) {
-            assert(wh_inc);
-            state = orwl_wh_release(wh_inc);
-            orwl_wh_delete(wh_inc);
           }
-          if (last_cli) {
-            state = orwl_wh_release(cli_wh);
-            orwl_wh_delete(cli_wh);
-          }
-          state = orwl_requested;
         }
       }
-    }
-    }
-  }
   }
   return state;
 }
@@ -201,61 +200,61 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
 orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_valid;
   ORWL_TIMER(total_release) {
-  assert(rh);
-  assert(rh->wh);
-  /* To be able to re-initialize rh in the middle of the procedure,
-     store all necessary data on the stack.*/
-  orwl_wh* const wh = rh->wh;
-  orwl_mirror*const rq = rh->rq;
-  uint64_t const svrID = rh->svrID;
-  orwl_server *srv = rq->srv;
-  orwl_endpoint const there = rq->there;
-  orwl_wq*const wq = wh->location;
-  /* If we are the last that holds this handle we have to prepare the
-     buffer for the return message while we hold the inner lock. */
-  uint64_t* mess = 0;
-  size_t len = 2;
-  /* Detect if we are the last user of this handle */
-  bool last = false;
-  pthread_mutex_lock(&rq->mut);
-  MUTUAL_EXCLUDE(wq->mut)
-  MUTUAL_EXCLUDE(wh->mut) {
-    assert(wq == &rq->local);
-    assert(wq->head == wh);
-    last = !orwl_wh_unload(wh);
-    if (last) {
-      bool inclusive = wh->svrID;
-      size_t extend = (inclusive ? 0 : wq->data_len);
-      report(false, "adding extend of length %zu?", extend);
-      len += extend;
-      mess = uint64_t_vnew(len);
-      mess[0] = ORWL_OBJID(orwl_proc_release);
-      mess[1] = svrID;
-      if (extend) {
-        report(false, "adding suplement of length %zu", extend);
-        ORWL_TIMER(copy_data_release)
-        memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
+    assert(rh);
+    assert(rh->wh);
+    /* To be able to re-initialize rh in the middle of the procedure,
+       store all necessary data on the stack.*/
+    orwl_wh* const wh = rh->wh;
+    orwl_mirror*const rq = rh->rq;
+    uint64_t const svrID = rh->svrID;
+    orwl_server *srv = rq->srv;
+    orwl_endpoint const there = rq->there;
+    orwl_wq*const wq = wh->location;
+    /* If we are the last that holds this handle we have to prepare the
+       buffer for the return message while we hold the inner lock. */
+    uint64_t* mess = 0;
+    size_t len = 2;
+    /* Detect if we are the last user of this handle */
+    bool last = false;
+    pthread_mutex_lock(&rq->mut);
+    MUTUAL_EXCLUDE(wq->mut)
+      MUTUAL_EXCLUDE(wh->mut) {
+      assert(wq == &rq->local);
+      assert(wq->head == wh);
+      last = !orwl_wh_unload(wh);
+      if (last) {
+        bool inclusive = wh->svrID;
+        size_t extend = (inclusive ? 0 : wq->data_len);
+        report(false, "adding extend of length %zu?", extend);
+        len += extend;
+        mess = uint64_t_vnew(len);
+        mess[0] = ORWL_OBJID(orwl_proc_release);
+        mess[1] = svrID;
+        if (extend) {
+          report(false, "adding suplement of length %zu", extend);
+          ORWL_TIMER(copy_data_release)
+            memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
+        }
+      } else {
+        orwl_count_inc(&wh->finalists);
+        orwl_handle_init(rh);
+        pthread_mutex_unlock(&rq->mut);
       }
-    } else {
-      orwl_count_inc(&wh->finalists);
+    }
+    if (last) {
+      orwl_count_wait(&wh->finalists);
+      state = orwl_wh_release(wh);
       orwl_handle_init(rh);
       pthread_mutex_unlock(&rq->mut);
+      ORWL_TIMER(send_data_release)
+        orwl_send(srv, &there, seed, len, mess);
+      /* We should be the last to have a reference to this handle so
+         we may destroy it. */
+      orwl_wh_delete(wh);
+      uint64_t_vdelete(mess);
+    } else {
+      orwl_count_dec(&wh->finalists);
     }
-  }
-  if (last) {
-    orwl_count_wait(&wh->finalists);
-    state = orwl_wh_release(wh);
-    orwl_handle_init(rh);
-    pthread_mutex_unlock(&rq->mut);
-    ORWL_TIMER(send_data_release)
-    orwl_send(srv, &there, seed, len, mess);
-    /* We should be the last to have a reference to this handle so
-       we may destroy it. */
-    orwl_wh_delete(wh);
-    uint64_t_vdelete(mess);
-  } else {
-    orwl_count_dec(&wh->finalists);
-  }
   }
   return state;
 }

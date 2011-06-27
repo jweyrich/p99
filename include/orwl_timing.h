@@ -1,3 +1,17 @@
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the authors and copyright holders for this work are as follows:           */
+/* all rights reserved,  2011 Emmanuel Jeanvoine, INRIA, France              */
+/* all rights reserved,  2011 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #ifndef   	ORWL_TIMING_H_
 #define   	ORWL_TIMING_H_
 
@@ -66,20 +80,20 @@ enum { orwl_timing_var = 0, orwl_timing_fetched = 0 };
 
 
 #ifdef GETTIMING
-# define ORWL_TIMING(NAME)                                              \
-P00_BLK_START                                                           \
-P00_BLK_DECL(register orwl_timing*const, _timing,                       \
-             (orwl_timing_fetched ? orwl_timing_var : orwl_timing_info())) \
-  P00_BLK_DECL(register orwl_timing*const, orwl_timing_var, _timing)    \
-  P00_BLK_DECL(register bool const, orwl_timing_fetched, true)          \
-  P00_BLK_DECL(struct timespec, p00_end)                                \
-  P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())              \
-  P00_BLK_DECL(atomic_float, p00_sec)                                         \
-  P00_BLK_AFTER(atomic_fetch_add(&(orwl_timing_var->NAME.nb), 1),       \
+# define ORWL_TIMING(NAME)                                                                        \
+P00_BLK_START                                                                                     \
+P00_BLK_DECL(register orwl_timing*const, _timing,                                                 \
+             (orwl_timing_fetched ? orwl_timing_var : orwl_timing_info()))                        \
+  P00_BLK_DECL(register orwl_timing*const, orwl_timing_var, _timing)                              \
+  P00_BLK_DECL(register bool const, orwl_timing_fetched, true)                                    \
+  P00_BLK_DECL(struct timespec, p00_end)                                                          \
+  P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())                                        \
+  P00_BLK_DECL(atomic_float, p00_sec)                                                             \
+  P00_BLK_AFTER(atomic_fetch_add(&(orwl_timing_var->NAME.nb), 1),                                 \
                 atomic_fetch_atomic_float_add(&(orwl_timing_var->NAME.time2), p00_sec * p00_sec), \
-                atomic_fetch_atomic_float_add(&(orwl_timing_var->NAME.time), p00_sec)) \
-  P00_BLK_AFTER(p00_sec = timespec2seconds(timespec_diff(p00_start, p00_end))) \
-  P00_BLK_AFTER(p00_end = orwl_gettime())                               \
+                atomic_fetch_atomic_float_add(&(orwl_timing_var->NAME.time), p00_sec))            \
+  P00_BLK_AFTER(p00_sec = timespec2seconds(timespec_diff(p00_start, p00_end)))                    \
+  P00_BLK_AFTER(p00_end = orwl_gettime())                                                         \
   P00_BLK_END
 #else
 # define ORWL_TIMING(NAME)
@@ -114,31 +128,31 @@ P00_BLK_DECL(register orwl_timing*const, _timing,                       \
  **/
 
 #ifdef GETTIMING
-# define ORWL_TIMER(NAME)                                               \
-P00_BLK_START                                                           \
-P00_BLK_BEFORE(register orwl_timing_element* elem = 0)                  \
-P99_PREFER(                                                             \
-           static orwl_timing_element p00_static_elem                   \
-           = ORWL_TIMING_ELEMENT_INITIALIZER(NAME);                     \
-           if (P99_UNLIKELY(p00_static_elem.nb == -1)) {                \
-             ORWL_CRITICAL {                                            \
-               if (P99_UNLIKELY(p00_static_elem.nb == -1)) {            \
-                 orwl_timing_element_insert(&p00_static_elem);          \
-                 p00_static_elem.nb = 0;                                \
-               }                                                        \
-             }                                                          \
-           }                                                            \
-           elem = &p00_static_elem;                                     \
-           goto P99_LINEID(p00_label_, NAME);                           \
-           ) P99_LINEID(p00_label_, NAME):                              \
-            P00_BLK_DECL(struct timespec, p00_end)                      \
-            P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())    \
-            P00_BLK_DECL(atomic_float, p00_sec)                               \
-            P00_BLK_AFTER(atomic_fetch_add(&(elem->nb), 1),             \
+# define ORWL_TIMER(NAME)                                                                   \
+P00_BLK_START                                                                               \
+P00_BLK_BEFORE(register orwl_timing_element* elem = 0)                                      \
+P99_PREFER(                                                                                 \
+           static orwl_timing_element p00_static_elem                                       \
+           = ORWL_TIMING_ELEMENT_INITIALIZER(NAME);                                         \
+           if (P99_UNLIKELY(p00_static_elem.nb == -1)) {                                    \
+             ORWL_CRITICAL {                                                                \
+               if (P99_UNLIKELY(p00_static_elem.nb == -1)) {                                \
+                 orwl_timing_element_insert(&p00_static_elem);                              \
+                 p00_static_elem.nb = 0;                                                    \
+               }                                                                            \
+             }                                                                              \
+           }                                                                                \
+           elem = &p00_static_elem;                                                         \
+           goto P99_LINEID(p00_label_, NAME);                                               \
+           ) P99_LINEID(p00_label_, NAME):                                                  \
+            P00_BLK_DECL(struct timespec, p00_end)                                          \
+            P00_BLK_DECL(struct timespec, p00_start, orwl_gettime())                        \
+            P00_BLK_DECL(atomic_float, p00_sec)                                             \
+            P00_BLK_AFTER(atomic_fetch_add(&(elem->nb), 1),                                 \
                           atomic_fetch_atomic_float_add(&(elem->time2), p00_sec * p00_sec), \
-                          atomic_fetch_atomic_float_add(&(elem->time), p00_sec)) \
-            P00_BLK_AFTER(p00_sec = timespec2seconds(timespec_diff(p00_start, p00_end))) \
-            P00_BLK_AFTER(p00_end = orwl_gettime())                     \
+                          atomic_fetch_atomic_float_add(&(elem->time), p00_sec))            \
+            P00_BLK_AFTER(p00_sec = timespec2seconds(timespec_diff(p00_start, p00_end)))    \
+            P00_BLK_AFTER(p00_end = orwl_gettime())                                         \
             P00_BLK_END
 #else
 # define ORWL_TIMER(NAME)

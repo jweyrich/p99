@@ -427,7 +427,7 @@ P99_INSTANTIATE(T*, P99_PASTE2(T, _join), pthread_t);                  \
 P99_INSTANTIATE(int, P99_PASTE2(T, _create), T*, pthread_t*);          \
 P99_INSTANTIATE(int, P99_PASTE2(T, _create_joinable), T*, pthread_t*); \
 P99_INSTANTIATE(int, P99_PASTE2(T, _create_detached), T*);             \
-P99_INSTANTIATE(int, P99_PASTE2(T, _launch), T*, orwl_thread_cntrl*); \
+P99_INSTANTIATE(int, P99_PASTE2(T, _launch), T*, orwl_thread_cntrl*);  \
 P99_INSTANTIATE(void*, P99_PASTE2(T, _start_joinable), void*);         \
 P99_INSTANTIATE(void*, P99_PASTE2(T, _start_detached), void*);         \
 void P99_PASTE2(T, _start)(T *const Arg)
