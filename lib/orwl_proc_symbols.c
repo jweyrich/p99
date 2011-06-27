@@ -179,17 +179,15 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID) {
       last = !orwl_wh_unload(wh);
       if (!last) orwl_count_inc(&wh->finalists);
       size_t len = Arg->len;
-      if (len) {
+      if (len) ORWL_TIMER(copy_data_release_server) {
 	report(false, "found suplementary message of length %zu", len);
 	Arg->len = 0;
 	size_t data_len;
 	uint64_t* data = orwl_wq_map_locked(wq, &data_len);
-	ORWL_TIMER(copy_data_release_server) {
 	  if (data_len != len) {
 	    orwl_wq_resize_locked(wq, len);
 	    data = orwl_wq_map_locked(wq, &data_len);
 	  }
-	}
 	memcpy(data, Arg->mes, len * sizeof(uint64_t));
 	report(false, "copied suplementary message of length %zu", len);
       }
