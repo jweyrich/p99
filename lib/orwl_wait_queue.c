@@ -114,15 +114,38 @@ void orwl_wq_request_append(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
   ++wq->clock;
 }
 
+static
+orwl_state orwl_wq_request_internal(orwl_wq *wq, size_t number, va_list ap);
+
 orwl_state P99_FSYMB(orwl_wq_request)(orwl_wq *wq, P99_VA_ARGS(number)) {
   orwl_state ret = orwl_invalid;
   if (wq)
-    MUTUAL_EXCLUDE(wq->mut)
+    MUTUAL_EXCLUDE(wq->mut) {
+      va_list ap;
+      va_start(ap, number);
+      ret = orwl_wq_request_internal(wq, number, ap);
+      va_end(ap);
+    }
+  return ret;
+}
+
+orwl_state P99_FSYMB(orwl_wq_request_locked)(orwl_wq *wq, P99_VA_ARGS(number)) {
+  orwl_state ret = orwl_invalid;
+  va_list ap;
+  va_start(ap, number);
+  ret = orwl_wq_request_internal(wq, number, ap);
+  va_end(ap);
+  return ret;
+}
+
+static
+orwl_state orwl_wq_request_internal(orwl_wq *wq, size_t number, va_list ap0) {
+  orwl_state ret = orwl_invalid;
       if (orwl_wq_valid(wq)) {
         /* Check (and wait eventually) that all wh are idle */
         for (bool idle = false; !idle; ) {
           va_list ap;
-          va_start(ap, number);
+          va_copy(ap, ap0);
           idle = true;
           for (size_t i = 0; i < number; ++i) {
             orwl_wh **wh = VA_MODARG(ap, orwl_wq_request, 0);
@@ -146,7 +169,7 @@ orwl_state P99_FSYMB(orwl_wq_request)(orwl_wq *wq, P99_VA_ARGS(number)) {
         ret = orwl_requested;
         /* Now insert them */
         va_list ap;
-        va_start(ap, number);
+        va_copy(ap, ap0);
         for (size_t i = 0; i < number; ++i) {
           orwl_wh **wh = VA_MODARG(ap, orwl_wq_request, 0);
           int64_t hm = VA_MODARG(ap, orwl_wq_request, 1);

@@ -367,9 +367,19 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_wh);
                                     P99_VA_ARGS(number)
                                     );
 
+/**
+ ** @private
+ ** @memberof orwl_wq
+ **/
+P99_VA_ARGS_DOCUMENTATION(orwl_wq_request_locked)
+orwl_state P99_FSYMB(orwl_wq_request_locked)(orwl_wq *wq, /*!< the queue to act on */
+                                    P99_VA_ARGS(number)
+                                    );
 #ifndef DOXYGEN
 #define orwl_wq_request(WQ, ...) P99_FSYMB(orwl_wq_request)(WQ, LEN_MODARG(orwl_wq_request, 2, __VA_ARGS__))
 VA_TYPES(orwl_wq_request, orwl_wh**, int64_t);
+#define orwl_wq_request_locked(WQ, ...) P99_FSYMB(orwl_wq_request_locked)(WQ, LEN_MODARG(orwl_wq_request_locked, 2, __VA_ARGS__))
+VA_TYPES(orwl_wq_request_locked, orwl_wh**, int64_t);
 #endif
 
   /**
