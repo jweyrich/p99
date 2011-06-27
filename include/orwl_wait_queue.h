@@ -171,10 +171,6 @@ struct orwl_wh {
    ** @{
    **/
 
-  /** Mutex used to control the access to the wh, it is used for acquires. */
-  pthread_mutex_t mut;
-  /** A wh will wait on that condition for requests and acquires. */
-  pthread_cond_t cond;
   /** The location to which this wh links. */
   orwl_wq *location;
   /** The next wh in the priority queue. */
@@ -186,7 +182,15 @@ struct orwl_wh {
    ** this has dropped to zero.
    **/
   orwl_count tokens;
+  /** @brief Needed at the end of a release to ensure that all threads
+   ** have safely terminated their work on this orwl_wh.
+   **/
   orwl_count finalists;
+  /** @brief This is set iff the orwl_wh is acquired.
+   **
+   ** This allows to check for this condition atomically. Acquire can
+   ** then be guaranteed by just blocking on this field. 
+   **/
   orwl_notifier acq;
   /**
    ** @brief The historical position in the wait queue.
@@ -299,8 +303,6 @@ int orwl_wq_idle(orwl_wq *wq) {
    ** @memberof orwl_wh
    **/
 #define ORWL_WH_INITIALIZER {                   \
-  .cond = PTHREAD_COND_INITIALIZER,             \
-  .mut = PTHREAD_MUTEX_INITIALIZER,             \
   .tokens = ORWL_COUNT_INITIALIZER(0),          \
   .finalists = ORWL_COUNT_INITIALIZER(0),       \
   .acq = ORWL_NOTIFIER_INITIALIZER              \

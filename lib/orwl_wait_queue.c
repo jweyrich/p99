@@ -69,8 +69,6 @@ orwl_wh* orwl_wh_init(orwl_wh *wh,
   orwl_count_init(&wh->tokens, 0);
   orwl_count_init(&wh->finalists, 0);
   orwl_notifier_init(&wh->acq);
-  pthread_cond_init(&wh->cond, attr);
-  pthread_mutex_init(&wh->mut, 0);
   return wh;
 }
 
@@ -80,8 +78,6 @@ void orwl_wh_destroy(orwl_wh *wh) {
   orwl_count_destroy(&wh->tokens);
   orwl_count_destroy(&wh->finalists);
   orwl_notifier_destroy(&wh->acq);
-  pthread_cond_destroy(&wh->cond);
-  pthread_mutex_destroy(&wh->mut);
   *wh = P99_LVAL(orwl_wh const,
                  .location = TGARB(orwl_wq*),
                  .next = TGARB(orwl_wh*),
@@ -110,12 +106,12 @@ void orwl_wq_request_append(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
   if (orwl_wq_idle(wq)) {
     wq->head = wh;
     wq->tail = wh;
+    assert(!orwl_notifier_verify(&wh->acq));
+    orwl_notifier_set(&wh->acq);
   } else {
     orwl_wh *wq_tail = wq->tail;
-    MUTUAL_EXCLUDE(wq_tail->mut) {
-      wq_tail->next = wh;
-      wq->tail = wh;
-    }
+    wq_tail->next = wh;
+    wq->tail = wh;
   }
   ++wq->clock;
 }
@@ -156,18 +152,10 @@ orwl_state orwl_wq_request_internal(orwl_wq *wq, size_t number, va_list ap0) {
           for (size_t i = 0; i < number; ++i) {
             orwl_wh **wh = VA_MODARG(ap, orwl_wq_request, 0);
             (void)VA_MODARG(ap, orwl_wq_request, 1);
-            if (*wh) {
-              orwl_wh *whp = *wh;
-              MUTUAL_EXCLUDE(whp->mut) {
-                if (!orwl_wh_idle(whp)) {
-                  idle = false;
-                }
-              }
-              if (!idle) {
-                report(true, "wait handle seems to be busy: %p", (void*)*wh);
-                pthread_cond_wait(&wq->cond, &wq->mut);
-                break;
-              }
+            if (*wh && !orwl_wh_idle(*wh)) {
+              idle = false;
+              report(true, "wait handle seems to be busy: %p", (void*)*wh);
+              break;
             }
           }
           va_end(ap);
@@ -182,9 +170,7 @@ orwl_state orwl_wq_request_internal(orwl_wq *wq, size_t number, va_list ap0) {
           uint64_t howmuch = (hm > P99_0(int64_t)) ? hm : -hm;
           if (wh) {
             if (*wh) {
-              orwl_wh *whp = *wh;
-              MUTUAL_EXCLUDE(whp->mut)
-                orwl_wq_request_append(wq, whp, howmuch);
+              orwl_wq_request_append(wq, *wh, howmuch);
             } else {
               /* if the wh is a null pointer, take this as a request to add to the
                  last handle if it exists */
@@ -193,17 +179,15 @@ orwl_state orwl_wq_request_internal(orwl_wq *wq, size_t number, va_list ap0) {
               if (number == 1
                   && !orwl_wq_idle(wq)
                   && wq_tail) {
-                MUTUAL_EXCLUDE(wq_tail->mut) {
-                  if (wq_tail->svrID) {
-                    report(false, "request for augmenting an inclusive lock %p, succes", (void*)wq_tail);
-                    assert(hm >= P99_0(int64_t));
-                    orwl_wh_load(wq_tail, howmuch);
-                    *wh = wq_tail;
-                  } else {
-                    report(false, "request for augmenting an inclusive lock %p (%jX), failed",
-                           (void*)wq_tail, wq_tail ? wq_tail->svrID : P99_0(size_t));
-                    ret = orwl_invalid;
-                  }
+                if (wq_tail->svrID) {
+                  report(false, "request for augmenting an inclusive lock %p, succes", (void*)wq_tail);
+                  assert(hm >= P99_0(int64_t));
+                  orwl_wh_load(wq_tail, howmuch);
+                  *wh = wq_tail;
+                } else {
+                  report(false, "request for augmenting an inclusive lock %p (%jX), failed",
+                         (void*)wq_tail, wq_tail ? wq_tail->svrID : P99_0(size_t));
+                  ret = orwl_invalid;
                 }
               } else {
                 report(false, "request for augmenting an inclusive lock %p (%jX), failed",
@@ -219,47 +203,12 @@ orwl_state orwl_wq_request_internal(orwl_wq *wq, size_t number, va_list ap0) {
   return ret;
 }
 
-orwl_state orwl_wh_acquire_locked(orwl_wh *wh, orwl_wq *wq) {
-  orwl_state ret = orwl_invalid;
-  orwl_wh* wq_head = atomic_load_orwl_wh_ptr(&wq->head);
-  if (wq_head) {
-    /* We are on the fast path */
-    if (wq_head == wh) ret = orwl_acquired;
-    /* We are on the slow path */
-    else while(true) {
-        orwl_wh_load(wh);
-        /* We wait on the local orwl_wh mutex */
-        ORWL_TIMER(wait_on_cond_acquire)
-        pthread_cond_wait(&wh->cond, &wh->mut);
-        orwl_wh_unload(wh);
-        if  (wq != wh->location) break;
-        /* Check everything again, somebody might have destroyed
-           our wq */
-        if (orwl_wq_valid(wq)) {
-          if (atomic_load_orwl_wh_ptr(&wq->head) == wh) {
-            ret = orwl_acquired;
-            pthread_cond_broadcast(&wh->cond);
-            break;
-          }
-        }
-      }
-  }
-  return ret;
-}
-
 orwl_state orwl_wh_acquire(orwl_wh *wh, uint64_t howmuch) {
   orwl_state ret = orwl_invalid;
-  /* using the mutex in orwl_wh */
-  MUTUAL_EXCLUDE(wh->mut) {
-    if (orwl_wh_valid(wh)) {
-      orwl_wq *wq = wh->location;
-      /* orwl_wq_valid uses atomic operations internally */
-      if (wq && orwl_wq_valid(wq)) {
-        ret = orwl_wh_acquire_locked(wh, wq);
-        if (ret == orwl_acquired)
-          orwl_wh_unload(wh, howmuch);
-      }
-    }
+  if (orwl_wh_valid(wh)) {
+    orwl_notifier_block(&wh->acq);
+    ret = orwl_acquired;
+    orwl_wh_unload(wh, howmuch);
   }
   return ret;
 }
@@ -269,13 +218,13 @@ orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
     orwl_wh* wq_head = atomic_load_orwl_wh_ptr(&wq->head);
-    if (wq) MUTUAL_EXCLUDE(wh->mut) {
-        /* orwl_wq_valid uses atomic operations internaly */
-        if (orwl_wq_valid(wq) && wq_head)
-        ret = (wq_head == wh) ? orwl_acquired : orwl_requested;
-        if (ret == orwl_acquired)
-          orwl_wh_unload(wh, howmuch);
-      } else {
+    if (wq) {
+      /* orwl_wq_valid uses atomic operations internaly */
+      if (orwl_wq_valid(wq) && wq_head)
+        ret = (orwl_notifier_verify(&wh->acq)) ? orwl_acquired : orwl_requested;
+      if (ret == orwl_acquired)
+        orwl_wh_unload(wh, howmuch);
+    } else {
       if (!wh->next) ret = orwl_valid;
     }
   }
@@ -296,26 +245,21 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
         break;
       case orwl_acquired:
         orwl_count_wait(&wh->tokens);
-        MUTUAL_EXCLUDE(wq->mut)
-          MUTUAL_EXCLUDE(wh->mut) {
+        MUTUAL_EXCLUDE(wq->mut) {
           orwl_wh  *wh_next = wh->next;
           wh->location = 0;
           wh->next = 0;
-          if (wh_next) pthread_mutex_lock(&wh_next->mut);
-          else {
+          if (!wh_next) {
+            wq->head = 0;
             if (wq->tail == wh) wq->tail = 0;
             else report(true, "Inconsistency in queue %p when releasing %p, different tail %p",
                         (void*)wq, (void*)wh, (void*)wq->tail);
-          }
-          wq->head = wh_next;
-          /* Unlock potential requesters */
-          pthread_cond_broadcast(&wq->cond);
-          pthread_cond_broadcast(&wh->cond);
-          /* Unlock potential acquirers */
-          /* wake up the first one in the queue */
-          if (wh_next) {
-            pthread_cond_broadcast(&wh_next->cond);
-            pthread_mutex_unlock(&wh_next->mut);
+          } else {
+            /* Unlock potential acquirers */
+            /* wake up the first one in the queue */
+            wq->head = wh_next;
+            assert(!orwl_notifier_verify(&wh_next->acq));
+            orwl_notifier_set(&wh_next->acq);
           }
           ret = orwl_valid;
         }
@@ -333,12 +277,10 @@ uint64_t* orwl_wq_map_locked(orwl_wq* wq, size_t* data_len) {
 uint64_t* orwl_wh_map(orwl_wh* wh, size_t* data_len) {
   uint64_t* ret = 0;
   if (orwl_wh_acquire(wh, 0) == orwl_acquired) {
-    MUTUAL_EXCLUDE(wh->mut) {
-      orwl_wq *wq = wh->location;
-      assert(wq);
-      MUTUAL_EXCLUDE(wq->mut)
-        ret = orwl_wq_map_locked(wq, data_len);
-    }
+    orwl_wq *wq = wh->location;
+    assert(wq);
+    MUTUAL_EXCLUDE(wq->mut)
+      ret = orwl_wq_map_locked(wq, data_len);
   } else {
     if (data_len) *data_len = 0;
   }
@@ -370,12 +312,10 @@ void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
 
 void orwl_wh_resize(orwl_wh* wh, size_t len) {
   if (orwl_wh_acquire(wh, 0) == orwl_acquired) {
-    MUTUAL_EXCLUDE(wh->mut) {
-      orwl_wq *wq = wh->location;
-      assert(wq);
-      MUTUAL_EXCLUDE(wq->mut)
-        orwl_wq_resize_locked(wq, len);
-    }
+    orwl_wq *wq = wh->location;
+    assert(wq);
+    MUTUAL_EXCLUDE(wq->mut)
+      orwl_wq_resize_locked(wq, len);
   }
 }
 

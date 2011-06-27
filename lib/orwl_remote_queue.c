@@ -168,17 +168,13 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
               // see that this corresponds to a different priority
               // (because remotely there was something in between) we
               // have to unload this again.
-              if (wh_inc) MUTUAL_EXCLUDE(wh_inc->mut) {
-                  last_inc = !orwl_wh_unload(wh_inc, 1);
-                }
+              if (wh_inc) last_inc = !orwl_wh_unload(wh_inc, 1);
               assert(rq->local.tail == cli_wh);
               orwl_wq_request_append(&rq->local, wh, 1);
               // Finally have rh point on wh and mark wh as being
               // inclusive.
               rh->wh = wh;
-              MUTUAL_EXCLUDE(cli_wh->mut) {
-                last_cli = !orwl_wh_unload(cli_wh, 1);
-              }
+              last_cli = !orwl_wh_unload(cli_wh, 1);
               if (last_inc) {
                 assert(wh_inc);
                 state = orwl_wh_release(wh_inc);
@@ -217,8 +213,7 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     /* Detect if we are the last user of this handle */
     bool last = false;
     pthread_mutex_lock(&rq->mut);
-    MUTUAL_EXCLUDE(wq->mut)
-      MUTUAL_EXCLUDE(wh->mut) {
+    MUTUAL_EXCLUDE(wq->mut) {
       assert(wq == &rq->local);
       assert(wq->head == wh);
       last = !orwl_wh_unload(wh);
