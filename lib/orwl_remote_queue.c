@@ -176,33 +176,22 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
 void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
                orwl_wq *wq, uint64_t whID,
                bool withdata) {
-  uint64_t* mess = 0;
-  size_t len = 2;
   /* Send a request to the other side to remove the remote wh ID
      and to transfer the data, if any. */
   assert(wq);
   MUTUAL_EXCLUDE(wq->mut) {
     size_t extend = 0;
-    uint64_t* data = 0;
-    if (withdata) {
-      data = orwl_wq_map_locked(wq, &extend);
-      if (extend) {
-        extend -= orwl_push_header;
-        data += orwl_push_header;
-      }
-    }
-    len += extend;
-    mess = uint64_t_vnew(len);
+    uint64_t* mess
+      = withdata
+      ? orwl_wq_map_locked(wq, &extend)
+      : 0;
+    if (!mess) mess = P99_LVAL(uint64_t[orwl_push_header]);
     mess[0] = ORWL_OBJID(orwl_proc_release);
     mess[1] = whID;
-    if (extend) {
-      ORWL_TIMER(copy_data_push_server)
-        memcpy(&mess[2], data, extend * sizeof(uint64_t));
-    }
+    size_t len = orwl_push_header + extend;
+    ORWL_TIMER(send_push_server)
+      orwl_send(srv, ep, seed_get(), len, mess);
   }
-  ORWL_TIMER(send_push_server)
-    orwl_send(srv, ep, seed_get(), len, mess);
-  uint64_t_vdelete(mess);
 }
 
 orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
