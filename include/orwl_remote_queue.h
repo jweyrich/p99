@@ -394,6 +394,15 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
 }
 
 /**
+ ** @brief push the associated data to a remote. 
+ ** @memberof orwl_handle
+ ** @private
+ **/
+void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
+               orwl_wq *wq, uint64_t whID,
+               bool withdata);
+
+/**
  ** @brief Obtain address and size of the data that is associated to a
  ** location for reading and writing
  ** @memberof orwl_handle

@@ -173,10 +173,29 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
   return state;
 }
 
-orwl_state orwl_proc_push(orwl_server *srv, orwl_endpoint *ep,
-                          orwl_wh *srv_wh, uint64_t whID,
-                          bool withdata);
-
+void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
+               orwl_wq *wq, uint64_t whID,
+               bool withdata) {
+  uint64_t* mess = 0;
+  size_t len = 2;
+  /* Send a request to the other side to remove the remote wh ID
+     and to transfer the data, if any. */
+  assert(wq);
+  MUTUAL_EXCLUDE(wq->mut) {
+    size_t extend = (withdata ? wq->data_len : 0);
+    len += extend;
+    mess = uint64_t_vnew(len);
+    mess[0] = ORWL_OBJID(orwl_proc_release);
+    mess[1] = whID;
+    if (extend) {
+      ORWL_TIMER(copy_data_push_server)
+        memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
+    }
+  }
+  ORWL_TIMER(send_push_server)
+    orwl_send(srv, ep, seed_get(), len, mess);
+  uint64_t_vdelete(mess);
+}
 
 orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_valid;
@@ -191,34 +210,16 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     orwl_server *srv = rq->srv;
     orwl_endpoint const there = rq->there;
     orwl_wq*const wq = wh->location;
+    bool withdata = !wh->svrID;
+
     /* Detect if we are the last user of this handle */
-    bool last = false;
-    last = !orwl_wh_unload(wh);
-    if (last) {
-      bool withdata = !wh->svrID;
+    if (!orwl_wh_unload(wh)) {
+      orwl_push(srv, &there, wq, svrID, withdata);
+
       /* We were the last to have a reference to this handle so we may
          destroy it. */
       state = orwl_wh_release(wh);
       orwl_wh_delete(wh);
-
-      /* If we are the last that holds this handle we have to prepare the
-         buffer for the return message while we hold the inner lock. */
-      uint64_t* mess = 0;
-      size_t len = 2;
-      MUTUAL_EXCLUDE(wq->mut) {
-        size_t extend = (withdata ? wq->data_len : 0);
-        len += extend;
-        mess = uint64_t_vnew(len);
-        mess[0] = ORWL_OBJID(orwl_proc_release);
-        mess[1] = svrID;
-        if (extend) {
-          ORWL_TIMER(copy_data_release)
-            memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
-        }
-      }
-      ORWL_TIMER(send_data_release)
-        orwl_send(srv, &there, seed, len, mess);
-      uint64_t_vdelete(mess);
     }
     orwl_handle_init(rh);
   }
