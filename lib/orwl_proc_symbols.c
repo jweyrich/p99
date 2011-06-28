@@ -59,17 +59,15 @@ orwl_state orwl_proc_push(orwl_server *srv, orwl_endpoint *ep,
     orwl_wq* wq = srv_wh->location;
     assert(wq);
     MUTUAL_EXCLUDE(wq->mut) {
-      ORWL_TIMER(copy_data_push_server) {
 	size_t extend = (withdata ? wq->data_len : 0);
 	len += extend;
 	mess = uint64_t_vnew(len);
 	mess[0] = ORWL_OBJID(orwl_proc_release);
 	mess[1] = whID;
 	if (extend) {
-	  report(false, "adding suplement of length %zu", extend);
-	  memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
+          ORWL_TIMER(copy_data_push_server)
+            memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
 	}
-      }
     }
     ORWL_TIMER(send_push_server)
       orwl_send(srv, ep, seed_get(), len, mess);
