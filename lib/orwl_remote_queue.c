@@ -182,14 +182,22 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
      and to transfer the data, if any. */
   assert(wq);
   MUTUAL_EXCLUDE(wq->mut) {
-    size_t extend = (withdata ? wq->data_len : 0);
+    size_t extend = 0;
+    uint64_t* data = 0;
+    if (withdata) {
+      data = orwl_wq_map_locked(wq, &extend);
+      if (extend) {
+        extend -= orwl_push_header;
+        data += orwl_push_header;
+      }
+    }
     len += extend;
     mess = uint64_t_vnew(len);
     mess[0] = ORWL_OBJID(orwl_proc_release);
     mess[1] = whID;
     if (extend) {
       ORWL_TIMER(copy_data_push_server)
-        memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
+        memcpy(&mess[2], data, extend * sizeof(uint64_t));
     }
   }
   ORWL_TIMER(send_push_server)

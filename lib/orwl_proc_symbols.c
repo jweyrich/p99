@@ -150,10 +150,12 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID) {
 	Arg->len = 0;
 	size_t data_len;
 	uint64_t* data = orwl_wq_map_locked(wq, &data_len);
-	  if (data_len != len) {
-	    orwl_wq_resize_locked(wq, len);
-	    data = orwl_wq_map_locked(wq, &data_len);
-	  }
+        if (data_len != (len + orwl_push_header)) {
+          orwl_wq_resize_locked(wq, len + orwl_push_header);
+          data = orwl_wq_map_locked(wq, &data_len);
+        }
+        data += orwl_push_header;
+        data_len -= orwl_push_header;
 	memcpy(data, Arg->mes, len * sizeof(uint64_t));
       }
     }
