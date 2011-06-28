@@ -182,10 +182,6 @@ struct orwl_wh {
    ** this has dropped to zero.
    **/
   orwl_count tokens;
-  /** @brief Needed at the end of a release to ensure that all threads
-   ** have safely terminated their work on this orwl_wh.
-   **/
-  orwl_count finalists;
   /** @brief This is set iff the orwl_wh is acquired.
    **
    ** This allows to check for this condition atomically. Acquire can
@@ -304,7 +300,6 @@ int orwl_wq_idle(orwl_wq *wq) {
    **/
 #define ORWL_WH_INITIALIZER {                   \
   .tokens = ORWL_COUNT_INITIALIZER(0),          \
-  .finalists = ORWL_COUNT_INITIALIZER(0),       \
   .acq = ORWL_NOTIFIER_INITIALIZER              \
   }
 

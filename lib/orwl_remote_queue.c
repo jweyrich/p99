@@ -200,33 +200,27 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
       if (last) {
         bool inclusive = wh->svrID;
         size_t extend = (inclusive ? 0 : wq->data_len);
-        report(false, "adding extend of length %zu?", extend);
         len += extend;
         mess = uint64_t_vnew(len);
         mess[0] = ORWL_OBJID(orwl_proc_release);
         mess[1] = svrID;
         if (extend) {
-          report(false, "adding suplement of length %zu", extend);
           ORWL_TIMER(copy_data_release)
             memcpy(&mess[2], wq->data, extend * sizeof(uint64_t));
         }
       } else {
-        orwl_count_inc(&wh->finalists);
         orwl_handle_init(rh);
       }
     }
     if (last) {
-      orwl_count_wait(&wh->finalists);
       state = orwl_wh_release(wh);
       orwl_handle_init(rh);
       ORWL_TIMER(send_data_release)
         orwl_send(srv, &there, seed, len, mess);
-      /* We should be the last to have a reference to this handle so
-         we may destroy it. */
+      /* We were the last to have a reference to this handle so we may
+         destroy it. */
       orwl_wh_delete(wh);
       uint64_t_vdelete(mess);
-    } else {
-      orwl_count_dec(&wh->finalists);
     }
   }
   return state;

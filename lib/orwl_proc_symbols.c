@@ -115,14 +115,13 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
     if (wqPOS < Arg->srv->max_queues) {
       /* extract wq and the remote wh ID */
       orwl_wq *srv_wq = &Arg->srv->wqs[wqPOS];
-      report(0, "inclusive request 0x%jx 0x%jx", (uintmax_t)svrID, (uintmax_t)cliID);
+
       /* First check if a previously inserted inclusive handle can be
 	 re-used. Always request two tokens, one for this function here
 	 when it acquires below, the other one to block until the remote
 	 issues a release */
       bool piggyback = false;
       orwl_wh *srv_wh = 0;
-      report(0, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
       MUTUAL_EXCLUDE(srv_wq->mut) {
         state = orwl_wq_request_locked(srv_wq, &srv_wh, 2);
         if (srv_wh) {
@@ -133,24 +132,21 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
           srv_wh = P99_NEW(orwl_wh);
           /* mark it as being inclusive */
           srv_wh->svrID = (uintptr_t)srv_wh;
-          report(0, "inclusive request (%p) 0x%jx 0x%jx", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
           state = orwl_wq_request_locked(srv_wq, &srv_wh, 2);
         }
       }
+
       if (state != orwl_requested) {
 	if (!piggyback) orwl_wh_delete(srv_wh);
       } else {
 	orwl_endpoint ep = { .addr = orwl_proc_getpeer(Arg), .port = host2port(port) };
 	/* Acknowledge the creation of the wh and send back its ID. */
-	report(0, "inclusive request (%p) 0x%jx 0x%jx, detaching", (void*)srv_wh, (uintmax_t)svrID, (uintmax_t)cliID);
 	Arg->ret = (uintptr_t)srv_wh;
+
 	/* If now the local handle is `requested' we only have to wait if
 	   we establish a new pair of client-server handles. */
 	if (piggyback) {
-	  report(0, "unloading server handle %p for existing pair", (void*)srv_wh);
-	  bool last = false;
-          last = !orwl_wh_unload(srv_wh, 2);
-	  if (last) {
+          if (!orwl_wh_unload(srv_wh, 2)) {
 	    state = orwl_wh_release(srv_wh);
 	    orwl_wh_delete(srv_wh);
 	  }
@@ -179,10 +175,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID) {
     bool last = false;
     MUTUAL_EXCLUDE(wq->mut) {
       last = !orwl_wh_unload(wh);
-      if (!last) orwl_count_inc(&wh->finalists);
       size_t len = Arg->len;
       if (len) ORWL_TIMER(copy_data_release_server) {
-	report(false, "found suplementary message of length %zu", len);
 	Arg->len = 0;
 	size_t data_len;
 	uint64_t* data = orwl_wq_map_locked(wq, &data_len);
@@ -191,21 +185,11 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID) {
 	    data = orwl_wq_map_locked(wq, &data_len);
 	  }
 	memcpy(data, Arg->mes, len * sizeof(uint64_t));
-	report(false, "copied suplementary message of length %zu", len);
       }
     }
-    orwl_proc_untie_caller(Arg);
-    if (Arg->det) {
-      orwl_thread_cntrl_wait_for_caller(Arg->det);
-      orwl_thread_cntrl_delete(Arg->det);
-      Arg->det = 0;
-    }
     if (last) {
-      orwl_count_wait(&wh->finalists);
       ret = orwl_wh_release(wh);
       orwl_wh_delete(wh);
-    } else {
-      orwl_count_dec(&wh->finalists);
     }
     Arg->ret = ret;
   }
@@ -220,7 +204,6 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_check_initialization, uint64_t id) {
     pthread_rwlock_unlock(&Arg->srv->lock);
     sleepfor(0.1);
   }
-  //orwl_proc_untie_caller(Arg);
 }
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_proc,

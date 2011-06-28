@@ -67,7 +67,6 @@ orwl_wh* orwl_wh_init(orwl_wh *wh,
   if (!wh) return 0;
   *wh =  (orwl_wh const)ORWL_WH_INITIALIZER;
   orwl_count_init(&wh->tokens, 0);
-  orwl_count_init(&wh->finalists, 0);
   orwl_notifier_init(&wh->acq);
   return wh;
 }
@@ -76,7 +75,6 @@ void orwl_wh_destroy(orwl_wh *wh) {
   assert(!wh->location);
   assert(!wh->next);
   orwl_count_destroy(&wh->tokens);
-  orwl_count_destroy(&wh->finalists);
   orwl_notifier_destroy(&wh->acq);
   *wh = P99_LVAL(orwl_wh const,
                  .location = TGARB(orwl_wq*),
