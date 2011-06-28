@@ -41,7 +41,7 @@ do {                                                           \
 void orwl_wq_destroy(orwl_wq *wq) {
   ORWL__WQ_CHECK(wq->head);
   ORWL__WQ_CHECK(wq->tail);
-  if (wq->data) free(wq->data);
+  if (wq->data) wq->data = realloc(wq->data, 0);
   pthread_mutex_destroy(&wq->mut);
   pthread_cond_destroy(&wq->cond);
   *wq = P99_LVAL(orwl_wq const,
@@ -235,16 +235,14 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
           wh->location = 0;
           wh->next = 0;
           if (!wh_next) {
+            assert(wq->tail == wh);
             wq->head = 0;
-            if (wq->tail == wh) wq->tail = 0;
-            else report(true, "Inconsistency in queue %p when releasing %p, different tail %p",
-                        (void*)wq, (void*)wh, (void*)wq->tail);
+            wq->tail = 0;
           } else {
-             /* wake up the next in the queue */
-            wq->head = wh_next;
             assert(!orwl_notifier_verify(&wh_next->acq));
+            wq->head = wh_next;
             /* Unlock potential acquirers */
-           orwl_notifier_set(&wh_next->acq);
+            orwl_notifier_set(&wh_next->acq);
           }
           ret = orwl_valid;
         }
@@ -256,7 +254,7 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
 
 uint64_t* orwl_wq_map_locked(orwl_wq* wq, size_t* data_len) {
   if (data_len) *data_len = wq->data_len;
-  return wq->data;
+  return wq->data_len ? wq->data : 0;
 }
 
 uint64_t* orwl_wh_map(orwl_wh* wh, size_t* data_len) {
@@ -273,26 +271,29 @@ uint64_t* orwl_wh_map(orwl_wh* wh, size_t* data_len) {
 }
 
 void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
-  size_t data_len = wq->data_len;
-  size_t const blen = len * sizeof(uint64_t);
-  uint64_t* data = realloc(wq->data, blen);
   /* realloc is allowed to return something non-0 if len is
      0. Avoid that. */
-  if (len) {
+  if (P99_UNLIKELY(!len && !wq->data_len)) return;
+  size_t data_len = wq->data_len;
+  if (P99_LIKELY(len)) {
+    size_t blen = len * sizeof(uint64_t);
+    uint64_t* data = realloc(wq->data, blen);
     if (P99_LIKELY(data)) {
       size_t const data_blen = data_len * sizeof(uint64_t);
       if (data_blen < blen)
         memset(&data[data_len], 0, blen - data_blen);
       wq->data = data;
+      wq->data_len = len;
     } else {
       /* realloc failed, don't do anything */
       report(true, "adding suplement of length %zu failed", len);
-      return;
     }
   } else {
-    wq->data = 0;
+    // Some systems may return a valid pointer even if the length is
+    // 0. Keep track of it.
+    wq->data = realloc(wq->data, 0);
+    wq->data_len = 0;
   }
-  wq->data_len = len;
 }
 
 void orwl_wh_resize(orwl_wh* wh, size_t len) {
