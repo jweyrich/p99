@@ -21,7 +21,7 @@
 DECLARE_ORWL_PROC_FUNC(orwl_server_callback, uint64_t funcID);
 DECLARE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port);
 DECLARE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port);
-DECLARE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data);
+DECLARE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID);
 DECLARE_ORWL_PROC_FUNC(orwl_proc_insert_peer, uint64_t port);
 DECLARE_ORWL_PROC_FUNC(orwl_proc_insert_host, uint64_t addr, uint64_t port);
 DECLARE_ORWL_PROC_FUNC(orwl_proc_do_nothing, void);
