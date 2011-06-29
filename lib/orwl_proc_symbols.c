@@ -138,6 +138,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data) {
   ORWL_TIMER(total_release_server) {
     ORWL_PROC_READ(Arg, orwl_proc_release, uintptr_t whID, uint64_t data);
+    // reserved for future use
+    (void)data;
     orwl_state ret = orwl_valid;
     // extract the wh for Arg
     assert(whID);
