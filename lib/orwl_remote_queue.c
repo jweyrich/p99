@@ -16,7 +16,6 @@
 #include "orwl_socket.h"
 #include "orwl_server.h"
 #include "orwl_proc_symbols.h"
-#include "orwl_timing.h"
 
 DEFINE_ONCE(orwl_mirror, orwl_wq, orwl_rand, orwl_handle) {
   // empty
@@ -275,7 +274,23 @@ P99_INSTANTIATE(void, orwl_resize, orwl_handle*, size_t);
 P99_INSTANTIATE(void*, orwl_write_map, orwl_handle*, size_t*);
 P99_INSTANTIATE(void const*, orwl_read_map, orwl_handle*, size_t*);
 P99_INSTANTIATE(void, orwl_truncate, orwl_handle*, size_t);
-P99_INSTANTIATE(void, orwl_scale, orwl_mirror*, size_t);
+
+P99_DEFINE_DEFARG(orwl_scale_t_init, , P99_0(orwl_mirror*), P99_0(size_t), P99_0(orwl_thread_cntrl*));
+DEFINE_NEW_DELETE(orwl_scale_t);
+P99_INSTANTIATE(orwl_scale_t*, orwl_scale_t_init, orwl_scale_t*, orwl_mirror*, size_t, orwl_thread_cntrl*);
+P99_INSTANTIATE(orwl_scale_t*, orwl_scale_t_destroy, orwl_scale_t*);
+
+DEFINE_THREAD(orwl_scale_t) {
+  ORWL_TIMER(total_scale) {
+    orwl_handle first = ORWL_HANDLE_INITIALIZER;
+    orwl_write_request(Arg->rq, &first);
+    orwl_thread_cntrl_freeze(Arg->det);
+    orwl_thread_cntrl_wait_for_caller(Arg->det);
+    orwl_acquire(&first);
+    orwl_truncate(&first, Arg->data_len);
+    orwl_release(&first);
+  }
+}
 
 DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire, orwl_handle);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_release, orwl_handle);

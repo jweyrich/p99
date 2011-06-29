@@ -629,38 +629,31 @@ void orwl_truncate(orwl_handle* rh, size_t data_len) {
   }
 }
 
-/**
- ** @brief Scale the size of the data that is associated to the
- ** resource to which @a rq points to a size of @a data_len bytes.
- ** @memberof orwl_mirror
- ** @pre This supposes that no handle is yet inserted into the request
- ** queue of @a rq.
- ** @see orwl_truncate for the rules that hold about initialization of
- ** newly allocated memory.
- ** @see ORWL_SCALE for a macro that scales to the capacity of a specific type
- **/
+typedef struct orwl_scale_t {
+  orwl_mirror* rq;
+  size_t data_len;
+  orwl_thread_cntrl *det;
+} orwl_scale_t;
+
 inline
-void orwl_scale(orwl_mirror* rq, size_t data_len) {
-  ORWL_TIMING(total_scale) {
-    orwl_handle first = ORWL_HANDLE_INITIALIZER;
-    orwl_write_request(rq, &first);
-    orwl_acquire(&first);
-    orwl_truncate(&first, data_len);
-    orwl_release(&first);
-  }
+orwl_scale_t* orwl_scale_t_init(orwl_scale_t* scale, orwl_mirror* rq, size_t data_len, orwl_thread_cntrl* det) {
+  scale->rq = rq;
+  scale->data_len = data_len;
+  scale->det = det;
+  return scale;
 }
 
-/**
- ** @brief Scale the size of the data that is associated to the
- ** resource @a RQ to a size of @a TYPE.
- ** @memberof orwl_mirror
- ** @pre This supposes that no handle is yet inserted into the request
- ** queue of @a RQ.
- ** @see orwl_truncate for the rules that hold about initialization of
- ** newly allocated memory.
- ** @see orwl_scale for a function that scales to a specific length
- **/
-#define ORWL_SCALE(RQ, TYPE) orwl_scale(&(RQ), sizeof(TYPE))
+inline
+orwl_scale_t* orwl_scale_t_destroy(orwl_scale_t* scale) {
+  return scale;
+}
+
+inline
+P99_PROTOTYPE(orwl_scale_t*, orwl_scale_t_init, orwl_scale_t*, orwl_mirror*, size_t, orwl_thread_cntrl*);
+#define orwl_scale_t_init(...) P99_CALL_DEFARG(orwl_scale_t_init, 4, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_scale_t_init,  , P99_0(orwl_mirror*), P99_0(size_t), P99_0(orwl_thread_cntrl*));
+DECLARE_NEW_DELETE(orwl_scale_t);
+DECLARE_THREAD(orwl_scale_t);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
 
