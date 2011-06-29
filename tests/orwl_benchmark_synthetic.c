@@ -87,7 +87,7 @@ DEFINE_THREAD(arg_t) {
   orwl_thread_cntrl_wait_for_caller(Arg->det);
 
   /* Wait to take all the distant locks */
-  orwl_wait_to_initialize_locks(Arg->id, graph, ab,  seed);
+  orwl_wait_to_initialize_locks(Arg->id, graph, ab, seed);
 
   /* Take the distant locks in read mode*/
   for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++) {
@@ -98,19 +98,6 @@ DEFINE_THREAD(arg_t) {
   orwl_wait_to_start(Arg->id, graph, ab, &srv, nb_tasks, seed);
 
   /* Fire ! */
-
-  /***************************************************************************/
-  /*                       Initialization iteration                          */
-  /***************************************************************************/
-  orwl_acquire2(&my_task_handle);
-  orwl_truncate2(&my_task_handle, shared_memory_size);
-  orwl_release2(&my_task_handle);
-
-  /* Take the locks on the neighbors to keep the same count of iterations */
-  for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++) {
-    orwl_acquire2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
-    orwl_release2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
-  }
   /***************************************************************************/
   /*                         Computation iterations                          */
   /***************************************************************************/
@@ -224,8 +211,19 @@ int main(int argc, char **argv) {
 
   local_locations = orwl_mirror_vnew(nb_locations);
 
-  for (size_t i = 0 ; i < nb_tasks ; i++)
+  orwl_thread_cntrl ** scale_det = calloc(nb_tasks, sizeof(orwl_thread_cntrl *));
+  orwl_scale_t ** scale = calloc(nb_tasks, sizeof(orwl_scale_t *));
+  for (size_t i = 0 ; i < nb_tasks ; i++) {
     orwl_make_local_connection(i, &srv, &local_locations[i]);
+    scale[i] = calloc(1, sizeof(orwl_scale_t));
+    scale_det[i] = calloc(1, sizeof(orwl_thread_cntrl));
+    scale[i]->rq = &local_locations[i];
+    scale[i]->data_len = shared_memory_size;
+    scale[i]->det = scale_det[i];
+    orwl_scale_t_launch(scale[i], scale_det[i]);
+    orwl_thread_cntrl_wait_for_callee(scale_det[i]);
+    orwl_thread_cntrl_detach(scale_det[i]);
+  }
 
   report(1, "local connections done");
 
