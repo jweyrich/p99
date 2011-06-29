@@ -57,6 +57,10 @@ void orwl_timing_element_print(FILE *out, orwl_timing_element* el) {
 
 static orwl_timing timing_info = {
   ORWL_TIMING_ELEMENT(total_acquire),
+  ORWL_TIMING_ELEMENT(total_write_map),
+  ORWL_TIMING_ELEMENT(total_read_map),
+  ORWL_TIMING_ELEMENT(total_truncate),
+  ORWL_TIMING_ELEMENT(total_scale),
 };
 
 orwl_timing * orwl_timing_info(void) {
@@ -73,6 +77,11 @@ void orwl_timing_print_stats(void) {
           "dev"
           );
   orwl_timing_element_print(stderr, &timing_info.total_acquire);
+  orwl_timing_element_print(stderr, &timing_info.total_write_map);
+  orwl_timing_element_print(stderr, &timing_info.total_read_map);
+  orwl_timing_element_print(stderr, &timing_info.total_truncate);
+  orwl_timing_element_print(stderr, &timing_info.total_scale);
+
   for (orwl_timing_element* el = head; el; el = el->next)
     orwl_timing_element_print(stderr, el);
 }

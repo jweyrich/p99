@@ -219,7 +219,8 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
   if (orwl_wh_valid(wh)) {
     orwl_wq *wq = wh->location;
     if (wq && orwl_wq_valid(wq)) {
-      ret = orwl_wh_acquire(wh, 0);
+      ORWL_TIMER(release_wh_acquire)
+	ret = orwl_wh_acquire(wh, 0);
       switch (ret) {
       default:
         report(true, "Inconsistency in queue %p when releasing %p, state is %s",
@@ -257,7 +258,10 @@ uint64_t* orwl_wq_map_locked(orwl_wq* wq, size_t* data_len) {
 
 uint64_t* orwl_wh_map(orwl_wh* wh, size_t* data_len) {
   uint64_t* ret = 0;
-  if (orwl_wh_acquire(wh, 0) == orwl_acquired) {
+  orwl_state state;
+  ORWL_TIMER(map_wh_acquire)
+    state = orwl_wh_acquire(wh, 0);
+  if (state == orwl_acquired) {
     orwl_wq *wq = wh->location;
     assert(wq);
     MUTUAL_EXCLUDE(wq->mut)
@@ -295,7 +299,10 @@ void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
 }
 
 void orwl_wh_resize(orwl_wh* wh, size_t len) {
-  if (orwl_wh_acquire(wh, 0) == orwl_acquired) {
+  orwl_state state;
+  ORWL_TIMER(resize_wh_acquire)
+    state = orwl_wh_acquire(wh, 0);
+  if (state == orwl_acquired) {
     orwl_wq *wq = wh->location;
     assert(wq);
     MUTUAL_EXCLUDE(wq->mut)

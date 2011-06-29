@@ -63,7 +63,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, ui
 	Arg->ret = (uintptr_t)srv_wh;
 	orwl_proc_untie_caller(Arg);
         /* Wait until the lock on wh is obtained. */
-        state = orwl_wh_acquire(srv_wh);
+	ORWL_TIMER(proc_write_request_wh_acquire)
+	  state = orwl_wh_acquire(srv_wh);
         assert(state == orwl_acquired);
 	ORWL_TIMER(push_write_request_server)
 	  orwl_push(Arg->srv, &ep, srv_wh->location, whID, true);
@@ -121,7 +122,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 	} else {
           orwl_proc_untie_caller(Arg);
           /* Wait until the lock on wh is obtained. */
-          state = orwl_wh_acquire(srv_wh);
+	  ORWL_TIMER(proc_read_request_wh_acquire)
+	    state = orwl_wh_acquire(srv_wh);
           assert(state == orwl_acquired);
 	  ORWL_TIMER(push_read_request_server)
 	    orwl_push(Arg->srv, &ep, srv_wh->location, cliID, true);

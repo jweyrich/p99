@@ -214,7 +214,8 @@ void orwl_server_block(orwl_server *srv) {
 void orwl_server_unblock(orwl_server *srv) {
   assert(srv->whs);
   for (uint64_t i = 0; i < srv->max_queues; ++i) {
-    orwl_wh_acquire(&srv->whs[i]);
+    ORWL_TIMER(server_unblock_wh_acquire)
+      orwl_wh_acquire(&srv->whs[i]);
     orwl_wh_release(&srv->whs[i]);
   }
   orwl_wh_vdelete(srv->whs);

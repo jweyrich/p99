@@ -213,7 +213,8 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
 
     /* Detect if we are the last user of this handle */
     if (!orwl_wh_unload(wh)) {
-      orwl_push(srv, &there, wq, svrID, withdata);
+      ORWL_TIMER(push_release)
+	orwl_push(srv, &there, wq, svrID, withdata);
 
       /* We were the last to have a reference to this handle so we may
          destroy it. */

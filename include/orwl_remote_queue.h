@@ -457,24 +457,26 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
 inline
 void* orwl_write_map(orwl_handle* rh, size_t* data_len) {
   uint64_t* ret = 0;
-  if (data_len) *data_len = 0;
-  if (rh)
-    switch (orwl_test(rh)) {
-    case orwl_acquired: ;
-      if (orwl_inclusive(rh)) break;
-    case orwl_write_acquired: ;
-      assert(rh->wh);
-      ret = orwl_wh_map(rh->wh, data_len);
-      if (ret) {
-        /* Take the offset for the push header into account. */
-        ret += orwl_push_header;
-        if (data_len) {
-          *data_len -= orwl_push_header;
-          *data_len *= sizeof(uint64_t);
-        }
+  ORWL_TIMING(total_write_map) {
+    if (data_len) *data_len = 0;
+    if (rh)
+      switch (orwl_test(rh)) {
+      case orwl_acquired: ;
+	if (orwl_inclusive(rh)) break;
+      case orwl_write_acquired: ;
+	assert(rh->wh);
+	ret = orwl_wh_map(rh->wh, data_len);
+	if (ret) {
+	  /* Take the offset for the push header into account. */
+	  ret += orwl_push_header;
+	  if (data_len) {
+	    *data_len -= orwl_push_header;
+	    *data_len *= sizeof(uint64_t);
+	  }
+	}
+      default:;
       }
-    default:;
-    }
+  }
   return ret;
 }
 
@@ -541,24 +543,26 @@ uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len) {
 inline
 void const* orwl_read_map(orwl_handle* rh, size_t* data_len) {
   uint64_t const* ret = 0;
-  if (data_len) *data_len = 0;
-  if (rh)
-    switch (orwl_test(rh)) {
-    case orwl_acquired: ;
-    case orwl_write_acquired: ;
-    case orwl_read_acquired: ;
-      assert(rh->wh);
-      ret = orwl_wh_map(rh->wh, data_len);
-      if (ret) {
-        /* Take the offset for the push header into account. */
-        ret += orwl_push_header;
-        if (data_len) {
-          *data_len -= orwl_push_header;
-          *data_len *= sizeof(uint64_t);
-        }
+  ORWL_TIMING(total_read_map) {
+    if (data_len) *data_len = 0;
+    if (rh)
+      switch (orwl_test(rh)) {
+      case orwl_acquired: ;
+      case orwl_write_acquired: ;
+      case orwl_read_acquired: ;
+	assert(rh->wh);
+	ret = orwl_wh_map(rh->wh, data_len);
+	if (ret) {
+	  /* Take the offset for the push header into account. */
+	  ret += orwl_push_header;
+	  if (data_len) {
+	    *data_len -= orwl_push_header;
+	    *data_len *= sizeof(uint64_t);
+	  }
+	}
+      default:;
       }
-    default:;
-    }
+  }
   return ret;
 }
 
@@ -609,12 +613,14 @@ void orwl_resize(orwl_handle* rh, size_t data_len) {
  **/
 inline
 void orwl_truncate(orwl_handle* rh, size_t data_len) {
-  if (orwl_test(rh) > orwl_valid) {
-    size_t len = data_len / sizeof(uint64_t);
-    len += (data_len % sizeof(uint64_t)) ? 1 : 0;
-    if (len) len += orwl_push_header;
-    assert(rh->wh);
-    orwl_wh_resize(rh->wh, len);
+  ORWL_TIMING(total_truncate) {
+    if (orwl_test(rh) > orwl_valid) {
+      size_t len = data_len / sizeof(uint64_t);
+      len += (data_len % sizeof(uint64_t)) ? 1 : 0;
+      if (len) len += orwl_push_header;
+      assert(rh->wh);
+      orwl_wh_resize(rh->wh, len);
+    }
   }
 }
 
@@ -630,11 +636,13 @@ void orwl_truncate(orwl_handle* rh, size_t data_len) {
  **/
 inline
 void orwl_scale(orwl_mirror* rq, size_t data_len) {
-  orwl_handle first = ORWL_HANDLE_INITIALIZER;
-  orwl_write_request(rq, &first);
-  orwl_acquire(&first);
-  orwl_truncate(&first, data_len);
-  orwl_release(&first);
+  ORWL_TIMING(total_scale) {
+    orwl_handle first = ORWL_HANDLE_INITIALIZER;
+    orwl_write_request(rq, &first);
+    orwl_acquire(&first);
+    orwl_truncate(&first, data_len);
+    orwl_release(&first);
+  }
 }
 
 /**

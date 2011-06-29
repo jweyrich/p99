@@ -40,6 +40,10 @@ P99_DECLARE_STRUCT(orwl_timing);
 *  be used in inline functions */
 struct orwl_timing {
   orwl_timing_element total_acquire;
+  orwl_timing_element total_write_map;
+  orwl_timing_element total_read_map;
+  orwl_timing_element total_truncate;
+  orwl_timing_element total_scale;
 };
 
 
