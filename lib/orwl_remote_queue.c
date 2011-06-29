@@ -185,12 +185,14 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
       = withdata
       ? orwl_wq_map_locked(wq, &extend)
       : 0;
+    uint64_t buffer[orwl_push_header] = {
+      ORWL_OBJID(orwl_proc_release),
+      whID,
+    };
     if (!mess) {
-      mess = P99_LVAL(uint64_t[orwl_push_header]);
+      mess = buffer;
       extend = orwl_push_header;
-    }
-    mess[0] = ORWL_OBJID(orwl_proc_release);
-    mess[1] = whID;
+    } else memcpy(mess, buffer, orwl_push_header * sizeof(mess[0]));
     ORWL_TIMER(send_push_server)
       orwl_send(srv, ep, seed_get(), extend, mess);
   }
