@@ -16,6 +16,7 @@
 # define   	ORWL_REMOTE_QUEUE_H_
 
 #include "orwl_wait_queue.h"
+#include "orwl_proc_symbols.h"
 #include P99_ADVANCE_ID
 #include "orwl_timing.h"
 
@@ -346,11 +347,15 @@ enum {
    ** @brief The number of additional items that are transferred in
    ** the header of a ::orwl_push operation.
    **/
-  orwl_push_header = 2
+  orwl_push_header
+  = orwl_server_callback_header
+  + orwl_proc_release_header
 };
 
 /**
  ** @brief push the associated data to a remote.
+ **
+ ** This data is to be handled by orwl_proc_release at the other side.
  ** @memberof orwl_handle
  ** @private
  ** @remark This uses the first ::orwl_push_header items of the data

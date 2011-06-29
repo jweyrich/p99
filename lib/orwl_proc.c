@@ -12,6 +12,7 @@
 /* particular purpose.                                                       */
 /*                                                                           */
 #include "orwl_proc.h"
+#include "orwl_proc_symbols.h"
 
 #include "orwl_server.h"
 #include "orwl_header.h"
@@ -76,9 +77,8 @@ void orwl_proc_destroy(orwl_proc *sock) {
 
 DEFINE_NEW_DELETE(orwl_proc);
 
-static
-void server_callback(orwl_proc* Arg) {
-  ORWL_PROC_READ(Arg, server_callback, uint64_t funcID);
+DEFINE_ORWL_PROC_FUNC(orwl_server_callback, uint64_t funcID) {
+  ORWL_PROC_READ(Arg, orwl_server_callback, uint64_t funcID);
   orwl_domain_call(ORWL_FTAB(orwl_proc), funcID, Arg);
 }
 
@@ -89,7 +89,7 @@ DEFINE_THREAD(orwl_proc) {
       || (!orwl_recv_(Arg->fd, Arg->mes, Arg->len, Arg->remoteorder)
           && Arg->srv)) {
     /* do something with mess here */
-    server_callback(Arg);
+    orwl_server_callback(Arg);
   }
   orwl_proc_untie_caller(Arg);
   report(0, "ending %p", (void*)Arg);

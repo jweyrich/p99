@@ -112,21 +112,27 @@ DECLARE_THREAD(orwl_proc);
 void orwl_proc_untie_caller(orwl_proc *sock);
 
 #ifdef DOXYGEN
-#define DEFINE_ORWL_PROC_FUNC(F, ...)                                       \
+#define DECLARE_ORWL_PROC_FUNC(F, ...)                                  \
+/*! @brief the number of @c uint64_t that F uses for control @see F */  \
+enum { P99_PASTE2(F, _header) = P99_NARG(__VA_ARGS__) + 1 };            \
 /*! An ::orwl_proc function interpreting a message received on a socket. */ \
-/*! It interprets the message it receives as if it where declared*/         \
-/*! @code uint64_t F(__VA_ARGS__) @endcode */                               \
-/*! @see ORWL_PROC_READ is used to interpret the message as specified */    \
-/*! @memberof orwl_proc */                                                  \
+/*! It interprets the message it receives as if it where declared @code uint64_t F(__VA_ARGS__) @endcode */ \
+/*! @see ORWL_PROC_READ is used to interpret the message as specified */ \
+/*! @see  P99_PASTE2(F, _header)*/                                      \
+/*! @memberof orwl_proc */                                              \
 void F(orwl_proc *Arg)
-#define DECLARE_ORWL_PROC_FUNC(F, ...) void F(orwl_proc *Arg)
+#define DEFINE_ORWL_PROC_FUNC(F, ...)                                   \
+void F(orwl_proc *Arg)
 #else
-#define DEFINE_ORWL_PROC_FUNC(F, ...)                          \
-DEFINE_ORWL_REGISTER_ALIAS(F, orwl_proc);                      \
+#define DEFINE_ORWL_PROC_FUNC(F, ...)           \
+void P99_PASTE2(F, _proto)(__VA_ARGS__) { }   \
+DEFINE_ORWL_REGISTER_ALIAS(F, orwl_proc);       \
 void F(orwl_proc *Arg)
 
-#define DECLARE_ORWL_PROC_FUNC(F, ...)                         \
-void F(orwl_proc *Arg);                                        \
+#define DECLARE_ORWL_PROC_FUNC(F, ...)                          \
+enum { P99_PASTE2(F, _header) = P99_NARG(__VA_ARGS__) };        \
+void P99_PASTE2(F, _proto)(__VA_ARGS__);                        \
+void F(orwl_proc *Arg);                                         \
 DECLARE_ORWL_REGISTER_ALIAS(F, orwl_proc)
 #endif
 
@@ -135,6 +141,7 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_proc);
 
 #define ORWL_PROC_READ(A, F, ...)                              \
 (void)((void (*)(orwl_proc*)){ F });                           \
+(void)((void (*)(__VA_ARGS__)){ P99_PASTE2(F, _proto) });                           \
 P99_VASSIGNS((A)->mes, __VA_ARGS__);                           \
 (A)->len -= P99_NARG(__VA_ARGS__);                             \
 (A)->mes += P99_NARG(__VA_ARGS__)
