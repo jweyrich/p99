@@ -174,7 +174,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
 
 void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
                orwl_wq *wq, uint64_t whID,
-               bool withdata) {
+               bool withdata, bool keep) {
   /* Send a request to the other side to remove the remote wh ID
      and to transfer the data, if any. */
   assert(wq);
@@ -195,6 +195,7 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
     }
     ORWL_TIMER(send_push_server)
       orwl_send(srv, ep, seed_get(), extend, mess);
+    if (!keep) orwl_wq_resize_locked(wq, 0);
   }
 }
 
@@ -217,7 +218,7 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
     if (!orwl_wh_unload(wh)) {
       orwl_wh_load(wh);
       ORWL_TIMER(push_release)
-	orwl_push(srv, &there, wq, svrID, withdata);
+	orwl_push(srv, &there, wq, svrID, withdata, false);
       orwl_wh_unload(wh);
 
       /* We were the last to have a reference to this handle so we may

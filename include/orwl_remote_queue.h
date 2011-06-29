@@ -363,7 +363,7 @@ enum {
  **/
 void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
                orwl_wq *wq, uint64_t whID,
-               bool withdata);
+               bool withdata, bool keep);
 
 /**
  ** @brief Obtain address and size of the data that is associated to a
