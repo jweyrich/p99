@@ -33,14 +33,12 @@ NAME 	=					\
 SRC	=					\
 		orwl_local_test_inclusive.c	\
 		orwl_remote_server.c		\
-		orwl_remote_test_exclusive.c	\
 		orwl_remote_test_inclusive.c	\
 		orwl_socket_finish.c		\
 		orwl_socket_test.c		\
 		orwl_benchmark_kernel23.c	\
 		orwl_benchmark_synthetic.c	\
 		orwl_benchmark_timer.c          \
-		orwl_wait_list.c		\
 		test-p99-block.c		\
 		test-p99-cases.c		\
 		test-p99-choice.c		\
