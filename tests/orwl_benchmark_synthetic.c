@@ -23,8 +23,9 @@ static orwl_graph *graph = 0;
 static orwl_address_book *ab = 0;
 static orwl_mirror *local_locations = 0;
 static rand48_t *seed = 0;
-static size_t shared_memory_size = MEGA * 16;
+static size_t shared_memory_size = 0;
 static size_t iterations = 0;
+static size_t inner_iterations = 0;
 static size_t nb_tasks = 0;
 static size_t global_nb_tasks = 0;
 static orwl_barrier init_barr;
@@ -103,15 +104,16 @@ DEFINE_THREAD(arg_t) {
   /***************************************************************************/
 
   for (size_t iter = 0 ; iter < iterations ; iter++) {
-    printf("Task %zu: iteration %zu\n", Arg->id, iter);
-    my_data = orwl_write_map2(&my_task_handle);
+    ORWL_TIMER(total_iteration) {
+      printf("Task %zu: iteration %zu\n", Arg->id, iter);
+      my_data = orwl_write_map2(&my_task_handle);
 
       /* CPU consuming computation */
       double a,b,c;
-      double * r = calloc(10000000, sizeof(double));
-      for (size_t i = 0 ; i < 10000000 ; i++) {
+      double * r = calloc(1000000, sizeof(double));
+      for (size_t i = 0 ; i < 1000000 ; i++) {
       	b = (i + 1) / (sin((i + 2) / (i + 1)) + 1.01);
-      	for (size_t j = 0 ; j < 1 ; j++) {
+      	for (size_t j = 0 ; j < inner_iterations ; j++) {
       	  c = (j + 3) / (cos((i + 4) / (i + 1)) + 1.02);
       	  a = (b * c) - (b / (i + (j * c)));
       	  r[i] += a;
@@ -119,7 +121,7 @@ DEFINE_THREAD(arg_t) {
       }
       free(r);
       /* Let's put anything in the shared memory */
-      for (size_t i = 0 ; i < (shared_memory_size / sizeof(uint64_t)) ; i++) {
+      for (size_t i = 0 ; i < ((shared_memory_size * MEGA) / sizeof(uint64_t)) ; i++) {
 	int32_t r;
 	random_r(&rand_states[Arg->task_pos], &r); 
 	my_data[i] = r;
@@ -131,6 +133,7 @@ DEFINE_THREAD(arg_t) {
       
       for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
       	orwl_release2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+    }
   }
   orwl_cancel2(&my_task_handle);
   for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
@@ -175,7 +178,7 @@ unsigned get_task(char const *str, size_t list_id[], const char *delim) {
 }
 
 int main(int argc, char **argv) {
-  if (argc < 7) {
+  if (argc < 9) {
     report(1, "only %d commandline arguments, this ain't enough", argc);
     return 1;
   }
@@ -190,6 +193,8 @@ int main(int argc, char **argv) {
   strncpy(global_ab_file, argv[4], 256);
   strncpy(local_ab_file, argv[5], 256);
   strncpy(main_tasks, argv[6], 4096);
+  shared_memory_size = strtouz(argv[7]);
+  inner_iterations = strtouz(argv[8]);
 
   nb_tasks = strcountchr(main_tasks, ",") + 1;
   list_tasks = size_t_vnew(nb_tasks);
@@ -218,7 +223,7 @@ int main(int argc, char **argv) {
     scale[i] = calloc(1, sizeof(orwl_scale_t));
     scale_det[i] = calloc(1, sizeof(orwl_thread_cntrl));
     scale[i]->rq = &local_locations[i];
-    scale[i]->data_len = shared_memory_size;
+    scale[i]->data_len = (shared_memory_size * MEGA);
     scale[i]->det = scale_det[i];
     orwl_scale_t_launch(scale[i], scale_det[i]);
     orwl_thread_cntrl_wait_for_callee(scale_det[i]);
@@ -264,6 +269,7 @@ int main(int argc, char **argv) {
   orwl_pthread_wait_detached();
   orwl_server_terminate(&srv);
   orwl_stop(&srv);
+  sleep(3);
   seed_get_clear();
   size_t_vdelete(list_tasks);
   return 0;
