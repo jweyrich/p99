@@ -161,7 +161,6 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data) {
           data = orwl_wq_map_locked(wq, &data_len);
         }
         data += orwl_push_header;
-        data_len -= orwl_push_header;
 	memcpy(data, Arg->mes, len * sizeof(uint64_t));
       }
     }
