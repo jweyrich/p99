@@ -178,20 +178,21 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
   /* Send a request to the other side to remove the remote wh ID
      and to transfer the data, if any. */
   assert(wq);
+  size_t extend = 0;
+  uint64_t* mess = 0;
+  uint64_t buffer[orwl_push_header] = {
+    ORWL_OBJID(orwl_proc_release),
+    whID,
+  };
   MUTUAL_EXCLUDE(wq->mut) {
-    size_t extend = 0;
-    uint64_t* mess
-      = withdata
-      ? orwl_wq_map_locked(wq, &extend)
-      : 0;
-    uint64_t buffer[orwl_push_header] = {
-      ORWL_OBJID(orwl_proc_release),
-      whID,
-    };
+    if (withdata) {
+      mess = orwl_wq_map_locked(wq, &extend);
+      if (mess) memcpy(mess, buffer, orwl_push_header * sizeof(mess[0]));
+    }
     if (!mess) {
       mess = buffer;
       extend = orwl_push_header;
-    } else memcpy(mess, buffer, orwl_push_header * sizeof(mess[0]));
+    }
     ORWL_TIMER(send_push_server)
       orwl_send(srv, ep, seed_get(), extend, mess);
   }
