@@ -62,7 +62,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, ui
 	/* Acknowledge the creation of the wh and send back its id. */
 	Arg->ret = (uintptr_t)srv_wh;
 	orwl_proc_untie_caller(Arg);
-        /* Wait until the lock on wh is obtained. */
+        /* Wait until the lock on wh is obtained. Only free the token
+           later, after we have pushed back to the remote. */
 	ORWL_TIMER(proc_write_request_wh_acquire)
 	  state = orwl_wh_acquire(srv_wh, 0);
         assert(state == orwl_acquired);
@@ -122,7 +123,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 	  }
 	} else {
           orwl_proc_untie_caller(Arg);
-          /* Wait until the lock on wh is obtained. */
+          /* Wait until the lock on wh is obtained. Only free the
+             token later, after we have pushed back to the remote. */
 	  ORWL_TIMER(proc_read_request_wh_acquire)
 	    state = orwl_wh_acquire(srv_wh, 0);
           assert(state == orwl_acquired);
@@ -137,11 +139,9 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 
 /* this is executed first on the client when the lock is acquired and */
 /* then on the server when the lock is released. */
-DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data) {
+DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t data_len) {
   ORWL_TIMER(total_release_server) {
-    ORWL_PROC_READ(Arg, orwl_proc_release, uintptr_t whID, uint64_t data);
-    // reserved for future use
-    (void)data;
+    ORWL_PROC_READ(Arg, orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t data_len);
     orwl_state ret = orwl_valid;
     // extract the wh for Arg
     assert(whID);
@@ -152,16 +152,23 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data) {
     MUTUAL_EXCLUDE(wq->mut) {
       last = !orwl_wh_unload(wh);
       size_t len = Arg->len;
-      if (len) ORWL_TIMER(copy_data_release_server) {
-	Arg->len = 0;
-	size_t data_len;
-	uint64_t* data = orwl_wq_map_locked(wq, &data_len);
-        if (data_len != (len + orwl_push_header)) {
-          orwl_wq_resize_locked(wq, len + orwl_push_header);
-          data = orwl_wq_map_locked(wq, &data_len);
+      if (data && data_len) {
+        // The other side sent us a shortcut
+        orwl_wq_resize_locked(wq, 0);
+        wq->data = (void*)data;
+        wq->data_len = data_len;
+      } else if (len) {
+        ORWL_TIMER(copy_data_release_server) {
+          Arg->len = 0;
+          size_t data_len;
+          uint64_t* data = orwl_wq_map_locked(wq, &data_len);
+          if (data_len != (len + orwl_push_header)) {
+            orwl_wq_resize_locked(wq, len + orwl_push_header);
+            data = orwl_wq_map_locked(wq, &data_len);
+          }
+          data += orwl_push_header;
+          memcpy(data, Arg->mes, len * sizeof(uint64_t));
         }
-        data += orwl_push_header;
-	memcpy(data, Arg->mes, len * sizeof(uint64_t));
       }
     }
     if (last) {

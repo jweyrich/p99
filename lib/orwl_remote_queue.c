@@ -175,8 +175,12 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
 void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
                orwl_wq *wq, uint64_t whID,
                bool withdata, bool keep) {
-  /* Send a request to the other side to remove the remote wh ID
-     and to transfer the data, if any. */
+  /*
+    Send a request to the other side
+    - to remove the remote wh ID and to transfer the data, if any,
+      or,
+    - pass over a pointer of the data.
+  */
   assert(wq);
   size_t extend = 0;
   uint64_t* mess = 0;
@@ -187,7 +191,22 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
   MUTUAL_EXCLUDE(wq->mut) {
     if (withdata) {
       mess = orwl_wq_map_locked(wq, &extend);
-      if (mess) memcpy(mess, buffer, orwl_push_header * sizeof(mess[0]));
+      if (mess) {
+        if ((sizeof(uintptr_t) > sizeof(uint64_t))
+            || keep
+            || !srv
+            || !orwl_endpoint_similar(&srv->host.ep, ep))
+          memcpy(mess, buffer, orwl_push_header * sizeof(mess[0]));
+        else {
+          // we are in the same address space and can reuse the memory
+          buffer[2] = (uintptr_t)mess;
+          buffer[3] = extend;
+          mess = 0;
+          // Just delete the local trace of the buffer, not the buffer itself
+          wq->data = 0;
+          wq->data_len = 0;
+        }
+      }
     }
     if (!mess) {
       mess = buffer;
