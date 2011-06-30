@@ -311,7 +311,7 @@ int main(int argc, char **argv) {
   }
 
   /* wait for even numbered threads, that have been started joinable. */
-  for (size_t thread2 = 0; thread2 < orwl_np/2; ++thread2) {
+  for (size_t thread2 = 0; thread2 < number/2; ++thread2) {
     arg_t_join(id[thread2]);
   }
 
