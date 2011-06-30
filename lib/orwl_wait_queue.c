@@ -276,12 +276,17 @@ void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
   /* realloc is allowed to return something non-0 if len is
      0. Avoid that. */
   if (P99_UNLIKELY(!len && !wq->data_len)) return;
-  size_t data_len = wq->data_len;
+  size_t const blen = len * sizeof(uint64_t);
+  size_t const data_len = wq->data_len;
+  size_t const data_blen = data_len * sizeof(uint64_t);
+  uint64_t* data = wq->data;
+  /* zero out unused memory */
+  if (data_blen > blen)
+    memset(&data[len], 0, data_blen - blen);
   if (P99_LIKELY(len)) {
-    size_t blen = len * sizeof(uint64_t);
-    uint64_t* data = realloc(wq->data, blen);
+    data = realloc(data, blen);
     if (P99_LIKELY(data)) {
-      size_t const data_blen = data_len * sizeof(uint64_t);
+      /* zero out unused memory */
       if (data_blen < blen)
         memset(&data[data_len], 0, blen - data_blen);
       wq->data = data;
@@ -293,7 +298,7 @@ void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
   } else {
     // Some systems may return a valid pointer even if the length is
     // 0. Keep track of it.
-    wq->data = realloc(wq->data, 0);
+    wq->data = realloc(data, 0);
     wq->data_len = 0;
   }
 }
