@@ -51,7 +51,7 @@ struct orwl_proc {
   size_t len;              /*!< the length of the message */
   uint64_t *mes;           /*!< the message itself */
   size_t back_len;         /*!< the initial length of the message */
-  uint64_t const* back;    /*!< a backup of the message */
+  uint64_t *back;          /*!< a backup of the message */
   /* internal control fields */
   struct orwl_server* srv; /*!< the server through which we received this socket */
   bool is_untied;          /*!< orwl_proc_untie_caller has been called once */

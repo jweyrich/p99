@@ -152,23 +152,41 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
     MUTUAL_EXCLUDE(wq->mut) {
       last = !orwl_wh_unload(wh);
       size_t len = Arg->len;
+      Arg->len = 0;
       if (data && data_len) {
-        // The other side sent us a shortcut
+        // The other side sent us a shortcut to the buffer it has
+        // previously used. This is the case of a local "write"
+        // request for both push operations that are effected.
         orwl_wq_resize_locked(wq, 0);
         wq->data = (void*)data;
         wq->data_len = data_len;
       } else if (len) {
-        ORWL_TIMER(copy_data_release_server) {
-          Arg->len = 0;
-          size_t data_len;
-          uint64_t* data = orwl_wq_map_locked(wq, &data_len);
-          if (data_len != (len + orwl_push_header)) {
-            orwl_wq_resize_locked(wq, len + orwl_push_header);
-            data = orwl_wq_map_locked(wq, &data_len);
+        if (len + orwl_push_header == Arg->back_len) {
+          // The total buffer has exactly the size we need, use it
+          // directly. This is the case of a remote request since this
+          // should always come form an orwl_push.
+          orwl_wq_resize_locked(wq, 0);
+          wq->data = Arg->back;
+          wq->data_len = Arg->back_len;
+          Arg->back = 0;
+          Arg->back_len = 0;
+        } else ORWL_TIMER(copy_data_release_server) {
+            // The buffer sizes don't match. This is the case of a
+            // local "read" request, that could not be copied. Then
+            // "mes" points to the orginal buffer and "back_len"
+            // should be 0.
+            assert(!Arg->back_len);
+            // If there is already a buffer associated to this wq,
+            // reuse that. If not, or of a different size, resize it.
+            size_t data_len;
+            uint64_t* data = orwl_wq_map_locked(wq, &data_len);
+            if (data_len != (len + orwl_push_header)) {
+              orwl_wq_resize_locked(wq, len + orwl_push_header);
+              data = orwl_wq_map_locked(wq, &data_len);
+            }
+            data += orwl_push_header;
+            memcpy(data, Arg->mes, len * sizeof(uint64_t));
           }
-          data += orwl_push_header;
-          memcpy(data, Arg->mes, len * sizeof(uint64_t));
-        }
       }
     }
     if (last) {

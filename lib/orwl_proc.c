@@ -71,7 +71,7 @@ void orwl_proc_destroy(orwl_proc *sock) {
     orwl_thread_cntrl_wait_for_caller(sock->det);
     orwl_thread_cntrl_delete(sock->det);
   }
-  if (sock->back) free((void*)sock->back);
+  if (sock->back) free(sock->back);
   orwl_proc_init(sock);
 }
 
