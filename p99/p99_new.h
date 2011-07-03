@@ -113,28 +113,40 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_MEMZERO, 0)
  ** @{
  **/
 
-#define P00_MALLOC0(T, N) malloc(sizeof(T)*N)
-#define P00_MALLOC(...) P00_MALLOC0(__VA_ARGS__)
-
 /**
  ** @brief A type oriented @c malloc wrapper
  **
- ** This macro receives one or two arguments. The first is an
- ** expression that is evaluated for its size. The second is optional
- ** and controls how may objects of the type of the expression should
- ** be created.
+ ** This macro receives an
+ ** expression that is evaluated for its size.
  ** @code
- ** double * a = P99_MALLOC(*a, 10); // allocate an array of 10 double
- ** node * n = P99_MALLOC(node);     // allocate a new node
+ ** double * a = P99_MALLOC(double[10]); // allocate an array of 10 double
+ ** double * b = P99_MALLOC(b[10]);      // allocate an array of 10 double
+ ** node * n = P99_MALLOC(node);         // allocate a new node
  ** @endcode
- ** @warning As for the C library routine the allocated space is
+ ** @remark As for the C library routine the allocated space is
  ** uninitialized. Better use ::P99_CALLOC wherever possible. In
  ** particular as in the second example, when you might have a dynamic
  ** data structure with pointers.
  **/
-#define P99_MALLOC(...)  P00_MALLOC(P99_CALL_DEFARG_LIST(P00_MALLOC, 2, __VA_ARGS__))
+#define P99_MALLOC(T) malloc(sizeof(T))
 
-#define P00_MALLOC_defarg_1() 1
+/**
+ ** @brief A type oriented @c realloc wrapper
+ **
+ ** This macro receives an
+ ** expression in @a T that is evaluated for its size as the second argument.
+ ** @code
+ ** double * a = P99_REALLOC(0, a[10]); // allocate an array of 10 double
+ ** a = P99_REALLOC(a, a[20]);          // re-allocate an array of 20 double
+ ** assert(a);                          // check if allocation was correct
+ ** @endcode
+ ** @remark As for the C library routine the allocated space is
+ ** uninitialized.
+ ** @remark In contrast to the library call @c realloc this macro can
+ ** not be used as a replacement for @c free, since the second
+ ** argument can not be tricked to result in a size of 0.
+ **/
+#define P99_REALLOC(X, T) realloc((X), sizeof(T))
 
 p99_inline
 void* p00_calloc(void const* source, size_t size, size_t number) {
