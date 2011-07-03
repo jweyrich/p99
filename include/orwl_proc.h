@@ -91,7 +91,7 @@ orwl_proc_init(orwl_proc *sock,         /*!< [out] */
                    .srv = srv,
                    .len = len,
                    .remoteorder = remo,
-                   .mes = (!m && len) ? uint64_t_vnew(len) : m,
+                   .mes = (!m && len) ? P99_CALLOC(uint64_t, len) : m,
                    .det = det,
                    );
   sock->back = (!m && len) ? sock->mes : 0;

@@ -258,7 +258,7 @@ bool orwl_send_(int fd, uint64_t const*const mess, size_t len, uint64_t remo) {
      the order of the remote host. */
   uint64_t *const buf = ((ORWL_HOSTORDER != ORWL_NETWORDER)
                          && (remo != ORWL_NETWORDER))
-    ? uint64_t_vnew(len)
+    ? P99_CALLOC(uint64_t, len)
     : (void*)0;
   if (buf) {
     orwl_hton(buf, mess, len);
@@ -293,7 +293,7 @@ bool orwl_send_(int fd, uint64_t const*const mess, size_t len, uint64_t remo) {
       }
     }
   P99_PROTECT:
-    if (buf) uint64_t_vdelete(buf);
+    if (buf) free(buf);
   }
   return false;
 }
