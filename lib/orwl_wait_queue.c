@@ -41,7 +41,7 @@ do {                                                           \
 void orwl_wq_destroy(orwl_wq *wq) {
   ORWL__WQ_CHECK(wq->head);
   ORWL__WQ_CHECK(wq->tail);
-  if (wq->data) wq->data = realloc(wq->data, 0);
+  if (wq->data) wq->data = wq->borrowed ? 0 : realloc(wq->data, 0);
   pthread_mutex_destroy(&wq->mut);
   pthread_cond_destroy(&wq->cond);
   *wq = P99_LVAL(orwl_wq const,
@@ -256,6 +256,19 @@ uint64_t* orwl_wq_map_locked(orwl_wq* wq, size_t* data_len) {
   return wq->data_len ? wq->data : 0;
 }
 
+void orwl_wq_link(orwl_wq *wq,       /*!< the locked queue to act on */
+                  uint64_t *data,    /*!< data buffer that is provided
+                                      from elsewhere */
+                  uint64_t data_len, /*!< the size of the data */
+                  bool borrowed      /*!< whether this location here
+                                       is responsible for the data */
+                  ) {
+  orwl_wq_resize_locked(wq, 0);
+  wq->data = data;
+  wq->data_len = data_len;
+  wq->borrowed = borrowed;
+}
+
 uint64_t* orwl_wh_map(orwl_wh* wh, size_t* data_len) {
   uint64_t* ret = 0;
   orwl_state state;
@@ -273,6 +286,11 @@ uint64_t* orwl_wh_map(orwl_wh* wh, size_t* data_len) {
 }
 
 void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
+  if (wq->borrowed) {
+    wq->data = 0;
+    wq->data_len = 0;
+    wq->borrowed = false;
+  }
   /* realloc is allowed to return something non-0 if len is
      0. Avoid that. */
   if (P99_UNLIKELY(!len && !wq->data_len)) return;

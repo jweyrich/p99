@@ -121,9 +121,9 @@ struct orwl_wq {
   orwl_wh *tail;        /**< The tail of the priority queue */
   uint64_t clock;       /**< A counter that is increased at each
                            event that this queue encounters. */
-  uint64_t* data_plus;
   uint64_t* data;
   size_t data_len;
+  bool borrowed:1;
 
   /**
    ** @}
@@ -207,7 +207,7 @@ struct orwl_wh {
   /**
    ** @memberof orwl_wq
    **/
-#define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .cond = PTHREAD_COND_INITIALIZER, .clock = 1 }
+#define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .cond = PTHREAD_COND_INITIALIZER, .clock = 1, .borrowed = false }
 
   DOCUMENT_INIT(orwl_wq)
 P99_DEFARG_DOCU(orwl_wq_init)
@@ -397,6 +397,20 @@ void orwl_wq_request_append(orwl_wq *wq,  /*!< the locked queue to act on */
                             orwl_wh *wh,  /*!< the handle to be inserted */
                             uint64_t howmuch /*!< the number of tokies to place */
                             );
+
+  /**
+   ** @brief Link this queue to a different data buffer
+   **
+   ** @memberof orwl_wq
+   ** @private
+   **/
+void orwl_wq_link(orwl_wq *wq,       /*!< the locked queue to act on */
+                  uint64_t *data,    /*!< data buffer that is provided
+                                      from elsewhere */
+                  uint64_t data_len, /*!< the size of the data */
+                  bool borrowed      /*!< whether this location here
+                                       is responsible for the data */
+                  );
 
 /**
  ** @brief Acquire a pending request on @a wh. Blocking until the

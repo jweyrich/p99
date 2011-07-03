@@ -157,17 +157,13 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
         // The other side sent us a shortcut to the buffer it has
         // previously used. This is the case of a local "write"
         // request for both push operations that are effected.
-        orwl_wq_resize_locked(wq, 0);
-        wq->data = (void*)data;
-        wq->data_len = data_len;
+        orwl_wq_link(wq, (void*)data, data_len, false);
       } else if (len) {
         if (len + orwl_push_header == Arg->back_len) {
           // The total buffer has exactly the size we need, use it
           // directly. This is the case of a remote request since this
           // should always come form an orwl_push.
-          orwl_wq_resize_locked(wq, 0);
-          wq->data = Arg->back;
-          wq->data_len = Arg->back_len;
+          orwl_wq_link(wq, Arg->back, Arg->back_len, false);
           Arg->back = 0;
           Arg->back_len = 0;
         } else ORWL_TIMER(copy_data_release_server) {
