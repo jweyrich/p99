@@ -50,6 +50,7 @@ struct orwl_proc {
   /* the message */
   size_t len;              /*!< the length of the message */
   uint64_t *mes;           /*!< the message itself */
+  size_t back_len;         /*!< the initial length of the message */
   uint64_t const* back;    /*!< a backup of the message */
   /* internal control fields */
   struct orwl_server* srv; /*!< the server through which we received this socket */
@@ -86,15 +87,17 @@ orwl_proc_init(orwl_proc *sock,         /*!< [out] */
                orwl_thread_cntrl *det   /*!< [in] non 0 if a local connection */
                ) {
   if (!sock) return 0;
+  uint64_t *mes = (!m && len) ? P99_CALLOC(uint64_t, len) : m;
   *sock = P99_LVAL(orwl_proc const,
                    .fd = fd,
                    .srv = srv,
                    .len = len,
                    .remoteorder = remo,
-                   .mes = (!m && len) ? P99_CALLOC(uint64_t, len) : m,
+                   .mes = mes,
+                   .back_len = (!m && len) ? len : 0,
+                   .back = (!m && len) ? mes : 0,
                    .det = det,
                    );
-  sock->back = (!m && len) ? sock->mes : 0;
   return sock;
 }
 
