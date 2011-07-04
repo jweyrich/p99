@@ -49,6 +49,7 @@ char const* orwl_seconds2str(double sec, char tmp[static 32]) {
     }
     char const* str = 0;
     switch (ilog) {
+    case -12 : str = "p"; break;
     case -9 : str = "n"; break;
     case -6 : str = "u"; break;
     case -3 : str = "m"; break;
