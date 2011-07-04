@@ -172,16 +172,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
             // "mes" points to the orginal buffer and "back_len"
             // should be 0.
             assert(!Arg->back_len);
-            // If there is already a buffer associated to this wq,
-            // reuse that. If not, or of a different size, resize it.
-            size_t data_len;
-            uint64_t* data = orwl_wq_map_locked(wq, &data_len);
-            if (data_len != (len + orwl_push_header)) {
-              orwl_wq_resize_locked(wq, len + orwl_push_header);
-              data = orwl_wq_map_locked(wq, &data_len);
-            }
-            data += orwl_push_header;
-            memcpy(data, Arg->mes, len * sizeof(uint64_t));
+            orwl_wq_link(wq, Arg->mes - orwl_push_header, len + orwl_push_header, true);
           }
       }
     }
