@@ -13,6 +13,7 @@ include ../scripts/Makefile-getconf-orwl
 NAME 	=	liborwl.a liborwl.so	# Name of executable file
 SRC	=					\
 	orwl_barrier.c				\
+	orwl_buffer.c				\
 	orwl_count.c				\
 	orwl_endpoint.c				\
 	orwl_futex.c				\

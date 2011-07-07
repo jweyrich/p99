@@ -405,9 +405,8 @@ void orwl_wq_request_append(orwl_wq *wq,  /*!< the locked queue to act on */
    ** @private
    **/
 void orwl_wq_link(orwl_wq *wq,       /*!< the locked queue to act on */
-                  uint64_t *data,    /*!< data buffer that is provided
+                  orwl_buffer data,    /*!< data buffer that is provided
                                       from elsewhere */
-                  uint64_t data_len, /*!< the size of the data */
                   bool borrowed      /*!< whether this location here
                                        is responsible for the data */
                   );

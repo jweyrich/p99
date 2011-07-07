@@ -151,33 +151,35 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
     bool last = false;
     MUTUAL_EXCLUDE(wq->mut) {
       last = !orwl_wh_unload(wh);
-      size_t len = Arg->len;
-      Arg->len = 0;
+      size_t len = Arg->mes.len;
+      Arg->mes.len = 0;
       if (data_len) {
         assert(data);
         /* The other side sent us a shortcut to the buffer it has
            previously used. This is the case of a local "write"
            request for both push operations that are effected. */
-        orwl_wq_link(wq, (void*)data, data_len, false);
+        orwl_buffer shortcut = ORWL_BUFFER_INITIALIZER(data_len, (void*)data);
+        orwl_wq_link(wq, shortcut, false);
       } else {
         /* If len is 0, this has been a read request who's buffer is
-           just dropped. */
+           just dropped and no update has to be done, here. */
         if (len) {
-          if (Arg->back_len) {
-            assert(Arg->back);
-            assert(len + orwl_push_header == Arg->back_len);
+          if (Arg->back.len) {
+            assert(Arg->back.data);
+            assert(len + orwl_push_header == Arg->back.len);
             /* The total buffer has exactly the size we need, use it
                directly. This is the case of a remote request since
                this should always come form an orwl_push. */
-            orwl_wq_link(wq, Arg->back, Arg->back_len, false);
-            Arg->back = 0;
-            Arg->back_len = 0;
+            orwl_wq_link(wq, Arg->back, false);
+            Arg->back = P99_LVAL(orwl_buffer);
           } else {
-            assert(Arg->mes);
+            assert(Arg->mes.data);
+            Arg->mes.data -= orwl_push_header;
+            Arg->mes.len += orwl_push_header;
             /* A local "read" request that is to be served, that could
                not be copied. Then "mes" points to the orginal buffer
                and "back_len" should be 0. */
-            orwl_wq_link(wq, Arg->mes - orwl_push_header, len + orwl_push_header, true);
+            orwl_wq_link(wq, Arg->mes, true);
           }
         }
       }

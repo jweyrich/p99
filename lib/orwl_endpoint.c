@@ -233,8 +233,8 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
        thread without going through the server socket. */
     orwl_thread_cntrl* det =  P99_NEW(orwl_thread_cntrl);
     orwl_proc *sock = P99_NEW(orwl_proc,
-                              -1, srv, len, ,
-                              mess,
+                              -1, srv, ,
+                              ((orwl_buffer)ORWL_BUFFER_INITIALIZER(len, mess)),
                               det);
     MUTUAL_EXCLUDE(srv->launch) {
       orwl_proc_launch(sock, det);

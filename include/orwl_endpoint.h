@@ -15,6 +15,7 @@
 # define   	ORWL_ENDPOINT_H_
 
 #include "orwl_rand.h"
+#include "orwl_buffer.h"
 
 P99_DECLARE_STRUCT(orwl_server);
 P99_DECLARE_STRUCT(orwl_proc);

@@ -257,15 +257,14 @@ uint64_t* orwl_wq_map_locked(orwl_wq* wq, size_t* data_len) {
 }
 
 void orwl_wq_link(orwl_wq *wq,       /*!< the locked queue to act on */
-                  uint64_t *data,    /*!< data buffer that is provided
+                  orwl_buffer data,    /*!< data buffer that is provided
                                       from elsewhere */
-                  uint64_t data_len, /*!< the size of the data */
                   bool borrowed      /*!< whether this location here
                                        is responsible for the data */
                   ) {
   orwl_wq_resize_locked(wq, 0);
-  wq->data = data;
-  wq->data_len = data_len;
+  wq->data = data.data;
+  wq->data_len = data.len;
   wq->borrowed = borrowed;
 }
 

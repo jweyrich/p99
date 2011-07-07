@@ -169,7 +169,7 @@ DEFINE_THREAD(orwl_server) {
           if (header[1] == repl) {
             size_t len = header[0];
             if (len) {
-              orwl_proc *sock = P99_NEW(orwl_proc, fd, Arg, len, header[2]);
+              orwl_proc *sock = P99_NEW(orwl_proc, fd, Arg, header[2], ((orwl_buffer)ORWL_BUFFER_INITIALIZER(len, 0)));
               MUTUAL_EXCLUDE(Arg->launch)
                 orwl_proc_create(sock);
               /* The spawned thread will close the fd. */

@@ -40,18 +40,13 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
  ** @see orwl_proc_join
  ** @see orwl_proc_insert_peer
  ** @see orwl_proc_insert_host
- **
- ** @todo In case of a local server shortcut the copy operation by
- ** just exchanging the address of the buffer.
  **/
 struct orwl_proc {
   uint64_t ret;            /*!< a place to store the return value of
                              the call */
   /* the message */
-  size_t len;              /*!< the length of the message */
-  uint64_t *mes;           /*!< the message itself */
-  size_t back_len;         /*!< the initial length of the message */
-  uint64_t *back;          /*!< a backup of the message */
+  orwl_buffer mes;           /*!< the message itself */
+  orwl_buffer back;          /*!< a backup of the message */
   /* internal control fields */
   struct orwl_server* srv; /*!< the server through which we received this socket */
   bool is_untied;          /*!< orwl_proc_untie_caller has been called once */
@@ -64,14 +59,13 @@ DECLARE_ONCE(orwl_proc);
 
 #ifndef DOXYGEN
 inline
-P99_PROTOTYPE(orwl_proc*, orwl_proc_init, orwl_proc *, int, struct orwl_server*, size_t, uint64_t, uint64_t*, orwl_thread_cntrl*);
-#define orwl_proc_init(...) P99_CALL_DEFARG(orwl_proc_init, 7, __VA_ARGS__)
+P99_PROTOTYPE(orwl_proc*, orwl_proc_init, orwl_proc *, int, struct orwl_server*, uint64_t, orwl_buffer, orwl_thread_cntrl*);
+#define orwl_proc_init(...) P99_CALL_DEFARG(orwl_proc_init, 6, __VA_ARGS__)
 #define orwl_proc_init_defarg_1() -1
 #define orwl_proc_init_defarg_2() P99_0(struct orwl_server*)
-#define orwl_proc_init_defarg_3() P99_0(size_t)
-#define orwl_proc_init_defarg_4() P99_0(uint64_t)
-#define orwl_proc_init_defarg_5() P99_0(uint64_t*)
-#define orwl_proc_init_defarg_6() P99_0(orwl_thread_cntrl*)
+#define orwl_proc_init_defarg_3() P99_0(uint64_t)
+#define orwl_proc_init_defarg_4() P99_LVAL(orwl_buffer)
+#define orwl_proc_init_defarg_5() P99_0(orwl_thread_cntrl*)
 #endif
 
 DOCUMENT_INIT(orwl_proc)
@@ -81,23 +75,26 @@ orwl_proc*
 orwl_proc_init(orwl_proc *sock,         /*!< [out] */
                int fd,                  /*!< [in] file descriptor, defaults to -1 */
                struct orwl_server* srv, /*!< [in,out] defaults to a null pointer */
-               size_t len,              /*!< [in] the length of the message 0 */
                uint64_t remo,           /*!< [in] the byte order on remote */
-               uint64_t *m,             /*!< [in] the message or 0 */
+               orwl_buffer m,             /*!< [in] the message or 0 */
                orwl_thread_cntrl *det   /*!< [in] non 0 if a local connection */
                ) {
   if (!sock) return 0;
-  uint64_t *mes = (!m && len) ? P99_CALLOC(uint64_t, len) : m;
+  bool alloc = (!m.data && m.len);
+  orwl_buffer mes
+    = {
+    .len = m.len,
+    .data = alloc ? P99_CALLOC(uint64_t, m.len) : m.data
+  };
   *sock = P99_LVAL(orwl_proc const,
                    .fd = fd,
                    .srv = srv,
-                   .len = len,
                    .remoteorder = remo,
                    .mes = mes,
-                   .back_len = (!m && len) ? len : 0,
-                   .back = (!m && len) ? mes : 0,
+                   .back = P99_INIT,
                    .det = det,
                    );
+  if (alloc) sock->back = mes;
   return sock;
 }
 
@@ -145,9 +142,9 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_proc);
 #define ORWL_PROC_READ(A, F, ...)                              \
 (void)((void (*)(orwl_proc*)){ F });                           \
 (void)((void (*)(__VA_ARGS__)){ P99_PASTE2(F, _proto) });                           \
-P99_VASSIGNS((A)->mes, __VA_ARGS__);                           \
-(A)->len -= P99_NARG(__VA_ARGS__);                             \
-(A)->mes += P99_NARG(__VA_ARGS__)
+P99_VASSIGNS((A)->mes.data, __VA_ARGS__);                           \
+(A)->mes.len -= P99_NARG(__VA_ARGS__);                             \
+(A)->mes.data += P99_NARG(__VA_ARGS__)
 
 /*! @brief an accessor function */
 /*! @memberof orwl_proc */

@@ -27,9 +27,8 @@ DEFINE_ONCE(orwl_proc,
 P99_INSTANTIATE(orwl_proc*, orwl_proc_init, orwl_proc *,
                                   int,
                                   orwl_server*,
-                          size_t,
                 uint64_t,
-                uint64_t*,
+                orwl_buffer,
                 orwl_thread_cntrl*);
 
 void orwl_proc_untie_caller(orwl_proc *sock) {
@@ -71,7 +70,7 @@ void orwl_proc_destroy(orwl_proc *sock) {
     orwl_thread_cntrl_wait_for_caller(sock->det);
     orwl_thread_cntrl_delete(sock->det);
   }
-  if (sock->back) free(sock->back);
+  if (sock->back.data) free(sock->back.data);
   orwl_proc_init(sock);
 }
 
@@ -83,10 +82,10 @@ DEFINE_ORWL_PROC_FUNC(orwl_server_callback, uint64_t funcID) {
 }
 
 DEFINE_THREAD(orwl_proc) {
-  assert(Arg->mes);
+  assert(Arg->mes.data);
   report(0, "starting %p", (void*)Arg);
   if (Arg->fd == -1
-      || (!orwl_recv_(Arg->fd, Arg->mes, Arg->len, Arg->remoteorder)
+      || (!orwl_recv_(Arg->fd, Arg->mes.data, Arg->mes.len, Arg->remoteorder)
           && Arg->srv)) {
     /* do something with mess here */
     orwl_server_callback(Arg);
