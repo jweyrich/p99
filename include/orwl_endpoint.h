@@ -275,8 +275,8 @@ P99_DECLARE_DEFARG(orwl_endpoint_print, , );
 #define orwl_endpoint_print_defarg_1() P99_LVAL(char[128])
 #endif
 
-bool orwl_send_(int fd, uint64_t const*mess, size_t len, uint64_t remo);
-bool orwl_recv_(int fd, uint64_t *mess, size_t len, uint64_t remo);
+bool orwl_send_(int fd, orwl_buffer mess, uint64_t remo);
+bool orwl_recv_(int fd, orwl_buffer mess, uint64_t remo);
 
 /**
  ** @brief Error value returned by ::orwl_send.
@@ -291,7 +291,7 @@ bool orwl_recv_(int fd, uint64_t *mess, size_t len, uint64_t remo);
  **
  ** @memberof orwl_server
  **/
-uint64_t orwl_send(orwl_server* srv, orwl_endpoint const* there, rand48_t *seed, size_t len, uint64_t*const mess);
+uint64_t orwl_send(orwl_server* srv, orwl_endpoint const* there, rand48_t *seed, orwl_buffer mess);
 
 /**
  ** @brief Lauch a remote procedure call with function @a F.
@@ -308,6 +308,6 @@ uint64_t orwl_send(orwl_server* srv, orwl_endpoint const* there, rand48_t *seed,
  ** @endmsc
  **/
 #define orwl_rpc(SRV, THERE, SEED, F, ...)                                            \
-orwl_send(SRV, THERE, SEED, P99_LENGTH_ARR_ARG(uint64_t, ORWL_OBJID(F), __VA_ARGS__))
+  orwl_send(SRV, THERE, SEED, ((orwl_buffer){ P99_LENGTH_ARR_ARG(uint64_t, ORWL_OBJID(F), __VA_ARGS__) }))
 
 #endif 	    /* !ORWL_ENDPOINT_H_ */

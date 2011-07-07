@@ -21,7 +21,7 @@
 /**
  ** @brief Negotiate a send request with remote endpoint @a ep.
  **/
-uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed, size_t len, uint64_t*const mess);
+uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed, orwl_buffer mess);
 
 /**
  ** @brief Data for a procedure call

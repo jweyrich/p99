@@ -182,38 +182,39 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
     - pass over a pointer of the data.
   */
   assert(wq);
-  size_t extend = 0;
-  uint64_t* mess = 0;
+  orwl_buffer mess = ORWL_BUFFER_INITIALIZER(0, 0);
   uint64_t buffer[orwl_push_header] = {
     ORWL_OBJID(orwl_proc_release),
     whID,
   };
   MUTUAL_EXCLUDE(wq->mut) {
     if (withdata) {
-      mess = orwl_wq_map_locked(wq, &extend);
-      if (mess) {
+      mess.data = orwl_wq_map_locked(wq, &mess.len);
+      if (mess.data) {
         if ((sizeof(uintptr_t) > sizeof(uint64_t))
             || keep
             || !srv
             || !orwl_endpoint_similar(&srv->host.ep, ep))
-          memcpy(mess, buffer, orwl_push_header * sizeof(mess[0]));
+          memcpy(mess.data, buffer, orwl_push_header * sizeof(mess.data[0]));
         else {
           // we are in the same address space and can reuse the memory
-          buffer[2] = (uintptr_t)mess;
-          buffer[3] = extend;
-          mess = 0;
+          buffer[2] = (uintptr_t)mess.data;
+          buffer[3] = mess.len;
+          mess = P99_LVAL(orwl_buffer);
           // Just delete the local trace of the buffer, not the buffer itself
           wq->data = 0;
           wq->data_len = 0;
         }
       }
     }
-    if (!mess) {
-      mess = buffer;
-      extend = orwl_push_header;
+    if (!mess.data) {
+      mess = (orwl_buffer){
+        .data = buffer,
+        .len = orwl_push_header
+      };
     }
     ORWL_TIMER(send_push_server)
-      orwl_send(srv, ep, seed_get(), extend, mess);
+      orwl_send(srv, ep, seed_get(), mess);
     if (!keep) orwl_wq_resize_locked(wq, 0);
   }
 }

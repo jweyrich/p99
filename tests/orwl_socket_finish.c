@@ -79,7 +79,7 @@ int main(int argc, char **argv) {
     orwl_endpoint_parse(&other, argv[1]);
     errno = 0;
     /* wait until the other side is up. */
-    uint64_t ret = orwl_send(0, &other, &seed, 0, P99_0(uint64_t*));
+    uint64_t ret = orwl_send(0, &other, &seed, P99_LVAL(orwl_buffer));
     char messg[245];
     sprintf(messg, "finish server %s %" PRIX64,
             argv[1], ret);

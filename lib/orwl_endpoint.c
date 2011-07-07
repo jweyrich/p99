@@ -145,7 +145,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
  **   thread -> caller [label="orwl_recv_(ret)", URL="\ref orwl_recv_()"];
  ** @endmsc
  **/
-uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed, size_t len, uint64_t*const mess) {
+uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed, orwl_buffer mess) {
   uint64_t ret = 0;
   /* We use a remote connection if either the local server address is
      not known or we see that the endpoint "there" is actually on
@@ -154,7 +154,10 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
     /* do all this work before opening the socket */
     uint64_t const chal = orwl_rand64(seed);
     uint64_t const repl = orwl_challenge(chal);
-    orwl_header header = ORWL_HEADER_INITIALIZER(chal);
+    orwl_buffer header = {
+      .data = (orwl_header)ORWL_HEADER_INITIALIZER(chal),
+      .len = orwl_header_els
+    };
     struct sockaddr_in addr = {
       .sin_addr = addr2net(&there->addr),
       .sin_port = port2net(&there->port),
@@ -190,7 +193,7 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
           else P99_UNWIND_RETURN ORWL_SEND_ERROR;
         } else break;
       }
-      if (P99_UNLIKELY(orwl_send_(fd, header, orwl_header_els, 0) || orwl_recv_(fd, header, orwl_header_els, 0))) {
+      if (P99_UNLIKELY(orwl_send_(fd, header, 0) || orwl_recv_(fd, header, 0))) {
         P99_HANDLE_ERRNO {
         default:
           perror("orwl_send could not exchange challenge");
@@ -199,30 +202,30 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
       }
 
       /* The communication was successful */
-      if (P99_LIKELY(header[1] == repl)) {
+      if (P99_LIKELY(header.data[1] == repl)) {
         /* The other side is authorized. Send the answer and the size of
            the message to the other side. */
-        header[1] = orwl_challenge(header[0]);
-        header[0] = len;
-        if (P99_UNLIKELY(orwl_send_(fd, header, orwl_header_els, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+        header.data[1] = orwl_challenge(header.data[0]);
+        header.data[0] = mess.len;
+        if (P99_UNLIKELY(orwl_send_(fd, header, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
         /* The authorized empty message indicates termination.
            If not so, we now send the real message. */
-        if (len) {
-          if (P99_UNLIKELY(orwl_send_(fd, mess, len, header[2]))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+        if (mess.len) {
+          if (P99_UNLIKELY(orwl_send_(fd, mess, header.data[2]))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
           /* Receive a final message, until the other end closes the
              connection. */
-          if (P99_UNLIKELY(orwl_recv_(fd, header, orwl_header_els, header[2])))
+          if (P99_UNLIKELY(orwl_recv_(fd, header, header.data[2])))
             report(1, "terminal reception not successful\n");
           else
-            ret = header[0];
+            ret = header.data[0];
         }
         success = true;
       } else  {
         /* The other side is not authorized. Terminate. */
         diagnose(fd, "fd %d, you are not who you pretend to be", fd);
-        header[1] = 0;
-        header[0] = 0;
-        if (P99_UNLIKELY(orwl_send_(fd, header, orwl_header_els, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+        header.data[1] = 0;
+        header.data[0] = 0;
+        if (P99_UNLIKELY(orwl_send_(fd, header, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
       }
     P99_PROTECT:
       close(fd);
@@ -234,7 +237,7 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
     orwl_thread_cntrl* det =  P99_NEW(orwl_thread_cntrl);
     orwl_proc *sock = P99_NEW(orwl_proc,
                               -1, srv, ,
-                              ((orwl_buffer)ORWL_BUFFER_INITIALIZER(len, mess)),
+                              mess,
                               det);
     MUTUAL_EXCLUDE(srv->launch) {
       orwl_proc_launch(sock, det);
@@ -252,22 +255,22 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
 
 enum { maxlen = 1 << 24 };
 
-bool orwl_send_(int fd, uint64_t const*const mess, size_t len, uint64_t remo) {
+bool orwl_send_(int fd, orwl_buffer mess, uint64_t remo) {
   /* We only have to translate the message buffer, if we have an
      order that is different from network order and different from
      the order of the remote host. */
   uint64_t *const buf = ((ORWL_HOSTORDER != ORWL_NETWORDER)
                          && (remo != ORWL_NETWORDER))
-    ? P99_CALLOC(uint64_t, len)
+    ? P99_CALLOC(uint64_t, mess.len)
     : (void*)0;
   if (buf) {
-    orwl_hton(buf, mess, len);
+    orwl_hton(buf, mess.data, mess.len);
   }
 
-  char * bbuf = (void*)(buf ? buf : mess);
+  char * bbuf = (void*)(buf ? buf : mess.data);
 
   P99_UNWIND_PROTECT {
-    for (size_t blen = sizeof(uint64_t) * len; blen;) {
+    for (size_t blen = sizeof(uint64_t) * mess.len; blen;) {
       /* Don't stress the network layer by sending too large messages
          at a time. */
       size_t const clen = (blen > maxlen) ? maxlen : blen;
@@ -298,11 +301,11 @@ bool orwl_send_(int fd, uint64_t const*const mess, size_t len, uint64_t remo) {
   return false;
 }
 
-bool orwl_recv_(int fd, uint64_t *const mess, size_t len, uint64_t remo) {
-  char * bbuf = (void*)mess;
-  if (!len) report(1, "orwl_recv_ with len 0, skipping\n");
+bool orwl_recv_(int fd, orwl_buffer const mess, uint64_t remo) {
+  char * bbuf = (void*)mess.data;
+  if (!mess.len) report(1, "orwl_recv_ with len 0, skipping\n");
   P99_UNWIND_PROTECT {
-    for (size_t blen = sizeof(uint64_t) * len; blen;) {
+    for (size_t blen = sizeof(uint64_t) * mess.len; blen;) {
       /* Don't stress the network layer by receiving too large messages
          at a time. */
       size_t const clen = (blen > maxlen) ? maxlen : blen;
@@ -332,7 +335,7 @@ bool orwl_recv_(int fd, uint64_t *const mess, size_t len, uint64_t remo) {
      the order of the remote host. */
     if ((ORWL_HOSTORDER != ORWL_NETWORDER)
         && (remo != ORWL_NETWORDER)) {
-      orwl_ntoh(mess, 0, len);
+      orwl_ntoh(mess.data, 0, mess.len);
     }
   }
   return false;

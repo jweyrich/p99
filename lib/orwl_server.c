@@ -68,7 +68,7 @@ void orwl_server_close(orwl_server *serv) {
 
 
 void orwl_server_terminate(orwl_server *serv) {
-  if (serv) orwl_send(0, &serv->host.ep, seed_get(), 0, P99_0(uint64_t*));
+  if (serv) orwl_send(0, &serv->host.ep, seed_get(), P99_LVAL(orwl_buffer));
 }
 
 void orwl_server_destroy(orwl_server *serv) {
@@ -137,7 +137,10 @@ DEFINE_THREAD(orwl_server) {
         /* Do this work before being connected */
         uint64_t const chal = orwl_rand64(seed);
         uint64_t const repl = orwl_challenge(chal);
-        orwl_header header = ORWL_HEADER_INITIALIZER(0);
+        orwl_buffer header = {
+          .data = (orwl_header)ORWL_HEADER_INITIALIZER(0),
+          .len = orwl_header_els
+        };
 
         if (Arg->info && Arg->info_len) progress(1, t, "%s", Arg->info);
 
@@ -158,18 +161,18 @@ DEFINE_THREAD(orwl_server) {
         /* Now that we have a valid file descriptor, protect its closing. */
         P99_UNWIND_PROTECT {
           /* Receive a challenge from the new connection */
-          if (P99_UNLIKELY(orwl_recv_(fd, header, orwl_header_els, 0)))
+          if (P99_UNLIKELY(orwl_recv_(fd, header, 0)))
             P99_UNWIND(1);
-          header[1] = orwl_challenge(header[0]);
-          header[0] = chal;
+          header.data[1] = orwl_challenge(header.data[0]);
+          header.data[0] = chal;
           /* challenge / reply of the new connection */
-          if (P99_UNLIKELY(orwl_send_(fd, header, orwl_header_els, 0)
-                           || orwl_recv_(fd, header, orwl_header_els, 0)))
+          if (P99_UNLIKELY(orwl_send_(fd, header, 0)
+                           || orwl_recv_(fd, header, 0)))
             P99_UNWIND(1);
-          if (header[1] == repl) {
-            size_t len = header[0];
+          if (header.data[1] == repl) {
+            size_t len = header.data[0];
             if (len) {
-              orwl_proc *sock = P99_NEW(orwl_proc, fd, Arg, header[2], ((orwl_buffer)ORWL_BUFFER_INITIALIZER(len, 0)));
+              orwl_proc *sock = P99_NEW(orwl_proc, fd, Arg, header.data[2], ((orwl_buffer)ORWL_BUFFER_INITIALIZER(len, 0)));
               MUTUAL_EXCLUDE(Arg->launch)
                 orwl_proc_create(sock);
               /* The spawned thread will close the fd. */
