@@ -202,8 +202,7 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
           buffer[3] = mess.len;
           mess = P99_LVAL(orwl_buffer);
           // Just delete the local trace of the buffer, not the buffer itself
-          wq->data = 0;
-          wq->data_len = 0;
+          wq->data = P99_LVAL(orwl_buffer);
         }
       }
     }

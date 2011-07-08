@@ -167,9 +167,9 @@ int main(int argc, char **argv) {
             sleepfor(0.1);
             size_t have_data = 0;
             for (size_t i = 0; i < len; ++i) {
-              if (srv.wqs[i].data) {
+              if (srv.wqs[i].data.data) {
                 ++have_data;
-                uint8_t val = *(srv.wqs[i].data);
+                uint8_t val = *(srv.wqs[i].data.data);
                 char buf[3];
                 snprintf(buf, 3, "%.2" PRIX8 "|", val);
                 memcpy(info + (3 * i) + 1, buf, 2);

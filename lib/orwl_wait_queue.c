@@ -41,15 +41,17 @@ do {                                                           \
 void orwl_wq_destroy(orwl_wq *wq) {
   ORWL__WQ_CHECK(wq->head);
   ORWL__WQ_CHECK(wq->tail);
-  if (wq->data) wq->data = wq->borrowed ? 0 : realloc(wq->data, 0);
+  if (wq->data.data) wq->data.data = wq->borrowed ? 0 : realloc(wq->data.data, 0);
   pthread_mutex_destroy(&wq->mut);
   pthread_cond_destroy(&wq->cond);
   *wq = P99_LVAL(orwl_wq const,
                  .head = TGARB(orwl_wh*),
                  .tail = TGARB(orwl_wh*),
-                 .data = TGARB(void*),
+                 .data = {
+                   .len = P99_TMAX(size_t),
+                     .data = TGARB(void*)
+                     },
                  .clock = P99_TMAX(uint64_t),
-                 .data_len = P99_TMAX(size_t),
                  );
 }
 
@@ -252,8 +254,8 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
 }
 
 uint64_t* orwl_wq_map_locked(orwl_wq* wq, size_t* data_len) {
-  if (data_len) *data_len = wq->data_len;
-  return wq->data_len ? wq->data : 0;
+  if (data_len) *data_len = wq->data.len;
+  return wq->data.len ? wq->data.data : 0;
 }
 
 void orwl_wq_link(orwl_wq *wq,       /*!< the locked queue to act on */
@@ -263,8 +265,7 @@ void orwl_wq_link(orwl_wq *wq,       /*!< the locked queue to act on */
                                        is responsible for the data */
                   ) {
   orwl_wq_resize_locked(wq, 0);
-  wq->data = data.data;
-  wq->data_len = data.len;
+  wq->data = data;
   wq->borrowed = borrowed;
 }
 
@@ -286,37 +287,42 @@ uint64_t* orwl_wh_map(orwl_wh* wh, size_t* data_len) {
 
 void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
   if (wq->borrowed) {
-    wq->data = 0;
-    wq->data_len = 0;
+    wq->data = P99_LVAL(orwl_buffer);
     wq->borrowed = false;
   }
-  /* realloc is allowed to return something non-0 if len is
-     0. Avoid that. */
-  if (P99_UNLIKELY(!len && !wq->data_len)) return;
-  size_t const blen = len * sizeof(uint64_t);
-  size_t const data_len = wq->data_len;
-  size_t const data_blen = data_len * sizeof(uint64_t);
-  uint64_t* data = wq->data;
-  /* zero out unused memory */
+  if (P99_UNLIKELY((!len && !wq->data.len) || (len == wq->data.len))) return;
+  size_t const blen      =          len * sizeof(wq->data.data[0]);
+  size_t const data_blen = wq->data.len * sizeof(wq->data.data[0]);
+  /* zero out memory that is returned to the system */
   if (data_blen > blen)
-    memset(&data[len], 0, data_blen - blen);
-  if (P99_LIKELY(len)) {
-    data = realloc(data, blen);
-    if (P99_LIKELY(data)) {
-      /* zero out unused memory */
-      if (data_blen < blen)
-        memset(&data[data_len], 0, blen - data_blen);
-      wq->data = data;
-      wq->data_len = len;
-    } else {
-      /* realloc failed, don't do anything */
-      report(true, "adding suplement of length %zu failed", len);
-    }
-  } else {
-    // Some systems may return a valid pointer even if the length is
-    // 0. Keep track of it.
-    wq->data = realloc(data, 0);
-    wq->data_len = 0;
+    memset(&wq->data.data[len], 0, data_blen - blen);
+  // Some systems may return a valid pointer even if the length is
+  // 0. Keep track of it.
+  orwl_buffer data = {
+    .data = realloc(wq->data.data, blen),
+    .len = len
+  };
+  /* zero out newly allocated memory */
+  if (data_blen < blen) {
+    if (P99_LIKELY(data.data))
+      memset(&data.data[wq->data.len], 0, blen - data_blen);
+    /* We wanted to enlarge the buffer but we ran out of virtual
+       address space. There is not much that we can do about it: keep
+       the data that we still possess, cross fingers and return. */
+    else return;
+  }
+  if (P99_LIKELY(data.data || !len))
+    wq->data = data;
+  else {
+    /* There is just one case that may bring us here and no decent
+       implementation of realloc should ever do that, but who
+       knows. We wanted to shrink the buffer, and realloc failed
+       instead of just returning the original pointer. So we do just
+       that, keep the pointer and adjust the length. We already
+       destroyed the data that we have beyond the new bound,
+       anyhow. */
+    assert(data_blen > blen);
+    wq->data.len = len;
   }
 }
 

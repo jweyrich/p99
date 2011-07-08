@@ -121,9 +121,10 @@ struct orwl_wq {
   orwl_wh *tail;        /**< The tail of the priority queue */
   uint64_t clock;       /**< A counter that is increased at each
                            event that this queue encounters. */
-  uint64_t* data;
-  size_t data_len;
-  bool borrowed:1;
+  orwl_buffer data;     /**< The data that is associated with this
+                           queue */
+  bool borrowed:1;      /**< True if the data is not to be released
+                           from here. */
 
   /**
    ** @}
