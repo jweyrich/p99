@@ -629,33 +629,40 @@ void orwl_truncate(orwl_handle* rh, size_t data_len) {
   }
 }
 
-P99_DECLARE_STRUCT(orwl_scale_t);
+P99_DECLARE_STRUCT(orwl_scale_state);
 
-struct orwl_scale_t {
+/**
+ ** @brief The internal state for a call to ::orwl_state.
+ **/
+struct orwl_scale_state {
   orwl_mirror* rq;
   size_t data_len;
   orwl_thread_cntrl *det;
 };
 
 inline
-orwl_scale_t* orwl_scale_t_init(orwl_scale_t* scale, orwl_mirror* rq, size_t data_len, orwl_thread_cntrl* det) {
-  scale->rq = rq;
-  scale->data_len = data_len;
-  scale->det = det;
+orwl_scale_state* orwl_scale_state_init(orwl_scale_state* scale, orwl_mirror* rq, size_t data_len, orwl_thread_cntrl* det) {
+  if (scale) {
+    *scale = P99_LVAL(orwl_scale_state,
+                      .rq = rq,
+                      .data_len = data_len,
+                      .det = det
+                      );
+  }
   return scale;
 }
 
 inline
-orwl_scale_t* orwl_scale_t_destroy(orwl_scale_t* scale) {
-  return scale;
+void orwl_scale_state_destroy(orwl_scale_state* scale) {
+  /* empty */
 }
 
 inline
-P99_PROTOTYPE(orwl_scale_t*, orwl_scale_t_init, orwl_scale_t*, orwl_mirror*, size_t, orwl_thread_cntrl*);
-#define orwl_scale_t_init(...) P99_CALL_DEFARG(orwl_scale_t_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_scale_t_init,  , P99_0(orwl_mirror*), P99_0(size_t), P99_0(orwl_thread_cntrl*));
-DECLARE_NEW_DELETE(orwl_scale_t);
-DECLARE_THREAD(orwl_scale_t);
+P99_PROTOTYPE(orwl_scale_state*, orwl_scale_state_init, orwl_scale_state*, orwl_mirror*, size_t, orwl_thread_cntrl*);
+#define orwl_scale_state_init(...) P99_CALL_DEFARG(orwl_scale_state_init, 4, __VA_ARGS__)
+P99_DECLARE_DEFARG(orwl_scale_state_init,  , P99_0(orwl_mirror*), P99_0(size_t), P99_0(orwl_thread_cntrl*));
+DECLARE_NEW_DELETE(orwl_scale_state);
+DECLARE_THREAD(orwl_scale_state);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
 

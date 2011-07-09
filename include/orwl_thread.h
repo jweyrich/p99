@@ -161,6 +161,7 @@ struct orwl_thread_cntrl {
 inline
 orwl_thread_cntrl* orwl_thread_cntrl_init(orwl_thread_cntrl* det) {
   if (det) {
+    *det = P99_LVAL(orwl_thread_cntrl);
     orwl_sem_init(&det->semCaller, 0u);
     orwl_sem_init(&det->semCallee, 0u);
   }
@@ -434,8 +435,9 @@ void P99_PASTE2(T, _start)(T *const Arg)
 #endif
 
 inline pthread_t* pthread_t_init(pthread_t *id) {
-  if (!id) return 0;
-  *id = P99_LVAL(pthread_t const);
+  if (id) {
+    *id = P99_LVAL(pthread_t const);
+  }
   return id;
 }
 inline void pthread_t_destroy(pthread_t *id) {

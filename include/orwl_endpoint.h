@@ -93,11 +93,9 @@ inline
 orwl_addr* orwl_addr_init(orwl_addr *A,  /*!< the object to initialize */
                     in_addr_t I0 /*!< defaults to the null address */
                     ) {
-  if (!A) return 0;
-  A->a[0] = P99_0(in_addr_t);
-  A->a[1] = P99_0(in_addr_t);
-  A->a[2] = htonl(0x0000FFFF);
-  A->a[3] = I0;
+  if (A) {
+    *A = P99_LVAL(orwl_addr, .a = { [2] = htonl(0x0000FFFF), [3] = I0 } );
+  }
   return A;
 }
 
@@ -176,8 +174,9 @@ inline
 orwl_port* orwl_port_init(orwl_port *A,   /*!< the object to initialize */
                     in_port_t P  /*!< defaults to 0 */
                     ) {
-  if (!A) return 0;
-  *A = net2port(P);
+  if (A) {
+    *A = net2port(P);
+  }
   return A;
 }
 
@@ -234,10 +233,11 @@ orwl_endpoint* orwl_endpoint_init
  in_port_t port,          /*!< defaults to 0 */
  uint64_t index           /*!< defaults to 0 */
  ) {
-  if (!endpoint) return 0;
-  orwl_addr_init(&endpoint->addr, addr);
-  orwl_port_init(&endpoint->port, port);
-  endpoint->index = index;
+  if (endpoint) {
+    *endpoint = P99_LVAL(orwl_endpoint, .index = index);
+    orwl_addr_init(&endpoint->addr, addr);
+    orwl_port_init(&endpoint->port, port);
+  }
   return endpoint;
 }
 

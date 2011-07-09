@@ -34,7 +34,7 @@ P99_PROTOTYPE(orwl_buffer*, orwl_buffer_init, orwl_buffer *, size_t, uint64_t*);
 inline
 orwl_buffer* orwl_buffer_init(orwl_buffer *buf, size_t len, uint64_t* data) {
   if (buf) {
-    *buf = (orwl_buffer)ORWL_BUFFER_INITIALIZER(len, data);
+    *buf = P99_LVAL(orwl_buffer, .len = len, .data = data);
   }
   return buf;
 }

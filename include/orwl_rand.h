@@ -56,10 +56,15 @@ rand48_t *rand48_t_init(rand48_t *seed,     /*!< [out] the object to iniialize *
                         unsigned short x1,  /*!< [in] defaults to the process id */
                         unsigned short x2   /*!< [in] defaults to the thread id */
                         ) {
-  if (!seed) return 0;
-  seed->x[0] = x0;
-  seed->x[1] = x1;
-  seed->x[2] = x2;
+  if (seed) {
+    *seed = P99_LVAL(rand48_t,
+                     .x = {
+                       [0] = x0,
+                         [1] = x1,
+                         [2] = x2,
+                         }
+                     );
+  }
   return seed;
 }
 

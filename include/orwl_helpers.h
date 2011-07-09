@@ -49,13 +49,13 @@ orwl_vertex* orwl_vertex_init(orwl_vertex *vertex, size_t nb_neighbors) {
     *vertex = P99_LVAL(orwl_vertex,
 		       .color = 0,
 		       .nb_neighbors = nb_neighbors,
-		       .neighbors = NULL,
-		       .label = {0},
+		       .neighbors = (nb_neighbors
+                                     ? vertex->neighbors = size_t_vnew(nb_neighbors)
+                                     : 0),
+		       .label = P99_INIT,
 		       );
-    if (nb_neighbors > 0)
-      vertex->neighbors = size_t_vnew(nb_neighbors);
   }
- 
+
   return vertex;
 }
 
@@ -89,8 +89,12 @@ struct orwl_graph {
 DOCUMENT_INIT(orwl_graph)
 inline
 orwl_graph * orwl_graph_init(orwl_graph * graph, size_t nb_vertices) {
-  graph->nb_vertices = nb_vertices;
-  graph->vertices = orwl_vertex_vnew(nb_vertices);
+  if (graph) {
+    *graph = P99_LVAL(orwl_graph,
+                      .nb_vertices = nb_vertices,
+                      .vertices = orwl_vertex_vnew(nb_vertices)
+                      );
+  }
   return graph;
 }
 

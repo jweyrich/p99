@@ -72,34 +72,35 @@ DOCUMENT_INIT(orwl_proc)
 P99_DEFARG_DOCU(orwl_proc_init)
 inline
 orwl_proc*
-orwl_proc_init(orwl_proc *sock,         /*!< [out] */
+orwl_proc_init(orwl_proc *proc,         /*!< [out] */
                int fd,                  /*!< [in] file descriptor, defaults to -1 */
                struct orwl_server* srv, /*!< [in,out] defaults to a null pointer */
                uint64_t remo,           /*!< [in] the byte order on remote */
-               orwl_buffer m,             /*!< [in] the message or 0 */
+               orwl_buffer m,           /*!< [in] the message or 0 */
                orwl_thread_cntrl *det   /*!< [in] non 0 if a local connection */
                ) {
-  if (!sock) return 0;
-  bool alloc = (!m.data && m.len);
-  orwl_buffer mes
-    = {
-    .len = m.len,
-    .data = alloc ? P99_CALLOC(uint64_t, m.len) : m.data
-  };
-  *sock = P99_LVAL(orwl_proc const,
-                   .fd = fd,
-                   .srv = srv,
-                   .remoteorder = remo,
-                   .mes = mes,
-                   .back = P99_INIT,
-                   .det = det,
-                   );
-  if (alloc) sock->back = mes;
-  return sock;
+  if (proc) {
+    bool alloc = (!m.data && m.len);
+    orwl_buffer mes
+      = {
+      .len = m.len,
+      .data = alloc ? P99_CALLOC(uint64_t, m.len) : m.data
+    };
+    *proc = P99_LVAL(orwl_proc const,
+                     .fd = fd,
+                     .srv = srv,
+                     .remoteorder = remo,
+                     .mes = mes,
+                     .back = P99_INIT,
+                     .det = det,
+                     );
+    if (alloc) proc->back = mes;
+  }
+  return proc;
 }
 
 DOCUMENT_DESTROY(orwl_proc)
-void orwl_proc_destroy(orwl_proc *sock);
+void orwl_proc_destroy(orwl_proc *proc);
 DECLARE_NEW_DELETE(orwl_proc);
 DECLARE_THREAD(orwl_proc);
 
@@ -109,7 +110,7 @@ DECLARE_THREAD(orwl_proc);
 /**
  ** @memberof orwl_proc
  **/
-void orwl_proc_untie_caller(orwl_proc *sock);
+void orwl_proc_untie_caller(orwl_proc *proc);
 
 #ifdef DOXYGEN
 #define DECLARE_ORWL_PROC_FUNC(F, ...)                                  \

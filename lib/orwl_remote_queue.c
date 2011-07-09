@@ -285,7 +285,7 @@ orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_valid;
   if (!rh || !rh->wh) return orwl_valid;
   orwl_handle_cancel* rhcp = memcpy(P99_NEW(orwl_handle_cancel), rh, sizeof(*rh));
-  orwl_handle_cancel_create(rhcp, P99_0(pthread_t*));
+  orwl_handle_cancel_create_detached(rhcp);
   orwl_handle_destroy(rh);
   return state;
 }
@@ -298,12 +298,12 @@ P99_INSTANTIATE(void*, orwl_write_map, orwl_handle*, size_t*);
 P99_INSTANTIATE(void const*, orwl_read_map, orwl_handle*, size_t*);
 P99_INSTANTIATE(void, orwl_truncate, orwl_handle*, size_t);
 
-P99_DEFINE_DEFARG(orwl_scale_t_init, , P99_0(orwl_mirror*), P99_0(size_t), P99_0(orwl_thread_cntrl*));
-DEFINE_NEW_DELETE(orwl_scale_t);
-P99_INSTANTIATE(orwl_scale_t*, orwl_scale_t_init, orwl_scale_t*, orwl_mirror*, size_t, orwl_thread_cntrl*);
-P99_INSTANTIATE(orwl_scale_t*, orwl_scale_t_destroy, orwl_scale_t*);
+P99_DEFINE_DEFARG(orwl_scale_state_init, , P99_0(orwl_mirror*), P99_0(size_t), P99_0(orwl_thread_cntrl*));
+DEFINE_NEW_DELETE(orwl_scale_state);
+P99_INSTANTIATE(orwl_scale_state*, orwl_scale_state_init, orwl_scale_state*, orwl_mirror*, size_t, orwl_thread_cntrl*);
+P99_INSTANTIATE(void, orwl_scale_state_destroy, orwl_scale_state*);
 
-DEFINE_THREAD(orwl_scale_t) {
+DEFINE_THREAD(orwl_scale_state) {
   ORWL_TIMER(total_scale) {
     orwl_handle first = ORWL_HANDLE_INITIALIZER;
     orwl_write_request(Arg->rq, &first);
