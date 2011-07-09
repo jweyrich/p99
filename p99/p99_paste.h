@@ -91,6 +91,7 @@
 #define P00_DOCUMENT_DECLARATION_ARGUMENT(MACRO, N)
 #define P00_DOCUMENT_MACRO_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO should correspond to a macro name */
 #define P00_DOCUMENT_NUMBER_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO must expand to a decimal number */
+#define P00_DOCUMENT_DESIGNATOR_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO must be a field designator */
 #endif
 
 /**

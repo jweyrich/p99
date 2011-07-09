@@ -67,6 +67,10 @@ struct toto {
   int a;
 };
 
+struct tutu {
+  int b;
+  struct toto c;
+};
 
 int main(int argc, char*argv[]) {
   printf("return %u 'a's: %s\n", len, myVerryBuggyFunction());
@@ -81,5 +85,10 @@ int main(int argc, char*argv[]) {
   struct toto j = P99_INIT;
   struct toto jj[4][5] = P99_INIT;
   struct toto (*jjj)[4][5] = &P99_LVAL(struct toto[4][5]);
+  struct toto k = P99_DESIGNATED(j, .a);
+  struct tutu L = P99_INIT;
+  struct tutu *M = &P99_LCOPY(struct tutu, L, .b, .c);
+  double A[4] = { 1, 2, 3, 4 };
+  double *B = P99_LCOPY(double[4], A, [2]);
   return P99_LVAL(struct toto[3][4])[0][0].a;
 }

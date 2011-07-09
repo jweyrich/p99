@@ -38,6 +38,7 @@
 #define P00_STRLEN(NAME, X, I) strlen(X)
 #define P00_SIZEOF(NAME, X, I) sizeof(X)
 #define P00_TYPD(NAME, X, I) typedef X P99_PASTE2(NAME, I)
+#define P00_DESIGNATE(NAME, X, I) X = (NAME)X
 #define P00_ADD(NAME, I, REC, RES) P99_ADD(RES, REC)
 
 #define P00_STRLENS(N, ...) P99_FOR(,N, P00_SUM, P00_STRLEN, __VA_ARGS__)
@@ -201,7 +202,62 @@ P99_IF_LT(P99_NARG(__VA_ARGS__),2)                                         \
 #define P99_TYPEDEFS(NAME, ...)                                \
 P00_TYPEDEFS(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
+#define P00_DESIGNATED(VAR, N, ...) P99_FOR(VAR, N, P00_SEQ, P00_DESIGNATE, __VA_ARGS__)
 
+/**
+ ** @brief Construct a designated initializer by copying fields of @a VAR.
+ **
+ ** The argument list must be composed of designators, something like
+ ** @code
+ ** struct toto { int a; int b; } A = { .a = 9, .b = 7 };
+ ** struct toto B = P99_DESIGNATED(A, .b);
+ ** double C[4] = { 1, 2, 3, 4 };
+ ** double D[4] = P99_DESIGNATED(C, [0], [2]);
+ ** @endcode
+ **
+ ** So here @c B.b is initialized with the value of @c A.b and @c B.a,
+ ** since @c .a is not in the list, is initialized by 0. Likewise @c D
+ ** gets copies of @c C[0] and @c C[2] and the other fields are
+ ** initialized to @c 0.
+ ** @see P99_LCOPY
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_DESIGNATED, 0)
+P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_DESIGNATED, 1)
+P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_DESIGNATED, 2)
+P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_DESIGNATED, 3)
+#define P99_DESIGNATED(VAR, ...) { P00_DESIGNATED(VAR, P99_NARG(__VA_ARGS__), __VA_ARGS__) }
+
+/**
+ ** @brief Construct a compound literal of type @a TYPE by copying fields of @a VAR.
+ **
+ ** The argument list must be composed of designators, something like
+ ** @code
+ ** struct toto { int a; int b; } A = { .a = 9, .b = 7 };
+ ** struct toto B = P99_LCOPY(struct toto, A, .b);
+ ** double C[4] = { 1, 2, 3, 4 };
+ ** double *D = P99_LCOPY(double[4], C, [0], [2]);
+ ** @endcode
+ **
+ ** So here @c B.b is initialized with the value of @c A.b and @c B.a,
+ ** since @c .a is not in the list, is initialized by 0. Likewise @c D
+ ** gets copies of @c C[0] and @c C[2] and the other fields are
+ ** initialized to @c 0.
+ **
+ ** This is probably best used indirectly inside a type specific
+ ** macro. E.g if you know that the copy operation for @c toto as
+ ** above always should only copy @c .b and not @c .a you could do
+ ** @code
+ ** #define TOTO_LCOPY(A) P99_LCOPY(struct toto, A, .b);
+ ** struct toto B = TOTO_LCOPY(A);
+ ** @endcode
+ ** @see P99_DESIGNATED
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_LCOPY, 1)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_LCOPY, 0)
+P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_LCOPY, 2)
+P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_LCOPY, 3)
+P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_LCOPY, 4)
+#define P99_LCOPY(TYPE, VAR, ...) ((TYPE)P99_DESIGNATED(VAR, __VA_ARGS__))
 
 /** @}
  **/

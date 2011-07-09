@@ -1,15 +1,5 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
-/*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
-/* (C) copyright  2011 Jens Gustedt, INRIA, France                           */
-/*                                                                           */
-/* This file is free software; it is part of the P99 project.                */
-/* You can redistribute it and/or modify it under the terms of the QPL as    */
-/* given in the file LICENSE. It is distributed without any warranty;        */
-/* without even the implied warranty of merchantability or fitness for a     */
-/* particular purpose.                                                       */
-/*                                                                           */
+
+
 /** @file
  ** @brief This file just contains automatically produced information for doxygen.
  **
@@ -117,6 +107,7 @@
  ** @see P99_DECLARE_UNION(NAME) for argument <code>NAME</code>.
  ** @see P99_DEC_DOUBLE(...) for arguments <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[4]</code>.
  ** @see P99_DERIVED_TYPES(T) for argument <code>T</code>.
+ ** @see P99_DESIGNATED(VAR, ...) for arguments <code>VAR</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_DO(TYPE, VAR, ...) for argument <code>TYPE</code>.
  ** @see P99_FCALLOC(T, F, N) for arguments <code>T</code>, <code>F</code>, <code>N</code>.
  ** @see P99_FHEAD(T, F, P) for argument <code>T</code>.
@@ -136,6 +127,7 @@
  ** @see P99_IS_ONE(FIRST, ...) for argument <code>FIRST</code>.
  ** @see P99_IS_SUP(FIRST, ...) for argument <code>FIRST</code>.
  ** @see P99_JOIN(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_LCOPY(TYPE, VAR, ...) for arguments <code>TYPE</code>, <code>VAR</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_MAXOF(0) for argument <code>1</code>.
  ** @see P99_MEMSET(TA, SO, N) for argument <code>SO</code>.
  ** @see P99_MEMZERO(T, TA, N) for argument <code>T</code>.
