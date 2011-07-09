@@ -22,15 +22,12 @@ static orwl_server srv = P99_INIT;
 static orwl_graph *graph = 0;
 static orwl_address_book *ab = 0;
 static orwl_mirror *local_locations = 0;
-static rand48_t *seed = 0;
 static size_t shared_memory_size = 0;
 static size_t iterations = 0;
 static size_t inner_iterations = 0;
 static size_t nb_tasks = 0;
 static size_t global_nb_tasks = 0;
 static orwl_barrier init_barr;
-static struct random_data *rand_states;
-static char *rand_statebufs;
 static size_t *list_tasks = 0;
 
 
@@ -44,11 +41,15 @@ typedef struct _arg_t {
 
 arg_t* arg_t_init(arg_t *arg, size_t id, orwl_vertex *v, size_t mlp, size_t tp,
 		  orwl_thread_cntrl* det) {
-  arg->id = id;
-  arg->vertex = v;
-  arg->my_location_pos = mlp;
-  arg->task_pos = tp;
-  arg->det = det;
+  if (arg) {
+    *arg = P99_LVAL(arg_t,
+                    .id = id,
+                    .vertex = v,
+                    .my_location_pos = mlp,
+                    .task_pos = tp,
+                    .det = det,
+                    );
+  }
   return arg;
 }
 
@@ -71,6 +72,7 @@ DEFINE_THREAD(arg_t) {
   uint64_t * my_data = 0;
   uint64_t ** distant_mapped_data = calloc(global_nb_tasks, sizeof(uint64_t*));
   orwl_mirror * distant_locations = orwl_mirror_vnew(global_nb_tasks);
+  rand48_t * seed = seed_get();
 
   /***************************************************************************/
   /*                              Connection step                            */
@@ -122,15 +124,13 @@ DEFINE_THREAD(arg_t) {
       free(r);
       /* Let's put anything in the shared memory */
       for (size_t i = 0 ; i < ((shared_memory_size * MEGA) / sizeof(uint64_t)) ; i++) {
-	int32_t r;
-	random_r(&rand_states[Arg->task_pos], &r); 
-	my_data[i] = r;
+	my_data[i] = orwl_rand(seed);
       }
       orwl_release2(&my_task_handle);
 
       for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
       	distant_mapped_data[i] = (uint64_t*)orwl_read_map2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
-      
+
       for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
       	orwl_release2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
     }
@@ -139,6 +139,7 @@ DEFINE_THREAD(arg_t) {
   for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
     orwl_cancel2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
 
+  seed_get_clear();
   orwl_handle2_vdelete(handle_distant_pos);
 }
 
@@ -206,7 +207,6 @@ int main(int argc, char **argv) {
     list_locations[i] = i;
 
   /* local server initialization */
-  seed = seed_get();
   orwl_types_init();
   orwl_start(&srv, SOMAXCONN, nb_locations);
 
@@ -216,18 +216,17 @@ int main(int argc, char **argv) {
 
   local_locations = orwl_mirror_vnew(nb_locations);
 
-  orwl_thread_cntrl ** scale_det = calloc(nb_tasks, sizeof(orwl_thread_cntrl *));
-  orwl_scale_t ** scale = calloc(nb_tasks, sizeof(orwl_scale_t *));
   for (size_t i = 0 ; i < nb_tasks ; i++) {
     orwl_make_local_connection(i, &srv, &local_locations[i]);
-    scale[i] = calloc(1, sizeof(orwl_scale_t));
-    scale_det[i] = calloc(1, sizeof(orwl_thread_cntrl));
-    scale[i]->rq = &local_locations[i];
-    scale[i]->data_len = (shared_memory_size * MEGA);
-    scale[i]->det = scale_det[i];
-    orwl_scale_t_launch(scale[i], scale_det[i]);
-    orwl_thread_cntrl_wait_for_callee(scale_det[i]);
-    orwl_thread_cntrl_detach(scale_det[i]);
+    orwl_thread_cntrl * scale_det = P99_NEW(orwl_thread_cntrl);
+    orwl_scale_state * scale
+      = P99_NEW(orwl_scale_state,
+                &local_locations[i],
+                (shared_memory_size * MEGA),
+                scale_det);
+    orwl_scale_state_launch(scale, scale_det);
+    orwl_thread_cntrl_wait_for_callee(scale_det);
+    orwl_thread_cntrl_detach(scale_det);
   }
 
   report(1, "local connections done");
@@ -244,24 +243,20 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 
-  rand_states = (struct random_data*)calloc(nb_tasks, sizeof(struct random_data));
-  rand_statebufs = (char*)calloc(nb_tasks, 32);
-  arg_t ** arg = calloc(nb_tasks, sizeof(arg_t *));
   orwl_thread_cntrl ** det = calloc(nb_tasks, sizeof(orwl_thread_cntrl *));
-  
+
   for (size_t i = 0 ; i < nb_tasks ; i++) {
-    initstate_r(random(), &rand_statebufs[i], 32, &rand_states[i]);
-    arg[i] = calloc(1, sizeof(arg_t));
-    det[i] = calloc(1, sizeof(orwl_thread_cntrl));
-    arg_t *myarg = arg[i];
-    myarg->id = list_tasks[i];
-    myarg->vertex = &graph->vertices[list_tasks[i]];
-    myarg->my_location_pos = list_locations[i];
-    myarg->task_pos = i;
-    myarg->det = det[i];
+    det[i] = P99_NEW(orwl_thread_cntrl);
+    arg_t *myarg
+      = P99_NEW(arg_t,
+                list_tasks[i],
+                &graph->vertices[list_tasks[i]],
+                list_locations[i],
+                i,
+                det[i]);
     arg_t_launch(myarg, det[i]);
   }
-  
+
   for (size_t i = 0 ; i < nb_tasks ; i++) {
     orwl_thread_cntrl_wait_for_callee(det[i]);
     orwl_thread_cntrl_detach(det[i]);
@@ -270,7 +265,7 @@ int main(int argc, char **argv) {
   orwl_server_terminate(&srv);
   orwl_stop(&srv);
   sleep(3);
-  seed_get_clear();
+  free(det);
   size_t_vdelete(list_tasks);
   return 0;
 }
