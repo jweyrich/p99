@@ -629,11 +629,13 @@ void orwl_truncate(orwl_handle* rh, size_t data_len) {
   }
 }
 
-typedef struct orwl_scale_t {
+P99_DECLARE_STRUCT(orwl_scale_t);
+
+struct orwl_scale_t {
   orwl_mirror* rq;
   size_t data_len;
   orwl_thread_cntrl *det;
-} orwl_scale_t;
+};
 
 inline
 orwl_scale_t* orwl_scale_t_init(orwl_scale_t* scale, orwl_mirror* rq, size_t data_len, orwl_thread_cntrl* det) {
