@@ -158,7 +158,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
         /* The other side sent us a shortcut to the buffer it has
            previously used. This is the case of a local "write"
            request for both push operations that are effected. */
-        orwl_buffer shortcut = ORWL_BUFFER_INITIALIZER(data_len, (void*)data);
+        orwl_buffer shortcut = ORWL_BUFFER_INITIALIZER(data_len, (void*)(uintptr_t)data);
         orwl_wq_link(wq, shortcut, false);
       } else {
         /* If len is 0, this has been a read request who's buffer is
