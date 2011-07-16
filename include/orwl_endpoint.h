@@ -127,8 +127,10 @@ struct in_addr addr2net(orwl_addr const*A) {
  **/
 inline
 struct in6_addr addr2net6(orwl_addr const*A) {
-  struct in6_addr ret = { .s6_addr[0] = 0 };
-  memcpy(ret.s6_addr, A->aaaa, 16);
+  struct in6_addr ret
+    = {
+    .s6_addr = P99_ADESIGNATED(A->aaaa, 16)
+  };
   return ret;
 }
 #endif

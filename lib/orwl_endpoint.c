@@ -83,7 +83,9 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
 }
 
 /* Needed to switch off alias testing by the compiler */
+P99_DECLARE_UNION(o_rwl_sockaddr);
 union o_rwl_sockaddr {
+  struct sockaddr_storage ss;
   struct sockaddr_in in4;
   struct sockaddr_in6 in6;
   struct sockaddr in46;
@@ -103,26 +105,26 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
   } else {
 #if defined(POSIX_IPV6) && (POSIX_IPV6 > 0)
     if (in4_addr.s_addr == P99_TMAX(in_addr_t)) {
-      union o_rwl_sockaddr addr6 = { .in6 = { .sin6_family = AF_INET6 } };
-      memcpy(addr6.in6.sin6_addr.s6_addr, ep->addr.aaaa, 16);
-      /* We need this, since sa_family is not necessarily atop of
-         sin6_family */
-      addr6.in46.sa_family = AF_INET6;
+      o_rwl_sockaddr addr6 = {
+        .in6 = {
+          .sin6_family = AF_INET6,
+          .sin6_addr = {
+            .s6_addr = P99_ADESIGNATED(ep->addr.aaaa, 16),
+          }
+        }
+      };
       strcat(host, "[");
       orwl_inet_ntop(&addr6.in46, host + 1);
       strcat(host, "]");
     } else
 #endif
       {
-        union o_rwl_sockaddr addr4 = {
+        o_rwl_sockaddr addr4 = {
           .in4 = {
-            .sin_family = AF_INET,
-            .sin_addr = in4_addr
+            .sin_family = AF_INET6,
+            .sin_addr = in4_addr,
           }
         };
-        /* We need this, since sa_family is not necessarily atop of
-           sin_family */
-        addr4.in46.sa_family = AF_INET;
         orwl_inet_ntop(&addr4.in46, host);
       }
   }
