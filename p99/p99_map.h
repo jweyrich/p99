@@ -33,7 +33,7 @@
  **/
 
 
-#define P00_ACCESSOR(NAME, X, I) (NAME)[I]
+#define P00_ACCESSOR(NAME, X, I) P99_IF_EMPTY(NAME)([I])((NAME)[I])
 #define P00_VASSIGN(NAME, X, I) X = P00_ACCESSOR(NAME, X, I)
 #define P00_STRLEN(NAME, X, I) strlen(X)
 #define P00_SIZEOF(NAME, X, I) sizeof(X)
@@ -164,6 +164,9 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_STRDUP, 2)
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_POSS, 0)
 #define P99_POSS(N) P99_FOR(,N, P00_SEQ, P00_POS,)
 
+
+#define P00_ACCESSORS(X, ...) P99_FOR(X, __VA_ARGS__, P00_SEQ, P00_ACCESSOR, )
+
 /**
  ** Produce a list of length @a N that has the contents of @a X[0], @a
  ** X [1], ,
@@ -171,7 +174,7 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_POSS, 0)
  **/
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_ACCESSORS, 0)
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_ACCESSORS, 1)
-#define P99_ACCESSORS(X, N) P99_FOR(X, N, P00_SEQ, P00_ACCESSOR, )
+#define P99_ACCESSORS(X, N) P00_ACCESSORS(X, N)
 
 
 /**
@@ -228,6 +231,20 @@ P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_DESIGNATED, 3)
 #define P99_DESIGNATED(VAR, ...) { P00_DESIGNATED(VAR, P99_NARG(__VA_ARGS__), __VA_ARGS__) }
 
 /**
+ ** @brief Expand to an array initializer copying array @a VAR for @a N positions.
+ **
+ ** This can be used to initialize an array by an designated
+ ** initializer that is derived from another array.
+ ** @code
+ ** double B[] = P99_ADESIGNATED(A, 3);
+ ** @endcode
+ **
+ ** Would initialize @c B to be an array of 3 @c double that are
+ ** copies of the first three values of @c A.
+ **/
+#define P99_ADESIGNATED(VAR, N) P99_DESIGNATED(VAR, P99_ACCESSORS(, N))
+
+/**
  ** @brief Construct a compound literal of type @a TYPE by copying fields of @a VAR.
  **
  ** The argument list must be composed of designators, something like
@@ -258,6 +275,33 @@ P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_LCOPY, 2)
 P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_LCOPY, 3)
 P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_LCOPY, 4)
 #define P99_LCOPY(TYPE, VAR, ...) ((TYPE)P99_DESIGNATED(VAR, __VA_ARGS__))
+
+
+#define P00_ACOPY4(TYPE, N, VAR, ...) ((TYPE[N])P99_DESIGNATED(VAR, P00_ACCESSORS(, __VA_ARGS__)))
+
+#define P00_ACOPY3(TYPE, N, VAR) P00_ACOPY4(TYPE, N, VAR, N)
+
+/**
+ ** @brief Expand to an array literal of type @a TYPE[@a N] copying
+ ** from another array.
+ **
+ ** The third argument is the array @c VAR to be copied from. The
+ ** optional forth argument @c M is the number of elements from @c VAR
+ ** that are to be copied. It defaults to @a N if omitted. Obviously
+ ** we always have to have <code>M <= N</code> for this to work.
+ **
+ ** This can be used to initialize to call a function with a copy of
+ ** of @a VAR.
+ **
+ ** @remark The base type of @a VAR must be assignment compatible with type @a TYPE.
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_ACOPY, 2)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_ACOPY, 4)
+#define P99_ACOPY(TYPE, N, ...)                 \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
+(P00_ACOPY3(TYPE, N, __VA_ARGS__))              \
+(P00_ACOPY4(TYPE, N, __VA_ARGS__))
+
 
 /** @}
  **/

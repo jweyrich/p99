@@ -87,6 +87,7 @@
  ** @see P99_AARG(TYPE, NAME, DIM, VAR) for argument <code>TYPE</code>, <code>DIM</code>.
  ** @see P99_ACALL(ARR, N, TYPE) for arguments <code>ARR</code>, <code>N</code>, <code>TYPE</code>.
  ** @see P99_ACCESSORS(X, N) for argument <code>X</code>, <code>N</code>.
+ ** @see P99_ACOPY(TYPE, N, ...) for argument <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_ALEN(ARR, N) for argument <code>ARR</code>, <code>N</code>.
  ** @see P99_ALENS(ARR, N) for argument <code>ARR</code>, <code>N</code>.
  ** @see P99_ARE_EQ(FIRST, ...) for argument <code>FIRST</code>.
