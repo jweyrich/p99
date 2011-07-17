@@ -81,22 +81,37 @@ P99_DECLARE_STRUCT(p00_strcat_state);
 #endif
 
 struct p00_strcat_state {
-  char* buffer;
-  size_t pos;
+  char*restrict buffer;
+  char*restrict pos;
 };
 
+#ifdef _GNU_SOURCE
 p99_inline
-p00_strcat_state* p00_strcat(p00_strcat_state *restrict dest, char const*src) {
-  if (!dest->pos) dest->pos = strlen(dest->buffer);
-  size_t len = strlen(src);
-  memcpy(dest->buffer + dest->pos, src, len);
-  dest->pos += len;
+char *p00_stpcpy(char *restrict dest, const char *restrict src) {
+  return stpcpy(dest, src);
+}
+#else
+p99_inline
+char *p00_stpcpy(char *restrict dest, const char *restrict src) {
+  for (;;) {
+    *dest = *src;
+    if (!*src) break;
+    ++dest; ++src;
+  }
+  return dest;
+}
+#endif
+
+
+p99_inline
+p00_strcat_state* p00_strcat(p00_strcat_state *restrict dest, char const*restrict src) {
+  if (!dest->pos) dest->pos = strchr(dest->buffer, 0);
+  dest->pos = p00_stpcpy(dest->pos, src);
   return dest;
 }
 
 p99_inline
 char* p00_strcat_terminate(p00_strcat_state *restrict dest) {
-  dest->buffer[dest->pos] = '\0';
   return dest->buffer;
 }
 
