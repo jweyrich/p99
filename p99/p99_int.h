@@ -600,8 +600,8 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_SIGNED_REPRESENTATION, 0)
  **/
 #define P99_2COMPLEMENT(T) ((T)(P99_SIGNED_REPRESENTATION(T) == p99_signed_representation_twos))
 
-P00_DOCUMENT_TYPE_ARGUMENT(P99_TMAX, 0)
 #ifdef p99x_uintmax
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TMAX, 0)
 #define P99_TMAX(T)                                                     \
 ((T)                                                                    \
  (P99X__SHIFT((T)0)                                                     \
@@ -615,7 +615,9 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_TMIN, 0)
   ? (P99_ISSIGNED(T) ? (-(P99X__SIGN_PROMOTE((T)-1)/2u)) - P99_2COMPLEMENT(T) : (T)0) \
   : (P99_ISSIGNED(T) ? (P00_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T))))
 #else
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TMAX, 0)
 #define P99_TMAX(T) (P99_ISSIGNED(T) ? P99_UT_MAX1(T) : P99_UT_MAX(T))
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TMIN, 0)
 #define P99_TMIN(T) (P99_ISSIGNED(T) ? (P00_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T))
 #endif
 
