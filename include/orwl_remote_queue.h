@@ -352,6 +352,11 @@ enum {
   + orwl_proc_release_header
 };
 
+#define ORWL_PUSH_HEADER 4
+
+P99_COMPILETIME_ASSERT(orwl_push_header == ORWL_PUSH_HEADER);
+
+
 /**
  ** @brief push the associated data to a remote.
  **

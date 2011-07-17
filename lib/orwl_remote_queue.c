@@ -195,7 +195,7 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
             || keep
             || !srv
             || !orwl_endpoint_similar(&srv->host.ep, ep))
-          memcpy(mess.data, buffer, orwl_push_header * sizeof(mess.data[0]));
+          P99_AASSIGN(mess.data, buffer, ORWL_PUSH_HEADER);
         else {
           // we are in the same address space and can reuse the memory
           buffer[2] = (uintptr_t)mess.data;
@@ -284,7 +284,8 @@ DEFINE_THREAD(orwl_handle_cancel) {
 orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_valid;
   if (!rh || !rh->wh) return orwl_valid;
-  orwl_handle_cancel* rhcp = memcpy(P99_NEW(orwl_handle_cancel), rh, sizeof(*rh));
+  orwl_handle_cancel* rhcp = P99_NEW(orwl_handle_cancel);
+  *rhcp = *rh;
   orwl_handle_cancel_create_detached(rhcp);
   orwl_handle_destroy(rh);
   return state;
