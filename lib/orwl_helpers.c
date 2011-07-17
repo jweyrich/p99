@@ -35,8 +35,9 @@ P99_INSTANTIATE(void, orwl_address_book_destroy, orwl_address_book *);
 
 
 char * remove_eol(char *str) {
-  if (str[strlen(str) - 1] == '\n')
-    str[strlen(str) - 1] = '\0';
+  size_t len = strlen(str) - 1;
+  if (str[len] == '\n')
+    str[len] = '\0';
   return str;
 }
 
@@ -250,6 +251,8 @@ bool orwl_dump_id(orwl_server *serv,
 		  size_t nb_id,
 		  size_t *list_id,
 		  size_t *list_locations) {
+  size_t maxlen = 255;
+  char * str = malloc(maxlen + 1);
   char name[256] = {0};
   FILE*volatile out = fopen(filename, "w");
   if (out == NULL) {
@@ -259,22 +262,30 @@ bool orwl_dump_id(orwl_server *serv,
   P99_UNWIND_PROTECT {
     for (size_t i = 0 ; i < nb_id ; i++) {
       orwl_endpoint_print(&serv->host.ep, name);
-      char str[256];
-      snprintf(str, 256, "%zu-%zu-%s\n", list_id[i], list_locations[i], name);
-      if (fprintf(out, "%s", str) != strlen(str)) {
+      size_t len;
+    RETRY:
+      len = snprintf(str, maxlen, "%zu-%zu-%s\n", list_id[i], list_locations[i], name);
+      if (len > maxlen) {
+        free(str);
+        maxlen = len;
+        str = malloc(maxlen + 1);
+        goto RETRY;
+      }
+      if (fputs(str, out) == EOF) {
 	perror("error when writing to file");
 	P99_UNWIND_RETURN false;
       }
     }
   P99_PROTECT:
     fclose(out);
+    free(str);
   }
   return true;
 }
 
 void orwl_wait_until_file_is_here(const char *filename) {
   FILE * f = NULL;
-  
+
   while ((f = fopen(filename, "r")) != NULL) {
     fclose(f);
     sleep(1);

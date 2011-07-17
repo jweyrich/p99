@@ -45,30 +45,29 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
     }
     {
       char const* name1 = 0;
-      size_t len = 0;
       if (name[0] == '[') {
         ++name;
-        len = strcspn(name, "]");
-        if (name[len] != ']') return 0;
-        name1 = name + (len + 1);
+        name1 = strchr(name, ']');
+        if (!name1) return 0;
+        ++name1;
       } else {
-        len = strcspn(name, ":");
-        name1 = name + len;
+        name1 = strchr(name, ':');
+        if (!name1) return 0;
       }
-      if (!len) return 0;
+      size_t len = name1 - name;
       assert(len);
-      char * host = memcpy(calloc(len + 1u, 1), name, len);
+      char host[len + 1];
+      strncpy(host, name, len);
+      host[len] = '\0';
       orwl_addr_init(&addr, orwl_inet_addr(host));
       name = name1;
-      free(host);
     }
     if (name[0]) {
       if (name[0] != ':') return 0;
       ++name;
       orwl_port_init(&port, strtou16(name));
-      size_t len = strcspn(name, "/");
-      if (!len) return 0;
-      name += len;
+      name = strchr(name, '/');
+      if (!name) return 0;
     }
     if (name[0]) {
       if (name[0] != '/') return 0;
