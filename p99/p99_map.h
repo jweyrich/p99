@@ -318,6 +318,34 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
 (P00_ACOPY4(TYPE, N, __VA_ARGS__))
 
 
+/**
+ ** @brief Assign the content of array @a SOURCE to @a TARGET.
+ **
+ ** Only the @a N first elements are copied. Use it as in
+ ** @code
+ ** size_t B[4] = { 2, 3, 4, 5 };
+ ** double *A = malloc(sizeof(double[4]));
+ ** P99_AASSIGN(A, B, 4);
+ ** @endcode
+ **
+ ** @pre @a N must expand to a decimal integer constant.
+ **
+ ** @pre @a SOURCE and @a TARGET must be arrays of size at least @a N
+ ** or pointers that point to such arrays.
+ **
+ ** @remark If @a TARGET has more than @a N elements the exceeding
+ ** elements are left untouched.
+ **
+ ** @remark The base types must not necessarily be the same but the
+ ** one of @a SOURCE must be assignable to the one for @a TARGET. In
+ ** particular, the type of @a TARGET should be at least as wide as
+ ** the one for @a SOURCE.
+ **/
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_AASSIGN, 0)
+P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_AASSIGN, 1)
+#define P99_AASSIGN(TARGET, SOURCE, N) P99_BLOCK(P99_VASSIGNS(SOURCE, P99_ACCESSORS(TARGET, N));)
+
+
 /** @}
  **/
 
