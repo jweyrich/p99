@@ -11,36 +11,83 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-/*
-** orwl_atomic.c
-** 
-** Made by (Jens Gustedt)
-** Login   <gustedt@damogran.loria.fr>
-** 
-** Started on  Sun Dec 19 01:04:47 2010 Jens Gustedt
-** Last update Sun May 12 01:17:25 2002 Speed Blue
-*/
 
 #include "orwl_atomic.h"
 #include "p99_defarg.h"
 
 #if defined(__GNUC__)
 
+#ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
+#define ORWL_MANG(NAME) ORWL_MANG_(NAME, 64)
+#define ORWL_AT ORWL_AT_(64)
+#define ORWL_RT ORWL_RT_(64)
+#include "orwl_atomic_gcc_sync_inttypes_instantiate.h"
+#undef ORWL_RT
+#undef ORWL_AT
+#undef ORWL_MANG
+#endif
+
+#ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
+#define ORWL_MANG(NAME) ORWL_MANG_(NAME, 32)
+#define ORWL_AT ORWL_AT_(32)
+#define ORWL_RT ORWL_RT_(32)
+#include "orwl_atomic_gcc_sync_inttypes_instantiate.h"
+#undef ORWL_RT
+#undef ORWL_AT
+#undef ORWL_MANG
+#endif
+
+#ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
+#define ORWL_MANG(NAME) ORWL_MANG_(NAME, 16)
+#define ORWL_AT ORWL_AT_(16)
+#define ORWL_RT ORWL_RT_(16)
+#include "orwl_atomic_gcc_sync_inttypes_instantiate.h"
+#undef ORWL_RT
+#undef ORWL_AT
+#undef ORWL_MANG
+#endif
+
+#ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1
+#define ORWL_MANG(NAME) ORWL_MANG_(NAME, 8)
+#define ORWL_AT ORWL_AT_(8)
+#define ORWL_RT ORWL_RT_(8)
+#include "orwl_atomic_gcc_sync_inttypes_instantiate.h"
+#undef ORWL_RT
+#undef ORWL_AT
+#undef ORWL_MANG
+#endif
+
+#ifndef atomic_load
 P99_INSTANTIATE(size_t, atomic_load, atomic_size_t volatile*);
+#endif
 
+#ifndef atomic_store
 P99_INSTANTIATE(void, atomic_store, atomic_size_t volatile *object, size_t desired);
+#endif
 
+#ifndef atomic_compare_exchange_weak
 P99_INSTANTIATE(_Bool, atomic_compare_exchange_weak, atomic_size_t volatile *object, size_t *expected, size_t desired);
+#endif
 
+#ifndef atomic_fetch_add
 P99_INSTANTIATE(size_t, atomic_fetch_add, atomic_size_t volatile *object, size_t operand);
+#endif
 
+#ifndef atomic_fetch_sub
 P99_INSTANTIATE(size_t, atomic_fetch_sub, atomic_size_t volatile *object, size_t operand);
+#endif
 
+#ifndef atomic_fetch_or
 P99_INSTANTIATE(size_t, atomic_fetch_or, atomic_size_t volatile *object, size_t operand);
+#endif
 
+#ifndef atomic_fetch_xor
 P99_INSTANTIATE(size_t, atomic_fetch_xor, atomic_size_t volatile *object, size_t operand);
+#endif
 
+#ifndef atomic_fetch_and
 P99_INSTANTIATE(size_t, atomic_fetch_and, atomic_size_t volatile *object, size_t operand);
+#endif
 
 DEFINE_ATOMIC_OPS(atomic_float);
 DEFINE_ATOMIC_OP(atomic_float, add, +=);

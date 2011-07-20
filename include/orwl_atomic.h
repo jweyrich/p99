@@ -80,21 +80,39 @@ typedef ATOMIC_TYPE atomic_size_t;
  **/
 typedef ATOMIC_FLOAT atomic_float;
 
+#ifdef __GNUC__
+#ifndef GNUC_NO_SYNC
+#include "orwl_atomic_gcc_sync.h"
+#else
+#ifdef __arm__
+#include "orwl_atomic_arm.h"
+#else
+#if defined(__x86_64__) || defined(__i386__)
+#include "orwl_atomic_x86.h"
+#endif
+#endif
+#endif
+#endif
+#endif
 
-
+#ifndef atomic_load
 /**
  ** @brief Return a consistent value of @a object.
  **/
 inline
 size_t atomic_load(atomic_size_t volatile *object);
+#endif
 
+#ifndef atomic_store
 /**
  ** @brief Store a consistent value @a desired in @a object by erasing
  ** any possible other contents.
  **/
 inline
 void atomic_store(atomic_size_t volatile *object, size_t desired);
+#endif
 
+#ifndef atomic_compare_exchange_weak
 /**
  ** @brief Store a consistent value @a desired in @a object if the
  ** previous value corresponds to @a expected.
@@ -106,8 +124,9 @@ void atomic_store(atomic_size_t volatile *object, size_t desired);
  **/
 inline
 _Bool atomic_compare_exchange_weak(atomic_size_t volatile *object, size_t *restrict expected, size_t desired);
+#endif
 
-
+#ifndef atomic_fetch_add
 /**
  ** @brief Add value @a operand to the value in @a object and return
  ** the previous value.
@@ -121,7 +140,9 @@ _Bool atomic_compare_exchange_weak(atomic_size_t volatile *object, size_t *restr
  **/
 inline
 size_t atomic_fetch_add(atomic_size_t volatile *object, size_t operand);
+#endif
 
+#ifndef atomic_fetch_sub
 /**
  ** @brief Substract value @a operand from the value in @a object and
  ** return the previous value.
@@ -135,7 +156,9 @@ size_t atomic_fetch_add(atomic_size_t volatile *object, size_t operand);
  **/
 inline
 size_t atomic_fetch_sub(atomic_size_t volatile *object, size_t operand);
+#endif
 
+#ifndef atomic_fetch_or
 /**
  ** @brief Bitwise or value @a operand with the value in @a object and
  ** return the previous value.
@@ -149,7 +172,9 @@ size_t atomic_fetch_sub(atomic_size_t volatile *object, size_t operand);
  **/
 inline
 size_t atomic_fetch_or(atomic_size_t volatile *object, size_t operand);
+#endif
 
+#ifndef atomic_fetch_xor
 /**
  ** @brief Bitwise exclusive or value @a operand with the value in @a
  ** object and return the previous value.
@@ -163,7 +188,9 @@ size_t atomic_fetch_or(atomic_size_t volatile *object, size_t operand);
  **/
 inline
 size_t atomic_fetch_xor(atomic_size_t volatile *object, size_t operand);
+#endif
 
+#ifndef atomic_fetch_and
 /**
  ** @brief Bitwise and value @a operand with the value in @a
  ** object and return the previous value.
@@ -177,69 +204,7 @@ size_t atomic_fetch_xor(atomic_size_t volatile *object, size_t operand);
  **/
 inline
 size_t atomic_fetch_and(atomic_size_t volatile *object, size_t operand);
-
-#ifdef __GNUC__
-#ifndef GNUC_NO_SYNC
-
-inline
-_Bool atomic_compare_exchange_weak(atomic_size_t volatile *object, size_t *restrict expected, size_t desired) {
-  size_t val = __sync_val_compare_and_swap(object, *expected, desired);
-  _Bool ret = (val == *expected);
-  if (!ret) *expected = val;
-  return ret;
-}
-
-inline
-void atomic_store(atomic_size_t volatile *object, size_t desired){
-  for (size_t expected = desired;;) {
-    size_t val = __sync_val_compare_and_swap(object, expected, desired);
-    if (val == expected) break;
-  }
-}
-
-
-inline
-size_t atomic_fetch_add(atomic_size_t volatile *object, size_t operand) {
-  return __sync_fetch_and_add(object, operand);
-}
-
-inline
-size_t atomic_fetch_sub(atomic_size_t volatile *object, size_t operand) {
-  return __sync_fetch_and_sub(object, operand);
-}
-
-inline
-size_t atomic_fetch_or(atomic_size_t volatile *object, size_t operand) {
-  return __sync_fetch_and_or(object, operand);
-}
-
-inline
-size_t atomic_fetch_xor(atomic_size_t volatile *object, size_t operand) {
-  return __sync_fetch_and_xor(object, operand);
-}
-
-inline
-size_t atomic_fetch_and(atomic_size_t volatile *object, size_t operand) {
-  return __sync_fetch_and_and(object, operand);
-}
-
-inline
-size_t atomic_load(atomic_size_t volatile *object) {
-  return atomic_fetch_xor(object, 0);
-}
-
-#else
-#ifdef __arm__
-#include "orwl_atomic_arm.h"
-#else
-#if defined(__x86_64__) || defined(__i386__)
-#include "orwl_atomic_x86.h"
 #endif
-#endif
-#endif
-#endif
-#endif
-
 
 /**
  ** @brief Declare atomic operations for type @a T, different from @c
