@@ -383,6 +383,8 @@ orwl_state P99_FSYMB(orwl_wq_request_locked)(orwl_wq *wq, /*!< the queue to act 
 #ifndef DOXYGEN
 #define orwl_wq_request(WQ, ...) P99_FSYMB(orwl_wq_request)(WQ, LEN_MODARG(orwl_wq_request, 2, __VA_ARGS__))
 VA_TYPES(orwl_wq_request, orwl_wh**, int64_t);
+#define orwl_wq_request2(WQ, ...) P99_FSYMB(orwl_wq_request2)(WQ, LEN_MODARG(orwl_wq_request2, 2, __VA_ARGS__))
+VA_TYPES(orwl_wq_request2, orwl_wh**, int64_t);
 #define orwl_wq_request_locked(WQ, ...) P99_FSYMB(orwl_wq_request_locked)(WQ, LEN_MODARG(orwl_wq_request_locked, 2, __VA_ARGS__))
 VA_TYPES(orwl_wq_request_locked, orwl_wh**, int64_t);
 #endif

@@ -118,9 +118,12 @@ void orwl_wq_request_append(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
 
 static
 orwl_state orwl_wq_request_internal(orwl_wq *wq, size_t number, va_list ap);
+static
+orwl_state orwl_wq_request_internal2(orwl_wq *wq, size_t number, va_list ap);
 
 orwl_state P99_FSYMB(orwl_wq_request)(orwl_wq *wq, P99_VA_ARGS(number)) {
   orwl_state ret = orwl_invalid;
+  assert(number == 1);
   if (wq)
     MUTUAL_EXCLUDE(wq->mut) {
       va_list ap;
@@ -131,7 +134,21 @@ orwl_state P99_FSYMB(orwl_wq_request)(orwl_wq *wq, P99_VA_ARGS(number)) {
   return ret;
 }
 
+orwl_state P99_FSYMB(orwl_wq_request2)(orwl_wq *wq, P99_VA_ARGS(number)) {
+  orwl_state ret = orwl_invalid;
+  assert(number == 2);
+  if (wq)
+    MUTUAL_EXCLUDE(wq->mut) {
+      va_list ap;
+      va_start(ap, number);
+      ret = orwl_wq_request_internal2(wq, number, ap);
+      va_end(ap);
+    }
+  return ret;
+}
+
 orwl_state P99_FSYMB(orwl_wq_request_locked)(orwl_wq *wq, P99_VA_ARGS(number)) {
+  assert(number == 1);
   orwl_state ret = orwl_invalid;
   va_list ap;
   va_start(ap, number);
@@ -143,6 +160,45 @@ orwl_state P99_FSYMB(orwl_wq_request_locked)(orwl_wq *wq, P99_VA_ARGS(number)) {
 static
 orwl_state orwl_wq_request_internal(orwl_wq *wq, size_t number, va_list ap) {
   orwl_state ret = orwl_invalid;
+  assert(number == 1);
+      if (orwl_wq_valid(wq)) {
+        ret = orwl_requested;
+        for (size_t i = 0; i < number; ++i) {
+          orwl_wh **wh = VA_MODARG(ap, orwl_wq_request, 0);
+          int64_t hm = VA_MODARG(ap, orwl_wq_request, 1);
+          uint64_t howmuch = (hm > P99_0(int64_t)) ? hm : -hm;
+          if (wh && *wh)
+            orwl_wq_request_append(wq, *wh, howmuch);
+          else {
+            /* if the wh is a null pointer, take this as a request to add to the
+               last handle if it exists */
+            orwl_wh *wq_tail = wq->tail;
+            report(false, "request for augmenting an inclusive lock %p", (void*)wq_tail);
+            if (number == 1
+                && !orwl_wq_idle(wq)
+                && wq_tail
+                && wq_tail->svrID) {
+              report(false, "request for augmenting an inclusive lock %p, succes", (void*)wq_tail);
+              assert(hm >= P99_0(int64_t));
+              orwl_wh_load(wq_tail, howmuch);
+              *wh = wq_tail;
+            } else {
+              report(false, "request for augmenting an inclusive lock %p (%jX), failed",
+                     (void*)wq_tail, wq_tail ? wq_tail->svrID : P99_0(size_t));
+              ret = orwl_invalid;
+              break;
+            }
+          }
+        }
+        va_end(ap);
+      }
+  return ret;
+}
+
+static
+orwl_state orwl_wq_request_internal2(orwl_wq *wq, size_t number, va_list ap) {
+  orwl_state ret = orwl_invalid;
+  assert(number == 2);
       if (orwl_wq_valid(wq)) {
         ret = orwl_requested;
         for (size_t i = 0; i < number; ++i) {
