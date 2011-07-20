@@ -23,7 +23,8 @@ DATE := ${shell date --rfc-3339=date}
 endif
 P99_RELEASE := p99-${DATE}
 P99_ARCHIVE := gforge-p99
-P99_PREFIX := ${shell pwd}/${P99_ARCHIVE}/versions/${P99_RELEASE}
+P99_VERSIONS := ${shell pwd}/${P99_ARCHIVE}/versions
+P99_PREFIX := ${P99_VERSIONS}/${P99_RELEASE}
 
 P99DISTRI = ${P99_PREFIX}.tgz ${P99_PREFIX}.zip ${P99_PREFIX}-html.tgz ${P99_PREFIX}-html.zip ${P99_PREFIX}-refman.pdf p99-links
 
@@ -58,13 +59,13 @@ doxygen-orwl :
 doxygen-p99 :
 	doxygen Doxyfile-p99
 
-.PHONY : ${P99DISTRI} ${ORWLDISTRI} 
+.PHONY : ${P99DISTRI} ${ORWLDISTRI}
 
-p99-distribution : ${P99DISTRI}
+p99-distribution : ${P99_VERSIONS} ${P99DISTRI}
 
 ${P99_PREFIX}.tar : p99/ChangeLog
-	git archive -v --format=tar --prefix=${P99_RELEASE}/ HEAD ${P99FILES} -o $@
-	tar --label ${P99_RELEASE} ${TAROPT} --transform 's|^|${P99_RELEASE}/|' -rf $@ p99/LICENSE p99/ChangeLog
+	git archive -v --format=tar --prefix=${P99_RELEASE}/ -o $@ HEAD ${P99FILES}
+	tar ${TAROPT} --transform 's|^|${P99_RELEASE}/|' -rf $@ p99/LICENSE p99/ChangeLog
 
 ${P99_PREFIX}.tgz : ${P99_PREFIX}.tar
 	gzip -9 $<
@@ -88,6 +89,9 @@ p99-links :
 	ln -fs  versions/${P99_RELEASE}-refman.pdf ${P99_ARCHIVE}/p99-refman.pdf
 
 orwl-distribution : ${ORWLDISTRI}
+
+${P99_VERSIONS} :
+	install -d ${P99_VERSIONS}
 
 orwl.tgz :
 	git archive --format=tar HEAD ${ORWLFILES} | gzip -9 > $@
