@@ -372,6 +372,10 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_wh);
                                     P99_VA_ARGS(number)
                                     );
 
+  P99_VA_ARGS_DOCUMENTATION(orwl_wq_request)
+  orwl_state P99_FSYMB(orwl_wq_request2)(orwl_wq *wq, /*!< the queue to act on */
+                                    P99_VA_ARGS(number)
+                                    );
 /**
  ** @private
  ** @memberof orwl_wq
