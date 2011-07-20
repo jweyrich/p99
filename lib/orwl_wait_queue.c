@@ -141,29 +141,10 @@ orwl_state P99_FSYMB(orwl_wq_request_locked)(orwl_wq *wq, P99_VA_ARGS(number)) {
 }
 
 static
-orwl_state orwl_wq_request_internal(orwl_wq *wq, size_t number, va_list ap0) {
+orwl_state orwl_wq_request_internal(orwl_wq *wq, size_t number, va_list ap) {
   orwl_state ret = orwl_invalid;
       if (orwl_wq_valid(wq)) {
-        /* Check (and wait eventually) that all wh are idle */
-        for (bool idle = false; !idle; ) {
-          va_list ap;
-          va_copy(ap, ap0);
-          idle = true;
-          for (size_t i = 0; i < number; ++i) {
-            orwl_wh **wh = VA_MODARG(ap, orwl_wq_request, 0);
-            (void)VA_MODARG(ap, orwl_wq_request, 1);
-            if (*wh && !orwl_wh_idle(*wh)) {
-              idle = false;
-              report(true, "wait handle seems to be busy: %p", (void*)*wh);
-              break;
-            }
-          }
-          va_end(ap);
-        }
         ret = orwl_requested;
-        /* Now insert them */
-        va_list ap;
-        va_copy(ap, ap0);
         for (size_t i = 0; i < number; ++i) {
           orwl_wh **wh = VA_MODARG(ap, orwl_wq_request, 0);
           int64_t hm = VA_MODARG(ap, orwl_wq_request, 1);
