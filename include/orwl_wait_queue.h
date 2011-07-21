@@ -324,7 +324,7 @@ DECLARE_NEW_DELETE(orwl_wh);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_wh);
 
-/**
+ /**
  ** @brief Insert a list of request pair of <code>(wh, howmuch)</code> into location
  ** @a wq.
  **
@@ -359,7 +359,11 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_wh);
                              orwl_wh **wh,
                              uint64_t hm
                              );
-
+/**
+ **
+ ** @memberof orwl_wq
+ ** @privatesection
+ **/
   orwl_state orwl_wq_request2(orwl_wq *wq, /*!< the queue to act on */
                               orwl_wh *wh0,
                               uint64_t hm0,

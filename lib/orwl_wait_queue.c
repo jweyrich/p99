@@ -127,30 +127,23 @@ orwl_state orwl_wq_request(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
 
 orwl_state orwl_wq_request_locked(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
   orwl_state ret = orwl_invalid;
-      if (orwl_wq_valid(wq)) {
+  if (orwl_wq_valid(wq) && wh) {
+    uint64_t howmuch = (hm > P99_0(int64_t)) ? hm : -hm;
+    if (*wh) {
+      orwl_wq_request_append(wq, *wh, howmuch);
+      ret = orwl_requested;
+    } else if (!orwl_wq_idle(wq)) {
+      /* if the wh is a null pointer, take this as a request to add to the
+         last handle if it exists */
+      orwl_wh *wq_tail = wq->tail;
+      if (wq_tail && wq_tail->svrID) {
+        assert(hm >= P99_0(int64_t));
+        orwl_wh_load(wq_tail, howmuch);
+        *wh = wq_tail;
         ret = orwl_requested;
-          uint64_t howmuch = (hm > P99_0(int64_t)) ? hm : -hm;
-          if (wh && *wh)
-            orwl_wq_request_append(wq, *wh, howmuch);
-          else {
-            /* if the wh is a null pointer, take this as a request to add to the
-               last handle if it exists */
-            orwl_wh *wq_tail = wq->tail;
-            report(false, "request for augmenting an inclusive lock %p", (void*)wq_tail);
-            if (!orwl_wq_idle(wq)
-                && wq_tail
-                && wq_tail->svrID) {
-              report(false, "request for augmenting an inclusive lock %p, succes", (void*)wq_tail);
-              assert(hm >= P99_0(int64_t));
-              orwl_wh_load(wq_tail, howmuch);
-              *wh = wq_tail;
-            } else {
-              report(false, "request for augmenting an inclusive lock %p (%jX), failed",
-                     (void*)wq_tail, wq_tail ? wq_tail->svrID : P99_0(size_t));
-              ret = orwl_invalid;
-            }
-          }
       }
+    }
+  }
   return ret;
 }
 
