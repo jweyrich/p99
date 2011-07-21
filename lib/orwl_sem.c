@@ -13,10 +13,10 @@
 /*                                                                           */
 /*
 ** orwl_sem.c
-** 
+**
 ** Made by (Jens Gustedt)
 ** Login   <gustedt@damogran.loria.fr>
-** 
+**
 ** Started on  Fri Nov 19 17:36:26 2010 Jens Gustedt
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */

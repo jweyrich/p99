@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_INT_H_
-# define   	ORWL_INT_H_
+#ifndef     ORWL_INT_H_
+# define    ORWL_INT_H_
 
 /**
  ** @file "orwl_int.h"
@@ -280,4 +280,4 @@ int P99_FSYMB(mfputs)(FILE* f, size_t n, char const*const*const A) {
 
 
 
-#endif 	    /* !ORWL_INT_H_ */
+#endif      /* !ORWL_INT_H_ */

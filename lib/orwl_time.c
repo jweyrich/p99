@@ -1,7 +1,8 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
+/* the authors and copyright holders for this work are as follows:           */
+/* all rights reserved,  2011 Emmanuel Jeanvoine, INRIA, France              */
 /* all rights reserved,  2011 Jens Gustedt, INRIA, France                    */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
@@ -142,10 +143,10 @@ void sleepfor(double t) {
       if (!usleep((useconds_t)rem)) return;
 #  else
 #  warning usleep replaced with select hack
-    /* This is a hack. For once we are not interested in the return
-       value. we have to check ourselves, anyhow. */
-      struct timeval req = useconds2timeval(rem);
-      select(0, 0, 0, 0, &req);
+/* This is a hack. For once we are not interested in the return
+   value. we have to check ourselves, anyhow. */
+struct timeval req = useconds2timeval(rem);
+select(0, 0, 0, 0, &req);
 # endif
       errno = 0;
       uint64_t now = useconds();

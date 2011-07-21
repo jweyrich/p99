@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_POSIX_DEFAULT_H_
-# define   	P99_POSIX_DEFAULT_H_
+#ifndef     P99_POSIX_DEFAULT_H_
+# define    P99_POSIX_DEFAULT_H_
 
 #include "p99_defarg.h"
 #include P99_ADVANCE_ID
@@ -116,4 +116,4 @@ P00_POSIX_DEFARG_DOCU(realpath, char*, char const *path, char *resolved_path)
 #define realpath_defarg_1() P99_LVAL(char[PATH_MAX])
 
 
-#endif 	    /* !P99_POSIX_DEFAULT_H_ */
+#endif      /* !P99_POSIX_DEFAULT_H_ */

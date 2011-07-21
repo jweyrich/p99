@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_HEADER_H_
-# define   	ORWL_HEADER_H_
+#ifndef     ORWL_HEADER_H_
+# define    ORWL_HEADER_H_
 
 #include "orwl_int.h"
 
@@ -46,4 +46,4 @@ uint64_t orwl_ntoh64(uint64_t val) {
 #define ORWL_HEADER_INITIALIZER(CHAL) { [0] = CHAL, [1] = 0, [2] = ORWL_NETWORDER }
 
 
-#endif 	    /* !ORWL_HEADER_H_ */
+#endif      /* !ORWL_HEADER_H_ */

@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_ONCE_H_
-# define   	ORWL_ONCE_H_
+#ifndef     ORWL_ONCE_H_
+# define    ORWL_ONCE_H_
 
 #include "orwl_posix.h"
 
@@ -148,12 +148,12 @@ void orwl_once_init(o_rwl_once_cont* o, char const name[]) {
     fprintf(stderr, "Initializing %s has a cycle!\n", name);
   } else
     MUTUAL_EXCLUDE(o->mut)
-      if (!o->cond) {
-        fprintf(stderr, "Initializing %s for once\n", name);
-        o->id = pthread_self();
-        o->init();
-        o->cond = true;
-      }
+    if (!o->cond) {
+      fprintf(stderr, "Initializing %s for once\n", name);
+      o->id = pthread_self();
+      o->init();
+      o->cond = true;
+    }
 }
 
 /**
@@ -173,4 +173,4 @@ if (P99_LIKELY(P99_PASTE3(o_rwl_, T, _once).cond))             \
   P99_NOP;                                                     \
  else orwl_once_init(&P99_PASTE3(o_rwl_, T, _once), # T);
 
-#endif 	    /* !ORWL_ONCE_H_ */
+#endif      /* !ORWL_ONCE_H_ */

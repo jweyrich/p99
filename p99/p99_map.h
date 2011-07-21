@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_MAP_H_
-# define   	P99_MAP_H_
+#ifndef     P99_MAP_H_
+# define    P99_MAP_H_
 
 /**
  ** @file
@@ -312,9 +312,9 @@ P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_LCOPY, 4)
  **/
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_ACOPY, 2)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_ACOPY, 4)
-#define P99_ACOPY(TYPE, N, ...)                 \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
-(P00_ACOPY3(TYPE, N, __VA_ARGS__))              \
+#define P99_ACOPY(TYPE, N, ...)                                \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
+(P00_ACOPY3(TYPE, N, __VA_ARGS__))                             \
 (P00_ACOPY4(TYPE, N, __VA_ARGS__))
 
 
@@ -349,4 +349,4 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_AASSIGN, 1)
 /** @}
  **/
 
-#endif 	    /* !P99_MAP_H_ */
+#endif      /* !P99_MAP_H_ */

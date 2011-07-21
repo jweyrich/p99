@@ -50,7 +50,7 @@ arg_t* arg_t_init(arg_t *arg, orwl_barrier* ba, size_t m,
                     .init_barr = ba,
                     .info = inf,
                     .readers = reads,
-                    );
+                   );
   return arg;
 }
 
@@ -103,8 +103,7 @@ DEFINE_THREAD(arg_t) {
   /* Insert the handles into the request queues. Positions 0 to "readers-1" and
    * "readers+1" to "2*readers" are the neighbors, so these are only read requests. Position "readers"
    * is our own location where we want to write. */
-  ORWL_TIMER(initialization)
-  {
+  ORWL_TIMER(initialization) {
     orwl_barrier_wait(init_barr);
     /* Randomize, so the system will always be initialized differently. */
     sleepfor(orwl_drand(seed) * 1E-1);
@@ -140,8 +139,7 @@ DEFINE_THREAD(arg_t) {
     report(false, "initial barrier passed");
   }
   /* Do some resizing = allocation, but only in an initial phase. */
-  ORWL_TIMER(allocation)
-  {
+  ORWL_TIMER(allocation) {
     /* Do some precomputation of the desired data size */
     size_t len = 1;
     char const* env = getenv("ORWL_HANDLE_SIZE");
@@ -149,9 +147,9 @@ DEFINE_THREAD(arg_t) {
       size_t len2 = strtouz(env) / sizeof(uint64_t);
       if (len2) len = len2;
     }
- 
+
     /** Block until we haven't acquired all locks. **/
-    for (size_t i = 0; i < nb_hand; ++i){
+    for (size_t i = 0; i < nb_hand; ++i) {
       t = orwl_gettime();
       report(false, "%ld/acquiring: %p",t.tv_nsec,&left[i]);
       orwl_acquire2(&handle[i]);
@@ -165,7 +163,7 @@ DEFINE_THREAD(arg_t) {
     t = orwl_gettime();
     report(false, "%ld/truncated: %p",t.tv_nsec,&left[readers]);
 
-    for (size_t i = 0; i < nb_hand; ++i){
+    for (size_t i = 0; i < nb_hand; ++i) {
       t = orwl_gettime();
       report(false, "%ld/releasing: %p",t.tv_nsec,&left[i]);
       orwl_release2(&handle[i]);
@@ -192,11 +190,11 @@ DEFINE_THREAD(arg_t) {
      **/
     ORWL_TIMER(work_loop)
     for (size_t i = 0; i < nb_hand; ++i) {
-       t = orwl_gettime();
-       report(false, "%ld/acquiring: %p",t.tv_nsec,&left[i]);
-       ostate = orwl_acquire2(&handle[i]);
-       t = orwl_gettime();
-       report(false, "%ld/acquired: %p",t.tv_nsec,&left[i]);
+      t = orwl_gettime();
+      report(false, "%ld/acquiring: %p",t.tv_nsec,&left[i]);
+      ostate = orwl_acquire2(&handle[i]);
+      t = orwl_gettime();
+      report(false, "%ld/acquired: %p",t.tv_nsec,&left[i]);
 
     }
     /** Working Phase: we hold a write lock on our own location and
@@ -222,10 +220,10 @@ DEFINE_THREAD(arg_t) {
         uint64_t phaseRight = *data;
 
         diffRight = (phaseRight == (orwl_phase - 1))
-          ? '<'
-          : ((phaseRight == orwl_phase)
-             ? '>'
-             : '!');
+                    ? '<'
+                    : ((phaseRight == orwl_phase)
+                       ? '>'
+                       : '!');
       }
       {
         uint64_t const* data = orwl_read_map2(&handle[readers+1]);
@@ -233,10 +231,10 @@ DEFINE_THREAD(arg_t) {
         uint64_t phaseLeft = *data;
 
         diffLeft = (phaseLeft == (orwl_phase - 1))
-          ? '<'
-          : ((phaseLeft == orwl_phase)
-             ? '>'
-             : '!');
+                   ? '<'
+                   : ((phaseLeft == orwl_phase)
+                      ? '>'
+                      : '!');
       }
     }
     report(false, "working end");
@@ -259,7 +257,7 @@ DEFINE_THREAD(arg_t) {
 
     /* At the end of the phase, release our locks and launch the next
      * phase by placing a new request in the end of the queue. */
-    for (size_t i = 0; i < nb_hand; ++i){
+    for (size_t i = 0; i < nb_hand; ++i) {
       report(false, "%ld/releasing: %p",t.tv_nsec,&left[i]);
       ostate = orwl_release2(&handle[i]);
       report(false, "%ld/released: %p",t.tv_nsec,&left[i]);
@@ -272,7 +270,7 @@ DEFINE_THREAD(arg_t) {
   for (size_t i = 0; i < nb_hand; ++i)
     ostate = orwl_cancel2(&handle[i]);
   report(false, "finished");
-   
+
   /** free handle **/
   orwl_handle2_vdelete(handle);
 }
@@ -318,8 +316,7 @@ int main(int argc, char **argv) {
 
   /* start the server thread and initialize it properly */
   orwl_server srv = P99_INIT;
-  ORWL_TIMER(server_start)
-  {
+  ORWL_TIMER(server_start) {
     orwl_start(&srv, SOMAXCONN, orwl_np * 2);
     if (!orwl_alive(&srv)) return EXIT_FAILURE;
 
@@ -345,8 +342,8 @@ int main(int argc, char **argv) {
   report(1, "%s: starting %zu phases, %zu locations and threads",
          argv[0], phases, orwl_np);
 
-  ORWL_TIMER(connecting)
-  { /* set up the connections between the clients and the
+  ORWL_TIMER(connecting) {
+    /* set up the connections between the clients and the
      * server thread. */
     orwl_endpoint there = srv.host.ep;
 
@@ -365,31 +362,31 @@ int main(int argc, char **argv) {
        * managed by this main thread, here. */
       size_t thread2 = thread/2;
       arg_t_create_joinable(
-                            arg_t_init(&arg[thread2],
-                                       &init_barr,
-                                       thread,
-                                       phases,
-                                       /* give it the starting
-                                        * position of the location on
-                                        * the left. */
-                                       &location[thread - orwl_readers],
-                                       srv.info,orwl_readers),
-                            &id[thread2]
-                            );
+        arg_t_init(&arg[thread2],
+                   &init_barr,
+                   thread,
+                   phases,
+                   /* give it the starting
+                    * position of the location on
+                    * the left. */
+                   &location[thread - orwl_readers],
+                   srv.info,orwl_readers),
+        &id[thread2]
+      );
     } else {
       /* The even numbered ones are created detached and receive a
        * freshly created arg_t for which they are responsible. */
       arg_t_create_detached(
-                   P99_NEW(arg_t,
-                           &init_barr,
-                           thread,
-                           phases,
-                           /* give it the starting
-                            * position of the location on
-                            * the left. */
-                           &location[thread - orwl_readers],
-                           srv.info,orwl_readers)
-                   );
+        P99_NEW(arg_t,
+                &init_barr,
+                thread,
+                phases,
+                /* give it the starting
+                 * position of the location on
+                 * the left. */
+                &location[thread - orwl_readers],
+                srv.info,orwl_readers)
+      );
     }
   }
   /* wait for even numbered threads, that have been started joinable. */

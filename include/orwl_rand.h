@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_RAND_H_
-# define   	ORWL_RAND_H_
+#ifndef     ORWL_RAND_H_
+# define    ORWL_RAND_H_
 
 #include "orwl_thread.h"
 #include P99_ADVANCE_ID
@@ -55,22 +55,22 @@ rand48_t *rand48_t_init(rand48_t *seed,     /*!< [out] the object to iniialize *
                         unsigned short x0,  /*!< [in] defaults to a time value */
                         unsigned short x1,  /*!< [in] defaults to the process id */
                         unsigned short x2   /*!< [in] defaults to the thread id */
-                        ) {
+                       ) {
   if (seed) {
     *seed = P99_LVAL(rand48_t,
-                     .x = {
-                       [0] = x0,
-                         [1] = x1,
-                         [2] = x2,
-                         }
-                     );
+    .x = {
+      [0] = x0,
+      [1] = x1,
+      [2] = x2,
+    }
+                    );
   }
   return seed;
 }
 
 DOCUMENT_DESTROY(rand48_t)
 inline
-void rand48_t_destroy(rand48_t* seed){
+void rand48_t_destroy(rand48_t* seed) {
   /* special care for bogus warning given by icc */
   (void)seed;
 }
@@ -110,4 +110,4 @@ uint64_t orwl_rand64(rand48_t *xsubi) {
 }
 
 
-#endif 	    /* !ORWL_RAND_H_ */
+#endif      /* !ORWL_RAND_H_ */

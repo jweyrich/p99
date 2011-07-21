@@ -103,12 +103,12 @@ unsigned const A[d0][d1][d2][d3]
 int main(int argc, char** argv) {
   unsigned const* a = &(A[0][0][0][0]);
   P99_PARALLEL_FORALL(D, i0, i1, i2, i3)
-    printf("ooo: compare indexing: %u %u\n",
-           a[ P99_CDIM(D, i0, i1, i2, i3)],
-           A[i0][i1][i2][i3]
-           );
+  printf("ooo: compare indexing: %u %u\n",
+         a[ P99_CDIM(D, i0, i1, i2, i3)],
+         A[i0][i1][i2][i3]
+        );
   P99_DO(unsigned, i,  0, argc)
-    printf("ino: %u\n", i);
+  printf("ino: %u\n", i);
   P99_PARALLEL_DO(unsigned, i,  0, argc)
-    printf("ooo: %u\n", i);
+  printf("ooo: %u\n", i);
 }

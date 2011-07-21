@@ -14,8 +14,8 @@
  ** @file p99_type.h
  */
 
-#ifndef   	P99_TYPE_H_
-# define   	P99_TYPE_H_
+#ifndef     P99_TYPE_H_
+# define    P99_TYPE_H_
 
 #include "p99_paste.h"
 
@@ -103,4 +103,4 @@ P99_PLAIN_TYPE(P99_PASTE2(T, _ptr))
 /** @}
  **/
 
-#endif 	    /* !P99_TYPE_H_ */
+#endif      /* !P99_TYPE_H_ */

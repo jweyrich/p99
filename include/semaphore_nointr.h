@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	SEMAPHORE_NOINTR_H_
-# define   	SEMAPHORE_NOINTR_H_
+#ifndef     SEMAPHORE_NOINTR_H_
+# define    SEMAPHORE_NOINTR_H_
 
 #ifndef _XOPEN_SOURCE
 # define _XOPEN_SOURCE 600
@@ -111,11 +111,11 @@ unsigned sem_assert(sem_t* p) {
                   : ((value < 0)
                      ? 0u
                      : (unsigned)value
-                     )
-                  );
+                    )
+                 );
   return ret;
 }
 
 
 
-#endif 	    /* !SEMAPHORE_NOINTR_H_ */
+#endif      /* !SEMAPHORE_NOINTR_H_ */

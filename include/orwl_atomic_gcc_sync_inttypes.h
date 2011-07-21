@@ -1,4 +1,16 @@
-
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2011 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 /**
  ** @file
  ** @brief Implementation of the atomic operations for the different
@@ -30,7 +42,7 @@ _Bool ORWL_MANG(atomic_compare_exchange_weak)(void volatile*object, void*restric
 }
 
 inline
-void ORWL_MANG(atomic_store)(void volatile*object, ORWL_AT desired){
+void ORWL_MANG(atomic_store)(void volatile*object, ORWL_AT desired) {
   for (ORWL_AT expected = desired;;) {
     ORWL_AT val = __sync_val_compare_and_swap((ORWL_AT volatile*)object, expected, desired);
     if (val == expected) break;

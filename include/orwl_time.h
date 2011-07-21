@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_TIME_H_
-# define   	ORWL_TIME_H_
+#ifndef     ORWL_TIME_H_
+# define    ORWL_TIME_H_
 
 #include "orwl_posix.h"
 #include "orwl_once.h"
@@ -256,4 +256,4 @@ double seconds(void) {
 extern void sleepfor(double t);
 
 
-#endif 	    /* !ORWL_TIME_H_ */
+#endif      /* !ORWL_TIME_H_ */

@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_LIST_H_
-# define   	P99_LIST_H_
+#ifndef     P99_LIST_H_
+# define    P99_LIST_H_
 
 /**
  ** @file
@@ -32,7 +32,7 @@
  **/
 
 /** @addtogroup basic_list_operations Basic list processing macros
- ** 
+ **
  ** @{
  **/
 
@@ -137,4 +137,4 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_REP, 2)
  **/
 
 
-#endif 	    /* !P99_LIST_H_ */
+#endif      /* !P99_LIST_H_ */

@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_HOST_H_
-# define   	ORWL_HOST_H_
+#ifndef     ORWL_HOST_H_
+# define    ORWL_HOST_H_
 
 #include "orwl_endpoint.h"
 #include P99_ADVANCE_ID
@@ -63,15 +63,15 @@ orwl_host* orwl_host_init(orwl_host *th,  /*!< [out] the object to iniialize */
                           in_addr_t addr, /*!< [in] defaults to the null address */
                           in_port_t port, /*!< [in] defaults to 0 */
                           size_t    refs  /*!< [in] defaults to 0 */
-                          ) {
+                         ) {
   if (th) {
     *th = P99_LVAL(orwl_host,
                    .next = th,
                    .prev = th,
                    .refs = refs,
-                   );
+                  );
     pthread_mutex_init(&th->mut, 0),
-    orwl_endpoint_init(&th->ep, addr, port);
+                       orwl_endpoint_init(&th->ep, addr, port);
   }
   return th;
 }
@@ -85,4 +85,4 @@ void orwl_host_destroy(orwl_host *th) {
 DECLARE_NEW_DELETE(orwl_host);
 
 
-#endif 	    /* !ORWL_HOST_H_ */
+#endif      /* !ORWL_HOST_H_ */

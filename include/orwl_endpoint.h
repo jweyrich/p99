@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_ENDPOINT_H_
-# define   	ORWL_ENDPOINT_H_
+#ifndef     ORWL_ENDPOINT_H_
+# define    ORWL_ENDPOINT_H_
 
 #include "orwl_rand.h"
 #include "orwl_buffer.h"
@@ -91,8 +91,8 @@ DOCUMENT_INIT(orwl_addr)
 P99_DEFARG_DOCU(orwl_addr)
 inline
 orwl_addr* orwl_addr_init(orwl_addr *A,  /*!< the object to initialize */
-                    in_addr_t I0 /*!< defaults to the null address */
-                    ) {
+                          in_addr_t I0 /*!< defaults to the null address */
+                         ) {
   if (A) {
     *A = P99_LVAL(orwl_addr, .a = { [2] = htonl(0x0000FFFF), [3] = I0 } );
   }
@@ -110,10 +110,10 @@ inline
 struct in_addr addr2net(orwl_addr const*A) {
   struct in_addr ret = {
     .s_addr = ((!A->a[0]
-                && !A->a[1]
-                && (ntohl(A->a[2]) == 0x0000FFFF))
-               ? A->a[3]
-               : P99_TMAX(in_addr_t))
+    && !A->a[1]
+    && (ntohl(A->a[2]) == 0x0000FFFF))
+    ? A->a[3]
+    : P99_TMAX(in_addr_t))
   };
   return ret;
 }
@@ -122,13 +122,13 @@ struct in_addr addr2net(orwl_addr const*A) {
 /**
  ** @brief Return the IPv6 address stored in @a A.
  **
- ** This is only present if the platform supports IPv6. 
+ ** This is only present if the platform supports IPv6.
  ** @memberof orwl_addr
  **/
 inline
 struct in6_addr addr2net6(orwl_addr const*A) {
   struct in6_addr ret
-    = {
+      = {
     .s6_addr = P99_ADESIGNATED(A->aaaa, 16)
   };
   return ret;
@@ -174,8 +174,8 @@ DOCUMENT_INIT(orwl_port)
 P99_DEFARG_DOCU(orwl_port)
 inline
 orwl_port* orwl_port_init(orwl_port *A,   /*!< the object to initialize */
-                    in_port_t P  /*!< defaults to 0 */
-                    ) {
+                          in_port_t P  /*!< defaults to 0 */
+                         ) {
   if (A) {
     *A = net2port(P);
   }
@@ -234,7 +234,7 @@ orwl_endpoint* orwl_endpoint_init
  in_addr_t addr,          /*!< defaults to the null address */
  in_port_t port,          /*!< defaults to 0 */
  uint64_t index           /*!< defaults to 0 */
- ) {
+) {
   if (endpoint) {
     *endpoint = P99_LVAL(orwl_endpoint, .index = index);
     orwl_addr_init(&endpoint->addr, addr);
@@ -255,11 +255,11 @@ DECLARE_NEW_DELETE(orwl_endpoint);
 
 orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, /*!< [out] the object to initialize */
                                    char const* name   /*!< [in] the string to parse */
-                                   );
+                                  );
 
 inline
 orwl_endpoint orwl_endpoint_get(char const* name   /*!< [in] the string to parse */
-                                ) {
+                               ) {
   orwl_endpoint ret = P99_INIT;
   orwl_endpoint_parse(&ret, name);
   return ret;
@@ -268,7 +268,7 @@ orwl_endpoint orwl_endpoint_get(char const* name   /*!< [in] the string to parse
 P99_DEFARG_DOCU(orwl_endpoint_print)
 char const* orwl_endpoint_print(orwl_endpoint const* ep, /*!< [in] the object to interpret */
                                 char name[static 128]    /*!< [out] the string to initialize */
-                                );
+                               );
 
 #ifndef DOXYGEN
 P99_PROTOTYPE(char const*, orwl_endpoint_print, orwl_endpoint const*, char*);
@@ -309,7 +309,7 @@ uint64_t orwl_send(orwl_server* srv, orwl_endpoint const* there, rand48_t *seed,
  **   thread->main [label="pthread_exit()"];
  ** @endmsc
  **/
-#define orwl_rpc(SRV, THERE, SEED, F, ...)                                            \
+#define orwl_rpc(SRV, THERE, SEED, F, ...)                                                                 \
   orwl_send(SRV, THERE, SEED, ((orwl_buffer){ P99_LENGTH_ARR_ARG(uint64_t, ORWL_OBJID(F), __VA_ARGS__) }))
 
-#endif 	    /* !ORWL_ENDPOINT_H_ */
+#endif      /* !ORWL_ENDPOINT_H_ */

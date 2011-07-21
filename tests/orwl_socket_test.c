@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
       report(1, "looping %zd", t);
       orwl_host *n = 0;
       MUTUAL_EXCLUDE(srv.host.mut)
-        n = srv.host.next;
+      n = srv.host.next;
       report(1, "%p -- %p", (void*)&srv.host, (void*)n);
       for (orwl_host *h = n; h != &srv.host; ) {
         orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(0, 0);

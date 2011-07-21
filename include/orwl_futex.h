@@ -50,7 +50,7 @@ int orwl_futex(int *uaddr, /*!< the base address to be used */
                             0. */
                int *uaddr2, /*!< unused by ORWL, defaults to 0 */
                int val3     /*!< unused by ORWL, defaults to 0 */
-               ) {
+              ) {
   return syscall(SYS_futex, uaddr, op, val, timeout, uaddr2, val3);
 }
 

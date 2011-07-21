@@ -11,8 +11,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_C99_H_
-# define   	P99_C99_H_
+#ifndef     P99_C99_H_
+# define    P99_C99_H_
 
 /**
  ** @file
@@ -57,4 +57,4 @@
 #include <wchar.h>
 #include <wctype.h>
 
-#endif 	    /* !P99_C99_H_ */
+#endif      /* !P99_C99_H_ */

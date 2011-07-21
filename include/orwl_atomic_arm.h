@@ -29,7 +29,7 @@ ATOMIC_TYPE arm_ldrex(ATOMIC_TYPE volatile*ptr) {
                     : "=&r" (ret)
                     : "r" (ptr)
                     : "cc", "memory"
-                    );
+                   );
   return ret;
 }
 
@@ -40,7 +40,7 @@ _Bool arm_strex(ATOMIC_TYPE volatile*ptr, ATOMIC_TYPE val) {
                     : "=&r" (error)
                     : "r" (val), "r" (ptr)
                     : "cc", "memory"
-                    );
+                   );
   return !error;
 }
 
@@ -72,8 +72,7 @@ _Bool atomic_compare_exchange_weak(atomic_size_t volatile *object, size_t *expec
   size_t oldval = arm_ldrex(object);
   if (oldval == *expected) {
     if (arm_strex(object, desired)) return true;
-  }
-  else {
+  } else {
     /* Cancel */
     arm_strex(object, oldval);
     *expected = oldval;

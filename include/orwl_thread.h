@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_THREAD_H_
-# define   	ORWL_THREAD_H_
+#ifndef     ORWL_THREAD_H_
+# define    ORWL_THREAD_H_
 
 #include "orwl_once.h"
 #include "orwl_int.h"
@@ -232,8 +232,8 @@ extern int orwl_pthread_create_joinable(pthread_t *restrict thread,
  ** interaction between caller and callee takes place.
  **/
 extern int orwl_pthread_launch(start_routine_t start_routine,
-                                      void *restrict arg,
-                                      orwl_thread_cntrl* det);
+                               void *restrict arg,
+                               orwl_thread_cntrl* det);
 
 #define orwl_pthread_launch(...) P99_CALL_DEFARG(orwl_pthread_launch, 3, __VA_ARGS__)
 #define orwl_pthread_launch_init_defarg_2() P99_0(orwl_thread_cntrl*)
@@ -595,4 +595,4 @@ P99_INSTANTIATE(T*, NAME)
 
 #endif /* end of default implementation */
 
-#endif 	    /* !ORWL_THREAD_H_ */
+#endif      /* !ORWL_THREAD_H_ */

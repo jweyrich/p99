@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_NEW_H_
-# define   	ORWL_NEW_H_
+#ifndef     ORWL_NEW_H_
+# define    ORWL_NEW_H_
 
 /**
  ** @file orwl_new.h
@@ -142,4 +142,4 @@ P99_DEFINE_DELETE(T)
 
 
 
-#endif 	    /* !ORWL_NEW_H_ */
+#endif      /* !ORWL_NEW_H_ */

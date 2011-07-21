@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_BLOCK_H_
-# define   	P99_BLOCK_H_
+#ifndef     P99_BLOCK_H_
+# define    P99_BLOCK_H_
 
 #include "p99_compiler.h"
 #include "p99_type.h"
@@ -570,4 +570,4 @@ P99_PROTECTED_BLOCK(assert((EXPR) && "failed on entry"), assert((EXPR) && "faile
 P99_IF_COMPILER(INTEL, warning(disable: 589)) /* transfer of control bypasses initialization of... */
 
 
-#endif 	    /* !P99_BLOCK_H_ */
+#endif      /* !P99_BLOCK_H_ */

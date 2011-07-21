@@ -21,6 +21,6 @@ int main(int argc, char **argv) {
   }
   const struct timespec end = orwl_gettime();
   printf("Average time for orwl_gettime(): %f ns\n",
-	 timespec2useconds(timespec_diff(start,end)) / (double)max * 1000);
+         timespec2useconds(timespec_diff(start,end)) / (double)max * 1000);
   return(0);
 }

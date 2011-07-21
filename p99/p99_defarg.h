@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_DEFARG_H_
-# define   	P99_DEFARG_H_
+#ifndef     P99_DEFARG_H_
+# define    P99_DEFARG_H_
 
 /**
  ** @file
@@ -419,4 +419,4 @@ P99_IF_GT(P99_NARG(__VA_ARGS__), M)                                             
 /** @}
  **/
 
-#endif 	    /* !P99_DEFARG_H_ */
+#endif      /* !P99_DEFARG_H_ */

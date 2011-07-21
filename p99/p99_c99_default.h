@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_C99_DEFAULT_H_
-# define   	P99_C99_DEFAULT_H_
+#ifndef     P99_C99_DEFAULT_H_
+# define    P99_C99_DEFAULT_H_
 
 #include "p99_defarg.h"
 
@@ -493,4 +493,4 @@ P00_C99_DEFARG_DOCU(p99_strtou64, uint_least64_t, char const *nptr, char **endpt
  ** @}
  **/
 
-#endif 	    /* !P99_C99_DEFAULT_H_ */
+#endif      /* !P99_C99_DEFAULT_H_ */

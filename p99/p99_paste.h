@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_PASTE_H_
-# define   	P99_PASTE_H_
+#ifndef     P99_PASTE_H_
+# define    P99_PASTE_H_
 
 /**
  ** @file
@@ -71,14 +71,14 @@
  ** @endcode
  **/
 #define P99_PASTE2(_1, _2) P99_CAT2(_1, _2)
-#define P99_PASTE3(_1,	_2,	_3)                                 \
-	P99_PASTE2(P99_PASTE2(_1,	_2), _3)
-#define P99_PASTE4(_1,	_2,	_3,	_4)                             \
-	P99_PASTE2(P99_PASTE3(_1,	_2,	_3), _4)
-#define P99_PASTE5(_1,	_2,	_3,	_4,	_5)                         \
-	P99_PASTE2(P99_PASTE4(_1,	_2,	_3,	_4), _5)
-#define P99_PASTE6(_1,	_2,	_3,	_4,	_5,	_6)                     \
-	P99_PASTE2(P99_PASTE5(_1,	_2,	_3,	_4,	_5), _6)
+#define P99_PASTE3(_1,  _2, _3)                                \
+  P99_PASTE2(P99_PASTE2(_1, _2), _3)
+#define P99_PASTE4(_1,  _2, _3, _4)                            \
+  P99_PASTE2(P99_PASTE3(_1, _2, _3), _4)
+#define P99_PASTE5(_1,  _2, _3, _4, _5)                        \
+  P99_PASTE2(P99_PASTE4(_1, _2, _3, _4), _5)
+#define P99_PASTE6(_1,  _2, _3, _4, _5, _6)                    \
+  P99_PASTE2(P99_PASTE5(_1, _2, _3, _4, _5), _6)
 
 #ifndef P00_DOCUMENT_MULTIPLE_ARGUMENT
 #define P00_DOCUMENT_TYPE_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO should correspond to a type that is not a VLA. */
@@ -99,4 +99,4 @@
  **/
 
 
-#endif 	    /* !P99_PASTE_H_ */
+#endif      /* !P99_PASTE_H_ */

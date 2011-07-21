@@ -21,11 +21,11 @@
 #include "orwl_server.h"
 
 orwl_endpoint* orwl_endpoint_init
-     (orwl_endpoint *endpoint,
-      in_addr_t addr,
-      in_port_t port,
-      uint64_t index
-      );
+(orwl_endpoint *endpoint,
+ in_addr_t addr,
+ in_port_t port,
+ uint64_t index
+);
 
 void orwl_endpoint_destroy(orwl_endpoint *endpoint);
 
@@ -99,7 +99,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
       || ((in4_addr.s_addr == P99_TMAX(in_addr_t))
           && !memcmp(ep->addr.aaaa, &in6addr_any, 16))
 #endif
-      ) {
+     ) {
     hostname(host);
   } else {
 #if defined(POSIX_IPV6) && (POSIX_IPV6 > 0)
@@ -117,15 +117,15 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
       strcat(host, "]");
     } else
 #endif
-      {
-        o_rwl_sockaddr addr4 = {
-          .in4 = {
-            .sin_family = AF_INET6,
-            .sin_addr = in4_addr,
-          }
-        };
-        orwl_inet_ntop(&addr4.in46, host);
-      }
+    {
+      o_rwl_sockaddr addr4 = {
+        .in4 = {
+          .sin_family = AF_INET6,
+          .sin_addr = in4_addr,
+        }
+      };
+      orwl_inet_ntop(&addr4.in46, host);
+    }
   }
   P99_STRCATS(name, "orwl://", host, ":", PRIu(port2net(&ep->port)), "/");
   if (ep->index) P99_STRCATS(name, PRIu(ep->index));
@@ -228,7 +228,7 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
         header.data[0] = 0;
         if (P99_UNLIKELY(orwl_send_(fd, header, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
       }
-    P99_PROTECT:
+P99_PROTECT:
       close(fd);
       if (!success) report(1, "send request didn't succeed");
     }
@@ -262,8 +262,8 @@ bool orwl_send_(int fd, orwl_buffer mess, uint64_t remo) {
      the order of the remote host. */
   uint64_t *const buf = ((ORWL_HOSTORDER != ORWL_NETWORDER)
                          && (remo != ORWL_NETWORDER))
-    ? P99_CALLOC(uint64_t, mess.len)
-    : (void*)0;
+                        ? P99_CALLOC(uint64_t, mess.len)
+                        : (void*)0;
   if (buf) {
     orwl_hton(buf, mess.data, mess.len);
   }
@@ -281,14 +281,14 @@ bool orwl_send_(int fd, orwl_buffer mess, uint64_t remo) {
         blen -= res;
         if (res != clen)
           report(true, "orwl_send_ only succeeded partially (%zd / %zu), retrying\n",
-                 res, clen);
+          res, clen);
       } else {
         report(1, "orwl_send_ did not make any progress\n");
         P99_HANDLE_ERRNO {
-          P99_XCASE EINTR : {
+P99_XCASE EINTR : {
             perror("orwl_send_ was interrupted, retrying");
           }
-        P99_XDEFAULT : {
+P99_XDEFAULT : {
             perror("orwl_send_ had problems, aborting");
             P99_UNWIND_RETURN true;
           }
@@ -296,7 +296,7 @@ bool orwl_send_(int fd, orwl_buffer mess, uint64_t remo) {
         sleepfor(1E-6);
       }
     }
-  P99_PROTECT:
+P99_PROTECT:
     if (buf) free(buf);
   }
   return false;
@@ -316,14 +316,14 @@ bool orwl_recv_(int fd, orwl_buffer const mess, uint64_t remo) {
         blen -= res;
         if (res != clen)
           report(true, "orwl_recv_ only succeeded partially (%zd / %zu), retrying\n",
-                 res, clen);
+          res, clen);
       } else {
         report(1, "orwl_recv_ did not make any progress\n");
         P99_HANDLE_ERRNO {
-          P99_XCASE EINTR : {
+P99_XCASE EINTR : {
             perror("orwl_recv_ was interrupted, retrying");
           }
-        P99_XDEFAULT : {
+P99_XDEFAULT : {
             perror("orwl_recv_ had problems, aborting");
             P99_UNWIND_RETURN true;
           }
@@ -331,9 +331,9 @@ bool orwl_recv_(int fd, orwl_buffer const mess, uint64_t remo) {
         sleepfor(1E-6);
       }
     }
-  /* We only have to translate the message buffer, if we have an
-     order that is different from network order and different from
-     the order of the remote host. */
+    /* We only have to translate the message buffer, if we have an
+       order that is different from network order and different from
+       the order of the remote host. */
     if ((ORWL_HOSTORDER != ORWL_NETWORDER)
         && (remo != ORWL_NETWORDER)) {
       orwl_ntoh(mess.data, 0, mess.len);

@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_DOUBLE_H_
-# define   	P99_DOUBLE_H_
+#ifndef     P99_DOUBLE_H_
+# define    P99_DOUBLE_H_
 
 #include "p99_if.h"
 
@@ -102,4 +102,4 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_HEX_DOUBLE, 4)
  */
 
 
-#endif 	    /* !P99_DOUBLE_H_ */
+#endif      /* !P99_DOUBLE_H_ */

@@ -13,10 +13,10 @@
 /*                                                                           */
 /*
 ** orwl_posix.c
-** 
+**
 ** Made by (Jens Gustedt)
 ** Login   <gustedt@damogran.loria.fr>
-** 
+**
 ** Started on  Sat Nov 20 14:59:49 2010 Jens Gustedt
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
@@ -103,7 +103,7 @@ long o_rwl_sysconf(int name) {
   if (ret < 0) {
     ret = LONG_MIN + 1;
     P99_HANDLE_ERRNO {
-    P99_XDEFAULT:
+P99_XDEFAULT:
       ret = -p99_errno;
     }
   }

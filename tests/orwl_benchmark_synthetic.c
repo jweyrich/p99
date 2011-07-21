@@ -1,8 +1,9 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
+/* the authors and copyright holders for this work are as follows:           */
 /* all rights reserved,  2011 Emmanuel Jeanvoine, INRIA, France              */
+/* all rights reserved,  2011 Jens Gustedt, INRIA, France                    */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -40,7 +41,7 @@ typedef struct _arg_t {
 } arg_t;
 
 arg_t* arg_t_init(arg_t *arg, size_t id, orwl_vertex *v, size_t mlp, size_t tp,
-		  orwl_thread_cntrl* det) {
+                  orwl_thread_cntrl* det) {
   if (arg) {
     *arg = P99_LVAL(arg_t,
                     .id = id,
@@ -48,7 +49,7 @@ arg_t* arg_t_init(arg_t *arg, size_t id, orwl_vertex *v, size_t mlp, size_t tp,
                     .my_location_pos = mlp,
                     .task_pos = tp,
                     .det = det,
-                    );
+                   );
   }
   return arg;
 }
@@ -114,25 +115,25 @@ DEFINE_THREAD(arg_t) {
       double a,b,c;
       double * r = calloc(1000000, sizeof(double));
       for (size_t i = 0 ; i < 1000000 ; i++) {
-      	b = (i + 1) / (sin((i + 2) / (i + 1)) + 1.01);
-      	for (size_t j = 0 ; j < inner_iterations ; j++) {
-      	  c = (j + 3) / (cos((i + 4) / (i + 1)) + 1.02);
-      	  a = (b * c) - (b / (i + (j * c)));
-      	  r[i] += a;
-      	}
+        b = (i + 1) / (sin((i + 2) / (i + 1)) + 1.01);
+        for (size_t j = 0 ; j < inner_iterations ; j++) {
+          c = (j + 3) / (cos((i + 4) / (i + 1)) + 1.02);
+          a = (b * c) - (b / (i + (j * c)));
+          r[i] += a;
+        }
       }
       free(r);
       /* Let's put anything in the shared memory */
       for (size_t i = 0 ; i < ((shared_memory_size * MEGA) / sizeof(uint64_t)) ; i++) {
-	my_data[i] = orwl_rand(seed);
+        my_data[i] = orwl_rand(seed);
       }
       orwl_release2(&my_task_handle);
 
       for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
-      	distant_mapped_data[i] = (uint64_t*)orwl_read_map2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+        distant_mapped_data[i] = (uint64_t*)orwl_read_map2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
 
       for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
-      	orwl_release2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+        orwl_release2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
     }
   }
   orwl_cancel2(&my_task_handle);
@@ -220,10 +221,10 @@ int main(int argc, char **argv) {
     orwl_make_local_connection(i, &srv, &local_locations[i]);
     orwl_thread_cntrl * scale_det = P99_NEW(orwl_thread_cntrl);
     orwl_scale_state * scale
-      = P99_NEW(orwl_scale_state,
-                &local_locations[i],
-                (shared_memory_size * MEGA),
-                scale_det);
+    = P99_NEW(orwl_scale_state,
+              &local_locations[i],
+              (shared_memory_size * MEGA),
+              scale_det);
     orwl_scale_state_launch(scale, scale_det);
     orwl_thread_cntrl_wait_for_callee(scale_det);
     orwl_thread_cntrl_detach(scale_det);
@@ -232,12 +233,12 @@ int main(int argc, char **argv) {
   report(1, "local connections done");
 
   if (!orwl_wait_and_load_init_files(&ab, global_ab_file,
-  				     &graph, graph_file,
-  				     &srv,
-  				     local_ab_file,
-  				     nb_tasks, list_tasks, 
-				     list_locations,
-				     global_nb_tasks)) {
+                                     &graph, graph_file,
+                                     &srv,
+                                     local_ab_file,
+                                     nb_tasks, list_tasks,
+                                     list_locations,
+                                     global_nb_tasks)) {
 
     report(1, "can't load some files");
     return EXIT_FAILURE;
@@ -248,12 +249,12 @@ int main(int argc, char **argv) {
   for (size_t i = 0 ; i < nb_tasks ; i++) {
     det[i] = P99_NEW(orwl_thread_cntrl);
     arg_t *myarg
-      = P99_NEW(arg_t,
-                list_tasks[i],
-                &graph->vertices[list_tasks[i]],
-                list_locations[i],
-                i,
-                det[i]);
+    = P99_NEW(arg_t,
+              list_tasks[i],
+              &graph->vertices[list_tasks[i]],
+              list_locations[i],
+              i,
+              det[i]);
     arg_t_launch(myarg, det[i]);
   }
 

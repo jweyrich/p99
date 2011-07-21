@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_ID_H_
-# define   	P99_ID_H_
+#ifndef     P99_ID_H_
+# define    P99_ID_H_
 
 #include "p99_if.h"
 

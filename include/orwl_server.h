@@ -12,8 +12,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_SERVER_H_
-# define   	ORWL_SERVER_H_
+#ifndef     ORWL_SERVER_H_
+# define    ORWL_SERVER_H_
 
 #include "orwl_host.h"
 
@@ -52,7 +52,7 @@ orwl_server_init(orwl_server *serv,       /*!< [out] the object to initialize */
                                             defaults to 0 */
                  char const* endp         /*!< [in] defaults to the
                                             null address */
-                 );
+                );
 
 #ifndef DOXYGEN
 P99_PROTOTYPE(orwl_server*, orwl_server_init, orwl_server *, size_t, size_t, char const*);
@@ -102,7 +102,7 @@ void orwl_server_close(orwl_server *serv);
 P99_DEFARG_DOCU(orwl_server_terminate)
 void
 orwl_server_terminate(orwl_server *serv   /*!< the server to terminate */
-                      );
+                     );
 
 /**
  ** @brief Block the server initially.
@@ -148,7 +148,7 @@ orwl_start(orwl_server *serv,       /*!< [out] the server object to initialize *
                                       defaults to 0 */
            char const* endp         /*!< [in] defaults to the
                                       null address */
-           );
+          );
 
 #ifndef DOXYGEN
 P99_PROTOTYPE(void, orwl_start, orwl_server *, size_t, size_t, char const*);
@@ -173,4 +173,4 @@ orwl_alive(orwl_server *serv) {
   return !pthread_kill(serv->id, 0);
 }
 
-#endif 	    /* !ORWL_SERVER_H_ */
+#endif      /* !ORWL_SERVER_H_ */

@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_NEW_H_
-# define   	P99_NEW_H_
+#ifndef     P99_NEW_H_
+# define    P99_NEW_H_
 
 #include "p99_c99.h"
 
@@ -391,7 +391,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FREALLOC, 2)
 #define P99_FREALLOC(P, T, F, N) realloc(P, P99_FSIZEOF(T, F, N))
 
 /**
- ** @def P99_FMALLOC 
+ ** @def P99_FMALLOC
  ** @brief Allocate an instance of @c struct T that is able to hold @a
  ** N items in flexible @c struct member @a F.
  **
@@ -423,4 +423,4 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FCALLOC, 1)
  ** @}
  **/
 
-#endif 	    /* !P99_NEW_H_ */
+#endif      /* !P99_NEW_H_ */

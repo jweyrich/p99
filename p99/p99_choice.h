@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_CHOICE_H_
-# define   	P99_CHOICE_H_
+#ifndef     P99_CHOICE_H_
+# define    P99_CHOICE_H_
 
 /**
  ** @file
@@ -123,4 +123,4 @@ P00_UNIQUE_BIT(5, 32);
 P00_UNIQUE_BIT(6, 64);
 
 
-#endif 	    /* !P99_CHOICE_H_ */
+#endif      /* !P99_CHOICE_H_ */

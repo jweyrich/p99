@@ -12,8 +12,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_REMOTE_QUEUE_H_
-# define   	ORWL_REMOTE_QUEUE_H_
+#ifndef     ORWL_REMOTE_QUEUE_H_
+# define    ORWL_REMOTE_QUEUE_H_
 
 #include "orwl_wait_queue.h"
 #include "orwl_proc_symbols.h"
@@ -93,7 +93,7 @@ inline
 orwl_mirror *orwl_mirror_init(orwl_mirror *rq, /*!< [out] the object to iniialize */
                               orwl_server *srv, /*!< [in] local, defaults to a temp variable */
                               orwl_endpoint t  /*!< [in] remote, defaults to a temp variable */
-                              ) {
+                             ) {
   if (rq)
     *rq = (orwl_mirror const)ORWL_MIRROR_INITIALIZER(srv, t);
   return rq;
@@ -243,7 +243,7 @@ P99_DEFARG_DOCU(orwl_write_request)
 orwl_state orwl_write_request(orwl_mirror* rq, /*!< [in,out] the location for the request */
                               orwl_handle* rh,   /*!< [in,out] the handle for the request */
                               rand48_t* seed         /*!< [in] defaults to a thread local seed */
-                              );
+                             );
 
 /**
  ** @brief Insert a write request in the FIFO at the location of @a rq
@@ -257,7 +257,7 @@ P99_DEFARG_DOCU(orwl_read_request)
 orwl_state orwl_read_request(orwl_mirror* rq, /*!< [in,out] the location for the request */
                              orwl_handle* rh,   /*!< [in,out] the handle for the request */
                              rand48_t* seed         /*!< [in] defaults to a thread local seed */
-                             );
+                            );
 
 /**
  ** Release the lock that @a rh has obtained on its location
@@ -274,7 +274,7 @@ O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_release)
 orwl_state orwl_release(orwl_handle* rh,   /*!< [in,out] the handle to be released */
                         rand48_t* seed         /*!< [in] defaults to a thread local seed */
-                        );
+                       );
 
 /**
  ** Release the lock that @a rh has requested on its location
@@ -284,7 +284,7 @@ O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_cancel)
 orwl_state orwl_cancel(orwl_handle* rh,   /*!< [in,out] the handle to be canceled */
                        rand48_t* seed         /*!< [in] defaults to a thread local seed */
-                       );
+                      );
 
 #ifndef DOXYGEN
 P99_PROTOTYPE(orwl_state, orwl_write_request, orwl_mirror*, orwl_handle*, rand48_t*);
@@ -327,7 +327,7 @@ inline
 orwl_state orwl_acquire(orwl_handle* rh) {
   orwl_state ret =  orwl_invalid;
   ORWL_TIMING(total_acquire)
-    if (rh) ret = orwl_wh_acquire(rh->wh, 0);
+  if (rh) ret = orwl_wh_acquire(rh->wh, 0);
   return ret;
 }
 
@@ -472,18 +472,18 @@ void* orwl_write_map(orwl_handle* rh, size_t* data_len) {
     if (rh)
       switch (orwl_test(rh)) {
       case orwl_acquired: ;
-	if (orwl_inclusive(rh)) break;
+        if (orwl_inclusive(rh)) break;
       case orwl_write_acquired: ;
-	assert(rh->wh);
-	ret = orwl_wh_map(rh->wh, data_len);
-	if (ret) {
-	  /* Take the offset for the push header into account. */
-	  ret += orwl_push_header;
-	  if (data_len) {
-	    *data_len -= orwl_push_header;
-	    *data_len *= sizeof(uint64_t);
-	  }
-	}
+        assert(rh->wh);
+        ret = orwl_wh_map(rh->wh, data_len);
+        if (ret) {
+          /* Take the offset for the push header into account. */
+          ret += orwl_push_header;
+          if (data_len) {
+            *data_len -= orwl_push_header;
+            *data_len *= sizeof(uint64_t);
+          }
+        }
       default:;
       }
   }
@@ -560,16 +560,16 @@ void const* orwl_read_map(orwl_handle* rh, size_t* data_len) {
       case orwl_acquired: ;
       case orwl_write_acquired: ;
       case orwl_read_acquired: ;
-	assert(rh->wh);
-	ret = orwl_wh_map(rh->wh, data_len);
-	if (ret) {
-	  /* Take the offset for the push header into account. */
-	  ret += orwl_push_header;
-	  if (data_len) {
-	    *data_len -= orwl_push_header;
-	    *data_len *= sizeof(uint64_t);
-	  }
-	}
+        assert(rh->wh);
+        ret = orwl_wh_map(rh->wh, data_len);
+        if (ret) {
+          /* Take the offset for the push header into account. */
+          ret += orwl_push_header;
+          if (data_len) {
+            *data_len -= orwl_push_header;
+            *data_len *= sizeof(uint64_t);
+          }
+        }
       default:;
       }
   }
@@ -652,7 +652,7 @@ orwl_scale_state* orwl_scale_state_init(orwl_scale_state* scale, orwl_mirror* rq
                       .rq = rq,
                       .data_len = data_len,
                       .det = det
-                      );
+                     );
   }
   return scale;
 }
@@ -679,4 +679,4 @@ DECLARE_ORWL_REGISTER_ALIAS(orwl_acquire, orwl_handle);
 DECLARE_ORWL_REGISTER_ALIAS(orwl_release, orwl_handle);
 DECLARE_ORWL_REGISTER_ALIAS(orwl_cancel, orwl_handle);
 
-#endif 	    /* !ORWL_REMOTE_QUEUE_H_ */
+#endif      /* !ORWL_REMOTE_QUEUE_H_ */

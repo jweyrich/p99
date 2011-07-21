@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_FOR_H_
-# define   	P99_FOR_H_
+#ifndef     P99_FOR_H_
+# define    P99_FOR_H_
 
 /**
  ** @file
@@ -64,7 +64,7 @@
  ** toto = (A)[0]; tutu = (A)[1];
  ** @endcode
  **
- ** To understand the associativity of the @a OP argument 
+ ** To understand the associativity of the @a OP argument
  ** @code
  ** #define P00_SUM(NAME, I, REC, RES) ((REC) + (RES))
  ** #define P00_IDT(NAME, X, I) X
@@ -798,4 +798,4 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_CASERANGE, 1)
 #endif
 
 
-#endif 	    /* !P99_FOR_H_ */
+#endif      /* !P99_FOR_H_ */

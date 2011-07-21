@@ -33,8 +33,8 @@ void orwl_report(size_t mynum, size_t np, size_t phase, char const* format, ...)
              phase, format);
   else
     snprintf(head, headlen, form1,
-            (np < 0x10 ? 1 : (np < 0x100 ? 2 : (np < 0x1000 ? 3 : 4))),
-            mynum, np, phase, format);
+             (np < 0x10 ? 1 : (np < 0x100 ? 2 : (np < 0x1000 ? 3 : 4))),
+             mynum, np, phase, format);
   va_list ap;
   va_start(ap, format);
   vfprintf(stderr, head, ap);
@@ -167,12 +167,12 @@ o_rwl_launch_arg* o_rwl_launch_arg_init(o_rwl_launch_arg *rt,
                                         void* arg,
                                         orwl_thread_cntrl* det) {
   if (!rt) return 0;
-  *rt = (o_rwl_launch_arg){
+  *rt = (o_rwl_launch_arg) {
     .det = det ? det : P99_NEW(orwl_thread_cntrl),
-    .own = !det,
-    .start_routine = start_routine,
-    .arg = arg
-  };
+     .own = !det,
+      .start_routine = start_routine,
+       .arg = arg
+            };
   return rt;
 }
 
@@ -222,8 +222,8 @@ void *o_rwl_launch_arg_wrapper(void *routine_arg) {
 
 
 int orwl_pthread_launch(start_routine_t start_routine,
-                               void *restrict arg,
-                               orwl_thread_cntrl* det) {
+                        void *restrict arg,
+                        orwl_thread_cntrl* det) {
   /* Be sure to allocate the pair on the heap to leave full control
      to o_rwl_launch_arg_wrapper() of what to do with it. */
   o_rwl_launch_arg *Routine_Arg = P99_NEW(o_rwl_launch_arg, start_routine, arg, det);

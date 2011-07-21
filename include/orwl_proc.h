@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_PROC_H_
-# define   	ORWL_PROC_H_
+#ifndef     ORWL_PROC_H_
+# define    ORWL_PROC_H_
 
 #include "orwl_register.h"
 #include "orwl_host.h"
@@ -78,11 +78,11 @@ orwl_proc_init(orwl_proc *proc,         /*!< [out] */
                uint64_t remo,           /*!< [in] the byte order on remote */
                orwl_buffer m,           /*!< [in] the message or 0 */
                orwl_thread_cntrl *det   /*!< [in] non 0 if a local connection */
-               ) {
+              ) {
   if (proc) {
     bool alloc = (!m.data && m.len);
     orwl_buffer mes
-      = {
+    = {
       .len = m.len,
       .data = alloc ? P99_CALLOC(uint64_t, m.len) : m.data
     };
@@ -93,7 +93,7 @@ orwl_proc_init(orwl_proc *proc,         /*!< [out] */
                      .mes = mes,
                      .back = P99_INIT,
                      .det = det,
-                     );
+                    );
     if (alloc) proc->back = mes;
   }
   return proc;
@@ -113,27 +113,27 @@ DECLARE_THREAD(orwl_proc);
 void orwl_proc_untie_caller(orwl_proc *proc);
 
 #ifdef DOXYGEN
-#define DECLARE_ORWL_PROC_FUNC(F, ...)                                  \
-/*! @brief the number of @c uint64_t that F uses for control @see F */  \
-enum { P99_PASTE2(F, _header) = P99_NARG(__VA_ARGS__) + 1 };            \
-/*! An ::orwl_proc function interpreting a message received on a socket. */ \
+#define DECLARE_ORWL_PROC_FUNC(F, ...)                                                                      \
+/*! @brief the number of @c uint64_t that F uses for control @see F */                                      \
+enum { P99_PASTE2(F, _header) = P99_NARG(__VA_ARGS__) + 1 };                                                \
+/*! An ::orwl_proc function interpreting a message received on a socket. */                                 \
 /*! It interprets the message it receives as if it where declared @code uint64_t F(__VA_ARGS__) @endcode */ \
-/*! @see ORWL_PROC_READ is used to interpret the message as specified */ \
-/*! @see  P99_PASTE2(F, _header)*/                                      \
-/*! @memberof orwl_proc */                                              \
+/*! @see ORWL_PROC_READ is used to interpret the message as specified */                                    \
+/*! @see  P99_PASTE2(F, _header)*/                                                                          \
+/*! @memberof orwl_proc */                                                                                  \
 void F(orwl_proc *Arg)
-#define DEFINE_ORWL_PROC_FUNC(F, ...)                                   \
+#define DEFINE_ORWL_PROC_FUNC(F, ...)                          \
 void F(orwl_proc *Arg)
 #else
-#define DEFINE_ORWL_PROC_FUNC(F, ...)           \
-void P99_PASTE2(F, _proto)(__VA_ARGS__) { }   \
-DEFINE_ORWL_REGISTER_ALIAS(F, orwl_proc);       \
+#define DEFINE_ORWL_PROC_FUNC(F, ...)                          \
+void P99_PASTE2(F, _proto)(__VA_ARGS__) { }                    \
+DEFINE_ORWL_REGISTER_ALIAS(F, orwl_proc);                      \
 void F(orwl_proc *Arg)
 
-#define DECLARE_ORWL_PROC_FUNC(F, ...)                          \
-enum { P99_PASTE2(F, _header) = P99_NARG(__VA_ARGS__) };        \
-void P99_PASTE2(F, _proto)(__VA_ARGS__);                        \
-void F(orwl_proc *Arg);                                         \
+#define DECLARE_ORWL_PROC_FUNC(F, ...)                         \
+enum { P99_PASTE2(F, _header) = P99_NARG(__VA_ARGS__) };       \
+void P99_PASTE2(F, _proto)(__VA_ARGS__);                       \
+void F(orwl_proc *Arg);                                        \
 DECLARE_ORWL_REGISTER_ALIAS(F, orwl_proc)
 #endif
 
@@ -142,13 +142,13 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_proc);
 
 #define ORWL_PROC_READ(A, F, ...)                              \
 (void)((void (*)(orwl_proc*)){ F });                           \
-(void)((void (*)(__VA_ARGS__)){ P99_PASTE2(F, _proto) });                           \
-P99_VASSIGNS((A)->mes.data, __VA_ARGS__);                           \
-(A)->mes.len -= P99_NARG(__VA_ARGS__);                             \
+(void)((void (*)(__VA_ARGS__)){ P99_PASTE2(F, _proto) });      \
+P99_VASSIGNS((A)->mes.data, __VA_ARGS__);                      \
+(A)->mes.len -= P99_NARG(__VA_ARGS__);                         \
 (A)->mes.data += P99_NARG(__VA_ARGS__)
 
 /*! @brief an accessor function */
 /*! @memberof orwl_proc */
 orwl_addr orwl_proc_getpeer(orwl_proc const*Arg);
 
-#endif 	    /* !ORWL_PROC_H_ */
+#endif      /* !ORWL_PROC_H_ */

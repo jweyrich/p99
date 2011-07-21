@@ -3,7 +3,7 @@
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:           */
 /* all rights reserved,  2011 Emmanuel Jeanvoine, INRIA, France              */
-/* all rights reserved,  2011 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -12,8 +12,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_H_
-# define   	ORWL_H_
+#ifndef     ORWL_H_
+# define    ORWL_H_
 
 #include "orwl_handle2.h"
 #include "orwl_posix.h"
@@ -227,4 +227,4 @@ O_RWL_DOCUMENT_CONFIG(POSIX_TIMEOUTS)
 
 #endif /* configuration options */
 
-#endif 	    /* !ORWL_H_ */
+#endif      /* !ORWL_H_ */

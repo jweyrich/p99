@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_SOCKET_H_
-# define   	ORWL_SOCKET_H_
+#ifndef     ORWL_SOCKET_H_
+# define    ORWL_SOCKET_H_
 
 #include "orwl_register.h"
 #include "orwl_host.h"
@@ -36,7 +36,7 @@ void
 orwl_hton(uint64_t *n,        /*!< [out] array of length @a l */
           uint64_t const *h,  /*!< [in] array of length @a l */
           size_t l            /*!< [in] defaults to 1 */
-          ) {
+         ) {
   uint64_t const* hv = h ? h : n;
   for (size_t i = 0; i < l; ++i) {
     n[i] = orwl_hton64(hv[i]);
@@ -56,7 +56,7 @@ void
 orwl_ntoh(uint64_t* h,       /*!< [out] array of length @a l */
           uint64_t const *n, /*!< [in] array of length @a l */
           size_t l           /*!< [in] defaults to 1 */
-          ) {
+         ) {
   uint64_t const *nv = n ? n : h;
   for (size_t i = 0; i < l; ++i) {
     h[i] = orwl_ntoh64(nv[i]);
@@ -98,7 +98,7 @@ char const* orwl_inet_ntop(struct sockaddr const* addr,
      :  ((addr->sa_family) == AF_INET6
          ? (void const*)&(((struct sockaddr_in6 const*)(addr))->sin6_addr)
          : (void const*)0)
-     );
+    );
   if (src) inet_ntop(addr->sa_family, src, buf, size);
   else strncpy(buf, "<invalid addr>", size);
   return buf;
@@ -123,11 +123,11 @@ inline
 char const*
 hostname(char buffer[],   /*!< [out] defaults to a temporary */
          size_t len       /*!< [in] maximum length of the name (HOST_NAME_MAX) */
-         ) {
+        ) {
   return
     gethostname(buffer, len)
     ? P99_0(char*)
     : buffer;
 }
 
-#endif 	    /* !ORWL_SOCKET_H_ */
+#endif      /* !ORWL_SOCKET_H_ */

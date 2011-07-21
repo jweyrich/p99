@@ -12,16 +12,16 @@
 /*                                                                           */
 /*
 ** p99_str.h
-** 
+**
 ** Made by Jens Gustedt
 ** Login   <gustedt@damogran.loria.fr>
-** 
+**
 ** Started on  Thu Oct  7 14:57:47 2010 Jens Gustedt
 ** Last update Thu Oct  7 14:57:47 2010 Jens Gustedt
 */
 
-#ifndef   	P99_STR_H_
-# define   	P99_STR_H_
+#ifndef     P99_STR_H_
+# define    P99_STR_H_
 
 /**
  ** @file
@@ -149,4 +149,4 @@ P00_C99_DEFARG_DOCU(str2ld, long double, char const *nptr, size_t *pos)
 
 
 
-#endif 	    /* !P99_STR_H_ */
+#endif      /* !P99_STR_H_ */

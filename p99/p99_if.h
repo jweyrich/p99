@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_IF_H_
-# define   	P99_IF_H_
+#ifndef     P99_IF_H_
+# define    P99_IF_H_
 
 /**
  ** @file
@@ -178,4 +178,4 @@
  ** @}
  **/
 
-#endif 	    /* !P99_IF_H_ */
+#endif      /* !P99_IF_H_ */

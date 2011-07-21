@@ -13,16 +13,16 @@
 /*                                                                           */
 /*
 ** orwl_sem.h
-** 
+**
 ** Made by Jens Gustedt
 ** Login   <gustedt@damogran.loria.fr>
-** 
+**
 ** Started on  Fri Nov 19 16:26:43 2010 Jens Gustedt
 ** Last update Fri Nov 19 16:26:43 2010 Jens Gustedt
 */
 
-#ifndef   	ORWL_SEM_H_
-# define   	ORWL_SEM_H_
+#ifndef     ORWL_SEM_H_
+# define    ORWL_SEM_H_
 
 #ifndef _XOPEN_SOURCE
 # define _XOPEN_SOURCE 600
@@ -124,7 +124,7 @@ inline int orwl_sem_init(orwl_sem *s, unsigned int val) {
   *s = P99_LVAL(orwl_sem const, .val = val);
   pthread_mutex_init(&s->mut, 0);
   pthread_cond_init(&s->cond, 0),
-  return 0;
+                    return 0;
 }
 
 inline int orwl_sem_post(orwl_sem *s) {
@@ -198,4 +198,4 @@ inline unsigned orwl_sem_assert(orwl_sem* s)                  { return sem_asser
 
 #endif      /* POSIX_SEMAPHORES */
 #endif      /* !DOXYGEN     */
-#endif 	    /* !ORWL_SEM_H_ */
+#endif      /* !ORWL_SEM_H_ */

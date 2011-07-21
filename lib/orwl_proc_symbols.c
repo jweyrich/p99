@@ -52,26 +52,26 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, ui
       /* extract wq and the remote wh ID */
       orwl_wq *srv_wq = &Arg->srv->wqs[wqPOS];
       /* Create a handle and insert it in the queue.  Request two tokens,
-	 one for this function here when it acquires below, the other one to
-	 block until the remote issues a release. */
+         one for this function here when it acquires below, the other one to
+         block until the remote issues a release. */
       orwl_wh *srv_wh = P99_NEW(orwl_wh);
       orwl_state state = orwl_wq_request(srv_wq, &srv_wh, 2);
       if (state == orwl_requested) {
-	/* mes is already in host order */
-	orwl_endpoint ep = { .addr = orwl_proc_getpeer(Arg), .port = host2port(port) };
-	/* Acknowledge the creation of the wh and send back its id. */
-	Arg->ret = (uintptr_t)srv_wh;
-	orwl_proc_untie_caller(Arg);
+        /* mes is already in host order */
+        orwl_endpoint ep = { .addr = orwl_proc_getpeer(Arg), .port = host2port(port) };
+        /* Acknowledge the creation of the wh and send back its id. */
+        Arg->ret = (uintptr_t)srv_wh;
+        orwl_proc_untie_caller(Arg);
         /* Wait until the lock on wh is obtained. Only free the token
            later, after we have pushed back to the remote. */
-	ORWL_TIMER(proc_write_request_wh_acquire)
-	  state = orwl_wh_acquire(srv_wh, 0);
+        ORWL_TIMER(proc_write_request_wh_acquire)
+        state = orwl_wh_acquire(srv_wh, 0);
         assert(state == orwl_acquired);
-	ORWL_TIMER(push_write_request_server)
-	  orwl_push(Arg->srv, &ep, srv_wh->location, whID, true, false);
+        ORWL_TIMER(push_write_request_server)
+        orwl_push(Arg->srv, &ep, srv_wh->location, whID, true, false);
         orwl_wh_unload(srv_wh);
       } else {
-	orwl_wh_delete(srv_wh);
+        orwl_wh_delete(srv_wh);
       }
     }
   }
@@ -88,9 +88,9 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
       orwl_wq *srv_wq = &Arg->srv->wqs[wqPOS];
 
       /* First check if a previously inserted inclusive handle can be
-	 re-used. Always request two tokens, one for this function here
-	 when it acquires below, the other one to block until the remote
-	 issues a release */
+         re-used. Always request two tokens, one for this function here
+         when it acquires below, the other one to block until the remote
+         issues a release */
       bool piggyback = false;
       orwl_wh *srv_wh = 0;
       MUTUAL_EXCLUDE(srv_wq->mut) {
@@ -108,30 +108,30 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
       }
 
       if (state != orwl_requested) {
-	if (!piggyback) orwl_wh_delete(srv_wh);
+        if (!piggyback) orwl_wh_delete(srv_wh);
       } else {
-	orwl_endpoint ep = { .addr = orwl_proc_getpeer(Arg), .port = host2port(port) };
-	/* Acknowledge the creation of the wh and send back its ID. */
-	Arg->ret = (uintptr_t)srv_wh;
+        orwl_endpoint ep = { .addr = orwl_proc_getpeer(Arg), .port = host2port(port) };
+        /* Acknowledge the creation of the wh and send back its ID. */
+        Arg->ret = (uintptr_t)srv_wh;
 
-	/* If now the local handle is `requested' we only have to wait if
-	   we establish a new pair of client-server handles. */
-	if (piggyback) {
+        /* If now the local handle is `requested' we only have to wait if
+           we establish a new pair of client-server handles. */
+        if (piggyback) {
           if (!orwl_wh_unload(srv_wh, 2)) {
-	    state = orwl_wh_release(srv_wh);
-	    orwl_wh_delete(srv_wh);
-	  }
-	} else {
+            state = orwl_wh_release(srv_wh);
+            orwl_wh_delete(srv_wh);
+          }
+        } else {
           orwl_proc_untie_caller(Arg);
           /* Wait until the lock on wh is obtained. Only free the
              token later, after we have pushed back to the remote. */
-	  ORWL_TIMER(proc_read_request_wh_acquire)
-	    state = orwl_wh_acquire(srv_wh, 0);
+          ORWL_TIMER(proc_read_request_wh_acquire)
+          state = orwl_wh_acquire(srv_wh, 0);
           assert(state == orwl_acquired);
-	  ORWL_TIMER(push_read_request_server)
-	    orwl_push(Arg->srv, &ep, srv_wh->location, cliID, true, true);
+          ORWL_TIMER(push_read_request_server)
+          orwl_push(Arg->srv, &ep, srv_wh->location, cliID, true, true);
           orwl_wh_unload(srv_wh);
-	}
+        }
       }
     }
   }
@@ -210,6 +210,6 @@ DEFINE_ORWL_TYPE_DYNAMIC(orwl_proc,
                          ORWL_REGISTER_ALIAS(orwl_proc_write_request, orwl_proc),
                          ORWL_REGISTER_ALIAS(orwl_proc_read_request, orwl_proc),
                          ORWL_REGISTER_ALIAS(orwl_proc_release, orwl_proc),
-			 ORWL_REGISTER_ALIAS(orwl_proc_check_initialization, orwl_proc)
-                         );
+                         ORWL_REGISTER_ALIAS(orwl_proc_check_initialization, orwl_proc)
+                        );
 

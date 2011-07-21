@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_H_
-# define   	P99_H_
+#ifndef     P99_H_
+# define    P99_H_
 
 /**
  ** @file
@@ -1335,4 +1335,4 @@
 #include "p99_double.h"
 #include "p99_swap.h"
 
-#endif 	    /* !P99_H_ */
+#endif      /* !P99_H_ */

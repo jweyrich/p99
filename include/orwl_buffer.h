@@ -1,15 +1,28 @@
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2011 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 /*
 ** orwl_buffer.h
-** 
+**
 ** Made by Jens Gustedt
 ** Login   <gustedt@damogran.loria.fr>
-** 
+**
 ** Started on  Tue Jul  5 08:25:17 2011 Jens Gustedt
 ** Last update Tue Jul  5 08:25:17 2011 Jens Gustedt
 */
 
-#ifndef   	ORWL_BUFFER_H_
-# define   	ORWL_BUFFER_H_
+#ifndef     ORWL_BUFFER_H_
+# define    ORWL_BUFFER_H_
 
 #include "p99.h"
 
@@ -45,4 +58,4 @@ void orwl_buffer_destroy(orwl_buffer *buf) {
 }
 
 
-#endif 	    /* !ORWL_BUFFER_H_ */
+#endif      /* !ORWL_BUFFER_H_ */

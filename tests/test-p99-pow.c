@@ -88,7 +88,7 @@ dotproductFunc(double ret,
                P99_AARG(double const, A, 1),
                P99_AARG(double const, B, 1)) {
   P99_DO(size_t, i, 0, P99_ALEN(A, 1))
-    ret += (*A)[i] * (*B)[i];
+  ret += (*A)[i] * (*B)[i];
   return ret;
 }
 
@@ -357,12 +357,12 @@ int main(int argc, char*argv[]) {
   /*   for (size_t i = 0; i < k; ++i) */
   size_t const D[2] = {n, k};
   P99_FORALL(D, j, i)
-    (*AR)[j][i] = i*j;
+  (*AR)[j][i] = i*j;
   /* for (size_t i = 0; i < k; ++i) */
   /*   for (size_t j = 0; j < m; ++j) */
   size_t const E[2] = {k, m};
   P99_FORALL(E, i, j)
-    (*BR)[i][j] = j + i;
+  (*BR)[i][j] = j + i;
   P99_AREF(double, CR, n, m) = P99_CALLOC(double, n*m);
   mult(CR, AR, BR);
   free(AR);

@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_LOGICAL_H_
-# define   	P99_LOGICAL_H_
+#ifndef     P99_LOGICAL_H_
+# define    P99_LOGICAL_H_
 
 /**
  ** @file
@@ -257,7 +257,7 @@ P00_ADD_(_0, _1,                                               \
 #define P00_PRED_0 minus_1
 
 /**
- ** @brief evaluate the result of one of the arithmetic preprocessor 
+ ** @brief evaluate the result of one of the arithmetic preprocessor
  **/
 #define P99_EVAL(EDEC) P99_PASTE2(P00_dec_eval_, EDEC)
 
@@ -345,4 +345,4 @@ P00_ADD_(_0, _1,                                               \
  **/
 
 
-#endif 	    /* !P99_LOGICAL_H_ */
+#endif      /* !P99_LOGICAL_H_ */

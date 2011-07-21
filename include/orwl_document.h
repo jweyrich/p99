@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_DOCUMENT_H_
-# define   	ORWL_DOCUMENT_H_
+#ifndef     ORWL_DOCUMENT_H_
+# define    ORWL_DOCUMENT_H_
 
 #include "p99_defarg.h"
 
@@ -57,4 +57,4 @@ P99_MACRO_END(DOCUMENT_INIT);
 /*! @brief Destroy a variable of type T @see T ## _delete needs this. */ \
 /*! @memberof T                                                       */
 
-#endif 	    /* !ORWL_DOCUMENT_H_ */
+#endif      /* !ORWL_DOCUMENT_H_ */

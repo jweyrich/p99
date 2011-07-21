@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -46,7 +46,7 @@ enum { len = 9 };
 
 
 char const* myVerryBuggyFunction(void) {
-  return memset((char[len + 1]){ 0 }, 'a', len);
+  return memset((char[len + 1]) { 0 }, 'a', len);
 }
 
 char const* myStillBuggyFunction(void) {
@@ -60,7 +60,7 @@ char const* myLessBuggyFunction(void) {
 }
 
 char const* myBuggyFunction(void) {
-  return (char const[len + 1]){ 0 };
+  return (char const[len + 1]) { 0 };
 }
 
 struct toto {

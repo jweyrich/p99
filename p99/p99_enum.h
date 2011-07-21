@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_ENUM_H_
-# define   	P99_ENUM_H_
+#ifndef     P99_ENUM_H_
+# define    P99_ENUM_H_
 
 #include "p99_for.h"
 
@@ -114,4 +114,4 @@ P99_DECLARE_ENUM_GETNAME(bool, false, true);
  **/
 
 
-#endif 	    /* !P99_ENUM_H_ */
+#endif      /* !P99_ENUM_H_ */

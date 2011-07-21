@@ -62,8 +62,8 @@ P99_PROTOTYPE(void, ftester, test_t, unsigned, double);
 void ftester(test_t A, unsigned B, double C) {
   report(1, "ftester has %d %u %g", A.x, B, C);
 }
-P99_DECLARE_DEFARG(ftester, ((test_t){ -2 }), 2, 0.5);
-P99_DEFINE_DEFARG(ftester, ((test_t){ -2 }), 2, 0.5);
+P99_DECLARE_DEFARG(ftester, ((test_t) { -2 }), 2, 0.5);
+P99_DEFINE_DEFARG(ftester, ((test_t) { -2 }), 2, 0.5);
 
 #define ftester(...) P99_CALL_DEFARG(ftester, 3, __VA_ARGS__)
 
@@ -97,9 +97,9 @@ int main(int argc, char **argv) {
   ftister(14, 15);
   (void)ftester;
   ftester();
-  ftester((test_t){16});
-  ftester((test_t){17}, 18);
-  ftester((test_t){19}, 20, 19.9999);
+  ftester((test_t) {16});
+  ftester((test_t) {17}, 18);
+  ftester((test_t) {19}, 20, 19.9999);
   report(1, "%s %s %s %s %s", P99_PRI(char, X,), P99_PRI(short, X,), P99_PRI(signed, X,), P99_PRI(long, X,), P99_PRI(long long, X,));
   report(1, "%zu %zu %zu %zu %zu", sizeof(char), sizeof(short), sizeof(signed), sizeof(long), sizeof(long long));
   mfputs(stderr, P99_JOIN("aa", "BB", "CC "), PRIX(37ull), " ", PRId(37), " ", PRIo(37), " ", PRIp(argv), "\n");

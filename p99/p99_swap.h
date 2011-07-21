@@ -12,16 +12,16 @@
 /*                                                                           */
 /*
 ** p99_swap.h
-** 
+**
 ** Made by Jens Gustedt
 ** Login   <gustedt@damogran.loria.fr>
-** 
+**
 ** Started on  Thu Oct 21 11:40:09 2010 Jens Gustedt
 ** Last update Thu Oct 21 11:40:09 2010 Jens Gustedt
 */
 
-#ifndef   	P99_SWAP_H_
-# define   	P99_SWAP_H_
+#ifndef     P99_SWAP_H_
+# define    P99_SWAP_H_
 
 #include "p99_c99.h"
 #include "p99_int.h"
@@ -156,4 +156,4 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SWAP, 1)
 #define P99_SWAP(_0, _1) ((sizeof(_0) > sizeof(uintmax_t)) ? P00_SWAP1(_0, _1) : P00_SWAP2(_0, _1))
 
 
-#endif 	    /* !P99_SWAP_H_ */
+#endif      /* !P99_SWAP_H_ */

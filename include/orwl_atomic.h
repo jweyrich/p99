@@ -13,16 +13,16 @@
 /*                                                                           */
 /*
 ** orwl_atomic.h
-** 
+**
 ** Made by Jens Gustedt
 ** Login   <gustedt@damogran.loria.fr>
-** 
+**
 ** Started on  Sun Dec 19 00:34:52 2010 Jens Gustedt
 ** Last update Sun Dec 19 00:34:52 2010 Jens Gustedt
 */
 
-#ifndef   	ORWL_ATOMIC_H_
-# define   	ORWL_ATOMIC_H_
+#ifndef     ORWL_ATOMIC_H_
+# define    ORWL_ATOMIC_H_
 
 #include "orwl_int.h"
 
@@ -308,4 +308,4 @@ DECLARE_ATOMIC_OP(atomic_float, mult, *=);
 DECLARE_ATOMIC_OP(atomic_float, div, /=);
 
 
-#endif 	    /* !ORWL_ATOMIC_H_ */
+#endif      /* !ORWL_ATOMIC_H_ */

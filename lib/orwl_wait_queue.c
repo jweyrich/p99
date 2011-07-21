@@ -24,7 +24,7 @@ DEFINE_ONCE(orwl_wq, orwl_thread) {
 }
 
 orwl_wq* orwl_wq_init(orwl_wq *wq,
-                                const pthread_mutexattr_t *attr) {
+                      const pthread_mutexattr_t *attr) {
   if (!wq) return 0;
   *wq = (orwl_wq const)ORWL_WQ_INITIALIZER;
   pthread_mutex_init(&wq->mut, attr);
@@ -47,12 +47,12 @@ void orwl_wq_destroy(orwl_wq *wq) {
   *wq = P99_LVAL(orwl_wq const,
                  .head = TGARB(orwl_wh*),
                  .tail = TGARB(orwl_wh*),
-                 .data = {
-                   .len = P99_TMAX(size_t),
-                     .data = TGARB(void*)
-                     },
-                 .clock = P99_TMAX(uint64_t),
-                 );
+  .data = {
+    .len = P99_TMAX(size_t),
+    .data = TGARB(void*)
+  },
+  .clock = P99_TMAX(uint64_t),
+                );
 }
 
 DEFINE_NEW_DELETE(orwl_wq);
@@ -65,7 +65,7 @@ DEFINE_ATOMIC_OPS(orwl_wh_ptr);
 
 
 orwl_wh* orwl_wh_init(orwl_wh *wh,
-                  const pthread_condattr_t *attr) {
+                      const pthread_condattr_t *attr) {
   if (!wh) return 0;
   *wh =  (orwl_wh const)ORWL_WH_INITIALIZER;
   orwl_count_init(&wh->tokens, 0);
@@ -82,7 +82,7 @@ void orwl_wh_destroy(orwl_wh *wh) {
                  .location = TGARB(orwl_wq*),
                  .next = TGARB(orwl_wh*),
                  .priority = P99_TMAX(int64_t),
-                 );
+                );
 }
 
 DEFINE_NEW_DELETE(orwl_wh);
@@ -120,8 +120,8 @@ orwl_state orwl_wq_request(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
   orwl_state ret = orwl_invalid;
   if (wq)
     MUTUAL_EXCLUDE(wq->mut) {
-      ret = orwl_wq_request_locked(wq, wh, hm);
-    }
+    ret = orwl_wq_request_locked(wq, wh, hm);
+  }
   return ret;
 }
 
@@ -153,16 +153,16 @@ orwl_state orwl_wq_request2(orwl_wq *wq,
   orwl_state ret = orwl_invalid;
   if (wq)
     MUTUAL_EXCLUDE(wq->mut) {
-      if (orwl_wq_valid(wq)) {
-        ret = orwl_requested;
-        uint64_t howmuch = (hm0 > P99_0(int64_t)) ? hm0 : -hm0;
-        assert(wh0);
-        orwl_wq_request_append(wq, wh0, howmuch);
-        howmuch = (hm1 > P99_0(int64_t)) ? hm1 : -hm1;
-        assert(wh1);
-        orwl_wq_request_append(wq, wh1, howmuch);
-      }
+    if (orwl_wq_valid(wq)) {
+      ret = orwl_requested;
+      uint64_t howmuch = (hm0 > P99_0(int64_t)) ? hm0 : -hm0;
+      assert(wh0);
+      orwl_wq_request_append(wq, wh0, howmuch);
+      howmuch = (hm1 > P99_0(int64_t)) ? hm1 : -hm1;
+      assert(wh1);
+      orwl_wq_request_append(wq, wh1, howmuch);
     }
+  }
   return ret;
 }
 
@@ -192,7 +192,7 @@ orwl_state orwl_wh_release(orwl_wh *wh) {
     orwl_wq *wq = wh->location;
     if (wq && orwl_wq_valid(wq)) {
       ORWL_TIMER(release_wh_acquire)
-	ret = orwl_wh_acquire(wh, 0);
+      ret = orwl_wh_acquire(wh, 0);
       switch (ret) {
       default:
         report(true, "Inconsistency in queue %p when releasing %p, state is %s",
@@ -233,7 +233,7 @@ void orwl_wq_link(orwl_wq *wq,       /*!< the locked queue to act on */
                                       from elsewhere */
                   bool borrowed      /*!< whether this location here
                                        is responsible for the data */
-                  ) {
+                 ) {
   orwl_wq_resize_locked(wq, 0);
   wq->data = data;
   wq->borrowed = borrowed;
@@ -243,12 +243,12 @@ uint64_t* orwl_wh_map(orwl_wh* wh, size_t* data_len) {
   uint64_t* ret = 0;
   orwl_state state;
   ORWL_TIMER(map_wh_acquire)
-    state = orwl_wh_acquire(wh, 0);
+  state = orwl_wh_acquire(wh, 0);
   if (state == orwl_acquired) {
     orwl_wq *wq = wh->location;
     assert(wq);
     MUTUAL_EXCLUDE(wq->mut)
-      ret = orwl_wq_map_locked(wq, data_len);
+    ret = orwl_wq_map_locked(wq, data_len);
   } else {
     if (data_len) *data_len = 0;
   }
@@ -299,12 +299,12 @@ void orwl_wq_resize_locked(orwl_wq* wq, size_t len) {
 void orwl_wh_resize(orwl_wh* wh, size_t len) {
   orwl_state state;
   ORWL_TIMER(resize_wh_acquire)
-    state = orwl_wh_acquire(wh, 0);
+  state = orwl_wh_acquire(wh, 0);
   if (state == orwl_acquired) {
     orwl_wq *wq = wh->location;
     assert(wq);
     MUTUAL_EXCLUDE(wq->mut)
-      orwl_wq_resize_locked(wq, len);
+    orwl_wq_resize_locked(wq, len);
   }
 }
 
@@ -327,4 +327,4 @@ DEFINE_ORWL_TYPE_DYNAMIC(orwl_wh,
                          ORWL_REGISTER_ALIAS(orwl_wh_release, orwl_wh),
                          ORWL_REGISTER_ALIAS(orwl_wh_load, orwl_wh),
                          ORWL_REGISTER_ALIAS(orwl_wh_unload, orwl_wh)
-                         );
+                        );

@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_TYPENAMES_H_
-# define   	P99_TYPENAMES_H_
+#ifndef     P99_TYPENAMES_H_
+# define    P99_TYPENAMES_H_
 
 /**
  ** @file
@@ -163,4 +163,4 @@ P99_DERIVED_TYPES(_Bool);
  ** @}
  **/
 
-#endif 	    /* !P99_TYPENAMES_H_ */
+#endif      /* !P99_TYPENAMES_H_ */

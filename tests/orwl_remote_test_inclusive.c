@@ -47,7 +47,7 @@ arg_t* arg_t_init(arg_t *arg, orwl_barrier* ba, size_t off, size_t m,
                     .left = le,
                     .init_barr = ba,
                     .info = inf,
-                    );
+                   );
   return arg;
 }
 
@@ -113,21 +113,21 @@ DEFINE_THREAD(arg_t) {
 
 
   /* Do some resizing, but only in the initial phase. */
- {
-   for (size_t i = 0; i < 3; ++i)
-     orwl_acquire2(&handle[i]);
-   size_t len = sizeof(uint64_t);
-   char const* env = getenv("ORWL_HANDLE_SIZE");
-   if (env) {
-     size_t len2 = strtouz(env);
-     if (len2 > len) len = len2;
-   }
-   orwl_truncate2(&handle[1], len);
-   report(true, "handle resized to %zu byte                                             \n",
-          len);
-   for (size_t i = 0; i < 3; ++i)
-     orwl_release2(&handle[i]);
- }
+  {
+    for (size_t i = 0; i < 3; ++i)
+      orwl_acquire2(&handle[i]);
+    size_t len = sizeof(uint64_t);
+    char const* env = getenv("ORWL_HANDLE_SIZE");
+    if (env) {
+      size_t len2 = strtouz(env);
+      if (len2 > len) len = len2;
+    }
+    orwl_truncate2(&handle[1], len);
+    report(true, "handle resized to %zu byte                                             \n",
+           len);
+    for (size_t i = 0; i < 3; ++i)
+      orwl_release2(&handle[i]);
+  }
 
 
   for (size_t orwl_phase = 1; orwl_phase < phases; ++orwl_phase) {
@@ -186,12 +186,12 @@ DEFINE_THREAD(arg_t) {
       if (diff[2] == P99_TMIN(int64_t))
         info[2] = '|';
       else
-        info[2] = (abs(diff[2]) <= 2 ? ((char[]){ '-', '<', '.', '>', '+'})[diff[2] + 2] : '!');
+info[2] = (abs(diff[2]) <= 2 ? ((char[]) { '-', '<', '.', '>', '+'})[diff[2] + 2] : '!');
       if (orwl_mynum == offset) {
         if (diff[0] == P99_TMIN(int64_t))
           info[-1] = '|';
         else
-          info[-1] = (abs(diff[0]) <= 2 ? ((char[]){ '-', '<', '.', '>', '+'})[diff[0] + 2] : '!');
+info[-1] = (abs(diff[0]) <= 2 ? ((char[]) { '-', '<', '.', '>', '+'})[diff[0] + 2] : '!');
       }
     }
 
@@ -260,7 +260,8 @@ int main(int argc, char **argv) {
   report(1, "%s: starting %zu phases, %zu/%zu threads, offset %zu",
          argv[0], phases, number, orwl_np, offset);
 
-  { /* set up the connections between the clients and the
+  {
+    /* set up the connections between the clients and the
      * server process. */
     report(1, "connecting to %s", argv[1]);
     orwl_endpoint there = orwl_endpoint_get(argv[1]);
@@ -280,33 +281,33 @@ int main(int argc, char **argv) {
        * managed by this main thread, here. */
       size_t thread2 = thread/2;
       arg_t_create_joinable(
-                            arg_t_init(&arg[thread2],
-                                       &init_barr,
-                                       offset,
-                                       thread + offset,
-                                       phases,
-                                       /* give it the starting
-                                        * position of the location on
-                                        * the left. */
-                                       &location[thread - 1],
-                                       srv.info),
-                            &id[thread2]
-                            );
+        arg_t_init(&arg[thread2],
+                   &init_barr,
+                   offset,
+                   thread + offset,
+                   phases,
+                   /* give it the starting
+                    * position of the location on
+                    * the left. */
+                   &location[thread - 1],
+                   srv.info),
+        &id[thread2]
+      );
     } else {
       /* The even numbered ones are created detached and receive a
        * freshly created arg_t for which they are responsible. */
       arg_t_create_detached(
-                   P99_NEW(arg_t,
-                           &init_barr,
-                           offset,
-                           thread + offset,
-                           phases,
-                           /* give it the starting
-                            * position of the location on
-                            * the left. */
-                           &location[thread - 1],
-                           srv.info)
-                   );
+        P99_NEW(arg_t,
+                &init_barr,
+                offset,
+                thread + offset,
+                phases,
+                /* give it the starting
+                 * position of the location on
+                 * the left. */
+                &location[thread - 1],
+                srv.info)
+      );
     }
   }
 

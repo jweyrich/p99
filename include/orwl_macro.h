@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_MACRO_H_
-# define   	ORWL_MACRO_H_
+#ifndef     ORWL_MACRO_H_
+# define    ORWL_MACRO_H_
 
 #include "p99_block.h"
 #include "p99_defarg.h"
@@ -64,4 +64,4 @@
 
 #define LEN_MODARG(NAME, M, ...) O_RWL_MODARG_(M)(__VA_ARGS__), O_RWL_MODARG_LIST(NAME, P99_PASTE2(O_RWL_CAS, M), P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
-#endif 	    /* !ORWL_MACRO_H_ */
+#endif      /* !ORWL_MACRO_H_ */

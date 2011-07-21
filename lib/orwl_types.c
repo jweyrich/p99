@@ -30,5 +30,5 @@ DEFINE_ORWL_TYPES(orwl_state,
                   orwl_wq,
                   orwl_wh,
                   orwl_proc
-                  );
+                 );
 

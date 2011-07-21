@@ -12,8 +12,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_HELPERS_H_
-# define   	ORWL_HELPERS_H_
+#ifndef     ORWL_HELPERS_H_
+# define    ORWL_HELPERS_H_
 
 #include "orwl_endpoint.h"
 #include "orwl_server.h"
@@ -47,13 +47,13 @@ inline
 orwl_vertex* orwl_vertex_init(orwl_vertex *vertex, size_t nb_neighbors) {
   if (vertex) {
     *vertex = P99_LVAL(orwl_vertex,
-		       .color = 0,
-		       .nb_neighbors = nb_neighbors,
-		       .neighbors = (nb_neighbors
+                       .color = 0,
+                       .nb_neighbors = nb_neighbors,
+                       .neighbors = (nb_neighbors
                                      ? vertex->neighbors = size_t_vnew(nb_neighbors)
-                                     : 0),
-		       .label = P99_INIT,
-		       );
+                                         : 0),
+                       .label = P99_INIT,
+                      );
   }
 
   return vertex;
@@ -93,7 +93,7 @@ orwl_graph * orwl_graph_init(orwl_graph * graph, size_t nb_vertices) {
     *graph = P99_LVAL(orwl_graph,
                       .nb_vertices = nb_vertices,
                       .vertices = orwl_vertex_vnew(nb_vertices)
-                      );
+                     );
   }
   return graph;
 }
@@ -114,7 +114,7 @@ DECLARE_NEW_DELETE(orwl_graph);
 /**
  ** @brief Read a directed and colored graph from a file in dot format
  **
- ** @param graph is a pointer on a ::orwl_graph*. Warning, memory 
+ ** @param graph is a pointer on a ::orwl_graph*. Warning, memory
  **        is allocated inside this function.
  ** @param file is the path to a dot file
  ** @param nb_vertices is the number of vertices that are expected to be
@@ -144,11 +144,11 @@ struct orwl_address_book {
 DOCUMENT_INIT(orwl_address_book)
 inline
 orwl_address_book* orwl_address_book_init(orwl_address_book *ab,
-					  size_t nb_vertices) {
+    size_t nb_vertices) {
   if (ab) {
     *ab = P99_LVAL(orwl_address_book,
-		   .nb_vertices = nb_vertices,
-		   );
+                   .nb_vertices = nb_vertices,
+                  );
     if (nb_vertices > 0) {
       ab->eps = orwl_endpoint_vnew(nb_vertices);
       ab->locations = size_t_vnew(nb_vertices);
@@ -174,7 +174,7 @@ DECLARE_NEW_DELETE(orwl_address_book);
 /**
  ** @brief Read an address book
  **
- ** @param ab is a pointer on a ::orwl_address_book*. Warning, memory 
+ ** @param ab is a pointer on a ::orwl_address_book*. Warning, memory
  **        is allocated inside this function.
  ** @param file is the path to the address book file to be read
  ** @param nb_vertices is the number of entries that are expected to be
@@ -185,10 +185,10 @@ DECLARE_NEW_DELETE(orwl_address_book);
 bool orwl_address_book_read(orwl_address_book **ab, char const *file, size_t nb_vertices);
 
 /**
- ** @brief Block the application until a kick-off is given and load 
+ ** @brief Block the application until a kick-off is given and load
  **        initialization files (graph and address book). Once called,
  **        this function produces a part of the address book with local
- **        information and writes it to id_filename. The idea is to 
+ **        information and writes it to id_filename. The idea is to
  **        collect the id_filename files on all the nodes with an external
  **        application that concatenates it to a global address book. Then
  **        The external application has to send the global address book on
@@ -196,10 +196,10 @@ bool orwl_address_book_read(orwl_address_book **ab, char const *file, size_t nb_
  **        Finally, once the global address book is copied everywhere, the
  **        kick-off can be performed by deleting id_filename on the nodes.
  **
- ** @param ab is a pointer on a ::orwl_address_book*. Warning, memory 
+ ** @param ab is a pointer on a ::orwl_address_book*. Warning, memory
  **        is allocated inside this function
  ** @param ab_filename is the expected path to the global address book
- ** @param graph is a pointer on a ::orwl_graph*. Warning, memory 
+ ** @param graph is a pointer on a ::orwl_graph*. Warning, memory
  **        is allocated inside this function
  ** @param graph is the path to the dot file containing the graph description
  ** @param serv is a pointer on the local ::orwl_server
@@ -212,15 +212,15 @@ bool orwl_address_book_read(orwl_address_book **ab, char const *file, size_t nb_
  ** @return true if everything has been correctly performed, false otherwise
  **/
 bool orwl_wait_and_load_init_files(orwl_address_book **ab,
-				   const char *ab_filename,
-				   orwl_graph **graph,
-				   const char *graph_filename,
-				   orwl_server *serv,
-				   const char *id_filename,
-				   size_t nb_id,
-				   size_t *list_id,
-				   size_t *list_locations,
-				   size_t nb_vertices);
+                                   const char *ab_filename,
+                                   orwl_graph **graph,
+                                   const char *graph_filename,
+                                   orwl_server *serv,
+                                   const char *id_filename,
+                                   size_t nb_id,
+                                   size_t *list_id,
+                                   size_t *list_locations,
+                                   size_t nb_vertices);
 
 /**
  ** @brief Connect a distant location to the local server
@@ -233,10 +233,10 @@ bool orwl_wait_and_load_init_files(orwl_address_book **ab,
  **        where the distant location must be mirrored
  **/
 void orwl_make_distant_connection(size_t dest_id,
-				  orwl_server *server,
-				  orwl_graph *graph, 
-				  orwl_address_book *ab,
-				  orwl_mirror *location);
+                                  orwl_server *server,
+                                  orwl_graph *graph,
+                                  orwl_address_book *ab,
+                                  orwl_mirror *location);
 
 /**
  ** @brief Connect a local location to the local server
@@ -247,8 +247,8 @@ void orwl_make_distant_connection(size_t dest_id,
  **        where the local vertex location must be mirrored
  **/
 void orwl_make_local_connection(size_t dest_id,
-				orwl_server *server,
-				orwl_mirror *location);
+                                orwl_server *server,
+                                orwl_mirror *location);
 
 
 /**
@@ -267,13 +267,13 @@ void orwl_make_local_connection(size_t dest_id,
  ** @return true if everything has been correctly performed, false otherwise
  **/
 bool orwl_wait_to_initialize_locks(size_t id,
-				   orwl_graph *graph,
-				   orwl_address_book *ab,
-				   rand48_t *seed);
+                                   orwl_graph *graph,
+                                   orwl_address_book *ab,
+                                   rand48_t *seed);
 
 /**
- ** @brief Block an application thread until the neighbors (in 
- **        the undirected graph) of the corresponding vertex 
+ ** @brief Block an application thread until the neighbors (in
+ **        the undirected graph) of the corresponding vertex
  **        have initialized their locks.
  **
  ** @param id is the id of the vertex corresponding to the
@@ -287,10 +287,10 @@ bool orwl_wait_to_initialize_locks(size_t id,
  ** @return true if everything has been correctly performed, false otherwise
  **/
 bool orwl_wait_to_start(size_t id,
-			orwl_graph *graph,
-			orwl_address_book *ab,
-			orwl_server *server,
-			size_t nb_local_tasks,
-			rand48_t *seed);
+                        orwl_graph *graph,
+                        orwl_address_book *ab,
+                        orwl_server *server,
+                        size_t nb_local_tasks,
+                        rand48_t *seed);
 
 #endif

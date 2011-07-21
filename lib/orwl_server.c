@@ -40,13 +40,13 @@ orwl_server* orwl_server_init(orwl_server *serv,
   if (serv) {
     *serv = (orwl_server) {
       .fd_listen = -1,
-      .max_connections = max_connections,
-      .max_queues = max_queues,
-      .wqs = max_queues ? orwl_wq_vnew(max_queues) : P99_0(void*),
-      .host = ORWL_HOST_INITIALIZER(serv->host, 0, 0, 1),
-      .id_initialized = P99_0(bool*),
-      .unblocked_locations = 0,
-    };
+       .max_connections = max_connections,
+        .max_queues = max_queues,
+         .wqs = max_queues ? orwl_wq_vnew(max_queues) : P99_0(void*),
+          .host = ORWL_HOST_INITIALIZER(serv->host, 0, 0, 1),
+           .id_initialized = P99_0(bool*),
+            .unblocked_locations = 0,
+           };
     pthread_rwlock_init(&serv->lock);
     pthread_mutex_init(&serv->launch);
     if (endp && endp[0]) orwl_endpoint_parse(&serv->host.ep, endp);
@@ -75,7 +75,7 @@ void orwl_server_destroy(orwl_server *serv) {
   orwl_server_close(serv);
   orwl_host *n = 0;
   MUTUAL_EXCLUDE(serv->host.mut)
-    n = serv->host.next;
+  n = serv->host.next;
   for (orwl_host *h = n; h != &serv->host; ) {
     MUTUAL_EXCLUDE(h->mut) {
       n = h;
@@ -150,7 +150,7 @@ DEFINE_THREAD(orwl_server) {
           P99_UNWIND_RETURN;
         }
         int fd = -1;
-        for (;fd < 0;) {
+        for (; fd < 0;) {
           fd = accept(Arg->fd_listen);
           if (fd >= 0) break;
           perror("orwl_server encountered error in accept, retrying");
@@ -167,14 +167,14 @@ DEFINE_THREAD(orwl_server) {
           header.data[0] = chal;
           /* challenge / reply of the new connection */
           if (P99_UNLIKELY(orwl_send_(fd, header, 0)
-                           || orwl_recv_(fd, header, 0)))
+          || orwl_recv_(fd, header, 0)))
             P99_UNWIND(1);
           if (header.data[1] == repl) {
             size_t len = header.data[0];
             if (len) {
               orwl_proc *sock = P99_NEW(orwl_proc, fd, Arg, header.data[2], ((orwl_buffer)ORWL_BUFFER_INITIALIZER(len, 0)));
               MUTUAL_EXCLUDE(Arg->launch)
-                orwl_proc_create(sock);
+              orwl_proc_create(sock);
               /* The spawned thread will close the fd. */
               fd = -1;
             } else {
@@ -185,11 +185,11 @@ DEFINE_THREAD(orwl_server) {
           } else {
             diagnose(fd, "You are not authorized to talk on fd %d", fd);
           }
-        P99_PROTECT:
+P99_PROTECT:
           if (fd != -1) close(fd);
         }
       }
-    P99_PROTECT:
+P99_PROTECT:
       report(1, "\n");
       if (!errorstr) errorstr = "orwl_server finished";
       if (errno) {
@@ -218,7 +218,7 @@ void orwl_server_unblock(orwl_server *srv) {
   assert(srv->whs);
   for (uint64_t i = 0; i < srv->max_queues; ++i) {
     ORWL_TIMER(server_unblock_wh_acquire)
-      orwl_wh_acquire(&srv->whs[i]);
+    orwl_wh_acquire(&srv->whs[i]);
     orwl_wh_release(&srv->whs[i]);
   }
   orwl_wh_vdelete(srv->whs);
@@ -241,7 +241,7 @@ orwl_start(orwl_server *serv,       /*!< [out] the server object to initialize *
                                       defaults to 0 */
            char const* endp         /*!< [in] defaults to the
                                       null address */
-           ) {
+          ) {
   orwl_server_init(serv, max_connections, max_queues, endp);
   orwl_server_create(serv, &serv->id);
   /* give the server the chance to fire things up */

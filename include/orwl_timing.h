@@ -12,8 +12,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_TIMING_H_
-#define   	ORWL_TIMING_H_
+#ifndef     ORWL_TIMING_H_
+#define     ORWL_TIMING_H_
 
 #include "orwl_time.h"
 #include "orwl_document.h"
@@ -162,4 +162,4 @@ P99_PREFER(                                                                     
 #endif
 
 
-#endif 	    /* !ORWL_TIMING_H_ */
+#endif      /* !ORWL_TIMING_H_ */

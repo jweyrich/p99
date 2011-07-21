@@ -27,7 +27,7 @@ DEFINE_ORWL_TYPE_DYNAMIC(orwl_handle2,
                          ORWL_REGISTER_ALIAS(orwl_acquire2, orwl_handle2),
                          ORWL_REGISTER_ALIAS(orwl_release2, orwl_handle2),
                          ORWL_REGISTER_ALIAS(orwl_cancel2, orwl_handle2)
-                         );
+                        );
 
 static
 orwl_mirror* mirror_location(orwl_handle2* rh2) {
@@ -43,8 +43,8 @@ static
 void o_rwl_new_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed, bool par) {
   if (rh2->state[par] != orwl_requested)
     rh2->state[par] = rh2->inclusive
-      ? orwl_read_request(location, &rh2->pair[par], seed)
-      : orwl_write_request(location, &rh2->pair[par], seed);
+                      ? orwl_read_request(location, &rh2->pair[par], seed)
+                      : orwl_write_request(location, &rh2->pair[par], seed);
 }
 
 static
@@ -74,8 +74,8 @@ orwl_state orwl_release2(orwl_handle2* rh2, rand48_t* seed)  {
   orwl_acquire2(rh2);
   if (rh2->state[par] == orwl_acquired) {
     rh2->state[par] =  mirror_location(rh2)
-      ? orwl_release(&rh2->pair[par], seed)
-      : orwl_invalid;
+                       ? orwl_release(&rh2->pair[par], seed)
+                       : orwl_invalid;
   }
   ++(rh2->clock);
   return rh2->state[par];
@@ -98,8 +98,8 @@ orwl_state orwl_acquire2(orwl_handle2* rh2, rand48_t* seed) {
   switch (state[par]) {
   case orwl_requested:
     state[par] = location
-      ? orwl_acquire(&rh2->pair[par])
-      : orwl_invalid;
+                 ? orwl_acquire(&rh2->pair[par])
+                 : orwl_invalid;
   case orwl_acquired: break;
   default: return orwl_invalid;
   }
@@ -113,8 +113,8 @@ orwl_state orwl_acquire2(orwl_handle2* rh2, rand48_t* seed) {
 orwl_state orwl_test2(orwl_handle2* rh2, rand48_t* seed) {
   bool par = (rh2->clock % 2);
   rh2->state[par] =  mirror_location(rh2)
-    ? orwl_test(&rh2->pair[par])
-    : orwl_invalid;
+                     ? orwl_test(&rh2->pair[par])
+                     : orwl_invalid;
   return rh2->state[par];
 }
 

@@ -25,8 +25,8 @@ DEFINE_ONCE(orwl_proc,
 
 
 P99_INSTANTIATE(orwl_proc*, orwl_proc_init, orwl_proc *,
-                                  int,
-                                  orwl_server*,
+                int,
+                orwl_server*,
                 uint64_t,
                 orwl_buffer,
                 orwl_thread_cntrl*);
@@ -49,19 +49,19 @@ void orwl_proc_untie_caller(orwl_proc *sock) {
        minimal. Thus allow the reuse of ports. */
     if (setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, &P99_LVAL(int const, 1), sizeof(int)) < 0)
       P99_HANDLE_ERRNO {
-      P99_XDEFAULT :
-        perror("setting socket to SO_REUSEADDR failed");
-      }
+P99_XDEFAULT :
+      perror("setting socket to SO_REUSEADDR failed");
+    }
     if (setsockopt(sock->fd, SOL_SOCKET, SO_LINGER, &P99_LVAL(struct linger, .l_onoff = 1, .l_linger = 1), sizeof(struct linger)) < 0)
       P99_HANDLE_ERRNO {
-      P99_XDEFAULT :
-        perror("setting socket to linger failed");
-      }
+P99_XDEFAULT :
+      perror("setting socket to linger failed");
+    }
     if (close(sock->fd) < 0)
       P99_HANDLE_ERRNO {
-      P99_XDEFAULT :
-        perror("close on socket failed");
-      }
+P99_XDEFAULT :
+      perror("close on socket failed");
+    }
     sock->fd = -1;
   }
   sock->is_untied = true;

@@ -13,10 +13,10 @@
 /*                                                                           */
 /*
 ** orwl_barrier.c
-** 
+**
 ** Made by (Jens Gustedt)
 ** Login   <gustedt@damogran.loria.fr>
-** 
+**
 ** Started on  Wed Nov 24 23:35:18 2010 Jens Gustedt
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */

@@ -13,10 +13,10 @@
 /*                                                                           */
 /*
 ** orwl_barrier.h
-** 
+**
 ** Made by Jens Gustedt
 ** Login   <gustedt@damogran.loria.fr>
-** 
+**
 ** Started on  Wed Nov 24 23:17:01 2010 Jens Gustedt
 ** Last update Wed Nov 24 23:17:01 2010 Jens Gustedt
 */
@@ -26,8 +26,8 @@
  ** @brief Provide a fallback implementation for barriers.
  **/
 
-#ifndef   	ORWL_BARRIER_H_
-# define   	ORWL_BARRIER_H_
+#ifndef     ORWL_BARRIER_H_
+# define    ORWL_BARRIER_H_
 
 #if defined(POSIX_BARRIERS) && (POSIX_BARRIERS > 0)
 
@@ -86,4 +86,4 @@ int orwl_barrier_wait(orwl_barrier* barrier);
 #endif
 
 
-#endif 	    /* !ORWL_BARRIER_H_ */
+#endif      /* !ORWL_BARRIER_H_ */

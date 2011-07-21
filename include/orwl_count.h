@@ -40,7 +40,7 @@ struct orwl_count {
     atomic_size_t large;
     int narrow;
   }
-    overl;
+  overl;
 #if !defined(HAVE_FUTEX) || !defined(HAVE_ATOMIC)
   /** @brief A mutex that is used in the non-futex implementations */
   pthread_mutex_t mut;
@@ -161,7 +161,7 @@ size_t orwl_count_dec(orwl_count* counter, size_t howmuch) {
   size_t val = atomic_fetch_sub(&counter->overl.large, howmuch);
   if (P99_UNLIKELY(val <= howmuch))
     MUTUAL_EXCLUDE(counter->mut)
-      pthread_cond_broadcast(&counter->cnd);
+    pthread_cond_broadcast(&counter->cnd);
   return val - howmuch;
 }
 
@@ -264,7 +264,7 @@ void orwl_notifier_destroy(orwl_notifier* notifier) {
 }
 
 /**
- ** @brief Verify if the notification flag has been set. Non blocking. 
+ ** @brief Verify if the notification flag has been set. Non blocking.
  ** @memberof orwl_notifier
  **/
 inline
@@ -273,7 +273,7 @@ bool orwl_notifier_verify(orwl_notifier* notifier) {
 }
 
 /**
- ** @brief Set the notifier flag and wake up all potential waiters. 
+ ** @brief Set the notifier flag and wake up all potential waiters.
  ** @memberof orwl_notifier
  **/
 inline

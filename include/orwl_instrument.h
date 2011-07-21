@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_INSTRUMENT_H_
-# define   	ORWL_INSTRUMENT_H_
+#ifndef     ORWL_INSTRUMENT_H_
+# define    ORWL_INSTRUMENT_H_
 
 #include "orwl.h"
 

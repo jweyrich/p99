@@ -12,8 +12,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_POSIX_H_
-#define   	ORWL_POSIX_H_
+#ifndef     ORWL_POSIX_H_
+#define     ORWL_POSIX_H_
 
 /**
  ** @file
@@ -250,19 +250,19 @@ inline long P99_PASTE2(P99_S, X)(void) {                         \
 O_RWL_DECLARE_SC(O_RWL_POSIX_SC_1)
 O_RWL_DECLARE_SC(O_RWL_POSIX_SC_2)
 #ifdef _SC_XOPEN_THREADS
-  O_RWL_DECLARE_SC(O_RWL_POSIX_SC_THREAD)
+O_RWL_DECLARE_SC(O_RWL_POSIX_SC_THREAD)
 #endif
 #ifdef _SC_XOPEN_VERSION
-  O_RWL_DECLARE_SC(O_RWL_POSIX_SC_XOPEN)
+O_RWL_DECLARE_SC(O_RWL_POSIX_SC_XOPEN)
 #endif
 #ifdef _SC_XBS5_ILP32_OFF32
- O_RWL_DECLARE_SC(O_RWL_POSIX_SC_XBS5)
+O_RWL_DECLARE_SC(O_RWL_POSIX_SC_XBS5)
 #endif
 #ifdef _SC_V6_ILP32_OFF32
-  O_RWL_DECLARE_SC(O_RWL_POSIX_SC_V6)
+O_RWL_DECLARE_SC(O_RWL_POSIX_SC_V6)
 #endif
 #ifdef _SC_TRACE_USER_EVENT_MAX
- O_RWL_DECLARE_SC(O_RWL_POSIX_SC_6)
+O_RWL_DECLARE_SC(O_RWL_POSIX_SC_6)
 #endif
 
 #undef O_RWL_DECLARE_SC_ENUM_
@@ -270,4 +270,4 @@ O_RWL_DECLARE_SC(O_RWL_POSIX_SC_2)
 #undef O_RWL_DECLARE_SC_
 #undef O_RWL_DECLARE_SC
 
-#endif 	    /* !ORWL_POSIX_H_ */
+#endif      /* !ORWL_POSIX_H_ */

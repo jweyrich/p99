@@ -11,8 +11,8 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	ORWL_REGISTER_H_
-# define   	ORWL_REGISTER_H_
+#ifndef     ORWL_REGISTER_H_
+# define    ORWL_REGISTER_H_
 
 #include "orwl_int.h"
 #include "orwl_once.h"
@@ -229,4 +229,4 @@ DECLARE_ORWL_DOMAIN(ORWL_FTAB(orwl_types));
 #define ORWL_TYPEID(T) (orwl_register_id(ORWL_REGISTER(ORWL_FTAB(T))))
 
 
-#endif 	    /* !ORWL_REGISTER_H_ */
+#endif      /* !ORWL_REGISTER_H_ */

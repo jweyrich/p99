@@ -48,7 +48,7 @@ void orwl_timing_element_print(FILE *out, orwl_timing_element* el) {
             orwl_seconds2str(time),
             orwl_seconds2str(mu),
             orwl_seconds2str(sqrt(var))
-            );
+           );
   }
 }
 
@@ -74,7 +74,7 @@ void orwl_timing_print_stats(void) {
           "time",
           "time/n",
           "dev"
-          );
+         );
   orwl_timing_element_print(stderr, &timing_info.total_acquire);
   orwl_timing_element_print(stderr, &timing_info.total_write_map);
   orwl_timing_element_print(stderr, &timing_info.total_read_map);

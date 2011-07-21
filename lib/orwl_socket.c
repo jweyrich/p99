@@ -96,7 +96,7 @@ in_addr_t orwl_inet_addr(char const *name) {
         ret = act->s_addr;
       }
     }
-      break;
+    break;
     default:;
     }
   }

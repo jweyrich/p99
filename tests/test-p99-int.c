@@ -236,9 +236,9 @@ int main(int argc, char** argv) {
   /* signed and unsigned int have the same size, but they may have
      different width. */
   typedef union bitfield {
-    signed s:UINT_WIDTH;
-    unsigned u:UINT_WIDTH;
-    int i:UINT_WIDTH;
+signed s:UINT_WIDTH;
+unsigned u:UINT_WIDTH;
+int i:UINT_WIDTH;
     signed S;
     unsigned U;
     unsigned char C[sizeof(int)];

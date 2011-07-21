@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
-#ifndef   	P99_INT_H_
-# define   	P99_INT_H_
+#ifndef     P99_INT_H_
+# define    P99_INT_H_
 
 /**
  ** @file
@@ -1076,4 +1076,4 @@ uintmax_t p99_next_popcount(uintmax_t x) {
  **/
 
 
-#endif 	    /* !P99_INT_H_ */
+#endif      /* !P99_INT_H_ */
