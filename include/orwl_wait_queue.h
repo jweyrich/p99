@@ -361,9 +361,9 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_wh);
                              );
 
   orwl_state orwl_wq_request2(orwl_wq *wq, /*!< the queue to act on */
-                              orwl_wh **wh0,
+                              orwl_wh *wh0,
                               uint64_t hm0,
-                              orwl_wh **wh1,
+                              orwl_wh *wh1,
                               uint64_t hm1
                              );
 /**

@@ -59,7 +59,7 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
         // insert two wh in the local queue
         orwl_wh* wh = P99_NEW(orwl_wh);
         orwl_wh* cli_wh = P99_NEW(orwl_wh);
-        state = orwl_wq_request2(&rq->local, &cli_wh, 1, &wh, 1);
+        state = orwl_wq_request2(&rq->local, cli_wh, 1, wh, 1);
         assert(state == orwl_requested);
         assert(!rh->rq);
 

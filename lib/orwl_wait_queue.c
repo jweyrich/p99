@@ -116,27 +116,11 @@ void orwl_wq_request_append(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
   ++wq->clock;
 }
 
-static
-orwl_state orwl_wq_request_internal2(orwl_wq *wq,
-                                     orwl_wh **wh0, uint64_t hm0,
-                                     orwl_wh **wh1, uint64_t hm1);
-
 orwl_state orwl_wq_request(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
   orwl_state ret = orwl_invalid;
   if (wq)
     MUTUAL_EXCLUDE(wq->mut) {
       ret = orwl_wq_request_locked(wq, wh, hm);
-    }
-  return ret;
-}
-
-orwl_state orwl_wq_request2(orwl_wq *wq,
-                            orwl_wh **wh0, uint64_t hm0,
-                            orwl_wh **wh1, uint64_t hm1) {
-  orwl_state ret = orwl_invalid;
-  if (wq)
-    MUTUAL_EXCLUDE(wq->mut) {
-      ret = orwl_wq_request_internal2(wq, wh0, hm0, wh1, hm1);
     }
   return ret;
 }
@@ -170,24 +154,22 @@ orwl_state orwl_wq_request_locked(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
   return ret;
 }
 
-static
-orwl_state orwl_wq_request_internal2(orwl_wq *wq,
-                                     orwl_wh **wh0, uint64_t hm0,
-                                     orwl_wh **wh1, uint64_t hm1) {
+orwl_state orwl_wq_request2(orwl_wq *wq,
+                            orwl_wh *wh0, uint64_t hm0,
+                            orwl_wh *wh1, uint64_t hm1) {
   orwl_state ret = orwl_invalid;
-  if (orwl_wq_valid(wq)) {
+  if (wq)
+    MUTUAL_EXCLUDE(wq->mut) {
+      if (orwl_wq_valid(wq)) {
         ret = orwl_requested;
-        {
-          uint64_t howmuch = (hm0 > P99_0(int64_t)) ? hm0 : -hm0;
-          assert(wh0 && *wh0);
-          orwl_wq_request_append(wq, *wh0, howmuch);
-        }
-        {
-          uint64_t howmuch = (hm1 > P99_0(int64_t)) ? hm1 : -hm1;
-          assert(wh1 && *wh1);
-          orwl_wq_request_append(wq, *wh1, howmuch);
-        }
+        uint64_t howmuch = (hm0 > P99_0(int64_t)) ? hm0 : -hm0;
+        assert(wh0);
+        orwl_wq_request_append(wq, wh0, howmuch);
+        howmuch = (hm1 > P99_0(int64_t)) ? hm1 : -hm1;
+        assert(wh1);
+        orwl_wq_request_append(wq, wh1, howmuch);
       }
+    }
   return ret;
 }
 
