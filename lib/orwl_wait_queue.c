@@ -117,7 +117,9 @@ void orwl_wq_request_append(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
 }
 
 static
-orwl_state orwl_wq_request_internal2(orwl_wq *wq, size_t number, va_list ap);
+orwl_state orwl_wq_request_internal2(orwl_wq *wq,
+                                     orwl_wh **wh0, uint64_t hm0,
+                                     orwl_wh **wh1, uint64_t hm1);
 
 orwl_state orwl_wq_request(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
   orwl_state ret = orwl_invalid;
@@ -128,15 +130,13 @@ orwl_state orwl_wq_request(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
   return ret;
 }
 
-orwl_state P99_FSYMB(orwl_wq_request2)(orwl_wq *wq, P99_VA_ARGS(number)) {
+orwl_state orwl_wq_request2(orwl_wq *wq,
+                            orwl_wh **wh0, uint64_t hm0,
+                            orwl_wh **wh1, uint64_t hm1) {
   orwl_state ret = orwl_invalid;
-  assert(number == 2);
   if (wq)
     MUTUAL_EXCLUDE(wq->mut) {
-      va_list ap;
-      va_start(ap, number);
-      ret = orwl_wq_request_internal2(wq, number, ap);
-      va_end(ap);
+      ret = orwl_wq_request_internal2(wq, wh0, hm0, wh1, hm1);
     }
   return ret;
 }
@@ -171,17 +171,21 @@ orwl_state orwl_wq_request_locked(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
 }
 
 static
-orwl_state orwl_wq_request_internal2(orwl_wq *wq, size_t number, va_list ap) {
+orwl_state orwl_wq_request_internal2(orwl_wq *wq,
+                                     orwl_wh **wh0, uint64_t hm0,
+                                     orwl_wh **wh1, uint64_t hm1) {
   orwl_state ret = orwl_invalid;
-  assert(number == 2);
-      if (orwl_wq_valid(wq)) {
+  if (orwl_wq_valid(wq)) {
         ret = orwl_requested;
-        for (size_t i = 0; i < number; ++i) {
-          orwl_wh **wh = VA_MODARG(ap, orwl_wq_request2, 0);
-          int64_t hm = VA_MODARG(ap, orwl_wq_request2, 1);
-          uint64_t howmuch = (hm > P99_0(int64_t)) ? hm : -hm;
-          assert(wh && *wh);
-          orwl_wq_request_append(wq, *wh, howmuch);
+        {
+          uint64_t howmuch = (hm0 > P99_0(int64_t)) ? hm0 : -hm0;
+          assert(wh0 && *wh0);
+          orwl_wq_request_append(wq, *wh0, howmuch);
+        }
+        {
+          uint64_t howmuch = (hm1 > P99_0(int64_t)) ? hm1 : -hm1;
+          assert(wh1 && *wh1);
+          orwl_wq_request_append(wq, *wh1, howmuch);
         }
       }
   return ret;

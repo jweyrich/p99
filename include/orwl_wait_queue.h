@@ -325,34 +325,22 @@ DECLARE_NEW_DELETE(orwl_wh);
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_wh);
 
 /**
- ** @brief Insert a list of request pairs of <code>(wh, howmuch)</code> into location
- ** @a wq. Blocking if one of the @c wh is already requested.
- **
- ** This function can usually not be called directly since there is a
- ** macro of the same name that hides it. You call it by something like
- ** @code
- ** orwl_state state = orwl_wq_request(wq, wh0, howmuch0, wh1, howmuch1, ...)
- ** @endcode
- **
- ** The macro magic behind then ensures that the number of argument
- ** pairs is computed at compile time and fed into the @a number
- ** argument of the real function.
- **
- ** The argument @a number gives the number of pairs <code>(wh,
- ** howmuch)</code> of orwl_wh** (pointer-to-pointer of orwl_wh) and token
- ** number pairs that are to be inserted consequently in the FIFO of
+ ** @brief Insert a list of request pair of <code>(wh, howmuch)</code> into location
  ** @a wq.
  **
- ** @return ::orwl_invalid if any of @c wh or @a wq was
- ** invalid. Otherwise returns ::orwl_requested. Blocking until it is
- ** detected that none of the @c wh is already requested.
+ ** You call it by something like
+ ** @code
+ ** orwl_state state = orwl_wq_request(wq, wh0, howmuch0)
+ ** @endcode
  **
- ** For @c wh arguments that are not a null pointer, this inserts the
- ** handle into the queue and places @c howmuch tokens on each @c
- ** wh. Any of the @c wh will only be possible to be released if,
- ** first, it is acquired (that is it moves front in the FIFO) and
- ** then if all tokens are unloaded ::with orwl_wh_acquire or
- ** ::orwl_wh_test.
+ ** @return ::orwl_invalid if any of @c wh or @a wq was
+ ** invalid. Otherwise returns ::orwl_requested.
+ **
+ ** For a @c wh argument that is not a null pointer, this inserts the
+ ** handle into the queue and places @c howmuch tokens on @c *wh. @c
+ ** wh will only be possible to be released if, first, it is acquired
+ ** (that is it moves front in the FIFO) and then if all tokens are
+ ** unloaded with ::orwl_wh_acquire or ::orwl_wh_test.
  **
  ** A @c wh that is a null pointer is considered to relate to the last
  ** such handle that is at the tail of the queue, if such a handle
@@ -367,28 +355,25 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_wh);
  **
  ** @memberof orwl_wq
  **/
-  P99_VA_ARGS_DOCUMENTATION(orwl_wq_request)
-  orwl_state P99_FSYMB(orwl_wq_request2)(orwl_wq *wq, /*!< the queue to act on */
-                                    P99_VA_ARGS(number)
-                                    );
-
   orwl_state orwl_wq_request(orwl_wq *wq, /*!< the queue to act on */
                              orwl_wh **wh,
                              uint64_t hm
+                             );
+
+  orwl_state orwl_wq_request2(orwl_wq *wq, /*!< the queue to act on */
+                              orwl_wh **wh0,
+                              uint64_t hm0,
+                              orwl_wh **wh1,
+                              uint64_t hm1
                              );
 /**
  ** @private
  ** @memberof orwl_wq
  **/
-P99_VA_ARGS_DOCUMENTATION(orwl_wq_request_locked)
 orwl_state orwl_wq_request_locked(orwl_wq *wq, /*!< the queue to act on */
                                   orwl_wh **wh,
                                   uint64_t hm
                                   );
-#ifndef DOXYGEN
-#define orwl_wq_request2(WQ, ...) P99_FSYMB(orwl_wq_request2)(WQ, LEN_MODARG(orwl_wq_request2, 2, __VA_ARGS__))
-VA_TYPES(orwl_wq_request2, orwl_wh**, int64_t);
-#endif
 
   /**
    ** @brief Insert a handle into the queue where we know that the
