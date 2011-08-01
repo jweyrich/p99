@@ -856,7 +856,12 @@ P00_DECLARE_OVERFLOW(ll);
  ** @pre @a VAL must not necessarily be of type @a T, but it must be
  ** of a type that is assignment compatible with @a T.
  **/
-#define P99_RVAL(T, ...) (P99_LVAL(T) = (__VA_ARGS__))
+#define P99_RVAL(...)                                                   \
+P99_IF_EQ_1(P99_NARG(__VA_ARGS__))                                      \
+(((const struct { int bla; __VA_ARGS__ zero; }){ .bla = 0 }).zero)      \
+(P00_RVAL(__VA_ARGS__))
+
+#define P00_RVAL(T, ...) (P99_LVAL(T) = (__VA_ARGS__))
 
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_CHOOSE5, 0)
 #define P99_CHOOSE5(xT, cc, cs, ci, cl, cll)                   \

@@ -366,7 +366,7 @@ struct p00_jmp_buf {
   jmp_buf buf;
 };
 
-#define P00_JMP_BUF_INITIALIZER { .returning = 0, .buf = { 0 }}
+#define P00_JMP_BUF_INITIALIZER { .returning = 0, /* initialize .buf implicitly */ }
 
 P99_DECLARE_STRUCT(p00_inhibitor);
 
@@ -460,7 +460,8 @@ P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                
    P99_UNWIND_PROTECT */                                                                  \
   P00_BLK_DECL_REC(register unsigned const, p99_unwind_level, p99_unwind_level + 1)       \
 /* the buffer variable for setjmp/longjump */                                             \
-  P00_BLK_DECL(auto jmp_buf, p00_unwind_top)                                              \
+/* initialization looks a bit weird because jmp_buf is an array type */                   \
+  P00_BLK_DECL(auto jmp_buf, p00_unwind_top, { P99_RVAL(jmp_buf)[0] })                    \
   P00_BLK_BEFORE(p00_code = setjmp(p00_unwind_top))                                       \
   /* detect whether or not we are unwinding */                                            \
   P00_BLK_BEFORE(p00_unw = !!p00_code)                                                    \
