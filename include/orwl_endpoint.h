@@ -260,7 +260,7 @@ orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, /*!< [out] the object to i
 inline
 orwl_endpoint orwl_endpoint_get(char const* name   /*!< [in] the string to parse */
                                ) {
-  orwl_endpoint ret = P99_INIT;
+  orwl_endpoint ret = ORWL_ENDPOINT_INITIALIZER(0, 0);
   orwl_endpoint_parse(&ret, name);
   return ret;
 }

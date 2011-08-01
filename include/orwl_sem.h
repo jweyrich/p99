@@ -98,6 +98,11 @@ inline unsigned orwl_sem_assert(orwl_sem* s);
 #define ORWL_SEM_VALUE_MAX INT_MAX
 
 struct orwl_sem { unsigned val; pthread_mutex_t mut; pthread_cond_t cond; };
+#define ORWL_SEM_INITIALIZER {                  \
+.val = 0,                                       \
+.mut = PTHREAD_MUTEX_INITIALIZER,               \
+.cond = PTHREAD_COND_INITIALIZER,               \
+}
 
 inline int orwl_sem_destroy(orwl_sem *s) {
   if (!s) return EINVAL;
@@ -185,6 +190,8 @@ inline unsigned orwl_sem_assert(orwl_sem* s) {
 #define ORWL_SEM_VALUE_MAX SEM_VALUE_MAX
 
 struct orwl_sem { sem_t sem; };
+#define ORWL_SEM_INITIALIZER { .sem = P99_RVAL(sem_t) }
+
 
 inline int    orwl_sem_destroy(orwl_sem *s)                { return sem_destroy(&s->sem); }
 inline int    orwl_sem_getvalue(orwl_sem *s, int *p)       { int ret = sem_getvalue(&s->sem, p); if (*p < 0) *p = 0; return ret; }

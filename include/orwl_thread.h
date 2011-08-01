@@ -161,7 +161,7 @@ struct orwl_thread_cntrl {
 inline
 orwl_thread_cntrl* orwl_thread_cntrl_init(orwl_thread_cntrl* det) {
   if (det) {
-    *det = P99_LVAL(orwl_thread_cntrl);
+    *det = P99_LVAL(orwl_thread_cntrl, .semCaller = ORWL_SEM_INITIALIZER );
     orwl_sem_init(&det->semCaller, 0u);
     orwl_sem_init(&det->semCallee, 0u);
   }

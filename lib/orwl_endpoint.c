@@ -36,8 +36,8 @@ P99_INSTANTIATE(orwl_endpoint, orwl_endpoint_get, char const* name);
 
 orwl_endpoint* orwl_endpoint_parse(orwl_endpoint* ep, char const* name) {
   if (ep && name && name[0]) {
-    orwl_addr addr = P99_INIT;
-    orwl_port port = P99_INIT;
+    orwl_addr addr = ORWL_ADDR_INITIALIZER(0);
+    orwl_port port = ORWL_PORT_INITIALIZER(0);
     uint64_t index = 0;
     char const prefix[7 + 1] = "orwl://";
     if (strstr(name, prefix) == name) {
