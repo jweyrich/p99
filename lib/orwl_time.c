@@ -85,7 +85,7 @@ static double orwl_timebase = 0.0;
 static uint64_t orwl_timestart = 0;
 
 DEFINE_ONCE(orwl_gettime) {
-  mach_timebase_info_data_t tb = P99_INIT;
+  mach_timebase_info_data_t tb = P99_RVAL(mach_timebase_info_data_t);
   mach_timebase_info(&tb);
   orwl_timebase = tb.numer;
   orwl_timebase /= tb.denom;
