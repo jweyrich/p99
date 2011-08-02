@@ -68,8 +68,8 @@ bool orwl_graph_extract_line(orwl_graph *graph,
                              regex_t *re_connection,
                              regex_t *re_attributes) {
 
-  regmatch_t connection_match[3]= {0};
-  regmatch_t attributes_match[4]= {0};
+  regmatch_t connection_match[3]= { P99_RVAL(regmatch_t) };
+  regmatch_t attributes_match[4]= { P99_RVAL(regmatch_t) };
 
   /* matching a connection line */
   if (regexec(re_connection, str, 3, connection_match, 0) == 0) {
@@ -184,7 +184,7 @@ bool orwl_address_book_extract_line(orwl_address_book *ab, char const *str, rege
   A line pattern is as follow:
   id-location-host
      */
-  regmatch_t match[4]= {0};
+  regmatch_t match[4]= { P99_RVAL(regmatch_t) };
 
   /* matching a connection line */
   if (regexec(re, str, 4, match, 0) == 0) {

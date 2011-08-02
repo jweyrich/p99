@@ -197,7 +197,7 @@ size_t get_main_task_from_label(char const *str) {
   if (regcomp(&re, pattern, REG_EXTENDED)) {
     printf("Pattern did not compile.\n");
   }
-  regmatch_t match[3]= {0};
+  regmatch_t match[3]= { P99_RVAL(regmatch_t) };
   if (regexec(&re, str, 3, match, 0) == 0) {
     main_task = extract_size_t_from_str(match[1].rm_so,
                                         match[1].rm_eo,
@@ -215,7 +215,7 @@ size_t get_sub_task_from_label(char const *str) {
     report(1, "Pattern did not compile");
     return SIZE_MAX;
   }
-  regmatch_t match[3]= {0};
+  regmatch_t match[3]= { P99_RVAL(regmatch_t) };
   if (regexec(&re, str, 3, match, 0) == 0) {
     char label[3];
     extract_str_from_str(match[2].rm_so,
