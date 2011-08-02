@@ -828,12 +828,22 @@ P00_DECLARE_OVERFLOW(ll);
  ** If only @c T is given as a parameter, @c { 0 } is used to
  ** initialize the lvalue. Otherwise the remaining parameters are used
  ** for initialization.
+ **
+ ** @see P99_AVAL for an array type with unknown base type.
+ **
+ ** @see P99_RVAL for a macro that returns an rvalue of a certain type
+ ** and value.
  **/
 #define P99_LVAL(...) P99_IF_LE(P99_NARG(__VA_ARGS__),1)(P00_LVAL(__VA_ARGS__, 0))(P00_LVAL(__VA_ARGS__))
 
-
+#ifdef DOXYGEN
 /**
- ** @brief Define an rvalue of type @a T and value @a VAL
+ ** @brief Define an rvalue of type @a T and (if given)
+ ** value @a VAL
+ **
+ ** @param T must be a type that can serve as an rvalue, but see below.
+ ** @param VAL can be omitted. If given it must be assignment compatible to @a T.
+ ** If omitted, an rvalue of type @a T with default initialization is produced.
  **
  ** In a way this is a "safer" cast operation. E.g
  ** @code
@@ -848,20 +858,51 @@ P00_DECLARE_OVERFLOW(ll);
  ** f(P99_RVAL(double*, &a)); // warning: assignment from incompatible pointer type
  ** @endcode
  **
- ** @pre @a T must be a type that can be initialized with @c
- ** {0}. These are all the built-in types (integral, floating point,
- ** pointers, enumerations, ...) plus all composite types for which
- ** the first element can be initialized with @c 0.
+ ** @pre @a T must be a type that can be assigned to. This excludes
+ ** function types and array types. It does not exclude pointers to
+ ** function types or array types, but unfortunately for syntactic
+ ** reasons these two do only work if @a T is a @c typedef to that
+ ** pointer type.
  **
- ** @pre @a VAL must not necessarily be of type @a T, but it must be
- ** of a type that is assignment compatible with @a T.
+ ** @see P99_AVAL for an array type with unknown base type.
+ **
+ ** @see P99_LVAL for a macro that returns an lvalue.
  **/
-#define P99_RVAL(...)                                                   \
-P99_IF_EQ_1(P99_NARG(__VA_ARGS__))                                      \
-(((const struct { int bla; __VA_ARGS__ zero; }){ .bla = 0 }).zero)      \
-(P00_RVAL(__VA_ARGS__))
+# define P99_RVAL(T, VAL)
+#else
+# define P99_RVAL(...)                          \
+  P99_IF_EQ_1(P99_NARG(__VA_ARGS__))            \
+  (P00_RVAL1(__VA_ARGS__))                      \
+  (P00_RVAL2(__VA_ARGS__))
+#endif
 
-#define P00_RVAL(T, ...) (P99_LVAL(T) = (__VA_ARGS__))
+#define P00_RVAL1_(T) (((const struct { int p00_bla1; T p00_T1; }){ .p00_bla1 = 0 }).p00_T1)
+#define P00_RVAL2_(T) (((      struct { int p00_bla2; T p00_T2; }){ .p00_bla2 = 0 }).p00_T2)
+
+#define P00_RVAL2(T, ...) (P00_RVAL2_(T) = (__VA_ARGS__))
+#define P00_RVAL1(T) P00_RVAL2(T, P00_RVAL1_(T))
+
+/**
+ ** @brief Define an lvalue of array type @c T with unknown base type.
+ **
+ ** This should be used for @c typedef array types for which you don't
+ ** have control over the base type. It should only be rarely needed.
+ **
+ ** @remark Even though the result is an lvalue it can't be assigned
+ ** to, since it is an array type. But @c sizeof such an object will
+ ** return the size of the array and the address of the array object
+ ** can be taken.
+ **
+ ** @remark In all other context than the two given above (@c sizeof
+ ** and addressof operator) this will decay to a pointer to the
+ ** unknown base class.
+ **
+ ** @see P99_LVAL for a macro that returns an lvalue.
+ ** @see P99_RVAL for a macro that returns an rvalue of a certain type
+ ** and value.
+ **/
+#define P99_AVAL(T) P00_RVAL2_(T)
+
 
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_CHOOSE5, 0)
 #define P99_CHOOSE5(xT, cc, cs, ci, cl, cll)                   \
