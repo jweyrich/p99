@@ -148,43 +148,50 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
     orwl_wh* wh = (void*)whID;
     orwl_wq* wq = wh->location;
     assert(wq);
-    bool last = false;
-    MUTUAL_EXCLUDE(wq->mut) {
-      last = !orwl_wh_unload(wh);
-      size_t len = Arg->mes.len;
-      Arg->mes.len = 0;
-      if (data_len) {
-        assert(data);
-        /* The other side sent us a shortcut to the buffer it has
-           previously used. This is the case of a local "write"
-           request for both push operations that are effected. */
-        orwl_buffer shortcut = ORWL_BUFFER_INITIALIZER(data_len, (void*)(uintptr_t)data);
-        orwl_wq_link(wq, shortcut, false);
-      } else {
-        /* If len is 0, this has been a read request who's buffer is
-           just dropped and no update has to be done, here. */
-        if (len) {
-          if (Arg->back.len) {
-            assert(Arg->back.data);
-            assert(len + orwl_push_header == Arg->back.len);
-            /* The total buffer has exactly the size we need, use it
-               directly. This is the case of a remote request since
-               this should always come form an orwl_push. */
-            orwl_wq_link(wq, Arg->back, false);
-            Arg->back = P99_LVAL(orwl_buffer);
-          } else {
-            assert(Arg->mes.data);
-            Arg->mes.data -= orwl_push_header;
-            Arg->mes.len += orwl_push_header;
-            /* A local "read" request that is to be served, that could
-               not be copied. Then "mes" points to the orginal buffer
-               and "back_len" should be 0. */
-            orwl_wq_link(wq, Arg->mes, true);
-          }
+    orwl_buffer buff = P99_LVAL(orwl_buffer);
+    size_t mes_len = Arg->mes.len;
+    size_t back_len = Arg->back.len;
+    Arg->mes.len = 0;
+    if (data_len) {
+      assert(data);
+      /* The other side sent us a shortcut to the buffer it has
+         previously used. This is the case of a local "write"
+         request for both push operations that are effected. */
+      buff = P99_LVAL(orwl_buffer, .len = data_len, .data = (void*)(uintptr_t)data);
+    } else {
+      /* If len is 0, this has been a read request who's buffer is
+         just dropped and no update has to be done, here. */
+      if (mes_len) {
+        if (back_len) {
+          assert(Arg->back.data);
+          assert(mes_len + orwl_push_header == back_len);
+          /* The total buffer has exactly the size we need, use it
+             directly. This is the case of a remote request since
+             this should always come form an orwl_push. */
+          buff = Arg->back;
+          Arg->back = P99_LVAL(orwl_buffer);
+        } else {
+          assert(Arg->mes.data);
+          Arg->mes.data -= orwl_push_header;
+          Arg->mes.len += orwl_push_header;
+          /* A local "read" request that is to be served, that could
+             not be copied. Then "mes" points to the orginal buffer
+             and "back_len" should be 0. */
+          buff = Arg->mes;
         }
       }
     }
-    if (last) {
+    /* Untie the caller. It may still hold a lock on the same mutex,
+       so we have to untie it before we can take the lock. We still
+       have a token loaded on wh, so we still have it acquired, in
+       particular wh still will be in front of wq. */
+    orwl_proc_untie_caller(Arg);
+    MUTUAL_EXCLUDE(wq->mut) {
+      if (data_len || mes_len)
+        orwl_wq_link(wq, buff, (!data_len && mes_len && !back_len));
+    }
+    /* Only now release our hold on wh. */
+    if (!orwl_wh_unload(wh)) {
       ret = orwl_wh_release(wh);
       orwl_wh_delete(wh);
     }
