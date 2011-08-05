@@ -62,14 +62,14 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, ui
         /* Acknowledge the creation of the wh and send back its id. */
         Arg->ret = (uintptr_t)srv_wh;
         orwl_proc_untie_caller(Arg);
-        /* Wait until the lock on wh is obtained. We would like to
-           free the token later, after we have pushed back to the
-           remote. But this results in deadlocks. */
+        /* Wait until the lock on wh is obtained. Only free the token
+           later, after we have pushed back to the remote. */
         ORWL_TIMER(proc_write_request_wh_acquire)
-        state = orwl_wh_acquire(srv_wh, 1);
+        state = orwl_wh_acquire(srv_wh, 0);
         assert(state == orwl_acquired);
         ORWL_TIMER(push_write_request_server)
         orwl_push(Arg->srv, &ep, srv_wh->location, whID, true, false);
+        orwl_wh_unload(srv_wh);
       } else {
         orwl_wh_delete(srv_wh);
       }
@@ -123,14 +123,14 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
           }
         } else {
           orwl_proc_untie_caller(Arg);
-          /* Wait until the lock on wh is obtained. We would like to
-             free the token later, after we have pushed back to the
-             remote. But this results in deadlocks. */
+          /* Wait until the lock on wh is obtained. Only free the
+             token later, after we have pushed back to the remote. */
           ORWL_TIMER(proc_read_request_wh_acquire)
-          state = orwl_wh_acquire(srv_wh, 1);
+          state = orwl_wh_acquire(srv_wh, 0);
           assert(state == orwl_acquired);
           ORWL_TIMER(push_read_request_server)
           orwl_push(Arg->srv, &ep, srv_wh->location, cliID, true, true);
+          orwl_wh_unload(srv_wh);
         }
       }
     }
