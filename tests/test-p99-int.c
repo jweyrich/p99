@@ -12,41 +12,40 @@
 /* particular purpose.                                                       */
 /*                                                                           */
 #include "p99_c99.h"
-#undef p99_inline
-#define p99_inline
 #include "p99_int.h"
 #include "p99_defarg.h"
 
+#define DEF(SUFF)                                                       \
+  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_twos, SUFF),   \
+                  P99_BUILTIN_TYPE(u, SUFF));                           \
+  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_add, SUFF),    \
+                  P99_BUILTIN_TYPE(SUFF),                               \
+                  P99_BUILTIN_TYPE(SUFF),                               \
+                  int[static 1]);                                       \
+  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p00_add1, SUFF),   \
+                  P99_BUILTIN_TYPE(SUFF),                               \
+                  P99_BUILTIN_TYPE(SUFF),                               \
+                  int[static 1]);                                       \
+  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p00_add2, SUFF),   \
+                  P99_BUILTIN_TYPE(SUFF),                               \
+                  P99_BUILTIN_TYPE(SUFF),                               \
+                  int[static 1]);                                       \
+  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_sub, SUFF),    \
+                  P99_BUILTIN_TYPE(SUFF),                               \
+                  P99_BUILTIN_TYPE(SUFF),                               \
+                  int[static 1])
 
-signed char p99_twoshh(unsigned char a);
-signed short p99_twosh(unsigned short a);
-signed p99_twos(unsigned a);
-signed long p99_twosl(unsigned long a);
-signed long long p99_twosll(unsigned long long a);
+DEF(c);
+DEF(hh);
+DEF(h);
+DEF();
+DEF(l);
+DEF(ll);
 
-unsigned char p99_unsighh(signed char a);
-unsigned short p99_unsigh(signed short a);
-unsigned p99_unsig(signed a);
-unsigned long p99_unsigl(signed long a);
-unsigned long long p99_unsigll(signed long long a);
-
-unsigned char p00_add0hh(signed char a, signed char b);
-unsigned short p00_add0h(signed short a, signed short b);
-unsigned p00_add0(signed a, signed b);
-unsigned long p00_add0l(signed long a, signed long b);
-unsigned long long p00_add0ll(signed long long a, signed long long b);
-
-signed char p00_addhh(signed char a, signed char b, int* err);
-signed short p00_addh(signed short a, signed short b, int* err);
-signed p00_add(signed a, signed b, int* err);
-signed long p00_addl(signed long a, signed long b, int* err);
-signed long long p00_addll(signed long long a, signed long long b, int* err);
-
-signed char p99_addhh(signed char a, signed char b, int* err);
-signed short p99_addh(signed short a, signed short b, int* err);
-signed p99_add(signed a, signed b, int* err);
-signed long p99_addl(signed long a, signed long b, int* err);
-signed long long p99_addll(signed long long a, signed long long b, int* err);
+/* check how an addition looks like if overflow trapping is enabled */
+int just_add(int a, int b) {
+  return a + b;
+}
 
 
 uintmax_t p99_low2shift(uintmax_t x);
@@ -539,4 +538,38 @@ int i:UINT_WIDTH;
 #ifdef p99x_int128
   SAYIT3((p99x_int128)0);
 #endif
+  printf("------------------------ testing for overflow behavior -----\n");
+  int oth = argc - 1;
+  {
+    int val = INT_MAX;
+    int err[1] = { 0 };
+    int sum = p99_add(val, oth, err);
+    printf ("adding %d to INT_MAX gives %d: %s\n", oth, sum, strerror(err[0]));
+#ifndef P99_NOTRAP
+    printf ("adding %d to INT_MAX gives %d\n", oth, just_add(val, oth));
+#endif
+    val = INT_MIN;
+    err[0] = 0;
+    sum = p99_add(val, -oth, err);
+    printf ("adding %d to INT_MIN gives %d: %s\n", -oth, sum, strerror(err[0]));
+#ifndef P99_NOTRAP
+    printf ("adding %d to INT_MIN gives %d\n", -oth, just_add(val, -oth));
+#endif
+    err[0] = 0;
+    sum = p99_sub(val, oth, err);
+    printf ("subtrackting %d from INT_MIN gives %d: %s\n", oth, sum, strerror(err[0]));
+  }
+  {
+    signed char val = SCHAR_MAX;
+    int err[1] = { 0 };
+    signed char sum = p99_addhh(val, oth, err);
+    printf ("adding %d to SCHAR_MAX gives %d: %s\n", oth, sum, strerror(err[0]));
+    val = SCHAR_MIN;
+    err[0] = 0;
+    sum = p99_addhh(val, -oth, err);
+    printf ("adding %d to SCHAR_MIN gives %d: %s\n", -oth, sum, strerror(err[0]));
+    err[0] = 0;
+    sum = p99_subhh(val, oth, err);
+    printf ("subtrackting %d from SCHAR_MIN gives %d: %s\n", oth, sum, strerror(err[0]));
+  }
 }
