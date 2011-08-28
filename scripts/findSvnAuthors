@@ -411,7 +411,7 @@ $type = "c++"  if (!defined($type));
 
 unlink(${icopy});
 # Since we are at it try to beautify the file, first.
-if (defined(${beauty}) && ${type} eq "c++") {
+if (defined(${beauty}) && ${type} =~ /^c/) {
   if (system("${beauty} @{beautyArgs} <${ifile} >${icopy}")) {
     print STDERR "${ifile} beautification had error: " . $OS_ERROR ."\n";
     # Fall back to the already opened file and remove the garbage.
