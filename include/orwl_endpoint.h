@@ -310,6 +310,6 @@ uint64_t orwl_send(orwl_server* srv, orwl_endpoint const* there, rand48_t *seed,
  ** @endmsc
  **/
 #define orwl_rpc(SRV, THERE, SEED, F, ...)                                                                 \
-  orwl_send(SRV, THERE, SEED, ((orwl_buffer){ P99_LENGTH_ARR_ARG(uint64_t, ORWL_OBJID(F), __VA_ARGS__) }))
+  orwl_send(SRV, THERE, SEED, ((orwl_buffer){ .len = ((size_t)P99_NARG(__VA_ARGS__)) + 1, .data = (uint64_t[]){ ORWL_OBJID(F), __VA_ARGS__ } }))
 
 #endif      /* !ORWL_ENDPOINT_H_ */
