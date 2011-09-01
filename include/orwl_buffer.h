@@ -25,12 +25,13 @@
 # define    ORWL_BUFFER_H_
 
 #include "p99.h"
+#include <sys/uio.h>
 
 P99_DECLARE_STRUCT(orwl_buffer);
 
 struct orwl_buffer {
-  size_t len;
   uint64_t* data;
+  size_t len;
 };
 
 #define ORWL_BUFFER_INITIALIZER(LEN, DATA) { .len = LEN, .data = DATA }
@@ -56,6 +57,33 @@ inline
 void orwl_buffer_destroy(orwl_buffer *buf) {
   /* empty */
 }
+
+typedef struct iovec orwl_iovec;
+
+inline
+orwl_iovec* orwl_iovec_init(orwl_iovec *buf, size_t len, uint64_t* data) {
+  if (buf) {
+    *buf = P99_LVAL(orwl_iovec, .iov_len = len, .iov_base = data);
+  }
+  return buf;
+}
+
+inline
+void orwl_iovec_destroy(orwl_iovec *buf) {
+  /* empty */
+}
+
+inline
+orwl_iovec orwl_buffer2iovec(orwl_buffer buf) {
+  return P99_LVAL(orwl_iovec, .iov_len = (buf.len)*sizeof buf.data[0], .iov_base = buf.data);
+}
+
+inline
+orwl_buffer orwl_iovec2buffer(orwl_iovec iovec) {
+  static orwl_buffer const buf;
+  return P99_LVAL(orwl_buffer, .len = iovec.iov_len / sizeof buf.data[0], .data = iovec.iov_base);
+}
+
 
 
 #endif      /* !ORWL_BUFFER_H_ */
