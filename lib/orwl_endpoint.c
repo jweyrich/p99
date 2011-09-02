@@ -276,7 +276,7 @@ bool orwl_send_(int fd, orwl_buffer mess, uint64_t remo) {
       orwl_iovec rbuf[iovcnt] = { [0] = bbuf };
       /* Don't stress the network layer by sending too large messages
          at a time. */
-      if (rbuf[1].iov_len > maxlen) rbuf[1].iov_len = maxlen;
+      if (rbuf[0].iov_len > maxlen) rbuf[0].iov_len = maxlen;
       ssize_t const res = writev(fd, rbuf, iovcnt);
       if (P99_LIKELY(res > 0)) {
         bbuf.iov_base = (char*)bbuf.iov_base + res;
