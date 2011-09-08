@@ -41,14 +41,22 @@ void orwl_timing_element_print(FILE *out, orwl_timing_element* el) {
     atomic_float var = (time2 - (time * mu)) / nb;
     if (var < 0.0) var = 0.0;
     char const* name = el->name ? el->name : "<unamed>";
+    /* fprintf(out, */
+    /*         "TIMING: %-24s%10"PRIu64"\t%-8ss\t%-8ss\t%-8ss\n", */
+    /*         name, */
+    /*         nb, */
+    /*         orwl_seconds2str(time), */
+    /*         orwl_seconds2str(mu), */
+    /*         orwl_seconds2str(sqrt(var)) */
+    /*        ); */
     fprintf(out,
-            "TIMING: %-24s%10"PRIu64"\t%-8ss\t%-8ss\t%-8ss\n",
-            name,
-            nb,
-            orwl_seconds2str(time),
-            orwl_seconds2str(mu),
-            orwl_seconds2str(sqrt(var))
-           );
+	    "TIMING: %-30s%10"PRIu64"\t%24.12f\t%24.12f\t%24.12f\n",
+	    name,
+	    nb,
+	    time,
+	    mu,
+	    sqrt(var)
+	    );
   }
 }
 
@@ -68,7 +76,8 @@ orwl_timing * orwl_timing_info(void) {
 
 void orwl_timing_print_stats(void) {
   fprintf(stderr,
-          "TIMING: %-24s%10s\t%-8ss\t%-8ss\t%-8ss\n",
+	  /* "TIMING: %-24s%10s\t%-8ss\t%-8ss\t%-8ss\n",*/
+          "TIMING: %-30s%10s\t%23ss\t%23ss\t%23ss\n",
           "pt of measure",
           "n",
           "time",
