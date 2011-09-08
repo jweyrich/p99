@@ -109,31 +109,46 @@ DEFINE_THREAD(arg_t) {
   for (size_t iter = 0 ; iter < iterations ; iter++) {
     ORWL_TIMER(total_iteration) {
       printf("Task %zu: iteration %zu\n", Arg->id, iter);
-      my_data = orwl_write_map2(&my_task_handle);
+      
+      ORWL_TIMER(appli_local_acquire)
+	orwl_acquire2(&my_task_handle);
 
-      /* CPU consuming computation */
-      double a,b,c;
-      double * r = calloc(1000000, sizeof(double));
-      for (size_t i = 0 ; i < 1000000 ; i++) {
-        b = (i + 1) / (sin((i + 2) / (i + 1)) + 1.01);
-        for (size_t j = 0 ; j < inner_iterations ; j++) {
-          c = (j + 3) / (cos((i + 4) / (i + 1)) + 1.02);
-          a = (b * c) - (b / (i + (j * c)));
-          r[i] += a;
-        }
+      ORWL_TIMER(appli_write_map)
+	my_data = orwl_write_map2(&my_task_handle);
+
+      ORWL_TIMER(appli_computation) {
+	/* CPU consuming computation */
+	double a,b,c;
+	double * r = calloc(1000000, sizeof(double));
+	for (size_t i = 0 ; i < 1000000 ; i++) {
+	  b = (i + 1) / (sin((i + 2) / (i + 1)) + 1.01);
+	  for (size_t j = 0 ; j < inner_iterations ; j++) {
+	    c = (j + 3) / (cos((i + 4) / (i + 1)) + 1.02);
+	    a = (b * c) - (b / (i + (j * c)));
+	    r[i] += a;
+	  }
+	}
+	free(r);
+	/* Let's put anything in the shared memory */
+	for (size_t i = 0 ; i < ((shared_memory_size * MEGA) / sizeof(uint64_t)) ; i++) {
+	  my_data[i] = orwl_rand(seed);
+	}
       }
-      free(r);
-      /* Let's put anything in the shared memory */
-      for (size_t i = 0 ; i < ((shared_memory_size * MEGA) / sizeof(uint64_t)) ; i++) {
-        my_data[i] = orwl_rand(seed);
-      }
-      orwl_release2(&my_task_handle);
 
-      for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
-        distant_mapped_data[i] = (uint64_t*)orwl_read_map2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+      ORWL_TIMER(appli_local_release)
+	orwl_release2(&my_task_handle);
 
-      for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
-        orwl_release2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+      ORWL_TIMER(appli_distant_acquire)
+	for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
+	  orwl_acquire2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+
+      ORWL_TIMER(appli_read_map)
+	for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
+	  distant_mapped_data[i] = (uint64_t*)orwl_read_map2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+      
+      ORWL_TIMER(appli_distant_release)
+	for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
+	  orwl_release2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
     }
   }
   orwl_cancel2(&my_task_handle);
@@ -184,89 +199,90 @@ int main(int argc, char **argv) {
     report(1, "only %d commandline arguments, this ain't enough", argc);
     return 1;
   }
+  ORWL_TIMER(appli_wall_time) {
+    char graph_file[256] = {0};
+    char global_ab_file[256] = {0};
+    char local_ab_file[256] = {0};
+    char main_tasks[4096] = {0};
+    iterations = strtouz(argv[1]);
+    global_nb_tasks = strtouz(argv[2]);
+    strncpy(graph_file, argv[3], 256);
+    strncpy(global_ab_file, argv[4], 256);
+    strncpy(local_ab_file, argv[5], 256);
+    strncpy(main_tasks, argv[6], 4096);
+    shared_memory_size = strtouz(argv[7]);
+    inner_iterations = strtouz(argv[8]);
 
-  char graph_file[256] = {0};
-  char global_ab_file[256] = {0};
-  char local_ab_file[256] = {0};
-  char main_tasks[4096] = {0};
-  iterations = strtouz(argv[1]);
-  global_nb_tasks = strtouz(argv[2]);
-  strncpy(graph_file, argv[3], 256);
-  strncpy(global_ab_file, argv[4], 256);
-  strncpy(local_ab_file, argv[5], 256);
-  strncpy(main_tasks, argv[6], 4096);
-  shared_memory_size = strtouz(argv[7]);
-  inner_iterations = strtouz(argv[8]);
+    nb_tasks = strcountchr(main_tasks, ",") + 1;
+    list_tasks = size_t_vnew(nb_tasks);
+    const size_t nb_locations = nb_tasks;
+    orwl_barrier_init(&init_barr, nb_tasks);
+    get_task(main_tasks, list_tasks, ",");
+    size_t list_locations[nb_tasks];
+    for (int i = 0 ; i < nb_tasks ; i++)
+      list_locations[i] = i;
 
-  nb_tasks = strcountchr(main_tasks, ",") + 1;
-  list_tasks = size_t_vnew(nb_tasks);
-  const size_t nb_locations = nb_tasks;
-  orwl_barrier_init(&init_barr, nb_tasks);
-  get_task(main_tasks, list_tasks, ",");
-  size_t list_locations[nb_tasks];
-  for (int i = 0 ; i < nb_tasks ; i++)
-    list_locations[i] = i;
+    /* local server initialization */
+    orwl_types_init();
+    orwl_start(&srv, SOMAXCONN, nb_locations);
 
-  /* local server initialization */
-  orwl_types_init();
-  orwl_start(&srv, SOMAXCONN, nb_locations);
+    if (!orwl_alive(&srv)) return EXIT_FAILURE;
 
-  if (!orwl_alive(&srv)) return EXIT_FAILURE;
+    orwl_server_block(&srv);
 
-  orwl_server_block(&srv);
+    local_locations = orwl_mirror_vnew(nb_locations);
 
-  local_locations = orwl_mirror_vnew(nb_locations);
-
-  for (size_t i = 0 ; i < nb_tasks ; i++) {
-    orwl_make_local_connection(i, &srv, &local_locations[i]);
-    orwl_thread_cntrl * scale_det = P99_NEW(orwl_thread_cntrl);
-    orwl_scale_state * scale
-    = P99_NEW(orwl_scale_state,
+    for (size_t i = 0 ; i < nb_tasks ; i++) {
+      orwl_make_local_connection(i, &srv, &local_locations[i]);
+      orwl_thread_cntrl * scale_det = P99_NEW(orwl_thread_cntrl);
+      orwl_scale_state * scale
+	= P99_NEW(orwl_scale_state,
               &local_locations[i],
-              (shared_memory_size * MEGA),
-              scale_det);
-    orwl_scale_state_launch(scale, scale_det);
-    orwl_thread_cntrl_wait_for_callee(scale_det);
-    orwl_thread_cntrl_detach(scale_det);
+		  (shared_memory_size * MEGA),
+		  scale_det);
+      orwl_scale_state_launch(scale, scale_det);
+      orwl_thread_cntrl_wait_for_callee(scale_det);
+      orwl_thread_cntrl_detach(scale_det);
+    }
+    report(1, "local connections done");
+
+    if (!orwl_wait_and_load_init_files(&ab, global_ab_file,
+				       &graph, graph_file,
+				       &srv,
+				       local_ab_file,
+				       nb_tasks, list_tasks, 
+				       list_locations,
+				       global_nb_tasks)) {
+
+      report(1, "can't load some files");
+      return EXIT_FAILURE;
+    }
+
+    orwl_thread_cntrl ** det = calloc(nb_tasks, sizeof(orwl_thread_cntrl *));
+
+    for (size_t i = 0 ; i < nb_tasks ; i++) {
+      det[i] = P99_NEW(orwl_thread_cntrl);
+      arg_t *myarg
+	= P99_NEW(arg_t,
+		  list_tasks[i],
+		  &graph->vertices[list_tasks[i]],
+		  list_locations[i],
+		  i,
+		  det[i]);
+      arg_t_launch(myarg, det[i]);
+    }
+    
+    for (size_t i = 0 ; i < nb_tasks ; i++) {
+      orwl_thread_cntrl_wait_for_callee(det[i]);
+      orwl_thread_cntrl_detach(det[i]);
+    }
+
+    orwl_pthread_wait_detached();
+    free(det);
   }
-
-  report(1, "local connections done");
-
-  if (!orwl_wait_and_load_init_files(&ab, global_ab_file,
-                                     &graph, graph_file,
-                                     &srv,
-                                     local_ab_file,
-                                     nb_tasks, list_tasks,
-                                     list_locations,
-                                     global_nb_tasks)) {
-
-    report(1, "can't load some files");
-    return EXIT_FAILURE;
-  }
-
-  orwl_thread_cntrl ** det = calloc(nb_tasks, sizeof(orwl_thread_cntrl *));
-
-  for (size_t i = 0 ; i < nb_tasks ; i++) {
-    det[i] = P99_NEW(orwl_thread_cntrl);
-    arg_t *myarg
-    = P99_NEW(arg_t,
-              list_tasks[i],
-              &graph->vertices[list_tasks[i]],
-              list_locations[i],
-              i,
-              det[i]);
-    arg_t_launch(myarg, det[i]);
-  }
-
-  for (size_t i = 0 ; i < nb_tasks ; i++) {
-    orwl_thread_cntrl_wait_for_callee(det[i]);
-    orwl_thread_cntrl_detach(det[i]);
-  }
-  orwl_pthread_wait_detached();
   orwl_server_terminate(&srv);
   orwl_stop(&srv);
   sleep(3);
-  free(det);
   size_t_vdelete(list_tasks);
-  return 0;
+  return(0);
 }
