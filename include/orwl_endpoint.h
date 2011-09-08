@@ -16,6 +16,7 @@
 
 #include "orwl_rand.h"
 #include "orwl_buffer.h"
+#include "orwl_timing.h"
 
 P99_DECLARE_STRUCT(orwl_server);
 P99_DECLARE_STRUCT(orwl_proc);
