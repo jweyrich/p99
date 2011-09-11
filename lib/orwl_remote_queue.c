@@ -191,10 +191,11 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
     if (withdata) {
       mess.data = orwl_wq_map_locked(wq, &mess.len);
       if (mess.data) {
-        if ((sizeof(uintptr_t) > sizeof(uint64_t))
-            || keep
-            || !srv
-            || !orwl_endpoint_similar(&srv->host.ep, ep)) {
+        /* first check if this will be remote */
+        if(!srv || !orwl_endpoint_similar(&srv->host.ep, ep)) {
+          buffer[4] = mess.len;
+          P99_AASSIGN(mess.data, buffer, ORWL_PUSH_HEADER);
+        } else if ((sizeof(uintptr_t) > sizeof(uint64_t)) || keep) {
           buffer[4] = mess.len;
           P99_AASSIGN(mess.data, buffer, ORWL_PUSH_HEADER);
         } else {
