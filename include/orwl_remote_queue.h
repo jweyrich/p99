@@ -352,7 +352,7 @@ enum {
   + orwl_proc_release_header
 };
 
-#define ORWL_PUSH_HEADER 4
+#define ORWL_PUSH_HEADER 5
 
 P99_COMPILETIME_ASSERT(orwl_push_header == ORWL_PUSH_HEADER);
 

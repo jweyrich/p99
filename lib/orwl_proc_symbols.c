@@ -139,9 +139,9 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 
 /* this is executed first on the client when the lock is acquired and */
 /* then on the server when the lock is released. */
-DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t data_len) {
+DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t data_len, uint64_t read_len) {
   ORWL_TIMER(total_release_server) {
-    ORWL_PROC_READ(Arg, orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t data_len);
+    ORWL_PROC_READ(Arg, orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t data_len, uint64_t read_len);
     orwl_state ret = orwl_valid;
     // extract the wh for Arg
     assert(whID);

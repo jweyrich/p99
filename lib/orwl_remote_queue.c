@@ -194,9 +194,10 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
         if ((sizeof(uintptr_t) > sizeof(uint64_t))
             || keep
             || !srv
-            || !orwl_endpoint_similar(&srv->host.ep, ep))
+            || !orwl_endpoint_similar(&srv->host.ep, ep)) {
+          buffer[4] = mess.len;
           P99_AASSIGN(mess.data, buffer, ORWL_PUSH_HEADER);
-        else {
+        } else {
           // we are in the same address space and can reuse the memory
           buffer[2] = (uintptr_t)mess.data;
           buffer[3] = mess.len;
