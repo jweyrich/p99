@@ -153,6 +153,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
     size_t back_len = Arg->back.len;
     Arg->mes.len = 0;
     if (data_len) {
+      /* This a local connection */
+      assert(Arg->fd == -1);
       assert(data);
       /* The other side sent us a shortcut to the buffer it has
          previously used. This is the case of a local "write"
@@ -163,6 +165,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
          just dropped and no update has to be done, here. */
       if (mes_len) {
         if (back_len) {
+          /* This is a remote connection */
+          assert(Arg->fd != -1);
           assert(Arg->back.data);
           assert(mes_len + orwl_push_header == back_len);
           /* The total buffer has exactly the size we need, use it
@@ -171,6 +175,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
           buff = Arg->back;
           Arg->back = P99_LVAL(orwl_buffer);
         } else {
+          /* This a local connection */
+          assert(Arg->fd == -1);
           assert(Arg->mes.data);
           Arg->mes.data -= orwl_push_header;
           Arg->mes.len += orwl_push_header;
