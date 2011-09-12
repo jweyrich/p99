@@ -196,7 +196,6 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
           buffer[4] = mess.len;
           P99_AASSIGN(mess.data, buffer, ORWL_PUSH_HEADER);
         } else if ((sizeof(uintptr_t) > sizeof(uint64_t)) || keep) {
-          buffer[4] = mess.len;
           P99_AASSIGN(mess.data, buffer, ORWL_PUSH_HEADER);
         } else {
           // we are in the same address space and can reuse the memory
@@ -215,7 +214,7 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
               };
     }
     ORWL_TIMER(send_push_server)
-    orwl_send(srv, ep, seed_get(), mess);
+    orwl_send(srv, ep, seed_get(), 1, &mess);
     if (!keep) orwl_wq_resize_locked(wq, 0);
   }
 }

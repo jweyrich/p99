@@ -146,7 +146,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
  **   thread -> caller [label="orwl_recv_(ret)", URL="\ref orwl_recv_()"];
  ** @endmsc
  **/
-uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed, orwl_buffer mess) {
+uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed, size_t n, orwl_buffer mess[n]) {
   uint64_t ret = 0;
   /* We use a remote connection if either the local server address is
      not known or we see that the endpoint "there" is actually on
@@ -195,7 +195,7 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
 	    else P99_UNWIND_RETURN ORWL_SEND_ERROR;
 	  } else break;
 	}
-	if (P99_UNLIKELY(orwl_send_(fd, header, 0) || orwl_recv_(fd, header, 0))) {
+	if (P99_UNLIKELY(orwl_send_(fd, 0, 1, &header) || orwl_recv_(fd, header, 0))) {
 	  P99_HANDLE_ERRNO {
 	  default:
 	    perror("orwl_send could not exchange challenge");
@@ -208,12 +208,12 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
 	  /* The other side is authorized. Send the answer and the size of
 	     the message to the other side. */
 	  header.data[1] = orwl_challenge(header.data[0]);
-	  header.data[0] = mess.len;
-	  if (P99_UNLIKELY(orwl_send_(fd, header, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+	  header.data[0] = mess[0].len;
+	  if (P99_UNLIKELY(orwl_send_(fd, 0, 1, &header))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
 	  /* The authorized empty message indicates termination.
 	     If not so, we now send the real message. */
-	  if (mess.len) {
-	    if (P99_UNLIKELY(orwl_send_(fd, mess, header.data[2]))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+	  if (mess[0].len) {
+	    if (P99_UNLIKELY(orwl_send_(fd, header.data[2], n, mess))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
 	    /* Receive a final message, until the other end closes the
 	       connection. */
 	    if (P99_UNLIKELY(orwl_recv_(fd, header, header.data[2])))
@@ -227,7 +227,7 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
 	  diagnose(fd, "fd %d, you are not who you pretend to be", fd);
 	  header.data[1] = 0;
 	  header.data[0] = 0;
-	  if (P99_UNLIKELY(orwl_send_(fd, header, 0))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
+	  if (P99_UNLIKELY(orwl_send_(fd, 0, 1, &header))) P99_UNWIND_RETURN ORWL_SEND_ERROR;
 	}
       P99_PROTECT:
 	close(fd);
@@ -241,6 +241,7 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
       orwl_thread_cntrl* det =  P99_NEW(orwl_thread_cntrl);
       orwl_proc *sock = P99_NEW(orwl_proc,
 				-1, srv, ,
+                                n,
 				mess,
 				det);
       MUTUAL_EXCLUDE(srv->launch) {
@@ -260,50 +261,52 @@ uint64_t orwl_send(orwl_server *srv, orwl_endpoint const* there, rand48_t *seed,
 
 enum { maxlen = 1 << 24 };
 
-bool orwl_send_(int fd, orwl_buffer mess, uint64_t remo) {
-  register orwl_iovec bbuf = orwl_buffer2iovec(mess);
-  /* We only have to translate the message buffer, if we have an
-     order that is different from network order and different from
-     the order of the remote host. */
-  uint64_t *const buf = ((ORWL_HOSTORDER != ORWL_NETWORDER)
-                         && (remo != ORWL_NETWORDER))
-                        ? P99_CALLOC(uint64_t, mess.len)
-                        : (void*)0;
-  if (buf) {
-    orwl_hton(buf, mess.data, mess.len);
-    bbuf.iov_base = buf;
-  }
-
-  P99_UNWIND_PROTECT {
-    while (bbuf.iov_len) {
-      enum { iovcnt = 1 };
-      orwl_iovec rbuf[iovcnt] = { [0] = bbuf };
-      /* Don't stress the network layer by sending too large messages
-         at a time. */
-      if (rbuf[0].iov_len > maxlen) rbuf[0].iov_len = maxlen;
-      ssize_t const res = writev(fd, rbuf, iovcnt);
-      if (P99_LIKELY(res > 0)) {
-        bbuf.iov_base = (char*)bbuf.iov_base + res;
-        bbuf.iov_len -= res;
-        if (res != rbuf[0].iov_len)
-          report(true, "orwl_send_ only succeeded partially (%zd / %zu), retrying\n",
-          res, rbuf[0].iov_len);
-      } else {
-        report(1, "orwl_send_ did not make any progress\n");
-        P99_HANDLE_ERRNO {
-P99_XCASE EINTR : {
-            perror("orwl_send_ was interrupted, retrying");
-          }
-P99_XDEFAULT : {
-            perror("orwl_send_ had problems, aborting");
-            P99_UNWIND_RETURN true;
-          }
-        }
-        sleepfor(1E-6);
-      }
+bool orwl_send_(int fd, uint64_t remo, size_t n, orwl_buffer mess[n]) {
+  for (size_t i = 0; i < n; ++i) {
+    register orwl_iovec bbuf = orwl_buffer2iovec(mess[i]);
+    /* We only have to translate the message buffer, if we have an
+       order that is different from network order and different from
+       the order of the remote host. */
+    uint64_t *const buf = ((ORWL_HOSTORDER != ORWL_NETWORDER)
+                           && (remo != ORWL_NETWORDER))
+      ? P99_CALLOC(uint64_t, mess[i].len)
+      : (void*)0;
+    if (buf) {
+      orwl_hton(buf, mess[i].data, mess[i].len);
+      bbuf.iov_base = buf;
     }
-P99_PROTECT:
-    if (buf) free(buf);
+
+    P99_UNWIND_PROTECT {
+      while (bbuf.iov_len) {
+        enum { iovcnt = 1 };
+        orwl_iovec rbuf[iovcnt] = { [0] = bbuf };
+        /* Don't stress the network layer by sending too large messages
+           at a time. */
+        if (rbuf[0].iov_len > maxlen) rbuf[0].iov_len = maxlen;
+        ssize_t const res = writev(fd, rbuf, iovcnt);
+        if (P99_LIKELY(res > 0)) {
+          bbuf.iov_base = (char*)bbuf.iov_base + res;
+          bbuf.iov_len -= res;
+          if (res != rbuf[0].iov_len)
+            report(true, "orwl_send_ only succeeded partially (%zd / %zu), retrying\n",
+                   res, rbuf[0].iov_len);
+        } else {
+          report(1, "orwl_send_ did not make any progress\n");
+          P99_HANDLE_ERRNO {
+            P99_XCASE EINTR : {
+              perror("orwl_send_ was interrupted, retrying");
+            }
+          P99_XDEFAULT : {
+              perror("orwl_send_ had problems, aborting");
+              P99_UNWIND_RETURN true;
+            }
+          }
+          sleepfor(1E-6);
+        }
+      }
+    P99_PROTECT:
+      if (buf) free(buf);
+    }
   }
   return false;
 }

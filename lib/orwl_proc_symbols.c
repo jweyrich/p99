@@ -149,9 +149,9 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
     orwl_wq* wq = wh->location;
     assert(wq);
     orwl_buffer buff = P99_LVAL(orwl_buffer);
-    size_t mes_len = Arg->mes.len;
+    size_t mes_len = Arg->mes[0].len;
     size_t back_len = Arg->back.len;
-    Arg->mes.len = 0;
+    Arg->mes[0].len = 0;
     if (data_len) {
       /* This a local connection */
       assert(Arg->fd == -1);
@@ -181,13 +181,13 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
         } else {
           /* This a local connection */
           assert(Arg->fd == -1);
-          assert(Arg->mes.data);
-          Arg->mes.data -= orwl_push_header;
-          Arg->mes.len += orwl_push_header;
+          assert(Arg->mes[0].data);
+          Arg->mes[0].data -= orwl_push_header;
+          Arg->mes[0].len += orwl_push_header;
           /* A local "read" request that is to be served, that could
              not be copied. Then "mes" points to the orginal buffer
              and "back_len" should be 0. */
-          buff = Arg->mes;
+          buff = Arg->mes[0];
         }
       }
     }

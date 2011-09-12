@@ -28,7 +28,8 @@ P99_INSTANTIATE(orwl_proc*, orwl_proc_init, orwl_proc *,
                 int,
                 orwl_server*,
                 uint64_t,
-                orwl_buffer,
+                size_t,
+                orwl_buffer*,
                 orwl_thread_cntrl*);
 
 void orwl_proc_untie_caller(orwl_proc *sock) {
@@ -43,7 +44,7 @@ void orwl_proc_untie_caller(orwl_proc *sock) {
       .data = (orwl_header)ORWL_HEADER_INITIALIZER(sock->ret),
       .len = orwl_header_els
     };
-    orwl_send_(sock->fd, header, sock->remoteorder);
+    orwl_send_(sock->fd, sock->remoteorder, 1, &header);
     /* Since we are doing blocking send / receive the probability that
        we have a walking duplicate of an ancient package is
        minimal. Thus allow the reuse of ports. */
@@ -74,7 +75,8 @@ void orwl_proc_destroy(orwl_proc *sock) {
     orwl_thread_cntrl_delete(sock->det);
   }
   if (sock->back.data) free(sock->back.data);
-  orwl_proc_init(sock);
+  free(sock->mes);
+  *sock = P99_LVAL(orwl_proc);
 }
 
 DEFINE_NEW_DELETE(orwl_proc);
@@ -85,10 +87,10 @@ DEFINE_ORWL_PROC_FUNC(orwl_server_callback, uint64_t funcID) {
 }
 
 DEFINE_THREAD(orwl_proc) {
-  assert(Arg->mes.data);
+  assert(Arg->mes[0].data);
   report(0, "starting %p", (void*)Arg);
   if (Arg->fd == -1
-      || (!orwl_recv_(Arg->fd, Arg->mes, Arg->remoteorder)
+      || (!orwl_recv_(Arg->fd, Arg->mes[0], Arg->remoteorder)
           && Arg->srv)) {
     /* do something with mess here */
     orwl_server_callback(Arg);

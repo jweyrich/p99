@@ -68,7 +68,7 @@ void orwl_server_close(orwl_server *serv) {
 
 
 void orwl_server_terminate(orwl_server *serv) {
-  if (serv) orwl_send(0, &serv->host.ep, seed_get(), P99_LVAL(orwl_buffer));
+  if (serv) orwl_send(0, &serv->host.ep, seed_get(), 1, &P99_LVAL(orwl_buffer));
 }
 
 void orwl_server_destroy(orwl_server *serv) {
@@ -166,13 +166,13 @@ DEFINE_THREAD(orwl_server) {
           header.data[1] = orwl_challenge(header.data[0]);
           header.data[0] = chal;
           /* challenge / reply of the new connection */
-          if (P99_UNLIKELY(orwl_send_(fd, header, 0)
+          if (P99_UNLIKELY(orwl_send_(fd, 0, 1, &header)
           || orwl_recv_(fd, header, 0)))
             P99_UNWIND(1);
           if (header.data[1] == repl) {
             size_t len = header.data[0];
             if (len) {
-              orwl_proc *sock = P99_NEW(orwl_proc, fd, Arg, header.data[2], ((orwl_buffer)ORWL_BUFFER_INITIALIZER(len, 0)));
+              orwl_proc *sock = P99_NEW(orwl_proc, fd, Arg, header.data[2], 1, &((orwl_buffer)ORWL_BUFFER_INITIALIZER(len, 0)));
               MUTUAL_EXCLUDE(Arg->launch)
               orwl_proc_create(sock);
               /* The spawned thread will close the fd. */
