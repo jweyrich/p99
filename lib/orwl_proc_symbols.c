@@ -150,7 +150,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
     assert(wq);
     orwl_buffer buff = P99_LVAL(orwl_buffer);
     size_t mes_len = Arg->mes[0].len;
-    size_t back_len = Arg->back.len;
+    size_t back_len = Arg->back[0].len;
     Arg->mes[0].len = 0;
     if (data_len) {
       /* This a local connection */
@@ -167,7 +167,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
         if (back_len) {
           /* This is a remote connection */
           assert(Arg->fd != -1);
-          assert(Arg->back.data);
+          assert(Arg->back[0].data);
           assert(mes_len + orwl_push_header == back_len);
           /* since this is a remote connection we must be able to get
              a lock on the queue, here */
@@ -175,8 +175,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
             /* The total buffer has exactly the size we need, use it
                directly. This is the case of a remote request since
                this should always come form an orwl_push. */
-            buff = Arg->back;
-            Arg->back = P99_LVAL(orwl_buffer);
+            buff = Arg->back[0];
+            Arg->back[0] = P99_LVAL(orwl_buffer);
           }
         } else {
           /* This a local connection */

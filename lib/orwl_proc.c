@@ -74,8 +74,10 @@ void orwl_proc_destroy(orwl_proc *sock) {
     orwl_thread_cntrl_wait_for_caller(sock->det);
     orwl_thread_cntrl_delete(sock->det);
   }
-  if (sock->back.data) free(sock->back.data);
+  for (size_t i = 0; i < sock->n; ++i)
+    if (sock->back[i].data) free(sock->back[i].data);
   free(sock->mes);
+  free(sock->back);
   *sock = P99_LVAL(orwl_proc);
 }
 

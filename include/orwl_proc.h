@@ -46,8 +46,8 @@ struct orwl_proc {
                              the call */
   /* the messages */
   size_t n;
-  orwl_buffer * mes;           /*!< the messages itself */
-  orwl_buffer back;          /*!< a backup of the first message */
+  orwl_buffer *mes;           /*!< the messages itself */
+  orwl_buffer *back;          /*!< a backup of the first message */
   /* internal control fields */
   struct orwl_server* srv; /*!< the server through which we received this socket */
   bool is_untied;          /*!< orwl_proc_untie_caller has been called once */
@@ -83,13 +83,15 @@ orwl_proc_init(orwl_proc *proc,         /*!< [out] */
                orwl_thread_cntrl *det   /*!< [in] non 0 if a local connection */
               ) {
   if (proc) {
-    bool alloc = (!m[0].data && m[0].len);
     orwl_buffer * mes = P99_CALLOC(orwl_buffer, n);
+    orwl_buffer * back = P99_CALLOC(orwl_buffer, n);
     for (size_t i = 0; i < n; ++i) {
+      bool alloc = (!m[i].data && m[i].len);
       mes[i] = (orwl_buffer){
         .len = m[i].len,
         .data = alloc ? P99_CALLOC(uint64_t, m[i].len) : m[i].data
       };
+      if (alloc) back[i] = mes[i];
     }
     *proc = P99_LVAL(orwl_proc const,
                      .fd = fd,
@@ -97,10 +99,9 @@ orwl_proc_init(orwl_proc *proc,         /*!< [out] */
                      .remoteorder = remo,
                      .n = n,
                      .mes = mes,
-                     .back = P99_INIT,
+                     .back = back,
                      .det = det,
-                    );
-    if (alloc) proc->back = mes[0];
+                     );
   }
   return proc;
 }
