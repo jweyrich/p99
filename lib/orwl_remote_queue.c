@@ -199,8 +199,7 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
       buffer[3] = mess[1].len;
       if (mess[1].data) {
         /* first check if this will be remote */
-        if(!srv || !orwl_endpoint_similar(&srv->host.ep, ep)) {
-        } else if (!keep) {
+        if(srv && orwl_endpoint_similar(&srv->host.ep, ep) && !keep) {
           // Just delete the local trace of the buffer, not the buffer itself
           wq->data = P99_LVAL(orwl_buffer);
         }
