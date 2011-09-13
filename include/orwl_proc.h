@@ -148,8 +148,12 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_proc);
 
 
 #define ORWL_PROC_READ(A, F, ...)                              \
+/* Assert that F has the correct type. */                      \
 (void)((void (*)(orwl_proc*)){ F });                           \
+/* Assert that the argument list has the correct types. */     \
 (void)((void (*)(__VA_ARGS__)){ P99_PASTE2(F, _proto) });      \
+/* Assert that mes[0] has enough elements */                   \
+assert((A)->mes[0].len >= P99_NARG(__VA_ARGS__));              \
 P99_VASSIGNS((A)->mes[0].data, __VA_ARGS__);                   \
 (A)->mes[0].len -= P99_NARG(__VA_ARGS__);                      \
 (A)->mes[0].data += P99_NARG(__VA_ARGS__)

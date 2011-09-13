@@ -21,7 +21,6 @@
 
 DEFINE_ORWL_PROC_FUNC(orwl_proc_insert_peer, uint64_t port) {
   ORWL_PROC_READ(Arg, orwl_proc_insert_peer, uint64_t port);
-  assert(Arg->mes[0].len == 0);
   if (Arg->fd != -1) {
     orwl_host *h = P99_NEW(orwl_host);
     /* mes and orwl_addr is already in host order */
@@ -33,7 +32,6 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_insert_peer, uint64_t port) {
 
 DEFINE_ORWL_PROC_FUNC(orwl_proc_insert_host, uint64_t addr, uint64_t port) {
   ORWL_PROC_READ(Arg, orwl_proc_insert_host, uint64_t addr, uint64_t port);
-  assert(Arg->mes[0].len == 0);
   orwl_host *h = P99_NEW(orwl_host);
   /* mes is already in host order */
   orwl_addr_init(&h->ep.addr, addr);
@@ -49,7 +47,6 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_do_nothing, void) {
 DEFINE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port) {
   ORWL_TIMER(total_write_request_server) {
     ORWL_PROC_READ(Arg, orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port);
-    assert(Arg->mes[0].len == 0);
     Arg->ret = 0;
     if (wqPOS < Arg->srv->max_queues) {
       /* extract wq and the remote wh ID */
@@ -85,7 +82,6 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
     orwl_state state = orwl_invalid;
     /* Extract wq and the remote handle IDs from Arg */
     ORWL_PROC_READ(Arg, orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port);
-    assert(Arg->mes[0].len == 0);
     Arg->ret = 0;
     if (wqPOS < Arg->srv->max_queues) {
       /* extract wq and the remote wh ID */
@@ -146,7 +142,6 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t flags, uint64_t read_len) {
   ORWL_TIMER(total_release_server) {
     ORWL_PROC_READ(Arg, orwl_proc_release, uintptr_t whID, uint64_t flags, uint64_t read_len);
-    assert(Arg->mes[0].len == 0);
     bool withdata = (flags & orwl_push_withdata);
     bool keep = (flags & orwl_push_keep);
 
@@ -195,7 +190,6 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t flags, uint64_
 
 DEFINE_ORWL_PROC_FUNC(orwl_proc_check_initialization, uint64_t id) {
   ORWL_PROC_READ(Arg, orwl_proc_check_initialization, uint64_t id);
-  assert(Arg->mes[0].len == 0);
   bool finished = false;
   while (!finished) {
     pthread_rwlock_rdlock(&Arg->srv->lock);
