@@ -153,32 +153,20 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t borrowed, uint
     orwl_wh* wh = (void*)whID;
     orwl_wq* wq = wh->location;
     assert(wq);
-    size_t mes_len = (Arg->n == 1) ? 0 : Arg->mes[1].len;
-    if (borrowed) {
-      /* This a local connection */
-      assert(Arg->fd == -1);
-      assert(Arg->n == 2);
-    } else if (read_len) {
-      /* This is a remote connection */
-      assert(Arg->fd != -1);
-      assert(Arg->n == 1);
-      /* since this is a remote connection we must be able to get
-         a lock on the queue, here */
-      MUTUAL_EXCLUDE(wq->mut) {
-        /* Write the data in place. */
-        orwl_wq_resize_locked(wq, read_len);
-        orwl_buffer mes1 = ORWL_BUFFER_INITIALIZER(0, 0);
-        mes1.data = orwl_wq_map_locked(wq, &mes1.len);
-        orwl_recv_(Arg->fd, mes1, Arg->remoteorder);
+    if (Arg->fd != -1) {
+      if (read_len) {
+        /* This is a remote connection */
+        assert(Arg->n == 1);
+        /* since this is a remote connection we must be able to get
+           a lock on the queue, here */
+        MUTUAL_EXCLUDE(wq->mut) {
+          /* Write the data in place. */
+          orwl_wq_resize_locked(wq, read_len);
+          orwl_buffer mes1 = ORWL_BUFFER_INITIALIZER(0, 0);
+          mes1.data = orwl_wq_map_locked(wq, &mes1.len);
+          orwl_recv_(Arg->fd, mes1, Arg->remoteorder);
+        }
       }
-    } else if (mes_len) {
-      /* This a local connection */
-      assert(Arg->fd == -1);
-      assert(Arg->n == 2);
-      assert(Arg->mes[1].data);
-    } else {
-      /* Otherwise this was a connection with no data. It could have
-         been remote or local so there are no assertions to check. */
     }
 
     /* Untie the caller. If this is a local connection, It may still
@@ -188,11 +176,8 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t borrowed, uint
        of wq. */
     orwl_proc_untie_caller(Arg);
     /* Now link the buffer in the case that this was a local connection. */
-    if (mes_len)
+    if (Arg->fd == -1 && Arg->n == 2 && Arg->mes[1].len)
       MUTUAL_EXCLUDE(wq->mut) {
-        /* This a local connection */
-        assert(Arg->fd == -1);
-        assert(Arg->n == 2);
         orwl_wq_link(wq, Arg->mes[1], !borrowed);
       }
     /* Only now release our hold on wh. */
