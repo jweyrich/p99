@@ -183,8 +183,10 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
   */
   assert(wq);
   uint64_t buffer[orwl_push_header] = {
-    ORWL_OBJID(orwl_proc_release),
-    whID,
+    [0] = ORWL_OBJID(orwl_proc_release),
+    [1] = whID,
+    [2] = ((withdata ? orwl_push_withdata : 0)
+           |(keep ? orwl_push_keep : 0)),
   };
   enum { push_buffers = 2 };
   orwl_buffer mess[push_buffers] = {
@@ -194,13 +196,11 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
   MUTUAL_EXCLUDE(wq->mut) {
     if (withdata) {
       mess[1].data = orwl_wq_map_locked(wq, &mess[1].len);
+      buffer[3] = mess[1].len;
       if (mess[1].data) {
         /* first check if this will be remote */
         if(!srv || !orwl_endpoint_similar(&srv->host.ep, ep)) {
-          buffer[3] = mess[1].len;
         } else if (!keep) {
-          // we are in the same address space and can reuse the memory
-          buffer[2] = true;
           // Just delete the local trace of the buffer, not the buffer itself
           wq->data = P99_LVAL(orwl_buffer);
         }

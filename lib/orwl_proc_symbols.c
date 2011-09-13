@@ -143,25 +143,28 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 
 /* this is executed first on the client when the lock is acquired and */
 /* then on the server when the lock is released. */
-DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t borrowed, uint64_t read_len) {
+DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t flags, uint64_t read_len) {
   ORWL_TIMER(total_release_server) {
-    ORWL_PROC_READ(Arg, orwl_proc_release, uintptr_t whID, uint64_t borrowed, uint64_t read_len);
+    ORWL_PROC_READ(Arg, orwl_proc_release, uintptr_t whID, uint64_t flags, uint64_t read_len);
     assert(Arg->mes[0].len == 0);
+    bool withdata = (flags & orwl_push_withdata);
+    bool keep = (flags & orwl_push_keep);
+
     orwl_state ret = orwl_valid;
     // extract the wh for Arg
     assert(whID);
     orwl_wh* wh = (void*)whID;
     orwl_wq* wq = wh->location;
     assert(wq);
-    if (Arg->fd != -1) {
-      if (read_len) {
-        /* This is a remote connection */
-        assert(Arg->n == 1);
-        /* since this is a remote connection we must be able to get
-           a lock on the queue, here */
-        MUTUAL_EXCLUDE(wq->mut) {
-          /* Write the data in place. */
-          orwl_wq_resize_locked(wq, read_len);
+    if (withdata && Arg->fd != -1) {
+      /* This is a remote connection */
+      assert(Arg->n == 1);
+      /* since this is a remote connection we must be able to get
+         a lock on the queue, here */
+      MUTUAL_EXCLUDE(wq->mut) {
+        /* Write the data in place. */
+        orwl_wq_resize_locked(wq, read_len);
+        if (read_len) {
           orwl_buffer mes1 = ORWL_BUFFER_INITIALIZER(0, 0);
           mes1.data = orwl_wq_map_locked(wq, &mes1.len);
           orwl_recv_(Arg->fd, mes1, Arg->remoteorder);
@@ -176,10 +179,11 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t borrowed, uint
        of wq. */
     orwl_proc_untie_caller(Arg);
     /* Now link the buffer in the case that this was a local connection. */
-    if (Arg->fd == -1 && Arg->n == 2 && Arg->mes[1].len)
-      MUTUAL_EXCLUDE(wq->mut) {
-        orwl_wq_link(wq, Arg->mes[1], !borrowed);
-      }
+    if (withdata && Arg->fd == -1)
+      if (Arg->n == 2)
+        MUTUAL_EXCLUDE(wq->mut) {
+          orwl_wq_link(wq, Arg->mes[1], keep);
+        }
     /* Only now release our hold on wh. */
     if (!orwl_wh_unload(wh)) {
       ret = orwl_wh_release(wh);

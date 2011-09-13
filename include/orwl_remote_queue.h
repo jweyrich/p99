@@ -349,7 +349,9 @@ enum {
    **/
   orwl_push_header
   = orwl_server_callback_header
-  + orwl_proc_release_header
+  + orwl_proc_release_header,
+  orwl_push_withdata = 1,
+  orwl_push_keep = 2,
 };
 
 #define ORWL_PUSH_HEADER 4
