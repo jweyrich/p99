@@ -197,7 +197,7 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
       if (mess[1].data) {
         /* first check if this will be remote */
         if(!srv || !orwl_endpoint_similar(&srv->host.ep, ep)) {
-          buffer[4] = mess[1].len;
+          buffer[3] = mess[1].len;
         } else if (!keep) {
           // we are in the same address space and can reuse the memory
           buffer[2] = true;
