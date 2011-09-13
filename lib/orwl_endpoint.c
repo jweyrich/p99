@@ -263,7 +263,7 @@ enum { maxlen = 1 << 24 };
 
 bool orwl_send_(int fd, uint64_t remo, size_t n, orwl_buffer mess[n]) {
   for (size_t i = 0; i < n; ++i) {
-    register orwl_iovec bbuf = orwl_buffer2iovec(mess[i]);
+    orwl_iovec bbuf = orwl_buffer2iovec(mess[i]);
     /* We only have to translate the message buffer, if we have an
        order that is different from network order and different from
        the order of the remote host. */
@@ -283,8 +283,7 @@ bool orwl_send_(int fd, uint64_t remo, size_t n, orwl_buffer mess[n]) {
         size_t const clen = (bbuf.iov_len > maxlen) ? maxlen : bbuf.iov_len;
         ssize_t const res = send(fd, bbuf.iov_base, clen, 0);
         if (P99_LIKELY(res > 0)) {
-          bbuf.iov_base = (char*)bbuf.iov_base + res;
-          bbuf.iov_len -= res;
+          orwl_iovec_advance(&bbuf, res);
         } else {
           report(1, "orwl_send_ did not make any progress\n");
           P99_HANDLE_ERRNO {
@@ -307,7 +306,7 @@ bool orwl_send_(int fd, uint64_t remo, size_t n, orwl_buffer mess[n]) {
 }
 
 bool orwl_recv_(int fd, orwl_buffer const mess, uint64_t remo) {
-  register orwl_iovec bbuf = orwl_buffer2iovec(mess);
+  orwl_iovec bbuf = orwl_buffer2iovec(mess);
   if (!mess.len) report(1, "orwl_recv_ with len 0, skipping\n");
   P99_UNWIND_PROTECT {
     while (bbuf.iov_len) {
@@ -316,8 +315,7 @@ bool orwl_recv_(int fd, orwl_buffer const mess, uint64_t remo) {
       size_t const clen = (bbuf.iov_len > maxlen) ? maxlen : bbuf.iov_len;
       ssize_t const res = recv(fd, bbuf.iov_base, clen, MSG_WAITALL);
       if (P99_LIKELY(res > 0)) {
-        bbuf.iov_base = (char*)bbuf.iov_base + res;
-        bbuf.iov_len -= res;
+        orwl_iovec_advance(&bbuf, res);
       } else {
         report(1, "orwl_recv_ did not make any progress\n");
         P99_HANDLE_ERRNO {

@@ -15,7 +15,9 @@
 
 P99_INSTANTIATE(orwl_buffer*, orwl_buffer_init, orwl_buffer *, size_t, uint64_t*);
 P99_INSTANTIATE(void, orwl_buffer_destroy, orwl_buffer*);
+P99_INSTANTIATE(void, orwl_buffer_advance, orwl_buffer *buf, ssize_t res);
 P99_INSTANTIATE(orwl_iovec*, orwl_iovec_init, orwl_iovec *, size_t, uint64_t*);
 P99_INSTANTIATE(void, orwl_iovec_destroy, orwl_iovec*);
 P99_INSTANTIATE(orwl_iovec, orwl_buffer2iovec, orwl_buffer buf);
 P99_INSTANTIATE(orwl_buffer, orwl_iovec2buffer, orwl_iovec iovec);
+P99_INSTANTIATE(void, orwl_iovec_advance, orwl_iovec *, ssize_t);

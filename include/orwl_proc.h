@@ -155,8 +155,7 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_proc);
 /* Assert that mes[0] has enough elements */                   \
 assert((A)->mes[0].len >= P99_NARG(__VA_ARGS__));              \
 P99_VASSIGNS((A)->mes[0].data, __VA_ARGS__);                   \
-(A)->mes[0].len -= P99_NARG(__VA_ARGS__);                      \
-(A)->mes[0].data += P99_NARG(__VA_ARGS__)
+orwl_buffer_advance((A)->mes, P99_NARG(__VA_ARGS__))
 
 /*! @brief an accessor function */
 /*! @memberof orwl_proc */

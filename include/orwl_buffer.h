@@ -58,6 +58,13 @@ void orwl_buffer_destroy(orwl_buffer *buf) {
   /* empty */
 }
 
+inline
+void orwl_buffer_advance(orwl_buffer *buf, ssize_t res) {
+  buf->data += res;
+  buf->len -= res;
+}
+
+
 typedef struct iovec orwl_iovec;
 
 inline
@@ -82,6 +89,12 @@ inline
 orwl_buffer orwl_iovec2buffer(orwl_iovec iovec) {
   static orwl_buffer const buf;
   return P99_LVAL(orwl_buffer, .len = iovec.iov_len / sizeof buf.data[0], .data = iovec.iov_base);
+}
+
+inline
+void orwl_iovec_advance(orwl_iovec *buf, ssize_t res) {
+  buf->iov_base = (char*)(buf->iov_base) + res;
+  buf->iov_len -= res;
 }
 
 
