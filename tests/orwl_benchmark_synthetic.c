@@ -101,6 +101,24 @@ DEFINE_THREAD(arg_t) {
   /* Check if my neighbors are ready before starting, then realease the handle on my location */
   orwl_wait_to_start(Arg->id, graph, ab, &srv, nb_tasks, seed);
 
+
+  /***************************************************************************/
+  /*                       Initialization iteration                          */
+  /***************************************************************************/
+  orwl_acquire2(&my_task_handle);
+  my_data = orwl_write_map2(&my_task_handle);
+  /* Let's put anything in the shared memory */
+  for (size_t i = 0 ; i < ((shared_memory_size * MEGA) / sizeof(uint64_t)) ; i++) {
+    my_data[i] = orwl_rand(seed);
+  }
+  orwl_release2(&my_task_handle);
+  /* Take the distant locks to keep the correct number of phases */
+  for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++) {
+    orwl_acquire2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+    orwl_release2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+  }
+
+
   /* Fire ! */
   /***************************************************************************/
   /*                         Computation iterations                          */
@@ -119,19 +137,15 @@ DEFINE_THREAD(arg_t) {
       ORWL_TIMER(appli_computation) {
 	/* CPU consuming computation */
 	double a,b,c;
-	double * r = calloc(1000000, sizeof(double));
+	volatile double d = 0;
 	for (size_t i = 0 ; i < 1000000 ; i++) {
 	  b = (i + 1) / (sin((i + 2) / (i + 1)) + 1.01);
+	  d = 0;
 	  for (size_t j = 0 ; j < inner_iterations ; j++) {
 	    c = (j + 3) / (cos((i + 4) / (i + 1)) + 1.02);
 	    a = (b * c) - (b / (i + (j * c)));
-	    r[i] += a;
+	    d += a;
 	  }
-	}
-	free(r);
-	/* Let's put anything in the shared memory */
-	for (size_t i = 0 ; i < ((shared_memory_size * MEGA) / sizeof(uint64_t)) ; i++) {
-	  my_data[i] = orwl_rand(seed);
 	}
       }
 
