@@ -145,7 +145,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 /* then on the server when the lock is released. */
 DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t data_len, uint64_t read_len) {
   ORWL_TIMER(total_release_server) {
-    ORWL_PROC_READ(Arg, orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t data_len, uint64_t read_len);
+    ORWL_PROC_READ(Arg, orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t borrowed, uint64_t read_len);
     assert(Arg->mes[0].len == 0);
     orwl_state ret = orwl_valid;
     // extract the wh for Arg
@@ -154,16 +154,10 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
     orwl_wq* wq = wh->location;
     assert(wq);
     size_t mes_len = (Arg->n == 1) ? 0 : Arg->mes[1].len;
-    if (data_len) {
+    if (borrowed) {
       /* This a local connection */
       assert(Arg->fd == -1);
       assert(Arg->n == 2);
-      assert(data);
-      assert(!mes_len);
-      /* The other side sent us a shortcut to the buffer it has
-         previously used. This is the case of a local "write"
-         request for both push operations that are effected. */
-      Arg->mes[1] = P99_LVAL(orwl_buffer, .len = data_len, .data = (void*)(uintptr_t)data);
     } else if (read_len) {
       /* This is a remote connection */
       assert(Arg->fd != -1);
@@ -194,12 +188,12 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
        of wq. */
     orwl_proc_untie_caller(Arg);
     /* Now link the buffer in the case that this was a local connection. */
-    if (data_len || mes_len)
+    if (mes_len)
       MUTUAL_EXCLUDE(wq->mut) {
         /* This a local connection */
         assert(Arg->fd == -1);
         assert(Arg->n == 2);
-        orwl_wq_link(wq, Arg->mes[1], !data_len);
+        orwl_wq_link(wq, Arg->mes[1], !borrowed);
       }
     /* Only now release our hold on wh. */
     if (!orwl_wh_unload(wh)) {
