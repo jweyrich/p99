@@ -278,18 +278,13 @@ bool orwl_send_(int fd, uint64_t remo, size_t n, orwl_buffer mess[n]) {
 
     P99_UNWIND_PROTECT {
       while (bbuf.iov_len) {
-        enum { iovcnt = 1 };
-        orwl_iovec rbuf[iovcnt] = { [0] = bbuf };
         /* Don't stress the network layer by sending too large messages
            at a time. */
-        if (rbuf[0].iov_len > maxlen) rbuf[0].iov_len = maxlen;
-        ssize_t const res = writev(fd, rbuf, iovcnt);
+        size_t const clen = (bbuf.iov_len > maxlen) ? maxlen : bbuf.iov_len;
+        ssize_t const res = send(fd, bbuf.iov_base, clen, 0);
         if (P99_LIKELY(res > 0)) {
           bbuf.iov_base = (char*)bbuf.iov_base + res;
           bbuf.iov_len -= res;
-          if (res != rbuf[0].iov_len)
-            report(true, "orwl_send_ only succeeded partially (%zd / %zu), retrying\n",
-                   res, rbuf[0].iov_len);
         } else {
           report(1, "orwl_send_ did not make any progress\n");
           P99_HANDLE_ERRNO {
@@ -316,18 +311,13 @@ bool orwl_recv_(int fd, orwl_buffer const mess, uint64_t remo) {
   if (!mess.len) report(1, "orwl_recv_ with len 0, skipping\n");
   P99_UNWIND_PROTECT {
     while (bbuf.iov_len) {
-      enum { iovcnt = 1 };
-      orwl_iovec rbuf[iovcnt] = { [0] = bbuf };
       /* Don't stress the network layer by receiving too large messages
          at a time. */
-      if (rbuf[0].iov_len > maxlen) rbuf[0].iov_len = maxlen;
-      ssize_t const res = readv(fd, rbuf, iovcnt);
+      size_t const clen = (bbuf.iov_len > maxlen) ? maxlen : bbuf.iov_len;
+      ssize_t const res = recv(fd, bbuf.iov_base, clen, MSG_WAITALL);
       if (P99_LIKELY(res > 0)) {
         bbuf.iov_base = (char*)bbuf.iov_base + res;
         bbuf.iov_len -= res;
-        if (res != rbuf[0].iov_len)
-          report(true, "orwl_recv_ only succeeded partially (%zd / %zu), retrying\n",
-          res, rbuf[0].iov_len);
       } else {
         report(1, "orwl_recv_ did not make any progress\n");
         P99_HANDLE_ERRNO {
