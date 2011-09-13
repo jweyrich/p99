@@ -363,8 +363,6 @@ P99_COMPILETIME_ASSERT(orwl_push_header == ORWL_PUSH_HEADER);
  ** This data is to be handled by orwl_proc_release at the other side.
  ** @memberof orwl_handle
  ** @private
- ** @remark This uses the first ::orwl_push_header items of the data
- ** that is associated to @a wq for controlling information.
  **/
 void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
                orwl_wq *wq, uint64_t whID,
@@ -417,11 +415,6 @@ uint64_t* orwl_map(orwl_handle* rh, size_t* data_len) {
     case orwl_write_acquired: ;
       assert(rh->wh);
       ret = orwl_wh_map(rh->wh, data_len);
-      if (ret) {
-        /* Take the offset for the push header into account. */
-        ret += orwl_push_header;
-        if (data_len) *data_len -= orwl_push_header;
-      }
     default:;
     }
   return ret;
@@ -476,14 +469,8 @@ void* orwl_write_map(orwl_handle* rh, size_t* data_len) {
       case orwl_write_acquired: ;
         assert(rh->wh);
         ret = orwl_wh_map(rh->wh, data_len);
-        if (ret) {
-          /* Take the offset for the push header into account. */
-          ret += orwl_push_header;
-          if (data_len) {
-            *data_len -= orwl_push_header;
-            *data_len *= sizeof(uint64_t);
-          }
-        }
+        if (ret && data_len)
+          *data_len *= sizeof(uint64_t);
       default:;
       }
   }
@@ -521,11 +508,6 @@ uint64_t const* orwl_mapro(orwl_handle* rh, size_t* data_len) {
     case orwl_read_acquired: ;
       assert(rh->wh);
       ret = orwl_wh_map(rh->wh, data_len);
-      if (ret) {
-        /* Take the offset for the push header into account. */
-        ret += orwl_push_header;
-        if (data_len) *data_len -= orwl_push_header;
-      }
     default:;
     }
   return ret;
@@ -562,14 +544,8 @@ void const* orwl_read_map(orwl_handle* rh, size_t* data_len) {
       case orwl_read_acquired: ;
         assert(rh->wh);
         ret = orwl_wh_map(rh->wh, data_len);
-        if (ret) {
-          /* Take the offset for the push header into account. */
-          ret += orwl_push_header;
-          if (data_len) {
-            *data_len -= orwl_push_header;
-            *data_len *= sizeof(uint64_t);
-          }
-        }
+        if (ret &&  data_len)
+          *data_len *= sizeof(uint64_t);
       default:;
       }
   }
@@ -600,7 +576,7 @@ inline
 void orwl_resize(orwl_handle* rh, size_t data_len) {
   if (orwl_test(rh) > orwl_valid) {
     assert(rh->wh);
-    orwl_wh_resize(rh->wh, data_len ? data_len + orwl_push_header : 0);
+    orwl_wh_resize(rh->wh, data_len);
   }
 }
 
@@ -627,7 +603,6 @@ void orwl_truncate(orwl_handle* rh, size_t data_len) {
     if (orwl_test(rh) > orwl_valid) {
       size_t len = data_len / sizeof(uint64_t);
       len += (data_len % sizeof(uint64_t)) ? 1 : 0;
-      if (len) len += orwl_push_header;
       assert(rh->wh);
       orwl_wh_resize(rh->wh, len);
     }

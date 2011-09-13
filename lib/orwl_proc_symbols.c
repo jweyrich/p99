@@ -21,6 +21,7 @@
 
 DEFINE_ORWL_PROC_FUNC(orwl_proc_insert_peer, uint64_t port) {
   ORWL_PROC_READ(Arg, orwl_proc_insert_peer, uint64_t port);
+  assert(Arg->mes[0].len == 0);
   if (Arg->fd != -1) {
     orwl_host *h = P99_NEW(orwl_host);
     /* mes and orwl_addr is already in host order */
@@ -32,6 +33,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_insert_peer, uint64_t port) {
 
 DEFINE_ORWL_PROC_FUNC(orwl_proc_insert_host, uint64_t addr, uint64_t port) {
   ORWL_PROC_READ(Arg, orwl_proc_insert_host, uint64_t addr, uint64_t port);
+  assert(Arg->mes[0].len == 0);
   orwl_host *h = P99_NEW(orwl_host);
   /* mes is already in host order */
   orwl_addr_init(&h->ep.addr, addr);
@@ -47,6 +49,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_do_nothing, void) {
 DEFINE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port) {
   ORWL_TIMER(total_write_request_server) {
     ORWL_PROC_READ(Arg, orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, uint64_t port);
+    assert(Arg->mes[0].len == 0);
     Arg->ret = 0;
     if (wqPOS < Arg->srv->max_queues) {
       /* extract wq and the remote wh ID */
@@ -82,6 +85,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
     orwl_state state = orwl_invalid;
     /* Extract wq and the remote handle IDs from Arg */
     ORWL_PROC_READ(Arg, orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, uint64_t svrID, uint64_t port);
+    assert(Arg->mes[0].len == 0);
     Arg->ret = 0;
     if (wqPOS < Arg->srv->max_queues) {
       /* extract wq and the remote wh ID */
@@ -142,64 +146,61 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
 DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t data_len, uint64_t read_len) {
   ORWL_TIMER(total_release_server) {
     ORWL_PROC_READ(Arg, orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t data_len, uint64_t read_len);
+    assert(Arg->mes[0].len == 0);
     orwl_state ret = orwl_valid;
     // extract the wh for Arg
     assert(whID);
     orwl_wh* wh = (void*)whID;
     orwl_wq* wq = wh->location;
     assert(wq);
-    orwl_buffer buff = P99_LVAL(orwl_buffer);
-    size_t mes_len = Arg->mes[0].len;
-    size_t back_len = Arg->back[0].len;
-    Arg->mes[0].len = 0;
+    size_t mes_len = (Arg->n == 1) ? 0 : Arg->mes[1].len;
     if (data_len) {
       /* This a local connection */
       assert(Arg->fd == -1);
+      assert(Arg->n == 2);
       assert(data);
+      assert(!mes_len);
       /* The other side sent us a shortcut to the buffer it has
          previously used. This is the case of a local "write"
          request for both push operations that are effected. */
-      buff = P99_LVAL(orwl_buffer, .len = data_len, .data = (void*)(uintptr_t)data);
-    } else {
-      /* If len is 0, this has been a read request who's buffer is
-         just dropped and no update has to be done, here. */
-      if (mes_len) {
-        if (back_len) {
-          /* This is a remote connection */
-          assert(Arg->fd != -1);
-          assert(Arg->back[0].data);
-          assert(mes_len + orwl_push_header == back_len);
-          /* since this is a remote connection we must be able to get
-             a lock on the queue, here */
-          MUTUAL_EXCLUDE(wq->mut) {
-            /* The total buffer has exactly the size we need, use it
-               directly. This is the case of a remote request since
-               this should always come form an orwl_push. */
-            buff = Arg->back[0];
-            Arg->back[0] = P99_LVAL(orwl_buffer);
-          }
-        } else {
-          /* This a local connection */
-          assert(Arg->fd == -1);
-          assert(Arg->mes[0].data);
-          Arg->mes[0].data -= orwl_push_header;
-          Arg->mes[0].len += orwl_push_header;
-          /* A local "read" request that is to be served, that could
-             not be copied. Then "mes" points to the orginal buffer
-             and "back_len" should be 0. */
-          buff = Arg->mes[0];
-        }
+      Arg->mes[1] = P99_LVAL(orwl_buffer, .len = data_len, .data = (void*)(uintptr_t)data);
+    } else if (read_len) {
+      /* This is a remote connection */
+      assert(Arg->fd != -1);
+      assert(Arg->n == 1);
+      /* since this is a remote connection we must be able to get
+         a lock on the queue, here */
+      MUTUAL_EXCLUDE(wq->mut) {
+        /* Write the data in place. */
+        orwl_wq_resize_locked(wq, read_len);
+        orwl_buffer mes1 = ORWL_BUFFER_INITIALIZER(0, 0);
+        mes1.data = orwl_wq_map_locked(wq, &mes1.len);
+        orwl_recv_(Arg->fd, mes1, Arg->remoteorder);
       }
+    } else if (mes_len) {
+      /* This a local connection */
+      assert(Arg->fd == -1);
+      assert(Arg->n == 2);
+      assert(Arg->mes[1].data);
+    } else {
+      /* Otherwise this was a connection with no data. It could have
+         been remote or local so there are no assertions to check. */
     }
-    /* Untie the caller. It may still hold a lock on the same mutex,
-       so we have to untie it before we can take the lock. We still
-       have a token loaded on wh, so we still have it acquired, in
-       particular wh still will be in front of wq. */
+
+    /* Untie the caller. If this is a local connection, It may still
+       hold a lock on the same mutex, so we have to untie it before we
+       can take the lock. We still have a token loaded on wh, so we
+       still have it acquired, in particular wh still will be in front
+       of wq. */
     orwl_proc_untie_caller(Arg);
-    MUTUAL_EXCLUDE(wq->mut) {
-      if (data_len || mes_len)
-        orwl_wq_link(wq, buff, (!data_len && mes_len && !back_len));
-    }
+    /* Now link the buffer in the case that this was a local connection. */
+    if (data_len || mes_len)
+      MUTUAL_EXCLUDE(wq->mut) {
+        /* This a local connection */
+        assert(Arg->fd == -1);
+        assert(Arg->n == 2);
+        orwl_wq_link(wq, Arg->mes[1], !data_len);
+      }
     /* Only now release our hold on wh. */
     if (!orwl_wh_unload(wh)) {
       ret = orwl_wh_release(wh);
@@ -211,6 +212,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t data, uint64_t
 
 DEFINE_ORWL_PROC_FUNC(orwl_proc_check_initialization, uint64_t id) {
   ORWL_PROC_READ(Arg, orwl_proc_check_initialization, uint64_t id);
+  assert(Arg->mes[0].len == 0);
   bool finished = false;
   while (!finished) {
     pthread_rwlock_rdlock(&Arg->srv->lock);
