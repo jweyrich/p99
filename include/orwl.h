@@ -15,6 +15,7 @@
 #ifndef     ORWL_H_
 # define    ORWL_H_
 
+#include "orwl_keys.h"
 #include "orwl_handle2.h"
 #include "orwl_posix.h"
 #include "orwl_proc_symbols.h"

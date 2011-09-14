@@ -15,6 +15,9 @@
 #include "p99_c99_default.h"
 #include "p99_str.h"
 
+ORWL_KEYS(basic);
+ORWL_KEYS_DEFINE();
+
 P99_DECLARE_STRUCT(arg_t);
 
 
@@ -233,9 +236,10 @@ int main(int argc, char **argv) {
   orwl_barrier_init(&init_barr, number);
 
   /* start the server thread and initialize it properly */
+  ORWL_KEY_SCALE(basic, number * 2);
   orwl_server srv = P99_INIT;
   {
-    orwl_start(&srv, SOMAXCONN, number * 2);
+    orwl_start(&srv, SOMAXCONN, orwl_keys_total());
     if (!orwl_alive(&srv)) return EXIT_FAILURE;
 
     /** The string "info" will be used as sort of common black board by
@@ -268,7 +272,7 @@ int main(int argc, char **argv) {
 
     for (ssize_t i = -1; i <= (ssize_t)number; ++i) {
       size_t gpos = (orwl_np + i + offset) % orwl_np;
-      there.index = gpos;
+      there.index = ORWL_KEY(basic, gpos);
       orwl_mirror_connect(&location[i], &srv, there);
       report(0, "connected to %s", orwl_endpoint_print(&there));
     }
