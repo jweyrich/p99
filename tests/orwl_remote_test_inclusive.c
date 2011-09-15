@@ -272,8 +272,7 @@ int main(int argc, char **argv) {
 
     for (ssize_t i = -1; i <= (ssize_t)number; ++i) {
       size_t gpos = (orwl_np + i + offset) % orwl_np;
-      there.index = ORWL_KEY(basic, gpos);
-      orwl_mirror_connect(&location[i], &srv, there);
+      orwl_mirror_connect(&location[i], &srv, there, ORWL_KEY(basic, gpos));
       report(0, "connected to %s", orwl_endpoint_print(&there));
     }
   }

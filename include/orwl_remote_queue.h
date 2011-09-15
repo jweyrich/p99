@@ -114,12 +114,19 @@ DECLARE_NEW_DELETE(orwl_mirror);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_mirror);
 
+
+#ifndef DOXYGEN
+P99_PROTOTYPE(void, orwl_mirror_connect, orwl_mirror *, orwl_server*, orwl_endpoint, int64_t);
+#define orwl_mirror_connect(...) P99_CALL_DEFARG(orwl_mirror_connect, 4, __VA_ARGS__)
+#define orwl_mirror_connect_defarg_3() -INT64_C(1)
+#endif
+
 /**
  ** @brief Initialize and connect a ::orwl_mirror @a rq with local
  ** server @a srv to the endpoint @a endp
  ** @memberof orwl_mirror
  **/
-void orwl_mirror_connect(orwl_mirror *rq, orwl_server* srv, orwl_endpoint endp);
+void orwl_mirror_connect(orwl_mirror *rq, orwl_server* srv, orwl_endpoint endp, int64_t index);
 
 
 /**
