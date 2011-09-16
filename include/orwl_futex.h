@@ -82,13 +82,15 @@ int orwl_futex(int *uaddr, /*!< the base address to be used */
  **/
 inline
 int orwl_futex_wait_once(int* uaddr, int val) {
-  int ret = 0;
-  if (P99_UNLIKELY(orwl_futex(uaddr, FUTEX_WAIT, val) < 0)) {
-    int errn = errno;
-    if (P99_UNLIKELY(errn != EWOULDBLOCK && errn != EINTR)) {
-      ret = errn;
-    }
+  int ret = orwl_futex(uaddr, FUTEX_WAIT, val);
+  if (P99_UNLIKELY(ret < 0)) {
+    ret = errno;
     errno = 0;
+  }
+  // Allow for different val or spurious wake ups
+  switch (ret) {
+  case EWOULDBLOCK: ;
+  case EINTR: ret = 0;
   }
   return ret;
 }
