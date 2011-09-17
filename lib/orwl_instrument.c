@@ -11,6 +11,12 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
+
+/* Ensure that deprecated function don't issue a warning, here */
+#include "orwl_posix.h"
+#undef P99_DEPRECATED
+#define P99_DEPRECATED(...) __VA_ARGS__
+
 #include "orwl_instrument.h"
 
 
@@ -32,6 +38,14 @@ orwl_state orwl_acquire2_instr(orwl_handle2* rh2, size_t flag) {
 
 orwl_state orwl_release2_instr(orwl_handle2* rh2, size_t flag) {
   return orwl_release2(rh2);
+}
+
+orwl_state orwl_disconnect2_instr(orwl_handle2* rh2, size_t flag) {
+  return orwl_disconnect2(rh2);
+}
+
+orwl_state orwl_forced_cancel2_instr(orwl_handle2* rh2, size_t flag) {
+  return orwl_forced_cancel2(rh2);
 }
 
 orwl_state orwl_cancel2_instr(orwl_handle2* rh2, size_t flag) {
