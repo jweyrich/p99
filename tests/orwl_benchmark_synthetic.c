@@ -136,7 +136,7 @@ DEFINE_THREAD(arg_t) {
       }
 
       ORWL_TIMER(appli_local_release)
-	orwl_release2(&my_task_handle);
+	orwl_next2(&my_task_handle);
 
       ORWL_TIMER(appli_distant_acquire)
 	for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
@@ -148,12 +148,12 @@ DEFINE_THREAD(arg_t) {
       
       ORWL_TIMER(appli_distant_release)
 	for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
-	  orwl_release2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+	  orwl_next2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
     }
   }
-  orwl_cancel2(&my_task_handle);
+  orwl_disconnect2(&my_task_handle);
   for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++)
-    orwl_cancel2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+    orwl_disconnect2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
 
   seed_get_clear();
   orwl_handle2_vdelete(handle_distant_pos);

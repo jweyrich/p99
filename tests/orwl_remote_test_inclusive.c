@@ -129,7 +129,7 @@ DEFINE_THREAD(arg_t) {
     report(true, "handle resized to %zu byte                                             \n",
            len);
     for (size_t i = 0; i < 3; ++i)
-      orwl_release2(&handle[i]);
+      orwl_next2(&handle[i]);
   }
 
 
@@ -201,14 +201,14 @@ info[-1] = (abs(diff[0]) <= 2 ? ((char[]) { '-', '<', '.', '>', '+'})[diff[0] + 
     /* At the end of the phase, release our locks and launch the next
      * phase by placing a new request in the end of the queue. */
     for (size_t i = 0; i < 3; ++i)
-      ostate = orwl_release2(&handle[i]);
+      ostate = orwl_next2(&handle[i]);
   }
 
   /** And at the very end of the lifetime of the thread cancel all
    ** locks such that no other thread is blocked and return.
    **/
   for (size_t i = 0; i < 3; ++i)
-    ostate = orwl_cancel2(&handle[i]);
+    ostate = orwl_disconnect2(&handle[i]);
   report(false, "finished");
 }
 

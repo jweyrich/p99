@@ -169,7 +169,7 @@ DEFINE_THREAD(arg_t) {
     for (size_t i = 0; i < nb_hand; ++i) {
       t = orwl_gettime();
       report(false, "%ld/releasing: %p",t.tv_nsec,&left[i]);
-      orwl_release2(&handle[i]);
+      orwl_next2(&handle[i]);
       t = orwl_gettime();
       report(false, "%ld/released: %p",t.tv_nsec,&left[i]);
     }
@@ -262,7 +262,7 @@ DEFINE_THREAD(arg_t) {
      * phase by placing a new request in the end of the queue. */
     for (size_t i = 0; i < nb_hand; ++i) {
       report(false, "%ld/releasing: %p",t.tv_nsec,&left[i]);
-      ostate = orwl_release2(&handle[i]);
+      ostate = orwl_next2(&handle[i]);
       report(false, "%ld/released: %p",t.tv_nsec,&left[i]);
     }
   }
@@ -271,7 +271,7 @@ DEFINE_THREAD(arg_t) {
    ** locks such that no other thread is blocked and return.
    **/
   for (size_t i = 0; i < nb_hand; ++i)
-    ostate = orwl_cancel2(&handle[i]);
+    ostate = orwl_disconnect2(&handle[i]);
   report(false, "finished");
 
   /** free handle **/
