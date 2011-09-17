@@ -20,13 +20,14 @@ DEFINE_NEW_DELETE(orwl_handle2);
 
 DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire2, orwl_handle2);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_release2, orwl_handle2);
-DEFINE_ORWL_REGISTER_ALIAS(orwl_cancel2, orwl_handle2);
-
+DEFINE_ORWL_REGISTER_ALIAS(orwl_forced_cancel2, orwl_handle2);
+DEFINE_ORWL_REGISTER_ALIAS(orwl_disconnect2, orwl_handle2);
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_handle2,
                          ORWL_REGISTER_ALIAS(orwl_acquire2, orwl_handle2),
                          ORWL_REGISTER_ALIAS(orwl_release2, orwl_handle2),
-                         ORWL_REGISTER_ALIAS(orwl_cancel2, orwl_handle2)
+                         ORWL_REGISTER_ALIAS(orwl_forced_cancel2, orwl_handle2),
+                         ORWL_REGISTER_ALIAS(orwl_disconnect2, orwl_handle2)
                         );
 
 static
@@ -82,6 +83,10 @@ orwl_state orwl_release2(orwl_handle2* rh2, rand48_t* seed)  {
 }
 
 orwl_state orwl_cancel2(orwl_handle2* rh2, rand48_t* seed) {
+  return orwl_disconnect2(rh2, seed);
+}
+
+orwl_state orwl_forced_cancel2(orwl_handle2* rh2, rand48_t* seed) {
   if (mirror_location(rh2)) {
     rh2->inclusive = false;
     for (int par = 0; par < 2; ++par) {
