@@ -60,6 +60,8 @@ P99_MACRO_END(declare_enum_getname, T)
  **
  ** - constants @c color_min and @c color_max that in this example
  **   here would correspond to @c red and @c blue, respectively
+ ** - constant @c color_amount that in this example
+ **   here would correspond to @c 3
  ** - a function @c color_getname that returns a string containing the
  **   name of its argument.
  **
