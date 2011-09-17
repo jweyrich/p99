@@ -143,6 +143,17 @@ orwl_state orwl_acquire2(orwl_handle2* rh2,   /*!< [in,out] the handle to be acq
                          rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                         );
 
+
+/**
+ ** @memberof orwl_handle2
+ **/
+O_RWL_DOCUMENT_SEED
+P99_DEFARG_DOCU(orwl_disconnect2)
+orwl_state orwl_disconnect2(orwl_handle2* rh2,   /*!< [in,out] the handle to be acquired */
+                            rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
+                            );
+
+
 /**
  ** @memberof orwl_handle2
  **/
@@ -247,6 +258,10 @@ P99_PROTOTYPE(orwl_state, orwl_acquire2, orwl_handle2*, rand48_t*);
 #define orwl_acquire2(...)  P99_CALL_DEFARG(orwl_acquire2, 2, __VA_ARGS__)
 #define orwl_acquire2_defarg_1() seed_get()
 
+P99_PROTOTYPE(orwl_state, orwl_disconnect2, orwl_handle2*, rand48_t*);
+#define orwl_disconnect2(...)  P99_CALL_DEFARG(orwl_disconnect2, 2, __VA_ARGS__)
+#define orwl_disconnect2_defarg_1() seed_get()
+
 P99_PROTOTYPE(orwl_state, orwl_test2, orwl_handle2*, rand48_t*);
 #define orwl_test2(...)  P99_CALL_DEFARG(orwl_test2, 2, __VA_ARGS__)
 #define orwl_test2_defarg_1() seed_get()
@@ -285,6 +300,7 @@ P99_PROTOTYPE(void, orwl_truncate2, orwl_handle2*, size_t, rand48_t*);
 DECLARE_ORWL_REGISTER_ALIAS(orwl_acquire2, orwl_handle2);
 DECLARE_ORWL_REGISTER_ALIAS(orwl_release2, orwl_handle2);
 DECLARE_ORWL_REGISTER_ALIAS(orwl_cancel2, orwl_handle2);
+DECLARE_ORWL_REGISTER_ALIAS(orwl_disconnect2, orwl_handle2);
 
 
 #endif      /* !ORWL_HANDLE2_H_ */
