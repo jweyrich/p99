@@ -19,13 +19,13 @@ P99_INSTANTIATE(void, orwl_handle2_destroy, orwl_handle2*);
 DEFINE_NEW_DELETE(orwl_handle2);
 
 DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire2, orwl_handle2);
-DEFINE_ORWL_REGISTER_ALIAS(orwl_release2, orwl_handle2);
+DEFINE_ORWL_REGISTER_ALIAS(orwl_next2, orwl_handle2);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_forced_cancel2, orwl_handle2);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_disconnect2, orwl_handle2);
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_handle2,
                          ORWL_REGISTER_ALIAS(orwl_acquire2, orwl_handle2),
-                         ORWL_REGISTER_ALIAS(orwl_release2, orwl_handle2),
+                         ORWL_REGISTER_ALIAS(orwl_next2, orwl_handle2),
                          ORWL_REGISTER_ALIAS(orwl_forced_cancel2, orwl_handle2),
                          ORWL_REGISTER_ALIAS(orwl_disconnect2, orwl_handle2)
                         );
@@ -71,6 +71,10 @@ orwl_state orwl_read_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t
 }
 
 orwl_state orwl_release2(orwl_handle2* rh2, rand48_t* seed)  {
+  return orwl_next2(rh2, seed);
+}
+
+orwl_state orwl_next2(orwl_handle2* rh2, rand48_t* seed)  {
   bool par = (rh2->clock % 2);
   orwl_acquire2(rh2);
   if (rh2->state[par] == orwl_acquired) {

@@ -120,6 +120,15 @@ orwl_state orwl_read_request2(orwl_mirror* location, /*!< [in,out] the location 
  ** @memberof orwl_handle2
  **/
 O_RWL_DOCUMENT_SEED
+P99_DEFARG_DOCU(orwl_next2)
+orwl_state orwl_next2(orwl_handle2* rh2,   /*!< [in,out] the handle to be released */
+                      rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
+                      );
+
+/**
+ ** @memberof orwl_handle2
+ **/
+O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_release2)
 orwl_state orwl_release2(orwl_handle2* rh2,   /*!< [in,out] the handle to be released */
                          rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
@@ -255,6 +264,11 @@ P99_PROTOTYPE(orwl_state, orwl_read_request2, orwl_mirror*, orwl_handle2*, rand4
 #define orwl_read_request2(...)  P99_CALL_DEFARG(orwl_read_request2, 3, __VA_ARGS__)
 #define orwl_read_request2_defarg_2() seed_get()
 
+P99_PROTOTYPE(orwl_state, orwl_next2, orwl_handle2*, rand48_t*);
+#define orwl_next2(...)  P99_CALL_DEFARG(orwl_next2, 2, __VA_ARGS__)
+#define orwl_next2_defarg_1() seed_get()
+
+P99_DEPRECATED()
 P99_PROTOTYPE(orwl_state, orwl_release2, orwl_handle2*, rand48_t*);
 #define orwl_release2(...)  P99_CALL_DEFARG(orwl_release2, 2, __VA_ARGS__)
 #define orwl_release2_defarg_1() seed_get()
@@ -312,7 +326,7 @@ P99_PROTOTYPE(void, orwl_truncate2, orwl_handle2*, size_t, rand48_t*);
 
 
 DECLARE_ORWL_REGISTER_ALIAS(orwl_acquire2, orwl_handle2);
-DECLARE_ORWL_REGISTER_ALIAS(orwl_release2, orwl_handle2);
+DECLARE_ORWL_REGISTER_ALIAS(orwl_next2, orwl_handle2);
 DECLARE_ORWL_REGISTER_ALIAS(orwl_forced_cancel2, orwl_handle2);
 DECLARE_ORWL_REGISTER_ALIAS(orwl_disconnect2, orwl_handle2);
 
