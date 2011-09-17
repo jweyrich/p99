@@ -279,8 +279,16 @@ orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_valid;
   if (!rh || !rh->wh) return orwl_valid;
   orwl_handle_cancel* rhcp = P99_NEW(orwl_handle_cancel);
+  orwl_wh* const wh = rh->wh;
+  orwl_wh_load(wh);
   *rhcp = *rh;
   orwl_handle_cancel_create_detached(rhcp);
+  if (!orwl_wh_unload(wh)) {
+    /* We were the last to have a reference to this handle so we may
+       destroy it. */
+    state = orwl_wh_release(wh);
+    orwl_wh_delete(wh);
+  }
   orwl_handle_destroy(rh);
   return state;
 }
