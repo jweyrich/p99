@@ -136,11 +136,19 @@ orwl_state orwl_wq_request_locked(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
       /* if the wh is a null pointer, take this as a request to add to the
          last handle if it exists */
       orwl_wh *wq_tail = wq->tail;
-      if (wq_tail && wq_tail->svrID) {
+      if (wq_tail
+          // detect if this last element is a read handle
+          && wq_tail->svrID) {
         assert(hm >= P99_0(int64_t));
-        orwl_wh_load(wq_tail, howmuch);
-        *wh = wq_tail;
-        ret = orwl_requested;
+        // Detect if it is still in use or just being released.
+        // Because we hold the lock we can be the only one that is
+        // issuing a request, but another one could just be releasing.
+        if (orwl_wh_load(wq_tail, howmuch)) {
+          *wh = wq_tail;
+          ret = orwl_requested;
+        } else {
+          orwl_wh_unload(wq_tail, howmuch);
+        }
       }
     }
   }
