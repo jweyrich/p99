@@ -120,15 +120,21 @@ orwl_state orwl_acquire2(orwl_handle2* rh2, rand48_t* seed) {
 }
 
 orwl_state orwl_disconnect2(orwl_handle2* rh2, rand48_t* seed) {
-  if (mirror_location(rh2)) {
-    bool par = (rh2->clock % 2);
-    orwl_state *const state = rh2->state;
-    state[par] = orwl_acquire(&rh2->pair[par]);
-    rh2->state[par] =  (rh2->state[par] == orwl_acquired)
-      ? orwl_release(&rh2->pair[par], seed)
-      : orwl_invalid;
-    return (rh2->state[0] <= rh2->state[1] ? rh2->state[0] : rh2->state[1]);
-  } else return orwl_valid;
+  orwl_state *const state = rh2->state;
+  orwl_handle *const pair = rh2->pair;
+  for (unsigned par = 0; par < 2; ++par) {
+    if (pair[par].rq) {
+      switch (orwl_test(&pair[par])) {
+      case orwl_requested:
+        orwl_acquire(&pair[par]);
+      case orwl_acquired:
+        orwl_release(&pair[par], seed);
+      default: ;
+      }
+    }
+    state[par] = orwl_invalid;
+  }
+  return orwl_invalid;
 }
 
 orwl_state orwl_test2(orwl_handle2* rh2, rand48_t* seed) {
