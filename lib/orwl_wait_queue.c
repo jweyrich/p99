@@ -179,7 +179,6 @@ orwl_state orwl_wh_acquire(orwl_wh *wh, uint64_t howmuch) {
 orwl_state orwl_wh_test(orwl_wh *wh, uint64_t howmuch) {
   orwl_state ret = orwl_invalid;
   if (orwl_wh_valid(wh)) {
-    orwl_notifier_block(&wh->acq);
     ret = (orwl_notifier_verify(&wh->acq)) ? orwl_acquired : orwl_requested;
     orwl_wh_unload(wh, howmuch);
   }
