@@ -97,6 +97,8 @@ P99_INSTANTIATE(int, orwl_wq_idle, orwl_wq*);
 /* This supposes that the corresponding wq != 0 */
 P99_INSTANTIATE(uint64_t, orwl_wh_load, orwl_wh *wh, uint64_t howmuch);
 /* This supposes that the corresponding wq != 0 */
+P99_INSTANTIATE(uint64_t, orwl_wh_load_conditionally, orwl_wh *wh, uint64_t howmuch);
+/* This supposes that the corresponding wq != 0 */
 P99_INSTANTIATE(uint64_t, orwl_wh_unload, orwl_wh *wh, uint64_t howmuch);
 
 void orwl_wq_request_append(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
@@ -143,11 +145,9 @@ orwl_state orwl_wq_request_locked(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
         // Detect if it is still in use or just being released.
         // Because we hold the lock we can be the only one that is
         // issuing a request, but another one could just be releasing.
-        if (orwl_wh_load(wq_tail, howmuch)) {
+        if (orwl_wh_load_conditionally(wq_tail, howmuch)) {
           *wh = wq_tail;
           ret = orwl_requested;
-        } else {
-          orwl_wh_unload(wq_tail, howmuch);
         }
       }
     }

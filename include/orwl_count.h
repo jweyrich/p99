@@ -114,6 +114,17 @@ inline size_t orwl_count_inc(orwl_count* counter, size_t howmuch);
 #define orwl_count_inc_defarg_1() ((size_t)1)
 
 /**
+ ** @brief increment the counter @a counter atomically by @a howmuch but only if it is not zero before.
+ ** @return the value of the counter before the increment.
+ ** @remark @a howmuch defaults to 1 if omitted.
+ ** @memberof orwl_count
+ **/
+inline size_t orwl_count_inc_conditionally(orwl_count* counter, size_t howmuch);
+
+#define orwl_count_inc_conditionally(...) P99_CALL_DEFARG(orwl_count_inc_conditionally, 2, __VA_ARGS__)
+#define orwl_count_inc_conditionally_defarg_1() ((size_t)1)
+
+/**
  ** @brief Obtain the value of counter @a counter atomically.
  ** @memberof orwl_count
  **/
@@ -145,6 +156,17 @@ inline
 size_t orwl_count_inc(orwl_count* counter, size_t howmuch) {
   size_t ret = atomic_fetch_add(&counter->overl.large, howmuch);
   return ret;
+}
+
+inline
+size_t orwl_count_inc_conditionally(orwl_count* counter, size_t howmuch) {
+  size_t expected = atomic_load(&counter->overl.large);
+  while (expected) {
+    size_t desired = expected + howmuch;
+    if (atomic_compare_exchange_weak(&counter->overl.large, &expected, desired))
+      return expected;
+  }
+  return 0;
 }
 
 inline
@@ -202,6 +224,18 @@ size_t orwl_count_inc(orwl_count* counter, size_t howmuch) {
   MUTUAL_EXCLUDE(counter->mut) {
     ret = counter->overl.large;
     counter->overl.large = ret + howmuch;
+  }
+  return ret;
+}
+
+inline
+size_t orwl_count_inc_conditionally(orwl_count* counter, size_t howmuch) {
+  size_t ret = 0;
+  MUTUAL_EXCLUDE(counter->mut) {
+    if (ret) {
+      ret = counter->overl.large;
+      counter->overl.large = ret + howmuch;
+    }
   }
   return ret;
 }

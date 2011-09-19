@@ -504,6 +504,31 @@ extern "C" {
 
 #ifndef DOXYGEN
   inline
+  P99_PROTOTYPE(uint64_t, orwl_wh_load_conditionally, orwl_wh *, uint64_t);
+#define orwl_wh_load_conditionally(...) P99_CALL_DEFARG(orwl_wh_load_conditionally, 2, __VA_ARGS__)
+#define orwl_wh_load_conditionally_defarg_1() 1
+#endif
+
+  /**
+   ** @brief if there still tokens on @a wh load @a howmuch additional tokens.
+   **
+   ** This supposes that the corresponding @c wq is not a null pointer and that @c
+   ** wh is already locked.
+   ** @see orwl_wh_load
+   **
+   ** @memberof orwl_wh
+   ** @private
+   **/
+  P99_DEFARG_DOCU(orwl_wh_load_conditionally)
+  inline
+  uint64_t orwl_wh_load_conditionally
+  (orwl_wh *wh /*!< the handle to act upon */,
+   uint64_t howmuch  /*!< defaults to 1 */) {
+    return orwl_count_inc_conditionally(&wh->tokens, howmuch);
+  }
+
+#ifndef DOXYGEN
+  inline
   P99_PROTOTYPE(uint64_t, orwl_wh_unload, orwl_wh *, uint64_t);
 #define orwl_wh_unload(...) P99_CALL_DEFARG(orwl_wh_unload, 2, __VA_ARGS__)
 #define orwl_wh_unload_defarg_1() UINT64_C(1)
