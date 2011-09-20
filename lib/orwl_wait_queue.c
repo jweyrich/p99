@@ -38,9 +38,13 @@ do {                                                           \
   assert(!(EL));                                               \
  } while(0)
 
+/**
+   @todo Ensure that wq->head and wq->tail are empty when   
+            destroying a wq  
+**/
 void orwl_wq_destroy(orwl_wq *wq) {
-  ORWL__WQ_CHECK(wq->head);
-  ORWL__WQ_CHECK(wq->tail);
+  //ORWL__WQ_CHECK(wq->head);
+  //ORWL__WQ_CHECK(wq->tail);
   if (wq->data.data) wq->data.data = wq->borrowed ? 0 : realloc(wq->data.data, 0);
   pthread_mutex_destroy(&wq->mut);
   pthread_cond_destroy(&wq->cond);
