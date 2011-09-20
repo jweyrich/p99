@@ -98,10 +98,10 @@ inline unsigned orwl_sem_assert(orwl_sem* s);
 #define ORWL_SEM_VALUE_MAX INT_MAX
 
 struct orwl_sem { unsigned val; pthread_mutex_t mut; pthread_cond_t cond; };
-#define ORWL_SEM_INITIALIZER {                  \
-.val = 0,                                       \
-.mut = PTHREAD_MUTEX_INITIALIZER,               \
-.cond = PTHREAD_COND_INITIALIZER,               \
+#define ORWL_SEM_INITIALIZER {                                 \
+.val = 0,                                                      \
+.mut = PTHREAD_MUTEX_INITIALIZER,                              \
+.cond = PTHREAD_COND_INITIALIZER,                              \
 }
 
 inline int orwl_sem_destroy(orwl_sem *s) {

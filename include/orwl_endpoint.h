@@ -1,7 +1,8 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
+/* the authors and copyright holders for this work are as follows:           */
+/* all rights reserved,  2011 Emmanuel Jeanvoine, INRIA, France              */
 /* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
@@ -310,7 +311,12 @@ uint64_t orwl_send(orwl_server* srv, orwl_endpoint const* there, rand48_t *seed,
  **   thread->main [label="pthread_exit()"];
  ** @endmsc
  **/
-#define orwl_rpc(SRV, THERE, SEED, F, ...)                                                                 \
-  orwl_send(SRV, THERE, SEED, 1, &((orwl_buffer){ .len = ((size_t)P99_NARG(__VA_ARGS__)) + 1, .data = (uint64_t[]){ ORWL_OBJID(F), __VA_ARGS__ } }))
+#define orwl_rpc(SRV, THERE, SEED, F, ...)                              \
+orwl_send(SRV, THERE, SEED, 1,                                          \
+          &((orwl_buffer){                                              \
+              .len = ((size_t)P99_NARG(__VA_ARGS__)) + 1,               \
+                .data = (uint64_t[]){ ORWL_OBJID(F), __VA_ARGS__ } }    \
+            )                                                           \
+          )
 
 #endif      /* !ORWL_ENDPOINT_H_ */

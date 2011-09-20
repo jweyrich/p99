@@ -1,5 +1,16 @@
-
-
+/* This may look like nonsense, but it really is -*- mode: C -*-             */
+/*                                                                           */
+/* Except of parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                          */
+/* all rights reserved,  2011 Jens Gustedt, INRIA, France                    */
+/*                                                                           */
+/* This file is part of the P99 project. You received this file as as        */
+/* part of a confidential agreement and you may generally not                */
+/* redistribute it and/or modify it, unless under the terms as given in      */
+/* the file LICENSE.  It is distributed without any warranty; without        */
+/* even the implied warranty of merchantability or fitness for a             */
+/* particular purpose.                                                       */
+/*                                                                           */
 #include "orwl_once.h"
 #include "p99_defarg.h"
 
@@ -73,28 +84,28 @@ size_t orwl_keys_total(void);
  ** }
  ** @code
  **/
-#define ORWL_KEYS(...)                                          \
-DECLARE_ONCE(o_rwl_keys);                                       \
-enum { O_RWL_KEYS_NB = P99_NARG(__VA_ARGS__), };                \
-extern size_t o_rwl_key_offset[O_RWL_KEYS_NB + 1];              \
-extern size_t o_rwl_key_nb[O_RWL_KEYS_NB];                      \
+#define ORWL_KEYS(...)                                         \
+DECLARE_ONCE(o_rwl_keys);                                      \
+enum { O_RWL_KEYS_NB = P99_NARG(__VA_ARGS__), };               \
+extern size_t o_rwl_key_offset[O_RWL_KEYS_NB + 1];             \
+extern size_t o_rwl_key_nb[O_RWL_KEYS_NB];                     \
 typedef enum o_rwl_key_enum { __VA_ARGS__ } o_rwl_key_enum
 
 /** @brief Define the symbols that are necessary for #ORWL_KEYS
  **/
-#define ORWL_KEYS_DEFINE()                                              \
-DEFINE_ONCE(o_rwl_keys) {                                               \
-  o_rwl_key_offset[0] = 0;                                              \
-  for (size_t i = 0; i < O_RWL_KEYS_NB; ++i) {                          \
-    if (!o_rwl_key_nb[i]) o_rwl_key_nb[i] = 1;                          \
-    o_rwl_key_offset[i + 1] = o_rwl_key_offset[i] + o_rwl_key_nb[i];    \
-  }                                                                     \
-}                                                                       \
-size_t orwl_keys_total(void) {                                          \
-  INIT_ONCE(o_rwl_keys);                                                \
-  return o_rwl_key_offset[O_RWL_KEYS_NB];                               \
-}                                                                       \
-size_t o_rwl_key_offset[O_RWL_KEYS_NB + 1];                             \
+#define ORWL_KEYS_DEFINE()                                           \
+DEFINE_ONCE(o_rwl_keys) {                                            \
+  o_rwl_key_offset[0] = 0;                                           \
+  for (size_t i = 0; i < O_RWL_KEYS_NB; ++i) {                       \
+    if (!o_rwl_key_nb[i]) o_rwl_key_nb[i] = 1;                       \
+    o_rwl_key_offset[i + 1] = o_rwl_key_offset[i] + o_rwl_key_nb[i]; \
+  }                                                                  \
+}                                                                    \
+size_t orwl_keys_total(void) {                                       \
+  INIT_ONCE(o_rwl_keys);                                             \
+  return o_rwl_key_offset[O_RWL_KEYS_NB];                            \
+}                                                                    \
+size_t o_rwl_key_offset[O_RWL_KEYS_NB + 1];                          \
 size_t o_rwl_key_nb[O_RWL_KEYS_NB]
 
 
