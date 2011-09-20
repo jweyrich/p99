@@ -118,21 +118,20 @@ void orwl_wq_request_append(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
   ++wq->clock;
 }
 
-orwl_state orwl_wq_request(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
+orwl_state orwl_wq_request(orwl_wq *wq, orwl_wh *wh, uint64_t hm) {
   orwl_state ret = orwl_invalid;
-  if (wq)
+  if (wq && wh)
     MUTUAL_EXCLUDE(wq->mut) {
     ret = orwl_wq_request_locked(wq, wh, hm);
   }
   return ret;
 }
 
-orwl_state orwl_wq_request_locked(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
+orwl_state orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t hm) {
   orwl_state ret = orwl_invalid;
   if (orwl_wq_valid(wq) && wh) {
     uint64_t howmuch = (hm > P99_0(int64_t)) ? hm : -hm;
-    assert(*wh);
-    orwl_wq_request_append(wq, *wh, howmuch);
+    orwl_wq_request_append(wq, wh, howmuch);
     ret = orwl_requested;
   }
   return ret;

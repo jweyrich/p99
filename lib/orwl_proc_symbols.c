@@ -55,7 +55,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, ui
          one for this function here when it acquires below, the other one to
          block until the remote issues a release. */
       orwl_wh *srv_wh = P99_NEW(orwl_wh);
-      orwl_state state = orwl_wq_request(srv_wq, &srv_wh, 2);
+      orwl_state state = orwl_wq_request(srv_wq, srv_wh, 2);
       if (state == orwl_requested) {
         /* mes is already in host order */
         orwl_endpoint ep = { .addr = orwl_proc_getpeer(Arg), .port = host2port(port) };
@@ -116,7 +116,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
           srv_wh = P99_NEW(orwl_wh);
           /* mark it as being inclusive */
           srv_wh->svrID = (uintptr_t)srv_wh;
-          state = orwl_wq_request_locked(srv_wq, &srv_wh, 2);
+          state = orwl_wq_request_locked(srv_wq, srv_wh, 2);
         }
       }
 

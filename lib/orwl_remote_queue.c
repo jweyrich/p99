@@ -111,7 +111,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
            for the remote event of acquisition of the lock. The other is
            used here locally to ensure that cli_wh is not freed before
            we have finished our work, here. */
-        state = orwl_wq_request_locked(&rq->local, &cli_wh, 2);
+        state = orwl_wq_request_locked(&rq->local, cli_wh, 2);
         assert(state == orwl_requested);
 
         /* Send the insertion request to the other side. This consists

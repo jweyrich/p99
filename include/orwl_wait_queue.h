@@ -360,7 +360,7 @@ extern "C" {
   ** @memberof orwl_wq
   **/
   orwl_state orwl_wq_request(orwl_wq *wq, /*!< the queue to act on */
-                             orwl_wh **wh,
+                             orwl_wh *wh,
                              uint64_t hm
                             );
   /**
@@ -379,7 +379,7 @@ extern "C" {
    ** @memberof orwl_wq
    **/
   orwl_state orwl_wq_request_locked(orwl_wq *wq, /*!< the queue to act on */
-                                    orwl_wh **wh,
+                                    orwl_wh *wh,
                                     uint64_t hm
                                    );
 
