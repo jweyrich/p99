@@ -709,207 +709,207 @@ p99_inline                                                                      
 P99_BUILTIN_TYPE(SUFF,)                                                                                                                       \
 P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF,) a, P99_BUILTIN_TYPE(SUFF,) b, int* err)
 #else
-#define P00_DECLARE_OVERFLOW(SUFF)              \
-  P00_DECLARE_TWOS(SUFF)                        \
-  P00_DECLARE_UNSIG(SUFF)                       \
-  P00_DECLARE_ADD0(SUFF)                        \
-  P00_DECLARE_ADD1(SUFF)                        \
-  P00_DECLARE_ADD2(SUFF)                        \
-  P00_DECLARE_ADD(SUFF)                         \
-  P00_DECLARE_SUB0(SUFF)                        \
-  P00_DECLARE_SUB1(SUFF)                        \
-  P00_DECLARE_SUB2(SUFF)                        \
-  P00_DECLARE_SUB(SUFF)                         \
+#define P00_DECLARE_OVERFLOW(SUFF)                             \
+  P00_DECLARE_TWOS(SUFF)                                       \
+  P00_DECLARE_UNSIG(SUFF)                                      \
+  P00_DECLARE_ADD0(SUFF)                                       \
+  P00_DECLARE_ADD1(SUFF)                                       \
+  P00_DECLARE_ADD2(SUFF)                                       \
+  P00_DECLARE_ADD(SUFF)                                        \
+  P00_DECLARE_SUB0(SUFF)                                       \
+  P00_DECLARE_SUB1(SUFF)                                       \
+  P00_DECLARE_SUB2(SUFF)                                       \
+  P00_DECLARE_SUB(SUFF)                                        \
 P99_MACRO_END(p99_overflow_, SUFF)
 
 
-#define P00_DECLARE_TWOS(SUFF)                                          \
-p99_inline                                                              \
-P99_BUILTIN_TYPE(SUFF)                                                  \
-P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) a) {               \
-  P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);     \
-  P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); \
-  /* the unsigned max, as if it had just one value bit more */          \
-  P99_BUILTIN_TYPE(u, SUFF) const utype_max = (P99_BUILTIN_TYPE(u, SUFF))((2 * type_max) + 1); \
-  return                                                                \
-    /* for positive values there is nothing to do, this includes the    \
-       case where the unsigned type has the same number of value bits   \
-       as the signed type */                                            \
-    (a <= type_max)                                                     \
-    ? a                                                                 \
-    /* Capture the special case where type_max1 is a trap               \
-       representation for the signed type */                            \
-    : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (a == type_max1)) \
-       ? (P99_BUILTIN_TYPE(SUFF))(-0)                                   \
-       /* otherwise compute the negative modulo utype_max + 1. for      \
-          the case that the unsigned type is much wider than the        \
-          signed type we mask the higher order bits away. */            \
+#define P00_DECLARE_TWOS(SUFF)                                                                    \
+p99_inline                                                                                        \
+P99_BUILTIN_TYPE(SUFF)                                                                            \
+P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) a) {                                         \
+  P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);                               \
+  P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1);          \
+  /* the unsigned max, as if it had just one value bit more */                                    \
+  P99_BUILTIN_TYPE(u, SUFF) const utype_max = (P99_BUILTIN_TYPE(u, SUFF))((2 * type_max) + 1);    \
+  return                                                                                          \
+    /* for positive values there is nothing to do, this includes the                              \
+       case where the unsigned type has the same number of value bits                             \
+       as the signed type */                                                                      \
+    (a <= type_max)                                                                               \
+    ? a                                                                                           \
+    /* Capture the special case where type_max1 is a trap                                         \
+       representation for the signed type */                                                      \
+    : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (a == type_max1))                    \
+       ? (P99_BUILTIN_TYPE(SUFF))(-0)                                                             \
+       /* otherwise compute the negative modulo utype_max + 1. for                                \
+          the case that the unsigned type is much wider than the                                  \
+          signed type we mask the higher order bits away. */                                      \
        : (P99_BUILTIN_TYPE(SUFF))((-(P99_BUILTIN_TYPE(SUFF))(utype_max - (utype_max & a))) - 1)); \
 }
 
-#define P00_DECLARE_UNSIG(SUFF)                                         \
-p99_inline                                                              \
-P99_BUILTIN_TYPE(u, SUFF)                                               \
-P99_PASTE2(p99_unsig, SUFF)(P99_BUILTIN_TYPE(SUFF) a) {                 \
-  /* needed to avoid spurious compiler warnings */                      \
-  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                  \
-  register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF); \
-  register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); \
-  /* the unsigned max, as if it had just one value bit more */          \
+#define P00_DECLARE_UNSIG(SUFF)                                                                         \
+p99_inline                                                                                              \
+P99_BUILTIN_TYPE(u, SUFF)                                                                               \
+P99_PASTE2(p99_unsig, SUFF)(P99_BUILTIN_TYPE(SUFF) a) {                                                 \
+  /* needed to avoid spurious compiler warnings */                                                      \
+  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                                                  \
+  register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);                            \
+  register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1);       \
+  /* the unsigned max, as if it had just one value bit more */                                          \
   register P99_BUILTIN_TYPE(u, SUFF) const utype_max = (P99_BUILTIN_TYPE(u, SUFF))((2 * type_max) + 1); \
-  return                                                                \
-    a >= type_null                                                      \
-    ? a                                                                 \
-    /* Capture the special case where -INTMAX_MIN can not represented   \
-       in the signed type */                                            \
-    : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (a == P99_BUILTIN_MIN(SUFF))) \
-       ? type_max1                                                      \
-       /* otherwise compute the negative modulo utype_max + 1. */       \
-       : (P99_BUILTIN_TYPE(u, SUFF))((utype_max - (P99_BUILTIN_TYPE(u, SUFF))-a) + 1)); \
+  return                                                                                                \
+    a >= type_null                                                                                      \
+    ? a                                                                                                 \
+    /* Capture the special case where -INTMAX_MIN can not represented                                   \
+       in the signed type */                                                                            \
+    : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (a == P99_BUILTIN_MIN(SUFF)))              \
+       ? type_max1                                                                                      \
+       /* otherwise compute the negative modulo utype_max + 1. */                                       \
+       : (P99_BUILTIN_TYPE(u, SUFF))((utype_max - (P99_BUILTIN_TYPE(u, SUFF))-a) + 1));                 \
 }
 
-#define P00_DECLARE_ADD0(SUFF)                                          \
-p99_inline                                                              \
-P99_BUILTIN_TYPE(u, SUFF)                                               \
+#define P00_DECLARE_ADD0(SUFF)                                                   \
+p99_inline                                                                       \
+P99_BUILTIN_TYPE(u, SUFF)                                                        \
 P99_PASTE2(p00_add0, SUFF)(P99_BUILTIN_TYPE(SUFF) a, P99_BUILTIN_TYPE(SUFF) b) { \
-  register P99_BUILTIN_TYPE(u, SUFF) ua = P99_PASTE2(p99_unsig, SUFF)(a); \
-  register P99_BUILTIN_TYPE(u, SUFF) ub = P99_PASTE2(p99_unsig, SUFF)(b); \
+  register P99_BUILTIN_TYPE(u, SUFF) ua = P99_PASTE2(p99_unsig, SUFF)(a);        \
+  register P99_BUILTIN_TYPE(u, SUFF) ub = P99_PASTE2(p99_unsig, SUFF)(b);        \
   register P99_BUILTIN_TYPE(u, SUFF) res = (P99_BUILTIN_TYPE(u, SUFF))(ua + ub); \
-  return res;                                                           \
+  return res;                                                                    \
 }
 
-#define P00_DECLARE_SUB0(SUFF)                                          \
-p99_inline                                                              \
-P99_BUILTIN_TYPE(u, SUFF)                                               \
+#define P00_DECLARE_SUB0(SUFF)                                                   \
+p99_inline                                                                       \
+P99_BUILTIN_TYPE(u, SUFF)                                                        \
 P99_PASTE2(p00_sub0, SUFF)(P99_BUILTIN_TYPE(SUFF) a, P99_BUILTIN_TYPE(SUFF) b) { \
-  register P99_BUILTIN_TYPE(u, SUFF) ua = P99_PASTE2(p99_unsig, SUFF)(a); \
-  register P99_BUILTIN_TYPE(u, SUFF) ub = P99_PASTE2(p99_unsig, SUFF)(b); \
+  register P99_BUILTIN_TYPE(u, SUFF) ua = P99_PASTE2(p99_unsig, SUFF)(a);        \
+  register P99_BUILTIN_TYPE(u, SUFF) ub = P99_PASTE2(p99_unsig, SUFF)(b);        \
   register P99_BUILTIN_TYPE(u, SUFF) res = (P99_BUILTIN_TYPE(u, SUFF))(ua - ub); \
-  return res;                                                           \
+  return res;                                                                    \
 }
 
-#define P00_DECLARE_ADD2(SUFF)                                          \
-p99_inline                                                              \
-P99_BUILTIN_TYPE(SUFF)                                                  \
-     P99_PASTE2(p00_add2, SUFF)(P99_BUILTIN_TYPE(SUFF) a,               \
-                                P99_BUILTIN_TYPE(SUFF) b,               \
-                                int err[static 1]) {                    \
-  /* needed to avoid spurious compiler warnings */                      \
-  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                  \
-  register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF); \
+#define P00_DECLARE_ADD2(SUFF)                                                                    \
+p99_inline                                                                                        \
+P99_BUILTIN_TYPE(SUFF)                                                                            \
+     P99_PASTE2(p00_add2, SUFF)(P99_BUILTIN_TYPE(SUFF) a,                                         \
+                                P99_BUILTIN_TYPE(SUFF) b,                                         \
+                                int err[static 1]) {                                              \
+  /* needed to avoid spurious compiler warnings */                                                \
+  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                                            \
+  register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);                      \
   register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); \
-  register P99_BUILTIN_TYPE(u, SUFF) uc                                 \
-    = P99_PASTE2(p00_add0, SUFF)(a, b);                                 \
-  register P99_BUILTIN_TYPE(SUFF) c                                     \
-    = P99_PASTE2(p99_twos, SUFF)(uc);                                   \
-  /* (x ^ y) < 0 iff x and y have different signs */                    \
-  if (P99_UNLIKELY(((a ^ b) >= type_null) && ((b ^ c) < type_null))     \
-      /* capture the case of the trap value */                          \
-      || ((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF))             \
-          && (uc == type_max1)))                                        \
-    err[0] = ERANGE;                                                    \
-  return c;                                                             \
+  register P99_BUILTIN_TYPE(u, SUFF) uc                                                           \
+    = P99_PASTE2(p00_add0, SUFF)(a, b);                                                           \
+  register P99_BUILTIN_TYPE(SUFF) c                                                               \
+    = P99_PASTE2(p99_twos, SUFF)(uc);                                                             \
+  /* (x ^ y) < 0 iff x and y have different signs */                                              \
+  if (P99_UNLIKELY(((a ^ b) >= type_null) && ((b ^ c) < type_null))                               \
+      /* capture the case of the trap value */                                                    \
+      || ((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF))                                       \
+          && (uc == type_max1)))                                                                  \
+    err[0] = ERANGE;                                                                              \
+  return c;                                                                                       \
 }
 
-#define P00_DECLARE_SUB2(SUFF)                                          \
-p99_inline                                                              \
-P99_BUILTIN_TYPE(SUFF)                                                  \
-     P99_PASTE2(p00_sub2, SUFF)(P99_BUILTIN_TYPE(SUFF) a,               \
-                                P99_BUILTIN_TYPE(SUFF) b,               \
-                                int err[static 1]) {                    \
-  /* needed to avoid spurious compiler warnings */                      \
-  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                  \
-  register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF); \
+#define P00_DECLARE_SUB2(SUFF)                                                                    \
+p99_inline                                                                                        \
+P99_BUILTIN_TYPE(SUFF)                                                                            \
+     P99_PASTE2(p00_sub2, SUFF)(P99_BUILTIN_TYPE(SUFF) a,                                         \
+                                P99_BUILTIN_TYPE(SUFF) b,                                         \
+                                int err[static 1]) {                                              \
+  /* needed to avoid spurious compiler warnings */                                                \
+  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                                            \
+  register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);                      \
   register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); \
-  register P99_BUILTIN_TYPE(u, SUFF) uc                                 \
-    = P99_PASTE2(p00_sub0, SUFF)(a, b);                                 \
-  register P99_BUILTIN_TYPE(SUFF) c                                     \
-    = P99_PASTE2(p99_twos, SUFF)(uc);                                   \
-  /* (x ^ y) < 0 iff x and y have different signs */                    \
-  if (P99_UNLIKELY(((a ^ b) < type_null) && ((b ^ c) >= type_null))     \
-      /* capture the case of the trap value */                          \
-      || ((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF))             \
-          && (uc == type_max1)))                                        \
-    err[0] = ERANGE;                                                    \
-  return c;                                                             \
+  register P99_BUILTIN_TYPE(u, SUFF) uc                                                           \
+    = P99_PASTE2(p00_sub0, SUFF)(a, b);                                                           \
+  register P99_BUILTIN_TYPE(SUFF) c                                                               \
+    = P99_PASTE2(p99_twos, SUFF)(uc);                                                             \
+  /* (x ^ y) < 0 iff x and y have different signs */                                              \
+  if (P99_UNLIKELY(((a ^ b) < type_null) && ((b ^ c) >= type_null))                               \
+      /* capture the case of the trap value */                                                    \
+      || ((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF))                                       \
+          && (uc == type_max1)))                                                                  \
+    err[0] = ERANGE;                                                                              \
+  return c;                                                                                       \
 }
 
-#define P00_DECLARE_ADD1(SUFF)                                          \
-p99_inline                                                              \
-P99_BUILTIN_TYPE(SUFF)                                                  \
-     P99_PASTE2(p00_add1, SUFF)(P99_BUILTIN_TYPE(SUFF) a,               \
-                                P99_BUILTIN_TYPE(SUFF) b,               \
-                                int err[static 1]) {                    \
-  /* needed to avoid spurious compiler warnings */                      \
-  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                  \
-  register P99_BUILTIN_TYPE(SUFF) ret;                                  \
-  if (b >= type_null) {                                                 \
-    if (P99_LIKELY(P99_BUILTIN_MAX(SUFF) - b >= a)) {                   \
-      ret = a + b;                                                      \
-    } else {                                                            \
-      ret = ((b - P99_BUILTIN_MAX(SUFF)) + a) - 1;                      \
-      err[0] = ERANGE;                                                  \
-    }                                                                   \
-  } else {                                                              \
-    if (P99_LIKELY(P99_BUILTIN_MIN(SUFF) - b <= a)) {                   \
-      ret = a + b;                                                      \
-    } else {                                                            \
-      ret = ((b + P99_BUILTIN_MAX(SUFF)) + a) + 1;                      \
-      err[0] = ERANGE;                                                  \
-    }                                                                   \
-  }                                                                     \
-  return ret;                                                           \
+#define P00_DECLARE_ADD1(SUFF)                                 \
+p99_inline                                                     \
+P99_BUILTIN_TYPE(SUFF)                                         \
+     P99_PASTE2(p00_add1, SUFF)(P99_BUILTIN_TYPE(SUFF) a,      \
+                                P99_BUILTIN_TYPE(SUFF) b,      \
+                                int err[static 1]) {           \
+  /* needed to avoid spurious compiler warnings */             \
+  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;         \
+  register P99_BUILTIN_TYPE(SUFF) ret;                         \
+  if (b >= type_null) {                                        \
+    if (P99_LIKELY(P99_BUILTIN_MAX(SUFF) - b >= a)) {          \
+      ret = a + b;                                             \
+    } else {                                                   \
+      ret = ((b - P99_BUILTIN_MAX(SUFF)) + a) - 1;             \
+      err[0] = ERANGE;                                         \
+    }                                                          \
+  } else {                                                     \
+    if (P99_LIKELY(P99_BUILTIN_MIN(SUFF) - b <= a)) {          \
+      ret = a + b;                                             \
+    } else {                                                   \
+      ret = ((b + P99_BUILTIN_MAX(SUFF)) + a) + 1;             \
+      err[0] = ERANGE;                                         \
+    }                                                          \
+  }                                                            \
+  return ret;                                                  \
 }
 
-#define P00_DECLARE_SUB1(SUFF)                                          \
-p99_inline                                                              \
-P99_BUILTIN_TYPE(SUFF)                                                  \
-     P99_PASTE2(p00_sub1, SUFF)(P99_BUILTIN_TYPE(SUFF) a,               \
-                                P99_BUILTIN_TYPE(SUFF) b,               \
-                                int err[static 1]) {                    \
-  /* needed to avoid spurious compiler warnings */                      \
-  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                  \
-  register P99_BUILTIN_TYPE(SUFF) ret;                                  \
-  if (b <= type_null) {                                                 \
-    if (P99_LIKELY(P99_BUILTIN_MAX(SUFF) + b >= a)) {                   \
-      ret = a - b;                                                      \
-    } else {                                                            \
-      ret = (a - (b + P99_BUILTIN_MAX(SUFF))) + 1;                      \
-      err[0] = ERANGE;                                                  \
-    }                                                                   \
-  } else {                                                              \
-    if (P99_LIKELY(P99_BUILTIN_MIN(SUFF) + b <= a)) {                   \
-      ret = a - b;                                                      \
-    } else {                                                            \
-      ret = (a - (b - P99_BUILTIN_MAX(SUFF))) - 1;                      \
-      err[0] = ERANGE;                                                  \
-    }                                                                   \
-  }                                                                     \
-  return ret;                                                           \
+#define P00_DECLARE_SUB1(SUFF)                                 \
+p99_inline                                                     \
+P99_BUILTIN_TYPE(SUFF)                                         \
+     P99_PASTE2(p00_sub1, SUFF)(P99_BUILTIN_TYPE(SUFF) a,      \
+                                P99_BUILTIN_TYPE(SUFF) b,      \
+                                int err[static 1]) {           \
+  /* needed to avoid spurious compiler warnings */             \
+  register P99_BUILTIN_TYPE(SUFF) const type_null = 0;         \
+  register P99_BUILTIN_TYPE(SUFF) ret;                         \
+  if (b <= type_null) {                                        \
+    if (P99_LIKELY(P99_BUILTIN_MAX(SUFF) + b >= a)) {          \
+      ret = a - b;                                             \
+    } else {                                                   \
+      ret = (a - (b + P99_BUILTIN_MAX(SUFF))) + 1;             \
+      err[0] = ERANGE;                                         \
+    }                                                          \
+  } else {                                                     \
+    if (P99_LIKELY(P99_BUILTIN_MIN(SUFF) + b <= a)) {          \
+      ret = a - b;                                             \
+    } else {                                                   \
+      ret = (a - (b - P99_BUILTIN_MAX(SUFF))) - 1;             \
+      err[0] = ERANGE;                                         \
+    }                                                          \
+  }                                                            \
+  return ret;                                                  \
 }
 
-#define P00_DECLARE_ADD(SUFF)                                           \
-p99_inline                                                              \
-P99_BUILTIN_TYPE(SUFF)                                                  \
-     P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF) a,                \
-                               P99_BUILTIN_TYPE(SUFF) b,                \
-                               int err[static 1]) {                     \
-  return                                                                \
-    (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF))                  \
-    ? P99_PASTE2(p00_add2, SUFF)(a, b, err)                             \
-    : P99_PASTE2(p00_add1, SUFF)(a, b, err);                            \
+#define P00_DECLARE_ADD(SUFF)                                  \
+p99_inline                                                     \
+P99_BUILTIN_TYPE(SUFF)                                         \
+     P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF) a,       \
+                               P99_BUILTIN_TYPE(SUFF) b,       \
+                               int err[static 1]) {            \
+  return                                                       \
+    (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF))         \
+    ? P99_PASTE2(p00_add2, SUFF)(a, b, err)                    \
+    : P99_PASTE2(p00_add1, SUFF)(a, b, err);                   \
 }
 
-#define P00_DECLARE_SUB(SUFF)                                           \
-p99_inline                                                              \
-P99_BUILTIN_TYPE(SUFF)                                                  \
-     P99_PASTE2(p99_sub, SUFF)(P99_BUILTIN_TYPE(SUFF) a,                \
-                               P99_BUILTIN_TYPE(SUFF) b,                \
-                               int err[static 1]) {                     \
-  return                                                                \
-    (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF))                  \
-    ? P99_PASTE2(p00_sub2, SUFF)(a, b, err)                             \
-    : P99_PASTE2(p00_sub1, SUFF)(a, b, err);                            \
+#define P00_DECLARE_SUB(SUFF)                                  \
+p99_inline                                                     \
+P99_BUILTIN_TYPE(SUFF)                                         \
+     P99_PASTE2(p99_sub, SUFF)(P99_BUILTIN_TYPE(SUFF) a,       \
+                               P99_BUILTIN_TYPE(SUFF) b,       \
+                               int err[static 1]) {            \
+  return                                                       \
+    (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF))         \
+    ? P99_PASTE2(p00_sub2, SUFF)(a, b, err)                    \
+    : P99_PASTE2(p00_sub1, SUFF)(a, b, err);                   \
 }
 #endif
 
@@ -993,9 +993,9 @@ P00_DECLARE_OVERFLOW(ll);
  **/
 # define P99_RVAL(T, VAL)
 #else
-# define P99_RVAL(...)                          \
-  P99_IF_EQ_1(P99_NARG(__VA_ARGS__))            \
-  (P00_RVAL1(__VA_ARGS__))                      \
+# define P99_RVAL(...)                                         \
+  P99_IF_EQ_1(P99_NARG(__VA_ARGS__))                           \
+  (P00_RVAL1(__VA_ARGS__))                                     \
   (P00_RVAL2(__VA_ARGS__))
 #endif
 
