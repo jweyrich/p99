@@ -477,6 +477,19 @@ extern "C" {
 #define orwl_wh_test_defarg_1() 0
 #endif
 
+
+  /**
+   ** @brief Release a request on @a wh. If @a wh had been acquired this
+   ** is blocking until all tokens are unloaded.
+   **
+   ** @return @c orwl_invalid if @a wh was invalid, or if there was no
+   ** request acquired for @a wh. Otherwise it returns @c orwl_valid.
+   **
+   ** @memberof orwl_wh
+   **/
+  orwl_state orwl_wh_release(orwl_wh *wh /*!< the handle to act upon */);
+
+
 #ifndef DOXYGEN
   inline
   P99_PROTOTYPE(uint64_t, orwl_wh_load_conditionally, orwl_wh *, uint64_t);
