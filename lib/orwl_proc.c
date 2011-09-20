@@ -104,5 +104,5 @@ DEFINE_THREAD(orwl_proc) {
 orwl_addr orwl_proc_getpeer(orwl_proc const*Arg) {
   struct sockaddr_in addr = SOCKADDR_IN_INIIALIZER;
   int ret = getpeername(Arg->fd, (struct sockaddr*)&addr, &P99_LVAL(socklen_t, sizeof(struct sockaddr_in)));
-  return  (orwl_addr)ORWL_ADDR_INITIALIZER((ret == -1) ? P99_0(in_addr_t) : addr.sin_addr.s_addr);
+  return (ret == -1) ? Arg->srv->host.ep.addr : (orwl_addr)ORWL_ADDR_INITIALIZER(addr.sin_addr.s_addr);
 }

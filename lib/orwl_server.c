@@ -128,6 +128,9 @@ DEFINE_THREAD(orwl_server) {
       }
       char const* server_name = orwl_endpoint_print(&Arg->host.ep);
       report(1, "server listening at %s", server_name);
+      char name[256] = {0};
+      P99_STRCATS(name, "orwl://", hostname(), ":", PRIu(port2net(&Arg->host.ep.port)), "/");
+      orwl_endpoint_parse(&Arg->host.ep, name);
       if (P99_UNLIKELY(listen(Arg->fd_listen, Arg->max_connections))) {
         errorstr = "orwl_server could not listen";
         if (!errno) errno = EINVAL;

@@ -96,6 +96,7 @@ orwl_addr* orwl_addr_init(orwl_addr *A,  /*!< the object to initialize */
                           in_addr_t I0 /*!< defaults to the null address */
                          ) {
   if (A) {
+    memset(A, 0, sizeof *A); /* Zero all for padding bytes */
     *A = P99_LVAL(orwl_addr, .a = { [2] = htonl(0x0000FFFF), [3] = I0 } );
   }
   return A;

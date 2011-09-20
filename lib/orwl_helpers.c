@@ -261,7 +261,10 @@ bool orwl_dump_id(orwl_server *serv,
   }
   P99_UNWIND_PROTECT {
     for (size_t i = 0 ; i < nb_id ; i++) {
-      orwl_endpoint_print(&serv->host.ep, name);
+      orwl_endpoint ep = serv->host.ep;
+      /* trick to make orwl_endpoint_print() work */
+      ep.addr =  P99_LVAL(orwl_addr, .a = { [0] = 0, [1] = 0, [2] = htonl(0x0000FFFF), [3] = 0 } );
+      orwl_endpoint_print(&ep, name);
       size_t len;
 RETRY:
       len = snprintf(str, maxlen, "%zu-%zu-%s\n", list_id[i], list_locations[i], name);
