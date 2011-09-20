@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2010 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is part of the P99 project. You received this file as as        */
 /* part of a confidential agreement and you may generally not                */
@@ -15,24 +15,24 @@
 #include "p99_int.h"
 #include "p99_defarg.h"
 
-#define DEF(SUFF)                                                       \
-  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_twos, SUFF),   \
-                  P99_BUILTIN_TYPE(u, SUFF));                           \
-  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_add, SUFF),    \
-                  P99_BUILTIN_TYPE(SUFF),                               \
-                  P99_BUILTIN_TYPE(SUFF),                               \
-                  int[static 1]);                                       \
-  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p00_add1, SUFF),   \
-                  P99_BUILTIN_TYPE(SUFF),                               \
-                  P99_BUILTIN_TYPE(SUFF),                               \
-                  int[static 1]);                                       \
-  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p00_add2, SUFF),   \
-                  P99_BUILTIN_TYPE(SUFF),                               \
-                  P99_BUILTIN_TYPE(SUFF),                               \
-                  int[static 1]);                                       \
-  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_sub, SUFF),    \
-                  P99_BUILTIN_TYPE(SUFF),                               \
-                  P99_BUILTIN_TYPE(SUFF),                               \
+#define DEF(SUFF)                                                     \
+  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_twos, SUFF), \
+                  P99_BUILTIN_TYPE(u, SUFF));                         \
+  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_add, SUFF),  \
+                  P99_BUILTIN_TYPE(SUFF),                             \
+                  P99_BUILTIN_TYPE(SUFF),                             \
+                  int[static 1]);                                     \
+  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p00_add1, SUFF), \
+                  P99_BUILTIN_TYPE(SUFF),                             \
+                  P99_BUILTIN_TYPE(SUFF),                             \
+                  int[static 1]);                                     \
+  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p00_add2, SUFF), \
+                  P99_BUILTIN_TYPE(SUFF),                             \
+                  P99_BUILTIN_TYPE(SUFF),                             \
+                  int[static 1]);                                     \
+  P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_sub, SUFF),  \
+                  P99_BUILTIN_TYPE(SUFF),                             \
+                  P99_BUILTIN_TYPE(SUFF),                             \
                   int[static 1])
 
 DEF(c);
