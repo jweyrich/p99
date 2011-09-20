@@ -210,7 +210,7 @@ void orwl_server_block(orwl_server *srv) {
   srv->whs = orwl_wh_vnew(srv->max_queues);
   for (uint64_t i = 0; i < srv->max_queues; ++i) {
     orwl_wh *whp = &srv->whs[i];
-    orwl_wq_request(&srv->wqs[i], whp, 1);
+    orwl_wq_request(&srv->wqs[i], whp);
   }
 }
 

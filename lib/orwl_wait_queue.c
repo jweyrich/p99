@@ -65,10 +65,10 @@ DEFINE_ATOMIC_OPS(orwl_wh_ptr);
 
 
 orwl_wh* orwl_wh_init(orwl_wh *wh,
-                      const pthread_condattr_t *attr) {
+                      size_t tok) {
   if (!wh) return 0;
   *wh =  (orwl_wh const)ORWL_WH_INITIALIZER;
-  orwl_count_init(&wh->tokens, 0);
+  orwl_count_init(&wh->tokens, tok);
   orwl_notifier_init(&wh->acq);
   return wh;
 }
@@ -95,16 +95,13 @@ P99_INSTANTIATE(int, orwl_wq_valid, orwl_wq*);
 P99_INSTANTIATE(int, orwl_wq_idle, orwl_wq*);
 
 /* This supposes that the corresponding wq != 0 */
-P99_INSTANTIATE(uint64_t, orwl_wh_load, orwl_wh *wh, uint64_t howmuch);
-/* This supposes that the corresponding wq != 0 */
 P99_INSTANTIATE(uint64_t, orwl_wh_load_conditionally, orwl_wh *wh, uint64_t howmuch);
 /* This supposes that the corresponding wq != 0 */
 P99_INSTANTIATE(uint64_t, orwl_wh_unload, orwl_wh *wh, uint64_t howmuch);
 
-void orwl_wq_request_append(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
+void orwl_wq_request_append(orwl_wq *wq, orwl_wh *wh) {
   wh->location = wq;
   wh->priority = wq->clock;
-  orwl_wh_load(wh, howmuch);
   if (orwl_wq_idle(wq)) {
     wq->head = wh;
     wq->tail = wh;
@@ -118,20 +115,19 @@ void orwl_wq_request_append(orwl_wq *wq, orwl_wh *wh, uint64_t howmuch) {
   ++wq->clock;
 }
 
-orwl_state orwl_wq_request(orwl_wq *wq, orwl_wh *wh, uint64_t hm) {
+orwl_state orwl_wq_request(orwl_wq *wq, orwl_wh *wh) {
   orwl_state ret = orwl_invalid;
   if (wq && wh)
     MUTUAL_EXCLUDE(wq->mut) {
-    ret = orwl_wq_request_locked(wq, wh, hm);
+    ret = orwl_wq_request_locked(wq, wh);
   }
   return ret;
 }
 
-orwl_state orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh, uint64_t hm) {
+orwl_state orwl_wq_request_locked(orwl_wq *wq, orwl_wh *wh) {
   orwl_state ret = orwl_invalid;
   if (orwl_wq_valid(wq) && wh) {
-    uint64_t howmuch = (hm > P99_0(int64_t)) ? hm : -hm;
-    orwl_wq_request_append(wq, wh, howmuch);
+    orwl_wq_request_append(wq, wh);
     ret = orwl_requested;
   }
   return ret;
@@ -168,19 +164,17 @@ orwl_state orwl_wq_try_request(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
 }
 
 orwl_state orwl_wq_request2(orwl_wq *wq,
-                            orwl_wh *wh0, uint64_t hm0,
-                            orwl_wh *wh1, uint64_t hm1) {
+                            orwl_wh *wh0,
+                            orwl_wh *wh1) {
   orwl_state ret = orwl_invalid;
   if (wq)
     MUTUAL_EXCLUDE(wq->mut) {
     if (orwl_wq_valid(wq)) {
       ret = orwl_requested;
-      uint64_t howmuch = (hm0 > P99_0(int64_t)) ? hm0 : -hm0;
       assert(wh0);
-      orwl_wq_request_append(wq, wh0, howmuch);
-      howmuch = (hm1 > P99_0(int64_t)) ? hm1 : -hm1;
+      orwl_wq_request_append(wq, wh0);
       assert(wh1);
-      orwl_wq_request_append(wq, wh1, howmuch);
+      orwl_wq_request_append(wq, wh1);
     }
   }
   return ret;
@@ -338,12 +332,12 @@ DEFINE_ORWL_TYPE_DYNAMIC(orwl_wq, {0});
 
 DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_acquire, orwl_wh);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_release, orwl_wh);
-DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_load, orwl_wh);
+DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_load_conditionally, orwl_wh);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_wh_unload, orwl_wh);
 
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_wh,
                          ORWL_REGISTER_ALIAS(orwl_wh_acquire, orwl_wh),
                          ORWL_REGISTER_ALIAS(orwl_wh_release, orwl_wh),
-                         ORWL_REGISTER_ALIAS(orwl_wh_load, orwl_wh),
+                         ORWL_REGISTER_ALIAS(orwl_wh_load_conditionally, orwl_wh),
                          ORWL_REGISTER_ALIAS(orwl_wh_unload, orwl_wh)
                         );

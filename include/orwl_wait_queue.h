@@ -140,9 +140,6 @@ extern "C" {
   /**
    ** @brief The handle type corresponding to ::orwl_wq.
    **
-   ** ::orwl_wh is mainly a @c pthread_cond_t that is bound to the
-   ** fixed condition to be the first in the FIFO.
-   **
    ** Locks through such a handle object are achieved in a two-step
    ** procedure. First, a lock is @em requested through
    ** ::orwl_wq_request. This binds the ::orwl_wh to a
@@ -154,6 +151,11 @@ extern "C" {
    ** tokes on the corresponding handle and ::orwl_wh_acquire removes
    ** these tokens. It is up to the code that uses a handle to watch
    ** that the number of placed and removed tokens match.
+   **
+   ** Initially, an ::orwl_wh should always hold at least one token,
+   ** since it is considered to be released, once the number of tokens
+   ** has reached 0. Tokens can only be added if the actual number is
+   ** greater than 0.
    **
    ** Depending on the field #svrID a handle can be in an inclusive or
    ** exclusive state. In inclusive state and when it is still at the
@@ -312,13 +314,13 @@ extern "C" {
   P99_DEFARG_DOCU(orwl_wh_init)
   orwl_wh* orwl_wh_init
   (orwl_wh *wh, /*!< the handle to be initialized */
-   const pthread_condattr_t *attr /*!< [in] defaults to a null pointer */
+   size_t tok   /*!< the initial number of tokens */
   );
 
 #ifndef DOXYGEN
-  P99_PROTOTYPE(orwl_wh*, orwl_wh_init, orwl_wh *, const pthread_condattr_t *);
+  P99_PROTOTYPE(orwl_wh*, orwl_wh_init, orwl_wh *, size_t);
 #define orwl_wh_init(...) P99_CALL_DEFARG(orwl_wh_init, 2, __VA_ARGS__)
-#define orwl_wh_init_defarg_1() P99_0(const pthread_condattr_t *)
+#define orwl_wh_init_defarg_1() 1u
 #endif
 
   DOCUMENT_DESTROY(orwl_wh)
@@ -360,8 +362,7 @@ extern "C" {
   ** @memberof orwl_wq
   **/
   orwl_state orwl_wq_request(orwl_wq *wq, /*!< the queue to act on */
-                             orwl_wh *wh,
-                             uint64_t hm
+                             orwl_wh *wh
                             );
   /**
    **
@@ -370,17 +371,14 @@ extern "C" {
    **/
   orwl_state orwl_wq_request2(orwl_wq *wq, /*!< the queue to act on */
                               orwl_wh *wh0,
-                              uint64_t hm0,
-                              orwl_wh *wh1,
-                              uint64_t hm1
+                              orwl_wh *wh1
                              );
   /**
    ** @private
    ** @memberof orwl_wq
    **/
   orwl_state orwl_wq_request_locked(orwl_wq *wq, /*!< the queue to act on */
-                                    orwl_wh *wh,
-                                    uint64_t hm
+                                    orwl_wh *wh
                                    );
 
   /**
@@ -401,8 +399,7 @@ extern "C" {
    ** @private
    **/
   void orwl_wq_request_append(orwl_wq *wq,  /*!< the locked queue to act on */
-                              orwl_wh *wh,  /*!< the handle to be inserted */
-                              uint64_t howmuch /*!< the number of tokies to place */
+                              orwl_wh *wh  /*!< the handle to be inserted */
                              );
 
   /**
@@ -480,42 +477,6 @@ extern "C" {
 #define orwl_wh_test_defarg_1() 0
 #endif
 
-  /**
-   ** @brief Release a request on @a wh. If @a wh had been acquired this
-   ** is blocking until all tokens are unloaded.
-   **
-   ** @return @c orwl_invalid if @a wh was invalid, or if there was no
-   ** request acquired for @a wh. Otherwise it returns @c orwl_valid.
-   **
-   ** @memberof orwl_wh
-   **/
-  orwl_state orwl_wh_release(orwl_wh *wh /*!< the handle to act upon */);
-
-#ifndef DOXYGEN
-  inline
-  P99_PROTOTYPE(uint64_t, orwl_wh_load, orwl_wh *, uint64_t);
-#define orwl_wh_load(...) P99_CALL_DEFARG(orwl_wh_load, 2, __VA_ARGS__)
-#define orwl_wh_load_defarg_1() 1
-#endif
-
-  /**
-   ** @brief load @a howmuch additional tokens on @a wh.
-   **
-   ** This supposes that the corresponding @c wq is not a null pointer and that @c
-   ** wh is already locked.
-   ** @see orwl_wh_unload
-   **
-   ** @memberof orwl_wh
-   ** @private
-   **/
-  P99_DEFARG_DOCU(orwl_wh_load)
-  inline
-  uint64_t orwl_wh_load
-  (orwl_wh *wh /*!< the handle to act upon */,
-   uint64_t howmuch  /*!< defaults to 1 */) {
-    return orwl_count_inc(&wh->tokens, howmuch);
-  }
-
 #ifndef DOXYGEN
   inline
   P99_PROTOTYPE(uint64_t, orwl_wh_load_conditionally, orwl_wh *, uint64_t);
@@ -526,9 +487,9 @@ extern "C" {
   /**
    ** @brief if there still tokens on @a wh load @a howmuch additional tokens.
    **
-   ** This supposes that the corresponding @c wq is not a null pointer and that @c
-   ** wh is already locked.
-   ** @see orwl_wh_load
+   ** This supposes that the corresponding @c wq is not a null pointer
+   ** and that its mutex is already locked.
+   ** @see orwl_wh_unload
    **
    ** @memberof orwl_wh
    ** @private
@@ -551,9 +512,13 @@ extern "C" {
   /**
    ** @brief unload @a howmuch additional tokens from @a wh.
    **
-   ** This supposes that the corresponding @c wq is not a null pointer and that @c
-   ** wh is already locked. If by this action the token count drops to
-   ** zero, eventual waiters for this @a wh are notified.
+   ** If by this action the token count drops to zero, eventual
+   ** waiters for this @a wh are notified.
+   **
+   ** @return The number of tokens after the decrement.
+   ** @warning If the number falls to @c 0 it is the responsibility of
+   ** the caller to release @c *wh.
+   **
    ** @see orwl_wh_load
    **
    ** @memberof orwl_wh

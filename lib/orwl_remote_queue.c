@@ -58,9 +58,9 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
       MUTUAL_EXCLUDE(rq->mut) {
 
       // insert two wh in the local queue
-      orwl_wh* wh = P99_NEW(orwl_wh);
-      orwl_wh* cli_wh = P99_NEW(orwl_wh);
-      state = orwl_wq_request2(&rq->local, cli_wh, 1, wh, 1);
+        orwl_wh* wh = P99_NEW(orwl_wh, 1);
+        orwl_wh* cli_wh = P99_NEW(orwl_wh, 1);
+      state = orwl_wq_request2(&rq->local, cli_wh, wh);
       assert(state == orwl_requested);
       assert(!rh->rq);
 
@@ -90,7 +90,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
     orwl_wh* wh_inc = 0;
     if (rq && rh && !rh->wh)
       MUTUAL_EXCLUDE(rq->mut) {
-      cli_wh = P99_NEW(orwl_wh);
+        cli_wh = P99_NEW(orwl_wh, 2);
       MUTUAL_EXCLUDE(rq->local.mut) {
         /* first try to piggyback the latest wh in the local list */
       AGAIN:
@@ -111,7 +111,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
            for the remote event of acquisition of the lock. The other is
            used here locally to ensure that cli_wh is not freed before
            we have finished our work, here. */
-        state = orwl_wq_request_locked(&rq->local, cli_wh, 2);
+        state = orwl_wq_request_locked(&rq->local, cli_wh);
         assert(state == orwl_requested);
 
         /* Send the insertion request to the other side. This consists
@@ -153,9 +153,9 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
           cli_wh = 0;
         } else {
           // A new handle has to be inserted in the local queue
-          rh->wh = P99_NEW(orwl_wh);
+          rh->wh = P99_NEW(orwl_wh, 1);
           rh->wh->svrID = rh->svrID;
-          orwl_wq_request_append(&rq->local, rh->wh, 1);
+          orwl_wq_request_append(&rq->local, rh->wh);
         }
       }
     }
@@ -288,15 +288,8 @@ orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
   if (!rh || !rh->wh) return orwl_valid;
   orwl_handle_cancel* rhcp = P99_NEW(orwl_handle_cancel);
   orwl_wh* const wh = rh->wh;
-  orwl_wh_load(wh);
   *rhcp = *rh;
   orwl_handle_cancel_create_detached(rhcp);
-  if (!orwl_wh_unload(wh)) {
-    /* We were the last to have a reference to this handle so we may
-       destroy it. */
-    state = orwl_wh_release(wh);
-    orwl_wh_delete(wh);
-  }
   orwl_handle_destroy(rh);
   return state;
 }
