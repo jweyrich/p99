@@ -69,7 +69,10 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_write_request, uint64_t wqPOS, uint64_t whID, ui
         assert(state == orwl_acquired);
         ORWL_TIMER(push_write_request_server)
         orwl_push(Arg->srv, &ep, srv_wh->location, whID, true, false);
-        orwl_wh_unload(srv_wh);
+        if (!orwl_wh_unload(srv_wh)) {
+          orwl_wh_release(srv_wh);
+          orwl_wh_delete(srv_wh);
+        }
       } else {
         orwl_wh_delete(srv_wh);
       }
@@ -140,7 +143,10 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
           assert(state == orwl_acquired);
           ORWL_TIMER(push_read_request_server)
           orwl_push(Arg->srv, &ep, srv_wh->location, cliID, true, true);
-          orwl_wh_unload(srv_wh);
+          if (!orwl_wh_unload(srv_wh)) {
+            state = orwl_wh_release(srv_wh);
+            orwl_wh_delete(srv_wh);
+          }
         }
       }
     }
