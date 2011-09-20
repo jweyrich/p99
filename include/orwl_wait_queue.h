@@ -28,6 +28,7 @@ extern "C" {
    **/
   P99_DECLARE_ENUM(orwl_state,
                    orwl_invalid,
+                   orwl_again,
                    orwl_valid,
                    orwl_requested,
                    orwl_read_requested,
@@ -39,6 +40,9 @@ extern "C" {
 
   /** @var orwl_state orwl_invalid
    ** call with an invalid object
+   **/
+  /** @var orwl_state orwl_again
+   ** a call observed a transient condition that made it fail, try again
    **/
   /** @var orwl_state orwl_valid
    ** object valid, but not requested

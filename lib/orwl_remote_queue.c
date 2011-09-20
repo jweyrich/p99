@@ -93,7 +93,17 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
       cli_wh = P99_NEW(orwl_wh);
       MUTUAL_EXCLUDE(rq->local.mut) {
         /* first try to piggyback the latest wh in the local list */
+      AGAIN:
         state = orwl_wq_request_locked(&rq->local, &wh_inc, 1);
+        /* If there is just one element in the queue, that element may
+           be just being released. Capture that event and unlock the
+           mutex to let the releasing thread finish its work. The lock
+           and retry. */
+        if (state == orwl_again) {
+          pthread_mutex_unlock(&rq->local.mut);
+          pthread_mutex_lock(&rq->local.mut);
+          goto AGAIN;
+        }
         assert(!wh_inc || wh_inc->svrID);
         assert(!wh_inc || (state == orwl_requested));
 

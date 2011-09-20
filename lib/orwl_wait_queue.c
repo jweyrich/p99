@@ -148,6 +148,10 @@ orwl_state orwl_wq_request_locked(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
         if (orwl_wh_load_conditionally(wq_tail, howmuch)) {
           *wh = wq_tail;
           ret = orwl_requested;
+        } else {
+          // remove this message, once this code stabilizes
+          report(1, "wait handle %p in the middle of release, please try again", (void*)wq_tail);
+          ret = orwl_again;
         }
       }
     }

@@ -164,7 +164,7 @@ size_t orwl_count_inc_conditionally(orwl_count* counter, size_t howmuch) {
   while (expected) {
     size_t desired = expected + howmuch;
     if (atomic_compare_exchange_weak(&counter->overl.large, &expected, desired))
-      return expected;
+      return desired - howmuch;
   }
   return 0;
 }
