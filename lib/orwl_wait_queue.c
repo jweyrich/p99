@@ -131,10 +131,19 @@ orwl_state orwl_wq_request_locked(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
   orwl_state ret = orwl_invalid;
   if (orwl_wq_valid(wq) && wh) {
     uint64_t howmuch = (hm > P99_0(int64_t)) ? hm : -hm;
-    if (*wh) {
-      orwl_wq_request_append(wq, *wh, howmuch);
-      ret = orwl_requested;
-    } else if (!orwl_wq_idle(wq)) {
+    assert(*wh);
+    orwl_wq_request_append(wq, *wh, howmuch);
+    ret = orwl_requested;
+  }
+  return ret;
+}
+
+orwl_state orwl_wq_try_request(orwl_wq *wq, orwl_wh **wh, uint64_t hm) {
+  orwl_state ret = orwl_invalid;
+  if (orwl_wq_valid(wq) && wh) {
+    uint64_t howmuch = (hm > P99_0(int64_t)) ? hm : -hm;
+    assert(!*wh);
+    if (!orwl_wq_idle(wq)) {
       /* if the wh is a null pointer, take this as a request to add to the
          last handle if it exists */
       orwl_wh *wq_tail = wq->tail;

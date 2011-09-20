@@ -94,7 +94,7 @@ orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
       MUTUAL_EXCLUDE(rq->local.mut) {
         /* first try to piggyback the latest wh in the local list */
       AGAIN:
-        state = orwl_wq_request_locked(&rq->local, &wh_inc, 1);
+        state = orwl_wq_try_request(&rq->local, &wh_inc, 1);
         /* If there is just one element in the queue, that element may
            be just being released. Capture that event and unlock the
            mutex to let the releasing thread finish its work. The lock

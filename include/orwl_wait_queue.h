@@ -384,6 +384,16 @@ extern "C" {
                                    );
 
   /**
+   ** @private
+   ** @memberof orwl_wq
+   **/
+  orwl_state orwl_wq_try_request(orwl_wq *wq, /*!< the queue to act on */
+                                    orwl_wh **wh,
+                                    uint64_t hm
+                                   );
+
+
+  /**
    ** @brief Insert a handle into the queue where we know that the
    ** lock is already held.
    **

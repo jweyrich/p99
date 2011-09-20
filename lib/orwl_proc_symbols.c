@@ -98,7 +98,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_read_request, uint64_t wqPOS, uint64_t cliID, ui
       orwl_wh *srv_wh = 0;
       MUTUAL_EXCLUDE(srv_wq->mut) {
       AGAIN:
-        state = orwl_wq_request_locked(srv_wq, &srv_wh, 2);
+        state = orwl_wq_try_request(srv_wq, &srv_wh, 2);
         /* If there is just one element in the queue, that element may
            be just being released. Capture that event and unlock the
            mutex to let the releasing thread finish its work. The lock
