@@ -115,28 +115,11 @@ DEFINE_THREAD(arg_t) {
        by holding a global mutex. */
     ORWL_CRITICAL {
       /* read request: left side   */
-      for (size_t i = 0; i < readers; ++i) {
-        t = orwl_gettime();
-        report(false, "%ld/read requesting: %p",t.tv_nsec,&left[i]);
-        orwl_read_request2(&left[i], &handle[i]);
-        t = orwl_gettime();
-        report(false, "%ld/read requested: %p",t.tv_nsec,&left[i]);
-      }
+      orwl_read_request2(left, handle, readers);
       /* write request: to my own position*/
-      t = orwl_gettime();
-      report(false, "%ld/write requesting: %p",t.tv_nsec,&left[readers]);
-      orwl_write_request2(&left[readers], &handle[readers]);
-      t = orwl_gettime();
-      report(false, "%ld/write requested: %p",t.tv_nsec,&left[readers]);
-
+      orwl_write_request2(left + readers, handle + readers, 1);
       /* read request: rigth side   */
-      for (size_t i =(readers+1) ; i <= (2*readers); ++i) {
-        t = orwl_gettime();
-        report(false, "%ld/read requesting: %p",t.tv_nsec,&left[i]);
-        orwl_read_request2(&left[i], &handle[i]);
-        t = orwl_gettime();
-        report(false, "%ld/read requested: %p",t.tv_nsec,&left[i]);
-      }
+      orwl_read_request2(left + readers + 1, handle + readers + 1, readers);
     }
     orwl_barrier_wait(init_barr);
     report(false, "initial barrier passed");
