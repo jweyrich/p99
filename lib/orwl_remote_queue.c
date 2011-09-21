@@ -51,12 +51,14 @@ P99_INSTANTIATE(bool, orwl_inclusive, orwl_handle*);
 P99_INSTANTIATE(orwl_state, orwl_acquire, orwl_handle*);
 P99_INSTANTIATE(orwl_state, orwl_test, orwl_handle*);
 
-orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
+orwl_state orwl_write_request(orwl_mirror *rq0, orwl_handle* rh0, size_t size, rand48_t *seed) {
   orwl_state state = orwl_invalid;
+  for (size_t i = 0; i < size; ++i)
   ORWL_TIMER(total_write_request) {
-    if (rq && rh && !rh->wh)
+    orwl_mirror *rq = rq0 + i;
+    orwl_handle *rh = rh0 + i;
+    if (rq0 && rh0 && !rh->wh)
       MUTUAL_EXCLUDE(rq->mut) {
-
       // insert two wh in the local queue
         orwl_wh* wh = P99_NEW(orwl_wh, 1);
         orwl_wh* cli_wh = P99_NEW(orwl_wh, 1);
@@ -83,9 +85,12 @@ orwl_state orwl_write_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) 
   return state;
 }
 
-orwl_state orwl_read_request(orwl_mirror *rq, orwl_handle* rh, rand48_t *seed) {
+orwl_state orwl_read_request(orwl_mirror *rq0, orwl_handle* rh0, size_t size, rand48_t *seed) {
   orwl_state state = orwl_invalid;
+  for (size_t i = 0; i < size; ++i)
   ORWL_TIMER(total_read_request) {
+    orwl_mirror *rq = rq0 + i;
+    orwl_handle *rh = rh0 + i;
     orwl_wh* cli_wh = 0;
     orwl_wh* wh_inc = 0;
     if (rq && rh && !rh->wh)

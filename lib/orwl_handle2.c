@@ -44,8 +44,8 @@ static
 void o_rwl_new_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed, bool par) {
   if (rh2->state[par] != orwl_requested)
     rh2->state[par] = rh2->inclusive
-                      ? orwl_read_request(location, &rh2->pair[par], seed)
-                      : orwl_write_request(location, &rh2->pair[par], seed);
+      ? orwl_read_request(location, &rh2->pair[par], 1, seed)
+      : orwl_write_request(location, &rh2->pair[par], 1, seed);
 }
 
 static
