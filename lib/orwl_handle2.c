@@ -60,14 +60,26 @@ orwl_state o_rwl_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* se
   return rh2->state[par];
 }
 
-orwl_state orwl_write_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed) {
-  if (!location && !rh2) return orwl_invalid;
-  return o_rwl_request2(location, rh2, seed, false);
+orwl_state orwl_write_request2(orwl_mirror* location, orwl_handle2* rh2, size_t size, rand48_t* seed) {
+  orwl_state ret = orwl_invalid;
+  if (location && rh2) {
+    for (size_t i = 0; i < size; ++i) {
+      ret = o_rwl_request2(location, rh2, seed, false);
+      if (ret != orwl_requested) break;
+    }
+  }
+  return ret;
 }
 
-orwl_state orwl_read_request2(orwl_mirror* location, orwl_handle2* rh2, rand48_t* seed) {
-  if (!location && !rh2) return orwl_invalid;
-  return o_rwl_request2(location, rh2, seed, true);
+orwl_state orwl_read_request2(orwl_mirror* location, orwl_handle2* rh2, size_t size, rand48_t* seed) {
+  orwl_state ret = orwl_invalid;
+  if (location && rh2) {
+    for (size_t i = 0; i < size; ++i) {
+      ret = o_rwl_request2(location, rh2, seed, true);
+      if (ret != orwl_requested) break;
+    }
+  }
+  return ret;
 }
 
 orwl_state orwl_release2(orwl_handle2* rh2, rand48_t* seed)  {

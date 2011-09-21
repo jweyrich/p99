@@ -102,7 +102,8 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle2);
 O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_write_request2)
 orwl_state orwl_write_request2(orwl_mirror* location, /*!< [in,out] the location for the request */
-                               orwl_handle2* rh2,   /*!< [in,out] the handle for the request */
+                               orwl_handle2* rh2,     /*!< [in,out] the handle for the request */
+                               size_t size,           /*!< [in] vector size, defaults to 1 */
                                rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                               );
 
@@ -112,7 +113,8 @@ orwl_state orwl_write_request2(orwl_mirror* location, /*!< [in,out] the location
 O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_read_request2)
 orwl_state orwl_read_request2(orwl_mirror* location, /*!< [in,out] the location for the request */
-                              orwl_handle2* rh2,   /*!< [in,out] the handle for the request */
+                              orwl_handle2* rh2,     /*!< [in,out] the handle for the request */
+                              size_t size,           /*!< [in] vector size, defaults to 1 */
                               rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                              );
 
@@ -256,13 +258,15 @@ P99_DEPRECATED(void orwl_resize2(orwl_handle2* rh2, size_t data_len, rand48_t*))
 
 
 #ifndef DOXYGEN
-P99_PROTOTYPE(orwl_state, orwl_write_request2, orwl_mirror*, orwl_handle2*, rand48_t*);
-#define orwl_write_request2(...)  P99_CALL_DEFARG(orwl_write_request2, 3, __VA_ARGS__)
-#define orwl_write_request2_defarg_2() seed_get()
+P99_PROTOTYPE(orwl_state, orwl_write_request2, orwl_mirror*, orwl_handle2*, size_t, rand48_t*);
+#define orwl_write_request2(...)  P99_CALL_DEFARG(orwl_write_request2, 4, __VA_ARGS__)
+#define orwl_write_request2_defarg_2() 1u
+#define orwl_write_request2_defarg_3() seed_get()
 
-P99_PROTOTYPE(orwl_state, orwl_read_request2, orwl_mirror*, orwl_handle2*, rand48_t*);
-#define orwl_read_request2(...)  P99_CALL_DEFARG(orwl_read_request2, 3, __VA_ARGS__)
-#define orwl_read_request2_defarg_2() seed_get()
+P99_PROTOTYPE(orwl_state, orwl_read_request2, orwl_mirror*, orwl_handle2*, size_t, rand48_t*);
+#define orwl_read_request2(...)  P99_CALL_DEFARG(orwl_read_request2, 4, __VA_ARGS__)
+#define orwl_read_request2_defarg_2() 1u
+#define orwl_read_request2_defarg_3() seed_get()
 
 P99_PROTOTYPE(orwl_state, orwl_next2, orwl_handle2*, rand48_t*);
 #define orwl_next2(...)  P99_CALL_DEFARG(orwl_next2, 2, __VA_ARGS__)
