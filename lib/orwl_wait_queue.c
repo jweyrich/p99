@@ -32,19 +32,23 @@ orwl_wq* orwl_wq_init(orwl_wq *wq,
   return wq;
 }
 
-#define ORWL__WQ_CHECK(EL)                                     \
-do {                                                           \
-  assert((EL) != TGARB(orwl_wh*));                             \
-  assert(!(EL));                                               \
- } while(0)
-
-/**
-   @todo Ensure that wq->head and wq->tail are empty when   
-            destroying a wq  
-**/
 void orwl_wq_destroy(orwl_wq *wq) {
-  //ORWL__WQ_CHECK(wq->head);
-  //ORWL__WQ_CHECK(wq->tail);
+  if (!wq) return;
+  for(size_t tries = 1; atomic_load_orwl_wh_ptr(&wq->head); ++tries) {
+    MUTUAL_EXCLUDE(wq->mut) {
+      if (wq->head && orwl_count_value(&wq->head->tokens)) {
+        /* Waiting for wq to be emptied. Once it has become empty the
+           thread that has to release the head will be waiting for the
+           lock that we are holding. */
+        orwl_count_wait(&wq->head->tokens);
+      }
+    }
+    /* The release operation may take some time if there is data push
+       to be performed. So we leave the processor to those who need
+       this. */
+    sched_yield();
+    report(!(tries % 10), "wait queue not empty when trying to destroy it. %zu tries so far.", tries);
+  }
   if (wq->data.data) wq->data.data = wq->borrowed ? 0 : realloc(wq->data.data, 0);
   pthread_mutex_destroy(&wq->mut);
   pthread_cond_destroy(&wq->cond);
