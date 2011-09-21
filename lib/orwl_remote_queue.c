@@ -252,31 +252,31 @@ orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
   return state;
 }
 
-typedef orwl_handle orwl_handle_cancel;
+typedef orwl_handle o_rwl_handle_cancel;
 
 inline
-orwl_handle_cancel* orwl_handle_cancel_init(orwl_handle_cancel* H) {
+o_rwl_handle_cancel* o_rwl_handle_cancel_init(o_rwl_handle_cancel* H) {
   if (!H) return 0;
   return orwl_handle_init(H);
 }
 
-P99_INSTANTIATE(orwl_handle_cancel*, orwl_handle_cancel_init, orwl_handle_cancel*);
+P99_INSTANTIATE(o_rwl_handle_cancel*, o_rwl_handle_cancel_init, o_rwl_handle_cancel*);
 
 inline
-void orwl_handle_cancel_destroy(orwl_handle_cancel* H) {
+void o_rwl_handle_cancel_destroy(o_rwl_handle_cancel* H) {
   orwl_handle_destroy(H);
 }
 
-P99_INSTANTIATE(void, orwl_handle_cancel_destroy, orwl_handle_cancel*);
+P99_INSTANTIATE(void, o_rwl_handle_cancel_destroy, o_rwl_handle_cancel*);
 
-DECLARE_NEW_DELETE(orwl_handle_cancel);
-DEFINE_NEW_DELETE(orwl_handle_cancel);
+DECLARE_NEW_DELETE(o_rwl_handle_cancel);
+DEFINE_NEW_DELETE(o_rwl_handle_cancel);
 
 inline
-DECLARE_THREAD(orwl_handle_cancel);
+DECLARE_THREAD(o_rwl_handle_cancel);
 
 
-DEFINE_THREAD(orwl_handle_cancel) {
+DEFINE_THREAD(o_rwl_handle_cancel) {
   orwl_acquire(Arg);
   orwl_release(Arg);
   /* We should be the last to have a reference to this handle so this
@@ -286,9 +286,9 @@ DEFINE_THREAD(orwl_handle_cancel) {
 orwl_state orwl_cancel(orwl_handle* rh, rand48_t *seed) {
   orwl_state state = orwl_valid;
   if (!rh || !rh->wh) return orwl_valid;
-  orwl_handle_cancel* rhcp = P99_NEW(orwl_handle_cancel);
+  o_rwl_handle_cancel* rhcp = P99_NEW(o_rwl_handle_cancel);
   *rhcp = *rh;
-  orwl_handle_cancel_create_detached(rhcp);
+  o_rwl_handle_cancel_create_detached(rhcp);
   orwl_handle_destroy(rh);
   return state;
 }
@@ -301,12 +301,38 @@ P99_INSTANTIATE(void*, orwl_write_map, orwl_handle*, size_t*);
 P99_INSTANTIATE(void const*, orwl_read_map, orwl_handle*, size_t*);
 P99_INSTANTIATE(void, orwl_truncate, orwl_handle*, size_t);
 
-P99_DEFINE_DEFARG(orwl_scale_state_init, , P99_0(orwl_mirror*), P99_0(size_t), P99_0(orwl_thread_cntrl*));
-DEFINE_NEW_DELETE(orwl_scale_state);
-P99_INSTANTIATE(orwl_scale_state*, orwl_scale_state_init, orwl_scale_state*, orwl_mirror*, size_t, orwl_thread_cntrl*);
-P99_INSTANTIATE(void, orwl_scale_state_destroy, orwl_scale_state*);
+P99_DECLARE_STRUCT(o_rwl_scale_state);
 
-DEFINE_THREAD(orwl_scale_state) {
+/**
+ ** @brief The internal state for a call to ::orwl_scale.
+ **/
+struct o_rwl_scale_state {
+  orwl_mirror* rq;
+  size_t data_len;
+  orwl_thread_cntrl *det;
+};
+
+o_rwl_scale_state* o_rwl_scale_state_init(o_rwl_scale_state* scale, orwl_mirror* rq, size_t data_len, orwl_thread_cntrl* det) {
+  if (scale) {
+    *scale = P99_LVAL(o_rwl_scale_state,
+                      .rq = rq,
+                      .data_len = data_len,
+                      .det = det
+                     );
+  }
+  return scale;
+}
+
+void o_rwl_scale_state_destroy(o_rwl_scale_state* scale) {
+  /* empty */
+}
+
+P99_DECLARE_DELETE(o_rwl_scale_state);
+P99_DEFINE_DELETE(o_rwl_scale_state);
+
+DECLARE_THREAD(o_rwl_scale_state);
+
+DEFINE_THREAD(o_rwl_scale_state) {
   ORWL_TIMER(total_scale) {
     orwl_handle first = ORWL_HANDLE_INITIALIZER;
     orwl_write_request(Arg->rq, &first);
@@ -317,6 +343,18 @@ DEFINE_THREAD(orwl_scale_state) {
     orwl_release(&first);
   }
 }
+
+void orwl_scale(orwl_mirror *mirr, size_t size) {
+  orwl_thread_cntrl * det = P99_NEW(orwl_thread_cntrl);
+  o_rwl_scale_state_launch(P99_NEW(o_rwl_scale_state,
+                                   mirr,
+                                   size,
+                                   det),
+                           det);
+  orwl_thread_cntrl_wait_for_callee(det);
+  orwl_thread_cntrl_detach(det);
+}
+
 
 DEFINE_ORWL_REGISTER_ALIAS(orwl_acquire, orwl_handle);
 DEFINE_ORWL_REGISTER_ALIAS(orwl_release, orwl_handle);

@@ -618,40 +618,16 @@ void orwl_truncate(orwl_handle* rh, size_t data_len) {
   }
 }
 
-P99_DECLARE_STRUCT(orwl_scale_state);
-
-/**
- ** @brief The internal state for a call to ::orwl_state.
+/** @brief Scale the object corresponding to @a mirr to size @a size
+ **
+ ** This is a short cut to set the size of an object before doing any
+ ** operation on it.
+ **
+ ** @see orwl_truncate for a more general operation that can be issued
+ ** at any time of the execution.
  **/
-struct orwl_scale_state {
-  orwl_mirror* rq;
-  size_t data_len;
-  orwl_thread_cntrl *det;
-};
+void orwl_scale(orwl_mirror *mirr, size_t size);
 
-inline
-orwl_scale_state* orwl_scale_state_init(orwl_scale_state* scale, orwl_mirror* rq, size_t data_len, orwl_thread_cntrl* det) {
-  if (scale) {
-    *scale = P99_LVAL(orwl_scale_state,
-                      .rq = rq,
-                      .data_len = data_len,
-                      .det = det
-                     );
-  }
-  return scale;
-}
-
-inline
-void orwl_scale_state_destroy(orwl_scale_state* scale) {
-  /* empty */
-}
-
-inline
-P99_PROTOTYPE(orwl_scale_state*, orwl_scale_state_init, orwl_scale_state*, orwl_mirror*, size_t, orwl_thread_cntrl*);
-#define orwl_scale_state_init(...) P99_CALL_DEFARG(orwl_scale_state_init, 4, __VA_ARGS__)
-P99_DECLARE_DEFARG(orwl_scale_state_init,  , P99_0(orwl_mirror*), P99_0(size_t), P99_0(orwl_thread_cntrl*));
-DECLARE_NEW_DELETE(orwl_scale_state);
-DECLARE_THREAD(orwl_scale_state);
 
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle);
 

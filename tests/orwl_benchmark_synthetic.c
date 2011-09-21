@@ -111,11 +111,11 @@ DEFINE_THREAD(arg_t) {
   for (size_t i = 0 ; i < ((shared_memory_size * MEGA) / sizeof(uint64_t)) ; i++) {
     my_data[i] = orwl_rand(seed);
   }
-  orwl_release2(&my_task_handle);
+  orwl_disconnect2(&my_task_handle);
   /* Take the distant locks to keep the correct number of phases */
   for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++) {
     orwl_acquire2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
-    orwl_release2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+    orwl_disconnect2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
   }
 
 
@@ -248,15 +248,7 @@ int main(int argc, char **argv) {
 
     for (size_t i = 0 ; i < nb_tasks ; i++) {
       orwl_make_local_connection(i, &srv, &local_locations[i]);
-      orwl_thread_cntrl * scale_det = P99_NEW(orwl_thread_cntrl);
-      orwl_scale_state * scale
-	= P99_NEW(orwl_scale_state,
-              &local_locations[i],
-		  (shared_memory_size * MEGA),
-		  scale_det);
-      orwl_scale_state_launch(scale, scale_det);
-      orwl_thread_cntrl_wait_for_callee(scale_det);
-      orwl_thread_cntrl_detach(scale_det);
+      orwl_scale(&local_locations[i], (shared_memory_size * MEGA));
     }
     report(1, "local connections done");
 
