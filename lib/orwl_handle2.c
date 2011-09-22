@@ -64,7 +64,7 @@ orwl_state orwl_write_request2(orwl_mirror* location, orwl_handle2* rh2, size_t 
   orwl_state ret = orwl_invalid;
   if (location && rh2) {
     for (size_t i = 0; i < size; ++i) {
-      ret = o_rwl_request2(location, rh2, seed, false);
+      ret = o_rwl_request2(location + i, rh2 + i, seed, false);
       if (ret != orwl_requested) break;
     }
   }
@@ -75,7 +75,7 @@ orwl_state orwl_read_request2(orwl_mirror* location, orwl_handle2* rh2, size_t s
   orwl_state ret = orwl_invalid;
   if (location && rh2) {
     for (size_t i = 0; i < size; ++i) {
-      ret = o_rwl_request2(location, rh2, seed, true);
+      ret = o_rwl_request2(location + i, rh2 + i, seed, true);
       if (ret != orwl_requested) break;
     }
   }
