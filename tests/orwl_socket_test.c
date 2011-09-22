@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 
   orwl_types_init();
   orwl_server srv;
-  orwl_start(&srv, 4, P99_0(in_addr_t));
+  orwl_start(P99_0(in_addr_t), 4, &srv);
   if (!orwl_alive(&srv)) return EXIT_FAILURE;
   report(1, "started %s" PRIX64, orwl_endpoint_print(&srv.host.ep));
 

@@ -94,9 +94,9 @@ DEFINE_THREAD(arg_t) {
   orwl_wait_to_initialize_locks(Arg->id, graph, ab, seed);
 
   /* Take the distant locks in read mode*/
-  orwl_read_request2(&distant_locations[Arg->vertex->neighbors[i]],
-                     &handle_distant_pos[Arg->vertex->neighbors[i]],
-                     Arg->vertex->nb_neighbors);
+  for (size_t i = 0; i < Arg->vertex->nb_neighbors; ++i)
+    orwl_read_request2(&distant_locations[Arg->vertex->neighbors[i]],
+                       &handle_distant_pos[Arg->vertex->neighbors[i]]);
 
   /* Check if my neighbors are ready before starting, then realease the handle on my location */
   orwl_wait_to_start(Arg->id, graph, ab, &srv, nb_tasks, seed);
@@ -238,7 +238,7 @@ int main(int argc, char **argv) {
 
     /* local server initialization */
     orwl_types_init();
-    orwl_start(&srv, SOMAXCONN, nb_locations);
+    orwl_start(nb_locations, SOMAXCONN, &srv);
 
     if (!orwl_alive(&srv)) return EXIT_FAILURE;
 

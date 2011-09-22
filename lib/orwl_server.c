@@ -237,11 +237,11 @@ void orwl_server_delayed_unblock(orwl_server *srv, size_t nb_tasks) {
 }
 
 void
-orwl_start(orwl_server *serv,       /*!< [out] the server object to initialize */
+orwl_start(size_t max_queues,       /*!< [in] the maximum number of locations,
+                                      defaults to 0 */
            size_t max_connections,  /*!< [in] maximum socket queue length,
                                       defaults to 20 */
-           size_t max_queues,       /*!< [in] the maximum number of locations,
-                                      defaults to 0 */
+           orwl_server *serv,       /*!< [out] the server object to initialize */
            char const* endp         /*!< [in] defaults to the
                                       null address */
           ) {

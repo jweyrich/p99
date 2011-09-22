@@ -304,7 +304,7 @@ int main(int argc, char **argv) {
   ORWL_KEY_SCALE(basic, orwl_np * 2);
   orwl_server srv = P99_INIT;
   ORWL_TIMER(server_start) {
-    orwl_start(&srv, SOMAXCONN, orwl_keys_total());
+    orwl_start(orwl_keys_total(), SOMAXCONN, &srv);
     if (!orwl_alive(&srv)) return EXIT_FAILURE;
 
     /** The string "info" will be used as sort of common black board by

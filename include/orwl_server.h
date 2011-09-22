@@ -141,20 +141,21 @@ void orwl_server_delayed_unblock(orwl_server *srv, size_t nb_tasks);
  ** @memberof orwl_server
  **/
 void
-orwl_start(orwl_server *serv,       /*!< [out] the server object to initialize */
+orwl_start(size_t max_queues,       /*!< [in] the maximum number of locations,
+                                      defaults to 0 */
            size_t max_connections,  /*!< [in] maximum socket queue length,
                                       defaults to 20 */
-           size_t max_queues,       /*!< [in] the maximum number of locations,
-                                      defaults to 0 */
+           orwl_server *serv,       /*!< [out] the server object to initialize */
            char const* endp         /*!< [in] defaults to the
                                       null address */
           );
 
 #ifndef DOXYGEN
-P99_PROTOTYPE(void, orwl_start, orwl_server *, size_t, size_t, char const*);
+P99_PROTOTYPE(void, orwl_start, size_t, size_t, orwl_server *, char const*);
 #define orwl_start(...) P99_CALL_DEFARG(orwl_start, 4, __VA_ARGS__)
-#define orwl_start_defarg_1() (size_t)20u
-#define orwl_start_defarg_2() P99_0(size_t)
+#define orwl_start_defarg_0() (size_t)20u
+#define orwl_start_defarg_1() P99_0(size_t)
+#define orwl_start_defarg_2() P99_0(orwl_server*)
 #define orwl_start_defarg_3() P99_0(char const*)
 #endif
 

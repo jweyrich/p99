@@ -676,7 +676,7 @@ int main(int argc, char **argv) {
   /* local server initialization */
   seed = seed_get();
   orwl_types_init();
-  orwl_start(&srv, SOMAXCONN, nb_locations);
+  orwl_start(nb_locations, SOMAXCONN, &srv);
 
   if (!orwl_alive(&srv)) return EXIT_FAILURE;
 
