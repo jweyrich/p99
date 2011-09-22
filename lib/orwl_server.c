@@ -32,6 +32,12 @@ DEFINE_ONCE(orwl_server,
             orwl_rand) {
 }
 
+orwl_server* orwl_server_get(void) {
+  static
+    orwl_server srv = P99_INIT;
+  return &srv;
+}
+
 orwl_server* orwl_server_init(orwl_server *serv,
                               size_t max_connections,
                               size_t max_queues,

@@ -302,10 +302,10 @@ int main(int argc, char **argv) {
 
   /* start the server thread and initialize it properly */
   ORWL_KEY_SCALE(basic, orwl_np * 2);
-  orwl_server srv = P99_INIT;
+  //orwl_server srv = P99_INIT;
   ORWL_TIMER(server_start) {
-    orwl_start(orwl_keys_total(), SOMAXCONN, &srv);
-    if (!orwl_alive(&srv)) return EXIT_FAILURE;
+    orwl_start(orwl_keys_total(), SOMAXCONN);
+    if (!orwl_alive()) return EXIT_FAILURE;
 
     /** The string "info" will be used as sort of common black board by
      ** the threads such that we can visualize their state. It has one
@@ -317,8 +317,8 @@ int main(int argc, char **argv) {
     memset(info, ' ', info_len + 1);
     for (size_t i = 3; i < info_len; i += 3)
       info[i] = '|';
-    srv.info = info;
-    srv.info_len = info_len;
+    orwl_server_get()->info = info;
+    orwl_server_get()->info_len = info_len;
   }
 
   /* To test both models of thread creation, half of the threads are
@@ -332,11 +332,11 @@ int main(int argc, char **argv) {
   ORWL_TIMER(connecting) {
     /* set up the connections between the clients and the
      * server thread. */
-    orwl_endpoint there = srv.host.ep;
+    orwl_endpoint there = orwl_server_get()->host.ep;
 
     for (ssize_t i = (-orwl_readers); i < (ssize_t)(orwl_np+orwl_readers); ++i) {
       size_t gpos = (orwl_np + i) % orwl_np;
-      orwl_mirror_connect(&location[i], &srv, there, ORWL_KEY(basic, gpos));
+      orwl_mirror_connect(&location[i], orwl_server_get(), there, ORWL_KEY(basic, gpos));
       report(0, "connected to %s", orwl_endpoint_print(&there));
     }
   }
@@ -356,7 +356,7 @@ int main(int argc, char **argv) {
                     * position of the location on
                     * the left. */
                    &location[thread - orwl_readers],
-                   srv.info,orwl_readers),
+                   orwl_server_get()->info,orwl_readers),
         &id[thread2]
       );
     } else {
@@ -371,7 +371,7 @@ int main(int argc, char **argv) {
                  * position of the location on
                  * the left. */
                 &location[thread - orwl_readers],
-                srv.info,orwl_readers)
+                orwl_server_get()->info,orwl_readers)
       );
     }
   }
@@ -387,8 +387,8 @@ int main(int argc, char **argv) {
 
   /* now we can safely destruct ourselves */
   report(0, "%s: killing server", argv[0]);
-  orwl_server_terminate(&srv);
-  orwl_stop(&srv);
+  orwl_server_terminate();
+  orwl_stop();
 
   report(1, "freeing arg");
   arg_t_vdelete(arg);

@@ -35,6 +35,8 @@ struct orwl_server {
   size_t unblocked_locations; /*!< needed during initialization */
 };
 
+orwl_server* orwl_server_get(void);
+
 #define ORWL_SERVER_INITIALIZER(NAME, MAXC, ADDR, PORT)        \
 {                                                              \
   .fd_listen = -1,                                             \
@@ -96,6 +98,13 @@ DECLARE_THREAD(orwl_server);
  **/
 void orwl_server_close(orwl_server *serv);
 
+#ifndef DOXYGEN
+P99_PROTOTYPE(void, orwl_close, orwl_server *);
+#define orwl_close(...) P99_CALL_DEFARG(orwl_close, 1, __VA_ARGS__)
+#define orwl_close_defarg_0() orwl_server_get()
+#endif
+
+
 /**
  ** @memberof orwl_server
  **/
@@ -103,6 +112,13 @@ P99_DEFARG_DOCU(orwl_server_terminate)
 void
 orwl_server_terminate(orwl_server *serv   /*!< the server to terminate */
                      );
+
+#ifndef DOXYGEN
+P99_PROTOTYPE(void, orwl_terminate, orwl_server *);
+#define orwl_server_terminate(...) P99_CALL_DEFARG(orwl_server_terminate, 1, __VA_ARGS__)
+#define orwl_server_terminate_defarg_0() orwl_server_get()
+#endif
+
 
 /**
  ** @brief Block the server initially.
@@ -114,6 +130,13 @@ orwl_server_terminate(orwl_server *serv   /*!< the server to terminate */
  **/
 void orwl_server_block(orwl_server *serv);
 
+#ifndef DOXYGEN
+P99_PROTOTYPE(void, orwl_block, orwl_server *);
+#define orwl_block(...) P99_CALL_DEFARG(orwl_block, 1, __VA_ARGS__)
+#define orwl_block_defarg_0() orwl_server_get()
+#endif
+
+
 /**
  ** @brief Unblock the server.
  **
@@ -124,6 +147,12 @@ void orwl_server_block(orwl_server *serv);
  ** @memberof orwl_server
  **/
 void orwl_server_unblock(orwl_server *serv);
+
+#ifndef DOXYGEN
+P99_PROTOTYPE(void, orwl_unblock, orwl_server *);
+#define orwl_unblock(...) P99_CALL_DEFARG(orwl_unblock, 1, __VA_ARGS__)
+#define orwl_unblock_defarg_0() orwl_server_get()
+#endif
 
 /**
  ** @brief Unblock the server once all the local tasks are correctly
@@ -155,7 +184,7 @@ P99_PROTOTYPE(void, orwl_start, size_t, size_t, orwl_server *, char const*);
 #define orwl_start(...) P99_CALL_DEFARG(orwl_start, 4, __VA_ARGS__)
 #define orwl_start_defarg_0() (size_t)20u
 #define orwl_start_defarg_1() P99_0(size_t)
-#define orwl_start_defarg_2() P99_0(orwl_server*)
+#define orwl_start_defarg_2() orwl_server_get()
 #define orwl_start_defarg_3() P99_0(char const*)
 #endif
 
@@ -165,6 +194,13 @@ P99_PROTOTYPE(void, orwl_start, size_t, size_t, orwl_server *, char const*);
 void
 orwl_stop(orwl_server *serv);
 
+#ifndef DOXYGEN
+P99_PROTOTYPE(void, orwl_stop, orwl_server *);
+#define orwl_stop(...) P99_CALL_DEFARG(orwl_stop, 1, __VA_ARGS__)
+#define orwl_stop_defarg_0() orwl_server_get()
+#endif
+
+
 /**
  ** @memberof orwl_server
  **/
@@ -173,5 +209,12 @@ bool
 orwl_alive(orwl_server *serv) {
   return !pthread_kill(serv->id, 0);
 }
+
+#ifndef DOXYGEN
+inline
+P99_PROTOTYPE(bool, orwl_alive, orwl_server *);
+#define orwl_alive(...) P99_CALL_DEFARG(orwl_alive, 1, __VA_ARGS__)
+#define orwl_alive_defarg_0() orwl_server_get()
+#endif
 
 #endif      /* !ORWL_SERVER_H_ */
