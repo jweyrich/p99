@@ -116,9 +116,10 @@ DECLARE_ORWL_TYPE_DYNAMIC(orwl_mirror);
 
 
 #ifndef DOXYGEN
-P99_PROTOTYPE(void, orwl_mirror_connect, orwl_mirror *, orwl_server*, orwl_endpoint, int64_t);
+P99_PROTOTYPE(void, orwl_mirror_connect, orwl_mirror *, orwl_endpoint, int64_t, orwl_server*);
 #define orwl_mirror_connect(...) P99_CALL_DEFARG(orwl_mirror_connect, 4, __VA_ARGS__)
-#define orwl_mirror_connect_defarg_3() -INT64_C(1)
+#define orwl_mirror_connect_defarg_2() -INT64_C(1)
+#define orwl_mirror_connect_defarg_3() orwl_server_get()
 #endif
 
 /**
@@ -126,7 +127,7 @@ P99_PROTOTYPE(void, orwl_mirror_connect, orwl_mirror *, orwl_server*, orwl_endpo
  ** server @a srv to the endpoint @a endp
  ** @memberof orwl_mirror
  **/
-void orwl_mirror_connect(orwl_mirror *rq, orwl_server* srv, orwl_endpoint endp, int64_t index);
+void orwl_mirror_connect(orwl_mirror *rq, orwl_endpoint endp, int64_t index, orwl_server* srv);
 
 
 /**

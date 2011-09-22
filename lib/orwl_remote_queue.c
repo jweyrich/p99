@@ -30,7 +30,7 @@ P99_INSTANTIATE(void, orwl_mirror_destroy, orwl_mirror*);
 
 DEFINE_NEW_DELETE(orwl_mirror);
 
-void orwl_mirror_connect(orwl_mirror *rq, orwl_server* srv, orwl_endpoint endp, int64_t index) {
+void orwl_mirror_connect(orwl_mirror *rq, orwl_endpoint endp, int64_t index, orwl_server* srv) {
   if (index >= 0) endp.index = index;
   orwl_mirror_init(rq, srv, endp);
   /* wait until the other side is up. */

@@ -106,17 +106,16 @@ int main(int argc, char **argv) {
         if (block) dup2(fdin, fd[0]);
         else close(fdin);
       }
-      orwl_server srv;
-      orwl_start(len, con, &srv, address);
-      if (!orwl_alive(&srv)) P99_UNWIND_RETURN EXIT_FAILURE;
-      char const* server_name = orwl_endpoint_print(&srv.host.ep);
+      orwl_start(len, con, orwl_server_get(), address);
+      if (!orwl_alive()) P99_UNWIND_RETURN EXIT_FAILURE;
+      char const* server_name = orwl_endpoint_print(&(orwl_server_get()->host.ep));
       if (verbose) {
         size_t ilen = 3 * len + 1;
         if (ilen < 256) ilen = 256;
         char* info = calloc(ilen + 1);
         snprintf(info, ilen, "server at %s                                               ", server_name);
-        srv.info = info;
-        srv.info_len = ilen;
+        orwl_server_get()->info = info;
+        orwl_server_get()->info_len = ilen;
       }
 
       if (lockfilename) {
@@ -145,31 +144,31 @@ P99_PROTECT:
       }
       if (block)
         P99_UNWIND_PROTECT {
-        orwl_server_block(&srv);
+        orwl_server_block();
         progress(1, 0, "%s waiting for kick off                                           ",
         server_name);
         if (!fgets((char[32]) {0}, 32, stdin))
         P99_ERROR_RETURN("error when reading from stdin");
 P99_PROTECT:
-        orwl_server_unblock(&srv);
+        orwl_server_unblock();
         if (background)
           fclose(stdin);
       }
 
       if (verbose) {
         size_t ilen = 3 * len + 1;
-        srv.info[ilen] = '\0';
-        char* info = memset(srv.info, ' ', ilen);
+        orwl_server_get()->info[ilen] = '\0';
+        char* info = memset(orwl_server_get()->info, ' ', ilen);
         for (size_t i = 0; i < ilen; i += 3)
           info[i] = '|';
         for (size_t t = 0; ; ++t) {
-          if (!orwl_alive(&srv)) break;
+          if (!orwl_alive()) break;
           sleepfor(0.1);
           size_t have_data = 0;
           for (size_t i = 0; i < len; ++i) {
-            if (srv.wqs[i].data.data) {
+            if (orwl_server_get()->wqs[i].data.data) {
               ++have_data;
-              uint8_t val = *(srv.wqs[i].data.data);
+              uint8_t val = *(orwl_server_get()->wqs[i].data.data);
               char buf[3];
               snprintf(buf, 3, "%.2" PRIX8 "|", val);
               memcpy(info + (3 * i) + 1, buf, 2);
@@ -181,7 +180,7 @@ P99_PROTECT:
         }
       }
 P99_PROTECT:
-      orwl_stop(&srv);
+      orwl_stop();
     } else {
       if (block)
         P99_UNWIND_PROTECT {

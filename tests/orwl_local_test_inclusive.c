@@ -336,7 +336,7 @@ int main(int argc, char **argv) {
 
     for (ssize_t i = (-orwl_readers); i < (ssize_t)(orwl_np+orwl_readers); ++i) {
       size_t gpos = (orwl_np + i) % orwl_np;
-      orwl_mirror_connect(&location[i], orwl_server_get(), there, ORWL_KEY(basic, gpos));
+      orwl_mirror_connect(&location[i], there, ORWL_KEY(basic, gpos));
       report(0, "connected to %s", orwl_endpoint_print(&there));
     }
   }

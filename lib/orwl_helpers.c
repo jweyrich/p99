@@ -323,7 +323,7 @@ void orwl_make_distant_connection(size_t dest_id,
                                   orwl_mirror *location) {
   orwl_endpoint there = ab->eps[dest_id];
   there.index = ab->locations[dest_id];
-  orwl_mirror_connect(location, server, there);
+  orwl_mirror_connect(location, there, ab->locations[dest_id], server);
   report(0, "connected to %s", orwl_endpoint_print(&there));
 }
 
@@ -332,7 +332,7 @@ void orwl_make_local_connection(size_t dest_id,
                                 orwl_mirror *location) {
   orwl_endpoint there = server->host.ep;
   there.index = dest_id;
-  orwl_mirror_connect(location, server, there);
+  orwl_mirror_connect(location, there, dest_id, server);
   report(0, "connected to %s", orwl_endpoint_print(&there));
 }
 

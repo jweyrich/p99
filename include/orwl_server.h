@@ -99,9 +99,9 @@ DECLARE_THREAD(orwl_server);
 void orwl_server_close(orwl_server *serv);
 
 #ifndef DOXYGEN
-P99_PROTOTYPE(void, orwl_close, orwl_server *);
-#define orwl_close(...) P99_CALL_DEFARG(orwl_close, 1, __VA_ARGS__)
-#define orwl_close_defarg_0() orwl_server_get()
+P99_PROTOTYPE(void, orwl_server_close, orwl_server *);
+#define orwl_server_close(...) P99_CALL_DEFARG(orwl_server_close, 1, __VA_ARGS__)
+#define orwl_server_close_defarg_0() orwl_server_get()
 #endif
 
 
@@ -131,9 +131,9 @@ P99_PROTOTYPE(void, orwl_terminate, orwl_server *);
 void orwl_server_block(orwl_server *serv);
 
 #ifndef DOXYGEN
-P99_PROTOTYPE(void, orwl_block, orwl_server *);
-#define orwl_block(...) P99_CALL_DEFARG(orwl_block, 1, __VA_ARGS__)
-#define orwl_block_defarg_0() orwl_server_get()
+P99_PROTOTYPE(void, orwl_server_block, orwl_server *);
+#define orwl_server_block(...) P99_CALL_DEFARG(orwl_server_block, 1, __VA_ARGS__)
+#define orwl_server_block_defarg_0() orwl_server_get()
 #endif
 
 
@@ -149,9 +149,9 @@ P99_PROTOTYPE(void, orwl_block, orwl_server *);
 void orwl_server_unblock(orwl_server *serv);
 
 #ifndef DOXYGEN
-P99_PROTOTYPE(void, orwl_unblock, orwl_server *);
-#define orwl_unblock(...) P99_CALL_DEFARG(orwl_unblock, 1, __VA_ARGS__)
-#define orwl_unblock_defarg_0() orwl_server_get()
+P99_PROTOTYPE(void, orwl_server_unblock, orwl_server *);
+#define orwl_server_unblock(...) P99_CALL_DEFARG(orwl_server_unblock, 1, __VA_ARGS__)
+#define orwl_server_unblock_defarg_0() orwl_server_get()
 #endif
 
 /**

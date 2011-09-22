@@ -17,7 +17,6 @@
 #include "p99_str.h"
 #include "orwl_instrument.h"
 
-static orwl_server srv = P99_INIT;
 static orwl_graph *graph = 0;
 static orwl_address_book *ab = 0;
 static orwl_mirror *locations = 0;
@@ -341,7 +340,7 @@ DEFINE_THREAD(arg_t) {
       size_t neighbor_sub_task = get_sub_task_from_label(graph->vertices[Arg->vertex->neighbors[i]].label);
       size_t neighbor_main_task = get_main_task_from_label(graph->vertices[Arg->vertex->neighbors[i]].label);
       size_t location_pos = shift_local_locations + (Arg->main_task_pos * 12) + distant_task_to_local_pos(neighbor_sub_task, Arg->main_task, neighbor_main_task);
-      orwl_make_distant_connection(Arg->vertex->neighbors[i], &srv, graph, ab, &locations[location_pos]);
+      orwl_make_distant_connection(Arg->vertex->neighbors[i], orwl_server_get(), graph, ab, &locations[location_pos]);
     }
   }
 
@@ -379,7 +378,7 @@ DEFINE_THREAD(arg_t) {
   }
 
   /* Check if my neighbors are ready before starting, then realease the handle on my location */
-  orwl_wait_to_start(Arg->id, graph, ab, &srv, nb_main_tasks * 9, seed);
+  orwl_wait_to_start(Arg->id, graph, ab, orwl_server_get(), nb_main_tasks * 9, seed);
   if (Arg->sub_task == MAIN) {
     report(0, "%zu is starting the init iteration", Arg->id);
   }
@@ -676,22 +675,22 @@ int main(int argc, char **argv) {
   /* local server initialization */
   seed = seed_get();
   orwl_types_init();
-  orwl_start(nb_locations, SOMAXCONN, &srv);
+  orwl_start(nb_locations, SOMAXCONN);
 
-  if (!orwl_alive(&srv)) return EXIT_FAILURE;
+  if (!orwl_alive()) return EXIT_FAILURE;
 
-  orwl_server_block(&srv);
+  orwl_server_block();
 
   locations = orwl_mirror_vnew(nb_locations);
 
   for (size_t i = 0 ; i < nb_tasks ; i++)
-    orwl_make_local_connection(i, &srv, &locations[i]);
+    orwl_make_local_connection(i, orwl_server_get(), &locations[i]);
 
   report(1, "local connections done");
 
   if (!orwl_wait_and_load_init_files(&ab, global_ab_file,
                                      &graph, graph_file,
-                                     &srv,
+                                     orwl_server_get(),
                                      local_ab_file,
                                      nb_tasks, list_tasks,
                                      list_locations,
@@ -725,8 +724,8 @@ int main(int argc, char **argv) {
   for (size_t i = 0 ; i < nb_tasks ; i++) {
     arg_t_join(tid[i]);
   }
-  orwl_server_terminate(&srv);
-  orwl_stop(&srv);
+  orwl_server_terminate();
+  orwl_stop();
   seed_get_clear();
   size_t_vdelete(list_tasks);
   return 0;

@@ -19,7 +19,6 @@
 
 #define MEGA (1024 * 1024)
 
-static orwl_server srv = P99_INIT;
 static orwl_graph *graph = 0;
 static orwl_address_book *ab = 0;
 static orwl_mirror *local_locations = 0;
@@ -80,7 +79,7 @@ DEFINE_THREAD(arg_t) {
   /***************************************************************************/
   /* Only the main task makes connections on distant guys */
   for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++) {
-    orwl_make_distant_connection(Arg->vertex->neighbors[i], &srv, graph, ab, &distant_locations[Arg->vertex->neighbors[i]]);
+    orwl_make_distant_connection(Arg->vertex->neighbors[i], orwl_server_get(), graph, ab, &distant_locations[Arg->vertex->neighbors[i]]);
   }
 
   /* Take the local lock in write mode */
@@ -99,7 +98,7 @@ DEFINE_THREAD(arg_t) {
                        &handle_distant_pos[Arg->vertex->neighbors[i]]);
 
   /* Check if my neighbors are ready before starting, then realease the handle on my location */
-  orwl_wait_to_start(Arg->id, graph, ab, &srv, nb_tasks, seed);
+  orwl_wait_to_start(Arg->id, graph, ab, orwl_server_get(), nb_tasks, seed);
 
 
   /***************************************************************************/
@@ -238,23 +237,23 @@ int main(int argc, char **argv) {
 
     /* local server initialization */
     orwl_types_init();
-    orwl_start(nb_locations, SOMAXCONN, &srv);
+    orwl_start(nb_locations, SOMAXCONN);
 
-    if (!orwl_alive(&srv)) return EXIT_FAILURE;
+    if (!orwl_alive()) return EXIT_FAILURE;
 
-    orwl_server_block(&srv);
+    orwl_server_block();
 
     local_locations = orwl_mirror_vnew(nb_locations);
 
     for (size_t i = 0 ; i < nb_tasks ; i++) {
-      orwl_make_local_connection(i, &srv, &local_locations[i]);
+      orwl_make_local_connection(i, orwl_server_get(), &local_locations[i]);
       orwl_scale(&local_locations[i], (shared_memory_size * MEGA));
     }
     report(1, "local connections done");
 
     if (!orwl_wait_and_load_init_files(&ab, global_ab_file,
 				       &graph, graph_file,
-				       &srv,
+				       orwl_server_get(),
 				       local_ab_file,
 				       nb_tasks, list_tasks, 
 				       list_locations,
@@ -286,8 +285,8 @@ int main(int argc, char **argv) {
     orwl_pthread_wait_detached();
     free(det);
   }
-  orwl_server_terminate(&srv);
-  orwl_stop(&srv);
+  orwl_server_terminate();
+  orwl_stop();
   sleep(3);
   size_t_vdelete(list_tasks);
   return(0);
