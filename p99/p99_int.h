@@ -793,7 +793,7 @@ p99_inline                                                                      
 P99_BUILTIN_TYPE(SUFF)                                                                            \
      P99_PASTE2(p00_add2, SUFF)(P99_BUILTIN_TYPE(SUFF) a,                                         \
                                 P99_BUILTIN_TYPE(SUFF) b,                                         \
-                                int err[static 1]) {                                              \
+                                int err[P99_ATLEAST 1]) {                                         \
   /* needed to avoid spurious compiler warnings */                                                \
   register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                                            \
   register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);                      \
@@ -816,7 +816,7 @@ p99_inline                                                                      
 P99_BUILTIN_TYPE(SUFF)                                                                            \
      P99_PASTE2(p00_sub2, SUFF)(P99_BUILTIN_TYPE(SUFF) a,                                         \
                                 P99_BUILTIN_TYPE(SUFF) b,                                         \
-                                int err[static 1]) {                                              \
+                                int err[P99_ATLEAST 1]) {                                         \
   /* needed to avoid spurious compiler warnings */                                                \
   register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                                            \
   register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);                      \
@@ -839,7 +839,7 @@ p99_inline                                                     \
 P99_BUILTIN_TYPE(SUFF)                                         \
      P99_PASTE2(p00_add1, SUFF)(P99_BUILTIN_TYPE(SUFF) a,      \
                                 P99_BUILTIN_TYPE(SUFF) b,      \
-                                int err[static 1]) {           \
+                                int err[P99_ATLEAST 1]) {      \
   /* needed to avoid spurious compiler warnings */             \
   register P99_BUILTIN_TYPE(SUFF) const type_null = 0;         \
   register P99_BUILTIN_TYPE(SUFF) ret;                         \
@@ -866,7 +866,7 @@ p99_inline                                                     \
 P99_BUILTIN_TYPE(SUFF)                                         \
      P99_PASTE2(p00_sub1, SUFF)(P99_BUILTIN_TYPE(SUFF) a,      \
                                 P99_BUILTIN_TYPE(SUFF) b,      \
-                                int err[static 1]) {           \
+                                int err[P99_ATLEAST 1]) {      \
   /* needed to avoid spurious compiler warnings */             \
   register P99_BUILTIN_TYPE(SUFF) const type_null = 0;         \
   register P99_BUILTIN_TYPE(SUFF) ret;                         \
@@ -893,7 +893,7 @@ p99_inline                                                     \
 P99_BUILTIN_TYPE(SUFF)                                         \
      P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF) a,       \
                                P99_BUILTIN_TYPE(SUFF) b,       \
-                               int err[static 1]) {            \
+                               int err[P99_ATLEAST 1]) {       \
   return                                                       \
     (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF))         \
     ? P99_PASTE2(p00_add2, SUFF)(a, b, err)                    \
@@ -905,7 +905,7 @@ p99_inline                                                     \
 P99_BUILTIN_TYPE(SUFF)                                         \
      P99_PASTE2(p99_sub, SUFF)(P99_BUILTIN_TYPE(SUFF) a,       \
                                P99_BUILTIN_TYPE(SUFF) b,       \
-                               int err[static 1]) {            \
+                               int err[P99_ATLEAST 1]) {       \
   return                                                       \
     (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF))         \
     ? P99_PASTE2(p00_sub2, SUFF)(a, b, err)                    \

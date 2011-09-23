@@ -21,19 +21,19 @@
   P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_add, SUFF),  \
                   P99_BUILTIN_TYPE(SUFF),                             \
                   P99_BUILTIN_TYPE(SUFF),                             \
-                  int[static 1]);                                     \
+                  int[P99_ATLEAST 1]);                                \
   P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p00_add1, SUFF), \
                   P99_BUILTIN_TYPE(SUFF),                             \
                   P99_BUILTIN_TYPE(SUFF),                             \
-                  int[static 1]);                                     \
+                  int[P99_ATLEAST 1]);                                \
   P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p00_add2, SUFF), \
                   P99_BUILTIN_TYPE(SUFF),                             \
                   P99_BUILTIN_TYPE(SUFF),                             \
-                  int[static 1]);                                     \
+                  int[P99_ATLEAST 1]);                                \
   P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_sub, SUFF),  \
                   P99_BUILTIN_TYPE(SUFF),                             \
                   P99_BUILTIN_TYPE(SUFF),                             \
-                  int[static 1])
+                  int[P99_ATLEAST 1])
 
 DEF(c);
 DEF(hh);

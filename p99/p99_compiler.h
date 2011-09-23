@@ -197,6 +197,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 /* clang can't nail a variable to a register, yet */
 # define P99_FIXED_REGISTER(REG)
 #elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
+# define P99_ATLEAST
 /* gcc prior to version 4.2.1 has the inline keyword but with slightly
    different semantics.
    Be sure to always inline functions in this cases.
@@ -343,6 +344,18 @@ signed p00_trailing_comma_in_initializer__(void) {
 #  define P99_DEPRECATED(...) __VA_ARGS__
 # endif
 #endif
+
+/**
+ ** @def P99_ATLEAST
+ ** @brief Specify for array parameters that they have a least amount of elements.
+ **
+ ** This is an addition through an abuse of the @c static keyword that
+ ** older compilers might not support.
+ **/
+#ifndef P99_ATLEAST
+# define P99_ATLEAST static
+#endif
+
 
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 # if defined(__LONG_MAX__) && defined(__LONG_LONG_MAX__) && (P99_GCC_VERSION >= 30000UL)
