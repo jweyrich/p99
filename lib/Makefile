@@ -21,6 +21,7 @@ SRC	=					\
 	orwl_host.c				\
 	orwl_int.c				\
 	orwl_new.c				\
+	orwl_notifier.c				\
 	orwl_once.c				\
 	orwl_posix.c				\
 	orwl_proc.c				\

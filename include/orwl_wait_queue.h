@@ -17,7 +17,7 @@
 
 #include "orwl_register.h"
 #include "orwl_endpoint.h"
-#include "orwl_count.h"
+#include "orwl_notifier.h"
 #include P99_ADVANCE_ID
 
 #ifdef __cplusplus

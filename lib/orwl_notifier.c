@@ -11,12 +11,11 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#include "orwl_count.h"
+#include "orwl_notifier.h"
 
-P99_INSTANTIATE(orwl_count*, orwl_count_init, orwl_count*, size_t);
-P99_INSTANTIATE(void, orwl_count_destroy, orwl_count*);
-P99_INSTANTIATE(size_t, orwl_count_inc, orwl_count*, size_t);
-P99_INSTANTIATE(size_t, orwl_count_inc_conditionally, orwl_count*, size_t);
-P99_INSTANTIATE(size_t, orwl_count_value, orwl_count*);
-P99_INSTANTIATE(size_t, orwl_count_dec, orwl_count*, size_t);
-P99_INSTANTIATE(void, orwl_count_wait, orwl_count*);
+P99_INSTANTIATE(orwl_notifier*, orwl_notifier_init, orwl_notifier*);
+P99_INSTANTIATE(void, orwl_notifier_destroy, orwl_notifier*);
+P99_INSTANTIATE(void, orwl_notifier_set, orwl_notifier*);
+P99_INSTANTIATE(void, orwl_notifier_unset, orwl_notifier*);
+P99_INSTANTIATE(void, orwl_notifier_block, orwl_notifier*);
+P99_INSTANTIATE(bool, orwl_notifier_verify, orwl_notifier*);
