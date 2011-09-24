@@ -28,7 +28,6 @@ orwl_wq* orwl_wq_init(orwl_wq *wq,
   if (!wq) return 0;
   *wq = (orwl_wq const)ORWL_WQ_INITIALIZER;
   pthread_mutex_init(&wq->mut, attr);
-  pthread_cond_init(&wq->cond, 0);
   return wq;
 }
 
@@ -51,7 +50,6 @@ void orwl_wq_destroy(orwl_wq *wq) {
   }
   if (wq->data.data) wq->data.data = wq->borrowed ? 0 : realloc(wq->data.data, 0);
   pthread_mutex_destroy(&wq->mut);
-  pthread_cond_destroy(&wq->cond);
   *wq = P99_LVAL(orwl_wq const,
                  .head = TGARB(orwl_wh*),
                  .tail = TGARB(orwl_wh*),

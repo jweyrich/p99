@@ -119,8 +119,7 @@ extern "C" {
      ** @{
      **/
 
-    pthread_mutex_t mut;  /**< The mutex used to control the access to the queue **/
-    pthread_cond_t  cond;
+    pthread_mutex_t mut;  /**< The mutex used to control the access to the queue */
     orwl_wh *head;        /**< The head of the priority queue */
     orwl_wh *tail;        /**< The tail of the priority queue */
     uint64_t clock;       /**< A counter that is increased at each
@@ -214,7 +213,7 @@ extern "C" {
   /**
    ** @memberof orwl_wq
    **/
-#define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .cond = PTHREAD_COND_INITIALIZER, .clock = 1, .borrowed = false }
+#define ORWL_WQ_INITIALIZER { .mut = PTHREAD_MUTEX_INITIALIZER, .clock = 1, .borrowed = false }
 
   DOCUMENT_INIT(orwl_wq)
   P99_DEFARG_DOCU(orwl_wq_init)
