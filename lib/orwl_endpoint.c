@@ -128,6 +128,7 @@ char const* orwl_endpoint_print(orwl_endpoint const* ep, char* name) {
       orwl_inet_ntop(&addr4.in46, host);
     }
   }
+  if (!host[0] || !strcmp(host, "::")) hostname(host);
   P99_STRCATS(name, "orwl://", host, ":", PRIu(port2net(&ep->port)), "/");
   if (ep->index) P99_STRCATS(name, PRIu(ep->index));
   return name;
