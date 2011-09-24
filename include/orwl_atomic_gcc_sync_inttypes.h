@@ -19,7 +19,7 @@
  ** These are not intended to be used directly but through a
  ** macro. The idea is that they operate on unsigned types, namely
  ** <code>uint8_t, uint16_t, uint32_t, uint64_t</code> but that their
- ** return type is the corresponding signed type. The promotion the
+ ** return type is the corresponding signed type. The promotion from the
  ** unsigned to the signed type is done such that no integer exception
  ** might trigger. This is only possible because the signed exact
  ** width type are guaranteed to be two's complement without trap
@@ -46,6 +46,7 @@ void ORWL_MANG(atomic_store)(void volatile*object, ORWL_AT desired) {
   for (ORWL_AT expected = desired;;) {
     ORWL_AT val = __sync_val_compare_and_swap((ORWL_AT volatile*)object, expected, desired);
     if (val == expected) break;
+    expected = val;
   }
 }
 
