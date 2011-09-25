@@ -161,7 +161,9 @@ include Makefile.inc
 # symbols can then be determined from liborwl.so and kept inside make
 # variables.
 ifeq (${MAKELEVEL},0)
-external_symbols.c orwl_symbols.c : Makefile liborwl.so
+external_symbols.c : orwl_symbols.c
+
+external_symbols.c orwl_symbols.c : Makefile liborwl.so liborwl.a
 	${MAKE}	external_symbols.c orwl_symbols.c
 else
 
