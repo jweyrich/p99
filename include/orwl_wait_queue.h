@@ -126,7 +126,7 @@ extern "C" {
                            event that this queue encounters. */
     orwl_buffer data;     /**< The data that is associated with this
                            queue */
-    bool borrowed:1;      /**< True if the data is not to be released
+    bool borrowed;        /**< True if the data is not to be released
                            from here. */
 
     /**
