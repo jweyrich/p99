@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
         if (block) dup2(fdin, fd[0]);
         else close(fdin);
       }
-      orwl_start(len, con, orwl_server_get(), address);
+      orwl_start(len, con, orwl_server_get(), false, address);
       if (!orwl_alive()) P99_UNWIND_RETURN EXIT_FAILURE;
       char const* server_name = orwl_endpoint_print(&(orwl_server_get()->host.ep));
       if (verbose) {

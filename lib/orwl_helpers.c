@@ -314,17 +314,17 @@ bool orwl_wait_and_load_init_files(char const *ab_filename,
   return true;
 }
 
-void orwl_make_distant_connection(size_t dest_id,
-                                  orwl_server *server,
-                                  orwl_mirror *location) {
+void orwl_make_distant_connection(size_t dest_id,                                  
+                                  orwl_mirror *location,
+				  orwl_server *server) {
   orwl_endpoint there = server->ab->eps[dest_id];
   orwl_mirror_connect(location, there, server->ab->locations[dest_id], server);
   report(0, "connected to %s", orwl_endpoint_print(&there));
 }
 
 void orwl_make_local_connection(size_t dest_id,
-                                orwl_server *server,
-                                orwl_mirror *location) {
+                                orwl_mirror *location,
+                                orwl_server *server) {
   orwl_endpoint there = server->host.ep;
   orwl_mirror_connect(location, there, dest_id, server);
   report(0, "connected to %s", orwl_endpoint_print(&there));

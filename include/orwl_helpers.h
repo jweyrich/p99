@@ -198,13 +198,13 @@ bool orwl_address_book_read(orwl_address_book **ab, char const *file, size_t nb_
  **
  ** @param ab_filename is the expected path to the global address book
  ** @param graph_filename is the path to the dot file containing the graph description
- ** @param serv is a pointer on the local ::orwl_server
  ** @param id_filename is the path to the partial address book produced
  ** @param nb_id is the number of vertices running on the local server
  ** @param list_id is an array containing the id of the local vertices
  ** @param list_locations is an array containing the location managed
  **        by a the local vertices
  ** @param nb_vertices is the global number of vertices in the graph
+ ** @param serv is a pointer on the local ::orwl_server
  ** @return true if everything has been correctly performed, false otherwise
  **/
 bool orwl_wait_and_load_init_files(const char *ab_filename,
@@ -216,30 +216,43 @@ bool orwl_wait_and_load_init_files(const char *ab_filename,
                                    size_t nb_vertices,
 				   orwl_server *serv);
 
+P99_PROTOTYPE(bool, orwl_wait_and_load_init_files, 
+	      char const *, char const *, char const *,
+	      size_t, size_t *, size_t *, size_t, orwl_server *);
+#define orwl_wait_and_load_init_files(...) P99_CALL_DEFARG(orwl_wait_and_load_init_files, 8, __VA_ARGS__)
+#define orwl_wait_and_load_init_files_defarg_7() orwl_server_get()
+
 /**
  ** @brief Connect a distant location to the local server
  **
  ** @param dest_id is the id of the distant vertex
- ** @param server is a pointer on the local ::orwl_server
  ** @param location is a pointer on a local ::orwl_mirror
  **        where the distant location must be mirrored
+ ** @param server is a pointer on the local ::orwl_server
  **/
 void orwl_make_distant_connection(size_t dest_id,
-                                  orwl_server *server,
-                                  orwl_mirror *location);
+                                  orwl_mirror *location,
+				  orwl_server *server);
+
+P99_PROTOTYPE(void, orwl_make_distant_connection, size_t, orwl_mirror *,  orwl_server *);
+#define orwl_make_distant_connection(...) P99_CALL_DEFARG(orwl_make_distant_connection, 3, __VA_ARGS__)
+#define orwl_make_distant_connection_defarg_2() orwl_server_get()
 
 /**
  ** @brief Connect a local location to the local server
  **
  ** @param dest_id is the id of the local vertex
- ** @param server is a pointer on the local ::orwl_server
  ** @param location is a pointer on a local ::orwl_mirror
  **        where the local vertex location must be mirrored
+ ** @param server is a pointer on the local ::orwl_server
  **/
 void orwl_make_local_connection(size_t dest_id,
-                                orwl_server *server,
-                                orwl_mirror *location);
+				orwl_mirror *location,
+                                orwl_server *server);
 
+P99_PROTOTYPE(void, orwl_make_local_connection, size_t, orwl_mirror*,  orwl_server *);
+#define orwl_make_local_connection(...) P99_CALL_DEFARG(orwl_make_local_connection, 3, __VA_ARGS__)
+#define orwl_make_local_connection_defarg_2() orwl_server_get()
 
 /**
  ** @brief Block an application thread until the corresponding
@@ -259,6 +272,11 @@ bool orwl_wait_to_initialize_locks(size_t id,
                                    orwl_server *serv,
                                    rand48_t *seed);
 
+P99_PROTOTYPE(bool, orwl_wait_to_initialize_locks, size_t, orwl_server *, rand48_t *);
+#define orwl_wait_to_initialize_locks(...) P99_CALL_DEFARG(orwl_wait_to_initialize_locks, 3, __VA_ARGS__)
+#define orwl_wait_to_initialize_locks_defarg_1() orwl_server_get()
+#define orwl_wait_to_initialize_locks_defarg_2() seed_get()
+
 /**
  ** @brief Block an application thread until the neighbors (in
  **        the undirected graph) of the corresponding vertex
@@ -276,5 +294,10 @@ bool orwl_wait_to_start(size_t id,
                         size_t nb_local_tasks,
                         orwl_server *server,
                         rand48_t *seed);
+
+P99_PROTOTYPE(bool, orwl_wait_to_start, size_t, size_t, orwl_server *, rand48_t *);
+#define orwl_wait_to_start(...) P99_CALL_DEFARG(orwl_wait_to_start, 4, __VA_ARGS__)
+#define orwl_wait_to_start_defarg_2() orwl_server_get()
+#define orwl_wait_to_start_defarg_3() seed_get()
 
 #endif

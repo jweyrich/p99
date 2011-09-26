@@ -339,7 +339,7 @@ DEFINE_THREAD(arg_t) {
       size_t neighbor_sub_task = get_sub_task_from_label(orwl_server_get()->graph->vertices[Arg->vertex->neighbors[i]].label);
       size_t neighbor_main_task = get_main_task_from_label(orwl_server_get()->graph->vertices[Arg->vertex->neighbors[i]].label);
       size_t location_pos = shift_local_locations + (Arg->main_task_pos * 12) + distant_task_to_local_pos(neighbor_sub_task, Arg->main_task, neighbor_main_task);
-      orwl_make_distant_connection(Arg->vertex->neighbors[i], orwl_server_get(), &locations[location_pos]);
+      orwl_make_distant_connection(Arg->vertex->neighbors[i], &locations[location_pos]);
     }
   }
 
@@ -681,7 +681,7 @@ int main(int argc, char **argv) {
   locations = orwl_mirror_vnew(nb_locations);
 
   for (size_t i = 0 ; i < nb_tasks ; i++)
-    orwl_make_local_connection(i, orwl_server_get(), &locations[i]);
+    orwl_make_local_connection(i, &locations[i]);
 
   report(1, "local connections done");
 

@@ -77,7 +77,7 @@ DEFINE_THREAD(arg_t) {
   /***************************************************************************/
   /* Only the main task makes connections on distant guys */
   for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++) {
-    orwl_make_distant_connection(Arg->vertex->neighbors[i], orwl_server_get(), &distant_locations[Arg->vertex->neighbors[i]]);
+    orwl_make_distant_connection(Arg->vertex->neighbors[i], &distant_locations[Arg->vertex->neighbors[i]]);
   }
 
   /* Take the local lock in write mode */
@@ -88,7 +88,7 @@ DEFINE_THREAD(arg_t) {
   orwl_thread_cntrl_wait_for_caller(Arg->det);
 
   /* Wait to take all the distant locks */
-  orwl_wait_to_initialize_locks(Arg->id, orwl_server_get(), seed);
+  orwl_wait_to_initialize_locks(Arg->id);
 
   /* Take the distant locks in read mode*/
   for (size_t i = 0; i < Arg->vertex->nb_neighbors; ++i)
@@ -96,7 +96,7 @@ DEFINE_THREAD(arg_t) {
                        &handle_distant_pos[Arg->vertex->neighbors[i]]);
 
   /* Check if my neighbors are ready before starting, then realease the handle on my location */
-  orwl_wait_to_start(Arg->id, nb_tasks, orwl_server_get(), seed);
+  orwl_wait_to_start(Arg->id, nb_tasks);
 
   /***************************************************************************/
   /*                       Initialization iteration                          */
@@ -238,7 +238,7 @@ int main(int argc, char **argv) {
     local_locations = orwl_mirror_vnew(nb_locations);
 
     for (size_t i = 0 ; i < nb_tasks ; i++) {
-      orwl_make_local_connection(i, orwl_server_get(), &local_locations[i]);
+      orwl_make_local_connection(i, &local_locations[i]);
       orwl_scale(&local_locations[i], (shared_memory_size * MEGA));
     }
     report(1, "local connections done");
@@ -248,8 +248,7 @@ int main(int argc, char **argv) {
 				       local_ab_file,
 				       nb_tasks, list_tasks, 
 				       list_locations,
-				       global_nb_tasks,	
-				       orwl_server_get())) {
+				       global_nb_tasks)) {
 
       report(1, "can't load some files");
       return EXIT_FAILURE;
