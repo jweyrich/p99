@@ -16,6 +16,7 @@
 # define    ORWL_SERVER_H_
 
 #include "orwl_host.h"
+#include "orwl_helpers.h"
 
 struct orwl_server {
   int fd_listen;           /*!< this servers file descriptor */
@@ -28,6 +29,8 @@ struct orwl_server {
   char* info;              /*!< an informative string that is
                              presented in the terminal */
   size_t info_len;         /*!< the length of #info */
+  struct orwl_graph* graph;     /*!< the graph used for distributed init */
+  struct orwl_address_book* ab; /*!< the address book used for distributed init */
   pthread_t id;            /*!< the ID of this server thread */
   pthread_mutex_t launch;  /*!< serialize the launching of threads */
   pthread_rwlock_t lock;   /*!< an initialization lock */
@@ -175,18 +178,22 @@ orwl_start(size_t max_queues,       /*!< [in] the maximum number of locations,
            size_t max_connections,  /*!< [in] maximum socket queue length,
                                       defaults to 20 */
            orwl_server *serv,       /*!< [out] the server object to initialize */
+	   bool block,              /*!< [in] block the server when launching,
+				      defaults to false */
            char const* endp         /*!< [in] defaults to the
                                       null address */
           );
 
 #ifndef DOXYGEN
-P99_PROTOTYPE(void, orwl_start, size_t, size_t, orwl_server *, char const*);
-#define orwl_start(...) P99_CALL_DEFARG(orwl_start, 4, __VA_ARGS__)
+P99_PROTOTYPE(void, orwl_start, size_t, size_t, orwl_server *, bool, char const*);
+#define orwl_start(...) P99_CALL_DEFARG(orwl_start, 5, __VA_ARGS__)
 #define orwl_start_defarg_0() (size_t)20u
 #define orwl_start_defarg_1() P99_0(size_t)
 #define orwl_start_defarg_2() orwl_server_get()
-#define orwl_start_defarg_3() P99_0(char const*)
+#define orwl_start_defarg_3() false
+#define orwl_start_defarg_4() P99_0(char const*)
 #endif
+
 
 /**
  ** @memberof orwl_server

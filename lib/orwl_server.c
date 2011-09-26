@@ -46,13 +46,15 @@ orwl_server* orwl_server_init(orwl_server *serv,
   if (serv) {
     *serv = (orwl_server) {
       .fd_listen = -1,
-       .max_connections = max_connections,
-        .max_queues = max_queues,
-         .wqs = max_queues ? orwl_wq_vnew(max_queues) : P99_0(void*),
-          .host = ORWL_HOST_INITIALIZER(serv->host, 0, 0, 1),
-           .id_initialized = P99_0(bool*),
-            .unblocked_locations = 0,
-           };
+      .max_connections = max_connections,
+      .max_queues = max_queues,
+      .wqs = max_queues ? orwl_wq_vnew(max_queues) : P99_0(void*),
+      .host = ORWL_HOST_INITIALIZER(serv->host, 0, 0, 1),
+      .ab = P99_0(orwl_address_book*),
+      .graph = P99_0(orwl_graph*),
+      .id_initialized = P99_0(bool*),
+      .unblocked_locations = 0,
+    };
     pthread_rwlock_init(&serv->lock);
     pthread_mutex_init(&serv->launch);
     if (endp && endp[0]) orwl_endpoint_parse(&serv->host.ep, endp);
@@ -248,13 +250,16 @@ orwl_start(size_t max_queues,       /*!< [in] the maximum number of locations,
            size_t max_connections,  /*!< [in] maximum socket queue length,
                                       defaults to 20 */
            orwl_server *serv,       /*!< [out] the server object to initialize */
+	   bool block,              /*!< [in] block the server when launching,
+				      defaults to false */
            char const* endp         /*!< [in] defaults to the
                                       null address */
-          ) {
+	   ) {
   orwl_server_init(serv, max_connections, max_queues, endp);
   orwl_server_create(serv, &serv->id);
   /* give the server the chance to fire things up */
   while (!port2net(&serv->host.ep.port)) sleepfor(0.01);
+  if (block) orwl_server_block(serv);
 }
 
 void

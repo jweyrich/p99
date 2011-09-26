@@ -295,35 +295,30 @@ void orwl_wait_until_file_is_here(const char *filename) {
   }
 }
 
-bool orwl_wait_and_load_init_files(orwl_address_book **ab,
-                                   char const *ab_filename,
-                                   orwl_graph **graph,
+bool orwl_wait_and_load_init_files(char const *ab_filename,
                                    char const *graph_filename,
-                                   orwl_server *serv,
                                    char const *id_filename,
                                    size_t nb_id,
                                    size_t *list_id,
                                    size_t *list_locations,
-                                   size_t nb_vertices) {
+                                   size_t nb_vertices,
+                                   orwl_server *serv) {
   serv->id_initialized = bool_vrealloc(serv->id_initialized, nb_vertices);
   if (!orwl_dump_id(serv, id_filename, nb_id, list_id, list_locations))
     return false;
   orwl_wait_until_file_is_here(id_filename);
-  if (!orwl_address_book_read(ab, ab_filename, nb_vertices))
+  if (!orwl_address_book_read(&serv->ab, ab_filename, nb_vertices))
     return false;
-  if (!orwl_graph_read(graph, graph_filename, nb_vertices))
+  if (!orwl_graph_read(&serv->graph, graph_filename, nb_vertices))
     return false;
   return true;
 }
 
 void orwl_make_distant_connection(size_t dest_id,
                                   orwl_server *server,
-                                  orwl_graph *graph,
-                                  orwl_address_book *ab,
                                   orwl_mirror *location) {
-  orwl_endpoint there = ab->eps[dest_id];
-  there.index = ab->locations[dest_id];
-  orwl_mirror_connect(location, there, ab->locations[dest_id], server);
+  orwl_endpoint there = server->ab->eps[dest_id];
+  orwl_mirror_connect(location, there, server->ab->locations[dest_id], server);
   report(0, "connected to %s", orwl_endpoint_print(&there));
 }
 
@@ -331,7 +326,6 @@ void orwl_make_local_connection(size_t dest_id,
                                 orwl_server *server,
                                 orwl_mirror *location) {
   orwl_endpoint there = server->host.ep;
-  there.index = dest_id;
   orwl_mirror_connect(location, there, dest_id, server);
   report(0, "connected to %s", orwl_endpoint_print(&there));
 }
@@ -346,9 +340,8 @@ void rpc_check_colored_init_finished(size_t id,
 }
 
 size_t orwl_get_neighbors_in_undirected_graph(orwl_vertex **my_neighbors,
-    size_t id,
-    size_t max_neighbors,
-    orwl_graph *graph) {
+					      size_t id,
+					      orwl_graph *graph) {
   size_t current = 0;
   orwl_vertex * me = &graph->vertices[id];
   /* first we add the neighbors where I request locks */
@@ -380,29 +373,27 @@ size_t orwl_get_id_from_vertex(orwl_graph *graph, orwl_vertex *vertex) {
 }
 
 bool orwl_wait_to_initialize_locks(size_t id,
-                                   orwl_graph *graph,
-                                   orwl_address_book *ab,
+				   orwl_server* serv,
                                    rand48_t *seed) {
-  orwl_vertex * me = &graph->vertices[id];
-  orwl_vertex * my_neighbors[graph->nb_vertices]; /* upper limit */
-  for (size_t i = 0 ; i < graph->nb_vertices ; i++)
+  orwl_vertex * me = &serv->graph->vertices[id];
+  orwl_vertex * my_neighbors[serv->graph->nb_vertices]; /* upper limit */
+  for (size_t i = 0 ; i < serv->graph->nb_vertices ; i++)
     my_neighbors[i] = NULL;
 
   size_t nb = orwl_get_neighbors_in_undirected_graph(my_neighbors,
-              id,
-              graph->nb_vertices,
-              graph);
+						     id,
+						     serv->graph);
 
   for (size_t i = 0 ; i < nb ; i++) {
     assert(my_neighbors[i]->color != me->color);
     /* we ensure that the neighbors with a lower color are initialized */
     if (my_neighbors[i]->color < me->color) {
-      size_t vertex_id = orwl_get_id_from_vertex(graph, my_neighbors[i]);
+      size_t vertex_id = orwl_get_id_from_vertex(serv->graph, my_neighbors[i]);
       if (vertex_id == SIZE_MAX) {
         printf("error when getting the id number of a vertex");
         return false;
       }
-      rpc_check_colored_init_finished(vertex_id, graph, ab, seed);
+      rpc_check_colored_init_finished(vertex_id, serv->graph, serv->ab, seed);
     }
   }
 
@@ -410,30 +401,27 @@ bool orwl_wait_to_initialize_locks(size_t id,
 }
 
 bool orwl_wait_to_start(size_t id,
-                        orwl_graph *graph,
-                        orwl_address_book *ab,
-                        orwl_server *server,
                         size_t nb_local_tasks,
+                        orwl_server *server,
                         rand48_t *seed) {
   pthread_rwlock_wrlock(&server->lock);
   server->id_initialized[id] = true;
   pthread_rwlock_unlock(&server->lock);
-  orwl_vertex * me = &graph->vertices[id];
-  orwl_vertex * my_neighbors[graph->nb_vertices]; /* upper limit */
+  orwl_vertex * me = &server->graph->vertices[id];
+  orwl_vertex * my_neighbors[server->graph->nb_vertices]; /* upper limit */
   size_t nb = orwl_get_neighbors_in_undirected_graph(my_neighbors,
-              id,
-              graph->nb_vertices,
-              graph);
+						     id,
+						     server->graph);
 
   for (size_t i = 0 ; i < nb ; i++) {
     assert(my_neighbors[i]->color != me->color);
     if (my_neighbors[i]->color > me->color) {
-      size_t vertex_id = orwl_get_id_from_vertex(graph, my_neighbors[i]);
+      size_t vertex_id = orwl_get_id_from_vertex(server->graph, my_neighbors[i]);
       if (vertex_id == SIZE_MAX) {
         printf("error when getting the id number of a vertex");
         return false;
       }
-      rpc_check_colored_init_finished(vertex_id, graph, ab, seed);
+      rpc_check_colored_init_finished(vertex_id, server->graph, server->ab, seed);
     }
   }
 

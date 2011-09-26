@@ -196,12 +196,8 @@ bool orwl_address_book_read(orwl_address_book **ab, char const *file, size_t nb_
  **        Finally, once the global address book is copied everywhere, the
  **        kick-off can be performed by deleting id_filename on the nodes.
  **
- ** @param ab is a pointer on a ::orwl_address_book*. Warning, memory
- **        is allocated inside this function
  ** @param ab_filename is the expected path to the global address book
- ** @param graph is a pointer on a ::orwl_graph*. Warning, memory
- **        is allocated inside this function
- ** @param graph is the path to the dot file containing the graph description
+ ** @param graph_filename is the path to the dot file containing the graph description
  ** @param serv is a pointer on the local ::orwl_server
  ** @param id_filename is the path to the partial address book produced
  ** @param nb_id is the number of vertices running on the local server
@@ -211,31 +207,25 @@ bool orwl_address_book_read(orwl_address_book **ab, char const *file, size_t nb_
  ** @param nb_vertices is the global number of vertices in the graph
  ** @return true if everything has been correctly performed, false otherwise
  **/
-bool orwl_wait_and_load_init_files(orwl_address_book **ab,
-                                   const char *ab_filename,
-                                   orwl_graph **graph,
+bool orwl_wait_and_load_init_files(const char *ab_filename,
                                    const char *graph_filename,
-                                   orwl_server *serv,
                                    const char *id_filename,
                                    size_t nb_id,
                                    size_t *list_id,
                                    size_t *list_locations,
-                                   size_t nb_vertices);
+                                   size_t nb_vertices,
+				   orwl_server *serv);
 
 /**
  ** @brief Connect a distant location to the local server
  **
  ** @param dest_id is the id of the distant vertex
  ** @param server is a pointer on the local ::orwl_server
- ** @param graph is a pointer on a ::orwl_graph
- ** @param ab is a pointer on a ::orwl_address_book
  ** @param location is a pointer on a local ::orwl_mirror
  **        where the distant location must be mirrored
  **/
 void orwl_make_distant_connection(size_t dest_id,
                                   orwl_server *server,
-                                  orwl_graph *graph,
-                                  orwl_address_book *ab,
                                   orwl_mirror *location);
 
 /**
@@ -260,15 +250,13 @@ void orwl_make_local_connection(size_t dest_id,
  **
  ** @param id is the id of the vertex corresponding to the
  **        application thread
- ** @param graph is a pointer on a ::orwl_graph
- ** @param ab is a pointer on a ::orwl_address_book
+ ** @param serv is a pointer on a ::orwl_server
  ** @param seed is a pointer on a ::rand48_t (required because
  **        RPC can be launched)
  ** @return true if everything has been correctly performed, false otherwise
  **/
 bool orwl_wait_to_initialize_locks(size_t id,
-                                   orwl_graph *graph,
-                                   orwl_address_book *ab,
+                                   orwl_server *serv,
                                    rand48_t *seed);
 
 /**
@@ -278,19 +266,15 @@ bool orwl_wait_to_initialize_locks(size_t id,
  **
  ** @param id is the id of the vertex corresponding to the
  **        application thread
- ** @param graph is a pointer on a ::orwl_graph
- ** @param ab is a pointer on a ::orwl_address_book
- ** @param server is a pointer on the local ::orwl_server
  ** @param nb_local_tasks is the number of local vertices
+ ** @param server is a pointer on the local ::orwl_server
  ** @param seed is a pointer on a ::rand48_t (required because
  **        RPC can be launched)
  ** @return true if everything has been correctly performed, false otherwise
  **/
 bool orwl_wait_to_start(size_t id,
-                        orwl_graph *graph,
-                        orwl_address_book *ab,
-                        orwl_server *server,
                         size_t nb_local_tasks,
+                        orwl_server *server,
                         rand48_t *seed);
 
 #endif

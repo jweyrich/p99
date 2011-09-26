@@ -19,8 +19,6 @@
 
 #define MEGA (1024 * 1024)
 
-static orwl_graph *graph = 0;
-static orwl_address_book *ab = 0;
 static orwl_mirror *local_locations = 0;
 static size_t shared_memory_size = 0;
 static size_t iterations = 0;
@@ -79,7 +77,7 @@ DEFINE_THREAD(arg_t) {
   /***************************************************************************/
   /* Only the main task makes connections on distant guys */
   for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++) {
-    orwl_make_distant_connection(Arg->vertex->neighbors[i], orwl_server_get(), graph, ab, &distant_locations[Arg->vertex->neighbors[i]]);
+    orwl_make_distant_connection(Arg->vertex->neighbors[i], orwl_server_get(), &distant_locations[Arg->vertex->neighbors[i]]);
   }
 
   /* Take the local lock in write mode */
@@ -90,7 +88,7 @@ DEFINE_THREAD(arg_t) {
   orwl_thread_cntrl_wait_for_caller(Arg->det);
 
   /* Wait to take all the distant locks */
-  orwl_wait_to_initialize_locks(Arg->id, graph, ab, seed);
+  orwl_wait_to_initialize_locks(Arg->id, orwl_server_get(), seed);
 
   /* Take the distant locks in read mode*/
   for (size_t i = 0; i < Arg->vertex->nb_neighbors; ++i)
@@ -98,8 +96,7 @@ DEFINE_THREAD(arg_t) {
                        &handle_distant_pos[Arg->vertex->neighbors[i]]);
 
   /* Check if my neighbors are ready before starting, then realease the handle on my location */
-  orwl_wait_to_start(Arg->id, graph, ab, orwl_server_get(), nb_tasks, seed);
-
+  orwl_wait_to_start(Arg->id, nb_tasks, orwl_server_get(), seed);
 
   /***************************************************************************/
   /*                       Initialization iteration                          */
@@ -110,13 +107,12 @@ DEFINE_THREAD(arg_t) {
   for (size_t i = 0 ; i < ((shared_memory_size * MEGA) / sizeof(uint64_t)) ; i++) {
     my_data[i] = orwl_rand(seed);
   }
-  orwl_disconnect2(&my_task_handle);
+  orwl_next2(&my_task_handle);
   /* Take the distant locks to keep the correct number of phases */
   for (size_t i = 0 ; i < Arg->vertex->nb_neighbors ; i++) {
     orwl_acquire2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
-    orwl_disconnect2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
+    orwl_next2(&handle_distant_pos[Arg->vertex->neighbors[i]]);
   }
-
 
   /* Fire ! */
   /***************************************************************************/
@@ -237,12 +233,8 @@ int main(int argc, char **argv) {
 
     /* local server initialization */
     orwl_types_init();
-    orwl_start(nb_locations, SOMAXCONN);
-
+    orwl_start(nb_locations, SOMAXCONN, , true);
     if (!orwl_alive()) return EXIT_FAILURE;
-
-    orwl_server_block();
-
     local_locations = orwl_mirror_vnew(nb_locations);
 
     for (size_t i = 0 ; i < nb_tasks ; i++) {
@@ -251,13 +243,13 @@ int main(int argc, char **argv) {
     }
     report(1, "local connections done");
 
-    if (!orwl_wait_and_load_init_files(&ab, global_ab_file,
-				       &graph, graph_file,
-				       orwl_server_get(),
+    if (!orwl_wait_and_load_init_files(global_ab_file,
+				       graph_file,
 				       local_ab_file,
 				       nb_tasks, list_tasks, 
 				       list_locations,
-				       global_nb_tasks)) {
+				       global_nb_tasks,	
+				       orwl_server_get())) {
 
       report(1, "can't load some files");
       return EXIT_FAILURE;
@@ -270,13 +262,13 @@ int main(int argc, char **argv) {
       arg_t *myarg
 	= P99_NEW(arg_t,
 		  list_tasks[i],
-		  &graph->vertices[list_tasks[i]],
+		  &orwl_server_get()->graph->vertices[list_tasks[i]],
 		  list_locations[i],
 		  i,
 		  det[i]);
       arg_t_launch(myarg, det[i]);
     }
-    
+
     for (size_t i = 0 ; i < nb_tasks ; i++) {
       orwl_thread_cntrl_wait_for_callee(det[i]);
       orwl_thread_cntrl_detach(det[i]);
