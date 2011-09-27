@@ -14,7 +14,8 @@ NAME 	=					\
 		orwl_local_test_inclusive	\
 		orwl_remote_server		\
 		orwl_remote_test_inclusive	\
-		orwl_socket_finish		\
+		orwl_finish		 	\
+		orwl_posix_print		\
 		orwl_socket_test		\
 		orwl_benchmark_kernel23		\
 		orwl_benchmark_synthetic	\
