@@ -17,7 +17,6 @@
 #include "p99_str.h"
 #include "orwl_instrument.h"
 
-static orwl_server srv = P99_INIT;
 static orwl_mirror *locations = 0;
 static size_t shift_local_locations = 0;
 static rand48_t *seed = 0;
@@ -675,7 +674,7 @@ int main(int argc, char **argv) {
   seed = seed_get();
   orwl_types_init();
 
-  orwl_start(nb_locations, SOMAXCONN, &srv, true);
+  orwl_start(nb_locations, SOMAXCONN,, true);
   if (!orwl_alive()) return EXIT_FAILURE;
 
   locations = orwl_mirror_vnew(nb_locations);
