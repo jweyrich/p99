@@ -232,7 +232,6 @@ int main(int argc, char **argv) {
       list_locations[i] = i;
 
     /* local server initialization */
-    orwl_types_init();
     orwl_start(nb_locations, SOMAXCONN, , true);
     if (!orwl_alive()) return EXIT_FAILURE;
     local_locations = orwl_mirror_vnew(nb_locations);

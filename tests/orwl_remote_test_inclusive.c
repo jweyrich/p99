@@ -221,8 +221,6 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  orwl_types_init();
-
   /* condition the run */
   size_t phases = str2uz(argv[2]);
   size_t number = str2uz(argv[3]);

@@ -212,7 +212,7 @@ void orwl_types_init(void);
 DEFINE_ORWL_DOMAIN(ORWL_FTAB(orwl_types),                                                     \
                    P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, ORWL_REGISTER_TYPE, __VA_ARGS__) \
                    );                                                                         \
-DEFINE_ONCE(orwl_types, __VA_ARGS__) { }
+DEFINE_ONCE(orwl_types, __VA_ARGS__)
 
 DECLARE_ONCE(orwl_types);
 

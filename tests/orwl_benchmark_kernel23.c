@@ -19,7 +19,6 @@
 
 static orwl_mirror *locations = 0;
 static size_t shift_local_locations = 0;
-static rand48_t *seed = 0;
 static size_t count = 0;
 static size_t sub_matrix_size = 0;
 static size_t iterations = 0;
@@ -328,6 +327,7 @@ DEFINE_THREAD(arg_t) {
                                          ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER,
                                          ORWL_HANDLE2_INITIALIZER, ORWL_HANDLE2_INITIALIZER
                                         };
+  rand48_t * seed = seed_get();
 
   /***************************************************************************/
   /*                              Connection step                            */
@@ -671,9 +671,6 @@ int main(int argc, char **argv) {
   shift_local_locations = nb_tasks; /* before: exported locations, after: imported locations */
 
   /* local server initialization */
-  seed = seed_get();
-  orwl_types_init();
-
   orwl_start(nb_locations, SOMAXCONN,, true);
   if (!orwl_alive()) return EXIT_FAILURE;
 

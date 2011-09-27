@@ -18,11 +18,9 @@ int main(int argc, char **argv) {
   int ret = 0;
 
   orwl_types_init();
-  orwl_start(P99_0(in_addr_t), 4);
+  orwl_start(10, 4);
   if (!orwl_alive()) return EXIT_FAILURE;
-  report(1, "started %s" PRIX64, orwl_endpoint_print(&orwl_server_get()->host.ep));
-
-  rand48_t seed = RAND48_T_INITIALIZER;
+  report(1, "started %s", orwl_endpoint_print(&orwl_server_get()->host.ep));
 
   if (argc > 1) {
     report(1, "connecting to %s", argv[1]);
@@ -31,7 +29,7 @@ int main(int argc, char **argv) {
 
     /* wait until the other side is up. */
     /* ep.port is already in host order */
-    while (orwl_rpc(0, &other, &seed, orwl_proc_insert_peer, port2host(&orwl_server_get()->host.ep.port))
+    while (orwl_rpc(0, &other, seed_get(), orwl_proc_insert_peer, port2host(&orwl_server_get()->host.ep.port))
            == P99_TMAX(uint64_t)) {
       if (!orwl_alive()) break;
       sleepfor(0.2);
@@ -54,7 +52,7 @@ int main(int argc, char **argv) {
         }
         report(1, "sending to %s ", orwl_endpoint_print(&other));
         /* ep.addr and ep.port are already in host order */
-        orwl_rpc(0, &other, &seed, orwl_proc_do_nothing,
+        orwl_rpc(0, &other, seed_get(), orwl_proc_do_nothing,
                  orwl_server_get()->host.ep.addr.a[3], orwl_server_get()->host.ep.port.p, t);
       }
     }
@@ -64,8 +62,14 @@ int main(int argc, char **argv) {
     char mesg[256] = "";
     strerror_r(ret, mesg, 256);
     report(1, "Server already terminated: %s", mesg);
+    ret = EXIT_FAILURE;
+  } else {
+    ret = EXIT_SUCCESS;
   }
   orwl_pthread_wait_detached();
   report(1, "host %p and next %p", (void*)orwl_server_get()->host.next, (void*)&orwl_server_get()->host);
+  orwl_server_terminate();
   orwl_stop();
+  seed_get_clear();
+  return ret;
 }

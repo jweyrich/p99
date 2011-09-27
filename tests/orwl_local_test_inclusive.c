@@ -281,8 +281,6 @@ int main(int argc, char **argv) {
     setenv("ORWL_SECRET", secretStr, 1);
   }
 
-  orwl_types_init();
-
   /* condition the run */
   size_t phases = str2uz(argv[1]);
   orwl_np = str2uz(argv[2]);
@@ -302,7 +300,6 @@ int main(int argc, char **argv) {
 
   /* start the server thread and initialize it properly */
   ORWL_KEY_SCALE(basic, orwl_np * 2);
-  //orwl_server srv = P99_INIT;
   ORWL_TIMER(server_start) {
     orwl_start(orwl_keys_total(), SOMAXCONN);
     if (!orwl_alive()) return EXIT_FAILURE;

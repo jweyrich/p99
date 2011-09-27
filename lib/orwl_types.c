@@ -30,5 +30,12 @@ DEFINE_ORWL_TYPES(orwl_state,
                   orwl_wq,
                   orwl_wh,
                   orwl_proc
-                 );
+                  ) {
+  orwl_register_init(ORWL_FTAB(orwl_types));
+  for (size_t i = 0; ; ++i) {
+    void *R = orwl_register_get(ORWL_FTAB(orwl_types) + i);
+    if (!R) break;
+    orwl_register_init(*(orwl_register**)R);
+  }
+}
 

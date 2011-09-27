@@ -77,7 +77,6 @@ void process_opt(int argc, char **argv) {
 
 
 int main(int argc, char **argv) {
-  orwl_types_init();
   process_opt(argc, argv);
   if (verbose < 0) verbose = background ? 0 : 1;
 

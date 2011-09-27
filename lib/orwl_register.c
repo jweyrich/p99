@@ -36,11 +36,5 @@ P99_INSTANTIATE(void, orwl_register_call, orwl_register const*, void*);
 P99_INSTANTIATE(void, orwl_domain_call, orwl_domain, size_t, void*);
 
 void orwl_types_init(void) {
-  orwl_register_init(ORWL_FTAB(orwl_types));
-  for (size_t i = 0; ; ++i) {
-    void *R = orwl_register_get(ORWL_FTAB(orwl_types) + i);
-    if (!R) break;
-    orwl_register_init(*(orwl_register**)R);
-  }
   INIT_ONCE(orwl_types);
 }

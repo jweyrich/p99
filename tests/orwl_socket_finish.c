@@ -69,20 +69,17 @@ P99_DEFINE_DEFARG(ftester, ((test_t) { -2 }), 2, 0.5);
 
 int main(int argc, char **argv) {
   report(1, "starting");
-  /* ORWL_TYPE_DYNAMIC_INIT(auth_sock); */
+  /* This init here is necessary since we don't even start a server thread */
   orwl_types_init();
   if (argc > 1) {
-    rand48_t seed = RAND48_T_INITIALIZER;
-
     report(1, "connecting to %s", argv[1]);
     orwl_endpoint other = ORWL_ENDPOINT_INITIALIZER(0, 0);
     orwl_endpoint_parse(&other, argv[1]);
     errno = 0;
     /* wait until the other side is up. */
-    uint64_t ret = orwl_send(0, &other, &seed, 1, &P99_LVAL(orwl_buffer));
+    uint64_t ret = orwl_send(0, &other, seed_get(), 1, &P99_LVAL(orwl_buffer));
     char messg[245];
-    sprintf(messg, "finish server %s %" PRIX64,
-            argv[1], ret);
+    sprintf(messg, "finish server %s %" PRIX64, argv[1], ret);
     perror(messg);
     errno = 0;
   }

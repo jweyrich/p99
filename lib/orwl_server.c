@@ -255,6 +255,7 @@ orwl_start(size_t max_queues,       /*!< [in] the maximum number of locations,
            char const* endp         /*!< [in] defaults to the
                                       null address */
 	   ) {
+  INIT_ONCE(orwl_types);
   orwl_server_init(serv, max_connections, max_queues, endp);
   orwl_server_create(serv, &serv->id);
   /* give the server the chance to fire things up */
