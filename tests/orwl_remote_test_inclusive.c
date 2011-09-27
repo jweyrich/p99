@@ -321,7 +321,6 @@ int main(int argc, char **argv) {
 
   /* now we can safely destruct ourselves */
   report(0, "%s: killing server", argv[0]);
-  orwl_server_terminate();
   orwl_stop();
 
   report(1, "freeing arg");

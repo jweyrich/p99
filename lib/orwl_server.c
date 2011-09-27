@@ -76,7 +76,7 @@ void orwl_server_close(orwl_server *serv) {
 
 
 void orwl_server_terminate(orwl_server *serv) {
-  if (serv) orwl_send(0, &serv->host.ep, seed_get(), 1, &P99_LVAL(orwl_buffer));
+  if (serv && orwl_alive(serv)) orwl_send(0, &serv->host.ep, seed_get(), 1, &P99_LVAL(orwl_buffer));
 }
 
 void orwl_server_destroy(orwl_server *serv) {
@@ -265,6 +265,7 @@ orwl_start(size_t max_queues,       /*!< [in] the maximum number of locations,
 
 void
 orwl_stop(orwl_server *serv) {
+  orwl_server_terminate(serv);
   orwl_server_join(serv->id);
   orwl_server_destroy(serv);
 }

@@ -275,7 +275,6 @@ int main(int argc, char **argv) {
     orwl_pthread_wait_detached();
     free(det);
   }
-  orwl_server_terminate();
   orwl_stop();
   sleep(3);
   size_t_vdelete(list_tasks);

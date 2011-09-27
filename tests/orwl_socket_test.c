@@ -68,7 +68,6 @@ int main(int argc, char **argv) {
   }
   orwl_pthread_wait_detached();
   report(1, "host %p and next %p", (void*)orwl_server_get()->host.next, (void*)&orwl_server_get()->host);
-  orwl_server_terminate();
   orwl_stop();
   seed_get_clear();
   return ret;

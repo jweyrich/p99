@@ -717,7 +717,6 @@ int main(int argc, char **argv) {
   for (size_t i = 0 ; i < nb_tasks ; i++) {
     arg_t_join(tid[i]);
   }
-  orwl_server_terminate();
   orwl_stop();
   seed_get_clear();
   size_t_vdelete(list_tasks);
