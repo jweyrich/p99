@@ -19,9 +19,9 @@
 require "tempfile"
 
 # Configuration stuffs
-GLOBAL_ADDRESS_BOOK = "/tmp/global_ab"
-LOCAL_ADDRESS_BOOK = "/tmp/local_ab"
-LOCAL_OUTPUT = "/tmp/orwl_output"
+GLOBAL_ADDRESS_BOOK = "/tmp/my_global_ab"
+LOCAL_ADDRESS_BOOK = "/tmp/my_local_ab"
+LOCAL_OUTPUT = "/tmp/my_orwl_output"
 CONNECTOR = "oarsh -q -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o PreferredAuthentications=publickey -o BatchMode=yes"
 
 def run(p)
@@ -79,4 +79,8 @@ taktuk_thread.join
 
 # Fetch the outputs
 taktuk_cmd = "broadcast get [ #{LOCAL_OUTPUT} ] [ '#{output_path}/#{File.basename(LOCAL_OUTPUT)}.$rank' ]"
+run(taktuk_header + node_list + taktuk_cmd)
+
+# Remove the global address books and outputs
+taktuk_cmd = "broadcast exec [ 'rm #{GLOBAL_ADDRESS_BOOK} #{LOCAL_OUTPUT}' ]"
 run(taktuk_header + node_list + taktuk_cmd)
