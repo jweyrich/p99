@@ -52,11 +52,10 @@ orwl_server* orwl_server_init(orwl_server *serv,
       .host = ORWL_HOST_INITIALIZER(serv->host, 0, 0, 1),
       .ab = P99_0(orwl_address_book*),
       .graph = P99_0(orwl_graph*),
-      .id_initialized = P99_0(bool*),
+      .id_initialized = P99_0(orwl_notifier*),
       .global_barrier = P99_0(orwl_notifier*),
       .unblocked_locations = 0,
     };
-    pthread_rwlock_init(&serv->lock);
     pthread_mutex_init(&serv->launch);
     if (endp && endp[0]) orwl_endpoint_parse(&serv->host.ep, endp);
   }
@@ -94,7 +93,6 @@ void orwl_server_destroy(orwl_server *serv) {
   }
   if (serv->wqs) orwl_wq_vdelete(serv->wqs);
   if (serv->whs) orwl_wh_vdelete(serv->whs);
-  if (serv->id_initialized) bool_vdelete(serv->id_initialized);
   if (serv->info) free(serv->info);
   orwl_server_init(serv);
 #ifdef GETTIMING

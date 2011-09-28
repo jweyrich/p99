@@ -206,13 +206,7 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_release, uintptr_t whID, uint64_t flags, uint64_
 
 DEFINE_ORWL_PROC_FUNC(orwl_proc_check_initialization, uint64_t id) {
   ORWL_PROC_READ(Arg, orwl_proc_check_initialization, uint64_t id);
-  bool finished = false;
-  while (!finished) {
-    pthread_rwlock_rdlock(&Arg->srv->lock);
-    finished = Arg->srv->id_initialized[id];
-    pthread_rwlock_unlock(&Arg->srv->lock);
-    sleepfor(0.1);
-  }
+  orwl_notifier_block(&Arg->srv->id_initialized[id]);
 }
 
 DEFINE_ORWL_PROC_FUNC(orwl_proc_barrier, uint64_t id) {

@@ -303,8 +303,12 @@ bool orwl_wait_and_load_init_files(char const *ab_filename,
                                    size_t *list_locations,
                                    size_t nb_vertices,
                                    orwl_server *serv) {
-  serv->id_initialized = bool_vrealloc(serv->id_initialized, nb_vertices);
+  serv->id_initialized = realloc(serv->id_initialized, sizeof(orwl_notifier) * nb_vertices);
   serv->global_barrier = realloc(serv->global_barrier, sizeof(orwl_notifier) * nb_vertices);
+  for (size_t task = 0 ; task < nb_vertices ; task++) {
+    orwl_notifier_init(serv->id_initialized + task);
+    orwl_notifier_init(serv->global_barrier + task);
+  }
   if (!orwl_dump_id(serv, id_filename, nb_id, list_id, list_locations))
     return false;
   orwl_wait_until_file_is_here(id_filename);
@@ -384,7 +388,6 @@ bool orwl_wait_to_initialize_locks(size_t id,
   size_t nb = orwl_get_neighbors_in_undirected_graph(my_neighbors,
 						     id,
 						     serv->graph);
-
   for (size_t i = 0 ; i < nb ; i++) {
     assert(my_neighbors[i]->color != me->color);
     /* we ensure that the neighbors with a lower color are initialized */
@@ -426,9 +429,7 @@ bool orwl_wait_to_start(size_t id,
                         size_t nb_local_tasks,
                         orwl_server *server,
                         rand48_t *seed) {
-  pthread_rwlock_wrlock(&server->lock);
-  server->id_initialized[id] = true;
-  pthread_rwlock_unlock(&server->lock);
+  orwl_notifier_set(&server->id_initialized[id]);
   orwl_vertex * me = &server->graph->vertices[id];
   orwl_vertex * my_neighbors[server->graph->nb_vertices]; /* upper limit */
   size_t nb = orwl_get_neighbors_in_undirected_graph(my_neighbors,

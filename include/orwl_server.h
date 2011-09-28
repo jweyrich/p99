@@ -33,9 +33,8 @@ struct orwl_server {
   struct orwl_address_book* ab; /*!< the address book used for distributed init */
   pthread_t id;            /*!< the ID of this server thread */
   pthread_mutex_t launch;  /*!< serialize the launching of threads */
-  pthread_rwlock_t lock;   /*!< an initialization lock */
-  bool* id_initialized;    /*!< needed during initialization */
-  struct orwl_notifier* global_barrier;
+  struct orwl_notifier* id_initialized; /*!< needed during initialization */
+  struct orwl_notifier* global_barrier; /*!< needed for global barrier */
   size_t unblocked_locations; /*!< needed during initialization */
 };
 
