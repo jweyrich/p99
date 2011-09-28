@@ -300,12 +300,29 @@ P99_PROTOTYPE(bool, orwl_wait_to_start, size_t, size_t, orwl_server *, rand48_t 
 #define orwl_wait_to_start_defarg_2() orwl_server_get()
 #define orwl_wait_to_start_defarg_3() seed_get()
 
+/**
+ ** @brief Initialize a global barrier. This must be performed on all the tasks
+ **
+ ** @param id is the is the id of the vertex corresponding to the
+ **        application thread
+ ** @param server is a pointer on the local ::orwl_server
+ **/
 void orwl_global_barrier_init(size_t id, orwl_server *server);
 
 P99_PROTOTYPE(void, orwl_global_barrier_init, size_t, orwl_server *);
 #define orwl_global_barrier_init(...) P99_CALL_DEFARG(orwl_global_barrier_init, 2, __VA_ARGS__)
 #define orwl_global_barrier_init_defarg_1() orwl_server_get()
 
+/**
+ ** @brief Wait until all the application tasks have entered in the barrier.
+ **
+ ** @param id is the is the id of the vertex corresponding to the
+ **        application thread
+ ** @param nb_tasks is the global number of tasks
+ ** @param server is a pointer on the local ::orwl_server
+ ** @param seed is a pointer on a ::rand48_t (required because
+ **        RPC can be launched)
+ **/
 void orwl_global_barrier(size_t id, size_t nb_tasks, orwl_server *server, rand48_t *seed);
 
 P99_PROTOTYPE(void, orwl_global_barrier, size_t, size_t, orwl_server *, rand48_t *);
