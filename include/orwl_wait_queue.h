@@ -225,7 +225,7 @@ extern "C" {
 #ifndef DOXYGEN
   P99_PROTOTYPE(orwl_wq*, orwl_wq_init, orwl_wq*, const pthread_mutexattr_t*);
 #define orwl_wq_init(...) P99_CALL_DEFARG(orwl_wq_init, 2, __VA_ARGS__)
-#define orwl_wq_init_defarg_1() P99_0(const pthread_mutexattr_t*)
+#define orwl_wq_init_defarg_1() pthread_mutexattr_thread
 #endif
 
   DOCUMENT_DESTROY(orwl_wq)

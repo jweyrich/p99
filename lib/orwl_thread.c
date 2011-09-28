@@ -96,6 +96,8 @@ DEFINE_ONCE(pthread_mutex_t) {
 #endif
   pthread_mutexattr_init(&pthread_mutexattr_thread_);
   pthread_mutexattr_setpshared(&pthread_mutexattr_thread_, PTHREAD_PROCESS_PRIVATE);
+  pthread_mutexattr_settype(&pthread_mutexattr_thread_, PTHREAD_MUTEX_ERRORCHECK);
+  pthread_mutexattr_settype(&pthread_mutexattr_process_, PTHREAD_MUTEX_ERRORCHECK);
 }
 
 DEFINE_ONCE(pthread_cond_t) {
