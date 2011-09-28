@@ -305,10 +305,6 @@ bool orwl_wait_and_load_init_files(char const *ab_filename,
                                    orwl_server *serv) {
   serv->id_initialized = orwl_notifier_vrealloc(serv->id_initialized, nb_vertices);
   serv->global_barrier = orwl_notifier_vrealloc(serv->global_barrier, nb_vertices);
-  for (size_t task = 0 ; task < nb_vertices ; task++) {
-    orwl_notifier_init(serv->id_initialized + task);
-    orwl_notifier_init(serv->global_barrier + task);
-  }
   if (!orwl_dump_id(serv, id_filename, nb_id, list_id, list_locations))
     return false;
   orwl_wait_until_file_is_here(id_filename);
