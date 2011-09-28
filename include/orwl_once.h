@@ -109,14 +109,28 @@ static void P99_PASTE3(o_rwl_, T, _once_init0)(void)
  ** pthread_mutex_t @a mut.
  ** @see ORWL_CRITICAL for a tool where you don't have to allocate the
  ** mutex yourself.
+ **
+ ** This does some rudimentary error checking for the result of the
+ ** locking. If an error occurs the whole block and any other
+ ** enclosing blocks that protected with P99_UNWIND_PROTECT are
+ ** aborted.
  **/
 P99_BLOCK_DOCUMENT
-#define MUTUAL_EXCLUDE(MUT)                                    \
-P99_GUARDED_BLOCK(pthread_mutex_t*,                            \
-      P99_FILEID(mut),                                         \
-      &(MUT),                                                  \
-      pthread_mutex_lock(P99_FILEID(mut)),                     \
-      pthread_mutex_unlock(P99_FILEID(mut)))
+#define MUTUAL_EXCLUDE(MUT)                                             \
+P00_BLK_START                                                           \
+P00_BLK_DECL(int, errNo, 0)                                             \
+P99_GUARDED_BLOCK(pthread_mutex_t*,                                     \
+                  P99_FILEID(mut),                                      \
+                  &(MUT),                                               \
+                  (void)(P99_UNLIKELY(errNo = pthread_mutex_lock(P99_FILEID(mut))) \
+                         && (errno = errNo)                             \
+                         && (perror(__FILE__ ":" P99_STRINGIFY(__LINE__) ": lock error for " P99_STRINGIFY(MUT)), 1) \
+                         && (errno = 0)                                 \
+                         && (P99_FILEID(mut) = 0, 1)                    \
+                         && (P99_UNWIND(-1), 1)                         \
+                         ),                                             \
+                  (void)(P99_FILEID(mut)                                \
+                         && pthread_mutex_unlock(P99_FILEID(mut))))
 
 /**
  ** @brief Protect the following block or statement as a critical
@@ -129,7 +143,8 @@ P99_GUARDED_BLOCK(pthread_mutex_t*,                            \
  ** to enter this same critical section. Threads may well be
  ** simultaneously be in different critical sections.
  ** @see MUTUAL_EXCLUDE to protect several critical sections against
- ** each other.
+ ** each other and on the behavior if an error occurs during the
+ ** locking of the mutex.
  **/
 P99_BLOCK_DOCUMENT
 #define ORWL_CRITICAL                                                                   \
