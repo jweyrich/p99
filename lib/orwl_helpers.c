@@ -303,8 +303,8 @@ bool orwl_wait_and_load_init_files(char const *ab_filename,
                                    size_t *list_locations,
                                    size_t nb_vertices,
                                    orwl_server *serv) {
-  serv->id_initialized = realloc(serv->id_initialized, sizeof(orwl_notifier) * nb_vertices);
-  serv->global_barrier = realloc(serv->global_barrier, sizeof(orwl_notifier) * nb_vertices);
+  serv->id_initialized = orwl_notifier_vrealloc(serv->id_initialized, nb_vertices);
+  serv->global_barrier = orwl_notifier_vrealloc(serv->global_barrier, nb_vertices);
   for (size_t task = 0 ; task < nb_vertices ; task++) {
     orwl_notifier_init(serv->id_initialized + task);
     orwl_notifier_init(serv->global_barrier + task);

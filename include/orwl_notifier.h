@@ -228,4 +228,6 @@ void orwl_notifier_block(orwl_notifier* notifier) {
 
 #endif
 
+DECLARE_NEW_DELETE(orwl_notifier);
+
 #endif

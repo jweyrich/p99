@@ -93,6 +93,8 @@ void orwl_server_destroy(orwl_server *serv) {
   }
   if (serv->wqs) orwl_wq_vdelete(serv->wqs);
   if (serv->whs) orwl_wh_vdelete(serv->whs);
+  if (serv->id_initialized) orwl_notifier_vdelete(serv->id_initialized);
+  if (serv->global_barrier) orwl_notifier_vdelete(serv->global_barrier);
   if (serv->info) free(serv->info);
   orwl_server_init(serv);
 #ifdef GETTIMING

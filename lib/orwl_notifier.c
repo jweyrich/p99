@@ -19,3 +19,5 @@ P99_INSTANTIATE(void, orwl_notifier_set, orwl_notifier*);
 P99_INSTANTIATE(void, orwl_notifier_unset, orwl_notifier*);
 P99_INSTANTIATE(void, orwl_notifier_block, orwl_notifier*);
 P99_INSTANTIATE(bool, orwl_notifier_verify, orwl_notifier*);
+
+DEFINE_NEW_DELETE(orwl_notifier);
