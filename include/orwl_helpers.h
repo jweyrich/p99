@@ -300,4 +300,17 @@ P99_PROTOTYPE(bool, orwl_wait_to_start, size_t, size_t, orwl_server *, rand48_t 
 #define orwl_wait_to_start_defarg_2() orwl_server_get()
 #define orwl_wait_to_start_defarg_3() seed_get()
 
+void orwl_global_barrier_init(size_t id, orwl_server *server);
+
+P99_PROTOTYPE(void, orwl_global_barrier_init, size_t, orwl_server *);
+#define orwl_global_barrier_init(...) P99_CALL_DEFARG(orwl_global_barrier_init, 2, __VA_ARGS__)
+#define orwl_global_barrier_init_defarg_1() orwl_server_get()
+
+void orwl_global_barrier(size_t id, size_t nb_tasks, orwl_server *server, rand48_t *seed);
+
+P99_PROTOTYPE(void, orwl_global_barrier, size_t, size_t, orwl_server *, rand48_t *);
+#define orwl_global_barrier(...) P99_CALL_DEFARG(orwl_global_barrier, 4, __VA_ARGS__)
+#define orwl_global_barrier_defarg_2() orwl_server_get()
+#define orwl_global_barrier_defarg_3() seed_get()
+
 #endif

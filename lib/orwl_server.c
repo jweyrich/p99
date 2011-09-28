@@ -53,6 +53,7 @@ orwl_server* orwl_server_init(orwl_server *serv,
       .ab = P99_0(orwl_address_book*),
       .graph = P99_0(orwl_graph*),
       .id_initialized = P99_0(bool*),
+      .global_barrier = P99_0(orwl_notifier*),
       .unblocked_locations = 0,
     };
     pthread_rwlock_init(&serv->lock);

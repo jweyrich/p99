@@ -35,6 +35,7 @@ struct orwl_server {
   pthread_mutex_t launch;  /*!< serialize the launching of threads */
   pthread_rwlock_t lock;   /*!< an initialization lock */
   bool* id_initialized;    /*!< needed during initialization */
+  struct orwl_notifier* global_barrier;
   size_t unblocked_locations; /*!< needed during initialization */
 };
 

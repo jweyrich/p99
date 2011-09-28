@@ -304,6 +304,7 @@ bool orwl_wait_and_load_init_files(char const *ab_filename,
                                    size_t nb_vertices,
                                    orwl_server *serv) {
   serv->id_initialized = bool_vrealloc(serv->id_initialized, nb_vertices);
+  serv->global_barrier = realloc(serv->global_barrier, sizeof(orwl_notifier) * nb_vertices);
   if (!orwl_dump_id(serv, id_filename, nb_id, list_id, list_locations))
     return false;
   orwl_wait_until_file_is_here(id_filename);
@@ -398,6 +399,27 @@ bool orwl_wait_to_initialize_locks(size_t id,
   }
 
   return true;
+}
+
+void rpc_check_barrier(size_t id,
+		       orwl_address_book *ab,
+		       rand48_t *seed) {
+  orwl_endpoint there = ab->eps[id];
+  orwl_rpc(0, &there, seed, orwl_proc_barrier, id);
+}
+
+void orwl_global_barrier_init(size_t id, orwl_server *server) {
+  orwl_notifier_unset(&server->global_barrier[id]);
+}
+
+void orwl_global_barrier(size_t id,
+			 size_t nb_tasks,
+			 orwl_server *server,
+			 rand48_t *seed) {
+  orwl_notifier_set(&server->global_barrier[id]);
+  for (size_t task = 0 ; task < nb_tasks ; task++)
+    if (task != id)
+      rpc_check_barrier(task, server->ab, seed);
 }
 
 bool orwl_wait_to_start(size_t id,

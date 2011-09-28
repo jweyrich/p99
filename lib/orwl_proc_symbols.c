@@ -215,6 +215,11 @@ DEFINE_ORWL_PROC_FUNC(orwl_proc_check_initialization, uint64_t id) {
   }
 }
 
+DEFINE_ORWL_PROC_FUNC(orwl_proc_barrier, uint64_t id) {
+  ORWL_PROC_READ(Arg, orwl_proc_barrier, uint64_t id);
+  orwl_notifier_block(&Arg->srv->global_barrier[id]);
+}
+
 DEFINE_ORWL_TYPE_DYNAMIC(orwl_proc,
                          ORWL_REGISTER_ALIAS(orwl_proc_insert_peer, orwl_proc),
                          ORWL_REGISTER_ALIAS(orwl_proc_insert_host, orwl_proc),
@@ -222,6 +227,7 @@ DEFINE_ORWL_TYPE_DYNAMIC(orwl_proc,
                          ORWL_REGISTER_ALIAS(orwl_proc_write_request, orwl_proc),
                          ORWL_REGISTER_ALIAS(orwl_proc_read_request, orwl_proc),
                          ORWL_REGISTER_ALIAS(orwl_proc_release, orwl_proc),
-                         ORWL_REGISTER_ALIAS(orwl_proc_check_initialization, orwl_proc)
+                         ORWL_REGISTER_ALIAS(orwl_proc_check_initialization, orwl_proc),
+			 ORWL_REGISTER_ALIAS(orwl_proc_barrier, orwl_proc)
                         );
 

@@ -26,6 +26,7 @@ DECLARE_ORWL_PROC_FUNC(orwl_proc_insert_peer, uint64_t port);
 DECLARE_ORWL_PROC_FUNC(orwl_proc_insert_host, uint64_t addr, uint64_t port);
 DECLARE_ORWL_PROC_FUNC(orwl_proc_do_nothing, void);
 DECLARE_ORWL_PROC_FUNC(orwl_proc_check_initialization, uint64_t id_pow2);
+DECLARE_ORWL_PROC_FUNC(orwl_proc_barrier, uint64_t id);
 
 
 #endif      /* !ORWL_PROC_SYMBOLS_H_ */
