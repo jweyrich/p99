@@ -331,7 +331,8 @@ void orwl_make_local_connection(size_t dest_id,
   report(0, "connected to %s", orwl_endpoint_print(&there));
 }
 
-void rpc_check_colored_init_finished(size_t id,
+static
+void o_rwl_rpc_check_colored_init_finished(size_t id,
                                      orwl_graph *graph,
                                      orwl_address_book *ab,
                                      rand48_t *seed) {
@@ -393,14 +394,15 @@ bool orwl_wait_to_initialize_locks(size_t id,
         printf("error when getting the id number of a vertex");
         return false;
       }
-      rpc_check_colored_init_finished(vertex_id, serv->graph, serv->ab, seed);
+      o_rwl_rpc_check_colored_init_finished(vertex_id, serv->graph, serv->ab, seed);
     }
   }
 
   return true;
 }
 
-void rpc_check_barrier(size_t id,
+static
+void o_rwl_rpc_check_barrier(size_t id,
 		       orwl_address_book *ab,
 		       rand48_t *seed) {
   orwl_endpoint there = ab->eps[id];
@@ -411,14 +413,15 @@ void orwl_global_barrier_init(size_t id, orwl_server *server) {
   orwl_notifier_unset(&server->global_barrier[id]);
 }
 
-void orwl_global_barrier(size_t id,
-			 size_t nb_tasks,
-			 orwl_server *server,
-			 rand48_t *seed) {
+int orwl_global_barrier_wait(size_t id,
+                             size_t nb_tasks,
+                             orwl_server *server,
+                             rand48_t *seed) {
   orwl_notifier_set(&server->global_barrier[id]);
   for (size_t task = 0 ; task < nb_tasks ; task++)
     if (task != id)
-      rpc_check_barrier(task, server->ab, seed);
+      o_rwl_rpc_check_barrier(task, server->ab, seed);
+  return id ? 0 : PTHREAD_BARRIER_SERIAL_THREAD;
 }
 
 bool orwl_wait_to_start(size_t id,
@@ -440,7 +443,7 @@ bool orwl_wait_to_start(size_t id,
         printf("error when getting the id number of a vertex");
         return false;
       }
-      rpc_check_colored_init_finished(vertex_id, server->graph, server->ab, seed);
+      o_rwl_rpc_check_colored_init_finished(vertex_id, server->graph, server->ab, seed);
     }
   }
 

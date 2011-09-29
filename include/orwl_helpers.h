@@ -19,6 +19,7 @@
 #include "orwl_server.h"
 #include "orwl_handle2.h"
 #include "orwl_int.h"
+#include "orwl_barrier.h"
 
 P99_DECLARE_STRUCT(orwl_vertex);
 P99_DECLARE_STRUCT(orwl_graph);
@@ -319,15 +320,21 @@ P99_PROTOTYPE(void, orwl_global_barrier_init, size_t, orwl_server *);
  ** @param id is the is the id of the vertex corresponding to the
  **        application thread
  ** @param nb_tasks is the global number of tasks
- ** @param server is a pointer on the local ::orwl_server
- ** @param seed is a pointer on a ::rand48_t (required because
- **        RPC can be launched)
+ ** @param server is a pointer on the local ::orwl_server, defaults to the standard server thread
+ ** @param seed is a pointer on a ::rand48_t, defaults to a predefined per thread seed. This is necessary because
+ **        an RPC may be launched by the barrier.
+ **
+ ** @return For all but one chosen participants in the barrier the
+ ** value @c 0 is returned. The chosen one returns @c
+ ** PTHREAD_BARRIER_SERIAL_THREAD such that an application may perform
+ ** special action that has to be done by just one of the
+ ** participants.
  **/
-void orwl_global_barrier(size_t id, size_t nb_tasks, orwl_server *server, rand48_t *seed);
+int orwl_global_barrier_wait(size_t id, size_t nb_tasks, orwl_server *server, rand48_t *seed);
 
-P99_PROTOTYPE(void, orwl_global_barrier, size_t, size_t, orwl_server *, rand48_t *);
-#define orwl_global_barrier(...) P99_CALL_DEFARG(orwl_global_barrier, 4, __VA_ARGS__)
-#define orwl_global_barrier_defarg_2() orwl_server_get()
-#define orwl_global_barrier_defarg_3() seed_get()
+P99_PROTOTYPE(int, orwl_global_barrier_wait, size_t, size_t, orwl_server *, rand48_t *);
+#define orwl_global_barrier_wait(...) P99_CALL_DEFARG(orwl_global_barrier_wait, 4, __VA_ARGS__)
+#define orwl_global_barrier_wait_defarg_2() orwl_server_get()
+#define orwl_global_barrier_wait_defarg_3() seed_get()
 
 #endif
