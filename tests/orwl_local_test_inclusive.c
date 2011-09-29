@@ -136,11 +136,7 @@ DEFINE_THREAD(arg_t) {
 
     /** Block until we haven't acquired all locks. **/
     for (size_t i = 0; i < nb_hand; ++i) {
-      t = orwl_gettime();
-      report(false, "%ld/acquiring: %p",t.tv_nsec,&left[i]);
       orwl_acquire2(&handle[i]);
-      t = orwl_gettime();
-      report(false, "%ld/acquired: %p",t.tv_nsec,&left[i]);
     }
 
     t = orwl_gettime();
@@ -150,11 +146,7 @@ DEFINE_THREAD(arg_t) {
     report(false, "%ld/truncated: %p",t.tv_nsec,&left[readers]);
 
     for (size_t i = 0; i < nb_hand; ++i) {
-      t = orwl_gettime();
-      report(false, "%ld/releasing: %p",t.tv_nsec,&left[i]);
       orwl_next2(&handle[i]);
-      t = orwl_gettime();
-      report(false, "%ld/released: %p",t.tv_nsec,&left[i]);
     }
   }
 
@@ -176,12 +168,7 @@ DEFINE_THREAD(arg_t) {
      **/
     ORWL_TIMER(work_loop)
     for (size_t i = 0; i < nb_hand; ++i) {
-      t = orwl_gettime();
-      report(false, "%ld/acquiring: %p",t.tv_nsec,&left[i]);
       ostate = orwl_acquire2(&handle[i]);
-      t = orwl_gettime();
-      report(false, "%ld/acquired: %p",t.tv_nsec,&left[i]);
-
     }
     /** Working Phase: we hold a write lock on our own location and
      ** read locks on the locations of the neighbors.
@@ -244,9 +231,7 @@ DEFINE_THREAD(arg_t) {
     /* At the end of the phase, release our locks and launch the next
      * phase by placing a new request in the end of the queue. */
     for (size_t i = 0; i < nb_hand; ++i) {
-      report(false, "%ld/releasing: %p",t.tv_nsec,&left[i]);
       ostate = orwl_next2(&handle[i]);
-      report(false, "%ld/released: %p",t.tv_nsec,&left[i]);
     }
   }
 
