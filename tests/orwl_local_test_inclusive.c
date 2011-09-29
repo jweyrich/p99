@@ -81,7 +81,6 @@ DEFINE_THREAD(arg_t) {
   char* info = Arg->info;
   size_t readers = Arg->readers;
   size_t nb_hand;
-  struct timespec t;
 
   /**
    ** Initialization of some variables.
@@ -135,19 +134,9 @@ DEFINE_THREAD(arg_t) {
     }
 
     /** Block until we haven't acquired all locks. **/
-    for (size_t i = 0; i < nb_hand; ++i) {
-      orwl_acquire2(&handle[i]);
-    }
-
-    t = orwl_gettime();
-    report(false, "%ld/truncating: %p",t.tv_nsec,&left[readers]);
+    orwl_acquire2(handle, nb_hand);
     orwl_truncate2(&handle[readers], len);
-    t = orwl_gettime();
-    report(false, "%ld/truncated: %p",t.tv_nsec,&left[readers]);
-
-    for (size_t i = 0; i < nb_hand; ++i) {
-      orwl_next2(&handle[i]);
-    }
+    orwl_next2(handle, nb_hand);
   }
 
   report(false, "starting phases");
@@ -166,10 +155,7 @@ DEFINE_THREAD(arg_t) {
     /** Acquire all the handles, our own and the neighboring ones.
      ** This will block until the locks are obtained.
      **/
-    ORWL_TIMER(work_loop)
-    for (size_t i = 0; i < nb_hand; ++i) {
-      ostate = orwl_acquire2(&handle[i]);
-    }
+    ostate = orwl_acquire2(handle, nb_hand);
     /** Working Phase: we hold a write lock on our own location and
      ** read locks on the locations of the neighbors.
      **/
@@ -230,16 +216,13 @@ DEFINE_THREAD(arg_t) {
 
     /* At the end of the phase, release our locks and launch the next
      * phase by placing a new request in the end of the queue. */
-    for (size_t i = 0; i < nb_hand; ++i) {
-      ostate = orwl_next2(&handle[i]);
-    }
+    ostate = orwl_next2(handle, nb_hand);
   }
 
   /** And at the very end of the lifetime of the thread cancel all
    ** locks such that no other thread is blocked and return.
    **/
-  for (size_t i = 0; i < nb_hand; ++i)
-    ostate = orwl_disconnect2(&handle[i]);
+  ostate = orwl_disconnect2(handle, nb_hand);
   report(false, "finished");
 
   /** free handle **/

@@ -117,8 +117,7 @@ DEFINE_THREAD(arg_t) {
 
   /* Do some resizing, but only in the initial phase. */
   {
-    for (size_t i = 0; i < 3; ++i)
-      orwl_acquire2(&handle[i]);
+    orwl_acquire2(handle, 3);
     size_t len = sizeof(uint64_t);
     char const* env = getenv("ORWL_HANDLE_SIZE");
     if (env) {
@@ -128,8 +127,7 @@ DEFINE_THREAD(arg_t) {
     orwl_truncate2(&handle[1], len);
     report(true, "handle resized to %zu byte                                             \n",
            len);
-    for (size_t i = 0; i < 3; ++i)
-      orwl_next2(&handle[i]);
+    orwl_next2(handle, 3);
   }
 
 
@@ -149,8 +147,7 @@ DEFINE_THREAD(arg_t) {
     /** Acquire all the three handles, our own and the two neighboring ones.
      ** This will block until the locks are obtained.
      **/
-    for (size_t i = 0; i < 3; ++i)
-      ostate = orwl_acquire2(&handle[i]);
+    ostate = orwl_acquire2(handle, 3);
 
     /* Now work on our data. */
     int64_t diff[3] = { P99_TMIN(int64_t), P99_0(int64_t), P99_TMIN(int64_t) };
@@ -200,15 +197,13 @@ info[-1] = (abs(diff[0]) <= 2 ? ((char[]) { '-', '<', '.', '>', '+'})[diff[0] + 
 
     /* At the end of the phase, release our locks and launch the next
      * phase by placing a new request in the end of the queue. */
-    for (size_t i = 0; i < 3; ++i)
-      ostate = orwl_next2(&handle[i]);
+    ostate = orwl_next2(handle, 3);
   }
 
   /** And at the very end of the lifetime of the thread cancel all
    ** locks such that no other thread is blocked and return.
    **/
-  for (size_t i = 0; i < 3; ++i)
-    ostate = orwl_disconnect2(&handle[i]);
+  ostate = orwl_disconnect2(handle, 3);
   report(false, "finished");
 }
 
