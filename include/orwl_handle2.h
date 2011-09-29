@@ -26,7 +26,7 @@
  ** @see orwl_acquire2 blocks until the state is orwl_acquired
  ** @see orwl_test2 can be used to know if an orwl_handle2 has been
  ** acquired asynchronously
- ** @see orwl_release2 inserts the handle at the end of the queue and
+ ** @see orwl_next2 inserts the handle at the end of the queue and
  ** frees the front of it.
  **/
 struct orwl_handle2 {
@@ -124,6 +124,7 @@ orwl_state orwl_read_request2(orwl_mirror* location, /*!< [in,out] the location 
 O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_next2)
 orwl_state orwl_next2(orwl_handle2* rh2,   /*!< [in,out] the handle to be released */
+                      size_t size,           /*!< [in] vector size, defaults to 1 */
                       rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                       );
 
@@ -160,6 +161,7 @@ orwl_state orwl_forced_cancel2(orwl_handle2* rh2,   /*!< [in,out] the handle to 
 O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_acquire2)
 orwl_state orwl_acquire2(orwl_handle2* rh2,   /*!< [in,out] the handle to be acquired */
+                         size_t size,           /*!< [in] vector size, defaults to 1 */
                          rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                         );
 
@@ -170,6 +172,7 @@ orwl_state orwl_acquire2(orwl_handle2* rh2,   /*!< [in,out] the handle to be acq
 O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_disconnect2)
 orwl_state orwl_disconnect2(orwl_handle2* rh2,   /*!< [in,out] the handle to be acquired */
+                            size_t size,           /*!< [in] vector size, defaults to 1 */
                             rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                             );
 
@@ -180,6 +183,7 @@ orwl_state orwl_disconnect2(orwl_handle2* rh2,   /*!< [in,out] the handle to be 
 O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_test2)
 orwl_state orwl_test2(orwl_handle2* rh2,   /*!< [in,out] the handle to be tested */
+                      size_t size,           /*!< [in] vector size, defaults to 1 */
                       rand48_t* seed         /*!< [in,out] defaults to a thread local seed */
                      );
 
@@ -268,9 +272,10 @@ P99_PROTOTYPE(orwl_state, orwl_read_request2, orwl_mirror*, orwl_handle2*, size_
 #define orwl_read_request2_defarg_2() 1u
 #define orwl_read_request2_defarg_3() seed_get()
 
-P99_PROTOTYPE(orwl_state, orwl_next2, orwl_handle2*, rand48_t*);
-#define orwl_next2(...)  P99_CALL_DEFARG(orwl_next2, 2, __VA_ARGS__)
-#define orwl_next2_defarg_1() seed_get()
+P99_PROTOTYPE(orwl_state, orwl_next2, orwl_handle2*, size_t, rand48_t*);
+#define orwl_next2(...)  P99_CALL_DEFARG(orwl_next2, 3, __VA_ARGS__)
+#define orwl_next2_defarg_1() 1u
+#define orwl_next2_defarg_2() seed_get()
 
 P99_DEPRECATED()
 P99_PROTOTYPE(orwl_state, orwl_release2, orwl_handle2*, rand48_t*);
@@ -286,17 +291,20 @@ P99_PROTOTYPE(orwl_state, orwl_forced_cancel2, orwl_handle2*, rand48_t*);
 #define orwl_forced_cancel2(...)  P99_CALL_DEFARG(orwl_forced_cancel2, 2, __VA_ARGS__)
 #define orwl_forced_cancel2_defarg_1() seed_get()
 
-P99_PROTOTYPE(orwl_state, orwl_acquire2, orwl_handle2*, rand48_t*);
-#define orwl_acquire2(...)  P99_CALL_DEFARG(orwl_acquire2, 2, __VA_ARGS__)
-#define orwl_acquire2_defarg_1() seed_get()
+P99_PROTOTYPE(orwl_state, orwl_acquire2, orwl_handle2*, size_t, rand48_t*);
+#define orwl_acquire2(...)  P99_CALL_DEFARG(orwl_acquire2, 3, __VA_ARGS__)
+#define orwl_acquire2_defarg_1() 1u
+#define orwl_acquire2_defarg_2() seed_get()
 
-P99_PROTOTYPE(orwl_state, orwl_disconnect2, orwl_handle2*, rand48_t*);
-#define orwl_disconnect2(...)  P99_CALL_DEFARG(orwl_disconnect2, 2, __VA_ARGS__)
-#define orwl_disconnect2_defarg_1() seed_get()
+P99_PROTOTYPE(orwl_state, orwl_disconnect2, orwl_handle2*, size_t, rand48_t*);
+#define orwl_disconnect2(...)  P99_CALL_DEFARG(orwl_disconnect2, 3, __VA_ARGS__)
+#define orwl_disconnect2_defarg_1() 1u
+#define orwl_disconnect2_defarg_2() seed_get()
 
-P99_PROTOTYPE(orwl_state, orwl_test2, orwl_handle2*, rand48_t*);
-#define orwl_test2(...)  P99_CALL_DEFARG(orwl_test2, 2, __VA_ARGS__)
-#define orwl_test2_defarg_1() seed_get()
+P99_PROTOTYPE(orwl_state, orwl_test2, orwl_handle2*, size_t, rand48_t*);
+#define orwl_test2(...)  P99_CALL_DEFARG(orwl_test2, 3, __VA_ARGS__)
+#define orwl_test2_defarg_1() 1u
+#define orwl_test2_defarg_2() seed_get()
 
 P99_PROTOTYPE(uint64_t*, orwl_map2, orwl_handle2*, size_t*, rand48_t*);
 #define orwl_map2(...)  P99_CALL_DEFARG(orwl_map2, 3, __VA_ARGS__)
