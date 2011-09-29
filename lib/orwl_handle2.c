@@ -91,7 +91,7 @@ orwl_state orwl_next2(orwl_handle2* rh2, rand48_t* seed)  {
   orwl_acquire2(rh2);
   if (rh2->state[par] == orwl_acquired) {
     rh2->state[par] =  mirror_location(rh2)
-                       ? orwl_release(&rh2->pair[par], seed)
+                       ? orwl_release(&rh2->pair[par], 1u, seed)
                        : orwl_invalid;
   }
   ++(rh2->clock);
@@ -140,7 +140,7 @@ orwl_state orwl_disconnect2(orwl_handle2* rh2, rand48_t* seed) {
       case orwl_requested:
         orwl_acquire(&pair[par]);
       case orwl_acquired:
-        orwl_release(&pair[par], seed);
+        orwl_release(&pair[par], 1u, seed);
       default: ;
       }
     }

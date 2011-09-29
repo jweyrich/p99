@@ -283,7 +283,8 @@ orwl_state orwl_read_request(orwl_mirror* rq, /*!< [in,out] the location for the
 O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_release)
 orwl_state orwl_release(orwl_handle* rh,   /*!< [in,out] the handle to be released */
-                        rand48_t* seed         /*!< [in] defaults to a thread local seed */
+                        size_t size,       /*!< [in] the size of the vector */
+                        rand48_t* seed     /*!< [in] defaults to a thread local seed */
                        );
 
 /**
@@ -293,7 +294,7 @@ orwl_state orwl_release(orwl_handle* rh,   /*!< [in,out] the handle to be releas
 O_RWL_DOCUMENT_SEED
 P99_DEFARG_DOCU(orwl_cancel)
 orwl_state orwl_cancel(orwl_handle* rh,   /*!< [in,out] the handle to be canceled */
-                       rand48_t* seed         /*!< [in] defaults to a thread local seed */
+                       rand48_t* seed     /*!< [in] defaults to a thread local seed */
                       );
 
 #ifndef DOXYGEN
@@ -307,9 +308,10 @@ P99_PROTOTYPE(orwl_state, orwl_read_request, orwl_mirror*, orwl_handle*, size_t,
 #define orwl_read_request_defarg_2() 1u
 #define orwl_read_request_defarg_3() seed_get()
 
-P99_PROTOTYPE(orwl_state, orwl_release, orwl_handle*, rand48_t*);
-#define orwl_release(...)  P99_CALL_DEFARG(orwl_release, 2, __VA_ARGS__)
-#define orwl_release_defarg_1() seed_get()
+P99_PROTOTYPE(orwl_state, orwl_release, orwl_handle*, size_t, rand48_t*);
+#define orwl_release(...)  P99_CALL_DEFARG(orwl_release, 3, __VA_ARGS__)
+#define orwl_release_defarg_1() 1u
+#define orwl_release_defarg_2() seed_get()
 
 P99_PROTOTYPE(orwl_state, orwl_cancel, orwl_handle*, rand48_t*);
 #define orwl_cancel(...)  P99_CALL_DEFARG(orwl_cancel, 2, __VA_ARGS__)
@@ -329,30 +331,63 @@ bool orwl_inclusive(orwl_handle* rh) {
 }
 
 /**
- ** @brief Block until a previously issued read or write request can
+ ** @brief Block until a set of previously issued read or write request can
  ** be fulfilled
  ** @memberof orwl_handle
  ** @todo By means of a version counter avoid to copy data over the
  ** wire that we know already.
  **/
 inline
-orwl_state orwl_acquire(orwl_handle* rh) {
+orwl_state orwl_acquire(orwl_handle* rh, size_t size) {
   orwl_state ret =  orwl_invalid;
-  ORWL_TIMING(total_acquire)
-  if (rh) ret = orwl_wh_acquire(rh->wh, 0);
+  for (size_t i = 0; i < size; ++i) {
+      if (rh) {
+        ORWL_TIMING(total_acquire) {
+          ret = orwl_wh_acquire(&rh->wh[i], 0);
+          if (ret == orwl_invalid) return ret;
+        }
+      }
+  }
   return ret;
 }
 
+inline
+P99_PROTOTYPE(orwl_state, orwl_acquire, orwl_handle*, size_t);
+#define orwl_acquire(...)  P99_CALL_DEFARG(orwl_acquire, 2, __VA_ARGS__)
+#define orwl_acquire_defarg_1() 1u
+
+
 /**
- ** @brief Test if a previously issued read or write request can
+ ** @brief Test if a set of previously issued read or write request can
  ** be fulfilled
  ** @memberof orwl_handle
+ **
+ ** Returns the "minimum" value among the return values for all @a
+ ** size elements of the vector @a rh, i.e ::orwl_invalid if at least
+ ** one of the handles is invalid, ::orwl_requested if at least one is
+ ** not yet acquired and ::orwl_acquired if all have been acquired.
  **/
 inline
-orwl_state orwl_test(orwl_handle* rh) {
-  if (!rh) return orwl_invalid;
-  return orwl_wh_test(rh->wh, 0);
+orwl_state orwl_test(orwl_handle* rh, size_t size) {
+  orwl_state ret =  orwl_state_amount;
+  for (size_t i = 0; i < size; ++i) {
+    if (rh) {
+      ORWL_TIMING(total_test)
+        orwl_state res = orwl_wh_test(&rh->wh[i], 0);
+      if (res < ret) return ret = res;
+    } else {
+      ret = orwl_invalid;
+    }
+  }
+  return ret;
 }
+
+inline
+P99_PROTOTYPE(orwl_state, orwl_test, orwl_handle*, size_t);
+#define orwl_test(...)  P99_CALL_DEFARG(orwl_test, 2, __VA_ARGS__)
+#define orwl_test_defarg_1() 1u
+
+
 
 enum {
   /**

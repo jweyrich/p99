@@ -48,8 +48,8 @@ P99_INSTANTIATE(void, orwl_handle_destroy, orwl_handle*);
 DEFINE_NEW_DELETE(orwl_handle);
 
 P99_INSTANTIATE(bool, orwl_inclusive, orwl_handle*);
-P99_INSTANTIATE(orwl_state, orwl_acquire, orwl_handle*);
-P99_INSTANTIATE(orwl_state, orwl_test, orwl_handle*);
+P99_INSTANTIATE(orwl_state, orwl_acquire, orwl_handle*, size_t);
+P99_INSTANTIATE(orwl_state, orwl_test, orwl_handle*, size_t);
 
 orwl_state orwl_write_request(orwl_mirror *rq0, orwl_handle* rh0, size_t size, rand48_t *seed) {
   orwl_state state = orwl_invalid;
@@ -227,9 +227,11 @@ void orwl_push(orwl_server *srv, orwl_endpoint const*ep,
   }
 }
 
-orwl_state orwl_release(orwl_handle* rh, rand48_t *seed) {
+orwl_state orwl_release(orwl_handle* rh0, size_t size, rand48_t *seed) {
   orwl_state state = orwl_valid;
+  for (size_t i = 0; i < size; ++i)
   ORWL_TIMER(total_release) {
+    orwl_handle *rh = rh0 + i;
     assert(rh);
     assert(rh->wh);
     /* To be able to re-initialize rh in the middle of the procedure,
