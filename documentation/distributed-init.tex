@@ -1,0 +1,338 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\title{Distributed initialization of ORWL applications}
+\author{Emmanuel Jeanvoine}
+
+\begin{document}
+\maketitle
+
+\section{Problem statements}
+To launch a distributed ORWL application, two points must be
+addressed. The first one is related to the connection between the
+distributed ORWL tasks and the second one is related to the
+initialization of the locks.
+
+\subsection{Connection}
+The distributed applications considered here are the applications
+composed of several tasks that have data dependencies. With ORWL, the
+remote data access is performed through \textit{orwl\_mirror} objects
+that must be connected either to a local location or to a distant
+one. To allow the distant connections, the tasks must know the
+physical location of other tasks. If the application is launched with
+a static scheme (aka the port number of the servers is specified at
+the startup), the solution is trivial. However it is not really
+flexible to proceed like that and it is more convenient to let the
+servers find a free port. The problem in this case is to know for a
+task the port number of the server of a distant task.
+
+\subsection{Initialization}
+To keep the liveness and equity properties in ORWL applications, it is
+crucial to ensure that the initialization of the lock handles is
+performed correctly. The typical workflow is as follows. The tasks
+manage local data that are accessed though write locks and these tasks
+also access to distant data through read locks.
+
+To associate a lock handle to a physical location, a read or write
+request (depending on the access kind) must be posted. In several
+communication patterns, the request post order is important and must
+be respected. For instance, a write request from a local task must be
+posted before read requests from the distant tasks.
+
+\section{Concept of the solution provided}
+As far as no global communicator like MPI can be used, we propose to
+provide the user application with two data structures: an address book
+and a connection graph.
+
+\subsection{Address book}
+The address book contains the information required to establish a
+communication between any task (eventually several tasks can be
+launched in the same \texttt{orwl\_server}). Basically it is a pair
+composed of a task rank and an \texttt{orwl\_endpoint}.
+
+At the startup, each server generates a file containing the
+information for every task it hosts. This information is called
+\textit{local address book}. Then, the servers are blocked until an
+external process gathers all the information and broadcasts the
+\textit{global address book}.
+
+\subsection{Connection graph}\label{subsec:connection-graph}
+The connection graph is a directed graph where each vertex stands for
+a task and each edge stands for a data access. Thanks to this data
+structure, each task can know on which distant tasks the data accesses
+must be performed.
+
+Furthermore, to ensure the liveness property in ORWL, the graph is
+also used for the initialization of the applications. Actually, the
+graph is also colored with the following properties: two vertices
+connected cannot have the same color and the number of color in the
+graph is minimized. Then, an initialization process can ensure that
+a given task can perform some operations before its neighbors. This is
+required when the read/write requests are posted to ensure a
+serialization of some requests in sub group of connected tasks.
+
+\section{How to create a graph file?}
+The graph files required to run the distributed applications are based
+on the DOT language.
+
+Here is an example of a fully connected graph with 4 vertices:
+\begin{verbatim}
+digraph G {
+0 -> 1
+0 -> 2
+0 -> 3
+1 -> 0
+1 -> 2
+1 -> 3
+2 -> 0
+2 -> 1
+2 -> 3
+3 -> 0
+3 -> 1
+3 -> 2
+0 [color="0", label="0-0"]
+1 [color="1", label="1-1"]
+2 [color="2", label="2-2"]
+3 [color="3", label="3-3"]
+}
+\end{verbatim}
+The graph file actually contains three informations:
+\begin{itemize}
+\item the connections between the vertices ;
+\item a color for each vertex ;
+\item a label for each vertex.
+\end{itemize}
+
+The label field does not necessarily contains significant information,
+but it can be used for some kind of applications. For instance, the
+Livermoore Kernel 23 application uses this field to specify on which
+main task belong a sub task and which is its position with respect to
+the main task.
+
+Writing a graph quickly becomes tedious as the number of tasks
+increased. Thus it is recommended to create a script to achieve
+that. Two scripts are provided for generating the graph associated to
+the ORWL benchmarks:\\ \texttt{scripts/gen\_graph\_bench\_synthetic.rb} and
+\texttt{scripts/gen\_graph\_bench\_kernel23.pl}. These scripts generate
+uncolored graph that must be colored. To achieve this coloring scripts
+are provided in the ORWL distribution (\texttt{script/coloreo.pl} and
+\texttt{script/parallel\_coloreo.pl}).
+
+For instance, to create a graph for the
+\texttt{orwl\_benchmark\_kernel23} application, and for a $4\times 4$ problem,
+one can generate it like that:
+\begin{verbatim}
+$> scripts/gen_graph_bench_kernel23.pl 4 4 > uncolored_graph.tmp
+$> scripts/coloreo.pl -n uncolored_graph.tmp > graph_4_4.dot
+$> rm uncolored_graph.tmp
+\end{verbatim}
+
+\section{Helpers library}
+A set of functions provides the developers with some facilities to
+run distributed ORWL applications.
+
+\subsection{Address book and graph data structures initialization}
+In order to create a global address book and to load the graph into
+memory, users can use the following function:
+\begin{verbatim}
+bool
+orwl_wait_and_load_init_files(char * global_ab_file,
+                              char * graph_file,
+                              char * local_ab_file,
+                              size_t nb_local_tasks,
+                              size_t * list_local_tasks,
+                              size_t * list_locations,
+                              size_t nb_global_tasks)
+\end{verbatim}
+\begin{itemize}
+\item \texttt{global\_ab\_file} is the expected path to the global
+  address book
+\item \texttt{graph\_file} is the path to the dot file containing the
+  graph description
+\item \texttt{local\_ab\_file} is the path to the partial address book
+  produced
+\item \texttt{nb\_local\_tasks} is the number of tasks running on the
+  local server
+\item \texttt{list\_local\_tasks} is an array containing the task rank
+  of the local tasks
+\item \texttt{list\_locations} is an array containing the location
+  managed by a the local tasks (\texttt{list\_locations[i]} is the
+  location corresponding to the task \texttt{list\_local\_tasks[i]})
+\item \texttt{nb\_global\_tasks} is the global number of tasks
+\end{itemize}
+
+This function should be placed in the main program, before launching
+the task threads. It blocks the application until a kick-off is
+given. Once called, this function produces a partial address book
+containing the information of the tasks launched on the current server
+and writes it in the \texttt{local\_ab\_file} file. The idea is to
+collect the \texttt{local\_ab\_file} files on all the nodes from an
+external application that concatenates it to a global address
+book. Then the external application has to send the global address
+book on the nodes (the expected file name is
+\texttt{global\_ab\_file}). Finally, once the global address book is
+copied on all the nodes, the kick-off can be performed by the external
+application by deleting \texttt{local\_ab\_file} on all the nodes.
+
+This function also expects that the \texttt{graph\_file} file has been
+copied on all the nodes by the external application once the kick-off
+is given.
+
+After the kick-off, the function loads the address book and the graph
+into memory and returns \texttt{true} if everything went well.
+
+\paragraph{Warning:} \texttt{local\_ab\_file} must not point to a
+shared space amongs all the nodes involved in the
+application. Typically it should points to a file in the \texttt{/tmp}
+directory. 
+
+\subsection{Locks initialization}
+To ensure that some locks initializations are performed in the
+correct order (based on the colored graph,
+cf. section~\ref{subsec:connection-graph}), two functions are
+provided. The two following functions must be called from the task
+threads and the server must be launched in blocked mode beforehand.
+
+\begin{verbatim}
+bool
+orwl_wait_to_initialize_locks(size_t task)
+\end{verbatim}
+\begin{itemize}
+\item \texttt{task} is the rank of the task thread
+\end{itemize}
+
+This function blocks a task thread until the corresponding task is
+able to initialize its locks. This \textit{ability} is based on graph
+coloring and on the policy to block a task until all its neighbors in
+the undirected graph with a lower color are initialized.
+
+\begin{verbatim}
+bool
+orwl_wait_to_start(size_t task,
+                   size_t nb_local_tasks)
+\end{verbatim}
+\begin{itemize}
+\item \texttt{task} is the rank of the task thread
+\item \texttt{nb\_local\_tasks} is the number of tasks running on the
+  local server
+\end{itemize}
+
+This function blocks a task thread until the neighbors (in the
+undirected graph) of the corresponding task have initialized their
+locks. Furthermore, once all the local task of a server have passed
+this function, the server is unblocked and starts to serve the remote
+requests.
+
+The typical workflow is as
+follows. \texttt{orwl\_wait\_to\_initialize\_locks()} is called and
+blocks until the neighbors with a lower color are initialized
+(aka have called \texttt{orwl\_wait\_to\_start()}). Then the task
+thread performs the locks initialization. Then it calls
+\texttt{orwl\_wait\_to\_start()}. This method allows to ensure that
+any task cannot start before all its neighbors are initialized.
+
+\paragraph{Warning:}this kind of initialization works only when the
+graph does not contain cycle of length 2.
+ 
+\subsection{Global barrier}
+Sometime, for instance when the graph has cycles of length 2, the
+locks initialization based on coloring is not a sufficient
+assumption. Thus, a global barrier must be required to ensure that
+some local requests are performed before distant requests. To achieve
+that, it is possible to call the following functions.
+\begin{verbatim}
+void
+orwl_global_barrier_init(size_t task)
+\end{verbatim}
+\begin{itemize}
+\item \texttt{task} is the task number 
+\end{itemize}
+This function initializes a global barrier. This must be performed on
+all the tasks. 
+
+\begin{verbatim}
+int
+orwl_global_barrier_wait(size_t task,
+                         size_t nb_tasks)
+\end{verbatim}
+\begin{itemize}
+\item \texttt{task} is the task number 
+\item \texttt{nb\_task} is the global number of tasks
+\end{itemize}
+This function waits until all the tasks enter in the barrier. This
+must be performed on all the tasks. Also, it returns 0 on all the
+tasks but one that receives \texttt{PTHREAD\_BARRIER\_SERIAL\_THREAD}.
+
+\paragraph{Note:}currently, the global barrier can be used safely only
+one time and must involve all the tasks of an application. 
+
+\section{Distributed run}
+A distributed ORWL application has its tasks distributed over several
+nodes. To ease the multi-nodes execution, a script is provided in the
+ORWL distribution that aims at:
+\begin{itemize}
+\item spawning all the processes (eventually composed of several
+  tasks) on the nodes
+\item cooperating with the helpers function to :
+\begin{itemize}
+  \item broadcast the graph file
+  \item gather the local address books and broadcast the global one
+  \item remove the local address books to kick-off the application
+\end{itemize}
+\item gathering the outputs of all the processes
+\end{itemize}
+
+This script can be found in \texttt{script/deploy\_orwl.rb}. It relies
+heavily on the parallel launcher
+Taktuk\footnote{http://taktuk.gforge.inria.fr/}. So Taktuk must be
+installed at least on the frontend of the cluster. Furthermore, it is
+supposed to work with the OAR batch scheduler and thus, it uses
+\texttt{oarsh} instead of the classical connector. If it supposed to
+work with another batch scheduler, the definition of the constant
+\texttt{CONNECTOR} must be adapted in the script with respect to the
+batch scheduler used.
+
+To launch an application, \texttt{script/deploy\_orwl.rb} must be used
+as follows:
+\begin{verbatim}
+ruby $ORWL_HOME/script/deploy_orwl.rb $MACHINE_FILE \
+                                      $OUTPUT_PATH \
+                                      $SCRIPT \
+                                      $SCRIPT_ARGS
+\end{verbatim}
+\begin{itemize}
+\item \texttt{\$ORWL\_HOME} is the path to the ORWL distribution
+\item \texttt{\$MACHINE\_FILE} is the path to node file, containing
+  one node per line
+\item \texttt{\$OUTPUT\_PATH} is the path to the directory that will
+  be used to store the output of each ORWL process
+\item \texttt{\$SCRIPT} is the path to an application specific script
+  that really spawn an  ORWL process. This script is supposed to take
+  4 parameters that are, in this order: 
+  \begin{enumerate}
+  \item the global address book file
+  \item the local address book file
+  \item the rank of the process
+  \item the output path
+  \end{enumerate}
+\item \texttt{\$SCRIPT\_ARGS} eventually contains additional
+  parameters that are directly passed to \texttt{\$SCRIPT}, just after
+  the 4 parameters above
+\end{itemize}
+
+Some application specific scripts are provided in the distribution:
+\begin{itemize}
+\item \texttt{scripts/launchers/run\_benchmark\_synthetic.rb}: it can
+  be used to launch the \texttt{orwl\_benchmark\_synthetic}
+  application (provided in the \texttt{tests/} directory).
+\item \texttt{scripts/launchers/run\_benchmark\_kernel23.rb}: it can be
+  used to launch the \texttt{orwl\_benchmark\_kernel23} application
+  (provided in the \texttt{tests/} directory).
+\item \texttt{scripts/launchers/run\_gpupricer.rb}: it can be used to
+  launch the full ORWL version of the GPU pricer (not privided in the
+  ORWL ditribution).
+\end{itemize}
+
+\end{document}
