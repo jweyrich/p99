@@ -96,6 +96,49 @@ DECLARE_NEW_DELETE(orwl_handle2);
 DECLARE_ORWL_TYPE_DYNAMIC(orwl_handle2);
 
 
+#ifdef DOXYGEN
+/**
+ ** @brief Protect the following block or statement with
+ ** ::owrl_handle2 @a HANDLE.
+ **
+ ** This does some rudimentary error checking for the result of the
+ ** locking. If an error occurs the whole block and any other
+ ** enclosing blocks that protected with P99_UNWIND_PROTECT are
+ ** aborted.
+ **
+ ** @param HANDLE a pointer to a vector of ::orwl_handle2, should not
+ ** be @c 0.
+ ** @param SIZE, optional, the length of the vector, default
+ ** if omitted is @c 1.
+ **/
+P99_BLOCK_DOCUMENT
+#define ORWL_SECTION2(HANDLE, SIZE)
+#else
+#define ORWL_SECTION2(...)                      \
+ P99_IF_LT(P99_NARGS(__VA_ARGS__),2)            \
+  (O_RWL_SECTION2(__VA_ARGS__, 1U))             \
+  (O_RWL_SECTION2(__VA_ARGS__))
+#define O_RWL_SECTION2(HANDLE, SIZE)                                    \
+P00_BLK_START                                                           \
+P00_BLK_DECL(orwl_state, P99_FILEID(state), orwl_invalid)               \
+P00_BLK_DECL(size_t const, P99_FILEID(size), SIZE)                      \
+P99_GUARDED_BLOCK(orwl_handle2*,                                        \
+                  P99_FILEID(handle),                                   \
+                  (HANDLE),                                             \
+                  (void)(P99_UNLIKELY                                   \
+                         ((P99_FILEID(state) = orwl_acquire2(P99_FILEID(handle), P99_FILEID(size))) \
+                          != orwl_acquired)                             \
+                         && (errno = EINVAL)                            \
+                         && (perror(__FILE__ ":" P99_STRINGIFY(__LINE__) ": lock error for " P99_STRINGIFY(HANDLE)), 1) \
+                         && (errno = 0)                                 \
+                         && (P99_FILEID(handle) = 0, 1)                 \
+                         && (P99_UNWIND(-1), 1)                         \
+                         ),                                             \
+                  (void)(P99_FILEID(handle)                             \
+                         && orwl_next2(P99_FILEID(handle), P99_FILEID(size))))
+#endif
+
+
 /**
  ** @memberof orwl_mirror
  **/
