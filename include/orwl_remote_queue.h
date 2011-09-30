@@ -357,6 +357,49 @@ P99_PROTOTYPE(orwl_state, orwl_acquire, orwl_handle*, size_t);
 #define orwl_acquire_defarg_1() 1u
 
 
+#ifdef DOXYGEN
+/**
+ ** @brief Protect the following block or statement with
+ ** ::owrl_handle @a HANDLE.
+ **
+ ** This does some rudimentary error checking for the result of the
+ ** locking. If an error occurs the whole block and any other
+ ** enclosing blocks that protected with P99_UNWIND_PROTECT are
+ ** aborted.
+ **
+ ** @param HANDLE a pointer to a vector of ::orwl_handle, should not
+ ** be @c 0.
+ ** @param SIZE, optional, the length of the vector, default
+ ** if omitted is @c 1.
+ **/
+P99_BLOCK_DOCUMENT
+#define ORWL_SECTION(HANDLE, SIZE)
+#else
+#define ORWL_SECTION(...)                       \
+ P99_IF_LT(P99_NARGS(__VA_ARGS__),2)            \
+  (O_RWL_SECTION(__VA_ARGS__, 1U))              \
+  (O_RWL_SECTION(__VA_ARGS__))
+#define O_RWL_SECTION(HANDLE, SIZE)                                     \
+P00_BLK_START                                                           \
+P00_BLK_DECL(orwl_state, P99_FILEID(state), orwl_invalid)               \
+  P00_BLK_DECL(size_t const, P99_FILEID(size), SIZE)                    \
+  P99_GUARDED_BLOCK(orwl_handle*,                                       \
+                    P99_FILEID(handle),                                 \
+                    (HANDLE),                                           \
+                    (void)(P99_UNLIKELY                                 \
+                           ((P99_FILEID(state) = orwl_acquire(P99_FILEID(handle), P99_FILEID(size))) \
+                            != orwl_acquired)                           \
+                           && (errno = EINVAL)                          \
+                           && (perror(__FILE__ ":" P99_STRINGIFY(__LINE__) ": lock error for " P99_STRINGIFY(HANDLE)), 1) \
+                           && (errno = 0)                               \
+                           && (P99_FILEID(handle) = 0, 1)               \
+                           && (P99_UNWIND(-1), 1)                       \
+                           ),                                           \
+                    (void)(P99_FILEID(handle)                           \
+                           && orwl_release(P99_FILEID(handle), P99_FILEID(size))))
+#endif
+
+
 /**
  ** @brief Test if a set of previously issued read or write request can
  ** be fulfilled
