@@ -1,0 +1,155 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\title{Micro-benchmarking of ORWL applications}
+\author{Emmanuel Jeanvoine}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+The ORWL library is instrumented at several places in order to measure
+the time spent. These places are identified with \texttt{ORWL\_TIMER}
+or \texttt{ORWL\_TIMING} macros. It is also possible to add some
+\texttt{ORWL\_TIMER} macros in the application code to measure parts
+of the code.
+
+At the end of the application run, and if it has been compiled with
+the required flag, a summary printed on STDERR.
+
+Here is an example of a such summary:
+\begin{scriptsize}
+\begin{verbatim}
+TIMING: pt of measure                     n              times           time/ns            devs
+TIMING: total_acquire                  1845   185.660521558000    0.100629008975  0.453990170222
+TIMING: total_write_map                 153     0.000114555000    0.000000748725  0.000001044583
+TIMING: total_read_map                 1650     0.000986161000    0.000000597673  0.000000916636
+TIMING: total_truncate                    3     0.000048928000    0.000016309333  0.000022186180
+TIMING: appli_wall_time                   1   130.493940830000  130.493940830000  0.000000000000
+TIMING: send_local                     1422    13.945804831000    0.009807176393  0.048799098504
+TIMING: total_scale                       3    29.287255589000    9.762418529667  0.000055092923
+TIMING: total_write_request             159     0.003335698000    0.000020979233  0.000009829312
+TIMING: rpc_write_request               159     0.003090427000    0.000019436648  0.000009691841
+TIMING: total_write_request_server      159   330.521348050000    2.078750616667  1.251866544220
+TIMING: proc_write_request_wh_acquire   159   330.516074633000    2.078717450522  1.251858639371
+TIMING: send_remote                    4269   194.641429028000    0.045594150627  0.048294548736
+TIMING: total_read_request             1716    76.482911368000    0.044570461170  0.050013381661
+TIMING: rpc_read_request               1716    76.478852613000    0.044568095928  0.050012813008
+TIMING: total_read_request_server      1716  2696.732280752005    1.571522308131  0.565919638951
+TIMING: proc_read_request_wh_acquire   1716  2286.022085983002    1.332180702787  0.527142015761
+TIMING: server_unblock_wh_acquire         3     0.000002863000    0.000000954333  0.000000498109
+TIMING: release_wh_acquire             4069     0.034332392000    0.000008437550  0.000341368223
+TIMING: push_write_request_server       159     0.004648689000    0.000029237038  0.000012676998
+TIMING: send_push_server               3750   142.952145551000    0.038120572147  0.282503983649
+TIMING: total_release_server           3750     0.353068866000    0.000094151698  0.000056988119
+TIMING: resize_wh_acquire                 3     0.000000228000    0.000000076000  0.000000014855
+TIMING: total_release                  1875    87.728429593000    0.046788495783  0.398961088476
+TIMING: push_release                   1875    87.659359431000    0.046751658363  0.398963553775
+TIMING: push_read_request_server       1716   333.543101488000    0.194372436765  0.106924636003
+TIMING: map_wh_acquire                 1803     0.000214868000    0.000000119172  0.000000256936
+TIMING: total_iteration                 150   294.594212809000    1.963961418727  0.051375850770
+TIMING: appli_local_acquire             150    61.130711282000    0.407538075213  0.324871858775
+TIMING: appli_write_map                 150     0.000190509000    0.000001270060  0.000002015423
+TIMING: appli_computation               150    12.422477752000    0.082816518347  0.002065510804
+TIMING: appli_local_release             150     0.003289938000    0.000021932920  0.000011691321
+TIMING: appli_distant_acquire           150   165.292621011000    1.101950806740  0.323701694931
+TIMING: appli_read_map                  150     0.001298085000    0.000008653900  0.000003997961
+TIMING: appli_distant_release           150    55.743012340000    0.371620082267  0.012163477311
+\end{verbatim}
+\end{scriptsize}
+
+\section{Compilation}
+In order to activate the timing report, the library and the
+application must be compiled with the \texttt{GETTIMING} flag. Do not
+forget also to compile with all the optimizations and without the
+assertions. For instance:
+\begin{verbatim}
+make OPT="-DGETTIMING -O3 -DNDEBUG"
+\end{verbatim}
+
+\section{Logs fetch}
+Each ORWL server produces a summary of the timings. Thus, if you run a
+distributed applications, it is necessary to redirect STDERR on all
+the ORWL servers to a file and to fetch all these files.
+
+This is done automatically if the \texttt{deploy\_orwl.rb} script is
+used to launch the application.
+
+\section{Data processing}
+The following is dedicated to the benchmarking of the
+\texttt{orwl\_benchmark\_synthetic} application and to the processing
+of its output data.
+
+\subsection{Assumptions}
+We suppose that many experimentations have been conducted where we have
+varied :
+\begin{itemize}
+\item the size of the shared memory for each task, the chosen values
+  are: 8 KB, 32 KB, 128 KB, 512 KB, 1 MB, 4 MB, 16 MB, 32 MB
+\item the number of internal loops of computation, the chosen values
+  are: 1, 5, 10, 100
+\end{itemize}
+Depending on the experimentation, we chose a given global number of
+tasks for the application, and we vary the number of tasks per node.
+
+We also suppose that the output directory for each experimentation
+follows the pattern \texttt{a\_b\_c\_d} where:
+\begin{itemize}
+\item \texttt{a} is the global number of tasks
+\item \texttt{b} is the number of tasks per node
+\item \texttt{c} is the shared memory size
+\item \texttt{d} is the number of internal loops of computation
+\end{itemize}
+
+Then, we suppose that all the output directories called
+\texttt{RESULTS}.
+
+\subsection{Plots generation}
+From all the data collected in the experimentations, it is possible to
+use the \texttt{process\_data\_benchmark\_synthetic.rb} script to
+generate all the plots associated to the timers introduced in the
+library and in the application.
+
+It must be launched as follows:
+\begin{verbatim}
+ruby process_data_benchmark_synthetic.rb $RESULTS \
+                                         $GLOBAL_NB_TASKS \
+                                         $NB\_TASKS_PER_NODE_LIST \
+                                         $SUFFIX \
+                                         $TIMERS_FILE
+\end{verbatim}
+\begin{itemize}
+\item \texttt{\$RESULTS} is the directory containing all the
+  experimentations directories
+\item \texttt{\$GLOBAL\_NB\_TASKS} is the global number of tasks
+\item \texttt{\$NB\_TASKS\_PER\_NODE\_LIST} is a list containing the
+  different number of tasks per node during the experimentations, for
+  instance it can be \texttt{"1,2,3,4,6,8,12,24"}
+\item \texttt{\$SUFFIX} is a suffix appended to the plots
+  generated. It can be useful when several sets of experimentations
+  are processed on the bounce
+\item \texttt{\$TIMERS\_FILE} is the path to a file containing the
+  timers that must be processed. This file must contain on timer name
+  (the same name that the one in the summary at the end of an
+  execution) per line.
+\end{itemize}
+
+After a little moment of processing, a set of pdf files generated with
+the following name:\\
+\texttt{graph\_workload\_NB-INTERNAL-LOOPS\_TIMER-NAME\_SUFFIX.pdf}
+~\\\\
+For information, the script performs the following operations:
+\begin{itemize}
+\item concatenation of all the output files from an experimentation (when
+  the tasks are executed on several ORWL processes)
+\item computation of the average values for each experimentation
+\item writing of the input gnuplot data
+\item generation of the gnuplot file
+\item execution of gnuplot
+\item conversion of the eps plots to pdf plots
+\item clean-up
+\end{itemize}
+
+\end{document}
