@@ -17,7 +17,6 @@
 
 #include "orwl_time.h"
 #include "orwl_document.h"
-#include "orwl_new.h"
 #include "orwl_atomic.h"
 
 P99_DECLARE_STRUCT(orwl_timing_element);
@@ -42,6 +41,7 @@ P99_DECLARE_STRUCT(orwl_timing);
  **/
 #define ORWL_TIMING_LIST                                        \
   total_acquire,                                                \
+    total_test,                                                 \
     total_write_map,                                            \
     total_read_map,                                             \
     total_truncate
