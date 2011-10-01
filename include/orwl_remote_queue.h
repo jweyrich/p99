@@ -339,12 +339,12 @@ bool orwl_inclusive(orwl_handle* rh) {
  **/
 inline
 orwl_state orwl_acquire(orwl_handle* rh, size_t size) {
-  orwl_state ret =  orwl_invalid;
+  orwl_state ret =  orwl_state_amount;
   for (size_t i = 0; i < size; ++i) {
       if (rh) {
         ORWL_TIMING(total_acquire) {
-          ret = orwl_wh_acquire(&rh->wh[i], 0);
-          if (ret == orwl_invalid) return ret;
+          orwl_state state = orwl_wh_acquire(rh[i].wh, 0);
+          if (state < ret) ret = state;
         }
       }
   }
