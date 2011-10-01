@@ -115,7 +115,7 @@ P99_BLOCK_DOCUMENT
 #define ORWL_SECTION2(HANDLE, SIZE)
 #else
 #define ORWL_SECTION2(...)                      \
- P99_IF_LT(P99_NARGS(__VA_ARGS__),2)            \
+ P99_IF_LT(P99_NARG(__VA_ARGS__),2)             \
   (O_RWL_SECTION2(__VA_ARGS__, 1U))             \
   (O_RWL_SECTION2(__VA_ARGS__))
 #define O_RWL_SECTION2(HANDLE, SIZE)                                    \
