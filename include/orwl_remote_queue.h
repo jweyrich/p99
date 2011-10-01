@@ -414,10 +414,10 @@ inline
 orwl_state orwl_test(orwl_handle* rh, size_t size) {
   orwl_state ret =  orwl_state_amount;
   for (size_t i = 0; i < size; ++i) {
-    if (rh) {
-      ORWL_TIMING(total_test)
+    if (rh)
+      ORWL_TIMING(total_test) {
         orwl_state res = orwl_wh_test(&rh->wh[i], 0);
-      if (res < ret) return ret = res;
+        if (res < ret) return ret = res;
     } else {
       ret = orwl_invalid;
     }
