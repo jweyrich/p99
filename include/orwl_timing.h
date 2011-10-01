@@ -36,13 +36,24 @@ void orwl_timing_element_insert(orwl_timing_element* );
 
 P99_DECLARE_STRUCT(orwl_timing);
 
+/** @brief These are the names of timing elements that can be used in
+ ** inline functions
+ ** @see ORWL_TIMING
+ **/
+#define ORWL_TIMING_LIST                                        \
+  total_acquire,                                                \
+    total_write_map,                                            \
+    total_read_map,                                             \
+    total_truncate
+
+#define O_RWL_FIELD(NAME, X, I) NAME X
+
+#define O_RWL_FIELDS(NAME, ...) P99_FOR(NAME, P99_NARG(__VA_ARGS__), P00_SEP, O_RWL_FIELD, __VA_ARGS__)
+
 /* This struct is used to declare timing elements that are supposed to
 *  be used in inline functions */
 struct orwl_timing {
-  orwl_timing_element total_acquire;
-  orwl_timing_element total_write_map;
-  orwl_timing_element total_read_map;
-  orwl_timing_element total_truncate;
+  O_RWL_FIELDS(orwl_timing_element, ORWL_TIMING_LIST);
 };
 
 

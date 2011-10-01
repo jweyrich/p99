@@ -61,18 +61,20 @@ void orwl_timing_element_print(FILE *out, orwl_timing_element* el) {
 }
 
 
-#define ORWL_TIMING_ELEMENT(NAME) .NAME = { .nb = 0, .name = #NAME }
+#define O_RWL_TIMING_ELEMENT(NAME, X, I) .X = { .nb = 0, .name = P99_STRINGIFY(X) }
+
+#define O_RWL_TIMING_ELEMENTS(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, O_RWL_TIMING_ELEMENT, __VA_ARGS__)
 
 static orwl_timing timing_info = {
-  ORWL_TIMING_ELEMENT(total_acquire),
-  ORWL_TIMING_ELEMENT(total_write_map),
-  ORWL_TIMING_ELEMENT(total_read_map),
-  ORWL_TIMING_ELEMENT(total_truncate),
+  O_RWL_TIMING_ELEMENTS(ORWL_TIMING_LIST)
 };
 
 orwl_timing * orwl_timing_info(void) {
   return &timing_info;
 }
+
+#define O_RWL_PRINT(NAME, X, I) orwl_timing_element_print(stderr, &timing_info.X)
+#define O_RWL_PRINTS(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, O_RWL_PRINT, __VA_ARGS__)
 
 void orwl_timing_print_stats(void) {
   fprintf(stderr,
@@ -84,11 +86,7 @@ void orwl_timing_print_stats(void) {
           "time/n",
           "dev"
          );
-  orwl_timing_element_print(stderr, &timing_info.total_acquire);
-  orwl_timing_element_print(stderr, &timing_info.total_write_map);
-  orwl_timing_element_print(stderr, &timing_info.total_read_map);
-  orwl_timing_element_print(stderr, &timing_info.total_truncate);
-
+  O_RWL_PRINTS(ORWL_TIMING_LIST);
   for (orwl_timing_element* el = head; el; el = el->next)
     orwl_timing_element_print(stderr, el);
 }
