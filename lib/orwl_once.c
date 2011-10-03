@@ -14,6 +14,4 @@
 #include "orwl_once.h"
 #include "p99.h"
 
-P99_INSTANTIATE(void, orwl_once_init,
-                o_rwl_once_cont* o,
-                char const name[]);
+P99_INSTANTIATE(void, orwl_once_init, o_rwl_once_cont* o);

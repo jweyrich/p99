@@ -19,8 +19,8 @@
 P99_DECLARE_STRUCT(o_rwl_once_cont);
 
 struct o_rwl_once_cont {
+  size_t volatile cond;
   void (*const init)(void);
-  bool volatile cond;
   pthread_mutex_t mut;
   pthread_t id;
 };
@@ -158,17 +158,18 @@ MUTUAL_EXCLUDE((*P99_LINEID(orwl_crit)))
  ** You should not use this directly.
  **/
 inline
-void orwl_once_init(o_rwl_once_cont* o, char const name[]) {
-  if (pthread_equal(o->id, pthread_self())) {
-    fprintf(stderr, "Initializing %s has a cycle!\n", name);
-  } else
+void orwl_once_init(o_rwl_once_cont* o) {
+  /* Under some circumstances the initialization of different may be
+     cyclic. If we detect that just do nothing and return. */
+  if (!pthread_equal(o->id, pthread_self()))
     MUTUAL_EXCLUDE(o->mut)
-    if (!o->cond) {
-      fprintf(stderr, "Initializing %s for once\n", name);
-      o->id = pthread_self();
-      o->init();
-      o->cond = true;
-    }
+      if (!o->cond) {
+        /* First mark this object as being our own. So we may detect
+           recursion in the call that follows directly after. */
+        o->id = pthread_self();
+        o->init();
+        o->cond = true;
+      }
 }
 
 /**
@@ -183,9 +184,9 @@ void orwl_once_init(o_rwl_once_cont* o, char const name[]) {
  ** @see DECLARE_ONCE
  ** @see DEFINE_ONCE
  **/
-#define INIT_ONCE(T)                                           \
-if (P99_LIKELY(P99_PASTE3(o_rwl_, T, _once).cond))             \
-  P99_NOP;                                                     \
- else orwl_once_init(&P99_PASTE3(o_rwl_, T, _once), # T);
+#define INIT_ONCE(T)                                    \
+if (P99_LIKELY(P99_PASTE3(o_rwl_, T, _once).cond)) {    \
+  /* empty */                                           \
+} else orwl_once_init(&P99_PASTE3(o_rwl_, T, _once))
 
 #endif      /* !ORWL_ONCE_H_ */
