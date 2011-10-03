@@ -59,6 +59,9 @@ struct orwl_timing {
 
 orwl_timing * orwl_timing_info(void);
 
+/** @brief Print the statistics that are collected during an ORWL
+ ** execution.
+ ** @see ORWL_TIMING */
 void orwl_timing_print_stats(void);
 
 enum { orwl_timing_var = 0, orwl_timing_fetched = 0 };
@@ -89,11 +92,22 @@ enum { orwl_timing_var = 0, orwl_timing_fetched = 0 };
  ** The update of the statistics are done with atomic operations such
  ** that all of this can be done without danger in a threaded
  ** environment.
+ **
+ ** @pre for this mechanism to be activated ::ORWL_TIMING must be
+ ** defined on the compiler command line, e.g by passing the option
+ ** <code>-DORWL_TIMING</code> to the compiler.
+ **
+ ** If an environment variable with the same name
+ ** <code>ORWL_TIMING</code> is present, ::orwl_timing_print_stats
+ ** will be called automatically at the end of the ORWL execution.  If
+ ** this variable also has a content a "human" output format is used
+ ** for the collected timings.
  **/
 
 
 
-#ifdef GETTIMING
+#ifdef ORWL_TIMING
+#undef ORWL_TIMING
 # define ORWL_TIMING(NAME)                                                                        \
 P00_BLK_START                                                                                     \
 P00_BLK_DECL(register orwl_timing*const, _timing,                                                 \
@@ -109,7 +123,9 @@ P00_BLK_DECL(register orwl_timing*const, _timing,                               
   P00_BLK_AFTER(p00_sec = timespec2seconds(timespec_diff(p00_start, p00_end)))                    \
   P00_BLK_AFTER(p00_end = orwl_gettime())                                                         \
   P00_BLK_END
+# define ORWL_GETTIMING
 #else
+#undef ORWL_TIMING
 # define ORWL_TIMING(NAME)
 #endif
 
@@ -141,7 +157,7 @@ P00_BLK_DECL(register orwl_timing*const, _timing,                               
  ** static variables, in particular @c inline functions.
  **/
 
-#ifdef GETTIMING
+#ifdef ORWL_GETTIMING
 # define ORWL_TIMER(NAME)                                                                   \
 P00_BLK_START                                                                               \
 P00_BLK_BEFORE(register orwl_timing_element* elem = 0)                                      \

@@ -38,11 +38,11 @@ P99_INSTANTIATE(struct timespec*, timespec_add, struct timespec *, struct timesp
 char const* orwl_seconds2str(double sec, char tmp[static 32]) {
   if (sec > 0.0) {
     double dlog = log10(sec);
-    int ilog = dlog;
-    ilog += 300;
+    long ilog = dlog;
+    ilog += 3000;
     ilog -= ilog % 3;
-    ilog -= 300;
-    double factor = exp((double)ilog);
+    ilog -= 3000;
+    double factor = pow(10.0, (double)ilog);
     double scal  = sec / factor;
     if (scal < 1.0) {
       ilog -= 3;
@@ -63,7 +63,7 @@ char const* orwl_seconds2str(double sec, char tmp[static 32]) {
     if (str) {
       sprintf(tmp, "%#7.3f%s", scal, str);
     } else {
-      sprintf(tmp, "%e", sec);
+      sprintf(tmp, "%#7.3fE%+ld", scal, ilog);
     }
   } else {
     sprintf(tmp, "%#7.3f", 0.0);

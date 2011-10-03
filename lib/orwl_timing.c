@@ -32,7 +32,7 @@ void orwl_timing_element_insert(orwl_timing_element* el) {
 }
 
 static
-void orwl_timing_element_print(FILE *out, orwl_timing_element* el) {
+void orwl_timing_element_print(FILE *out, orwl_timing_element* el, int namelen, int nblen, bool human) {
   uint64_t nb = el->nb;
   if (nb) {
     atomic_float time = el->time;
@@ -41,17 +41,23 @@ void orwl_timing_element_print(FILE *out, orwl_timing_element* el) {
     atomic_float var = (time2 - (time * mu)) / nb;
     if (var < 0.0) var = 0.0;
     char const* name = el->name ? el->name : "<unamed>";
-    /* fprintf(out, */
-    /*         "TIMING: %-24s%10"PRIu64"\t%-8ss\t%-8ss\t%-8ss\n", */
-    /*         name, */
-    /*         nb, */
-    /*         orwl_seconds2str(time), */
-    /*         orwl_seconds2str(mu), */
-    /*         orwl_seconds2str(sqrt(var)) */
-    /*        ); */
-    fprintf(out,
-	    "TIMING: %-30s%10"PRIu64"\t%24.12f\t%24.12f\t%24.12f\n",
+    if (human)
+      fprintf(out,
+            "TIMING: %-*s\t%*"PRIu64"\t%-8ss\t%-8ss\t%-8ss\n",
+              namelen,
+            name,
+              nblen,
+            nb,
+            orwl_seconds2str(time),
+            orwl_seconds2str(mu),
+            orwl_seconds2str(sqrt(var))
+           );
+    else
+      fprintf(out,
+	    "TIMING: %-*s\t%*"PRIu64"\t%24.12f\t%24.12f\t%24.12f\n",
+              namelen,
 	    name,
+              nblen,
 	    nb,
 	    time,
 	    mu,
@@ -73,20 +79,37 @@ orwl_timing * orwl_timing_info(void) {
   return &timing_info;
 }
 
-#define O_RWL_PRINT(NAME, X, I) orwl_timing_element_print(stderr, &timing_info.X)
+#define O_RWL_PRINT(NAME, X, I) orwl_timing_element_print(stderr, &timing_info.X, namelen, nblen, human)
 #define O_RWL_PRINTS(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, O_RWL_PRINT, __VA_ARGS__)
 
 void orwl_timing_print_stats(void) {
+  int namelen = 12;
+  int nblen = 2;
+  for (orwl_timing_element* el = head; el; el = el->next)
+    if (el->name) {
+      size_t l = strlen(el->name);
+      if (l > namelen) namelen = l;
+      size_t lg = (size_t)log10(el->nb);
+      if (lg > nblen) nblen = lg;
+    }
+  ++nblen;
+  char const* var = getenv("ORWL_TIMING");
+  bool human = (var && var[0]);
+  int slen =  human ? 9 : 24;
   fprintf(stderr,
-	  /* "TIMING: %-24s%10s\t%-8ss\t%-8ss\t%-8ss\n",*/
-          "TIMING: %-30s%10s\t%23ss\t%23ss\t%23ss\n",
+          "TIMING: %-*s\t%*s\t%*s\t%*s\t%*s\n",
+          namelen,
           "pt of measure",
+          nblen,
           "n",
+          slen,
           "time",
+          slen,
           "time/n",
+          slen,
           "dev"
          );
   O_RWL_PRINTS(ORWL_TIMING_LIST);
   for (orwl_timing_element* el = head; el; el = el->next)
-    orwl_timing_element_print(stderr, el);
+    orwl_timing_element_print(stderr, el, namelen, nblen, human);
 }

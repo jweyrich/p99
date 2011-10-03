@@ -106,8 +106,8 @@ else
 LDSHARED := -dynamiclib
 endif
 
-ifeq (${GETTIMING},on)
-CFLAGS += -DGETTIMING
+ifeq (${ORWL_TIMING},on)
+CFLAGS += -DORWL_TIMING
 endif
 
 .SUFFIXES: .h.Z .c.Z .h.gz .c.gz .c.z .h.z

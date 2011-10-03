@@ -97,9 +97,10 @@ void orwl_server_destroy(orwl_server *serv) {
   if (serv->global_barrier) orwl_notifier_vdelete(serv->global_barrier);
   if (serv->info) free(serv->info);
   orwl_server_init(serv);
-#ifdef GETTIMING
-  orwl_timing_print_stats();
-#endif /* GETTIMING */
+#ifdef ORWL_TIMING
+  if (getenv("ORWL_TIMING"))
+    orwl_timing_print_stats();
+#endif /* ORWL_TIMING */
 }
 
 DEFINE_NEW_DELETE(orwl_server);
