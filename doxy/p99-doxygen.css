@@ -11,34 +11,38 @@ html, html *, body, table, div, p, dt, dd, dl {
 
 h1
 {
-counter-reset:section;
+ counter-reset:section;
 }
 
 h2
 {
+counter-increment:section;
 counter-reset:subsection;
 }
 
 h3
 {
+counter-increment:subsection;
 counter-reset:subsubsection;
+}
+
+h4
+{
+counter-increment:subsubsection;
 }
 
 h2:before
 {
-counter-increment:section;
 content: counter(section) " ";
 }
 
 h3:before
 {
-counter-increment:subsection;
 content:counter(section) "." counter(subsection) " ";
 }
 
 h4:before
 {
-counter-increment:subsubsection;
 content:counter(section) "." counter(subsection) "." counter(subsubsection) " ";
 }
 
