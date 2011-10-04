@@ -4,6 +4,9 @@ DIRS = ./p99 ./tests
 P99_SOURCES = ./p99/*.h ./p99/p99_special.c ./tests/test-p99*.c
 P99_DOXY = ./doxy/p99-doxygen
 
+# The first commit after the first release
+REL1 = 4efb830e54f1b157a6127e5e7c2f4b34e298691e
+
 P99FILES =  ${P99_SOURCES} ${P99_DOXY}
 
 CLEAN = ${patsubst %,%/clean,${DIRS}}
@@ -77,8 +80,21 @@ p99-links :
 ${P99_VERSIONS} :
 	install -d ${P99_VERSIONS}
 
-p99/ChangeLog :
-	git log --since=2010-11-20 -- p99 tests/test-p99-*.c > $@
+p99/ChangeLog : commits Makefile
+	git show -C -M --find-copies-harder --name-only `cat commits` | grep -vi orwl > $@
+
+commits : p99/*.h tests/test-p99-*.c Makefile
+#	insert a line for the first release commit such that we can cut off, later
+	git log --pretty=format:"%at CUTCUTCUT%n" ${REL1}^..${REL1} > .commits
+#	collect the blobs for all source files
+#	prefix them with the time stamp such that we can sort them later
+	for f in $^ ; do                                                    \
+	git log -C -M --follow --pretty=format:"%at %H%n" $$f >> .commits ; \
+	done
+#	sort all blobs uniquely and cut off at the chosen line
+	sort -u -r .commits | sed -n 's/.* //; /CUTCUTCUT/q; p' > commits
+	@rm .commits
+
 
 p99-transfer :
 	-rsync -az --no-g --no-p --progress -e 'ssh -ax' ${P99_ARCHIVE}/ ${P99_GFORGE}:${P99_HTDOCS}
