@@ -241,26 +241,104 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_TO_UNSIGNED, 1)
 #define P00_DOCUMENT_SIGNED(X) /*! @brief Cast the @c int value @c X to type @a T */
 #define P00_DOCUMENT_UNSIGNED(X) /*! @brief Cast the @c int value @c X to the unsigned type corresponding to @a T */
 
+
+/**
+ ** @brief Generate an integer expression of type @a T and value @a X.
+ **
+ ** This macro is suitable for use in preprocessor conditionals,
+ ** provided X evaluates to an integer constant.
+ **
+ ** @warning Beware that the type information @a T is simply ignored
+ ** by the preprocessor because there arithmetic is done with types @c
+ ** intmax_t or @c uintmax_t. If you want to be sure that it is used
+ ** as @c uintmax_t suffix the constant @a X with an "u" or "U".
+ **
+ ** @warning Don't do bit complement arithmetic in the preprocessor
+ ** with that, since @c uintmax_t might have more bits than @a T, the
+ ** result might not be what you expect.
+ **
+ ** @param T must be a type identifier, just one word that represents a type.
+ **
+ ** @param X could be any integer expression that is allowed in the
+ ** same context. If @a X evaluates to a pointer value, an error is
+ ** detected.
+ **
+ ** The macro itself uses a dirty trick. In preprocessor context of
+ ** conditional evaluation the @a T in the expansion is just an
+ ** identifier that is unknown to the preprocessor and it is thus
+ ** replaced by @c 0. The <code>+</code> sign is thus a binary plus.
+ **
+ ** In program context @c (T) is interpreted as a cast.  The
+ ** <code>+</code> sign is thus a prefix to the integer
+ ** expression. This results in an error when an attempt is made to
+ ** use this with a pointer value.
+ **/
+#define P99_C(T, X) ((T)+(X))
+
+#define P00_DOCUMENT_CONSTANT(T) /*! @brief Cast the integer value @c X to type @a T, compatible with the preprocessor @see P99_C */
+
+/* Constants macros for the required typedefs */
+
+#if !defined(SIZE_C)
+P00_DOCUMENT_CONSTANT(size_t)
+# define SIZE_C(X) P99_C(size_t, X)
+#endif
+
+#if !defined(PTRDIFF_C)
+P00_DOCUMENT_CONSTANT(ptrdiff_t)
+# define PTRDIFF_C(X) P99_C(ptrdiff_t, X)
+#endif
+
+#if !defined(WCHAR_C)
+P00_DOCUMENT_CONSTANT(wchar_t)
+# define WCHAR_C(X) P99_C(wchar_t, X)
+#endif
+
+#if !defined(WINT_C)
+P00_DOCUMENT_CONSTANT(wint_t)
+# define WINT_C(X) P99_C(wint_t, X)
+#endif
+
+/* Constants macros for the optional typedefs */
+
+#if defined(SIG_ATOMIC_MAX) && !defined(SIG_ATOMIC_C)
+P00_DOCUMENT_CONSTANT(sig_atomic_t)
+# define SIG_ATOMIC_C(X) P99_C(sig_atomic_t, X)
+#endif
+
+#if defined(UINTPTR_MAX) && !defined(UINTPTR_C)
+P00_DOCUMENT_CONSTANT(uintptr_t)
+# define UINTPTR_C(X) P99_C(uintptr_t, X)
+#endif
+
+#if defined(UINTPTR_MAX) && !defined(INTPTR_C)
+P00_DOCUMENT_CONSTANT(intptr_t)
+# define INTPTR_C(X) P99_C(intptr_t, X)
+#endif
+
+
+
+
 P00_DOCUMENT_SIGNED(0)
-#define P99_0(T) ((T)0)
+#define P99_0(T) P99_C(T, 0)
 
 P00_DOCUMENT_UNSIGNED(0)
 #define P99_0U(T) P99_TO_UNSIGNED(T, P99_0)
 
 P00_DOCUMENT_SIGNED(1)
-#define P99_1(T) ((T)1)
+#define P99_1(T) P99_C(T, 1)
 
 P00_DOCUMENT_UNSIGNED(1)
 #define P99_1U(T)  P99_TO_UNSIGNED(T, P99_1)
 
 P00_DOCUMENT_SIGNED(2)
-#define P99_2(T) ((T)2)
+#define P99_2(T) P99_C(T, 2)
 
 P00_DOCUMENT_UNSIGNED(2)
 #define P99_2U(T)  P99_TO_UNSIGNED(T, P99_2)
 
 P00_DOCUMENT_SIGNED(3)
-#define P99_3(T) ((T)3)
+#define P99_3(T) P99_C(T, 3)
 
 P00_DOCUMENT_UNSIGNED(3)
 #define P99_3U(T)  P99_TO_UNSIGNED(T, P99_3)

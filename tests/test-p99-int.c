@@ -465,11 +465,15 @@ int i:UINT_WIDTH;
   SAYIT(uintmax_t);
   SAYIT(intmax_t);
   SAYIT(wchar_t);
+  SAYIT(wint_t);
 
-  printf("--------------------------- optional typedefs -------------------------------\n");
 #if defined(SIG_ATOMIC_MAX)
   SAYIT(sig_atomic_t);
+#else
+  printf("**** sig_atomic_t seems to be missing ****\n");
 #endif
+
+  printf("--------------------------- optional typedefs -------------------------------\n");
 #if defined(UINTPTR_MAX)
   SAYIT(uintptr_t);
 #endif
