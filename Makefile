@@ -95,6 +95,18 @@ commits : p99/*.h tests/test-p99-*.c Makefile
 	sort -u -r .commits | sed -n 's/.* //; /CUTCUTCUT/q; p' > commits
 	@rm .commits
 
+all-commits : p99/*.h tests/test-p99-*.c Makefile Doxyfile-p99 gforge-p99/* scripts/* doxy/*
+#	insert a line for the first release commit such that we can cut off, later
+	echo > .commits
+#	collect the blobs for all source files
+#	prefix them with the time stamp such that we can sort them later
+	for f in $^ ; do                                                    \
+	git log -C -M --follow --pretty=format:"%at %H%n" $$f >> .commits ; \
+	done
+#	sort all blobs uniquely and cut off at the chosen line
+	sort -u -r .commits | sed 's/.* //' > all-commits
+	@rm .commits
+
 
 p99-transfer :
 	-rsync -az --no-g --no-p --progress -e 'ssh -ax' ${P99_ARCHIVE}/ ${P99_GFORGE}:${P99_HTDOCS}
