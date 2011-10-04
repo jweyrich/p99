@@ -19,17 +19,7 @@ NAME 	=					\
 		orwl_socket_test		\
 		orwl_benchmark_kernel23		\
 		orwl_benchmark_synthetic	\
-		orwl_benchmark_timer            \
-		test-p99-block			\
-		test-p99-cases			\
-		test-p99-choice			\
-		test-p99-classification		\
-		test-p99-compound		\
-		test-p99-double			\
-		test-p99-int			\
-		test-p99-ndim			\
-		test-p99-pow			\
-		test-p99-va-arg
+		orwl_benchmark_timer
 
 SRC	=					\
 		orwl_local_test_inclusive.c	\
@@ -39,33 +29,7 @@ SRC	=					\
 		orwl_socket_test.c		\
 		orwl_benchmark_kernel23.c	\
 		orwl_benchmark_synthetic.c	\
-		orwl_benchmark_timer.c          \
-		test-p99-block.c		\
-		test-p99-cases.c		\
-		test-p99-choice.c		\
-		test-p99-classification.c	\
-		test-p99-compound.c		\
-		test-p99-double.c		\
-		test-p99-int.c			\
-		test-p99-ndim.c			\
-		test-p99-pow.c			\
-		test-p99-va-arg.c
-
-HTML = 						\
-c99-conformance-clang-2.9.html			\
-c99-conformance-gcc-4.1.html			\
-c99-conformance-gcc-4.2.html			\
-c99-conformance-gcc-4.3.html			\
-c99-conformance-gcc-4.4.html			\
-c99-conformance-icc-12.0.0.html			\
-c99-conformance-opencc-4.2.4.html		\
-c99-conformance-p99-gcc-4.1.html		\
-c99-conformance-p99-gcc-4.2.html		\
-c99-conformance-p99-gcc-4.3.html		\
-c99-conformance-p99-gcc-4.4.html		\
-c99-conformance-p99-pcc-0.9.9.html		\
-c99-conformance-pcc-0.9.9.html			\
-c99-conformance-tcc-0.9.25.html
+		orwl_benchmark_timer.c
 
 INCL  	=		# List of *.h
 LIBDIR	:= $(join $(dir ${CURDIR}),lib)
@@ -82,7 +46,6 @@ LICENSE = SHORTLICENCE-closed.txt
 SCRIPTS = ../scripts
 AUTH = ${SCRIPTS}/AUTHORS.txt
 TIDY = ../../parxxl/scripts/findSvnAuthors --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
-CONFORM = ${SCRIPTS}/p99_conformance.pl
 
 ifneq (${POSIX_SEMAPHORES}, -1L)
 LDFLAGS += -lrt
@@ -125,11 +88,8 @@ all:	$(NAME)
 	$(CC) $< $(LDFLAGS) -o $@
 #	$(STRIP) ./$(NAME) # if you debug ,don't strip ...
 
-test-p99-inline : test-p99-inline.o test-p99-inline-empty.o
-	$(CC) $^ $(LDFLAGS) -o $@
-
 depend Makefile.inc:
-	${CC} $(CFLAGS) $(IPATH) -MM $(SRC)  test-p99-inline.c test-p99-inline-empty.c > Makefile.inc
+	${CC} $(CFLAGS) $(IPATH) -MM $(SRC) > Makefile.inc
 clean:
 	-$(RM) $(NAME) $(OBJS) *~
 distclean: clean
@@ -152,36 +112,6 @@ tidy :
 	for f in ${SRC} ; do  ${TIDY} $$f ; done
 
 html : ${HTML}
-
-c99-conformance-clang-2.9.html : ${CONFORM}
-	${CONFORM} clang 2.9
-c99-conformance-gcc-4.1.html : ${CONFORM}
-	${CONFORM} gcc-4.1
-c99-conformance-gcc-4.2.html : ${CONFORM}
-	${CONFORM} gcc-4.2
-c99-conformance-gcc-4.3.html : ${CONFORM}
-	${CONFORM} gcc-4.3
-c99-conformance-gcc-4.4.html : ${CONFORM}
-	${CONFORM} gcc-4.4
-c99-conformance-icc-12.0.0.html : ${CONFORM}
-	${CONFORM} icc 12.0.0
-c99-conformance-opencc-4.2.4.html : ${CONFORM}
-	${CONFORM} opencc 4.2.4
-c99-conformance-p99-gcc-4.1.html : ${CONFORM}
-	${CONFORM} ${SCRIPTS}/p99-gcc-4.1
-c99-conformance-p99-gcc-4.2.html : ${CONFORM}
-	${CONFORM} ${SCRIPTS}/p99-gcc-4.2
-c99-conformance-p99-gcc-4.3.html : ${CONFORM}
-	${CONFORM} ${SCRIPTS}/p99-gcc-4.3
-c99-conformance-p99-gcc-4.4.html : ${CONFORM}
-	${CONFORM} ${SCRIPTS}/p99-gcc-4.4
-c99-conformance-p99-pcc-0.9.9.html : ${CONFORM}
-	${CONFORM} ${SCRIPTS}/p99-pcc 0.9.9
-c99-conformance-pcc-0.9.9.html : ${CONFORM}
-	${CONFORM} pcc 0.9.9
-c99-conformance-tcc-0.9.25.html : ${CONFORM}
-	${CONFORM} tcc 0.9.25
-
 
 ################
 # Dependencies #

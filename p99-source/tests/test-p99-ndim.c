@@ -11,7 +11,6 @@
 /* even the implied warranty of merchantability or fitness for a             */
 /* particular purpose.                                                       */
 /*                                                                           */
-#include "orwl_posix.h"
 #include "p99_id.h"
 #include "p99_args.h"
 #include "p99_map.h"
