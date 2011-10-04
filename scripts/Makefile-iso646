@@ -1,9 +1,0 @@
-# -*- makefile-gmake -*-
-FORCEC = -xc
-
-__ISO646 := $(shell echo '%:include <iso646.h>' | ${CC} ${CFLAGS} ${FORCEC} -c -o /dev/null - 2> /dev/null || echo "NO")
-
-ifeq (${__ISO646},NO)
-${warning header iso646.h is not supported}
-CFLAGS += -DP00_NO_HAVE_ISO646_H
-endif

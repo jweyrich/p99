@@ -1,3 +1,0 @@
-gustedt		Jens Gustedt, INRIA, France
-ejeanvoi	Emmanuel Jeanvoine, INRIA, France
-matiasvara      Matias E. Vara, INRIA, France
