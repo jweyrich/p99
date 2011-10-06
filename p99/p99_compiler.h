@@ -335,13 +335,13 @@ signed p00_trailing_comma_in_initializer__(void) {
 
 /**
  ** @def P99_DEPRECATED
- ** @brief Depreciate a declaration that is given as the argument list.
+ ** @brief Deprecate a declaration that is given as the argument list.
  **/
 #ifndef P99_DEPRECATED
 # ifdef __GNUC__
-#  define P99_DEPRECATED(...) __VA_ARGS__ __attribute__((deprecated))
+#  define P99_DEPRECATED(...) /*! \deprecated __VA_ARGS__ */ __attribute__((deprecated))
 # else
-#  define P99_DEPRECATED(...) __VA_ARGS__
+#  define P99_DEPRECATED(...) /*! \deprecated __VA_ARGS__ */
 # endif
 #endif
 
