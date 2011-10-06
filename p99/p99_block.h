@@ -548,9 +548,9 @@ P00_BLK_START                                                       \
  ** block macro.
  **/
 #define P99_BLOCK_DOCUMENT                                                                      \
-/*! @warning Restrictions on preliminary exits from the dependent block or statement apply. **/ \
-/*! @see P99_PROTECTED_BLOCK **/                                                                \
-/*! @see P99_GUARDED_BLOCK **/
+/*! \warning Restrictions on preliminary exits from the dependent block or statement apply. **/ \
+/*! \see P99_PROTECTED_BLOCK **/                                                                \
+/*! \see P99_GUARDED_BLOCK **/
 
 /**
  ** @brief Assert runtime condition @a EXPR on entry and on leave of the

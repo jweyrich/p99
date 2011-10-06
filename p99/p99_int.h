@@ -1166,7 +1166,7 @@ P99_CHOOSE5(xT,                                                \
  **
  ** On the other hand prefer the macro when you known that you have
  ** compile time expressions. Then you may even use them as part of an
- ** @c #if preprocessing conditional.
+ ** <code>#</code><code>if</code> preprocessing conditional.
  **
  ** @{
  **/
