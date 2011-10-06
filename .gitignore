@@ -1,0 +1,9 @@
+*.log
+*~
+commits
+doxy/orwl-tagfile
+gforge-p99
+p99-2???-*
+p99-html
+p99-latex
+p99/ChangeLog
