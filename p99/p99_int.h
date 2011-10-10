@@ -1133,6 +1133,20 @@ P99_CHOOSE5(xT,                                                \
  **/
 #define P00_J(x) (0 ? P99_0(uintmax_t) : (x))
 
+
+/**
+ ** @brief A mask for the higher @a M bits in a N bit word.
+ **
+ ** This is a generic implementation that should also work that for
+ ** the case that @a N is less than the width of @c unsigned, or in
+ ** other words if the conversion rank of @c uintN_t is less than that
+ ** for @c unsigned.
+ **
+ ** @remark this is only implemented for values @a N of 8, 16, 32 and
+ ** 64.
+ **/
+#define P99_HMASK(N,M) P99_PASTE4(P00_HMASK_, N, _, M)
+
 /**
  ** @addtogroup bitfiddling
  ** @brief Bit fiddling of low order bits

@@ -454,6 +454,8 @@ my $fileid = '$Id$';
 
 my ($FILEID) = $fileid =~ m/[\$]Id:[ ]*([^\$ ]+)/;
 
+$FILEID //= "";
+
 my $FILEDATE = `date -R`;
 chomp $FILEDATE;
 
@@ -1208,6 +1210,25 @@ sub printnumber {
         advance(3, $i);
     }
 }
+
+{
+    sub printmask($$$) {
+        my ($n, $m, $val) = @_;
+        printf "#define P00_HMASK_%d_%d UINT%d_C(0x%0*X)\n", $n, $m, $n, $n/4, $val;
+    }
+
+    sub mask($) {
+        my $max = (((1 << ((shift) - 1)) - 1) << 1) + 1;
+    }
+
+    for my $n (8, 16, 32, 64) {
+        my $max = mask($n);
+        for (my $m = 0; $m <= $n; ++$m) {
+            printmask($n, $m, $max & (mask($m) << ($n - $m)));
+        }
+    }
+}
+
 
 my @groups =
     [ "preprocessor_macros",
