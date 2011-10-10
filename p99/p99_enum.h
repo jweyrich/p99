@@ -90,36 +90,36 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ENUM, 0)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 1)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 2)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 3)
-#define P99_DECLARE_ENUM(T, ...)                                                   \
-/*! \see T ## _getname for access to the names of the constants as strings */      \
-/*! \see T for the type that is to be used in code. We only use T ## _  here because of a doxygen bug. */      \
-enum T ## _ { __VA_ARGS__ ,                                                        \
-               /*! upper bound of the @ref T constants */                          \
-               P99_PASTE2(T, _amount),                                             \
-               /*! the largest @ref T constant */                                  \
-               P99_PASTE2(T, _max) = ((size_t)(P99_PASTE2(T, _amount)) - 1u),      \
-               /*! the smallest @ref T constant */                                 \
-               P99_PASTE2(T, _min) = 0                                             \
-};                                                                                 \
-/*! \brief Enumeration type @c enum T and @c typedef T. */                         \
-/*! \see T ## _ is used for documentation through doxygen. */                      \
-/*! \see T ## _getname for access to the names of the constants as strings */      \
-typedef enum T ## _ T;                                                             \
+#define P99_DECLARE_ENUM(T, ...)                                                                          \
+/*! \see T ## _getname for access to the names of the constants as strings */                             \
+/*! \see T for the type that is to be used in code. We only use T ## _  here because of a doxygen bug. */ \
+enum T ## _ { __VA_ARGS__ ,                                                                               \
+               /*! upper bound of the @ref T constants */                                                 \
+               P99_PASTE2(T, _amount),                                                                    \
+               /*! the largest @ref T constant */                                                         \
+               P99_PASTE2(T, _max) = ((size_t)(P99_PASTE2(T, _amount)) - 1u),                             \
+               /*! the smallest @ref T constant */                                                        \
+               P99_PASTE2(T, _min) = 0                                                                    \
+};                                                                                                        \
+/*! \brief Enumeration type @c enum T and @c typedef T. */                                                \
+/*! \see T ## _ is used for documentation through doxygen. */                                             \
+/*! \see T ## _getname for access to the names of the constants as strings */                             \
+typedef enum T ## _ T;                                                                                    \
 P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__)
 #else
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ENUM, 0)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 1)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 2)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 3)
-#define P99_DECLARE_ENUM(T, ...)                                                   \
-typedef enum T { __VA_ARGS__ ,                                                     \
-               /*! upper bound of the @ref T constants */                          \
-               P99_PASTE2(T, _amount),                                             \
-               /*! the largest @ref T constant */                                  \
-               P99_PASTE2(T, _max) = ((size_t)(P99_PASTE2(T, _amount)) - 1u),      \
-               /*! the smallest @ref T constant */                                 \
-               P99_PASTE2(T, _min) = 0                                             \
-} T;                                                                               \
+#define P99_DECLARE_ENUM(T, ...)                                              \
+typedef enum T { __VA_ARGS__ ,                                                \
+               /*! upper bound of the @ref T constants */                     \
+               P99_PASTE2(T, _amount),                                        \
+               /*! the largest @ref T constant */                             \
+               P99_PASTE2(T, _max) = ((size_t)(P99_PASTE2(T, _amount)) - 1u), \
+               /*! the smallest @ref T constant */                            \
+               P99_PASTE2(T, _min) = 0                                        \
+} T;                                                                          \
 P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__)
 #endif
 
