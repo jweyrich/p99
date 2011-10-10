@@ -120,7 +120,6 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_MEMZERO, 0)
  ** expression that is evaluated for its size.
  ** @code
  ** double * a = P99_MALLOC(double[10]); // allocate an array of 10 double
- ** double * b = P99_MALLOC(b[10]);      // allocate an array of 10 double
  ** node * n = P99_MALLOC(node);         // allocate a new node
  ** @endcode
  ** @remark As for the C library routine the allocated space is
@@ -136,9 +135,9 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_MEMZERO, 0)
  ** This macro receives an
  ** expression in @a T that is evaluated for its size as the second argument.
  ** @code
- ** double * a = P99_REALLOC(0, a[10]); // allocate an array of 10 double
- ** a = P99_REALLOC(a, a[20]);          // re-allocate an array of 20 double
- ** assert(a);                          // check if allocation was correct
+ ** double * a = P99_REALLOC(0, double[10]); // allocate an array of 10 double
+ ** a = P99_REALLOC(a, double[20]);          // re-allocate an array of 20 double
+ ** assert(a);                               // check if allocation was correct
  ** @endcode
  ** @remark As for the C library routine the allocated space is
  ** uninitialized.
@@ -171,7 +170,7 @@ void* p00_calloc(void const* source, size_t size, size_t number) {
  ** created.
  ** @code
  ** double * a = P99_CALLOC(double, 10); // allocate and initialize an array of 10 double
- ** node * n = P99_CALLOC(node);     // allocate and initialize a new node
+ ** node * n = P99_CALLOC(node);         // allocate and initialize one new node
  ** @endcode
  **
  ** Observe that here the @c double array @c a is initialized with the
