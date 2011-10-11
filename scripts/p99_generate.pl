@@ -1187,6 +1187,7 @@ sub printnumber {
     sub printout($) {
         my ($width) = @_;
         print "#ifndef P99_UINTMAX_MAX\n";
+        printf "# define P00_MASK_%u 0x%s\n", $width, printnumber(@maxval);
         printf "# if P00_UNSIGNED_MAX == 0x%s\n", printnumber(@maxval);
         printf "#  define P99_UINTMAX_WIDTH %u\n", $width;
         printf "#  define P99_UINTMAX_MAX 0x%sU\n", printnumber(@maxval);
@@ -1212,21 +1213,17 @@ sub printnumber {
 }
 
 {
-    sub printmask($$$) {
-        my ($n, $m, $val) = @_;
-        printf "#define P00_HMASK_%d_%d UINT%d_C(0x%0*X)\n", $n, $m, $n, $n/4, $val;
+    sub printmask($$) {
+        my ($n, $val) = @_;
+        printf "#define P00_MASK_%d 0x%X\n", $n, $val;
     }
 
-    sub mask($) {
-        my $max = (((1 << ((shift) - 1)) - 1) << 1) + 1;
+    my $val = 0;
+    for (my $n = 0; $n < 64; ++$n) {
+        printmask($n, $val);
+        $val = 2 * $val + 1;
     }
 
-    for my $n (8, 16, 32, 64) {
-        my $max = mask($n);
-        for (my $m = 0; $m <= $n; ++$m) {
-            printmask($n, $m, $max & (mask($m) << ($n - $m)));
-        }
-    }
 }
 
 

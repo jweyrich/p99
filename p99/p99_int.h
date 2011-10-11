@@ -1142,10 +1142,12 @@ P99_CHOOSE5(xT,                                                \
  ** other words if the conversion rank of @c uintN_t is less than that
  ** for @c unsigned.
  **
- ** @remark this is only implemented for values @a N of 8, 16, 32 and
- ** 64.
+ ** @pre @a N and @a M must evaluate to decimal constants by the preprocessor
+ ** @pre @a N must be larger or equal than @a M
+ ** @remark this is only implemented for values @a N and @a M less
+ ** than the width of @c uintmax_t.
  **/
-#define P99_HMASK(N,M) P99_PASTE4(P00_HMASK_, N, _, M)
+#define P99_HMASK(N,M) (P99_PASTE2(P00_MASK_, N)^P99_PASTE2(P00_MASK_, P99_MINUS(N, M)))
 
 /**
  ** @addtogroup bitfiddling
