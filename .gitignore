@@ -1,4 +1,5 @@
 *.log
+*.o
 *~
 commits
 doxy/orwl-tagfile
@@ -7,3 +8,14 @@ p99-2???-*
 p99-html
 p99-latex
 p99/ChangeLog
+tests/Makefile.inc
+tests/test-p99-block
+tests/test-p99-cases
+tests/test-p99-choice
+tests/test-p99-classification
+tests/test-p99-compound
+tests/test-p99-double
+tests/test-p99-int
+tests/test-p99-ndim
+tests/test-p99-pow
+tests/test-p99-va-arg
