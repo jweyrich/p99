@@ -739,19 +739,17 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_PARALLEL_FORALL, 0)
 
 
 #define P00_CASERANGE0(NAME, X, I) case ((NAME)+I):
-#define P00_CASERANGE(START, LEN, ...)                               \
-if (0) {                                                             \
-  /* Let this be empty if LEN evaluates to 0. In that case we'd      \
-     probably encounter a warning about an unused label. */          \
-  P99_IF_EQ_0(LEN)()                                                 \
-    /* Execution will only go here if one of the cases is chosen. */ \
-    (P99_FOR(START, LEN, P00_SEP, P00_CASERANGE0, P99_REP(LEN,))     \
-     /* Then it just continues with the else part */                 \
-     goto P99_LINEID(__VA_ARGS__);)                                  \
-    } else                                                           \
-  /* execution will just fall through, here, if a previous case      \
-     matched */                                                      \
+#define P00_CASERANGE(START, LEN, ...)                                  \
+if (0) {                                                                \
+  /* Execution will only go here if one of the cases is chosen. */      \
+  P99_FOR(START, LEN, P00_SEP, P00_CASERANGE0, P99_REP(LEN,))           \
+    /* Then it just continues with the else part */                     \
+    goto P99_LINEID(__VA_ARGS__);                                       \
+ } else                                                                 \
+  /* execution will just fall through, here, if a previous case         \
+     matched */                                                         \
   P99_LINEID(__VA_ARGS__)
+
 
 #ifdef P00_DOXYGEN
 /**
@@ -768,8 +766,9 @@ if (0) {                                                             \
  ** switch (argv[0][0]) {
  **   P99_CASERANGE('\0', 0): return -1;
  **   P99_CASERANGE('0', 10): return 0;
- **   P99_CASERANGE('A', 25): return 1;
- **   P99_CASERANGE('a', 25, oioi): return 2;
+ **   P99_CASERANGE('A', 25): --argc;
+ **   P99_CASERANGE('.', 0):  return -1;
+ **   P99_CASERANGE('a', 25,  oioi): return 2;
  **   default: return 3;
  ** }
  ** @endcode
@@ -777,9 +776,12 @@ if (0) {                                                             \
  ** @param START must evaluate to an expression that can be used as a case label
  **
  ** @param LEN must evaluate to a decimal number. If this is 0 the
- ** entire depending statement is skipped and a warning about an
- ** unused label might result. (For me this is e.g the case for the
- ** first range in the above example.)
+ ** depending statement will never be reached as a direct jump to the
+ ** "label". Depending on the flow for the other cases the statement
+ ** may or may be not reachable when falling through from a previous
+ ** case.  In the example above for the first range @c '\0' is not
+ ** reachable. But the range for @c '.' is reachable after the
+ ** execution of the range starting with @c 'A'.
  **
  ** The additional variable argument list is optional and is used to
  ** "name" the range. This is only necessary if you have more than one

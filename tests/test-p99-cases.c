@@ -26,10 +26,11 @@
 int main(int argc, char*argv[]) {
   if (argc < 2) return -2;
   switch (argv[1][0]) {
-    /* This line should produce a warning */
+    /* This line could produce a warning */
     P99_CASERANGE('\0', 0): return -1;
     P99_CASERANGE('0', 10): return 0;
-    P99_CASERANGE('A', 25): return 1;
+    P99_CASERANGE('A', 25): --argc;
+    P99_CASERANGE('\01', 0): return -1;
     P99_CASERANGE('a', 25, oioi): return 2;
   default: return 3;
   }
