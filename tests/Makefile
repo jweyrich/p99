@@ -54,7 +54,7 @@ LIBDIR	:= $(join $(dir ${CURDIR}),lib)
 # Optional add #
 ################
 OPT     += -O0
-IPATH   += -I. -I../include
+IPATH   += -I../p99
 OBJOPT  += -Wall -Wstrict-prototypes ${OPT}
 EXEOPT  += ${OPT}
 LPATH   += -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR}
