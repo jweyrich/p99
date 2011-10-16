@@ -260,6 +260,53 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 
 
+#if P99_GCC_VERSION >= 40600UL
+/* In C1x this macro must exactly have that value. */
+#define static_assert _Static_assert
+#endif
+
+#if  __STDC_VERSION__ < 201101L && !defined(static_assert)
+/**
+ ** @brief Evaluate expression @a EXPR at compile time and ensure that
+ ** it is fulfilled.
+ **
+ ** The expression must be given as first argument. The second
+ ** argument is a diagnostic string that should be part of the
+ ** diagnostic message when the assertion fails.
+ **
+ ** Not all compilers give a useful message when an assertion is not
+ ** fulfilled, but all should give at least the line number and stop
+ ** compilation.
+ **
+ ** @remark This functionality will be directly supported in C1x.
+ **/
+#define static_assert(EXPR, DIAGSTR)                    \
+extern char const p00_compiletime_assert[               \
+ sizeof((void const*[3*(!!(EXPR)) - 1]){                \
+    &p00_compiletime_assert,                            \
+    "static assertion failed: " #EXPR ", " DIAGSTR})    \
+]
+extern char const p00_compiletime_assert[sizeof(void const*[2])];
+#endif
+
+static_assert(1, "test of static assertions");
+
+#define P00_HARMLESS_DECLARATION                        \
+extern char const p00_harmless_declaration[             \
+ sizeof((void const*[1]){ &p00_harmless_declaration })  \
+]
+
+extern char const p00_harmless_declaration[sizeof(void const*[1])];
+
+/**
+ ** @brief A meta macro that forces the addition of a semicolon after
+ ** a call to the macro that it terminates.
+ **
+ ** This should only be used for macros that replace declarations.
+ **/
+#define P99_MACRO_END(...) P00_HARMLESS_DECLARATION
+
+
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
 # if P99_GCC_VERSION >= 30000UL
 #  define P99_EXPECT(EXP, VAL) __builtin_expect((EXP), (VAL))
