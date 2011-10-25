@@ -58,6 +58,45 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_UNION, 0)
 /*! @copydoc union NAME */                                     \
 typedef union NAME NAME
 
+/**
+ ** @def P99_DEFINE_UNION
+ ** @brief definition of a @c union @a NAME
+ **
+ ** The member declaration(s) should be given as the variable argument
+ ** list.
+ **
+ ** The difference of this to a straight forward @c union declaration
+ ** is that here we introduce a hidden first member that consists of a
+ ** byte array that has just the appropriate length to cover the whole
+ ** union. The only purpose for this hidden member is to ensure that
+ ** the default initializer <code>{ 0 }</code> initializes the whole
+ ** @c union.
+ **
+ ** Otherwise in C99 padding bytes could be omitted from such an
+ ** initialization, which can lead to surprising results. C1x
+ ** explicitly states that padding bytes must be initialized to @c
+ ** 0. So from then on we can use a straight @c union definition.
+ **
+ ** @warning Don't assume anything about the ordering of the members
+ ** of this @c union. Use designated initializers such as <code>{
+ ** .toto = { .a = 1, }, }</code>, instead.
+ **/
+
+#if  __STDC_VERSION__ < 201101L
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DEFINE_UNION, 0)
+#define P99_DEFINE_UNION(NAME, ...)                                     \
+  /** \remark This union has a hidden first member that is just a byte array to ensure that the default initializer <code>{ 0 }</code> will zero out the whole structure. To initialize a particular member, you should always use a designated initializer such as <code>{ .toto = { .a = 1, }, }</code> **/ \
+union NAME {                                                            \
+  uint8_t p00_allbytes[sizeof(union { __VA_ARGS__ })];                  \
+  __VA_ARGS__                                                           \
+}
+#else
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DEFINE_UNION, 0)
+#define P99_DEFINE_UNION(NAME, ...)                                     \
+  /** \remark This union has a hidden first member that is just a byte array to ensure that the default initializer <code>{ 0 }</code> will zero out the whole structure. To initialize a particular member, you should always use a designated initializer such as <code>{ .toto = { .a = 1, }, }</code> **/ \
+union NAME { __VA_ARGS__ }
+#endif
+
 /* For each one word integer type have a signed and unsigned variant. */
 #define P00_ONE_TOK(T, NAME)                                                    \
 /*! @brief a `one token' abreviation for <code>T</code> */                      \
