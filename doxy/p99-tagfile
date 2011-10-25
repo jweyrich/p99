@@ -653,6 +653,13 @@
       <anchor>ga77d5ca6c2badbdccb8ac4ec69a6a264f</anchor>
       <arglist>(...)</arglist>
     </member>
+    <member kind="function">
+      <type></type>
+      <name>P99_MACRO_END</name>
+      <anchorfile>p99__c99__default_8h_a714da082d7771afaa4f90ad3710bcb04.html</anchorfile>
+      <anchor>a714da082d7771afaa4f90ad3710bcb04</anchor>
+      <arglist>(C99_DEFARG_DOCU)</arglist>
+    </member>
     <member kind="variable">
       <type></type>
       <name>c</name>
@@ -802,6 +809,20 @@
       <arglist>(TYPE, NAME, DEFAULT,...)</arglist>
     </member>
     <member kind="function">
+      <type></type>
+      <name>P99_MACRO_END</name>
+      <anchorfile>p99__choice_8h_a8c546adeff6d261a89cad9991293b157.html</anchorfile>
+      <anchor>a8c546adeff6d261a89cad9991293b157</anchor>
+      <arglist>(_choice_function_, p99_small_primes)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>P99_MACRO_END</name>
+      <anchorfile>p99__choice_8h_aa844d60cffe98226defb3933e67f1492.html</anchorfile>
+      <anchor>aa844d60cffe98226defb3933e67f1492</anchor>
+      <arglist>(_unique_bit)</arglist>
+    </member>
+    <member kind="function">
       <type>uint8_t</type>
       <name>p99_small_primes</name>
       <anchorfile>p99__choice_8h_ad4c04d06f508615cb049aaec93c47ef3.html</anchorfile>
@@ -863,13 +884,6 @@
       <anchorfile>p99__choice_8h_aca7cdf4b46d709c5cf0f9298c19c85bf.html</anchorfile>
       <anchor>aca7cdf4b46d709c5cf0f9298c19c85bf</anchor>
       <arglist>(uint8_t x)</arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>p99_small_primes</name>
-      <anchorfile>p99__choice_8h_aa3f4fb07d8b7987fbbceea1a31acaf09.html</anchorfile>
-      <anchor>aa3f4fb07d8b7987fbbceea1a31acaf09</anchor>
-      <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -935,13 +949,6 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>P99_DEPRECATED</name>
-      <anchorfile>group__compiler_ga12bab6ae673e0a0af7fb7dd5e959850e.html</anchorfile>
-      <anchor>ga12bab6ae673e0a0af7fb7dd5e959850e</anchor>
-      <arglist>(...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>P99_EXPECT</name>
       <anchorfile>group__compiler_ga6746a5d1e51edbdcf8cb06a926bfcf5c.html</anchorfile>
       <anchor>ga6746a5d1e51edbdcf8cb06a926bfcf5c</anchor>
@@ -970,6 +977,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_MACRO_END</name>
+      <anchorfile>group__compiler_gadbd3e08384c594c614e27882ec9bdde0.html</anchorfile>
+      <anchor>gadbd3e08384c594c614e27882ec9bdde0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_PARALLEL_PRAGMA</name>
       <anchorfile>group__compiler_gac21d17b6a0ed4da6ebaa8bb5ad0c151b.html</anchorfile>
       <anchor>gac21d17b6a0ed4da6ebaa8bb5ad0c151b</anchor>
@@ -988,6 +1002,13 @@
       <anchorfile>group__compiler_gaab8f2fc166b2e55ab4209a1140906beb.html</anchorfile>
       <anchor>gaab8f2fc166b2e55ab4209a1140906beb</anchor>
       <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>static_assert</name>
+      <anchorfile>group__compiler_ga66ade0753b8af7a4500621f8bc1e04d7.html</anchorfile>
+      <anchor>ga66ade0753b8af7a4500621f8bc1e04d7</anchor>
+      <arglist>(EXPR, DIAGSTR)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -2672,20 +2693,6 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>P99_COMPILETIME_ASSERT</name>
-      <anchorfile>p99__id_8h_a29e6cc7d11c1a32c9e17200cffda8618.html</anchorfile>
-      <anchor>a29e6cc7d11c1a32c9e17200cffda8618</anchor>
-      <arglist>(...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_COMPILETIME_ASSERT_</name>
-      <anchorfile>p99__id_8h_a7dd52d0b4cb29197486947847d79c461.html</anchorfile>
-      <anchor>a7dd52d0b4cb29197486947847d79c461</anchor>
-      <arglist>(EXPR,...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>P99_FILEID</name>
       <anchorfile>p99__id_8h_a3ec1e39eccb7218928f5508e9caf14ad.html</anchorfile>
       <anchor>a3ec1e39eccb7218928f5508e9caf14ad</anchor>
@@ -2802,13 +2809,6 @@
       <anchorfile>p99__id_8h_a6980474953376302c67af936cdc692ec.html</anchorfile>
       <anchor>a6980474953376302c67af936cdc692ec</anchor>
       <arglist>()</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_MACRO_END</name>
-      <anchorfile>p99__id_8h_adbd3e08384c594c614e27882ec9bdde0.html</anchorfile>
-      <anchor>adbd3e08384c594c614e27882ec9bdde0</anchor>
-      <arglist>(...)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -3109,6 +3109,13 @@
       <anchorfile>group__integers_ga50411e20a633c76a86feb952121c544d.html</anchorfile>
       <anchor>ga50411e20a633c76a86feb952121c544d</anchor>
       <arglist>(X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_HMASK</name>
+      <anchorfile>group__integers_ga5487f362f78cb5f4641810b636e12238.html</anchorfile>
+      <anchor>ga5487f362f78cb5f4641810b636e12238</anchor>
+      <arglist>(N, M)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -4250,6 +4257,13 @@
       <anchor>a3a4125284e799b1e4cbf06041aa3548c</anchor>
       <arglist>(...)</arglist>
     </member>
+    <member kind="function">
+      <type></type>
+      <name>P99_MACRO_END</name>
+      <anchorfile>p99__posix__default_8h_a8e77aec536608c7a7ff05a0000e9f473.html</anchorfile>
+      <anchor>a8e77aec536608c7a7ff05a0000e9f473</anchor>
+      <arglist>(POSIX_DEFARG_DOCU)</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>p99_special.c</name>
@@ -4407,6 +4421,13 @@
       <anchorfile>group__types_ga801c486e408d4fb016d1ac06d5432b66.html</anchorfile>
       <anchor>ga801c486e408d4fb016d1ac06d5432b66</anchor>
       <arglist>(NAME)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_DEFINE_UNION</name>
+      <anchorfile>group__types_ga15e5754373a7f6a8675b55b0ff5cb2cb.html</anchorfile>
+      <anchor>ga15e5754373a7f6a8675b55b0ff5cb2cb</anchor>
+      <arglist>(NAME,...)</arglist>
     </member>
     <member kind="typedef">
       <type>T *</type>
@@ -7941,13 +7962,6 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>P99_DEPRECATED</name>
-      <anchorfile>group__compiler_ga12bab6ae673e0a0af7fb7dd5e959850e.html</anchorfile>
-      <anchor>ga12bab6ae673e0a0af7fb7dd5e959850e</anchor>
-      <arglist>(...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>P99_EXPECT</name>
       <anchorfile>group__compiler_ga6746a5d1e51edbdcf8cb06a926bfcf5c.html</anchorfile>
       <anchor>ga6746a5d1e51edbdcf8cb06a926bfcf5c</anchor>
@@ -7976,6 +7990,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_MACRO_END</name>
+      <anchorfile>group__compiler_gadbd3e08384c594c614e27882ec9bdde0.html</anchorfile>
+      <anchor>gadbd3e08384c594c614e27882ec9bdde0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_PARALLEL_PRAGMA</name>
       <anchorfile>group__compiler_gac21d17b6a0ed4da6ebaa8bb5ad0c151b.html</anchorfile>
       <anchor>gac21d17b6a0ed4da6ebaa8bb5ad0c151b</anchor>
@@ -7994,6 +8015,13 @@
       <anchorfile>group__compiler_gaab8f2fc166b2e55ab4209a1140906beb.html</anchorfile>
       <anchor>gaab8f2fc166b2e55ab4209a1140906beb</anchor>
       <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>static_assert</name>
+      <anchorfile>group__compiler_ga66ade0753b8af7a4500621f8bc1e04d7.html</anchorfile>
+      <anchor>ga66ade0753b8af7a4500621f8bc1e04d7</anchor>
+      <arglist>(EXPR, DIAGSTR)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -8128,6 +8156,13 @@
       <anchorfile>group__types_ga9940d22773961f7161d778a8e15dcac8.html</anchorfile>
       <anchor>ga9940d22773961f7161d778a8e15dcac8</anchor>
       <arglist>(T)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_DEFINE_UNION</name>
+      <anchorfile>group__types_ga15e5754373a7f6a8675b55b0ff5cb2cb.html</anchorfile>
+      <anchor>ga15e5754373a7f6a8675b55b0ff5cb2cb</anchor>
+      <arglist>(NAME,...)</arglist>
     </member>
     <member kind="typedef">
       <type>T *</type>
@@ -11257,6 +11292,13 @@
       <anchorfile>group__integers_ga50411e20a633c76a86feb952121c544d.html</anchorfile>
       <anchor>ga50411e20a633c76a86feb952121c544d</anchor>
       <arglist>(X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_HMASK</name>
+      <anchorfile>group__integers_ga5487f362f78cb5f4641810b636e12238.html</anchorfile>
+      <anchor>ga5487f362f78cb5f4641810b636e12238</anchor>
+      <arglist>(N, M)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
