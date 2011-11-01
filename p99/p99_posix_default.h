@@ -116,4 +116,21 @@ P00_POSIX_DEFARG_DOCU(realpath, char*, char const *path, char *resolved_path)
 #define realpath_defarg_1() P99_LVAL(char[PATH_MAX])
 
 
+P00_POSIX_DEFARG_DOCU(getsockopt, int, int sockfd, int level, int optname, void* optval, socklen_t*optlen)
+/**
+ ** @a optlen is optional and defaults to a temporary containing the length of the argument @a optval
+ **/
+#define getsockopt(...) P99_IF_GE(P99_NARG(__VA_ARGS__),5)(getsockopt(__VA_ARGS__))(p00_getsockopt(__VA_ARGS__))
+
+#define p00_getsockopt(FD, LEV, OPTNAME, OPTVAL)                        \
+getsockopt(FD, LEV, OPTNAME, OPTVAL, (socklen_t[1]){ sizeof *(OPTVAL) })
+
+P00_POSIX_DEFARG_DOCU(setsockopt, int, int sockfd, int level, int optname, void* optval, socklen_t optlen)
+/**
+ ** @a optlen is optional and defaults to the length of the argument @a optval
+ **/
+#define setsockopt(...) P99_IF_GE(P99_NARG(__VA_ARGS__),5)(setsockopt(__VA_ARGS__))(p00_setsockopt(__VA_ARGS__))
+
+#define p00_setsockopt(FD, LEV, OPTNAME, OPTVAL) (setsockopt)(FD, LEV, OPTNAME, OPTVAL, sizeof *(OPTVAL))
+
 #endif      /* !P99_POSIX_DEFAULT_H_ */
