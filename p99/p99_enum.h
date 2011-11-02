@@ -130,7 +130,14 @@ P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__)
  **/
 #define P99_DEFINE_ENUM(T) P99_INSTANTIATE(char const*, P99_PASTE2(T, _getname), T)
 
-P99_DECLARE_ENUM_GETNAME(bool, false, true);
+p99_inline
+char const* bool_getname(bool x) {
+  switch ((uintmax_t)x) {
+  case 0: return "false";
+  case 1: return "true";
+  default: return "((bool)unknown value)";
+  }
+}
 
 /** @}
  **/
