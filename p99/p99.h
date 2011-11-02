@@ -63,7 +63,7 @@
  ** unsigned. This has to be so, since otherwise not all valid values
  ** could be necessarily be realized.
  **
- ** ::p00_abs_signed would not be a good candidate for a macro, since
+ ** @c p00_abs_signed would not be a good candidate for a macro, since
  ** @c a is evaluated twice in the expression; once in the controlling
  ** expression and once for returning its value or its negation.
  **

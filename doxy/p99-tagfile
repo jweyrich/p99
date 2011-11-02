@@ -1123,9 +1123,9 @@
     <member kind="function">
       <type>char const *</type>
       <name>bool_getname</name>
-      <anchorfile>group__types_ga34ace5834fda96a5d82d0558bf2b7ee3.html</anchorfile>
-      <anchor>ga34ace5834fda96a5d82d0558bf2b7ee3</anchor>
-      <arglist>(bool x)...</arglist>
+      <anchorfile>group__types_ga3e55786fe2f76aa141177836e11d6b5a.html</anchorfile>
+      <anchor>ga3e55786fe2f76aa141177836e11d6b5a</anchor>
+      <arglist>(bool x)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -4175,6 +4175,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>getsockopt</name>
+      <anchorfile>p99__posix__default_8h_a6a1673e9cd30f9c97c0eed6db91d2f2d.html</anchorfile>
+      <anchor>a6a1673e9cd30f9c97c0eed6db91d2f2d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>IN_ADDR_INITIALIZER</name>
       <anchorfile>p99__posix__default_8h_ac40fb87ccca336589d19ca38361c27ca.html</anchorfile>
       <anchor>ac40fb87ccca336589d19ca38361c27ca</anchor>
@@ -4241,6 +4248,13 @@
       <name>sem_init</name>
       <anchorfile>p99__posix__default_8h_a4461bd5cb79c05f949779fcaa8469880.html</anchorfile>
       <anchor>a4461bd5cb79c05f949779fcaa8469880</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>setsockopt</name>
+      <anchorfile>p99__posix__default_8h_a47bba3bfd15eff2c05026e4d386531df.html</anchorfile>
+      <anchor>a47bba3bfd15eff2c05026e4d386531df</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
@@ -4408,27 +4422,6 @@
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__type_8h</filename>
     <includes id="p99__paste_8h" name="p99_paste.h" local="yes" imported="no">p99_paste.h</includes>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_DECLARE_STRUCT</name>
-      <anchorfile>group__types_gae3d8acb581de618aa43051acfd249120.html</anchorfile>
-      <anchor>gae3d8acb581de618aa43051acfd249120</anchor>
-      <arglist>(NAME)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_DECLARE_UNION</name>
-      <anchorfile>group__types_ga801c486e408d4fb016d1ac06d5432b66.html</anchorfile>
-      <anchor>ga801c486e408d4fb016d1ac06d5432b66</anchor>
-      <arglist>(NAME)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_DEFINE_UNION</name>
-      <anchorfile>group__types_ga15e5754373a7f6a8675b55b0ff5cb2cb.html</anchorfile>
-      <anchor>ga15e5754373a7f6a8675b55b0ff5cb2cb</anchor>
-      <arglist>(NAME,...)</arglist>
-    </member>
     <member kind="typedef">
       <type>T *</type>
       <name>T_ptr</name>
@@ -8138,31 +8131,10 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>P99_DECLARE_STRUCT</name>
-      <anchorfile>group__types_gae3d8acb581de618aa43051acfd249120.html</anchorfile>
-      <anchor>gae3d8acb581de618aa43051acfd249120</anchor>
-      <arglist>(NAME)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_DECLARE_UNION</name>
-      <anchorfile>group__types_ga801c486e408d4fb016d1ac06d5432b66.html</anchorfile>
-      <anchor>ga801c486e408d4fb016d1ac06d5432b66</anchor>
-      <arglist>(NAME)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>P99_DEFINE_ENUM</name>
       <anchorfile>group__types_ga9940d22773961f7161d778a8e15dcac8.html</anchorfile>
       <anchor>ga9940d22773961f7161d778a8e15dcac8</anchor>
       <arglist>(T)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_DEFINE_UNION</name>
-      <anchorfile>group__types_ga15e5754373a7f6a8675b55b0ff5cb2cb.html</anchorfile>
-      <anchor>ga15e5754373a7f6a8675b55b0ff5cb2cb</anchor>
-      <arglist>(NAME,...)</arglist>
     </member>
     <member kind="typedef">
       <type>T *</type>
@@ -8174,9 +8146,9 @@
     <member kind="function">
       <type>char const *</type>
       <name>bool_getname</name>
-      <anchorfile>group__types_ga34ace5834fda96a5d82d0558bf2b7ee3.html</anchorfile>
-      <anchor>ga34ace5834fda96a5d82d0558bf2b7ee3</anchor>
-      <arglist>(bool x)...</arglist>
+      <anchorfile>group__types_ga3e55786fe2f76aa141177836e11d6b5a.html</anchorfile>
+      <anchor>ga3e55786fe2f76aa141177836e11d6b5a</anchor>
+      <arglist>(bool x)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
