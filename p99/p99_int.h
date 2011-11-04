@@ -33,6 +33,7 @@
 
 #include "p99_c99.h"
 #include "p99_id.h"
+#include "p99_type.h"
 
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 # if P99_GCC_VERSION >= 40200UL
@@ -1329,6 +1330,49 @@ uintmax_t p99_next_popcount(uintmax_t x) {
   }
   return ret;
 }
+
+/**
+ ** @}
+ **/
+
+/**
+ ** @addtogroup endianess
+ ** @brief Help to handle endianess problems of different kind.
+ ** @{
+ **/
+
+P99_DECLARE_UNION(p99_endian_2);
+P99_DECLARE_UNION(p99_endian_4);
+P99_DECLARE_UNION(p99_endian_8);
+
+typedef uint16_t p00_uint_byte_2;
+typedef uint32_t p00_uint_byte_4;
+typedef uint64_t p00_uint_byte_8;
+
+union p99_endian_2 {
+  uint8_t c[2];
+  p00_uint_byte_2 i;
+};
+
+union p99_endian_4 {
+  uint8_t c[4];
+  p00_uint_byte_4 i;
+};
+
+union p99_endian_8 {
+  uint8_t c[8];
+  p00_uint_byte_8 i;
+};
+
+#define P00_HTON0(N, X, I) [I] = (0xFF & ((X)>>((N - (I + 1))*CHAR_BIT)))
+#define P00_HTON(N, X) P99_FOR(N, N, P00_SEQ, P00_HTON0, P99_DUPL(N, X))
+#define P99_HTON_INITIALIZER(N, X) { .c = { P00_HTON(N, X) } }
+#define P99_HTON(N, X) (((P99_PASTE2(p99_endian_, N) const)P99_HTON_INITIALIZER(N, X)).i)
+
+#define P00_NTOH0(N, X, I) (((P99_PASTE2(p00_uint_byte_, N))((X).c[I]))<<((N - (I + 1))*CHAR_BIT))
+#define P00_NTOH(N, X, XX) P99_FOR(N, N, P00_BOR, P00_NTOH0, P99_DUPL(N, XX))
+#define P99_NTOH_INITIALIZER(N, X) { .i = (X) }
+#define P99_NTOH(N, X) (P99_PASTE2(p00_uint_byte_, N) const)P00_NTOH(N, X, ((P99_PASTE2(p99_endian_, N) const)P99_NTOH_INITIALIZER(N, X)))
 
 /**
  ** @}

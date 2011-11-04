@@ -142,5 +142,36 @@ char const* bool_getname(bool x) {
 /** @}
  **/
 
+/**
+** @addtogroup endianess
+** @{
+**/
+
+/**
+ ** @brief Classify platforms according to their endianness
+ ** @see P99_ENDIANNESS
+ **/
+typedef enum p99_endianness {
+  p99_big_endian = 0x01020304u,
+  p99_little_endian = 0x04030201u,
+  p99_pdp_endian = 0x02010403u
+} p99_endianness;
+
+P99_DECLARE_ENUM_GETNAME(
+                 p99_endianness,
+                 p99_big_endian,
+                 p99_little_endian,
+                 p99_pdp_endian
+                 );
+
+/**
+ ** @brief Return the platform the endianness
+ ** in terms of a value of type ::p99_endianness.
+ **/
+#define P99_ENDIANNESS ((p99_endianness)P99_HTON(4, UINT32_C(0x01020304)))
+
+/** @}
+ **/
+
 
 #endif      /* !P99_ENUM_H_ */

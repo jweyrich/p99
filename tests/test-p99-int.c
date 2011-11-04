@@ -14,6 +14,7 @@
 #include "p99_c99.h"
 #include "p99_int.h"
 #include "p99_defarg.h"
+#include "p99_enum.h"
 
 #define DEF(SUFF)                                                     \
   P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_twos, SUFF), \
@@ -246,6 +247,7 @@ int i:UINT_WIDTH;
   bitfield m_256 = { .C = { 0 }};
   m_256.U = (0u - 256u);
   P99_IF_COMPILER(INTEL, warning(disable: 186)) /* pointless comparison of unsigned integer with zero */
+  printf("P99 diagnostic:\tplatform endianess is %s\n", p99_endianness_getname(P99_ENDIANNESS)+4);
   printf("P99 diagnostic:\t\t\t int in bitfield is %s\n", (m_256.i < 0 ? "signed" : "unsigned"));
   printf("P99 diagnostic:\t\t  signed int in bitfield is %s\n", (m_256.s < 0 ? "signed" : "unsigned"));
   printf("P99 diagnostic:\t\tunsigned int in bitfield is %s\n", (m_256.u < 0 ? "signed" : "unsigned"));
@@ -576,4 +578,8 @@ int i:UINT_WIDTH;
     sum = p99_subhh(val, oth, err);
     printf ("subtrackting %d from SCHAR_MIN gives %d: %s\n", oth, sum, strerror(err[0]));
   }
+  printf ("Endianess results in %04"PRIX16", %08"PRIX32", %016"PRIX64"\n",
+          P99_HTON(2, 0x0102), P99_HTON(4, 0x01020304), P99_HTON(8, 0x0102030405060708));
+  printf ("Endianess results in %04"PRIX16", %08"PRIX32", %016"PRIX64"\n",
+          P99_NTOH(2, 0x0102), P99_NTOH(4, 0x01020304), P99_NTOH(8, 0x0102030405060708));
 }
