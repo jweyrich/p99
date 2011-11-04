@@ -1341,8 +1341,11 @@ uintmax_t p99_next_popcount(uintmax_t x) {
  ** @{
  **/
 
+/** @brief an overlay of 2 byte integer and an uint8_array of 2 elements **/
 P99_DECLARE_UNION(p99_endian_2);
+/** @brief an overlay of 4 byte integer and an uint8_array of 4 elements **/
 P99_DECLARE_UNION(p99_endian_4);
+/** @brief an overlay of 8 byte integer and an uint8_array of 8 elements **/
 P99_DECLARE_UNION(p99_endian_8);
 
 typedef uint16_t p00_uint_byte_2;
@@ -1367,12 +1370,59 @@ union p99_endian_8 {
 #define P00_HTON0(N, X, I) [I] = (0xFF & ((X)>>((N - (I + 1))*CHAR_BIT)))
 #define P00_HTON(N, X) P99_FOR(N, N, P00_SEQ, P00_HTON0, P99_DUPL(N, X))
 #define P99_HTON_INITIALIZER(N, X) { .c = { P00_HTON(N, X) } }
+
+/**
+ ** @brief host to network transformation of integers according to the endianness of the platform
+ ** @param N is the number of bytes of the type
+ ** @param X is the value that is to be transformed
+ **/
 #define P99_HTON(N, X) (((P99_PASTE2(p99_endian_, N) const)P99_HTON_INITIALIZER(N, X)).i)
+
+/**
+ ** @brief host to network transformation of integers according to the endianness of the platform
+ ** @param X is the value that is to be transformed
+ ** @remark the "S" for @c short in the name refers to a base type of @c uint16_t
+ ** @see P99_HTON
+ **/
+#define P99_HTONS(X) P99_HTON(2, X)
+
+/**
+ ** @brief host to network transformation of integers according to the endianness of the platform
+ ** @param X is the value that is to be transformed
+ ** @remark the "L" for @c long in the name refers to a base type of @c uint32_t
+ ** @see P99_HTON
+ **/
+#define P99_HTONL(X) P99_HTON(4, X)
+
 
 #define P00_NTOH0(N, X, I) (((P99_PASTE2(p00_uint_byte_, N))((X).c[I]))<<((N - (I + 1))*CHAR_BIT))
 #define P00_NTOH(N, X, XX) P99_FOR(N, N, P00_BOR, P00_NTOH0, P99_DUPL(N, XX))
 #define P99_NTOH_INITIALIZER(N, X) { .i = (X) }
+
+/**
+ ** @brief network to host transformation of integers according to the endianness of the platform
+ ** @param N is the number of bytes of the type
+ ** @param X is the value that is to be transformed
+ **/
 #define P99_NTOH(N, X) (P99_PASTE2(p00_uint_byte_, N) const)P00_NTOH(N, X, ((P99_PASTE2(p99_endian_, N) const)P99_NTOH_INITIALIZER(N, X)))
+
+/**
+ ** @brief network to host transformation of integers according to the endianness of the platform
+ ** @param X is the value that is to be transformed
+ ** @remark the "S" for @c short in the name refers to a base type of @c uint16_t
+ ** @see P99_NTOH
+ **/
+#define P99_NTOHS(X) P99_NTOH(2, X)
+
+/**
+ ** @brief network to host transformation of integers according to the endianness of the platform
+ ** @param X is the value that is to be transformed
+ ** @remark the "L" for @c long in the name refers to a base type of @c uint32_t
+ ** @see P99_NTOH
+ **/
+#define P99_NTOHL(X) P99_NTOH(4, X)
+
+
 
 /**
  ** @}

@@ -1120,12 +1120,57 @@
       <anchor>ga9940d22773961f7161d778a8e15dcac8</anchor>
       <arglist>(T)</arglist>
     </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_ENDIANNESS</name>
+      <anchorfile>group__endianess_gaed0f069cce73ff8d9e57387cdd0565eb.html</anchorfile>
+      <anchor>gaed0f069cce73ff8d9e57387cdd0565eb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>enum p99_endianness</type>
+      <name>p99_endianness</name>
+      <anchorfile>group__endianess_ga5e771d8d637ca8d019f6837e2273c1f0.html</anchorfile>
+      <anchor>ga5e771d8d637ca8d019f6837e2273c1f0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>p99_endianness</name>
+      <anchorfile>group__endianess_ga34676229bb1425b3f1df0c4db6a4ed5c.html</anchorfile>
+      <anchor>ga34676229bb1425b3f1df0c4db6a4ed5c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_big_endian</name>
+      <anchorfile>group__endianess_ga34676229bb1425b3f1df0c4db6a4ed5c.html</anchorfile>
+      <anchor>gga34676229bb1425b3f1df0c4db6a4ed5ca0fd6242992b673adf77a019a6317385d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_little_endian</name>
+      <anchorfile>group__endianess_ga34676229bb1425b3f1df0c4db6a4ed5c.html</anchorfile>
+      <anchor>gga34676229bb1425b3f1df0c4db6a4ed5ca2eac75b50889fa63545325f097733e92</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_pdp_endian</name>
+      <anchorfile>group__endianess_ga34676229bb1425b3f1df0c4db6a4ed5c.html</anchorfile>
+      <anchor>gga34676229bb1425b3f1df0c4db6a4ed5caaaacc5602bcd83a99ff78f9fd6e12b6e</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function">
       <type>char const *</type>
       <name>bool_getname</name>
       <anchorfile>group__types_ga3e55786fe2f76aa141177836e11d6b5a.html</anchorfile>
       <anchor>ga3e55786fe2f76aa141177836e11d6b5a</anchor>
       <arglist>(bool x)</arglist>
+    </member>
+    <member kind="function">
+      <type>char const *</type>
+      <name>p99_endianness_getname</name>
+      <anchorfile>group__endianess_ga4b191234cb9a90bb430e626063477154.html</anchorfile>
+      <anchor>ga4b191234cb9a90bb430e626063477154</anchor>
+      <arglist>(p99_endianness x)...</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -2949,6 +2994,10 @@
     <filename>p99__int_8h</filename>
     <includes id="p99__c99_8h" name="p99_c99.h" local="yes" imported="no">p99_c99.h</includes>
     <includes id="p99__id_8h" name="p99_id.h" local="yes" imported="no">p99_id.h</includes>
+    <includes id="p99__type_8h" name="p99_type.h" local="yes" imported="no">p99_type.h</includes>
+    <class kind="union">p99_endian_2</class>
+    <class kind="union">p99_endian_4</class>
+    <class kind="union">p99_endian_8</class>
     <member kind="define">
       <type>#define</type>
       <name>P99_0</name>
@@ -3119,6 +3168,34 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_HTON</name>
+      <anchorfile>group__endianess_ga0d9db3c22281f5e8b2757cc06c03865a.html</anchorfile>
+      <anchor>ga0d9db3c22281f5e8b2757cc06c03865a</anchor>
+      <arglist>(N, X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_HTON_INITIALIZER</name>
+      <anchorfile>group__endianess_ga082045ca97b5dc22edf31946ea6688e2.html</anchorfile>
+      <anchor>ga082045ca97b5dc22edf31946ea6688e2</anchor>
+      <arglist>(N, X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_HTONL</name>
+      <anchorfile>group__endianess_ga1e072acd5ccea88898c5a6c48eb766c6.html</anchorfile>
+      <anchor>ga1e072acd5ccea88898c5a6c48eb766c6</anchor>
+      <arglist>(X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_HTONS</name>
+      <anchorfile>group__endianess_gae15c0c7948d0f527e22609f71c3c7ba7.html</anchorfile>
+      <anchor>gae15c0c7948d0f527e22609f71c3c7ba7</anchor>
+      <arglist>(X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_INIT</name>
       <anchorfile>group__integers_ga9027c7b4da28cf06bb2d369a6a359b28.html</anchorfile>
       <anchor>ga9027c7b4da28cf06bb2d369a6a359b28</anchor>
@@ -3213,6 +3290,34 @@
       <name>P99_MASK2LOW1</name>
       <anchorfile>group__bitfiddling_gacdb1472992ffc3d7705025124d531050.html</anchorfile>
       <anchor>gacdb1472992ffc3d7705025124d531050</anchor>
+      <arglist>(X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_NTOH</name>
+      <anchorfile>group__endianess_ga995c308ea0a93eaf9bc66891bc293a24.html</anchorfile>
+      <anchor>ga995c308ea0a93eaf9bc66891bc293a24</anchor>
+      <arglist>(N, X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_NTOH_INITIALIZER</name>
+      <anchorfile>group__endianess_ga169b7c5ca029fc4d1464c402f45f207c.html</anchorfile>
+      <anchor>ga169b7c5ca029fc4d1464c402f45f207c</anchor>
+      <arglist>(N, X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_NTOHL</name>
+      <anchorfile>group__endianess_gabbd8375af1b2e1d5a544cc79e297b3cc.html</anchorfile>
+      <anchor>gabbd8375af1b2e1d5a544cc79e297b3cc</anchor>
+      <arglist>(X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_NTOHS</name>
+      <anchorfile>group__endianess_ga502649174d3efb3d0ab31b508dbf4a52.html</anchorfile>
+      <anchor>ga502649174d3efb3d0ab31b508dbf4a52</anchor>
       <arglist>(X)</arglist>
     </member>
     <member kind="define">
@@ -3424,6 +3529,27 @@
       <anchorfile>group__integers_ga8aac219698a912df6abe02f6886d8fea.html</anchorfile>
       <anchor>ga8aac219698a912df6abe02f6886d8fea</anchor>
       <arglist>(X)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>union p99_endian_2</type>
+      <name>p99_endian_2</name>
+      <anchorfile>group__endianess_gafc76184fdc3aa263356b9bdc7ec2d92a.html</anchorfile>
+      <anchor>gafc76184fdc3aa263356b9bdc7ec2d92a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>union p99_endian_4</type>
+      <name>p99_endian_4</name>
+      <anchorfile>group__endianess_ga1ef0dfbd917edc7959fa102df6c433f8.html</anchorfile>
+      <anchor>ga1ef0dfbd917edc7959fa102df6c433f8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>union p99_endian_8</type>
+      <name>p99_endian_8</name>
+      <anchorfile>group__endianess_ga33efb720ca8c6da761c492e0296606f9.html</anchorfile>
+      <anchor>ga33efb720ca8c6da761c492e0296606f9</anchor>
+      <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>extendedInt</type>
@@ -8194,6 +8320,136 @@
     </member>
   </compound>
   <compound kind="group">
+    <name>endianess</name>
+    <title>Endianess</title>
+    <filename>group__endianess.html</filename>
+    <class kind="union">p99_endian_2</class>
+    <class kind="union">p99_endian_4</class>
+    <class kind="union">p99_endian_8</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_ENDIANNESS</name>
+      <anchorfile>group__endianess_gaed0f069cce73ff8d9e57387cdd0565eb.html</anchorfile>
+      <anchor>gaed0f069cce73ff8d9e57387cdd0565eb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_HTON</name>
+      <anchorfile>group__endianess_ga0d9db3c22281f5e8b2757cc06c03865a.html</anchorfile>
+      <anchor>ga0d9db3c22281f5e8b2757cc06c03865a</anchor>
+      <arglist>(N, X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_HTON_INITIALIZER</name>
+      <anchorfile>group__endianess_ga082045ca97b5dc22edf31946ea6688e2.html</anchorfile>
+      <anchor>ga082045ca97b5dc22edf31946ea6688e2</anchor>
+      <arglist>(N, X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_HTONL</name>
+      <anchorfile>group__endianess_ga1e072acd5ccea88898c5a6c48eb766c6.html</anchorfile>
+      <anchor>ga1e072acd5ccea88898c5a6c48eb766c6</anchor>
+      <arglist>(X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_HTONS</name>
+      <anchorfile>group__endianess_gae15c0c7948d0f527e22609f71c3c7ba7.html</anchorfile>
+      <anchor>gae15c0c7948d0f527e22609f71c3c7ba7</anchor>
+      <arglist>(X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_NTOH</name>
+      <anchorfile>group__endianess_ga995c308ea0a93eaf9bc66891bc293a24.html</anchorfile>
+      <anchor>ga995c308ea0a93eaf9bc66891bc293a24</anchor>
+      <arglist>(N, X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_NTOH_INITIALIZER</name>
+      <anchorfile>group__endianess_ga169b7c5ca029fc4d1464c402f45f207c.html</anchorfile>
+      <anchor>ga169b7c5ca029fc4d1464c402f45f207c</anchor>
+      <arglist>(N, X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_NTOHL</name>
+      <anchorfile>group__endianess_gabbd8375af1b2e1d5a544cc79e297b3cc.html</anchorfile>
+      <anchor>gabbd8375af1b2e1d5a544cc79e297b3cc</anchor>
+      <arglist>(X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_NTOHS</name>
+      <anchorfile>group__endianess_ga502649174d3efb3d0ab31b508dbf4a52.html</anchorfile>
+      <anchor>ga502649174d3efb3d0ab31b508dbf4a52</anchor>
+      <arglist>(X)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>union p99_endian_2</type>
+      <name>p99_endian_2</name>
+      <anchorfile>group__endianess_gafc76184fdc3aa263356b9bdc7ec2d92a.html</anchorfile>
+      <anchor>gafc76184fdc3aa263356b9bdc7ec2d92a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>union p99_endian_4</type>
+      <name>p99_endian_4</name>
+      <anchorfile>group__endianess_ga1ef0dfbd917edc7959fa102df6c433f8.html</anchorfile>
+      <anchor>ga1ef0dfbd917edc7959fa102df6c433f8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>union p99_endian_8</type>
+      <name>p99_endian_8</name>
+      <anchorfile>group__endianess_ga33efb720ca8c6da761c492e0296606f9.html</anchorfile>
+      <anchor>ga33efb720ca8c6da761c492e0296606f9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>enum p99_endianness</type>
+      <name>p99_endianness</name>
+      <anchorfile>group__endianess_ga5e771d8d637ca8d019f6837e2273c1f0.html</anchorfile>
+      <anchor>ga5e771d8d637ca8d019f6837e2273c1f0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>p99_endianness</name>
+      <anchorfile>group__endianess_ga34676229bb1425b3f1df0c4db6a4ed5c.html</anchorfile>
+      <anchor>ga34676229bb1425b3f1df0c4db6a4ed5c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_big_endian</name>
+      <anchorfile>group__endianess_ga34676229bb1425b3f1df0c4db6a4ed5c.html</anchorfile>
+      <anchor>gga34676229bb1425b3f1df0c4db6a4ed5ca0fd6242992b673adf77a019a6317385d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_little_endian</name>
+      <anchorfile>group__endianess_ga34676229bb1425b3f1df0c4db6a4ed5c.html</anchorfile>
+      <anchor>gga34676229bb1425b3f1df0c4db6a4ed5ca2eac75b50889fa63545325f097733e92</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_pdp_endian</name>
+      <anchorfile>group__endianess_ga34676229bb1425b3f1df0c4db6a4ed5c.html</anchorfile>
+      <anchor>gga34676229bb1425b3f1df0c4db6a4ed5caaaacc5602bcd83a99ff78f9fd6e12b6e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>char const *</type>
+      <name>p99_endianness_getname</name>
+      <anchorfile>group__endianess_ga4b191234cb9a90bb430e626063477154.html</anchorfile>
+      <anchor>ga4b191234cb9a90bb430e626063477154</anchor>
+      <arglist>(p99_endianness x)...</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
     <name>preprocessor_for</name>
     <title>Preprocessor FOR loops</title>
     <filename>group__preprocessor__for.html</filename>
@@ -11104,6 +11360,7 @@
     <title>Macros to handle integer type expressions</title>
     <filename>group__integers.html</filename>
     <subgroup>bitfiddling</subgroup>
+    <subgroup>endianess</subgroup>
     <member kind="define">
       <type>#define</type>
       <name>P99_0</name>
@@ -11836,6 +12093,60 @@
       <anchorfile>group__flexible_ga07295b3c6696f8fcc020b7786ab3919f.html</anchorfile>
       <anchor>ga07295b3c6696f8fcc020b7786ab3919f</anchor>
       <arglist>(T, F, N)</arglist>
+    </member>
+  </compound>
+  <compound kind="union">
+    <name>p99_endian_2</name>
+    <filename>unionp99__endian__2.html</filename>
+    <member kind="variable">
+      <type>uint8_t</type>
+      <name>c</name>
+      <anchorfile>unionp99__endian__2_a76646e6188e3238053aafb4412fd951e.html</anchorfile>
+      <anchor>a76646e6188e3238053aafb4412fd951e</anchor>
+      <arglist>[2]</arglist>
+    </member>
+    <member kind="variable">
+      <type>p00_uint_byte_2</type>
+      <name>i</name>
+      <anchorfile>unionp99__endian__2_a96cec064a924b00ba6dc062aef7a480e.html</anchorfile>
+      <anchor>a96cec064a924b00ba6dc062aef7a480e</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="union">
+    <name>p99_endian_4</name>
+    <filename>unionp99__endian__4.html</filename>
+    <member kind="variable">
+      <type>uint8_t</type>
+      <name>c</name>
+      <anchorfile>unionp99__endian__4_a6bd3ffed979e8fd96482545ef2a973e5.html</anchorfile>
+      <anchor>a6bd3ffed979e8fd96482545ef2a973e5</anchor>
+      <arglist>[4]</arglist>
+    </member>
+    <member kind="variable">
+      <type>p00_uint_byte_4</type>
+      <name>i</name>
+      <anchorfile>unionp99__endian__4_a16bac6d0527af08eb30210320d946267.html</anchorfile>
+      <anchor>a16bac6d0527af08eb30210320d946267</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="union">
+    <name>p99_endian_8</name>
+    <filename>unionp99__endian__8.html</filename>
+    <member kind="variable">
+      <type>uint8_t</type>
+      <name>c</name>
+      <anchorfile>unionp99__endian__8_a8c70e94580659d5bfb7b0a4c193c2f7d.html</anchorfile>
+      <anchor>a8c70e94580659d5bfb7b0a4c193c2f7d</anchor>
+      <arglist>[8]</arglist>
+    </member>
+    <member kind="variable">
+      <type>p00_uint_byte_8</type>
+      <name>i</name>
+      <anchorfile>unionp99__endian__8_a8e96051e0728c5c03b56a1f24cf67f1b.html</anchorfile>
+      <anchor>a8e96051e0728c5c03b56a1f24cf67f1b</anchor>
+      <arglist></arglist>
     </member>
   </compound>
   <compound kind="dir">
