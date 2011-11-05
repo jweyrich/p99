@@ -1347,6 +1347,8 @@ P99_DECLARE_UNION(p99_endian_2);
 P99_DECLARE_UNION(p99_endian_4);
 /** @brief an overlay of 8 byte integer and an uint8_array of 8 elements **/
 P99_DECLARE_UNION(p99_endian_8);
+/** @brief an overlay of 16 byte integer and an uint8_array of 16 elements **/
+P99_DECLARE_UNION(p99_endian_16);
 
 typedef uint16_t p00_uint_byte_2;
 typedef uint32_t p00_uint_byte_4;
@@ -1354,18 +1356,38 @@ typedef uint64_t p00_uint_byte_8;
 
 union p99_endian_2 {
   uint8_t c[2];
-  p00_uint_byte_2 i;
+  uint16_t i;
 };
 
 union p99_endian_4 {
   uint8_t c[4];
-  p00_uint_byte_4 i;
+  uint32_t i;
 };
 
 union p99_endian_8 {
   uint8_t c[8];
-  p00_uint_byte_8 i;
+  uint64_t i;
 };
+
+
+#ifdef UINT128_MAX
+typedef uint128_t p00_uint_byte_16;
+
+union p99_endian_16 {
+  uint8_t c[16];
+  uint128_t i;
+};
+#else
+# ifdef p99x_uint128
+typedef p99x_uint128 p00_uint_byte_16;
+
+union p99_endian_16 {
+  uint8_t c[16];
+  p99x_uint128 i;
+};
+# endif
+#endif
+
 
 #define P00_HTON0(N, X, I) [I] = (0xFF & ((X)>>((N - (I + 1))*CHAR_BIT)))
 #define P00_HTON(N, X) P99_FOR(N, N, P00_SEQ, P00_HTON0, P99_DUPL(N, X))

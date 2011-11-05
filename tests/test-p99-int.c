@@ -74,6 +74,24 @@ char* print_uintmax(p99x_uintmax x, char* tmp) {
   }
   return tmp;
 }
+char* print_uintmax_X(p99x_uintmax x, char* tmp) {
+  *tmp = 0;
+  //--tmp;
+  if (x) while (x) {
+      uint64_t low = (uint64_t)x;
+      char buf[] = { "18446744073709551615" };
+      sprintf(buf, "%" PRIX64, low);
+      size_t l = strlen(buf);
+      tmp -= l;
+      memcpy(tmp, buf, l);
+      x -= low;
+      x >>= 64;
+    } else {
+    --tmp;
+    *tmp = '0';
+  }
+  return tmp;
+}
 char const* print_intmax(p99x_intmax x, char* tmp) {
   p99x_uintmax a = (x < 0) ? -(p99x_uintmax)x : x;
   tmp = print_uintmax(a, tmp);
@@ -101,6 +119,10 @@ const char* print_intmax(p99x_intmax x, char* tmp) {
 #define print_uintmax(...) P99_CALL_DEFARG(print_uintmax, 2, __VA_ARGS__)
 P99_DECLARE_DEFARG(print_uintmax, ,);
 #define print_uintmax_defarg_1() ((char[40]){ 0 }+39)
+
+#define print_uintmax_X(...) P99_CALL_DEFARG(print_uintmax_X, 2, __VA_ARGS__)
+P99_DECLARE_DEFARG(print_uintmax_X, ,);
+#define print_uintmax_X_defarg_1() ((char[40]){ 0 }+39)
 
 #define print_intmax(...) P99_CALL_DEFARG(print_intmax, 2, __VA_ARGS__)
 P99_DECLARE_DEFARG(print_intmax, , );
@@ -544,6 +566,29 @@ int i:UINT_WIDTH;
 #ifdef p99x_int128
   SAYIT3((p99x_int128)0);
 #endif
+  printf("------------------------ endianness behavior -----\n");
+  printf ("Endianess results in 0x%04"PRIX16", 0x%08"PRIX32", 0x%016"PRIX64", %s%s\n",
+          P99_HTON(2, 0x0102),
+          P99_HTON(4, 0x01020304),
+          P99_HTON(8, 0x0102030405060708),
+#ifdef p99x_uint128
+          "0x",
+          print_uintmax_X(P99_HTON(16, ((p99x_uint128)0x0102030405060708) << 64 | ((p99x_uint128)0x090A0B0C0D0E0F)))
+#else
+          "<128 bit types not supported>", ""
+#endif
+          );
+  printf ("Endianess results in 0x%04"PRIX16", 0x%08"PRIX32", 0x%016"PRIX64", %s%s\n",
+          P99_NTOH(2, 0x0102),
+          P99_NTOH(4, 0x01020304),
+          P99_NTOH(8, 0x0102030405060708),
+#ifdef p99x_uint128
+          "0x",
+          print_uintmax_X(P99_NTOH(16, ((p99x_uint128)0x0102030405060708) << 64 | ((p99x_uint128)0x090A0B0C0D0E0F)))
+#else
+          "<128 bit types not supported>", ""
+#endif
+          );
   printf("------------------------ testing for overflow behavior -----\n");
   int oth = argc - 1;
   {
@@ -578,8 +623,4 @@ int i:UINT_WIDTH;
     sum = p99_subhh(val, oth, err);
     printf ("subtrackting %d from SCHAR_MIN gives %d: %s\n", oth, sum, strerror(err[0]));
   }
-  printf ("Endianess results in %04"PRIX16", %08"PRIX32", %016"PRIX64"\n",
-          P99_HTON(2, 0x0102), P99_HTON(4, 0x01020304), P99_HTON(8, 0x0102030405060708));
-  printf ("Endianess results in %04"PRIX16", %08"PRIX32", %016"PRIX64"\n",
-          P99_NTOH(2, 0x0102), P99_NTOH(4, 0x01020304), P99_NTOH(8, 0x0102030405060708));
 }

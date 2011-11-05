@@ -8,18 +8,6 @@
 ## Last update Sat Feb 20 21:57:30 2010 Jens Gustedt
 ## 
 
-NAME 	=					\
-		test-p99-block			\
-		test-p99-cases			\
-		test-p99-choice			\
-		test-p99-classification		\
-		test-p99-compound		\
-		test-p99-double			\
-		test-p99-int			\
-		test-p99-ndim			\
-		test-p99-pow			\
-		test-p99-va-arg
-
 SRC	=					\
 		test-p99-block.c		\
 		test-p99-cases.c		\
@@ -76,6 +64,7 @@ CC 	= c99
 MAKE 	= make
 SHELL	= /bin/sh
 OBJS 	= $(SRC:.c=.o)
+NAME 	= $(SRC:.c=)
 RM 	= /bin/rm -f
 COMP	= gzip -9v
 UNCOMP	= gzip -df
