@@ -270,9 +270,9 @@ int i:UINT_WIDTH;
   m_256.U = (0u - 256u);
   P99_IF_COMPILER(INTEL, warning(disable: 186)) /* pointless comparison of unsigned integer with zero */
   printf("P99 diagnostic:\tplatform endianess is %s\n", p99_endianness_getname(P99_ENDIANNESS)+4);
-  printf("P99 diagnostic:\t\t\t int in bitfield is %s\n", (m_256.i < 0 ? "signed" : "unsigned"));
-  printf("P99 diagnostic:\t\t  signed int in bitfield is %s\n", (m_256.s < 0 ? "signed" : "unsigned"));
-  printf("P99 diagnostic:\t\tunsigned int in bitfield is %s\n", (m_256.u < 0 ? "signed" : "unsigned"));
+  printf("P99 diagnostic:\t\t\t int in bitfield is %s\n", (m_256.i <= 0 ? "signed" : "unsigned"));
+  printf("P99 diagnostic:\t\t  signed int in bitfield is %s\n", (m_256.s <= 0 ? "signed" : "unsigned"));
+  printf("P99 diagnostic:\t\tunsigned int in bitfield is %s\n", (m_256.u <= 0 ? "signed" : "unsigned"));
   /* Check to see which bit is the sign bit. */
   size_t signbit = 0;
   bool signincluded = false;
