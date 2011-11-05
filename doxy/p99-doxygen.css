@@ -9,7 +9,7 @@ html, html *, body, table, div, p, dt, dd, dl {
 
 /* counters */
 
-h1
+body
 {
  counter-reset:section;
 }

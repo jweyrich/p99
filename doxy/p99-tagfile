@@ -3531,6 +3531,13 @@
       <arglist>(X)</arglist>
     </member>
     <member kind="typedef">
+      <type>union p99_endian_16</type>
+      <name>p99_endian_16</name>
+      <anchorfile>group__endianess_gabcc59f6c69c12fc4888a5a195472bbd2.html</anchorfile>
+      <anchor>gabcc59f6c69c12fc4888a5a195472bbd2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
       <type>union p99_endian_2</type>
       <name>p99_endian_2</name>
       <anchorfile>group__endianess_gafc76184fdc3aa263356b9bdc7ec2d92a.html</anchorfile>
@@ -8390,6 +8397,13 @@
       <arglist>(X)</arglist>
     </member>
     <member kind="typedef">
+      <type>union p99_endian_16</type>
+      <name>p99_endian_16</name>
+      <anchorfile>group__endianess_gabcc59f6c69c12fc4888a5a195472bbd2.html</anchorfile>
+      <anchor>gabcc59f6c69c12fc4888a5a195472bbd2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
       <type>union p99_endian_2</type>
       <name>p99_endian_2</name>
       <anchorfile>group__endianess_gafc76184fdc3aa263356b9bdc7ec2d92a.html</anchorfile>
@@ -12106,10 +12120,10 @@
       <arglist>[2]</arglist>
     </member>
     <member kind="variable">
-      <type>p00_uint_byte_2</type>
+      <type>uint16_t</type>
       <name>i</name>
-      <anchorfile>unionp99__endian__2_a96cec064a924b00ba6dc062aef7a480e.html</anchorfile>
-      <anchor>a96cec064a924b00ba6dc062aef7a480e</anchor>
+      <anchorfile>unionp99__endian__2_acfb44ffb7100db22ec07e81a22be10c7.html</anchorfile>
+      <anchor>acfb44ffb7100db22ec07e81a22be10c7</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -12124,10 +12138,10 @@
       <arglist>[4]</arglist>
     </member>
     <member kind="variable">
-      <type>p00_uint_byte_4</type>
+      <type>uint32_t</type>
       <name>i</name>
-      <anchorfile>unionp99__endian__4_a16bac6d0527af08eb30210320d946267.html</anchorfile>
-      <anchor>a16bac6d0527af08eb30210320d946267</anchor>
+      <anchorfile>unionp99__endian__4_a6161d6fc417a17e48e3c3b8a8c570149.html</anchorfile>
+      <anchor>a6161d6fc417a17e48e3c3b8a8c570149</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -12142,10 +12156,10 @@
       <arglist>[8]</arglist>
     </member>
     <member kind="variable">
-      <type>p00_uint_byte_8</type>
+      <type>uint64_t</type>
       <name>i</name>
-      <anchorfile>unionp99__endian__8_a8e96051e0728c5c03b56a1f24cf67f1b.html</anchorfile>
-      <anchor>a8e96051e0728c5c03b56a1f24cf67f1b</anchor>
+      <anchorfile>unionp99__endian__8_a51d61e80857fd91a050211207253ba11.html</anchorfile>
+      <anchor>a51d61e80857fd91a050211207253ba11</anchor>
       <arglist></arglist>
     </member>
   </compound>
