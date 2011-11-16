@@ -54,6 +54,13 @@
  ** http://gustedt.wordpress.com/2010/06/08/detect-empty-macro-arguments/
  **
  ** @return tokens 0 or 1
+ **
+ ** @warning This macro should work for most reasonable invocations
+ ** (balanced parenthesis and stuff like that). The only case that
+ ** definitively does not work is when called with another macro @c X
+ ** at the end of its argument(s) that expects more than one argument
+ ** by itself. The particular cases that X receives @c 0, @c 1 or a
+ ** variable number of arguments should be fine.
  **/
 #define P99_IS_EMPTY(...)                                               \
 P00_ISEMPTY(                                                            \
@@ -65,14 +72,30 @@ P00_ISEMPTY(                                                            \
              P99_HAS_COMMA(P00_IS__EQ__ __VA_ARGS__),                   \
              /* test if the argument together with a parenthesis        \
                 adds a comma */                                         \
-             P99_HAS_COMMA(__VA_ARGS__ (~)),                            \
+             P99_HAS_COMMA(__VA_ARGS__ (/*empty*/)),                    \
              /* test if placing it between P99_IS__EQ__ and the         \
                 parenthesis adds a comma */                             \
-             P99_HAS_COMMA(P00_IS__EQ__ __VA_ARGS__ (~))                \
+             P99_HAS_COMMA(P00_IS__EQ__ __VA_ARGS__ (/*empty*/))        \
              )
 
 #define P00_ISEMPTY(_0, _1, _2, _3) P99_HAS_COMMA(P99_PASTE5(P00_IS_EMPTY_CASE_, _0, _1, _2, _3))
+#define P00_IS_EMPTY_CASE_0000 P00_IS_EMPTY_CASE_0000
 #define P00_IS_EMPTY_CASE_0001 ,
+#define P00_IS_EMPTY_CASE_0010 P00_IS_EMPTY_CASE_0010
+#define P00_IS_EMPTY_CASE_0011 P00_IS_EMPTY_CASE_0011
+#define P00_IS_EMPTY_CASE_0100 P00_IS_EMPTY_CASE_0100
+#define P00_IS_EMPTY_CASE_0101 P00_IS_EMPTY_CASE_0101
+#define P00_IS_EMPTY_CASE_0110 P00_IS_EMPTY_CASE_0110
+#define P00_IS_EMPTY_CASE_0111 P00_IS_EMPTY_CASE_0111
+#define P00_IS_EMPTY_CASE_1000 P00_IS_EMPTY_CASE_1000
+#define P00_IS_EMPTY_CASE_1001 P00_IS_EMPTY_CASE_1001
+#define P00_IS_EMPTY_CASE_1010 P00_IS_EMPTY_CASE_1010
+#define P00_IS_EMPTY_CASE_1011 P00_IS_EMPTY_CASE_1011
+#define P00_IS_EMPTY_CASE_1100 P00_IS_EMPTY_CASE_1100
+#define P00_IS_EMPTY_CASE_1101 P00_IS_EMPTY_CASE_1101
+#define P00_IS_EMPTY_CASE_1110 P00_IS_EMPTY_CASE_1110
+#define P00_IS_EMPTY_CASE_1111 P00_IS_EMPTY_CASE_1111
+
 
 #define P00_NARG_EMPTY_1(VAL) 0
 #define P00_NARG_EMPTY_0(VAL) VAL
