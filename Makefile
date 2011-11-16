@@ -65,6 +65,7 @@ ${P99_PREFIX}.zip : ${P99_PREFIX}.tgz
 	zip -r $@ --move ${P99_RELEASE}
 
 ${P99_PREFIX}-html.tgz ${P99_PREFIX}-html.zip ${P99_PREFIX}-refman.pdf : ${P99_PREFIX}
+	-cp greekUTF8.sty ${P99_RELEASE}/p99-latex/
 	-make -C ${P99_RELEASE}/p99-latex refman.pdf
 	-cp ${P99_RELEASE}/p99-latex/refman.pdf ${P99_PREFIX}-refman.pdf
 	tar -czf ${P99_PREFIX}-html.tgz ${TAROPT} ${P99_RELEASE}/p99-html
@@ -113,9 +114,9 @@ p99-transfer :
 
 p99-html-transfer : ${P99_RELEASE}/p99-html
 	-cd ${P99_RELEASE}; rsync -az --no-g --no-p --progress -e 'ssh -ax' p99-html/ ${P99_GFORGE}:${P99_HTDOCS}/p99-html-new
-	ssh ${P99_GFORGE} mv ${P99_HTDOCS}/p99-html ${P99_HTDOCS}/p99-html-bak
-	ssh ${P99_GFORGE} mv ${P99_HTDOCS}/p99-html-new ${P99_HTDOCS}/p99-html
-	ssh ${P99_GFORGE} rm -rf ${P99_HTDOCS}/p99-html-bak
+	-ssh ${P99_GFORGE} mv ${P99_HTDOCS}/p99-html ${P99_HTDOCS}/p99-html-bak
+	-ssh ${P99_GFORGE} mv ${P99_HTDOCS}/p99-html-new ${P99_HTDOCS}/p99-html
+	-ssh ${P99_GFORGE} rm -rf ${P99_HTDOCS}/p99-html-bak
 
 ${P99_PREFIX} : ${P99_PREFIX}.tgz
 	rm -rf ${P99_PREFIX}
