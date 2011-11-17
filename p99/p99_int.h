@@ -1406,6 +1406,8 @@ union p99_endian_16 {
  ** @remark the "S" for @c short in the name refers to a base type of @c uint16_t
  ** @see P99_HTON
  **/
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_HTONS, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_HTONS, 1)
 #define P99_HTONS(X) P99_HTON(2, X)
 
 /**
@@ -1414,6 +1416,8 @@ union p99_endian_16 {
  ** @remark the "L" for @c long in the name refers to a base type of @c uint32_t
  ** @see P99_HTON
  **/
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_HTONL, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_HTONL, 1)
 #define P99_HTONL(X) P99_HTON(4, X)
 
 
@@ -1434,6 +1438,7 @@ union p99_endian_16 {
  ** @remark the "S" for @c short in the name refers to a base type of @c uint16_t
  ** @see P99_NTOH
  **/
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_NTOHS, 0)
 #define P99_NTOHS(X) P99_NTOH(2, X)
 
 /**
@@ -1442,6 +1447,7 @@ union p99_endian_16 {
  ** @remark the "L" for @c long in the name refers to a base type of @c uint32_t
  ** @see P99_NTOH
  **/
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_NTOHL, 0)
 #define P99_NTOHL(X) P99_NTOH(4, X)
 
 
