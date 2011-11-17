@@ -280,20 +280,20 @@ signed p00_trailing_comma_in_initializer__(void) {
  **
  ** @remark This functionality will be directly supported in C1x.
  **/
-#define static_assert(EXPR, DIAGSTR)                    \
-extern char const p00_compiletime_assert[               \
- sizeof((void const*[3*(!!(EXPR)) - 1]){                \
-    &p00_compiletime_assert,                            \
-    "static assertion failed: " #EXPR ", " DIAGSTR})    \
+#define static_assert(EXPR, DIAGSTR)                           \
+extern char const p00_compiletime_assert[                      \
+ sizeof((void const*[3*(!!(EXPR)) - 1]){                       \
+    &p00_compiletime_assert,                                   \
+    "static assertion failed: " #EXPR ", " DIAGSTR})           \
 ]
 extern char const p00_compiletime_assert[sizeof(void const*[2])];
 #endif
 
 static_assert(1, "test of static assertions");
 
-#define P00_HARMLESS_DECLARATION                        \
-extern char const p00_harmless_declaration[             \
- sizeof((void const*[1]){ &p00_harmless_declaration })  \
+#define P00_HARMLESS_DECLARATION                               \
+extern char const p00_harmless_declaration[                    \
+ sizeof((void const*[1]){ &p00_harmless_declaration })         \
 ]
 
 extern char const p00_harmless_declaration[sizeof(void const*[1])];

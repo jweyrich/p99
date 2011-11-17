@@ -122,7 +122,7 @@ P00_POSIX_DEFARG_DOCU(getsockopt, int, int sockfd, int level, int optname, void*
  **/
 #define getsockopt(...) P99_IF_GE(P99_NARG(__VA_ARGS__),5)(getsockopt(__VA_ARGS__))(p00_getsockopt(__VA_ARGS__))
 
-#define p00_getsockopt(FD, LEV, OPTNAME, OPTVAL)                        \
+#define p00_getsockopt(FD, LEV, OPTNAME, OPTVAL)                         \
 getsockopt(FD, LEV, OPTNAME, OPTVAL, (socklen_t[1]){ sizeof *(OPTVAL) })
 
 P00_POSIX_DEFARG_DOCU(setsockopt, int, int sockfd, int level, int optname, void* optval, socklen_t optlen)

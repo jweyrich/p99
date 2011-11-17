@@ -1411,10 +1411,38 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_REPEAT</name>
+      <anchorfile>group__preprocessor__for_ga6d061d0258fbdabfde9f5b99b47d80e6.html</anchorfile>
+      <anchor>ga6d061d0258fbdabfde9f5b99b47d80e6</anchor>
+      <arglist>(MACRO, N)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_REVS</name>
       <anchorfile>group__preprocessor__for_ga7ce820b215664fea1c4ff1cdb8079728.html</anchorfile>
       <anchor>ga7ce820b215664fea1c4ff1cdb8079728</anchor>
       <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_SEP</name>
+      <anchorfile>group__preprocessor__for_ga587594351f1763bfa31857764b70616e.html</anchorfile>
+      <anchor>ga587594351f1763bfa31857764b70616e</anchor>
+      <arglist>(MACRO,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_SEQ</name>
+      <anchorfile>group__preprocessor__for_gaaf12072aef5a55a36f400d685525d497.html</anchorfile>
+      <anchor>gaaf12072aef5a55a36f400d685525d497</anchor>
+      <arglist>(MACRO,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_SER</name>
+      <anchorfile>group__preprocessor__for_gaa8397413f3ecf6c5f24463a728989ab4.html</anchorfile>
+      <anchor>gaa8397413f3ecf6c5f24463a728989ab4</anchor>
+      <arglist>(MACRO,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -1436,6 +1464,13 @@
       <anchorfile>p99__for_8h_ac9ff2662b5a9b4f1c4493359de3f1662.html</anchorfile>
       <anchor>ac9ff2662b5a9b4f1c4493359de3f1662</anchor>
       <arglist>(TOK,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_UNROLL</name>
+      <anchorfile>group__preprocessor__for_gaec0c87b336a5fa2a8230e207af5cc1f0.html</anchorfile>
+      <anchor>gaec0c87b336a5fa2a8230e207af5cc1f0</anchor>
+      <arglist>(MACRO, N)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -4555,12 +4590,12 @@
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__type_8h</filename>
     <includes id="p99__paste_8h" name="p99_paste.h" local="yes" imported="no">p99_paste.h</includes>
-    <member kind="typedef">
-      <type>T *</type>
-      <name>T_ptr</name>
-      <anchorfile>group__types_ga7ef36958b4d12a50a7a2131a577f93ae.html</anchorfile>
-      <anchor>ga7ef36958b4d12a50a7a2131a577f93ae</anchor>
-      <arglist></arglist>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_DEFINE_UNION</name>
+      <anchorfile>group__types_ga558aba2920c60ab19eaf7a492840cfad.html</anchorfile>
+      <anchor>ga558aba2920c60ab19eaf7a492840cfad</anchor>
+      <arglist>(NAME,...)typedef T *T_ptr</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -8269,12 +8304,12 @@
       <anchor>ga9940d22773961f7161d778a8e15dcac8</anchor>
       <arglist>(T)</arglist>
     </member>
-    <member kind="typedef">
-      <type>T *</type>
-      <name>T_ptr</name>
-      <anchorfile>group__types_ga7ef36958b4d12a50a7a2131a577f93ae.html</anchorfile>
-      <anchor>ga7ef36958b4d12a50a7a2131a577f93ae</anchor>
-      <arglist></arglist>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_DEFINE_UNION</name>
+      <anchorfile>group__types_ga558aba2920c60ab19eaf7a492840cfad.html</anchorfile>
+      <anchor>ga558aba2920c60ab19eaf7a492840cfad</anchor>
+      <arglist>(NAME,...)typedef T *T_ptr</arglist>
     </member>
     <member kind="function">
       <type>char const *</type>
@@ -8497,10 +8532,45 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_REPEAT</name>
+      <anchorfile>group__preprocessor__for_ga6d061d0258fbdabfde9f5b99b47d80e6.html</anchorfile>
+      <anchor>ga6d061d0258fbdabfde9f5b99b47d80e6</anchor>
+      <arglist>(MACRO, N)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_REVS</name>
       <anchorfile>group__preprocessor__for_ga7ce820b215664fea1c4ff1cdb8079728.html</anchorfile>
       <anchor>ga7ce820b215664fea1c4ff1cdb8079728</anchor>
       <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_SEP</name>
+      <anchorfile>group__preprocessor__for_ga587594351f1763bfa31857764b70616e.html</anchorfile>
+      <anchor>ga587594351f1763bfa31857764b70616e</anchor>
+      <arglist>(MACRO,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_SEQ</name>
+      <anchorfile>group__preprocessor__for_gaaf12072aef5a55a36f400d685525d497.html</anchorfile>
+      <anchor>gaaf12072aef5a55a36f400d685525d497</anchor>
+      <arglist>(MACRO,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_SER</name>
+      <anchorfile>group__preprocessor__for_gaa8397413f3ecf6c5f24463a728989ab4.html</anchorfile>
+      <anchor>gaa8397413f3ecf6c5f24463a728989ab4</anchor>
+      <arglist>(MACRO,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_UNROLL</name>
+      <anchorfile>group__preprocessor__for_gaec0c87b336a5fa2a8230e207af5cc1f0.html</anchorfile>
+      <anchor>gaec0c87b336a5fa2a8230e207af5cc1f0</anchor>
+      <arglist>(MACRO, N)</arglist>
     </member>
   </compound>
   <compound kind="group">

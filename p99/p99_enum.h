@@ -158,11 +158,11 @@ typedef enum p99_endianness {
 } p99_endianness;
 
 P99_DECLARE_ENUM_GETNAME(
-                 p99_endianness,
-                 p99_big_endian,
-                 p99_little_endian,
-                 p99_pdp_endian
-                 );
+  p99_endianness,
+  p99_big_endian,
+  p99_little_endian,
+  p99_pdp_endian
+);
 
 /**
  ** @brief Return the platform the endianness

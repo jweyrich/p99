@@ -118,6 +118,7 @@
  ** @see P99_DECLARE_STRUCT(NAME) for argument <code>NAME</code>.
  ** @see P99_DECLARE_UNION(NAME) for argument <code>NAME</code>.
  ** @see P99_DEC_DOUBLE(...) for arguments <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[4]</code>.
+ ** @see P99_DEFINE_UNION(NAME, ...) for arguments <code>NAME</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_DERIVED_TYPES(T) for argument <code>T</code>.
  ** @see P99_DESIGNATED(VAR, ...) for arguments <code>VAR</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_DO(TYPE, VAR, ...) for argument <code>TYPE</code>.
@@ -130,6 +131,8 @@
  ** @see P99_FSIZEOF(T, F, N) for arguments <code>T</code>, <code>F</code>, <code>N</code>.
  ** @see P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER) for arguments <code>T</code>, <code>NAME</code>, <code>AFTER</code>.
  ** @see P99_HEX_DOUBLE(...) for arguments <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[4]</code>.
+ ** @see P99_HTONL(X) for argument <code>X</code>, <code>1</code>.
+ ** @see P99_HTONS(X) for argument <code>X</code>, <code>1</code>.
  ** @see P99_INVARIANT(EXPR) for argument <code>EXPR</code>.
  ** @see P99_IPOW(N, X) for argument <code>N</code>, <code>X</code>.
  ** @see P99_ISSIGNED(T) for argument <code>T</code>.
@@ -145,6 +148,8 @@
  ** @see P99_MEMZERO(T, TA, N) for argument <code>T</code>.
  ** @see P99_MINOF(A, B) for argument <code>A</code>, <code>B</code>.
  ** @see P99_NAME(N, NAME) for argument <code>N</code>.
+ ** @see P99_NTOHL(X) for argument <code>X</code>.
+ ** @see P99_NTOHS(X) for argument <code>X</code>.
  ** @see P99_PARALLEL_DO(TYPE, VAR, ...) for argument <code>TYPE</code>.
  ** @see P99_PARALLEL_FORALL(NAME, ...) for argument <code>NAME</code>.
  ** @see P99_PLAIN_TYPE(T) for argument <code>T</code>.
@@ -155,6 +160,10 @@
  ** @see P99_PROTOTYPE(RT, NAME, ...) for argument <code>RT</code>, <code>__VA_ARG__[0]</code>.
  ** @see P99_PZERO(X, N) for argument <code>X</code>.
  ** @see P99_REP(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_REPEAT(MACRO, N) for argument <code>MACRO</code>, <code>N</code>.
+ ** @see P99_SEP(MACRO, ...) for argument <code>MACRO</code>.
+ ** @see P99_SEQ(MACRO, ...) for argument <code>MACRO</code>.
+ ** @see P99_SER(MACRO, ...) for argument <code>MACRO</code>.
  ** @see P99_SIGNED_REPRESENTATION(T) for argument <code>T</code>.
  ** @see P99_STRDUP(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_SWAP(_0, _1) for argument <code>_0</code>, <code>_1</code>.
@@ -163,6 +172,7 @@
  ** @see P99_TOKJOIN(TOK, ...) for argument <code>TOK</code>.
  ** @see P99_TO_UNSIGNED(T, MACRO) for argument <code>T</code>, <code>MACRO</code>.
  ** @see P99_TZERO(X) for argument <code>X</code>.
+ ** @see P99_UNROLL(MACRO, N) for argument <code>MACRO</code>, <code>N</code>.
  ** @see P99_UT_MAX(T) for argument <code>T</code>.
  ** @see P99_VASSIGNS(NAME, ...) for argument <code>NAME</code>.
  **/
