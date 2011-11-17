@@ -135,6 +135,151 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_BIGOP, 1)
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_BIGFUNC, 1)
 #define P99_BIGFUNC(FUNC, M, ...) P99_FOR(FUNC, M, P00_FUNC, P00_IDT, __VA_ARGS__)
 
+
+#define P00_REPEAT(MACRO, X, I) MACRO(I)
+
+/**
+ ** @brief Apply the macro @a MACRO @a N times
+ **
+ ** The macro is called with the numbers <code>0, ..., N-1</code> and
+ ** the @a N results are separated by a comma.
+ **
+ ** In the following example we define an adhoc macro that initializes
+ ** an array element with a certain structure type. The array @c P is
+ ** an array of 10 pairs, each containing their index in the @c .index
+ ** field and a different pointer in their @c aPos field.
+ ** @code
+ ** typedef struct pair pair;
+ ** struct pair {
+ **   size_t index;
+ **   double* aPos;
+ ** };
+ ** #define ASIZE 10
+ ** double A[] = { P99_DUPL(ASIZE, 1.7) };
+ ** #define INIT_PAIR(I) [I] = {                               \
+ **   .index = I,                                              \
+ **   .aPos = &A[I],                                           \
+ **   }
+ ** pair P[] = { P99_REPEAT(INIT_PAIR, ASIZE) };
+ ** @endcode
+ ** @see P99_UNROLL for a macro that separates the parts by @c ;
+ ** @see P99_SEQ for a similar macro that applies @a MACRO to a list of items
+ ** @see P99_FOR for a more generic and flexible utility
+ **/
+P00_DOCUMENT_MACRO_ARGUMENT(P99_REPEAT, 0)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_REPEAT, 1)
+#define P99_REPEAT(MACRO, N) P99_FOR(MACRO, N, P00_SEQ, P00_REPEAT, P99_DUPL(N,))
+
+/**
+ ** @brief Apply the macro @a MACRO @a N times
+ **
+ ** The macro is called with the numbers <code>0, ..., N-1</code> and
+ ** the @a N results are separated by a semicolon.
+ **
+ ** In the following example we define an adhoc macro that copies an array element
+ ** of an array @c A to the elements of another array B.
+ **
+ ** @code
+ ** #define ASIZE 3
+ ** double A[] = { P99_DUPL(ASIZE, 1.7) };
+ ** double B[] = { P99_DUPL(ASIZE, 371) };
+ ** #define COPY_A2B(I) B[I] = A[I]
+ ** P99_UNROLL(COPY_A2B, ASIZE);
+ ** @endcode
+ **
+ ** This will expand to
+ ** @code
+ ** B[0] = A[0]; B[1] = A [1]; B[2] = A[2];
+ ** @endcode
+ **
+ ** Observe that the first two @c ; are inserted automatically as
+ ** separators by the ::P99_UNROLL macro.  The final one is inserted
+ ** directly in the program, right after the macro invocation.
+ **
+ ** @see P99_REPEAT for a macro that separates the parts by @c ,
+ ** @see P99_SEQ for a similar macro that applies @a MACRO to a list of items
+ ** @see P99_FOR for a more generic and flexible utility
+ **/
+P00_DOCUMENT_MACRO_ARGUMENT(P99_UNROLL, 0)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_UNROLL, 1)
+#define P99_UNROLL(MACRO, N) P99_FOR(MACRO, N, P00_SEP, P00_REPEAT, P99_DUPL(N,))
+
+#define P00_MAP(MACRO, X, I) MACRO(X)
+/**
+ ** @brief Apply the macro @a MACRO to the rest of the argument list.
+ **
+ ** The macro is called with each of the other arguments and
+ ** the results are separated by commas.
+ **
+ ** Suppose you have an enumeration type with three values:
+ ** @code
+ ** enum { one, two, three } ;
+ ** #define ENUM_INIT(X) [X] = P99_STRINGIFY(X)
+ ** char const* names[] = { P99_SEQ(ENUM_INIT, one, two, three) };
+ ** @endcode
+ **
+ ** This will result in the following expansion
+ **
+ ** @code
+ ** char const* names[] = { [one] = "one", [two] = "two", [three] = "three" };
+ ** @endcode
+ ** @see P99_REPEAT for a similar macro that applies @a MACRO a fixed number of times
+ ** @see P99_SEP for a similar macro that separates the different parts with a @c ;
+ ** @see P99_SER for a similar macro that separates the different parts with a blanc
+ ** @see P99_FOR for a more generic and flexible utility
+ **/
+P00_DOCUMENT_MACRO_ARGUMENT(P99_SEQ, 0)
+#define P99_SEQ(MACRO, ...) P99_FOR(MACRO, P99_NARG(__VA_ARGS__), P00_SEQ, P00_MAP, __VA_ARGS__)
+
+/**
+ ** @brief Apply the macro @a MACRO to the rest of the argument list.
+ **
+ ** The macro is called with each of the other arguments and
+ ** the results are separated by a blanc token.
+ **
+ ** @see P99_UNROLL for a similar macro that applies @a MACRO a fixed number of times
+ ** @see P99_SEQ for a similar macro that separates the different parts with a @c ,
+ ** @see P99_SER for a similar macro that separates the different parts with a blanc
+ ** @see P99_FOR for a more generic and flexible utility
+ **/
+P00_DOCUMENT_MACRO_ARGUMENT(P99_SER, 0)
+#define P99_SER(MACRO, ...) P99_FOR(MACRO, P99_NARG(__VA_ARGS__), P00_SER, P00_MAP, __VA_ARGS__)
+
+/**
+ ** @brief Apply the macro @a MACRO to the rest of the argument list.
+ **
+ ** The macro is called with each of the other arguments and
+ ** the results are separated by semicolon.
+ **
+ ** Suppose you want to create a @c struct that has several fields of
+ ** similar name and type.
+ **
+ ** @code
+ ** #define FIELD_DECL(X) P99_PASTE2(type_, X) P99_PASTE2(X, _flag)
+ ** struct bits {
+ **    P99_SEP(FIELD_DECL, chaos, sat, grey);
+ ** };
+ ** @endcode
+ **
+ ** This will result in the following expansion
+ **
+ ** @code
+ ** struct bits {
+ **    type_chaos chaos_flag;
+ **    type_sat sat_flag;
+ **    type_grey grey_flag;
+ ** };
+ ** @endcode
+ ** @see P99_UNROLL for a similar macro that applies @a MACRO a fixed number of times
+ ** @see P99_SEQ for a similar macro that separates the different parts with a @c ,
+ ** @see P99_SER for a similar macro that separates the different parts with a blanc
+ ** @see P99_FOR for a more generic and flexible utility
+ **/
+P00_DOCUMENT_MACRO_ARGUMENT(P99_SEP, 0)
+#define P99_SEP(MACRO, ...) P99_FOR(MACRO, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAP, __VA_ARGS__)
+
+
+
 /**
  ** @}
  **/
