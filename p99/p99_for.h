@@ -534,13 +534,13 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_CDIM, 0)
  ** @{
  **/
 
-#define P00_SUBSCRIPT(NAME, X, I) [X]
+#define P00_SUBSCRIPT(X) [X]
 
 /**
  ** @brief Transform the list of arguments <code>x0, x1, ...</code> to array
  ** subscripts <code>[x0][x1]...</code>
  **/
-#define P99_SUBSCRIPT(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SER, P00_SUBSCRIPT, __VA_ARGS__)
+#define P99_SUBSCRIPT(...) P99_SER(P00_SUBSCRIPT, __VA_ARGS__)
 
 #define P99_ARRAY(ARR, ...) (ARR)P99_SUBSCRIPT(__VA_ARGS__)
 #define P99_AREF(T, ARR, ...) T P99_ARRAY(*const ARR, __VA_ARGS__)
@@ -572,8 +572,8 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
 #define P00_ACALL3(ARR, N, TYPE) P99_ALENS(*ARR, N), ((TYPE (*const)P99_REP(N,[1]))(TYPE*const){ &((*ARR)P99_REP(N,[0])) })
 
 /* transform a list of names into size_t declarations */
-#define P00_AARG_DECL(NAME, X, I) size_t const X
-#define P00_AARG_LIST(N, ...) P99_FOR(, N, P00_SEQ, P00_AARG_DECL, __VA_ARGS__)
+#define P00_AARG_DECL(X) size_t const X
+#define P00_AARG_LIST(N, ...) P99_SEQ(P00_AARG_DECL, __VA_ARGS__)
 
 /* generate a list of size_t's and the declaration of the array
    pointer */

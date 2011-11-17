@@ -232,7 +232,7 @@ P00_C99_DEFARG_DOCU(strtold, long double, char const *nptr, char **endptr)
 #define strtold(...) P99_CALL_DEFARG(strtold, 2, __VA_ARGS__)
 #define strtold_defarg_1() 0
 
-#define P00_DECLARE_STRTO(NAME, SUFF, I)                                 \
+#define P00_DECLARE_STRTO(SUFF)                                          \
 /*! @brief A type safe wrapper for string to RET conversion */           \
 /*! @see stringconversion */                                             \
 p99_inline                                                               \
@@ -248,7 +248,7 @@ P99_PASTE2(p99_strto, SUFF)(char const *nptr, char **endptr, int base) { \
 P99_MACRO_END(p99_strto, SUFF)
 
 
-#define P00_DECLARE_STRTOU(NAME, SUFF, I)                                \
+#define P00_DECLARE_STRTOU(SUFF)                                         \
 /*! @brief A type safe wrapper for string to RET conversion */           \
 /*! @see stringconversion */                                             \
 p99_inline                                                               \
@@ -265,10 +265,10 @@ P99_MACRO_END(p99_strto, SUFF)
 
 #define P00_I_LIST c, hh, , h, t, j, i8, i16, i32, i64
 
-P99_FOR(, P99_NARG(P00_I_LIST), P00_SEP, P00_DECLARE_STRTO, P00_I_LIST);
+P99_SEP(P00_DECLARE_STRTO, P00_I_LIST);
 
 #define P00_U_LIST uhh, u, uh, uz, uj, u8, u16, u32, u64
-P99_FOR(, P99_NARG(P00_U_LIST), P00_SEP, P00_DECLARE_STRTOU, P00_U_LIST);
+P99_SEP(P00_DECLARE_STRTOU, P00_U_LIST);
 
 /** This macro is preferable to the @c atoi function. The default
  ** arguments make it functionally equivalent but add two features:

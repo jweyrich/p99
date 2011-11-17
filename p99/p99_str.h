@@ -43,8 +43,8 @@ P99_BUILTIN_TYPE(CODE) P99_PASTE2(str2, CODE)(char const* nptr, size_t* pos, uns
 }                                                                                             \
 P99_MACRO_END(P00_DEFINE_STR3, CODE)
 
-#define P00_STR3_0(NAME, X, I) P00_DEFINE_STR3(X)
-#define P00_STR3_1(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_STR3_0, __VA_ARGS__)
+#define P00_STR3_0(X) P00_DEFINE_STR3(X)
+#define P00_STR3_1(...) P99_SEP(P00_STR3_0, __VA_ARGS__)
 
 #ifndef P00_DOXYGEN
 P00_STR3_1(l, ll, ul, ull, uz, t, j, uj);
@@ -124,8 +124,8 @@ P99_BUILTIN_TYPE(CODE) P99_PASTE2(str2, CODE)(char const* nptr, size_t* pos) { \
 }                                                                              \
 P99_MACRO_END(P00_DEFINE_STR2, CODE)
 
-#define P00_STR2_0(NAME, X, I) P00_DEFINE_STR2(X)
-#define P00_STR2_1(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_STR2_0, __VA_ARGS__)
+#define P00_STR2_0(X) P00_DEFINE_STR2(X)
+#define P00_STR2_1(...) P99_SEP(P00_STR2_0, __VA_ARGS__)
 
 P00_STR2_1(f, d, ld);
 

@@ -23,6 +23,22 @@
 
 #include "p99_for.h"
 
+typedef struct {
+  size_t index;
+  double* aPos;
+} pair;
+
+#define ASIZE 10
+
+double A[] = { P99_DUPL(ASIZE, 1.7) };
+
+#define INIT_PAIR(I) [I] = {                    \
+  .index = I,                                   \
+  .aPos = &A[I],                                \
+  }
+
+pair P[] = { P99_REPEAT(INIT_PAIR, ASIZE) };
+
 int main(int argc, char*argv[]) {
   if (argc < 2) return -2;
   switch (argv[1][0]) {
@@ -31,7 +47,7 @@ int main(int argc, char*argv[]) {
     P99_CASERANGE('0', 10): return 0;
     P99_CASERANGE('A', 25): --argc;
     P99_CASERANGE('\01', 0): return -1;
-    P99_CASERANGE('a', 25, oioi): return 2;
+    P99_CASERANGE('a', 25, oioi): return P[2].index;
   default: return 3;
   }
 }
