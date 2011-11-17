@@ -84,6 +84,9 @@ typedef union NAME NAME
 
 #if  __STDC_VERSION__ < 201101L
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DEFINE_UNION, 0)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DEFINE_UNION, 1)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DEFINE_UNION, 2)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DEFINE_UNION, 3)
 #define P99_DEFINE_UNION(NAME, ...)                                     \
   /** \remark This union has a hidden first member that is just a byte array to ensure that the default initializer <code>{ 0 }</code> will zero out the whole structure. To initialize a particular member, you should always use a designated initializer such as <code>{ .toto = { .a = 1, }, }</code> **/ \
 union NAME {                                                            \
@@ -92,6 +95,9 @@ union NAME {                                                            \
 }
 #else
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DEFINE_UNION, 0)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DEFINE_UNION, 1)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DEFINE_UNION, 2)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DEFINE_UNION, 3)
 #define P99_DEFINE_UNION(NAME, ...)                                     \
   /** \remark This union has a hidden first member that is just a byte array to ensure that the default initializer <code>{ 0 }</code> will zero out the whole structure. To initialize a particular member, you should always use a designated initializer such as <code>{ .toto = { .a = 1, }, }</code> **/ \
 union NAME { __VA_ARGS__ }
