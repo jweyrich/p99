@@ -945,4 +945,65 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_CASERANGE, 1)
 #endif
 
 
+#define P00_STRUCT_TYPENAME(BASE, DECL) P99_PASTE3(DECL, _P99_typedef_of_, BASE)
+#define P00_STRUCT_TYPEDEF(BASE, DECL, I) typedef P00_STRUCT_TYPENAME(BASE, DECL)
+#define P00_STRUCT_TYPEDEFS(NAME, ...) P99_FOR(NAME, P99_NARG(__VA_ARGS__), P00_SEP, P00_STRUCT_TYPEDEF, __VA_ARGS__)
+
+
+/**
+ ** @brief Declare a structure that of name @a NAME composed of the
+ ** field declarations that are given in the remaining arguments.
+ **
+ ** For this to work the argument list must contain the declaration of
+ ** the fields, one per argument.
+ **
+ ** @remark The declarations must be such that the name of the field
+ ** is at the end of the declaration.
+ **
+ ** @see P99_STRUCT_USE to see how to lift all or parts of the fields
+ ** that are defined here as local variables on the stack of the
+ ** current function.
+ **/
+#define P99_DEFINE_STRUCT(NAME, ...)                           \
+struct NAME {                                                  \
+  P99_SEP(P00_IDENT, __VA_ARGS__);                             \
+};                                                             \
+P00_STRUCT_TYPEDEFS(NAME, __VA_ARGS__)
+
+
+#define P00_STRUCT_USE3(TYPE, VAR, NAME) P00_STRUCT_TYPENAME(TYPE, NAME) NAME = (VAR)->NAME
+#define P00_STRUCT_USE2(PAIR, NAME) P00_STRUCT_USE3(PAIR, NAME)
+#define P00_STRUCT_USE(PAIR, NAME, I) P00_STRUCT_USE2(P00_ROBUST PAIR, NAME)
+
+/**
+ ** @brief Use the fields of variable @a VAR of type @a TYPE
+ **
+ ** This "lifts" the fields of @a VAR as local variables onto the
+ ** local stack and copies their value in these local variables.
+ **
+ ** @see P99_STRUCT_UNUSE to restore changed values back into @a VAR.
+ **/
+P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(P99_STRUCT_USE, 0)
+P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(P99_STRUCT_USE, 1)
+P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(P99_STRUCT_USE, 2)
+P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(P99_STRUCT_USE, 3)
+P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(P99_STRUCT_USE, 4)
+#define P99_STRUCT_USE(TYPE, VAR, ...) P99_FOR((TYPE, VAR), P99_NARG(__VA_ARGS__), P00_SEP, P00_STRUCT_USE, __VA_ARGS__)
+
+#define P00_STRUCT_UNUSE3(TYPE, VAR, NAME) P00_STRUCT_TYPENAME(TYPE, NAME) (VAR)->NAME = NAME
+#define P00_STRUCT_UNUSE2(PAIR, NAME) P00_STRUCT_UNUSE3(PAIR, NAME)
+#define P00_STRUCT_UNUSE(PAIR, NAME, I) P00_STRUCT_UNUSE2(P00_ROBUST PAIR, NAME)
+
+/**
+ ** @brief Copy local variables back to the fields of variable @a VAR.
+ **
+ ** @see P99_STRUCT_USE
+ **/
+P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(P99_STRUCT_UNUSE, 0)
+P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(P99_STRUCT_UNUSE, 1)
+P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(P99_STRUCT_UNUSE, 2)
+P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(P99_STRUCT_UNUSE, 3)
+P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(P99_STRUCT_UNUSE, 4)
+#define P99_STRUCT_UNUSE(TYPE, VAR, ...) P99_FOR((TYPE, VAR), P99_NARG(__VA_ARGS__), P00_SEP, P00_STRUCT_UNUSE, __VA_ARGS__)
+
 #endif      /* !P99_FOR_H_ */
