@@ -325,9 +325,9 @@ typedef enum p00_uncase_enum {
 #define P99_HANDLE_ERRNO                                       \
 P00_BLK_START                                                  \
 P00_BLK_DECL(int const, p99_errno, errno)                      \
-  if (P99_LIKELY(!p99_errno)) { } else                         \
+  switch (P99_UNLIKELY(!!p99_errno)) case true:                \
     P99_UNWIND_PROTECT                                         \
-      if (0) { P99_PROTECT: errno = 0; } else                  \
+      if (false) { P99_PROTECT: errno = 0; } else              \
         P00_BLK_AFTER(errno = 0)                               \
           switch (p99_errno) case 0:
 
@@ -468,7 +468,8 @@ P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                
   P00_BLK_DECL(register int const, p99_unwind_code, p00_code)                             \
   P00_BLK_END                                                                             \
 /* dispatch. cast the _Bool to int since this is what happens anyhow                      \
-   and some compilers will issue strange warnings. */                                     \
+   and some compilers will issue strange warnings. The "true" case must be provided       \
+   through a placement of P99_PROTECT inside the depending statement. */                  \
   switch ((int)p00_unw) case 0:
 
 p99_inline
@@ -537,11 +538,20 @@ P00_BLK_START                                                       \
  ** Each ::P99_UNWIND_PROTECT may contain at most one such label.
  **
  ** @see P99_UNWIND_PROTECT
- ** @see ::P99_UNWIND
- ** @see ::p99_unwind_code
- ** @see ::p99_unwind_level
+ ** @see P99_UNWIND_RETURN
+ ** @see P99_UNWIND
+ ** @see p99_unwind_code
+ ** @see p99_unwind_level
  **/
-#define P99_PROTECT case 1 : P00_UNCASE
+#define P99_PROTECT                                                     \
+if (0) {                                                                \
+  /* The switch expression of the surrounding switch from               \
+     P99_UNWIND_PROTECT should only have values true and false. So      \
+     this default label can never trigger. It is here to ensure that    \
+     no other "default" label is placed on the same level of "switch"   \
+     by error. */                                                       \
+ default: ;                                                             \
+ } else case 1 : P00_UNCASE
 
 /**
  ** @brief Add some default documentation and links to the following
