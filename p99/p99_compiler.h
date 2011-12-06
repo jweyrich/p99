@@ -284,7 +284,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 extern char const p00_compiletime_assert[                      \
  sizeof((void const*[3*(!!(EXPR)) - 1]){                       \
     &p00_compiletime_assert,                                   \
-    "static assertion failed: " #EXPR ", " DIAGSTR})           \
+   "static assertion failed: " P99_STRINGIFY(EXPR) ", " DIAGSTR})    \
 ]
 extern char const p00_compiletime_assert[sizeof(void const*[2])];
 #endif
