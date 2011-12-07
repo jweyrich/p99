@@ -53,6 +53,9 @@ P99_XCASE ENOMEM :
 P99_XDEFAULT : {
       fprintf(stderr, "AUTSCH: call to schnoeck failed with unhandled case!\n");
       perror("AUTSCH");
+      /* This is a return that should be triggered as dangerous when
+         this code is compiled with P99_CHECK_RETURN. */
+      return EXIT_FAILURE;
     }
   }
 
@@ -68,6 +71,10 @@ P99_XDEFAULT : {
 P99_PROTECT: {
         printf("cleanup level %u, code %d\n", p99_unwind_level, p99_unwind_code);
         free(b);
+        /* This is a return that is protected, so it should *not* be
+           triggered as dangerous when this code is compiled with
+           P99_CHECK_RETURN. */
+        return EXIT_SUCCESS;
       }
     }
     printf("before cleanup level %u, code %d\n", p99_unwind_level, p99_unwind_code);
