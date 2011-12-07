@@ -37,7 +37,6 @@
 #define P00 P99_FILEID(blk)
 
 #define P00_BLK_GEN(BEFORE, COND, ...) for (P00_ROBUST(BEFORE); (COND) && P00; (__VA_ARGS__), P00 = 0)
-#define P00_BLK_BEFAFT(BEFORE, ...) P00_BLK_GEN(P00_ROBUST(BEFORE), true, __VA_ARGS__)
 #define P00_BLK_BEFORE(...) for (__VA_ARGS__; P00; P00 = 0)
 #define P00_BLK_AFTER(...) P00_BLK_BEFAFT(, (__VA_ARGS__))
 #define P00_BLK_CONDITIONAL(...) for (; (__VA_ARGS__) && P00; P00 = 0)
@@ -73,6 +72,81 @@ P99_PREFER(                                                            \
   goto P99_FILEID(p00_label_, NAME); ) P99_FILEID(p00_label_, NAME):
 
 
+/**
+ ** @addtogroup validity Checking code validity
+ ** @{
+ **/
+
+#define P00_INHIBIT(NAME, EXT) P99_PASTE3(p00_inhibit_, NAME, EXT)
+
+
+/**
+ ** @brief Declare a feature @a NAME that can be compile time
+ ** inhibited or allowed in certain parts of code.
+ **
+ ** @see P99_INHIBIT
+ ** @see P99_ALLOW
+ ** @see P99_INHIBIT_CHECK
+ ** @see P99_CHECK_RETURN for an example
+ **/
+#define P99_DECLARE_INHIBIT(NAME) enum { P00_INHIBIT(NAME,) = 0 }
+
+/**
+ ** @brief Error out at compile time if @a NAME is inhibited.
+ **
+ ** @see P99_DECLARE_INHIBIT
+ **/
+#define P99_INHIBIT_CHECK(NAME)                                         \
+switch (P99_STRINGIFY(P00_INHIBIT(NAME,))[P00_INHIBIT(NAME,)]) default:
+
+
+/**
+ ** @brief Inhibit the use of feature @a NAME inside the dependent code.
+ **
+ ** @see P99_DECLARE_INHIBIT
+ ** @see P99_ALLOW
+ **/
+#define P99_INHIBIT(NAME)                                               \
+P00_BLK_START                                                           \
+for (unsigned const*const P00_INHIBIT(NAME,) = 0; !P00_INHIBIT(NAME,) && P00; P00 = 0)
+
+
+/**
+ ** @brief Allow the use of feature @a NAME inside the dependent code.
+ **
+ ** @see P99_DECLARE_INHIBIT
+ ** @see P99_INHIBIT
+ **/
+#define P99_ALLOW(NAME)                                                 \
+P00_BLK_START                                                           \
+P00_BLK_DECL(unsigned const, P00_INHIBIT(NAME,), 0)
+
+
+P99_DECLARE_INHIBIT(RETURN);
+
+#ifdef P99_CHECK_RETURN
+#define return P99_INHIBIT_CHECK(RETURN) return
+#endif
+
+#ifdef P00_DOXYGEN
+/**
+ ** @brief Insert code checks for bare @c return statements inside
+ ** ::P99_UNWIND_PROTECT
+ **
+ ** This check is not on by default, you should only enable it during
+ ** development via, e.g, a <code>-DP99_CHECK_RETURN</code> compiler
+ ** option.
+ **/
+#define P99_CHECK_RETURN
+#endif
+
+/** @}
+ **/
+
+
+#define P00_BLK_BEFAFT(BEFORE, ...)                     \
+P99_INHIBIT(RETURN)                                     \
+P00_BLK_GEN(P00_ROBUST(BEFORE), true, __VA_ARGS__)
 
 #ifdef P00_DOXYGEN
 /**
@@ -412,11 +486,15 @@ struct p00_inhibitor {
  ** ::P99_UNWIND are only guaranteed to have their new value in the
  ** protected part if they are declared @c volatile.
  **
+ ** @warning There should be no plain @c return statement in the
+ ** depending block before the ::P99_PROTECT label.
+ **
  ** @see "test-p99-block.c" for a more sophisticated example of nested
  ** ::P99_UNWIND_PROTECT.
  ** @see ::P99_UNWIND
  ** @see ::P99_UNWIND_RETURN for a replacement of @c return that
  **      respects the protected parts
+ ** @see ::P99_CHECK_RETURN to check for suspicious bare @c return statements
  ** @see ::p99_unwind_code
  ** @see ::p99_unwind_level
  **/
@@ -426,7 +504,7 @@ P00_BLK_START                                                                   
    inside this construct. Only the lowest level variable will be                          \
    needed but since we don't know our level yet, we have to declare                       \
    this at every level. */                                                                \
- P00_BLK_BEFAFT(auto p00_jmp_buf p00_unwind_return = P00_ROBUST(P00_JMP_BUF_INITIALIZER), \
+P00_BLK_BEFAFT(auto p00_jmp_buf p00_unwind_return = P00_ROBUST(P00_JMP_BUF_INITIALIZER),  \
                /* returning can only be on because it was set by                          \
                   P99_UNWIND_RETURN and we fell of the edge after all                     \
                   P99_PROTECT clauses */                                                  \
@@ -529,13 +607,17 @@ P00_BLK_START                                                       \
     /* assign before we unwind all the way down */                  \
     p00_unwind_bottom->returning = 1;                               \
     P99_UNWIND(-p99_unwind_return);                                 \
-  } else return
+  } else P99_ALLOW(RETURN) return
 
 /**
  ** @brief The pseudo label to which we jump when we unwind the stack
  ** with ::P99_UNWIND.
  **
- ** Each ::P99_UNWIND_PROTECT may contain at most one such label.
+ ** @warning ::P99_UNWIND_PROTECT may contain at most one such label.
+ **
+ ** @warning Other than a normal C label, ::P99_PROTECT must be at a
+ ** location where several statements can be placed. In particular, it
+ ** should not be the direct dependent of a conditional.
  **
  ** @see P99_UNWIND_PROTECT
  ** @see P99_UNWIND_RETURN
@@ -544,6 +626,7 @@ P00_BLK_START                                                       \
  ** @see p99_unwind_level
  **/
 #define P99_PROTECT                                                     \
+P99_DECLARE_INHIBIT(RETURN);                                            \
 if (0) {                                                                \
   /* The switch expression of the surrounding switch from               \
      P99_UNWIND_PROTECT should only have values true and false. So      \
@@ -575,6 +658,7 @@ P99_PROTECTED_BLOCK(assert((EXPR) && "failed on entry"), assert((EXPR) && "faile
 
 /** @}
  **/
+
 
 /* Disable bogus warnings that are provoked by the code in this file. */
 
