@@ -21,57 +21,123 @@
 #include <sys/time.h>
 #include <time.h>
 #include <pthread.h>
-#include <p99_c99.h>
+#include "p99_c99.h"
 
+#define P00_ENCAPSULATE(T, NAME)                \
+typedef struct {                                \
+  /** @private */                               \
+  T val;                                        \
+} NAME
 
+/**
+ ** @addtogroup threads
+ ** @{
+ **/
 
-// macros are
-#define thread_local _Thread_local
-#define ONCE_FLAG_INIT PTHREAD_ONCE_INIT
-// which expands to a value that can be used to initialize an object of type once_flag; and
+/**
+ ** @addtogroup thread_macros
+ ** @{
+ **/
+
+/**
+ ** @brief expands to a value that can be used to initialize an object
+ ** of type ::once_flag
+ ** @memberof once_flag
+ **/
+#define ONCE_FLAG_INIT { .val = PTHREAD_ONCE_INIT, }
 #ifndef PTHREAD_DESTRUCTOR_ITERATIONS
 # warning "definition of PTHREAD_DESTRUCTOR_ITERATIONS is missing"
+/**
+ ** @brief expands to an integer constant expression representing the
+ ** maximum number of times that destructors will be called when a
+ ** thread terminates
+ ** @memberof tss_t
+ **/
 # define TSS_DTOR_ITERATIONS 1
 #else
 # define TSS_DTOR_ITERATIONS PTHREAD_DESTRUCTOR_ITERATIONS
 #endif
-// which expands to an integer constant expression representing the maximum number of
-// times that destructors will be called when a thread terminates.
 
-// The types are
-typedef pthread_cond_t cnd_t;
-// which is a complete object type that holds an identifier for a condition variable;
+/**
+ ** @}
+ **/
+
+
+/**
+ ** @addtogroup thread_types
+ ** @{
+ **/
+
+/**
+ ** @brief complete object type that holds an identifier for a
+ ** condition variable
+ **/
+P00_ENCAPSULATE(pthread_cond_t, cnd_t);
 
 typedef struct p00_thrd p00_thrd;
-typedef struct p00_thrd* thrd_t;
+/**
+ ** @brief complete object type that holds an identifier for a thread
+ **/
+P00_ENCAPSULATE(struct p00_thrd*, thrd_t);
 
-// which is a complete object type that holds an identifier for a thread;
-typedef pthread_key_t tss_t;
-// which is a complete object type that holds an identifier for a thread-specific storage pointer;
-typedef pthread_mutex_t mtx_t;
-// which is a complete object type that holds an identifier for a mutex;
+/**
+ ** @brief complete object type that holds an identifier for a
+ ** thread-specific storage pointer
+ **/
+P00_ENCAPSULATE(pthread_key_t, tss_t);
+/**
+ ** @brief complete object type that holds an identifier for a mutex
+ **/
+P00_ENCAPSULATE(pthread_mutex_t, mtx_t);
+
+/**
+ ** @brief which is the function pointer type <code>void
+ ** (*)(void*)</code>, used for a destructor for a thread-specific
+ ** storage pointer
+ ** @see tss_t
+ **/
 typedef void (*tss_dtor_t)(void*);
-// which is the function pointer type void (*)(void*), used for a destructor for a
-// thread-specific storage pointer;
+
+/**
+ ** @brief function pointer type <code>int (*)(void*)</code> that is
+ ** passed to ::thrd_create to create a new thread
+ ** @see thrd_t
+ */
 typedef int (*thrd_start_t)(void*);
-// which is the function pointer type int (*)(void*) that is passed to thrd_create
-// to create a new thread; and
-typedef pthread_once_t once_flag;
-// which is a complete object type that holds a flag for use by call_once.
 
-typedef int atomic_flag;
-
-#define ATOMIC_FLAG_INIT 0
+/**
+ ** @brief complete object type that holds a flag for use by
+ ** ::call_once
+ */
+P00_ENCAPSULATE(pthread_once_t, once_flag);
 
 
+P00_ENCAPSULATE(int, atomic_flag);
+
+/**
+ ** @}
+ **/
+
+/**
+ ** @memberof atomic_flag
+ **/
+#define ATOMIC_FLAG_INIT { .val = 0, }
+
+
+/**
+ ** @memberof atomic_flag
+ **/
 p99_inline
 _Bool atomic_flag_test_and_set(volatile atomic_flag *object) {
-  return __sync_val_compare_and_swap(object, 0, 1);
+  return __sync_val_compare_and_swap(&object->val, 0, 1);
 }
 
+/**
+ ** @memberof atomic_flag
+ **/
 p99_inline
 void atomic_flag_clear(volatile atomic_flag *object) {
-  __sync_val_compare_and_swap(object, 1, 0);
+  __sync_val_compare_and_swap(&object->val, 1, 0);
 }
 
 struct p00_thrd {
@@ -86,6 +152,11 @@ struct p00_thrd {
     jmp_buf jmp;
   } ovrl;
 };
+
+/**
+ ** @addtogroup thread_enum
+ ** @{
+ **/
 
 // The enumeration constants are
 enum {
@@ -114,28 +185,44 @@ enum {
   // was unable to allocate memory.
 };
 
+/**
+ ** @}
+ **/
+
 // 7.26.2 Initialization functions
 
+/**
+ ** @memberof once_flag
+ **/
 p99_inline
 void call_once(once_flag *flag, void (*func)(void)) {
-  (void)pthread_once(flag, func);
+  (void)pthread_once(&flag->val, func);
 }
 
 // 7.26.3 Condition variable functions
 
+/**
+ ** @memberof cnd_t
+ **/
 p99_inline
 int cnd_broadcast(cnd_t *cond) {
-  return pthread_cond_broadcast(cond) ? thrd_error : thrd_success;
+  return pthread_cond_broadcast(&cond->val) ? thrd_error : thrd_success;
 }
 
+/**
+ ** @memberof cnd_t
+ **/
 p99_inline
 void cnd_destroy(cnd_t *cond) {
-  (void)pthread_cond_destroy(cond);
+  (void)pthread_cond_destroy(&cond->val);
 }
 
+/**
+ ** @memberof cnd_t
+ **/
 p99_inline
 int cnd_init(cnd_t *cond) {
-  int ret = pthread_cond_init(cond, 0);
+  int ret = pthread_cond_init(&cond->val, 0);
   switch (ret) {
   case 0:         return thrd_success;
   case ENOMEM:    return thrd_nomem;
@@ -143,14 +230,20 @@ int cnd_init(cnd_t *cond) {
   }
 }
 
+/**
+ ** @memberof cnd_t
+ **/
 p99_inline
 int cnd_signal(cnd_t *cond) {
-  return pthread_cond_signal(cond) ? thrd_error : thrd_success;
+  return pthread_cond_signal(&cond->val) ? thrd_error : thrd_success;
 }
 
+/**
+ ** @memberof cnd_t
+ **/
 p99_inline
 int cnd_timedwait(cnd_t *restrict cond, mtx_t *restrict mtx, const struct timespec *restrict ts) {
-  int ret = pthread_cond_timedwait(cond, mtx, ts);
+  int ret = pthread_cond_timedwait(&cond->val, &mtx->val, ts);
   switch (ret) {
   case 0:         return thrd_success;
   case ETIMEDOUT: return thrd_timedout;
@@ -158,18 +251,27 @@ int cnd_timedwait(cnd_t *restrict cond, mtx_t *restrict mtx, const struct timesp
   };
 }
 
+/**
+ ** @memberof cnd_t
+ **/
 p99_inline
 int cnd_wait(cnd_t *cond, mtx_t *mtx) {
-  return pthread_cond_wait(cond, mtx) ? thrd_error : thrd_success;
+  return pthread_cond_wait(&cond->val, &mtx->val) ? thrd_error : thrd_success;
 }
 
 // 7.26.4 Mutex functions
 
+/**
+ ** @memberof mtx_t
+ **/
 p99_inline
 void mtx_destroy(mtx_t *mtx) {
-  (void)pthread_mutex_destroy(mtx);
+  (void)pthread_mutex_destroy(&mtx->val);
 }
 
+/**
+ ** @memberof mtx_t
+ **/
 p99_inline
 int mtx_init(mtx_t *mtx, int type) {
   pthread_mutexattr_t attr;
@@ -177,19 +279,25 @@ int mtx_init(mtx_t *mtx, int type) {
   if (ret) return thrd_error;
   ret = pthread_mutexattr_settype(&attr, (type & mtx_recursive) ? PTHREAD_MUTEX_NORMAL : PTHREAD_MUTEX_RECURSIVE);
   if (ret) return thrd_error;
-  ret = pthread_mutex_init(mtx, &attr);
+  ret = pthread_mutex_init(&mtx->val, &attr);
   if (ret) return thrd_error;
   else return thrd_success;
 }
 
+/**
+ ** @memberof mtx_t
+ **/
 p99_inline
 int mtx_lock(mtx_t *mtx) {
-  return pthread_mutex_lock(mtx) ? thrd_error : thrd_success;
+  return pthread_mutex_lock(&mtx->val) ? thrd_error : thrd_success;
 }
 
+/**
+ ** @memberof mtx_t
+ **/
 p99_inline
 int mtx_timedlock(mtx_t *restrict mtx, const struct timespec *restrict ts) {
-  int ret = pthread_mutex_timedlock(mtx, ts);
+  int ret = pthread_mutex_timedlock(&mtx->val, ts);
   switch (ret) {
   case 0:         return thrd_success;
   case ETIMEDOUT: return thrd_timedout;
@@ -197,9 +305,12 @@ int mtx_timedlock(mtx_t *restrict mtx, const struct timespec *restrict ts) {
   };
 }
 
+/**
+ ** @memberof mtx_t
+ **/
 p99_inline
 int mtx_trylock(mtx_t *mtx) {
-  int ret = pthread_mutex_trylock(mtx);
+  int ret = pthread_mutex_trylock(&mtx->val);
   switch (ret) {
   case 0:         return thrd_success;
   case EBUSY:     return thrd_busy;
@@ -207,9 +318,12 @@ int mtx_trylock(mtx_t *mtx) {
   };
 }
 
+/**
+ ** @memberof mtx_t
+ **/
 p99_inline
 int mtx_unlock(mtx_t *mtx) {
-  return pthread_mutex_unlock(mtx) ? thrd_error : thrd_success;
+  return pthread_mutex_unlock(&mtx->val) ? thrd_error : thrd_success;
 }
 
 _Thread_local p00_thrd * p00_cntxt;
@@ -217,6 +331,9 @@ _Thread_local p00_thrd * p00_cntxt;
 static
 void * p00_thrd_create(void* context);
 
+/**
+ ** @memberof thrd_t
+ **/
 p99_inline
 static
 int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
@@ -239,37 +356,49 @@ int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
     default:        return thrd_error;
     };
   } else {
-    *thr = cntxt;
+    thr->val = cntxt;
     return thrd_success;
   }
 }
 
+/**
+ ** @memberof thrd_t
+ **/
 p99_inline
 thrd_t thrd_current(void) {
-  return p00_cntxt;
+  return (thrd_t){ .val = p00_cntxt, };
 }
 
+/**
+ ** @memberof thrd_t
+ **/
 p99_inline
 int thrd_detach(thrd_t thr) {
   /* The thread is not yet detached so its pthread id is still
      valid. If it already has finished, this will just free the
      resources that pthread holds for it. */
-  int ret = pthread_detach(thr->id) ? thrd_error : thrd_success;
-  if (atomic_flag_test_and_set(&thr->detached)) {
+  int ret = pthread_detach(thr.val->id) ? thrd_error : thrd_success;
+  if (atomic_flag_test_and_set(&thr.val->detached)) {
     /* The thread has already finished. Free the state, since nobody
        will join it, anyhow. */
-    free(thr);
+    free(thr.val);
     return thrd_success;
   } else {
     return ret;
   }
 }
 
+/**
+ ** @memberof thrd_t
+ **/
 p99_inline
 int thrd_equal(thrd_t thr0, thrd_t thr1) {
-  return !!pthread_equal(thr0->id, thr1->id);
+  return thr0.val ==  thr1.val;
 }
 
+/**
+ ** @memberof thrd_t
+ **/
 p99_inline
 _Noreturn
 void thrd_exit(int res) {
@@ -283,15 +412,21 @@ void thrd_exit(int res) {
   }
 }
 
+/**
+ ** @memberof thrd_t
+ **/
 p99_inline
 int thrd_join(thrd_t thr, int *res) {
   void *res0;
-  if (pthread_join(thr->id, &res0)) return thrd_error;
-  if (res) *res = thr->ret;
-  free(thr);
+  if (pthread_join(thr.val->id, &res0)) return thrd_error;
+  if (res) *res = thr.val->ret;
+  free(thr.val);
   return thrd_success;
 }
 
+/**
+ ** @memberof thrd_t
+ **/
 p99_inline
 int thrd_sleep(const struct timespec *duration, struct timespec *remaining) {
   errno = 0;
@@ -303,29 +438,44 @@ int thrd_sleep(const struct timespec *duration, struct timespec *remaining) {
   return ret;
 }
 
+/**
+ ** @memberof thrd_t
+ **/
 p99_inline
 void thrd_yield(void) {
   if (sched_yield()) errno = 0;
 }
 
+/**
+ ** @memberof tss_t
+ **/
 p99_inline
 int tss_create(tss_t *key, tss_dtor_t dtor) {
-  return pthread_key_create(key, dtor) ? thrd_error : thrd_success;
+  return pthread_key_create(&key->val, dtor) ? thrd_error : thrd_success;
 }
 
+/**
+ ** @memberof tss_t
+ **/
 p99_inline
 void tss_delete(tss_t key) {
-  (void)pthread_key_delete(key);
+  (void)pthread_key_delete(key.val);
 }
 
+/**
+ ** @memberof tss_t
+ **/
 p99_inline
 void *tss_get(tss_t key) {
-  return pthread_getspecific(key);
+  return pthread_getspecific(key.val);
 }
 
+/**
+ ** @memberof tss_t
+ **/
 p99_inline
 int tss_set(tss_t key, void *val) {
-  return pthread_setspecific(key, val) ? thrd_error : thrd_success;
+  return pthread_setspecific(key.val, val) ? thrd_error : thrd_success;
 }
 
 static
@@ -345,5 +495,9 @@ void * p00_thrd_create(void* context) {
   p00_cntxt = 0;
   return 0;
 }
+
+/**
+ ** @}
+ **/
 
 #endif
