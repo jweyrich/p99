@@ -265,7 +265,14 @@ signed p00_trailing_comma_in_initializer__(void) {
 #define static_assert _Static_assert
 #endif
 
-#if  __STDC_VERSION__ < 201101L && !defined(static_assert)
+/* implement emulation of some C11 features */
+#if  __STDC_VERSION__ > 201101L
+# include <assert.h>
+# include <stdalign.h>
+# include <stdnoreturn.h>
+#endif /* C11 emulation support */
+
+#ifndef static_assert
 /**
  ** @brief Evaluate expression @a EXPR at compile time and ensure that
  ** it is fulfilled.
@@ -288,6 +295,41 @@ extern char const p00_compiletime_assert[                      \
 ]
 extern char const p00_compiletime_assert[sizeof(void const*[2])];
 #endif
+
+#ifndef alignof
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
+#define _Alignof(T) __alignof__(T)
+#define alignof _Alignof
+#endif
+#endif
+
+#ifndef alignas
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
+#define _Alignas(X) __attribute__((__aligned__(X)))
+#define alignas _Alignas
+#endif
+#endif
+
+#ifndef noreturn
+#define noreturn _Noreturn
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
+/* use __noreturn__ for the attribute since noreturn is now a macro */
+#define _Noreturn __attribute__((__noreturn__))
+#else
+#define _Noreturn _Pragma(NORETURN)
+#endif
+#endif
+
+#ifndef thread_local
+#define thread_local _Thread_local
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64 | P99_COMPILER_IBM | P99_COMPILER_SUN)
+#define _Thread_local __thread
+#elif P99_COMPILER & (P99_COMPILER_MICROSOFT | P99_COMPILER_BORLAND)
+#define _Thread_local __declspec(thread)
+#endif
+#endif
+
+
 
 static_assert(1, "test of static assertions");
 

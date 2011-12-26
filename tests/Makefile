@@ -10,6 +10,7 @@
 
 SRC	=					\
 		test-p99-block.c		\
+		test-p99-c11.c			\
 		test-p99-cases.c		\
 		test-p99-choice.c		\
 		test-p99-classification.c	\
