@@ -96,6 +96,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_ALLOW</name>
+      <anchorfile>group__validity_gad9ec5efb4df9689a3ccd7518dac17a54.html</anchorfile>
+      <anchor>gad9ec5efb4df9689a3ccd7518dac17a54</anchor>
+      <arglist>(NAME)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_AVOID</name>
       <anchorfile>group__preprocessor__blocks_ga2e83e2fd9a49a378911cb1d506fa13b4.html</anchorfile>
       <anchor>ga2e83e2fd9a49a378911cb1d506fa13b4</anchor>
@@ -117,6 +124,20 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_CHECK_RETURN</name>
+      <anchorfile>group__validity_ga44181dc93ca0663ffde886682e5e706f.html</anchorfile>
+      <anchor>ga44181dc93ca0663ffde886682e5e706f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_DECLARE_INHIBIT</name>
+      <anchorfile>group__validity_ga9875471484af8d756096edcfa2b97a12.html</anchorfile>
+      <anchor>ga9875471484af8d756096edcfa2b97a12</anchor>
+      <arglist>(NAME)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_GUARDED_BLOCK</name>
       <anchorfile>group__preprocessor__blocks_gaa864200ae44c5666b1c42cfa60836a63.html</anchorfile>
       <anchor>gaa864200ae44c5666b1c42cfa60836a63</anchor>
@@ -128,6 +149,20 @@
       <anchorfile>group__preprocessor__blocks_gab77c2a48f5449cc7935dbb2437b00e67.html</anchorfile>
       <anchor>gab77c2a48f5449cc7935dbb2437b00e67</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_INHIBIT</name>
+      <anchorfile>group__validity_ga6193390056e7017ab2a181b577fada49.html</anchorfile>
+      <anchor>ga6193390056e7017ab2a181b577fada49</anchor>
+      <arglist>(NAME)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_INHIBIT_CHECK</name>
+      <anchorfile>group__validity_gac6567774becfd58f812142614f635fa8.html</anchorfile>
+      <anchor>gac6567774becfd58f812142614f635fa8</anchor>
+      <arglist>(NAME)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -204,6 +239,12 @@
       <name>P99_XDEFAULT</name>
       <anchorfile>group__preprocessor__blocks_ga8d2d933bceb97704eb9ce57d1729e8af.html</anchorfile>
       <anchor>ga8d2d933bceb97704eb9ce57d1729e8af</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p00_inhibit_RETURN</name>
+      <anchorfile>group__validity_ga06fc87d81c62e9abb8790b6e5713c55b.html</anchorfile>
+      <anchor>gga06fc87d81c62e9abb8790b6e5713c55b</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumeration">
@@ -942,6 +983,13 @@
     <includes id="p99__args_8h" name="p99_args.h" local="yes" imported="no">p99_args.h</includes>
     <member kind="define">
       <type>#define</type>
+      <name>noreturn</name>
+      <anchorfile>group__compiler_ga4a453f3a748e55cbdac6fcc79357cfef.html</anchorfile>
+      <anchor>ga4a453f3a748e55cbdac6fcc79357cfef</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_ATLEAST</name>
       <anchorfile>group__compiler_gab2e698aac27dfc78e0f995a63e799b9b.html</anchorfile>
       <anchor>gab2e698aac27dfc78e0f995a63e799b9b</anchor>
@@ -1010,6 +1058,18 @@
       <anchor>ga66ade0753b8af7a4500621f8bc1e04d7</anchor>
       <arglist>(EXPR, DIAGSTR)</arglist>
     </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>thread_local</name>
+      <anchorfile>group__compiler_gad4d9b405bcbffaf0d4dae6166c18aa1e.html</anchorfile>
+      <anchor>gad4d9b405bcbffaf0d4dae6166c18aa1e</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>p99_conformity.c</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__conformity_8c</filename>
   </compound>
   <compound kind="file">
     <name>p99_defarg.h</name>
@@ -1292,6 +1352,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_DEFINE_STRUCT</name>
+      <anchorfile>p99__for_8h_ac9ebe92774588d5b7bc6a73f955685f4.html</anchorfile>
+      <anchor>ac9ebe92774588d5b7bc6a73f955685f4</anchor>
+      <arglist>(NAME,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_DIV</name>
       <anchorfile>group__preprocessor__arithmetic_ga6740ff272bb7153d33a60f66fcda7166.html</anchorfile>
       <anchor>ga6740ff272bb7153d33a60f66fcda7166</anchor>
@@ -1352,6 +1419,13 @@
       <anchorfile>group__statement__lists_ga1516c21d2c44e1031b6b41595785b91e.html</anchorfile>
       <anchor>ga1516c21d2c44e1031b6b41595785b91e</anchor>
       <arglist>(FIRST,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_LITERAL</name>
+      <anchorfile>p99__for_8h_a7c1dde170b9f8b5283eb3b257cbba3a2.html</anchorfile>
+      <anchor>a7c1dde170b9f8b5283eb3b257cbba3a2</anchor>
+      <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -1443,6 +1517,41 @@
       <anchorfile>group__preprocessor__for_gaa8397413f3ecf6c5f24463a728989ab4.html</anchorfile>
       <anchor>gaa8397413f3ecf6c5f24463a728989ab4</anchor>
       <arglist>(MACRO,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_STRUCT_LITERAL</name>
+      <anchorfile>p99__for_8h_af159893c3dec347f888e84e7e789b73f.html</anchorfile>
+      <anchor>af159893c3dec347f888e84e7e789b73f</anchor>
+      <arglist>(TYPE,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_STRUCT_TYPE0</name>
+      <anchorfile>p99__for_8h_a0cd886a743a2b058f0a20ab3bc6e1fa5.html</anchorfile>
+      <anchor>a0cd886a743a2b058f0a20ab3bc6e1fa5</anchor>
+      <arglist>(TYPE,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_STRUCT_TYPES</name>
+      <anchorfile>p99__for_8h_a1005f610c22f207f6f837cfd885fc2de.html</anchorfile>
+      <anchor>a1005f610c22f207f6f837cfd885fc2de</anchor>
+      <arglist>(TYPE,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_STRUCT_UNUSE</name>
+      <anchorfile>p99__for_8h_a1b272a905ae432c524fd191e2297dfe0.html</anchorfile>
+      <anchor>a1b272a905ae432c524fd191e2297dfe0</anchor>
+      <arglist>(TYPE, VAR,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_STRUCT_USE</name>
+      <anchorfile>p99__for_8h_aee46ba898e0f3382644c53c3e0aee0be.html</anchorfile>
+      <anchor>aee46ba898e0f3382644c53c3e0aee0be</anchor>
+      <arglist>(TYPE, VAR,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -4586,6 +4695,108 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>p99_threads.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__threads_8h</filename>
+    <includes id="p99__c99_8h" name="p99_c99.h" local="yes" imported="no">p99_c99.h</includes>
+    <class kind="struct">atomic_flag</class>
+    <class kind="struct">cnd_t</class>
+    <class kind="struct">mtx_t</class>
+    <class kind="struct">once_flag</class>
+    <class kind="struct">thrd_t</class>
+    <class kind="struct">tss_t</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>_XOPEN_SOURCE</name>
+      <anchorfile>p99__threads_8h_a78c99ffd76a7bb3c8c74db76207e9ab4.html</anchorfile>
+      <anchor>a78c99ffd76a7bb3c8c74db76207e9ab4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ATOMIC_FLAG_INIT</name>
+      <anchorfile>group__threads_ga3cf6ded3b463faf0cedce1718caaa695.html</anchorfile>
+      <anchor>ga3cf6ded3b463faf0cedce1718caaa695</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ONCE_FLAG_INIT</name>
+      <anchorfile>group__thread__macros_ga0eeb41bf239112f98df3d9f644d48f6e.html</anchorfile>
+      <anchor>ga0eeb41bf239112f98df3d9f644d48f6e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSS_DTOR_ITERATIONS</name>
+      <anchorfile>group__thread__macros_ga11de84b15b6b59861b4366a192aadd58.html</anchorfile>
+      <anchor>ga11de84b15b6b59861b4366a192aadd58</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>int(*</type>
+      <name>thrd_start_t</name>
+      <anchorfile>group__thread__types_gac948a680a1f1761ffb639c80eb110d14.html</anchorfile>
+      <anchor>gac948a680a1f1761ffb639c80eb110d14</anchor>
+      <arglist>)(void *)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>void(*</type>
+      <name>tss_dtor_t</name>
+      <anchorfile>group__thread__types_ga7a0d675d8ca1572bf3b00552dc913ae8.html</anchorfile>
+      <anchor>ga7a0d675d8ca1572bf3b00552dc913ae8</anchor>
+      <arglist>)(void *)</arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>mtx_plain</name>
+      <anchorfile>group__thread__enum_gadf764cbdea00d65edcd07bb9953ad2b7.html</anchorfile>
+      <anchor>ggadf764cbdea00d65edcd07bb9953ad2b7a5634f2eaf52c96ff2c1cb64422751f70</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>mtx_recursive</name>
+      <anchorfile>group__thread__enum_gadf764cbdea00d65edcd07bb9953ad2b7.html</anchorfile>
+      <anchor>ggadf764cbdea00d65edcd07bb9953ad2b7aecf8e2501ee10f9e988c11786e97cbb5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>mtx_timed</name>
+      <anchorfile>group__thread__enum_gadf764cbdea00d65edcd07bb9953ad2b7.html</anchorfile>
+      <anchor>ggadf764cbdea00d65edcd07bb9953ad2b7a191acdb2c3c36e65826f054948be301d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>thrd_timedout</name>
+      <anchorfile>group__thread__enum_ga99fb83031ce9923c84392b4e92f956b5.html</anchorfile>
+      <anchor>gga99fb83031ce9923c84392b4e92f956b5a1aa5a7150d2b1363d15a000d1b924357</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>thrd_success</name>
+      <anchorfile>group__thread__enum_ga99fb83031ce9923c84392b4e92f956b5.html</anchorfile>
+      <anchor>gga99fb83031ce9923c84392b4e92f956b5a257a2d1327a2bbed7983c1297923a676</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>thrd_busy</name>
+      <anchorfile>group__thread__enum_ga99fb83031ce9923c84392b4e92f956b5.html</anchorfile>
+      <anchor>gga99fb83031ce9923c84392b4e92f956b5aa6b1ec2dc67085a3ad76257d61625628</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>thrd_error</name>
+      <anchorfile>group__thread__enum_ga99fb83031ce9923c84392b4e92f956b5.html</anchorfile>
+      <anchor>gga99fb83031ce9923c84392b4e92f956b5afeda1521d2ed7b4a9d84e502a6d2c834</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>thrd_nomem</name>
+      <anchorfile>group__thread__enum_ga99fb83031ce9923c84392b4e92f956b5.html</anchorfile>
+      <anchor>gga99fb83031ce9923c84392b4e92f956b5ac97366cd62131b748aedb70f292cbb97</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>p99_type.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__type_8h</filename>
@@ -7356,6 +7567,7 @@
     <name>preprocessor_blocks</name>
     <title>Preprocessor BLocks</title>
     <filename>group__preprocessor__blocks.html</filename>
+    <subgroup>validity</subgroup>
     <member kind="define">
       <type>#define</type>
       <name>P00</name>
@@ -7551,6 +7763,52 @@
       <name>p99_unwind_return</name>
       <anchorfile>group__preprocessor__blocks_ga7aaa0ac4082af4f1597f39ef1c32e1bd.html</anchorfile>
       <anchor>gga7aaa0ac4082af4f1597f39ef1c32e1bda9b149171c522ccbdff3c578d95f917a7</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>validity</name>
+    <title>Checking code validity</title>
+    <filename>group__validity.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_ALLOW</name>
+      <anchorfile>group__validity_gad9ec5efb4df9689a3ccd7518dac17a54.html</anchorfile>
+      <anchor>gad9ec5efb4df9689a3ccd7518dac17a54</anchor>
+      <arglist>(NAME)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_CHECK_RETURN</name>
+      <anchorfile>group__validity_ga44181dc93ca0663ffde886682e5e706f.html</anchorfile>
+      <anchor>ga44181dc93ca0663ffde886682e5e706f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_DECLARE_INHIBIT</name>
+      <anchorfile>group__validity_ga9875471484af8d756096edcfa2b97a12.html</anchorfile>
+      <anchor>ga9875471484af8d756096edcfa2b97a12</anchor>
+      <arglist>(NAME)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_INHIBIT</name>
+      <anchorfile>group__validity_ga6193390056e7017ab2a181b577fada49.html</anchorfile>
+      <anchor>ga6193390056e7017ab2a181b577fada49</anchor>
+      <arglist>(NAME)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_INHIBIT_CHECK</name>
+      <anchorfile>group__validity_gac6567774becfd58f812142614f635fa8.html</anchorfile>
+      <anchor>gac6567774becfd58f812142614f635fa8</anchor>
+      <arglist>(NAME)</arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p00_inhibit_RETURN</name>
+      <anchorfile>group__validity_ga06fc87d81c62e9abb8790b6e5713c55b.html</anchorfile>
+      <anchor>gga06fc87d81c62e9abb8790b6e5713c55b</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -8116,6 +8374,13 @@
     <filename>group__compiler.html</filename>
     <member kind="define">
       <type>#define</type>
+      <name>noreturn</name>
+      <anchorfile>group__compiler_ga4a453f3a748e55cbdac6fcc79357cfef.html</anchorfile>
+      <anchor>ga4a453f3a748e55cbdac6fcc79357cfef</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_ATLEAST</name>
       <anchorfile>group__compiler_gab2e698aac27dfc78e0f995a63e799b9b.html</anchorfile>
       <anchor>gab2e698aac27dfc78e0f995a63e799b9b</anchor>
@@ -8183,6 +8448,13 @@
       <anchorfile>group__compiler_ga66ade0753b8af7a4500621f8bc1e04d7.html</anchorfile>
       <anchor>ga66ade0753b8af7a4500621f8bc1e04d7</anchor>
       <arglist>(EXPR, DIAGSTR)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>thread_local</name>
+      <anchorfile>group__compiler_gad4d9b405bcbffaf0d4dae6166c18aa1e.html</anchorfile>
+      <anchor>gad4d9b405bcbffaf0d4dae6166c18aa1e</anchor>
+      <arglist></arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -12179,6 +12451,463 @@
       <arglist>(T, F, N)</arglist>
     </member>
   </compound>
+  <compound kind="group">
+    <name>threads</name>
+    <title>Threads</title>
+    <filename>group__threads.html</filename>
+    <subgroup>thread_macros</subgroup>
+    <subgroup>thread_types</subgroup>
+    <subgroup>thread_enum</subgroup>
+    <member kind="define">
+      <type>#define</type>
+      <name>ATOMIC_FLAG_INIT</name>
+      <anchorfile>group__threads_ga3cf6ded3b463faf0cedce1718caaa695.html</anchorfile>
+      <anchor>ga3cf6ded3b463faf0cedce1718caaa695</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type></type>
+      <name>ATOMIC_FLAG_INIT</name>
+      <anchorfile>group__threads_ga64528ddab2a24554b3ffb49bd8951a12.html</anchorfile>
+      <anchor>ga64528ddab2a24554b3ffb49bd8951a12</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>atomic_flag_clear</name>
+      <anchorfile>group__threads_ga281cc77096d886b0cf2c6ab7dfbe900c.html</anchorfile>
+      <anchor>ga281cc77096d886b0cf2c6ab7dfbe900c</anchor>
+      <arglist>(volatile atomic_flag *object)</arglist>
+    </member>
+    <member kind="function">
+      <type>_Bool</type>
+      <name>atomic_flag_test_and_set</name>
+      <anchorfile>group__threads_gafbdfcef48a9fd85fa85549afbd3abdeb.html</anchorfile>
+      <anchor>gafbdfcef48a9fd85fa85549afbd3abdeb</anchor>
+      <arglist>(volatile atomic_flag *object)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>call_once</name>
+      <anchorfile>group__threads_gabff739b74c4ef36c3e4bddd332650493.html</anchorfile>
+      <anchor>gabff739b74c4ef36c3e4bddd332650493</anchor>
+      <arglist>(once_flag *flag, void(*func)(void))</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>cnd_broadcast</name>
+      <anchorfile>group__threads_ga66228b340509733bdf529b93bca8df14.html</anchorfile>
+      <anchor>ga66228b340509733bdf529b93bca8df14</anchor>
+      <arglist>(cnd_t *cond)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>cnd_destroy</name>
+      <anchorfile>group__threads_gaa925921fa9edc189f474ae10a23bcfd3.html</anchorfile>
+      <anchor>gaa925921fa9edc189f474ae10a23bcfd3</anchor>
+      <arglist>(cnd_t *cond)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>cnd_init</name>
+      <anchorfile>group__threads_ga146f4cd218c2a2f770be14c1dee26d08.html</anchorfile>
+      <anchor>ga146f4cd218c2a2f770be14c1dee26d08</anchor>
+      <arglist>(cnd_t *cond)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>cnd_signal</name>
+      <anchorfile>group__threads_gaf76e066715b1190d38a69da1c511e30f.html</anchorfile>
+      <anchor>gaf76e066715b1190d38a69da1c511e30f</anchor>
+      <arglist>(cnd_t *cond)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>cnd_timedwait</name>
+      <anchorfile>group__threads_ga25d7464c90e710aa7ccd886b9d265120.html</anchorfile>
+      <anchor>ga25d7464c90e710aa7ccd886b9d265120</anchor>
+      <arglist>(cnd_t *restrict cond, mtx_t *restrict mtx, const struct timespec *restrict ts)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>cnd_wait</name>
+      <anchorfile>group__threads_gac4dfb82fc3d92bb688cb07308af6a659.html</anchorfile>
+      <anchor>gac4dfb82fc3d92bb688cb07308af6a659</anchor>
+      <arglist>(cnd_t *cond, mtx_t *mtx)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>mtx_destroy</name>
+      <anchorfile>group__threads_gae8b3732298d1d316db6438b4c561c0dd.html</anchorfile>
+      <anchor>gae8b3732298d1d316db6438b4c561c0dd</anchor>
+      <arglist>(mtx_t *mtx)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>mtx_init</name>
+      <anchorfile>group__threads_ga89200caf0dc25fcc97df171d0034bff2.html</anchorfile>
+      <anchor>ga89200caf0dc25fcc97df171d0034bff2</anchor>
+      <arglist>(mtx_t *mtx, int type)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>mtx_lock</name>
+      <anchorfile>group__threads_ga8945984db67db8ee774872da64d0e424.html</anchorfile>
+      <anchor>ga8945984db67db8ee774872da64d0e424</anchor>
+      <arglist>(mtx_t *mtx)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>mtx_timedlock</name>
+      <anchorfile>group__threads_ga4f1ca5f0a9f7da8f2d162934d4ff66ce.html</anchorfile>
+      <anchor>ga4f1ca5f0a9f7da8f2d162934d4ff66ce</anchor>
+      <arglist>(mtx_t *restrict mtx, const struct timespec *restrict ts)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>mtx_trylock</name>
+      <anchorfile>group__threads_gac577690ddd48f5a1fdf3dc97881a2199.html</anchorfile>
+      <anchor>gac577690ddd48f5a1fdf3dc97881a2199</anchor>
+      <arglist>(mtx_t *mtx)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>mtx_unlock</name>
+      <anchorfile>group__threads_gae2fb1d2854461fa583017cc9b0bc6cca.html</anchorfile>
+      <anchor>gae2fb1d2854461fa583017cc9b0bc6cca</anchor>
+      <arglist>(mtx_t *mtx)</arglist>
+    </member>
+    <member kind="function">
+      <type>static int</type>
+      <name>thrd_create</name>
+      <anchorfile>group__threads_ga657bbd957fb8ba7ff99f2082cff6ec74.html</anchorfile>
+      <anchor>ga657bbd957fb8ba7ff99f2082cff6ec74</anchor>
+      <arglist>(thrd_t *thr, thrd_start_t func, void *arg)</arglist>
+    </member>
+    <member kind="function">
+      <type>thrd_t</type>
+      <name>thrd_current</name>
+      <anchorfile>group__threads_gab67b6f182a848d979155d03598325fa7.html</anchorfile>
+      <anchor>gab67b6f182a848d979155d03598325fa7</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>thrd_detach</name>
+      <anchorfile>group__threads_gad5380997f9e32a31f802bdd9cb266902.html</anchorfile>
+      <anchor>gad5380997f9e32a31f802bdd9cb266902</anchor>
+      <arglist>(thrd_t thr)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>thrd_equal</name>
+      <anchorfile>group__threads_ga153e65a389814ce51ad07791e42b2118.html</anchorfile>
+      <anchor>ga153e65a389814ce51ad07791e42b2118</anchor>
+      <arglist>(thrd_t thr0, thrd_t thr1)</arglist>
+    </member>
+    <member kind="function">
+      <type>_Noreturn void</type>
+      <name>thrd_exit</name>
+      <anchorfile>group__threads_ga3b41b58eeee148228fd188cdee6e9389.html</anchorfile>
+      <anchor>ga3b41b58eeee148228fd188cdee6e9389</anchor>
+      <arglist>(int res)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>thrd_join</name>
+      <anchorfile>group__threads_gaa2e83a544f49f74cf217a69a882b5d80.html</anchorfile>
+      <anchor>gaa2e83a544f49f74cf217a69a882b5d80</anchor>
+      <arglist>(thrd_t thr, int *res)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>thrd_sleep</name>
+      <anchorfile>group__threads_ga77f5f79db415e2363470a8570250f785.html</anchorfile>
+      <anchor>ga77f5f79db415e2363470a8570250f785</anchor>
+      <arglist>(const struct timespec *duration, struct timespec *remaining)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>thrd_yield</name>
+      <anchorfile>group__threads_gacbfb78346e6b76b23da1d2d8df03549a.html</anchorfile>
+      <anchor>gacbfb78346e6b76b23da1d2d8df03549a</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tss_create</name>
+      <anchorfile>group__threads_ga286fe7927e9af276a9cfdbc8b9eb08ad.html</anchorfile>
+      <anchor>ga286fe7927e9af276a9cfdbc8b9eb08ad</anchor>
+      <arglist>(tss_t *key, tss_dtor_t dtor)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tss_delete</name>
+      <anchorfile>group__threads_gaecebbc66b206171d9381ba94528c6cb7.html</anchorfile>
+      <anchor>gaecebbc66b206171d9381ba94528c6cb7</anchor>
+      <arglist>(tss_t key)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>tss_get</name>
+      <anchorfile>group__threads_ga5cf26b78a3f19a4e7b6876f957f2059c.html</anchorfile>
+      <anchor>ga5cf26b78a3f19a4e7b6876f957f2059c</anchor>
+      <arglist>(tss_t key)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tss_set</name>
+      <anchorfile>group__threads_ga608e01c49b84a5ad4f085a9aedc6a680.html</anchorfile>
+      <anchor>ga608e01c49b84a5ad4f085a9aedc6a680</anchor>
+      <arglist>(tss_t key, void *val)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>thread_macros</name>
+    <title>Thread_macros</title>
+    <filename>group__thread__macros.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>ONCE_FLAG_INIT</name>
+      <anchorfile>group__thread__macros_ga0eeb41bf239112f98df3d9f644d48f6e.html</anchorfile>
+      <anchor>ga0eeb41bf239112f98df3d9f644d48f6e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type></type>
+      <name>ONCE_FLAG_INIT</name>
+      <anchorfile>group__thread__macros_gaa5eb509ec8494c31f56f60dcbc37e282.html</anchorfile>
+      <anchor>gaa5eb509ec8494c31f56f60dcbc37e282</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type></type>
+      <name>TSS_DTOR_ITERATIONS</name>
+      <anchorfile>group__thread__macros_gaa88e9cf5ed63515da705976621dcf9d1.html</anchorfile>
+      <anchor>gaa88e9cf5ed63515da705976621dcf9d1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSS_DTOR_ITERATIONS</name>
+      <anchorfile>group__thread__macros_ga11de84b15b6b59861b4366a192aadd58.html</anchorfile>
+      <anchor>ga11de84b15b6b59861b4366a192aadd58</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>thread_types</name>
+    <title>Thread_types</title>
+    <filename>group__thread__types.html</filename>
+    <class kind="struct">atomic_flag</class>
+    <class kind="struct">cnd_t</class>
+    <class kind="struct">mtx_t</class>
+    <class kind="struct">once_flag</class>
+    <class kind="struct">thrd_t</class>
+    <class kind="struct">tss_t</class>
+    <member kind="typedef">
+      <type>int(*</type>
+      <name>thrd_start_t</name>
+      <anchorfile>group__thread__types_gac948a680a1f1761ffb639c80eb110d14.html</anchorfile>
+      <anchor>gac948a680a1f1761ffb639c80eb110d14</anchor>
+      <arglist>)(void *)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>void(*</type>
+      <name>tss_dtor_t</name>
+      <anchorfile>group__thread__types_ga7a0d675d8ca1572bf3b00552dc913ae8.html</anchorfile>
+      <anchor>ga7a0d675d8ca1572bf3b00552dc913ae8</anchor>
+      <arglist>)(void *)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>thread_enum</name>
+    <title>Thread_enum</title>
+    <filename>group__thread__enum.html</filename>
+    <member kind="enumvalue">
+      <name>mtx_plain</name>
+      <anchorfile>group__thread__enum_gadf764cbdea00d65edcd07bb9953ad2b7.html</anchorfile>
+      <anchor>ggadf764cbdea00d65edcd07bb9953ad2b7a5634f2eaf52c96ff2c1cb64422751f70</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>mtx_recursive</name>
+      <anchorfile>group__thread__enum_gadf764cbdea00d65edcd07bb9953ad2b7.html</anchorfile>
+      <anchor>ggadf764cbdea00d65edcd07bb9953ad2b7aecf8e2501ee10f9e988c11786e97cbb5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>mtx_timed</name>
+      <anchorfile>group__thread__enum_gadf764cbdea00d65edcd07bb9953ad2b7.html</anchorfile>
+      <anchor>ggadf764cbdea00d65edcd07bb9953ad2b7a191acdb2c3c36e65826f054948be301d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>thrd_timedout</name>
+      <anchorfile>group__thread__enum_ga99fb83031ce9923c84392b4e92f956b5.html</anchorfile>
+      <anchor>gga99fb83031ce9923c84392b4e92f956b5a1aa5a7150d2b1363d15a000d1b924357</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>thrd_success</name>
+      <anchorfile>group__thread__enum_ga99fb83031ce9923c84392b4e92f956b5.html</anchorfile>
+      <anchor>gga99fb83031ce9923c84392b4e92f956b5a257a2d1327a2bbed7983c1297923a676</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>thrd_busy</name>
+      <anchorfile>group__thread__enum_ga99fb83031ce9923c84392b4e92f956b5.html</anchorfile>
+      <anchor>gga99fb83031ce9923c84392b4e92f956b5aa6b1ec2dc67085a3ad76257d61625628</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>thrd_error</name>
+      <anchorfile>group__thread__enum_ga99fb83031ce9923c84392b4e92f956b5.html</anchorfile>
+      <anchor>gga99fb83031ce9923c84392b4e92f956b5afeda1521d2ed7b4a9d84e502a6d2c834</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>thrd_nomem</name>
+      <anchorfile>group__thread__enum_ga99fb83031ce9923c84392b4e92f956b5.html</anchorfile>
+      <anchor>gga99fb83031ce9923c84392b4e92f956b5ac97366cd62131b748aedb70f292cbb97</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>atomic_flag</name>
+    <filename>structatomic__flag.html</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>atomic_flag_clear</name>
+      <anchorfile>group__threads_ga281cc77096d886b0cf2c6ab7dfbe900c.html</anchorfile>
+      <anchor>ga281cc77096d886b0cf2c6ab7dfbe900c</anchor>
+      <arglist>(volatile atomic_flag *object)</arglist>
+    </member>
+    <member kind="define">
+      <type></type>
+      <name>ATOMIC_FLAG_INIT</name>
+      <anchorfile>group__threads_ga64528ddab2a24554b3ffb49bd8951a12.html</anchorfile>
+      <anchor>ga64528ddab2a24554b3ffb49bd8951a12</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>_Bool</type>
+      <name>atomic_flag_test_and_set</name>
+      <anchorfile>group__threads_gafbdfcef48a9fd85fa85549afbd3abdeb.html</anchorfile>
+      <anchor>gafbdfcef48a9fd85fa85549afbd3abdeb</anchor>
+      <arglist>(volatile atomic_flag *object)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>cnd_t</name>
+    <filename>structcnd__t.html</filename>
+    <member kind="function">
+      <type>int</type>
+      <name>cnd_broadcast</name>
+      <anchorfile>group__threads_ga66228b340509733bdf529b93bca8df14.html</anchorfile>
+      <anchor>ga66228b340509733bdf529b93bca8df14</anchor>
+      <arglist>(cnd_t *cond)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>cnd_destroy</name>
+      <anchorfile>group__threads_gaa925921fa9edc189f474ae10a23bcfd3.html</anchorfile>
+      <anchor>gaa925921fa9edc189f474ae10a23bcfd3</anchor>
+      <arglist>(cnd_t *cond)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>cnd_init</name>
+      <anchorfile>group__threads_ga146f4cd218c2a2f770be14c1dee26d08.html</anchorfile>
+      <anchor>ga146f4cd218c2a2f770be14c1dee26d08</anchor>
+      <arglist>(cnd_t *cond)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>cnd_signal</name>
+      <anchorfile>group__threads_gaf76e066715b1190d38a69da1c511e30f.html</anchorfile>
+      <anchor>gaf76e066715b1190d38a69da1c511e30f</anchor>
+      <arglist>(cnd_t *cond)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>cnd_timedwait</name>
+      <anchorfile>group__threads_ga25d7464c90e710aa7ccd886b9d265120.html</anchorfile>
+      <anchor>ga25d7464c90e710aa7ccd886b9d265120</anchor>
+      <arglist>(cnd_t *restrict cond, mtx_t *restrict mtx, const struct timespec *restrict ts)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>cnd_wait</name>
+      <anchorfile>group__threads_gac4dfb82fc3d92bb688cb07308af6a659.html</anchorfile>
+      <anchor>gac4dfb82fc3d92bb688cb07308af6a659</anchor>
+      <arglist>(cnd_t *cond, mtx_t *mtx)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>mtx_t</name>
+    <filename>structmtx__t.html</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>mtx_destroy</name>
+      <anchorfile>group__threads_gae8b3732298d1d316db6438b4c561c0dd.html</anchorfile>
+      <anchor>gae8b3732298d1d316db6438b4c561c0dd</anchor>
+      <arglist>(mtx_t *mtx)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>mtx_init</name>
+      <anchorfile>group__threads_ga89200caf0dc25fcc97df171d0034bff2.html</anchorfile>
+      <anchor>ga89200caf0dc25fcc97df171d0034bff2</anchor>
+      <arglist>(mtx_t *mtx, int type)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>mtx_lock</name>
+      <anchorfile>group__threads_ga8945984db67db8ee774872da64d0e424.html</anchorfile>
+      <anchor>ga8945984db67db8ee774872da64d0e424</anchor>
+      <arglist>(mtx_t *mtx)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>mtx_timedlock</name>
+      <anchorfile>group__threads_ga4f1ca5f0a9f7da8f2d162934d4ff66ce.html</anchorfile>
+      <anchor>ga4f1ca5f0a9f7da8f2d162934d4ff66ce</anchor>
+      <arglist>(mtx_t *restrict mtx, const struct timespec *restrict ts)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>mtx_trylock</name>
+      <anchorfile>group__threads_gac577690ddd48f5a1fdf3dc97881a2199.html</anchorfile>
+      <anchor>gac577690ddd48f5a1fdf3dc97881a2199</anchor>
+      <arglist>(mtx_t *mtx)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>mtx_unlock</name>
+      <anchorfile>group__threads_gae2fb1d2854461fa583017cc9b0bc6cca.html</anchorfile>
+      <anchor>gae2fb1d2854461fa583017cc9b0bc6cca</anchor>
+      <arglist>(mtx_t *mtx)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>once_flag</name>
+    <filename>structonce__flag.html</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>call_once</name>
+      <anchorfile>group__threads_gabff739b74c4ef36c3e4bddd332650493.html</anchorfile>
+      <anchor>gabff739b74c4ef36c3e4bddd332650493</anchor>
+      <arglist>(once_flag *flag, void(*func)(void))</arglist>
+    </member>
+    <member kind="define">
+      <type></type>
+      <name>ONCE_FLAG_INIT</name>
+      <anchorfile>group__thread__macros_gaa5eb509ec8494c31f56f60dcbc37e282.html</anchorfile>
+      <anchor>gaa5eb509ec8494c31f56f60dcbc37e282</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
   <compound kind="union">
     <name>p99_endian_2</name>
     <filename>unionp99__endian__2.html</filename>
@@ -12233,6 +12962,105 @@
       <arglist></arglist>
     </member>
   </compound>
+  <compound kind="struct">
+    <name>thrd_t</name>
+    <filename>structthrd__t.html</filename>
+    <member kind="function">
+      <type>static int</type>
+      <name>thrd_create</name>
+      <anchorfile>group__threads_ga657bbd957fb8ba7ff99f2082cff6ec74.html</anchorfile>
+      <anchor>ga657bbd957fb8ba7ff99f2082cff6ec74</anchor>
+      <arglist>(thrd_t *thr, thrd_start_t func, void *arg)</arglist>
+    </member>
+    <member kind="function">
+      <type>thrd_t</type>
+      <name>thrd_current</name>
+      <anchorfile>group__threads_gab67b6f182a848d979155d03598325fa7.html</anchorfile>
+      <anchor>gab67b6f182a848d979155d03598325fa7</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>thrd_detach</name>
+      <anchorfile>group__threads_gad5380997f9e32a31f802bdd9cb266902.html</anchorfile>
+      <anchor>gad5380997f9e32a31f802bdd9cb266902</anchor>
+      <arglist>(thrd_t thr)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>thrd_equal</name>
+      <anchorfile>group__threads_ga153e65a389814ce51ad07791e42b2118.html</anchorfile>
+      <anchor>ga153e65a389814ce51ad07791e42b2118</anchor>
+      <arglist>(thrd_t thr0, thrd_t thr1)</arglist>
+    </member>
+    <member kind="function">
+      <type>_Noreturn void</type>
+      <name>thrd_exit</name>
+      <anchorfile>group__threads_ga3b41b58eeee148228fd188cdee6e9389.html</anchorfile>
+      <anchor>ga3b41b58eeee148228fd188cdee6e9389</anchor>
+      <arglist>(int res)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>thrd_join</name>
+      <anchorfile>group__threads_gaa2e83a544f49f74cf217a69a882b5d80.html</anchorfile>
+      <anchor>gaa2e83a544f49f74cf217a69a882b5d80</anchor>
+      <arglist>(thrd_t thr, int *res)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>thrd_sleep</name>
+      <anchorfile>group__threads_ga77f5f79db415e2363470a8570250f785.html</anchorfile>
+      <anchor>ga77f5f79db415e2363470a8570250f785</anchor>
+      <arglist>(const struct timespec *duration, struct timespec *remaining)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>thrd_yield</name>
+      <anchorfile>group__threads_gacbfb78346e6b76b23da1d2d8df03549a.html</anchorfile>
+      <anchor>gacbfb78346e6b76b23da1d2d8df03549a</anchor>
+      <arglist>(void)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tss_t</name>
+    <filename>structtss__t.html</filename>
+    <member kind="function">
+      <type>int</type>
+      <name>tss_create</name>
+      <anchorfile>group__threads_ga286fe7927e9af276a9cfdbc8b9eb08ad.html</anchorfile>
+      <anchor>ga286fe7927e9af276a9cfdbc8b9eb08ad</anchor>
+      <arglist>(tss_t *key, tss_dtor_t dtor)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tss_delete</name>
+      <anchorfile>group__threads_gaecebbc66b206171d9381ba94528c6cb7.html</anchorfile>
+      <anchor>gaecebbc66b206171d9381ba94528c6cb7</anchor>
+      <arglist>(tss_t key)</arglist>
+    </member>
+    <member kind="define">
+      <type></type>
+      <name>TSS_DTOR_ITERATIONS</name>
+      <anchorfile>group__thread__macros_gaa88e9cf5ed63515da705976621dcf9d1.html</anchorfile>
+      <anchor>gaa88e9cf5ed63515da705976621dcf9d1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>tss_get</name>
+      <anchorfile>group__threads_ga5cf26b78a3f19a4e7b6876f957f2059c.html</anchorfile>
+      <anchor>ga5cf26b78a3f19a4e7b6876f957f2059c</anchor>
+      <arglist>(tss_t key)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tss_set</name>
+      <anchorfile>group__threads_ga608e01c49b84a5ad4f085a9aedc6a680.html</anchorfile>
+      <anchor>ga608e01c49b84a5ad4f085a9aedc6a680</anchor>
+      <arglist>(tss_t key, void *val)</arglist>
+    </member>
+  </compound>
   <compound kind="dir">
     <name>p99/</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
@@ -12245,6 +13073,7 @@
     <file>p99_choice.h</file>
     <file>p99_classification.h</file>
     <file>p99_compiler.h</file>
+    <file>p99_conformity.c</file>
     <file>p99_defarg.h</file>
     <file>p99_double.h</file>
     <file>p99_enum.h</file>
@@ -12262,6 +13091,7 @@
     <file>p99_special.c</file>
     <file>p99_str.h</file>
     <file>p99_swap.h</file>
+    <file>p99_threads.h</file>
     <file>p99_type.h</file>
     <file>p99_typenames.h</file>
   </compound>

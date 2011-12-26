@@ -315,7 +315,7 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
 /* use __noreturn__ for the attribute since noreturn is now a macro */
 #define _Noreturn __attribute__((__noreturn__))
-#else
+#elif !defined(P00_DOXYGEN)
 #define _Noreturn _Pragma(NORETURN)
 #endif
 #endif

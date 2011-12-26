@@ -143,6 +143,7 @@
  ** @see P99_IS_SUP(FIRST, ...) for argument <code>FIRST</code>.
  ** @see P99_JOIN(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_LCOPY(TYPE, VAR, ...) for arguments <code>TYPE</code>, <code>VAR</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_LITERAL(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[3]</code>.
  ** @see P99_MAXOF(0) for argument <code>1</code>.
  ** @see P99_MEMSET(TA, SO, N) for argument <code>SO</code>.
  ** @see P99_MEMZERO(T, TA, N) for argument <code>T</code>.
@@ -166,6 +167,9 @@
  ** @see P99_SER(MACRO, ...) for argument <code>MACRO</code>.
  ** @see P99_SIGNED_REPRESENTATION(T) for argument <code>T</code>.
  ** @see P99_STRDUP(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_STRUCT_LITERAL(TYPE, ...) for arguments <code>TYPE</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_STRUCT_TYPE0(TYPE, ...) for arguments <code>TYPE</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[3]</code>.
+ ** @see P99_STRUCT_TYPES(TYPE, ...) for arguments <code>TYPE</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[3]</code>.
  ** @see P99_STRUCT_UNUSE(TYPE, VAR, ...) for arguments <code>TYPE</code>, <code>VAR</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_STRUCT_USE(TYPE, VAR, ...) for arguments <code>TYPE</code>, <code>VAR</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_SWAP(_0, _1) for argument <code>_0</code>, <code>_1</code>.

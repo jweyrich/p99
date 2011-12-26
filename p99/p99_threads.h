@@ -23,10 +23,10 @@
 #include <pthread.h>
 #include "p99_c99.h"
 
-#define P00_ENCAPSULATE(T, NAME)                \
-typedef struct {                                \
-  /** @private */                               \
-  T val;                                        \
+#define P00_ENCAPSULATE(T, NAME)                               \
+typedef struct {                                               \
+  /** @private */                                              \
+  T val;                                                       \
 } NAME
 
 /**
@@ -366,7 +366,7 @@ int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
  **/
 p99_inline
 thrd_t thrd_current(void) {
-  return (thrd_t){ .val = p00_cntxt, };
+  return (thrd_t) { .val = p00_cntxt, };
 }
 
 /**
