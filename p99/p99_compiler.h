@@ -287,11 +287,11 @@ signed p00_trailing_comma_in_initializer__(void) {
  **
  ** @remark This functionality will be directly supported in C1x.
  **/
-#define static_assert(EXPR, DIAGSTR)                           \
-extern char const p00_compiletime_assert[                      \
- sizeof((void const*[3*(!!(EXPR)) - 1]){                       \
-    &p00_compiletime_assert,                                   \
-   "static assertion failed: " P99_STRINGIFY(EXPR) ", " DIAGSTR})    \
+#define static_assert(EXPR, DIAGSTR)                              \
+extern char const p00_compiletime_assert[                         \
+ sizeof((void const*[3*(!!(EXPR)) - 1]){                          \
+    &p00_compiletime_assert,                                      \
+   "static assertion failed: " P99_STRINGIFY(EXPR) ", " DIAGSTR}) \
 ]
 extern char const p00_compiletime_assert[sizeof(void const*[2])];
 #endif

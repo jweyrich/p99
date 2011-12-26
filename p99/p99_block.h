@@ -106,8 +106,8 @@ switch (P99_STRINGIFY(P00_INHIBIT(NAME,))[P00_INHIBIT(NAME,)]) default:
  ** @see P99_DECLARE_INHIBIT
  ** @see P99_ALLOW
  **/
-#define P99_INHIBIT(NAME)                                               \
-P00_BLK_START                                                           \
+#define P99_INHIBIT(NAME)                                                              \
+P00_BLK_START                                                                          \
 for (unsigned const*const P00_INHIBIT(NAME,) = 0; !P00_INHIBIT(NAME,) && P00; P00 = 0)
 
 
@@ -117,8 +117,8 @@ for (unsigned const*const P00_INHIBIT(NAME,) = 0; !P00_INHIBIT(NAME,) && P00; P0
  ** @see P99_DECLARE_INHIBIT
  ** @see P99_INHIBIT
  **/
-#define P99_ALLOW(NAME)                                                 \
-P00_BLK_START                                                           \
+#define P99_ALLOW(NAME)                                        \
+P00_BLK_START                                                  \
 P00_BLK_DECL(unsigned const, P00_INHIBIT(NAME,), 0)
 
 
@@ -144,8 +144,8 @@ P99_DECLARE_INHIBIT(RETURN);
  **/
 
 
-#define P00_BLK_BEFAFT(BEFORE, ...)                     \
-P99_INHIBIT(RETURN)                                     \
+#define P00_BLK_BEFAFT(BEFORE, ...)                            \
+P99_INHIBIT(RETURN)                                            \
 P00_BLK_GEN(P00_ROBUST(BEFORE), true, __VA_ARGS__)
 
 #ifdef P00_DOXYGEN
@@ -625,15 +625,15 @@ P00_BLK_START                                                       \
  ** @see p99_unwind_code
  ** @see p99_unwind_level
  **/
-#define P99_PROTECT                                                     \
-P99_DECLARE_INHIBIT(RETURN);                                            \
-if (0) {                                                                \
-  /* The switch expression of the surrounding switch from               \
-     P99_UNWIND_PROTECT should only have values true and false. So      \
-     this default label can never trigger. It is here to ensure that    \
-     no other "default" label is placed on the same level of "switch"   \
-     by error. */                                                       \
- default: ;                                                             \
+#define P99_PROTECT                                                   \
+P99_DECLARE_INHIBIT(RETURN);                                          \
+if (0) {                                                              \
+  /* The switch expression of the surrounding switch from             \
+     P99_UNWIND_PROTECT should only have values true and false. So    \
+     this default label can never trigger. It is here to ensure that  \
+     no other "default" label is placed on the same level of "switch" \
+     by error. */                                                     \
+ default: ;                                                           \
  } else case 1 : P00_UNCASE
 
 /**
