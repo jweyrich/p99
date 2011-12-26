@@ -4,11 +4,10 @@
 /* the author and copyright holder for this work is                          */
 /* all rights reserved,  2011 Jens Gustedt, INRIA, France                    */
 /*                                                                           */
-/* This file is part of the P99 project. You received this file as as        */
-/* part of a confidential agreement and you may generally not                */
-/* redistribute it and/or modify it, unless under the terms as given in      */
-/* the file LICENSE.  It is distributed without any warranty; without        */
-/* even the implied warranty of merchantability or fitness for a             */
+/* This file is free software; it is part of the P99 project.                */
+/* You can redistribute it and/or modify it under the terms of the QPL as    */
+/* given in the file LICENSE. It is distributed without any warranty;        */
+/* without even the implied warranty of merchantability or fitness for a     */
 /* particular purpose.                                                       */
 /*                                                                           */
 /*
@@ -32,9 +31,9 @@ typedef struct {
 
 double A[] = { P99_DUPL(ASIZE, 1.7) };
 
-#define INIT_PAIR(I) [I] = {                    \
-  .index = I,                                   \
-  .aPos = &A[I],                                \
+#define INIT_PAIR(I) [I] = {                                   \
+  .index = I,                                                  \
+  .aPos = &A[I],                                               \
   }
 
 pair P[] = { P99_REPEAT(INIT_PAIR, ASIZE) };
