@@ -19,6 +19,7 @@ SRC	=					\
 		test-p99-int.c			\
 		test-p99-ndim.c			\
 		test-p99-pow.c			\
+		test-p99-thread.c		\
 		test-p99-va-arg.c
 
 HTML = 						\
@@ -48,10 +49,10 @@ OBJOPT  += -Wall -Wstrict-prototypes ${OPT}
 EXEOPT  += ${OPT}
 LPATH   += -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR}
 COPY = "all rights reserved, "
-LICENSE = SHORTLICENCE-closed.txt
+LICENSE = SHORTLICENCE-open.txt
 SCRIPTS = ../scripts
 AUTH = ${SCRIPTS}/AUTHORS.txt
-TIDY = ../../parxxl/scripts/findSvnAuthors --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
+TIDY = ../../../parxxl/scripts/findSvnAuthors --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
 CONFORM = ${SCRIPTS}/p99_conformance.pl
 
 ifneq (${POSIX_SEMAPHORES}, -1L)
