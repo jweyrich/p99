@@ -349,7 +349,7 @@ int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
     .detached = ATOMIC_FLAG_INIT,
    };
   int ret = pthread_create(&cntxt->id, 0, p00_thrd_create, cntxt);
-  if (ret) {
+  if (P99_UNLIKELY(ret)) {
     free(cntxt);
     switch (ret) {
     case ENOMEM:    return thrd_nomem;
@@ -403,7 +403,7 @@ p99_inline
 _Noreturn
 void thrd_exit(int res) {
   p00_thrd * cntxt = p00_cntxt;
-  if (cntxt) {
+  if (P99_LIKELY(cntxt)) {
     cntxt->ret = res;
     longjmp(cntxt->ovrl.jmp, 1);
   } else {
@@ -418,7 +418,7 @@ void thrd_exit(int res) {
 p99_inline
 int thrd_join(thrd_t thr, int *res) {
   void *res0;
-  if (pthread_join(thr.val->id, &res0)) return thrd_error;
+  if (P99_UNLIKELY(pthread_join(thr.val->id, &res0))) return thrd_error;
   if (res) *res = thr.val->ret;
   free(thr.val);
   return thrd_success;
@@ -443,7 +443,7 @@ int thrd_sleep(const struct timespec *duration, struct timespec *remaining) {
  **/
 p99_inline
 void thrd_yield(void) {
-  if (sched_yield()) errno = 0;
+  if (P99_UNLIKELY(sched_yield())) errno = 0;
 }
 
 /**
