@@ -397,7 +397,11 @@ int mtx_unlock(mtx_t *mtx) {
   return pthread_mutex_unlock(&mtx->val) ? thrd_error : thrd_success;
 }
 
-_Thread_local p00_thrd * p00_cntxt;
+/* Tentative definitions for global variables. This has the advantage
+   that this defines weak symbols and we avoid to have to create a
+   specific library. */
+tss_t volatile   p00_thrd_key;
+once_flag p00_thrd_once;
 
 static
 void * p00_thrd_create(void* context);
@@ -436,15 +440,7 @@ int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
   }
 }
 
-/**
- ** @memberof thrd_t
- **
- ** @return identifier of the thread that called it
- **/
-p99_inline
-thrd_t thrd_current(void) {
-  return (thrd_t) { .val = p00_cntxt, };
-}
+p99_inline thrd_t thrd_current(void);
 
 /**
  ** @memberof thrd_t
@@ -485,7 +481,7 @@ int thrd_equal(thrd_t thr0, thrd_t thr1) {
 p99_inline
 _Noreturn
 void thrd_exit(int res) {
-  p00_thrd * cntxt = p00_cntxt;
+  p00_thrd * cntxt = thrd_current().val;
   if (P99_LIKELY(cntxt)) {
     cntxt->ret = res;
     longjmp(cntxt->ovrl.jmp, 1);
@@ -581,9 +577,20 @@ int tss_set(tss_t key, void *val) {
 }
 
 static
+void p00_thrd_once_init(void) {
+  int ret = tss_create((tss_t*)&p00_thrd_key, 0);
+  if (ret) {
+    errno = ret;
+    perror("can't create thread specific key");
+    abort();
+  }
+}
+
+static
 void * p00_thrd_create(void* context) {
+  call_once(&p00_thrd_once, p00_thrd_once_init);
   p00_thrd * cntxt = context;
-  p00_cntxt = cntxt;
+  tss_set(p00_thrd_key, context);
   {
     thrd_start_t func = cntxt->ovrl.init.func;
     void * arg = cntxt->ovrl.init.arg;
@@ -594,9 +601,21 @@ void * p00_thrd_create(void* context) {
       free(cntxt);
     }
   }
-  p00_cntxt = 0;
+  tss_set(p00_thrd_key, 0);
   return 0;
 }
+
+/**
+ ** @memberof thrd_t
+ **
+ ** @return identifier of the thread that called it
+ **/
+p99_inline
+thrd_t thrd_current(void) {
+  return (thrd_t) { .val = tss_get(p00_thrd_key), };
+}
+
+
 
 /**
  ** @}

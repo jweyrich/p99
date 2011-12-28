@@ -5001,6 +5001,13 @@
       <anchor>gga72c208d2825fef097748da10a5a4f3f7ab9572ef600e16755419816012a216f15</anchor>
       <arglist></arglist>
     </member>
+    <member kind="function">
+      <type>thrd_t</type>
+      <name>thrd_current</name>
+      <anchorfile>group__threads_gab67b6f182a848d979155d03598325fa7.html</anchorfile>
+      <anchor>gab67b6f182a848d979155d03598325fa7</anchor>
+      <arglist>(void)</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>p99_type.h</name>
@@ -13076,6 +13083,13 @@
       <anchorfile>group__threads_ga657bbd957fb8ba7ff99f2082cff6ec74.html</anchorfile>
       <anchor>ga657bbd957fb8ba7ff99f2082cff6ec74</anchor>
       <arglist>(thrd_t *thr, thrd_start_t func, void *arg)</arglist>
+    </member>
+    <member kind="function">
+      <type>thrd_t</type>
+      <name>thrd_current</name>
+      <anchorfile>group__threads_gab67b6f182a848d979155d03598325fa7.html</anchorfile>
+      <anchor>gab67b6f182a848d979155d03598325fa7</anchor>
+      <arglist>(void)</arglist>
     </member>
     <member kind="function">
       <type>thrd_t</type>
