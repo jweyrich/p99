@@ -4922,6 +4922,13 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
+      <type>struct once_flag</type>
+      <name>once_flag</name>
+      <anchorfile>group__thread__types_gaa584498c8a2e6af7229acc637512a520.html</anchorfile>
+      <anchor>gaa584498c8a2e6af7229acc637512a520</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
       <type>int(*</type>
       <name>thrd_start_t</name>
       <anchorfile>group__thread__types_gac948a680a1f1761ffb639c80eb110d14.html</anchorfile>
@@ -5006,6 +5013,13 @@
       <name>thrd_current</name>
       <anchorfile>group__threads_gab67b6f182a848d979155d03598325fa7.html</anchorfile>
       <anchor>gab67b6f182a848d979155d03598325fa7</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>thrd_yield</name>
+      <anchorfile>group__threads_gacbfb78346e6b76b23da1d2d8df03549a.html</anchorfile>
+      <anchor>gacbfb78346e6b76b23da1d2d8df03549a</anchor>
       <arglist>(void)</arglist>
     </member>
   </compound>
@@ -13141,6 +13155,13 @@
       <arglist>(void)</arglist>
     </member>
     <member kind="function">
+      <type>void</type>
+      <name>thrd_yield</name>
+      <anchorfile>group__threads_gacbfb78346e6b76b23da1d2d8df03549a.html</anchorfile>
+      <anchor>gacbfb78346e6b76b23da1d2d8df03549a</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
       <type>int</type>
       <name>tss_create</name>
       <anchorfile>group__threads_ga286fe7927e9af276a9cfdbc8b9eb08ad.html</anchorfile>
@@ -13211,6 +13232,13 @@
     <class kind="struct">once_flag</class>
     <class kind="struct">thrd_t</class>
     <class kind="struct">tss_t</class>
+    <member kind="typedef">
+      <type>struct once_flag</type>
+      <name>once_flag</name>
+      <anchorfile>group__thread__types_gaa584498c8a2e6af7229acc637512a520.html</anchorfile>
+      <anchor>gaa584498c8a2e6af7229acc637512a520</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="typedef">
       <type>int(*</type>
       <name>thrd_start_t</name>
@@ -13646,6 +13674,20 @@
       <name>ONCE_FLAG_INIT</name>
       <anchorfile>group__thread__macros_gaa5eb509ec8494c31f56f60dcbc37e282.html</anchorfile>
       <anchor>gaa5eb509ec8494c31f56f60dcbc37e282</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>atomic_uint</type>
+      <name>guard</name>
+      <anchorfile>structonce__flag_a01df0355ea7aa2ddde07c0e341015e56.html</anchorfile>
+      <anchor>a01df0355ea7aa2ddde07c0e341015e56</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>atomic_uint</type>
+      <name>release</name>
+      <anchorfile>structonce__flag_a908892211ecfec035eb26b833ee42503.html</anchorfile>
+      <anchor>a908892211ecfec035eb26b833ee42503</anchor>
       <arglist></arglist>
     </member>
   </compound>

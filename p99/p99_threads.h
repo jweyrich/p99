@@ -36,8 +36,8 @@
  ** documentation of the type ::thrd_t.
  **
  ** @remark In addition to POSIX threads this implementation needs
- ** some C11 atomic operations for initialization and status
- ** communication.
+ ** some C11 atomic operations for initialization via ::call_once and
+ ** status communication.
  **
  ** @{
  **/
@@ -113,6 +113,7 @@ typedef void (*tss_dtor_t)(void*);
  */
 typedef int (*thrd_start_t)(void*);
 
+typedef struct once_flag once_flag;
 /**
  ** @brief complete object type that holds a flag for use by
  ** ::call_once
@@ -126,7 +127,6 @@ typedef int (*thrd_start_t)(void*);
  ** ::once_flag that is initialized by the default initializer always
  ** has the correct state.
  */
-typedef struct once_flag once_flag;
 struct once_flag {
   atomic_uint guard;
   atomic_uint release;
