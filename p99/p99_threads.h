@@ -35,6 +35,10 @@
  ** You find the thread management interfaces through the
  ** documentation of the type ::thrd_t.
  **
+ ** @remark In addition to POSIX threads this implementation needs
+ ** some C11 atomic operations for initialization and status
+ ** communication.
+ **
  ** @{
  **/
 
@@ -48,7 +52,7 @@
  ** of type ::once_flag
  ** @memberof once_flag
  **/
-#define ONCE_FLAG_INIT { .val = PTHREAD_ONCE_INIT, }
+#define ONCE_FLAG_INIT { .guard = 0, .release = 0, }
 #ifndef PTHREAD_DESTRUCTOR_ITERATIONS
 # warning "definition of PTHREAD_DESTRUCTOR_ITERATIONS is missing"
 /**
@@ -112,8 +116,22 @@ typedef int (*thrd_start_t)(void*);
 /**
  ** @brief complete object type that holds a flag for use by
  ** ::call_once
+ **
+ ** From the wording of the standard it is not clear if a variable of
+ ** this type @b must be initialized by means of ::ONCE_FLAG_INIT. The
+ ** corresponding POSIX structure requires the analog.
+ **
+ ** Therefore we don't use the POSIX structure, here, but cook this
+ ** ourselves with atomic variables. By that we can guarantee that a
+ ** ::once_flag that is initialized by the default initializer always
+ ** has the correct state.
  */
-P00_ENCAPSULATE(pthread_once_t, once_flag);
+typedef struct once_flag once_flag;
+struct once_flag {
+  atomic_uint guard;
+  atomic_uint release;
+};
+
 
 /**
  ** @}
@@ -196,12 +214,22 @@ enum thrd_status {
 
 // 7.26.2 Initialization functions
 
+p99_inline void thrd_yield(void);
+
 /**
  ** @memberof once_flag
  **/
 p99_inline
 void call_once(once_flag *flag, void (*func)(void)) {
-  (void)pthread_once(&flag->val, func);
+  if (P99_UNLIKELY(!atomic_load(&flag->release))) {
+    if (!atomic_fetch_add(&flag->guard, 1u)) {
+      func();
+      atomic_store(&flag->release, 1u);
+    } else {
+      while (!atomic_load(&flag->release)) thrd_yield();
+      // printf("blocked threads %u\n", atomic_load(&flag->guard));
+    }
+  }
 }
 
 // 7.26.3 Condition variable functions
