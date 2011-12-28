@@ -24,7 +24,17 @@
 #endif
 
 /**
- ** @addtogroup threads
+ ** @addtogroup threads C11 thread emulation on top of POSIX threads
+ **
+ ** This is a relatively straight forward implementation of the C11
+ ** thread model on top of POSIX threads. The main difficulty in that
+ ** is that the thread entry function signature differs between the
+ ** two. C11 thread returns an <code>int</code> whereas POSIX returns
+ ** a <code>void*</code>.
+ **
+ ** You find the thread management interfaces through the
+ ** documentation of the type ::thrd_t.
+ **
  ** @{
  **/
 
@@ -127,31 +137,57 @@ struct p00_thrd {
  ** @{
  **/
 
-// The enumeration constants are
-enum {
+/**
+ ** @brief C11 mutex types
+ **/
+enum mtx_type {
+  /**
+   ** @brief passed to ::mtx_init to create a mutex object that supports
+   ** neither timeout nor test and return
+   **/
   mtx_plain = 0,
-  // which is passed to mtx_init to create a mutex object that supports neither timeout nor
-  // test and return;
+  /**
+   ** @brief passed to ::mtx_init to create a mutex object that supports recursive locking
+   **/
   mtx_recursive = 1,
-  // which is passed to mtx_init to create a mutex object that supports recursive locking;
+  /**
+   ** @brief passed to ::mtx_init to create a mutex object that supports timeout
+   **/
   mtx_timed = 2,
-  // which is passed to mtx_init to create a mutex object that supports timeout;
 };
 
-enum {
+/**
+ ** @brief C11 thread function return values
+ **/
+enum thrd_status {
+  /**
+   ** @brief returned by a timed wait function to indicate that the time specified in the call was reached without acquiring the requested resource
+   **/
   thrd_timedout = ETIMEDOUT,
-  // which is returned by a timed wait function to indicate that the time specified in the call
-  // was reached without acquiring the requested resource;
+  /**
+   ** @brief returned by a function to indicate that the requested operation succeeded
+   **/
   thrd_success = 0,
-  // which is returned by a function to indicate that the requested operation succeeded;
+  /**
+   ** @brief returned by a function to indicate that the requested
+   ** operation failed because a resource requested by a test and
+   ** return function is already in use
+   **/
   thrd_busy = EBUSY,
-  // which is returned by a function to indicate that the requested operation failed because a
-  // resource requested by a test and return function is already in use;
-  thrd_error = EINVAL,
-  // which is returned by a function to indicate that the requested operation failed; and
-  thrd_nomem = ENOMEM
-  // which is returned by a function to indicate that the requested operation failed because it
-  // was unable to allocate memory.
+  /**
+   ** @brief returned by a function to indicate that the requested operation failed
+   **/
+  thrd_error = INT_MIN,
+  /**
+   ** @brief returned by a function to indicate that the requested
+   ** operation failed because it was unable to allocate memory
+   **/
+  thrd_nomem = ENOMEM,
+  /**
+   ** @brief (extension) returned by ::thrd_sleep to indicate that the
+   ** corresponding request has been interrupted by a signal
+   **/
+  thrd_intr = -1
 };
 
 /**
@@ -172,6 +208,9 @@ void call_once(once_flag *flag, void (*func)(void)) {
 
 /**
  ** @memberof cnd_t
+ **
+ ** @return ::thrd_success on success, or ::thrd_error if the request
+ ** could not be honored.
  **/
 p99_inline
 int cnd_broadcast(cnd_t *cond) {
@@ -188,6 +227,11 @@ void cnd_destroy(cnd_t *cond) {
 
 /**
  ** @memberof cnd_t
+ **
+ ** @return The ::cnd_init function returns ::thrd_success on success,
+ ** or ::thrd_nomem if no memory could be allocated for the newly
+ ** created condition, or ::thrd_error if the request could not be
+ ** honored.
  **/
 p99_inline
 int cnd_init(cnd_t *cond) {
@@ -201,6 +245,9 @@ int cnd_init(cnd_t *cond) {
 
 /**
  ** @memberof cnd_t
+ **
+ ** @return ::thrd_success on success, or ::thrd_error if the request
+ ** could not be honored.
  **/
 p99_inline
 int cnd_signal(cnd_t *cond) {
@@ -209,6 +256,11 @@ int cnd_signal(cnd_t *cond) {
 
 /**
  ** @memberof cnd_t
+ **
+ ** @return ::thrd_success upon success, or ::thrd_timedout if the
+ ** time specified in the call was reached without acquiring the
+ ** requested resource, or ::thrd_error if the request could not be
+ ** honored.
  **/
 p99_inline
 int cnd_timedwait(cnd_t *restrict cond, mtx_t *restrict mtx, const struct timespec *restrict ts) {
@@ -222,6 +274,9 @@ int cnd_timedwait(cnd_t *restrict cond, mtx_t *restrict mtx, const struct timesp
 
 /**
  ** @memberof cnd_t
+ **
+ ** @return ::thrd_success on success, or ::thrd_error if the request
+ ** could not be honored.
  **/
 p99_inline
 int cnd_wait(cnd_t *cond, mtx_t *mtx) {
@@ -240,6 +295,12 @@ void mtx_destroy(mtx_t *mtx) {
 
 /**
  ** @memberof mtx_t
+ **
+ ** @param mtx A pointer to an unitialized mutex object
+ ** @param type One of the constants in ::mtx_type
+ **
+ ** @return ::thrd_success on success, or ::thrd_error if the request
+ ** could not be honored.
  **/
 p99_inline
 int mtx_init(mtx_t *mtx, int type) {
@@ -255,6 +316,8 @@ int mtx_init(mtx_t *mtx, int type) {
 
 /**
  ** @memberof mtx_t
+ ** @return ::thrd_success on success, or ::thrd_error if the request
+ ** could not be honored.
  **/
 p99_inline
 int mtx_lock(mtx_t *mtx) {
@@ -263,6 +326,11 @@ int mtx_lock(mtx_t *mtx) {
 
 /**
  ** @memberof mtx_t
+ **
+ ** @return ::thrd_success upon success, or ::thrd_timedout if the
+ ** time specified in the call was reached without acquiring the
+ ** requested resource, or ::thrd_error if the request could not be
+ ** honored.
  **/
 p99_inline
 int mtx_timedlock(mtx_t *restrict mtx, const struct timespec *restrict ts) {
@@ -276,6 +344,10 @@ int mtx_timedlock(mtx_t *restrict mtx, const struct timespec *restrict ts) {
 
 /**
  ** @memberof mtx_t
+ **
+ ** @return ::thrd_success on success, or ::thrd_busy if the resource
+ ** requested is already in use, or ::thrd_error if the request could
+ ** not be honored.
  **/
 p99_inline
 int mtx_trylock(mtx_t *mtx) {
@@ -289,6 +361,8 @@ int mtx_trylock(mtx_t *mtx) {
 
 /**
  ** @memberof mtx_t
+ ** @return ::thrd_success on success, or ::thrd_error if the request
+ ** could not be honored.
  **/
 p99_inline
 int mtx_unlock(mtx_t *mtx) {
@@ -302,6 +376,10 @@ void * p00_thrd_create(void* context);
 
 /**
  ** @memberof thrd_t
+ **
+ ** @return ::thrd_success on success, or ::thrd_nomem if no memory
+ ** could be allocated for the thread requested, or ::thrd_error if
+ ** the request could not be honored.
  **/
 p99_inline
 static
@@ -332,6 +410,8 @@ int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
 
 /**
  ** @memberof thrd_t
+ **
+ ** @return identifier of the thread that called it
  **/
 p99_inline
 thrd_t thrd_current(void) {
@@ -340,6 +420,9 @@ thrd_t thrd_current(void) {
 
 /**
  ** @memberof thrd_t
+ **
+ ** @return ::thrd_success on success, or ::thrd_error if the request
+ ** could not be honored.
  **/
 p99_inline
 int thrd_detach(thrd_t thr) {
@@ -359,6 +442,9 @@ int thrd_detach(thrd_t thr) {
 
 /**
  ** @memberof thrd_t
+ **
+ ** @return @c 0 if the thread @a thr0 and the thread @a thr1 refer to
+ ** different threads. Otherwise a nonzero value is returned.
  **/
 p99_inline
 int thrd_equal(thrd_t thr0, thrd_t thr1) {
@@ -383,6 +469,8 @@ void thrd_exit(int res) {
 
 /**
  ** @memberof thrd_t
+ ** @return ::thrd_success on success, or ::thrd_error if the request
+ ** could not be honored.
  **/
 p99_inline
 int thrd_join(thrd_t thr, int *res) {
@@ -395,16 +483,21 @@ int thrd_join(thrd_t thr, int *res) {
 
 /**
  ** @memberof thrd_t
+ **
+ ** @return @c 0 if the requested time has elapsed, @c -1 if it has
+ ** been interrupted by a signal, or a negative value if it fails.
+ ** Consistently with that, this implementation uses ::thrd_success,
+ ** ::thrd_intr and ::thrd_error as return values.
  **/
 p99_inline
 int thrd_sleep(const struct timespec *duration, struct timespec *remaining) {
   errno = 0;
   int ret = nanosleep(duration, remaining);
   if (ret) {
-    ret = errno == EINTR ? -1 : -2;
+    ret = (errno == EINTR) ? thrd_intr : thrd_error;
     errno = 0;
-  }
-  return ret;
+    return ret;
+  } else return thrd_success;
 }
 
 /**
@@ -417,6 +510,13 @@ void thrd_yield(void) {
 
 /**
  ** @memberof tss_t
+ ** @return ::thrd_success on success, or ::thrd_error if the request
+ ** could not be honored.
+ **
+ ** If successful, sets the thread-specific storage pointed to by key
+ ** to a value that uniquely identifies the newly created
+ ** pointer. Otherwise, the thread-specific storage pointed to by key
+ ** is set to an undefined value.
  **/
 p99_inline
 int tss_create(tss_t *key, tss_dtor_t dtor) {
@@ -433,6 +533,9 @@ void tss_delete(tss_t key) {
 
 /**
  ** @memberof tss_t
+ **
+ ** @return the value for the current thread if successful, or @c 0 if
+ ** unsuccessful.
  **/
 p99_inline
 void *tss_get(tss_t key) {
@@ -441,6 +544,8 @@ void *tss_get(tss_t key) {
 
 /**
  ** @memberof tss_t
+ ** @return ::thrd_success on success, or ::thrd_error if the request
+ ** could not be honored.
  **/
 p99_inline
 int tss_set(tss_t key, void *val) {
