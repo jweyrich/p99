@@ -180,7 +180,7 @@ _Bool p00_is_lock_free(volatile void * objp, size_t size) {
 do { /* empty */ }                                                      \
  while(!__sync_bool_compare_and_swap                                    \
        ((uint ## N ## _t volatile*)objp,                                \
-        __sync_bool_compare_and_swap((uint ## N ## _t volatile*)objp, 0, 0), \
+        __sync_val_compare_and_swap((uint ## N ## _t volatile*)objp, 0, 0), \
         (uint ## N ## _t)desired))
 
 p99_inline
