@@ -19,11 +19,44 @@
 # error "P99 atomic needs gcc specific features"
 #endif
 
-#define P00_ENCAPSULATE(T, NAME)                               \
-typedef struct {                                               \
-  /** @private */                                              \
-  T val;                                                       \
+/**
+ ** @brief Encapsulate an object of type @a T in a new type called @a NAME
+ **
+ ** This hides type @a T inside the new structure type such that the
+ ** original type is only accessible if asked explicitly.
+ **
+ ** @see P99_ENC to access the hidden type of an object of type @a NAME
+ ** @see P99_ENCP to access the hidden type of a pointer to object of type @a NAME
+ ** @see P99_ENC_INIT to initialize a variable of type @a NAME
+ **/
+#define P99_ENC_DECLARE(T, NAME)                                        \
+/** @remark encapsulates an object of type T @see P99_ENC for access through object @see P99_ENCP for access through pointer **/ \
+typedef struct NAME {                                                   \
+  /** @private */                                                       \
+  T p00_val;                                                            \
 } NAME
+
+/**
+ ** @brief Access an encapsulated object
+ ** @see P99_ENC_DECLARE
+ **/
+#define P99_ENC(OBJ) ((OBJ).p00_val)
+
+/**
+ ** @brief Access an encapsulated object through a pointer
+ ** @see P99_ENC_DECLARE
+ **/
+#define P99_ENCP(OBJP) ((OBJP)->p00_val)
+
+/**
+ ** @brief Initialize an encapsulated object
+ **
+ ** @param V must be an expression that is assignment compatible with
+ ** the base type of the encapsulated object type
+ **
+ ** @see P99_ENC_DECLARE
+ **/
+#define P99_ENC_INIT(V) { .p00_val = (V), }
 
 /**
  ** @addtogroup atomic
@@ -39,12 +72,12 @@ typedef struct {                                               \
 /**
  ** @memberof atomic_flag
  **/
-#define ATOMIC_FLAG_INIT { .val = 0, }
+#define ATOMIC_FLAG_INIT P99_ENC_INIT(0)
 
 /**
  ** @memberof atomic_int
  **/
-#define ATOMIC_VAR_INIT(V) { .val = (V), }
+#define ATOMIC_VAR_INIT(V) P99_ENC_INIT(V)
 
 /**
  ** @}
@@ -56,63 +89,65 @@ typedef struct {                                               \
  ** @{
  **/
 
-P00_ENCAPSULATE(int, atomic_flag);
+P99_ENC_DECLARE(int, atomic_flag);
 
 /**
  ** @brief Atomic access to a value of type <code>int</code>
- ** @see atomic_int for the possible operations on this type
+ **
+ ** See the "public member function" section of this description for
+ ** the operations that support this type
  **/
-P00_ENCAPSULATE(int, atomic_int);
+P99_ENC_DECLARE(int, atomic_int);
 
 /**
- ** @brief Atomic access to a value of type <code>int</code>
+ ** @brief Atomic access to a value of type <code>bool</code>
  ** @see atomic_load
  ** @see atomic_store
  ** @see atomic_compare_exchange_weak
  ** @see ATOMIC_VAR_INIT
  ** @see atomic_init
  **/
-P00_ENCAPSULATE(_Bool, atomic_bool);
+P99_ENC_DECLARE(_Bool, atomic_bool);
 
-#define P00_ENCAPSULATE_ATOMIC(T, NAME)                                 \
+#define P00_DECLARE_ATOMIC(T, NAME)                                 \
 /** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
-P00_ENCAPSULATE(T, NAME)
+P99_ENC_DECLARE(T, NAME)
 
-P00_ENCAPSULATE_ATOMIC(char, atomic_char);
-P00_ENCAPSULATE_ATOMIC(signed char, atomic_schar);
-P00_ENCAPSULATE_ATOMIC(unsigned char, atomic_uchar);
-P00_ENCAPSULATE_ATOMIC(short, atomic_short);
-P00_ENCAPSULATE_ATOMIC(unsigned short, atomic_ushort);
-P00_ENCAPSULATE_ATOMIC(unsigned int, atomic_uint);
-P00_ENCAPSULATE_ATOMIC(long, atomic_long);
-P00_ENCAPSULATE_ATOMIC(unsigned long, atomic_ulong);
-P00_ENCAPSULATE_ATOMIC(long long, atomic_llong);
-P00_ENCAPSULATE_ATOMIC(unsigned long long, atomic_ullong);
-//P00_ENCAPSULATE_ATOMIC(char16_t, atomic_char16_t);
-//P00_ENCAPSULATE_ATOMIC(char32_t, atomic_char32_t);
-P00_ENCAPSULATE_ATOMIC(wchar_t, atomic_wchar_t);
-P00_ENCAPSULATE_ATOMIC(int_least8_t, atomic_int_least8_t);
-P00_ENCAPSULATE_ATOMIC(uint_least8_t, atomic_uint_least8_t);
-P00_ENCAPSULATE_ATOMIC(int_least16_t, atomic_int_least16_t);
-P00_ENCAPSULATE_ATOMIC(uint_least16_t, atomic_uint_least16_t);
-P00_ENCAPSULATE_ATOMIC(int_least32_t, atomic_int_least32_t);
-P00_ENCAPSULATE_ATOMIC(uint_least32_t, atomic_uint_least32_t);
-P00_ENCAPSULATE_ATOMIC(int_least64_t, atomic_int_least64_t);
-P00_ENCAPSULATE_ATOMIC(uint_least64_t, atomic_uint_least64_t);
-P00_ENCAPSULATE_ATOMIC(int_fast8_t, atomic_int_fast8_t);
-P00_ENCAPSULATE_ATOMIC(uint_fast8_t, atomic_uint_fast8_t);
-P00_ENCAPSULATE_ATOMIC(int_fast16_t, atomic_int_fast16_t);
-P00_ENCAPSULATE_ATOMIC(uint_fast16_t, atomic_uint_fast16_t);
-P00_ENCAPSULATE_ATOMIC(int_fast32_t, atomic_int_fast32_t);
-P00_ENCAPSULATE_ATOMIC(uint_fast32_t, atomic_uint_fast32_t);
-P00_ENCAPSULATE_ATOMIC(int_fast64_t, atomic_int_fast64_t);
-P00_ENCAPSULATE_ATOMIC(uint_fast64_t, atomic_uint_fast64_t);
-P00_ENCAPSULATE_ATOMIC(intptr_t, atomic_intptr_t);
-P00_ENCAPSULATE_ATOMIC(uintptr_t, atomic_uintptr_t);
-P00_ENCAPSULATE_ATOMIC(size_t, atomic_size_t);
-P00_ENCAPSULATE_ATOMIC(ptrdiff_t, atomic_ptrdiff_t);
-P00_ENCAPSULATE_ATOMIC(intmax_t, atomic_intmax_t);
-P00_ENCAPSULATE_ATOMIC(uintmax_t, atomic_uintmax_t);
+P00_DECLARE_ATOMIC(char, atomic_char);
+P00_DECLARE_ATOMIC(signed char, atomic_schar);
+P00_DECLARE_ATOMIC(unsigned char, atomic_uchar);
+P00_DECLARE_ATOMIC(short, atomic_short);
+P00_DECLARE_ATOMIC(unsigned short, atomic_ushort);
+P00_DECLARE_ATOMIC(unsigned int, atomic_uint);
+P00_DECLARE_ATOMIC(long, atomic_long);
+P00_DECLARE_ATOMIC(unsigned long, atomic_ulong);
+P00_DECLARE_ATOMIC(long long, atomic_llong);
+P00_DECLARE_ATOMIC(unsigned long long, atomic_ullong);
+//P00_DECLARE_ATOMIC(char16_t, atomic_char16_t);
+//P00_DECLARE_ATOMIC(char32_t, atomic_char32_t);
+P00_DECLARE_ATOMIC(wchar_t, atomic_wchar_t);
+P00_DECLARE_ATOMIC(int_least8_t, atomic_int_least8_t);
+P00_DECLARE_ATOMIC(uint_least8_t, atomic_uint_least8_t);
+P00_DECLARE_ATOMIC(int_least16_t, atomic_int_least16_t);
+P00_DECLARE_ATOMIC(uint_least16_t, atomic_uint_least16_t);
+P00_DECLARE_ATOMIC(int_least32_t, atomic_int_least32_t);
+P00_DECLARE_ATOMIC(uint_least32_t, atomic_uint_least32_t);
+P00_DECLARE_ATOMIC(int_least64_t, atomic_int_least64_t);
+P00_DECLARE_ATOMIC(uint_least64_t, atomic_uint_least64_t);
+P00_DECLARE_ATOMIC(int_fast8_t, atomic_int_fast8_t);
+P00_DECLARE_ATOMIC(uint_fast8_t, atomic_uint_fast8_t);
+P00_DECLARE_ATOMIC(int_fast16_t, atomic_int_fast16_t);
+P00_DECLARE_ATOMIC(uint_fast16_t, atomic_uint_fast16_t);
+P00_DECLARE_ATOMIC(int_fast32_t, atomic_int_fast32_t);
+P00_DECLARE_ATOMIC(uint_fast32_t, atomic_uint_fast32_t);
+P00_DECLARE_ATOMIC(int_fast64_t, atomic_int_fast64_t);
+P00_DECLARE_ATOMIC(uint_fast64_t, atomic_uint_fast64_t);
+P00_DECLARE_ATOMIC(intptr_t, atomic_intptr_t);
+P00_DECLARE_ATOMIC(uintptr_t, atomic_uintptr_t);
+P00_DECLARE_ATOMIC(size_t, atomic_size_t);
+P00_DECLARE_ATOMIC(ptrdiff_t, atomic_ptrdiff_t);
+P00_DECLARE_ATOMIC(intmax_t, atomic_intmax_t);
+P00_DECLARE_ATOMIC(uintmax_t, atomic_uintmax_t);
 
 /**
  ** @}
@@ -123,7 +158,7 @@ P00_ENCAPSULATE_ATOMIC(uintmax_t, atomic_uintmax_t);
  **/
 p99_inline
 _Bool atomic_flag_test_and_set(volatile atomic_flag *object) {
-  return __sync_val_compare_and_swap(&object->val, 0, 1);
+  return __sync_val_compare_and_swap(&P99_ENCP(object), 0, 1);
 }
 
 /**
@@ -131,7 +166,7 @@ _Bool atomic_flag_test_and_set(volatile atomic_flag *object) {
  **/
 p99_inline
 void atomic_flag_clear(volatile atomic_flag *object) {
-  __sync_val_compare_and_swap(&object->val, 1, 0);
+  __sync_val_compare_and_swap(&P99_ENCP(object), 1, 0);
 }
 
 p99_inline
@@ -168,13 +203,13 @@ _Bool p00_is_lock_free(volatile void * objp, size_t size) {
 /**
  ** @memberof atomic_int
  **/
-#define atomic_is_lock_free(OBJECT, DESIRED) p00_is_lock_free(&(OBJECT)->val, sizeof((OBJECT)->val))
+#define atomic_is_lock_free(OBJECT, DESIRED) p00_is_lock_free(&P99_ENCP(OBJECT), sizeof(P99_ENCP(OBJECT)))
 
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_init(OBJECT, VAL) ((void)((OBJECT)->val = (VAL)))
+#define atomic_init(OBJECT, VAL) ((void)(P99_ENCP(OBJECT) = (VAL)))
 
 #define P00_STORE(N)                                                    \
 do { /* empty */ }                                                      \
@@ -216,12 +251,12 @@ void p00_store(volatile void * objp, size_t size, uintmax_t desired) {
 /**
  ** @memberof atomic_int
  **/
-#define atomic_store(OBJECT, DESIRED) p00_store(&(OBJECT)->val, sizeof((OBJECT)->val), (DESIRED))
+#define atomic_store(OBJECT, DESIRED) p00_store(&P99_ENCP(OBJECT), sizeof(P99_ENCP(OBJECT)), (DESIRED))
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_load(OBJECT) __sync_val_compare_and_swap(&(OBJECT)->val, 0, 0)
+#define atomic_load(OBJECT) __sync_val_compare_and_swap(&P99_ENCP(OBJECT), 0, 0)
 
 p99_inline
 _Bool p00_compare_exchange(uintmax_t val, uintmax_t expected, size_t size, void* expectedP) {
@@ -262,7 +297,7 @@ _Bool p00_compare_exchange(uintmax_t val, uintmax_t expected, size_t size, void*
  **/
 #define atomic_compare_exchange_weak(OBJECT, EXPECTED, DESIRED)         \
 p00_compare_exchange                                                    \
-(__sync_val_compare_and_swap(&(OBJECT)->val, *(EXPECTED), (uintmax_t)(DESIRED)), \
+(__sync_val_compare_and_swap(&P99_ENCP(OBJECT), *(EXPECTED), (uintmax_t)(DESIRED)), \
  *(EXPECTED),                                                           \
  sizeof(*(EXPECTED)),                                                   \
  (EXPECTED))
@@ -271,27 +306,27 @@ p00_compare_exchange                                                    \
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_add(OBJECT, OPERAND) __sync_fetch_and_add(&(OBJECT)->val, OPERAND)
+#define atomic_fetch_add(OBJECT, OPERAND) __sync_fetch_and_add(&P99_ENCP(OBJECT), OPERAND)
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_sub(OBJECT, OPERAND) __sync_fetch_and_sub(&(OBJECT)->val, OPERAND)
+#define atomic_fetch_sub(OBJECT, OPERAND) __sync_fetch_and_sub(&P99_ENCP(OBJECT), OPERAND)
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_or(OBJECT, OPERAND) __sync_fetch_and_or(&(OBJECT)->val, OPERAND)
+#define atomic_fetch_or(OBJECT, OPERAND) __sync_fetch_and_or(&P99_ENCP(OBJECT), OPERAND)
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_and(OBJECT, OPERAND) __sync_fetch_and_and(&(OBJECT)->val, OPERAND)
+#define atomic_fetch_and(OBJECT, OPERAND) __sync_fetch_and_and(&P99_ENCP(OBJECT), OPERAND)
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_xor(OBJECT, OPERAND) __sync_fetch_and_xor(&(OBJECT)->val, OPERAND)
+#define atomic_fetch_xor(OBJECT, OPERAND) __sync_fetch_and_xor(&P99_ENCP(OBJECT), OPERAND)
 
 
 /**

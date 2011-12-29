@@ -80,23 +80,23 @@
  ** @brief complete object type that holds an identifier for a
  ** condition variable
  **/
-P00_ENCAPSULATE(pthread_cond_t, cnd_t);
+P99_ENC_DECLARE(pthread_cond_t, cnd_t);
 
 typedef struct p00_thrd p00_thrd;
 /**
  ** @brief complete object type that holds an identifier for a thread
  **/
-P00_ENCAPSULATE(struct p00_thrd*, thrd_t);
+P99_ENC_DECLARE(struct p00_thrd*, thrd_t);
 
 /**
  ** @brief complete object type that holds an identifier for a
  ** thread-specific storage pointer
  **/
-P00_ENCAPSULATE(pthread_key_t, tss_t);
+P99_ENC_DECLARE(pthread_key_t, tss_t);
 /**
  ** @brief complete object type that holds an identifier for a mutex
  **/
-P00_ENCAPSULATE(pthread_mutex_t, mtx_t);
+P99_ENC_DECLARE(pthread_mutex_t, mtx_t);
 
 /**
  ** @brief which is the function pointer type <code>void
@@ -245,7 +245,7 @@ void call_once(once_flag *flag, void (*func)(void)) {
  **/
 p99_inline
 int cnd_broadcast(cnd_t *cond) {
-  return pthread_cond_broadcast(&cond->val) ? thrd_error : thrd_success;
+  return pthread_cond_broadcast(&P99_ENCP(cond)) ? thrd_error : thrd_success;
 }
 
 /**
@@ -253,7 +253,7 @@ int cnd_broadcast(cnd_t *cond) {
  **/
 p99_inline
 void cnd_destroy(cnd_t *cond) {
-  (void)pthread_cond_destroy(&cond->val);
+  (void)pthread_cond_destroy(&P99_ENCP(cond));
 }
 
 /**
@@ -266,7 +266,7 @@ void cnd_destroy(cnd_t *cond) {
  **/
 p99_inline
 int cnd_init(cnd_t *cond) {
-  int ret = pthread_cond_init(&cond->val, 0);
+  int ret = pthread_cond_init(&P99_ENCP(cond), 0);
   switch (ret) {
   case 0:         return thrd_success;
   case ENOMEM:    return thrd_nomem;
@@ -282,7 +282,7 @@ int cnd_init(cnd_t *cond) {
  **/
 p99_inline
 int cnd_signal(cnd_t *cond) {
-  return pthread_cond_signal(&cond->val) ? thrd_error : thrd_success;
+  return pthread_cond_signal(&P99_ENCP(cond)) ? thrd_error : thrd_success;
 }
 
 /**
@@ -295,7 +295,7 @@ int cnd_signal(cnd_t *cond) {
  **/
 p99_inline
 int cnd_timedwait(cnd_t *restrict cond, mtx_t *restrict mtx, const struct timespec *restrict ts) {
-  int ret = pthread_cond_timedwait(&cond->val, &mtx->val, ts);
+  int ret = pthread_cond_timedwait(&P99_ENCP(cond), &P99_ENCP(mtx), ts);
   switch (ret) {
   case 0:         return thrd_success;
   case ETIMEDOUT: return thrd_timedout;
@@ -311,7 +311,7 @@ int cnd_timedwait(cnd_t *restrict cond, mtx_t *restrict mtx, const struct timesp
  **/
 p99_inline
 int cnd_wait(cnd_t *cond, mtx_t *mtx) {
-  return pthread_cond_wait(&cond->val, &mtx->val) ? thrd_error : thrd_success;
+  return pthread_cond_wait(&P99_ENCP(cond), &P99_ENCP(mtx)) ? thrd_error : thrd_success;
 }
 
 // 7.26.4 Mutex functions
@@ -321,7 +321,7 @@ int cnd_wait(cnd_t *cond, mtx_t *mtx) {
  **/
 p99_inline
 void mtx_destroy(mtx_t *mtx) {
-  (void)pthread_mutex_destroy(&mtx->val);
+  (void)pthread_mutex_destroy(&P99_ENCP(mtx));
 }
 
 /**
@@ -340,7 +340,7 @@ int mtx_init(mtx_t *mtx, int type) {
   if (ret) return thrd_error;
   ret = pthread_mutexattr_settype(&attr, (type & mtx_recursive) ? PTHREAD_MUTEX_NORMAL : PTHREAD_MUTEX_RECURSIVE);
   if (ret) return thrd_error;
-  ret = pthread_mutex_init(&mtx->val, &attr);
+  ret = pthread_mutex_init(&P99_ENCP(mtx), &attr);
   if (ret) return thrd_error;
   else return thrd_success;
 }
@@ -352,7 +352,7 @@ int mtx_init(mtx_t *mtx, int type) {
  **/
 p99_inline
 int mtx_lock(mtx_t *mtx) {
-  return pthread_mutex_lock(&mtx->val) ? thrd_error : thrd_success;
+  return pthread_mutex_lock(&P99_ENCP(mtx)) ? thrd_error : thrd_success;
 }
 
 /**
@@ -365,7 +365,7 @@ int mtx_lock(mtx_t *mtx) {
  **/
 p99_inline
 int mtx_timedlock(mtx_t *restrict mtx, const struct timespec *restrict ts) {
-  int ret = pthread_mutex_timedlock(&mtx->val, ts);
+  int ret = pthread_mutex_timedlock(&P99_ENCP(mtx), ts);
   switch (ret) {
   case 0:         return thrd_success;
   case ETIMEDOUT: return thrd_timedout;
@@ -382,7 +382,7 @@ int mtx_timedlock(mtx_t *restrict mtx, const struct timespec *restrict ts) {
  **/
 p99_inline
 int mtx_trylock(mtx_t *mtx) {
-  int ret = pthread_mutex_trylock(&mtx->val);
+  int ret = pthread_mutex_trylock(&P99_ENCP(mtx));
   switch (ret) {
   case 0:         return thrd_success;
   case EBUSY:     return thrd_busy;
@@ -397,7 +397,7 @@ int mtx_trylock(mtx_t *mtx) {
  **/
 p99_inline
 int mtx_unlock(mtx_t *mtx) {
-  return pthread_mutex_unlock(&mtx->val) ? thrd_error : thrd_success;
+  return pthread_mutex_unlock(&P99_ENCP(mtx)) ? thrd_error : thrd_success;
 }
 
 /* Tentative definitions for global variables. This has the advantage
@@ -438,7 +438,7 @@ int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
     default:        return thrd_error;
     };
   } else {
-    thr->val = cntxt;
+    P99_ENCP(thr) = cntxt;
     return thrd_success;
   }
 }
@@ -456,11 +456,11 @@ int thrd_detach(thrd_t thr) {
   /* The thread is not yet detached so its pthread id is still
      valid. If it already has finished, this will just free the
      resources that pthread holds for it. */
-  int ret = pthread_detach(thr.val->id) ? thrd_error : thrd_success;
-  if (atomic_flag_test_and_set(&thr.val->detached)) {
+  int ret = pthread_detach(P99_ENC(thr)->id) ? thrd_error : thrd_success;
+  if (atomic_flag_test_and_set(&P99_ENC(thr)->detached)) {
     /* The thread has already finished. Free the state, since nobody
        will join it, anyhow. */
-    free(thr.val);
+    free(P99_ENC(thr));
     return thrd_success;
   } else {
     return ret;
@@ -475,7 +475,7 @@ int thrd_detach(thrd_t thr) {
  **/
 p99_inline
 int thrd_equal(thrd_t thr0, thrd_t thr1) {
-  return thr0.val ==  thr1.val;
+  return P99_ENC(thr0) ==  P99_ENC(thr1);
 }
 
 /**
@@ -484,7 +484,7 @@ int thrd_equal(thrd_t thr0, thrd_t thr1) {
 p99_inline
 _Noreturn
 void thrd_exit(int res) {
-  p00_thrd * cntxt = thrd_current().val;
+  p00_thrd * cntxt = P99_ENC(thrd_current());
   if (P99_LIKELY(cntxt)) {
     cntxt->ret = res;
     longjmp(cntxt->ovrl.jmp, 1);
@@ -502,9 +502,9 @@ void thrd_exit(int res) {
 p99_inline
 int thrd_join(thrd_t thr, int *res) {
   void *res0;
-  if (P99_UNLIKELY(pthread_join(thr.val->id, &res0))) return thrd_error;
-  if (res) *res = thr.val->ret;
-  free(thr.val);
+  if (P99_UNLIKELY(pthread_join(P99_ENC(thr)->id, &res0))) return thrd_error;
+  if (res) *res = P99_ENC(thr)->ret;
+  free(P99_ENC(thr));
   return thrd_success;
 }
 
@@ -547,7 +547,7 @@ void thrd_yield(void) {
  **/
 p99_inline
 int tss_create(tss_t *key, tss_dtor_t dtor) {
-  return pthread_key_create(&key->val, dtor) ? thrd_error : thrd_success;
+  return pthread_key_create(&P99_ENCP(key), dtor) ? thrd_error : thrd_success;
 }
 
 /**
@@ -555,7 +555,7 @@ int tss_create(tss_t *key, tss_dtor_t dtor) {
  **/
 p99_inline
 void tss_delete(tss_t key) {
-  (void)pthread_key_delete(key.val);
+  (void)pthread_key_delete(P99_ENC(key));
 }
 
 /**
@@ -566,7 +566,7 @@ void tss_delete(tss_t key) {
  **/
 p99_inline
 void *tss_get(tss_t key) {
-  return pthread_getspecific(key.val);
+  return pthread_getspecific(P99_ENC(key));
 }
 
 /**
@@ -576,7 +576,7 @@ void *tss_get(tss_t key) {
  **/
 p99_inline
 int tss_set(tss_t key, void *val) {
-  return pthread_setspecific(key.val, val) ? thrd_error : thrd_success;
+  return pthread_setspecific(P99_ENC(key), val) ? thrd_error : thrd_success;
 }
 
 static
@@ -615,7 +615,7 @@ void * p00_thrd_create(void* context) {
  **/
 p99_inline
 thrd_t thrd_current(void) {
-  return (thrd_t) { .val = tss_get(p00_thrd_key), };
+  return (thrd_t)P99_ENC_INIT(tss_get(p00_thrd_key));
 }
 
 
