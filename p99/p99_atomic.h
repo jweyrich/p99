@@ -313,6 +313,32 @@ P99_DECLARE_ENUM(memory_order,
  ** @}
  **/
 
+/**
+ ** @addtogroup fences Memory Fences
+ **
+ ** This is only rudimentary support for fences. Basically all fences
+ ** but with argument ::memory_order_relaxed perform a full memory
+ ** barrier.
+ ** @{
+ **/
+
+p99_inline
+void atomic_thread_fence(memory_order order) {
+  switch (order) {
+  case memory_order_relaxed: break;
+  default: __sync_synchronize(); break;
+  }
+}
+
+/**
+ ** @remark In the current implementation a signal fence and a thread
+ ** fence are the same full memory barrier.
+ **/
+#define atomic_signal_fence atomic_thread_fence
+
+/**
+ ** @}
+ **/
 
 /**
  ** @}
