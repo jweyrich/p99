@@ -52,7 +52,7 @@
  ** of type ::once_flag
  ** @memberof once_flag
  **/
-#define ONCE_FLAG_INIT { .guard = 0, .release = 0, }
+#define ONCE_FLAG_INIT { .count = ATOMIC_VAR_INIT(0), .release = 0, }
 #ifndef PTHREAD_DESTRUCTOR_ITERATIONS
 # warning "definition of PTHREAD_DESTRUCTOR_ITERATIONS is missing"
 /**
@@ -128,8 +128,8 @@ typedef struct once_flag once_flag;
  ** has the correct state.
  */
 struct once_flag {
-  atomic_uint guard;
-  atomic_uint release;
+  _Bool volatile done;
+  atomic_uint count;
 };
 
 
@@ -219,15 +219,18 @@ p99_inline void thrd_yield(void);
 /**
  ** @memberof once_flag
  **/
+
+
 p99_inline
 void call_once(once_flag *flag, void (*func)(void)) {
-  if (P99_UNLIKELY(!atomic_load(&flag->release))) {
-    if (!atomic_fetch_add(&flag->guard, 1u)) {
+  if (P99_UNLIKELY(!flag->done)) {
+    if (!atomic_fetch_add(&flag->count, 1u)) {
       func();
-      atomic_store(&flag->release, 1u);
+      atomic_thread_fence(memory_order_seq_cst);
+      flag->done = true;
     } else {
-      while (!atomic_load(&flag->release)) thrd_yield();
-      // printf("blocked threads %u\n", atomic_load(&flag->guard));
+      while (!flag->done) thrd_yield();
+      // printf("blocked threads %u\n", atomic_load(&flag->count));
     }
   }
 }
