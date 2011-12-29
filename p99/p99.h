@@ -1325,12 +1325,9 @@
 
 
 
-#include "p99_type.h"
-#include "p99_block.h"
 #include "p99_choice.h"
 #include "p99_defarg.h"
 #include "p99_enum.h"
-#include "p99_int.h"
 #include "p99_new.h"
 #include "p99_double.h"
 #include "p99_swap.h"

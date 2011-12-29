@@ -13,8 +13,6 @@
 #ifndef     P99_BLOCK_H_
 # define    P99_BLOCK_H_
 
-#include "p99_compiler.h"
-#include "p99_type.h"
 #include "p99_int.h"
 
 /**

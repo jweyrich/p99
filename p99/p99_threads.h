@@ -18,7 +18,6 @@
 #include <sys/time.h>
 #include <time.h>
 #include <pthread.h>
-#include "p99_c99.h"
 #if defined(__GNUC__) || defined(P00_DOXYGEN)
 # include "p99_atomic.h"
 #endif

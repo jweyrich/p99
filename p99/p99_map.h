@@ -19,7 +19,6 @@
  ** @see statement_lists
  **/
 
-#include "p99_c99.h"
 #include "p99_type.h"
 #include "p99_for.h"
 

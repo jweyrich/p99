@@ -23,7 +23,6 @@
 #ifndef     P99_SWAP_H_
 # define    P99_SWAP_H_
 
-#include "p99_c99.h"
 #include "p99_int.h"
 
 p99_inline
