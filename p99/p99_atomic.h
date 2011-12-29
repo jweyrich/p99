@@ -68,6 +68,16 @@ typedef struct NAME {                                                   \
  ** @{
  **/
 
+#define ATOMIC_BOOL_LOCK_FREE 2
+#define ATOMIC_CHAR_LOCK_FREE 2
+//#define ATOMIC_CHAR16_T_LOCK_FREE 2
+//#define ATOMIC_CHAR32_T_LOCK_FREE 2
+#define ATOMIC_WCHAR_T_LOCK_FREE 2
+#define ATOMIC_SHORT_LOCK_FREE 2
+#define ATOMIC_INT_LOCK_FREE 2
+#define ATOMIC_LONG_LOCK_FREE 2
+#define ATOMIC_LLONG_LOCK_FREE 2
+#define ATOMIC_POINTER_LOCK_FREE 0
 
 /**
  ** @memberof atomic_flag
