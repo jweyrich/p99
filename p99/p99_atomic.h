@@ -20,45 +20,6 @@
 #endif
 
 /**
- ** @brief Encapsulate an object of type @a T in a new type called @a NAME
- **
- ** This hides type @a T inside the new structure type such that the
- ** original type is only accessible if asked explicitly.
- **
- ** @see P99_ENC to access the hidden type of an object of type @a NAME
- ** @see P99_ENCP to access the hidden type of a pointer to object of type @a NAME
- ** @see P99_ENC_INIT to initialize a variable of type @a NAME
- **/
-#define P99_ENC_DECLARE(T, NAME)                                        \
-/** @remark encapsulates an object of type T @see P99_ENC for access through object @see P99_ENCP for access through pointer **/ \
-typedef struct NAME {                                                   \
-  /** @private */                                                       \
-  T p00_val;                                                            \
-} NAME
-
-/**
- ** @brief Access an encapsulated object
- ** @see P99_ENC_DECLARE
- **/
-#define P99_ENC(OBJ) ((OBJ).p00_val)
-
-/**
- ** @brief Access an encapsulated object through a pointer
- ** @see P99_ENC_DECLARE
- **/
-#define P99_ENCP(OBJP) ((OBJP)->p00_val)
-
-/**
- ** @brief Initialize an encapsulated object
- **
- ** @param V must be an expression that is assignment compatible with
- ** the base type of the encapsulated object type
- **
- ** @see P99_ENC_DECLARE
- **/
-#define P99_ENC_INIT(V) { .p00_val = (V), }
-
-/**
  ** @addtogroup atomic
  ** @{
  **/
