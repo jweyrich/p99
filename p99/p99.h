@@ -1331,5 +1331,6 @@
 #include "p99_new.h"
 #include "p99_double.h"
 #include "p99_swap.h"
+#include "p99_generic.h"
 
 #endif      /* !P99_H_ */
