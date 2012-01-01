@@ -138,6 +138,83 @@ __builtin_choose_expr                                                   \
  **/
 #define P99_GENERIC(EXP, DEF, ...) P00_GENERIC(P99_NARG(__VA_ARGS__), EXP, DEF, __VA_ARGS__)
 
+#define P00_TYPE_EXPRESSION_(_0, T, I) (T, 1)
+
+#define P00_TYPE_EXPRESSION(EXP, ...)                                   \
+P99_GENERIC                                                             \
+((EXP),                                                                 \
+ 0,                                                                     \
+ P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_TYPE_EXPRESSION_, __VA_ARGS__))
+
+#define P99_TYPE_INTEGER(EXP)                   \
+P00_TYPE_EXPRESSION                             \
+((EXP),                                         \
+ _Bool,                                         \
+ char,                                          \
+ signed char,                                   \
+ unsigned char,                                 \
+ signed short,                                  \
+ unsigned short,                                \
+ signed,                                        \
+ unsigned,                                      \
+ signed long,                                   \
+ unsigned long,                                 \
+ signed long long,                              \
+ unsigned long long)
+
+#if CHAR_MIN < 0
+/* char is signed */
+#define P99_TYPE_UNSIGNED(EXP)                  \
+P00_TYPE_EXPRESSION                             \
+((EXP),                                         \
+ _Bool,                                         \
+ unsigned char,                                 \
+ unsigned short,                                \
+ unsigned,                                      \
+ unsigned long,                                 \
+ unsigned long long)
+
+#define P99_TYPE_SIGNED(EXP)                    \
+P00_TYPE_EXPRESSION                             \
+((EXP),                                         \
+ char,                                          \
+ signed char,                                   \
+ signed short,                                  \
+ signed,                                        \
+ signed long,                                   \
+ signed long long)
+#else
+/* char is signed */
+#define P99_TYPE_UNSIGNED(EXP)                  \
+P00_TYPE_EXPRESSION                             \
+((EXP),                                         \
+ _Bool,                                         \
+ char,                                          \
+ unsigned char,                                 \
+ unsigned short,                                \
+ unsigned,                                      \
+ unsigned long,                                 \
+ unsigned long long)
+
+#define P99_TYPE_SIGNED(EXP)                    \
+P00_TYPE_EXPRESSION                             \
+((EXP),                                         \
+ signed char,                                   \
+ signed short,                                  \
+ signed,                                        \
+ signed long,                                   \
+ signed long long)
+#endif
+
+#define P99_TYPE_FLOATING(EXP)                  \
+P00_TYPE_EXPRESSION                             \
+((EXP),                                         \
+ float,                                         \
+ double,                                        \
+ long double)
+
+
+
 inline int* p00_generic_test(int * a) {
   double *x;
   switch (*a % 3) {
