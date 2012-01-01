@@ -14,6 +14,7 @@
 #define P99_ATOMIC_H 1
 
 #include "p99_enum.h"
+#include "p99_generic.h"
 
 #ifndef __GNUC__
 # error "P99 atomic needs gcc specific features"
@@ -56,11 +57,68 @@
 
 
 /**
+ ** @addtogroup atomic_enum
+ ** @{
+ **/
+
+P99_DECLARE_ENUM(memory_order,
+                 memory_order_relaxed,
+                 memory_order_consume,
+                 memory_order_acquire,
+                 memory_order_release,
+                 memory_order_acq_rel,
+                 memory_order_seq_cst
+                 );
+
+
+/**
+ ** @}
+ **/
+
+/**
  ** @addtogroup atomic_types
  ** @{
  **/
 
 P99_ENC_DECLARE(int, atomic_flag);
+
+#define P00_AT(OBJP) ((OBJP)->p00_xval.p00_type_member)
+#define P00_AI(OBJP) ((OBJP)->p00_xval.p00_integer_member)
+
+#define P00_DECLARE_INT_STORE(T, NAME)                          \
+p99_inline                                                      \
+void P99_PASTE2(NAME, _store)(NAME * objp, T desired) {         \
+  do { /* empty */ }                                            \
+  while(!__sync_bool_compare_and_swap                           \
+        (&P00_AT(objp),                                         \
+         __sync_val_compare_and_swap(&P00_AT(objp), 0, 0),      \
+         desired));                                             \
+}
+
+
+#define P00_DECLARE_INT_CMP_EXCHG_WEAK(T, NAME)                         \
+p99_inline                                                              \
+_Bool P99_PASTE2(NAME, _compare_exchange_weak)(T * objp, T * expected, size_t size, T desired) { \
+  T val = __sync_val_compare_and_swap(objp, *expected, desired);        \
+  _Bool ret = (*expected == val);                                       \
+  if (!ret) *expected = val;                                            \
+  return ret;                                                           \
+}
+
+
+#define P00_DECLARE_ATOMIC(T, NAME)                                     \
+/** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
+union NAME;                                                             \
+typedef union NAME NAME;                                                \
+union NAME {                                                            \
+  atomic_flag p00_lock;                                                 \
+  union {                                                               \
+    T p00_integer_member;                                               \
+    T p00_type_member;                                                  \
+  } p00_xval;                                                           \
+};                                                                      \
+P00_DECLARE_INT_STORE(T, NAME);                                         \
+P00_DECLARE_INT_CMP_EXCHG_WEAK(T, NAME)
 
 /**
  ** @brief Atomic access to a value of type <code>int</code>
@@ -68,7 +126,7 @@ P99_ENC_DECLARE(int, atomic_flag);
  ** See the "public member function" section of this description for
  ** the operations that support this type
  **/
-P99_ENC_DECLARE(int, atomic_int);
+P00_DECLARE_ATOMIC(int, atomic_int);
 
 /**
  ** @brief Atomic access to a value of type <code>bool</code>
@@ -78,11 +136,8 @@ P99_ENC_DECLARE(int, atomic_int);
  ** @see ATOMIC_VAR_INIT
  ** @see atomic_init
  **/
-P99_ENC_DECLARE(_Bool, atomic_bool);
+P00_DECLARE_ATOMIC(_Bool, atomic_bool);
 
-#define P00_DECLARE_ATOMIC(T, NAME)                                 \
-/** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
-P99_ENC_DECLARE(T, NAME)
 
 P00_DECLARE_ATOMIC(char, atomic_char);
 P00_DECLARE_ATOMIC(signed char, atomic_schar);
@@ -120,6 +175,31 @@ P00_DECLARE_ATOMIC(ptrdiff_t, atomic_ptrdiff_t);
 P00_DECLARE_ATOMIC(intmax_t, atomic_intmax_t);
 P00_DECLARE_ATOMIC(uintmax_t, atomic_uintmax_t);
 
+#define P99_DECLARE_ATOMIC(T, NAME)                                     \
+/** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
+struct NAME {                                                           \
+  atomic_flag p00_lock;                                                 \
+  union {                                                               \
+    int p00_integer_member;                                             \
+    T p00_type_member;                                                  \
+  } p00_xval;                                                           \
+};                                                                      \
+P99_DECLARE_STRUCT(NAME)
+
+p99_inline
+void p00_atomic_store_ignore(void * objp, ...) {
+  /* just ignore all */
+}
+
+p99_inline
+_Bool p00_atomic_compare_exchange_weak_generic(void * objp, void * expected, size_t size, ...) {
+  return !memcmp(objp, expected, size);
+}
+
+P99_DECLARE_ATOMIC(float, atomic_float);
+P99_DECLARE_ATOMIC(double, atomic_double);
+
+
 /**
  ** @}
  **/
@@ -127,18 +207,62 @@ P00_DECLARE_ATOMIC(uintmax_t, atomic_uintmax_t);
 /**
  ** @memberof atomic_flag
  **/
-p99_inline
-_Bool atomic_flag_test_and_set(volatile atomic_flag *object) {
-  return __sync_val_compare_and_swap(&P99_ENCP(object), 0, 1);
-}
+#define atomic_flag_test_and_set_explicit(OBJP, ORDER)                  \
+({                                                                      \
+  _Bool ret;                                                            \
+  switch (ORDER) {                                                      \
+  case memory_order_relaxed: ;                                          \
+  case memory_order_acquire: ret = __sync_lock_test_and_set(&P99_ENCP(OBJP), 1); break; \
+  default:                   ret = __sync_val_compare_and_swap(&P99_ENCP(OBJP), 0, 1); break; \
+  }                                                                     \
+  ret;                                                                  \
+ })
 
 /**
  ** @memberof atomic_flag
  **/
-p99_inline
-void atomic_flag_clear(volatile atomic_flag *object) {
-  __sync_val_compare_and_swap(&P99_ENCP(object), 1, 0);
-}
+#define atomic_flag_test_and_set(OBJP) atomic_flag_test_and_set_explicit((OBJP), memory_order_seq_cst)
+
+/**
+ ** @memberof atomic_flag
+ **/
+#define atomic_flag_clear_explicit(OBJP, ORDER)                       \
+(void)({                                                                \
+  switch(ORDER) {                                                       \
+  case memory_order_relaxed: ;                                          \
+  case memory_order_release: __sync_lock_release(&P99_ENCP(OBJP)); break; \
+  default:                   __sync_val_compare_and_swap(&P99_ENCP(OBJP), 1, 0); break; \
+  }                                                                     \
+ })
+
+/**
+ ** @memberof atomic_flag
+ **/
+#define atomic_flag_clear(OBJP) atomic_flag_clear_explicit((OBJP), memory_order_seq_cst)
+
+/**
+ ** @brief extension: spin on @a object setting the flag until the state before was "clear"
+ **
+ ** This interprets an ::atomic_flag as a spinlock. State "clear"
+ ** means unlocked and state "set" means locked.
+ **
+ ** @memberof atomic_flag
+ **/
+#define atomic_flag_lock(OBJP)                                        \
+(void)({ while (atomic_flag_test_and_set_explicit((OBJP), memory_order_acquire)); })
+
+/**
+ ** @brief extension: set the flag and return true if we are the first
+ ** to do so
+ **
+ ** This interprets an ::atomic_flag as a spinlock. State "clear"
+ ** means unlocked and state "set" means locked.
+ **
+ ** @memberof atomic_flag
+ **/
+#define atomic_flag_trylock(OBJP) !atomic_flag_test_and_set_explicit((OBJP), memory_order_acquire)
+
+#define atomic_flag_unlock(OBJP) atomic_flag_clear_explicit((OBJP), memory_order_release)
 
 p99_inline
 _Bool p00_is_lock_free(volatile void * objp, size_t size) {
@@ -174,150 +298,132 @@ _Bool p00_is_lock_free(volatile void * objp, size_t size) {
 /**
  ** @memberof atomic_int
  **/
-#define atomic_is_lock_free(OBJECT, DESIRED) p00_is_lock_free(&P99_ENCP(OBJECT), sizeof(P99_ENCP(OBJECT)))
+#define atomic_is_lock_free(OBJP, DESIRED) p00_is_lock_free(&P00_AT(OBJP), sizeof(P00_AT(OBJP)))
 
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_init(OBJECT, VAL) ((void)(P99_ENCP(OBJECT) = (VAL)))
+#define atomic_init(OBJP, VAL) ((void)(P00_AT(OBJP) = (VAL)))
 
-#define P00_STORE(N)                                                    \
-do { /* empty */ }                                                      \
- while(!__sync_bool_compare_and_swap                                    \
-       ((uint ## N ## _t volatile*)objp,                                \
-        __sync_val_compare_and_swap((uint ## N ## _t volatile*)objp, 0, 0), \
-        (uint ## N ## _t)desired))
-
-p99_inline
-void p00_store(volatile void * objp, size_t size, uintmax_t desired) {
-  switch (size * CHAR_BIT) {
-#ifdef UINT8_MAX
-  case 8: P00_STORE(8); break;
-#endif
-#ifdef UINT16_MAX
-  case 16: P00_STORE(16); break;
-#endif
-#ifdef UINT24_MAX
-  case 24: P00_STORE(24); break;
-#endif
-#ifdef UINT32_MAX
-  case 32: P00_STORE(32); break;
-#endif
-#ifdef UINT48_MAX
-  case 48: P00_STORE(48); break;
-#endif
-#ifdef UINT64_MAX
-  case 64: P00_STORE(64); break;
-#endif
-#ifdef UINT96_MAX
-  case 96: P00_STORE(96); break;
-#endif
-#ifdef UINT128_MAX
-  case 128: P00_STORE(128); break;
-#endif
-  }
-}
+#define p00_store(OBJP, size, desired)                          \
+P99_GENERIC                                                     \
+(P00_AT(OBJP),                                                  \
+ (                                                              \
+  ({ __typeof__(OBJP) o = (OBJP);                               \
+    atomic_flag_lock(&o->p00_lock);                             \
+    (void)(P00_AT(o) = desired);                                \
+    atomic_flag_unlock(&o->p00_lock);                           \
+  }),                                                           \
+  p00_atomic_store_ignore),                                     \
+ (_Bool,              atomic_bool_store),                       \
+ (char,               atomic_char_store),                       \
+ (signed char,        atomic_schar_store),                      \
+ (unsigned char,      atomic_uchar_store),                      \
+ (signed short,       atomic_short_store),                      \
+ (unsigned short,     atomic_ushort_store),                     \
+ (signed,             atomic_int_store),                        \
+ (unsigned,           atomic_uint_store),                       \
+ (signed long,        atomic_long_store),                       \
+ (unsigned long,      atomic_ulong_store),                      \
+ (signed long long,   atomic_llong_store),                      \
+ (unsigned long long, atomic_ullong_store))(OBJP, desired)
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_store(OBJECT, DESIRED) p00_store(&P99_ENCP(OBJECT), sizeof(P99_ENCP(OBJECT)), (DESIRED))
+#define atomic_store(OBJP, DESIRED) p00_store((OBJP), sizeof(P00_AT(OBJP)), (DESIRED))
+
+#define P00_LOAD(OBJP)                                                  \
+  ({ __typeof__(OBJP) o = (OBJP);                                       \
+    atomic_flag_lock(&o->p00_lock);                                     \
+   __typeof__(P00_AT(o)) ret = P00_AT(o);                               \
+   atomic_flag_unlock(&o->p00_lock);                                    \
+   (__typeof__(P00_AT(o)))ret;                                          \
+  })
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_load(OBJECT) __sync_val_compare_and_swap(&P99_ENCP(OBJECT), 0, 0)
-
-p99_inline
-_Bool p00_compare_exchange(uintmax_t val, uintmax_t expected, size_t size, void* expectedP) {
-  _Bool ret = (val == expected);
-  if (!ret) {
-    switch (size * CHAR_BIT) {
-#ifdef UINT8_MAX
-    case 8: *(uint8_t*)expectedP = (uint8_t)val; break;
-#endif
-#ifdef UINT16_MAX
-    case 16: *(uint16_t*)expectedP = (uint16_t)val; break;
-#endif
-#ifdef UINT24_MAX
-    case 24: *(uint24_t*)expectedP = (uint24_t)val; break;
-#endif
-#ifdef UINT32_MAX
-    case 32: *(uint32_t*)expectedP = (uint32_t)val; break;
-#endif
-#ifdef UINT48_MAX
-    case 48: *(uint48_t*)expectedP = (uint48_t)val; break;
-#endif
-#ifdef UINT64_MAX
-    case 64: *(uint64_t*)expectedP = (uint64_t)val; break;
-#endif
-#ifdef UINT96_MAX
-    case 96: *(uint96_t*)expectedP = (uint96_t)val; break;
-#endif
-#ifdef UINT128_MAX
-    case 128: *(uint128_t*)expectedP = (uint128_t)val; break;
-#endif
-    }
-  }
-  return ret;
-}
+#define atomic_load(OBJP)                                               \
+P99_GENERIC                                                             \
+(P00_AT(OBJP),                                                          \
+ P00_LOAD(OBJP),                                                        \
+ (_Bool,              __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
+ (char,               __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
+ (signed char,        __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
+ (unsigned char,      __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
+ (signed short,       __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
+ (unsigned short,     __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
+ (signed,             __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
+ (unsigned,           __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
+ (signed long,        __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
+ (unsigned long,      __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
+ (signed long long,   __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
+ (unsigned long long, __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)))
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_compare_exchange_weak(OBJECT, EXPECTED, DESIRED)         \
-p00_compare_exchange                                                    \
-(__sync_val_compare_and_swap(&P99_ENCP(OBJECT), *(EXPECTED), (uintmax_t)(DESIRED)), \
- *(EXPECTED),                                                           \
- sizeof(*(EXPECTED)),                                                   \
- (EXPECTED))
+#define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)           \
+({                                                                      \
+  __typeof__(OBJP) o = (OBJP);                                          \
+  __typeof__(EXPECTED) p00_exp = (EXPECTED);                            \
+  __typeof__(EXPECTED) p00_des = (DESIRED);                             \
+  if (!P99_TYPE_INTEGER(P00_AT(o))) atomic_flag_lock(&o->p00_lock);     \
+  _Bool p00_ret = P99_GENERIC                                           \
+    (P00_AT(o),                                                         \
+     p00_atomic_compare_exchange_weak_generic,                          \
+     (_Bool,              atomic_bool_compare_exchange_weak),           \
+     (char,               atomic_char_compare_exchange_weak),           \
+     (signed char,        atomic_schar_compare_exchange_weak),          \
+     (unsigned char,      atomic_uchar_compare_exchange_weak),          \
+     (signed short,       atomic_short_compare_exchange_weak),          \
+     (unsigned short,     atomic_ushort_compare_exchange_weak),         \
+     (signed,             atomic_int_compare_exchange_weak),            \
+     (unsigned,           atomic_uint_compare_exchange_weak),           \
+     (signed long,        atomic_long_compare_exchange_weak),           \
+     (unsigned long,      atomic_ulong_compare_exchange_weak),          \
+     (signed long long,   atomic_llong_compare_exchange_weak),          \
+     (unsigned long long, atomic_ullong_compare_exchange_weak))         \
+    (&P00_AT(o), p00_exp, sizeof P00_AT(o), p00_des);                   \
+  if (!P99_TYPE_INTEGER(P00_AT(o))) {                                   \
+    /* Both, *EXPECTED and DESIRED must be assignment compatible with the base type */    \
+    if (p00_ret) *p00_exp = P00_AT(o);                                  \
+    else         P00_AT(o) = p00_des;                                   \
+    atomic_flag_unlock(&o->p00_lock);                                   \
+  }                                                                     \
+  p00_ret;                                                              \
+ })
+
+
 
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_add(OBJECT, OPERAND) __sync_fetch_and_add(&P99_ENCP(OBJECT), OPERAND)
+#define atomic_fetch_add(OBJP, OPERAND) __sync_fetch_and_add(&P00_AT(OBJP), OPERAND)
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_sub(OBJECT, OPERAND) __sync_fetch_and_sub(&P99_ENCP(OBJECT), OPERAND)
+#define atomic_fetch_sub(OBJP, OPERAND) __sync_fetch_and_sub(&P00_AT(OBJP), OPERAND)
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_or(OBJECT, OPERAND) __sync_fetch_and_or(&P99_ENCP(OBJECT), OPERAND)
+#define atomic_fetch_or(OBJP, OPERAND) __sync_fetch_and_or(&P00_AT(OBJP), OPERAND)
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_and(OBJECT, OPERAND) __sync_fetch_and_and(&P99_ENCP(OBJECT), OPERAND)
+#define atomic_fetch_and(OBJP, OPERAND) __sync_fetch_and_and(&P00_AT(OBJP), OPERAND)
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_xor(OBJECT, OPERAND) __sync_fetch_and_xor(&P99_ENCP(OBJECT), OPERAND)
+#define atomic_fetch_xor(OBJP, OPERAND) __sync_fetch_and_xor(&P00_AT(OBJP), OPERAND)
 
-
-/**
- ** @addtogroup atomic_enum
- ** @{
- **/
-
-P99_DECLARE_ENUM(memory_order,
-                 memory_order_relaxed,
-                 memory_order_consume,
-                 memory_order_acquire,
-                 memory_order_release,
-                 memory_order_acq_rel,
-                 memory_order_seq_cst
-                 );
-
-
-/**
- ** @}
- **/
 
 /**
  ** @addtogroup fences Memory Fences

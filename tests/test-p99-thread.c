@@ -18,16 +18,32 @@ void * p00_thrd_create(void* context);
 static mtx_t mut;
 static cnd_t cond;
 static size_t volatile count = 0;
+static atomic_double D;
+static atomic_uint U;
+
+P99_DECLARE_STRUCT(tester);
+
+struct tester {
+  int a;
+  double b;
+};
+
+P99_DECLARE_ATOMIC(tester, atomic_tester);
+
+atomic_tester testvar;
 
 static
 int task(void* arg) {
   int ret = 0;
-  printf("arg is %p\n", arg);
+  printf("arg is %p, %d\n", arg, P99_TYPE_INTEGER(arg));
+  atomic_fetch_add(&U, 1u);
   mtx_lock(&mut);
   ++count;
   ret = count;
   cnd_signal(&cond);
   mtx_unlock(&mut);
+  atomic_store(&D, ret);
+  atomic_store(&testvar, (tester){ .a = ret });
   if (ret % 3) thrd_yield();
   if (ret % 2)
     return -1;
@@ -52,5 +68,5 @@ int main(int argc, char *argv[]) {
   mtx_lock(&mut);
   while (count < n) cnd_wait(&cond, &mut);
   mtx_unlock(&mut);
-  printf("result is %d\n", res);
+  printf("results are %d, %d and %u\n", res, atomic_load(&testvar).a, atomic_load(&U));
 }
