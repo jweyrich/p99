@@ -24,7 +24,41 @@
  **/
 
 
-/** @addtogroup compiler Compiler Requirements
+/**
+ ** @def P99_COMPILER
+ **
+ ** @brief Identify the compiler
+ **
+ ** All compilers have some specific macro that identifies them but it
+ ** is difficult for user code to track all of them. This macro here
+ ** can be used to identify the compiler in a portable way. E.g by
+ ** something like
+ **
+ ** @code
+ ** #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
+ ** ...
+ ** #endif
+ ** @endcode
+ **
+ ** See @link p99_generated.h @endlink for a list of the compilers
+ ** that are known to P99.
+ **/
+
+/**
+ ** @addtogroup compiler Compiler Specific Tuning and Extensions
+ **
+ ** Many compilers provide extensions that could be
+ ** useful. Unfortunately similar extension are often presented
+ ** differently with different compilers. Here we try to give macros
+ ** that abstract from these compiler specifics.
+ **
+ ** As I personally mainly have compilers that all claim themselves to
+ ** be compatible with gcc, this collection is strongly biased towards
+ ** gcc extensions. Please don't hesitate to point me to documentation
+ ** of other compilers that could be useful, here.
+ **
+ ** @see P99_COMPILER
+ ** @see P99_IF_COMPILER
  ** @{
  **/
 
@@ -220,7 +254,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # endif
 #endif
 
-# ifndef p99_inline
+# if !defined(p99_inline) || defined(P00_DOXYGEN)
 /**
  ** @brief Try to force a function to be always inlined
  **
@@ -258,6 +292,25 @@ signed p00_trailing_comma_in_initializer__(void) {
 # endif
 #endif
 
+
+/**
+ ** @addtogroup C11 Emulating features of C11
+ **
+ ** The new C standard C11 (published in December 2011) introduces
+ ** some new features that are already present in many compilers or
+ ** OS, but sometimes with different syntax or interfaces. We provide
+ ** interfaces to some of them with the intention that once compilers
+ ** that implement C11 come out these interfaces can directly relate
+ ** to the C11 feature.
+ **
+ ** @{
+ **/
+
+/**
+ ** @addtogroup C11_keywords Some new C11 keywords
+ **
+ ** @{
+ **/
 
 #if P99_GCC_VERSION >= 40600UL
 /* In C1x this macro must exactly have that value. */
@@ -331,6 +384,20 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 
 
 static_assert(1, "test of static assertions");
+
+/**
+ ** @}
+ **/
+
+/**
+ ** @}
+ **/
+
+/**
+ ** @addtogroup compiler_utilities A small collection of utilities
+ **
+ ** @{
+ **/
 
 #define P00_HARMLESS_DECLARATION                               \
 extern char const p00_harmless_declaration[                    \
@@ -425,7 +492,7 @@ extern char const p00_harmless_declaration[sizeof(void const*[1])];
  ** @def P99_DEPRECATED
  ** @brief Deprecate a declaration that is given as the argument list.
  **/
-#ifndef P99_DEPRECATED
+#if !defined(P99_DEPRECATED) || defined(P00_DOXYGEN)
 # ifdef __GNUC__
 #  define P99_DEPRECATED(...) /*! \deprecated __VA_ARGS__ */ __attribute__((deprecated))
 # else
@@ -470,6 +537,7 @@ typedef __int128_t p99x_int128;
 /**
  ** @brief Issue the pragma that is given as supplementary argument
  ** iff the actual compiler is @a COMP.
+ ** @see P99_COMPILER
  **/
 #define P99_IF_COMPILER(COMP, ...) P00_COMPILER_PRAGMA_ ## COMP(P99_STRINGIFY(__VA_ARGS__))
 
@@ -481,6 +549,10 @@ P99_IF_COMPILER(INTEL, warning(disable: 1418)) /* external function definition w
 P99_IF_COMPILER(INTEL, warning(disable: 1419)) /* external declaration in primary source file */
 
 #endif
+
+/** @}
+ **/
+
 
 /** @}
  **/

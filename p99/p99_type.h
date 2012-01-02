@@ -156,12 +156,12 @@ P99_PLAIN_TYPE(P99_PASTE2(T, _ptr))
  ** @see P99_ENCP to access the hidden type of a pointer to object of type @a NAME
  ** @see P99_ENC_INIT to initialize a variable of type @a NAME
  **/
-#define P99_ENC_DECLARE(T, NAME)                                        \
+#define P99_ENC_DECLARE(T, NAME)                                                                                                 \
 /** @remark encapsulates an object of type T @see P99_ENC for access through object @see P99_ENCP for access through pointer **/ \
-struct NAME {                                                           \
-  /** @private */                                                       \
-  T p00_val;                                                            \
-};                                                                      \
+struct NAME {                                                                                                                    \
+  /** @private */                                                                                                                \
+  T p00_val;                                                                                                                     \
+};                                                                                                                               \
 P99_DECLARE_STRUCT(NAME)
 
 /**

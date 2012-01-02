@@ -41,7 +41,7 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Tue, 11 Oct 2011 10:02:05 +0200"
+#define P00_VERSION_DATE "Mon, 02 Jan 2012 13:28:36 +0100"
 #define P00_VERSION_ID ""
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -8021,6 +8021,68 @@ automatically generated, do not change manually.
 #define P00_MASK_62 0x3FFFFFFFFFFFFFFF
 #define P00_MASK_63 0x7FFFFFFFFFFFFFFF
 
+//! @addtogroup P99
+//! @{
+
+
+#define P00_P99
+
+//! @addtogroup compiler
+//! @{
+
+
+#define P00_compiler
+
+//! @addtogroup compiler_utilities
+//! @{
+
+
+#define P00_compiler_utilities
+
+//! @}
+
+//! @addtogroup C11
+//! @{
+
+
+#define P00_C11
+
+//! @addtogroup C11_keywords
+//! @{
+
+
+#define P00_C11_keywords
+
+//! @}
+
+//! @addtogroup C11_types
+//! @{
+
+
+#define P00_C11_types
+
+//! @}
+
+//! @addtogroup atomic
+//! @{
+
+
+#define P00_atomic
+
+//! @}
+
+//! @addtogroup threads
+//! @{
+
+
+#define P00_threads
+
+//! @}
+
+//! @}
+
+//! @}
+
 //! @addtogroup preprocessor_macros
 //! @{
 
@@ -8222,6 +8284,8 @@ automatically generated, do not change manually.
 
 
 #define P00_integers
+
+//! @}
 
 //! @}
 

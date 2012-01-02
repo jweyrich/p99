@@ -255,28 +255,28 @@ void p99_call_once(once_flag *flag, void (*func)(void*), void* arg) {
   }
 }
 
-#define P99_DECLARE_INIT_ONCE(T, NAME, ARG)                             \
-/** @remark wrapper type around a T that is initialized once */         \
-struct NAME {                                                           \
-  once_flag p00_once;                                                   \
-  T p00_val;                                                            \
-};                                                                      \
-P99_DECLARE_STRUCT(NAME);                                               \
-p99_inline                                                              \
-void P99_PASTE3(p00_, NAME, _init_func)(T* ARG);                        \
-p99_inline                                                              \
-void P99_PASTE3(p00_, NAME, _init_once)(NAME* ARG) {                    \
-  if (P99_UNLIKELY(!ARG->p00_once.done)) {                              \
-    if (!atomic_fetch_add(&ARG->p00_once.count, 1u)) {                  \
-      P99_PASTE3(p00_, NAME, _init_func)(&ARG->p00_val);                \
-      atomic_thread_fence(memory_order_seq_cst);                        \
-      ARG->p00_once.done = true;                                        \
-    } else {                                                            \
-      while (!ARG->p00_once.done) thrd_yield();                         \
-    }                                                                   \
-  }                                                                     \
-}                                                                       \
-p99_inline                                                              \
+#define P99_DECLARE_INIT_ONCE(T, NAME, ARG)                     \
+/** @remark wrapper type around a T that is initialized once */ \
+struct NAME {                                                   \
+  once_flag p00_once;                                           \
+  T p00_val;                                                    \
+};                                                              \
+P99_DECLARE_STRUCT(NAME);                                       \
+p99_inline                                                      \
+void P99_PASTE3(p00_, NAME, _init_func)(T* ARG);                \
+p99_inline                                                      \
+void P99_PASTE3(p00_, NAME, _init_once)(NAME* ARG) {            \
+  if (P99_UNLIKELY(!ARG->p00_once.done)) {                      \
+    if (!atomic_fetch_add(&ARG->p00_once.count, 1u)) {          \
+      P99_PASTE3(p00_, NAME, _init_func)(&ARG->p00_val);        \
+      atomic_thread_fence(memory_order_seq_cst);                \
+      ARG->p00_once.done = true;                                \
+    } else {                                                    \
+      while (!ARG->p00_once.done) thrd_yield();                 \
+    }                                                           \
+  }                                                             \
+}                                                               \
+p99_inline                                                      \
 void P99_PASTE3(p00_, NAME, _init_func)(T* ARG)
 
 #define P99_INIT_ONCE(NAME, VARP) P99_PASTE3(p00_, NAME, _init_once)(VARP)
@@ -677,9 +677,9 @@ void* p00_thread_local_get(p99_tss * key, size_t size) {
  ** @see P99_THREAD_LOCAL to access the variable
  ** @memberof p99_tss
  **/
-#define P99_DECLARE_THREAD_LOCAL(T, NAME)               \
-/** @see P99_THREAD_LOCAL to access the variable */     \
-p99_tss NAME;                                           \
+#define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
+/** @see P99_THREAD_LOCAL to access the variable */            \
+p99_tss NAME;                                                  \
 typedef T P99_PASTE3(p00_, NAME, _type)
 
 /**

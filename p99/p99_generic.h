@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
+/* (C) copyright  2012 Jens Gustedt, INRIA, France                           */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -19,32 +19,38 @@
  ** @file
  **/
 
+/**
+ ** @addtogroup C11_keywords
+ **
+ ** @{
+ **/
+
 #define P00_GENERIC_TYPE(T, EXP) T
 #define P00_GENERIC_EXP(T, EXP) EXP
 
 #if __STDC_VERSION__ >= 201012L
 
-#define P00_GENERIC_BASE(EXP, PAIR, I)          \
+#define P00_GENERIC_BASE(EXP, PAIR, I)                         \
 P00_GENERIC_TYPE PAIR: (P00_GENERIC_EXP PAIR)
 
-#define P00_GENERIC(N, EXP, DEF, ...)                           \
-_Generic                                                        \
-((EXP),                                                         \
- P99_IF_EMPTY(DEF)()(default: (DEF),)                           \
- P99_FOR((EXP), N, P00_SEQ, P00_GENERIC_BASE, __VA_ARGS__)      \
+#define P00_GENERIC(N, EXP, DEF, ...)                          \
+_Generic                                                       \
+((EXP),                                                        \
+ P99_IF_EMPTY(DEF)()(default: (DEF),)                          \
+ P99_FOR((EXP), N, P00_SEQ, P00_GENERIC_BASE, __VA_ARGS__)     \
  )
 
 #elif defined(__GNUC__)
 
 #define P00_GENERIC_CLOSE(A,B,C) )
 
-#define P00_GENERIC_BASE(EXP, PAIR, I)                                  \
-__builtin_choose_expr                                                   \
-(__builtin_types_compatible_p(__typeof__ EXP, P00_GENERIC_TYPE PAIR),   \
+#define P00_GENERIC_BASE(EXP, PAIR, I)                                \
+__builtin_choose_expr                                                 \
+(__builtin_types_compatible_p(__typeof__ EXP, P00_GENERIC_TYPE PAIR), \
  (P00_GENERIC_EXP PAIR)
 
-#define P00_GENERIC(N, EXP, DEF, ...)                                   \
-  P99_FOR((EXP), N, P00_SEQ, P00_GENERIC_BASE, __VA_ARGS__),            \
+#define P00_GENERIC(N, EXP, DEF, ...)                                             \
+  P99_FOR((EXP), N, P00_SEQ, P00_GENERIC_BASE, __VA_ARGS__),                      \
     P99_IF_EMPTY(DEF)(&(const volatile struct { int p00_v; }){ .p00_v = 0 })(DEF) \
     P99_FOR(, N, P00_SER, P00_GENERIC_CLOSE, P99_DUPL(N, ))
 
@@ -107,7 +113,7 @@ __builtin_choose_expr                                                   \
  **              double: max_double)(a, b);
  ** @endcode
  **
- ** Here all the expressions evaluate to a function pointer. If
+ ** Here all the expressions evaluate to a function specifier. If
  ** <code>a + b</code> is @c int, ... or @c double the
  ** appropriate maximum function is choosen for that type. If none of
  ** these matches, the one for @c uintmax_t is choosen. The
@@ -121,9 +127,9 @@ __builtin_choose_expr                                                   \
  **   function. If @c a would be @c unsigned and @c b would be @c
  **   double the result would be @c double, too.
  **
- ** - the return type of the @c _Generic expression is a pointer of
+ ** - the return type of the @c _Generic expression is a
  **   function to two arguments. If it would be for @c int, e.g, the
- **   type would be <code>int (*)(int, int)</code>. So the return type
+ **   type would be <code>int ()(int, int)</code>. So the return type
  **   of the function call would be @c int in that case.
  **
  ** - the arguments are promoted and converted to the expected type of
@@ -134,85 +140,98 @@ __builtin_choose_expr                                                   \
  ** _Generic expression.
  **
  ** @remark Otherwise only gcc and compatible compilers are supported.
- ** @addtogroup C11
  **/
 #define P99_GENERIC(EXP, DEF, ...) P00_GENERIC(P99_NARG(__VA_ARGS__), EXP, DEF, __VA_ARGS__)
 
+/**
+ ** @}
+ **/
+
+/**
+ ** @addtogroup C11_types Generic identification of families of types
+ **
+ ** @{
+ **/
+
 #define P00_TYPE_EXPRESSION_(_0, T, I) (T, 1)
 
-#define P00_TYPE_EXPRESSION(EXP, ...)                                   \
-P99_GENERIC                                                             \
-((EXP),                                                                 \
- 0,                                                                     \
+#define P00_TYPE_EXPRESSION(EXP, ...)                                          \
+P99_GENERIC                                                                    \
+((EXP),                                                                        \
+ 0,                                                                            \
  P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_TYPE_EXPRESSION_, __VA_ARGS__))
 
-#define P99_TYPE_INTEGER(EXP)                   \
-P00_TYPE_EXPRESSION                             \
-((EXP),                                         \
- _Bool,                                         \
- char,                                          \
- signed char,                                   \
- unsigned char,                                 \
- signed short,                                  \
- unsigned short,                                \
- signed,                                        \
- unsigned,                                      \
- signed long,                                   \
- unsigned long,                                 \
- signed long long,                              \
+#define P99_TYPE_INTEGER(EXP)                                  \
+P00_TYPE_EXPRESSION                                            \
+((EXP),                                                        \
+ _Bool,                                                        \
+ char,                                                         \
+ signed char,                                                  \
+ unsigned char,                                                \
+ signed short,                                                 \
+ unsigned short,                                               \
+ signed,                                                       \
+ unsigned,                                                     \
+ signed long,                                                  \
+ unsigned long,                                                \
+ signed long long,                                             \
  unsigned long long)
 
 #if CHAR_MIN < 0
 /* char is signed */
-#define P99_TYPE_UNSIGNED(EXP)                  \
-P00_TYPE_EXPRESSION                             \
-((EXP),                                         \
- _Bool,                                         \
- unsigned char,                                 \
- unsigned short,                                \
- unsigned,                                      \
- unsigned long,                                 \
+#define P99_TYPE_UNSIGNED(EXP)                                 \
+P00_TYPE_EXPRESSION                                            \
+((EXP),                                                        \
+ _Bool,                                                        \
+ unsigned char,                                                \
+ unsigned short,                                               \
+ unsigned,                                                     \
+ unsigned long,                                                \
  unsigned long long)
 
-#define P99_TYPE_SIGNED(EXP)                    \
-P00_TYPE_EXPRESSION                             \
-((EXP),                                         \
- char,                                          \
- signed char,                                   \
- signed short,                                  \
- signed,                                        \
- signed long,                                   \
+#define P99_TYPE_SIGNED(EXP)                                   \
+P00_TYPE_EXPRESSION                                            \
+((EXP),                                                        \
+ char,                                                         \
+ signed char,                                                  \
+ signed short,                                                 \
+ signed,                                                       \
+ signed long,                                                  \
  signed long long)
 #else
 /* char is signed */
-#define P99_TYPE_UNSIGNED(EXP)                  \
-P00_TYPE_EXPRESSION                             \
-((EXP),                                         \
- _Bool,                                         \
- char,                                          \
- unsigned char,                                 \
- unsigned short,                                \
- unsigned,                                      \
- unsigned long,                                 \
+#define P99_TYPE_UNSIGNED(EXP)                                 \
+P00_TYPE_EXPRESSION                                            \
+((EXP),                                                        \
+ _Bool,                                                        \
+ char,                                                         \
+ unsigned char,                                                \
+ unsigned short,                                               \
+ unsigned,                                                     \
+ unsigned long,                                                \
  unsigned long long)
 
-#define P99_TYPE_SIGNED(EXP)                    \
-P00_TYPE_EXPRESSION                             \
-((EXP),                                         \
- signed char,                                   \
- signed short,                                  \
- signed,                                        \
- signed long,                                   \
+#define P99_TYPE_SIGNED(EXP)                                   \
+P00_TYPE_EXPRESSION                                            \
+((EXP),                                                        \
+ signed char,                                                  \
+ signed short,                                                 \
+ signed,                                                       \
+ signed long,                                                  \
  signed long long)
 #endif
 
-#define P99_TYPE_FLOATING(EXP)                  \
-P00_TYPE_EXPRESSION                             \
-((EXP),                                         \
- float,                                         \
- double,                                        \
+#define P99_TYPE_FLOATING(EXP)                                 \
+P00_TYPE_EXPRESSION                                            \
+((EXP),                                                        \
+ float,                                                        \
+ double,                                                       \
  long double)
 
+
+/**
+ ** @}
+ **/
 
 
 inline int* p00_generic_test(int * a) {
