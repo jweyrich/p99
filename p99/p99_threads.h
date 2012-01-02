@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2011 Jens Gustedt, INRIA, France                           */
+/* (C) copyright  2011-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -620,7 +620,10 @@ int tss_set(tss_t key, void *val) {
 
 #if defined(thread_local) && !defined(P99_EMULATE_THREAD_LOCAL)
 
-#define P99_DECLARE_THREAD_LOCAL(T, NAME) thread_local T NAME
+#define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
+P99_WEAK(NAME)                                                 \
+thread_local T NAME
+
 #define P99_THREAD_LOCAL(NAME) (NAME)
 
 #else
@@ -679,6 +682,7 @@ void* p00_thread_local_get(p99_tss * key, size_t size) {
  **/
 #define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
 /** @see P99_THREAD_LOCAL to access the variable */            \
+P99_WEAK(NAME)                                                 \
 p99_tss NAME;                                                  \
 typedef T P99_PASTE3(p00_, NAME, _type)
 
@@ -700,7 +704,7 @@ P99_DECLARE_THREAD_LOCAL(p00_thrd *, p00_thrd_local);
 
 #define P00_THRD_LOCAL P99_THREAD_LOCAL(p00_thrd_local)
 
-
+P99_WEAK(p00_thrd_create)
 inline
 void * p00_thrd_create(void* context) {
   p00_thrd * cntxt = context;

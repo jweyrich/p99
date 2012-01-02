@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
+/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -62,6 +62,11 @@
  ** @{
  **/
 
+/**
+ ** @addtogroup compiler_utilities A small collection of utilities
+ **
+ ** @{
+ **/
 
 /**
  ** @example test-p99-conformance.c
@@ -279,6 +284,48 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_instantiate extern inline
 # endif
 
+#ifdef __GNUC__
+# define P00_WEAK1(ID) __attribute__((__weak__))
+#elif P99_COMPILER & P99_COMPILER_MICROSOFT
+# define P00_WEAK1(ID) __declspec(selectany)
+#else
+# define P00_WEAK1(ID) _Pragma(P99_STRINGIFY(weak ID))
+#endif
+
+#ifdef __GNUC__
+# define P00_WEAK2(ID, REPL) __attribute__((__weakref__(#REPL)))
+#else
+# define P00_WEAK2(ID, REPL) _Pragma(P99_STRINGIFY(weak ID=REPL))
+#endif
+
+/**
+ ** @brief Declare a symbol to be weak such that it can be provided
+ ** several times without error.
+ **
+ ** This should be placed before the corresponding declaration and
+ ** receive the name of the symbol as an argument. Such as
+ **
+ ** @code
+ ** P99_WEAK(toto)
+ ** unsigned toto;
+ ** @endcode
+ **
+ ** To have maximum portability this should immediately precede the
+ ** definition. Another form would be
+ **
+ ** @code
+ ** P99_WEAK(func, _func)
+ ** unsigned func(void);
+ ** @endcode
+ **
+ ** By that all references to @c func would use @c _func, instead.
+ **
+ ** @remark This feature seems to be widely supported. We have seen
+ ** mention of that for gcc and relatives, IBM, SGI, HP, SUN, Diab,
+ ** Microsoft
+ **/
+# define P99_WEAK(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2)(P00_WEAK1(__VA_ARGS__))(P00_WEAK2(__VA_ARGS__))
+
 #ifndef P99_FIXED_REGISTER
 # ifdef __GNUC__
 #  define P99_FIXED_REGISTER(REG) __asm__(P99_STRINGIFY(REG))
@@ -292,6 +339,10 @@ signed p00_trailing_comma_in_initializer__(void) {
 # endif
 #endif
 
+
+/**
+ ** @}
+ **/
 
 /**
  ** @addtogroup C11 Emulating features of C11

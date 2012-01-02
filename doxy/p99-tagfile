@@ -2092,7 +2092,7 @@
     <member kind="define">
       <type>#define</type>
       <name>P99_FIXED_REGISTER</name>
-      <anchorfile>group__compiler_ga880b448a7bdd51324db2ca904a561b16.html</anchorfile>
+      <anchorfile>group__compiler__utilities_ga880b448a7bdd51324db2ca904a561b16.html</anchorfile>
       <anchor>ga880b448a7bdd51324db2ca904a561b16</anchor>
       <arglist>(REG)</arglist>
     </member>
@@ -2106,7 +2106,7 @@
     <member kind="define">
       <type>#define</type>
       <name>p99_inline</name>
-      <anchorfile>group__compiler_gaa113bfa0df539e8dee797a00c6947446.html</anchorfile>
+      <anchorfile>group__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446.html</anchorfile>
       <anchor>gaa113bfa0df539e8dee797a00c6947446</anchor>
       <arglist></arglist>
     </member>
@@ -2134,7 +2134,7 @@
     <member kind="define">
       <type>#define</type>
       <name>P99_STRINGIFY</name>
-      <anchorfile>group__compiler_ga788ec4bb9b627ac630a546cd8071024e.html</anchorfile>
+      <anchorfile>group__compiler__utilities_ga788ec4bb9b627ac630a546cd8071024e.html</anchorfile>
       <anchor>ga788ec4bb9b627ac630a546cd8071024e</anchor>
       <arglist>(...)</arglist>
     </member>
@@ -2143,6 +2143,13 @@
       <name>P99_UNLIKELY</name>
       <anchorfile>group__compiler__utilities_gaab8f2fc166b2e55ab4209a1140906beb.html</anchorfile>
       <anchor>gaab8f2fc166b2e55ab4209a1140906beb</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_WEAK</name>
+      <anchorfile>group__compiler__utilities_ga16dfb0fd90c3dced377c8c5801d5f042.html</anchorfile>
+      <anchor>ga16dfb0fd90c3dced377c8c5801d5f042</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
@@ -10847,27 +10854,95 @@
     <name>compiler</name>
     <title>Compiler Specific Tuning and Extensions</title>
     <filename>group__compiler.html</filename>
-    <subgroup>C11</subgroup>
     <subgroup>compiler_utilities</subgroup>
+    <subgroup>C11</subgroup>
+  </compound>
+  <compound kind="group">
+    <name>compiler_utilities</name>
+    <title>A small collection of utilities</title>
+    <filename>group__compiler__utilities.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_ATLEAST</name>
+      <anchorfile>group__compiler__utilities_gab2e698aac27dfc78e0f995a63e799b9b.html</anchorfile>
+      <anchor>gab2e698aac27dfc78e0f995a63e799b9b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_DEPRECATED</name>
+      <anchorfile>group__compiler__utilities_ga12bab6ae673e0a0af7fb7dd5e959850e.html</anchorfile>
+      <anchor>ga12bab6ae673e0a0af7fb7dd5e959850e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_EXPECT</name>
+      <anchorfile>group__compiler__utilities_ga6746a5d1e51edbdcf8cb06a926bfcf5c.html</anchorfile>
+      <anchor>ga6746a5d1e51edbdcf8cb06a926bfcf5c</anchor>
+      <arglist>(EXP, VAL)</arglist>
+    </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_FIXED_REGISTER</name>
-      <anchorfile>group__compiler_ga880b448a7bdd51324db2ca904a561b16.html</anchorfile>
+      <anchorfile>group__compiler__utilities_ga880b448a7bdd51324db2ca904a561b16.html</anchorfile>
       <anchor>ga880b448a7bdd51324db2ca904a561b16</anchor>
       <arglist>(REG)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_IF_COMPILER</name>
+      <anchorfile>group__compiler__utilities_ga114bf1ffc4f7b5ae652f71539678a3e5.html</anchorfile>
+      <anchor>ga114bf1ffc4f7b5ae652f71539678a3e5</anchor>
+      <arglist>(COMP,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>p99_inline</name>
-      <anchorfile>group__compiler_gaa113bfa0df539e8dee797a00c6947446.html</anchorfile>
+      <anchorfile>group__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446.html</anchorfile>
       <anchor>gaa113bfa0df539e8dee797a00c6947446</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_LIKELY</name>
+      <anchorfile>group__compiler__utilities_gaeb07ca696b97a2403f7dc2685c99197e.html</anchorfile>
+      <anchor>gaeb07ca696b97a2403f7dc2685c99197e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_MACRO_END</name>
+      <anchorfile>group__compiler__utilities_gadbd3e08384c594c614e27882ec9bdde0.html</anchorfile>
+      <anchor>gadbd3e08384c594c614e27882ec9bdde0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PARALLEL_PRAGMA</name>
+      <anchorfile>group__compiler__utilities_gac21d17b6a0ed4da6ebaa8bb5ad0c151b.html</anchorfile>
+      <anchor>gac21d17b6a0ed4da6ebaa8bb5ad0c151b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_STRINGIFY</name>
-      <anchorfile>group__compiler_ga788ec4bb9b627ac630a546cd8071024e.html</anchorfile>
+      <anchorfile>group__compiler__utilities_ga788ec4bb9b627ac630a546cd8071024e.html</anchorfile>
       <anchor>ga788ec4bb9b627ac630a546cd8071024e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_UNLIKELY</name>
+      <anchorfile>group__compiler__utilities_gaab8f2fc166b2e55ab4209a1140906beb.html</anchorfile>
+      <anchor>gaab8f2fc166b2e55ab4209a1140906beb</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_WEAK</name>
+      <anchorfile>group__compiler__utilities_ga16dfb0fd90c3dced377c8c5801d5f042.html</anchorfile>
+      <anchor>ga16dfb0fd90c3dced377c8c5801d5f042</anchor>
       <arglist>(...)</arglist>
     </member>
   </compound>
@@ -10911,67 +10986,6 @@
       <anchorfile>group__C11__keywords_gad4d9b405bcbffaf0d4dae6166c18aa1e.html</anchorfile>
       <anchor>gad4d9b405bcbffaf0d4dae6166c18aa1e</anchor>
       <arglist></arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>compiler_utilities</name>
-    <title>A small collection of utilities</title>
-    <filename>group__compiler__utilities.html</filename>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_ATLEAST</name>
-      <anchorfile>group__compiler__utilities_gab2e698aac27dfc78e0f995a63e799b9b.html</anchorfile>
-      <anchor>gab2e698aac27dfc78e0f995a63e799b9b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_DEPRECATED</name>
-      <anchorfile>group__compiler__utilities_ga12bab6ae673e0a0af7fb7dd5e959850e.html</anchorfile>
-      <anchor>ga12bab6ae673e0a0af7fb7dd5e959850e</anchor>
-      <arglist>(...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_EXPECT</name>
-      <anchorfile>group__compiler__utilities_ga6746a5d1e51edbdcf8cb06a926bfcf5c.html</anchorfile>
-      <anchor>ga6746a5d1e51edbdcf8cb06a926bfcf5c</anchor>
-      <arglist>(EXP, VAL)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_IF_COMPILER</name>
-      <anchorfile>group__compiler__utilities_ga114bf1ffc4f7b5ae652f71539678a3e5.html</anchorfile>
-      <anchor>ga114bf1ffc4f7b5ae652f71539678a3e5</anchor>
-      <arglist>(COMP,...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_LIKELY</name>
-      <anchorfile>group__compiler__utilities_gaeb07ca696b97a2403f7dc2685c99197e.html</anchorfile>
-      <anchor>gaeb07ca696b97a2403f7dc2685c99197e</anchor>
-      <arglist>(...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_MACRO_END</name>
-      <anchorfile>group__compiler__utilities_gadbd3e08384c594c614e27882ec9bdde0.html</anchorfile>
-      <anchor>gadbd3e08384c594c614e27882ec9bdde0</anchor>
-      <arglist>(...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_PARALLEL_PRAGMA</name>
-      <anchorfile>group__compiler__utilities_gac21d17b6a0ed4da6ebaa8bb5ad0c151b.html</anchorfile>
-      <anchor>gac21d17b6a0ed4da6ebaa8bb5ad0c151b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_UNLIKELY</name>
-      <anchorfile>group__compiler__utilities_gaab8f2fc166b2e55ab4209a1140906beb.html</anchorfile>
-      <anchor>gaab8f2fc166b2e55ab4209a1140906beb</anchor>
-      <arglist>(...)</arglist>
     </member>
   </compound>
   <compound kind="group">
