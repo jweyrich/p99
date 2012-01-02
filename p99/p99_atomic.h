@@ -49,7 +49,7 @@
 /**
  ** @memberof atomic_int
  **/
-#define ATOMIC_VAR_INIT(V) P99_ENC_INIT(V)
+#define ATOMIC_VAR_INIT(V) { .p00_xval = { .p00_type_member = (V), }, }
 
 /**
  ** @}
@@ -180,15 +180,17 @@ P00_DECLARE_ATOMIC(uintmax_t, atomic_uintmax_t);
 struct NAME {                                                                                                          \
   atomic_flag p00_lock;                                                                                                \
   union {                                                                                                              \
-    int p00_integer_member;                                                                                            \
+    /* should be an integer type that can be cast to pointers without warning */                                       \
+    uintptr_t p00_integer_member;                                                                                      \
     T p00_type_member;                                                                                                 \
   } p00_xval;                                                                                                          \
 };                                                                                                                     \
 P99_DECLARE_STRUCT(NAME)
 
 p99_inline
-void p00_atomic_store_ignore(void * objp, ...) {
+uintptr_t p00_atomic_store_ignore(void * objp, ...) {
   /* just ignore all */
+  return 0;
 }
 
 p99_inline
@@ -198,6 +200,7 @@ _Bool p00_atomic_compare_exchange_weak_generic(void * objp, void * expected, siz
 
 P99_DECLARE_ATOMIC(float, atomic_float);
 P99_DECLARE_ATOMIC(double, atomic_double);
+P99_DECLARE_ATOMIC(long double, atomic_ldouble);
 
 
 /**
@@ -264,75 +267,47 @@ P99_DECLARE_ATOMIC(double, atomic_double);
 
 #define atomic_flag_unlock(OBJP) atomic_flag_clear_explicit((OBJP), memory_order_release)
 
-p99_inline
-_Bool p00_is_lock_free(volatile void * objp, size_t size) {
-  switch (size * CHAR_BIT) {
-#ifdef UINT8_MAX
-  case 8: return true;
-#endif
-#ifdef UINT16_MAX
-  case 16: return true;
-#endif
-#ifdef UINT24_MAX
-  case 24: return true;
-#endif
-#ifdef UINT32_MAX
-  case 32: return true;
-#endif
-#ifdef UINT48_MAX
-  case 48: return true;
-#endif
-#ifdef UINT64_MAX
-  case 64: return true;
-#endif
-#ifdef UINT96_MAX
-  case 96: return true;
-#endif
-#ifdef UINT128_MAX
-  case 128: return true;
-#endif
-  default: return false;
-  }
-}
-
 /**
  ** @memberof atomic_int
  **/
-#define atomic_is_lock_free(OBJP, DESIRED) p00_is_lock_free(&P00_AT(OBJP), sizeof(P00_AT(OBJP)))
-
+#define atomic_is_lock_free(OBJP) !offsetof(__typeof__(*(OBJP)), p00_xval)
 
 /**
  ** @memberof atomic_int
  **/
 #define atomic_init(OBJP, VAL) ((void)(P00_AT(OBJP) = (VAL)))
 
-#define p00_store(OBJP, size, desired)                         \
-P99_GENERIC                                                    \
-(P00_AT(OBJP),                                                 \
- (                                                             \
-  ({ __typeof__(OBJP) o = (OBJP);                              \
-    atomic_flag_lock(&o->p00_lock);                            \
-    (void)(P00_AT(o) = desired);                               \
-    atomic_flag_unlock(&o->p00_lock);                          \
-  }),                                                          \
-  p00_atomic_store_ignore),                                    \
- (_Bool,              atomic_bool_store),                      \
- (char,               atomic_char_store),                      \
- (signed char,        atomic_schar_store),                     \
- (unsigned char,      atomic_uchar_store),                     \
- (signed short,       atomic_short_store),                     \
- (unsigned short,     atomic_ushort_store),                    \
- (signed,             atomic_int_store),                       \
- (unsigned,           atomic_uint_store),                      \
- (signed long,        atomic_long_store),                      \
- (unsigned long,      atomic_ulong_store),                     \
- (signed long long,   atomic_llong_store),                     \
- (unsigned long long, atomic_ullong_store))(OBJP, desired)
-
 /**
  ** @memberof atomic_int
  **/
-#define atomic_store(OBJP, DESIRED) p00_store((OBJP), sizeof(P00_AT(OBJP)), (DESIRED))
+#define atomic_store(OBJP, DESIRED)             \
+({                                              \
+  __typeof__(OBJP) objp = (OBJP);               \
+  __typeof__(DESIRED) desired = (DESIRED);      \
+  P99_GENERIC                                   \
+    (P00_AT(OBJP),                              \
+     (                                          \
+      ({                                        \
+        atomic_flag_lock(&objp->p00_lock);      \
+        (void)(P00_AT(objp) = desired);         \
+        atomic_flag_unlock(&objp->p00_lock);    \
+      }),                                       \
+      p00_atomic_store_ignore),                 \
+     (_Bool,              atomic_bool_store),   \
+     (char,               atomic_char_store),   \
+     (signed char,        atomic_schar_store),  \
+     (unsigned char,      atomic_uchar_store),  \
+     (signed short,       atomic_short_store),  \
+     (unsigned short,     atomic_ushort_store), \
+     (signed,             atomic_int_store),    \
+     (unsigned,           atomic_uint_store),   \
+     (signed long,        atomic_long_store),   \
+     (unsigned long,      atomic_ulong_store),  \
+     (signed long long,   atomic_llong_store),  \
+     (unsigned long long, atomic_ullong_store)) \
+    (objp, desired);                            \
+ })
+
 
 #define P00_LOAD(OBJP)                                         \
   ({ __typeof__(OBJP) o = (OBJP);                              \
@@ -345,84 +320,133 @@ P99_GENERIC                                                    \
 /**
  ** @memberof atomic_int
  **/
-#define atomic_load(OBJP)                                                \
-P99_GENERIC                                                              \
-(P00_AT(OBJP),                                                           \
- P00_LOAD(OBJP),                                                         \
- (_Bool,              __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
- (char,               __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
- (signed char,        __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
- (unsigned char,      __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
- (signed short,       __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
- (unsigned short,     __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
- (signed,             __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
- (unsigned,           __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
- (signed long,        __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
- (unsigned long,      __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
- (signed long long,   __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)), \
- (unsigned long long, __sync_val_compare_and_swap(&P00_AI(OBJP), 0, 0)))
-
-/**
- ** @memberof atomic_int
- **/
-#define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                          \
-({                                                                                     \
-  __typeof__(OBJP) o = (OBJP);                                                         \
-  __typeof__(EXPECTED) p00_exp = (EXPECTED);                                           \
-  __typeof__(EXPECTED) p00_des = (DESIRED);                                            \
-  if (!P99_TYPE_INTEGER(P00_AT(o))) atomic_flag_lock(&o->p00_lock);                    \
-  _Bool p00_ret = P99_GENERIC                                                          \
-    (P00_AT(o),                                                                        \
-     p00_atomic_compare_exchange_weak_generic,                                         \
-     (_Bool,              atomic_bool_compare_exchange_weak),                          \
-     (char,               atomic_char_compare_exchange_weak),                          \
-     (signed char,        atomic_schar_compare_exchange_weak),                         \
-     (unsigned char,      atomic_uchar_compare_exchange_weak),                         \
-     (signed short,       atomic_short_compare_exchange_weak),                         \
-     (unsigned short,     atomic_ushort_compare_exchange_weak),                        \
-     (signed,             atomic_int_compare_exchange_weak),                           \
-     (unsigned,           atomic_uint_compare_exchange_weak),                          \
-     (signed long,        atomic_long_compare_exchange_weak),                          \
-     (unsigned long,      atomic_ulong_compare_exchange_weak),                         \
-     (signed long long,   atomic_llong_compare_exchange_weak),                         \
-     (unsigned long long, atomic_ullong_compare_exchange_weak))                        \
-    (&P00_AT(o), p00_exp, sizeof P00_AT(o), p00_des);                                  \
-  if (!P99_TYPE_INTEGER(P00_AT(o))) {                                                  \
-    /* Both, *EXPECTED and DESIRED must be assignment compatible with the base type */ \
-    if (p00_ret) *p00_exp = P00_AT(o);                                                 \
-    else         P00_AT(o) = p00_des;                                                  \
-    atomic_flag_unlock(&o->p00_lock);                                                  \
-  }                                                                                    \
-  p00_ret;                                                                             \
+#define atomic_load(OBJP)                                               \
+({                                                                      \
+  __typeof__(OBJP) objp = (OBJP);                                       \
+  __typeof__(P00_AT(objp)) ret;                                         \
+  /* cast to the same type to be sure that the result is an lvalue */   \
+  (__typeof__(P00_AT(objp)))                                            \
+    P99_GENERIC                                                         \
+    (ret,                                                               \
+     ({                                                                 \
+       atomic_flag_lock(&objp->p00_lock);                               \
+       ret = P00_AT(objp);                                              \
+       atomic_flag_unlock(&objp->p00_lock);                             \
+       ret;                                                             \
+     }),                                                                \
+     (_Bool,              __sync_val_compare_and_swap(&P00_AI(objp), 0, 0)), \
+     (char,               __sync_val_compare_and_swap(&P00_AI(objp), 0, 0)), \
+     (signed char,        __sync_val_compare_and_swap(&P00_AI(objp), 0, 0)), \
+     (unsigned char,      __sync_val_compare_and_swap(&P00_AI(objp), 0, 0)), \
+     (signed short,       __sync_val_compare_and_swap(&P00_AI(objp), 0, 0)), \
+     (unsigned short,     __sync_val_compare_and_swap(&P00_AI(objp), 0, 0)), \
+     (signed,             __sync_val_compare_and_swap(&P00_AI(objp), 0, 0)), \
+     (unsigned,           __sync_val_compare_and_swap(&P00_AI(objp), 0, 0)), \
+     (signed long,        __sync_val_compare_and_swap(&P00_AI(objp), 0, 0)), \
+     (unsigned long,      __sync_val_compare_and_swap(&P00_AI(objp), 0, 0)), \
+     (signed long long,   __sync_val_compare_and_swap(&P00_AI(objp), 0, 0)), \
+     (unsigned long long, __sync_val_compare_and_swap(&P00_AI(objp), 0, 0))); \
  })
 
+/**
+ ** @memberof atomic_int
+ **/
+#define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)           \
+({                                                                      \
+  _Bool p00_ret;                                                        \
+  __typeof__(OBJP) o = (OBJP);                                          \
+  __typeof__(EXPECTED) p00_exp = (EXPECTED);                            \
+  __typeof__(DESIRED) p00_des = (DESIRED);                              \
+  if (!P99_TYPE_INTEGER(P00_AT(o))) {                                   \
+    atomic_flag_lock(&o->p00_lock);                                     \
+    p00_ret = !memcmp(p00_exp, &P00_AT(o), sizeof P00_AT(o));           \
+    /* Both, *EXPECTED and DESIRED must be assignment compatible        \
+       with the base type */                                            \
+    if (!p00_ret) *p00_exp = P00_AT(o);                                 \
+    else         P00_AT(o) = p00_des;                                   \
+    atomic_flag_unlock(&o->p00_lock);                                   \
+  } else {                                                              \
+    p00_ret = P99_GENERIC                                               \
+      (P00_AT(o),                                                       \
+       p00_atomic_compare_exchange_weak_generic,                        \
+       (_Bool,              atomic_bool_compare_exchange_weak),         \
+       (char,               atomic_char_compare_exchange_weak),         \
+       (signed char,        atomic_schar_compare_exchange_weak),        \
+       (unsigned char,      atomic_uchar_compare_exchange_weak),        \
+       (signed short,       atomic_short_compare_exchange_weak),        \
+       (unsigned short,     atomic_ushort_compare_exchange_weak),       \
+       (signed,             atomic_int_compare_exchange_weak),          \
+       (unsigned,           atomic_uint_compare_exchange_weak),         \
+       (signed long,        atomic_long_compare_exchange_weak),         \
+       (unsigned long,      atomic_ulong_compare_exchange_weak),        \
+       (signed long long,   atomic_llong_compare_exchange_weak),        \
+       (unsigned long long, atomic_ullong_compare_exchange_weak))       \
+      (&P00_AT(o), p00_exp, sizeof P00_AT(o), p00_des);                 \
+  }                                                                     \
+  p00_ret;                                                              \
+ })
 
+/**
+ ** @memberof atomic_int
+ **/
+#define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)  \
+({                                                      \
+  __typeof__(OBJP) p00_objp = OBJP;                     \
+  __typeof__(P00_AT(p00_objp)) p00_ret;                 \
+  __typeof__(OPERAND) p00_op = OPERAND;                 \
+  if (!atomic_is_lock_free(p00_objp)) {                 \
+    atomic_flag_lock(&p00_objp->p00_lock);              \
+    p00_ret = P00_AT(p00_objp);                         \
+    P00_AT(p00_objp) OPERATOR p00_op;                   \
+    atomic_flag_unlock(&p00_objp->p00_lock);            \
+  } else {                                              \
+    p00_ret =                                           \
+      (__typeof__(p00_ret))                             \
+      P99_GENERIC                                       \
+      (p00_ret,                                         \
+       p00_atomic_store_ignore,                         \
+       (_Bool,              BUILTIN),                   \
+       (char,               BUILTIN),                   \
+       (signed char,        BUILTIN),                   \
+       (unsigned char,      BUILTIN),                   \
+       (signed short,       BUILTIN),                   \
+       (unsigned short,     BUILTIN),                   \
+       (signed,             BUILTIN),                   \
+       (unsigned,           BUILTIN),                   \
+       (signed long,        BUILTIN),                   \
+       (unsigned long,      BUILTIN),                   \
+       (signed long long,   BUILTIN),                   \
+       (unsigned long long, BUILTIN))                   \
+      (&P00_AT(p00_objp), p00_op);                      \
+  }                                                     \
+  p00_ret;                                              \
+ })
+
+/**
+ ** @memberof atomic_int
+ **/
+#define atomic_fetch_add(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_add, +=)
 
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_add(OBJP, OPERAND) __sync_fetch_and_add(&P00_AT(OBJP), OPERAND)
+#define atomic_fetch_sub(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_sub, -=)
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_sub(OBJP, OPERAND) __sync_fetch_and_sub(&P00_AT(OBJP), OPERAND)
+#define atomic_fetch_or(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_or, |=)
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_or(OBJP, OPERAND) __sync_fetch_and_or(&P00_AT(OBJP), OPERAND)
+#define atomic_fetch_and(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_and, &=)
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_fetch_and(OBJP, OPERAND) __sync_fetch_and_and(&P00_AT(OBJP), OPERAND)
-
-/**
- ** @memberof atomic_int
- **/
-#define atomic_fetch_xor(OBJP, OPERAND) __sync_fetch_and_xor(&P00_AT(OBJP), OPERAND)
+#define atomic_fetch_xor(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_xor, ^=)
 
 
 /**

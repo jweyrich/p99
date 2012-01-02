@@ -29,20 +29,27 @@ struct tester {
 };
 
 P99_DECLARE_ATOMIC(tester, atomic_tester);
-
 atomic_tester testvar;
+
+P99_DECLARE_ATOMIC(int*, atomic_intp);
+atomic_intp intp;
 
 static
 int task(void* arg) {
   int ret = 0;
-  printf("arg is %p, %d\n", arg, P99_TYPE_INTEGER(arg));
+  printf("arg is %p, %d, %s %s\n",
+         arg,
+         P99_TYPE_INTEGER(arg),
+         bool_getname(atomic_is_lock_free(&D)),
+         bool_getname(atomic_is_lock_free(&U)));
   atomic_fetch_add(&U, 1u);
   mtx_lock(&mut);
   ++count;
   ret = count;
   cnd_signal(&cond);
   mtx_unlock(&mut);
-  atomic_store(&D, ret);
+  atomic_fetch_add(&D, ret);
+  atomic_fetch_add(&intp, 1);
   atomic_store(&testvar, (tester){ .a = ret });
   if (ret % 3) thrd_yield();
   if (ret % 2)
@@ -58,6 +65,13 @@ int main(int argc, char *argv[]) {
   mtx_init(&mut, mtx_plain);
   cnd_init(&cond);
   thrd_t id[n];
+  int* intp2 = 0;
+  atomic_compare_exchange_weak(&intp, &intp2, &argc);
+  unsigned U2 = 3;
+  atomic_compare_exchange_weak(&U, &U2, 2);
+  printf("initial value of U is %u, should be 0\n", U2);
+  atomic_compare_exchange_weak(&U, &U2, 1);
+  printf("value of U is set to %u, should be 1\n", atomic_load(&U));
   for (size_t i = 0; i < n; ++i)
     thrd_create(&id[i], task, &id[i]);
   for (size_t i = 1; i < n; i += 2)
@@ -68,5 +82,9 @@ int main(int argc, char *argv[]) {
   mtx_lock(&mut);
   while (count < n) cnd_wait(&cond, &mut);
   mtx_unlock(&mut);
-  printf("results are %d, %d and %u\n", res, atomic_load(&testvar).a, atomic_load(&U));
+  printf("results are %d, %d, %zu and %g\n",
+         res,
+         atomic_load(&testvar).a,
+         (size_t)(atomic_load(&intp) - &argc),
+         atomic_load(&D));
 }

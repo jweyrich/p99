@@ -2767,6 +2767,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_COMPILER_DIAB</name>
+      <anchorfile>p99__generated_8h_a7328f37b6982e06caecbbc81684ff663.html</anchorfile>
+      <anchor>a7328f37b6982e06caecbbc81684ff663</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_COMPILER_GNU</name>
       <anchorfile>p99__generated_8h_a8c22d83d44218e874cb9f3f78ea09026.html</anchorfile>
       <anchor>a8c22d83d44218e874cb9f3f78ea09026</anchor>

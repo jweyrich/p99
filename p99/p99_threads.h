@@ -704,7 +704,6 @@ P99_DECLARE_THREAD_LOCAL(p00_thrd *, p00_thrd_local);
 
 #define P00_THRD_LOCAL P99_THREAD_LOCAL(p00_thrd_local)
 
-P99_WEAK(p00_thrd_create)
 inline
 void * p00_thrd_create(void* context) {
   p00_thrd * cntxt = context;
