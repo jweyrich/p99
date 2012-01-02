@@ -424,6 +424,7 @@ my @compilers = (
     "comeau" => "__COMO__",
     "cray" => "_CRAYC",
     "dec" => "__DECC_VER",
+    "diab" => "__DCC__",
     "hp" => "__HP_cc",
     "ibm" => "__IBMC__",
     "intel" => "__INTEL_COMPILER",

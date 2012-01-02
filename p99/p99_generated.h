@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
+/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -41,7 +41,7 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Mon, 02 Jan 2012 13:28:36 +0100"
+#define P00_VERSION_DATE "Mon, 02 Jan 2012 15:50:40 +0100"
 #define P00_VERSION_ID ""
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -8309,35 +8309,37 @@ automatically generated, do not change manually.
 #define P00_COMPILER_PRAGMA_CRAY(...)
 #define P99_COMPILER_DEC 16
 #define P00_COMPILER_PRAGMA_DEC(...)
-#define P99_COMPILER_GNU 32
+#define P99_COMPILER_DIAB 32
+#define P00_COMPILER_PRAGMA_DIAB(...)
+#define P99_COMPILER_GNU 64
 #define P00_COMPILER_PRAGMA_GNU(...)
-#define P99_COMPILER_HP 64
+#define P99_COMPILER_HP 128
 #define P00_COMPILER_PRAGMA_HP(...)
-#define P99_COMPILER_IBM 128
+#define P99_COMPILER_IBM 256
 #define P00_COMPILER_PRAGMA_IBM(...)
-#define P99_COMPILER_INTEL 256
+#define P99_COMPILER_INTEL 512
 #define P00_COMPILER_PRAGMA_INTEL(...)
-#define P99_COMPILER_KAI 512
+#define P99_COMPILER_KAI 1024
 #define P00_COMPILER_PRAGMA_KAI(...)
-#define P99_COMPILER_LCC 1024
+#define P99_COMPILER_LCC 2048
 #define P00_COMPILER_PRAGMA_LCC(...)
-#define P99_COMPILER_METROWERKS 2048
+#define P99_COMPILER_METROWERKS 4096
 #define P00_COMPILER_PRAGMA_METROWERKS(...)
-#define P99_COMPILER_MICROSOFT 4096
+#define P99_COMPILER_MICROSOFT 8192
 #define P00_COMPILER_PRAGMA_MICROSOFT(...)
-#define P99_COMPILER_OPEN64 8192
+#define P99_COMPILER_OPEN64 16384
 #define P00_COMPILER_PRAGMA_OPEN64(...)
-#define P99_COMPILER_PCC 16384
+#define P99_COMPILER_PCC 32768
 #define P00_COMPILER_PRAGMA_PCC(...)
-#define P99_COMPILER_PORTLAND 32768
+#define P99_COMPILER_PORTLAND 65536
 #define P00_COMPILER_PRAGMA_PORTLAND(...)
-#define P99_COMPILER_SGI 65536
+#define P99_COMPILER_SGI 131072
 #define P00_COMPILER_PRAGMA_SGI(...)
-#define P99_COMPILER_SUN 131072
+#define P99_COMPILER_SUN 262144
 #define P00_COMPILER_PRAGMA_SUN(...)
-#define P99_COMPILER_TINYC 262144
+#define P99_COMPILER_TINYC 524288
 #define P00_COMPILER_PRAGMA_TINYC(...)
-#define P99_COMPILER_WATCOM 524288
+#define P99_COMPILER_WATCOM 1048576
 #define P00_COMPILER_PRAGMA_WATCOM(...)
 #if defined(__BORLANDC__)
 # define P99_COMPILER 1
@@ -8364,78 +8366,83 @@ automatically generated, do not change manually.
 # define P99_COMPILER_VERSION "dec "
 # undef P00_COMPILER_PRAGMA_DEC
 # define P00_COMPILER_PRAGMA_DEC(...) _Pragma(__VA_ARGS__)
+#elif defined(__DCC__)
+# define P99_COMPILER 32
+# define P99_COMPILER_VERSION "diab "
+# undef P00_COMPILER_PRAGMA_DIAB
+# define P00_COMPILER_PRAGMA_DIAB(...) _Pragma(__VA_ARGS__)
 #elif defined(__HP_cc)
-# define P99_COMPILER 64
+# define P99_COMPILER 128
 # define P99_COMPILER_VERSION "hp "
 # undef P00_COMPILER_PRAGMA_HP
 # define P00_COMPILER_PRAGMA_HP(...) _Pragma(__VA_ARGS__)
 #elif defined(__IBMC__)
-# define P99_COMPILER 128
+# define P99_COMPILER 256
 # define P99_COMPILER_VERSION "ibm "
 # undef P00_COMPILER_PRAGMA_IBM
 # define P00_COMPILER_PRAGMA_IBM(...) _Pragma(__VA_ARGS__)
 #elif defined(__INTEL_COMPILER)
-# define P99_COMPILER 256
+# define P99_COMPILER 512
 # define P99_COMPILER_VERSION "intel "
 # undef P00_COMPILER_PRAGMA_INTEL
 # define P00_COMPILER_PRAGMA_INTEL(...) _Pragma(__VA_ARGS__)
 #elif defined(__KCC)
-# define P99_COMPILER 512
+# define P99_COMPILER 1024
 # define P99_COMPILER_VERSION "kai "
 # undef P00_COMPILER_PRAGMA_KAI
 # define P00_COMPILER_PRAGMA_KAI(...) _Pragma(__VA_ARGS__)
 #elif defined(__LCC__)
-# define P99_COMPILER 1024
+# define P99_COMPILER 2048
 # define P99_COMPILER_VERSION "lcc "
 # undef P00_COMPILER_PRAGMA_LCC
 # define P00_COMPILER_PRAGMA_LCC(...) _Pragma(__VA_ARGS__)
 #elif defined(__MWERKS__)
-# define P99_COMPILER 2048
+# define P99_COMPILER 4096
 # define P99_COMPILER_VERSION "metrowerks "
 # undef P00_COMPILER_PRAGMA_METROWERKS
 # define P00_COMPILER_PRAGMA_METROWERKS(...) _Pragma(__VA_ARGS__)
 #elif defined(_MSC_VER)
-# define P99_COMPILER 4096
+# define P99_COMPILER 8192
 # define P99_COMPILER_VERSION "microsoft "
 # undef P00_COMPILER_PRAGMA_MICROSOFT
 # define P00_COMPILER_PRAGMA_MICROSOFT(...) _Pragma(__VA_ARGS__)
 #elif defined(__OPEN64__)
-# define P99_COMPILER 8192
+# define P99_COMPILER 16384
 # define P99_COMPILER_VERSION "open64 "
 # undef P00_COMPILER_PRAGMA_OPEN64
 # define P00_COMPILER_PRAGMA_OPEN64(...) _Pragma(__VA_ARGS__)
 #elif defined(__PCC__)
-# define P99_COMPILER 16384
+# define P99_COMPILER 32768
 # define P99_COMPILER_VERSION "pcc "
 # undef P00_COMPILER_PRAGMA_PCC
 # define P00_COMPILER_PRAGMA_PCC(...) _Pragma(__VA_ARGS__)
 #elif defined(__PGI)
-# define P99_COMPILER 32768
+# define P99_COMPILER 65536
 # define P99_COMPILER_VERSION "portland "
 # undef P00_COMPILER_PRAGMA_PORTLAND
 # define P00_COMPILER_PRAGMA_PORTLAND(...) _Pragma(__VA_ARGS__)
 #elif defined(__sgi)
-# define P99_COMPILER 65536
+# define P99_COMPILER 131072
 # define P99_COMPILER_VERSION "sgi "
 # undef P00_COMPILER_PRAGMA_SGI
 # define P00_COMPILER_PRAGMA_SGI(...) _Pragma(__VA_ARGS__)
 #elif defined(__SUNPRO_C)
-# define P99_COMPILER 131072
+# define P99_COMPILER 262144
 # define P99_COMPILER_VERSION "sun "
 # undef P00_COMPILER_PRAGMA_SUN
 # define P00_COMPILER_PRAGMA_SUN(...) _Pragma(__VA_ARGS__)
 #elif defined(__TINYC__)
-# define P99_COMPILER 262144
+# define P99_COMPILER 524288
 # define P99_COMPILER_VERSION "tinyc "
 # undef P00_COMPILER_PRAGMA_TINYC
 # define P00_COMPILER_PRAGMA_TINYC(...) _Pragma(__VA_ARGS__)
 #elif defined(__WATCOMC__)
-# define P99_COMPILER 524288
+# define P99_COMPILER 1048576
 # define P99_COMPILER_VERSION "watcom "
 # undef P00_COMPILER_PRAGMA_WATCOM
 # define P00_COMPILER_PRAGMA_WATCOM(...) _Pragma(__VA_ARGS__)
 #elif defined(__GNUC__)
-# define P99_COMPILER 32
+# define P99_COMPILER 64
 # define P99_COMPILER_VERSION "gnu "
 # undef P00_COMPILER_PRAGMA_GNU
 # define P00_COMPILER_PRAGMA_GNU(...) _Pragma(__VA_ARGS__)
