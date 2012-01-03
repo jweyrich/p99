@@ -186,54 +186,54 @@ P99_DECLARE_STRUCT(NAME)
  **/
 #define P99_ENC_INIT(V) { .p00_val = (V), }
 
-#define P99_STD_UNSIGNED_TYPES                  \
- _Bool,                                         \
- unsigned char,                                 \
- unsigned short int,                            \
- unsigned int,                                  \
- unsigned long int,                             \
+#define P99_STD_UNSIGNED_TYPES                                 \
+ _Bool,                                                        \
+ unsigned char,                                                \
+ unsigned short int,                                           \
+ unsigned int,                                                 \
+ unsigned long int,                                            \
  unsigned long long int
 
-#define P99_STD_SIGNED_TYPES                    \
-  signed char,                                  \
-  short int,                                    \
-  int,                                          \
-  long int ,                                    \
+#define P99_STD_SIGNED_TYPES                                   \
+  signed char,                                                 \
+  short int,                                                   \
+  int,                                                         \
+  long int ,                                                   \
   long long int
 
-#define P99_STD_REAL_FLOATING_TYPES             \
- float,                                         \
- double,                                        \
+#define P99_STD_REAL_FLOATING_TYPES                            \
+ float,                                                        \
+ double,                                                       \
  long double
 
-#define P99_STD_COMPLEX_TYPES                   \
-float _Complex,                                 \
-double _Complex,                                \
+#define P99_STD_COMPLEX_TYPES                                  \
+float _Complex,                                                \
+double _Complex,                                               \
 long double _Complex
 
 #define P99_STD_FLOATING_TYPES P99_STD_REAL_FLOATING_TYPES, P99_STD_COMPLEX_TYPES
 
-#define P99_STD_BASIC_TYPES                     \
- char,                                          \
- P99_STD_INTEGER_TYPES,                         \
+#define P99_STD_BASIC_TYPES                                    \
+ char,                                                         \
+ P99_STD_INTEGER_TYPES,                                        \
  P99_STD_FLOATING_TYPES
 
-#define P99_STD_CHARACTER_TYPES                 \
-  char,                                         \
-  signed char,                                  \
+#define P99_STD_CHARACTER_TYPES                                \
+  char,                                                        \
+  signed char,                                                 \
   unsigned char
 
-#define P99_STD_INTEGER_TYPES                   \
-  char,                                         \
-  P99_STD_SIGNED_TYPES,                         \
+#define P99_STD_INTEGER_TYPES                                  \
+  char,                                                        \
+  P99_STD_SIGNED_TYPES,                                        \
   P99_STD_UNSIGNED_TYPES
 
-#define P99_STD_REAL_TYPES                      \
-  P99_STD_INTEGER_TYPES,                        \
+#define P99_STD_REAL_TYPES                                     \
+  P99_STD_INTEGER_TYPES,                                       \
   P99_STD_REAL_FLOATING_TYPES
 
-#define P99_STD_ARITHMETIC_TYPES                \
-  P99_STD_INTEGER_TYPES,                        \
+#define P99_STD_ARITHMETIC_TYPES                               \
+  P99_STD_INTEGER_TYPES,                                       \
   P99_STD_FLOATING_TYPES
 
 /** @}

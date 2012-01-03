@@ -11,6 +11,7 @@
 /* particular purpose.                                                       */
 /*                                                                           */
 #include "p99_threads.h"
+#include "p99_generic.h"
 
 
 void * p00_thrd_create(void* context);
@@ -34,7 +35,7 @@ atomic_tester testvar;
 P99_DECLARE_ATOMIC(int*, atomic_intp);
 
 P99_DECLARE_ATOMIC(int*, atomic_intp2);
-atomic_intp intp2;
+atomic_intp intp;
 
 static
 int real_task(atomic_intp* arg) {
@@ -66,8 +67,6 @@ static
 int task(void* arg) {
   return real_task(arg);
 }
-
-uintptr_t p00_atomic_ignore(void volatile* objp, ...);
 
 int main(int argc, char *argv[]) {
   size_t n = argc < 2 ? 2 : strtoul(argv[1], 0, 0);

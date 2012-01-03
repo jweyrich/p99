@@ -155,10 +155,10 @@ __builtin_choose_expr                                                 \
 
 #define P00_TYPE_CHOICE(VAL, T, I) (T, VAL)
 
-#define P99_TYPE_CHOICE(EXP, MATCH, DEF, ...)                           \
-P99_GENERIC                                                             \
-((EXP),                                                                 \
- DEF,                                                                   \
+#define P99_TYPE_CHOICE(EXP, MATCH, DEF, ...)                                  \
+P99_GENERIC                                                                    \
+((EXP),                                                                        \
+ DEF,                                                                          \
  P99_FOR(MATCH, P99_NARG(__VA_ARGS__), P00_SEQ, P00_TYPE_CHOICE, __VA_ARGS__))
 
 /**
