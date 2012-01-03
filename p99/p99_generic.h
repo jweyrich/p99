@@ -153,86 +153,36 @@ __builtin_choose_expr                                                 \
  ** @{
  **/
 
-#define P00_TYPE_EXPRESSION_(_0, T, I) (T, 1)
+#define P00_TYPE_CHOICE(VAL, T, I) (T, VAL)
 
-#define P00_TYPE_EXPRESSION(EXP, ...)                                          \
-P99_GENERIC                                                                    \
-((EXP),                                                                        \
- 0,                                                                            \
- P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_TYPE_EXPRESSION_, __VA_ARGS__))
+#define P99_TYPE_CHOICE(EXP, MATCH, DEF, ...)                           \
+P99_GENERIC                                                             \
+((EXP),                                                                 \
+ DEF,                                                                   \
+ P99_FOR(MATCH, P99_NARG(__VA_ARGS__), P00_SEQ, P00_TYPE_CHOICE, __VA_ARGS__))
 
-#define P99_TYPE_INTEGER(EXP)                                  \
-P00_TYPE_EXPRESSION                                            \
-((EXP),                                                        \
- _Bool,                                                        \
- char,                                                         \
- signed char,                                                  \
- unsigned char,                                                \
- signed short,                                                 \
- unsigned short,                                               \
- signed,                                                       \
- unsigned,                                                     \
- signed long,                                                  \
- unsigned long,                                                \
- signed long long,                                             \
- unsigned long long)
+/**
+ ** @addtogroup type_generic Generic macros that classify expressions
+ **/
 
-#if CHAR_MIN < 0
-/* char is signed */
-#define P99_TYPE_UNSIGNED(EXP)                                 \
-P00_TYPE_EXPRESSION                                            \
-((EXP),                                                        \
- _Bool,                                                        \
- unsigned char,                                                \
- unsigned short,                                               \
- unsigned,                                                     \
- unsigned long,                                                \
- unsigned long long)
-
-#define P99_TYPE_SIGNED(EXP)                                   \
-P00_TYPE_EXPRESSION                                            \
-((EXP),                                                        \
- char,                                                         \
- signed char,                                                  \
- signed short,                                                 \
- signed,                                                       \
- signed long,                                                  \
- signed long long)
-#else
-/* char is signed */
-#define P99_TYPE_UNSIGNED(EXP)                                 \
-P00_TYPE_EXPRESSION                                            \
-((EXP),                                                        \
- _Bool,                                                        \
- char,                                                         \
- unsigned char,                                                \
- unsigned short,                                               \
- unsigned,                                                     \
- unsigned long,                                                \
- unsigned long long)
-
-#define P99_TYPE_SIGNED(EXP)                                   \
-P00_TYPE_EXPRESSION                                            \
-((EXP),                                                        \
- signed char,                                                  \
- signed short,                                                 \
- signed,                                                       \
- signed long,                                                  \
- signed long long)
-#endif
-
-#define P99_TYPE_FLOATING(EXP)                                 \
-P00_TYPE_EXPRESSION                                            \
-((EXP),                                                        \
- float,                                                        \
- double,                                                       \
- long double)
-
+#define P99_TYPE_UNSIGNED(EXP)      P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_UNSIGNED_TYPES)
+#define P99_TYPE_SIGNED(EXP)        P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_SIGNED_TYPES)
+#define P99_TYPE_REAL_FLOATING(EXP) P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_REAL_FLOATING_TYPES)
+#define P99_TYPE_COMPLEX(EXP)       P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_COMPLEX_TYPES)
+#define P99_TYPE_FLOATING(EXP)      P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_FLOATING_TYPES)
+#define P99_TYPE_BASIC(EXP)         P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_BASIC_TYPES)
+#define P99_TYPE_CHARACTER(EXP)     P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_CHARACTER_TYPES)
+#define P99_TYPE_INTEGER(EXP)       P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_INTEGER_TYPES)
+#define P99_TYPE_REAL(EXP)          P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_REAL_TYPES)
+#define P99_TYPE_ARITHMETIC(EXP)    P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_ARITHMETIC_TYPES)
 
 /**
  ** @}
  **/
 
+/**
+ ** @}
+ **/
 
 inline int* p00_generic_test(int * a) {
   double *x;
