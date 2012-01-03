@@ -32,24 +32,28 @@ P99_DECLARE_ATOMIC(tester, atomic_tester);
 atomic_tester testvar;
 
 P99_DECLARE_ATOMIC(int*, atomic_intp);
-atomic_intp intp;
+
+P99_DECLARE_ATOMIC(int*, atomic_intp2);
+atomic_intp intp2;
 
 static
-int task(void* arg) {
+int real_task(atomic_intp* arg) {
   int ret = 0;
   printf("arg is %p, %d, %s %s\n",
          arg,
-         P99_TYPE_INTEGER(arg),
+         P99_TYPE_FLOATING(atomic_load(arg)),
          bool_getname(atomic_is_lock_free(&D)),
          bool_getname(atomic_is_lock_free(&U)));
-  atomic_fetch_add(&U, 1u);
+  (void)atomic_fetch_add(&U, 1u);
   mtx_lock(&mut);
   ++count;
   ret = count;
   cnd_signal(&cond);
   mtx_unlock(&mut);
-  atomic_fetch_add(&D, ret);
-  atomic_fetch_add(&intp, 1);
+  (void)atomic_fetch_add(&D, ret);
+  (void)atomic_fetch_add(&intp, 1);
+  int * point = atomic_fetch_add(arg, 1);
+  *point = ret;
   atomic_store(&testvar, (tester){ .a = ret });
   if (ret % 3) thrd_yield();
   if (ret % 2)
@@ -58,7 +62,12 @@ int task(void* arg) {
     thrd_exit(ret);
 }
 
+static
+int task(void* arg) {
+  return real_task(arg);
+}
 
+uintptr_t p00_atomic_ignore(void volatile* objp, ...);
 
 int main(int argc, char *argv[]) {
   size_t n = argc < 2 ? 2 : strtoul(argv[1], 0, 0);
@@ -66,14 +75,18 @@ int main(int argc, char *argv[]) {
   cnd_init(&cond);
   thrd_t id[n];
   int* intp2 = 0;
-  atomic_compare_exchange_weak(&intp, &intp2, &argc);
+  (void)atomic_compare_exchange_weak(&intp, &intp2, &argc);
   unsigned U2 = 3;
-  atomic_compare_exchange_weak(&U, &U2, 2);
+  (void)atomic_compare_exchange_weak(&U, &U2, 2);
   printf("initial value of U is %u, should be 0\n", U2);
-  atomic_compare_exchange_weak(&U, &U2, 1);
+  (void)atomic_compare_exchange_weak(&U, &U2, 1);
   printf("value of U is set to %u, should be 1\n", atomic_load(&U));
+  int arr[n+1];
+  atomic_intp arrp = intp; //ATOMIC_VAR_INIT(0);
+  atomic_store(&arrp, &arr[0]);
+  real_task(&arrp);
   for (size_t i = 0; i < n; ++i)
-    thrd_create(&id[i], task, &id[i]);
+    thrd_create(&id[i], task, &arrp);
   for (size_t i = 1; i < n; i += 2)
     thrd_detach(id[i]);
   int res = 0;
