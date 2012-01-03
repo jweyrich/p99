@@ -400,16 +400,16 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 #endif
 
 #ifndef alignof
+#define alignof _Alignof
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
 #define _Alignof(T) __alignof__(T)
-#define alignof _Alignof
 #endif
 #endif
 
 #ifndef alignas
+#define alignas _Alignas
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
 #define _Alignas(X) __attribute__((__aligned__(X)))
-#define alignas _Alignas
 #endif
 #endif
 
