@@ -27,50 +27,74 @@
 
 /**
  ** @addtogroup atomic_macros
+ **
+ ** Most of the macros defined here just serve the purpose of
+ ** detecting the lock-free property for specific integer data
+ ** types. Names are used as they are foreseen in the standard, e.g
+ ** ::ATOMIC_INT_LOCK_FREE that handles the case for @c int and @c
+ ** unsigned types.
+ **
+ ** This information can be provided externally. If it isn't, some
+ ** heuristic is used to detect these features. Currently the only
+ ** mechanism that is implemented is the one of gcc.
+ **
+ ** From this information then is constructed a list of atomic integer
+ ** types, ::P99_ATOMIC_LOCK_FREE_TYPES, that is used inside the
+ ** macros for type generic programming.
+ **
+ ** The only type/functions that is always necessary is ::atomic_flag
+ ** that is used for all other atomic types.
+ **
  ** @{
  **/
 
 #ifndef ATOMIC_BOOL_LOCK_FREE
-# ifdef __GNUC__
+# ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
 #define ATOMIC_BOOL_LOCK_FREE 2
 # else
 #define ATOMIC_BOOL_LOCK_FREE 0
 # endif
 #endif
 #ifndef ATOMIC_CHAR_LOCK_FREE
-# ifdef __GNUC__
+# ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
 #define ATOMIC_CHAR_LOCK_FREE 2
 # else
 #define ATOMIC_CHAR_LOCK_FREE 0
 # endif
 #endif
 #ifndef ATOMIC_SHORT_LOCK_FREE
-# ifdef __GNUC__
+# ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
 #define ATOMIC_SHORT_LOCK_FREE 2
 # else
 #define ATOMIC_SHORT_LOCK_FREE 0
 # endif
 #endif
 #ifndef ATOMIC_INT_LOCK_FREE
-# ifdef __GNUC__
+# ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
 #define ATOMIC_INT_LOCK_FREE 2
 # else
 #define ATOMIC_INT_LOCK_FREE 0
 # endif
 #endif
 #ifndef ATOMIC_LONG_LOCK_FREE
-# ifdef __GNUC__
-#define ATOMIC_LONG_LOCK_FREE 2
-# else
-#define ATOMIC_LONG_LOCK_FREE 0
-# endif
+#  if ULONG_MAX == UINT_MAX
+#   define ATOMIC_LONG_LOCK_FREE ATOMIC_INT_LOCK_FREE
+#  elif __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 && (ULONG_MAX <= UINT64_C(18446744073709551615))
+#   define ATOMIC_LONG_LOCK_FREE 2
+#  else
+#   define ATOMIC_LONG_LOCK_FREE 0
+#  endif
 #endif
 #ifndef ATOMIC_LLONG_LOCK_FREE
-# ifdef __GNUC__
-#define ATOMIC_LLONG_LOCK_FREE 2
-# else
-#define ATOMIC_LLONG_LOCK_FREE 0
-# endif
+#  if ULLONG_MAX == UINT_MAX
+#   define ATOMIC_LLONG_LOCK_FREE ATOMIC_INT_LOCK_FREE
+#  elif ULONG_MAX == ULONG_MAX
+#   define ATOMIC_LLONG_LOCK_FREE ATOMIC_LONG_LOCK_FREE
+#  elif __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 && (ULLONG_MAX <= UINT64_C(18446744073709551615))
+#   define ATOMIC_LLONG_LOCK_FREE 2
+#  else
+#   define ATOMIC_LLONG_LOCK_FREE 0
+#  endif
 #endif
 #ifndef ATOMIC_POINTER_LOCK_FREE
 # ifdef __GNUC__
@@ -121,16 +145,98 @@
  ** @brief A list of types that are supposed to have lock-free atomic
  ** operations.
  **
- ** If not defined externally, this resolves to the list of standard
- ** integer types as given in the C standard.
+ ** This list is constructed from the knowledge given via the
+ ** lock-free macros for the standard types.
+ **
+ ** @see ATOMIC_BOOL_LOCK_FREE
+ ** @see ATOMIC_CHAR_LOCK_FREE
+ ** @see ATOMIC_SHORT_LOCK_FREE
+ ** @see ATOMIC_INT_LOCK_FREE
+ ** @see ATOMIC_LONG_LOCK_FREE
+ ** @see ATOMIC_LLONG_LOCK_FREE
  **/
 #ifndef P99_ATOMIC_LOCK_FREE_TYPES
-# define P99_ATOMIC_LOCK_FREE_TYPES                                      \
-P99_IF_EQ_2(ATOMIC_INT_LOCK_FREE)(int, unsigned int)()                  \
-P99_IF_EQ_2(ATOMIC_BOOL_LOCK_FREE)(,_Bool)()                            \
-P99_IF_EQ_2(ATOMIC_SHORT_LOCK_FREE)(,short, unsigned short)()           \
-P99_IF_EQ_2(ATOMIC_LONG_LOCK_FREE)(,long, unsigned long)()              \
-P99_IF_EQ_2(ATOMIC_LLONG_LOCK_FREE)(,long long, unsigned long long)()
+# define P99_ATOMIC_LOCK_FREE_TYPES P00_ATOMIC_LOCK_FREE_TYPES5_
+
+#if ATOMIC_BOOL_LOCK_FREE == 2
+# define P00_ATOMIC_LOCK_FREE_TYPES0 _Bool
+#endif
+#if ATOMIC_CHAR_LOCK_FREE == 2
+# define P00_ATOMIC_LOCK_FREE_TYPES1 char, signed char, unsigned char
+#endif
+#if ATOMIC_SHORT_LOCK_FREE == 2
+# define P00_ATOMIC_LOCK_FREE_TYPES2 short, unsigned short
+#endif
+#if ATOMIC_INT_LOCK_FREE == 2
+# define P00_ATOMIC_LOCK_FREE_TYPES3 int, unsigned int
+#endif
+#if ATOMIC_LONG_LOCK_FREE == 2
+# define P00_ATOMIC_LOCK_FREE_TYPES4 long, unsigned long
+#endif
+#if ATOMIC_LLONG_LOCK_FREE == 2
+# define P00_ATOMIC_LOCK_FREE_TYPES5 long long, unsigned long long
+#endif
+
+#ifdef P00_ATOMIC_LOCK_FREE_TYPES0
+# ifdef P00_ATOMIC_LOCK_FREE_TYPES1
+#  define P00_ATOMIC_LOCK_FREE_TYPES1_ P00_ATOMIC_LOCK_FREE_TYPES0, P00_ATOMIC_LOCK_FREE_TYPES1
+# else
+#  define P00_ATOMIC_LOCK_FREE_TYPES1_ P00_ATOMIC_LOCK_FREE_TYPES0
+# endif
+#else
+# ifdef P00_ATOMIC_LOCK_FREE_TYPES1
+#  define P00_ATOMIC_LOCK_FREE_TYPES1_ P00_ATOMIC_LOCK_FREE_TYPES1
+# endif
+#endif
+
+#ifdef P00_ATOMIC_LOCK_FREE_TYPES1_
+# ifdef P00_ATOMIC_LOCK_FREE_TYPES2
+#  define P00_ATOMIC_LOCK_FREE_TYPES2_ P00_ATOMIC_LOCK_FREE_TYPES1_, P00_ATOMIC_LOCK_FREE_TYPES2
+# else
+#  define P00_ATOMIC_LOCK_FREE_TYPES2_ P00_ATOMIC_LOCK_FREE_TYPES1_
+# endif
+#else
+# ifdef P00_ATOMIC_LOCK_FREE_TYPES2
+#  define P00_ATOMIC_LOCK_FREE_TYPES2_ P00_ATOMIC_LOCK_FREE_TYPES2
+# endif
+#endif
+
+#ifdef P00_ATOMIC_LOCK_FREE_TYPES2_
+# ifdef P00_ATOMIC_LOCK_FREE_TYPES3
+#  define P00_ATOMIC_LOCK_FREE_TYPES3_ P00_ATOMIC_LOCK_FREE_TYPES2_, P00_ATOMIC_LOCK_FREE_TYPES3
+# else
+#  define P00_ATOMIC_LOCK_FREE_TYPES3_ P00_ATOMIC_LOCK_FREE_TYPES2_
+# endif
+#else
+# ifdef P00_ATOMIC_LOCK_FREE_TYPES3
+#  define P00_ATOMIC_LOCK_FREE_TYPES3_ P00_ATOMIC_LOCK_FREE_TYPES3
+# endif
+#endif
+
+#ifdef P00_ATOMIC_LOCK_FREE_TYPES3_
+# ifdef P00_ATOMIC_LOCK_FREE_TYPES4
+#  define P00_ATOMIC_LOCK_FREE_TYPES4_ P00_ATOMIC_LOCK_FREE_TYPES3_, P00_ATOMIC_LOCK_FREE_TYPES4
+# else
+#  define P00_ATOMIC_LOCK_FREE_TYPES4_ P00_ATOMIC_LOCK_FREE_TYPES3_
+# endif
+#else
+# ifdef P00_ATOMIC_LOCK_FREE_TYPES4
+#  define P00_ATOMIC_LOCK_FREE_TYPES4_ P00_ATOMIC_LOCK_FREE_TYPES4
+# endif
+#endif
+
+#ifdef P00_ATOMIC_LOCK_FREE_TYPES4_
+# ifdef P00_ATOMIC_LOCK_FREE_TYPES5
+#  define P00_ATOMIC_LOCK_FREE_TYPES5_ P00_ATOMIC_LOCK_FREE_TYPES4_, P00_ATOMIC_LOCK_FREE_TYPES5
+# else
+#  define P00_ATOMIC_LOCK_FREE_TYPES5_ P00_ATOMIC_LOCK_FREE_TYPES4_
+# endif
+#else
+# ifdef P00_ATOMIC_LOCK_FREE_TYPES5
+#  define P00_ATOMIC_LOCK_FREE_TYPES5_ P00_ATOMIC_LOCK_FREE_TYPES5
+# endif
+#endif
+
 _Pragma(P99_STRINGIFY(message P99_STRINGIFY(detected atomic types are P99_ATOMIC_LOCK_FREE_TYPES)))
 #endif
 
