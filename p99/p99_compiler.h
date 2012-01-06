@@ -14,6 +14,21 @@
 #define P99_COMPILER_H
 
 #include "p99_args.h"
+#include <float.h>
+#ifndef P00_NO_HAVE_ISO646_H
+# include <iso646.h>
+#endif
+#include <limits.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+
+#if __STDC_HOSTED__
+# include <assert.h>
+# include <wchar.h>
+# include <wctype.h>
+#endif
 
 /**
  ** @file
@@ -363,16 +378,25 @@ signed p00_trailing_comma_in_initializer__(void) {
  ** @{
  **/
 
-#if P99_GCC_VERSION >= 40600UL
-/* In C1x this macro must exactly have that value. */
-#define static_assert _Static_assert
+#if !defined(static_assert) && (P99_GCC_VERSION >= 40600UL)
+/* In C11 this macro must exactly have that value. */
+# define static_assert _Static_assert
 #endif
 
 /* implement emulation of some C11 features */
-#if  __STDC_VERSION__ > 201101L
-# include <assert.h>
+#if  __STDC_VERSION__ > 201100L
 # include <stdalign.h>
 # include <stdnoreturn.h>
+# if __STDC_HOSTED__
+#  include <uchar.h>
+# endif
+#else
+
+/* Define the unicode character types directly. */
+
+typedef uint_least16_t char16_t;
+typedef uint_least32_t char32_t;
+
 #endif /* C11 emulation support */
 
 #ifndef static_assert

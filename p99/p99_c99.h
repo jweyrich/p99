@@ -26,35 +26,37 @@
 
 #include "p99_compiler.h"
 
-#include <assert.h>
-#ifndef P00_NO_HAVE_COMPLEX_H
-# include <complex.h>
+#if __STDC_HOSTED__
+# ifndef __STDC_NO_COMPLEX__
+#  include <complex.h>
+# endif
+# include <ctype.h>
+# include <errno.h>
+# include <fenv.h>
+# include <inttypes.h>
+# include <locale.h>
+# include <math.h>
+# include <setjmp.h>
+# include <signal.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# ifndef P00_NO_HAVE_TGMATH_H
+#  include <tgmath.h>
+# endif
+# include <time.h>
+# include <wchar.h>
+# include <wctype.h>
+
+/* Additions by C11 */
+# if __STDC_VERSION__ > 201100L
+#  ifndef  __STDC_NO_ATOMICS__
+#   include <stdatomic.h>
+#  endif
+#  ifndef __STDC_NO_THREADS__
+#   include <threads.h>
+#  endif
+# endif
 #endif
-#include <ctype.h>
-#include <errno.h>
-#include <fenv.h>
-#include <float.h>
-#include <inttypes.h>
-#ifndef P00_NO_HAVE_ISO646_H
-# include <iso646.h>
-#endif
-#include <limits.h>
-#include <locale.h>
-#include <math.h>
-#include <setjmp.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#ifndef P00_NO_HAVE_TGMATH_H
-# include <tgmath.h>
-#endif
-#include <time.h>
-#include <wchar.h>
-#include <wctype.h>
 
 #endif      /* !P99_C99_H_ */

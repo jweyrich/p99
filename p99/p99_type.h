@@ -206,12 +206,15 @@ P99_DECLARE_STRUCT(NAME)
  double,                                                       \
  long double
 
-#define P99_STD_COMPLEX_TYPES                                  \
+#ifndef __STDC_NO_COMPLEX__
+# define P99_STD_COMPLEX_TYPES                                 \
 float _Complex,                                                \
 double _Complex,                                               \
 long double _Complex
-
-#define P99_STD_FLOATING_TYPES P99_STD_REAL_FLOATING_TYPES, P99_STD_COMPLEX_TYPES
+# define P99_STD_FLOATING_TYPES P99_STD_REAL_FLOATING_TYPES, P99_STD_COMPLEX_TYPES
+#else
+# define P99_STD_FLOATING_TYPES P99_STD_REAL_FLOATING_TYPES
+#endif
 
 #define P99_STD_BASIC_TYPES                                    \
  char,                                                         \
