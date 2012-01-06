@@ -269,7 +269,7 @@ P99_DECLARE_ENUM(memory_order,
  ** @{
  **/
 
-P99_ENC_DECLARE(int, atomic_flag);
+P99_ENC_DECLARE(int volatile, atomic_flag);
 
 #define P00_AT(OBJP) ((OBJP)->p00_xval.p00_type_member)
 #define P00_AI(OBJP) ((OBJP)->p00_xval.p00_integer_member)
@@ -391,18 +391,59 @@ P99_DECLARE_ATOMIC(long double, atomic_ldouble);
  ** @}
  **/
 
+
+/**
+ ** @addtogroup fences Memory Fences
+ **
+ ** This is only rudimentary support for fences. Basically all fences
+ ** but with argument ::memory_order_relaxed perform a full memory
+ ** barrier.
+ ** @{
+ **/
+
+p99_inline
+void atomic_thread_fence(memory_order order) {
+  switch (order) {
+  case memory_order_relaxed: break;
+  default: __sync_synchronize(); break;
+  }
+}
+
+/**
+ ** @remark In the current implementation a signal fence and a thread
+ ** fence are the same full memory barrier.
+ **/
+#define atomic_signal_fence atomic_thread_fence
+
+/**
+ ** @}
+ **/
+
 /**
  ** @memberof atomic_flag
  **/
-#define atomic_flag_test_and_set_explicit(OBJP, ORDER)                                        \
-({                                                                                            \
-  _Bool ret;                                                                                  \
-  switch (ORDER) {                                                                            \
-  case memory_order_relaxed: ;                                                                \
-  case memory_order_acquire: ret = __sync_lock_test_and_set(&P99_ENCP(OBJP), 1); break;       \
-  default:                   ret = __sync_val_compare_and_swap(&P99_ENCP(OBJP), 0, 1); break; \
-  }                                                                                           \
-  ret;                                                                                        \
+#define atomic_flag_test_and_set_explicit(OBJP, ORDER)                  \
+({                                                                      \
+  _Bool ret;                                                            \
+  memory_order order = (ORDER);                                         \
+  switch (order) {                                                      \
+    /* This case doesn't require any guarantee. */                      \
+  case memory_order_relaxed:                                            \
+    ret = P99_ENCP(OBJP);                                               \
+    P99_ENCP(OBJP) = 1;                                                 \
+    break;                                                              \
+    /* For these three the acquire semantics are not sufficient. */     \
+  case memory_order_release: ;                                          \
+  case memory_order_acq_rel: ;                                          \
+  case memory_order_seq_cst:                                            \
+    atomic_thread_fence(order);                                         \
+    ret = __sync_lock_test_and_set(&P99_ENCP(OBJP), 1);                 \
+    break;                                                              \
+  default:                                                              \
+    ret = __sync_lock_test_and_set(&P99_ENCP(OBJP), 1);                 \
+    break;                                                              \
+  }                                                                     \
+  ret;                                                                  \
  })
 
 /**
@@ -413,14 +454,26 @@ P99_DECLARE_ATOMIC(long double, atomic_ldouble);
 /**
  ** @memberof atomic_flag
  **/
-#define atomic_flag_clear_explicit(OBJP, ORDER)                                         \
-(void)({                                                                                \
-  switch(ORDER) {                                                                       \
-  case memory_order_relaxed: ;                                                          \
-  case memory_order_release: __sync_lock_release(&P99_ENCP(OBJP)); break;               \
-  default:                   __sync_val_compare_and_swap(&P99_ENCP(OBJP), 1, 0); break; \
-  }                                                                                     \
- })
+#define atomic_flag_clear_explicit(OBJP, ORDER)                         \
+(void)({                                                                \
+    memory_order order = (ORDER);                                       \
+    switch(order) {                                                     \
+      /* This case doesn't require any guarantee. */                    \
+    case memory_order_relaxed:                                          \
+      P99_ENCP(OBJP) = 0;                                               \
+      break;                                                            \
+    /* For these three the release semantics are not sufficient. */     \
+    case memory_order_acquire: ;                                        \
+    case memory_order_acq_rel: ;                                        \
+    case memory_order_seq_cst:                                          \
+      __sync_lock_release(&P99_ENCP(OBJP));                             \
+      atomic_thread_fence(order);                                       \
+      break;                                                            \
+    default:                                                            \
+      __sync_lock_release(&P99_ENCP(OBJP));                             \
+      break;                                                            \
+    }                                                                   \
+  })
 
 /**
  ** @memberof atomic_flag
@@ -609,33 +662,6 @@ P99_DECLARE_ATOMIC(long double, atomic_ldouble);
  **/
 #define atomic_fetch_xor(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_xor, ^=)
 
-
-/**
- ** @addtogroup fences Memory Fences
- **
- ** This is only rudimentary support for fences. Basically all fences
- ** but with argument ::memory_order_relaxed perform a full memory
- ** barrier.
- ** @{
- **/
-
-p99_inline
-void atomic_thread_fence(memory_order order) {
-  switch (order) {
-  case memory_order_relaxed: break;
-  default: __sync_synchronize(); break;
-  }
-}
-
-/**
- ** @remark In the current implementation a signal fence and a thread
- ** fence are the same full memory barrier.
- **/
-#define atomic_signal_fence atomic_thread_fence
-
-/**
- ** @}
- **/
 
 /**
  ** @}
