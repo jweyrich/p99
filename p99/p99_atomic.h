@@ -30,16 +30,64 @@
  ** @{
  **/
 
+#ifndef ATOMIC_BOOL_LOCK_FREE
+# ifdef __GNUC__
 #define ATOMIC_BOOL_LOCK_FREE 2
+# else
+#define ATOMIC_BOOL_LOCK_FREE 0
+# endif
+#endif
+#ifndef ATOMIC_CHAR_LOCK_FREE
+# ifdef __GNUC__
 #define ATOMIC_CHAR_LOCK_FREE 2
+# else
+#define ATOMIC_CHAR_LOCK_FREE 0
+# endif
+#endif
 //#define ATOMIC_CHAR16_T_LOCK_FREE 2
 //#define ATOMIC_CHAR32_T_LOCK_FREE 2
+#ifndef ATOMIC_WCHAR_T_LOCK_FREE
+# ifdef __GNUC__
 #define ATOMIC_WCHAR_T_LOCK_FREE 2
+# else
+#define ATOMIC_WCHAR_T_LOCK_FREE 0
+# endif
+#endif
+#ifndef ATOMIC_SHORT_LOCK_FREE
+# ifdef __GNUC__
 #define ATOMIC_SHORT_LOCK_FREE 2
+# else
+#define ATOMIC_SHORT_LOCK_FREE 0
+# endif
+#endif
+#ifndef ATOMIC_INT_LOCK_FREE
+# ifdef __GNUC__
 #define ATOMIC_INT_LOCK_FREE 2
+# else
+#define ATOMIC_INT_LOCK_FREE 0
+# endif
+#endif
+#ifndef ATOMIC_LONG_LOCK_FREE
+# ifdef __GNUC__
 #define ATOMIC_LONG_LOCK_FREE 2
+# else
+#define ATOMIC_LONG_LOCK_FREE 0
+# endif
+#endif
+#ifndef ATOMIC_LLONG_LOCK_FREE
+# ifdef __GNUC__
 #define ATOMIC_LLONG_LOCK_FREE 2
+# else
+#define ATOMIC_LLONG_LOCK_FREE 0
+# endif
+#endif
+#ifndef ATOMIC_POINTER_LOCK_FREE
+# ifdef __GNUC__
 #define ATOMIC_POINTER_LOCK_FREE 0
+# else
+#define ATOMIC_POINTER_LOCK_FREE 0
+# endif
+#endif
 
 /**
  ** @memberof atomic_flag
@@ -58,8 +106,14 @@
  ** If not defined externally, this resolves to the list of standard
  ** integer types as given in the C standard.
  **/
-#ifndef P99_ATOMIC_LOCKFREE_TYPES
-# define P99_ATOMIC_LOCKFREE_TYPES P99_STD_INTEGER_TYPES
+#ifndef P99_ATOMIC_LOCK_FREE_TYPES
+# define P99_ATOMIC_LOCK_FREE_TYPES                                      \
+P99_IF_EQ_2(ATOMIC_INT_LOCK_FREE)(int, unsigned int)()                  \
+P99_IF_EQ_2(ATOMIC_BOOL_LOCK_FREE)(,_Bool)()                            \
+P99_IF_EQ_2(ATOMIC_SHORT_LOCK_FREE)(,short, unsigned short)()           \
+P99_IF_EQ_2(ATOMIC_LONG_LOCK_FREE)(,long, unsigned long)()              \
+P99_IF_EQ_2(ATOMIC_LLONG_LOCK_FREE)(,long long, unsigned long long)()
+_Pragma(P99_STRINGIFY(message P99_STRINGIFY(detected atomic types are P99_ATOMIC_LOCK_FREE_TYPES)))
 #endif
 
 /**
@@ -96,7 +150,7 @@ P99_ENC_DECLARE(int, atomic_flag);
 #define P00_AT(OBJP) ((OBJP)->p00_xval.p00_type_member)
 #define P00_AI(OBJP) ((OBJP)->p00_xval.p00_integer_member)
 
-#define P00_DECLARE_ATOMIC(T, NAME)                                                                                    \
+#define P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME)                                                                                    \
 /** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
 union NAME {                                                                                                           \
   atomic_flag p00_lock;                                                                                                \
@@ -106,61 +160,6 @@ union NAME {                                                                    
   } p00_xval;                                                                                                          \
 };                                                                                                                     \
 typedef union NAME NAME
-
-/**
- ** @brief Atomic access to a value of type <code>int</code>
- **
- ** See the "public member function" section of this description for
- ** the operations that support this type
- **/
-P00_DECLARE_ATOMIC(int, atomic_int);
-
-/**
- ** @brief Atomic access to a value of type <code>bool</code>
- ** @see atomic_load
- ** @see atomic_store
- ** @see atomic_compare_exchange_weak
- ** @see ATOMIC_VAR_INIT
- ** @see atomic_init
- **/
-P00_DECLARE_ATOMIC(_Bool, atomic_bool);
-
-
-P00_DECLARE_ATOMIC(char, atomic_char);
-P00_DECLARE_ATOMIC(signed char, atomic_schar);
-P00_DECLARE_ATOMIC(unsigned char, atomic_uchar);
-P00_DECLARE_ATOMIC(short, atomic_short);
-P00_DECLARE_ATOMIC(unsigned short, atomic_ushort);
-P00_DECLARE_ATOMIC(unsigned int, atomic_uint);
-P00_DECLARE_ATOMIC(long, atomic_long);
-P00_DECLARE_ATOMIC(unsigned long, atomic_ulong);
-P00_DECLARE_ATOMIC(long long, atomic_llong);
-P00_DECLARE_ATOMIC(unsigned long long, atomic_ullong);
-//P00_DECLARE_ATOMIC(char16_t, atomic_char16_t);
-//P00_DECLARE_ATOMIC(char32_t, atomic_char32_t);
-P00_DECLARE_ATOMIC(wchar_t, atomic_wchar_t);
-P00_DECLARE_ATOMIC(int_least8_t, atomic_int_least8_t);
-P00_DECLARE_ATOMIC(uint_least8_t, atomic_uint_least8_t);
-P00_DECLARE_ATOMIC(int_least16_t, atomic_int_least16_t);
-P00_DECLARE_ATOMIC(uint_least16_t, atomic_uint_least16_t);
-P00_DECLARE_ATOMIC(int_least32_t, atomic_int_least32_t);
-P00_DECLARE_ATOMIC(uint_least32_t, atomic_uint_least32_t);
-P00_DECLARE_ATOMIC(int_least64_t, atomic_int_least64_t);
-P00_DECLARE_ATOMIC(uint_least64_t, atomic_uint_least64_t);
-P00_DECLARE_ATOMIC(int_fast8_t, atomic_int_fast8_t);
-P00_DECLARE_ATOMIC(uint_fast8_t, atomic_uint_fast8_t);
-P00_DECLARE_ATOMIC(int_fast16_t, atomic_int_fast16_t);
-P00_DECLARE_ATOMIC(uint_fast16_t, atomic_uint_fast16_t);
-P00_DECLARE_ATOMIC(int_fast32_t, atomic_int_fast32_t);
-P00_DECLARE_ATOMIC(uint_fast32_t, atomic_uint_fast32_t);
-P00_DECLARE_ATOMIC(int_fast64_t, atomic_int_fast64_t);
-P00_DECLARE_ATOMIC(uint_fast64_t, atomic_uint_fast64_t);
-P00_DECLARE_ATOMIC(intptr_t, atomic_intptr_t);
-P00_DECLARE_ATOMIC(uintptr_t, atomic_uintptr_t);
-P00_DECLARE_ATOMIC(size_t, atomic_size_t);
-P00_DECLARE_ATOMIC(ptrdiff_t, atomic_ptrdiff_t);
-P00_DECLARE_ATOMIC(intmax_t, atomic_intmax_t);
-P00_DECLARE_ATOMIC(uintmax_t, atomic_uintmax_t);
 
 #define P99_ATOMIC(T)                                                            \
 struct {                                                                         \
@@ -175,6 +174,89 @@ struct {                                                                        
 #define P99_DECLARE_ATOMIC(T, NAME)                                                                                    \
 /** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
 typedef P99_ATOMIC(T) NAME
+
+#define P00_DECLARE_ATOMIC_CHOICE(MAC, T, NAME) \
+P99_IF_EQ_2(MAC)                                \
+(P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME))         \
+(P99_DECLARE_ATOMIC(T, NAME))
+
+
+#define P00_DECLARE_ATOMIC_INHERIT(T, NAME)             \
+typedef                                                 \
+__typeof__                                              \
+(                                                       \
+ P99_GENERIC                                            \
+ ((T)0, ,                                               \
+  (_Bool, (atomic_bool){ 0 }),                          \
+  (char, (atomic_char){ 0 }),                           \
+  (signed char, (atomic_schar){ 0 }),                   \
+  (unsigned char, (atomic_uchar){ 0 }),                 \
+  (short int, (atomic_short){ 0 }),                     \
+  (unsigned short int, (atomic_ushort){ 0 }),           \
+  (int, (atomic_int){ 0 }),                             \
+  (unsigned int, (atomic_uint){ 0 }),                   \
+  (long int, (atomic_long){ 0 }),                       \
+  (unsigned long int, (atomic_ulong){ 0 }),             \
+  (long long int, (atomic_llong){ 0 }),                 \
+  (unsigned long long int, (atomic_ullong){ 0 })        \
+  )                                                     \
+ ) NAME
+
+
+/**
+ ** @brief Atomic access to a value of type <code>int</code>
+ **
+ ** See the "public member function" section of this description for
+ ** the operations that support this type
+ **/
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_INT_LOCK_FREE, int, atomic_int);
+
+/**
+ ** @brief Atomic access to a value of type <code>bool</code>
+ ** @see atomic_load
+ ** @see atomic_store
+ ** @see atomic_compare_exchange_weak
+ ** @see ATOMIC_VAR_INIT
+ ** @see atomic_init
+ **/
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_BOOL_LOCK_FREE, _Bool, atomic_bool);
+
+
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_CHAR_LOCK_FREE, char, atomic_char);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_CHAR_LOCK_FREE, signed char, atomic_schar);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_CHAR_LOCK_FREE, unsigned char, atomic_uchar);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_SHORT_LOCK_FREE, short, atomic_short);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_SHORT_LOCK_FREE, unsigned short, atomic_ushort);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_INT_LOCK_FREE, unsigned int, atomic_uint);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_LONG_LOCK_FREE, long, atomic_long);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_LONG_LOCK_FREE, unsigned long, atomic_ulong);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_LLONG_LOCK_FREE, long long, atomic_llong);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_LONG_LOCK_FREE, unsigned long long, atomic_ullong);
+//P00_DECLARE_ATOMIC_INHERIT(char16_t, atomic_char16_t);
+//P00_DECLARE_ATOMIC_INHERIT(char32_t, atomic_char32_t);
+P00_DECLARE_ATOMIC_INHERIT(wchar_t, atomic_wchar_t);
+P00_DECLARE_ATOMIC_INHERIT(int_least8_t, atomic_int_least8_t);
+P00_DECLARE_ATOMIC_INHERIT(uint_least8_t, atomic_uint_least8_t);
+P00_DECLARE_ATOMIC_INHERIT(int_least16_t, atomic_int_least16_t);
+P00_DECLARE_ATOMIC_INHERIT(uint_least16_t, atomic_uint_least16_t);
+P00_DECLARE_ATOMIC_INHERIT(int_least32_t, atomic_int_least32_t);
+P00_DECLARE_ATOMIC_INHERIT(uint_least32_t, atomic_uint_least32_t);
+P00_DECLARE_ATOMIC_INHERIT(int_least64_t, atomic_int_least64_t);
+P00_DECLARE_ATOMIC_INHERIT(uint_least64_t, atomic_uint_least64_t);
+P00_DECLARE_ATOMIC_INHERIT(int_fast8_t, atomic_int_fast8_t);
+P00_DECLARE_ATOMIC_INHERIT(uint_fast8_t, atomic_uint_fast8_t);
+P00_DECLARE_ATOMIC_INHERIT(int_fast16_t, atomic_int_fast16_t);
+P00_DECLARE_ATOMIC_INHERIT(uint_fast16_t, atomic_uint_fast16_t);
+P00_DECLARE_ATOMIC_INHERIT(int_fast32_t, atomic_int_fast32_t);
+P00_DECLARE_ATOMIC_INHERIT(uint_fast32_t, atomic_uint_fast32_t);
+P00_DECLARE_ATOMIC_INHERIT(int_fast64_t, atomic_int_fast64_t);
+P00_DECLARE_ATOMIC_INHERIT(uint_fast64_t, atomic_uint_fast64_t);
+P00_DECLARE_ATOMIC_INHERIT(intptr_t, atomic_intptr_t);
+P00_DECLARE_ATOMIC_INHERIT(uintptr_t, atomic_uintptr_t);
+P00_DECLARE_ATOMIC_INHERIT(size_t, atomic_size_t);
+P00_DECLARE_ATOMIC_INHERIT(ptrdiff_t, atomic_ptrdiff_t);
+P00_DECLARE_ATOMIC_INHERIT(intmax_t, atomic_intmax_t);
+P00_DECLARE_ATOMIC_INHERIT(uintmax_t, atomic_uintmax_t);
 
 P99_DECLARE_ATOMIC(float, atomic_float);
 P99_DECLARE_ATOMIC(double, atomic_double);
@@ -267,10 +349,10 @@ P99_DECLARE_ATOMIC(long double, atomic_ldouble);
     P00_AT(p00_objp) = p00_des;                                                             \
     atomic_flag_unlock(&p00_objp->p00_lock);                                                \
   }                                                                                         \
-  P99_IF_EQ_0(P99_NARG(P99_ATOMIC_LOCKFREE_TYPES))()                                        \
+  P99_IF_EQ_0(P99_NARG(P99_ATOMIC_LOCK_FREE_TYPES))()                                        \
     (else {                                                                                 \
       __typeof__(P00_AI(p00_objp)) p00_desi =                                               \
-        P99_TYPE_CHOICE(P00_AT(p00_objp), p00_des, 0, P99_ATOMIC_LOCKFREE_TYPES);           \
+        P99_TYPE_CHOICE(P00_AT(p00_objp), p00_des, 0, P99_ATOMIC_LOCK_FREE_TYPES);           \
       __typeof__(P00_AI(p00_objp)) p00_prei = 0;                                            \
       __typeof__(P00_AI(p00_objp)) p00_vali = 0;                                            \
       P99_TYPE_CHOICE                                                                       \
@@ -283,7 +365,7 @@ P99_DECLARE_ATOMIC(long double, atomic_ldouble);
            }                                                                                \
          }),                                                                                \
          (void)0,                                                                           \
-         P99_ATOMIC_LOCKFREE_TYPES);                                                        \
+         P99_ATOMIC_LOCK_FREE_TYPES);                                                        \
     })                                                                                      \
  })
 
@@ -299,13 +381,13 @@ P99_DECLARE_ATOMIC(long double, atomic_ldouble);
     p00_ret = P00_AT(p00_objp);                                               \
     atomic_flag_unlock(&p00_objp->p00_lock);                                  \
   }                                                                           \
-  P99_IF_EQ_0(P99_NARG(P99_ATOMIC_LOCKFREE_TYPES))()                          \
+  P99_IF_EQ_0(P99_NARG(P99_ATOMIC_LOCK_FREE_TYPES))()                          \
     (else {                                                                   \
       p00_ret =                                                               \
         P99_TYPE_CHOICE(p00_ret,                                              \
                         __sync_val_compare_and_swap(&P00_AI(p00_objp), 0, 0), \
                         P00_AT(p00_objp),                                     \
-                        P99_ATOMIC_LOCKFREE_TYPES);                           \
+                        P99_ATOMIC_LOCK_FREE_TYPES);                           \
     })                                                                        \
   /* cast to the same type to be sure that the result is an lvalue */         \
   (__typeof__(P00_AT(p00_objp)))p00_ret;                                      \
@@ -329,18 +411,18 @@ P99_DECLARE_ATOMIC(long double, atomic_ldouble);
     else         P00_AT(p00_objp) = p00_des;                                       \
     atomic_flag_unlock(&p00_objp->p00_lock);                                       \
   }                                                                                \
-  P99_IF_EQ_0(P99_NARG(P99_ATOMIC_LOCKFREE_TYPES))()                               \
+  P99_IF_EQ_0(P99_NARG(P99_ATOMIC_LOCK_FREE_TYPES))()                               \
     (else {                                                                        \
       __typeof__(P00_AI(p00_objp)) p00_desi =                                      \
-        P99_TYPE_CHOICE(P00_AT(p00_objp), p00_des, 0, P99_ATOMIC_LOCKFREE_TYPES);  \
+        P99_TYPE_CHOICE(P00_AT(p00_objp), p00_des, 0, P99_ATOMIC_LOCK_FREE_TYPES);  \
       __typeof__(P00_AI(p00_objp))* p00_expi =                                     \
-        P99_TYPE_CHOICE(P00_AT(p00_objp), p00_exp, 0, P99_ATOMIC_LOCKFREE_TYPES);  \
+        P99_TYPE_CHOICE(P00_AT(p00_objp), p00_exp, 0, P99_ATOMIC_LOCK_FREE_TYPES);  \
       __typeof__(P00_AI(p00_objp)) p00_vali =                                      \
         P99_TYPE_CHOICE                                                            \
         (P00_AT(p00_objp),                                                         \
          __sync_val_compare_and_swap(&P00_AI(p00_objp), *p00_expi, p00_desi),      \
          0,                                                                        \
-         P99_ATOMIC_LOCKFREE_TYPES);                                               \
+         P99_ATOMIC_LOCK_FREE_TYPES);                                               \
       p00_ret = (*p00_expi == p00_vali);                                           \
       if (!p00_ret) *p00_expi = p00_vali;                                          \
     })                                                                             \
@@ -361,15 +443,15 @@ P99_DECLARE_ATOMIC(long double, atomic_ldouble);
     P00_AT(p00_objp) OPERATOR p00_op;                                   \
     atomic_flag_unlock(&p00_objp->p00_lock);                            \
   }                                                                     \
-  P99_IF_EQ_0(P99_NARG(P99_ATOMIC_LOCKFREE_TYPES))()                    \
+  P99_IF_EQ_0(P99_NARG(P99_ATOMIC_LOCK_FREE_TYPES))()                    \
     (else {                                                             \
       __typeof__(P00_AI(p00_objp)) p00_opi =                            \
-        P99_TYPE_CHOICE(p00_ret, p00_op, 0, P99_ATOMIC_LOCKFREE_TYPES); \
+        P99_TYPE_CHOICE(p00_ret, p00_op, 0, P99_ATOMIC_LOCK_FREE_TYPES); \
       p00_ret =                                                         \
         P99_TYPE_CHOICE(p00_ret,                                        \
                         BUILTIN(&P00_AI(p00_objp), p00_opi),            \
                         P00_AT(p00_objp),                               \
-                        P99_ATOMIC_LOCKFREE_TYPES);                     \
+                        P99_ATOMIC_LOCK_FREE_TYPES);                     \
     })                                                                  \
     p00_ret;                                                            \
  })
