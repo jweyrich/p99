@@ -26,36 +26,53 @@
  **/
 
 #define P00_GENERIC_TYPE(T, EXP) T
-#define P00_GENERIC_EXP(T, EXP) EXP
+#define P00_GENERIC_EXP_(T, EXP) (EXP)
+#define P00_GENERIC_LIT_(T, EXP) (EXP){ 0 }
+
+#define P00_GENERIC_EXP(EXP, PAIR, I) P00_GENERIC_EXPRESSION(P00_GENERIC_EXP_, EXP, PAIR, I)
+#define P00_GENERIC_LIT(EXP, PAIR, I) P00_GENERIC_EXPRESSION(P00_GENERIC_LIT_, EXP, PAIR, I)
 
 #if __STDC_VERSION__ >= 201012L
 
-#define P00_GENERIC_BASE(EXP, PAIR, I)                         \
-P00_GENERIC_TYPE PAIR: (P00_GENERIC_EXP PAIR)
+#define P00_GENERIC_EXPRESSION(OP EXP, PAIR, I)                         \
+P00_GENERIC_TYPE PAIR: OP PAIR
 
-#define P00_GENERIC(N, EXP, DEF, ...)                          \
+#define P00_GENERIC_(N, MOP, EXP, DEF, ...)                      \
 _Generic                                                       \
 ((EXP),                                                        \
  P99_IF_EMPTY(DEF)()(default: (DEF),)                          \
- P99_FOR((EXP), N, P00_SEQ, P00_GENERIC_BASE, __VA_ARGS__)     \
+ P99_FOR((EXP), N, P00_SEQ, MOP, __VA_ARGS__)      \
  )
 
 #elif defined(__GNUC__)
 
 #define P00_GENERIC_CLOSE(A,B,C) )
 
-#define P00_GENERIC_BASE(EXP, PAIR, I)                                \
+#define P00_GENERIC_EXPRESSION(OP, EXP, PAIR, I)                      \
 __builtin_choose_expr                                                 \
 (__builtin_types_compatible_p(__typeof__ EXP, P00_GENERIC_TYPE PAIR), \
- (P00_GENERIC_EXP PAIR)
+ OP PAIR
 
-#define P00_GENERIC(N, EXP, DEF, ...)                                             \
-  P99_FOR((EXP), N, P00_SEQ, P00_GENERIC_BASE, __VA_ARGS__),                      \
+#define P00_GENERIC_(N, MOP, EXP, DEF, ...)                               \
+  P99_FOR((EXP), N, P00_SEQ, MOP, __VA_ARGS__),                       \
     P99_IF_EMPTY(DEF)(&(const volatile struct { int p00_v; }){ .p00_v = 0 })(DEF) \
     P99_FOR(, N, P00_SER, P00_GENERIC_CLOSE, P99_DUPL(N, ))
 
-
 #endif
+
+#define P00_GENERIC0(MOP, EXP, DEF, ...)        \
+P00_GENERIC_                                    \
+(                                               \
+ P99_NARG(__VA_ARGS__),                         \
+ P00_ROBUST(MOP),                               \
+ P00_ROBUST(EXP),                               \
+ P00_ROBUST(DEF),                               \
+ __VA_ARGS__)
+
+#define P00_GENERIC(N, ...) P99_IF_LT(N, 4)()(P00_GENERIC0(__VA_ARGS__))
+
+
+
 
 /**
  ** @brief Type generic expression in anticipation of C11 @c _Generic
@@ -141,7 +158,9 @@ __builtin_choose_expr                                                 \
  **
  ** @remark Otherwise only gcc and compatible compilers are supported.
  **/
-#define P99_GENERIC(EXP, DEF, ...) P00_GENERIC(P99_NARG(__VA_ARGS__), EXP, DEF, __VA_ARGS__)
+#define P99_GENERIC(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_EXP, __VA_ARGS__)
+
+#define P99_GENERIC_LITERAL(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_LIT, __VA_ARGS__)
 
 /**
  ** @}
@@ -168,7 +187,9 @@ P99_GENERIC                                                                    \
 #define P99_TYPE_UNSIGNED(EXP)      P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_UNSIGNED_TYPES)
 #define P99_TYPE_SIGNED(EXP)        P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_SIGNED_TYPES)
 #define P99_TYPE_REAL_FLOATING(EXP) P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_REAL_FLOATING_TYPES)
-#define P99_TYPE_COMPLEX(EXP)       P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_COMPLEX_TYPES)
+#ifndef __STDC_NO_COMPLEX__
+# define P99_TYPE_COMPLEX(EXP)       P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_COMPLEX_TYPES)
+#endif
 #define P99_TYPE_FLOATING(EXP)      P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_FLOATING_TYPES)
 #define P99_TYPE_BASIC(EXP)         P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_BASIC_TYPES)
 #define P99_TYPE_CHARACTER(EXP)     P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_CHARACTER_TYPES)
