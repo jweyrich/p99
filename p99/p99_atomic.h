@@ -422,63 +422,67 @@ void atomic_thread_fence(memory_order order) {
 /**
  ** @memberof atomic_flag
  **/
-#define atomic_flag_test_and_set_explicit(OBJP, ORDER)                  \
-({                                                                      \
-  _Bool ret;                                                            \
-  memory_order order = (ORDER);                                         \
-  switch (order) {                                                      \
-    /* This case doesn't require any guarantee. */                      \
-  case memory_order_relaxed:                                            \
-    ret = P99_ENCP(OBJP);                                               \
-    P99_ENCP(OBJP) = 1;                                                 \
-    break;                                                              \
-    /* For these three the acquire semantics are not sufficient. */     \
-  case memory_order_release: ;                                          \
-  case memory_order_acq_rel: ;                                          \
-  case memory_order_seq_cst:                                            \
-    atomic_thread_fence(order);                                         \
-    ret = __sync_lock_test_and_set(&P99_ENCP(OBJP), 1);                 \
-    break;                                                              \
-  default:                                                              \
-    ret = __sync_lock_test_and_set(&P99_ENCP(OBJP), 1);                 \
-    break;                                                              \
-  }                                                                     \
-  ret;                                                                  \
- })
+p99_inline
+_Bool atomic_flag_test_and_set_explicit(volatile atomic_flag *object, memory_order order) {
+  _Bool ret;
+  switch (order) {
+    /* This case doesn't require any guarantee. */
+  case memory_order_relaxed:
+    ret = P99_ENCP(object);
+    P99_ENCP(object) = 1;
+    break;
+    /* For these three the acquire semantics are not sufficient. */
+  case memory_order_release: ;
+  case memory_order_acq_rel: ;
+  case memory_order_seq_cst:
+    atomic_thread_fence(order);
+    ret = __sync_lock_test_and_set(&P99_ENCP(object), 1);
+    break;
+  default:
+    ret = __sync_lock_test_and_set(&P99_ENCP(object), 1);
+    break;
+  }
+  return ret;
+}
 
 /**
  ** @memberof atomic_flag
  **/
-#define atomic_flag_test_and_set(OBJP) atomic_flag_test_and_set_explicit((OBJP), memory_order_seq_cst)
+p99_inline
+_Bool atomic_flag_test_and_set(volatile atomic_flag *object) {
+  return atomic_flag_test_and_set_explicit(object, memory_order_seq_cst);
+}
 
 /**
  ** @memberof atomic_flag
  **/
-#define atomic_flag_clear_explicit(OBJP, ORDER)                         \
-(void)({                                                                \
-    memory_order order = (ORDER);                                       \
-    switch(order) {                                                     \
-      /* This case doesn't require any guarantee. */                    \
-    case memory_order_relaxed:                                          \
-      P99_ENCP(OBJP) = 0;                                               \
-      break;                                                            \
-    /* For these three the release semantics are not sufficient. */     \
-    case memory_order_acquire: ;                                        \
-    case memory_order_acq_rel: ;                                        \
-    case memory_order_seq_cst:                                          \
-      __sync_lock_release(&P99_ENCP(OBJP));                             \
-      atomic_thread_fence(order);                                       \
-      break;                                                            \
-    default:                                                            \
-      __sync_lock_release(&P99_ENCP(OBJP));                             \
-      break;                                                            \
-    }                                                                   \
-  })
+p99_inline
+void atomic_flag_clear_explicit(volatile atomic_flag *object, memory_order order) {
+  switch(order) {
+    /* This case doesn't require any guarantee. */
+  case memory_order_relaxed:
+    P99_ENCP(object) = 0;
+    break;
+    /* For these three the release semantics are not sufficient. */
+  case memory_order_acquire: ;
+  case memory_order_acq_rel: ;
+  case memory_order_seq_cst:
+    __sync_lock_release(&P99_ENCP(object));
+    atomic_thread_fence(order);
+    break;
+  default:
+    __sync_lock_release(&P99_ENCP(object));
+    break;
+  }
+}
 
 /**
  ** @memberof atomic_flag
  **/
-#define atomic_flag_clear(OBJP) atomic_flag_clear_explicit((OBJP), memory_order_seq_cst)
+p99_inline
+void atomic_flag_clear(volatile atomic_flag *object) {
+  atomic_flag_clear_explicit(object, memory_order_seq_cst);
+}
 
 /**
  ** @brief extension: spin on @a object setting the flag until the state before was "clear"
@@ -488,8 +492,10 @@ void atomic_thread_fence(memory_order order) {
  **
  ** @memberof atomic_flag
  **/
-#define atomic_flag_lock(OBJP)                                                       \
-(void)({ while (atomic_flag_test_and_set_explicit((OBJP), memory_order_acquire)); })
+p99_inline
+void atomic_flag_lock(volatile atomic_flag *object) {
+  while (atomic_flag_test_and_set_explicit(object, memory_order_acquire));
+}
 
 /**
  ** @brief extension: set the flag and return true if we are the first
@@ -500,14 +506,23 @@ void atomic_thread_fence(memory_order order) {
  **
  ** @memberof atomic_flag
  **/
-#define atomic_flag_trylock(OBJP) !atomic_flag_test_and_set_explicit((OBJP), memory_order_acquire)
+p99_inline
+_Bool atomic_flag_trylock(volatile atomic_flag *object) {
+  return !atomic_flag_test_and_set_explicit(object, memory_order_acquire);
+}
 
-#define atomic_flag_unlock(OBJP) atomic_flag_clear_explicit((OBJP), memory_order_release)
+p99_inline
+void atomic_flag_unlock(volatile atomic_flag *object) {
+  atomic_flag_clear_explicit(object, memory_order_release);
+}
 
 /**
  ** @memberof atomic_int
  **/
-#define atomic_is_lock_free(OBJP) !offsetof(__typeof__(*(OBJP)), p00_xval)
+#define atomic_is_lock_free(OBJP)                                       \
+P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                \
+(0)                                                                     \
+(P99_TYPE_CHOICE(P00_AT(OBJP), 1, 0, P99_ATOMIC_LOCK_FREE_TYPES))
 
 /**
  ** @memberof atomic_int
