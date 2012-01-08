@@ -25,6 +25,81 @@
  ** @{
  **/
 
+
+#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
+
+p99_inline
+uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
+  return __sync_lock_test_and_set(object, 1);
+}
+
+p99_inline
+void p00_sync_lock_release(uint32_t volatile *object) {
+  __sync_lock_release(object);
+}
+
+#elif defined(__arm__)
+
+p99_inline
+uint32_t p00_arm_ldrex(uint32_t volatile*ptr) {
+  uint32_t ret;
+  __asm__ volatile ("ldrex %0,[%1]\t@ load exclusive\n"
+                    : "=&r" (ret)
+                    : "r" (ptr)
+                    : "cc", "memory"
+                    );
+  return ret;
+}
+
+p99_inline
+_Bool p00_arm_strex(uint32_t volatile*ptr, uint32_t val) {
+  uint32_t ret;
+  __asm__ volatile ("strex %0,%1,[%2]\t@ store exclusive\n"
+                    : "=&r" (ret)
+                    : "r" (val), "r" (ptr)
+                    : "cc", "memory"
+                    );
+  return ret;
+}
+
+p99_inline
+uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
+  for (;;) {
+    uint32_t ret = p00_arm_ldrex(object);
+    if (!p00_arm_strex(object, 1)) return ret;
+  }
+}
+
+p99_inline
+void p00_sync_lock_release(uint32_t volatile *object) {
+  __sync_lock_release(object);
+}
+
+#elif defined(__x86_64__) || defined(__i386__)
+
+p99_inline
+uint32_t p00_x86_cmpxchgl(uint32_t volatile *object,  uint32_t expected, register uint32_t desired) {
+  register uint32_t ret P99_FIXED_REGISTER(eax) = expected;
+  __asm__ __volatile__("lock cmpxchgl %1, %2"
+                       : "=a"(ret)
+                       : "r"(desired), "m"(*object), "0"(ret)
+                       : "memory");
+  return ret;
+}
+
+p99_inline
+uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
+  return p00_x86_cmpxchgl(object, 0, 1);
+}
+
+p99_inline
+void p00_sync_lock_release(uint32_t volatile *object) {
+  return p00_x86_cmpxchgl(object, 1, 0);
+}
+
+
+#endif
+
 /**
  ** @addtogroup atomic_macros
  **
@@ -49,28 +124,28 @@
  **/
 
 #ifndef ATOMIC_BOOL_LOCK_FREE
-# ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
+# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && (UINT_MAX <= UINT64_C(4294967295))
 #define ATOMIC_BOOL_LOCK_FREE 2
 # else
 #define ATOMIC_BOOL_LOCK_FREE 0
 # endif
 #endif
 #ifndef ATOMIC_CHAR_LOCK_FREE
-# ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
+# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && (UCHAR_MAX <= UINT64_C(4294967295))
 #define ATOMIC_CHAR_LOCK_FREE 2
 # else
 #define ATOMIC_CHAR_LOCK_FREE 0
 # endif
 #endif
 #ifndef ATOMIC_SHORT_LOCK_FREE
-# ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
+# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && (USHORT_MAX <= UINT64_C(4294967295))
 #define ATOMIC_SHORT_LOCK_FREE 2
 # else
 #define ATOMIC_SHORT_LOCK_FREE 0
 # endif
 #endif
 #ifndef ATOMIC_INT_LOCK_FREE
-# ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
+# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && (UINT_MAX <= UINT64_C(4294967295))
 #define ATOMIC_INT_LOCK_FREE 2
 # else
 #define ATOMIC_INT_LOCK_FREE 0
@@ -79,7 +154,7 @@
 #ifndef ATOMIC_LONG_LOCK_FREE
 #  if ULONG_MAX == UINT_MAX
 #   define ATOMIC_LONG_LOCK_FREE ATOMIC_INT_LOCK_FREE
-#  elif __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 && (ULONG_MAX <= UINT64_C(18446744073709551615))
+#  elif defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) && (ULONG_MAX <= UINT64_C(18446744073709551615))
 #   define ATOMIC_LONG_LOCK_FREE 2
 #  else
 #   define ATOMIC_LONG_LOCK_FREE 0
@@ -90,7 +165,7 @@
 #   define ATOMIC_LLONG_LOCK_FREE ATOMIC_INT_LOCK_FREE
 #  elif ULONG_MAX == ULONG_MAX
 #   define ATOMIC_LLONG_LOCK_FREE ATOMIC_LONG_LOCK_FREE
-#  elif __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 && (ULLONG_MAX <= UINT64_C(18446744073709551615))
+#  elif defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) && (ULLONG_MAX <= UINT64_C(18446744073709551615))
 #   define ATOMIC_LLONG_LOCK_FREE 2
 #  else
 #   define ATOMIC_LLONG_LOCK_FREE 0
@@ -269,7 +344,7 @@ P99_DECLARE_ENUM(memory_order,
  ** @{
  **/
 
-P99_ENC_DECLARE(int volatile, atomic_flag);
+P99_ENC_DECLARE(uint32_t volatile, atomic_flag);
 
 #define P00_AT(OBJP) ((OBJP)->p00_xval.p00_type_member)
 #define P00_AI(OBJP) ((OBJP)->p00_xval.p00_integer_member)
@@ -436,10 +511,10 @@ _Bool atomic_flag_test_and_set_explicit(volatile atomic_flag *object, memory_ord
   case memory_order_acq_rel: ;
   case memory_order_seq_cst:
     atomic_thread_fence(order);
-    ret = __sync_lock_test_and_set(&P99_ENCP(object), 1);
+    ret = p00_sync_lock_test_and_set(&P99_ENCP(object));
     break;
   default:
-    ret = __sync_lock_test_and_set(&P99_ENCP(object), 1);
+    ret = p00_sync_lock_test_and_set(&P99_ENCP(object));
     break;
   }
   return ret;
