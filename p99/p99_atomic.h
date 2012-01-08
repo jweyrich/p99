@@ -78,23 +78,22 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 #elif defined(__x86_64__) || defined(__i386__)
 
 p99_inline
-uint32_t p00_x86_cmpxchgl(uint32_t volatile *object,  uint32_t expected, register uint32_t desired) {
-  register uint32_t ret P99_FIXED_REGISTER(eax) = expected;
-  __asm__ __volatile__("lock cmpxchgl %1, %2"
+uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
+  register uint32_t ret P99_FIXED_REGISTER(eax) = 1;
+  __asm__ __volatile__("xchgl %2, %0"
                        : "=a"(ret)
-                       : "r"(desired), "m"(*object), "0"(ret)
+                       : "r"(ret), "m"(*object)
                        : "memory");
   return ret;
 }
 
 p99_inline
-uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
-  return p00_x86_cmpxchgl(object, 0, 1);
-}
-
-p99_inline
 void p00_sync_lock_release(uint32_t volatile *object) {
-  return p00_x86_cmpxchgl(object, 1, 0);
+  register uint32_t val = 0;
+  __asm__ __volatile__("movl %0, %1"
+                       :
+                       : "r"(val), "m"(*object)
+                       : "memory");
 }
 
 
