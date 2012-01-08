@@ -308,9 +308,9 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 
 #ifdef __GNUC__
-# define P00_WEAK2(ID, REPL) __attribute__((__weakref__(#REPL)))
+# define P00_WEAK2(ID, ...) __attribute__((__weakref__(#__VA_ARGS__)))
 #else
-# define P00_WEAK2(ID, REPL) _Pragma(P99_STRINGIFY(weak ID=REPL))
+# define P00_WEAK2(ID, ...) _Pragma(P99_STRINGIFY(weak ID=__VA_ARGS__))
 #endif
 
 /**

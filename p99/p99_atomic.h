@@ -16,12 +16,22 @@
 #include "p99_enum.h"
 #include "p99_generic.h"
 
-#ifndef __GNUC__
-# error "P99 atomic needs gcc specific features"
-#endif
-
 /**
- ** @addtogroup atomic
+ ** @addtogroup atomic C11 atomic operations
+ **
+ ** This is a stub implementation of C11 atomic types and operations.
+ **
+ ** This uses gcc extensions
+ ** - all those that are needed for ::P99_GENERIC
+ ** - @c __typeof__ to declare @c typedef or local variables of a specific type
+ ** - block expressions with <code>({ ... })</code>
+ **
+ ** We also use @c __sync_lock_test_and_set and other similar builtins
+ ** if they are available. If not, @c __sync_lock_test_and_set and @c
+ ** __sync_lock_release are implemented in assembler (for 4 byte
+ ** integers) and all other operations are synthesized with an
+ ** ::atomic_flag that is used as a spinlock.
+ **
  ** @{
  **/
 
@@ -123,28 +133,28 @@ void p00_sync_lock_release(uint32_t volatile *object) {
  **/
 
 #ifndef ATOMIC_BOOL_LOCK_FREE
-# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && (UINT_MAX <= UINT64_C(4294967295))
+# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && (UINT_MAX <= UINT32_MAX)
 #define ATOMIC_BOOL_LOCK_FREE 2
 # else
 #define ATOMIC_BOOL_LOCK_FREE 0
 # endif
 #endif
 #ifndef ATOMIC_CHAR_LOCK_FREE
-# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && (UCHAR_MAX <= UINT64_C(4294967295))
+# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && (UCHAR_MAX <= UINT32_MAX)
 #define ATOMIC_CHAR_LOCK_FREE 2
 # else
 #define ATOMIC_CHAR_LOCK_FREE 0
 # endif
 #endif
 #ifndef ATOMIC_SHORT_LOCK_FREE
-# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && (USHORT_MAX <= UINT64_C(4294967295))
+# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && (USHORT_MAX <= UINT32_MAX)
 #define ATOMIC_SHORT_LOCK_FREE 2
 # else
 #define ATOMIC_SHORT_LOCK_FREE 0
 # endif
 #endif
 #ifndef ATOMIC_INT_LOCK_FREE
-# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && (UINT_MAX <= UINT64_C(4294967295))
+# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && (UINT_MAX <= UINT32_MAX)
 #define ATOMIC_INT_LOCK_FREE 2
 # else
 #define ATOMIC_INT_LOCK_FREE 0
@@ -153,7 +163,7 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 #ifndef ATOMIC_LONG_LOCK_FREE
 #  if ULONG_MAX == UINT_MAX
 #   define ATOMIC_LONG_LOCK_FREE ATOMIC_INT_LOCK_FREE
-#  elif defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) && (ULONG_MAX <= UINT64_C(18446744073709551615))
+#  elif defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) && (ULONG_MAX <= UINT64_MAX)
 #   define ATOMIC_LONG_LOCK_FREE 2
 #  else
 #   define ATOMIC_LONG_LOCK_FREE 0
@@ -164,7 +174,7 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 #   define ATOMIC_LLONG_LOCK_FREE ATOMIC_INT_LOCK_FREE
 #  elif ULONG_MAX == ULONG_MAX
 #   define ATOMIC_LLONG_LOCK_FREE ATOMIC_LONG_LOCK_FREE
-#  elif defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) && (ULLONG_MAX <= UINT64_C(18446744073709551615))
+#  elif defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) && (ULLONG_MAX <= UINT64_MAX)
 #   define ATOMIC_LLONG_LOCK_FREE 2
 #  else
 #   define ATOMIC_LLONG_LOCK_FREE 0
@@ -176,6 +186,15 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 # else
 #define ATOMIC_POINTER_LOCK_FREE 0
 # endif
+#endif
+#if UINTPTR_MAX == UCHAR_MAX
+# define ATOMIC_INTPTR_LOCK_FREE ATOMIC_CHAR_LOCK_FREE
+#elif UINTPTR_MAX == UINT_MAX
+# define ATOMIC_INTPTR_LOCK_FREE ATOMIC_SHORT_LOCK_FREE
+#elif UINTPTR_MAX == ULONG_MAX
+# define ATOMIC_INTPTR_LOCK_FREE ATOMIC_INT_LOCK_FREE
+#else
+# define ATOMIC_INTPTR_LOCK_FREE ATOMIC_LONG_LOCK_FREE
 #endif
 #if UINT_LEAST16_MAX == UCHAR_MAX
 # define ATOMIC_CHAR16_T_LOCK_FREE ATOMIC_CHAR_LOCK_FREE
@@ -206,11 +225,13 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 #endif
 
 /**
+ ** @brief Initialize a variable of type ::atomic_flag
  ** @memberof atomic_flag
  **/
 #define ATOMIC_FLAG_INIT P99_ENC_INIT(0)
 
 /**
+ ** @brief Initialize a variable of an atomic type.
  ** @memberof atomic_int
  **/
 #define ATOMIC_VAR_INIT(V) { .p00_xval = { .p00_type_member = (V), }, }
@@ -230,7 +251,7 @@ void p00_sync_lock_release(uint32_t volatile *object) {
  ** @see ATOMIC_LLONG_LOCK_FREE
  **/
 #ifndef P99_ATOMIC_LOCK_FREE_TYPES
-# define P99_ATOMIC_LOCK_FREE_TYPES P00_ATOMIC_LOCK_FREE_TYPES5_
+# define P99_ATOMIC_LOCK_FREE_TYPES P00_ATOMIC_LOCK_FREE_TYPES6_
 
 #if ATOMIC_BOOL_LOCK_FREE == 2
 # define P00_ATOMIC_LOCK_FREE_TYPES0 _Bool
@@ -249,6 +270,9 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 #endif
 #if ATOMIC_LLONG_LOCK_FREE == 2
 # define P00_ATOMIC_LOCK_FREE_TYPES5 long long, unsigned long long
+#endif
+#if ATOMIC_INTPTR_LOCK_FREE == 2
+# define P00_ATOMIC_LOCK_FREE_TYPES6 char*, signed char*, unsigned char*
 #endif
 
 #ifdef P00_ATOMIC_LOCK_FREE_TYPES0
@@ -311,6 +335,18 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 # endif
 #endif
 
+#ifdef P00_ATOMIC_LOCK_FREE_TYPES5_
+# ifdef P00_ATOMIC_LOCK_FREE_TYPES6
+#  define P00_ATOMIC_LOCK_FREE_TYPES6_ P00_ATOMIC_LOCK_FREE_TYPES5_, P00_ATOMIC_LOCK_FREE_TYPES6
+# else
+#  define P00_ATOMIC_LOCK_FREE_TYPES6_ P00_ATOMIC_LOCK_FREE_TYPES5_
+# endif
+#else
+# ifdef P00_ATOMIC_LOCK_FREE_TYPES6
+#  define P00_ATOMIC_LOCK_FREE_TYPES6_ P00_ATOMIC_LOCK_FREE_TYPES6
+# endif
+#endif
+
 _Pragma(P99_STRINGIFY(message P99_STRINGIFY(detected atomic types are P99_ATOMIC_LOCK_FREE_TYPES)))
 #endif
 
@@ -343,12 +379,36 @@ P99_DECLARE_ENUM(memory_order,
  ** @{
  **/
 
+/**
+ ** @brief The "minimal" type for which atomic operations must be
+ ** defined.
+ **
+ ** This only has very basic operations that can set and clear the
+ ** flag. In particular it has no operation that returns the state of
+ ** the flag and that would not modify it eventually. So this is a
+ ** kind of Heisenberg flag, you can't measure it without modifying
+ ** it. This can be used as a spinlock to force the flag to be set,
+ ** perform a desired operation and then clear the flag, again.
+ **
+ ** There are extensions ::atomic_flag_lock, ::atomic_flag_trylock and
+ ** ::atomic_flag_unlock that perform these spinlock type operations
+ ** with only the necessary memory consistency.
+ **/
 P99_ENC_DECLARE(uint32_t volatile, atomic_flag);
 
 #define P00_AT(OBJP) ((OBJP)->p00_xval.p00_type_member)
 #define P00_AI(OBJP) ((OBJP)->p00_xval.p00_integer_member)
 
-#define P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME)                                                                                    \
+/**
+ ** @brief declare an atomic type that will have lock-free operations
+ **
+ ** Normally it shouldn't be necessary to use this macro in user code
+ ** for integral data types; the lock-free types should be detected
+ ** automatically.
+ **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_ATOMIC_LOCK_FREE, 0)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ATOMIC_LOCK_FREE, 1)
+#define P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME)                                                                          \
 /** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
 union NAME {                                                                                                           \
   atomic_flag p00_lock;                                                                                                \
@@ -359,6 +419,7 @@ union NAME {                                                                    
 };                                                                                                                     \
 typedef union NAME NAME
 
+P00_DOCUMENT_TYPE_ARGUMENT(P99_ATOMIC, 0)
 #define P99_ATOMIC(T)                                                            \
 struct {                                                                         \
   atomic_flag p00_lock;                                                          \
@@ -369,6 +430,27 @@ struct {                                                                        
   } p00_xval;                                                                    \
 }
 
+/**
+ ** @brief declare an atomic type that will use lock operations to
+ ** guarantee atomicity
+ **
+ ** Normally it shouldn't be necessary to use this macro in user code
+ ** for integral data types; the lock-free types should be detected
+ ** automatically.
+ **
+ ** This is used per default for integral types that are detected not
+ ** to support atomic operations directly and for floating point
+ ** types.
+ **
+ ** Use this macro to protect your own particular data type.
+ **
+ ** @param T base type for the atomic type
+ **
+ ** @param NAME the name of the newly derived type. Usually for type
+ ** @c foo you should use something like atomic_foo.
+ **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_ATOMIC, 0)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ATOMIC_LOCK_FREE, 1)
 #define P99_DECLARE_ATOMIC(T, NAME)                                                                                    \
 /** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
 typedef P99_ATOMIC(T) NAME
@@ -416,6 +498,7 @@ P00_DECLARE_ATOMIC_CHOICE(ATOMIC_INT_LOCK_FREE, int, atomic_int);
  ** @see atomic_compare_exchange_weak
  ** @see ATOMIC_VAR_INIT
  ** @see atomic_init
+ **
  **/
 P00_DECLARE_ATOMIC_CHOICE(ATOMIC_BOOL_LOCK_FREE, _Bool, atomic_bool);
 
@@ -430,6 +513,11 @@ P00_DECLARE_ATOMIC_CHOICE(ATOMIC_LONG_LOCK_FREE, long, atomic_long);
 P00_DECLARE_ATOMIC_CHOICE(ATOMIC_LONG_LOCK_FREE, unsigned long, atomic_ulong);
 P00_DECLARE_ATOMIC_CHOICE(ATOMIC_LLONG_LOCK_FREE, long long, atomic_llong);
 P00_DECLARE_ATOMIC_CHOICE(ATOMIC_LONG_LOCK_FREE, unsigned long long, atomic_ullong);
+
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_CHAR_LOCK_FREE, char*, atomic_char_p);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_CHAR_LOCK_FREE, signed char*, atomic_schar_p);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_CHAR_LOCK_FREE, unsigned char*, atomic_uchar_p);
+
 P00_DECLARE_ATOMIC_INHERIT(char16_t, atomic_char16_t);
 P00_DECLARE_ATOMIC_INHERIT(char32_t, atomic_char32_t);
 P00_DECLARE_ATOMIC_INHERIT(wchar_t, atomic_wchar_t);
@@ -494,7 +582,16 @@ void atomic_thread_fence(memory_order order) {
  **/
 
 /**
+ ** @brief Unconditionally set @a *object to @c true and return the
+ ** previous value
+ **
  ** @memberof atomic_flag
+ **
+ ** @param object the object that will be set
+ **
+ ** @param order fine tune the set operation for a specific memory
+ ** order. The current implementation only uses this to enforce a
+ ** complete memory barrier where necessary.
  **/
 p99_inline
 _Bool atomic_flag_test_and_set_explicit(volatile atomic_flag *object, memory_order order) {
@@ -520,6 +617,9 @@ _Bool atomic_flag_test_and_set_explicit(volatile atomic_flag *object, memory_ord
 }
 
 /**
+ ** @brief Unconditionally set @a *object to @c true and return the
+ ** previous value
+ **
  ** @memberof atomic_flag
  **/
 p99_inline
@@ -528,7 +628,15 @@ _Bool atomic_flag_test_and_set(volatile atomic_flag *object) {
 }
 
 /**
+ ** @brief Unconditionally set @a *object to @c false
+ **
  ** @memberof atomic_flag
+ **
+ ** @param object the object that will be set
+ **
+ ** @param order fine tune the set operation for a specific memory
+ ** order. The current implementation only uses this to enforce a
+ ** complete memory barrier where necessary.
  **/
 p99_inline
 void atomic_flag_clear_explicit(volatile atomic_flag *object, memory_order order) {
@@ -551,6 +659,8 @@ void atomic_flag_clear_explicit(volatile atomic_flag *object, memory_order order
 }
 
 /**
+ ** @brief Unconditionally set @a *object to @c false
+ **
  ** @memberof atomic_flag
  **/
 p99_inline
@@ -563,6 +673,8 @@ void atomic_flag_clear(volatile atomic_flag *object) {
  **
  ** This interprets an ::atomic_flag as a spinlock. State "clear"
  ** means unlocked and state "set" means locked.
+ **
+ ** This operation only guarantees acquire consistency.
  **
  ** @memberof atomic_flag
  **/
@@ -578,6 +690,8 @@ void atomic_flag_lock(volatile atomic_flag *object) {
  ** This interprets an ::atomic_flag as a spinlock. State "clear"
  ** means unlocked and state "set" means locked.
  **
+ ** This operation only guarantees acquire consistency.
+ **
  ** @memberof atomic_flag
  **/
 p99_inline
@@ -585,12 +699,24 @@ _Bool atomic_flag_trylock(volatile atomic_flag *object) {
   return !atomic_flag_test_and_set_explicit(object, memory_order_acquire);
 }
 
+/**
+ ** @brief extension: clear the flag unconditionally
+ **
+ ** This operation only guarantees release consistency.
+ **
+ ** @memberof atomic_flag
+ **/
 p99_inline
 void atomic_flag_unlock(volatile atomic_flag *object) {
   atomic_flag_clear_explicit(object, memory_order_release);
 }
 
 /**
+ ** @brief return true if @a OBJP points to a lock-free object
+ **
+ ** In this implementation this is a constant integer expression and
+ ** will be determined at compile time.
+ **
  ** @memberof atomic_int
  **/
 #define atomic_is_lock_free(OBJP)                                       \
@@ -599,11 +725,25 @@ P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                \
 (P99_TYPE_CHOICE(P00_AT(OBJP), 1, 0, P99_ATOMIC_LOCK_FREE_TYPES))
 
 /**
+ ** @brief Initialize the object behind @a OBJP with value @a VAL
+ **
+ ** @a VAL and the base type of @a OBJP must be assignment compatible.
+ **
+ ** @warning this should only be used in a context that is known to
+ ** have no race condition
+ **
  ** @memberof atomic_int
  **/
 #define atomic_init(OBJP, VAL) ((void)(P00_AT(OBJP) = (VAL)))
 
 /**
+ ** @brief Store @a VAL into the object behind @a OBJP.
+ **
+ ** @a VAL and the base type of @a OBJP must be assignment compatible.
+ **
+ ** @remark this can be used in a context that is known to have a race
+ ** condition
+ **
  ** @memberof atomic_int
  **/
 #define atomic_store(OBJP, DESIRED)                                                         \
@@ -636,6 +776,11 @@ P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                \
  })
 
 /**
+ ** @brief Return the value of the object behind @a OBJP.
+ **
+ ** @remark this can be used in a context that is known to have a race
+ ** condition
+ **
  ** @memberof atomic_int
  **/
 #define atomic_load(OBJP)                                                     \
@@ -661,6 +806,19 @@ P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                \
  })
 
 /**
+ ** @brief Atomically compare @a *OBJP to @a *EXPECTED and set it to
+ ** @a DESIRED if they are equal.
+ **
+ ** @return true if both values agree and @c false otherwise.  If the
+ ** two values are not the same, the current value is returned in @a
+ ** *EXPECTED, additionally.
+ **
+ ** The base type of @a OBJP and @a *EXPECTED must be compatible, that
+ ** is they must be the same if all qualifiers are taken out.
+ **
+ ** @a DESIRED must be assignment compatible with the base type of @a
+ ** OBJP.
+ **
  ** @memberof atomic_int
  **/
 #define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                      \
@@ -697,9 +855,6 @@ P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                \
   p00_ret;                                                                         \
  })
 
-/**
- ** @memberof atomic_int
- **/
 #define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                  \
 ({                                                                      \
   __typeof__(*OBJP) volatile* p00_objp = OBJP;                          \
@@ -726,27 +881,75 @@ P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                \
  })
 
 /**
+ ** @brief Atomically add @a OPERAND to @a *OBJP.
+ **
+ ** @return the current value hidden in @a OBJP before the operation.
+ **
+ ** @a OPERAND must be assignment compatible with the base type of @a
+ ** OBJP.
+ **
+ ** The base type of @a OBJP must have an operator @c +=.
+ **
  ** @memberof atomic_int
  **/
 #define atomic_fetch_add(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_add, +=)
 
 
 /**
+ ** @brief Atomically subtract @a OPERAND from @a *OBJP.
+ **
+ ** @return the current value hidden in @a OBJP before the operation.
+ **
+ ** @a OPERAND must be assignment compatible with the base type of @a
+ ** OBJP.
+ **
+ ** The base type of @a OBJP must have an operator @c -=.
+ **
  ** @memberof atomic_int
  **/
 #define atomic_fetch_sub(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_sub, -=)
 
 /**
+ ** @brief Atomically do a bitwise or operation between @a OPERAND and
+ ** @a *OBJP.
+ **
+ ** @return the current value hidden in @a OBJP before the operation.
+ **
+ ** @a OPERAND must be assignment compatible with the base type of @a
+ ** OBJP.
+ **
+ ** The base type of @a OBJP must have an operator @c |=.
+ **
  ** @memberof atomic_int
  **/
 #define atomic_fetch_or(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_or, |=)
 
 /**
+ ** @brief Atomically do a bitwise and operation between @a OPERAND
+ ** and @a *OBJP.
+ **
+ ** @return the current value hidden in @a OBJP before the operation.
+ **
+ ** @a OPERAND must be assignment compatible with the base type of @a
+ ** OBJP.
+ **
+ ** The base type of @a OBJP must have an operator @c &=.
+ **
  ** @memberof atomic_int
  **/
 #define atomic_fetch_and(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_and, &=)
 
 /**
+ ** @brief Atomically do a bitwise xor operation between @a OPERAND
+ ** and @a *OBJP.
+ **
+ ** @return the current value hidden in @a OBJP before the operation.
+ **
+ ** @a OPERAND must be assignment compatible with the base type of @a
+ ** OBJP.
+ **
+ ** The base type of @a OBJP must have an operator @c ^=.
+ **
  ** @memberof atomic_int
  **/
 #define atomic_fetch_xor(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_xor, ^=)

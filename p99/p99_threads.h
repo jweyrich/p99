@@ -391,6 +391,9 @@ void p99_call_once(once_flag *flag, void (*func)(void*), void* arg) {
   }
 }
 
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_INIT_ONCE, 0)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INIT_ONCE, 1)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INIT_ONCE, 2)
 #define P99_DECLARE_INIT_ONCE(T, NAME, ARG)                     \
 /** @remark wrapper type around a T that is initialized once */ \
 struct NAME {                                                   \
