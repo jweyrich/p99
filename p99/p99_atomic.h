@@ -346,8 +346,6 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 #  define P00_ATOMIC_LOCK_FREE_TYPES6_ P00_ATOMIC_LOCK_FREE_TYPES6
 # endif
 #endif
-
-_Pragma(P99_STRINGIFY(message P99_STRINGIFY(detected atomic types are P99_ATOMIC_LOCK_FREE_TYPES)))
 #endif
 
 /**
@@ -749,7 +747,7 @@ P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                \
 #define atomic_store(OBJP, DESIRED)                                                         \
 ({                                                                                          \
   __typeof__(*OBJP) volatile* p00_objp = OBJP;                                              \
-  __typeof__(DESIRED) p00_des = (DESIRED);                                                  \
+  __typeof__(P00_AT(p00_objp)) p00_des = (DESIRED);                                         \
   if (!atomic_is_lock_free(p00_objp)) {                                                     \
     atomic_flag_lock(&p00_objp->p00_lock);                                                  \
     P00_AT(p00_objp) = p00_des;                                                             \
