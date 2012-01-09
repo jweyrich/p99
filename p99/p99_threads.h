@@ -49,9 +49,16 @@
 /**
  ** @brief expands to a value that can be used to initialize an object
  ** of type ::once_flag
+ **
+ ** This implementation here has the particularity that this
+ ** initialization is equivalent to the default initialization by @c
+ ** 0.  This specific property is then use in the fallback
+ ** implementation of thread local storage.
+ **
  ** @memberof once_flag
  **/
-#define ONCE_FLAG_INIT { .count = ATOMIC_VAR_INIT(0), .release = 0, }
+#define ONCE_FLAG_INIT P99_INIT
+
 #ifndef PTHREAD_DESTRUCTOR_ITERATIONS
 # warning "definition of PTHREAD_DESTRUCTOR_ITERATIONS is missing"
 /**
@@ -211,6 +218,85 @@ enum thrd_status {
  ** @}
  **/
 
+// 7.26.2 Initialization functions
+
+/**
+ ** @memberof thrd_t
+ **/
+p99_inline
+void thrd_yield(void) {
+  if (P99_UNLIKELY(sched_yield())) errno = 0;
+}
+
+/**
+ ** @memberof once_flag
+ **/
+p99_inline
+void call_once(once_flag *flag, void (*func)(void)) {
+  if (P99_UNLIKELY(!flag->done)) {
+    if (!atomic_fetch_add(&flag->count, 1u)) {
+      func();
+      atomic_thread_fence(memory_order_seq_cst);
+      flag->done = true;
+    } else {
+      while (!flag->done) thrd_yield();
+      // printf("blocked threads %u\n", atomic_load(&flag->count));
+    }
+  }
+}
+
+/**
+ ** @brief Call a function @a func exactly once by providing it with
+ ** argument @a arg
+ **
+ ** This is an extension of the standard function ::call_once that
+ ** doesn't allow to pass an argument to @a func.
+ **
+ ** @memberof once_flag
+ **/
+p99_inline
+void p99_call_once(once_flag *flag, void (*func)(void*), void* arg) {
+  if (P99_UNLIKELY(!flag->done)) {
+    if (!atomic_fetch_add(&flag->count, 1u)) {
+      func(arg);
+      atomic_thread_fence(memory_order_seq_cst);
+      flag->done = true;
+    } else {
+      while (!flag->done) thrd_yield();
+      // printf("blocked threads %u\n", atomic_load(&flag->count));
+    }
+  }
+}
+
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_INIT_ONCE, 0)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INIT_ONCE, 1)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INIT_ONCE, 2)
+#define P99_DECLARE_INIT_ONCE(T, NAME, ARG)                     \
+/** @remark wrapper type around a T that is initialized once */ \
+struct NAME {                                                   \
+  once_flag p00_once;                                           \
+  T p00_val;                                                    \
+};                                                              \
+P99_DECLARE_STRUCT(NAME);                                       \
+p99_inline                                                      \
+void P99_PASTE3(p00_, NAME, _init_func)(T* ARG);                \
+p99_inline                                                      \
+void P99_PASTE3(p00_, NAME, _init_once)(NAME* ARG) {            \
+  if (P99_UNLIKELY(!ARG->p00_once.done)) {                      \
+    if (!atomic_fetch_add(&ARG->p00_once.count, 1u)) {          \
+      P99_PASTE3(p00_, NAME, _init_func)(&ARG->p00_val);        \
+      atomic_thread_fence(memory_order_seq_cst);                \
+      ARG->p00_once.done = true;                                \
+    } else {                                                    \
+      while (!ARG->p00_once.done) thrd_yield();                 \
+    }                                                           \
+  }                                                             \
+}                                                               \
+p99_inline                                                      \
+void P99_PASTE3(p00_, NAME, _init_func)(T* ARG)
+
+#define P99_INIT_ONCE(NAME, VARP) P99_PASTE3(p00_, NAME, _init_once)(VARP)
+
 /**
  ** @memberof tss_t
  ** @return ::thrd_success on success, or ::thrd_error if the request
@@ -340,85 +426,6 @@ typedef T P99_PASTE3(p00_, NAME, _type)
 P99_DECLARE_THREAD_LOCAL(p00_thrd *, p00_thrd_local);
 
 #define P00_THRD_LOCAL P99_THREAD_LOCAL(p00_thrd_local)
-
-// 7.26.2 Initialization functions
-
-/**
- ** @memberof thrd_t
- **/
-p99_inline
-void thrd_yield(void) {
-  if (P99_UNLIKELY(sched_yield())) errno = 0;
-}
-
-/**
- ** @memberof once_flag
- **/
-p99_inline
-void call_once(once_flag *flag, void (*func)(void)) {
-  if (P99_UNLIKELY(!flag->done)) {
-    if (!atomic_fetch_add(&flag->count, 1u)) {
-      func();
-      atomic_thread_fence(memory_order_seq_cst);
-      flag->done = true;
-    } else {
-      while (!flag->done) thrd_yield();
-      // printf("blocked threads %u\n", atomic_load(&flag->count));
-    }
-  }
-}
-
-/**
- ** @brief Call a function @a func exactly once by providing it with
- ** argument @a arg
- **
- ** This is an extension of the standard function ::call_once that
- ** doesn't allow to pass an argument to @a func.
- **
- ** @memberof once_flag
- **/
-p99_inline
-void p99_call_once(once_flag *flag, void (*func)(void*), void* arg) {
-  if (P99_UNLIKELY(!flag->done)) {
-    if (!atomic_fetch_add(&flag->count, 1u)) {
-      func(arg);
-      atomic_thread_fence(memory_order_seq_cst);
-      flag->done = true;
-    } else {
-      while (!flag->done) thrd_yield();
-      // printf("blocked threads %u\n", atomic_load(&flag->count));
-    }
-  }
-}
-
-P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_INIT_ONCE, 0)
-P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INIT_ONCE, 1)
-P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INIT_ONCE, 2)
-#define P99_DECLARE_INIT_ONCE(T, NAME, ARG)                     \
-/** @remark wrapper type around a T that is initialized once */ \
-struct NAME {                                                   \
-  once_flag p00_once;                                           \
-  T p00_val;                                                    \
-};                                                              \
-P99_DECLARE_STRUCT(NAME);                                       \
-p99_inline                                                      \
-void P99_PASTE3(p00_, NAME, _init_func)(T* ARG);                \
-p99_inline                                                      \
-void P99_PASTE3(p00_, NAME, _init_once)(NAME* ARG) {            \
-  if (P99_UNLIKELY(!ARG->p00_once.done)) {                      \
-    if (!atomic_fetch_add(&ARG->p00_once.count, 1u)) {          \
-      P99_PASTE3(p00_, NAME, _init_func)(&ARG->p00_val);        \
-      atomic_thread_fence(memory_order_seq_cst);                \
-      ARG->p00_once.done = true;                                \
-    } else {                                                    \
-      while (!ARG->p00_once.done) thrd_yield();                 \
-    }                                                           \
-  }                                                             \
-}                                                               \
-p99_inline                                                      \
-void P99_PASTE3(p00_, NAME, _init_func)(T* ARG)
-
-#define P99_INIT_ONCE(NAME, VARP) P99_PASTE3(p00_, NAME, _init_once)(VARP)
 
 // 7.26.3 Condition variable functions
 
