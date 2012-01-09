@@ -134,8 +134,11 @@ typedef struct once_flag once_flag;
  ** has the correct state.
  */
 struct once_flag {
-  _Bool volatile done;
-  atomic_uint count;
+  union {
+    _Bool done;
+    _Bool volatile volatile_done;
+  } done;
+  atomic_flag flg;
 };
 
 
@@ -233,16 +236,15 @@ void thrd_yield(void) {
  **/
 p99_inline
 void call_once(once_flag *flag, void (*func)(void)) {
-  if (P99_UNLIKELY(!flag->done)) {
-    if (!atomic_fetch_add(&flag->count, 1u)) {
-      func();
-      atomic_thread_fence(memory_order_seq_cst);
-      flag->done = true;
-    } else {
-      while (!flag->done) thrd_yield();
-      // printf("blocked threads %u\n", atomic_load(&flag->count));
-    }
-  }
+  if (P99_UNLIKELY(!flag->done.done))
+    do {
+      atomic_flag_lock(&flag->flg);
+      if (!flag->done.volatile_done) {
+        func();
+        flag->done.volatile_done = true;
+      }
+      atomic_flag_unlock(&flag->flg);
+    } while (!flag->done.volatile_done);
 }
 
 /**
@@ -256,16 +258,15 @@ void call_once(once_flag *flag, void (*func)(void)) {
  **/
 p99_inline
 void p99_call_once(once_flag *flag, void (*func)(void*), void* arg) {
-  if (P99_UNLIKELY(!flag->done)) {
-    if (!atomic_fetch_add(&flag->count, 1u)) {
-      func(arg);
-      atomic_thread_fence(memory_order_seq_cst);
-      flag->done = true;
-    } else {
-      while (!flag->done) thrd_yield();
-      // printf("blocked threads %u\n", atomic_load(&flag->count));
-    }
-  }
+  if (P99_UNLIKELY(!flag->done.done))
+    do {
+      atomic_flag_lock(&flag->flg);
+      if (!flag->done.volatile_done) {
+        func(arg);
+        flag->done.volatile_done = true;
+      }
+      atomic_flag_unlock(&flag->flg);
+    } while (!flag->done.volatile_done);
 }
 
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_INIT_ONCE, 0)
@@ -282,15 +283,15 @@ p99_inline                                                      \
 void P99_PASTE3(p00_, NAME, _init_func)(T* ARG);                \
 p99_inline                                                      \
 void P99_PASTE3(p00_, NAME, _init_once)(NAME* ARG) {            \
-  if (P99_UNLIKELY(!ARG->p00_once.done)) {                      \
-    if (!atomic_fetch_add(&ARG->p00_once.count, 1u)) {          \
-      P99_PASTE3(p00_, NAME, _init_func)(&ARG->p00_val);        \
-      atomic_thread_fence(memory_order_seq_cst);                \
-      ARG->p00_once.done = true;                                \
-    } else {                                                    \
-      while (!ARG->p00_once.done) thrd_yield();                 \
-    }                                                           \
-  }                                                             \
+  if (P99_UNLIKELY(!ARG->p00_once.done.done))                   \
+    do {                                                        \
+      atomic_flag_lock(&ARG->p00_once.flg);                     \
+      if (!ARG->p00_once.done.volatile_done) {                  \
+        P99_PASTE3(p00_, NAME, _init_func)(&ARG->p00_val);      \
+        ARG->p00_once.done.volatile_done = true;                \
+      }                                                         \
+      atomic_flag_unlock(&ARG->p00_once.flg);                   \
+    } while (!ARG->p00_once.done.volatile_done);                \
 }                                                               \
 p99_inline                                                      \
 void P99_PASTE3(p00_, NAME, _init_func)(T* ARG)
