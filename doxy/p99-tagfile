@@ -85,7 +85,13 @@
     <includes id="p99__enum_8h" name="p99_enum.h" local="yes" imported="no">p99_enum.h</includes>
     <includes id="p99__generic_8h" name="p99_generic.h" local="yes" imported="no">p99_generic.h</includes>
     <class kind="struct">atomic_flag</class>
-    <class kind="struct">NAME</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>_Atomic</name>
+      <anchorfile>group__C11__keywords_ga52600f5d4caab9c54707d8e21d1d1761.html</anchorfile>
+      <anchor>ga52600f5d4caab9c54707d8e21d1d1761</anchor>
+      <arglist>(T)</arglist>
+    </member>
     <member kind="define">
       <type>#define</type>
       <name>ATOMIC_BOOL_LOCK_FREE</name>
@@ -256,9 +262,9 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>P99_ATOMIC</name>
-      <anchorfile>group__atomic__types_gaa14bf443db9efa8851c59671fd6dd255.html</anchorfile>
-      <anchor>gaa14bf443db9efa8851c59671fd6dd255</anchor>
+      <name>P99_ATOMIC_INHERIT</name>
+      <anchorfile>group__atomic__types_gae1656acf9fdd7a8120dcfaf2e083aecc.html</anchorfile>
+      <anchor>gae1656acf9fdd7a8120dcfaf2e083aecc</anchor>
       <arglist>(T)</arglist>
     </member>
     <member kind="define">
@@ -270,23 +276,51 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_DECLARE_ATOMIC</name>
+      <anchorfile>group__atomic__types_ga223f7d4d2a21afdb5f10d4837d8cc7b0.html</anchorfile>
+      <anchor>ga223f7d4d2a21afdb5f10d4837d8cc7b0</anchor>
+      <arglist>(T, NAME)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_DECLARE_ATOMIC_LOCK_FREE</name>
       <anchorfile>group__atomic__types_gabce300bd517cda62bf63fe7b9b0a7d30.html</anchorfile>
       <anchor>gabce300bd517cda62bf63fe7b9b0a7d30</anchor>
       <arglist>(T, NAME)</arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
-      <name>atomic_char16_t</name>
-      <anchorfile>group__atomic__types_gae83f1f64cbef33f08a3b7c36128b69ad.html</anchorfile>
-      <anchor>gae83f1f64cbef33f08a3b7c36128b69ad</anchor>
+      <type>struct atomic_bool</type>
+      <name>atomic_bool</name>
+      <anchorfile>group__atomic__types_ga85d2a956d1eb0970f3f16cc03a40af5b.html</anchorfile>
+      <anchor>ga85d2a956d1eb0970f3f16cc03a40af5b</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_char</type>
+      <name>atomic_char</name>
+      <anchorfile>group__atomic__types_ga2d0779df8d50b58618577260c3ce2ea0.html</anchorfile>
+      <anchor>ga2d0779df8d50b58618577260c3ce2ea0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_char16_t</type>
+      <name>atomic_char16_t</name>
+      <anchorfile>group__atomic__types_ga084a2ec840d327fe01fa37b76e61d20c.html</anchorfile>
+      <anchor>ga084a2ec840d327fe01fa37b76e61d20c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_char32_t</type>
       <name>atomic_char32_t</name>
-      <anchorfile>group__atomic__types_gae5b40660bc5887103124d5b2c339c350.html</anchorfile>
-      <anchor>gae5b40660bc5887103124d5b2c339c350</anchor>
+      <anchorfile>group__atomic__types_gacc7d206c06e5e63241b20b3c85037e26.html</anchorfile>
+      <anchor>gacc7d206c06e5e63241b20b3c85037e26</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_char_p</type>
+      <name>atomic_char_p</name>
+      <anchorfile>group__atomic__types_gaa392d2eb1983f993976d4f39ffc9450d.html</anchorfile>
+      <anchor>gaa392d2eb1983f993976d4f39ffc9450d</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -297,241 +331,248 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short</type>
+      <type>struct atomic_int</type>
       <name>atomic_int</name>
-      <anchorfile>group__atomic__types_ga36657ea877f4ce4f871dcb68e032f7e7.html</anchorfile>
-      <anchor>ga36657ea877f4ce4f871dcb68e032f7e7</anchor>
+      <anchorfile>group__atomic__types_gaa1a8ab3409aef0d101a673157b84bc1b.html</anchorfile>
+      <anchor>gaa1a8ab3409aef0d101a673157b84bc1b</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_fast16_t</type>
       <name>atomic_int_fast16_t</name>
-      <anchorfile>group__atomic__types_gaf862ee4849ca0edd42b0d775bbbfa880.html</anchorfile>
-      <anchor>gaf862ee4849ca0edd42b0d775bbbfa880</anchor>
+      <anchorfile>group__atomic__types_gafc9c4feb2b1fa3da1dec3f46333d160a.html</anchorfile>
+      <anchor>gafc9c4feb2b1fa3da1dec3f46333d160a</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_fast32_t</type>
       <name>atomic_int_fast32_t</name>
-      <anchorfile>group__atomic__types_ga99115d4083b0f0f1acda854c103ea19f.html</anchorfile>
-      <anchor>ga99115d4083b0f0f1acda854c103ea19f</anchor>
+      <anchorfile>group__atomic__types_ga3285fc984cef000922db3bcaa08923dd.html</anchorfile>
+      <anchor>ga3285fc984cef000922db3bcaa08923dd</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_fast64_t</type>
       <name>atomic_int_fast64_t</name>
-      <anchorfile>group__atomic__types_ga149da7110dd2b1e675e5dadccc2c31d0.html</anchorfile>
-      <anchor>ga149da7110dd2b1e675e5dadccc2c31d0</anchor>
+      <anchorfile>group__atomic__types_ga83d947d53eee6335b3053d02ce321730.html</anchorfile>
+      <anchor>ga83d947d53eee6335b3053d02ce321730</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_fast8_t</type>
       <name>atomic_int_fast8_t</name>
-      <anchorfile>group__atomic__types_gad5c0525fe39f381418d828ad16fbce4e.html</anchorfile>
-      <anchor>gad5c0525fe39f381418d828ad16fbce4e</anchor>
+      <anchorfile>group__atomic__types_ga335f2cca96a8f0b0da284dc3eb0c46f2.html</anchorfile>
+      <anchor>ga335f2cca96a8f0b0da284dc3eb0c46f2</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_least16_t</type>
       <name>atomic_int_least16_t</name>
-      <anchorfile>group__atomic__types_ga0ea29be558febc363d8429c718673642.html</anchorfile>
-      <anchor>ga0ea29be558febc363d8429c718673642</anchor>
+      <anchorfile>group__atomic__types_gabad05aff43d93737de3925644d1b07e9.html</anchorfile>
+      <anchor>gabad05aff43d93737de3925644d1b07e9</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_least32_t</type>
       <name>atomic_int_least32_t</name>
-      <anchorfile>group__atomic__types_ga15be4b04b3d74e2e0182db3583131b40.html</anchorfile>
-      <anchor>ga15be4b04b3d74e2e0182db3583131b40</anchor>
+      <anchorfile>group__atomic__types_ga163a51178ba549454e924f61ef5e4671.html</anchorfile>
+      <anchor>ga163a51178ba549454e924f61ef5e4671</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_least64_t</type>
       <name>atomic_int_least64_t</name>
-      <anchorfile>group__atomic__types_ga3ef595b3fc327dd4af9705e0d12458eb.html</anchorfile>
-      <anchor>ga3ef595b3fc327dd4af9705e0d12458eb</anchor>
+      <anchorfile>group__atomic__types_ga3c4524e580dc83ed58cebcc2b5a3be67.html</anchorfile>
+      <anchor>ga3c4524e580dc83ed58cebcc2b5a3be67</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_least8_t</type>
       <name>atomic_int_least8_t</name>
-      <anchorfile>group__atomic__types_gad4b2dbb4d7c432d0c77fd6204c7743d1.html</anchorfile>
-      <anchor>gad4b2dbb4d7c432d0c77fd6204c7743d1</anchor>
+      <anchorfile>group__atomic__types_ga61f0bf4a73ac29efff2c2a4a8b8852f1.html</anchorfile>
+      <anchor>ga61f0bf4a73ac29efff2c2a4a8b8852f1</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_intmax_t</type>
       <name>atomic_intmax_t</name>
-      <anchorfile>group__atomic__types_gaca6198fc80e28717888247556c73cd72.html</anchorfile>
-      <anchor>gaca6198fc80e28717888247556c73cd72</anchor>
+      <anchorfile>group__atomic__types_gae9b80b36284ff092a0be3097c743af3e.html</anchorfile>
+      <anchor>gae9b80b36284ff092a0be3097c743af3e</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_intptr_t</type>
       <name>atomic_intptr_t</name>
-      <anchorfile>group__atomic__types_ga0e5482d0070fc7640cb7aee4a73a4ade.html</anchorfile>
-      <anchor>ga0e5482d0070fc7640cb7aee4a73a4ade</anchor>
+      <anchorfile>group__atomic__types_ga2e23e50e40ffc4c5684190a4d8ec02cf.html</anchorfile>
+      <anchor>ga2e23e50e40ffc4c5684190a4d8ec02cf</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long</type>
+      <type>struct atomic_llong</type>
       <name>atomic_llong</name>
-      <anchorfile>group__atomic__types_gabc30fe34a8ea0e791c72ed5bc3127632.html</anchorfile>
-      <anchor>gabc30fe34a8ea0e791c72ed5bc3127632</anchor>
+      <anchorfile>group__atomic__types_gac3eda532ae7e6186e86748923c1a47ca.html</anchorfile>
+      <anchor>gac3eda532ae7e6186e86748923c1a47ca</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long</type>
+      <type>struct atomic_long</type>
       <name>atomic_long</name>
-      <anchorfile>group__atomic__types_gab04d0b4f04438befbb2fbb713e374f98.html</anchorfile>
-      <anchor>gab04d0b4f04438befbb2fbb713e374f98</anchor>
+      <anchorfile>group__atomic__types_ga92322ae230d88d077589ecef01cbc843.html</anchorfile>
+      <anchor>ga92322ae230d88d077589ecef01cbc843</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_ptrdiff_t</type>
       <name>atomic_ptrdiff_t</name>
-      <anchorfile>group__atomic__types_ga1c0de762841a4bf8ac3f6243e17de90b.html</anchorfile>
-      <anchor>ga1c0de762841a4bf8ac3f6243e17de90b</anchor>
+      <anchorfile>group__atomic__types_ga1985a2cd2308a8e23e3bf5c557c9b328.html</anchorfile>
+      <anchor>ga1985a2cd2308a8e23e3bf5c557c9b328</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed</type>
+      <type>struct atomic_schar</type>
       <name>atomic_schar</name>
-      <anchorfile>group__atomic__types_gaed7b05ca5aa176b9081268b48cad3fbf.html</anchorfile>
-      <anchor>gaed7b05ca5aa176b9081268b48cad3fbf</anchor>
+      <anchorfile>group__atomic__types_ga68984af336ac3f1de3af46cefd0755e1.html</anchorfile>
+      <anchor>ga68984af336ac3f1de3af46cefd0755e1</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short</type>
+      <type>struct atomic_schar_p</type>
+      <name>atomic_schar_p</name>
+      <anchorfile>group__atomic__types_ga70e5d645dbd59927c97153c8e2e768f1.html</anchorfile>
+      <anchor>ga70e5d645dbd59927c97153c8e2e768f1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_short</type>
       <name>atomic_short</name>
-      <anchorfile>group__atomic__types_ga1015622dd7e065fc1aad3e9b0b6a5c4b.html</anchorfile>
-      <anchor>ga1015622dd7e065fc1aad3e9b0b6a5c4b</anchor>
+      <anchorfile>group__atomic__types_ga34d68a18d9587056aff7734fc9c6ba45.html</anchorfile>
+      <anchor>ga34d68a18d9587056aff7734fc9c6ba45</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_size_t</type>
       <name>atomic_size_t</name>
-      <anchorfile>group__atomic__types_ga894b593649447927ab43299acd715a28.html</anchorfile>
-      <anchor>ga894b593649447927ab43299acd715a28</anchor>
+      <anchorfile>group__atomic__types_gac4e234867809c6a7ac1e31ff0d1942af.html</anchorfile>
+      <anchor>gac4e234867809c6a7ac1e31ff0d1942af</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned</type>
+      <type>struct atomic_uchar</type>
       <name>atomic_uchar</name>
-      <anchorfile>group__atomic__types_ga84231115518d4441053e6fdb887de671.html</anchorfile>
-      <anchor>ga84231115518d4441053e6fdb887de671</anchor>
+      <anchorfile>group__atomic__types_ga996e3eb7bc4d488696277e793f28132b.html</anchorfile>
+      <anchor>ga996e3eb7bc4d488696277e793f28132b</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned</type>
+      <type>struct atomic_uchar_p</type>
+      <name>atomic_uchar_p</name>
+      <anchorfile>group__atomic__types_ga800ac00005f01ba90324cecd5ba39ac0.html</anchorfile>
+      <anchor>ga800ac00005f01ba90324cecd5ba39ac0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_uint</type>
       <name>atomic_uint</name>
-      <anchorfile>group__atomic__types_ga7b0c1b5c3348d496325a2056b412e83f.html</anchorfile>
-      <anchor>ga7b0c1b5c3348d496325a2056b412e83f</anchor>
+      <anchorfile>group__atomic__types_gad3e765e890fd0cfc60084c3285c53dd3.html</anchorfile>
+      <anchor>gad3e765e890fd0cfc60084c3285c53dd3</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_fast16_t</type>
       <name>atomic_uint_fast16_t</name>
-      <anchorfile>group__atomic__types_ga3976876bb14b4a43a7cd426928cfd555.html</anchorfile>
-      <anchor>ga3976876bb14b4a43a7cd426928cfd555</anchor>
+      <anchorfile>group__atomic__types_gae0fc7c93869b9b91cadf70601576c054.html</anchorfile>
+      <anchor>gae0fc7c93869b9b91cadf70601576c054</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_fast32_t</type>
       <name>atomic_uint_fast32_t</name>
-      <anchorfile>group__atomic__types_gaaf31b041109feae9ec8b329aac36f970.html</anchorfile>
-      <anchor>gaaf31b041109feae9ec8b329aac36f970</anchor>
+      <anchorfile>group__atomic__types_ga8689cc38c5b685603f573f4d1f93cd29.html</anchorfile>
+      <anchor>ga8689cc38c5b685603f573f4d1f93cd29</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_fast64_t</type>
       <name>atomic_uint_fast64_t</name>
-      <anchorfile>group__atomic__types_gaa707381513423dd0b09740cfb380d995.html</anchorfile>
-      <anchor>gaa707381513423dd0b09740cfb380d995</anchor>
+      <anchorfile>group__atomic__types_ga331ce9dd059dd47125773e70c0c3cebb.html</anchorfile>
+      <anchor>ga331ce9dd059dd47125773e70c0c3cebb</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_fast8_t</type>
       <name>atomic_uint_fast8_t</name>
-      <anchorfile>group__atomic__types_gaade29cb1906db734b813233f7b23f0f6.html</anchorfile>
-      <anchor>gaade29cb1906db734b813233f7b23f0f6</anchor>
+      <anchorfile>group__atomic__types_gaff56a62b357f210bd389d6d3439bf9ba.html</anchorfile>
+      <anchor>gaff56a62b357f210bd389d6d3439bf9ba</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_least16_t</type>
       <name>atomic_uint_least16_t</name>
-      <anchorfile>group__atomic__types_gad2d6ddeda6a6a6357ef5bf1d328e10c8.html</anchorfile>
-      <anchor>gad2d6ddeda6a6a6357ef5bf1d328e10c8</anchor>
+      <anchorfile>group__atomic__types_ga0f537ec9b9ce2370a1c5bbb5a7942a6d.html</anchorfile>
+      <anchor>ga0f537ec9b9ce2370a1c5bbb5a7942a6d</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_least32_t</type>
       <name>atomic_uint_least32_t</name>
-      <anchorfile>group__atomic__types_ga4c8a467ef91ee91e2d46fe68fce366ce.html</anchorfile>
-      <anchor>ga4c8a467ef91ee91e2d46fe68fce366ce</anchor>
+      <anchorfile>group__atomic__types_ga0e8b9b79080beea683dd880cf66a58e2.html</anchorfile>
+      <anchor>ga0e8b9b79080beea683dd880cf66a58e2</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_least64_t</type>
       <name>atomic_uint_least64_t</name>
-      <anchorfile>group__atomic__types_gaeae71ead52ec6c4092fb24d7e3e584ba.html</anchorfile>
-      <anchor>gaeae71ead52ec6c4092fb24d7e3e584ba</anchor>
+      <anchorfile>group__atomic__types_ga85c8946074e09e4372357f9471b4c571.html</anchorfile>
+      <anchor>ga85c8946074e09e4372357f9471b4c571</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_least8_t</type>
       <name>atomic_uint_least8_t</name>
-      <anchorfile>group__atomic__types_ga9777d32dd0ffcfdb5c14d504722fb52a.html</anchorfile>
-      <anchor>ga9777d32dd0ffcfdb5c14d504722fb52a</anchor>
+      <anchorfile>group__atomic__types_gaf1c389b5b50026121c8c1d2f5d48e7b7.html</anchorfile>
+      <anchor>gaf1c389b5b50026121c8c1d2f5d48e7b7</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uintmax_t</type>
       <name>atomic_uintmax_t</name>
-      <anchorfile>group__atomic__types_ga196f102bbb5d8ffe75c632afae85c970.html</anchorfile>
-      <anchor>ga196f102bbb5d8ffe75c632afae85c970</anchor>
+      <anchorfile>group__atomic__types_gacece7d7a55390dabdacbd1d55aeee46e.html</anchorfile>
+      <anchor>gacece7d7a55390dabdacbd1d55aeee46e</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uintptr_t</type>
       <name>atomic_uintptr_t</name>
-      <anchorfile>group__atomic__types_gaed5c0341fb41c651e218430a2dadb086.html</anchorfile>
-      <anchor>gaed5c0341fb41c651e218430a2dadb086</anchor>
+      <anchorfile>group__atomic__types_gadc470d6d054e299003a2e3f527506b8d.html</anchorfile>
+      <anchor>gadc470d6d054e299003a2e3f527506b8d</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long</type>
+      <type>struct atomic_ullong</type>
+      <name>atomic_ullong</name>
+      <anchorfile>group__atomic__types_ga4595c072b41d14909db0a1746f8cd43d.html</anchorfile>
+      <anchor>ga4595c072b41d14909db0a1746f8cd43d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_ulong</type>
       <name>atomic_ulong</name>
-      <anchorfile>group__atomic__types_ga7cf9882ac0f5dd767e1d8157a983c6f1.html</anchorfile>
-      <anchor>ga7cf9882ac0f5dd767e1d8157a983c6f1</anchor>
+      <anchorfile>group__atomic__types_ga21dc74e3ab99d24c14cd57b41fece77c.html</anchorfile>
+      <anchor>ga21dc74e3ab99d24c14cd57b41fece77c</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short</type>
+      <type>struct atomic_ushort</type>
       <name>atomic_ushort</name>
-      <anchorfile>group__atomic__types_gabac95d1bf227886681b62cde1d73ea6b.html</anchorfile>
-      <anchor>gabac95d1bf227886681b62cde1d73ea6b</anchor>
+      <anchorfile>group__atomic__types_ga1fe5654b9d17cdc7f262854062536729.html</anchorfile>
+      <anchor>ga1fe5654b9d17cdc7f262854062536729</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_wchar_t</type>
       <name>atomic_wchar_t</name>
-      <anchorfile>group__atomic__types_gac52c182b071d8fbc16c6d5341cf29059.html</anchorfile>
-      <anchor>gac52c182b071d8fbc16c6d5341cf29059</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>signed</type>
-      <name>char</name>
-      <anchorfile>group__atomic__types_gacec88b5ad7ef3000cc69cf062187a18f.html</anchorfile>
-      <anchor>gacec88b5ad7ef3000cc69cf062187a18f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>signed unsigned short</type>
-      <name>int</name>
-      <anchorfile>group__atomic__types_gabe6927b59ca769d7b4674e18946b46a1.html</anchorfile>
-      <anchor>gabe6927b59ca769d7b4674e18946b46a1</anchor>
+      <anchorfile>group__atomic__types_gae44f1130c8cdfab21b78c180f697f3cd.html</anchorfile>
+      <anchor>gae44f1130c8cdfab21b78c180f697f3cd</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -541,19 +582,65 @@
       <anchor>gaaf3bad5d9512860807a4bb2515c5d1d7</anchor>
       <arglist></arglist>
     </member>
-    <member kind="typedef">
-      <type>struct NAME</type>
-      <name>T</name>
-      <anchorfile>group__atomic__types_ga53101b991fa8ab1126891a7f6b683958.html</anchorfile>
-      <anchor>ga53101b991fa8ab1126891a7f6b683958</anchor>
+    <member kind="enumeration">
+      <name>memory_order_</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>ga4a513b42e7eb3a78701d7a4613c94c9d</anchor>
       <arglist></arglist>
     </member>
-    <member kind="function">
-      <type>typedef</type>
-      <name>__typeof__</name>
-      <anchorfile>group__atomic__types_ga5137f576e9614a705a370444c6aad33a.html</anchorfile>
-      <anchor>ga5137f576e9614a705a370444c6aad33a</anchor>
-      <arglist>(P00_CLAUSE2, 4)()(P00_GENERIC_(P00_NARG__2(P00_NARG_EMPTY_01)</arglist>
+    <member kind="enumvalue">
+      <name>memory_order_relaxed</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9dac6489d0374e297a776f6a3db7ea5654a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_consume</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9da0745f54882bc00251a719e42969db110</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_acquire</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9dafb313754331704b978e9a80a933b3da7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_release</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9da685a90c8fc516895354973c3918a5f7b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_acq_rel</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9dae17e60cbfd766a7f165872c36e2f7bc5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_seq_cst</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9da2d21914d1edd227a890107e7878a3752</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_amount</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9dafc5433dafaace7721084ec870a2e9272</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_max</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9da4b5017e2c246286475590cf5f8aa2ec9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_min</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9da629448cd11537ae2fd72a4c2d8aa80ea</anchor>
+      <arglist></arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -568,321 +655,6 @@
       <anchorfile>group__atomic__enum_gabeb697852ea46b71e03e2c19273b9380.html</anchorfile>
       <anchor>gabeb697852ea46b71e03e2c19273b9380</anchor>
       <arglist>(memory_order x)...</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga06a32e26e76633557b77760e41347ed1.html</anchorfile>
-      <anchor>ga06a32e26e76633557b77760e41347ed1</anchor>
-      <arglist>(double, atomic_double)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga9109e69352479b6f46a27f3d657d28fd.html</anchorfile>
-      <anchor>ga9109e69352479b6f46a27f3d657d28fd</anchor>
-      <arglist>(float, atomic_float)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_gad60bee5463f72917153467afd7c73535.html</anchorfile>
-      <anchor>gad60bee5463f72917153467afd7c73535</anchor>
-      <arglist>(unsigned int, atomic_uint)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga8455113c802d5583f2f37b481a8760d6.html</anchorfile>
-      <anchor>ga8455113c802d5583f2f37b481a8760d6</anchor>
-      <arglist>(unsigned char *, atomic_uchar_p)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga31da8ff4e64346002ba3c801e311d237.html</anchorfile>
-      <anchor>ga31da8ff4e64346002ba3c801e311d237</anchor>
-      <arglist>(signed char *, atomic_schar_p)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_gacaa34497ce204f60ac00ba4f16a6b70a.html</anchorfile>
-      <anchor>gacaa34497ce204f60ac00ba4f16a6b70a</anchor>
-      <arglist>(char *, atomic_char_p)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_gaeb470de26d1d0a5f477c0c3980dd4e5e.html</anchorfile>
-      <anchor>gaeb470de26d1d0a5f477c0c3980dd4e5e</anchor>
-      <arglist>(unsigned long long, atomic_ullong)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga94c3373c5dd4b52932ab2391902af4a0.html</anchorfile>
-      <anchor>ga94c3373c5dd4b52932ab2391902af4a0</anchor>
-      <arglist>(long long, atomic_llong)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga0eb78c05c1b591a0a2af2ffb2895e5eb.html</anchorfile>
-      <anchor>ga0eb78c05c1b591a0a2af2ffb2895e5eb</anchor>
-      <arglist>(unsigned char, atomic_uchar)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga9fa613dba15107829c66ff127e033970.html</anchorfile>
-      <anchor>ga9fa613dba15107829c66ff127e033970</anchor>
-      <arglist>(long, atomic_long)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_gaefbabb3ef566be3339df0393636e2055.html</anchorfile>
-      <anchor>gaefbabb3ef566be3339df0393636e2055</anchor>
-      <arglist>(signed char, atomic_schar)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga564227f08a7f7ee2f632e897555aaf68.html</anchorfile>
-      <anchor>ga564227f08a7f7ee2f632e897555aaf68</anchor>
-      <arglist>(unsigned short, atomic_ushort)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga51e6f87024f0d9090a59c620b296eb5f.html</anchorfile>
-      <anchor>ga51e6f87024f0d9090a59c620b296eb5f</anchor>
-      <arglist>(short, atomic_short)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga2048c9805dd8bb3b221022ab0169d282.html</anchorfile>
-      <anchor>ga2048c9805dd8bb3b221022ab0169d282</anchor>
-      <arglist>(unsigned long, atomic_ulong)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga5ba1f9921a2b4bbaa537af025c4aa9b5.html</anchorfile>
-      <anchor>ga5ba1f9921a2b4bbaa537af025c4aa9b5</anchor>
-      <arglist>(_Bool, atomic_bool)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_gacbe20f0397fd58365170f04f69e0010b.html</anchorfile>
-      <anchor>gacbe20f0397fd58365170f04f69e0010b</anchor>
-      <arglist>(char, atomic_char)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga66531769d3546a7020063953a75e0d6b.html</anchorfile>
-      <anchor>ga66531769d3546a7020063953a75e0d6b</anchor>
-      <arglist>(long double, atomic_ldouble)</arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>_Bool</name>
-      <anchorfile>group__atomic__types_ga0f26592408ca9953eaee5846079aca39.html</anchorfile>
-      <anchor>ga0f26592408ca9953eaee5846079aca39</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>atomic_bool</name>
-      <anchorfile>group__atomic__types_ga8b2d80301f7018549b406b4b2a3a5e4b.html</anchorfile>
-      <anchor>ga8b2d80301f7018549b406b4b2a3a5e4b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>atomic_char</name>
-      <anchorfile>group__atomic__types_gaf40d9d758fa93d409e9c17f5c5055560.html</anchorfile>
-      <anchor>gaf40d9d758fa93d409e9c17f5c5055560</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>char16_t</name>
-      <anchorfile>group__atomic__types_gabd87676629ec63c92a4c8d690c0a623b.html</anchorfile>
-      <anchor>gabd87676629ec63c92a4c8d690c0a623b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>char32_t</name>
-      <anchorfile>group__atomic__types_gaf50fe5275362fe455cbac6b438574da7.html</anchorfile>
-      <anchor>gaf50fe5275362fe455cbac6b438574da7</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_fast16_t</name>
-      <anchorfile>group__atomic__types_ga0dd4bc9b9555f4a3b7ae8b8a3866318d.html</anchorfile>
-      <anchor>ga0dd4bc9b9555f4a3b7ae8b8a3866318d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_fast32_t</name>
-      <anchorfile>group__atomic__types_ga97ffc6679c27f49b908492c5bb3311f5.html</anchorfile>
-      <anchor>ga97ffc6679c27f49b908492c5bb3311f5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_fast64_t</name>
-      <anchorfile>group__atomic__types_gada1a84f1ffd479cd48c777e730fd75c2.html</anchorfile>
-      <anchor>gada1a84f1ffd479cd48c777e730fd75c2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_fast8_t</name>
-      <anchorfile>group__atomic__types_gad733b462fbe488f342c8a36a6f9be52a.html</anchorfile>
-      <anchor>gad733b462fbe488f342c8a36a6f9be52a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_least16_t</name>
-      <anchorfile>group__atomic__types_ga45a1738c4299728df4a56860e2b1713a.html</anchorfile>
-      <anchor>ga45a1738c4299728df4a56860e2b1713a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_least32_t</name>
-      <anchorfile>group__atomic__types_gad4d6ac45ee6c2b3d055893742953f639.html</anchorfile>
-      <anchor>gad4d6ac45ee6c2b3d055893742953f639</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_least64_t</name>
-      <anchorfile>group__atomic__types_ga330f294aa94d82de3d7d30fd99dcb0fc.html</anchorfile>
-      <anchor>ga330f294aa94d82de3d7d30fd99dcb0fc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_least8_t</name>
-      <anchorfile>group__atomic__types_ga2984c3f0fce54a9a7d19445041d6f612.html</anchorfile>
-      <anchor>ga2984c3f0fce54a9a7d19445041d6f612</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>intmax_t</name>
-      <anchorfile>group__atomic__types_ga71735520655a30a129ffa5e6b92bdacd.html</anchorfile>
-      <anchor>ga71735520655a30a129ffa5e6b92bdacd</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>intptr_t</name>
-      <anchorfile>group__atomic__types_gab6d0a84c6ca6166b0d9ca2bbe5e9b9b2.html</anchorfile>
-      <anchor>gab6d0a84c6ca6166b0d9ca2bbe5e9b9b2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>ptrdiff_t</name>
-      <anchorfile>group__atomic__types_ga3e7098c31fe0170a0957e53f5135e033.html</anchorfile>
-      <anchor>ga3e7098c31fe0170a0957e53f5135e033</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>size_t</name>
-      <anchorfile>group__atomic__types_ga6af059a937ef4eb7c2bd183d493fe0db.html</anchorfile>
-      <anchor>ga6af059a937ef4eb7c2bd183d493fe0db</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_fast16_t</name>
-      <anchorfile>group__atomic__types_ga6a234291c7fb8fa914a2fa2ce381283f.html</anchorfile>
-      <anchor>ga6a234291c7fb8fa914a2fa2ce381283f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_fast32_t</name>
-      <anchorfile>group__atomic__types_ga08a77842ac9a8f3cbdf315fbb014533a.html</anchorfile>
-      <anchor>ga08a77842ac9a8f3cbdf315fbb014533a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_fast64_t</name>
-      <anchorfile>group__atomic__types_ga75772a807e6c5cc3327dd9be429c6c37.html</anchorfile>
-      <anchor>ga75772a807e6c5cc3327dd9be429c6c37</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_fast8_t</name>
-      <anchorfile>group__atomic__types_gaf72a33dcc70972732c3322d7a70254d1.html</anchorfile>
-      <anchor>gaf72a33dcc70972732c3322d7a70254d1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_least16_t</name>
-      <anchorfile>group__atomic__types_ga7ad8b2fafc50a8e49b65d9210fc258c0.html</anchorfile>
-      <anchor>ga7ad8b2fafc50a8e49b65d9210fc258c0</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_least32_t</name>
-      <anchorfile>group__atomic__types_ga839266f4182f6115099f766a2bb5e717.html</anchorfile>
-      <anchor>ga839266f4182f6115099f766a2bb5e717</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_least64_t</name>
-      <anchorfile>group__atomic__types_ga505e7deee45d2eb588de789ba4243c91.html</anchorfile>
-      <anchor>ga505e7deee45d2eb588de789ba4243c91</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_least8_t</name>
-      <anchorfile>group__atomic__types_ga0b20a9ff5f3d24939915499aacc823eb.html</anchorfile>
-      <anchor>ga0b20a9ff5f3d24939915499aacc823eb</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uintmax_t</name>
-      <anchorfile>group__atomic__types_ga3b1f94cfc705e18f5d330dce988dab5a.html</anchorfile>
-      <anchor>ga3b1f94cfc705e18f5d330dce988dab5a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uintptr_t</name>
-      <anchorfile>group__atomic__types_ga0d803217d6424ee82359f169a6e14e26.html</anchorfile>
-      <anchor>ga0d803217d6424ee82359f169a6e14e26</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>wchar_t</name>
-      <anchorfile>group__atomic__types_ga1eb8b1a649e3c104520c04ca64612bad.html</anchorfile>
-      <anchor>ga1eb8b1a649e3c104520c04ca64612bad</anchor>
-      <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -1046,8 +818,8 @@
     </member>
     <member kind="enumvalue">
       <name>p00_inhibit_RETURN</name>
-      <anchorfile>group__validity_gadf764cbdea00d65edcd07bb9953ad2b7.html</anchorfile>
-      <anchor>ggadf764cbdea00d65edcd07bb9953ad2b7</anchor>
+      <anchorfile>group__validity_ga06fc87d81c62e9abb8790b6e5713c55b.html</anchorfile>
+      <anchor>gga06fc87d81c62e9abb8790b6e5713c55b</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumeration">
@@ -8930,6 +8702,66 @@
       <anchor>gaaf3bad5d9512860807a4bb2515c5d1d7</anchor>
       <arglist></arglist>
     </member>
+    <member kind="enumeration">
+      <name>memory_order_</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>ga4a513b42e7eb3a78701d7a4613c94c9d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_relaxed</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9dac6489d0374e297a776f6a3db7ea5654a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_consume</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9da0745f54882bc00251a719e42969db110</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_acquire</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9dafb313754331704b978e9a80a933b3da7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_release</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9da685a90c8fc516895354973c3918a5f7b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_acq_rel</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9dae17e60cbfd766a7f165872c36e2f7bc5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_seq_cst</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9da2d21914d1edd227a890107e7878a3752</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_amount</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9dafc5433dafaace7721084ec870a2e9272</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_max</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9da4b5017e2c246286475590cf5f8aa2ec9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>memory_order_min</name>
+      <anchorfile>group__atomic__enum_ga4a513b42e7eb3a78701d7a4613c94c9d.html</anchorfile>
+      <anchor>gga4a513b42e7eb3a78701d7a4613c94c9da629448cd11537ae2fd72a4c2d8aa80ea</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function">
       <type>char const *</type>
       <name>memory_order_getname</name>
@@ -8943,13 +8775,19 @@
     <title>Atomic_types</title>
     <filename>group__atomic__types.html</filename>
     <class kind="struct">atomic_flag</class>
-    <class kind="struct">NAME</class>
     <member kind="define">
       <type>#define</type>
-      <name>P99_ATOMIC</name>
-      <anchorfile>group__atomic__types_gaa14bf443db9efa8851c59671fd6dd255.html</anchorfile>
-      <anchor>gaa14bf443db9efa8851c59671fd6dd255</anchor>
+      <name>P99_ATOMIC_INHERIT</name>
+      <anchorfile>group__atomic__types_gae1656acf9fdd7a8120dcfaf2e083aecc.html</anchorfile>
+      <anchor>gae1656acf9fdd7a8120dcfaf2e083aecc</anchor>
       <arglist>(T)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_DECLARE_ATOMIC</name>
+      <anchorfile>group__atomic__types_ga223f7d4d2a21afdb5f10d4837d8cc7b0.html</anchorfile>
+      <anchor>ga223f7d4d2a21afdb5f10d4837d8cc7b0</anchor>
+      <arglist>(T, NAME)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -8959,17 +8797,38 @@
       <arglist>(T, NAME)</arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
-      <name>atomic_char16_t</name>
-      <anchorfile>group__atomic__types_gae83f1f64cbef33f08a3b7c36128b69ad.html</anchorfile>
-      <anchor>gae83f1f64cbef33f08a3b7c36128b69ad</anchor>
+      <type>struct atomic_bool</type>
+      <name>atomic_bool</name>
+      <anchorfile>group__atomic__types_ga85d2a956d1eb0970f3f16cc03a40af5b.html</anchorfile>
+      <anchor>ga85d2a956d1eb0970f3f16cc03a40af5b</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_char</type>
+      <name>atomic_char</name>
+      <anchorfile>group__atomic__types_ga2d0779df8d50b58618577260c3ce2ea0.html</anchorfile>
+      <anchor>ga2d0779df8d50b58618577260c3ce2ea0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_char16_t</type>
+      <name>atomic_char16_t</name>
+      <anchorfile>group__atomic__types_ga084a2ec840d327fe01fa37b76e61d20c.html</anchorfile>
+      <anchor>ga084a2ec840d327fe01fa37b76e61d20c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_char32_t</type>
       <name>atomic_char32_t</name>
-      <anchorfile>group__atomic__types_gae5b40660bc5887103124d5b2c339c350.html</anchorfile>
-      <anchor>gae5b40660bc5887103124d5b2c339c350</anchor>
+      <anchorfile>group__atomic__types_gacc7d206c06e5e63241b20b3c85037e26.html</anchorfile>
+      <anchor>gacc7d206c06e5e63241b20b3c85037e26</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_char_p</type>
+      <name>atomic_char_p</name>
+      <anchorfile>group__atomic__types_gaa392d2eb1983f993976d4f39ffc9450d.html</anchorfile>
+      <anchor>gaa392d2eb1983f993976d4f39ffc9450d</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -8980,570 +8839,248 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short</type>
+      <type>struct atomic_int</type>
       <name>atomic_int</name>
-      <anchorfile>group__atomic__types_ga36657ea877f4ce4f871dcb68e032f7e7.html</anchorfile>
-      <anchor>ga36657ea877f4ce4f871dcb68e032f7e7</anchor>
+      <anchorfile>group__atomic__types_gaa1a8ab3409aef0d101a673157b84bc1b.html</anchorfile>
+      <anchor>gaa1a8ab3409aef0d101a673157b84bc1b</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_fast16_t</type>
       <name>atomic_int_fast16_t</name>
-      <anchorfile>group__atomic__types_gaf862ee4849ca0edd42b0d775bbbfa880.html</anchorfile>
-      <anchor>gaf862ee4849ca0edd42b0d775bbbfa880</anchor>
+      <anchorfile>group__atomic__types_gafc9c4feb2b1fa3da1dec3f46333d160a.html</anchorfile>
+      <anchor>gafc9c4feb2b1fa3da1dec3f46333d160a</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_fast32_t</type>
       <name>atomic_int_fast32_t</name>
-      <anchorfile>group__atomic__types_ga99115d4083b0f0f1acda854c103ea19f.html</anchorfile>
-      <anchor>ga99115d4083b0f0f1acda854c103ea19f</anchor>
+      <anchorfile>group__atomic__types_ga3285fc984cef000922db3bcaa08923dd.html</anchorfile>
+      <anchor>ga3285fc984cef000922db3bcaa08923dd</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_fast64_t</type>
       <name>atomic_int_fast64_t</name>
-      <anchorfile>group__atomic__types_ga149da7110dd2b1e675e5dadccc2c31d0.html</anchorfile>
-      <anchor>ga149da7110dd2b1e675e5dadccc2c31d0</anchor>
+      <anchorfile>group__atomic__types_ga83d947d53eee6335b3053d02ce321730.html</anchorfile>
+      <anchor>ga83d947d53eee6335b3053d02ce321730</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_fast8_t</type>
       <name>atomic_int_fast8_t</name>
-      <anchorfile>group__atomic__types_gad5c0525fe39f381418d828ad16fbce4e.html</anchorfile>
-      <anchor>gad5c0525fe39f381418d828ad16fbce4e</anchor>
+      <anchorfile>group__atomic__types_ga335f2cca96a8f0b0da284dc3eb0c46f2.html</anchorfile>
+      <anchor>ga335f2cca96a8f0b0da284dc3eb0c46f2</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_least16_t</type>
       <name>atomic_int_least16_t</name>
-      <anchorfile>group__atomic__types_ga0ea29be558febc363d8429c718673642.html</anchorfile>
-      <anchor>ga0ea29be558febc363d8429c718673642</anchor>
+      <anchorfile>group__atomic__types_gabad05aff43d93737de3925644d1b07e9.html</anchorfile>
+      <anchor>gabad05aff43d93737de3925644d1b07e9</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_least32_t</type>
       <name>atomic_int_least32_t</name>
-      <anchorfile>group__atomic__types_ga15be4b04b3d74e2e0182db3583131b40.html</anchorfile>
-      <anchor>ga15be4b04b3d74e2e0182db3583131b40</anchor>
+      <anchorfile>group__atomic__types_ga163a51178ba549454e924f61ef5e4671.html</anchorfile>
+      <anchor>ga163a51178ba549454e924f61ef5e4671</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_least64_t</type>
       <name>atomic_int_least64_t</name>
-      <anchorfile>group__atomic__types_ga3ef595b3fc327dd4af9705e0d12458eb.html</anchorfile>
-      <anchor>ga3ef595b3fc327dd4af9705e0d12458eb</anchor>
+      <anchorfile>group__atomic__types_ga3c4524e580dc83ed58cebcc2b5a3be67.html</anchorfile>
+      <anchor>ga3c4524e580dc83ed58cebcc2b5a3be67</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_int_least8_t</type>
       <name>atomic_int_least8_t</name>
-      <anchorfile>group__atomic__types_gad4b2dbb4d7c432d0c77fd6204c7743d1.html</anchorfile>
-      <anchor>gad4b2dbb4d7c432d0c77fd6204c7743d1</anchor>
+      <anchorfile>group__atomic__types_ga61f0bf4a73ac29efff2c2a4a8b8852f1.html</anchorfile>
+      <anchor>ga61f0bf4a73ac29efff2c2a4a8b8852f1</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_intmax_t</type>
       <name>atomic_intmax_t</name>
-      <anchorfile>group__atomic__types_gaca6198fc80e28717888247556c73cd72.html</anchorfile>
-      <anchor>gaca6198fc80e28717888247556c73cd72</anchor>
+      <anchorfile>group__atomic__types_gae9b80b36284ff092a0be3097c743af3e.html</anchorfile>
+      <anchor>gae9b80b36284ff092a0be3097c743af3e</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_intptr_t</type>
       <name>atomic_intptr_t</name>
-      <anchorfile>group__atomic__types_ga0e5482d0070fc7640cb7aee4a73a4ade.html</anchorfile>
-      <anchor>ga0e5482d0070fc7640cb7aee4a73a4ade</anchor>
+      <anchorfile>group__atomic__types_ga2e23e50e40ffc4c5684190a4d8ec02cf.html</anchorfile>
+      <anchor>ga2e23e50e40ffc4c5684190a4d8ec02cf</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long</type>
+      <type>struct atomic_llong</type>
       <name>atomic_llong</name>
-      <anchorfile>group__atomic__types_gabc30fe34a8ea0e791c72ed5bc3127632.html</anchorfile>
-      <anchor>gabc30fe34a8ea0e791c72ed5bc3127632</anchor>
+      <anchorfile>group__atomic__types_gac3eda532ae7e6186e86748923c1a47ca.html</anchorfile>
+      <anchor>gac3eda532ae7e6186e86748923c1a47ca</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long</type>
+      <type>struct atomic_long</type>
       <name>atomic_long</name>
-      <anchorfile>group__atomic__types_gab04d0b4f04438befbb2fbb713e374f98.html</anchorfile>
-      <anchor>gab04d0b4f04438befbb2fbb713e374f98</anchor>
+      <anchorfile>group__atomic__types_ga92322ae230d88d077589ecef01cbc843.html</anchorfile>
+      <anchor>ga92322ae230d88d077589ecef01cbc843</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_ptrdiff_t</type>
       <name>atomic_ptrdiff_t</name>
-      <anchorfile>group__atomic__types_ga1c0de762841a4bf8ac3f6243e17de90b.html</anchorfile>
-      <anchor>ga1c0de762841a4bf8ac3f6243e17de90b</anchor>
+      <anchorfile>group__atomic__types_ga1985a2cd2308a8e23e3bf5c557c9b328.html</anchorfile>
+      <anchor>ga1985a2cd2308a8e23e3bf5c557c9b328</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed</type>
+      <type>struct atomic_schar</type>
       <name>atomic_schar</name>
-      <anchorfile>group__atomic__types_gaed7b05ca5aa176b9081268b48cad3fbf.html</anchorfile>
-      <anchor>gaed7b05ca5aa176b9081268b48cad3fbf</anchor>
+      <anchorfile>group__atomic__types_ga68984af336ac3f1de3af46cefd0755e1.html</anchorfile>
+      <anchor>ga68984af336ac3f1de3af46cefd0755e1</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short</type>
+      <type>struct atomic_schar_p</type>
+      <name>atomic_schar_p</name>
+      <anchorfile>group__atomic__types_ga70e5d645dbd59927c97153c8e2e768f1.html</anchorfile>
+      <anchor>ga70e5d645dbd59927c97153c8e2e768f1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_short</type>
       <name>atomic_short</name>
-      <anchorfile>group__atomic__types_ga1015622dd7e065fc1aad3e9b0b6a5c4b.html</anchorfile>
-      <anchor>ga1015622dd7e065fc1aad3e9b0b6a5c4b</anchor>
+      <anchorfile>group__atomic__types_ga34d68a18d9587056aff7734fc9c6ba45.html</anchorfile>
+      <anchor>ga34d68a18d9587056aff7734fc9c6ba45</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_size_t</type>
       <name>atomic_size_t</name>
-      <anchorfile>group__atomic__types_ga894b593649447927ab43299acd715a28.html</anchorfile>
-      <anchor>ga894b593649447927ab43299acd715a28</anchor>
+      <anchorfile>group__atomic__types_gac4e234867809c6a7ac1e31ff0d1942af.html</anchorfile>
+      <anchor>gac4e234867809c6a7ac1e31ff0d1942af</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned</type>
+      <type>struct atomic_uchar</type>
       <name>atomic_uchar</name>
-      <anchorfile>group__atomic__types_ga84231115518d4441053e6fdb887de671.html</anchorfile>
-      <anchor>ga84231115518d4441053e6fdb887de671</anchor>
+      <anchorfile>group__atomic__types_ga996e3eb7bc4d488696277e793f28132b.html</anchorfile>
+      <anchor>ga996e3eb7bc4d488696277e793f28132b</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned</type>
+      <type>struct atomic_uchar_p</type>
+      <name>atomic_uchar_p</name>
+      <anchorfile>group__atomic__types_ga800ac00005f01ba90324cecd5ba39ac0.html</anchorfile>
+      <anchor>ga800ac00005f01ba90324cecd5ba39ac0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_uint</type>
       <name>atomic_uint</name>
-      <anchorfile>group__atomic__types_ga7b0c1b5c3348d496325a2056b412e83f.html</anchorfile>
-      <anchor>ga7b0c1b5c3348d496325a2056b412e83f</anchor>
+      <anchorfile>group__atomic__types_gad3e765e890fd0cfc60084c3285c53dd3.html</anchorfile>
+      <anchor>gad3e765e890fd0cfc60084c3285c53dd3</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_fast16_t</type>
       <name>atomic_uint_fast16_t</name>
-      <anchorfile>group__atomic__types_ga3976876bb14b4a43a7cd426928cfd555.html</anchorfile>
-      <anchor>ga3976876bb14b4a43a7cd426928cfd555</anchor>
+      <anchorfile>group__atomic__types_gae0fc7c93869b9b91cadf70601576c054.html</anchorfile>
+      <anchor>gae0fc7c93869b9b91cadf70601576c054</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_fast32_t</type>
       <name>atomic_uint_fast32_t</name>
-      <anchorfile>group__atomic__types_gaaf31b041109feae9ec8b329aac36f970.html</anchorfile>
-      <anchor>gaaf31b041109feae9ec8b329aac36f970</anchor>
+      <anchorfile>group__atomic__types_ga8689cc38c5b685603f573f4d1f93cd29.html</anchorfile>
+      <anchor>ga8689cc38c5b685603f573f4d1f93cd29</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_fast64_t</type>
       <name>atomic_uint_fast64_t</name>
-      <anchorfile>group__atomic__types_gaa707381513423dd0b09740cfb380d995.html</anchorfile>
-      <anchor>gaa707381513423dd0b09740cfb380d995</anchor>
+      <anchorfile>group__atomic__types_ga331ce9dd059dd47125773e70c0c3cebb.html</anchorfile>
+      <anchor>ga331ce9dd059dd47125773e70c0c3cebb</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_fast8_t</type>
       <name>atomic_uint_fast8_t</name>
-      <anchorfile>group__atomic__types_gaade29cb1906db734b813233f7b23f0f6.html</anchorfile>
-      <anchor>gaade29cb1906db734b813233f7b23f0f6</anchor>
+      <anchorfile>group__atomic__types_gaff56a62b357f210bd389d6d3439bf9ba.html</anchorfile>
+      <anchor>gaff56a62b357f210bd389d6d3439bf9ba</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_least16_t</type>
       <name>atomic_uint_least16_t</name>
-      <anchorfile>group__atomic__types_gad2d6ddeda6a6a6357ef5bf1d328e10c8.html</anchorfile>
-      <anchor>gad2d6ddeda6a6a6357ef5bf1d328e10c8</anchor>
+      <anchorfile>group__atomic__types_ga0f537ec9b9ce2370a1c5bbb5a7942a6d.html</anchorfile>
+      <anchor>ga0f537ec9b9ce2370a1c5bbb5a7942a6d</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_least32_t</type>
       <name>atomic_uint_least32_t</name>
-      <anchorfile>group__atomic__types_ga4c8a467ef91ee91e2d46fe68fce366ce.html</anchorfile>
-      <anchor>ga4c8a467ef91ee91e2d46fe68fce366ce</anchor>
+      <anchorfile>group__atomic__types_ga0e8b9b79080beea683dd880cf66a58e2.html</anchorfile>
+      <anchor>ga0e8b9b79080beea683dd880cf66a58e2</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_least64_t</type>
       <name>atomic_uint_least64_t</name>
-      <anchorfile>group__atomic__types_gaeae71ead52ec6c4092fb24d7e3e584ba.html</anchorfile>
-      <anchor>gaeae71ead52ec6c4092fb24d7e3e584ba</anchor>
+      <anchorfile>group__atomic__types_ga85c8946074e09e4372357f9471b4c571.html</anchorfile>
+      <anchor>ga85c8946074e09e4372357f9471b4c571</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uint_least8_t</type>
       <name>atomic_uint_least8_t</name>
-      <anchorfile>group__atomic__types_ga9777d32dd0ffcfdb5c14d504722fb52a.html</anchorfile>
-      <anchor>ga9777d32dd0ffcfdb5c14d504722fb52a</anchor>
+      <anchorfile>group__atomic__types_gaf1c389b5b50026121c8c1d2f5d48e7b7.html</anchorfile>
+      <anchor>gaf1c389b5b50026121c8c1d2f5d48e7b7</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uintmax_t</type>
       <name>atomic_uintmax_t</name>
-      <anchorfile>group__atomic__types_ga196f102bbb5d8ffe75c632afae85c970.html</anchorfile>
-      <anchor>ga196f102bbb5d8ffe75c632afae85c970</anchor>
+      <anchorfile>group__atomic__types_gacece7d7a55390dabdacbd1d55aeee46e.html</anchorfile>
+      <anchor>gacece7d7a55390dabdacbd1d55aeee46e</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_uintptr_t</type>
       <name>atomic_uintptr_t</name>
-      <anchorfile>group__atomic__types_gaed5c0341fb41c651e218430a2dadb086.html</anchorfile>
-      <anchor>gaed5c0341fb41c651e218430a2dadb086</anchor>
+      <anchorfile>group__atomic__types_gadc470d6d054e299003a2e3f527506b8d.html</anchorfile>
+      <anchor>gadc470d6d054e299003a2e3f527506b8d</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long</type>
+      <type>struct atomic_ullong</type>
+      <name>atomic_ullong</name>
+      <anchorfile>group__atomic__types_ga4595c072b41d14909db0a1746f8cd43d.html</anchorfile>
+      <anchor>ga4595c072b41d14909db0a1746f8cd43d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_ulong</type>
       <name>atomic_ulong</name>
-      <anchorfile>group__atomic__types_ga7cf9882ac0f5dd767e1d8157a983c6f1.html</anchorfile>
-      <anchor>ga7cf9882ac0f5dd767e1d8157a983c6f1</anchor>
+      <anchorfile>group__atomic__types_ga21dc74e3ab99d24c14cd57b41fece77c.html</anchorfile>
+      <anchor>ga21dc74e3ab99d24c14cd57b41fece77c</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short</type>
+      <type>struct atomic_ushort</type>
       <name>atomic_ushort</name>
-      <anchorfile>group__atomic__types_gabac95d1bf227886681b62cde1d73ea6b.html</anchorfile>
-      <anchor>gabac95d1bf227886681b62cde1d73ea6b</anchor>
+      <anchorfile>group__atomic__types_ga1fe5654b9d17cdc7f262854062536729.html</anchorfile>
+      <anchor>ga1fe5654b9d17cdc7f262854062536729</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>signed unsigned short unsigned short unsigned long unsigned long long long unsigned long long atomic_ullong</type>
+      <type>struct atomic_wchar_t</type>
       <name>atomic_wchar_t</name>
-      <anchorfile>group__atomic__types_gac52c182b071d8fbc16c6d5341cf29059.html</anchorfile>
-      <anchor>gac52c182b071d8fbc16c6d5341cf29059</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>signed</type>
-      <name>char</name>
-      <anchorfile>group__atomic__types_gacec88b5ad7ef3000cc69cf062187a18f.html</anchorfile>
-      <anchor>gacec88b5ad7ef3000cc69cf062187a18f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>signed unsigned short</type>
-      <name>int</name>
-      <anchorfile>group__atomic__types_gabe6927b59ca769d7b4674e18946b46a1.html</anchorfile>
-      <anchor>gabe6927b59ca769d7b4674e18946b46a1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct NAME</type>
-      <name>T</name>
-      <anchorfile>group__atomic__types_ga53101b991fa8ab1126891a7f6b683958.html</anchorfile>
-      <anchor>ga53101b991fa8ab1126891a7f6b683958</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>typedef</type>
-      <name>__typeof__</name>
-      <anchorfile>group__atomic__types_ga5137f576e9614a705a370444c6aad33a.html</anchorfile>
-      <anchor>ga5137f576e9614a705a370444c6aad33a</anchor>
-      <arglist>(P00_CLAUSE2, 4)()(P00_GENERIC_(P00_NARG__2(P00_NARG_EMPTY_01)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga66531769d3546a7020063953a75e0d6b.html</anchorfile>
-      <anchor>ga66531769d3546a7020063953a75e0d6b</anchor>
-      <arglist>(long double, atomic_ldouble)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga06a32e26e76633557b77760e41347ed1.html</anchorfile>
-      <anchor>ga06a32e26e76633557b77760e41347ed1</anchor>
-      <arglist>(double, atomic_double)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga9109e69352479b6f46a27f3d657d28fd.html</anchorfile>
-      <anchor>ga9109e69352479b6f46a27f3d657d28fd</anchor>
-      <arglist>(float, atomic_float)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_gad60bee5463f72917153467afd7c73535.html</anchorfile>
-      <anchor>gad60bee5463f72917153467afd7c73535</anchor>
-      <arglist>(unsigned int, atomic_uint)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga8455113c802d5583f2f37b481a8760d6.html</anchorfile>
-      <anchor>ga8455113c802d5583f2f37b481a8760d6</anchor>
-      <arglist>(unsigned char *, atomic_uchar_p)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga31da8ff4e64346002ba3c801e311d237.html</anchorfile>
-      <anchor>ga31da8ff4e64346002ba3c801e311d237</anchor>
-      <arglist>(signed char *, atomic_schar_p)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_gacaa34497ce204f60ac00ba4f16a6b70a.html</anchorfile>
-      <anchor>gacaa34497ce204f60ac00ba4f16a6b70a</anchor>
-      <arglist>(char *, atomic_char_p)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_gaeb470de26d1d0a5f477c0c3980dd4e5e.html</anchorfile>
-      <anchor>gaeb470de26d1d0a5f477c0c3980dd4e5e</anchor>
-      <arglist>(unsigned long long, atomic_ullong)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga94c3373c5dd4b52932ab2391902af4a0.html</anchorfile>
-      <anchor>ga94c3373c5dd4b52932ab2391902af4a0</anchor>
-      <arglist>(long long, atomic_llong)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga2048c9805dd8bb3b221022ab0169d282.html</anchorfile>
-      <anchor>ga2048c9805dd8bb3b221022ab0169d282</anchor>
-      <arglist>(unsigned long, atomic_ulong)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga9fa613dba15107829c66ff127e033970.html</anchorfile>
-      <anchor>ga9fa613dba15107829c66ff127e033970</anchor>
-      <arglist>(long, atomic_long)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_gaefbabb3ef566be3339df0393636e2055.html</anchorfile>
-      <anchor>gaefbabb3ef566be3339df0393636e2055</anchor>
-      <arglist>(signed char, atomic_schar)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga564227f08a7f7ee2f632e897555aaf68.html</anchorfile>
-      <anchor>ga564227f08a7f7ee2f632e897555aaf68</anchor>
-      <arglist>(unsigned short, atomic_ushort)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga51e6f87024f0d9090a59c620b296eb5f.html</anchorfile>
-      <anchor>ga51e6f87024f0d9090a59c620b296eb5f</anchor>
-      <arglist>(short, atomic_short)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga0eb78c05c1b591a0a2af2ffb2895e5eb.html</anchorfile>
-      <anchor>ga0eb78c05c1b591a0a2af2ffb2895e5eb</anchor>
-      <arglist>(unsigned char, atomic_uchar)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_ga5ba1f9921a2b4bbaa537af025c4aa9b5.html</anchorfile>
-      <anchor>ga5ba1f9921a2b4bbaa537af025c4aa9b5</anchor>
-      <arglist>(_Bool, atomic_bool)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__atomic__types_gacbe20f0397fd58365170f04f69e0010b.html</anchorfile>
-      <anchor>gacbe20f0397fd58365170f04f69e0010b</anchor>
-      <arglist>(char, atomic_char)</arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>_Bool</name>
-      <anchorfile>group__atomic__types_ga0f26592408ca9953eaee5846079aca39.html</anchorfile>
-      <anchor>ga0f26592408ca9953eaee5846079aca39</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>atomic_bool</name>
-      <anchorfile>group__atomic__types_ga8b2d80301f7018549b406b4b2a3a5e4b.html</anchorfile>
-      <anchor>ga8b2d80301f7018549b406b4b2a3a5e4b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>atomic_char</name>
-      <anchorfile>group__atomic__types_gaf40d9d758fa93d409e9c17f5c5055560.html</anchorfile>
-      <anchor>gaf40d9d758fa93d409e9c17f5c5055560</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>char16_t</name>
-      <anchorfile>group__atomic__types_gabd87676629ec63c92a4c8d690c0a623b.html</anchorfile>
-      <anchor>gabd87676629ec63c92a4c8d690c0a623b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>char32_t</name>
-      <anchorfile>group__atomic__types_gaf50fe5275362fe455cbac6b438574da7.html</anchorfile>
-      <anchor>gaf50fe5275362fe455cbac6b438574da7</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_fast16_t</name>
-      <anchorfile>group__atomic__types_ga0dd4bc9b9555f4a3b7ae8b8a3866318d.html</anchorfile>
-      <anchor>ga0dd4bc9b9555f4a3b7ae8b8a3866318d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_fast32_t</name>
-      <anchorfile>group__atomic__types_ga97ffc6679c27f49b908492c5bb3311f5.html</anchorfile>
-      <anchor>ga97ffc6679c27f49b908492c5bb3311f5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_fast64_t</name>
-      <anchorfile>group__atomic__types_gada1a84f1ffd479cd48c777e730fd75c2.html</anchorfile>
-      <anchor>gada1a84f1ffd479cd48c777e730fd75c2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_fast8_t</name>
-      <anchorfile>group__atomic__types_gad733b462fbe488f342c8a36a6f9be52a.html</anchorfile>
-      <anchor>gad733b462fbe488f342c8a36a6f9be52a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_least16_t</name>
-      <anchorfile>group__atomic__types_ga45a1738c4299728df4a56860e2b1713a.html</anchorfile>
-      <anchor>ga45a1738c4299728df4a56860e2b1713a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_least32_t</name>
-      <anchorfile>group__atomic__types_gad4d6ac45ee6c2b3d055893742953f639.html</anchorfile>
-      <anchor>gad4d6ac45ee6c2b3d055893742953f639</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_least64_t</name>
-      <anchorfile>group__atomic__types_ga330f294aa94d82de3d7d30fd99dcb0fc.html</anchorfile>
-      <anchor>ga330f294aa94d82de3d7d30fd99dcb0fc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>int_least8_t</name>
-      <anchorfile>group__atomic__types_ga2984c3f0fce54a9a7d19445041d6f612.html</anchorfile>
-      <anchor>ga2984c3f0fce54a9a7d19445041d6f612</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>intmax_t</name>
-      <anchorfile>group__atomic__types_ga71735520655a30a129ffa5e6b92bdacd.html</anchorfile>
-      <anchor>ga71735520655a30a129ffa5e6b92bdacd</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>intptr_t</name>
-      <anchorfile>group__atomic__types_gab6d0a84c6ca6166b0d9ca2bbe5e9b9b2.html</anchorfile>
-      <anchor>gab6d0a84c6ca6166b0d9ca2bbe5e9b9b2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>ptrdiff_t</name>
-      <anchorfile>group__atomic__types_ga3e7098c31fe0170a0957e53f5135e033.html</anchorfile>
-      <anchor>ga3e7098c31fe0170a0957e53f5135e033</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>size_t</name>
-      <anchorfile>group__atomic__types_ga6af059a937ef4eb7c2bd183d493fe0db.html</anchorfile>
-      <anchor>ga6af059a937ef4eb7c2bd183d493fe0db</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_fast16_t</name>
-      <anchorfile>group__atomic__types_ga6a234291c7fb8fa914a2fa2ce381283f.html</anchorfile>
-      <anchor>ga6a234291c7fb8fa914a2fa2ce381283f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_fast32_t</name>
-      <anchorfile>group__atomic__types_ga08a77842ac9a8f3cbdf315fbb014533a.html</anchorfile>
-      <anchor>ga08a77842ac9a8f3cbdf315fbb014533a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_fast64_t</name>
-      <anchorfile>group__atomic__types_ga75772a807e6c5cc3327dd9be429c6c37.html</anchorfile>
-      <anchor>ga75772a807e6c5cc3327dd9be429c6c37</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_fast8_t</name>
-      <anchorfile>group__atomic__types_gaf72a33dcc70972732c3322d7a70254d1.html</anchorfile>
-      <anchor>gaf72a33dcc70972732c3322d7a70254d1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_least16_t</name>
-      <anchorfile>group__atomic__types_ga7ad8b2fafc50a8e49b65d9210fc258c0.html</anchorfile>
-      <anchor>ga7ad8b2fafc50a8e49b65d9210fc258c0</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_least32_t</name>
-      <anchorfile>group__atomic__types_ga839266f4182f6115099f766a2bb5e717.html</anchorfile>
-      <anchor>ga839266f4182f6115099f766a2bb5e717</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_least64_t</name>
-      <anchorfile>group__atomic__types_ga505e7deee45d2eb588de789ba4243c91.html</anchorfile>
-      <anchor>ga505e7deee45d2eb588de789ba4243c91</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uint_least8_t</name>
-      <anchorfile>group__atomic__types_ga0b20a9ff5f3d24939915499aacc823eb.html</anchorfile>
-      <anchor>ga0b20a9ff5f3d24939915499aacc823eb</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uintmax_t</name>
-      <anchorfile>group__atomic__types_ga3b1f94cfc705e18f5d330dce988dab5a.html</anchorfile>
-      <anchor>ga3b1f94cfc705e18f5d330dce988dab5a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>uintptr_t</name>
-      <anchorfile>group__atomic__types_ga0d803217d6424ee82359f169a6e14e26.html</anchorfile>
-      <anchor>ga0d803217d6424ee82359f169a6e14e26</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>typedef</type>
-      <name>wchar_t</name>
-      <anchorfile>group__atomic__types_ga1eb8b1a649e3c104520c04ca64612bad.html</anchorfile>
-      <anchor>ga1eb8b1a649e3c104520c04ca64612bad</anchor>
+      <anchorfile>group__atomic__types_gae44f1130c8cdfab21b78c180f697f3cd.html</anchorfile>
+      <anchor>gae44f1130c8cdfab21b78c180f697f3cd</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -9810,8 +9347,8 @@
     </member>
     <member kind="enumvalue">
       <name>p00_inhibit_RETURN</name>
-      <anchorfile>group__validity_gadf764cbdea00d65edcd07bb9953ad2b7.html</anchorfile>
-      <anchor>ggadf764cbdea00d65edcd07bb9953ad2b7</anchor>
+      <anchorfile>group__validity_ga06fc87d81c62e9abb8790b6e5713c55b.html</anchorfile>
+      <anchor>gga06fc87d81c62e9abb8790b6e5713c55b</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -10480,6 +10017,13 @@
     <name>C11_keywords</name>
     <title>Some new C11 keywords</title>
     <filename>group__C11__keywords.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>_Atomic</name>
+      <anchorfile>group__C11__keywords_ga52600f5d4caab9c54707d8e21d1d1761.html</anchorfile>
+      <anchor>ga52600f5d4caab9c54707d8e21d1d1761</anchor>
+      <arglist>(T)</arglist>
+    </member>
     <member kind="define">
       <type>#define</type>
       <name>alignas</name>
@@ -15265,10 +14809,6 @@
     </member>
   </compound>
   <compound kind="struct">
-    <name>NAME</name>
-    <filename>structNAME.html</filename>
-  </compound>
-  <compound kind="struct">
     <name>once_flag</name>
     <filename>structonce__flag.html</filename>
     <member kind="function">
@@ -15293,17 +14833,31 @@
       <arglist>(once_flag *flag, void(*func)(void *), void *arg)</arglist>
     </member>
     <member kind="variable">
-      <type>atomic_uint</type>
-      <name>count</name>
-      <anchorfile>structonce__flag_af7fb6894e4b2ba818fc465c08b6d2b07.html</anchorfile>
-      <anchor>af7fb6894e4b2ba818fc465c08b6d2b07</anchor>
+      <type>union once_flag::@1</type>
+      <name>done</name>
+      <anchorfile>structonce__flag_ab1c08c5dd694199b5e2a9a47f063f30c.html</anchorfile>
+      <anchor>ab1c08c5dd694199b5e2a9a47f063f30c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>_Bool</type>
+      <name>done</name>
+      <anchorfile>uniononce__flag_1_1@1_ac224b94d78b36ba8ceeb6123ce98884f.html</anchorfile>
+      <anchor>ac224b94d78b36ba8ceeb6123ce98884f</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
       <type>_Bool volatile</type>
-      <name>done</name>
-      <anchorfile>structonce__flag_acf3a6e28d37edb8ac7261e6a8cdc41f1.html</anchorfile>
-      <anchor>acf3a6e28d37edb8ac7261e6a8cdc41f1</anchor>
+      <name>volatile_done</name>
+      <anchorfile>uniononce__flag_1_1@1_a7511dad5a76b5b9c5079eef38e62269f.html</anchorfile>
+      <anchor>a7511dad5a76b5b9c5079eef38e62269f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>atomic_flag</type>
+      <name>flg</name>
+      <anchorfile>structonce__flag_af936f151a645255ad0d26add37c4a31e.html</anchorfile>
+      <anchor>af936f151a645255ad0d26add37c4a31e</anchor>
       <arglist></arglist>
     </member>
   </compound>
