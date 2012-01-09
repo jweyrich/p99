@@ -406,8 +406,12 @@ P99_ENC_DECLARE(uint32_t volatile, atomic_flag);
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_ATOMIC_LOCK_FREE, 0)
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ATOMIC_LOCK_FREE, 1)
-#define P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME)                                                                          \
+#ifdef P00_DOXYGEN
+# define P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME)                                                                         \
 /** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
+typedef union NAME NAME
+#else
+#define P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME)                                                                          \
 union NAME {                                                                                                           \
   atomic_flag p00_lock;                                                                                                \
   union {                                                                                                              \
@@ -416,10 +420,11 @@ union NAME {                                                                    
   } p00_xval;                                                                                                          \
 };                                                                                                                     \
 typedef union NAME NAME
+#endif
 
-P00_DOCUMENT_TYPE_ARGUMENT(P99_ATOMIC, 0)
-#define P99_ATOMIC(T)                                                            \
-struct {                                                                         \
+P00_DOCUMENT_TYPE_ARGUMENT(P00_ATOMIC_STRUCT, 0)
+#define P00_ATOMIC_STRUCT(T, NAME)                                               \
+struct NAME {                                                                    \
   atomic_flag p00_lock;                                                          \
   union {                                                                        \
     /* should be an integer type that can be cast to pointers without warning */ \
@@ -449,36 +454,24 @@ struct {                                                                        
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_ATOMIC, 0)
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ATOMIC_LOCK_FREE, 1)
-#define P99_DECLARE_ATOMIC(T, NAME)                                                                                    \
+#ifdef P00_DOXYGEN
+#define P99_DECLARE_ATOMIC(T, NAME)
+#else
+#define P99_DECLARE_ATOMIC(...)                                         \
 /** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
-typedef P99_ATOMIC(T) NAME
+P99_IF_EQ_1(P99_NARG(__VA_ARGS__))                                      \
+(P00_DECLARE_ATOMIC(__VA_ARGS__, P99_PASTE2(atomic_, __VA_ARGS__)))     \
+(P00_DECLARE_ATOMIC(__VA_ARGS__))
+#endif
+
+#define P00_DECLARE_ATOMIC(T, ...)                                                                                    \
+/** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
+typedef P00_ATOMIC_STRUCT(T, __VA_ARGS__) __VA_ARGS__
 
 #define P00_DECLARE_ATOMIC_CHOICE(MAC, T, NAME) \
 P99_IF_EQ_2(MAC)                                \
 (P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME))         \
 (P99_DECLARE_ATOMIC(T, NAME))
-
-
-#define P00_DECLARE_ATOMIC_INHERIT(T, NAME)     \
-typedef                                         \
-__typeof__                                      \
-(                                               \
- P99_GENERIC_LITERAL                            \
- ((T)0, ,                                       \
-  (_Bool, atomic_bool),                         \
-  (char, atomic_char),                          \
-  (signed char, atomic_schar),                  \
-  (unsigned char, atomic_uchar),                \
-  (short int, atomic_short),                    \
-  (unsigned short int, atomic_ushort),          \
-  (int, atomic_int),                            \
-  (unsigned int, atomic_uint),                  \
-  (long int, atomic_long),                      \
-  (unsigned long int, atomic_ulong),            \
-  (long long int, atomic_llong),                \
-  (unsigned long long int, atomic_ullong)       \
-  )                                             \
- ) NAME
 
 
 /**
@@ -516,41 +509,166 @@ P00_DECLARE_ATOMIC_CHOICE(ATOMIC_CHAR_LOCK_FREE, char*, atomic_char_p);
 P00_DECLARE_ATOMIC_CHOICE(ATOMIC_CHAR_LOCK_FREE, signed char*, atomic_schar_p);
 P00_DECLARE_ATOMIC_CHOICE(ATOMIC_CHAR_LOCK_FREE, unsigned char*, atomic_uchar_p);
 
-P00_DECLARE_ATOMIC_INHERIT(char16_t, atomic_char16_t);
-P00_DECLARE_ATOMIC_INHERIT(char32_t, atomic_char32_t);
-P00_DECLARE_ATOMIC_INHERIT(wchar_t, atomic_wchar_t);
-P00_DECLARE_ATOMIC_INHERIT(int_least8_t, atomic_int_least8_t);
-P00_DECLARE_ATOMIC_INHERIT(uint_least8_t, atomic_uint_least8_t);
-P00_DECLARE_ATOMIC_INHERIT(int_least16_t, atomic_int_least16_t);
-P00_DECLARE_ATOMIC_INHERIT(uint_least16_t, atomic_uint_least16_t);
-P00_DECLARE_ATOMIC_INHERIT(int_least32_t, atomic_int_least32_t);
-P00_DECLARE_ATOMIC_INHERIT(uint_least32_t, atomic_uint_least32_t);
-P00_DECLARE_ATOMIC_INHERIT(int_least64_t, atomic_int_least64_t);
-P00_DECLARE_ATOMIC_INHERIT(uint_least64_t, atomic_uint_least64_t);
-P00_DECLARE_ATOMIC_INHERIT(int_fast8_t, atomic_int_fast8_t);
-P00_DECLARE_ATOMIC_INHERIT(uint_fast8_t, atomic_uint_fast8_t);
-P00_DECLARE_ATOMIC_INHERIT(int_fast16_t, atomic_int_fast16_t);
-P00_DECLARE_ATOMIC_INHERIT(uint_fast16_t, atomic_uint_fast16_t);
-P00_DECLARE_ATOMIC_INHERIT(int_fast32_t, atomic_int_fast32_t);
-P00_DECLARE_ATOMIC_INHERIT(uint_fast32_t, atomic_uint_fast32_t);
-P00_DECLARE_ATOMIC_INHERIT(int_fast64_t, atomic_int_fast64_t);
-P00_DECLARE_ATOMIC_INHERIT(uint_fast64_t, atomic_uint_fast64_t);
-P00_DECLARE_ATOMIC_INHERIT(intptr_t, atomic_intptr_t);
-P00_DECLARE_ATOMIC_INHERIT(uintptr_t, atomic_uintptr_t);
-P00_DECLARE_ATOMIC_INHERIT(size_t, atomic_size_t);
-P00_DECLARE_ATOMIC_INHERIT(ptrdiff_t, atomic_ptrdiff_t);
-P00_DECLARE_ATOMIC_INHERIT(intmax_t, atomic_intmax_t);
-P00_DECLARE_ATOMIC_INHERIT(uintmax_t, atomic_uintmax_t);
-
 P99_DECLARE_ATOMIC(float, atomic_float);
 P99_DECLARE_ATOMIC(double, atomic_double);
 P99_DECLARE_ATOMIC(long double, atomic_ldouble);
 
+#ifndef __STDC_NO_COMPLEX__
+P99_DECLARE_ATOMIC(float _Complex, atomic_cfloat);
+P99_DECLARE_ATOMIC(double _Complex, atomic_cdouble);
+P99_DECLARE_ATOMIC(long double _Complex, atomic_cldouble);
+#define P00_ATOMIC_TYPES                         \
+  (_Bool, atomic_bool*),                         \
+  (char, atomic_char*),                          \
+  (signed char, atomic_schar*),                  \
+  (unsigned char, atomic_uchar*),                \
+  (short int, atomic_short*),                    \
+  (unsigned short int, atomic_ushort*),          \
+  (int, atomic_int*),                            \
+  (unsigned int, atomic_uint*),                  \
+  (long int, atomic_long*),                      \
+  (unsigned long int, atomic_ulong*),            \
+  (long long int, atomic_llong*),                \
+  (unsigned long long int, atomic_ullong*),      \
+  (float, atomic_float*),                        \
+  (double, atomic_double*),                      \
+  (long double, atomic_ldouble*),                \
+  (float _Complex, atomic_cfloat*),              \
+  (double _Complex, atomic_cdouble*),            \
+  (long double _Complex, atomic_cldouble*)
+#else
+#define P00_ATOMIC_TYPES                         \
+  (_Bool, atomic_bool*),                         \
+  (char, atomic_char*),                          \
+  (signed char, atomic_schar*),                  \
+  (unsigned char, atomic_uchar*),                \
+  (short int, atomic_short*),                    \
+  (unsigned short int, atomic_ushort*),          \
+  (int, atomic_int*),                            \
+  (unsigned int, atomic_uint*),                  \
+  (long int, atomic_long*),                      \
+  (unsigned long int, atomic_ulong*),            \
+  (long long int, atomic_llong*),                \
+  (unsigned long long int, atomic_ullong*),      \
+  (float, atomic_float*),                        \
+  (double, atomic_double*),                      \
+  (long double, atomic_ldouble*)
+#endif
+
+#define P99_ATOMIC_INHERIT(T) (*P99_GENERIC_LITERAL((T)0, (struct P99_PASTE2(atomic_, T)*){ 0 }, P00_ATOMIC_TYPES))
+
+/**
+ ** @brief refer to an atomic type of base type T
+ **
+ ** @param T a @b type name
+ **
+ ** This implements only part of the @c _Atomic keyword of C11. First
+ ** it implements only the part described in 6.7.2.4, atomic type
+ ** specifiers. I does not cover type qualifiers.
+ **
+ ** Second for data types that are not predefined integer or
+ ** floatingpoint types, the underlying realization of the atomic type
+ ** must have been previously declared with ::P99_DECLARE_ATOMIC.
+ **
+ ** Besides the atomic integer types that are listed in the standard
+ ** we provide 6 atomic types for all real and complex floating point
+ ** types, as long as they exist.
+ **
+ ** For the standard predefined integer types there are different
+ ** atomic types as they are listed in the standard. The atomic types
+ ** for the floating point types (as there are no names listed in the
+ ** standard) are chosen arbitrarily with an @c atomic_ prefix. Don't
+ ** rely on a particular naming. Whenever ::_Atomic is called with a
+ ** typename @a T that resolves to one of the predefined arithmetic
+ ** types (without @c enum and pointers) the same type as for the
+ ** original type results: e.g if @c unsigned is 32 bit wide (and @c
+ ** long is 64)
+ **
+ ** @code
+ ** _Atomic(uint32_t) a;
+ ** _Atomic(unsigned) b;
+ ** @endcode
+ **
+ ** is equivalent to
+ **
+ ** @code
+ ** atomic_uint a;
+ ** atomic_uint b;
+ ** @endcode
+ **
+ ** @remark These types don't work with the usual operators such as @
+ ** +=, and a variable of such an atomic type doesn't evaluate to an
+ ** rvalue of the base type.
+ **
+ ** @remark These variables are guaranteed to be in a valid state when
+ ** they are @c 0 initialized by the default initializer, either
+ ** explicitly or when declared with static storage location. The
+ ** initial value of the base type corresponds to its @c 0 initialized
+ ** value.
+ **
+ ** @see ATOMIC_VAR_INIT for an initializer macro
+ ** @see atomic_init for a initializer function
+ ** @see atomic_load to return an rvalue of the underlying base type @a T
+ ** @see atomic_store to store a value that is compatible with @a T
+ ** @see atomic_compare_exchange_weak to store a value conditionally
+ **
+ ** If the underlying operations are defined for @a T the following
+ ** generic functions (macros) can be used with an atomic type:
+ **
+ ** @see atomic_fetch_add to add a value
+ ** @see atomic_fetch_sub to subtract a value
+ ** @see atomic_fetch_or or a value
+ ** @see atomic_fetch_and and a value
+ ** @see atomic_fetch_xor exclusive or a value
+ **
+ ** @warning Don't assign atomic variables through the @c =
+ ** operator. This will most probably not do what you expect:
+ ** - This would copy state information from the right side to the
+ **   left side.
+ ** - Neither the read access on the right side nor the write access
+ **   on the left side would be atomic.
+ **
+ ** @warning Don't use atomic variables as function arguments.
+ ** - If you are only interested in the value evaluate by ::atomic_load.
+ ** - Otherwise pass it through a pointer to atomic type.
+ **
+ ** @ingroup C11_keywords
+ **/
+#ifdef P00_DOXYGEN
+# define _Atomic(T) struct P99_PASTE2(atomic_, T)
+#else
+# define _Atomic(T) __typeof__(P99_ATOMIC_INHERIT(T))
+#endif
+
+typedef _Atomic(char16_t) atomic_char16_t;
+typedef _Atomic(char32_t) atomic_char32_t;
+typedef _Atomic(wchar_t) atomic_wchar_t;
+typedef _Atomic(int_least8_t) atomic_int_least8_t;
+typedef _Atomic(uint_least8_t) atomic_uint_least8_t;
+typedef _Atomic(int_least16_t) atomic_int_least16_t;
+typedef _Atomic(uint_least16_t) atomic_uint_least16_t;
+typedef _Atomic(int_least32_t) atomic_int_least32_t;
+typedef _Atomic(uint_least32_t) atomic_uint_least32_t;
+typedef _Atomic(int_least64_t) atomic_int_least64_t;
+typedef _Atomic(uint_least64_t) atomic_uint_least64_t;
+typedef _Atomic(int_fast8_t) atomic_int_fast8_t;
+typedef _Atomic(uint_fast8_t) atomic_uint_fast8_t;
+typedef _Atomic(int_fast16_t) atomic_int_fast16_t;
+typedef _Atomic(uint_fast16_t) atomic_uint_fast16_t;
+typedef _Atomic(int_fast32_t) atomic_int_fast32_t;
+typedef _Atomic(uint_fast32_t) atomic_uint_fast32_t;
+typedef _Atomic(int_fast64_t) atomic_int_fast64_t;
+typedef _Atomic(uint_fast64_t) atomic_uint_fast64_t;
+typedef _Atomic(intptr_t) atomic_intptr_t;
+typedef _Atomic(uintptr_t) atomic_uintptr_t;
+typedef _Atomic(size_t) atomic_size_t;
+typedef _Atomic(ptrdiff_t) atomic_ptrdiff_t;
+typedef _Atomic(intmax_t) atomic_intmax_t;
+typedef _Atomic(uintmax_t) atomic_uintmax_t;
 
 /**
  ** @}
  **/
-
 
 /**
  ** @addtogroup fences Memory Fences
@@ -948,7 +1066,8 @@ P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                \
  **
  ** The base type of @a OBJP must have an operator @c ^=.
  **
- ** @memberof atomic_int
+ ** @see atomic_int
+ ** @see _Atomic
  **/
 #define atomic_fetch_xor(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_xor, ^=)
 
