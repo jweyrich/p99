@@ -313,6 +313,10 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 #endif
 #endif
 
+#ifndef P00_ATOMIC_LOCK_FREE_TYPES6_
+# define P00_ATOMIC_LOCK_FREE_TYPES6_
+#endif
+
 /**
  ** @}
  **/
