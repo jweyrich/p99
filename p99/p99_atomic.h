@@ -36,6 +36,22 @@
  **/
 
 
+/**
+ ** @addtogroup atomic_stub Stub replacements of C11 atomic operations
+ **
+ ** This is a collection stub implementation of C11 atomic types and
+ ** operations for the case that gcc doesn't implement them.
+ **
+ ** These use the @c __asm__ gcc extension.
+ **
+ ** The only operations that are implemented by these stubs are @c
+ ** lock_test_and_set and @c lock_release operations. These are the
+ ** minimal set of operations that are needed to comply to the
+ ** standard.
+ **
+ ** @{
+ **/
+
 #if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
 
 p99_inline
@@ -49,82 +65,14 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 }
 
 #elif defined(__arm__)
-
-/*
-  ldrex/strex is a load-link and store instruction pair. This means a
-  strex will only succeed, if nobody else has touched "object" since
-  the load.
-
-  This operation is not lock-free by itself, so by itself it doesn't
-  guarantee the requirements of the standard for operations on
-  atomic_flag. The OS must support this operation by canceling all
-  pending ldrex operations when (de)scheduling a thread or entering or
-  leaving a signal handler.
-*/
-
-p99_inline
-uint32_t p00_arm_ldrex(uint32_t volatile*ptr) {
-  uint32_t ret;
-  __asm__ volatile ("ldrex %0,[%1]\t@ load exclusive\n"
-                    : "=&r" (ret)
-                    : "r" (ptr)
-                    : "cc", "memory"
-                    );
-  return ret;
-}
-
-p99_inline
-_Bool p00_arm_strex(uint32_t volatile*ptr, uint32_t val) {
-  uint32_t ret;
-  __asm__ volatile ("strex %0,%1,[%2]\t@ store exclusive\n"
-                    : "=&r" (ret)
-                    : "r" (val), "r" (ptr)
-                    : "cc", "memory"
-                    );
-  return ret;
-}
-
-p99_inline
-uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
-  for (;;) {
-    uint32_t ret = p00_arm_ldrex(object);
-    /* Even if the result has been a 1 in ret, We must imperatively
-       put a strex after the ldex since otherwise we would block other
-       threads when they try to access this. On the other hand even if
-       the strex doesn't succeed but ret is already set, we are also
-       done. */
-    if (!p00_arm_strex(object, 1) || ret) return ret;
-  }
-}
-
-p99_inline
-void p00_sync_lock_release(uint32_t volatile *object) {
-  __sync_lock_release(object);
-}
-
+# include "p99_atomic_arm.h"
 #elif defined(__x86_64__) || defined(__i386__)
-
-p99_inline
-uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
-  register uint32_t ret P99_FIXED_REGISTER(eax) = 1;
-  __asm__ __volatile__("xchgl %2, %0"
-                       : "=a"(ret)
-                       : "r"(ret), "m"(*object)
-                       : "memory");
-  return ret;
-}
-
-p99_inline
-void p00_sync_lock_release(uint32_t volatile *object) {
-  register uint32_t val = 0;
-  __asm__ __volatile__("movl %0, %1"
-                       :
-                       : "r"(val), "m"(*object)
-                       : "memory");
-}
-
-
+# include "p99_atomic_x86.h"
 #endif
+
+/**
+ ** @}
+ **/
 
 /**
  ** @addtogroup atomic_macros

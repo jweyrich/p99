@@ -658,6 +658,16 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>p99_atomic_arm.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__atomic__arm_8h</filename>
+  </compound>
+  <compound kind="file">
+    <name>p99_atomic_x86.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__atomic__x86_8h</filename>
+  </compound>
+  <compound kind="file">
     <name>p99_block.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__block_8h</filename>
@@ -8457,6 +8467,7 @@
     <name>atomic</name>
     <title>C11 atomic operations</title>
     <filename>group__atomic.html</filename>
+    <subgroup>atomic_stub</subgroup>
     <subgroup>atomic_macros</subgroup>
     <subgroup>atomic_enum</subgroup>
     <subgroup>atomic_types</subgroup>
@@ -8580,6 +8591,13 @@
       <anchor>ga073f056cc9ecfa70e26c7739e60a4e44</anchor>
       <arglist>(volatile atomic_flag *object)</arglist>
     </member>
+  </compound>
+  <compound kind="group">
+    <name>atomic_stub</name>
+    <title>Stub replacements of C11 atomic operations</title>
+    <filename>group__atomic__stub.html</filename>
+    <subgroup>atomic_arm</subgroup>
+    <subgroup>atomic_x86</subgroup>
   </compound>
   <compound kind="group">
     <name>atomic_macros</name>
@@ -9102,6 +9120,16 @@
       <anchor>gac430bd4835cf6c69c11df0cc6792f67f</anchor>
       <arglist>(memory_order order)</arglist>
     </member>
+  </compound>
+  <compound kind="group">
+    <name>atomic_arm</name>
+    <title>Atomic operations on ARM</title>
+    <filename>group__atomic__arm.html</filename>
+  </compound>
+  <compound kind="group">
+    <name>atomic_x86</name>
+    <title>Atomic operations on i386 and x86_64</title>
+    <filename>group__atomic__x86.html</filename>
   </compound>
   <compound kind="group">
     <name>preprocessor_blocks</name>
@@ -15021,6 +15049,8 @@
     <file>p99.h</file>
     <file>p99_args.h</file>
     <file>p99_atomic.h</file>
+    <file>p99_atomic_arm.h</file>
+    <file>p99_atomic_x86.h</file>
     <file>p99_block.h</file>
     <file>p99_c99.h</file>
     <file>p99_c99_default.h</file>
