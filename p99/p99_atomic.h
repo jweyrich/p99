@@ -64,6 +64,12 @@ void p00_sync_lock_release(uint32_t volatile *object) {
   __sync_lock_release(object);
 }
 
+p99_inline
+void p00_mfence(void) {
+  __sync_synchronize();
+}
+
+
 #elif defined(__arm__)
 # include "p99_atomic_arm.h"
 #elif defined(__x86_64__) || defined(__i386__)
@@ -657,7 +663,7 @@ p99_inline
 void atomic_thread_fence(memory_order order) {
   switch (order) {
   case memory_order_relaxed: break;
-  default: __sync_synchronize(); break;
+  default: p00_mfence(); break;
   }
 }
 

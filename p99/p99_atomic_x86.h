@@ -55,6 +55,13 @@ void p00_sync_lock_release(uint32_t volatile *object) {
                        : "memory");
 }
 
+p99_inline
+void p00_mfence(void) {
+  __asm__ __volatile__("mfence":::"memory");
+}
+
+
+
 /**
  ** @}
  **/
