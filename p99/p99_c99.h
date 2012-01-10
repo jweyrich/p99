@@ -56,6 +56,26 @@
 #  ifndef __STDC_NO_THREADS__
 #   include <threads.h>
 #  endif
+
+/* Provide aligned allocation. */
+
+#  if _XOPEN_SOURCE >= 600
+p99_inline
+void *aligned_alloc(size_t alignment, size_t size) {
+  void * ret = 0;
+  int err = posix_memalign(&ret, alignment, size);
+  /* If there was an error and a fake pointer has been returned, free
+     this pointer and set it to 0. This is the only way to return an
+     error for this C11 interface. */
+  if (err && ret) {
+    free(ret);
+    ret = 0;
+  }
+  return ret;
+}
+
+#  endif
+
 # endif
 #endif
 
