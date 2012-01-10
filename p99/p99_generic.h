@@ -34,7 +34,7 @@
 
 #if __has_extension(c_generic_selections) || (__STDC_VERSION__ >= 201012L)
 
-#define P00_GENERIC_EXPRESSION(OP EXP, PAIR, I)                         \
+#define P00_GENERIC_EXPRESSION(OP, EXP, PAIR, I)        \
 P00_GENERIC_TYPE PAIR: OP PAIR
 
 #define P00_GENERIC_(N, MOP, EXP, DEF, ...)                      \
@@ -229,7 +229,7 @@ inline int* p00_generic_test(int * a) {
   case 1:
     return P99_GENERIC(&*a,
                        /* another form of empty default */,
-                       (double[], x+0),
+                       (double[7], x+0),
                        (int*, a),
                        (float*, x+2));
   default:
