@@ -394,11 +394,6 @@ signed p00_trailing_comma_in_initializer__(void) {
  ** @{
  **/
 
-#if !defined(static_assert) && (P99_GCC_VERSION >= 40600UL)
-/* In C11 this macro must exactly have that value. */
-# define static_assert _Static_assert
-#endif
-
 /* implement emulation of some C11 features */
 #if  __STDC_VERSION__ > 201100L
 # include <stdalign.h>
@@ -428,9 +423,13 @@ typedef uint_least32_t char32_t;
  ** fulfilled, but all should give at least the line number and stop
  ** compilation.
  **
- ** @remark This functionality will be directly supported in C1x.
+ ** @remark This functionality will be directly supported in C1x and
+ ** the macro ::static_assert must be provided by assert.h, which we
+ ** include.
  **/
-#if !__has_feature(c_static_assert)
+#if __has_extension(c_static_assert) || (P99_GCC_VERSION > 40600UL)
+# define static_assert _Static_assert
+#else
 # define static_assert(EXPR, DIAGSTR)                             \
 extern char const p00_compiletime_assert[                         \
  sizeof((void const*[3*(!!(EXPR)) - 1]){                          \
@@ -478,8 +477,6 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 #endif
 #endif
 
-
-
 static_assert(1, "test of static assertions");
 
 /**
@@ -496,6 +493,10 @@ static_assert(1, "test of static assertions");
  ** @{
  **/
 
+/* Used inside P99_MACRO_END. The idea that this is an extern
+   declaration, so it doesn't result in any code. On the other hand it
+   uses the address of itself in its own declaration, so the compiler
+   shouldn't issue a warning about an unused variable. */
 #define P00_HARMLESS_DECLARATION                               \
 extern char const p00_harmless_declaration[                    \
  sizeof((void const*[1]){ &p00_harmless_declaration })         \

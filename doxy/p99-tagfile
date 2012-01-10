@@ -1567,6 +1567,34 @@
     <includes id="p99__args_8h" name="p99_args.h" local="yes" imported="no">p99_args.h</includes>
     <member kind="define">
       <type>#define</type>
+      <name>__has_attribute</name>
+      <anchorfile>group__compiler__utilities_ga54d2d7742701f3f112afbcd8d4f9ccdb.html</anchorfile>
+      <anchor>ga54d2d7742701f3f112afbcd8d4f9ccdb</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>__has_builtin</name>
+      <anchorfile>group__compiler__utilities_ga447121dcab4275b7839a56082b7a1ab8.html</anchorfile>
+      <anchor>ga447121dcab4275b7839a56082b7a1ab8</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>__has_extension</name>
+      <anchorfile>group__compiler__utilities_gaea1c4f7b66a67b78ad863176338dae8d.html</anchorfile>
+      <anchor>gaea1c4f7b66a67b78ad863176338dae8d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>__has_feature</name>
+      <anchorfile>group__compiler__utilities_gaf989845e24678c452b9222afdac95e7f.html</anchorfile>
+      <anchor>gaf989845e24678c452b9222afdac95e7f</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>alignas</name>
       <anchorfile>group__C11__keywords_gac2d9dab29c1c9e7069f1d6f19fbbd115.html</anchorfile>
       <anchor>gac2d9dab29c1c9e7069f1d6f19fbbd115</anchor>
@@ -9947,6 +9975,34 @@
     <name>compiler_utilities</name>
     <title>A small collection of utilities</title>
     <filename>group__compiler__utilities.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>__has_attribute</name>
+      <anchorfile>group__compiler__utilities_ga54d2d7742701f3f112afbcd8d4f9ccdb.html</anchorfile>
+      <anchor>ga54d2d7742701f3f112afbcd8d4f9ccdb</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>__has_builtin</name>
+      <anchorfile>group__compiler__utilities_ga447121dcab4275b7839a56082b7a1ab8.html</anchorfile>
+      <anchor>ga447121dcab4275b7839a56082b7a1ab8</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>__has_extension</name>
+      <anchorfile>group__compiler__utilities_gaea1c4f7b66a67b78ad863176338dae8d.html</anchorfile>
+      <anchor>gaea1c4f7b66a67b78ad863176338dae8d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>__has_feature</name>
+      <anchorfile>group__compiler__utilities_gaf989845e24678c452b9222afdac95e7f.html</anchorfile>
+      <anchor>gaf989845e24678c452b9222afdac95e7f</anchor>
+      <arglist>(x)</arglist>
+    </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_ATLEAST</name>
