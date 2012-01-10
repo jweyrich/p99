@@ -238,6 +238,20 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 #endif
 
+
+#ifndef __has_builtin
+# define __has_builtin(x) 0  // Compatibility with non-clang compilers.
+#endif
+#ifndef __has_feature
+# define __has_feature(x) 0  // Compatibility with non-clang compilers.
+#endif
+#ifndef __has_extension
+# define __has_extension __has_feature  // Compatibility with non-clang compilers.
+#endif
+#ifndef __has_attribute
+  #define __has_attribute(x) 0  // Compatibility with non-clang compilers.
+#endif
+
 #if P99_COMPILER & P99_COMPILER_INTEL
 # define p99_inline __attribute__((always_inline)) inline
 # ifndef __GNUC__
@@ -246,7 +260,9 @@ signed p00_trailing_comma_in_initializer__(void) {
 #elif P99_COMPILER & P99_COMPILER_PCC
 //# error "The P99 preprocessor files can't work with the pcc compiler, yet"
 #elif P99_COMPILER & P99_COMPILER_CLANG
-# define p99_inline __attribute__((always_inline)) inline
+#if __has_attribute(__always_inline__)
+# define p99_inline __attribute__((__always_inline__)) inline
+#endif
 /* clang can't nail a variable to a register, yet */
 # define P99_FIXED_REGISTER(REG)
 #elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
@@ -414,27 +430,33 @@ typedef uint_least32_t char32_t;
  **
  ** @remark This functionality will be directly supported in C1x.
  **/
-#define static_assert(EXPR, DIAGSTR)                              \
+#if !__has_feature(c_static_assert)
+# define static_assert(EXPR, DIAGSTR)                             \
 extern char const p00_compiletime_assert[                         \
  sizeof((void const*[3*(!!(EXPR)) - 1]){                          \
     &p00_compiletime_assert,                                      \
    "static assertion failed: " P99_STRINGIFY(EXPR) ", " DIAGSTR}) \
 ]
 extern char const p00_compiletime_assert[sizeof(void const*[2])];
+# endif
 #endif
 
 #ifndef alignof
-#define alignof _Alignof
-#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
-#define _Alignof(T) __alignof__(T)
-#endif
+# define alignof _Alignof
+# if P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
+#  define _Alignof(T) __alignof__(T)
+# elif (P99_COMPILER & P99_COMPILER_CLANG) && !__has_extension(c_alignof)
+#  define _Alignof(T) __alignof(T)
+# endif
 #endif
 
 #ifndef alignas
-#define alignas _Alignas
-#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
-#define _Alignas(X) __attribute__((__aligned__(X)))
-#endif
+# define alignas _Alignas
+# if P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
+#  define _Alignas(X) __attribute__((__aligned__(X)))
+# elif (P99_COMPILER & P99_COMPILER_CLANG) && !__has_extension(c_alignas) && __has_attribute(aligned)
+#  define _Alignas(X) __attribute__((__aligned__(X)))
+# endif
 #endif
 
 #ifndef noreturn

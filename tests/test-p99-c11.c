@@ -17,7 +17,15 @@
 static_assert(true, "everything is alright");
 // static_assert(false, "all goes wrong");
 
-alignas(alignof(double)) int a;
+_Alignas(double) int a;
+
+_Alignas(16) int b;
+
+alignas(16) int c;
+
+alignas(double) int d;
+
+alignas(alignof(double)) int e;
 
 noreturn
 void stop(void) {
