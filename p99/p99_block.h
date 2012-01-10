@@ -597,15 +597,21 @@ void p00_unwind(void* top, unsigned level, int cond) {
  ** P99_UNWIND_RETURN myret;
  ** @endcode
  **/
-#define P99_UNWIND_RETURN                                           \
-/* This is just there to prevent spurious dangling else warnings */ \
-P00_BLK_START                                                       \
-  if (p00_unwind_bottom                                             \
-      && !setjmp(p00_unwind_bottom->buf)) {                         \
-    /* assign before we unwind all the way down */                  \
-    p00_unwind_bottom->returning = 1;                               \
-    P99_UNWIND(-p99_unwind_return);                                 \
-  } else P99_ALLOW(RETURN) return
+#define P99_UNWIND_RETURN                                               \
+/* This is just there to prevent spurious dangling else warnings */     \
+P00_BLK_START                                                           \
+for (;                                                                  \
+     !(p00_unwind_bottom && !setjmp(p00_unwind_bottom->buf))            \
+       /* assign before we unwind all the way down */                   \
+       || (p00_unwind_bottom->returning = 1,                            \
+           /* If an unwind is possible, i.e if we are not in the outer  \
+              frame this will stop the evaluation of the expression     \
+              here, and unwind as side effect. Otherwise, this will     \
+              continue normally and directly proceed with the           \
+              return. */                                                \
+           P99_UNWIND(-p99_unwind_return),                              \
+           1);                                                          \
+     ) P99_ALLOW(RETURN) return
 
 /**
  ** @brief The pseudo label to which we jump when we unwind the stack
