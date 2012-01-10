@@ -50,6 +50,18 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 
 #elif defined(__arm__)
 
+/*
+  ldrex/strex is a load-link and store instruction pair. This means a
+  strex will only succeed, if nobody else has touched "object" since
+  the load.
+
+  This operation is not lock-free by itself, so by itself it doesn't
+  guarantee the requirements of the standard for operations on
+  atomic_flag. The OS must support this operation by canceling all
+  pending ldrex operations when (de)scheduling a thread or entering or
+  leaving a signal handler.
+*/
+
 p99_inline
 uint32_t p00_arm_ldrex(uint32_t volatile*ptr) {
   uint32_t ret;
@@ -76,7 +88,12 @@ p99_inline
 uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
   for (;;) {
     uint32_t ret = p00_arm_ldrex(object);
-    if (!p00_arm_strex(object, 1)) return ret;
+    /* Even if the result has been a 1 in ret, We must imperatively
+       put a strex after the ldex since otherwise we would block other
+       threads when they try to access this. On the other hand even if
+       the strex doesn't succeed but ret is already set, we are also
+       done. */
+    if (!p00_arm_strex(object, 1) || ret) return ret;
   }
 }
 
