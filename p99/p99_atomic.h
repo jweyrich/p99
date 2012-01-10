@@ -68,11 +68,16 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 # include "p99_atomic_arm.h"
 #elif defined(__x86_64__) || defined(__i386__)
 # include "p99_atomic_x86.h"
+#else
+# warning "no support for atomic operations detected for this platform" \
+# define P00_NO_ATOMICS
 #endif
 
 /**
  ** @}
  **/
+
+#ifndef P00_NO_ATOMICS
 
 /**
  ** @addtogroup atomic_macros
@@ -1044,5 +1049,8 @@ P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                \
 /**
  ** @}
  **/
+
+# endif /* P00_NO_ATOMICS */
+#undef P00_NO_ATOMICS
 
 #endif
