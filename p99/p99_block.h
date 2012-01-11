@@ -252,8 +252,12 @@ P00_BLK_END
  ** @endcode
  ** @see P99_AVOID
  **/
-#define P99_PREFER(...)                                        \
-  if (1) { __VA_ARGS__ } else
+#if p99_has_feature(statement_expression)
+# define P99_PREFER(...) /* avoid the dangling else problem */          \
+for (_Bool p00 = 1; p00 && ((void)({ __VA_ARGS__ }), 1); p00 = 0)
+#else
+# define P99_PREFER(...) if (1) { __VA_ARGS__ } else
+#endif
 
 /**
  ** @brief Only execute the depending statement or block if it is
@@ -282,7 +286,7 @@ P00_BLK_END
  ** @endcode
  ** @see P99_PREFER
  **/
-#define P99_AVOID P99_PREFER(/* NOP */)
+#define P99_AVOID for (;0;)
 
 /**
  ** @brief Execute the statements in the argument list.
