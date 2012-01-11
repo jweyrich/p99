@@ -32,7 +32,7 @@
 #define P00_GENERIC_EXP(EXP, PAIR, I) P00_GENERIC_EXPRESSION(P00_GENERIC_EXP_, EXP, PAIR, I)
 #define P00_GENERIC_LIT(EXP, PAIR, I) P00_GENERIC_EXPRESSION(P00_GENERIC_LIT_, EXP, PAIR, I)
 
-#if __has_extension(c_generic_selections) || (__STDC_VERSION__ >= 201012L)
+#if p99_has_extension(c_generic_selections)
 
 #define P00_GENERIC_EXPRESSION(OP, EXP, PAIR, I)        \
 P00_GENERIC_TYPE PAIR: OP PAIR
