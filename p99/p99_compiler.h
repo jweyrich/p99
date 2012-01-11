@@ -238,29 +238,95 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 #endif
 
-
 #ifndef __has_builtin
-# define __has_builtin(x) 0  // Compatibility with non-clang compilers.
+# define __has_builtin(x) p00_has_builtin_ ## x  // Compatibility with non-clang compilers.
 #endif
 #ifndef __has_feature
-# define __has_feature(x) 0  // Compatibility with non-clang compilers.
+# define __has_feature(x) p00_has_feature_ ## x  // Compatibility with non-clang compilers.
 #endif
 #ifndef __has_extension
 # define __has_extension __has_feature  // Compatibility with non-clang compilers.
 #endif
 #ifndef __has_attribute
-  #define __has_attribute(x) 0  // Compatibility with non-clang compilers.
+# define __has_attribute(x) p00_has_attribute_ ## x  // Compatibility with non-clang compilers.
+#endif
+
+# define p99_has_builtin(x) (__has_builtin(x) || p00_has_builtin_ ## x)  // Compatibility with non-clang compilers.
+# define p99_has_feature(x) (__has_feature(x) || p00_has_feature_ ## x)  // Compatibility with non-clang compilers.
+# define p99_has_extension(x) (__has_extension(x) || p00_has_extension_ ## x)  // Compatibility with non-clang compilers.
+# define p99_has_attribute(x) (__has_attribute(x) || p00_has_attribute_ ## x)  // Compatibility with non-clang compilers.
+
+
+#if P99_COMPILER & P99_COMPILER_OPEN64
+# define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 1
+# define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 1
+# define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 1
+# define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 1
+# define __GNUC_NO_TLS__ 1
+#endif
+
+#ifdef _OPENMP
+# define p00_has_feature_openmp 1
+#endif
+
+#if __GNUC__
+# define p00_has_attribute_always_inline 1
+# define p00_has_attribute_weak 1
+# define p00_has_attribute_weakref 1
+# ifdef __GNUC_GNU_INLINE__
+#  define p00_has_attribute_gnu_inline 1
+# endif
+# define p00_has_attribute_aligned 1
+# define p00_has_attribute_noreturn 1
+# define p00_has_attribute_deprecated 1
+# ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
+#  define p00_has_builtin___sync_val_compare_and_swap 1
+#  define p00_has_builtin___sync_lock_test_and_set 1
+#  define p00_has_builtin___sync_lock_release 1
+#  define p00_has_builtin___sync_synchronize 1
+#  define p00_has_builtin___sync_fetch_and_add 1
+#  define p00_has_builtin___sync_fetch_and_sub 1
+#  define p00_has_builtin___sync_fetch_and_or 1
+#  define p00_has_builtin___sync_fetch_and_and 1
+#  define p00_has_builtin___sync_fetch_and_xor 1
+# endif
+# if P99_GCC_VERSION >= 30000UL
+#  define p00_has_builtin___builtin_expect 1
+# endif
+//# if P99_GCC_VERSION >= UNKNOWN
+//#  define p00_has_feature_c_alignas 1
+//# endif
+# if P99_GCC_VERSION >= 40600UL
+#  define p00_has_feature_c_static_assert 1
+# endif
+# if defined(__GNUC_STDC_INLINE__) || P99_GCC_VERSION >= 40300UL
+#  define p00_has_feature_c_inline 1
+# endif
+# define p00_has_feature_gnu_thread_local 1
+# define p00_has_feature_gnu_alignof 1
+# define p00_has_feature_statement_expression 1
+# define p00_has_feature_typeof 1
+#endif
+
+#if __STDC_VERSION__ > 201100L
+# define p00_has_feature_c_generic_selections 1
+#endif
+
+#if P99_COMPILER & (P99_COMPILER_IBM | P99_COMPILER_SUN)
+# define p00_has_feature_gnu_thread 1
+#elif P99_COMPILER & (P99_COMPILER_MICROSOFT | P99_COMPILER_BORLAND)
+# define p00_has_feature_declspec_thread 1
 #endif
 
 #if P99_COMPILER & P99_COMPILER_INTEL
-# define p99_inline __attribute__((always_inline)) inline
+# define p99_inline __attribute__((__always_inline__)) inline
 # ifndef __GNUC__
 #  define P00_NO_HAVE_TGMATH_H
 # endif
 #elif P99_COMPILER & P99_COMPILER_PCC
 //# error "The P99 preprocessor files can't work with the pcc compiler, yet"
 #elif P99_COMPILER & P99_COMPILER_CLANG
-#if __has_attribute(__always_inline__)
+#if p99_has_attribute(always_inline)
 # define p99_inline __attribute__((__always_inline__)) inline
 #endif
 /* clang can't nail a variable to a register, yet */
@@ -271,13 +337,13 @@ signed p00_trailing_comma_in_initializer__(void) {
    different semantics.
    Be sure to always inline functions in this cases.
    */
-# if !defined(__GNUC_STDC_INLINE__) && P99_GCC_VERSION < 40300UL
+# if !p99_has_feature(c_inline)
 #  ifdef inline
 #   undef inline
 #  endif
-#  ifdef __GNUC_GNU_INLINE__
-#   define inline __attribute__((gnu_inline,weak)) __inline__
-#   define p99_inline __attribute__((always_inline,gnu_inline,weak)) __inline__
+#  ifdef p99_has_feature(gnu_inline)
+#   define inline __attribute__((__gnu_inline__,__weak__)) __inline__
+#   define p99_inline __attribute__((__always_inline__,__gnu_inline,weak__)) __inline__
 #  else
 #   define inline __attribute__((weak)) __inline__
 #   define p99_inline __attribute__((always_inline,weak)) __inline__
@@ -315,7 +381,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_instantiate extern inline
 # endif
 
-#ifdef __GNUC__
+#if p99_has_attribute(weak)
 # define P00_WEAK1(ID) __attribute__((__weak__))
 #elif P99_COMPILER & P99_COMPILER_MICROSOFT
 # define P00_WEAK1(ID) __declspec(selectany)
@@ -323,7 +389,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define P00_WEAK1(ID) _Pragma(P99_STRINGIFY(weak ID))
 #endif
 
-#ifdef __GNUC__
+#if p99_has_attribute(weakref)
 # define P00_WEAK2(ID, ...) __attribute__((__weakref__(#__VA_ARGS__)))
 #else
 # define P00_WEAK2(ID, ...) _Pragma(P99_STRINGIFY(weak ID=__VA_ARGS__))
@@ -427,7 +493,7 @@ typedef uint_least32_t char32_t;
  ** the macro ::static_assert must be provided by assert.h, which we
  ** include.
  **/
-#if __has_extension(c_static_assert) || (P99_GCC_VERSION > 40600UL)
+#if p99_has_feature(c_static_assert)
 # define static_assert _Static_assert
 #else
 # define static_assert(EXPR, DIAGSTR)                             \
@@ -442,39 +508,38 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 
 #ifndef alignof
 # define alignof _Alignof
-# if P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
+# if  !p99_has_feature(c_alignof) && p99_has_feature(gnu_alignof)
 #  define _Alignof(T) __alignof__(T)
-# elif (P99_COMPILER & P99_COMPILER_CLANG) && !__has_extension(c_alignof)
-#  define _Alignof(T) __alignof(T)
 # endif
 #endif
 
 #ifndef alignas
 # define alignas _Alignas
-# if P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
-#  define _Alignas(X) __attribute__((__aligned__(X)))
-# elif (P99_COMPILER & P99_COMPILER_CLANG) && !__has_extension(c_alignas) && __has_attribute(aligned)
-#  define _Alignas(X) __attribute__((__aligned__(X)))
+# if !p99_has_feature(c_alignas)
+#  if p99_has_attribute(aligned)
+#   define _Alignas(X) __attribute__((__aligned__(X)))
+#  endif
 # endif
 #endif
 
 #ifndef noreturn
 #define noreturn _Noreturn
-#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
-/* use __noreturn__ for the attribute since noreturn is now a macro */
-#define _Noreturn __attribute__((__noreturn__))
-#elif !defined(P00_DOXYGEN)
-#define _Noreturn _Pragma(NORETURN)
-#endif
+# if !p99_has_feature(c_noreturn)
+#  if p99_has_attribute(noreturn)
+#   define _Noreturn __attribute__((__noreturn__))
+#  elif !defined(P00_DOXYGEN)
+#   define _Noreturn _Pragma(NORETURN)
+#  endif
+# endif
 #endif
 
 #ifndef thread_local
-#define thread_local _Thread_local
-#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64 | P99_COMPILER_IBM | P99_COMPILER_SUN)
-#define _Thread_local __thread
-#elif P99_COMPILER & (P99_COMPILER_MICROSOFT | P99_COMPILER_BORLAND)
-#define _Thread_local __declspec(thread)
-#endif
+# define thread_local _Thread_local
+# if p99_has_feature(gnu_thread_local)
+#  define _Thread_local __thread
+# elif p99_has_feature(declspec_thread)
+#  define _Thread_local __declspec(thread)
+# endif
 #endif
 
 static_assert(1, "test of static assertions");
@@ -513,12 +578,6 @@ extern char const p00_harmless_declaration[sizeof(void const*[1])];
 #define P99_MACRO_END(...) P00_HARMLESS_DECLARATION
 
 
-#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_INTEL | P99_COMPILER_OPEN64)
-# if P99_GCC_VERSION >= 30000UL
-#  define P99_EXPECT(EXP, VAL) __builtin_expect((EXP), (VAL))
-# endif
-#endif
-
 /**
  ** @brief A token sequence that can be used in a @c #pragma directive
  ** to indicate a parallel for loop.
@@ -531,7 +590,7 @@ extern char const p00_harmless_declaration[sizeof(void const*[1])];
  ** extension (OpenMP for short, or OMP even shorter) and you told him
  ** to use it.
  **/
-#ifdef _OPENMP
+#if p99_has_feature(openmp)
 #define P99_PARALLEL_PRAGMA omp parallel for
 #else
 #define P99_PARALLEL_PRAGMA
@@ -545,9 +604,11 @@ extern char const p00_harmless_declaration[sizeof(void const*[1])];
  ** With this you indicate that in the overwhelming number of cases
  ** the integer expression @a EXP will evaluate to @a VAL.
  **
- ** Currently this is only implemented for gcc.
+ ** Currently this is only implemented for gcc and related.
  **/
-#ifndef P99_EXPECT
+#if p99_has_builtin(__builtin_expect)
+# define P99_EXPECT(EXP, VAL) __builtin_expect((EXP), (VAL))
+#else
 # define P99_EXPECT(EXP, VAL) (EXP)
 #endif
 
@@ -590,12 +651,10 @@ extern char const p00_harmless_declaration[sizeof(void const*[1])];
  ** @def P99_DEPRECATED
  ** @brief Deprecate a declaration that is given as the argument list.
  **/
-#if !defined(P99_DEPRECATED) || defined(P00_DOXYGEN)
-# ifdef __GNUC__
-#  define P99_DEPRECATED(...) /*! \deprecated __VA_ARGS__ */ __attribute__((deprecated))
-# else
-#  define P99_DEPRECATED(...) /*! \deprecated __VA_ARGS__ */
-# endif
+#if p99_has_attribute(deprecated)
+# define P99_DEPRECATED(...) /*! \deprecated __VA_ARGS__ */ __attribute__((__deprecated__))
+#else
+# define P99_DEPRECATED(...) /*! \deprecated __VA_ARGS__ */
 #endif
 
 /**
