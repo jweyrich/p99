@@ -593,7 +593,7 @@ int mtx_unlock(mtx_t *mtx) {
   return pthread_mutex_unlock(&P99_ENCP(mtx)) ? thrd_error : thrd_success;
 }
 
-inline
+P99_SETJMP_INLINE(p00_thrd_create)
 void * p00_thrd_create(void* context);
 
 /**
@@ -721,7 +721,12 @@ int thrd_sleep(const struct timespec *duration, struct timespec *remaining) {
   } else return thrd_success;
 }
 
-inline
+/*
+  This is static inline because of the following message from gcc:
+
+   sorry, unimplemented: function ‘p00_thrd_create’ can never be inlined because it uses setjmp
+*/
+P99_SETJMP_INLINE(p00_thrd_create)
 void * p00_thrd_create(void* context) {
   p00_thrd * cntxt = context;
   P00_THRD_LOCAL = cntxt;

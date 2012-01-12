@@ -424,6 +424,13 @@ signed p00_trailing_comma_in_initializer__(void) {
  **/
 # define P99_WEAK(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2)(P00_WEAK1(__VA_ARGS__))(P00_WEAK2(__VA_ARGS__))
 
+#if p99_has_feature(setjmp_inline)
+# define P99_SETJMP_INLINE(NAME) p99_inline
+#else
+# define P99_SETJMP_INLINE(NAME) P99_WEAK(NAME) inline
+#endif
+
+
 #ifndef P99_FIXED_REGISTER
 # ifdef __GNUC__
 #  define P99_FIXED_REGISTER(REG) __asm__(P99_STRINGIFY(REG))
