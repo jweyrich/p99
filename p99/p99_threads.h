@@ -148,6 +148,7 @@ struct once_flag {
 
 struct p00_thrd {
   pthread_t id;
+  size_t foreign;
   int ret;
   atomic_flag detached;
   union {
@@ -629,6 +630,9 @@ int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
   }
 }
 
+P99_WEAK(p00_foreign_threads)
+_Atomic(size_t) p00_foreign_threads;
+
 /**
  ** @memberof thrd_t
  **
@@ -636,7 +640,18 @@ int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
  **/
 p99_inline
 thrd_t thrd_current(void) {
-  return (thrd_t)P99_ENC_INIT(P00_THRD_LOCAL);
+  p00_thrd * loc = P00_THRD_LOCAL;
+  if (P99_UNLIKELY(!loc)) {
+    size_t foreign = atomic_fetch_add(&p00_foreign_threads, 1);
+    loc = malloc(sizeof *loc);
+    *loc = (p00_thrd) {
+      .id = pthread_self(),
+      .foreign = foreign + 1,
+    };
+    P00_THRD_LOCAL = loc;
+    if (foreign) fprintf(stderr, "foreign thread %lu is %zu\n", loc->id, foreign + 1);
+  }
+  return (thrd_t)P99_ENC_INIT(loc);
 }
 
 /**
@@ -678,14 +693,19 @@ int thrd_equal(thrd_t thr0, thrd_t thr1) {
 p99_inline
 _Noreturn
 void thrd_exit(int res) {
-  p00_thrd * cntxt = P99_ENC(thrd_current());
+  p00_thrd * cntxt = P00_THRD_LOCAL;
   if (P99_LIKELY(cntxt)) {
-    cntxt->ret = res;
-    longjmp(cntxt->ovrl.jmp, 1);
-  } else {
-    // should never be reached
-    pthread_exit(0);
+    if (cntxt->foreign) {
+      cntxt->ret = res;
+      longjmp(cntxt->ovrl.jmp, 1);
+    } else {
+      free(cntxt);
+      P00_THRD_LOCAL = 0;
+    }
   }
+  /* should only be reached by threads that where created directly
+     with pthreads, e.g main */
+  pthread_exit(0);
 }
 
 /**
