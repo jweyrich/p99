@@ -251,11 +251,12 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define __has_attribute(x) p00_has_attribute_ ## x  // Compatibility with non-clang compilers.
 #endif
 
+#ifndef p99_has_builtin
 # define p99_has_builtin(x) (__has_builtin(x) || p00_has_builtin_ ## x)  // Compatibility with non-clang compilers.
 # define p99_has_feature(x) (__has_feature(x) || p00_has_feature_ ## x)  // Compatibility with non-clang compilers.
 # define p99_has_extension(x) (__has_extension(x) || p00_has_extension_ ## x)  // Compatibility with non-clang compilers.
 # define p99_has_attribute(x) (__has_attribute(x) || p00_has_attribute_ ## x)  // Compatibility with non-clang compilers.
-
+#endif
 
 #if P99_COMPILER & P99_COMPILER_OPEN64
 # define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 1
