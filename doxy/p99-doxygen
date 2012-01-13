@@ -35,18 +35,20 @@ EXCLUDE_SYMBOLS        += P99_IS_EQ_*
 # A set of macros that are just too complicated that doxygen can make
 # something reasonable out of them.
 PREDEFINED += DOXYGEN
+PREDEFINED += P00_DECLARE_ATOMIC_CHOICE(x,y,z)="/** \see _Atomic for a detail description of the atomic implementation */ typedef struct z z"
 PREDEFINED += P00_DOXYGEN
-PREDEFINED += P99_COMPILETIME_ASSERT(x,y)=
-PREDEFINED += P99_BUILTIN_TYPE(x,y)="P00_BUILTIN_TYPE_ ## x ## y"
 PREDEFINED += P99_BUILTIN_MAX(x)="P00_BUILTIN_MAX_ ## x"
 PREDEFINED += P99_BUILTIN_MIN(x)="P00_BUILTIN_MIN_ ## x"
-PREDEFINED += P00_DECLARE_ATOMIC_CHOICE(x,y,z)="/** \see _Atomic for a detail description of the atomic implementation */ typedef struct z z"
+PREDEFINED += P99_BUILTIN_TYPE(x,y)="P00_BUILTIN_TYPE_ ## x ## y"
+PREDEFINED += P99_COMPILETIME_ASSERT(x,y)=
+PREDEFINED += P99_DECLARE_THREAD_LOCAL(T,NAME)="/** \brief a thread local variable **/ T NAME"
 PREDEFINED += P99_FSYMB(x):="x ## _symbol"
 PREDEFINED += P99_LINEID(x):="p00_unique_id ## x"
 PREDEFINED += P99_MACRO_END(x,y,x)=
 PREDEFINED += P99_PASTE2(_1, _2):="_1 ## _2"
 PREDEFINED += P99_PASTE3(_1, _2, _3):="_1 ## _2 ## _3"
 PREDEFINED += P99_PASTE4(_1, _2, _3, _4):="_1 ## _2 ## _3 ## _4"
+PREDEFINED += _Atomic(X)="atomic_ ## X"
 PREDEFINED += p99_inline="inline"
 PREDEFINED += static_inline="inline"
 
