@@ -427,7 +427,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 #if p99_has_feature(setjmp_inline)
 # define P99_SETJMP_INLINE(NAME) p99_inline
 #else
-# define P99_SETJMP_INLINE(NAME) P99_WEAK(NAME) inline
+# define P99_SETJMP_INLINE(NAME) P99_WEAK(NAME)
 #endif
 
 
