@@ -152,6 +152,7 @@ struct p99_once_flag {
     enum p00_once volatile volatile_done;
   } done;
   thrd_t id;
+  void (*const init)(void);
   atomic_flag flg;
 };
 
@@ -277,6 +278,11 @@ void p00_call_once_2(p99_once_flag *flag, void (*func)(void)) {
 }
 
 p99_inline
+void p00_call_once_1(p99_once_flag *flag) {
+  p00_call_once_2(flag, flag->init);
+}
+
+p99_inline
 void p00_call_once_3(p99_once_flag *flag, void (*func)(void*), void* arg) {
   if (P99_UNLIKELY(flag->done.done != p00_once_finished))
     do {
@@ -304,22 +310,45 @@ void p00_call_once_3(p99_once_flag *flag, void (*func)(void*), void* arg) {
     } while (flag->done.volatile_done != p00_once_finished);
 }
 
+#define p00_call_once(N, ...)                   \
+P99_IF_EQ_1(N)                                  \
+(p00_call_once_1(__VA_ARGS__))                  \
+(P99_IF_EQ_2(N)                                 \
+ (p00_call_once_2(__VA_ARGS__))                 \
+ (p00_call_once_3(__VA_ARGS__)))
+
 /**
- ** @brief Call a function @a func exactly once eventually by
+ ** @brief Call a function @a FUNC exactly once eventually by
  ** providing it with argument @a arg
  **
- ** This is an extension of the standard function ::call_once that
- ** doesn't allow to pass an argument to @a func.
+ ** This is an extension of the standard function ::call_once.
+ **
+ ** - If @a ARG is given, it must be compatible to type `void*` and is
+ **   passed to @a FUNC as an argument. In that case @a FUNC must have
+ **   the prototype <code>void FUNC(void*)</code>.
+ **
+ ** - If @a ARG is omitted @a FUNC should have the prototype
+ **   <code>void FUNC(void)</code>, i.e not take any argument.
+ **
+ ** - If the field @c init is initialized with an appropriate
+ **   function, the @a FUNC can also be omitted and @c init is then
+ **   called instead.
+ **
+ ** @remark The @a FLAG is only protected by an
+ ** ::atomic_flag. Therefore the functions that are passed to this
+ ** should be nice and short.
+ **
+ ** @remark These functions are protected against recursion and should
+ ** not deadlock when they are confronted with cyclic
+ ** dependencies. But obviously, the order in which such a cycle is
+ ** taken is not predictable.
  **
  ** @memberof p99_once_flag
  **/
 #ifdef P00_DOXYGEN
 #define p99_call_once(FLAG, FUNC, ARG)
 #else
-#define p99_call_once(FLAG, ...)                \
-P99_IF_EQ_1(P99_NARG(__VA_ARGS__))              \
-(p00_call_once_2(FLAG, __VA_ARGS__))            \
-(p00_call_once_3(FLAG, __VA_ARGS__))
+#define p99_call_once(...) p00_call_once(P99_NARG(__VA_ARGS__), __VA_ARGS__)
 #endif
 
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_INIT_ONCE, 0)
