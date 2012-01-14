@@ -510,6 +510,93 @@ P99_DECLARE_THREAD_LOCAL(p00_thrd *, p00_thrd_local);
 
 #define P00_THRD_LOCAL P99_THREAD_LOCAL(p00_thrd_local)
 
+#ifdef P00_DOXYGEN
+/**
+ ** @brief Define the function that will be exactly called once by
+ ** <code>P99_INIT_CHAIN(T)</code>.
+ **
+ ** The function has a prototype of <code>void someFunctionName(void)</code>.
+ **
+ ** @a T can be any valid identifier, the real function name will
+ ** be mangled such that this will not clash with an existing one.
+ **
+ ** The ... list (optional) can be used to give a list of dependencies
+ ** from other ::P99_INIT_CHAIN functions.
+ ** @code
+ ** P99_DEFINE_ONCE_CHAIN(toto) {
+ **  // initialize some share ressource
+ ** }
+ **
+ ** P99_DEFINE_ONCE_CHAIN(tutu, toto) {
+ **   // empty
+ ** }
+ ** @endcode
+ **
+ ** This will ensure that <code>P99_INIT_CHAIN(toto)</code> is always
+ ** triggered by <code>P99_INIT_CHAIN(tutu)</code> and run before we run
+ ** the function of @c tutu itself. As in this case many functions
+ ** will be empty and serve just to ensure that all dynamic
+ ** dependencies are initialized in the right order.
+ ** @see P99_DECLARE_ONCE_CHAIN
+ ** @see P99_INIT_CHAIN
+ **/
+#define P99_DEFINE_ONCE_CHAIN(T, ...)           \
+p99_once_flag p00_ ## T ## _once);              \
+void p00_ ## T ## _once_init(void)
+#else
+#define P99_DEFINE_ONCE_CHAIN(...)              \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
+ (P00_P99_DEFINE_ONCE_CHAIN_0(__VA_ARGS__))     \
+ (P00_P99_DEFINE_ONCE_CHAIN_1(__VA_ARGS__))
+#endif
+
+#define P00_P99_DEFINE_ONCE_CHAIN_0(T)                       \
+static void P99_PASTE3(p00_, T, _once_init)(void);           \
+p99_once_flag P99_PASTE3(p00_, T, _once) = {                 \
+  .init = P99_PASTE3(p00_, T, _once_init),                   \
+};                                                           \
+static void P99_PASTE3(p00_, T, _once_init)(void)
+
+#define P00_ONCE_INIT(_0, T, _2) P99_INIT_CHAIN(T)
+
+#define P00_P99_DEFINE_ONCE_CHAIN_1(T, ...)                              \
+static void P99_PASTE3(p00_, T, _once_init0)(void);                      \
+static void P99_PASTE3(p00_, T, _once_init)(void) {                      \
+  P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_ONCE_INIT, __VA_ARGS__); \
+  /* fprintf(stderr, "Initializing " #T "\n");*/                         \
+  P99_PASTE3(p00_, T, _once_init0)();                                    \
+ }                                                                       \
+struct p99_once_flag P99_PASTE3(p00_, T, _once) = {                      \
+  .init = P99_PASTE3(p00_, T, _once_init),                               \
+};                                                                       \
+static void P99_PASTE3(p00_, T, _once_init0)(void)
+
+/**
+ ** @brief Declare the symbols that are needed for the macro
+ ** ::P99_INIT_CHAIN().
+ **
+ ** @param T should be unique for each use of this macro.
+ ** @see P99_INIT_CHAIN
+ ** @see P99_DEFINE_ONCE_CHAIN
+ **/
+#define P99_DECLARE_ONCE_CHAIN(T)                                        \
+extern p99_once_flag P99_PASTE3(p00_, T, _once)
+
+/**
+ ** @brief Ensure that the function that was defined with
+ ** ::P99_DEFINE_ONCE_CHAIN has been called exactly once before further
+ ** proceeding.
+ **
+ ** Such a call could be place at the beginning of a user function to
+ ** ensure that a shared resource is always initialized before its
+ ** use. A better strategy though would be to call ::P99_INIT_CHAIN from @c
+ ** main, e.g., before any threads of the application are started.
+ ** @see P99_DECLARE_ONCE_CHAIN
+ ** @see P99_DEFINE_ONCE_CHAIN
+ **/
+#define P99_INIT_CHAIN(T)                                               \
+p99_call_once(&P99_PASTE3(p00_, T, _once), P99_PASTE3(p00_, T, _once).init)
+
 // 7.26.3 Condition variable functions
 
 /**
