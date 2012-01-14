@@ -635,6 +635,39 @@ int mtx_unlock(mtx_t *mtx) {
   return pthread_mutex_unlock(&P99_ENCP(mtx)) ? thrd_error : thrd_success;
 }
 
+/**
+ ** @brief Protect the following block or statement with @c
+ ** mtx_t @a MUT.
+ **
+ ** @see P99_CRITICAL for a tool that uses a spinlock that is
+ ** allocated behind the scene.
+ **
+ ** This does some rudimentary error checking for the result of the
+ ** locking. If an error occurs the whole block and any other
+ ** enclosing blocks that protected with P99_UNWIND_PROTECT are
+ ** aborted.
+ **/
+P99_BLOCK_DOCUMENT
+#define P99_MUTUAL_EXCLUDE(MUT)                                         \
+P00_BLK_START                                                           \
+P00_BLK_DECL(int, p00_errNo, 0)                                         \
+P99_GUARDED_BLOCK(mtx_t*,                                               \
+                  P99_FILEID(mut),                                      \
+                  &(MUT),                                               \
+                  (void)(P99_UNLIKELY(p00_errNo = mtx_lock(P99_FILEID(mut))) \
+                         && (fprintf(stderr,                            \
+                                     __FILE__ ":"                       \
+                                     P99_STRINGIFY(__LINE__) ": lock error for " \
+                                     P99_STRINGIFY(MUT) ", %s",         \
+                                     strerror(p00_errNo)), 1)           \
+                         && (P99_FILEID(mut) = 0, 1)                    \
+                         && (P99_UNWIND(-1), 1)                         \
+                         ),                                             \
+                  (void)(P99_FILEID(mut)                                \
+                         && mtx_unlock(P99_FILEID(mut))))
+
+
+
 P99_SETJMP_INLINE(p00_thrd_create)
 void * p00_thrd_create(void* context);
 

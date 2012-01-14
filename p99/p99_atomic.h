@@ -15,6 +15,7 @@
 
 #include "p99_enum.h"
 #include "p99_generic.h"
+#include "p99_block.h"
 
 /**
  ** @addtogroup atomic C11 atomic operations
@@ -1050,6 +1051,39 @@ P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                \
  ** @see _Atomic
  **/
 #define atomic_fetch_xor(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_xor, ^=)
+
+
+/**
+ ** @brief Protect the following block or statement as a critical
+ ** section of the program.
+ **
+ ** Internally this uses a <code>static</code> ::atomic_flag as a
+ ** spinlock, so this is an active wait.
+ **
+ ** @warning Such a section should only contain a handful of
+ ** statements.
+ **
+ ** @warning Such a section should not contain preliminary exits such
+ ** as @c goto, @c break, @c return or @c longjmp. Use ::P99_UNWIND
+ ** etc, instead.
+ **
+ ** Such a critical section is only protected against threads that try
+ ** to enter this same critical section. Threads may well be
+ ** simultaneously be in different critical sections.
+ **
+ **
+ ** @see P99_MUTUAL_EXCLUDE to protect several critical sections against
+ ** each other and that is more suited for larger sections.
+ **/
+P99_BLOCK_DOCUMENT
+#define P99_CRITICAL                                                    \
+P00_BLK_START                                                           \
+P00_BLK_DECL_STATIC(atomic_flag, P99_LINEID(crit), ATOMIC_FLAG_INIT)    \
+P99_GUARDED_BLOCK(atomic_flag*,                                         \
+                  P99_FILEID(flg),                                      \
+                  P99_LINEID(crit),                                     \
+                  atomic_flag_lock(P99_FILEID(flg)),                    \
+                  atomic_flag_unlock(P99_FILEID(flg)))
 
 
 /**
