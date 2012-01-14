@@ -48,16 +48,16 @@
 
 /**
  ** @brief expands to a value that can be used to initialize an object
- ** of type ::once_flag
+ ** of type ::p99_once_flag
  **
  ** This implementation here has the particularity that this
  ** initialization is equivalent to the default initialization by @c
  ** 0.  This specific property is then use in the fallback
  ** implementation of thread local storage.
  **
- ** @memberof once_flag
+ ** @memberof p99_once_flag
  **/
-#define ONCE_FLAG_INIT P99_INIT
+#define P99_ONCE_FLAG_INIT P99_INIT
 
 #ifndef PTHREAD_DESTRUCTOR_ITERATIONS
 # warning "definition of PTHREAD_DESTRUCTOR_ITERATIONS is missing"
@@ -119,7 +119,13 @@ typedef void (*tss_dtor_t)(void*);
  */
 typedef int (*thrd_start_t)(void*);
 
-typedef struct once_flag once_flag;
+#ifndef ONCE_FLAG_INIT
+typedef struct p99_once_flag once_flag;
+#define ONCE_FLAG_INIT P99_ONCE_FLAG_INIT
+#define call_once p99_call_once
+#endif
+
+typedef struct p99_once_flag p99_once_flag;
 
 enum p00_once {
   p00_once_uninit = 0,
@@ -129,18 +135,18 @@ enum p00_once {
 
 /**
  ** @brief complete object type that holds a flag for use by
- ** ::call_once
+ ** ::p99_call_once
  **
  ** From the wording of the standard it is not clear if a variable of
- ** this type @b must be initialized by means of ::ONCE_FLAG_INIT. The
+ ** this type @b must be initialized by means of ::P99_ONCE_FLAG_INIT. The
  ** corresponding POSIX structure requires the analog.
  **
  ** Therefore we don't use the POSIX structure, here, but cook this
  ** ourselves with atomic variables. By that we can guarantee that a
- ** ::once_flag that is initialized by the default initializer always
+ ** ::p99_once_flag that is initialized by the default initializer always
  ** has the correct state.
  */
-struct once_flag {
+struct p99_once_flag {
   union {
     enum p00_once done;
     enum p00_once volatile volatile_done;
@@ -148,7 +154,6 @@ struct once_flag {
   thrd_t id;
   atomic_flag flg;
 };
-
 
 /**
  ** @}
@@ -243,11 +248,8 @@ void thrd_yield(void) {
 p99_inline thrd_t thrd_current(void);
 p99_inline int thrd_equal(thrd_t thr0, thrd_t thr1);
 
-/**
- ** @memberof once_flag
- **/
 p99_inline
-void call_once(once_flag *flag, void (*func)(void)) {
+void p00_call_once_2(p99_once_flag *flag, void (*func)(void)) {
   if (P99_UNLIKELY(flag->done.done != p00_once_finished))
     do {
       atomic_flag_lock(&flag->flg);
@@ -274,17 +276,8 @@ void call_once(once_flag *flag, void (*func)(void)) {
     } while (flag->done.volatile_done != p00_once_finished);
 }
 
-/**
- ** @brief Call a function @a func exactly once by providing it with
- ** argument @a arg
- **
- ** This is an extension of the standard function ::call_once that
- ** doesn't allow to pass an argument to @a func.
- **
- ** @memberof once_flag
- **/
 p99_inline
-void p99_call_once(once_flag *flag, void (*func)(void*), void* arg) {
+void p00_call_once_3(p99_once_flag *flag, void (*func)(void*), void* arg) {
   if (P99_UNLIKELY(flag->done.done != p00_once_finished))
     do {
       atomic_flag_lock(&flag->flg);
@@ -311,13 +304,31 @@ void p99_call_once(once_flag *flag, void (*func)(void*), void* arg) {
     } while (flag->done.volatile_done != p00_once_finished);
 }
 
+/**
+ ** @brief Call a function @a func exactly once eventually by
+ ** providing it with argument @a arg
+ **
+ ** This is an extension of the standard function ::call_once that
+ ** doesn't allow to pass an argument to @a func.
+ **
+ ** @memberof p99_once_flag
+ **/
+#ifdef P00_DOXYGEN
+#define p99_call_once(FLAG, FUNC, ARG)
+#else
+#define p99_call_once(FLAG, ...)                \
+P99_IF_EQ_1(P99_NARG(__VA_ARGS__))              \
+(p00_call_once_2(FLAG, __VA_ARGS__))            \
+(p00_call_once_3(FLAG, __VA_ARGS__))
+#endif
+
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_INIT_ONCE, 0)
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INIT_ONCE, 1)
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INIT_ONCE, 2)
 #define P99_DECLARE_INIT_ONCE(T, NAME, ARG)                     \
 /** @remark wrapper type around a T that is initialized once */ \
 struct NAME {                                                   \
-  once_flag p00_once;                                           \
+  p99_once_flag p00_once;                                       \
   T p00_val;                                                    \
 };                                                              \
 P99_DECLARE_STRUCT(NAME);                                       \
