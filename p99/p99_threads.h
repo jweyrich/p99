@@ -120,6 +120,13 @@ typedef void (*tss_dtor_t)(void*);
 typedef int (*thrd_start_t)(void*);
 
 typedef struct once_flag once_flag;
+
+enum p00_once {
+  p00_once_uninit = 0,
+  p00_once_started,
+  p00_once_finished,
+};
+
 /**
  ** @brief complete object type that holds a flag for use by
  ** ::call_once
@@ -135,9 +142,10 @@ typedef struct once_flag once_flag;
  */
 struct once_flag {
   union {
-    _Bool done;
-    _Bool volatile volatile_done;
+    enum p00_once done;
+    enum p00_once volatile volatile_done;
   } done;
+  thrd_t id;
   atomic_flag flg;
 };
 
@@ -232,20 +240,38 @@ void thrd_yield(void) {
   if (P99_UNLIKELY(sched_yield())) errno = 0;
 }
 
+p99_inline thrd_t thrd_current(void);
+p99_inline int thrd_equal(thrd_t thr0, thrd_t thr1);
+
 /**
  ** @memberof once_flag
  **/
 p99_inline
 void call_once(once_flag *flag, void (*func)(void)) {
-  if (P99_UNLIKELY(!flag->done.done))
+  if (P99_UNLIKELY(flag->done.done != p00_once_finished))
     do {
       atomic_flag_lock(&flag->flg);
-      if (!flag->done.volatile_done) {
+      switch (flag->done.volatile_done) {
+        /* we are doing the initialization */
+      case p00_once_uninit:
+        flag->done.done = 1;
+        flag->id = thrd_current();
+        atomic_flag_unlock(&flag->flg);
         func();
-        flag->done.volatile_done = true;
+        flag->done.done = 2;
+        break;
+      case p00_once_started:
+        if (thrd_equal(flag->id, thrd_current())) {
+          /* we are called recursively, abandon and return */
+          atomic_flag_unlock(&flag->flg);
+          return;
+        }
+        /* otherwise fall through */
+      case p00_once_finished:
+        atomic_flag_unlock(&flag->flg);
+        break;
       }
-      atomic_flag_unlock(&flag->flg);
-    } while (!flag->done.volatile_done);
+    } while (flag->done.volatile_done != p00_once_finished);
 }
 
 /**
@@ -259,15 +285,30 @@ void call_once(once_flag *flag, void (*func)(void)) {
  **/
 p99_inline
 void p99_call_once(once_flag *flag, void (*func)(void*), void* arg) {
-  if (P99_UNLIKELY(!flag->done.done))
+  if (P99_UNLIKELY(flag->done.done != p00_once_finished))
     do {
       atomic_flag_lock(&flag->flg);
-      if (!flag->done.volatile_done) {
+      switch (flag->done.volatile_done) {
+        /* we are doing the initialization */
+      case p00_once_uninit:
+        flag->done.done = 1;
+        flag->id = thrd_current();
+        atomic_flag_unlock(&flag->flg);
         func(arg);
-        flag->done.volatile_done = true;
+        flag->done.done = 2;
+        break;
+      case p00_once_started:
+        if (thrd_equal(flag->id, thrd_current())) {
+          /* we are called recursively, abandon and return */
+          atomic_flag_unlock(&flag->flg);
+          return;
+        }
+        /* otherwise fall through */
+      case p00_once_finished:
+        atomic_flag_unlock(&flag->flg);
+        break;
       }
-      atomic_flag_unlock(&flag->flg);
-    } while (!flag->done.volatile_done);
+    } while (flag->done.volatile_done != p00_once_finished);
 }
 
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_INIT_ONCE, 0)
