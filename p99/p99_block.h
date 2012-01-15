@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
+/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -253,7 +253,7 @@ P00_BLK_END
  ** @see P99_AVOID
  **/
 #if p99_has_feature(statement_expression)
-# define P99_PREFER(...) /* avoid the dangling else problem */          \
+# define P99_PREFER(...) /* avoid the dangling else problem */    \
 for (_Bool p00 = 1; p00 && ((void)({ __VA_ARGS__ }), 1); p00 = 0)
 #else
 # define P99_PREFER(...) if (1) { __VA_ARGS__ } else
@@ -601,20 +601,20 @@ void p00_unwind(void* top, unsigned level, int cond) {
  ** P99_UNWIND_RETURN myret;
  ** @endcode
  **/
-#define P99_UNWIND_RETURN                                               \
-/* This is just there to prevent spurious dangling else warnings */     \
-P00_BLK_START                                                           \
-for (;                                                                  \
-     !(p00_unwind_bottom && !setjmp(p00_unwind_bottom->buf))            \
-       /* assign before we unwind all the way down */                   \
-       || (p00_unwind_bottom->returning = 1,                            \
-           /* If an unwind is possible, i.e if we are not in the outer  \
-              frame this will stop the evaluation of the expression     \
-              here, and unwind as side effect. Otherwise, this will     \
-              continue normally and directly proceed with the           \
-              return. */                                                \
-           P99_UNWIND(-p99_unwind_return),                              \
-           1);                                                          \
+#define P99_UNWIND_RETURN                                              \
+/* This is just there to prevent spurious dangling else warnings */    \
+P00_BLK_START                                                          \
+for (;                                                                 \
+     !(p00_unwind_bottom && !setjmp(p00_unwind_bottom->buf))           \
+       /* assign before we unwind all the way down */                  \
+       || (p00_unwind_bottom->returning = 1,                           \
+           /* If an unwind is possible, i.e if we are not in the outer \
+              frame this will stop the evaluation of the expression    \
+              here, and unwind as side effect. Otherwise, this will    \
+              continue normally and directly proceed with the          \
+              return. */                                               \
+           P99_UNWIND(-p99_unwind_return),                             \
+           1);                                                         \
      ) P99_ALLOW(RETURN) return
 
 /**

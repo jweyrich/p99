@@ -34,14 +34,14 @@
 
 #if p99_has_extension(c_generic_selections)
 
-#define P00_GENERIC_EXPRESSION(OP, EXP, PAIR, I)        \
+#define P00_GENERIC_EXPRESSION(OP, EXP, PAIR, I)               \
 P00_GENERIC_TYPE PAIR: OP PAIR
 
-#define P00_GENERIC_(N, MOP, EXP, DEF, ...)                      \
+#define P00_GENERIC_(N, MOP, EXP, DEF, ...)                    \
 _Generic                                                       \
 ((EXP),                                                        \
  P99_IF_EMPTY(DEF)()(default: (DEF),)                          \
- P99_FOR((EXP), N, P00_SEQ, MOP, __VA_ARGS__)      \
+ P99_FOR((EXP), N, P00_SEQ, MOP, __VA_ARGS__)                  \
  )
 
 #elif defined(__GNUC__)
@@ -53,20 +53,20 @@ __builtin_choose_expr                                                 \
 (__builtin_types_compatible_p(__typeof__ EXP, P00_GENERIC_TYPE PAIR), \
  OP PAIR
 
-#define P00_GENERIC_(N, MOP, EXP, DEF, ...)                               \
-  P99_FOR((EXP), N, P00_SEQ, MOP, __VA_ARGS__),                       \
+#define P00_GENERIC_(N, MOP, EXP, DEF, ...)                                       \
+  P99_FOR((EXP), N, P00_SEQ, MOP, __VA_ARGS__),                                   \
     P99_IF_EMPTY(DEF)(&(const volatile struct { int p00_v; }){ .p00_v = 0 })(DEF) \
     P99_FOR(, N, P00_SER, P00_GENERIC_CLOSE, P99_DUPL(N, ))
 
 #endif
 
-#define P00_GENERIC0(MOP, EXP, DEF, ...)        \
-P00_GENERIC_                                    \
-(                                               \
- P99_NARG(__VA_ARGS__),                         \
- P00_ROBUST(MOP),                               \
- P00_ROBUST(EXP),                               \
- P00_ROBUST(DEF),                               \
+#define P00_GENERIC0(MOP, EXP, DEF, ...)                       \
+P00_GENERIC_                                                   \
+(                                                              \
+ P99_NARG(__VA_ARGS__),                                        \
+ P00_ROBUST(MOP),                                              \
+ P00_ROBUST(EXP),                                              \
+ P00_ROBUST(DEF),                                              \
  __VA_ARGS__)
 
 #define P00_GENERIC(N, ...) P99_IF_LT(N, 4)()(P00_GENERIC0(__VA_ARGS__))

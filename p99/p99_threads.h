@@ -310,11 +310,11 @@ void p00_call_once_3(p99_once_flag *flag, void (*func)(void*), void* arg) {
     } while (flag->done.volatile_done != p00_once_finished);
 }
 
-#define p00_call_once(N, ...)                   \
-P99_IF_EQ_1(N)                                  \
-(p00_call_once_1(__VA_ARGS__))                  \
-(P99_IF_EQ_2(N)                                 \
- (p00_call_once_2(__VA_ARGS__))                 \
+#define p00_call_once(N, ...)                                  \
+P99_IF_EQ_1(N)                                                 \
+(p00_call_once_1(__VA_ARGS__))                                 \
+(P99_IF_EQ_2(N)                                                \
+ (p00_call_once_2(__VA_ARGS__))                                \
  (p00_call_once_3(__VA_ARGS__)))
 
 /**
@@ -540,21 +540,21 @@ P99_DECLARE_THREAD_LOCAL(p00_thrd *, p00_thrd_local);
  ** @see P99_DECLARE_ONCE_CHAIN
  ** @see P99_INIT_CHAIN
  **/
-#define P99_DEFINE_ONCE_CHAIN(T, ...)           \
-p99_once_flag p00_ ## T ## _once);              \
+#define P99_DEFINE_ONCE_CHAIN(T, ...)                          \
+p99_once_flag p00_ ## T ## _once);                             \
 void p00_ ## T ## _once_init(void)
 #else
-#define P99_DEFINE_ONCE_CHAIN(...)              \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
- (P00_P99_DEFINE_ONCE_CHAIN_0(__VA_ARGS__))     \
+#define P99_DEFINE_ONCE_CHAIN(...)                             \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
+ (P00_P99_DEFINE_ONCE_CHAIN_0(__VA_ARGS__))                    \
  (P00_P99_DEFINE_ONCE_CHAIN_1(__VA_ARGS__))
 #endif
 
-#define P00_P99_DEFINE_ONCE_CHAIN_0(T)                       \
-static void P99_PASTE3(p00_, T, _once_init)(void);           \
-p99_once_flag P99_PASTE3(p00_, T, _once) = {                 \
-  .init = P99_PASTE3(p00_, T, _once_init),                   \
-};                                                           \
+#define P00_P99_DEFINE_ONCE_CHAIN_0(T)                         \
+static void P99_PASTE3(p00_, T, _once_init)(void);             \
+p99_once_flag P99_PASTE3(p00_, T, _once) = {                   \
+  .init = P99_PASTE3(p00_, T, _once_init),                     \
+};                                                             \
 static void P99_PASTE3(p00_, T, _once_init)(void)
 
 #define P00_ONCE_INIT(_0, T, _2) P99_INIT_CHAIN(T)
@@ -579,7 +579,7 @@ static void P99_PASTE3(p00_, T, _once_init0)(void)
  ** @see P99_INIT_CHAIN
  ** @see P99_DEFINE_ONCE_CHAIN
  **/
-#define P99_DECLARE_ONCE_CHAIN(T)                                        \
+#define P99_DECLARE_ONCE_CHAIN(T)                              \
 extern p99_once_flag P99_PASTE3(p00_, T, _once)
 
 /**
@@ -594,7 +594,7 @@ extern p99_once_flag P99_PASTE3(p00_, T, _once)
  ** @see P99_DECLARE_ONCE_CHAIN
  ** @see P99_DEFINE_ONCE_CHAIN
  **/
-#define P99_INIT_CHAIN(T)                                               \
+#define P99_INIT_CHAIN(T)                                                   \
 p99_call_once(&P99_PASTE3(p00_, T, _once), P99_PASTE3(p00_, T, _once).init)
 
 // 7.26.3 Condition variable functions
@@ -775,22 +775,22 @@ int mtx_unlock(mtx_t *mtx) {
  ** aborted.
  **/
 P99_BLOCK_DOCUMENT
-#define P99_MUTUAL_EXCLUDE(MUT)                                         \
-P00_BLK_START                                                           \
-P00_BLK_DECL(int, p00_errNo, 0)                                         \
-P99_GUARDED_BLOCK(mtx_t*,                                               \
-                  P99_FILEID(mut),                                      \
-                  &(MUT),                                               \
-                  (void)(P99_UNLIKELY(p00_errNo = mtx_lock(P99_FILEID(mut))) \
-                         && (fprintf(stderr,                            \
-                                     __FILE__ ":"                       \
+#define P99_MUTUAL_EXCLUDE(MUT)                                                  \
+P00_BLK_START                                                                    \
+P00_BLK_DECL(int, p00_errNo, 0)                                                  \
+P99_GUARDED_BLOCK(mtx_t*,                                                        \
+                  P99_FILEID(mut),                                               \
+                  &(MUT),                                                        \
+                  (void)(P99_UNLIKELY(p00_errNo = mtx_lock(P99_FILEID(mut)))     \
+                         && (fprintf(stderr,                                     \
+                                     __FILE__ ":"                                \
                                      P99_STRINGIFY(__LINE__) ": lock error for " \
-                                     P99_STRINGIFY(MUT) ", %s",         \
-                                     strerror(p00_errNo)), 1)           \
-                         && (P99_FILEID(mut) = 0, 1)                    \
-                         && (P99_UNWIND(-1), 1)                         \
-                         ),                                             \
-                  (void)(P99_FILEID(mut)                                \
+                                     P99_STRINGIFY(MUT) ", %s",                  \
+                                     strerror(p00_errNo)), 1)                    \
+                         && (P99_FILEID(mut) = 0, 1)                             \
+                         && (P99_UNWIND(-1), 1)                                  \
+                         ),                                                      \
+                  (void)(P99_FILEID(mut)                                         \
                          && mtx_unlock(P99_FILEID(mut))))
 
 
@@ -847,8 +847,8 @@ thrd_t thrd_current(void) {
     loc = malloc(sizeof *loc);
     *loc = (p00_thrd) {
       .id = pthread_self(),
-      .foreign = foreign + 1,
-    };
+       .foreign = foreign + 1,
+      };
     P00_THRD_LOCAL = loc;
     if (foreign) fprintf(stderr, "foreign thread %lu is %zu\n", loc->id, foreign + 1);
   }

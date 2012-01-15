@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2011-2012 Jens Gustedt, INRIA, France                      */
+/* (C) copyright  2012 Jens Gustedt, INRIA, France                           */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -50,7 +50,7 @@ uint32_t p00_arm_ldrex(uint32_t volatile*ptr) {
                     : "=&r" (ret)
                     : "r" (ptr)
                     : "cc", "memory"
-                    );
+                   );
   return ret;
 }
 
@@ -61,7 +61,7 @@ _Bool p00_arm_strex(uint32_t volatile*ptr, uint32_t val) {
                     : "=&r" (ret)
                     : "r" (val), "r" (ptr)
                     : "cc", "memory"
-                    );
+                   );
   return ret;
 }
 
