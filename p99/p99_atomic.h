@@ -211,7 +211,7 @@ void p00_mfence(void) {
  ** @brief Initialize a variable of an atomic type.
  ** @memberof atomic_int
  **/
-#define ATOMIC_VAR_INIT(V) { .p00_xval = { .p00_type_member = (V), }, }
+#define ATOMIC_VAR_INIT(V) { .p00_xval = { .p00_integer_member = (0), .p00_type_member = (V), }, }
 
 /**
  ** @brief A list of types that are supposed to have lock-free atomic
@@ -846,15 +846,13 @@ P00_BLK_END
 /**
  ** @brief return true if @a OBJP points to a lock-free object
  **
- ** In this implementation this is a constant integer expression and
- ** will be determined at compile time.
- **
  ** @memberof atomic_int
  **/
-#define atomic_is_lock_free(OBJP)                                 \
-P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                          \
-(0)                                                               \
-(P99_TYPE_CHOICE(P00_AT(OBJP), 1, 0, P99_ATOMIC_LOCK_FREE_TYPES))
+#define atomic_is_lock_free(OBJP)                               \
+({                                                              \
+  __typeof__(*OBJP) volatile* p00_objp = OBJP;                  \
+  (void*)&(p00_objp->p00_lock) == (void*)&(p00_objp->p00_xval); \
+ })
 
 /**
  ** @brief Initialize the object behind @a OBJP with value @a VAL
@@ -866,7 +864,13 @@ P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                          \
  **
  ** @memberof atomic_int
  **/
-#define atomic_init(OBJP, VAL) ((void)(P00_AT(OBJP) = (VAL)))
+#define atomic_init(OBJP, VAL)                  \
+(void)({                                        \
+  __typeof__(*OBJP) volatile* p00_objp = OBJP;  \
+  atomic_flag_clear(&p00_objp->p00_lock);       \
+  P00_AI(OBJP) = 0;                             \
+  P00_AT(OBJP) = (VAL);                         \
+  })
 
 /**
  ** @brief Store @a VAL into the object behind @a OBJP.
