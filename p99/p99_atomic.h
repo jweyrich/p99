@@ -378,6 +378,20 @@ P99_ENC_DECLARE(uint32_t volatile, atomic_flag);
 #define P00_AT(OBJP) ((OBJP)->p00_xval.p00_type_member)
 #define P00_AI(OBJP) ((OBJP)->p00_xval.p00_integer_member)
 
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P00_DECLARE_ATOMIC_TYPE, 0)
+P00_DOCUMENT_TYPE_ARGUMENT(P00_DECLARE_ATOMIC_TYPE, 1)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P00_DECLARE_ATOMIC_TYPE, 2)
+#define P00_DECLARE_ATOMIC_TYPE(TAGGER, TI, T, NAME)                    \
+TAGGER P99_PASTE3(NAME, _, TAGGER) {                                    \
+  atomic_flag p00_lock;                                                 \
+  union {                                                               \
+    TI p00_integer_member;                                              \
+    T p00_type_member;                                                  \
+  } p00_xval;                                                           \
+};                                                                      \
+typedef TAGGER P99_PASTE3(NAME, _, TAGGER) P99_PASTE3(NAME, _, TAGGER)
+
+
 /**
  ** @brief declare an atomic type that will have lock-free operations
  **
@@ -390,29 +404,20 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ATOMIC_LOCK_FREE, 1)
 #ifdef P00_DOXYGEN
 # define P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME)                                                                         \
 /** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
-typedef union NAME NAME
+typedef P99_PASTE3(p99_, NAME, _union) NAME
 #else
-#define P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME)                  \
-union NAME {                                                   \
-  atomic_flag p00_lock;                                        \
-  union {                                                      \
-    T p00_integer_member;                                      \
-    T p00_type_member;                                         \
-  } p00_xval;                                                  \
-};                                                             \
-typedef union NAME NAME
+#define P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME)                           \
+P00_DECLARE_ATOMIC_TYPE(union, T, T, P99_PASTE2(p99_, NAME));           \
+P00_DECLARE_ATOMIC_TYPE(struct, uintptr_t, T, P99_PASTE2(p99_, NAME));  \
+typedef P99_PASTE3(p99_, NAME, _union) NAME
 #endif
 
-P00_DOCUMENT_TYPE_ARGUMENT(P00_ATOMIC_STRUCT, 0)
-#define P00_ATOMIC_STRUCT(T, NAME)                                               \
-struct NAME {                                                                    \
-  atomic_flag p00_lock;                                                          \
-  union {                                                                        \
-    /* should be an integer type that can be cast to pointers without warning */ \
-    uintptr_t p00_integer_member;                                                \
-    T p00_type_member;                                                           \
-  } p00_xval;                                                                    \
-}
+
+#define P00_DECLARE_ATOMIC2(T, NAME)                                    \
+P00_DECLARE_ATOMIC_TYPE(union, T, T, P99_PASTE2(p99_, NAME));           \
+P00_DECLARE_ATOMIC_TYPE(struct, uintptr_t, T, P99_PASTE2(p99_, NAME));  \
+/** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
+typedef P99_PASTE3(p99_, NAME, _struct) NAME
 
 /**
  ** @brief declare an atomic type that will use lock operations to
@@ -441,8 +446,8 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ATOMIC_LOCK_FREE, 1)
 #define P99_DECLARE_ATOMIC(...)                                                                                        \
 /** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
 P99_IF_EQ_1(P99_NARG(__VA_ARGS__))                                                                                     \
-(P00_DECLARE_ATOMIC(__VA_ARGS__, P99_PASTE2(atomic_, __VA_ARGS__)))                                                    \
-(P00_DECLARE_ATOMIC(__VA_ARGS__))
+(P00_DECLARE_ATOMIC2(__VA_ARGS__, P99_PASTE2(atomic_, __VA_ARGS__)))                                                   \
+(P00_DECLARE_ATOMIC2(__VA_ARGS__))
 #endif
 
 #define P00_DECLARE_ATOMIC(T, ...)                                                                                     \
@@ -536,7 +541,7 @@ P99_DECLARE_ATOMIC(long double _Complex, atomic_cldouble);
   (long double, atomic_ldouble*)
 #endif
 
-#define P99_ATOMIC_INHERIT(T) (*P99_GENERIC_LITERAL((T)0, (struct P99_PASTE2(atomic_, T)*){ 0 }, P00_ATOMIC_TYPES))
+#define P99_ATOMIC_INHERIT(T) (*P99_GENERIC_LITERAL((T)0, (struct P99_PASTE3(p99_atomic_, T, _struct)*){ 0 }, P00_ATOMIC_TYPES))
 
 /**
  ** @brief refer to an atomic type of base type T
@@ -616,7 +621,7 @@ P99_DECLARE_ATOMIC(long double _Complex, atomic_cldouble);
  ** @ingroup C11_keywords
  **/
 #ifdef P00_DOXYGEN
-# define _Atomic(T) struct P99_PASTE2(atomic_, T)
+# define _Atomic(T) P99_PASTE2(atomic_, T)
 #else
 # define _Atomic(T) __typeof__(P99_ATOMIC_INHERIT(T))
 #endif
