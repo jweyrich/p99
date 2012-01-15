@@ -367,12 +367,12 @@ p99_inline                                                      \
 void P99_PASTE3(p00_, NAME, _init_once)(NAME* ARG) {            \
   if (P99_UNLIKELY(!ARG->p00_once.done.done))                   \
     do {                                                        \
-      atomic_flag_lock(&ARG->p00_once.flg);                     \
-      if (!ARG->p00_once.done.volatile_done) {                  \
-        P99_PASTE3(p00_, NAME, _init_func)(&ARG->p00_val);      \
-        ARG->p00_once.done.volatile_done = true;                \
+      P99_SPIN_EXCLUDE(&ARG->p00_once.flg) {                    \
+        if (!ARG->p00_once.done.volatile_done) {                \
+          P99_PASTE3(p00_, NAME, _init_func)(&ARG->p00_val);    \
+          ARG->p00_once.done.volatile_done = true;              \
+        }                                                       \
       }                                                         \
-      atomic_flag_unlock(&ARG->p00_once.flg);                   \
     } while (!ARG->p00_once.done.volatile_done);                \
 }                                                               \
 p99_inline                                                      \
