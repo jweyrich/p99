@@ -1091,7 +1091,7 @@ P00_BLK_END
 ({                                                                         \
   __typeof__(*(OBJP)) volatile* p00_aobjp = OBJP;                          \
   __typeof__(OPERAND) p00_OP = OPERAND;                                    \
-  __typeof__(P00_AT(p00_aobjp)) p00_ret = atomic_load(p00_aobjp);          \
+  __typeof__(P00_AT(p00_aobjp)) volatile p00_ret = atomic_load(p00_aobjp); \
   while (p00_ret) {                                                        \
     __typeof__(p00_ret) p00_DES = p00_ret + p00_OP;                        \
     if (atomic_compare_exchange_weak(p00_aobjp, &p00_ret, p00_DES)) break; \
