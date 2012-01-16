@@ -896,7 +896,7 @@ _Noreturn
 void thrd_exit(int res) {
   p00_thrd * cntxt = P00_THRD_LOCAL;
   if (P99_LIKELY(cntxt)) {
-    if (cntxt->foreign) {
+    if (!cntxt->foreign) {
       cntxt->ret = res;
       longjmp(cntxt->ovrl.jmp, 1);
     } else {
