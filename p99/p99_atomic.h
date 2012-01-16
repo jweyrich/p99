@@ -381,14 +381,14 @@ P99_ENC_DECLARE(uint32_t volatile, atomic_flag);
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P00_DECLARE_ATOMIC_TYPE, 0)
 P00_DOCUMENT_TYPE_ARGUMENT(P00_DECLARE_ATOMIC_TYPE, 1)
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P00_DECLARE_ATOMIC_TYPE, 2)
-#define P00_DECLARE_ATOMIC_TYPE(TAGGER, TI, T, NAME)                    \
-TAGGER P99_PASTE3(NAME, _, TAGGER) {                                    \
-  atomic_flag p00_lock;                                                 \
-  union {                                                               \
-    TI p00_integer_member;                                              \
-    T p00_type_member;                                                  \
-  } p00_xval;                                                           \
-};                                                                      \
+#define P00_DECLARE_ATOMIC_TYPE(TAGGER, TI, T, NAME)                   \
+TAGGER P99_PASTE3(NAME, _, TAGGER) {                                   \
+  atomic_flag p00_lock;                                                \
+  union {                                                              \
+    TI p00_integer_member;                                             \
+    T p00_type_member;                                                 \
+  } p00_xval;                                                          \
+};                                                                     \
 typedef TAGGER P99_PASTE3(NAME, _, TAGGER) P99_PASTE3(NAME, _, TAGGER)
 
 
@@ -406,16 +406,16 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ATOMIC_LOCK_FREE, 1)
 /** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
 typedef P99_PASTE3(p99_, NAME, _union) NAME
 #else
-#define P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME)                           \
-P00_DECLARE_ATOMIC_TYPE(union, T, T, P99_PASTE2(p99_, NAME));           \
-P00_DECLARE_ATOMIC_TYPE(struct, uintptr_t, T, P99_PASTE2(p99_, NAME));  \
+#define P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME)                          \
+P00_DECLARE_ATOMIC_TYPE(union, T, T, P99_PASTE2(p99_, NAME));          \
+P00_DECLARE_ATOMIC_TYPE(struct, uintptr_t, T, P99_PASTE2(p99_, NAME)); \
 typedef P99_PASTE3(p99_, NAME, _union) NAME
 #endif
 
 
-#define P00_DECLARE_ATOMIC2(T, NAME)                                    \
-P00_DECLARE_ATOMIC_TYPE(union, T, T, P99_PASTE2(p99_, NAME));           \
-P00_DECLARE_ATOMIC_TYPE(struct, uintptr_t, T, P99_PASTE2(p99_, NAME));  \
+#define P00_DECLARE_ATOMIC2(T, NAME)                                                                                   \
+P00_DECLARE_ATOMIC_TYPE(union, T, T, P99_PASTE2(p99_, NAME));                                                          \
+P00_DECLARE_ATOMIC_TYPE(struct, uintptr_t, T, P99_PASTE2(p99_, NAME));                                                 \
 /** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
 typedef P99_PASTE3(p99_, NAME, _struct) NAME
 
@@ -836,11 +836,11 @@ void atomic_flag_unlock(volatile atomic_flag *object) {
  **
  ** @see P99_MUTUAL_EXCLUDE that is more suited for larger sections.
  **/
-#define P99_SPIN_EXCLUDE(FLAGP)                                         \
-P00_BLK_START                                                           \
+#define P99_SPIN_EXCLUDE(FLAGP)                                             \
+P00_BLK_START                                                               \
 P00_BLK_DECL(register atomic_flag volatile*const, P99_FILEID(flg), (FLAGP)) \
-P00_BLK_BEFAFT(atomic_flag_lock(P99_FILEID(flg)),                       \
-               atomic_flag_unlock(P99_FILEID(flg)))                     \
+P00_BLK_BEFAFT(atomic_flag_lock(P99_FILEID(flg)),                           \
+               atomic_flag_unlock(P99_FILEID(flg)))                         \
 P00_BLK_END
 
 /**
@@ -848,10 +848,10 @@ P00_BLK_END
  **
  ** @memberof atomic_int
  **/
-#define atomic_is_lock_free(OBJP)                               \
-({                                                              \
-  __typeof__(*OBJP) volatile* p00_objp = OBJP;                  \
-  (void*)&(p00_objp->p00_lock) == (void*)&(p00_objp->p00_xval); \
+#define atomic_is_lock_free(OBJP)                              \
+({                                                             \
+  __typeof__(*OBJP) volatile* p00_P = OBJP;                    \
+  (void*)&(p00_P->p00_lock) == (void*)&(p00_P->p00_xval);      \
  })
 
 /**
@@ -864,12 +864,12 @@ P00_BLK_END
  **
  ** @memberof atomic_int
  **/
-#define atomic_init(OBJP, VAL)                  \
-(void)({                                        \
-  __typeof__(*OBJP) volatile* p00_objp = OBJP;  \
-  atomic_flag_clear(&p00_objp->p00_lock);       \
-  P00_AI(OBJP) = 0;                             \
-  P00_AT(OBJP) = (VAL);                         \
+#define atomic_init(OBJP, VAL)                                 \
+(void)({                                                       \
+  __typeof__(*OBJP) volatile* p00_objp = OBJP;                 \
+  atomic_flag_clear(&p00_objp->p00_lock);                      \
+  P00_AI(OBJP) = 0;                                            \
+  P00_AT(OBJP) = (VAL);                                        \
   })
 
 /**
@@ -882,31 +882,31 @@ P00_BLK_END
  **
  ** @memberof atomic_int
  **/
-#define atomic_store(OBJP, DESIRED)                                                         \
-({                                                                                          \
-  __typeof__(*OBJP) volatile* p00_objp = OBJP;                                              \
-  __typeof__(P00_AT(p00_objp)) p00_des = (DESIRED);                                         \
-  if (!atomic_is_lock_free(p00_objp))                                                       \
-    P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                                   \
-      P00_AT(p00_objp) = p00_des;                                                           \
-  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)()                                                \
-    (else {                                                                                 \
-      __typeof__(P00_AI(p00_objp)) p00_desi =                                               \
-        P99_TYPE_CHOICE(P00_AT(p00_objp), p00_des, 0, P99_ATOMIC_LOCK_FREE_TYPES);          \
-      __typeof__(P00_AI(p00_objp)) p00_prei = 0;                                            \
-      __typeof__(P00_AI(p00_objp)) p00_vali = 0;                                            \
-      P99_TYPE_CHOICE                                                                       \
-        (P00_AT(p00_objp),                                                                  \
-         ({                                                                                 \
-           for (;;) {                                                                       \
-             p00_vali = __sync_val_compare_and_swap(&P00_AI(p00_objp), p00_prei, p00_desi); \
-             if (p00_vali == p00_prei) break;                                               \
-             p00_prei = p00_vali;                                                           \
-           }                                                                                \
-         }),                                                                                \
-         (void)0,                                                                           \
-         P99_ATOMIC_LOCK_FREE_TYPES);                                                       \
-    })                                                                                      \
+#define atomic_store(OBJP, DESIRED)                                                          \
+({                                                                                           \
+  __typeof__(*OBJP) volatile* p00_sobjp = OBJP;                                              \
+  __typeof__(P00_AT(p00_sobjp)) p00_des = (DESIRED);                                         \
+  if (!atomic_is_lock_free(p00_sobjp))                                                       \
+    P99_SPIN_EXCLUDE(&p00_sobjp->p00_lock)                                                   \
+      P00_AT(p00_sobjp) = p00_des;                                                           \
+  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)()                                                 \
+    (else {                                                                                  \
+      __typeof__(P00_AI(p00_sobjp)) p00_desi =                                               \
+        P99_TYPE_CHOICE(P00_AT(p00_sobjp), p00_des, 0, P99_ATOMIC_LOCK_FREE_TYPES);          \
+      __typeof__(P00_AI(p00_sobjp)) p00_prei = 0;                                            \
+      __typeof__(P00_AI(p00_sobjp)) p00_vali = 0;                                            \
+      P99_TYPE_CHOICE                                                                        \
+        (P00_AT(p00_sobjp),                                                                  \
+         ({                                                                                  \
+           for (;;) {                                                                        \
+             p00_vali = __sync_val_compare_and_swap(&P00_AI(p00_sobjp), p00_prei, p00_desi); \
+             if (p00_vali == p00_prei) break;                                                \
+             p00_prei = p00_vali;                                                            \
+           }                                                                                 \
+         }),                                                                                 \
+         (void)0,                                                                            \
+         P99_ATOMIC_LOCK_FREE_TYPES);                                                        \
+    })                                                                                       \
  })
 
 /**
@@ -917,25 +917,27 @@ P00_BLK_END
  **
  ** @memberof atomic_int
  **/
-#define atomic_load(OBJP)                                                     \
-({                                                                            \
-  __typeof__(*OBJP) volatile* p00_objp = OBJP;                                \
-  __typeof__(P00_AT(p00_objp)) p00_ret;                                       \
-  if (!atomic_is_lock_free(p00_objp))                                         \
-    P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                     \
-      p00_ret = P00_AT(p00_objp);                                             \
-  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                    \
-    (else p00_ret = P00_AT(p00_objp);)                                        \
-    (else {                                                                   \
-      p00_ret =                                                               \
-        P99_TYPE_CHOICE(p00_ret,                                              \
-                        __sync_val_compare_and_swap(&P00_AI(p00_objp), 0, 0), \
-                        P00_AT(p00_objp),                                     \
-                        P99_ATOMIC_LOCK_FREE_TYPES);                          \
-    })                                                                        \
-  /* cast to the same type to be sure that the result is an lvalue */         \
-  (__typeof__(P00_AT(p00_objp)))p00_ret;                                      \
+#define atomic_load(OBJP)                                                      \
+({                                                                             \
+  __typeof__(*OBJP) volatile* p00_lobjp = OBJP;                                \
+  __typeof__(P00_AT(p00_lobjp)) p00_ret;                                       \
+  if (!atomic_is_lock_free(p00_lobjp))                                         \
+    P99_SPIN_EXCLUDE(&p00_lobjp->p00_lock)                                     \
+      p00_ret = P00_AT(p00_lobjp);                                             \
+  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                     \
+    (else p00_ret = P00_AT(p00_lobjp);)                                        \
+    (else {                                                                    \
+      p00_ret =                                                                \
+        P99_TYPE_CHOICE(p00_ret,                                               \
+                        __sync_val_compare_and_swap(&P00_AI(p00_lobjp), 0, 0), \
+                        P00_AT(p00_lobjp),                                     \
+                        P99_ATOMIC_LOCK_FREE_TYPES);                           \
+    })                                                                         \
+  /* cast to the same type to be sure that the result is an lvalue */          \
+  (__typeof__(P00_AT(p00_lobjp)))p00_ret;                                      \
  })
+
+#define P00_CVT(EXP) ((void const*)(((struct { void const volatile* a; }){ .a = (EXP) }).a))
 
 /**
  ** @brief Atomically compare @a *OBJP to @a *EXPECTED and set it to
@@ -953,60 +955,58 @@ P00_BLK_END
  **
  ** @memberof atomic_int
  **/
-#define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                        \
-({                                                                                   \
-  _Bool p00_ret;                                                                     \
-  __typeof__(*OBJP) volatile* p00_objp = OBJP;                                       \
-  __typeof__(EXPECTED) p00_exp = (EXPECTED);                                         \
-  __typeof__(DESIRED) p00_des = (DESIRED);                                           \
-  if (!atomic_is_lock_free(p00_objp)) {                                              \
-    P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                                          \
-      p00_ret = !memcmp(p00_exp, (void*)&P00_AT(p00_objp), sizeof P00_AT(p00_objp)); \
-      /* Both, *EXPECTED and DESIRED must be assignment compatible                   \
-         with the base type */                                                       \
-      if (!p00_ret) *p00_exp = P00_AT(p00_objp);                                     \
-      else         P00_AT(p00_objp) = p00_des;                                       \
-    }                                                                                \
-  }                                                                                  \
-  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                           \
-    (else p00_ret = P00_AT(p00_objp);)                                               \
-    (else {                                                                          \
-      __typeof__(P00_AI(p00_objp)) p00_desi =                                        \
-        P99_TYPE_CHOICE(P00_AT(p00_objp), p00_des, 0, P99_ATOMIC_LOCK_FREE_TYPES);   \
-      __typeof__(P00_AI(p00_objp))* p00_expi =                                       \
-        P99_TYPE_CHOICE(P00_AT(p00_objp), p00_exp, 0, P99_ATOMIC_LOCK_FREE_TYPES);   \
-      __typeof__(P00_AI(p00_objp)) p00_vali =                                        \
-        P99_TYPE_CHOICE                                                              \
-        (P00_AT(p00_objp),                                                           \
-         __sync_val_compare_and_swap(&P00_AI(p00_objp), *p00_expi, p00_desi),        \
-         0,                                                                          \
-         P99_ATOMIC_LOCK_FREE_TYPES);                                                \
-      p00_ret = (*p00_expi == p00_vali);                                             \
-      if (!p00_ret) *p00_expi = p00_vali;                                            \
-    })                                                                               \
-  p00_ret;                                                                           \
+#define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                                     \
+({                                                                                                \
+  _Bool p00_ret;                                                                                  \
+  __typeof__(*OBJP) volatile* p00_cobjp = OBJP;                                                   \
+  __typeof__(EXPECTED) p00_exp = (EXPECTED);                                                      \
+  __typeof__(DESIRED) p00_des = (DESIRED);                                                        \
+  if (!atomic_is_lock_free(p00_cobjp)) {                                                          \
+    P99_SPIN_EXCLUDE(&p00_cobjp->p00_lock) {                                                      \
+      p00_ret = !memcmp(P00_CVT(p00_exp), P00_CVT(&P00_AT(p00_cobjp)), sizeof P00_AT(p00_cobjp)); \
+      /* Both, *EXPECTED and DESIRED must be assignment compatible                                \
+         with the base type */                                                                    \
+      if (p00_ret) P00_AT(p00_cobjp) = p00_des;                                                   \
+      else *p00_exp = P00_AT(p00_cobjp);                                                          \
+    }                                                                                             \
+  }                                                                                               \
+  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                                        \
+    (else p00_ret = P00_AT(p00_cobjp);)                                                           \
+    (else {                                                                                       \
+      __typeof__(P00_AI(p00_cobjp)) p00_desi =                                                    \
+        P99_TYPE_CHOICE(P00_AT(p00_cobjp), p00_des, 0, P99_ATOMIC_LOCK_FREE_TYPES);               \
+      __typeof__(P00_AI(p00_cobjp)) p00_vali =                                                    \
+        P99_TYPE_CHOICE                                                                           \
+        (P00_AT(p00_cobjp),                                                                       \
+         __sync_val_compare_and_swap(&P00_AI(p00_cobjp), *p00_exp, p00_desi),                     \
+         0,                                                                                       \
+         P99_ATOMIC_LOCK_FREE_TYPES);                                                             \
+      p00_ret = (*p00_exp == p00_vali);                                                           \
+      if (!p00_ret) *p00_exp = p00_vali;                                                          \
+    })                                                                                            \
+  p00_ret;                                                                                        \
  })
 
 #define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                   \
 ({                                                                       \
-  __typeof__(*OBJP) volatile* p00_objp = OBJP;                           \
-  __typeof__(P00_AT(p00_objp)) p00_ret;                                  \
+  __typeof__(*OBJP) volatile* p00_fobjp = OBJP;                          \
+  __typeof__(P00_AT(p00_fobjp)) p00_ret;                                 \
   __typeof__(OPERAND) p00_op = OPERAND;                                  \
-  if (!atomic_is_lock_free(p00_objp)) {                                  \
-    P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                              \
-      p00_ret = P00_AT(p00_objp);                                        \
-      P00_AT(p00_objp) OPERATOR p00_op;                                  \
+  if (!atomic_is_lock_free(p00_fobjp)) {                                 \
+    P99_SPIN_EXCLUDE(&p00_fobjp->p00_lock) {                             \
+      p00_ret = P00_AT(p00_fobjp);                                       \
+      P00_AT(p00_fobjp) OPERATOR p00_op;                                 \
     }                                                                    \
   }                                                                      \
   P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                               \
-    (else p00_ret = P00_AT(p00_objp);)                                   \
+    (else p00_ret = P00_AT(p00_fobjp);)                                  \
     (else {                                                              \
-      __typeof__(P00_AI(p00_objp)) p00_opi =                             \
+      __typeof__(P00_AI(p00_fobjp)) p00_opi =                            \
         P99_TYPE_CHOICE(p00_ret, p00_op, 0, P99_ATOMIC_LOCK_FREE_TYPES); \
       p00_ret =                                                          \
         P99_TYPE_CHOICE(p00_ret,                                         \
-                        BUILTIN(&P00_AI(p00_objp), p00_opi),             \
-                        P00_AT(p00_objp),                                \
+                        BUILTIN(&P00_AI(p00_fobjp), p00_opi),            \
+                        P00_AT(p00_fobjp),                               \
                         P99_ATOMIC_LOCK_FREE_TYPES);                     \
     })                                                                   \
     p00_ret;                                                             \
@@ -1087,6 +1087,17 @@ P00_BLK_END
  **/
 #define atomic_fetch_xor(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_xor, ^=)
 
+#define atomic_fetch_add_conditional(OBJP, OPERAND)                        \
+({                                                                         \
+  __typeof__(*(OBJP)) volatile* p00_aobjp = OBJP;                          \
+  __typeof__(OPERAND) p00_OP = OPERAND;                                    \
+  __typeof__(P00_AT(p00_aobjp)) p00_ret = atomic_load(p00_aobjp);          \
+  while (p00_ret) {                                                        \
+    __typeof__(p00_ret) p00_DES = p00_ret + p00_OP;                        \
+    if (atomic_compare_exchange_weak(p00_aobjp, &p00_ret, p00_DES)) break; \
+  }                                                                        \
+  p00_ret;                                                                 \
+ })
 
 /**
  ** @brief Protect the following block or statement as a critical
