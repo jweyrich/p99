@@ -55,7 +55,9 @@ int real_task(atomic_intp* arg) {
   (void)atomic_fetch_add(&intp, 1);
   int * point = atomic_fetch_add(arg, 1);
   *point = ret;
-  atomic_store(&testvar, (tester){ .a = ret });
+  tester b = atomic_load(&testvar);
+  if (!atomic_compare_exchange_weak(&testvar, &b, (tester){ .a = ret }))
+    printf("store didn't succeeded\n");
   if (ret % 3) thrd_yield();
   if (ret % 2)
     return -1;
