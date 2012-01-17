@@ -951,6 +951,7 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_CASERANGE, 1)
 
 
 /**
+ ** @ingroup types
  ** @brief Declare a structure that of name @a NAME composed of the
  ** field declarations that are given in the remaining arguments.
  **
@@ -976,6 +977,7 @@ P00_STRUCT_TYPEDEFS(NAME, __VA_ARGS__)
 #define P00_STRUCT_USE(PAIR, NAME, I) P00_STRUCT_USE2(P00_ROBUST PAIR, NAME)
 
 /**
+ ** @ingroup types
  ** @brief Use the fields of variable @a VAR of type @a TYPE
  **
  ** This "lifts" the fields of @a VAR as local variables onto the
@@ -995,6 +997,7 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_STRUCT_USE, 4)
 #define P00_STRUCT_UNUSE(PAIR, NAME, I) P00_STRUCT_UNUSE2(P00_ROBUST PAIR, NAME)
 
 /**
+ ** @ingroup types
  ** @brief Copy local variables back to the fields of variable @a VAR.
  **
  ** @see P99_STRUCT_USE
@@ -1009,6 +1012,7 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_STRUCT_UNUSE, 4)
 #define P00_LITERAL(NAME) .NAME = NAME
 
 /**
+ ** @ingroup types
  ** @brief Copy local variables back to the fields of same name inside a literal.
  **
  ** @see P99_DEFINE_STRUCT
@@ -1021,6 +1025,7 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_LITERAL, 3)
 
 
 /**
+ ** @ingroup types
  ** @brief Copy local variables back to the fields of same name inside
  ** a compound literal of type @a TYPE.
  **
@@ -1035,6 +1040,7 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_STRUCT_LITERAL, 3)
 #define P00_STRUCT_TYPES(TYPE, NAME, I) P00_STRUCT_TYPENAME(TYPE, NAME)
 
 /**
+ ** @ingroup types
  ** @brief Transform the argument list into a list of field types for
  ** type @a TYPE.
  **
@@ -1050,6 +1056,7 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_STRUCT_TYPES, 4)
 #define P00_STRUCT_TYPE0(TYPE, NAME, I) P99_0(P00_STRUCT_TYPENAME(TYPE, NAME))
 
 /**
+ ** @ingroup types
  ** @brief Transform the argument list into a list of lvalue for the
  ** fields of type @a TYPE.
  **
@@ -1061,6 +1068,55 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_STRUCT_TYPE0, 2)
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_STRUCT_TYPE0, 3)
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_STRUCT_TYPE0, 4)
 #define P99_STRUCT_TYPE0(TYPE, ...) P99_FOR(TYPE, P99_NARG(__VA_ARGS__), P00_SEQ, P00_STRUCT_TYPE0, __VA_ARGS__)
+
+
+#define P00_MAC_ARGS_NAME(NAME, EXP) NAME
+#define P00_MAC_ARGS_TYPE(NAME, EXP) __typeof__(EXP)
+#define P00_MAC_ARGS_EXP(NAME, EXP) (EXP)
+
+#define P00_MAC_ARGS_REAL0(_0, PAIR, I) P00_MAC_ARGS_TYPE PAIR P99_PASTE2(p00_dummy_, P00_MAC_ARGS_NAME PAIR) = P00_MAC_ARGS_EXP PAIR
+#define P00_MAC_ARGS_REAL1(_0, PAIR, I) P00_MAC_ARGS_TYPE PAIR P00_MAC_ARGS_NAME PAIR = P99_PASTE2(p00_dummy_, P00_MAC_ARGS_NAME PAIR)
+
+/**
+ ** @ingroup preprocessor_initialization
+ **
+ ** @brief Declare macro parameters as local variables as if the macro
+ ** were declared as a type generic @c inline function.
+ **
+ ** @remark This uses the @c __typeof__ extension that is implemented
+ ** by gcc.
+ **
+ ** This receives parenthesized pairs of name and value that are to be
+ ** promoted as local variables inside a macro expansion. Use this as
+ ** follows:
+ ** @code
+ ** #define atomic_fetch_add_conditional(OBJP, OPERAND)        \
+ ** ({                                                         \
+ ** P99_MAC_ARGS((p00_objp, OBJP), (p00_op, OPERAND));         \
+ ** ...                                                        \
+ ** })
+ ** @endcode
+ **
+ ** @remark The corresponding local variables have exactly the type of
+ ** the expressions that are passed as 2nd element in each pair.
+ **
+ ** This achieves several objectives
+ ** - Each macro parameter is evaluated exactly once.
+ **
+ ** - The values of the macro parameters are accessible through an
+ **   ordinary identifier.
+ **
+ ** - Even if a variable with one of the names is passed through a
+ **   macro parameter (e.g by calling
+ **   <code>atomic_fetch_add_conditional(p00_op->next, 23)</code>)
+ **   there will be no conflict.
+ **
+ ** This is done by evaluating all macro arguments first, as it would
+ ** be for a function call, and then assigning it to fresh variables.
+ **/
+#define P99_MAC_ARGS(...)                                                   \
+P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL0, __VA_ARGS__); \
+P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL1, __VA_ARGS__)
 
 
 

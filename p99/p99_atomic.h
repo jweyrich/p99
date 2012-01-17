@@ -17,18 +17,6 @@
 #include "p99_generic.h"
 #include "p99_block.h"
 
-#define P00_MAC_ARGS_NAME(NAME, EXP) NAME
-#define P00_MAC_ARGS_TYPE(NAME, EXP) __typeof__(EXP)
-#define P00_MAC_ARGS_EXP(NAME, EXP) (EXP)
-
-#define P00_MAC_ARGS_REAL0(_0, PAIR, I) P00_MAC_ARGS_TYPE PAIR P99_PASTE2(p00_dummy_, P00_MAC_ARGS_NAME PAIR) = P00_MAC_ARGS_EXP PAIR
-#define P00_MAC_ARGS_REAL1(_0, PAIR, I) P00_MAC_ARGS_TYPE PAIR P00_MAC_ARGS_NAME PAIR = P99_PASTE2(p00_dummy_, P00_MAC_ARGS_NAME PAIR)
-
-#define P00_MAC_ARGS(...)                                                   \
-P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL0, __VA_ARGS__); \
-P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL1, __VA_ARGS__)
-
-
 /**
  ** @addtogroup atomic C11 atomic operations
  **
@@ -862,7 +850,7 @@ P00_BLK_END
  **/
 #define atomic_is_lock_free(OBJP)                               \
 ({                                                              \
-  P00_MAC_ARGS((p00_objp, OBJP));                               \
+  P99_MAC_ARGS((p00_objp, OBJP));                               \
   (void*)&(p00_objp->p00_lock) == (void*)&(p00_objp->p00_xval); \
  })
 
@@ -878,7 +866,7 @@ P00_BLK_END
  **/
 #define atomic_init(OBJP, VAL)                                 \
 (void)({                                                       \
-    P00_MAC_ARGS((p00_objp, OBJP), (p00_val, VAL));            \
+    P99_MAC_ARGS((p00_objp, OBJP), (p00_val, VAL));            \
     atomic_flag_clear(&p00_objp->p00_lock);                    \
     P00_AI(p00_objp) = 0;                                      \
     P00_AT(p00_objp) = p00_val;                                \
@@ -896,7 +884,7 @@ P00_BLK_END
  **/
 #define atomic_store(OBJP, DESIRED)                                                         \
 ({                                                                                          \
-  P00_MAC_ARGS((p00_objp, OBJP), (p00_des, DESIRED));                                       \
+  P99_MAC_ARGS((p00_objp, OBJP), (p00_des, DESIRED));                                       \
   if (!atomic_is_lock_free(p00_objp))                                                       \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                                   \
       P00_AT(p00_objp) = p00_des;                                                           \
@@ -930,7 +918,7 @@ P00_BLK_END
  **/
 #define atomic_load(OBJP)                                                     \
 ({                                                                            \
-  P00_MAC_ARGS((p00_objp, OBJP));                                             \
+  P99_MAC_ARGS((p00_objp, OBJP));                                             \
   __typeof__(P00_AT(p00_objp)) p00_ret;                                       \
   if (!atomic_is_lock_free(p00_objp))                                         \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                     \
@@ -968,7 +956,7 @@ P00_BLK_END
  **/
 #define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                                   \
 ({                                                                                              \
-  P00_MAC_ARGS((p00_objp, OBJP), (p00_exp, EXPECTED), (p00_des, DESIRED));                      \
+  P99_MAC_ARGS((p00_objp, OBJP), (p00_exp, EXPECTED), (p00_des, DESIRED));                      \
   _Bool p00_ret = false;                                                                        \
   if (!atomic_is_lock_free(p00_objp)) {                                                         \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                                                     \
@@ -998,7 +986,7 @@ P00_BLK_END
 
 #define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                   \
 ({                                                                       \
-  P00_MAC_ARGS((p00_objp, OBJP), (p00_op, OPERAND));                     \
+  P99_MAC_ARGS((p00_objp, OBJP), (p00_op, OPERAND));                     \
   __typeof__(P00_AT(p00_objp)) p00_ret;                                  \
   if (!atomic_is_lock_free(p00_objp)) {                                  \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                              \
@@ -1097,11 +1085,11 @@ P00_BLK_END
 
 #define atomic_fetch_add_conditional(OBJP, OPERAND)                       \
 ({                                                                        \
-  P00_MAC_ARGS((p00_objp, OBJP), (p00_OP, OPERAND));                      \
+  P99_MAC_ARGS((p00_objp, OBJP), (p00_op, OPERAND));                      \
   __typeof__(P00_AT(p00_objp)) volatile p00_ret = atomic_load(p00_objp);  \
   while (p00_ret) {                                                       \
-    __typeof__(p00_ret) p00_DES = p00_ret + p00_OP;                       \
-    if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_DES)) break; \
+    __typeof__(p00_ret) p00_des = p00_ret + p00_op;                       \
+    if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_des)) break; \
   }                                                                       \
   p00_ret;                                                                \
  })
