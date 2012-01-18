@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
+/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -1070,12 +1070,28 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_STRUCT_TYPE0, 4)
 #define P99_STRUCT_TYPE0(TYPE, ...) P99_FOR(TYPE, P99_NARG(__VA_ARGS__), P00_SEQ, P00_STRUCT_TYPE0, __VA_ARGS__)
 
 
-#define P00_MAC_ARGS_NAME(NAME, EXP) NAME
-#define P00_MAC_ARGS_TYPE(NAME, EXP) __typeof__(EXP)
-#define P00_MAC_ARGS_EXP(NAME, EXP) (EXP)
+#define P00_MAC_ARGS_TYPE_(NAME, EXP, QUAL, ...) __typeof__(EXP)
+#define P00_MAC_ARGS_EXP_(NAME, EXP, QUAL, ...) (EXP)
+#define P00_MAC_ARGS_QUAL_(NAME, EXP, QUAL, ...) QUAL
 
-#define P00_MAC_ARGS_REAL0(_0, PAIR, I) P00_MAC_ARGS_TYPE PAIR P99_PASTE2(p00_dummy_, P00_MAC_ARGS_NAME PAIR) = P00_MAC_ARGS_EXP PAIR
-#define P00_MAC_ARGS_REAL1(_0, PAIR, I) P00_MAC_ARGS_TYPE PAIR P00_MAC_ARGS_NAME PAIR = P99_PASTE2(p00_dummy_, P00_MAC_ARGS_NAME PAIR)
+#define P00_MAC_ARGS_NAME(NAME, ...) NAME
+#define P00_MAC_ARGS_TYPE(...) P00_MAC_ARGS_TYPE_(__VA_ARGS__,)
+
+#define P00_MAC_ARGS_EXP(...) P00_MAC_ARGS_EXP_(__VA_ARGS__,)
+
+#define P00_MAC_ARGS_QUAL(...) P00_MAC_ARGS_QUAL_(__VA_ARGS__,)
+
+#define P00_MAC_ARGS_REAL0(_0, PAIR, I)         \
+P00_MAC_ARGS_TYPE PAIR                          \
+P00_MAC_ARGS_QUAL PAIR                          \
+P99_PASTE2(p00_mac_arg_, I)                     \
+= P00_MAC_ARGS_EXP PAIR
+
+#define P00_MAC_ARGS_REAL1(_0, PAIR, I)         \
+P00_MAC_ARGS_TYPE PAIR                          \
+P00_MAC_ARGS_QUAL PAIR                          \
+P00_MAC_ARGS_NAME PAIR                          \
+  = P99_PASTE2(p00_mac_arg_, I)
 
 /**
  ** @ingroup preprocessor_initialization
@@ -1118,6 +1134,22 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_STRUCT_TYPE0, 4)
 P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL0, __VA_ARGS__); \
 P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL1, __VA_ARGS__)
 
+#define P00_MACRO_VAR(NAME, EXP, QUAL)                         \
+__typeof__(EXP) QUAL P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
+  NAME = P99_PASTE2(p00_macro_var_, NAME)
 
+#ifdef DOXYGEN
+/**
+ ** @brief Define a variable with @a NAME that has type and value of
+ ** @a EXPR. If @a QUAL is given it must be a qualifier list that is
+ ** added to the resulting type.
+ **/
+#define P99_MACRO_VAR(NAME, EXPR, QUAL)
+#else
+# define P99_MACRO_VAR(NAME, ...)                              \
+P99_IF_EQ_1(P99_NARG(__VA_ARGS__))                             \
+(P00_MACRO_VAR(NAME, __VA_ARGS__,))                            \
+(P00_MACRO_VAR(NAME, __VA_ARGS__))
+#endif
 
 #endif      /* !P99_FOR_H_ */
