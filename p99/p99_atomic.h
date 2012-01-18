@@ -211,7 +211,7 @@ void p00_mfence(void) {
  ** @brief Initialize a variable of an atomic type.
  ** @memberof atomic_int
  **/
-#define ATOMIC_VAR_INIT(V) { .p00_xval = { .p00_integer_member = (0), .p00_type_member = (V), }, }
+#define ATOMIC_VAR_INIT(V) { .p00_xval = { .p00_type_member = (V), }, }
 
 /**
  ** @brief A list of types that are supposed to have lock-free atomic
@@ -863,12 +863,12 @@ P00_BLK_END
  **
  ** @memberof atomic_int
  **/
-#define atomic_init(OBJP, VAL)                                 \
-(void)({                                                       \
-    P99_MAC_ARGS((p00_objp, OBJP), (p00_val, VAL));            \
-    atomic_flag_clear(&p00_objp->p00_lock);                    \
-    P00_AI(p00_objp) = 0;                                      \
-    P00_AT(p00_objp) = p00_val;                                \
+#define atomic_init(OBJP, VAL)                                  \
+(void)({                                                        \
+    P99_MAC_ARGS((p00_objp, OBJP), (p00_val, VAL));             \
+    /* To take care of the atomic_flag and padding bytes. */    \
+    memset(p00_objp, 0, sizeof *p00_objp);                      \
+    P00_AT(p00_objp) = p00_val;                                 \
   })
 
 /**
