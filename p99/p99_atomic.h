@@ -883,7 +883,8 @@ P00_BLK_END
  **/
 #define atomic_store(OBJP, DESIRED)                                                  \
 ({                                                                                   \
-  P99_MAC_ARGS((p00_objp, OBJP, volatile), (p00_des, DESIRED));                      \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                        \
+  P99_MACRO_VAR(p00_des, (DESIRED));                                                 \
   if (!atomic_is_lock_free(p00_objp))                                                \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                            \
       P00_AT(p00_objp) = p00_des;                                                    \
@@ -911,7 +912,7 @@ P00_BLK_END
  **/
 #define atomic_load(OBJP)                                                     \
 ({                                                                            \
-  P99_MAC_ARGS((p00_objp, OBJP, volatile));                                   \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                 \
   __typeof__(P00_AT(p00_objp)) p00_ret;                                       \
   if (!atomic_is_lock_free(p00_objp))                                         \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                     \
@@ -948,7 +949,9 @@ P00_BLK_END
  **/
 #define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                                   \
 ({                                                                                              \
-  P99_MAC_ARGS((p00_objp, OBJP, volatile), (p00_exp, EXPECTED), (p00_des, DESIRED));            \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                                   \
+  P99_MACRO_PVAR(p00_exp, (EXPECTED), volatile);                                                \
+  P99_MACRO_VAR(p00_des, DESIRED);                                                              \
   _Bool p00_ret = false;                                                                        \
   if (!atomic_is_lock_free(p00_objp)) {                                                         \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                                                     \
@@ -980,7 +983,8 @@ P00_BLK_END
 
 #define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                 \
 ({                                                                     \
-  P99_MAC_ARGS((p00_objp, OBJP, volatile), (p00_op, OPERAND));         \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                          \
+  P99_MACRO_VAR(p00_op, OPERAND);                                      \
   __typeof__(P00_AT(p00_objp)) p00_ret;                                \
   if (!atomic_is_lock_free(p00_objp)) {                                \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                            \
@@ -1077,7 +1081,8 @@ P00_BLK_END
 
 #define atomic_fetch_add_conditional(OBJP, OPERAND)                       \
 ({                                                                        \
-  P99_MAC_ARGS((p00_objp, OBJP, volatile), (p00_op, OPERAND));            \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                             \
+  P99_MACRO_VAR(p00_op, (OPERAND));                                       \
   P99_MACRO_VAR(p00_ret, atomic_load(p00_objp), volatile);                \
   while (p00_ret) {                                                       \
     P99_MACRO_VAR(p00_des, p00_ret + p00_op);                             \

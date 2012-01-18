@@ -1138,6 +1138,10 @@ P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL1, __VA_ARGS__)
 __typeof__(EXP) QUAL P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
   NAME = P99_PASTE2(p00_macro_var_, NAME)
 
+#define P00_MACRO_PVAR(NAME, EXP, QUAL)                         \
+__typeof__(__typeof__(*(EXP)) QUAL*) P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
+  NAME = P99_PASTE2(p00_macro_var_, NAME)
+
 #ifdef DOXYGEN
 /**
  ** @brief Define a variable with @a NAME that has type and value of
@@ -1150,6 +1154,11 @@ __typeof__(EXP) QUAL P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
 P99_IF_EQ_1(P99_NARG(__VA_ARGS__))                             \
 (P00_MACRO_VAR(NAME, __VA_ARGS__,))                            \
 (P00_MACRO_VAR(NAME, __VA_ARGS__))
+
+# define P99_MACRO_PVAR(NAME, ...)                             \
+P99_IF_EQ_1(P99_NARG(__VA_ARGS__))                             \
+(P00_MACRO_PVAR(NAME, __VA_ARGS__,))                           \
+(P00_MACRO_PVAR(NAME, __VA_ARGS__))
 #endif
 
 #endif      /* !P99_FOR_H_ */
