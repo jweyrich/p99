@@ -162,6 +162,35 @@ P00_GENERIC_                                                   \
 
 #define P99_GENERIC_LITERAL(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_LIT, __VA_ARGS__)
 
+#if p99_has_extension(c_generic_selections)
+
+# define P99_TYPED_TERN(COND, YES, NO)                         \
+(P99_GENERIC                                                   \
+ ((int(*)[1 + !!(COND)]){ 0 },                                 \
+  (NO),                                                        \
+  (int(*)[2], (YES))))
+
+#elif defined(__GNUC__)
+
+# define P99_TYPED_TERN __builtin_choose_expr
+
+#else
+
+/**
+ ** @brief A compile time ternary operator that is analogous to
+ ** <code>COND ? YES : NO</code> that keeps the type of the chosen
+ ** expression.
+ **
+ ** When there is full @c _Generic support this is implemented with
+ ** that feature. If not, the fallback from gcc for that purpose is
+ ** used.
+ **/
+#define P99_TYPED_TERN(COND, YES, NO) only_implemented_with_C11_or_gcc
+
+
+#endif
+
+
 /**
  ** @}
  **/
