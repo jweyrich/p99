@@ -69,7 +69,7 @@ P00_GENERIC_                                                   \
  P00_ROBUST(DEF),                                              \
  __VA_ARGS__)
 
-#define P00_GENERIC(N, ...) P99_IF_LT(N, 4)()(P00_GENERIC0(__VA_ARGS__))
+#define P00_GENERIC(N, ...) P99_IF_LT(N, 3)()(P00_GENERIC0(__VA_ARGS__))
 
 
 
