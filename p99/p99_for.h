@@ -1081,16 +1081,16 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_STRUCT_TYPE0, 4)
 
 #define P00_MAC_ARGS_QUAL(...) P00_MAC_ARGS_QUAL_(__VA_ARGS__,)
 
-#define P00_MAC_ARGS_REAL0(_0, PAIR, I)         \
-P00_MAC_ARGS_TYPE PAIR                          \
-P00_MAC_ARGS_QUAL PAIR                          \
-P99_PASTE2(p00_mac_arg_, I)                     \
+#define P00_MAC_ARGS_REAL0(_0, PAIR, I)                        \
+P00_MAC_ARGS_TYPE PAIR                                         \
+P00_MAC_ARGS_QUAL PAIR                                         \
+P99_PASTE2(p00_mac_arg_, I)                                    \
 = P00_MAC_ARGS_EXP PAIR
 
-#define P00_MAC_ARGS_REAL1(_0, PAIR, I)         \
-P00_MAC_ARGS_TYPE PAIR                          \
-P00_MAC_ARGS_QUAL PAIR                          \
-P00_MAC_ARGS_NAME PAIR                          \
+#define P00_MAC_ARGS_REAL1(_0, PAIR, I)                        \
+P00_MAC_ARGS_TYPE PAIR                                         \
+P00_MAC_ARGS_QUAL PAIR                                         \
+P00_MAC_ARGS_NAME PAIR                                         \
   = P99_PASTE2(p00_mac_arg_, I)
 
 /**
@@ -1138,7 +1138,7 @@ P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL1, __VA_ARGS__)
 __typeof__(EXP) QUAL P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
   NAME = P99_PASTE2(p00_macro_var_, NAME)
 
-#define P00_MACRO_PVAR(NAME, EXP, QUAL)                         \
+#define P00_MACRO_PVAR(NAME, EXP, QUAL)                                        \
 __typeof__(__typeof__(*(EXP)) QUAL*) P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
   NAME = P99_PASTE2(p00_macro_var_, NAME)
 

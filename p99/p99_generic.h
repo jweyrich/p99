@@ -26,16 +26,18 @@
  **/
 
 #define P00_GENERIC_TYPE(T, EXP) T
+#define P00_GENERIC_UINT_(UI, EXP) int(*)[UI]
 #define P00_GENERIC_EXP_(T, EXP) (EXP)
 #define P00_GENERIC_LIT_(T, EXP) (EXP){ 0 }
 
-#define P00_GENERIC_EXP(EXP, PAIR, I) P00_GENERIC_EXPRESSION(P00_GENERIC_EXP_, EXP, PAIR, I)
-#define P00_GENERIC_LIT(EXP, PAIR, I) P00_GENERIC_EXPRESSION(P00_GENERIC_LIT_, EXP, PAIR, I)
+#define P00_GENERIC_UINT(EXP, PAIR, I) P00_GENERIC_EXPRESSION(P00_GENERIC_UINT_, P00_GENERIC_LIT_, EXP, PAIR, I)
+#define P00_GENERIC_EXP(EXP, PAIR, I) P00_GENERIC_EXPRESSION(P00_GENERIC_TYPE, P00_GENERIC_EXP_, EXP, PAIR, I)
+#define P00_GENERIC_LIT(EXP, PAIR, I) P00_GENERIC_EXPRESSION(P00_GENERIC_TYPE, P00_GENERIC_LIT_, EXP, PAIR, I)
 
 #if p99_has_extension(c_generic_selections)
 
-#define P00_GENERIC_EXPRESSION(OP, EXP, PAIR, I)               \
-P00_GENERIC_TYPE PAIR: OP PAIR
+#define P00_GENERIC_EXPRESSION(TOP, EOP, EXP, PAIR, I)         \
+TOP PAIR: EOP PAIR
 
 #define P00_GENERIC_(N, MOP, EXP, DEF, ...)                    \
 _Generic                                                       \
@@ -48,10 +50,10 @@ _Generic                                                       \
 
 #define P00_GENERIC_CLOSE(A,B,C) )
 
-#define P00_GENERIC_EXPRESSION(OP, EXP, PAIR, I)                      \
-__builtin_choose_expr                                                 \
-(__builtin_types_compatible_p(__typeof__ EXP, P00_GENERIC_TYPE PAIR), \
- OP PAIR
+#define P00_GENERIC_EXPRESSION(TOP, EOP, EXP, PAIR, I)         \
+__builtin_choose_expr                                          \
+(__builtin_types_compatible_p(__typeof__ EXP, TOP PAIR),       \
+ EOP PAIR
 
 #define P00_GENERIC_(N, MOP, EXP, DEF, ...)                                       \
   P99_FOR((EXP), N, P00_SEQ, MOP, __VA_ARGS__),                                   \
@@ -161,6 +163,11 @@ P00_GENERIC_                                                   \
 #define P99_GENERIC(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_EXP, __VA_ARGS__)
 
 #define P99_GENERIC_LITERAL(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_LIT, __VA_ARGS__)
+
+#define P00_GENERIC_UINT_LIT(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_UINT, __VA_ARGS__)
+
+#define P99_GENERIC_UINT_LIT(UI, ...) P00_GENERIC_UINT_LIT((int(*)[UI]){ 0 }, __VA_ARGS__)
+
 
 #if p99_has_extension(c_generic_selections)
 

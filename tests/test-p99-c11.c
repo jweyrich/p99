@@ -14,17 +14,20 @@
 #include "stdlib.h"
 #include "p99_compiler.h"
 #include "p99_generic.h"
+#include "p99_atomic.h"
 
 static_assert(true, "everything is alright");
 // static_assert(false, "all goes wrong");
 
-_Alignas(double) int a;
+//_Alignas(double)
+int a;
 
 _Alignas(16) int b;
 
 alignas(16) int c;
 
-alignas(double) int d;
+//alignas(double)
+int d;
 
 alignas(alignof(double)) int e;
 
@@ -34,11 +37,15 @@ unsigned char f[__alignof(double)];
 unsigned char f[__alignof__(double)];
 
 int * g = P99_GENERIC(a, (void*)&d, (int, &a), (unsigned int, &a));
-int * h = _Generic(a, default: (void*)&d, int: &a, unsigned int: &a);
+//int * h = _Generic(a, default: (void*)&d, int: &a, unsigned int: &a);
 
-float funcf(float, float);
+float funcf(float a, float b) {
+  return a;
+}
 void funcf_2nd_arg_error(float);
-double funcd(double, double);
+double funcd(double a, double b) {
+  return a;
+}
 void funcd_2nd_arg_error(double);
 
 #define check(x, y)                                                     \
@@ -60,8 +67,6 @@ void funcd_2nd_arg_error(double);
               (float,  P99_GENERIC((y), , (float,  funcf), (double, funcf_2nd_arg_error))), \
               (double, P99_GENERIC((y), , (double, funcd), (float,  funcd_2nd_arg_error))) \
               )(x, check2(x, y))
-
-
 
 noreturn
 void stop(void) {
@@ -87,10 +92,23 @@ int main(void) {
   print_feature(gnu_alignof);
   print_feature(gnu_thread_local);
   print_feature(statement_expression);
-  print_feature(typeof);
+  //print_feature(__typeof);
+  print_feature(topeof);
+  print_builtin(__sync_val_compare_and_swap);
+  printf("list of default unsigned types is " P99_STRINGIFY(P00_UINT_TYPE_LIST) "\n");
+  printf("list of atomic lock-free types is " P99_STRINGIFY(P99_ATOMIC_LOCK_FREE_TYPES) "\n");
+  printf("atomic lock-free macros: %d %d %d %d %d %d %d\n",
+         ATOMIC_BOOL_LOCK_FREE,
+         ATOMIC_CHAR_LOCK_FREE,
+         ATOMIC_SHORT_LOCK_FREE,
+         ATOMIC_INT_LOCK_FREE,
+         ATOMIC_LONG_LOCK_FREE,
+         ATOMIC_LLONG_LOCK_FREE,
+         ATOMIC_POINTER_LOCK_FREE
+        );
   func2(1.0f, 2.0f);	// should work, but doesn't
-  func2(1.0f, 2.0);	// shouldn't work
-  func2(1.0,  2.0f);	// shouldn't work
+  //func2(1.0f, 2.0);	// shouldn't work
+  //func2(1.0,  2.0f);	// shouldn't work
   func2(1.0,  2.0);	// should work, but doesn't
   /* func(1.0f, 2.0f);	// should work, but doesn't */
   /* func(1.0f, 2.0);	// shouldn't work */

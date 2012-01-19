@@ -309,6 +309,22 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_feature_typeof 1
 #endif
 
+#if p99_has_builtin(__sync_val_compare_and_swap)
+# ifndef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1
+#  define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 1
+# endif
+# ifndef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
+#  define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 1
+# endif
+# ifndef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
+#  define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 1
+#  if !defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) && (UINTPTR_MAX >= UINT64_MAX)
+#   define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 1
+#  endif
+# endif
+#endif
+
+
 #if __STDC_VERSION__ > 201100L
 # define p00_has_feature_c_generic_selections 1
 #endif
