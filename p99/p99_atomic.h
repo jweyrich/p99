@@ -1056,25 +1056,28 @@ P00_BLK_END
  **
  ** @memberof atomic_int
  **/
-#define atomic_store(OBJP, DESIRED)                                                        \
-({                                                                                         \
-  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                              \
-  P99_MACRO_VAR(p00_des, (DESIRED));                                                       \
-  if (!atomic_is_lock_free(p00_objp))                                                      \
-    P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                                  \
-      P00_AT(p00_objp) = p00_des;                                                          \
-  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                                 \
-    ()                                                                                     \
-    (else {                                                                                \
-      P99_MACRO_VAR(p00_desm, P00_ATOMIC_TERN(p00_objp, p00_des, P00_AM(p00_objp)));       \
-      P99_MACRO_VAR(p00_prem, P00_AM(p00_objp));                                           \
-      for (;;) {                                                                           \
-        P99_MACRO_VAR(p00_valm,                                                            \
-                      __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_prem, p00_desm)); \
-        if (p00_valm == p00_prem) break;                                                   \
-        p00_prem = p00_valm;                                                               \
-      }                                                                                    \
-    })                                                                                     \
+#define atomic_store(OBJP, DESIRED)                                                              \
+({                                                                                               \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                                    \
+  P99_MACRO_VAR(p00_des, (DESIRED));                                                             \
+  if (!atomic_is_lock_free(p00_objp))                                                            \
+    P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                                        \
+      P00_AT(p00_objp) = p00_des;                                                                \
+  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                                       \
+    ()                                                                                           \
+    (else {                                                                                      \
+      union {                                                                                    \
+        __typeof__(P00_AT(p00_objp)) p00_t;                                                      \
+        __typeof__(P00_AM(p00_objp)) p00_m;                                                      \
+      } p00_desm = { .p00_t = p00_des };                                                         \
+      P99_MACRO_VAR(p00_prem, P00_AM(p00_objp));                                                 \
+      for (;;) {                                                                                 \
+        P99_MACRO_VAR(p00_valm,                                                                  \
+                      __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_prem, p00_desm.p00_m)); \
+        if (p00_valm == p00_prem) break;                                                         \
+        p00_prem = p00_valm;                                                                     \
+      }                                                                                          \
+    })                                                                                           \
  })
 
 /**
