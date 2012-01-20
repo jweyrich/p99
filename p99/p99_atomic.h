@@ -339,7 +339,7 @@ void p00_mfence(void) {
  ** compilers.
  **/
 #define P99_UINT_DEFAULT(T)                                                       \
-__typeof__(P99_GENERIC_UINT_LIT(sizeof(T), (uintptr_t){ 0 }, P00_UINT_TYPE_LIST))
+__typeof__(P99_GENERIC_SIZE_LIT(sizeof(T), (uintptr_t){ 0 }, P00_UINT_TYPE_LIST))
 
 
 /**
@@ -685,9 +685,9 @@ P99_DECLARE_ATOMIC(long double _Complex, atomic_cldouble);
 #endif
 
 #define P99_ATOMIC_INHERIT(T)                                  \
-(*P99_GENERIC_LITERAL                                          \
+(*P99_GENERIC_LIT                                              \
  ((T){ 0 },                                                    \
-  P99_GENERIC_UINT_LIT                                         \
+  P99_GENERIC_SIZE_LIT                                         \
   (sizeof(T),                                                  \
    (struct P99_PASTE3(p99_atomic_, T, _struct)*){ 0 },         \
    (1, union P99_PASTE3(p99_atomic_, T, _union)*),             \
