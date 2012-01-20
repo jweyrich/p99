@@ -246,7 +246,19 @@ void thrd_yield(void) {
   if (P99_UNLIKELY(sched_yield())) errno = 0;
 }
 
+/**
+ ** @memberof thrd_t
+ **
+ ** @return identifier of the thread that called it
+ **/
 p99_inline thrd_t thrd_current(void);
+
+/**
+ ** @memberof thrd_t
+ **
+ ** @return @c 0 if the thread @a thr0 and the thread @a thr1 refer to
+ ** different threads. Otherwise a nonzero value is returned.
+ **/
 p99_inline int thrd_equal(thrd_t thr0, thrd_t thr1);
 
 p99_inline
@@ -775,6 +787,7 @@ int mtx_unlock(mtx_t *mtx) {
  ** aborted.
  **/
 P99_BLOCK_DOCUMENT
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MUTUAL_EXCLUDE, 0)
 #define P99_MUTUAL_EXCLUDE(MUT)                                                  \
 P00_BLK_START                                                                    \
 P00_BLK_DECL(int, p00_errNo, 0)                                                  \
@@ -888,9 +901,12 @@ int thrd_equal(thrd_t thr0, thrd_t thr1) {
   return P99_ENC(thr0) ==  P99_ENC(thr1);
 }
 
+#ifdef P00_DOXYGEN
 /**
  ** @memberof thrd_t
  **/
+p99_inline void thrd_exit(int res);
+#else
 p99_inline
 _Noreturn
 void thrd_exit(int res) {
@@ -908,6 +924,7 @@ void thrd_exit(int res) {
      with pthreads, e.g main */
   pthread_exit(0);
 }
+#endif
 
 /**
  ** @memberof thrd_t

@@ -26,7 +26,7 @@
 
 #include "p99_compiler.h"
 
-#if __STDC_HOSTED__
+#if __STDC_HOSTED__ || defined(P00_DOXYGEN)
 # ifndef __STDC_NO_COMPLEX__
 #  include <complex.h>
 # endif
@@ -56,10 +56,22 @@
 #  ifndef __STDC_NO_THREADS__
 #   include <threads.h>
 #  endif
-
+# else
 /* Provide aligned allocation. */
 
-#  if _XOPEN_SOURCE >= 600
+# if (_XOPEN_SOURCE >= 600) || defined(P00_DOXYGEN)
+
+/**
+ ** @addtogroup C11_library C11 additions to the C library
+ **
+ ** @{
+ **/
+
+/**
+ ** @brief allocation with a chosen alignment
+ **
+ ** @remark this implementation relies on the presence of @c posix_memalign from POSIX
+ **/
 p99_inline
 void *aligned_alloc(size_t alignment, size_t size) {
   void * ret = 0;
@@ -74,7 +86,11 @@ void *aligned_alloc(size_t alignment, size_t size) {
   return ret;
 }
 
-#  endif
+/**
+ ** @}
+ **/
+
+# endif
 
 # endif
 #endif

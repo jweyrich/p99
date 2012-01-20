@@ -114,5 +114,23 @@ int main(void) {
   /* func(1.0f, 2.0);	// shouldn't work */
   /* func(1.0,  2.0f);	// shouldn't work */
   /* func(1.0,  2.0);	// should work, but doesn't */
+  if (P99_SIZE_INDICATOR(sizeof(int), 1, 2, 4, 8)) {
+    printf("sizeof int is one of 1, 2, 4, 8\n");
+  } else {
+    printf("sizeof int is weird\n");
+  }
+  /* Test both branches of P99_SIZE_INDICATOR */
+  if (!P99_SIZE_INDICATOR(sizeof(char[3]), 1, 2, 4, 8)
+      && P99_SIZE_INDICATOR(sizeof(char[3]), 3)) {
+    printf("sizeof char[3] seems ok\n");
+  } else {
+    printf("sizeof char[3] is weird\n");
+  }
+  /* Test the minmax value for P99_SIZE_INDICATOR */
+  if (P99_SIZE_INDICATOR(UINT16_MAX, 1, 2, 4, 8)) {
+    printf("UINT16_MAX (%" PRIu16 ") is weird\n", UINT16_MAX);
+  } else {
+    printf("UINT16_MAX (%" PRIu16 ") seems ok\n", UINT16_MAX);
+  }
   return ret;
 }

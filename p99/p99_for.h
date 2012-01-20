@@ -1130,16 +1130,19 @@ P00_MAC_ARGS_NAME PAIR                                         \
  ** This is done by evaluating all macro arguments first, as it would
  ** be for a function call, and then assigning it to fresh variables.
  **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MAC_ARGS, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MAC_ARGS, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MAC_ARGS, 2)
 #define P99_MAC_ARGS(...)                                                   \
 P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL0, __VA_ARGS__); \
 P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL1, __VA_ARGS__)
 
-#define P00_MACRO_VAR(NAME, EXP, QUAL)                         \
-__typeof__(EXP) QUAL P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
+#define P00_MACRO_VAR(NAME, EXP, ...)                                 \
+__typeof__(EXP) __VA_ARGS__ P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
   NAME = P99_PASTE2(p00_macro_var_, NAME)
 
-#define P00_MACRO_PVAR(NAME, EXP, QUAL)                                        \
-__typeof__(__typeof__(*(EXP)) QUAL*) P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
+#define P00_MACRO_PVAR(NAME, EXP, ...)                                                \
+__typeof__(__typeof__(*(EXP)) __VA_ARGS__*) P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
   NAME = P99_PASTE2(p00_macro_var_, NAME)
 
 #ifdef DOXYGEN
@@ -1148,13 +1151,19 @@ __typeof__(__typeof__(*(EXP)) QUAL*) P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
  ** @a EXPR. If @a QUAL is given it must be a qualifier list that is
  ** added to the resulting type.
  **/
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_MACRO_VAR, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MACRO_VAR, 1)
 #define P99_MACRO_VAR(NAME, EXPR, QUAL)
 #else
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_MACRO_VAR, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MACRO_VAR, 1)
 # define P99_MACRO_VAR(NAME, ...)                              \
 P99_IF_EQ_1(P99_NARG(__VA_ARGS__))                             \
 (P00_MACRO_VAR(NAME, __VA_ARGS__,))                            \
 (P00_MACRO_VAR(NAME, __VA_ARGS__))
 
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_MACRO_PVAR, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MACRO_PVAR, 1)
 # define P99_MACRO_PVAR(NAME, ...)                             \
 P99_IF_EQ_1(P99_NARG(__VA_ARGS__))                             \
 (P00_MACRO_PVAR(NAME, __VA_ARGS__,))                           \

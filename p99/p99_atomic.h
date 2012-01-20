@@ -338,6 +338,7 @@ void p00_mfence(void) {
  ** @remark Uses the @c __typeof__ extension of the gcc-family of
  ** compilers.
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_UINT_DEFAULT, 0)
 #define P99_UINT_DEFAULT(T)                                                       \
 __typeof__(P99_GENERIC_SIZE_LIT(sizeof(T), (uintptr_t){ 0 }, P00_UINT_TYPE_LIST))
 
@@ -556,11 +557,11 @@ typedef P99_PASTE3(p99_, NAME, _union) NAME
 #endif
 
 
-#define P00_DECLARE_ATOMIC2(T, NAME)                                                                                   \
-P00_DECLARE_ATOMIC_TYPE(union, T, T, P99_PASTE2(p99_, NAME));                                                          \
-P00_DECLARE_ATOMIC_TYPE(struct, uintptr_t, T, P99_PASTE2(p99_, NAME));                                                 \
+#define P00_DECLARE_ATOMIC2(T, ...)                                                                                    \
+P00_DECLARE_ATOMIC_TYPE(union, T, T, P99_PASTE(p99_, __VA_ARGS__));                                                    \
+P00_DECLARE_ATOMIC_TYPE(struct, uintptr_t, T, P99_PASTE(p99_, __VA_ARGS__));                                           \
 /** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
-typedef P99_PASTE3(p99_, NAME, _struct) NAME
+typedef P99_PASTE(p99_, __VA_ARGS__, _struct) __VA_ARGS__
 
 /**
  ** @brief declare an atomic type that will use lock operations to
@@ -684,6 +685,8 @@ P99_DECLARE_ATOMIC(long double _Complex, atomic_cldouble);
   (long double, atomic_ldouble*)
 #endif
 
+
+P00_DOCUMENT_TYPE_ARGUMENT(P99_ATOMIC_INHERIT, 0)
 #define P99_ATOMIC_INHERIT(T)                                  \
 (*P99_GENERIC_LIT                                              \
  ((T){ 0 },                                                    \
@@ -735,7 +738,7 @@ P99_DECLARE_ATOMIC(long double _Complex, atomic_cldouble);
  ** atomic_uint b;
  ** @endcode
  **
- ** @remark These types don't work with the usual operators such as @
+ ** @remark These types don't work with the usual operators such as @c
  ** +=, and a variable of such an atomic type doesn't evaluate to an
  ** rvalue of the base type.
  **
@@ -760,18 +763,18 @@ P99_DECLARE_ATOMIC(long double _Complex, atomic_cldouble);
  ** If the underlying operations are defined for @a T the following
  ** generic functions (macros) can be used with an atomic type:
  **
- ** @see atomic_fetch_add to add a value to the object. This should be
+ ** @see atomic_fetch_add to add a value to the object as @c += would on @a T. This should be
  ** lock-free for all integer types (see above) and is @em not
  ** lock-free for floating point types.
  **
- ** @see atomic_fetch_sub to subtract a value. See ::atomic_fetch_add
+ ** @see atomic_fetch_sub to subtract a value as @c -= would on @a T. See ::atomic_fetch_add
  ** for constraints.
  **
- ** @see atomic_fetch_or "or" a value in place
+ ** @see atomic_fetch_or "or" a value in place as @c |= would on @a T
  **
- ** @see atomic_fetch_and "and" a value in place
+ ** @see atomic_fetch_and "and" a value in place as @c &= would on @a T
  **
- ** @see atomic_fetch_xor "exclusive or" a value in place
+ ** @see atomic_fetch_xor "exclusive or" a value in place as @c ^= would on @a T
  **
  ** @warning Don't assign atomic variables through the @c =
  ** operator. This will most probably not do what you expect:

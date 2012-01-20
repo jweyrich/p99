@@ -20,13 +20,19 @@
  **/
 
 /**
- ** @addtogroup C11_keywords
+ ** @addtogroup generic Generic type expressions
+ **
+ ** C11 provides a new feature to write template-like expressions with
+ ** the macro preprocessor, @c _Generic. Here we provide some tools
+ ** that emulate this feature by means of gcc specific extensions.
+ **
+ ** @see P99_GENERIC
  **
  ** @{
  **/
 
 #define P00_GENERIC_TYPE(T, EXP) T
-#define P00_GENERIC_SIZE_(UI, EXP) int(*)[UI]
+#define P00_GENERIC_SIZE_(UI, EXP) char(*)[UI]
 #define P00_GENERIC_EXP_(T, EXP) (EXP)
 #define P00_GENERIC_LIT_(T, EXP) (EXP){ 0 }
 
@@ -161,26 +167,94 @@ P00_GENERIC_                                                   \
  **
  ** @remark Otherwise only gcc and compatible compilers are supported.
  **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC, 2)
 #define P99_GENERIC(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_EXP, __VA_ARGS__)
 
+/**
+ ** @brief For each generic choice return a compound literal of the chosen type
+ **
+ ** The resulting literal is default initialized from @c 0.
+ **
+ ** This is similar to ::P99_GENERIC only that the second entry in
+ ** each pair should be a type.
+ **
+ ** @code
+ ** P99_GENERIC_LIT(a + b,
+ **                 uintmax_t,
+ **                 (int, unsigned),
+ **                 (long, unsigned long),
+ **                 (float, double),
+ **                 (double, double));
+ ** @endcode
+ **
+ ** @see P99_GENERIC
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_LIT, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_LIT, 2)
 #define P99_GENERIC_LIT(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_LIT, __VA_ARGS__)
 
 #define P00_GENERIC_SIZE0(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_SIZE, __VA_ARGS__)
 
-#define P99_GENERIC_SIZE(UI, ...) P00_GENERIC_SIZE0((int(*)[UI]){ 0 }, __VA_ARGS__)
+/**
+ ** @brief Similar to ::P99_GENERIC but the choice is not done
+ ** according to the type of the expression @a UI but for its unsigned
+ ** value.
+ **
+ ** @param UI must be a compile time integer expression that is cast
+ ** to @c size_t and that must not be of value @c 0.
+ **
+ ** @remark @a UI is only evaluated at compile time
+ **
+ ** @code
+ ** a = P99_GENERIC_SIZE(sizeof(a),
+ **                      func_fallback,
+ **                      (1, func1),
+ **                      (2, func2),
+ **                      (4, func4),
+ **                      (8, func8))
+ **                ((void*)&a);
+ ** @endcode
+ **
+ ** In this example one of the functions @c func1, ..., @c func8 is
+ ** chosen according to the size of @c a. This function is then called
+ ** with the address of @c a. In case that the size of @c a is not
+ ** appropriate a function @c func_fallback is used.
+ **
+ ** @warning The range of allowed values for @a UI is platform
+ ** dependent. The only known fixed guarantee is @c UINT16_MAX, but
+ ** the result of a @c sizeof operator should always work.
+ **
+ ** @see P99_GENERIC
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE, 2)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE, 3)
+#define P99_GENERIC_SIZE(UI, ...) P00_GENERIC_SIZE0((char(*)[(size_t)(UI)]){ 0 }, __VA_ARGS__)
 
 #define P00_GENERIC_SIZE_LIT0(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_SIZE_LIT, __VA_ARGS__)
 
-#define P99_GENERIC_SIZE_LIT(UI, ...) P00_GENERIC_SIZE_LIT0((int(*)[UI]){ 0 }, __VA_ARGS__)
+/**
+ ** @brief Similar to ::P99_GENERIC_SIZE but returns a compound
+ ** literal of the chosen type
+ **
+ ** @see P99_GENERIC_SIZE
+ ** @see P99_GENERIC_LIT
+ ** @see P99_GENERIC
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 2)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 3)
+#define P99_GENERIC_SIZE_LIT(UI, ...) P00_GENERIC_SIZE_LIT0((char(*)[(size_t)(UI)]){ 0 }, __VA_ARGS__)
 
 
 #if p99_has_extension(c_generic_selections)
 
 # define P99_TYPED_TERN(COND, YES, NO)                         \
 (P99_GENERIC                                                   \
- ((int(*)[1 + !!(COND)]){ 0 },                                 \
+ ((char(*)[1 + !!(COND)]){ 0 },                                \
   (NO),                                                        \
-  (int(*)[2], (YES))))
+  (char(*)[2], (YES))))
 
 #elif defined(__GNUC__)
 
@@ -204,27 +278,33 @@ P00_GENERIC_                                                   \
 
 
 /**
- ** @}
- **/
-
-/**
- ** @addtogroup C11_types Generic identification of families of types
+ ** @addtogroup C11_types Generic identification of families of types or values
  **
  ** @{
  **/
 
-#define P00_TYPE_CHOICE(VAL, T, I) (T, VAL)
+#define P00_TYPE_CHOICE(YES, T, I) (T, YES)
 
+/**
+ ** @brief Classify expression @a EXP according to its type and return
+ ** @a YES if the type is in the list and @a NO, otherwise.
+ **
+ ** @a EXP is only compile time evaluated for its type. @a YES and @a
+ ** NO are evaluated at most once.
+ **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_CHOICE, 0)
-P00_DOCUMENT_MACRO_ARGUMENT(P99_TYPE_CHOICE, 1)
-#define P99_TYPE_CHOICE(EXP, MATCH, DEF, ...)                                  \
-P99_GENERIC                                                                    \
-((EXP),                                                                        \
- DEF,                                                                          \
- P99_FOR(MATCH, P99_NARG(__VA_ARGS__), P00_SEQ, P00_TYPE_CHOICE, __VA_ARGS__))
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_CHOICE, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_CHOICE, 2)
+#define P99_TYPE_CHOICE(EXP, YES, NO, ...)                                   \
+P99_GENERIC                                                                  \
+((EXP),                                                                      \
+ NO,                                                                         \
+ P99_FOR(YES, P99_NARG(__VA_ARGS__), P00_SEQ, P00_TYPE_CHOICE, __VA_ARGS__))
 
 /**
  ** @addtogroup type_generic Generic macros that classify expressions
+ **
+ ** @{
  **/
 
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_UNSIGNED, 0)
@@ -249,6 +329,59 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_REAL, 0)
 #define P99_TYPE_REAL(EXP)          P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_REAL_TYPES)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_ARITHMETIC, 0)
 #define P99_TYPE_ARITHMETIC(EXP)    P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_ARITHMETIC_TYPES)
+
+/**
+ ** @}
+ **/
+
+#define P00_SIZE_CHOICE(YES, UI, I) (char(*)[(size_t)(UI)], YES)
+
+/**
+ ** @brief Classify expression @a UI according to its value and
+ ** return @a YES if the value is in the list and @a NO, otherwise.
+ **
+ ** @a UI is only compile time evaluated for its value which is cast
+ ** to @c size_t. It must not be @c 0.
+ **
+ ** @a YES and @a NO are evaluated at most once.
+ **
+ ** @warning The range of allowed values for @a UI is platform
+ ** dependent. The only known fixed guarantee is @c UINT16_MAX, but
+ ** the result of a @c sizeof operator should always work.
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_CHOICE, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_CHOICE, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_CHOICE, 2)
+#define P99_SIZE_CHOICE(UI, YES, NO, ...)                                    \
+P99_GENERIC                                                                  \
+ ((char(*)[(size_t)(UI)])0,                                                  \
+ NO,                                                                         \
+ P99_FOR(YES, P99_NARG(__VA_ARGS__), P00_SEQ, P00_SIZE_CHOICE, __VA_ARGS__))
+
+
+/**
+ ** @brief Classify expression @a UI according to its value and
+ ** return @c 1 if the value is in the list and @c 0, otherwise.
+ **
+ ** @a UI is only compile time evaluated for its value which is cast
+ ** to @c size_t. It must not be @c 0.
+ **
+ ** @code
+ ** if (P99_SIZE_INDICATOR(sizeof(toto), 1, 2, 4, 8)) {
+ **   .. do something easy ..
+ ** } else {
+ **   .. have some fallback for weirdos ...
+ ** }
+ ** @endcode
+ **
+ ** @warning The range of allowed values for @a UI is platform
+ ** dependent. The only known fixed guarantee is @c UINT16_MAX, but
+ ** the result of a @c sizeof operator should always work.
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_INDICATOR, 0)
+#define P99_SIZE_INDICATOR(UI, ...) P99_SIZE_CHOICE(UI, 1, 0, __VA_ARGS__)
+
+
 
 /**
  ** @}
