@@ -56,6 +56,13 @@
  ** @{
  **/
 
+#ifdef P99_TEST_ATOMIC
+# undef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1
+# undef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_2
+# undef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
+# undef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
+#endif
+
 #if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
 
 p99_inline
@@ -238,6 +245,7 @@ void p00_mfence(void) {
 #ifndef ATOMIC_POINTER_LOCK_FREE
 #define ATOMIC_POINTER_LOCK_FREE ATOMIC_INTPTR_LOCK_FREE
 #endif
+#if ATOMIC_INTPTR_LOCK_FREE == 2
 #if UINTPTR_MAX == UINT8_MAX
 # define P00_UINT_TYPE_LIST                                    \
   (1, uintptr_t)                                               \
@@ -280,6 +288,7 @@ void p00_mfence(void) {
   P00_TYPE_LIST_ELEM4                                          \
   P00_TYPE_LIST_ELEM8                                          \
   P00_TYPE_LIST_ELEM16
+#endif
 #endif
 #if UINT_LEAST16_MAX == UINT16_MAX
 # define ATOMIC_CHAR16_T_LOCK_FREE ATOMIC_INT16_LOCK_FREE
@@ -339,9 +348,13 @@ void p00_mfence(void) {
  ** compilers.
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_UINT_DEFAULT, 0)
-#define P99_UINT_DEFAULT(T)                                                       \
+#if defined(P00_UINT_TYPE_LIST) || defined(P00_DOXYGEN)
+# define P99_UINT_DEFAULT(T)                                                       \
 __typeof__(P99_GENERIC_SIZE_LIT(sizeof(T), (uintptr_t){ 0 }, P00_UINT_TYPE_LIST))
-
+#else
+# define P00_UINT_TYPE_LIST
+# define P99_UINT_DEFAULT(T) uintptr_t
+#endif
 
 /**
  ** @brief Initialize a variable of type ::atomic_flag
@@ -687,16 +700,19 @@ P99_DECLARE_ATOMIC(long double _Complex, atomic_cldouble);
 
 
 P00_DOCUMENT_TYPE_ARGUMENT(P99_ATOMIC_INHERIT, 0)
-#define P99_ATOMIC_INHERIT(T)                                  \
-(*P99_GENERIC_LIT                                              \
- ((T){ 0 },                                                    \
-  P99_GENERIC_SIZE_LIT                                         \
-  (sizeof(T),                                                  \
-   (struct P99_PASTE3(p99_atomic_, T, _struct)*){ 0 },         \
-   (1, union P99_PASTE3(p99_atomic_, T, _union)*),             \
-   (2, union P99_PASTE3(p99_atomic_, T, _union)*),             \
-   (4, union P99_PASTE3(p99_atomic_, T, _union)*),             \
-   (8, union P99_PASTE3(p99_atomic_, T, _union)*)),            \
+#define P99_ATOMIC_INHERIT(T)                                           \
+(*P99_GENERIC_LIT                                                       \
+ ((T){ 0 },                                                             \
+  P99_GENERIC_SIZE_LIT                                                  \
+  (sizeof(T)+1,                                                         \
+   (struct P99_PASTE3(p99_atomic_, T, _struct)*){ 0 },                  \
+   (1, union P99_PASTE3(p99_atomic_, T, _union)*)                       \
+   P99_IF_EQ_2(ATOMIC_INT8_LOCK_FREE)(,(2, union P99_PASTE3(p99_atomic_, T, _union)*))() \
+   P99_IF_EQ_2(ATOMIC_INT16_LOCK_FREE)(,(3, union P99_PASTE3(p99_atomic_, T, _union)*))() \
+   P99_IF_EQ_2(ATOMIC_INT32_LOCK_FREE)(,(5, union P99_PASTE3(p99_atomic_, T, _union)*))() \
+   P99_IF_EQ_2(ATOMIC_INT64_LOCK_FREE)(,(9, union P99_PASTE3(p99_atomic_, T, _union)*))() \
+   P99_IF_EQ_2(ATOMIC_INT128_LOCK_FREE)(,(17, union P99_PASTE3(p99_atomic_, T, _union)*))() \
+   ),                                                                   \
   P00_ATOMIC_TYPES))
 
 /**
