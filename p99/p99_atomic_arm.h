@@ -83,6 +83,11 @@ void p00_sync_lock_release(uint32_t volatile *object) {
   __sync_lock_release(object);
 }
 
+p99_inline
+void p00_mfence(void) {
+  __asm__ __volatile__("dmb":::"memory");
+}
+
 #elif defined(__x86_64__) || defined(__i386__)
 
 p99_inline
@@ -106,7 +111,7 @@ void p00_sync_lock_release(uint32_t volatile *object) {
 
 p99_inline
 void p00_mfence(void) {
-  __asm__ __volatile__("dmb":::"memory");
+  __asm__ __volatile__("mfence":::"memory");
 }
 
 /**
