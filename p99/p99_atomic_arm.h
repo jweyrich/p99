@@ -88,31 +88,86 @@ void p00_mfence(void) {
   __asm__ __volatile__("dmb":::"memory");
 }
 
-#elif defined(__x86_64__) || defined(__i386__)
-
 p99_inline
-uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
-  register uint32_t ret P99_FIXED_REGISTER(eax) = 1;
-  __asm__ __volatile__("xchgl %2, %0"
-                       : "=a"(ret)
-                       : "r"(ret), "m"(*object)
-                       : "memory");
+uint32_t __sync_val_compare_and_swap_4(uint32_t volatile *object, uint32_t pre, uint32_t des) {
+  uint32_t ret = 0;
+  for (;;) {
+    ret = p00_arm_ldrex(object);
+    if (pre != ret) {
+      /* wrong value, cancel */
+      p00_arm_strex(object, ret);
+      break;
+    } else {
+      if (!p00_arm_strex(object, des)) break;
+      /* somebody else touched it, continue */
+    }
+  }
   return ret;
 }
 
 p99_inline
-void p00_sync_lock_release(uint32_t volatile *object) {
-  register uint32_t val = 0;
-  __asm__ __volatile__("movl %0, %1"
-                       :
-                       : "r"(val), "m"(*object)
-                       : "memory");
+uint32_t __sync_fetch_and_add_4(uint32_t volatile *object, uint32_t val) {
+  uint32_t ret = 0;
+  for (;;) {
+    ret = p00_arm_ldrex(object);
+    uint32_t des = ret + val;
+    if (!p00_arm_strex(object, des)) break;
+    /* somebody else touched it, continue */
+  }
+  return ret;
 }
 
 p99_inline
-void p00_mfence(void) {
-  __asm__ __volatile__("mfence":::"memory");
+uint32_t __sync_fetch_and_sub_4(uint32_t volatile *object, uint32_t val) {
+  uint32_t ret = 0;
+  for (;;) {
+    ret = p00_arm_ldrex(object);
+    uint32_t des = ret - val;
+    if (!p00_arm_strex(object, des)) break;
+    /* somebody else touched it, continue */
+  }
+  return ret;
 }
+
+p99_inline
+uint32_t __sync_fetch_and_or_4(uint32_t volatile *object, uint32_t val) {
+  uint32_t ret = 0;
+  for (;;) {
+    ret = p00_arm_ldrex(object);
+    uint32_t des = ret | val;
+    if (!p00_arm_strex(object, des)) break;
+    /* somebody else touched it, continue */
+  }
+  return ret;
+}
+
+p99_inline
+uint32_t __sync_fetch_and_and_4(uint32_t volatile *object, uint32_t val) {
+  uint32_t ret = 0;
+  for (;;) {
+    ret = p00_arm_ldrex(object);
+    uint32_t des = ret & val;
+    if (!p00_arm_strex(object, des)) break;
+    /* somebody else touched it, continue */
+  }
+  return ret;
+}
+
+p99_inline
+uint32_t __sync_fetch_and_xor_4(uint32_t volatile *object, uint32_t val) {
+  uint32_t ret = 0;
+  for (;;) {
+    ret = p00_arm_ldrex(object);
+    uint32_t des = ret ^ val;
+    if (!p00_arm_strex(object, des)) break;
+    /* somebody else touched it, continue */
+  }
+  return ret;
+}
+
+#undef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
+#define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 1
+
 
 /**
  ** @}
