@@ -274,7 +274,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_attribute_always_inline 1
 # define p00_has_attribute_weak 1
 # define p00_has_attribute_weakref 1
-# ifdef __GNUC_GNU_INLINE__
+# if defined(__GNUC_GNU_INLINE__) || (P99_GCC_VERSION < 40300UL)
 #  define p00_has_attribute_gnu_inline 1
 # endif
 # define p00_has_attribute_aligned 1
@@ -358,7 +358,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 #  ifdef inline
 #   undef inline
 #  endif
-#  ifdef p99_has_feature(gnu_inline)
+#  if p99_has_attribute(gnu_inline)
 #   define inline __attribute__((__gnu_inline__,__weak__)) __inline__
 #   define p99_inline __attribute__((__always_inline__,__gnu_inline__,__weak__)) __inline__
 #  else

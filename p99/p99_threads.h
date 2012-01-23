@@ -247,11 +247,158 @@ void thrd_yield(void) {
 }
 
 /**
+ ** @memberof tss_t
+ ** @return ::thrd_success on success, or ::thrd_error if the request
+ ** could not be honored.
+ **
+ ** If successful, sets the thread-specific storage pointed to by key
+ ** to a value that uniquely identifies the newly created
+ ** pointer. Otherwise, the thread-specific storage pointed to by key
+ ** is set to an undefined value.
+ **/
+p99_inline
+int tss_create(tss_t *key, tss_dtor_t dtor) {
+  return pthread_key_create(&P99_ENCP(key), dtor) ? thrd_error : thrd_success;
+}
+
+/**
+ ** @memberof tss_t
+ **/
+p99_inline
+void tss_delete(tss_t key) {
+  (void)pthread_key_delete(P99_ENC(key));
+}
+
+/**
+ ** @memberof tss_t
+ **
+ ** @return the value for the current thread if successful, or @c 0 if
+ ** unsuccessful.
+ **/
+p99_inline
+void *tss_get(tss_t key) {
+  return pthread_getspecific(P99_ENC(key));
+}
+
+/**
+ ** @memberof tss_t
+ ** @return ::thrd_success on success, or ::thrd_error if the request
+ ** could not be honored.
+ **/
+p99_inline
+int tss_set(tss_t key, void *val) {
+  return pthread_setspecific(P99_ENC(key), val) ? thrd_error : thrd_success;
+}
+
+#if defined(thread_local) && !defined(P99_EMULATE_THREAD_LOCAL)
+
+#define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
+P99_WEAK(NAME)                                                 \
+thread_local T NAME
+
+#define P99_THREAD_LOCAL(NAME) (NAME)
+
+#else
+/**
+ ** @brief A stub structure to hold a thread local variable if
+ ** ::thread_local is not available.
+ **
+ ** Don't use this type directly but use ::P99_DECLARE_THREAD_LOCAL to
+ ** declare a variable and ::P99_THREAD_LOCAL to access it.
+ **
+ ** A hypothetical example for the use of such a variable would be @c
+ ** errno:
+ **
+ ** @code
+ ** P99_DECLARE_THREAD_LOCAL(int, errno_loc);
+ ** #define errno P99_THREAD_LOCAL(errno_loc)
+ ** @endcode
+ **
+ ** With just these two lines @c errno always evaluates to an lvalue
+ ** representing a thread local object. That is you can use it
+ ** everywhere a normal variable of type @c int could be used:
+ **
+ ** @code
+ ** if (errno == EINTR) ...
+ ** errno = 0;
+ ** my_func(&errno);
+ ** @endcode
+ **/
+P99_DECLARE_INIT_ONCE(tss_t, p99_tss, key) {
+  int ret = tss_create(key, free);
+  if (ret) {
+    errno = ret;
+    perror("can't create thread specific key");
+    abort();
+  }
+}
+
+p99_inline
+void* p00_thread_local_get(p99_tss * key, size_t size) {
+  P99_INIT_ONCE(p99_tss, key);
+  void * ret = tss_get(P99_ENCP(key));
+  if (P99_UNLIKELY(!ret)) {
+    ret = calloc(1, size);
+    tss_set(P99_ENCP(key), ret);
+  }
+  return ret;
+}
+
+/**
+ ** @brief declare a thread local variable @a NAME of type @a T
+ **
+ ** @remark such a variable must be declared in global scope
+ **
+ ** @see P99_THREAD_LOCAL to access the variable
+ ** @memberof p99_tss
+ **/
+#define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
+/** @see P99_THREAD_LOCAL to access the variable */            \
+P99_WEAK(NAME)                                                 \
+p99_tss NAME;                                                  \
+typedef T P99_PASTE3(p00_, NAME, _type)
+
+/**
+ ** @brief an lvalue expression that returns the thread local instance
+ ** of variable @a NAME
+ **
+ ** @see P99_DECLARE_THREAD_LOCAL to declare the variable
+ ** @memberof p99_tss
+ **/
+#define P99_THREAD_LOCAL(NAME) (*(P99_PASTE3(p00_, NAME, _type)*)p00_thread_local_get(&(NAME), sizeof(P99_PASTE3(p00_, NAME, _type))))
+
+#endif
+
+/* Tentative definitions for global variables. This has the advantage
+   that this defines weak symbols and we avoid to have to create a
+   specific library. */
+P99_DECLARE_THREAD_LOCAL(p00_thrd *, p00_thrd_local);
+
+#define P00_THRD_LOCAL P99_THREAD_LOCAL(p00_thrd_local)
+
+P99_WEAK(p00_foreign_threads)
+_Atomic(size_t) p00_foreign_threads;
+
+/**
  ** @memberof thrd_t
  **
  ** @return identifier of the thread that called it
  **/
-p99_inline thrd_t thrd_current(void);
+p99_inline
+thrd_t thrd_current(void) {
+  p00_thrd * loc = P00_THRD_LOCAL;
+  if (P99_UNLIKELY(!loc)) {
+    size_t foreign = atomic_fetch_add(&p00_foreign_threads, 1);
+    loc = malloc(sizeof *loc);
+    *loc = (p00_thrd) {
+      .id = pthread_self(),
+       .foreign = foreign + 1,
+      };
+    P00_THRD_LOCAL = loc;
+    if (foreign) fprintf(stderr, "foreign thread %lu is %zu\n", loc->id, foreign + 1);
+  }
+  return (thrd_t)P99_ENC_INIT(loc);
+}
 
 /**
  ** @memberof thrd_t
@@ -259,7 +406,10 @@ p99_inline thrd_t thrd_current(void);
  ** @return @c 0 if the thread @a thr0 and the thread @a thr1 refer to
  ** different threads. Otherwise a nonzero value is returned.
  **/
-p99_inline int thrd_equal(thrd_t thr0, thrd_t thr1);
+p99_inline
+int thrd_equal(thrd_t thr0, thrd_t thr1) {
+  return P99_ENC(thr0) ==  P99_ENC(thr1);
+}
 
 p99_inline
 void p00_call_once_2(p99_once_flag *flag, void (*func)(void)) {
@@ -391,136 +541,6 @@ p99_inline                                                      \
 void P99_PASTE3(p00_, NAME, _init_func)(T* ARG)
 
 #define P99_INIT_ONCE(NAME, VARP) P99_PASTE3(p00_, NAME, _init_once)(VARP)
-
-/**
- ** @memberof tss_t
- ** @return ::thrd_success on success, or ::thrd_error if the request
- ** could not be honored.
- **
- ** If successful, sets the thread-specific storage pointed to by key
- ** to a value that uniquely identifies the newly created
- ** pointer. Otherwise, the thread-specific storage pointed to by key
- ** is set to an undefined value.
- **/
-p99_inline
-int tss_create(tss_t *key, tss_dtor_t dtor) {
-  return pthread_key_create(&P99_ENCP(key), dtor) ? thrd_error : thrd_success;
-}
-
-/**
- ** @memberof tss_t
- **/
-p99_inline
-void tss_delete(tss_t key) {
-  (void)pthread_key_delete(P99_ENC(key));
-}
-
-/**
- ** @memberof tss_t
- **
- ** @return the value for the current thread if successful, or @c 0 if
- ** unsuccessful.
- **/
-p99_inline
-void *tss_get(tss_t key) {
-  return pthread_getspecific(P99_ENC(key));
-}
-
-/**
- ** @memberof tss_t
- ** @return ::thrd_success on success, or ::thrd_error if the request
- ** could not be honored.
- **/
-p99_inline
-int tss_set(tss_t key, void *val) {
-  return pthread_setspecific(P99_ENC(key), val) ? thrd_error : thrd_success;
-}
-
-#if defined(thread_local) && !defined(P99_EMULATE_THREAD_LOCAL)
-
-#define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
-P99_WEAK(NAME)                                                 \
-thread_local T NAME
-
-#define P99_THREAD_LOCAL(NAME) (NAME)
-
-#else
-/**
- ** @brief A stub structure to hold a thread local variable if
- ** ::thread_local is not available.
- **
- ** Don't use this type directly but use ::P99_DECLARE_THREAD_LOCAL to
- ** declare a variable and ::P99_THREAD_LOCAL to access it.
- **
- ** A hypothetical example for the use of such a variable would be @c
- ** errno:
- **
- ** @code
- ** P99_DECLARE_THREAD_LOCAL(int, errno_loc);
- ** #define errno P99_THREAD_LOCAL(errno_loc)
- ** @endcode
- **
- ** With just these two lines @c errno always evaluates to an lvalue
- ** representing a thread local object. That is you can use it
- ** everywhere a normal variable of type @c int could be used:
- **
- ** @code
- ** if (errno == EINTR) ...
- ** errno = 0;
- ** my_func(&errno);
- ** @endcode
- **/
-P99_DECLARE_INIT_ONCE(tss_t, p99_tss, key) {
-  int ret = tss_create(key, free);
-  if (ret) {
-    errno = ret;
-    perror("can't create thread specific key");
-    abort();
-  }
-}
-
-p99_inline
-void* p00_thread_local_get(p99_tss * key, size_t size) {
-  P99_INIT_ONCE(p99_tss, key);
-  void * ret = tss_get(P99_ENCP(key));
-  if (P99_UNLIKELY(!ret)) {
-    ret = calloc(1, size);
-    tss_set(P99_ENCP(key), ret);
-  }
-  return ret;
-}
-
-/**
- ** @brief declare a thread local variable @a NAME of type @a T
- **
- ** @remark such a variable must be declared in global scope
- **
- ** @see P99_THREAD_LOCAL to access the variable
- ** @memberof p99_tss
- **/
-#define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
-/** @see P99_THREAD_LOCAL to access the variable */            \
-P99_WEAK(NAME)                                                 \
-p99_tss NAME;                                                  \
-typedef T P99_PASTE3(p00_, NAME, _type)
-
-/**
- ** @brief an lvalue expression that returns the thread local instance
- ** of variable @a NAME
- **
- ** @see P99_DECLARE_THREAD_LOCAL to declare the variable
- ** @memberof p99_tss
- **/
-#define P99_THREAD_LOCAL(NAME) (*(P99_PASTE3(p00_, NAME, _type)*)p00_thread_local_get(&(NAME), sizeof(P99_PASTE3(p00_, NAME, _type))))
-
-#endif
-
-/* Tentative definitions for global variables. This has the advantage
-   that this defines weak symbols and we avoid to have to create a
-   specific library. */
-P99_DECLARE_THREAD_LOCAL(p00_thrd *, p00_thrd_local);
-
-#define P00_THRD_LOCAL P99_THREAD_LOCAL(p00_thrd_local)
 
 #ifdef P00_DOXYGEN
 /**
@@ -844,30 +864,6 @@ int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
   }
 }
 
-P99_WEAK(p00_foreign_threads)
-_Atomic(size_t) p00_foreign_threads;
-
-/**
- ** @memberof thrd_t
- **
- ** @return identifier of the thread that called it
- **/
-p99_inline
-thrd_t thrd_current(void) {
-  p00_thrd * loc = P00_THRD_LOCAL;
-  if (P99_UNLIKELY(!loc)) {
-    size_t foreign = atomic_fetch_add(&p00_foreign_threads, 1);
-    loc = malloc(sizeof *loc);
-    *loc = (p00_thrd) {
-      .id = pthread_self(),
-       .foreign = foreign + 1,
-      };
-    P00_THRD_LOCAL = loc;
-    if (foreign) fprintf(stderr, "foreign thread %lu is %zu\n", loc->id, foreign + 1);
-  }
-  return (thrd_t)P99_ENC_INIT(loc);
-}
-
 /**
  ** @memberof thrd_t
  **
@@ -888,17 +884,6 @@ int thrd_detach(thrd_t thr) {
   } else {
     return ret;
   }
-}
-
-/**
- ** @memberof thrd_t
- **
- ** @return @c 0 if the thread @a thr0 and the thread @a thr1 refer to
- ** different threads. Otherwise a nonzero value is returned.
- **/
-p99_inline
-int thrd_equal(thrd_t thr0, thrd_t thr1) {
-  return P99_ENC(thr0) ==  P99_ENC(thr1);
 }
 
 #ifdef P00_DOXYGEN
