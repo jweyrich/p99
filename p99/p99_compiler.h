@@ -341,7 +341,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 #  define P00_NO_HAVE_TGMATH_H
 # endif
 #elif P99_COMPILER & P99_COMPILER_PCC
-//# error "The P99 preprocessor files can't work with the pcc compiler, yet"
+/* # error "The P99 preprocessor files can't work with the pcc compiler, yet" */
 #elif P99_COMPILER & P99_COMPILER_CLANG
 #if p99_has_attribute(always_inline)
 # define p99_inline __attribute__((__always_inline__)) inline
@@ -360,16 +360,16 @@ signed p00_trailing_comma_in_initializer__(void) {
 #  endif
 #  ifdef p99_has_feature(gnu_inline)
 #   define inline __attribute__((__gnu_inline__,__weak__)) __inline__
-#   define p99_inline __attribute__((__always_inline__,__gnu_inline,weak__)) __inline__
+#   define p99_inline __attribute__((__always_inline__,__gnu_inline__,__weak__)) __inline__
 #  else
-#   define inline __attribute__((weak)) __inline__
-#   define p99_inline __attribute__((always_inline,weak)) __inline__
+#   define inline __attribute__((__weak__)) __inline__
+#   define p99_inline __attribute__((__always_inline__,__weak__)) __inline__
 #  endif
 #  define p00_instantiate
 # else
 #  define inline __inline__
 #  define p00_instantiate extern __inline__
-#  define p99_inline __attribute__((always_inline)) __inline__
+#  define p99_inline __attribute__((__always_inline__)) __inline__
 # endif
 #endif
 
