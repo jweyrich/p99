@@ -43,6 +43,9 @@
  ** @{
  **/
 
+#if !defined(__thumb__) && !defined(__thumb2__)
+/* When in arm mode we can't do addressing with offset, here, so use
+   direct addressing. */
 p99_inline
 uint32_t p00_arm_ldrex(uint32_t volatile*ptr) {
   uint32_t ret;
@@ -64,6 +67,31 @@ _Bool p00_arm_strex(uint32_t volatile*ptr, uint32_t val) {
                    );
   return ret;
 }
+#else
+/* When in thumb mode we can do addressing with offset, here, so use
+   the "m" constraint to the assembler. */
+p99_inline
+uint32_t p00_arm_ldrex(uint32_t volatile*ptr) {
+  uint32_t ret;
+  __asm__ volatile ("ldrex %0,%1\t@ load exclusive\n"
+                    : "=&r" (ret)
+                    : "m" (ptr)
+                    : "cc", "memory"
+                    );
+  return ret;
+}
+
+p99_inline
+_Bool p00_arm_strex(uint32_t volatile*ptr, uint32_t val) {
+  uint32_t ret;
+  __asm__ volatile ("strex %0,%1,%2\t@ store exclusive\n"
+                    : "=&r" (ret)
+                    : "r" (val), "m" (ptr)
+                    : "cc", "memory"
+                    );
+  return ret;
+}
+#endif
 
 p99_inline
 uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
