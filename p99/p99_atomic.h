@@ -936,11 +936,11 @@ void atomic_flag_clear_explicit(volatile atomic_flag *object, memory_order order
   case memory_order_acquire: ;
   case memory_order_acq_rel: ;
   case memory_order_seq_cst:
-    __sync_lock_release(&P99_ENCP(object));
+    p00_sync_lock_release(&P99_ENCP(object));
     atomic_thread_fence(order);
     break;
   default:
-    __sync_lock_release(&P99_ENCP(object));
+    p00_sync_lock_release(&P99_ENCP(object));
     break;
   }
 }

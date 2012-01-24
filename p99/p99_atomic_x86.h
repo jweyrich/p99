@@ -38,20 +38,19 @@
 
 p99_inline
 uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
-  register uint32_t ret P99_FIXED_REGISTER(eax) = 1;
-  __asm__ __volatile__("xchgl %2, %0"
-                       : "=a"(ret)
-                       : "r"(ret), "m"(*object)
+  register uint32_t ret = 1;
+  __asm__ __volatile__("xchgl %1, %0"
+                       : "=r"(ret)
+                       : "m"(*object), "0"(ret)
                        : "memory");
   return ret;
 }
 
 p99_inline
 void p00_sync_lock_release(uint32_t volatile *object) {
-  register uint32_t val = 0;
-  __asm__ __volatile__("movl %0, %1"
+  __asm__ __volatile__("movl $0, %0"
                        :
-                       : "r"(val), "m"(*object)
+                       : "m"(*object)
                        : "memory");
 }
 
