@@ -148,12 +148,12 @@ enum p00_once {
  */
 struct p99_once_flag {
   union {
-    enum p00_once done;
-    enum p00_once volatile volatile_done;
-  } done;
-  thrd_t id;
-  void (*const init)(void);
-  atomic_flag flg;
+    enum p00_once p00_done;
+    enum p00_once volatile p00_vdone;
+  } p00_done;
+  thrd_t p00_id;
+  void (*const p00_init)(void);
+  atomic_flag p00_flg;
 };
 
 /**
@@ -161,17 +161,17 @@ struct p99_once_flag {
  **/
 
 struct p00_thrd {
-  pthread_t id;
-  size_t foreign;
-  int ret;
-  atomic_flag detached;
+  pthread_t p00_id;
+  size_t p00_foreign;
+  int p00_ret;
+  atomic_flag p00_detached;
   union {
     struct {
-      thrd_start_t func;
-      void *arg;
-    } init;
-    jmp_buf jmp;
-  } ovrl;
+      thrd_start_t p00_func;
+      void *p00_arg;
+    } p00_init;
+    jmp_buf p00_jmp;
+  } p00_ovrl;
 };
 
 /**
@@ -257,16 +257,16 @@ void thrd_yield(void) {
  ** is set to an undefined value.
  **/
 p99_inline
-int tss_create(tss_t *key, tss_dtor_t dtor) {
-  return pthread_key_create(&P99_ENCP(key), dtor) ? thrd_error : thrd_success;
+int tss_create(tss_t *p00_key, tss_dtor_t dtor) {
+  return pthread_key_create(&P99_ENCP(p00_key), dtor) ? thrd_error : thrd_success;
 }
 
 /**
  ** @memberof tss_t
  **/
 p99_inline
-void tss_delete(tss_t key) {
-  (void)pthread_key_delete(P99_ENC(key));
+void tss_delete(tss_t p00_key) {
+  (void)pthread_key_delete(P99_ENC(p00_key));
 }
 
 /**
@@ -276,8 +276,8 @@ void tss_delete(tss_t key) {
  ** unsuccessful.
  **/
 p99_inline
-void *tss_get(tss_t key) {
-  return pthread_getspecific(P99_ENC(key));
+void *tss_get(tss_t p00_key) {
+  return pthread_getspecific(P99_ENC(p00_key));
 }
 
 /**
@@ -286,8 +286,8 @@ void *tss_get(tss_t key) {
  ** could not be honored.
  **/
 p99_inline
-int tss_set(tss_t key, void *val) {
-  return pthread_setspecific(P99_ENC(key), val) ? thrd_error : thrd_success;
+int tss_set(tss_t p00_key, void *p00_val) {
+  return pthread_setspecific(P99_ENC(p00_key), p00_val) ? thrd_error : thrd_success;
 }
 
 #if defined(thread_local) && !defined(P99_EMULATE_THREAD_LOCAL)
@@ -324,24 +324,24 @@ thread_local T NAME
  ** my_func(&errno);
  ** @endcode
  **/
-P99_DECLARE_INIT_ONCE(tss_t, p99_tss, key) {
-  int ret = tss_create(key, free);
-  if (ret) {
-    errno = ret;
+P99_DECLARE_INIT_ONCE(tss_t, p99_tss, p00_key) {
+  int p00_ret = tss_create(p00_key, free);
+  if (p00_ret) {
+    errno = p00_ret;
     perror("can't create thread specific key");
     abort();
   }
 }
 
 p99_inline
-void* p00_thread_local_get(p99_tss * key, size_t size) {
-  P99_INIT_ONCE(p99_tss, key);
-  void * ret = tss_get(P99_ENCP(key));
-  if (P99_UNLIKELY(!ret)) {
-    ret = calloc(1, size);
-    tss_set(P99_ENCP(key), ret);
+void* p00_thread_local_get(p99_tss * p00_key, size_t p00_size) {
+  P99_INIT_ONCE(p99_tss, p00_key);
+  void * p00_ret = tss_get(P99_ENCP(p00_key));
+  if (P99_UNLIKELY(!p00_ret)) {
+    p00_ret = calloc(1, p00_size);
+    tss_set(P99_ENCP(p00_key), p00_ret);
   }
-  return ret;
+  return p00_ret;
 }
 
 /**
@@ -386,90 +386,90 @@ _Atomic(size_t) p00_foreign_threads;
  **/
 p99_inline
 thrd_t thrd_current(void) {
-  p00_thrd * loc = P00_THRD_LOCAL;
-  if (P99_UNLIKELY(!loc)) {
-    size_t foreign = atomic_fetch_add(&p00_foreign_threads, 1);
-    loc = malloc(sizeof *loc);
-    *loc = (p00_thrd) {
-      .id = pthread_self(),
-       .foreign = foreign + 1,
+  p00_thrd * p00_loc = P00_THRD_LOCAL;
+  if (P99_UNLIKELY(!p00_loc)) {
+    size_t p00_foreign = atomic_fetch_add(&p00_foreign_threads, 1);
+    p00_loc = malloc(sizeof *p00_loc);
+    *p00_loc = (p00_thrd) {
+      .p00_id = pthread_self(),
+       .p00_foreign = p00_foreign + 1,
       };
-    P00_THRD_LOCAL = loc;
-    if (foreign) fprintf(stderr, "foreign thread %lu is %zu\n", loc->id, foreign + 1);
+    P00_THRD_LOCAL = p00_loc;
+    if (p00_foreign) fprintf(stderr, "foreign thread %lu is %zu\n", p00_loc->p00_id, p00_foreign + 1);
   }
-  return (thrd_t)P99_ENC_INIT(loc);
+  return (thrd_t)P99_ENC_INIT(p00_loc);
 }
 
 /**
  ** @memberof thrd_t
  **
- ** @return @c 0 if the thread @a thr0 and the thread @a thr1 refer to
+ ** @return @c 0 if the thread @a p00_thr0 and the thread @a p00_thr1 refer to
  ** different threads. Otherwise a nonzero value is returned.
  **/
 p99_inline
-int thrd_equal(thrd_t thr0, thrd_t thr1) {
-  return P99_ENC(thr0) ==  P99_ENC(thr1);
+int thrd_equal(thrd_t p00_thr0, thrd_t p00_thr1) {
+  return P99_ENC(p00_thr0) ==  P99_ENC(p00_thr1);
 }
 
 p99_inline
-void p00_call_once_2(p99_once_flag *flag, void (*func)(void)) {
-  if (P99_UNLIKELY(flag->done.done != p00_once_finished))
+void p00_call_once_2(p99_once_flag *flag, void (*p00_func)(void)) {
+  if (P99_UNLIKELY(flag->p00_done.p00_done != p00_once_finished))
     do {
-      atomic_flag_lock(&flag->flg);
-      switch (flag->done.volatile_done) {
+      atomic_flag_lock(&flag->p00_flg);
+      switch (flag->p00_done.p00_vdone) {
         /* we are doing the initialization */
       case p00_once_uninit:
-        flag->done.done = 1;
-        flag->id = thrd_current();
-        atomic_flag_unlock(&flag->flg);
-        func();
-        flag->done.done = 2;
+        flag->p00_done.p00_done = 1;
+        flag->p00_id = thrd_current();
+        atomic_flag_unlock(&flag->p00_flg);
+        p00_func();
+        flag->p00_done.p00_done = 2;
         break;
       case p00_once_started:
-        if (thrd_equal(flag->id, thrd_current())) {
+        if (thrd_equal(flag->p00_id, thrd_current())) {
           /* we are called recursively, abandon and return */
-          atomic_flag_unlock(&flag->flg);
+          atomic_flag_unlock(&flag->p00_flg);
           return;
         }
         /* otherwise fall through */
       case p00_once_finished:
-        atomic_flag_unlock(&flag->flg);
+        atomic_flag_unlock(&flag->p00_flg);
         break;
       }
-    } while (flag->done.volatile_done != p00_once_finished);
+    } while (flag->p00_done.p00_vdone != p00_once_finished);
 }
 
 p99_inline
 void p00_call_once_1(p99_once_flag *flag) {
-  p00_call_once_2(flag, flag->init);
+  p00_call_once_2(flag, flag->p00_init);
 }
 
 p99_inline
-void p00_call_once_3(p99_once_flag *flag, void (*func)(void*), void* arg) {
-  if (P99_UNLIKELY(flag->done.done != p00_once_finished))
+void p00_call_once_3(p99_once_flag *flag, void (*p00_func)(void*), void* p00_arg) {
+  if (P99_UNLIKELY(flag->p00_done.p00_done != p00_once_finished))
     do {
-      atomic_flag_lock(&flag->flg);
-      switch (flag->done.volatile_done) {
+      atomic_flag_lock(&flag->p00_flg);
+      switch (flag->p00_done.p00_vdone) {
         /* we are doing the initialization */
       case p00_once_uninit:
-        flag->done.done = 1;
-        flag->id = thrd_current();
-        atomic_flag_unlock(&flag->flg);
-        func(arg);
-        flag->done.done = 2;
+        flag->p00_done.p00_done = 1;
+        flag->p00_id = thrd_current();
+        atomic_flag_unlock(&flag->p00_flg);
+        p00_func(p00_arg);
+        flag->p00_done.p00_done = 2;
         break;
       case p00_once_started:
-        if (thrd_equal(flag->id, thrd_current())) {
+        if (thrd_equal(flag->p00_id, thrd_current())) {
           /* we are called recursively, abandon and return */
-          atomic_flag_unlock(&flag->flg);
+          atomic_flag_unlock(&flag->p00_flg);
           return;
         }
         /* otherwise fall through */
       case p00_once_finished:
-        atomic_flag_unlock(&flag->flg);
+        atomic_flag_unlock(&flag->p00_flg);
         break;
       }
-    } while (flag->done.volatile_done != p00_once_finished);
+    } while (flag->p00_done.p00_vdone != p00_once_finished);
 }
 
 #define p00_call_once(N, ...)                                  \
@@ -481,7 +481,7 @@ P99_IF_EQ_1(N)                                                 \
 
 /**
  ** @brief Call a function @a FUNC exactly once eventually by
- ** providing it with argument @a arg
+ ** providing it with argument @a ARG
  **
  ** This is an extension of the standard function ::call_once.
  **
@@ -492,8 +492,8 @@ P99_IF_EQ_1(N)                                                 \
  ** - If @a ARG is omitted @a FUNC should have the prototype
  **   <code>void FUNC(void)</code>, i.e not take any argument.
  **
- ** - If the field @c init is initialized with an appropriate
- **   function, the @a FUNC can also be omitted and @c init is then
+ ** - If the field @c p00_init is initialized with an appropriate
+ **   function, the @a FUNC can also be omitted and @c p00_init is then
  **   called instead.
  **
  ** @remark The @a FLAG is only protected by an
@@ -527,15 +527,15 @@ p99_inline                                                      \
 void P99_PASTE3(p00_, NAME, _init_func)(T* ARG);                \
 p99_inline                                                      \
 void P99_PASTE3(p00_, NAME, _init_once)(NAME* ARG) {            \
-  if (P99_UNLIKELY(!ARG->p00_once.done.done))                   \
+  if (P99_UNLIKELY(!ARG->p00_once.p00_done.p00_done))           \
     do {                                                        \
-      P99_SPIN_EXCLUDE(&ARG->p00_once.flg) {                    \
-        if (!ARG->p00_once.done.volatile_done) {                \
+      P99_SPIN_EXCLUDE(&ARG->p00_once.p00_flg) {                \
+        if (!ARG->p00_once.p00_done.p00_vdone) {                \
           P99_PASTE3(p00_, NAME, _init_func)(&ARG->p00_val);    \
-          ARG->p00_once.done.volatile_done = true;              \
+          ARG->p00_once.p00_done.p00_vdone = true;              \
         }                                                       \
       }                                                         \
-    } while (!ARG->p00_once.done.volatile_done);                \
+    } while (!ARG->p00_once.p00_done.p00_vdone);                \
 }                                                               \
 p99_inline                                                      \
 void P99_PASTE3(p00_, NAME, _init_func)(T* ARG)
@@ -585,7 +585,7 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
 #define P00_P99_DEFINE_ONCE_CHAIN_0(T)                         \
 static void P99_PASTE3(p00_, T, _once_init)(void);             \
 p99_once_flag P99_PASTE3(p00_, T, _once) = {                   \
-  .init = P99_PASTE3(p00_, T, _once_init),                     \
+  .p00_init = P99_PASTE3(p00_, T, _once_init),                 \
 };                                                             \
 static void P99_PASTE3(p00_, T, _once_init)(void)
 
@@ -599,7 +599,7 @@ static void P99_PASTE3(p00_, T, _once_init)(void) {                      \
   P99_PASTE3(p00_, T, _once_init0)();                                    \
  }                                                                       \
 struct p99_once_flag P99_PASTE3(p00_, T, _once) = {                      \
-  .init = P99_PASTE3(p00_, T, _once_init),                               \
+  .p00_init = P99_PASTE3(p00_, T, _once_init),                           \
 };                                                                       \
 static void P99_PASTE3(p00_, T, _once_init0)(void)
 
@@ -626,8 +626,8 @@ extern p99_once_flag P99_PASTE3(p00_, T, _once)
  ** @see P99_DECLARE_ONCE_CHAIN
  ** @see P99_DEFINE_ONCE_CHAIN
  **/
-#define P99_INIT_CHAIN(T)                                                   \
-p99_call_once(&P99_PASTE3(p00_, T, _once), P99_PASTE3(p00_, T, _once).init)
+#define P99_INIT_CHAIN(T)                                                       \
+p99_call_once(&P99_PASTE3(p00_, T, _once), P99_PASTE3(p00_, T, _once).p00_init)
 
 // 7.26.3 Condition variable functions
 
@@ -638,16 +638,16 @@ p99_call_once(&P99_PASTE3(p00_, T, _once), P99_PASTE3(p00_, T, _once).init)
  ** could not be honored.
  **/
 p99_inline
-int cnd_broadcast(cnd_t *cond) {
-  return pthread_cond_broadcast(&P99_ENCP(cond)) ? thrd_error : thrd_success;
+int cnd_broadcast(cnd_t *p00_cond) {
+  return pthread_cond_broadcast(&P99_ENCP(p00_cond)) ? thrd_error : thrd_success;
 }
 
 /**
  ** @memberof cnd_t
  **/
 p99_inline
-void cnd_destroy(cnd_t *cond) {
-  (void)pthread_cond_destroy(&P99_ENCP(cond));
+void cnd_destroy(cnd_t *p00_cond) {
+  (void)pthread_cond_destroy(&P99_ENCP(p00_cond));
 }
 
 /**
@@ -659,9 +659,9 @@ void cnd_destroy(cnd_t *cond) {
  ** honored.
  **/
 p99_inline
-int cnd_init(cnd_t *cond) {
-  int ret = pthread_cond_init(&P99_ENCP(cond), 0);
-  switch (ret) {
+int cnd_init(cnd_t *p00_cond) {
+  int p00_ret = pthread_cond_init(&P99_ENCP(p00_cond), 0);
+  switch (p00_ret) {
   case 0:         return thrd_success;
   case ENOMEM:    return thrd_nomem;
   default:        return thrd_error;
@@ -675,8 +675,8 @@ int cnd_init(cnd_t *cond) {
  ** could not be honored.
  **/
 p99_inline
-int cnd_signal(cnd_t *cond) {
-  return pthread_cond_signal(&P99_ENCP(cond)) ? thrd_error : thrd_success;
+int cnd_signal(cnd_t *p00_cond) {
+  return pthread_cond_signal(&P99_ENCP(p00_cond)) ? thrd_error : thrd_success;
 }
 
 /**
@@ -688,9 +688,9 @@ int cnd_signal(cnd_t *cond) {
  ** honored.
  **/
 p99_inline
-int cnd_timedwait(cnd_t *restrict cond, mtx_t *restrict mtx, const struct timespec *restrict ts) {
-  int ret = pthread_cond_timedwait(&P99_ENCP(cond), &P99_ENCP(mtx), ts);
-  switch (ret) {
+int cnd_timedwait(cnd_t *restrict p00_cond, mtx_t *restrict p00_mtx, const struct timespec *restrict p00_ts) {
+  int p00_ret = pthread_cond_timedwait(&P99_ENCP(p00_cond), &P99_ENCP(p00_mtx), p00_ts);
+  switch (p00_ret) {
   case 0:         return thrd_success;
   case ETIMEDOUT: return thrd_timedout;
   default:        return thrd_error;
@@ -704,8 +704,8 @@ int cnd_timedwait(cnd_t *restrict cond, mtx_t *restrict mtx, const struct timesp
  ** could not be honored.
  **/
 p99_inline
-int cnd_wait(cnd_t *cond, mtx_t *mtx) {
-  return pthread_cond_wait(&P99_ENCP(cond), &P99_ENCP(mtx)) ? thrd_error : thrd_success;
+int cnd_wait(cnd_t *p00_cond, mtx_t *p00_mtx) {
+  return pthread_cond_wait(&P99_ENCP(p00_cond), &P99_ENCP(p00_mtx)) ? thrd_error : thrd_success;
 }
 
 // 7.26.4 Mutex functions
@@ -714,8 +714,8 @@ int cnd_wait(cnd_t *cond, mtx_t *mtx) {
  ** @memberof mtx_t
  **/
 p99_inline
-void mtx_destroy(mtx_t *mtx) {
-  (void)pthread_mutex_destroy(&P99_ENCP(mtx));
+void mtx_destroy(mtx_t *p00_mtx) {
+  (void)pthread_mutex_destroy(&P99_ENCP(p00_mtx));
 }
 
 /**
@@ -728,14 +728,14 @@ void mtx_destroy(mtx_t *mtx) {
  ** could not be honored.
  **/
 p99_inline
-int mtx_init(mtx_t *mtx, int type) {
-  pthread_mutexattr_t attr;
-  int ret = pthread_mutexattr_init(&attr);
-  if (ret) return thrd_error;
-  ret = pthread_mutexattr_settype(&attr, (type & mtx_recursive) ? PTHREAD_MUTEX_NORMAL : PTHREAD_MUTEX_RECURSIVE);
-  if (ret) return thrd_error;
-  ret = pthread_mutex_init(&P99_ENCP(mtx), &attr);
-  if (ret) return thrd_error;
+int mtx_init(mtx_t *p00_mtx, int p00_type) {
+  pthread_mutexattr_t p00_attr;
+  int p00_ret = pthread_mutexattr_init(&p00_attr);
+  if (p00_ret) return thrd_error;
+  p00_ret = pthread_mutexattr_settype(&p00_attr, (p00_type & mtx_recursive) ? PTHREAD_MUTEX_NORMAL : PTHREAD_MUTEX_RECURSIVE);
+  if (p00_ret) return thrd_error;
+  p00_ret = pthread_mutex_init(&P99_ENCP(p00_mtx), &p00_attr);
+  if (p00_ret) return thrd_error;
   else return thrd_success;
 }
 
@@ -745,8 +745,8 @@ int mtx_init(mtx_t *mtx, int type) {
  ** could not be honored.
  **/
 p99_inline
-int mtx_lock(mtx_t *mtx) {
-  return pthread_mutex_lock(&P99_ENCP(mtx)) ? thrd_error : thrd_success;
+int mtx_lock(mtx_t *p00_mtx) {
+  return pthread_mutex_lock(&P99_ENCP(p00_mtx)) ? thrd_error : thrd_success;
 }
 
 /**
@@ -758,9 +758,9 @@ int mtx_lock(mtx_t *mtx) {
  ** honored.
  **/
 p99_inline
-int mtx_timedlock(mtx_t *restrict mtx, const struct timespec *restrict ts) {
-  int ret = pthread_mutex_timedlock(&P99_ENCP(mtx), ts);
-  switch (ret) {
+int mtx_timedlock(mtx_t *restrict p00_mtx, const struct timespec *restrict p00_ts) {
+  int p00_ret = pthread_mutex_timedlock(&P99_ENCP(p00_mtx), p00_ts);
+  switch (p00_ret) {
   case 0:         return thrd_success;
   case ETIMEDOUT: return thrd_timedout;
   default:        return thrd_error;
@@ -775,9 +775,9 @@ int mtx_timedlock(mtx_t *restrict mtx, const struct timespec *restrict ts) {
  ** not be honored.
  **/
 p99_inline
-int mtx_trylock(mtx_t *mtx) {
-  int ret = pthread_mutex_trylock(&P99_ENCP(mtx));
-  switch (ret) {
+int mtx_trylock(mtx_t *p00_mtx) {
+  int p00_ret = pthread_mutex_trylock(&P99_ENCP(p00_mtx));
+  switch (p00_ret) {
   case 0:         return thrd_success;
   case EBUSY:     return thrd_busy;
   default:        return thrd_error;
@@ -790,8 +790,8 @@ int mtx_trylock(mtx_t *mtx) {
  ** could not be honored.
  **/
 p99_inline
-int mtx_unlock(mtx_t *mtx) {
-  return pthread_mutex_unlock(&P99_ENCP(mtx)) ? thrd_error : thrd_success;
+int mtx_unlock(mtx_t *p00_mtx) {
+  return pthread_mutex_unlock(&P99_ENCP(p00_mtx)) ? thrd_error : thrd_success;
 }
 
 /**
@@ -829,7 +829,7 @@ P99_GUARDED_BLOCK(mtx_t*,                                                       
 
 
 P99_SETJMP_INLINE(p00_thrd_create)
-void * p00_thrd_create(void* context);
+void * p00_thrd_create(void* p00_context);
 
 /**
  ** @memberof thrd_t
@@ -839,27 +839,27 @@ void * p00_thrd_create(void* context);
  ** the request could not be honored.
  **/
 p99_inline
-int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
-  p00_thrd * cntxt = malloc(sizeof *cntxt);
-  if (!cntxt) return thrd_nomem;
-  *cntxt = (p00_thrd const) {
-    .ovrl = {
-      .init = {
-        .func = func,
-        .arg = arg,
+int thrd_create(thrd_t *p00_thr, thrd_start_t p00_func, void *p00_arg) {
+  p00_thrd * p00_cntxt = malloc(sizeof *p00_cntxt);
+  if (!p00_cntxt) return thrd_nomem;
+  *p00_cntxt = (p00_thrd const) {
+    .p00_ovrl = {
+      .p00_init = {
+        .p00_func = p00_func,
+        .p00_arg = p00_arg,
       },
     },
-    .detached = ATOMIC_FLAG_INIT,
+    .p00_detached = ATOMIC_FLAG_INIT,
    };
-  int ret = pthread_create(&cntxt->id, 0, p00_thrd_create, cntxt);
-  if (P99_UNLIKELY(ret)) {
-    free(cntxt);
-    switch (ret) {
+  int p00_ret = pthread_create(&p00_cntxt->p00_id, 0, p00_thrd_create, p00_cntxt);
+  if (P99_UNLIKELY(p00_ret)) {
+    free(p00_cntxt);
+    switch (p00_ret) {
     case ENOMEM:    return thrd_nomem;
     default:        return thrd_error;
     };
   } else {
-    P99_ENCP(thr) = cntxt;
+    P99_ENCP(p00_thr) = p00_cntxt;
     return thrd_success;
   }
 }
@@ -871,18 +871,18 @@ int thrd_create(thrd_t *thr, thrd_start_t func, void *arg) {
  ** could not be honored.
  **/
 p99_inline
-int thrd_detach(thrd_t thr) {
+int thrd_detach(thrd_t p00_thr) {
   /* The thread is not yet detached so its pthread id is still
      valid. If it already has finished, this will just free the
      resources that pthread holds for it. */
-  int ret = pthread_detach(P99_ENC(thr)->id) ? thrd_error : thrd_success;
-  if (atomic_flag_test_and_set(&P99_ENC(thr)->detached)) {
+  int p00_ret = pthread_detach(P99_ENC(p00_thr)->p00_id) ? thrd_error : thrd_success;
+  if (atomic_flag_test_and_set(&P99_ENC(p00_thr)->p00_detached)) {
     /* The thread has already finished. Free the state, since nobody
        will join it, anyhow. */
-    free(P99_ENC(thr));
+    free(P99_ENC(p00_thr));
     return thrd_success;
   } else {
-    return ret;
+    return p00_ret;
   }
 }
 
@@ -890,18 +890,18 @@ int thrd_detach(thrd_t thr) {
 /**
  ** @memberof thrd_t
  **/
-p99_inline void thrd_exit(int res);
+p99_inline void thrd_exit(int p00_res);
 #else
 p99_inline
 _Noreturn
-void thrd_exit(int res) {
-  p00_thrd * cntxt = P00_THRD_LOCAL;
-  if (P99_LIKELY(cntxt)) {
-    if (!cntxt->foreign) {
-      cntxt->ret = res;
-      longjmp(cntxt->ovrl.jmp, 1);
+void thrd_exit(int p00_res) {
+  p00_thrd * p00_cntxt = P00_THRD_LOCAL;
+  if (P99_LIKELY(p00_cntxt)) {
+    if (!p00_cntxt->p00_foreign) {
+      p00_cntxt->p00_ret = p00_res;
+      longjmp(p00_cntxt->p00_ovrl.p00_jmp, 1);
     } else {
-      free(cntxt);
+      free(p00_cntxt);
       P00_THRD_LOCAL = 0;
     }
   }
@@ -917,11 +917,11 @@ void thrd_exit(int res) {
  ** could not be honored.
  **/
 p99_inline
-int thrd_join(thrd_t thr, int *res) {
-  void *res0;
-  if (P99_UNLIKELY(pthread_join(P99_ENC(thr)->id, &res0))) return thrd_error;
-  if (res) *res = P99_ENC(thr)->ret;
-  free(P99_ENC(thr));
+int thrd_join(thrd_t p00_thr, int *p00_res) {
+  void *p00_res0;
+  if (P99_UNLIKELY(pthread_join(P99_ENC(p00_thr)->p00_id, &p00_res0))) return thrd_error;
+  if (p00_res) *p00_res = P99_ENC(p00_thr)->p00_ret;
+  free(P99_ENC(p00_thr));
   return thrd_success;
 }
 
@@ -934,13 +934,13 @@ int thrd_join(thrd_t thr, int *res) {
  ** ::thrd_intr and ::thrd_error as return values.
  **/
 p99_inline
-int thrd_sleep(const struct timespec *duration, struct timespec *remaining) {
+int thrd_sleep(const struct timespec *p00_duration, struct timespec *p00_remaining) {
   errno = 0;
-  int ret = nanosleep(duration, remaining);
-  if (ret) {
-    ret = (errno == EINTR) ? thrd_intr : thrd_error;
+  int p00_ret = nanosleep(p00_duration, p00_remaining);
+  if (p00_ret) {
+    p00_ret = (errno == EINTR) ? thrd_intr : thrd_error;
     errno = 0;
-    return ret;
+    return p00_ret;
   } else return thrd_success;
 }
 
@@ -950,17 +950,17 @@ int thrd_sleep(const struct timespec *duration, struct timespec *remaining) {
    sorry, unimplemented: function ‘p00_thrd_create’ can never be inlined because it uses setjmp
 */
 P99_SETJMP_INLINE(p00_thrd_create)
-void * p00_thrd_create(void* context) {
-  p00_thrd * cntxt = context;
-  P00_THRD_LOCAL = cntxt;
+void * p00_thrd_create(void* p00_context) {
+  p00_thrd * p00_cntxt = p00_context;
+  P00_THRD_LOCAL = p00_cntxt;
   {
-    thrd_start_t func = cntxt->ovrl.init.func;
-    void * arg = cntxt->ovrl.init.arg;
-    if (!setjmp(cntxt->ovrl.jmp)) {
-      cntxt->ret = func(arg);
+    thrd_start_t p00_func = p00_cntxt->p00_ovrl.p00_init.p00_func;
+    void * p00_arg = p00_cntxt->p00_ovrl.p00_init.p00_arg;
+    if (!setjmp(p00_cntxt->p00_ovrl.p00_jmp)) {
+      p00_cntxt->p00_ret = p00_func(p00_arg);
     }
-    if (atomic_flag_test_and_set(&cntxt->detached)) {
-      free(cntxt);
+    if (atomic_flag_test_and_set(&p00_cntxt->p00_detached)) {
+      free(p00_cntxt);
     }
   }
   P00_THRD_LOCAL = 0;

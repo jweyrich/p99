@@ -391,27 +391,27 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_INDICATOR, 0)
  ** @}
  **/
 
-inline int* p00_generic_test(int * a) {
-  double *x;
-  switch (*a % 3) {
+inline int* p00_generic_test(int * p00_a) {
+  double *p00_x;
+  switch (*p00_a % 3) {
   case 0:
-    return P99_GENERIC(&*a,
+    return P99_GENERIC(&*p00_a,
                        /* empty default expression */,
-                       (int*, a),
-                       (double*, x+1),
-                       (float*, x+2));
+                       (int*, p00_a),
+                       (double*, p00_x+1),
+                       (float*, p00_x+2));
   case 1:
-    return P99_GENERIC(&*a,
+    return P99_GENERIC(&*p00_a,
                        /* another form of empty default */,
-                       (double[7], x+0),
-                       (int*, a),
-                       (float*, x+2));
+                       (double[7], p00_x+0),
+                       (int*, p00_a),
+                       (float*, p00_x+2));
   default:
-    return P99_GENERIC(&*a,
-                       /* default expression: */ x,
-                       (double*, x+0),
-                       (float[7], x+1),
-                       (int*, a));
+    return P99_GENERIC(&*p00_a,
+                       /* default expression: */ p00_x,
+                       (double*, p00_x+0),
+                       (float[7], p00_x+1),
+                       (int*, p00_a));
   }
 }
 

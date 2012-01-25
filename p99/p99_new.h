@@ -67,11 +67,11 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TZERO, 0)
 
 
 p99_inline
-void* p00_memset(void* target, void const* source, size_t size, size_t number) {
-  register char *p = target;
-  for (size_t i = 0; i < number; ++i, p += size)
-    memcpy(p, source, size);
-  return target;
+void* p00_memset(void* p00_tar, void const* p00_src, size_t p00_size, size_t p00_nb) {
+  register char *p00_p = p00_tar;
+  for (size_t p00_i = 0; p00_i < p00_nb; ++p00_i, p00_p += p00_size)
+    memcpy(p00_p, p00_src, p00_size);
+  return p00_tar;
 }
 
 /**
@@ -148,8 +148,8 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_MEMZERO, 0)
 #define P99_REALLOC(X, T) realloc((X), sizeof(T))
 
 p99_inline
-void* p00_calloc(void const* source, size_t size, size_t number) {
-  return p00_memset(malloc(size*number), source, size, number);
+void* p00_calloc(void const* p00_src, size_t p00_size, size_t p00_nb) {
+  return p00_memset(malloc(p00_size*p00_nb), p00_src, p00_size, p00_nb);
 }
 
 #define P00_CALLOC0(T, N) p00_calloc((void const*)&P99_LVAL(const T), sizeof(T), N)
@@ -261,11 +261,11 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
   /*! @see P99_NEW */                                                                                       \
   /*! @memberof T */                                                                                        \
 __VA_ARGS__                                                                                                 \
-void P99_PASTE2(T, _delete)(T const*el) {                                                                   \
-  if (el) {                                                                                                 \
-    T* e = (T*)el;                                                                                          \
-    P99_PASTE2(T, _destroy)(e);                                                                             \
-    free((void*)e);                                                                                         \
+void P99_PASTE2(T, _delete)(T const*p00_el) {                                                               \
+  if (p00_el) {                                                                                             \
+    T* p00_e = (T*)p00_el;                                                                                  \
+    P99_PASTE2(T, _destroy)(p00_e);                                                                         \
+    free((void*)p00_e);                                                                                     \
   }                                                                                                         \
 }
 
@@ -273,8 +273,8 @@ void P99_PASTE2(T, _delete)(T const*el) {                                       
 #define P00_DEFINE_DELETE(T, ...) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)
 
 p99_inline
-size_t p99_maxof(size_t m, size_t n) {
-  return m < n ? n : m;
+size_t p99_maxof(size_t p00_m, size_t p00_n) {
+  return p00_m < p00_n ? p00_n : p00_m;
 }
 
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_MINOF, 0)

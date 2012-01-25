@@ -26,18 +26,18 @@
 
 #define P99_CASE_RETURN(...) P99_FOR(,P99_NARG(__VA_ARGS__), P00_SEP, P00_CASE_RETURN, __VA_ARGS__)
 
-#define P99_CHOICE_FUNCTION(TYPE, NAME, DEFAULT, ...)                                \
-/*! This is a function implementing a ``@c static @c inline'' case table          */ \
-/*! Default value if @a x is out of range is DEFAULT.                             */ \
-/*! The table values are __VA_ARGS__.                                             */ \
-/*! @param x indicates the value to choose, it must be compatible with @c size_t. */ \
-p99_inline                                                                           \
-TYPE NAME(size_t x) {                                                                \
-  switch (x) {                                                                       \
-    P99_CASE_RETURN(__VA_ARGS__);                                                    \
-  default: return DEFAULT;                                                           \
-  }                                                                                  \
-}                                                                                    \
+#define P99_CHOICE_FUNCTION(TYPE, NAME, DEFAULT, ...)                                    \
+/*! This is a function implementing a ``@c static @c inline'' case table          */     \
+/*! Default value if @a p00_x is out of range is DEFAULT.                             */ \
+/*! The table values are __VA_ARGS__.                                             */     \
+/*! @param p00_x indicates the value to choose, it must be compatible with @c size_t. */ \
+p99_inline                                                                               \
+TYPE NAME(size_t p00_x) {                                                                \
+  switch (p00_x) {                                                                       \
+    P99_CASE_RETURN(__VA_ARGS__);                                                        \
+  default: return DEFAULT;                                                               \
+  }                                                                                      \
+}                                                                                        \
 P99_MACRO_END(_choice_function_, NAME)
 
 /** @brief Return a small prime number or 0 if @a x is too big **/
@@ -70,12 +70,12 @@ P00_UNIQUE_BIT__(BIT, BITS, WIDTH, P00_UNIQUE_BIT_MULT(BITS, WIDTH))
 /* doxygen can't handle the P99_FOR */
 #define P00_UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH) \
 p99_inline                                                        \
-TYPE P99_PASTE2(NAME, BITS)(size_t x)
+TYPE P99_PASTE2(NAME, BITS)(size_t p00_x)
 #else
 #define P00_UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH)                 \
 p99_inline                                                                        \
-TYPE P99_PASTE2(NAME, BITS)(size_t x) {                                           \
-  switch (x) {                                                                    \
+TYPE P99_PASTE2(NAME, BITS)(size_t p00_x) {                                       \
+  switch (p00_x) {                                                                \
     P99_FOR(WIDTH, WIDTH, P00_SEP, P00_UNIQUE_BIT_RETURN, P99_DUPL(WIDTH, BITS)); \
   default: return DEFAULT;                                                        \
   }                                                                               \
@@ -94,27 +94,27 @@ P00_UNIQUE_BIT_FUNCTION(unsigned, p00_unique_bit_hash_, -1, 6, 64);
  ** question on stackoverflow:
  ** http://stackoverflow.com/questions/3465098/bit-twiddling-which-bit-is-set
  **/
-#define P00_UNIQUE_BIT(BITS, WIDTH)                                                  \
-/*! @brief Find the one unique bit that is set in @a x                     */        \
-/*! @warning this function doesn't check if the precondition is fulfilled. */        \
-/*! @see p99_unique_bit_checked ## WIDTH                                   */        \
-p99_inline                                                                           \
- unsigned P99_PASTE2(p99_unique_bit_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) x) {        \
-  /* the index now only has BITS significant bits, so the default case of            \
-     P99_PASTE2(p00_unique_bit_hash_, BITS) will never trigger.*/                    \
-  return                                                                             \
-    P99_PASTE2(p00_unique_bit_hash_, BITS)                                           \
-    ((x * P00_UNIQUE_BIT_MULT(BITS, WIDTH))                                          \
-     >> (WIDTH - BITS));                                                             \
-}                                                                                    \
-/*! @brief Find the one unique bit that is set in @a x                 */            \
-/*! if @a x has 0 or more than one bits set this returns a big number. */            \
-/*! @see p99_unique_bit_ ## WIDTH                                      */            \
-p99_inline                                                                           \
-unsigned P99_PASTE2(p99_unique_bit_checked_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) x) { \
-  unsigned ret = P99_PASTE2(p99_unique_bit_, WIDTH)(x);                              \
-  return ((P99_PASTE3(UINT, WIDTH, _C)(1) << ret) == x) ? ret : -1;                  \
-}                                                                                    \
+#define P00_UNIQUE_BIT(BITS, WIDTH)                                                      \
+/*! @brief Find the one unique bit that is set in @a p00_x                     */        \
+/*! @warning this function doesn't check if the precondition is fulfilled. */            \
+/*! @see p99_unique_bit_checked ## WIDTH                                   */            \
+p99_inline                                                                               \
+ unsigned P99_PASTE2(p99_unique_bit_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) p00_x) {        \
+  /* the index now only has BITS significant bits, so the default case of                \
+     P99_PASTE2(p00_unique_bit_hash_, BITS) will never trigger.*/                        \
+  return                                                                                 \
+    P99_PASTE2(p00_unique_bit_hash_, BITS)                                               \
+    ((p00_x * P00_UNIQUE_BIT_MULT(BITS, WIDTH))                                          \
+     >> (WIDTH - BITS));                                                                 \
+}                                                                                        \
+/*! @brief Find the one unique bit that is set in @a p00_x                 */            \
+/*! if @a p00_x has 0 or more than one bits set this returns a big number. */            \
+/*! @see p99_unique_bit_ ## WIDTH                                      */                \
+p99_inline                                                                               \
+unsigned P99_PASTE2(p99_unique_bit_checked_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) p00_x) { \
+  unsigned p00_ret = P99_PASTE2(p99_unique_bit_, WIDTH)(p00_x);                          \
+  return ((P99_PASTE3(UINT, WIDTH, _C)(1) << p00_ret) == p00_x) ? p00_ret : -1;          \
+}                                                                                        \
 P99_MACRO_END(_unique_bit)
 
 P00_UNIQUE_BIT(3, 8);

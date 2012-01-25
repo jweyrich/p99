@@ -183,10 +183,10 @@
 # undef p99_has_extension
 # undef p99_has_attribute
 
-# define p99_has_builtin(x) (P99_IF_EQ_1(__has_builtin(x))(1)(0) || P99_IF_EQ_1(p00_has_builtin_ ## x)(1)(0))  // Compatibility with non-clang compilers.
-# define p99_has_feature(x) (P99_IF_EQ_1(__has_feature(x))(1)(0) || P99_IF_EQ_1(p00_has_feature_ ## x)(1)(0))  // Compatibility with non-clang compilers.
-# define p99_has_extension(x) (P99_IF_EQ_1(__has_extension(x))(1)(0) || P99_IF_EQ_1(p00_has_extension_ ## x)(1)(0)) // Compatibility with non-clang compilers.
-# define p99_has_attribute(x) (P99_IF_EQ_1(__has_attribute(x))(1)(0) || P99_IF_EQ_1(p00_has_attribute_ ## x)(1)(0))  // Compatibility with non-clang compilers.
+# define p99_has_builtin(X) (P99_IF_EQ_1(__has_builtin(X))(1)(0) || P99_IF_EQ_1(p00_has_builtin_ ## X)(1)(0))  // Compatibility with non-clang compilers.
+# define p99_has_feature(X) (P99_IF_EQ_1(__has_feature(X))(1)(0) || P99_IF_EQ_1(p00_has_feature_ ## X)(1)(0))  // Compatibility with non-clang compilers.
+# define p99_has_extension(X) (P99_IF_EQ_1(__has_extension(X))(1)(0) || P99_IF_EQ_1(p00_has_extension_ ## X)(1)(0)) // Compatibility with non-clang compilers.
+# define p99_has_attribute(X) (P99_IF_EQ_1(__has_attribute(X))(1)(0) || P99_IF_EQ_1(p00_has_attribute_ ## X)(1)(0))  // Compatibility with non-clang compilers.
 
 
 #endif      /* !P99_IF_H_ */

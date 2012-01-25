@@ -598,12 +598,12 @@ P00_SEE_PROMOTE
 
 
 p99_inline
-uintmax_t p00_abs_signed(intmax_t a) {
-  uintmax_t aa = a;
+uintmax_t p00_abs_signed(intmax_t p00_a) {
+  uintmax_t p00_aa = p00_a;
   /* The minus is taken on the unsigned value, so it gives the
      correct result with -INTMAX_MAX, namely INTMAX_MAX, which might
      not be representable for two's complement representation. */
-  return (a < INTMAX_C(0)) ? -aa : a;
+  return (p00_a < INTMAX_C(0)) ? -p00_aa : p00_a;
 }
 
 /**
@@ -623,12 +623,12 @@ uintmax_t p00_abs_signed(intmax_t a) {
 
 #if defined(p99x_uintmax) && defined(p99x_intmax)
 p99_inline
-p99x_uintmax p99x__abs_signed(p99x_intmax a) {
-  p99x_uintmax aa = a;
+p99x_uintmax p99x__abs_signed(p99x_intmax p00_a) {
+  p99x_uintmax p00_aa = p00_a;
   /* The minus is taken on the unsigned value, so it gives the
      correct result with -INTMAX_MAX, namely INTMAX_MAX, which might
      not be representable for two's complement representation. */
-  return (a < (p99x_intmax)0) ? -aa : a;
+  return (p00_a < (p99x_intmax)0) ? -p00_aa : p00_a;
 }
 #define P99X_ABS(EXPR) (P99_SIGNED(EXPR) ? p99x__abs_signed(EXPR) : (EXPR))
 #endif
@@ -783,10 +783,10 @@ P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (
 /*! @warning For bizarrely encoded cases this might result in a negative zero or so. */                                                       \
 p99_inline                                                                                                                                    \
 P99_BUILTIN_TYPE(SUFF,)                                                                                                                       \
-P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) a);                                                                                      \
+P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) p00_a);                                                                                  \
 p99_inline                                                                                                                                    \
 P99_BUILTIN_TYPE(SUFF,)                                                                                                                       \
-P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF,) a, P99_BUILTIN_TYPE(SUFF,) b, int* err)
+P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF,) p00_a, P99_BUILTIN_TYPE(SUFF,) p00_b, int* p00_err)
 #else
 #define P00_DECLARE_OVERFLOW(SUFF)                             \
   P00_DECLARE_TWOS(SUFF)                                       \
@@ -802,34 +802,34 @@ P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF,) a, P99_BUILTIN_TYPE(SUFF,) b, 
 P99_MACRO_END(p99_overflow_, SUFF)
 
 
-#define P00_DECLARE_TWOS(SUFF)                                                                    \
-p99_inline                                                                                        \
-P99_BUILTIN_TYPE(SUFF)                                                                            \
-P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) a) {                                         \
-  P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);                               \
-  P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1);          \
-  /* the unsigned max, as if it had just one value bit more */                                    \
-  P99_BUILTIN_TYPE(u, SUFF) const utype_max = (P99_BUILTIN_TYPE(u, SUFF))((2 * type_max) + 1);    \
-  return                                                                                          \
-    /* for positive values there is nothing to do, this includes the                              \
-       case where the unsigned type has the same number of value bits                             \
-       as the signed type */                                                                      \
-    (a <= type_max)                                                                               \
-    ? a                                                                                           \
-    /* Capture the special case where type_max1 is a trap                                         \
-       representation for the signed type */                                                      \
-    : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (a == type_max1))                    \
-       ? (P99_BUILTIN_TYPE(SUFF))(-0)                                                             \
-       /* otherwise compute the negative modulo utype_max + 1. for                                \
-          the case that the unsigned type is much wider than the                                  \
-          signed type we mask the higher order bits away. */                                      \
-       : (P99_BUILTIN_TYPE(SUFF))((-(P99_BUILTIN_TYPE(SUFF))(utype_max - (utype_max & a))) - 1)); \
+#define P00_DECLARE_TWOS(SUFF)                                                                        \
+p99_inline                                                                                            \
+P99_BUILTIN_TYPE(SUFF)                                                                                \
+P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) p00_a) {                                         \
+  P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);                                   \
+  P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1);              \
+  /* the unsigned max, as if it had just one value bit more */                                        \
+  P99_BUILTIN_TYPE(u, SUFF) const utype_max = (P99_BUILTIN_TYPE(u, SUFF))((2 * type_max) + 1);        \
+  return                                                                                              \
+    /* for positive values there is nothing to do, this includes the                                  \
+       case where the unsigned type has the same number of value bits                                 \
+       as the signed type */                                                                          \
+    (p00_a <= type_max)                                                                               \
+    ? p00_a                                                                                           \
+    /* Capture the special case where type_max1 is a trap                                             \
+       representation for the signed type */                                                          \
+    : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (p00_a == type_max1))                    \
+       ? (P99_BUILTIN_TYPE(SUFF))(-0)                                                                 \
+       /* otherwise compute the negative modulo utype_max + 1. for                                    \
+          the case that the unsigned type is much wider than the                                      \
+          signed type we mask the higher order bits away. */                                          \
+       : (P99_BUILTIN_TYPE(SUFF))((-(P99_BUILTIN_TYPE(SUFF))(utype_max - (utype_max & p00_a))) - 1)); \
 }
 
 #define P00_DECLARE_UNSIG(SUFF)                                                                         \
 p99_inline                                                                                              \
 P99_BUILTIN_TYPE(u, SUFF)                                                                               \
-P99_PASTE2(p99_unsig, SUFF)(P99_BUILTIN_TYPE(SUFF) a) {                                                 \
+P99_PASTE2(p99_unsig, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a) {                                             \
   /* needed to avoid spurious compiler warnings */                                                      \
   register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                                                  \
   register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);                            \
@@ -837,158 +837,158 @@ P99_PASTE2(p99_unsig, SUFF)(P99_BUILTIN_TYPE(SUFF) a) {                         
   /* the unsigned max, as if it had just one value bit more */                                          \
   register P99_BUILTIN_TYPE(u, SUFF) const utype_max = (P99_BUILTIN_TYPE(u, SUFF))((2 * type_max) + 1); \
   return                                                                                                \
-    a >= type_null                                                                                      \
-    ? a                                                                                                 \
+    p00_a >= type_null                                                                                  \
+    ? p00_a                                                                                             \
     /* Capture the special case where -INTMAX_MIN can not represented                                   \
        in the signed type */                                                                            \
-    : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (a == P99_BUILTIN_MIN(SUFF)))              \
+    : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (p00_a == P99_BUILTIN_MIN(SUFF)))          \
        ? type_max1                                                                                      \
        /* otherwise compute the negative modulo utype_max + 1. */                                       \
-       : (P99_BUILTIN_TYPE(u, SUFF))((utype_max - (P99_BUILTIN_TYPE(u, SUFF))-a) + 1));                 \
+       : (P99_BUILTIN_TYPE(u, SUFF))((utype_max - (P99_BUILTIN_TYPE(u, SUFF))-p00_a) + 1));             \
 }
 
-#define P00_DECLARE_ADD0(SUFF)                                                   \
-p99_inline                                                                       \
-P99_BUILTIN_TYPE(u, SUFF)                                                        \
-P99_PASTE2(p00_add0, SUFF)(P99_BUILTIN_TYPE(SUFF) a, P99_BUILTIN_TYPE(SUFF) b) { \
-  register P99_BUILTIN_TYPE(u, SUFF) ua = P99_PASTE2(p99_unsig, SUFF)(a);        \
-  register P99_BUILTIN_TYPE(u, SUFF) ub = P99_PASTE2(p99_unsig, SUFF)(b);        \
-  register P99_BUILTIN_TYPE(u, SUFF) res = (P99_BUILTIN_TYPE(u, SUFF))(ua + ub); \
-  return res;                                                                    \
+#define P00_DECLARE_ADD0(SUFF)                                                               \
+p99_inline                                                                                   \
+P99_BUILTIN_TYPE(u, SUFF)                                                                    \
+P99_PASTE2(p00_add0, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b) {     \
+  register P99_BUILTIN_TYPE(u, SUFF) p00_ua = P99_PASTE2(p99_unsig, SUFF)(p00_a);            \
+  register P99_BUILTIN_TYPE(u, SUFF) p00_ub = P99_PASTE2(p99_unsig, SUFF)(p00_b);            \
+  register P99_BUILTIN_TYPE(u, SUFF) p00_res = (P99_BUILTIN_TYPE(u, SUFF))(p00_ua + p00_ub); \
+  return p00_res;                                                                            \
 }
 
-#define P00_DECLARE_SUB0(SUFF)                                                   \
-p99_inline                                                                       \
-P99_BUILTIN_TYPE(u, SUFF)                                                        \
-P99_PASTE2(p00_sub0, SUFF)(P99_BUILTIN_TYPE(SUFF) a, P99_BUILTIN_TYPE(SUFF) b) { \
-  register P99_BUILTIN_TYPE(u, SUFF) ua = P99_PASTE2(p99_unsig, SUFF)(a);        \
-  register P99_BUILTIN_TYPE(u, SUFF) ub = P99_PASTE2(p99_unsig, SUFF)(b);        \
-  register P99_BUILTIN_TYPE(u, SUFF) res = (P99_BUILTIN_TYPE(u, SUFF))(ua - ub); \
-  return res;                                                                    \
+#define P00_DECLARE_SUB0(SUFF)                                                               \
+p99_inline                                                                                   \
+P99_BUILTIN_TYPE(u, SUFF)                                                                    \
+P99_PASTE2(p00_sub0, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b) {     \
+  register P99_BUILTIN_TYPE(u, SUFF) p00_ua = P99_PASTE2(p99_unsig, SUFF)(p00_a);            \
+  register P99_BUILTIN_TYPE(u, SUFF) p00_ub = P99_PASTE2(p99_unsig, SUFF)(p00_b);            \
+  register P99_BUILTIN_TYPE(u, SUFF) p00_res = (P99_BUILTIN_TYPE(u, SUFF))(p00_ua - p00_ub); \
+  return p00_res;                                                                            \
 }
 
 #define P00_DECLARE_ADD2(SUFF)                                                                    \
 p99_inline                                                                                        \
 P99_BUILTIN_TYPE(SUFF)                                                                            \
-     P99_PASTE2(p00_add2, SUFF)(P99_BUILTIN_TYPE(SUFF) a,                                         \
-                                P99_BUILTIN_TYPE(SUFF) b,                                         \
-                                int err[P99_ATLEAST 1]) {                                         \
+     P99_PASTE2(p00_add2, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a,                                     \
+                                P99_BUILTIN_TYPE(SUFF) p00_b,                                     \
+                                int p00_err[P99_ATLEAST 1]) {                                     \
   /* needed to avoid spurious compiler warnings */                                                \
   register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                                            \
   register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);                      \
   register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); \
-  register P99_BUILTIN_TYPE(u, SUFF) uc                                                           \
-    = P99_PASTE2(p00_add0, SUFF)(a, b);                                                           \
-  register P99_BUILTIN_TYPE(SUFF) c                                                               \
-    = P99_PASTE2(p99_twos, SUFF)(uc);                                                             \
+  register P99_BUILTIN_TYPE(u, SUFF) p00_uc                                                       \
+    = P99_PASTE2(p00_add0, SUFF)(p00_a, p00_b);                                                   \
+  register P99_BUILTIN_TYPE(SUFF) p00_c                                                           \
+    = P99_PASTE2(p99_twos, SUFF)(p00_uc);                                                         \
   /* (x ^ y) < 0 iff x and y have different signs */                                              \
-  if (P99_UNLIKELY(((a ^ b) >= type_null) && ((b ^ c) < type_null))                               \
+  if (P99_UNLIKELY(((p00_a ^ p00_b) >= type_null) && ((p00_b ^ p00_c) < type_null))               \
       /* capture the case of the trap value */                                                    \
       || ((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF))                                       \
-          && (uc == type_max1)))                                                                  \
-    err[0] = ERANGE;                                                                              \
-  return c;                                                                                       \
+          && (p00_uc == type_max1)))                                                              \
+    p00_err[0] = ERANGE;                                                                          \
+  return p00_c;                                                                                   \
 }
 
 #define P00_DECLARE_SUB2(SUFF)                                                                    \
 p99_inline                                                                                        \
 P99_BUILTIN_TYPE(SUFF)                                                                            \
-     P99_PASTE2(p00_sub2, SUFF)(P99_BUILTIN_TYPE(SUFF) a,                                         \
-                                P99_BUILTIN_TYPE(SUFF) b,                                         \
-                                int err[P99_ATLEAST 1]) {                                         \
+     P99_PASTE2(p00_sub2, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a,                                     \
+                                P99_BUILTIN_TYPE(SUFF) p00_b,                                     \
+                                int p00_err[P99_ATLEAST 1]) {                                     \
   /* needed to avoid spurious compiler warnings */                                                \
   register P99_BUILTIN_TYPE(SUFF) const type_null = 0;                                            \
   register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF);                      \
   register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); \
-  register P99_BUILTIN_TYPE(u, SUFF) uc                                                           \
-    = P99_PASTE2(p00_sub0, SUFF)(a, b);                                                           \
-  register P99_BUILTIN_TYPE(SUFF) c                                                               \
-    = P99_PASTE2(p99_twos, SUFF)(uc);                                                             \
+  register P99_BUILTIN_TYPE(u, SUFF) p00_uc                                                       \
+    = P99_PASTE2(p00_sub0, SUFF)(p00_a, p00_b);                                                   \
+  register P99_BUILTIN_TYPE(SUFF) p00_c                                                           \
+    = P99_PASTE2(p99_twos, SUFF)(p00_uc);                                                         \
   /* (x ^ y) < 0 iff x and y have different signs */                                              \
-  if (P99_UNLIKELY(((a ^ b) < type_null) && ((b ^ c) >= type_null))                               \
+  if (P99_UNLIKELY(((p00_a ^ p00_b) < type_null) && ((p00_b ^ p00_c) >= type_null))               \
       /* capture the case of the trap value */                                                    \
       || ((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF))                                       \
-          && (uc == type_max1)))                                                                  \
-    err[0] = ERANGE;                                                                              \
-  return c;                                                                                       \
+          && (p00_uc == type_max1)))                                                              \
+    p00_err[0] = ERANGE;                                                                          \
+  return p00_c;                                                                                   \
 }
 
 #define P00_DECLARE_ADD1(SUFF)                                 \
 p99_inline                                                     \
 P99_BUILTIN_TYPE(SUFF)                                         \
-     P99_PASTE2(p00_add1, SUFF)(P99_BUILTIN_TYPE(SUFF) a,      \
-                                P99_BUILTIN_TYPE(SUFF) b,      \
-                                int err[P99_ATLEAST 1]) {      \
+     P99_PASTE2(p00_add1, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a,  \
+                                P99_BUILTIN_TYPE(SUFF) p00_b,  \
+                                int p00_err[P99_ATLEAST 1]) {  \
   /* needed to avoid spurious compiler warnings */             \
   register P99_BUILTIN_TYPE(SUFF) const type_null = 0;         \
-  register P99_BUILTIN_TYPE(SUFF) ret;                         \
-  if (b >= type_null) {                                        \
-    if (P99_LIKELY(P99_BUILTIN_MAX(SUFF) - b >= a)) {          \
-      ret = a + b;                                             \
+  register P99_BUILTIN_TYPE(SUFF) p00_ret;                     \
+  if (p00_b >= type_null) {                                    \
+    if (P99_LIKELY(P99_BUILTIN_MAX(SUFF) - p00_b >= p00_a)) {  \
+      p00_ret = p00_a + p00_b;                                 \
     } else {                                                   \
-      ret = ((b - P99_BUILTIN_MAX(SUFF)) + a) - 1;             \
-      err[0] = ERANGE;                                         \
+      p00_ret = ((p00_b - P99_BUILTIN_MAX(SUFF)) + p00_a) - 1; \
+      p00_err[0] = ERANGE;                                     \
     }                                                          \
   } else {                                                     \
-    if (P99_LIKELY(P99_BUILTIN_MIN(SUFF) - b <= a)) {          \
-      ret = a + b;                                             \
+    if (P99_LIKELY(P99_BUILTIN_MIN(SUFF) - p00_b <= p00_a)) {  \
+      p00_ret = p00_a + p00_b;                                 \
     } else {                                                   \
-      ret = ((b + P99_BUILTIN_MAX(SUFF)) + a) + 1;             \
-      err[0] = ERANGE;                                         \
+      p00_ret = ((p00_b + P99_BUILTIN_MAX(SUFF)) + p00_a) + 1; \
+      p00_err[0] = ERANGE;                                     \
     }                                                          \
   }                                                            \
-  return ret;                                                  \
+  return p00_ret;                                              \
 }
 
 #define P00_DECLARE_SUB1(SUFF)                                 \
 p99_inline                                                     \
 P99_BUILTIN_TYPE(SUFF)                                         \
-     P99_PASTE2(p00_sub1, SUFF)(P99_BUILTIN_TYPE(SUFF) a,      \
-                                P99_BUILTIN_TYPE(SUFF) b,      \
-                                int err[P99_ATLEAST 1]) {      \
+     P99_PASTE2(p00_sub1, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a,  \
+                                P99_BUILTIN_TYPE(SUFF) p00_b,  \
+                                int p00_err[P99_ATLEAST 1]) {  \
   /* needed to avoid spurious compiler warnings */             \
   register P99_BUILTIN_TYPE(SUFF) const type_null = 0;         \
-  register P99_BUILTIN_TYPE(SUFF) ret;                         \
-  if (b <= type_null) {                                        \
-    if (P99_LIKELY(P99_BUILTIN_MAX(SUFF) + b >= a)) {          \
-      ret = a - b;                                             \
+  register P99_BUILTIN_TYPE(SUFF) p00_ret;                     \
+  if (p00_b <= type_null) {                                    \
+    if (P99_LIKELY(P99_BUILTIN_MAX(SUFF) + p00_b >= p00_a)) {  \
+      p00_ret = p00_a - p00_b;                                 \
     } else {                                                   \
-      ret = (a - (b + P99_BUILTIN_MAX(SUFF))) + 1;             \
-      err[0] = ERANGE;                                         \
+      p00_ret = (p00_a - (p00_b + P99_BUILTIN_MAX(SUFF))) + 1; \
+      p00_err[0] = ERANGE;                                     \
     }                                                          \
   } else {                                                     \
-    if (P99_LIKELY(P99_BUILTIN_MIN(SUFF) + b <= a)) {          \
-      ret = a - b;                                             \
+    if (P99_LIKELY(P99_BUILTIN_MIN(SUFF) + p00_b <= p00_a)) {  \
+      p00_ret = p00_a - p00_b;                                 \
     } else {                                                   \
-      ret = (a - (b - P99_BUILTIN_MAX(SUFF))) - 1;             \
-      err[0] = ERANGE;                                         \
+      p00_ret = (p00_a - (p00_b - P99_BUILTIN_MAX(SUFF))) - 1; \
+      p00_err[0] = ERANGE;                                     \
     }                                                          \
   }                                                            \
-  return ret;                                                  \
+  return p00_ret;                                              \
 }
 
 #define P00_DECLARE_ADD(SUFF)                                  \
 p99_inline                                                     \
 P99_BUILTIN_TYPE(SUFF)                                         \
-     P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF) a,       \
-                               P99_BUILTIN_TYPE(SUFF) b,       \
-                               int err[P99_ATLEAST 1]) {       \
+     P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a,   \
+                               P99_BUILTIN_TYPE(SUFF) p00_b,   \
+                               int p00_err[P99_ATLEAST 1]) {   \
   return                                                       \
     (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF))         \
-    ? P99_PASTE2(p00_add2, SUFF)(a, b, err)                    \
-    : P99_PASTE2(p00_add1, SUFF)(a, b, err);                   \
+    ? P99_PASTE2(p00_add2, SUFF)(p00_a, p00_b, p00_err)        \
+    : P99_PASTE2(p00_add1, SUFF)(p00_a, p00_b, p00_err);       \
 }
 
 #define P00_DECLARE_SUB(SUFF)                                  \
 p99_inline                                                     \
 P99_BUILTIN_TYPE(SUFF)                                         \
-     P99_PASTE2(p99_sub, SUFF)(P99_BUILTIN_TYPE(SUFF) a,       \
-                               P99_BUILTIN_TYPE(SUFF) b,       \
-                               int err[P99_ATLEAST 1]) {       \
+     P99_PASTE2(p99_sub, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a,   \
+                               P99_BUILTIN_TYPE(SUFF) p00_b,   \
+                               int p00_err[P99_ATLEAST 1]) {   \
   return                                                       \
     (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF))         \
-    ? P99_PASTE2(p00_sub2, SUFF)(a, b, err)                    \
-    : P99_PASTE2(p00_sub1, SUFF)(a, b, err);                   \
+    ? P99_PASTE2(p00_sub2, SUFF)(p00_a, p00_b, p00_err)        \
+    : P99_PASTE2(p00_sub1, SUFF)(p00_a, p00_b, p00_err);       \
 }
 #endif
 
@@ -1132,7 +1132,7 @@ P99_CHOOSE5(xT,                                                \
  ** @brief Promote integer expression @a x to the width of @c
  ** uintmax_t but keep signedness if possible.
  **/
-#define P00_J(x) (0 ? P99_0(uintmax_t) : (x))
+#define P00_J(X) (0 ? P99_0(uintmax_t) : (X))
 
 
 /**
@@ -1199,7 +1199,7 @@ P99_CHOOSE5(xT,                                                \
  ** @brief function equivalent to ::P99_LOW2
  **/
 p99_inline
-uintmax_t p99_low2(uintmax_t x) { return P99_LOW2(x); }
+uintmax_t p99_low2(uintmax_t p00_x) { return P99_LOW2(p00_x); }
 
 /**
  ** @brief mask consisting of bits strictly below the least
@@ -1213,7 +1213,7 @@ uintmax_t p99_low2(uintmax_t x) { return P99_LOW2(x); }
  ** @brief function equivalent to ::P99_LOW2MASK1
  **/
 p99_inline
-uintmax_t p99_low2mask1(uintmax_t x) { return P99_LOW2MASK1(x); }
+uintmax_t p99_low2mask1(uintmax_t p00_x) { return P99_LOW2MASK1(p00_x); }
 
 /**
  ** @brief mask consisting of bits below and including the least
@@ -1227,7 +1227,7 @@ uintmax_t p99_low2mask1(uintmax_t x) { return P99_LOW2MASK1(x); }
  ** @brief function equivalent to ::P99_LOW2MASK0
  **/
 p99_inline
-uintmax_t p99_low2mask0(uintmax_t x) { return P99_LOW2MASK0(x); }
+uintmax_t p99_low2mask0(uintmax_t p00_x) { return P99_LOW2MASK0(p00_x); }
 
 /**
  ** @brief mask consisting of bits above and including the least
@@ -1241,7 +1241,7 @@ uintmax_t p99_low2mask0(uintmax_t x) { return P99_LOW2MASK0(x); }
  ** @brief function equivalent to ::P99_MASK2LOW1
  **/
 p99_inline
-uintmax_t p99_mask2low1(uintmax_t x) { return P99_MASK2LOW1(x); }
+uintmax_t p99_mask2low1(uintmax_t p00_x) { return P99_MASK2LOW1(p00_x); }
 
 /**
  ** @brief mask consisting of bits strictly above the least
@@ -1255,7 +1255,7 @@ uintmax_t p99_mask2low1(uintmax_t x) { return P99_MASK2LOW1(x); }
  ** @brief function equivalent to ::P99_MASK2LOW0
  **/
 p99_inline
-uintmax_t p99_mask2low0(uintmax_t x) { return P99_MASK2LOW0(x); }
+uintmax_t p99_mask2low0(uintmax_t p00_x) { return P99_MASK2LOW0(p00_x); }
 
 /**
  ** @brief clear the least significant bit that is non zero
@@ -1268,7 +1268,7 @@ uintmax_t p99_mask2low0(uintmax_t x) { return P99_MASK2LOW0(x); }
  ** @brief function equivalent to ::P99_LOW2CLEAR
  **/
 p99_inline
-uintmax_t p99_low2clear(uintmax_t x) { return P99_LOW2CLEAR(x); }
+uintmax_t p99_low2clear(uintmax_t p00_x) { return P99_LOW2CLEAR(p00_x); }
 
 /**
  ** @brief fill all bits below least significant bit that is non zero
@@ -1281,7 +1281,7 @@ uintmax_t p99_low2clear(uintmax_t x) { return P99_LOW2CLEAR(x); }
  ** @brief function equivalent to ::P99_LOW2FILL
  **/
 p99_inline
-uintmax_t p99_low2fill(uintmax_t x) { return P99_LOW2FILL(x); }
+uintmax_t p99_low2fill(uintmax_t p00_x) { return P99_LOW2FILL(p00_x); }
 
 /**
  ** @brief set least significant zero bit
@@ -1294,7 +1294,7 @@ uintmax_t p99_low2fill(uintmax_t x) { return P99_LOW2FILL(x); }
  ** @brief function equivalent to ::P99_LOW0SET
  **/
 p99_inline
-uintmax_t p99_low0set(uintmax_t x) { return P99_LOW0SET(x); }
+uintmax_t p99_low0set(uintmax_t p00_x) { return P99_LOW0SET(p00_x); }
 
 /**
  ** @brief shift number right such that the least significant bit
@@ -1308,7 +1308,7 @@ uintmax_t p99_low0set(uintmax_t x) { return P99_LOW0SET(x); }
  ** @brief function equivalent to ::P99_LOW2SHIFT
  **/
 p99_inline
-uintmax_t p99_low2shift(uintmax_t x) { return P99_LOW2SHIFT(x); }
+uintmax_t p99_low2shift(uintmax_t p00_x) { return P99_LOW2SHIFT(p00_x); }
 
 /**
  ** @brief function that returns the next higher value that has
@@ -1319,16 +1319,16 @@ uintmax_t p99_low2shift(uintmax_t x) { return P99_LOW2SHIFT(x); }
  ** than @a x.
  **/
 p99_inline
-uintmax_t p99_next_popcount(uintmax_t x) {
-  uintmax_t ret = 0;
-  if (x) {
-    uintmax_t b = P99_LOW2(x);
-    uintmax_t t = x + b;
-    uintmax_t c = x ^ t;
-    uintmax_t m = (c >> 2) / b;
-    ret = t | m;
+uintmax_t p99_next_popcount(uintmax_t p00_x) {
+  uintmax_t p00_ret = 0;
+  if (p00_x) {
+    uintmax_t p00_b = P99_LOW2(p00_x);
+    uintmax_t p00_t = p00_x + p00_b;
+    uintmax_t p00_c = p00_x ^ p00_t;
+    uintmax_t p00_m = (p00_c >> 2) / p00_b;
+    p00_ret = p00_t | p00_m;
   }
-  return ret;
+  return p00_ret;
 }
 
 /**
@@ -1355,18 +1355,18 @@ typedef uint32_t p00_uint_byte_4;
 typedef uint64_t p00_uint_byte_8;
 
 union p99_endian_2 {
-  uint8_t c[2];
-  uint16_t i;
+  uint8_t p00_c[2];
+  uint16_t p00_i;
 };
 
 union p99_endian_4 {
-  uint8_t c[4];
-  uint32_t i;
+  uint8_t p00_c[4];
+  uint32_t p00_i;
 };
 
 union p99_endian_8 {
-  uint8_t c[8];
-  uint64_t i;
+  uint8_t p00_c[8];
+  uint64_t p00_i;
 };
 
 
@@ -1374,16 +1374,16 @@ union p99_endian_8 {
 typedef uint128_t p00_uint_byte_16;
 
 union p99_endian_16 {
-  uint8_t c[16];
-  uint128_t i;
+  uint8_t p00_c[16];
+  uint128_t p00_i;
 };
 #else
 # ifdef p99x_uint128
 typedef p99x_uint128 p00_uint_byte_16;
 
 union p99_endian_16 {
-  uint8_t c[16];
-  p99x_uint128 i;
+  uint8_t p00_c[16];
+  p99x_uint128 p00_i;
 };
 # endif
 #endif
@@ -1391,14 +1391,14 @@ union p99_endian_16 {
 
 #define P00_HTON0(N, X, I) [I] = (0xFF & ((X)>>((N - (I + 1))*CHAR_BIT)))
 #define P00_HTON(N, X) P99_FOR(N, N, P00_SEQ, P00_HTON0, P99_DUPL(N, X))
-#define P99_HTON_INITIALIZER(N, X) { .c = { P00_HTON(N, X) } }
+#define P99_HTON_INITIALIZER(N, X) { .p00_c = { P00_HTON(N, X) } }
 
 /**
  ** @brief host to network transformation of integers according to the endianness of the platform
  ** @param N is the number of bytes of the type
  ** @param X is the value that is to be transformed
  **/
-#define P99_HTON(N, X) (((P99_PASTE2(p99_endian_, N) const)P99_HTON_INITIALIZER(N, X)).i)
+#define P99_HTON(N, X) (((P99_PASTE2(p99_endian_, N) const)P99_HTON_INITIALIZER(N, X)).p00_i)
 
 /**
  ** @brief host to network transformation of integers according to the endianness of the platform
@@ -1421,9 +1421,9 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_HTONL, 1)
 #define P99_HTONL(X) P99_HTON(4, X)
 
 
-#define P00_NTOH0(N, X, I) (((P99_PASTE2(p00_uint_byte_, N))((X).c[I]))<<((N - (I + 1))*CHAR_BIT))
+#define P00_NTOH0(N, X, I) (((P99_PASTE2(p00_uint_byte_, N))((X).p00_c[I]))<<((N - (I + 1))*CHAR_BIT))
 #define P00_NTOH(N, X, XX) P99_FOR(N, N, P00_BOR, P00_NTOH0, P99_DUPL(N, XX))
-#define P99_NTOH_INITIALIZER(N, X) { .i = (X) }
+#define P99_NTOH_INITIALIZER(N, X) { .p00_i = (X) }
 
 /**
  ** @brief network to host transformation of integers according to the endianness of the platform

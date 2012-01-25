@@ -26,11 +26,11 @@
 #include "p99_int.h"
 
 p99_inline
-void p00_swap2(void* p0, void* p1, size_t pSize, void* t0, void* t1) {
-  memcpy(t0, p0, pSize);
-  memcpy(t1, p1, pSize);
-  memcpy(p1, t0, pSize);
-  memcpy(p0, t1, pSize);
+void p00_swap2(void* p00_p0, void* p00_p1, size_t p00_size, void* p00_t0, void* p00_t1) {
+  memcpy(p00_t0, p00_p0, p00_size);
+  memcpy(p00_t1, p00_p1, p00_size);
+  memcpy(p00_p1, p00_t0, p00_size);
+  memcpy(p00_p0, p00_t1, p00_size);
 }
 
 /**
@@ -42,18 +42,18 @@ void p00_swap2(void* p0, void* p1, size_t pSize, void* t0, void* t1) {
  ** @see p99_swap1
  **/
 p99_inline
-void p99_swap2(void* p0, void* p1, size_t pSize) {
-  char* t0 = malloc(2 * pSize);
-  char* t1 = t0 + pSize;
-  p00_swap2(p0, p1, pSize, t0, t1);
-  free(t0);
+void p99_swap2(void* p00_p0, void* p00_p1, size_t p00_size) {
+  char* p00_t0 = malloc(2 * p00_size);
+  char* p00_t1 = p00_t0 + p00_size;
+  p00_swap2(p00_p0, p00_p1, p00_size, p00_t0, p00_t1);
+  free(p00_t0);
 }
 
 p99_inline
-void p00_swap1(void* p0, void* p1, size_t pSize, void* t0) {
-  memcpy(t0, p0, pSize);
-  memcpy(p0, p1, pSize);
-  memcpy(p1, t0, pSize);
+void p00_swap1(void* p00_p0, void* p00_p1, size_t p00_size, void* p00_t0) {
+  memcpy(p00_t0, p00_p0, p00_size);
+  memcpy(p00_p0, p00_p1, p00_size);
+  memcpy(p00_p1, p00_t0, p00_size);
 }
 
 /**
@@ -65,10 +65,10 @@ void p00_swap1(void* p0, void* p1, size_t pSize, void* t0) {
  ** @see p99_swap2
  **/
 p99_inline
-void p99_swap1(void* p0, void* p1, size_t pSize) {
-  void* t0 = malloc(pSize);
-  p00_swap1(p0, p1, pSize, t0);
-  free(t0);
+void p99_swap1(void* p00_p0, void* p00_p1, size_t p00_size) {
+  void* p00_t0 = malloc(p00_size);
+  p00_swap1(p00_p0, p00_p1, p00_size, p00_t0);
+  free(p00_t0);
 }
 
 #define P00_SWAP2(_0, _1)                                      \

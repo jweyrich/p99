@@ -73,17 +73,17 @@
  ** @remark this implementation relies on the presence of @c posix_memalign from POSIX
  **/
 p99_inline
-void *aligned_alloc(size_t alignment, size_t size) {
-  void * ret = 0;
-  int err = posix_memalign(&ret, alignment, size);
+void *aligned_alloc(size_t p00_alignment, size_t p00_size) {
+  void * p00_ret = 0;
+  int err = posix_memalign(&p00_ret, p00_alignment, p00_size);
   /* If there was an error and a fake pointer has been returned, free
      this pointer and set it to 0. This is the only way to return an
      error for this C11 interface. */
-  if (err && ret) {
-    free(ret);
-    ret = 0;
+  if (err && p00_ret) {
+    free(p00_ret);
+    p00_ret = 0;
   }
-  return ret;
+  return p00_ret;
 }
 
 /**

@@ -26,7 +26,7 @@
  ** wraps around.
  **/
 
-#define P00_DOCUMENT_ID(x) /*! @brief counting the number of inclusions of "p99_id.h" mod x */
+#define P00_DOCUMENT_ID(X) /*! @brief counting the number of inclusions of "p99_id.h" mod X */
 
 P00_DOCUMENT_ID(11)
 #define P99_ID_11 0

@@ -47,62 +47,62 @@
 /* When in arm mode we can't do addressing with offset, here, so use
    direct addressing. */
 p99_inline
-uint32_t p00_arm_ldrex(uint32_t volatile*ptr) {
-  uint32_t ret;
+uint32_t p00_arm_ldrex(uint32_t volatile*p00_ptr) {
+  uint32_t p00_ret;
   __asm__ volatile ("ldrex %0,[%1]\t@ load exclusive\n"
-                    : "=&r" (ret)
-                    : "r" (ptr)
+                    : "=&r" (p00_ret)
+                    : "r" (p00_ptr)
                     : "cc", "memory"
                    );
-  return ret;
+  return p00_ret;
 }
 
 p99_inline
-_Bool p00_arm_strex(uint32_t volatile*ptr, uint32_t val) {
-  uint32_t ret;
+_Bool p00_arm_strex(uint32_t volatile*p00_ptr, uint32_t p00_val) {
+  uint32_t p00_ret;
   __asm__ volatile ("strex %0,%1,[%2]\t@ store exclusive\n"
-                    : "=&r" (ret)
-                    : "r" (val), "r" (ptr)
+                    : "=&r" (p00_ret)
+                    : "r" (p00_val), "r" (p00_ptr)
                     : "cc", "memory"
                    );
-  return ret;
+  return p00_ret;
 }
 #else
 /* When in thumb mode we can do addressing with offset, here, so use
    the "m" constraint to the assembler. */
 p99_inline
-uint32_t p00_arm_ldrex(uint32_t volatile*ptr) {
-  uint32_t ret;
+uint32_t p00_arm_ldrex(uint32_t volatile*p00_ptr) {
+  uint32_t p00_ret;
   __asm__ volatile ("ldrex %0,%1\t@ load exclusive\n"
-                    : "=&r" (ret)
-                    : "m" (ptr)
+                    : "=&r" (p00_ret)
+                    : "m" (p00_ptr)
                     : "cc", "memory"
-                    );
-  return ret;
+                   );
+  return p00_ret;
 }
 
 p99_inline
-_Bool p00_arm_strex(uint32_t volatile*ptr, uint32_t val) {
-  uint32_t ret;
+_Bool p00_arm_strex(uint32_t volatile*p00_ptr, uint32_t p00_val) {
+  uint32_t p00_ret;
   __asm__ volatile ("strex %0,%1,%2\t@ store exclusive\n"
-                    : "=&r" (ret)
-                    : "r" (val), "m" (ptr)
+                    : "=&r" (p00_ret)
+                    : "r" (p00_val), "m" (p00_ptr)
                     : "cc", "memory"
-                    );
-  return ret;
+                   );
+  return p00_ret;
 }
 #endif
 
 p99_inline
 uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
   for (;;) {
-    uint32_t ret = p00_arm_ldrex(object);
-    /* Even if the result has been a 1 in ret, We must imperatively
+    uint32_t p00_ret = p00_arm_ldrex(object);
+    /* Even if the result has been a 1 in p00_ret, We must imperatively
        put a strex after the ldex since otherwise we would block other
        threads when they try to access this. On the other hand even if
-       the strex doesn't succeed but ret is already set, we are also
+       the strex doesn't succeed but p00_ret is already set, we are also
        done. */
-    if (!p00_arm_strex(object, 1) || ret) return ret;
+    if (!p00_arm_strex(object, 1) || p00_ret) return p00_ret;
   }
 }
 
@@ -117,80 +117,80 @@ void p00_mfence(void) {
 }
 
 p99_inline
-uint32_t __sync_val_compare_and_swap_4(uint32_t volatile *object, uint32_t pre, uint32_t des) {
-  uint32_t ret = 0;
+uint32_t __sync_val_compare_and_swap_4(uint32_t volatile *object, uint32_t p00_pre, uint32_t p00_des) {
+  uint32_t p00_ret = 0;
   for (;;) {
-    ret = p00_arm_ldrex(object);
-    if (pre != ret) {
+    p00_ret = p00_arm_ldrex(object);
+    if (p00_pre != p00_ret) {
       /* wrong value, cancel */
-      p00_arm_strex(object, ret);
+      p00_arm_strex(object, p00_ret);
       break;
     } else {
-      if (!p00_arm_strex(object, des)) break;
+      if (!p00_arm_strex(object, p00_des)) break;
       /* somebody else touched it, continue */
     }
   }
-  return ret;
+  return p00_ret;
 }
 
 p99_inline
-uint32_t __sync_fetch_and_add_4(uint32_t volatile *object, uint32_t val) {
-  uint32_t ret = 0;
+uint32_t __sync_fetch_and_add_4(uint32_t volatile *object, uint32_t p00_val) {
+  uint32_t p00_ret = 0;
   for (;;) {
-    ret = p00_arm_ldrex(object);
-    uint32_t des = ret + val;
-    if (!p00_arm_strex(object, des)) break;
+    p00_ret = p00_arm_ldrex(object);
+    uint32_t p00_des = p00_ret + p00_val;
+    if (!p00_arm_strex(object, p00_des)) break;
     /* somebody else touched it, continue */
   }
-  return ret;
+  return p00_ret;
 }
 
 p99_inline
-uint32_t __sync_fetch_and_sub_4(uint32_t volatile *object, uint32_t val) {
-  uint32_t ret = 0;
+uint32_t __sync_fetch_and_sub_4(uint32_t volatile *object, uint32_t p00_val) {
+  uint32_t p00_ret = 0;
   for (;;) {
-    ret = p00_arm_ldrex(object);
-    uint32_t des = ret - val;
-    if (!p00_arm_strex(object, des)) break;
+    p00_ret = p00_arm_ldrex(object);
+    uint32_t p00_des = p00_ret - p00_val;
+    if (!p00_arm_strex(object, p00_des)) break;
     /* somebody else touched it, continue */
   }
-  return ret;
+  return p00_ret;
 }
 
 p99_inline
-uint32_t __sync_fetch_and_or_4(uint32_t volatile *object, uint32_t val) {
-  uint32_t ret = 0;
+uint32_t __sync_fetch_and_or_4(uint32_t volatile *object, uint32_t p00_val) {
+  uint32_t p00_ret = 0;
   for (;;) {
-    ret = p00_arm_ldrex(object);
-    uint32_t des = ret | val;
-    if (!p00_arm_strex(object, des)) break;
+    p00_ret = p00_arm_ldrex(object);
+    uint32_t p00_des = p00_ret | p00_val;
+    if (!p00_arm_strex(object, p00_des)) break;
     /* somebody else touched it, continue */
   }
-  return ret;
+  return p00_ret;
 }
 
 p99_inline
-uint32_t __sync_fetch_and_and_4(uint32_t volatile *object, uint32_t val) {
-  uint32_t ret = 0;
+uint32_t __sync_fetch_and_and_4(uint32_t volatile *object, uint32_t p00_val) {
+  uint32_t p00_ret = 0;
   for (;;) {
-    ret = p00_arm_ldrex(object);
-    uint32_t des = ret & val;
-    if (!p00_arm_strex(object, des)) break;
+    p00_ret = p00_arm_ldrex(object);
+    uint32_t p00_des = p00_ret & p00_val;
+    if (!p00_arm_strex(object, p00_des)) break;
     /* somebody else touched it, continue */
   }
-  return ret;
+  return p00_ret;
 }
 
 p99_inline
-uint32_t __sync_fetch_and_xor_4(uint32_t volatile *object, uint32_t val) {
-  uint32_t ret = 0;
+uint32_t __sync_fetch_and_xor_4(uint32_t volatile *object, uint32_t p00_val) {
+  uint32_t p00_ret = 0;
   for (;;) {
-    ret = p00_arm_ldrex(object);
-    uint32_t des = ret ^ val;
-    if (!p00_arm_strex(object, des)) break;
+    p00_ret = p00_arm_ldrex(object);
+    uint32_t p00_des = p00_ret ^ p00_val;
+    if (!p00_arm_strex(object, p00_des)) break;
     /* somebody else touched it, continue */
   }
-  return ret;
+  return p00_ret;
 }
 
 #undef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4

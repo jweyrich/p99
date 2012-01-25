@@ -66,13 +66,13 @@
 #if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
 
 p99_inline
-uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
-  return __sync_lock_test_and_set(object, 1);
+uint32_t p00_sync_lock_test_and_set(uint32_t volatile *p00_objp) {
+  return __sync_lock_test_and_set(p00_objp, 1);
 }
 
 p99_inline
-void p00_sync_lock_release(uint32_t volatile *object) {
-  __sync_lock_release(object);
+void p00_sync_lock_release(uint32_t volatile *p00_objp) {
+  __sync_lock_release(p00_objp);
 }
 
 p99_inline
@@ -349,7 +349,7 @@ void p00_mfence(void) {
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_UINT_DEFAULT, 0)
 #if defined(P00_UINT_TYPE_LIST) || defined(P00_DOXYGEN)
-# define P99_UINT_DEFAULT(T)                                                       \
+# define P99_UINT_DEFAULT(T)                                                      \
 __typeof__(P99_GENERIC_SIZE_LIT(sizeof(T), (uintptr_t){ 0 }, P00_UINT_TYPE_LIST))
 #else
 # define P00_UINT_TYPE_LIST
@@ -700,19 +700,19 @@ P99_DECLARE_ATOMIC(long double _Complex, atomic_cldouble);
 
 
 P00_DOCUMENT_TYPE_ARGUMENT(P99_ATOMIC_INHERIT, 0)
-#define P99_ATOMIC_INHERIT(T)                                           \
-(*P99_GENERIC_LIT                                                       \
- ((T){ 0 },                                                             \
-  P99_GENERIC_SIZE_LIT                                                  \
-  (sizeof(T)+1,                                                         \
-   (struct P99_PASTE3(p99_atomic_, T, _struct)*){ 0 },                  \
-   (1, union P99_PASTE3(p99_atomic_, T, _union)*)                       \
-   P99_IF_EQ_2(ATOMIC_INT8_LOCK_FREE)(,(2, union P99_PASTE3(p99_atomic_, T, _union)*))() \
-   P99_IF_EQ_2(ATOMIC_INT16_LOCK_FREE)(,(3, union P99_PASTE3(p99_atomic_, T, _union)*))() \
-   P99_IF_EQ_2(ATOMIC_INT32_LOCK_FREE)(,(5, union P99_PASTE3(p99_atomic_, T, _union)*))() \
-   P99_IF_EQ_2(ATOMIC_INT64_LOCK_FREE)(,(9, union P99_PASTE3(p99_atomic_, T, _union)*))() \
+#define P99_ATOMIC_INHERIT(T)                                                               \
+(*P99_GENERIC_LIT                                                                           \
+ ((T){ 0 },                                                                                 \
+  P99_GENERIC_SIZE_LIT                                                                      \
+  (sizeof(T)+1,                                                                             \
+   (struct P99_PASTE3(p99_atomic_, T, _struct)*){ 0 },                                      \
+   (1, union P99_PASTE3(p99_atomic_, T, _union)*)                                           \
+   P99_IF_EQ_2(ATOMIC_INT8_LOCK_FREE)(,(2, union P99_PASTE3(p99_atomic_, T, _union)*))()    \
+   P99_IF_EQ_2(ATOMIC_INT16_LOCK_FREE)(,(3, union P99_PASTE3(p99_atomic_, T, _union)*))()   \
+   P99_IF_EQ_2(ATOMIC_INT32_LOCK_FREE)(,(5, union P99_PASTE3(p99_atomic_, T, _union)*))()   \
+   P99_IF_EQ_2(ATOMIC_INT64_LOCK_FREE)(,(9, union P99_PASTE3(p99_atomic_, T, _union)*))()   \
    P99_IF_EQ_2(ATOMIC_INT128_LOCK_FREE)(,(17, union P99_PASTE3(p99_atomic_, T, _union)*))() \
-   ),                                                                   \
+   ),                                                                                       \
   P00_ATOMIC_TYPES))
 
 /**
@@ -851,8 +851,8 @@ typedef _Atomic(uintmax_t) atomic_uintmax_t;
  **/
 
 p99_inline
-void atomic_thread_fence(memory_order order) {
-  switch (order) {
+void atomic_thread_fence(memory_order p00_ord) {
+  switch (p00_ord) {
   case memory_order_relaxed: break;
   default: p00_mfence(); break;
   }
@@ -881,26 +881,26 @@ void atomic_thread_fence(memory_order order) {
  ** complete memory barrier where necessary.
  **/
 p99_inline
-_Bool atomic_flag_test_and_set_explicit(volatile atomic_flag *object, memory_order order) {
-  _Bool ret;
-  switch (order) {
+_Bool atomic_flag_test_and_set_explicit(volatile atomic_flag *p00_objp, memory_order p00_ord) {
+  _Bool p00_ret;
+  switch (p00_ord) {
     /* This case doesn't require any guarantee. */
   case memory_order_relaxed:
-    ret = P99_ENCP(object);
-    P99_ENCP(object) = 1;
+    p00_ret = P99_ENCP(p00_objp);
+    P99_ENCP(p00_objp) = 1;
     break;
     /* For these three the acquire semantics are not sufficient. */
   case memory_order_release: ;
   case memory_order_acq_rel: ;
   case memory_order_seq_cst:
-    atomic_thread_fence(order);
-    ret = p00_sync_lock_test_and_set(&P99_ENCP(object));
+    atomic_thread_fence(p00_ord);
+    p00_ret = p00_sync_lock_test_and_set(&P99_ENCP(p00_objp));
     break;
   default:
-    ret = p00_sync_lock_test_and_set(&P99_ENCP(object));
+    p00_ret = p00_sync_lock_test_and_set(&P99_ENCP(p00_objp));
     break;
   }
-  return ret;
+  return p00_ret;
 }
 
 /**
@@ -910,53 +910,53 @@ _Bool atomic_flag_test_and_set_explicit(volatile atomic_flag *object, memory_ord
  ** @memberof atomic_flag
  **/
 p99_inline
-_Bool atomic_flag_test_and_set(volatile atomic_flag *object) {
-  return atomic_flag_test_and_set_explicit(object, memory_order_seq_cst);
+_Bool atomic_flag_test_and_set(volatile atomic_flag *p00_objp) {
+  return atomic_flag_test_and_set_explicit(p00_objp, memory_order_seq_cst);
 }
 
 /**
- ** @brief Unconditionally set @a *object to @c false
+ ** @brief Unconditionally set @a *p00_objp to @c false
  **
  ** @memberof atomic_flag
  **
- ** @param object the object that will be set
+ ** @param p00_objp the object that will be set
  **
- ** @param order fine tune the set operation for a specific memory
+ ** @param p00_ord fine tune the set operation for a specific memory
  ** order. The current implementation only uses this to enforce a
  ** complete memory barrier where necessary.
  **/
 p99_inline
-void atomic_flag_clear_explicit(volatile atomic_flag *object, memory_order order) {
-  switch(order) {
+void atomic_flag_clear_explicit(volatile atomic_flag *p00_objp, memory_order p00_ord) {
+  switch(p00_ord) {
     /* This case doesn't require any guarantee. */
   case memory_order_relaxed:
-    P99_ENCP(object) = 0;
+    P99_ENCP(p00_objp) = 0;
     break;
     /* For these three the release semantics are not sufficient. */
   case memory_order_acquire: ;
   case memory_order_acq_rel: ;
   case memory_order_seq_cst:
-    p00_sync_lock_release(&P99_ENCP(object));
-    atomic_thread_fence(order);
+    p00_sync_lock_release(&P99_ENCP(p00_objp));
+    atomic_thread_fence(p00_ord);
     break;
   default:
-    p00_sync_lock_release(&P99_ENCP(object));
+    p00_sync_lock_release(&P99_ENCP(p00_objp));
     break;
   }
 }
 
 /**
- ** @brief Unconditionally set @a *object to @c false
+ ** @brief Unconditionally set @a *p00_objp to @c false
  **
  ** @memberof atomic_flag
  **/
 p99_inline
-void atomic_flag_clear(volatile atomic_flag *object) {
-  atomic_flag_clear_explicit(object, memory_order_seq_cst);
+void atomic_flag_clear(volatile atomic_flag *p00_objp) {
+  atomic_flag_clear_explicit(p00_objp, memory_order_seq_cst);
 }
 
 /**
- ** @brief extension: spin on @a object setting the flag until the state before was "clear"
+ ** @brief extension: spin on @a p00_objp setting the flag until the state before was "clear"
  **
  ** This interprets an ::atomic_flag as a spinlock. State "clear"
  ** means unlocked and state "set" means locked.
@@ -966,8 +966,8 @@ void atomic_flag_clear(volatile atomic_flag *object) {
  ** @memberof atomic_flag
  **/
 p99_inline
-void atomic_flag_lock(volatile atomic_flag *object) {
-  while (atomic_flag_test_and_set_explicit(object, memory_order_acquire));
+void atomic_flag_lock(volatile atomic_flag *p00_objp) {
+  while (atomic_flag_test_and_set_explicit(p00_objp, memory_order_acquire));
 }
 
 /**
@@ -982,8 +982,8 @@ void atomic_flag_lock(volatile atomic_flag *object) {
  ** @memberof atomic_flag
  **/
 p99_inline
-_Bool atomic_flag_trylock(volatile atomic_flag *object) {
-  return !atomic_flag_test_and_set_explicit(object, memory_order_acquire);
+_Bool atomic_flag_trylock(volatile atomic_flag *p00_objp) {
+  return !atomic_flag_test_and_set_explicit(p00_objp, memory_order_acquire);
 }
 
 /**
@@ -994,8 +994,8 @@ _Bool atomic_flag_trylock(volatile atomic_flag *object) {
  ** @memberof atomic_flag
  **/
 p99_inline
-void atomic_flag_unlock(volatile atomic_flag *object) {
-  atomic_flag_clear_explicit(object, memory_order_release);
+void atomic_flag_unlock(volatile atomic_flag *p00_objp) {
+  atomic_flag_clear_explicit(p00_objp, memory_order_release);
 }
 
 /**

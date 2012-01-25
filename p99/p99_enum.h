@@ -27,9 +27,9 @@
  ** @brief Declare a simple inline function to return strings
  ** containing the names of enumeration constants.
  **/
-#define P99_DECLARE_ENUM_GETNAME(T, ...)                            \
-/*! @brief Get a string with the name of constant @a x of type T */ \
-inline char const* P99_PASTE2(T, _getname)(T x)...
+#define P99_DECLARE_ENUM_GETNAME(T, ...)                                \
+/*! @brief Get a string with the name of constant @a p00_x of type T */ \
+inline char const* P99_PASTE2(T, _getname)(T p00_x)...
 #else
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 0)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 1)
@@ -37,8 +37,8 @@ P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 2)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 3)
 #define P99_DECLARE_ENUM_GETNAME(T, ...)                       \
 p99_inline                                                     \
-char const* P99_PASTE2(T, _getname)(T x) {                     \
-  switch ((uintmax_t)x) {                                      \
+char const* P99_PASTE2(T, _getname)(T p00_x) {                 \
+  switch ((uintmax_t)p00_x) {                                  \
     P99_SEP(P00_ENUM_CASE, __VA_ARGS__);                       \
   default: return "((" #T ")unknown value)";                   \
   }                                                            \
@@ -131,8 +131,8 @@ P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__)
 #define P99_DEFINE_ENUM(T) P99_INSTANTIATE(char const*, P99_PASTE2(T, _getname), T)
 
 p99_inline
-char const* bool_getname(bool x) {
-  switch ((uintmax_t)x) {
+char const* bool_getname(bool p00_x) {
+  switch ((uintmax_t)p00_x) {
   case 0: return "false";
   case 1: return "true";
   default: return "((bool)unknown value)";

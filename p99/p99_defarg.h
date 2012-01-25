@@ -234,8 +234,8 @@ P99_IF_EMPTY(X)                                                         \
 (                                                                       \
  inline                                                                 \
  P99_PASTE3(NAME, _prototype_, N) P99_PASTE3(NAME, _defarg_, N)(void) { \
-   P99_PASTE3(NAME, _prototype_, N) ret = (X);                          \
-   return ret;                                                          \
+   P99_PASTE3(NAME, _prototype_, N) p00_ret = (X);                      \
+   return p00_ret;                                                      \
  }                                                                      \
 )
 

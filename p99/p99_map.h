@@ -80,38 +80,38 @@ P99_DECLARE_STRUCT(p00_strcat_state);
 #endif
 
 struct p00_strcat_state {
-  char*restrict buffer;
-  char*restrict pos;
+  char*restrict p00_buf;
+  char*restrict p00_pos;
 };
 
 #ifdef _GNU_SOURCE
 p99_inline
-char *p00_stpcpy(char *restrict dest, const char *restrict src) {
-  return stpcpy(dest, src);
+char *p00_stpcpy(char *restrict p00_des, const char *restrict p00_src) {
+  return stpcpy(p00_des, p00_src);
 }
 #else
 p99_inline
-char *p00_stpcpy(char *restrict dest, const char *restrict src) {
+char *p00_stpcpy(char *restrict p00_des, const char *restrict p00_src) {
   for (;;) {
-    *dest = *src;
-    if (!*src) break;
-    ++dest; ++src;
+    *p00_des = *p00_src;
+    if (!*p00_src) break;
+    ++p00_des; ++p00_src;
   }
-  return dest;
+  return p00_des;
 }
 #endif
 
 
 p99_inline
-p00_strcat_state* p00_strcat(p00_strcat_state *restrict dest, char const*restrict src) {
-  if (!dest->pos) dest->pos = strchr(dest->buffer, 0);
-  dest->pos = p00_stpcpy(dest->pos, src);
-  return dest;
+p00_strcat_state* p00_strcat(p00_strcat_state *restrict p00_des, char const*restrict p00_src) {
+  if (!p00_des->p00_pos) p00_des->p00_pos = strchr(p00_des->p00_buf, 0);
+  p00_des->p00_pos = p00_stpcpy(p00_des->p00_pos, p00_src);
+  return p00_des;
 }
 
 p99_inline
-char* p00_strcat_terminate(p00_strcat_state *restrict dest) {
-  return dest->buffer;
+char* p00_strcat_terminate(p00_strcat_state *restrict p00_des) {
+  return p00_des->p00_buf;
 }
 
 /**
@@ -137,7 +137,7 @@ p00_strcat_terminate                                           \
 (P99_BIGFUNC                                                   \
  (p00_strcat,                                                  \
   P99_NARG(TARG, __VA_ARGS__),                                 \
-  (&(p00_strcat_state){ .buffer = (TARG), .pos = 0  }),        \
+  (&(p00_strcat_state){ .p00_buf = (TARG), .p00_pos = 0  }),   \
    __VA_ARGS__))
 
 /**
