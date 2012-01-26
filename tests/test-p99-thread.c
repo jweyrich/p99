@@ -12,6 +12,7 @@
 /*                                                                           */
 #include "p99_threads.h"
 #include "p99_generic.h"
+#include "p99_clib.h"
 
 
 void * p00_thrd_create(void* context);
@@ -38,6 +39,11 @@ P99_DECLARE_ATOMIC(int*, atomic_intp2);
 atomic_intp intp;
 
 static
+void aqe(void) {
+  fprintf(stderr, "quick exit!\n");
+}
+
+static
 int real_task(atomic_intp* arg) {
   int ret = 0;
   printf("arg is %p, %d, %s %s\n",
@@ -59,6 +65,7 @@ int real_task(atomic_intp* arg) {
   if (!atomic_compare_exchange_weak(&testvar, &b, (tester){ .a = ret }))
     printf("store didn't succeeded\n");
   if (ret % 3) thrd_yield();
+  else at_quick_exit(aqe);
   if (ret % 2)
     return -1;
   else
@@ -101,4 +108,5 @@ int main(int argc, char *argv[]) {
          atomic_load(&testvar).a,
          (size_t)(atomic_load(&intp) - &argc),
          atomic_load(&D));
+  quick_exit(EXIT_SUCCESS);
 }

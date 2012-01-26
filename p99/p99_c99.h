@@ -47,6 +47,7 @@
 # include <time.h>
 # include <wchar.h>
 # include <wctype.h>
+#endif
 
 /* Additions by C11 */
 # if __STDC_VERSION__ > 201100L
@@ -56,43 +57,5 @@
 #  ifndef __STDC_NO_THREADS__
 #   include <threads.h>
 #  endif
-# else
-/* Provide aligned allocation. */
-
-# if (_XOPEN_SOURCE >= 600) || defined(P00_DOXYGEN)
-
-/**
- ** @addtogroup C11_library C11 additions to the C library
- **
- ** @{
- **/
-
-/**
- ** @brief allocation with a chosen alignment
- **
- ** @remark this implementation relies on the presence of @c posix_memalign from POSIX
- **/
-p99_inline
-void *aligned_alloc(size_t p00_alignment, size_t p00_size) {
-  void * p00_ret = 0;
-  int err = posix_memalign(&p00_ret, p00_alignment, p00_size);
-  /* If there was an error and a fake pointer has been returned, free
-     this pointer and set it to 0. This is the only way to return an
-     error for this C11 interface. */
-  if (err && p00_ret) {
-    free(p00_ret);
-    p00_ret = 0;
-  }
-  return p00_ret;
-}
-
-/**
- ** @}
- **/
-
 # endif
-
-# endif
-#endif
-
 #endif      /* !P99_C99_H_ */
