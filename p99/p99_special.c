@@ -120,6 +120,8 @@
  ** @see P99_DECLARE_ENUM(T, ...) for arguments <code>T</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_DECLARE_ENUM_GETNAME(T, ...) for arguments <code>T</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_DECLARE_INIT_ONCE(T, NAME, ARG) for arguments <code>T</code>, <code>NAME</code>, <code>ARG</code>.
+ ** @see P99_DECLARE_INLINE_EXPRESSION(EXT, BASE, EXP, ...) for arguments <code>EXT</code>, <code>BASE</code>, <code>EXP</code>.
+ ** @see P99_DECLARE_INLINE_EXPRESSIONS(NEPL, ...) for argument <code>NEPL</code>.
  ** @see P99_DECLARE_STRUCT(NAME) for argument <code>NAME</code>.
  ** @see P99_DECLARE_UNION(NAME) for argument <code>NAME</code>.
  ** @see P99_DEC_DOUBLE(...) for arguments <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[4]</code>.
@@ -139,6 +141,11 @@
  ** @see P99_GENERIC_LIT(...) for argument <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_GENERIC_SIZE(UI, ...) for arguments <code>UI</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_GENERIC_SIZE_LIT(UI, ...) for arguments <code>UI</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_GEN_ABS(A) for argument <code>A</code>.
+ ** @see P99_GEN_EXPR(BASE, EXPR, ...) for argument <code>BASE</code>, <code>EXPR</code>.
+ ** @see P99_GEN_MAX(A, B) for argument <code>A</code>, <code>B</code>.
+ ** @see P99_GEN_MIN(A, B) for argument <code>A</code>, <code>B</code>.
+ ** @see P99_GEN_SIN(A) for argument <code>A</code>.
  ** @see P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER) for arguments <code>T</code>, <code>NAME</code>, <code>AFTER</code>.
  ** @see P99_HEX_DOUBLE(...) for arguments <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[4]</code>.
  ** @see P99_HTONL(X) for argument <code>X</code>, <code>1</code>.

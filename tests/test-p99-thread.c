@@ -54,7 +54,7 @@ int real_task(atomic_intp* arg) {
   (void)atomic_fetch_add(&U, 1u);
   mtx_lock(&mut);
   ++count;
-  ret = count;
+  ret = P99_GEN_MAX(count, 23);
   cnd_signal(&cond);
   mtx_unlock(&mut);
   (void)atomic_fetch_add(&D, ret);

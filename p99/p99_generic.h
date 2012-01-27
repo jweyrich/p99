@@ -382,10 +382,283 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_INDICATOR, 0)
 #define P99_SIZE_INDICATOR(UI, ...) P99_SIZE_CHOICE(UI, 1, 0, __VA_ARGS__)
 
 
-
 /**
  ** @}
  **/
+
+#define P00_DECLARE_INLINE_EXPRESSION1(EXT, BASE, EXP, A)      \
+p99_inline                                                     \
+P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)          \
+(P99_BUILTIN_TYPE(EXT) A)                                      \
+{                                                              \
+  return (EXP);                                                \
+}
+
+#define P00_DECLARE_INLINE_EXPRESSION2(EXT, BASE, EXP, A, B)   \
+p99_inline                                                     \
+P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)          \
+(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B)             \
+{                                                              \
+  return (EXP);                                                \
+}
+
+#define P00_DECLARE_INLINE_EXPRESSION3(EXT, BASE, EXP, A, B, C) \
+p99_inline                                                      \
+P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)           \
+(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B,              \
+ P99_BUILTIN_TYPE(EXT) C)                                       \
+{                                                               \
+  return (EXP);                                                 \
+}
+
+#define P00_DECLARE_INLINE_EXPRESSION4(EXT, BASE, EXP, A, B, C, D) \
+p99_inline                                                         \
+P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)              \
+(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B,                 \
+ P99_BUILTIN_TYPE(EXT) C, P99_BUILTIN_TYPE(EXT) D)                 \
+{                                                                  \
+  return (EXP);                                                    \
+}
+
+#define P00_DECLARE_INLINE_EXPRESSION5(EXT, BASE, EXP, A, B, C, D, E) \
+p99_inline                                                            \
+P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)                 \
+(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B,                    \
+ P99_BUILTIN_TYPE(EXT) C, P99_BUILTIN_TYPE(EXT) D,                    \
+ P99_BUILTIN_TYPE(EXT) E)                                             \
+{                                                                     \
+  return (EXP);                                                       \
+}
+
+#define P00_DECLARE_INLINE_EXPRESSION6(EXT, BASE, EXP, A, B, C, D, E, F) \
+p99_inline                                                               \
+P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)                    \
+(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B,                       \
+ P99_BUILTIN_TYPE(EXT) C, P99_BUILTIN_TYPE(EXT) D,                       \
+ P99_BUILTIN_TYPE(EXT) E, P99_BUILTIN_TYPE(EXT) F)                       \
+{                                                                        \
+  return (EXP);                                                          \
+}
+
+/**
+ ** @brief Declare an inline function of basename @a BASE for
+ ** expression @a EXP, applied to the builtin type @a EXT.
+ **
+ ** The interest of declaring such functions is for expressions that
+ ** evaluate their arguments multiple times.
+ **
+ ** The argument list are the names of the function parameters as the
+ ** should appear inside @a EXP. The name of the declared function has
+ ** @a EXT appended to @a BASE. E.g for a function operating on two @c
+ ** unsigned values:
+ **
+ ** @code
+ ** P99_DECLARE_INLINE_EXPRESSION(u, my_max, ((a >= b) ? a : b), a, b);
+ ** @endcode
+ **
+ ** This declares an @c inline function with the following prototype:
+ **
+ ** @code
+ ** unsigned p00_gen_my_maxu(unsigned, unsigned);
+ ** @endcode
+ **
+ ** @remark For the moment the number of arguments that can appear in
+ ** the expression is limited to 6, but this could be augmented easily
+ ** if there is need for it.
+ **
+ ** @see P99_BUILTIN_TYPE
+ **/
+#ifdef P00_DOXYGEN
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 0)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 2)
+#define P99_DECLARE_INLINE_EXPRESSION(EXT, BASE, EXP, ...)
+#else
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 0)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 2)
+#define P99_DECLARE_INLINE_EXPRESSION(...)                                                  \
+P99_PASTE2(P00_DECLARE_INLINE_EXPRESSION, P99_MINUS(P99_NARG(__VA_ARGS__), 3))(__VA_ARGS__)
+#endif
+
+#define P00_DECLARE_INLINE_EXPRESSION_(...) P99_DECLARE_INLINE_EXPRESSION(__VA_ARGS__)
+#define P00_DECLARE_INLINE_EXPRESSION(ARGS, EXT, I) P00_DECLARE_INLINE_EXPRESSION_(EXT, P00_ROBUST ARGS)
+
+/**
+ ** @brief Declare a whole bunch of inline function of basename @a
+ ** BASE for expression @a EXP, applied to the builtin types as given
+ ** in the argument list.
+ **
+ ** The interest of declaring such functions is for expressions that
+ ** evaluate their arguments multiple times. You can use these
+ ** functions in a generic expression such as ::P99_GEN_EXPR.
+ **
+ ** @a NEPL represents the argument list that is passed to
+ ** ::P99_DECLARE_INLINE_EXPRESSION for defining the individual
+ ** functions.
+ **
+ ** @code
+ ** P99_DECLARE_INLINE_EXPRESSIONS((my_max, ((a >= b) ? a : b), a, b),
+ **                                u, ul, i, c, uhh);
+ ** @endcode
+ **
+ ** This declares @c inline functions with the following prototypes:
+ **
+ ** @code
+ ** unsigned p00_gen_my_maxu(unsigned, unsigned);
+ ** unsigned long p00_gen_my_maxul(unsigned long, unsigned long);
+ ** signed p00_gen_my_maxi(signed, signed);
+ ** char p00_gen_my_maxc(char, char);
+ ** unsigned char p00_gen_my_maxuhh(unsigned char, unsigned char);
+ ** @endcode
+ **
+ ** @see P99_BUILTIN_TYPE
+ ** @see P99_GENERIC
+ ** @see P99_GEN_EXPR
+ ** @see P99_DECLARE_INLINE_EXPRESSION
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_DECLARE_INLINE_EXPRESSIONS, 0)
+#define P99_DECLARE_INLINE_EXPRESSIONS(NEPL, ...)                                         \
+P99_FOR(NEPL, P99_NARG(__VA_ARGS__), P00_SER, P00_DECLARE_INLINE_EXPRESSION, __VA_ARGS__) \
+P99_MACRO_END(P99_DECLARE_INLINE_EXPRESSIONS, __VA_ARGS__)
+
+extern void p00_invalid_function(void*, ...);
+
+#define P00_GEN_EXPR(BASE, EXT, I) (P99_BUILTIN_TYPE(EXT), P99_PASTE3(p00_gen_, BASE, EXT))
+
+/**
+ ** @brief Produce a type generic expression that can be used as if it
+ ** where an @c inline function.
+ **
+ ** The interest of declaring a macro that uses this is for
+ ** expressions that evaluate their arguments multiple times.
+ **
+ ** E.g to define a macro ::P99_GEN_MAX you can use the following
+ **
+ ** @code
+ ** P99_DECLARE_INLINE_EXPRESSIONS((maximum,
+ **                                 (p00_a >= p00_b) ? p00_a : p00_b,
+ **                                 p00_a, p00_b),
+ **                                b, c, hh, uhh, h, uh, i, u, l, ul, ll, ull,
+ **                                d, f, ld
+ **                                );
+ **
+ ** #define P99_GEN_MAX(A, B)                                  \
+ ** P99_GEN_EXPR(maximum, ((A) >= (B)) ? (A) : (B),            \
+ **              b, c, hh, uhh, h, uh, i, u, l, ul, ll, ull,   \
+ **              d, f, ld                                      \
+ **              )                                             \
+ ** ((A), (B))
+ ** @endcode
+ **
+ ** This first defines 15 inline functions for the different
+ ** arithmetic types, you also just could use
+ ** ::P99_STD_ARITHMETIC_EXTS to produce that long list. Then the
+ ** definition of the macro expands to a type generic expression that
+ ** has as @a EXPR as selection expression (here <code>(A) >= (B)) ?
+ ** (A) : (B)</code>).
+ **
+ ** @remark using exactly the target expression for @a EXPR has the
+ ** only effect that the type of the selection expression undergoes
+ ** exactly the promotion or conversion rules that would be applied to
+ ** @a EXPR if it would be evaluated directly.
+ **
+ ** So if to stay in the above example we would have
+ **
+ ** @code
+ ** int f(toto t);
+ ** double d;
+ **
+ ** double dd = P99_GEN_MAX(f(t), d);
+ ** @endcode
+ **
+ ** the common used type of @c f and @c d for the evaluation of
+ ** <code>P99_GEN_MAX(f(t), d)</code> would be @c double. Before
+ ** computing the maximum value the result of @c f(t) is converted to
+ ** @c double and then the result of the operation is @c double.
+ **
+ ** As you can already see from this simple example, for such an
+ ** expression it is crucial that @c f(t) is only evaluated once,
+ ** which is the principal goal of ::P99_GEN_EXPR.
+ **
+ ** Here is another example that shows how simple it is to produce the
+ ** type generic math macros that should normally be provided by
+ ** "tgmath.h".
+ **
+ ** @code
+ ** #define p00_gen_sind sin
+ ** #define p00_gen_sinf sinf
+ ** #define p00_gen_sinld sinl
+ ** #define p00_gen_sindc csin
+ ** #define p00_gen_sinfc csinf
+ ** #define p00_gen_sinldc csinl
+ **
+ ** #define P99_GEN_SIN(A) P99_GEN_EXPR(sin, (A), P99_STD_FLOATING_EXTS)(A)
+ ** @endcode
+ **/
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_GEN_EXPR, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_EXPR, 1)
+#define P99_GEN_EXPR(BASE, EXPR, ...)                                                 \
+P99_GENERIC(EXPR,                                                                     \
+            p00_invalid_function,                                                     \
+            P99_FOR(BASE, P99_NARG(__VA_ARGS__), P00_SEQ, P00_GEN_EXPR, __VA_ARGS__))
+
+
+
+
+P99_DECLARE_INLINE_EXPRESSIONS((maximum,
+                                (p00_a >= p00_b) ? p00_a : p00_b,
+                                p00_a, p00_b),
+                               P99_STD_REAL_EXTS
+                              );
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_MAX, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_MAX, 1)
+#define P99_GEN_MAX(A, B)                                      \
+P99_GEN_EXPR(maximum, ((A) >= (B)) ? (A) : (B),                \
+             P99_STD_REAL_EXTS                                 \
+             )                                                 \
+((A), (B))
+
+P99_DECLARE_INLINE_EXPRESSIONS((minimum,
+                                (p00_a <= p00_b) ? p00_a : p00_b,
+                                p00_a, p00_b),
+                               P99_STD_REAL_EXTS
+                              );
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_MIN, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_MIN, 1)
+#define P99_GEN_MIN(A, B)                                      \
+P99_GEN_EXPR(minimum, ((A) <= (B)) ? (A) : (B),                \
+             P99_STD_REAL_EXTS                                 \
+             )                                                 \
+((A), (B))
+
+
+P99_DECLARE_INLINE_EXPRESSIONS((abs,
+                                (p00_a >= 0) ? p00_a : -p00_a,
+                                p00_a),
+                               P99_STD_REAL_EXTS
+                              );
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_ABS, 0)
+#define P99_GEN_ABS(A) P99_GEN_EXPR(abs, ((A) >= 0) ? (A) : -(A), P99_STD_REAL_EXTS)(A)
+
+#define p00_gen_sind sin
+#define p00_gen_sinf sinf
+#define p00_gen_sinld sinl
+#define p00_gen_sindc csin
+#define p00_gen_sinfc csinf
+#define p00_gen_sinldc csinl
+
+/**
+ ** @brief Type generic macro to compute the sine of @a A.
+ **
+ ** This is just a little example how simple the type generic macros
+ ** of "tgmath.h" can be implemented.
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_SIN, 0)
+#define P99_GEN_SIN(A) P99_GEN_EXPR(sin, (A), P99_STD_FLOATING_EXTS)(A)
 
 /**
  ** @}
@@ -393,7 +666,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_INDICATOR, 0)
 
 inline int* p00_generic_test(int * p00_a) {
   double *p00_x;
-  switch (*p00_a % 3) {
+  switch (P99_GEN_ABS(*p00_a % 3)) {
   case 0:
     return P99_GENERIC(&*p00_a,
                        /* empty default expression */,
@@ -403,7 +676,7 @@ inline int* p00_generic_test(int * p00_a) {
   case 1:
     return P99_GENERIC(&*p00_a,
                        /* another form of empty default */,
-                       (double[7], p00_x+0),
+                       (double[7], P99_GEN_SIN(((p00_x+0)))),
                        (int*, p00_a),
                        (float*, p00_x+2));
   default:
