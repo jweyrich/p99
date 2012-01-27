@@ -196,6 +196,9 @@ P99_DECLARE_STRUCT(NAME)
  unsigned long int,                                            \
  unsigned long long int
 
+#define P99_STD_UNSIGNED_EXTS b, uhh, uh, u, ul, ull
+
+
 #define P99_STD_SIGNED_TYPES                                   \
   signed char,                                                 \
   short int,                                                   \
@@ -203,19 +206,27 @@ P99_DECLARE_STRUCT(NAME)
   long int ,                                                   \
   long long int
 
+#define P99_STD_SIGNED_EXTS hh, h, i, l, ll
+
+
 #define P99_STD_REAL_FLOATING_TYPES                            \
  float,                                                        \
  double,                                                       \
  long double
+
+#define P99_STD_REAL_FLOATING_EXTS f, d, ld
 
 #ifndef __STDC_NO_COMPLEX__
 # define P99_STD_COMPLEX_TYPES                                 \
 float _Complex,                                                \
 double _Complex,                                               \
 long double _Complex
+# define P99_STD_COMPLEX_EXTS fc, dc, ldc
 # define P99_STD_FLOATING_TYPES P99_STD_REAL_FLOATING_TYPES, P99_STD_COMPLEX_TYPES
+# define P99_STD_FLOATING_EXTS P99_STD_REAL_FLOATING_EXTS, P99_STD_COMPLEX_EXTS
 #else
 # define P99_STD_FLOATING_TYPES P99_STD_REAL_FLOATING_TYPES
+# define P99_STD_FLOATING_EXTS P99_STD_REAL_FLOATING_EXTS
 #endif
 
 #define P99_STD_BASIC_TYPES                                    \
@@ -223,23 +234,43 @@ long double _Complex
  P99_STD_INTEGER_TYPES,                                        \
  P99_STD_FLOATING_TYPES
 
+#define P99_STD_BASIC_EXTS                                     \
+ c,                                                            \
+ P99_STD_INTEGER_EXTS,                                         \
+ P99_STD_FLOATING_EXTS
+
 #define P99_STD_CHARACTER_TYPES                                \
   char,                                                        \
   signed char,                                                 \
   unsigned char
+
+#define P99_STD_CHARACTER_EXTS c, hh, uhh
 
 #define P99_STD_INTEGER_TYPES                                  \
   char,                                                        \
   P99_STD_SIGNED_TYPES,                                        \
   P99_STD_UNSIGNED_TYPES
 
+#define P99_STD_INTEGER_EXTS                                   \
+  c,                                                           \
+  P99_STD_SIGNED_EXTS,                                         \
+  P99_STD_UNSIGNED_EXTS
+
 #define P99_STD_REAL_TYPES                                     \
   P99_STD_INTEGER_TYPES,                                       \
   P99_STD_REAL_FLOATING_TYPES
 
+#define P99_STD_REAL_EXTS                                      \
+  P99_STD_INTEGER_EXTS,                                        \
+  P99_STD_REAL_FLOATING_EXTS
+
 #define P99_STD_ARITHMETIC_TYPES                               \
   P99_STD_INTEGER_TYPES,                                       \
   P99_STD_FLOATING_TYPES
+
+#define P99_STD_ARITHMETIC_EXTS                                \
+  P99_STD_INTEGER_EXTS,                                        \
+  P99_STD_FLOATING_EXTS
 
 /** @}
  **/
