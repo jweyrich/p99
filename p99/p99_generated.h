@@ -41,7 +41,7 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Fri, 20 Jan 2012 17:38:58 +0100"
+#define P00_VERSION_DATE "Fri, 27 Jan 2012 16:34:40 +0100"
 #define P00_VERSION_ID ""
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -5281,7 +5281,7 @@ automatically generated, do not change manually.
  ** <tr><td>ld</td><td><code>long double</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>ldc</td><td><code>long double _Complex</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>t</td><td><code>ptrdiff_t</code></td><td></td><td></td><td></td><td></td></tr>
- ** <tr><td></td><td><code>signed</code></td><td></td><td></td><td></td><td></td></tr>
+ ** <tr><td></td><td><code>signed</code></td><td>1</td><td>i</td><td>u</td><td>3</td></tr>
  ** <tr><td>hh</td><td><code>signed char</code></td><td>1</td><td>hh</td><td>uhh</td><td>1</td></tr>
  ** <tr><td>l</td><td><code>signed long</code></td><td>1</td><td>l</td><td>ul</td><td>4</td></tr>
  ** <tr><td>ll</td><td><code>signed long long</code></td><td>1</td><td>ll</td><td>ull</td><td>5</td></tr>
@@ -5396,6 +5396,7 @@ automatically generated, do not change manually.
 #define P00_BUILTIN_MIN_ull 0ULL
 #define P00_BUILTIN_MIN_uz 0
 #define P99_INTEGER_RANK(...) P99_PASTE2(P00_, P99_PASTE(INTEGER_RANK_, __VA_ARGS__))
+#define P00_INTEGER_RANK_ 3
 #define P00_INTEGER_RANK_b 0
 #define P00_INTEGER_RANK_c 1
 #define P00_INTEGER_RANK_h 2
@@ -5409,6 +5410,7 @@ automatically generated, do not change manually.
 #define P00_INTEGER_RANK_ul 4
 #define P00_INTEGER_RANK_ull 5
 #define P99_INTEGER_SIGN(...) P99_PASTE2(P00_, P99_PASTE(INTEGER_SIGN_, __VA_ARGS__))
+#define P00_INTEGER_SIGN_ 1
 #define P00_INTEGER_SIGN_b 0
 #define P00_INTEGER_SIGN_h 1
 #define P00_INTEGER_SIGN_hh 1
@@ -5421,6 +5423,7 @@ automatically generated, do not change manually.
 #define P00_INTEGER_SIGN_ul 0
 #define P00_INTEGER_SIGN_ull 0
 #define P99_INTEGER_SIGNED(...) P99_PASTE2(P00_, P99_PASTE(INTEGER_SIGNED_, __VA_ARGS__))
+#define P00_INTEGER_SIGNED_ i
 #define P00_INTEGER_SIGNED_1 hh
 #define P00_INTEGER_SIGNED_2 h
 #define P00_INTEGER_SIGNED_3 i
@@ -5438,6 +5441,7 @@ automatically generated, do not change manually.
 #define P00_INTEGER_SIGNED_ul l
 #define P00_INTEGER_SIGNED_ull ll
 #define P99_INTEGER_UNSIGNED(...) P99_PASTE2(P00_, P99_PASTE(INTEGER_UNSIGNED_, __VA_ARGS__))
+#define P00_INTEGER_UNSIGNED_ u
 #define P00_INTEGER_UNSIGNED_0 b
 #define P00_INTEGER_UNSIGNED_1 uhh
 #define P00_INTEGER_UNSIGNED_2 uh
