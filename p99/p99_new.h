@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
+/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -27,6 +27,8 @@
  **
  ** @{
  **/
+
+P99_MACRO_END(dummy);
 
 /**
  ** @brief Zero out all bits in the object that @a X points to.
