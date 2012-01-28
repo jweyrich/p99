@@ -1338,6 +1338,80 @@ P99_SPIN_EXCLUDE(P99_LINEID(crit))
 
 
 /**
+ ** @brief Return a pointer to the top element of an atomic LIFO @a L
+ ** @see P99_LIFO_PUSH
+ ** @see P99_LIFO_POP
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_TOP, 0)
+#define P99_LIFO_TOP(L)  atomic_load(L)
+
+/**
+ ** @brief Push element @a EL into an atomic LIFO @a L
+ ** @see P99_LIFO_TOP
+ ** @see P99_LIFO_POP
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
+#define P99_LIFO_PUSH(L, EL)                    \
+({                                              \
+  P99_MACRO_VAR(p00_l, (L));                    \
+  P99_MACRO_VAR(p00_el, (EL));                  \
+  p00_el->p99_lifo = p00_el;                    \
+  atomic_swap(p00_l, &p00_el->p99_lifo);        \
+ })
+
+/**
+ ** @brief Pop the top element from an atomic LIFO @a L
+ **
+ ** This implements a generic interface to an atomic LIFO (Last In -
+ ** Last Out) data structure. To use it you just have do some
+ ** preparatory declarations and add a @c p99_lifo field to your data
+ ** structure:
+ **
+ ** @code
+ ** P99_DECLARE_STRUCT(myData);
+ ** P99_POINTER_TYPE(myData);
+ ** P99_DECLARE_ATOMIC(myData_ptr);
+ **
+ ** struct myData {
+ **   ...
+ **   myData_ptr p99_lifo;
+ **   ...
+ ** };
+ ** extern _Atomic(myData_ptr) head;
+ ** @endcode
+ **
+ ** Now @c head can be used as the head of a LIFO:
+ **
+ ** @code
+ ** myData_ptr el = P99_NEW(myData_ptr, \/\* your initializer arguments \*\/);
+ ** P99_FIFO_PUSH(&head, el);
+ ** ...
+ ** for (myData_ptr el = P99_FIFO_POP(&head);
+ **      el;
+ **      el = P99_FIFO_POP(&head)) {
+ **        // do something with el and then
+ **        free(el);
+ ** }
+ ** @endcode
+ **
+ ** @see P99_LIFO_PUSH
+ ** @see P99_LIFO_TOP
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_POP, 0)
+#define P99_LIFO_POP(L)                                                 \
+({                                                                      \
+  P99_MACRO_VAR(p00_l, (L));                                            \
+  __typeof__(P99_LIFO_TOP(p00_l)) p00_el = P99_LIFO_TOP(p00_l);         \
+  if (P99_LIKELY(p00_el)) {                                             \
+    while (P99_UNLIKELY(!atomic_compare_exchange_weak(p00_l, &p00_el, p00_el->p99_lifo))) P99_NOP; \
+    p00_el->p99_lifo = 0;                                               \
+  }                                                                     \
+  p00_el;                                                               \
+ })
+
+
+/**
  ** @}
  **/
 
