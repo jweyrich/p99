@@ -308,7 +308,7 @@ int tss_set(tss_t p00_key, void *p00_val) {
   return pthread_setspecific(P99_ENC(p00_key), p00_val) ? thrd_error : thrd_success;
 }
 
-#if defined(thread_local) && !defined(P99_EMULATE_THREAD_LOCAL)
+#if defined(thread_local) && !defined(P99_EMULATE_THREAD_LOCAL) && !defined(P00_DOXYGEN)
 
 #define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
 P99_WEAK(NAME)                                                 \
@@ -363,6 +363,7 @@ void* p00_thread_local_get(p99_tss * p00_key, size_t p00_size) {
 }
 
 /**
+ ** @def P99_DECLARE_THREAD_LOCAL
  ** @brief declare a thread local variable @a NAME of type @a T
  **
  ** @remark such a variable must be declared in global scope
@@ -377,6 +378,7 @@ p99_tss NAME;                                                  \
 typedef T P99_PASTE3(p00_, NAME, _type)
 
 /**
+ ** @def P99_THREAD_LOCAL
  ** @brief an lvalue expression that returns the thread local instance
  ** of variable @a NAME
  **

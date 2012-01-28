@@ -388,6 +388,20 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
+      <type>struct atomic_double _Complex double _Complex</type>
+      <name>atomic_cdouble</name>
+      <anchorfile>group__atomic__types_ga3e576e2ce006d15aeaf1ce94d12ba310.html</anchorfile>
+      <anchor>ga3e576e2ce006d15aeaf1ce94d12ba310</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_float _Complex float _Complex</type>
+      <name>atomic_cfloat</name>
+      <anchorfile>group__atomic__types_gaf830d34d541d4df3fd07f7bc5f2b4ca1.html</anchorfile>
+      <anchor>gaf830d34d541d4df3fd07f7bc5f2b4ca1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
       <type>struct atomic_char</type>
       <name>atomic_char</name>
       <anchorfile>group__atomic__types_ga2d0779df8d50b58618577260c3ce2ea0.html</anchorfile>
@@ -416,10 +430,31 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
+      <type>struct atomic_long double _Complex long double _Complex</type>
+      <name>atomic_cldouble</name>
+      <anchorfile>group__atomic__types_ga389441681eb850e144f75d68f38d685f.html</anchorfile>
+      <anchor>ga389441681eb850e144f75d68f38d685f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_double double</type>
+      <name>atomic_double</name>
+      <anchorfile>group__atomic__types_gae5718237c5396aa9c21b668142e9f0b3.html</anchorfile>
+      <anchor>gae5718237c5396aa9c21b668142e9f0b3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
       <type>struct atomic_flag</type>
       <name>atomic_flag</name>
       <anchorfile>group__atomic__types_ga7317e642c4aaab66b33b4ed0e57af94d.html</anchorfile>
       <anchor>ga7317e642c4aaab66b33b4ed0e57af94d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_float float</type>
+      <name>atomic_float</name>
+      <anchorfile>group__atomic__types_gaf5e5a9cc4ac5761d65ac980fde09635c.html</anchorfile>
+      <anchor>gaf5e5a9cc4ac5761d65ac980fde09635c</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -497,6 +532,13 @@
       <name>atomic_intptr_t</name>
       <anchorfile>group__atomic__types_ga2c0e47577a8423e9a496bc1c653c3e95.html</anchorfile>
       <anchor>ga2c0e47577a8423e9a496bc1c653c3e95</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_long double long double</type>
+      <name>atomic_ldouble</name>
+      <anchorfile>group__atomic__types_gab726efc9cb2b49b10069ca87452f13ce.html</anchorfile>
+      <anchor>gab726efc9cb2b49b10069ca87452f13ce</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -1721,13 +1763,6 @@
       <anchorfile>group__C11__library_gaf6f4a93aa8e7dcf0779c58c611c8109c.html</anchorfile>
       <anchor>gaf6f4a93aa8e7dcf0779c58c611c8109c</anchor>
       <arglist>(void(*p00_func)(void))</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__C11__library_ga9702bac7f093effd90f2098b491d1a8f.html</anchorfile>
-      <anchor>ga9702bac7f093effd90f2098b491d1a8f</anchor>
-      <arglist>(p00_aqe_el_ptr)</arglist>
     </member>
     <member kind="function">
       <type>_Noreturn void</type>
@@ -9419,6 +9454,20 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
+      <type>struct atomic_double _Complex double _Complex</type>
+      <name>atomic_cdouble</name>
+      <anchorfile>group__atomic__types_ga3e576e2ce006d15aeaf1ce94d12ba310.html</anchorfile>
+      <anchor>ga3e576e2ce006d15aeaf1ce94d12ba310</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_float _Complex float _Complex</type>
+      <name>atomic_cfloat</name>
+      <anchorfile>group__atomic__types_gaf830d34d541d4df3fd07f7bc5f2b4ca1.html</anchorfile>
+      <anchor>gaf830d34d541d4df3fd07f7bc5f2b4ca1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
       <type>struct atomic_char</type>
       <name>atomic_char</name>
       <anchorfile>group__atomic__types_ga2d0779df8d50b58618577260c3ce2ea0.html</anchorfile>
@@ -9447,10 +9496,31 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
+      <type>struct atomic_long double _Complex long double _Complex</type>
+      <name>atomic_cldouble</name>
+      <anchorfile>group__atomic__types_ga389441681eb850e144f75d68f38d685f.html</anchorfile>
+      <anchor>ga389441681eb850e144f75d68f38d685f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_double double</type>
+      <name>atomic_double</name>
+      <anchorfile>group__atomic__types_gae5718237c5396aa9c21b668142e9f0b3.html</anchorfile>
+      <anchor>gae5718237c5396aa9c21b668142e9f0b3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
       <type>struct atomic_flag</type>
       <name>atomic_flag</name>
       <anchorfile>group__atomic__types_ga7317e642c4aaab66b33b4ed0e57af94d.html</anchorfile>
       <anchor>ga7317e642c4aaab66b33b4ed0e57af94d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_float float</type>
+      <name>atomic_float</name>
+      <anchorfile>group__atomic__types_gaf5e5a9cc4ac5761d65ac980fde09635c.html</anchorfile>
+      <anchor>gaf5e5a9cc4ac5761d65ac980fde09635c</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -9528,6 +9598,13 @@
       <name>atomic_intptr_t</name>
       <anchorfile>group__atomic__types_ga2c0e47577a8423e9a496bc1c653c3e95.html</anchorfile>
       <anchor>ga2c0e47577a8423e9a496bc1c653c3e95</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_long double long double</type>
+      <name>atomic_ldouble</name>
+      <anchorfile>group__atomic__types_gab726efc9cb2b49b10069ca87452f13ce.html</anchorfile>
+      <anchor>gab726efc9cb2b49b10069ca87452f13ce</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -10599,13 +10676,6 @@
       <anchorfile>group__C11__library_gaf6f4a93aa8e7dcf0779c58c611c8109c.html</anchorfile>
       <anchor>gaf6f4a93aa8e7dcf0779c58c611c8109c</anchor>
       <arglist>(void(*p00_func)(void))</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>P99_DECLARE_ATOMIC</name>
-      <anchorfile>group__C11__library_ga9702bac7f093effd90f2098b491d1a8f.html</anchorfile>
-      <anchor>ga9702bac7f093effd90f2098b491d1a8f</anchor>
-      <arglist>(p00_aqe_el_ptr)</arglist>
     </member>
     <member kind="function">
       <type>_Noreturn void</type>

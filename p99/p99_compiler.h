@@ -557,6 +557,13 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 # endif
 #endif
 
+/**
+ ** @def _Thread_local
+ ** @brief The C11 keyword for declaring a thread local variable.
+ **
+ ** @see P99_DECLARE_THREAD_LOCAL
+ **/
+
 #ifndef thread_local
 # define thread_local _Thread_local
 # if p99_has_feature(gnu_thread_local)

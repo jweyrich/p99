@@ -61,11 +61,13 @@ void *aligned_alloc(size_t p00_alignment, size_t p00_size) {
 
 typedef struct p00_aqe_el p00_aqe_el;
 P99_POINTER_TYPE(p00_aqe_el);
-#if p99_has_feature(quick_exit_thread_safe)
+#ifndef P00_DOXYGEN
+# if p99_has_feature(quick_exit_thread_safe)
 P99_DECLARE_ATOMIC(p00_aqe_el_ptr);
 typedef _Atomic(p00_aqe_el_ptr) p00_aqe_list;
-#else
+# else
 typedef p00_aqe_el_ptr p00_aqe_list;
+# endif
 #endif
 
 typedef void p00_aqe_func(void);
