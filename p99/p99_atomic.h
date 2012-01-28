@@ -159,7 +159,7 @@ void p00_mfence(void) {
 #ifndef ATOMIC_INT128_LOCK_FREE
 #  if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_16)
 #   define ATOMIC_INT128_LOCK_FREE 2
-#   define P00_TYPE_LIST_ELEM16 , (16, uint128_t)
+#   define P00_TYPE_LIST_ELEM16 , (16, p99x_uint128)
 #  else
 #   define ATOMIC_INT128_LOCK_FREE 0
 #   define P00_TYPE_LIST_ELEM16
@@ -648,9 +648,9 @@ P00_DECLARE_ATOMIC_CHOICE(ATOMIC_LONG_LOCK_FREE, unsigned long, atomic_ulong);
 P00_DECLARE_ATOMIC_CHOICE(ATOMIC_LLONG_LOCK_FREE, long long, atomic_llong);
 P00_DECLARE_ATOMIC_CHOICE(ATOMIC_LONG_LOCK_FREE, unsigned long long, atomic_ullong);
 
-P00_DECLARE_ATOMIC_CHOICE(ATOMIC_POINTER_LOCK_FREE, char*, atomic_char_p);
-P00_DECLARE_ATOMIC_CHOICE(ATOMIC_POINTER_LOCK_FREE, signed char*, atomic_schar_p);
-P00_DECLARE_ATOMIC_CHOICE(ATOMIC_POINTER_LOCK_FREE, unsigned char*, atomic_uchar_p);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_POINTER_LOCK_FREE, char*, atomic_char_ptr);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_POINTER_LOCK_FREE, signed char*, atomic_schar_ptr);
+P00_DECLARE_ATOMIC_CHOICE(ATOMIC_POINTER_LOCK_FREE, unsigned char*, atomic_uchar_ptr);
 
 P99_DECLARE_ATOMIC(float, atomic_float);
 P99_DECLARE_ATOMIC(double, atomic_double);
