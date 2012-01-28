@@ -35,7 +35,7 @@
 #define p00_has_extension_aligned_alloc 1
 #define p00_has_feature_quick_exit 1
 #define p00_has_extension_quick_exit 1
-#if defined(ATOMIC_FLAG_INIT) || defined(P00_DOXYGEN)
+#if defined(P99_LIFO_POP) || defined(P00_DOXYGEN)
 # define p00_has_feature_quick_exit_thread_safe 1
 # define p00_has_extension_quick_exit_thread_safe 1
 #endif
@@ -60,65 +60,85 @@ void *aligned_alloc(size_t p00_alignment, size_t p00_size) {
 }
 
 typedef struct p00_aqe_el p00_aqe_el;
-typedef struct p00_aqe_list p00_aqe_list;
+P99_POINTER_TYPE(p00_aqe_el);
+#if p99_has_feature(quick_exit_thread_safe)
+P99_DECLARE_ATOMIC(p00_aqe_el_ptr);
+typedef _Atomic(p00_aqe_el_ptr) p00_aqe_list;
+#else
+typedef p00_aqe_el_ptr p00_aqe_list;
+#endif
+
 typedef void p00_aqe_func(void);
 
 struct p00_aqe_el {
-  p00_aqe_el * next;
-  p00_aqe_func * func;
+  p00_aqe_el_ptr p99_lifo;
+  p00_aqe_func * p00_func;
 };
 
+
 p99_inline
-p00_aqe_el* p00_aqe_el_init(p00_aqe_el * obj, p00_aqe_el * next, p00_aqe_func* func) {
-  if (obj) {
-    *obj = (p00_aqe_el){ .next = next, .func = func };
+p00_aqe_el* p00_aqe_el_init(p00_aqe_el * p00_obj, p00_aqe_func* p00_func) {
+  if (p00_obj) {
+    *p00_obj = (p00_aqe_el){ .p00_func = p00_func };
   }
-  return obj;
+  return p00_obj;
 }
 
-struct p00_aqe_list {
+p99_inline
+p00_aqe_el* p00_at_quick_exit_top(p00_aqe_list* p00_l){
 #if p99_has_feature(quick_exit_thread_safe)
-  atomic_flag cat;
+  return P99_LIFO_TOP(p00_l);
+#else
+  return *p00_l;
 #endif
-  p00_aqe_el * head;
-};
-
-P99_WEAK(p00_aqe)
-p00_aqe_list p00_at_quick_exit = { .cat = ATOMIC_FLAG_INIT, .head = 0 };
+}
 
 p99_inline
-int at_quick_exit(void (*func)(void)) {
-  int ret = 0;
+void p00_at_quick_exit_push(p00_aqe_list* p00_l, p00_aqe_el* p00_el) {
 #if p99_has_feature(quick_exit_thread_safe)
-  P99_SPIN_EXCLUDE(&p00_at_quick_exit.cat) {
+  P99_LIFO_PUSH(p00_l, p00_el);
+#else
+  p00_el->p99_lifo = *p00_l;
+  *p00_l = p00_el;
 #endif
-    p00_aqe_el *el = P99_NEW(p00_aqe_el, p00_at_quick_exit.head, func);
-    ret = !el;
-    if (!ret) p00_at_quick_exit.head = el;
+}
+
+p99_inline
+p00_aqe_el* p00_at_quick_exit_pop(p00_aqe_list* p00_l) {
 #if p99_has_feature(quick_exit_thread_safe)
+  return P99_LIFO_POP(p00_l);
+#else
+  p00_aqe_el *p00_el = p00_at_quick_exit_top(p00_l);
+  if (p00_el) {
+    *p00_l = p00_el->p99_lifo;
+    p00_el->p99_lifo = 0;
   }
+  return p00_el;
 #endif
+}
+
+/* In both cases this is guaranteed to do the correct
+   initialization. */
+P99_WEAK(p00_aqe)
+p00_aqe_list p00_at_quick_exit;
+
+p99_inline
+int at_quick_exit(void (*p00_func)(void)) {
+  int ret = 0;
+  p00_aqe_el *el = P99_NEW(p00_aqe_el, p00_func);
+  ret = !el;
+  if (P99_LIKELY(!ret)) p00_at_quick_exit_push(&p00_at_quick_exit, el);
   return ret;
 }
 
 p99_inline
 _Noreturn void quick_exit(int status) {
   for (;;) {
-    p00_aqe_func * func = 0;
-#if p99_has_feature(quick_exit_thread_safe)
-    P99_SPIN_EXCLUDE(&p00_at_quick_exit.cat) {
-#endif
-      p00_aqe_el *el = p00_at_quick_exit.head;
-      if (el) {
-        func = el->func;
-        p00_at_quick_exit.head = el->next;
-        free(el);
-      }
-#if p99_has_feature(quick_exit_thread_safe)
-    }
-#endif
-    if (!func) break;
-    func();
+    p00_aqe_el *el = p00_at_quick_exit_pop(&p00_at_quick_exit);
+    if (P99_UNLIKELY(!el)) break;
+    p00_aqe_func * p00_func = el->p00_func;
+    free(el);
+    p00_func();
   }
   _Exit(status);
 }
