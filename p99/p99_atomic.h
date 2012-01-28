@@ -94,7 +94,7 @@ void p00_mfence(void) {
  ** @}
  **/
 
-#ifndef P00_NO_ATOMICS
+#if !defined(P00_NO_ATOMICS) || defined(P00_DOXYGEN)
 
 /**
  ** @addtogroup atomic_macros
@@ -1188,13 +1188,13 @@ P00_BLK_END
  **
  ** @remark @a BOP must be a pointer to the base type of @a AOP
  **/
-#define atomic_swap(AOP, BOP)                                           \
-({                                                                      \
-  P99_MACRO_PVAR(p00_aop, (AOP), volatile);                             \
-  P99_MACRO_PVAR(p00_bop, (BOP));                                       \
-  __typeof__(*p00_bop) p00_des = *p00_bop;                              \
+#define atomic_swap(AOP, BOP)                                                    \
+({                                                                               \
+  P99_MACRO_PVAR(p00_aop, (AOP), volatile);                                      \
+  P99_MACRO_PVAR(p00_bop, (BOP));                                                \
+  __typeof__(*p00_bop) p00_des = *p00_bop;                                       \
   while (P99_UNLIKELY(!atomic_compare_exchange_weak(p00_aop, p00_bop, p00_des))) \
-    P99_NOP;                                                            \
+    P99_NOP;                                                                     \
  })
 
 
@@ -1321,9 +1321,19 @@ P00_BLK_END
  ** @warning Such a section should not contain preliminary exits such
  ** as @c goto, @c break, @c return, @c longjmp, or ::P99_UNWIND etc.
  **
+ ** @code
+ ** P99_CRITICAL {
+ **    // do some operations on a fragile resource here
+ ** }
+ ** @endcode
+ **
  ** Such a critical section is only protected against threads that try
  ** to enter this same critical section. Threads may well be
  ** simultaneously be in different critical sections.
+ **
+ ** @remark Don't use this if you just want to protect e.g a counter
+ ** that is used between different threads. ::_Atomic and the
+ ** operations on atomic variables are more appropriate for that.
  **
  ** @see P99_SPIN_EXCLUDE to protect several critical sections against
  ** each other.
@@ -1352,12 +1362,12 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_TOP, 0)
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
-#define P99_LIFO_PUSH(L, EL)                    \
-({                                              \
-  P99_MACRO_VAR(p00_l, (L));                    \
-  P99_MACRO_VAR(p00_el, (EL));                  \
-  p00_el->p99_lifo = p00_el;                    \
-  atomic_swap(p00_l, &p00_el->p99_lifo);        \
+#define P99_LIFO_PUSH(L, EL)                                   \
+({                                                             \
+  P99_MACRO_VAR(p00_l, (L));                                   \
+  P99_MACRO_VAR(p00_el, (EL));                                 \
+  p00_el->p99_lifo = p00_el;                                   \
+  atomic_swap(p00_l, &p00_el->p99_lifo);                       \
  })
 
 /**
@@ -1399,15 +1409,15 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
  ** @see P99_LIFO_TOP
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_POP, 0)
-#define P99_LIFO_POP(L)                                                 \
-({                                                                      \
-  P99_MACRO_VAR(p00_l, (L));                                            \
-  __typeof__(P99_LIFO_TOP(p00_l)) p00_el = P99_LIFO_TOP(p00_l);         \
-  if (P99_LIKELY(p00_el)) {                                             \
+#define P99_LIFO_POP(L)                                                                            \
+({                                                                                                 \
+  P99_MACRO_VAR(p00_l, (L));                                                                       \
+  __typeof__(P99_LIFO_TOP(p00_l)) p00_el = P99_LIFO_TOP(p00_l);                                    \
+  if (P99_LIKELY(p00_el)) {                                                                        \
     while (P99_UNLIKELY(!atomic_compare_exchange_weak(p00_l, &p00_el, p00_el->p99_lifo))) P99_NOP; \
-    p00_el->p99_lifo = 0;                                               \
-  }                                                                     \
-  p00_el;                                                               \
+    p00_el->p99_lifo = 0;                                                                          \
+  }                                                                                                \
+  p00_el;                                                                                          \
  })
 
 

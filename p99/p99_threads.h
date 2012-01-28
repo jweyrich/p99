@@ -85,22 +85,40 @@
 /**
  ** @brief complete object type that holds an identifier for a
  ** condition variable
+ **
+ ** @remark This type is just a wrapper around a POSIX @c pthread_cond_t.
  **/
 P99_ENC_DECLARE(pthread_cond_t, cnd_t);
 
 typedef struct p00_thrd p00_thrd;
 /**
  ** @brief complete object type that holds an identifier for a thread
+ **
+ ** @remark Even thought this implementation of threads is based on
+ ** POSIX, this thread id type is not compatible with POSIX' @c
+ ** pthread_t.
+ **
+ ** As soon as you use this implementation here, all threads even if
+ ** they are not created through ::thrd_create will have a distinct
+ ** such ::thrd_t as their ID. This ID is accessible through
+ ** ::thrd_current.
  **/
 P99_ENC_DECLARE(struct p00_thrd*, thrd_t);
 
 /**
  ** @brief complete object type that holds an identifier for a
  ** thread-specific storage pointer
+ **
+ ** @remark This type is just a wrapper around a POSIX @c pthread_key_t.
+ **
+ ** @see P99_DECLARE_THREAD_LOCAL for a more comfortable interface to
+ ** thread local variables
  **/
 P99_ENC_DECLARE(pthread_key_t, tss_t);
 /**
  ** @brief complete object type that holds an identifier for a mutex
+ **
+ ** @remark This type is just a wrapper around a POSIX @c pthread_mutex_t.
  **/
 P99_ENC_DECLARE(pthread_mutex_t, mtx_t);
 

@@ -79,13 +79,13 @@ struct p00_aqe_el {
 p99_inline
 p00_aqe_el* p00_aqe_el_init(p00_aqe_el * p00_obj, p00_aqe_func* p00_func) {
   if (p00_obj) {
-    *p00_obj = (p00_aqe_el){ .p00_func = p00_func };
+    *p00_obj = (p00_aqe_el) { .p00_func = p00_func };
   }
   return p00_obj;
 }
 
 p99_inline
-p00_aqe_el* p00_at_quick_exit_top(p00_aqe_list* p00_l){
+p00_aqe_el* p00_at_quick_exit_top(p00_aqe_list* p00_l) {
 #if p99_has_feature(quick_exit_thread_safe)
   return P99_LIFO_TOP(p00_l);
 #else

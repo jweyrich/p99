@@ -112,7 +112,13 @@
  **  - @ref hide
  **  - @ref pragma
  **
- ** With these it implements @ref utilities "utilities" that
+ ** On some platforms, P99 is also able to emulate the main features
+ ** that come with @link C11 the newest C standard, C11:@endlink
+ **  - @ref generic
+ **  - @ref atomic
+ **  - @ref threads
+ **
+ ** With all these features it implements @ref utilities "utilities" that
  ** previously had not been possible to program in C (or C macros) or
  ** that were very difficult to implement
  **  - @ref defaults
@@ -152,7 +158,7 @@
  ** ::P99_VERSION_ID, namely $Format:%H$.
  **
  ** @subsection copyright Copyright
- ** Copyright &copy; 2010-2011 Jens Gustedt, INRIA, France, http://www.inria.fr/
+ ** Copyright &copy; 2010-2012 Jens Gustedt, INRIA, France, http://www.inria.fr/
  **
  ** @htmlinclude SHORTLICENCE-open.txt
  **
@@ -466,7 +472,7 @@
  **                    ,
  **                    useconds(),
  **                    getpid(),
- **                    (atomic_counter_inc(&rand48_counter), atomic_counter_getvalue(&rand48_counter))
+ **                    atomic_fetch_add(&rand48_counter)
  **                    );
  ** @endcode
  **
@@ -478,25 +484,25 @@
  **  - a declaration of the default arguments.
  **
  ** Here in the example there is no default argument for position 0
- ** but one for positions 1 to 3. All three have the type @c
- ** unsigned. The above leads to the automatic generation of three @c
- ** inline function that looks something like:
+ ** but one for positions 1 to 3. All three have the type
+ ** <code>unsigned short</code>. The above leads to the automatic generation of three @c
+ ** inline function that look something like:
  **
  ** @code
  ** inline
- ** pthread_mutexattr_t const*
- ** pthread_mutex_init_defarg_1(void) {
+ ** unsigned short
+ ** rand48_t_init_defarg_1(void) {
  **   return useconds();
  ** }
  ** inline
- ** pthread_mutexattr_t const*
- ** pthread_mutex_init_defarg_2(void) {
+ ** unsigned short
+ ** rand48_t_init_defarg_2(void) {
  **   return getpid();
  ** }
  ** inline
- ** pthread_mutexattr_t const*
- ** pthread_mutex_init_defarg_3(void) {
- **   return (atomic_counter_inc(&rand48_counter), atomic_counter_getvalue(&rand48_counter));
+ ** unsigned short
+ ** rand48_t_init_defarg_3(void) {
+ **   return atomic_fetch_add(&rand48_counter);
  ** }
  ** @endcode
  **
@@ -510,15 +516,14 @@
  ** @section blocks Scope bound resource management with for scopes
  **
  ** Resource management can be tedious in C. <em>E.g</em> to protect a
- ** critical block from simultaneous execution in a threaded
- ** environment you'd have to place a lock / unlock pair before and
- ** after that block:
- ** @code
- ** pthread_mutex_t guard = PTHREAD_MUTEX_INTIALIZER;
+ ** critical block from simultaneous execution in a @link threads
+ ** threaded environment @endlink you'd have to place a lock / unlock
+ ** pair before and after that block: @code mtx_t guard;
+ ** mtx_init(&guard);
  **
- ** pthread_mutex_lock(&amp;guard);
+ ** mtx_lock(&guard);
  ** // critical block comes here
- ** pthread_mutex_unlock(&amp;guard);
+ ** mtx_unlock(&guard);
  ** @endcode
  ** This is very much error prone since you have to provide such calls
  ** every time you have such a block. If the block is longer than some
@@ -530,79 +535,47 @@
  ** and guarantee that your lock / unlock calls are matching. Below,
  ** we will give an example of a macro that will help us to write
  ** something like
+ **
  ** @code
- ** P99_PROTECTED_BLOCK(pthread_mutex_lock(&guard),
- **                     pthread_mutex_unlock(&guard)) {
+ ** P99_PROTECTED_BLOCK(mtx_lock(&guard),
+ **                     mtx_unlock(&guard)) {
  **        // critical block comes here
  ** }
  ** @endcode
- ** If we want to make this even a bit more comfortable for cases that
- ** we still need to know the mutex variable we may have something
- ** like:
+ **
+ ** To make this even a bit more comfortable we have
+ **
  ** @code
- ** PROTECT_IT(guard) {
- **        // critical block comes here
- ** }
- ** @endcode
- ** For cases where the mutex variable is specific to the block:
- **  @code
- ** CRITICAL {
+ ** P99_MUTUAL_EXCLUDE(&guard) {
  **        // critical block comes here
  ** }
  ** @endcode
  **
- ** Please look into the documentation of
- ** ::P99_PROTECTED_BLOCK(BEFORE, AFTER) to see how it is defined.  As
- ** you may see there, it uses two <code>for</code> statements. The
- ** first defines a auxiliary variable @c _one1_ that is used to
- ** control that the dependent code is only executed exactly once. The
- ** arguments @c BEFORE and @c AFTER are then placed such that they
- ** will be executed before and after the dependent code,
- ** respectively.
+ ** There is an equivalent block protection that uses an ::atomic_flag
+ ** as a spin lock. Such a spin lock only uses @link atomic atomic
+ ** operations @endlink and can be much more efficient than a
+ ** protection through a ::mtx_t, @b if the code inside the critical
+ ** section is really small and fast:
  **
+ ** @code
+ ** P99_SPIN_EXCLUDE(&cat) {
+ **        // critical block comes here
+ ** }
+ ** @endcode
  **
- ** The second @c for is just there to ensure that @c AFTER is even
- ** executed when the dependent code executes a @c break or @c
- ** continue statement. For other preliminary exits such as @c return
- ** or @c exit() there is unfortunately no such cure. When programming
- ** the dependent statement we have to be careful about these, but
- ** this problem is just the same as it had been in the ``plain'' C
- ** version.
+ ** For cases where the ::atomic_flag variable would be specific to
+ ** the block, you don't even have to define it yourself:
  **
- ** Generally there is no run time performance cost for using such a
+ ** @code
+ ** P99_CRITICAL {
+ **        // critical block comes here
+ ** }
+ ** @endcode
+ **
+ ** Generally there should be no run time performance cost for using such a
  ** macro. Any decent compiler will detect that the dependent code is
  ** executed exactly once, and thus optimize out all the control that
- ** has to do with our variable @c _one1_.
- **
- ** The PROTECT_IT macro could now be realized as:
- ** @code
- ** #define PROTECT_IT(NAME)                                   \
- ** P99_PROTECTED_BLOCK(pthread_mutex_lock(&(NAME)),           \
- **                     pthread_mutex_unlock(&(NAME)))
- ** @endcode
- **
- ** To have more specific control about the mutex variable we may use
- ** another P99 macro,
- ** P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)
- **
- ** This is a bit more complex than the previous one since in addition
- ** it declares a local variable @c NAME of type
- ** @c T and initializes it. The @c CRITICAL macro
- ** can then be defined as follows
- ** @code
- ** #define CRITICAL                                           \
- ** P99_GUARDED_BLOCK(                                         \
- **     static pthread_mutex_t,                                \
- **     _critical_guard_,                                      \
- **     PTHREAD_MUTEX_INITIALIZER,                             \
- **     pthread_mutex_lock(&_critical_guard_),                 \
- **     pthread_mutex_unlock(&_critical_guard_))
- ** @endcode
- ** Observe the use of @c static for the declaration of
- ** @c _critical_guard_. This guarantees that any thread
- ** that runs through this code uses the same variable and that this
- ** variable is properly initialized at compile time.
- **
+ ** has to do with our specific implementation of theses blocks.
  **
  ** Other such block macros that can be implemented with such a technique:
  **   - pre- and postconditions
