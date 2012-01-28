@@ -1182,6 +1182,22 @@ P00_BLK_END
   p00_ret;                                                                                      \
  })
 
+/**
+ ** @brief Atomically swap the value of the atomic variable @a AOP
+ ** with the contents of @a BOP.
+ **
+ ** @remark @a BOP must be a pointer to the base type of @a AOP
+ **/
+#define atomic_swap(AOP, BOP)                                           \
+({                                                                      \
+  P99_MACRO_PVAR(p00_aop, (AOP), volatile);                             \
+  P99_MACRO_PVAR(p00_bop, (BOP));                                       \
+  __typeof__(*p00_bop) p00_des = *p00_bop;                              \
+  while (P99_UNLIKELY(!atomic_compare_exchange_weak(p00_aop, p00_bop, p00_des))) \
+    P99_NOP;                                                            \
+ })
+
+
 #define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                 \
 ({                                                                     \
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                          \
