@@ -366,7 +366,7 @@ __typeof__(P99_GENERIC_SIZE_LIT(sizeof(T), (uintptr_t){ 0 }, P00_UINT_TYPE_LIST)
  ** @brief Initialize a variable of an atomic type.
  ** @memberof atomic_int
  **/
-#define ATOMIC_VAR_INIT(V) { .p00_xval = { .p00_type_member = (V), }, }
+#define ATOMIC_VAR_INIT(V) { .p00_xval = { .p00_t = (V), }, }
 
 /**
  ** @brief A list of types that are supposed to have lock-free atomic
@@ -530,9 +530,10 @@ P99_DECLARE_ENUM(memory_order,
  **/
 P99_ENC_DECLARE(uint32_t volatile, atomic_flag);
 
-#define P00_AT(OBJP) ((OBJP)->p00_xval.p00_type_member)
-#define P00_AO(OBJP) ((OBJP)->p00_xval.p00_operator_member)
-#define P00_AM(OBJP) ((OBJP)->p00_xval.p00_memory_member)
+#define P00_AX(OBJP) ((OBJP)->p00_xval)
+#define P00_AT(OBJP) (P00_AX(OBJP).p00_t)
+#define P00_AO(OBJP) (P00_AX(OBJP).p00_o)
+#define P00_AM(OBJP) (P00_AX(OBJP).p00_m)
 
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P00_DECLARE_ATOMIC_TYPE, 0)
 P00_DOCUMENT_TYPE_ARGUMENT(P00_DECLARE_ATOMIC_TYPE, 1)
@@ -541,9 +542,9 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P00_DECLARE_ATOMIC_TYPE, 2)
 TAGGER P99_PASTE3(NAME, _, TAGGER) {                                   \
   atomic_flag p00_lock;                                                \
   union {                                                              \
-    TI p00_operator_member;                                            \
-    P99_UINT_DEFAULT(T) p00_memory_member;                             \
-    T p00_type_member;                                                 \
+    TI p00_o;                                                          \
+    P99_UINT_DEFAULT(T) p00_m;                                         \
+    T p00_t;                                                           \
   } p00_xval;                                                          \
 };                                                                     \
 typedef TAGGER P99_PASTE3(NAME, _, TAGGER) P99_PASTE3(NAME, _, TAGGER)
@@ -780,8 +781,8 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_ATOMIC_INHERIT, 0)
  ** generic functions (macros) can be used with an atomic type:
  **
  ** @see atomic_fetch_add to add a value to the object as @c += would on @a T. This should be
- ** lock-free for all integer types (see above) and is @em not
- ** lock-free for floating point types.
+ ** lock-free for all integer %types (see above) and is @em not
+ ** lock-free for floating point %types.
  **
  ** @see atomic_fetch_sub to subtract a value as @c -= would on @a T. See ::atomic_fetch_add
  ** for constraints.
@@ -1066,37 +1067,38 @@ P00_BLK_END
   })
 
 /**
- ** @brief Store @a VAL into the object behind @a OBJP.
+ ** @brief Store @a DESIRED into the object behind @a OBJP and return its previous value.
  **
- ** @a VAL and the base type of @a OBJP must be assignment compatible.
+ ** @a DESIRED and the base type of @a OBJP must be assignment compatible.
  **
  ** @remark this can be used in a context that is known to have a race
  ** condition
  **
  ** @memberof atomic_int
  **/
-#define atomic_store(OBJP, DESIRED)                                                              \
-({                                                                                               \
-  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                                    \
-  P99_MACRO_VAR(p00_des, (DESIRED));                                                             \
-  if (!atomic_is_lock_free(p00_objp))                                                            \
-    P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                                        \
-      P00_AT(p00_objp) = p00_des;                                                                \
-  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                                       \
-    ()                                                                                           \
-    (else {                                                                                      \
-      union {                                                                                    \
-        __typeof__(P00_AT(p00_objp)) p00_t;                                                      \
-        __typeof__(P00_AM(p00_objp)) p00_m;                                                      \
-      } p00_desm = { .p00_t = p00_des };                                                         \
-      P99_MACRO_VAR(p00_prem, P00_AM(p00_objp));                                                 \
-      for (;;) {                                                                                 \
-        P99_MACRO_VAR(p00_valm,                                                                  \
-                      __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_prem, p00_desm.p00_m)); \
-        if (p00_valm == p00_prem) break;                                                         \
-        p00_prem = p00_valm;                                                                     \
-      }                                                                                          \
-    })                                                                                           \
+#define atomic_fetch_and_store(OBJP, DESIRED)                                                         \
+({                                                                                                    \
+  P99_MACRO_PVAR(p00_objp, (OBJP));                                                                   \
+  P99_MACRO_VAR(p00_des, (DESIRED));                                                                  \
+  __typeof__(P00_AX(p00_objp)) p00_ret = P99_INIT;                                                    \
+  if (!atomic_is_lock_free(p00_objp))                                                                 \
+    P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                                                           \
+      p00_ret.p00_t = P00_AT(p00_objp);                                                               \
+      P00_AT(p00_objp) = p00_des;                                                                     \
+    }                                                                                                 \
+  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                                            \
+    ()                                                                                                \
+    (else {                                                                                           \
+      __typeof__(P00_AX(p00_objp)) p00_desm = { .p00_t = p00_des };                                   \
+      p00_ret.p00_m = P00_AM(p00_objp);                                                               \
+     for (;;) {                                                                                       \
+        P99_MACRO_VAR(p00_valm,                                                                       \
+                      __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_ret.p00_m, p00_desm.p00_m)); \
+        if (P99_LIKELY(p00_valm == p00_ret.p00_m)) break;                                             \
+        p00_ret.p00_m = p00_valm;                                                                     \
+      }                                                                                               \
+    })                                                                                                \
+    p00_ret.p00_t;                                                                                    \
  })
 
 /**
@@ -1109,11 +1111,8 @@ P00_BLK_END
  **/
 #define atomic_load(OBJP)                                                     \
 ({                                                                            \
-  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                 \
-  union {                                                                     \
-    __typeof__(P00_AT(p00_objp)) p00_t;                                       \
-    __typeof__(P00_AM(p00_objp)) p00_m;                                       \
-  } p00_ret;                                                                  \
+  P99_MACRO_PVAR(p00_objp, (OBJP));                                           \
+  __typeof__(P00_AX(p00_objp)) p00_ret;                                       \
   if (!atomic_is_lock_free(p00_objp))                                         \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                     \
       p00_ret.p00_t = P00_AT(p00_objp);                                       \
@@ -1149,8 +1148,8 @@ P00_BLK_END
  **/
 #define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                                   \
 ({                                                                                              \
-  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                                   \
-  P99_MACRO_PVAR(p00_exp, (EXPECTED), volatile);                                                \
+  P99_MACRO_PVAR(p00_objp, (OBJP));                                                             \
+  P99_MACRO_PVAR(p00_exp, (EXPECTED));                                                          \
   P99_MACRO_VAR(p00_des, DESIRED);                                                              \
   _Bool p00_ret = false;                                                                        \
   if (!atomic_is_lock_free(p00_objp)) {                                                         \
@@ -1165,12 +1164,9 @@ P00_BLK_END
   P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                                      \
     (else p00_ret = false;)                                                                     \
     (else {                                                                                     \
-      __typeof__(P00_AM(p00_objp)) volatile* p00_expm                                           \
+      __typeof__(P00_AM(p00_objp))* p00_expm                                                    \
         = (__typeof__(P00_AM(p00_objp))*)P00_ATOMIC_TERN(p00_objp, p00_exp, 0);                 \
-      union {                                                                                   \
-        __typeof__(P00_AT(p00_objp)) p00_t;                                                     \
-        __typeof__(P00_AM(p00_objp)) p00_m;                                                     \
-      } p00_desm = { .p00_t = p00_des };                                                        \
+      __typeof__(P00_AX(p00_objp)) p00_desm = { .p00_t = p00_des };                             \
       __typeof__(P00_AM(p00_objp)) p00_valm                                                     \
         = P00_ATOMIC_TERN                                                                       \
         (p00_objp,                                                                              \
@@ -1183,24 +1179,21 @@ P00_BLK_END
  })
 
 /**
- ** @brief Atomically swap the value of the atomic variable @a AOP
- ** with the contents of @a BOP.
+ ** @brief Store @a DESIRED into the object behind @a OBJP.
  **
- ** @remark @a BOP must be a pointer to the base type of @a AOP
+ ** @a DESIRED and the base type of @a OBJP must be assignment compatible.
+ **
+ ** @remark this can be used in a context that is known to have a race
+ ** condition
+ **
+ ** @memberof atomic_int
  **/
-#define atomic_swap(AOP, BOP)                                                    \
-({                                                                               \
-  P99_MACRO_PVAR(p00_aop, (AOP), volatile);                                      \
-  P99_MACRO_PVAR(p00_bop, (BOP));                                                \
-  __typeof__(*p00_bop) p00_des = *p00_bop;                                       \
-  while (P99_UNLIKELY(!atomic_compare_exchange_weak(p00_aop, p00_bop, p00_des))) \
-    P99_NOP;                                                                     \
- })
+#define atomic_store(OBJP, DES) ((void)atomic_fetch_and_store(OBJP, DES))
 
 
 #define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                 \
 ({                                                                     \
-  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                          \
+  P99_MACRO_PVAR(p00_objp, (OBJP));                                    \
   P99_MACRO_VAR(p00_op, OPERAND);                                      \
   __typeof__(P00_AT(p00_objp)) p00_ret;                                \
   if (!atomic_is_lock_free(p00_objp)) {                                \
@@ -1298,9 +1291,9 @@ P00_BLK_END
 
 #define atomic_fetch_add_conditional(OBJP, OPERAND)                       \
 ({                                                                        \
-  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                             \
+  P99_MACRO_PVAR(p00_objp, (OBJP));                                       \
   P99_MACRO_VAR(p00_op, (OPERAND));                                       \
-  P99_MACRO_VAR(p00_ret, atomic_load(p00_objp), volatile);                \
+  P99_MACRO_VAR(p00_ret, atomic_load(p00_objp))          ;                \
   while (p00_ret) {                                                       \
     P99_MACRO_VAR(p00_des, p00_ret + p00_op);                             \
     if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_des)) break; \
@@ -1349,16 +1342,18 @@ P99_SPIN_EXCLUDE(P99_LINEID(crit))
 
 /**
  ** @brief Return a pointer to the top element of an atomic LIFO @a L
- ** @see P99_LIFO_PUSH
+ ** @see P99_LIFO_CLEAR
  ** @see P99_LIFO_POP
+ ** @see P99_LIFO_PUSH
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_TOP, 0)
 #define P99_LIFO_TOP(L)  atomic_load(L)
 
 /**
  ** @brief Push element @a EL into an atomic LIFO @a L
- ** @see P99_LIFO_TOP
+ ** @see P99_LIFO_CLEAR
  ** @see P99_LIFO_POP
+ ** @see P99_LIFO_TOP
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
@@ -1366,8 +1361,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
 ({                                                             \
   P99_MACRO_VAR(p00_l, (L));                                   \
   P99_MACRO_VAR(p00_el, (EL));                                 \
-  p00_el->p99_lifo = p00_el;                                   \
-  atomic_swap(p00_l, &p00_el->p99_lifo);                       \
+  p00_el->p99_lifo = atomic_fetch_and_store(p00_l, p00_el);    \
  })
 
 /**
@@ -1405,6 +1399,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
  ** }
  ** @endcode
  **
+ ** @see P99_LIFO_CLEAR
  ** @see P99_LIFO_PUSH
  ** @see P99_LIFO_TOP
  **/
@@ -1419,6 +1414,17 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_POP, 0)
   }                                                                                                \
   p00_el;                                                                                          \
  })
+
+/**
+ ** @brief Atomically clear an atomic LIFO @a L and return a pointer
+ ** to the start of the list that it previously contained
+ **
+ ** @see P99_LIFO_POP
+ ** @see P99_LIFO_PUSH
+ ** @see P99_LIFO_TOP
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
+#define P99_LIFO_CLEAR(L) atomic_fetch_and_store(p00_l, 0)
 
 
 /**
