@@ -63,25 +63,7 @@
 # undef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
 #endif
 
-#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
-
-p99_inline
-uint32_t p00_sync_lock_test_and_set(uint32_t volatile *p00_objp) {
-  return __sync_lock_test_and_set(p00_objp, 1);
-}
-
-p99_inline
-void p00_sync_lock_release(uint32_t volatile *p00_objp) {
-  __sync_lock_release(p00_objp);
-}
-
-p99_inline
-void p00_mfence(void) {
-  __sync_synchronize();
-}
-
-
-#elif defined(__arm__)
+#if defined(__arm__)
 # include "p99_atomic_arm.h"
 #elif defined(__x86_64__) || defined(__i386__)
 # include "p99_atomic_x86.h"
@@ -716,6 +698,19 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_ATOMIC_INHERIT, 0)
    ),                                                                                       \
   P00_ATOMIC_TYPES))
 
+p99_inline
+uintptr_t p00_fetch_and_store_ignore(void* x, ...) { return 0; }
+
+#define P00_FETCH_AND_STORE(X)                                              \
+P99_GENERIC_SIZE                                                            \
+ (sizeof(X),                                                                \
+  p00_fetch_and_store_ignore,                                               \
+  (1, p00_atomic_fetch_and_store_1),                                        \
+  (2, p00_atomic_fetch_and_store_2),                                        \
+  (4, p00_atomic_fetch_and_store_4)                                         \
+  P99_IF_EQ_2(ATOMIC_INT64_LOCK_FREE)(,(8, p00_atomic_fetch_and_store_8))() \
+  )
+
 /**
  ** @brief refer to an atomic type of base type T
  **
@@ -1076,29 +1071,38 @@ P00_BLK_END
  **
  ** @memberof atomic_int
  **/
-#define atomic_fetch_and_store(OBJP, DESIRED)                                                         \
-({                                                                                                    \
-  P99_MACRO_PVAR(p00_objp, (OBJP));                                                                   \
-  P99_MACRO_VAR(p00_des, (DESIRED));                                                                  \
-  __typeof__(P00_AX(p00_objp)) p00_ret = P99_INIT;                                                    \
-  if (!atomic_is_lock_free(p00_objp))                                                                 \
-    P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                                                           \
-      p00_ret.p00_t = P00_AT(p00_objp);                                                               \
-      P00_AT(p00_objp) = p00_des;                                                                     \
-    }                                                                                                 \
-  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                                            \
-    ()                                                                                                \
-    (else {                                                                                           \
-      __typeof__(P00_AX(p00_objp)) p00_desm = { .p00_t = p00_des };                                   \
-      p00_ret.p00_m = P00_AM(p00_objp);                                                               \
-     for (;;) {                                                                                       \
-        P99_MACRO_VAR(p00_valm,                                                                       \
-                      __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_ret.p00_m, p00_desm.p00_m)); \
-        if (P99_LIKELY(p00_valm == p00_ret.p00_m)) break;                                             \
-        p00_ret.p00_m = p00_valm;                                                                     \
-      }                                                                                               \
-    })                                                                                                \
-    p00_ret.p00_t;                                                                                    \
+#define atomic_fetch_and_store(OBJP, DESIRED)                                                           \
+({                                                                                                      \
+  P99_MACRO_PVAR(p00_objp, (OBJP));                                                                     \
+  P99_MACRO_VAR(p00_des, (DESIRED));                                                                    \
+  __typeof__(P00_AX(p00_objp)) p00_ret = P99_INIT;                                                      \
+  if (!atomic_is_lock_free(p00_objp))                                                                   \
+    P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                                                             \
+      p00_ret.p00_t = P00_AT(p00_objp);                                                                 \
+      P00_AT(p00_objp) = p00_des;                                                                       \
+    }                                                                                                   \
+  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                                              \
+    ()                                                                                                  \
+    (else {                                                                                             \
+      __typeof__(P00_AX(p00_objp)) p00_desm = { .p00_t = p00_des };                                     \
+      switch (sizeof(P00_AT(p00_objp))) {                                                               \
+      case 1:;                                                                                          \
+      case 2:;                                                                                          \
+      case 4:;                                                                                          \
+      case 8:;                                                                                          \
+        p00_ret.p00_m = P00_FETCH_AND_STORE(P00_AT(p00_objp))(&P00_AM(p00_objp), p00_desm.p00_m);       \
+        break;                                                                                          \
+      default:                                                                                          \
+        p00_ret.p00_m = P00_AM(p00_objp);                                                               \
+        for (;;) {                                                                                      \
+          P99_MACRO_VAR(p00_valm,                                                                       \
+                        __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_ret.p00_m, p00_desm.p00_m)); \
+          if (P99_LIKELY(p00_valm == p00_ret.p00_m)) break;                                             \
+          p00_ret.p00_m = p00_valm;                                                                     \
+        }                                                                                               \
+      }                                                                                                 \
+    })                                                                                                  \
+    p00_ret.p00_t;                                                                                      \
  })
 
 /**

@@ -17,6 +17,239 @@
 # warning "never include this file directly, use p99_atomic.h, instead"
 #endif
 
+#if !defined(__thumb__) && !defined(__thumb2__)
+/* When in arm mode we can't do addressing with offset, here, so use
+   direct addressing. */
+p99_inline
+uint8_t p00_arm_ldrexb(uint8_t volatile*p00_ptr) {
+  uint8_t p00_ret;
+  __asm__ volatile ("ldrexb %0,[%1]\t@ load exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "r" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+
+p99_inline
+_Bool p00_arm_strexb(uint8_t volatile*p00_ptr, uint8_t p00_val) {
+  uint32_t p00_ret;
+  __asm__ volatile ("strexb %0,%1,[%2]\t@ store exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "r" (p00_val), "r" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+p99_inline
+uint16_t p00_arm_ldrexh(uint16_t volatile*p00_ptr) {
+  uint16_t p00_ret;
+  __asm__ volatile ("ldrexh %0,[%1]\t@ load exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "r" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+
+p99_inline
+_Bool p00_arm_strexh(uint16_t volatile*p00_ptr, uint16_t p00_val) {
+  uint32_t p00_ret;
+  __asm__ volatile ("strexh %0,%1,[%2]\t@ store exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "r" (p00_val), "r" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+p99_inline
+uint32_t p00_arm_ldrex(uint32_t volatile*p00_ptr) {
+  uint32_t p00_ret;
+  __asm__ volatile ("ldrex %0,[%1]\t@ load exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "r" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+
+p99_inline
+_Bool p00_arm_strex(uint32_t volatile*p00_ptr, uint32_t p00_val) {
+  uint32_t p00_ret;
+  __asm__ volatile ("strex %0,%1,[%2]\t@ store exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "r" (p00_val), "r" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)
+p99_inline
+uint64_t p00_arm_ldrexd(uint64_t volatile*p00_ptr) {
+  uint64_t p00_ret;
+  __asm__ volatile ("ldrexd %0, %H0, [%1]\t@ load exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "r" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+
+p99_inline
+_Bool p00_arm_strex(uint64_t volatile*p00_ptr, uint64_t p00_val) {
+  uint32_t p00_ret;
+  __asm__ volatile ("strex %0, %1, %H1, [%2]\t@ store exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "r" (p00_val), "r" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+# endif
+#else
+/* When in thumb mode we can do addressing with offset, here, so use
+   the "m" constraint to the assembler. */
+p99_inline
+uint8_t p00_arm_ldrexb(uint8_t volatile*p00_ptr) {
+  uint8_t p00_ret;
+  __asm__ volatile ("ldrexb %0,%1\t@ load exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "m" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+
+p99_inline
+_Bool p00_arm_strexb(uint8_t volatile*p00_ptr, uint8_t p00_val) {
+  uint32_t p00_ret;
+  __asm__ volatile ("strexb %0,%1,%2\t@ store exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "r" (p00_val), "m" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+p99_inline
+uint16_t p00_arm_ldrexh(uint16_t volatile*p00_ptr) {
+  uint16_t p00_ret;
+  __asm__ volatile ("ldrexh %0,%1\t@ load exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "m" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+
+p99_inline
+_Bool p00_arm_strexh(uint16_t volatile*p00_ptr, uint16_t p00_val) {
+  uint32_t p00_ret;
+  __asm__ volatile ("strexh %0,%1,%2\t@ store exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "r" (p00_val), "m" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+p99_inline
+uint32_t p00_arm_ldrex(uint32_t volatile*p00_ptr) {
+  uint32_t p00_ret;
+  __asm__ volatile ("ldrex %0,%1\t@ load exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "m" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+
+p99_inline
+_Bool p00_arm_strex(uint32_t volatile*p00_ptr, uint32_t p00_val) {
+  uint32_t p00_ret;
+  __asm__ volatile ("strex %0,%1,%2\t@ store exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "r" (p00_val), "m" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)
+p99_inline
+uint64_t p00_arm_ldrexd(uint64_t volatile*p00_ptr) {
+  uint64_t p00_ret;
+  __asm__ volatile ("ldrexd %0, %H0, %1\t@ load exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "m" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+
+p99_inline
+_Bool p00_arm_strexd(uint64_t volatile*p00_ptr, uint64_t p00_val) {
+  uint32_t p00_ret;
+  __asm__ volatile ("strexd %0, %1, %H1, %2\t@ store exclusive\n"
+                    : "=&r" (p00_ret)
+                    : "r" (p00_val), "m" (p00_ptr)
+                    : "cc", "memory"
+                   );
+  return p00_ret;
+}
+# endif
+#endif
+
+p99_inline
+uint8_t p00_atomic_fetch_and_store_1(uint8_t volatile* p00_objp, uint8_t p00_des) {
+  for (;;) {
+    uint8_t p00_ret = p00_arm_ldrexb(object);
+    if (!p00_arm_strexb(object, p00_des)) return p00_ret;
+  }
+}
+
+p99_inline
+uint16_t p00_atomic_fetch_and_store_2(uint16_t volatile* p00_objp, uint16_t p00_des) {
+  for (;;) {
+    uint16_t p00_ret = p00_arm_ldrexh(object);
+    if (!p00_arm_strexh(object, p00_des)) return p00_ret;
+  }
+}
+
+p99_inline
+uint32_t p00_atomic_fetch_and_store_4(uint32_t volatile* p00_objp, uint32_t p00_des) {
+  for (;;) {
+    uint32_t p00_ret = p00_arm_ldrex(object);
+    if (!p00_arm_strex(object, p00_des)) return p00_ret;
+  }
+}
+
+#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(P00_DOXYGEN)
+p99_inline
+uint64_t p00_atomic_fetch_and_store_8(uint64_t volatile* p00_objp, uint64_t p00_des) {
+  for (;;) {
+    uint64_t p00_ret = p00_arm_ldrexd(object);
+    if (!p00_arm_strexd(object, p00_des)) return p00_ret;
+  }
+}
+#endif
+
+#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && !defined(P00_DOXYGEN)
+
+p99_inline
+uint32_t p00_sync_lock_test_and_set(uint32_t volatile *p00_objp) {
+  return __sync_lock_test_and_set(p00_objp, 1);
+}
+
+p99_inline
+void p00_sync_lock_release(uint32_t volatile *p00_objp) {
+  __sync_lock_release(p00_objp);
+}
+
+p99_inline
+void p00_mfence(void) {
+  __sync_synchronize();
+}
+
+
+#else
 /**
  ** @addtogroup atomic_arm Atomic operations on ARM
  **
@@ -43,55 +276,6 @@
  ** @{
  **/
 
-#if !defined(__thumb__) && !defined(__thumb2__)
-/* When in arm mode we can't do addressing with offset, here, so use
-   direct addressing. */
-p99_inline
-uint32_t p00_arm_ldrex(uint32_t volatile*p00_ptr) {
-  uint32_t p00_ret;
-  __asm__ volatile ("ldrex %0,[%1]\t@ load exclusive\n"
-                    : "=&r" (p00_ret)
-                    : "r" (p00_ptr)
-                    : "cc", "memory"
-                   );
-  return p00_ret;
-}
-
-p99_inline
-_Bool p00_arm_strex(uint32_t volatile*p00_ptr, uint32_t p00_val) {
-  uint32_t p00_ret;
-  __asm__ volatile ("strex %0,%1,[%2]\t@ store exclusive\n"
-                    : "=&r" (p00_ret)
-                    : "r" (p00_val), "r" (p00_ptr)
-                    : "cc", "memory"
-                   );
-  return p00_ret;
-}
-#else
-/* When in thumb mode we can do addressing with offset, here, so use
-   the "m" constraint to the assembler. */
-p99_inline
-uint32_t p00_arm_ldrex(uint32_t volatile*p00_ptr) {
-  uint32_t p00_ret;
-  __asm__ volatile ("ldrex %0,%1\t@ load exclusive\n"
-                    : "=&r" (p00_ret)
-                    : "m" (p00_ptr)
-                    : "cc", "memory"
-                   );
-  return p00_ret;
-}
-
-p99_inline
-_Bool p00_arm_strex(uint32_t volatile*p00_ptr, uint32_t p00_val) {
-  uint32_t p00_ret;
-  __asm__ volatile ("strex %0,%1,%2\t@ store exclusive\n"
-                    : "=&r" (p00_ret)
-                    : "r" (p00_val), "m" (p00_ptr)
-                    : "cc", "memory"
-                   );
-  return p00_ret;
-}
-#endif
 
 p99_inline
 uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
@@ -200,5 +384,7 @@ uint32_t __sync_fetch_and_xor_4(uint32_t volatile *object, uint32_t p00_val) {
 /**
  ** @}
  **/
+
+# endif
 
 #endif

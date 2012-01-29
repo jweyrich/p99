@@ -160,6 +160,7 @@
  ** @see P99_IS_SUP(FIRST, ...) for argument <code>FIRST</code>.
  ** @see P99_JOIN(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_LCOPY(TYPE, VAR, ...) for arguments <code>TYPE</code>, <code>VAR</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_LIFO_CLEAR(L) for argument <code>L</code>.
  ** @see P99_LIFO_POP(L) for argument <code>L</code>.
  ** @see P99_LIFO_PUSH(L, EL) for argument <code>L</code>, <code>EL</code>.
  ** @see P99_LIFO_TOP(L) for argument <code>L</code>.
