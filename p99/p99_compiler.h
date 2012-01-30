@@ -581,9 +581,6 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 #if !p99_has_feature(c_max_align_t) && !p99_has_extension(c_max_align_t)
 typedef union max_align_t max_align_t;
 # ifndef P00_DOXYGEN
-#  if p99_has_attribute(aligned)
-__attribute__((__aligned__))
-#  endif
 union max_align_t {
   struct P99_PASTE2(p00_, __LINE__) {
     unsigned P99_PASTE2(p00_, __LINE__);
@@ -611,7 +608,11 @@ union max_align_t {
   double _Complex P99_PASTE2(p00_, __LINE__);
   long double _Complex P99_PASTE2(p00_, __LINE__);
 #  endif
-};
+}
+#  if p99_has_attribute(aligned)
+__attribute__((__aligned__))
+#  endif
+;
 # endif
 #endif
 
