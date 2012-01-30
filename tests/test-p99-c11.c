@@ -80,6 +80,9 @@ thread_local int ret = EXIT_SUCCESS;
 #define print_extension(X) if (p99_has_extension(X)) printf("has extension %s\n", #X)
 #define print_builtin(X) if (p99_has_builtin(X)) printf("has builtin %s\n", #X)
 
+unsigned globA = P99_GENERIC(globA, ,(unsigned, 1));   // should work and not give diagnostic
+//unsigned globB = P99_GENERIC(globB, ,(signed, 1));     // shouldn't work and give a diagnostic
+
 int main(void) {
   print_attribute(deprecated);
   print_attribute(weak);
