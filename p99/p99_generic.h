@@ -62,9 +62,46 @@ __builtin_choose_expr                                          \
 (__builtin_types_compatible_p(__typeof__ EXP, TOP PAIR),       \
  EOP PAIR
 
-#define P00_GENERIC_(N, MOP, EXP, DEF, ...)                                       \
-  P99_FOR((EXP), N, P00_SEQ, MOP, __VA_ARGS__),                                   \
-    P99_IF_EMPTY(DEF)(&(const volatile struct { int p00_v; }){ .p00_v = 0 })(DEF) \
+/* If no default is given, the idea of _Generic is to abort
+   compilation. To emulate this behavior we would have to produce an
+   expression that is valid as such, but can't be used in any valid
+   context. Such an expression doesn't exist, I think, since any valid
+   expression can always be used in a void context.
+
+   The idea for that case is to use an extern function that never will
+   be defined and that bears a special attribute that inhibits this
+   function to be called.  This function is then called through a
+   sizeof expression for VLA with side effect, such that it only
+   triggers when that particular branch is taken. */
+
+__attribute__((__error__("Invalid choice in type generic expression")))
+extern size_t p00_invalid_type_in_generic(char const*);
+
+/*
+#define P00_INVALID_TYPE_IN_GENERIC(EXP, STR)                              \
+((const struct {                                                           \
+  size_t const P99_FILEID(__COUNTER__);                                    \
+}){                                                                        \
+  sizeof(int[p00_invalid_type_in_generic(__FILE__                          \
+                                         P99_STRINGIFY(:__LINE__)          \
+                                         ": invalid type generic choice `" \
+                                         P99_STRINGIFY(EXP)                \
+                                         "` for "                          \
+                                         STR)]),                           \
+    })
+*/
+
+#define P00_INVALID_TYPE_IN_GENERIC(EXP, STR)                  \
+p00_invalid_type_in_generic(__FILE__                           \
+                            P99_STRINGIFY(:__LINE__)           \
+                            ": invalid type generic choice `"  \
+                            P99_STRINGIFY(EXP)                 \
+                            "` for "                           \
+                            STR)
+
+#define P00_GENERIC_(N, MOP, EXP, DEF, ...)                                \
+  P99_FOR((EXP), N, P00_SEQ, MOP, __VA_ARGS__),                            \
+    P99_IF_EMPTY(DEF)(P00_INVALID_TYPE_IN_GENERIC(EXP, #__VA_ARGS__))(DEF) \
     P99_FOR(, N, P00_SER, P00_GENERIC_CLOSE, P99_DUPL(N, ))
 
 #endif
