@@ -174,6 +174,36 @@ struct p99_once_flag {
   atomic_flag p00_flg;
 };
 
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_INIT_ONCE, 0)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INIT_ONCE, 1)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INIT_ONCE, 2)
+#define P99_DECLARE_INIT_ONCE(T, NAME, ARG)                     \
+/** @remark wrapper type around a T that is initialized once */ \
+struct NAME {                                                   \
+  p99_once_flag p00_once;                                       \
+  T p00_val;                                                    \
+};                                                              \
+P99_DECLARE_STRUCT(NAME);                                       \
+p99_inline                                                      \
+void P99_PASTE3(p00_, NAME, _init_func)(T* ARG);                \
+p99_inline                                                      \
+void P99_PASTE3(p00_, NAME, _init_once)(NAME* ARG) {            \
+  if (P99_UNLIKELY(!ARG->p00_once.p00_done.p00_done))           \
+    do {                                                        \
+      P99_SPIN_EXCLUDE(&ARG->p00_once.p00_flg) {                \
+        if (!ARG->p00_once.p00_done.p00_vdone) {                \
+          P99_PASTE3(p00_, NAME, _init_func)(&ARG->p00_val);    \
+          ARG->p00_once.p00_done.p00_vdone = true;              \
+        }                                                       \
+      }                                                         \
+    } while (!ARG->p00_once.p00_done.p00_vdone);                \
+}                                                               \
+p99_inline                                                      \
+void P99_PASTE3(p00_, NAME, _init_func)(T* ARG)
+
+#define P99_INIT_ONCE(NAME, VARP) P99_PASTE3(p00_, NAME, _init_once)(VARP)
+
+
 /**
  ** @}
  **/
@@ -369,6 +399,7 @@ void* p00_thread_local_get(p99_tss * p00_key, size_t p00_size) {
  ** @remark such a variable must be declared in global scope
  **
  ** @see P99_THREAD_LOCAL to access the variable
+ ** @see p99_tss for a complete description
  ** @memberof p99_tss
  **/
 #define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
@@ -383,6 +414,7 @@ typedef T P99_PASTE3(p00_, NAME, _type)
  ** of variable @a NAME
  **
  ** @see P99_DECLARE_THREAD_LOCAL to declare the variable
+ ** @see p99_tss for a complete description
  ** @memberof p99_tss
  **/
 #define P99_THREAD_LOCAL(NAME) (*(P99_PASTE3(p00_, NAME, _type)*)p00_thread_local_get(&(NAME), sizeof(P99_PASTE3(p00_, NAME, _type))))
@@ -532,35 +564,6 @@ P99_IF_EQ_1(N)                                                 \
 #else
 #define p99_call_once(...) p00_call_once(P99_NARG(__VA_ARGS__), __VA_ARGS__)
 #endif
-
-P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_INIT_ONCE, 0)
-P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INIT_ONCE, 1)
-P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INIT_ONCE, 2)
-#define P99_DECLARE_INIT_ONCE(T, NAME, ARG)                     \
-/** @remark wrapper type around a T that is initialized once */ \
-struct NAME {                                                   \
-  p99_once_flag p00_once;                                       \
-  T p00_val;                                                    \
-};                                                              \
-P99_DECLARE_STRUCT(NAME);                                       \
-p99_inline                                                      \
-void P99_PASTE3(p00_, NAME, _init_func)(T* ARG);                \
-p99_inline                                                      \
-void P99_PASTE3(p00_, NAME, _init_once)(NAME* ARG) {            \
-  if (P99_UNLIKELY(!ARG->p00_once.p00_done.p00_done))           \
-    do {                                                        \
-      P99_SPIN_EXCLUDE(&ARG->p00_once.p00_flg) {                \
-        if (!ARG->p00_once.p00_done.p00_vdone) {                \
-          P99_PASTE3(p00_, NAME, _init_func)(&ARG->p00_val);    \
-          ARG->p00_once.p00_done.p00_vdone = true;              \
-        }                                                       \
-      }                                                         \
-    } while (!ARG->p00_once.p00_done.p00_vdone);                \
-}                                                               \
-p99_inline                                                      \
-void P99_PASTE3(p00_, NAME, _init_func)(T* ARG)
-
-#define P99_INIT_ONCE(NAME, VARP) P99_PASTE3(p00_, NAME, _init_once)(VARP)
 
 #ifdef P00_DOXYGEN
 /**

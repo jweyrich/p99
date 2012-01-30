@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2011 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2011-2012 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -48,24 +48,24 @@ double funcd(double a, double b) {
 }
 void funcd_2nd_arg_error(double);
 
-#define check(x, y)                                                     \
-  (*(_Generic((x), float:  (float*){ 0 }, double: (double*){ 0 })       \
+#define check(x, y)                                                  \
+  (*(_Generic((x), float:  (float*){ 0 }, double: (double*){ 0 })    \
      = &_Generic((y), float:  (float){ y }, double: (double){ y })))
 
-#define func(x, y)                                                      \
-  _Generic((x),                                                         \
-           float:  _Generic((y), float:  funcf, double: funcf_2nd_arg_error),   \
-           double: _Generic((y), double: funcd, float:  funcd_2nd_arg_error)    \
+#define func(x, y)                                                            \
+  _Generic((x),                                                               \
+           float:  _Generic((y), float:  funcf, double: funcf_2nd_arg_error), \
+           double: _Generic((y), double: funcd, float:  funcd_2nd_arg_error)  \
            )(x, check(x, y))
 
-#define check2(x, y)                                                    \
-  (*(P99_GENERIC((x), , (float,  (float*){ 0 }), (double, (double*){ 0 })) \
+#define check2(x, y)                                                          \
+  (*(P99_GENERIC((x), , (float,  (float*){ 0 }), (double, (double*){ 0 }))    \
      = &P99_GENERIC((y), , (float,  (float){ y }), (double, (double){ y }))))
 
-#define func2(x, y)                                                     \
-  P99_GENERIC((x), ,                                                    \
+#define func2(x, y)                                                                         \
+  P99_GENERIC((x), ,                                                                        \
               (float,  P99_GENERIC((y), , (float,  funcf), (double, funcf_2nd_arg_error))), \
-              (double, P99_GENERIC((y), , (double, funcd), (float,  funcd_2nd_arg_error))) \
+              (double, P99_GENERIC((y), , (double, funcd), (float,  funcd_2nd_arg_error)))  \
               )(x, check2(x, y))
 
 noreturn
@@ -106,14 +106,17 @@ int main(void) {
          ATOMIC_LLONG_LOCK_FREE,
          ATOMIC_POINTER_LOCK_FREE
         );
-  func2(1.0f, 2.0f);	// should work, but doesn't
-  //func2(1.0f, 2.0);	// shouldn't work
-  //func2(1.0,  2.0f);	// shouldn't work
-  func2(1.0,  2.0);	// should work, but doesn't
-  /* func(1.0f, 2.0f);	// should work, but doesn't */
-  /* func(1.0f, 2.0);	// shouldn't work */
-  /* func(1.0,  2.0f);	// shouldn't work */
-  /* func(1.0,  2.0);	// should work, but doesn't */
+  //P99_GENERIC(1.0, ,(int, P99_NOP)); // shouldn't work
+  P99_GENERIC(1, ,(int, P99_NOP));   // should work and not give diagnostic
+  func2(1.0f, 2.0f);  // should work, but doesn't
+  //func2(1.0f, 2.0); // shouldn't work
+  //func2(1.0,  2.0f);  // shouldn't work
+  func2(1.0,  2.0); // should work
+  //func2(1,  2.0); // shouldn't work
+  /* func(1.0f, 2.0f);  // should work, but doesn't */
+  /* func(1.0f, 2.0); // shouldn't work */
+  /* func(1.0,  2.0f);  // shouldn't work */
+  /* func(1.0,  2.0); // should work, but doesn't */
   if (P99_SIZE_INDICATOR(sizeof(int), 1, 2, 4, 8)) {
     printf("sizeof int is one of 1, 2, 4, 8\n");
   } else {

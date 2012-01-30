@@ -42,6 +42,7 @@ PREDEFINED += P99_BUILTIN_MIN(x)="P00_BUILTIN_MIN_ ## x"
 PREDEFINED += P99_BUILTIN_TYPE(x,y)="P00_BUILTIN_TYPE_ ## x ## y"
 PREDEFINED += P99_COMPILETIME_ASSERT(x,y)=
 PREDEFINED += P99_DECLARE_ATOMIC(x)="/** \see _Atomic for a detail description of the atomic implementation */ typedef struct atomic_ ## x x"
+PREDEFINED += P99_DECLARE_INIT_ONCE(T, NAME, ARG)="/** @remark wrapper type around a T that is initialized once */ typedef struct NAME NAME"
 PREDEFINED += P99_DECLARE_THREAD_LOCAL(T,NAME)="/** \brief a thread local variable **/ T NAME"
 PREDEFINED += P99_FSYMB(x):="x ## _symbol"
 PREDEFINED += P99_LINEID(x):="p00_unique_id ## x"

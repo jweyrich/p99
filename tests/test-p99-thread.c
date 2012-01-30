@@ -2,7 +2,7 @@
 /*                                                                           */
 /* Except of parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
-/* all rights reserved,  2011 Jens Gustedt, INRIA, France                    */
+/* all rights reserved,  2011-2012 Jens Gustedt, INRIA, France               */
 /*                                                                           */
 /* This file is free software; it is part of the P99 project.                */
 /* You can redistribute it and/or modify it under the terms of the QPL as    */
@@ -62,8 +62,8 @@ int real_task(atomic_intp* arg) {
   int * point = atomic_fetch_add(arg, 1);
   *point = ret;
   tester b = atomic_load(&testvar);
-  if (!atomic_compare_exchange_weak(&testvar, &b, (tester){ .a = ret }))
-    printf("store didn't succeeded\n");
+  if (!atomic_compare_exchange_weak(&testvar, &b, (tester) { .a = ret }))
+  printf("store didn't succeeded\n");
   if (ret % 3) thrd_yield();
   else at_quick_exit(aqe);
   if (ret % 2)

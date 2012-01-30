@@ -343,9 +343,9 @@ signed p00_trailing_comma_in_initializer__(void) {
 #elif P99_COMPILER & P99_COMPILER_PCC
 /* # error "The P99 preprocessor files can't work with the pcc compiler, yet" */
 #elif P99_COMPILER & P99_COMPILER_CLANG
-#if p99_has_attribute(always_inline)
-# define p99_inline __attribute__((__always_inline__)) inline
-#endif
+# if p99_has_attribute(always_inline)
+#  define p99_inline __attribute__((__always_inline__)) inline
+# endif
 /* clang can't nail a variable to a register, yet */
 # define P99_FIXED_REGISTER(REG)
 #elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
@@ -517,10 +517,10 @@ typedef uint_least32_t char32_t;
  ** the macro ::static_assert must be provided by assert.h, which we
  ** include.
  **/
-#if p99_has_feature(c_static_assert)
-# define static_assert _Static_assert
-#else
-# define static_assert(EXPR, DIAGSTR)                             \
+# if p99_has_feature(c_static_assert)
+#  define static_assert _Static_assert
+# else
+#  define static_assert(EXPR, DIAGSTR)                            \
 extern char const p00_compiletime_assert[                         \
  sizeof((void const*[3*(!!(EXPR)) - 1]){                          \
     &p00_compiletime_assert,                                      \
@@ -530,14 +530,32 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 # endif
 #endif
 
-#ifndef alignof
+/**
+ ** @brief Return the alignment requirement for type @a T
+ **
+ ** @remark If this is not provided this uses a gcc extension. If this
+ ** also isn't provided this uses a hack through the @c offsetof
+ ** macro.
+ **/
+#ifndef __alignof_is_defined
 # define alignof _Alignof
-# if  !p99_has_feature(c_alignof) && p99_has_feature(gnu_alignof)
-#  define _Alignof(T) __alignof__(T)
+# if !p99_has_feature(c_alignof)
+#  if 0 && p99_has_feature(gnu_alignof)
+#   define _Alignof(T) __alignof__(T)
+#  else
+#   define _Alignof(T) offsetof(struct { char p00_c; T p00_t; }, p00_t)
+#  endif
 # endif
 #endif
 
-#ifndef alignas
+/**
+ ** @brief Align an object according to @a X
+ **
+ ** @remark If this is not provided by the compiler implementation
+ ** this uses a gcc extension. Other than required by C11, this
+ ** extension only accepts numerical values for @a X.
+ **/
+#ifndef __alignas_is_defined
 # define alignas _Alignas
 # if !p99_has_feature(c_alignas)
 #  if p99_has_attribute(aligned)
@@ -546,8 +564,89 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 # endif
 #endif
 
-#ifndef noreturn
-#define noreturn _Noreturn
+/**
+ ** @brief A type with the maximum alignment among the standard types.
+ **
+ ** This type is required for C11. We simply achieve this feature by
+ ** producing a @c union of all the standard types, object
+ ** and function pointer types, @a struct and @a union.
+ **
+ ** If it is provided, we additionally use a gcc extension to
+ ** determine such a maximal alignment.
+ **
+ ** @remark The actual declaration of this type should never be used
+ ** for any other purpose than to ensure alignment. The field names
+ ** are obfuscated to make such abuses really difficult.
+ **/
+#if !p99_has_feature(c_max_align_t) && !p99_has_extension(c_max_align_t)
+typedef union max_align_t max_align_t;
+# ifndef P00_DOXYGEN
+#  if p99_has_attribute(aligned)
+__attribute__((__aligned__))
+#  endif
+union max_align_t {
+  struct P99_PASTE2(p00_, __LINE__) {
+    unsigned P99_PASTE2(p00_, __LINE__);
+  } P99_PASTE2(p00_, __LINE__);
+  union max_align_t* P99_PASTE2(p00_, __LINE__);
+  void* P99_PASTE2(p00_, __LINE__);
+  void (*P99_PASTE2(p00_, __LINE__))(void);
+  _Bool P99_PASTE2(p00_, __LINE__);
+  char P99_PASTE2(p00_, __LINE__);
+  signed char P99_PASTE2(p00_, __LINE__);
+  unsigned char P99_PASTE2(p00_, __LINE__);
+  short int P99_PASTE2(p00_, __LINE__);
+  unsigned short int P99_PASTE2(p00_, __LINE__);
+  int P99_PASTE2(p00_, __LINE__);
+  unsigned int P99_PASTE2(p00_, __LINE__);
+  long int P99_PASTE2(p00_, __LINE__);
+  unsigned long int P99_PASTE2(p00_, __LINE__);
+  long long int P99_PASTE2(p00_, __LINE__);
+  unsigned long long int P99_PASTE2(p00_, __LINE__);
+  float P99_PASTE2(p00_, __LINE__);
+  double P99_PASTE2(p00_, __LINE__);
+  long double P99_PASTE2(p00_, __LINE__);
+#  ifndef __STDC_NO_COMPLEX__
+  float _Complex P99_PASTE2(p00_, __LINE__);
+  double _Complex P99_PASTE2(p00_, __LINE__);
+  long double _Complex P99_PASTE2(p00_, __LINE__);
+#  endif
+};
+# endif
+#endif
+
+#undef p00_has_feature_c_max_align_t
+#define p00_has_feature_c_max_align_t 1
+#undef p00_has_extension_c_max_align_t
+#define p00_has_extension_c_max_align_t 1
+
+#ifdef P00_DOXYGEN
+/**
+ ** @def _Noreturn
+ ** @brief Declare a function that doesn't returns to the caller.
+ **
+ ** You'd probably use this rarely, only for functions that use
+ ** something like @c longjmp, @c exit, @c abort, ::quick_exit or
+ ** ::thrd_exit under the hood.
+ **
+ ** @remark Uses a gcc attribute for the implementation of defers to a
+ ** @c #pragma if that is not available.
+ ** @see noreturn
+ **/
+#define _Noreturn
+/**
+ ** @def noreturn
+ ** @brief Declare a function that doesn't returns to the caller.
+ **
+ ** @see _Noreturn
+ **/
+#define noreturn
+
+noreturn void p00_f(void);
+static_assert(1);
+
+#elif !defined(noreturn)
+# define noreturn _Noreturn
 # if !p99_has_feature(c_noreturn)
 #  if p99_has_attribute(noreturn)
 #   define _Noreturn __attribute__((__noreturn__))
@@ -557,14 +656,24 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 # endif
 #endif
 
+#ifdef P00_DOXYGEN
 /**
  ** @def _Thread_local
  ** @brief The C11 keyword for declaring a thread local variable.
  **
- ** @see P99_DECLARE_THREAD_LOCAL
+ ** @see P99_DECLARE_THREAD_LOCAL for a method that is also usable for non-C11 compilers
+ ** @see thread_local
  **/
-
-#ifndef thread_local
+# define _Thread_local
+/**
+ ** @def thread_local
+ ** @brief Declare a thread local variable.
+ **
+ ** @see P99_DECLARE_THREAD_LOCAL for a method that is also usable for non-C11 compilers
+ ** @see _Thread_local
+ **/
+# define thread_local
+#elif !defined(thread_local)
 # define thread_local _Thread_local
 # if p99_has_feature(gnu_thread_local)
 #  define _Thread_local __thread
