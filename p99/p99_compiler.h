@@ -535,12 +535,13 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
  **
  ** @remark If this is not provided this uses a gcc extension. If this
  ** also isn't provided this uses a hack through the @c offsetof
- ** macro.
+ ** macro. For the later, @a T is restricted to simple type names,
+ ** arrays or function pointers can only be used through typedefs.
  **/
 #ifndef __alignof_is_defined
 # define alignof _Alignof
 # if !p99_has_feature(c_alignof)
-#  if 0 && p99_has_feature(gnu_alignof)
+#  if p99_has_feature(gnu_alignof)
 #   define _Alignof(T) __alignof__(T)
 #  else
 #   define _Alignof(T) offsetof(struct { char p00_c; T p00_t; }, p00_t)
