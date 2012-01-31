@@ -22,6 +22,14 @@
 
 #define P00_ENUM_CASE(X) case X: return P99_STRINGIFY(X)
 
+#define P00_ENUM_PARSE(C)                                             \
+if (!memcmp(P99_STRINGIFY(C), p00_s, p00_len)) {                      \
+  ++p00_c;                                                            \
+  p00_ret = C;                                                        \
+ }
+
+
+
 #ifdef P00_DOXYGEN
 /**
  ** @brief Declare a simple inline function to return strings
@@ -29,7 +37,14 @@
  **/
 #define P99_DECLARE_ENUM_GETNAME(T, ...)                                \
 /*! @brief Get a string with the name of constant @a p00_x of type T */ \
-inline char const* P99_PASTE2(T, _getname)(T p00_x)...
+inline char const* P99_PASTE2(T, _getname)(T p00_x)
+/**
+ ** @brief Declare a simple inline function to return the longest
+ ** enumeration constants of type @a T found in a string.
+ **/
+#define P99_DECLARE_ENUM_PARSE(T, ...)                                  \
+/*! @brief Parse a string @a p00_s for the longest matching constant of type T */ \
+inline T P99_PASTE2(T, _parse)(char const* p00_s)
 #else
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 0)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 1)
@@ -44,6 +59,24 @@ char const* P99_PASTE2(T, _getname)(T p00_x) {                 \
   }                                                            \
 }                                                              \
 P99_MACRO_END(declare_enum_getname, T)
+
+P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 0)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 1)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 2)
+P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 3)
+#define P99_DECLARE_ENUM_PARSE(T, ...)                  \
+p99_inline                                              \
+T P99_PASTE2(T, _parse)(char const p00_s[]) {           \
+  T p00_ret = P99_PASTE2(T, _amount);                   \
+  if (p00_s) {                                          \
+    size_t p00_c = 0;                                   \
+    size_t const p00_len = strlen(p00_s);               \
+    P99_SEP(P00_ENUM_PARSE, __VA_ARGS__);               \
+    if (p00_c > 1) p00_ret = P99_PASTE2(T, _amount);    \
+  }                                                     \
+  return p00_ret;                                       \
+}                                                       \
+P99_MACRO_END(declare_enum_parse, T)
 #endif
 
 #ifdef DOXYGEN
@@ -65,6 +98,7 @@ P99_MACRO_END(declare_enum_getname, T)
  **   here would correspond to @c 3
  ** - a function @c color_getname that returns a string containing the
  **   name of its argument.
+ ** - a function @c color_parse that returns the color that has longest prefix in a string.
  **
  ** To have this functional, you have to put an line
  ** @code
@@ -105,7 +139,8 @@ enum T ## _ { __VA_ARGS__ ,                                                     
 /*! \see T ## _ is used for documentation through doxygen. */                                             \
 /*! \see T ## _getname for access to the names of the constants as strings */                             \
 typedef enum T ## _ T;                                                                                    \
-P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__)
+ P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__);                                                                \
+P99_DECLARE_ENUM_PARSE(T, __VA_ARGS__)
 #else
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ENUM, 0)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 1)
@@ -120,7 +155,8 @@ typedef enum T { __VA_ARGS__ ,                                                \
                /*! the smallest @ref T constant */                            \
                P99_PASTE2(T, _min) = 0                                        \
 } T;                                                                          \
-P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__)
+P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__);                                     \
+P99_DECLARE_ENUM_PARSE(T, __VA_ARGS__)
 #endif
 
 /**
@@ -128,7 +164,9 @@ P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__)
  **
  ** Use this with P99_DECLARE_ENUM(), which see.
  **/
-#define P99_DEFINE_ENUM(T) P99_INSTANTIATE(char const*, P99_PASTE2(T, _getname), T)
+#define P99_DEFINE_ENUM(T)                                      \
+P99_INSTANTIATE(char const*, P99_PASTE2(T, _getname), T);       \
+P99_INSTANTIATE(T, P99_PASTE2(T, _parse), char const*)
 
 p99_inline
 char const* bool_getname(bool p00_x) {
