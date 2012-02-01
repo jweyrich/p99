@@ -1074,7 +1074,7 @@ P00_BLK_END
 #define atomic_fetch_and_store(OBJP, DESIRED)                                                           \
 ({                                                                                                      \
   P99_MACRO_PVAR(p00_objp, (OBJP));                                                                     \
-  P99_MACRO_VAR(p00_des, (DESIRED));                                                                    \
+  __typeof__(P00_AT(p00_objp)) p00_des = (DESIRED);                                                     \
   __typeof__(P00_AX(p00_objp)) p00_ret = P99_INIT;                                                      \
   if (!atomic_is_lock_free(p00_objp))                                                                   \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                                                             \
@@ -1392,7 +1392,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
  ** Now @c head can be used as the head of a LIFO:
  **
  ** @code
- ** myData_ptr el = P99_NEW(myData_ptr, \/\* your initializer arguments \*\/);
+ ** myData_ptr el = P99_NEW(myData, \/\* your initializer arguments \*\/);
  ** P99_FIFO_PUSH(&head, el);
  ** ...
  ** for (myData_ptr el = P99_FIFO_POP(&head);
@@ -1428,7 +1428,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_POP, 0)
  ** @see P99_LIFO_TOP
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
-#define P99_LIFO_CLEAR(L) atomic_fetch_and_store(p00_l, 0)
+#define P99_LIFO_CLEAR(L) atomic_fetch_and_store(L, 0)
 
 
 /**
