@@ -155,4 +155,10 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SWAP, 1)
 #define P99_SWAP(_0, _1) ((sizeof(_0) > sizeof(uintmax_t)) ? P00_SWAP1(_0, _1) : P00_SWAP2(_0, _1))
 
 
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_QSORT, 0)
+#define P99_QSORT(TAB, NB, COMP) qsort((TAB), (NB), sizeof (TAB)[0], (COMP))
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_ASORT, 0)
+#define P99_ASORT(TAB, COMP) qsort((TAB), P99_ALEN(TAB), sizeof (TAB)[0], (COMP))
+
 #endif      /* !P99_SWAP_H_ */
