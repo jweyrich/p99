@@ -1393,11 +1393,11 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
  **
  ** @code
  ** myData_ptr el = P99_NEW(myData, \/\* your initializer arguments \*\/);
- ** P99_FIFO_PUSH(&head, el);
+ ** P99_LIFO_PUSH(&head, el);
  ** ...
- ** for (myData_ptr el = P99_FIFO_POP(&head);
+ ** for (myData_ptr el = P99_LIFO_POP(&head);
  **      el;
- **      el = P99_FIFO_POP(&head)) {
+ **      el = P99_LIFO_POP(&head)) {
  **        // do something with el and then
  **        free(el);
  ** }
@@ -1430,6 +1430,23 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_POP, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
 #define P99_LIFO_CLEAR(L) atomic_fetch_and_store(L, 0)
 
+P00_DOCUMENT_TYPE_ARGUMENT(P99_LIFO_TABULATE, 0)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_LIFO_TABULATE, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_TABULATE, 2)
+#define P99_LIFO_TABULATE(TYPE, TAB, L)                 \
+size_t P99_FILEID(TAB, _cnt) = 0;                       \
+TYPE * P99_FILEID(TAB, _head) = P99_LIFO_CLEAR(L);      \
+for (TYPE * p00_e = P99_FILEID(TAB, _head);             \
+     p00_e;                                             \
+     p00_e = p00_e->p99_lifo)                           \
+  ++P99_FILEID(TAB, _cnt);                              \
+TYPE * TAB[P99_FILEID(TAB, _cnt)];                      \
+for (TYPE ** p00_t = &(TAB[0]),                         \
+       * p00_e = P99_FILEID(TAB, _head);                \
+     p00_e;                                             \
+     p00_e = p00_e->p99_lifo,                           \
+       ++p00_t)                                         \
+  *p00_t = p00_e
 
 /**
  ** @}
