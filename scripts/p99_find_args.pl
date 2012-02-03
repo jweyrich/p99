@@ -30,7 +30,7 @@ my %name;
 open(PIPE, "c99 -E -xc - |");
 
 while (<PIPE>) {
-    s/"[^"]"//go;
+    s/(?:L?"(?:[^"\\]|[\\].)*+")//go;
     while (m/(\bP99_[a-zA-Z_]*ARG_[0-9]*\b)/) {
         my $name = $1;
         $name{$name} = 0 if (!defined($name{$name}));
