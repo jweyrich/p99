@@ -1,15 +1,5 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
-/*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
-/* (C) copyright  2011-2012 Jens Gustedt, INRIA, France                      */
-/*                                                                           */
-/* This file is free software; it is part of the P99 project.                */
-/* You can redistribute it and/or modify it under the terms of the QPL as    */
-/* given in the file LICENSE. It is distributed without any warranty;        */
-/* without even the implied warranty of merchantability or fitness for a     */
-/* particular purpose.                                                       */
-/*                                                                           */
+
+
 /** @file
  ** @brief This file just contains automatically produced information for doxygen.
  **
@@ -104,6 +94,7 @@
  ** @see P99_ALENS(ARR, N) for argument <code>ARR</code>, <code>N</code>.
  ** @see P99_ARE_EQ(FIRST, ...) for argument <code>FIRST</code>.
  ** @see P99_ARE_ORDERED(OP, ...) for arguments <code>OP</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>.
+ ** @see P99_ASORT(TAB, COMP) for argument <code>TAB</code>.
  ** @see P99_ATOMIC_INHERIT(T) for argument <code>T</code>.
  ** @see P99_BIGFUNC(FUNC, M, ...) for argument <code>M</code>.
  ** @see P99_BIGOP(OP, M, ...) for argument <code>M</code>.
@@ -119,12 +110,14 @@
  ** @see P99_DECLARE_DELETE(...) for argument <code>__VA_ARG__[0]</code>.
  ** @see P99_DECLARE_ENUM(T, ...) for arguments <code>T</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_DECLARE_ENUM_GETNAME(T, ...) for arguments <code>T</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_DECLARE_ENUM_PARSE(T, ...) for arguments <code>T</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_DECLARE_INIT_ONCE(T, NAME, ARG) for arguments <code>T</code>, <code>NAME</code>, <code>ARG</code>.
  ** @see P99_DECLARE_INLINE_EXPRESSION(EXT, BASE, EXP, ...) for arguments <code>EXT</code>, <code>BASE</code>, <code>EXP</code>.
  ** @see P99_DECLARE_INLINE_EXPRESSIONS(NEPL, ...) for argument <code>NEPL</code>.
  ** @see P99_DECLARE_STRUCT(NAME) for argument <code>NAME</code>.
  ** @see P99_DECLARE_UNION(NAME) for argument <code>NAME</code>.
  ** @see P99_DEC_DOUBLE(...) for arguments <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[4]</code>.
+ ** @see P99_DEFINE_ENUM(T) for argument <code>T</code>.
  ** @see P99_DEFINE_UNION(NAME, ...) for arguments <code>NAME</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_DERIVED_TYPES(T) for argument <code>T</code>.
  ** @see P99_DESIGNATED(VAR, ...) for arguments <code>VAR</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
@@ -163,6 +156,7 @@
  ** @see P99_LIFO_CLEAR(L) for argument <code>L</code>.
  ** @see P99_LIFO_POP(L) for argument <code>L</code>.
  ** @see P99_LIFO_PUSH(L, EL) for argument <code>L</code>, <code>EL</code>.
+ ** @see P99_LIFO_TABULATE(TYPE, TAB, L) for arguments <code>TYPE</code>, <code>TAB</code>, <code>L</code>.
  ** @see P99_LIFO_TOP(L) for argument <code>L</code>.
  ** @see P99_LITERAL(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[3]</code>.
  ** @see P99_MACRO_PVAR(NAME, ...) for argument <code>NAME</code>, <code>__VA_ARG__[0]</code>.
@@ -185,6 +179,7 @@
  ** @see P99_PRI(xT, F, LEN) for argument <code>xT</code>.
  ** @see P99_PROTOTYPE(RT, NAME, ...) for argument <code>RT</code>, <code>__VA_ARG__[0]</code>.
  ** @see P99_PZERO(X, N) for argument <code>X</code>.
+ ** @see P99_QSORT(TAB, NB, COMP) for argument <code>TAB</code>.
  ** @see P99_REP(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_REPEAT(MACRO, N) for argument <code>MACRO</code>, <code>N</code>.
  ** @see P99_SEP(MACRO, ...) for argument <code>MACRO</code>.
