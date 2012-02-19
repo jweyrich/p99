@@ -13,14 +13,8 @@
 #ifndef P99_THREADS_H
 #define P99_THREADS_H 1
 
-#define _XOPEN_SOURCE 600
-#include <unistd.h>
-#include <sys/time.h>
-#include <time.h>
-#include <pthread.h>
-#if defined(__GNUC__) || defined(P00_DOXYGEN)
-# include "p99_atomic.h"
-#endif
+#include "p99_tss.h"
+
 
 /**
  ** @addtogroup threads C11 thread emulation on top of POSIX threads
@@ -106,29 +100,11 @@ typedef struct p00_thrd p00_thrd;
 P99_ENC_DECLARE(struct p00_thrd*, thrd_t);
 
 /**
- ** @brief complete object type that holds an identifier for a
- ** thread-specific storage pointer
- **
- ** @remark This type is just a wrapper around a POSIX @c pthread_key_t.
- **
- ** @see P99_DECLARE_THREAD_LOCAL for a more comfortable interface to
- ** thread local variables
- **/
-P99_ENC_DECLARE(pthread_key_t, tss_t);
-/**
  ** @brief complete object type that holds an identifier for a mutex
  **
  ** @remark This type is just a wrapper around a POSIX @c pthread_mutex_t.
  **/
 P99_ENC_DECLARE(pthread_mutex_t, mtx_t);
-
-/**
- ** @brief which is the function pointer type <code>void
- ** (*)(void*)</code>, used for a destructor for a thread-specific
- ** storage pointer
- ** @see tss_t
- **/
-typedef void (*tss_dtor_t)(void*);
 
 /**
  ** @brief function pointer type <code>int (*)(void*)</code> that is
@@ -246,39 +222,6 @@ enum mtx_type {
   mtx_timed = 2,
 };
 
-/**
- ** @brief C11 thread function return values
- **/
-enum thrd_status {
-  /**
-   ** @brief returned by a timed wait function to indicate that the time specified in the call was reached without acquiring the requested resource
-   **/
-  thrd_timedout = ETIMEDOUT,
-  /**
-   ** @brief returned by a function to indicate that the requested operation succeeded
-   **/
-  thrd_success = 0,
-  /**
-   ** @brief returned by a function to indicate that the requested
-   ** operation failed because a resource requested by a test and
-   ** return function is already in use
-   **/
-  thrd_busy = EBUSY,
-  /**
-   ** @brief returned by a function to indicate that the requested operation failed
-   **/
-  thrd_error = INT_MIN,
-  /**
-   ** @brief returned by a function to indicate that the requested
-   ** operation failed because it was unable to allocate memory
-   **/
-  thrd_nomem = ENOMEM,
-  /**
-   ** @brief (extension) returned by ::thrd_sleep to indicate that the
-   ** corresponding request has been interrupted by a signal
-   **/
-  thrd_intr = -1
-};
 
 /**
  ** @}
@@ -293,133 +236,6 @@ p99_inline
 void thrd_yield(void) {
   if (P99_UNLIKELY(sched_yield())) errno = 0;
 }
-
-/**
- ** @memberof tss_t
- ** @return ::thrd_success on success, or ::thrd_error if the request
- ** could not be honored.
- **
- ** If successful, sets the thread-specific storage pointed to by key
- ** to a value that uniquely identifies the newly created
- ** pointer. Otherwise, the thread-specific storage pointed to by key
- ** is set to an undefined value.
- **/
-p99_inline
-int tss_create(tss_t *p00_key, tss_dtor_t dtor) {
-  return pthread_key_create(&P99_ENCP(p00_key), dtor) ? thrd_error : thrd_success;
-}
-
-/**
- ** @memberof tss_t
- **/
-p99_inline
-void tss_delete(tss_t p00_key) {
-  (void)pthread_key_delete(P99_ENC(p00_key));
-}
-
-/**
- ** @memberof tss_t
- **
- ** @return the value for the current thread if successful, or @c 0 if
- ** unsuccessful.
- **/
-p99_inline
-void *tss_get(tss_t p00_key) {
-  return pthread_getspecific(P99_ENC(p00_key));
-}
-
-/**
- ** @memberof tss_t
- ** @return ::thrd_success on success, or ::thrd_error if the request
- ** could not be honored.
- **/
-p99_inline
-int tss_set(tss_t p00_key, void *p00_val) {
-  return pthread_setspecific(P99_ENC(p00_key), p00_val) ? thrd_error : thrd_success;
-}
-
-#if defined(thread_local) && !defined(P99_EMULATE_THREAD_LOCAL) && !defined(P00_DOXYGEN)
-
-#define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
-P99_WEAK(NAME)                                                 \
-thread_local T NAME
-
-#define P99_THREAD_LOCAL(NAME) (NAME)
-
-#else
-/**
- ** @brief A stub structure to hold a thread local variable if
- ** ::thread_local is not available.
- **
- ** Don't use this type directly but use ::P99_DECLARE_THREAD_LOCAL to
- ** declare a variable and ::P99_THREAD_LOCAL to access it.
- **
- ** A hypothetical example for the use of such a variable would be @c
- ** errno:
- **
- ** @code
- ** P99_DECLARE_THREAD_LOCAL(int, errno_loc);
- ** #define errno P99_THREAD_LOCAL(errno_loc)
- ** @endcode
- **
- ** With just these two lines @c errno always evaluates to an lvalue
- ** representing a thread local object. That is you can use it
- ** everywhere a normal variable of type @c int could be used:
- **
- ** @code
- ** if (errno == EINTR) ...
- ** errno = 0;
- ** my_func(&errno);
- ** @endcode
- **/
-P99_DECLARE_INIT_ONCE(tss_t, p99_tss, p00_key) {
-  int p00_ret = tss_create(p00_key, free);
-  if (p00_ret) {
-    errno = p00_ret;
-    perror("can't create thread specific key");
-    abort();
-  }
-}
-
-p99_inline
-void* p00_thread_local_get(p99_tss * p00_key, size_t p00_size) {
-  P99_INIT_ONCE(p99_tss, p00_key);
-  void * p00_ret = tss_get(P99_ENCP(p00_key));
-  if (P99_UNLIKELY(!p00_ret)) {
-    p00_ret = calloc(1, p00_size);
-    tss_set(P99_ENCP(p00_key), p00_ret);
-  }
-  return p00_ret;
-}
-
-/**
- ** @def P99_DECLARE_THREAD_LOCAL
- ** @brief declare a thread local variable @a NAME of type @a T
- **
- ** @remark such a variable must be declared in global scope
- **
- ** @see P99_THREAD_LOCAL to access the variable
- ** @see p99_tss for a complete description
- ** @memberof p99_tss
- **/
-#define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
-/** @see P99_THREAD_LOCAL to access the variable */            \
-P99_WEAK(NAME)                                                 \
-p99_tss NAME;                                                  \
-typedef T P99_PASTE3(p00_, NAME, _type)
-
-/**
- ** @def P99_THREAD_LOCAL
- ** @brief an lvalue expression that returns the thread local instance
- ** of variable @a NAME
- **
- ** @see P99_DECLARE_THREAD_LOCAL to declare the variable
- ** @see p99_tss for a complete description
- ** @memberof p99_tss
- **/
-#define P99_THREAD_LOCAL(NAME) (*(P99_PASTE3(p00_, NAME, _type)*)p00_thread_local_get(&(NAME), sizeof(P99_PASTE3(p00_, NAME, _type))))
-
-#endif
 
 /* Tentative definitions for global variables. This has the advantage
    that this defines weak symbols and we avoid to have to create a
