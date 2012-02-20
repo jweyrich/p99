@@ -221,8 +221,9 @@ struct p99_tss {
 
 typedef struct p99_tss p99_tss;
 
-//P99_DECLARE_INIT_ONCE(tss_t, p99_tss, p00_key)
-
+/* This is an implementation to bootstrap the thread specific
+   code. Once initialization functionalities that are better suited
+   for application code are defined elsewhere. */
 p99_inline
 void p00_key_once_init(p99_tss * p00_key) {
   if (!p00_key->p00_done) {

@@ -417,6 +417,7 @@ enum p99_unwind {
    **/
   p99_unwind_level = 0,
   p00_unwind_top = 0,
+  p00_unwind_prev = 0,
   p00_unwind_bottom = 0,
   /**
    ** @brief The code an eventual call to ::P99_UNWIND
@@ -454,6 +455,12 @@ P99_DECLARE_STRUCT(p00_inhibitor);
 struct p00_inhibitor {
   int p00_a;
 };
+
+p99_inline
+noreturn
+void p00_longjmp(p00_jmp_buf0 * p00_buf, int p00_val) {
+  longjmp(p00_buf->p00_buf, p00_val);
+}
 
 /**
  ** @brief Unwind execution from several levels of nesting inside a
@@ -515,7 +522,7 @@ P00_BLK_BEFAFT(auto p00_jmp_buf p00_unwind_return = P00_ROBUST(P00_JMP_BUF_INITI
                /* returning can only be on because it was set by                                  \
                   P99_UNWIND_RETURN and we fell of the edge after all                             \
                   P99_PROTECT clauses */                                                          \
-               p00_unwind_return[0].p00_returning ? longjmp(p00_unwind_return[0].p00_buf, 1) : P99_NOP) \
+               p00_unwind_return[0].p00_returning ? p00_longjmp(p00_unwind_return, 1) : P99_NOP) \
 /* Detect the bottom of enclosing other P99_UNWIND_PROTECT. If it                                 \
    exists set it to that one, otherwise set it to our newly allocated                             \
    jump buffer. We have to do this in two steps such that the                                     \
@@ -544,10 +551,10 @@ P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                
 /* maintain the level of nesting of different calls to                                            \
    P99_UNWIND_PROTECT */                                                                          \
   P00_BLK_DECL_REC(register unsigned const, p99_unwind_level, p99_unwind_level + 1)               \
+  P00_BLK_DECL(p00_jmp_buf0*, p00_unwind_prev, p00_unwind_top)                                    \
 /* the buffer variable for setjmp/longjump */                                                     \
-/* initialization looks a bit weird because jmp_buf is an array type */                           \
-  P00_BLK_DECL(auto p00_jmp_buf, p00_unwind_top, P99_INIT)                     \
-  P00_BLK_BEFORE(p00_code = setjmp(p00_unwind_top[0].p00_buf))                                               \
+  P00_BLK_DECL(auto p00_jmp_buf, p00_unwind_top, P99_INIT)                                        \
+  P00_BLK_BEFORE(p00_code = setjmp(p00_unwind_top[0].p00_buf))                                    \
   /* detect whether or not we are unwinding */                                                    \
   P00_BLK_BEFORE(p00_unw = !!p00_code)                                                            \
   P00_BLK_DECL(register int const, p99_unwind_code, p00_code)                                     \
@@ -559,7 +566,7 @@ P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                
 
 p99_inline
 void p00_unwind(void* p00_top, unsigned p00_level, int p00_cond) {
-  if (p00_level && p00_cond && p00_top) longjmp(((p00_jmp_buf0*)p00_top)->p00_buf, p00_cond);
+  if (p00_level && p00_cond && p00_top) p00_longjmp(p00_top, p00_cond);
 }
 
 /**
