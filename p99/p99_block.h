@@ -512,56 +512,56 @@ void p00_longjmp(p00_jmp_buf0 * p00_buf, int p00_val) {
  ** @see ::p99_unwind_code
  ** @see ::p99_unwind_level
  **/
-#define P99_UNWIND_PROTECT                                                                        \
-P00_BLK_START                                                                                     \
-/* The jump buffer for the case that P99_UNWIND_RETURN is launched                                \
-   inside this construct. Only the lowest level variable will be                                  \
-   needed but since we don't know our level yet, we have to declare                               \
-   this at every level. */                                                                        \
-P00_BLK_BEFAFT(auto p00_jmp_buf p00_unwind_return = P00_ROBUST(P00_JMP_BUF_INITIALIZER),          \
-               /* returning can only be on because it was set by                                  \
-                  P99_UNWIND_RETURN and we fell of the edge after all                             \
-                  P99_PROTECT clauses */                                                          \
+#define P99_UNWIND_PROTECT                                                                       \
+P00_BLK_START                                                                                    \
+/* The jump buffer for the case that P99_UNWIND_RETURN is launched                               \
+   inside this construct. Only the lowest level variable will be                                 \
+   needed but since we don't know our level yet, we have to declare                              \
+   this at every level. */                                                                       \
+P00_BLK_BEFAFT(auto p00_jmp_buf p00_unwind_return = P00_ROBUST(P00_JMP_BUF_INITIALIZER),         \
+               /* returning can only be on because it was set by                                 \
+                  P99_UNWIND_RETURN and we fell of the edge after all                            \
+                  P99_PROTECT clauses */                                                         \
                p00_unwind_return[0].p00_returning ? p00_longjmp(p00_unwind_return, 1) : P99_NOP) \
-/* Detect the bottom of enclosing other P99_UNWIND_PROTECT. If it                                 \
-   exists set it to that one, otherwise set it to our newly allocated                             \
-   jump buffer. We have to do this in two steps such that the                                     \
-   initializer of the variable is not the variable itself. */                                     \
-P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                                  \
-             (p00_unwind_bottom ? p00_unwind_bottom : &p00_unwind_return))                        \
-  /* inhibit further access of the p00_unwind_return variable */                                  \
-  P00_BLK_DECL(register p00_inhibitor const, p00_unwind_return, { INT_MAX })                      \
-/* are we unwinding or not? */                                                                    \
-  P00_BLK_DECL(register _Bool, p00_unw)                                                           \
-/* The return code from the longjmp to which we apply the                                         \
-   special convention concerning the value 0. */                                                  \
-  P00_BLK_BEFAFT(register int p00_code = 0,                                                       \
-                 /* An eventual continuation of the unwind process is                             \
-                    decided here, since here the p00_unwind_top                                   \
-                    variable that is visible is that of the enclosing                             \
-                    scope, but the unwind code variable is ours.  If                              \
-                    the enclosing scope is the outer scope,                                       \
-                    p00_unwind_top is a integer with value zero. So                               \
-                    even then the P99_UNWIND is syntactically correct,                            \
-                    but fortunately the underlying call to longjmp                                \
-                    will not be issued. */                                                        \
-                 (p00_unw                                                                         \
-                  ? P99_UNWIND(p00_code < 0 ? p00_code : p00_code - 1)                            \
-                  : P99_NOP))                                                                     \
-/* maintain the level of nesting of different calls to                                            \
-   P99_UNWIND_PROTECT */                                                                          \
-  P00_BLK_DECL_REC(register unsigned const, p99_unwind_level, p99_unwind_level + 1)               \
-  P00_BLK_DECL(p00_jmp_buf0*, p00_unwind_prev, p00_unwind_top)                                    \
-/* the buffer variable for setjmp/longjump */                                                     \
-  P00_BLK_DECL(auto p00_jmp_buf, p00_unwind_top, P99_INIT)                                        \
-  P00_BLK_BEFORE(p00_code = setjmp(p00_unwind_top[0].p00_buf))                                    \
-  /* detect whether or not we are unwinding */                                                    \
-  P00_BLK_BEFORE(p00_unw = !!p00_code)                                                            \
-  P00_BLK_DECL(register int const, p99_unwind_code, p00_code)                                     \
-  P00_BLK_END                                                                                     \
-/* dispatch. cast the _Bool to int since this is what happens anyhow                              \
-   and some compilers will issue strange warnings. The "true" case must be provided               \
-   through a placement of P99_PROTECT inside the depending statement. */                          \
+/* Detect the bottom of enclosing other P99_UNWIND_PROTECT. If it                                \
+   exists set it to that one, otherwise set it to our newly allocated                            \
+   jump buffer. We have to do this in two steps such that the                                    \
+   initializer of the variable is not the variable itself. */                                    \
+P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                                 \
+             (p00_unwind_bottom ? p00_unwind_bottom : &p00_unwind_return))                       \
+  /* inhibit further access of the p00_unwind_return variable */                                 \
+  P00_BLK_DECL(register p00_inhibitor const, p00_unwind_return, { INT_MAX })                     \
+/* are we unwinding or not? */                                                                   \
+  P00_BLK_DECL(register _Bool, p00_unw)                                                          \
+/* The return code from the longjmp to which we apply the                                        \
+   special convention concerning the value 0. */                                                 \
+  P00_BLK_BEFAFT(register int p00_code = 0,                                                      \
+                 /* An eventual continuation of the unwind process is                            \
+                    decided here, since here the p00_unwind_top                                  \
+                    variable that is visible is that of the enclosing                            \
+                    scope, but the unwind code variable is ours.  If                             \
+                    the enclosing scope is the outer scope,                                      \
+                    p00_unwind_top is a integer with value zero. So                              \
+                    even then the P99_UNWIND is syntactically correct,                           \
+                    but fortunately the underlying call to longjmp                               \
+                    will not be issued. */                                                       \
+                 (p00_unw                                                                        \
+                  ? P99_UNWIND(p00_code < 0 ? p00_code : p00_code - 1)                           \
+                  : P99_NOP))                                                                    \
+/* maintain the level of nesting of different calls to                                           \
+   P99_UNWIND_PROTECT */                                                                         \
+  P00_BLK_DECL_REC(register unsigned const, p99_unwind_level, p99_unwind_level + 1)              \
+  P00_BLK_DECL(p00_jmp_buf0*, p00_unwind_prev, p00_unwind_top)                                   \
+/* the buffer variable for setjmp/longjump */                                                    \
+  P00_BLK_DECL(auto p00_jmp_buf, p00_unwind_top, P99_INIT)                                       \
+  P00_BLK_BEFORE(p00_code = setjmp(p00_unwind_top[0].p00_buf))                                   \
+  /* detect whether or not we are unwinding */                                                   \
+  P00_BLK_BEFORE(p00_unw = !!p00_code)                                                           \
+  P00_BLK_DECL(register int const, p99_unwind_code, p00_code)                                    \
+  P00_BLK_END                                                                                    \
+/* dispatch. cast the _Bool to int since this is what happens anyhow                             \
+   and some compilers will issue strange warnings. The "true" case must be provided              \
+   through a placement of P99_PROTECT inside the depending statement. */                         \
   switch ((int)p00_unw) case 0:
 
 p99_inline
