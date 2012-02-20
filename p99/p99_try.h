@@ -190,10 +190,11 @@ for (register unsigned p00_pha = 0; p00_pha < 2u; ++p00_pha)   \
   /* Restrict the first phase to the try */                    \
   if (!p00_pha)                                                \
     P00_BLK_START                                              \
-      P00_BLK_BEFORE(p00_jmp_push(p00_unwind_top))
+      P00_BLK_BEFORE(p00_jmp_push(p00_unwind_top))             \
+      do
 
 #define P00_FINALLY                                                 \
-else if (0) { default: P99_NOP; } else case 1:                      \
+while (0); else if (0) { default: P99_NOP; } else case 1:           \
 P00_BLK_START                                                       \
 /* make sure that this phase is executed at most once */            \
 P00_BLK_BEFORE(p00_pha = 2u)                                        \
