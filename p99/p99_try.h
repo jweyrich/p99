@@ -214,6 +214,15 @@ P00_BLK_DECL(p00_jmp_buf0*, p00_unwind_top, p00_unwind_prev)
  ** will continue. Otherwise execution will resume normally after the
  ** ::P99_FINALLY clause.
  **
+ ** A typical use pattern will looks as follows:
+ **
+ ** @code
+ ** P99_FINALLY {
+ **  // do some cleanup
+ ** }
+ ** // continue only if no exception had been caught
+ ** @endcode
+ **
  ** @see P99_TRY
  ** @see P99_CATCH
  **/
@@ -232,8 +241,19 @@ P00_BLK_AFTER(p00_unw ? P99_RETHROW : P99_NOP)
  ** be caught. If you want to unwind the call stack even further you
  ** have to use ::P99_RETHROW.
  **
- ** @remark The corresponding code will @c 0 if and only if no
+ ** @remark The corresponding code will be @c 0 if and only if no
  ** exception occured.
+ **
+ ** The definition of the @c code variable can be omitted. This can be
+ ** used to catch any exception and to continue execution after the
+ ** catch clause in any case:
+ **
+ ** @code
+ ** P99_CATCH() {
+ **  // do some cleanup
+ ** }
+ ** // continue here regardless of what happened
+ ** @endcode
  **
  ** @see P99_TRY
  ** @see P99_THROW
@@ -241,7 +261,7 @@ P00_BLK_AFTER(p00_unw ? P99_RETHROW : P99_NOP)
  **/
 #define P99_CATCH(...)                                         \
 P00_FINALLY                                                    \
-P00_BLK_BEFORE(__VA_ARGS__ = p00_code)
+P99_IF_EMPTY(__VA_ARGS__)()(P00_BLK_BEFORE(__VA_ARGS__ = p00_code))
 
 /**
  ** @}
