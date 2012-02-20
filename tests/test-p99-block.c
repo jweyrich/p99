@@ -20,12 +20,7 @@
 ** Last update Sun May 12 01:17:25 2002 Speed Blue
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <errno.h>
-#include <setjmp.h>
-#include "p99_block.h"
+#include "p99_try.h"
 #include "p99_swap.h"
 
 double ad = 1.0, bd = 2.0;
@@ -35,6 +30,23 @@ struct big { uintmax_t B[1024]; } ab = { .B = { [0] = 7 }}, bb = { .B = { [0] = 
 struct mimic { char B[sizeof(double)]; } am = { .B = { [0] = 7 }}, bm = { .B = { [0] = 1 }};
 void const *av = &av, *bv = &bv;
 
+static
+void my_throw(void) {
+  P99_THROW(37);
+}
+
+static
+void my_func(void) {
+  P99_TRY {
+    P99_TRY {
+      my_throw();
+    } P99_FINALLY {
+      fprintf(stderr, "finally in %s, %d\n", __func__, __LINE__);
+    }
+  } P99_FINALLY {
+    fprintf(stderr, "finally in %s, %d\n", __func__, __LINE__);
+  }
+}
 
 
 int main(int argc, char *argv[]) {
@@ -49,6 +61,8 @@ P99_XCASE EINTR : {
     }
 P99_XCASE ENOMEM :
     fprintf(stderr, "Autsch: call to schnoeck didn't have enough memory!\n");
+P99_XCASE 42 :
+    fprintf(stderr, "all well\n");
 P99_XDEFAULT : {
       fprintf(stderr, "AUTSCH: call to schnoeck failed with unhandled case!\n");
       perror("AUTSCH");
@@ -59,6 +73,34 @@ P99_XDEFAULT : {
   }
 
   fprintf(stderr, "now errno is set to %d\n", errno);
+
+  P99_TRY {
+    printf("before throw\n");
+    switch (argc % 3) {
+    case 0: P99_THROW(32);
+    case 1: my_func();
+    default:;
+    }
+    printf("after throw\n");
+  } P99_FINALLY {
+    printf("in finally\n");
+  }
+
+  P99_TRY {
+    printf("before throw\n");
+    switch (argc % 6) {
+    case 2: P99_THROW(41);
+    default:;
+    }
+    printf("after throw\n");
+  } P99_CATCH(int err) {
+    switch(err) {
+    default:
+      printf("caught err %d\n", err);
+      P99_RETHROW;
+    case 0:;
+    }
+  }
 
   P99_UNWIND_PROTECT {
     char *volatile a = malloc(32);
