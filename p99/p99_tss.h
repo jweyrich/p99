@@ -22,6 +22,8 @@
 # include "p99_atomic.h"
 #endif
 
+#include "p99_compiler.h"
+
 /**
  ** @addtogroup threads C11 thread emulation on top of POSIX threads
  **

@@ -13,7 +13,7 @@
 #ifndef P99_THREADS_H
 #define P99_THREADS_H 1
 
-#include "p99_tss.h"
+#include "p99_try.h"
 
 
 /**
@@ -185,10 +185,10 @@ void P99_PASTE3(p00_, NAME, _init_func)(T* ARG)
  **/
 
 struct p00_thrd {
-  pthread_t p00_id;
-  size_t p00_foreign;
-  int p00_ret;
   atomic_flag p00_detached;
+  unsigned p00_foreign;
+  int p00_ret;
+  pthread_t p00_id;
   union {
     struct {
       thrd_start_t p00_func;
