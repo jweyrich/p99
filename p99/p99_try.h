@@ -128,10 +128,10 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file) {
  ** thrown from below the call to @c favorite_func.
  **
  ** If no exception occurs, the ::P99_FINALLY clause is executed
- ** anyhow. Then execution continues after the clause, just as normal
- ** code.
+ ** anyhow. Then execution continues after the clause, just as for
+ ** normal code.
  **
- ** If an exception occurs, the clause is executed (an in this case
+ ** If an exception occurs, the clause is executed (and in this case
  ** the call to @c free is issued). But afterwards execution will not
  ** continue as normal but jump to the next ::P99_FINALLY or
  ** ::P99_CATCH block on the call stack.
@@ -164,7 +164,7 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file) {
  **
  ** Here, since there is a ::P99_RETHROW, execution will jump to the
  ** next ::P99_FINALLY or ::P99_CATCH block on the call stack. In fact
- ** a catch block of
+ ** a catch clause of
  **
  ** @code
  ** P99_CATCH(int code) {
@@ -182,6 +182,12 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file) {
  ** @endcode
  **
  ** only that this wouldn't give access to @c code.
+ **
+ ** Note that the code depending on ::P99_TRY must always be an entire
+ ** block with <code>{ }</code> surrounding it. The code depending on
+ ** ::P99_FINALLY or ::P99_CATCH don't has that restriction, it could
+ ** just be a single statement.
+ **
  **/
 #define P99_TRY                                                \
 P99_UNWIND_PROTECT                                             \
@@ -254,6 +260,17 @@ P00_BLK_AFTER(p00_unw ? P99_RETHROW : P99_NOP)
  ** }
  ** // continue here regardless of what happened
  ** @endcode
+ **
+ ** There is also a "catch all" dialect of all this
+ ** @code
+ ** P99_TRY {
+ **   // do something complicated that may fail
+ ** } P99_CATCH();
+ ** @endcode
+ **
+ ** The ";" after the catch is just an empty statement. So this catch
+ ** clause catches all exceptions, forgets the exception code and does
+ ** nothing.
  **
  ** @see P99_TRY
  ** @see P99_THROW
