@@ -1297,12 +1297,23 @@ P00_BLK_END
 ({                                                                        \
   P99_MACRO_PVAR(p00_objp, (OBJP));                                       \
   P99_MACRO_VAR(p00_op, (OPERAND));                                       \
-  P99_MACRO_VAR(p00_ret, atomic_load(p00_objp))          ;                \
+  P99_MACRO_VAR(p00_ret, atomic_load(p00_objp));                          \
   while (p00_ret) {                                                       \
     P99_MACRO_VAR(p00_des, p00_ret + p00_op);                             \
     if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_des)) break; \
   }                                                                       \
   p00_ret;                                                                \
+ })
+
+#define atomic_fetch_max(OBJP, OPERAND)                                 \
+({                                                                      \
+  P99_MACRO_PVAR(p00_objp, (OBJP));                                     \
+  P99_MACRO_VAR(p00_op, (OPERAND));                                     \
+  P99_MACRO_VAR(p00_ret, atomic_load(p00_objp));                        \
+  while (p00_ret <= p00_op) {                                           \
+    if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_op)) break; \
+  }                                                                     \
+  p00_ret;                                                              \
  })
 
 /**
