@@ -24,8 +24,10 @@ P99_DECLARE_THREAD_LOCAL(_Atomic(p00_jmp_buf0_ptr), p00_jmp_buf_top);
 #define P00_JMP_BUF_TOP P99_THREAD_LOCAL(p00_jmp_buf_top)
 
 P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_file);
+P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_func);
 
 #define P00_JMP_BUF_FILE P99_THREAD_LOCAL(p00_jmp_buf_file)
+#define P00_JMP_BUF_FUNC P99_THREAD_LOCAL(p00_jmp_buf_func)
 
 p99_inline
 void p00_jmp_skip(p00_jmp_buf0 * p00_des) {
@@ -45,9 +47,13 @@ enum { p00_ilen10 = sizeof(P99_STRINGIFY(LLONG_MIN)) };
 
 p99_inline
 noreturn
-void p00_jmp_abort(int p00_cond, char const* p00_file) {
+void p00_jmp_abort(int p00_cond, char const* p00_file, char const* p00_func) {
   char p00_str[p00_ilen10];
   sprintf(p00_str, "%d", p00_cond);
+  if (!p00_func) p00_func = P00_JMP_BUF_FUNC;
+  if (!p00_func) p00_func = "<unknown function>";
+  fputs(p00_func, stderr);
+  fputc(':', stderr);
   if (!p00_file) p00_file = P00_JMP_BUF_FILE;
   if (!p00_file) p00_file = "<unknown location>";
   fputs(p00_file, stderr);
@@ -55,17 +61,18 @@ void p00_jmp_abort(int p00_cond, char const* p00_file) {
   fputs(p00_str, stderr);
   if (!errno && p00_cond) errno = p00_cond;
   if (errno) perror(", could be");
-  else fputs("\n", stderr);
+  else fputc('\n', stderr);
   abort();
 }
 
 p99_inline
 noreturn
-void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file) {
+void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_func) {
   if (p00_file) P00_JMP_BUF_FILE = p00_file;
+  if (p00_func) P00_JMP_BUF_FUNC = p00_func;
   if (!p00_top) p00_top = P99_LIFO_TOP(&P00_JMP_BUF_TOP);
   if (P99_LIKELY(p00_top)) p00_longjmp(p00_top, p00_cond);
-  else p00_jmp_abort(p00_cond, p00_file);
+  else p00_jmp_abort(p00_cond, p00_file, p00_func);
 }
 
 
@@ -92,7 +99,7 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file) {
  ** error numbers such as @c ERANGE. But any other convention that
  ** fits the needs of an application can be used.
  **/
-#define P99_THROW(X) p00_jmp_throw((X), p00_unwind_top, __FILE__ ":" P99_STRINGIFY(__LINE__))
+#define P99_THROW(X) p00_jmp_throw((X), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
 
 /**
@@ -100,7 +107,7 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file) {
  ** or ::P99_CATCH clause and propagate the same exception that let
  ** here to the next level.
  **/
-#define P99_RETHROW p00_jmp_throw(p00_code, p00_unwind_top, 0)
+#define P99_RETHROW p00_jmp_throw(p00_code, p00_unwind_top, 0, 0)
 
 
 /**
