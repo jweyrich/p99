@@ -283,9 +283,12 @@ P00_BLK_AFTER(p00_unw ? P99_RETHROW : P99_NOP)
  ** @see P99_THROW
  ** @see P99_RETHROW
  **/
-#define P99_CATCH(...)                                         \
-P00_FINALLY                                                    \
-P99_IF_EMPTY(__VA_ARGS__)()(P00_BLK_BEFORE(__VA_ARGS__ = p00_code))
+#define P99_CATCH(...)                                                  \
+P00_FINALLY                                                             \
+P99_IF_EMPTY(__VA_ARGS__)()(P00_BLK_BEFORE(__VA_ARGS__ = p00_code))     \
+P00_BLK_BEFORE(p00_unw = 0)                                             \
+P00_BLK_AFTER(P00_JMP_BUF_FILE = 0)                                     \
+P00_BLK_AFTER(P00_JMP_BUF_FUNC = 0)
 
 /**
  ** @}
