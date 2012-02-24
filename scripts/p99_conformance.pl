@@ -36,13 +36,15 @@ my @compilers = (
     "pcc" => [["-std=c99"],
         ["DIGRAPH", "TRIGRAPH",
             "CONST_PARAMETER", "VOLATILE_PARAMETER", "UNIVERSAL", "EVALUATED_COMMA_ASSIGN"]],
-    "clang" => [["-trigraphs", "-Wno-trigraphs"], ["UNIVERSAL", "TOKEN_HASH_HASH_AS_ARGUMENT"]],
+    "clang-2.9" => [["-trigraphs", "-Wno-trigraphs"], ["UNIVERSAL", "TOKEN_HASH_HASH_AS_ARGUMENT"]],
+    "clang" => [["-trigraphs", "-Wno-trigraphs"], ["UNIVERSAL"]],
     "opencc" => [["-std=c99", "-Wno-trigraphs"], ["UNIVERSAL", "EVALUATED_COMMA_ASSIGN"]],
     "icc" => [["-std=c99"], ["UNIVERSAL_UTF8", "UNIVERSAL_MANGLE", "EVALUATED_COMMA_ASSIGN", "EVALUATED_COMMA_PREPRO"]],
     "gcc-4.1" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
     "gcc-4.2" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
     "gcc-4.3" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
     "gcc-4.4" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
+    "gcc-4.5" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
     "p99-pcc" => [["-std=c99", "-B$dir"],
                   [#"DIGRAPH", "TRIGRAPH",
                    "CONST_PARAMETER", "VOLATILE_PARAMETER",
@@ -54,6 +56,7 @@ my @compilers = (
     "p99-gcc-4.2" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
     "p99-gcc-4.3" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
     "p99-gcc-4.4" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
+    "p99-gcc-4.5" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN", "EVALUATED_COMMA_PREPRO"]],
 );
 
 my %compilers = @compilers;

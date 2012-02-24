@@ -1,0 +1,66 @@
+#!/bin/sh -f
+#!perl     ##  This may look like complete nonsense, but it really is -*- mode: perl; coding: utf-8 -*- ##
+#          ##  Exec to perl if started from /bin/sh. Do nothing if already executed by perl.            ##
+# line 5
+eval 'exec perl -wS -x $0 ${1+"$@"}'
+if 0;
+# Except of parts copied from previous work and as explicitly stated below,
+# the author and copyright holder for this work is
+# all rights reserved,  2011 Jens Gustedt, INRIA, France
+#
+# This file is part of the P99 project. You received this file as as
+# part of a confidential agreement and you may generally not
+# redistribute it and/or modify it, unless under the terms as given in
+# the file LICENSE.  It is distributed without any warranty; without
+# even the implied warranty of merchantability or fitness for a
+# particular purpose.
+#
+
+no warnings 'portable';  # Support for 64-bit ints required
+use integer;
+use English '-no_match_vars';
+
+print STDERR "$PROGRAM_NAME invoked as @ARGV\n";
+
+## set the default real compiler to gcc
+$ENV{COLLECT_GCC} //= "gcc";
+
+shift @ARGV while ($ARGV[0] eq "--");
+
+my $found;
+my @dirs;
+{
+    open(my $prepro, "$ENV{COLLECT_GCC} -### -x c /dev/null 2>&1 |");
+    foreach (<$prepro>) {
+        chomp;
+        if (m/^COMPILER_PATH=(.*)$/) {
+            $ENV{PATH} = "$1:$ENV{PATH}";
+        } elsif (m|\s*"([^"]+)/cc1"|o) {
+            $found = "$1/cc1";
+            @dirs = ("-isystem=$1/include-fixed", "-isystem=$1/include");
+            warn "found $found";
+        }
+    }
+    close $prepro;
+}
+
+if ($ARGV[0] ne "-E") {
+    $PROGRAM_NAME = $found // "cc1";
+} else {
+    shift @ARGV;
+    unshift(@ARGV, @dirs);
+    {
+        open(my $prepro, "$ENV{COLLECT_GCC} -E -dM -x c /dev/null |");
+        unshift(@ARGV, map {
+            chomp;
+            m/^#define (\w+) (.*)$/o;
+            $_ = "-D$1=$2";
+                } (<$prepro>));
+        close $prepro;
+    }
+    $PROGRAM_NAME =~ s|[^/]*$||o;
+    $PROGRAM_NAME .= "p99pro.pl";
+}
+
+exec $PROGRAM_NAME, @ARGV;
+

@@ -123,6 +123,8 @@ c99-conformance-gcc-4.3.html : ${CONFORM}
 	${CONFORM} gcc-4.3
 c99-conformance-gcc-4.4.html : ${CONFORM}
 	${CONFORM} gcc-4.4
+c99-conformance-gcc-4.5.html : ${CONFORM}
+	${CONFORM} gcc-4.5
 c99-conformance-icc-12.0.0.html : ${CONFORM}
 	${CONFORM} icc 12.0.0
 c99-conformance-opencc-4.2.4.html : ${CONFORM}
@@ -135,6 +137,8 @@ c99-conformance-p99-gcc-4.3.html : ${CONFORM}
 	${CONFORM} ${SCRIPTS}/p99-gcc-4.3
 c99-conformance-p99-gcc-4.4.html : ${CONFORM}
 	${CONFORM} ${SCRIPTS}/p99-gcc-4.4
+c99-conformance-p99-gcc-4.5.html : ${CONFORM}
+	${CONFORM} ${SCRIPTS}/p99-gcc-4.5
 c99-conformance-p99-pcc-0.9.9.html : ${CONFORM}
 	${CONFORM} ${SCRIPTS}/p99-pcc 0.9.9
 c99-conformance-pcc-0.9.9.html : ${CONFORM}
