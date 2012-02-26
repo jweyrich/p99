@@ -45,23 +45,50 @@ void p00_jmp_push(p00_jmp_buf0 * p00_des) {
 
 enum { p00_ilen10 = sizeof(P99_STRINGIFY(LLONG_MIN)) };
 
+/**
+ ** @brief Report the origin and reason of a caught error
+ **
+ ** Use this if a catch clause needs another layer of try/catch blocks
+ ** during the cleanup.
+ **
+ ** @code
+ ** P99_TRY {
+ **   // the real application code
+ ** } P99_CATCH(int code) {
+ **   if (code) p99_jmp_report(code, 0, 0);
+ **   P99_TRY {
+ **     // some complicated cleanup that might throw
+ **     // errors by itself
+ **   } P99_CATCH();
+ ** }
+ ** @endcode
+ **
+ ** Without the call to ::p99_jmp_report the origin of the error would
+ ** be lost in the second :P99_CATCH.
+ **
+ **/
 p99_inline
-noreturn
-void p00_jmp_abort(int p00_cond, char const* p00_file, char const* p00_func) {
-  char p00_str[p00_ilen10];
-  sprintf(p00_str, "%d", p00_cond);
+void p99_jmp_report(int p00_cond, char const* p00_file, char const* p00_func) {
   if (!p00_func) p00_func = P00_JMP_BUF_FUNC;
   if (!p00_func) p00_func = "<unknown function>";
-  fputs(p00_func, stderr);
-  fputc(':', stderr);
   if (!p00_file) p00_file = P00_JMP_BUF_FILE;
   if (!p00_file) p00_file = "<unknown location>";
+  char p00_str[p00_ilen10];
+  sprintf(p00_str, "%d", p00_cond);
+  fputs(p00_func, stderr);
+  fputc(':', stderr);
   fputs(p00_file, stderr);
-  fputs(": uncaught exception ", stderr);
+  fputs(": exception ", stderr);
   fputs(p00_str, stderr);
   if (!errno && p00_cond) errno = p00_cond;
   if (errno) perror(", could be");
   else fputc('\n', stderr);
+}
+
+p99_inline
+noreturn
+void p00_jmp_abort(int p00_cond, char const* p00_file, char const* p00_func) {
+  p99_jmp_report(p00_cond, p00_file, p00_func);
   abort();
 }
 
