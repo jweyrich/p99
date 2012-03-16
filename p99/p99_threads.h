@@ -416,9 +416,9 @@ p99_once_flag p00_ ## T ## _once);                             \
 void p00_ ## T ## _once_init(void)
 #else
 #define P99_DEFINE_ONCE_CHAIN(...)                             \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
- (P00_P99_DEFINE_ONCE_CHAIN_0(__VA_ARGS__))                    \
- (P00_P99_DEFINE_ONCE_CHAIN_1(__VA_ARGS__))
+P99_IF_ELSE(P99_HAS_COMMA(__VA_ARGS__))                        \
+ (P00_P99_DEFINE_ONCE_CHAIN_1(__VA_ARGS__))                    \
+ (P00_P99_DEFINE_ONCE_CHAIN_0(__VA_ARGS__))
 #endif
 
 #define P00_P99_DEFINE_ONCE_CHAIN_0(T)                         \

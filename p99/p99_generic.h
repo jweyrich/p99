@@ -47,6 +47,7 @@
 TOP PAIR: EOP PAIR
 
 #define P00_GENERIC_(N, MOP, EXP, DEF, ...)                    \
+p99_extension                                                  \
 _Generic                                                       \
 ((EXP),                                                        \
  P99_IF_EMPTY(DEF)()(default: (DEF),)                          \

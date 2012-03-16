@@ -65,7 +65,10 @@
  **
  ** Counting of elements starts at 0.
  **/
-#define P99_CHS(N, ...) P99_SUB(N, 1, __VA_ARGS__)
+#define P99_CHS(N, ...) P00_CHS(P99_SKP(N, __VA_ARGS__))
+#define P00_CHS(...) P00_CHS_(__VA_ARGS__,)
+#define P00_CHS_(X, ...) X
+
 
 /**
  ** @brief Construct a list that repeats the argument list @a N times

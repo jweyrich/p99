@@ -47,7 +47,7 @@ static
 int real_task(atomic_intp* arg) {
   int ret = 0;
   printf("arg is %p, %d, %s %s\n",
-         arg,
+         (void*)arg,
          P99_TYPE_FLOATING(atomic_load(arg)),
          bool_getname(atomic_is_lock_free(&D)),
          bool_getname(atomic_is_lock_free(&U)));

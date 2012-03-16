@@ -1054,6 +1054,7 @@ P00_BLK_END
  ** @memberof atomic_int
  **/
 #define atomic_init(OBJP, VAL)                                 \
+p99_extension                                                  \
 (void)({                                                       \
     P99_MAC_ARGS((p00_objp, OBJP), (p00_val, VAL));            \
     /* To take care of the atomic_flag and padding bytes. */   \
@@ -1072,6 +1073,7 @@ P00_BLK_END
  ** @memberof atomic_int
  **/
 #define atomic_fetch_and_store(OBJP, DESIRED)                                                           \
+p99_extension                                                                                           \
 ({                                                                                                      \
   P99_MACRO_PVAR(p00_objp, (OBJP));                                                                     \
   __typeof__(P00_AT(p00_objp)) p00_des = (DESIRED);                                                     \
@@ -1114,6 +1116,7 @@ P00_BLK_END
  ** @memberof atomic_int
  **/
 #define atomic_load(OBJP)                                                     \
+p99_extension                                                                 \
 ({                                                                            \
   P99_MACRO_PVAR(p00_objp, (OBJP));                                           \
   __typeof__(P00_AX(p00_objp)) p00_ret;                                       \
@@ -1151,6 +1154,7 @@ P00_BLK_END
  ** @memberof atomic_int
  **/
 #define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                                   \
+p99_extension                                                                                   \
 ({                                                                                              \
   P99_MACRO_PVAR(p00_objp, (OBJP));                                                             \
   P99_MACRO_PVAR(p00_exp, (EXPECTED));                                                          \
@@ -1196,6 +1200,7 @@ P00_BLK_END
 
 
 #define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                 \
+p99_extension                                                          \
 ({                                                                     \
   P99_MACRO_PVAR(p00_objp, (OBJP));                                    \
   P99_MACRO_VAR(p00_op, OPERAND);                                      \
@@ -1294,6 +1299,7 @@ P00_BLK_END
 #define atomic_fetch_xor(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_xor, ^=)
 
 #define atomic_fetch_add_conditional(OBJP, OPERAND)                       \
+p99_extension                                                             \
 ({                                                                        \
   P99_MACRO_PVAR(p00_objp, (OBJP));                                       \
   P99_MACRO_VAR(p00_op, (OPERAND));                                       \
@@ -1306,6 +1312,7 @@ P00_BLK_END
  })
 
 #define atomic_fetch_max(OBJP, OPERAND)                                 \
+p99_extension                                                           \
 ({                                                                      \
   P99_MACRO_PVAR(p00_objp, (OBJP));                                     \
   P99_MACRO_VAR(p00_op, (OPERAND));                                     \
@@ -1373,6 +1380,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_TOP, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
 #define P99_LIFO_PUSH(L, EL)                                   \
+p99_extension                                                  \
 ({                                                             \
   P99_MACRO_VAR(p00_l, (L));                                   \
   P99_MACRO_VAR(p00_el, (EL));                                 \
@@ -1420,6 +1428,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_POP, 0)
 #define P99_LIFO_POP(L)                                                                            \
+p99_extension                                                                                      \
 ({                                                                                                 \
   P99_MACRO_VAR(p00_l, (L));                                                                       \
   __typeof__(P99_LIFO_TOP(p00_l)) p00_el = P99_LIFO_TOP(p00_l);                                    \

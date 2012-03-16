@@ -253,7 +253,8 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_DELETE, 0)
 #define P99_DECLARE_DELETE(...)                                \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
 (P00_DECLARE_DELETE(__VA_ARGS__, p99_inline))                  \
-(P00_DECLARE_DELETE(__VA_ARGS__))
+(P00_DECLARE_DELETE(__VA_ARGS__))                              \
+P99_MACRO_END(P99_DECLARE_DELETE)
 #endif
 
 #define P00_DECLARE_DELETE(T, ...)                                                                          \

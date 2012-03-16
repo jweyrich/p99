@@ -180,6 +180,7 @@
 
 
 # ifdef __GNUC__
+#  define p99_extension __extension__
 #  define P00_GCC_VERSION(A, B, C) P00_GCC_VERSION_(A, B, C)
 #  define P00_GCC_VERSION_(A, B, C) A ## B ## C ## UL
 #  ifdef __GNUC_PATCHLEVEL__
@@ -198,6 +199,14 @@
 #  endif
 #  define P99_GCC_VERSION P00_GCC_VERSION(__GNUC__, P00_GNUC_MINOR__, P00_GNUC_PATCHLEVEL__)
 # endif
+
+#ifndef p99_extension
+/**
+ ** @brief Mark an expression as using a compiler extension.
+ **/
+# define p99_extension
+#endif
+
 
 #ifndef P00_DOXYGEN
 #ifdef __cplusplus
