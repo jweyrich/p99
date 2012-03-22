@@ -105,6 +105,8 @@
 #define P00_PREFIX0(N) P00_PREFIX0_(N)
 #define P00_PREFIX0_(N) 0 ## N
 #define P00_STRINGIFY(...) #__VA_ARGS__
+#define P00_VERSION_NO(A, B, C) (((A)*10000UL)+(B)*100UL+(C))
+
 /**
  ** @brief Transform the argument list into one string.
  **/
@@ -122,6 +124,7 @@
  P99_STRINGIFY(__GNUC__) "."                                   \
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
  P99_STRINGIFY(__GNUC_PATCHLEVEL__)
+# define P99_VERSION_NO P00_VERSION_NO(__clang_major__, __clang_minor__, __clang_patchlevel__)
 
 #elif P99_COMPILER & P99_COMPILER_INTEL
 # undef P99_COMPILER_VERSION
@@ -131,6 +134,7 @@
  P99_STRINGIFY(__GNUC__) "."                                   \
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
  P99_STRINGIFY(__GNUC_PATCHLEVEL__)
+# define P99_VERSION_NO P00_VERSION_NO(__INTEL_COMPILER, 0, 0)
 
 #elif P99_COMPILER & P99_COMPILER_PCC
 # undef P99_COMPILER_VERSION
@@ -143,12 +147,14 @@
  P99_STRINGIFY(__GNUC__) "."                                   \
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
  P99_STRINGIFY(__GNUC_PATCHLEVEL__)
+# define P99_VERSION_NO P00_VERSION_NO(__PCC__, __PCC_MINOR__, __PCC_MINORMINOR__)
 
 #elif P99_COMPILER & P99_COMPILER_TINYC
 # undef P99_COMPILER_VERSION
 # define P99_COMPILER_VERSION                                  \
   "tinyc "                                                     \
   P99_STRINGIFY(__TINYC__)
+# define P99_VERSION_NO P00_VERSION_NO(__TINYC__, 0, 0)
 
 #elif P99_COMPILER & P99_COMPILER_OPEN64
 # undef P99_COMPILER_VERSION
@@ -158,6 +164,7 @@
  P99_STRINGIFY(__GNUC__) "."                                   \
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
  P99_STRINGIFY(__GNUC_PATCHLEVEL__)
+# define P99_VERSION_NO P00_VERSION_NO(__TINYC__, 0, 0)
 
 #elif P99_COMPILER & P99_COMPILER_GNU
 # undef P99_COMPILER_VERSION
@@ -166,6 +173,7 @@
  P99_STRINGIFY(__GNUC__) "."                                   \
  P99_STRINGIFY(__GNUC_MINOR__) "."                             \
  P99_STRINGIFY(__GNUC_PATCHLEVEL__)
+# define P99_VERSION_NO P00_VERSION_NO(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
 #endif
 
 /* intel is cheating about the gcc abi they support */
@@ -181,23 +189,7 @@
 
 # ifdef __GNUC__
 #  define p99_extension __extension__
-#  define P00_GCC_VERSION(A, B, C) P00_GCC_VERSION_(A, B, C)
-#  define P00_GCC_VERSION_(A, B, C) A ## B ## C ## UL
-#  ifdef __GNUC_PATCHLEVEL__
-#   if __GNUC_PATCHLEVEL__ < 10
-#    define P00_GNUC_PATCHLEVEL__ P00_PREFIX0(__GNUC_PATCHLEVEL__)
-#   else
-#    define P00_GNUC_PATCHLEVEL__ __GNUC_PATCHLEVEL__
-#   endif
-#  else
-#    define P00_GNUC_PATCHLEVEL__ 00
-#  endif
-#  if __GNUC_MINOR__ < 10
-#   define P00_GNUC_MINOR__ P00_PREFIX0(__GNUC_MINOR__)
-#  else
-#   define P00_GNUC_MINOR__ __GNUC_MINOR__
-#  endif
-#  define P99_GCC_VERSION P00_GCC_VERSION(__GNUC__, P00_GNUC_MINOR__, P00_GNUC_PATCHLEVEL__)
+#  define P99_GCC_VERSION P00_VERSION_NO(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
 # endif
 
 #ifndef p99_extension
@@ -316,6 +308,16 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_feature_gnu_alignof 1
 # define p00_has_feature_statement_expression 1
 # define p00_has_feature_typeof 1
+# if (P99_GCC_VERSION >= 40700UL) && (P99_GCC_VERSION < 40800UL)
+#  if __STDC_VERSION__ > 201100L
+#   define p00_has_feature_uchar_h 0
+#   define p00_has_feature_stdnoreturn_h 1
+#   define __STDC_NO_ATOMICS__ 1
+#   define __STDC_NO_THREADS__ 1
+#   define p00_has_feature_c_max_align_t 1
+#   define p00_has_feature_c_generic_selections 0
+#  endif
+# endif
 #endif
 
 #if p99_has_builtin(__sync_val_compare_and_swap)
@@ -334,8 +336,23 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 
 
+/* Since for the moment C11 support is only very partial, we have to
+   introduce some feature test macros. If a compiler claims to be C11
+   but doesn't implement a required feature, you have to define the
+   corresponding macro to 0 before this point. */
 #if __STDC_VERSION__ > 201100L
-# define p00_has_feature_c_generic_selections 1
+# ifndef p00_has_feature_uchar_h
+#   define p00_has_feature_uchar_h 1
+# endif
+# ifndef p00_has_feature_stdnoreturn_h
+#   define p00_has_feature_stdnoreturn_h 1
+# endif
+# ifndef p00_has_feature_c_max_align_t
+#   define p00_has_feature_c_max_align_t 1
+# endif
+# ifndef p00_has_feature_c_generic_selections
+#  define p00_has_feature_c_generic_selections 1
+# endif
 #endif
 
 #if P99_COMPILER & (P99_COMPILER_IBM | P99_COMPILER_SUN)
@@ -357,6 +374,12 @@ signed p00_trailing_comma_in_initializer__(void) {
 # endif
 /* clang can't nail a variable to a register, yet */
 # define P99_FIXED_REGISTER(REG)
+# if P99_VERSION_NO < 30200UL
+/* clang has no stdatomic.h, yet */
+#   define __STDC_NO_ATOMICS__ 1
+/* clang has no threads.h, yet */
+#   define __STDC_NO_THREADS__ 1
+# endif
 #elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 # define P99_ATLEAST
 /* gcc prior to version 4.2.1 has the inline keyword but with slightly
@@ -496,18 +519,20 @@ signed p00_trailing_comma_in_initializer__(void) {
 /* implement emulation of some C11 features */
 #if  __STDC_VERSION__ > 201100L
 # include <stdalign.h>
-# include <stdnoreturn.h>
-# if __STDC_HOSTED__
-#  include <uchar.h>
+# if p99_has_feature(stdnoreturn_h)
+#  include <stdnoreturn.h>
 # endif
-#else
+#endif /* C11 emulation support */
 
+#if __STDC_HOSTED__
+# if p99_has_feature(uchar_h)
+#   include <uchar.h>
+# else
 /* Define the unicode character types directly. */
-
 typedef uint_least16_t char16_t;
 typedef uint_least32_t char32_t;
-
-#endif /* C11 emulation support */
+# endif
+#endif /* uchar */
 
 #ifndef static_assert
 /**
