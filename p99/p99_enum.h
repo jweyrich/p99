@@ -127,7 +127,7 @@ P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 3)
 #define P99_DECLARE_ENUM(T, ...)                                                                          \
 /*! \see T ## _getname for access to the names of the constants as strings */                             \
 /*! \see T for the type that is to be used in code. We only use T ## _  here because of a doxygen bug. */ \
-enum T ## _ { __VA_ARGS__ ,                                                                               \
+enum T { __VA_ARGS__ ,                                                                               \
                /*! upper bound of the @ref T constants */                                                 \
                P99_PASTE2(T, _amount),                                                                    \
                /*! the largest @ref T constant */                                                         \
@@ -138,7 +138,7 @@ enum T ## _ { __VA_ARGS__ ,                                                     
 /*! \brief Enumeration type @c enum T and @c typedef T. */                                                \
 /*! \see T ## _ is used for documentation through doxygen. */                                             \
 /*! \see T ## _getname for access to the names of the constants as strings */                             \
-typedef enum T ## _ T;                                                                                    \
+typedef enum T T;                                                                                    \
  P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__);                                                                \
 P99_DECLARE_ENUM_PARSE(T, __VA_ARGS__)
 #else

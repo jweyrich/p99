@@ -181,10 +181,9 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_PROTOTYPE, 0)
 P00_DOCUMENT_TYPE_ARGUMENT(P99_PROTOTYPE, 2)
 
 #ifdef P00_DOXYGEN
-#define P00_PROTOTYPE(RT, NAME, ...)                                                     \
+#define P99_PROTOTYPE(RT, NAME, ...)                                                     \
 /*! @remark This function might be hidden behind a macro :: ## NAME of the same name. */ \
 RT NAME(__VA_ARGS__)
-#define P99_PROTOTYPE(RT, NAME, ...) P00_PROTOTYPE(__VA_ARGS__)
 #else
 #define P00_PROTOTYPE(RT, NAME, ...)                           \
   RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));       \
@@ -206,6 +205,7 @@ p00_instantiate RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
 p00_instantiate RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
 #endif
 
+#ifdef P00_DOXYGEN
 /**
  ** @brief Instantiate an inline function.
  **
@@ -222,11 +222,13 @@ p00_instantiate RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
  ** will then be generated there.  @see P99_PROTOTYPE for the syntax
  ** of this macro.
  **/
+#define P99_INSTANTIATE(RT, NAME, ...) RT NAME(__VA_ARGS__)
+#else
 #define P99_INSTANTIATE(...)                                   \
 P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
 (P00_INSTANTIATE(__VA_ARGS__, void))                           \
 (P00_INSTANTIATE(__VA_ARGS__))
-
+#endif
 
 #define P00_EXPR_FUNCTION(NAME, X, N)                                   \
 P99_IF_EMPTY(X)                                                         \

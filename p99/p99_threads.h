@@ -99,6 +99,30 @@ typedef struct p00_thrd p00_thrd;
  **/
 P99_ENC_DECLARE(struct p00_thrd*, thrd_t);
 
+p99_inline thrd_t* thrd_t_init(thrd_t *id) {
+  if (id) {
+    *id = P99_LVAL(thrd_t const);
+  }
+  return id;
+}
+
+p99_inline void thrd_t_destroy(thrd_t *id) {
+  /* special care for bogus warning given by icc */
+  (void)id;
+}
+
+p99_inline
+char const* thrd2str(char *p00_buf, thrd_t p00_id) {
+  unsigned char *p00_p = (unsigned char*)&p00_id;
+  for (size_t p00_i = 0; p00_i < sizeof(thrd_t); ++p00_i) {
+    snprintf(p00_buf + 2*p00_i, 3, "%02X", p00_p[p00_i]);
+  }
+  return p00_buf;
+}
+
+#define THRD2STR(ID) thrd2str((char[1 + sizeof(thrd_t) * 2]){0}, (ID))
+
+
 /**
  ** @brief complete object type that holds an identifier for a mutex
  **
@@ -412,7 +436,7 @@ P99_IF_EQ_1(N)                                                 \
  ** @see P99_INIT_CHAIN
  **/
 #define P99_DEFINE_ONCE_CHAIN(T, ...)                          \
-p99_once_flag p00_ ## T ## _once);                             \
+p99_once_flag p99_ ## T ## _once;                              \
 void p00_ ## T ## _once_init(void)
 #else
 #define P99_DEFINE_ONCE_CHAIN(...)                             \
@@ -423,7 +447,7 @@ P99_IF_ELSE(P99_HAS_COMMA(__VA_ARGS__))                        \
 
 #define P00_P99_DEFINE_ONCE_CHAIN_0(T)                         \
 static void P99_PASTE3(p00_, T, _once_init)(void);             \
-p99_once_flag P99_PASTE3(p00_, T, _once) = {                   \
+p99_once_flag P99_PASTE3(p99_, T, _once) = {                   \
   .p00_init = P99_PASTE3(p00_, T, _once_init),                 \
 };                                                             \
 static void P99_PASTE3(p00_, T, _once_init)(void)
@@ -437,7 +461,7 @@ static void P99_PASTE3(p00_, T, _once_init)(void) {                      \
   /* fprintf(stderr, "Initializing " #T "\n");*/                         \
   P99_PASTE3(p00_, T, _once_init0)();                                    \
  }                                                                       \
-struct p99_once_flag P99_PASTE3(p00_, T, _once) = {                      \
+struct p99_once_flag P99_PASTE3(p99_, T, _once) = {                      \
   .p00_init = P99_PASTE3(p00_, T, _once_init),                           \
 };                                                                       \
 static void P99_PASTE3(p00_, T, _once_init0)(void)
@@ -451,7 +475,7 @@ static void P99_PASTE3(p00_, T, _once_init0)(void)
  ** @see P99_DEFINE_ONCE_CHAIN
  **/
 #define P99_DECLARE_ONCE_CHAIN(T)                              \
-extern p99_once_flag P99_PASTE3(p00_, T, _once)
+extern p99_once_flag P99_PASTE3(p99_, T, _once)
 
 /**
  ** @brief Ensure that the function that was defined with
@@ -466,7 +490,7 @@ extern p99_once_flag P99_PASTE3(p00_, T, _once)
  ** @see P99_DEFINE_ONCE_CHAIN
  **/
 #define P99_INIT_CHAIN(T)                                                       \
-p99_call_once(&P99_PASTE3(p00_, T, _once), P99_PASTE3(p00_, T, _once).p00_init)
+p99_call_once(&P99_PASTE3(p99_, T, _once), P99_PASTE3(p99_, T, _once).p00_init)
 
 // 7.26.3 Condition variable functions
 
