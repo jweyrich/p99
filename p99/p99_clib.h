@@ -145,6 +145,43 @@ _Noreturn void quick_exit(int status) {
   _Exit(status);
 }
 
+P99_WEAK(p00_at_thrd_exit)
+p99_tss p00_at_thrd_exit;
+
+#define P00_AT_THRD_EXIT                                              \
+(*(p00_aqe_list*)p00_thread_local_get(&(p00_at_thrd_exit), sizeof(p00_aqe_list*)))
+
+P99_SETJMP_INLINE(p00_run_at_thrd_exit)
+void p00_run_at_thrd_exit(void * li) {
+  p00_aqe_list* list = li;
+  for (;;) {
+    p00_aqe_el *el = p00_at_quick_exit_pop(list);
+    if (P99_UNLIKELY(!el)) break;
+    p00_aqe_func * p00_func = el->p00_func;
+    free(el);
+    p00_func();
+  }
+}
+
+p99_tss p00_at_thrd_exit = { .p00_func = p00_run_at_thrd_exit, };
+
+
+/**
+ ** @brief Add @a p00_func to the functions that are called on exit of
+ ** the current thread.
+ **
+ ** This is an extension of the C11 thread functions and works
+ ** analogously to the functions ::at_exit and ::at_quick exit.
+ **/
+p99_inline
+int at_thrd_exit(void (*p00_func)(void)) {
+  int ret = 0;
+  p00_aqe_el *el = P99_NEW(p00_aqe_el, p00_func);
+  ret = !el;
+  if (P99_LIKELY(!ret)) p00_at_quick_exit_push(&P00_AT_THRD_EXIT, el);
+  return ret;
+}
+
 /**
  ** @}
  **/

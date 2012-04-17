@@ -1,15 +1,5 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
-/*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
-/* (C) copyright  2011-2012 Jens Gustedt, INRIA, France                      */
-/*                                                                           */
-/* This file is free software; it is part of the P99 project.                */
-/* You can redistribute it and/or modify it under the terms of the QPL as    */
-/* given in the file LICENSE. It is distributed without any warranty;        */
-/* without even the implied warranty of merchantability or fitness for a     */
-/* particular purpose.                                                       */
-/*                                                                           */
+
+
 /** @file
  ** @brief This file just contains automatically produced information for doxygen.
  **
@@ -117,7 +107,7 @@
  ** @see P99_CHOOSE5(xT, cc, cs, ci, cl, cll) for argument <code>xT</code>.
  ** @see P99_DECLARE_ATOMIC(T, NAME) for argument <code>T</code>.
  ** @see P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME) for argument <code>T</code>, <code>NAME</code>.
- ** @see P99_DECLARE_DELETE(...) for argument <code>__VA_ARG__[0]</code>.
+ ** @see P99_DECLARE_DELETE(T) for argument <code>T</code>.
  ** @see P99_DECLARE_ENUM(T, ...) for arguments <code>T</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_DECLARE_ENUM_GETNAME(T, ...) for arguments <code>T</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_DECLARE_ENUM_PARSE(T, ...) for arguments <code>T</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.

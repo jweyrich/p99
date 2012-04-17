@@ -181,15 +181,6 @@ int tss_set(tss_t p00_key, void *p00_val) {
   return pthread_setspecific(P99_ENC(p00_key), p00_val) ? thrd_error : thrd_success;
 }
 
-#if defined(thread_local) && !defined(P99_EMULATE_THREAD_LOCAL) && !defined(P00_DOXYGEN)
-
-#define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
-P99_WEAK(NAME)                                                 \
-thread_local T NAME
-
-#define P99_THREAD_LOCAL(NAME) (NAME)
-
-#else
 /**
  ** @brief A stub structure to hold a thread local variable if
  ** ::thread_local is not available.
@@ -217,6 +208,7 @@ thread_local T NAME
  **/
 struct p99_tss {
   tss_t p00_val;
+  tss_dtor_t p00_func;
   bool volatile p00_done;
   atomic_flag p00_flg;
 };
@@ -231,7 +223,8 @@ void p00_key_once_init(p99_tss * p00_key) {
   if (!p00_key->p00_done) {
     P99_SPIN_EXCLUDE(&p00_key->p00_flg) {
       if (!p00_key->p00_done) {
-        int p00_ret = tss_create(&P99_ENCP(p00_key), free);
+        if (!p00_key->p00_func) p00_key->p00_func = free;
+        int p00_ret = tss_create(&P99_ENCP(p00_key), p00_key->p00_func);
         if (p00_ret) {
           errno = p00_ret;
           perror("can't create thread specific key");
@@ -254,6 +247,15 @@ void* p00_thread_local_get(p99_tss * p00_key, size_t p00_size) {
   return p00_ret;
 }
 
+#if defined(thread_local) && !defined(P99_EMULATE_THREAD_LOCAL) && !defined(P00_DOXYGEN)
+
+#define P99_DECLARE_THREAD_LOCAL(T, NAME)                      \
+P99_WEAK(NAME)                                                 \
+thread_local T NAME
+
+#define P99_THREAD_LOCAL(NAME) (NAME)
+
+#else
 /**
  ** @def P99_DECLARE_THREAD_LOCAL
  ** @brief declare a thread local variable @a NAME of type @a T

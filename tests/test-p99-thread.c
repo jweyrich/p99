@@ -44,6 +44,16 @@ void aqe(void) {
 }
 
 static
+void ate0(void) {
+  fprintf(stderr, "thread exit 0!\n");
+}
+
+static
+void ate1(void) {
+  fprintf(stderr, "thread exit 1!\n");
+}
+
+static
 int real_task(atomic_intp* arg) {
   int ret = 0;
   printf("arg is %p, %d, %s %s\n",
@@ -63,9 +73,13 @@ int real_task(atomic_intp* arg) {
   *point = ret;
   tester b = atomic_load(&testvar);
   if (!atomic_compare_exchange_weak(&testvar, &b, (tester) { .a = ret }))
-  printf("store didn't succeeded\n");
-  if (ret % 3) thrd_yield();
-  else at_quick_exit(aqe);
+    printf("store didn't succeeded\n");
+  at_thrd_exit(ate0);
+  switch (ret % 3) {
+  case 0: thrd_yield(); break;
+  case 1: at_quick_exit(aqe); break;
+  case 2: at_thrd_exit(ate1); break;
+  }
   if (ret % 2)
     return -1;
   else
