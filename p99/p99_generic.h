@@ -19,17 +19,7 @@
  ** @file
  **/
 
-/**
- ** @addtogroup generic Generic type expressions
- **
- ** C11 provides a new feature to write template-like expressions with
- ** the macro preprocessor, @c _Generic. Here we provide some tools
- ** that emulate this feature by means of gcc specific extensions.
- **
- ** @see P99_GENERIC
- **
- ** @{
- **/
+#ifndef P00_DOXYGEN
 
 #define P00_GENERIC_TYPE(T, EXP) T
 #define P00_GENERIC_SIZE_(UI, EXP) char(*)[UI]
@@ -78,20 +68,6 @@ __builtin_choose_expr                                          \
 __attribute__((__error__("Invalid choice in type generic expression")))
 extern size_t p00_invalid_type_in_generic(char const*);
 
-/*
-#define P00_INVALID_TYPE_IN_GENERIC(EXP, STR)                              \
-((const struct {                                                           \
-  size_t const P99_FILEID(__COUNTER__);                                    \
-}){                                                                        \
-  sizeof(int[p00_invalid_type_in_generic(__FILE__                          \
-                                         P99_STRINGIFY(:__LINE__)          \
-                                         ": invalid type generic choice `" \
-                                         P99_STRINGIFY(EXP)                \
-                                         "` for "                          \
-                                         STR)]),                           \
-    })
-*/
-
 #define P00_INVALID_TYPE_IN_GENERIC(EXP, STR)                  \
 p00_invalid_type_in_generic(__FILE__                           \
                             P99_STRINGIFY(:__LINE__)           \
@@ -118,8 +94,266 @@ P00_GENERIC_                                                   \
 
 #define P00_GENERIC(N, ...) P99_IF_LT(N, 3)()(P00_GENERIC0(__VA_ARGS__))
 
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC, 2)
+#define P99_GENERIC(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_EXP, __VA_ARGS__)
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_LIT, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_LIT, 2)
+#define P99_GENERIC_LIT(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_LIT, __VA_ARGS__)
+
+#define P00_GENERIC_SIZE0(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_SIZE, __VA_ARGS__)
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE, 2)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE, 3)
+#define P99_GENERIC_SIZE(UI, ...) P00_GENERIC_SIZE0((char(*)[(size_t)(UI)]){ 0 }, __VA_ARGS__)
+
+#define P00_GENERIC_SIZE_LIT0(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_SIZE_LIT, __VA_ARGS__)
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 2)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 3)
+#define P99_GENERIC_SIZE_LIT(UI, ...) P00_GENERIC_SIZE_LIT0((char(*)[(size_t)(UI)]){ 0 }, __VA_ARGS__)
 
 
+#if p99_has_extension(c_generic_selections)
+
+# define P99_TYPED_TERN(COND, YES, NO)                         \
+(P99_GENERIC                                                   \
+ ((char(*)[1 + !!(COND)]){ 0 },                                \
+  (NO),                                                        \
+  (char(*)[2], (YES))))
+
+#elif defined(__GNUC__)
+
+# define P99_TYPED_TERN __builtin_choose_expr
+
+#else
+
+#define P99_TYPED_TERN(COND, YES, NO) only_implemented_with_C11_or_gcc
+
+
+#endif
+
+
+#define P00_TYPE_CHOICE(YES, T, I) (T, YES)
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_CHOICE, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_CHOICE, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_CHOICE, 2)
+#define P99_TYPE_CHOICE(EXP, YES, NO, ...)                                   \
+P99_GENERIC                                                                  \
+((EXP),                                                                      \
+ NO,                                                                         \
+ P99_FOR(YES, P99_NARG(__VA_ARGS__), P00_SEQ, P00_TYPE_CHOICE, __VA_ARGS__))
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_UNSIGNED, 0)
+#define P99_TYPE_UNSIGNED(EXP)      P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_UNSIGNED_TYPES)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_SIGNED, 0)
+#define P99_TYPE_SIGNED(EXP)        P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_SIGNED_TYPES)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_REAL_FLOATING, 0)
+#define P99_TYPE_REAL_FLOATING(EXP) P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_REAL_FLOATING_TYPES)
+#ifndef __STDC_NO_COMPLEX__
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_COMPLEX, 0)
+# define P99_TYPE_COMPLEX(EXP)       P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_COMPLEX_TYPES)
+#endif
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_FLOATING, 0)
+#define P99_TYPE_FLOATING(EXP)      P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_FLOATING_TYPES)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_BASIC, 0)
+#define P99_TYPE_BASIC(EXP)         P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_BASIC_TYPES)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_CHARACTER, 0)
+#define P99_TYPE_CHARACTER(EXP)     P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_CHARACTER_TYPES)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_INTEGER, 0)
+#define P99_TYPE_INTEGER(EXP)       P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_INTEGER_TYPES)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_REAL, 0)
+#define P99_TYPE_REAL(EXP)          P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_REAL_TYPES)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_ARITHMETIC, 0)
+#define P99_TYPE_ARITHMETIC(EXP)    P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_ARITHMETIC_TYPES)
+
+#define P00_SIZE_CHOICE(YES, UI, I) (char(*)[(size_t)(UI)], YES)
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_CHOICE, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_CHOICE, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_CHOICE, 2)
+#define P99_SIZE_CHOICE(UI, YES, NO, ...)                                    \
+P99_GENERIC                                                                  \
+ ((char(*)[(size_t)(UI)])0,                                                  \
+ NO,                                                                         \
+ P99_FOR(YES, P99_NARG(__VA_ARGS__), P00_SEQ, P00_SIZE_CHOICE, __VA_ARGS__))
+
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_INDICATOR, 0)
+#define P99_SIZE_INDICATOR(UI, ...) P99_SIZE_CHOICE(UI, 1, 0, __VA_ARGS__)
+
+
+#define P00_DECLARE_INLINE_EXPRESSION1(EXT, BASE, EXP, A)      \
+p99_inline                                                     \
+P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)          \
+(P99_BUILTIN_TYPE(EXT) A)                                      \
+{                                                              \
+  return (EXP);                                                \
+}
+
+#define P00_DECLARE_INLINE_EXPRESSION2(EXT, BASE, EXP, A, B)   \
+p99_inline                                                     \
+P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)          \
+(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B)             \
+{                                                              \
+  return (EXP);                                                \
+}
+
+#define P00_DECLARE_INLINE_EXPRESSION3(EXT, BASE, EXP, A, B, C) \
+p99_inline                                                      \
+P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)           \
+(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B,              \
+ P99_BUILTIN_TYPE(EXT) C)                                       \
+{                                                               \
+  return (EXP);                                                 \
+}
+
+#define P00_DECLARE_INLINE_EXPRESSION4(EXT, BASE, EXP, A, B, C, D) \
+p99_inline                                                         \
+P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)              \
+(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B,                 \
+ P99_BUILTIN_TYPE(EXT) C, P99_BUILTIN_TYPE(EXT) D)                 \
+{                                                                  \
+  return (EXP);                                                    \
+}
+
+#define P00_DECLARE_INLINE_EXPRESSION5(EXT, BASE, EXP, A, B, C, D, E) \
+p99_inline                                                            \
+P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)                 \
+(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B,                    \
+ P99_BUILTIN_TYPE(EXT) C, P99_BUILTIN_TYPE(EXT) D,                    \
+ P99_BUILTIN_TYPE(EXT) E)                                             \
+{                                                                     \
+  return (EXP);                                                       \
+}
+
+#define P00_DECLARE_INLINE_EXPRESSION6(EXT, BASE, EXP, A, B, C, D, E, F) \
+p99_inline                                                               \
+P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)                    \
+(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B,                       \
+ P99_BUILTIN_TYPE(EXT) C, P99_BUILTIN_TYPE(EXT) D,                       \
+ P99_BUILTIN_TYPE(EXT) E, P99_BUILTIN_TYPE(EXT) F)                       \
+{                                                                        \
+  return (EXP);                                                          \
+}
+
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 0)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 2)
+#define P99_DECLARE_INLINE_EXPRESSION(...)                                                  \
+P99_PASTE2(P00_DECLARE_INLINE_EXPRESSION, P99_MINUS(P99_NARG(__VA_ARGS__), 3))(__VA_ARGS__)
+
+#define P00_DECLARE_INLINE_EXPRESSION_(...) P99_DECLARE_INLINE_EXPRESSION(__VA_ARGS__)
+#define P00_DECLARE_INLINE_EXPRESSION(ARGS, EXT, I) P00_DECLARE_INLINE_EXPRESSION_(EXT, P00_ROBUST ARGS)
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_DECLARE_INLINE_EXPRESSIONS, 0)
+#define P99_DECLARE_INLINE_EXPRESSIONS(NEPL, ...)                                         \
+P99_FOR(NEPL, P99_NARG(__VA_ARGS__), P00_SER, P00_DECLARE_INLINE_EXPRESSION, __VA_ARGS__) \
+P99_MACRO_END(P99_DECLARE_INLINE_EXPRESSIONS, __VA_ARGS__)
+
+extern void p00_invalid_function(void*, ...);
+
+#define P00_GEN_EXPR(BASE, EXT, I) (P99_BUILTIN_TYPE(EXT), P99_PASTE3(p00_gen_, BASE, EXT))
+
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_GEN_EXPR, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_EXPR, 1)
+#define P99_GEN_EXPR(BASE, EXPR, ...)                                                 \
+P99_GENERIC(EXPR,                                                                     \
+            p00_invalid_function,                                                     \
+            P99_FOR(BASE, P99_NARG(__VA_ARGS__), P00_SEQ, P00_GEN_EXPR, __VA_ARGS__))
+
+
+
+
+P99_DECLARE_INLINE_EXPRESSIONS((maximum,
+                                (p00_a >= p00_b) ? p00_a : p00_b,
+                                p00_a, p00_b),
+                               P99_STD_REAL_EXTS
+                              );
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_MAX, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_MAX, 1)
+#define P99_GEN_MAX(A, B)                                      \
+P99_GEN_EXPR(maximum, ((A) >= (B)) ? (A) : (B),                \
+             P99_STD_REAL_EXTS                                 \
+             )                                                 \
+((A), (B))
+
+P99_DECLARE_INLINE_EXPRESSIONS((minimum,
+                                (p00_a <= p00_b) ? p00_a : p00_b,
+                                p00_a, p00_b),
+                               P99_STD_REAL_EXTS
+                              );
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_MIN, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_MIN, 1)
+#define P99_GEN_MIN(A, B)                                      \
+P99_GEN_EXPR(minimum, ((A) <= (B)) ? (A) : (B),                \
+             P99_STD_REAL_EXTS                                 \
+             )                                                 \
+((A), (B))
+
+
+P99_DECLARE_INLINE_EXPRESSIONS((abs,
+                                (p00_a >= 0) ? p00_a : -p00_a,
+                                p00_a),
+                               P99_STD_REAL_EXTS
+                              );
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_ABS, 0)
+#define P99_GEN_ABS(A) P99_GEN_EXPR(abs, ((A) >= 0) ? (A) : -(A), P99_STD_REAL_EXTS)(A)
+
+#define p00_gen_sind sin
+#define p00_gen_sinf sinf
+#define p00_gen_sinld sinl
+#define p00_gen_sindc csin
+#define p00_gen_sinfc csinf
+#define p00_gen_sinldc csinl
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_SIN, 0)
+#define P99_GEN_SIN(A) P99_GEN_EXPR(sin, (A), P99_STD_FLOATING_EXTS)(A)
+
+inline int* p00_generic_test(int * p00_a) {
+  double *p00_x;
+  switch (P99_GEN_ABS(*p00_a % 3)) {
+  case 0:
+    return P99_GENERIC(&*p00_a,
+                       /* empty default expression */,
+                       (int*, p00_a),
+                       (double*, p00_x+1),
+                       (float*, p00_x+2));
+  case 1:
+    return P99_GENERIC(&*p00_a,
+                       /* another form of empty default */,
+                       (double[7], P99_GEN_SIN(((p00_x+0)))),
+                       (int*, p00_a),
+                       (float*, p00_x+2));
+  default:
+    return P99_GENERIC(&*p00_a,
+                       /* default expression: */ p00_x,
+                       (double*, p00_x+0),
+                       (float[7], p00_x+1),
+                       (int*, p00_a));
+  }
+}
+
+#else
+
+/**
+ ** @addtogroup generic Generic type expressions
+ **
+ ** C11 provides a new feature to write template-like expressions with
+ ** the macro preprocessor, @c _Generic. Here we provide some tools
+ ** that emulate this feature by means of gcc specific extensions.
+ **
+ ** @see P99_GENERIC
+ **
+ ** @{
+ **/
 
 /**
  ** @brief Type generic expression in anticipation of C11 @c _Generic
@@ -205,9 +439,7 @@ P00_GENERIC_                                                   \
  **
  ** @remark Otherwise only gcc and compatible compilers are supported.
  **/
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC, 0)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC, 2)
-#define P99_GENERIC(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_EXP, __VA_ARGS__)
+#define P99_GENERIC(...)
 
 /**
  ** @brief For each generic choice return a compound literal of the chosen type
@@ -228,11 +460,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC, 2)
  **
  ** @see P99_GENERIC
  **/
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_LIT, 0)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_LIT, 2)
-#define P99_GENERIC_LIT(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_LIT, __VA_ARGS__)
-
-#define P00_GENERIC_SIZE0(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_SIZE, __VA_ARGS__)
+#define P99_GENERIC_LIT(...)
 
 /**
  ** @brief Similar to ::P99_GENERIC but the choice is not done
@@ -265,12 +493,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_LIT, 2)
  **
  ** @see P99_GENERIC
  **/
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE, 0)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE, 2)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE, 3)
-#define P99_GENERIC_SIZE(UI, ...) P00_GENERIC_SIZE0((char(*)[(size_t)(UI)]){ 0 }, __VA_ARGS__)
-
-#define P00_GENERIC_SIZE_LIT0(...) P00_GENERIC(P99_NARG(__VA_ARGS__), P00_GENERIC_SIZE_LIT, __VA_ARGS__)
+#define P99_GENERIC_SIZE(UI, ...)
 
 /**
  ** @brief Similar to ::P99_GENERIC_SIZE but returns a compound
@@ -280,25 +503,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE, 3)
  ** @see P99_GENERIC_LIT
  ** @see P99_GENERIC
  **/
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 0)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 2)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 3)
-#define P99_GENERIC_SIZE_LIT(UI, ...) P00_GENERIC_SIZE_LIT0((char(*)[(size_t)(UI)]){ 0 }, __VA_ARGS__)
-
-
-#if p99_has_extension(c_generic_selections)
-
-# define P99_TYPED_TERN(COND, YES, NO)                         \
-(P99_GENERIC                                                   \
- ((char(*)[1 + !!(COND)]){ 0 },                                \
-  (NO),                                                        \
-  (char(*)[2], (YES))))
-
-#elif defined(__GNUC__)
-
-# define P99_TYPED_TERN __builtin_choose_expr
-
-#else
+#define P99_GENERIC_SIZE_LIT(UI, ...)
 
 /**
  ** @brief A compile time ternary operator that is analogous to
@@ -309,11 +514,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 3)
  ** that feature. If not, the fallback from gcc for that purpose is
  ** used.
  **/
-#define P99_TYPED_TERN(COND, YES, NO) only_implemented_with_C11_or_gcc
-
-
-#endif
-
+#define P99_TYPED_TERN(COND, YES, NO)
 
 /**
  ** @addtogroup C11_types Generic identification of families of types or values
@@ -330,14 +531,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 3)
  ** @a EXP is only compile time evaluated for its type. @a YES and @a
  ** NO are evaluated at most once.
  **/
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_CHOICE, 0)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_CHOICE, 1)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_CHOICE, 2)
-#define P99_TYPE_CHOICE(EXP, YES, NO, ...)                                   \
-P99_GENERIC                                                                  \
-((EXP),                                                                      \
- NO,                                                                         \
- P99_FOR(YES, P99_NARG(__VA_ARGS__), P00_SEQ, P00_TYPE_CHOICE, __VA_ARGS__))
+#define P99_TYPE_CHOICE(EXP, YES, NO, ...)
 
 /**
  ** @addtogroup type_generic Generic macros that classify expressions
@@ -345,34 +539,20 @@ P99_GENERIC                                                                  \
  ** @{
  **/
 
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_UNSIGNED, 0)
 #define P99_TYPE_UNSIGNED(EXP)      P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_UNSIGNED_TYPES)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_SIGNED, 0)
 #define P99_TYPE_SIGNED(EXP)        P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_SIGNED_TYPES)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_REAL_FLOATING, 0)
 #define P99_TYPE_REAL_FLOATING(EXP) P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_REAL_FLOATING_TYPES)
-#ifndef __STDC_NO_COMPLEX__
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_COMPLEX, 0)
 # define P99_TYPE_COMPLEX(EXP)       P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_COMPLEX_TYPES)
-#endif
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_FLOATING, 0)
 #define P99_TYPE_FLOATING(EXP)      P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_FLOATING_TYPES)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_BASIC, 0)
 #define P99_TYPE_BASIC(EXP)         P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_BASIC_TYPES)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_CHARACTER, 0)
 #define P99_TYPE_CHARACTER(EXP)     P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_CHARACTER_TYPES)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_INTEGER, 0)
 #define P99_TYPE_INTEGER(EXP)       P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_INTEGER_TYPES)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_REAL, 0)
 #define P99_TYPE_REAL(EXP)          P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_REAL_TYPES)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_ARITHMETIC, 0)
 #define P99_TYPE_ARITHMETIC(EXP)    P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_ARITHMETIC_TYPES)
 
 /**
  ** @}
  **/
-
-#define P00_SIZE_CHOICE(YES, UI, I) (char(*)[(size_t)(UI)], YES)
 
 /**
  ** @brief Classify expression @a UI according to its value and
@@ -387,15 +567,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TYPE_ARITHMETIC, 0)
  ** dependent. The only known fixed guarantee is @c UINT16_MAX, but
  ** the result of a @c sizeof operator should always work.
  **/
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_CHOICE, 0)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_CHOICE, 1)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_CHOICE, 2)
-#define P99_SIZE_CHOICE(UI, YES, NO, ...)                                    \
-P99_GENERIC                                                                  \
- ((char(*)[(size_t)(UI)])0,                                                  \
- NO,                                                                         \
- P99_FOR(YES, P99_NARG(__VA_ARGS__), P00_SEQ, P00_SIZE_CHOICE, __VA_ARGS__))
-
+#define P99_SIZE_CHOICE(UI, YES, NO, ...)
 
 /**
  ** @brief Classify expression @a UI according to its value and
@@ -416,67 +588,11 @@ P99_GENERIC                                                                  \
  ** dependent. The only known fixed guarantee is @c UINT16_MAX, but
  ** the result of a @c sizeof operator should always work.
  **/
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_INDICATOR, 0)
-#define P99_SIZE_INDICATOR(UI, ...) P99_SIZE_CHOICE(UI, 1, 0, __VA_ARGS__)
-
+#define P99_SIZE_INDICATOR(UI, ...)
 
 /**
  ** @}
  **/
-
-#define P00_DECLARE_INLINE_EXPRESSION1(EXT, BASE, EXP, A)      \
-p99_inline                                                     \
-P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)          \
-(P99_BUILTIN_TYPE(EXT) A)                                      \
-{                                                              \
-  return (EXP);                                                \
-}
-
-#define P00_DECLARE_INLINE_EXPRESSION2(EXT, BASE, EXP, A, B)   \
-p99_inline                                                     \
-P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)          \
-(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B)             \
-{                                                              \
-  return (EXP);                                                \
-}
-
-#define P00_DECLARE_INLINE_EXPRESSION3(EXT, BASE, EXP, A, B, C) \
-p99_inline                                                      \
-P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)           \
-(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B,              \
- P99_BUILTIN_TYPE(EXT) C)                                       \
-{                                                               \
-  return (EXP);                                                 \
-}
-
-#define P00_DECLARE_INLINE_EXPRESSION4(EXT, BASE, EXP, A, B, C, D) \
-p99_inline                                                         \
-P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)              \
-(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B,                 \
- P99_BUILTIN_TYPE(EXT) C, P99_BUILTIN_TYPE(EXT) D)                 \
-{                                                                  \
-  return (EXP);                                                    \
-}
-
-#define P00_DECLARE_INLINE_EXPRESSION5(EXT, BASE, EXP, A, B, C, D, E) \
-p99_inline                                                            \
-P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)                 \
-(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B,                    \
- P99_BUILTIN_TYPE(EXT) C, P99_BUILTIN_TYPE(EXT) D,                    \
- P99_BUILTIN_TYPE(EXT) E)                                             \
-{                                                                     \
-  return (EXP);                                                       \
-}
-
-#define P00_DECLARE_INLINE_EXPRESSION6(EXT, BASE, EXP, A, B, C, D, E, F) \
-p99_inline                                                               \
-P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)                    \
-(P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B,                       \
- P99_BUILTIN_TYPE(EXT) C, P99_BUILTIN_TYPE(EXT) D,                       \
- P99_BUILTIN_TYPE(EXT) E, P99_BUILTIN_TYPE(EXT) F)                       \
-{                                                                        \
-  return (EXP);                                                          \
-}
 
 /**
  ** @brief Declare an inline function of basename @a BASE for
@@ -504,27 +620,17 @@ P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)                    \
  ** the expression is limited to 6, but this could be augmented easily
  ** if there is need for it.
  **
- ** @see P99_BUILTIN_TYPE
+ ** @see P99_BUILTIN_TYPE for the shorthands that can be used for the
+ ** types
+ **
+ ** @see P99_DECLARE_INLINE_EXPRESSIONS to create this type of
+ ** functions %for a whole list of %types
  **/
-#ifdef P00_DOXYGEN
-P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 0)
-P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 1)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 2)
 #define P99_DECLARE_INLINE_EXPRESSION(EXT, BASE, EXP, ...)
-#else
-P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 0)
-P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 1)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_DECLARE_INLINE_EXPRESSION, 2)
-#define P99_DECLARE_INLINE_EXPRESSION(...)                                                  \
-P99_PASTE2(P00_DECLARE_INLINE_EXPRESSION, P99_MINUS(P99_NARG(__VA_ARGS__), 3))(__VA_ARGS__)
-#endif
-
-#define P00_DECLARE_INLINE_EXPRESSION_(...) P99_DECLARE_INLINE_EXPRESSION(__VA_ARGS__)
-#define P00_DECLARE_INLINE_EXPRESSION(ARGS, EXT, I) P00_DECLARE_INLINE_EXPRESSION_(EXT, P00_ROBUST ARGS)
 
 /**
- ** @brief Declare a whole bunch of inline function of basename @a
- ** BASE for expression @a EXP, applied to the builtin types as given
+ ** @brief Declare a whole bunch of inline function of basename @c
+ ** BASE for expression @c EXP, applied to the builtin types as given
  ** in the argument list.
  **
  ** The interest of declaring such functions is for expressions that
@@ -555,14 +661,9 @@ P99_PASTE2(P00_DECLARE_INLINE_EXPRESSION, P99_MINUS(P99_NARG(__VA_ARGS__), 3))(_
  ** @see P99_GEN_EXPR
  ** @see P99_DECLARE_INLINE_EXPRESSION
  **/
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_DECLARE_INLINE_EXPRESSIONS, 0)
-#define P99_DECLARE_INLINE_EXPRESSIONS(NEPL, ...)                                         \
-P99_FOR(NEPL, P99_NARG(__VA_ARGS__), P00_SER, P00_DECLARE_INLINE_EXPRESSION, __VA_ARGS__) \
-P99_MACRO_END(P99_DECLARE_INLINE_EXPRESSIONS, __VA_ARGS__)
+#define P99_DECLARE_INLINE_EXPRESSIONS(NEPL, ...)
 
 extern void p00_invalid_function(void*, ...);
-
-#define P00_GEN_EXPR(BASE, EXT, I) (P99_BUILTIN_TYPE(EXT), P99_PASTE3(p00_gen_, BASE, EXT))
 
 /**
  ** @brief Produce a type generic expression that can be used as if it
@@ -634,38 +735,14 @@ extern void p00_invalid_function(void*, ...);
  ** #define P99_GEN_SIN(A) P99_GEN_EXPR(sin, (A), P99_STD_FLOATING_EXTS)(A)
  ** @endcode
  **/
-P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_GEN_EXPR, 0)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_EXPR, 1)
-#define P99_GEN_EXPR(BASE, EXPR, ...)                                                 \
-P99_GENERIC(EXPR,                                                                     \
-            p00_invalid_function,                                                     \
-            P99_FOR(BASE, P99_NARG(__VA_ARGS__), P00_SEQ, P00_GEN_EXPR, __VA_ARGS__))
+#define P99_GEN_EXPR(BASE, EXPR, ...)
 
-
-
-
-P99_DECLARE_INLINE_EXPRESSIONS((maximum,
-                                (p00_a >= p00_b) ? p00_a : p00_b,
-                                p00_a, p00_b),
-                               P99_STD_REAL_EXTS
-                              );
-
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_MAX, 0)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_MAX, 1)
 #define P99_GEN_MAX(A, B)                                      \
 P99_GEN_EXPR(maximum, ((A) >= (B)) ? (A) : (B),                \
              P99_STD_REAL_EXTS                                 \
              )                                                 \
 ((A), (B))
 
-P99_DECLARE_INLINE_EXPRESSIONS((minimum,
-                                (p00_a <= p00_b) ? p00_a : p00_b,
-                                p00_a, p00_b),
-                               P99_STD_REAL_EXTS
-                              );
-
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_MIN, 0)
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_MIN, 1)
 #define P99_GEN_MIN(A, B)                                      \
 P99_GEN_EXPR(minimum, ((A) <= (B)) ? (A) : (B),                \
              P99_STD_REAL_EXTS                                 \
@@ -673,21 +750,7 @@ P99_GEN_EXPR(minimum, ((A) <= (B)) ? (A) : (B),                \
 ((A), (B))
 
 
-P99_DECLARE_INLINE_EXPRESSIONS((abs,
-                                (p00_a >= 0) ? p00_a : -p00_a,
-                                p00_a),
-                               P99_STD_REAL_EXTS
-                              );
-
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_ABS, 0)
 #define P99_GEN_ABS(A) P99_GEN_EXPR(abs, ((A) >= 0) ? (A) : -(A), P99_STD_REAL_EXTS)(A)
-
-#define p00_gen_sind sin
-#define p00_gen_sinf sinf
-#define p00_gen_sinld sinl
-#define p00_gen_sindc csin
-#define p00_gen_sinfc csinf
-#define p00_gen_sinldc csinl
 
 /**
  ** @brief Type generic macro to compute the sine of @a A.
@@ -695,35 +758,13 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_ABS, 0)
  ** This is just a little example how simple the type generic macros
  ** of "tgmath.h" can be implemented.
  **/
-P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_SIN, 0)
 #define P99_GEN_SIN(A) P99_GEN_EXPR(sin, (A), P99_STD_FLOATING_EXTS)(A)
 
 /**
  ** @}
  **/
 
-inline int* p00_generic_test(int * p00_a) {
-  double *p00_x;
-  switch (P99_GEN_ABS(*p00_a % 3)) {
-  case 0:
-    return P99_GENERIC(&*p00_a,
-                       /* empty default expression */,
-                       (int*, p00_a),
-                       (double*, p00_x+1),
-                       (float*, p00_x+2));
-  case 1:
-    return P99_GENERIC(&*p00_a,
-                       /* another form of empty default */,
-                       (double[7], P99_GEN_SIN(((p00_x+0)))),
-                       (int*, p00_a),
-                       (float*, p00_x+2));
-  default:
-    return P99_GENERIC(&*p00_a,
-                       /* default expression: */ p00_x,
-                       (double*, p00_x+0),
-                       (float[7], p00_x+1),
-                       (int*, p00_a));
-  }
-}
+#endif
+
 
 #endif

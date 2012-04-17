@@ -235,7 +235,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_CALLOC, 0)
  **/
 #define P99_NEW(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2)(P00_NEW(__VA_ARGS__))(P00_NEW_ARGS(__VA_ARGS__))
 
-#ifdef DOXYGEN
+#ifdef P00_DOXYGEN
 /**
  ** @brief Declare a `delete' operator for type @a T.
  **
@@ -247,7 +247,15 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_CALLOC, 0)
  ** class specifier for the functions. Default is ::p99_inline.
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_DELETE, 0)
-#define P99_DECLARE_DELETE(...) P00_DECLARE_DELETE(__VA_ARGS__,)
+#define P99_DECLARE_DELETE(T)                                           \
+/*! @brief Operator @c delete for type T   **/                          \
+/*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T * argument **/ \
+/*! @attention @a el show have been allocated through P99_NEW */        \
+/*! @see P99_NEW */                                                     \
+/*! @memberof T */                                                      \
+  void P99_PASTE2(T, _delete)(T const*p00_el) { }
+
+#define P99_DEFINE_DELETE(T) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)
 #else
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_DELETE, 0)
 #define P99_DECLARE_DELETE(...)                                \
@@ -255,14 +263,10 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
 (P00_DECLARE_DELETE(__VA_ARGS__, p99_inline))                  \
 (P00_DECLARE_DELETE(__VA_ARGS__))                              \
 P99_MACRO_END(P99_DECLARE_DELETE)
+#define P99_DEFINE_DELETE(...) P00_DEFINE_DELETE(__VA_ARGS__,)
 #endif
 
 #define P00_DECLARE_DELETE(T, ...)                                                                          \
-/*! @brief Operator @c delete for type T   **/                                                              \
-  /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T * argument **/ \
-  /*! @attention @a el show have been allocated through P99_NEW */                                          \
-  /*! @see P99_NEW */                                                                                       \
-  /*! @memberof T */                                                                                        \
 __VA_ARGS__                                                                                                 \
 void P99_PASTE2(T, _delete)(T const*p00_el) {                                                               \
   if (p00_el) {                                                                                             \
@@ -272,7 +276,6 @@ void P99_PASTE2(T, _delete)(T const*p00_el) {                                   
   }                                                                                                         \
 }
 
-#define P99_DEFINE_DELETE(...) P00_DEFINE_DELETE(__VA_ARGS__,)
 #define P00_DEFINE_DELETE(T, ...) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)
 
 p99_inline

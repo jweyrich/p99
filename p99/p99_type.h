@@ -39,7 +39,6 @@
  **/
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_STRUCT, 0)
 #define P99_DECLARE_STRUCT(NAME)                               \
-/*! @copydoc struct NAME */                                    \
 typedef struct NAME NAME
 
 
@@ -55,7 +54,6 @@ typedef struct NAME NAME
  **/
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_UNION, 0)
 #define P99_DECLARE_UNION(NAME)                                \
-/*! @copydoc union NAME */                                     \
 typedef union NAME NAME
 
 /**

@@ -295,12 +295,13 @@ P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_LCOPY, 4)
 
 #define P00_ACOPY3(TYPE, N, VAR) P00_ACOPY4(TYPE, N, VAR, N)
 
+#ifdef P00_DOXYGEN
 /**
  ** @brief Expand to an array literal of type @a TYPE[@a N] copying
  ** from another array.
  **
- ** The third argument is the array @c VAR to be copied from. The
- ** optional forth argument @c M is the number of elements from @c VAR
+ ** The third argument is the array @a VAR to be copied from. The
+ ** optional forth argument @a M is the number of elements from @c VAR
  ** that are to be copied. It defaults to @a N if omitted. Obviously
  ** we always have to have <code>M <= N</code> for this to work.
  **
@@ -309,14 +310,17 @@ P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_LCOPY, 4)
  **
  ** @remark The base type of @a VAR must be assignment compatible with type @a TYPE.
  **/
+#define P99_ACOPY(TYPE, N, VAR, M)
+#else
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_ACOPY, 2)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_ACOPY, 4)
 #define P99_ACOPY(TYPE, N, ...)                                \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
 (P00_ACOPY3(TYPE, N, __VA_ARGS__))                             \
 (P00_ACOPY4(TYPE, N, __VA_ARGS__))
+#endif
 
-
+#ifdef P00_DOXYGEN
 /**
  ** @brief Assign the content of array @a SOURCE to @a TARGET.
  **
@@ -340,10 +344,12 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
  ** particular, the type of @a TARGET should be at least as wide as
  ** the one for @a SOURCE.
  **/
+#define P99_AASSIGN(TARGET, SOURCE, N)
+#else
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_AASSIGN, 0)
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_AASSIGN, 1)
 #define P99_AASSIGN(TARGET, SOURCE, N) P99_BLOCK(P99_VASSIGNS(SOURCE, P99_ACCESSORS(TARGET, N));)
-
+#endif
 
 /** @}
  **/

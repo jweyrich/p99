@@ -584,8 +584,8 @@ void mtx_destroy(mtx_t *p00_mtx) {
 /**
  ** @memberof mtx_t
  **
- ** @param mtx A pointer to an unitialized mutex object
- ** @param type One of the constants in ::mtx_type
+ ** @param p00_mtx A pointer to an unitialized mutex object
+ ** @param p00_type One of the constants in ::mtx_type
  **
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.

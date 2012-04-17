@@ -68,7 +68,7 @@
 #elif defined(__x86_64__) || defined(__i386__)
 # include "p99_atomic_x86.h"
 #else
-# warning "no support for atomic operations detected for this platform" \
+# warning "no support for atomic operations detected for this platform"
 # define P00_NO_ATOMICS
 #endif
 
@@ -1042,7 +1042,6 @@ P00_BLK_END
 
 #define P00_ATOMIC_TERN(OBJP, VAL, ALT) P99_TYPED_TERN(atomic_is_lock_free(OBJP), (VAL), (ALT))
 
-
 /**
  ** @brief Initialize the object behind @a OBJP with value @a VAL
  **
@@ -1062,6 +1061,7 @@ p99_extension                                                  \
     P00_AT(p00_objp) = p00_val;                                \
   })
 
+#ifdef P00_DOXYGEN
 /**
  ** @brief Store @a DESIRED into the object behind @a OBJP and return its previous value.
  **
@@ -1072,6 +1072,8 @@ p99_extension                                                  \
  **
  ** @memberof atomic_int
  **/
+#define atomic_fetch_and_store(OBJP, DESIRED)
+#else
 #define atomic_fetch_and_store(OBJP, DESIRED)                                                           \
 p99_extension                                                                                           \
 ({                                                                                                      \
@@ -1106,6 +1108,7 @@ p99_extension                                                                   
     })                                                                                                  \
     p00_ret.p00_t;                                                                                      \
  })
+#endif
 
 /**
  ** @brief Return the value of the object behind @a OBJP.
@@ -1186,6 +1189,7 @@ p99_extension                                                                   
   p00_ret;                                                                                      \
  })
 
+#ifdef P00_DOXYGEN
 /**
  ** @brief Store @a DESIRED into the object behind @a OBJP.
  **
@@ -1196,8 +1200,10 @@ p99_extension                                                                   
  **
  ** @memberof atomic_int
  **/
+#define atomic_store(OBJP, DES)
+#else
 #define atomic_store(OBJP, DES) ((void)atomic_fetch_and_store(OBJP, DES))
-
+#endif
 
 #define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                 \
 p99_extension                                                          \

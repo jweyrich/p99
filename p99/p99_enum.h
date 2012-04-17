@@ -36,14 +36,14 @@ if (!memcmp(P99_STRINGIFY(C), p00_s, p00_len)) {               \
  ** containing the names of enumeration constants.
  **/
 #define P99_DECLARE_ENUM_GETNAME(T, ...)                                \
-/*! @brief Get a string with the name of constant @a p00_x of type T */ \
+/*! @brief Get a string with the name of constant @a p00_x of type ::T */ \
 inline char const* P99_PASTE2(T, _getname)(T p00_x)
 /**
  ** @brief Declare a simple inline function to return the longest
  ** enumeration constants of type @a T found in a string.
  **/
 #define P99_DECLARE_ENUM_PARSE(T, ...)                                            \
-/*! @brief Parse a string @a p00_s for the longest matching constant of type T */ \
+/*! @brief Parse a string @a p00_s for the longest matching constant of type ::T */ \
 inline T P99_PASTE2(T, _parse)(char const* p00_s)
 #else
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 0)
@@ -126,7 +126,6 @@ P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 2)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 3)
 #define P99_DECLARE_ENUM(T, ...)                                                                          \
 /*! \see T ## _getname for access to the names of the constants as strings */                             \
-/*! \see T for the type that is to be used in code. We only use T ## _  here because of a doxygen bug. */ \
 enum T { __VA_ARGS__ ,                                                                               \
                /*! upper bound of the @ref T constants */                                                 \
                P99_PASTE2(T, _amount),                                                                    \
@@ -136,7 +135,6 @@ enum T { __VA_ARGS__ ,                                                          
                P99_PASTE2(T, _min) = 0                                                                    \
 };                                                                                                        \
 /*! \brief Enumeration type @c enum T and @c typedef T. */                                                \
-/*! \see T ## _ is used for documentation through doxygen. */                                             \
 /*! \see T ## _getname for access to the names of the constants as strings */                             \
 typedef enum T T;                                                                                    \
  P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__);                                                                \

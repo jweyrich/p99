@@ -30,6 +30,7 @@
  ** @{
  **/
 
+#ifndef P00_DOXYGEN
 #define P00_ROBUST(...) __VA_ARGS__
 
 #define P00 P99_FILEID(blk)
@@ -69,6 +70,7 @@ P99_PREFER(                                                            \
   NAME = &P99_PASTE2(p00_static_, NAME);                               \
   goto P99_FILEID(p00_label_, NAME); ) P99_FILEID(p00_label_, NAME):
 
+#endif
 
 /**
  ** @addtogroup validity Checking code validity
@@ -122,7 +124,7 @@ P00_BLK_DECL(unsigned const, P00_INHIBIT(NAME,), 0)
 
 P99_DECLARE_INHIBIT(RETURN);
 
-#ifdef P99_CHECK_RETURN
+#if defined(P99_CHECK_RETURN) && !defined(P00_DOXYGEN)
 #define return P99_INHIBIT_CHECK(RETURN) return
 #endif
 
@@ -183,6 +185,7 @@ P00_BLK_BEFAFT(P00_ROBUST(BEFORE), __VA_ARGS__)                \
 P00_BLK_END
 #endif
 
+#ifdef P00_DOXYGEN
 /**
  ** @brief A meta-macro to protect a dependent block or statement by
  ** a guard variable @a NAME of type @a T.
@@ -207,6 +210,8 @@ P00_BLK_END
  ** @see P99_UNWIND to break through one or several nested guarded blocks
  ** @see P99_UNWIND_RETURN to return from the enclosing function
  **/
+#define P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)
+#else
 P00_DOCUMENT_WARN_VLA_ARGUMENT(P99_GUARDED_BLOCK, 0)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_GUARDED_BLOCK, 1)
 P00_DOCUMENT_STATEMENT_ARGUMENT(P99_GUARDED_BLOCK, 4)
@@ -217,6 +222,7 @@ P99_UNWIND_PROTECT if (0) { P99_PROTECT: AFTER; } else         \
 P00_BLK_BEFAFT(P00_ROBUST(BEFORE), AFTER)                      \
 /* Ensure that a `break' will still execute AFTER */           \
 P00_BLK_END
+#endif
 
 /**
  ** @brief Do nothing
