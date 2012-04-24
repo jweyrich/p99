@@ -435,9 +435,15 @@
  ** Where @c NAME becomes the name of a macro and where we also
  ** suppose that there is already a function of the same name @c NAME.
  **
- ** Other than this would be in C++, the default value for the
- ** ::hostname macro that we had given was itself produced by a macro,
- ** namely @c hostname_defarg_0. The convention here is as simple as that:
+ ** The default value for the ::hostname macro above was produced by a
+ ** macro, namely @c hostname_defarg_0. The evaluation of the
+ ** default value is done in the context of the call and not in the
+ ** context of the declaration. For default arguments that are not
+ ** constants but expressions that have to be evaluated this is a
+ ** major difference to C++. There, default arguments are always
+ ** evaluated in the context of the declaration.
+ **
+ ** The convention here is simple:
  **  - when called, ::P99_CALL_DEFARG replaces each argument M
  **    (counting starts at 0) that is not
  **    provided by the tokens
@@ -514,7 +520,7 @@
  ** fixes the variable @c rand48_counter to the one that is visible at
  ** the point of declaration.
  **
- ** @section blocks Scope bound resource management with for scopes
+ ** @section blocks Scope-bound resource management with for-statements
  **
  ** Resource management can be tedious in C. <em>E.g</em> to protect a
  ** critical block from simultaneous execution in a @link threads
@@ -676,8 +682,8 @@
  ** ::P99_FOR. The use of this will be described in more detail under
  ** @ref programming.
  **
- ** The predefined macros from above usually are also able a nasty
- ** special case if the variadic part of the argument list is
+ ** The predefined macros from above are also able to avoid the nasty
+ ** special case that the variadic part of the argument list is
  ** empty. Something like
  **
  ** @code
@@ -903,7 +909,8 @@
  ** Other macros are then programmed with similar tricks as are used for @c
  ** NARG2, here: the variable argument list is positioned at the
  ** beginning of a new macro list that is then completed by a list of
- ** values that contain the different tokens that are returned conditionally.
+ ** values that contain the different tokens that complete the given
+ ** list, if necessary.
  **
  ** A second trick is then to paste the name of another macro with
  ** that number together. Look e.g at ::P99_DUPL. When called as follows
@@ -977,8 +984,8 @@
  ** a[3] = b[3];
  ** @endcode
  **
- ** This would have the advantage to spoil a CPU register for the
- ** variable @c i and also that the addressing of the individual
+ ** This would have the advantage to spare a CPU register otherwise used for
+ ** @c i and also that the addressing of the individual
  ** elements now can be done with constant offsets from the
  ** basepointers of @c a and @c b.
  **
@@ -1200,7 +1207,7 @@
  **    opening parenthesis it is not expanded.
  **
  ** Theses features can be used to define a macro and another
- ** identifier that have the same name. It is sometimes used to all
+ ** identifier that have the same name. It is sometimes used
  ** for a test if some functionality is present on a platform. E.g on
  ** my computer I have
  **

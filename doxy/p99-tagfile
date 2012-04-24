@@ -1624,6 +1624,13 @@
       <arglist>(void(*p00_func)(void))</arglist>
     </member>
     <member kind="function">
+      <type>int</type>
+      <name>at_thrd_exit</name>
+      <anchorfile>group__C11__library_ga97154844a980a2d3f666271e255b6838.html</anchorfile>
+      <anchor>ga97154844a980a2d3f666271e255b6838</anchor>
+      <arglist>(void(*p00_func)(void))</arglist>
+    </member>
+    <member kind="function">
       <type>void</type>
       <name>quick_exit</name>
       <anchorfile>group__C11__library_gaa5c766e6d5440124aeaf783a96a92e93.html</anchorfile>
@@ -10582,6 +10589,13 @@
       <name>at_quick_exit</name>
       <anchorfile>group__C11__library_gaf6f4a93aa8e7dcf0779c58c611c8109c.html</anchorfile>
       <anchor>gaf6f4a93aa8e7dcf0779c58c611c8109c</anchor>
+      <arglist>(void(*p00_func)(void))</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>at_thrd_exit</name>
+      <anchorfile>group__C11__library_ga97154844a980a2d3f666271e255b6838.html</anchorfile>
+      <anchor>ga97154844a980a2d3f666271e255b6838</anchor>
       <arglist>(void(*p00_func)(void))</arglist>
     </member>
     <member kind="function">
