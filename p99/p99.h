@@ -21,8 +21,8 @@
 /**
  ** @mainpage P99 - Preprocessor macros and functions for c99
  **
- ** P99 is a suite of macro and function definitions that ease the
- ** programming in modern C, aka C99. By using new tools from C99 we
+ ** P99 is a suite of macro and function definitions that ease
+ ** programming in modern C, aka C99. By using new facilities in C99 we
  ** implement default arguments for functions, scope bound resource
  ** management, transparent allocation and initialization, ...
  **
@@ -61,24 +61,24 @@
  ** It takes signed integer value @c a and computes its absolute
  ** value. Observe that the return type of this function is
  ** unsigned. This has to be so, since otherwise not all valid values
- ** could be necessarily be realized.
+ ** could be realized.
  **
  ** @c p00_abs_signed would not be a good candidate for a macro, since
  ** @c a is evaluated twice in the expression; once in the controlling
  ** expression and once for returning its value or its negation.
  **
  ** We may use this function with any integral type, but then the
- ** result would probably not what a naive programmer would expect if
+ ** result would probably not be what a naive programmer would expect if
  ** the argument is a large unsigned value. The argument will be
- ** promoted to @c intmax_t. In case that the value @c A that is
+ ** promoted to @c intmax_t. If the value @c X that is
  ** passed to the call is positive and greater than <code> INTMAX_MAX
  ** = 2<sup>N</sup> -1</code>, the result is probably not what we'd
  ** expect.@fntm 1@efntm If the conversion to
  ** @c intmax_t doesn't result in a range error thrown by the run time
  ** system (it would be permitted to do so), the argument @a a of the
  ** function would receive the negative value @c -C where @c C is @c
- ** 2<sup>N</sup> - A.  The result of the function call would then be
- ** @c C and not @c A.
+ ** 2<sup>N</sup> - X.  The result of the function call would then be
+ ** @c C and not @c X.
  **
  ** With the following macro we get rid of these restrictions by
  ** combining the macro and the function:
@@ -104,7 +104,7 @@
  ** macros and @c inline funcions and that are only possible with the
  ** @ref c99 "features"
  ** that come with C99 (read ANSI C as normalized in 1999)
- ** and that where absent in C89. The features include among others
+ ** and that were absent in C89. The features include among others
  **  - @ref variadic
  **  - @ref inline
  **  - @ref initializers
@@ -113,7 +113,7 @@
  **  - @ref pragma
  **
  ** On some platforms, P99 is also able to emulate the main features
- ** that come with @link C11 the newest C standard, C11:@endlink
+ ** that come with @link C11, the newest C standard, C11:@endlink
  **  - @ref generic
  **  - @ref atomic
  **  - @ref threads
@@ -131,7 +131,7 @@
  **
  ** P99 is not a C library in the classical sense but merely a
  ** collection of include files:
- **  - There is no binary library that is to be linked to your
+ **  - There is no binary library to be linked to your
  **    executable. The few functions that are provided are small
  **    wrappers that are compiled directly into your code.
  **  - There is nothing to configure, P99 include files should work
@@ -152,7 +152,7 @@
  **
  ** @subsection version Version
  **
- ** The version that this documentation describes can be identified
+ ** The version this documentation describes can be identified
  ** via the macros ::P99_VERSION_DATE, namely $Format:%cd$. It also is
  ** tagged with an hexadecimal ID tag that is given in
  ** ::P99_VERSION_ID, namely $Format:%H$.
@@ -183,8 +183,8 @@
  **
  ** @section standardconformance Standard conformance
  **
- ** Where we can, we try to be conforming to the C99 standard and to
- ** clearly mark extensions, if we use them.
+ ** Where we can, we try to conform to the C99 standard and to
+ ** mark extensions clearly, if we use them.
  **
  ** @subsection UB Undefined behavior
  **
@@ -193,7 +193,7 @@
  ** undefined. Generally this means that a conforming C implementation
  ** is not obliged to capture such circumstances and for code that
  ** uses such undefined behavior might do anything, from
- ** do-the-right-thing, crashing to eating your hard drive.
+ ** do-the-right-thing or crashing to eating your hard drive.
  **
  ** P99 should not produce any such undefined behavior.
  **
@@ -208,8 +208,8 @@
  ** variations:
  **
  **  - padding bits: integer types may have padding bits that do not
- **    count into their width (# of significant bits) but into their
- **    size (storage requirement). So generally we have to be careful
+ **    count towards their width (# of significant bits) but do count towards
+ **    their size (storage requirement). So generally we have to be careful
  **    to not use expressions that use @c sizeof expressions for
  **    shifts.
  **
@@ -219,7 +219,7 @@
  **
  **  - signed under- and overflow: arithmetic on signed integer types
  **    may under- or overflow and C99 leaves it to the implementation
- **    of whether or not this silently wraps around or triggers a
+ **    whether or not this silently wraps around or triggers a
  **    signal. All expressions that involve signed types should be
  **    such that they avoid this implementation specific behavior. E.g
  **    to compute the absolute value of a negative @c int @c a we
@@ -235,17 +235,18 @@
  **
  ** @section prefixes Defining identifiers
  **
- ** Macro names that implement a functionality of P99 are generally
+ ** Macro names that implement the functionality of P99 are generally
  ** uppercase. Exceptions from that rule are @ref hide.
  ** All other identifiers are lowercase.
  **
  ** P99 uses the common prefixes @c P99_ and @c p99_ for macros and
- ** other identifiers, respectively. If you include any of the P99
- ** files future version could use any new identifier with one of
- ** those prefixes, so don't define some of them your own.
+ ** other identifiers, respectively.
+ ** Future P99 versions could define new identifiers with
+ ** these prefixes.  If you include any of the P99 files,
+ ** avoid using these prefixes for your own identifiers.
  **
- ** The same rule holds for the prefixes @c P00_and @c p00_ are used
- ** for identifiers, only that they are auxiliary and that need not be
+ ** The same rule holds for the prefixes @c P00_and @c p00_ which are used
+ ** for auxilliary identifiers that need not be
  ** documented. Such identifiers are ignored in the doxygen
  ** documentation.
  **
@@ -253,8 +254,8 @@
  **
  ** The P99 macros and functions as such should be independent of the
  ** execution system and compiler. Nevertheless, for the time being
- ** they are only tested on POSIX systems, namely linux. So if there
- ** is a pitfall for other systems that we didn't see, yet, please let
+ ** they are only tested on POSIX systems, namely Linux. So if
+ ** problems are discovered with other systems, please let
  ** us know.
  **
  ** In contrast to that general policy, there is @em one file that is
@@ -264,8 +265,8 @@
  **
  ** Also, some of the examples throughout this documentation are taken
  ** from programs that would typically run on POSIX systems. We hope
- ** that they easily may stand as such and don't need much
- ** explanations for programmers of other systems.
+ ** that such examples are obvious  and don't need
+ ** explanation for programmers of other systems.
  **
  ** @section variableInit Variable initialization
  **
@@ -281,7 +282,7 @@
  ** #define TOTO_INITIALIZER { .a = 0.0; .b = 0u }
  ** @endcode
  **
- ** In case that you want just the default behavior of C, namely that
+ ** In case you want the default behavior of C, namely that
  ** all fields are recursively initialized with @c 0 then you could
  ** just use
  ** @code
@@ -289,7 +290,7 @@
  ** @endcode
  ** to make this choice explicit.
  **
- ** Such initializers can be easily assembled together
+ ** Such initializers can easily be assembled together
  ** @code
  ** typedef struct tutu tutu;
  ** struct tutu { toto A; bool c; };
@@ -322,11 +323,11 @@
  ** @section temporaries Use of temporary lvalues
  **
  ** Often when programming utilities for C that are supposed to return
- ** a pointer to an array or structure the question arises who is
- ** allocating the space, the caller or the callee.
+ ** a pointer to an array or structure, the question of who is
+ ** allocating the space arises: the caller or the callee.
  **
- ** P99 goes a different way, in between, in that tries to take away
- ** that burden mostly from the programmer of both, caller and callee.
+ ** P99 goes a different way, in that it tries to remove
+ ** most of the burden from the programmer of both caller and callee.
  ** Let us look at the hypothetical function
  ** @code
  ** char const* hostname(char buffer[], size_t len);
@@ -354,7 +355,7 @@
  ** #define hostname_defarg_1() HOST_NAME_MAX
  ** @endcode
  **
- ** This defines three different macros. One that is used in the place
+ ** This defines three different macros. One that is used where
  ** the programmer places a call to @c hostname. The other two, @c
  ** hostname_defarg_0 and @c hostname_defarg_1, are used by the macro
  ** @c hostname when the respective arguments are left out.
@@ -370,7 +371,7 @@
  ** @endcode
  ** </li>
  ** <li>Such that the caller initializes its own variable that has a
- ** storage class that fits best to the needs:
+ ** storage class that best fits its needs:
  ** @code
  ** char host[mylen];
  ** .
@@ -379,7 +380,7 @@
  ** </li>
  ** <li>
  ** Or such that the space is allocated on the stack of the current
- ** scope of the call:
+ ** call scope:
  ** @code
  ** char const*const host = hostname();
  ** @endcode
@@ -396,23 +397,23 @@
  **
  ** It uses a temporary value that is only valid inside the block in
  ** which the @c get_hostname macro is expanded. The handling of this
- ** temporary is implicit, neither the caller nor the callee have to
+ ** temporary is implicit; neither the caller nor the callee have to
  ** worry of allocating or deallocating it.  On the calling side this
  ** convention is simple to use without having the callee expose a
  ** static buffer.
  **
- ** In P99, is currently applied in a few places, in particular in the
- ** header file "p99_posix_default.h". The usage of it will probably
+ ** In P99, it is currently applied in a few places, in particular in the
+ ** header file "p99_posix_default.h". Its use will probably
  ** grow in future releases.
  **/
 
 /**
  ** @page utilities Implemented utilities
  **
- ** P99 implements a lot of different features through macros and
- ** functions, too much to mention explicitly in such an overview. You
+ ** P99 implements many different features through macros and
+ ** functions, too many to mention explicitly in such an overview. You
  ** will find a structured hierarchy of descriptions below the
- ** "Modules" tag and the documentation of the individual items under
+ ** "Modules" tag and the documentation of individual items under
  ** "Files" -> "Globals". Here we will introduce some main features:
  **
  **  -# @ref defaults
@@ -423,7 +424,7 @@
  **
  ** @section defaults Default arguments to functions
  **
- ** In section @ref temporaries we have seen a way to provide default
+ ** In section @ref temporaries we saw a way to provide default
  ** arguments to functions by overloading them with macros. The
  ** general declaration pattern here is as follows
  **
@@ -445,9 +446,9 @@
  **    @endcode
  **    that is a concatenation of @c NAME with the token @c _defarg_
  **    and the decimal number @c M
- **  - "not provided" here meaning either
+ **  - "not provided" here means either
  **     - leaving an empty place in an argument list
- **     - giving less arguments than @c N
+ **     - giving fewer arguments than @c N
  **  - to be valid C code this name must then either
  **      -# itself be a macro that is then expanded
  **      -# be a valid function call that can be interpreted by the
@@ -460,10 +461,10 @@
  ** To obtain the same behavior as for C++, namely to provide a
  ** default argument that is evaluated at the place of declaration and
  ** not at the place of the call we have to use (b), a function call.
- ** This will be as efficient as macro call if we use @ref inline for
+ ** This will be as efficient as a macro call if we use @ref inline for
  ** that purpose.
  **
- ** To ease the programming of this functional approach P99 provides
+ ** To ease the programming of this functional approach, P99 provides
  ** some machinery. We need three things as in the following example:
  ** @code
  ** P99_PROTOTYPE(rand48_t *, rand48_t_init, rand48_t*, unsigned short, unsigned short, unsigned short);
@@ -476,17 +477,17 @@
  **                    );
  ** @endcode
  **
- ** That are
+ ** Namely
  **  - a "prototype" of the underlying function, such that P99
- **    knows of the name of the function, the return type and the types
+ **    knows the name of the function, the return type and the types
  **    of the arguments.
  **  - the macro definition as we have already seen
  **  - a declaration of the default arguments.
  **
- ** Here in the example there is no default argument for position 0
- ** but one for positions 1 to 3. All three have the type
- ** <code>unsigned short</code>. The above leads to the automatic generation of three @c
- ** inline function that look something like:
+ ** Here in the example, a default argument is provided for positions 1 to 3
+ ** but not for position 0. All three defaults have the type
+ ** <code>unsigned short</code>. The above code leads to the automatic generation of three @c
+ ** inline functions that look something like:
  **
  ** @code
  ** inline
@@ -525,14 +526,15 @@
  ** // critical block comes here
  ** mtx_unlock(&guard);
  ** @endcode
- ** This is very much error prone since you have to provide such calls
- ** every time you have such a block. If the block is longer than some
- ** lines it is difficult to keep track of that, since the lock /
- ** unlock calls are spread on the same level as the other code.
+ ** This is error prone as locking calls must be provided
+ ** for each critical block. If the block is longer than a few
+ ** lines it becomes increasingly difficult to ensure the unlocking of the
+ ** resource, since the lock /
+ ** unlock calls are spread at the same level as other code.
  **
  ** Within C99 (and equally in C++, BTW) it is possible to extend the
- ** language of some sorts such that you may make this easier visible
- ** and guarantee that your lock / unlock calls are matching. Below,
+ ** language in order to  make this more easily visible
+ ** and to guarantee that lock / unlock calls match. Below,
  ** we will give an example of a macro that will help us to write
  ** something like
  **
@@ -543,7 +545,7 @@
  ** }
  ** @endcode
  **
- ** To make this even a bit more comfortable we have
+ ** To make this even more comfortable we have
  **
  ** @code
  ** P99_MUTUAL_EXCLUDE(&guard) {
@@ -552,8 +554,8 @@
  ** @endcode
  **
  ** There is an equivalent block protection that uses an ::atomic_flag
- ** as a spin lock. Such a spin lock only uses @link atomic atomic
- ** operations @endlink and can be much more efficient than a
+ ** as a spin lock. Such a spin lock uses only @link atomic atomic
+ ** operations @endlink and can be much more efficient than
  ** protection through a ::mtx_t, @b if the code inside the critical
  ** section is really small and fast:
  **
@@ -572,17 +574,17 @@
  ** }
  ** @endcode
  **
- ** Generally there should be no run time performance cost for using such a
+ ** Generally there should be no run-time performance cost for using such a
  ** macro. Any decent compiler will detect that the dependent code is
  ** executed exactly once, and thus optimize out all the control that
  ** has to do with our specific implementation of theses blocks.
  **
- ** Other such block macros that can be implemented with such a technique:
- **   - pre- and postconditions
- **   - ensure that some dynamic initialization of a static variable is performed exactly once
+ ** Other such block macros that can be implemented with such a technique are:
+ **   - pre- and post-conditions
+ **   - ensuring that some dynamic initialization of a static variable is performed exactly once
  **   - code instrumentation
  **
- ** An even more sophisticated tool for scope bound resources
+ ** An even more sophisticated tool for scope-bound resource
  ** management is provided by the macro ::P99_UNWIND_PROTECT
  ** @code
  ** double toto(double x) {
@@ -606,7 +608,7 @@
  ** @endcode
  **
  ** In this code fragment the statement ::P99_UNWIND will ensure that
- ** the two levels of loops are broken and that the execution
+ ** the two levels of loops are broken and that execution
  ** continues at the special label ::P99_PROTECT.
  **
  ** ::P99_UNWIND_RETURN goes one step further. As for ::P99_UNWIND, it
@@ -619,7 +621,7 @@
  **
  ** We provide some utilities to ease the programming of loop
  ** iterations in one or multiple dimensions. The simplest to use
- ** is ::P99_DO, that resembles much to a @c do loop in fortran. It
+ ** is ::P99_DO, that closely resembles a @c do loop in Fortran. It
  ** fixes the bounds of the iteration once, before entering the
  ** iteration itself.
  **
@@ -630,8 +632,8 @@
  ** @endcode
  **
  **
- ** ::P99_FORALL allows to generate nested for loops over
- ** arbitrary many dimensions:
+ ** ::P99_FORALL allows the generatation of nested for-loops over
+ ** an arbitrary number of dimensions:
  ** @code
  ** size_t const D[3] = { 20, 17, 31 };
  ** P99_FORALL(D, i, j, k) {
@@ -643,15 +645,15 @@
  ** bounds specified by @c D.
  **
  ** ::P99_PARALLEL_FOR, where available, will provide a parallelized
- ** version of a simple @c for loop, and ::P99_PARALLEL_DO and
- ** ::P99_PARALLEL_FORALL implements nested parallel loops with
+ ** version of a simple @c for-loop, and ::P99_PARALLEL_DO and
+ ** ::P99_PARALLEL_FORALL implement nested parallel loops with
  ** otherwise the same semantics as for ::P99_DO or ::P99_FORALL,
  ** respectively.
  **
  ** @section condi Preprocessor conditionals and loops
  **
  ** P99 provides you with macro features that can become handy if you
- ** have to generate code repetition that might be subject to changes, later.
+ ** have to generate code repetition that might later be subject to changes.
  ** As examples suppose that you'd have to code something like
  **
  ** @code
@@ -659,8 +661,8 @@
  ** typedef int hui_0; typedef unsigned hui_1; typedef double hui_2;
  ** @endcode
  **
- ** If over time there are many additions and removals to these lists,
- ** maintaining such a code will not really be a pleasure. In P99 you
+ ** If, over time, there are many additions and removals to these lists,
+ ** maintaining such code will not really be a pleasure. In P99 you
  ** may write equivalent statements and declarations just as
  **
  ** @code
@@ -671,7 +673,7 @@
  ** There are a handful of such predefined macros that you may look up
  ** under @ref statement_lists. Under the hood they all use a more
  ** general macro that you may yourself use to define your own macros:
- ** ::P99_FOR. The use of this will be described more in detail under
+ ** ::P99_FOR. The use of this will be described in more detail under
  ** @ref programming.
  **
  ** The predefined macros from above usually are also able a nasty
@@ -694,13 +696,13 @@
  ** since the variable length part should not be empty, according to
  ** the standard. With P99 you don't have these sort of problems, the
  ** above should just result in empty statements or declarations, that
- ** are even capable to swallow the then superfluent semicolon at the
+ ** are even capable of swallowing the then superfluous semicolon at the
  ** end.
  **
  ** P99 avoids this by testing for the length of the argument list as
  ** a whole with ::P99_NARG and by using a macro conditional
  ** controlled by that length. Such conditionals like ::P99_IF_EMPTY
- ** ensure that the preprocessor decides which code of two different
+ ** ensure that the preprocessor decides which of two different code
  ** variants the compiler will see. The fragment
  **
  ** @code
@@ -709,13 +711,13 @@
  **
  ** will expand to either @c special_version or @c general_version
  ** according to @c BLA. If it expands to an empty token, the first
- ** variant is produced, if it is at least one non-empty token the
- ** second one results.
+ ** variant is produced, if there is at least one non-empty token the
+ ** second version results.
  **
  ** P99 also implements logical and arithmetic operations in the
  ** preprocessor. Logical operations just evaluate to the tokens @c 0
  ** or @c 1. Arithmetic is restricted to small decimal numbers, less
- ** than ::P99_MAX_NUMBER. Just some examples
+ ** than ::P99_MAX_NUMBER. Some examples
  **
  ** @code
  ** P99_IS_EQ(int, double)    ==> 0
@@ -728,7 +730,7 @@
  ** @section alloc Allocation and initialization facilities
  **
  ** Consistent initialization of variables is an important issue in
- ** C. P99 provides some tools to help you on that, most importantly a
+ ** C. P99 provides some tools to help with that, most importantly a
  ** macro ::P99_NEW. Therefore we have to relay on some assumptions
  ** that are specified in @ref variableInit, in particular that there
  ** is an `init' function for each type that we want to use with ::P99_NEW.
@@ -745,7 +747,7 @@
  ** @endcode
  **
  ** we might want to ensure that the fields @c pred and @c succ are
- ** always properly initialized. An `init' function could look as follows:
+ ** always properly initialized. An `init' function could be as follows:
  ** @code
  ** #define ELEM_INITIALIZER(HERE, PRED, SUCC) {
  **  .pred = (PRED) ? (PRED) : (HERE),
@@ -753,7 +755,7 @@
  ** }
  ** @endcode
  **
- ** A static initialization of a 4 element list in file scope can then be done as
+ ** A static initialization of a 4-element list in file scope can then be done as
  ** @code
  ** extern elem * head;
  ** .
@@ -769,7 +771,7 @@
  ** head = &L0;
  ** @endcode
  **
- ** Dynamic initialization of a 4 element list on the stack in function scope
+ ** Dynamic initialization of a 4-element list on the stack in function scope
  ** @code
  ** elem L[4] = {
  **   [0] = ELEM_INITIALIZER(&L[0], &L[1], &L[3]),
@@ -779,7 +781,7 @@
  ** };
  ** @endcode
  **
- ** To do dynamic initialization we would then define something like this:
+ ** For dynamic initialization we would then define something like this:
  ** @code
  ** elem * elem_init(elem* here, elem* there) {
  **   if (here) {
@@ -814,8 +816,8 @@
  **
  ** In fact, the ::P99_NEW macro takes a list of arguments that may be
  ** arbitrarily@fntm 3@efntm
- ** long. It just needs the first, which is supposed to be
- ** the type of the object that is to be created. The other are then
+ ** long. It just needs the first, which must be
+ ** the type of the object that is to be created. The others are then
  ** passed as supplementary arguments to the `init' function, here the
  ** parameter @c there.
  **
@@ -844,7 +846,7 @@
  ** @page programming Macro programming with P99
  **
  ** Most macros and features for macro programming with P99 are
- ** defined in @ref meta_programming. This allows to do things like
+ ** defined in @ref meta_programming. This allows operations such as
  ** <dl>
  **  <dt>@ref arg_counting</dt>
  **  <dt>rudimentary argument list processing</dt>
@@ -861,9 +863,9 @@
  **
  ** @section arg_counting Argument List Counting
  **
- ** To implement macros that evaluate conditionally on the number of
- ** arguments that they receive we will need to determine how many
- ** arguments it receives. This can be achieved with something like
+ ** To implement macros in which evaluation depends upon the number of
+ ** arguments received, we will need to determine how many
+ ** arguments are received. This can be achieved with something like
  ** the following:
  **
  ** @code
@@ -874,7 +876,7 @@
  ** If NARG2 is called with two arguments the @c 2 of its expansion is in
  ** third position and we will see this @c 2. If it is called with just
  ** one argument the 1 will be in that place and thus be the result of
- ** the expansion. You probably easily imagine an extension of that
+ ** the expansion. You can probably imagine an extension of that
  ** macro to treat more arguments, look into the P99 sources to see a
  ** version for ::P99_MAX_NUMBER.
  **
@@ -885,20 +887,20 @@
  ** we don't want to have the compiler itself see the same expressions
  ** multiple times.
  **
- ** The @c NARG2 has a major disadvantage, it will not be able to
+ ** The @c NARG2 has a major disadvantage: it is unable to
  ** detect an empty argument list. This is due to a fundamental
- ** difference between C and its preprocessor. For C a parenthesis @c ()
+ ** difference between C and its preprocessor. For C, a parenthesis @c ()
  ** is empty and contains no argument. For the preprocessor it
  ** contains just one argument, and this argument is the empty token
  ** <code>&nbsp;</code>.
  **
- ** So in fact @c NARG2 is cheating. It doesn't count the number of
+ ** So in fact @c NARG2 cheats. It doesn't count the number of
  ** arguments that it receives, but returns the number of commas plus
  ** one. In particular, even if it receives an empty argument list it
  ** will return @c 1. The macro ::P99_NARG deals with that and returns
  ** the token @c 0, if the list is empty.
  **
- ** Other macros are then programmed with similar tricks as for @c
+ ** Other macros are then programmed with similar tricks as are used for @c
  ** NARG2, here: the variable argument list is positioned at the
  ** beginning of a new macro list that is then completed by a list of
  ** values that contain the different tokens that are returned conditionally.
@@ -922,13 +924,13 @@
  ** it would be tedious and error prone to have to copy similar
  ** definitions over and over again. Therefore P99 implements some of
  ** these with a script and collects them in the above mentioned
- ** include file. This is probably not something you should or
- ** want to do yourself. Section @ref unrolling will show how to
+ ** include file. This is probably not something you should do
+ ** yourself. Section @ref unrolling will show how to
  ** avoid this with higher level preprocessor programming constructs.
  **
  **
  ** The next step in macro programming is then to use ::P99_NARG to
- ** obtain the length of a list and to use this number token to
+ ** obtain the length of a list and to use this numeric token to
  ** derive a macro name with the number in it
  **
  ** @code
@@ -965,7 +967,7 @@
  **    a[i] = b[i];
  ** @endcode
  **
- ** There are good chances that an optimizing compiler would unroll
+ ** There is a good chance that an optimizing compiler would unroll
  ** this loop
  **
  ** @code
@@ -980,8 +982,8 @@
  ** elements now can be done with constant offsets from the
  ** basepointers of @c a and @c b.
  **
- ** We will see below how to achieve such a loop unrolling directly
- ** with the preprocessor, avoiding to rely on the compiler to do so.
+ ** We will see below how to achieve such loop unrolling directly
+ ** with the preprocessor, avoiding reliance on the compiler.
  **
  ** But code unrolling can do more than that. It may be helpful where
  ** we have repeated pieces of code for which there is no loop
@@ -1007,7 +1009,7 @@
  ** You'd later just change @c N and the rest of your code remains consistent.
  **
  ** As another example of flexibility take another assignment example,
- ** namely some "deserialization" of a @c struct. Suppose that we have
+ ** namely the "deserialization" of a @c struct. Suppose that we have
  ** a variable of a @c struct type to which we want to assign values
  ** that we receive through an array @c b:
  ** @code
@@ -1031,10 +1033,10 @@
  ** @endcode
  **
  ** The "control structure" that is behind these two macros is called
- ** ::P99_FOR. This is by itself a macro that at least 4 parameters,
+ ** ::P99_FOR. This is by itself a macro that takes at least 4 parameters,
  ** named @c NAME, @c N, @c OP, @c FUNC, but generally will have more,
  ** namely a list <code>A0, A1, ... , A{N-1}</code> of extra
- ** arguments. The idea behind is simple:
+ ** arguments. The idea behind this is simple:
  **  - the argument @c FUNC is supposed to be a macro name that is
  **    going to be applied to each of the @c A{i}
  **  - argument @c OP in turn is a macro that is called to control the
@@ -1050,10 +1052,10 @@
 /**
  ** @page c99 C99 features
  **
- ** As extensions to C89, C99 offers some features that largely
- ** improve its possibilities of programming efficiently and portable
+ ** As extensions to C89, C99 offers some features that
+ ** improve the possibilities of programming efficiently and portably
  ** at the same time. There are four of these new concepts that are
- ** particularly important for P99, without them P99 wouldn't be
+ ** particularly important for P99 and without them P99 wouldn't be
  ** possible.
  ** - @ref variadic
  ** - @ref inline
@@ -1063,9 +1065,9 @@
  **
  ** @section variadic Variadic macros
  **
- ** The preprocessor now has a feature that previously already C
- ** functions could have: a macro may accept an argument list that may
- ** vary in size. As for functions such a macro is defined with `...'
+ ** The preprocessor now has a feature that previously only C
+ ** functions had: a macro may accept an argument list that may
+ ** vary in size. As with functions, such a macro is defined with `...'
  ** in the argument list to indicate a list following the initial,
  ** named, arguments:
  **
@@ -1073,24 +1075,24 @@
  ** #define TOTO(NAME, ...)  NAME[__VA_ARGS__]
  ** @endcode
  **
- ** The variable length list then is referred by the reserved
+ ** The variable-length list is then referred to using the reserved
  ** identifier @c __VA_ARGS__.
  **
  ** This functionality of C99 allows us e.g to implement macros for
- ** @ref defaults and to do @ref unrolling.
+ ** @ref defaults and to perform  @ref unrolling.
  **
  ** @section inline Inline functions
  **
- ** The new keyword @c inline is a borrow from C++ with some slightly
+ ** The new keyword @c inline is borrowed from C++ with some slightly
  ** changed semantics. The important part for P99 is that functions
- ** can be @em defined in a header file (an not only declared) when
+ ** can be @em defined in a header file (and not only declared) when
  ** specified as @c inline.
  **
- ** This allows us to define small wrappers in include files through
+ ** This allows us to define small wrappers in header files using
  ** macros, without generating conflicts in different compilation
  ** units. By that we can avoid one of the major drawbacks of C macro
  ** programming: a macro cannot @em define another macro. In addition
- ** functions, compared to macros, have other advantages
+ ** functions, when compared to macros, have other advantages
  ** - they are typesafe
  ** - their arguments are evaluated exactly once
  **
@@ -1113,11 +1115,11 @@
  ** declaration. Here the @c 0 in the initializer is used to
  ** initialize the component @c A.a and the @c 1 for A.b.
  **
- ** Whenever the structure @c toto changes during a development
+ ** Whenever the structure @c toto changes during the development
  ** process, we would have to revisit @em all initializations to see
- ** whether or not the are still consistent:
+ ** whether or not they remain consistent:
  ** - if the order of components @c a and @c b changes, the order of
- **   the expressions must be inversed
+ **   the expressions must be inverted
  ** - if we insert an element before @c a or @c b, the initialization
  **   of @c b by @c 1 in the example is replaced by the default
  **   initialization, namely @c 0.0.
@@ -1131,11 +1133,11 @@
  ** toto A = { .a = 0, .b = 1 };
  ** @endcode
  **
- ** By that we avoid all of the problems that are mentioned
+ ** By this means we avoid all of the problems mentioned
  ** above. This scheme is robust against reordering and insertion of
  ** components. In a certain sense it is also robust against the
  ** renaming of components: all initializations will then simply fail
- ** at compile time, so it is easy to identify the problem spots.
+ ** at compile time, so it is easy to identify problems.
  **
  ** For a more detailed discussion of initialization and P99 see @ref
  ** variableInit.
@@ -1149,20 +1151,21 @@
  ** (T){ .d = 1, .a = 10 }.
  ** @endcode
  **
- ** It is best seen to define a temporary object of the requested
- ** type, initialized with the same rules as would a named variable of
+ ** It is best seen as defining a temporary object of the requested
+ ** type, initialized using the same rules that apply to a named variable of
  ** that type.
  **
  **  - Such unnamed temporary objects can be initialized on the fly, e.g
- **     as the arguments to functions, and they are alive to the end of
+ **     as the arguments to functions, and they live until the end of
  **     the block in which they are defined.
  **  - They define an lvalue from which an address can be taken.
  **  - Unless the type of the cast is defined with `const' the content
  **     of such a variable is modifiable.
  **
- ** Example: The following returns the pointer to a character array
- ** that is initialized with all @c `a', a terminating @c 0 character and
- ** that is a valid objet until the program leaves the current block.
+ ** Example: The following code returns the pointer to a character array
+ ** that is initialized with all @c `a' and a terminating @c 0 character.
+ ** The array
+ ** is a valid object until the program leaves the current block.
  ** @code
  ** char const*const hui = memset((char[256]){0}, 'a', 255);
  ** @endcode
@@ -1176,7 +1179,7 @@
  ** Using the compound literal here has the advantage that no other
  ** non-const reference to the temporary is exposed.
  **
- ** The compound literal syntax is not always very easy to read in
+ ** The compound literal syntax is not always very easy to read; in
  ** fact it might even hurt your eyes. P99 gives you a shortcut for
  ** compound literals that are initialized from the all @c 0
  ** initializer. With that the above could have been written:
@@ -1189,7 +1192,7 @@
  **
  ** Per se, this is not a new feature of C99 but had been present
  ** before. The preprocessor has two special rules, one that applies
- ** generally to macros and the other that applies on to functional macros:
+ ** generally to macros and the other that applies only to functional macros:
  **
  **  -# If during expansion of a macro XXX the token XXX is found, it
  **    is not expanded. So there is no recursion in C macros.
@@ -1208,7 +1211,7 @@
  ** This can be used as follows
  ** @code
  ** #ifdef stdin
- **   // Do something for an hosted environment
+ **   // Do something for a hosted environment
  **   // Use stdin as usual
  ** #else
  **   // Do something for a free standing environment
@@ -1227,14 +1230,14 @@
  ** </em>
  ** </center>
  **
- ** Lets have a look at some random function from there and suppose it
+ ** Lets have a look at a randomly selected function from stdio and suppose it
  ** would be given as follows:
  ** @code
  ** int putc(int, FILE *);
  ** #define putc(C, F) (is_it_special(C) ? do_something_clever(C, F) : putc(C, F) )
  ** @endcode
  **
- ** (Yes this evaluates @c C two times.)  With that, these uses of @c
+ ** (Yes this evaluates @c C twice.)  With that, these uses of @c
  ** putc are still valid:
  ** @code
  ** // Use the macro and implicitly the function, relies on rule 1
@@ -1249,7 +1252,7 @@
  **
  ** The example above with @c putc has a particular pitfall if we have
  ** the above definitions in a header file and then include this file
- ** at the place where we define the the function:
+ ** at the place where we define the function:
  **
  ** @code
  ** #include <stdio.h>
@@ -1267,12 +1270,12 @@
  ** With P99, we use this technique to @em overload a function to
  ** provide it with @ref defaults. A macro defined in that way will
  ** avoid this pitfall: if it is called with the same number of
- ** arguments (or more) that all are non-empty, it will produce the
+ ** arguments (or more) that are all non-empty, it will produce the
  ** same token sequence as if the macro had not been defined.
  **
  ** @subsection pragma Pragmas inside macros
  **
- ** The traditional approach of C had been to specify meta information
+ ** The traditional approach in C had been to specify meta information
  ** for the compiler in so called pragmas:
  ** @code
  ** #pragma omp parallel for
@@ -1280,7 +1283,7 @@
  ** @endcode
  **
  ** The inconvenience of such a construct is that it has always to be
- ** on a line of its own and could not be placed in a macro. For that
+ ** on a line of its own and cannot be placed in a macro. For that
  ** reason most compilers provided extensions that let the programmer
  ** place meta information more precisely at some specific point of
  ** the code, e.g gcc has an @c __attribute__ extension for that.
