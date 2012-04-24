@@ -19,12 +19,16 @@
  **/
 
 /**
- ** @mainpage P99 - Preprocessor macros and functions for c99
+ ** @mainpage P99 - Preprocessor macros and functions for C99 and C11
  **
  ** P99 is a suite of macro and function definitions that ease
  ** programming in modern C, aka C99. By using new facilities in C99 we
  ** implement default arguments for functions, scope bound resource
  ** management, transparent allocation and initialization, ...
+ **
+ ** By using special features of some compilers and operating systems,
+ ** we also are able to provide an almost feature complete emulation
+ ** of the new C standard, C11.
  **
  ** @section introduction Macros and inline functions working together
  **
@@ -421,6 +425,10 @@
  **  -# @ref for
  **  -# @ref condi
  **  -# @ref alloc
+ **  -# @ref secC11
+ **     -# @ref secGeneric
+ **     -# @ref secAtomic
+ **     -# @ref secThreads
  **
  ** @section defaults Default arguments to functions
  **
@@ -846,6 +854,93 @@
  ** implementation. Also most of the P99 macros are limited to
  ** ::P99_MAX_NUMBER.
  **
+ ** @section secC11 Emulating features of C11
+ **
+ ** The new C standard C11 (published in December 2011) introduces
+ ** some new features that are already present in many compilers or
+ ** OS, but sometimes with different syntax or interfaces. We provide
+ ** interfaces to some of them with the intention that once compilers
+ ** that implement C11 come out these interfaces can directly relate
+ ** to the C11 feature.
+ **
+ ** With these emulated interfaces you can already program almost as
+ ** if you had a native C11 compiler (which doesn't yet exist) and
+ ** take advantage of the improvements that C11 makes to the language,
+ ** without giving up on portability in the real world of today's
+ ** compilers.
+ **
+ ** @subsection secGeneric Type generic macros
+ **
+ ** C11 provides a new feature to "overload" macros and more generally
+ ** the result of any type of expression, @c _Generic. It allows to
+ ** write template-like expressions with the macro preprocessor. The
+ ** idea is to generate <em>type generic mathematical function</em>
+ ** that already had been present in C99:
+ **
+ ** If you include the "tgmath.h" header you have a macro @c sin that
+ ** implements calls to the family of sine functions, e.g
+ **
+ ** @code
+ ** double complex z0 = sin(1.0);        // invokes the @em function @c sin
+ ** double complex z1 = sin(2.0 + 3*I);  // invokes the function @c csin
+ ** @endcode
+ **
+ ** At compile, these type generic macros decide from the @em type of
+ ** the argument which function call to emit.
+ **
+ ** The new concept of @c _Generic expressions generalizes this
+ ** concept. From the usually public domain compilers at the time of
+ ** this writing (Apr 2012) only @c clang implements this feature
+ ** already. On the other hand @c gcc has extension that can be used
+ ** to emulate it, and such an emulation is provided through
+ ** ::P99_GENERIC.
+ **
+ ** @subsection secAtomic Atomic operations
+ **
+ ** Atomic operations are an important contribution of the new
+ ** standard; these operations are implemented on all commodity CPU
+ ** nowadays but a direct interface in a higher programming language
+ ** was missing.
+ **
+ ** These operations give guarantees on the coherence of data accesses
+ ** and other primitive operations, even in presence of @em
+ ** races. Such races may occur between different threads (see below)
+ ** of the same application or when a program execution is
+ ** interrupted, e.g for a signal handler or a @c longjmp call. Since
+ ** most instructions on modern CPU are composed of several
+ ** micro-instructions, in such a context an instruction may only
+ ** succeed partially and a data may end up in a intermediate state.
+ **
+ ** In this example
+ **
+ ** @code
+ ** static _Atomic(size_t) n = 0;
+ ** atomic_fetch_and_add(&n, 1);
+ ** // do something in here
+ ** atomic_fetch_and_sub(&n, 1);
+ ** @endcode
+ **
+ ** the variable @c n is always in a clean state: either the addition
+ ** of @c has taken place or it has not. Multiple threads can execute
+ ** this code without locking a mutex or so, the value of @c n will
+ ** always be well defined.
+ **
+ ** One of the interesting concepts that come with C11 is
+ ** ::atomic_flag, that is a simple interface that can implement
+ ** spinlocks quite efficiently.
+ **
+ ** @subsection secThreads Threads
+ **
+ ** Atomic operations have their major advantage in the presence of
+ ** threads, that is multiple entities that compute concurrently
+ ** inside the same application and using a common address space. C11
+ ** provides an optional interface for threads and the principal data
+ ** structures that are needed for them (::thrd_mutex_t and
+ ** ::thrd_cond_t). This thread interface is a bit simpler than POSIX
+ ** threads, but implements the main features.
+ **
+ ** P99 provides a shallow wrapper on top of POSIX threads that
+ ** provides all the interfaces that are required by C11.
  **/
 
 /**

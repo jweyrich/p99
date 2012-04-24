@@ -8600,8 +8600,12 @@
     <docanchor file="utilities">alloc</docanchor>
     <docanchor file="utilities">condi</docanchor>
     <docanchor file="utilities">defaults</docanchor>
+    <docanchor file="utilities">secThreads</docanchor>
     <docanchor file="utilities">for</docanchor>
+    <docanchor file="utilities">secC11</docanchor>
     <docanchor file="utilities">blocks</docanchor>
+    <docanchor file="utilities">secGeneric</docanchor>
+    <docanchor file="utilities">secAtomic</docanchor>
   </compound>
   <compound kind="page">
     <name>programming</name>
@@ -15828,7 +15832,7 @@
   </compound>
   <compound kind="page">
     <name>index</name>
-    <title>P99 - Preprocessor macros and functions for c99</title>
+    <title>P99 - Preprocessor macros and functions for C99 and C11</title>
     <filename>index</filename>
     <docanchor file="index">introduction</docanchor>
     <docanchor file="index">copyright</docanchor>
