@@ -44,6 +44,7 @@ PREDEFINED += P99_COMPILETIME_ASSERT(x,y)=
 PREDEFINED += P99_DECLARE_ATOMIC(x)="/** \see _Atomic for a detail description of the atomic implementation */ typedef struct atomic_ ## x x"
 PREDEFINED += P99_DECLARE_INIT_ONCE(T, NAME, ARG)="/** @remark wrapper type around a T that is initialized once */ typedef struct NAME NAME"
 PREDEFINED += P99_DECLARE_THREAD_LOCAL(T,NAME)="/** \brief a thread local variable **/ T NAME"
+PREDEFINED += P99_TSS_DECLARE_LOCAL(T,NAME)="/** \brief a thread local variable **/ T NAME"
 PREDEFINED += P99_DECLARE_ONCE_CHAIN(T)="/** \brief chain the 'static' initialization for T **/ p99_once_flag p99_ ## T ## _once"
 PREDEFINED += P99_DEFINE_ONCE_CHAIN(T)="p99_once_flag p99_ ## T ## _once"
 PREDEFINED += P99_FSYMB(x):="x ## _symbol"

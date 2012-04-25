@@ -5359,6 +5359,7 @@
     <filename>p99__tss_8h</filename>
     <includes id="p99__atomic_8h" name="p99_atomic.h" local="yes" imported="no">p99_atomic.h</includes>
     <includes id="p99__compiler_8h" name="p99_compiler.h" local="yes" imported="no">p99_compiler.h</includes>
+    <includes id="p99__defarg_8h" name="p99_defarg.h" local="yes" imported="no">p99_defarg.h</includes>
     <class kind="struct">p99_tss</class>
     <class kind="struct">tss_t</class>
     <member kind="define">
@@ -5371,15 +5372,29 @@
     <member kind="define">
       <type>#define</type>
       <name>P99_DECLARE_THREAD_LOCAL</name>
-      <anchorfile>group__threads_gaff73ebc50901c4264c332b5f54c3928a.html</anchorfile>
-      <anchor>gaff73ebc50901c4264c332b5f54c3928a</anchor>
-      <arglist>(T, NAME)</arglist>
+      <anchorfile>group__threads_ga7f9c74bb2abcf81825126f6271c3c440.html</anchorfile>
+      <anchor>ga7f9c74bb2abcf81825126f6271c3c440</anchor>
+      <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_THREAD_LOCAL</name>
-      <anchorfile>group__threads_ga08381ccf9d079cee37d76b8183e0c753.html</anchorfile>
-      <anchor>ga08381ccf9d079cee37d76b8183e0c753</anchor>
+      <anchorfile>group__threads_ga76af7f3f0180a052b42852a1fc98bd75.html</anchorfile>
+      <anchor>ga76af7f3f0180a052b42852a1fc98bd75</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TSS_DECLARE_LOCAL</name>
+      <anchorfile>group__threads_gad3c8f5616451da99b74216eeb256a56c.html</anchorfile>
+      <anchor>gad3c8f5616451da99b74216eeb256a56c</anchor>
+      <arglist>(T, NAME, DTOR)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TSS_LOCAL</name>
+      <anchorfile>group__threads_ga6b827f6c9f23c963b218698c101e4eb7.html</anchorfile>
+      <anchor>ga6b827f6c9f23c963b218698c101e4eb7</anchor>
       <arglist>(NAME)</arglist>
     </member>
     <member kind="define">
@@ -11287,9 +11302,9 @@
     <member kind="define">
       <type>#define</type>
       <name>P99_DECLARE_THREAD_LOCAL</name>
-      <anchorfile>group__threads_gaff73ebc50901c4264c332b5f54c3928a.html</anchorfile>
-      <anchor>gaff73ebc50901c4264c332b5f54c3928a</anchor>
-      <arglist>(T, NAME)</arglist>
+      <anchorfile>group__threads_ga7f9c74bb2abcf81825126f6271c3c440.html</anchorfile>
+      <anchor>ga7f9c74bb2abcf81825126f6271c3c440</anchor>
+      <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -11315,8 +11330,22 @@
     <member kind="define">
       <type>#define</type>
       <name>P99_THREAD_LOCAL</name>
-      <anchorfile>group__threads_ga08381ccf9d079cee37d76b8183e0c753.html</anchorfile>
-      <anchor>ga08381ccf9d079cee37d76b8183e0c753</anchor>
+      <anchorfile>group__threads_ga76af7f3f0180a052b42852a1fc98bd75.html</anchorfile>
+      <anchor>ga76af7f3f0180a052b42852a1fc98bd75</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TSS_DECLARE_LOCAL</name>
+      <anchorfile>group__threads_gad3c8f5616451da99b74216eeb256a56c.html</anchorfile>
+      <anchor>gad3c8f5616451da99b74216eeb256a56c</anchor>
+      <arglist>(T, NAME, DTOR)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TSS_LOCAL</name>
+      <anchorfile>group__threads_ga6b827f6c9f23c963b218698c101e4eb7.html</anchorfile>
+      <anchor>ga6b827f6c9f23c963b218698c101e4eb7</anchor>
       <arglist>(NAME)</arglist>
     </member>
     <member kind="typedef">
@@ -11409,6 +11438,34 @@
       <anchorfile>group__threads_ga22b2c165c089278c2678ea37f7e0c5f8.html</anchorfile>
       <anchor>ga22b2c165c089278c2678ea37f7e0c5f8</anchor>
       <arglist>(mtx_t *p00_mtx)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_tss_delete</name>
+      <anchorfile>group__threads_ga17d40101455a6813581f812adf6e9108.html</anchorfile>
+      <anchor>ga17d40101455a6813581f812adf6e9108</anchor>
+      <arglist>(p99_tss *p00_key)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>p99_tss_get</name>
+      <anchorfile>group__threads_ga7eb32430ebfeeb40114b9e7c1049ce49.html</anchorfile>
+      <anchor>ga7eb32430ebfeeb40114b9e7c1049ce49</anchor>
+      <arglist>(p99_tss *p00_key)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>p99_tss_get_alloc</name>
+      <anchorfile>group__threads_gabb53796488f159fc1921b05ac96c64a5.html</anchorfile>
+      <anchor>gabb53796488f159fc1921b05ac96c64a5</anchor>
+      <arglist>(p99_tss *p00_key, size_t p00_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>p99_tss_set</name>
+      <anchorfile>group__threads_gaf263c5b90eafd1af74e34ef3db8419ea.html</anchorfile>
+      <anchor>gaf263c5b90eafd1af74e34ef3db8419ea</anchor>
+      <arglist>(p99_tss *p00_key, void *p00_val)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -15683,6 +15740,41 @@
   <compound kind="struct">
     <name>p99_tss</name>
     <filename>structp99__tss.html</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_tss_delete</name>
+      <anchorfile>group__threads_ga17d40101455a6813581f812adf6e9108.html</anchorfile>
+      <anchor>ga17d40101455a6813581f812adf6e9108</anchor>
+      <arglist>(p99_tss *p00_key)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>p99_tss_get</name>
+      <anchorfile>group__threads_ga7eb32430ebfeeb40114b9e7c1049ce49.html</anchorfile>
+      <anchor>ga7eb32430ebfeeb40114b9e7c1049ce49</anchor>
+      <arglist>(p99_tss *p00_key)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>p99_tss_get_alloc</name>
+      <anchorfile>group__threads_gabb53796488f159fc1921b05ac96c64a5.html</anchorfile>
+      <anchor>gabb53796488f159fc1921b05ac96c64a5</anchor>
+      <arglist>(p99_tss *p00_key, size_t p00_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>p99_tss_set</name>
+      <anchorfile>group__threads_gaf263c5b90eafd1af74e34ef3db8419ea.html</anchorfile>
+      <anchor>gaf263c5b90eafd1af74e34ef3db8419ea</anchor>
+      <arglist>(p99_tss *p00_key, void *p00_val)</arglist>
+    </member>
+    <member kind="variable">
+      <type>tss_dtor_t const</type>
+      <name>p99_dtor</name>
+      <anchorfile>structp99__tss_af9fbb5466fd9b825eff0ea2f1b937ccf.html</anchorfile>
+      <anchor>af9fbb5466fd9b825eff0ea2f1b937ccf</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="struct">
     <name>thrd_t</name>

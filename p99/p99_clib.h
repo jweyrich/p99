@@ -145,12 +145,6 @@ _Noreturn void quick_exit(int status) {
   _Exit(status);
 }
 
-P99_WEAK(p00_at_thrd_exit)
-p99_tss p00_at_thrd_exit;
-
-#define P00_AT_THRD_EXIT                                              \
-(*(p00_aqe_list*)p00_thread_local_get(&(p00_at_thrd_exit), sizeof(p00_aqe_list*)))
-
 P99_SETJMP_INLINE(p00_run_at_thrd_exit)
 void p00_run_at_thrd_exit(void * li) {
   p00_aqe_list* list = li;
@@ -163,8 +157,8 @@ void p00_run_at_thrd_exit(void * li) {
   }
 }
 
-p99_tss p00_at_thrd_exit = { .p00_func = p00_run_at_thrd_exit, };
-
+P99_TSS_DECLARE_LOCAL(p00_aqe_list, p00_at_thrd_exit, p00_run_at_thrd_exit);
+#define P00_AT_THRD_EXIT P99_TSS_LOCAL(p00_at_thrd_exit)
 
 /**
  ** @brief Add @a p00_func to the functions that are called on exit of
