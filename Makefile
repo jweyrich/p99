@@ -110,11 +110,12 @@ all-commits : p99/*.h tests/test-p99-*.c Makefile Doxyfile-p99 gforge-p99/* scri
 
 
 p99-transfer :
-	-rsync -az --no-g --no-p --progress -e 'ssh -ax' ${P99_ARCHIVE}/ ${P99_GFORGE}:${P99_HTDOCS}
+	-rsync -az --no-g --no-p --chmod=ug+rw --progress -e 'ssh -ax' ${P99_ARCHIVE}/ ${P99_GFORGE}:${P99_HTDOCS}
 
 p99-html-transfer : ${P99_RELEASE}/p99-html
-	-cd ${P99_RELEASE}; rsync -az --no-g --no-p --chmod=ug=rw --progress -e 'ssh -ax' p99-html/ ${P99_GFORGE}:${P99_HTDOCS}/p99-html-new
+	-cd ${P99_RELEASE}; rsync -az --no-g --no-p --chmod=ug+rw --progress -e 'ssh -ax' p99-html/ ${P99_GFORGE}:${P99_HTDOCS}/p99-html-new
 	-ssh ${P99_GFORGE} mv ${P99_HTDOCS}/p99-html ${P99_HTDOCS}/p99-html-bak
+	-ssh ${P99_GFORGE} chmod -R ug+rw ${P99_HTDOCS}/p99-html-new
 	-ssh ${P99_GFORGE} mv ${P99_HTDOCS}/p99-html-new ${P99_HTDOCS}/p99-html
 	-ssh ${P99_GFORGE} rm -rf ${P99_HTDOCS}/p99-html-bak
 
