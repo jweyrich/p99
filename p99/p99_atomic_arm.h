@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2012 Jens Gustedt, INRIA, France                           */
 /*                                                                           */
@@ -253,16 +253,16 @@ void p00_mfence(void) {
 /**
  ** @addtogroup atomic_arm Atomic operations on ARM
  **
- ** This implementation uses the @c ldrex/strex instruction pair that is
+ ** This implementation uses the @c ldrex/strex instruction pair that has been
  ** implemented since arm v6.
  **
  ** @c ldrex/strex is a load-link and store instruction pair. This means
- ** a strex will only succeed, if nobody else has touched "object"
+ ** a strex will only succeed if nobody else has touched "object"
  ** since the load.
  **
  ** This operation is not lock-free by itself, so it doesn't guarantee
  ** the requirements of the standard for operations on ::atomic_flag
- ** when used by its own. The OS must support this operation by
+ ** when used on its own. The OS must support this operation by
  ** canceling all pending @c ldrex operations when (de)scheduling a
  ** thread or entering or leaving a signal handler.
  **

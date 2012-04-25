@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2012 Jens Gustedt, INRIA, France                           */
 /*                                                                           */
@@ -79,7 +79,7 @@ void p00_mfence(void) {
 /**
  ** @addtogroup atomic_x86 Atomic operations on i386 and x86_64
  **
- ** This implementation uses the @c xchgl instruction that is
+ ** This implementation uses the @c xchgl instruction that has been
  ** implemented since the early days of i386.
  **
  ** This instruction has an implicit lock prefix and no further OS

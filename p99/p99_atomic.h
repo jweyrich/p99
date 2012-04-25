@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2011-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -27,7 +27,7 @@
  ** - @c __typeof__ to declare @c typedef or local variables of a specific type
  ** - block expressions with <code>({ ... })</code>
  **
- ** We also use @c __sync_lock_test_and_set and other similar builtins
+ ** We also use @c __sync_lock_test_and_set and other similar built-ins
  ** if they are available. If not, @c __sync_lock_test_and_set and @c
  ** __sync_lock_release are implemented in assembler (for 4 byte
  ** integers) and all other operations are synthesized with an
@@ -50,7 +50,7 @@
  **
  ** The only operations that are implemented by these stubs are @c
  ** lock_test_and_set and @c lock_release operations. These are the
- ** minimal set of operations that are needed to comply to the
+ ** minimal set of operations that are needed to comply with the
  ** standard.
  **
  ** @{
@@ -89,13 +89,13 @@
  **
  ** This information can be provided externally. If it isn't, some
  ** heuristic is used to detect these features. Currently the only
- ** mechanism that is implemented is the one of gcc.
+ ** mechanism that is implemented is the one provided by gcc.
  **
- ** From this information then is constructed a list of atomic integer
- ** types, ::P99_ATOMIC_LOCK_FREE_TYPES, that is used inside the
- ** macros for type generic programming.
+ ** From this information a list of atomic integer types is constructed,
+ ** ::P99_ATOMIC_LOCK_FREE_TYPES.  This list is used inside the macros for
+ ** type generic programming.
  **
- ** The only type/functions that is always necessary is ::atomic_flag
+ ** The only type/function that is always necessary is ::atomic_flag
  ** that is used for all other atomic types.
  **
  ** @{
@@ -311,13 +311,12 @@
  **
  ** @return The result is an unsigned integer type of the same width
  ** as @a T, if such an integer type exists. Otherwise, the type is @c
- ** uintptr_t, that is an unsigned integer type that should be
+ ** uintptr_t, an unsigned integer type that should be
  ** compatible with address arithmetic.
  **
  ** If @a T has the same width the result is @c uintptr_t. Otherwise,
- ** the result type is chosen among @c uint8_t, @c uint16_t, @c
- ** uint32_t or @c uint64_t if any of them fits the width. If none
- ** does, we fall back to @c uintptr_t.
+ ** the result type is chosen from @c uint8_t, @c uint16_t, @c
+ ** uint32_t and @c uint64_t.  If none fits the width, we fall back on @c uintptr_t.
  **
  ** As a consequence, if @a T is an integer type and the
  ** implementation has another integer type of the same width, this is
@@ -354,7 +353,7 @@ __typeof__(P99_GENERIC_SIZE_LIT(sizeof(T), (uintptr_t){ 0 }, P00_UINT_TYPE_LIST)
  ** @brief A list of types that are supposed to have lock-free atomic
  ** operations.
  **
- ** This list is constructed from the knowledge given via the
+ ** This list is constructed from knowledge given via the
  ** lock-free macros for the standard types.
  **
  ** @see ATOMIC_BOOL_LOCK_FREE
@@ -504,7 +503,7 @@ P99_DECLARE_ENUM(memory_order,
  ** the flag and that would not modify it eventually. So this is a
  ** kind of Heisenberg flag, you can't measure it without modifying
  ** it. This can be used as a spinlock to force the flag to be set,
- ** perform a desired operation and then clear the flag, again.
+ ** perform a desired operation and then clear the flag again.
  **
  ** There are extensions ::atomic_flag_lock, ::atomic_flag_trylock and
  ** ::atomic_flag_unlock that perform these spinlock type operations
@@ -721,7 +720,7 @@ P99_GENERIC_SIZE                                                            \
  ** specifiers. I does not cover type qualifiers.
  **
  ** Second for data types that are not predefined integer or
- ** floatingpoint types, the underlying realization of the atomic type
+ ** floating point types, the underlying realization of the atomic type
  ** must have been previously declared with ::P99_DECLARE_ATOMIC.
  **
  ** Besides the atomic integer types that are listed in the standard
@@ -768,7 +767,7 @@ P99_GENERIC_SIZE                                                            \
  **
  ** With the exception of the floating point types, these latter three
  ** operations are lock-free if a lock-free low-level function is
- ** implemented for an unsigned integer type that has the same
+ ** implemented for an unsigned integer type with the same
  ** width. This should usually be the case for all integer types,
  ** including @c enum, and pointer types.
  **
@@ -840,9 +839,9 @@ typedef _Atomic(uintmax_t) atomic_uintmax_t;
 /**
  ** @addtogroup fences Memory Fences
  **
- ** This is only rudimentary support for fences. Basically all fences
- ** but with argument ::memory_order_relaxed perform a full memory
- ** barrier.
+ ** This is only rudimentary support for fences. Basically, all fences perform
+ ** a full memory barrier except where the argument ::memory_order_relaxed is
+ ** passed.[???? did I get that right?]
  ** @{
  **/
 
@@ -957,7 +956,7 @@ void atomic_flag_clear(volatile atomic_flag *p00_objp) {
  ** This interprets an ::atomic_flag as a spinlock. State "clear"
  ** means unlocked and state "set" means locked.
  **
- ** This operation only guarantees acquire consistency.
+ ** This operation only guarantees acquire-consistency.
  **
  ** @memberof atomic_flag
  **/
@@ -973,7 +972,7 @@ void atomic_flag_lock(volatile atomic_flag *p00_objp) {
  ** This interprets an ::atomic_flag as a spinlock. State "clear"
  ** means unlocked and state "set" means locked.
  **
- ** This operation only guarantees acquire consistency.
+ ** This operation only guarantees acquire-consistency.
  **
  ** @memberof atomic_flag
  **/
@@ -985,7 +984,7 @@ _Bool atomic_flag_trylock(volatile atomic_flag *p00_objp) {
 /**
  ** @brief extension: clear the flag unconditionally
  **
- ** This operation only guarantees release consistency.
+ ** This operation only guarantees release-consistency.
  **
  ** @memberof atomic_flag
  **/
@@ -999,7 +998,8 @@ void atomic_flag_unlock(volatile atomic_flag *p00_objp) {
  ** section of the program by using @a FLAGP as a spinlock.
  **
  ** @param FLAGP is an expression that evaluates to a pointer to
- ** ::atomic_flag. The pointee is used as a spinlock, so this is an
+ ** ::atomic_flag. The [????pointee - you mean the thing pointed to?  can you
+ ** use 'flag'?] is used as a spinlock, so this is an
  ** active wait.
  **
  ** @remark @a FLAGP is only evaluated once at the beginning, so it
@@ -1012,7 +1012,7 @@ void atomic_flag_unlock(volatile atomic_flag *p00_objp) {
  ** as @c goto, @c break, @c return, @c longjmp, or ::P99_UNWIND etc.
  **
  ** Such a critical section is only protected against threads that try
- ** to enter this same critical section. Threads may well be
+ ** to enter this same critical section. Threads may well
  ** simultaneously be in different critical sections.
  **
  ** @see P99_MUTUAL_EXCLUDE that is more suited for larger sections.
@@ -1028,7 +1028,7 @@ P00_BLK_END
  ** @brief return true if @a OBJP points to a lock-free object
  **
  ** @remark in this implementation this is a compile time expression,
- ** but this is nothing you should build upon for future
+ ** but it should not be built upon for future
  ** implementations of the C11 standard. For us this property is
  ** important such that two different versions of the atomic
  ** operations can be chosen at compile time.
@@ -1145,8 +1145,8 @@ p99_extension                                                                 \
  ** @a DESIRED if they are equal.
  **
  ** @return true if both values agree and @c false otherwise.  If the
- ** two values are not the same, the current value is returned in @a
- ** *EXPECTED, additionally.
+ ** two values are not the same, the current value is also returned in @a
+ ** *EXPECTED.
  **
  ** The base type of @a OBJP and @a *EXPECTED must be compatible, that
  ** is they must be the same if all qualifiers are taken out.
@@ -1259,7 +1259,7 @@ p99_extension                                                          \
 #define atomic_fetch_sub(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_sub, -=)
 
 /**
- ** @brief Atomically do a bitwise or operation between @a OPERAND and
+ ** @brief Atomically do a bitwise OR operation between @a OPERAND and
  ** @a *OBJP.
  **
  ** @return the current value hidden in @a OBJP before the operation.
@@ -1274,7 +1274,7 @@ p99_extension                                                          \
 #define atomic_fetch_or(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_or, |=)
 
 /**
- ** @brief Atomically do a bitwise and operation between @a OPERAND
+ ** @brief Atomically do a bitwise AND operation between @a OPERAND
  ** and @a *OBJP.
  **
  ** @return the current value hidden in @a OBJP before the operation.
@@ -1289,7 +1289,7 @@ p99_extension                                                          \
 #define atomic_fetch_and(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_and, &=)
 
 /**
- ** @brief Atomically do a bitwise xor operation between @a OPERAND
+ ** @brief Atomically do a bitwise XOR operation between @a OPERAND
  ** and @a *OBJP.
  **
  ** @return the current value hidden in @a OBJP before the operation.
@@ -1349,11 +1349,11 @@ p99_extension                                                           \
  ** @endcode
  **
  ** Such a critical section is only protected against threads that try
- ** to enter this same critical section. Threads may well be
+ ** to enter this same critical section. Threads may well
  ** simultaneously be in different critical sections.
  **
  ** @remark Don't use this if you just want to protect e.g a counter
- ** that is used between different threads. ::_Atomic and the
+ ** that is shared between different threads. ::_Atomic and the
  ** operations on atomic variables are more appropriate for that.
  **
  ** @see P99_SPIN_EXCLUDE to protect several critical sections against
@@ -1397,7 +1397,7 @@ p99_extension                                                  \
  ** @brief Pop the top element from an atomic LIFO @a L
  **
  ** This implements a generic interface to an atomic LIFO (Last In -
- ** Last Out) data structure. To use it you just have do some
+ ** [???? Last - First] Out) data structure. To use it you just have do some
  ** preparatory declarations and add a @c p99_lifo field to your data
  ** structure:
  **
