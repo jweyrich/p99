@@ -567,7 +567,7 @@ INTERPRETER
 my $header = "${slogan}\n";
 $header .= << "HEADER";
 
-Except of parts copied from previous work and as explicitly stated below,
+Except for parts copied from previous work and as explicitly stated below,
 HEADER
 
 $header .= keys(%authors) > 1 ? << "PLURAL" : << "SINGULAR";
