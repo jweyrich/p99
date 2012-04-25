@@ -65,8 +65,7 @@
  **/
 #define P99_IS_EMPTY(...)                                               \
 P00_ISEMPTY(                                                            \
-             /* test if there is just one argument, [????eventually] an empty \
-                one */                                                  \
+            /* test if there is just one argument, that might be empty */ \
              P99_HAS_COMMA(__VA_ARGS__),                                \
              /* test if P99_IS__EQ__ together with the argument         \
                 adds a comma */                                         \
@@ -102,7 +101,7 @@ P00_ISEMPTY(                                                            \
 #define P00_NARG_EMPTY_0(VAL) VAL
 
 /**
- ** @brief Return the length of the [????variate] argument list, where an empty
+ ** @brief Return the length of the variable length argument list, where an empty
  ** argument list is considered to have 0 arguments.
  **
  ** This supposes that the length of the list is less than ::P99_MAX_NUMBER.
@@ -184,8 +183,7 @@ P00_ISEMPTY(                                                            \
  **     return ret % a;
  ** }
  ** @endcode
- ** In this [????toy Ive never seen 'toy' used in this context. 'simple'
- ** perhaps? (globally)] example @c toto can be used as
+ ** In this toy example @c toto can be used as
  ** @code
  ** unsigned magic = toto(3, 1, 3, 5, 7);
  ** @endcode

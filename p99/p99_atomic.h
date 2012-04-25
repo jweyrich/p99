@@ -841,7 +841,7 @@ typedef _Atomic(uintmax_t) atomic_uintmax_t;
  **
  ** This is only rudimentary support for fences. Basically, all fences perform
  ** a full memory barrier except where the argument ::memory_order_relaxed is
- ** passed.[???? did I get that right?]
+ ** passed.
  ** @{
  **/
 
@@ -998,8 +998,7 @@ void atomic_flag_unlock(volatile atomic_flag *p00_objp) {
  ** section of the program by using @a FLAGP as a spinlock.
  **
  ** @param FLAGP is an expression that evaluates to a pointer to
- ** ::atomic_flag. The [????pointee - you mean the thing pointed to?  can you
- ** use 'flag'?] is used as a spinlock, so this is an
+ ** ::atomic_flag. The flag is used as a spinlock, so this is an
  ** active wait.
  **
  ** @remark @a FLAGP is only evaluated once at the beginning, so it
@@ -1397,7 +1396,7 @@ p99_extension                                                  \
  ** @brief Pop the top element from an atomic LIFO @a L
  **
  ** This implements a generic interface to an atomic LIFO (Last In -
- ** [???? Last - First] Out) data structure. To use it you just have do some
+ ** First Out) data structure. To use it you just have do some
  ** preparatory declarations and add a @c p99_lifo field to your data
  ** structure:
  **
