@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -26,7 +26,7 @@
  ** @addtogroup code_augmenting C Programming facilities
  **
  ** Macros and functions in these groups are designed to ease
- ** everyday's life. These concern initialization and heap allocation
+ ** everyday life. They concern initialization and heap allocation
  ** of variables, default arguments for functions (yes, this is C),
  ** "variadic" function that magically receive the length of their
  ** argument list...
@@ -89,7 +89,7 @@ P99_IF_EQ(0,M)                                                 \
  ** default arguments to the underlying real function.
  **
  ** This macro may be used for `overloading' system functions or
- ** functions that you define by your own. The easiest is to explain
+ ** functions that you define yourself. It is easiest to explain
  ** this with an example. The system function @c pthread_mutex_init is
  ** defined as follows:
  **
@@ -97,12 +97,12 @@ P99_IF_EQ(0,M)                                                 \
  ** int pthread_mutex_init(pthread_mutex_t *mut, pthread_mutexattr_t* attr);
  ** @endcode
  **
- ** Here the second argument is used to eventually specify an
+ ** Here the second argument is used to specify an
  ** `attribute' to the mutex @c mut. Most people don't use that
  ** functionality and therefore @c pthread_mutex_init accepts a null
  ** pointer constant
  ** as a replacement for @c attr. This might be annoying since the
- ** focus of the syntax is on the exception than on the main use: the
+ ** focus of the syntax is on the exception rather than on the main use: the
  ** programmer always has to remember this particular special case and
  ** give explicit @c 0's.
  **
@@ -116,10 +116,10 @@ P99_IF_EQ(0,M)                                                 \
  **
  ** This declares a macro @c pthread_mutex_init that resolves to the call of
  ** a real function to initialize a @c pthread_mutexattr_t*. If invoked
- ** with two arguments or more, the macro expansion results just in
+ ** with two arguments or more, the macro expansion just results in
  ** the usual call to the function.
  **
- ** If this initialization value for argument 1 is omitted (arguments
+ ** If the initialization value for argument 1 is omitted (arguments
  ** count from 0) the default value of a null pointer constant is used. Valid use is
  **
  ** @code
@@ -148,8 +148,8 @@ P99_IF_EQ(0,M)                                                 \
  ** and @a M and that it is callable without arguments. This may just
  ** be a function (as implicitly defined by #P99_DECLARE_DEFARG) or a
  ** macro. For the first case everything the function refers to must
- ** be declare at the point of its definition. For the second case,
- ** the macro is evaluate at the place of the call and could refer to
+ ** be declared at the point of its definition. For the second case,
+ ** the macro is evaluated at the place of the call and could refer to
  ** local variables or anything you like.
  **/
 
@@ -157,7 +157,7 @@ P99_IF_EQ(0,M)                                                 \
  ** @def P99_CALL_DEFARG_LIST
  ** @brief Expand an argument list with default arguments.
  **
- ** @see P99_CALL_DEFARG for how this mechanism works. This macro here
+ ** @see P99_CALL_DEFARG for how this mechanism works. This macro
  ** just expands the argument list but doesn't add the function call
  ** itself.
  **/
@@ -174,7 +174,7 @@ P99_IF_EQ(0,M)                                                 \
  ** @warning the list should only contain types and should not give
  ** names to the individual parameters.
  **
- ** @see P99_INSTANTIATE if your function is @c inline and thus you
+ ** @see P99_INSTANTIATE if your function is @c inline, in which case you
  ** also have to provide an external symbol for the function.
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_PROTOTYPE, 0)
@@ -209,8 +209,8 @@ p00_instantiate RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
 /**
  ** @brief Instantiate an inline function.
  **
- ** Functions that are declared inline in C99 don't generate an
- ** external symbol unless the compiler is told so explicitly. But
+ ** For functions that are declared inline in C99, the compiler doesn't generate an
+ ** external symbol unless explicitly told to. But
  ** often you will need such an external symbol, e.g if you switch on
  ** debugging or if you pass a function pointer as a callback to
  ** another function.
@@ -256,13 +256,13 @@ P99_MACRO_END(NAME, _declare_defarg)
  **
  ** Each element in the list must correspond to an expression that can
  ** be evaluated in the outer scope, just where this call is placed.
- ** In many cases this will be constant expressions such as @c 0, but they must not necessarily be so.
+ ** In many cases they will be constant expressions such as @c 0, but they need not be so.
  **
  ** An empty argument, i.e nothing but an eventual comment, produces
  ** nothing. So no default argument will be provided for the
  ** corresponding position in the parameter list of @a NAME.
  **
- ** @see P99_PROTOTYPE on how to declare a prototype of a function
+ ** @see P99_PROTOTYPE on how to declare the prototype of a function
  ** @a NAME that can be used with this
  **
  ** @see P99_CALL_DEFARG on how to declare the macro @a NAME
@@ -316,10 +316,10 @@ P99_MACRO_END(NAME, _declare_defarg)
 /**
  ** @brief Assure type safety for variadic functions
  **
- ** Variadic functions in C have a big loop hole in that they don't
- ** enforce a type for parameters that are given to the ... list. This
+ ** Variadic functions in C have a big loophole in that they don't
+ ** enforce the types for parameters that are given to the ... list. This
  ** may have severe consequences when you pass constants as arguments
- ** to such a function that result in a different type than you think.
+ ** to such functions and the resulting type differs from what is expected.
  **
  ** A classical example is @c NULL, which may be an integral 0 of any
  ** type @em or @c (void*)0. Suppose a function
@@ -327,8 +327,8 @@ P99_MACRO_END(NAME, _declare_defarg)
  ** void toto_raw(size_t len, ...);
  ** @endcode
  **
- ** that handles the number of arguments that it expects with the
- ** parameter @c len, and then all other arguments are expected to be @c
+ ** expects the
+ ** parameter @c len, followed by a list of arguments expected to be @c
  ** void*. Consider the following three calls to @c toto_raw:
  ** @code
  ** toto_raw(2, NULL, malloc(23));
@@ -337,10 +337,10 @@ P99_MACRO_END(NAME, _declare_defarg)
  ** @endcode
  **
  ** Depending on the compiler, the first two might both result in an
- ** <code>(int)0</code> that is put on the stack. @c sizeof(int) might
+ ** <code>(int)0</code> being put on the stack. @c sizeof(int) might
  ** for example be 4 and @c sizeof(void*) be 8, so the program would
- ** crash. C has no possibility to detect that automatically since the
- ** interface of @c toto_raw simply can't specify what type the function
+ ** crash. C has no automatic way to detect that since the
+ ** interface of @c toto_raw simply can't specify which types the function
  ** expects.
  **
  ** ::P99_CALL_VA_ARG allows you to "declare" the type of the ... arguments.
@@ -378,7 +378,7 @@ P99_MACRO_END(NAME, _declare_defarg)
  ** toto();
  ** @endcode
  **
- ** The convention for these symbol are that the number at the end
+ ** The convention for these symbols is that the number at the end
  ** corresponds to the position of the argument, starting from 0. This
  ** may be a macro, as above, or a function. We could have achieved
  ** the same effect by declaring
@@ -386,7 +386,7 @@ P99_MACRO_END(NAME, _declare_defarg)
  ** inline size_t toto_defarg_0(void) { return 0; }
  ** @endcode
  **
- ** The arguments in the variadic list may not only have a
+ ** The arguments in the variadic list may have not only a
  ** default type but may have a default value, too.
  ** @code
  ** #define toto_defarg() ((void*)0)
@@ -401,7 +401,7 @@ P99_MACRO_END(NAME, _declare_defarg)
  ** toto(1, (void*)0);
  ** @endcode
  **
- ** The naming convention is similar to what is stated above for the
+ ** The naming convention is similar to that stated above for the
  ** numbered arguments, only that the suffix "_N" is omitted from the
  ** name of the function or macro.
  **/

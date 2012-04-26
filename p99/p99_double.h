@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -25,7 +25,7 @@
  **
  ** Since not all substrings of a double constant form a valid
  ** preprocessor token, construction of @c double constants must be
- ** done carefully when done with macros. The macros here guarantee
+ ** done carefully when macros are used. The macros here guarantee
  ** that this is done in a portable way.
  ** @{
  */

@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -85,22 +85,22 @@ P99_MACRO_END(declare_enum_parse, T)
  **
  ** This macro only works for enumeration types that have no
  ** assignments to the constants. To define an enumeration type @c
- ** color Use it in something as
+ ** color use the macro in something like
  ** @code
  ** P99_DECLARE_ENUM(color, red, green, blue);
  ** @endcode
  **
  ** As additional benefits you obtain:
  **
- ** - constants @c color_min and @c color_max that in this example
+ ** - constants @c color_min and @c color_max that in the example
  **   here would correspond to @c red and @c blue, respectively
- ** - constant @c color_amount that in this example
+ ** - constant @c color_amount that in the example
  **   here would correspond to @c 3
  ** - a function @c color_getname that returns a string containing the
  **   name of its argument.
- ** - a function @c color_parse that returns the color that has longest prefix in a string.
+ ** - a function @c color_parse that returns the color with the longest prefix in a string.
  **
- ** To have this functional, you have to put an line
+ ** To have this work, you have to put a line
  ** @code
  ** P99_DEFINE_ENUM(color);
  ** @endcode
@@ -109,15 +109,15 @@ P99_MACRO_END(declare_enum_parse, T)
  **
  ** Unfortunately you can't use doxygen like comments inside the
  ** argument list to document the enumeration constants. You have to
- ** document the constants separately. For the above example you would
+ ** document the constants separately. For the example above you would
  ** do
  ** @code
  **   /// @var color red
- **   /// the most redish color of all colors
+ **   /// the most reddish color of all colors
  ** @endcode
  ** Observe the bizarre naming convention, here. Although in C (and
  ** C++) `red' is declared in the same scope as `enum color' you have
- ** to prefix it with `color' such that the documentation lands inside
+ ** to prefix it with `color' such that the documentation ends up inside
  ** the one for `color'.
  **/
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ENUM, 0)
@@ -160,7 +160,7 @@ P99_DECLARE_ENUM_PARSE(T, __VA_ARGS__)
 /**
  ** @brief Define the necessary symbols for a simple enumeration type.
  **
- ** Use this with P99_DECLARE_ENUM(), which see.
+ ** @see P99_DECLARE_ENUM
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DEFINE_ENUM, 0)
 #define P99_DEFINE_ENUM(T)                                     \
@@ -202,7 +202,7 @@ P99_DECLARE_ENUM_GETNAME(
 );
 
 /**
- ** @brief Return the platform the endianness
+ ** @brief Return the platform endianness
  ** in terms of a value of type ::p99_endianness.
  **/
 #define P99_ENDIANNESS ((p99_endianness)P99_HTON(4, UINT32_C(0x01020304)))
