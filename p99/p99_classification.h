@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -104,7 +104,7 @@
 #define P00_DETECT_PAREN(...) ,
 
 /**
- ** @brief Detect if the argument list has an extra pair of of () around.
+ ** @brief Detect if the argument list is surrounded by an extra pair of ().
  **/
 #define P99_HAS_NO_PAREN(...)                                                         \
   /* Use of P00_NARG is important to avoid false trigger when __VA_ARGS__ is empty */ \
@@ -114,7 +114,7 @@ P99_IS_EQ(P00_NARG(__VA_ARGS__), P00_NARG(P00_DETECT_PAREN __VA_ARGS__))
 #define P00_REMOVE_PAREN(ARG) P00_REMOVE_PAREN_ ARG
 
 /**
- ** @brief Remove an extra pair of of () around the argument, if any.
+ ** @brief Remove an extra pair of () around the argument, if any.
  **/
 #define P99_REMOVE_PAREN(...)                                                            \
   P99_IF_ELSE(P99_HAS_NO_PAREN(__VA_ARGS__))(__VA_ARGS__)(P00_REMOVE_PAREN(__VA_ARGS__))

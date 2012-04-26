@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -23,7 +23,7 @@
 
 
 /**
- ** @addtogroup preprocessor_blocks Preprocessor BLocks
+ ** @addtogroup preprocessor_blocks Preprocessor Blocks
  ** @brief This defines some macros that can be used to ensure that
  ** certain operations are always executed before entering and after
  ** leaving a particular block.
@@ -81,8 +81,8 @@ P99_PREFER(                                                            \
 
 
 /**
- ** @brief Declare a feature @a NAME that can be compile time
- ** inhibited or allowed in certain parts of code.
+ ** @brief Declare a feature @a NAME that can be inhibited or allowed at
+ ** compile time in certain parts of code.
  **
  ** @see P99_INHIBIT
  ** @see P99_ALLOW
@@ -150,11 +150,11 @@ P00_BLK_GEN(P00_ROBUST(BEFORE), true, __VA_ARGS__)
 
 #ifdef P00_DOXYGEN
 /**
- ** @brief A meta-macro to protect a dependent block or statement by
- ** statement @a BEFORE that is executed before the block and @a AFTER
+ ** @brief A meta-macro to protect a dependent block or statement by the
+ ** statements @a BEFORE that is executed before the block and @a AFTER
  ** that is executed afterward.
  **
- ** Preliminary exit of the block is possible with @c break or @c continue.
+ ** Early exit from the block is possible with @c break or @c continue.
  **
  ** @warning @c return, @c exit() or other functions that don't return
  ** to the caller inside the dependent block will result in not
@@ -194,7 +194,7 @@ P00_BLK_END
  ** statement @a BEFORE and @a AFTER are executed before and after the
  ** block, respectively.
  **
- ** Preliminary exit of the block is possible with @c break or @c continue.
+ ** Early exit from the block is possible with @c break or @c continue.
  **
  ** @warning @c return, @c exit() or other functions that don't return
  ** to the caller inside the dependent block will result in not
@@ -269,13 +269,13 @@ for (_Bool p00 = 1; p00 && p99_extension ((void)({ __VA_ARGS__ }), 1); p00 = 0)
  ** @brief Only execute the depending statement or block if it is
  ** jumped into explicitly from the outer block.
  **
- ** This can be used to comment out code temporarily on source
- ** level. This macro is preferable over the common <code>if
+ ** This can be used to comment out code temporarily at source
+ ** level. This macro is preferable to the common <code>if
  ** (0)</code> dialect that is used for the same purpose, since it has
  ** no problem with a dangling @c else.
  **
  ** This can also be used to handle some exceptional cases to which
- ** you want to jump to explicitly, either by a @c goto or as a @c
+ ** you want to jump explicitly, either by a @c goto or as a @c
  ** switch @c case.
  **
  ** With this the example from ::P99_PREFER reads simply
@@ -348,7 +348,7 @@ for (_Bool p00 = 1; p00 && p99_extension ((void)({ __VA_ARGS__ }), 1); p00 = 0)
  **
  ** Please observe that these macros prefix exactly one statement or
  ** block and not a series of statements as a normal @c case would
- ** do and none of them has the semantic of a @c break. In particular:
+ ** and that none has the semantic of a @c break. In particular:
  ** - @c EINTR and the default cases have <code>{ .. }</code> around their statements
  **   such that they may execute several statements.
  ** - The @c severe_error_occured assignment is executed for the
@@ -382,8 +382,8 @@ typedef enum p00_uncase_enum {
 /**
  ** @brief Handle and reset @c errno.
  **
- ** This is will inspect @c errno (which is expensive) exactly once.
- ** If @c errno is @c 0, it will do nothing as efficient as
+ ** This will inspect @c errno (which is expensive) exactly once.
+ ** If @c errno is @c 0, it will do nothing as efficiently as
  ** possible. Otherwise it will execute the dependent block much as a
  ** @c switch statement:
  **
@@ -418,8 +418,8 @@ enum p99_unwind {
   /**
    ** @brief The level of nesting ::P99_UNWIND_PROTECT
    **
-   ** This will always be accessible as read-only constant and taking
-   ** an address of it will produce an error.
+   ** This will always be accessible as a read-only constant and taking
+   ** its address will produce an error.
    **/
   p99_unwind_level = 0,
   p00_unwind_top = 0,
@@ -431,11 +431,11 @@ enum p99_unwind {
    ** This will be @c 0 if no ::P99_UNWIND is in progress. Otherwise a
    ** positive number tells how many levels will at most be unwound. A
    ** negative value will cause the whole ::P99_UNWIND_PROTECT level
-   ** to traversed. This same negative value is visible on all levels
+   ** to be traversed. This same negative value is visible at all levels
    ** through the execution of the protected parts.
    **
-   ** This will always be accessible as read-only constant and taking
-   ** an address of it will produce an error.
+   ** This will always be accessible as a read-only constant and taking
+   ** its address will produce an error.
    **/
   p99_unwind_code = 0,
   p99_unwind_return = INT_MAX,
@@ -472,8 +472,7 @@ void p00_longjmp(p00_jmp_buf0 * p00_buf, int p00_val) {
  ** @brief Unwind execution from several levels of nesting inside a
  ** function.
  **
- ** This macro allows to safely unwind several levels of block
- ** statements.
+ ** This macro allows several levels of block statements to be unwound safely.
  **
  ** @code
  ** P99_UNWIND_PROTECT {
@@ -495,11 +494,11 @@ void p00_longjmp(p00_jmp_buf0 * p00_buf, int p00_val) {
  ** present.
  **
  ** The argument to ::P99_UNWIND controls how many levels are
- ** unwound. If it is positive at most that number of level is
+ ** unwound. If it is positive, at most the specified number of levels is
  ** unwound, but never more levels than there are on the call stack of
  ** the enclosing function. If it is negative, all levels on the stack
- ** of the enclosing function are unwound and during that process this
- ** negative value that is passed to ::P99_UNWIND is accessible
+ ** of the enclosing function are unwound and during unwinding, this
+ ** negative argument (that was passed to ::P99_UNWIND) is accessible
  ** through ::p99_unwind_code.
  **
  ** @warning Variables that are modified before the call to
@@ -579,8 +578,8 @@ void p00_unwind(void* p00_top, unsigned p00_level, int p00_cond) {
  ** @brief Preliminary resume from one or several levels of nested
  ** ::P99_UNWIND_PROTECT
  **
- ** @param X If this is evaluates to @c 0 nothing is done. If the
- ** result is positive as most as many levels of ::P99_UNWIND_PROTECT
+ ** @param X If this evaluates to @c 0 nothing is done. If it evaluates
+ ** positive, that number of levels of ::P99_UNWIND_PROTECT
  ** will be unwound. Otherwise all levels on the stack will be unwound
  ** and the control variables ::p99_unwind_code of these will be set
  ** to the value of @a x.
@@ -601,7 +600,7 @@ void p00_unwind(void* p00_top, unsigned p00_level, int p00_cond) {
  **
  ** By this you can guarantee that all eventually existing
  ** ::P99_PROTECT parts of enclosing ::P99_UNWIND_PROTECT are properly
- ** executed. This is in some similar to the guarantee of C++ to call
+ ** executed. This is in some way similar to the guarantee of C++ to call
  ** destructors before returning from a function.
  **
  ** There is one important difference, though: the @c return
@@ -672,14 +671,14 @@ if (0) {                                                              \
 /*! \see P99_GUARDED_BLOCK **/
 
 /**
- ** @brief Assert runtime condition @a EXPR on entry and on leave of the
+ ** @brief Assert runtime condition @a EXPR when entering or leaving the
  ** dependent block.
  ** @headerfile p99_c99.h "p99_c99.h"
  **/
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_INVARIANT, 0)
 P99_BLOCK_DOCUMENT
 #define P99_INVARIANT(EXPR)                                                                   \
-P99_PROTECTED_BLOCK(assert((EXPR) && "failed on entry"), assert((EXPR) && "failed on leave"))
+P99_PROTECTED_BLOCK(assert((EXPR) && "failed at beginning of block"), assert((EXPR) && "failed at end of block"))
 
 
 /** @}

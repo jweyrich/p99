@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -60,7 +60,7 @@ P00_C99_DEFARG_DOCU(longjmp, void, jmp_buf env, int val)
  **  - precise overflow and underflow handling according to the type
  **  - flexible base, namely octal, decimal or hexadecimal conversion
  **
- ** In addition to provide default arguments for the standard
+ ** In addition, to provide default arguments for the standard
  ** functions, these have names starting with @c p99_str... and macros that
  ** expand to these starting with @c str..., instead. The later might
  ** be reserved or provided in later version of the C standard. If we

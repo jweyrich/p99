@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -70,7 +70,7 @@
  ** As I personally mainly have compilers that all claim themselves to
  ** be compatible with gcc, this collection is strongly biased towards
  ** gcc extensions. Please don't hesitate to point me to documentation
- ** of other compilers that could be useful, here.
+ ** of other compilers that could be useful here.
  **
  ** @see P99_COMPILER
  ** @see P99_IF_COMPILER
@@ -85,20 +85,20 @@
 
 /**
  ** @example test-p99-conformance.c
- ** @brief That file provides a test for C99 conformance.
+ ** @brief A file that provides a test for C99 conformance.
  **
  ** It only tests the "compiler" part of C, that is without any
  ** include files. Any C implementation, whether hosted or
- ** freestanding should comply to this.
+ ** freestanding should comply with this.
  **
- ** To convince your compiler to compile this you have perhaps to
+ ** To convince your compiler to compile this you might have to
  ** provide some additional parameters on the command line. E.g for
  ** the gcc family of compilers (including third party pretenders) you
  ** usually have to give "-std=c99" to switch to C99 mode. But other
  ** parameters may be in order, consult your compiler documentation.
  **
  ** This file is split into several parts that hopefully are
- ** self explaining. Each of the parts has a macro @c SKIP_... that
+ ** self explanatory. Each of the parts has a macro @c SKIP_... that
  ** lets you skip a test.
  **/
 
@@ -407,7 +407,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 
 # if !defined(p99_inline) || defined(P00_DOXYGEN)
 /**
- ** @brief Try to force a function to be always inlined
+ ** @brief Try to force a function always to be inlined
  **
  ** Since there is no default language construct to ensure this, this
  ** will always only be an approximation depending on the compiler.
@@ -467,7 +467,7 @@ signed p00_trailing_comma_in_initializer__(void) {
  ** By that all references to @c func would use @c _func, instead.
  **
  ** @remark This feature seems to be widely supported. We have seen
- ** mention of that for gcc and relatives, IBM, SGI, HP, SUN, Diab,
+ ** it mentioned for gcc and relatives, IBM, SGI, HP, SUN, Diab,
  ** Microsoft
  **/
 # define P99_WEAK(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2)(P00_WEAK1(__VA_ARGS__))(P00_WEAK2(__VA_ARGS__))
@@ -504,7 +504,7 @@ signed p00_trailing_comma_in_initializer__(void) {
  ** some new features that are already present in many compilers or
  ** OS, but sometimes with different syntax or interfaces. We provide
  ** interfaces to some of them with the intention that once compilers
- ** that implement C11 come out these interfaces can directly relate
+ ** that implement C11 are released, these interfaces can directly relate
  ** to the C11 feature.
  **
  ** @{
@@ -539,7 +539,7 @@ typedef uint_least32_t char32_t;
  ** @brief Evaluate expression @a EXPR at compile time and ensure that
  ** it is fulfilled.
  **
- ** The expression must be given as first argument. The second
+ ** The expression must be given as the first argument. The second
  ** argument is a diagnostic string that should be part of the
  ** diagnostic message when the assertion fails.
  **
@@ -547,7 +547,7 @@ typedef uint_least32_t char32_t;
  ** fulfilled, but all should give at least the line number and stop
  ** compilation.
  **
- ** @remark This functionality will be directly supported in C1x and
+ ** @remark This functionality will be directly supported in C11 and
  ** the macro ::static_assert must be provided by assert.h, which we
  ** include.
  **/
@@ -567,10 +567,10 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 /**
  ** @brief Return the alignment requirement for type @a T
  **
- ** @remark If this is not provided this uses a gcc extension. If this
- ** also isn't provided this uses a hack through the @c offsetof
- ** macro. For the later, @a T is restricted to simple type names,
- ** arrays or function pointers can only be used through typedefs.
+ ** @remark If this is not provided a gcc extension is used. If no such extension
+ ** is provided, a hack through the @c offsetof
+ ** macro is used. For the later, @a T is restricted to simple type names.
+ ** Arrays or function pointers can only be used through @c typedef.
  **/
 #ifndef __alignof_is_defined
 # define alignof _Alignof
@@ -587,7 +587,7 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
  ** @brief Align an object according to @a X
  **
  ** @remark If this is not provided by the compiler implementation
- ** this uses a gcc extension. Other than required by C11, this
+ ** a gcc extension is used. Other than required by C11, this
  ** extension only accepts numerical values for @a X.
  **/
 #ifndef __alignas_is_defined
@@ -602,7 +602,7 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 /**
  ** @brief A type with the maximum alignment among the standard types.
  **
- ** This type is required for C11. We simply achieve this feature by
+ ** This type is required for C11. We achieve this feature by simply
  ** producing a @c union of all the standard types, object
  ** and function pointer types, @a struct and @a union.
  **
@@ -659,20 +659,20 @@ __attribute__((__aligned__))
 #ifdef P00_DOXYGEN
 /**
  ** @def _Noreturn
- ** @brief Declare a function that doesn't returns to the caller.
+ ** @brief Declare a function that doesn't return to the caller.
  **
- ** You'd probably use this rarely, only for functions that use
+ ** You'd probably use this rarely, and only for functions that use
  ** something like @c longjmp, @c exit, @c abort, ::quick_exit or
  ** ::thrd_exit under the hood.
  **
- ** @remark Uses a gcc attribute for the implementation of defers to a
+ ** @remark Uses a gcc attribute for the implementation or defers to a
  ** @c #pragma if that is not available.
  ** @see noreturn
  **/
 #define _Noreturn
 /**
  ** @def noreturn
- ** @brief Declare a function that doesn't returns to the caller.
+ ** @brief Declare a function that doesn't return to the caller.
  **
  ** @see _Noreturn
  **/
@@ -695,7 +695,7 @@ static_assert(1);
 #ifdef P00_DOXYGEN
 /**
  ** @def _Thread_local
- ** @brief The C11 keyword for declaring a thread local variable.
+ ** @brief The C11 keyword for declaring a thread-local variable.
  **
  ** @see P99_DECLARE_THREAD_LOCAL for a method that is also usable for non-C11 compilers
  ** @see thread_local
@@ -703,7 +703,7 @@ static_assert(1);
 # define _Thread_local
 /**
  ** @def thread_local
- ** @brief Declare a thread local variable.
+ ** @brief Declare a thread-local variable.
  **
  ** @see P99_DECLARE_THREAD_LOCAL for a method that is also usable for non-C11 compilers
  ** @see _Thread_local
@@ -756,15 +756,15 @@ extern char const p00_harmless_declaration[sizeof(void const*[1])];
 
 /**
  ** @brief A token sequence that can be used in a @c #pragma directive
- ** to indicate a parallel for loop.
+ ** to indicate a parallel for-loop.
  **
- ** When using this in a @c #pragma, the resulting code then may be
+ ** When using this in a @c #pragma, the resulting code may then be
  ** parallelized and (if the platform
- ** supports this) multiple threads may be used to speed up the
+ ** supports this) multiple threads may be used to speed up
  ** execution. This will only be effective if your compiler supports
  ** the <a href="http://openmp.org/wp/">Open Multi-Processing</a>
- ** extension (OpenMP for short, or OMP even shorter) and you told him
- ** to use it.
+ ** extension (OpenMP for short, or OMP even shorter) and you enabled its
+ ** use.
  **/
 #if p99_has_feature(openmp)
 #define P99_PARALLEL_PRAGMA omp parallel for
@@ -791,11 +791,11 @@ extern char const p00_harmless_declaration[sizeof(void const*[1])];
 /**
  ** @brief Mark the conditional expression as being unlikely
  **
- ** This can e.g be useful to test returns of system functions. Many
+ ** This can be useful e.g to test returns of system functions. Many
  ** of these return @c 0 if everything goes well and something else
  ** otherwise.
  **
- ** Use with care, humans are particularly bad concerning branch
+ ** Use with care, as humans are particularly bad at branch
  ** prediction. If unsure, first test your conditional for some time
  **
  ** to see that the case is really as unlikely as you think.
@@ -809,9 +809,9 @@ extern char const p00_harmless_declaration[sizeof(void const*[1])];
 /**
  ** @brief Mark the conditional expression as being likely
  **
- ** This can e.g be useful to test the return value of @c printf.
+ ** This can be useful e.g to test the return value of @c printf.
  **
- ** Use with care, humans are particularly bad concerning branch
+ ** Use with care, as humans are particularly bad at branch
  ** prediction. If unsure, first test your conditional for some time
  ** to see that the case is really as likely as you think.
  **
@@ -835,7 +835,7 @@ extern char const p00_harmless_declaration[sizeof(void const*[1])];
 
 /**
  ** @def P99_ATLEAST
- ** @brief Specify for array parameters that they have a least amount of elements.
+ ** @brief Specify for array parameters that they have a least a given number of elements.
  **
  ** This is an addition through an abuse of the @c static keyword that
  ** older compilers might not support.
@@ -868,7 +868,7 @@ typedef __int128_t p99x_int128;
 #endif
 
 /**
- ** @brief Issue the pragma that is given as supplementary argument
+ ** @brief Issue the pragma that is given as a supplementary argument
  ** iff the actual compiler is @a COMP.
  ** @see P99_COMPILER
  **/
