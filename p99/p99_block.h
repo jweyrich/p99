@@ -408,8 +408,6 @@ typedef enum p00_uncase_enum {
 P00_BLK_START                                                  \
 P00_BLK_DECL(int const, p99_errno, errno)                      \
   switch (P99_UNLIKELY(!!p99_errno)) case true:                \
-    P99_UNWIND_PROTECT                                         \
-      if (false) { P99_PROTECT: errno = 0; } else              \
         P00_BLK_AFTER(errno = 0)                               \
           switch (p99_errno) case 0:
 
