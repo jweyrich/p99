@@ -126,6 +126,7 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, c
  ** error numbers such as @c ERANGE. But any other convention that
  ** fits the needs of an application can be used.
  **/
+P00_UNWIND_DOCUMENT
 #define P99_THROW(X) p00_jmp_throw((X), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
 
@@ -134,6 +135,7 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, c
  ** or ::P99_CATCH clause and propagate the same exception that let
  ** here to the next level.
  **/
+P00_UNWIND_DOCUMENT
 #define P99_RETHROW p00_jmp_throw(p00_code, p00_unwind_top, 0, 0)
 
 
@@ -223,6 +225,7 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, c
  ** just be a single statement.
  **
  **/
+P00_UNWIND_DOCUMENT
 #define P99_TRY                                                \
 P99_UNWIND_PROTECT                                             \
 /* one phase for the try, one for the finally */               \
@@ -266,6 +269,7 @@ P00_BLK_DECL(p00_jmp_buf0*, p00_unwind_top, p00_unwind_prev)
  ** @see P99_TRY
  ** @see P99_CATCH
  **/
+P00_UNWIND_DOCUMENT
 #define P99_FINALLY                                            \
 P00_FINALLY                                                    \
 P00_BLK_AFTER(p00_unw ? P99_RETHROW : P99_NOP)
@@ -310,6 +314,7 @@ P00_BLK_AFTER(p00_unw ? P99_RETHROW : P99_NOP)
  ** @see P99_THROW
  ** @see P99_RETHROW
  **/
+P00_UNWIND_DOCUMENT
 #define P99_CATCH(...)                                                  \
 P00_FINALLY                                                             \
 P99_IF_EMPTY(__VA_ARGS__)()(P00_BLK_BEFORE(__VA_ARGS__ = p00_code))     \

@@ -72,6 +72,10 @@ P99_PREFER(                                                            \
 
 #endif
 
+
+#define P00_UNWIND_DOCUMENT                                             \
+/** @warning Utilities that change control flow in an unexpected way may result in the loss of some modifications that are effected on variables. A modern compiler should tell you when you are in such a situation. If it is the case you'd have to declare the variable in question with the @c volatile qualifier. For an explanation see ::P99_UNWIND_PROTECT. **/
+
 /**
  ** @addtogroup validity Checking code validity
  ** @{
@@ -210,6 +214,7 @@ P00_BLK_END
  ** @see P99_UNWIND to break through one or several nested guarded blocks
  ** @see P99_UNWIND_RETURN to return from the enclosing function
  **/
+P00_UNWIND_DOCUMENT
 #define P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)
 #else
 P00_DOCUMENT_WARN_VLA_ARGUMENT(P99_GUARDED_BLOCK, 0)
@@ -503,6 +508,32 @@ void p00_longjmp(p00_jmp_buf0 * p00_buf, int p00_val) {
  ** ::P99_UNWIND are only guaranteed to have their new value in the
  ** protected part if they are declared @c volatile.
  **
+ ** Let us see this at an example. The natural way with
+ ** ::P99_UNWIND_PROTECT to check for a valid return of @c malloc
+ ** could look like this:
+ **
+ ** @code
+ ** unsigned char*volatile buffer = 0;
+ ** P99_UNWIND_PROTECT {
+ **   buffer = malloc(bignumber);
+ **   if (!buffer || IamSick) P99_UNWIND 1;
+ **   // do something complicated with buffer
+ ** P99_PROTECT:
+ **   free(buffer);
+ ** }
+ ** @endcode
+ **
+ ** If we would not declare @c buffer to be @c volatile, the update to
+ ** @c buffer with the new value would perhaps not be visible at the
+ ** point that we call @c free. Under normal circumstance the compiler
+ ** is allowed to optimize the store operation away (implied by the
+ ** assignment), if he can prove that the only visible value of it
+ ** comes from the last assignment. I could then just use a cached
+ ** value (e.g in a register) to pass as an argument to @c free. The
+ ** @c volatile qualifier inhibits such an optimization and forces
+ ** memory-store operations when there is a modification and
+ ** memory-load operations when there is access to the variable.
+ **
  ** @warning There should be no plain @c return statement in the
  ** depending block before the ::P99_PROTECT label.
  **
@@ -514,6 +545,7 @@ void p00_longjmp(p00_jmp_buf0 * p00_buf, int p00_val) {
  ** @see ::P99_CHECK_RETURN to check for suspicious bare @c return statements
  ** @see ::p99_unwind_code
  ** @see ::p99_unwind_level
+ ** @see ::P99_TRY and ::P99_THROW for a construct that can be used across function calls.
  **/
 #define P99_UNWIND_PROTECT                                                                       \
 P00_BLK_START                                                                                    \
@@ -582,6 +614,7 @@ void p00_unwind(void* p00_top, unsigned p00_level, int p00_cond) {
  ** and the control variables ::p99_unwind_code of these will be set
  ** to the value of @a x.
  **/
+P00_UNWIND_DOCUMENT
 /* This uses a very special trick, such that this a valid call to
    longjmp at the end. On the lowest level p00_unwind_top is an
    integer of value 0 that converts to a void* that can be passed to
@@ -616,6 +649,7 @@ void p00_unwind(void* p00_top, unsigned p00_level, int p00_cond) {
  ** P99_UNWIND_RETURN myret;
  ** @endcode
  **/
+P00_UNWIND_DOCUMENT
 #define P99_UNWIND_RETURN                                              \
 /* This is just there to prevent spurious dangling else warnings */    \
 P00_BLK_START                                                          \
@@ -648,6 +682,7 @@ for (;                                                                 \
  ** @see p99_unwind_code
  ** @see p99_unwind_level
  **/
+P00_UNWIND_DOCUMENT
 #define P99_PROTECT                                                   \
 P99_DECLARE_INHIBIT(RETURN);                                          \
 if (0) {                                                              \

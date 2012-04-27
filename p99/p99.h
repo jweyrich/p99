@@ -631,6 +631,34 @@
  ** with a return value as specified after ::P99_UNWIND_RETURN, here
  ** the value @c 5.7777E-30.
  **
+ ** On certain platforms that implement enough of C11 we even now have
+ ** try-catch clauses that are entirely implemented within
+ ** C. ::P99_TRY and ::P99_CATCH can be used as follows
+ ** @code
+ ** double toto(double x) {
+ **  P99_TRY {
+ **    // do something
+ **    while (cond0) {
+ **      for (;cond1;) {
+ **         if (cond2) P99_THROW -1;
+ **         // preliminary return
+ **         if (cond3) P99_UNWIND_RETURN 5.7777E-30;
+ **      }
+ **    }
+ **  } P99_CATCH(int code) {
+ **    // do some cleanup here
+ **    // if everything went well "code" has value 0 otherwise it
+ **    // receives a value from ::P99_TRY
+ **  }
+ **  // regular return
+ **  return x * x;
+ ** }
+ ** @endcode
+ **
+ ** The advantage of ::P99_TRY over ::P99_UNWIND is that P99_THROW
+ ** will also work from other functions that called within the
+ ** try-block.
+ **
  ** @section for Multidimensional arrays and parallel loops
  **
  ** We provide some utilities to ease the programming of loop
