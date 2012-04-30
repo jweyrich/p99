@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -15,7 +15,7 @@
 
 /**
  ** @file
- ** @brief A prepprocessor for loop implementation and some derived
+ ** @brief A preprocessor for loop implementation and some derived
  ** list handling macros.
  ** @see P99_FOR
  **/
@@ -153,7 +153,7 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_BIGFUNC, 1)
  **
  ** In the following example we define an adhoc macro that initializes
  ** an array element with a certain structure type. The array @c P is
- ** an array of 10 pairs, each containing their index in the @c .index
+ ** an array of 10 pairs, each containing their index in the @c index
  ** field and a different pointer in their @c aPos field.
  ** @code
  ** typedef struct pair pair;
@@ -196,7 +196,7 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_REPEAT, 1)
  **
  ** This will expand to
  ** @code
- ** B[0] = A[0]; B[1] = A [1]; B[2] = A[2];
+ ** B[0] = A[0]; B[1] = A[1]; B[2] = A[2];
  ** @endcode
  **
  ** Observe that the first two @c ; are inserted automatically as
@@ -232,7 +232,7 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_UNROLL, 1)
  ** @endcode
  ** @see P99_REPEAT for a similar macro that applies @a MACRO a fixed number of times
  ** @see P99_SEP for a similar macro that separates the different parts with a @c ;
- ** @see P99_SER for a similar macro that separates the different parts with a blanc
+ ** @see P99_SER for a similar macro that separates the different parts with a space token
  ** @see P99_FOR for a more generic and flexible utility
  **/
 P00_DOCUMENT_MACRO_ARGUMENT(P99_SEQ, 0)
@@ -242,11 +242,11 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_SEQ, 0)
  ** @brief Apply the macro @a MACRO to the rest of the argument list.
  **
  ** The macro is called with each of the other arguments and
- ** the results are separated by a blanc token.
+ ** the results are separated by a space token.
  **
  ** @see P99_UNROLL for a similar macro that applies @a MACRO a fixed number of times
  ** @see P99_SEQ for a similar macro that separates the different parts with a @c ,
- ** @see P99_SER for a similar macro that separates the different parts with a blanc
+ ** @see P99_SER for a similar macro that separates the different parts with a space token
  ** @see P99_FOR for a more generic and flexible utility
  **/
 P00_DOCUMENT_MACRO_ARGUMENT(P99_SER, 0)
@@ -279,7 +279,7 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_SER, 0)
  ** @endcode
  ** @see P99_UNROLL for a similar macro that applies @a MACRO a fixed number of times
  ** @see P99_SEQ for a similar macro that separates the different parts with a @c ,
- ** @see P99_SER for a similar macro that separates the different parts with a blanc
+ ** @see P99_SER for a similar macro that separates the different parts with a space token
  ** @see P99_FOR for a more generic and flexible utility
  **/
 P00_DOCUMENT_MACRO_ARGUMENT(P99_SEP, 0)
@@ -335,7 +335,7 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_SEP, 0)
  ** @brief Check if argument @a FIRST is equal to one of the other
  ** elements in the list
  **
- ** Use this as the following:
+ ** Use this as follows:
  ** @code
  ** if (P99_IS_ONE(23, b, c, d, e, f)) {
  **   // one of the guys is 23, do something special
@@ -350,7 +350,7 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_IS_ONE, 0)
 /**
  ** @brief Check if the arguments in the list are all equal
  **
- ** Use this as the following:
+ ** Use this as follows:
  ** @code
  ** if (P99_ARE_EQ(a, b, c, d, e, f)) {
  **   // all are equal, do something special
@@ -365,7 +365,7 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_ARE_EQ, 0)
 /**
  ** @brief Check if argument @a FIRST is less than the other elements in the list
  **
- ** Use this as the following:
+ ** Use this as follows:
  ** @code
  ** if (P99_IS_MIN(a, b, c, d, e, f)) {
  **   // a is smallest, do something special
@@ -378,9 +378,10 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_IS_MIN, 0)
 #define P99_IS_MIN(FIRST, ...) P99_FOR(>= (FIRST), P99_NARG(__VA_ARGS__), P00_AND, P00_ISIT, __VA_ARGS__)
 
 /**
- ** @brief Check if argument @a FIRST is less or equal than the other elements in the list
+ ** @brief Check if argument @a FIRST is less than or equal to the other
+ ** elements in the list
  **
- ** Use this as the following:
+ ** Use this as follows:
  ** @code
  ** if (P99_IS_INF(a, b, c, d, e, f)) {
  **   // a is smallest, do something special
@@ -395,7 +396,7 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_IS_INF, 0)
 /**
  ** @brief Check if argument @a FIRST is strictly greater than the other elements in the list
  **
- ** Use this as the following:
+ ** Use this as follows:
  ** @code
  ** if (P99_IS_MAX(a, b, c, d, e, f)) {
  **   // a is largest, do something special
@@ -408,9 +409,10 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_IS_MAX, 0)
 #define P99_IS_MAX(FIRST, ...) P99_FOR(<= (FIRST), P99_NARG(__VA_ARGS__), P00_AND, P00_ISIT, __VA_ARGS__)
 
 /**
- ** @brief Check if argument @a FIRST is greater or equal the other elements in the list
+ ** @brief Check if argument @a FIRST is greater than or equal to the other
+ ** elements in the list
  **
- ** Use this as the following:
+ ** Use this as follows:
  ** @code
  ** if (P99_IS_SUP(a, b, c, d, e, f)) {
  **   // a is largest, do something special
@@ -426,7 +428,7 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_IS_SUP, 0)
  ** @brief Check if the arguments in the list are ordered according to
  ** the operation @a OP.
  **
- ** Use this as the following:
+ ** Use this as follows:
  ** @code
  ** if (P99_ARE_ORDERED(<=, a, b, c, d, e, f)) {
  **   // all are in order, do something special
@@ -465,7 +467,7 @@ P99_FOR(OP, N, P00_ARE_ORDERED_OP, P00_ARE_ORDERED_AND, P99_SUB(1, N, __VA_ARGS_
  **/
 
 /**
- ** @brief join a list with a specific token given as first argument
+ ** @brief join a list with a specific token given as the first argument
  **
  ** Examples
  ** @code
@@ -512,8 +514,8 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                      \
 
 /**
  ** @ingroup preprocessor_arithmetic
- ** @brief Compute an absolute index in a multidimensional array with
- ** the same function as C would do that.
+ ** @brief Compute an absolute index in a multidimensional array in
+ ** the same way as C.
  **
  ** If we have @c N arguments after @a NAME, @a NAME must be an array
  ** of type
@@ -563,8 +565,8 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_CDIM, 0)
 
 #define P00_ALENS0(NAME, I, REC, _3) REC, P00_ALEN(NAME,,I)
 /**
- ** @brief Produce a list of the lengths of the argument array @a ARR in terms of number
- ** of elements in the first @a N dimensions.
+ ** @brief Produce a list of the lengths of the argument array @a ARR in terms
+ ** of the number of elements in the first @a N dimensions.
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_ALENS, 0)
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
@@ -609,8 +611,8 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALEN, 1)
 /**
  ** @brief Pass a pointer to an @a N dimensional array @a ARR to a function.
  **
- ** This is not supposed to be used directly but for defining a macro
- ** interface to a function:
+ ** This is not supposed to be used directly but instead is for defining a
+ ** macro interface to a function:
  ** @code
  ** double dotproductFunc(P99_AARG(double const, A, 1),
  **                       P99_AARG(double const, B, 1));
@@ -629,16 +631,16 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALEN, 1)
  ** well as the array sizes to a call of the function @c
  ** dotproductFunc.
  **
- ** If the argument @a N is omitted it will default to 1, supposing
- ** that the array is just one dimensional. If it is greater than 1, a
- ** list of length in the first @a N dimension of @a ARR is
- ** transmitted to the function call.
+ ** If the argument @a N is omitted it will default to 1, indicating
+ ** that the array is just one dimensional. If N is greater than 1, a
+ ** list of the @a N lengths in the first @a N dimensions of @a ARR is
+ ** passed to the function call.
  **
  ** @a TYPE can be omitted in which case no attempt to conform types
  ** will be made. Specifying @a TYPE is particularly helpful if the
- ** type is qualified, that is has a @c const or @c volatile
- ** qualification as in the above example. If you don't use the tool
- ** that is provided here, ensuring <code>const</code>ness of multidimensional
+ ** type is qualified, that is it has a @c const or @c volatile
+ ** qualification as in the example above. If you don't use this macro,
+ ** ensuring <code>const</code>ness of multidimensional
  ** arrays is particularly tedious.
  **
  ** To be more precise, the three argument form asserts that pointers
@@ -664,8 +666,8 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_ACALL, 2)
  **
  ** @a DIM defaults to @c 1.
  **
- ** @warning The pointer such declared has the @c const attribute
- ** and may thus not be modified.
+ ** @warning A pointer so declared has the @c const attribute
+ ** and thus may not be modified.
  **
  ** If @a TYPE has qualifiers (@c const, @c volatile, @c restrict or
  ** @c _Atomic), the corresponding call to ::P99_ACALL @em must
@@ -720,7 +722,7 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_AARG, 2)
  ** }
  ** @endcode
  **
- ** The resulting code then may be parallelized and (if the platform
+ ** The resulting code may then be parallelized and (if the platform
  ** supports this) multiple threads may be used to speed up the
  ** execution.
  ** @see P99_PARALLEL_PRAGMA for the conditions under which this will
@@ -752,7 +754,7 @@ P99_PRAGMA(PRAG)                                                                
  ** arithmetic type.
  **
  ** @param VAR is the name of the control variable. It is not mutable
- ** inside the loop as if it where declared <code>TYPE const
+ ** inside the loop, as if it were declared <code>TYPE const
  ** VAR</code>.
  **
  ** @param LOW is the start value of VAR for the first iteration. Only
@@ -861,7 +863,7 @@ P99_IF_EQ(P99_NARG(__VA_ARGS__), 2)                            \
  **
  ** @see P99_PARALLEL_FORALL for a variant that uses OpenMp to parallelize the loop.
  ** @see P99_DO for a simple fortran like iteration
- ** @see P99_CDIM for a macro that computes the absolute position of a
+ ** @see P99_CDIM for a macro that computes the absolute position of an
  **   index N-tuple in a multi-dimensional array.
  **/
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_FORALL, 0)
@@ -875,15 +877,15 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_FORALL, 0)
  ** @brief A multi-index @c for loop who's dependent statement or
  ** block may be executed out of order.
  **
- ** This has the same semantics as ::P99_FORALL only that it assumes
- ** the independence of the of each execution of the statement from
- ** the others.
+ ** This has the same semantics as ::P99_FORALL except that it assumes
+ ** the independence of each execution of the statement from every
+ ** other.
  **
  ** @see P99_FORALL for a variant that doesn't need that assumption,
  ** i.e where the statements should be executed sequentially in order.
  ** @see P99_PARALLEL_DO for a simple fortran like parallel iteration
  ** @see P99_PARALLEL_FOR for a parallel replacement of @c for
- ** @see P99_CDIM for a macro that computes the absolute position of a
+ ** @see P99_CDIM for a macro that computes the absolute position of an
  **   index N-tuple in a multi-dimensional array.
  **/
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_PARALLEL_FORALL, 0)
@@ -912,7 +914,7 @@ if (0) {                                                           \
  ** @code
  ** case '0'..'9': return 23;
  ** @endcode
- ** This here implements such a thing with macros and should as such
+ ** This implementation uses macros and consequently should
  ** be more portable.
  ** @code
  ** switch (argv[0][0]) {
@@ -930,8 +932,8 @@ if (0) {                                                           \
  ** @param LEN must evaluate to a decimal number. If this is 0 the
  ** depending statement will never be reached as a direct jump to the
  ** "label". Depending on the flow for the other cases the statement
- ** may or may be not reachable when falling through from a previous
- ** case.  In the example above for the first range @c '\0' is not
+ ** may or may not be reachable when falling through from a previous
+ ** case.  In the example above, for the first range @c '\0' is not
  ** reachable. But the range for @c '.' is reachable after the
  ** execution of the range starting with @c 'A'.
  **
@@ -959,7 +961,7 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_CASERANGE, 1)
 
 /**
  ** @ingroup types
- ** @brief Declare a structure that of name @a NAME composed of the
+ ** @brief Declare a structure of name @a NAME composed of the
  ** field declarations that are given in the remaining arguments.
  **
  ** For this to work the argument list must contain the declaration of
@@ -988,7 +990,7 @@ P00_STRUCT_TYPEDEFS(NAME, __VA_ARGS__)
  ** @brief Use the fields of variable @a VAR of type @a TYPE
  **
  ** This "lifts" the fields of @a VAR as local variables onto the
- ** local stack and copies their value in these local variables.
+ ** local stack and copies their value into these local variables.
  **
  ** @see P99_STRUCT_UNUSE to restore changed values back into @a VAR.
  **/
@@ -1106,7 +1108,7 @@ P00_MAC_ARGS_NAME PAIR                                         \
  ** @brief Declare macro parameters as local variables as if the macro
  ** were declared as a type generic @c inline function.
  **
- ** @remark This uses the @c __typeof__ extension that is implemented
+ ** @remark This uses the @c __typeof__ extension implemented
  ** by gcc.
  **
  ** This receives parenthesized pairs of name and value that are to be
@@ -1121,7 +1123,7 @@ P00_MAC_ARGS_NAME PAIR                                         \
  ** @endcode
  **
  ** @remark The corresponding local variables have exactly the type of
- ** the expressions that are passed as 2nd element in each pair.
+ ** the expressions that are passed as the 2nd element in each pair.
  **
  ** This achieves several objectives
  ** - Each macro parameter is evaluated exactly once.
@@ -1154,7 +1156,7 @@ __typeof__(__typeof__(*(EXP)) __VA_ARGS__*) P99_PASTE2(p00_macro_var_, NAME) = (
 
 #ifdef DOXYGEN
 /**
- ** @brief Define a variable with @a NAME that has type and value of
+ ** @brief Define a variable with @a NAME that has the type and value of
  ** @a EXPR. If @a QUAL is given it must be a qualifier list that is
  ** added to the resulting type.
  **/

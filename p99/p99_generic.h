@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2012 Jens Gustedt, INRIA, France                           */
 /*                                                                           */
@@ -383,11 +383,11 @@ inline int* p00_generic_test(int * p00_a) {
  **          double*: x);
  ** @endcode
  **
- ** As you can see above, the default value can be omitted. If so, it
+ ** As you can see above, the default value can be omitted. If omitted, it
  ** is replaced with some appropriate expression that should usually
  ** give you a syntax error.
  **
- ** If there is a default expression, that one is used when none of
+ ** If there is a default expression, it is used when none of
  ** the types matches:
  **
  ** @code
@@ -411,7 +411,7 @@ inline int* p00_generic_test(int * p00_a) {
  **              double: max_double)(a, b);
  ** @endcode
  **
- ** Here all the expressions evaluate to a function specifier. If
+ ** Here all of the expressions evaluate to a function specifier. If
  ** <code>a + b</code> is @c int, ... or @c double the
  ** appropriate maximum function is choosen for that type. If none of
  ** these matches, the one for @c uintmax_t is choosen. The
@@ -422,18 +422,18 @@ inline int* p00_generic_test(int * p00_a) {
  **   the promoted common type of @c a and @c b. E.g for all types
  **   that are narrower than @c int, e.g @c short, normally @c int
  **   will be the type of the expression and @c max_int will be the
- **   function. If @c a would be @c unsigned and @c b would be @c
- **   double the result would be @c double, too.
+ **   function. If @c a is @c unsigned and @c b is @c
+ **   double the result is also @c double.
  **
  ** - the return type of the @c _Generic expression is a
- **   function to two arguments. If it would be for @c int, e.g, the
- **   type would be <code>int ()(int, int)</code>. So the return type
+ **   function to two arguments. If it is @c int, e.g, the
+ **   type is <code>int ()(int, int)</code>. So the return type
  **   of the function call would be @c int in that case.
  **
  ** - the arguments are promoted and converted to the expected type of
  **   the choosen function
  **
- ** @remark If the compiler is C11 complying, the ::P99_GENERIC
+ ** @remark If the compiler is C11 compliant, the ::P99_GENERIC
  ** expression will just be translated to the corresponding @c
  ** _Generic expression.
  **
@@ -444,9 +444,9 @@ inline int* p00_generic_test(int * p00_a) {
 /**
  ** @brief For each generic choice return a compound literal of the chosen type
  **
- ** The resulting literal is default initialized from @c 0.
+ ** The resulting literal is default initialized with @c 0.
  **
- ** This is similar to ::P99_GENERIC only that the second entry in
+ ** This is similar to ::P99_GENERIC except that the second entry in
  ** each pair should be a type.
  **
  ** @code
@@ -463,8 +463,8 @@ inline int* p00_generic_test(int * p00_a) {
 #define P99_GENERIC_LIT(...)
 
 /**
- ** @brief Similar to ::P99_GENERIC but the choice is not done
- ** according to the type of the expression @a UI but for its unsigned
+ ** @brief Similar to ::P99_GENERIC but the choice is not
+ ** according to the type of the expression @a UI but to its unsigned
  ** value.
  **
  ** @param UI must be a compile time integer expression that is cast
@@ -484,8 +484,8 @@ inline int* p00_generic_test(int * p00_a) {
  **
  ** In this example one of the functions @c func1, ..., @c func8 is
  ** chosen according to the size of @c a. This function is then called
- ** with the address of @c a. In case that the size of @c a is not
- ** appropriate a function @c func_fallback is used.
+ ** with the address of @c a. In case the size of @c a is not
+ ** appropriate, a function @c func_fallback is used.
  **
  ** @warning The range of allowed values for @a UI is platform
  ** dependent. The only known fixed guarantee is @c UINT16_MAX, but
@@ -510,7 +510,7 @@ inline int* p00_generic_test(int * p00_a) {
  ** <code>COND ? YES : NO</code> that keeps the type of the chosen
  ** expression.
  **
- ** When there is full @c _Generic support this is implemented with
+ ** When there is full @c _Generic support this is implemented using
  ** that feature. If not, the fallback from gcc for that purpose is
  ** used.
  **/
@@ -528,7 +528,7 @@ inline int* p00_generic_test(int * p00_a) {
  ** @brief Classify expression @a EXP according to its type and return
  ** @a YES if the type is in the list and @a NO, otherwise.
  **
- ** @a EXP is only compile time evaluated for its type. @a YES and @a
+ ** @a EXP is evaluated only at compile time for its type. @a YES and @a
  ** NO are evaluated at most once.
  **/
 #define P99_TYPE_CHOICE(EXP, YES, NO, ...)
@@ -558,7 +558,7 @@ inline int* p00_generic_test(int * p00_a) {
  ** @brief Classify expression @a UI according to its value and
  ** return @a YES if the value is in the list and @a NO, otherwise.
  **
- ** @a UI is only compile time evaluated for its value which is cast
+ ** @a UI is evaluated only at compile time and the resulting value is cast
  ** to @c size_t. It must not be @c 0.
  **
  ** @a YES and @a NO are evaluated at most once.
@@ -573,7 +573,7 @@ inline int* p00_generic_test(int * p00_a) {
  ** @brief Classify expression @a UI according to its value and
  ** return @c 1 if the value is in the list and @c 0, otherwise.
  **
- ** @a UI is only compile time evaluated for its value which is cast
+ ** @a UI is evaluated only at compile time and the resulting value is cast
  ** to @c size_t. It must not be @c 0.
  **
  ** @code
@@ -598,10 +598,10 @@ inline int* p00_generic_test(int * p00_a) {
  ** @brief Declare an inline function of basename @a BASE for
  ** expression @a EXP, applied to the builtin type @a EXT.
  **
- ** The interest of declaring such functions is for expressions that
+ ** The motivation for declaring such functions is for expressions that
  ** evaluate their arguments multiple times.
  **
- ** The argument list are the names of the function parameters as the
+ ** The argument list contains the names of the function parameters as they
  ** should appear inside @a EXP. The name of the declared function has
  ** @a EXT appended to @a BASE. E.g for a function operating on two @c
  ** unsigned values:
@@ -616,7 +616,7 @@ inline int* p00_generic_test(int * p00_a) {
  ** unsigned p00_gen_my_maxu(unsigned, unsigned);
  ** @endcode
  **
- ** @remark For the moment the number of arguments that can appear in
+ ** @remark For the moment, the number of arguments that can appear in
  ** the expression is limited to 6, but this could be augmented easily
  ** if there is need for it.
  **
@@ -629,11 +629,12 @@ inline int* p00_generic_test(int * p00_a) {
 #define P99_DECLARE_INLINE_EXPRESSION(EXT, BASE, EXP, ...)
 
 /**
- ** @brief Declare a whole bunch of inline function of basename @c
+
+ ** @brief Declare a whole bunch of @c inline functions of basename @c
  ** BASE for expression @c EXP, applied to the builtin types as given
  ** in the argument list.
  **
- ** The interest of declaring such functions is for expressions that
+ ** The motivation for declaring such functions is for expressions that
  ** evaluate their arguments multiple times. You can use these
  ** functions in a generic expression such as ::P99_GEN_EXPR.
  **
@@ -667,9 +668,9 @@ extern void p00_invalid_function(void*, ...);
 
 /**
  ** @brief Produce a type generic expression that can be used as if it
- ** where an @c inline function.
+ ** were an @c inline function.
  **
- ** The interest of declaring a macro that uses this is for
+ ** The motivation for declaring a macro that uses this is for
  ** expressions that evaluate their arguments multiple times.
  **
  ** E.g to define a macro ::P99_GEN_MAX you can use the following
@@ -691,18 +692,18 @@ extern void p00_invalid_function(void*, ...);
  ** @endcode
  **
  ** This first defines 15 inline functions for the different
- ** arithmetic types, you also just could use
+ ** arithmetic types, you could also just use
  ** ::P99_STD_ARITHMETIC_EXTS to produce that long list. Then the
  ** definition of the macro expands to a type generic expression that
- ** has as @a EXPR as selection expression (here <code>(A) >= (B)) ?
+ ** has as @a EXPR as its selection expression (here <code>(A) >= (B)) ?
  ** (A) : (B)</code>).
  **
- ** @remark using exactly the target expression for @a EXPR has the
- ** only effect that the type of the selection expression undergoes
+ ** @remark the sole effect of using exactly the target expression for @a EXPR
+ ** is that the type of the selection expression undergoes
  ** exactly the promotion or conversion rules that would be applied to
- ** @a EXPR if it would be evaluated directly.
+ ** @a EXPR if it were to be evaluated directly.
  **
- ** So if to stay in the above example we would have
+ ** So, staying with the example above, we would have
  **
  ** @code
  ** int f(toto t);
@@ -711,10 +712,10 @@ extern void p00_invalid_function(void*, ...);
  ** double dd = P99_GEN_MAX(f(t), d);
  ** @endcode
  **
- ** the common used type of @c f and @c d for the evaluation of
+ ** the commonly used type of @c f and @c d for the evaluation of
  ** <code>P99_GEN_MAX(f(t), d)</code> would be @c double. Before
- ** computing the maximum value the result of @c f(t) is converted to
- ** @c double and then the result of the operation is @c double.
+ ** computing the maximum value, the result of @c f(t) is converted to
+ ** @c double and then the result of the operation is also @c double.
  **
  ** As you can already see from this simple example, for such an
  ** expression it is crucial that @c f(t) is only evaluated once,
@@ -755,7 +756,7 @@ P99_GEN_EXPR(minimum, ((A) <= (B)) ? (A) : (B),                \
 /**
  ** @brief Type generic macro to compute the sine of @a A.
  **
- ** This is just a little example how simple the type generic macros
+ ** This is just a little example showing how simply the type generic macros
  ** of "tgmath.h" can be implemented.
  **/
 #define P99_GEN_SIN(A) P99_GEN_EXPR(sin, (A), P99_STD_FLOATING_EXTS)(A)
