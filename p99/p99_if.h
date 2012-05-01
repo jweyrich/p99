@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -23,9 +23,9 @@
 /**
  ** @addtogroup preprocessor_conditionals Preprocessor conditionals
  **
- ** @brief This provides different types of if-else clauses for the preprocessor.
+ ** @brief This provides different types of if-else clause for the preprocessor.
  **
- ** The macros in this group work all analogous to ::P99_IF_EQ
+ ** The macros in this group are analogous to ::P99_IF_EQ
  ** @code
  ** P99_IF_EQ(INT_MAX, 10000)(short)(long) a;
  ** P99_IF_EQ(8, CHAR_BIT)(uint8_t)(uint_least8_t) c;
@@ -65,7 +65,7 @@
 #define P00_IF_NOT_CLAUSE(EXP) P00__IF_CLAUSE(EXP, P00_CLAUSE2, P00_CLAUSE1, ~)
 
 /**
- ** @brief Test two words @a A and @a B if they are equal.
+ ** @brief Test if two words @a A and @a B are equal.
  **
  ** @a A and @a B must be just one word, i.e composed of
  ** alpha-numerical characters and underscores.
@@ -78,12 +78,12 @@
  ** P99_IF_EQ(0, X)(expand_when_equal)(expand_when_unequal)
  ** @endcode
  **
- ** the macro ::P00_IF_0_EQ_0 must exist. (Which it does in that case).
+ ** the macro ::P00_IF_0_EQ_0 must exist. (Which it does in this case).
  **/
 #define P99_IF_EQ(A, B) P00_IF_CLAUSE(P99_PASTE4(P00_IS_,A,_EQ_,B)())
 
 /**
- ** @brief Test two words @a A and @a B if they are unequal.
+ ** @brief Test if two words @a A and @a B are unequal.
  **
  ** @see P99_IF_EQ
  **/
@@ -93,25 +93,25 @@
 #define P99_IF_LT_0(A) P00_IF_NOT_CLAUSE(P99_PASTE4(P00_IS_,A,_GE_,0)())
 
 /**
- ** @brief Test two decimal numbers @a A and @a B if @a A is greater
- ** or equal to @a B.
+ ** @brief Test two decimal numbers @a A and @a B for whether @a A is greater
+ ** than or equal to @a B.
  **/
 #define P99_IF_GE(A, B) P99_IF_EQ_1(P99_IS_GE(A, B))
 
 /**
- ** @brief Test two decimal numbers @a A and @a B if @a A is less
- ** or equal to @a B.
+ ** @brief Test two decimal numbers @a A and @a B for whether @a A is less
+ ** than or equal to @a B.
  **/
 #define P99_IF_LE(A, B) P99_IF_EQ_1(P99_IS_LE(A, B))
 
 /**
- ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
+ ** @brief Test two decimal numbers @a A and @a B for whether @a A is strictly
  ** less than @a B.
  **/
 #define P99_IF_LT(A, B) P99_IF_EQ_1(P99_IS_LT(A, B))
 
 /**
- ** @brief Test two decimal numbers @a A and @a B if @a A is strictly
+ ** @brief Test two decimal numbers @a A and @a B for whether @a A is strictly
  ** greater than @a B.
  **/
 #define P99_IF_GT(A, B) P99_IF_EQ_1(P99_IS_GT(A, B))

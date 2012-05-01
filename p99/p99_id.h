@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -18,10 +18,10 @@
 /**
  ** @file
  **
- ** @brief Implement a simple FILEID that changes at each time this file
+ ** @brief Implement a simple FILEID that changes each time this file
  ** is included somewhere
  **
- ** The FILEID here is hexadecimal numbers with 4 digits. 34320
+ ** The FILEID here is a hexadecimal number with 4 digits. 34320
  ** different such numbers are produced by the algorithm until it
  ** wraps around.
  **/
@@ -90,7 +90,7 @@ P00_DOCUMENT_ID(16)
 #define P99_ID() P99_PASTE4(P99_ID_11_, P99_ID_13_, P99_ID_15_, P99_ID_16_)
 
 /**
- ** @brief A number that identifies different times of inclusions of
+ ** @brief A number that identifies different times of inclusion of
  ** the file "p99_id.h"
  **
  ** This is a hexadecimal constant of width at most 4 significant digits.
@@ -98,7 +98,7 @@ P00_DOCUMENT_ID(16)
 #define P99_FILENO() P99_PASTE2(0x, P99_ID())
 
 /**
- ** @brief An id that identifies different times of inclusions of
+ ** @brief An id that identifies different times of inclusion of
  ** the file "p99_id.h"
  **
  ** The argument may contain a token that is appended to the id.

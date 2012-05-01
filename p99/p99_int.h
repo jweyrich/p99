@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -18,17 +18,17 @@
  ** @brief Macros handling integer types and initialization.
  **
  ** The initialization features in this file might produce many
- ** warnings by your compiler of "missing braces in initializer" or
- ** something similar. This is due to the fact that we have to use a
+ ** compiler warnings, such as "missing braces in initializer" or
+ ** something similar. This is because we have to use a
  ** catch all initializer of the form <code>{ 0 }</code>. Such a
  ** flattened initializer is explicitly covered by the standard but
  ** seems to be considered bad style by some people.
  **
- ** If you would use the features of this file and switch all warnings
- ** on for such a compiler you probably would have a hard time to
- ** detect real and interesting warning between all these initializer
- ** warnings. Therefore we switch such warnings off for compiler that
- ** we know causing such a problem.
+ ** If you use the features of this file and switch all warnings
+ ** on for such a compiler you will probably have a hard time
+ ** detecting real and interesting warning for all these initializer
+ ** warnings. Therefore we switch off such warnings for compilers that
+ ** we know cause such a problem.
  **/
 
 #include "p99_c99.h"
@@ -44,7 +44,7 @@
 /**
  ** @addtogroup integers Macros to handle integer type expressions
  **
- ** The macros here help to integers more easily, e.g to detect if a
+ ** The macros here help with integer handling, e.g to detect if a
  ** type or expression is signed, what the maximum and minimum values
  ** are etc.
  **
@@ -93,15 +93,15 @@ P00_DOCUMENT_C2(128)
 #endif
 
 /**
- ** @brief An unsigned integer type of maximal width that extends the
+ ** @brief An unsigned integer type of maximal width that exceeds the
  ** C99 specifications.
  **
  ** Typically this might be of width 128 where the whole tool chain,
- ** in particular the preprocessor only supports 64.
+ ** in particular the preprocessor, only supports 64.
  **
- ** This @c typedef is always defined, in the best of all worlds it
- ** coincides with @c uintmax_t. If it is different from that can be
- ** checked for with a macro of the same name.
+ ** This @c typedef is always defined.  In the best case, it
+ ** coincides with @c uintmax_t - this can be
+ ** checked with a macro of the same name.
  ** @see p99x_uint128
  **/
 #ifndef p99x_uint128
@@ -109,14 +109,14 @@ typedef uintmax_t p99x_uintmax;
 #endif
 
 /**
- ** @brief A signed integer type of maximal width that extends the
+ ** @brief A signed integer type of maximal width that exceeds the
  ** C99 specifications.
  **
  ** Typically this might be of width 128 where the whole tool chain,
- ** in particular the preprocessor only supports 64.
+ ** in particular the preprocessor, only supports 64.
  **
- ** This @c typedef is always defined, in the best of all worlds it
- ** coincides with @c intmax_t. If it is different from that can be
+ ** This @c typedef is always defined.  In the bestcase, it
+ ** coincides with @c intmax_t - this can be
  ** checked for with a macro of the same name.
  ** @see p99x_int128
  **/
@@ -126,11 +126,11 @@ typedef intmax_t p99x_intmax;
 
 #ifdef P00_DOXYGEN
 /**
- ** @brief An unsigned integer type of width 128 that extends the
+ ** @brief An unsigned integer type of width 128 that exceeds the
  ** C99 specifications.
  **
  ** Typically this might be defined when the whole tool chain,
- ** in particular the preprocessor only supports 64 bits.
+ ** in particular the preprocessor, only supports 64 bits.
  **
  ** This @c typedef does not necessary exist. It can be checked for with a
  ** macro of the same name.
@@ -139,11 +139,11 @@ typedef intmax_t p99x_intmax;
 typedef extendedInt p99x_uint128;
 
 /**
- ** @brief A signed integer type of width 128 that extends the
+ ** @brief A signed integer type of width 128 that exceeds the
  ** C99 specifications.
  **
  ** Typically this might be defined when the whole tool chain,
- ** in particular the preprocessor only supports 64 bits.
+ ** in particular the preprocessor, only supports 64 bits.
  **
  ** This @c typedef does not necessary exist. It can be checked for with a
  ** macro of the same name.
@@ -201,7 +201,7 @@ typedef extendedInt p99x_int128;
  ** @brief Apply the type macro @a MACRO to an unsigned type that is
  ** compatible with type @a T.
  **
- ** The returning expression is of type @c uintmax_t
+ ** The returned expression is of type @c uintmax_t
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_TO_UNSIGNED, 0)
 P00_DOCUMENT_MACRO_ARGUMENT(P99_TO_UNSIGNED, 1)
@@ -220,7 +220,7 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_TO_UNSIGNED, 1)
 /**
  ** @brief Convert -1 to type @a T
  **
- ** If @a T is a signed type a representation of the value -1 should
+ ** If @a T is a signed type, a representation of the value -1 should
  ** always exist, since the value 1 also exists.
  **
  ** If @a T is an unsigned type, the converted value is guaranteed to
@@ -235,7 +235,7 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_TO_UNSIGNED, 1)
 /**
  ** @brief Return an unsigned version of P99_M1.
  **
- ** The returning expression is of type @c uintmax_t
+ ** The returned expression is of type @c uintmax_t
  **/
 #define P99_M1U(T) (P99_ISSIGNED(T) ? P99_TO_UNSIGNED(T, P99_M1) : P99_M1(T))
 
@@ -250,19 +250,18 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_TO_UNSIGNED, 1)
  ** provided X evaluates to an integer constant.
  **
  ** @warning Beware that the type information @a T is simply ignored
- ** by the preprocessor because there arithmetic is done with types @c
+ ** by the preprocessor because its arithmetic is done with types @c
  ** intmax_t or @c uintmax_t. If you want to be sure that it is used
  ** as @c uintmax_t suffix the constant @a X with an "u" or "U".
  **
- ** @warning Don't do bit complement arithmetic in the preprocessor
- ** with that, since @c uintmax_t might have more bits than @a T, the
+ ** @warning Don't use this to perform bit-complement arithmetic in the
+ ** preprocessor, since @c uintmax_t might have more bits than @a T, the
  ** result might not be what you expect.
  **
  ** @param T must be a type identifier, just one word that represents a type.
  **
  ** @param X could be any integer expression that is allowed in the
- ** same context. If @a X evaluates to a pointer value, an error is
- ** detected.
+ ** same context. It is an error for @a X to evaluate to a pointer value.
  **
  ** The macro itself uses a dirty trick. In preprocessor context of
  ** conditional evaluation the @a T in the expansion is just an
@@ -348,7 +347,7 @@ P00_DOCUMENT_UNSIGNED(3)
  ** @brief The maximum representable value of the unsigned type
  ** corresponding to @a T
  **
- ** The returning expression is of type @c uintmax_t
+ ** The returned expression is of type @c uintmax_t
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_UT_MAX, 0)
 #define P99_UT_MAX(T) (P99_M1U(T))
@@ -360,20 +359,20 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_UT_MAX, 0)
  ** This is the maximum representable value of the signed type
  ** corresponding to @a T.
  **
- ** The returning expression is of type @c uintmax_t.
+ ** The returned expression is of type @c uintmax_t.
  **
  ** @see P99_TMAX
  **/
 #define P99_UT_MAX1(T) (P99_UT_MAX(T)/2u)
 
 /**
- ** @brief The negative of the half of the maximum representable value
+ ** @brief The negative of half the maximum representable value
  ** of the unsigned type corresponding to @a T
  **
  ** This is generally not the minimum representable value of the signed type
  ** corresponding to @a T, it might deviate by one from that value.
  **
- ** The returning expression is of type @a T.
+ ** The returned expression is of type @a T.
  **
  ** @see P99_TMIN
  **/
@@ -464,7 +463,7 @@ P00_SEE_PROMOTE
  ** @brief The maximum representable value of the unsigned type
  ** promoted with respect to expression @a EXPR.
  **
- ** The returning expression is of unsigned integer type.
+ ** The returned expression is of unsigned integer type.
  **/
 P00_SEE_PROMOTE
 #define P99_UE_MAX(EXPR) (P99_PROMOTE_M1U(EXPR))
@@ -476,7 +475,7 @@ P00_SEE_PROMOTE
  ** This is the maximum representable value of the signed type
  ** promoted with respect to @a EXPR
  **
- ** The returning expression is of unsigned integer type.
+ ** The returned expression is of unsigned integer type.
  **
  ** @see P99_TMAX
  **/
@@ -488,11 +487,11 @@ P00_SEE_PROMOTE
 /**
  ** @brief The width of the integral type of expression @a EXPR.
  **
- ** This is the precision plus eventually a sign bit, if the type is
+ ** This is the precision, plus a sign bit if the type is
  ** signed.
  **
- ** The resulting expression is evaluated at compile time and maybe
- ** used int constant expressions.
+ ** The resulting expression is evaluated at compile time and may be
+ ** used in constant expressions.
  ** @warning These are not necessarily all bits that are @em used by
  ** the type, there might be padding bits.
  ** @see P99_TWIDTH
@@ -527,11 +526,11 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_TMIN, 0)
 #endif
 
 /**
- ** @brief The precision, i.e the number of significant bits the
+ ** @brief The precision, i.e the number of significant bits in the
  ** integral type of expression @a EXPR.
  **
- ** The resulting expression is evaluated at compile time and maybe
- ** used int constant expressions.
+ ** The resulting expression is evaluated at compile time and may be
+ ** used in constant expressions.
  ** @warning this is not necessarily the width of @a T
  ** @see P99_TPREC
  ** @see P99_EWIDTH
@@ -548,8 +547,8 @@ P00_SEE_PROMOTE
  ** types this will be 0. But for e.g for @c _Bool this will be at
  ** least 7.
  **
- ** The resulting expression is evaluated at compile time and maybe
- ** used int constant expressions.
+ ** The resulting expression is evaluated at compile time and may be
+ ** used in constant expressions.
  ** @see P99_TPADDING
  ** @see P99_EWIDTH
  ** @see P99_EPREC
@@ -566,7 +565,7 @@ P00_SEE_PROMOTE
 
 
 /**
- ** @brief The negative of the half of the maximum representable value
+ ** @brief The negative of half the maximum representable value
  ** of the promoted integral type of expression @a EXPR
  **
  ** This is generally not the minimum representable value of the signed type
@@ -648,8 +647,8 @@ p99x_uintmax p99x__abs_signed(p99x_intmax p00_a) {
 #endif
 
 /**
- ** @brief C99 allows for exactly three different possibilities to
- ** encode negative values of integer types.
+ ** @brief C99 allows exactly three different possibilities for the
+ ** encoding of negative values of integer types.
  **
  ** @see ::P99_SIGNED_REPRESENTATION
  **/
@@ -661,8 +660,8 @@ typedef enum {
 } p99_signed_representation;
 
 /**
- ** @brief C99 allows for exactly three different possibilities to
- ** encode negative values of integer types.
+ ** @brief C99 allows exactly three different possibilities for the
+ ** encoding of negative values of integer types.
  **
  ** The representation can be found by looking at the two least
  ** significant bits of -1 represented in @a T.
@@ -702,8 +701,8 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_TMIN, 0)
 
 
 /**
- ** @brief C99 allows for exactly three different possibilities to
- ** encode negative values of integer types.
+ ** @brief C99 allows for exactly three different possibilities for the
+ ** encoding of negative values of integer types.
  **
  ** The representation can be found by looking at the two least
  ** significant bits of -1 represented in the type of the expression.
@@ -721,7 +720,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_TMIN, 0)
 P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (EXPR))
 
 /**
- ** @brief Give the maximum representable value of the type of
+ ** @brief Give the maximum representable value of the type of the
  ** expression @a EXPR
  **/
 #define P99_EMAX(EXPR) (P99_SIGNED(EXPR) ? P99_SE_MAX(EXPR) : P99_PROMOTE_M1(EXPR))
@@ -736,8 +735,8 @@ P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (
  ** @brief The precision, i.e the number of significant bits of integral type
  ** @a T.
  **
- ** The resulting expression is evaluated at compile time and maybe
- ** used int constant expressions.
+ ** The resulting expression is evaluated at compile time and may be
+ ** used in constant expressions.
  ** @warning this is not necessarily the width of @a T
  ** @see P99_TWIDTH
  ** @see P99_TPADDING
@@ -750,10 +749,10 @@ P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (
 /**
  ** @brief The width of integral type @a T.
  **
- ** This is the precision plus eventually a sign bit, if @a T is signed.
+ ** This is the precision, plus a sign bit if @a T is signed.
  **
- ** The resulting expression is evaluated at compile time and maybe
- ** used int constant expressions.
+ ** The resulting expression is evaluated at compile time and may be
+ ** used in constant expressions.
  ** @warning These are not necessarily all bits that are @em used by
  ** the type, there might be padding bits.
  ** @see P99_TPREC
@@ -769,8 +768,8 @@ P99_SIGN_PROMOTE(P99_E_REPRESENTATION(EXPR) == p99_signed_representation_twos, (
  ** types this will be 0. But for e.g for @c _Bool this will be at
  ** least 7.
  **
- ** The resulting expression is evaluated at compile time and maybe
- ** used int constant expressions.
+ ** The resulting expression is evaluated at compile time and may be
+ ** used in constant expressions.
  ** @see P99_TWIDTH
  ** @see P99_TPREC
  **/
@@ -1002,8 +1001,8 @@ P00_DECLARE_OVERFLOW(ll);
 /**
  ** @brief A catch all 0-initializer
  **
- ** Variables of static storage are initialized as such as if all
- ** components recursively are initialized from 0. Use this macro here
+ ** Variables of static storage are initialized as if all
+ ** components are initialized recursively from 0. Use this macro
  ** to achieve the same effect for @c auto or @c register variables.
  ** All the following declarations are legal:
  ** @code
@@ -1013,7 +1012,7 @@ P00_DECLARE_OVERFLOW(ll);
  ** unsigned (*)d[3]  = P99_INIT;
  ** unsigned e[4][5]  = P99_INIT;
  ** @endcode
- ** Here depending on your compiler the last for @c e (and other
+ ** Here, depending on your compiler, the last expression for @c e (and other
  ** deeply nested types) may produce spurious "missing braces"
  ** warnings. These can safely be ignored.
  ** @see P99_LVAL
@@ -1060,10 +1059,10 @@ P00_DECLARE_OVERFLOW(ll);
  ** f(P99_RVAL(double*, &a)); // warning: assignment from incompatible pointer type
  ** @endcode
  **
- ** @pre @a T must be a type that can be assigned to. This excludes
+ ** @pre @a T must be a type to which a value can be assigned. This excludes
  ** function types and array types. It does not exclude pointers to
  ** function types or array types, but unfortunately for syntactic
- ** reasons these two do only work if @a T is a @c typedef to that
+ ** reasons these two only work if @a T is a @c typedef to that
  ** pointer type.
  **
  ** @see P99_AVAL for an array type with unknown base type.
@@ -1090,12 +1089,12 @@ P00_DECLARE_OVERFLOW(ll);
  ** This should be used for @c typedef array types for which you don't
  ** have control over the base type. It should only be rarely needed.
  **
- ** @remark Even though the result is an lvalue it can't be assigned
- ** to, since it is an array type. But @c sizeof such an object will
+ ** @remark Even though the result is an lvalue it can't be assigned,
+ ** since it is an array type. But @c sizeof such an object will
  ** return the size of the array and the address of the array object
  ** can be taken.
  **
- ** @remark In all other context than the two given above (@c sizeof
+ ** @remark In all contexts other than the two given above (@c sizeof
  ** and addressof operator) this will decay to a pointer to the
  ** unknown base class.
  **
@@ -1136,9 +1135,9 @@ P99_CHOOSE5(xT,                                                \
 
 
 /**
- ** @brief A mask for the higher @a M bits in a N bit word.
+ ** @brief A mask for the higher @a M bits in an N bit word.
  **
- ** This is a generic implementation that should also work that for
+ ** This is a generic implementation that should also work for
  ** the case that @a N is less than the width of @c unsigned, or in
  ** other words if the conversion rank of @c uintN_t is less than that
  ** for @c unsigned.
@@ -1154,13 +1153,13 @@ P99_CHOOSE5(xT,                                                \
  ** @addtogroup bitfiddling
  ** @brief Bit fiddling of low order bits
  **
- ** The smart expression that are used in this group are taken as
- ** where summarized on <a
+ ** The smart expression used in this group are taken as
+ ** summarized in <a
  ** href="http://realtimecollisiondetection.net/blog/?p=78"> Christer
  ** Ericson's blog</a>.
  **
  ** They work because of the special features of unsigned integer
- ** arithmetic that is an arithmetic modulo a power of @c 2.
+ ** arithmetic that it is arithmetic modulo a power of @c 2.
  **
  ** The notation of the macro and function names has some menomics:
  **
@@ -1173,10 +1172,10 @@ P99_CHOOSE5(xT,                                                \
  **   least significant bit. When @c mask comes before @c low as in @c
  **   mask2low it means that the bit mask precedes that least
  **   significant bit.
- ** - The last digit of @c 0 or @c 1 tells if that least significant
+ ** - The last digit of @c 0 or @c 1 indicates whether that least significant
  **   bit is cleared or left untouched.
  **
- ** Be careful when using one of the macros in this group:
+ ** Be careful when using the macros in this group:
  ** - they may evaluate their arguments several times
  ** - they @b must be only used with expressions that can be
  **   guaranteed to be unsigned
