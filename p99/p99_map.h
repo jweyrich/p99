@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -121,15 +121,15 @@ char* p00_strcat_terminate(p00_strcat_state *restrict p00_des) {
  ** space to hold the concatenation of all strings. The remaining
  ** arguments must be compatible with @c const char*.
  **
- ** This macro ensures a linear complexity of the operation. In
- ** particular any position in the argument strings is accessed at
- ** most 2 times, once by a call to strlen and once by a call to
+ ** This macro ensures linear complexity in the operation. In
+ ** particular each position in the argument strings is accessed at
+ ** most twice, once by a call to strlen and once by a call to
  ** memcpy.
  **
  ** This uses some small inlined helper functions, since the repeated
  ** use of bare @c strcat would have quadratic complexity.
  **
- ** The resulting replacement that is produced by this macro evaluates
+ ** The resulting replacement produced by this macro evaluates
  ** each of the arguments at most once.
  **/
 #define P99_STRCATS(TARG, ...)                                 \
@@ -162,9 +162,9 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_JOIN, 2)
  **
  ** @return a string that must be freed by @c free
  **
- ** The resulting replacement that is produced by this macro evaluates
+ ** The resulting replacement produced by this macro evaluates
  ** each of the arguments twice; once to compute the overall length of
- ** the new string and then for the duplication operation.
+ ** the new string and then again for the duplication operation.
  **/
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_STRDUP, 0)
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_STRDUP, 1)
@@ -210,10 +210,10 @@ P99_IF_LT(P99_NARG(__VA_ARGS__),2)                                         \
   (P99_FOR(NAME, N, P00_SEP, P00_TYPD, __VA_ARGS__))
 
 /**
- ** @brief Take each argument of the list and transform it into a
+ ** @brief Take each argument on the list and transform it into a
  ** @c typedef of name NAME_0, NAME_1, etc.
  **
- ** Because of syntax problems this can't be used for function or
+ ** Due to syntax problems this can't be used for function or
  ** array type derivatives.
  **/
 #define P99_TYPEDEFS(NAME, ...)                                \
@@ -247,7 +247,7 @@ P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_DESIGNATED, 3)
 /**
  ** @brief Expand to an array initializer copying array @a VAR for @a N positions.
  **
- ** This can be used to initialize an array by an designated
+ ** This can be used to initialize an array with a designated
  ** initializer that is derived from another array.
  ** @code
  ** double B[] = P99_ADESIGNATED(A, 3);
@@ -276,7 +276,7 @@ P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_DESIGNATED, 3)
  **
  ** This is probably best used indirectly inside a type specific
  ** macro. E.g if you know that the copy operation for @c toto as
- ** above always should only copy @c .b and not @c .a you could do
+ ** above should always copy only @c .b and not @c .a you could do
  ** @code
  ** #define TOTO_LCOPY(A) P99_LCOPY(struct toto, A, .b);
  ** struct toto B = TOTO_LCOPY(A);
@@ -303,9 +303,9 @@ P00_DOCUMENT_DESIGNATOR_ARGUMENT(P99_LCOPY, 4)
  ** The third argument is the array @a VAR to be copied from. The
  ** optional forth argument @a M is the number of elements from @c VAR
  ** that are to be copied. It defaults to @a N if omitted. Obviously
- ** we always have to have <code>M <= N</code> for this to work.
+ ** we must always have <code>M <= N</code> for this to work.
  **
- ** This can be used to initialize to call a function with a copy of
+ ** This can be used to call a function with a copy of
  ** of @a VAR.
  **
  ** @remark The base type of @a VAR must be assignment compatible with type @a TYPE.
@@ -333,16 +333,16 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
  **
  ** @pre @a N must expand to a decimal integer constant.
  **
- ** @pre @a SOURCE and @a TARGET must be arrays of size at least @a N
+ ** @pre @a SOURCE and @a TARGET must be arrays with a size of at least @a N
  ** or pointers that point to such arrays.
  **
- ** @remark If @a TARGET has more than @a N elements the exceeding
+ ** @remark If @a TARGET has more than @a N elements the excess
  ** elements are left untouched.
  **
- ** @remark The base types must not necessarily be the same but the
- ** one of @a SOURCE must be assignable to the one for @a TARGET. In
+ ** @remark The base types must not necessarily be the same but that
+ ** of @a SOURCE must be assignable to that for @a TARGET. In
  ** particular, the type of @a TARGET should be at least as wide as
- ** the one for @a SOURCE.
+ ** that for @a SOURCE.
  **/
 #define P99_AASSIGN(TARGET, SOURCE, N)
 #else

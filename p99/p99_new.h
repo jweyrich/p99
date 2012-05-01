@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -23,7 +23,7 @@
  **/
 
 /**
- ** @addtogroup preprocessor_initialization Initialization facilities throught the preprocessor
+ ** @addtogroup preprocessor_initialization Initialization facilities through the preprocessor
  **
  ** @{
  **/
@@ -31,7 +31,7 @@
 P99_MACRO_END(dummy);
 
 /**
- ** @brief Zero out all bits in the object that @a X points to.
+ ** @brief Zero out all bits in the object to which @a X points.
  **
  ** @a X can be a pointer or an array
  ** @code
@@ -42,10 +42,10 @@ P99_MACRO_END(dummy);
  ** @endcode
  **
  ** Here the first call zeroes out 29 elements of type T starting at
- ** the memory where @c A points to. The second zeroes out the first
+ ** the memory to which @c A points. The second zeroes out the first
  ** two elements of the array @c B.
  **
- ** This is a macro not a function, but anyhow @a X is evaluated only
+ ** This is a macro not a function, but nevertheless, @a X is evaluated only
  ** once.
  ** @see P99_MEMZERO for a macro that initializes to a default value
  ** that is guaranteed to correspond to the type.
@@ -59,7 +59,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_PZERO, 0)
  ** @a X must be an object from which the address can be taken, such
  ** as a normal variable or an array.
  **
- ** This is a macro not a function, but anyhow @a X is evaluated only
+ ** This is a macro not a function, but nevertheless, @a X is evaluated only
  ** once.
  ** @see P99_MEMZERO for a macro that initializes to a default value
  ** that is guaranteed to correspond to the type.
@@ -124,9 +124,9 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_MEMZERO, 0)
  ** double * a = P99_MALLOC(double[10]); // allocate an array of 10 double
  ** node * n = P99_MALLOC(node);         // allocate a new node
  ** @endcode
- ** @remark As for the C library routine the allocated space is
+ ** @remark As with the C library routine, the allocated space is
  ** uninitialized. Better use ::P99_CALLOC wherever possible. In
- ** particular as in the second example, when you might have a dynamic
+ ** particular, as in the second example, when you might have a dynamic
  ** data structure with pointers.
  **/
 #define P99_MALLOC(T) malloc(sizeof(T))
@@ -141,7 +141,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_MEMZERO, 0)
  ** a = P99_REALLOC(a, double[20]);          // re-allocate an array of 20 double
  ** assert(a);                               // check if allocation was correct
  ** @endcode
- ** @remark As for the C library routine the allocated space is
+ ** @remark As with the C library routine, the allocated space is
  ** uninitialized.
  ** @remark In contrast to the library call @c realloc this macro can
  ** not be used as a replacement for @c free, since the second
@@ -163,7 +163,7 @@ void* p00_calloc(void const* p00_src, size_t p00_size, size_t p00_nb) {
  **
  ** This similar to ::P99_MALLOC with the extra feature that the
  ** allocated space is initialized with the default as if the variable
- ** or array would have been declared static.
+ ** or array had been declared static.
  **
  ** This macro receives one or two arguments. The first is a @em type
  ** expression that is evaluated for the size of the type and used to
@@ -175,15 +175,15 @@ void* p00_calloc(void const* p00_src, size_t p00_size, size_t p00_nb) {
  ** node * n = P99_CALLOC(node);         // allocate and initialize one new node
  ** @endcode
  **
- ** Observe that here the @c double array @c a is initialized with the
- ** default initializer @c 0.0 for doubles. As on a given platform @c
- ** 0.0 might be represented differently than an all-zero-bit object
+ ** Observe here that the @c double array @c a is initialized with the
+ ** default initializer @c 0.0 for doubles. As on certain platforms @c
+ ** 0.0 might not be represented by an all-zero-bit object,
  ** this might or might not be different from using plain @c calloc.
  **
  ** For @c n the advantage might be that the type @c node has pointer
  ** fields. These then are correctly initialized to null pointers. As
- ** on a given platform null pointers might be represented differently
- ** than an all-zero-bit object this might or might not be different
+ ** on certain platforms null pointers might not be represented
+ ** by an all-zero-bit object, this might or might not be different
  ** from using plain @c calloc.
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_CALLOC, 0)
@@ -221,7 +221,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_CALLOC, 0)
  ** @endcode
  **
  ** - it must accept a pointer to @c T as a first argument
- ** - it must be robust to the fact of receiving a null pointer through that
+ ** - it must be robust to the possibility of receiving a null pointer through that
  **     first argument (indicating an error condition)
  ** - it should return the @em same pointer @c p
  ** - it may accept additional arguments which may then be passed
@@ -244,7 +244,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_CALLOC, 0)
  ** initialized.
  **
  ** Other arguments after the type argument are interpreted as storage
- ** class specifier for the functions. Default is ::p99_inline.
+ ** class specifiers for the functions. Default is ::p99_inline.
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_DELETE, 0)
 #define P99_DECLARE_DELETE(T)                                           \
@@ -307,7 +307,7 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_MAXOF, 1)
 /**
  ** @addtogroup flexible Flexible array members
  **
- ** C99 allows to define a flexible array member as the last member of
+ ** C99 allows a flexible array member to be defined as the last member of
  ** a @c struct, namely an array of undetermined length.
  ** @code
  ** P99_DECLARE_STRUCT(package_head);
@@ -317,19 +317,19 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_MAXOF, 1)
  **   uint64_t data[];
  ** };
  ** @endcode
- ** Such a @c struct can then allocated on the heap with a suitable
- ** size such that the field @c data has as much elements as fit in
+ ** Such a @c struct can then be allocated on the heap with a suitable
+ ** size such that the field @c data has as many elements as fit in
  ** the allocated space from the start of @c data onward. Usually one
  ** would allocate such @c struct with
  ** @code
  ** package_head *a = malloc(sizeof(package_head) + 10 * sizeof(uint64_t));
  ** package_head *b = malloc(sizeof(*b) + 12 * sizeof(b->data[0]));
  ** @endcode
- ** This has several disadvantages. First the syntax is clumsy, we
+ ** This has several disadvantages. Firstly, the syntax is clumsy.  We
  ** have to use a relatively complicated expression that uses two
  ** elements of the specification of @c a or @c b.
  **
- ** Then this is wasting space. Due to packing of the @c struct the
+ ** Secondly, it wastes space. Due to packing of the @c struct the
  ** offset of @c data "inside" the @c struct may be less than
  ** <code>sizeof(package_head)</code>. In most cases the real size of
  ** the object that we want to construct is
@@ -344,12 +344,12 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_MAXOF, 1)
  **
  ** The above formula for the exact size is only valid for larger
  ** values of @c N. We must also ensure that we allocate at least @c
- ** sizeof(package_head) bytes. So the complete formula for looks
+ ** sizeof(package_head) bytes. So the complete formula looks
  ** something like
  ** @code
  ** #define P99_FSIZEOF(T, F, N) P99_MAXOF(sizeof(T), offsetof(T, F) + P99_SIZEOF(T, F[0]) * N)
  ** @endcode
- ** which is probably not something that you want to write on a daily base.
+ ** which is probably not something that you want to write on a daily basis.
  **
  ** We provide several interfaces to allocate @c struct with flexible members
  ** @see P99_FCALLOC
@@ -385,7 +385,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FSIZEOF, 1)
  **
  ** No initialization of the instance is performed.
  **
- ** This behaves analogous to @c realloc. In particular, the object
+ ** The behaviour is analogous to that of @c realloc. In particular, the object
  ** can be moved to a different location, and therefore the return
  ** value must always be checked.
  **/
