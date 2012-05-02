@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -36,7 +36,7 @@ void p00_swap2(void* p00_p0, void* p00_p1, size_t p00_size, void* p00_t0, void* 
 /**
  ** @brief Swap the contents of the arguments.
  **
- ** This uses two temporary object, allocated on the heap.
+ ** This uses two temporary objects, allocated on the heap.
  ** @see P99_SWAP for a macro that is generally better adapted, since
  ** all allocation is done on the stack.
  ** @see p99_swap1
@@ -106,7 +106,7 @@ p00_swap1(                                                     \
  **  - It has a compile time check for the correct sizes.
  **  - It checks if the two expressions are assignment compatible in
  **    both ways
- **  - It has no naming issue with a hidden variable.
+ **  - It has no naming issues with a hidden variable.
  **  - The size of the temporary variable is computed at compile
  **    time. So we may use a compound literal and not a dynamic array.
  **
@@ -118,18 +118,18 @@ p00_swap1(                                                     \
  ** cases: @c P00_SWAP2(_0, _1), for small sizes, uses two
  ** temporaries in the hope that the loads into registers can be done
  ** simultaneously. The other one, @c P00_SWAP1(_0, _1), uses only one
- ** temporary but is then forced to do serialized copy operations.
+ ** temporary but is then forced to serialize copy operations.
  **
- ** @warning Both arguments
- ** - must be lvalue expressions
+ ** @warning For both arguments
+ ** - each must be an lvalue expression
  ** - it must be permitted to take their addresses.
  **
  ** So variables that have the @c register storage class will not work
  ** with this macro.
  **
- ** @warning The types of the arguments are only checked that they
+ ** @warning The types of the arguments are only checked to confirm that they
  ** have the same size @em and that the two lvalues are assignment
- ** compatible. If both at the same time are
+ ** compatible. If both are
  ** - of the same size,
  ** - are assignment compatible,
  ** - have different semantics,
@@ -139,13 +139,13 @@ p00_swap1(                                                     \
  **   <code>unsigned int</code>
  ** - Two integer types that by coincidence have the same size, e.g on
  **   a platform <code>long</code> and <code>long long</code> may
- **   both 8 byte. This may work ok for a long time and then fail when
+ **   both be 8 byte. This may work ok for a long time and then fail when
  **   you move to another platform.
  ** - If one type is a floating point type and the other an integral
  **   type, e.g @c double and a @c uint64_t may be of the same size.
  ** - Two types that have the same size but not the same width. A @c
  **   bool will usually be stored in one byte, but memcpy from a @c
- **   char is not equivalent of assigning it with @c =. Padding bits
+ **   char is not equivalent to assigning it with @c =. Padding bits
  **   may have the effect that the value stored in a @c bool is a trap
  **   representation.
  **

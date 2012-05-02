@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -15,7 +15,7 @@
 
 /**
  ** @file
- ** @brief macros that paste tokens in a predictive way
+ ** @brief macros that paste tokens in a predictable way
  ** @see P99_PASTE
  **/
 
@@ -55,7 +55,7 @@
  ** @brief Paste two token sequences at their junction.
  **
  ** This macro does the evaluation of the arguments first and then
- ** proceeds at the concatenation
+ ** proceeds with the concatenation
  ** of the results. Thus
  ** @code
  ** #define B(x) toto(x)

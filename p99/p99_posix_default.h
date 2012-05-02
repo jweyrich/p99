@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -76,7 +76,7 @@ P00_POSIX_DEFARG_DOCU(pthread_key_create, int, pthread_key_t *key, void (*destr_
 
 P00_POSIX_DEFARG_DOCU(accept, int, int sockfd, struct sockaddr *addr, socklen_t *addrlen)
 /**
- ** @param  sockfd must be providedd
+ ** @param  sockfd must be provided
  ** @param  addr defaults to 0
  ** @param  addrlen defaults to the address of a temporary of type @c socklen_t
  **/

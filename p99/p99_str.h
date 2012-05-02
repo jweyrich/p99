@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -26,7 +26,7 @@
 /**
  ** @file
  ** @brief Provide a family of functions @c str2XX that provide a
- ** safer end check with an position in the string instead of the
+ ** safer end-check with a position in the string instead of the
  ** bogus @c char pointer.
  **/
 
