@@ -347,6 +347,7 @@ P99_PROTOTYPE(int, p99_tss_set, p99_tss*, void *);
  ** @see P99_TSS_LOCAL to access the variable
  ** @see p99_tss
  **/
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_TSS_DECLARE_LOCAL, 1)
 #ifdef P00_DOXYGEN
 # define P99_TSS_DECLARE_LOCAL(T, NAME, DTOR)           \
 /** @see P99_TSS_LOCAL to access the variable */        \
