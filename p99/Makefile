@@ -6,7 +6,8 @@ LICENSECLOSED = SHORTLICENCE-closed.txt
 COPY = "(C) copyright "
 LICENSE = SHORTLICENCE-open.txt
 AUTH = ../scripts/AUTHORS.txt
-TIDY = ../../../parxxl/scripts/findSvnAuthors --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
+TIDY = ../../../parxxl/scripts/findSvnAuthors
+TIDYFLAGS = --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
 
 target : p99_generated.h check
 
@@ -30,4 +31,4 @@ clean:
 distclean : clean
 
 tidy :
-	for f in *.h p99_special.c ; do  ${TIDY} $$f ; done
+	for f in *.h p99_special.c ; do  ${TIDY} ${TIDYFLAGS} $$f ; done
