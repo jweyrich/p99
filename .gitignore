@@ -10,6 +10,7 @@ p99-latex
 p99/ChangeLog
 tests/Makefile.inc
 tests/test-p99-block
+tests/test-p99-c11
 tests/test-p99-cases
 tests/test-p99-choice
 tests/test-p99-classification
@@ -18,4 +19,5 @@ tests/test-p99-double
 tests/test-p99-int
 tests/test-p99-ndim
 tests/test-p99-pow
+tests/test-p99-thread
 tests/test-p99-va-arg

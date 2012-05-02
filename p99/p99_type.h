@@ -1,15 +1,16 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
-/*                                                                           */
+/* This may look like nonsense, but it really is -*- mode: C -*-              */
+/*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
-/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
-/*                                                                           */
-/* This file is free software; it is part of the P99 project.                */
-/* You can redistribute it and/or modify it under the terms of the QPL as    */
-/* given in the file LICENSE. It is distributed without any warranty;        */
-/* without even the implied warranty of merchantability or fitness for a     */
-/* particular purpose.                                                       */
-/*                                                                           */
+/* the authors and copyright holders for this work are as follows:            */
+/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2012 William Morris                                         */
+/*                                                                            */
+/* This file is free software; it is part of the P99 project.                 */
+/* You can redistribute it and/or modify it under the terms of the QPL as     */
+/* given in the file LICENSE. It is distributed without any warranty;         */
+/* without even the implied warranty of merchantability or fitness for a      */
+/* particular purpose.                                                        */
+/*                                                                            */
 /**
  ** @file p99_type.h
  */
@@ -121,17 +122,17 @@ typedef T const*P99_PASTE2(T, _cptr)
  ** @brief Declare trivial init and destroy functions for type @a T.
  **/
 P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(P99_PLAIN_TYPE, 0)
-#define P99_PLAIN_TYPE(T)                                               \
-/*! @brief initialize the object that @a p00_id points to by 0. */      \
-p99_inline T* P99_PASTE2(T, _init)(T *p00_id) {                         \
-  if (p00_id) *p00_id = (T){ 0 };                                       \
-  return p00_id;                                                        \
-}                                                                       \
-/*! @brief destroy the object that @a p00_id points to. */              \
-p99_inline void P99_PASTE2(T, _destroy)(T*  p00_id) {                   \
-  /* empty */                                                           \
-  (void)p00_id;                                                         \
-}                                                                       \
+#define P99_PLAIN_TYPE(T)                                          \
+/*! @brief initialize the object that @a p00_id points to by 0. */ \
+p99_inline T* P99_PASTE2(T, _init)(T *p00_id) {                    \
+  if (p00_id) *p00_id = (T){ 0 };                                  \
+  return p00_id;                                                   \
+}                                                                  \
+/*! @brief destroy the object that @a p00_id points to. */         \
+p99_inline void P99_PASTE2(T, _destroy)(T*  p00_id) {              \
+  /* empty */                                                      \
+  (void)p00_id;                                                    \
+}                                                                  \
 P99_MACRO_END(P99_PLAIN_TYPE, T)
 
 /**

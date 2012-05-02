@@ -1,15 +1,16 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
-/*                                                                           */
+/* This may look like nonsense, but it really is -*- mode: C -*-              */
+/*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
-/* (C) copyright  2011-2012 Jens Gustedt, INRIA, France                      */
-/*                                                                           */
-/* This file is free software; it is part of the P99 project.                */
-/* You can redistribute it and/or modify it under the terms of the QPL as    */
-/* given in the file LICENSE. It is distributed without any warranty;        */
-/* without even the implied warranty of merchantability or fitness for a     */
-/* particular purpose.                                                       */
-/*                                                                           */
+/* the authors and copyright holders for this work are as follows:            */
+/* (C) copyright  2011-2012 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2012 William Morris                                         */
+/*                                                                            */
+/* This file is free software; it is part of the P99 project.                 */
+/* You can redistribute it and/or modify it under the terms of the QPL as     */
+/* given in the file LICENSE. It is distributed without any warranty;         */
+/* without even the implied warranty of merchantability or fitness for a      */
+/* particular purpose.                                                        */
+/*                                                                            */
 #ifndef P99_ATOMIC_H
 #define P99_ATOMIC_H 1
 
@@ -1316,16 +1317,16 @@ p99_extension                                                             \
   p00_ret;                                                                \
  })
 
-#define atomic_fetch_max(OBJP, OPERAND)                                 \
-p99_extension                                                           \
-({                                                                      \
-  P99_MACRO_PVAR(p00_objp, (OBJP));                                     \
-  P99_MACRO_VAR(p00_op, (OPERAND));                                     \
-  P99_MACRO_VAR(p00_ret, atomic_load(p00_objp));                        \
-  while (p00_ret <= p00_op) {                                           \
+#define atomic_fetch_max(OBJP, OPERAND)                                  \
+p99_extension                                                            \
+({                                                                       \
+  P99_MACRO_PVAR(p00_objp, (OBJP));                                      \
+  P99_MACRO_VAR(p00_op, (OPERAND));                                      \
+  P99_MACRO_VAR(p00_ret, atomic_load(p00_objp));                         \
+  while (p00_ret <= p00_op) {                                            \
     if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_op)) break; \
-  }                                                                     \
-  p00_ret;                                                              \
+  }                                                                      \
+  p00_ret;                                                               \
  })
 
 /**

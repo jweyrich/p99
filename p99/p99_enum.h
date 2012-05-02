@@ -1,15 +1,16 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
-/*                                                                           */
+/* This may look like nonsense, but it really is -*- mode: C -*-              */
+/*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
-/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
-/*                                                                           */
-/* This file is free software; it is part of the P99 project.                */
-/* You can redistribute it and/or modify it under the terms of the QPL as    */
-/* given in the file LICENSE. It is distributed without any warranty;        */
-/* without even the implied warranty of merchantability or fitness for a     */
-/* particular purpose.                                                       */
-/*                                                                           */
+/* the authors and copyright holders for this work are as follows:            */
+/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2012 William Morris                                         */
+/*                                                                            */
+/* This file is free software; it is part of the P99 project.                 */
+/* You can redistribute it and/or modify it under the terms of the QPL as     */
+/* given in the file LICENSE. It is distributed without any warranty;         */
+/* without even the implied warranty of merchantability or fitness for a      */
+/* particular purpose.                                                        */
+/*                                                                            */
 #ifndef     P99_ENUM_H_
 # define    P99_ENUM_H_
 
@@ -35,14 +36,14 @@ if (!memcmp(P99_STRINGIFY(C), p00_s, p00_len)) {               \
  ** @brief Declare a simple inline function to return strings
  ** containing the names of enumeration constants.
  **/
-#define P99_DECLARE_ENUM_GETNAME(T, ...)                                \
+#define P99_DECLARE_ENUM_GETNAME(T, ...)                                  \
 /*! @brief Get a string with the name of constant @a p00_x of type ::T */ \
 inline char const* P99_PASTE2(T, _getname)(T p00_x)
 /**
  ** @brief Declare a simple inline function to return the longest
  ** enumeration constants of type @a T found in a string.
  **/
-#define P99_DECLARE_ENUM_PARSE(T, ...)                                            \
+#define P99_DECLARE_ENUM_PARSE(T, ...)                                              \
 /*! @brief Parse a string @a p00_s for the longest matching constant of type ::T */ \
 inline T P99_PASTE2(T, _parse)(char const* p00_s)
 #else
@@ -124,20 +125,20 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ENUM, 0)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 1)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 2)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM, 3)
-#define P99_DECLARE_ENUM(T, ...)                                                                          \
-/*! \see T ## _getname for access to the names of the constants as strings */                             \
-enum T { __VA_ARGS__ ,                                                                               \
-               /*! upper bound of the @ref T constants */                                                 \
-               P99_PASTE2(T, _amount),                                                                    \
-               /*! the largest @ref T constant */                                                         \
-               P99_PASTE2(T, _max) = ((size_t)(P99_PASTE2(T, _amount)) - 1u),                             \
-               /*! the smallest @ref T constant */                                                        \
-               P99_PASTE2(T, _min) = 0                                                                    \
-};                                                                                                        \
-/*! \brief Enumeration type @c enum T and @c typedef T. */                                                \
-/*! \see T ## _getname for access to the names of the constants as strings */                             \
-typedef enum T T;                                                                                    \
- P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__);                                                                \
+#define P99_DECLARE_ENUM(T, ...)                                              \
+/*! \see T ## _getname for access to the names of the constants as strings */ \
+enum T { __VA_ARGS__ ,                                                        \
+               /*! upper bound of the @ref T constants */                     \
+               P99_PASTE2(T, _amount),                                        \
+               /*! the largest @ref T constant */                             \
+               P99_PASTE2(T, _max) = ((size_t)(P99_PASTE2(T, _amount)) - 1u), \
+               /*! the smallest @ref T constant */                            \
+               P99_PASTE2(T, _min) = 0                                        \
+};                                                                            \
+/*! \brief Enumeration type @c enum T and @c typedef T. */                    \
+/*! \see T ## _getname for access to the names of the constants as strings */ \
+typedef enum T T;                                                             \
+ P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__);                                    \
 P99_DECLARE_ENUM_PARSE(T, __VA_ARGS__)
 #else
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_ENUM, 0)

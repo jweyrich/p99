@@ -1,15 +1,16 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
-/*                                                                           */
+/* This may look like nonsense, but it really is -*- mode: C -*-              */
+/*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
-/* (C) copyright  2010-2011 Jens Gustedt, INRIA, France                      */
-/*                                                                           */
-/* This file is free software; it is part of the P99 project.                */
-/* You can redistribute it and/or modify it under the terms of the QPL as    */
-/* given in the file LICENSE. It is distributed without any warranty;        */
-/* without even the implied warranty of merchantability or fitness for a     */
-/* particular purpose.                                                       */
-/*                                                                           */
+/* the authors and copyright holders for this work are as follows:            */
+/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2012 William Morris                                         */
+/*                                                                            */
+/* This file is free software; it is part of the P99 project.                 */
+/* You can redistribute it and/or modify it under the terms of the QPL as     */
+/* given in the file LICENSE. It is distributed without any warranty;         */
+/* without even the implied warranty of merchantability or fitness for a      */
+/* particular purpose.                                                        */
+/*                                                                            */
 #ifndef     P99_ARGS_H_
 # define    P99_ARGS_H_
 
@@ -63,19 +64,19 @@
  ** The particular cases where X receives @c 0, @c 1 or a
  ** variable number of arguments should be fine.
  **/
-#define P99_IS_EMPTY(...)                                               \
-P00_ISEMPTY(                                                            \
+#define P99_IS_EMPTY(...)                                                 \
+P00_ISEMPTY(                                                              \
             /* test if there is just one argument, that might be empty */ \
-             P99_HAS_COMMA(__VA_ARGS__),                                \
-             /* test if P99_IS__EQ__ together with the argument         \
-                adds a comma */                                         \
-             P99_HAS_COMMA(P00_IS__EQ__ __VA_ARGS__),                   \
-             /* test if the argument together with a parenthesis        \
-                adds a comma */                                         \
-             P99_HAS_COMMA(__VA_ARGS__ (/*empty*/)),                    \
-             /* test if placing it between P99_IS__EQ__ and the         \
-                parenthesis adds a comma */                             \
-             P99_HAS_COMMA(P00_IS__EQ__ __VA_ARGS__ (/*empty*/))        \
+             P99_HAS_COMMA(__VA_ARGS__),                                  \
+             /* test if P99_IS__EQ__ together with the argument           \
+                adds a comma */                                           \
+             P99_HAS_COMMA(P00_IS__EQ__ __VA_ARGS__),                     \
+             /* test if the argument together with a parenthesis          \
+                adds a comma */                                           \
+             P99_HAS_COMMA(__VA_ARGS__ (/*empty*/)),                      \
+             /* test if placing it between P99_IS__EQ__ and the           \
+                parenthesis adds a comma */                               \
+             P99_HAS_COMMA(P00_IS__EQ__ __VA_ARGS__ (/*empty*/))          \
              )
 
 #define P00_ISEMPTY(_0, _1, _2, _3) P99_HAS_COMMA(P99_PASTE5(P00_IS_EMPTY_CASE_, _0, _1, _2, _3))

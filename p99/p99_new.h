@@ -1,15 +1,16 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
-/*                                                                           */
+/* This may look like nonsense, but it really is -*- mode: C -*-              */
+/*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
-/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
-/*                                                                           */
-/* This file is free software; it is part of the P99 project.                */
-/* You can redistribute it and/or modify it under the terms of the QPL as    */
-/* given in the file LICENSE. It is distributed without any warranty;        */
-/* without even the implied warranty of merchantability or fitness for a     */
-/* particular purpose.                                                       */
-/*                                                                           */
+/* the authors and copyright holders for this work are as follows:            */
+/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2012 William Morris                                         */
+/*                                                                            */
+/* This file is free software; it is part of the P99 project.                 */
+/* You can redistribute it and/or modify it under the terms of the QPL as     */
+/* given in the file LICENSE. It is distributed without any warranty;         */
+/* without even the implied warranty of merchantability or fitness for a      */
+/* particular purpose.                                                        */
+/*                                                                            */
 #ifndef     P99_NEW_H_
 # define    P99_NEW_H_
 
@@ -247,12 +248,12 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_CALLOC, 0)
  ** class specifiers for the functions. Default is ::p99_inline.
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_DELETE, 0)
-#define P99_DECLARE_DELETE(T)                                           \
-/*! @brief Operator @c delete for type T   **/                          \
+#define P99_DECLARE_DELETE(T)                                                                             \
+/*! @brief Operator @c delete for type T   **/                                                            \
 /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T * argument **/ \
-/*! @attention @a el show have been allocated through P99_NEW */        \
-/*! @see P99_NEW */                                                     \
-/*! @memberof T */                                                      \
+/*! @attention @a el show have been allocated through P99_NEW */                                          \
+/*! @see P99_NEW */                                                                                       \
+/*! @memberof T */                                                                                        \
   void P99_PASTE2(T, _delete)(T const*p00_el) { }
 
 #define P99_DEFINE_DELETE(T) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)
@@ -266,14 +267,14 @@ P99_MACRO_END(P99_DECLARE_DELETE)
 #define P99_DEFINE_DELETE(...) P00_DEFINE_DELETE(__VA_ARGS__,)
 #endif
 
-#define P00_DECLARE_DELETE(T, ...)                                                                          \
-__VA_ARGS__                                                                                                 \
-void P99_PASTE2(T, _delete)(T const*p00_el) {                                                               \
-  if (p00_el) {                                                                                             \
-    T* p00_e = (T*)p00_el;                                                                                  \
-    P99_PASTE2(T, _destroy)(p00_e);                                                                         \
-    free((void*)p00_e);                                                                                     \
-  }                                                                                                         \
+#define P00_DECLARE_DELETE(T, ...)                             \
+__VA_ARGS__                                                    \
+void P99_PASTE2(T, _delete)(T const*p00_el) {                  \
+  if (p00_el) {                                                \
+    T* p00_e = (T*)p00_el;                                     \
+    P99_PASTE2(T, _destroy)(p00_e);                            \
+    free((void*)p00_e);                                        \
+  }                                                            \
 }
 
 #define P00_DEFINE_DELETE(T, ...) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)

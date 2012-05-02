@@ -1,15 +1,16 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
-/*                                                                           */
+/* This may look like nonsense, but it really is -*- mode: C -*-              */
+/*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
-/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
-/*                                                                           */
-/* This file is free software; it is part of the P99 project.                */
-/* You can redistribute it and/or modify it under the terms of the QPL as    */
-/* given in the file LICENSE. It is distributed without any warranty;        */
-/* without even the implied warranty of merchantability or fitness for a     */
-/* particular purpose.                                                       */
-/*                                                                           */
+/* the authors and copyright holders for this work are as follows:            */
+/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2012 William Morris                                         */
+/*                                                                            */
+/* This file is free software; it is part of the P99 project.                 */
+/* You can redistribute it and/or modify it under the terms of the QPL as     */
+/* given in the file LICENSE. It is distributed without any warranty;         */
+/* without even the implied warranty of merchantability or fitness for a      */
+/* particular purpose.                                                        */
+/*                                                                            */
 #ifndef     P99_BLOCK_H_
 # define    P99_BLOCK_H_
 
@@ -73,7 +74,7 @@ P99_PREFER(                                                            \
 #endif
 
 
-#define P00_UNWIND_DOCUMENT                                             \
+#define P00_UNWIND_DOCUMENT                                                                                                                                                                                                                                                                                                                                             \
 /** @warning Utilities that change control flow in an unexpected way may result in the loss of some modifications that are effected on variables. A modern compiler should tell you when you are in such a situation. If it is the case you'd have to declare the variable in question with the @c volatile qualifier. For an explanation see ::P99_UNWIND_PROTECT. **/
 
 /**
@@ -264,7 +265,7 @@ P00_BLK_END
  ** @see P99_AVOID
  **/
 #if p99_has_feature(statement_expression)
-# define P99_PREFER(...) /* avoid the dangling else problem */    \
+# define P99_PREFER(...) /* avoid the dangling else problem */                  \
 for (_Bool p00 = 1; p00 && p99_extension ((void)({ __VA_ARGS__ }), 1); p00 = 0)
 #else
 # define P99_PREFER(...) if (1) { __VA_ARGS__ } else
@@ -710,7 +711,7 @@ if (0) {                                                              \
  **/
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_INVARIANT, 0)
 P99_BLOCK_DOCUMENT
-#define P99_INVARIANT(EXPR)                                                                   \
+#define P99_INVARIANT(EXPR)                                                                                       \
 P99_PROTECTED_BLOCK(assert((EXPR) && "failed at beginning of block"), assert((EXPR) && "failed at end of block"))
 
 

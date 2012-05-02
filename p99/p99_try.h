@@ -1,15 +1,16 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
-/*                                                                           */
+/* This may look like nonsense, but it really is -*- mode: C -*-              */
+/*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
-/* (C) copyright  2012 Jens Gustedt, INRIA, France                           */
-/*                                                                           */
-/* This file is free software; it is part of the P99 project.                */
-/* You can redistribute it and/or modify it under the terms of the QPL as    */
-/* given in the file LICENSE. It is distributed without any warranty;        */
-/* without even the implied warranty of merchantability or fitness for a     */
-/* particular purpose.                                                       */
-/*                                                                           */
+/* the authors and copyright holders for this work are as follows:            */
+/* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
+/* (C) copyright  2012 William Morris                                         */
+/*                                                                            */
+/* This file is free software; it is part of the P99 project.                 */
+/* You can redistribute it and/or modify it under the terms of the QPL as     */
+/* given in the file LICENSE. It is distributed without any warranty;         */
+/* without even the implied warranty of merchantability or fitness for a      */
+/* particular purpose.                                                        */
+/*                                                                            */
 #ifndef P99_TRY_H
 #define P99_TRY_H
 #include "p99_tss.h"
@@ -316,10 +317,10 @@ P00_BLK_AFTER(p00_unw ? P99_RETHROW : P99_NOP)
  ** @see P99_RETHROW
  **/
 P00_UNWIND_DOCUMENT
-#define P99_CATCH(...)                                                  \
-P00_FINALLY                                                             \
-P99_IF_EMPTY(__VA_ARGS__)()(P00_BLK_BEFORE(__VA_ARGS__ = p00_code))     \
-P00_BLK_BEFORE(p00_unw = 0)                                             \
+#define P99_CATCH(...)                                                                     \
+P00_FINALLY                                                                                \
+P99_IF_EMPTY(__VA_ARGS__)()(P00_BLK_BEFORE(__VA_ARGS__ = p00_code))                        \
+P00_BLK_BEFORE(p00_unw = 0)                                                                \
 P00_BLK_AFTER(p00_code ? (void)((P00_JMP_BUF_FILE = 0), (P00_JMP_BUF_FUNC = 0)) : P99_NOP)
 
 /**

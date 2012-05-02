@@ -1,15 +1,16 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
-/*                                                                           */
+/* This may look like nonsense, but it really is -*- mode: C -*-              */
+/*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
-/* (C) copyright  2012 Jens Gustedt, INRIA, France                           */
-/*                                                                           */
-/* This file is free software; it is part of the P99 project.                */
-/* You can redistribute it and/or modify it under the terms of the QPL as    */
-/* given in the file LICENSE. It is distributed without any warranty;        */
-/* without even the implied warranty of merchantability or fitness for a     */
-/* particular purpose.                                                       */
-/*                                                                           */
+/* the authors and copyright holders for this work are as follows:            */
+/* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
+/* (C) copyright  2012 William Morris                                         */
+/*                                                                            */
+/* This file is free software; it is part of the P99 project.                 */
+/* You can redistribute it and/or modify it under the terms of the QPL as     */
+/* given in the file LICENSE. It is distributed without any warranty;         */
+/* without even the implied warranty of merchantability or fitness for a      */
+/* particular purpose.                                                        */
+/*                                                                            */
 #ifndef P99_TSS_H
 #define P99_TSS_H 1
 
@@ -349,28 +350,28 @@ P99_PROTOTYPE(int, p99_tss_set, p99_tss*, void *);
  **/
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_TSS_DECLARE_LOCAL, 1)
 #ifdef P00_DOXYGEN
-# define P99_TSS_DECLARE_LOCAL(T, NAME, DTOR)           \
-/** @see P99_TSS_LOCAL to access the variable */        \
+# define P99_TSS_DECLARE_LOCAL(T, NAME, DTOR)                  \
+/** @see P99_TSS_LOCAL to access the variable */               \
 p99_tss NAME
 #else
-# define P99_TSS_DECLARE_LOCAL(...)             \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 3)             \
-(P00_TSS_DECLARE_LOCAL3(__VA_ARGS__, (free)))   \
+# define P99_TSS_DECLARE_LOCAL(...)                            \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                            \
+(P00_TSS_DECLARE_LOCAL3(__VA_ARGS__, (free)))                  \
 (P00_TSS_DECLARE_LOCAL3(__VA_ARGS__))
 #endif
 
 
-#define P00_TSS_DECLARE_LOCAL2(T, NAME)                 \
-/** @see P99_TSS_LOCAL to access the variable */        \
-P99_WEAK(NAME)                                          \
-p99_tss NAME;                                           \
+#define P00_TSS_DECLARE_LOCAL2(T, NAME)                        \
+/** @see P99_TSS_LOCAL to access the variable */               \
+P99_WEAK(NAME)                                                 \
+p99_tss NAME;                                                  \
 typedef T P99_PASTE3(p00_, NAME, _type)
 
-#define P00_TSS_DECLARE_LOCAL3(T, NAME, DTOR)           \
-/** @see P99_TSS_LOCAL to access the variable */        \
-P99_WEAK(NAME)                                          \
-p99_tss NAME;                                           \
-p99_tss NAME = { .p99_dtor = (DTOR), };                 \
+#define P00_TSS_DECLARE_LOCAL3(T, NAME, DTOR)                  \
+/** @see P99_TSS_LOCAL to access the variable */               \
+P99_WEAK(NAME)                                                 \
+p99_tss NAME;                                                  \
+p99_tss NAME = { .p99_dtor = (DTOR), };                        \
 typedef T P99_PASTE3(p00_, NAME, _type)
 
 /**
