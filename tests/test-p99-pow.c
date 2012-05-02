@@ -14,6 +14,7 @@
 #include "p99_map.h"
 #include "p99_new.h"
 #include "p99_c99_default.h"
+#include "p99_atomic.h"
 
 #ifdef _OPENMP
 # include <omp.h>
@@ -65,12 +66,13 @@ zeroOutFunc(P99_AARG(double, C, 2)) {
 inline
 bool
 checkZeroFunc(P99_AARG(double, C, 2)) {
+  atomic_flag ret = ATOMIC_FLAG_INIT;
   P99_PARALLEL_DO(size_t, i, 0, P99_ALEN(*C, 0)) {
     P99_PARALLEL_DO(size_t, j, 0, P99_ALEN(*C, 1)) {
-      if ((*C)[i][j] != 0.0) return false;
+      if ((*C)[i][j] != 0.0) atomic_flag_test_and_set(&ret);
     }
   }
-  return true;
+  return !atomic_flag_test_and_set(&ret);
 }
 
 /* The user interface. It receives just one argument the pointer to
