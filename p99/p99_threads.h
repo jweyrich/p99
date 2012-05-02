@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2011-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -19,13 +19,13 @@
 /**
  ** @addtogroup threads C11 thread emulation on top of POSIX threads
  **
- ** This is a relatively straight forward implementation of the C11
- ** thread model on top of POSIX threads. The main difficulty in that
+ ** This is a relatively straightforward implementation of the C11
+ ** thread model on top of POSIX threads. The main difficulty this presents
  ** is that the thread entry function signature differs between the
  ** two. C11 thread returns an <code>int</code> whereas POSIX returns
  ** a <code>void*</code>.
  **
- ** You find the thread management interfaces through the
+ ** You can find the thread management interfaces through the
  ** documentation of the type ::thrd_t.
  **
  ** @remark In addition to POSIX threads this implementation needs
@@ -44,9 +44,11 @@
  ** @brief expands to a value that can be used to initialize an object
  ** of type ::p99_once_flag
  **
- ** This implementation here has the particularity that this
- ** initialization is equivalent to the default initialization by @c
- ** 0.  This specific property is then use in the fallback
+ ** A characteristic of this implementation is that initialization is
+ ** equivalent to the default initialization by @c 0, meaning in
+ ** particular that a ::p99_once_flag that is of static or
+ ** thread-local storage duration is by default correctly initialized.
+ ** This property is subsequently used in the fallback
  ** implementation of thread local storage.
  **
  ** @memberof p99_once_flag
@@ -88,13 +90,13 @@ typedef struct p00_thrd p00_thrd;
 /**
  ** @brief complete object type that holds an identifier for a thread
  **
- ** @remark Even thought this implementation of threads is based on
- ** POSIX, this thread id type is not compatible with POSIX' @c
+ ** @remark Although this implementation of threads is based on
+ ** POSIX, this thread id type is not compatible with POSIX @c
  ** pthread_t.
  **
- ** As soon as you use this implementation here, all threads even if
- ** they are not created through ::thrd_create will have a distinct
- ** such ::thrd_t as their ID. This ID is accessible through
+ ** The use of the P99 implementation will result in all threads, even those
+ ** not created through ::thrd_create, having a distinct
+ ** object of type ::thrd_t as their ID. This ID is accessible through
  ** ::thrd_current.
  **/
 P99_ENC_DECLARE(struct p00_thrd*, thrd_t);
@@ -155,12 +157,12 @@ enum p00_once {
  ** @brief complete object type that holds a flag for use by
  ** ::p99_call_once
  **
- ** From the wording of the standard it is not clear if a variable of
+ ** From the wording of the standard it is not clear whether a variable of
  ** this type @b must be initialized by means of ::P99_ONCE_FLAG_INIT. The
  ** corresponding POSIX structure requires the analog.
  **
  ** Therefore we don't use the POSIX structure, here, but cook this
- ** ourselves with atomic variables. By that we can guarantee that a
+ ** ourselves with atomic variables. In this way we can guarantee that a
  ** ::p99_once_flag that is initialized by the default initializer always
  ** has the correct state.
  */
@@ -372,13 +374,13 @@ P99_IF_EQ_1(N)                                                 \
  (p00_call_once_3(__VA_ARGS__)))
 
 /**
- ** @brief Call a function @a FUNC exactly once eventually by
+ ** @brief Call a function @a FUNC exactly once, optionally
  ** providing it with argument @a ARG
  **
  ** This is an extension of the standard function ::call_once.
  **
- ** - If @a ARG is given, it must be compatible to type `void*` and is
- **   passed to @a FUNC as an argument. In that case @a FUNC must have
+ ** - If @a ARG is given, it must be compatible with type @c void* and is
+ **   passed to @a FUNC as an argument. In this case @a FUNC must have
  **   the prototype <code>void FUNC(void*)</code>.
  **
  ** - If @a ARG is omitted @a FUNC should have the prototype
@@ -407,19 +409,19 @@ P99_IF_EQ_1(N)                                                 \
 
 #ifdef P00_DOXYGEN
 /**
- ** @brief Define the function that will be exactly called once by
+ ** @brief Define a function that will be called exactly once by
  ** <code>P99_INIT_CHAIN(T)</code>.
  **
  ** The function has a prototype of <code>void someFunctionName(void)</code>.
  **
  ** @a T can be any valid identifier, the real function name will
- ** be mangled such that this will not clash with an existing one.
+ ** be mangled such that it will not clash with an existing name.
  **
  ** The ... list (optional) can be used to give a list of dependencies
  ** from other ::P99_INIT_CHAIN functions.
  ** @code
  ** P99_DEFINE_ONCE_CHAIN(toto) {
- **  // initialize some share ressource
+ **  // initialize some shared ressource
  ** }
  **
  ** P99_DEFINE_ONCE_CHAIN(tutu, toto) {
@@ -428,9 +430,9 @@ P99_IF_EQ_1(N)                                                 \
  ** @endcode
  **
  ** This will ensure that <code>P99_INIT_CHAIN(toto)</code> is always
- ** triggered by <code>P99_INIT_CHAIN(tutu)</code> and run before we run
- ** the function of @c tutu itself. As in this case many functions
- ** will be empty and serve just to ensure that all dynamic
+ ** triggered by <code>P99_INIT_CHAIN(tutu)</code> and is run before we run
+ ** the function @c tutu itself. As shown above in the example, many functions
+ ** will be empty, serving just to ensure that all dynamic
  ** dependencies are initialized in the right order.
  ** @see P99_DECLARE_ONCE_CHAIN
  ** @see P99_INIT_CHAIN
@@ -479,10 +481,9 @@ extern p99_once_flag P99_PASTE3(p99_, T, _once)
 
 /**
  ** @brief Ensure that the function that was defined with
- ** ::P99_DEFINE_ONCE_CHAIN has been called exactly once before further
- ** proceeding.
+ ** ::P99_DEFINE_ONCE_CHAIN has been called exactly once before proceeding.
  **
- ** Such a call could be place at the beginning of a user function to
+ ** Such a call could be placed at the beginning of a user function to
  ** ensure that a shared resource is always initialized before its
  ** use. A better strategy though would be to call ::P99_INIT_CHAIN from @c
  ** main, e.g., before any threads of the application are started.
@@ -664,9 +665,9 @@ int mtx_unlock(mtx_t *p00_mtx) {
  ** @see P99_CRITICAL for a tool that uses a spinlock that is
  ** allocated behind the scene.
  **
- ** This does some rudimentary error checking for the result of the
+ ** This does some rudimentary error checking for the result of
  ** locking. If an error occurs the whole block and any other
- ** enclosing blocks that protected with P99_UNWIND_PROTECT are
+ ** enclosing blocks that are protected with P99_UNWIND_PROTECT are
  ** aborted.
  **/
 P99_BLOCK_DOCUMENT
@@ -792,8 +793,8 @@ int thrd_join(thrd_t p00_thr, int *p00_res) {
  ** @memberof thrd_t
  **
  ** @return @c 0 if the requested time has elapsed, @c -1 if it has
- ** been interrupted by a signal, or a negative value if it fails.
- ** Consistently with that, this implementation uses ::thrd_success,
+ ** been interrupted by a signal, or another negative value if it fails.
+ ** Consistent with that, this implementation uses ::thrd_success,
  ** ::thrd_intr and ::thrd_error as return values.
  **/
 p99_inline

@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2012 Jens Gustedt, INRIA, France                           */
 /*                                                                           */
@@ -28,13 +28,13 @@
 /**
  ** @addtogroup threads C11 thread emulation on top of POSIX threads
  **
- ** This is a relatively straight forward implementation of the C11
- ** thread model on top of POSIX threads. The main difficulty in that
+ ** This is a relatively straightforward implementation of the C11
+ ** thread model on top of POSIX threads. The main difficulty this presents
  ** is that the thread entry function signature differs between the
  ** two. C11 thread returns an <code>int</code> whereas POSIX returns
  ** a <code>void*</code>.
  **
- ** You find the thread management interfaces through the
+ ** You can find the thread management interfaces through the
  ** documentation of the type ::thrd_t.
  **
  ** @remark In addition to POSIX threads this implementation needs

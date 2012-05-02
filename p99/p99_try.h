@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2012 Jens Gustedt, INRIA, France                           */
 /*                                                                           */
@@ -46,7 +46,7 @@ void p00_jmp_push(p00_jmp_buf0 * p00_des) {
 enum { p00_ilen10 = sizeof(P99_STRINGIFY(LLONG_MIN)) };
 
 /**
- ** @brief Report the origin and reason of a caught error
+ ** @brief Report the origin and cause of an error
  **
  ** Use this if a catch clause needs another layer of try/catch blocks
  ** during the cleanup.
@@ -111,9 +111,9 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, c
 
 
 /**
- ** @brief Stop execution and the current point and signal an
- ** exception of value @a X to the next ::P99_TRY clause that is
- ** located on the call stack, if any.
+ ** @brief Stop execution at the current point and signal an
+ ** exception of value @a X to the next ::P99_TRY clause
+ ** on the call stack, if any.
  **
  ** @remark If there is no such try clause on the call stack, @c abort
  ** is called.
@@ -122,7 +122,7 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, c
  ** @b must be non-zero. Otherwise the arbitrary value @c 1 as for @c
  ** setjmp / @c longjmp is transferred.
  **
- ** A good convention for the values to throw is using system wide
+ ** A good convention for the values to throw is to use system wide
  ** error numbers such as @c ERANGE. But any other convention that
  ** fits the needs of an application can be used.
  **/
@@ -131,8 +131,8 @@ P00_UNWIND_DOCUMENT
 
 
 /**
- ** @brief Stop execution and the current point inside a ::P99_FINALLY
- ** or ::P99_CATCH clause and propagate the same exception that let
+ ** @brief Stop execution at the current point inside a ::P99_FINALLY
+ ** or ::P99_CATCH clause and propagate the same exception that led
  ** here to the next level.
  **/
 P00_UNWIND_DOCUMENT
@@ -159,17 +159,17 @@ P00_UNWIND_DOCUMENT
  ** @endcode
  **
  ** This will ensure that the buffer allocated in @c buffer will
- ** always be freed, regardless what error conditions the code will
- ** encounter. In particular this will work, even if an exception is
+ ** always be freed, regardless of any error conditions the code
+ ** encounters. In particular this will work, even if an exception is
  ** thrown from below the call to @c favorite_func.
  **
- ** If no exception occurs, the ::P99_FINALLY clause is executed
- ** anyhow. Then execution continues after the clause, just as for
+ ** If no exception occurs, the ::P99_FINALLY clause is always executed.
+ ** Execution then continues after the clause, just as for
  ** normal code.
  **
- ** If an exception occurs, the clause is executed (and in this case
- ** the call to @c free is issued). But afterwards execution will not
- ** continue as normal but jump to the next ::P99_FINALLY or
+ ** If an exception occurs, the ::P99_FINALLY clause is executed (and in this case
+ ** the call to @c free is issued). But afterwards, execution will not
+ ** continue as normal but instead will jump to the next ::P99_FINALLY or
  ** ::P99_CATCH block on the call stack.
  **
  ** An alternative way is to use ::P99_CATCH and to handle different
@@ -196,7 +196,7 @@ P00_UNWIND_DOCUMENT
  ** different exceptional conditions. If it weren't for the
  ** ::P99_RETHROW, the unrolling of the call stack would stop at this
  ** point and execution would continue after the catch block. The
- ** exception would be considered to be caught.
+ ** exception would be considered caught.
  **
  ** Here, since there is a ::P99_RETHROW, execution will jump to the
  ** next ::P99_FINALLY or ::P99_CATCH block on the call stack. In fact
@@ -217,12 +217,12 @@ P00_UNWIND_DOCUMENT
  ** }
  ** @endcode
  **
- ** only that this wouldn't give access to @c code.
+ ** except that this wouldn't give access to @c code.
  **
  ** Note that the code depending on ::P99_TRY must always be an entire
  ** block with <code>{ }</code> surrounding it. The code depending on
- ** ::P99_FINALLY or ::P99_CATCH don't has that restriction, it could
- ** just be a single statement.
+ ** ::P99_FINALLY or ::P99_CATCH doesn't have that restriction and could
+ ** be just a single statement.
  **
  **/
 P00_UNWIND_DOCUMENT
@@ -252,12 +252,12 @@ P00_BLK_DECL(p00_jmp_buf0*, p00_unwind_top, p00_unwind_prev)
  ** @brief Designate a block that is executed regardless of the
  ** exceptions that were encountered in the corresponding try block
  **
- ** @remark If an exception had been caught to arrive to the finally
- ** clause, the unwind of ::P99_TRY and ::P99_UNWIND_PROTECT blocks
+ ** @remark If the finally clause was reached via the catching of an exception,
+ ** the unwind of ::P99_TRY and ::P99_UNWIND_PROTECT blocks
  ** will continue. Otherwise execution will resume normally after the
  ** ::P99_FINALLY clause.
  **
- ** A typical use pattern will looks as follows:
+ ** A typical use pattern will be as follows:
  **
  ** @code
  ** P99_FINALLY {
@@ -281,14 +281,15 @@ P00_BLK_AFTER(p00_unw ? P99_RETHROW : P99_NOP)
  ** @remark The argument to ::P99_CATCH should be a declaration of an
  ** integer variable, most likely an @c int.
  **
- ** @remark With a ::P99_CATCH clause, an exception is considered to
- ** be caught. If you want to unwind the call stack even further you
+ ** @remark With a ::P99_CATCH clause, an exception is considered to have
+ ** been caught. If you want to unwind the call stack even further you
  ** have to use ::P99_RETHROW.
  **
  ** @remark The corresponding code will be @c 0 if and only if no
  ** exception occured.
  **
- ** The definition of the @c code variable can be omitted. This can be
+ ** The definition of the @c code variable can be omitted. Such a ::P99_CATCH
+ ** without a variable can be
  ** used to catch any exception and to continue execution after the
  ** catch clause in any case:
  **

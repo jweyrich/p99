@@ -1,6 +1,6 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-             */
 /*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
+/* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                          */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                      */
 /*                                                                           */
@@ -21,8 +21,8 @@
 
 /**
  ** @addtogroup types Type facilities
- ** @brief Macros that help you handle different kind of types,
- ** forward declaring @c struct of @c union, and handle @c enum.
+ ** @brief Macros that help in the handling of different kinds of types,
+ ** forward declaring @c struct or @c union, and in handling @c enum.
  ** @{
  **/
 
@@ -34,7 +34,7 @@
  ** that should allow you to use @c struct @a NAME and just @a NAME
  ** interchangeably.
  **
- ** This declaration should also be suitable to be included into a C++
+ ** This declaration should also be suitable for inclusion into a C++
  ** source.
  **/
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_STRUCT, 0)
@@ -49,7 +49,7 @@ typedef struct NAME NAME
  ** that should allow you to use @c union @a NAME and just @a NAME
  ** interchangeably.
  **
- ** This declaration should also be suitable to be included into a C++
+ ** This declaration should also be suitable for inclusion into a C++
  ** source.
  **/
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_DECLARE_UNION, 0)
@@ -63,10 +63,10 @@ typedef union NAME NAME
  ** The member declaration(s) should be given as the variable argument
  ** list.
  **
- ** The difference of this to a straight forward @c union declaration
+ ** The difference between this and a straightforward @c union declaration
  ** is that here we introduce a hidden first member that consists of a
- ** byte array that has just the appropriate length to cover the whole
- ** union. The only purpose for this hidden member is to ensure that
+ ** byte array with just the appropriate length to cover the whole
+ ** union. The only purpose of this hidden member is to ensure that
  ** the default initializer <code>{ 0 }</code> initializes the whole
  ** @c union.
  **
@@ -149,7 +149,7 @@ P99_PLAIN_TYPE(P99_PASTE2(T, _ptr))
  ** @brief Encapsulate an object of type @a T in a new type called @a NAME
  **
  ** This hides type @a T inside the new structure type such that the
- ** original type is only accessible if asked explicitly.
+ ** original type is only accessible if asked accessed explicitly.
  **
  ** @see P99_ENC to access the hidden type of an object of type @a NAME
  ** @see P99_ENCP to access the hidden type of a pointer to object of type @a NAME
