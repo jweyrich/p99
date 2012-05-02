@@ -42,18 +42,18 @@ print SPECIAL << 'DOCUMENTATION';
 /**
  ** @page safety Safety of macro programming and pitfalls
  **
- ** Often we may hear arguments that function like macros obfuscate
+ ** Often we may hear arguments that function-like macros obfuscate
  ** the code, are dangerous, not maintainable, in short: the big
  ** evil.
  **
- ** I am convinced that this is just one of the other urban
+ ** I am convinced that this is just one of the many urban
  ** legends. Macros as such are not less safe than, say, the use of
  ** pointers or of a high quality sharpened kitchen knife.  And they
- ** belong to C as the <code>for</code> or the <code>++</code>
+ ** belong to C as much as the <code>for</code> or the <code>++</code>
  ** operator.
  **
- ** Macros can make your code easier readable, better maintainable,
- ** more precise and more efficient than you ever would do by writing
+ ** Macros can make your code easier to read and to maintain,
+ ** more precise and more efficient than would be possible by writing
  ** code "directly" without macros. It is all about how you write
  ** them, if you do that yourself, and how you use them.
  **
@@ -66,7 +66,7 @@ print SPECIAL << 'DOCUMENTATION';
  ** }
  ** @endcode
  **  - This is readable: you have all the variables that are to be
- **    checked by the condition in one glance.
+ **    checked by the condition at one glance.
  **  - This is maintainable: just change a variable name in one place,
  **    deleted one or add one without problems.
  **  - This is precise and describes exactly what it does.
@@ -75,13 +75,13 @@ print SPECIAL << 'DOCUMENTATION';
  ** @code
  ** ((a) < (b)) && ((b) < (c)) && ((c) < (d)) && ((d) < (e)) && ((e) < (f))
  ** @endcode
- ** which by itself is not very readable, difficult to maintain and
+ ** which by itself is not very readable, is difficult to maintain and is
  ** not very explicit in its intentions.
  **
- ** In the example a part of the efficiency also comes from the fact
- ** that it is <em>not a function</em>. This is e.g interesting if
- ** some of the variables in the list are of integer type and the
- ** others of floating type: promotions from integer type to floating
+ ** In the example, part of the efficiency also comes from the fact
+ ** that it is <em>not a function</em>. This is interesting if, for example,
+ ** some of the variables in the list are of integer type and
+ ** others are of floating type: promotions from integer type to floating
  ** type will only be performed where necessary in a comparison of two
  ** adjacent variables. In such a way we can profit of the exact
  ** comparison for integer types and can avoid the problems of
@@ -89,30 +89,30 @@ print SPECIAL << 'DOCUMENTATION';
  ** comparing <code>e = UINT64_MAX - 1</code> and <code>e =
  ** UINT64_MAX</code>.)
  **
- ** But, macros have pitfalls, in particular <em>one</em> important
- ** pitfall: you don't see from a macro call if the arguments are
- ** evaluated multiple times or not. So if you have the habit to
- ** program with side effects, you really have to be careful.
+ ** But, macros have pitfalls, and <em>one</em> important pitfall
+ ** in particular: you don't see from a macro call if the arguments are
+ ** evaluated multiple times or not. So if you have the habit of
+ ** programming with side effects, you really have to be careful.
  **
- ** The simplest really is to avoid that, don't have expressions with
+ ** The simplest solution is avoidance: don't use expressions with
  ** side effects such as <code>++</code> as arguments to macros or
  ** functions. Really, don't do that.
  **
  ** If you are programming macros, you have to be more careful since
  ** you can't assume that everybody knows what she or he is doing. For
- ** P99 we an automatic suite of scripts that tests if any of the
+ ** P99 we have an automatic suite of scripts that tests if any of the
  ** macros that start with "P99_" evaluate their arguments multiple
  ** times. This is a bit tricky, special care has to be taken for
  ** macros that use the ternary operator <code>?:</code> and the @c
  ** sizeof operator:
  **
- **  - For the ternary operator, P99 has a lot where the condition is
- **    constant and one branch is only evaluated for its type.
- **  - <code>sizeof</code> is special because its argument is also
- **    mostly evaluated for its type and not for its value. There is
- **    one exception for that rule, variable length arrays, VLA.
+ **  - For the ternary operator, P99 has many cases where the condition is
+ **    constant and only one branch is evaluated for its type.
+ **  - <code>sizeof</code> is also special because its argument is evaluated
+ **    mostly for its type and not for its value. There is
+ **    one exception to that rule, namely variable length arrays, VLA.
  **
- ** The mentioned scripts help us detect these and other special cases
+ ** The scripts mentioned above help us detect these and other special cases
  ** and the documentation of the corresponding P99 macros is then
  ** annotated with warnings and remarks that document the special
  ** behavior of these macros.
