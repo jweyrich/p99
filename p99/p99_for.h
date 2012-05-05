@@ -497,6 +497,10 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                      \
 #define P00_REVS_(N, ...) P99_FOR(,N, P00_REV, P00_IDT, __VA_ARGS__)
 
 /**
+ ** @}
+ **/
+
+/**
  ** @ingroup preprocessor_arithmetic
  ** @brief Generate the quotient of non-negative decimal numbers @a A and @a B at
  ** preprocessing time.

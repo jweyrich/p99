@@ -82,17 +82,17 @@
   P99_PASTE2(P99_PASTE5(_1, _2, _3, _4, _5), _6)
 
 #ifndef P00_DOCUMENT_MULTIPLE_ARGUMENT
-#define P00_DOCUMENT_TYPE_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO should correspond to a type that is not a VLA. */
-#define P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO should correspond to a type name (one token) that is not a VLA. */
-#define P00_DOCUMENT_MULTIPLE_ARGUMENT(MACRO, N) /*! @warning argument N of MACRO may be evaluated multiple times */
-#define P00_DOCUMENT_WARN_VLA_ARGUMENT(MACRO, N) /*! @warning argument N of MACRO may be evaluated multiple times if it is a VLA */
-#define P00_DOCUMENT_IDENTIFIER_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO must be an identifier */
-#define P00_DOCUMENT_PERMITTED_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO maybe evaluated several times for its type but only once for its value */
-#define P00_DOCUMENT_STATEMENT_ARGUMENT(MACRO, N)  /*! @remark argument N of MACRO is a statement that will be emitted multiple times in the resulting macro expansion */
+#define P00_DOCUMENT_TYPE_ARGUMENT(MACRO, N) /*! @remark argument N should correspond to a type that is not a VLA. */
+#define P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(MACRO, N) /*! @remark argument N should correspond to a type name (one token) that is not a VLA. */
+#define P00_DOCUMENT_MULTIPLE_ARGUMENT(MACRO, N) /*! @warning argument N may be evaluated multiple times */
+#define P00_DOCUMENT_WARN_VLA_ARGUMENT(MACRO, N) /*! @warning argument N may be evaluated multiple times if it is a VLA */
+#define P00_DOCUMENT_IDENTIFIER_ARGUMENT(MACRO, N) /*! @remark argument N must be an identifier */
+#define P00_DOCUMENT_PERMITTED_ARGUMENT(MACRO, N) /*! @remark argument N maybe evaluated several times for its type but only once for its value */
+#define P00_DOCUMENT_STATEMENT_ARGUMENT(MACRO, N)  /*! @remark argument N is a statement that will be emitted multiple times in the resulting macro expansion */
 #define P00_DOCUMENT_DECLARATION_ARGUMENT(MACRO, N)
-#define P00_DOCUMENT_MACRO_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO should correspond to a macro name */
-#define P00_DOCUMENT_NUMBER_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO must expand to a decimal number */
-#define P00_DOCUMENT_DESIGNATOR_ARGUMENT(MACRO, N) /*! @remark argument N of MACRO must be a field designator */
+#define P00_DOCUMENT_MACRO_ARGUMENT(MACRO, N) /*! @remark argument N should correspond to a macro name */
+#define P00_DOCUMENT_NUMBER_ARGUMENT(MACRO, N) /*! @remark argument N must expand to a decimal number */
+#define P00_DOCUMENT_DESIGNATOR_ARGUMENT(MACRO, N) /*! @remark argument N must be a field designator */
 #endif
 
 /**
