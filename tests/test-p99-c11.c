@@ -138,5 +138,30 @@ int main(void) {
   } else {
     printf("UINT16_MAX (%" PRIu16 ") seems ok\n", UINT16_MAX);
   }
+  unsigned Arr[7] = { 0 };
+  printf("array length is %zu, pointer is %zu\n",
+         P99_OBJLEN(Arr, unsigned, signed, float, double),
+         P99_OBJLEN(&Arr[0], unsigned, signed, float, double)
+         );
+  double Ard[7] = { 0 };
+  printf("array length is %zu, pointer is %zu\n",
+         P99_OBJLEN(Ard, unsigned, signed, float, double),
+         P99_OBJLEN(&Ard[0], unsigned, signed, float, double)
+         );
+  char Arc[7] = { 0 };
+  printf("array length is %zu, pointer is %zu\n",
+         P99_OBJLEN(Arc, char, unsigned, signed),
+         P99_OBJLEN(&Arc[0], char, unsigned, signed)
+         );
+  unsigned char Aruc[7] = { 0 };
+  printf("array length is %zu, pointer is %zu\n",
+         P99_OBJLEN(Aruc, unsigned char, signed),
+         P99_OBJLEN(&Aruc[0], unsigned char, signed)
+         );
+  signed char Arsc[7] = { 0 };
+  printf("array length is %zu, pointer is %zu\n",
+         P99_OBJLEN(Arsc, signed char, unsigned),
+         P99_OBJLEN(&Arsc[0], signed char, unsigned)
+         );
   return ret;
 }

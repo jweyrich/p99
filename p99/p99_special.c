@@ -181,6 +181,8 @@
  ** @see P99_NAME(N, NAME) for argument <code>N</code>.
  ** @see P99_NTOHL(X) for argument <code>X</code>.
  ** @see P99_NTOHS(X) for argument <code>X</code>.
+ ** @see P99_OBJLEN(X, ...) for arguments <code>X</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_OBJSIZE(X, ...) for arguments <code>X</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_PARALLEL_DO(TYPE, VAR, ...) for argument <code>TYPE</code>.
  ** @see P99_PARALLEL_FORALL(NAME, ...) for argument <code>NAME</code>.
  ** @see P99_PLAIN_TYPE(T) for argument <code>T</code>.

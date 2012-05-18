@@ -56,7 +56,7 @@ TIDY = ../../../parxxl/scripts/findSvnAuthors --type c --auth ${AUTH} --copy ${C
 CONFORM = ${SCRIPTS}/p99_conformance.pl
 
 ifneq (${POSIX_SEMAPHORES}, -1L)
-LDFLAGS += -lrt
+LDFLAGS := ${LDFLAGS} -lrt -lpthread
 endif
 
 #####################
@@ -73,7 +73,7 @@ UNCOMP	= gzip -df
 STRIP	= strip
 
 CFLAGS  += $(OBJOPT) $(IPATH)
-LDFLAGS += $(EXEOPT) $(LPATH)
+LDFLAGS := $(EXEOPT) $(LPATH) $(LDFLAGS)
 
 .SUFFIXES: .h.Z .c.Z .h.gz .c.gz .c.z .h.z
 

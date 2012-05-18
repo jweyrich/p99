@@ -768,5 +768,71 @@ P99_GEN_EXPR(minimum, ((A) <= (B)) ? (A) : (B),                \
 
 #endif
 
+#define P00_OBJSIZES_(X, T, I) (T*, (sizeof X[0]))
+#define P00_OBJSIZES(X, ...) P99_FOR(X, P99_NARG(__VA_ARGS__), P00_SEQ, P00_OBJSIZES_, __VA_ARGS__)
+#define P00_OBJSIZE_(X, DEF, ...) P99_GENERIC(X, DEF, __VA_ARGS__)
+
+#define P00_OBJSIZES1_(X, T, I) (T*, sizeof X)
+#define P00_OBJSIZES1(X, ...) P99_FOR(X, P99_NARG(__VA_ARGS__), P00_SEQ, P00_OBJSIZES1_, __VA_ARGS__)
+#define P00_OBJSIZE1_(X, ...) P99_GENERIC(&(X[0]), , P00_OBJSIZES1(X, __VA_ARGS__))
+
+#ifdef P00_DOXYGEN
+/**
+ ** @brief For a pointer or array expression @a X return the size of
+ ** the underlying object.
+ **
+ ** @pre This requires that @a X is either a pointer or array, or in
+ ** other words that <code>(X)[0]</code> is a valid expression.
+ **
+ ** @pre This requires that the base type of @a X is one of the types
+ ** listed in the arguments.
+ **
+ ** @return If @a X is a pointer to of one of the types listed in the
+ ** argument list, <code>sizeof (X)[0]</code> is returned, that is it
+ ** is assumed that the pointer points to one element of the
+ ** underlying base type. Otherwise @a X is an lvalue of array type
+ ** and this corresponds to the total size of the array object.
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_OBJSIZE, 0)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJSIZE, 1)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJSIZE, 2)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJSIZE, 3)
+#define P99_OBJSIZE(X, ...)
+
+/**
+ ** @brief For a pointer or array expression @a X return the length of
+ ** the underlying array object.
+ **
+ ** @pre This requires that @a X is either a pointer or array, or in
+ ** other words that <code>(X)[0]</code> is a valid expression.
+ **
+ ** @pre This requires that the base type of @a X is one of the types
+ ** listed in the arguments.
+ **
+ ** @return If @a X is a pointer to of one of the types listed in the
+ ** argument list, <code>1</code> is returned, that is it is assumed
+ ** that the pointer points to one element of the underlying base
+ ** type. Otherwise @a X is an lvalue of array type and this
+ ** corresponds to the total number of elements of the array object.
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_OBJLEN, 0)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJLEN, 1)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJLEN, 2)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJLEN, 3)
+#define P99_OBJLEN(X, ...)
+#else
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_OBJSIZE, 0)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJSIZE, 1)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJSIZE, 2)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJSIZE, 3)
+#define P99_OBJSIZE(X, ...) P00_OBJSIZE_((X), P00_OBJSIZE1_((X), __VA_ARGS__), P00_OBJSIZES((X), __VA_ARGS__))
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_OBJLEN, 0)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJLEN, 1)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJLEN, 2)
+P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJLEN, 3)
+#define P99_OBJLEN(X, ...) (P99_OBJSIZE(X, __VA_ARGS__)/(sizeof (X)[0]))
+#endif
+
 
 #endif
