@@ -1106,7 +1106,8 @@ p99_extension                                                                   
         }                                                                                               \
       }                                                                                                 \
     })                                                                                                  \
-    p00_ret.p00_t;                                                                                      \
+    /* assign to itself to be sure that the result is an rvalue */                                      \
+    p00_ret.p00_t = p00_ret.p00_t;                                                                      \
  })
 #endif
 
@@ -1186,7 +1187,8 @@ p99_extension                                                                   
       p00_ret = (*p00_expm == p00_valm);                                                        \
       if (!p00_ret) *p00_expm = p00_valm;                                                       \
     })                                                                                          \
-  p00_ret;                                                                                      \
+  /* assign to itself to be sure that the result is an rvalue */                                \
+  p00_ret = p00_ret;                                                                            \
  })
 
 #ifdef P00_DOXYGEN
@@ -1226,7 +1228,8 @@ p99_extension                                                          \
                                 P00_ATOMIC_TERN(p00_objp, p00_op, 0)), \
                         P00_AT(p00_objp));                             \
     })                                                                 \
-    p00_ret;                                                           \
+    /* assign to itself to be sure that the result is an rvalue */     \
+    p00_ret = p00_ret;                                                 \
  })
 
 /**
@@ -1314,7 +1317,8 @@ p99_extension                                                             \
     P99_MACRO_VAR(p00_des, p00_ret + p00_op);                             \
     if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_des)) break; \
   }                                                                       \
-  p00_ret;                                                                \
+  /* assign to itself to be sure that the result is an rvalue */          \
+  p00_ret = p00_ret;                                                      \
  })
 
 #define atomic_fetch_max(OBJP, OPERAND)                                  \
@@ -1326,7 +1330,8 @@ p99_extension                                                            \
   while (p00_ret <= p00_op) {                                            \
     if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_op)) break; \
   }                                                                      \
-  p00_ret;                                                               \
+  /* assign to itself to be sure that the result is an rvalue */         \
+  p00_ret = p00_ret;                                                     \
  })
 
 /**
@@ -1442,7 +1447,8 @@ p99_extension                                                                   
     while (P99_UNLIKELY(!atomic_compare_exchange_weak(p00_l, &p00_el, p00_el->p99_lifo))) P99_NOP; \
     p00_el->p99_lifo = 0;                                                                          \
   }                                                                                                \
-  p00_el;                                                                                          \
+  /* assign to itself to be sure that the result is an rvalue */                                   \
+  p00_el = p00_el;                                                                                 \
  })
 
 /**
