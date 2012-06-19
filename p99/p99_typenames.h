@@ -38,6 +38,22 @@ P00_ONE_TOK(long long, llong);
 P00_ONE_TOK(signed long long, sllong);
 P00_ONE_TOK(unsigned long long, ullong);
 
+#ifndef SSIZE_MAX
+# if SIZE_MAX == SHRT_MAX
+typedef short ssize_t;
+# define SSIZE_MAX SHRT_MAX
+# elif SIZE_MAX == UINT_MAX
+typedef int ssize_t;
+# define SSIZE_MAX INT_MAX
+# elif SIZE_MAX == ULONG_MAX
+typedef long ssize_t;
+# define SSIZE_MAX LONG_MAX
+# else
+typedef long long ssize_t;
+# define SSIZE_MAX LLONG_MAX
+# endif
+#endif
+
 /**
  ** @}
  **/
