@@ -14,6 +14,7 @@
 #ifndef     P99_GENERIC_H_
 # define    P99_GENERIC_H_
 
+#include "p99_typenames.h"
 #include "p99_for.h"
 
 /**
@@ -136,6 +137,53 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 3)
 
 
 #endif
+
+#define P00_CHAR_SIGNED (CHAR_MAX < UCHAR_MAX)
+
+#define P00_RVALUE(X) (1 ? (X) : (X))
+
+#define P00_QVALUE_SIG(T, X)                                               \
+  (T, (T)(intmax_t)(X)),                                                \
+  (T const, (T const)(intmax_t const)(X)),                              \
+  (T volatile, (T volatile)(intmax_t volatile)(X)),                     \
+  (T const volatile, (T const volatile)(intmax_t const volatile)(X)),   \
+  (_Atomic(T), (T)(intmax_t)(X)),                                       \
+  (_Atomic(T) const, (T const)(intmax_t const)(X)),                     \
+  (_Atomic(T) volatile, (T volatile)(intmax_t volatile)(X)),            \
+  (_Atomic(T) const volatile, (T const volatile)(intmax_t const volatile)(X))
+
+#define P00_QVALUE_UNS(T, X)                                               \
+  (T, (T)(uintmax_t)(X)),                                               \
+  (T const, (T const)(uintmax_t const)(X)),                             \
+  (T volatile, (T volatile)(uintmax_t volatile)(X)),                    \
+  (T const volatile, (T const volatile)(uintmax_t const volatile)(X)),  \
+  (_Atomic(T), (T)(uintmax_t)(X)),                                      \
+  (_Atomic(T) const, (T const)(uintmax_t const)(X)),                    \
+  (_Atomic(T) volatile, (T volatile)(uintmax_t volatile)(X)),           \
+  (_Atomic(T) const volatile, (T const volatile)(uintmax_t const volatile)(X))
+
+#define P00_QVALUE_QUAL(X, Q)                                            \
+(char Q, ((char Q)P99_TYPED_TERN(P00_CHAR_SIGNED, (schar Q)(intmax_t Q)(X), (uchar Q)(uintmax_t Q)(X)))), \
+(_Atomic(char) Q, ((char Q)P99_TYPED_TERN(P00_CHAR_SIGNED, (schar Q)(intmax_t Q)(X), (uchar Q)(uintmax_t Q)(X))))
+
+#define P00_QVALUE_CHAR(X)                       \
+  P00_QVALUE_QUAL(X, ),                          \
+  P00_QVALUE_QUAL(X, const),                     \
+  P00_QVALUE_QUAL(X, volatile),                  \
+  P00_QVALUE_QUAL(X, const volatile)
+
+
+
+
+#define P99_QVALUE(X)                            \
+P99_GENERIC((X),                                \
+            P00_RVALUE(X),                      \
+            P00_QVALUE_CHAR(X),                  \
+            P00_QVALUE_SIG(schar, X),            \
+            P00_QVALUE_SIG(sshort, X),           \
+            P00_QVALUE_UNS(_Bool, X),            \
+            P00_QVALUE_UNS(uchar, X),            \
+            P00_QVALUE_UNS(ushort, X))
 
 
 #define P00_TYPE_CHOICE(YES, T, I) (T, YES)
@@ -543,7 +591,7 @@ inline int* p00_generic_test(int * p00_a) {
 #define P99_TYPE_UNSIGNED(EXP)      P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_UNSIGNED_TYPES)
 #define P99_TYPE_SIGNED(EXP)        P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_SIGNED_TYPES)
 #define P99_TYPE_REAL_FLOATING(EXP) P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_REAL_FLOATING_TYPES)
-# define P99_TYPE_COMPLEX(EXP)       P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_COMPLEX_TYPES)
+#define P99_TYPE_COMPLEX(EXP)       P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_COMPLEX_TYPES)
 #define P99_TYPE_FLOATING(EXP)      P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_FLOATING_TYPES)
 #define P99_TYPE_BASIC(EXP)         P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_BASIC_TYPES)
 #define P99_TYPE_CHARACTER(EXP)     P99_TYPE_CHOICE((EXP), 1, 0, P99_STD_CHARACTER_TYPES)

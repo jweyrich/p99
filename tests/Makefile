@@ -19,6 +19,7 @@ SRC	=					\
 		test-p99-int.c			\
 		test-p99-ndim.c			\
 		test-p99-pow.c			\
+		test-p99-qualifier.c            \
 		test-p99-thread.c		\
 		test-p99-va-arg.c
 
