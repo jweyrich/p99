@@ -130,6 +130,25 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, c
 P00_UNWIND_DOCUMENT
 #define P99_THROW(X) p00_jmp_throw((X), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
+/**
+ ** @brief Capture, clean and throw the current value of @c errno
+ **
+ ** This is intended for a cleanup after system functions. A lot of
+ ** them just return a @c -1 or so if an error occurred.
+ ** @code
+ ** FILE* f = fopen("bla.txt", "w");
+ ** if (!f) P99_THROW_ERRNO;
+ ** @endcode
+ **
+ ** @see P99_THROW
+ **/
+#define P99_THROW_ERRNO                         \
+do {                                            \
+  int err = errno;                              \
+  if (!err) err = EINVAL;                       \
+  errno = 0;                                    \
+  P99_THROW(err);                               \
+ } while(0)
 
 /**
  ** @brief Stop execution at the current point inside a ::P99_FINALLY
