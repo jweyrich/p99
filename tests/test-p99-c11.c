@@ -39,6 +39,19 @@ unsigned char f[__alignof__(double)];
 int * g = P99_GENERIC(a, (void*)&d, (int, &a), (unsigned int, &a));
 //int * h = _Generic(a, default: (void*)&d, int: &a, unsigned int: &a);
 
+#define TYPESTR(T) (T, #T)
+
+#define SIGNEDTYPE_(T, X) (unsigned T, (signed T)(X))
+
+#define SSIZE_T(X)                              \
+P99_GENERIC(sizeof(1),                          \
+            ,                                   \
+            SIGNEDTYPE_(char, X),               \
+            SIGNEDTYPE_(short, X),              \
+            SIGNEDTYPE_(int, X),                \
+            SIGNEDTYPE_(long, X),               \
+            SIGNEDTYPE_(long long, X))
+
 float funcf(float a, float b) {
   return a;
 }
@@ -138,6 +151,26 @@ int main(void) {
   } else {
     printf("UINT16_MAX (%" PRIu16 ") seems ok\n", UINT16_MAX);
   }
+  printf("size_t is %s\n",
+         P99_GENERIC(sizeof(1),
+                     ,
+                     TYPESTR(unsigned char),
+                     TYPESTR(unsigned short),
+                     TYPESTR(unsigned int),
+                     TYPESTR(unsigned long),
+                     TYPESTR(unsigned long long)
+                     ));
+
+  printf("ssize_t is %s\n",
+         P99_GENERIC(SSIZE_T(1),
+                     ,
+                     TYPESTR(signed char),
+                     TYPESTR(signed short),
+                     TYPESTR(signed int),
+                     TYPESTR(signed long),
+                     TYPESTR(signed long long)
+                     ));
+
   unsigned Arr[7] = { 0 };
   printf("array length is %zu, pointer is %zu\n",
          P99_OBJLEN(Arr, unsigned, signed, float, double),
