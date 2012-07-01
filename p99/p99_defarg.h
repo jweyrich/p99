@@ -182,9 +182,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_PROTOTYPE, 0)
 P00_DOCUMENT_TYPE_ARGUMENT(P99_PROTOTYPE, 2)
 
 #ifdef P00_DOXYGEN
-#define P99_PROTOTYPE(RT, NAME, ...)                                                     \
-/*! @remark This function might be hidden behind a macro :: ## NAME of the same name. */ \
-RT NAME(__VA_ARGS__)
+#define P99_PROTOTYPE(...)
 #else
 #define P00_PROTOTYPE(RT, NAME, ...)                           \
   RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));       \

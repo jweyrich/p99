@@ -340,13 +340,13 @@ __typeof__(P99_GENERIC_SIZE_LIT(sizeof(T), (uintptr_t){ 0 }, P00_UINT_TYPE_LIST)
 
 /**
  ** @brief Initialize a variable of type ::atomic_flag
- ** @memberof atomic_flag
+ ** @see atomic_flag
  **/
 #define ATOMIC_FLAG_INIT P99_ENC_INIT(0)
 
 /**
  ** @brief Initialize a variable of an atomic type.
- ** @memberof atomic_int
+ ** @see atomic_int
  **/
 #define ATOMIC_VAR_INIT(V) { .p00_xval = { .p00_t = (V), }, }
 
@@ -868,7 +868,7 @@ void atomic_thread_fence(memory_order p00_ord) {
  ** @brief Unconditionally set @a *object to @c true and return the
  ** previous value
  **
- ** @memberof atomic_flag
+ ** @related atomic_flag
  **
  ** @param object the object that will be set
  **
@@ -903,7 +903,7 @@ _Bool atomic_flag_test_and_set_explicit(volatile atomic_flag *p00_objp, memory_o
  ** @brief Unconditionally set @a *object to @c true and return the
  ** previous value
  **
- ** @memberof atomic_flag
+ ** @related atomic_flag
  **/
 p99_inline
 _Bool atomic_flag_test_and_set(volatile atomic_flag *p00_objp) {
@@ -913,7 +913,7 @@ _Bool atomic_flag_test_and_set(volatile atomic_flag *p00_objp) {
 /**
  ** @brief Unconditionally set @a *p00_objp to @c false
  **
- ** @memberof atomic_flag
+ ** @related atomic_flag
  **
  ** @param p00_objp the object that will be set
  **
@@ -944,7 +944,7 @@ void atomic_flag_clear_explicit(volatile atomic_flag *p00_objp, memory_order p00
 /**
  ** @brief Unconditionally set @a *p00_objp to @c false
  **
- ** @memberof atomic_flag
+ ** @related atomic_flag
  **/
 p99_inline
 void atomic_flag_clear(volatile atomic_flag *p00_objp) {
@@ -959,7 +959,7 @@ void atomic_flag_clear(volatile atomic_flag *p00_objp) {
  **
  ** This operation only guarantees acquire-consistency.
  **
- ** @memberof atomic_flag
+ ** @related atomic_flag
  **/
 p99_inline
 void atomic_flag_lock(volatile atomic_flag *p00_objp) {
@@ -975,7 +975,7 @@ void atomic_flag_lock(volatile atomic_flag *p00_objp) {
  **
  ** This operation only guarantees acquire-consistency.
  **
- ** @memberof atomic_flag
+ ** @related atomic_flag
  **/
 p99_inline
 _Bool atomic_flag_trylock(volatile atomic_flag *p00_objp) {
@@ -987,7 +987,7 @@ _Bool atomic_flag_trylock(volatile atomic_flag *p00_objp) {
  **
  ** This operation only guarantees release-consistency.
  **
- ** @memberof atomic_flag
+ ** @related atomic_flag
  **/
 p99_inline
 void atomic_flag_unlock(volatile atomic_flag *p00_objp) {
@@ -1036,7 +1036,7 @@ P00_BLK_END
  ** @remark Uses the @c __typeof__ extension of the gcc-compiler
  ** family.
  **
- ** @memberof atomic_int
+ ** @see atomic_int
  **/
 #define atomic_is_lock_free(OBJP) (!offsetof(__typeof__(*OBJP), p00_xval))
 
@@ -1050,7 +1050,7 @@ P00_BLK_END
  ** @warning this should only be used in a context that is known to
  ** have no race condition
  **
- ** @memberof atomic_int
+ ** @see atomic_int
  **/
 #define atomic_init(OBJP, VAL)                                 \
 p99_extension                                                  \
@@ -1070,7 +1070,7 @@ p99_extension                                                  \
  ** @remark this can be used in a context that is known to have a race
  ** condition
  **
- ** @memberof atomic_int
+ ** @see atomic_int
  **/
 #define atomic_fetch_and_store(OBJP, DESIRED)
 #else
@@ -1117,7 +1117,7 @@ p99_extension                                                                   
  ** @remark this can be used in a context that is known to have a race
  ** condition
  **
- ** @memberof atomic_int
+ ** @see atomic_int
  **/
 #define atomic_load(OBJP)                                                     \
 p99_extension                                                                 \
@@ -1155,7 +1155,7 @@ p99_extension                                                                 \
  ** @a DESIRED must be assignment compatible with the base type of @a
  ** OBJP.
  **
- ** @memberof atomic_int
+ ** @see atomic_int
  **/
 #define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                                   \
 p99_extension                                                                                   \
@@ -1200,7 +1200,7 @@ p99_extension                                                                   
  ** @remark this can be used in a context that is known to have a race
  ** condition
  **
- ** @memberof atomic_int
+ ** @see atomic_int
  **/
 #define atomic_store(OBJP, DES)
 #else
@@ -1242,7 +1242,7 @@ p99_extension                                                          \
  **
  ** The base type of @a OBJP must have an operator @c +=.
  **
- ** @memberof atomic_int
+ ** @see atomic_int
  **/
 #define atomic_fetch_add(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_add, +=)
 
@@ -1257,7 +1257,7 @@ p99_extension                                                          \
  **
  ** The base type of @a OBJP must have an operator @c -=.
  **
- ** @memberof atomic_int
+ ** @see atomic_int
  **/
 #define atomic_fetch_sub(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_sub, -=)
 
@@ -1272,7 +1272,7 @@ p99_extension                                                          \
  **
  ** The base type of @a OBJP must have an operator @c |=.
  **
- ** @memberof atomic_int
+ ** @see atomic_int
  **/
 #define atomic_fetch_or(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_or, |=)
 
@@ -1287,7 +1287,7 @@ p99_extension                                                          \
  **
  ** The base type of @a OBJP must have an operator @c &=.
  **
- ** @memberof atomic_int
+ ** @see atomic_int
  **/
 #define atomic_fetch_and(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_and, &=)
 

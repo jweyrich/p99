@@ -56,7 +56,7 @@
  ** @brief expands to an integer constant expression representing the
  ** maximum number of times that destructors will be called when a
  ** thread terminates
- ** @memberof tss_t
+ ** @see tss_t
  **/
 # define TSS_DTOR_ITERATIONS 1
 #else
@@ -140,7 +140,7 @@ enum thrd_status {
  **/
 
 /**
- ** @memberof tss_t
+ ** @related tss_t
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **
@@ -155,7 +155,7 @@ int tss_create(tss_t *p00_key, tss_dtor_t dtor) {
 }
 
 /**
- ** @memberof tss_t
+ ** @related tss_t
  **/
 p99_inline
 void tss_delete(tss_t p00_key) {
@@ -163,7 +163,7 @@ void tss_delete(tss_t p00_key) {
 }
 
 /**
- ** @memberof tss_t
+ ** @related tss_t
  **
  ** @return the value for the current thread if successful, or @c 0 if
  ** unsuccessful.
@@ -174,7 +174,7 @@ void *tss_get(tss_t p00_key) {
 }
 
 /**
- ** @memberof tss_t
+ ** @related tss_t
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
@@ -253,7 +253,7 @@ void p00_tss_init(p99_tss * p00_key) {
 }
 
 /**
- ** @memberof p99_tss
+ ** @related p99_tss
  **
  ** @brief Similar to ::tss_delete
  **/
@@ -265,7 +265,7 @@ void p99_tss_delete(p99_tss * p00_key) {
 }
 
 /**
- ** @memberof p99_tss
+ ** @related p99_tss
  **
  ** @brief Similar to ::tss_get
  **/
@@ -276,7 +276,7 @@ void* p99_tss_get(p99_tss * p00_key) {
 }
 
 /**
- ** @memberof p99_tss
+ ** @related p99_tss
  **
  ** @brief Similar to <code>tss_set(p00_key, p00_val)</code> but also
  ** calls the destructor on the previous value if necessary.
@@ -315,7 +315,7 @@ P99_PROTOTYPE(int, p99_tss_set, p99_tss*, void *);
 
 /**
  ** @def P99_TSS_DECLARE_LOCAL
- ** @memberof p99_tss
+ ** @see p99_tss
  ** @brief declare a thread local variable @a NAME of type @a T and
  ** with destructor @a DTOR.
  **
@@ -376,7 +376,7 @@ typedef T P99_PASTE3(p00_, NAME, _type)
 
 /**
  ** @def P99_TSS_LOCAL
- ** @memberof p99_tss
+ ** @see p99_tss
  ** @brief an lvalue expression that returns the thread local instance
  ** of variable @a NAME
  **
@@ -388,7 +388,7 @@ typedef T P99_PASTE3(p00_, NAME, _type)
 
 
 /**
- ** @memberof p99_tss
+ ** @related p99_tss
  **
  ** @brief Similar to ::p99_tss_get, but also allocates a buffer of @a
  ** p00_size bytes for @a p00_key.

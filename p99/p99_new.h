@@ -253,7 +253,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_DECLARE_DELETE, 0)
 /*! @attention @ref T ## _destroy  is supposed to exist and to be callable with just one T * argument **/ \
 /*! @attention @a el show have been allocated through P99_NEW */                                          \
 /*! @see P99_NEW */                                                                                       \
-/*! @memberof T */                                                                                        \
+/*! @related T */                                                                                        \
   void P99_PASTE2(T, _delete)(T const*p00_el) { }
 
 #define P99_DEFINE_DELETE(T) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)

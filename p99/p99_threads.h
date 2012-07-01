@@ -52,7 +52,7 @@
  ** This property is subsequently used in the fallback
  ** implementation of thread local storage.
  **
- ** @memberof p99_once_flag
+ ** @see p99_once_flag
  **/
 #define P99_ONCE_FLAG_INIT P99_INIT
 
@@ -62,7 +62,7 @@
  ** @brief expands to an integer constant expression representing the
  ** maximum number of times that destructors will be called when a
  ** thread terminates
- ** @memberof tss_t
+ ** @see tss_t
  **/
 # define TSS_DTOR_ITERATIONS 1
 #else
@@ -257,7 +257,7 @@ enum mtx_type {
 // 7.26.2 Initialization functions
 
 /**
- ** @memberof thrd_t
+ ** @related thrd_t
  **/
 p99_inline
 void thrd_yield(void) {
@@ -275,7 +275,7 @@ P99_WEAK(p00_foreign_threads)
 _Atomic(size_t) p00_foreign_threads;
 
 /**
- ** @memberof thrd_t
+ ** @related thrd_t
  **
  ** @return identifier of the thread that called it
  **/
@@ -296,7 +296,7 @@ thrd_t thrd_current(void) {
 }
 
 /**
- ** @memberof thrd_t
+ ** @related thrd_t
  **
  ** @return @c 0 if the thread @a p00_thr0 and the thread @a p00_thr1 refer to
  ** different threads. Otherwise a nonzero value is returned.
@@ -400,7 +400,7 @@ P99_IF_EQ_1(N)                                                 \
  ** dependencies. But obviously, the order in which such a cycle is
  ** taken is not predictable.
  **
- ** @memberof p99_once_flag
+ ** @see p99_once_flag
  **/
 #ifdef P00_DOXYGEN
 #define p99_call_once(FLAG, FUNC, ARG)
@@ -497,7 +497,7 @@ p99_call_once(&P99_PASTE3(p99_, T, _once), P99_PASTE3(p99_, T, _once).p00_init)
 // 7.26.3 Condition variable functions
 
 /**
- ** @memberof cnd_t
+ ** @related cnd_t
  **
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
@@ -508,7 +508,7 @@ int cnd_broadcast(cnd_t *p00_cond) {
 }
 
 /**
- ** @memberof cnd_t
+ ** @related cnd_t
  **/
 p99_inline
 void cnd_destroy(cnd_t *p00_cond) {
@@ -516,7 +516,7 @@ void cnd_destroy(cnd_t *p00_cond) {
 }
 
 /**
- ** @memberof cnd_t
+ ** @related cnd_t
  **
  ** @return The ::cnd_init function returns ::thrd_success on success,
  ** or ::thrd_nomem if no memory could be allocated for the newly
@@ -534,7 +534,7 @@ int cnd_init(cnd_t *p00_cond) {
 }
 
 /**
- ** @memberof cnd_t
+ ** @related cnd_t
  **
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
@@ -545,7 +545,7 @@ int cnd_signal(cnd_t *p00_cond) {
 }
 
 /**
- ** @memberof cnd_t
+ ** @related cnd_t
  **
  ** @return ::thrd_success upon success, or ::thrd_timedout if the
  ** time specified in the call was reached without acquiring the
@@ -563,7 +563,7 @@ int cnd_timedwait(cnd_t *restrict p00_cond, mtx_t *restrict p00_mtx, const struc
 }
 
 /**
- ** @memberof cnd_t
+ ** @related cnd_t
  **
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
@@ -576,7 +576,7 @@ int cnd_wait(cnd_t *p00_cond, mtx_t *p00_mtx) {
 // 7.26.4 Mutex functions
 
 /**
- ** @memberof mtx_t
+ ** @related mtx_t
  **/
 p99_inline
 void mtx_destroy(mtx_t *p00_mtx) {
@@ -584,7 +584,7 @@ void mtx_destroy(mtx_t *p00_mtx) {
 }
 
 /**
- ** @memberof mtx_t
+ ** @related mtx_t
  **
  ** @param p00_mtx A pointer to an unitialized mutex object
  ** @param p00_type One of the constants in ::mtx_type
@@ -605,7 +605,7 @@ int mtx_init(mtx_t *p00_mtx, int p00_type) {
 }
 
 /**
- ** @memberof mtx_t
+ ** @related mtx_t
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
@@ -615,7 +615,7 @@ int mtx_lock(mtx_t *p00_mtx) {
 }
 
 /**
- ** @memberof mtx_t
+ ** @related mtx_t
  **
  ** @return ::thrd_success upon success, or ::thrd_timedout if the
  ** time specified in the call was reached without acquiring the
@@ -633,7 +633,7 @@ int mtx_timedlock(mtx_t *restrict p00_mtx, const struct timespec *restrict p00_t
 }
 
 /**
- ** @memberof mtx_t
+ ** @related mtx_t
  **
  ** @return ::thrd_success on success, or ::thrd_busy if the resource
  ** requested is already in use, or ::thrd_error if the request could
@@ -650,7 +650,7 @@ int mtx_trylock(mtx_t *p00_mtx) {
 }
 
 /**
- ** @memberof mtx_t
+ ** @related mtx_t
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
@@ -697,7 +697,7 @@ P99_SETJMP_INLINE(p00_thrd_create)
 void * p00_thrd_create(void* p00_context);
 
 /**
- ** @memberof thrd_t
+ ** @related thrd_t
  **
  ** @return ::thrd_success on success, or ::thrd_nomem if no memory
  ** could be allocated for the thread requested, or ::thrd_error if
@@ -730,7 +730,7 @@ int thrd_create(thrd_t *p00_thr, thrd_start_t p00_func, void *p00_arg) {
 }
 
 /**
- ** @memberof thrd_t
+ ** @related thrd_t
  **
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
@@ -753,7 +753,7 @@ int thrd_detach(thrd_t p00_thr) {
 
 #ifdef P00_DOXYGEN
 /**
- ** @memberof thrd_t
+ ** @related thrd_t
  **/
 p99_inline void thrd_exit(int p00_res);
 #else
@@ -777,7 +777,7 @@ void thrd_exit(int p00_res) {
 #endif
 
 /**
- ** @memberof thrd_t
+ ** @related thrd_t
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
@@ -791,7 +791,7 @@ int thrd_join(thrd_t p00_thr, int *p00_res) {
 }
 
 /**
- ** @memberof thrd_t
+ ** @related thrd_t
  **
  ** @return @c 0 if the requested time has elapsed, @c -1 if it has
  ** been interrupted by a signal, or another negative value if it fails.
