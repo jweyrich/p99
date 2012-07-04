@@ -194,6 +194,15 @@ int p00_check_call_zero(int p00_err,
 #define P99_CHECK_CALL_ZERO(F, ...)                                      \
 p00_check_call_zero(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
+inline static
+int p00_check_call_neg(int p00_neg,
+                      p00_jmp_buf0 * p00_top,
+                      char const* p00_file,
+                      char const* p00_func) {
+  if (p00_neg < 0) p00_throw_errno(p00_top, p00_file, p00_func);
+  return p00_neg;
+}
+
 /**
  ** @brief Wrap a function call to @a F such that it throws an error
  ** on negative return.
@@ -213,13 +222,16 @@ p00_check_call_zero(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __f
  ** @see P99_CHECK_CALL_VOIDP for a similar macro that checks a
  ** pointer return value
  **/
+#define P99_CHECK_CALL_NEG(F, ...)                                      \
+p00_check_call_neg(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
+
 inline static
-int p00_check_call_neg(int p00_neg,
-                      p00_jmp_buf0 * p00_top,
-                      char const* p00_file,
-                      char const* p00_func) {
-  if (p00_neg < 0) p00_throw_errno(p00_top, p00_file, p00_func);
-  return p00_neg;
+void* p00_check_call_voidp(void* p00_p,
+                           p00_jmp_buf0 * p00_top,
+                           char const* p00_file,
+                           char const* p00_func) {
+  if (!p00_p || (p00_p == (void*)-1)) p00_throw_errno(p00_top, p00_file, p00_func);
+  return p00_p;
 }
 
 /**
@@ -243,18 +255,6 @@ int p00_check_call_neg(int p00_neg,
  ** return value is negative
  **
  **/
-#define P99_CHECK_CALL_NEG(F, ...)                                      \
-p00_check_call_neg(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
-
-inline static
-void* p00_check_call_voidp(void* p00_p,
-                           p00_jmp_buf0 * p00_top,
-                           char const* p00_file,
-                           char const* p00_func) {
-  if (!p00_p || (p00_p == (void*)-1)) p00_throw_errno(p00_top, p00_file, p00_func);
-  return p00_p;
-}
-
 #define P99_CHECK_CALL_VOIDP(F, ...)                                    \
 p00_check_call_voidp(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
