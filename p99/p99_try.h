@@ -130,6 +130,15 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, c
 P00_UNWIND_DOCUMENT
 #define P99_THROW(X) p00_jmp_throw((X), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
+inline static
+noreturn
+void p00_throw_errno(p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_func) {
+  int p00_err = errno;
+  if (!p00_err) p00_err = EINVAL;
+  errno = 0;
+  p00_jmp_throw(p00_err, p00_top, p00_file, p00_func);
+}
+
 /**
  ** @brief Capture, clean and throw the current value of @c errno
  **
@@ -143,24 +152,111 @@ P00_UNWIND_DOCUMENT
  ** @see P99_THROW
  **/
 #if defined(noreturn) || defined(_Noreturn)
-static
-noreturn
-void p00_throw_errno(p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_func) {
-  int err = errno;
-  if (!err) err = EINVAL;
-  errno = 0;
-  p00_jmp_throw(err, p00_top, p00_file, p00_func);
-}
 #define P99_THROW_ERRNO p00_throw_errno(p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 #else
 #define P99_THROW_ERRNO                         \
 do {                                            \
-  int err = errno;                              \
-  if (!err) err = EINVAL;                       \
+  int p00_err = errno;                          \
+  if (!p00_err) p00_err = EINVAL;               \
   errno = 0;                                    \
-  P99_THROW(err);                               \
+  P99_THROW(p00_err);                           \
  } while(0)
 #endif
+
+inline static
+int p00_check_call_zero(int p00_err,
+                       p00_jmp_buf0 * p00_top,
+                       char const* p00_file,
+                       char const* p00_func) {
+  if (p00_err) p00_throw_errno(p00_top, p00_file, p00_func);
+  return 0;
+}
+
+/**
+ ** @brief Wrap a function call to @a F such that it throws an error
+ ** on failure.
+ **
+ ** Many functions in the C and POSIX standards return an @c int only
+ ** for the purpose of signaling an error and provide an error code in
+ ** @c errno. This wrapper makes this transparent such that it ensures
+ ** that the error code is always checked, and if an error occurs the
+ ** value of @c errno is thrown.
+ **
+ ** @return @c 0 if the call was successful. Never returns if it
+ ** wasn't.
+ **
+ ** @see P99_CHECK_CALL_NEG for a similar macro that checks if the
+ ** return value is negative
+ **
+ ** @see P99_CHECK_CALL_VOIDP for a similar macro that checks a
+ ** pointer return value
+ **/
+#define P99_CHECK_CALL_ZERO(F, ...)                                      \
+p00_check_call_zero(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
+
+/**
+ ** @brief Wrap a function call to @a F such that it throws an error
+ ** on negative return.
+ **
+ ** Many functions in the C and POSIX standards return an @c int and
+ ** signal an error with a negative value. They then provide an error
+ ** code in @c errno. This wrapper makes this transparent such that it
+ ** ensures that the error code is always checked, and if an error
+ ** occurs the value of @c errno is thrown.
+ **
+ ** @return the value of the call to the function if that was
+ ** successful. Never returns if it wasn't.
+ **
+ ** @see P99_CHECK_CALL_ZERO for a similar macro that checks if the
+ ** return value is @c 0
+ **
+ ** @see P99_CHECK_CALL_VOIDP for a similar macro that checks a
+ ** pointer return value
+ **/
+inline static
+int p00_check_call_neg(int p00_neg,
+                      p00_jmp_buf0 * p00_top,
+                      char const* p00_file,
+                      char const* p00_func) {
+  if (p00_neg < 0) p00_throw_errno(p00_top, p00_file, p00_func);
+  return p00_neg;
+}
+
+/**
+ ** @brief Wrap a function call to @a F such that it throws an error
+ ** on invalid return.
+ **
+ ** Many functions in the C and POSIX standards return a @c void* and
+ ** signal an error with value that is @c 0 or
+ ** <code>(void*)-1</code>. They then provide an error code in @c
+ ** errno. This wrapper makes this transparent such that it ensures
+ ** that the error code is always checked, and if an error occurs the
+ ** value of @c errno is thrown.
+ **
+ ** @return the value of the call to the function if that was
+ ** successful. Never returns if it wasn't.
+ **
+ ** @see P99_CHECK_CALL_ZERO for a similar macro that checks if the
+ ** return value is @c 0
+ **
+ ** @see P99_CHECK_CALL_NEG for a similar macro that checks if the
+ ** return value is negative
+ **
+ **/
+#define P99_CHECK_CALL_NEG(F, ...)                                      \
+p00_check_call_neg(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
+
+inline static
+void* p00_check_call_voidp(void* p00_p,
+                           p00_jmp_buf0 * p00_top,
+                           char const* p00_file,
+                           char const* p00_func) {
+  if (!p00_p || (p00_p == (void*)-1)) p00_throw_errno(p00_top, p00_file, p00_func);
+  return p00_p;
+}
+
+#define P99_CHECK_CALL_VOIDP(F, ...)                                    \
+p00_check_call_voidp(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
 /**
  ** @brief Stop execution at the current point inside a ::P99_FINALLY
