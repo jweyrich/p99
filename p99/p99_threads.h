@@ -271,8 +271,24 @@ P99_DECLARE_THREAD_LOCAL(p00_thrd *, p00_thrd_local);
 
 #define P00_THRD_LOCAL P99_THREAD_LOCAL(p00_thrd_local)
 
-P99_WEAK(p00_foreign_threads)
-_Atomic(size_t) p00_foreign_threads;
+P99_WEAK(p00_foreign_nb)
+_Atomic(size_t) p00_foreign_nb;
+
+P99_WEAK(p00_foreign_tab)
+p00_thrd ** p00_foreign_tab;
+
+P99_WEAK(p00_foreign_cleanup)
+void p00_foreign_cleanup(void) {
+  size_t p00_foreign = atomic_load(&p00_foreign_nb);
+  p00_thrd ** p00_thrd = p00_foreign_tab;
+  p00_foreign_tab = 0;
+  for (size_t p00_i = 0; p00_i < p00_foreign; ++p00_i) {
+    if (!pthread_equal(p00_thrd[p00_i]->p00_id, pthread_self()))
+      fputs("found foreign thread\n", stderr);
+    free(p00_thrd[p00_i]);
+  }
+  free(p00_thrd);
+}
 
 /**
  ** @related thrd_t
@@ -283,14 +299,19 @@ p99_inline
 thrd_t thrd_current(void) {
   p00_thrd * p00_loc = P00_THRD_LOCAL;
   if (P99_UNLIKELY(!p00_loc)) {
-    size_t p00_foreign = atomic_fetch_add(&p00_foreign_threads, 1);
+    size_t p00_nb = atomic_fetch_add(&p00_foreign_nb, 1);
+    if (!p00_nb) atexit(p00_foreign_cleanup);
+    if ((p00_nb^(p00_nb-1)) == (p00_nb+(p00_nb-1))) {
+      p00_foreign_tab = realloc(p00_foreign_tab, sizeof(p00_thrd*[2*(p00_nb+1)]));
+    }
     p00_loc = malloc(sizeof *p00_loc);
+    p00_foreign_tab[p00_nb] = p00_loc;
     *p00_loc = (p00_thrd) {
       .p00_id = pthread_self(),
-       .p00_foreign = p00_foreign + 1,
+       .p00_foreign = p00_nb + 1,
       };
     P00_THRD_LOCAL = p00_loc;
-    if (p00_foreign) fprintf(stderr, "foreign thread %lu is %zu\n", p00_loc->p00_id, p00_foreign + 1);
+    if (p00_nb) fprintf(stderr, "foreign thread %lu is %zu\n", p00_loc->p00_id, p00_nb + 1);
   }
   return (thrd_t)P99_ENC_INIT(p00_loc);
 }
