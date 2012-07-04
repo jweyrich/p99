@@ -14,7 +14,9 @@
 #ifndef P99_TSS_H
 #define P99_TSS_H 1
 
-#define _XOPEN_SOURCE 600
+#ifndef _XOPEN_SOURCE
+# define _XOPEN_SOURCE 600
+#endif
 #include <unistd.h>
 #include <sys/time.h>
 #include <time.h>
