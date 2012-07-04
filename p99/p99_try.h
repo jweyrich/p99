@@ -142,6 +142,17 @@ P00_UNWIND_DOCUMENT
  **
  ** @see P99_THROW
  **/
+#if defined(noreturn) || defined(_Noreturn)
+static
+noreturn
+void p00_throw_errno(p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_func) {
+  int err = errno;
+  if (!err) err = EINVAL;
+  errno = 0;
+  p00_jmp_throw(err, p00_top, p00_file, p00_func);
+}
+#define P99_THROW_ERRNO p00_throw_errno(p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
+#else
 #define P99_THROW_ERRNO                         \
 do {                                            \
   int err = errno;                              \
@@ -149,6 +160,7 @@ do {                                            \
   errno = 0;                                    \
   P99_THROW(err);                               \
  } while(0)
+#endif
 
 /**
  ** @brief Stop execution at the current point inside a ::P99_FINALLY
