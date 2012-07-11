@@ -239,14 +239,50 @@ enum mtx_type {
    ** neither timeout nor test and return
    **/
   mtx_plain = 0,
+
   /**
-   ** @brief passed to ::mtx_init to create a mutex object that supports recursive locking
+   ** @brief passed to ::mtx_init to create a mutex object that
+   ** supports recursive locking
    **/
   mtx_recursive = 1,
+
   /**
    ** @brief passed to ::mtx_init to create a mutex object that supports timeout
+   **
+   ** In this implementation this feature is always provided.
    **/
   mtx_timed = 2,
+
+  /**
+   ** @brief passed to ::mtx_init to create a mutex object that
+   ** deadlocks when locked twice
+   **
+   ** Consider a deadlock as a feature, here. Without this locking a
+   ** mutex again is just undefined behavior, so anything could
+   ** happen.
+   **
+   ** @remark This is an extension that comes with POSIX. Don't use it
+   ** if you want your code to be portable outside POSIX.
+   **/
+  mtx_normal = 4,
+
+  /**
+   ** @brief passed to ::mtx_init to create a mutex object that
+   ** returns an error when locked twice
+   **
+   ** @remark This is an extension that comes with POSIX. Don't use it
+   ** if you want your code to be portable outside POSIX.
+   **/
+  mtx_errorcheck = 8,
+
+  /**
+   ** @brief used internally
+   **
+   ** This is meant to accumulate all extra flags that could be
+   ** distinguished with POSIX mutex. This is not a valid flag to pass
+   ** to ::mtx_init.
+   **/
+  mtx_extras = (mtx_normal | mtx_errorcheck | mtx_recursive),
 };
 
 
@@ -615,14 +651,25 @@ void mtx_destroy(mtx_t *p00_mtx) {
  **/
 p99_inline
 int mtx_init(mtx_t *p00_mtx, int p00_type) {
-  pthread_mutexattr_t p00_attr;
-  int p00_ret = pthread_mutexattr_init(&p00_attr);
-  if (p00_ret) return thrd_error;
-  p00_ret = pthread_mutexattr_settype(&p00_attr, (p00_type & mtx_recursive) ? PTHREAD_MUTEX_NORMAL : PTHREAD_MUTEX_RECURSIVE);
-  if (p00_ret) return thrd_error;
-  p00_ret = pthread_mutex_init(&P99_ENCP(p00_mtx), &p00_attr);
-  if (p00_ret) return thrd_error;
-  else return thrd_success;
+  if (p00_type & mtx_extras) {
+    pthread_mutexattr_t p00_attr;
+    int p00_ret = pthread_mutexattr_init(&p00_attr);
+    if (P99_UNLIKELY(p00_ret)) return thrd_error;
+    switch (p00_type & mtx_extras) {
+    case mtx_normal: p00_ret = PTHREAD_MUTEX_NORMAL; break;
+    case mtx_errorcheck: p00_ret = PTHREAD_MUTEX_ERRORCHECK; break;
+    case mtx_recursive: p00_ret = PTHREAD_MUTEX_RECURSIVE; break;
+    default: return thrd_error;
+    }
+    p00_ret = pthread_mutexattr_settype(&p00_attr, p00_ret);
+    if (P99_UNLIKELY(p00_ret)) return thrd_error;
+    p00_ret = pthread_mutex_init(&P99_ENCP(p00_mtx), &p00_attr);
+    if (P99_UNLIKELY(p00_ret)) return thrd_error;
+  } else {
+    int p00_ret = pthread_mutex_init(&P99_ENCP(p00_mtx), 0);
+    if (P99_UNLIKELY(p00_ret)) return thrd_error;
+  }
+  return thrd_success;
 }
 
 /**
