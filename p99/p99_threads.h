@@ -102,16 +102,16 @@ typedef struct p00_thrd p00_thrd;
  **/
 P99_ENC_DECLARE(struct p00_thrd*, thrd_t);
 
-p99_inline thrd_t* thrd_t_init(thrd_t *id) {
-  if (id) {
-    *id = P99_LVAL(thrd_t const);
+p99_inline thrd_t* thrd_t_init(thrd_t *p00_id) {
+  if (p00_id) {
+    *p00_id = P99_LVAL(thrd_t const);
   }
-  return id;
+  return p00_id;
 }
 
-p99_inline void thrd_t_destroy(thrd_t *id) {
+p99_inline void thrd_t_destroy(thrd_t *p00_id) {
   /* special care for bogus warning given by icc */
-  (void)id;
+  (void)p00_id;
 }
 
 p99_inline
