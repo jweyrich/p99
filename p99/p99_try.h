@@ -164,11 +164,11 @@ do {                                            \
 #endif
 
 inline static
-int p00_check_call_zero(int p00_err,
+int p00_throw_call_zero(int p00_err,
                        p00_jmp_buf0 * p00_top,
                        char const* p00_file,
                        char const* p00_func) {
-  if (p00_err) p00_throw_errno(p00_top, p00_file, p00_func);
+  if (P99_UNLIKELY(p00_err)) p00_throw_errno(p00_top, p00_file, p00_func);
   return 0;
 }
 
@@ -185,21 +185,21 @@ int p00_check_call_zero(int p00_err,
  ** @return @c 0 if the call was successful. Never returns if it
  ** wasn't.
  **
- ** @see P99_CHECK_CALL_NEG for a similar macro that checks if the
+ ** @see P99_THROW_CALL_NEG for a similar macro that checks if the
  ** return value is negative
  **
- ** @see P99_CHECK_CALL_VOIDP for a similar macro that checks a
+ ** @see P99_THROW_CALL_VOIDP for a similar macro that checks a
  ** pointer return value
  **/
-#define P99_CHECK_CALL_ZERO(F, ...)                                      \
-p00_check_call_zero(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
+#define P99_THROW_CALL_ZERO(F, ...)                                      \
+p00_throw_call_zero(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
 inline static
-int p00_check_call_neg(int p00_neg,
+int p00_throw_call_neg(int p00_neg,
                       p00_jmp_buf0 * p00_top,
                       char const* p00_file,
                       char const* p00_func) {
-  if (p00_neg < 0) p00_throw_errno(p00_top, p00_file, p00_func);
+  if (P99_UNLIKELY(p00_neg < 0)) p00_throw_errno(p00_top, p00_file, p00_func);
   return p00_neg;
 }
 
@@ -216,21 +216,21 @@ int p00_check_call_neg(int p00_neg,
  ** @return the value of the call to the function if that was
  ** successful. Never returns if it wasn't.
  **
- ** @see P99_CHECK_CALL_ZERO for a similar macro that checks if the
+ ** @see P99_THROW_CALL_ZERO for a similar macro that checks if the
  ** return value is @c 0
  **
- ** @see P99_CHECK_CALL_VOIDP for a similar macro that checks a
+ ** @see P99_THROW_CALL_VOIDP for a similar macro that checks a
  ** pointer return value
  **/
-#define P99_CHECK_CALL_NEG(F, ...)                                      \
-p00_check_call_neg(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
+#define P99_THROW_CALL_NEG(F, ...)                                      \
+p00_throw_call_neg(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
 inline static
-void* p00_check_call_voidp(void* p00_p,
+void* p00_throw_call_voidp(void* p00_p,
                            p00_jmp_buf0 * p00_top,
                            char const* p00_file,
                            char const* p00_func) {
-  if (!p00_p || (p00_p == (void*)-1)) p00_throw_errno(p00_top, p00_file, p00_func);
+  if (P99_UNLIKELY(!p00_p || (p00_p == (void*)-1))) p00_throw_errno(p00_top, p00_file, p00_func);
   return p00_p;
 }
 
@@ -248,15 +248,15 @@ void* p00_check_call_voidp(void* p00_p,
  ** @return the value of the call to the function if that was
  ** successful. Never returns if it wasn't.
  **
- ** @see P99_CHECK_CALL_ZERO for a similar macro that checks if the
+ ** @see P99_THROW_CALL_ZERO for a similar macro that checks if the
  ** return value is @c 0
  **
- ** @see P99_CHECK_CALL_NEG for a similar macro that checks if the
+ ** @see P99_THROW_CALL_NEG for a similar macro that checks if the
  ** return value is negative
  **
  **/
-#define P99_CHECK_CALL_VOIDP(F, ...)                                    \
-p00_check_call_voidp(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
+#define P99_THROW_CALL_VOIDP(F, ...)                                    \
+p00_throw_call_voidp(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
 /**
  ** @brief Stop execution at the current point inside a ::P99_FINALLY
