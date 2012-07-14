@@ -25,10 +25,10 @@ P99_DECLARE_THREAD_LOCAL(_Atomic(p00_jmp_buf0_ptr), p00_jmp_buf_top);
 #define P00_JMP_BUF_TOP P99_THREAD_LOCAL(p00_jmp_buf_top)
 
 P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_file);
-P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_func);
+P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_context);
 
 #define P00_JMP_BUF_FILE P99_THREAD_LOCAL(p00_jmp_buf_file)
-#define P00_JMP_BUF_FUNC P99_THREAD_LOCAL(p00_jmp_buf_func)
+#define P00_JMP_BUF_CONTEXT P99_THREAD_LOCAL(p00_jmp_buf_context)
 
 p99_inline
 void p00_jmp_skip(p00_jmp_buf0 * p00_des) {
@@ -69,14 +69,14 @@ enum { p00_ilen10 = sizeof(P99_STRINGIFY(LLONG_MIN)) };
  **
  **/
 p99_inline
-void p99_jmp_report(int p00_cond, char const* p00_file, char const* p00_func) {
-  if (!p00_func) p00_func = P00_JMP_BUF_FUNC;
-  if (!p00_func) p00_func = "<unknown function>";
+void p99_jmp_report(int p00_cond, char const* p00_file, char const* p00_context) {
+  if (!p00_context) p00_context = P00_JMP_BUF_CONTEXT;
+  if (!p00_context) p00_context = "<unknown function>";
   if (!p00_file) p00_file = P00_JMP_BUF_FILE;
   if (!p00_file) p00_file = "<unknown location>";
   char p00_str[p00_ilen10];
   sprintf(p00_str, "%d", p00_cond);
-  fputs(p00_func, stderr);
+  fputs(p00_context, stderr);
   fputc(':', stderr);
   fputs(p00_file, stderr);
   fputs(": exception ", stderr);
@@ -88,19 +88,19 @@ void p99_jmp_report(int p00_cond, char const* p00_file, char const* p00_func) {
 
 p99_inline
 noreturn
-void p00_jmp_abort(int p00_cond, char const* p00_file, char const* p00_func) {
-  p99_jmp_report(p00_cond, p00_file, p00_func);
+void p00_jmp_abort(int p00_cond, char const* p00_file, char const* p00_context) {
+  p99_jmp_report(p00_cond, p00_file, p00_context);
   abort();
 }
 
 p99_inline
 noreturn
-void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_func) {
+void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_context) {
   if (p00_file) P00_JMP_BUF_FILE = p00_file;
-  if (p00_func) P00_JMP_BUF_FUNC = p00_func;
+  if (p00_context) P00_JMP_BUF_CONTEXT = p00_context;
   if (!p00_top) p00_top = P99_LIFO_TOP(&P00_JMP_BUF_TOP);
   if (P99_LIKELY(p00_top)) p00_longjmp(p00_top, p00_cond);
-  else p00_jmp_abort(p00_cond, p00_file, p00_func);
+  else p00_jmp_abort(p00_cond, p00_file, p00_context);
 }
 
 
@@ -132,11 +132,11 @@ P00_UNWIND_DOCUMENT
 
 inline static
 noreturn
-void p00_throw_errno(p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_func) {
+void p00_throw_errno(p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_context) {
   int p00_err = errno;
   if (!p00_err) p00_err = EINVAL;
   errno = 0;
-  p00_jmp_throw(p00_err, p00_top, p00_file, p00_func);
+  p00_jmp_throw(p00_err, p00_top, p00_file, p00_context);
 }
 
 /**
@@ -167,8 +167,8 @@ inline static
 int p00_throw_call_zero(int p00_err,
                         p00_jmp_buf0 * p00_top,
                         char const* p00_file,
-                        char const* p00_func) {
-  if (P99_UNLIKELY(p00_err)) p00_throw_errno(p00_top, p00_file, p00_func);
+                        char const* p00_context) {
+  if (P99_UNLIKELY(p00_err)) p00_throw_errno(p00_top, p00_file, p00_context);
   return 0;
 }
 
@@ -198,8 +198,8 @@ inline static
 int p00_throw_call_neg(int p00_neg,
                        p00_jmp_buf0 * p00_top,
                        char const* p00_file,
-                       char const* p00_func) {
-  if (P99_UNLIKELY(p00_neg < 0)) p00_throw_errno(p00_top, p00_file, p00_func);
+                       char const* p00_context) {
+  if (P99_UNLIKELY(p00_neg < 0)) p00_throw_errno(p00_top, p00_file, p00_context);
   return p00_neg;
 }
 
@@ -229,8 +229,8 @@ inline static
 void* p00_throw_call_voidp(void* p00_p,
                            p00_jmp_buf0 * p00_top,
                            char const* p00_file,
-                           char const* p00_func) {
-  if (P99_UNLIKELY(!p00_p || (p00_p == (void*)-1))) p00_throw_errno(p00_top, p00_file, p00_func);
+                           char const* p00_context) {
+  if (P99_UNLIKELY(!p00_p || (p00_p == (void*)-1))) p00_throw_errno(p00_top, p00_file, p00_context);
   return p00_p;
 }
 
@@ -448,7 +448,7 @@ P00_UNWIND_DOCUMENT
 P00_FINALLY                                                                                \
 P99_IF_EMPTY(__VA_ARGS__)()(P00_BLK_BEFORE(__VA_ARGS__ = p00_code))                        \
 P00_BLK_BEFORE(p00_unw = 0)                                                                \
-P00_BLK_AFTER(p00_code ? (void)((P00_JMP_BUF_FILE = 0), (P00_JMP_BUF_FUNC = 0)) : P99_NOP)
+P00_BLK_AFTER(p00_code ? (void)((P00_JMP_BUF_FILE = 0), (P00_JMP_BUF_CONTEXT = 0)) : P99_NOP)
 
 /**
  ** @}
