@@ -1,15 +1,15 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-             */
-/*                                                                           */
-/* Except of parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                          */
-/* all rights reserved,  2011-2012 Jens Gustedt, INRIA, France               */
-/*                                                                           */
-/* This file is free software; it is part of the P99 project.                */
-/* You can redistribute it and/or modify it under the terms of the QPL as    */
-/* given in the file LICENSE. It is distributed without any warranty;        */
-/* without even the implied warranty of merchantability or fitness for a     */
-/* particular purpose.                                                       */
-/*                                                                           */
+/* This may look like nonsense, but it really is -*- mode: C -*-              */
+/*                                                                            */
+/* Except for parts copied from previous work and as explicitly stated below, */
+/* the author and copyright holder for this work is                           */
+/* all rights reserved,  2011-2012 Jens Gustedt, INRIA, France                */
+/*                                                                            */
+/* This file is free software; it is part of the P99 project.                 */
+/* You can redistribute it and/or modify it under the terms of the QPL as     */
+/* given in the file LICENSE. It is distributed without any warranty;         */
+/* without even the implied warranty of merchantability or fitness for a      */
+/* particular purpose.                                                        */
+/*                                                                            */
 #include "stdbool.h"
 #include "stdlib.h"
 #include "p99_compiler.h"
@@ -43,13 +43,13 @@ int * g = P99_GENERIC(a, (void*)&d, (int, &a), (unsigned int, &a));
 
 #define SIGNEDTYPE_(T, X) (unsigned T, (signed T)(X))
 
-#define SSIZE_T(X)                              \
-P99_GENERIC(sizeof(1),                          \
-            ,                                   \
-            SIGNEDTYPE_(char, X),               \
-            SIGNEDTYPE_(short, X),              \
-            SIGNEDTYPE_(int, X),                \
-            SIGNEDTYPE_(long, X),               \
+#define SSIZE_T(X)                                             \
+P99_GENERIC(sizeof(1),                                         \
+            ,                                                  \
+            SIGNEDTYPE_(char, X),                              \
+            SIGNEDTYPE_(short, X),                             \
+            SIGNEDTYPE_(int, X),                               \
+            SIGNEDTYPE_(long, X),                              \
             SIGNEDTYPE_(long long, X))
 
 float funcf(float a, float b) {
@@ -159,7 +159,7 @@ int main(void) {
                      TYPESTR(unsigned int),
                      TYPESTR(unsigned long),
                      TYPESTR(unsigned long long)
-                     ));
+                    ));
 
   printf("ssize_t is %s\n",
          P99_GENERIC(SSIZE_T(1),
@@ -169,32 +169,32 @@ int main(void) {
                      TYPESTR(signed int),
                      TYPESTR(signed long),
                      TYPESTR(signed long long)
-                     ));
+                    ));
 
   unsigned Arr[7] = { 0 };
   printf("array length is %zu, pointer is %zu\n",
          P99_OBJLEN(Arr, unsigned, signed, float, double),
          P99_OBJLEN(&Arr[0], unsigned, signed, float, double)
-         );
+        );
   double Ard[7] = { 0 };
   printf("array length is %zu, pointer is %zu\n",
          P99_OBJLEN(Ard, unsigned, signed, float, double),
          P99_OBJLEN(&Ard[0], unsigned, signed, float, double)
-         );
+        );
   char Arc[7] = { 0 };
   printf("array length is %zu, pointer is %zu\n",
          P99_OBJLEN(Arc, char, unsigned, signed),
          P99_OBJLEN(&Arc[0], char, unsigned, signed)
-         );
+        );
   unsigned char Aruc[7] = { 0 };
   printf("array length is %zu, pointer is %zu\n",
          P99_OBJLEN(Aruc, unsigned char, signed),
          P99_OBJLEN(&Aruc[0], unsigned char, signed)
-         );
+        );
   signed char Arsc[7] = { 0 };
   printf("array length is %zu, pointer is %zu\n",
          P99_OBJLEN(Arsc, signed char, unsigned),
          P99_OBJLEN(&Arsc[0], signed char, unsigned)
-         );
+        );
   return ret;
 }

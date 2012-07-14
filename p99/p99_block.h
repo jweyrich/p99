@@ -265,7 +265,7 @@ P00_BLK_END
  ** @see P99_AVOID
  **/
 #if p99_has_feature(statement_expression)
-# define P99_PREFER(...) /* avoid the dangling else problem */                  \
+# define P99_PREFER(...) /* avoid the dangling else problem */              \
 for (_Bool p00 = 1; p00 && p99_extension ({ { __VA_ARGS__ } 1; }); p00 = 0)
 #else
 # define P99_PREFER(...) if (1) { __VA_ARGS__ } else

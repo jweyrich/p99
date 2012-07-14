@@ -154,20 +154,20 @@ void p00_throw_errno(p00_jmp_buf0 * p00_top, char const* p00_file, char const* p
 #if defined(noreturn) || defined(_Noreturn)
 #define P99_THROW_ERRNO p00_throw_errno(p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 #else
-#define P99_THROW_ERRNO                         \
-do {                                            \
-  int p00_err = errno;                          \
-  if (!p00_err) p00_err = EINVAL;               \
-  errno = 0;                                    \
-  P99_THROW(p00_err);                           \
+#define P99_THROW_ERRNO                                        \
+do {                                                           \
+  int p00_err = errno;                                         \
+  if (!p00_err) p00_err = EINVAL;                              \
+  errno = 0;                                                   \
+  P99_THROW(p00_err);                                          \
  } while(0)
 #endif
 
 inline static
 int p00_throw_call_zero(int p00_err,
-                       p00_jmp_buf0 * p00_top,
-                       char const* p00_file,
-                       char const* p00_func) {
+                        p00_jmp_buf0 * p00_top,
+                        char const* p00_file,
+                        char const* p00_func) {
   if (P99_UNLIKELY(p00_err)) p00_throw_errno(p00_top, p00_file, p00_func);
   return 0;
 }
@@ -191,14 +191,14 @@ int p00_throw_call_zero(int p00_err,
  ** @see P99_THROW_CALL_VOIDP for a similar macro that checks a
  ** pointer return value
  **/
-#define P99_THROW_CALL_ZERO(F, ...)                                      \
+#define P99_THROW_CALL_ZERO(F, ...)                                                    \
 p00_throw_call_zero(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
 inline static
 int p00_throw_call_neg(int p00_neg,
-                      p00_jmp_buf0 * p00_top,
-                      char const* p00_file,
-                      char const* p00_func) {
+                       p00_jmp_buf0 * p00_top,
+                       char const* p00_file,
+                       char const* p00_func) {
   if (P99_UNLIKELY(p00_neg < 0)) p00_throw_errno(p00_top, p00_file, p00_func);
   return p00_neg;
 }
@@ -222,7 +222,7 @@ int p00_throw_call_neg(int p00_neg,
  ** @see P99_THROW_CALL_VOIDP for a similar macro that checks a
  ** pointer return value
  **/
-#define P99_THROW_CALL_NEG(F, ...)                                      \
+#define P99_THROW_CALL_NEG(F, ...)                                                    \
 p00_throw_call_neg(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
 inline static
@@ -255,7 +255,7 @@ void* p00_throw_call_voidp(void* p00_p,
  ** return value is negative
  **
  **/
-#define P99_THROW_CALL_VOIDP(F, ...)                                    \
+#define P99_THROW_CALL_VOIDP(F, ...)                                                    \
 p00_throw_call_voidp(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
 
 /**

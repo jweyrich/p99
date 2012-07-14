@@ -144,120 +144,120 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 3)
 
 #define P00_SVALUE(X) ((X)+0)
 
-#define P00_SVALUE_SIG(T, X)                    \
-  (T, (T)(intmax_t)(X)),                        \
-  (T const, (T)(intmax_t)(X)),                  \
-  (T volatile, (T)(intmax_t)(X)),               \
-  (T const volatile, (T)(intmax_t)(X)),         \
-  (_Atomic(T), (T)(intmax_t)(X)),               \
-  (_Atomic(T) const, (T)(intmax_t)(X)),         \
-  (_Atomic(T) volatile, (T)(intmax_t)(X)),      \
+#define P00_SVALUE_SIG(T, X)                                   \
+  (T, (T)(intmax_t)(X)),                                       \
+  (T const, (T)(intmax_t)(X)),                                 \
+  (T volatile, (T)(intmax_t)(X)),                              \
+  (T const volatile, (T)(intmax_t)(X)),                        \
+  (_Atomic(T), (T)(intmax_t)(X)),                              \
+  (_Atomic(T) const, (T)(intmax_t)(X)),                        \
+  (_Atomic(T) volatile, (T)(intmax_t)(X)),                     \
   (_Atomic(T) const volatile, (T)(intmax_t)(X))
 
-#define P00_SVALUE_UNS(T, X)                            \
-  (T, (T)(uintmax_t)(X)),                               \
-  (T const, (T)(uintmax_t)(X)),                         \
-  (T volatile, (T)(uintmax_t)(X)),                      \
-  (T const volatile, (T)(uintmax_t)(X)),                \
-  (_Atomic(T), (T)(uintmax_t)(X)),                      \
-  (_Atomic(T) const, (T)(uintmax_t)(X)),                \
-  (_Atomic(T) volatile, (T)(uintmax_t)(X)),             \
+#define P00_SVALUE_UNS(T, X)                                   \
+  (T, (T)(uintmax_t)(X)),                                      \
+  (T const, (T)(uintmax_t)(X)),                                \
+  (T volatile, (T)(uintmax_t)(X)),                             \
+  (T const volatile, (T)(uintmax_t)(X)),                       \
+  (_Atomic(T), (T)(uintmax_t)(X)),                             \
+  (_Atomic(T) const, (T)(uintmax_t)(X)),                       \
+  (_Atomic(T) volatile, (T)(uintmax_t)(X)),                    \
   (_Atomic(T) const volatile, (T)(uintmax_t)(X))
 
-#define P00_SVALUE_QUAL(X, Q)                                            \
-(char Q, ((char)P99_TYPED_TERN(P00_CHAR_SIGNED, (schar)(intmax_t)(X), (uchar)(uintmax_t)(X)))), \
+#define P00_SVALUE_QUAL(X, Q)                                                                           \
+(char Q, ((char)P99_TYPED_TERN(P00_CHAR_SIGNED, (schar)(intmax_t)(X), (uchar)(uintmax_t)(X)))),         \
 (_Atomic(char) Q, ((char)P99_TYPED_TERN(P00_CHAR_SIGNED, (schar)(intmax_t)(X), (uchar)(uintmax_t)(X))))
 
-#define P00_SVALUE_CHAR(X)                       \
-  P00_SVALUE_QUAL(X, ),                          \
-  P00_SVALUE_QUAL(X, const),                     \
-  P00_SVALUE_QUAL(X, volatile),                  \
+#define P00_SVALUE_CHAR(X)                                     \
+  P00_SVALUE_QUAL(X, ),                                        \
+  P00_SVALUE_QUAL(X, const),                                   \
+  P00_SVALUE_QUAL(X, volatile),                                \
   P00_SVALUE_QUAL(X, const volatile)
 
-#define P99_SVALUE(X)                                           \
-P99_GENERIC((X),                                                \
-            P00_SVALUE(X),                                      \
-            (void*, (X)),                                       \
-            /*(void const*, (X)),                               \
-            (void volatile*, (X)),                              \
-            (void const volatile*, (X)),                        \
-            (void*const, (X)),                                  \
-            (void const*const, (X)),                            \
-            (void volatile*const, (X)),                         \
-            (void const volatile*const, (X)),                   \
-            (void*volatile, (X)),                               \
-            (void const*volatile, (X)),                         \
-            (void volatile*volatile, (X)),                      \
-            (void const volatile*volatile, (X)),                \
-            (void*const volatile, (X)),                         \
-            (void const*const volatile, (X)),                   \
-            (void volatile*const volatile, (X)),                \
-            (void const volatile*const volatile, (X)),*/        \
-            /* currently clang crashes with restrict */         \
-            /*(void* restrict, (X)),                            \
-            (void const* restrict, (X)),                        \
-            (void volatile* restrict, (X)),                     \
-            (void const volatile* restrict, (X)),               \
-            (void*const restrict, (X)),                         \
-            (void const*const restrict, (X)),                   \
-            (void volatile*const restrict, (X)),                \
-            (void const volatile*const restrict, (X)),          \
-            (void*volatile restrict, (X)),                      \
-            (void const*volatile restrict, (X)),                \
-            (void volatile*volatile restrict, (X)),             \
-            (void const volatile*volatile restrict, (X)),       \
-            (void*const volatile restrict, (X)),                \
-            (void const*const volatile restrict, (X)),          \
-            (void volatile*const volatile restrict, (X)),       \
-            (void const volatile*const volatile restrict, (X)),*/       \
-            P00_SVALUE_CHAR(X),                                 \
-            P00_SVALUE_SIG(schar, X),                           \
-            P00_SVALUE_SIG(sshort, X),                          \
-            P00_SVALUE_UNS(_Bool, X),                           \
-            P00_SVALUE_UNS(uchar, X),                           \
+#define P99_SVALUE(X)                                             \
+P99_GENERIC((X),                                                  \
+            P00_SVALUE(X),                                        \
+            (void*, (X)),                                         \
+            /*(void const*, (X)),                                 \
+            (void volatile*, (X)),                                \
+            (void const volatile*, (X)),                          \
+            (void*const, (X)),                                    \
+            (void const*const, (X)),                              \
+            (void volatile*const, (X)),                           \
+            (void const volatile*const, (X)),                     \
+            (void*volatile, (X)),                                 \
+            (void const*volatile, (X)),                           \
+            (void volatile*volatile, (X)),                        \
+            (void const volatile*volatile, (X)),                  \
+            (void*const volatile, (X)),                           \
+            (void const*const volatile, (X)),                     \
+            (void volatile*const volatile, (X)),                  \
+            (void const volatile*const volatile, (X)),*/          \
+            /* currently clang crashes with restrict */           \
+            /*(void* restrict, (X)),                              \
+            (void const* restrict, (X)),                          \
+            (void volatile* restrict, (X)),                       \
+            (void const volatile* restrict, (X)),                 \
+            (void*const restrict, (X)),                           \
+            (void const*const restrict, (X)),                     \
+            (void volatile*const restrict, (X)),                  \
+            (void const volatile*const restrict, (X)),            \
+            (void*volatile restrict, (X)),                        \
+            (void const*volatile restrict, (X)),                  \
+            (void volatile*volatile restrict, (X)),               \
+            (void const volatile*volatile restrict, (X)),         \
+            (void*const volatile restrict, (X)),                  \
+            (void const*const volatile restrict, (X)),            \
+            (void volatile*const volatile restrict, (X)),         \
+            (void const volatile*const volatile restrict, (X)),*/ \
+            P00_SVALUE_CHAR(X),                                   \
+            P00_SVALUE_SIG(schar, X),                             \
+            P00_SVALUE_SIG(sshort, X),                            \
+            P00_SVALUE_UNS(_Bool, X),                             \
+            P00_SVALUE_UNS(uchar, X),                             \
             P00_SVALUE_UNS(ushort, X))
 
-#define P00_QVALUE_SIG(T, X)                                               \
-  (T, (T)(intmax_t)(X)),                                                \
-  (T const, (T const)(intmax_t const)(X)),                              \
-  (T volatile, (T volatile)(intmax_t volatile)(X)),                     \
-  (T const volatile, (T const volatile)(intmax_t const volatile)(X)),   \
-  (_Atomic(T), (T)(intmax_t)(X)),                                       \
-  (_Atomic(T) const, (T const)(intmax_t const)(X)),                     \
-  (_Atomic(T) volatile, (T volatile)(intmax_t volatile)(X)),            \
+#define P00_QVALUE_SIG(T, X)                                                  \
+  (T, (T)(intmax_t)(X)),                                                      \
+  (T const, (T const)(intmax_t const)(X)),                                    \
+  (T volatile, (T volatile)(intmax_t volatile)(X)),                           \
+  (T const volatile, (T const volatile)(intmax_t const volatile)(X)),         \
+  (_Atomic(T), (T)(intmax_t)(X)),                                             \
+  (_Atomic(T) const, (T const)(intmax_t const)(X)),                           \
+  (_Atomic(T) volatile, (T volatile)(intmax_t volatile)(X)),                  \
   (_Atomic(T) const volatile, (T const volatile)(intmax_t const volatile)(X))
 
-#define P00_QVALUE_UNS(T, X)                                               \
-  (T, (T)(uintmax_t)(X)),                                               \
-  (T const, (T const)(uintmax_t const)(X)),                             \
-  (T volatile, (T volatile)(uintmax_t volatile)(X)),                    \
-  (T const volatile, (T const volatile)(uintmax_t const volatile)(X)),  \
-  (_Atomic(T), (T)(uintmax_t)(X)),                                      \
-  (_Atomic(T) const, (T const)(uintmax_t const)(X)),                    \
-  (_Atomic(T) volatile, (T volatile)(uintmax_t volatile)(X)),           \
+#define P00_QVALUE_UNS(T, X)                                                   \
+  (T, (T)(uintmax_t)(X)),                                                      \
+  (T const, (T const)(uintmax_t const)(X)),                                    \
+  (T volatile, (T volatile)(uintmax_t volatile)(X)),                           \
+  (T const volatile, (T const volatile)(uintmax_t const volatile)(X)),         \
+  (_Atomic(T), (T)(uintmax_t)(X)),                                             \
+  (_Atomic(T) const, (T const)(uintmax_t const)(X)),                           \
+  (_Atomic(T) volatile, (T volatile)(uintmax_t volatile)(X)),                  \
   (_Atomic(T) const volatile, (T const volatile)(uintmax_t const volatile)(X))
 
-#define P00_QVALUE_QUAL(X, Q)                                            \
-(char Q, ((char Q)P99_TYPED_TERN(P00_CHAR_SIGNED, (schar Q)(intmax_t Q)(X), (uchar Q)(uintmax_t Q)(X)))), \
+#define P00_QVALUE_QUAL(X, Q)                                                                                     \
+(char Q, ((char Q)P99_TYPED_TERN(P00_CHAR_SIGNED, (schar Q)(intmax_t Q)(X), (uchar Q)(uintmax_t Q)(X)))),         \
 (_Atomic(char) Q, ((char Q)P99_TYPED_TERN(P00_CHAR_SIGNED, (schar Q)(intmax_t Q)(X), (uchar Q)(uintmax_t Q)(X))))
 
-#define P00_QVALUE_CHAR(X)                       \
-  P00_QVALUE_QUAL(X, ),                          \
-  P00_QVALUE_QUAL(X, const),                     \
-  P00_QVALUE_QUAL(X, volatile),                  \
+#define P00_QVALUE_CHAR(X)                                     \
+  P00_QVALUE_QUAL(X, ),                                        \
+  P00_QVALUE_QUAL(X, const),                                   \
+  P00_QVALUE_QUAL(X, volatile),                                \
   P00_QVALUE_QUAL(X, const volatile)
 
 
 
 
-#define P99_QVALUE(X)                            \
-P99_GENERIC((X),                                \
-            P00_RVALUE(X),                      \
-            P00_QVALUE_CHAR(X),                  \
-            P00_QVALUE_SIG(schar, X),            \
-            P00_QVALUE_SIG(sshort, X),           \
-            P00_QVALUE_UNS(_Bool, X),            \
-            P00_QVALUE_UNS(uchar, X),            \
+#define P99_QVALUE(X)                                          \
+P99_GENERIC((X),                                               \
+            P00_RVALUE(X),                                     \
+            P00_QVALUE_CHAR(X),                                \
+            P00_QVALUE_SIG(schar, X),                          \
+            P00_QVALUE_SIG(sshort, X),                         \
+            P00_QVALUE_UNS(_Bool, X),                          \
+            P00_QVALUE_UNS(uchar, X),                          \
             P00_QVALUE_UNS(ushort, X))
 
 

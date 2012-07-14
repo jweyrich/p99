@@ -345,7 +345,7 @@ thrd_t thrd_current(void) {
     *p00_loc = (p00_thrd) {
       .p00_id = pthread_self(),
        .p00_foreign = p00_nb + 1,
-      };
+    };
     P00_THRD_LOCAL = p00_loc;
     if (p00_nb) fprintf(stderr, "foreign thread %lu is %zu\n", p00_loc->p00_id, p00_nb + 1);
   }
@@ -783,7 +783,7 @@ int thrd_create(thrd_t *p00_thr, thrd_start_t p00_func, void *p00_arg) {
       },
     },
     .p00_detached = ATOMIC_FLAG_INIT,
-   };
+  };
   int p00_ret = pthread_create(&p00_cntxt->p00_id, 0, p00_thrd_create, p00_cntxt);
   if (P99_UNLIKELY(p00_ret)) {
     free(p00_cntxt);
