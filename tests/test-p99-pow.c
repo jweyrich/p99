@@ -316,6 +316,7 @@ multFunc(P99_AARG(double, C, 2, nc),
 }
 
 int main(int argc, char*argv[]) {
+  size_t p = 1;
   if (argc > 4)
     p = strtoul(argv[4], NULL, 0);
   omp_set_num_threads(p);
