@@ -16,6 +16,7 @@ SRC	=					\
 		test-p99-classification.c	\
 		test-p99-compound.c		\
 		test-p99-double.c		\
+		test-p99-error.c		\
 		test-p99-int.c			\
 		test-p99-ndim.c			\
 		test-p99-pow.c			\

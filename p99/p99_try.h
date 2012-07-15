@@ -15,6 +15,7 @@
 #define P99_TRY_H
 #include "p99_tss.h"
 #include "p99_typenames.h"
+#include "p99_errno.h"
 
 
 P99_POINTER_TYPE(p00_jmp_buf0);
@@ -26,9 +27,11 @@ P99_DECLARE_THREAD_LOCAL(_Atomic(p00_jmp_buf0_ptr), p00_jmp_buf_top);
 
 P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_file);
 P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_context);
+P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_info);
 
 #define P00_JMP_BUF_FILE P99_THREAD_LOCAL(p00_jmp_buf_file)
 #define P00_JMP_BUF_CONTEXT P99_THREAD_LOCAL(p00_jmp_buf_context)
+#define P00_JMP_BUF_INFO P99_THREAD_LOCAL(p00_jmp_buf_info)
 
 p99_inline
 void p00_jmp_skip(p00_jmp_buf0 * p00_des) {
@@ -56,7 +59,7 @@ enum { p00_ilen10 = sizeof(P99_STRINGIFY(LLONG_MIN)) };
  ** P99_TRY {
  **   // the real application code
  ** } P99_CATCH(int code) {
- **   if (code) p99_jmp_report(code, 0, 0);
+ **   if (code) p99_jmp_report(code);
  **   P99_TRY {
  **     // some complicated cleanup that might throw
  **     // errors by itself
@@ -66,41 +69,67 @@ enum { p00_ilen10 = sizeof(P99_STRINGIFY(LLONG_MIN)) };
  **
  ** Without the call to ::p99_jmp_report the origin of the error would
  ** be lost in the second :P99_CATCH.
- **
  **/
+p99_inline void p99_jmp_report(int);
+
 p99_inline
-void p99_jmp_report(int p00_cond, char const* p00_file, char const* p00_context) {
+void p00_jmp_report(int p00_cond, char const* p00_file, char const* p00_context, char const* p00_info) {
   if (!p00_context) p00_context = P00_JMP_BUF_CONTEXT;
   if (!p00_context) p00_context = "<unknown function>";
+  if (!p00_info) p00_info = P00_JMP_BUF_INFO;
   if (!p00_file) p00_file = P00_JMP_BUF_FILE;
   if (!p00_file) p00_file = "<unknown location>";
-  char p00_str[p00_ilen10];
-  sprintf(p00_str, "%d", p00_cond);
   fputs(p00_context, stderr);
   fputc(':', stderr);
   fputs(p00_file, stderr);
-  fputs(": exception ", stderr);
-  fputs(p00_str, stderr);
-  if (!errno && p00_cond) errno = p00_cond;
-  if (errno) perror(", could be");
-  else fputc('\n', stderr);
+  fputs(": ", stderr);
+  if (p00_info) {
+    fputs(p00_info, stderr);
+    fputs(", ", stderr);
+  }
+  fputs("exception ", stderr);
+  {
+    char const*const p00_errname = p99_errno_getname(p00_cond);
+    if (p00_errname) {
+      fputs(p00_errname, stderr);
+      fputc('=', stderr);
+    }
+  }
+  {
+    char p00_str[p00_ilen10];
+    sprintf(p00_str, "%d", p00_cond);
+    fputs(p00_str, stderr);
+  }
+  if (!p00_cond && errno) p00_cond = errno;
+  char const* errstr = strerror(p00_cond);
+  if (errstr) {
+    fputs(", library error: ", stderr);
+    fputs(errstr, stderr);
+  }
+  fputc('\n', stderr);
 }
+
+p99_inline void p99_jmp_report(int p00_cond) {
+  p00_jmp_report(p00_cond, 0, 0, 0);
+}
+
 
 p99_inline
 noreturn
-void p00_jmp_abort(int p00_cond, char const* p00_file, char const* p00_context) {
-  p99_jmp_report(p00_cond, p00_file, p00_context);
+void p00_jmp_abort(int p00_cond, char const* p00_file, char const* p00_context, char const* p00_info) {
+  p00_jmp_report(p00_cond, p00_file, p00_context, p00_info);
   abort();
 }
 
 p99_inline
 noreturn
-void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_context) {
+void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_context, char const* p00_info) {
   if (p00_file) P00_JMP_BUF_FILE = p00_file;
   if (p00_context) P00_JMP_BUF_CONTEXT = p00_context;
+  if (p00_info) P00_JMP_BUF_INFO = p00_info;
   if (!p00_top) p00_top = P99_LIFO_TOP(&P00_JMP_BUF_TOP);
   if (P99_LIKELY(p00_top)) p00_longjmp(p00_top, p00_cond);
-  else p00_jmp_abort(p00_cond, p00_file, p00_context);
+  else p00_jmp_abort(p00_cond, p00_file, p00_context, p00_info);
 }
 
 
@@ -128,15 +157,15 @@ void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, c
  ** fits the needs of an application can be used.
  **/
 P00_UNWIND_DOCUMENT
-#define P99_THROW(X) p00_jmp_throw((X), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
+#define P99_THROW(X) p00_jmp_throw((X), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, "throw")
 
 inline static
 noreturn
-void p00_throw_errno(p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_context) {
+void p00_throw_errno(p00_jmp_buf0 * p00_top, int p00_def, char const* p00_file, char const* p00_context, char const* p00_info) {
   int p00_err = errno;
-  if (!p00_err) p00_err = EINVAL;
+  if (!p00_err) p00_err = (p00_def ? p00_def : EINVAL);
   errno = 0;
-  p00_jmp_throw(p00_err, p00_top, p00_file, p00_context);
+  p00_jmp_throw(p00_err, p00_top, p00_file, p00_context, p00_info);
 }
 
 /**
@@ -152,7 +181,7 @@ void p00_throw_errno(p00_jmp_buf0 * p00_top, char const* p00_file, char const* p
  ** @see P99_THROW
  **/
 #if defined(noreturn) || defined(_Noreturn)
-#define P99_THROW_ERRNO p00_throw_errno(p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
+#define P99_THROW_ERRNO p00_throw_errno(p00_unwind_top, EINVAL, P99_STRINGIFY(__LINE__), __func__, "THROW_ERRNO")
 #else
 #define P99_THROW_ERRNO                                        \
 do {                                                           \
@@ -165,10 +194,12 @@ do {                                                           \
 
 inline static
 int p00_throw_call_zero(int p00_err,
+                        int p00_def,
                         p00_jmp_buf0 * p00_top,
                         char const* p00_file,
-                        char const* p00_context) {
-  if (P99_UNLIKELY(p00_err)) p00_throw_errno(p00_top, p00_file, p00_context);
+                        char const* p00_context,
+                        char const* p00_info) {
+  if (P99_UNLIKELY(p00_err)) p00_throw_errno(p00_top, p00_def, p00_file, p00_context, p00_info);
   return 0;
 }
 
@@ -191,17 +222,22 @@ int p00_throw_call_zero(int p00_err,
  ** @see P99_THROW_CALL_VOIDP for a similar macro that checks a
  ** pointer return value
  **/
-#define P99_THROW_CALL_ZERO(F, ...)                                                    \
-p00_throw_call_zero(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
+#define P99_THROW_CALL_ZERO(F, E, ...)                                   \
+p00_throw_call_zero(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", non-zero return")
 
 inline static
 int p00_throw_call_neg(int p00_neg,
+                       int p00_def,
                        p00_jmp_buf0 * p00_top,
                        char const* p00_file,
-                       char const* p00_context) {
-  if (P99_UNLIKELY(p00_neg < 0)) p00_throw_errno(p00_top, p00_file, p00_context);
+                       char const* p00_context,
+                       char const* p00_info) {
+  if (P99_UNLIKELY(p00_neg < 0)) p00_throw_errno(p00_top, p00_def, p00_file, p00_context, p00_info);
   return p00_neg;
 }
+
+#define P00_THROW_CALL_NEG(F, E, ...)                                    \
+p00_throw_call_neg(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", neg return")
 
 /**
  ** @brief Wrap a function call to @a F such that it throws an error
@@ -222,17 +258,22 @@ int p00_throw_call_neg(int p00_neg,
  ** @see P99_THROW_CALL_VOIDP for a similar macro that checks a
  ** pointer return value
  **/
-#define P99_THROW_CALL_NEG(F, ...)                                                    \
-p00_throw_call_neg(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
+#define P99_THROW_CALL_NEG(F, E, ...) P00_THROW_CALL_NEG(F, E, __VA_ARGS__)
 
 inline static
 void* p00_throw_call_voidp(void* p00_p,
+                           int p00_def,
                            p00_jmp_buf0 * p00_top,
                            char const* p00_file,
-                           char const* p00_context) {
-  if (P99_UNLIKELY(!p00_p || (p00_p == (void*)-1))) p00_throw_errno(p00_top, p00_file, p00_context);
+                           char const* p00_context,
+                           char const* p00_info) {
+  if (P99_UNLIKELY(!p00_p || (p00_p == (void*)-1))) p00_throw_errno(p00_top, p00_def, p00_file, p00_context, p00_info);
   return p00_p;
 }
+
+#define P00_THROW_CALL_VOIDP(F, E, ...)                                  \
+p00_throw_call_voidp(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", invalid return")
+
 
 /**
  ** @brief Wrap a function call to @a F such that it throws an error
@@ -255,8 +296,7 @@ void* p00_throw_call_voidp(void* p00_p,
  ** return value is negative
  **
  **/
-#define P99_THROW_CALL_VOIDP(F, ...)                                                    \
-p00_throw_call_voidp(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__)
+#define P99_THROW_CALL_VOIDP(F, E, ...) P00_THROW_CALL_VOIDP(F, E, __VA_ARGS__)
 
 /**
  ** @brief Stop execution at the current point inside a ::P99_FINALLY
@@ -264,7 +304,7 @@ p00_throw_call_voidp(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __
  ** here to the next level.
  **/
 P00_UNWIND_DOCUMENT
-#define P99_RETHROW p00_jmp_throw(p00_code, p00_unwind_top, 0, 0)
+#define P99_RETHROW p00_jmp_throw(p00_code, p00_unwind_top, 0, 0, 0)
 
 
 /**
