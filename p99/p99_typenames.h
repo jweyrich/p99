@@ -37,6 +37,12 @@ P00_ONE_TOK(signed char, schar);
 P00_ONE_TOK(long long, llong);
 P00_ONE_TOK(signed long long, sllong);
 P00_ONE_TOK(unsigned long long, ullong);
+P00_ONE_TOK(long double, ldouble);
+#ifndef __STDC_NO_COMPLEX__
+P00_ONE_TOK(float _Complex, cfloat);
+P00_ONE_TOK(double _Complex, cdouble);
+P00_ONE_TOK(long double _Complex, cldouble);
+#endif
 
 #ifndef SSIZE_MAX
 # if SIZE_MAX == SHRT_MAX
@@ -69,9 +75,14 @@ typedef long long ssize_t;
 
 
 P99_POINTER_TYPE(void);
-P99_POINTER_TYPE(double);
 P99_POINTER_TYPE(float);
-
+P99_POINTER_TYPE(double);
+P99_POINTER_TYPE(ldouble);
+#ifndef __STDC_NO_COMPLEX__
+P99_POINTER_TYPE(cfloat);
+P99_POINTER_TYPE(cdouble);
+P99_POINTER_TYPE(cldouble);
+#endif
 P99_POINTER_TYPE(ullong);
 P99_POINTER_TYPE(sllong);
 P99_POINTER_TYPE(llong);
@@ -111,8 +122,14 @@ P99_POINTER_TYPE(uint64_t);
 P99_PLAIN_TYPE(void_ptr);
 P99_PLAIN_TYPE(void_cptr);
 
-P99_DERIVED_TYPES(double);
 P99_DERIVED_TYPES(float);
+P99_DERIVED_TYPES(double);
+P99_DERIVED_TYPES(ldouble);
+#ifndef __STDC_NO_COMPLEX__
+P99_DERIVED_TYPES(cfloat);
+P99_DERIVED_TYPES(cdouble);
+P99_DERIVED_TYPES(cldouble);
+#endif
 P99_DERIVED_TYPES(ullong);
 P99_DERIVED_TYPES(sllong);
 P99_DERIVED_TYPES(llong);
