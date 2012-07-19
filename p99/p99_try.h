@@ -168,6 +168,101 @@ void p00_throw_errno(p00_jmp_buf0 * p00_top, int p00_def, char const* p00_file, 
   p00_jmp_throw(p00_err, p00_top, p00_file, p00_context, p00_info);
 }
 
+inline static
+void p00_throw_call_range(p00_jmp_buf0 * p00_top, int p00_sign, char const* p00_file, char const* p00_context, char const* p00_info) {
+  int p00_err = errno;
+  if  (P99_LIKELY(!p00_err)) return;
+  switch (p00_err) {
+  case ERANGE: if (p00_sign) p00_err = p00_sign;
+  }
+  errno = 0;
+  p00_jmp_throw(p00_err, p00_top, p00_file, p00_context, p00_info);
+}
+
+/* Define a function for each of the standard real types, that runs
+   p00_throw_call_range with the correct information of under- or
+   overflow. We need this for compilers that don't support gcc's block
+   expressions and @c typeof. */
+#define P00_THROW_CALL_RANGE(T, F, ...)                         \
+inline static                                                   \
+T P99_PASTE2(p00_throw_call_range_, T)(p00_jmp_buf0 * p00_top,  \
+                                     T p00_val,                 \
+                                     char const* p00_file,      \
+                                     char const* p00_context,   \
+                                     char const* p00_info) {    \
+  if (P99_IS_ONE(p00_val, 0, __VA_ARGS__)                       \
+      P99_IF_EQ_1(F)(|| !isnormal(p00_val))()                   \
+      )                                                         \
+    p00_throw_call_range(p00_top,                               \
+                       /* also capture errors for floating      \
+                          types, for integer types part of this \
+                          is redundant. */                      \
+                       ((p00_val > 0)                           \
+                        ? ((p00_val >= 1) ? INT_MAX : 0)        \
+                        : (((T)-p00_val >= 1) ? INT_MIN : 0)),  \
+                       p00_file, p00_context, p00_info);        \
+  return p00_val;                                               \
+}                                                               \
+P99_MACRO_END(P00_THROW_CALL_RANGE, T)
+
+P00_THROW_CALL_RANGE(_Bool, 0, 1);
+P00_THROW_CALL_RANGE(char, 0, CHAR_MAX, CHAR_MIN);
+P00_THROW_CALL_RANGE(schar, 0, SCHAR_MAX, SCHAR_MIN);
+P00_THROW_CALL_RANGE(short, 0, SHRT_MAX, SHRT_MIN);
+P00_THROW_CALL_RANGE(int, 0, INT_MAX, INT_MIN);
+P00_THROW_CALL_RANGE(long, 0, LONG_MAX, LONG_MIN);
+P00_THROW_CALL_RANGE(llong, 0, LLONG_MAX, LLONG_MIN);
+P00_THROW_CALL_RANGE(uchar, 0, UCHAR_MAX);
+P00_THROW_CALL_RANGE(ushort, 0, USHRT_MAX);
+P00_THROW_CALL_RANGE(unsigned, 0, UINT_MAX);
+P00_THROW_CALL_RANGE(ulong, 0, ULONG_MAX);
+P00_THROW_CALL_RANGE(ullong, 0, ULLONG_MAX);
+P00_THROW_CALL_RANGE(float, 1, HUGE_VALF, -HUGE_VALF);
+P00_THROW_CALL_RANGE(double, 1, HUGE_VAL, -HUGE_VAL);
+P00_THROW_CALL_RANGE(ldouble, 1, HUGE_VALL, -HUGE_VALL);
+
+#define P00_THROW_CALL_RANGE_CASE(T) ,(T, P99_PASTE2(p00_throw_call_range_, T))
+
+#define P00_THROW_CALL_RANGE_(F, CASES, ...)                            \
+P99_GENERIC((F)(__VA_ARGS__), P00_ROBUST CASES)                         \
+  (p00_unwind_top, F(__VA_ARGS__), P99_STRINGIFY(__LINE__), __func__, #F ", range check")
+
+/**
+ ** @brief Wrap a function call to @a F such that it throws an error
+ ** on failure.
+ **
+ ** Many functions in the C and POSIX standards set @c errno to @c
+ ** ERANGE to signal an under- or overflow. This wrapper makes this
+ ** transparent such that it ensures that @c errno is always checked,
+ ** and if an error occurs a value is thrown.
+ **
+ ** If the error is @c ERANGE the value of @c INT_MAX is thrown for an
+ ** overflow and @c INT_MIN for a negative overflow. If the return
+ ** type of @a F is a floating point type @c ERANGE could also be set
+ ** for a value that is too close to 0. In that case @c ERANGE is
+ ** thrown directly.
+ **
+ ** If @c errno has another non-zero value that value is thrown.
+ **
+ ** @return the value of the function call if the call was
+ ** successful. Never returns if it wasn't.
+ **
+ ** @see P99_THROW_CALL_NEG for a similar macro that checks if the
+ ** return value is negative
+ **
+ ** @see P99_THROW_CALL_VOIDP for a similar macro that checks a
+ ** pointer return value
+ **
+ ** @remark This is only implemented for the real arithmetic types by
+ ** means of a type generic macro.
+ **/
+#define P99_THROW_CALL_RANGE(F, ...)                                    \
+  P00_THROW_CALL_RANGE_                                                 \
+  (F,                                                                   \
+   (P99_SER(P00_THROW_CALL_RANGE_CASE, P99_STD_REAL_TYPES)),            \
+   __VA_ARGS__)
+
+
 /**
  ** @brief Capture, clean and throw the current value of @c errno
  **
