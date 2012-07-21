@@ -19,13 +19,11 @@
 #endif
 #include <unistd.h>
 #include <sys/time.h>
-#include <time.h>
 #include <pthread.h>
 #if defined(__GNUC__) || defined(P00_DOXYGEN)
 # include "p99_atomic.h"
 #endif
 
-#include "p99_compiler.h"
 #include "p99_defarg.h"
 
 /**

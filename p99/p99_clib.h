@@ -14,7 +14,6 @@
 #ifndef P99_CLIB_H
 #define P99_CLIB_H 1
 
-#include "p99_for.h"
 #include "p99_new.h"
 
 /* Additions by C11 */

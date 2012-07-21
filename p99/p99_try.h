@@ -14,7 +14,6 @@
 #ifndef P99_TRY_H
 #define P99_TRY_H
 #include "p99_tss.h"
-#include "p99_typenames.h"
 #include "p99_errno.h"
 
 

@@ -19,7 +19,6 @@
  ** @brief Choice macros that implement `static inline' table lookup.
  **/
 
-#include "p99_c99.h"
 #include "p99_id.h"
 #include "p99_for.h"
 

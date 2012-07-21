@@ -20,7 +20,6 @@
  ** @see statement_lists
  **/
 
-#include "p99_type.h"
 #include "p99_for.h"
 
 /** @addtogroup statement_lists Produce C99 statements or expression lists

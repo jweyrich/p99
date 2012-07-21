@@ -16,7 +16,6 @@
 
 #include "p99_enum.h"
 #include "p99_generic.h"
-#include "p99_block.h"
 
 /**
  ** @addtogroup atomic C11 atomic operations
