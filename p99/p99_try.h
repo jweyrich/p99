@@ -178,6 +178,13 @@ void p00_throw_call_range(p00_jmp_buf0 * p00_top, errno_t p00_sign, char const* 
   p00_jmp_throw(p00_err, p00_top, p00_file, p00_context, p00_info);
 }
 
+#define P00_ALMOST_ZERO(X)                                              \
+P99_GENERIC((X),                                                        \
+            ((X) > 0 ? (X) <= FLT_MIN : -(X) >= FLT_MIN),               \
+            (float, ((X) > 0 ? (X) <= LDBL_MIN : -(X) >= LDBL_MIN)),    \
+            (long double, ((X) > 0 ? (X) <= LDBL_MIN : -(X) >= LDBL_MIN)) \
+            )
+
 /* Define a function for each of the standard real types, that runs
    p00_throw_call_range with the correct information of under- or
    overflow. We need this for compilers that don't support gcc's block
@@ -190,7 +197,7 @@ T P99_PASTE2(p00_throw_call_range_, T)(p00_jmp_buf0 * p00_top,  \
                                      char const* p00_context,   \
                                      char const* p00_info) {    \
   if (P99_UNLIKELY(P99_IS_ONE(p00_val, 0, __VA_ARGS__))         \
-      P99_IF_EQ_1(F)(|| P99_UNLIKELY(!isnormal(p00_val)))()     \
+      P99_IF_EQ_1(F)(|| P99_UNLIKELY(P00_ALMOST_ZERO(p00_val)))()       \
       )                                                         \
     p00_throw_call_range(p00_top,                               \
                        /* also capture errors for floating      \
