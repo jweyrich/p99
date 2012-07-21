@@ -69,10 +69,10 @@ enum { p00_ilen10 = sizeof(P99_STRINGIFY(LLONG_MIN)) };
  ** Without the call to ::p99_jmp_report the origin of the error would
  ** be lost in the second :P99_CATCH.
  **/
-p99_inline void p99_jmp_report(int);
+p99_inline void p99_jmp_report(errno_t);
 
 p99_inline
-void p00_jmp_report(int p00_cond, char const* p00_file, char const* p00_context, char const* p00_info) {
+void p00_jmp_report(errno_t p00_cond, char const* p00_file, char const* p00_context, char const* p00_info) {
   if (!p00_context) p00_context = P00_JMP_BUF_CONTEXT;
   if (!p00_context) p00_context = "<unknown function>";
   if (!p00_info) p00_info = P00_JMP_BUF_INFO;
@@ -108,21 +108,21 @@ void p00_jmp_report(int p00_cond, char const* p00_file, char const* p00_context,
   fputc('\n', stderr);
 }
 
-p99_inline void p99_jmp_report(int p00_cond) {
+p99_inline void p99_jmp_report(errno_t p00_cond) {
   p00_jmp_report(p00_cond, 0, 0, 0);
 }
 
 
 p99_inline
 noreturn
-void p00_jmp_abort(int p00_cond, char const* p00_file, char const* p00_context, char const* p00_info) {
+void p00_jmp_abort(errno_t p00_cond, char const* p00_file, char const* p00_context, char const* p00_info) {
   p00_jmp_report(p00_cond, p00_file, p00_context, p00_info);
   abort();
 }
 
 p99_inline
 noreturn
-void p00_jmp_throw(int p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_context, char const* p00_info) {
+void p00_jmp_throw(errno_t p00_cond, p00_jmp_buf0 * p00_top, char const* p00_file, char const* p00_context, char const* p00_info) {
   if (p00_file) P00_JMP_BUF_FILE = p00_file;
   if (p00_context) P00_JMP_BUF_CONTEXT = p00_context;
   if (p00_info) P00_JMP_BUF_INFO = p00_info;
@@ -160,16 +160,16 @@ P00_UNWIND_DOCUMENT
 
 inline static
 noreturn
-void p00_throw_errno(p00_jmp_buf0 * p00_top, int p00_def, char const* p00_file, char const* p00_context, char const* p00_info) {
-  int p00_err = errno;
+void p00_throw_errno(p00_jmp_buf0 * p00_top, errno_t p00_def, char const* p00_file, char const* p00_context, char const* p00_info) {
+  errno_t p00_err = errno;
   if (!p00_err) p00_err = (p00_def ? p00_def : EINVAL);
   errno = 0;
   p00_jmp_throw(p00_err, p00_top, p00_file, p00_context, p00_info);
 }
 
 inline static
-void p00_throw_call_range(p00_jmp_buf0 * p00_top, int p00_sign, char const* p00_file, char const* p00_context, char const* p00_info) {
-  int p00_err = errno;
+void p00_throw_call_range(p00_jmp_buf0 * p00_top, errno_t p00_sign, char const* p00_file, char const* p00_context, char const* p00_info) {
+  errno_t p00_err = errno;
   if  (P99_LIKELY(!p00_err)) return;
   switch (p00_err) {
   case ERANGE: if (p00_sign) p00_err = p00_sign;
@@ -189,8 +189,8 @@ T P99_PASTE2(p00_throw_call_range_, T)(p00_jmp_buf0 * p00_top,  \
                                      char const* p00_file,      \
                                      char const* p00_context,   \
                                      char const* p00_info) {    \
-  if (P99_IS_ONE(p00_val, 0, __VA_ARGS__)                       \
-      P99_IF_EQ_1(F)(|| !isnormal(p00_val))()                   \
+  if (P99_UNLIKELY(P99_IS_ONE(p00_val, 0, __VA_ARGS__))         \
+      P99_IF_EQ_1(F)(|| P99_UNLIKELY(!isnormal(p00_val)))()     \
       )                                                         \
     p00_throw_call_range(p00_top,                               \
                        /* also capture errors for floating      \
@@ -279,7 +279,7 @@ P99_GENERIC((F)(__VA_ARGS__), P00_ROBUST CASES)                         \
 #else
 #define P99_THROW_ERRNO                                        \
 do {                                                           \
-  int p00_err = errno;                                         \
+  errno_t p00_err = errno;                                     \
   if (!p00_err) p00_err = EINVAL;                              \
   errno = 0;                                                   \
   P99_THROW(p00_err);                                          \
@@ -288,7 +288,7 @@ do {                                                           \
 
 inline static
 int p00_throw_call_zero(int p00_err,
-                        int p00_def,
+                        errno_t p00_def,
                         p00_jmp_buf0 * p00_top,
                         char const* p00_file,
                         char const* p00_context,
@@ -301,7 +301,7 @@ int p00_throw_call_zero(int p00_err,
  ** @brief Wrap a function call to @a F such that it throws an error
  ** on failure.
  **
- ** Many functions in the C and POSIX standards return an @c int only
+ ** Many functions in the C and POSIX standards return an @c int or @c errno_t only
  ** for the purpose of signaling an error and provide an error code in
  ** @c errno. This wrapper makes this transparent such that it ensures
  ** that the error code is always checked, and if an error occurs the
@@ -321,7 +321,7 @@ p00_throw_call_zero(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), 
 
 inline static
 int p00_throw_call_neg(int p00_neg,
-                       int p00_def,
+                       errno_t p00_def,
                        p00_jmp_buf0 * p00_top,
                        char const* p00_file,
                        char const* p00_context,
@@ -356,7 +356,7 @@ p00_throw_call_neg(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), _
 
 inline static
 void* p00_throw_call_voidp(void* p00_p,
-                           int p00_def,
+                           errno_t p00_def,
                            p00_jmp_buf0 * p00_top,
                            char const* p00_file,
                            char const* p00_context,

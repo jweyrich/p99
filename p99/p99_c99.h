@@ -24,6 +24,10 @@
  ** @c and @c and_eq @c bitand @c bitor @c compl @c not @c not_eq @c or @c or_eq @c xor @c xor_eq
  **/
 
+#ifndef __STDC_WANT_LIB_EXT1__
+# define __STDC_WANT_LIB_EXT1__ 1
+#endif
+
 #include "p99_compiler.h"
 
 #if __STDC_HOSTED__ || defined(P00_DOXYGEN)

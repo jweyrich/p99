@@ -20,6 +20,12 @@
 
 #include "p99_paste.h"
 
+
+/* This is defined in some header file since C11. Since C11 allows to
+   repeat typedefs as long as they resolve to the same type, this can
+   be done at any place. */
+typedef int errno_t;
+
 /**
  ** @addtogroup types Type facilities
  ** @brief Macros that help in the handling of different kinds of types,

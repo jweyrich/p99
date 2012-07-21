@@ -25,6 +25,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
+/* This is defined in some header file since C11. Since C11 allows to
+   repeat typedefs as long as they resolve to the same type, this can
+   be done at any place. */
+typedef size_t rsize_t;
+
 #if __STDC_HOSTED__
 # include <assert.h>
 # include <wchar.h>

@@ -176,7 +176,7 @@ enum {
  ** null pointer is returned.
  **/
 p99_inline
-char const* p99_errno_getname(int p00_err) {
+char const* p99_errno_getname(errno_t p00_err) {
   switch (p00_err) {
     P99_SER(P00_ERRNO_CASE, P00_ERRNO_LIST);
   default: return 0;
