@@ -429,21 +429,22 @@ enum p99_unwind {
   p00_unwind_top = 0,
   p00_unwind_prev = 0,
   p00_unwind_bottom = 0,
-  /**
-   ** @brief The code an eventual call to ::P99_UNWIND
-   **
-   ** This will be @c 0 if no ::P99_UNWIND is in progress. Otherwise a
-   ** positive number tells how many levels will at most be unwound. A
-   ** negative value will cause the whole ::P99_UNWIND_PROTECT level
-   ** to be traversed. This same negative value is visible at all levels
-   ** through the execution of the protected parts.
-   **
-   ** This will always be accessible as a read-only constant and taking
-   ** its address will produce an error.
-   **/
-  p99_unwind_code = 0,
   p99_unwind_return = INT_MAX,
 };
+
+/**
+ ** @brief The code an eventual call to ::P99_UNWIND
+ **
+ ** This will be @c 0 if no ::P99_UNWIND is in progress. Otherwise a
+ ** positive number tells how many levels will at most be unwound. A
+ ** negative value will cause the whole ::P99_UNWIND_PROTECT level
+ ** to be traversed. This same negative value is visible at all levels
+ ** through the execution of the protected parts.
+ **
+ ** This will always be accessible as read-only and taking
+ ** its address will produce an error.
+ **/
+#define p99_unwind_code ((int)(p00_unwind_top[0].p00_code))
 
 
 P99_DECLARE_STRUCT(p00_jmp_buf0);
@@ -451,6 +452,7 @@ P99_DECLARE_STRUCT(p00_jmp_buf0);
 struct p00_jmp_buf0 {
   p00_jmp_buf0 * p99_lifo;
   bool volatile p00_returning;
+  int volatile p00_code;
   jmp_buf p00_buf;
 };
 
@@ -469,6 +471,7 @@ struct p00_inhibitor {
 p99_inline
 noreturn
 void p00_longjmp(p00_jmp_buf0 * p00_buf, int p00_val) {
+  p00_buf->p00_code = p00_val;
   longjmp(p00_buf->p00_buf, p00_val);
 }
 
@@ -593,7 +596,6 @@ P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                
   P00_BLK_BEFORE(p00_code = setjmp(p00_unwind_top[0].p00_buf))                                   \
   /* detect whether or not we are unwinding */                                                   \
   P00_BLK_BEFORE(p00_unw = !!p00_code)                                                           \
-  P00_BLK_DECL(register int const, p99_unwind_code, p00_code)                                    \
   P00_BLK_END                                                                                    \
 /* dispatch. cast the _Bool to int since this is what happens anyhow                             \
    and some compilers will issue strange warnings. The "true" case must be provided              \
