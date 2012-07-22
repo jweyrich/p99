@@ -593,17 +593,21 @@ P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                
   P00_BLK_DECL(p00_jmp_buf0*, p00_unwind_prev, p00_unwind_top)                                   \
 /* the buffer variable for setjmp/longjump */                                                    \
   P00_BLK_DECL(auto p00_jmp_buf, p00_unwind_top, P99_INIT)                                       \
-  P00_BLK_END                                                                                    \
-  switch ((int)!!setjmp(p00_unwind_top[0].p00_buf)) if (0) {                                        \
-/* The switch expression of the surrounding switch from                 \
-   P99_UNWIND_PROTECT should only have values true and false. So        \
-   this default label can only trigger if there is no "case 1". It      \
-   is also here to ensure that no other "default" label is placed on    \
-   the same level of "switch" by error. */                            \
- default:                                                             \
-   p00_code = p00_unwind_top[0].p00_code;                             \
-   p00_unw = !!p00_code;                                              \
- } else case 0:
+  P00_BLK_END                                                           \
+  /* force interpretation of the setjmp return to 0 or 1, and ensure
+     that it occurs in a context where it is permitted. */ \
+  switch (!setjmp(p00_unwind_top[0].p00_buf))                           \
+    if (0) {                                                            \
+      /* The switch expression of the surrounding switch from           \
+         P99_UNWIND_PROTECT should only have values true and false. So  \
+         this default label can only trigger if there is no "case 0". It \
+         is also here to ensure that no other "default" label is placed on \
+         the same level of "switch" by error. */                        \
+    default:                                                            \
+      p00_code = p00_unwind_top[0].p00_code;                            \
+      p00_unw = !!p00_code;                                             \
+    } else                                                              \
+    case 1:
 
 p99_inline
 void p00_unwind(void* p00_top, unsigned p00_level, int p00_cond) {
@@ -691,9 +695,11 @@ for (;                                                                 \
 P00_UNWIND_DOCUMENT
 #define P99_PROTECT                                                   \
 P99_DECLARE_INHIBIT(RETURN);                                          \
-case 1 :                                                              \
+ if (0) {                                                             \
+ case 0 :                                                             \
  p00_code = p00_unwind_top[0].p00_code;                               \
  p00_unw = !!p00_code;                                                \
+ }                                                                    \
  P00_UNCASE
 
 /**

@@ -506,7 +506,7 @@ for (register unsigned p00_pha = 0; p00_pha < 2u; ++p00_pha)   \
       do
 
 #define P00_FINALLY                                                 \
-while (0); else case 1:                                             \
+while (0); else case 0:                                             \
 P00_BLK_START                                                       \
 P00_BLK_BEFORE(p00_code = p00_unwind_top[0].p00_code)               \
 P00_BLK_BEFORE(p00_unw = !!p00_code)                                \
