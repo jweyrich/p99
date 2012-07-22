@@ -571,10 +571,10 @@ P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                
   /* inhibit further access of the p00_unwind_return variable */                                 \
   P00_BLK_DECL(register p00_inhibitor const, p00_unwind_return, { INT_MAX })                     \
 /* are we unwinding or not? */                                                                   \
-  P00_BLK_DECL(register _Bool, p00_unw)                                                          \
+  P00_BLK_DECL(auto _Bool volatile, p00_unw)                                                     \
 /* The return code from the longjmp to which we apply the                                        \
    special convention concerning the value 0. */                                                 \
-  P00_BLK_BEFAFT(register int p00_code = 0,                                                      \
+  P00_BLK_BEFAFT(auto int volatile p00_code = 0,                                                 \
                  /* An eventual continuation of the unwind process is                            \
                     decided here, since here the p00_unwind_top                                  \
                     variable that is visible is that of the enclosing                            \
@@ -593,14 +593,17 @@ P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                
   P00_BLK_DECL(p00_jmp_buf0*, p00_unwind_prev, p00_unwind_top)                                   \
 /* the buffer variable for setjmp/longjump */                                                    \
   P00_BLK_DECL(auto p00_jmp_buf, p00_unwind_top, P99_INIT)                                       \
-  P00_BLK_BEFORE(p00_code = setjmp(p00_unwind_top[0].p00_buf))                                   \
-  /* detect whether or not we are unwinding */                                                   \
-  P00_BLK_BEFORE(p00_unw = !!p00_code)                                                           \
   P00_BLK_END                                                                                    \
-/* dispatch. cast the _Bool to int since this is what happens anyhow                             \
-   and some compilers will issue strange warnings. The "true" case must be provided              \
-   through a placement of P99_PROTECT inside the depending statement. */                         \
-  switch ((int)p00_unw) case 0:
+  switch ((int)!!setjmp(p00_unwind_top[0].p00_buf)) if (0) {                                        \
+/* The switch expression of the surrounding switch from                 \
+   P99_UNWIND_PROTECT should only have values true and false. So        \
+   this default label can only trigger if there is no "case 1". It      \
+   is also here to ensure that no other "default" label is placed on    \
+   the same level of "switch" by error. */                            \
+ default:                                                             \
+   p00_code = p00_unwind_top[0].p00_code;                             \
+   p00_unw = !!p00_code;                                              \
+ } else case 0:
 
 p99_inline
 void p00_unwind(void* p00_top, unsigned p00_level, int p00_cond) {
@@ -688,14 +691,10 @@ for (;                                                                 \
 P00_UNWIND_DOCUMENT
 #define P99_PROTECT                                                   \
 P99_DECLARE_INHIBIT(RETURN);                                          \
-if (0) {                                                              \
-  /* The switch expression of the surrounding switch from             \
-     P99_UNWIND_PROTECT should only have values true and false. So    \
-     this default label can never trigger. It is here to ensure that  \
-     no other "default" label is placed on the same level of "switch" \
-     by error. */                                                     \
- default: ;                                                           \
- } else case 1 : P00_UNCASE
+case 1 :                                                              \
+ p00_code = p00_unwind_top[0].p00_code;                               \
+ p00_unw = !!p00_code;                                                \
+ P00_UNCASE
 
 /**
  ** @brief Add some default documentation and links to the following
