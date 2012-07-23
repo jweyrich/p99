@@ -90,6 +90,7 @@ P99_XDEFAULT : {
     printf("before throw\n");
     switch (argc % 6) {
     case 2: P99_THROW(41);
+    case 5: P99_THROW(0);
     default:;
     }
     printf("after throw\n");
@@ -98,7 +99,7 @@ P99_XDEFAULT : {
     default:
       printf("caught err %d\n", err);
       P99_RETHROW;
-    case 0:;
+    case 0: puts("caught 0 exception\n");
     }
   }
 

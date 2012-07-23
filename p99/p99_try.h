@@ -147,13 +147,17 @@ void p00_jmp_throw(errno_t p00_cond, p00_jmp_buf0 * p00_top, char const* p00_fil
  ** @remark If there is no such try clause on the call stack, @c abort
  ** is called.
  **
- ** @param X should be an integer value that fits into an @c int. It
- ** @b must be non-zero. Otherwise the arbitrary value @c 1 as for @c
- ** setjmp / @c longjmp is transferred.
+ ** @param X should be an integer value that fits into an @c int.
  **
  ** A good convention for the values to throw is to use system wide
  ** error numbers such as @c ERANGE. But any other convention that
  ** fits the needs of an application can be used.
+ **
+ ** @warning Be careful when throwing @c 0 as a value. This should be
+ ** reserved for preliminary returns from deep recursion that is not
+ ** considered being an error. In particular, throwing @c 0 will only
+ ** unwind to the next ::P99_FINALLY and continue normal execution
+ ** thereafter.
  **/
 P00_UNWIND_DOCUMENT
 #define P99_THROW(X) p00_jmp_throw((X), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, "throw")
