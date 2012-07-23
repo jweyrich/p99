@@ -660,21 +660,20 @@ P00_UNWIND_DOCUMENT
  ** @endcode
  **/
 P00_UNWIND_DOCUMENT
-#define P99_UNWIND_RETURN                                              \
-/* This is just there to prevent spurious dangling else warnings */    \
-P00_BLK_START                                                          \
-for (;                                                                 \
-     !(p00_unwind_bottom && !setjmp(p00_unwind_bottom[0]->p00_buf))    \
-       /* assign before we unwind all the way down */                  \
-       || (p00_unwind_bottom[0]->p00_returning = 1,                    \
-           /* If an unwind is possible, i.e if we are not in the outer \
-              frame this will stop the evaluation of the expression    \
-              here, and unwind as side effect. Otherwise, this will    \
-              continue normally and directly proceed with the          \
-              return. */                                               \
-           P99_UNWIND(-p99_unwind_return),                             \
-           1);                                                         \
-     ) P99_ALLOW(RETURN) return
+#define P99_UNWIND_RETURN                                               \
+/* we use a special form of short circuit evaluation here, since        \
+   setjmp is only allowed in restricted contexts */                     \
+switch (!!p00_unwind_bottom)                                            \
+ case 1:                                                                \
+  /* If an unwind is possible, i.e if we are not in the outer frame     \
+     this will stop the evaluation of the expression here, and unwind   \
+     as side effect. Otherwise, this will continue normally and         \
+     directly proceed with the return. */                               \
+  if (!setjmp(p00_unwind_bottom[0]->p00_buf)) {                         \
+    /* assign before we unwind all the way down */                      \
+    p00_unwind_bottom[0]->p00_returning = 1;                            \
+    P99_UNWIND(-p99_unwind_return);                                     \
+  } else case 0: P99_ALLOW(RETURN) return
 
 /**
  ** @brief The pseudo label to which we jump when we unwind the stack
