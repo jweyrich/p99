@@ -1,45 +1,39 @@
-<html>
-<header>
-<title>Defect Report relative to n1570, 6.8.5p1 and A.2.3</title>
-<style>
-html { background-color : #FFF }
-tr { frame : 2px solid black;}
-th { background-color : #DDD }
-.missing { background-color : #E11 }
-.toomuch { background-color : #E1E }
-.optional { background-color : #070 }
-.alternative { color : #AAA }
-.command { background-color : #AAA; text-style : sans-serif }
-</style>
-</header>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link href="DR.css" rel="stylesheet" type="text/css"/>
+<title>Defect Report relative to n1570: 6.8.5p1 and A.2.3</title>
+</head>
 <body>
-<h1>Defect Report relative to n1570, 6.8.5p1 and A.2.3</h1>
+<h1>Defect Report relative to n1570: 6.8.5p1 and A.2.3</h1>
 
 <h2>Problem statement</h2>
 
+<p>
 The standard lists two different forms for
 the <code>for</code>-statement in 6.8.5p1:
-
+</p>
 <pre>
 for ( expression[opt] ; expression[opt] ; expression[opt] ) statement
 for ( declaration expression[opt] ; expression[opt] ) statement
 </pre>
 
-whereas later in 6.8.5.3 these two forms are subsumed in a third form
+<p>whereas later in 6.8.5.3 these two forms are subsumed in a third form
 by:
-
+</p>
 <pre>
 for ( clause-1 ; expression-2 ; expression-3 ) statement
 </pre>
 
-Obviously the second form above is a typo and doesn't fit within this
+<p>Obviously the second form above is a typo and doesn't fit within this
 third form, the semantic that is given in 6.8.5.3 and to common
 practice in existing compilers.
-
+</p>
 <h2>Proposed solution</h2>
 
+<p>
 Replace the second form in 6.8.5p1 and A.2.3 by the intended one:
-
+</p>
 <pre>
 for ( declaration expression[opt] ; expression[opt] ; expression[opt] ) statement
 </pre>

@@ -1,0 +1,12 @@
+html { background-color : #FFF }
+tr { frame : 2px solid black;}
+th { background-color : #DDD }
+.missing { background-color : #E11 }
+.toomuch { background-color : #E1E }
+.optional { background-color : #070 }
+.quote {
+    background-color : #FFD;
+    text-align : center;
+}
+.alternative { color : #AAA }
+pre , code { background-color : #EEE; text-style : sans-serif }
