@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link href="DR.css" rel="stylesheet" type="text/css"/>
+<title>Defect Report relative to n1570: underspecification for
+  qualified rvalues</title>
+</head>
+<body>
+<h1>Defect Report relative to n1570: underspecification for
+  qualified rvalues</h1>
+
+<h2>Problem statement</h2>
+
+<p>
+The dealing of rvalues with qualified types is largely underspecified
+in all versions of the C standard. This didn't surface as a problem
+until C11, since until then the type of an expression was not
+observable but only its value.
+</p>
+<p>
+  With C11 now a problem arises for type generic primary expressions;
+  with <code>_Generic</code> type qualifications of values have become
+  observable.
+</p>
+
+<p>
+  The standard in any of its versions has not much to say when it
+  comes to qualified types for rvalues. They definitively do exist,
+  since the cast operator (6.5.4p2) explicitly specifies that the type
+  could be qualified. That section on casts also has the only
+  indication that relates to rvalues. There is a footnote (thus not
+  normative) that says
+</p>
+<p  class="quote">
+  89) A cast does not yield an lvalue. Thus, a cast to a qualified
+  type has the same effect as a cast to the unqualified version of the
+  type.
+</p>
+
+<p>
+  That could mean two things:
+</p>
+<ol>
+  <li>the effective type of the resulting rvalue is unqualified</li>
+  <li>all operators that will accept the rvalue as an operand will act
+    all the same whether the type is qualified or not</li>
+</ol>
+
+<p>doing some tests I have found that clang and gcc disagree on this
+point. (gcc doesn't have <code>_Generic</code>, yet, but other builtins to observe
+types)
+</p>
+
+<p>clang seems to implement 1., gcc 2. They agree for lvalues like
+this
+</p>
+<pre>
+_Generic((double const){ 0 },
+         default: 0,
+         double const: 1)
+</pre>
+
+<p>
+  both evaluate it to <code>1</code>.
+</p>
+<p>
+  They disagree on the outcome for rvalues
+</p>
+<pre>
+_Generic((double const)0,
+         default: 0,
+         double const: 1)
+</pre>
+<p>
+  clang gives <code>0</code>, gcc gives <code>1</code>.
+</p>
+<p>
+  (for gcc all with caution that it doesn't have <code>_Generic</code>
+  yet, but that this was obtained using an emulation of it by means of
+  other gcc builtins)
+</p>
+
+<p>
+  So that situation can easily lead to simple programs that have a
+  behavior that depends on an undocumented choice and thus observe
+  <em>unspecified behavior</em>.
+</p>
+
+<h2>Discussion</h2>
+
+
+<h3>Importance of observability of qualifiers</h3>
+<p>
+  This is not a defect of the <code>_Generic</code> construct
+  itself. The intention is clearly to distinguish all types (with the
+  exception of VM types) that are not compatible, thus to allow to
+  distinguish all 8 different forms of qualifications of a type
+  (resp. 16 for pointer types) that can be obtained from the
+  qualifiers <code>_Atomic</code>, <code>const</code>,
+  <code>volatile</code> (and <code>restrict</code>).
+</p>
+<p>
+  For type generic expressions that are intended to operate on
+  lvalues, such distinction can be crucial for any of the four
+  qualifiers:
+</p>
+<ul>
+  <li>For <code>const</code> or <code>volatile</code> qualified
+  lvalues there might be situations where application code might want
+  to use an unqualified compound literal in place of the controlling
+  expression.</li>
+
+  <li>For <code>_Atomic</code> qualified lvalues there might be
+  situations where application code might want to select a different
+  function than for expressions with same base type but without such a
+  qualifier.</li>
+
+  <li><code>restrict</code> (or not) qualified pointers may enable an
+  application to select different algorithms or functions
+  (e.g <code>memcopy</code> versus <code>memmove</code>).</li>
+</ul>
+
+<h3>Origin</h3>
+<p>
+  Two different constructs can be at the origin of a qualification of
+  an rvalue:
+</p>
+
+<ul>
+  <li>casts</li>
+  <li>function evaluation</li>
+</ul>
+
+<p>
+  Both constructs explicitly allow for qualifiers to be applied to the
+  type. In particular 6.7.6.3p15 emphasizes (and constrains) the
+  return type of function specifications to have compatible types,
+  thus indicating that the qualification of the return type bares a
+  semantic meaning.
+</p>
+
+<h3>Operations</h3>
+<p>
+  If we suppose that any rvalue expression carries its qualification
+  further, other operations (e.g unary or binary <code>+</code>) could
+  or could not result in qualified rvalues. The conversion rules in
+  6.3 and in particular the usual arithmetic conversions in 6.3.1.8
+  that allow to determine a common real type don't specify rules to
+  deal with qualifiers.
+</p>
+
+<p>
+  It seems that a lot of compilers already warn on such "superfluous"
+  qualifications, but in view of type generic primary expression it is
+  not clear that such warnings are still adequate.
+</p>
+
+<h2>Proposed solutions</h2>
+<p>
+  There doesn't seem to be an easy solution to this defect, and the
+  proposed solutions (as below or even differently) probably will need
+  some discussion and investigations about their implications on
+  existing code before a consensus could be reached.
+</p>
+
+<h3>Require the implementation to specify its choice</h3>
+<p>
+  This is (to my opinion) the worst solution, because the potential
+  different code paths that an application code could take are
+  numerous. There are 4 different qualifiers to handle and code that
+  would have to rely on enumerating all combinations of different
+  generic choices can quickly become a maintenance nightmare.
+</p>
+
+<p>
+  Also, implementations that chose to keep qualifiers on rvalues would
+  have to decide (and document) by their own what the rules would be
+  when operators are applied to such qualified rvalues.
+</p>
+
+<h3>Require the implementation to provide a feature test macro</h3>
+<p>
+  This solution would already be a bit better than the previous one,
+  since applications that compose type generic macros could select
+  between two (or several) implementations. But the main problems
+  (complexity and underspecification of operations) would remain.
+</p>
+
+<h3>Drop all qualifiers</h3>
+
+<p>
+  The easiest to fix this would be, I think, to specify that (1)
+  happens, that is all casts result in types that have no
+  qualification, and, that functions always return unqualified types,
+  even the specification has one.
+</p>
+<p>
+  Then, only lvalues could have qualified types. (lvalue conversion
+  drops qualifiers, arrays can't be qualified by themselves)
+</p>
+<p>
+  On the other hand the consequence that the two <code>_Generic</code> expressions
+  above would return different values could be quite surprising.
+</p>
+
+
+</body>
