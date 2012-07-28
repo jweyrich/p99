@@ -8,5 +8,8 @@ th { background-color : #DDD }
     background-color : #FFD;
     text-align : center;
 }
-.alternative { color : #AAA }
+.alternative {
+    background-color : #FCC;
+    text-align : center;
+}
 pre , code { background-color : #EEE; text-style : sans-serif }
