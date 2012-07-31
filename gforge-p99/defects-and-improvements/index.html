@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link href="DR.css" rel="stylesheet" type="text/css"/>
+<title>A collection of defect reports and feature requests for C</title>
+</head>
+<body>
+<h1>A collection of defect reports and feature requests for C</h1>
+
+<p>
+  Here I will collect problems and a wishes that I encountered during
+  the programming of (or with) C99. Don't hesitate to drop me line if
+  you have remarks, precisions, additions, ... whatever.
+</p>
+
+<h2>Defects</h2>
+
+<p>
+  Here I list things that I identified as defects in the C
+  standard. This may involve obviously wrong wordings or semantic
+  inconsistencies.
+</p>
+
+<ul>
+  <li>
+    <a href="DR-6.8.5p1.html">Invalid grammar for the <code>for</code>-statement.</a>
+  </li>
+  <li>
+    <a href="DR-qualified-rvalues.html">underspecification for qualified rvalues</a>
+  </li>
+</ul>
+
+<h2>Features</h2>
+
+<p>
+  This will be a list of features that I think could be added to the C
+  standard that I found useful. Generally the idea will be to be
+  conservative (in the first sense of the word) and not to invalidate
+  much existing code.
+</p>
+
+<ul>
+  <li>
+    Constrain <code>const</code>-qualified variables
+    with <code>register</code> storage class to be initialized.
+  </li>
+  <li>
+    Allow <code>const</code>-qualified variables
+    with <code>register</code> storage class in file scope.
+  </li>
+  <li>
+    Use designators (<code>.identifier</code>
+    and <code>[constant-expression]</code>) uniformly for the access
+    to the components of composite types.
+  </li>
+  <li>
+    Allow arrays to be of <code>register</code> storage class.
+  </li>
+</ul>
+
+</body>
