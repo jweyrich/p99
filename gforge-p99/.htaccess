@@ -1,4 +1,5 @@
 AddDescription "C99 conformance tests" c99-conformance*
+AddDescription "C11 defect reports and feature requests" defects-and-improvements*
 AddDescription "P99 code documentation" p99-html*
 AddDescription "current version" p99.zip
 AddDescription "current version" p99.tgz
