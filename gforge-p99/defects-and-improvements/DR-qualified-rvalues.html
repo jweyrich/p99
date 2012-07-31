@@ -214,13 +214,31 @@ double (*C)[5] = &(A);
 <h3>Keep all qualifiers on types of rvalue expressions</h3>
 
 <p>
-  In particular cumulate qualifiers from operands with different qualifiers.
+  For this solution in should be then elaborated how operators handle
+  qualifiers. A natural way would be to accumulate qualifiers from
+  operands with different qualifiers.
 </p>
-
 <p>
-  How to drop qualifiers for type generic expressions?
+  An important issue with this approach is the rapidly increasing
+  number of cases, in particular 16 for pointer types. To keep the
+  number of cases low when programming with type generic expressions
+  we would need a <em>generic</em> tool for the following:
 </p>
-
+<p>
+  How to drop qualifiers for type generic expressions? Or
+  alternatively add all qualifiers?
+</p>
+<p>
+  For arithmetic types with base type other
+  than <code>_Bool</code>, <code>char</code>, or <code>short</code>
+  something like the following would be useful:
+</p>
+<pre>
++(X)                                 // if unary plus drops all qualifiers
+(X) + (int const volatile _Atomic)0  // if qualifiers accumulate
+</pre>
+This strategy wouldn't work for the narrow types, because the are
+promoted to <code>signed</code> or <code>unsigned</code>.
 
 <h3>Require the implementation to provide a feature test macro</h3>
 <p>
@@ -266,10 +284,13 @@ F(A);
 
 <p>
   This solution seems the one that is chosen by clang. It is probably
-  the easiest to specify. Some clarification should be added to the
-  standard, though.
+  the easiest to specify. As mentioned above it has the disadvantage
+  that the two very similar expressions <code>(int const){0}</code>
+  and <code>(int const)0</code> have different types.
 </p>
-
+<p>
+  Some clarification should be added to the standard, though.
+</p>
 <p class="alternative">
   6.5.2.2, add after p1: The type of a function call is the return
   type of the function without any qualifiers.
@@ -286,13 +307,55 @@ F(A);
   compatible.
 </p>
 
+<p>
+  <b>C11:</b> When introduced like this, this will invalidate some
+  valid C11 programs, since some type generic expression might behave
+  differently. The faster such corrigendum is adopted the less likely
+  it is that such programs exist.
+</p>
+
 <h3>Add a <code>const</code> qualifier to all types for rvalues</h3>
 
-<!-- <p> -->
-<!--   This solution seems the one that is chosen by clang. It is probably -->
-<!--   the easiest to specify. Some clarification should be added to the -->
-<!--   standard, though. -->
-<!-- </p> -->
+
+<p>
+  Analogous as in the case above it has the disadvantage that the two
+  very similar expressions <code>(int){0}</code>
+  and <code>(int)0</code> have different types.
+</p>
+<p>
+  This is my favorite solution, since it also "repairs" another issue
+  that I am unconfortable with: the problem of rvalued pointers:
+</p>
+
+<pre>
+  struct T { double a[4]; } A;
+  struct T f(void) { return (struct T){ 0 }; }
+  double g0(double* x) { return *x; }
+  ...
+  g0(f().a);
+</pre>
+
+<p>
+  Here <code>f()</code> is an rvalue of type <code>struct T</code> and
+  then <code>f().a</code> decays to
+  a <code>double*</code>. Semantically a better solution would be that
+  it decays to a <code>double const*</code> since a modification of
+  the value is not allowed (undefined behavior). Already with C99 it
+  would be clearer to declare <code>g1</code> as:
+</p>
+
+<pre>
+  double g1(double const* x) { return *x; }
+</pre>
+<p>
+  If <code>f()</code> would be of type <code>struct T const</code>,
+  <code>f().a</code> would decay to a <code>double const*</code>. Then
+  a call of <code>g0</code> would be a constraint violation
+  and <code>g1</code> would have to be used.
+</p>
+<p>
+  The necessary changes to the standard would be something like:
+</p>
 
 <p class="alternative">
   6.5.2.2, add after p1: The type of a function call is
@@ -312,6 +375,25 @@ The third addedum would be the same as in the previous case:
   6.7.63, change p15, first sentence: For two function types to be
   compatible, the unqualified versions of both return types shall be
   compatible.
+</p>
+
+<p>
+  <b>C11:</b> When introduced like this, this will invalidate some
+  valid C11 programs, since some type generic expression might behave
+  differently. The faster such corrigendum is adopted the less likely
+  it is that such programs exist.
+</p>
+
+<p>
+  <b>C99:</b> When introduced like this, this will invalidate some
+  valid C99 programs that pass rvalue pointers as presented above to
+  function parameters that are
+  not <code>const</code>-qualified. Unless for very old legacy
+  functions (from before the introduction of <code>const</code> to the
+  language) such interfaces should be able to use the
+  "correct" <code>const</code>-qualification, or they could be
+  overloaded with a type generic interface that takes care of that
+  issue.
 </p>
 
 
