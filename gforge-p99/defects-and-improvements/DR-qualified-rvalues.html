@@ -291,6 +291,24 @@ F(A);
 <p>
   Some clarification should be added to the standard, though.
 </p>
+
+<p  class="alternative">
+  6.5.1.1, modify as follows:<br />
+  EXAMPLE The <code>cbrt</code> type-generic macro could be implemented as
+  follows. Here the prefix operator <code>+</code> in the selection
+  expression ensures that lvalue conversion on arithmetic
+  types is performed such that
+  e.g lvalues of type <code>float const</code>
+  select <code>cbrtf</code> and not the default <code>cbrt</code>.
+</p>
+<pre>
+#define cbrt(X) _Generic(+(X), \
+long double: cbrtl,            \
+default: cbrt,                 \
+float: cbrtf                   \
+)(X)
+</pre>
+
 <p class="alternative">
   6.5.2.2, add after p1: The type of a function call is the return
   type of the function without any qualifiers.
@@ -356,6 +374,23 @@ F(A);
 <p>
   The necessary changes to the standard would be something like:
 </p>
+
+<p  class="alternative">
+  6.5.1.1, modify as follows:<br />
+  EXAMPLE The <code>cbrt</code> type-generic macro could be implemented as
+  follows. Here the prefix operator <code>+</code> in the selection
+  expression ensures that lvalue conversion on arithmetic
+  types is performed such that
+  e.g lvalues of type <code>float</code>
+  select <code>cbrtf</code> and not the default <code>cbrt</code>.
+</p>
+<pre>
+#define cbrt(X) _Generic(+(X), \
+long double const: cbrtl,      \
+default: cbrt,                 \
+float const: cbrtf             \
+)(X)
+</pre>
 
 <p class="alternative">
   6.5.2.2, add after p1: The type of a function call is

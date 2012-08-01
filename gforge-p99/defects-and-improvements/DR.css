@@ -10,6 +10,6 @@ th { background-color : #DDD }
 }
 .alternative {
     background-color : #FCC;
-    text-align : center;
+    text-align : left;
 }
 pre , code { background-color : #EEE; text-style : sans-serif }
