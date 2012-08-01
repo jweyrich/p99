@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link href="DR.css" rel="stylesheet" type="text/css"/>
+<title>Feature Request: unary <code>+</code> for rvalue conversion of
+  arbitrary types</title>
+</head>
+<body>
+<h1>Feature Request: unary <code>+</code> for rvalue conversion of
+  arbitrary types</h1>
+
+<h2>Problem statement</h2>
+
+<p>
+  To use generic selection primary expressions comfortably it would
+  be convenient to have a possibility to perform some sort of lvalue
+  to rvalue conversion to the controlling expression:
+</p>
+<pre>
+#define cbrt(X)        \
+_Generic(+(X),         \
+  long double: cbrtl,  \
+  default: cbrt,       \
+  float: cbrtf         \
+)(X)
+</pre>
+
+<p>
+  Under the assumption that types of rvalues are always unqualified,
+  here the prefix operator <code>+</code> in the selection expression
+  ensures that lvalue conversion on arithmetic types is performed such
+  that e.g lvalues of type <code>float const</code>
+  select <code>cbrtf</code> and not the
+  default <code>cbrt</code>. Otherwise, for the same effect, the
+  generic association list would have to list all 8 qualified version
+  of <code>long double</code> and <code>float</code>, respectively.
+</p>
+
+<p>
+  For programming with type generic expressions it would be convenient
+  to have a generic tool that allows to drop qualifiers in same spirit
+  as for <code>cbrt</code> above:
+</p>
+<pre>
+#define LOCK(X)           \
+_Generic(UNQUALIFY(*(X)), \
+  mtx_t: mtx_lock,        \
+  sem_t: sem_wait,        \
+)(X)
+</pre>
+
+<p>
+  In the current version of the standard there is no generic tool that
+  would transform an lvalue of any type into an rvalue expression of
+  the same type or that would allow to drop all qualifiers from the
+  type. There are only partial solutions:
+</p>
+<ul>
+  <li>
+    for arithmetic types other
+    than <code>_Bool</code>, <code>char</code>, <code>short</code>:
+    apply unary <code>+</code>
+  </li>
+  <li>
+    for scalar types other
+    than <code>_Bool</code>, <code>char</code>, <code>short</code>:
+    apply binary <code>+</code> or <code>-</code> with other
+    operand <code>0</code>.
+  </li>
+</ul>
+
+<p>
+  The later form can be used to cook a generic expression that results
+  in an appropriate rvalue for all scalar types.
+</p>
+
+<pre>
+#define UNQUALIFY_SCALAR(X) _Generic((X),              \
+  default: (X)+0,                                      \
+  _Bool: (_Bool)(X),                                   \
+  _Bool const: (_Bool)(X),                             \
+  _Bool volatile: (_Bool)(X),                          \
+  _Bool const volatile: (_Bool)(X),                    \
+  _Bool _Atomic: (_Bool)(X),                           \
+  _Bool _Atomic const: (_Bool)(X),                     \
+  _Bool _Atomic volatile: (_Bool)(X),                  \
+  _Bool _Atomic const volatile: (_Bool)(X),            \
+   ... same expansion for the other narrow types ...   \
+)
+</pre>
+
+<p>
+  This expression has to cover all possible combinations of qualifiers
+  for all the 6 narrow integer types, that is in total 48 special
+  cases.
+</p>
+
+<p>
+  For our example of <code>LOCK</code> currently no generic
+  implementation of an <code>UNQUALIFY</code> macro is known. So
+  instead to implement <code>LOCK</code> 16 different cases would be
+  needed in the selection list. Coding such type generic expression
+  systematically in production code is difficult to maintain and such
+  enumerative solutions observably increase compilation times.
+</p>
+
+
+<h2>Proposed modification</h2>
+
+<p>
+Replace the beginning of 6.5.3.3 by the following
+</p>
+
+<p  class="alternative">
+6.5.3.3 Unary arithmetic operators
+<br />
+Constraints
+<br />
+The operand of the unary <code>-</code> operator shall have arithmetic
+type; of the <code>~</code> operator, integer type; of
+the <code>!</code>  operator, scalar type.
+<p>
+
+<p>
+  Add a new section for the unary <code>+</code> operator:
+</p>
+
+<p  class="alternative">
+6.5.3.X The unary <code>+</code> operator
+<br />
+Semantics
+<br />
+
+If the operand of the unary <code>+</code> operator is not of an array
+type, the result shall be the value of its operand with a result type
+that is the unqualified type of its operand. If it is of array type,
+the operand shall first undergo an array to pointer conversion
+(6.3.2.1p3).
+</p>
+
+<p>
+  <b>C all previous standards:</b> For expression that use the
+  unary <code>+</code> operator outside type generic expression this
+  modification slightly changes the order in which type promotion is
+  effected in the abstract machine. Whereas before that modification a
+  promotion (e.g of <code>short</code> to <code>int</code>) would have
+  occurred prior to an application of the operator, with this
+  modification the promotion would only be performed on the result of
+  the <code>+</code> operator once it is itself the operand of another
+  operator. This difference is not be observable by any program,
+  unless it uses a <code>_Generic</code> primary expression.
+</p>
+
+<p>
+  <b>C11:</b> When used in <code>_Generic</code> primary expressions
+  the difference would become observable by a program. But expressions
+  that knowingly use a <code>+</code> operator, e.g to force a type
+  promotion, should be marginal.
+</p>
+
+</body>
