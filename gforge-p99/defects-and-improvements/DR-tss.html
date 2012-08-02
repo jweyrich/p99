@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link href="DR.css" rel="stylesheet" type="text/css"/>
+<title>Defect Report relative to n1570: underspecification of <code>tss_t</code></title>
+</head>
+<body>
+<h1>Defect Report relative to n1570: underspecification of <code>tss_t</code></h1>
+
+<h2>Problem statement</h2>
+
+
+<p>
+  Section 7.26.6 &#8220;Thread-specific storage functions&#8221; of
+  C11 is severely underspecified since it uses terms that are not
+  introduced (so far) in the context of C. This is really a pity,
+  since POSIX also has <code>pthread_key_t</code> that is completely
+  feature equivalent and for which the specification is much more
+  complete.
+</p>
+
+<p>
+  Jacob Navia had observed that at several occasions
+  in <code>comp.std.c</code> but it seems that he had not got enough
+  attention such that this had made it in a defect report.
+</p>
+
+<p class="quote">
+  The <code>tss_create</code> function creates a thread-specific
+  storage pointer with destructor <code>dtor</code>, which may be
+  null.
+</p>
+
+<p>
+  The main problem is that it is nowhere explained/defined what a
+  destructor should be.
+</p>
+
+<h2>Proposed solution</h2>
+
+<p>I think several paragraphs should be added after the one above:</p>
+
+<p class="alternative">
+  The effect is that for each thread that has the thread specific
+  storage corresponding to <code>key</code> set to a
+  value <code>x</code> that is not null, the destructor
+  function <code>*dtor</code> is called with <code>dtor(x)</code>
+  before the thread exits.
+</p>
+
+<p class="alternative">
+  This call to <code>dtor</code> is executed in the context of the
+  same thread; it is sequenced after the <code>return</code> statement
+  or the call to <code>thrd_exit</code> that terminates the thread and
+  before any return from <code>thrd_join</code> of a waiter for this
+  same thread. If there are several thread specific storages for the
+  same thread their destructor functions are called in an unspecific
+  order but with a sequence point between each of these function
+  calls.
+</p>
+
+<p class="alternative">
+  If a destructor function for <code>key</code> issues calls
+  to <code>tss_set</code>, <code>tss_get</code>
+  or <code>tss_delete</code> with the same <code>key</code> the
+  behavior is undefined.<br />
+  <code>tss_set</code> can be used to set the value of a thread
+  specific storage for a different key <code>key2</code> that had not
+  been set before or that has been processed with a call to the
+  corresponding destructor.
+</p>
+
+
+<p>
+  By that the set of thread specific storages for a given thread may
+  change during the execution of the corresponding destructors.
+</p>
+
+<p class="alternative">
+  If after processing all tss that are active at
+  the <code>return</code> of the thread function or at the end
+  of <code>thrd_exit</code> there are still tss that are active the
+  procedure of calling destructors is iterated. An implementation may
+  bind the maximum number such of supplementary iterations
+  by <code>TSS_DTOR_ITERATIONS</code>.
+</p>
+
+<p>
+  A second problem is that there are two functionalities that are
+  easily mixed up and which interrelationship should be clarified: the
+  destructor that is called (let us suppose this) at exit of a thread,
+  and <code>tss_delete</code> that deletes a thread specific storage
+  for all running threads. I think something like the following should
+  be added in 7.26.6.2 after para 2:
+</p>
+
+<p class="alternative">
+  The deletion of <code>key</code> will not change the observable
+  behavior of any of the active threads. If <code>tss_delete</code> is
+  called for <code>key</code> and there is a thread that has a
+  non-null value for <code>key</code> that has passed a
+  terminating <code>return</code> statement or call
+  to <code>thrd_exit</code> but not yet finished the processing of all
+  its tss destructors, the behavior is undefined.
+</p>
+
+</body>
