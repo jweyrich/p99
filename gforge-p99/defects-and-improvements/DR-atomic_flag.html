@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link href="DR.css" rel="stylesheet" type="text/css"/>
+<title>Defect Report relative to n1570: initialization of atomic
+  types, including <code>atomic_flag</code></title>
+</head>
+<body>
+<h1>Defect Report relative to n1570: initialization of atomic types,
+  including <code>atomic_flag</code></h1>
+
+<h2>Problem statement</h2>
+
+<p>
+  C11 expresses the intention to have <code>atomic_flag</code> as a primitive that
+  should allow to emulate all other atomic types and
+  operations, <em>7.17.8 p3</em> in a note says:
+</p>
+
+<p class="quote">
+  The remaining types can be emulated with <code>atomic_flag</code>,
+  though with less than ideal properties.
+</p>
+
+<p>
+  This is a very good concept as far as I can see, but I have one
+  problem to achieve this, initialization. The phrasing for atomic
+  types in general and for <code>atomic_flag</code> are different.
+  For <code>atomic_flag</code> we have:
+</p>
+
+<p class="quote">
+  An atomic_flag that is not explicitly initialized with
+  <code>ATOMIC_FLAG_INIT</code> is initially in an indeterminate
+  state.
+</p>
+
+<p>For other atomic types we have:</p>
+
+<p class="quote">
+  An atomic object with automatic storage duration that is not
+  explicitly initialized using <code>ATOMIC_VAR_INIT</code> is
+  initially in an indeterminate state; however, the default (zero)
+  initialization for objects with static or thread-local storage
+  duration is guaranteed to produce a valid state.
+</p>
+
+<p>
+  This has two problems. First, the mentioned valid state (in contrast
+  to the indeterminate state mentioned before) is thus a determinate
+  state, but the value that is stored is not mentioned
+  explicitly. Everything suggests that this would be the same value as
+  for initializing a variable of the underlying base type
+  by <code>0</code>. But I think it would have helped to make that
+  explicit.</p>
+
+<p>
+  The second, more difficult problem is how to emulate an atomic type
+  with <code>atomic_flag</code> during initialization. Say we emulate
+  with something like
+</p>
+
+<pre class="brush: cpp;">
+struct atomic_int_struct {
+  atomic_flag cat;
+  int val;
+};
+</pre>
+<p>
+  Then the <code>ATOMIC_VAR_INIT</code> macro could simply look
+  like:
+</p>
+<pre class="brush: cpp;">
+#define ATOMIC_VAR_INIT(V) { .cat = ATOMIC_FLAG_INIT, .val = (V), }
+</pre>
+<p>
+  But if I&#8217;d have a variable of <code>atomic_int_struct</code>
+  with static storage duration
+</p>
+<pre class="brush: cpp;">
+struct atomic_int_struct v;
+</pre>
+<p>
+  is supposed to do the right thing, namely to guarantee
+  that <code>v</code> has a valid state at startup, so it should
+  contain a <code>0</code> for <code>.val</code>,
+  and <code>.cat</code> must be in a determinate state. Since all
+  atomic operations should work without problems on <code>v</code>,
+  the state of <code>.cat</code> can&#8217;t be anything else than
+  &#8220;clear&#8221;.
+</p>
+<p>
+  Now looking into the possible implementations
+  of <code>atomic_flag</code> in assembler I didn&#8217;t yet meet a
+  processor where the &#8220;clear&#8221; state would not be naturally
+  represented by an all <code>0</code> value. So I guess in any
+  reasonable implementation we would just have
+</p>
+<pre class="brush: cpp;">
+#define ATOMIC_FLAG_INIT { 0 }
+</pre>
+<p>(or some equivalent formulation.)</p>
+<p>
+  If this is so, why <code>ATOMIC_FLAG_INIT</code> at all? Why not
+  phrasing the same as for the other atomic types
+</p>
+
+<h2>Proposed solution</h2>
+
+<p>
+  Eliminate the mention of <code>ATOMIC_FLAG_INIT</code> in 7.17.1p3,
+  B.16 and the index.
+</p>
+
+<p>
+  Proposed change for the initialization of <code>atomic_flag</code>,
+  7.17.8p4:
+</p>
+
+<p class="alternative">
+  The default initializer <code>{ 0 }</code> may be used to initialize
+  an <code>atomic_flag</code> to the clear
+  state. An <code>atomic_flag</code> object with automatic storage
+  duration that is not explicitly initialized using <code>{ 0 }</code>
+  is initially in an indeterminate state; <em>however, the default
+    (zero) initialization for objects with static or thread-local
+    storage duration initializes an <code>atomic_flag</code> to the
+    clear state.</em>
+  <br />
+  EXAMPLE<br />
+  <code>atomic_flag guard = { 0 };</code>
+</p>
+
+<p>Proposed change for the initialization of atomic objects, 7.17.2.1p2:</p>
+<p class="alternative">
+  An atomic object with automatic storage duration that is not
+  explicitly initialized using <code>ATOMIC_VAR_INIT</code> is
+  initially in an indeterminate state; however, the default (zero)
+  initialization for objects with static or thread-local storage
+  duration is guaranteed to produce a valid state that corresponds to
+  the value of a zero initialized object of the unqualified base
+  type.
+  <br />
+  EXAMPLE All three of the following objects initially have an
+  observable value of <code>0</code>.<br />
+  <code>_Atomic(unsigned) A = { 0 };</code><br />
+  <code>_Atomic(unsigned) B = ATOMIC_VAR_INIT(0u);</code><br />
+  <code>static _Atomic(unsigned) C;</code>
+</p>
+
+<hr />
+<author>Author: Jens Gustedt, INRIA, 2012</author>
+</body>

@@ -6,10 +6,18 @@ th { background-color : #DDD }
 .optional { background-color : #070 }
 .quote {
     background-color : #FFD;
-    text-align : center;
+    text-align : left;
+    margin : 0em 2em;
 }
 .alternative {
     background-color : #FCC;
     text-align : left;
+    margin : 0em 2em;
 }
-pre , code { background-color : #EEE; text-style : sans-serif }
+pre {
+    background-color : #EEE;
+    text-style : sans-serif;
+    margin : 0em 2em;
+}
+
+code { background-color : #EEE; text-style : sans-serif }
