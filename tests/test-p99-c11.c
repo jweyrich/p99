@@ -96,7 +96,7 @@ thread_local int ret = EXIT_SUCCESS;
 unsigned globA = P99_GENERIC(globA, ,(unsigned, 1));   // should work and not give diagnostic
 //unsigned globB = P99_GENERIC(globB, ,(signed, 1));     // shouldn't work and give a diagnostic
 
-int main(void) {
+int main(int argc, char* argv[]) {
   print_attribute(deprecated);
   print_attribute(weak);
   print_attribute(weakref);
@@ -196,5 +196,12 @@ int main(void) {
          P99_OBJLEN(Arsc, signed char, unsigned),
          P99_OBJLEN(&Arsc[0], signed char, unsigned)
         );
+  char volatile aChar = 'a';
+  printf("print generic from float %s, long double complex %s, int %s, _Bool %s and char %s\n",
+         P99_FORMAT(5.3f, 1),
+         P99_FORMAT(CMPLX(54, 1E-181)),
+         P99_FORMAT(argc),
+         P99_FORMAT((bool)(argc > 1), 2),
+         P99_FORMAT(aChar));
   return ret;
 }

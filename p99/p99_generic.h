@@ -1054,5 +1054,159 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJLEN, 3)
 #define P99_OBJLEN(X, ...) (P99_OBJSIZE(X, __VA_ARGS__)/(sizeof (X)[0]))
 #endif
 
+#define P00_SPRINT_DEFINE(T, ...)                                       \
+p99_inline                                                              \
+char const* P99_PASTE2(p00_sprint_, T)(T p00_val, char* p00_str, unsigned p00_form) { \
+  enum { p00_len = P99_NARG(__VA_ARGS__), };                            \
+  static char const*const p00_format[p00_len] = { __VA_ARGS__ };        \
+  char const*const p00_f = (p00_form < p00_len)                         \
+    ? p00_format[p00_form]                                              \
+    : p00_format[0];                                                    \
+  sprintf(p00_str, p00_f, p00_val);                                     \
+  return p00_str;                                                       \
+}                                                                       \
+P99_MACRO_END(P00_SPRINT_DEFINE, T)
+
+P00_SPRINT_DEFINE(char, "%c");
+P00_SPRINT_DEFINE(schar, "%hhd");
+P00_SPRINT_DEFINE(uchar, "%hhu", "%#hhX", "%#hho");
+P00_SPRINT_DEFINE(short, "%hd");
+P00_SPRINT_DEFINE(ushort, "%hu", "%#hX", "%#ho");
+P00_SPRINT_DEFINE(int, "%d");
+P00_SPRINT_DEFINE(unsigned, "%u", "%#X", "%#o");
+P00_SPRINT_DEFINE(long, "%ld");
+P00_SPRINT_DEFINE(ulong, "%lu", "%#lX", "%#lo");
+P00_SPRINT_DEFINE(llong, "%lld");
+P00_SPRINT_DEFINE(ullong, "%llu", "%#llX", "%#llo");
+P00_SPRINT_DEFINE(float, "%g", "%a");
+P00_SPRINT_DEFINE(double, "%g", "%a");
+P00_SPRINT_DEFINE(ldouble, "%Lg", "%La");
+
+p99_inline
+char const* p00_sprint__Bool(_Bool p00_val, char* p00_str, unsigned p00_form) {
+  char const*const p00_format[] = {
+    "false", "true",
+    "0", "1",
+    "f", "t",
+  };
+  register unsigned const p00_len = P99_ALEN(p00_format) / 2;
+  if (p00_form >= p00_len) p00_form = 0;
+  return p00_format[p00_form * 2 + p00_val];
+}
+
+p99_inline
+char const* p00_sprint_charp(char const* p00_val, char* p00_str, unsigned p00_form) {
+  return p00_val;
+}
+
+p99_inline
+char const* p00_sprint_voidp(void * p00_val, char* p00_str, unsigned p00_form) {
+  sprintf(p00_str, "%p", p00_val);
+  return p00_str;
+}
+
+#ifndef __STDC_NO_COMPLEX__
+p99_inline
+char const* p00_sprint_cfloat(cfloat p00_val, char* p00_str, unsigned p00_form) {
+  char const*const p00_format[] = { "(%g, %g)", "(%a, %a)", };
+  register unsigned const p00_len = P99_ALEN(p00_format);
+  char const*const p00_f = (p00_form < p00_len)
+    ? p00_format[p00_form]
+    : p00_format[0];
+  sprintf(p00_str, p00_f, creal(p00_val), cimag(p00_val));
+  return p00_str;
+}
+
+p99_inline
+char const* p00_sprint_cdouble(cdouble p00_val, char* p00_str, unsigned p00_form) {
+  char const*const p00_format[] = { "(%g, %g)", "(%a, %a)", };
+  register unsigned const p00_len = P99_ALEN(p00_format);
+  char const*const p00_f = (p00_form < p00_len)
+    ? p00_format[p00_form]
+    : p00_format[0];
+  sprintf(p00_str, p00_f, creal(p00_val), cimag(p00_val));
+  return p00_str;
+}
+
+p99_inline
+char const* p00_sprint_cldouble(cldouble p00_val, char* p00_str, unsigned p00_form) {
+  char const*const p00_format[] = { "(%Lg, %Lg)", "(%La, %La)", };
+  register unsigned const p00_len = P99_ALEN(p00_format);
+  char const*const p00_f = (p00_form < p00_len)
+    ? p00_format[p00_form]
+    : p00_format[0];
+  sprintf(p00_str, p00_f, creal(p00_val), cimag(p00_val));
+  return p00_str;
+}
+#endif
+
+#define P00_SPRINT(NAME, T, I)                          \
+  (T, P99_PASTE2(p00_sprint_, T)),                      \
+  (T const, P99_PASTE2(p00_sprint_, T)),                \
+  (T volatile, P99_PASTE2(p00_sprint_, T)),             \
+  (T const volatile, P99_PASTE2(p00_sprint_, T))
+
+
+#define P00_SPRINT_LIST_(...)                                               \
+  P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_SPRINT, __VA_ARGS__)
+
+#define P00_SPRINT_LIST() P00_SPRINT_LIST_(P99_STD_ARITHMETIC_TYPES)
+
+#define P00_SPRINT_FORMAT_(X, A, ...)                                   \
+P99_GENERIC((X),                                                        \
+            p00_sprint_voidp,                                           \
+            (char*, p00_sprint_charp),                                  \
+            (char const*, p00_sprint_charp),                            \
+            (char*const, p00_sprint_charp),                             \
+            (char const*const, p00_sprint_charp),                       \
+            (char*volatile, p00_sprint_charp),                          \
+            (char const*volatile, p00_sprint_charp),                    \
+            (char*const volatile, p00_sprint_charp),                    \
+            (char const*const volatile, p00_sprint_charp),              \
+            (char*restrict, p00_sprint_charp),                          \
+            (char const*restrict, p00_sprint_charp),                    \
+            (char*const restrict, p00_sprint_charp),                    \
+            (char const*const restrict, p00_sprint_charp),              \
+            (char*volatile restrict, p00_sprint_charp),                 \
+            (char const*volatile restrict, p00_sprint_charp),           \
+            (char*const volatile restrict, p00_sprint_charp),           \
+            (char const*const volatile restrict, p00_sprint_charp),     \
+            __VA_ARGS__)((X), (char[64]){ 0 }, (A))
+
+#define P00_SPRINT_FORMAT(...) P00_SPRINT_FORMAT_(__VA_ARGS__)
+
+/**
+ ** @return a string with a printable representation of the first
+ ** argument. This string is local to the function and should not be
+ ** exported from there.
+ **
+ ** Only use this with the @c printf family of functions as follows:
+ **
+ ** @code
+ ** printf("My values are %s and %s\n", P99_FORMAT(a), P99_FORMAT(b));
+ ** @endcode
+ **
+ ** that is the only @c printf format you should use yourself is "%s"
+ ** for the position and then ::P99_FORMAT is doing the rest, namely
+ ** prints the argument according to its type.
+ **
+ ** @remark This supports all scalar types, including @c _Bool and the
+ ** complex types (if there are any).
+ **
+ ** @remark For many of the types there are alternate output formats
+ ** that can be chosen by adding a second parameter (default 0). The
+ ** alternate formats are hexadecimal (for unsigned and floating
+ ** types) and additionally octal representations (for unsigned
+ ** types).
+ **
+ ** @pre This uses ::P99_GENERIC, so obviously it will only work if
+ ** the rudimentary support for type generic macros is available.
+ **/
+#define P99_FORMAT(...)                         \
+P00_SPRINT_FORMAT                               \
+ (P99_IF_LT(P99_NARG(__VA_ARGS__), 2)           \
+  (__VA_ARGS__, 0)                              \
+  (__VA_ARGS__),                                \
+  P00_SPRINT_LIST())
 
 #endif
