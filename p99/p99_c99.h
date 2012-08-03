@@ -61,5 +61,37 @@
 #  ifndef __STDC_NO_THREADS__
 #   include <threads.h>
 #  endif
+# else
+#  ifndef __STDC_NO_COMPLEX__
+/* The CMPLX macros expand to an expression of the specified complex
+ * type, with the real part having the (converted) value of x and the
+ * imaginary part having the (converted) value of y. The resulting
+ * expression shall be suitable for use as an initializer for an
+ * object with static or thread storage duration, provided both
+ * arguments are likewise suitable.
+ */
+#   ifndef CMPLXF
+#    define CMPLXF(A, B) ((float _Complex)((float)(A) + _Complex_I * (float)(B)))
+#   endif
+#   ifndef CMPLX
+#    define CMPLX(A, B) ((double _Complex)((double)(A) + _Complex_I * (double)(B)))
+#   endif
+#   ifndef CMPLXL
+#    define CMPLXL(A, B) ((long double _Complex)((long double)(A) + _Complex_I * (long double)(B)))
+#   endif
+/* Each complex type has the same representation and alignment
+ * requirements as an array type containing exactly two elements of
+ * the corresponding real type; the first element is equal to the real
+ * part, and the second element to the imaginary part, of the complex
+ * number. */
+#   define P00_COMPLEX_PARTIAL(T, A, I) ((T)((*(T const(*)[2])(&(A)))[I]))
+p99_inline float p99_crealf(float _Complex p00_c) { return P00_COMPLEX_PARTIAL(float, p00_c, 0); }
+p99_inline double p99_creal(double _Complex p00_c) { return P00_COMPLEX_PARTIAL(double, p00_c, 0); }
+p99_inline long double p99_creall(long double _Complex p00_c) { return P00_COMPLEX_PARTIAL(long double, p00_c, 0); }
+p99_inline float p99_cimagf(float _Complex p00_c) { return P00_COMPLEX_PARTIAL(float, p00_c, 1); }
+p99_inline double p99_cimag(double _Complex p00_c) { return P00_COMPLEX_PARTIAL(double, p00_c, 1); }
+p99_inline long double p99_cimagl(long double _Complex p00_c) { return P00_COMPLEX_PARTIAL(long double, p00_c, 1); }
+#   undef P00_COMPLEX_PARTIAL
+#  endif
 # endif
 #endif      /* !P99_C99_H_ */
