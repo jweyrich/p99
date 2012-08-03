@@ -138,6 +138,43 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 3)
 
 #endif
 
+/* A first example for the usefulness of type generic
+   expressions. Implement creal and cimag type generic functions
+   ourselves. */
+#ifndef __STDC_NO_COMPLEX__
+# ifdef creal
+#  undef creal
+# endif
+# define creal(A)                                               \
+P99_GENERIC((A),                                                \
+            p99_creall,                                         \
+            (float _Complex, p99_crealf),                       \
+            (float _Complex const, p99_crealf),                 \
+            (float _Complex volatile, p99_crealf),              \
+            (float _Complex const volatile, p99_creal),         \
+            (double _Complex, p99_creal),                       \
+            (double _Complex const, p99_creal),                 \
+            (double _Complex volatile, p99_creal),              \
+            (double _Complex const volatile, p99_creal))        \
+ (A)
+
+# ifdef cimag
+#  undef cimag
+# endif
+# define cimag(A)                                               \
+P99_GENERIC((A),                                                \
+            p99_cimagl,                                         \
+            (float _Complex, p99_cimagf),                       \
+            (float _Complex const, p99_cimagf),                 \
+            (float _Complex volatile, p99_cimagf),              \
+            (float _Complex const volatile, p99_cimag),         \
+            (double _Complex, p99_cimag),                       \
+            (double _Complex const, p99_cimag),                 \
+            (double _Complex volatile, p99_cimag),              \
+            (double _Complex const volatile, p99_cimag))        \
+ (A)
+#endif
+
 #define P00_CHAR_SIGNED (CHAR_MAX < UCHAR_MAX)
 
 #define P00_RVALUE(X) (1 ? (X) : (X))
