@@ -1140,6 +1140,99 @@ char const* p00_sprint_cldouble(cldouble p00_val, char* p00_str, unsigned p00_fo
 }
 #endif
 
+
+#ifdef p99x_uintmax
+#define UINT64_D19 UINT64_C(10000000000000000000)
+p99_inline
+void p00_sprint_p99x_uintmax_u_ite(p99x_uintmax p00_val, char* p00_str) {
+  uint64_t p00_ar[2*sizeof(p99x_uintmax)/sizeof(uint64_t)];
+  size_t p00_pos = 0;
+  for (; p00_val >= UINT64_D19; ++p00_pos) {
+    /* These operations are expensive, so avoid them whenever we
+       can. */
+    p00_ar[p00_pos] = (uint64_t)(p00_val % UINT64_D19);
+    p00_val /= UINT64_D19;
+  }
+  p00_str += sprintf(p00_str, "%" PRIu64, (uint64_t)p00_val);
+  while (p00_pos) {
+    --p00_pos;
+    p00_str += sprintf(p00_str, "%019" PRIu64, p00_ar[p00_pos]);
+  }
+}
+p99_inline
+char* p00_sprint_p99x_uintmax_u(p99x_uintmax p00_val, char* p00_str) {
+  p00_sprint_p99x_uintmax_u_ite(p00_val, p00_str);
+  return p00_str;
+}
+#define UINT64_O21 (~(UINT64_C(1)<<63))
+p99_inline
+void p00_sprint_p99x_uintmax_o_ite(p99x_uintmax p00_val, char* p00_str) {
+  uint64_t p00_ar[3*sizeof(p99x_uintmax)/sizeof(uint64_t)];
+  size_t p00_pos = 0;
+  for (;;) {
+    /* Mask and shift in that case are less expensive. */
+    p00_ar[p00_pos] = ((uint64_t)p00_val) & UINT64_O21;
+    p00_val >>= 63;
+    if (!p00_val) break;
+    ++p00_pos;
+  }
+  p00_str += sprintf(p00_str, "%#" PRIo64, p00_ar[p00_pos]);
+  while (p00_pos) {
+    --p00_pos;
+    p00_str += sprintf(p00_str, "%021" PRIo64, p00_ar[p00_pos]);
+  }
+}
+p99_inline
+char* p00_sprint_p99x_uintmax_o(p99x_uintmax p00_val, char* p00_str) {
+  p00_sprint_p99x_uintmax_o_ite(p00_val, p00_str);
+  return p00_str;
+}
+p99_inline
+void p00_sprint_p99x_uintmax_X_ite(p99x_uintmax p00_val, char* p00_str) {
+  uint64_t p00_ar[2*sizeof(p99x_uintmax)/sizeof(uint64_t)];
+  size_t p00_pos = 0;
+  for (;;) {
+    /* Mask and shift in that case are less expensive. */
+    p00_ar[p00_pos] = (uint64_t)p00_val;
+    p00_val >>= 64;
+    if (!p00_val) break;
+    ++p00_pos;
+  }
+  p00_str += sprintf(p00_str, "%#" PRIX64, p00_ar[p00_pos]);
+  while (p00_pos) {
+    --p00_pos;
+    p00_str += sprintf(p00_str, "%016" PRIX64, p00_ar[p00_pos]);
+  }
+}
+p99_inline
+char const* p00_sprint_p99x_uintmax_X(p99x_uintmax p00_val, char* p00_str) {
+  p00_sprint_p99x_uintmax_X_ite(p00_val, p00_str);
+  return p00_str;
+}
+
+p99_inline
+char const* p00_sprint_p99x_intmax(p99x_intmax p00_val, char* p00_str, unsigned p00_form) {
+  if (p00_val < 0) {
+    p00_str[0] = '-';
+    p00_sprint_p99x_uintmax_u(-p00_val, p00_str + 1);
+  } else {
+    p00_sprint_p99x_uintmax_u(p00_val, p00_str);
+  }
+  return p00_str;
+}
+
+p99_inline
+char const* p00_sprint_p99x_uintmax(p99x_uintmax p00_val, char* p00_str, unsigned p00_form) {
+  switch (p00_form) {
+  default: return p00_sprint_p99x_uintmax_u(p00_val, p00_str);
+  case 1: return p00_sprint_p99x_uintmax_X(p00_val, p00_str);
+  case 2: return p00_sprint_p99x_uintmax_o(p00_val, p00_str);
+  }
+}
+#endif
+
+
+
 #define P00_SPRINT(NAME, T, I)                          \
   (T, P99_PASTE2(p00_sprint_, T)),                      \
   (T const, P99_PASTE2(p00_sprint_, T)),                \
@@ -1150,7 +1243,7 @@ char const* p00_sprint_cldouble(cldouble p00_val, char* p00_str, unsigned p00_fo
 #define P00_SPRINT_LIST_(...)                                               \
   P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_SPRINT, __VA_ARGS__)
 
-#define P00_SPRINT_LIST() P00_SPRINT_LIST_(P99_STD_ARITHMETIC_TYPES)
+#define P00_SPRINT_LIST() P00_SPRINT_LIST_(P99_EXT_ARITHMETIC_TYPES)
 
 #define P00_SPRINT_FORMAT_(X, A, ...)                                   \
 P99_GENERIC((X),                                                        \
