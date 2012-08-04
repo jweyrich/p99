@@ -1171,7 +1171,12 @@ P99_GENERIC((X),                                                        \
             (char const*volatile restrict, p00_sprint_charp),           \
             (char*const volatile restrict, p00_sprint_charp),           \
             (char const*const volatile restrict, p00_sprint_charp),     \
-            __VA_ARGS__)((X), (char[64]){ 0 }, (A))
+            __VA_ARGS__)((X),                                           \
+                         /* be sure not to have an array for the sizeof */ \
+                         /* times a rough estimate for octal conversion */ \
+                         /* plus a rough offset for floating points */  \
+                         (char[(sizeof(X+0)*22+64)/8]){ 0 },              \
+                         (A))
 
 #define P00_SPRINT_FORMAT(...) P00_SPRINT_FORMAT_(__VA_ARGS__)
 
