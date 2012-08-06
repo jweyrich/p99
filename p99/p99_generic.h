@@ -145,33 +145,33 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 3)
 # ifdef creal
 #  undef creal
 # endif
-# define creal(A)                                               \
-P99_GENERIC((A),                                                \
-            p99_creall,                                         \
-            (float _Complex, p99_crealf),                       \
-            (float _Complex const, p99_crealf),                 \
-            (float _Complex volatile, p99_crealf),              \
-            (float _Complex const volatile, p99_creal),         \
-            (double _Complex, p99_creal),                       \
-            (double _Complex const, p99_creal),                 \
-            (double _Complex volatile, p99_creal),              \
-            (double _Complex const volatile, p99_creal))        \
+# define creal(A)                                              \
+P99_GENERIC((A),                                               \
+            p99_creall,                                        \
+            (float _Complex, p99_crealf),                      \
+            (float _Complex const, p99_crealf),                \
+            (float _Complex volatile, p99_crealf),             \
+            (float _Complex const volatile, p99_creal),        \
+            (double _Complex, p99_creal),                      \
+            (double _Complex const, p99_creal),                \
+            (double _Complex volatile, p99_creal),             \
+            (double _Complex const volatile, p99_creal))       \
  (A)
 
 # ifdef cimag
 #  undef cimag
 # endif
-# define cimag(A)                                               \
-P99_GENERIC((A),                                                \
-            p99_cimagl,                                         \
-            (float _Complex, p99_cimagf),                       \
-            (float _Complex const, p99_cimagf),                 \
-            (float _Complex volatile, p99_cimagf),              \
-            (float _Complex const volatile, p99_cimag),         \
-            (double _Complex, p99_cimag),                       \
-            (double _Complex const, p99_cimag),                 \
-            (double _Complex volatile, p99_cimag),              \
-            (double _Complex const volatile, p99_cimag))        \
+# define cimag(A)                                              \
+P99_GENERIC((A),                                               \
+            p99_cimagl,                                        \
+            (float _Complex, p99_cimagf),                      \
+            (float _Complex const, p99_cimagf),                \
+            (float _Complex volatile, p99_cimagf),             \
+            (float _Complex const volatile, p99_cimag),        \
+            (double _Complex, p99_cimag),                      \
+            (double _Complex const, p99_cimag),                \
+            (double _Complex volatile, p99_cimag),             \
+            (double _Complex const volatile, p99_cimag))       \
  (A)
 #endif
 
@@ -211,6 +211,7 @@ P99_GENERIC((A),                                                \
   P00_SVALUE_QUAL(X, volatile),                                \
   P00_SVALUE_QUAL(X, const volatile)
 
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SVALUE, 0)
 #define P99_SVALUE(X)                                             \
 P99_GENERIC((X),                                                  \
             P00_SVALUE(X),                                        \
@@ -286,7 +287,7 @@ P99_GENERIC((X),                                                  \
 
 
 
-
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_QVALUE, 0)
 #define P99_QVALUE(X)                                          \
 P99_GENERIC((X),                                               \
             P00_RVALUE(X),                                     \
@@ -1054,17 +1055,17 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJLEN, 3)
 #define P99_OBJLEN(X, ...) (P99_OBJSIZE(X, __VA_ARGS__)/(sizeof (X)[0]))
 #endif
 
-#define P00_SPRINT_DEFINE(T, ...)                                       \
-p99_inline                                                              \
+#define P00_SPRINT_DEFINE(T, ...)                                                     \
+p99_inline                                                                            \
 char const* P99_PASTE2(p00_sprint_, T)(T p00_val, char* p00_str, unsigned p00_form) { \
-  enum { p00_len = P99_NARG(__VA_ARGS__), };                            \
-  static char const*const p00_format[p00_len] = { __VA_ARGS__ };        \
-  char const*const p00_f = (p00_form < p00_len)                         \
-    ? p00_format[p00_form]                                              \
-    : p00_format[0];                                                    \
-  sprintf(p00_str, p00_f, p00_val);                                     \
-  return p00_str;                                                       \
-}                                                                       \
+  enum { p00_len = P99_NARG(__VA_ARGS__), };                                          \
+  static char const*const p00_format[p00_len] = { __VA_ARGS__ };                      \
+  char const*const p00_f = (p00_form < p00_len)                                       \
+    ? p00_format[p00_form]                                                            \
+    : p00_format[0];                                                                  \
+  sprintf(p00_str, p00_f, p00_val);                                                   \
+  return p00_str;                                                                     \
+}                                                                                     \
 P99_MACRO_END(P00_SPRINT_DEFINE, T)
 
 P00_SPRINT_DEFINE(char, "%c");
@@ -1111,8 +1112,8 @@ char const* p00_sprint_cfloat(cfloat p00_val, char* p00_str, unsigned p00_form) 
   char const*const p00_format[] = { "(%g, %g)", "(%a, %a)", };
   register unsigned const p00_len = P99_ALEN(p00_format);
   char const*const p00_f = (p00_form < p00_len)
-    ? p00_format[p00_form]
-    : p00_format[0];
+                           ? p00_format[p00_form]
+                           : p00_format[0];
   sprintf(p00_str, p00_f, creal(p00_val), cimag(p00_val));
   return p00_str;
 }
@@ -1122,8 +1123,8 @@ char const* p00_sprint_cdouble(cdouble p00_val, char* p00_str, unsigned p00_form
   char const*const p00_format[] = { "(%g, %g)", "(%a, %a)", };
   register unsigned const p00_len = P99_ALEN(p00_format);
   char const*const p00_f = (p00_form < p00_len)
-    ? p00_format[p00_form]
-    : p00_format[0];
+                           ? p00_format[p00_form]
+                           : p00_format[0];
   sprintf(p00_str, p00_f, creal(p00_val), cimag(p00_val));
   return p00_str;
 }
@@ -1133,8 +1134,8 @@ char const* p00_sprint_cldouble(cldouble p00_val, char* p00_str, unsigned p00_fo
   char const*const p00_format[] = { "(%Lg, %Lg)", "(%La, %La)", };
   register unsigned const p00_len = P99_ALEN(p00_format);
   char const*const p00_f = (p00_form < p00_len)
-    ? p00_format[p00_form]
-    : p00_format[0];
+                           ? p00_format[p00_form]
+                           : p00_format[0];
   sprintf(p00_str, p00_f, creal(p00_val), cimag(p00_val));
   return p00_str;
 }
@@ -1233,42 +1234,42 @@ char const* p00_sprint_p99x_uintmax(p99x_uintmax p00_val, char* p00_str, unsigne
 
 
 
-#define P00_SPRINT(NAME, T, I)                          \
-  (T, P99_PASTE2(p00_sprint_, T)),                      \
-  (T const, P99_PASTE2(p00_sprint_, T)),                \
-  (T volatile, P99_PASTE2(p00_sprint_, T)),             \
+#define P00_SPRINT(NAME, T, I)                                 \
+  (T, P99_PASTE2(p00_sprint_, T)),                             \
+  (T const, P99_PASTE2(p00_sprint_, T)),                       \
+  (T volatile, P99_PASTE2(p00_sprint_, T)),                    \
   (T const volatile, P99_PASTE2(p00_sprint_, T))
 
 
-#define P00_SPRINT_LIST_(...)                                               \
+#define P00_SPRINT_LIST_(...)                                        \
   P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_SPRINT, __VA_ARGS__)
 
 #define P00_SPRINT_LIST() P00_SPRINT_LIST_(P99_EXT_ARITHMETIC_TYPES)
 
-#define P00_SPRINT_FORMAT_(X, A, ...)                                   \
-P99_GENERIC((X),                                                        \
-            p00_sprint_voidp,                                           \
-            (char*, p00_sprint_charp),                                  \
-            (char const*, p00_sprint_charp),                            \
-            (char*const, p00_sprint_charp),                             \
-            (char const*const, p00_sprint_charp),                       \
-            (char*volatile, p00_sprint_charp),                          \
-            (char const*volatile, p00_sprint_charp),                    \
-            (char*const volatile, p00_sprint_charp),                    \
-            (char const*const volatile, p00_sprint_charp),              \
-            (char*restrict, p00_sprint_charp),                          \
-            (char const*restrict, p00_sprint_charp),                    \
-            (char*const restrict, p00_sprint_charp),                    \
-            (char const*const restrict, p00_sprint_charp),              \
-            (char*volatile restrict, p00_sprint_charp),                 \
-            (char const*volatile restrict, p00_sprint_charp),           \
-            (char*const volatile restrict, p00_sprint_charp),           \
-            (char const*const volatile restrict, p00_sprint_charp),     \
-            __VA_ARGS__)((X),                                           \
+#define P00_SPRINT_FORMAT_(X, A, ...)                                      \
+P99_GENERIC((X),                                                           \
+            p00_sprint_voidp,                                              \
+            (char*, p00_sprint_charp),                                     \
+            (char const*, p00_sprint_charp),                               \
+            (char*const, p00_sprint_charp),                                \
+            (char const*const, p00_sprint_charp),                          \
+            (char*volatile, p00_sprint_charp),                             \
+            (char const*volatile, p00_sprint_charp),                       \
+            (char*const volatile, p00_sprint_charp),                       \
+            (char const*const volatile, p00_sprint_charp),                 \
+            (char*restrict, p00_sprint_charp),                             \
+            (char const*restrict, p00_sprint_charp),                       \
+            (char*const restrict, p00_sprint_charp),                       \
+            (char const*const restrict, p00_sprint_charp),                 \
+            (char*volatile restrict, p00_sprint_charp),                    \
+            (char const*volatile restrict, p00_sprint_charp),              \
+            (char*const volatile restrict, p00_sprint_charp),              \
+            (char const*const volatile restrict, p00_sprint_charp),        \
+            __VA_ARGS__)((X),                                              \
                          /* be sure not to have an array for the sizeof */ \
                          /* times a rough estimate for octal conversion */ \
-                         /* plus a rough offset for floating points */  \
-                         (char[(sizeof(X+0)*22+64)/8]){ 0 },              \
+                         /* plus a rough offset for floating points */     \
+                         (char[(sizeof(X+0)*22+64)/8]){ 0 },               \
                          (A))
 
 #define P00_SPRINT_FORMAT(...) P00_SPRINT_FORMAT_(__VA_ARGS__)
@@ -1300,11 +1301,13 @@ P99_GENERIC((X),                                                        \
  ** @pre This uses ::P99_GENERIC, so obviously it will only work if
  ** the rudimentary support for type generic macros is available.
  **/
-#define P99_FORMAT(...)                         \
-P00_SPRINT_FORMAT                               \
- (P99_IF_LT(P99_NARG(__VA_ARGS__), 2)           \
-  (__VA_ARGS__, 0)                              \
-  (__VA_ARGS__),                                \
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FORMAT, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FORMAT, 2)
+#define P99_FORMAT(...)                                        \
+P00_SPRINT_FORMAT                                              \
+ (P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
+  (__VA_ARGS__, 0)                                             \
+  (__VA_ARGS__),                                               \
   P00_SPRINT_LIST())
 
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FORMATS, 0)

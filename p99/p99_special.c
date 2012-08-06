@@ -107,6 +107,7 @@
  ** @see P99_ARE_ORDERED(OP, ...) for arguments <code>OP</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>.
  ** @see P99_ASORT(TAB, COMP) for argument <code>TAB</code>.
  ** @see P99_ATOMIC_INHERIT(T) for argument <code>T</code>.
+ ** @see P99_AVALUE(X, ...) for arguments <code>X</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_BIGFUNC(FUNC, M, ...) for argument <code>M</code>.
  ** @see P99_BIGOP(OP, M, ...) for argument <code>M</code>.
  ** @see P99_CALLOC(T, N) for argument <code>T</code>.
@@ -139,6 +140,9 @@
  ** @see P99_FMALLOC(T, F, N) for arguments <code>T</code>, <code>F</code>, <code>N</code>.
  ** @see P99_FOR(NAME, N, OP, FUNC, ...) for arguments <code>NAME</code>, <code>N</code>, <code>FUNC</code>.
  ** @see P99_FORALL(NAME, ...) for argument <code>NAME</code>.
+ ** @see P99_FORMAT(...) for argument <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_FORMATS(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_FPRINTF(F, FORMAT, ...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_FREALLOC(P, T, F, N) for arguments <code>T</code>, <code>F</code>, <code>N</code>.
  ** @see P99_FSIZEOF(T, F, N) for arguments <code>T</code>, <code>F</code>, <code>N</code>.
  ** @see P99_GENERIC(...) for argument <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[2]</code>.
@@ -183,6 +187,7 @@
  ** @see P99_NTOHS(X) for argument <code>X</code>.
  ** @see P99_OBJLEN(X, ...) for arguments <code>X</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_OBJSIZE(X, ...) for arguments <code>X</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_OVALUE(X, ...) for arguments <code>X</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_PARALLEL_DO(TYPE, VAR, ...) for argument <code>TYPE</code>.
  ** @see P99_PARALLEL_FORALL(NAME, ...) for argument <code>NAME</code>.
  ** @see P99_PLAIN_TYPE(T) for argument <code>T</code>.
@@ -190,9 +195,11 @@
  ** @see P99_POSS(N) for argument <code>N</code>.
  ** @see P99_PRAGMA_DO(PRAG, TYPE, VAR, ...) for argument <code>TYPE</code>.
  ** @see P99_PRI(xT, F, LEN) for argument <code>xT</code>.
- ** @see P99_PROTOTYPE(RT, NAME, ...) for argument <code>RT</code>, <code>__VA_ARG__[0]</code>.
+ ** @see P99_PRINTF(FORMAT, ...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_PROTOTYPE(...) for argument <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_PZERO(X, N) for argument <code>X</code>.
  ** @see P99_QSORT(TAB, NB, COMP) for argument <code>TAB</code>.
+ ** @see P99_QVALUE(X) for argument <code>X</code>.
  ** @see P99_REP(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_REPEAT(MACRO, N) for argument <code>MACRO</code>, <code>N</code>.
  ** @see P99_SEP(MACRO, ...) for argument <code>MACRO</code>.
@@ -201,13 +208,17 @@
  ** @see P99_SIGNED_REPRESENTATION(T) for argument <code>T</code>.
  ** @see P99_SIZE_CHOICE(UI, YES, NO, ...) for arguments <code>UI</code>, <code>YES</code>, <code>NO</code>.
  ** @see P99_SIZE_INDICATOR(UI, ...) for argument <code>UI</code>.
+ ** @see P99_SNPRINTF(S, N, FORMAT, ...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_SPRINTF(S, FORMAT, ...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_STRDUP(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_STRUCT_LITERAL(TYPE, ...) for arguments <code>TYPE</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_STRUCT_TYPE0(TYPE, ...) for arguments <code>TYPE</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[3]</code>.
  ** @see P99_STRUCT_TYPES(TYPE, ...) for arguments <code>TYPE</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[3]</code>.
  ** @see P99_STRUCT_UNUSE(TYPE, VAR, ...) for arguments <code>TYPE</code>, <code>VAR</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_STRUCT_USE(TYPE, VAR, ...) for arguments <code>TYPE</code>, <code>VAR</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_SVALUE(X) for argument <code>X</code>.
  ** @see P99_SWAP(_0, _1) for argument <code>_0</code>, <code>_1</code>.
+ ** @see P99_THROW_CALL_RANGE(F, ...) for arguments <code>F</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[3]</code>.
  ** @see P99_TMAX(T) for argument <code>T</code>.
  ** @see P99_TMIN(T) for argument <code>T</code>.
  ** @see P99_TOKJOIN(TOK, ...) for argument <code>TOK</code>.

@@ -182,10 +182,10 @@ void p00_throw_call_range(p00_jmp_buf0 * p00_top, errno_t p00_sign, char const* 
   p00_jmp_throw(p00_err, p00_top, p00_file, p00_context, p00_info);
 }
 
-#define P00_ALMOST_ZERO(X)                                              \
-P99_GENERIC((X),                                                        \
-            ((X) > 0 ? (X) <= FLT_MIN : -(X) >= FLT_MIN),               \
-            (float, ((X) > 0 ? (X) <= LDBL_MIN : -(X) >= LDBL_MIN)),    \
+#define P00_ALMOST_ZERO(X)                                                \
+P99_GENERIC((X),                                                          \
+            ((X) > 0 ? (X) <= FLT_MIN : -(X) >= FLT_MIN),                 \
+            (float, ((X) > 0 ? (X) <= LDBL_MIN : -(X) >= LDBL_MIN)),      \
             (long double, ((X) > 0 ? (X) <= LDBL_MIN : -(X) >= LDBL_MIN)) \
             )
 
@@ -193,26 +193,26 @@ P99_GENERIC((X),                                                        \
    p00_throw_call_range with the correct information of under- or
    overflow. We need this for compilers that don't support gcc's block
    expressions and @c typeof. */
-#define P00_THROW_CALL_RANGE(T, F, ...)                         \
-inline static                                                   \
-T P99_PASTE2(p00_throw_call_range_, T)(p00_jmp_buf0 * p00_top,  \
-                                     T p00_val,                 \
-                                     char const* p00_file,      \
-                                     char const* p00_context,   \
-                                     char const* p00_info) {    \
-  if (P99_UNLIKELY(P99_IS_ONE(p00_val, 0, __VA_ARGS__))         \
-      P99_IF_EQ_1(F)(|| P99_UNLIKELY(P00_ALMOST_ZERO(p00_val)))()       \
-      )                                                         \
-    p00_throw_call_range(p00_top,                               \
-                       /* also capture errors for floating      \
-                          types, for integer types part of this \
-                          is redundant. */                      \
-                       ((p00_val > 0)                           \
-                        ? ((p00_val >= 1) ? INT_MAX : 0)        \
-                        : (((T)-p00_val >= 1) ? INT_MIN : 0)),  \
-                       p00_file, p00_context, p00_info);        \
-  return p00_val;                                               \
-}                                                               \
+#define P00_THROW_CALL_RANGE(T, F, ...)                           \
+inline static                                                     \
+T P99_PASTE2(p00_throw_call_range_, T)(p00_jmp_buf0 * p00_top,    \
+                                     T p00_val,                   \
+                                     char const* p00_file,        \
+                                     char const* p00_context,     \
+                                     char const* p00_info) {      \
+  if (P99_UNLIKELY(P99_IS_ONE(p00_val, 0, __VA_ARGS__))           \
+      P99_IF_EQ_1(F)(|| P99_UNLIKELY(P00_ALMOST_ZERO(p00_val)))() \
+      )                                                           \
+    p00_throw_call_range(p00_top,                                 \
+                       /* also capture errors for floating        \
+                          types, for integer types part of this   \
+                          is redundant. */                        \
+                       ((p00_val > 0)                             \
+                        ? ((p00_val >= 1) ? INT_MAX : 0)          \
+                        : (((T)-p00_val >= 1) ? INT_MIN : 0)),    \
+                       p00_file, p00_context, p00_info);          \
+  return p00_val;                                                 \
+}                                                                 \
 P99_MACRO_END(P00_THROW_CALL_RANGE, T)
 
 P00_THROW_CALL_RANGE(_Bool, 0, 1);
@@ -233,8 +233,8 @@ P00_THROW_CALL_RANGE(ldouble, 1, HUGE_VALL, -HUGE_VALL);
 
 #define P00_THROW_CALL_RANGE_CASE(T) ,(T, P99_PASTE2(p00_throw_call_range_, T))
 
-#define P00_THROW_CALL_RANGE_(F, CASES, ...)                            \
-P99_GENERIC((F)(__VA_ARGS__), P00_ROBUST CASES)                         \
+#define P00_THROW_CALL_RANGE_(F, CASES, ...)                                              \
+P99_GENERIC((F)(__VA_ARGS__), P00_ROBUST CASES)                                           \
   (p00_unwind_top, F(__VA_ARGS__), P99_STRINGIFY(__LINE__), __func__, #F ", range check")
 
 /**
@@ -266,10 +266,15 @@ P99_GENERIC((F)(__VA_ARGS__), P00_ROBUST CASES)                         \
  ** @remark This is only implemented for the real arithmetic types by
  ** means of a type generic macro.
  **/
-#define P99_THROW_CALL_RANGE(F, ...)                                    \
-  P00_THROW_CALL_RANGE_                                                 \
-  (F,                                                                   \
-   (P99_SER(P00_THROW_CALL_RANGE_CASE, P99_STD_REAL_TYPES)),            \
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_THROW_CALL_RANGE, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_THROW_CALL_RANGE, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_THROW_CALL_RANGE, 2)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_THROW_CALL_RANGE, 3)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_THROW_CALL_RANGE, 4)
+#define P99_THROW_CALL_RANGE(F, ...)                           \
+  P00_THROW_CALL_RANGE_                                        \
+  (F,                                                          \
+   (P99_SER(P00_THROW_CALL_RANGE_CASE, P99_STD_REAL_TYPES)),   \
    __VA_ARGS__)
 
 
@@ -327,7 +332,7 @@ int p00_throw_call_zero(int p00_err,
  ** @see P99_THROW_CALL_VOIDP for a similar macro that checks a
  ** pointer return value
  **/
-#define P99_THROW_CALL_ZERO(F, E, ...)                                   \
+#define P99_THROW_CALL_ZERO(F, E, ...)                                                                            \
 p00_throw_call_zero(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", non-zero return")
 
 inline static
@@ -341,7 +346,7 @@ int p00_throw_call_neg(int p00_neg,
   return p00_neg;
 }
 
-#define P00_THROW_CALL_NEG(F, E, ...)                                    \
+#define P00_THROW_CALL_NEG(F, E, ...)                                                                       \
 p00_throw_call_neg(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", neg return")
 
 /**
@@ -376,7 +381,7 @@ void* p00_throw_call_voidp(void* p00_p,
   return p00_p;
 }
 
-#define P00_THROW_CALL_VOIDP(F, E, ...)                                  \
+#define P00_THROW_CALL_VOIDP(F, E, ...)                                                                           \
 p00_throw_call_voidp(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", invalid return")
 
 
@@ -591,10 +596,10 @@ P00_BLK_AFTER(p00_unw ? P99_RETHROW : P99_NOP)
  ** @see P99_RETHROW
  **/
 P00_UNWIND_DOCUMENT
-#define P99_CATCH(...)                                                                     \
-P00_FINALLY                                                                                \
-P99_IF_EMPTY(__VA_ARGS__)()(P00_BLK_BEFORE(__VA_ARGS__ = p00_code))                        \
-P00_BLK_BEFORE(p00_unw = 0)                                                                \
+#define P99_CATCH(...)                                                                        \
+P00_FINALLY                                                                                   \
+P99_IF_EMPTY(__VA_ARGS__)()(P00_BLK_BEFORE(__VA_ARGS__ = p00_code))                           \
+P00_BLK_BEFORE(p00_unw = 0)                                                                   \
 P00_BLK_AFTER(p00_code ? (void)((P00_JMP_BUF_FILE = 0), (P00_JMP_BUF_CONTEXT = 0)) : P99_NOP)
 
 /**

@@ -1,7 +1,7 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-              */
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is as follows:               */
+/* the author and copyright holder for this work is                           */
 /* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
@@ -29,126 +29,126 @@
    For the moment this list is from what Linux has to offer. This
    includes the macros that are defined by POSIX.
    */
-#define P00_ERRNO_LIST                                                  \
-       2BIG,                                                            \
-       ACCES,                                                           \
-       ADDRINUSE,                                                       \
-       ADDRNOTAVAIL,                                                    \
-       AFNOSUPPORT,                                                     \
-         /* POSIX allows these two to be equal */                       \
-       P99_IF_EQ(EAGAIN, EWOULDBLOCK)(AGAIN,)(AGAIN, WOULDBLOCK,)       \
-       ALREADY,                                                         \
-       BADE,                                                            \
-       BADF,                                                            \
-       BADFD,                                                           \
-       BADMSG,                                                          \
-       BADR,                                                            \
-       BADRQC,                                                          \
-       BADSLT,                                                          \
-       BUSY,                                                            \
-       CANCELED,                                                        \
-       CHILD,                                                           \
-       CHRNG,                                                           \
-       COMM,                                                            \
-       CONNABORTED,                                                     \
-       CONNREFUSED,                                                     \
-       CONNRESET,                                                       \
-         /* POSIX has only EDEADLK, Linux also has EDEADLOCK */         \
-       P99_IF_EQ(EDEADLK, EDEADLOCK)(DEADLK,)(DEADLK, DEADLOCK,)        \
-       DESTADDRREQ,                                                     \
-       DOM,                                                             \
-       DQUOT,                                                           \
-       EXIST,                                                           \
-       FAULT,                                                           \
-       FBIG,                                                            \
-       HOSTDOWN,                                                        \
-       HOSTUNREACH,                                                     \
-       IDRM,                                                            \
-       ILSEQ,                                                           \
-       INPROGRESS,                                                      \
-       INTR,                                                            \
-       INVAL,                                                           \
-       IO,                                                              \
-       ISCONN,                                                          \
-       ISDIR,                                                           \
-       ISNAM,                                                           \
-       KEYEXPIRED,                                                      \
-       KEYREJECTED,                                                     \
-       KEYREVOKED,                                                      \
-       L2HLT,                                                           \
-       L2NSYNC,                                                         \
-       L3HLT,                                                           \
-       L3RST,                                                           \
-       LIBACC,                                                          \
-       LIBBAD,                                                          \
-       LIBEXEC,                                                         \
-       LIBMAX,                                                          \
-       LIBSCN,                                                          \
-       LOOP,                                                            \
-       MEDIUMTYPE,                                                      \
-       MFILE,                                                           \
-       MLINK,                                                           \
-       MSGSIZE,                                                         \
-       MULTIHOP,                                                        \
-       NAMETOOLONG,                                                     \
-       NETDOWN,                                                         \
-       NETRESET,                                                        \
-       NETUNREACH,                                                      \
-       NFILE,                                                           \
-       NOBUFS,                                                          \
-       NODATA,                                                          \
-       NODEV,                                                           \
-       NOENT,                                                           \
-       NOEXEC,                                                          \
-       NOKEY,                                                           \
-       NOLCK,                                                           \
-       NOLINK,                                                          \
-       NOMEDIUM,                                                        \
-       NOMEM,                                                           \
-       NOMSG,                                                           \
-       NONET,                                                           \
-       NOPKG,                                                           \
-       NOPROTOOPT,                                                      \
-       NOSPC,                                                           \
-       NOSR,                                                            \
-       NOSTR,                                                           \
-       NOSYS,                                                           \
-       NOTBLK,                                                          \
-       NOTCONN,                                                         \
-       NOTDIR,                                                          \
-       NOTEMPTY,                                                        \
-       NOTSOCK,                                                         \
-       NOTTY,                                                           \
-       NOTUNIQ,                                                         \
-       NXIO,                                                            \
-         /* should be distinct for POSIX, but are equal on Linux */     \
-       P99_IF_EQ(ENOTSUP, EOPNOTSUPP)(NOTSUP,)(NOTSUP, OPNOTSUPP,)      \
-       OVERFLOW,                                                        \
-       PERM,                                                            \
-       PFNOSUPPORT,                                                     \
-       PIPE,                                                            \
-       PROTO,                                                           \
-       PROTONOSUPPORT,                                                  \
-       PROTOTYPE,                                                       \
-       RANGE,                                                           \
-       REMCHG,                                                          \
-       REMOTE,                                                          \
-       REMOTEIO,                                                        \
-       RESTART,                                                         \
-       ROFS,                                                            \
-       SHUTDOWN,                                                        \
-       SOCKTNOSUPPORT,                                                  \
-       SPIPE,                                                           \
-       SRCH,                                                            \
-       STALE,                                                           \
-       STRPIPE,                                                         \
-       TIME,                                                            \
-       TIMEDOUT,                                                        \
-       TXTBSY,                                                          \
-       UCLEAN,                                                          \
-       UNATCH,                                                          \
-       USERS,                                                           \
-       XDEV,                                                            \
+#define P00_ERRNO_LIST                                              \
+       2BIG,                                                        \
+       ACCES,                                                       \
+       ADDRINUSE,                                                   \
+       ADDRNOTAVAIL,                                                \
+       AFNOSUPPORT,                                                 \
+         /* POSIX allows these two to be equal */                   \
+       P99_IF_EQ(EAGAIN, EWOULDBLOCK)(AGAIN,)(AGAIN, WOULDBLOCK,)   \
+       ALREADY,                                                     \
+       BADE,                                                        \
+       BADF,                                                        \
+       BADFD,                                                       \
+       BADMSG,                                                      \
+       BADR,                                                        \
+       BADRQC,                                                      \
+       BADSLT,                                                      \
+       BUSY,                                                        \
+       CANCELED,                                                    \
+       CHILD,                                                       \
+       CHRNG,                                                       \
+       COMM,                                                        \
+       CONNABORTED,                                                 \
+       CONNREFUSED,                                                 \
+       CONNRESET,                                                   \
+         /* POSIX has only EDEADLK, Linux also has EDEADLOCK */     \
+       P99_IF_EQ(EDEADLK, EDEADLOCK)(DEADLK,)(DEADLK, DEADLOCK,)    \
+       DESTADDRREQ,                                                 \
+       DOM,                                                         \
+       DQUOT,                                                       \
+       EXIST,                                                       \
+       FAULT,                                                       \
+       FBIG,                                                        \
+       HOSTDOWN,                                                    \
+       HOSTUNREACH,                                                 \
+       IDRM,                                                        \
+       ILSEQ,                                                       \
+       INPROGRESS,                                                  \
+       INTR,                                                        \
+       INVAL,                                                       \
+       IO,                                                          \
+       ISCONN,                                                      \
+       ISDIR,                                                       \
+       ISNAM,                                                       \
+       KEYEXPIRED,                                                  \
+       KEYREJECTED,                                                 \
+       KEYREVOKED,                                                  \
+       L2HLT,                                                       \
+       L2NSYNC,                                                     \
+       L3HLT,                                                       \
+       L3RST,                                                       \
+       LIBACC,                                                      \
+       LIBBAD,                                                      \
+       LIBEXEC,                                                     \
+       LIBMAX,                                                      \
+       LIBSCN,                                                      \
+       LOOP,                                                        \
+       MEDIUMTYPE,                                                  \
+       MFILE,                                                       \
+       MLINK,                                                       \
+       MSGSIZE,                                                     \
+       MULTIHOP,                                                    \
+       NAMETOOLONG,                                                 \
+       NETDOWN,                                                     \
+       NETRESET,                                                    \
+       NETUNREACH,                                                  \
+       NFILE,                                                       \
+       NOBUFS,                                                      \
+       NODATA,                                                      \
+       NODEV,                                                       \
+       NOENT,                                                       \
+       NOEXEC,                                                      \
+       NOKEY,                                                       \
+       NOLCK,                                                       \
+       NOLINK,                                                      \
+       NOMEDIUM,                                                    \
+       NOMEM,                                                       \
+       NOMSG,                                                       \
+       NONET,                                                       \
+       NOPKG,                                                       \
+       NOPROTOOPT,                                                  \
+       NOSPC,                                                       \
+       NOSR,                                                        \
+       NOSTR,                                                       \
+       NOSYS,                                                       \
+       NOTBLK,                                                      \
+       NOTCONN,                                                     \
+       NOTDIR,                                                      \
+       NOTEMPTY,                                                    \
+       NOTSOCK,                                                     \
+       NOTTY,                                                       \
+       NOTUNIQ,                                                     \
+       NXIO,                                                        \
+         /* should be distinct for POSIX, but are equal on Linux */ \
+       P99_IF_EQ(ENOTSUP, EOPNOTSUPP)(NOTSUP,)(NOTSUP, OPNOTSUPP,)  \
+       OVERFLOW,                                                    \
+       PERM,                                                        \
+       PFNOSUPPORT,                                                 \
+       PIPE,                                                        \
+       PROTO,                                                       \
+       PROTONOSUPPORT,                                              \
+       PROTOTYPE,                                                   \
+       RANGE,                                                       \
+       REMCHG,                                                      \
+       REMOTE,                                                      \
+       REMOTEIO,                                                    \
+       RESTART,                                                     \
+       ROFS,                                                        \
+       SHUTDOWN,                                                    \
+       SOCKTNOSUPPORT,                                              \
+       SPIPE,                                                       \
+       SRCH,                                                        \
+       STALE,                                                       \
+       STRPIPE,                                                     \
+       TIME,                                                        \
+       TIMEDOUT,                                                    \
+       TXTBSY,                                                      \
+       UCLEAN,                                                      \
+       UNATCH,                                                      \
+       USERS,                                                       \
+       XDEV,                                                        \
        XFULL
 
 #define P00_ERRNO_ELEM_(ERR, STR) P99_IF_GT(ERR, 0)([ERR] = 0,)()
@@ -158,7 +158,7 @@ enum {
   /**
    ** @brief The maximum error code that we found on this system
    **/
-  p99_errno_max = sizeof((char[]){ P99_SER(P00_ERRNO_ELEM, P00_ERRNO_LIST) })
+  p99_errno_max = sizeof((char[]) { P99_SER(P00_ERRNO_ELEM, P00_ERRNO_LIST) })
 };
 
 #define P00_ERRNO_CASE_(ERR, STR) P99_IF_GT(ERR, 0)(case ERR: return STR;)()

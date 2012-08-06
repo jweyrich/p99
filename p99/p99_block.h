@@ -593,21 +593,22 @@ P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                
   P00_BLK_DECL(p00_jmp_buf0*, p00_unwind_prev, p00_unwind_top)                                   \
 /* the buffer variable for setjmp/longjump */                                                    \
   P00_BLK_DECL(auto p00_jmp_buf, p00_unwind_top, P99_INIT)                                       \
-  P00_BLK_END                                                           \
-  /* force interpretation of the setjmp return to 0 or 1, and ensure
-     that it occurs in a context where it is permitted. */ \
-  switch (!setjmp(p00_unwind_top[0].p00_buf))                           \
-    if (0) {                                                            \
-      /* The switch expression of the surrounding switch from           \
-         P99_UNWIND_PROTECT should only have values true and false. So  \
-         this default label can only trigger if there is no "case 0". It \
-         is also here to ensure that no other "default" label is placed on \
-         the same level of "switch" by error. */                        \
-    default:                                                            \
-      p00_code = p00_unwind_top[0].p00_code;                            \
-      p00_unw = !!p00_code;                                             \
-    } else                                                              \
-    case 1:
+  P00_BLK_END                                                                                    \
+/* force interpretation of the setjmp return to 0 or 1, and ensure                               \
+   that it occurs in a context where it is permitted. */                                         \
+  switch (!setjmp(p00_unwind_top[0].p00_buf))                                                    \
+    if (0) {                                                                                     \
+                                                                                                 \
+    /* The switch expression of the surrounding switch from                                      \
+       P99_UNWIND_PROTECT should only have values true and false. So                             \
+       this default label can only trigger if there is no "case 0". It                           \
+       is also here to ensure that no other "default" label is placed on                         \
+       the same level of "switch" by error. */                                                   \
+  default:                                                                                       \
+    p00_code = p00_unwind_top[0].p00_code;                                                       \
+    p00_unw = !!p00_code;                                                                        \
+  } else                                                                                         \
+  case 1:
 
 p99_inline
 void p00_unwind(void* p00_top, unsigned p00_level, int p00_cond) {
@@ -660,19 +661,19 @@ P00_UNWIND_DOCUMENT
  ** @endcode
  **/
 P00_UNWIND_DOCUMENT
-#define P99_UNWIND_RETURN                                               \
-/* we use a special form of short circuit evaluation here, since        \
-   setjmp is only allowed in restricted contexts */                     \
-switch (!!p00_unwind_bottom)                                            \
- case 1:                                                                \
-  /* If an unwind is possible, i.e if we are not in the outer frame     \
-     this will stop the evaluation of the expression here, and unwind   \
-     as side effect. Otherwise, this will continue normally and         \
-     directly proceed with the return. */                               \
-  if (!setjmp(p00_unwind_bottom[0]->p00_buf)) {                         \
-    /* assign before we unwind all the way down */                      \
-    p00_unwind_bottom[0]->p00_returning = 1;                            \
-    P99_UNWIND(-p99_unwind_return);                                     \
+#define P99_UNWIND_RETURN                                             \
+/* we use a special form of short circuit evaluation here, since      \
+   setjmp is only allowed in restricted contexts */                   \
+switch (!!p00_unwind_bottom)                                          \
+ case 1:                                                              \
+  /* If an unwind is possible, i.e if we are not in the outer frame   \
+     this will stop the evaluation of the expression here, and unwind \
+     as side effect. Otherwise, this will continue normally and       \
+     directly proceed with the return. */                             \
+  if (!setjmp(p00_unwind_bottom[0]->p00_buf)) {                       \
+    /* assign before we unwind all the way down */                    \
+    p00_unwind_bottom[0]->p00_returning = 1;                          \
+    P99_UNWIND(-p99_unwind_return);                                   \
   } else case 0: P99_ALLOW(RETURN) return
 
 /**
@@ -692,13 +693,13 @@ switch (!!p00_unwind_bottom)                                            \
  ** @see p99_unwind_level
  **/
 P00_UNWIND_DOCUMENT
-#define P99_PROTECT                                                   \
-P99_DECLARE_INHIBIT(RETURN);                                          \
- if (0) {                                                             \
- case 0 :                                                             \
- p00_code = p00_unwind_top[0].p00_code;                               \
- p00_unw = !!p00_code;                                                \
- }                                                                    \
+#define P99_PROTECT                                            \
+P99_DECLARE_INHIBIT(RETURN);                                   \
+ if (0) {                                                      \
+ case 0 :                                                      \
+ p00_code = p00_unwind_top[0].p00_code;                        \
+ p00_unw = !!p00_code;                                         \
+ }                                                             \
  P00_UNCASE
 
 /**

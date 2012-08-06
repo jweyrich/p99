@@ -194,22 +194,22 @@ P99_DECLARE_STRUCT(NAME)
  **/
 #define P99_ENC_INIT(V) { .p00_val = (V), }
 
-#define P99_STD_UNSIGNED_TYPES                  \
- _Bool,                                         \
- uchar,                                         \
- ushort,                                        \
- unsigned,                                      \
- ulong,                                         \
+#define P99_STD_UNSIGNED_TYPES                                 \
+ _Bool,                                                        \
+ uchar,                                                        \
+ ushort,                                                       \
+ unsigned,                                                     \
+ ulong,                                                        \
  ullong
 
 #define P99_STD_UNSIGNED_EXTS b, uhh, uh, u, ul, ull
 
 
-#define P99_STD_SIGNED_TYPES                    \
-  schar,                                        \
-  short,                                        \
-  int,                                          \
-  long,                                         \
+#define P99_STD_SIGNED_TYPES                                   \
+  schar,                                                       \
+  short,                                                       \
+  int,                                                         \
+  long,                                                        \
   llong
 
 #define P99_STD_SIGNED_EXTS hh, h, i, l, ll
