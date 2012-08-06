@@ -237,7 +237,7 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_UNROLL, 1)
  ** @see P99_FOR for a more generic and flexible utility
  **/
 P00_DOCUMENT_MACRO_ARGUMENT(P99_SEQ, 0)
-#define P99_SEQ(MACRO, ...) P99_FOR(MACRO, P99_NARG(__VA_ARGS__), P00_SEQ, P00_MAP, __VA_ARGS__)
+#define P99_SEQ(MACRO, ...) P00_MAP_(P99_NARG(__VA_ARGS__), MACRO, (,), __VA_ARGS__)
 
 /**
  ** @brief Apply the macro @a MACRO to the rest of the argument list.
@@ -251,7 +251,7 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_SEQ, 0)
  ** @see P99_FOR for a more generic and flexible utility
  **/
 P00_DOCUMENT_MACRO_ARGUMENT(P99_SER, 0)
-#define P99_SER(MACRO, ...) P99_FOR(MACRO, P99_NARG(__VA_ARGS__), P00_SER, P00_MAP, __VA_ARGS__)
+#define P99_SER(MACRO, ...) P00_MAP_(P99_NARG(__VA_ARGS__), MACRO, ( ), __VA_ARGS__)
 
 /**
  ** @brief Apply the macro @a MACRO to the rest of the argument list.
@@ -284,7 +284,7 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_SER, 0)
  ** @see P99_FOR for a more generic and flexible utility
  **/
 P00_DOCUMENT_MACRO_ARGUMENT(P99_SEP, 0)
-#define P99_SEP(MACRO, ...) P99_FOR(MACRO, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAP, __VA_ARGS__)
+#define P99_SEP(MACRO, ...) P00_MAP_(P99_NARG(__VA_ARGS__), MACRO, (;), __VA_ARGS__)
 
 
 

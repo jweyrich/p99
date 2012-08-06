@@ -1116,6 +1116,8 @@ print "#define P00_BRACE_${_}(X, ...) {X}, P00_BRACE_", ($_ - 1), "(__VA_ARGS__)
     foreach (2 .. $maxnumber);
 print "#define P00_PAREN_${_}(X, ...) (X)P00_PAREN_", ($_ - 1), "(__VA_ARGS__)\n"
     foreach (2 .. $maxnumber);
+print "#define P00_MAP_${_}(MAC, SEP, X, ...) MAC(X)P00_ROBUST SEP P00_MAP_", ($_ - 1), "(MAC, SEP, __VA_ARGS__)\n"
+    foreach (2 .. $maxnumber);
 
 
 for (my $i = 2; $i < $maxnumber; ++$i) {

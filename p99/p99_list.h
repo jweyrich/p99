@@ -136,6 +136,13 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_REP, 2)
 
 #define P00_BRACE(N, ...) P00_BRACE_ ## N(__VA_ARGS__)
 
+#define P00_MAP_1(MAC, SEP, ...) MAC(__VA_ARGS__)
+
+#define P00_MAP_0(N, MAC, SEP, ...) P00_MAP_ ## N(MAC, SEP, __VA_ARGS__)
+
+#define P00_MAP_(...) P00_MAP_0(__VA_ARGS__)
+
+
 /** @}
  **/
 
