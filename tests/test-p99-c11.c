@@ -197,14 +197,14 @@ int main(int argc, char* argv[]) {
          P99_OBJLEN(&Arsc[0], signed char, unsigned)
         );
   char volatile aChar = 'a';
-  printf("print generic from float %s, long double complex %s, a pointer %s, int %s, uint128 %s (%s), _Bool %s and char %s\n",
-         P99_FORMAT(5.3f, 1),
-         P99_FORMAT(CMPLXL(54, 1E-181)),
-         P99_FORMAT(Ard),
-         P99_FORMAT(argc),
-         P99_FORMAT((p99x_uint128)1020304050607 * 100000, 0),
-         P99_FORMAT((p99x_uint128)0x0, 0),
-         P99_FORMAT((bool)(argc > 1), 2),
-         P99_FORMAT(aChar));
+  P99_PRINTF("print generic from float %s, long double complex %s, a pointer %s, int %s, uint128 %s (%s), _Bool %s and char %s\n",
+             5.3f,
+             CMPLXL(54, 1E-181),
+             Ard,
+             argc,
+             (p99x_uint128)1020304050607 * 100000,
+             (p99x_uint128)0x0,
+             (bool)(argc > 1),
+             aChar);
   return ret;
 }
