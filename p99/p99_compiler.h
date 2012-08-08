@@ -403,6 +403,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 #   define inline __attribute__((__weak__)) __inline__
 #   define p99_inline __attribute__((__always_inline__,__weak__)) __inline__
 #  endif
+#  define static_inline static __inline__
 #  define p00_instantiate
 # else
 #  define inline __inline__
@@ -411,6 +412,9 @@ signed p00_trailing_comma_in_initializer__(void) {
 # endif
 #endif
 
+# if !defined(static_inline) || defined(P00_DOXYGEN)
+#  define static_inline static inline
+# endif
 # if !defined(p99_inline) || defined(P00_DOXYGEN)
 /**
  ** @brief Try to force a function always to be inlined
