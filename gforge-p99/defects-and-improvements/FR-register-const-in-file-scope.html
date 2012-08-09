@@ -2,25 +2,127 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <link href="DR.css" rel="stylesheet" type="text/css"/>
-<title>Feature Request: allow <code>const</code>-qualified variables
-    with <code>register</code> storage class in file scope</title>
+<title>
+  Feature Request: <code>const</code>-qualified variables
+  with <code>register</code> storage class as <em>named
+    literals</em>
+</title>
 </head>
 <body>
-<h1>Feature Request: allow <code>const</code>-qualified variables
-    with <code>register</code> storage class in file scope</h1>
+<h1>
+  Feature Request: <code>const</code>-qualified variables
+  with <code>register</code> storage class as <em>named
+    literals</em>
+</h1>
 
 <h2>Problem statement</h2>
 
 <p>
+  Data types that we declare in C often have some common values that
+  should be shared by all users of that type. Most prominent in C is
+  the all zero initialized value that we always can enforce trough a
+  default initializer of a <code>static</code> variable, others need
+  detailed initializers:
 </p>
 
 <pre>
-  register unsigned char const oops;
-  auto unsigned char const rando;
+typedef struct listElem listElem;
+struct listElem { unsigned val; listElem* next; };
+static listElem const singleton = { 0 };
+static listElem const singleOne = { .val = 1 };
 </pre>
+
+<p>
+  There are two ways to deal with such <code>const</code> qualified
+  variables in file scope. If they are implemented as above
+  with <code>static</code> storage class, the may result in one object
+  per compilation unit and the compiler might throw spooky warnings on
+  us if we define them in a header file but don't use them at all.
+</p>
+
+<p>
+  Another way is to declare them <code>extern</code> in a header file
+</p>
+
+<pre>
+extern listElem const singleton;
+</pre>
+
+<p>
+  and to define them in one of the compilation units:
+</p>
+
+<pre>
+listElem const singleton = { 0 };
+</pre>
+
+<p>
+  This second method has the big disadvantage that the value of the
+  variable is not available in the other units that include the
+  declaration. Therefore we may miss some opportunities for the
+  compiler to optimize our code.
+</p>
+
+<p>
+  C currently has no real support for global constants for arbitrary
+  data types, not even for all of the standard arithmetic types: all
+  integer constants are at least as large as <code>int</code>. For
+  arithmetic types a cast can be used to produce a value expression:
+</p>
+<pre>
+#define myVeritableFalse ((_Bool)0)
+#define myVeritableTrue ((_Bool)1)
+</pre>
+
+<p>
+  Or some predefined macro for the special case of complex types:
+</p>
+<pre>
+#define ORIGIN CMPLX(0, 0)
+</pre>
+
+<p>
+  The only named constants that can serve as genuine constant
+  expressions as C understands it are of type <code>int</code> and are
+  declared through a declaration of an enumeration:
+</p>
+
+<pre>
+enum { uchar_upper = ((unsigned)UCHAR_MAX) + 1, };
+</pre>
+
+<p>
+  To just define a constant we thereby define a new type (the unnamed
+  enumeration type) and define a constant that isn't even of that
+  type, but just an <code>int</code>.
+</p>
+
+<p>
+  For derived types, in particular structure types, the only way to
+  fabric a value expression that is not an lvalue is to first define
+  an object for the desired type and to feed it into an expression
+  such that the result is an rvalue:
+</p>
+
+<pre>
+typedef struct listElem listElem;
+struct listElem { unsigned val; listElem* next; };
+#define SINGLETON ((listElem const)(listElem const){ .val = 0, next = 0, })
+#define DOUBLETON ((listElem const){ .val = 0, next = 0, } = SINGLETON)
+</pre>
+
+<p>
+  Macros with such expressions have the disadvantage that they can be
+  hard to read for a human and a debugger.
+</p>
 
 
 <h2>Proposed modification</h2>
+
+<p>
+  
+</p>
+
 
 <p>
 After 6.7.9p5 add a new paragraph:
