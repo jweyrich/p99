@@ -84,7 +84,12 @@
  * the corresponding real type; the first element is equal to the real
  * part, and the second element to the imaginary part, of the complex
  * number. */
-#   define P00_COMPLEX_PARTIAL(T, A, I) ((T)((*(T const(*)[2])(&(A)))[I]))
+#   define P00_COMPLEX_PARTIAL(T, A, I)         \
+  (((const union {                              \
+        T _Complex p00_c;                       \
+        T p00_r[2];                             \
+  }){ .p00_c = (A) }).p00_r[I])
+
 p99_inline float p99_crealf(float _Complex p00_c) { return P00_COMPLEX_PARTIAL(float, p00_c, 0); }
 p99_inline double p99_creal(double _Complex p00_c) { return P00_COMPLEX_PARTIAL(double, p00_c, 0); }
 p99_inline long double p99_creall(long double _Complex p00_c) { return P00_COMPLEX_PARTIAL(long double, p00_c, 0); }
