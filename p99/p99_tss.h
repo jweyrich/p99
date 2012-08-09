@@ -261,7 +261,7 @@ p99_inline
 void p99_tss_delete(p99_tss * p00_key) {
   p00_tss_init(p00_key);
   tss_delete(P99_ENCP(p00_key));
-  memcpy(p00_key, &P99_LVAL(p99_tss), sizeof *p00_key);
+  memcpy(p00_key, &P99_LVAL(p99_tss const, .p00_done = false), sizeof *p00_key);
 }
 
 /**
