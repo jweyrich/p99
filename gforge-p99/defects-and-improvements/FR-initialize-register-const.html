@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link href="DR.css" rel="stylesheet" type="text/css"/>
+<title>Feature Request: constrain <code>const</code>-qualified variables
+    with <code>register</code> storage class to be initialized</title>
+</head>
+<body>
+<h1>Feature Request: constrain <code>const</code>-qualified variables
+    with <code>register</code> storage class to be initialized</h1>
+
+<h2>Problem statement</h2>
+
+<p>
+  Consider two <code>const</code>-qualified variables, one with
+  <code>register</code> storage class and one <code>auto</code>:
+</p>
+
+<pre>
+  register unsigned char const oops;
+  auto unsigned char const rando;
+</pre>
+
+<p>
+  Since <code>rando</code> doesn't have <code>register</code> class
+  and is <code>unsigned char</code> it could always be evaluated and
+  would provide an unspecific value.
+</p>
+
+<p>
+  In contrast to that <code>oops</code> can never be used for other
+  effects than to feed it to the <code>sizeof</code> operator. All
+  other access is inhibited by the standard, either as constraint
+  violation or as resulting in undefined behavior:
+</p>
+
+<ul>
+  <li>
+    Because it is <code>const</code> qualified it can not be assigned
+    to or otherwise modified.
+  </li>
+  <li>
+    Because it is of <code>register</code> class, its address cannot
+    be taken. So it can't even be modified indirectly by any other
+    means.
+  </li>
+  <li>
+    Because it is of <code>register</code> class and not initialized
+    it cannot be evaluated.
+  </li>
+</ul>
+
+<p>
+  A compiler can easily detect that such a variable is not
+  initialized at the point of the declaration itself. No complicated
+  flow analysis has to be performed to see if it could have been
+  initialized later or if the underlying object could have been
+  aliased and then assigned with a value.
+</p>
+
+
+<h2>Proposed modification</h2>
+
+<p>
+After 6.7.9p5 add a new paragraph:
+</p>
+
+<p  class="alternative">
+  If the declaration of an identifier has <code>register</code>
+  storage class and the type of the declaration is <code>const</code>
+  qualified an initialization of the object shall be provided to form
+  a full definition of the object.
+<p>
+
+
+<p>
+  If the feature request to allow for <code>const</code>-qualified
+  variables with <code>register</code> storage class in file scope,
+  the terminating subsentence would be important to clarify that the
+  initializer is expected at any occurence of the declaration of the
+  identifier and thus that there can be only exactly one
+  declaration/definition of it.
+</p>
+
+<p>
+  This would defer from a <code>static</code> declaration, that first
+  can be given without initialization (thus being only a declaration
+  and not a definition) and then later be defined by providing an
+  initializer. Here a compiler could defer to establish the the value
+  of the object, since he may always refer to the object through its
+  address.
+</p>
+
+
+<hr />
+<author>Author: Jens Gustedt, INRIA, 2012</author>
+</body>
