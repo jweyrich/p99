@@ -456,7 +456,7 @@ struct p00_jmp_buf0 {
   jmp_buf p00_buf;
 };
 
-#define P00_JMP_BUF0_INITIALIZER { .p00_returning = 0, /* initialize .p00_buf implicitly */ }
+#define P00_JMP_BUF0_INITIALIZER { .p00_returning = 0 /* initialize .p00_buf implicitly */ }
 
 typedef p00_jmp_buf0 p00_jmp_buf[1];
 
@@ -592,7 +592,7 @@ P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                
   P00_BLK_DECL_REC(register unsigned const, p99_unwind_level, p99_unwind_level + 1)              \
   P00_BLK_DECL(p00_jmp_buf0*, p00_unwind_prev, p00_unwind_top)                                   \
 /* the buffer variable for setjmp/longjump */                                                    \
-  P00_BLK_DECL(auto p00_jmp_buf, p00_unwind_top, P99_INIT)                                       \
+  P00_BLK_DECL(auto p00_jmp_buf, p00_unwind_top, P00_JMP_BUF_INITIALIZER)                        \
   P00_BLK_END                                                                                    \
 /* force interpretation of the setjmp return to 0 or 1, and ensure                               \
    that it occurs in a context where it is permitted. */                                         \
