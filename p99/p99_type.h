@@ -194,31 +194,49 @@ P99_DECLARE_STRUCT(NAME)
  **/
 #define P99_ENC_INIT(V) { .p00_val = (V), }
 
-#define P99_STD_UNSIGNED_TYPES                                 \
+#if CHAR_MAX == UCHAR_MAX
+# define P99_STD_UNSIGNED_TYPES                                \
+ _Bool,                                                        \
+ char,                                                         \
+ uchar,                                                        \
+ ushort,                                                       \
+ unsigned,                                                     \
+ ulong,                                                        \
+ ullong
+# define P99_STD_UNSIGNED_EXTS b, c, uhh, uh, u, ul, ull
+# define P99_STD_SIGNED_TYPES                                  \
+  schar,                                                       \
+  short,                                                       \
+  int,                                                         \
+  long,                                                        \
+  llong
+# define P99_STD_SIGNED_EXTS hh, h, i, l, ll
+# define P99_STD_REAL_FLOATING_TYPES                           \
+ float,                                                        \
+ double,                                                       \
+ ldouble
+#else
+# define P99_STD_UNSIGNED_TYPES                                \
  _Bool,                                                        \
  uchar,                                                        \
  ushort,                                                       \
  unsigned,                                                     \
  ulong,                                                        \
  ullong
-
-#define P99_STD_UNSIGNED_EXTS b, uhh, uh, u, ul, ull
-
-
-#define P99_STD_SIGNED_TYPES                                   \
+# define P99_STD_UNSIGNED_EXTS b, uhh, uh, u, ul, ull
+# define P99_STD_SIGNED_TYPES                                  \
+  char,                                                        \
   schar,                                                       \
   short,                                                       \
   int,                                                         \
   long,                                                        \
   llong
-
-#define P99_STD_SIGNED_EXTS hh, h, i, l, ll
-
-
-#define P99_STD_REAL_FLOATING_TYPES                            \
+# define P99_STD_SIGNED_EXTS c, hh, h, i, l, ll
+# define P99_STD_REAL_FLOATING_TYPES                           \
  float,                                                        \
  double,                                                       \
  ldouble
+#endif
 
 #define P99_STD_REAL_FLOATING_EXTS f, d, ld
 
@@ -236,12 +254,10 @@ P99_DECLARE_STRUCT(NAME)
 #endif
 
 #define P99_STD_BASIC_TYPES                                    \
- char,                                                         \
  P99_STD_INTEGER_TYPES,                                        \
  P99_STD_FLOATING_TYPES
 
 #define P99_STD_BASIC_EXTS                                     \
- c,                                                            \
  P99_STD_INTEGER_EXTS,                                         \
  P99_STD_FLOATING_EXTS
 
@@ -253,12 +269,10 @@ P99_DECLARE_STRUCT(NAME)
 #define P99_STD_CHARACTER_EXTS c, hh, uhh
 
 #define P99_STD_INTEGER_TYPES                                  \
-  char,                                                        \
   P99_STD_SIGNED_TYPES,                                        \
   P99_STD_UNSIGNED_TYPES
 
 #define P99_STD_INTEGER_EXTS                                   \
-  c,                                                           \
   P99_STD_SIGNED_EXTS,                                         \
   P99_STD_UNSIGNED_EXTS
 

@@ -463,8 +463,15 @@ P99_GEN_EXPR(minimum, ((A) <= (B)) ? (A) : (B),                \
 P99_DECLARE_INLINE_EXPRESSIONS((abs,
                                 (p00_a >= 0) ? p00_a : -p00_a,
                                 p00_a),
-                               P99_STD_REAL_EXTS
+                               P99_STD_SIGNED_EXTS, P99_STD_REAL_FLOATING_EXTS
                               );
+
+P99_DECLARE_INLINE_EXPRESSIONS((abs,
+                                p00_a,
+                                p00_a),
+                               P99_STD_UNSIGNED_EXTS
+                              );
+
 
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_ABS, 0)
 #define P99_GEN_ABS(A) P99_GEN_EXPR(abs, ((A) >= 0) ? (A) : -(A), P99_STD_REAL_EXTS)(A)
