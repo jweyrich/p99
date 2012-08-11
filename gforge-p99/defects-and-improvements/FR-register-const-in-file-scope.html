@@ -3,16 +3,16 @@
 <head>
 <link href="DR.css" rel="stylesheet" type="text/css"/>
 <title>
-  Feature Request: <code>const</code>-qualified variables
-  with <code>register</code> storage class as <em>named
-    literals</em>
+  Feature Request: introduce <em>named
+    constants</em> as <code>const</code>-qualified variables
+  with <code>register</code> storage class
 </title>
 </head>
 <body>
 <h1>
-  Feature Request: <code>const</code>-qualified variables
-  with <code>register</code> storage class as <em>named
-    literals</em>
+  Feature Request: introduce <em>named
+    constants</em> as <code>const</code>-qualified variables
+  with <code>register</code> storage class
 </h1>
 
 <h2>Problem statement</h2>
@@ -60,25 +60,42 @@ listElem const singleton = { 0 };
   This second method has the big disadvantage that the value of the
   variable is not available in the other units that include the
   declaration. Therefore we may miss some opportunities for the
-  compiler to optimize our code.
+  compiler to optimize our code. For example an initialization
+  function for our structure type may be written as
+</p>
+
+<pre>
+inline
+listElem* listElem_init(listElem* el) {
+ if (el) *el = singleOne;
+ return el;
+}
+</pre>
+
+<p>
+  If the value of <code>singleOne</code> is known, the assignment
+  could be realized without loading it but only with immediats. And
+  <code>listElem_init</code> itself could then much easier be inlined
+  where it is called.
 </p>
 
 <p>
   C currently has no real support for global constants for arbitrary
   data types, not even for all of the standard arithmetic types: all
   integer constants are at least as large as <code>int</code>. For
-  arithmetic types a cast can be used to produce a value expression:
+  scalar types a cast can be used to produce a value expression:
 </p>
 <pre>
-#define myVeritableFalse ((_Bool)0)
-#define myVeritableTrue ((_Bool)1)
+#define myVeritableFalse ((_Bool)+0)
+#define myVeritableTrue ((_Bool)+1)
+#define HELLO ((char const*const)"hello")
 </pre>
 
 <p>
   Or some predefined macro for the special case of complex types:
 </p>
 <pre>
-#define ORIGIN CMPLX(0, 0)
+#define ORIGIN CMPLXF(0, 0)
 </pre>
 
 <p>
@@ -92,45 +109,231 @@ enum { uchar_upper = ((unsigned)UCHAR_MAX) + 1, };
 </pre>
 
 <p>
-  To just define a constant we thereby define a new type (the unnamed
+  All this, to just define a constant; we thereby define a new type (the unnamed
   enumeration type) and define a constant that isn't even of that
-  type, but just an <code>int</code>.
+  type, but an <code>int</code>.
 </p>
 
 <p>
-  For derived types, in particular structure types, the only way to
-  fabric a value expression that is not an lvalue is to first define
+  For composite types, in particular structure types, the only way to
+  fabric a value expression that is not an assignable lvalue and such
+  that the addreass can't be taken is to first define
   an object for the desired type and to feed it into an expression
   such that the result is an rvalue:
 </p>
 
 <pre>
-typedef struct listElem listElem;
-struct listElem { unsigned val; listElem* next; };
 #define SINGLETON ((listElem const)(listElem const){ .val = 0, next = 0, })
 #define DOUBLETON ((listElem const){ .val = 0, next = 0, } = SINGLETON)
 </pre>
 
 <p>
-  Macros with such expressions have the disadvantage that they can be
-  hard to read for a human and a debugger.
+  Such expression can be hard to read for a human and a debugger, but
+  their biggest disadvantage is that they are not suitable for
+  initializers for objects with static storage duration. We'd have to
+  define two different macros, one for the initializer and one for the
+  constant expression:
 </p>
 
+<pre>
+#define SINGLETON_INIT { .val = 0, next = 0, }
+#define SINGLETON ((listElem const)(listElem const)SINGLETON_INIT)
+</pre>
+
+<p>
+  In block scope, on the other hand, there is a construct that can be
+  used to declare unmutable values of which no address can be
+  taken: <code>const</code>-qualified variables
+  with <code>register</code> storage class. All the above could be
+  given in block scope with functionally equivalent definitions:
+</p>
+
+<pre>
+register const listElem singleton = { 0 };
+register const listElem singleOne = { .val = 1 };
+register const _Bool myVeritableFalse = 0;
+register const _Bool myVeritableTrue = 1;
+register const char *const HELLO = "hello";
+register const float _Complex ORIGIN = CMPLXF(0, 0);
+register const int uchar_upper = (unsigned)UCHAR_MAX + 1;
+register const listElem SINGLETON = { .val = 0, next = 0, };
+register const listElem DOUBLETON = SINGLETON;
+</pre>
 
 <h2>Proposed modification</h2>
 
 <p>
-  
+  The aim of this proposal is to introduce <em>named constants</em>,
+  that are values that are referred through an identifier, by
+  means <code>const</code>-qualified variables
+  with <code>register</code> storage class. Since this construct
+  already exists in block scope, only two features must be introduced
+  to make this concept suitable for the intended use:
+</p>
+<ol>
+  <li>
+    Allow <code>const</code>-qualified variables
+    with <code>register</code> storage class in file scope.
+  </li>
+  <li>
+    Allow <code>const</code>-qualified variables
+    with <code>register</code> storage class in constant
+    expressions.
+  </li>
+</ol>
+
+<h3>
+  Allow <code>const</code>-qualified variables
+  with <code>register</code> storage class in constant expressions.
+</h3>
+
+<p>
+  We have to add a new item to the list of valid constants in 6.4.4
+  (and in the appendix)
+</p>
+
+<pre  class="alternative">
+constant:
+	integer-constant
+	floating-constant
+	enumeration-constant
+	character-constant
+	named-constant
+</pre>
+
+<p>
+  Then add a new section 6.4.4.5:
 </p>
 
 
+<p class="alternative">
+6.4.4.3 Named constants<br />
+Syntax<br />
+1 named-constant: identifier<br />
+Semantics<br />
+2 An identifier of <code>register</code>
+storage class and of type that is <code>const</code> qualified with no
+other qualification and such that its initializer is build only with
+constant expressions is a <em>named constant</em>.
 <p>
-After 6.7.9p5 add a new paragraph:
+
+<p>
+  Add a paragraph (between the current p5 and p6) that explains how
+  named constants can be used in subexpressions.
+</p>
+
+<p class="alternative">
+  A <em>named constant expression</em> shall be a named constant
+  optionally followed by a designator list.
+</p>
+
+<p>
+  In the examples above, the following are valid named constant
+  expressions:
+</p>
+
+<pre>
+singleton
+singleOne.val
+Hello[myVeritableTrue]
+</pre>
+
+The first is of type <code>struct listElem</code> and with default
+initialized value for that type; the second is of type <code>unsigned
+int</code> and value <code>0</code>; the third is of type <code>char
+const</code> and value <code>'e'</code>.
+
+<p>
+  Then we have to add named constants to be valid integer constant
+  expressions in 6.6. Add to p6 before "integer constants,":
+</p>
+
+<p class="alternative">
+  named constant expressions of integer type,
+</p>
+
+<p>
+  and to p7 add as a first list item:
+</p>
+
+<p class="alternative">
+  - a named constant expression
+</p>
+
+<p>
+  Optionally, we could also add suitable compound literals to that
+  list; gcc already has an extension that allows for this.
+</p>
+
+<p class="alternative">
+  - a compound literal that is <code>const</code> qualified with no
+  other qualification and such that its initializer is build only with
+  constant expressions, optionally followed by a designator list.
+</p>
+
+<p>
+  Add to p8 before "integer constants,":
+</p>
+
+<p class="alternative">
+  named constants expressions of arithmetic type,
+</p>
+
+<p>
+  Modify p9 at the end of the first setence:
+</p>
+
+<p class="alternative">
+  ... or implicitly by the use of an expression of array or function
+  type, or by the value of a named constant expression.
+</p>
+
+<h3>
+  Enable <code>const</code>-qualified variables
+  with <code>register</code> storage class in file scope
+</h3>
+
+<p>
+In 6.9 replace p2:
 </p>
 
 <p  class="alternative">
+  The storage-class specifier <code>auto</code> shall not appear in
+  the declaration specifier in an external declaration.  If the
+  storage-class specifier <code>register</code> appears in the
+  declaration specifier of an external declaration it shall be the
+  definition of a named constant.
 <p>
 
-<hr />
-<author>Author: Jens Gustedt, INRIA, 2012</author>
+  <h2>
+    Discussion
+  </h2>
+
+  <h3>
+    Validity
+  </h3>
+<p>
+  Clearly the above modifications do not invalidate any valid program
+  under the current standard. They only assure that some formally
+  invalid programs become valid.
+</p>
+
+<p>
+  The impact on the allowed grammar is minimal. The only new case is
+  the definition of an identifier in file scope, where now also
+  storage class specifier <code>register</code> may occur.
+</p>
+<p>
+  For the semantic of constant expressions this adds named constants
+  followed by designators to the possibilities.
+</p>
+<p>
+  For the semantic of integer constant expressions this adds some
+  expressions of integer type that contain named constants followed by
+  designators to the possibilities that correspond to fields of
+  integer type.
+</p>
+
+  <hr />
+  <author>Author: Jens Gustedt, INRIA, 2012</author>
 </body>
