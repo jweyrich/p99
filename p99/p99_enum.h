@@ -177,7 +177,34 @@ char const* bool_getname(bool p00_x) {
   }
 }
 
-/** @}
+
+/**
+ ** @brief check if the list of expressions is syntactically valid but
+ ** don't evaluate it
+ **
+ ** This can be used to mark an identifier as unused to avoid bogus
+ ** compiler warnings.
+ ** @code
+ ** bool myTruth(bool t) {
+ **   P99_UNUSED(t);
+ **   return true;
+ ** }
+ ** @endcode
+ **
+ ** @remark this must be in a place where the expression could
+ ** successfully evaluate and where a declaration of any sort is
+ ** suitable
+ **
+ ** @remark this is preferable over the trick <code>(void)EXPR;</code>
+ ** since it guarantees that @a EXPR is never evaluated, even if it
+ ** contains references to @c volatile objects, and since it can also
+ ** be placed in file scope.
+ **/
+#define P99_UNUSED(...) P99_SEP(P00_UNUSED, __VA_ARGS__)
+
+
+/**
+ ** @}
  **/
 
 /**

@@ -753,16 +753,21 @@ static_assert(1, "test of static assertions");
  ** @{
  **/
 
+#define P00_HARMLESS_SIZEOF(ID) sizeof(sizeof(ID))
+
+#define P00_UNUSED(EXPR)                        \
+  extern char const p00_harmless_declaration    \
+  [P00_HARMLESS_SIZEOF(EXPR)]
+
 /* Used inside P99_MACRO_END. The idea that this is an extern
    declaration, so it doesn't result in any code. On the other hand it
    uses the address of itself in its own declaration, so the compiler
    shouldn't issue a warning about an unused variable. */
-#define P00_HARMLESS_DECLARATION                               \
-extern char const p00_harmless_declaration[                    \
- sizeof((void const*[1]){ &p00_harmless_declaration })         \
-]
+#define P00_HARMLESS_DECLARATION P00_UNUSED(p00_harmless_declaration)
 
-extern char const p00_harmless_declaration[sizeof(void const*[1])];
+/* To be able to refer to it in a sizeof expression this must be
+   forward declared. */
+P00_UNUSED(1);
 
 /**
  ** @brief A meta macro that forces the addition of a semicolon after
