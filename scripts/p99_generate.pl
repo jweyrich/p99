@@ -419,6 +419,7 @@ my @functions_C99 = sort(
 ## this list here is not thought to be alphabetic. In particular
 ## compilers that are faked by other compilers should come at the end.
 my @compilers = (
+    "armcc" => "__ARMCC_VERSION",
     "borland" => "__BORLANDC__",
     "clang" => "__clang__",
     "comeau" => "__COMO__",

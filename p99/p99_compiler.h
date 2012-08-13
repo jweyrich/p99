@@ -326,6 +326,15 @@ signed p00_trailing_comma_in_initializer__(void) {
 # endif
 #endif
 
+#if P99_COMPILER & P99_COMPILER_ARMCC
+# define p00_has_attribute_always_inline 1
+# define p00_has_attribute_weak 1
+# define p00_has_attribute_weakref 1
+# define p00_has_attribute_deprecated 1
+# define p00_has_attribute_aligned 1
+# define p00_has_attribute_noreturn 1
+#endif
+
 #if p99_has_builtin(__sync_val_compare_and_swap)
 # ifndef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1
 #  define __GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 1
