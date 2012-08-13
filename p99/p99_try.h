@@ -46,7 +46,7 @@ void p00_jmp_push(p00_jmp_buf0 * p00_des) {
   P99_LIFO_PUSH(&P00_JMP_BUF_TOP, p00_des);
 }
 
-enum { p00_ilen10 = sizeof(P99_STRINGIFY(LLONG_MIN)) };
+P99_CONSTANT(int, p00_ilen10, sizeof(P99_STRINGIFY(LLONG_MIN)));
 
 /**
  ** @brief Report the origin and cause of an error
