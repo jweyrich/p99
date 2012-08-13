@@ -202,6 +202,53 @@ char const* bool_getname(bool p00_x) {
  **/
 #define P99_UNUSED(...) P99_SEP(P00_UNUSED, __VA_ARGS__)
 
+#define P00_CONSTANT_STATIC_3(T, NAME, ...)  static T const NAME = __VA_ARGS__; P99_UNUSED(NAME)
+#define P00_CONSTANT_ENUM_1(NAME) enum { NAME }
+#define P00_CONSTANT_ENUM_2(NAME, ...) enum { NAME = (__VA_ARGS__) }
+
+#define P00_CONSTANT_2(T, NAME)                 \
+P99_IF_INT(T)                                   \
+(P00_CONSTANT_ENUM_1(NAME))                     \
+(P00_CONSTANT_STATIC_3(T, NAME, P99_INIT))
+
+#define P00_CONSTANT_3(T, NAME, ...)            \
+P99_IF_INT(T)                                   \
+ (P00_CONSTANT_ENUM_2(NAME, __VA_ARGS__))       \
+ (P00_CONSTANT_STATIC_3(T, NAME, __VA_ARGS__))
+
+#ifdef P00_DOXYGEN
+/**
+ ** @brief define a compile time constant @a NAME of type @a T with
+ ** value @a INIT
+ **
+ ** @a INIT can be omitted, resulting in a zero initialized constant.
+ **
+ ** @remark if @T is one of the special values @c int or @c signed,
+ ** enumeration constants are defined.
+ **
+ ** Use this as in the following:
+ ** @code
+ ** P99_CONSTANT(struct tutu, tutu0);
+ ** inline
+ ** struct tutu * tutu_init(struct tutu* x) {
+ **   if (x) *x = tutu0;
+ **   return x;
+ ** }
+ ** @endcode
+ **
+ ** Here @c tutu0 is defined a the zero initialized value of type
+ ** <code>struct tutu</code>.
+ **
+ ** @remark This is thought to use the proposed extension of @c
+ ** register variables in file scope but we are not yet there.
+ **/
+#define P99_CONSTANT(T, NAME, INIT)
+#else
+#define P99_CONSTANT(...)                       \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 3)             \
+(P00_CONSTANT_2(__VA_ARGS__))                   \
+(P00_CONSTANT_3(__VA_ARGS__))
+#endif
 
 /**
  ** @}
