@@ -38,7 +38,6 @@
 
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 #pragma GCC diagnostic ignored "-Wunused-value"
-#pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
 enum { len = 9 };
@@ -71,6 +70,22 @@ struct tutu {
   struct toto c;
 };
 
+
+P99_CONSTANT(int, O1, 1);
+P99_CONSTANT(unsigned, O2, 2);
+P99_CONSTANT(signed, O3, 3);
+P99_CONSTANT(struct tutu, tutu0);
+P99_CONSTANT(struct tutu, tutu1, { .b = 7, });
+
+inline
+struct tutu * tutu_init(struct tutu* x) {
+  if (x) *x = tutu0;
+  return x;
+}
+
+P99_INSTANTIATE(struct tutu *, tutu_init, struct tutu*);
+
+
 int main(int argc, char*argv[]) {
   printf("return %u 'a's: %s\n", len, myVerryBuggyFunction());
   printf("return %u 'a's: %s\n", len, myStillBuggyFunction());
@@ -89,5 +104,6 @@ int main(int argc, char*argv[]) {
   struct tutu *M = &P99_LCOPY(struct tutu, L, .b, .c);
   double A[4] = { 1, 2, 3, 4 };
   double *B = P99_LCOPY(double[4], A, [2]);
+  P99_UNUSED(ip, ipp, ippp, jj, jjj, k, M, B);
   return P99_LVAL(struct toto[3][4])[0][0].a;
 }
