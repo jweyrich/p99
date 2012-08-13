@@ -1496,6 +1496,132 @@
       <anchor>ga77d5ca6c2badbdccb8ac4ec69a6a264f</anchor>
       <arglist>(...)</arglist>
     </member>
+    <member kind="variable">
+      <type></type>
+      <name>c</name>
+      <anchorfile>group__stringconversion_gae0323a9039add2978bf5b49550572c7c.html</anchorfile>
+      <anchor>gae0323a9039add2978bf5b49550572c7c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>h</name>
+      <anchorfile>group__stringconversion_ga5e36941b3d856737e81516acd45edc50.html</anchorfile>
+      <anchor>ga5e36941b3d856737e81516acd45edc50</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>hh</name>
+      <anchorfile>group__stringconversion_gae61e7de603852182385da5e907b4b232.html</anchorfile>
+      <anchor>gae61e7de603852182385da5e907b4b232</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>i16</name>
+      <anchorfile>group__stringconversion_ga4af6c64423d3a8691229135cb4356124.html</anchorfile>
+      <anchor>ga4af6c64423d3a8691229135cb4356124</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>i32</name>
+      <anchorfile>group__stringconversion_ga3b1df617247dbb90f86c43c7e5a0504d.html</anchorfile>
+      <anchor>ga3b1df617247dbb90f86c43c7e5a0504d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>i64</name>
+      <anchorfile>group__stringconversion_ga6c95997324761b0f5e6aa06244f52d24.html</anchorfile>
+      <anchor>ga6c95997324761b0f5e6aa06244f52d24</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>i8</name>
+      <anchorfile>group__stringconversion_ga10d539749f8a7b0e12af460edb3a40e6.html</anchorfile>
+      <anchor>ga10d539749f8a7b0e12af460edb3a40e6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>j</name>
+      <anchorfile>group__stringconversion_gabf2bc2545a4a5f5683d9ef3ed0d977e0.html</anchorfile>
+      <anchor>gabf2bc2545a4a5f5683d9ef3ed0d977e0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>t</name>
+      <anchorfile>group__stringconversion_gaaccc9105df5383111407fd5b41255e23.html</anchorfile>
+      <anchor>gaaccc9105df5383111407fd5b41255e23</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>u</name>
+      <anchorfile>group__stringconversion_ga6277e2a7446059985dc9bcf0a4ac1a8f.html</anchorfile>
+      <anchor>ga6277e2a7446059985dc9bcf0a4ac1a8f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>u16</name>
+      <anchorfile>group__stringconversion_ga8aa9149a22317014c683c48cebd8cfef.html</anchorfile>
+      <anchor>ga8aa9149a22317014c683c48cebd8cfef</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>u32</name>
+      <anchorfile>group__stringconversion_ga449a74b72ed931d627eca7efcc6f8c9d.html</anchorfile>
+      <anchor>ga449a74b72ed931d627eca7efcc6f8c9d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>u64</name>
+      <anchorfile>group__stringconversion_gad9a16e74d880983f276dce5b0344b8bd.html</anchorfile>
+      <anchor>gad9a16e74d880983f276dce5b0344b8bd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>u8</name>
+      <anchorfile>group__stringconversion_gab9f930ae0484417a1883fd3f7cdb490e.html</anchorfile>
+      <anchor>gab9f930ae0484417a1883fd3f7cdb490e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>uh</name>
+      <anchorfile>group__stringconversion_ga92163508c0b18e75db11592248b16332.html</anchorfile>
+      <anchor>ga92163508c0b18e75db11592248b16332</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>uhh</name>
+      <anchorfile>group__stringconversion_ga5511a7b325008060e7fb04ca25938bb4.html</anchorfile>
+      <anchor>ga5511a7b325008060e7fb04ca25938bb4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>uj</name>
+      <anchorfile>group__stringconversion_ga4b37394e3f8e8bb44668e582f18b8f31.html</anchorfile>
+      <anchor>ga4b37394e3f8e8bb44668e582f18b8f31</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>uz</name>
+      <anchorfile>group__stringconversion_ga3f0fa10deec07041a769fcb9eedae06b.html</anchorfile>
+      <anchor>ga3f0fa10deec07041a769fcb9eedae06b</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>p99_choice.h</name>
@@ -1804,6 +1930,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>static_inline</name>
+      <anchorfile>group__compiler__utilities_gaee1f2f5fb05f4936184a23f4dda732c9.html</anchorfile>
+      <anchor>gaee1f2f5fb05f4936184a23f4dda732c9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>thread_local</name>
       <anchorfile>group__C11__keywords_gad4d9b405bcbffaf0d4dae6166c18aa1e.html</anchorfile>
       <anchor>gad4d9b405bcbffaf0d4dae6166c18aa1e</anchor>
@@ -1913,6 +2046,13 @@
     <includes id="p99__for_8h" name="p99_for.h" local="yes" imported="no">p99_for.h</includes>
     <member kind="define">
       <type>#define</type>
+      <name>P99_CONSTANT</name>
+      <anchorfile>group__types_gabd74963ce7cf96a90031d20ba6450e40.html</anchorfile>
+      <anchor>gabd74963ce7cf96a90031d20ba6450e40</anchor>
+      <arglist>(T, NAME, INIT)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_DECLARE_ENUM</name>
       <anchorfile>group__types_ga5d811e46f48e01d79d1f931817d9c0f1.html</anchorfile>
       <anchor>ga5d811e46f48e01d79d1f931817d9c0f1</anchor>
@@ -1945,6 +2085,13 @@
       <anchorfile>group__endianess_gaed0f069cce73ff8d9e57387cdd0565eb.html</anchorfile>
       <anchor>gaed0f069cce73ff8d9e57387cdd0565eb</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_UNUSED</name>
+      <anchorfile>group__types_gadfc4a740e019532904e5577e7ece9090.html</anchorfile>
+      <anchor>gadfc4a740e019532904e5577e7ece9090</anchor>
+      <arglist>(...)</arglist>
     </member>
     <member kind="typedef">
       <type>enum p99_endianness</type>
@@ -1997,12 +2144,6 @@
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__errno_8h</filename>
     <includes id="p99__for_8h" name="p99_for.h" local="yes" imported="no">p99_for.h</includes>
-    <member kind="enumvalue">
-      <name>p99_errno_max</name>
-      <anchorfile>p99__errno_8h_adf764cbdea00d65edcd07bb9953ad2b7.html</anchorfile>
-      <anchor>adf764cbdea00d65edcd07bb9953ad2b7afbea1a0d25cce2b80ac320410a422580</anchor>
-      <arglist></arglist>
-    </member>
     <member kind="function">
       <type>char const *</type>
       <name>p99_errno_getname</name>
@@ -2425,6 +2566,13 @@
       <name>P99_COMPILER</name>
       <anchorfile>p99__generated_8h_a302a96fa136be4a10e71db24b1755fb1.html</anchorfile>
       <anchor>a302a96fa136be4a10e71db24b1755fb1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_COMPILER_ARMCC</name>
+      <anchorfile>p99__generated_8h_a5e457b8226ad267e1943640e8caed1ad.html</anchorfile>
+      <anchor>a5e457b8226ad267e1943640e8caed1ad</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -3689,6 +3837,20 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_FORMATS</name>
+      <anchorfile>p99__generic_8h_ace29fc3eee87b9ec202f737866f7a3a8.html</anchorfile>
+      <anchor>ace29fc3eee87b9ec202f737866f7a3a8</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_FPRINTF</name>
+      <anchorfile>p99__generic_8h_a36a3f823988f7d8a2382175bd580327b.html</anchorfile>
+      <anchor>a36a3f823988f7d8a2382175bd580327b</anchor>
+      <arglist>(F, FORMAT,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_GEN_ABS</name>
       <anchorfile>group__generic_ga230a46da075b050dbaf989ae306b0009.html</anchorfile>
       <anchor>ga230a46da075b050dbaf989ae306b0009</anchor>
@@ -3773,6 +3935,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_PRINTF</name>
+      <anchorfile>p99__generic_8h_a5576b3a5a85352f263fbe86b5d79d9a8.html</anchorfile>
+      <anchor>a5576b3a5a85352f263fbe86b5d79d9a8</anchor>
+      <arglist>(FORMAT,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_SIZE_CHOICE</name>
       <anchorfile>group__C11__types_ga82919f4a1220f615a3fb905cfddb4f99.html</anchorfile>
       <anchor>ga82919f4a1220f615a3fb905cfddb4f99</anchor>
@@ -3784,6 +3953,20 @@
       <anchorfile>group__C11__types_ga1d7c41b8ffcd75cd49421ba0859b9aa8.html</anchorfile>
       <anchor>ga1d7c41b8ffcd75cd49421ba0859b9aa8</anchor>
       <arglist>(UI,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_SNPRINTF</name>
+      <anchorfile>p99__generic_8h_ac3a69f1af6e1768890d76d92b019adbd.html</anchorfile>
+      <anchor>ac3a69f1af6e1768890d76d92b019adbd</anchor>
+      <arglist>(S, N, FORMAT,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_SPRINTF</name>
+      <anchorfile>p99__generic_8h_a3b8ff5ba39a6c5c1b73e1abde144d7a3.html</anchorfile>
+      <anchor>a3b8ff5ba39a6c5c1b73e1abde144d7a3</anchor>
+      <arglist>(S, FORMAT,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -5015,6 +5198,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_IF_INT</name>
+      <anchorfile>group__preprocessor__logic_ga081352efe3815ffa05876f1d50ea6bce.html</anchorfile>
+      <anchor>ga081352efe3815ffa05876f1d50ea6bce</anchor>
+      <arglist>(TOK)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_IS_EQ</name>
       <anchorfile>group__preprocessor__logic_ga316ec102bd9728181e04c2a26ec0603e.html</anchorfile>
       <anchor>ga316ec102bd9728181e04c2a26ec0603e</anchor>
@@ -5033,6 +5223,13 @@
       <anchorfile>group__preprocessor__logic_gadaf4dede4d2aa60e5694582a06bc2a0e.html</anchorfile>
       <anchor>gadaf4dede4d2aa60e5694582a06bc2a0e</anchor>
       <arglist>(_0, _1)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_IS_INT</name>
+      <anchorfile>group__preprocessor__logic_ga5ac40e943871ac565d1ea457d66778a5.html</anchorfile>
+      <anchor>ga5ac40e943871ac565d1ea457d66778a5</anchor>
+      <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -5652,9 +5849,30 @@
     </member>
     <member kind="variable">
       <type></type>
+      <name>d</name>
+      <anchorfile>p99__str_8h_a1aabac6d068eef6a7bad3fdf50a05cc8.html</anchorfile>
+      <anchor>a1aabac6d068eef6a7bad3fdf50a05cc8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
       <name>double</name>
       <anchorfile>p99__str_8h_a45c855d65dd0e2b57b08024500ff9159.html</anchorfile>
       <anchor>a45c855d65dd0e2b57b08024500ff9159</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>f</name>
+      <anchorfile>p99__str_8h_a633de4b0c14ca52ea2432a3c8a5c4c31.html</anchorfile>
+      <anchor>a633de4b0c14ca52ea2432a3c8a5c4c31</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ld</name>
+      <anchorfile>p99__str_8h_a52eb8ebd51523f9793a2f527790f0892.html</anchorfile>
+      <anchor>a52eb8ebd51523f9793a2f527790f0892</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -6170,6 +6388,20 @@
       <anchorfile>group__types_ga984aaad63855f3143393f9d6af13acfc.html</anchorfile>
       <anchor>ga984aaad63855f3143393f9d6af13acfc</anchor>
       <arglist>(OBJP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_EXT_ARITHMETIC_TYPES</name>
+      <anchorfile>group__types_ga4b269f769b186e837689e9a6e75d8996.html</anchorfile>
+      <anchor>ga4b269f769b186e837689e9a6e75d8996</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_EXT_INTEGER_TYPES</name>
+      <anchorfile>group__types_gaf3dd5595a335d028c75125d2e74d6ad9.html</anchorfile>
+      <anchor>gaf3dd5595a335d028c75125d2e74d6ad9</anchor>
+      <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -11564,6 +11796,132 @@
       <anchor>ga77d5ca6c2badbdccb8ac4ec69a6a264f</anchor>
       <arglist>(...)</arglist>
     </member>
+    <member kind="variable">
+      <type></type>
+      <name>c</name>
+      <anchorfile>group__stringconversion_gae0323a9039add2978bf5b49550572c7c.html</anchorfile>
+      <anchor>gae0323a9039add2978bf5b49550572c7c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>h</name>
+      <anchorfile>group__stringconversion_ga5e36941b3d856737e81516acd45edc50.html</anchorfile>
+      <anchor>ga5e36941b3d856737e81516acd45edc50</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>hh</name>
+      <anchorfile>group__stringconversion_gae61e7de603852182385da5e907b4b232.html</anchorfile>
+      <anchor>gae61e7de603852182385da5e907b4b232</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>i16</name>
+      <anchorfile>group__stringconversion_ga4af6c64423d3a8691229135cb4356124.html</anchorfile>
+      <anchor>ga4af6c64423d3a8691229135cb4356124</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>i32</name>
+      <anchorfile>group__stringconversion_ga3b1df617247dbb90f86c43c7e5a0504d.html</anchorfile>
+      <anchor>ga3b1df617247dbb90f86c43c7e5a0504d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>i64</name>
+      <anchorfile>group__stringconversion_ga6c95997324761b0f5e6aa06244f52d24.html</anchorfile>
+      <anchor>ga6c95997324761b0f5e6aa06244f52d24</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>i8</name>
+      <anchorfile>group__stringconversion_ga10d539749f8a7b0e12af460edb3a40e6.html</anchorfile>
+      <anchor>ga10d539749f8a7b0e12af460edb3a40e6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>j</name>
+      <anchorfile>group__stringconversion_gabf2bc2545a4a5f5683d9ef3ed0d977e0.html</anchorfile>
+      <anchor>gabf2bc2545a4a5f5683d9ef3ed0d977e0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>t</name>
+      <anchorfile>group__stringconversion_gaaccc9105df5383111407fd5b41255e23.html</anchorfile>
+      <anchor>gaaccc9105df5383111407fd5b41255e23</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>u</name>
+      <anchorfile>group__stringconversion_ga6277e2a7446059985dc9bcf0a4ac1a8f.html</anchorfile>
+      <anchor>ga6277e2a7446059985dc9bcf0a4ac1a8f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>u16</name>
+      <anchorfile>group__stringconversion_ga8aa9149a22317014c683c48cebd8cfef.html</anchorfile>
+      <anchor>ga8aa9149a22317014c683c48cebd8cfef</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>u32</name>
+      <anchorfile>group__stringconversion_ga449a74b72ed931d627eca7efcc6f8c9d.html</anchorfile>
+      <anchor>ga449a74b72ed931d627eca7efcc6f8c9d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>u64</name>
+      <anchorfile>group__stringconversion_gad9a16e74d880983f276dce5b0344b8bd.html</anchorfile>
+      <anchor>gad9a16e74d880983f276dce5b0344b8bd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>u8</name>
+      <anchorfile>group__stringconversion_gab9f930ae0484417a1883fd3f7cdb490e.html</anchorfile>
+      <anchor>gab9f930ae0484417a1883fd3f7cdb490e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>uh</name>
+      <anchorfile>group__stringconversion_ga92163508c0b18e75db11592248b16332.html</anchorfile>
+      <anchor>ga92163508c0b18e75db11592248b16332</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>uhh</name>
+      <anchorfile>group__stringconversion_ga5511a7b325008060e7fb04ca25938bb4.html</anchorfile>
+      <anchor>ga5511a7b325008060e7fb04ca25938bb4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>uj</name>
+      <anchorfile>group__stringconversion_ga4b37394e3f8e8bb44668e582f18b8f31.html</anchorfile>
+      <anchor>ga4b37394e3f8e8bb44668e582f18b8f31</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>uz</name>
+      <anchorfile>group__stringconversion_ga3f0fa10deec07041a769fcb9eedae06b.html</anchorfile>
+      <anchor>ga3f0fa10deec07041a769fcb9eedae06b</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="group">
     <name>classification</name>
@@ -11747,6 +12105,13 @@
       <anchor>ga16dfb0fd90c3dced377c8c5801d5f042</anchor>
       <arglist>(...)</arglist>
     </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>static_inline</name>
+      <anchorfile>group__compiler__utilities_gaee1f2f5fb05f4936184a23f4dda732c9.html</anchorfile>
+      <anchor>gaee1f2f5fb05f4936184a23f4dda732c9</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="group">
     <name>C11</name>
@@ -11927,6 +12292,13 @@
     <subgroup>typenames</subgroup>
     <member kind="define">
       <type>#define</type>
+      <name>P99_CONSTANT</name>
+      <anchorfile>group__types_gabd74963ce7cf96a90031d20ba6450e40.html</anchorfile>
+      <anchor>gabd74963ce7cf96a90031d20ba6450e40</anchor>
+      <arglist>(T, NAME, INIT)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_DECLARE_ENUM</name>
       <anchorfile>group__types_ga5d811e46f48e01d79d1f931817d9c0f1.html</anchorfile>
       <anchor>ga5d811e46f48e01d79d1f931817d9c0f1</anchor>
@@ -12015,6 +12387,20 @@
       <anchorfile>group__types_ga984aaad63855f3143393f9d6af13acfc.html</anchorfile>
       <anchor>ga984aaad63855f3143393f9d6af13acfc</anchor>
       <arglist>(OBJP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_EXT_ARITHMETIC_TYPES</name>
+      <anchorfile>group__types_ga4b269f769b186e837689e9a6e75d8996.html</anchorfile>
+      <anchor>ga4b269f769b186e837689e9a6e75d8996</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_EXT_INTEGER_TYPES</name>
+      <anchorfile>group__types_gaf3dd5595a335d028c75125d2e74d6ad9.html</anchorfile>
+      <anchor>gaf3dd5595a335d028c75125d2e74d6ad9</anchor>
+      <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -12211,6 +12597,13 @@
       <anchorfile>group__types_gaee46ba898e0f3382644c53c3e0aee0be.html</anchorfile>
       <anchor>gaee46ba898e0f3382644c53c3e0aee0be</anchor>
       <arglist>(TYPE, VAR,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_UNUSED</name>
+      <anchorfile>group__types_gadfc4a740e019532904e5577e7ece9090.html</anchorfile>
+      <anchor>gadfc4a740e019532904e5577e7ece9090</anchor>
+      <arglist>(...)</arglist>
     </member>
     <member kind="function">
       <type>char const *</type>
@@ -13360,6 +13753,13 @@
     <filename>group__preprocessor__logic.html</filename>
     <member kind="define">
       <type>#define</type>
+      <name>P99_IF_INT</name>
+      <anchorfile>group__preprocessor__logic_ga081352efe3815ffa05876f1d50ea6bce.html</anchorfile>
+      <anchor>ga081352efe3815ffa05876f1d50ea6bce</anchor>
+      <arglist>(TOK)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_IS_EQ</name>
       <anchorfile>group__preprocessor__logic_ga316ec102bd9728181e04c2a26ec0603e.html</anchorfile>
       <anchor>ga316ec102bd9728181e04c2a26ec0603e</anchor>
@@ -13378,6 +13778,13 @@
       <anchorfile>group__preprocessor__logic_gadaf4dede4d2aa60e5694582a06bc2a0e.html</anchorfile>
       <anchor>gadaf4dede4d2aa60e5694582a06bc2a0e</anchor>
       <arglist>(_0, _1)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_IS_INT</name>
+      <anchorfile>group__preprocessor__logic_ga5ac40e943871ac565d1ea457d66778a5.html</anchorfile>
+      <anchor>ga5ac40e943871ac565d1ea457d66778a5</anchor>
+      <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
