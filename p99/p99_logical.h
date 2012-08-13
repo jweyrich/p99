@@ -157,6 +157,18 @@
 /* should not happen */
 #define P00_IS_VOID_11 WEIRD_VOID_ARG_ERROR
 
+#define P99_IS_INT(...) P00_IS_INT(P99_IS_EQ_signed(__VA_ARGS__), P99_IS_EQ_int(__VA_ARGS__))
+
+#define P00_IS_INT(_0, _1) P99_PASTE3(P00_IS_INT_, _0, _1)
+
+#define P00_IS_INT_00 0
+#define P00_IS_INT_01 1
+#define P00_IS_INT_10 1
+/* should not happen */
+#define P00_IS_INT_11 WEIRD_INT_ARG_ERROR
+
+#define P99_IF_INT(TOK) P99_IF_EQ_1(P99_IS_INT(TOK))
+
 /** @brief a decimal less than operator **/
 #define P99_IS_LT(_0, _1)  P00_LT( P99_IS_EQ_0(_1), P99_CHS(_0, P99_SELS(_1, P00_ALL_ONES()), P00_ALL_ZEROES()))
 #define P00_LT(_0, _1)  P99_PASTE2(P00_LT_, _0)(_1)
