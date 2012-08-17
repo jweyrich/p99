@@ -67,7 +67,7 @@ listElem const singleton = { 0 };
 <pre>
 inline
 listElem* listElem_init(listElem* el) {
- if (el) *el = singleOne;
+ if (el) *el = singleton;
  return el;
 }
 </pre>
@@ -117,7 +117,7 @@ enum { uchar_upper = ((unsigned)UCHAR_MAX) + 1, };
 <p>
   For composite types, in particular structure types, the only way to
   fabric a value expression that is not an assignable lvalue and such
-  that the addreass can't be taken is to first define
+  that the address can't be taken is to first define
   an object for the desired type and to feed it into an expression
   such that the result is an rvalue. The only operator that can return
   a composite type as a whole is the assignment operator:
@@ -181,18 +181,17 @@ register const listElem SINGLETON = { .val = 0, next = 0, };
 </p>
 <ol>
   <li>
-    Allow <code>const</code>-qualified objects
+    Allow the definition of <code>const</code>-qualified objects
     with <code>register</code> storage class in file scope.
   </li>
   <li>
-    Allow <code>const</code>-qualified objects
-    with <code>register</code> storage class in constant
-    expressions.
+    Allow the usage of <code>const</code>-qualified objects
+    with <code>register</code> storage class in constant expressions.
   </li>
 </ol>
 
 <h3>
-  Allow <code>const</code>-qualified objects
+  Allow the usage of <code>const</code>-qualified objects
   with <code>register</code> storage class in constant expressions.
 </h3>
 
@@ -312,8 +311,8 @@ const</code> and value <code>'e'</code>.
 </p>
 
 <h3>
-  Enable <code>const</code>-qualified objects
-  with <code>register</code> storage class in file scope
+  Allow the definition of <code>const</code>-qualified objects
+  with <code>register</code> storage class in file scope.
 </h3>
 
 <p>
@@ -389,7 +388,7 @@ In 6.9 replace p2:
 
 <p>
   For <code>register</code> objects in block scope, the only
-  semantic change would be that some of these objects now would be
+  semantic change wouldn't be that some of these objects now would be
   considered to be constant expressions, and thus be allowed in some contexts where
   they weren't before. In particular, some array bounds of block scope
   arrays might now become constant and thus an array that previously
@@ -444,7 +443,7 @@ In 6.9 replace p2:
 </p>
 <ol>
   <li>
-    They have external linkage.
+    They have "external" linkage.
   </li>
   <li>
     They have of static storage duration.
@@ -498,6 +497,27 @@ In 6.9 replace p2:
 </p>
 
 <h3>Possible realizations</h3>
+
+<h4>
+  The C++ way
+</h4>
+
+<p>
+  C++ already went part of the path that is proposed here. It allows
+  definitions of <code>const</code>-qualified integer typed objects in
+  file scope, if the initializer is a constant integer
+  expression. This is made in such a way that no linkage conflicts
+  occurs and that these "constants" in turn can occur in constant
+  integer expressions.
+</p>
+
+<p>
+  This model only fits half into what we want to achieve, here. First
+  C++ has these objects also as external symbol and enables the
+  programmer to take the address of it; C++ often needs references of
+  values. Then this is restricted to integer typed constants, which is
+  much less than is desirable.
+</p>
 
 <h4>
   Treat named constants similar to objects with internal linkage
