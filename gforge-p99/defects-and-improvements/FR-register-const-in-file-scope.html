@@ -1,219 +1,116 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-<link href="DR.css" rel="stylesheet" type="text/css"/>
-<title>
-  Feature Request: introduce <em>named
-    constants</em> as <code>const</code>-qualified objects
-  with <code>register</code> storage class
-</title>
+  <meta content="text/html;charset=UTF-8" http-equiv="Content-Type" />
+  <link href="DR.css" rel="stylesheet" type="text/css" />
+  <title>Feature Request: introduce &lt;em&gt;named
+constants&lt;/em&gt; as &lt;code&gt;const&lt;/code&gt;-qualified
+objects with &lt;code&gt;register&lt;/code&gt; storage class</title>
+  <meta content="Jens Gustedt, INRIA, France" name="author" />
 </head>
 <body>
-<h1>
-  Feature Request: introduce <em>named
-    constants</em> as <code>const</code>-qualified objects
-  with <code>register</code> storage class
+<h1> Feature Request: introduce <em>named constants</em> as <code>const</code>-qualified
+objects with <code>register</code> storage class
 </h1>
-
 <h2>Problem statement</h2>
-
-<p>
-  Data types that we declare in C often have some common values that
-  should be shared by all users of that type. Most prominent in C is
-  the all zero initialized value that we always can enforce trough a
-  default initializer of a <code>static</code> object, others need
-  detailed initializers:
+<p> Data types that we declare in C often have some common values that
+should be shared by all users of that type. Most prominent in C is the
+all zero initialized value that we always can enforce trough a default
+initializer of a <code>static</code> object, others need detailed
+initializers:
 </p>
-
-<pre>
-typedef struct listElem listElem;
-struct listElem { unsigned val; listElem* next; };
-static listElem const singleton = { 0 };
-static listElem const singleOne = { .val = 1 };
-</pre>
-
-<p>
-  There are two ways to deal with such <code>const</code> qualified
-  objects in file scope. If they are implemented as above
-  with <code>static</code> storage class, the may result in one object
-  per compilation unit and the compiler might throw spooky warnings on
-  us if we define them in a header file but don't use them at all.
+<pre>typedef struct listElem listElem;<br />struct listElem { unsigned val; listElem* next; };<br />static listElem const singleton = { 0 };<br />static listElem const singleOne = { .val = 1 };<br /></pre>
+<p> There are two ways to deal with such <code>const</code> qualified
+objects in file scope. If they are implemented as above with <code>static</code>
+storage class, the may result in one object per compilation unit and
+the compiler might throw spooky warnings on us if we define them in a
+header file but don't use them at all.
 </p>
-
-<p>
-  Another way is to declare them <code>extern</code> in a header file
+<p> Another way is to declare them <code>extern</code> in a header
+file
 </p>
-
-<pre>
-extern listElem const singleton;
-</pre>
-
-<p>
-  and to define them in one of the compilation units:
+<pre>extern listElem const singleton;<br /></pre>
+<p> and to define them in one of the compilation units:
 </p>
-
-<pre>
-listElem const singleton = { 0 };
-</pre>
-
-<p>
-  This second method has the big disadvantage that the value of the
-  object is not available in the other units that include the
-  declaration. Therefore we may miss some opportunities for the
-  compiler to optimize our code. For example an initialization
-  function for our structure type may be written as
+<pre>listElem const singleton = { 0 };<br /></pre>
+<p> This second method has the big disadvantage that the value of the
+object is not available in the other units that include the
+declaration. Therefore we may miss some opportunities for the compiler
+to optimize our code. For example an initialization function for our
+structure type may be written as
 </p>
-
-<pre>
-inline
-listElem* listElem_init(listElem* el) {
- if (el) *el = singleton;
- return el;
-}
-</pre>
-
-<p>
-  If the value of <code>singleOne</code> is known, the assignment
-  could be realized without loading it but only with immediats. And
-  <code>listElem_init</code> itself could then much easier be inlined
-  where it is called.
+<pre>inline<br />listElem* listElem_init(listElem* el) {<br /> if (el) *el = singleton;<br /> return el;<br />}<br /></pre>
+<p> If the value of <code>singleOne</code> is known, the assignment
+could be realized without loading it but only with immediats. And <code>listElem_init</code>
+itself could then much easier be inlined where it is called.
 </p>
-
-<p>
-  C currently has no real support for global constants for arbitrary
-  data types, not even for all of the standard arithmetic types: all
-  integer constants are at least as large as <code>int</code>. For
-  scalar types a cast can be used to produce a value expression:
+<p> C currently has no real support for global constants for arbitrary
+data types, not even for all of the standard arithmetic types: all
+integer constants are at least as large as <code>int</code>. For
+scalar types a cast can be used to produce a value expression:
 </p>
-<pre>
-#define myVeritableFalse ((_Bool)+0)
-#define myVeritableTrue ((_Bool)+1)
-#define HELLO ((char const*const)"hello")
-</pre>
-
-<p>
-  Or some predefined macro for the special case of complex types:
+<pre>#define myVeritableFalse ((_Bool)+0)<br />#define myVeritableTrue ((_Bool)+1)<br />#define HELLO ((char const*const)"hello")<br /></pre>
+<p> Or some predefined macro for the special case of complex types:
 </p>
-<pre>
-#define ORIGIN CMPLXF(0, 0)
-</pre>
-
-<p>
-  The only named constants that can serve as genuine constant
-  expressions as C understands it are of type <code>int</code> and are
-  declared through a declaration of an enumeration:
+<pre>#define ORIGIN CMPLXF(0, 0)<br /></pre>
+<p> The only named constants that can serve as genuine constant
+expressions as C understands it are of type <code>int</code> and are
+declared through a declaration of an enumeration:
 </p>
-
-<pre>
-enum { uchar_upper = ((unsigned)UCHAR_MAX) + 1, };
-</pre>
-
-<p>
-  All this, to just define a constant; we thereby define a new type (the unnamed
-  enumeration type) and define a constant that isn't even of that
-  type, but an <code>int</code>.
+<pre>enum { uchar_upper = ((unsigned)UCHAR_MAX) + 1, };<br /></pre>
+<p> All this, to just define a constant; we thereby define a new type
+(the unnamed enumeration type) and define a constant that isn't even of
+that type, but an <code>int</code>.
 </p>
-
-<p>
-  For composite types, in particular structure types, the only way to
-  fabric a value expression that is not an assignable lvalue and such
-  that the address can't be taken is to first define
-  an object for the desired type and to feed it into an expression
-  such that the result is an rvalue. The only operator that can return
-  a composite type as a whole is the assignment operator:
+<p> For composite types, in particular structure types, the only way to
+fabric a value expression that is not an assignable lvalue and such
+that the address can't be taken is to first define an object for the
+desired type and to feed it into an expression such that the result is
+an rvalue. The only operator that can return a composite type as a
+whole is the assignment operator:
 </p>
-
-<pre>
-#define SINGLETON ((listElem){ .val = 0, next = 0, } = (listElem const){ .val = 0, next = 0, })
-</pre>
-
-<p>
-  Such expression can be hard to read for a human and a debugger; we
-  have to use two compound literals to create a simple rvalue, one
-  that may be <code>const</code>-qualified where the other can't.
-  The biggest disadvantage is that such an expression is not suitable for
-  initializers for objects with static storage duration. We'd have to
-  define two different macros, one for the initializer and one for the
-  constant expression:
+<pre>#define SINGLETON ((listElem){ .val = 0, next = 0, } = (listElem const){ .val = 0, next = 0, })<br /></pre>
+<p> Such expression can be hard to read for a human and a debugger; we
+have to use two compound literals to create a simple rvalue, one that
+may be <code>const</code>-qualified where the other can't. The biggest
+disadvantage is that such an expression is not suitable for
+initializers for objects with static storage duration. We'd have to
+define two different macros, one for the initializer and one for the
+constant expression:
 </p>
-
-<pre>
-#define SINGLETON_INIT { .val = 0, next = 0, }
-#define SINGLETON_MOD_LVALUE (listElem){ .val = 0, next = 0, }
-#define SINGLETON_CONST_LVALUE (listElem const){ .val = 0, next = 0, }
-#define SINGLETON (SINGLETON_MOD_LVALUE = SINGLETON_CONST_LVALUE)
-</pre>
-
-<p>
-  In block scope, on the other hand, there is a construct that can be
-  used to declare unmutable values of which no address can be
-  taken: <code>const</code>-qualified objects
-  with <code>register</code> storage class. All the above could be
-  given in block scope with functionally equivalent definitions:
+<pre>#define SINGLETON_INIT { .val = 0, next = 0, }<br />#define SINGLETON_MOD_LVALUE (listElem){ .val = 0, next = 0, }<br />#define SINGLETON_CONST_LVALUE (listElem const){ .val = 0, next = 0, }<br />#define SINGLETON (SINGLETON_MOD_LVALUE = SINGLETON_CONST_LVALUE)<br /></pre>
+<p> In block scope, on the other hand, there is a construct that can be
+used to declare unmutable values of which no address can be taken: <code>const</code>-qualified
+objects with <code>register</code> storage class. All the above could
+be given in block scope with functionally equivalent definitions:
 </p>
-
-<pre>
-register const listElem singleton = { 0 };
-register const listElem singleOne = { .val = 1 };
-register const _Bool myVeritableFalse = 0;
-register const _Bool myVeritableTrue = 1;
-register const char *const HELLO = "hello";
-register const float _Complex ORIGIN = CMPLXF(0, 0);
-register const int uchar_upper = (unsigned)UCHAR_MAX + 1;
-register const listElem SINGLETON = { .val = 0, next = 0, };
-</pre>
-
-<p>
-  The idea of this proposal is that there is no apparent reason that
-  these <code>register</code> definitions couldn't be allowed in file
-  scope.
+<pre>register const listElem singleton = { 0 };<br />register const listElem singleOne = { .val = 1 };<br />register const _Bool myVeritableFalse = 0;<br />register const _Bool myVeritableTrue = 1;<br />register const char *const HELLO = "hello";<br />register const float _Complex ORIGIN = CMPLXF(0, 0);<br />register const int uchar_upper = (unsigned)UCHAR_MAX + 1;<br />register const listElem SINGLETON = { .val = 0, next = 0, };<br /></pre>
+<p> The idea of this proposal is that there is no apparent reason that
+these <code>register</code> definitions couldn't be allowed in file
+scope.
 </p>
-
 <h2>Proposed modification</h2>
-
-<p>
-  The aim of this proposal is to introduce <em>named constants</em>,
-  that are values that are referred through an identifier, by
-  means <code>const</code>-qualified objects
-  with <code>register</code> storage class. Since this construct
-  already exists in block scope, only two features must be introduced
-  to make this concept suitable for the intended use:
+<p> The aim of this proposal is to introduce <em>named constants</em>,
+that are values that are referred through an identifier, by means <code>const</code>-qualified
+objects with <code>register</code> storage class. Since this construct
+already exists in block scope, only two features must be introduced to
+make this concept suitable for the intended use:
 </p>
 <ol>
-  <li>
-    Allow the definition of <code>const</code>-qualified objects
-    with <code>register</code> storage class in file scope.
-  </li>
-  <li>
-    Allow the usage of <code>const</code>-qualified objects
-    with <code>register</code> storage class in constant expressions.
-  </li>
+  <li> Allow the definition of <code>const</code>-qualified objects
+with <code>register</code> storage class in file scope. </li>
+  <li> Allow the usage of <code>const</code>-qualified objects with <code>register</code>
+storage class in constant expressions. </li>
 </ol>
-
-<h3>
-  Allow the usage of <code>const</code>-qualified objects
-  with <code>register</code> storage class in constant expressions.
+<h3> Allow the usage of <code>const</code>-qualified objects with <code>register</code>
+storage class in constant expressions.
 </h3>
-
-<p>
-  We have to add a new item to the list of valid constants in 6.4.4
-  (and in the appendix)
+<p> We have to add a new item to the list of valid constants in 6.4.4
+(and in the appendix)
 </p>
-
-<pre  class="alternative">
-constant:
-	integer-constant
-	floating-constant
-	enumeration-constant
-	character-constant
-	named-constant
-</pre>
-
-<p>
-  Then add a new section 6.4.4.5:
+<pre class="alternative">constant:<br />	integer-constant<br />	floating-constant<br />	enumeration-constant<br />	character-constant<br />	named-constant<br /></pre>
+<p> Then add a new section 6.4.4.5:
 </p>
-
-
 <p class="alternative">
 6.4.4.3 Named constants<br />
 Syntax<br />
@@ -223,356 +120,256 @@ Semantics<br />
 storage class and of type that is <code>const</code> qualified with no
 other qualification, that is not a VM type, and such that its
 initializer is build only with constant expressions is a <em>named
-    constant</em>.
+constant</em>.
+</p>
 <p>
-
-<p>
-  It would also be appropriate to add an explanatory footnote, here.
 </p>
-
-<p class="alternative">
-  XX) A named constant is such that its value and size are entirely
-  determined at compile time. Because it must be initialized it cannot
-  be a VLA. The additional constraint of not being a VM type is
-  necessary to ensure that all uses in constant expressions will
-  indeed be constant.
+<p> It would also be appropriate to add an explanatory footnote, here.
 </p>
-
-
-<p>
-  Add a paragraph (between the current p5 and p6) that explains how
-  named constants can be used in subexpressions.
+<p class="alternative"> XX) A named constant is such that its value and
+size are entirely determined at compile time. Because it must be
+initialized it cannot be a VLA. The additional constraint of not being
+a VM type is necessary to ensure that all uses in constant expressions
+will indeed be constant.
 </p>
-
-<p class="alternative">
-  A <em>named constant expression</em> shall be a named constant
-  optionally followed by a designator list.
+<p> Add a paragraph (between the current p5 and p6) that explains how
+named constants can be used in subexpressions.
 </p>
-
-<p>
-  In the examples above, the following are valid named constant
-  expressions:
+<p class="alternative"> A <em>named constant expression</em> shall be
+a named constant optionally followed by a designator list.
 </p>
-
-<pre>
-singleton
-singleOne.val
-Hello[myVeritableTrue]
-</pre>
-
+<p> In the examples above, the following are valid named constant
+expressions:
+</p>
+<pre>singleton<br />singleOne.val<br />Hello[myVeritableTrue]<br /></pre>
 The first is of type <code>struct listElem</code> and with default
 initialized value for that type; the second is of type <code>unsigned
 int</code> and value <code>0</code>; the third is of type <code>char
 const</code> and value <code>'e'</code>.
-
-<p>
-  Then we have to add named constants to be valid integer constant
-  expressions in 6.6. Add to p6 before "integer constants,":
+<p> Then we have to add named constants to be valid integer constant
+expressions in 6.6. Add to p6 before "integer constants,":
 </p>
-
-<p class="alternative">
-  named constant expressions of integer type,
+<p class="alternative"> named constant expressions of integer type,
 </p>
-
-<p>
-  and to p7 add as a first list item:
+<p> and to p7 add as a first list item:
 </p>
-
-<p class="alternative">
-  - a named constant expression
+<p class="alternative"> - a named constant expression
 </p>
-
-<p>
-  Optionally, we could also add suitable compound literals to that
-  list; gcc already has an extension that allows for this.
+<p> Optionally, we could also add suitable compound literals to that
+list; gcc already has an extension that allows for this.
 </p>
-
-<p class="alternative">
-  - a compound literal that is <code>const</code> qualified with no
-  other qualification and such that its initializer is build only with
-  constant expressions, optionally followed by a designator list.
+<p class="alternative"> - a compound literal that is <code>const</code>
+qualified with no other qualification and such that its initializer is
+build only with constant expressions, optionally followed by a
+designator list.
 </p>
-
-<p>
-  Add to p8 before "integer constants,":
+<p> Add to p8 before "integer constants,":
 </p>
-
-<p class="alternative">
-  named constants expressions of arithmetic type,
+<p class="alternative"> named constants expressions of arithmetic type,
 </p>
-
-<p>
-  Modify p9 at the end of the first sentence:
+<p> Modify p9 at the end of the first sentence:
 </p>
-
-<p class="alternative">
-  ... or implicitly by the use of an expression of array or function
-  type, or by the value of a named constant expression.
+<p class="alternative"> ... or implicitly by the use of an expression
+of array or function type, or by the value of a named constant
+expression.
 </p>
-
-<h3>
-  Allow the definition of <code>const</code>-qualified objects
-  with <code>register</code> storage class in file scope.
+<h3> Allow the definition of <code>const</code>-qualified objects with
+<code>register</code> storage class in file scope.
 </h3>
-
 <p>
 In 6.9 replace p2:
 </p>
-
-<p  class="alternative">
-  The storage-class specifier <code>auto</code> shall not appear in
-  the declaration specifier in an external declaration.  If the
-  storage-class specifier <code>register</code> appears in the
-  declaration specifier of an external declaration it shall be the
-  definition of a named constant.
-<p>
-
-
-<p>
-  In 6.3.2.1p3 add to the list of exceptional cases
-</p>
-
-<p  class="alternative">
-  or it occurs inside a named constant expression
-<p>
-
-<p>
-  and add named constant expressions to the "Forward references" at
-  the end:
-</p>
-<p  class="alternative">
-  named constant expression (6.4.4.5)
-<p>
-
-<p>
-  In section 6.7.1 there is a footnote that explains the potential
-  implementation and use of <code>register</code> objects.
-</p>
-<p  class="alternative">
-  121) The implementation simply may treat any register declaration in block
-  scope as an auto declaration and in file scope as static
-  declaration.<br />
-  ... ...<br />
-  Thus, the only operators that can be applied to an array declared
-  with storage-class specifier register
-  are <code>sizeof</code>, <code>_Alignof</code> or array designators
-  if the array is the obtained as the value of a named constant
-  expression (6.4.4.5).
-</p>
-
-<p>
-  Optionally, in section 6.7.6.2 "Array declarators" p2 emphasize
-  that <code>register</code> storage class in file scope implies that
-  VLA are not allowed. Add a footnote for that:
-</p>
-<p  class="alternative">
-  xx) Thus a file scope named constant can not have a variable length
-  array type, because it has static storage duration. It also can't be
-  of another VM type, because in file scope there exists no constant
-  identifier of VM type that could be used for its initialization.
-</p>
-
-
-  <h2>
-    Discussion
-  </h2>
-
-  <h3>
-    Validity
-  </h3>
-<p>
-  Clearly the above modifications do not invalidate any valid program
-  under the current standard. They only assure that some formally
-  invalid programs become valid.
-</p>
-
-<p>
-  For <code>register</code> objects in block scope, the only
-  semantic change wouldn't be that some of these objects now would be
-  considered to be constant expressions, and thus be allowed in some contexts where
-  they weren't before. In particular, some array bounds of block scope
-  arrays might now become constant and thus an array that previously
-  was a VLA might now be an ordinary array. Such a shift only enables
-  more flexibility (by allowing initializers) and extends in some
-  cases the life time of an array.
-</p>
-
-<p>
-  <code>Register</code> objects in file scope were not permitted
-  before. So here there will be no change for existing conforming
-  programs.
-</p>
-
-<p>
-  The impact on the allowed grammar is minimal. The only new case is
-  the definition of an identifier in file scope, where now also
-  storage class specifier <code>register</code> may occur, but this
-  only if the type is <code>const</code> qualified in addition.
+<p class="alternative"> The storage-class specifier <code>auto</code>
+shall not appear in the declaration specifier in an external
+declaration. If the storage-class specifier <code>register</code>
+appears in the declaration specifier of an external declaration it
+shall be the definition of a named constant.
 </p>
 <p>
-  For the semantic of constant expressions this adds named constants
-  followed by designators to the possibilities.
+</p>
+<p> In 6.3.2.1p3 add to the list of exceptional cases
+</p>
+<p class="alternative"> or it occurs inside a named constant expression
 </p>
 <p>
-  For the semantic of integer constant expressions this adds some
-  expressions of integer type that contain named constants followed by
-  designators to the possibilities that correspond to fields of
-  integer type.
+</p>
+<p> and add named constant expressions to the "Forward references" at
+the end:
+</p>
+<p class="alternative"> named constant expression (6.4.4.5)
 </p>
 <p>
-  For the semantic of <em>integer constant expressions</em>
-  or <em>arithmetic constant expressions</em> this adds some
-  expressions of integer type that contain named constants followed by
-  designators to the possibilities that correspond to fields of
-  integer type.
 </p>
-<p>
-  This doesn't add new types of <em>address constants</em> since the
-  address of <code>register</code> objects can't be taken.
+<p> In section 6.7.1 there is a footnote that explains the potential
+implementation and use of <code>register</code> objects.
 </p>
-
+<p class="alternative"> 121) The implementation simply may treat any
+register declaration in block scope as an auto declaration and in file
+scope as static declaration.<br />
+... ...<br />
+Thus, the only operators that can be applied to an array declared with
+storage-class specifier register are <code>sizeof</code>, <code>_Alignof</code>
+or array designators if the array is the obtained as the value of a
+named constant expression (6.4.4.5).
+</p>
+<p> Optionally, in section 6.7.6.2 "Array declarators" p2 emphasize
+that <code>register</code> storage class in file scope implies that
+VLA are not allowed. Add a footnote for that:
+</p>
+<p class="alternative"> xx) Thus a file scope named constant can not
+have a variable length array type, because it has static storage
+duration. It also can't be of another VM type, because in file scope
+there exists no constant identifier of VM type that could be used for
+its initialization.
+</p>
+<h2> Discussion </h2>
+<h3> Validity </h3>
+<p> Clearly the above modifications do not invalidate any valid program
+under the current standard. They only assure that some formally invalid
+programs become valid.
+</p>
+<p> For <code>register</code> objects in block scope, the only
+semantic change wouldn't be that some of these objects now would be
+considered to be constant expressions, and thus be allowed in some
+contexts where they weren't before. In particular, some array bounds of
+block scope arrays might now become constant and thus an array that
+previously was a VLA might now be an ordinary array. Such a shift only
+enables more flexibility (by allowing initializers) and extends in some
+cases the life time of an array.
+</p>
+<p> <code>Register</code> objects in file scope were not permitted
+before. So here there will be no change for existing conforming
+programs.
+</p>
+<p> The impact on the allowed grammar is minimal. The only new case is
+the definition of an identifier in file scope, where now also storage
+class specifier <code>register</code> may occur, but this only if the
+type is <code>const</code> qualified in addition.
+</p>
+<p> For the semantic of constant expressions this adds named constants
+followed by designators to the possibilities.
+</p>
+<p> For the semantic of integer constant expressions this adds some
+expressions of integer type that contain named constants followed by
+designators to the possibilities that correspond to fields of integer
+type.
+</p>
+<p> For the semantic of <em>integer constant expressions</em> or <em>arithmetic
+constant expressions</em> this adds some expressions of integer type
+that contain named constants followed by designators to the
+possibilities that correspond to fields of integer type.
+</p>
+<p> This doesn't add new types of <em>address constants</em> since the
+address of <code>register</code> objects can't be taken.
+</p>
 <h3>New file scope objects</h3>
-
-<p>
-  The main new feature that is added by this proposal are a restricted
-  class of <code>register</code> objects in file scope, namely those
-  that have a <code>const</code>-qualified type. Since not much of the
-  rest of the description of file scope objects is changed,
-  such <code>const</code> qualified objects would have the following
-  properties:
+<p> The main new feature that is added by this proposal are a
+restricted class of <code>register</code> objects in file scope,
+namely those that have a <code>const</code>-qualified type. Since not
+much of the rest of the description of file scope objects is changed,
+such <code>const</code> qualified objects would have the following
+properties:
 </p>
 <ol>
-  <li>
-    They have "external" linkage.
-  </li>
-  <li>
-    They have of static storage duration.
-  </li>
-  <li>
-    Taking the address of such an object would be a constraint
-    violation.
-  </li>
-  <li>
-    Such an object is not a modifiable lvalue.
-  </li>
-  <li>
-    Since the proposal requires that all declarations are also
-    definitions, there can actually only exactly one such definition.
-  </li>
-  <li>
-    If the definition has no initializer the object is default
-    initialized just as other objects of static storage duration.
-  </li>
-  <li>
-    If there is an initializer, it must only contain constant
-    expressions as partial initializer expressions and for
-    designators.
-  </li>
+  <li> They have "external" linkage. </li>
+  <li> They have of static storage duration. </li>
+  <li> Taking the address of such an object would be a constraint
+violation. </li>
+  <li> Such an object is not a modifiable lvalue. </li>
+  <li> Since the proposal requires that all declarations are also
+definitions, there can actually only exactly one such definition. </li>
+  <li> If the definition has no initializer the object is default
+initialized just as other objects of static storage duration. </li>
+  <li> If there is an initializer, it must only contain constant
+expressions as partial initializer expressions and for designators. </li>
 </ol>
-
-<p>
-  Modifying an object that is defined
-  with <code>const</code>-qualified type would always be undefined
-  behavior, but if the object would be <code>register</code> such a
-  modification could slip in when the program is executed. With this
-  proposal we would even have a stronger property, namely that a
-  modification could only happen through a constraint violation (and
-  thus require a compile time diagnostic):
+<p> Modifying an object that is defined with <code>const</code>-qualified
+type would always be undefined behavior, but if the object would be <code>register</code>
+such a modification could slip in when the program is executed. With
+this proposal we would even have a stronger property, namely that a
+modification could only happen through a constraint violation (and thus
+require a compile time diagnostic):
 </p>
-
-<p>
-  Because of 4. it can never be on the left side of an assignment
-  operator or the operand of an increment operator. A cast never leads
-  to an lvalue. Property 3. ensures that the lvalue can never be
-  accessed through a different type.
+<p> Because of 4. it can never be on the left side of an assignment
+operator or the operand of an increment operator. A cast never leads to
+an lvalue. Property 3. ensures that the lvalue can never be accessed
+through a different type.
 </p>
-
-
-<p>
-  Property 1. is desirable to oblige users of this feature to use the
-  identifier that corresponds to a named constant consistently. It
-  doesn't oblige and implementation to provide a symbol in the sense
-  of the linker program of the platform, but it provides the
-  possibility to do so.
+<p> Property 1. is desirable to oblige users of this feature to use the
+identifier that corresponds to a named constant consistently. It
+doesn't oblige and implementation to provide a symbol in the sense of
+the linker program of the platform, but it provides the possibility to
+do so.
 </p>
-
 <h3>Possible realizations</h3>
-
-<h4>
-  The C++ way
+<h4> The C++ way
 </h4>
-
-<p>
-  C++ already went part of the path that is proposed here. It allows
-  definitions of <code>const</code>-qualified integer typed objects in
-  file scope, if the initializer is a constant integer
-  expression. This is made in such a way that no linkage conflicts
-  occurs and that these "constants" in turn can occur in constant
-  integer expressions.
+<p> C++ already went part of the path that is proposed here. It allows
+definitions of <code>const</code>-qualified integer typed objects in
+file scope, if the initializer is a constant integer expression. This
+is made in such a way that no linkage conflicts occurs and that these
+"constants" in turn can occur in constant integer expressions.
 </p>
-
-<p>
-  This model only fits half into what we want to achieve, here. First
-  C++ has these objects also as external symbol and enables the
-  programmer to take the address of it; C++ often needs references of
-  values. Then this is restricted to integer typed constants, which is
-  much less than is desirable.
+<p> This model only fits half into what we want to achieve, here. First
+C++ has these objects also as external symbol and enables the
+programmer to take the address of it; C++ often needs references of
+values. Then this is restricted to integer typed constants, which is
+much less than is desirable.
 </p>
-
-<h4>
-  Treat named constants similar to objects with internal linkage
+<h4> Treat named constants similar to objects with internal linkage
 </h4>
-<p>
-  As mentioned in the modified footnote 121) the simplest possible
-  realization of named constants in file scope is to treat them the
-  same as <code>static</code> <code>const</code> qualified
-  objects. If the compiler is not able to optimize all uses of that
-  object into immediates, this realization may have the disadvantage
-  that each compilation unit gets its own copy of this object.
+<p> As mentioned in the modified footnote 121) the simplest possible
+realization of named constants in file scope is to treat them the same
+as <code>static</code> <code>const</code> qualified objects. If the
+compiler is not able to optimize all uses of that object into
+immediates, this realization may have the disadvantage that each
+compilation unit gets its own copy of this object.
 </p>
-
-<p>
-  Such a realization would never lead to unspecific behavior. The only
-  unspecific behavior that several realizations as objects with
-  internal linkage would imply, is that the addresses of these objects
-  would be different. Since the address of such an object can't be
-  taken, the properties of having the same address (or not) would not
-  be observable.
+<p> Such a realization would never lead to unspecific behavior. The
+only unspecific behavior that several realizations as objects with
+internal linkage would imply, is that the addresses of these objects
+would be different. Since the address of such an object can't be taken,
+the properties of having the same address (or not) would not be
+observable.
 </p>
-
-<p>
-  A test macro code in P99, <code>P99_CONSTANT</code> that just
-  declares a <code>static</code> <code>const</code> qualified object
-  and assures that the compiler cannot issue useless warnings about
-  an unused identifier shows good results: with optimization enabled,
-  gcc and clang both are able to avoid the allocation of the object
-  and use only its value where appropriate. Obviously, such
-  replacement macro cannot test if the address of such an object is
-  taken, but hopefully the implementation of this feature for block
-  scope <code>register</code> objects could easily be reused.
+<p> A test macro code in <a href="http://p99.gforge.inria.fr/">P99</a>,
+<code>P99_CONSTANT</code> that just declares a <code>static</code> <code>const</code>
+qualified object and assures that the compiler cannot issue useless
+warnings about an unused identifier shows good results: with
+optimization enabled, gcc and clang both are able to avoid the
+allocation of the object and use only its value where appropriate.
+Obviously, such replacement macro cannot test if the address of such an
+object is taken, but hopefully the implementation of this feature for
+block scope <code>register</code> objects could easily be reused.
 </p>
-
-<h4>
-  Treat named constants similar to objects with "weak" linkage
+<h4> Treat named constants similar to objects with "weak" linkage
 </h4>
-
-<p>
-  Another possibility for a realization is to use a common extension
-  that introduces "weak" linkage, i.e a linkage property that allows
-  for multiple definition of an object in different compilation
-  units. If several such objects occur in different units, the linker
-  then asserts that all are of the same size and arbitrarily chooses
-  one of these for the final program.
+<p> Another possibility for a realization is to use a common extension
+that introduces "weak" linkage, i.e a linkage property that allows for
+multiple definition of an object in different compilation units. If
+several such objects occur in different units, the linker then asserts
+that all are of the same size and arbitrarily chooses one of these for
+the final program.
 </p>
-
-<p>
-  This technique is e.g already used by some compiler implementors to
-  realize inline functions. gcc and clang also handle this approach
-  well. But in difference to the previous approach they always
-  generate an object, so a final program will always contain exactly
-  one copy of each named constant.
+<p> This technique is e.g already used by some compiler implementors to
+realize inline functions. gcc and clang also handle this approach well.
+But in difference to the previous approach they always generate an
+object, so a final program will always contain exactly one copy of each
+named constant.<a href="http://validator.w3.org/check?uri=referer"> </a>
 </p>
-
-  <hr />
-  <author>Author: Jens Gustedt, INRIA, 2012</author>
+<table style="width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td>Author: Jens Gustedt, INRIA, 2012<br />
+      </td>
+      <td><span style="text-align: right;"> <a
+ href="http://validator.w3.org/check?uri=referer"><img
+ alt="Valid XHTML 1.0 Transitional"
+ src="http://www.w3.org/Icons/valid-xhtml10" height="31" width="88" /></a></span></td>
+    </tr>
+  </tbody>
+</table>
+<span style="text-align: right;"><a
+ href="http://validator.w3.org/check?uri=referer">|</a></span>
 </body>
+</html>
