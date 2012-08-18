@@ -177,6 +177,10 @@ P99_IF_EQ(0,M)                                                 \
  **
  ** @see P99_INSTANTIATE if your function is @c inline, in which case you
  ** also have to provide an external symbol for the function.
+ **
+ ** @remark This should be "macro-safe" that is if @a NAME is
+ ** overloaded with a macro, ::P99_PROTOTYPE should still be able to
+ ** instantiate the corresponding function.
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_PROTOTYPE, 0)
 P00_DOCUMENT_TYPE_ARGUMENT(P99_PROTOTYPE, 2)
@@ -185,7 +189,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_PROTOTYPE, 2)
 #define P99_PROTOTYPE(...)
 #else
 #define P00_PROTOTYPE(RT, NAME, ...)                           \
-  RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));       \
+  RT (NAME)(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__));     \
   typedef RT P99_CAT2(NAME, _prototype_ret);                   \
   P99_TYPEDEFS(P99_CAT2(NAME, _prototype_), __VA_ARGS__)
 
@@ -198,10 +202,10 @@ P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
 #if P99_COMPILER & P99_COMPILER_CLANG
 #define P00_INSTANTIATE(RT, NAME, ...)                                                                   \
 RT (*const P99_PASTE3(p00_, NAME, _pointer)[])(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__)) = { NAME }; \
-p00_instantiate RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
+p00_instantiate RT (NAME)(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
 #else
 #define P00_INSTANTIATE(RT, NAME, ...)                                \
-p00_instantiate RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
+p00_instantiate RT (NAME)(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
 #endif
 
 #ifdef P00_DOXYGEN
@@ -218,8 +222,13 @@ p00_instantiate RT NAME(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
  ** agree upon the interpretation. Therefore we provide a wrapper that
  ** does just this.  Put such a call to ::P99_INSTANTIATE in exactly
  ** one .c file (compilation unit) of you liking. The external symbol
- ** will then be generated there.  @see P99_PROTOTYPE for the syntax
- ** of this macro.
+ ** will then be generated there.
+ **
+ ** @see P99_PROTOTYPE for the syntax of this macro.
+ **
+ ** @remark This should be "macro-safe" that is if @a NAME is
+ ** overloaded with a macro, ::P99_INSTANTIATE should still be able to
+ ** instantiate the corresponding function.
  **/
 #define P99_INSTANTIATE(RT, NAME, ...) RT NAME(__VA_ARGS__)
 #else
