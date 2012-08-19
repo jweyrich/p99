@@ -13,6 +13,10 @@
 #include "p99_id.h"
 #include "p99_args.h"
 #include "p99_map.h"
+#include "p99_defarg.h"
+#include "p99_checkargs.h"
+#include "p99_c99.h"
+
 
 enum { d0 = 2, d1 = 3, d2 = 2, d3 = 3 };
 
@@ -98,6 +102,30 @@ unsigned const A[d0][d1][d2][d3]
   },
 };
 
+inline
+unsigned char sum(size_t n, unsigned char A[n]) {
+  unsigned char ret = 0;
+  for (size_t i = 0; i < n; ++i) ret += A[i];
+  return ret;
+}
+
+P99_CA_WRAP_DECLARE(sum, unsigned char, (size_t n, unsigned char A[n]), (n, A), (1));
+P99_CA_WRAP_DEFINE(sum, unsigned char, (size_t n, unsigned char A[n]), (n, A), (1));
+
+#define sum(...) P99_CA_CALL(sum, (1), (1), __VA_ARGS__)
+
+inline
+unsigned char sump(size_t n, unsigned char *A) {
+  unsigned char ret = 0;
+  for (size_t i = 0; i < n; ++i) ret += A[i];
+  return ret;
+}
+
+P99_CA_WRAP_DECLARE(sump, unsigned char, (size_t n, unsigned char *A), (n, A), (), (1));
+P99_CA_WRAP_DEFINE(sump, unsigned char, (size_t n, unsigned char *A), (n, A), (), (1));
+
+#define sump(...) P99_CA_CALL(sump, (), (1), __VA_ARGS__)
+
 int main(int argc, char** argv) {
   unsigned const* a = &(A[0][0][0][0]);
   P99_PARALLEL_FORALL(D, i0, i1, i2, i3)
@@ -109,4 +137,50 @@ int main(int argc, char** argv) {
   printf("ino: %u\n", i);
   P99_PARALLEL_DO(unsigned, i,  0, argc)
   printf("ooo: %u\n", i);
+  __asm__("nop");
+  unsigned char B[argc];
+  printf("va_arg sum: %hhu\n", sum(argc, B));
+  __asm__("nop");
+  size_t const fail8 = (argc == 2 ? 8 : 7);
+  size_t const fail9 = (argc == 3 ? 10 : 9);
+  {
+    unsigned char C[] = { 1 };
+    printf("fixed sump: %hhu\n", sump(1, C));
+    unsigned char D[] = { 1, 2 };
+    printf("fixed sump: %hhu\n", sump(2, D));
+    unsigned char E[] = { 1, 2, 3 };
+    printf("fixed sump: %hhu\n", sump(3, E));
+    unsigned char F[] = { 1, 2, 3, 4 };
+    printf("fixed sump: %hhu\n", sump(4, F));
+    unsigned char G[] = { 1, 2, 3, 4, 5 };
+    printf("fixed sump: %hhu\n", sump(5, G));
+    unsigned char H[] = { 1, 2, 3, 4, 5, 6 };
+    printf("fixed sump: %hhu\n", sump(6, H));
+    unsigned char J[] = { 1, 2, 3, 4, 5, 6, 7 };
+    printf("fixed sump: %hhu\n", sump(fail8, J));
+    unsigned char K[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    printf("fixed sump: %hhu\n", sump(8, K));
+    unsigned char L[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    printf("fixed sump: %hhu\n", sump(fail9, L));
+  }
+  {
+    unsigned char C[] = { 1 };
+    printf("fixed sum: %hhu\n", sum(1, C));
+    unsigned char D[] = { 1, 2 };
+    printf("fixed sum: %hhu\n", sum(2, D));
+    unsigned char E[] = { 1, 2, 3 };
+    printf("fixed sum: %hhu\n", sum(3, E));
+    unsigned char F[] = { 1, 2, 3, 4 };
+    printf("fixed sum: %hhu\n", sum(4, F));
+    unsigned char G[] = { 1, 2, 3, 4, 5 };
+    printf("fixed sum: %hhu\n", sum(5, G));
+    unsigned char H[] = { 1, 2, 3, 4, 5, 6 };
+    printf("fixed sum: %hhu\n", sum(6, H));
+    unsigned char J[] = { 1, 2, 3, 4, 5, 6, 7 };
+    printf("fixed sum: %hhu\n", sum(fail8, J));
+    unsigned char K[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    printf("fixed sum: %hhu\n", sum(8, K));
+    unsigned char L[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    printf("fixed sum: %hhu\n", sum(fail9, L));
+  }
 }
