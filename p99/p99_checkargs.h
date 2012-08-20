@@ -104,12 +104,15 @@ RET P00_CA_MANGLE(NAME, ACHECKS, PCHECKS)                                      \
       P00_ROBUST TYPES) {                                               \
   char const*const p00_proto = P99_STRINGIFY(NAME) P99_STRINGIFY(TYPES); \
   P99_UNUSED(p00_proto);                                                \
-  P00_CA_FSIZES(P99_NARG VARS, P00_ROBUST VARS);                        \
-  {                                                                     \
-    P00_CA_TYPEDEFS(P99_NARG TYPES, P00_ROBUST TYPES);                  \
-    P00_CA_FSIZEOFS(P99_NARG VARS, P00_ROBUST VARS);                    \
-  }                                                                     \
-  P00_CA_ACHECKS(P99_NARG ACHECKS, P00_ROBUST ACHECKS);                 \
+  P99_IF_EMPTY ACHECKS()                                                \
+       (                                                                \
+        P00_CA_FSIZES(P99_NARG VARS, P00_ROBUST VARS);                  \
+       {                                                                \
+         P00_CA_TYPEDEFS(P99_NARG TYPES, P00_ROBUST TYPES);             \
+         P00_CA_FSIZEOFS(P99_NARG VARS, P00_ROBUST VARS);               \
+       }                                                                \
+        P00_CA_ACHECKS(P99_NARG ACHECKS, P00_ROBUST ACHECKS);           \
+       )                                                                \
   P00_CA_PCHECKS(VARS, P99_NARG PCHECKS, P00_ROBUST PCHECKS);           \
   /* Do a type check without re-declaring the function */               \
   RET (*P99_PASTE2(p00_ca_ft_, NAME)) TYPES = NAME;                     \
