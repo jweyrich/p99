@@ -577,6 +577,15 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_ALENS, 0)
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
 #define P99_ALENS(ARR, N) P99_FOR(ARR, N, P00_ALENS0, P00_ALEN, P99_REP(N,))
 
+
+#define P00_AALLOC(...) ((__VA_ARGS__)malloc(sizeof *(__VA_ARGS__){ 0 }))
+
+/**
+ ** @brief Allocate a new matrix of base type @a T and with @a N
+ ** dimensions as given by @a VB
+ **/
+#define P99_AALLOC(T, VB, N) P00_AALLOC(P99_AREF(T, , P99_ALENS(*VB, N)))
+
 #define P00_ACALL1(ARR) P99_ALENS(*ARR, 1), (ARR)
 #define P00_ACALL2(ARR, N) P99_ALENS(*ARR, N), (ARR)
 /* The three argument form asserts that pointers to the elements of
@@ -597,6 +606,15 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
 /* capture the special cases do implement default arguments */
 #define P00_AARG_3(T, ARR, DIM) P00_AARG(T, ARR, DIM, P99_PASTE(p00_aarg_, ARR))
 #define P00_AARG_2(T, ARR) P00_AARG_3(T, ARR, 1)
+
+/* generate a list of size_t's and the declaration of the array
+   pointer */
+#define P00_ANAME_0(ARR, DIM, ...) __VA_ARGS__, ARR
+#define P00_ANAME(ARR, DIM, INAME) P00_ANAME_0(ARR, DIM, P99_NAME(DIM, INAME))
+
+/* capture the special cases do implement default arguments */
+#define P00_ANAME_2(ARR, DIM) P00_ANAME(ARR, DIM, P99_PASTE(p00_aarg_, ARR))
+#define P00_ANAME_1(ARR) P00_ANAME_2(ARR, 1)
 
 #ifdef P00_DOXYGEN
 /**
@@ -685,6 +703,20 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_AARG, 0)
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_AARG, 2)
 #define P99_AARG(TYPE, NAME, DIM, VAR)
 
+/**
+ ** @brief Declare list of variable names as produced by ::P99_AARG
+ **
+ ** Parameter @a VAR may be omitted as for :P99_AARG.
+ **
+ ** @a DIM defaults to @c 1.
+ **
+ ** @see P99_ACALL
+ ** @see P99_ALEN
+ **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_ANAME, 0)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_ANAME, 2)
+#define P99_ANAME(NAME, DIM, VAR)
+
 #else
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_ALEN, 0)
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALEN, 1)
@@ -696,6 +728,9 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_ACALL, 2)
 P00_DOCUMENT_TYPE_ARGUMENT(P99_AARG, 0)
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_AARG, 2)
 #define P99_AARG(...) P99_IF_GT(P99_NARG(__VA_ARGS__),3)(P00_AARG(__VA_ARGS__))(P99_PASTE2(P00_AARG_, P99_NARG(__VA_ARGS__))(__VA_ARGS__))
+P00_DOCUMENT_TYPE_ARGUMENT(P99_ANAME, 0)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_ANAME, 2)
+#define P99_ANAME(...) P99_IF_GT(P99_NARG(__VA_ARGS__),2)(P00_ANAME(__VA_ARGS__))(P99_PASTE2(P00_ANAME_, P99_NARG(__VA_ARGS__))(__VA_ARGS__))
 
 #endif
 
