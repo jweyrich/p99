@@ -109,6 +109,9 @@ unsigned char sum(size_t n, unsigned char A[n]) {
   return ret;
 }
 
+P99_INSTANTIATE(unsigned char, sum, size_t n, unsigned char A[n]);
+
+
 P99_CA_WRAP_DECLARE(sum, unsigned char, (size_t n, unsigned char A[n]), (n, A), (1));
 P99_CA_WRAP_DEFINE(sum, unsigned char, (size_t n, unsigned char A[n]), (n, A), (1));
 
@@ -120,6 +123,8 @@ unsigned char sump(size_t n, unsigned char *A) {
   for (size_t i = 0; i < n; ++i) ret += A[i];
   return ret;
 }
+
+P99_INSTANTIATE(unsigned char, sump, size_t n, unsigned char *A);
 
 P99_CA_WRAP_DECLARE(sump, unsigned char, (size_t n, unsigned char *A), (n, A), (), (1));
 P99_CA_WRAP_DEFINE(sump, unsigned char, (size_t n, unsigned char *A), (n, A), (), (1));
