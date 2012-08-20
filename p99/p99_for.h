@@ -583,7 +583,7 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
    the matrix are assignment compatible to pointers of the indicated type.
    Then we do the cast to the pointer to matrix type that would
    otherwise be dangerous and could hide incompatibilities. */
-#define P00_ACALL3(ARR, N, TYPE) P99_ALENS(*ARR, N), ((TYPE (*const)P99_REP(N,[1]))(TYPE*const){ &((*ARR)P99_REP(N,[0])) })
+#define P00_ACALL3(ARR, N, TYPE) P99_ALENS(*ARR, N), ((TYPE (*const)P99_SUBSCRIPT(P99_ALENS(*ARR, N)))(TYPE*const){ &((*ARR)P99_REP(N,[0])) })
 
 /* transform a list of names into size_t declarations */
 #define P00_AARG_DECL(X) size_t const X
