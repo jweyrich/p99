@@ -159,6 +159,7 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                     \
 #define P00_CA_PSIZEOFS(LIST, N, ...) P99_FOR(LIST, N, P00_SEQ, P00_CA_PSIZEOF, __VA_ARGS__)
 
 
+#ifndef P99_NO_CHECKARGS
 #define P99_CA_CALL(NAME, ACHECKS, PCHECKS, ...)                        \
 P00_CA_MANGLE(NAME, ACHECKS, PCHECKS)                                   \
 (                                                                       \
@@ -168,6 +169,8 @@ P00_CA_MANGLE(NAME, ACHECKS, PCHECKS)                                   \
  P99_IF_EMPTY PCHECKS()(P00_CA_PSIZEOFS((__VA_ARGS__), P99_NARG PCHECKS, P00_ROBUST PCHECKS),) \
  __VA_ARGS__                                                            \
 )
-
+#else
+#define P99_CA_CALL(NAME, ACHECKS, PCHECKS, ...)  NAME(__VA_ARGS__)
+#endif
 
 #endif
