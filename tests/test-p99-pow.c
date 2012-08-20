@@ -15,6 +15,7 @@
 #include "p99_new.h"
 #include "p99_c99_default.h"
 #include "p99_atomic.h"
+#include "p99_checkargs.h"
 
 #ifdef _OPENMP
 # include <omp.h>
@@ -40,15 +41,17 @@ printFunc(P99_AARG(double const, A, 2, na)) {
   fflush(0);
 }
 
+P99_CA_WRAP_DECLARE(printFunc, void, (P99_AARG(double const, A, 2, na)), (na0, na1, A), (), (2));
+
 /* Print a 2D array, the user interface */
-#define print(ARR) printFunc(P99_ACALL(ARR, 2, double const))
+#define print(ARR) P99_CA_CALL(printFunc, (), (2), P99_ACALL(ARR, 2, double const))
 
 /* Zero out a 2D double array, the (more or less) hidden function. */
 /* The array is called C. The lengths are not accessible through a
    name, but only trough the ::P99_ALEN macro. */
 inline
 void
-zeroOutFunc(P99_AARG(double, C, 2)) {
+zeroOutFunc(P99_AARG(double, C, 2, nc)) {
   P99_PARALLEL_DO(size_t, i, 0, P99_ALEN(*C, 0)) {
     P99_PARALLEL_DO(size_t, j, 0, P99_ALEN(*C, 1)) {
       (*C)[i][j] = 0.0;
@@ -56,16 +59,18 @@ zeroOutFunc(P99_AARG(double, C, 2)) {
   }
 }
 
+P99_CA_WRAP_DECLARE(zeroOutFunc, void, (P99_AARG(double, C, 2, nc)), (nc0, nc1, C), (), (2));
+
 /* The user interface. It receives just one argument the pointer to
    the matrix. */
-#define zeroOut(VC) zeroOutFunc(P99_ACALL(VC, 2))
+#define zeroOut(VC) P99_CA_CALL(zeroOutFunc, (), (2), P99_ACALL(VC, 2))
 
 /* Check a 2D double array if it is all 0.0, the (more or less) hidden function. */
 /* The array is called C. The lengths are not accessible through a
    name, but only trough the ::P99_ALEN macro. */
 inline
 bool
-checkZeroFunc(P99_AARG(double, C, 2)) {
+checkZeroFunc(P99_AARG(double const, C, 2, nc)) {
   atomic_flag ret = ATOMIC_FLAG_INIT;
   P99_PARALLEL_DO(size_t, i, 0, P99_ALEN(*C, 0)) {
     P99_PARALLEL_DO(size_t, j, 0, P99_ALEN(*C, 1)) {
@@ -75,9 +80,12 @@ checkZeroFunc(P99_AARG(double, C, 2)) {
   return !atomic_flag_test_and_set(&ret);
 }
 
+P99_CA_WRAP_DECLARE(checkZeroFunc, bool, (P99_AARG(double const, C, 2, nc)), (nc0, nc1, C), (), (2));
+
+
 /* The user interface. It receives just one argument the pointer to
    the matrix. */
-#define checkZero(VC) checkZeroFunc(P99_ACALL(VC, 2))
+#define checkZero(VC) P99_CA_CALL(checkZeroFunc, (), (2), P99_ACALL(VC, 2, double const))
 
 /* Compute the dot-product of two double vectors, the (more or less) hidden function. */
 /* The two vectors are called A and B. Their length are not accessible
@@ -93,8 +101,15 @@ dotproductFunc(double ret,
   return ret;
 }
 
+P99_CA_WRAP_DECLARE(dotproductFunc,
+                    double,
+                    (double ret, P99_AARG(double const, A, 1, na), P99_AARG(double const, B, 1, nb)),
+                    (ret, na0, A, nb0, B), (), (2, 4));
+
 /* A helper macro that puts the accumulator argument in front. */
-#define dotproduct1(VA, VB, CAR) dotproductFunc(CAR, P99_ACALL(VA, 1, double const), P99_ACALL(VB, 1, double const))
+#define dotproduct1(VA, VB, CAR)                                        \
+P99_CA_CALL(dotproductFunc, (), (2, 4), CAR, P99_ACALL(VA, 1, double const), P99_ACALL(VB, 1, double const))
+
 /* A helper macro that translates a va_arg list into the five
    arguments for dotproductFunc. */
 #define dotproduct0(...) dotproduct1(__VA_ARGS__)
@@ -125,8 +140,10 @@ transposeFunc(P99_AARG(double const, B, 2, nb), void* buf) {
   return A;
 }
 
+P99_CA_WRAP_DECLARE(transposeFunc, void*, (P99_AARG(double const, B, 2, nb), void* buf), (nb0, nb1, B, buf), (), (2));
+
 /* A helper macro that is to be called with 2 arguments. */
-#define transpose2(VB, buff) transposeFunc(P99_ACALL(VB, 2, double const), buff)
+#define transpose2(VB, buff) P99_CA_CALL(transposeFunc, (), (2), P99_ACALL(VB, 2, double const), buff)
 /* A helper macro that is to be called with 1 arguments and adds a
    call to malloc to allocate the necessary space. */
 #define transpose1(VB) transpose2(VB, malloc(sizeof(*VB)))
@@ -168,12 +185,24 @@ multFunc(P99_AARG(double, C, 2, nc),
          P99_AARG(double const, A, 2, na),
          P99_AARG(double const, B, 2, nb));
 
+P99_CA_WRAP_DECLARE(multFunc,
+                    void,
+                    (P99_AARG(double, C, 2, nc),
+                     P99_AARG(double const, A, 2, na),
+                     P99_AARG(double const, B, 2, nb)),
+                    (nc0, nc1, C, na0, na1, A, nb0, nb1, B),
+                    (),
+                    (2, 5, 8));
+
 /* The user interface. It receives just the three pointers to
    the matrix as arguments. */
-#define mult(CRR, ARR, BRR)                                    \
-multFunc(P99_ACALL(CRR, 2, double),                            \
-         P99_ACALL(ARR, 2, double const),                      \
-         P99_ACALL(BRR, 2, double const))
+#define mult(CRR, ARR, BRR)                     \
+P99_CA_CALL(multFunc,                           \
+            (),                                 \
+            (2, 5, 8),                          \
+            P99_ACALL(CRR, 2, double),          \
+            P99_ACALL(ARR, 2, double const),    \
+            P99_ACALL(BRR, 2, double const))
 
 /* All above would typically be written in a header (.h) file ***/
 /****************************************************************/
@@ -186,7 +215,7 @@ P99_INSTANTIATE(void, zeroOutFunc,
                 P99_AARG(double, C, 2));
 
 P99_INSTANTIATE(bool, checkZeroFunc,
-                P99_AARG(double, C, 2));
+                P99_AARG(double const, C, 2));
 
 P99_INSTANTIATE(double, dotproductFunc,
                 double,
@@ -202,6 +231,31 @@ P99_INSTANTIATE(void, multFunc,
                 P99_AARG(double, C, 2),
                 P99_AARG(double const, A, 2),
                 P99_AARG(double const, B, 2));
+
+
+P99_CA_WRAP_DEFINE(printFunc, void, (P99_AARG(double const, A, 2, na)), (na0, na1, A), (), (2));
+P99_CA_WRAP_DEFINE(zeroOutFunc, void, (P99_AARG(double, C, 2, nc)), (nc0, nc1, C), (), (2));
+P99_CA_WRAP_DEFINE(checkZeroFunc, bool, (P99_AARG(double const, C, 2, nc)), (nc0, nc1, C), (), (2));
+P99_CA_WRAP_DEFINE(dotproductFunc,
+                   double,
+                   (double ret, P99_AARG(double const, A, 1, na), P99_AARG(double const, B, 1, nb)),
+                   (ret, na0, A, nb0, B), (), (2, 4));
+P99_CA_WRAP_DEFINE(multFunc,
+                    void,
+                    (P99_AARG(double, C, 2, nc),
+                     P99_AARG(double const, A, 2, na),
+                     P99_AARG(double const, B, 2, nb)),
+                    (nc0, nc1, C, na0, na1, A, nb0, nb1, B),
+                    (),
+                    (2, 5, 8));
+
+P99_CA_WRAP_DEFINE(transposeFunc,
+                   void*,
+                   (P99_AARG(double const, B, 2, nb), void* buf),
+                   (nb0, nb1, B, buf),
+                   (),
+                   (2));
+
 
 /* Matrix multiplication has three nested for loops. One for each
    dimension and on for the dotproduct between the rows of A and the
@@ -271,7 +325,7 @@ multFunc(P99_AARG(double, C, 2, nc),
 
        or about istep/2 operations per entry. */
     P99_PARALLEL_DO(size_t, i, 0, na0, istep) {
-      P99_PARALLEL_DO(size_t, j, 0, nb1, jstep) {
+      P99_DO(size_t, j, 0, nb1, jstep) {
         register size_t const kMax = (na1 - k);
         register size_t const iMax = (na0 - i);
         register size_t const jMax = (nb1 - j);
@@ -317,6 +371,7 @@ multFunc(P99_AARG(double, C, 2, nc),
 
 int main(int argc, char*argv[]) {
   size_t p = 1;
+  P99_UNUSED(p);
   if (argc > 4)
     p = strtoul(argv[4], NULL, 0);
   omp_set_num_threads(p);
