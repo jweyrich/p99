@@ -27,10 +27,10 @@
 #endif
 
 /* Print a 2D double array, the (more or less) hidden function. */
-/* The array is called A, the length in the two dimensions are called
-   na0 and na1, respectively. */
 void
-printFunc(P99_AARG(double const, A, 2, na)) {
+printFunc(P99_AARG(double const, A, 2)) {
+  size_t const na0 = P99_ALEN(*A, 0);
+  size_t const na1 = P99_ALEN(*A, 1);
   P99_DO(size_t, i, 0, na0) {
     P99_DO(size_t, j, 0, na1) {
       printf("%g\t", (*A)[i][j]);
@@ -41,7 +41,7 @@ printFunc(P99_AARG(double const, A, 2, na)) {
   fflush(0);
 }
 
-P99_CA_WRAP_DECLARE(printFunc, void, (P99_AARG(double const, A, 2, na)), (na0, na1, A), (), (2));
+P99_CA_WRAP_DECLARE(printFunc, void, (P99_AARG(double const, A, 2)), (P99_ANAME(A, 2)), (), (2));
 
 /* Print a 2D array, the user interface */
 #define print(ARR) P99_CA_CALL(printFunc, (), (2), P99_ACALL(ARR, 2, double const))
@@ -51,7 +51,7 @@ P99_CA_WRAP_DECLARE(printFunc, void, (P99_AARG(double const, A, 2, na)), (na0, n
    name, but only trough the ::P99_ALEN macro. */
 inline
 void
-zeroOutFunc(P99_AARG(double, C, 2, nc)) {
+zeroOutFunc(P99_AARG(double, C, 2)) {
   P99_PARALLEL_DO(size_t, i, 0, P99_ALEN(*C, 0)) {
     P99_PARALLEL_DO(size_t, j, 0, P99_ALEN(*C, 1)) {
       (*C)[i][j] = 0.0;
@@ -59,7 +59,7 @@ zeroOutFunc(P99_AARG(double, C, 2, nc)) {
   }
 }
 
-P99_CA_WRAP_DECLARE(zeroOutFunc, void, (P99_AARG(double, C, 2, nc)), (nc0, nc1, C), (), (2));
+P99_CA_WRAP_DECLARE(zeroOutFunc, void, (P99_AARG(double, C, 2)), (P99_ANAME(C, 2)), (), (2));
 
 /* The user interface. It receives just one argument the pointer to
    the matrix. */
@@ -70,7 +70,7 @@ P99_CA_WRAP_DECLARE(zeroOutFunc, void, (P99_AARG(double, C, 2, nc)), (nc0, nc1, 
    name, but only trough the ::P99_ALEN macro. */
 inline
 bool
-checkZeroFunc(P99_AARG(double const, C, 2, nc)) {
+checkZeroFunc(P99_AARG(double const, C, 2)) {
   atomic_flag ret = ATOMIC_FLAG_INIT;
   P99_PARALLEL_DO(size_t, i, 0, P99_ALEN(*C, 0)) {
     P99_PARALLEL_DO(size_t, j, 0, P99_ALEN(*C, 1)) {
@@ -80,7 +80,7 @@ checkZeroFunc(P99_AARG(double const, C, 2, nc)) {
   return !atomic_flag_test_and_set(&ret);
 }
 
-P99_CA_WRAP_DECLARE(checkZeroFunc, bool, (P99_AARG(double const, C, 2, nc)), (nc0, nc1, C), (), (2));
+P99_CA_WRAP_DECLARE(checkZeroFunc, bool, (P99_AARG(double const, C, 2)), (P99_ANAME(C, 2)), (), (2));
 
 
 /* The user interface. It receives just one argument the pointer to
@@ -96,6 +96,7 @@ double
 dotproductFunc(double ret,
                P99_AARG(double const, A, 1),
                P99_AARG(double const, B, 1)) {
+  assert(P99_ALEN(A, 1) == P99_ALEN(B, 1));
   P99_DO(size_t, i, 0, P99_ALEN(A, 1))
   ret += (*A)[i] * (*B)[i];
   return ret;
@@ -103,8 +104,8 @@ dotproductFunc(double ret,
 
 P99_CA_WRAP_DECLARE(dotproductFunc,
                     double,
-                    (double ret, P99_AARG(double const, A, 1, na), P99_AARG(double const, B, 1, nb)),
-                    (ret, na0, A, nb0, B), (), (2, 4));
+                    (double ret, P99_AARG(double const, A, 1), P99_AARG(double const, B, 1)),
+                    (ret, P99_ANAME(A, 1), P99_ANAME(B, 1)), (), (2, 4));
 
 /* A helper macro that puts the accumulator argument in front. */
 #define dotproduct1(VA, VB, CAR)                                        \
@@ -127,9 +128,10 @@ P99_CA_CALL(dotproductFunc, (), (2, 4), CAR, P99_ACALL(VA, 1, double const), P99
    stored. It is also returned. */
 inline
 void*
-transposeFunc(P99_AARG(double const, B, 2, nb), void* buf) {
-  typedef double P99_ARRAY(transposed, nb1, nb0);
-  transposed *A = buf ? buf : malloc(sizeof(*A));
+transposeFunc(P99_AARG(double const, B, 2)) {
+  size_t const nb0 = P99_ALEN(*B, 0);
+  size_t const nb1 = P99_ALEN(*B, 1);
+  P99_AREF(double, A, nb1, nb0) = P99_MALLOC(*A);
   P99_PARALLEL_DO(size_t, j, 0, nb0) {
     /* sequentialize access to the rows of B */
     P99_AREF(double const, BV, nb1) = &(*B)[j];
@@ -140,19 +142,10 @@ transposeFunc(P99_AARG(double const, B, 2, nb), void* buf) {
   return A;
 }
 
-P99_CA_WRAP_DECLARE(transposeFunc, void*, (P99_AARG(double const, B, 2, nb), void* buf), (nb0, nb1, B, buf), (), (2));
+P99_CA_WRAP_DECLARE(transposeFunc, void*, (P99_AARG(double const, B, 2)), (P99_ANAME(B, 2)), (), (2));
 
-/* A helper macro that is to be called with 2 arguments. */
-#define transpose2(VB, buff) P99_CA_CALL(transposeFunc, (), (2), P99_ACALL(VB, 2, double const), buff)
-/* A helper macro that is to be called with 1 arguments and adds a
-   call to malloc to allocate the necessary space. */
-#define transpose1(VB) transpose2(VB, malloc(sizeof(*VB)))
-
-/* The user interface. It receives two arguments of which the second
-   is optional. That second argument is given as a call to malloc to
-   allocate the space to store the transposed matrix. */
-#define transpose(...) P99_IF_LT(P99_NARG(__VA_ARGS__),2)(transpose1(__VA_ARGS__))(transpose2(__VA_ARGS__))
-
+/* The user interface. */
+#define transpose(VB) ((double const(*)[P99_ALEN(*VB, 1)][P99_ALEN(*VB, 1)])P99_CA_CALL(transposeFunc, (), (2), P99_ACALL(VB, 2, double const)))
 
 /* Use constants that represent the sizes of blocks for a
    decomposition of the matrices used by the mult function.
@@ -175,34 +168,33 @@ enum {
 
 /* Compute the product of two 2D matrices. The (more or less) hidden
    function. */
-/* The input matrices are called A and B, the length in the two
-   dimensions are called na0, na1, nb0 and nb1, respectively. */
+/* The input matrices are called A and B. */
 /* The matrix C receives the result. */
 /* This function is not declared as inline. It will be way to big that
    this would make sense. */
 void
-multFunc(P99_AARG(double, C, 2, nc),
-         P99_AARG(double const, A, 2, na),
-         P99_AARG(double const, B, 2, nb));
+multFunc(P99_AARG(double const, A, 2),
+         P99_AARG(double const, B, 2),
+         P99_AREF(double, C, P99_ALEN(*A, 0), P99_ALEN(*B, 1)));
 
 P99_CA_WRAP_DECLARE(multFunc,
                     void,
-                    (P99_AARG(double, C, 2, nc),
-                     P99_AARG(double const, A, 2, na),
-                     P99_AARG(double const, B, 2, nb)),
-                    (nc0, nc1, C, na0, na1, A, nb0, nb1, B),
+                    (P99_AARG(double const, A, 2),
+                     P99_AARG(double const, B, 2),
+                     P99_AREF(double, C, P99_ALEN(*A, 0), P99_ALEN(*B, 1))),
+                    (P99_ANAME(A, 2), P99_ANAME(B, 2), C),
                     (),
-                    (2, 5, 8));
+                    (2, 5, 6));
 
 /* The user interface. It receives just the three pointers to
    the matrix as arguments. */
-#define mult(CRR, ARR, BRR)                     \
+#define mult(ARR, BRR, CRR)                     \
 P99_CA_CALL(multFunc,                           \
             (),                                 \
-            (2, 5, 8),                          \
-            P99_ACALL(CRR, 2, double),          \
+            (2, 5, 6),                          \
             P99_ACALL(ARR, 2, double const),    \
-            P99_ACALL(BRR, 2, double const))
+            P99_ACALL(BRR, 2, double const),    \
+            CRR)
 
 /* All above would typically be written in a header (.h) file ***/
 /****************************************************************/
@@ -223,36 +215,35 @@ P99_INSTANTIATE(double, dotproductFunc,
                 P99_AARG(double const, B, 1));
 
 P99_INSTANTIATE(void*, transposeFunc,
-                P99_AARG(double const, B, 2),
-                void*);
-
-
-P99_INSTANTIATE(void, multFunc,
-                P99_AARG(double, C, 2),
-                P99_AARG(double const, A, 2),
                 P99_AARG(double const, B, 2));
 
 
-P99_CA_WRAP_DEFINE(printFunc, void, (P99_AARG(double const, A, 2, na)), (na0, na1, A), (), (2));
-P99_CA_WRAP_DEFINE(zeroOutFunc, void, (P99_AARG(double, C, 2, nc)), (nc0, nc1, C), (), (2));
-P99_CA_WRAP_DEFINE(checkZeroFunc, bool, (P99_AARG(double const, C, 2, nc)), (nc0, nc1, C), (), (2));
+P99_INSTANTIATE(void, multFunc,
+                P99_AARG(double const, A, 2),
+                P99_AARG(double const, B, 2),
+                P99_AREF(double, C, P99_ALEN(*A, 0), P99_ALEN(*B, 1)));
+
+
+P99_CA_WRAP_DEFINE(printFunc, void, (P99_AARG(double const, A, 2)), (P99_ANAME(A, 2)), (), (2));
+P99_CA_WRAP_DEFINE(zeroOutFunc, void, (P99_AARG(double, C, 2)), (P99_ANAME(C, 2)), (), (2));
+P99_CA_WRAP_DEFINE(checkZeroFunc, bool, (P99_AARG(double const, C, 2)), (P99_ANAME(C, 2)), (), (2));
 P99_CA_WRAP_DEFINE(dotproductFunc,
                    double,
-                   (double ret, P99_AARG(double const, A, 1, na), P99_AARG(double const, B, 1, nb)),
-                   (ret, na0, A, nb0, B), (), (2, 4));
+                   (double ret, P99_AARG(double const, A, 1), P99_AARG(double const, B, 1)),
+                   (ret, P99_ANAME(A, 1), P99_ANAME(B, 1)), (), (2, 4));
 P99_CA_WRAP_DEFINE(multFunc,
-                    void,
-                    (P99_AARG(double, C, 2, nc),
-                     P99_AARG(double const, A, 2, na),
-                     P99_AARG(double const, B, 2, nb)),
-                    (nc0, nc1, C, na0, na1, A, nb0, nb1, B),
-                    (),
-                    (2, 5, 8));
+                   void,
+                   (P99_AARG(double const, A, 2),
+                    P99_AARG(double const, B, 2),
+                    P99_AREF(double, C, P99_ALEN(*A, 0), P99_ALEN(*B, 1))),
+                   (P99_ANAME(A, 2), P99_ANAME(B, 2), C),
+                   (),
+                   (2, 5, 6));
 
 P99_CA_WRAP_DEFINE(transposeFunc,
                    void*,
-                   (P99_AARG(double const, B, 2, nb), void* buf),
-                   (nb0, nb1, B, buf),
+                   (P99_AARG(double const, B, 2)),
+                   (P99_ANAME(B, 2), buf),
                    (),
                    (2));
 
@@ -292,17 +283,20 @@ P99_DO(size_t, i0, ISTART, ILEN) {                                    \
 
 /* The implementation of the function itself. */
 void
-multFunc(P99_AARG(double, C, 2, nc),
-         P99_AARG(double const, A, 2, na),
-         P99_AARG(double const, B, 2, nb)) {
+multFunc(P99_AARG(double const, A, 2),
+         P99_AARG(double const, B, 2),
+         P99_AREF(double, C, P99_ALEN(*A, 0), P99_ALEN(*B, 1))) {
+  size_t const na0 = P99_ALEN(*A, 0);
+  size_t const na1 = P99_ALEN(*A, 1);
+  size_t const nb0 = P99_ALEN(*B, 0);
+  size_t const nb1 = P99_ALEN(*B, 1);
   /* check that the dimensions of the matrices fit */
-  assert(nc0 == na0);
-  assert(nc1 == nb1);
   assert(na1 == nb0);
 
   double times0 = omp_get_wtime();
   /* transpose B to have its columns consecutive in memory */
   double const P99_ARRAY(*BS, nb1, nb0) = transpose(B);
+  zeroOut(C);
   assert(checkZero(C));
   double times1 = omp_get_wtime();
 
@@ -325,7 +319,7 @@ multFunc(P99_AARG(double, C, 2, nc),
 
        or about istep/2 operations per entry. */
     P99_PARALLEL_DO(size_t, i, 0, na0, istep) {
-      P99_DO(size_t, j, 0, nb1, jstep) {
+      P99_PARALLEL_DO(size_t, j, 0, nb1, jstep) {
         register size_t const kMax = (na1 - k);
         register size_t const iMax = (na0 - i);
         register size_t const jMax = (nb1 - j);
@@ -370,11 +364,24 @@ multFunc(P99_AARG(double, C, 2, nc),
 }
 
 int main(int argc, char*argv[]) {
+  if (argc <= 3) {
+    fprintf(stderr, "Usage: %s n k m p e\n", argv[0]);
+    fputs("   for matrices C[n][m] = A[n][k] * B[k][m]\n", stderr);
+    fputs("   with p OpenMP processors\n", stderr);
+    fputs("   error generation e: 0 - no error\n", stderr);
+    fputs("                       1 - size error in C\n", stderr);
+    fputs("                       2 - null pointer for C\n", stderr);
+    return EXIT_SUCCESS;
+  }
   size_t p = 1;
   P99_UNUSED(p);
   if (argc > 4)
     p = strtoul(argv[4], NULL, 0);
   omp_set_num_threads(p);
+
+  size_t err = 0;
+  if (argc > 5)
+    err = strtoul(argv[5], NULL, 0);
 
   double const P99_ARRAY(A, 3, 2) = {
     {2, 3 },
@@ -396,31 +403,47 @@ int main(int argc, char*argv[]) {
     {0, 0, 0, 0},
   };
   P99_AREF(double, CP, 3, 4) = &C;
-  mult(CP, AP, BP);
+  mult(AP, BP, CP);
   print(CP);
-  /* captured by the checks inside the macro: */
-  // struct {double a[2];} * p; P99_ALEN(p);
-  /* not captured:                            */
-  // char * q; P99_ALEN(q);
-  size_t n = strtoul(argv[1]);
-  size_t m = strtoul(argv[2]);
-  size_t k = strtoul(argv[3]);
+
+  /* Now demonstrate the use of the matrix multiplication code with
+     matrices that have dynamic length. */
+  register const size_t n = strtoul(argv[1]);
+  register const size_t m = strtoul(argv[2]);
+  register const size_t k = strtoul(argv[3]);
   printf("matrix length are n=%zu, m=%zu, k=%zu\n", n, m, k);
   printf("step   length are n=%d, m=%d, k=%d\n", istep, jstep, kstep);
-  P99_AREF(double, AR, n, k) = malloc(sizeof(*AR));
-  P99_AREF(double, BR, k, m) = malloc(sizeof(*BR));
+
+  /* Allocate the three matrices. The matrix dimensions are only
+     specified on the left side. The allocation expression only uses
+     the base type and sizeof information to do the allocation.
+
+     Also, each of n, m, k occurs exactly once, so the other
+     dimensions are enforced. */
+  P99_AREF(double, AR, n, /*          */ k /*          */) = P99_MALLOC(*AR);
+  P99_AREF(double, BR, P99_ALEN(*AR, 1), m /*          */) = P99_MALLOC(*BR);
+
+  /* Test the error checks by perturbing matrix C:
+     - if err is 1 we add one to the size so a size mismatch should be detected
+     - if err is 2 we don't alloc but set to 0, so a null pointer should be detected */
+  P99_AREF(double, CR, P99_ALEN(*AR, 0)
+           /*   */ + (err == 1 ? 1 : 0),
+           /*                         */ P99_ALEN(*BR, 1)) = (err == 2 ? 0 : P99_MALLOC(*CR));
+
+  /* Initialize the two matrices to some arbitrary values */
+  /* This replaces the following nested loops: */
   /* for (size_t j = 0; j < n; ++j) */
   /*   for (size_t i = 0; i < k; ++i) */
-  size_t const D[2] = {n, k};
-  P99_FORALL(D, j, i)
-  (*AR)[j][i] = i*j;
+  size_t const D[2] = { P99_ALEN(*AR, 0), P99_ALEN(*AR, 1) };
+  P99_FORALL(D, j, i) (*AR)[j][i] = i*j;
+  /* This replaces the following nested loops: */
   /* for (size_t i = 0; i < k; ++i) */
   /*   for (size_t j = 0; j < m; ++j) */
-  size_t const E[2] = {k, m};
-  P99_FORALL(E, i, j)
-  (*BR)[i][j] = j + i;
-  P99_AREF(double, CR, n, m) = P99_CALLOC(double, n*m);
-  mult(CR, AR, BR);
+  size_t const E[2] = { P99_ALEN(*BR, 0), P99_ALEN(*BR, 1)};
+  P99_FORALL(E, i, j) (*BR)[i][j] = j + i;
+
+  /* run the multiplication itself */
+  mult(AR, BR, CR);
   free(AR);
   free(BR);
   free(CR);
