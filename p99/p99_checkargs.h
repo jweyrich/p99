@@ -30,13 +30,13 @@
 #define P00_CA_PSIZE(X) size_t const P99_PASTE2(p00_ca_psize_, X)
 #define P00_CA_PSIZES(N, ...) P99_SEQ(P00_CA_PSIZE, __VA_ARGS__)
 
-#define P00_CA_FSIZE(_0, _1, I) size_t P99_PASTE2(p00_ca_fsize_, I); P99_UNUSED(P99_PASTE2(p00_ca_fsize_, I))
+#define P00_CA_FSIZE(_0, X, _2) size_t P99_PASTE2(p00_ca_fsize_, X); P99_UNUSED(P99_PASTE2(p00_ca_fsize_, X))
 #define P00_CA_FSIZES(N, ...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_CA_FSIZE, __VA_ARGS__)
 
 #define P00_CA_TYPEDEF(X) typedef X
 #define P00_CA_TYPEDEFS(N, ...) P99_SEP(P00_CA_TYPEDEF, P99_REVS(__VA_ARGS__))
 
-#define P00_CA_FSIZEOF(_0, X, I) P99_PASTE2(p00_ca_fsize_, I) = sizeof(X)
+#define P00_CA_FSIZEOF(_0, X, _2) P99_PASTE2(p00_ca_fsize_, X) = sizeof(X)
 #define P00_CA_FSIZEOFS(N, ...) P99_FOR(, N, P00_SEP, P00_CA_FSIZEOF, __VA_ARGS__)
 
 #define P00_CA_MANGLE_JOIN(X) _, X
@@ -52,49 +52,72 @@ P99_PASTE(p00_ca_,                              \
           P00_CA_MANGLE_LIST PCHECKS            \
           )
 
-#define P00_CA_ACHECK(X)                                                \
-if (P99_UNLIKELY                                                        \
-    (                                                                   \
-     /* passing in a larger array is ok */                              \
-     (P99_PASTE2(p00_ca_fsize_, X) > P99_PASTE2(p00_ca_asize_, X))      \
-     )                                                                  \
-    ) {                                                                 \
+#define P00_CA_ACHECK_(P, X)                                            \
+if (P99_LIKELY(X)) {                                                    \
+  if (P99_UNLIKELY                                                      \
+      (                                                                 \
+       /* passing in a larger array is ok */                            \
+       (P99_PASTE2(p00_ca_fsize_, X) > P99_PASTE2(p00_ca_asize_, P))    \
+       )                                                                \
+      ) {                                                               \
+    fprintf(stderr,                                                     \
+            "%s, call from %s, size of parameter " P99_STRINGIFY(X) " is %zu instead of %zu\n", \
+            p00_proto,                                                  \
+            p00_call,                                                   \
+            P99_PASTE2(p00_ca_asize_, P),                               \
+            P99_PASTE2(p00_ca_fsize_, X)                                \
+            );                                                          \
+    abort();                                                            \
+  }                                                                     \
+ } else {                                                               \
   fprintf(stderr,                                                       \
-          "%s, call from %s, size check failed for parameter number " P99_STRINGIFY(X) ", is %zu instead of %zu\n", \
+          "%s, call from %s, parameter " P99_STRINGIFY(X) ", is null pointer.\n", \
           p00_proto,                                                    \
-          p00_call,                                                     \
-          P99_PASTE2(p00_ca_asize_, X),                                 \
-          P99_PASTE2(p00_ca_fsize_, X)                                  \
+          p00_call                                                      \
           );                                                            \
   abort();                                                              \
  }
 
-#define P00_CA_ACHECKS(N, ...) P99_SEP(P00_CA_ACHECK, __VA_ARGS__)
+#define P00_CA_ACHECK(LIST, X, _2) P00_CA_ACHECK_(X, P99_CHS(X, P00_ROBUST LIST))
 
-#define P00_CA_PCHECK(LIST, X, I)                                       \
-size_t const P99_PASTE2(p00_ca_lsize_, I) = sizeof((P99_CHS(X, P00_ROBUST LIST))[0]); \
-if (P99_UNLIKELY                                                        \
-    (                                                                   \
-     (P99_PASTE2(p00_ca_lsize_, I) != P99_PASTE2(p00_ca_psize_, X))     \
-     )                                                                  \
-    ) {                                                                 \
+#define P00_CA_ACHECKS(LIST, N, ...) P99_FOR(LIST, P99_NARG(__VA_ARGS__), P00_SEP, P00_CA_ACHECK, __VA_ARGS__)
+
+#define P00_CA_PCHECK_(P, X, I)                                         \
+if (P99_LIKELY(X)) {                                                    \
+  size_t const P99_PASTE2(p00_ca_lsize_, I) = sizeof((X)[0]);           \
+  if (P99_UNLIKELY                                                      \
+      (                                                                 \
+       (P99_PASTE2(p00_ca_lsize_, I) != P99_PASTE2(p00_ca_psize_, P))   \
+       )                                                                \
+      ) {                                                               \
+    fprintf(stderr,                                                     \
+            "%s, call from %s, sizeof " P99_STRINGIFY(X) "[0] is %zu instead of %zu\n", \
+            p00_proto,                                                  \
+            p00_call,                                                   \
+            P99_PASTE2(p00_ca_psize_, P),                               \
+            P99_PASTE2(p00_ca_lsize_, I)                                \
+            );                                                          \
+    abort();                                                            \
+  }                                                                     \
+ } else {                                                               \
   fprintf(stderr,                                                       \
-          "%s, call from %s, pointed to size check failed for parameter number " P99_STRINGIFY(X) ", is %zu instead of %zu\n", \
+          "%s, call from %s, parameter " P99_STRINGIFY(X) " is null pointer.\n", \
           p00_proto,                                                    \
-          p00_call,                                                     \
-          P99_PASTE2(p00_ca_psize_, X),                                 \
-          P99_PASTE2(p00_ca_lsize_, I)                                  \
+          p00_call                                                      \
           );                                                            \
   abort();                                                              \
  }
+
+#define P00_CA_PCHECK(LIST, X, I) P00_CA_PCHECK_(X, P99_CHS(X, P00_ROBUST LIST), I)
+
 
 #define P00_CA_PCHECKS(LIST, N, ...) P99_FOR(LIST, P99_NARG(__VA_ARGS__), P00_SEP, P00_CA_PCHECK, __VA_ARGS__)
 
 
-#define P00_CA_WRAP_DECLARE(NAME, RET, TYPES, VARS, ACHECKS, PCHECKS)   \
+#define P00_CA_WRAP_DECLARE(NAME, RET, TYPES, STYPES, VARS, ACHECKS, PCHECKS) \
   /* clang tries to be helpful here, but we know better */              \
 P99_IF_COMPILER(CLANG, GCC diagnostic push)                             \
-P99_IF_COMPILER(CLANG, GCC diagnostic ignored "-Wsizeof-array-argument") \
+ /*P99_IF_COMPILER(CLANG, GCC diagnostic ignored "-Wsizeof-array-argument")*/ \
 inline                                                                  \
 RET P00_CA_MANGLE(NAME, ACHECKS, PCHECKS)                                      \
      (                                                                  \
@@ -102,7 +125,7 @@ RET P00_CA_MANGLE(NAME, ACHECKS, PCHECKS)                                      \
       P99_IF_EMPTY ACHECKS()(P00_CA_ASIZES(P99_NARG ACHECKS, P00_ROBUST ACHECKS),) \
       P99_IF_EMPTY PCHECKS()(P00_CA_PSIZES(P99_NARG PCHECKS, P00_ROBUST PCHECKS),) \
       P00_ROBUST TYPES) {                                               \
-  char const*const p00_proto = P99_STRINGIFY(NAME) P99_STRINGIFY(TYPES); \
+  char const*const p00_proto = P99_STRINGIFY(NAME) STYPES;              \
   P99_UNUSED(p00_proto);                                                \
   P99_IF_EMPTY ACHECKS()                                                \
        (                                                                \
@@ -111,7 +134,7 @@ RET P00_CA_MANGLE(NAME, ACHECKS, PCHECKS)                                      \
          P00_CA_TYPEDEFS(P99_NARG TYPES, P00_ROBUST TYPES);             \
          P00_CA_FSIZEOFS(P99_NARG VARS, P00_ROBUST VARS);               \
        }                                                                \
-        P00_CA_ACHECKS(P99_NARG ACHECKS, P00_ROBUST ACHECKS);           \
+        P00_CA_ACHECKS(VARS, P99_NARG ACHECKS, P00_ROBUST ACHECKS);     \
        )                                                                \
   P00_CA_PCHECKS(VARS, P99_NARG PCHECKS, P00_ROBUST PCHECKS);           \
   /* Do a type check without re-declaring the function */               \
@@ -123,16 +146,16 @@ RET P00_CA_MANGLE(NAME, ACHECKS, PCHECKS)                                      \
 P99_IF_COMPILER(CLANG, GCC diagnostic pop)                              \
 P99_MACRO_END(P00_CA_WRAP_RET_DECLARE)
 
-#define P00_CA_WRAP_DECLARE2(NAME, RET, TYPES, VARS, ACHECKS, PCHECKS)  \
-P00_CA_WRAP_DECLARE(NAME, RET, TYPES, VARS,                             \
+#define P00_CA_WRAP_DECLARE2(NAME, RET, TYPES, STYPES, VARS, ACHECKS, PCHECKS) \
+P00_CA_WRAP_DECLARE(NAME, RET, TYPES, STYPES, VARS,                     \
                    P99_IF_EMPTY ACHECKS(())(ACHECKS),                   \
                    P99_IF_EMPTY PCHECKS(())(PCHECKS))
 
 
 #define P99_CA_WRAP_DECLARE(NAME, RET, TYPES, VARS, ...)                \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                     \
-(P00_CA_WRAP_DECLARE(NAME, RET, TYPES, VARS, __VA_ARGS__, __VA_ARGS__)) \
-(P00_CA_WRAP_DECLARE(NAME, RET, TYPES, VARS, __VA_ARGS__))
+(P00_CA_WRAP_DECLARE(NAME, RET, TYPES, #TYPES, VARS, __VA_ARGS__, __VA_ARGS__)) \
+(P00_CA_WRAP_DECLARE(NAME, RET, TYPES, #TYPES, VARS, __VA_ARGS__))
 
 #define P00_CA_WRAP_DEFINE(NAME, RET, TYPES, VARS, ACHECKS, PCHECKS)    \
   P00_INSTANTIATE(RET,                                                  \
@@ -164,7 +187,7 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                     \
 P00_CA_MANGLE(NAME, ACHECKS, PCHECKS)                                   \
 (                                                                       \
  __FILE__ ":" P99_STRINGIFY(__LINE__) ": "                              \
- P99_STRINGIFY(NAME) P99_STRINGIFY((__VA_ARGS__)),                      \
+ P99_STRINGIFY(NAME) "(" #__VA_ARGS__ ")",                              \
  P99_IF_EMPTY ACHECKS()(P00_CA_SIZEOFS((__VA_ARGS__), P99_NARG ACHECKS, P00_ROBUST ACHECKS),) \
  P99_IF_EMPTY PCHECKS()(P00_CA_PSIZEOFS((__VA_ARGS__), P99_NARG PCHECKS, P00_ROBUST PCHECKS),) \
  __VA_ARGS__                                                            \
