@@ -13,9 +13,7 @@
 /*                                                                            */
 #ifndef P99_TRY_H
 #define P99_TRY_H
-#include "p99_tss.h"
-#include "p99_errno.h"
-
+#include "p99_constraint.h"
 
 P99_POINTER_TYPE(p00_jmp_buf0);
 P99_DECLARE_ATOMIC(p00_jmp_buf0_ptr);
@@ -23,14 +21,6 @@ P99_DECLARE_ATOMIC(p00_jmp_buf0_ptr);
 P99_DECLARE_THREAD_LOCAL(_Atomic(p00_jmp_buf0_ptr), p00_jmp_buf_top);
 
 #define P00_JMP_BUF_TOP P99_THREAD_LOCAL(p00_jmp_buf_top)
-
-P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_file);
-P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_context);
-P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_info);
-
-#define P00_JMP_BUF_FILE P99_THREAD_LOCAL(p00_jmp_buf_file)
-#define P00_JMP_BUF_CONTEXT P99_THREAD_LOCAL(p00_jmp_buf_context)
-#define P00_JMP_BUF_INFO P99_THREAD_LOCAL(p00_jmp_buf_info)
 
 p99_inline
 void p00_jmp_skip(p00_jmp_buf0 * p00_des) {
@@ -45,8 +35,6 @@ p99_inline
 void p00_jmp_push(p00_jmp_buf0 * p00_des) {
   P99_LIFO_PUSH(&P00_JMP_BUF_TOP, p00_des);
 }
-
-P99_CONSTANT(int, p00_ilen10, sizeof(P99_STRINGIFY(LLONG_MIN)));
 
 /**
  ** @brief Report the origin and cause of an error
@@ -69,54 +57,14 @@ P99_CONSTANT(int, p00_ilen10, sizeof(P99_STRINGIFY(LLONG_MIN)));
  ** Without the call to ::p99_jmp_report the origin of the error would
  ** be lost in the second :P99_CATCH.
  **/
-p99_inline void p99_jmp_report(errno_t);
-
-p99_inline
-void p00_jmp_report(errno_t p00_cond, char const* p00_file, char const* p00_context, char const* p00_info) {
-  if (!p00_context) p00_context = P00_JMP_BUF_CONTEXT;
-  if (!p00_context) p00_context = "<unknown function>";
-  if (!p00_info) p00_info = P00_JMP_BUF_INFO;
-  if (!p00_file) p00_file = P00_JMP_BUF_FILE;
-  if (!p00_file) p00_file = "<unknown location>";
-  fputs(p00_context, stderr);
-  fputc(':', stderr);
-  fputs(p00_file, stderr);
-  fputs(": ", stderr);
-  if (p00_info) {
-    fputs(p00_info, stderr);
-    fputs(", ", stderr);
-  }
-  fputs("exception ", stderr);
-  {
-    char const*const p00_errname = p99_errno_getname(p00_cond);
-    if (p00_errname) {
-      fputs(p00_errname, stderr);
-      fputc('=', stderr);
-    }
-  }
-  {
-    char p00_str[p00_ilen10];
-    sprintf(p00_str, "%d", p00_cond);
-    fputs(p00_str, stderr);
-  }
-  if (!p00_cond && errno) p00_cond = errno;
-  char const* errstr = strerror(p00_cond);
-  if (errstr) {
-    fputs(", library error: ", stderr);
-    fputs(errstr, stderr);
-  }
-  fputc('\n', stderr);
-}
-
 p99_inline void p99_jmp_report(errno_t p00_cond) {
-  p00_jmp_report(p00_cond, 0, 0, 0);
+  p00_constraint_report(p00_cond, 0, 0, 0);
 }
-
 
 p99_inline
 noreturn
 void p00_jmp_abort(errno_t p00_cond, char const* p00_file, char const* p00_context, char const* p00_info) {
-  p00_jmp_report(p00_cond, p00_file, p00_context, p00_info);
+  p00_constraint_report(p00_cond, p00_file, p00_context, p00_info);
   abort();
 }
 

@@ -19,6 +19,7 @@
  ** variably modified types.
  **/
 
+#include "p99_constraint.h"
 #include "p99_map.h"
 #include "p99_enum.h"
 #include "p99_type.h"
@@ -52,6 +53,8 @@ P99_PASTE(p00_ca_,                              \
           P00_CA_MANGLE_LIST PCHECKS            \
           )
 
+P99_CONSTANT(int, P00_CA_CHECK_BUFFLEN, 512);
+
 #define P00_CA_ACHECK_(P, X)                                            \
 if (P99_LIKELY(X)) {                                                    \
   if (P99_UNLIKELY                                                      \
@@ -60,22 +63,24 @@ if (P99_LIKELY(X)) {                                                    \
        (P99_PASTE2(p00_ca_fsize_, X) > P99_PASTE2(p00_ca_asize_, P))    \
        )                                                                \
       ) {                                                               \
-    fprintf(stderr,                                                     \
-            "%s, call from %s, size of parameter " P99_STRINGIFY(X) " is %zu instead of %zu\n", \
+    char buf[P00_CA_CHECK_BUFFLEN];                                     \
+    snprintf(buf, P00_CA_CHECK_BUFFLEN - 1,                             \
+            "%s, call from %s, size of parameter " P99_STRINGIFY(X) " is %zu instead of %zu", \
             p00_proto,                                                  \
             p00_call,                                                   \
             P99_PASTE2(p00_ca_asize_, P),                               \
             P99_PASTE2(p00_ca_fsize_, X)                                \
-            );                                                          \
-    abort();                                                            \
+             );                                                         \
+    P99_CONSTRAINT_TRIGGER(EINVAL, buf);                                \
   }                                                                     \
  } else {                                                               \
-  fprintf(stderr,                                                       \
-          "%s, call from %s, parameter " P99_STRINGIFY(X) ", is null pointer.\n", \
+  char buf[P00_CA_CHECK_BUFFLEN];                                       \
+  snprintf(buf, P00_CA_CHECK_BUFFLEN - 1,                               \
+          "%s, call from %s, parameter " P99_STRINGIFY(X) ", is null pointer", \
           p00_proto,                                                    \
           p00_call                                                      \
           );                                                            \
-  abort();                                                              \
+  P99_CONSTRAINT_TRIGGER(ENOMEM, buf);                                  \
  }
 
 #define P00_CA_ACHECK(LIST, X, _2) P00_CA_ACHECK_(X, P99_CHS(X, P00_ROBUST LIST))
@@ -90,22 +95,24 @@ if (P99_LIKELY(X)) {                                                    \
        (P99_PASTE2(p00_ca_lsize_, I) != P99_PASTE2(p00_ca_psize_, P))   \
        )                                                                \
       ) {                                                               \
-    fprintf(stderr,                                                     \
-            "%s, call from %s, sizeof " P99_STRINGIFY(X) "[0] is %zu instead of %zu\n", \
-            p00_proto,                                                  \
-            p00_call,                                                   \
-            P99_PASTE2(p00_ca_psize_, P),                               \
-            P99_PASTE2(p00_ca_lsize_, I)                                \
-            );                                                          \
-    abort();                                                            \
+    char buf[P00_CA_CHECK_BUFFLEN];                                     \
+    snprintf(buf, P00_CA_CHECK_BUFFLEN - 1,                             \
+             "%s, call from %s, sizeof " P99_STRINGIFY(X) "[0] is %zu instead of %zu", \
+             p00_proto,                                                 \
+             p00_call,                                                  \
+             P99_PASTE2(p00_ca_psize_, P),                              \
+             P99_PASTE2(p00_ca_lsize_, I)                               \
+             );                                                         \
+    P99_CONSTRAINT_TRIGGER(EINVAL, buf);                                \
   }                                                                     \
  } else {                                                               \
-  fprintf(stderr,                                                       \
-          "%s, call from %s, parameter " P99_STRINGIFY(X) " is null pointer.\n", \
+  char buf[P00_CA_CHECK_BUFFLEN];                                       \
+  snprintf(buf, P00_CA_CHECK_BUFFLEN - 1,                               \
+          "%s, call from %s, parameter " P99_STRINGIFY(X) " is null pointer", \
           p00_proto,                                                    \
           p00_call                                                      \
           );                                                            \
-  abort();                                                              \
+  P99_CONSTRAINT_TRIGGER(ENOMEM, buf);                                  \
  }
 
 #define P00_CA_PCHECK(LIST, X, I) P00_CA_PCHECK_(X, P99_CHS(X, P00_ROBUST LIST), I)
