@@ -578,13 +578,20 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
 #define P99_ALENS(ARR, N) P99_FOR(ARR, N, P00_ALENS0, P00_ALEN, P99_REP(N,))
 
 
+/**
+ ** @brief Declare a new matrix @a A of base type @a T and with @a N
+ ** dimensions as given by @a B
+ **/
+#define P99_ATYPE(T, A, B, N) P99_AREF(T, A, P99_ALENS(*B, N))
+
+
 #define P00_AALLOC(...) ((__VA_ARGS__)malloc(sizeof *(__VA_ARGS__){ 0 }))
 
 /**
  ** @brief Allocate a new matrix of base type @a T and with @a N
  ** dimensions as given by @a VB
  **/
-#define P99_AALLOC(T, VB, N) P00_AALLOC(P99_AREF(T, , P99_ALENS(*VB, N)))
+#define P99_AALLOC(T, VB, N) P00_AALLOC(P99_ATYPE(T, , VB, N))
 
 #define P00_ACALL1(ARR) P99_ALENS(*ARR, 1), (ARR)
 #define P00_ACALL2(ARR, N) P99_ALENS(*ARR, N), (ARR)
