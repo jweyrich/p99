@@ -10,12 +10,12 @@
 /* without even the implied warranty of merchantability or fitness for a      */
 /* particular purpose.                                                        */
 /*                                                                            */
+#include "p99_checkargs.h"
 #include "p99_for.h"
 #include "p99_map.h"
 #include "p99_new.h"
 #include "p99_c99_default.h"
 #include "p99_atomic.h"
-#include "p99_checkargs.h"
 
 #ifdef _OPENMP
 # include <omp.h>
@@ -364,6 +364,10 @@ multFunc(P99_AARG(double const, A, 2),
 }
 
 int main(int argc, char*argv[]) {
+#if __STDC_WANT_LIB_EXT1__
+  set_constraint_handler_s(abort_handler_s);
+#endif
+
   if (argc <= 3) {
     fprintf(stderr, "Usage: %s n k m p e\n", argv[0]);
     fputs("   for matrices C[n][m] = A[n][k] * B[k][m]\n", stderr);

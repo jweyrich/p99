@@ -10,11 +10,11 @@
 /* without even the implied warranty of merchantability or fitness for a      */
 /* particular purpose.                                                        */
 /*                                                                            */
+#include "p99_checkargs.h"
 #include "p99_id.h"
 #include "p99_args.h"
 #include "p99_map.h"
 #include "p99_defarg.h"
-#include "p99_checkargs.h"
 #include "p99_c99.h"
 
 
@@ -132,6 +132,9 @@ P99_CA_WRAP_DEFINE(sump, unsigned char, (size_t n, unsigned char *A), (n, A), ()
 #define sump(...) P99_CA_CALL(sump, (), (1), __VA_ARGS__)
 
 int main(int argc, char** argv) {
+#if __STDC_WANT_LIB_EXT1__
+  set_constraint_handler_s(abort_handler_s);
+#endif
   unsigned const* a = &(A[0][0][0][0]);
   P99_PARALLEL_FORALL(D, i0, i1, i2, i3)
   printf("ooo: compare indexing: %u %u\n",
