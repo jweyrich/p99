@@ -13,6 +13,7 @@
 #ifndef P99_CONSTRAINT_H
 #define P99_CONSTRAINT_H
 #include "p99_tss.h"
+#include "p99_c99.h"
 #include "p99_errno.h"
 
 P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_file);
@@ -23,10 +24,135 @@ P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_info);
 #define P00_JMP_BUF_CONTEXT P99_THREAD_LOCAL(p00_jmp_buf_context)
 #define P00_JMP_BUF_INFO P99_THREAD_LOCAL(p00_jmp_buf_info)
 
-P99_CONSTANT(int, p00_ilen10, sizeof(P99_STRINGIFY(LLONG_MIN)));
+P99_CONSTANT(int, p00_ilen10, 256);
+
+#if __STDC_WANT_LIB_EXT1__ && !defined(__STDC_LIB_EXT1__)
+p99_inline
+size_t strerrorlen_s(errno_t p00_errnum) {
+  return strlen(strerror(p00_errnum));
+}
+#endif
+
+#if (_XOPEN_SOURCE >= 600)
+p99_inline
+int p00_strerror(int p00_errname, size_t p00_maxsize, char p00_s[p00_maxsize]) {
+  return strerror_r(p00_errname, p00_s, p00_maxsize);
+}
+#elif __STDC_WANT_LIB_EXT1__ && defined(__STDC_LIB_EXT1__)
+p99_inline
+int p00_strerror(int p00_errname, size_t p00_maxsize, char p00_s[p00_maxsize]) {
+  return strerror_s(p00_s, p00_maxsize, p00_errname);
+}
+#else
+p99_inline
+int p00_strerror(int p00_errname, size_t p00_maxsize, char p00_s[p00_maxsize]) {
+  size_t p00_len = strerrorlen_s(p00_errname);
+  size_t p00_ret = 0;
+  if (p00_len > p00_maxsize - 1) {
+    p00_len = p00_maxsize - 1;
+    p00_ret = ERANGE;
+  }
+  strncpy(p00_s, strerror(p00_errname), p00_len);
+  p00_s[p00_len] = 0;
+  return p00_ret;
+}
+#endif
+
+p99_inline
+char const* p00_strerror_r(int p00_errname, size_t p00_maxsize, char p00_s[p00_maxsize]) {
+  p00_strerror(p00_errname, p00_maxsize, p00_s);
+  return p00_s;
+}
+
+#define P00_STRERROR2(E, STR) p00_strerror(E, sizeof(STR), STR)
+
+#define P99_STRERROR_MAX 256
+
+#define p00_strerror(...)                                               \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                     \
+(p00_strerror(__VA_ARGS__, P99_STRERROR_MAX, (char[P99_STRERROR_MAX]))) \
+(P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                                    \
+ (P00_STRERROR2(__VA_ARGS__))                                           \
+ (p00_strerror(__VA_ARGS__)))
+
+#if __STDC_WANT_LIB_EXT1__ && !defined(__STDC_LIB_EXT1__)
+p99_inline
+void p99_constraint_handler(const char * restrict p00_msg,
+                            void * restrict p00_ptr,
+                            errno_t p00_err);
+
+
+p99_inline
+size_t strnlen_s(const char *p00_s, size_t p00_maxsize) {
+  size_t p00_ret = p00_maxsize;
+  if (p00_s) {
+    char const* p00_pos = memchr(p00_s, 0, p00_maxsize);
+    if (p00_pos) p00_ret = p00_pos - p00_s;
+  }
+  return p00_ret;
+}
+
+p99_inline
+errno_t strerror_s(char *p00_s, rsize_t p00_maxsize, errno_t p00_errnum) {
+  if (!p00_maxsize || p00_maxsize > RSIZE_MAX)
+    p99_constraint_handler(
+                           ", call to strerror_s, dynamic constraint violation",
+                           0,
+                           EINVAL);
+  // strerror_r may set errno
+  errno_t p00_back = errno;
+  errno = 0;
+  int p00_ret = p00_strerror(p00_errnum, p00_maxsize, p00_s);
+  switch (p00_ret) {
+  case 0: break;
+  case ERANGE: {
+    /* The output string has been shortend to fit into p00_s. */
+    p00_ret = 0;
+    if (p00_maxsize > 3) memset(p00_s + (p00_maxsize - 4), '.', 3);
+    break;
+  }
+  case EINVAL: {
+    /* p00_errnum didn't correspond to a valid error number. */
+    p00_ret = snprintf(p00_s, p00_maxsize, "unknown <%d> error", p00_errnum);
+    if (!p00_ret || (p00_ret < p00_maxsize)) {
+      p00_ret = 0;
+      if (p00_maxsize > 3) memset(p00_s + (p00_maxsize - 4), '.', 3);
+    }
+    break;
+  }
+  default:
+    P99_FPRINTF(stderr, "strerror_r returned %s\n", p00_ret);
+    break;
+  }
+  /* Unconditionally set errno to the previous value. */
+  errno = p00_back;
+  return p00_ret;
+}
+#endif
+
+p99_inline
+char const* p00_strerror_s(char *p00_s, rsize_t p00_maxsize, errno_t p00_errnum) {
+  strerror_s(p00_s, p00_maxsize, p00_errnum);
+  return p00_s;
+}
+
+# define P00_STRERROR(E, S, STR) p00_strerror_s(STR, S, E)
+#else
+# define P00_STRERROR(...) p00_strerror_r(__VA_ARGS__)
+#endif
+
+#define P00_STRERROR02(E, STR) P00_STRERROR(E, sizeof(STR), STR)
+
+#define P99_STRERROR(...)                                               \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                     \
+(P00_STRERROR(__VA_ARGS__, P99_STRERROR_MAX, (char[P99_STRERROR_MAX]){ 0 })) \
+(P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                                    \
+ (P00_STRERROR02(__VA_ARGS__))                                          \
+ (P00_STRERROR(__VA_ARGS__)))
 
 p99_inline
 void p00_constraint_report(errno_t p00_cond, char const* p00_file, char const* p00_context, char const* p00_info) {
+  char p00_str[p00_ilen10] = P99_INIT;
   if (!p00_context) p00_context = P00_JMP_BUF_CONTEXT;
   if (!p00_context) p00_context = "<unknown function>";
   if (!p00_info) p00_info = P00_JMP_BUF_INFO;
@@ -49,15 +175,14 @@ void p00_constraint_report(errno_t p00_cond, char const* p00_file, char const* p
     }
   }
   {
-    char p00_str[p00_ilen10];
     sprintf(p00_str, "%d", p00_cond);
     fputs(p00_str, stderr);
   }
   if (!p00_cond && errno) p00_cond = errno;
-  char const* errstr = strerror(p00_cond);
-  if (errstr) {
+  P99_STRERROR(p00_cond, p00_str);
+  if (p00_str[0]) {
     fputs(", library error: ", stderr);
-    fputs(errstr, stderr);
+    fputs(p00_str, stderr);
   }
   fputc('\n', stderr);
 }
@@ -145,7 +270,6 @@ constraint_handler_t set_constraint_handler_s(constraint_handler_t handler) {
 }
 
 # endif
-#endif
 
 p99_inline
 errno_t p00_constraint_call(errno_t p00_cond, char const* p00_file, char const* p00_context, char const* p00_info) {

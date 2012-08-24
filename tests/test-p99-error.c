@@ -19,6 +19,9 @@
 #define strtold_throw(...) P99_THROW_CALL_RANGE(strtold, __VA_ARGS__)
 
 int main(void) {
+  char errbuf[10] = P99_INIT;
+  P99_STRERROR(EINVAL, sizeof errbuf, errbuf);
+  fprintf_throw(stdout, "Testing P99_STRERROR: %s\n", errbuf);
   char const* message = "This should be ok.\n";
   int len = fprintf_throw(stdout, "%s", message);
   char* buf = memcpy(malloc_throw(len), message, len);
