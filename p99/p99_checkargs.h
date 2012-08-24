@@ -71,7 +71,7 @@ if (P99_LIKELY(X)) {                                                    \
             P99_PASTE2(p00_ca_asize_, P),                               \
             P99_PASTE2(p00_ca_fsize_, X)                                \
              );                                                         \
-    P99_CONSTRAINT_TRIGGER(EINVAL, buf);                                \
+    P99_CONSTRAINT_TRIGGER(ERANGE, buf);                                \
   }                                                                     \
  } else {                                                               \
   char buf[P00_CA_CHECK_BUFFLEN];                                       \
@@ -103,7 +103,7 @@ if (P99_LIKELY(X)) {                                                    \
              P99_PASTE2(p00_ca_psize_, P),                              \
              P99_PASTE2(p00_ca_lsize_, I)                               \
              );                                                         \
-    P99_CONSTRAINT_TRIGGER(EINVAL, buf);                                \
+    P99_CONSTRAINT_TRIGGER(ERANGE, buf);                                \
   }                                                                     \
  } else {                                                               \
   char buf[P00_CA_CHECK_BUFFLEN];                                       \
