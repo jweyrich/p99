@@ -30,6 +30,12 @@
    be done at any place. */
 typedef size_t rsize_t;
 
+#ifndef RSIZE_MAX
+/* This is the recommended practice if there is no other value
+   available. */
+# define RSIZE_MAX (SIZE_MAX >> 1)
+#endif
+
 #if __STDC_HOSTED__
 # include <assert.h>
 # include <wchar.h>
