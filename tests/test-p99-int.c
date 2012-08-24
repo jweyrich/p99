@@ -10,6 +10,7 @@
 /* without even the implied warranty of merchantability or fitness for a      */
 /* particular purpose.                                                        */
 /*                                                                            */
+#include "p99_constraint.h"
 #include "p99_c99.h"
 #include "p99_int.h"
 #include "p99_defarg.h"
@@ -575,32 +576,32 @@ int i:UINT_WIDTH;
     int val = INT_MAX;
     int err[1] = { 0 };
     int sum = p99_add(val, oth, err);
-    printf ("adding %d to INT_MAX gives %d: %s\n", oth, sum, strerror(err[0]));
+    printf ("adding %d to INT_MAX gives %d: %s\n", oth, sum, P99_STRERROR(err[0]));
 #ifndef P99_NOTRAP
     printf ("adding %d to INT_MAX gives %d\n", oth, just_add(val, oth));
 #endif
     val = INT_MIN;
     err[0] = 0;
     sum = p99_add(val, -oth, err);
-    printf ("adding %d to INT_MIN gives %d: %s\n", -oth, sum, strerror(err[0]));
+    printf ("adding %d to INT_MIN gives %d: %s\n", -oth, sum, P99_STRERROR(err[0]));
 #ifndef P99_NOTRAP
     printf ("adding %d to INT_MIN gives %d\n", -oth, just_add(val, -oth));
 #endif
     err[0] = 0;
     sum = p99_sub(val, oth, err);
-    printf ("subtrackting %d from INT_MIN gives %d: %s\n", oth, sum, strerror(err[0]));
+    printf ("subtrackting %d from INT_MIN gives %d: %s\n", oth, sum, P99_STRERROR(err[0]));
   }
   {
     signed char val = SCHAR_MAX;
     int err[1] = { 0 };
     signed char sum = p99_addhh(val, oth, err);
-    printf ("adding %d to SCHAR_MAX gives %d: %s\n", oth, sum, strerror(err[0]));
+    printf ("adding %d to SCHAR_MAX gives %d: %s\n", oth, sum, P99_STRERROR(err[0]));
     val = SCHAR_MIN;
     err[0] = 0;
     sum = p99_addhh(val, -oth, err);
-    printf ("adding %d to SCHAR_MIN gives %d: %s\n", -oth, sum, strerror(err[0]));
+    printf ("adding %d to SCHAR_MIN gives %d: %s\n", -oth, sum, P99_STRERROR(err[0]));
     err[0] = 0;
     sum = p99_subhh(val, oth, err);
-    printf ("subtrackting %d from SCHAR_MIN gives %d: %s\n", oth, sum, strerror(err[0]));
+    printf ("subtrackting %d from SCHAR_MIN gives %d: %s\n", oth, sum, P99_STRERROR(err[0]));
   }
 }
