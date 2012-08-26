@@ -41,6 +41,11 @@
     undetermined values: <code>signed char</code> and
     thus <code>char</code> could have trap representations.
   </li>
+  <li>
+    Annexe K asks for verification of non-overlapping memory ranges
+    for <code>memcpy_s</code> and similar functions, which is not
+    feasible without provoking UB.
+  </li>
 </ul>
 
 <h2>Features</h2>

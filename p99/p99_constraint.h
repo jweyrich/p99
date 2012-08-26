@@ -85,7 +85,7 @@ void p99_constraint_handler(const char * restrict p00_msg,
 p99_inline
 size_t strnlen_s(const char *p00_s, size_t p00_maxsize) {
   size_t p00_ret = p00_maxsize;
-  if (p00_s) {
+  if (p00_s && p00_maxsize) {
     char const* p00_pos = memchr(p00_s, 0, p00_maxsize);
     if (p00_pos) p00_ret = p00_pos - p00_s;
   }
@@ -298,5 +298,114 @@ P99_CONSTRAINT_TRIGGER(F C, I)
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
 (P00_CONSTRAINT_CALL1(__VA_ARGS__))             \
 (P00_CONSTRAINT_CALL0(__VA_ARGS__))
+
+
+# ifndef __STDC_LIB_EXT1__
+
+p99_inline
+errno_t p00_memcpy_s(_Bool p00_overlap,
+                     void * restrict p00_s1, rsize_t p00_s1max,
+                     const void * restrict p00_s2, rsize_t p00_n) {
+  errno_t p00_ret = 0;
+  if (!p00_s1) { p00_ret = EINVAL; goto P00_SEVERE; }
+  if (p00_s1max > RSIZE_MAX) { p00_ret = ERANGE; goto P00_SEVERE; }
+  if (!p00_s2) { p00_ret = EINVAL; goto P00_ERR; }
+  if (p00_n > RSIZE_MAX || p00_n > p00_s1max) { p00_ret = ERANGE; goto P00_ERR; }
+  if (!p00_overlap) {
+    unsigned char const* p00_c1 = p00_s1;
+    unsigned char const* p00_c2 = p00_s2;
+    /* Strictly speaking all this range check is UB if the regions don't
+       overlap. */
+    if ((p00_c1 <= p00_c2 && p00_c2 < (p00_c1 + p00_s1max))
+        || (p00_c2 <= p00_c1 && p00_c1 < (p00_c2 + p00_n))) {
+      p00_ret = EINVAL; goto P00_ERR;
+    }
+    memcpy(p00_s1, p00_s2, p00_n);
+  } else {
+    memmove(p00_s1, p00_s2, p00_n);
+  }
+  return 0;
+ P00_ERR:
+  if (p00_s1max) memset(p00_s1, 0, p00_s1max);
+ P00_SEVERE:
+  return p00_ret;
+}
+
+# define memcpy_s(S1, S1MAX, S2, N)  P99_CONSTRAINT_TRIGGER(p00_memcpy_s(false, (S1), (S1MAX), (S2), (N)), "memcpy_s runtime constraint violation")
+# define memmove_s(S1, S1MAX, S2, N) P99_CONSTRAINT_TRIGGER(p00_memcpy_s(true, (S1), (S1MAX), (S2), (N)), "memmove_s runtime constraint violation")
+
+p99_inline
+errno_t p00_strcpy_s(void * restrict p00_s1, rsize_t p00_s1max,
+                     const void * restrict p00_s2) {
+  size_t p00_len = strnlen_s(p00_s2, p00_s1max) + 1;
+  return p00_memcpy_s(false, p00_s1, p00_s1max, p00_s2, p00_len);
+}
+
+# define strcpy_s(S1, S1MAX, S2)  P99_CONSTRAINT_TRIGGER(p00_strcpy_s((S1), (S1MAX), (S2)), "strcpy_s runtime constraint violation")
+
+p99_inline
+errno_t p00_strncpy_s(char * restrict p00_s1,
+                      rsize_t p00_s1max,
+                      const char * restrict p00_s2,
+                      rsize_t p00_n) {
+  if (!p00_s1 || !p00_s1max || p00_s1max > RSIZE_MAX) return memcpy_s(p00_s1, p00_s1max, p00_s2, p00_n);
+  if (!p00_s2 || p00_n > RSIZE_MAX) return memcpy_s(p00_s1, p00_s1max, p00_s2, p00_n);
+  /* The maximum string length that we can copy is p00_n - 1. */
+  size_t p00_len = strnlen_s(p00_s2, p00_n - 1) + 1;
+  /* If the target can't hold the string, the standard demands to
+     abort the copy operation. */
+  if (p00_s1max < p00_len) return memcpy_s(p00_s1, p00_s1max, 0, 0);
+  /* Now copy and force null termination. */
+  size_t p00_ret = memcpy_s(p00_s1, p00_s1max, p00_s2, p00_len - 1);
+  p00_s1[p00_len - 1] = 0;
+  return p00_ret;
+}
+
+# define strncpy_s(S1, S1MAX, S2, N)  P99_CONSTRAINT_TRIGGER(p00_strncpy_s((S1), (S1MAX), (S2), (N)), "strncpy_s runtime constraint violation")
+
+p99_inline
+errno_t p00_strcat_s(char * restrict p00_s1,
+                     rsize_t p00_s1max,
+                     const char * restrict p00_s2) {
+  if (!p00_s1 || !p00_s1max || p00_s1max > RSIZE_MAX) return memcpy_s(p00_s1, p00_s1max, p00_s2, 0);
+  if (!p00_s2) return memcpy_s(p00_s1, p00_s1max, p00_s2, 0);
+  size_t p00_l1 = strnlen_s(p00_s1, p00_s1max);
+  /* Check if p00_s1 had been null terminated */
+  if (p00_l1 >= p00_s1max) return memcpy_s(p00_s1, 1, 0, 0);
+  else p00_s1max -= p00_l1;
+  /* Only look into the string that could fit after the current
+     contents of p00_s1. */
+  size_t p00_l2 = strnlen_s(p00_s2, p00_s1max) + 1;
+  if (p00_l2 > p00_s1max) return memcpy_s(p00_s1, 1, p00_s2, 0);
+  size_t p00_ret = strncpy_s(p00_s1 + p00_l1, p00_s1max, p00_s2, p00_l2);
+  if (p00_ret) p00_s1[0] = 0;
+  return p00_ret;
+}
+
+# define strcat_s(S1, S1MAX, S2)  P99_CONSTRAINT_TRIGGER(p00_strcat_s((S1), (S1MAX), (S2)), "strcat_s runtime constraint violation")
+
+p99_inline
+errno_t p00_strncat_s(char * restrict p00_s1,
+                      rsize_t p00_s1max,
+                      const char * restrict p00_s2,
+                      rsize_t p00_n) {
+  if (!p00_s1 || !p00_s1max || p00_s1max > RSIZE_MAX) return memcpy_s(p00_s1, p00_s1max, p00_s2, 0);
+  if (!p00_s2 || p00_n > RSIZE_MAX) return memcpy_s(p00_s1, p00_s1max, p00_s2, 0);
+  size_t p00_l1 = strnlen_s(p00_s1, p00_s1max);
+  /* Check if p00_s1 had been null terminated */
+  if (p00_l1 >= p00_s1max) return memcpy_s(p00_s1, 1, 0, 0);
+  else p00_s1max -= p00_l1;
+  /* Only look into the string that could fit after the current
+     contents of p00_s1. */
+  size_t p00_l2 = strnlen_s(p00_s2, p00_n) + 1;
+  if (p00_l2 > p00_s1max) return memcpy_s(p00_s1, 1, p00_s2, 0);
+  size_t p00_ret = strncpy_s(p00_s1 + p00_l1, p00_s1max, p00_s2, p00_l2);
+  if (p00_ret) p00_s1[0] = 0;
+  return p00_ret;
+}
+
+# define strncat_s(S1, S1MAX, S2, N)  P99_CONSTRAINT_TRIGGER(p00_strncat_s((S1), (S1MAX), (S2), (N)), "strncat_s runtime constraint violation")
+
+# endif
 
 #endif
