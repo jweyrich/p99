@@ -84,6 +84,99 @@
   </li>
 </ul>
 
+
+<h2>C and C++ convergence</h2>
+
+<p>
+  A recent usenet discussion emphasize that a lot of the differences
+  between C and C++ are there just gratuitously and serve no
+  particular purpose that enforcing some ideological view points. So I
+  started this collection here which is divided in three parts. What
+  C++ can easily import from C, the other way round, and things that
+  both got wrong or that are history and irrelevant for modern
+  platforms.
+</p>
+
+<h3>Features that C++ could easily import from C11</h3>
+<ul>
+  <li>variably modified types (not necessarily VLA but pointers to VLA are
+    nice)
+  </li>
+  <li>The concept and syntax of <code>restrict</code></li>
+  <li>designated initializers</li>
+  <li>compound literals</li>
+  <li>type punning through unions</li>
+  <li>compatible complex types</li>
+  <li>bit-field ordering for <code>signed</code>, <code>un
+  signed</code> and <code>bool</code> base type</li>
+</ul>
+
+<h3>Features that C++ could import from C11 but that would need some effort</h3>
+
+<ul>
+  <li>let the ternary operator return rvalues</li>
+  <li>allow implicit cast of <code>void*</code> pointers to object pointers</li>
+</ul>
+
+<h3>Features that C could easily import from C++11</h3>
+
+<p>
+  I probably don't know enough of C++ for this section. So please send
+  me your ideas, if you have any.
+</p>
+
+<ul>
+  <li> <code>{}</code> for default initializers
+  </li>
+  <li>
+    <code>nullptr</code>
+  </li>
+  <li>a wider concept of compile time constants</li>
+  <li><code>static</code> declarations in <code>for</code>
+  declarations</li>
+  <li>declarations in <code>if</code> and <code>while</code>
+  </li>
+  <li>optional arguments for functions</li>
+  <li><code>extern "C"</code></li>
+  <li>references</li>
+</ul>
+
+
+<h3>Problems that C and C++ could tackle jointly in their next version</h3>
+
+
+<ul>
+  <li>
+    fix signed integer representations to two's complement
+  </li>
+  <li>
+    forbid trap representations for <code>0x80000...</code>, or
+    equivalently force <code>TYPE_MIN</code> to have the
+    value <code>-TYPE_MAX - 1</code> for all signed integer types.
+  </li>
+  <li>
+    no padding bits for integral types
+  </li>
+  <li>
+    force definition of <code>[u]intptr_t</code>
+  </li>
+  <li>
+    force <code>ptrdiff_t</code> to be the signed type corresponding
+    to <code>size_t</code>
+  </li>
+  <li>
+    find a common ground for the inferred declared type feature, AKA C++'s
+    "<code>auto</code>"
+  </li>
+  <li>
+    find a common ground for <code>inline</code> functions
+  </li>
+  <li>
+    find a new common definition of rvalue as <code>register</code>
+    value
+  </li>
+  </ul>
+
   <hr />
   <author>Author: Jens Gustedt, INRIA, 2012</author>
 </body>
