@@ -36,7 +36,7 @@
 #include "p99_id.h"
 #include "p99_type.h"
 
-#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
+#if P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 # if P99_GCC_VERSION >= 40200UL
 #   pragma GCC diagnostic ignored "-Wmissing-braces"
 # endif
@@ -1019,8 +1019,17 @@ P00_DECLARE_OVERFLOW(ll);
  ** @see P99_LVAL
  ** @see p99_int.h
  **/
-#define P99_INIT { 0 }
+#if P99_COMPILER & P99_COMPILER_CLANG
+# define P99_INIT                                       \
+_Pragma("GCC diagnostic push")                          \
+_Pragma("GCC diagnostic ignored \"-Wmissing-braces\"")  \
+  { 0 }                                                 \
+_Pragma("GCC diagnostic pop")
+#else
+# define P99_INIT { 0 }
+#endif
 
+#define P00_LVAL1(T) ((T)P99_INIT)
 #define P00_LVAL(T, ...) ((T){ __VA_ARGS__ })
 
 /**
@@ -1036,7 +1045,7 @@ P00_DECLARE_OVERFLOW(ll);
  ** @see P99_RVAL for a macro that returns an rvalue of a certain type
  ** and value.
  **/
-#define P99_LVAL(...) P99_IF_LE(P99_NARG(__VA_ARGS__),1)(P00_LVAL(__VA_ARGS__, 0))(P00_LVAL(__VA_ARGS__))
+#define P99_LVAL(...) P99_IF_LE(P99_NARG(__VA_ARGS__),1)(P00_LVAL1(__VA_ARGS__))(P00_LVAL(__VA_ARGS__))
 
 #ifdef DOXYGEN
 /**
