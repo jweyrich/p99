@@ -1064,7 +1064,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJLEN, 3)
 
 #define P00_SPRINT_DEFINE(T, ...)                                                     \
 p99_inline                                                                            \
-char const* P99_PASTE2(p00_sprint_, T)(T p00_val, char* p00_str, unsigned p00_form) { \
+char const* P99_PASTE2(p00_sprint_, T)(T p00_val, char*restrict p00_str, unsigned p00_form) { \
   enum { p00_len = P99_NARG(__VA_ARGS__), };                                          \
   static char const*const p00_format[p00_len] = { __VA_ARGS__ };                      \
   char const*const p00_f = (p00_form < p00_len)                                       \
@@ -1091,7 +1091,7 @@ P00_SPRINT_DEFINE(double, "%g", "%a");
 P00_SPRINT_DEFINE(ldouble, "%Lg", "%La");
 
 p99_inline
-char const* p00_sprint__Bool(_Bool p00_val, char* p00_str, unsigned p00_form) {
+char const* p00_sprint__Bool(_Bool p00_val, char*restrict p00_str, unsigned p00_form) {
   char const*const p00_format[] = {
     "false", "true",
     "0", "1",
@@ -1103,19 +1103,19 @@ char const* p00_sprint__Bool(_Bool p00_val, char* p00_str, unsigned p00_form) {
 }
 
 p99_inline
-char const* p00_sprint_charp(char const* p00_val, char* p00_str, unsigned p00_form) {
+char const* p00_sprint_charp(char const* p00_val, char*restrict p00_str, unsigned p00_form) {
   return p00_val;
 }
 
 p99_inline
-char const* p00_sprint_voidp(void * p00_val, char* p00_str, unsigned p00_form) {
+char const* p00_sprint_voidp(void * p00_val, char*restrict p00_str, unsigned p00_form) {
   sprintf(p00_str, "%p", p00_val);
   return p00_str;
 }
 
 #ifndef __STDC_NO_COMPLEX__
 p99_inline
-char const* p00_sprint_cfloat(cfloat p00_val, char* p00_str, unsigned p00_form) {
+char const* p00_sprint_cfloat(cfloat p00_val, char*restrict p00_str, unsigned p00_form) {
   char const*const p00_format[] = { "(%g, %g)", "(%a, %a)", };
   register unsigned const p00_len = P99_ALEN(p00_format);
   char const*const p00_f = (p00_form < p00_len)
@@ -1126,7 +1126,7 @@ char const* p00_sprint_cfloat(cfloat p00_val, char* p00_str, unsigned p00_form) 
 }
 
 p99_inline
-char const* p00_sprint_cdouble(cdouble p00_val, char* p00_str, unsigned p00_form) {
+char const* p00_sprint_cdouble(cdouble p00_val, char*restrict p00_str, unsigned p00_form) {
   char const*const p00_format[] = { "(%g, %g)", "(%a, %a)", };
   register unsigned const p00_len = P99_ALEN(p00_format);
   char const*const p00_f = (p00_form < p00_len)
@@ -1137,7 +1137,7 @@ char const* p00_sprint_cdouble(cdouble p00_val, char* p00_str, unsigned p00_form
 }
 
 p99_inline
-char const* p00_sprint_cldouble(cldouble p00_val, char* p00_str, unsigned p00_form) {
+char const* p00_sprint_cldouble(cldouble p00_val, char*restrict p00_str, unsigned p00_form) {
   char const*const p00_format[] = { "(%Lg, %Lg)", "(%La, %La)", };
   register unsigned const p00_len = P99_ALEN(p00_format);
   char const*const p00_f = (p00_form < p00_len)
@@ -1152,7 +1152,7 @@ char const* p00_sprint_cldouble(cldouble p00_val, char* p00_str, unsigned p00_fo
 #ifdef p99x_uintmax
 #define UINT64_D19 UINT64_C(10000000000000000000)
 p99_inline
-void p00_sprint_p99x_uintmax_u_ite(p99x_uintmax p00_val, char* p00_str) {
+void p00_sprint_p99x_uintmax_u_ite(p99x_uintmax p00_val, char*restrict p00_str) {
   uint64_t p00_ar[2*sizeof(p99x_uintmax)/sizeof(uint64_t)];
   size_t p00_pos = 0;
   for (; p00_val >= UINT64_D19; ++p00_pos) {
@@ -1168,13 +1168,13 @@ void p00_sprint_p99x_uintmax_u_ite(p99x_uintmax p00_val, char* p00_str) {
   }
 }
 p99_inline
-char* p00_sprint_p99x_uintmax_u(p99x_uintmax p00_val, char* p00_str) {
+char* p00_sprint_p99x_uintmax_u(p99x_uintmax p00_val, char*restrict p00_str) {
   p00_sprint_p99x_uintmax_u_ite(p00_val, p00_str);
   return p00_str;
 }
 #define UINT64_O21 (~(UINT64_C(1)<<63))
 p99_inline
-void p00_sprint_p99x_uintmax_o_ite(p99x_uintmax p00_val, char* p00_str) {
+void p00_sprint_p99x_uintmax_o_ite(p99x_uintmax p00_val, char*restrict p00_str) {
   uint64_t p00_ar[3*sizeof(p99x_uintmax)/sizeof(uint64_t)];
   size_t p00_pos = 0;
   for (;;) {
@@ -1191,12 +1191,12 @@ void p00_sprint_p99x_uintmax_o_ite(p99x_uintmax p00_val, char* p00_str) {
   }
 }
 p99_inline
-char* p00_sprint_p99x_uintmax_o(p99x_uintmax p00_val, char* p00_str) {
+char* p00_sprint_p99x_uintmax_o(p99x_uintmax p00_val, char*restrict p00_str) {
   p00_sprint_p99x_uintmax_o_ite(p00_val, p00_str);
   return p00_str;
 }
 p99_inline
-void p00_sprint_p99x_uintmax_X_ite(p99x_uintmax p00_val, char* p00_str) {
+void p00_sprint_p99x_uintmax_X_ite(p99x_uintmax p00_val, char*restrict p00_str) {
   uint64_t p00_ar[2*sizeof(p99x_uintmax)/sizeof(uint64_t)];
   size_t p00_pos = 0;
   for (;;) {
@@ -1213,13 +1213,13 @@ void p00_sprint_p99x_uintmax_X_ite(p99x_uintmax p00_val, char* p00_str) {
   }
 }
 p99_inline
-char const* p00_sprint_p99x_uintmax_X(p99x_uintmax p00_val, char* p00_str) {
+char const* p00_sprint_p99x_uintmax_X(p99x_uintmax p00_val, char*restrict p00_str) {
   p00_sprint_p99x_uintmax_X_ite(p00_val, p00_str);
   return p00_str;
 }
 
 p99_inline
-char const* p00_sprint_p99x_intmax(p99x_intmax p00_val, char* p00_str, unsigned p00_form) {
+char const* p00_sprint_p99x_intmax(p99x_intmax p00_val, char*restrict p00_str, unsigned p00_form) {
   if (p00_val < 0) {
     p00_str[0] = '-';
     p00_sprint_p99x_uintmax_u(-p00_val, p00_str + 1);
@@ -1230,7 +1230,7 @@ char const* p00_sprint_p99x_intmax(p99x_intmax p00_val, char* p00_str, unsigned 
 }
 
 p99_inline
-char const* p00_sprint_p99x_uintmax(p99x_uintmax p00_val, char* p00_str, unsigned p00_form) {
+char const* p00_sprint_p99x_uintmax(p99x_uintmax p00_val, char*restrict p00_str, unsigned p00_form) {
   switch (p00_form) {
   default: return p00_sprint_p99x_uintmax_u(p00_val, p00_str);
   case 1: return p00_sprint_p99x_uintmax_X(p00_val, p00_str);

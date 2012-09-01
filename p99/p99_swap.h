@@ -27,11 +27,13 @@
 #include "p99_int.h"
 
 p99_inline
-void p00_swap2(void* p00_p0, void* p00_p1, size_t p00_size, void* p00_t0, void* p00_t1) {
-  memcpy(p00_t0, p00_p0, p00_size);
-  memcpy(p00_t1, p00_p1, p00_size);
-  memcpy(p00_p1, p00_t0, p00_size);
-  memcpy(p00_p0, p00_t1, p00_size);
+void p00_swap2(void* p00_p0, void* p00_p1, size_t p00_size, void*restrict p00_t0, void*restrict p00_t1) {
+  if (p00_p0 != p00_p1) {
+    memcpy(p00_t0, p00_p0, p00_size);
+    memcpy(p00_t1, p00_p1, p00_size);
+    memcpy(p00_p1, p00_t0, p00_size);
+    memcpy(p00_p0, p00_t1, p00_size);
+  }
 }
 
 /**
@@ -44,17 +46,21 @@ void p00_swap2(void* p00_p0, void* p00_p1, size_t p00_size, void* p00_t0, void* 
  **/
 p99_inline
 void p99_swap2(void* p00_p0, void* p00_p1, size_t p00_size) {
-  char* p00_t0 = malloc(2 * p00_size);
-  char* p00_t1 = p00_t0 + p00_size;
-  p00_swap2(p00_p0, p00_p1, p00_size, p00_t0, p00_t1);
-  free(p00_t0);
+  if (p00_p0 != p00_p1) {
+    char* p00_t0 = malloc(2 * p00_size);
+    char* p00_t1 = p00_t0 + p00_size;
+    p00_swap2(p00_p0, p00_p1, p00_size, p00_t0, p00_t1);
+    free(p00_t0);
+  }
 }
 
 p99_inline
-void p00_swap1(void* p00_p0, void* p00_p1, size_t p00_size, void* p00_t0) {
-  memcpy(p00_t0, p00_p0, p00_size);
-  memcpy(p00_p0, p00_p1, p00_size);
-  memcpy(p00_p1, p00_t0, p00_size);
+void p00_swap1(void* p00_p0, void* p00_p1, size_t p00_size, void*restrict p00_t0) {
+  if (p00_p0 != p00_p1) {
+    memcpy(p00_t0, p00_p0, p00_size);
+    memcpy(p00_p0, p00_p1, p00_size);
+    memcpy(p00_p1, p00_t0, p00_size);
+  }
 }
 
 /**
@@ -67,9 +73,11 @@ void p00_swap1(void* p00_p0, void* p00_p1, size_t p00_size, void* p00_t0) {
  **/
 p99_inline
 void p99_swap1(void* p00_p0, void* p00_p1, size_t p00_size) {
-  void* p00_t0 = malloc(p00_size);
-  p00_swap1(p00_p0, p00_p1, p00_size, p00_t0);
-  free(p00_t0);
+  if (p00_p0 != p00_p1) {
+    void* p00_t0 = malloc(p00_size);
+    p00_swap1(p00_p0, p00_p1, p00_size, p00_t0);
+    free(p00_t0);
+  }
 }
 
 #define P00_SWAP2(_0, _1)                                      \
