@@ -36,7 +36,20 @@ size_t strerrorlen_s(errno_t p00_errnum) {
 #if (_XOPEN_SOURCE >= 600)
 p99_inline
 int p00_strerror(int p00_errname, size_t p00_maxsize, char p00_s[p00_maxsize]) {
+# if _GNU_SOURCE
+  char * p00_ret = strerror_r(p00_errname, p00_s, p00_maxsize);
+  if (p00_ret != p00_s) {
+    if (strlen(p00_ret) < p00_maxsize) {
+      strcpy(p00_s, p00_ret);
+    } else {
+      errno = ERANGE;
+      return -1;
+    }
+  }
+  return 0;
+# else
   return strerror_r(p00_errname, p00_s, p00_maxsize);
+# endif
 }
 #elif __STDC_WANT_LIB_EXT1__ && defined(__STDC_LIB_EXT1__)
 p99_inline
