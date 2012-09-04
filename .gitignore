@@ -1,5 +1,7 @@
 *.log
 *.o
+*.s
+*.tmp
 *~
 commits
 doxy/orwl-tagfile
