@@ -251,17 +251,19 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 #endif
 
-#ifndef __has_builtin
-# define __has_builtin(X) p00_has_builtin_ ## X  // Compatibility with non-clang compilers.
-#endif
-#ifndef __has_feature
-# define __has_feature(X) p00_has_feature_ ## X  // Compatibility with non-clang compilers.
-#endif
-#ifndef __has_extension
-# define __has_extension __has_feature  // Compatibility with non-clang compilers.
-#endif
-#ifndef __has_attribute
-# define __has_attribute(X) p00_has_attribute_ ## X  // Compatibility with non-clang compilers.
+#if !(P99_COMPILER & P99_COMPILER_CLANG)
+# ifndef __has_builtin
+#  define __has_builtin(X) p00_has_builtin_ ## X  // Compatibility with non-clang compilers.
+# endif
+# ifndef __has_feature
+#  define __has_feature(X) p00_has_feature_ ## X  // Compatibility with non-clang compilers.
+# endif
+# ifndef __has_extension
+#  define __has_extension __has_feature  // Compatibility with non-clang compilers.
+# endif
+# ifndef __has_attribute
+#  define __has_attribute(X) p00_has_attribute_ ## X  // Compatibility with non-clang compilers.
+# endif
 #endif
 
 #ifndef p99_has_builtin
@@ -319,7 +321,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_feature_gnu_thread_local 1
 # define p00_has_feature_gnu_alignof 1
 # define p00_has_feature_statement_expression 1
-# define p00_has_feature_typeof 1
+# define P99_TYPEOF(X) __typeof__(X)
 # if (P99_GCC_VERSION >= 40700UL) && (P99_GCC_VERSION < 40800UL)
 #  if __STDC_VERSION__ > 201100L
 #   define p00_has_feature_uchar_h 0
