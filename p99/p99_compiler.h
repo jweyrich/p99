@@ -323,12 +323,13 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_feature_statement_expression 1
 # define P99_TYPEOF(X) __typeof__(X)
 # if (P99_GCC_VERSION >= 40700UL) && (P99_GCC_VERSION < 40800UL)
+#  define p00_has_feature_stdnoreturn_h 1
+#  define p00_has_feature_stdalign_h 1
+#  define p00_has_feature_c_max_align_t 1
 #  if __STDC_VERSION__ > 201100L
 #   define p00_has_feature_uchar_h 0
-#   define p00_has_feature_stdnoreturn_h 1
 #   define __STDC_NO_ATOMICS__ 1
 #   define __STDC_NO_THREADS__ 1
-#   define p00_has_feature_c_max_align_t 1
 #   define p00_has_feature_c_generic_selections 0
 #  endif
 # endif
@@ -402,6 +403,12 @@ signed p00_trailing_comma_in_initializer__(void) {
 #   define __STDC_NO_ATOMICS__ 1
 /* clang has no threads.h, yet */
 #   define __STDC_NO_THREADS__ 1
+# endif
+# if P99_VERSION_NO > 30200UL
+#  define p00_has_feature_stdnoreturn_h 1
+# endif
+# if P99_VERSION_NO >= 30000UL
+#  define p00_has_feature_stdalign_h 1
 # endif
 #elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 # define P99_ATLEAST
@@ -544,12 +551,13 @@ signed p00_trailing_comma_in_initializer__(void) {
  **/
 
 /* implement emulation of some C11 features */
-#if  __STDC_VERSION__ > 201100L
+#if p99_has_feature(stdalign_h)
 # include <stdalign.h>
-# if p99_has_feature(stdnoreturn_h)
-#  include <stdnoreturn.h>
-# endif
-#endif /* C11 emulation support */
+#endif
+#if p99_has_feature(stdnoreturn_h)
+# include <stdnoreturn.h>
+#endif
+/* end C11 emulation support */
 
 #if __STDC_HOSTED__
 # if p99_has_feature(uchar_h)
