@@ -89,7 +89,7 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                     \
  (p00_strerror(__VA_ARGS__)))
 
 #if __STDC_WANT_LIB_EXT1__ && !defined(__STDC_LIB_EXT1__)
-p99_inline
+P99_WEAK(p99_constraint_handler)
 void p99_constraint_handler(const char * restrict p00_msg,
                             void * restrict p00_ptr,
                             errno_t p00_err);
@@ -251,7 +251,7 @@ void report_handler_s(const char * restrict p00_msg,
   p99_report_handler(p00_msg, p00_ptr, p00_err);
 }
 
-p99_inline
+P99_WEAK(p99_constraint_handler)
 void p99_constraint_handler(const char * restrict p00_msg,
                             void * restrict p00_ptr,
                             errno_t p00_err) {
