@@ -46,25 +46,6 @@ P99_CA_WRAP_DECLARE(printFunc, void, (P99_AARG(double const, A, 2)), (P99_ANAME(
 /* Print a 2D array, the user interface */
 #define print(ARR) P99_CA_CALL(printFunc, (), (2), P99_ACALL(ARR, 2, double const))
 
-/* Zero out a 2D double array, the (more or less) hidden function. */
-/* The array is called C. The lengths are not accessible through a
-   name, but only trough the ::P99_ALEN macro. */
-inline
-void
-zeroOutFunc(P99_AARG(double, C, 2)) {
-  P99_PARALLEL_DO(size_t, i, 0, P99_ALEN(*C, 0)) {
-    P99_PARALLEL_DO(size_t, j, 0, P99_ALEN(*C, 1)) {
-      (*C)[i][j] = 0.0;
-    }
-  }
-}
-
-P99_CA_WRAP_DECLARE(zeroOutFunc, void, (P99_AARG(double, C, 2)), (P99_ANAME(C, 2)), (), (2));
-
-/* The user interface. It receives just one argument the pointer to
-   the matrix. */
-#define zeroOut(VC) P99_CA_CALL(zeroOutFunc, (), (2), P99_ACALL(VC, 2))
-
 /* Check a 2D double array if it is all 0.0, the (more or less) hidden function. */
 /* The array is called C. The lengths are not accessible through a
    name, but only trough the ::P99_ALEN macro. */
@@ -131,7 +112,7 @@ void*
 transposeFunc(P99_AARG(double const, B, 2)) {
   size_t const nb0 = P99_ALEN(*B, 0);
   size_t const nb1 = P99_ALEN(*B, 1);
-  P99_AREF(double, A, nb1, nb0) = P99_MALLOC(*A);
+  P99_AREF(double, A, nb1, nb0) = P99_ALLOC(*A);
   P99_PARALLEL_DO(size_t, j, 0, nb0) {
     /* sequentialize access to the rows of B */
     P99_AREF(double const, BV, nb1) = &(*B)[j];
@@ -203,9 +184,6 @@ P99_CA_CALL(multFunc,                           \
 /* From here on are only things that concern the implementation */
 /* This starts with instantiations of for the inline function. **/
 
-P99_INSTANTIATE(void, zeroOutFunc,
-                P99_AARG(double, C, 2));
-
 P99_INSTANTIATE(bool, checkZeroFunc,
                 P99_AARG(double const, C, 2));
 
@@ -225,7 +203,6 @@ P99_INSTANTIATE(void, multFunc,
 
 
 P99_CA_WRAP_DEFINE(printFunc, void, (P99_AARG(double const, A, 2)), (P99_ANAME(A, 2)), (), (2));
-P99_CA_WRAP_DEFINE(zeroOutFunc, void, (P99_AARG(double, C, 2)), (P99_ANAME(C, 2)), (), (2));
 P99_CA_WRAP_DEFINE(checkZeroFunc, bool, (P99_AARG(double const, C, 2)), (P99_ANAME(C, 2)), (), (2));
 P99_CA_WRAP_DEFINE(dotproductFunc,
                    double,
@@ -296,7 +273,6 @@ multFunc(P99_AARG(double const, A, 2),
   double times0 = omp_get_wtime();
   /* transpose B to have its columns consecutive in memory */
   double const P99_ARRAY(*BS, nb1, nb0) = transpose(B);
-  zeroOut(C);
   assert(checkZero(C));
   double times1 = omp_get_wtime();
 
@@ -424,15 +400,15 @@ int main(int argc, char*argv[]) {
 
      Also, each of n, m, k occurs exactly once, so the other
      dimensions are enforced. */
-  P99_AREF(double, AR, n, /*          */ k /*          */) = P99_MALLOC(*AR);
-  P99_AREF(double, BR, P99_ALEN(*AR, 1), m /*          */) = P99_MALLOC(*BR);
+  P99_AREF(double, AR, n, /*          */ k /*          */) = P99_ALLOC(*AR);
+  P99_AREF(double, BR, P99_ALEN(*AR, 1), m /*          */) = P99_ALLOC(*BR);
 
   /* Test the error checks by perturbing matrix C:
      - if err is 1 we add one to the size so a size mismatch should be detected
      - if err is 2 we don't alloc but set to 0, so a null pointer should be detected */
   P99_AREF(double, CR, P99_ALEN(*AR, 0)
            /*   */ + (err == 1 ? 1 : 0),
-           /*                         */ P99_ALEN(*BR, 1)) = (err == 2 ? 0 : P99_MALLOC(*CR));
+           /*                         */ P99_ALEN(*BR, 1)) = (err == 2 ? 0 : P99_ALLOC(*CR, P99_LVAL(double)));
 
   /* Initialize the two matrices to some arbitrary values */
   /* This replaces the following nested loops: */

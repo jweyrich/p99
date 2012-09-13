@@ -15,6 +15,7 @@
 # define    P99_NEW_H_
 
 #include "p99_c99.h"
+#include "p99_int.h"
 
 /**
  ** @file
@@ -68,12 +69,60 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_PZERO, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_TZERO, 0)
 #define P99_TZERO(X) (memset(&(X), 0, sizeof(X)))
 
+p99_inline
+unsigned char
+(*p00_memcpy(size_t p00_len, unsigned char (*p00_tar)[p00_len], unsigned char const (*p00_src)[p00_len]))[] {
+  memcpy(&(*p00_tar)[0], &(*p00_src)[0], p00_len);
+  return p00_tar;
+}
+
+#define P99_ASUB(X, T, N, L)                            \
+(                                                       \
+ (T(*)[L                                                \
+       /* check for validity                         \
+          / !!(L && (sizeof(T[N+L]) < sizeof(*X)))*/])  \
+ (P99_LVAL(T*, &((*X)[N])))                             \
+)
+
+p99_inline
+unsigned char
+(*p00_initialize(size_t p00_len, unsigned char (*p00_base)[p00_len], size_t p00_init))[] {
+  for (; (p00_init * 2u) <= p00_len; p00_init *= 2u) {
+    p00_memcpy(p00_init,
+               P99_ASUB(p00_base, unsigned char, p00_init, p00_init),
+               P99_ASUB(p00_base, unsigned char const, 0, p00_init));
+  }
+  if (p00_len > p00_init) {
+    p00_len -= p00_init;
+    p00_memcpy(p00_len,
+               P99_ASUB(p00_base, unsigned char, p00_init, p00_len),
+               P99_ASUB(p00_base, unsigned char const, 0, p00_len));
+  }
+  return p00_base;
+}
+
+#if ((P99_COMPILER & P99_COMPILER_GNU) && (P99_GCC_VERSION >= 40600UL) && (P99_GCC_VERSION <= 40700UL))
+# define P00_ABLESS_BUG 1
+#endif
+
+#if defined(P99_TYPEOF) && !P00_ABLESS_BUG
+# define P00_ABLESS(X, ...) ((P99_TYPEOF(__VA_ARGS__)*restrict)(unsigned char(*)[sizeof(__VA_ARGS__)]){ X })
+#else
+# define P00_ABLESS(X, ...) ((void*restrict)(unsigned char(*)[sizeof(__VA_ARGS__)]){ X })
+#endif
+
+#define P00_APLAIN(X, N) ((unsigned char(*)[N])(X))
+#define P99_APLAIN(...)                                 \
+(P99_IF_LT_2(P99_NARG(__VA_ARGS__))                     \
+ (P00_APLAIN(__VA_ARGS__, sizeof(*__VA_ARGS__)))        \
+ (P00_APLAIN(__VA_ARGS__))                              \
+ )
 
 p99_inline
 void* p00_memset(void* p00_tar, void const* p00_src, size_t p00_size, size_t p00_nb) {
-  register char *p00_p = p00_tar;
-  for (size_t p00_i = 0; p00_i < p00_nb; ++p00_i, p00_p += p00_size)
-    memcpy(p00_p, p00_src, p00_size);
+  p00_initialize(p00_nb * p00_size,
+                 P00_APLAIN(memcpy(p00_tar, p00_src, p00_size), p00_size),
+                 p00_size);
   return p00_tar;
 }
 
@@ -123,14 +172,32 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_MEMZERO, 0)
  ** expression that is evaluated for its size.
  ** @code
  ** double * a = P99_MALLOC(double[10]); // allocate an array of 10 double
- ** node * n = P99_MALLOC(node);         // allocate a new node
+ ** node * n = P99_MALLOC(*n);           // allocate a new node
  ** @endcode
  ** @remark As with the C library routine, the allocated space is
  ** uninitialized. Better use ::P99_CALLOC wherever possible. In
  ** particular, as in the second example, when you might have a dynamic
  ** data structure with pointers.
  **/
-#define P99_MALLOC(T) malloc(sizeof(T))
+#define P99_MALLOC(X) malloc(sizeof(X))
+
+
+#define P00_VMALLOC(X) P00_ABLESS(P99_MALLOC(X), X)
+
+#define P00_INITIALIZE(X, L)                                            \
+p00_initialize(sizeof(*X),                                              \
+               P00_APLAIN(memcpy((X), (L), sizeof(*L)), sizeof(*X)),    \
+               sizeof(*L))
+
+#define P99_INITIALIZE(X, L) P00_ABLESS(P00_INITIALIZE((X), (L)), *(X))
+
+#define P00_ALLOC(X, L)                                                 \
+P00_ABLESS(p00_initialize(sizeof(X),                                    \
+                          P00_APLAIN(memcpy(P99_MALLOC(X), (&L), sizeof(L)), sizeof(X)), \
+                          sizeof(L)),                                   \
+           (X))
+
+#define P99_ALLOC(...) P99_IF_GT(P99_NARG(__VA_ARGS__), 1)(P00_ALLOC(__VA_ARGS__))(P00_VMALLOC(__VA_ARGS__))
 
 /**
  ** @brief A type oriented @c realloc wrapper
