@@ -101,7 +101,7 @@ unsigned char
   return p00_base;
 }
 
-#if ((P99_COMPILER & P99_COMPILER_GNU) && (P99_GCC_VERSION >= 40600UL) && (P99_GCC_VERSION <= 40700UL))
+#if ((P99_COMPILER & P99_COMPILER_GNU) && (P99_GCC_VERSION < 40704UL))
 # define P00_ABLESS_BUG 1
 #endif
 
