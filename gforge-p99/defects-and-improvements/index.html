@@ -85,6 +85,12 @@
   <li>
     Allow <code>setjmp</code> to be the initializer expression of a variable.
   </li>
+  <li>
+    Enforce the order on <code>uintptr_t</code> (if it is defined)
+    given through the <code>&lt;</code> operator to be compatible with
+    the ordering of pointers. This would it possible to check if
+    pointer ranges overlap without provoking UB.
+  </li>
 </ul>
 
 
