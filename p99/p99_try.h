@@ -291,6 +291,41 @@ int p00_throw_call_zero(int p00_err,
 p00_throw_call_zero(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", non-zero return")
 
 static_inline
+int p00_throw_call_thrd(int p00_err,
+                        p00_jmp_buf0 * p00_top,
+                        char const* p00_file,
+                        char const* p00_context,
+                        char const* p00_info) {
+  if (P99_UNLIKELY(p00_err != thrd_success))
+    p00_jmp_throw(p00_err, p00_top, p00_file, p00_context, p00_info);
+  return 0;
+}
+
+/**
+ ** @brief Wrap a "thread" function call to @a F such that it throws an error
+ ** on failure.
+ **
+ ** In C thread interface functions return an @c int to signal success
+ ** (::thrd_success) or an error. This wrapper makes this transparent
+ ** such that it ensures that the error code is always checked, and if
+ ** an error occurs the value is thrown.
+ **
+ ** @return ::thread_success if the call was successful. Never returns
+ ** if it wasn't.
+ **
+ ** @see P99_THROW_CALL_ZERO for a similar macro that checks if the
+ ** return value is @c 0
+ **
+ ** @see P99_THROW_CALL_NEG for a similar macro that checks if the
+ ** return value is negative
+ **
+ ** @see P99_THROW_CALL_VOIDP for a similar macro that checks a
+ ** pointer return value
+ **/
+#define P99_THROW_CALL_THRD(F, ...)                                                                            \
+p00_throw_call_thrd(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", no thrd_success")
+
+static_inline
 int p00_throw_call_neg(int p00_neg,
                        errno_t p00_def,
                        p00_jmp_buf0 * p00_top,
