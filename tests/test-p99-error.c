@@ -10,13 +10,7 @@
 /* without even the implied warranty of merchantability or fitness for a      */
 /* particular purpose.                                                        */
 /*                                                                            */
-#include "p99_try.h"
-
-#define fprintf_throw(...) P99_THROW_CALL_NEG(fprintf, EINVAL, __VA_ARGS__)
-#define malloc_throw(...) P99_THROW_CALL_VOIDP(malloc, thrd_nomem, __VA_ARGS__)
-#define fclose_throw(...) P99_THROW_CALL_ZERO(fclose, EINVAL, __VA_ARGS__)
-#define strtoul_throw(...) P99_THROW_CALL_RANGE(strtoul, __VA_ARGS__)
-#define strtold_throw(...) P99_THROW_CALL_RANGE(strtold, __VA_ARGS__)
+#include "p99_c99_throw.h"
 
 int main(void) {
   char errbuf[10] = P99_INIT;
