@@ -65,6 +65,13 @@ p99_inline
 noreturn
 void p00_jmp_abort(errno_t p00_cond, char const* p00_file, char const* p00_context, char const* p00_info) {
   p00_constraint_report(p00_cond, p00_file, p00_context, p00_info);
+  constraint_handler_t p00_func = atomic_load(&p00_constraint_handler);
+  if (p00_func == exit_handler_s) {
+    /* Avoid looping in exit handlers. */
+    set_constraint_handler_s(abort_handler_s);
+    /* Give the application a chance to clean up. */
+    exit(EXIT_FAILURE);
+  }
   abort();
 }
 

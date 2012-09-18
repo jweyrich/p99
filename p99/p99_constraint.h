@@ -223,8 +223,17 @@ void p99_abort_handler(const char * restrict p00_msg,
   abort();
 }
 
+p99_inline
+void p99_exit_handler(const char * restrict p00_msg,
+                        void * restrict p00_ptr,
+                        errno_t p00_err) {
+  p00_constraint_report(p00_err, 0, 0, p00_msg);
+  fputs("runtime constraint violation: ", stderr);
+  exit(EXIT_FAILURE);
+}
+
 #ifndef P99_CONSTRAINT_HANDLER
-# define P99_CONSTRAINT_HANDLER report_handler_s
+# define P99_CONSTRAINT_HANDLER exit_handler_s
 #endif
 
 #if __STDC_WANT_LIB_EXT1__
@@ -241,6 +250,11 @@ void report_handler_s(const char * restrict p00_msg,
                       void * restrict p00_ptr,
                       errno_t p00_err);
 
+P99_WEAK(exit_handler_s)
+void exit_handler_s(const char * restrict p00_msg,
+                      void * restrict p00_ptr,
+                      errno_t p00_err);
+
 P99_WEAK(p00_constraint_handler)
 _Atomic(constraint_handler_t) p00_constraint_handler = ATOMIC_VAR_INIT(P99_CONSTRAINT_HANDLER);
 
@@ -251,12 +265,19 @@ void report_handler_s(const char * restrict p00_msg,
   p99_report_handler(p00_msg, p00_ptr, p00_err);
 }
 
+P99_WEAK(exit_handler_s)
+void exit_handler_s(const char * restrict p00_msg,
+                      void * restrict p00_ptr,
+                      errno_t p00_err) {
+  p99_exit_handler(p00_msg, p00_ptr, p00_err);
+}
+
 P99_WEAK(p99_constraint_handler)
 void p99_constraint_handler(const char * restrict p00_msg,
                             void * restrict p00_ptr,
                             errno_t p00_err) {
-  constraint_handler_t func = atomic_load(&p00_constraint_handler);
-  if (func) func(p00_msg, p00_ptr, p00_err);
+  constraint_handler_t p00_func = atomic_load(&p00_constraint_handler);
+  if (p00_func) p00_func(p00_msg, p00_ptr, p00_err);
 }
 
 
