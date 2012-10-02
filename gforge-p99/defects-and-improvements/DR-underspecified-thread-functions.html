@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link href="DR.css" rel="stylesheet" type="text/css"/>
+<title>Defect Report relative to n1570: underspecification of thread
+  functions with void return</title>
+</head>
+<body>
+<h1>Defect Report relative to n1570: underspecification of thread
+  functions with void return</h1>
+
+<h2>Problem statement</h2>
+
+<p>
+  There is are several thread functions in C11 that don't provide
+  return values:
+  <code>call_once</code>,
+  <code>cnd_destroy</code>,
+  <code>mtx_destroy</code>,
+  <code>tss_delete</code>, and
+  <code>thrd_yield</code>.
+  These functions can never fail.
+</p>
+
+<p>
+  On the other it is easily imaginable that for given implementations
+  there might be conditions that have these functions fail. In
+  particular first four refer to objects or structures of some kind
+  and have to suppose that these are valid. The standard in these
+  cases gives no possibility to the functions to return an eventual
+  detection of such a bad state. It doesn't even mention that calling
+  these functions with invalid data can lead to undefined behavior.
+</p>
+
+<h2>Discussion</h2>
+
+
+<h3>Importance of compatibility with other thread interfaces</h3>
+<p>
+  POSIX threads have return types for the corresponding calls that may
+  return valuable information to the application. Wrappers around
+  POSIX threads currently have to ignore that information and are not
+  able to return it, nor are they allowed to output a runtime
+  diagnostic or to abort the program.
+</p>
+
+<p>
+  Implementations of C11 threads that use POSIX threads underneath in
+  a shallow interface (e.g through <code>inline</code> functions) may
+  face multiple warnings from compilers or code analysers about
+  ignored return values.
+</p>
+
+<h3>Importance of the possibility of failure</h3>
+<p>
+  It is unlikely that an implementation will be able to implement
+  these functions in way that guarantees their successful invocation
+  under all circumstances. The standard not being precise on the
+  possible conditions for failure opens the door to a great variety of
+  behavior of these calls in such a case. It is possible that that
+  variety of strategies to cope with errors is unavoidable, but the
+  standard should at least note the most common conditions and force
+  implementation defined behavior in these cases.
+</p>
+
+<h2>Proposed solutions</h2>
+<p>
+  There are basically two main strategies to overcome that
+  difficulty. The first is to change the interfaces and to allow them
+  to return an <code>int</code>-error code. The second to specify for
+  each call under what circumstances the behavior becomes undefined.
+</p>
+
+<p>
+  Both solutions require an analysis of the conditions under which
+  these functions may fail. Fortunately, POSIX also provides us with
+  such an analysis so the text could be more or less copied from
+  there.
+</p>
+
+  <code>call_once</code>,
+
+<p class="alternative">
+ The behavior of <code>call_once</code> is undefined if <code>flag</code>
+ has automatic storage duration or is not initialized by
+ <code>ONCE_FLAG_INIT<code>.
+</p>
+
+  <code>cnd_destroy</code>,
+
+<p class="alternative">
+  A destroyed condition variable object can be reinitialized
+  using <code>cnd_init</code>; the results of otherwise referencing
+  the object after it has been destroyed are undefined.<br />
+
+  It shall be safe to destroy an initialized condition variable object
+  upon which no threads are currently blocked. Attempting to destroy a
+  condition variable object upon which other threads are currently
+  blocked results in failure of the call.
+</p>
+
+  <code>mtx_destroy</code>,
+
+<p class="alternative">
+  A destroyed mutex object can be reinitialized
+  using <code>mtx_init</code>; the results of otherwise referencing
+  the object after it has been destroyed are undefined.<br />
+
+  Attempting to destroy a locked mutex or one that is referenced by
+  another thread that is blocked in a call to <code>cnd_wait</code>
+  results in failure of the call.
+</p>
+
+<code>tss_delete</code>,
+
+<p class="alternative">
+  Any attempt to use <code>key</code> following the call to
+  <code>tss_delete</code> results in failure of the call.
+</p>
+
+<p>
+  Then, the two alternatives would be to add either of the two
+  following snipets to the sections for each of the functions:
+</p>
+
+UB
+<p class="alternative">
+  A failing call results in undefined behavior.
+</p>
+
+change return type
+<p class="alternative">
+  ... change the return type to int ...<br />
+
+  An implementation should specify if it is able to handle failures
+  and what error indications are returned in such a case by the
+  function. If a particular implementation isn't able to handle
+  failures the behavior becomes undefined.
+</p>
+
+
+<hr />
+<author>Author: Jens Gustedt, INRIA, 2012</author>
+</body>
