@@ -1,8 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
 <head>
-<title>Defect Report relative to n1570: underspecification of thread
-  functions with void return</title>
+<title>Defect report #4nn</title>
 <style>
 .quote {
     background-color : #FFD;
@@ -23,10 +22,22 @@ code { background-color : #EEE; text-style : sans-serif }
 </style>
 </head>
 <body>
-<h1>Defect Report relative to n1570: underspecification of thread
-  functions with void return</h1>
+<h2>Defect report #4nn</h2><a href=
+  "dr_4aa.htm">Previous Defect Report</a> &lt; - &gt; <a href=
+  "dr_4bb.htm">Next Defect Report</a>
 
-<h2>Problem statement</h2>
+  <p><br>
+  <b>Submitter:</b> Jens Gustedt<br>
+  <b>Submission Date:</b> <br>
+  <!-- yyyy-mm-dd -->
+  2012-10-08
+   <b>Source:</b><br>
+  <b>Reference Document:</b> N/A<br>
+  <b>Version:</b> 1.0<br>
+  <b>Date:</b> 2012-10-08<br>
+  <b>Subject:</b> underspecification of thread functions with void return</p>
+
+  <p><b>Summary</b></p>
 
 <p>
   There is are several thread functions in C11 that don't provide
@@ -40,19 +51,26 @@ code { background-color : #EEE; text-style : sans-serif }
 </p>
 
 <p>
-  On the other it is easily imaginable that for given implementations
+  On the other hand it is easily imaginable that for given implementations
   there might be conditions that have these functions fail. In
   particular first four refer to objects or structures of some kind
-  and have to suppose that these are valid. The standard in these
-  cases gives no possibility to the functions to return an eventual
-  detection of such a bad state. It doesn't even mention that calling
-  these functions with invalid data can lead to undefined behavior.
+  and have to suppose that these are valid.
 </p>
+<ul>
+  <li>
+    The standard in these cases gives no possibility to the functions
+    to return an eventual detection of such a bad state.
+  </li>
+  <li>
+    It doesn't even mention that calling these functions with invalid
+    data can lead to undefined behavior.
+  </li>
+</ul>
 
-<h2>Discussion</h2>
+  <p><b>Discussion</b></p>
 
 
-<h3>Importance of compatibility with other thread interfaces</h3>
+<h4>Importance of compatibility with other thread interfaces</h4>
 <p>
   POSIX threads have return types for the corresponding calls that may
   return valuable information to the application. Wrappers around
@@ -68,10 +86,10 @@ code { background-color : #EEE; text-style : sans-serif }
   ignored return values.
 </p>
 
-<h3>Importance of the possibility of failure</h3>
+<h4>Importance of the possibility of failure</h4>
 <p>
   It is unlikely that an implementation will be able to implement
-  these functions in way that guarantees their successful invocation
+  these functions in ways that guarantees their successful invocation
   under all circumstances. The standard not being precise on the
   possible conditions for failure opens the door to a great variety of
   behavior of these calls in such a case. It is possible that that
@@ -80,7 +98,7 @@ code { background-color : #EEE; text-style : sans-serif }
   implementation defined behavior in these cases.
 </p>
 
-<h2>Proposed solutions</h2>
+<p><b>Suggested Technical Corrigendum</b><br></p>
 <p>
   There are basically two main strategies to overcome that
   difficulty. The first is to change the interfaces and to allow them
@@ -94,6 +112,8 @@ code { background-color : #EEE; text-style : sans-serif }
   such an analysis so the text could be more or less copied from
   there.
 </p>
+
+<p>(0) common corrigendum proposed for both alternatives</p>
 
   <code>call_once</code>,
 
@@ -140,12 +160,21 @@ code { background-color : #EEE; text-style : sans-serif }
   following snipets to the sections for each of the functions:
 </p>
 
-UB
+<p>
+  (1) UB
+</p>
 <p class="alternative">
   A failing call results in undefined behavior.
 </p>
 
-change return type
+<p>
+  (2) Changing the return type from <code>void</code>
+  to <code>int</code> would not break existing code, since such calls
+  could have up to now only be placed
+  in <code>void</code>-context. Some compilers might add warnings
+  after the corrigendum, though, for unused return values. For each of
+  the functions in question add something equivalent to
+</p>
 <p class="alternative">
   ... change the return type to int ...<br />
 
@@ -157,5 +186,9 @@ change return type
 
 
 <hr />
-<author>Author: Jens Gustedt, INRIA, 2012</author>
+  <!-- Entires below the line by WG14 only. -->
+
+  <p><br>
+  <a href="dr_4aa.htm">Previous Defect Report</a> &lt; - &gt;
+  <a href="dr_4bb.htm">Next Defect Report</a></p>
 </body>
