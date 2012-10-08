@@ -1,19 +1,48 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
 <head>
-<link href="DR.css" rel="stylesheet" type="text/css"/>
-<title>Defect Report relative to n1570: initialization of atomic
-  types, including <code>atomic_flag</code></title>
+<title>Defect report #4nn</title>
+<style>
+.quote {
+    background-color : #FFD;
+    text-align : left;
+    margin : 0em 2em;
+}
+.alternative {
+    background-color : #FCC;
+    text-align : left;
+    margin : 0em 2em;
+}
+pre {
+    background-color : #EEE;
+    text-style : sans-serif;
+    margin : 0em 2em;
+}
+code { background-color : #EEE; text-style : sans-serif }
+</style>
 </head>
 <body>
-<h1>Defect Report relative to n1570: initialization of atomic types,
-  including <code>atomic_flag</code></h1>
+<h2>Defect report #4nn</h2><a href=
+  "dr_4aa.htm">Previous Defect Report</a> &lt; - &gt; <a href=
+  "dr_4bb.htm">Next Defect Report</a>
 
-<h2>Problem statement</h2>
+  <p><br>
+  <b>Submitter:</b> Jens Gustedt<br>
+  <b>Submission Date:</b> <br>
+  <!-- yyyy-mm-dd -->
+  2012-10-08
+   <b>Source:</b><br>
+  <b>Reference Document:</b> N/A<br>
+  <b>Version:</b> 1.0<br>
+  <b>Date:</b> 2012-10-08<br>
+  <b>Subject:</b> initialization of <code>atomic_flag</code></p>
+
+
+  <p><b>Summary</b></p>
 
 <p>
-  C11 expresses the intention to have <code>atomic_flag</code> as a primitive that
-  should allow to emulate all other atomic types and
+  C11 expresses the intention to have <code>atomic_flag</code> as a
+  primitive that should allow to emulate all other atomic types and
   operations, <em>7.17.8 p3</em> in a note says:
 </p>
 
@@ -21,6 +50,13 @@
   The remaining types can be emulated with <code>atomic_flag</code>,
   though with less than ideal properties.
 </p>
+
+<p>
+  With the current semantic for the initialization
+  of <code>atomic_flag</code> this goal cannot be achieved.
+</p>
+
+  <p><b>Details</b></p>
 
 <p>
   This is a very good concept as far as I can see, but I have one
@@ -35,27 +71,8 @@
   state.
 </p>
 
-<p>For other atomic types we have:</p>
-
-<p class="quote">
-  An atomic object with automatic storage duration that is not
-  explicitly initialized using <code>ATOMIC_VAR_INIT</code> is
-  initially in an indeterminate state; however, the default (zero)
-  initialization for objects with static or thread-local storage
-  duration is guaranteed to produce a valid state.
-</p>
-
 <p>
-  This has two problems. First, the mentioned valid state (in contrast
-  to the indeterminate state mentioned before) is thus a determinate
-  state, but the value that is stored is not mentioned
-  explicitly. Everything suggests that this would be the same value as
-  for initializing a variable of the underlying base type
-  by <code>0</code>. But I think it would have helped to make that
-  explicit.</p>
-
-<p>
-  The second, more difficult problem is how to emulate an atomic type
+  The problem is how to emulate an atomic type
   with <code>atomic_flag</code> during initialization. Say we emulate
   with something like
 </p>
@@ -105,7 +122,7 @@ struct atomic_int_struct v;
   phrasing the same as for the other atomic types
 </p>
 
-<h2>Proposed solution</h2>
+  <p><b>Suggested Technical Corrigendum</b><br></p>
 
 <p>
   Eliminate the mention of <code>ATOMIC_FLAG_INIT</code> in 7.17.1p3,
@@ -131,23 +148,22 @@ struct atomic_int_struct v;
   <code>atomic_flag guard = { 0 };</code>
 </p>
 
-<p>Proposed change for the initialization of atomic objects, 7.17.2.1p2:</p>
+<p>
+  If the committee would want to keep the
+  macro <code>ATOMIC_FLAG_INIT</code> arround, a partial alternative
+  to the above text would be to modify the text in 7.17.1
+</p>
+
 <p class="alternative">
-  An atomic object with automatic storage duration that is not
-  explicitly initialized using <code>ATOMIC_VAR_INIT</code> is
-  initially in an indeterminate state; however, the default (zero)
-  initialization for objects with static or thread-local storage
-  duration is guaranteed to produce a valid state that corresponds to
-  the value of a zero initialized object of the unqualified base
-  type.
-  <br />
-  EXAMPLE All three of the following objects initially have an
-  observable value of <code>0</code>.<br />
-  <code>_Atomic(unsigned) A = { 0 };</code><br />
-  <code>_Atomic(unsigned) B = ATOMIC_VAR_INIT(0u);</code><br />
-  <code>static _Atomic(unsigned) C;</code>
+<code>ATOMIC_FLAG_INIT</code><br />
+which expands to a default initializer (<code>{ 0 }</code> or
+equivalent) for an object of type <code>atomic_flag</code>.
 </p>
 
 <hr />
-<author>Author: Jens Gustedt, INRIA, 2012</author>
+  <!-- Entires below the line by WG14 only. -->
+
+  <p><br>
+  <a href="dr_4aa.htm">Previous Defect Report</a> &lt; - &gt;
+  <a href="dr_4bb.htm">Next Defect Report</a></p>
 </body>
