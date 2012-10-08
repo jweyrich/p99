@@ -1,13 +1,43 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
 <head>
-<link href="DR.css" rel="stylesheet" type="text/css"/>
-<title>Defect Report relative to n1570: underspecification of <code>tss_t</code></title>
+<title>Defect report #4nn</title>
+<style>
+.quote {
+    background-color : #FFD;
+    text-align : left;
+    margin : 0em 2em;
+}
+.alternative {
+    background-color : #FCC;
+    text-align : left;
+    margin : 0em 2em;
+}
+pre {
+    background-color : #EEE;
+    text-style : sans-serif;
+    margin : 0em 2em;
+}
+code { background-color : #EEE; text-style : sans-serif }
+</style>
 </head>
 <body>
-<h1>Defect Report relative to n1570: underspecification of <code>tss_t</code></h1>
+<h2>Defect report #4nn</h2><a href=
+  "dr_4aa.htm">Previous Defect Report</a> &lt; - &gt; <a href=
+  "dr_4bb.htm">Next Defect Report</a>
 
-<h2>Problem statement</h2>
+  <p><br>
+  <b>Submitter:</b> Jens Gustedt<br>
+  <b>Submission Date:</b> <br>
+  <!-- yyyy-mm-dd -->
+  2012-10-08
+   <b>Source:</b><br>
+  <b>Reference Document:</b> N/A<br>
+  <b>Version:</b> 1.0<br>
+  <b>Date:</b> 2012-10-08<br>
+  <b>Subject:</b> underspecification of <code>tss_t</code></p>
+
+  <p><b>Summary</b></p>
 
 
 <p>
@@ -32,11 +62,18 @@
 </p>
 
 <p>
-  The main problem is that it is nowhere explained/defined what a
-  destructor should be.
+  The main problem is that it is nowhere explained/defined
 </p>
-
-<h2>Proposed solution</h2>
+<ul>
+  <li>what a destructor should be,</li>
+  <li>when such a destructor should be called,</li> 
+  <li>in which thread context this constructor is executed</li>
+  <li>what happens when new destructors are added while others are
+  executed</li>
+  <li>what the meaning of the value
+  of <code>TSS_DTOR_ITERATIONS</code> would be.</li>
+</ul>
+<p><b>Suggested Technical Corrigendum</b><br></p>
 
 <p>I think several paragraphs should be added after the one above:</p>
 
@@ -105,5 +142,9 @@
 </p>
 
 <hr />
-<author>Author: Jens Gustedt, INRIA, 2012</author>
+  <!-- Entires below the line by WG14 only. -->
+
+  <p><br>
+  <a href="dr_4aa.htm">Previous Defect Report</a> &lt; - &gt;
+  <a href="dr_4bb.htm">Next Defect Report</a></p>
 </body>
