@@ -35,8 +35,8 @@ code { background-color : #EEE; text-style : sans-serif }
   <b>Reference Document:</b> N/A<br>
   <b>Version:</b> 1.0<br>
   <b>Date:</b> 2012-10-08<br>
-  <b>Subject:</b> collection of various underspecification defects in
-  the thread interfaces</p>
+  <b>Subject:</b>thread interface not realizable with threads as
+  defined by ISO/IEC 9945:2009</p>
 
   <p><b>Summary</b></p>
 
@@ -44,18 +44,39 @@ code { background-color : #EEE; text-style : sans-serif }
   The thread interfaces as they are declared in
   the <code>threads.h</code> header are largely underspecified, such
   that interpreting them is often just guess work and leaves room for
-  a wide range of interpretations. In the following I only give an
-  incomplete list of the defects as I noticed them, I suspect that
-  there might be a lot of others.
+  a wide range of interpretations. This is particularly irritating
+  since there already is an ISO standard about threads that is quite
+  elaborated and mature, namely ISO/IEC 9945:2009, commonly know as
+  POSIX 2010.
+</p>
+
+<p>
+  C11 mentions ISO/IEC 9945:2009, but completely misses to technically
+  relate to it concerning the thread interface. The semantic
+  specification of C11 threads is in parts so loose, that a stringent
+  implementation of C11 threads on top of POSIX doesn't seem
+  possible.
+</p>
+
+<p>
+ In the following I only give an incomplete list of the defects as I
+  noticed them, I suspect that there might be a lot of others.
 </p>
 
   <p><b>List of defects</b></p>
 
   <ol>
     <li>
-      It is not defined what the <em>thread's result code</em> would
-      be. Suggestion: the value returned by the thread function or the
-      value passed to <code>thrd_exit</code>.
+      C11-thread functions have an interface that is different from
+      POSIX, namely they return <code>int</code> instead
+      of <code>void*</code>. Whereas it can be argued that this return
+      type better fits into the overall approach of C, it has the
+      drawback that <code>pthread_create</code> can not directly be
+      used for <code>thrd_create</code>. In addition to this major
+      drawback, in the specification it is not defined what the
+      term <em>thread's result code</em> would be. Suggestion: the
+      value returned by the thread function or the value passed
+      to <code>thrd_exit</code>.
     </li>
     <li>
       Executing a thread function through <code>thrd_create</code> is
@@ -73,7 +94,11 @@ code { background-color : #EEE; text-style : sans-serif }
     </li>
     <li>
       The relation that is established between a <code>mtx_t</code>
-      and <code>cnd_t</code> is not well specified.
+      and <code>cnd_t</code> is not well specified. Because of that,
+      a C11 conforming implementation would be allowed to
+      perform operations that would be undefined under POSIX. (And
+      thus the C11 functions could not be realized by using POSIX
+      functions.)
       <ol>
         <li>May several condition variables concurrently be used with
           the same mutex?  (suggestion: yes)
@@ -101,6 +126,15 @@ code { background-color : #EEE; text-style : sans-serif }
       The initialzation of <code>once_flag</code> doesn't seem to be
       mandatory? Can such objects be of automatic storage duration?
     </li>
+    <li>
+      POSIX has a model of a flat address space that is shared between
+      all threads. In contrast to that, the C standard makes it
+      implementation defined if certain types of objects can be access
+      by different threads than they are defined (thread local,
+      automatic, and probably also temporary lifetime) and it also
+      allows for a segmented address space. The implications of these
+      different models should be worked out more cleanly.
+    </li>
   </ol>
 
 
@@ -125,9 +159,9 @@ code { background-color : #EEE; text-style : sans-serif }
 <p>
   As a solution to this major problem with the thread interface, I
   propose to rewrite large parts of the descriptive text, by getting
-  it in sync with the existing widely accepted standard for threads,
-  namely POSIX threads. Being binary compatible with POSIX threads is
-  a imperative for implementations of C11 threads on POSIX platforms.
+  it in sync with ISO/IEC 9945:2009. Being binary compatible with POSIX
+  threads is a imperative for implementations of C11 threads on POSIX
+  platforms.
 </p>
 
 <p>
@@ -135,6 +169,158 @@ code { background-color : #EEE; text-style : sans-serif }
   technical restrictions that should additionally be taken into
   account.
 </p>
+
+<p>
+  Since the proposed rewrite would probably need a number of
+  iterations in the committee, I suggest to preliminary correct this
+  defect by a general statement that relates C threads to POSIX
+  threads.
+</p>
+
+<p class="alternative">
+  ISO/IEC 9945:2009 (POSIX) already defines a multi-threading
+  interface for operating systems with a much larger functionality
+  than the threads interface as presented within this standard. The
+  aim of this interface here is to provide portable multi-threading
+  even for platforms that do not conform to POSIX. Concerning
+  functions provided by &lt;threads.h&gt; the interfaces is reduced
+  in comparison to POSIX threads and offers less functionality. On the
+  other hand this standard provides concepts and features that are
+  intended to ease programming of threads and that are necessarily
+  features that are programming language related and that thus have so
+  far not been provided by POSIX. Most important of these is the
+  concept of the sequenced before relation and the specification of
+  atomic operations and data types.
+</p>
+<p></p>
+<p class="alternative">
+  With one major exception, any incompatibility to ISO/IEC 9945:2009
+  that would appear by restricting and renaming the POSIX interfaces
+  such that they comply to the C threads interface is unintentional
+  and shall be corrected; any program that would be using the
+  restricted interfaces in conformance to ISO/IEC 9945:2009 and that
+  ensures that the implementation provides the value 1 for the
+  macros <code>__STDC_THREAD_AUTO_VISIBLE__</code>
+  and <code>__STDC_THREAD_TEMPORARY_VISIBLE__</code> and that makes no
+  implicit assumption about implementation defined behavior that is
+  forced by ISO/IEC 9945:2009 to a certain value shall be a conforming
+  C program. FOOTNOTE:
+</p>
+<pre>
+  A test for such implementation defined behavior could be achieved by
+#include &lt;threads.h&gt;
+#include &lt;stdint.h&gt;
+#if !(__STDC_THREAD_AUTO_VISIBLE__ && __STDC_THREAD_TEMPORARY_VISIBLE__ && (CHAR_BIT == 8) && UINTPTR_MAX)
+# error "the thread implementation for this platform lacks necessary features"
+#endif
+</pre>
+<p class="alternative">
+  On the other hand, implementations of this C standard for
+  threads are allowed to have properties such that they would fail to
+  be complying ISO/IEC 9945:2009 implementations.
+</p>
+<p></p>
+<p class="alternative">
+  The mentioned major exception is the interface definition given by
+  the function type <code>thrd_start_t</code> that is used to describe
+  entry functions to threads. The differing return type for that
+  interface (<code>int</code> instead of <code>void*</code> as for
+  POSIX) has been judged by the committee to better suit for the more
+  general C interface.
+</p>
+<p></p>
+<p class="alternative">
+  The major difference in behavior that is allowed for a C thread
+  implementation that would not be allowed for ISO/IEC 9945:2009 concerns
+  the common address space of threads: objects with automatic storage
+  duration that are defined in one thread are not necessarily visible
+  to any other thread. Whether or not this is the case is
+  implementation defined behavior and must thus be documented by any
+  implementation by means of the feature test
+  macro <code>__STDC_THREAD_AUTO_VISIBLE__</code>.
+</p>
+<p></p>
+<p class="alternative">
+  Other such differences concern the existence
+  of <code>uintptr_t</code> (forced by POSIX), the value
+  of <code>CHAR_BIT</code> (forced to 8 by POSIX) and the existence of
+  an associated signed type for <code>size_t</code>.
+</p>
+
+<p>
+  Feature test macros that describe the eventual difference to a
+  ISO/IEC 9945:2009 conforming implementation would then be needed. Most of
+  the features that could make up a difference can already be tested
+  through macros, with the exception of the visibility of objects with
+  automatic storage duration. Therefore add to 7.26.1p3:
+</p>
+<p class="alternative">
+  <code>__STDC_THREAD_AUTO_VISIBLE__</code></br>
+  which expands to 1 if objects of automatic storage duration are
+  visible to other threads and to 0 otherwise.
+</p>
+<p>For convenience also add a second macro that makes a similar
+  (non-POSIX feature) observable for conforming programs:</p>
+<p class="alternative">
+  <code>__STDC_THREAD_LOCAL_VISIBLE__</code></br> which expands to 1
+  if objects of thread storage duration are visible to other threads
+  and to 0 otherwise</br>
+</p>
+<p>In accordance with DR ?? also add a feature macro for the implicit
+  POSIX feature:</p>
+<p class="alternative">
+  <code>__STDC_THREAD_TEMPORARY_VISIBLE__</code></br> which expands to
+  1 if objects of temporary lifetime are visible to other threads and
+  to 0 otherwise.
+</p>
+
+<p>
+  Add an new section to Annex J, portability issues.
+</p>
+
+<p class="alternative">
+  <b>J.6 C threads and POSIX threads</b><br />
+
+  The following table lists symbols of the C thread interface that
+  have equivalent interfaces in ISO/IEC 9945:2009 (POSIX). A sematic of the
+  C interfaces that deviates from the corresponding POSIX interface
+  (functions eventually called with analogous or default parameters) is
+  unintentional.
+</p>
+<table>
+<tr><td><code>ONCE_FLAG_INIT</code></td><td><code>PTHREAD_ONCE_INIT</code></td></tr>
+<tr><td><code>TSS_DTOR_ITERATIONS</code></td><td><code>PTHREAD_DESTRUCTOR_ITERATIONS</code></td></tr>
+<tr><td><code>cnd_t</code></td><td><code>pthread_cond_t</code></td></tr>
+<tr><td><code>thrd_t</code></td><td><code>pthread_t</code></td></tr>
+<tr><td><code>tss_t</code></td><td><code>pthread_key_t</code></td></tr>
+<tr><td><code>mtx_t</code></td><td><code>phread_mutex_t</code></td></tr>
+<tr><td><code>once_flag</code></td><td><code>pthread_once_t</code></td></tr>
+<tr><td><code>call_once</code></td><td><code>pthread_call_once</code></td></tr>
+<tr><td><code>cnd_broadcast</code></td><td><code>pthread_cond_broadcast</code></td></tr>
+<tr><td><code>cnd_destroy</code></td><td><code>pthread_cond_destroy</code></td></tr>
+<tr><td><code>cnd_init</code></td><td><code>pthread_cond_init</code></td></tr>
+<tr><td><code>cnd_signal</code></td><td><code>pthread_cond_signal</code></td></tr>
+<tr><td><code>cnd_timedwait</code></td><td><code>pthread_cond_timedwait</code></td></tr>
+<tr><td><code>cnd_wait</code></td><td><code>pthread_cond_wait</code></td></tr>
+<tr><td><code>mtx_destroy</code></td><td><code>phread_mutex_destroy</code></td></tr>
+<tr><td><code>mtx_init</code></td><td><code>phread_mutex_init</code></td></tr>
+<tr><td><code>mtx_lock</code></td><td><code>phread_mutex_lock</code></td></tr>
+<tr><td><code>mtx_timedlock</code></td><td><code>phread_mutex_timedlock</code></td></tr>
+<tr><td><code>mtx_trylock</code></td><td><code>phread_mutex_trylock</code></td></tr>
+<tr><td><code>mtx_unlock</code></td><td><code>phread_mutex_unlock</code></td></tr>
+<tr><td><code>thrd_create</code></td><td><code>pthread_create</code></td></tr>
+<tr><td><code>thrd_current</code></td><td><code>pthread_self</code></td></tr>
+<tr><td><code>thrd_detach</code></td><td><code>pthread_detach</code></td></tr>
+<tr><td><code>thrd_equal</code></td><td><code>pthread_equal</code></td></tr>
+<tr><td><code>thrd_exit</code></td><td><code>pthread_exit</code></td></tr>
+<tr><td><code>thrd_join</code></td><td><code>pthread_join</code></td></tr>
+<tr><td><code>thrd_sleep</code></td><td><code>nanosleep</code></td></tr>
+<tr><td><code>thrd_yield</code></td><td><code>sched_yield</code></td></tr>
+<tr><td><code>tss_create</code></td><td><code>pthread_key_create</code></td></tr>
+<tr><td><code>tss_delete</code></td><td><code>pthread_key_delete</code></td></tr>
+<tr><td><code>tss_get</code></td><td><code>pthread_getspecific</code></td></tr>
+<tr><td><code>tss_set</code></td><td><code>pthread_setspecific</code></td></tr>
+</table>
 
 <hr />
   <!-- Entires below the line by WG14 only. -->

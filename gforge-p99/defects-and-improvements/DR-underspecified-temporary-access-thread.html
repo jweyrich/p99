@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>Defect report #4nn</title>
+<style>
+.quote {
+    background-color : #FFD;
+    text-align : left;
+    margin : 0em 2em;
+}
+.alternative {
+    background-color : #FCC;
+    text-align : left;
+    margin : 0em 2em;
+}
+pre {
+    background-color : #EEE;
+    text-style : sans-serif;
+    margin : 0em 2em;
+}
+code { background-color : #EEE; text-style : sans-serif }
+</style>
+</head>
+<body>
+<h2>Defect report #4nn</h2><a href=
+  "dr_4aa.htm">Previous Defect Report</a> &lt; - &gt; <a href=
+  "dr_4bb.htm">Next Defect Report</a>
+
+  <p><br>
+  <b>Submitter:</b> Jens Gustedt<br>
+  <b>Submission Date:</b> <br>
+  <!-- yyyy-mm-dd -->
+  2012-10-08
+   <b>Source:</b><br>
+  <b>Reference Document:</b> N/A<br>
+  <b>Version:</b> 1.0<br>
+  <b>Date:</b> 2012-10-08<br>
+  <b>Subject:</b>no specification for the access to variables with
+  temporary lifetime</p>
+
+  <p><b>Summary</b></p>
+
+<p>
+  Section 6.2.4 in p4 and p5 requires implementation defined behavior
+  for accessing objects with thread local or automatic storage from
+  different threads than where they are defined. No such mention is
+  done for objects with <em>temporary lifetime</em> in p8. Can they be
+  accessed by other threads? Is this property handled similar to the
+  property for automatic storage duration? Or should this simply be
+  forbidden?
+</p>
+  </ol>
+
+
+<p><b>Suggested Technical Corrigendum</b><br></p>
+
+<p>
+  Add to the end of 6.2.4 p8:
+</p>
+<p class="alternative">
+  The result of attempting to indirectly access an object with
+  temporary lifetime from a thread other than the one with which the
+  object is associated is implementation-defined.
+</p>
+<p>
+  Add to 7.26.1p3:
+</p>
+<p class="alternative">
+  <code>__STDC_THREAD_TEMPORARY_VISIBLE__</code></br> which expands to
+  1 if objects of temporary lifetime are visible to other threads and
+  to 0 otherwise.
+</p>
+<hr />
+  <!-- Entires below the line by WG14 only. -->
+
+  <p><br>
+  <a href="dr_4aa.htm">Previous Defect Report</a> &lt; - &gt;
+  <a href="dr_4bb.htm">Next Defect Report</a></p>
+</body>
