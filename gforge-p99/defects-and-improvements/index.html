@@ -21,12 +21,26 @@
   inconsistencies.
 </p>
 
+<h4>Serious issues</h4>
 <ul>
   <li>
-    <a href="DR-6.8.5p1.html">Invalid grammar for the <code>for</code>-statement.</a>
+    <a href="DR-qualified-rvalues.html">underspecification for qualified rvalues</a>
   </li>
   <li>
-    <a href="DR-qualified-rvalues.html">underspecification for qualified rvalues</a>
+    <a href="DR-thread-interface.htm">The C thread interface is not
+      realizable with threads as defined by ISO/IEC 9945:2009.</a>
+  </li>
+</ul>
+<h4>Annoying</h4>
+<ul>
+  <li>
+    <a href="DR-underspecified-thread-functions.html">Allow all thread
+    functions to return an error code.</a>
+  </li>
+  <li>
+    <a href="DR-underspecified-temporary-access-thread.html">The
+    access properties for objects with temporary lifetime with respect
+    to threads is not specified.</a>
   </li>
   <li>
     <a href="DR-tss.html">underspecification of <code>tss_t</code></a>
@@ -36,6 +50,12 @@
   </li>
   <li>
     <a href="DR-atomic_initialization.html">initialization of atomic types</a>
+  </li>
+</ul>
+<h4>Minor</h4>
+<ul>
+  <li>
+    <a href="DR-6.8.5p1.html">Invalid grammar for the <code>for</code>-statement.</a>
   </li>
   <li>
     <code>strcpy_s</code>, <code>strncpy_s</code>, <code>strcat_s</code>
@@ -49,24 +69,9 @@
     feasible without provoking UB.
   </li>
   <li>
-    <a href="DR-underspecified-thread-functions.html">Allow all thread
-    functions to return an error code.</a>
-  </li>
-  <li>
-    <a href="DR-underspecified-temporary-access-thread.html">The
-    access properties for objects with temporary lifetime with respect
-    to threads is not specified.</a>
-  </li>
-  <li>
-    <a href="DR-thread-interface.htm">The C thread interface is not
-      realizable with threads as defined by ISO/IEC 9945:2009.</a>
-  </li>
-  <li>
     The order on <code>uintptr_t</code> (if it is defined) given
     through the <code>&lt;</code> operator should be compatible with
     the ordering of pointers.
-    <!-- This would make it possible to check if -->
-    <!-- pointer ranges overlap without provoking UB. -->
   </li>
 </ul>
 
