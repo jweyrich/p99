@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<style>
+.quote {
+    background-color : #FFD;
+    text-align : left;
+    margin : 0em 2em;
+}
+.alternative {
+    background-color : #FCC;
+    text-align : left;
+    margin : 0em 2em;
+}
+pre {
+    background-color : #EEE;
+    text-style : sans-serif;
+    margin : 0em 2em;
+}
+code { background-color : #EEE; text-style : sans-serif }
+</style>
+<title>Defect report #4nn</title>
+</head>
+<body>
+<h2>Defect report #4nn</h2><a href=
+  "dr_4aa.htm">Previous Defect Report</a> &lt; - &gt; <a href=
+  "dr_4bb.htm">Next Defect Report</a>
+
+  <p><br>
+  <b>Submitter:</b> Jens Gustedt<br>
+  <b>Submission Date:</b> <br>
+  <!-- yyyy-mm-dd -->
+  2012-10-08
+   <b>Source:</b><br>
+  <b>Reference Document:</b> N/A<br>
+  <b>Version:</b> 1.0<br>
+  <b>Date:</b> 2012-10-08<br>
+  <b>Subject:</b> The order on <code>uintptr_t</code>
+  and <code>void</code> pointers should be compatible.</p>
+
+
+  <p><b>Summary</b></p>
+
+<p>
+  If the type aliases <code>[u]intptr_t</code> are present on a
+  platform, the address space that is used for <code>void*</code> can
+  be linearized in such a way that a cast from such a pointer to
+  an <code>[u]intptr_t</code> and back to <code>void*</code> results in
+  the initial pointer value.
+</p>
+
+<p>
+  The standard is tacit on the underlying mapping between integer
+  values and pointer values. But already the title of the
+  corresponding section7.20.1.4 "Integer types capable of holding
+  object pointers" suggest that this mapping would not be an arbitrary
+  mapping (some kind of hash function), but that it should correspond
+  to an interpretation of the bit representation of the pointer as an
+  integer value.
+</p>
+
+<p>
+  Platforms for which the address space is not yet linear by itself
+  but segmented, can still easily map <code>void*</code> to a larger
+  integer type, but the arithmetic for the integer interpretation and
+  pointer arithmetic (for the pointer seen as <code>char*</code>, e.g)
+  must then not necessarily coincide.
+</p>
+
+<p>
+  The only advantage of representing a <code>void*</code> in an
+  integer type are comparisons of values, even if the originating
+  pointer values potentially do not point into the same object (or one
+  element beyond). Unfortunately the current standard lacks to be
+  precise on how such comparisons can be performed.
+</p>
+
+  <p><b>Suggested Technical Corrigendum</b><br></p>
+
+<p>
+  Add 7.20.1.4 at the end:
+</p>
+
+<p class="alternative">
+  It shall be implementation defined [variant: unspecified] whether
+  the mapping between the integer conversion and the pointer value is
+  order preserving or inverting.  If <code>x</code>, <code>y</code>
+  and <code>z</code> are values of type <code>void*</code> that point
+  to parts of the same object (or one element beyond) and that compare
+  ascending (ordered as <code>x &le; y &le; z</code>), their
+  corresponding values <code>x'</code>, <code>y'</code>
+  and <code>z'</code> after conversion to <code>intptr_t</code>
+  or <code>uintptr_t</code> shall compare ascending (order preserving)
+  or descending (order inverting).
+</p>
+
+<hr />
+  <!-- Entires below the line by WG14 only. -->
+
+  <p><br>
+  <a href="dr_4aa.htm">Previous Defect Report</a> &lt; - &gt;
+  <a href="dr_4bb.htm">Next Defect Report</a></p>
+</body>
