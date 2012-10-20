@@ -76,6 +76,7 @@ unsigned char
   return p00_tar;
 }
 
+P00_DOCUMENT_TYPE_ARGUMENT(P99_ASUB, 1)
 #define P99_ASUB(X, T, N, L)                            \
 (                                                       \
  (T(*)[L                                                \
@@ -189,6 +190,8 @@ p00_initialize(sizeof(*X),                                              \
                P00_APLAIN(memcpy((X), (L), sizeof(*L)), sizeof(*X)),    \
                sizeof(*L))
 
+P00_DOCUMENT_WARN_VLA_ARGUMENT(P99_INITIALIZE, 0)
+P00_DOCUMENT_WARN_VLA_ARGUMENT(P99_INITIALIZE, 1)
 #define P99_INITIALIZE(X, L) P00_ABLESS(P00_INITIALIZE((X), (L)), *(X))
 
 #define P00_ALLOC(X, L)                                                 \

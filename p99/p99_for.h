@@ -591,6 +591,8 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_ALENS, 1)
  ** @brief Allocate a new matrix of base type @a T and with @a N
  ** dimensions as given by @a VB
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_AALLOC, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_AALLOC, 1)
 #define P99_AALLOC(T, VB, N) P00_AALLOC(P99_ATYPE(T, , VB, N))
 
 #define P00_ACALL1(ARR) P99_ALENS(*ARR, 1), (ARR)

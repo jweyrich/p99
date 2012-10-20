@@ -242,8 +242,10 @@ P99_IF_INT(T)                                   \
  ** @remark This is thought to use the proposed extension of @c
  ** register variables in file scope but we are not yet there.
  **/
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_CONSTANT, 1)
 #define P99_CONSTANT(T, NAME, INIT) register T const NAME = INIT
 #else
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_CONSTANT, 1)
 #define P99_CONSTANT(...)                       \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 3)             \
 (P00_CONSTANT_2(__VA_ARGS__))                   \

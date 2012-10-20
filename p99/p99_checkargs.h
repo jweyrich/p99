@@ -190,6 +190,11 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                     \
 
 
 #ifndef P99_NO_CHECKARGS
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_CA_CALL, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_CA_CALL, 2)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_CA_CALL, 3)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_CA_CALL, 4)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_CA_CALL, 5)
 #define P99_CA_CALL(NAME, ACHECKS, PCHECKS, ...)                        \
 P00_CA_MANGLE(NAME, ACHECKS, PCHECKS)                                   \
 (                                                                       \

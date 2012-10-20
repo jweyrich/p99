@@ -192,6 +192,12 @@ P00_THROW_CALL_RANGE(ldouble, 1, HUGE_VALL, -HUGE_VALL);
 P99_GENERIC((F)(__VA_ARGS__), P00_ROBUST CASES)                                           \
   (p00_unwind_top, F(__VA_ARGS__), P99_STRINGIFY(__LINE__), __func__, #F ", range check")
 
+#define P99_THROW_CALL_RANGE_ARG_0 permitted
+#define P99_THROW_CALL_RANGE_ARG_1 permitted
+#define P99_THROW_CALL_RANGE_ARG_2 permitted
+#define P99_THROW_CALL_RANGE_ARG_3 permitted
+#define P99_THROW_CALL_RANGE_ARG_4 permitted
+
 /**
  ** @brief Wrap a function call to @a F such that it throws an error
  ** on failure.
