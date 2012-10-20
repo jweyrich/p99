@@ -1,7 +1,7 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-              */
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is as follows:               */
+/* the author and copyright holder for this work is                           */
 /* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
@@ -109,9 +109,9 @@ p99_inline
 errno_t strerror_s(char *p00_s, rsize_t p00_maxsize, errno_t p00_errnum) {
   if (!p00_maxsize || p00_maxsize > RSIZE_MAX)
     p99_constraint_handler(
-                           ", call to strerror_s, dynamic constraint violation",
-                           0,
-                           EINVAL);
+      ", call to strerror_s, dynamic constraint violation",
+      0,
+      EINVAL);
   // strerror_r may set errno
   errno_t p00_back = errno;
   errno = 0;
@@ -156,11 +156,11 @@ char const* p00_strerror_s(char *p00_s, rsize_t p00_maxsize, errno_t p00_errnum)
 
 #define P00_STRERROR02(E, STR) P00_STRERROR(E, sizeof(STR), STR)
 
-#define P99_STRERROR(...)                                               \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                     \
+#define P99_STRERROR(...)                                                    \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                                          \
 (P00_STRERROR(__VA_ARGS__, P99_STRERROR_MAX, (char[P99_STRERROR_MAX]){ 0 })) \
-(P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                                    \
- (P00_STRERROR02(__VA_ARGS__))                                          \
+(P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                                         \
+ (P00_STRERROR02(__VA_ARGS__))                                               \
  (P00_STRERROR(__VA_ARGS__)))
 
 p99_inline
@@ -216,8 +216,8 @@ void p99_ignore_handler(const char * restrict p00_msg,
 
 p99_inline
 void p99_abort_handler(const char * restrict p00_msg,
-                        void * restrict p00_ptr,
-                        errno_t p00_err) {
+                       void * restrict p00_ptr,
+                       errno_t p00_err) {
   p00_constraint_report(p00_err, 0, 0, p00_msg);
   fputs("runtime constraint violation: ", stderr);
   abort();
@@ -225,8 +225,8 @@ void p99_abort_handler(const char * restrict p00_msg,
 
 p99_inline
 void p99_exit_handler(const char * restrict p00_msg,
-                        void * restrict p00_ptr,
-                        errno_t p00_err) {
+                      void * restrict p00_ptr,
+                      errno_t p00_err) {
   p00_constraint_report(p00_err, 0, 0, p00_msg);
   fputs("runtime constraint violation: ", stderr);
   exit(EXIT_FAILURE);
@@ -252,8 +252,8 @@ void report_handler_s(const char * restrict p00_msg,
 
 P99_WEAK(exit_handler_s)
 void exit_handler_s(const char * restrict p00_msg,
-                      void * restrict p00_ptr,
-                      errno_t p00_err);
+                    void * restrict p00_ptr,
+                    errno_t p00_err);
 
 P99_WEAK(p00_constraint_handler)
 _Atomic(constraint_handler_t) p00_constraint_handler = ATOMIC_VAR_INIT(P99_CONSTRAINT_HANDLER);
@@ -267,8 +267,8 @@ void report_handler_s(const char * restrict p00_msg,
 
 P99_WEAK(exit_handler_s)
 void exit_handler_s(const char * restrict p00_msg,
-                      void * restrict p00_ptr,
-                      errno_t p00_err) {
+                    void * restrict p00_ptr,
+                    errno_t p00_err) {
   p99_exit_handler(p00_msg, p00_ptr, p00_err);
 }
 
@@ -318,19 +318,19 @@ errno_t p00_constraint_call(errno_t p00_cond, char const* p00_file, char const* 
 #define P00_CONSTRAINT_INFO(F) ", call to " #F ", dynamic constraint violation"
 
 
-#define P99_CONSTRAINT_TRIGGER(E, I)                       \
+#define P99_CONSTRAINT_TRIGGER(E, I)                           \
 p00_constraint_call((E), P99_STRINGIFY(__LINE__), __func__, I)
 
-#define P00_CONSTRAINT_CALL3(F, I, C)         \
+#define P00_CONSTRAINT_CALL3(F, I, C)                          \
 P99_CONSTRAINT_TRIGGER(F C, I)
 
 #define P00_CONSTRAINT_CALL1(F) P00_CONSTRAINT_CALL3(F, P00_CONSTRAINT_INFO(F), ())
 
 #define P00_CONSTRAINT_CALL0(F, ...) P00_CONSTRAINT_CALL3(F, P00_CONSTRAINT_INFO(F), (__VA_ARGS__))
 
-#define P99_CONSTRAINT_CALL(...)                \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
-(P00_CONSTRAINT_CALL1(__VA_ARGS__))             \
+#define P99_CONSTRAINT_CALL(...)                               \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
+(P00_CONSTRAINT_CALL1(__VA_ARGS__))                            \
 (P00_CONSTRAINT_CALL0(__VA_ARGS__))
 
 
@@ -359,9 +359,9 @@ errno_t p00_memcpy_s(_Bool p00_overlap,
     memmove(p00_s1, p00_s2, p00_n);
   }
   return 0;
- P00_ERR:
+P00_ERR:
   if (p00_s1max) memset(p00_s1, 0, p00_s1max);
- P00_SEVERE:
+P00_SEVERE:
   return p00_ret;
 }
 

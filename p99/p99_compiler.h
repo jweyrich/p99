@@ -773,8 +773,8 @@ static_assert(1, "test of static assertions");
 
 #define P00_HARMLESS_SIZEOF(ID) sizeof(sizeof(ID))
 
-#define P00_UNUSED(EXPR)                        \
-  extern char const p00_harmless_declaration    \
+#define P00_UNUSED(EXPR)                                       \
+  extern char const p00_harmless_declaration                   \
   [P00_HARMLESS_SIZEOF(EXPR)]
 
 /* Used inside P99_MACRO_END. The idea that this is an extern

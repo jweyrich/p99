@@ -77,12 +77,12 @@ unsigned char
 }
 
 P00_DOCUMENT_TYPE_ARGUMENT(P99_ASUB, 1)
-#define P99_ASUB(X, T, N, L)                            \
-(                                                       \
- (T(*)[L                                                \
-       /* check for validity                         \
-          / !!(L && (sizeof(T[N+L]) < sizeof(*X)))*/])  \
- (P99_LVAL(T*, &((*X)[N])))                             \
+#define P99_ASUB(X, T, N, L)                                   \
+(                                                              \
+ (T(*)[L                                                       \
+       /* check for validity                                   \
+          / !!(L && (sizeof(T[N+L]) < sizeof(*X)))*/])         \
+ (P99_LVAL(T*, &((*X)[N])))                                    \
 )
 
 p99_inline
@@ -90,14 +90,14 @@ unsigned char
 (*p00_initialize(size_t p00_len, unsigned char (*p00_base)[p00_len], size_t p00_init))[] {
   for (; (p00_init * 2u) <= p00_len; p00_init *= 2u) {
     p00_memcpy(p00_init,
-               P99_ASUB(p00_base, unsigned char, p00_init, p00_init),
-               P99_ASUB(p00_base, unsigned char const, 0, p00_init));
+    P99_ASUB(p00_base, unsigned char, p00_init, p00_init),
+    P99_ASUB(p00_base, unsigned char const, 0, p00_init));
   }
   if (p00_len > p00_init) {
     p00_len -= p00_init;
     p00_memcpy(p00_len,
-               P99_ASUB(p00_base, unsigned char, p00_init, p00_len),
-               P99_ASUB(p00_base, unsigned char const, 0, p00_len));
+    P99_ASUB(p00_base, unsigned char, p00_init, p00_len),
+    P99_ASUB(p00_base, unsigned char const, 0, p00_len));
   }
   return p00_base;
 }
@@ -113,10 +113,10 @@ unsigned char
 #endif
 
 #define P00_APLAIN(X, N) ((unsigned char(*)[N])(X))
-#define P99_APLAIN(...)                                 \
-(P99_IF_LT_2(P99_NARG(__VA_ARGS__))                     \
- (P00_APLAIN(__VA_ARGS__, sizeof(*__VA_ARGS__)))        \
- (P00_APLAIN(__VA_ARGS__))                              \
+#define P99_APLAIN(...)                                        \
+(P99_IF_LT_2(P99_NARG(__VA_ARGS__))                            \
+ (P00_APLAIN(__VA_ARGS__, sizeof(*__VA_ARGS__)))               \
+ (P00_APLAIN(__VA_ARGS__))                                     \
  )
 
 p99_inline
@@ -185,19 +185,19 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_MEMZERO, 0)
 
 #define P00_VMALLOC(X) P00_ABLESS(P99_MALLOC(X), X)
 
-#define P00_INITIALIZE(X, L)                                            \
-p00_initialize(sizeof(*X),                                              \
-               P00_APLAIN(memcpy((X), (L), sizeof(*L)), sizeof(*X)),    \
+#define P00_INITIALIZE(X, L)                                         \
+p00_initialize(sizeof(*X),                                           \
+               P00_APLAIN(memcpy((X), (L), sizeof(*L)), sizeof(*X)), \
                sizeof(*L))
 
 P00_DOCUMENT_WARN_VLA_ARGUMENT(P99_INITIALIZE, 0)
 P00_DOCUMENT_WARN_VLA_ARGUMENT(P99_INITIALIZE, 1)
 #define P99_INITIALIZE(X, L) P00_ABLESS(P00_INITIALIZE((X), (L)), *(X))
 
-#define P00_ALLOC(X, L)                                                 \
-P00_ABLESS(p00_initialize(sizeof(X),                                    \
+#define P00_ALLOC(X, L)                                                                  \
+P00_ABLESS(p00_initialize(sizeof(X),                                                     \
                           P00_APLAIN(memcpy(P99_MALLOC(X), (&L), sizeof(L)), sizeof(X)), \
-                          sizeof(L)),                                   \
+                          sizeof(L)),                                                    \
            (X))
 
 #define P99_ALLOC(...) P99_IF_GT(P99_NARG(__VA_ARGS__), 1)(P00_ALLOC(__VA_ARGS__))(P00_VMALLOC(__VA_ARGS__))

@@ -204,7 +204,7 @@ P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
 RT (*const P99_PASTE3(p00_, NAME, _pointer)[])(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__)) = { NAME }; \
 p00_instantiate RT (NAME)(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
 #else
-#define P00_INSTANTIATE(RT, NAME, ...)                                \
+#define P00_INSTANTIATE(RT, NAME, ...)                                  \
 p00_instantiate RT (NAME)(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
 #endif
 

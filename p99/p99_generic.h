@@ -1062,17 +1062,17 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJLEN, 3)
 #define P99_OBJLEN(X, ...) (P99_OBJSIZE(X, __VA_ARGS__)/(sizeof (X)[0]))
 #endif
 
-#define P00_SPRINT_DEFINE(T, ...)                                                     \
-p99_inline                                                                            \
+#define P00_SPRINT_DEFINE(T, ...)                                                             \
+p99_inline                                                                                    \
 char const* P99_PASTE2(p00_sprint_, T)(T p00_val, char*restrict p00_str, unsigned p00_form) { \
-  enum { p00_len = P99_NARG(__VA_ARGS__), };                                          \
-  static char const*const p00_format[p00_len] = { __VA_ARGS__ };                      \
-  char const*const p00_f = (p00_form < p00_len)                                       \
-    ? p00_format[p00_form]                                                            \
-    : p00_format[0];                                                                  \
-  sprintf(p00_str, p00_f, p00_val);                                                   \
-  return p00_str;                                                                     \
-}                                                                                     \
+  enum { p00_len = P99_NARG(__VA_ARGS__), };                                                  \
+  static char const*const p00_format[p00_len] = { __VA_ARGS__ };                              \
+  char const*const p00_f = (p00_form < p00_len)                                               \
+    ? p00_format[p00_form]                                                                    \
+    : p00_format[0];                                                                          \
+  sprintf(p00_str, p00_f, p00_val);                                                           \
+  return p00_str;                                                                             \
+}                                                                                             \
 P99_MACRO_END(P00_SPRINT_DEFINE, T)
 
 P00_SPRINT_DEFINE(char, "%c");
@@ -1346,10 +1346,10 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SNPRINTF, 4)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SNPRINTF, 5)
 #define P99_SNPRINTF(S, N, FORMAT, ...) snprintf(S, N, FORMAT, P99_FORMATS(__VA_ARGS__))
 
-#define P00_DEFINE_IN_RANGE(T)                                          \
-p99_inline                                                              \
-bool P99_PASTE2(p00_in_range_, T)(T p00_r, T p00_s, T p00_len) {        \
-  return (p00_r >= p00_s) && ((p00_r - p00_s) < p00_len);               \
+#define P00_DEFINE_IN_RANGE(T)                                   \
+p99_inline                                                       \
+bool P99_PASTE2(p00_in_range_, T)(T p00_r, T p00_s, T p00_len) { \
+  return (p00_r >= p00_s) && ((p00_r - p00_s) < p00_len);        \
 }
 
 p99_inline
@@ -1361,19 +1361,19 @@ bool p00_in_range_voidp(void* p00_r_, void* p00_s_, size_t p00_len) {
 
 P99_SER(P00_DEFINE_IN_RANGE, P99_EXT_REAL_TYPES)
 
-#define P00_IN_RANGE_PART(NAME, T, I)                            \
-  (T, P99_PASTE2(p00_in_range_, T)),                             \
-  (T const, P99_PASTE2(p00_in_range_, T)),                       \
-  (T volatile, P99_PASTE2(p00_in_range_, T)),                    \
+#define P00_IN_RANGE_PART(NAME, T, I)                          \
+  (T, P99_PASTE2(p00_in_range_, T)),                           \
+  (T const, P99_PASTE2(p00_in_range_, T)),                     \
+  (T volatile, P99_PASTE2(p00_in_range_, T)),                  \
   (T const volatile, P99_PASTE2(p00_in_range_, T))
 
 
-#define P00_IN_RANGE_LIST_(...)                                        \
+#define P00_IN_RANGE_LIST_(...)                                             \
   P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_IN_RANGE_PART, __VA_ARGS__)
 
 #define P00_IN_RANGE_LIST() P00_IN_RANGE_LIST_(P99_EXT_REAL_TYPES)
 
-#define P00_IN_RANGE(R, S, L, ...)                                      \
+#define P00_IN_RANGE(R, S, L, ...)                                           \
 P99_GENERIC((1 ? (R) : (S)), p00_in_range_voidp, __VA_ARGS__)((R), (S), (L))
 
 /**

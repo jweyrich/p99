@@ -96,6 +96,7 @@
  ** behavior of these macros.
  **
  ** @see P00_DECLARE_ATOMIC_TYPE(0) for argument <code>1</code>, <code>2</code>.
+ ** @see P99_AALLOC(T, VB, N) for argument <code>T</code>, <code>VB</code>.
  ** @see P99_AARG(TYPE, NAME, DIM, VAR) for argument <code>TYPE</code>, <code>DIM</code>.
  ** @see P99_AASSIGN(TARGET, SOURCE, N) for argument <code>TARGET</code>, <code>SOURCE</code>.
  ** @see P99_ACALL(ARR, N, TYPE) for arguments <code>ARR</code>, <code>N</code>, <code>TYPE</code>.
@@ -103,9 +104,11 @@
  ** @see P99_ACOPY(TYPE, N, ...) for argument <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_ALEN(ARR, N) for argument <code>ARR</code>, <code>N</code>.
  ** @see P99_ALENS(ARR, N) for argument <code>ARR</code>, <code>N</code>.
+ ** @see P99_ANAME(NAME, DIM, VAR) for argument <code>NAME</code>, <code>VAR</code>.
  ** @see P99_ARE_EQ(FIRST, ...) for argument <code>FIRST</code>.
  ** @see P99_ARE_ORDERED(OP, ...) for arguments <code>OP</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>.
  ** @see P99_ASORT(TAB, COMP) for argument <code>TAB</code>.
+ ** @see P99_ASUB(X, T, N, L) for argument <code>T</code>.
  ** @see P99_ATOMIC_INHERIT(T) for argument <code>T</code>.
  ** @see P99_AVALUE(X, ...) for arguments <code>X</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_BIGFUNC(FUNC, M, ...) for argument <code>M</code>.
@@ -115,8 +118,10 @@
  ** @see P99_CALL_DEFARG_LIST(NAME, M, ...) for argument <code>M</code>.
  ** @see P99_CALL_VA_ARG(NAME, M, T, ...) for argument <code>M</code>.
  ** @see P99_CASERANGE(START, ...) for argument <code>START</code>, <code>__VA_ARG__[0]</code>.
+ ** @see P99_CA_CALL(NAME, ACHECKS, PCHECKS, ...) for arguments <code>ACHECKS</code>, <code>PCHECKS</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_CDIM(NAME, ...) for argument <code>NAME</code>.
  ** @see P99_CHOOSE5(xT, cc, cs, ci, cl, cll) for argument <code>xT</code>.
+ ** @see P99_CONSTANT(T, NAME, INIT) for argument <code>NAME</code>.
  ** @see P99_DECLARE_ATOMIC(T, NAME) for argument <code>T</code>.
  ** @see P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME) for argument <code>T</code>, <code>NAME</code>.
  ** @see P99_DECLARE_DELETE(T) for argument <code>T</code>.
@@ -158,7 +163,9 @@
  ** @see P99_HEX_DOUBLE(...) for arguments <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[4]</code>.
  ** @see P99_HTONL(X) for argument <code>X</code>, <code>1</code>.
  ** @see P99_HTONS(X) for argument <code>X</code>, <code>1</code>.
+ ** @see P99_INITIALIZE(X, L) for argument <code>X</code>, <code>L</code>.
  ** @see P99_INVARIANT(EXPR) for argument <code>EXPR</code>.
+ ** @see P99_IN_RANGE(R, S, L) for argument <code>R</code>, <code>S</code>.
  ** @see P99_IPOW(N, X) for argument <code>N</code>, <code>X</code>.
  ** @see P99_ISSIGNED(T) for argument <code>T</code>.
  ** @see P99_IS_INF(FIRST, ...) for argument <code>FIRST</code>.

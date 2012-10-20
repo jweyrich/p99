@@ -206,14 +206,14 @@ char const* bool_getname(bool p00_x) {
 #define P00_CONSTANT_ENUM_1(NAME) enum { NAME }
 #define P00_CONSTANT_ENUM_2(NAME, ...) enum { NAME = (__VA_ARGS__) }
 
-#define P00_CONSTANT_2(T, NAME)                 \
-P99_IF_INT(T)                                   \
-(P00_CONSTANT_ENUM_1(NAME))                     \
+#define P00_CONSTANT_2(T, NAME)                                \
+P99_IF_INT(T)                                                  \
+(P00_CONSTANT_ENUM_1(NAME))                                    \
 (P00_CONSTANT_STATIC_3(T, NAME, P99_INIT))
 
-#define P00_CONSTANT_3(T, NAME, ...)            \
-P99_IF_INT(T)                                   \
- (P00_CONSTANT_ENUM_2(NAME, __VA_ARGS__))       \
+#define P00_CONSTANT_3(T, NAME, ...)                           \
+P99_IF_INT(T)                                                  \
+ (P00_CONSTANT_ENUM_2(NAME, __VA_ARGS__))                      \
  (P00_CONSTANT_STATIC_3(T, NAME, __VA_ARGS__))
 
 #ifdef P00_DOXYGEN
@@ -246,9 +246,9 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_CONSTANT, 1)
 #define P99_CONSTANT(T, NAME, INIT) register T const NAME = INIT
 #else
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_CONSTANT, 1)
-#define P99_CONSTANT(...)                       \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 3)             \
-(P00_CONSTANT_2(__VA_ARGS__))                   \
+#define P99_CONSTANT(...)                                      \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                            \
+(P00_CONSTANT_2(__VA_ARGS__))                                  \
 (P00_CONSTANT_3(__VA_ARGS__))
 #endif
 
