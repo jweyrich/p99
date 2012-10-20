@@ -140,8 +140,9 @@
   <li>compound literals</li>
   <li>type punning through unions</li>
   <li>compatible complex types</li>
-  <li>bit-field ordering for <code>signed</code>, <code>un
-  signed</code> and <code>bool</code> base type</li>
+  <li>bit-field ordering
+  for <code>signed</code>, <code>unsigned</code> and <code>bool</code>
+  base type</li>
 </ul>
 
 <h3>Features that C++ could import from C11 but that would need some effort</h3>
@@ -160,6 +161,9 @@
 
 <ul>
   <li> <code>{}</code> for default initializers
+  </li>
+  <li> slightly relaxed rules for implicit conversions
+    of <code>const</code>-qualified pointers
   </li>
   <li>
     <code>nullptr</code>
@@ -196,6 +200,10 @@
   <li>
     force <code>ptrdiff_t</code> to be the signed type corresponding
     to <code>size_t</code>
+  </li>
+  <li> relaxed rules for implicit conversions
+    of <code>const</code>-qualified arrays. Arrays are not pointers so
+    they should have a single level of qualification.
   </li>
   <li>
     find a common ground for the inferred declared type feature, AKA C++'s
