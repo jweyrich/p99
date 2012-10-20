@@ -1346,4 +1346,48 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SNPRINTF, 4)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SNPRINTF, 5)
 #define P99_SNPRINTF(S, N, FORMAT, ...) snprintf(S, N, FORMAT, P99_FORMATS(__VA_ARGS__))
 
+#define P00_DEFINE_IN_RANGE(T)                                          \
+p99_inline                                                              \
+bool P99_PASTE2(p00_in_range_, T)(T p00_r, T p00_s, T p00_len) {        \
+  return (p00_r >= p00_s) && ((p00_r - p00_s) < p00_len);               \
+}
+
+p99_inline
+bool p00_in_range_voidp(void* p00_r_, void* p00_s_, size_t p00_len) {
+  unsigned char* p00_r = p00_r_;
+  unsigned char* p00_s = p00_s_;
+  return (p00_r >= p00_s) && ((p00_r - p00_s) < p00_len);
+}
+
+P99_SER(P00_DEFINE_IN_RANGE, P99_EXT_REAL_TYPES)
+
+#define P00_IN_RANGE_PART(NAME, T, I)                            \
+  (T, P99_PASTE2(p00_in_range_, T)),                             \
+  (T const, P99_PASTE2(p00_in_range_, T)),                       \
+  (T volatile, P99_PASTE2(p00_in_range_, T)),                    \
+  (T const volatile, P99_PASTE2(p00_in_range_, T))
+
+
+#define P00_IN_RANGE_LIST_(...)                                        \
+  P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_IN_RANGE_PART, __VA_ARGS__)
+
+#define P00_IN_RANGE_LIST() P00_IN_RANGE_LIST_(P99_EXT_REAL_TYPES)
+
+#define P00_IN_RANGE(R, S, L, ...)                                      \
+P99_GENERIC((1 ? (R) : (S)), p00_in_range_voidp, __VA_ARGS__)((R), (S), (L))
+
+/**
+ ** @brief check if @a R is in the range [@a S, @a S + @a L)
+ **
+ ** This is a type generic function that should work with all real
+ ** types and pointer types, though you may encounter some surprises
+ ** with floating point types due to rounding errors.
+ **
+ ** @warning The length parameter @a L is to be taken in bytes and not
+ ** in numbers of elements of the base type.
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IN_RANGE, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IN_RANGE, 1)
+#define P99_IN_RANGE(R, S, L) P00_IN_RANGE((R), (S), (L), P00_IN_RANGE_LIST())
+
 #endif

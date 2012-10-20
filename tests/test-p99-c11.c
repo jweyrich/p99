@@ -206,5 +206,24 @@ int main(int argc, char* argv[]) {
              (p99x_uint128)0x0,
              (bool)(argc > 1),
              aChar);
+
+  double base[25] = { 0 };
+  double * somewhere = base + 13;
+  double * elsewhere = base + 25;
+  P99_PRINTF("checking generic range test, pointers: base=%s, base1=%s, inside=%s, outside=%s\n",
+             P99_IN_RANGE(base, base, 25 * sizeof base[0]),
+             P99_IN_RANGE(base + 1, base, 25 * sizeof base[0]),
+             P99_IN_RANGE(somewhere, base, 25 * sizeof base[0]),
+             P99_IN_RANGE(elsewhere, base, 25 * sizeof base[0]));
+  P99_PRINTF("checking generic range test, integers: base=%s, inside=%s, upper=%s, outside=%s\n",
+             P99_IN_RANGE(1, 1u, 7),
+             P99_IN_RANGE(5, 1u, 7),
+             P99_IN_RANGE(8, 1u, 7),
+             P99_IN_RANGE(28, 1, 7));
+  P99_PRINTF("checking generic range test, floats: base=%s, inside=%s, upper=%s, outside=%s\n",
+             P99_IN_RANGE(1.0, 1u, 7.f),
+             P99_IN_RANGE(5.0, 1u, 7.f),
+             P99_IN_RANGE(8.0, 1u, 7),
+             P99_IN_RANGE(28.0, 1, 7));
   return ret;
 }
