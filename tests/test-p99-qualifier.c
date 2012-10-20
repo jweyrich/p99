@@ -17,6 +17,13 @@
 #define DETECT_SVAL(T, X) P99_GENERIC(P99_SVALUE(X), false, (T, true))
 #define DETECT_TVAL(T, X) P99_GENERIC(P00_RVALUE(X), false, (T, true))
 
+
+typedef struct tester tester;
+
+struct tester {
+  double a;
+};
+
 #define SAYIT(MAC)                                                                                                     \
   printf(#MAC ":\t%d for double lvalue\n", MAC(double const, (double const){ 0 }));                                    \
   printf(#MAC ":\t%d for double rvalue\n", MAC(double const, (double const)0));                                        \
@@ -37,8 +44,13 @@
   printf(#MAC ":\t%d for array, potential array-to-pointer conversion\n", MAC(int const[2], (int const[2]){ 0 }))
 
 
+#define SAYIT_STRUCT(MAC)                                               \
+printf(#MAC ":\t%d for struct lvalue\n", MAC(tester const, (tester const){ .a = 0 })); \
+printf(#MAC ":\t%d for struct rvalue\n", MAC(tester const, ((tester){ .a = 0 } = (tester const){ .a = 0 })))
+
 int main(void) {
   printf("P99 compiler:\t%40s\n", P99_COMPILER_VERSION);
+  SAYIT_STRUCT(DETECT_TYPE);
   SAYIT(DETECT_TYPE);
   SAYIT(DETECT_QVAL);
   SAYIT(DETECT_SVAL);
