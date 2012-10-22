@@ -1624,6 +1624,861 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>p99_c99_throw.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__c99__throw_8h</filename>
+    <includes id="p99__try_8h" name="p99_try.h" local="yes" imported="no">p99_try.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>aligned_alloc_throw</name>
+      <anchorfile>group__library__wrappers_ga90353150e2de4e1f7eb94a6764e1546d.html</anchorfile>
+      <anchor>ga90353150e2de4e1f7eb94a6764e1546d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>at_quick_exit_throw</name>
+      <anchorfile>group__library__wrappers_gab064f28a18dba04ddb54536dabcccf01.html</anchorfile>
+      <anchor>gab064f28a18dba04ddb54536dabcccf01</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>atexit_throw</name>
+      <anchorfile>group__library__wrappers_gaaa7e34e5d5ce64467ae5cac97ac4133e.html</anchorfile>
+      <anchor>gaaa7e34e5d5ce64467ae5cac97ac4133e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>btowc_throw</name>
+      <anchorfile>group__library__wrappers_gada671ef8278b407da33b68ccb0822e27.html</anchorfile>
+      <anchor>gada671ef8278b407da33b68ccb0822e27</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>calloc_throw</name>
+      <anchorfile>group__library__wrappers_ga90c4fde110cad8c46edf7204feb4c633.html</anchorfile>
+      <anchor>ga90c4fde110cad8c46edf7204feb4c633</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>cnd_broadcast_throw</name>
+      <anchorfile>group__library__wrappers_ga6d0377489edca1e9e7b1de81fa6226a5.html</anchorfile>
+      <anchor>ga6d0377489edca1e9e7b1de81fa6226a5</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>cnd_init_throw</name>
+      <anchorfile>group__library__wrappers_ga283dcc21eec7b900d6e1d15f8aff678d.html</anchorfile>
+      <anchor>ga283dcc21eec7b900d6e1d15f8aff678d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>cnd_signal_throw</name>
+      <anchorfile>group__library__wrappers_ga4a69f6a44175eae104bd671aa75b5d6c.html</anchorfile>
+      <anchor>ga4a69f6a44175eae104bd671aa75b5d6c</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>cnd_timedwait_throw</name>
+      <anchorfile>group__library__wrappers_gacf6039166b97e02ce2e3d96fc2161c6f.html</anchorfile>
+      <anchor>gacf6039166b97e02ce2e3d96fc2161c6f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>cnd_wait_throw</name>
+      <anchorfile>group__library__wrappers_ga667c1c4aadbaf75e2118745101136fbc.html</anchorfile>
+      <anchor>ga667c1c4aadbaf75e2118745101136fbc</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fclose_throw</name>
+      <anchorfile>group__library__wrappers_gac32b997e1ff6c6a87dc2063149e269ff.html</anchorfile>
+      <anchor>gac32b997e1ff6c6a87dc2063149e269ff</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>feclearexcept_throw</name>
+      <anchorfile>group__library__wrappers_gad4b28c6535a7359f94b76654e141ad8a.html</anchorfile>
+      <anchor>gad4b28c6535a7359f94b76654e141ad8a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fegetenv_throw</name>
+      <anchorfile>group__library__wrappers_gaa10067ef3bf2cb152415189a5909183f.html</anchorfile>
+      <anchor>gaa10067ef3bf2cb152415189a5909183f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fegetexceptflag_throw</name>
+      <anchorfile>group__library__wrappers_gaa900a4836baf1bc0699302e4a9918b5a.html</anchorfile>
+      <anchor>gaa900a4836baf1bc0699302e4a9918b5a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fegetround_throw</name>
+      <anchorfile>group__library__wrappers_gaa0f54bfe22efe411042351bdb91fefba.html</anchorfile>
+      <anchor>gaa0f54bfe22efe411042351bdb91fefba</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>feholdexcept_throw</name>
+      <anchorfile>group__library__wrappers_gab022ee2141ef53e62017fd08faa08a5b.html</anchorfile>
+      <anchor>gab022ee2141ef53e62017fd08faa08a5b</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>feraiseexcept_throw</name>
+      <anchorfile>group__library__wrappers_gaf10f33c23826c3d24790ded1e856ad0d.html</anchorfile>
+      <anchor>gaf10f33c23826c3d24790ded1e856ad0d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fesetenv_throw</name>
+      <anchorfile>group__library__wrappers_gaf895ab47f2b50a28e7baf93d0d27be32.html</anchorfile>
+      <anchor>gaf895ab47f2b50a28e7baf93d0d27be32</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fesetexceptflag_throw</name>
+      <anchorfile>group__library__wrappers_gae05434c5fb4746295315a1fc75298e17.html</anchorfile>
+      <anchor>gae05434c5fb4746295315a1fc75298e17</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fesetround_throw</name>
+      <anchorfile>group__library__wrappers_ga89c6c0a2af9cb2f2a1c23aff109a2c41.html</anchorfile>
+      <anchor>ga89c6c0a2af9cb2f2a1c23aff109a2c41</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fetestexcept_throw</name>
+      <anchorfile>group__library__wrappers_gadae9e4bc694186c953022ce65ca26673.html</anchorfile>
+      <anchor>gadae9e4bc694186c953022ce65ca26673</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>feupdateenv_throw</name>
+      <anchorfile>group__library__wrappers_ga7fb2488a867aaee06ec32caa22992216.html</anchorfile>
+      <anchor>ga7fb2488a867aaee06ec32caa22992216</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fflush_throw</name>
+      <anchorfile>group__library__wrappers_gae4016ab7ec70d57bd0476b2ce27fa755.html</anchorfile>
+      <anchor>gae4016ab7ec70d57bd0476b2ce27fa755</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fgetc_throw</name>
+      <anchorfile>group__library__wrappers_gad97e3422fcdcb368764a1ee603d6e26e.html</anchorfile>
+      <anchor>gad97e3422fcdcb368764a1ee603d6e26e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fgetpos_throw</name>
+      <anchorfile>group__library__wrappers_gae5926add8965b7a876ec8ed111fcc827.html</anchorfile>
+      <anchor>gae5926add8965b7a876ec8ed111fcc827</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fgets_throw</name>
+      <anchorfile>group__library__wrappers_gaa0677ea19fb0258be466789a992e361a.html</anchorfile>
+      <anchor>gaa0677ea19fb0258be466789a992e361a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fgetwc_throw</name>
+      <anchorfile>group__library__wrappers_gaee517ddcbeb2ca05c7156f5d8896c051.html</anchorfile>
+      <anchor>gaee517ddcbeb2ca05c7156f5d8896c051</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fgetws_throw</name>
+      <anchorfile>group__library__wrappers_ga684526c0a0f25682d72b8fece5137acc.html</anchorfile>
+      <anchor>ga684526c0a0f25682d72b8fece5137acc</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fopen_throw</name>
+      <anchorfile>group__library__wrappers_ga9c490cd9468bcb78c2f7ea4b033a6f79.html</anchorfile>
+      <anchor>ga9c490cd9468bcb78c2f7ea4b033a6f79</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fprintf_throw</name>
+      <anchorfile>group__library__wrappers_gaffe5b3596cfe67c2b28f1556677109d4.html</anchorfile>
+      <anchor>gaffe5b3596cfe67c2b28f1556677109d4</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fputc_throw</name>
+      <anchorfile>group__library__wrappers_gafd67937ef1520b88e4df1060d728f121.html</anchorfile>
+      <anchor>gafd67937ef1520b88e4df1060d728f121</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fputs_throw</name>
+      <anchorfile>group__library__wrappers_ga167430a72d97aeeb7770de97aacae4f8.html</anchorfile>
+      <anchor>ga167430a72d97aeeb7770de97aacae4f8</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fputwc_throw</name>
+      <anchorfile>group__library__wrappers_ga150ce7b01068be11307c4a3f75b0bc5f.html</anchorfile>
+      <anchor>ga150ce7b01068be11307c4a3f75b0bc5f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fputws_throw</name>
+      <anchorfile>group__library__wrappers_gad89bd2d3e8daf10ac6dd52f8277e4089.html</anchorfile>
+      <anchor>gad89bd2d3e8daf10ac6dd52f8277e4089</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>freopen_throw</name>
+      <anchorfile>group__library__wrappers_gadb2e8e11ae98da488275012e2133f5f6.html</anchorfile>
+      <anchor>gadb2e8e11ae98da488275012e2133f5f6</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fscanf_throw</name>
+      <anchorfile>group__library__wrappers_gace73d9f50ce0ca918906e038be5822f9.html</anchorfile>
+      <anchor>gace73d9f50ce0ca918906e038be5822f9</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fseek_throw</name>
+      <anchorfile>group__library__wrappers_ga377fa8687fa8fea034ab50c27dc11c47.html</anchorfile>
+      <anchor>ga377fa8687fa8fea034ab50c27dc11c47</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fsetpos_throw</name>
+      <anchorfile>group__library__wrappers_ga6c6f427a6ebfe78512e5db0b222a3fba.html</anchorfile>
+      <anchor>ga6c6f427a6ebfe78512e5db0b222a3fba</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ftell_throw</name>
+      <anchorfile>group__library__wrappers_ga6d0580b46465b0bc8f6ed4f27bf86808.html</anchorfile>
+      <anchor>ga6d0580b46465b0bc8f6ed4f27bf86808</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fwprintf_throw</name>
+      <anchorfile>group__library__wrappers_gabfc86e797606280de7d2af4b2edc1ea1.html</anchorfile>
+      <anchor>gabfc86e797606280de7d2af4b2edc1ea1</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fwscanf_throw</name>
+      <anchorfile>group__library__wrappers_ga278226d9622693215e8c696245b5a5c0.html</anchorfile>
+      <anchor>ga278226d9622693215e8c696245b5a5c0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>getc_throw</name>
+      <anchorfile>group__library__wrappers_gaadf6fdbcf4ab84416bb72f98c62e7e83.html</anchorfile>
+      <anchor>gaadf6fdbcf4ab84416bb72f98c62e7e83</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>getchar_throw</name>
+      <anchorfile>group__library__wrappers_ga9a02a9add367b76118f9c38503d67d9f.html</anchorfile>
+      <anchor>ga9a02a9add367b76118f9c38503d67d9f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>getenv_throw</name>
+      <anchorfile>group__library__wrappers_ga036bc154638075965c5c1c956d611492.html</anchorfile>
+      <anchor>ga036bc154638075965c5c1c956d611492</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>getwc_throw</name>
+      <anchorfile>group__library__wrappers_gaea6aac5abd3e2ed1b4b96ec12a99092e.html</anchorfile>
+      <anchor>gaea6aac5abd3e2ed1b4b96ec12a99092e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>getwchar_throw</name>
+      <anchorfile>group__library__wrappers_ga16a2b348ef4eef06c7ad337baa398b92.html</anchorfile>
+      <anchor>ga16a2b348ef4eef06c7ad337baa398b92</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>malloc_throw</name>
+      <anchorfile>group__library__wrappers_gaf8a9500032f42256f573cf3be5b5cbe9.html</anchorfile>
+      <anchor>gaf8a9500032f42256f573cf3be5b5cbe9</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>mblen_throw</name>
+      <anchorfile>group__library__wrappers_gaec44ddfa07325f5e22f4fc5164531e52.html</anchorfile>
+      <anchor>gaec44ddfa07325f5e22f4fc5164531e52</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>mbtowc_throw</name>
+      <anchorfile>group__library__wrappers_gae33e417637ddf54520bc366f8d6be769.html</anchorfile>
+      <anchor>gae33e417637ddf54520bc366f8d6be769</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>mtx_init_throw</name>
+      <anchorfile>group__library__wrappers_ga1fd6446e8a4c0d55c656321b9eef5504.html</anchorfile>
+      <anchor>ga1fd6446e8a4c0d55c656321b9eef5504</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>mtx_lock_throw</name>
+      <anchorfile>group__library__wrappers_gaf2a66eedf236e45e53a9a0b331865ed0.html</anchorfile>
+      <anchor>gaf2a66eedf236e45e53a9a0b331865ed0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>mtx_timedlock_throw</name>
+      <anchorfile>group__library__wrappers_ga1a69f2f8ef2cf66c113fcb9e9b4dfe0a.html</anchorfile>
+      <anchor>ga1a69f2f8ef2cf66c113fcb9e9b4dfe0a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>mtx_unlock_throw</name>
+      <anchorfile>group__library__wrappers_ga330a0d094e3bf250baa2915e91da9f89.html</anchorfile>
+      <anchor>ga330a0d094e3bf250baa2915e91da9f89</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>printf_throw</name>
+      <anchorfile>group__library__wrappers_ga523d0f74c46eec59ceacbc081f826aa0.html</anchorfile>
+      <anchor>ga523d0f74c46eec59ceacbc081f826aa0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>putc_throw</name>
+      <anchorfile>group__library__wrappers_gafa46d0d6eb7d7b5cfcb6d043fc58de92.html</anchorfile>
+      <anchor>gafa46d0d6eb7d7b5cfcb6d043fc58de92</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>putchar_throw</name>
+      <anchorfile>group__library__wrappers_ga74bcbfa1ead14a3cc673085f68d2fb94.html</anchorfile>
+      <anchor>ga74bcbfa1ead14a3cc673085f68d2fb94</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>puts_throw</name>
+      <anchorfile>group__library__wrappers_ga42dbff7ef1c4db198fe797acb786e2e7.html</anchorfile>
+      <anchor>ga42dbff7ef1c4db198fe797acb786e2e7</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>putwc_throw</name>
+      <anchorfile>group__library__wrappers_gafef5767c49dba0eecccbba3754b08141.html</anchorfile>
+      <anchor>gafef5767c49dba0eecccbba3754b08141</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>putwchar_throw</name>
+      <anchorfile>group__library__wrappers_ga9b31db13d26be8bb77e01c70a4ae0e40.html</anchorfile>
+      <anchor>ga9b31db13d26be8bb77e01c70a4ae0e40</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>raise_throw</name>
+      <anchorfile>group__library__wrappers_ga2def2645865f366dbc55e134faa541f4.html</anchorfile>
+      <anchor>ga2def2645865f366dbc55e134faa541f4</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>realloc_throw</name>
+      <anchorfile>group__library__wrappers_ga0ca15fb66f776baf9f33c2c752406ff4.html</anchorfile>
+      <anchor>ga0ca15fb66f776baf9f33c2c752406ff4</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>remove_throw</name>
+      <anchorfile>group__library__wrappers_gab564ca50245d15f1772752fcc1e8e225.html</anchorfile>
+      <anchor>gab564ca50245d15f1772752fcc1e8e225</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>rename_throw</name>
+      <anchorfile>group__library__wrappers_ga82b9106d4e5dd3dd71b525f77c19f206.html</anchorfile>
+      <anchor>ga82b9106d4e5dd3dd71b525f77c19f206</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>scanf_throw</name>
+      <anchorfile>group__library__wrappers_ga6481045ca60b657ebd3f77df4bec486a.html</anchorfile>
+      <anchor>ga6481045ca60b657ebd3f77df4bec486a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>setvbuf_throw</name>
+      <anchorfile>group__library__wrappers_ga9df0883f176ee8d2276c9b45f740ddf3.html</anchorfile>
+      <anchor>ga9df0883f176ee8d2276c9b45f740ddf3</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>snprintf_throw</name>
+      <anchorfile>group__library__wrappers_gabfcf71908cddb9833385a16fb1ab1bc5.html</anchorfile>
+      <anchor>gabfcf71908cddb9833385a16fb1ab1bc5</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>sprintf_throw</name>
+      <anchorfile>group__library__wrappers_gac7d5d14c8568e779754ae3885c70dfa6.html</anchorfile>
+      <anchor>gac7d5d14c8568e779754ae3885c70dfa6</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>sscanf_throw</name>
+      <anchorfile>group__library__wrappers_ga129fe20851f7e3b6d4424f1689272044.html</anchorfile>
+      <anchor>ga129fe20851f7e3b6d4424f1689272044</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtod_throw</name>
+      <anchorfile>group__library__wrappers_gab263ed08bd040d51dfbceebcc6cb2504.html</anchorfile>
+      <anchor>gab263ed08bd040d51dfbceebcc6cb2504</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtof_throw</name>
+      <anchorfile>group__library__wrappers_gaf534f64511bf4876f747b9992a3f3017.html</anchorfile>
+      <anchor>gaf534f64511bf4876f747b9992a3f3017</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtoimax_throw</name>
+      <anchorfile>group__library__wrappers_gad31873897cbe337890d41ddee6b8fedc.html</anchorfile>
+      <anchor>gad31873897cbe337890d41ddee6b8fedc</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtol_throw</name>
+      <anchorfile>group__library__wrappers_gae419ce14c198fc9c8a99c9e942533701.html</anchorfile>
+      <anchor>gae419ce14c198fc9c8a99c9e942533701</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtold_throw</name>
+      <anchorfile>group__library__wrappers_ga6987e5b97cdc210e312e2f36bf653f81.html</anchorfile>
+      <anchor>ga6987e5b97cdc210e312e2f36bf653f81</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtoll_throw</name>
+      <anchorfile>group__library__wrappers_gab613f0661941aac638d50373d30e2f26.html</anchorfile>
+      <anchor>gab613f0661941aac638d50373d30e2f26</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtoul_throw</name>
+      <anchorfile>group__library__wrappers_ga1bcf6979a88e95bfd0071a415d497591.html</anchorfile>
+      <anchor>ga1bcf6979a88e95bfd0071a415d497591</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtoull_throw</name>
+      <anchorfile>group__library__wrappers_ga5c1529010f46a10bc171b2369a56f8d9.html</anchorfile>
+      <anchor>ga5c1529010f46a10bc171b2369a56f8d9</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtoumax_throw</name>
+      <anchorfile>group__library__wrappers_gab3a939e298b7e84343378d9a6fe3354f.html</anchorfile>
+      <anchor>gab3a939e298b7e84343378d9a6fe3354f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>swprintf_throw</name>
+      <anchorfile>group__library__wrappers_ga9290c51f8c2fc185f2d35b41da57b1eb.html</anchorfile>
+      <anchor>ga9290c51f8c2fc185f2d35b41da57b1eb</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>swscanf_throw</name>
+      <anchorfile>group__library__wrappers_ga7330ff72eaf04963730d14f6f29964c3.html</anchorfile>
+      <anchor>ga7330ff72eaf04963730d14f6f29964c3</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>system_throw</name>
+      <anchorfile>group__library__wrappers_ga3b6284c1491b025f725494c59c230b21.html</anchorfile>
+      <anchor>ga3b6284c1491b025f725494c59c230b21</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>thrd_create_throw</name>
+      <anchorfile>group__library__wrappers_gabc8553a532a5bc1dca676177cb6f6832.html</anchorfile>
+      <anchor>gabc8553a532a5bc1dca676177cb6f6832</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>thrd_detach_throw</name>
+      <anchorfile>group__library__wrappers_ga9bbe2f687e383cb0ca067c8b64d40cbb.html</anchorfile>
+      <anchor>ga9bbe2f687e383cb0ca067c8b64d40cbb</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>thrd_equal_throw</name>
+      <anchorfile>group__library__wrappers_ga2b89fdcb433ef28dbbcbdda3edc92a8d.html</anchorfile>
+      <anchor>ga2b89fdcb433ef28dbbcbdda3edc92a8d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>thrd_join_throw</name>
+      <anchorfile>group__library__wrappers_ga5d8afb6d0c26daa914a78f953759c479.html</anchorfile>
+      <anchor>ga5d8afb6d0c26daa914a78f953759c479</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>thrd_sleep_throw</name>
+      <anchorfile>group__library__wrappers_gaeb57973803b3845c253676b75bfa4d12.html</anchorfile>
+      <anchor>gaeb57973803b3845c253676b75bfa4d12</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tmpfile_throw</name>
+      <anchorfile>group__library__wrappers_ga501bbbe7bc5c685e360cc2cdc5dc1ba1.html</anchorfile>
+      <anchor>ga501bbbe7bc5c685e360cc2cdc5dc1ba1</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tmpnam_throw</name>
+      <anchorfile>group__library__wrappers_gaa5e38546055d1268896a47a17da021f3.html</anchorfile>
+      <anchor>gaa5e38546055d1268896a47a17da021f3</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tss_create_throw</name>
+      <anchorfile>group__library__wrappers_ga287c5fcde42081fb6c8d7f5787772c90.html</anchorfile>
+      <anchor>ga287c5fcde42081fb6c8d7f5787772c90</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tss_set_throw</name>
+      <anchorfile>group__library__wrappers_gaf605b30ea2398768fe198648354171d4.html</anchorfile>
+      <anchor>gaf605b30ea2398768fe198648354171d4</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ungetc_throw</name>
+      <anchorfile>group__library__wrappers_ga50fa6080c576ce9957f81914e896698e.html</anchorfile>
+      <anchor>ga50fa6080c576ce9957f81914e896698e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ungetwc_throw</name>
+      <anchorfile>group__library__wrappers_gad26cde8286c2632ea574796125d134a5.html</anchorfile>
+      <anchor>gad26cde8286c2632ea574796125d134a5</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vfprintf_throw</name>
+      <anchorfile>group__library__wrappers_ga836da205d5caf7479a8d3d75e4bc61c9.html</anchorfile>
+      <anchor>ga836da205d5caf7479a8d3d75e4bc61c9</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vfscanf_throw</name>
+      <anchorfile>group__library__wrappers_ga53dddb46396340b58d3a1d532881c34c.html</anchorfile>
+      <anchor>ga53dddb46396340b58d3a1d532881c34c</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vfwprintf_throw</name>
+      <anchorfile>group__library__wrappers_gac418e0c29763648a245ec3ecc875c5f7.html</anchorfile>
+      <anchor>gac418e0c29763648a245ec3ecc875c5f7</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vfwscanf_throw</name>
+      <anchorfile>group__library__wrappers_gac71f9a48f93d6794ab93a8a842787ad0.html</anchorfile>
+      <anchor>gac71f9a48f93d6794ab93a8a842787ad0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vprintf_throw</name>
+      <anchorfile>group__library__wrappers_gad0973c292f0bb39bbdec89747ff8ccf0.html</anchorfile>
+      <anchor>gad0973c292f0bb39bbdec89747ff8ccf0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vscanf_throw</name>
+      <anchorfile>group__library__wrappers_ga0ca9dd3284f381cbdd270a4a4c6e4826.html</anchorfile>
+      <anchor>ga0ca9dd3284f381cbdd270a4a4c6e4826</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vsnprintf_throw</name>
+      <anchorfile>group__library__wrappers_ga567503fa5c22dc17163c2826645e05f0.html</anchorfile>
+      <anchor>ga567503fa5c22dc17163c2826645e05f0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vsprintf_throw</name>
+      <anchorfile>group__library__wrappers_ga76ddefb9635f9f243401f6dee682ca8a.html</anchorfile>
+      <anchor>ga76ddefb9635f9f243401f6dee682ca8a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vsscanf_throw</name>
+      <anchorfile>group__library__wrappers_ga430024149557789efffae7e626d16c59.html</anchorfile>
+      <anchor>ga430024149557789efffae7e626d16c59</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vswprintf_throw</name>
+      <anchorfile>group__library__wrappers_ga4891f24b1735b6fa5f8d149052cb6b8d.html</anchorfile>
+      <anchor>ga4891f24b1735b6fa5f8d149052cb6b8d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vswscanf_throw</name>
+      <anchorfile>group__library__wrappers_gaf1aea78b5c3bc13819e6ee1e917a40d6.html</anchorfile>
+      <anchor>gaf1aea78b5c3bc13819e6ee1e917a40d6</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vwprintf_throw</name>
+      <anchorfile>group__library__wrappers_gae2256c49933960eb82f075296c378bb7.html</anchorfile>
+      <anchor>gae2256c49933960eb82f075296c378bb7</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vwscanf_throw</name>
+      <anchorfile>group__library__wrappers_gac38e97cb010c935ae6ccc07c3ed193fb.html</anchorfile>
+      <anchor>gac38e97cb010c935ae6ccc07c3ed193fb</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstod_throw</name>
+      <anchorfile>group__library__wrappers_gaf85543af2b7e079d87a8fcab91855662.html</anchorfile>
+      <anchor>gaf85543af2b7e079d87a8fcab91855662</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstof_throw</name>
+      <anchorfile>group__library__wrappers_gadc71d25d208d656f3988087204b3ce8b.html</anchorfile>
+      <anchor>gadc71d25d208d656f3988087204b3ce8b</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstoimax_throw</name>
+      <anchorfile>group__library__wrappers_ga7a3004a76ebcf0ee0c5aab84af979685.html</anchorfile>
+      <anchor>ga7a3004a76ebcf0ee0c5aab84af979685</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstok_throw</name>
+      <anchorfile>group__library__wrappers_gacdcdae458eb5ad5ed2bdf30c65a76e18.html</anchorfile>
+      <anchor>gacdcdae458eb5ad5ed2bdf30c65a76e18</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstol_throw</name>
+      <anchorfile>group__library__wrappers_ga94af0747c3d5136f4719da13ab3234c5.html</anchorfile>
+      <anchor>ga94af0747c3d5136f4719da13ab3234c5</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstold_throw</name>
+      <anchorfile>group__library__wrappers_ga34a082a2409910760a2fb5590f38775f.html</anchorfile>
+      <anchor>ga34a082a2409910760a2fb5590f38775f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstoll_throw</name>
+      <anchorfile>group__library__wrappers_gad04a6babf733845c3278886a83b37fc1.html</anchorfile>
+      <anchor>gad04a6babf733845c3278886a83b37fc1</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstoul_throw</name>
+      <anchorfile>group__library__wrappers_gad70714145df709e69259d57fe76581a3.html</anchorfile>
+      <anchor>gad70714145df709e69259d57fe76581a3</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstoull_throw</name>
+      <anchorfile>group__library__wrappers_ga04cfbeeadb1e7af44ffd6fa2376dccd8.html</anchorfile>
+      <anchor>ga04cfbeeadb1e7af44ffd6fa2376dccd8</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstoumax_throw</name>
+      <anchorfile>group__library__wrappers_gaa44c6e3edb8990603f5211ebe3ba8b27.html</anchorfile>
+      <anchor>gaa44c6e3edb8990603f5211ebe3ba8b27</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wctomb_throw</name>
+      <anchorfile>group__library__wrappers_ga2f6a9d9223f819d4ab11ff587d91f612.html</anchorfile>
+      <anchor>ga2f6a9d9223f819d4ab11ff587d91f612</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wprintf_throw</name>
+      <anchorfile>group__library__wrappers_ga4d02d700abee9914977a22cca5e4d1e7.html</anchorfile>
+      <anchor>ga4d02d700abee9914977a22cca5e4d1e7</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wscanf_throw</name>
+      <anchorfile>group__library__wrappers_gadc47a0d10ce715c07533dece1363c943.html</anchorfile>
+      <anchor>gadc47a0d10ce715c07533dece1363c943</anchor>
+      <arglist>(...)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>p99_checkargs.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__checkargs_8h</filename>
+    <includes id="p99__constraint_8h" name="p99_constraint.h" local="yes" imported="no">p99_constraint.h</includes>
+    <includes id="p99__map_8h" name="p99_map.h" local="yes" imported="no">p99_map.h</includes>
+    <includes id="p99__enum_8h" name="p99_enum.h" local="yes" imported="no">p99_enum.h</includes>
+    <includes id="p99__type_8h" name="p99_type.h" local="yes" imported="no">p99_type.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_CA_CALL</name>
+      <anchorfile>p99__checkargs_8h_a1a5bf5d80be657dbd413561818ad34e0.html</anchorfile>
+      <anchor>a1a5bf5d80be657dbd413561818ad34e0</anchor>
+      <arglist>(NAME, ACHECKS, PCHECKS,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_CA_WRAP_DECLARE</name>
+      <anchorfile>p99__checkargs_8h_aa899e8ba351ca59e8077f0d2bc01882d.html</anchorfile>
+      <anchor>aa899e8ba351ca59e8077f0d2bc01882d</anchor>
+      <arglist>(NAME, RET, TYPES, VARS,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_CA_WRAP_DEFINE</name>
+      <anchorfile>p99__checkargs_8h_a01832445037d0b96fb8d4a4dd39add42.html</anchorfile>
+      <anchor>a01832445037d0b96fb8d4a4dd39add42</anchor>
+      <arglist>(NAME, RET, TYPES, VARS,...)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>p99_choice.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__choice_8h</filename>
@@ -1958,6 +2813,147 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>p99_constraint.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__constraint_8h</filename>
+    <includes id="p99__tss_8h" name="p99_tss.h" local="yes" imported="no">p99_tss.h</includes>
+    <includes id="p99__c99_8h" name="p99_c99.h" local="yes" imported="no">p99_c99.h</includes>
+    <includes id="p99__errno_8h" name="p99_errno.h" local="yes" imported="no">p99_errno.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>memcpy_s</name>
+      <anchorfile>p99__constraint_8h_a84536d74b0148b18b3e7ff485ada2fc6.html</anchorfile>
+      <anchor>a84536d74b0148b18b3e7ff485ada2fc6</anchor>
+      <arglist>(S1, S1MAX, S2, N)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>memmove_s</name>
+      <anchorfile>p99__constraint_8h_acfa5a2eb3e89779e04d5fa6fc7c320a1.html</anchorfile>
+      <anchor>acfa5a2eb3e89779e04d5fa6fc7c320a1</anchor>
+      <arglist>(S1, S1MAX, S2, N)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_CONSTRAINT_CALL</name>
+      <anchorfile>p99__constraint_8h_adf5c68ada07a896ea68aeb4705db8517.html</anchorfile>
+      <anchor>adf5c68ada07a896ea68aeb4705db8517</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_CONSTRAINT_TRIGGER</name>
+      <anchorfile>p99__constraint_8h_afba26d974e7e354077b4f9a51f2845c7.html</anchorfile>
+      <anchor>afba26d974e7e354077b4f9a51f2845c7</anchor>
+      <arglist>(E, I)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_STRERROR</name>
+      <anchorfile>p99__constraint_8h_ac8e53665f073d31468b51ace254ae809.html</anchorfile>
+      <anchor>ac8e53665f073d31468b51ace254ae809</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_STRERROR_MAX</name>
+      <anchorfile>p99__constraint_8h_a01ae2777cd8069cb52a2879e2fe821a9.html</anchorfile>
+      <anchor>a01ae2777cd8069cb52a2879e2fe821a9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strcat_s</name>
+      <anchorfile>p99__constraint_8h_a55065cde73f7e4d9879c61bd462b7f7b.html</anchorfile>
+      <anchor>a55065cde73f7e4d9879c61bd462b7f7b</anchor>
+      <arglist>(S1, S1MAX, S2)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strcpy_s</name>
+      <anchorfile>p99__constraint_8h_a5537735b5692dd1a3f6cfeef616d6647.html</anchorfile>
+      <anchor>a5537735b5692dd1a3f6cfeef616d6647</anchor>
+      <arglist>(S1, S1MAX, S2)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strncat_s</name>
+      <anchorfile>p99__constraint_8h_a9a88c60dc8b59e815a19c35c505dc528.html</anchorfile>
+      <anchor>a9a88c60dc8b59e815a19c35c505dc528</anchor>
+      <arglist>(S1, S1MAX, S2, N)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strncpy_s</name>
+      <anchorfile>p99__constraint_8h_a42fd5c8f796a00d5aded64004f48c714.html</anchorfile>
+      <anchor>a42fd5c8f796a00d5aded64004f48c714</anchor>
+      <arglist>(S1, S1MAX, S2, N)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>void(*</type>
+      <name>constraint_handler_t</name>
+      <anchorfile>p99__constraint_8h_ab95e04d583322d145bbaa8595d1cd8ed.html</anchorfile>
+      <anchor>ab95e04d583322d145bbaa8595d1cd8ed</anchor>
+      <arglist>)(const char *restrict p00_msg, void *restrict p00_ptr, errno_t p00_err)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_abort_handler</name>
+      <anchorfile>p99__constraint_8h_a7504a0cf856b5fc292c9fe682a67605d.html</anchorfile>
+      <anchor>a7504a0cf856b5fc292c9fe682a67605d</anchor>
+      <arglist>(const char *restrict p00_msg, void *restrict p00_ptr, errno_t p00_err)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_exit_handler</name>
+      <anchorfile>p99__constraint_8h_a889df20cfb66bf95f5752f0592001534.html</anchorfile>
+      <anchor>a889df20cfb66bf95f5752f0592001534</anchor>
+      <arglist>(const char *restrict p00_msg, void *restrict p00_ptr, errno_t p00_err)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_ignore_handler</name>
+      <anchorfile>p99__constraint_8h_ac319bb02c79643fa9f0279994fa03fa0.html</anchorfile>
+      <anchor>ac319bb02c79643fa9f0279994fa03fa0</anchor>
+      <arglist>(const char *restrict p00_msg, void *restrict p00_ptr, errno_t p00_err)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_report_handler</name>
+      <anchorfile>p99__constraint_8h_a1933f4242d71d97029d1d63c938340b1.html</anchorfile>
+      <anchor>a1933f4242d71d97029d1d63c938340b1</anchor>
+      <arglist>(const char *restrict p00_msg, void *restrict p00_ptr, errno_t p00_err)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>sizeof</name>
+      <anchorfile>p99__constraint_8h_a404c336b5c72c698e7b829482bf49e82.html</anchorfile>
+      <anchor>a404c336b5c72c698e7b829482bf49e82</anchor>
+      <arglist>(size_t p00_maxsize)</arglist>
+    </member>
+    <member kind="function">
+      <type>errno_t</type>
+      <name>strerror_s</name>
+      <anchorfile>p99__constraint_8h_a74a9eae086033d03df34eb2d27070fda.html</anchorfile>
+      <anchor>a74a9eae086033d03df34eb2d27070fda</anchor>
+      <arglist>(char *p00_s, rsize_t p00_maxsize, errno_t p00_errnum)</arglist>
+    </member>
+    <member kind="function">
+      <type>size_t</type>
+      <name>strerrorlen_s</name>
+      <anchorfile>p99__constraint_8h_a2e4f91f2f6e90462d42a92d29b8fe8a5.html</anchorfile>
+      <anchor>a2e4f91f2f6e90462d42a92d29b8fe8a5</anchor>
+      <arglist>(errno_t p00_errnum)</arglist>
+    </member>
+    <member kind="function">
+      <type>size_t</type>
+      <name>strnlen_s</name>
+      <anchorfile>p99__constraint_8h_a2208fb8690e68ffcbe22bb82f81b82bb.html</anchorfile>
+      <anchor>a2208fb8690e68ffcbe22bb82f81b82bb</anchor>
+      <arglist>(const char *p00_s, size_t p00_maxsize)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>p99_defarg.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__defarg_8h</filename>
@@ -2159,6 +3155,13 @@
     <includes id="p99__block_8h" name="p99_block.h" local="yes" imported="no">p99_block.h</includes>
     <member kind="define">
       <type>#define</type>
+      <name>P99_AALLOC</name>
+      <anchorfile>group__VLA_gaa5bb6c72ca4678e47cf8b9f89a4529f9.html</anchorfile>
+      <anchor>gaa5bb6c72ca4678e47cf8b9f89a4529f9</anchor>
+      <arglist>(T, VB, N)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_AARG</name>
       <anchorfile>group__VLA_gad39db1984f1f396b1fb980b55dbe4a88.html</anchorfile>
       <anchor>gad39db1984f1f396b1fb980b55dbe4a88</anchor>
@@ -2184,6 +3187,13 @@
       <anchorfile>group__VLA_ga342cda84d1c726925c32016f46d00790.html</anchorfile>
       <anchor>ga342cda84d1c726925c32016f46d00790</anchor>
       <arglist>(ARR, N)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_ANAME</name>
+      <anchorfile>group__VLA_gaffba75783d0d22abecae4fb7d19e8006.html</anchorfile>
+      <anchor>gaffba75783d0d22abecae4fb7d19e8006</anchor>
+      <arglist>(NAME, DIM, VAR)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -2226,6 +3236,13 @@
       <anchorfile>group__VLA_gae86010cd3e4dfe56a5e579759f01ecbc.html</anchorfile>
       <anchor>gae86010cd3e4dfe56a5e579759f01ecbc</anchor>
       <arglist>(ARR,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_ATYPE</name>
+      <anchorfile>group__VLA_ga01e42cadeabd08ae1a3c4ed87a22d71f.html</anchorfile>
+      <anchor>ga01e42cadeabd08ae1a3c4ed87a22d71f</anchor>
+      <arglist>(T, A, B, N)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -3914,6 +4931,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_IN_RANGE</name>
+      <anchorfile>p99__generic_8h_a8e3cb69914277c628755949524187893.html</anchorfile>
+      <anchor>a8e3cb69914277c628755949524187893</anchor>
+      <arglist>(R, S, L)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_OBJLEN</name>
       <anchorfile>p99__generic_8h_a60af7d3df62f118142b1f11285445998.html</anchorfile>
       <anchor>a60af7d3df62f118142b1f11285445998</anchor>
@@ -4051,6 +5075,125 @@
       <anchorfile>group__generic_gaf2c10f0af126c95aac270e3244bd51ae.html</anchorfile>
       <anchor>gaf2c10f0af126c95aac270e3244bd51ae</anchor>
       <arglist>(COND, YES, NO)</arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>_Bool</name>
+      <anchorfile>p99__generic_8h_a3b2f8ce8eb83358d84c6058be0e0a92b.html</anchorfile>
+      <anchor>a3b2f8ce8eb83358d84c6058be0e0a92b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>char</name>
+      <anchorfile>p99__generic_8h_a335bb7fc67438e21069ec7ed0de2343c.html</anchorfile>
+      <anchor>a335bb7fc67438e21069ec7ed0de2343c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>T</type>
+      <name>const</name>
+      <anchorfile>p99__generic_8h_a9a6b2f622722f81a37ee87e5a58f08b1.html</anchorfile>
+      <anchor>a9a6b2f622722f81a37ee87e5a58f08b1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>double</name>
+      <anchorfile>p99__generic_8h_a45c855d65dd0e2b57b08024500ff9159.html</anchorfile>
+      <anchor>a45c855d65dd0e2b57b08024500ff9159</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>float</name>
+      <anchorfile>p99__generic_8h_a6a1bb6ed41f44b60e7bd83b0e9945aa7.html</anchorfile>
+      <anchor>a6a1bb6ed41f44b60e7bd83b0e9945aa7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>int</name>
+      <anchorfile>p99__generic_8h_a61569f2965b7a369eb10b6d75d410d11.html</anchorfile>
+      <anchor>a61569f2965b7a369eb10b6d75d410d11</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>llong</name>
+      <anchorfile>p99__generic_8h_a134569a97ed09fdece35238a3e6fa669.html</anchorfile>
+      <anchor>a134569a97ed09fdece35238a3e6fa669</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>long</name>
+      <anchorfile>p99__generic_8h_a86ea7407fb6372918b491e26d4b771c9.html</anchorfile>
+      <anchor>a86ea7407fb6372918b491e26d4b771c9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>schar</name>
+      <anchorfile>p99__generic_8h_a44ac95d6454e8c8be52a3bebf39801e1.html</anchorfile>
+      <anchor>a44ac95d6454e8c8be52a3bebf39801e1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>short</name>
+      <anchorfile>p99__generic_8h_a607fa506112b93546cb651732cb87e12.html</anchorfile>
+      <anchor>a607fa506112b93546cb651732cb87e12</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>T</name>
+      <anchorfile>p99__generic_8h_adf1f3edb9115acb0a1e04209b7a9937b.html</anchorfile>
+      <anchor>adf1f3edb9115acb0a1e04209b7a9937b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>uchar</name>
+      <anchorfile>p99__generic_8h_a86a4b5380e358b45113e47f1340c1a56.html</anchorfile>
+      <anchor>a86a4b5380e358b45113e47f1340c1a56</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ullong</name>
+      <anchorfile>p99__generic_8h_a08001ce50af844b620f3585e7bded579.html</anchorfile>
+      <anchor>a08001ce50af844b620f3585e7bded579</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ulong</name>
+      <anchorfile>p99__generic_8h_a1398ea0e48e059bf4db2f4bcd7eb31fa.html</anchorfile>
+      <anchor>a1398ea0e48e059bf4db2f4bcd7eb31fa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>unsigned</name>
+      <anchorfile>p99__generic_8h_aca40206900cfc164654362fa8d4ad1e6.html</anchorfile>
+      <anchor>aca40206900cfc164654362fa8d4ad1e6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ushort</name>
+      <anchorfile>p99__generic_8h_ab513c70f71b4c500b177f09b5f1f8d32.html</anchorfile>
+      <anchor>ab513c70f71b4c500b177f09b5f1f8d32</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>T T</type>
+      <name>volatile</name>
+      <anchorfile>p99__generic_8h_a22ea7d2bf6e8f99605dcb6eabc442b97.html</anchorfile>
+      <anchor>a22ea7d2bf6e8f99605dcb6eabc442b97</anchor>
+      <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -5453,6 +6596,28 @@
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__new_8h</filename>
     <includes id="p99__c99_8h" name="p99_c99.h" local="yes" imported="no">p99_c99.h</includes>
+    <includes id="p99__int_8h" name="p99_int.h" local="yes" imported="no">p99_int.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_ALLOC</name>
+      <anchorfile>group__preprocessor__allocation_gadc87686dd0be0820fe983f3497823f00.html</anchorfile>
+      <anchor>gadc87686dd0be0820fe983f3497823f00</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_APLAIN</name>
+      <anchorfile>group__preprocessor__initialization_ga7e3ba686d2a8e0e2f417079e3f98458c.html</anchorfile>
+      <anchor>ga7e3ba686d2a8e0e2f417079e3f98458c</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_ASUB</name>
+      <anchorfile>group__preprocessor__initialization_ga330085947ecdf0c3c65ba899bc2ec234.html</anchorfile>
+      <anchor>ga330085947ecdf0c3c65ba899bc2ec234</anchor>
+      <arglist>(X, T, N, L)</arglist>
+    </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_CALLOC</name>
@@ -5511,10 +6676,17 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_INITIALIZE</name>
+      <anchorfile>group__preprocessor__allocation_gac249931b98e5767b9149fc4921c7dea3.html</anchorfile>
+      <anchor>gac249931b98e5767b9149fc4921c7dea3</anchor>
+      <arglist>(X, L)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_MALLOC</name>
-      <anchorfile>group__preprocessor__allocation_gad294fe8eefb50e5700e7434e939eecb4.html</anchorfile>
-      <anchor>gad294fe8eefb50e5700e7434e939eecb4</anchor>
-      <arglist>(T)</arglist>
+      <anchorfile>group__preprocessor__allocation_ga60bf929698377be26ef0dd9d3a0597c2.html</anchorfile>
+      <anchor>ga60bf929698377be26ef0dd9d3a0597c2</anchor>
+      <arglist>(X)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -6141,8 +7313,7 @@
     <name>p99_try.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__try_8h</filename>
-    <includes id="p99__tss_8h" name="p99_tss.h" local="yes" imported="no">p99_tss.h</includes>
-    <includes id="p99__errno_8h" name="p99_errno.h" local="yes" imported="no">p99_errno.h</includes>
+    <includes id="p99__constraint_8h" name="p99_constraint.h" local="yes" imported="no">p99_constraint.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>P99_CATCH</name>
@@ -6187,6 +7358,48 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_THROW_CALL_RANGE_ARG_0</name>
+      <anchorfile>group__try_ga3094ce97410e27ab0580280412c743d7.html</anchorfile>
+      <anchor>ga3094ce97410e27ab0580280412c743d7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_RANGE_ARG_1</name>
+      <anchorfile>group__try_gada7d557a1eed825e722e8dbffb6428a3.html</anchorfile>
+      <anchor>gada7d557a1eed825e722e8dbffb6428a3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_RANGE_ARG_2</name>
+      <anchorfile>group__try_ga27e5aa12fbc5377cd8b6a594a10a6551.html</anchorfile>
+      <anchor>ga27e5aa12fbc5377cd8b6a594a10a6551</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_RANGE_ARG_3</name>
+      <anchorfile>group__try_ga7bbbad92a527e317a4a71cac7873fea2.html</anchorfile>
+      <anchor>ga7bbbad92a527e317a4a71cac7873fea2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_RANGE_ARG_4</name>
+      <anchorfile>group__try_ga1c9b9bee0fa0dc79fb06b195707e86d5.html</anchorfile>
+      <anchor>ga1c9b9bee0fa0dc79fb06b195707e86d5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_THRD</name>
+      <anchorfile>group__try_ga5c3b270a467ab68c0f02dc906e52bad5.html</anchorfile>
+      <anchor>ga5c3b270a467ab68c0f02dc906e52bad5</anchor>
+      <arglist>(F,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_THROW_CALL_VOIDP</name>
       <anchorfile>group__try_ga2b4f4d9ebfb520a30e4af6fc047e7fe0.html</anchorfile>
       <anchor>ga2b4f4d9ebfb520a30e4af6fc047e7fe0</anchor>
@@ -6216,9 +7429,9 @@
     <member kind="function">
       <type>void</type>
       <name>p99_jmp_report</name>
-      <anchorfile>p99__try_8h_afbda9bdd17127980dd4b63bead5a2dc1.html</anchorfile>
-      <anchor>afbda9bdd17127980dd4b63bead5a2dc1</anchor>
-      <arglist>(errno_t)</arglist>
+      <anchorfile>p99__try_8h_a3c5ac8e5e1c2665696e602224e5c7bdf.html</anchorfile>
+      <anchor>a3c5ac8e5e1c2665696e602224e5c7bdf</anchor>
+      <arglist>(errno_t p00_cond)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -6401,6 +7614,13 @@
       <name>P99_EXT_INTEGER_TYPES</name>
       <anchorfile>group__types_gaf3dd5595a335d028c75125d2e74d6ad9.html</anchorfile>
       <anchor>gaf3dd5595a335d028c75125d2e74d6ad9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_EXT_REAL_TYPES</name>
+      <anchorfile>group__types_gacdc1cfd75627f29c24aec44f123f4bd7.html</anchorfile>
+      <anchor>gacdc1cfd75627f29c24aec44f123f4bd7</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -11924,6 +13144,830 @@
     </member>
   </compound>
   <compound kind="group">
+    <name>library_wrappers</name>
+    <title>Wrappers for C library functions</title>
+    <filename>group__library__wrappers.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>aligned_alloc_throw</name>
+      <anchorfile>group__library__wrappers_ga90353150e2de4e1f7eb94a6764e1546d.html</anchorfile>
+      <anchor>ga90353150e2de4e1f7eb94a6764e1546d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>at_quick_exit_throw</name>
+      <anchorfile>group__library__wrappers_gab064f28a18dba04ddb54536dabcccf01.html</anchorfile>
+      <anchor>gab064f28a18dba04ddb54536dabcccf01</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>atexit_throw</name>
+      <anchorfile>group__library__wrappers_gaaa7e34e5d5ce64467ae5cac97ac4133e.html</anchorfile>
+      <anchor>gaaa7e34e5d5ce64467ae5cac97ac4133e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>btowc_throw</name>
+      <anchorfile>group__library__wrappers_gada671ef8278b407da33b68ccb0822e27.html</anchorfile>
+      <anchor>gada671ef8278b407da33b68ccb0822e27</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>calloc_throw</name>
+      <anchorfile>group__library__wrappers_ga90c4fde110cad8c46edf7204feb4c633.html</anchorfile>
+      <anchor>ga90c4fde110cad8c46edf7204feb4c633</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>cnd_broadcast_throw</name>
+      <anchorfile>group__library__wrappers_ga6d0377489edca1e9e7b1de81fa6226a5.html</anchorfile>
+      <anchor>ga6d0377489edca1e9e7b1de81fa6226a5</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>cnd_init_throw</name>
+      <anchorfile>group__library__wrappers_ga283dcc21eec7b900d6e1d15f8aff678d.html</anchorfile>
+      <anchor>ga283dcc21eec7b900d6e1d15f8aff678d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>cnd_signal_throw</name>
+      <anchorfile>group__library__wrappers_ga4a69f6a44175eae104bd671aa75b5d6c.html</anchorfile>
+      <anchor>ga4a69f6a44175eae104bd671aa75b5d6c</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>cnd_timedwait_throw</name>
+      <anchorfile>group__library__wrappers_gacf6039166b97e02ce2e3d96fc2161c6f.html</anchorfile>
+      <anchor>gacf6039166b97e02ce2e3d96fc2161c6f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>cnd_wait_throw</name>
+      <anchorfile>group__library__wrappers_ga667c1c4aadbaf75e2118745101136fbc.html</anchorfile>
+      <anchor>ga667c1c4aadbaf75e2118745101136fbc</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fclose_throw</name>
+      <anchorfile>group__library__wrappers_gac32b997e1ff6c6a87dc2063149e269ff.html</anchorfile>
+      <anchor>gac32b997e1ff6c6a87dc2063149e269ff</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>feclearexcept_throw</name>
+      <anchorfile>group__library__wrappers_gad4b28c6535a7359f94b76654e141ad8a.html</anchorfile>
+      <anchor>gad4b28c6535a7359f94b76654e141ad8a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fegetenv_throw</name>
+      <anchorfile>group__library__wrappers_gaa10067ef3bf2cb152415189a5909183f.html</anchorfile>
+      <anchor>gaa10067ef3bf2cb152415189a5909183f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fegetexceptflag_throw</name>
+      <anchorfile>group__library__wrappers_gaa900a4836baf1bc0699302e4a9918b5a.html</anchorfile>
+      <anchor>gaa900a4836baf1bc0699302e4a9918b5a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fegetround_throw</name>
+      <anchorfile>group__library__wrappers_gaa0f54bfe22efe411042351bdb91fefba.html</anchorfile>
+      <anchor>gaa0f54bfe22efe411042351bdb91fefba</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>feholdexcept_throw</name>
+      <anchorfile>group__library__wrappers_gab022ee2141ef53e62017fd08faa08a5b.html</anchorfile>
+      <anchor>gab022ee2141ef53e62017fd08faa08a5b</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>feraiseexcept_throw</name>
+      <anchorfile>group__library__wrappers_gaf10f33c23826c3d24790ded1e856ad0d.html</anchorfile>
+      <anchor>gaf10f33c23826c3d24790ded1e856ad0d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fesetenv_throw</name>
+      <anchorfile>group__library__wrappers_gaf895ab47f2b50a28e7baf93d0d27be32.html</anchorfile>
+      <anchor>gaf895ab47f2b50a28e7baf93d0d27be32</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fesetexceptflag_throw</name>
+      <anchorfile>group__library__wrappers_gae05434c5fb4746295315a1fc75298e17.html</anchorfile>
+      <anchor>gae05434c5fb4746295315a1fc75298e17</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fesetround_throw</name>
+      <anchorfile>group__library__wrappers_ga89c6c0a2af9cb2f2a1c23aff109a2c41.html</anchorfile>
+      <anchor>ga89c6c0a2af9cb2f2a1c23aff109a2c41</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fetestexcept_throw</name>
+      <anchorfile>group__library__wrappers_gadae9e4bc694186c953022ce65ca26673.html</anchorfile>
+      <anchor>gadae9e4bc694186c953022ce65ca26673</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>feupdateenv_throw</name>
+      <anchorfile>group__library__wrappers_ga7fb2488a867aaee06ec32caa22992216.html</anchorfile>
+      <anchor>ga7fb2488a867aaee06ec32caa22992216</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fflush_throw</name>
+      <anchorfile>group__library__wrappers_gae4016ab7ec70d57bd0476b2ce27fa755.html</anchorfile>
+      <anchor>gae4016ab7ec70d57bd0476b2ce27fa755</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fgetc_throw</name>
+      <anchorfile>group__library__wrappers_gad97e3422fcdcb368764a1ee603d6e26e.html</anchorfile>
+      <anchor>gad97e3422fcdcb368764a1ee603d6e26e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fgetpos_throw</name>
+      <anchorfile>group__library__wrappers_gae5926add8965b7a876ec8ed111fcc827.html</anchorfile>
+      <anchor>gae5926add8965b7a876ec8ed111fcc827</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fgets_throw</name>
+      <anchorfile>group__library__wrappers_gaa0677ea19fb0258be466789a992e361a.html</anchorfile>
+      <anchor>gaa0677ea19fb0258be466789a992e361a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fgetwc_throw</name>
+      <anchorfile>group__library__wrappers_gaee517ddcbeb2ca05c7156f5d8896c051.html</anchorfile>
+      <anchor>gaee517ddcbeb2ca05c7156f5d8896c051</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fgetws_throw</name>
+      <anchorfile>group__library__wrappers_ga684526c0a0f25682d72b8fece5137acc.html</anchorfile>
+      <anchor>ga684526c0a0f25682d72b8fece5137acc</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fopen_throw</name>
+      <anchorfile>group__library__wrappers_ga9c490cd9468bcb78c2f7ea4b033a6f79.html</anchorfile>
+      <anchor>ga9c490cd9468bcb78c2f7ea4b033a6f79</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fprintf_throw</name>
+      <anchorfile>group__library__wrappers_gaffe5b3596cfe67c2b28f1556677109d4.html</anchorfile>
+      <anchor>gaffe5b3596cfe67c2b28f1556677109d4</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fputc_throw</name>
+      <anchorfile>group__library__wrappers_gafd67937ef1520b88e4df1060d728f121.html</anchorfile>
+      <anchor>gafd67937ef1520b88e4df1060d728f121</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fputs_throw</name>
+      <anchorfile>group__library__wrappers_ga167430a72d97aeeb7770de97aacae4f8.html</anchorfile>
+      <anchor>ga167430a72d97aeeb7770de97aacae4f8</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fputwc_throw</name>
+      <anchorfile>group__library__wrappers_ga150ce7b01068be11307c4a3f75b0bc5f.html</anchorfile>
+      <anchor>ga150ce7b01068be11307c4a3f75b0bc5f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fputws_throw</name>
+      <anchorfile>group__library__wrappers_gad89bd2d3e8daf10ac6dd52f8277e4089.html</anchorfile>
+      <anchor>gad89bd2d3e8daf10ac6dd52f8277e4089</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>freopen_throw</name>
+      <anchorfile>group__library__wrappers_gadb2e8e11ae98da488275012e2133f5f6.html</anchorfile>
+      <anchor>gadb2e8e11ae98da488275012e2133f5f6</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fscanf_throw</name>
+      <anchorfile>group__library__wrappers_gace73d9f50ce0ca918906e038be5822f9.html</anchorfile>
+      <anchor>gace73d9f50ce0ca918906e038be5822f9</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fseek_throw</name>
+      <anchorfile>group__library__wrappers_ga377fa8687fa8fea034ab50c27dc11c47.html</anchorfile>
+      <anchor>ga377fa8687fa8fea034ab50c27dc11c47</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fsetpos_throw</name>
+      <anchorfile>group__library__wrappers_ga6c6f427a6ebfe78512e5db0b222a3fba.html</anchorfile>
+      <anchor>ga6c6f427a6ebfe78512e5db0b222a3fba</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ftell_throw</name>
+      <anchorfile>group__library__wrappers_ga6d0580b46465b0bc8f6ed4f27bf86808.html</anchorfile>
+      <anchor>ga6d0580b46465b0bc8f6ed4f27bf86808</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fwprintf_throw</name>
+      <anchorfile>group__library__wrappers_gabfc86e797606280de7d2af4b2edc1ea1.html</anchorfile>
+      <anchor>gabfc86e797606280de7d2af4b2edc1ea1</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fwscanf_throw</name>
+      <anchorfile>group__library__wrappers_ga278226d9622693215e8c696245b5a5c0.html</anchorfile>
+      <anchor>ga278226d9622693215e8c696245b5a5c0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>getc_throw</name>
+      <anchorfile>group__library__wrappers_gaadf6fdbcf4ab84416bb72f98c62e7e83.html</anchorfile>
+      <anchor>gaadf6fdbcf4ab84416bb72f98c62e7e83</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>getchar_throw</name>
+      <anchorfile>group__library__wrappers_ga9a02a9add367b76118f9c38503d67d9f.html</anchorfile>
+      <anchor>ga9a02a9add367b76118f9c38503d67d9f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>getenv_throw</name>
+      <anchorfile>group__library__wrappers_ga036bc154638075965c5c1c956d611492.html</anchorfile>
+      <anchor>ga036bc154638075965c5c1c956d611492</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>getwc_throw</name>
+      <anchorfile>group__library__wrappers_gaea6aac5abd3e2ed1b4b96ec12a99092e.html</anchorfile>
+      <anchor>gaea6aac5abd3e2ed1b4b96ec12a99092e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>getwchar_throw</name>
+      <anchorfile>group__library__wrappers_ga16a2b348ef4eef06c7ad337baa398b92.html</anchorfile>
+      <anchor>ga16a2b348ef4eef06c7ad337baa398b92</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>malloc_throw</name>
+      <anchorfile>group__library__wrappers_gaf8a9500032f42256f573cf3be5b5cbe9.html</anchorfile>
+      <anchor>gaf8a9500032f42256f573cf3be5b5cbe9</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>mblen_throw</name>
+      <anchorfile>group__library__wrappers_gaec44ddfa07325f5e22f4fc5164531e52.html</anchorfile>
+      <anchor>gaec44ddfa07325f5e22f4fc5164531e52</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>mbtowc_throw</name>
+      <anchorfile>group__library__wrappers_gae33e417637ddf54520bc366f8d6be769.html</anchorfile>
+      <anchor>gae33e417637ddf54520bc366f8d6be769</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>mtx_init_throw</name>
+      <anchorfile>group__library__wrappers_ga1fd6446e8a4c0d55c656321b9eef5504.html</anchorfile>
+      <anchor>ga1fd6446e8a4c0d55c656321b9eef5504</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>mtx_lock_throw</name>
+      <anchorfile>group__library__wrappers_gaf2a66eedf236e45e53a9a0b331865ed0.html</anchorfile>
+      <anchor>gaf2a66eedf236e45e53a9a0b331865ed0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>mtx_timedlock_throw</name>
+      <anchorfile>group__library__wrappers_ga1a69f2f8ef2cf66c113fcb9e9b4dfe0a.html</anchorfile>
+      <anchor>ga1a69f2f8ef2cf66c113fcb9e9b4dfe0a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>mtx_unlock_throw</name>
+      <anchorfile>group__library__wrappers_ga330a0d094e3bf250baa2915e91da9f89.html</anchorfile>
+      <anchor>ga330a0d094e3bf250baa2915e91da9f89</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>printf_throw</name>
+      <anchorfile>group__library__wrappers_ga523d0f74c46eec59ceacbc081f826aa0.html</anchorfile>
+      <anchor>ga523d0f74c46eec59ceacbc081f826aa0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>putc_throw</name>
+      <anchorfile>group__library__wrappers_gafa46d0d6eb7d7b5cfcb6d043fc58de92.html</anchorfile>
+      <anchor>gafa46d0d6eb7d7b5cfcb6d043fc58de92</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>putchar_throw</name>
+      <anchorfile>group__library__wrappers_ga74bcbfa1ead14a3cc673085f68d2fb94.html</anchorfile>
+      <anchor>ga74bcbfa1ead14a3cc673085f68d2fb94</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>puts_throw</name>
+      <anchorfile>group__library__wrappers_ga42dbff7ef1c4db198fe797acb786e2e7.html</anchorfile>
+      <anchor>ga42dbff7ef1c4db198fe797acb786e2e7</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>putwc_throw</name>
+      <anchorfile>group__library__wrappers_gafef5767c49dba0eecccbba3754b08141.html</anchorfile>
+      <anchor>gafef5767c49dba0eecccbba3754b08141</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>putwchar_throw</name>
+      <anchorfile>group__library__wrappers_ga9b31db13d26be8bb77e01c70a4ae0e40.html</anchorfile>
+      <anchor>ga9b31db13d26be8bb77e01c70a4ae0e40</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>raise_throw</name>
+      <anchorfile>group__library__wrappers_ga2def2645865f366dbc55e134faa541f4.html</anchorfile>
+      <anchor>ga2def2645865f366dbc55e134faa541f4</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>realloc_throw</name>
+      <anchorfile>group__library__wrappers_ga0ca15fb66f776baf9f33c2c752406ff4.html</anchorfile>
+      <anchor>ga0ca15fb66f776baf9f33c2c752406ff4</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>remove_throw</name>
+      <anchorfile>group__library__wrappers_gab564ca50245d15f1772752fcc1e8e225.html</anchorfile>
+      <anchor>gab564ca50245d15f1772752fcc1e8e225</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>rename_throw</name>
+      <anchorfile>group__library__wrappers_ga82b9106d4e5dd3dd71b525f77c19f206.html</anchorfile>
+      <anchor>ga82b9106d4e5dd3dd71b525f77c19f206</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>scanf_throw</name>
+      <anchorfile>group__library__wrappers_ga6481045ca60b657ebd3f77df4bec486a.html</anchorfile>
+      <anchor>ga6481045ca60b657ebd3f77df4bec486a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>setvbuf_throw</name>
+      <anchorfile>group__library__wrappers_ga9df0883f176ee8d2276c9b45f740ddf3.html</anchorfile>
+      <anchor>ga9df0883f176ee8d2276c9b45f740ddf3</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>snprintf_throw</name>
+      <anchorfile>group__library__wrappers_gabfcf71908cddb9833385a16fb1ab1bc5.html</anchorfile>
+      <anchor>gabfcf71908cddb9833385a16fb1ab1bc5</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>sprintf_throw</name>
+      <anchorfile>group__library__wrappers_gac7d5d14c8568e779754ae3885c70dfa6.html</anchorfile>
+      <anchor>gac7d5d14c8568e779754ae3885c70dfa6</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>sscanf_throw</name>
+      <anchorfile>group__library__wrappers_ga129fe20851f7e3b6d4424f1689272044.html</anchorfile>
+      <anchor>ga129fe20851f7e3b6d4424f1689272044</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtod_throw</name>
+      <anchorfile>group__library__wrappers_gab263ed08bd040d51dfbceebcc6cb2504.html</anchorfile>
+      <anchor>gab263ed08bd040d51dfbceebcc6cb2504</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtof_throw</name>
+      <anchorfile>group__library__wrappers_gaf534f64511bf4876f747b9992a3f3017.html</anchorfile>
+      <anchor>gaf534f64511bf4876f747b9992a3f3017</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtoimax_throw</name>
+      <anchorfile>group__library__wrappers_gad31873897cbe337890d41ddee6b8fedc.html</anchorfile>
+      <anchor>gad31873897cbe337890d41ddee6b8fedc</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtol_throw</name>
+      <anchorfile>group__library__wrappers_gae419ce14c198fc9c8a99c9e942533701.html</anchorfile>
+      <anchor>gae419ce14c198fc9c8a99c9e942533701</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtold_throw</name>
+      <anchorfile>group__library__wrappers_ga6987e5b97cdc210e312e2f36bf653f81.html</anchorfile>
+      <anchor>ga6987e5b97cdc210e312e2f36bf653f81</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtoll_throw</name>
+      <anchorfile>group__library__wrappers_gab613f0661941aac638d50373d30e2f26.html</anchorfile>
+      <anchor>gab613f0661941aac638d50373d30e2f26</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtoul_throw</name>
+      <anchorfile>group__library__wrappers_ga1bcf6979a88e95bfd0071a415d497591.html</anchorfile>
+      <anchor>ga1bcf6979a88e95bfd0071a415d497591</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtoull_throw</name>
+      <anchorfile>group__library__wrappers_ga5c1529010f46a10bc171b2369a56f8d9.html</anchorfile>
+      <anchor>ga5c1529010f46a10bc171b2369a56f8d9</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtoumax_throw</name>
+      <anchorfile>group__library__wrappers_gab3a939e298b7e84343378d9a6fe3354f.html</anchorfile>
+      <anchor>gab3a939e298b7e84343378d9a6fe3354f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>swprintf_throw</name>
+      <anchorfile>group__library__wrappers_ga9290c51f8c2fc185f2d35b41da57b1eb.html</anchorfile>
+      <anchor>ga9290c51f8c2fc185f2d35b41da57b1eb</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>swscanf_throw</name>
+      <anchorfile>group__library__wrappers_ga7330ff72eaf04963730d14f6f29964c3.html</anchorfile>
+      <anchor>ga7330ff72eaf04963730d14f6f29964c3</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>system_throw</name>
+      <anchorfile>group__library__wrappers_ga3b6284c1491b025f725494c59c230b21.html</anchorfile>
+      <anchor>ga3b6284c1491b025f725494c59c230b21</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>thrd_create_throw</name>
+      <anchorfile>group__library__wrappers_gabc8553a532a5bc1dca676177cb6f6832.html</anchorfile>
+      <anchor>gabc8553a532a5bc1dca676177cb6f6832</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>thrd_detach_throw</name>
+      <anchorfile>group__library__wrappers_ga9bbe2f687e383cb0ca067c8b64d40cbb.html</anchorfile>
+      <anchor>ga9bbe2f687e383cb0ca067c8b64d40cbb</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>thrd_equal_throw</name>
+      <anchorfile>group__library__wrappers_ga2b89fdcb433ef28dbbcbdda3edc92a8d.html</anchorfile>
+      <anchor>ga2b89fdcb433ef28dbbcbdda3edc92a8d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>thrd_join_throw</name>
+      <anchorfile>group__library__wrappers_ga5d8afb6d0c26daa914a78f953759c479.html</anchorfile>
+      <anchor>ga5d8afb6d0c26daa914a78f953759c479</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>thrd_sleep_throw</name>
+      <anchorfile>group__library__wrappers_gaeb57973803b3845c253676b75bfa4d12.html</anchorfile>
+      <anchor>gaeb57973803b3845c253676b75bfa4d12</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tmpfile_throw</name>
+      <anchorfile>group__library__wrappers_ga501bbbe7bc5c685e360cc2cdc5dc1ba1.html</anchorfile>
+      <anchor>ga501bbbe7bc5c685e360cc2cdc5dc1ba1</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tmpnam_throw</name>
+      <anchorfile>group__library__wrappers_gaa5e38546055d1268896a47a17da021f3.html</anchorfile>
+      <anchor>gaa5e38546055d1268896a47a17da021f3</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tss_create_throw</name>
+      <anchorfile>group__library__wrappers_ga287c5fcde42081fb6c8d7f5787772c90.html</anchorfile>
+      <anchor>ga287c5fcde42081fb6c8d7f5787772c90</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tss_set_throw</name>
+      <anchorfile>group__library__wrappers_gaf605b30ea2398768fe198648354171d4.html</anchorfile>
+      <anchor>gaf605b30ea2398768fe198648354171d4</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ungetc_throw</name>
+      <anchorfile>group__library__wrappers_ga50fa6080c576ce9957f81914e896698e.html</anchorfile>
+      <anchor>ga50fa6080c576ce9957f81914e896698e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ungetwc_throw</name>
+      <anchorfile>group__library__wrappers_gad26cde8286c2632ea574796125d134a5.html</anchorfile>
+      <anchor>gad26cde8286c2632ea574796125d134a5</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vfprintf_throw</name>
+      <anchorfile>group__library__wrappers_ga836da205d5caf7479a8d3d75e4bc61c9.html</anchorfile>
+      <anchor>ga836da205d5caf7479a8d3d75e4bc61c9</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vfscanf_throw</name>
+      <anchorfile>group__library__wrappers_ga53dddb46396340b58d3a1d532881c34c.html</anchorfile>
+      <anchor>ga53dddb46396340b58d3a1d532881c34c</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vfwprintf_throw</name>
+      <anchorfile>group__library__wrappers_gac418e0c29763648a245ec3ecc875c5f7.html</anchorfile>
+      <anchor>gac418e0c29763648a245ec3ecc875c5f7</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vfwscanf_throw</name>
+      <anchorfile>group__library__wrappers_gac71f9a48f93d6794ab93a8a842787ad0.html</anchorfile>
+      <anchor>gac71f9a48f93d6794ab93a8a842787ad0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vprintf_throw</name>
+      <anchorfile>group__library__wrappers_gad0973c292f0bb39bbdec89747ff8ccf0.html</anchorfile>
+      <anchor>gad0973c292f0bb39bbdec89747ff8ccf0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vscanf_throw</name>
+      <anchorfile>group__library__wrappers_ga0ca9dd3284f381cbdd270a4a4c6e4826.html</anchorfile>
+      <anchor>ga0ca9dd3284f381cbdd270a4a4c6e4826</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vsnprintf_throw</name>
+      <anchorfile>group__library__wrappers_ga567503fa5c22dc17163c2826645e05f0.html</anchorfile>
+      <anchor>ga567503fa5c22dc17163c2826645e05f0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vsprintf_throw</name>
+      <anchorfile>group__library__wrappers_ga76ddefb9635f9f243401f6dee682ca8a.html</anchorfile>
+      <anchor>ga76ddefb9635f9f243401f6dee682ca8a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vsscanf_throw</name>
+      <anchorfile>group__library__wrappers_ga430024149557789efffae7e626d16c59.html</anchorfile>
+      <anchor>ga430024149557789efffae7e626d16c59</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vswprintf_throw</name>
+      <anchorfile>group__library__wrappers_ga4891f24b1735b6fa5f8d149052cb6b8d.html</anchorfile>
+      <anchor>ga4891f24b1735b6fa5f8d149052cb6b8d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vswscanf_throw</name>
+      <anchorfile>group__library__wrappers_gaf1aea78b5c3bc13819e6ee1e917a40d6.html</anchorfile>
+      <anchor>gaf1aea78b5c3bc13819e6ee1e917a40d6</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vwprintf_throw</name>
+      <anchorfile>group__library__wrappers_gae2256c49933960eb82f075296c378bb7.html</anchorfile>
+      <anchor>gae2256c49933960eb82f075296c378bb7</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>vwscanf_throw</name>
+      <anchorfile>group__library__wrappers_gac38e97cb010c935ae6ccc07c3ed193fb.html</anchorfile>
+      <anchor>gac38e97cb010c935ae6ccc07c3ed193fb</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstod_throw</name>
+      <anchorfile>group__library__wrappers_gaf85543af2b7e079d87a8fcab91855662.html</anchorfile>
+      <anchor>gaf85543af2b7e079d87a8fcab91855662</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstof_throw</name>
+      <anchorfile>group__library__wrappers_gadc71d25d208d656f3988087204b3ce8b.html</anchorfile>
+      <anchor>gadc71d25d208d656f3988087204b3ce8b</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstoimax_throw</name>
+      <anchorfile>group__library__wrappers_ga7a3004a76ebcf0ee0c5aab84af979685.html</anchorfile>
+      <anchor>ga7a3004a76ebcf0ee0c5aab84af979685</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstok_throw</name>
+      <anchorfile>group__library__wrappers_gacdcdae458eb5ad5ed2bdf30c65a76e18.html</anchorfile>
+      <anchor>gacdcdae458eb5ad5ed2bdf30c65a76e18</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstol_throw</name>
+      <anchorfile>group__library__wrappers_ga94af0747c3d5136f4719da13ab3234c5.html</anchorfile>
+      <anchor>ga94af0747c3d5136f4719da13ab3234c5</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstold_throw</name>
+      <anchorfile>group__library__wrappers_ga34a082a2409910760a2fb5590f38775f.html</anchorfile>
+      <anchor>ga34a082a2409910760a2fb5590f38775f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstoll_throw</name>
+      <anchorfile>group__library__wrappers_gad04a6babf733845c3278886a83b37fc1.html</anchorfile>
+      <anchor>gad04a6babf733845c3278886a83b37fc1</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstoul_throw</name>
+      <anchorfile>group__library__wrappers_gad70714145df709e69259d57fe76581a3.html</anchorfile>
+      <anchor>gad70714145df709e69259d57fe76581a3</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstoull_throw</name>
+      <anchorfile>group__library__wrappers_ga04cfbeeadb1e7af44ffd6fa2376dccd8.html</anchorfile>
+      <anchor>ga04cfbeeadb1e7af44ffd6fa2376dccd8</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wcstoumax_throw</name>
+      <anchorfile>group__library__wrappers_gaa44c6e3edb8990603f5211ebe3ba8b27.html</anchorfile>
+      <anchor>gaa44c6e3edb8990603f5211ebe3ba8b27</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wctomb_throw</name>
+      <anchorfile>group__library__wrappers_ga2f6a9d9223f819d4ab11ff587d91f612.html</anchorfile>
+      <anchor>ga2f6a9d9223f819d4ab11ff587d91f612</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wprintf_throw</name>
+      <anchorfile>group__library__wrappers_ga4d02d700abee9914977a22cca5e4d1e7.html</anchorfile>
+      <anchor>ga4d02d700abee9914977a22cca5e4d1e7</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>wscanf_throw</name>
+      <anchorfile>group__library__wrappers_gadc47a0d10ce715c07533dece1363c943.html</anchorfile>
+      <anchor>gadc47a0d10ce715c07533dece1363c943</anchor>
+      <arglist>(...)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
     <name>classification</name>
     <title>Classification</title>
     <filename>group__classification.html</filename>
@@ -12400,6 +14444,13 @@
       <name>P99_EXT_INTEGER_TYPES</name>
       <anchorfile>group__types_gaf3dd5595a335d028c75125d2e74d6ad9.html</anchorfile>
       <anchor>gaf3dd5595a335d028c75125d2e74d6ad9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_EXT_REAL_TYPES</name>
+      <anchorfile>group__types_gacdc1cfd75627f29c24aec44f123f4bd7.html</anchorfile>
+      <anchor>gacdc1cfd75627f29c24aec44f123f4bd7</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -13053,6 +15104,13 @@
     <filename>group__VLA.html</filename>
     <member kind="define">
       <type>#define</type>
+      <name>P99_AALLOC</name>
+      <anchorfile>group__VLA_gaa5bb6c72ca4678e47cf8b9f89a4529f9.html</anchorfile>
+      <anchor>gaa5bb6c72ca4678e47cf8b9f89a4529f9</anchor>
+      <arglist>(T, VB, N)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_AARG</name>
       <anchorfile>group__VLA_gad39db1984f1f396b1fb980b55dbe4a88.html</anchorfile>
       <anchor>gad39db1984f1f396b1fb980b55dbe4a88</anchor>
@@ -13081,6 +15139,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_ANAME</name>
+      <anchorfile>group__VLA_gaffba75783d0d22abecae4fb7d19e8006.html</anchorfile>
+      <anchor>gaffba75783d0d22abecae4fb7d19e8006</anchor>
+      <arglist>(NAME, DIM, VAR)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_AREF</name>
       <anchorfile>group__VLA_gaf7d8afa64602113cfb4e99e93188f291.html</anchorfile>
       <anchor>gaf7d8afa64602113cfb4e99e93188f291</anchor>
@@ -13099,6 +15164,13 @@
       <anchorfile>group__VLA_gae86010cd3e4dfe56a5e579759f01ecbc.html</anchorfile>
       <anchor>gae86010cd3e4dfe56a5e579759f01ecbc</anchor>
       <arglist>(ARR,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_ATYPE</name>
+      <anchorfile>group__VLA_ga01e42cadeabd08ae1a3c4ed87a22d71f.html</anchorfile>
+      <anchor>ga01e42cadeabd08ae1a3c4ed87a22d71f</anchor>
+      <arglist>(T, A, B, N)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -13705,6 +15777,48 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_THROW_CALL_RANGE_ARG_0</name>
+      <anchorfile>group__try_ga3094ce97410e27ab0580280412c743d7.html</anchorfile>
+      <anchor>ga3094ce97410e27ab0580280412c743d7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_RANGE_ARG_1</name>
+      <anchorfile>group__try_gada7d557a1eed825e722e8dbffb6428a3.html</anchorfile>
+      <anchor>gada7d557a1eed825e722e8dbffb6428a3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_RANGE_ARG_2</name>
+      <anchorfile>group__try_ga27e5aa12fbc5377cd8b6a594a10a6551.html</anchorfile>
+      <anchor>ga27e5aa12fbc5377cd8b6a594a10a6551</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_RANGE_ARG_3</name>
+      <anchorfile>group__try_ga7bbbad92a527e317a4a71cac7873fea2.html</anchorfile>
+      <anchor>ga7bbbad92a527e317a4a71cac7873fea2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_RANGE_ARG_4</name>
+      <anchorfile>group__try_ga1c9b9bee0fa0dc79fb06b195707e86d5.html</anchorfile>
+      <anchor>ga1c9b9bee0fa0dc79fb06b195707e86d5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_THRD</name>
+      <anchorfile>group__try_ga5c3b270a467ab68c0f02dc906e52bad5.html</anchorfile>
+      <anchor>ga5c3b270a467ab68c0f02dc906e52bad5</anchor>
+      <arglist>(F,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_THROW_CALL_VOIDP</name>
       <anchorfile>group__try_ga2b4f4d9ebfb520a30e4af6fc047e7fe0.html</anchorfile>
       <anchor>ga2b4f4d9ebfb520a30e4af6fc047e7fe0</anchor>
@@ -13911,6 +16025,13 @@
     <subgroup>flexible</subgroup>
     <member kind="define">
       <type>#define</type>
+      <name>P99_ALLOC</name>
+      <anchorfile>group__preprocessor__allocation_gadc87686dd0be0820fe983f3497823f00.html</anchorfile>
+      <anchor>gadc87686dd0be0820fe983f3497823f00</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_CALLOC</name>
       <anchorfile>group__preprocessor__allocation_ga4109a0b46ab2bf14d72ad4759d561e7d.html</anchorfile>
       <anchor>ga4109a0b46ab2bf14d72ad4759d561e7d</anchor>
@@ -13932,10 +16053,17 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_INITIALIZE</name>
+      <anchorfile>group__preprocessor__allocation_gac249931b98e5767b9149fc4921c7dea3.html</anchorfile>
+      <anchor>gac249931b98e5767b9149fc4921c7dea3</anchor>
+      <arglist>(X, L)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_MALLOC</name>
-      <anchorfile>group__preprocessor__allocation_gad294fe8eefb50e5700e7434e939eecb4.html</anchorfile>
-      <anchor>gad294fe8eefb50e5700e7434e939eecb4</anchor>
-      <arglist>(T)</arglist>
+      <anchorfile>group__preprocessor__allocation_ga60bf929698377be26ef0dd9d3a0597c2.html</anchorfile>
+      <anchor>ga60bf929698377be26ef0dd9d3a0597c2</anchor>
+      <arglist>(X)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -13984,6 +16112,20 @@
     <name>preprocessor_initialization</name>
     <title>Initialization facilities through the preprocessor</title>
     <filename>group__preprocessor__initialization.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_APLAIN</name>
+      <anchorfile>group__preprocessor__initialization_ga7e3ba686d2a8e0e2f417079e3f98458c.html</anchorfile>
+      <anchor>ga7e3ba686d2a8e0e2f417079e3f98458c</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_ASUB</name>
+      <anchorfile>group__preprocessor__initialization_ga330085947ecdf0c3c65ba899bc2ec234.html</anchorfile>
+      <anchor>ga330085947ecdf0c3c65ba899bc2ec234</anchor>
+      <arglist>(X, T, N, L)</arglist>
+    </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_MAC_ARGS</name>
@@ -18592,10 +20734,13 @@
     <file>p99_block.h</file>
     <file>p99_c99.h</file>
     <file>p99_c99_default.h</file>
+    <file>p99_c99_throw.h</file>
+    <file>p99_checkargs.h</file>
     <file>p99_choice.h</file>
     <file>p99_classification.h</file>
     <file>p99_clib.h</file>
     <file>p99_compiler.h</file>
+    <file>p99_constraint.h</file>
     <file>p99_defarg.h</file>
     <file>p99_double.h</file>
     <file>p99_enum.h</file>
