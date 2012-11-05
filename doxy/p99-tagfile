@@ -7198,6 +7198,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>TIME_UTC</name>
+      <anchorfile>group__threads_gaa43107f3cb85397223bf6d40be480480.html</anchorfile>
+      <anchor>gaa43107f3cb85397223bf6d40be480480</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>TSS_DTOR_ITERATIONS</name>
       <anchorfile>group__thread__macros_ga11de84b15b6b59861b4366a192aadd58.html</anchorfile>
       <anchor>ga11de84b15b6b59861b4366a192aadd58</anchor>
@@ -7307,6 +7314,13 @@
       <anchorfile>group__thread__types_gab39bb8d1addc1621c7e736268cb22840.html</anchorfile>
       <anchor>gab39bb8d1addc1621c7e736268cb22840</anchor>
       <arglist>(thrd_t *p00_id)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>timespec_get</name>
+      <anchorfile>group__threads_ga966344e01e999d250b1623f11426903b.html</anchorfile>
+      <anchor>ga966344e01e999d250b1623f11426903b</anchor>
+      <arglist>(struct timespec *p00_ts, int p00_base)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -15375,6 +15389,13 @@
       <anchor>ga6b827f6c9f23c963b218698c101e4eb7</anchor>
       <arglist>(NAME)</arglist>
     </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TIME_UTC</name>
+      <anchorfile>group__threads_gaa43107f3cb85397223bf6d40be480480.html</anchorfile>
+      <anchor>gaa43107f3cb85397223bf6d40be480480</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="typedef">
       <type>struct p99_tss</type>
       <name>p99_tss</name>
@@ -15549,6 +15570,13 @@
       <anchorfile>group__threads_gacbfb78346e6b76b23da1d2d8df03549a.html</anchorfile>
       <anchor>gacbfb78346e6b76b23da1d2d8df03549a</anchor>
       <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>timespec_get</name>
+      <anchorfile>group__threads_ga966344e01e999d250b1623f11426903b.html</anchorfile>
+      <anchor>ga966344e01e999d250b1623f11426903b</anchor>
+      <arglist>(struct timespec *p00_ts, int p00_base)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
