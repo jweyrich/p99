@@ -926,13 +926,11 @@ int p00_timespec_get(struct timespec *p00_ts, int p00_base) {
 }
 
 #ifndef TIME_UTC
-# if defined(CLOCK_REALTIME) || defined(DOXYGEN)
+
 enum {
   p00_time_base,
   p00_time_utc,
-# ifdef CLOCK_MONOTONIC
   p00_time_monotonic,
-# endif
 # ifdef CLOCK_PROCESS_CPUTIME_ID
   p00_time_process_cputime_id,
 # endif
@@ -944,11 +942,32 @@ enum {
 
 /**
  ** @brief expands to an integer constant greater than 0 that
- ** designates the UTC time base
+ ** designates the UTC time base since an implementation defined epoch
+ **
+ ** This is the only time base that is guaranteed to be available by C11.
+ **
+ ** @see TIME_MONOTONIC
  **/
 # define TIME_UTC p00_time_utc
-# ifdef CLOCK_MONOTONIC
+
+# if defined(CLOCK_REALTIME) || defined(P00_DOXYGEN)
+
+# if defined(CLOCK_MONOTONIC) || defined(P00_DOXYGEN)
+/**
+ ** @brief expands to an integer constant greater than 0 that
+ ** designates a real time clock who's base is usually the boot time
+ ** of the processor
+ **
+ ** If this is available, this denotes a clock that should be a bit
+ ** more efficient than ::TIME_UTC, since it usually doesn't have to
+ ** perform a call into the OS kernel but may query the processor
+ ** directly.
+ **
+ ** Use this if available and if you are only interested in times
+ ** relative to your program execution, e.g for benchmarks.
+ **/
 #  define TIME_MONOTONIC p00_time_monotonic
+
 # endif
 # ifdef CLOCK_PROCESS_CPUTIME_ID
 #  define TIME_PROCESS_CPUTIME_ID p00_time_process_cputime_id
@@ -1002,6 +1021,9 @@ int timespec_get(struct timespec *p00_ts, int p00_base) {
 
 # elif defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__)
 # include <mach/mach_time.h>
+
+# define TIME_MONOTONIC p00_time_monotonic
+
 P99_WEAK(p00_timebase)
 double p00_timebase;
 
@@ -1016,10 +1038,12 @@ uint64_t p00_timeonce = ONCE_FLAG_INIT;
 
 P99_WEAK(p00_timeonce_init)
 void p00_timeonce_init(void) {
+  /* Calibrate the monotonic time */
   mach_timebase_info_data_t p00_tb = P99_INIT;
   mach_timebase_info(&p00_tb);
   p00_timebase = p00_tb.numer;
   p00_timebase /= p00_tb.denom;
+  /* Compute the offset of the monotonic time compared to UTC */
   /* Nanosec since system start, or something similar. */
   uint64_t p00_nsec = mach_absolute_time() * p00_timebase;
   p00_timespec_get(&p00_timeoff, TIME_UTC);
@@ -1035,11 +1059,15 @@ int timespec_get(struct timespec *p00_ts, int p00_base) {
   call_once(&p00_timeonce, p00_timeonce_init);
   uint64_t p00_nsec = mach_absolute_time() * p00_timebase;
   register uint64_t const p00_giga = UINT64_C(1000000000);
-  p00_ts->tv_sec = p00_timeoff->tv_sec + (p00_nsec / p00_giga);
-  p00_ts->tv_nsec = p00_timeoff->tv_nsec + (p00_nsec % p00_giga);
-  while (p00_ts->tv_nsec >= p00_giga) {
-    p00_ts->tv_nsec -= p00_giga;
-    ++p00_ts->tv_sec;
+  p00_ts->tv_sec = p00_nsec / p00_giga;
+  p00_ts->tv_nsec = p00_nsec % p00_giga;
+  if (p00_base != TIME_MONOTONIC) {
+    p00_ts->tv_sec += p00_timeoff->tv_sec;
+    p00_ts->tv_nsec += p00_timeoff->tv_nsec;
+    while (p00_ts->tv_nsec >= p00_giga) {
+      p00_ts->tv_nsec -= p00_giga;
+      ++p00_ts->tv_sec;
+    }
   }
   return p00_base;
 }
@@ -1048,11 +1076,6 @@ int timespec_get(struct timespec *p00_ts, int p00_base) {
 # #define timespec_get p00_timespec_get
 # endif
 #endif
-
-#ifndef TIME_UTC
-# define TIME_UTC INT_MAX
-#endif
-
 
 /**
  ** @}
