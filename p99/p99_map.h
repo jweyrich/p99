@@ -84,7 +84,7 @@ struct p00_strcat_state {
   char*restrict p00_pos;
 };
 
-#ifdef _GNU_SOURCE
+#if _XOPEN_SOURCE >= 700 || _POSIX_C_SOURCE >= 200809L
 p99_inline
 char *p00_stpcpy(char *restrict p00_des, const char *restrict p00_src) {
   return stpcpy(p00_des, p00_src);
