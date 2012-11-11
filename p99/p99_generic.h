@@ -14,8 +14,8 @@
 #ifndef     P99_GENERIC_H_
 # define    P99_GENERIC_H_
 
-#include "p99_typenames.h"
 #include "p99_for.h"
+#include "p99_typenames.h"
 
 /**
  ** @file

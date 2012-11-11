@@ -19,6 +19,7 @@
  ** @brief Declare types derived from the standard types.
  **/
 
+#include "p99_compiler.h"
 #include "p99_type.h"
 
 /** @addtogroup one_token One token type names
