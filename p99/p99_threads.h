@@ -1050,7 +1050,7 @@ P99_WEAK(p00_timeoff)
 struct timespec const*const p00_timeoff = &p00_timeoff_;
 
 P99_WEAK(p00_timeonce)
-uint64_t p00_timeonce = ONCE_FLAG_INIT;
+once_flag p00_timeonce = ONCE_FLAG_INIT;
 
 P99_WEAK(p00_timeonce_init)
 void p00_timeonce_init(void) {
@@ -1062,9 +1062,9 @@ void p00_timeonce_init(void) {
   /* Compute the offset of the monotonic time compared to UTC */
   /* Nanosec since system start, or something similar. */
   uint64_t p00_nsec = mach_absolute_time() * p00_timebase;
-  p00_timespec_get(&p00_timeoff, TIME_UTC);
+  p00_timespec_get(&p00_timeoff_, TIME_UTC);
   uint64_t const p00_giga = UINT64_C(1000000000);
-  uint64_t p00_epoc = p00_timeoff_.tv_sec * p00_giga + p00_timeoff_.tv_nsec;
+  uint64_t p00_epoch = p00_timeoff_.tv_sec * p00_giga + p00_timeoff_.tv_nsec;
   p00_epoch -= p00_nsec;
   p00_timeoff_.tv_sec = p00_epoch / p00_giga;
   p00_timeoff_.tv_nsec = p00_epoch % p00_giga;
