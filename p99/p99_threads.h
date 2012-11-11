@@ -347,7 +347,15 @@ thrd_t thrd_current(void) {
        .p00_foreign = p00_nb + 1,
     };
     P00_THRD_LOCAL = p00_loc;
-    if (p00_nb) fprintf(stderr, "foreign thread %lu is %zu\n", p00_loc->p00_id, p00_nb + 1);
+    if (p00_nb) {
+      union {
+        unsigned char raw[16];
+        pthread_t thrd;
+        unsigned long long ull;
+      } id = { .raw = { 0 } };
+      id.thrd = p00_loc->p00_id;
+      fprintf(stderr, "foreign thread %llu is %zu\n", id.ull, p00_nb + 1);
+    }
   }
   return (thrd_t)P99_ENC_INIT(p00_loc);
 }
