@@ -54,7 +54,7 @@
  **
  ** @see p99_once_flag
  **/
-#define P99_ONCE_FLAG_INIT P99_INIT
+#define P99_ONCE_FLAG_INIT { { 0 } }
 
 #ifndef PTHREAD_DESTRUCTOR_ITERATIONS
 # warning "definition of PTHREAD_DESTRUCTOR_ITERATIONS is missing"
