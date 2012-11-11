@@ -65,9 +65,16 @@ __builtin_choose_expr                                          \
    be defined and that bears a special attribute that inhibits this
    function to be called.  This function is then called through a
    sizeof expression for VLA with side effect, such that it only
-   triggers when that particular branch is taken. */
+   triggers when that particular branch is taken.
 
+   Unfortunately gcc had this attribute only from about version 4.3,
+   so for versions below that this only produces a link error, much
+   later.
+   */
+
+#if P99_GCC_VERSION >= 40300UL
 __attribute__((__error__("Invalid choice in type generic expression")))
+#endif
 extern size_t p00_invalid_type_in_generic(char const*);
 
 #define P00_INVALID_TYPE_IN_GENERIC(EXP, STR)                  \
