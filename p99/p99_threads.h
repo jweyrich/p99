@@ -609,6 +609,8 @@ int cnd_signal(cnd_t *p00_cond) {
   return pthread_cond_signal(&P99_ENCP(p00_cond)) ? thrd_error : thrd_success;
 }
 
+#if (POSIX_TIMEOUTS > 0) || !defined(POSIX_TIMEOUTS)
+
 /**
  ** @related cnd_t
  **
@@ -626,6 +628,8 @@ int cnd_timedwait(cnd_t *restrict p00_cond, mtx_t *restrict p00_mtx, const struc
   default:        return thrd_error;
   };
 }
+
+#endif
 
 /**
  ** @related cnd_t
@@ -690,6 +694,8 @@ int mtx_lock(mtx_t *p00_mtx) {
   return pthread_mutex_lock(&P99_ENCP(p00_mtx)) ? thrd_error : thrd_success;
 }
 
+#if (POSIX_TIMEOUTS > 0) || !defined(POSIX_TIMEOUTS)
+
 /**
  ** @related mtx_t
  **
@@ -707,6 +713,8 @@ int mtx_timedlock(mtx_t *restrict p00_mtx, const struct timespec *restrict p00_t
   default:        return thrd_error;
   };
 }
+
+#endif
 
 /**
  ** @related mtx_t
