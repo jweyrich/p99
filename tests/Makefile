@@ -41,7 +41,6 @@ c99-conformance-pcc-0.9.9.html			\
 c99-conformance-tcc-0.9.25.html
 
 INCL  	=		# List of *.h
-LIBDIR	:= $(join $(dir ${CURDIR}),lib)
 ################
 # Optional add #
 ################
@@ -49,7 +48,7 @@ OPT     += -O0
 IPATH   += -I../p99
 OBJOPT  += -Wall -Wstrict-prototypes ${OPT}
 EXEOPT  += ${OPT}
-LPATH   += -L. -Wl,-rpath,${LIBDIR} -L${LIBDIR}
+LPATH   += -L.
 COPY = "all rights reserved, "
 LICENSE = SHORTLICENCE-open.txt
 SCRIPTS = ../scripts
