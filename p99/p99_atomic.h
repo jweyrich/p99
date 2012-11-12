@@ -67,6 +67,8 @@
 # include "p99_atomic_arm.h"
 #elif defined(__x86_64__) || defined(__i386__)
 # include "p99_atomic_x86.h"
+#elif defined(__GNUC__)
+# include "p99_atomic_gcc.h"
 #else
 # warning "no support for atomic operations detected for this platform"
 # define P00_NO_ATOMICS
