@@ -17,6 +17,11 @@
 #ifndef _XOPEN_SOURCE
 # define _XOPEN_SOURCE 600
 #endif
+#ifdef __linux__
+# ifndef _GNU_SOURCE
+#  define _GNU_SOURCE 1       /* See feature_test_macros(7) */
+# endif
+#endif
 #include <unistd.h>
 #include <sys/time.h>
 #include <pthread.h>
