@@ -176,43 +176,6 @@ P00_FUTEX_INLINE(p99_futex_fetch_and_store) unsigned p99_futex_fetch_and_store(p
 #endif
 
 /**
- ** @brief wait until the futex @a p00_fut has value @a p00_expected and
- ** change it to @a p00_desired
- **
- ** After effecting the operation atomically, some waiters on this
- ** ::p99_futex will be woken up if the new value of the futex is in
- ** the range that is specified by the arguments @a p00_cstart and @a
- ** p00_clen. See ::P99_FUTEX_COMPARE_EXCHANGE for more details on the
- ** rules for the @a p00_wmin and @a p00_wmax counts.
- **
- ** As long as the futex has not the value @a p00_expected this will block
- ** the calling thread.
- **
- ** @remark Waiters that wait for a value in the @a p00_clen element
- ** range starting at @a p00_cstart will be woken up if the counter
- ** reaches that value with this operation.
- ** @remark @a p00_clen defaults to @c 1u
- ** @remark @a p00_wmin defaults to @c 0u
- ** @remark @a p00_wmax defaults to ::P99_FUTEX_MAX_WAITERS
- **
- ** @see P99_FUTEX_COMPARE_EXCHANGE for a macro with more flexibility
- ** concerning the expect value, the desired value or the p00_wmax
- ** conditions.
- **
- ** @related p99_futex
- **/
-P00_FUTEX_INLINE(p99_futex_compare_exchange) void p99_futex_compare_exchange(p99_futex volatile* p00_fut, unsigned p00_expected, unsigned p00_desired,
-                                        unsigned p00_cstart, unsigned p00_clen,
-                                        unsigned p00_wmin, unsigned p00_wmax);
-
-#ifndef DOXYGEN
-#define p99_futex_compare_exchange(...) P99_CALL_DEFARG(p99_futex_compare_exchange, 7, __VA_ARGS__)
-#define p99_futex_compare_exchange_defarg_4() 1u
-#define p99_futex_compare_exchange_defarg_5() 0u
-#define p99_futex_compare_exchange_defarg_6() P99_FUTEX_MAX_WAITERS
-#endif
-
-/**
  ** @brief Wake up threads that are waiting for a futex
  ** @related p99_futex
  **
@@ -435,22 +398,6 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
  **/
 #define P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX)
 #endif
-
-P00_FUTEX_INLINE(p99_futex_compare_exchange)
-void p99_futex_compare_exchange(p99_futex volatile* p00_fut,
-                                 unsigned p00_expected, unsigned p00_desired,
-                                 unsigned p00_cstart, unsigned p00_clen,
-                                 unsigned p00_wmin, unsigned p00_wmax) {
-  if (!P99_IN_RANGE(p00_desired, p00_cstart, p00_clen)) {
-    p00_wmin = 0;
-    p00_wmax = 0;
-  }
-  P99_FUTEX_COMPARE_EXCHANGE(p00_fut, x,
-                              (x == p00_expected),
-                              p00_desired,
-                              p00_wmin,
-                              p00_wmax);
-}
 
 /**
  ** @}
