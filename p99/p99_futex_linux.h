@@ -28,7 +28,7 @@
 
 
 #if (defined(__linux__) && !defined(NO_FUTEX)) || defined(DOXYGEN)
-#define HAVE_FUTEX 1
+#define P00_FUTEX_LINUX 1
 
 # include <linux/futex.h>
 # include <sys/syscall.h>

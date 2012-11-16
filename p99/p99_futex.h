@@ -37,9 +37,8 @@ typedef p99_futex_c11 p99_futex;
  ** @{
  **/
 
+#ifdef P00_DOXYGEN
 /**
- ** @typedef p99_futex
- **
  ** @brief A counter similar to a conditional variable that allows
  ** atomic increment and decrement and to wait for the atomic compare
  ** and exchange for a specific value.
@@ -69,7 +68,8 @@ typedef p99_futex_c11 p99_futex;
  ** @see P99_FUTEX_COMPARE_EXCHANGE for a generic tool to operate
  ** with ::p99_futex.
  **/
-
+struct p99_futex { };
+#endif
 
 
 

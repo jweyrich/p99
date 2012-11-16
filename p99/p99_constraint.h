@@ -16,6 +16,77 @@
 #include "p99_c99.h"
 #include "p99_errno.h"
 
+/**
+ ** @addtogroup C11_library
+ **
+ ** @{
+ **/
+
+/**
+ ** @brief calculates the length of the (untruncated) locale-specific
+ ** message string that the strerror_s function maps to errnum.
+ **/
+p99_inline size_t strerrorlen_s(errno_t p00_errnum);
+
+/**
+ ** @brief computes the length of the string pointed to by s.
+ **/
+p99_inline size_t strnlen_s(const char *p00_s, size_t p00_maxsize);
+
+
+/**
+ ** @brief maps the number in errnum to a locale-specific message
+ ** string.
+ **/
+p99_inline
+errno_t strerror_s(char *p00_s, rsize_t p00_maxsize, errno_t p00_errnum);
+
+P99_WEAK(exit_handler_s)
+void exit_handler_s(const char * restrict p00_msg,
+                    void * restrict p00_ptr,
+                    errno_t p00_err);
+
+/**
+ ** @brief A pointer to the ::ignore_handler_s function shall be a
+ ** suitable argument to the ::set_constraint_handler_s function.
+ **
+ ** The ::ignore_handler_s function simply returns to its caller.
+ **/
+P99_WEAK(ignore_handler_s)
+void ignore_handler_s(const char * restrict p00_msg,
+                      void * restrict p00_ptr,
+                      errno_t p00_err);
+
+/**
+ ** @brief A pointer to the ::abort_handler_s function shall be a
+ ** suitable argument to the ::set_constraint_handler_s function.
+ **
+ ** The ::abort_handler_s function writes a message on the standard
+ ** error stream in an implementation-defined format. The message
+ ** shall include the string pointed to by @a p00_msg.  The
+ ** ::abort_handler_s function then calls the @c abort function.
+ **
+ ** @return The ::abort_handler_s function does not return to its
+ ** caller.
+ **/
+P99_WEAK(abort_handler_s)
+void abort_handler_s(const char * restrict p00_msg,
+                     void * restrict p00_ptr,
+                     errno_t p00_err);
+
+
+typedef
+void (*constraint_handler_t)(const char * restrict p00_msg,
+                             void * restrict p00_ptr,
+                             errno_t p00_err);
+
+/**
+ ** @brief sets the runtime-constraint handler to be handler.
+ **/
+p99_inline
+constraint_handler_t set_constraint_handler_s(constraint_handler_t handler);
+
+
 P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_file);
 P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_context);
 P99_DECLARE_THREAD_LOCAL(char_cptr, p00_jmp_buf_info);
@@ -238,11 +309,6 @@ void p99_exit_handler(const char * restrict p00_msg,
 
 #if __STDC_WANT_LIB_EXT1__
 
-typedef
-void (*constraint_handler_t)(const char * restrict p00_msg,
-                             void * restrict p00_ptr,
-                             errno_t p00_err);
-
 P99_DECLARE_ATOMIC(constraint_handler_t);
 
 P99_WEAK(report_handler_s)
@@ -334,7 +400,7 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
 (P00_CONSTRAINT_CALL0(__VA_ARGS__))
 
 
-# ifndef __STDC_LIB_EXT1__
+# if !defined(__STDC_LIB_EXT1__) || defined(P00_DOXYGEN)
 
 p99_inline
 errno_t p00_memcpy_s(_Bool p00_overlap,
@@ -365,7 +431,9 @@ P00_SEVERE:
   return p00_ret;
 }
 
+/** @ingroup C11_library **/
 # define memcpy_s(S1, S1MAX, S2, N)  P99_CONSTRAINT_TRIGGER(p00_memcpy_s(false, (S1), (S1MAX), (S2), (N)), "memcpy_s runtime constraint violation")
+/** @ingroup C11_library **/
 # define memmove_s(S1, S1MAX, S2, N) P99_CONSTRAINT_TRIGGER(p00_memcpy_s(true, (S1), (S1MAX), (S2), (N)), "memmove_s runtime constraint violation")
 
 p99_inline
@@ -375,6 +443,7 @@ errno_t p00_strcpy_s(void * restrict p00_s1, rsize_t p00_s1max,
   return p00_memcpy_s(false, p00_s1, p00_s1max, p00_s2, p00_len);
 }
 
+/** @ingroup C11_library **/
 # define strcpy_s(S1, S1MAX, S2)  P99_CONSTRAINT_TRIGGER(p00_strcpy_s((S1), (S1MAX), (S2)), "strcpy_s runtime constraint violation")
 
 p99_inline
@@ -416,6 +485,7 @@ errno_t p00_strcat_s(char * restrict p00_s1,
   return p00_ret;
 }
 
+/** @ingroup C11_library **/
 # define strcat_s(S1, S1MAX, S2)  P99_CONSTRAINT_TRIGGER(p00_strcat_s((S1), (S1MAX), (S2)), "strcat_s runtime constraint violation")
 
 p99_inline
@@ -438,8 +508,15 @@ errno_t p00_strncat_s(char * restrict p00_s1,
   return p00_ret;
 }
 
+/** @ingroup C11_library **/
 # define strncat_s(S1, S1MAX, S2, N)  P99_CONSTRAINT_TRIGGER(p00_strncat_s((S1), (S1MAX), (S2), (N)), "strncat_s runtime constraint violation")
 
 # endif
+
+/**
+ ** @}
+ **/
+
+
 
 #endif

@@ -941,6 +941,25 @@ int p00_timespec_get(struct timespec *p00_ts, int p00_base) {
   }
 }
 
+/**
+ ** @brief The ::timespec_get function sets the interval pointed to by
+ ** @a p00_ts to hold the current calendar time based on the specified
+ ** time base.
+ **
+ ** If @a p00_base is ::TIME_UTC, the @c tv_sec member is set to the
+ ** number of seconds since an implementation defined epoch, truncated
+ ** to a whole value and the @c tv_nsec member is set to the integral
+ ** number of nanoseconds, rounded to the resolution of the system
+ ** clock.
+ **
+ ** @return If the ::timespec_get function is successful it returns
+ ** the nonzero value @a p00_base; otherwise, it returns zero.
+ **
+ ** @ingroup C11_library
+ **/
+p99_inline
+int timespec_get(struct timespec *p00_ts, int p00_base);
+
 #ifndef TIME_UTC
 
 enum {

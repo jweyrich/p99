@@ -124,6 +124,10 @@ p00_aqe_el* p00_at_quick_exit_pop(p00_aqe_list* p00_l) {
 P99_WEAK(p00_aqe)
 p00_aqe_list p00_at_quick_exit;
 
+/**
+ ** @brief registers the function pointed to by func, to be called
+ ** without arguments should ::quick_exit be called.
+ **/
 p99_inline
 int at_quick_exit(void (*p00_func)(void)) {
   int ret = 0;
@@ -133,6 +137,14 @@ int at_quick_exit(void (*p00_func)(void)) {
   return ret;
 }
 
+/**
+ ** @brief causes normal program termination to occur.
+ **
+ ** No functions registered by the @c atexit function or signal
+ ** handlers registered by the signal function are called.
+ **
+ ** @see at_quick_exit
+ **/
 p99_inline
 _Noreturn void quick_exit(int status) {
   for (;;) {

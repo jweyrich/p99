@@ -24,6 +24,9 @@
 /* This is defined in some header file since C11. Since C11 allows to
    repeat typedefs as long as they resolve to the same type, this can
    be done at any place. */
+/**
+ ** @ingroup C11_library
+ **/
 typedef int errno_t;
 
 /**
