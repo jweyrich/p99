@@ -3607,6 +3607,7 @@
     <name>p99_futex_c11.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__futex__c11_8h</filename>
+    <class kind="struct">p99_futex_c11</class>
     <member kind="define">
       <type>#define</type>
       <name>P99_FUTEX_COMPARE_EXCHANGE</name>
@@ -3614,19 +3615,40 @@
       <anchor>ad22d35b3a2af941a484a6e06a5e46106</anchor>
       <arglist>(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX)</arglist>
     </member>
-    <member kind="function">
-      <type></type>
-      <name>if</name>
-      <anchorfile>p99__futex__c11_8h_a02f062e07617e20c56aadb5885d8e360.html</anchorfile>
-      <anchor>a02f062e07617e20c56aadb5885d8e360</anchor>
-      <arglist>(p00_wmin) p99_futex_wakeup(p00_fut</arglist>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_FUTEX_INITIALIZER</name>
+      <anchorfile>p99__futex__c11_8h_abd0d0b02f4338f7cbbde26e97c7dc094.html</anchorfile>
+      <anchor>abd0d0b02f4338f7cbbde26e97c7dc094</anchor>
+      <arglist>(INITIAL)</arglist>
     </member>
     <member kind="function">
-      <type>unsigned</type>
-      <name>p99_futex_fetch_and_store</name>
-      <anchorfile>p99__futex__c11_8h_ae9992e6155e6444297674daf34127bb4.html</anchorfile>
-      <anchor>ae9992e6155e6444297674daf34127bb4</anchor>
-      <arglist>(p99_futex volatile *p00_fut, unsigned p00_desired, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
+      <type>void</type>
+      <name>p99_futex_destroy</name>
+      <anchorfile>p99__futex__c11_8h_a29d9f46c194bb715fdf0bc28f8ae334e.html</anchorfile>
+      <anchor>a29d9f46c194bb715fdf0bc28f8ae334e</anchor>
+      <arglist>(p99_futex *p00_fut)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_futex *</type>
+      <name>p99_futex_init</name>
+      <anchorfile>p99__futex__c11_8h_aa80073189bba82b2d5e06d7087adf239.html</anchorfile>
+      <anchor>aa80073189bba82b2d5e06d7087adf239</anchor>
+      <arglist>(p99_futex *p00_fut, unsigned p00_ini)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>P99_WEAK</name>
+      <anchorfile>p99__futex__c11_8h_a89fcb4ddbe9b0878d43e394cf521d210.html</anchorfile>
+      <anchor>a89fcb4ddbe9b0878d43e394cf521d210</anchor>
+      <arglist>(p99_futex_load) unsigned p99_futex_load(p99_futex volatile *p00_fut)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>P99_WEAK</name>
+      <anchorfile>p99__futex__c11_8h_af45258d1bba777656a3394b796e01c99.html</anchorfile>
+      <anchor>af45258d1bba777656a3394b796e01c99</anchor>
+      <arglist>(p99_futex_wakeup) void p99_futex_wakeup(p99_futex volatile *p00_fut</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -14600,20 +14622,6 @@
     </member>
     <member kind="function">
       <type>void</type>
-      <name>p99_futex_compare_exchange</name>
-      <anchorfile>group__library__support_ga8f14080a3b0e4a5a11e84877de3cf97d.html</anchorfile>
-      <anchor>ga8f14080a3b0e4a5a11e84877de3cf97d</anchor>
-      <arglist>(p99_futex volatile *p00_fut, unsigned p00_expected, unsigned p00_desired, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>p99_futex_compare_exchange</name>
-      <anchorfile>group__library__support_ga8f14080a3b0e4a5a11e84877de3cf97d.html</anchorfile>
-      <anchor>ga8f14080a3b0e4a5a11e84877de3cf97d</anchor>
-      <arglist>(p99_futex volatile *p00_fut, unsigned p00_expected, unsigned p00_desired, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
       <name>p99_futex_destroy</name>
       <anchorfile>group__library__support_gac30811f76a7f0734e34e2d86a41965d2.html</anchorfile>
       <anchor>gac30811f76a7f0734e34e2d86a41965d2</anchor>
@@ -19281,13 +19289,6 @@
       <anchor>ga805fff4efe80ea7e2553f6abf0fd1621</anchor>
       <arglist>(p99_futex volatile *p00_fut, unsigned p00_hmuch, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
     </member>
-    <member kind="function">
-      <type>void</type>
-      <name>p99_futex_compare_exchange</name>
-      <anchorfile>group__library__support_ga8f14080a3b0e4a5a11e84877de3cf97d.html</anchorfile>
-      <anchor>ga8f14080a3b0e4a5a11e84877de3cf97d</anchor>
-      <arglist>(p99_futex volatile *p00_fut, unsigned p00_expected, unsigned p00_desired, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
-    </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_FUTEX_COMPARE_EXCHANGE</name>
@@ -19344,6 +19345,10 @@
       <anchor>ga2f178f4b43246a2860289e04769ada88</anchor>
       <arglist>(p99_futex volatile *p00_fut, unsigned p00_wmin, unsigned p00_wmax)</arglist>
     </member>
+  </compound>
+  <compound kind="struct">
+    <name>p99_futex_c11</name>
+    <filename>structp99__futex__c11.html</filename>
   </compound>
   <compound kind="struct">
     <name>p99_once_flag</name>

@@ -213,49 +213,73 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
  ** @param FUTEX a pointer that is compatible to <code>p99_futex
  ** volatile*</code>
  **
- ** @param ACT an identifier that can be used in the three following
+ ** @param ACT an identifier that can be used in the following
  ** parameters. If used there it will correspond to local @c register
- ** variable of type <code>unsigned const</code>, that is the variable
- ** can't be modified it and its address can't be taken.
+ ** variable of type <code>unsigned const</code> holding the actual
+ ** value of the futex. That variable cannot be modified and its
+ ** address cannot be taken.
  **
  ** The other parameters are expressions that may contain arbitrary
  ** code that is valid at the point of calling this macro.  The
- ** evaluation may include the local variable @a ACT.
+ ** evaluation may include the local variable @a ACT. Here is a pseudo
+ ** code of what this macro actually does:
  **
- ** @param EXPECTED an expression that is interpreted as a Boolean
+ ** @code
+ ** for (;;) {
+ **   register unsigned const ACT = <load value from FUTEX>;
+ **   if (EXPECTED) {
+ **     if (ACT != (DESIRED)) {
+ **       <try to change value of FUTEX to DESIRED>;
+ **       if (<not successful>) continue;
+ **     }
+ **     unsigned wmin = (WAKEMIN);
+ **     unsigned wmax = (WAKEMAX);
+ **     if (wmin < wmax) wmax = wmin;
+ **     <wakeup at least wmin and at most wmax waiters>
+ **   } else {
+ **     <block and wait until a change is signaled on FUTEX>
+ **   }
+ ** }
+ ** @endcode
+ **
+ ** Only that each of the macro parameters is expanded exactly once
+ ** for the C code. As this is a loop structure the code resulting
+ ** from that argument expansion of @a EXPECTED and @a DESIRED may
+ ** effectively be evaluated multiple times at run time, in particular
+ ** when there is congestion on the futex.
+ **
+ ** @param EXPECTED is an expression that is interpreted as a Boolean
  ** condition. The calling thread will be blocked until this
  ** expression evaluates to @c true.
  **
- ** @param DESIRED an expression that is interpreted as an @c
+ ** @remark @a EXPECTED should never be set to the constant @c false,
+ ** since will result in the thread being blocked in the @c for loop.
+ **
+ ** @param DESIRED is an expression that is interpreted as an @c
  ** unsigned. Once the futex fulfills the condition @a EXPECTED the
  ** futex is atomically set to that value if necessary.
  **
- ** @param WAKEMIN an expression that is interpreted as an @c unsigned
- ** that should not exceed ::P99_FUTEX_MAX_WAITERS. The calling
- ** thread will block until it has woken up at least that number of
- ** waiters.
- **
- ** @param WAKEMAX an expression that is interpreted as an @c unsigned
- ** that should not exceed ::P99_FUTEX_MAX_WAITERS. @a WAKEMAX is
- ** adjusted to be at least as large as @a WAKEMIN.
+ ** @warning @a EXPECTED and @a DESIRED may be evaluated several times
+ ** if the underlying atomic compare exchange operations fails
+ ** temporarily. So you should not have destructive side effects in
+ ** these expressions.
  **
  ** After the futex value has been set atomically to the desired
- ** value, waiters may be woken up. There are three different
- ** situations: If @a WAKEMAX (after adjustment) evaluates to @c 0, no
- ** waiter is woken up. If it is @c 1, and if there are any waiters
- ** exactly one of them is awoken.
+ ** value, waiters may be woken up.
  **
- ** For other values, if there are N waiters, at least <code>min(N,
- ** WAKEMAX)</code> are woken, up. If N is less than @a WAKEMIN, the
- ** calling threads blocks until it has been able to wake up the
- ** requested amount.
+ ** @param WAKEMIN is an expression that is interpreted as an @c
+ ** unsigned that should not exceed ::P99_FUTEX_MAX_WAITERS. The
+ ** calling thread will block until it has woken up at least that
+ ** number of waiters.
  **
  ** @warning blocking on the @a WAKEMIN condition can be an active
  ** wait and should be avoided whenever possible.
  **
- ** @warning @a EXPECTED and @a DESIRED may be evaluated several times
- ** if the underlying atomic compare exchange operations fails
- ** temporarily. So you should not have destructive side, here.
+ ** @param WAKEMAX is an expression that is interpreted as an @c
+ ** unsigned that should not exceed ::P99_FUTEX_MAX_WAITERS. @a
+ ** WAKEMAX is adjusted to be at least as large as @a WAKEMIN.
+ **
+ ** <h3>Example 1: a semaphore implementation</h3>
  **
  ** To see how to use this, let us look into an implementation of a
  ** semaphore, starting with a "post" operation.
@@ -276,8 +300,17 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
  **
  ** @code
  ** inline
- ** void my_sem_post(p99_futex volatile* f) {
- **   P99_FUTEX_COMPARE_EXCHANGE(f, val, true, val + 1u, 0u, 1u);
+ ** int my_sem_post(p99_futex volatile* f) {
+ **   P99_FUTEX_COMPARE_EXCHANGE(f,
+ **                              // name of the local variable
+ **                              val,
+ **                              // never wait
+ **                              true,
+ **                              // increment the value
+ **                              val + 1u,
+ **                              // wake up at most one waiter
+ **                              0u, 1u);
+ **   return 0;
  ** }
  ** @endcode
  **
@@ -286,13 +319,23 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
  ** implementation this would better be done by using
  ** ::p99_futex_add.
  **
- ** A semaphore wait operation should block if the value is @c 0,
- ** decrement the value by 1 and never wake up any other waiters:
+ ** A semaphore <em>wait operation</em> should block if the value is
+ ** @c 0, and then, once the value is positive, decrement that value
+ ** by @c 1 and never wake up any other waiters:
  **
  ** @code
  ** inline
  ** void my_sem_wait(p99_futex volatile* f) {
- **   P99_FUTEX_COMPARE_EXCHANGE(f, val, val, val - 1u, 0u);
+ **   P99_FUTEX_COMPARE_EXCHANGE(f,
+ **                              // name of the local variable
+ **                              val,
+ **                              // block if val is 0 and retry
+ **                              val > 0,
+ **                              // once there is val, decrement it, if possible
+ **                              val - 1u,
+ **                              // never wake up anybody
+ **                              0u, 0u);
+ **   return 0;
  ** }
  ** @endcode
  **
@@ -307,17 +350,23 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
  ** inline
  ** int my_sem_trywait(p99_futex volatile* f) {
  **   int ret;
- **   P99_FUTEX_COMPARE_EXCHANGE(f, val, true,
- **                               (val ? 0u : val - 1u),
- **                               (ret = val, 0u),
- **                               0u);
- **   if (ret) {
- **     errno = EAGAIN;
- **     ret = -1;
- **   }
+ **   P99_FUTEX_COMPARE_EXCHANGE(f,
+ **                              // name of the local variable
+ **                              val,
+ **                              // never wait
+ **                              true,
+ **                              // if there is val decrement by one
+ **                              (val ? 0u : val - 1u),
+ **                              // capture the error by side effect
+ **                              (ret = -!val, 0u),
+ **                              // never wake up anybody
+ **                              0u, 0u);
+ **   if (ret) errno = EAGAIN;
  **   return ret;
  ** }
  ** @endcode
+ **
+ ** <h3>Example 2: reference counting</h3>
  **
  ** Another example of the use of an ::p99_futex could be a reference
  ** counter. Such a counter can e.g be useful to launch a number of
@@ -363,11 +412,17 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
  ** @code
  ** inline
  ** void my_counter_lock_unsafe(p99_futex volatile* f) {
- **   P99_FUTEX_COMPARE_EXCHANGE(f, val,
- **                               true,
- **                               val - 1u,
- **                               0u,
- **                               ((val == 1u) ? P99_FUTEX_MAX_WAITERS : 0u));
+ **   P99_FUTEX_COMPARE_EXCHANGE(f,
+ **                              // name of the local variable
+ **                              val,
+ **                              // never wait
+ **                              true,
+ **                              // decrement by one
+ **                              val - 1u,
+ **                              // no enforced wake up
+ **                              0u,
+ **                              // wake up all waiters iff the value falls to 0
+ **                              ((val == 1u) ? P99_FUTEX_MAX_WAITERS : 0u));
  ** }
  ** @endcode
  **
@@ -379,10 +434,16 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
  ** inline
  ** void my_counter_lock(p99_futex volatile* f) {
  **   P99_FUTEX_COMPARE_EXCHANGE(f, val,
- **                               true,
- **                               (val ? val - 1u : 0u),
- **                               0u,
- **                               ((val <= 1u) ? P99_FUTEX_MAX_WAITERS : 0u));
+ **                              // name of the local variable
+ **                              val,
+ **                              // never wait
+ **                              true,
+ **                              // decrement by one, but only if wouldn't be underflow
+ **                              (val ? val - 1u : 0u),
+ **                              // no enforced wake up
+ **                              0u,
+ **                              // wake up all waiters iff the new value is 0
+ **                              ((val <= 1u) ? P99_FUTEX_MAX_WAITERS : 0u));
  ** }
  ** @endcode
  **
@@ -393,6 +454,14 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
  ** inline
  ** void my_counter_wait(p99_futex volatile* f) {
  **   P99_FUTEX_COMPARE_EXCHANGE(f, val, 0u, 0u, 0u);
+ **                              // name of the local variable
+ **                              val,
+ **                              // wait until the value is 0
+ **                              !val,
+ **                              // don't do anything else, no update
+ **                              0u,
+ **                              // and no wake up
+ **                              0u, 0u);
  ** }
  ** @endcode
  **/

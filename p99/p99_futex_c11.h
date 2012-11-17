@@ -85,10 +85,10 @@ unsigned p00_futex_wakeup(p99_futex volatile* p00_fut,
 }
 
 #define P00_FUTEX_WAKEUP(FUT, WMIN, WMAX)                             \
-do {                                                                    \
+  do {                                                                \
   unsigned p00Wok = p00_futex_wakeup((FUT), WMIN, WMAX);              \
-  WMIN -= p00Wok;                                                       \
-  WMAX -= p00Wok;                                                       \
+  WMIN -= p00Wok;                                                     \
+  WMAX -= p00Wok;                                                     \
  } while(false)
 
 P99_WEAK(p99_futex_wakeup)
@@ -97,8 +97,9 @@ void p99_futex_wakeup(p99_futex volatile* p00_fut,
   if (p00_wmax < p00_wmin) p00_wmax = p00_wmin;
   if (p00_wmax) do {
       unsigned p00_wok = 0;
-      P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p00_mut)
-      p00_wok = p00_futex_wakeup(p00_fut, p00_wmin, p00_wmax);
+      P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p00_mut) {
+        p00_wok = p00_futex_wakeup(p00_fut, p00_wmin, p00_wmax);
+      }
       p00_wmax -= p00_wok;
       p00_wmin -= p00_wok;
     } while (p00_wmin);
