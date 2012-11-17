@@ -73,7 +73,7 @@ unsigned p00_futex_wakeup(p99_futex volatile* p00_fut,
                             unsigned p00_wmin, unsigned p00_wmax) {
   assert(p00_wmin <= p00_wmax);
   if (p00_wmax && p00_fut->p00_waiting) {
-    if (p00_wmax > 1u) p00_wmax = p00_fut->p00_waiting;
+    if (p00_wmax > p00_fut->p00_waiting) p00_wmax = p00_fut->p00_waiting;
     if (p00_wmax > 1u) cnd_broadcast((cnd_t*)&p00_fut->p00_cnd);
     else cnd_signal((cnd_t*)&p00_fut->p00_cnd);
     p00_fut->p00_waiting -= p00_wmax;
