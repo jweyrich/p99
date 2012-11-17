@@ -284,7 +284,7 @@ do {                                                                            
   unsigned p00Mact = *p00Mcnt;                                                          \
   for (;;) {                                                                            \
     register unsigned const ACT = p00Mact;                                              \
-    if (EXPECTED) {                                                                     \
+    if (P99_LIKELY(EXPECTED)) {                                                         \
       register unsigned const p00Mdes = (DESIRED);                                      \
       /* This will only fail if there is contention on the futex, so we then try */     \
       /* again, immediately. */                                                         \
