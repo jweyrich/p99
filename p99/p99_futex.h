@@ -23,13 +23,11 @@ P99_DECLARE_STRUCT(p99_futex_c11);
 #if (defined(__linux__) && !defined(NO_FUTEX)) || defined(DOXYGEN)
 typedef _Atomic(unsigned) p99_futex;
 #define P00_FUTEX_INLINE(NAME) p99_inline
-#include "p99_futex_linux.h"
 #else
 typedef p99_futex_c11 p99_futex;
 /* The C11 implementation needs setjmp in its internals so the
    functions must be implemented as weak symbols. */
 #define P00_FUTEX_INLINE(NAME) P99_WEAK(NAME)
-#include "p99_futex_c11.h"
 #endif
 
 /**
@@ -471,5 +469,12 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
 /**
  ** @}
  **/
+
+#if (defined(__linux__) && !defined(NO_FUTEX)) || defined(DOXYGEN)
+#include "p99_futex_linux.h"
+#else
+#include "p99_futex_c11.h"
+#endif
+
 
 #endif
