@@ -14679,23 +14679,16 @@
     <member kind="function">
       <type>void</type>
       <name>p99_futex_wait</name>
-      <anchorfile>group__library__support_ga918f22eb5c3fab10bbc0e27e15da511b.html</anchorfile>
-      <anchor>ga918f22eb5c3fab10bbc0e27e15da511b</anchor>
-      <arglist>(p99_futex volatile *p00_fut)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>p99_futex_wait</name>
       <anchorfile>group__library__support_gaee80ac2cca7a4b003266b5d580b3f1da.html</anchorfile>
       <anchor>gaee80ac2cca7a4b003266b5d580b3f1da</anchor>
       <arglist>(p99_futex volatile *p00_cntp)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
-      <name>p99_futex_wakeup</name>
-      <anchorfile>group__library__support_ga2f178f4b43246a2860289e04769ada88.html</anchorfile>
-      <anchor>ga2f178f4b43246a2860289e04769ada88</anchor>
-      <arglist>(p99_futex volatile *p00_fut, unsigned p00_wmin, unsigned p00_wmax)</arglist>
+      <name>p99_futex_wait</name>
+      <anchorfile>group__library__support_ga918f22eb5c3fab10bbc0e27e15da511b.html</anchorfile>
+      <anchor>ga918f22eb5c3fab10bbc0e27e15da511b</anchor>
+      <arglist>(p99_futex volatile *p00_fut)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -14703,6 +14696,13 @@
       <anchorfile>group__library__support_ga5a7b92d5684d5809688b827aef8fa28c.html</anchorfile>
       <anchor>ga5a7b92d5684d5809688b827aef8fa28c</anchor>
       <arglist>(p99_futex volatile *p00_cntp, unsigned p00_wmin, unsigned p00_wmax)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_futex_wakeup</name>
+      <anchorfile>group__library__support_ga2f178f4b43246a2860289e04769ada88.html</anchorfile>
+      <anchor>ga2f178f4b43246a2860289e04769ada88</anchor>
+      <arglist>(p99_futex volatile *p00_fut, unsigned p00_wmin, unsigned p00_wmax)</arglist>
     </member>
   </compound>
   <compound kind="group">

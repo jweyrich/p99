@@ -50,21 +50,69 @@ typedef p99_futex_c11 p99_futex;
  ** kernel address of the @c int, so the waiting can be organized even
  ** between different processes that don't share their address space.
  **
- ** Most of the operations operate as their atomic counterparts, with
- ** one exception. They wake up waiters if the value reaches a certain
- ** interval. Therefore they have additional arguments @c p00_cstart,
- ** @c p00_clen and @c p00_wmin @c p00_wmax that give two ranges. One of the
- ** conditional values and one of a range of waiters that should be
- ** woken up.
+ ** ::p99_futex are build around this only that for ideological
+ ** reasons the base type is an @c unsigned, instead of an @c int.
  **
- ** This is implemented more or less efficiently according to the
+ **  - a ::p99_futex represents an unsigned value
+ **    - the access to the value is atomic
+ **
+ **  - a ::p99_futex represents a lock and wait utility
+ **    - the entrance into the OS wait queue is atomic, a thread only
+ **      enters the OS wait if the state is what the thread expects
+ **    - it will only wake up threads when the unsigned value has
+ **      changed, or another thread signals the futex explicitly
+ **    - there are no <em>spurious wakeups</em>, state changes of threads
+ **      only depend on state changes of the value of the futex
+ **      or user space actions
+ **    - the number of threads that are woken up can be controlled:
+ **      - a minimal number may be used to block (actively!) a thread
+ **        until enough others are woken up
+ **      - a maximum number may also be given
+ **
+ ** There are several operations that work on that value similar to
+ ** their atomic analogues:
+ **  - ::p99_futex_load returns the value
+ **  - ::p99_futex_fetch_and_store atomically exchanges the value with
+ **    a new one and returns the old one
+ **  - ::p99_futex_add atomically adds a quantity to the value
+ **  - ::P99_FUTEX_COMPARE_EXCHANGE atomically compares the existing
+ **    value and conditionally exchanges it.
+ **
+ ** The last three may also be used to wakeup threads that are waiting
+ ** on the futex, the very last, a macro, may also put the calling
+ ** thread to a blocking or waiting state.
+ **
+ ** There is only ::p99_futex_add operation and no subtraction. That
+ ** operation is simply not needed, because adding a negative value in
+ ** @c unsigned arithmetic will magically do the right thing, here.
+ **
+ ** If the value of the futex isn't as expected, a thread may wait
+ ** (::p99_futex_wait) until another thread notifies it
+ ** (::p99_futex_wakeup) about a change of the value. That wait is not
+ ** (or scarcely) using resources. Such a waiting thread will only be
+ ** awoken if another thread wants so. Either by calling an explicit
+ ** ::p99_futex_wakeup, or implicitly by changing the value through
+ ** :p99_futex_fetch_and_store, ::p99_futex_add or
+ ** ::P99_FUTEX_COMPARE_EXCHANGE.
+ **
+ ** :p99_futex_fetch_and_store and ::p99_futex_add wake up waiters if
+ ** the value reaches a certain interval. Therefore they have
+ ** additional arguments @c p00_cstart, @c p00_clen and @c p00_wmin @c
+ ** p00_wmax that give two ranges. One of the conditional values and
+ ** one of a range of waiters that should be woken up.
+ **
+ ** ::P99_FUTEX_COMPARE_EXCHANGE is the most generic tool to operate
+ ** on a ::p99_futex, since it is able to wait until the value is as
+ ** expected, change it and then notify other threads about the
+ ** change.
+ **
+ ** ::p99_futex is implemented more or less efficiently according to the
  ** features that the platform provides:
  ** - one, for Linux, that uses atomic operations and futexes for signaling
  ** - a fall back that mutexes all access and uses a condition variable for
  **   signaling.
  **
- ** @see P99_FUTEX_COMPARE_EXCHANGE for a generic tool to operate
- ** with ::p99_futex.
+ ** @see P99_FUTEX_COMPARE_EXCHANGE for some examples.
  **/
 struct p99_futex { };
 #endif
