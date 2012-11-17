@@ -37,7 +37,7 @@ struct p99_futex_c11 {
 
 #define P99_FUTEX_INITIALIZER(INITIAL) { .p00_cnt = INITIAL, }
 
-inline
+p99_inline
 p99_futex* p99_futex_init(p99_futex* p00_fut, unsigned p00_ini) {
   if (p00_fut) {
     *p00_fut = (p99_futex)P99_FUTEX_INITIALIZER(p00_ini);
@@ -47,7 +47,7 @@ p99_futex* p99_futex_init(p99_futex* p00_fut, unsigned p00_ini) {
   return p00_fut;
 }
 
-inline
+p99_inline
 void p99_futex_destroy(p99_futex* p00_fut) {
   if (p00_fut) {
     p00_fut->p00_cnt = UINT_MAX;
@@ -56,7 +56,7 @@ void p99_futex_destroy(p99_futex* p00_fut) {
   }
 }
 
-inline
+P99_WEAK(p99_futex_load)
 unsigned p99_futex_load(p99_futex volatile* p00_fut) {
   unsigned p00_ret = 0;
   P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p00_mut) {
@@ -68,7 +68,7 @@ unsigned p99_futex_load(p99_futex volatile* p00_fut) {
 /* Supposes that the lock on the mutex is already taken and that
  * p00_wmin <= p00_wmax. Returns min(p00_win, p00_wok) where p00_wok
  * is the number of threads that have been woken up. */
-inline
+p99_inline
 unsigned p00_futex_wakeup(p99_futex volatile* p00_fut,
                             unsigned p00_wmin, unsigned p00_wmax) {
   assert(p00_wmin <= p00_wmax);
@@ -91,7 +91,7 @@ do {                                                                    \
   WMAX -= p00Wok;                                                       \
  } while(false)
 
-inline
+P99_WEAK(p99_futex_wakeup)
 void p99_futex_wakeup(p99_futex volatile* p00_fut,
                        unsigned p00_wmin, unsigned p00_wmax) {
   if (p00_wmax < p00_wmin) p00_wmax = p00_wmin;
@@ -104,7 +104,7 @@ void p99_futex_wakeup(p99_futex volatile* p00_fut,
     } while (p00_wmin);
 }
 
-inline
+p99_inline
 void p00_futex_wait(p99_futex volatile* p00_fut) {
   ++p00_fut->p00_waiting;
   /* This loop captures spurious wakeups as they may happen for
@@ -115,13 +115,13 @@ void p00_futex_wait(p99_futex volatile* p00_fut) {
   --p00_fut->p00_awaking;
 }
 
-inline
+P99_WEAK(p99_futex_wait)
 void p99_futex_wait(p99_futex volatile* p00_fut) {
   P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p00_mut)
     p00_futex_wait(p00_fut);
 }
 
-inline
+P99_WEAK(p99_futex_add)
 unsigned p99_futex_add(p99_futex volatile* p00_fut, unsigned p00_hmuch,
                         unsigned p00_cstart, unsigned p00_clen,
                         unsigned p00_wmin, unsigned p00_wmax) {
@@ -143,7 +143,7 @@ unsigned p99_futex_add(p99_futex volatile* p00_fut, unsigned p00_hmuch,
   return p00_ret;
 }
 
-inline
+P99_WEAK(p99_futex_fetch_and_store)
 unsigned p99_futex_fetch_and_store(p99_futex volatile* p00_fut, unsigned p00_desired,
                                     unsigned p00_cstart, unsigned p00_clen,
                                     unsigned p00_wmin, unsigned p00_wmax) {

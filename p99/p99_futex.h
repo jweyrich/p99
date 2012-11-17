@@ -22,9 +22,13 @@ P99_DECLARE_STRUCT(p99_futex_c11);
 
 #if (defined(__linux__) && !defined(NO_FUTEX)) || defined(DOXYGEN)
 typedef _Atomic(unsigned) p99_futex;
+#define P00_FUTEX_INLINE(NAME) p99_inline
 #include "p99_futex_linux.h"
 #else
 typedef p99_futex_c11 p99_futex;
+/* The C11 implementation needs setjmp in its internals so the
+   functions must be implemented as weak symbols. */
+#define P00_FUTEX_INLINE(NAME) P99_WEAK(NAME)
 #include "p99_futex_c11.h"
 #endif
 
@@ -86,13 +90,13 @@ typedef p99_futex_c11 p99_futex;
  ** @brief Initialize an ::p99_futex object.
  ** @related p99_futex
  **/
-inline p99_futex* p99_futex_init(p99_futex* p00_c, unsigned p00_ini);
+p99_inline p99_futex* p99_futex_init(p99_futex* p00_c, unsigned p00_ini);
 
 /**
  ** @brief Destroy an ::p99_futex object.
  ** @related p99_futex
  **/
-inline void p99_futex_destroy(p99_futex* p00_c);
+p99_inline void p99_futex_destroy(p99_futex* p00_c);
 
 /**
  ** @brief increment the counter of @a p00_fut atomically by @a p00_hmuch.
@@ -120,7 +124,7 @@ inline void p99_futex_destroy(p99_futex* p00_c);
  ** @remark @a p00_wmax defaults to ::P99_FUTEX_MAX_WAITERS
  ** @related p99_futex
  **/
-inline unsigned p99_futex_add(p99_futex volatile* p00_fut, unsigned p00_hmuch,
+P00_FUTEX_INLINE(p99_futex_add) unsigned p99_futex_add(p99_futex volatile* p00_fut, unsigned p00_hmuch,
                                unsigned p00_cstart, unsigned p00_clen,
                                unsigned p00_wmin, unsigned p00_wmax);
 
@@ -136,7 +140,7 @@ inline unsigned p99_futex_add(p99_futex volatile* p00_fut, unsigned p00_hmuch,
  ** @brief Obtain the value of futex @a p00_fut atomically.
  ** @related p99_futex
  **/
-inline unsigned p99_futex_load(p99_futex volatile* p00_fut);
+P00_FUTEX_INLINE(p99_futex_load) unsigned p99_futex_load(p99_futex volatile* p00_fut);
 
 /**
  ** @brief Unconditionally and atomically set the futex @a p00_fut to
@@ -160,7 +164,7 @@ inline unsigned p99_futex_load(p99_futex volatile* p00_fut);
  ** @remark @a p00_wmax defaults to ::P99_FUTEX_MAX_WAITERS
  ** @related p99_futex
  **/
-inline unsigned p99_futex_fetch_and_store(p99_futex volatile* p00_fut, unsigned p00_desired,
+P00_FUTEX_INLINE(p99_futex_fetch_and_store) unsigned p99_futex_fetch_and_store(p99_futex volatile* p00_fut, unsigned p00_desired,
     unsigned p00_cstart, unsigned p00_clen,
     unsigned p00_wmin, unsigned p00_wmax);
 
@@ -197,7 +201,7 @@ inline unsigned p99_futex_fetch_and_store(p99_futex volatile* p00_fut, unsigned 
  **
  ** @related p99_futex
  **/
-inline void p99_futex_compare_exchange(p99_futex volatile* p00_fut, unsigned p00_expected, unsigned p00_desired,
+P00_FUTEX_INLINE(p99_futex_compare_exchange) void p99_futex_compare_exchange(p99_futex volatile* p00_fut, unsigned p00_expected, unsigned p00_desired,
                                         unsigned p00_cstart, unsigned p00_clen,
                                         unsigned p00_wmin, unsigned p00_wmax);
 
@@ -218,7 +222,7 @@ inline void p99_futex_compare_exchange(p99_futex volatile* p00_fut, unsigned p00
  **
  ** @see P99_FUTEX_COMPARE_EXCHANGE for more detailed explanations.
  **/
-inline
+P00_FUTEX_INLINE(p99_futex_wakeup)
 void p99_futex_wakeup(p99_futex volatile* p00_fut,
                        unsigned p00_wmin, unsigned p00_wmax);
 
@@ -233,7 +237,7 @@ void p99_futex_wakeup(p99_futex volatile* p00_fut,
  ** @remark Such a waiting thread will not be subject to spurious wake
  ** ups when receiving signals.
  **/
-inline
+P00_FUTEX_INLINE(p99_futex_wait)
 void p99_futex_wait(p99_futex volatile* p00_fut);
 
 
@@ -432,7 +436,7 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
 #define P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX)
 #endif
 
-inline
+P00_FUTEX_INLINE(p99_futex_compare_exchange)
 void p99_futex_compare_exchange(p99_futex volatile* p00_fut,
                                  unsigned p00_expected, unsigned p00_desired,
                                  unsigned p00_cstart, unsigned p00_clen,

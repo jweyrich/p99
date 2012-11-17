@@ -223,7 +223,7 @@ unsigned p99_futex_load(p99_futex volatile* p00_fut) {
   return atomic_load(p00_fut);
 }
 
-inline
+p99_inline
 void p99_futex_wakeup(p99_futex volatile* p00_cntp,
                        unsigned p00_wmin, unsigned p00_wmax) {
   if (p00_wmax < p00_wmin) p00_wmax = p00_wmin;
@@ -239,7 +239,7 @@ void p99_futex_wakeup(p99_futex volatile* p00_cntp,
   }
 }
 
-inline
+p99_inline
 void p99_futex_wait(p99_futex volatile* p00_cntp) {
   unsigned volatile*const p00_cnt = &P00_AT(p00_cntp);
   for (;;) {
@@ -256,7 +256,7 @@ void p99_futex_wait(p99_futex volatile* p00_cntp) {
 }
 
 
-inline
+p99_inline
 unsigned p99_futex_add(p99_futex volatile* futex, unsigned p00_hmuch,
                         unsigned p00_cstart, unsigned p00_clen,
                         unsigned p00_wmin, unsigned p00_wmax) {
@@ -267,7 +267,7 @@ unsigned p99_futex_add(p99_futex volatile* futex, unsigned p00_hmuch,
   return p00_act;
 }
 
-inline
+p99_inline
 unsigned p99_futex_fetch_and_store(p99_futex volatile* futex, unsigned p00_desired,
                                     unsigned p00_cstart, unsigned p00_clen,
                                     unsigned p00_wmin, unsigned p00_wmax) {
