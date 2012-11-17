@@ -24,6 +24,11 @@ SRC	=					\
 		test-p99-thread.c		\
 		test-p99-va-arg.c
 
+ASRC	=       				\
+		libp99.c			\
+		libp99-weak.c
+
+
 HTML = 						\
 c99-conformance-clang-2.9.html			\
 c99-conformance-gcc-4.1.html			\
@@ -67,6 +72,9 @@ CC 	= c99
 MAKE 	= make
 SHELL	= /bin/sh
 OBJS 	= $(SRC:.c=.o)
+AOBJS 	= $(ASRC:.c=.o)
+ASSEM 	= $(ASRC:.c=.s)
+ALIB 	= $(ASRC:.c=.a)
 NAME 	= $(SRC:.c=)
 RM 	= /bin/rm -f
 COMP	= gzip -9v
@@ -82,17 +90,21 @@ LDFLAGS := $(EXEOPT) $(LPATH) $(LDFLAGS)
 # Basic Compile Instructions #
 ##############################
 
-all:	$(NAME)
+all:	$(NAME) $(ASSEM) $(ALIB)
 % : %.o
 	$(CC) $< $(LDFLAGS) -o $@
+
+%.a : %.o
+	$(AR) crf $@ $<
 
 test-p99-inline : test-p99-inline.o test-p99-inline-empty.o
 	$(CC) $^ $(LDFLAGS) -o $@
 
-depend Makefile.inc:
-	${CC} $(CFLAGS) $(IPATH) -MM $(SRC)  test-p99-inline.c test-p99-inline-empty.c > Makefile.inc
+depend Makefile.inc: Makefile
+	${CC} $(CFLAGS) $(IPATH) -MM $(SRC) $(ASRC) test-p99-inline.c test-p99-inline-empty.c > Makefile.inc
+	${CC} $(CFLAGS) $(IPATH) -MM $(SRC) $(ASRC) test-p99-inline.c test-p99-inline-empty.c | sed 's/[.]o/.s/g' >> Makefile.inc
 clean:
-	-$(RM) $(NAME) $(OBJS) *~
+	-$(RM) $(NAME) $(OBJS) $(ASSEM) $(ALIB) *~
 distclean: clean
 	-$(RM) Makefile.inc
 fclean:
@@ -107,6 +119,9 @@ ucomp:
 
 .c.o:
 	$(CC) $(CFLAGS) -c $<
+
+.c.s:
+	$(CC) $(CFLAGS) -S $<
 
 
 tidy :

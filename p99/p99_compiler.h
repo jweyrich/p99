@@ -452,6 +452,12 @@ signed p00_trailing_comma_in_initializer__(void) {
 #  define p99_inline static inline
 # endif
 
+#ifdef P00_FORCE_NOINLINE
+# undef p99_inline
+# define p99_inline
+#endif
+
+
 # ifndef p00_instantiate
 /**
  ** @brief Force a function symbol to be emitted.
