@@ -10,8 +10,8 @@
 /* without even the implied warranty of merchantability or fitness for a      */
 /* particular purpose.                                                        */
 /*                                                                            */
-#ifndef P99_LINUX_FUTEX_H
-#define P99_LINUX_FUTEX_H
+#if !defined(P99_FUTEX_LINUX_H) && !defined(P00_DOXYGEN)
+#define P99_FUTEX_LINUX_H
 
 #include "p99_atomic.h"
 #include "p99_threads.h"

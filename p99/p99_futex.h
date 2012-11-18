@@ -19,9 +19,13 @@
 
 P99_DECLARE_STRUCT(p99_futex_c11);
 
-#if (defined(__linux__) && !defined(NO_FUTEX)) || defined(DOXYGEN)
+#if defined(DOXYGEN)
+#define P00_FUTEX_INLINE(NAME) p99_inline
+
+#elif (defined(__linux__) && !defined(NO_FUTEX)) || defined(DOXYGEN)
 typedef _Atomic(unsigned) p99_futex;
 #define P00_FUTEX_INLINE(NAME) p99_inline
+
 #else
 typedef p99_futex_c11 p99_futex;
 /* The C11 implementation needs setjmp in its internals so the

@@ -13,37 +13,39 @@
 #ifndef P99_FUTEX_C11_H
 #define P99_FUTEX_C11_H
 
-
+/**
+ ** @brief The structure that is used in the fallback implementation
+ ** of ::p99_futex on non-linux systems
+ **/
 struct p99_futex_c11 {
   /** @brief An @c unsigned that makes up the counter itself.
-   **
-   ** Its address might be used as a @c int* for signaling through a
-   ** futex call if this is supported.
    **/
-  unsigned p00_cnt;
+  unsigned p99_cnt;
   /** @brief Holds the number of waiters on the condition.
    **/
-  unsigned p00_waiting;
+  unsigned p99_waiting;
   /** @brief Holds the number of waiters on the condition that are to be woken up.
    **/
-  unsigned p00_awaking;
-  /** @brief A mutex that is used in the non-futex implementations */
-  mtx_t p00_mut;
-  /** @brief A conditional variable that is used in the non-futex
-   ** implementations */
-  cnd_t p00_cnd;
+  unsigned p99_awaking;
+  /** @brief A mutex that locks the access to the data structure */
+  mtx_t p99_mut;
+  /** @brief A conditional variable to wait and signal changes to the value.
+   **/
+  cnd_t p99_cnd;
 };
 
+#ifndef P00_DOXYGEN
+
 #ifndef P99_FUTEX_INITIALIZER
-# define P99_FUTEX_INITIALIZER(INITIAL) { .p00_cnt = (INITIAL), }
+# define P99_FUTEX_INITIALIZER(INITIAL) { .p99_cnt = (INITIAL), }
 #endif
 
 p99_inline
 p99_futex* p99_futex_init(p99_futex* p00_fut, unsigned p00_ini) {
   if (p00_fut) {
     *p00_fut = (p99_futex)P99_FUTEX_INITIALIZER(p00_ini);
-    mtx_init(&p00_fut->p00_mut, mtx_plain);
-    cnd_init(&p00_fut->p00_cnd);
+    mtx_init(&p00_fut->p99_mut, mtx_plain);
+    cnd_init(&p00_fut->p99_cnd);
   }
   return p00_fut;
 }
@@ -51,17 +53,17 @@ p99_futex* p99_futex_init(p99_futex* p00_fut, unsigned p00_ini) {
 p99_inline
 void p99_futex_destroy(p99_futex* p00_fut) {
   if (p00_fut) {
-    p00_fut->p00_cnt = UINT_MAX;
-    mtx_destroy(&p00_fut->p00_mut);
-    cnd_destroy(&p00_fut->p00_cnd);
+    p00_fut->p99_cnt = UINT_MAX;
+    mtx_destroy(&p00_fut->p99_mut);
+    cnd_destroy(&p00_fut->p99_cnd);
   }
 }
 
 P99_WEAK(p99_futex_load)
 unsigned p99_futex_load(p99_futex volatile* p00_fut) {
   unsigned p00_ret = 0;
-  P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p00_mut) {
-    p00_ret = p00_fut->p00_cnt;
+  P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p99_mut) {
+    p00_ret = p00_fut->p99_cnt;
   }
   return p00_ret;
 }
@@ -73,12 +75,12 @@ p99_inline
 unsigned p00_futex_wakeup(p99_futex volatile* p00_fut,
                           unsigned p00_wmin, unsigned p00_wmax) {
   assert(p00_wmin <= p00_wmax);
-  if (p00_wmax && p00_fut->p00_waiting) {
-    if (p00_wmax > p00_fut->p00_waiting) p00_wmax = p00_fut->p00_waiting;
-    if (p00_wmax > 1u) cnd_broadcast((cnd_t*)&p00_fut->p00_cnd);
-    else cnd_signal((cnd_t*)&p00_fut->p00_cnd);
-    p00_fut->p00_waiting -= p00_wmax;
-    p00_fut->p00_awaking += p00_wmax;
+  if (p00_wmax && p00_fut->p99_waiting) {
+    if (p00_wmax > p00_fut->p99_waiting) p00_wmax = p00_fut->p99_waiting;
+    if (p00_wmax > 1u) cnd_broadcast((cnd_t*)&p00_fut->p99_cnd);
+    else cnd_signal((cnd_t*)&p00_fut->p99_cnd);
+    p00_fut->p99_waiting -= p00_wmax;
+    p00_fut->p99_awaking += p00_wmax;
     return p00_wmin;
   } else {
     return 0;
@@ -98,7 +100,7 @@ void p99_futex_wakeup(p99_futex volatile* p00_fut,
   if (p00_wmax < p00_wmin) p00_wmax = p00_wmin;
   if (p00_wmax) do {
       unsigned p00_wok = 0;
-      P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p00_mut) {
+      P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p99_mut) {
         p00_wok = p00_futex_wakeup(p00_fut, p00_wmin, p00_wmax);
       }
       p00_wmax -= p00_wok;
@@ -108,18 +110,18 @@ void p99_futex_wakeup(p99_futex volatile* p00_fut,
 
 p99_inline
 void p00_futex_wait(p99_futex volatile* p00_fut) {
-  ++p00_fut->p00_waiting;
+  ++p00_fut->p99_waiting;
   /* This loop captures spurious wakeups as they may happen for
      cnd_wait. */
   do {
-    cnd_wait((cnd_t*)&p00_fut->p00_cnd, (mtx_t*)&p00_fut->p00_mut);
-  } while (!p00_fut->p00_awaking);
-  --p00_fut->p00_awaking;
+    cnd_wait((cnd_t*)&p00_fut->p99_cnd, (mtx_t*)&p00_fut->p99_mut);
+  } while (!p00_fut->p99_awaking);
+  --p00_fut->p99_awaking;
 }
 
 P99_WEAK(p99_futex_wait)
 void p99_futex_wait(p99_futex volatile* p00_fut) {
-  P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p00_mut)
+  P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p99_mut)
   p00_futex_wait(p00_fut);
 }
 
@@ -129,10 +131,10 @@ unsigned p99_futex_add(p99_futex volatile* p00_fut, unsigned p00_hmuch,
                        unsigned p00_wmin, unsigned p00_wmax) {
   unsigned p00_ret = 0;
   if (p00_wmax < p00_wmin) p00_wmax = p00_wmin;
-  P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p00_mut) {
-    p00_ret = p00_fut->p00_cnt;
+  P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p99_mut) {
+    p00_ret = p00_fut->p99_cnt;
     register unsigned const p00_des = p00_ret + p00_hmuch;
-    p00_fut->p00_cnt = p00_des;
+    p00_fut->p99_cnt = p00_des;
     if (p00_clen && P99_IN_RANGE(p00_des, p00_cstart, p00_clen)) {
       P00_FUTEX_WAKEUP(p00_fut, p00_wmin, p00_wmax);
     } else {
@@ -151,9 +153,9 @@ unsigned p99_futex_fetch_and_store(p99_futex volatile* p00_fut, unsigned p00_des
                                    unsigned p00_wmin, unsigned p00_wmax) {
   volatile unsigned p00_act = 0;
   if (p00_wmax < p00_wmin) p00_wmax = p00_wmin;
-  P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p00_mut) {
-    p00_act = p00_fut->p00_cnt;
-    p00_fut->p00_cnt = p00_desired;
+  P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p99_mut) {
+    p00_act = p00_fut->p99_cnt;
+    p00_fut->p99_cnt = p00_desired;
     if (p00_clen && P99_IN_RANGE(p00_desired, p00_cstart, p00_clen)) {
       P00_FUTEX_WAKEUP(p00_fut, p00_wmin, p00_wmax);
     } else {
@@ -173,11 +175,11 @@ do {                                                                            
   p99_futex volatile*const p00Mfut = (FUTEX);                                        \
   unsigned volatile p00Mwmin = 0;                                                    \
   unsigned volatile p00Mwmax = 0;                                                    \
-  P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00Mfut->p00_mut) {                                   \
+  P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00Mfut->p99_mut) {                                   \
     for (;;) {                                                                       \
-      register unsigned const ACT = p00Mfut->p00_cnt;                                \
+      register unsigned const ACT = p00Mfut->p99_cnt;                                \
       if (P99_LIKELY(EXPECTED)) {                                                    \
-        p00Mfut->p00_cnt = (DESIRED);                                                \
+        p00Mfut->p99_cnt = (DESIRED);                                                \
         p00Mwmin = (WAKEMIN);                                                        \
         p00Mwmax = (WAKEMAX);                                                        \
         if (p00Mwmax < p00Mwmin) p00Mwmax = p00Mwmin;                                \
@@ -193,4 +195,5 @@ do {                                                                            
  } while (false)
 #endif
 
+#endif /* P00_DOXYGEN */
 #endif
