@@ -6897,106 +6897,106 @@
     <member kind="define">
       <type>#define</type>
       <name>accept</name>
-      <anchorfile>p99__posix__default_8h_a3017fa0b482dc4bb7d103d4c180deed2.html</anchorfile>
-      <anchor>a3017fa0b482dc4bb7d103d4c180deed2</anchor>
+      <anchorfile>group__posix__default_ga3017fa0b482dc4bb7d103d4c180deed2.html</anchorfile>
+      <anchor>ga3017fa0b482dc4bb7d103d4c180deed2</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>getsockopt</name>
-      <anchorfile>p99__posix__default_8h_a6a1673e9cd30f9c97c0eed6db91d2f2d.html</anchorfile>
-      <anchor>a6a1673e9cd30f9c97c0eed6db91d2f2d</anchor>
+      <anchorfile>group__posix__default_ga6a1673e9cd30f9c97c0eed6db91d2f2d.html</anchorfile>
+      <anchor>ga6a1673e9cd30f9c97c0eed6db91d2f2d</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>IN_ADDR_INITIALIZER</name>
-      <anchorfile>p99__posix__default_8h_ac40fb87ccca336589d19ca38361c27ca.html</anchorfile>
-      <anchor>ac40fb87ccca336589d19ca38361c27ca</anchor>
+      <anchorfile>group__posix__default_gac40fb87ccca336589d19ca38361c27ca.html</anchorfile>
+      <anchor>gac40fb87ccca336589d19ca38361c27ca</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>inet_ntop</name>
-      <anchorfile>p99__posix__default_8h_aa4471060ec535bcbf636a5a0311e4243.html</anchorfile>
-      <anchor>aa4471060ec535bcbf636a5a0311e4243</anchor>
+      <anchorfile>group__posix__default_gaa4471060ec535bcbf636a5a0311e4243.html</anchorfile>
+      <anchor>gaa4471060ec535bcbf636a5a0311e4243</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>pthread_barrier_init</name>
-      <anchorfile>p99__posix__default_8h_a764bf33f92fe389caaa33dc5e52ff8e3.html</anchorfile>
-      <anchor>a764bf33f92fe389caaa33dc5e52ff8e3</anchor>
+      <anchorfile>group__posix__default_ga764bf33f92fe389caaa33dc5e52ff8e3.html</anchorfile>
+      <anchor>ga764bf33f92fe389caaa33dc5e52ff8e3</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>pthread_cond_init</name>
-      <anchorfile>p99__posix__default_8h_a606aa140fa734d0c6774e355d0fe3beb.html</anchorfile>
-      <anchor>a606aa140fa734d0c6774e355d0fe3beb</anchor>
+      <anchorfile>group__posix__default_ga606aa140fa734d0c6774e355d0fe3beb.html</anchorfile>
+      <anchor>ga606aa140fa734d0c6774e355d0fe3beb</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>pthread_key_create</name>
-      <anchorfile>p99__posix__default_8h_a4899deeadc2abf181965fa493605461b.html</anchorfile>
-      <anchor>a4899deeadc2abf181965fa493605461b</anchor>
+      <anchorfile>group__posix__default_ga4899deeadc2abf181965fa493605461b.html</anchorfile>
+      <anchor>ga4899deeadc2abf181965fa493605461b</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>pthread_mutex_init</name>
-      <anchorfile>p99__posix__default_8h_aac0022c8e6bd988145077706c4eb9931.html</anchorfile>
-      <anchor>aac0022c8e6bd988145077706c4eb9931</anchor>
+      <anchorfile>group__posix__default_gaac0022c8e6bd988145077706c4eb9931.html</anchorfile>
+      <anchor>gaac0022c8e6bd988145077706c4eb9931</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>pthread_rwlock_init</name>
-      <anchorfile>p99__posix__default_8h_af49b8e49ae55a5dde886d778db0409e4.html</anchorfile>
-      <anchor>af49b8e49ae55a5dde886d778db0409e4</anchor>
+      <anchorfile>group__posix__default_gaf49b8e49ae55a5dde886d778db0409e4.html</anchorfile>
+      <anchor>gaf49b8e49ae55a5dde886d778db0409e4</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>pthread_spin_init</name>
-      <anchorfile>p99__posix__default_8h_a37d5d1ce0742b658fd9c3a5d6a040399.html</anchorfile>
-      <anchor>a37d5d1ce0742b658fd9c3a5d6a040399</anchor>
+      <anchorfile>group__posix__default_ga37d5d1ce0742b658fd9c3a5d6a040399.html</anchorfile>
+      <anchor>ga37d5d1ce0742b658fd9c3a5d6a040399</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>realpath</name>
-      <anchorfile>p99__posix__default_8h_a136fd1304569eb34999e6af42f8f0a98.html</anchorfile>
-      <anchor>a136fd1304569eb34999e6af42f8f0a98</anchor>
+      <anchorfile>group__posix__default_ga136fd1304569eb34999e6af42f8f0a98.html</anchorfile>
+      <anchor>ga136fd1304569eb34999e6af42f8f0a98</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>sem_init</name>
-      <anchorfile>p99__posix__default_8h_a4461bd5cb79c05f949779fcaa8469880.html</anchorfile>
-      <anchor>a4461bd5cb79c05f949779fcaa8469880</anchor>
+      <anchorfile>group__posix__default_ga4461bd5cb79c05f949779fcaa8469880.html</anchorfile>
+      <anchor>ga4461bd5cb79c05f949779fcaa8469880</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>setsockopt</name>
-      <anchorfile>p99__posix__default_8h_a47bba3bfd15eff2c05026e4d386531df.html</anchorfile>
-      <anchor>a47bba3bfd15eff2c05026e4d386531df</anchor>
+      <anchorfile>group__posix__default_ga47bba3bfd15eff2c05026e4d386531df.html</anchorfile>
+      <anchor>ga47bba3bfd15eff2c05026e4d386531df</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>SOCKADDR_IN_INIIALIZER</name>
-      <anchorfile>p99__posix__default_8h_a4b97d56602f2478d64b9877ee945e519.html</anchorfile>
-      <anchor>a4b97d56602f2478d64b9877ee945e519</anchor>
+      <anchorfile>group__posix__default_ga4b97d56602f2478d64b9877ee945e519.html</anchorfile>
+      <anchor>ga4b97d56602f2478d64b9877ee945e519</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>socket</name>
-      <anchorfile>p99__posix__default_8h_a3a4125284e799b1e4cbf06041aa3548c.html</anchorfile>
-      <anchor>a3a4125284e799b1e4cbf06041aa3548c</anchor>
+      <anchorfile>group__posix__default_ga3a4125284e799b1e4cbf06041aa3548c.html</anchorfile>
+      <anchor>ga3a4125284e799b1e4cbf06041aa3548c</anchor>
       <arglist>(...)</arglist>
     </member>
   </compound>
@@ -14525,53 +14525,61 @@
     <name>library_support</name>
     <title>Compiler and system support features</title>
     <filename>group__library__support.html</filename>
+    <subgroup>futex</subgroup>
+    <subgroup>library_wrappers</subgroup>
+    <subgroup>posix_default</subgroup>
+  </compound>
+  <compound kind="group">
+    <name>futex</name>
+    <title>Fast User space locking and signaling</title>
+    <filename>group__futex.html</filename>
     <class kind="struct">p99_futex</class>
     <member kind="function">
       <type>unsigned</type>
       <name>p99_futex_add</name>
-      <anchorfile>group__library__support_ga805fff4efe80ea7e2553f6abf0fd1621.html</anchorfile>
+      <anchorfile>group__futex_ga805fff4efe80ea7e2553f6abf0fd1621.html</anchorfile>
       <anchor>ga805fff4efe80ea7e2553f6abf0fd1621</anchor>
       <arglist>(p99_futex volatile *p00_fut, unsigned p00_hmuch, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>p99_futex_destroy</name>
-      <anchorfile>group__library__support_gac30811f76a7f0734e34e2d86a41965d2.html</anchorfile>
+      <anchorfile>group__futex_gac30811f76a7f0734e34e2d86a41965d2.html</anchorfile>
       <anchor>gac30811f76a7f0734e34e2d86a41965d2</anchor>
       <arglist>(p99_futex *p00_c)</arglist>
     </member>
     <member kind="function">
       <type>unsigned</type>
       <name>p99_futex_fetch_and_store</name>
-      <anchorfile>group__library__support_gae9992e6155e6444297674daf34127bb4.html</anchorfile>
+      <anchorfile>group__futex_gae9992e6155e6444297674daf34127bb4.html</anchorfile>
       <anchor>gae9992e6155e6444297674daf34127bb4</anchor>
       <arglist>(p99_futex volatile *p00_fut, unsigned p00_desired, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
     </member>
     <member kind="function">
       <type>p99_futex *</type>
       <name>p99_futex_init</name>
-      <anchorfile>group__library__support_ga32fa44dd0ab812e0dfdfff658fdd0552.html</anchorfile>
+      <anchorfile>group__futex_ga32fa44dd0ab812e0dfdfff658fdd0552.html</anchorfile>
       <anchor>ga32fa44dd0ab812e0dfdfff658fdd0552</anchor>
       <arglist>(p99_futex *p00_c, unsigned p00_ini)</arglist>
     </member>
     <member kind="function">
       <type>unsigned</type>
       <name>p99_futex_load</name>
-      <anchorfile>group__library__support_ga94890012858ca4b360a0733de64a0116.html</anchorfile>
+      <anchorfile>group__futex_ga94890012858ca4b360a0733de64a0116.html</anchorfile>
       <anchor>ga94890012858ca4b360a0733de64a0116</anchor>
       <arglist>(p99_futex volatile *p00_fut)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>p99_futex_wait</name>
-      <anchorfile>group__library__support_ga918f22eb5c3fab10bbc0e27e15da511b.html</anchorfile>
+      <anchorfile>group__futex_ga918f22eb5c3fab10bbc0e27e15da511b.html</anchorfile>
       <anchor>ga918f22eb5c3fab10bbc0e27e15da511b</anchor>
       <arglist>(p99_futex volatile *p00_fut)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>p99_futex_wakeup</name>
-      <anchorfile>group__library__support_ga2f178f4b43246a2860289e04769ada88.html</anchorfile>
+      <anchorfile>group__futex_ga2f178f4b43246a2860289e04769ada88.html</anchorfile>
       <anchor>ga2f178f4b43246a2860289e04769ada88</anchor>
       <arglist>(p99_futex volatile *p00_fut, unsigned p00_wmin, unsigned p00_wmax)</arglist>
     </member>
@@ -14581,6 +14589,7 @@
     <title>P99</title>
     <filename>group__P99.html</filename>
     <subgroup>compiler</subgroup>
+    <subgroup>library_support</subgroup>
     <subgroup>preprocessor_macros</subgroup>
   </compound>
   <compound kind="group">
@@ -14973,6 +14982,116 @@
       <anchorfile>group__threads_ga8e17390f8dccb206126294240f4dc5dd.html</anchorfile>
       <anchor>ga8e17390f8dccb206126294240f4dc5dd</anchor>
       <arglist>(tss_t p00_key, void *p00_val)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>posix_default</name>
+    <title>Provide default arguments for some POSIX functions</title>
+    <filename>group__posix__default.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>accept</name>
+      <anchorfile>group__posix__default_ga3017fa0b482dc4bb7d103d4c180deed2.html</anchorfile>
+      <anchor>ga3017fa0b482dc4bb7d103d4c180deed2</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>getsockopt</name>
+      <anchorfile>group__posix__default_ga6a1673e9cd30f9c97c0eed6db91d2f2d.html</anchorfile>
+      <anchor>ga6a1673e9cd30f9c97c0eed6db91d2f2d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>IN_ADDR_INITIALIZER</name>
+      <anchorfile>group__posix__default_gac40fb87ccca336589d19ca38361c27ca.html</anchorfile>
+      <anchor>gac40fb87ccca336589d19ca38361c27ca</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>inet_ntop</name>
+      <anchorfile>group__posix__default_gaa4471060ec535bcbf636a5a0311e4243.html</anchorfile>
+      <anchor>gaa4471060ec535bcbf636a5a0311e4243</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>pthread_barrier_init</name>
+      <anchorfile>group__posix__default_ga764bf33f92fe389caaa33dc5e52ff8e3.html</anchorfile>
+      <anchor>ga764bf33f92fe389caaa33dc5e52ff8e3</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>pthread_cond_init</name>
+      <anchorfile>group__posix__default_ga606aa140fa734d0c6774e355d0fe3beb.html</anchorfile>
+      <anchor>ga606aa140fa734d0c6774e355d0fe3beb</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>pthread_key_create</name>
+      <anchorfile>group__posix__default_ga4899deeadc2abf181965fa493605461b.html</anchorfile>
+      <anchor>ga4899deeadc2abf181965fa493605461b</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>pthread_mutex_init</name>
+      <anchorfile>group__posix__default_gaac0022c8e6bd988145077706c4eb9931.html</anchorfile>
+      <anchor>gaac0022c8e6bd988145077706c4eb9931</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>pthread_rwlock_init</name>
+      <anchorfile>group__posix__default_gaf49b8e49ae55a5dde886d778db0409e4.html</anchorfile>
+      <anchor>gaf49b8e49ae55a5dde886d778db0409e4</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>pthread_spin_init</name>
+      <anchorfile>group__posix__default_ga37d5d1ce0742b658fd9c3a5d6a040399.html</anchorfile>
+      <anchor>ga37d5d1ce0742b658fd9c3a5d6a040399</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>realpath</name>
+      <anchorfile>group__posix__default_ga136fd1304569eb34999e6af42f8f0a98.html</anchorfile>
+      <anchor>ga136fd1304569eb34999e6af42f8f0a98</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>sem_init</name>
+      <anchorfile>group__posix__default_ga4461bd5cb79c05f949779fcaa8469880.html</anchorfile>
+      <anchor>ga4461bd5cb79c05f949779fcaa8469880</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>setsockopt</name>
+      <anchorfile>group__posix__default_ga47bba3bfd15eff2c05026e4d386531df.html</anchorfile>
+      <anchor>ga47bba3bfd15eff2c05026e4d386531df</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>SOCKADDR_IN_INIIALIZER</name>
+      <anchorfile>group__posix__default_ga4b97d56602f2478d64b9877ee945e519.html</anchorfile>
+      <anchor>ga4b97d56602f2478d64b9877ee945e519</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>socket</name>
+      <anchorfile>group__posix__default_ga3a4125284e799b1e4cbf06041aa3548c.html</anchorfile>
+      <anchor>ga3a4125284e799b1e4cbf06041aa3548c</anchor>
+      <arglist>(...)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -19156,7 +19275,7 @@
     <member kind="function">
       <type>unsigned</type>
       <name>p99_futex_add</name>
-      <anchorfile>group__library__support_ga805fff4efe80ea7e2553f6abf0fd1621.html</anchorfile>
+      <anchorfile>group__futex_ga805fff4efe80ea7e2553f6abf0fd1621.html</anchorfile>
       <anchor>ga805fff4efe80ea7e2553f6abf0fd1621</anchor>
       <arglist>(p99_futex volatile *p00_fut, unsigned p00_hmuch, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
     </member>
@@ -19170,28 +19289,28 @@
     <member kind="function">
       <type>void</type>
       <name>p99_futex_destroy</name>
-      <anchorfile>group__library__support_gac30811f76a7f0734e34e2d86a41965d2.html</anchorfile>
+      <anchorfile>group__futex_gac30811f76a7f0734e34e2d86a41965d2.html</anchorfile>
       <anchor>gac30811f76a7f0734e34e2d86a41965d2</anchor>
       <arglist>(p99_futex *p00_c)</arglist>
     </member>
     <member kind="function">
       <type>unsigned</type>
       <name>p99_futex_fetch_and_store</name>
-      <anchorfile>group__library__support_gae9992e6155e6444297674daf34127bb4.html</anchorfile>
+      <anchorfile>group__futex_gae9992e6155e6444297674daf34127bb4.html</anchorfile>
       <anchor>gae9992e6155e6444297674daf34127bb4</anchor>
       <arglist>(p99_futex volatile *p00_fut, unsigned p00_desired, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
     </member>
     <member kind="function">
       <type>p99_futex *</type>
       <name>p99_futex_init</name>
-      <anchorfile>group__library__support_ga32fa44dd0ab812e0dfdfff658fdd0552.html</anchorfile>
+      <anchorfile>group__futex_ga32fa44dd0ab812e0dfdfff658fdd0552.html</anchorfile>
       <anchor>ga32fa44dd0ab812e0dfdfff658fdd0552</anchor>
       <arglist>(p99_futex *p00_c, unsigned p00_ini)</arglist>
     </member>
     <member kind="function">
       <type>unsigned</type>
       <name>p99_futex_load</name>
-      <anchorfile>group__library__support_ga94890012858ca4b360a0733de64a0116.html</anchorfile>
+      <anchorfile>group__futex_ga94890012858ca4b360a0733de64a0116.html</anchorfile>
       <anchor>ga94890012858ca4b360a0733de64a0116</anchor>
       <arglist>(p99_futex volatile *p00_fut)</arglist>
     </member>
@@ -19205,14 +19324,14 @@
     <member kind="function">
       <type>void</type>
       <name>p99_futex_wait</name>
-      <anchorfile>group__library__support_ga918f22eb5c3fab10bbc0e27e15da511b.html</anchorfile>
+      <anchorfile>group__futex_ga918f22eb5c3fab10bbc0e27e15da511b.html</anchorfile>
       <anchor>ga918f22eb5c3fab10bbc0e27e15da511b</anchor>
       <arglist>(p99_futex volatile *p00_fut)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>p99_futex_wakeup</name>
-      <anchorfile>group__library__support_ga2f178f4b43246a2860289e04769ada88.html</anchorfile>
+      <anchorfile>group__futex_ga2f178f4b43246a2860289e04769ada88.html</anchorfile>
       <anchor>ga2f178f4b43246a2860289e04769ada88</anchor>
       <arglist>(p99_futex volatile *p00_fut, unsigned p00_wmin, unsigned p00_wmax)</arglist>
     </member>

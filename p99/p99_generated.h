@@ -41,7 +41,7 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Sat, 20 Oct 2012 22:23:21 +0200"
+#define P00_VERSION_DATE "Sun, 18 Nov 2012 09:55:39 +0100"
 #define P00_VERSION_ID ""
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -8218,6 +8218,38 @@ automatically generated, do not change manually.
 #define P00_C11_library
 
 //! @}
+
+//! @}
+
+//! @}
+
+//! @addtogroup library_support
+//! @{
+
+
+#define P00_library_support
+
+//! @addtogroup futex
+//! @{
+
+
+#define P00_futex
+
+//! @}
+
+//! @addtogroup library_wrappers
+//! @{
+
+
+#define P00_library_wrappers
+
+//! @}
+
+//! @addtogroup posix_default
+//! @{
+
+
+#define P00_posix_default
 
 //! @}
 

@@ -17,6 +17,11 @@
 #include "p99_defarg.h"
 #include P99_ADVANCE_ID
 
+/**
+ ** @addtogroup posix_default Provide default arguments for some POSIX functions
+ **
+ ** @{
+ **/
 
 #define P00_POSIX_DEFARG_DOCU(NAME, RET, ...)                             \
 /*! @brief Default arguments for POSIX function NAME */                   \
@@ -133,5 +138,9 @@ P00_POSIX_DEFARG_DOCU(setsockopt, int, int sockfd, int level, int optname, void*
 #define setsockopt(...) P99_IF_GE(P99_NARG(__VA_ARGS__),5)(setsockopt(__VA_ARGS__))(p00_setsockopt(__VA_ARGS__))
 
 #define p00_setsockopt(FD, LEV, OPTNAME, OPTVAL) (setsockopt)(FD, LEV, OPTNAME, OPTVAL, sizeof *(OPTVAL))
+
+/**
+ ** @}
+ **/
 
 #endif      /* !P99_POSIX_DEFAULT_H_ */

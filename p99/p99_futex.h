@@ -38,6 +38,39 @@ typedef p99_futex_c11 p99_futex;
  ** @{
  **/
 
+/**
+ ** @}
+ **/
+
+
+/**
+ ** @addtogroup futex Fast User space locking and signaling
+ **
+ ** @brief A simple to use integer valued conditional for user code
+ **
+ ** Most C11 or POSIX lock-and-wait structures have the disadvantage
+ ** that they may have so-called spurious wakeups. These are wakeups
+ ** that are not related to the application code signaling changes,
+ ** but wakeups that are related to some internal OS events in which
+ ** the programmer (that is not a system programmer) usually is not
+ ** interested.
+ **
+ ** Starting from a brilliant idea in the Linux kernel, this
+ ** implements a feature that can be seen as a primitive for locks and
+ ** wakeup control structure. In fact it could be used to build up all
+ ** other usual control structures (mutexes, conditional variables,
+ ** read-write locks, barriers, semaphores ...)
+ **
+ ** There is only one feature that is yet missing, here, which is wait
+ ** calls that would time out, such as ::mtx_timedlock or
+ ** ::cnd_timedwait provide it, e.g. There is no principal hurdle to
+ ** overcome for the addition of such a feature, I just don't use
+ ** these often, and so I am not yet sure about what interface I would
+ ** provide for this.
+ **
+ ** @{
+ **/
+
 #ifdef P00_DOXYGEN
 /**
  ** @brief A counter similar to a conditional variable that allows
@@ -123,7 +156,7 @@ struct p99_futex { };
 
 
 /**
- ** @dfn P99_FUTEX_INITIALIZER(INITIAL)
+ ** @def P99_FUTEX_INITIALIZER(INITIAL)
  ** @brief Initialize an ::p99_futex object.
  ** @related p99_futex
  **/
