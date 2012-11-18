@@ -18,7 +18,7 @@
 #include "p99_futex.h"
 
 /**
- ** @addtogroup library_support
+ ** @addtogroup futex
  ** @{
  **/
 
@@ -66,11 +66,17 @@
  ** @see p99_notifier_load
  ** @see p99_notifier_unset
  **/
+#ifdef P00_DOXYGEN
+struct p99_notifier { };
+#else
 typedef p99_futex p99_notifier;
+#endif
 
 /**
+ ** @brief Initialize a notifier to value @a p00_v
  ** @related p99_notifier
  **/
+P99_DEFARG_DOCU(p99_notifier_init)
 p99_inline
 p99_notifier* p99_notifier_init(p99_notifier* p00_n, unsigned p00_v) {
   return p99_futex_init(p00_n, p00_v);
@@ -83,6 +89,7 @@ p99_notifier* p99_notifier_init(p99_notifier* p00_n, unsigned p00_v) {
 
 
 /**
+ ** @brief destroy a notifier
  ** @related p99_notifier
  **/
 p99_inline
@@ -99,6 +106,7 @@ void p99_notifier_destroy(p99_notifier* p00_n) {
  ** @remark @a p00_v defaults to @c 1.
  ** @related p99_notifier
  **/
+P99_DEFARG_DOCU(p99_notifier_block)
 P00_FUTEX_INLINE(p99_notifier_block)
 void p99_notifier_block(p99_notifier volatile* p00_n, unsigned p00_v) {
   P99_FUTEX_COMPARE_EXCHANGE(p00_n, p00_act,
@@ -136,6 +144,7 @@ unsigned p99_notifier_load(p99_notifier volatile* p00_n) {
  ** @remark @a p00_v defaults to @c 1.
  ** @related p99_notifier
  **/
+P99_DEFARG_DOCU(p99_notifier_set)
 p99_inline
 void p99_notifier_set(p99_notifier volatile* p00_n, unsigned p00_v) {
   p99_futex_fetch_and_store(p00_n, p00_v, p00_v, 1u, 0u, P99_FUTEX_MAX_WAITERS);

@@ -2994,6 +2994,48 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>p99_count.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__count_8h</filename>
+    <includes id="p99__futex_8h" name="p99_futex.h" local="yes" imported="no">p99_futex.h</includes>
+    <class kind="struct">p99_count</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_ACCOUNT</name>
+      <anchorfile>group__futex_gac29bbeff7d7947339d71ad4dafec66e9.html</anchorfile>
+      <anchor>gac29bbeff7d7947339d71ad4dafec66e9</anchor>
+      <arglist>(COUNT)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>p99_count_init</name>
+      <anchorfile>group__futex_gafead674be949a1a542b6e0464a9ad293.html</anchorfile>
+      <anchor>gafead674be949a1a542b6e0464a9ad293</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_COUNT_INITIALIZER</name>
+      <anchorfile>group__futex_gad9e71c248e0e42337ee29ca51f2f028a.html</anchorfile>
+      <anchor>gad9e71c248e0e42337ee29ca51f2f028a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_count_destroy</name>
+      <anchorfile>group__futex_ga18f10b5fc2050a458daeef49a1d62291.html</anchorfile>
+      <anchor>ga18f10b5fc2050a458daeef49a1d62291</anchor>
+      <arglist>(p99_count *p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_count *</type>
+      <name>p99_count_init</name>
+      <anchorfile>group__futex_ga5ba2e0b3a412360132eab61dcfa378f0.html</anchorfile>
+      <anchor>ga5ba2e0b3a412360132eab61dcfa378f0</anchor>
+      <arglist>(p99_count *p00_c, unsigned p00_v)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>p99_defarg.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__defarg_8h</filename>
@@ -6825,6 +6867,20 @@
       <anchorfile>group__preprocessor__allocation_ga3755d4130db0334ebda451ddd62c5a89.html</anchorfile>
       <anchor>ga3755d4130db0334ebda451ddd62c5a89</anchor>
       <arglist>(size_t p00_m, size_t p00_n)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>p99_notifier.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__notifier_8h</filename>
+    <includes id="p99__futex_8h" name="p99_futex.h" local="yes" imported="no">p99_futex.h</includes>
+    <class kind="struct">p99_notifier</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_NOTIFIER_INITIALIZER</name>
+      <anchorfile>group__futex_gadceb314ba39fa6712030576ea1466bc2.html</anchorfile>
+      <anchor>gadceb314ba39fa6712030576ea1466bc2</anchor>
+      <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -13578,6 +13634,161 @@
     </member>
   </compound>
   <compound kind="group">
+    <name>futex</name>
+    <title>Fast User space locking and signaling</title>
+    <filename>group__futex.html</filename>
+    <class kind="struct">p99_count</class>
+    <class kind="struct">p99_futex</class>
+    <class kind="struct">p99_notifier</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_ACCOUNT</name>
+      <anchorfile>group__futex_gac29bbeff7d7947339d71ad4dafec66e9.html</anchorfile>
+      <anchor>gac29bbeff7d7947339d71ad4dafec66e9</anchor>
+      <arglist>(COUNT)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>p99_count_init</name>
+      <anchorfile>group__futex_gafead674be949a1a542b6e0464a9ad293.html</anchorfile>
+      <anchor>gafead674be949a1a542b6e0464a9ad293</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_COUNT_INITIALIZER</name>
+      <anchorfile>group__futex_gad9e71c248e0e42337ee29ca51f2f028a.html</anchorfile>
+      <anchor>gad9e71c248e0e42337ee29ca51f2f028a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_NOTIFIER_INITIALIZER</name>
+      <anchorfile>group__futex_gadceb314ba39fa6712030576ea1466bc2.html</anchorfile>
+      <anchor>gadceb314ba39fa6712030576ea1466bc2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_count_destroy</name>
+      <anchorfile>group__futex_ga18f10b5fc2050a458daeef49a1d62291.html</anchorfile>
+      <anchor>ga18f10b5fc2050a458daeef49a1d62291</anchor>
+      <arglist>(p99_count *p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_count *</type>
+      <name>p99_count_init</name>
+      <anchorfile>group__futex_ga5ba2e0b3a412360132eab61dcfa378f0.html</anchorfile>
+      <anchor>ga5ba2e0b3a412360132eab61dcfa378f0</anchor>
+      <arglist>(p99_count *p00_c, unsigned p00_v)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned</type>
+      <name>p99_count_value</name>
+      <anchorfile>group__futex_gab91761bcbc900d66b2105fa51ece69f7.html</anchorfile>
+      <anchor>gab91761bcbc900d66b2105fa51ece69f7</anchor>
+      <arglist>(p99_count volatile *p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_count_wait</name>
+      <anchorfile>group__futex_gac3ff44e3c10e715562bde8c625002565.html</anchorfile>
+      <anchor>gac3ff44e3c10e715562bde8c625002565</anchor>
+      <arglist>(p99_count volatile *p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned</type>
+      <name>p99_futex_add</name>
+      <anchorfile>group__futex_ga805fff4efe80ea7e2553f6abf0fd1621.html</anchorfile>
+      <anchor>ga805fff4efe80ea7e2553f6abf0fd1621</anchor>
+      <arglist>(p99_futex volatile *p00_fut, unsigned p00_hmuch, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_futex_destroy</name>
+      <anchorfile>group__futex_gac30811f76a7f0734e34e2d86a41965d2.html</anchorfile>
+      <anchor>gac30811f76a7f0734e34e2d86a41965d2</anchor>
+      <arglist>(p99_futex *p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned</type>
+      <name>p99_futex_fetch_and_store</name>
+      <anchorfile>group__futex_gae9992e6155e6444297674daf34127bb4.html</anchorfile>
+      <anchor>gae9992e6155e6444297674daf34127bb4</anchor>
+      <arglist>(p99_futex volatile *p00_fut, unsigned p00_desired, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_futex *</type>
+      <name>p99_futex_init</name>
+      <anchorfile>group__futex_ga32fa44dd0ab812e0dfdfff658fdd0552.html</anchorfile>
+      <anchor>ga32fa44dd0ab812e0dfdfff658fdd0552</anchor>
+      <arglist>(p99_futex *p00_c, unsigned p00_ini)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned</type>
+      <name>p99_futex_load</name>
+      <anchorfile>group__futex_ga94890012858ca4b360a0733de64a0116.html</anchorfile>
+      <anchor>ga94890012858ca4b360a0733de64a0116</anchor>
+      <arglist>(p99_futex volatile *p00_fut)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_futex_wait</name>
+      <anchorfile>group__futex_ga918f22eb5c3fab10bbc0e27e15da511b.html</anchorfile>
+      <anchor>ga918f22eb5c3fab10bbc0e27e15da511b</anchor>
+      <arglist>(p99_futex volatile *p00_fut)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_futex_wakeup</name>
+      <anchorfile>group__futex_ga2f178f4b43246a2860289e04769ada88.html</anchorfile>
+      <anchor>ga2f178f4b43246a2860289e04769ada88</anchor>
+      <arglist>(p99_futex volatile *p00_fut, unsigned p00_wmin, unsigned p00_wmax)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_notifier_block</name>
+      <anchorfile>group__futex_ga7da4887d51f589428b6fd92ce5d56091.html</anchorfile>
+      <anchor>ga7da4887d51f589428b6fd92ce5d56091</anchor>
+      <arglist>(p99_notifier volatile *p00_n, unsigned p00_v)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_notifier_destroy</name>
+      <anchorfile>group__futex_ga768877d86a55bf22eb8150cb81d52d77.html</anchorfile>
+      <anchor>ga768877d86a55bf22eb8150cb81d52d77</anchor>
+      <arglist>(p99_notifier *p00_n)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_notifier *</type>
+      <name>p99_notifier_init</name>
+      <anchorfile>group__futex_ga02a63efe375a33e5ac5eae04a2475bd3.html</anchorfile>
+      <anchor>ga02a63efe375a33e5ac5eae04a2475bd3</anchor>
+      <arglist>(p99_notifier *p00_n, unsigned p00_v)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned</type>
+      <name>p99_notifier_load</name>
+      <anchorfile>group__futex_gabf23aa78fdefc22c05be23540302e926.html</anchorfile>
+      <anchor>gabf23aa78fdefc22c05be23540302e926</anchor>
+      <arglist>(p99_notifier volatile *p00_n)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_notifier_set</name>
+      <anchorfile>group__futex_ga08e439b4a0bd6d94dd193454241ef746.html</anchorfile>
+      <anchor>ga08e439b4a0bd6d94dd193454241ef746</anchor>
+      <arglist>(p99_notifier volatile *p00_n, unsigned p00_v)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_notifier_unset</name>
+      <anchorfile>group__futex_gac291f07ce15b6a19e35aac36d99967e0.html</anchorfile>
+      <anchor>gac291f07ce15b6a19e35aac36d99967e0</anchor>
+      <arglist>(p99_notifier volatile *p00_n)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
     <name>code_augmenting</name>
     <title>C Programming facilities</title>
     <filename>group__code__augmenting.html</filename>
@@ -14528,61 +14739,6 @@
     <subgroup>futex</subgroup>
     <subgroup>library_wrappers</subgroup>
     <subgroup>posix_default</subgroup>
-  </compound>
-  <compound kind="group">
-    <name>futex</name>
-    <title>Fast User space locking and signaling</title>
-    <filename>group__futex.html</filename>
-    <class kind="struct">p99_futex</class>
-    <member kind="function">
-      <type>unsigned</type>
-      <name>p99_futex_add</name>
-      <anchorfile>group__futex_ga805fff4efe80ea7e2553f6abf0fd1621.html</anchorfile>
-      <anchor>ga805fff4efe80ea7e2553f6abf0fd1621</anchor>
-      <arglist>(p99_futex volatile *p00_fut, unsigned p00_hmuch, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>p99_futex_destroy</name>
-      <anchorfile>group__futex_gac30811f76a7f0734e34e2d86a41965d2.html</anchorfile>
-      <anchor>gac30811f76a7f0734e34e2d86a41965d2</anchor>
-      <arglist>(p99_futex *p00_c)</arglist>
-    </member>
-    <member kind="function">
-      <type>unsigned</type>
-      <name>p99_futex_fetch_and_store</name>
-      <anchorfile>group__futex_gae9992e6155e6444297674daf34127bb4.html</anchorfile>
-      <anchor>gae9992e6155e6444297674daf34127bb4</anchor>
-      <arglist>(p99_futex volatile *p00_fut, unsigned p00_desired, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
-    </member>
-    <member kind="function">
-      <type>p99_futex *</type>
-      <name>p99_futex_init</name>
-      <anchorfile>group__futex_ga32fa44dd0ab812e0dfdfff658fdd0552.html</anchorfile>
-      <anchor>ga32fa44dd0ab812e0dfdfff658fdd0552</anchor>
-      <arglist>(p99_futex *p00_c, unsigned p00_ini)</arglist>
-    </member>
-    <member kind="function">
-      <type>unsigned</type>
-      <name>p99_futex_load</name>
-      <anchorfile>group__futex_ga94890012858ca4b360a0733de64a0116.html</anchorfile>
-      <anchor>ga94890012858ca4b360a0733de64a0116</anchor>
-      <arglist>(p99_futex volatile *p00_fut)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>p99_futex_wait</name>
-      <anchorfile>group__futex_ga918f22eb5c3fab10bbc0e27e15da511b.html</anchorfile>
-      <anchor>ga918f22eb5c3fab10bbc0e27e15da511b</anchor>
-      <arglist>(p99_futex volatile *p00_fut)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>p99_futex_wakeup</name>
-      <anchorfile>group__futex_ga2f178f4b43246a2860289e04769ada88.html</anchorfile>
-      <anchor>ga2f178f4b43246a2860289e04769ada88</anchor>
-      <arglist>(p99_futex volatile *p00_fut, unsigned p00_wmin, unsigned p00_wmax)</arglist>
-    </member>
   </compound>
   <compound kind="group">
     <name>P99</name>
@@ -19257,6 +19413,45 @@
       <arglist>(mtx_t *p00_mtx)</arglist>
     </member>
   </compound>
+  <compound kind="struct">
+    <name>p99_count</name>
+    <filename>structp99__count.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>p99_count_dec</name>
+      <anchorfile>structp99__count_aa5cf9645940f8ef12d8814f1d34532ed.html</anchorfile>
+      <anchor>aa5cf9645940f8ef12d8814f1d34532ed</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>p99_count_inc</name>
+      <anchorfile>structp99__count_a3c85949e83cc69fc40e55bda718400a2.html</anchorfile>
+      <anchor>a3c85949e83cc69fc40e55bda718400a2</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>p99_count_inc_conditionally</name>
+      <anchorfile>structp99__count_af7901a684f205bc5c99ef97823e7a52a.html</anchorfile>
+      <anchor>af7901a684f205bc5c99ef97823e7a52a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned</type>
+      <name>p99_count_value</name>
+      <anchorfile>group__futex_gab91761bcbc900d66b2105fa51ece69f7.html</anchorfile>
+      <anchor>gab91761bcbc900d66b2105fa51ece69f7</anchor>
+      <arglist>(p99_count volatile *p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_count_wait</name>
+      <anchorfile>group__futex_gac3ff44e3c10e715562bde8c625002565.html</anchorfile>
+      <anchor>gac3ff44e3c10e715562bde8c625002565</anchor>
+      <arglist>(p99_count volatile *p00_c)</arglist>
+    </member>
+  </compound>
   <compound kind="union">
     <name>p99_endian_2</name>
     <filename>unionp99__endian__2.html</filename>
@@ -19373,6 +19568,52 @@
       <anchorfile>structp99__futex__c11_a1a6042e6199e2aca7d9ea4c54371c148.html</anchorfile>
       <anchor>a1a6042e6199e2aca7d9ea4c54371c148</anchor>
       <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>p99_notifier</name>
+    <filename>structp99__notifier.html</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_notifier_block</name>
+      <anchorfile>group__futex_ga7da4887d51f589428b6fd92ce5d56091.html</anchorfile>
+      <anchor>ga7da4887d51f589428b6fd92ce5d56091</anchor>
+      <arglist>(p99_notifier volatile *p00_n, unsigned p00_v)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_notifier_destroy</name>
+      <anchorfile>group__futex_ga768877d86a55bf22eb8150cb81d52d77.html</anchorfile>
+      <anchor>ga768877d86a55bf22eb8150cb81d52d77</anchor>
+      <arglist>(p99_notifier *p00_n)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_notifier *</type>
+      <name>p99_notifier_init</name>
+      <anchorfile>group__futex_ga02a63efe375a33e5ac5eae04a2475bd3.html</anchorfile>
+      <anchor>ga02a63efe375a33e5ac5eae04a2475bd3</anchor>
+      <arglist>(p99_notifier *p00_n, unsigned p00_v)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned</type>
+      <name>p99_notifier_load</name>
+      <anchorfile>group__futex_gabf23aa78fdefc22c05be23540302e926.html</anchorfile>
+      <anchor>gabf23aa78fdefc22c05be23540302e926</anchor>
+      <arglist>(p99_notifier volatile *p00_n)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_notifier_set</name>
+      <anchorfile>group__futex_ga08e439b4a0bd6d94dd193454241ef746.html</anchorfile>
+      <anchor>ga08e439b4a0bd6d94dd193454241ef746</anchor>
+      <arglist>(p99_notifier volatile *p00_n, unsigned p00_v)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_notifier_unset</name>
+      <anchorfile>group__futex_gac291f07ce15b6a19e35aac36d99967e0.html</anchorfile>
+      <anchor>gac291f07ce15b6a19e35aac36d99967e0</anchor>
+      <arglist>(p99_notifier volatile *p00_n)</arglist>
     </member>
   </compound>
   <compound kind="struct">
@@ -19530,6 +19771,7 @@
     <file>p99_clib.h</file>
     <file>p99_compiler.h</file>
     <file>p99_constraint.h</file>
+    <file>p99_count.h</file>
     <file>p99_defarg.h</file>
     <file>p99_double.h</file>
     <file>p99_enum.h</file>
@@ -19547,6 +19789,7 @@
     <file>p99_logical.h</file>
     <file>p99_map.h</file>
     <file>p99_new.h</file>
+    <file>p99_notifier.h</file>
     <file>p99_paste.h</file>
     <file>p99_posix_default.h</file>
     <file>p99_special.c</file>

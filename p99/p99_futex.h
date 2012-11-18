@@ -128,7 +128,7 @@ typedef p99_futex_c11 p99_futex;
  ** (or scarcely) using resources. Such a waiting thread will only be
  ** awoken if another thread wants so. Either by calling an explicit
  ** ::p99_futex_wakeup, or implicitly by changing the value through
- ** :p99_futex_fetch_and_store, ::p99_futex_add or
+ ** ::p99_futex_fetch_and_store, ::p99_futex_add or
  ** ::P99_FUTEX_COMPARE_EXCHANGE.
  **
  ** :p99_futex_fetch_and_store and ::p99_futex_add wake up waiters if
@@ -148,7 +148,9 @@ typedef p99_futex_c11 p99_futex;
  ** - a fall back that mutexes all access and uses a condition variable for
  **   signaling.
  **
- ** @see P99_FUTEX_COMPARE_EXCHANGE for some examples.
+ ** @see P99_FUTEX_COMPARE_EXCHANGE for some examples
+ ** @see p99_notifier for a derived data structure to have a group of threads wait for an event
+ ** @see p99_count for a resource counter
  **/
 struct p99_futex { };
 #endif
@@ -206,6 +208,7 @@ p99_inline void p99_futex_destroy(p99_futex* p00_c);
  ** @remark @a p00_wmax defaults to ::P99_FUTEX_MAX_WAITERS
  ** @related p99_futex
  **/
+P99_DEFARG_DOCU(p99_futex_add)
 P00_FUTEX_INLINE(p99_futex_add) unsigned p99_futex_add(p99_futex volatile* p00_fut, unsigned p00_hmuch,
     unsigned p00_cstart, unsigned p00_clen,
     unsigned p00_wmin, unsigned p00_wmax);
@@ -246,6 +249,7 @@ P00_FUTEX_INLINE(p99_futex_load) unsigned p99_futex_load(p99_futex volatile* p00
  ** @remark @a p00_wmax defaults to ::P99_FUTEX_MAX_WAITERS
  ** @related p99_futex
  **/
+P99_DEFARG_DOCU(p99_futex_fetch_and_store)
 P00_FUTEX_INLINE(p99_futex_fetch_and_store) unsigned p99_futex_fetch_and_store(p99_futex volatile* p00_fut, unsigned p00_desired,
     unsigned p00_cstart, unsigned p00_clen,
     unsigned p00_wmin, unsigned p00_wmax);
@@ -265,7 +269,7 @@ P00_FUTEX_INLINE(p99_futex_fetch_and_store) unsigned p99_futex_fetch_and_store(p
  ** functionality conditionally as a side effect when they change the
  ** value of the futex.
  **
- ** @see P99_FUTEX_COMPARE_EXCHANGE for more detailed explanations.
+ ** @see P99_FUTEX_COMPARE_EXCHANGE for more detailed explanations
  **/
 P00_FUTEX_INLINE(p99_futex_wakeup)
 void p99_futex_wakeup(p99_futex volatile* p00_fut,

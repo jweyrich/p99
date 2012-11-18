@@ -17,7 +17,7 @@
 #include "p99_futex.h"
 
 /**
- ** @addtogroup library_support Compiler and system support features
+ ** @addtogroup futex
  ** @{
  **/
 
@@ -31,8 +31,11 @@
  ** - one that mutexes all access and uses a condition variable for
  **   signaling.
  **/
+#ifdef P00_DOXYGEN
+struct p99_count {};
+#else
 typedef p99_futex p99_count;
-
+#endif
 
 /**
  ** @brief Initialize an ::p99_count object.
@@ -42,6 +45,7 @@ typedef p99_futex p99_count;
 /**
  ** @brief Initialize an ::p99_count object.
  **/
+P99_DEFARG_DOCU(p99_notifier_init)
 p99_inline
 p99_count* p99_count_init(p99_count* p00_c, unsigned p00_v) {
   return p99_futex_init(p00_c, p00_v);
@@ -68,6 +72,7 @@ P99_BLOCK_DOCUMENT
  ** @remark @a p00_hm defaults to 1 if omitted.
  ** @related p99_count
  **/
+P99_DEFARG_DOCU(p99_count_inc)
 p99_inline unsigned p99_count_inc(p99_count volatile* p00_c, unsigned p00_hm) {
   return p99_futex_add(p00_c, p00_hm, 0U, 0U, 0U, 0U);
 }
@@ -81,6 +86,7 @@ p99_inline unsigned p99_count_inc(p99_count volatile* p00_c, unsigned p00_hm) {
  ** @remark @a p00_hm defaults to 1 if omitted.
  ** @related p99_count
  **/
+P99_DEFARG_DOCU(p99_count_inc_conditionally)
 P00_FUTEX_INLINE(p99_count_inc_conditionally)
 unsigned p99_count_inc_conditionally(p99_count volatile* p00_c, unsigned p00_hm) {
   unsigned p00_ret = 0;
@@ -115,6 +121,7 @@ p99_inline unsigned p99_count_value(p99_count volatile* p00_c) {
  ** @remark @a p00_hm defaults to 1 if omitted.
  ** @related p99_count
  **/
+P99_DEFARG_DOCU(p99_count_dec)
 p99_inline
 unsigned p99_count_dec(p99_count volatile* p00_c, unsigned p00_hm) {
   unsigned ret = p99_futex_add(p00_c, -(signed)p00_hm, 0U, 1U, 0U, P99_FUTEX_MAX_WAITERS);
