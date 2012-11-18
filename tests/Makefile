@@ -104,7 +104,7 @@ depend Makefile.inc: Makefile
 	${CC} $(CFLAGS) $(IPATH) -MM $(SRC) $(ASRC) test-p99-inline.c test-p99-inline-empty.c > Makefile.inc
 	${CC} $(CFLAGS) $(IPATH) -MM $(SRC) $(ASRC) test-p99-inline.c test-p99-inline-empty.c | sed 's/[.]o/.s/g' >> Makefile.inc
 clean:
-	-$(RM) $(NAME) $(OBJS) $(ASSEM) $(ALIB) *~
+	-$(RM) $(NAME) $(OBJS) $(AOBJS) $(ASSEM) $(ALIB) *~
 distclean: clean
 	-$(RM) Makefile.inc
 fclean:
