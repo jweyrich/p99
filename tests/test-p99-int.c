@@ -43,6 +43,22 @@ DEF();
 DEF(l);
 DEF(ll);
 
+int compar(void const* a, void const* b, void* context) {
+  unsigned const * A = a;
+  unsigned const * B = b;
+  {
+    unsigned a = *A;
+    unsigned b = *B;
+    return
+      ((a == b)
+       ? 0
+       : ((a < b)
+          ? -1
+          : 1));
+  }
+}
+
+
 /* check how an addition looks like if overflow trapping is enabled */
 int just_add(int a, int b) {
   return a + b;
@@ -603,5 +619,23 @@ int i:UINT_WIDTH;
     err[0] = 0;
     sum = p99_subhh(val, oth, err);
     printf ("subtrackting %d from SCHAR_MIN gives %d: %s\n", oth, sum, P99_STRERROR(err[0]));
+  }
+  {
+    unsigned A[6] = { 1, 3, 4, 5, 8, 10 };
+    unsigned el = 5;
+    unsigned * res = bsearch_s(&el, A, 6, sizeof *A, compar, 0);
+    printf("searching for %u, gave %u\n", el, res ? *(unsigned*)res : UINT_MAX);
+    el = 11;
+    res = bsearch_s(&el, A, 6, sizeof *A, compar, 0);
+    printf("searching for %u, gave %u\n", el, res ? *(unsigned*)res : UINT_MAX);
+    el = 1;
+    res = bsearch_s(&el, A, 6, sizeof *A, compar, 0);
+    printf("searching for %u, gave %u\n", el, res ? *(unsigned*)res : UINT_MAX);
+    el = 7;
+    res = bsearch_s(&el, A, 6, sizeof *A, compar, 0);
+    printf("searching for %u, gave %u\n", el, res ? *(unsigned*)res : UINT_MAX);
+    el = 0;
+    res = bsearch_s(&el, A, 6, sizeof *A, compar, 0);
+    printf("searching for %u, gave %u\n", el, res ? *(unsigned*)res : UINT_MAX);
   }
 }

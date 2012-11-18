@@ -511,6 +511,50 @@ errno_t p00_strncat_s(char * restrict p00_s1,
 /** @ingroup C11_library **/
 # define strncat_s(S1, S1MAX, S2, N)  P99_CONSTRAINT_TRIGGER(p00_strncat_s((S1), (S1MAX), (S2), (N)), "strncat_s runtime constraint violation")
 
+p99_inline
+void *p00_bsearch_s(char const* p00_file, char const* p00_context,
+                    const void *key, const void *base,
+                    rsize_t nmemb, rsize_t size,
+                    int (*compar)(const void *k, const void *y,
+                                  void *context),
+                    void *context) {
+  if (nmemb) {
+    if (nmemb > RSIZE_MAX || size > RSIZE_MAX) {
+      p00_constraint_call(ERANGE, p00_file, p00_context, "bsearch_s runtime constraint violation");
+    } else if (nmemb && (!key || !base || !compar)) {
+      p00_constraint_call(EINVAL, p00_file, p00_context, "bsearch_s runtime constraint violation");
+    } else {
+      typedef unsigned char const dummy[size];
+      dummy const * dkey = (void*)key;
+      dummy const * dbase = (void*)base;
+      /* bot and top will always be the maximal (minimal) index that
+         is known to be smaller (larger) than the search item. This
+         strategy here even works when nmemb == (rsize_t)-1. The
+         wonders of unsigned arithmetic... */
+      for (register rsize_t bot = -1, top = nmemb;
+           (top - bot) != 1;) {
+        /* unsigned arithmetic just wraps around, so this is ok            */
+        rsize_t med = (bot + top) / 2;
+        /* We always have the assertions                                   */
+        /* assert((bot == top && top == (rsize_t)-1)                       */
+        /*        || (top - bot > 1));                                     */
+        /* assert(med < top);                                              */
+        /* assert(bot < med || (bot == (rsize_t)-1 && med != (rsize_t)-1); */
+        int co = compar(dkey, dbase + med, context);
+        printf("%zu < %zu < %zu, result is %d\n", bot, med, top, co);
+        if (!co) return dbase + med;
+        else if (co < 0) top = med;
+        else bot = med;
+      }
+    }
+  }
+  return 0;
+}
+
+#define bsearch_s(...) p00_bsearch_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
+
+
+
 # endif
 
 /**
