@@ -1,7 +1,7 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-              */
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work are as follows:              */
+/* the author and copyright holder for this work is                           */
 /* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
@@ -25,17 +25,17 @@
  **/
 
 
-#define P00_ATOMIC_FETCH_AND_STORE_DECLARE(T, N)                        \
-p99_inline                                                              \
+#define P00_ATOMIC_FETCH_AND_STORE_DECLARE(T, N)                             \
+p99_inline                                                                   \
 T P99_PASTE(p00_atomic_fetch_and_store_, N)(T volatile * p00_p, T p00_des) { \
-  T p00_ret = *p00_p;                                                   \
-  for (;;) {                                                            \
-    T p00_val = __sync_val_compare_and_swap(p00_p, p00_ret, p00_des);   \
-    if (P99_LIKELY(p00_val == p00_ret)) break;                          \
-    p00_ret = p00_val;                                                  \
-  }                                                                     \
-  return p00_ret;                                                       \
-}                                                                       \
+  T p00_ret = *p00_p;                                                        \
+  for (;;) {                                                                 \
+    T p00_val = __sync_val_compare_and_swap(p00_p, p00_ret, p00_des);        \
+    if (P99_LIKELY(p00_val == p00_ret)) break;                               \
+    p00_ret = p00_val;                                                       \
+  }                                                                          \
+  return p00_ret;                                                            \
+}                                                                            \
 P99_MACRO_END(P00_ATOMIC_FETCH_AND_STORE_DECLARE)
 
 P00_ATOMIC_FETCH_AND_STORE_DECLARE(uint8_t, 1);

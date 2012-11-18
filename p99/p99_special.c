@@ -150,6 +150,7 @@
  ** @see P99_FPRINTF(F, FORMAT, ...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_FREALLOC(P, T, F, N) for arguments <code>T</code>, <code>F</code>, <code>N</code>.
  ** @see P99_FSIZEOF(T, F, N) for arguments <code>T</code>, <code>F</code>, <code>N</code>.
+ ** @see P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX) for argument <code>ACT</code>.
  ** @see P99_GENERIC(...) for argument <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_GENERIC_LIT(...) for argument <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_GENERIC_SIZE(UI, ...) for arguments <code>UI</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.

@@ -2,13 +2,12 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* all rights reserved,  2011-2012 Jens Gustedt, INRIA, France                */
+/* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
 /*                                                                            */
-/* This file is part of the P99 project. You received this file as as         */
-/* part of a confidential agreement and you may generally not                 */
-/* redistribute it and/or modify it, unless under the terms as given in       */
-/* the file LICENSE.  It is distributed without any warranty; without         */
-/* even the implied warranty of merchantability or fitness for a              */
+/* This file is free software; it is part of the P99 project.                 */
+/* You can redistribute it and/or modify it under the terms of the QPL as     */
+/* given in the file LICENSE. It is distributed without any warranty;         */
+/* without even the implied warranty of merchantability or fitness for a      */
 /* particular purpose.                                                        */
 /*                                                                            */
 #ifndef P99_FUTEX_H
@@ -171,8 +170,8 @@ p99_inline void p99_futex_destroy(p99_futex* p00_c);
  ** @related p99_futex
  **/
 P00_FUTEX_INLINE(p99_futex_add) unsigned p99_futex_add(p99_futex volatile* p00_fut, unsigned p00_hmuch,
-                               unsigned p00_cstart, unsigned p00_clen,
-                               unsigned p00_wmin, unsigned p00_wmax);
+    unsigned p00_cstart, unsigned p00_clen,
+    unsigned p00_wmin, unsigned p00_wmax);
 
 #ifndef DOXYGEN
 #define p99_futex_add(...) P99_CALL_DEFARG(p99_futex_add, 6, __VA_ARGS__)
@@ -233,7 +232,7 @@ P00_FUTEX_INLINE(p99_futex_fetch_and_store) unsigned p99_futex_fetch_and_store(p
  **/
 P00_FUTEX_INLINE(p99_futex_wakeup)
 void p99_futex_wakeup(p99_futex volatile* p00_fut,
-                       unsigned p00_wmin, unsigned p00_wmax);
+                      unsigned p00_wmin, unsigned p00_wmax);
 
 
 /**
@@ -511,6 +510,7 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
  ** }
  ** @endcode
  **/
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_FUTEX_COMPARE_EXCHANGE, 1)
 #define P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX)
 #endif
 

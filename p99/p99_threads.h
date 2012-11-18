@@ -1014,20 +1014,20 @@ enum {
 p99_inline
 clockid_t p00_getclockid(int base) {
   return (base >= p00_time_base_max)
-    ? CLOCK_REALTIME
-    : (clockid_t const[]){
+         ? CLOCK_REALTIME
+  : (clockid_t const[]) {
     [p00_time_base] = CLOCK_REALTIME,
-    [p00_time_utc] = CLOCK_REALTIME,
+                      [p00_time_utc] = CLOCK_REALTIME,
 # ifdef CLOCK_MONOTONIC
-      [p00_time_monotonic] = CLOCK_MONOTONIC,
+                                       [p00_time_monotonic] = CLOCK_MONOTONIC,
 # endif
 # ifdef CLOCK_PROCESS_CPUTIME_ID
-      [p00_time_process_cputime_id] = CLOCK_PROCESS_CPUTIME_ID,
+                                           [p00_time_process_cputime_id] = CLOCK_PROCESS_CPUTIME_ID,
 # endif
 # ifdef CLOCK_THREAD_CPUTIME_ID
-      [p00_time_thread_cputime_id] = CLOCK_THREAD_CPUTIME_ID,
+                                               [p00_time_thread_cputime_id] = CLOCK_THREAD_CPUTIME_ID,
 # endif
-      }[base];
+  }[base];
 }
 
 /**
@@ -1108,7 +1108,7 @@ int timespec_get(struct timespec *p00_ts, int p00_base) {
 }
 # else
 # warning only low resolution gettimeofday found
-# #define timespec_get p00_timespec_get
+# define timespec_get p00_timespec_get
 # endif
 #endif
 

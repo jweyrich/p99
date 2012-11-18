@@ -1119,28 +1119,28 @@ p99_extension                                                                   
  **
  ** @see atomic_int
  **/
-#define atomic_load(OBJP)                                                     \
-p99_extension                                                                 \
-({                                                                            \
-  P99_MACRO_PVAR(p00_objp, (OBJP));                                           \
-  ((!atomic_is_lock_free(p00_objp))                                           \
-   ? ({                                                                       \
-       register __typeof__(P00_AX(p00_objp).p00_t) p00_ret;                   \
-       P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                  \
-         p00_ret = P00_AT(p00_objp);                                          \
-       p00_ret;                                                               \
-     })                                                                       \
-   : (P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                \
-      (P00_AT(p00_objp))                                                      \
-      (({                                                                     \
-          register __typeof__(P00_AX(p00_objp)) p00_ret = {                   \
-            .p00_m =                                                          \
-            P00_ATOMIC_TERN(p00_objp,                                         \
+#define atomic_load(OBJP)                                                         \
+p99_extension                                                                     \
+({                                                                                \
+  P99_MACRO_PVAR(p00_objp, (OBJP));                                               \
+  ((!atomic_is_lock_free(p00_objp))                                               \
+   ? ({                                                                           \
+       register __typeof__(P00_AX(p00_objp).p00_t) p00_ret;                       \
+       P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                      \
+         p00_ret = P00_AT(p00_objp);                                              \
+       p00_ret;                                                                   \
+     })                                                                           \
+   : (P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                    \
+      (P00_AT(p00_objp))                                                          \
+      (({                                                                         \
+          register __typeof__(P00_AX(p00_objp)) p00_ret = {                       \
+            .p00_m =                                                              \
+            P00_ATOMIC_TERN(p00_objp,                                             \
                             __sync_val_compare_and_swap(&P00_AM(p00_objp), 0, 0), \
-                            P00_AM(p00_objp)),                                \
-          };                                                                  \
-          p00_ret.p00_t;                                                      \
-        }))));                                                                \
+                            P00_AM(p00_objp)),                                    \
+          };                                                                      \
+          p00_ret.p00_t;                                                          \
+        }))));                                                                    \
  })
 
 #define P00_CVT(EXP) ((void const*)(((struct { void const volatile* a; }){ .a = (EXP) }).a))
@@ -1210,26 +1210,26 @@ p99_extension                                                                   
 #define atomic_store(OBJP, DES) ((void)atomic_fetch_and_store(OBJP, DES))
 #endif
 
-#define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                 \
-p99_extension                                                          \
-({                                                                     \
-  P99_MACRO_PVAR(p00_objp, (OBJP));                                    \
-  P99_MACRO_VAR(p00_op, OPERAND);                                      \
-  ((!atomic_is_lock_free(p00_objp))                                    \
-   ? ({                                                                \
-       register __typeof__(P00_AT(p00_objp)) p00_ret;                  \
-       P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                         \
-         p00_ret = P00_AT(p00_objp);                                   \
-         P00_AT(p00_objp) OPERATOR p00_op;                             \
-       }                                                               \
-       p00_ret;                                                        \
-     })                                                                \
-   : (P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                         \
-      (P00_AT(p00_objp))                                               \
-      (P00_ATOMIC_TERN(p00_objp,                                       \
-                       BUILTIN(&P00_AO(p00_objp),                      \
-                               P00_ATOMIC_TERN(p00_objp, p00_op, 0)),  \
-                       P00_AT(p00_objp)))));                           \
+#define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                \
+p99_extension                                                         \
+({                                                                    \
+  P99_MACRO_PVAR(p00_objp, (OBJP));                                   \
+  P99_MACRO_VAR(p00_op, OPERAND);                                     \
+  ((!atomic_is_lock_free(p00_objp))                                   \
+   ? ({                                                               \
+       register __typeof__(P00_AT(p00_objp)) p00_ret;                 \
+       P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                        \
+         p00_ret = P00_AT(p00_objp);                                  \
+         P00_AT(p00_objp) OPERATOR p00_op;                            \
+       }                                                              \
+       p00_ret;                                                       \
+     })                                                               \
+   : (P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                        \
+      (P00_AT(p00_objp))                                              \
+      (P00_ATOMIC_TERN(p00_objp,                                      \
+                       BUILTIN(&P00_AO(p00_objp),                     \
+                               P00_ATOMIC_TERN(p00_objp, p00_op, 0)), \
+                       P00_AT(p00_objp)))));                          \
  })
 
 /**

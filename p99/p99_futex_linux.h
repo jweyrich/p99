@@ -2,13 +2,12 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* all rights reserved,  2011-2012 Jens Gustedt, INRIA, France                */
+/* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
 /*                                                                            */
-/* This file is part of the P99 project. You received this file as as        */
-/* part of a confidential agreement and you may generally not                 */
-/* redistribute it and/or modify it, unless under the terms as given in       */
-/* the file LICENSE.  It is distributed without any warranty; without         */
-/* even the implied warranty of merchantability or fitness for a              */
+/* This file is free software; it is part of the P99 project.                 */
+/* You can redistribute it and/or modify it under the terms of the QPL as     */
+/* given in the file LICENSE. It is distributed without any warranty;         */
+/* without even the implied warranty of merchantability or fitness for a      */
 /* particular purpose.                                                        */
 /*                                                                            */
 #ifndef P99_LINUX_FUTEX_H
@@ -50,16 +49,16 @@
 P99_DEFARG_DOCU(p00_futex)
 p99_inline
 int p00_futex(int *uaddr, /*!< the base address to be used */
-                int op,     /*!< the operation that is to be performed */
-                int val,    /*!< the value that a wait operation
+              int op,     /*!< the operation that is to be performed */
+              int val,    /*!< the value that a wait operation
                              expects when going into wait, or the
                              number of tasks to wake up */
-                const struct timespec
-                *timeout, /*!< a time out for wait, unused by P99, defaults to
+              const struct timespec
+              *timeout, /*!< a time out for wait, unused by P99, defaults to
                             0. */
-                int *uaddr2, /*!< unused by P99, defaults to 0 */
-                int val3     /*!< unused by P99, defaults to 0 */
-               ) {
+              int *uaddr2, /*!< unused by P99, defaults to 0 */
+              int val3     /*!< unused by P99, defaults to 0 */
+             ) {
   return syscall(SYS_futex, uaddr, op, val, timeout, uaddr2, val3);
 }
 
@@ -149,13 +148,13 @@ int p00_futex_wait_once(int* uaddr, int val) {
  ** @see p00_futex_signal
  ** @see p00_futex_broadcast
  **/
-#define P00_FUTEX_WAIT(ADDR, NAME, EXPECTED)                 \
+#define P00_FUTEX_WAIT(ADDR, NAME, EXPECTED)                   \
 do {                                                           \
   register int volatile*const p = (int volatile*)(ADDR);       \
   for (;;) {                                                   \
     register int NAME = *p;                                    \
     if (P99_LIKELY(EXPECTED)) break;                           \
-    register int ret = p00_futex_wait_once((int*)p, NAME);   \
+    register int ret = p00_futex_wait_once((int*)p, NAME);     \
     if (P99_UNLIKELY(ret)) {                                   \
       assert(!ret);                                            \
     }                                                          \
@@ -201,7 +200,9 @@ int p00_futex_broadcast(int* uaddr) {
   return p00_futex_wake(uaddr, INT_MAX);
 }
 
-# define P99_FUTEX_INITIALIZER(INITIAL) ATOMIC_VAR_INIT(INITIAL)
+# ifndef P99_FUTEX_INITIALIZER
+#  define P99_FUTEX_INITIALIZER(INITIAL) ATOMIC_VAR_INIT(INITIAL)
+# endif
 
 p99_inline
 p99_futex* p99_futex_init(p99_futex* p00_c, unsigned p00_ini) {
@@ -225,7 +226,7 @@ unsigned p99_futex_load(p99_futex volatile* p00_fut) {
 
 p99_inline
 void p99_futex_wakeup(p99_futex volatile* p00_cntp,
-                       unsigned p00_wmin, unsigned p00_wmax) {
+                      unsigned p00_wmin, unsigned p00_wmax) {
   if (p00_wmax < p00_wmin) p00_wmax = p00_wmin;
   if (p00_wmax) {
     unsigned volatile*const p00_cnt = &P00_AT(p00_cntp);
@@ -258,8 +259,8 @@ void p99_futex_wait(p99_futex volatile* p00_cntp) {
 
 p99_inline
 unsigned p99_futex_add(p99_futex volatile* futex, unsigned p00_hmuch,
-                        unsigned p00_cstart, unsigned p00_clen,
-                        unsigned p00_wmin, unsigned p00_wmax) {
+                       unsigned p00_cstart, unsigned p00_clen,
+                       unsigned p00_wmin, unsigned p00_wmax) {
   unsigned p00_act = atomic_fetch_add(futex, p00_hmuch);
   register unsigned const ret = p00_act + p00_hmuch;
   if (p00_clen && P99_IN_RANGE(ret, p00_cstart, p00_clen))
@@ -269,15 +270,17 @@ unsigned p99_futex_add(p99_futex volatile* futex, unsigned p00_hmuch,
 
 p99_inline
 unsigned p99_futex_fetch_and_store(p99_futex volatile* futex, unsigned p00_desired,
-                                    unsigned p00_cstart, unsigned p00_clen,
-                                    unsigned p00_wmin, unsigned p00_wmax) {
+                                   unsigned p00_cstart, unsigned p00_clen,
+                                   unsigned p00_wmin, unsigned p00_wmax) {
   unsigned p00_act = atomic_fetch_and_store(futex, p00_desired);
   if (p00_clen && P99_IN_RANGE(p00_desired, p00_cstart, p00_clen))
     p99_futex_wakeup(futex, p00_wmin, p00_wmax);
   return p00_act;
 }
 
-#define P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX)     \
+#ifndef P99_FUTEX_COMPARE_EXCHANGE
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_FUTEX_COMPARE_EXCHANGE, 1)
+# define P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX)    \
 do {                                                                                    \
   _Atomic(unsigned) volatile*const p00Mcntp = (FUTEX);                                  \
   unsigned volatile*const p00Mcnt = &P00_AT(p00Mcntp);                                  \
@@ -308,6 +311,7 @@ do {                                                                            
     }                                                                                   \
   }                                                                                     \
  } while (false)
+#endif
 
 #endif
 
