@@ -44,8 +44,8 @@ struct tester {
   printf(#MAC ":\t%d for array, potential array-to-pointer conversion\n", MAC(int const[2], (int const[2]){ 0 }))
 
 
-#define SAYIT_STRUCT(MAC)                                               \
-printf(#MAC ":\t%d for struct lvalue\n", MAC(tester const, (tester const){ .a = 0 })); \
+#define SAYIT_STRUCT(MAC)                                                                                    \
+printf(#MAC ":\t%d for struct lvalue\n", MAC(tester const, (tester const){ .a = 0 }));                       \
 printf(#MAC ":\t%d for struct rvalue\n", MAC(tester const, ((tester){ .a = 0 } = (tester const){ .a = 0 })))
 
 int main(void) {

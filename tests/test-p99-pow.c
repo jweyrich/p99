@@ -89,7 +89,7 @@ P99_CA_WRAP_DECLARE(dotproductFunc,
                     (ret, P99_ANAME(A, 1), P99_ANAME(B, 1)), (), (2, 4));
 
 /* A helper macro that puts the accumulator argument in front. */
-#define dotproduct1(VA, VB, CAR)                                        \
+#define dotproduct1(VA, VB, CAR)                                                                             \
 P99_CA_CALL(dotproductFunc, (), (2, 4), CAR, P99_ACALL(VA, 1, double const), P99_ACALL(VB, 1, double const))
 
 /* A helper macro that translates a va_arg list into the five
@@ -169,12 +169,12 @@ P99_CA_WRAP_DECLARE(multFunc,
 
 /* The user interface. It receives just the three pointers to
    the matrix as arguments. */
-#define mult(ARR, BRR, CRR)                     \
-P99_CA_CALL(multFunc,                           \
-            (),                                 \
-            (2, 5, 6),                          \
-            P99_ACALL(ARR, 2, double const),    \
-            P99_ACALL(BRR, 2, double const),    \
+#define mult(ARR, BRR, CRR)                                    \
+P99_CA_CALL(multFunc,                                          \
+            (),                                                \
+            (2, 5, 6),                                         \
+            P99_ACALL(ARR, 2, double const),                   \
+            P99_ACALL(BRR, 2, double const),                   \
             CRR)
 
 /* All above would typically be written in a header (.h) file ***/

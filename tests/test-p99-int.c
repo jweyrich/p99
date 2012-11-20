@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* all rights reserved,  2010-2011 Jens Gustedt, INRIA, France                */
+/* all rights reserved,  2010-2012 Jens Gustedt, INRIA, France                */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -76,9 +76,9 @@ P99_PROTOTYPE(const char*, print_uintmax_X, p99x_uintmax, char*);
 #ifdef p99x_uintmax
 char* print_uintmax_rec(p99x_uintmax x, char* tmp) {
   return tmp +
-    ((x > UINT64_D19)
-     ? sprintf(print_uintmax_rec(x / UINT64_D19, tmp), "%019" PRIu64, (uint64_t)(x % UINT64_D19))
-     : sprintf(tmp, "%" PRIu64, (uint64_t)x));
+         ((x > UINT64_D19)
+          ? sprintf(print_uintmax_rec(x / UINT64_D19, tmp), "%019" PRIu64, (uint64_t)(x % UINT64_D19))
+          : sprintf(tmp, "%" PRIu64, (uint64_t)x));
 }
 char* print_uintmax(p99x_uintmax x, char* tmp) {
   print_uintmax_rec(x, tmp);
@@ -86,9 +86,9 @@ char* print_uintmax(p99x_uintmax x, char* tmp) {
 }
 char* print_uintmax_X_rec(p99x_uintmax x, char* tmp) {
   return tmp +
-    ((x > UINT64_MAX)
-     ? sprintf(print_uintmax_X_rec(((x >> 32) >> 32), tmp), "%016" PRIX64, (uint64_t)x)
-     : sprintf(tmp, "%" PRIX64, (uint64_t)x));
+         ((x > UINT64_MAX)
+          ? sprintf(print_uintmax_X_rec(((x >> 32) >> 32), tmp), "%016" PRIX64, (uint64_t)x)
+          : sprintf(tmp, "%" PRIX64, (uint64_t)x));
 }
 char const* print_uintmax_X(p99x_uintmax x, char* tmp) {
   tmp[0] = '0'; tmp[1] = 'X';
