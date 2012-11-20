@@ -122,5 +122,10 @@ int main(int argc, char *argv[]) {
          atomic_load(&testvar).a,
          (size_t)(atomic_load(&intp) - &argc),
          atomic_load(&D));
+  size_t len = 0;
+  getenv_s(&len, 0, 0, "PATH");
+  char path[len + 1];
+  getenv_s(0, path, len + 1, "PATH");
+  P99_PRINTF("environment PATH is %s\n", (char const*)path);
   quick_exit(EXIT_SUCCESS);
 }

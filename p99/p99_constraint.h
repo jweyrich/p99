@@ -525,24 +525,22 @@ void *p00_bsearch_s(char const* p00_file, char const* p00_context,
       p00_constraint_call(EINVAL, p00_file, p00_context, "bsearch_s runtime constraint violation");
     } else {
       typedef unsigned char const dummy[size];
-      dummy const * dkey = (void*)key;
-      dummy const * dbase = (void*)base;
+      register dummy const * dbase = (void*)base;
       /* bot and top will always be the maximal (minimal) index that
          is known to be smaller (larger) than the search item. This
          strategy here even works when nmemb == (rsize_t)-1. The
          wonders of unsigned arithmetic... */
-      for (register rsize_t bot = -1, top = nmemb;
+      for (register size_t bot = -1, top = nmemb;
            (top - bot) != 1;) {
         /* unsigned arithmetic just wraps around, so this is ok            */
-        rsize_t med = (bot + top) / 2;
+        register size_t med = (bot + top) / 2;
         /* We always have the assertions                                   */
         /* assert((bot == top && top == (rsize_t)-1)                       */
         /*        || (top - bot > 1));                                     */
         /* assert(med < top);                                              */
         /* assert(bot < med || (bot == (rsize_t)-1 && med != (rsize_t)-1); */
-        int co = compar(dkey, dbase + med, context);
-        printf("%zu < %zu < %zu, result is %d\n", bot, med, top, co);
-        if (!co) return dbase + med;
+        int co = compar(key, dbase + med, context);
+        if (!co) return (void*)(dbase + med);
         else if (co < 0) top = med;
         else bot = med;
       }
@@ -551,9 +549,37 @@ void *p00_bsearch_s(char const* p00_file, char const* p00_context,
   return 0;
 }
 
+/** @ingroup C11_library **/
 #define bsearch_s(...) p00_bsearch_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
 
+p99_inline
+errno_t p00_getenv_s(char const* p00_file, char const* p00_context,
+                     size_t * restrict len,
+                     char * restrict value, rsize_t maxsize,
+                     const char * restrict name) {
+  errno_t ret = 0;
+  size_t le = 0;
+  if (maxsize > RSIZE_MAX) {
+    ret = ERANGE;
+    p00_constraint_call(ret, p00_file, p00_context, "getenv_s runtime constraint violation");
+  } else if (!name || (maxsize && !value)) {
+    ret = EINVAL;
+    p00_constraint_call(ret, p00_file, p00_context, "getenv_s runtime constraint violation");
+  } else {
+    char const*const found = getenv(name);
+    if (found) {
+      le = strlen(found);
+      if (le < maxsize) strcpy(value, found);
+    } else {
+      if (maxsize) value[0] = '\0';
+    }
+  }
+  if (len) *len = le;
+  return ret;
+}
 
+/** @ingroup C11_library **/
+#define getenv_s(...) p00_getenv_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
 
 # endif
 
