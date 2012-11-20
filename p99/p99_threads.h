@@ -371,66 +371,70 @@ int thrd_equal(thrd_t p00_thr0, thrd_t p00_thr1) {
   return P99_ENC(p00_thr0) ==  P99_ENC(p00_thr1);
 }
 
-p99_inline
-void p00_call_once_2(p99_once_flag *flag, void (*p00_func)(void)) {
-  if (P99_UNLIKELY(flag->p00_done.p00_done != p00_once_finished))
-    do {
-      atomic_flag_lock(&flag->p00_flg);
-      switch (flag->p00_done.p00_vdone) {
-        /* we are doing the initialization */
-      case p00_once_uninit:
-        flag->p00_done.p00_done = 1;
-        flag->p00_id = thrd_current();
-        atomic_flag_unlock(&flag->p00_flg);
-        p00_func();
-        flag->p00_done.p00_done = 2;
-        break;
-      case p00_once_started:
-        if (thrd_equal(flag->p00_id, thrd_current())) {
-          /* we are called recursively, abandon and return */
-          atomic_flag_unlock(&flag->p00_flg);
-          return;
-        }
-        /* otherwise fall through */
-      case p00_once_finished:
-        atomic_flag_unlock(&flag->p00_flg);
-        break;
-      }
-    } while (flag->p00_done.p00_vdone != p00_once_finished);
-}
+#define p00_call_once_2(FLAG, FUNC)                                          \
+do {                                                                         \
+  p99_once_flag *p00Mflag = (FLAG);                                          \
+  if (P99_UNLIKELY(p00Mflag->p00_done.p00_done != p00_once_finished))        \
+    do {                                                                     \
+      atomic_flag_lock(&p00Mflag->p00_flg);                                  \
+      switch (p00Mflag->p00_done.p00_vdone) {                                \
+        /* we are doing the initialization */                                \
+      case p00_once_uninit:                                                  \
+        p00Mflag->p00_done.p00_done = 1;                                     \
+        p00Mflag->p00_id = thrd_current();                                   \
+        atomic_flag_unlock(&p00Mflag->p00_flg);                              \
+        FUNC();                                                              \
+        p00Mflag->p00_done.p00_done = 2;                                     \
+        break;                                                               \
+      case p00_once_started:                                                 \
+        if (thrd_equal(p00Mflag->p00_id, thrd_current())) {                  \
+          /* we are called recursively, abandon and return */                \
+          atomic_flag_unlock(&p00Mflag->p00_flg);                            \
+          p00Mflag = 0;                                                      \
+          break;                                                             \
+        }                                                                    \
+        /* otherwise fall through */                                         \
+      case p00_once_finished:                                                \
+        atomic_flag_unlock(&p00Mflag->p00_flg);                              \
+        break;                                                               \
+      }                                                                      \
+    } while (p00Mflag && p00Mflag->p00_done.p00_vdone != p00_once_finished); \
+ } while (false)
 
 p99_inline
-void p00_call_once_1(p99_once_flag *flag) {
-  p00_call_once_2(flag, flag->p00_init);
+void p00_call_once_1(p99_once_flag *p00_flag) {
+  p00_call_once_2(p00_flag, p00_flag->p00_init);
 }
 
-p99_inline
-void p00_call_once_3(p99_once_flag *flag, void (*p00_func)(void*), void* p00_arg) {
-  if (P99_UNLIKELY(flag->p00_done.p00_done != p00_once_finished))
-    do {
-      atomic_flag_lock(&flag->p00_flg);
-      switch (flag->p00_done.p00_vdone) {
-        /* we are doing the initialization */
-      case p00_once_uninit:
-        flag->p00_done.p00_done = 1;
-        flag->p00_id = thrd_current();
-        atomic_flag_unlock(&flag->p00_flg);
-        p00_func(p00_arg);
-        flag->p00_done.p00_done = 2;
-        break;
-      case p00_once_started:
-        if (thrd_equal(flag->p00_id, thrd_current())) {
-          /* we are called recursively, abandon and return */
-          atomic_flag_unlock(&flag->p00_flg);
-          return;
-        }
-        /* otherwise fall through */
-      case p00_once_finished:
-        atomic_flag_unlock(&flag->p00_flg);
-        break;
-      }
-    } while (flag->p00_done.p00_vdone != p00_once_finished);
-}
+#define p00_call_once_3(FLAG, FUNC, ARG)                                     \
+do {                                                                         \
+  p99_once_flag *p00Mflag = (FLAG);                                          \
+  if (P99_UNLIKELY(p00Mflag->p00_done.p00_done != p00_once_finished))        \
+    do {                                                                     \
+      atomic_flag_lock(&p00Mflag->p00_flg);                                  \
+      switch (p00Mflag->p00_done.p00_vdone) {                                \
+        /* we are doing the initialization */                                \
+      case p00_once_uninit:                                                  \
+        p00Mflag->p00_done.p00_done = 1;                                     \
+        p00Mflag->p00_id = thrd_current();                                   \
+        atomic_flag_unlock(&p00Mflag->p00_flg);                              \
+        FUNC(ARG);                                                           \
+        p00Mflag->p00_done.p00_done = 2;                                     \
+        break;                                                               \
+      case p00_once_started:                                                 \
+        if (thrd_equal(p00Mflag->p00_id, thrd_current())) {                  \
+          /* we are called recursively, abandon and return */                \
+          atomic_flag_unlock(&p00Mflag->p00_flg);                            \
+          p00Mflag = 0;                                                      \
+          break;                                                             \
+        }                                                                    \
+        /* otherwise fall through */                                         \
+      case p00_once_finished:                                                \
+        atomic_flag_unlock(&p00Mflag->p00_flg);                              \
+        break;                                                               \
+      }                                                                      \
+    } while (p00Mflag && p00Mflag->p00_done.p00_vdone != p00_once_finished); \
+ } while (false)
 
 #define p00_call_once(N, ...)                                  \
 P99_IF_EQ_1(N)                                                 \
@@ -1071,7 +1075,7 @@ struct timespec const*const p00_timeoff = &p00_timeoff_;
 P99_WEAK(p00_timeonce)
 once_flag p00_timeonce = ONCE_FLAG_INIT;
 
-P99_WEAK(p00_timeonce_init)
+p99_inline
 void p00_timeonce_init(void) {
   /* Calibrate the monotonic time */
   mach_timebase_info_data_t p00_tb = P99_INIT;
