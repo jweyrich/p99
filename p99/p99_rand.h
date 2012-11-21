@@ -30,11 +30,11 @@
    long period RNGs, returns more than 120 million random 32-bit
    integers/second (1.8MHz CPU), seems to pass all tests: */
 
-P99_CONSTANT(int, p99_seed160_len, 6);
-typedef uint32_t p99_seed160[p99_seed160_len];
+P99_CONSTANT(int, p00_seed160_len, 6);
+typedef uint32_t p00_seed160[p00_seed160_len];
 
 p99_inline
-uint32_t p00_xorshift(p99_seed160 * p00_s) {
+uint32_t p00_xorshift(p00_seed160 * p00_s) {
   /* Use the 6th element as the running index, and compute the
      necessary derived indices mod 5 */
   ++(*p00_s)[5];
@@ -57,12 +57,14 @@ uint32_t p00_xorshift(p99_seed160 * p00_s) {
   return (2*p00_y + 1) * t;
 }
 
+typedef p00_seed160 p99_seed[2];
+
 struct p00_rand160 {
   once_flag p00_flag;
-  p99_seed160 p00_seed[2];
+  p99_seed p00_seed;
 };
 
-P99_DECLARE_THREAD_LOCAL(struct p00_rand160, p00_seed160);
+P99_DECLARE_THREAD_LOCAL(struct p00_rand160, p00_seed);
 
 #define P00_BIGPRIME                                           \
 UINT64_C(10007814641597694113),                                \
@@ -156,25 +158,41 @@ UINT64_C(18219113917191524677),                                \
 UINT64_C(18298168206731166317),                                \
 UINT64_C(18319234190200763803)
 
-P99_WEAK(p99_rand160_init)
-void p99_rand160_init(void* p00_p) {
-  p99_seed160 * p00_s = p00_p
-                        ? p00_p
-                        : &P99_THREAD_LOCAL(p00_seed160).p00_seed;
+p99_inline
+uint32_t p00_bitpack(void const* p00_p) {
+  uintptr_t p00_u = (uintptr_t)p00_p;
+  if (sizeof(uintptr_t) == sizeof(uint32_t))
+    return p00_u;
+  else {
+    uint32_t p00_r = 0;
+    do {
+      p00_r ^= p00_u;
+      p00_u >>= (sizeof(uint32_t)*CHAR_BIT);
+    } while (p00_u);
+    return p00_r;
+  }
+}
+
+
+P99_WEAK(p99_rand_init)
+void p99_rand_init(void* p00_p) {
+  p99_seed * p00_s = p00_p
+    ? p00_p
+    : &P99_THREAD_LOCAL(p00_seed).p00_seed;
   struct timespec p00_ts;
   timespec_get(&p00_ts, TIME_UTC);
-  p99_seed160 p00_st = {
+  p00_seed160 p00_st = {
     /* local to this initialization call */
-    (uintptr_t)p00_st,
+    p00_bitpack(p00_st),
     /* unique to this thread */
-    (uintptr_t)p00_s,
+    p00_bitpack(p00_s),
     /* unique to this reallocation in the process */
-    (uintptr_t)__func__,
+    p00_bitpack(__func__),
     /* unique in time */
     (uint32_t)p00_ts.tv_sec,
     (uint32_t)p00_ts.tv_nsec,
     /* index, unique to this thread */
-    (uintptr_t)p00_s,
+    p00_bitpack(p00_s) ^ p00_bitpack(p00_st),
   };
   /* mix things up a bit */
   for (unsigned p00_i = 0; p00_i < 32; ++p00_i) p00_xorshift(&p00_st);
@@ -182,17 +200,34 @@ void p99_rand160_init(void* p00_p) {
      can be in any state of the xorshift generator, so there are
      2^160 different initializations. */
   for (unsigned p00_j = 0; p00_j < 2; ++p00_j) {
-    for (unsigned p00_i = 0; p00_i < p99_seed160_len; ++p00_i)
-      (*p00_s)[p00_i] = p00_xorshift(&p00_st);
-    ++p00_s;
+    for (unsigned p00_i = 0; p00_i < p00_seed160_len; ++p00_i)
+      (*p00_s)[p00_j][p00_i] = p00_xorshift(&p00_st);
   }
 }
 
+#define p99_rand_init(...) P99_CALL_DEFARG(p99_rand_init, 1, __VA_ARGS__)
+#define p99_rand_init_defarg_0() (0)
+
+/**
+ ** @brief Access the seed state for this particular thread.
+ **
+ ** If you want a reproducible state of the random generate, you'd
+ ** have to use this to access the state and pump any bit pattern of
+ ** your favor over that state.
+ **
+ ** @code
+ ** p99_seed * seed = p99_seed_get();
+ ** memcpy(seed, (char [sizeof *seed]){ "some long string" }, sizeof *seed);
+ ** @endcode
+ **
+ ** But beware that you'd have to apply that strategy in @b all
+ ** threads and to a different value for each.
+ **/
 p99_inline
-p99_seed160 * p99_seed160_get(void) {
-  struct p00_rand160 * p00_loc = &P99_THREAD_LOCAL(p00_seed160);
-  p99_call_once(&p00_loc->p00_flag, p99_rand160_init, &p00_loc->p00_seed);
-  return &p00_loc->p00_seed[0];
+p99_seed * p99_seed_get(void) {
+  struct p00_rand160 * p00_loc = &P99_THREAD_LOCAL(p00_seed);
+  p99_call_once(&p00_loc->p00_flag, p99_rand_init, &p00_loc->p00_seed);
+  return &p00_loc->p00_seed;
 }
 
 P99_WEAK(p00_bigprime)
@@ -210,12 +245,14 @@ enum { p00_bigprime_len = P99_ALEN(p00_bigprime) };
  ** individual bits can not be traced.
  **
  ** @warning This is not guaranteed to be crytographically secure.
+ **
+ ** Every thread has its own seed for this function. By default this
+ ** thread specific seed is passed through @a p00_seed.
  **/
-P99_WEAK(p99_rand160)
-uint64_t p99_rand160(void) {
-  register p99_seed160 * p00_seed = p99_seed160_get();
-  uint64_t p00_0 = p00_xorshift(&p00_seed[0]);
-  uint64_t p00_1 = p00_xorshift(&p00_seed[1]);
+p99_inline
+uint64_t p99_rand(register p99_seed * p00_seed) {
+  uint64_t p00_0 = p00_xorshift(&(*p00_seed)[0]);
+  uint64_t p00_1 = p00_xorshift(&(*p00_seed)[1]);
   uint64_t p00_0r = p00_0 % p00_bigprime_len;
   uint64_t p00_0d = p00_0 / p00_bigprime_len;
   /* Use pare of the bits to choose a big number */
@@ -223,5 +260,24 @@ uint64_t p99_rand160(void) {
   /* Use the rest of the bits to add more randomness */
   return (p00_0d ^ p00_1);
 }
+
+#define p99_rand(...) P99_CALL_DEFARG(p99_rand, 1, __VA_ARGS__)
+#define p99_rand_defarg_0() (p99_seed_get())
+
+p99_inline
+double p99_drand(register p99_seed * p00_seed) {
+  enum {
+    p00_s = (DBL_MANT_DIG > 64 ? 64 : DBL_MANT_DIG),
+    p00_0 = 64 - p00_s,
+    p00_m = (1 << p00_0),
+  };
+  double const p00_imax = 1.0 / (UINT64_C(1) << p00_s);
+  uint64_t p00_r = p99_rand(p00_seed);
+  double p00_1 = ((p00_r >> p00_0)^(p00_r & p00_m)) * p00_imax;
+  return p00_1;
+}
+
+#define p99_drand(...) P99_CALL_DEFARG(p99_drand, 1, __VA_ARGS__)
+#define p99_drand_defarg_0() (p99_seed_get())
 
 #endif
