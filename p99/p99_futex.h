@@ -497,7 +497,7 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
  **
  ** @code
  ** inline
- ** void my_counter_lock_unsafe(p99_futex volatile* f) {
+ ** void my_counter_unlock_unsafe(p99_futex volatile* f) {
  **   P99_FUTEX_COMPARE_EXCHANGE(f,
  **                              // name of the local variable
  **                              val,
@@ -518,7 +518,7 @@ void p99_futex_wait(p99_futex volatile* p00_fut);
  **
  ** @code
  ** inline
- ** void my_counter_lock(p99_futex volatile* f) {
+ ** void my_counter_unlock(p99_futex volatile* f) {
  **   P99_FUTEX_COMPARE_EXCHANGE(f, val,
  **                              // name of the local variable
  **                              val,
