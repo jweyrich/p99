@@ -117,7 +117,7 @@ void p00_jmp_throw(errno_t p00_cond, p00_jmp_buf0 * p00_top, char const* p00_fil
 P00_UNWIND_DOCUMENT
 #define P99_THROW(X) p00_jmp_throw((X), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, "throw")
 
-static_inline
+p99_inline
 noreturn
 void p00_throw_errno(p00_jmp_buf0 * p00_top, errno_t p00_def, char const* p00_file, char const* p00_context, char const* p00_info) {
   errno_t p00_err = errno;
@@ -126,7 +126,7 @@ void p00_throw_errno(p00_jmp_buf0 * p00_top, errno_t p00_def, char const* p00_fi
   p00_jmp_throw(p00_err, p00_top, p00_file, p00_context, p00_info);
 }
 
-static_inline
+p99_inline
 void p00_throw_call_range(p00_jmp_buf0 * p00_top, errno_t p00_sign, char const* p00_file, char const* p00_context, char const* p00_info) {
   errno_t p00_err = errno;
   if  (P99_LIKELY(!p00_err)) return;
@@ -149,7 +149,7 @@ P99_GENERIC((X),                                                          \
    overflow. We need this for compilers that don't support gcc's block
    expressions and @c typeof. */
 #define P00_THROW_CALL_RANGE(T, F, ...)                           \
-static_inline                                                     \
+p99_inline                                                        \
 T P99_PASTE2(p00_throw_call_range_, T)(p00_jmp_buf0 * p00_top,    \
                                      T p00_val,                   \
                                      char const* p00_file,        \
@@ -263,7 +263,7 @@ do {                                                           \
  } while(0)
 #endif
 
-static_inline
+p99_inline
 int p00_throw_call_zero(int p00_err,
                         errno_t p00_def,
                         p00_jmp_buf0 * p00_top,
@@ -296,7 +296,7 @@ int p00_throw_call_zero(int p00_err,
 #define P99_THROW_CALL_ZERO(F, E, ...)                                                                            \
 p00_throw_call_zero(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", non-zero return")
 
-static_inline
+p99_inline
 int p00_throw_call_thrd(int p00_err,
                         p00_jmp_buf0 * p00_top,
                         char const* p00_file,
@@ -331,7 +331,7 @@ int p00_throw_call_thrd(int p00_err,
 #define P99_THROW_CALL_THRD(F, ...)                                                                            \
 p00_throw_call_thrd(F(__VA_ARGS__), p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", no thrd_success")
 
-static_inline
+p99_inline
 int p00_throw_call_neg(int p00_neg,
                        errno_t p00_def,
                        p00_jmp_buf0 * p00_top,
@@ -366,7 +366,7 @@ p00_throw_call_neg(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), _
  **/
 #define P99_THROW_CALL_NEG(F, E, ...) P00_THROW_CALL_NEG(F, E, __VA_ARGS__)
 
-static_inline
+p99_inline
 void* p00_throw_call_voidp(void* p00_p,
                            errno_t p00_def,
                            p00_jmp_buf0 * p00_top,
