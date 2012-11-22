@@ -21,6 +21,11 @@
  ** with a period of about 2^160
  **/
 
+/**
+ ** @addtogroup random Pseudo Random Generator
+ ** @{
+ **/
+
 /* From: George Marsaglia (geo@stat.fsu.edu)    */
 /* Subject: Re: good C random number generator  */
 /* Newsgroups: comp.lang.c                      */
@@ -57,6 +62,49 @@ uint32_t p00_xorshift(p00_seed160 * p00_s) {
   return (2*p00_y + 1) * t;
 }
 
+/**
+ ** @brief The internal state that the PRG for ::p99_rand and
+ ** ::p99_drand uses.
+ **
+ ** @remark Usually you don't have to deal with this type other than
+ ** the cases described for ::p99_seed_get.
+ **
+ ** This is currently a set of 12 values of type @c uint32_t, so 384
+ ** bits. Any reasonable initialization with true random bits of such
+ ** a state variable should give you a different PRG of cycle length
+ ** 2^160. (Reasonable here means that initializations with 160
+ ** consecutive 0 bits or more should be avoided.)
+ **
+ ** P99 initializes a different state for each thread that uses the
+ ** corresponding functions. The setup of that state for each thread
+ ** may incur a cost of about 16 to 20 times the call to
+ ** ::p99_rand. The initialization only produces one state out of
+ ** 2^160 possibilities, so the state space of 384 is not used
+ ** optimally.
+ **
+ ** Please let me know if you have an idea of using other portable
+ ** sources of randomness for the initialization, currently we use the
+ ** wall clock time, monotonic time (if available), the stack address
+ ** of the thread and a per thread malloced address. This guarantees
+ ** that the states are different for all threads that run
+ ** concurrently (they will not have the same stack or malloced
+ ** address) or that are scheduled with a suitable time difference
+ ** that exceeds the clock granularity (they will not use the same
+ ** time stamp).
+ **
+ ** All of this is only a heuristic and can be spoofed; it might
+ ** give the same initial state for threads that are schedule in short
+ ** sequence if:
+ **  - the first thread terminates before the second is started
+ **  - the second obtains the same time stamp as the first
+ **  - the second is scheduled with the same stack address as the first
+ **  - the second receives exactly the same address from @c malloc.
+ **
+ ** Under non-hostile circumstance this should only occur on a
+ ** combination of platform and code that quickly launches a lot of
+ ** threads (thousands) and has no good address randomization and a
+ ** low granularity clock.
+ **/
 typedef p00_seed160 p99_seed[2];
 
 struct p00_rand160 {
@@ -174,25 +222,35 @@ uint32_t p00_bitpack(void const* p00_p) {
 }
 
 
-P99_WEAK(p99_rand_init)
-void p99_rand_init(void* p00_p) {
+P99_WEAK(p00_rand_init)
+void p00_rand_init(void* p00_p) {
   p99_seed * p00_s = p00_p
-    ? p00_p
-    : &P99_THREAD_LOCAL(p00_seed).p00_seed;
+                     ? p00_p
+                     : &P99_THREAD_LOCAL(p00_seed).p00_seed;
+  /* local to this initialization call, stack address */
+  uint32_t p00_0 = p00_bitpack(&p00_s);
+  /* unique to this thread, heap address */
+  uint32_t p00_1 = p00_bitpack(p00_p);
   struct timespec p00_ts;
   timespec_get(&p00_ts, TIME_UTC);
+  uint32_t p00_2 = p00_ts.tv_sec;
+  uint32_t p00_3 = p00_ts.tv_nsec;
+#ifdef TIME_MONOTONIC
+  struct timespec p00_tm;
+  timespec_get(&p00_tm, TIME_MONOTONIC);
+  uint32_t p00_4 = p00_tm.tv_nsec;
+#else
+  uint32_t p00_4 = p00_bitpack(__func__);
+#endif
+  /* index, unique to this thread */
+  uint32_t p00_ind = p00_0 ^ p00_1 ^ p00_2 ^ p00_3 ^ p00_4;
   p00_seed160 p00_st = {
-    /* local to this initialization call */
-    p00_bitpack(p00_st),
-    /* unique to this thread */
-    p00_bitpack(p00_s),
-    /* unique to this reallocation in the process */
-    p00_bitpack(__func__),
-    /* unique in time */
-    (uint32_t)p00_ts.tv_sec,
-    (uint32_t)p00_ts.tv_nsec,
-    /* index, unique to this thread */
-    p00_bitpack(p00_s) ^ p00_bitpack(p00_st),
+    p00_0,
+    p00_1,
+    p00_2,
+    p00_3,
+    p00_4,
+    p00_ind,
   };
   /* mix things up a bit */
   for (unsigned p00_i = 0; p00_i < 32; ++p00_i) p00_xorshift(&p00_st);
@@ -205,15 +263,29 @@ void p99_rand_init(void* p00_p) {
   }
 }
 
-#define p99_rand_init(...) P99_CALL_DEFARG(p99_rand_init, 1, __VA_ARGS__)
-#define p99_rand_init_defarg_0() (0)
-
 /**
  ** @brief Access the seed state for this particular thread.
  **
- ** If you want a reproducible state of the random generate, you'd
- ** have to use this to access the state and pump any bit pattern of
- ** your favor over that state.
+ ** The main purpose in user code of this function is to be able to
+ ** store a pointer to the seed state at the beginning of the
+ ** execution an then re-use that pointer on calls to ::p99_rand or
+ ** ::p99_drand.
+ **
+ ** @code
+ ** p99_seed * seed = p99_seed_get();
+ **
+ **
+ ** for (size_t i = 0; i < largeNumber; ++i) {
+ **   A[i] = p99_drand(seed);
+ ** }
+ ** @endcode
+ **
+ ** This avoids repetitive invocations of calls to ::p99_seed_get that
+ ** usually can't be optimized away by the compiler.
+ **
+ ** It may also serve to establish a reproducible state of the random
+ ** generator. You'd have to use this to access the state and pump any
+ ** bit pattern of your favor over that state.
  **
  ** @code
  ** p99_seed * seed = p99_seed_get();
@@ -226,44 +298,66 @@ void p99_rand_init(void* p00_p) {
 p99_inline
 p99_seed * p99_seed_get(void) {
   struct p00_rand160 * p00_loc = &P99_THREAD_LOCAL(p00_seed);
-  p99_call_once(&p00_loc->p00_flag, p99_rand_init, &p00_loc->p00_seed);
+  p99_call_once(&p00_loc->p00_flag, p00_rand_init, &p00_loc->p00_seed);
   return &p00_loc->p00_seed;
 }
 
 P99_WEAK(p00_bigprime)
 uint64_t const p00_bigprime[] = { P00_BIGPRIME };
 
-enum { p00_bigprime_len = P99_ALEN(p00_bigprime) };
+P99_CONSTANT(int, p00_bigprime_len, P99_ALEN(p00_bigprime));
 
 /**
- ** @brief a folded variant of the xorshift pseudo random generator
+ ** @brief Return 64 bits of pseudo randomness
  **
- ** This implements a set of about 2^160 pseudo random generators,
- ** each with a period of about 2^160. The main idea is to have two
- ** different xorshift generators run in sync giving two 32 bit
- ** quantities and then to mangle up their results such that the
+ ** This uses a folded variant of the xorshift pseudo random
+ ** generator.  It implements a set of about 2^160 pseudo random
+ ** generators, each with a period of about 2^160. The main idea is to
+ ** have two different xorshift generators run in sync giving two 32
+ ** bit quantities and then to mangle up their results such that the
  ** individual bits can not be traced.
  **
- ** @warning This is not guaranteed to be crytographically secure.
+ ** @warning This is not guaranteed to be cryptographically secure.
  **
- ** Every thread has its own seed for this function. By default this
- ** thread specific seed is passed through @a p00_seed.
+ ** @param p00_seed is optional and represents state variable for the
+ ** PRG. If omitted, every thread uses its own seed for this function.
+ **
+ ** @see p99_drand for a similar function that returns a @c double
+ ** @see p99_seed_get for a discussion of the per thread state variable
  **/
+P99_DEFARG_DOCU(p99_rand)
 p99_inline
 uint64_t p99_rand(register p99_seed * p00_seed) {
-  uint64_t p00_0 = p00_xorshift(&(*p00_seed)[0]);
+  uint32_t p00_0 = p00_xorshift(&(*p00_seed)[0]);
   uint64_t p00_1 = p00_xorshift(&(*p00_seed)[1]);
   uint64_t p00_0r = p00_0 % p00_bigprime_len;
   uint64_t p00_0d = p00_0 / p00_bigprime_len;
-  /* Use pare of the bits to choose a big number */
+  /* Use part of the bits to choose a big number */
   p00_1 *= p00_bigprime[p00_0r];
   /* Use the rest of the bits to add more randomness */
   return (p00_0d ^ p00_1);
 }
 
+#ifndef DOXYGEN
 #define p99_rand(...) P99_CALL_DEFARG(p99_rand, 1, __VA_ARGS__)
 #define p99_rand_defarg_0() (p99_seed_get())
+#endif
 
+/**
+ ** @brief Return a pseudo random double in the range from @c 0
+ ** (inclusive) to @c 1 (exclusive).
+ **
+ ** @warning This is not guaranteed to be cryptographically secure.
+ **
+ ** @param p00_seed is optional and represents state variable for the
+ ** PRG. If omitted, every thread uses its own seed for this function.
+ **
+ ** @see p99_rand for a similar function that returns an @c uint64_t
+ ** and for a discussion of the PRG that is used
+ **
+ ** @see p99_seed_get for a discussion of the per thread state variable
+ **/
+P99_DEFARG_DOCU(p99_drand)
 p99_inline
 double p99_drand(register p99_seed * p00_seed) {
   enum {
@@ -277,7 +371,13 @@ double p99_drand(register p99_seed * p00_seed) {
   return p00_1;
 }
 
+#ifndef DOXYGEN
 #define p99_drand(...) P99_CALL_DEFARG(p99_drand, 1, __VA_ARGS__)
 #define p99_drand_defarg_0() (p99_seed_get())
+#endif
+
+/**
+ ** @}
+ **/
 
 #endif

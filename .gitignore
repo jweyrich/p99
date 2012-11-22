@@ -21,5 +21,6 @@ tests/test-p99-double
 tests/test-p99-int
 tests/test-p99-ndim
 tests/test-p99-pow
+tests/test-p99-rand
 tests/test-p99-thread
 tests/test-p99-va-arg

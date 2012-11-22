@@ -2854,6 +2854,20 @@
     <includes id="p99__errno_8h" name="p99_errno.h" local="yes" imported="no">p99_errno.h</includes>
     <member kind="define">
       <type>#define</type>
+      <name>bsearch_s</name>
+      <anchorfile>p99__constraint_8h_a92f371527a091b0c1c6c5788f990eaa4.html</anchorfile>
+      <anchor>a92f371527a091b0c1c6c5788f990eaa4</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>getenv_s</name>
+      <anchorfile>p99__constraint_8h_a19c036d37cf91e1090ec2727ffac6f1e.html</anchorfile>
+      <anchor>a19c036d37cf91e1090ec2727ffac6f1e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>memcpy_s</name>
       <anchorfile>p99__constraint_8h_a84536d74b0148b18b3e7ff485ada2fc6.html</anchorfile>
       <anchor>a84536d74b0148b18b3e7ff485ada2fc6</anchor>
@@ -7054,6 +7068,41 @@
       <anchorfile>group__posix__default_ga3a4125284e799b1e4cbf06041aa3548c.html</anchorfile>
       <anchor>ga3a4125284e799b1e4cbf06041aa3548c</anchor>
       <arglist>(...)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>p99_rand.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__rand_8h</filename>
+    <includes id="p99__threads_8h" name="p99_threads.h" local="yes" imported="no">p99_threads.h</includes>
+    <includes id="p99__new_8h" name="p99_new.h" local="yes" imported="no">p99_new.h</includes>
+    <member kind="typedef">
+      <type>p00_seed160</type>
+      <name>p99_seed</name>
+      <anchorfile>group__random_ga2bcc15a9210d0327b9c02a9cf06a5fbb.html</anchorfile>
+      <anchor>ga2bcc15a9210d0327b9c02a9cf06a5fbb</anchor>
+      <arglist>[2]</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>p99_drand</name>
+      <anchorfile>group__random_gaf23db4c7c4dd415f00dcc56817e082aa.html</anchorfile>
+      <anchor>gaf23db4c7c4dd415f00dcc56817e082aa</anchor>
+      <arglist>(register p99_seed *p00_seed)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint64_t</type>
+      <name>p99_rand</name>
+      <anchorfile>group__random_ga46a86e651285280152b9ab0f68782524.html</anchorfile>
+      <anchor>ga46a86e651285280152b9ab0f68782524</anchor>
+      <arglist>(register p99_seed *p00_seed)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_seed *</type>
+      <name>p99_seed_get</name>
+      <anchorfile>group__random_ga4da425c606ccb2783fc80ca9eec54359.html</anchorfile>
+      <anchor>ga4da425c606ccb2783fc80ca9eec54359</anchor>
+      <arglist>(void)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -19053,6 +19102,39 @@
     </member>
   </compound>
   <compound kind="group">
+    <name>random</name>
+    <title>Pseudo Random Generator</title>
+    <filename>group__random.html</filename>
+    <member kind="typedef">
+      <type>p00_seed160</type>
+      <name>p99_seed</name>
+      <anchorfile>group__random_ga2bcc15a9210d0327b9c02a9cf06a5fbb.html</anchorfile>
+      <anchor>ga2bcc15a9210d0327b9c02a9cf06a5fbb</anchor>
+      <arglist>[2]</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>p99_drand</name>
+      <anchorfile>group__random_gaf23db4c7c4dd415f00dcc56817e082aa.html</anchorfile>
+      <anchor>gaf23db4c7c4dd415f00dcc56817e082aa</anchor>
+      <arglist>(register p99_seed *p00_seed)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint64_t</type>
+      <name>p99_rand</name>
+      <anchorfile>group__random_ga46a86e651285280152b9ab0f68782524.html</anchorfile>
+      <anchor>ga46a86e651285280152b9ab0f68782524</anchor>
+      <arglist>(register p99_seed *p00_seed)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_seed *</type>
+      <name>p99_seed_get</name>
+      <anchorfile>group__random_ga4da425c606ccb2783fc80ca9eec54359.html</anchorfile>
+      <anchor>ga4da425c606ccb2783fc80ca9eec54359</anchor>
+      <arglist>(void)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
     <name>thread_macros</name>
     <title>Thread_macros</title>
     <filename>group__thread__macros.html</filename>
@@ -19792,6 +19874,7 @@
     <file>p99_notifier.h</file>
     <file>p99_paste.h</file>
     <file>p99_posix_default.h</file>
+    <file>p99_rand.h</file>
     <file>p99_special.c</file>
     <file>p99_str.h</file>
     <file>p99_swap.h</file>

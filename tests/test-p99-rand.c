@@ -17,7 +17,6 @@ int main(int argc, char * argv[]) {
   unsigned n = argc <= 1 ? 20 : strtoul(argv[1], 0, 0);
   for (unsigned i = 0; i < n; ++i)
     printf("0x%016" PRIx64 "\n", p99_rand());
-  p99_rand_init();
   for (unsigned i = 0; i < n; ++i)
     printf("%.15f\n", p99_drand());
 }
