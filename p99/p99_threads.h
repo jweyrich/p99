@@ -406,7 +406,7 @@ void p00_call_once_1(p99_once_flag *p00_flag) {
   p00_call_once_2(p00_flag, p00_flag->p00_init);
 }
 
-#define p00_call_once_3(FLAG, FUNC, ARG)                                     \
+#define p00_call_once_3(FLAG, FUNC, ...)                                     \
 do {                                                                         \
   p99_once_flag *p00Mflag = (FLAG);                                          \
   if (P99_UNLIKELY(p00Mflag->p00_done.p00_done != p00_once_finished))        \
@@ -418,7 +418,7 @@ do {                                                                         \
         p00Mflag->p00_done.p00_done = 1;                                     \
         p00Mflag->p00_id = thrd_current();                                   \
         atomic_flag_unlock(&p00Mflag->p00_flg);                              \
-        FUNC(ARG);                                                           \
+        FUNC(__VA_ARGS__);                                                   \
         p00Mflag->p00_done.p00_done = 2;                                     \
         break;                                                               \
       case p00_once_started:                                                 \
