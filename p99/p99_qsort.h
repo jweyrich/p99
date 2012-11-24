@@ -121,7 +121,12 @@ do {                                                                    \
         /* The pivot is always a maximal element in the lower part */   \
         --p00_b;                                                        \
         SWAP(p00_bot, p00_b);                                           \
-        P00_QPUSH(p00_p, p00_bot, p00_b);                               \
+        /* Detect all adjacent elements that compare equal */           \
+        register size_t p00_c = p00_b;                                  \
+        while (p00_c != p00_bot && (P00_QCOMP(p00_c - 1, p00_b) >= 0))  \
+          --p00_c;                                                      \
+        if ((p00_c - p00_bot) > 1)                                      \
+          P00_QPUSH(p00_p, p00_bot, p00_c);                             \
       }                                                                 \
       if ((p00_top - p00_t) > 1)                                        \
         P00_QPUSH(p00_p, p00_t, p00_top);                               \
