@@ -301,6 +301,30 @@ P99_GENERIC(&((B)[0]),                                                  \
             )((B), (N), (S), (CMP), (CTX))
 #endif
 
+p99_inline
+rsize_t p99_mismatch(void *p00_base,
+                     rsize_t p00_n,
+                     rsize_t p00_s,
+                     int (*p00_comp)(const void *, const void *, void *),
+                     void *p00_ctx) {
+  typedef unsigned char p00_el[p00_s];
+  p00_el *const p00_B = p00_base;
+  for (register rsize_t p00_r = 1; p00_r < p00_n; ++p00_r) {
+    if (p00_comp(&p00_B[p00_r - 1], &p00_B[p00_r], p00_ctx) > 0)
+      return p00_r;
+  }
+  return p00_n;
+}
+
+p99_inline
+bool p99_is_sorted(void *p00_base,
+                      rsize_t p00_n,
+                      rsize_t p00_s,
+                      int (*p00_comp)(const void *, const void *, void *),
+                      void *p00_ctx) {
+  return !(p99_mismatch(p00_base, p00_n, p00_s, p00_comp, p00_ctx) < p00_n);
+}
+
 
 /**
  ** @}
