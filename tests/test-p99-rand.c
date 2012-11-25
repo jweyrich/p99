@@ -75,8 +75,9 @@ int main(int argc, char * argv[]) {
   TEST_MISMATCH("before sorting", uA, n, uComp, m ? &m : 0);
   qsort_s(uA, n, sizeof uA[0], uComp, m ? &m : 0);
   TEST_MISMATCH("after sorting", uA, n, uComp, m ? &m : 0);
-  for (unsigned i = 0; i < n; ++i)
-    printf("0x%016" PRIx64 "\n", uA[i]);
+  if (n < 100)
+    for (unsigned i = 0; i < n; ++i)
+      printf("0x%016" PRIx64 "\n", uA[i]);
   free(uA);
 
   double * dA= P99_MALLOC(double[n]);
@@ -85,7 +86,8 @@ int main(int argc, char * argv[]) {
   TEST_MISMATCH("before sorting", dA, n, dComp, 0);
   qsort_s(dA, n, sizeof dA[0], dComp, 0);
   TEST_MISMATCH("after sorting", dA, n, dComp, 0);
-  for (unsigned i = 0; i < n; ++i)
-    printf("%.15f\n", dA[i]);
+  if (n < 100)
+    for (unsigned i = 0; i < n; ++i)
+      printf("%.15f\n", dA[i]);
   free(dA);
 }

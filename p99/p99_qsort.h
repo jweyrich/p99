@@ -31,19 +31,19 @@ struct p00_qsort {
   size_t top;
 };
 
-#define P00_QSWAP_MEMPCP(A, B)                  \
+#define P00_QSWAP_MEMPCP(P, A, B, S)            \
 do {                                            \
-  memcpy(&p00_tmp, &(p00_B[A]), p00_s);         \
-  memcpy(&(p00_B[A]), &(p00_B[B]), p00_s);      \
-  memcpy(&(p00_B[B]), &p00_tmp, p00_s);         \
+  memcpy(&p00_tmp, (P)+(A), (S));               \
+  memcpy((P)+(A), (P)+(B), (S));                \
+  memcpy((P)+(B), &p00_tmp, (S));               \
 } while (false)
 
-#define P00_QSWAP_ASSIGN(A, B)                  \
+#define P00_QSWAP_ASSIGN(P, A, B, S)            \
 do {                                            \
-  p00_tmp = p00_B[A];                           \
-  p00_B[A] = p00_B[B];                          \
-  p00_B[B] = p00_tmp;                           \
-} while (false)
+  p00_tmp = (P)[A];                             \
+  (P)[A] = (P)[B];                              \
+  (P)[B] = p00_tmp;                             \
+ } while (false)
 
 #define P00_QCOMP(A, B) p00_comp(&p00_B[A], &p00_B[B], p00_ctx)
 
@@ -54,84 +54,116 @@ do {                                            \
   p00Mp->top = (T);                             \
  } while (false)
 
-#define P00_QPOP(P, B, T)                       \
-do {                                            \
-  register p00_qsort const*const p00Mp = (P)--; \
-  (B) = p00Mp->bot;                             \
-  (T) = p00Mp->top;                             \
- } while (false)
+#define P00_QTOP(P, B, T)                       \
+  register size_t const B = (P)->bot;           \
+  register size_t const T = (P)->top
 
 #define P00_QEMPTY(S, P) ((S) == (P))
+
+#define P00_ILOG2_INNER(_0, XI, _2)              \
+{                                               \
+  P99_CONSTANT(int, p00_r, (1 << (XI)));        \
+  if (p00_i >= (UINTMAX_C(1) << p00_r)) {       \
+    p00_n += p00_r;                             \
+    p00_i >>= p00_r;                            \
+  }                                             \
+}
+
+p99_inline
+signed p99_ilog2(uintmax_t p00_i) {
+  if (!p00_i) return -1;
+  register unsigned p00_n = 0;
+#if (UINTMAX_MAX/2 + 1) > (1ULL << 63)
+  P99_FOR(, 7, P00_SER, P00_ILOG2_INNER, 6, 5, 4, 3, 2, 1, 0);
+#else
+  P99_FOR(, 6, P00_SER, P00_ILOG2_INNER, 5, 4, 3, 2, 1, 0);
+#endif
+  return p00_n;
+}
 
 
 #define P00_QSORT_BODY(SWAP)                                            \
 do {                                                                    \
   register p99_seed *const seed = p99_seed_get();                       \
   /* Initialize a stack of states */                                    \
-  p00_qsort p00_a[p00_n];                                               \
-  p00_a[0] = (p00_qsort){ .bot = -1, .top = -1, };                      \
-  p00_qsort* p00_p = &p00_a[0];                                         \
+  P99_CONSTANT(int, p00_tail, 20);                                      \
+  /* provide a reasonable stack of states */                            \
+  p00_qsort p00_a[(p99_ilog2(p00_n) + 1)*p00_tail];                     \
+  p00_qsort* p00_p = p00_a;                                             \
   P00_QPUSH(p00_p, 0, p00_n);                                           \
-  do {                                                                  \
-    register size_t p00_bot;                                            \
-    register size_t p00_top;                                            \
+  while(!P00_QEMPTY(p00_a, p00_p)) {                                    \
     /* read the values from the stack */                                \
-    P00_QPOP(p00_p, p00_bot, p00_top);                                  \
-    size_t p00_len = p00_top - p00_bot;                                 \
+    P00_QTOP(p00_p, p00_bot, p00_top);                                  \
+    register size_t const p00_len = p00_top - p00_bot;                  \
                                                                         \
     switch (p00_len) {                                                  \
-    case 0: break;                                                      \
-    case 1: break;                                                      \
+      /* special cases all fall through. */                             \
     case 2:                                                             \
       if (P00_QCOMP(p00_bot, p00_bot + 1) > 0)                          \
-        SWAP(p00_bot, p00_bot + 1);                                     \
+        SWAP(p00_B, p00_bot, p00_bot + 1, p00_s);                       \
+    case 1: ;                                                           \
+    case 0:                                                             \
+      --p00_p;                                                          \
       break;                                                            \
     default:                                                            \
       /* move the pivot to the bottom element */                        \
       {                                                                 \
         size_t p00_c = p99_rand(seed) % p00_len;                        \
-        if (p00_c > p00_bot) SWAP(p00_bot, p00_bot + p00_c);            \
+        if (p00_c) SWAP(p00_B, p00_bot, p00_bot + p00_c, p00_s);        \
       }                                                                 \
                                                                         \
       /* The running variables. The fact that p00_b is > p00_bot,       \
          guarantees progress. */                                        \
-      register size_t p00_b = p00_bot;                                  \
+      register size_t p00_b = p00_bot + 1;                              \
       register size_t p00_t = p00_top;                                  \
                                                                         \
-      while (p00_b < p00_t) {                                           \
+      while (P99_LIKELY(p00_b < p00_t)) {                               \
         /* Try to find two misplaced elements. */                       \
         for (;;) {                                                      \
-          if (!(P00_QCOMP(p00_bot, p00_b) < 0)) ++p00_b;                \
-          else break;                                                   \
-          if (p00_b == p00_t) goto P00_RECURSE;                         \
+          if (!(P00_QCOMP(p00_bot, p00_b) < 0)) {                       \
+            ++p00_b;                                                    \
+            if (P99_UNLIKELY(p00_b == p00_t)) goto P00_RECURSE;         \
+          } else break;                                                 \
         }                                                               \
         for (;;) {                                                      \
-          if (P00_QCOMP(p00_bot, p00_t - 1) < 0) --p00_t;               \
-          else break;                                                   \
-          if (p00_b == p00_t) goto P00_RECURSE;                         \
+          if (P00_QCOMP(p00_bot, p00_t - 1) < 0) {                      \
+            --p00_t;                                                    \
+            if (P99_UNLIKELY(p00_b == p00_t)) goto P00_RECURSE;         \
+          } else break;                                                 \
         }                                                               \
                                                                         \
         /* Two distinct misplaced elements are found. */                \
-        SWAP(p00_b, p00_t - 1);                                         \
-        ++p00_b;                                                        \
         --p00_t;                                                        \
+        SWAP(p00_B, p00_b, p00_t, p00_s);                               \
+        ++p00_b;                                                        \
       }                                                                 \
     P00_RECURSE:                                                        \
       if ((p00_b - p00_bot) > 1) {                                      \
         /* The pivot is always a maximal element in the lower part */   \
         --p00_b;                                                        \
-        SWAP(p00_bot, p00_b);                                           \
-        /* Detect all adjacent elements that compare equal */           \
-        register size_t p00_c = p00_b;                                  \
-        while (p00_c != p00_bot && (P00_QCOMP(p00_c - 1, p00_b) >= 0))  \
-          --p00_c;                                                      \
-        if ((p00_c - p00_bot) > 1)                                      \
-          P00_QPUSH(p00_p, p00_bot, p00_c);                             \
+        SWAP(p00_B, p00_bot, p00_b, p00_s);                             \
+        /* Move all elements that compare equal adjacent */             \
+        register size_t const p00_bb = p00_b;                           \
+        for (register size_t p00_c = p00_bot;                           \
+             p00_c < p00_b;) {                                          \
+          if (P00_QCOMP(p00_bb, p00_c) <= 0) {                          \
+            --p00_b;                                                    \
+            SWAP(p00_B, p00_c, p00_b, p00_s);                           \
+          } else ++p00_c;                                               \
+        }                                                               \
       }                                                                 \
-      if ((p00_top - p00_t) > 1)                                        \
-        P00_QPUSH(p00_p, p00_t, p00_top);                               \
+      /* If the split isn't good enough we just try again, without pop. */ \
+      if ((p00_len < p00_tail)                                          \
+          ||(((p00_b - p00_bot) < p00_len*0.99)                         \
+             && ((p00_top - p00_t) < p00_len*0.99))) {                  \
+        --p00_p;                                                        \
+        if ((p00_b - p00_bot) > 1)                                      \
+          P00_QPUSH(p00_p, p00_bot, p00_b);                             \
+        if ((p00_top - p00_t) > 1)                                      \
+          P00_QPUSH(p00_p, p00_t, p00_top);                             \
+      }                                                                 \
     }                                                                   \
-  } while(!P00_QEMPTY(p00_a, p00_p));                                   \
+  }                                                                     \
   return 0;                                                             \
  } while(false)
 
@@ -143,7 +175,7 @@ errno_t p99_qsort_generic(void *p00_base,
                 int (*p00_comp)(const void *, const void *, void *),
                 void *p00_ctx) {
   typedef unsigned char p00_el[p00_s];
-  p00_el *const p00_B = p00_base;
+  register p00_el *const p00_B = p00_base;
   p00_el p00_tmp;
   P00_QSORT_BODY(P00_QSWAP_MEMPCP);
 }
@@ -156,7 +188,7 @@ errno_t P99_PASTE2(p99_qsort_, T)(void *p00_base,                       \
                     rsize_t p00_s,                                      \
                     int (*p00_comp)(const void *, const void *, void *), \
                     void *p00_ctx) {                                    \
-  T *const p00_B = p00_base;                                            \
+  register T *const p00_B = p00_base;                                   \
   _Alignas(sizeof(max_align_t)) T p00_tmp;                              \
   P00_QSORT_BODY(P00_QSWAP_ASSIGN);                                     \
 }                                                                       \
