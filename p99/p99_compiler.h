@@ -407,9 +407,10 @@ signed p00_trailing_comma_in_initializer__(void) {
 # if P99_VERSION_NO > 30200UL
 #  define p00_has_feature_stdnoreturn_h 1
 # endif
-# if P99_VERSION_NO >= 30000UL
-#  define p00_has_feature_stdalign_h 1
-# endif
+/* stdalign.h exists but is not usable, at least up to 3.2 */
+//# if P99_VERSION_NO >= 30000UL
+//#  define p00_has_feature_stdalign_h 1
+//# endif
 #elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 # define P99_ATLEAST
 /* gcc prior to version 4.2.1 has the inline keyword but with slightly
