@@ -69,10 +69,14 @@ int main(int argc, char * argv[]) {
   size_t n = argc <= 1 ? 20 : strtoul(argv[1], 0, 0);
   uint64_t m = (argc <= 2 ? 0 : strtoul(argv[2], 0, 0));
 
-  uint64_t * uA= P99_MALLOC(uint64_t[n]);
-  for (unsigned i = 0; i < n; ++i)
-    uA[i] = p99_rand();
-  TEST_MISMATCH("before sorting", uA, n, uComp, m ? &m : 0);
+  uint64_t * uA= (n ? P99_MALLOC(uint64_t[n]) : 0);
+  if (n) {
+    for (unsigned i = 0; i < n; ++i)
+      uA[i] = p99_rand();
+    TEST_MISMATCH("before sorting", uA, n, uComp, m ? &m : 0);
+  } else {
+    n = 1;
+  }
   qsort_s(uA, n, sizeof uA[0], uComp, m ? &m : 0);
   TEST_MISMATCH("after sorting", uA, n, uComp, m ? &m : 0);
   if (n < 100)

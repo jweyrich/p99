@@ -83,6 +83,8 @@ signed p99_ilog2(uintmax_t p00_i) {
 
 
 #define P00_QSORT_BODY(SWAP)                                            \
+if (p00_n > RSIZE_MAX || p00_s > RSIZE_MAX) return ERANGE;              \
+if (p00_n && (!p00_base || !p00_comp)) return EINVAL;                   \
 do {                                                                    \
   register p99_seed *const seed = p99_seed_get();                       \
   /* Initialize a stack of states */                                    \
@@ -248,7 +250,6 @@ errno_t p99_qsort_s(void *p00_base,
                     rsize_t p00_s,
                     int (*p00_comp)(const void *, const void *, void *),
                     void *p00_ctx) {
-  fprintf(stderr, "call with %zu\n", p00_s);
   switch (p00_s) {
 #ifdef UINT8_MAX
   case sizeof(uint8_t): return p99_qsort_uint8_t(p00_base, p00_n, p00_s, p00_comp, p00_ctx);
@@ -275,7 +276,8 @@ errno_t p99_qsort_s(void *p00_base,
 
 #ifdef __STDC_NO_COMPLEX__
 #define qsort_s(B, N, S, CMP, CTX)                                      \
-P99_GENERIC(&((B)[0]),                                                  \
+  P99_CONSTRAINT_TRIGGER(                                               \
+  P99_GENERIC(&((B)[0]),                                                \
             p99_qsort_s,                                                \
             (void_ptr*, p99_qsort_void_ptr),                            \
             /* */                                                       \
@@ -299,10 +301,12 @@ P99_GENERIC(&((B)[0]),                                                  \
             /* */                                                       \
             (llong*, p99_qsort_llong),                                  \
             (ullong*, p99_qsort_ullong)                                 \
-            )((B), (N), (S), (CMP), (CTX))
+              )((B), (N), (S), (CMP), (CTX)),                           \
+  "qsort_s runtime constraint violation")
 #else
 #define qsort_s(B, N, S, CMP, CTX)                                      \
-P99_GENERIC(&((B)[0]),                                                  \
+  P99_CONSTRAINT_TRIGGER(                                               \
+  P99_GENERIC(&((B)[0]),                                                \
             p99_qsort_s,                                                \
             (void_ptr*, p99_qsort_void_ptr),                            \
             /* */                                                       \
@@ -330,7 +334,8 @@ P99_GENERIC(&((B)[0]),                                                  \
             /* */                                                       \
             (llong*, p99_qsort_llong),                                  \
             (ullong*, p99_qsort_ullong)                                 \
-            )((B), (N), (S), (CMP), (CTX))
+              )((B), (N), (S), (CMP), (CTX)),                           \
+  "qsort_s runtime constraint violation")
 #endif
 
 p99_inline
