@@ -165,9 +165,15 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SWAP, 1)
 
 
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_QSORT, 0)
-#define P99_QSORT(TAB, NB, COMP) qsort((TAB), (NB), sizeof (TAB)[0], (COMP))
+#define P99_QSORT(TAB, NB, ...)                         \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                     \
+(qsort((TAB), (NB), sizeof (TAB)[0], __VA_ARGS__))      \
+(qsort_s((TAB), (NB), sizeof (TAB)[0], __VA_ARGS__))
 
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_ASORT, 0)
-#define P99_ASORT(TAB, COMP) qsort((TAB), P99_ALEN(TAB), sizeof (TAB)[0], (COMP))
+#define P99_ASORT(TAB, ...)                                     \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                             \
+(qsort((TAB), P99_ALEN(TAB), sizeof (TAB)[0], __VA_ARGS__))     \
+(qsort_s((TAB), P99_ALEN(TAB), sizeof (TAB)[0], __VA_ARGS__))
 
 #endif      /* !P99_SWAP_H_ */
