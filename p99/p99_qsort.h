@@ -33,9 +33,14 @@ struct p00_qsort {
 
 #define P00_QSWAP_MEMPCP(P, A, B, S)            \
 do {                                            \
-  memcpy(&p00_tmp, (P)+(A), (S));               \
-  memcpy((P)+(A), (P)+(B), (S));                \
-  memcpy((P)+(B), &p00_tmp, (S));               \
+  void * p00Ma = (P)+(A);                       \
+  void * p00Mb = (P)+(B);                       \
+  size_t p00Ms = (S);                           \
+  /* if (p00Ma != p00Mb) */ {                   \
+    memcpy(&p00_tmp, p00Ma, p00Ms);             \
+    memcpy(p00Ma, p00Mb, p00Ms);                \
+    memcpy(p00Mb, &p00_tmp, p00Ms);             \
+  }                                             \
 } while (false)
 
 #define P00_QSWAP_ASSIGN(P, A, B, S)            \
@@ -150,6 +155,7 @@ do {                                                                    \
              p00_c < p00_b;) {                                          \
           if (P00_QCOMP(p00_bb, p00_c) <= 0) {                          \
             --p00_b;                                                    \
+            if (p00_c == p00_b) break;                                  \
             SWAP(p00_B, p00_c, p00_b, p00_s);                           \
           } else ++p00_c;                                               \
         }                                                               \
