@@ -126,17 +126,13 @@ do {                                                                    \
                                                                         \
       while (P99_LIKELY(p00_b < p00_t)) {                               \
         /* Try to find two misplaced elements. */                       \
-        for (;;) {                                                      \
-          if (!(P00_QCOMP(p00_bot, p00_b) < 0)) {                       \
-            ++p00_b;                                                    \
-            if (P99_UNLIKELY(p00_b == p00_t)) goto P00_RECURSE;         \
-          } else break;                                                 \
+        while (!(P00_QCOMP(p00_bot, p00_b) < 0)) {                      \
+          ++p00_b;                                                      \
+          if (P99_UNLIKELY(p00_b == p00_t)) goto P00_RECURSE;           \
         }                                                               \
-        for (;;) {                                                      \
-          if (P00_QCOMP(p00_bot, p00_t - 1) < 0) {                      \
-            --p00_t;                                                    \
-            if (P99_UNLIKELY(p00_b == p00_t)) goto P00_RECURSE;         \
-          } else break;                                                 \
+        while (P00_QCOMP(p00_bot, p00_t - 1) < 0){                      \
+          --p00_t;                                                      \
+          if (P99_UNLIKELY(p00_b == p00_t)) goto P00_RECURSE;           \
         }                                                               \
                                                                         \
         /* Two distinct misplaced elements are found. */                \
@@ -151,25 +147,31 @@ do {                                                                    \
         SWAP(p00_B, p00_bot, p00_b, p00_s);                             \
         /* Move all elements that compare equal adjacent */             \
         register size_t const p00_bb = p00_b;                           \
-        for (register size_t p00_c = p00_bot;                           \
-             p00_c < p00_b;) {                                          \
+        for (register size_t p00_c = p00_bot;;) {                       \
           if (P00_QCOMP(p00_bb, p00_c) <= 0) {                          \
             --p00_b;                                                    \
-            if (p00_c == p00_b) break;                                  \
+            if (P99_UNLIKELY(p00_c == p00_b)) break;                    \
             SWAP(p00_B, p00_c, p00_b, p00_s);                           \
-          } else ++p00_c;                                               \
+          } else {                                                      \
+            ++p00_c;                                                    \
+            if (P99_UNLIKELY(p00_c == p00_b)) break;                    \
+          }                                                             \
         }                                                               \
       }                                                                 \
-      /* If the split isn't good enough we just try again, without pop. */ \
-      if ((p00_len < p00_tail)                                          \
-          ||(((p00_b - p00_bot) < p00_len*0.99)                         \
-             && ((p00_top - p00_t) < p00_len*0.99))) {                  \
-        --p00_p;                                                        \
-        if ((p00_b - p00_bot) > 1)                                      \
-          P00_QPUSH(p00_p, p00_bot, p00_b);                             \
-        if ((p00_top - p00_t) > 1)                                      \
-          P00_QPUSH(p00_p, p00_t, p00_top);                             \
+      /* Register the "recursive" calls into the two halfs. Most */     \
+      /* recursive calls are actually close to the bottom, so we */     \
+      /* rarely have to do the check if they are small enough.   */     \
+      if (P99_UNLIKELY(p00_len >= p00_tail)) {                          \
+        size_t p00Mmax = p00_len*0.99;                                  \
+        /* If the split isn't good enough we just try again     */      \
+        if (P99_UNLIKELY(((p00_b - p00_bot) >= p00Mmax)                 \
+                         ||                                             \
+                         ((p00_top - p00_t) >= p00Mmax)))               \
+          continue;                                                     \
       }                                                                 \
+      --p00_p;                                                          \
+      if ((p00_b - p00_bot) > 1) P00_QPUSH(p00_p, p00_bot, p00_b);      \
+      if ((p00_top - p00_t) > 1) P00_QPUSH(p00_p, p00_t, p00_top);      \
     }                                                                   \
   }                                                                     \
   return 0;                                                             \
