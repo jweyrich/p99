@@ -63,7 +63,9 @@ void p99_count_destroy(p99_count* p00_c) {
  ** of a dependent block or statement.
  **/
 P99_BLOCK_DOCUMENT
-#define P99_ACCOUNT(COUNT) P99_PROTECTED_BLOCK(p99_count_inc(&COUNT), p99_count_dec(&COUNT))
+#define P99_ACCOUNT(COUNT)                                              \
+P00_BLK_DECL(p99_count*, p00Mcount, &(COUNT))                           \
+P99_PROTECTED_BLOCK(p99_count_inc(p00Mcount), p99_count_dec(p00Mcount))
 
 /**
  ** @brief increment the counter @a counter atomically by @a p00_hm.
