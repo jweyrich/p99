@@ -269,10 +269,10 @@ unsigned p99_futex_add(p99_futex volatile* futex, unsigned p00_hmuch,
 }
 
 p99_inline
-unsigned p99_futex_fetch_and_store(p99_futex volatile* futex, unsigned p00_desired,
-                                   unsigned p00_cstart, unsigned p00_clen,
-                                   unsigned p00_wmin, unsigned p00_wmax) {
-  unsigned p00_act = atomic_fetch_and_store(futex, p00_desired);
+unsigned p99_futex_exchange(p99_futex volatile* futex, unsigned p00_desired,
+                            unsigned p00_cstart, unsigned p00_clen,
+                            unsigned p00_wmin, unsigned p00_wmax) {
+  unsigned p00_act = atomic_exchange(futex, p00_desired);
   if (p00_clen && P99_IN_RANGE(p00_desired, p00_cstart, p00_clen))
     p99_futex_wakeup(futex, p00_wmin, p00_wmax);
   return p00_act;

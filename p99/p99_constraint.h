@@ -366,7 +366,7 @@ void abort_handler_s(const char * restrict p00_msg,
 p99_inline
 constraint_handler_t set_constraint_handler_s(constraint_handler_t handler) {
   if (!handler) handler = P99_CONSTRAINT_HANDLER;
-  return atomic_fetch_and_store(&p00_constraint_handler, handler);
+  return atomic_exchange(&p00_constraint_handler, handler);
 }
 
 # endif

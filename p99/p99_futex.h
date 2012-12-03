@@ -108,7 +108,7 @@ typedef p99_futex_c11 p99_futex;
  ** There are several operations that work on that value similar to
  ** their atomic analogues:
  **  - ::p99_futex_load returns the value
- **  - ::p99_futex_fetch_and_store atomically exchanges the value with
+ **  - ::p99_futex_exchange atomically exchanges the value with
  **    a new one and returns the old one
  **  - ::p99_futex_add atomically adds a quantity to the value
  **  - ::P99_FUTEX_COMPARE_EXCHANGE atomically compares the existing
@@ -128,10 +128,10 @@ typedef p99_futex_c11 p99_futex;
  ** (or scarcely) using resources. Such a waiting thread will only be
  ** awoken if another thread wants so. Either by calling an explicit
  ** ::p99_futex_wakeup, or implicitly by changing the value through
- ** ::p99_futex_fetch_and_store, ::p99_futex_add or
+ ** ::p99_futex_exchange, ::p99_futex_add or
  ** ::P99_FUTEX_COMPARE_EXCHANGE.
  **
- ** :p99_futex_fetch_and_store and ::p99_futex_add wake up waiters if
+ ** :p99_futex_exchange and ::p99_futex_add wake up waiters if
  ** the value reaches a certain interval. Therefore they have
  ** additional arguments @c p00_cstart, @c p00_clen and @c p00_wmin @c
  ** p00_wmax that give two ranges. One of the conditional values and
@@ -249,16 +249,16 @@ P00_FUTEX_INLINE(p99_futex_load) unsigned p99_futex_load(p99_futex volatile* p00
  ** @remark @a p00_wmax defaults to ::P99_FUTEX_MAX_WAITERS
  ** @related p99_futex
  **/
-P99_DEFARG_DOCU(p99_futex_fetch_and_store)
-P00_FUTEX_INLINE(p99_futex_fetch_and_store) unsigned p99_futex_fetch_and_store(p99_futex volatile* p00_fut, unsigned p00_desired,
+P99_DEFARG_DOCU(p99_futex_exchange)
+P00_FUTEX_INLINE(p99_futex_exchange) unsigned p99_futex_exchange(p99_futex volatile* p00_fut, unsigned p00_desired,
     unsigned p00_cstart, unsigned p00_clen,
     unsigned p00_wmin, unsigned p00_wmax);
 
 #ifndef DOXYGEN
-#define p99_futex_fetch_and_store(...) P99_CALL_DEFARG(p99_futex_fetch_and_store, 6, __VA_ARGS__)
-#define p99_futex_fetch_and_store_defarg_3() 1u
-#define p99_futex_fetch_and_store_defarg_4() 0u
-#define p99_futex_fetch_and_store_defarg_5() P99_FUTEX_MAX_WAITERS
+#define p99_futex_exchange(...) P99_CALL_DEFARG(p99_futex_exchange, 6, __VA_ARGS__)
+#define p99_futex_exchange_defarg_3() 1u
+#define p99_futex_exchange_defarg_4() 0u
+#define p99_futex_exchange_defarg_5() P99_FUTEX_MAX_WAITERS
 #endif
 
 /**

@@ -145,7 +145,7 @@ unsigned p99_notifier_load(p99_notifier volatile* p00_n) {
 P99_DEFARG_DOCU(p99_notifier_set)
 p99_inline
 void p99_notifier_set(p99_notifier volatile* p00_n, unsigned p00_v) {
-  p99_futex_fetch_and_store(p00_n, p00_v, p00_v, 1u, 0u, P99_FUTEX_MAX_WAITERS);
+  p99_futex_exchange(p00_n, p00_v, p00_v, 1u, 0u, P99_FUTEX_MAX_WAITERS);
 }
 
 #ifndef DOXYGEN
@@ -163,7 +163,7 @@ void p99_notifier_set(p99_notifier volatile* p00_n, unsigned p00_v) {
  **/
 p99_inline
 void p99_notifier_unset(p99_notifier volatile* p00_n) {
-  p99_futex_fetch_and_store(p00_n, 0u, 1u, 0u, 0u, 0u);
+  p99_futex_exchange(p00_n, 0u, 1u, 0u, 0u, 0u);
 }
 
 /**

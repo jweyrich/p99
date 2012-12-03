@@ -25,23 +25,23 @@
  **/
 
 
-#define P00_ATOMIC_FETCH_AND_STORE_DECLARE(T, N)                             \
-p99_inline                                                                   \
-T P99_PASTE(p00_atomic_fetch_and_store_, N)(T volatile * p00_p, T p00_des) { \
-  T p00_ret = *p00_p;                                                        \
-  for (;;) {                                                                 \
-    T p00_val = __sync_val_compare_and_swap(p00_p, p00_ret, p00_des);        \
-    if (P99_LIKELY(p00_val == p00_ret)) break;                               \
-    p00_ret = p00_val;                                                       \
-  }                                                                          \
-  return p00_ret;                                                            \
-}                                                                            \
-P99_MACRO_END(P00_ATOMIC_FETCH_AND_STORE_DECLARE)
+#define P00_ATOMIC_EXCHANGE_DECLARE(T, N)                             \
+p99_inline                                                            \
+T P99_PASTE(p00_atomic_exchange_, N)(T volatile * p00_p, T p00_des) { \
+  T p00_ret = *p00_p;                                                 \
+  for (;;) {                                                          \
+    T p00_val = __sync_val_compare_and_swap(p00_p, p00_ret, p00_des); \
+    if (P99_LIKELY(p00_val == p00_ret)) break;                        \
+    p00_ret = p00_val;                                                \
+  }                                                                   \
+  return p00_ret;                                                     \
+}                                                                     \
+P99_MACRO_END(P00_ATOMIC_EXCHANGE_DECLARE)
 
-P00_ATOMIC_FETCH_AND_STORE_DECLARE(uint8_t, 1);
-P00_ATOMIC_FETCH_AND_STORE_DECLARE(uint16_t, 2);
-P00_ATOMIC_FETCH_AND_STORE_DECLARE(uint32_t, 4);
-P00_ATOMIC_FETCH_AND_STORE_DECLARE(uint64_t, 8);
+P00_ATOMIC_EXCHANGE_DECLARE(uint8_t, 1);
+P00_ATOMIC_EXCHANGE_DECLARE(uint16_t, 2);
+P00_ATOMIC_EXCHANGE_DECLARE(uint32_t, 4);
+P00_ATOMIC_EXCHANGE_DECLARE(uint64_t, 8);
 
 p99_inline void p00_mfence(void) {  __sync_synchronize(); }
 

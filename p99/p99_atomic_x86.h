@@ -20,7 +20,7 @@
 
 
 p99_inline
-uint8_t p00_atomic_fetch_and_store_1(uint8_t volatile* p00_objp, uint8_t p00_ret) {
+uint8_t p00_atomic_exchange_1(uint8_t volatile* p00_objp, uint8_t p00_ret) {
   __asm__ __volatile__("xchgb %1, %b0"
                        : "=r"(p00_ret)
                        : "m"(*p00_objp), "0"(p00_ret)
@@ -29,7 +29,7 @@ uint8_t p00_atomic_fetch_and_store_1(uint8_t volatile* p00_objp, uint8_t p00_ret
 }
 
 p99_inline
-uint16_t p00_atomic_fetch_and_store_2(uint16_t volatile* p00_objp, uint16_t p00_ret) {
+uint16_t p00_atomic_exchange_2(uint16_t volatile* p00_objp, uint16_t p00_ret) {
   __asm__ __volatile__("xchgw %1, %w0"
                        : "=r"(p00_ret)
                        : "m"(*p00_objp), "0"(p00_ret)
@@ -38,7 +38,7 @@ uint16_t p00_atomic_fetch_and_store_2(uint16_t volatile* p00_objp, uint16_t p00_
 }
 
 p99_inline
-uint32_t p00_atomic_fetch_and_store_4(uint32_t volatile* p00_objp, uint32_t p00_ret) {
+uint32_t p00_atomic_exchange_4(uint32_t volatile* p00_objp, uint32_t p00_ret) {
   __asm__ __volatile__("xchgl %1, %k0"
                        : "=r"(p00_ret)
                        : "m"(*p00_objp), "0"(p00_ret)
@@ -48,7 +48,7 @@ uint32_t p00_atomic_fetch_and_store_4(uint32_t volatile* p00_objp, uint32_t p00_
 
 #if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(P00_DOXYGEN)
 p99_inline
-uint64_t p00_atomic_fetch_and_store_8(uint64_t volatile* p00_objp, uint64_t p00_ret) {
+uint64_t p00_atomic_exchange_8(uint64_t volatile* p00_objp, uint64_t p00_ret) {
   __asm__ __volatile__("xchgq %1, %0"
                        : "=r"(p00_ret)
                        : "m"(*p00_objp), "0"(p00_ret)
@@ -99,7 +99,7 @@ void p00_mfence(void) {
 p99_inline
 uint32_t p00_sync_lock_test_and_set(uint32_t volatile *p00_objp) {
   register uint32_t p00_ret = 1;
-  return p00_atomic_fetch_and_store_4(p00_objp, p00_ret);
+  return p00_atomic_exchange_4(p00_objp, p00_ret);
 }
 
 p99_inline

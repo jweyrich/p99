@@ -700,16 +700,16 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_ATOMIC_INHERIT, 0)
   P00_ATOMIC_TYPES))
 
 p99_inline
-uintptr_t p00_fetch_and_store_ignore(void* x, ...) { return 0; }
+uintptr_t p00_exchange_ignore(void* x, ...) { return 0; }
 
-#define P00_FETCH_AND_STORE(X)                                              \
-P99_GENERIC_SIZE                                                            \
- (sizeof(X),                                                                \
-  p00_fetch_and_store_ignore,                                               \
-  (1, p00_atomic_fetch_and_store_1),                                        \
-  (2, p00_atomic_fetch_and_store_2),                                        \
-  (4, p00_atomic_fetch_and_store_4)                                         \
-  P99_IF_EQ_2(ATOMIC_INT64_LOCK_FREE)(,(8, p00_atomic_fetch_and_store_8))() \
+#define P00_EXCHANGE(X)                                              \
+P99_GENERIC_SIZE                                                     \
+ (sizeof(X),                                                         \
+  p00_exchange_ignore,                                               \
+  (1, p00_atomic_exchange_1),                                        \
+  (2, p00_atomic_exchange_2),                                        \
+  (4, p00_atomic_exchange_4)                                         \
+  P99_IF_EQ_2(ATOMIC_INT64_LOCK_FREE)(,(8, p00_atomic_exchange_8))() \
   )
 
 /**
@@ -1073,9 +1073,9 @@ p99_extension                                                  \
  **
  ** @see atomic_int
  **/
-#define atomic_fetch_and_store(OBJP, DESIRED)
+#define atomic_exchange(OBJP, DESIRED)
 #else
-#define atomic_fetch_and_store(OBJP, DESIRED)                                                           \
+#define atomic_exchange(OBJP, DESIRED)                                                                  \
 p99_extension                                                                                           \
 ({                                                                                                      \
   P99_MACRO_PVAR(p00_objp, (OBJP));                                                                     \
@@ -1095,7 +1095,7 @@ p99_extension                                                                   
       case 2:;                                                                                          \
       case 4:;                                                                                          \
       case 8:;                                                                                          \
-        p00_ret.p00_m = P00_FETCH_AND_STORE(P00_AT(p00_objp))(&P00_AM(p00_objp), p00_desm.p00_m);       \
+        p00_ret.p00_m = P00_EXCHANGE(P00_AT(p00_objp))(&P00_AM(p00_objp), p00_desm.p00_m);              \
         break;                                                                                          \
       default:                                                                                          \
         p00_ret.p00_m = P00_AM(p00_objp);                                                               \
@@ -1207,7 +1207,7 @@ p99_extension                                                                   
  **/
 #define atomic_store(OBJP, DES)
 #else
-#define atomic_store(OBJP, DES) ((void)atomic_fetch_and_store(OBJP, DES))
+#define atomic_store(OBJP, DES) ((void)atomic_exchange(OBJP, DES))
 #endif
 
 #define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                \
@@ -1397,7 +1397,7 @@ p99_extension                                                  \
 ({                                                             \
   P99_MACRO_VAR(p00_l, (L));                                   \
   P99_MACRO_VAR(p00_el, (EL));                                 \
-  p00_el->p99_lifo = atomic_fetch_and_store(p00_l, p00_el);    \
+  p00_el->p99_lifo = atomic_exchange(p00_l, p00_el);           \
  })
 
 /**
@@ -1463,7 +1463,7 @@ p99_extension                                                                   
  ** @see P99_LIFO_TOP
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
-#define P99_LIFO_CLEAR(L) atomic_fetch_and_store(L, 0)
+#define P99_LIFO_CLEAR(L) atomic_exchange(L, 0)
 
 P00_DOCUMENT_TYPE_ARGUMENT(P99_LIFO_TABULATE, 0)
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_LIFO_TABULATE, 1)

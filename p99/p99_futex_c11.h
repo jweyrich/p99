@@ -147,10 +147,10 @@ unsigned p99_futex_add(p99_futex volatile* p00_fut, unsigned p00_hmuch,
   return p00_ret;
 }
 
-P99_WEAK(p99_futex_fetch_and_store)
-unsigned p99_futex_fetch_and_store(p99_futex volatile* p00_fut, unsigned p00_desired,
-                                   unsigned p00_cstart, unsigned p00_clen,
-                                   unsigned p00_wmin, unsigned p00_wmax) {
+P99_WEAK(p99_futex_exchange)
+unsigned p99_futex_exchange(p99_futex volatile* p00_fut, unsigned p00_desired,
+                            unsigned p00_cstart, unsigned p00_clen,
+                            unsigned p00_wmin, unsigned p00_wmax) {
   volatile unsigned p00_act = 0;
   if (p00_wmax < p00_wmin) p00_wmax = p00_wmin;
   P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00_fut->p99_mut) {
@@ -159,7 +159,7 @@ unsigned p99_futex_fetch_and_store(p99_futex volatile* p00_fut, unsigned p00_des
     if (p00_clen && P99_IN_RANGE(p00_desired, p00_cstart, p00_clen)) {
       P00_FUTEX_WAKEUP(p00_fut, p00_wmin, p00_wmax);
     } else {
-      p00_wmin = 0;;
+      p00_wmin = 0;
     }
   }
   /* If we haven't woken enough threads, we have to re-acquire the

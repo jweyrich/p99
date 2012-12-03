@@ -199,7 +199,7 @@ _Bool p00_arm_strexd(uint64_t volatile*p00_ptr, uint64_t p00_val) {
 #endif
 
 p99_inline
-uint8_t p00_atomic_fetch_and_store_1(uint8_t volatile* p00_objp, uint8_t p00_des) {
+uint8_t p00_atomic_exchange_1(uint8_t volatile* p00_objp, uint8_t p00_des) {
   for (;;) {
     uint8_t p00_ret = p00_arm_ldrexb(object);
     if (!p00_arm_strexb(object, p00_des)) return p00_ret;
@@ -207,7 +207,7 @@ uint8_t p00_atomic_fetch_and_store_1(uint8_t volatile* p00_objp, uint8_t p00_des
 }
 
 p99_inline
-uint16_t p00_atomic_fetch_and_store_2(uint16_t volatile* p00_objp, uint16_t p00_des) {
+uint16_t p00_atomic_exchange_2(uint16_t volatile* p00_objp, uint16_t p00_des) {
   for (;;) {
     uint16_t p00_ret = p00_arm_ldrexh(object);
     if (!p00_arm_strexh(object, p00_des)) return p00_ret;
@@ -215,7 +215,7 @@ uint16_t p00_atomic_fetch_and_store_2(uint16_t volatile* p00_objp, uint16_t p00_
 }
 
 p99_inline
-uint32_t p00_atomic_fetch_and_store_4(uint32_t volatile* p00_objp, uint32_t p00_des) {
+uint32_t p00_atomic_exchange_4(uint32_t volatile* p00_objp, uint32_t p00_des) {
   for (;;) {
     uint32_t p00_ret = p00_arm_ldrex(object);
     if (!p00_arm_strex(object, p00_des)) return p00_ret;
@@ -224,7 +224,7 @@ uint32_t p00_atomic_fetch_and_store_4(uint32_t volatile* p00_objp, uint32_t p00_
 
 #if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(P00_DOXYGEN)
 p99_inline
-uint64_t p00_atomic_fetch_and_store_8(uint64_t volatile* p00_objp, uint64_t p00_des) {
+uint64_t p00_atomic_exchange_8(uint64_t volatile* p00_objp, uint64_t p00_des) {
   for (;;) {
     uint64_t p00_ret = p00_arm_ldrexd(object);
     if (!p00_arm_strexd(object, p00_des)) return p00_ret;
