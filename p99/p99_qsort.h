@@ -147,15 +147,13 @@ do {                                                                    \
         SWAP(p00_B, p00_bot, p00_b, p00_s);                             \
         /* Move all elements that compare equal adjacent */             \
         register size_t const p00_bb = p00_b;                           \
-        for (register size_t p00_c = p00_bot;;) {                       \
+        for (register size_t p00_c = p00_bot;                           \
+             p00_c < p00_b;) {                                          \
           if (P00_QCOMP(p00_bb, p00_c) <= 0) {                          \
             --p00_b;                                                    \
-            if (P99_UNLIKELY(p00_c == p00_b)) break;                    \
+            if (p00_c == p00_b) break;                                  \
             SWAP(p00_B, p00_c, p00_b, p00_s);                           \
-          } else {                                                      \
-            ++p00_c;                                                    \
-            if (P99_UNLIKELY(p00_c == p00_b)) break;                    \
-          }                                                             \
+          } else ++p00_c;                                               \
         }                                                               \
       }                                                                 \
       /* Register the "recursive" calls into the two halfs. Most */     \
