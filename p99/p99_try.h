@@ -367,6 +367,46 @@ p00_throw_call_neg(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), _
 #define P99_THROW_CALL_NEG(F, E, ...) P00_THROW_CALL_NEG(F, E, __VA_ARGS__)
 
 p99_inline
+int p00_throw_call_negate(int p00_neg,
+                             errno_t p00_def,
+                             p00_jmp_buf0 * p00_top,
+                             char const* p00_file,
+                             char const* p00_context,
+                             char const* p00_info) {
+  if (P99_UNLIKELY(p00_neg < 0)) p00_jmp_throw(-p00_neg, p00_top, p00_file, p00_context, p00_info);
+  return p00_neg;
+}
+
+#define P00_THROW_CALL_NEGATE(F, E, ...)                                \
+p00_throw_call_negate(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", neg return")
+
+/**
+ ** @brief Wrap a function call to @a F such that it throws an error
+ ** on negative return.
+ **
+ ** A common strategy of libraries and also the Linux kernel is to
+ ** return an @c int and signal an error with a negative value. The
+ ** error code is then the negation of that return value. This wrapper
+ ** makes this transparent such that it ensures that the error code is
+ ** always checked, and if an error occurs the negated value is
+ ** thrown.
+ **
+ ** @return the value of the call to the function if that was
+ ** successful. Never returns if it wasn't.
+ **
+ ** @see P99_THROW_CALL_NEG for a similar macro that also checks if
+ ** the return value is negative but that returns the value of @c
+ ** errno, instead.
+ **
+ ** @see P99_THROW_CALL_ZERO for a similar macro that checks if the
+ ** return value is @c 0
+ **
+ ** @see P99_THROW_CALL_VOIDP for a similar macro that checks a
+ ** pointer return value
+ **/
+#define P99_THROW_CALL_NEGATE(F, E, ...) P00_THROW_CALL_NEGATE(F, E, __VA_ARGS__)
+
+p99_inline
 void* p00_throw_call_voidp(void* p00_p,
                            errno_t p00_def,
                            p00_jmp_buf0 * p00_top,
