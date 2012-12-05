@@ -42,6 +42,18 @@ do {                                                           \
   }                                                            \
 } while (false)
 
+#define P00_QSWAP_VCPY_(A, B)                           \
+for (size_t p00Mi = 0; p00Mi < p00_vsize; ++p00Mi)      \
+  (A)[p00Mi] = (B)[p00Mi]
+
+
+#define P00_QSWAP_VCPY(P, A, B)                 \
+do {                                            \
+  P00_QSWAP_VCPY_(p00_tmp, (P)[A]);             \
+  P00_QSWAP_VCPY_((P)[A], (P)[B]);              \
+  P00_QSWAP_VCPY_((P)[B], p00_tmp);             \
+} while (false)
+
 #define P00_QSWAP_ASSIGN(P, A, B)                              \
 do {                                                           \
   p00_tmp = (P)[A];                                            \
@@ -175,6 +187,84 @@ do {                                                                  \
  } while(false)
 
 
+p99_inline
+errno_t p00_qsort_generic16(void *p00_base,
+                          rsize_t p00_n,
+                          rsize_t p00_a,
+                          rsize_t p00_s,
+                          int (*p00_comp)(const void *, const void *, void *),
+                          void *p00_ctx) {
+  size_t const p00_vsize = p00_s / sizeof(uint16_t);
+  typedef uint16_t p00_el[p00_vsize];
+  register p00_el *const p00_B = p00_base;
+  p00_el p00_tmp;
+  P00_QSORT_BODY(P00_QSWAP_VCPY);
+}
+
+
+p99_inline
+errno_t p00_qsort_generic32(void *p00_base,
+                          rsize_t p00_n,
+                          rsize_t p00_a,
+                          rsize_t p00_s,
+                          int (*p00_comp)(const void *, const void *, void *),
+                          void *p00_ctx) {
+  size_t const p00_vsize = p00_s / sizeof(uint32_t);
+  typedef uint32_t p00_el[p00_vsize];
+  register p00_el *const p00_B = p00_base;
+  p00_el p00_tmp;
+  P00_QSORT_BODY(P00_QSWAP_VCPY);
+}
+
+
+p99_inline
+errno_t p00_qsort_generic64(void *p00_base,
+                          rsize_t p00_n,
+                          rsize_t p00_a,
+                          rsize_t p00_s,
+                          int (*p00_comp)(const void *, const void *, void *),
+                          void *p00_ctx) {
+  size_t const p00_vsize = p00_s / sizeof(uint64_t);
+  typedef uint64_t p00_el[p00_vsize];
+  register p00_el *const p00_B = p00_base;
+  p00_el p00_tmp;
+  P00_QSORT_BODY(P00_QSWAP_VCPY);
+}
+
+
+#ifdef UINT128_MAX
+p99_inline
+errno_t p00_qsort_generic128(void *p00_base,
+                          rsize_t p00_n,
+                          rsize_t p00_a,
+                          rsize_t p00_s,
+                          int (*p00_comp)(const void *, const void *, void *),
+                          void *p00_ctx) {
+  size_t const p00_vsize = p00_s / sizeof(uint128_t);
+  typedef uint128_t p00_el[p00_vsize];
+  register p00_el *const p00_B = p00_base;
+  p00_el p00_tmp;
+  P00_QSORT_BODY(P00_QSWAP_VCPY);
+}
+#else
+# ifdef P99X_UINT128_MAX
+p99_inline
+errno_t p00_qsort_generic128(void *p00_base,
+                          rsize_t p00_n,
+                          rsize_t p00_a,
+                          rsize_t p00_s,
+                          int (*p00_comp)(const void *, const void *, void *),
+                          void *p00_ctx) {
+  size_t const p00_vsize = p00_s / sizeof(p99x_uint128);
+  typedef p99x_uint128 p00_el[p00_vsize];
+  register p00_el *const p00_B = p00_base;
+  p00_el p00_tmp;
+  P00_QSORT_BODY(P00_QSWAP_VCPY);
+}
+# endif
+#endif
+
+
 P99_WEAK(p99_qsort_generic)
 errno_t p99_qsort_generic(void *p00_base,
                           rsize_t p00_n,
@@ -193,6 +283,7 @@ errno_t p99_qsort_generic(void *p00_base,
 p99_inline                                                               \
 errno_t P99_PASTE2(p99_qsort_, T)(void *p00_base,                        \
                     rsize_t p00_n,                                       \
+                    rsize_t p00_a,                                       \
                     rsize_t p00_s,                                       \
                     int (*p00_comp)(const void *, const void *, void *), \
                     void *p00_ctx) {                                     \
@@ -232,52 +323,61 @@ P00_QSORT_DECLARE(uintptr_t);
 
 #ifdef UINT8_MAX
 P00_QSORT_DECLARE(uint8_t);
+P00_QSORT_DECLARE(int8_t);
 #endif
 #ifdef UINT16_MAX
 P00_QSORT_DECLARE(uint16_t);
+P00_QSORT_DECLARE(int16_t);
 #endif
 #ifdef UINT32_MAX
 P00_QSORT_DECLARE(uint32_t);
+P00_QSORT_DECLARE(int32_t);
 #endif
 #ifdef UINT64_MAX
 P00_QSORT_DECLARE(uint64_t);
+P00_QSORT_DECLARE(int64_t);
 #endif
 #ifdef UINT128_MAX
 P00_QSORT_DECLARE(uint128_t);
+P00_QSORT_DECLARE(int128_t);
 #else
 # ifdef P99X_UINT128_MAX
 P00_QSORT_DECLARE(p99x_uint128);
+P00_QSORT_DECLARE(p99x_int128);
 # endif
 #endif
 
 p99_inline
 errno_t p99_qsort_s(void *p00_base,
                     rsize_t p00_n,
+                    rsize_t p00_a,
                     rsize_t p00_s,
                     int (*p00_comp)(const void *, const void *, void *),
                     void *p00_ctx) {
-  switch (p00_s) {
-#ifdef UINT8_MAX
-  case sizeof(uint8_t): return p99_qsort_uint8_t(p00_base, p00_n, p00_s, p00_comp, p00_ctx);
-#endif
+  switch (p00_a) {
 #ifdef UINT16_MAX
-  case sizeof(uint16_t): return p99_qsort_uint16_t(p00_base, p00_n, p00_s, p00_comp, p00_ctx);
+  case sizeof(uint16_t):
+    return p00_qsort_generic16(p00_base, p00_n, p00_a, p00_s, p00_comp, p00_ctx);
 #endif
 #ifdef UINT32_MAX
-  case sizeof(uint32_t): return p99_qsort_uint32_t(p00_base, p00_n, p00_s, p00_comp, p00_ctx);
+  case sizeof(uint32_t):
+    return p00_qsort_generic32(p00_base, p00_n, p00_a, p00_s, p00_comp, p00_ctx);
 #endif
 #ifdef UINT64_MAX
-  case sizeof(uint64_t): return p99_qsort_uint64_t(p00_base, p00_n, p00_s, p00_comp, p00_ctx);
+  case sizeof(uint64_t):
+    return p00_qsort_generic64(p00_base, p00_n, p00_a, p00_s, p00_comp, p00_ctx);
 #endif
 #ifdef UINT128_MAX
-  case sizeof(uint128_t): return p99_qsort_uint128_t(p00_base, p00_n, p00_s, p00_comp, p00_ctx);
+  case sizeof(uint128_t):
+    return p00_qsort_generic128(p00_base, p00_n, p00_a, p00_s, p00_comp, p00_ctx);
 #else
 # ifdef P99X_UINT128_MAX
-  case sizeof(p99x_uint128): return p99_qsort_p99x_uint128(p00_base, p00_n, p00_s, p00_comp, p00_ctx);
+  case sizeof(p99x_uint128):
+    return p00_qsort_generic128(p00_base, p00_n, p00_a, p00_s, p00_comp, p00_ctx);
 # endif
 #endif
-  default: return p99_qsort_generic(p00_base, p00_n, p00_s, p00_comp, p00_ctx);
   }
+  return p99_qsort_generic(p00_base, p00_n, p00_a, p00_s, p00_comp, p00_ctx);
 }
 
 #ifdef __STDC_NO_COMPLEX__
@@ -307,7 +407,7 @@ errno_t p99_qsort_s(void *p00_base,
             /* */                                              \
             (llong*, p99_qsort_llong),                         \
             (ullong*, p99_qsort_ullong)                        \
-              )((B), (N), (S), (CMP), (CTX)),                  \
+              )((B), (N), alignof(*(B)), (S), (CMP), (CTX)),   \
   "qsort_s runtime constraint violation")
 #else
 #define qsort_s(B, N, S, CMP, CTX)                             \
@@ -340,7 +440,7 @@ errno_t p99_qsort_s(void *p00_base,
             /* */                                              \
             (llong*, p99_qsort_llong),                         \
             (ullong*, p99_qsort_ullong)                        \
-              )((B), (N), (S), (CMP), (CTX)),                  \
+              )((B), (N), alignof(*(B)), (S), (CMP), (CTX)),   \
   "qsort_s runtime constraint violation")
 #endif
 
