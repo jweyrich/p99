@@ -3,6 +3,7 @@
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
 /* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
+/* (C) copyright  2012 Simon Peeters                                          */
 /* (C) copyright  2012 William Morris                                         */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
@@ -368,16 +369,16 @@ p00_throw_call_neg(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), _
 
 p99_inline
 int p00_throw_call_negate(int p00_neg,
-                             errno_t p00_def,
-                             p00_jmp_buf0 * p00_top,
-                             char const* p00_file,
-                             char const* p00_context,
-                             char const* p00_info) {
+                          errno_t p00_def,
+                          p00_jmp_buf0 * p00_top,
+                          char const* p00_file,
+                          char const* p00_context,
+                          char const* p00_info) {
   if (P99_UNLIKELY(p00_neg < 0)) p00_jmp_throw(-p00_neg, p00_top, p00_file, p00_context, p00_info);
   return p00_neg;
 }
 
-#define P00_THROW_CALL_NEGATE(F, E, ...)                                \
+#define P00_THROW_CALL_NEGATE(F, E, ...)                                                                       \
 p00_throw_call_negate(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", neg return")
 
 /**

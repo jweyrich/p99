@@ -118,6 +118,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>atomic_exchange</name>
+      <anchorfile>group__atomic_gab1452731a25566508807d6fe92e55cf9.html</anchorfile>
+      <anchor>gab1452731a25566508807d6fe92e55cf9</anchor>
+      <arglist>(OBJP, DESIRED)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>atomic_fetch_add</name>
       <anchorfile>group__atomic_ga9fcd205c9afa613a5ab567b2f0631b87.html</anchorfile>
       <anchor>ga9fcd205c9afa613a5ab567b2f0631b87</anchor>
@@ -136,13 +143,6 @@
       <anchorfile>group__atomic_gadc3fefa52ac8a2e588df25ebc79afd80.html</anchorfile>
       <anchor>gadc3fefa52ac8a2e588df25ebc79afd80</anchor>
       <arglist>(OBJP, OPERAND)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>atomic_fetch_and_store</name>
-      <anchorfile>group__atomic_gadc4844e27863d4b2d146e41f1c70ea03.html</anchorfile>
-      <anchor>gadc4844e27863d4b2d146e41f1c70ea03</anchor>
-      <arglist>(OBJP, DESIRED)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -868,30 +868,30 @@
     <member kind="function">
       <type>uint8_t</type>
       <name>P99_PASTE</name>
-      <anchorfile>p99__atomic__gcc_8h_a86cc72848bb704e7cc882ff4f0a35bb2.html</anchorfile>
-      <anchor>a86cc72848bb704e7cc882ff4f0a35bb2</anchor>
-      <arglist>(p00_atomic_fetch_and_store_, 1)(uint8_t volatile *p00_p</arglist>
+      <anchorfile>p99__atomic__gcc_8h_a3bf1466f647dd4e426adc475bc633682.html</anchorfile>
+      <anchor>a3bf1466f647dd4e426adc475bc633682</anchor>
+      <arglist>(p00_atomic_exchange_, 1)(uint8_t volatile *p00_p</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>P99_PASTE</name>
-      <anchorfile>p99__atomic__gcc_8h_ab9e23f97d5f0940fc780bed243f2284b.html</anchorfile>
-      <anchor>ab9e23f97d5f0940fc780bed243f2284b</anchor>
-      <arglist>(p00_atomic_fetch_and_store_, 2)(uint16_t volatile *p00_p</arglist>
+      <anchorfile>p99__atomic__gcc_8h_a564ae6fe9e595f353aad357877970532.html</anchorfile>
+      <anchor>a564ae6fe9e595f353aad357877970532</anchor>
+      <arglist>(p00_atomic_exchange_, 2)(uint16_t volatile *p00_p</arglist>
     </member>
     <member kind="function">
       <type>uint32_t</type>
       <name>P99_PASTE</name>
-      <anchorfile>p99__atomic__gcc_8h_aac0766ef7687fa8f4ff1d92549b97fbe.html</anchorfile>
-      <anchor>aac0766ef7687fa8f4ff1d92549b97fbe</anchor>
-      <arglist>(p00_atomic_fetch_and_store_, 4)(uint32_t volatile *p00_p</arglist>
+      <anchorfile>p99__atomic__gcc_8h_a2222a1dba5df6fc6e42339d9e5309cb3.html</anchorfile>
+      <anchor>a2222a1dba5df6fc6e42339d9e5309cb3</anchor>
+      <arglist>(p00_atomic_exchange_, 4)(uint32_t volatile *p00_p</arglist>
     </member>
     <member kind="function">
       <type>uint64_t</type>
       <name>P99_PASTE</name>
-      <anchorfile>p99__atomic__gcc_8h_a6810eb798805d5b933801501c1115a2b.html</anchorfile>
-      <anchor>a6810eb798805d5b933801501c1115a2b</anchor>
-      <arglist>(p00_atomic_fetch_and_store_, 8)(uint64_t volatile *p00_p</arglist>
+      <anchorfile>p99__atomic__gcc_8h_a80d7bca8730953560b82eca7faa6d93c.html</anchorfile>
+      <anchor>a80d7bca8730953560b82eca7faa6d93c</anchor>
+      <arglist>(p00_atomic_exchange_, 8)(uint64_t volatile *p00_p</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -7071,6 +7071,40 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>p99_qsort.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__qsort_8h</filename>
+    <includes id="p99__rand_8h" name="p99_rand.h" local="yes" imported="no">p99_rand.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>qsort_s</name>
+      <anchorfile>group__sorting_ga7dffa4b52032f181ca7360c7de4e48cb.html</anchorfile>
+      <anchor>ga7dffa4b52032f181ca7360c7de4e48cb</anchor>
+      <arglist>(B, N, S, CMP, CTX)</arglist>
+    </member>
+    <member kind="function">
+      <type>signed</type>
+      <name>p99_ilog2</name>
+      <anchorfile>group__sorting_ga05807be33b5e68937bb6458333d4c339.html</anchorfile>
+      <anchor>ga05807be33b5e68937bb6458333d4c339</anchor>
+      <arglist>(uintmax_t p00_i)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>p99_is_sorted</name>
+      <anchorfile>group__sorting_ga9ecb9298d2c8cb8cba981000710d7b8d.html</anchorfile>
+      <anchor>ga9ecb9298d2c8cb8cba981000710d7b8d</anchor>
+      <arglist>(void *p00_base, rsize_t p00_n, rsize_t p00_s, int(*p00_comp)(const void *, const void *, void *), void *p00_ctx)</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_mismatch</name>
+      <anchorfile>group__sorting_ga1ca07f2aaf851bd6e99f2bdec6fdefec.html</anchorfile>
+      <anchor>ga1ca07f2aaf851bd6e99f2bdec6fdefec</anchor>
+      <arglist>(void *p00_base, rsize_t p00_n, rsize_t p00_s, int(*p00_comp)(const void *, const void *, void *), void *p00_ctx)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>p99_rand.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__rand_8h</filename>
@@ -7250,16 +7284,16 @@
     <member kind="define">
       <type>#define</type>
       <name>P99_ASORT</name>
-      <anchorfile>p99__swap_8h_aae4c45f828a3fc295ba09738065ef620.html</anchorfile>
-      <anchor>aae4c45f828a3fc295ba09738065ef620</anchor>
-      <arglist>(TAB, COMP)</arglist>
+      <anchorfile>p99__swap_8h_a8b54df939370c509ff7a9b26a8101aae.html</anchorfile>
+      <anchor>a8b54df939370c509ff7a9b26a8101aae</anchor>
+      <arglist>(TAB,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_QSORT</name>
-      <anchorfile>p99__swap_8h_a7a022c4bd7cfbbf6e0e8c255caf4e1b0.html</anchorfile>
-      <anchor>a7a022c4bd7cfbbf6e0e8c255caf4e1b0</anchor>
-      <arglist>(TAB, NB, COMP)</arglist>
+      <anchorfile>p99__swap_8h_ac1f0c291dff5d6db6e15b7b6828f85b5.html</anchorfile>
+      <anchor>ac1f0c291dff5d6db6e15b7b6828f85b5</anchor>
+      <arglist>(TAB, NB,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -7506,6 +7540,13 @@
       <name>P99_THROW_CALL_NEG</name>
       <anchorfile>group__try_ga7b75882abf4279114a1e5e072f1d63fd.html</anchorfile>
       <anchor>ga7b75882abf4279114a1e5e072f1d63fd</anchor>
+      <arglist>(F, E,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_NEGATE</name>
+      <anchorfile>group__try_gaff676c5efd7542cd3eff90b9098b94fb.html</anchorfile>
+      <anchor>gaff676c5efd7542cd3eff90b9098b94fb</anchor>
       <arglist>(F, E,...)</arglist>
     </member>
     <member kind="define">
@@ -10903,6 +10944,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>atomic_exchange</name>
+      <anchorfile>group__atomic_gab1452731a25566508807d6fe92e55cf9.html</anchorfile>
+      <anchor>gab1452731a25566508807d6fe92e55cf9</anchor>
+      <arglist>(OBJP, DESIRED)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>atomic_fetch_add</name>
       <anchorfile>group__atomic_ga9fcd205c9afa613a5ab567b2f0631b87.html</anchorfile>
       <anchor>ga9fcd205c9afa613a5ab567b2f0631b87</anchor>
@@ -10921,13 +10969,6 @@
       <anchorfile>group__atomic_gadc3fefa52ac8a2e588df25ebc79afd80.html</anchorfile>
       <anchor>gadc3fefa52ac8a2e588df25ebc79afd80</anchor>
       <arglist>(OBJP, OPERAND)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>atomic_fetch_and_store</name>
-      <anchorfile>group__atomic_gadc4844e27863d4b2d146e41f1c70ea03.html</anchorfile>
-      <anchor>gadc4844e27863d4b2d146e41f1c70ea03</anchor>
-      <arglist>(OBJP, DESIRED)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -13761,9 +13802,9 @@
     </member>
     <member kind="function">
       <type>unsigned</type>
-      <name>p99_futex_fetch_and_store</name>
-      <anchorfile>group__futex_gae9992e6155e6444297674daf34127bb4.html</anchorfile>
-      <anchor>gae9992e6155e6444297674daf34127bb4</anchor>
+      <name>p99_futex_exchange</name>
+      <anchorfile>group__futex_ga5f3a21217d8b30a26562eaf0a9fa742a.html</anchorfile>
+      <anchor>ga5f3a21217d8b30a26562eaf0a9fa742a</anchor>
       <arglist>(p99_futex volatile *p00_fut, unsigned p00_desired, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
     </member>
     <member kind="function">
@@ -15486,6 +15527,13 @@
       <name>P99_THROW_CALL_NEG</name>
       <anchorfile>group__try_ga7b75882abf4279114a1e5e072f1d63fd.html</anchorfile>
       <anchor>ga7b75882abf4279114a1e5e072f1d63fd</anchor>
+      <arglist>(F, E,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_NEGATE</name>
+      <anchorfile>group__try_gaff676c5efd7542cd3eff90b9098b94fb.html</anchorfile>
+      <anchor>gaff676c5efd7542cd3eff90b9098b94fb</anchor>
       <arglist>(F, E,...)</arglist>
     </member>
     <member kind="define">
@@ -19102,6 +19150,39 @@
     </member>
   </compound>
   <compound kind="group">
+    <name>sorting</name>
+    <title>Sorting</title>
+    <filename>group__sorting.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>qsort_s</name>
+      <anchorfile>group__sorting_ga7dffa4b52032f181ca7360c7de4e48cb.html</anchorfile>
+      <anchor>ga7dffa4b52032f181ca7360c7de4e48cb</anchor>
+      <arglist>(B, N, S, CMP, CTX)</arglist>
+    </member>
+    <member kind="function">
+      <type>signed</type>
+      <name>p99_ilog2</name>
+      <anchorfile>group__sorting_ga05807be33b5e68937bb6458333d4c339.html</anchorfile>
+      <anchor>ga05807be33b5e68937bb6458333d4c339</anchor>
+      <arglist>(uintmax_t p00_i)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>p99_is_sorted</name>
+      <anchorfile>group__sorting_ga9ecb9298d2c8cb8cba981000710d7b8d.html</anchorfile>
+      <anchor>ga9ecb9298d2c8cb8cba981000710d7b8d</anchor>
+      <arglist>(void *p00_base, rsize_t p00_n, rsize_t p00_s, int(*p00_comp)(const void *, const void *, void *), void *p00_ctx)</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_mismatch</name>
+      <anchorfile>group__sorting_ga1ca07f2aaf851bd6e99f2bdec6fdefec.html</anchorfile>
+      <anchor>ga1ca07f2aaf851bd6e99f2bdec6fdefec</anchor>
+      <arglist>(void *p00_base, rsize_t p00_n, rsize_t p00_s, int(*p00_comp)(const void *, const void *, void *), void *p00_ctx)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
     <name>random</name>
     <title>Pseudo Random Generator</title>
     <filename>group__random.html</filename>
@@ -19572,9 +19653,9 @@
     </member>
     <member kind="function">
       <type>unsigned</type>
-      <name>p99_futex_fetch_and_store</name>
-      <anchorfile>group__futex_gae9992e6155e6444297674daf34127bb4.html</anchorfile>
-      <anchor>gae9992e6155e6444297674daf34127bb4</anchor>
+      <name>p99_futex_exchange</name>
+      <anchorfile>group__futex_ga5f3a21217d8b30a26562eaf0a9fa742a.html</anchorfile>
+      <anchor>ga5f3a21217d8b30a26562eaf0a9fa742a</anchor>
       <arglist>(p99_futex volatile *p00_fut, unsigned p00_desired, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</arglist>
     </member>
     <member kind="function">
@@ -19874,6 +19955,7 @@
     <file>p99_notifier.h</file>
     <file>p99_paste.h</file>
     <file>p99_posix_default.h</file>
+    <file>p99_qsort.h</file>
     <file>p99_rand.h</file>
     <file>p99_special.c</file>
     <file>p99_str.h</file>

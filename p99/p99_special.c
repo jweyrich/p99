@@ -107,7 +107,7 @@
  ** @see P99_ANAME(NAME, DIM, VAR) for argument <code>NAME</code>, <code>VAR</code>.
  ** @see P99_ARE_EQ(FIRST, ...) for argument <code>FIRST</code>.
  ** @see P99_ARE_ORDERED(OP, ...) for arguments <code>OP</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>.
- ** @see P99_ASORT(TAB, COMP) for argument <code>TAB</code>.
+ ** @see P99_ASORT(TAB, ...) for argument <code>TAB</code>.
  ** @see P99_ASUB(X, T, N, L) for argument <code>T</code>.
  ** @see P99_ATOMIC_INHERIT(T) for argument <code>T</code>.
  ** @see P99_AVALUE(X, ...) for arguments <code>X</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
@@ -206,7 +206,7 @@
  ** @see P99_PRINTF(FORMAT, ...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_PROTOTYPE(...) for argument <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_PZERO(X, N) for argument <code>X</code>.
- ** @see P99_QSORT(TAB, NB, COMP) for argument <code>TAB</code>.
+ ** @see P99_QSORT(TAB, NB, ...) for argument <code>TAB</code>.
  ** @see P99_QVALUE(X) for argument <code>X</code>.
  ** @see P99_REP(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_REPEAT(MACRO, N) for argument <code>MACRO</code>, <code>N</code>.

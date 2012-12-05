@@ -42,16 +42,16 @@ do {                                                           \
   }                                                            \
 } while (false)
 
-#define P00_QSWAP_VCPY_(A, B)                           \
-for (size_t p00Mi = 0; p00Mi < p00_vsize; ++p00Mi)      \
+#define P00_QSWAP_VCPY_(A, B)                                  \
+for (size_t p00Mi = 0; p00Mi < p00_vsize; ++p00Mi)             \
   (A)[p00Mi] = (B)[p00Mi]
 
 
-#define P00_QSWAP_VCPY(P, A, B)                 \
-do {                                            \
-  P00_QSWAP_VCPY_(p00_tmp, (P)[A]);             \
-  P00_QSWAP_VCPY_((P)[A], (P)[B]);              \
-  P00_QSWAP_VCPY_((P)[B], p00_tmp);             \
+#define P00_QSWAP_VCPY(P, A, B)                                \
+do {                                                           \
+  P00_QSWAP_VCPY_(p00_tmp, (P)[A]);                            \
+  P00_QSWAP_VCPY_((P)[A], (P)[B]);                             \
+  P00_QSWAP_VCPY_((P)[B], p00_tmp);                            \
 } while (false)
 
 #define P00_QSWAP_ASSIGN(P, A, B)                              \
@@ -85,6 +85,9 @@ do {                                                           \
   }                                                            \
 }
 
+/**
+ ** @brief compute the integer logarithm base @c 2 of @a p00_i
+ **/
 p99_inline
 signed p99_ilog2(uintmax_t p00_i) {
   if (!p00_i) return -1;
@@ -189,11 +192,11 @@ do {                                                                  \
 
 p99_inline
 errno_t p00_qsort_generic16(void *p00_base,
-                          rsize_t p00_n,
-                          rsize_t p00_a,
-                          rsize_t p00_s,
-                          int (*p00_comp)(const void *, const void *, void *),
-                          void *p00_ctx) {
+                            rsize_t p00_n,
+                            rsize_t p00_a,
+                            rsize_t p00_s,
+                            int (*p00_comp)(const void *, const void *, void *),
+                            void *p00_ctx) {
   size_t const p00_vsize = p00_s / sizeof(uint16_t);
   typedef uint16_t p00_el[p00_vsize];
   register p00_el *const p00_B = p00_base;
@@ -204,11 +207,11 @@ errno_t p00_qsort_generic16(void *p00_base,
 
 p99_inline
 errno_t p00_qsort_generic32(void *p00_base,
-                          rsize_t p00_n,
-                          rsize_t p00_a,
-                          rsize_t p00_s,
-                          int (*p00_comp)(const void *, const void *, void *),
-                          void *p00_ctx) {
+                            rsize_t p00_n,
+                            rsize_t p00_a,
+                            rsize_t p00_s,
+                            int (*p00_comp)(const void *, const void *, void *),
+                            void *p00_ctx) {
   size_t const p00_vsize = p00_s / sizeof(uint32_t);
   typedef uint32_t p00_el[p00_vsize];
   register p00_el *const p00_B = p00_base;
@@ -219,11 +222,11 @@ errno_t p00_qsort_generic32(void *p00_base,
 
 p99_inline
 errno_t p00_qsort_generic64(void *p00_base,
-                          rsize_t p00_n,
-                          rsize_t p00_a,
-                          rsize_t p00_s,
-                          int (*p00_comp)(const void *, const void *, void *),
-                          void *p00_ctx) {
+                            rsize_t p00_n,
+                            rsize_t p00_a,
+                            rsize_t p00_s,
+                            int (*p00_comp)(const void *, const void *, void *),
+                            void *p00_ctx) {
   size_t const p00_vsize = p00_s / sizeof(uint64_t);
   typedef uint64_t p00_el[p00_vsize];
   register p00_el *const p00_B = p00_base;
@@ -235,11 +238,11 @@ errno_t p00_qsort_generic64(void *p00_base,
 #ifdef UINT128_MAX
 p99_inline
 errno_t p00_qsort_generic128(void *p00_base,
-                          rsize_t p00_n,
-                          rsize_t p00_a,
-                          rsize_t p00_s,
-                          int (*p00_comp)(const void *, const void *, void *),
-                          void *p00_ctx) {
+                             rsize_t p00_n,
+                             rsize_t p00_a,
+                             rsize_t p00_s,
+                             int (*p00_comp)(const void *, const void *, void *),
+                             void *p00_ctx) {
   size_t const p00_vsize = p00_s / sizeof(uint128_t);
   typedef uint128_t p00_el[p00_vsize];
   register p00_el *const p00_B = p00_base;
@@ -250,11 +253,11 @@ errno_t p00_qsort_generic128(void *p00_base,
 # ifdef P99X_UINT128_MAX
 p99_inline
 errno_t p00_qsort_generic128(void *p00_base,
-                          rsize_t p00_n,
-                          rsize_t p00_a,
-                          rsize_t p00_s,
-                          int (*p00_comp)(const void *, const void *, void *),
-                          void *p00_ctx) {
+                             rsize_t p00_n,
+                             rsize_t p00_a,
+                             rsize_t p00_s,
+                             int (*p00_comp)(const void *, const void *, void *),
+                             void *p00_ctx) {
   size_t const p00_vsize = p00_s / sizeof(p99x_uint128);
   typedef p99x_uint128 p00_el[p00_vsize];
   register p00_el *const p00_B = p00_base;
@@ -265,8 +268,8 @@ errno_t p00_qsort_generic128(void *p00_base,
 #endif
 
 
-P99_WEAK(p99_qsort_generic)
-errno_t p99_qsort_generic(void *p00_base,
+P99_WEAK(p00_qsort_generic)
+errno_t p00_qsort_generic(void *p00_base,
                           rsize_t p00_n,
                           rsize_t p00_a,
                           rsize_t p00_s,
@@ -281,7 +284,7 @@ errno_t p99_qsort_generic(void *p00_base,
 
 #define P00_QSORT_DECLARE(T)                                             \
 p99_inline                                                               \
-errno_t P99_PASTE2(p99_qsort_, T)(void *p00_base,                        \
+errno_t P99_PASTE2(p00_qsort_, T)(void *p00_base,                        \
                     rsize_t p00_n,                                       \
                     rsize_t p00_a,                                       \
                     rsize_t p00_s,                                       \
@@ -291,7 +294,7 @@ errno_t P99_PASTE2(p99_qsort_, T)(void *p00_base,                        \
   _Alignas(sizeof(max_align_t)) T p00_tmp;                               \
   P00_QSORT_BODY(P00_QSWAP_ASSIGN);                                      \
 }                                                                        \
-P99_MACRO_END(p99_qsort_, T)
+P99_MACRO_END(p00_qsort_, T)
 
 P00_QSORT_DECLARE(_Bool);
 P00_QSORT_DECLARE(schar);
@@ -348,7 +351,7 @@ P00_QSORT_DECLARE(p99x_int128);
 #endif
 
 p99_inline
-errno_t p99_qsort_s(void *p00_base,
+errno_t p00_qsort_s(void *p00_base,
                     rsize_t p00_n,
                     rsize_t p00_a,
                     rsize_t p00_s,
@@ -377,73 +380,109 @@ errno_t p99_qsort_s(void *p00_base,
 # endif
 #endif
   }
-  return p99_qsort_generic(p00_base, p00_n, p00_a, p00_s, p00_comp, p00_ctx);
+  return p00_qsort_generic(p00_base, p00_n, p00_a, p00_s, p00_comp, p00_ctx);
 }
 
+
+/**
+ ** @brief A generic sorting routine.
+ **
+ ** This an implementation of the @c qsort variant as it is specified
+ ** in Annex K of the C11 standard. Its particularity is that it
+ ** additionally takes a "context" argument, which allows to program
+ ** comparison functions more widely, without refering to global
+ ** variables. Its prototype if it were not implemented as
+ ** a type generic macro, would be:
+ **
+ ** @code
+ ** errno_t qsort_s(void *base,
+ **                 rsize_t nmemb,
+ **                 rsize_t size,
+ **                 int (*compar)(const void *x, const void *y, void *context),
+ **                 void *context);
+ ** @endcode
+ **
+ ** Because this is a type generic macro, the implementation can take
+ ** care of the "real" base type of @c base, in particular about
+ ** alignment. If it really only would receive a @c void* it would
+ ** have to make the worst assumptions about that and always use
+ ** @c memcpy to copy elements around. If it has more type information it
+ ** can use more efficient means for that. So casting the first
+ ** argument to @c void* wouldn't be a good idea.
+ **/
 #ifdef __STDC_NO_COMPLEX__
 #define qsort_s(B, N, S, CMP, CTX)                             \
   P99_CONSTRAINT_TRIGGER(                                      \
   P99_GENERIC(&((B)[0]),                                       \
-            p99_qsort_s,                                       \
-            (void_ptr*, p99_qsort_void_ptr),                   \
+            p00_qsort_s,                                       \
+            (void_ptr*, p00_qsort_void_ptr),                   \
             /* */                                              \
-            (float*, p99_qsort_float),                         \
-            (double*, p99_qsort_double),                       \
-            (double*, p99_qsort_cdouble),                      \
+            (float*, p00_qsort_float),                         \
+            (double*, p00_qsort_double),                       \
+            (double*, p00_qsort_cdouble),                      \
             /* */                                              \
-            (_Bool*, p99_qsort__Bool),                         \
-            (char*, p99_qsort_char),                           \
-            (uchar*, p99_qsort_uchar),                         \
-            (schar*, p99_qsort_schar),                         \
+            (_Bool*, p00_qsort__Bool),                         \
+            (char*, p00_qsort_char),                           \
+            (uchar*, p00_qsort_uchar),                         \
+            (schar*, p00_qsort_schar),                         \
             /* */                                              \
-            (ushort*, p99_qsort_ushort),                       \
-            (short*, p99_qsort_short),                         \
+            (ushort*, p00_qsort_ushort),                       \
+            (short*, p00_qsort_short),                         \
             /* */                                              \
-            (unsigned*, p99_qsort_unsigned),                   \
-            (signed*, p99_qsort_signed),                       \
+            (unsigned*, p00_qsort_unsigned),                   \
+            (signed*, p00_qsort_signed),                       \
             /* */                                              \
-            (long*, p99_qsort_long),                           \
-            (ulong*, p99_qsort_ulong),                         \
+            (long*, p00_qsort_long),                           \
+            (ulong*, p00_qsort_ulong),                         \
             /* */                                              \
-            (llong*, p99_qsort_llong),                         \
-            (ullong*, p99_qsort_ullong)                        \
+            (llong*, p00_qsort_llong),                         \
+            (ullong*, p00_qsort_ullong)                        \
               )((B), (N), alignof(*(B)), (S), (CMP), (CTX)),   \
   "qsort_s runtime constraint violation")
 #else
 #define qsort_s(B, N, S, CMP, CTX)                             \
   P99_CONSTRAINT_TRIGGER(                                      \
   P99_GENERIC(&((B)[0]),                                       \
-            p99_qsort_s,                                       \
-            (void_ptr*, p99_qsort_void_ptr),                   \
+            p00_qsort_s,                                       \
+            (void_ptr*, p00_qsort_void_ptr),                   \
             /* */                                              \
-            (float*, p99_qsort_float),                         \
-            (double*, p99_qsort_double),                       \
-            (ldouble*, p99_qsort_ldouble),                     \
+            (float*, p00_qsort_float),                         \
+            (double*, p00_qsort_double),                       \
+            (ldouble*, p00_qsort_ldouble),                     \
             /* */                                              \
-            (cfloat*, p99_qsort_cfloat),                       \
-            (cdouble*, p99_qsort_cdouble),                     \
-            (cldouble*, p99_qsort_cldouble),                   \
+            (cfloat*, p00_qsort_cfloat),                       \
+            (cdouble*, p00_qsort_cdouble),                     \
+            (cldouble*, p00_qsort_cldouble),                   \
             /* */                                              \
-            (_Bool*, p99_qsort__Bool),                         \
-            (char*, p99_qsort_char),                           \
-            (uchar*, p99_qsort_uchar),                         \
-            (schar*, p99_qsort_schar),                         \
+            (_Bool*, p00_qsort__Bool),                         \
+            (char*, p00_qsort_char),                           \
+            (uchar*, p00_qsort_uchar),                         \
+            (schar*, p00_qsort_schar),                         \
             /* */                                              \
-            (ushort*, p99_qsort_ushort),                       \
-            (short*, p99_qsort_short),                         \
+            (ushort*, p00_qsort_ushort),                       \
+            (short*, p00_qsort_short),                         \
             /* */                                              \
-            (unsigned*, p99_qsort_unsigned),                   \
-            (signed*, p99_qsort_signed),                       \
+            (unsigned*, p00_qsort_unsigned),                   \
+            (signed*, p00_qsort_signed),                       \
             /* */                                              \
-            (long*, p99_qsort_long),                           \
-            (ulong*, p99_qsort_ulong),                         \
+            (long*, p00_qsort_long),                           \
+            (ulong*, p00_qsort_ulong),                         \
             /* */                                              \
-            (llong*, p99_qsort_llong),                         \
-            (ullong*, p99_qsort_ullong)                        \
+            (llong*, p00_qsort_llong),                         \
+            (ullong*, p00_qsort_ullong)                        \
               )((B), (N), alignof(*(B)), (S), (CMP), (CTX)),   \
   "qsort_s runtime constraint violation")
 #endif
 
+
+/**
+ ** @brief Check if the array passed in as @a p00_base is sorted and
+ ** return the first mismatch if it is not.
+ **
+ ** A mismatch here is defined as the first position at which we
+ ** detect that the array is not sorted. If the array is in fact
+ ** sorted the return value is @a p00_n.
+ **/
 p99_inline
 rsize_t p99_mismatch(void *p00_base,
                      rsize_t p00_n,
@@ -459,6 +498,9 @@ rsize_t p99_mismatch(void *p00_base,
   return p00_n;
 }
 
+/**
+ ** @brief Check if the array passed in as @a p00_base is sorted
+ **/
 p99_inline
 bool p99_is_sorted(void *p00_base,
                    rsize_t p00_n,
