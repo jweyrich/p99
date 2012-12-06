@@ -17,7 +17,7 @@ if 0;               #### for this magic, see findSvnAuthors ####
 # particular purpose.
 #
 
-my $maxnumber = 121;
+my $maxnumber = 159;
 
 my @qualpar_C99
     = sort qw(const restrict volatile);

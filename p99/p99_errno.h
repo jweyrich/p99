@@ -123,7 +123,7 @@
        NXIO,                                                        \
          /* should be distinct for POSIX, but are equal on Linux */ \
        P99_IF_EQ(ENOTSUP, EOPNOTSUPP)(NOTSUP,)(NOTSUP, OPNOTSUPP,)  \
-       OVERFLOW,                                                    \
+         /* is defined by SVID as such: OVERFLOW, */                \
        PERM,                                                        \
        PFNOSUPPORT,                                                 \
        PIPE,                                                        \
@@ -149,19 +149,29 @@
        UNATCH,                                                      \
        USERS,                                                       \
        XDEV,                                                        \
-       XFULL
+       XFULL,                                                       \
+       XXX
 
 #define P00_ERRNO_ELEM_(ERR, STR) P99_IF_GT(ERR, 0)([ERR] = 0,)()
 #define P00_ERRNO_ELEM(ERR) P00_ERRNO_ELEM_(E ## ERR, "E" #ERR)
 
+#define P00_ERRNO_ENUM_(ERR, NAME) P99_IF_GT(ERR, 0)(NAME)(ERR)
+#define P00_ERRNO_ENUM(ERR) P00_ERRNO_ENUM_(E ## ERR, p00_E ## ERR)
+
 enum {
   /**
-   ** @brief The maximum error code that we found on this system
+   ** @brief The maximum predefined error code that we found on this system
    **/
-  p99_errno_max = sizeof((char[]) { P99_SER(P00_ERRNO_ELEM, P00_ERRNO_LIST) })
+  p00_errno_max = sizeof((char[]) { P99_SER(P00_ERRNO_ELEM, P00_ERRNO_LIST) P00_ERRNO_ELEM(OVERFLOW) }),
+  /* Add all other codes as enumeration constants */
+  P99_SEQ(P00_ERRNO_ENUM, P00_ERRNO_LIST), P00_ERRNO_ENUM(OVERFLOW),
+  /**
+   ** @brief The maximum error code that we found or defined on this system
+   **/
+  p99_errno_max
 };
 
-#define P00_ERRNO_CASE_(ERR, STR) P99_IF_GT(ERR, 0)(case ERR: return STR;)()
+#define P00_ERRNO_CASE_(ERR, STR) case ERR: return STR
 #define P00_ERRNO_CASE(ERR) P00_ERRNO_CASE_(E ## ERR, "E" #ERR)
 
 /**
@@ -178,7 +188,8 @@ enum {
 p99_inline
 char const* p99_errno_getname(errno_t p00_err) {
   switch (p00_err) {
-    P99_SER(P00_ERRNO_CASE, P00_ERRNO_LIST);
+    P99_SEP(P00_ERRNO_CASE, P00_ERRNO_LIST);
+    P00_ERRNO_CASE(OVERFLOW);
   default: return 0;
   }
 }
