@@ -10,6 +10,7 @@
 /* without even the implied warranty of merchantability or fitness for a      */
 /* particular purpose.                                                        */
 /*                                                                            */
+#include "p99_constraint.h"
 #include "stdbool.h"
 #include "stdlib.h"
 #include "p99_compiler.h"
@@ -225,5 +226,10 @@ int main(int argc, char* argv[]) {
              P99_IN_RANGE(5.0, 1u, 7.f),
              P99_IN_RANGE(8.0, 1u, 7),
              P99_IN_RANGE(28.0, 1, 7));
+  char line[32];
+  while(gets_s(line, 32)) {
+    tmpnam_s(line, 32);
+    puts(line);
+  }
   return ret;
 }

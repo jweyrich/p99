@@ -579,6 +579,99 @@ errno_t p00_getenv_s(char const* p00_file, char const* p00_context,
 /** @ingroup C11_library **/
 #define getenv_s(...) p00_getenv_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
 
+p99_inline
+errno_t p00_tmpfile_s(char const* p00_file, char const* p00_context,
+                      FILE * restrict * restrict p00_streamptr) {
+  errno_t p00_ret = 0;
+  if (!p00_streamptr) {
+    p00_ret = EINVAL;
+  } else {
+    *p00_streamptr = tmpfile();
+    if (!*p00_streamptr) {
+      p00_ret = errno;
+      errno = 0;
+    }
+  }
+  if (p00_ret) p00_constraint_call(p00_ret, p00_file, p00_context, "tmpfile_s runtime constraint violation");
+  return p00_ret;
+}
+
+/** @ingroup C11_library **/
+#define tmpfile_s(...) p00_tmpfile_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
+
+p99_inline
+errno_t p00_tmpnam_s(char const* p00_file, char const* p00_context,
+                     char *p00_s, rsize_t p00_maxsize) {
+  errno_t p00_ret = 0;
+  if (p00_maxsize > RSIZE_MAX) {
+    p00_ret = ERANGE;
+  } else if (!p00_s) {
+    p00_ret = EINVAL;
+  } else {
+    char p00_b[L_tmpnam] = P99_INIT;
+    char * p00_r = tmpnam(p00_b);
+    char p00_p = p00_b[L_tmpnam - 1];
+    p00_b[L_tmpnam - 1] = 0;
+    size_t p00_l = strlen(p00_b);
+    if (!p00_r || ((p00_l == (L_tmpnam - 1)) && p00_p) || (p00_l >= p00_maxsize)) {
+      p00_ret = ERANGE;
+      /* no name could be created or the result was too long */
+      p00_s[0] = 0;
+    } else {
+      strcpy(p00_s, p00_r);
+    }
+  }
+  if (p00_ret) p00_constraint_call(p00_ret, p00_file, p00_context, "tmpnam_s runtime constraint violation");
+  return p00_ret;
+}
+
+/** @ingroup C11_library **/
+#define tmpnam_s(...) p00_tmpnam_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
+
+p99_inline
+char *p00_gets_s(char const* p00_file, char const* p00_context,
+                 char *p00_s, rsize_t p00_n) {
+  errno_t p00_err = 0;
+  char* p00_ret = 0;
+  if (!p00_s) {
+    p00_err = EINVAL;
+  } else if (!p00_n) {
+    p00_s[0] = '\0';
+    p00_err = EINVAL;
+  } else if (p00_n > RSIZE_MAX) {
+    p00_s[0] = '\0';
+    p00_err = ERANGE;
+  } else {
+    p00_ret = fgets(p00_s, p00_n - 1, stdin);
+    if (p00_ret) {
+      size_t p00_l = strlen(p00_s);
+      if (p00_s[p00_l - 1] == '\n') {
+        /* all went well, just zero out the EOL character */
+        p00_s[p00_l - 1] = '\0';
+      } else {
+        /* If the last character has not been a newline the only
+           possibility of valid input that the end of the stream has been
+           encountered. */
+        char p00_b[2];
+        char* p00_r = fgets(p00_b, 2, stdin);
+        if (p00_r) {
+          p00_s[0] = '\0';
+          p00_err = ENOBUFS;
+        }
+      }
+    }
+  }
+  if (p00_err) {
+    p00_constraint_call(p00_err, p00_file, p00_context, "gets_s runtime constraint violation");
+    return 0;
+  } else {
+    return p00_ret;
+  }
+}
+
+/** @ingroup C11_library **/
+#define gets_s(...) p00_gets_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
+
 # endif
 
 /**
