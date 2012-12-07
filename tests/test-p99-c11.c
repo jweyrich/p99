@@ -226,10 +226,19 @@ int main(int argc, char* argv[]) {
              P99_IN_RANGE(5.0, 1u, 7.f),
              P99_IN_RANGE(8.0, 1u, 7),
              P99_IN_RANGE(28.0, 1, 7));
-  char line[32];
-  while(gets_s(line, 32)) {
-    tmpnam_s(line, 32);
+  char line[] = "this is a, long text -- it has some special charActers\nnewlines?";
+  puts("--- end ---");
+
+  do {
+    printf("parsing: %s\n", line);
+    char *ptr = 0;
+    rsize_t s1max = sizeof line;
+    for(char * tok;
+        s1max && (tok = strtok_s(ptr ? 0 : line, &s1max, "A-\n? ,", &ptr));)
+      puts(tok);
+    tmpnam_s(line, sizeof line);
     puts(line);
-  }
+  }  while(gets_s(line, sizeof line) && line[0]);
+
   return ret;
 }

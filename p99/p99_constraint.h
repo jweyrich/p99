@@ -672,6 +672,115 @@ char *p00_gets_s(char const* p00_file, char const* p00_context,
 /** @ingroup C11_library **/
 #define gets_s(...) p00_gets_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
 
+p99_inline
+bool p00_isin(char p00_c,
+              rsize_t p00_s2l, uint8_t const p00_s2[const restrict p00_s2l]) {
+  if (p00_c)
+    for (rsize_t p00_i = 0; p00_i < (p00_s2l - 1); ++p00_i)
+      if (P99_UNLIKELY(p00_c == p00_s2[p00_i]))
+        return true;
+  return false;
+}
+
+
+p99_inline
+rsize_t p99_span(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l],
+                 rsize_t p00_s2l, uint8_t const p00_s2[const restrict p00_s2l]) {
+  for (rsize_t p00_ret = 0; p00_ret < p00_s1l; ++p00_ret) {
+    if (!p00_s1[p00_ret] || !p00_isin(p00_s1[p00_ret], p00_s2l, p00_s2))
+      return p00_ret;
+  }
+  return p00_s1l;
+}
+
+p99_inline
+rsize_t p00_cskip(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l],
+                  rsize_t p00_s2l, uint8_t const p00_s2[const restrict p00_s2l]) {
+  rsize_t p00_ret = 0;
+  for (;p00_ret < p00_s1l && p00_s1[p00_ret]; ++p00_ret) {
+    if (p00_isin(p00_s1[p00_ret], p00_s2l, p00_s2)) {
+      p00_s1[p00_ret] = '\0';
+      return p00_ret + 1;
+    }
+  }
+  return p00_ret;
+}
+
+p99_inline
+uint8_t *p00_strtok_inner(
+                   rsize_t * restrict p00_s1max,
+                   uint8_t p00_ret[restrict (*p00_s1max)],
+                   rsize_t p00_s2max,
+                   const uint8_t p00_s2[const restrict p00_s2max],
+                   uint8_t ** restrict p00_ptr) {
+  /* Skip delimiters at the beginning of the string. */
+  register size_t const p00_l = p99_span(*p00_s1max, p00_ret, p00_s2max, p00_s2);
+  if (p00_l < *p00_s1max) {
+    *p00_s1max -= p00_l;
+    p00_ret += p00_l;
+
+    register size_t const p00_k = p00_cskip(*p00_s1max, p00_ret, p00_s2max, p00_s2);
+    /* The empty token is always returned as null pointer. */
+    if (p00_k && ((p00_k > 1) || (*p00_s1max == 1) || !p00_ret[1])) {
+      *p00_ptr = p00_ret + p00_k;
+      *p00_s1max -=  p00_k;
+      return p00_ret;
+    }
+  }
+  return 0;
+}
+
+p99_inline
+char *p00_strtok_s(char const* p00_file, char const* p00_context,
+                   rsize_t * restrict p00_s1max,
+                   uint8_t p00_s1[restrict (*p00_s1max)],
+                   rsize_t p00_s2max,
+                   const uint8_t p00_s2[const restrict p00_s2max],
+                   uint8_t ** restrict p00_ptr) {
+  errno_t p00_err = 0;
+  uint8_t *p00_ret = 0;
+  if (P99_UNLIKELY(!p00_s1max || !p00_s2 || !p00_ptr)) {
+    p00_err = EINVAL;
+  } else if (P99_UNLIKELY(*p00_s1max > RSIZE_MAX)) {
+    p00_err = ERANGE;
+  } else if (P99_UNLIKELY(!p00_s1 && !*p00_ptr)) {
+    p00_err = EINVAL;
+  }
+  if (P99_UNLIKELY(p00_err)) {
+    p00_constraint_call(p00_err, p00_file, p00_context, "strtok_s runtime constraint violation");
+  } else {
+    if (P99_LIKELY(*p00_s1max)) {
+      /* If this is a new scan, initialize the machinery */
+      if (p00_s1)
+        p00_ret = p00_strtok_inner(p00_s1max, p00_s1, p00_s2max, p00_s2, p00_ptr);
+      else
+        p00_ret = p00_strtok_inner(p00_s1max, *p00_ptr, p00_s2max, p00_s2, p00_ptr);
+    }
+  }
+  return (char*)p00_ret;
+}
+
+#define P00_STRSIZE(S)                                  \
+P99_GENERIC(S,                                          \
+            sizeof(S),                                  \
+            (char *, strlen(S)+1),                      \
+            (char const*, strlen(S)+1),                 \
+            (char volatile*, strlen(S)+1),              \
+            (char volatile const*, strlen(S)+1),        \
+            (char *restrict, strlen(S)+1),              \
+            (char const*restrict, strlen(S)+1),         \
+            (char volatile*restrict, strlen(S)+1),      \
+            (char volatile const*restrict, strlen(S)+1) \
+            )
+
+
+/** @ingroup C11_library **/
+#define strtok_s(S1, S1MAX, S2, PTR)                            \
+p00_strtok_s(P99_STRINGIFY(__LINE__), __func__,                 \
+             S1MAX, (uint8_t*restrict)(S1),                     \
+             P00_STRSIZE(S2), (uint8_t const*restrict)(S2),     \
+             (uint8_t**)PTR)
+
 # endif
 
 /**
