@@ -51,13 +51,13 @@ int dComp(void const*a, void const*b, void*context) {
   }
 }
 
-#define TEST_MISMATCH(S, A, N, CMP, CTX)                                \
-do {                                                                    \
-  rsize_t mm = p99_mismatch((A), (N), sizeof (A)[0], (CMP), (CTX));     \
-  if (mm < (N))                                                         \
+#define TEST_MISMATCH(S, A, N, CMP, CTX)                                                                                             \
+do {                                                                                                                                 \
+  rsize_t mm = p99_mismatch((A), (N), sizeof (A)[0], (CMP), (CTX));                                                                  \
+  if (mm < (N))                                                                                                                      \
     P99_FPRINTF(stderr, "mismatch %s with context %s at position %s, %s > %s\n", (char const*)(S), (CTX), mm, (A)[mm - 1], (A)[mm]); \
-  else                                                                  \
-    P99_FPRINTF(stderr, "no mismatch %s with context %s\n", (char const*)(S), (CTX)); \
+  else                                                                                                                               \
+    P99_FPRINTF(stderr, "no mismatch %s with context %s\n", (char const*)(S), (CTX));                                                \
  } while(false)
 
 
