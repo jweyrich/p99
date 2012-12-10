@@ -12,9 +12,7 @@
 /*                                                                            */
 #ifndef P99_CONSTRAINT_H
 #define P99_CONSTRAINT_H
-#include "p99_tss.h"
-#include "p99_c99.h"
-#include "p99_errno.h"
+#include "p99_bitset.h"
 
 /**
  ** @addtogroup C11_library
@@ -673,8 +671,8 @@ char *p00_gets_s(char const* p00_file, char const* p00_context,
 #define gets_s(...) p00_gets_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
 
 p99_inline
-bool p00_isin(char p00_c,
-              rsize_t p00_s2l, uint8_t const p00_s2[const restrict p00_s2l]) {
+bool p00_isin0(char p00_c,
+               rsize_t p00_s2l, uint8_t const p00_s2[const restrict p00_s2l]) {
   if (p00_c)
     for (rsize_t p00_i = 0; p00_i < (p00_s2l - 1); ++p00_i)
       if (P99_UNLIKELY(p00_c == p00_s2[p00_i]))
@@ -687,7 +685,7 @@ p99_inline
 rsize_t p99_span(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l],
                  rsize_t p00_s2l, uint8_t const p00_s2[const restrict p00_s2l]) {
   for (rsize_t p00_ret = 0; p00_ret < p00_s1l; ++p00_ret) {
-    if (!p00_s1[p00_ret] || !p00_isin(p00_s1[p00_ret], p00_s2l, p00_s2))
+    if (!p00_s1[p00_ret] || !P00_ISIN(p00_s1[p00_ret], p00_s2l, p00_s2))
       return p00_ret;
   }
   return p00_s1l;
@@ -697,8 +695,8 @@ p99_inline
 rsize_t p00_cskip(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l],
                   rsize_t p00_s2l, uint8_t const p00_s2[const restrict p00_s2l]) {
   rsize_t p00_ret = 0;
-  for (;p00_ret < p00_s1l && p00_s1[p00_ret]; ++p00_ret) {
-    if (p00_isin(p00_s1[p00_ret], p00_s2l, p00_s2)) {
+  for (; p00_ret < p00_s1l && p00_s1[p00_ret]; ++p00_ret) {
+    if (P00_ISIN(p00_s1[p00_ret], p00_s2l, p00_s2)) {
       p00_s1[p00_ret] = '\0';
       return p00_ret + 1;
     }
@@ -708,11 +706,11 @@ rsize_t p00_cskip(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l],
 
 p99_inline
 uint8_t *p00_strtok_inner(
-                   rsize_t * restrict p00_s1max,
-                   uint8_t p00_ret[restrict (*p00_s1max)],
-                   rsize_t p00_s2max,
-                   const uint8_t p00_s2[const restrict p00_s2max],
-                   uint8_t ** restrict p00_ptr) {
+  rsize_t * restrict p00_s1max,
+  uint8_t p00_ret[restrict (*p00_s1max)],
+  rsize_t p00_s2max,
+  const uint8_t p00_s2[const restrict p00_s2max],
+  uint8_t ** restrict p00_ptr) {
   /* Skip delimiters at the beginning of the string. */
   register size_t const p00_l = p99_span(*p00_s1max, p00_ret, p00_s2max, p00_s2);
   if (p00_l < *p00_s1max) {
@@ -760,26 +758,52 @@ char *p00_strtok_s(char const* p00_file, char const* p00_context,
   return (char*)p00_ret;
 }
 
-#define P00_STRSIZE(S)                                  \
-P99_GENERIC(S,                                          \
-            sizeof(S),                                  \
-            (char *, strlen(S)+1),                      \
-            (char const*, strlen(S)+1),                 \
-            (char volatile*, strlen(S)+1),              \
-            (char volatile const*, strlen(S)+1),        \
-            (char *restrict, strlen(S)+1),              \
-            (char const*restrict, strlen(S)+1),         \
-            (char volatile*restrict, strlen(S)+1),      \
-            (char volatile const*restrict, strlen(S)+1) \
+#define P00_STRSIZE(S)                                         \
+P99_GENERIC(S,                                                 \
+            sizeof(S),                                         \
+            (char *, strlen(S)+1),                             \
+            (char const*, strlen(S)+1),                        \
+            (char volatile*, strlen(S)+1),                     \
+            (char volatile const*, strlen(S)+1),               \
+            (char *restrict, strlen(S)+1),                     \
+            (char const*restrict, strlen(S)+1),                \
+            (char volatile*restrict, strlen(S)+1),             \
+            (char volatile const*restrict, strlen(S)+1)        \
             )
 
 
 /** @ingroup C11_library **/
-#define strtok_s(S1, S1MAX, S2, PTR)                            \
-p00_strtok_s(P99_STRINGIFY(__LINE__), __func__,                 \
-             S1MAX, (uint8_t*restrict)(S1),                     \
-             P00_STRSIZE(S2), (uint8_t const*restrict)(S2),     \
+#define strtok_s(S1, S1MAX, S2, PTR)                           \
+p00_strtok_s(P99_STRINGIFY(__LINE__), __func__,                \
+             S1MAX, (uint8_t*restrict)(S1),                    \
+             P00_STRSIZE(S2), (uint8_t const*restrict)(S2),    \
              (uint8_t**)PTR)
+
+#define P00_SPAN_DECLARE(NAME, SET)                                                            \
+/*p99_inline*/                                                                                 \
+P99_WEAK(P99_PASTE2(p99_span_, NAME))                                                          \
+rsize_t P99_PASTE2(p99_span_, NAME)(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l]) { \
+  return p99_span(p00_s1l, p00_s1, sizeof(SET), (uint8_t const[]){ SET });                     \
+}                                                                                              \
+P99_WEAK(P99_PASTE2(p99_strtok_, NAME))                                                        \
+char* P99_PASTE2(p99_strtok_, NAME)(rsize_t * restrict p00_s1max,                              \
+                                      char p00_s1[restrict (*p00_s1max)],                      \
+                                      char ** restrict p00_ptr) {                              \
+  return strtok_s(p00_s1, p00_s1max, SET, p00_ptr);                                            \
+}                                                                                              \
+P99_MACRO_END(P00_SPAN_DECLARE, NAME)
+
+
+
+P00_SPAN_DECLARE(blank, P00_BLANK);
+P00_SPAN_DECLARE(space, P00_SPACE);
+P00_SPAN_DECLARE(lower, P00_LOWER);
+P00_SPAN_DECLARE(upper, P00_UPPER);
+P00_SPAN_DECLARE(digit, P00_DIGIT);
+P00_SPAN_DECLARE(xdigit, P00_XDIGIT);
+P00_SPAN_DECLARE(alpha, P00_ALPHA);
+P00_SPAN_DECLARE(alnum, P00_ALNUM);
+
 
 # endif
 
