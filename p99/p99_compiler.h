@@ -325,8 +325,8 @@ signed p00_trailing_comma_in_initializer__(void) {
 # if (P99_GCC_VERSION >= 40700UL) && (P99_GCC_VERSION < 40800UL)
 #  define p00_has_feature_stdnoreturn_h 1
 #  define p00_has_feature_stdalign_h 1
-#  define p00_has_feature_c_max_align_t 1
 #  if __STDC_VERSION__ > 201100L
+#   define p00_has_feature_c_max_align_t 1
 #   define p00_has_feature_uchar_h 0
 #   define __STDC_NO_ATOMICS__ 1
 #   define __STDC_NO_THREADS__ 1
