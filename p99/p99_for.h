@@ -111,6 +111,8 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_FOR, 3)
 #define P00_SEP(NAME, I, REC, X) REC; X
 #define P00_SER(NAME, I, REC, X) REC X
 #define P00_REV(NAME, I, REC, X) X, REC
+#define P00_PES(NAME, I, REC, X) X; REC
+#define P00_RES(NAME, I, REC, X) X REC
 
 /**
  ** @brief generate lists of names of the form <code>NAME0, NAME1, ...</code>
