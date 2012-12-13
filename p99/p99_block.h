@@ -74,6 +74,28 @@ P99_PREFER(                                                            \
 #endif
 
 
+/**
+ ** @brief mark the produced assembler with a comment that contains
+ ** the source line number and the token @a X
+ **/
+#ifdef __GNUC__
+# define P99_MARK(X) ({ __asm__ volatile ("# " P99_STRINGIFY(__LINE__: X)); })
+#else
+# define P99_MARK(X) P99_NOP
+#endif
+
+/**
+ ** @brief mark the assembler of a block just before and after
+ **
+ ** @remark @a X should be an identifier token
+ **/
+#define P99_BLK_MARK(X)                                        \
+P00_BLK_BEFAFT(P99_MARK(P99_PASTE2(X, _bef)),                  \
+               P99_MARK(P99_PASTE2(X, _end)))
+
+
+
+
 #define P00_UNWIND_DOCUMENT                                                                                                                                                                                                                                                                                                                                             \
 /** @warning Utilities that change control flow in an unexpected way may result in the loss of some modifications that are effected on variables. A modern compiler should tell you when you are in such a situation. If it is the case you'd have to declare the variable in question with the @c volatile qualifier. For an explanation see ::P99_UNWIND_PROTECT. **/
 
