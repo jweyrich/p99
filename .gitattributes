@@ -1,0 +1,5 @@
+p99/p99_generated.h	export-subst
+p99/p99.h		export-subst
+scripts/p99_generate.pl	ident
+documentation/micro-benchmarking/micro-benchmarking.tex export-subst
+documentation/micro-benchmarking/micro-benchmarking.tex ident
