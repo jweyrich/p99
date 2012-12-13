@@ -725,14 +725,16 @@ static_assert(1);
 
 #elif !defined(noreturn)
 # define noreturn _Noreturn
-# if !p99_has_feature(c_noreturn)
-#  if p99_has_attribute(noreturn)
-#   define _Noreturn __attribute__((__noreturn__))
-#  elif p99_has_feature(pragma_noreturn)
-#   define _Noreturn _Pragma(NORETURN)
-#  else
-#   define _Noreturn /* noreturn feature is not implemented */
-#  endif
+#endif
+
+#ifdef P00_DOXYGEN
+#elif !p99_has_feature(c_noreturn)
+# if p99_has_attribute(noreturn)
+#  define _Noreturn __attribute__((__noreturn__))
+# elif p99_has_feature(pragma_noreturn)
+#  define _Noreturn _Pragma(NORETURN)
+# else
+#  define _Noreturn /* noreturn feature is not implemented */
 # endif
 #endif
 
