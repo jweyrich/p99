@@ -203,8 +203,13 @@ int main(int argc, char* argv[]) {
              CMPLXL(54, 1E-181),
              Ard,
              argc,
+#ifdef P99X_UINT128_MAX
              (p99x_uint128)1020304050607 * 100000,
              (p99x_uint128)0x0,
+#else
+             UINT64_C(1020304050607) * 100000,
+             UINT64_C(0),
+#endif
              (bool)(argc > 1),
              aChar);
 
