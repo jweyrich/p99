@@ -1,7 +1,7 @@
 
 DIRS = ./p99 ./tests
 
-P99_SOURCES = ./p99/*.h ./p99/p99_special.c ./tests/test-p99*.c
+P99_SOURCES = ./p99/*.h ./p99/p99_special.c ./tests/test-p99*.c tests/test-p99-*.h
 P99_DOXY = ./doxy/p99-doxygen
 
 # The first commit after the first release
@@ -96,7 +96,7 @@ commits : p99/*.h tests/test-p99-*.c tests/test-p99-*.h Makefile
 	sort -u -r .commits | sed -n 's/.* //; /CUTCUTCUT/q; p' > commits
 	@rm .commits
 
-all-commits : p99/*.h tests/test-p99-*.c Makefile Doxyfile-p99 gforge-p99/* scripts/* doxy/*
+all-commits : p99/*.h tests/test-p99-*.c tests/test-p99-*.h Makefile Doxyfile-p99 gforge-p99/* scripts/* doxy/*
 #	insert a line for the first release commit such that we can cut off, later
 	echo > .commits
 #	collect the blobs for all source files
