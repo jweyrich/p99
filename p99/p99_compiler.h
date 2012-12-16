@@ -190,7 +190,7 @@ typedef size_t rsize_t;
 
 /* intel is cheating about the gcc abi they support */
 #if P99_COMPILER & P99_COMPILER_INTEL
-# if (__ICC < 1300) && (__GNUC__ == 4) && (__GNUC_MINOR__ > 2)
+# if (__ICC < 1400) && (__GNUC__ == 4) && (__GNUC_MINOR__ > 2)
 #  undef __GNUC_MINOR__
 #  define __GNUC_MINOR__ 2
 #  undef __GNUC_PATCHLEVEL__
