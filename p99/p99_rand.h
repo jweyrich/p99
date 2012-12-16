@@ -209,16 +209,16 @@ UINT64_C(18319234190200763803)
 p99_inline
 uint32_t p00_bitpack(void const* p00_p) {
   uintptr_t p00_u = (uintptr_t)p00_p;
-  if (sizeof(uintptr_t) == sizeof(uint32_t))
-    return p00_u;
-  else {
-    uint32_t p00_r = 0;
-    do {
-      p00_r ^= p00_u;
-      p00_u >>= (sizeof(uint32_t)*CHAR_BIT);
-    } while (p00_u);
-    return p00_r;
-  }
+#if UINTPTR_MAX == UINT32_MAX
+  return p00_u;
+#else
+  uint32_t p00_r = 0;
+  do {
+    p00_r ^= p00_u;
+    p00_u >>= (sizeof(uint32_t)*CHAR_BIT);
+  } while (p00_u);
+  return p00_r;
+#endif
 }
 
 
