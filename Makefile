@@ -84,7 +84,7 @@ ${P99_VERSIONS} :
 p99/ChangeLog : commits Makefile
 	git show -C -M --find-copies-harder --name-only `cat commits` | grep -vi orwl > $@
 
-commits : p99/*.h tests/test-p99-*.c Makefile
+commits : p99/*.h tests/test-p99-*.c tests/test-p99-*.h Makefile
 #	insert a line for the first release commit such that we can cut off, later
 	git log --pretty=format:"%at CUTCUTCUT%n" ${REL1}^..${REL1} > .commits
 #	collect the blobs for all source files
