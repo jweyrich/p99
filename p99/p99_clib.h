@@ -36,8 +36,8 @@
 #define p00_has_feature_quick_exit 1
 #define p00_has_extension_quick_exit 1
 #if defined(P99_LIFO_POP) || defined(P00_DOXYGEN)
-# define p00_has_feature_quick_exit_thread_safe 1
-# define p00_has_extension_quick_exit_thread_safe 1
+# define p00_has_feature_callback_thread_safe 1
+# define p00_has_extension_callback_thread_safe 1
 #endif
 
 /**
@@ -59,36 +59,36 @@ void *aligned_alloc(size_t p00_alignment, size_t p00_size) {
   return p00_ret;
 }
 
-typedef struct p00_aqe_el p00_aqe_el;
-P99_POINTER_TYPE(p00_aqe_el);
+typedef struct p00_cb_el p00_cb_el;
+P99_POINTER_TYPE(p00_cb_el);
 #ifndef P00_DOXYGEN
-# if p99_has_feature(quick_exit_thread_safe)
-P99_DECLARE_ATOMIC(p00_aqe_el_ptr);
-typedef _Atomic(p00_aqe_el_ptr) p00_aqe_list;
+# if p99_has_feature(callback_thread_safe)
+P99_DECLARE_ATOMIC(p00_cb_el_ptr);
+typedef _Atomic(p00_cb_el_ptr) p99_callback_stack;
 # else
-typedef p00_aqe_el_ptr p00_aqe_list;
+typedef p00_cb_el_ptr p99_callback_stack;
 # endif
 #endif
 
-typedef void p00_aqe_func(void);
+typedef void p99_callback_void_func(void);
 
-struct p00_aqe_el {
-  p00_aqe_el_ptr p99_lifo;
-  p00_aqe_func * p00_func;
+struct p00_cb_el {
+  p00_cb_el_ptr p99_lifo;
+  p99_callback_void_func * p00_void_func;
 };
 
 
 p99_inline
-p00_aqe_el* p00_aqe_el_init(p00_aqe_el * p00_obj, p00_aqe_func* p00_func) {
+p00_cb_el* p00_cb_el_init(p00_cb_el * p00_obj, p99_callback_void_func* p00_void_func) {
   if (p00_obj) {
-    *p00_obj = (p00_aqe_el) { .p00_func = p00_func };
+    *p00_obj = (p00_cb_el) { .p00_void_func = p00_void_func };
   }
   return p00_obj;
 }
 
 p99_inline
-p00_aqe_el* p00_at_quick_exit_top(p00_aqe_list* p00_l) {
-#if p99_has_feature(quick_exit_thread_safe)
+p00_cb_el* p99_callback_top(p99_callback_stack* p00_l) {
+#if p99_has_feature(callback_thread_safe)
   return P99_LIFO_TOP(p00_l);
 #else
   return *p00_l;
@@ -96,8 +96,8 @@ p00_aqe_el* p00_at_quick_exit_top(p00_aqe_list* p00_l) {
 }
 
 p99_inline
-void p00_at_quick_exit_push(p00_aqe_list* p00_l, p00_aqe_el* p00_el) {
-#if p99_has_feature(quick_exit_thread_safe)
+void p99_callback_push(p99_callback_stack* p00_l, p00_cb_el* p00_el) {
+#if p99_has_feature(callback_thread_safe)
   P99_LIFO_PUSH(p00_l, p00_el);
 #else
   p00_el->p99_lifo = *p00_l;
@@ -106,11 +106,11 @@ void p00_at_quick_exit_push(p00_aqe_list* p00_l, p00_aqe_el* p00_el) {
 }
 
 p99_inline
-p00_aqe_el* p00_at_quick_exit_pop(p00_aqe_list* p00_l) {
-#if p99_has_feature(quick_exit_thread_safe)
+p00_cb_el* p99_callback_pop(p99_callback_stack* p00_l) {
+#if p99_has_feature(callback_thread_safe)
   return P99_LIFO_POP(p00_l);
 #else
-  p00_aqe_el *p00_el = p00_at_quick_exit_top(p00_l);
+  p00_cb_el *p00_el = p99_callback_top(p00_l);
   if (p00_el) {
     *p00_l = p00_el->p99_lifo;
     p00_el->p99_lifo = 0;
@@ -119,21 +119,32 @@ p00_aqe_el* p00_at_quick_exit_pop(p00_aqe_list* p00_l) {
 #endif
 }
 
+p99_inline
+void p99_callback_stack_call(p99_callback_stack* stck) {
+  for (;;) {
+    p00_cb_el *el = p99_callback_pop(stck);
+    if (P99_UNLIKELY(!el)) break;
+    p99_callback_void_func * p00_void_func = el->p00_void_func;
+    free(el);
+    p00_void_func();
+  }
+}
+
 /* In both cases this is guaranteed to do the correct
    initialization. */
-P99_WEAK(p00_aqe)
-p00_aqe_list p00_at_quick_exit;
+P99_WEAK(p00_cb)
+p99_callback_stack p00_at_quick_exit;
 
 /**
  ** @brief registers the function pointed to by func, to be called
  ** without arguments should ::quick_exit be called.
  **/
 p99_inline
-int at_quick_exit(void (*p00_func)(void)) {
+int at_quick_exit(void (*p00_void_func)(void)) {
   int ret = 0;
-  p00_aqe_el *el = P99_NEW(p00_aqe_el, p00_func);
+  p00_cb_el *el = P99_NEW(p00_cb_el, p00_void_func);
   ret = !el;
-  if (P99_LIKELY(!ret)) p00_at_quick_exit_push(&p00_at_quick_exit, el);
+  if (P99_LIKELY(!ret)) p99_callback_push(&p00_at_quick_exit, el);
   return ret;
 }
 
@@ -147,44 +158,31 @@ int at_quick_exit(void (*p00_func)(void)) {
  **/
 p99_inline
 _Noreturn void quick_exit(int status) {
-  for (;;) {
-    p00_aqe_el *el = p00_at_quick_exit_pop(&p00_at_quick_exit);
-    if (P99_UNLIKELY(!el)) break;
-    p00_aqe_func * p00_func = el->p00_func;
-    free(el);
-    p00_func();
-  }
+  p99_callback_stack_call(&p00_at_quick_exit);
   _Exit(status);
 }
 
 P99_SETJMP_INLINE(p00_run_at_thrd_exit)
 void p00_run_at_thrd_exit(void * li) {
-  p00_aqe_list* list = li;
-  for (;;) {
-    p00_aqe_el *el = p00_at_quick_exit_pop(list);
-    if (P99_UNLIKELY(!el)) break;
-    p00_aqe_func * p00_func = el->p00_func;
-    free(el);
-    p00_func();
-  }
+  p99_callback_stack_call(li);
 }
 
-P99_TSS_DECLARE_LOCAL(p00_aqe_list, p00_at_thrd_exit, p00_run_at_thrd_exit);
+P99_TSS_DECLARE_LOCAL(p99_callback_stack, p00_at_thrd_exit, p00_run_at_thrd_exit);
 #define P00_AT_THRD_EXIT P99_TSS_LOCAL(p00_at_thrd_exit)
 
 /**
- ** @brief Add @a p00_func to the functions that are called on exit of
+ ** @brief Add @a p00_void_func to the functions that are called on exit of
  ** the current thread.
  **
  ** This is an extension of the C11 thread functions and works
  ** analogously to the functions ::at_exit and ::at_quick exit.
  **/
 p99_inline
-int at_thrd_exit(void (*p00_func)(void)) {
+int at_thrd_exit(void (*p00_void_func)(void)) {
   int ret = 0;
-  p00_aqe_el *el = P99_NEW(p00_aqe_el, p00_func);
+  p00_cb_el *el = P99_NEW(p00_cb_el, p00_void_func);
   ret = !el;
-  if (P99_LIKELY(!ret)) p00_at_quick_exit_push(&P00_AT_THRD_EXIT, el);
+  if (P99_LIKELY(!ret)) p99_callback_push(&P00_AT_THRD_EXIT, el);
   return ret;
 }
 
