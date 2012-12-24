@@ -17,25 +17,16 @@
 #include "p99_new.h"
 #include "p99_callback.h"
 
-/* Additions by C11 */
-# if __STDC_VERSION__ < 201100L
-
-# include "p99_atomic.h"
-
-/* Provide aligned allocation. */
-
-# if (_XOPEN_SOURCE >= 600) || defined(P00_DOXYGEN)
-
 /**
  ** @addtogroup C11_library C11 additions to the C library
  **
  ** @{
  **/
 
+# if (_XOPEN_SOURCE >= 600) || defined(P00_DOXYGEN)
+
 #define p00_has_feature_aligned_alloc 1
 #define p00_has_extension_aligned_alloc 1
-#define p00_has_feature_quick_exit 1
-#define p00_has_extension_quick_exit 1
 
 /**
  ** @brief allocation with a chosen alignment
@@ -56,26 +47,28 @@ void *aligned_alloc(size_t p00_alignment, size_t p00_size) {
   return p00_ret;
 }
 
+# endif /* XOPEN */
+
+
+# define p00_has_feature_quick_exit 1
+# define p00_has_extension_quick_exit 1
+
 /* In both cases this is guaranteed to do the correct
    initialization. */
 P99_WEAK(p00_cb)
 p99_callback_stack p00_at_quick_exit;
 
 /**
- ** @brief registers the function pointed to by func, to be called
+ ** @brief registers the function pointed to by @a p00_void_func, to be called
  ** without arguments should ::quick_exit be called.
  **/
 p99_inline
 int at_quick_exit(void (*p00_void_func)(void)) {
-  int ret = 0;
-  p00_cb_el *el = P99_NEW(p00_cb_el, p00_void_func);
-  ret = !el;
-  if (P99_LIKELY(!ret)) p99_callback_push(&p00_at_quick_exit, el);
-  return ret;
+  return !P99_CALLBACK_PUSH(&p00_at_quick_exit, p00_void_func);
 }
 
 /**
- ** @brief causes normal program termination to occur.
+ ** @brief causes normal program termination.
  **
  ** No functions registered by the @c atexit function or signal
  ** handlers registered by the signal function are called.
@@ -84,17 +77,17 @@ int at_quick_exit(void (*p00_void_func)(void)) {
  **/
 p99_inline
 _Noreturn void quick_exit(int status) {
-  p99_callback_stack_call(&p00_at_quick_exit);
+  p99_callback(&p00_at_quick_exit);
   _Exit(status);
 }
 
 P99_SETJMP_INLINE(p00_run_at_thrd_exit)
 void p00_run_at_thrd_exit(void * li) {
-  p99_callback_stack_call(li);
+  p99_callback(li);
 }
 
 P99_TSS_DECLARE_LOCAL(p99_callback_stack, p00_at_thrd_exit, p00_run_at_thrd_exit);
-#define P00_AT_THRD_EXIT P99_TSS_LOCAL(p00_at_thrd_exit)
+# define P00_AT_THRD_EXIT P99_TSS_LOCAL(p00_at_thrd_exit)
 
 /**
  ** @brief Add @a p00_void_func to the functions that are called on exit of
@@ -105,17 +98,11 @@ P99_TSS_DECLARE_LOCAL(p99_callback_stack, p00_at_thrd_exit, p00_run_at_thrd_exit
  **/
 p99_inline
 int at_thrd_exit(void (*p00_void_func)(void)) {
-  int ret = 0;
-  p00_cb_el *el = P99_NEW(p00_cb_el, p00_void_func);
-  ret = !el;
-  if (P99_LIKELY(!ret)) p99_callback_push(&P00_AT_THRD_EXIT, el);
-  return ret;
+  return !P99_CALLBACK_PUSH(&P00_AT_THRD_EXIT, p00_void_func);
 }
 
 /**
  ** @}
  **/
 
-#  endif /* XOPEN */
-# endif /* STDC < 2011 */
 #endif

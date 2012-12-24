@@ -96,7 +96,7 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                            \
 (p00_cb_el_init_(__VA_ARGS__))
 
 p99_inline
-p00_cb_el* p99_callback_top(p99_callback_stack* p00_l) {
+p00_cb_el* p00_callback_top(p99_callback_stack* p00_l) {
 #if p99_has_feature(callback_thread_safe)
   return P99_LIFO_TOP(p00_l);
 #else
@@ -105,21 +105,24 @@ p00_cb_el* p99_callback_top(p99_callback_stack* p00_l) {
 }
 
 p99_inline
-void p99_callback_push(p99_callback_stack* p00_l, p00_cb_el* p00_el) {
+p00_cb_el* p00_callback_push(p99_callback_stack* p00_l, p00_cb_el* p00_el) {
+  if (p00_el) {
 #if p99_has_feature(callback_thread_safe)
-  P99_LIFO_PUSH(p00_l, p00_el);
+    P99_LIFO_PUSH(p00_l, p00_el);
 #else
-  p00_el->p99_lifo = *p00_l;
-  *p00_l = p00_el;
+    p00_el->p99_lifo = *p00_l;
+    *p00_l = p00_el;
 #endif
+  }
+  return p00_el;
 }
 
 p99_inline
-p00_cb_el* p99_callback_pop(p99_callback_stack* p00_l) {
+p00_cb_el* p00_callback_pop(p99_callback_stack* p00_l) {
 #if p99_has_feature(callback_thread_safe)
   return P99_LIFO_POP(p00_l);
 #else
-  p00_cb_el *p00_el = p99_callback_top(p00_l);
+  p00_cb_el *p00_el = p00_callback_top(p00_l);
   if (p00_el) {
     *p00_l = p00_el->p99_lifo;
     p00_el->p99_lifo = 0;
@@ -128,10 +131,13 @@ p00_cb_el* p99_callback_pop(p99_callback_stack* p00_l) {
 #endif
 }
 
+#define P99_CALLBACK_PUSH(STCK, ...) p00_callback_push((STCK), P99_NEW(p00_cb_el, __VA_ARGS__))
+
+
 p99_inline
-void p99_callback_stack_call(p99_callback_stack* stck) {
+void p99_callback(p99_callback_stack* stck) {
   for (;;) {
-    p00_cb_el *el = p99_callback_pop(stck);
+    p00_cb_el *el = p00_callback_pop(stck);
     if (P99_UNLIKELY(!el)) break;
     p99_callback_voidptr_func * p00_voidptr_func = el->p00_voidptr_func;
     p99_callback_void_func * p00_void_func = el->p00_void_func;
