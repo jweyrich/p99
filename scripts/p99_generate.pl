@@ -1252,6 +1252,7 @@ my @groups =
         ["futex"],
         ["library_wrappers"],
         ["posix_default"],
+        ["callbacks"],
       ],
       [ "preprocessor_macros",
         [ "meta_programming",

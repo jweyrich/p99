@@ -41,7 +41,7 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Thu, 06 Dec 2012 21:22:58 +0100"
+#define P00_VERSION_DATE "Mon, 24 Dec 2012 11:18:47 +0100"
 #define P00_VERSION_ID ""
 
 /** @brief The maximal number of arguments the P99 macros can handle.
@@ -9237,6 +9237,14 @@ automatically generated, do not change manually.
 
 
 #define P00_posix_default
+
+//! @}
+
+//! @addtogroup callbacks
+//! @{
+
+
+#define P00_callbacks
 
 //! @}
 
