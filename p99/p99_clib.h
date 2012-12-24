@@ -71,20 +71,59 @@ typedef p00_cb_el_ptr p99_callback_stack;
 #endif
 
 typedef void p99_callback_void_func(void);
+typedef void p99_callback_voidptr_func(void*);
 
 struct p00_cb_el {
   p00_cb_el_ptr p99_lifo;
-  p99_callback_void_func * p00_void_func;
+  p99_callback_voidptr_func * p00_voidptr_func;
+  union {
+    p99_callback_void_func * p00_void_func;
+    void* p00_arg;
+  };
 };
 
 
 p99_inline
-p00_cb_el* p00_cb_el_init(p00_cb_el * p00_obj, p99_callback_void_func* p00_void_func) {
+p00_cb_el* p00_cb_el_init(p00_cb_el * p00_obj,
+                          p99_callback_voidptr_func* p00_voidptr_func,
+                          p99_callback_void_func* p00_void_func,
+                          void* p00_arg
+                          ) {
   if (p00_obj) {
-    *p00_obj = (p00_cb_el) { .p00_void_func = p00_void_func };
+    if (p00_voidptr_func)
+      *p00_obj = (p00_cb_el) {
+        .p00_voidptr_func = p00_voidptr_func,
+        .p00_arg = p00_arg,
+      };
+    else
+      *p00_obj = (p00_cb_el) { .p00_void_func = p00_void_func };
   }
   return p00_obj;
 }
+
+#define p00_cb_el_init_1(FUNC)                                          \
+P99_GENERIC((&*FUNC),                                                   \
+            ,                                                           \
+            (p99_callback_voidptr_func*, (p99_callback_voidptr_func*)(FUNC)), \
+            (p99_callback_void_func*, (p99_callback_voidptr_func*)0)    \
+            )
+
+
+#define p00_cb_el_init_2(FUNC)                                          \
+P99_GENERIC((&*FUNC),                                                   \
+            ,                                                           \
+            (p99_callback_void_func*, (p99_callback_void_func*)(FUNC)), \
+            (p99_callback_voidptr_func*, (p99_callback_void_func*)0)    \
+            )
+
+#define p00_cb_el_init_(OBJ, FUNC, ARG)                                 \
+p00_cb_el_init((OBJ), p00_cb_el_init_1(FUNC), p00_cb_el_init_2(FUNC), ARG)
+
+
+#define p00_cb_el_init(...)                     \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 3)             \
+(p00_cb_el_init_(__VA_ARGS__, 0))               \
+(p00_cb_el_init_(__VA_ARGS__))
 
 p99_inline
 p00_cb_el* p99_callback_top(p99_callback_stack* p00_l) {
@@ -124,9 +163,12 @@ void p99_callback_stack_call(p99_callback_stack* stck) {
   for (;;) {
     p00_cb_el *el = p99_callback_pop(stck);
     if (P99_UNLIKELY(!el)) break;
+    p99_callback_voidptr_func * p00_voidptr_func = el->p00_voidptr_func;
     p99_callback_void_func * p00_void_func = el->p00_void_func;
+    void * p00_arg = el->p00_arg;
     free(el);
-    p00_void_func();
+    if (p00_voidptr_func) p00_voidptr_func(p00_arg);
+    else p00_void_func();
   }
 }
 
