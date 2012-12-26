@@ -15,6 +15,7 @@
 #ifndef P99_TRY_H
 #define P99_TRY_H
 #include "p99_constraint.h"
+#include "p99_lifo.h"
 
 P99_POINTER_TYPE(p00_jmp_buf0);
 P99_DECLARE_ATOMIC(p00_jmp_buf0_ptr);

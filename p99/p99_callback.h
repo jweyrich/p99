@@ -14,10 +14,7 @@
 #ifndef P99_CALLBACK_H
 #define P99_CALLBACK_H 1
 
-/* Additions by C11 */
-# if __STDC_VERSION__ < 201100L
-#  include "p99_atomic.h"
-# endif
+# include "p99_lifo.h"
 
 /**
  ** @addtogroup callbacks simple callbacks with or without void* argument
