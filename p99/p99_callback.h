@@ -131,20 +131,6 @@ p00_cb_el* p00_callback_push(p99_callback_stack* p00_l, p00_cb_el* p00_el) {
   return p00_el;
 }
 
-p99_inline
-p00_cb_el* p00_callback_pop(p99_callback_stack* p00_l) {
-#if p99_has_feature(callback_thread_safe)
-  return P99_LIFO_POP(p00_l);
-#else
-  p00_cb_el *p00_el = p00_callback_top(p00_l);
-  if (p00_el) {
-    *p00_l = p00_el->p99_lifo;
-    p00_el->p99_lifo = 0;
-  }
-  return p00_el;
-#endif
-}
-
 /**
  ** @brief Register a function as a callback on @a STCK
  **
@@ -178,14 +164,19 @@ p00_cb_el* p00_callback_pop(p99_callback_stack* p00_l) {
  ** the parameter that has been registered along with it. Functions of
  ** type ::p99_callback_void_func will be called without parameters.
  **
+ ** All functions that have been registered with @a p00_stck are taken
+ ** from the stack atomically and are executed in one batch by the
+ ** same thread that runs ::p99_callback. Another function that would
+ ** be registered with @a p00_stck by one of the callbacks would not
+ ** be executed in the same batch.
+ **
  ** @related p99_callback_stack
  ** @see P99_CALLBACK_PUSH to register a callback function
  **/
 p99_inline
 void p99_callback(p99_callback_stack* p00_stck) {
-  for (;;) {
-    p00_cb_el *el = p00_callback_pop(p00_stck);
-    if (P99_UNLIKELY(!el)) break;
+  for (p00_cb_el *head = P99_LIFO_CLEAR(p00_stck), *el = head; el; el = head) {
+    head = el->p99_lifo;
     p99_callback_voidptr_func * p00_voidptr_func = el->p00_voidptr_func;
     p99_callback_void_func * p00_void_func = el->p00_void_func;
     void * p00_arg = el->p00_arg;
