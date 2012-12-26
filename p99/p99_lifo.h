@@ -44,13 +44,16 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_TOP, 0)
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
-#define P99_LIFO_PUSH(L, EL)                                   \
-p99_extension                                                  \
-({                                                             \
-  P99_MACRO_VAR(p00_l, (L));                                   \
-  P99_MACRO_VAR(p00_el, (EL));                                 \
-  p00_el->p99_lifo = atomic_exchange(p00_l, p00_el);           \
- })
+#define P99_LIFO_PUSH(L, EL)                                         \
+p99_extension                                                        \
+({                                                                   \
+  P99_MACRO_VAR(p00_l, (L));                                         \
+  P99_MACRO_VAR(p00_el, (EL));                                       \
+  P99_MACRO_VAR(p00_prev, atomic_load(p00_l));                       \
+  do {                                                               \
+    p00_el->p99_lifo = p00_prev;                                     \
+  } while (!atomic_compare_exchange_weak(p00_l, &p00_prev, p00_el)); \
+})
 
 /**
  ** @brief Pop the top element from an atomic LIFO @a L
