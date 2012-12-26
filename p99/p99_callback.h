@@ -1,8 +1,9 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-              */
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                           */
+/* the authors and copyright holders for this work are as follows:            */
 /* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
+/* (C) copyright  2012 William Morris                                         */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -19,7 +20,7 @@
 # endif
 
 /**
- ** @addtogroup callbacks simple callbacks with or without @c void* argument
+ ** @addtogroup callbacks simple callbacks with or without void* argument
  **
  ** @{
  **/
@@ -38,9 +39,25 @@ typedef _Atomic(p00_cb_el_ptr) p99_callback_stack;
 # else
 typedef p00_cb_el_ptr p99_callback_stack;
 # endif
+#else
+int p00_doxygen_is_confused(void) {}
+/**
+ ** @brief A data structure to register callbacks
+ **/
+struct p99_callback_stack { };
+typedef struct p99_callback_stack p99_callback_stack;
 #endif
 
+/**
+ ** @brief Function type for a callback without arguments
+ ** @related p99_callback_stack
+ **/
 typedef void p99_callback_void_func(void);
+
+/**
+ ** @brief Function type for a callback with @c void* argument
+ ** @related p99_callback_stack
+ **/
 typedef void p99_callback_voidptr_func(void*);
 
 struct p00_cb_el {
@@ -131,13 +148,46 @@ p00_cb_el* p00_callback_pop(p99_callback_stack* p00_l) {
 #endif
 }
 
+/**
+ ** @brief Register a function as a callback on @a STCK
+ **
+ ** @param STCK should be of type ::p99_callback_stack*
+ **
+ ** The first of the arguments in the variable argument list should be
+ ** a function pointer, either of type ::p99_callback_voidptr_func or
+ ** ::p99_callback_void_func. In the first case a following argument,
+ ** if any, should be a data pointer (i.e compatible to @c void*),
+ ** which will be passed as parameter to the function. If no such
+ ** argument is given the function is called with parameter @c 0.
+ **
+ ** This is as if there'd be two overloaded functions as
+ ** @code
+ ** p99_callback_push(p99_callback_stack*, p99_callback_voidptr_func*, void* = 0);
+ ** p99_callback_push(p99_callback_stack*, p99_callback_void_func*);
+ ** @endcode
+ **
+ ** @related p99_callback_stack
+ ** @see p99_callback
+ **/
 #define P99_CALLBACK_PUSH(STCK, ...) p00_callback_push((STCK), P99_NEW(p00_cb_el, __VA_ARGS__))
 
 
+/**
+ ** @brief Call all functions that have been registered with @a
+ ** p00_stck in reverse order of their registration and remove them
+ ** from the stack
+ **
+ ** Functions of type ::p99_callback_voidptr_func will be called with
+ ** the parameter that has been registered along with it. Functions of
+ ** type ::p99_callback_void_func will be called without parameters.
+ **
+ ** @related p99_callback_stack
+ ** @see P99_CALLBACK_PUSH to register a callback function
+ **/
 p99_inline
-void p99_callback(p99_callback_stack* stck) {
+void p99_callback(p99_callback_stack* p00_stck) {
   for (;;) {
-    p00_cb_el *el = p00_callback_pop(stck);
+    p00_cb_el *el = p00_callback_pop(p00_stck);
     if (P99_UNLIKELY(!el)) break;
     p99_callback_voidptr_func * p00_voidptr_func = el->p00_voidptr_func;
     p99_callback_void_func * p00_void_func = el->p00_void_func;

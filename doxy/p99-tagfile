@@ -900,6 +900,92 @@
     <filename>p99__atomic__x86_8h</filename>
   </compound>
   <compound kind="file">
+    <name>p99_bitset.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__bitset_8h</filename>
+    <includes id="p99__tss_8h" name="p99_tss.h" local="yes" imported="no">p99_tss.h</includes>
+    <includes id="p99__c99_8h" name="p99_c99.h" local="yes" imported="no">p99_c99.h</includes>
+    <includes id="p99__errno_8h" name="p99_errno.h" local="yes" imported="no">p99_errno.h</includes>
+    <includes id="p99__int_8h" name="p99_int.h" local="yes" imported="no">p99_int.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_BITSET_C</name>
+      <anchorfile>p99__bitset_8h_ac77917c90122021896334af0586b473b.html</anchorfile>
+      <anchor>ac77917c90122021896334af0586b473b</anchor>
+      <arglist>(X)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>uint64_t</type>
+      <name>p99_bitset</name>
+      <anchorfile>p99__bitset_8h_a564c469dacf6717c969d8bb66ca3d606.html</anchorfile>
+      <anchor>a564c469dacf6717c969d8bb66ca3d606</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>p99_bitset</type>
+      <name>p99_is_alnum</name>
+      <anchorfile>p99__bitset_8h_aa841a04b2f49f71327053256b34be007.html</anchorfile>
+      <anchor>aa841a04b2f49f71327053256b34be007</anchor>
+      <arglist>(uint8_t p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_bitset</type>
+      <name>p99_is_alpha</name>
+      <anchorfile>p99__bitset_8h_a48fb3e4efb7c7fc5cba19906adfbcf35.html</anchorfile>
+      <anchor>a48fb3e4efb7c7fc5cba19906adfbcf35</anchor>
+      <arglist>(uint8_t p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_bitset</type>
+      <name>p99_is_blank</name>
+      <anchorfile>p99__bitset_8h_a598be3ce26f1d57d85159d34698f486d.html</anchorfile>
+      <anchor>a598be3ce26f1d57d85159d34698f486d</anchor>
+      <arglist>(uint8_t p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_bitset</type>
+      <name>p99_is_digit</name>
+      <anchorfile>p99__bitset_8h_af2aa8ccb4baaa415ac8cd24f9cb49771.html</anchorfile>
+      <anchor>af2aa8ccb4baaa415ac8cd24f9cb49771</anchor>
+      <arglist>(uint8_t p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_bitset</type>
+      <name>p99_is_lower</name>
+      <anchorfile>p99__bitset_8h_a9e143c88dee14abeb33708f62dc4bee7.html</anchorfile>
+      <anchor>a9e143c88dee14abeb33708f62dc4bee7</anchor>
+      <arglist>(uint8_t p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_bitset</type>
+      <name>p99_is_space</name>
+      <anchorfile>p99__bitset_8h_a83fdd4c4a952fcd6f8d3bc3195a06ad9.html</anchorfile>
+      <anchor>a83fdd4c4a952fcd6f8d3bc3195a06ad9</anchor>
+      <arglist>(uint8_t p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_bitset</type>
+      <name>p99_is_upper</name>
+      <anchorfile>p99__bitset_8h_a8e082db3291de468c0463c1f9b50a798.html</anchorfile>
+      <anchor>a8e082db3291de468c0463c1f9b50a798</anchor>
+      <arglist>(uint8_t p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_bitset</type>
+      <name>p99_is_xdigit</name>
+      <anchorfile>p99__bitset_8h_a66e980ca45e50692d23177a073b051eb.html</anchorfile>
+      <anchor>a66e980ca45e50692d23177a073b051eb</anchor>
+      <arglist>(uint8_t p00_c)</arglist>
+    </member>
+    <member kind="variable">
+      <type>register int const</type>
+      <name>p99_bitset_bit</name>
+      <anchorfile>p99__bitset_8h_a5d160c82cde78dfa22eac07252ebab0e.html</anchorfile>
+      <anchor>a5d160c82cde78dfa22eac07252ebab0e</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>p99_block.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__block_8h</filename>
@@ -917,6 +1003,13 @@
       <anchorfile>group__preprocessor__blocks_ga2e83e2fd9a49a378911cb1d506fa13b4.html</anchorfile>
       <anchor>ga2e83e2fd9a49a378911cb1d506fa13b4</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_BLK_MARK</name>
+      <anchorfile>group__preprocessor__blocks_ga5ad3c18edd11e4b0acf86496046b3f21.html</anchorfile>
+      <anchor>ga5ad3c18edd11e4b0acf86496046b3f21</anchor>
+      <arglist>(X)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -980,6 +1073,13 @@
       <anchorfile>group__preprocessor__blocks_gaed18105bafd193ace796a59fd33107ef.html</anchorfile>
       <anchor>gaed18105bafd193ace796a59fd33107ef</anchor>
       <arglist>(EXPR)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_MARK</name>
+      <anchorfile>group__preprocessor__blocks_gaacff75cd15a1dd11138fdeeb91a3f677.html</anchorfile>
+      <anchor>gaacff75cd15a1dd11138fdeeb91a3f677</anchor>
+      <arglist>(X)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -2482,6 +2582,20 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>p99_callback.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__callback_8h</filename>
+    <includes id="p99__atomic_8h" name="p99_atomic.h" local="yes" imported="no">p99_atomic.h</includes>
+    <class kind="struct">p99_callback_stack</class>
+    <member kind="typedef">
+      <type>struct p99_callback_stack</type>
+      <name>p99_callback_stack</name>
+      <anchorfile>group__callbacks_ga3705a3cfd80ec3e7425855eebff2449f.html</anchorfile>
+      <anchor>ga3705a3cfd80ec3e7425855eebff2449f</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>p99_checkargs.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__checkargs_8h</filename>
@@ -2648,7 +2762,7 @@
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__clib_8h</filename>
     <includes id="p99__new_8h" name="p99_new.h" local="yes" imported="no">p99_new.h</includes>
-    <includes id="p99__atomic_8h" name="p99_atomic.h" local="yes" imported="no">p99_atomic.h</includes>
+    <includes id="p99__callback_8h" name="p99_callback.h" local="yes" imported="no">p99_callback.h</includes>
     <member kind="function">
       <type>void *</type>
       <name>aligned_alloc</name>
@@ -2659,16 +2773,16 @@
     <member kind="function">
       <type>int</type>
       <name>at_quick_exit</name>
-      <anchorfile>group__C11__library_gaf6f4a93aa8e7dcf0779c58c611c8109c.html</anchorfile>
-      <anchor>gaf6f4a93aa8e7dcf0779c58c611c8109c</anchor>
-      <arglist>(void(*p00_func)(void))</arglist>
+      <anchorfile>group__C11__library_gaef8f1c579fb10f28ad6fb65615df3184.html</anchorfile>
+      <anchor>gaef8f1c579fb10f28ad6fb65615df3184</anchor>
+      <arglist>(void(*p00_void_func)(void))</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>at_thrd_exit</name>
-      <anchorfile>group__C11__library_ga97154844a980a2d3f666271e255b6838.html</anchorfile>
-      <anchor>ga97154844a980a2d3f666271e255b6838</anchor>
-      <arglist>(void(*p00_func)(void))</arglist>
+      <anchorfile>group__C11__library_ga7c1e379077b8a7568f318628ee636959.html</anchorfile>
+      <anchor>ga7c1e379077b8a7568f318628ee636959</anchor>
+      <arglist>(void(*p00_void_func)(void))</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -2849,9 +2963,7 @@
     <name>p99_constraint.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__constraint_8h</filename>
-    <includes id="p99__tss_8h" name="p99_tss.h" local="yes" imported="no">p99_tss.h</includes>
-    <includes id="p99__c99_8h" name="p99_c99.h" local="yes" imported="no">p99_c99.h</includes>
-    <includes id="p99__errno_8h" name="p99_errno.h" local="yes" imported="no">p99_errno.h</includes>
+    <includes id="p99__bitset_8h" name="p99_bitset.h" local="yes" imported="no">p99_bitset.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>bsearch_s</name>
@@ -2864,6 +2976,13 @@
       <name>getenv_s</name>
       <anchorfile>p99__constraint_8h_a19c036d37cf91e1090ec2727ffac6f1e.html</anchorfile>
       <anchor>a19c036d37cf91e1090ec2727ffac6f1e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>gets_s</name>
+      <anchorfile>p99__constraint_8h_a40641925e16ad9bfa8ab28ecd9e16486.html</anchorfile>
+      <anchor>a40641925e16ad9bfa8ab28ecd9e16486</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
@@ -2935,6 +3054,27 @@
       <anchorfile>p99__constraint_8h_a42fd5c8f796a00d5aded64004f48c714.html</anchorfile>
       <anchor>a42fd5c8f796a00d5aded64004f48c714</anchor>
       <arglist>(S1, S1MAX, S2, N)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>strtok_s</name>
+      <anchorfile>p99__constraint_8h_a2c9f2a8c547531488ae08783b6e798a9.html</anchorfile>
+      <anchor>a2c9f2a8c547531488ae08783b6e798a9</anchor>
+      <arglist>(S1, S1MAX, S2, PTR)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tmpfile_s</name>
+      <anchorfile>p99__constraint_8h_ae4c12e41b9a938eb77c8bbbfc55bf3fe.html</anchorfile>
+      <anchor>ae4c12e41b9a938eb77c8bbbfc55bf3fe</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tmpnam_s</name>
+      <anchorfile>p99__constraint_8h_aeb45e061b6fdff66de639715756ca7b2.html</anchorfile>
+      <anchor>aeb45e061b6fdff66de639715756ca7b2</anchor>
+      <arglist>(...)</arglist>
     </member>
     <member kind="typedef">
       <type>void(*</type>
@@ -4236,9 +4376,142 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_PASTE121</name>
+      <anchorfile>p99__generated_8h_a20cc71c59330ab3a00f3060aea68cdf0.html</anchorfile>
+      <anchor>a20cc71c59330ab3a00f3060aea68cdf0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE122</name>
+      <anchorfile>p99__generated_8h_a77cab7a3aa0d8460d9d83908aaa11084.html</anchorfile>
+      <anchor>a77cab7a3aa0d8460d9d83908aaa11084</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE123</name>
+      <anchorfile>p99__generated_8h_af8ab1019d67549aeaa22261a7a6d11b5.html</anchorfile>
+      <anchor>af8ab1019d67549aeaa22261a7a6d11b5</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE124</name>
+      <anchorfile>p99__generated_8h_a65d9322a06a8d5ef0d2c436dd5b98b25.html</anchorfile>
+      <anchor>a65d9322a06a8d5ef0d2c436dd5b98b25</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE125</name>
+      <anchorfile>p99__generated_8h_aa3c640e208bea343a8b6b4f32ca24d12.html</anchorfile>
+      <anchor>aa3c640e208bea343a8b6b4f32ca24d12</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE126</name>
+      <anchorfile>p99__generated_8h_a7415f140e3bd2f2d366c4b6ca11f9ee0.html</anchorfile>
+      <anchor>a7415f140e3bd2f2d366c4b6ca11f9ee0</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE127</name>
+      <anchorfile>p99__generated_8h_aa4632e5155135ff8e6c4047283fc9e86.html</anchorfile>
+      <anchor>aa4632e5155135ff8e6c4047283fc9e86</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE128</name>
+      <anchorfile>p99__generated_8h_ac7da2c3c864dbf7e7c6b9e7fe9b166e5.html</anchorfile>
+      <anchor>ac7da2c3c864dbf7e7c6b9e7fe9b166e5</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE129</name>
+      <anchorfile>p99__generated_8h_a67d52ede46fb0078cc731da678a492e8.html</anchorfile>
+      <anchor>a67d52ede46fb0078cc731da678a492e8</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_PASTE13</name>
       <anchorfile>p99__generated_8h_a7a52c081d6776c35d88804c1ff100b48.html</anchorfile>
       <anchor>a7a52c081d6776c35d88804c1ff100b48</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE130</name>
+      <anchorfile>p99__generated_8h_acb563417dff9f019869bd02456d84371.html</anchorfile>
+      <anchor>acb563417dff9f019869bd02456d84371</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE131</name>
+      <anchorfile>p99__generated_8h_aa9d7b3c811c9bfdebf6f0d80ffbc2010.html</anchorfile>
+      <anchor>aa9d7b3c811c9bfdebf6f0d80ffbc2010</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE132</name>
+      <anchorfile>p99__generated_8h_a9469ca80353252749c7397492541bfa7.html</anchorfile>
+      <anchor>a9469ca80353252749c7397492541bfa7</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE133</name>
+      <anchorfile>p99__generated_8h_ab2bdbeed98bf594ea329a244c281925d.html</anchorfile>
+      <anchor>ab2bdbeed98bf594ea329a244c281925d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE134</name>
+      <anchorfile>p99__generated_8h_af57a10cefdb077b5ae76defe89efc798.html</anchorfile>
+      <anchor>af57a10cefdb077b5ae76defe89efc798</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE135</name>
+      <anchorfile>p99__generated_8h_ad1fb243a79e90b3d0bf7d2a859ae659a.html</anchorfile>
+      <anchor>ad1fb243a79e90b3d0bf7d2a859ae659a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE136</name>
+      <anchorfile>p99__generated_8h_ab45ce4af878ee87632e92926a2090fc1.html</anchorfile>
+      <anchor>ab45ce4af878ee87632e92926a2090fc1</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE137</name>
+      <anchorfile>p99__generated_8h_a6b4601813e57d408ce4cf2bf3ff34b4a.html</anchorfile>
+      <anchor>a6b4601813e57d408ce4cf2bf3ff34b4a</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE138</name>
+      <anchorfile>p99__generated_8h_a223fd685fb515e59154a583cfa0b724d.html</anchorfile>
+      <anchor>a223fd685fb515e59154a583cfa0b724d</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE139</name>
+      <anchorfile>p99__generated_8h_a101b2095f58b4fc0a2cef47fe86bd491.html</anchorfile>
+      <anchor>a101b2095f58b4fc0a2cef47fe86bd491</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
@@ -4250,9 +4523,142 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_PASTE140</name>
+      <anchorfile>p99__generated_8h_a0211dd8549d78a44eb6512b942330f9f.html</anchorfile>
+      <anchor>a0211dd8549d78a44eb6512b942330f9f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE141</name>
+      <anchorfile>p99__generated_8h_ab3c38df1effba53622f3f8bd362b2510.html</anchorfile>
+      <anchor>ab3c38df1effba53622f3f8bd362b2510</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE142</name>
+      <anchorfile>p99__generated_8h_a68866d89f91d44cde7517cfdf67e6238.html</anchorfile>
+      <anchor>a68866d89f91d44cde7517cfdf67e6238</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE143</name>
+      <anchorfile>p99__generated_8h_afc1de37e3028ce6b17bd100e43a74013.html</anchorfile>
+      <anchor>afc1de37e3028ce6b17bd100e43a74013</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE144</name>
+      <anchorfile>p99__generated_8h_adc08928e255efb2e961076a2ea83b0b5.html</anchorfile>
+      <anchor>adc08928e255efb2e961076a2ea83b0b5</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE145</name>
+      <anchorfile>p99__generated_8h_afaa930de642cb002674cde05c373896b.html</anchorfile>
+      <anchor>afaa930de642cb002674cde05c373896b</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE146</name>
+      <anchorfile>p99__generated_8h_ad8845906dc7e340a8e50d6b4ce198202.html</anchorfile>
+      <anchor>ad8845906dc7e340a8e50d6b4ce198202</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE147</name>
+      <anchorfile>p99__generated_8h_ad13876d897e1fd02d18bf72a6be0c792.html</anchorfile>
+      <anchor>ad13876d897e1fd02d18bf72a6be0c792</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE148</name>
+      <anchorfile>p99__generated_8h_a5df33d33219523e9d173a9b47799a185.html</anchorfile>
+      <anchor>a5df33d33219523e9d173a9b47799a185</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE149</name>
+      <anchorfile>p99__generated_8h_a899aceb650ad2348d1c4ffbb6feea802.html</anchorfile>
+      <anchor>a899aceb650ad2348d1c4ffbb6feea802</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_PASTE15</name>
       <anchorfile>p99__generated_8h_a5044007e26b814c967c3b30171cb76bb.html</anchorfile>
       <anchor>a5044007e26b814c967c3b30171cb76bb</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE150</name>
+      <anchorfile>p99__generated_8h_acfcdc4009b1a094e4dfcda9380c72cab.html</anchorfile>
+      <anchor>acfcdc4009b1a094e4dfcda9380c72cab</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE151</name>
+      <anchorfile>p99__generated_8h_ae6e6764bb4619b913194c11ad13dd950.html</anchorfile>
+      <anchor>ae6e6764bb4619b913194c11ad13dd950</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE152</name>
+      <anchorfile>p99__generated_8h_a000fbbc5c5eaf240fd0accbf17d4c47f.html</anchorfile>
+      <anchor>a000fbbc5c5eaf240fd0accbf17d4c47f</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE153</name>
+      <anchorfile>p99__generated_8h_a9c01d052a81b8de7ce3e06933d73b4f3.html</anchorfile>
+      <anchor>a9c01d052a81b8de7ce3e06933d73b4f3</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE154</name>
+      <anchorfile>p99__generated_8h_aefdbf0bfd1d54890d6049323642b2b72.html</anchorfile>
+      <anchor>aefdbf0bfd1d54890d6049323642b2b72</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE155</name>
+      <anchorfile>p99__generated_8h_a460fa8433dc972e84445e60ee274ecd6.html</anchorfile>
+      <anchor>a460fa8433dc972e84445e60ee274ecd6</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE156</name>
+      <anchorfile>p99__generated_8h_ad7eff3266025ab317495ef3a714578aa.html</anchorfile>
+      <anchor>ad7eff3266025ab317495ef3a714578aa</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE157</name>
+      <anchorfile>p99__generated_8h_a40eaff674efc7fc4c49ae5fcec619740.html</anchorfile>
+      <anchor>a40eaff674efc7fc4c49ae5fcec619740</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PASTE158</name>
+      <anchorfile>p99__generated_8h_a7c9de07f9024e45c68330a29fe2ec543.html</anchorfile>
+      <anchor>a7c9de07f9024e45c68330a29fe2ec543</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
@@ -6365,6 +6771,28 @@
       <anchorfile>group__integers_gad452d55b18b5669e3ace3ebb6beac4a0.html</anchorfile>
       <anchor>gad452d55b18b5669e3ace3ebb6beac4a0</anchor>
       <arglist>(unsigned long long p00_a)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>p99_iterator.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__iterator_8h</filename>
+    <includes id="p99__futex_8h" name="p99_futex.h" local="yes" imported="no">p99_futex.h</includes>
+    <class kind="struct">p99_event</class>
+    <class kind="struct">p99_iterator</class>
+    <member kind="typedef">
+      <type>struct p99_event</type>
+      <name>p99_event</name>
+      <anchorfile>group__futex_gade3081cbabd0d006d0b566bb3e01718a.html</anchorfile>
+      <anchor>gade3081cbabd0d006d0b566bb3e01718a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct p99_iterator</type>
+      <name>p99_iterator</name>
+      <anchorfile>group__futex_gaf1333bf005757df3e00617afb2967049.html</anchorfile>
+      <anchor>gaf1333bf005757df3e00617afb2967049</anchor>
+      <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -11812,6 +12240,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_BLK_MARK</name>
+      <anchorfile>group__preprocessor__blocks_ga5ad3c18edd11e4b0acf86496046b3f21.html</anchorfile>
+      <anchor>ga5ad3c18edd11e4b0acf86496046b3f21</anchor>
+      <arglist>(X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_BLOCK</name>
       <anchorfile>group__preprocessor__blocks_gabafd0664b05b5784e0796d27170ba512.html</anchorfile>
       <anchor>gabafd0664b05b5784e0796d27170ba512</anchor>
@@ -11865,6 +12300,13 @@
       <anchorfile>group__preprocessor__blocks_gaed18105bafd193ace796a59fd33107ef.html</anchorfile>
       <anchor>gaed18105bafd193ace796a59fd33107ef</anchor>
       <arglist>(EXPR)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_MARK</name>
+      <anchorfile>group__preprocessor__blocks_gaacff75cd15a1dd11138fdeeb91a3f677.html</anchorfile>
+      <anchor>gaacff75cd15a1dd11138fdeeb91a3f677</anchor>
+      <arglist>(X)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -13357,6 +13799,40 @@
     </member>
   </compound>
   <compound kind="group">
+    <name>callbacks</name>
+    <title>simple callbacks with or without void argument</title>
+    <filename>group__callbacks.html</filename>
+    <class kind="struct">p99_callback_stack</class>
+    <member kind="typedef">
+      <type>struct p99_callback_stack</type>
+      <name>p99_callback_stack</name>
+      <anchorfile>group__callbacks_ga3705a3cfd80ec3e7425855eebff2449f.html</anchorfile>
+      <anchor>ga3705a3cfd80ec3e7425855eebff2449f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>void</type>
+      <name>p99_callback_void_func</name>
+      <anchorfile>group__callbacks_ga0585e51c520f4b87269df4c53279a918.html</anchorfile>
+      <anchor>ga0585e51c520f4b87269df4c53279a918</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>void</type>
+      <name>p99_callback_voidptr_func</name>
+      <anchorfile>group__callbacks_ga43bc6e42657ad8c2bc4c3fdd695f9182.html</anchorfile>
+      <anchor>ga43bc6e42657ad8c2bc4c3fdd695f9182</anchor>
+      <arglist>(void *)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_callback</name>
+      <anchorfile>group__callbacks_ga306df7572aa6d7bddfe559eae5e10ac1.html</anchorfile>
+      <anchor>ga306df7572aa6d7bddfe559eae5e10ac1</anchor>
+      <arglist>(p99_callback_stack *p00_stck)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
     <name>classification</name>
     <title>Classification</title>
     <filename>group__classification.html</filename>
@@ -13445,16 +13921,16 @@
     <member kind="function">
       <type>int</type>
       <name>at_quick_exit</name>
-      <anchorfile>group__C11__library_gaf6f4a93aa8e7dcf0779c58c611c8109c.html</anchorfile>
-      <anchor>gaf6f4a93aa8e7dcf0779c58c611c8109c</anchor>
-      <arglist>(void(*p00_func)(void))</arglist>
+      <anchorfile>group__C11__library_gaef8f1c579fb10f28ad6fb65615df3184.html</anchorfile>
+      <anchor>gaef8f1c579fb10f28ad6fb65615df3184</anchor>
+      <arglist>(void(*p00_void_func)(void))</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>at_thrd_exit</name>
-      <anchorfile>group__C11__library_ga97154844a980a2d3f666271e255b6838.html</anchorfile>
-      <anchor>ga97154844a980a2d3f666271e255b6838</anchor>
-      <arglist>(void(*p00_func)(void))</arglist>
+      <anchorfile>group__C11__library_ga7c1e379077b8a7568f318628ee636959.html</anchorfile>
+      <anchor>ga7c1e379077b8a7568f318628ee636959</anchor>
+      <arglist>(void(*p00_void_func)(void))</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -13728,7 +14204,9 @@
     <title>Fast User space locking and signaling</title>
     <filename>group__futex.html</filename>
     <class kind="struct">p99_count</class>
+    <class kind="struct">p99_event</class>
     <class kind="struct">p99_futex</class>
+    <class kind="struct">p99_iterator</class>
     <class kind="struct">p99_notifier</class>
     <member kind="define">
       <type>#define</type>
@@ -13758,6 +14236,20 @@
       <anchor>gadceb314ba39fa6712030576ea1466bc2</anchor>
       <arglist></arglist>
     </member>
+    <member kind="typedef">
+      <type>struct p99_event</type>
+      <name>p99_event</name>
+      <anchorfile>group__futex_gade3081cbabd0d006d0b566bb3e01718a.html</anchorfile>
+      <anchor>gade3081cbabd0d006d0b566bb3e01718a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct p99_iterator</type>
+      <name>p99_iterator</name>
+      <anchorfile>group__futex_gaf1333bf005757df3e00617afb2967049.html</anchorfile>
+      <anchor>gaf1333bf005757df3e00617afb2967049</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function">
       <type>void</type>
       <name>p99_count_destroy</name>
@@ -13785,6 +14277,34 @@
       <anchorfile>group__futex_gac3ff44e3c10e715562bde8c625002565.html</anchorfile>
       <anchor>gac3ff44e3c10e715562bde8c625002565</anchor>
       <arglist>(p99_count volatile *p00_c)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_event_destroy</name>
+      <anchorfile>group__futex_ga1d4c361123f1b493e970284f0210be89.html</anchorfile>
+      <anchor>ga1d4c361123f1b493e970284f0210be89</anchor>
+      <arglist>(p99_event *p00_e)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_event *</type>
+      <name>p99_event_init</name>
+      <anchorfile>group__futex_ga570ddf086e5fe22eaf47598091cd95ed.html</anchorfile>
+      <anchor>ga570ddf086e5fe22eaf47598091cd95ed</anchor>
+      <arglist>(p99_event *p00_e, unsigned p00_n)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>p99_event_next</name>
+      <anchorfile>group__futex_gae6dd5ce9cf28be2ca3bb384163e3c717.html</anchorfile>
+      <anchor>gae6dd5ce9cf28be2ca3bb384163e3c717</anchor>
+      <arglist>(p99_event volatile *p00_e)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_event_signal</name>
+      <anchorfile>group__futex_gaf3c1eb35e2714cae91141faad108bc36.html</anchorfile>
+      <anchor>gaf3c1eb35e2714cae91141faad108bc36</anchor>
+      <arglist>(p99_event volatile *p00_e, void *p00_w)</arglist>
     </member>
     <member kind="function">
       <type>unsigned</type>
@@ -13834,6 +14354,34 @@
       <anchorfile>group__futex_ga2f178f4b43246a2860289e04769ada88.html</anchorfile>
       <anchor>ga2f178f4b43246a2860289e04769ada88</anchor>
       <arglist>(p99_futex volatile *p00_fut, unsigned p00_wmin, unsigned p00_wmax)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_iterator_destroy</name>
+      <anchorfile>group__futex_gab1b62647b08327755c3f35f4fa93ed9b.html</anchorfile>
+      <anchor>gab1b62647b08327755c3f35f4fa93ed9b</anchor>
+      <arglist>(p99_iterator *p00_i)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_iterator *</type>
+      <name>p99_iterator_init</name>
+      <anchorfile>group__futex_ga10d589ca3bdbf2c9553e66cb8f12290b.html</anchorfile>
+      <anchor>ga10d589ca3bdbf2c9553e66cb8f12290b</anchor>
+      <arglist>(p99_iterator *p00_i)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned</type>
+      <name>p99_iterator_next</name>
+      <anchorfile>group__futex_gad5f0a00589913dce16413370e197b6d4.html</anchorfile>
+      <anchor>gad5f0a00589913dce16413370e197b6d4</anchor>
+      <arglist>(p99_iterator volatile *p00_i)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned</type>
+      <name>p99_iterator_signal</name>
+      <anchorfile>group__futex_ga9cf1f3345a00f1c08e95fea3410036fd.html</anchorfile>
+      <anchor>ga9cf1f3345a00f1c08e95fea3410036fd</anchor>
+      <arglist>(p99_iterator volatile *p00_i)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -14829,6 +15377,7 @@
     <subgroup>futex</subgroup>
     <subgroup>library_wrappers</subgroup>
     <subgroup>posix_default</subgroup>
+    <subgroup>callbacks</subgroup>
   </compound>
   <compound kind="group">
     <name>P99</name>
@@ -19577,6 +20126,38 @@
     </member>
   </compound>
   <compound kind="struct">
+    <name>p99_callback_stack</name>
+    <filename>structp99__callback__stack.html</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_callback</name>
+      <anchorfile>group__callbacks_ga306df7572aa6d7bddfe559eae5e10ac1.html</anchorfile>
+      <anchor>ga306df7572aa6d7bddfe559eae5e10ac1</anchor>
+      <arglist>(p99_callback_stack *p00_stck)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_CALLBACK_PUSH</name>
+      <anchorfile>structp99__callback__stack_a622971d4e8cdee839013684ef151c33a.html</anchorfile>
+      <anchor>a622971d4e8cdee839013684ef151c33a</anchor>
+      <arglist>(STCK,...)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>void</type>
+      <name>p99_callback_void_func</name>
+      <anchorfile>group__callbacks_ga0585e51c520f4b87269df4c53279a918.html</anchorfile>
+      <anchor>ga0585e51c520f4b87269df4c53279a918</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>void</type>
+      <name>p99_callback_voidptr_func</name>
+      <anchorfile>group__callbacks_ga43bc6e42657ad8c2bc4c3fdd695f9182.html</anchorfile>
+      <anchor>ga43bc6e42657ad8c2bc4c3fdd695f9182</anchor>
+      <arglist>(void *)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
     <name>p99_count</name>
     <filename>structp99__count.html</filename>
     <member kind="define">
@@ -19626,6 +20207,38 @@
   <compound kind="union">
     <name>p99_endian_8</name>
     <filename>unionp99__endian__8.html</filename>
+  </compound>
+  <compound kind="struct">
+    <name>p99_event</name>
+    <filename>structp99__event.html</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_event_destroy</name>
+      <anchorfile>group__futex_ga1d4c361123f1b493e970284f0210be89.html</anchorfile>
+      <anchor>ga1d4c361123f1b493e970284f0210be89</anchor>
+      <arglist>(p99_event *p00_e)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_event *</type>
+      <name>p99_event_init</name>
+      <anchorfile>group__futex_ga570ddf086e5fe22eaf47598091cd95ed.html</anchorfile>
+      <anchor>ga570ddf086e5fe22eaf47598091cd95ed</anchor>
+      <arglist>(p99_event *p00_e, unsigned p00_n)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>p99_event_next</name>
+      <anchorfile>group__futex_gae6dd5ce9cf28be2ca3bb384163e3c717.html</anchorfile>
+      <anchor>gae6dd5ce9cf28be2ca3bb384163e3c717</anchor>
+      <arglist>(p99_event volatile *p00_e)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_event_signal</name>
+      <anchorfile>group__futex_gaf3c1eb35e2714cae91141faad108bc36.html</anchorfile>
+      <anchor>gaf3c1eb35e2714cae91141faad108bc36</anchor>
+      <arglist>(p99_event volatile *p00_e, void *p00_w)</arglist>
+    </member>
   </compound>
   <compound kind="struct">
     <name>p99_futex</name>
@@ -19731,6 +20344,38 @@
       <anchorfile>structp99__futex__c11_a1a6042e6199e2aca7d9ea4c54371c148.html</anchorfile>
       <anchor>a1a6042e6199e2aca7d9ea4c54371c148</anchor>
       <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>p99_iterator</name>
+    <filename>structp99__iterator.html</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_iterator_destroy</name>
+      <anchorfile>group__futex_gab1b62647b08327755c3f35f4fa93ed9b.html</anchorfile>
+      <anchor>gab1b62647b08327755c3f35f4fa93ed9b</anchor>
+      <arglist>(p99_iterator *p00_i)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_iterator *</type>
+      <name>p99_iterator_init</name>
+      <anchorfile>group__futex_ga10d589ca3bdbf2c9553e66cb8f12290b.html</anchorfile>
+      <anchor>ga10d589ca3bdbf2c9553e66cb8f12290b</anchor>
+      <arglist>(p99_iterator *p00_i)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned</type>
+      <name>p99_iterator_next</name>
+      <anchorfile>group__futex_gad5f0a00589913dce16413370e197b6d4.html</anchorfile>
+      <anchor>gad5f0a00589913dce16413370e197b6d4</anchor>
+      <arglist>(p99_iterator volatile *p00_i)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned</type>
+      <name>p99_iterator_signal</name>
+      <anchorfile>group__futex_ga9cf1f3345a00f1c08e95fea3410036fd.html</anchorfile>
+      <anchor>ga9cf1f3345a00f1c08e95fea3410036fd</anchor>
+      <arglist>(p99_iterator volatile *p00_i)</arglist>
     </member>
   </compound>
   <compound kind="struct">
@@ -19924,10 +20569,12 @@
     <file>p99_atomic_arm.h</file>
     <file>p99_atomic_gcc.h</file>
     <file>p99_atomic_x86.h</file>
+    <file>p99_bitset.h</file>
     <file>p99_block.h</file>
     <file>p99_c99.h</file>
     <file>p99_c99_default.h</file>
     <file>p99_c99_throw.h</file>
+    <file>p99_callback.h</file>
     <file>p99_checkargs.h</file>
     <file>p99_choice.h</file>
     <file>p99_classification.h</file>
@@ -19948,6 +20595,7 @@
     <file>p99_id.h</file>
     <file>p99_if.h</file>
     <file>p99_int.h</file>
+    <file>p99_iterator.h</file>
     <file>p99_list.h</file>
     <file>p99_logical.h</file>
     <file>p99_map.h</file>
