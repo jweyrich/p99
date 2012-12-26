@@ -95,19 +95,17 @@ p99_extension                                                        \
  ** @see P99_LIFO_TOP
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_POP, 0)
-#define P99_LIFO_POP(L)                                                                            \
-p99_extension                                                                                      \
-({                                                                                                 \
-  P99_MACRO_VAR(p00_l, (L));                                                                       \
-  __typeof__(P99_LIFO_TOP(p00_l)) p00_el = P99_LIFO_TOP(p00_l);                                    \
-  if (P99_LIKELY(p00_el)) {                                                                        \
-    while (P99_UNLIKELY(!atomic_compare_exchange_weak(p00_l, &p00_el, p00_el->p99_lifo))) P99_NOP; \
-    p00_el->p99_lifo = 0;                                                                          \
-  }                                                                                                \
-  /* be sure that the result can not be used as an lvalue */                                       \
-  register __typeof__(p00_el = p00_el) p00_r = p00_el;                                             \
-  p00_r;                                                                                           \
- })
+#define P99_LIFO_POP(L)                                                                      \
+p99_extension                                                                                \
+({                                                                                           \
+  P99_MACRO_VAR(p00_l, (L));                                                                 \
+  P99_MACRO_VAR(p00_el, P99_LIFO_TOP(p00_l));                                                \
+  while (p00_el && !atomic_compare_exchange_weak(p00_l, &p00_el, p00_el->p99_lifo)) P99_NOP; \
+  if (p00_el) p00_el->p99_lifo = 0;                                                          \
+  /* be sure that the result can not be used as an lvalue */                                 \
+  register __typeof__(p00_el = p00_el) p00_r = p00_el;                                       \
+  p00_r;                                                                                     \
+})
 
 /**
  ** @brief Atomically clear an atomic LIFO @a L and return a pointer
