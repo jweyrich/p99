@@ -22,20 +22,11 @@
  ** @{
  **/
 
-#if defined(P99_LIFO_POP) || defined(P00_DOXYGEN)
-# define p00_has_feature_callback_thread_safe 1
-# define p00_has_extension_callback_thread_safe 1
-#endif
-
 typedef struct p00_cb_el p00_cb_el;
 P99_POINTER_TYPE(p00_cb_el);
 #ifndef P00_DOXYGEN
-# if p99_has_feature(callback_thread_safe)
-P99_DECLARE_ATOMIC(p00_cb_el_ptr);
-typedef _Atomic(p00_cb_el_ptr) p99_callback_stack;
-# else
-typedef p00_cb_el_ptr p99_callback_stack;
-# endif
+P99_LIFO_DECLARE(p00_cb_el_ptr);
+typedef P99_LIFO(p00_cb_el_ptr) p99_callback_stack;
 #else
 int p00_doxygen_is_confused(void) {}
 /**
@@ -110,23 +101,9 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                            \
 (p00_cb_el_init_(__VA_ARGS__))
 
 p99_inline
-p00_cb_el* p00_callback_top(p99_callback_stack* p00_l) {
-#if p99_has_feature(callback_thread_safe)
-  return P99_LIFO_TOP(p00_l);
-#else
-  return *p00_l;
-#endif
-}
-
-p99_inline
 p00_cb_el* p00_callback_push(p99_callback_stack* p00_l, p00_cb_el* p00_el) {
   if (p00_el) {
-#if p99_has_feature(callback_thread_safe)
     P99_LIFO_PUSH(p00_l, p00_el);
-#else
-    p00_el->p99_lifo = *p00_l;
-    *p00_l = p00_el;
-#endif
   }
   return p00_el;
 }
