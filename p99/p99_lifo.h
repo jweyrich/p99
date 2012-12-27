@@ -27,6 +27,13 @@
  ** @{
  **/
 
+#if defined(P99_DECLARE_ATOMIC) || P00_DOXYGEN
+# define P99_LIFO(T) _Atomic(P99_PASTE2(p00_lifo_, T))
+# define P99_LIFO_DECLARE(T)                    \
+typedef T P99_PASTE2(p00_lifo_, T);             \
+P99_DECLARE_ATOMIC(P99_PASTE2(p00_lifo_, T))
+
+
 /**
  ** @brief Return a pointer to the top element of an atomic LIFO @a L
  ** @see P99_LIFO_CLEAR
@@ -66,14 +73,14 @@ p99_extension                                                        \
  ** @code
  ** P99_DECLARE_STRUCT(myData);
  ** P99_POINTER_TYPE(myData);
- ** P99_DECLARE_ATOMIC(myData_ptr);
+ ** P99_FIFO_DECLARE(myData_ptr);
  **
  ** struct myData {
  **   ...
  **   myData_ptr p99_lifo;
  **   ...
  ** };
- ** extern _Atomic(myData_ptr) head;
+ ** extern P99_LIFO(myData_ptr) head;
  ** @endcode
  **
  ** Now @c head can be used as the head of a LIFO:
@@ -91,8 +98,9 @@ p99_extension                                                        \
  ** @endcode
  **
  ** @see P99_LIFO_CLEAR
+ ** @see P99_LIFO
+ ** @see P99_LIFO_DECLARE
  ** @see P99_LIFO_PUSH
- ** @see P99_LIFO_TOP
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_POP, 0)
 #define P99_LIFO_POP(L)                                                                      \
@@ -111,12 +119,63 @@ p99_extension                                                                   
  ** @brief Atomically clear an atomic LIFO @a L and return a pointer
  ** to the start of the list that it previously contained
  **
- ** @see P99_LIFO_POP
+ ** @see P99_LIFO
+ ** @see P99_LIFO_DECLARE
  ** @see P99_LIFO_PUSH
  ** @see P99_LIFO_TOP
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
 #define P99_LIFO_CLEAR(L) atomic_exchange(L, 0)
+
+#else
+
+/* A fall back implementation for the case that there are no atomic
+   operations available */
+
+# define P99_LIFO(T) P99_PASTE2(p00_lifo_, T)
+# define P99_LIFO_DECLARE(T) typedef T P99_LIFO(T)
+
+#define P99_LIFO_TOP(L)  (*(L))
+
+#define P99_LIFO_PUSH(L, EL)                                         \
+p99_extension                                                        \
+({                                                                   \
+  P99_MACRO_VAR(p00_l, (L));                                         \
+  P99_MACRO_VAR(p00_el, (EL));                                       \
+  p00_el->p99_lifo = *p00_l;                                         \
+  *p00_l = p00_el;                                                   \
+})
+
+#define P99_LIFO_POP(L)                                                                      \
+p99_extension                                                                                \
+({                                                                                           \
+  P99_MACRO_VAR(p00_l, (L));                                                                 \
+  P99_MACRO_VAR(p00_el, *p00_l);                                        \
+  *p00_l = p00_el->p99_lifo;                                            \
+  if (p00_el) p00_el->p99_lifo = 0;                                                          \
+  /* be sure that the result can not be used as an lvalue */                                 \
+  register __typeof__(p00_el = p00_el) p00_r = p00_el;                                       \
+  p00_r;                                                                                     \
+})
+
+/**
+ ** @brief Atomically clear an atomic LIFO @a L and return a pointer
+ ** to the start of the list that it previously contained
+ **
+ ** @see P99_LIFO_POP
+ ** @see P99_LIFO_PUSH
+ ** @see P99_LIFO_TOP
+ **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
+#define P99_LIFO_CLEAR(L)                       \
+({                                              \
+  P99_MACRO_VAR(p00_l, (L));                    \
+  register P99_MACRO_VAR(p00_ret, *p00_l);      \
+  *p00_l = 0;                                   \
+  p00_ret;                                      \
+})
+
+#endif
 
 P00_DOCUMENT_TYPE_ARGUMENT(P99_LIFO_TABULATE, 0)
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_LIFO_TABULATE, 1)

@@ -18,15 +18,15 @@
 #include "p99_lifo.h"
 
 P99_POINTER_TYPE(p00_jmp_buf0);
-P99_DECLARE_ATOMIC(p00_jmp_buf0_ptr);
+P99_LIFO_DECLARE(p00_jmp_buf0_ptr);
 
-P99_DECLARE_THREAD_LOCAL(_Atomic(p00_jmp_buf0_ptr), p00_jmp_buf_top);
+P99_DECLARE_THREAD_LOCAL(P99_LIFO(p00_jmp_buf0_ptr), p00_jmp_buf_top);
 
 #define P00_JMP_BUF_TOP P99_THREAD_LOCAL(p00_jmp_buf_top)
 
 p99_inline
 void p00_jmp_skip(p00_jmp_buf0 * p00_des) {
-  _Atomic(p00_jmp_buf0_ptr)* p00_head = &P00_JMP_BUF_TOP;
+  P99_LIFO(p00_jmp_buf0_ptr)* p00_head = &P00_JMP_BUF_TOP;
   p00_jmp_buf0 * p00_ret = 0;
   do {
     p00_ret = P99_LIFO_POP(p00_head);
