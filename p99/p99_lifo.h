@@ -32,7 +32,7 @@
 # define P99_LIFO_DECLARE(T)                    \
 typedef T P99_PASTE2(p00_lifo_, T);             \
 P99_DECLARE_ATOMIC(P99_PASTE2(p00_lifo_, T))
-
+# define P99_LIFO_INITIALIZER(VAL) ATOMIC_VAR_INIT((void*)VAL)
 
 /**
  ** @brief Return a pointer to the top element of an atomic LIFO @a L
@@ -134,6 +134,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
 
 # define P99_LIFO(T) P99_PASTE2(p00_lifo_, T)
 # define P99_LIFO_DECLARE(T) typedef T P99_LIFO(T)
+# define P99_LIFO_INITIALIZER(VAL) ((void*)VAL)
 
 #define P99_LIFO_TOP(L)  (*(L))
 

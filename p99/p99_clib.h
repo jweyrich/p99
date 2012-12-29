@@ -56,7 +56,7 @@ void *aligned_alloc(size_t p00_alignment, size_t p00_size) {
 /* In both cases this is guaranteed to do the correct
    initialization. */
 P99_WEAK(p00_cb)
-p99_callback_stack p00_at_quick_exit;
+p99_callback_stack p00_at_quick_exit = P99_LIFO_INITIALIZER(0);
 
 /**
  ** @brief registers the function pointed to by @a p00_void_func, to be called
