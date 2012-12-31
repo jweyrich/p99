@@ -21,6 +21,7 @@
 #include "p99_count.h"
 #include "p99_enum.h"
 #include "p99_errno.h"
+#include "p99_fifo.h"
 #include "p99_generic.h"
 #include "p99_int.h"
 #include "p99_map.h"

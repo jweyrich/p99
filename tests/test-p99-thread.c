@@ -13,6 +13,7 @@
 #include "p99_threads.h"
 #include "p99_generic.h"
 #include "p99_clib.h"
+#include "p99_fifo.h"
 
 
 void * p00_thrd_create(void* context);
@@ -24,10 +25,13 @@ static atomic_double D;
 static atomic_uint U;
 
 P99_DECLARE_STRUCT(tester);
+P99_POINTER_TYPE(tester);
+P99_FIFO_DECLARE(tester_ptr);
 
 struct tester {
   int a;
   double b;
+  tester* p99_lifo;
 };
 
 P99_DECLARE_ATOMIC(tester, atomic_tester);
@@ -38,9 +42,19 @@ P99_DECLARE_ATOMIC(int*, atomic_intp);
 P99_DECLARE_ATOMIC(int*, atomic_intp2);
 atomic_intp intp;
 
+P99_FIFO(tester_ptr) ober_tester = P99_FIFO_INITIALIZER(0, 0);
+
 static
 void aqe(void) {
-  fprintf(stderr, "quick exit!\n");
+  fprintf(stderr, "quick exit!:");
+  tester_ptr unter_tester = P99_FIFO_CLEAR(&ober_tester);
+  while (unter_tester) {
+    tester_ptr next = unter_tester->p99_lifo;
+    fprintf(stderr, " %d (%p)", unter_tester ? unter_tester->a : INT_MAX, (void*)unter_tester);
+    free(unter_tester);
+    unter_tester = next;
+  }
+  fputc('\n', stderr);
 }
 
 static
@@ -50,7 +64,9 @@ void ate0(void) {
 
 static
 void ate1(void) {
-  fprintf(stderr, "thread exit 1!\n");
+  tester_ptr unter_tester = P99_FIFO_POP(&ober_tester);
+  fprintf(stderr, "thread exit 1! %d (%p)\n", unter_tester ? unter_tester->a : INT_MAX, (void*)unter_tester);
+  free(unter_tester);
 }
 
 static
@@ -80,6 +96,9 @@ int real_task(atomic_intp* arg) {
   case 1: at_quick_exit(aqe); break;
   case 2: at_thrd_exit(ate1); break;
   }
+  tester_ptr unter_tester = P99_MALLOC(tester);
+  *unter_tester = (tester){ .a = ret, };
+  P99_FIFO_APPEND(&ober_tester, unter_tester);
   if (ret % 2)
     return -1;
   else
