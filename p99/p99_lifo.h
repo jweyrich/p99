@@ -115,6 +115,21 @@ p99_extension                                                                   
   p00_r;                                                                                     \
 })
 
+#define P00_LIFO_REVERT(L)                                      \
+p99_extension                                                   \
+({                                                              \
+  register P99_MACRO_VAR(p00_h, (L));                           \
+  register P99_MACRO_VAR(p00_t, P99_PROMOTE_0(p00_h));          \
+  while (p00_h) {                                               \
+    register P99_MACRO_VAR(p00_n, p00_h->p99_lifo);             \
+    p00_h->p99_lifo = p00_t;                                    \
+    p00_h = p00_n;                                              \
+  }                                                             \
+  /* make sure that the result can not be used as an lvalue */  \
+  register const __typeof__(p00_t = p00_t) p00_r = p00_t;       \
+  p00_r;                                                        \
+})
+
 /**
  ** @brief Atomically clear an atomic LIFO @a L and return a pointer
  ** to the start of the list that it previously contained
