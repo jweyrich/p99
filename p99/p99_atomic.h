@@ -1079,7 +1079,7 @@ p99_extension                                                  \
 p99_extension                                                                                           \
 ({                                                                                                      \
   P99_MACRO_PVAR(p00_objp, (OBJP));                                                                     \
-  __typeof__(P00_AT(p00_objp)) p00_des = (DESIRED);                                                     \
+  register __typeof__(P00_AT(p00_objp)) const p00_des = (DESIRED);                                      \
   register __typeof__(P00_AX(p00_objp)) p00_ret = P99_INIT;                                             \
   if (!atomic_is_lock_free(p00_objp))                                                                   \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                                                             \
@@ -1089,7 +1089,7 @@ p99_extension                                                                   
   P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                                              \
     ()                                                                                                  \
     (else {                                                                                             \
-      __typeof__(P00_AX(p00_objp)) p00_desm = { .p00_t = p00_des };                                     \
+      register __typeof__(P00_AX(p00_objp)) const p00_desm = { .p00_t = p00_des };                      \
       switch (sizeof(P00_AT(p00_objp))) {                                                               \
       case 1:;                                                                                          \
       case 2:;                                                                                          \
@@ -1132,15 +1132,12 @@ p99_extension                                                                   
      })                                                                           \
    : (P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                    \
       (P00_AT(p00_objp))                                                          \
-      (({                                                                         \
-          register __typeof__(P00_AX(p00_objp)) p00_ret = {                       \
+      ((__typeof__(P00_AX(p00_objp))){                                            \
             .p00_m =                                                              \
             P00_ATOMIC_TERN(p00_objp,                                             \
                             __sync_val_compare_and_swap(&P00_AM(p00_objp), 0, 0), \
                             P00_AM(p00_objp)),                                    \
-          };                                                                      \
-          p00_ret.p00_t;                                                          \
-        }))));                                                                    \
+            }).p00_t));                                                           \
  })
 
 #define P00_CVT(EXP) ((void const*)(((struct { void const volatile* a; }){ .a = (EXP) }).a))
@@ -1165,8 +1162,8 @@ p99_extension                                                                   
 p99_extension                                                                                   \
 ({                                                                                              \
   P99_MACRO_PVAR(p00_objp, (OBJP));                                                             \
-  P99_MACRO_PVAR(p00_exp, (EXPECTED));                                                          \
-  P99_MACRO_VAR(p00_des, DESIRED);                                                              \
+  register __typeof__(P00_AT(p00_objp))*const p00_exp = (EXPECTED);                             \
+  register __typeof__(P00_AT(p00_objp)) const p00_des = (DESIRED);                              \
   register _Bool p00_ret = false;                                                               \
   if (!atomic_is_lock_free(p00_objp)) {                                                         \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                                                     \
@@ -1180,10 +1177,10 @@ p99_extension                                                                   
   P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                                      \
     (else p00_ret = false;)                                                                     \
     (else {                                                                                     \
-      __typeof__(P00_AM(p00_objp))* p00_expm                                                    \
+      register __typeof__(P00_AM(p00_objp))*const p00_expm                                      \
         = (__typeof__(P00_AM(p00_objp))*)P00_ATOMIC_TERN(p00_objp, p00_exp, 0);                 \
-      __typeof__(P00_AX(p00_objp)) p00_desm = { .p00_t = p00_des };                             \
-      __typeof__(P00_AM(p00_objp)) p00_valm                                                     \
+      register __typeof__(P00_AX(p00_objp)) const p00_desm = { .p00_t = p00_des };              \
+      register __typeof__(P00_AM(p00_objp)) const p00_valm                                      \
         = P00_ATOMIC_TERN                                                                       \
         (p00_objp,                                                                              \
          __sync_val_compare_and_swap(&P00_AM(p00_objp), *p00_expm, p00_desm.p00_m),             \
