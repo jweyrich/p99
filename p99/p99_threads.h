@@ -869,6 +869,65 @@ void thrd_exit(int p00_res) {
 }
 #endif
 
+#if defined(P99_INTERCEPT_MAIN) || defined(P00_DOXYGEN)
+
+/**
+ ** @brief A replacement name for the users @c main function,
+ ** experimental
+ **
+ ** @remark compile with @c -DP99_INTERCEPT_MAIN to enable this
+ ** feature
+ **
+ ** If compiled with the above macro definition, the users @c main
+ ** function is silently renamed to ::p99_main and a stub @c main is
+ ** provided. That stub function will not do much more than creating a
+ ** separate thread running ::p99_main as the user would expect it,
+ ** and then exit the thread of that stub @c main function.
+ **
+ ** The purpose is to ensure that all threads are C11 threads.
+ **/
+int p99_main(int, char*[]);
+
+struct p00_main_arg {
+  int p00_argc;
+  char**p00_argv;
+};
+
+P99_WEAK(p00_main)
+int p00_main(void* p00_arg) {
+  struct p00_main_arg *p00_a = p00_arg;
+  int p00_argc = p00_a->p00_argc;
+  char**p00_argv = p00_a->p00_argv;
+  free(p00_arg);
+  /* To have the same behavior as prescribed by the standard, we have
+     to exit the whole process if main returns. The only thing that we
+     wouldn't be able to emulate is the fact that leaving main without
+     return statement is permitted. But the compiler should warn the
+     user about that. */
+  int ret = p99_main(p00_argc, p00_argv);
+  exit(ret);
+}
+
+P99_WEAK(main)
+int main(int p00_argc, char*p00_argv[]) {
+  fputs("intercepting main\n", stderr);
+  thrd_t id = P99_INIT;
+  struct p00_main_arg * p00_arg = malloc(sizeof *p00_arg);
+  *p00_arg = (struct p00_main_arg){
+    .p00_argc = p00_argc,
+    .p00_argv = p00_argv,
+  };
+  thrd_create(&id, p00_main, p00_arg);
+  thrd_detach(id);
+  thrd_exit(0);
+}
+
+#undef main
+#define main p99_main
+#endif
+
+
+
 /**
  ** @related thrd_t
  ** @return ::thrd_success on success, or ::thrd_error if the request
