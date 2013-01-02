@@ -4,6 +4,7 @@
 /* the authors and copyright holders for this work are as follows:            */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                       */
 /* (C) copyright  2012 William Morris                                         */
+/* (C) copyright  2013 Pierre-Nicolas Clauss                                  */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -1443,5 +1444,6 @@
 #include "p99_double.h"
 #include "p99_swap.h"
 #include "p99_generic.h"
+#include "p99_hook.h"
 
 #endif      /* !P99_H_ */
