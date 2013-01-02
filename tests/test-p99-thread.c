@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
   size_t n = argc < 2 ? 2 : strtoul(argv[1], 0, 0);
   mtx_init(&mut, mtx_plain);
   cnd_init(&cond);
-  thrd_t id[n];
+  thrd_t (*id)[n] = P99_MALLOC(*id);
   int* intp2 = 0;
   (void)atomic_compare_exchange_weak(&intp, &intp2, &argc);
   unsigned U2 = 3;
@@ -122,17 +122,18 @@ int main(int argc, char *argv[]) {
   printf("initial value of U is %u, should be 0\n", U2);
   (void)atomic_compare_exchange_weak(&U, &U2, 1);
   printf("value of U is set to %u, should be 1\n", atomic_load(&U));
-  int arr[n+1];
+  int (*arr)[n+1] = P99_MALLOC(*arr);
   atomic_intp arrp = intp; //ATOMIC_VAR_INIT(0);
-  atomic_store(&arrp, &arr[0]);
+  atomic_store(&arrp, &(*arr)[0]);
   real_task(&arrp);
   for (size_t i = 0; i < n; ++i)
-    thrd_create(&id[i], task, &arrp);
+    thrd_create(&(*id)[i], task, &arrp);
   for (size_t i = 1; i < n; i += 2)
-    thrd_detach(id[i]);
+    thrd_detach((*id)[i]);
   int res = 0;
   for (size_t i = 0; i < n; i += 2)
-    thrd_join(id[i], &res);
+    thrd_join((*id)[i], &res);
+  if (!(n % 5)) thrd_exit(1);
   mtx_lock(&mut);
   while (count < n) cnd_wait(&cond, &mut);
   mtx_unlock(&mut);

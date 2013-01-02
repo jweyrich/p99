@@ -860,6 +860,11 @@ void thrd_exit(int p00_res) {
   }
   /* should only be reached by threads that where created directly
      with pthreads, e.g main */
+  if (p00_res)
+    fprintf(stderr,
+            "P99: We are exiting a foreign thread (main?) with non zero error code %d\n"
+            "P99: There is no consistent way we can transmit that error code to the environment\n",
+            p00_res);
   pthread_exit(0);
 }
 #endif
