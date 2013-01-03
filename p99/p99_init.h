@@ -18,12 +18,10 @@
 /**
  ** @file
  **
- ** @brief Implement a simple FILEID that changes each time this file
- ** is included somewhere
+ ** @brief Implement initialization functions that are executed early.
  **
- ** The FILEID here is a hexadecimal number with 4 digits. 34320
- ** different such numbers are produced by the algorithm until it
- ** wraps around.
+ ** This is similar to gcc's constructor attribute.
+ **
  **/
 
 
@@ -50,25 +48,38 @@ P99_WEAK(NAME) void NAME(void)
 
 #if defined(P99_INTERCEPT_MAIN) || defined(P00_DOXYGEN)
 
-int p99_init_main(int, char*[]);
+#define P99_MAIN_INTERCEPT(NAME)                                        \
+int NAME(int, char*[]);                                                 \
+P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
+ void P99_PASTE2(p00_init_func_, NAME)(int*, char***);                  \
+P99_WEAK(main)                                                          \
+int main(int p00_argc, char**p00_argv) {                                \
+  fprintf(stderr, "%s: intercepting " P99_STRINGIFY(NAME) "\n", __func__); \
+  P99_PASTE2(p00_init_func_, NAME)(&p00_argc, &p00_argv);               \
+  return NAME(p00_argc, p00_argv);                                      \
+}                                                                       \
+P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
+void P99_PASTE2(p00_init_func_, NAME)(int * p00_argc, char***p00_argv)
+
+#define P99_INIT_TRIGGER(NAME, ARGC, ARGV) P99_NOP
+
+#  else
+
+#define P99_MAIN_INTERCEPT(NAME)                                        \
+P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
+void P99_PASTE2(p00_init_func_, NAME)(int * p00_argc, char***p00_argv)
+
+#define P99_INIT_TRIGGER(NAME, ARGC, ARGV) P99_PASTE2(p00_init_func_, NAME)((ARGC), (ARGV))
+
+# endif
 
 P99_MAIN_INTERCEPT(p99_init_main) {
   P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_TRIGGER_FUNCTION_1, P99_REP(P99_MAX_NUMBER,));
 }
 
-#undef main
-#define main p99_init_main
-
-static inline void p99_init_trigger(void) {
-  /* empty */
-};
-
-#  else
-
-static inline void p99_init_trigger(void) {
-  P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_TRIGGER_FUNCTION_1, P99_REP(P99_MAX_NUMBER,));
-};
-
+# if defined(P99_INTERCEPT_MAIN)
+#  undef main
+#  define main p99_init_main
 # endif
 
 

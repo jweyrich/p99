@@ -128,7 +128,7 @@ int task(void* arg) {
 
 int main(int argc, char *argv[]) {
   size_t n = argc < 2 ? 2 : strtoul(argv[1], 0, 0);
-  p99_init_trigger();
+  P99_INIT_TRIGGER(p99_init_main, &argc, &argv);
   mtx_init(&mut, mtx_plain);
   cnd_init(&cond);
   thrd_t (*id)[n] = P99_MALLOC(*id);

@@ -15,6 +15,7 @@
 #define P99_THREADS_H 1
 
 #include "p99_try.h"
+#include "p99_init.h"
 
 
 /**
@@ -869,19 +870,6 @@ void thrd_exit(int p00_res) {
 }
 #endif
 
-#define P99_MAIN_INTERCEPT(NAME)                                        \
-int NAME(int, char*[]);                                                 \
-P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
-void P99_PASTE2(p00_init_func_, NAME)(int, char*[]);                    \
-P99_WEAK(main)                                                          \
-int main(int p00_argc, char*p00_argv[]) {                               \
-  fprintf(stderr, "%s: intercepting " P99_STRINGIFY(NAME) "\n", __func__); \
-  P99_PASTE2(p00_init_func_, NAME)(p00_argc, p00_argv);                 \
-  return NAME(p00_argc, p00_argv);                                      \
-}                                                                       \
-P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
-void P99_PASTE2(p00_init_func_, NAME)(int p00_argc, char*p00_argv[])
-
 #if defined(P99_INTERCEPT_MAIN) || defined(P00_DOXYGEN)
 
 /**
@@ -926,8 +914,8 @@ P99_MAIN_INTERCEPT(p99_threads_main) {
   thrd_t id = P99_INIT;
   struct p00_threads_main_arg * p00_arg = malloc(sizeof *p00_arg);
   *p00_arg = (struct p00_threads_main_arg){
-    .p00_argc = p00_argc,
-    .p00_argv = p00_argv,
+    .p00_argc = *p00_argc,
+    .p00_argv = *p00_argv,
   };
   thrd_create(&id, p00_threads_main, p00_arg);
   thrd_detach(id);
