@@ -869,6 +869,19 @@ void thrd_exit(int p00_res) {
 }
 #endif
 
+#define P99_MAIN_INTERCEPT(NAME)                                        \
+int NAME(int, char*[]);                                                 \
+P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
+void P99_PASTE2(p00_init_func_, NAME)(int, char*[]);                    \
+P99_WEAK(main)                                                          \
+int main(int p00_argc, char*p00_argv[]) {                               \
+  fprintf(stderr, "%s: intercepting " P99_STRINGIFY(NAME) "\n", __func__); \
+  P99_PASTE2(p00_init_func_, NAME)(p00_argc, p00_argv);                 \
+  return NAME(p00_argc, p00_argv);                                      \
+}                                                                       \
+P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
+void P99_PASTE2(p00_init_func_, NAME)(int p00_argc, char*p00_argv[])
+
 #if defined(P99_INTERCEPT_MAIN) || defined(P00_DOXYGEN)
 
 /**
@@ -879,23 +892,24 @@ void thrd_exit(int p00_res) {
  ** feature
  **
  ** If compiled with the above macro definition, the users @c main
- ** function is silently renamed to ::p99_main and a stub @c main is
+ ** function is silently renamed to ::p99_threads_main and a stub @c main is
  ** provided. That stub function will not do much more than creating a
- ** separate thread running ::p99_main as the user would expect it,
+ ** separate thread running ::p99_threads_main as the user would expect it,
  ** and then exit the thread of that stub @c main function.
  **
- ** The purpose is to ensure that all threads are C11 threads.
+ ** The purpose is to ensure that all threads are C11 threads, and not
+ ** only POSIX threads.
  **/
-int p99_main(int, char*[]);
+int p99_threads_main(int, char*[]);
 
-struct p00_main_arg {
+struct p00_threads_main_arg {
   int p00_argc;
   char**p00_argv;
 };
 
-P99_WEAK(p00_main)
-int p00_main(void* p00_arg) {
-  struct p00_main_arg *p00_a = p00_arg;
+P99_WEAK(p00_threads_main)
+int p00_threads_main(void* p00_arg) {
+  struct p00_threads_main_arg *p00_a = p00_arg;
   int p00_argc = p00_a->p00_argc;
   char**p00_argv = p00_a->p00_argv;
   free(p00_arg);
@@ -904,26 +918,24 @@ int p00_main(void* p00_arg) {
      wouldn't be able to emulate is the fact that leaving main without
      return statement is permitted. But the compiler should warn the
      user about that. */
-  int ret = p99_main(p00_argc, p00_argv);
-  exit(ret);
+  int p00_ret = p99_threads_main(p00_argc, p00_argv);
+  exit(p00_ret);
 }
 
-P99_WEAK(main)
-int main(int p00_argc, char*p00_argv[]) {
-  fputs("intercepting main\n", stderr);
+P99_MAIN_INTERCEPT(p99_threads_main) {
   thrd_t id = P99_INIT;
-  struct p00_main_arg * p00_arg = malloc(sizeof *p00_arg);
-  *p00_arg = (struct p00_main_arg){
+  struct p00_threads_main_arg * p00_arg = malloc(sizeof *p00_arg);
+  *p00_arg = (struct p00_threads_main_arg){
     .p00_argc = p00_argc,
     .p00_argv = p00_argv,
   };
-  thrd_create(&id, p00_main, p00_arg);
+  thrd_create(&id, p00_threads_main, p00_arg);
   thrd_detach(id);
-  thrd_exit(0);
+  pthread_exit(0);
 }
 
 #undef main
-#define main p99_main
+#define main p99_threads_main
 #endif
 
 
