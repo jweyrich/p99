@@ -15,6 +15,22 @@
 #include "p99_clib.h"
 #include "p99_fifo.h"
 
+#include "p99_init.h"
+P99_INIT_FUNCTION(toto) {
+  fprintf(stderr, "this is %s\n", __func__);
+}
+#include "p99_init.h"
+P99_INIT_FUNCTION(tutu, 95) {
+  fprintf(stderr, "this is %s\n", __func__);
+}
+#include "p99_init.h"
+P99_INIT_FUNCTION(tata) {
+  fprintf(stderr, "this is %s\n", __func__);
+}
+#include "p99_init.h"
+P99_INIT_FUNCTION(tete) {
+  fprintf(stderr, "this is %s\n", __func__);
+}
 
 void * p00_thrd_create(void* context);
 
@@ -112,6 +128,7 @@ int task(void* arg) {
 
 int main(int argc, char *argv[]) {
   size_t n = argc < 2 ? 2 : strtoul(argv[1], 0, 0);
+  p99_init_trigger();
   mtx_init(&mut, mtx_plain);
   cnd_init(&cond);
   thrd_t (*id)[n] = P99_MALLOC(*id);
