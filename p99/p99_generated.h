@@ -41,15 +41,15 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Mon, 24 Dec 2012 11:18:47 +0100"
-#define P00_VERSION_ID ""
+#define P00_VERSION_DATE "Thu, 03 Jan 2013 18:48:58 +0100"
+#define P00_VERSION_ID "33ac89c0993a36ee079572e19bc4b4c63ff71b46"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
  **
  ** This limit applies also to the integer arithmetic that is
  ** performed by the macros in @ref preprocessor_arithmetic.
  **/
-#define P99_MAX_NUMBER 159
+#define P99_MAX_NUMBER 158
 #define P00_ARG(                                               \
  _1, _2, _3, _4, _5, _6, _7, _8,                               \
  _9, _10, _11, _12, _13, _14, _15, _16,                        \

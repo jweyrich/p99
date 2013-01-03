@@ -467,6 +467,8 @@ print "ge manually.\n***********************************************/\n";
 print "\n";
 print "\n#ifndef P99_GENERATED_H\n#define P99_GENERATED_H\n\n";
 
+my $maxnumber1 = $maxnumber - 1;
+
 print << "DOCU";
 /** \@file
  ** \@brief automatically generated macros to handle variadic macros.
@@ -499,7 +501,7 @@ print << "DOCU";
  ** This limit applies also to the integer arithmetic that is
  ** performed by the macros in \@ref preprocessor_arithmetic.
  **/
-#define P99_MAX_NUMBER $maxnumber
+#define P99_MAX_NUMBER $maxnumber1
 DOCU
 
 print "#define P00_ARG(";
