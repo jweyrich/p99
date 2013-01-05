@@ -1443,5 +1443,6 @@
 #include "p99_double.h"
 #include "p99_swap.h"
 #include "p99_generic.h"
+#include "p99_arith.h"
 
 #endif      /* !P99_H_ */
