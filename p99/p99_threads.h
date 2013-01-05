@@ -556,8 +556,9 @@ extern p99_once_flag P99_PASTE3(p99_, T, _once)
  **
  ** Such a call could be placed at the beginning of a user function to
  ** ensure that a shared resource is always initialized before its
- ** use. A better strategy though would be to call ::P99_INIT_CHAIN from @c
- ** main, e.g., before any threads of the application are started.
+ ** use. A better strategy though would be to call ::P99_INIT_CHAIN
+ ** from @c main, e.g., before any threads of the application are
+ ** started, or through the mechanism provided by :::P99_INIT_FUNCTION.
  ** @see P99_DECLARE_ONCE_CHAIN
  ** @see P99_DEFINE_ONCE_CHAIN
  **/

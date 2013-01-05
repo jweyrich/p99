@@ -23,7 +23,9 @@ P99_INIT_FUNCTION_DECLARE(tutu, 95);
 #include "p99_init.h"
 P99_INIT_FUNCTION_DECLARE(tata);
 #include "p99_init.h"
-P99_INIT_FUNCTION_DECLARE(tete);
+unsigned teteVar;
+void tete(void*);
+P99_INIT_VARIABLE(teteVar, tete);
 
 /* implementations of these functions would usually go in the .c */
 void toto(void) {
@@ -35,8 +37,11 @@ void tutu(void) {
 void tata(void) {
   fprintf(stderr, "this is %s\n", __func__);
 }
-void tete(void) {
+void tete(void* arg) {
   fprintf(stderr, "this is %s\n", __func__);
+  unsigned* teteVar = arg;
+  *teteVar = 42;
+  fprintf(stderr, "teteVar is %u\n", *teteVar);
 }
 
 
