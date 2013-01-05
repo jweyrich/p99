@@ -25,7 +25,7 @@
 #if P00_HAS_ARITH_SHIFT
 # define P00_ARITH_SHIFT(X, N) ((X) >> (N))
 #else
-# define P00_ARITH_SHIFT(X, N) P99_IF_ELSE(P99_SIGNED(X))(((X) >> (N)) | ~((((X) & (1 << (P99_EWIDTH(X) - (N)))) << 1) - 1))((X) >> (N))
+# define P00_ARITH_SHIFT(X, N) P99_IF_ELSE(P99_SIGNED(X))(((X) >> (N)) | ~((((X) & (P99_PROMOTE_1(X) << (P99_EWIDTH(X) - (N)))) << 1) - 1))((X) >> (N))
 #endif      /* !P00_HAS_ARITH_SHIFT */
 
 static p99_inline size_t p00_arith_abs(ssize_t a) {
