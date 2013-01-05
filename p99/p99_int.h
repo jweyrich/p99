@@ -669,7 +669,7 @@ typedef enum {
  ** @see ::p99_signed_representation
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_SIGNED_REPRESENTATION, 0)
-#define P99_SIGNED_REPRESENTATION(T) ((p99_signed_representation)(P99_M1(T) & P99_3(T)))
+#define P99_SIGNED_REPRESENTATION(T) P99_C(p99_signed_representation, (P99_M1(T) & P99_3(T)))
 
 
 /**
@@ -677,7 +677,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_SIGNED_REPRESENTATION, 0)
  ** the type has no @em negative zero and can thus represent one more
  ** value.
  **/
-#define P99_2COMPLEMENT(T) ((T)(P99_SIGNED_REPRESENTATION(T) == p99_signed_representation_twos))
+#define P99_2COMPLEMENT(T) (P99_SIGNED_REPRESENTATION(T) == p99_signed_representation_twos)
 
 #ifdef p99x_uintmax
 P00_DOCUMENT_TYPE_ARGUMENT(P99_TMAX, 0)
