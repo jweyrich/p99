@@ -15,22 +15,30 @@
 #include "p99_clib.h"
 #include "p99_fifo.h"
 
+/* declarations of these functions would usually go in a .h file */
 #include "p99_init.h"
-P99_INIT_FUNCTION(toto) {
+P99_INIT_FUNCTION_DECLARE(toto);
+#include "p99_init.h"
+P99_INIT_FUNCTION_DECLARE(tutu, 95);
+#include "p99_init.h"
+P99_INIT_FUNCTION_DECLARE(tata);
+#include "p99_init.h"
+P99_INIT_FUNCTION_DECLARE(tete);
+
+/* implementations of these functions would usually go in the .c */
+void toto(void) {
   fprintf(stderr, "this is %s\n", __func__);
 }
-#include "p99_init.h"
-P99_INIT_FUNCTION(tutu, 95) {
+void tutu(void) {
   fprintf(stderr, "this is %s\n", __func__);
 }
-#include "p99_init.h"
-P99_INIT_FUNCTION(tata) {
+void tata(void) {
   fprintf(stderr, "this is %s\n", __func__);
 }
-#include "p99_init.h"
-P99_INIT_FUNCTION(tete) {
+void tete(void) {
   fprintf(stderr, "this is %s\n", __func__);
 }
+
 
 void * p00_thrd_create(void* context);
 

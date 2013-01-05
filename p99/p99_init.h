@@ -33,17 +33,32 @@
 
 #define P00_INIT_FUNCTION(NR)  P99_IF_EMPTY(NR)(P99_PASTE2(p00_init_function_, P99_INIT_NR))(P99_PASTE2(p00_init_function_, NR))
 
-#define P00_INIT_TRIGGER_FUNCTION_0(_0, _1, I)  static void (*P99_PASTE2(p00_init_function_, I))(void)
-#define P00_INIT_TRIGGER_FUNCTION_1(_0, _1, I)  if (P99_PASTE2(p00_init_function_, I)) P99_PASTE2(p00_init_function_, I)()
+#define P00_INIT_FUNC_VAR_S(_0, _1, I)          \
+static void (*const P99_PASTE2(p00_init_function_, I))(void); \
+static void * P99_PASTE2(p00_init_var_, I)
 
-P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_TRIGGER_FUNCTION_0, P99_REP(P99_MAX_NUMBER,));
+P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_FUNC_VAR_S, P99_REP(P99_MAX_NUMBER,));
 
-#define P00_INIT_FUNCTION_(NAME, NR)                           \
-P99_WEAK(NAME) void NAME(void);                                \
-static void (*P00_INIT_FUNCTION(NR))(void) = NAME;             \
-P99_WEAK(NAME) void NAME(void)
+p99_inline
+void p00_init_function_dummy(void) { }
 
-#define P99_INIT_FUNCTION(...) P99_IF_EQ(P99_NARG(__VA_ARGS__), 2)(P00_INIT_FUNCTION_(__VA_ARGS__))(P00_INIT_FUNCTION_(__VA_ARGS__,))
+/* gcc is particularly bad in optimizing this code, go figure */
+#if P99_COMPILER & P99_COMPILER_GNU
+# define P00_INIT_TRIGGER_FUNCTION_1(_0, _1, I)                          \
+if (__builtin_constant_p(!!P99_PASTE2(p00_init_function_, I)) && !!P99_PASTE2(p00_init_function_, I)) \
+    P99_PASTE2(p00_init_function_, I)()
+#else
+# define P00_INIT_TRIGGER_FUNCTION_1(_0, _1, I)                          \
+if (P99_PASTE2(p00_init_function_, I)) P99_PASTE2(p00_init_function_, I)()
+#endif
+
+#define P00_INIT_TRIGGER_FUNCTION_2(_0, _1, I) (void)P99_PASTE2(p00_init_var_, I)
+
+#define P00_INIT_FUNCTION_(NAME, NR)                    \
+void NAME(void);                                        \
+static void (*const P00_INIT_FUNCTION(NR))(void) = NAME
+
+#define P99_INIT_FUNCTION_DECLARE(...) P99_IF_EQ(P99_NARG(__VA_ARGS__), 2)(P00_INIT_FUNCTION_(__VA_ARGS__))(P00_INIT_FUNCTION_(__VA_ARGS__,))
 
 
 #if defined(P99_INTERCEPT_MAIN) || defined(P00_DOXYGEN)
@@ -75,6 +90,7 @@ void P99_PASTE2(p00_init_func_, NAME)(int * p00_argc, char***p00_argv)
 
 P99_MAIN_INTERCEPT(p99_init_main) {
   P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_TRIGGER_FUNCTION_1, P99_REP(P99_MAX_NUMBER,));
+  P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_TRIGGER_FUNCTION_2, P99_REP(P99_MAX_NUMBER,));
 }
 
 # if defined(P99_INTERCEPT_MAIN)
