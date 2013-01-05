@@ -20,6 +20,8 @@
 
 #include "p99_int.h"
 
+#include <strings.h>
+
 #define P00_HAS_2COMPLEMENT ((INTMAX_MIN < -INTMAX_MAX) || (_XOPENSOURCE >= 600) || _POSIX_C_SOURCE)
 
 #define P00_HAS_ARITH_SHIFT (((-1) >> 1) == (-1))
@@ -83,13 +85,15 @@ static p99_inline uintmax_t p99_arith_log2(uintmax_t a) {
    uintmax_t log = 0;
 
    /* Any decent compiler will unroll this loop */
-   for(size_t shift = 1 << sizeof(a), mask  = (1 << (P99_EWIDTH(a) >> 1)) - 1; shift > 1; shift >>= 1, mask >>= shift) {
-      if(a > mask) {
-         a   >>= shift;
-         log  |= shift;
-      }
+   for(int i = ffs(P99_EWIDTH(a)) - 2; i >= 0; --i) {
+      uintmax_t shift = P99_PROMOTE_1(shift) << i;
+      uintmax_t mask = ((P99_PROMOTE_1(mask) << shift) - 1) << shift;
+      uintmax_t test = (a & mask) != 0;
+
+      log  |= test * shift;
+      a   >>= test * shift;
    }
-   return log | (a >> 1);
+   return log;
 }
 
 #endif      /* !P99_ARITH_H_ */
