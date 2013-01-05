@@ -27,15 +27,15 @@
 #include "p99_list.h"
 
 #if p99_has_attribute(constructor)
-# define P99_AT_LOAD(X, ...) __attribute__((constructor P99_IF_EMPTY(__VA_ARGS__)()((__VA_ARGS__)))) void X(void)
+# define P99_AT_LOAD(...) __attribute__((constructor P99_IF_LE(P99_NARG(__VA_ARGS__), 1)()((P99_SKP(1, __VA_ARGS__))))) void P99_CHS(0, __VA_ARGS__)(void)
 #else
-# define P99_AT_LOAD(X, ...) void X(void); P99_PRAGMA(startup X __VA_ARGS__) void X(void)
+# define P99_AT_LOAD(...) void P99_CHS(0, __VA_ARGS__)(void); P99_PRAGMA(startup P99_FOR(, P99_NARG(__VA_ARGS__), P00_SER, P00_IDT, __VA_ARGS__)) void P99_CHS(0, __VA_ARGS__)(void)
 #endif
 
 #if p99_has_attribute(destructor)
-# define P99_AT_UNLOAD(X, ...) __attribute__((destructor P99_IF_EMPTY(__VA_ARGS__)()((__VA_ARGS__)))) void X(void)
+# define P99_AT_UNLOAD(...) __attribute__((destructor P99_IF_LE(P99_NARG(__VA_ARGS__), 1)()((P99_SKP(1, __VA_ARGS__))))) void P99_CHS(0, __VA_ARGS__)(void)
 #else
-# define P99_AT_UNLOAD(X, ...) void X(void); P99_PRAGMA(exit X __VA_ARGS__) void X(void)
+# define P99_AT_UNLOAD(...) void P99_CHS(0, __VA_ARGS__)(void); P99_PRAGMA(exit P99_FOR(, P99_NARG(__VA_ARGS__), P00_SER, P00_IDT, __VA_ARGS__)) void P99_CHS(0, __VA_ARGS__)(void)
 #endif
 
 #endif      /* !P99_HOOK_H_ */
