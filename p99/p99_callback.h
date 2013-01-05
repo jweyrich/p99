@@ -100,6 +100,13 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                            \
 (p99_callback_el_init_(__VA_ARGS__, 0))                        \
 (p99_callback_el_init_(__VA_ARGS__))
 
+
+p99_inline
+void p99_callback_el_call(p99_callback_el const p00_el) {
+  if (p00_el.p00_voidptr_func) p00_el.p00_voidptr_func(p00_el.p00_arg);
+  else if (p00_el.p00_void_func) p00_el.p00_void_func();
+}
+
 p99_inline
 p99_callback_el* p00_callback_push(p99_callback_stack* p00_l, p99_callback_el* p00_el) {
   if (p00_el) {
@@ -152,14 +159,11 @@ p99_callback_el* p00_callback_push(p99_callback_stack* p00_l, p99_callback_el* p
  **/
 p99_inline
 void p99_callback(p99_callback_stack* p00_stck) {
-  for (p99_callback_el *head = P99_LIFO_CLEAR(p00_stck), *el = head; el; el = head) {
-    head = el->p99_lifo;
-    p99_callback_voidptr_func * p00_voidptr_func = el->p00_voidptr_func;
-    p99_callback_void_func * p00_void_func = el->p00_void_func;
-    void * p00_arg = el->p00_arg;
-    free(el);
-    if (p00_voidptr_func) p00_voidptr_func(p00_arg);
-    else p00_void_func();
+  for (p99_callback_el *head = P99_LIFO_CLEAR(p00_stck), *p00_el = head; p00_el; p00_el = head) {
+    head = p00_el->p99_lifo;
+    p99_callback_el const p00_cb = *p00_el;
+    free(p00_el);
+    p99_callback_el_call(p00_cb);
   }
 }
 
