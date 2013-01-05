@@ -29,7 +29,7 @@
 #endif      /* !P00_HAS_ARITH_SHIFT */
 
 static p99_inline size_t p00_arith_abs(ssize_t a) {
-#ifndef P99_2COMPLEMENT
+#if P99_2COMPLEMENT
    register ssize_t mask = P00_ARITH_SHIFT(a, P99_EWIDTH(a) - 1);
 
    return (size_t)((a ^ mask) - mask);
@@ -40,7 +40,7 @@ static p99_inline size_t p00_arith_abs(ssize_t a) {
 #define p99_arith_abs(X) (P99_SIGNED(X) ? p00_arith_abs(X) : (size_t)(X))
 
 static p99_inline ssize_t p99_arith_min(ssize_t a, ssize_t b) {
-#ifdef P99_2COMPLEMENT
+#if P99_2COMPLEMENT
    a = a - b;
    return (a & P00_ARITH_SHIFT(a, P99_EWIDTH(a) - 1)) + b;
 #else
@@ -49,7 +49,7 @@ static p99_inline ssize_t p99_arith_min(ssize_t a, ssize_t b) {
 }
 
 static p99_inline ssize_t p99_arith_max(ssize_t a, ssize_t b) {
-#ifdef P99_2COMPLEMENT
+#if P99_2COMPLEMENT
    a = a - b;
    return (a & ~P00_ARITH_SHIFT(a, P99_EWIDTH(a) - 1)) + b;
 #else
