@@ -22,11 +22,11 @@
  ** @{
  **/
 
-typedef struct p00_cb_el p00_cb_el;
-P99_POINTER_TYPE(p00_cb_el);
+P99_DECLARE_STRUCT(p99_callback_el);
+P99_POINTER_TYPE(p99_callback_el);
 #ifndef P00_DOXYGEN
-P99_LIFO_DECLARE(p00_cb_el_ptr);
-typedef P99_LIFO(p00_cb_el_ptr) p99_callback_stack;
+P99_LIFO_DECLARE(p99_callback_el_ptr);
+typedef P99_LIFO(p99_callback_el_ptr) p99_callback_stack;
 #else
 int p00_doxygen_is_confused(void) {}
 /**
@@ -48,8 +48,8 @@ typedef void p99_callback_void_func(void);
  **/
 typedef void p99_callback_voidptr_func(void*);
 
-struct p00_cb_el {
-  p00_cb_el_ptr p99_lifo;
+struct p99_callback_el {
+  p99_callback_el_ptr p99_lifo;
   p99_callback_voidptr_func * p00_voidptr_func;
   union {
     p99_callback_void_func * p00_void_func;
@@ -59,24 +59,24 @@ struct p00_cb_el {
 
 
 p99_inline
-p00_cb_el* p00_cb_el_init(p00_cb_el * p00_obj,
+p99_callback_el* p99_callback_el_init(p99_callback_el * p00_obj,
                           p99_callback_voidptr_func* p00_voidptr_func,
                           p99_callback_void_func* p00_void_func,
                           void* p00_arg
                          ) {
   if (p00_obj) {
     if (p00_voidptr_func)
-      *p00_obj = (p00_cb_el) {
+      *p00_obj = (p99_callback_el) {
       .p00_voidptr_func = p00_voidptr_func,
        .p00_arg = p00_arg,
     };
     else
-      *p00_obj = (p00_cb_el) { .p00_void_func = p00_void_func };
+      *p00_obj = (p99_callback_el) { .p00_void_func = p00_void_func };
   }
   return p00_obj;
 }
 
-#define p00_cb_el_init_1(FUNC)                                                \
+#define p99_callback_el_init_1(FUNC)                                          \
 P99_GENERIC((&*FUNC),                                                         \
             ,                                                                 \
             (p99_callback_voidptr_func*, (p99_callback_voidptr_func*)(FUNC)), \
@@ -84,24 +84,24 @@ P99_GENERIC((&*FUNC),                                                         \
             )
 
 
-#define p00_cb_el_init_2(FUNC)                                          \
+#define p99_callback_el_init_2(FUNC)                                    \
 P99_GENERIC((&*FUNC),                                                   \
             ,                                                           \
             (p99_callback_void_func*, (p99_callback_void_func*)(FUNC)), \
             (p99_callback_voidptr_func*, (p99_callback_void_func*)0)    \
             )
 
-#define p00_cb_el_init_(OBJ, FUNC, ARG)                                    \
-p00_cb_el_init((OBJ), p00_cb_el_init_1(FUNC), p00_cb_el_init_2(FUNC), ARG)
+#define p99_callback_el_init_(OBJ, FUNC, ARG)                                    \
+p99_callback_el_init((OBJ), p99_callback_el_init_1(FUNC), p99_callback_el_init_2(FUNC), ARG)
 
 
-#define p00_cb_el_init(...)                                    \
+#define p99_callback_el_init(...)                              \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                            \
-(p00_cb_el_init_(__VA_ARGS__, 0))                              \
-(p00_cb_el_init_(__VA_ARGS__))
+(p99_callback_el_init_(__VA_ARGS__, 0))                        \
+(p99_callback_el_init_(__VA_ARGS__))
 
 p99_inline
-p00_cb_el* p00_callback_push(p99_callback_stack* p00_l, p00_cb_el* p00_el) {
+p99_callback_el* p00_callback_push(p99_callback_stack* p00_l, p99_callback_el* p00_el) {
   if (p00_el) {
     P99_LIFO_PUSH(p00_l, p00_el);
   }
@@ -129,7 +129,7 @@ p00_cb_el* p00_callback_push(p99_callback_stack* p00_l, p00_cb_el* p00_el) {
  ** @related p99_callback_stack
  ** @see p99_callback
  **/
-#define P99_CALLBACK_PUSH(STCK, ...) p00_callback_push((STCK), P99_NEW(p00_cb_el, __VA_ARGS__))
+#define P99_CALLBACK_PUSH(STCK, ...) p00_callback_push((STCK), P99_NEW(p99_callback_el, __VA_ARGS__))
 
 
 /**
@@ -152,7 +152,7 @@ p00_cb_el* p00_callback_push(p99_callback_stack* p00_l, p00_cb_el* p00_el) {
  **/
 p99_inline
 void p99_callback(p99_callback_stack* p00_stck) {
-  for (p00_cb_el *head = P99_LIFO_CLEAR(p00_stck), *el = head; el; el = head) {
+  for (p99_callback_el *head = P99_LIFO_CLEAR(p00_stck), *el = head; el; el = head) {
     head = el->p99_lifo;
     p99_callback_voidptr_func * p00_voidptr_func = el->p00_voidptr_func;
     p99_callback_void_func * p00_void_func = el->p00_void_func;
