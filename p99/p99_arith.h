@@ -20,6 +20,8 @@
 
 #include "p99_int.h"
 
+#define P00_HAS_2COMPLEMENT ((INTMAX_MIN < -INTMAX_MAX) || (_XOPENSOURCE >= 600) || _POSIX_C_SOURCE)
+
 #define P00_HAS_ARITH_SHIFT (((-1) >> 1) == (-1))
 
 #if P00_HAS_ARITH_SHIFT
@@ -28,47 +30,47 @@
 # define P00_ARITH_SHIFT(X, N) P99_IF_ELSE(P99_SIGNED(X))(((X) >> (N)) | ~((((X) & (P99_PROMOTE_1(X) << (P99_EWIDTH(X) - (N)))) << 1) - 1))((X) >> (N))
 #endif      /* !P00_HAS_ARITH_SHIFT */
 
-static p99_inline size_t p00_arith_abs(ssize_t a) {
-#if P99_2COMPLEMENT
-   register ssize_t mask = P00_ARITH_SHIFT(a, P99_EWIDTH(a) - 1);
+static p99_inline uintmax_t p00_arith_abs(intmax_t a) {
+#if P00_HAS_2COMPLEMENT
+   register intmax_t mask = P00_ARITH_SHIFT(a, P99_EWIDTH(a) - 1);
 
-   return (size_t)((a ^ mask) - mask);
+   return (uintmax_t)((a ^ mask) - mask);
 #else
-   return (size_t)(a < 0 ? -a : a);
-#endif      /* !P99_2COMPLEMENT */
+   return (uintmax_t)(a < 0 ? -a : a);
+#endif      /* !P00_HAS_2COMPLEMENT */
 }
-#define p99_arith_abs(X) (P99_SIGNED(X) ? p00_arith_abs(X) : (size_t)(X))
+#define p99_arith_abs(X) (P99_SIGNED(X) ? p00_arith_abs(X) : (uintmax_t)(X))
 
-static p99_inline ssize_t p99_arith_min(ssize_t a, ssize_t b) {
-#if P99_2COMPLEMENT
+static p99_inline intmax_t p99_arith_min(intmax_t a, intmax_t b) {
+#if P00_HAS_2COMPLEMENT
    a = a - b;
    return (a & P00_ARITH_SHIFT(a, P99_EWIDTH(a) - 1)) + b;
 #else
    return a < b ? a : b;
-#endif      /* !P99_2COMPLEMENT */
+#endif      /* !P00_HAS_2COMPLEMENT */
 }
 
-static p99_inline ssize_t p99_arith_max(ssize_t a, ssize_t b) {
-#if P99_2COMPLEMENT
+static p99_inline intmax_t p99_arith_max(intmax_t a, intmax_t b) {
+#if P00_HAS_2COMPLEMENT
    a = a - b;
    return (a & ~P00_ARITH_SHIFT(a, P99_EWIDTH(a) - 1)) + b;
 #else
    return a < b ? b : a;
-#endif      /* !P99_2COMPLEMENT */
+#endif      /* !P00_HAS_2COMPLEMENT */
 }
 
-static p99_inline size_t p99_arith_prev_pow2(size_t a) {
+static p99_inline uintmax_t p99_arith_prev_pow2(uintmax_t a) {
    /* Any decent compiler will unroll this loop */
-   for(size_t shift = 1; shift <= P99_EWIDTH(a) >> 1; shift <<= 1) {
+   for(uintmax_t shift = 1; shift <= P99_EWIDTH(a) >> 1; shift <<= 1) {
       a |= a >> shift;
    }
    return a - (a >> 1);
 }
 
-static p99_inline size_t p99_arith_next_pow2(size_t a) {
+static p99_inline uintmax_t p99_arith_next_pow2(uintmax_t a) {
    --a;
    /* Any decent compiler will unroll this loop */
-   for(size_t shift = 1; shift <= P99_EWIDTH(a) >> 1; shift <<= 1) {
+   for(uintmax_t shift = 1; shift <= P99_EWIDTH(a) >> 1; shift <<= 1) {
       a |= a >> shift;
    }
    return a + 1;
@@ -77,8 +79,8 @@ static p99_inline size_t p99_arith_next_pow2(size_t a) {
 /**
  ** @brief Computes the floored base-2 logarithm.
  **/
-static p99_inline size_t p99_arith_log2(size_t a) {
-   size_t log = 0;
+static p99_inline uintmax_t p99_arith_log2(uintmax_t a) {
+   uintmax_t log = 0;
 
    /* Any decent compiler will unroll this loop */
    for(size_t shift = 1 << sizeof(a), mask  = (1 << (P99_EWIDTH(a) >> 1)) - 1; shift > 1; shift >>= 1, mask >>= shift) {
