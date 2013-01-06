@@ -156,10 +156,10 @@ typedef extendedInt p99x_int128;
 #ifdef p99x_uintmax
 
 #define P99X__SIGN_PROMOTE(EXPR)                                              \
-((p99x_uintmax)P99_SIGN_PROMOTE(P99_UE_MAX(EXPR), (p99x_uintmax)UINTMAX_MAX))
+((p99x_uintmax)+P99_SIGN_PROMOTE(P99_UE_MAX(EXPR), (p99x_uintmax)+UINTMAX_MAX))
 
 #define P99X__SHIFT(EXPR)                                                      \
-((P99_SIGN_PROMOTE(P99_UE_MAX(EXPR), UINTMAX_MAX) > (p99x_uintmax)UINTMAX_MAX) \
+((P99_SIGN_PROMOTE(P99_UE_MAX(EXPR), UINTMAX_MAX) > (p99x_uintmax)+UINTMAX_MAX) \
  ? 64u                                                                         \
  : 0u)
 #endif
@@ -519,7 +519,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_TMIN, 0)
 #ifdef p99x_uintmax
 #define P99_EWIDTH(EXPR)                                                               \
   (P99X__SHIFT(EXPR)                                                                   \
- ? (P99_HIGH2_1((uintmax_t)(P99_UE_MAX(EXPR)>>P99X__SHIFT(EXPR))) + P99X__SHIFT(EXPR)) \
+ ? (P99_HIGH2_1((uintmax_t)+(P99_UE_MAX(EXPR)>>P99X__SHIFT(EXPR))) + P99X__SHIFT(EXPR)) \
  : P99_HIGH2_1(P99_UE_MAX(EXPR))                                                       \
  )
 #else
