@@ -45,39 +45,39 @@ p99_inline uintmax_t p00_arith_abs(uintmax_t p00_a) {
 }
 #define p99_arith_abs(X) (P99_SIGNED(X) ? p00_arith_abs(X) : P99_RVAL(uintmax_t, (X)))
 
-p99_inline intmax_t p99_arith_min(intmax_t a, intmax_t b) {
+p99_inline intmax_t p99_arith_min(intmax_t p00_a, intmax_t p00_b) {
 #if UINTMAX_MAX > INTMAX_MAX
-   a -= b;
-   return (a & P00_ARITH_INTMAX_SHIFT(a)) + b;
+   p00_a -= p00_b;
+   return (p00_a & P00_ARITH_INTMAX_SHIFT(p00_a)) + p00_b;
 #else
-   return a < b ? a : b;
+   return p00_a < p00_b ? p00_a : p00_b;
 #endif
 }
 
-p99_inline intmax_t p99_arith_max(intmax_t a, intmax_t b) {
+p99_inline intmax_t p99_arith_max(intmax_t p00_a, intmax_t p00_b) {
 #if UINTMAX_MAX > INTMAX_MAX
-   a -= b;
-   return (a & ~P00_ARITH_INTMAX_SHIFT(a)) + b;
+   p00_a -= p00_b;
+   return (p00_a & ~P00_ARITH_INTMAX_SHIFT(p00_a)) + p00_b;
 #else
-   return a < b ? b : a;
+   return p00_a < p00_b ? p00_b : p00_a;
 #endif
 }
 
-p99_inline uintmax_t p99_arith_prev_pow2(uintmax_t a) {
+p99_inline uintmax_t p99_arith_prev_pow2(uintmax_t p00_a) {
    /* Any decent compiler will unroll this loop */
-   for(uintmax_t shift = 1; shift <= P99_EWIDTH(a) >> 1; shift <<= 1) {
-      a |= a >> shift;
+   for(uintmax_t p00_s = 1; p00_s <= P99_EWIDTH(p00_a) >> 1; p00_s <<= 1) {
+      p00_a |= p00_a >> p00_s;
    }
-   return a - (a >> 1);
+   return p00_a - (p00_a >> 1);
 }
 
-p99_inline uintmax_t p99_arith_next_pow2(uintmax_t a) {
-   --a;
+p99_inline uintmax_t p99_arith_next_pow2(uintmax_t p00_a) {
+   --p00_a;
    /* Any decent compiler will unroll this loop */
-   for(uintmax_t shift = 1; shift <= P99_EWIDTH(a) >> 1; shift <<= 1) {
-      a |= a >> shift;
+   for(uintmax_t p00_s = 1; p00_s <= P99_EWIDTH(p00_a) >> 1; p00_s <<= 1) {
+      p00_a |= p00_a >> p00_s;
    }
-   return a + 1;
+   return p00_a + 1;
 }
 
 /**
@@ -85,19 +85,19 @@ p99_inline uintmax_t p99_arith_next_pow2(uintmax_t a) {
  **
  ** @todo replace ffs(P99_UINTMAX_WIDTH) by a preprocessor constant
  **/
-p99_inline uintmax_t p99_arith_log2(uintmax_t a) {
-   uintmax_t log = 0;
+p99_inline uintmax_t p99_arith_log2(uintmax_t p00_a) {
+   uintmax_t p00_l = 0;
 
    /* Any decent compiler will unroll this loop */
    for(int i = ffs(P99_UINTMAX_WIDTH) - 2; i >= 0; --i) {
-     uintmax_t shift = UINTMAX_C(1) << i;
-      uintmax_t mask = ((UINTMAX_C(1) << shift) - 1) << shift;
-      uintmax_t test = (a & mask) != 0;
+     uintmax_t p00_s = UINTMAX_C(1) << i;
+      uintmax_t p00_m = ((UINTMAX_C(1) << p00_s) - 1) << p00_s;
+      uintmax_t p00_t = (p00_a & p00_m) != 0;
 
-      log  |= test * shift;
-      a   >>= test * shift;
+      p00_l  |= p00_t * p00_s;
+      p00_a   >>= p00_t * p00_s;
    }
-   return log;
+   return p00_l;
 }
 
 #endif      /* !P99_ARITH_H_ */
