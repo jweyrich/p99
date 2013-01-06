@@ -2,6 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
+/* (C) copyright  2013 Jens Gustedt, INRIA, France                            */
 /* (C) copyright  2013 Pierre-Nicolas Clauss                                  */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
@@ -47,37 +48,37 @@ p99_inline uintmax_t p00_arith_abs(uintmax_t p00_a) {
 
 p99_inline intmax_t p99_arith_min(intmax_t p00_a, intmax_t p00_b) {
 #if UINTMAX_MAX > INTMAX_MAX
-   p00_a -= p00_b;
-   return (p00_a & P00_ARITH_INTMAX_SHIFT(p00_a)) + p00_b;
+  p00_a -= p00_b;
+  return (p00_a & P00_ARITH_INTMAX_SHIFT(p00_a)) + p00_b;
 #else
-   return p00_a < p00_b ? p00_a : p00_b;
+  return p00_a < p00_b ? p00_a : p00_b;
 #endif
 }
 
 p99_inline intmax_t p99_arith_max(intmax_t p00_a, intmax_t p00_b) {
 #if UINTMAX_MAX > INTMAX_MAX
-   p00_a -= p00_b;
-   return (p00_a & ~P00_ARITH_INTMAX_SHIFT(p00_a)) + p00_b;
+  p00_a -= p00_b;
+  return (p00_a & ~P00_ARITH_INTMAX_SHIFT(p00_a)) + p00_b;
 #else
-   return p00_a < p00_b ? p00_b : p00_a;
+  return p00_a < p00_b ? p00_b : p00_a;
 #endif
 }
 
 p99_inline uintmax_t p99_arith_prev_pow2(uintmax_t p00_a) {
-   /* Any decent compiler will unroll this loop */
-   for(uintmax_t p00_s = 1; p00_s <= P99_EWIDTH(p00_a) >> 1; p00_s <<= 1) {
-      p00_a |= p00_a >> p00_s;
-   }
-   return p00_a - (p00_a >> 1);
+  /* Any decent compiler will unroll this loop */
+  for(uintmax_t p00_s = 1; p00_s <= P99_EWIDTH(p00_a) >> 1; p00_s <<= 1) {
+    p00_a |= p00_a >> p00_s;
+  }
+  return p00_a - (p00_a >> 1);
 }
 
 p99_inline uintmax_t p99_arith_next_pow2(uintmax_t p00_a) {
-   --p00_a;
-   /* Any decent compiler will unroll this loop */
-   for(uintmax_t p00_s = 1; p00_s <= P99_EWIDTH(p00_a) >> 1; p00_s <<= 1) {
-      p00_a |= p00_a >> p00_s;
-   }
-   return p00_a + 1;
+  --p00_a;
+  /* Any decent compiler will unroll this loop */
+  for(uintmax_t p00_s = 1; p00_s <= P99_EWIDTH(p00_a) >> 1; p00_s <<= 1) {
+    p00_a |= p00_a >> p00_s;
+  }
+  return p00_a + 1;
 }
 
 /**
@@ -86,18 +87,18 @@ p99_inline uintmax_t p99_arith_next_pow2(uintmax_t p00_a) {
  ** @todo replace ffs(P99_UINTMAX_WIDTH) by a preprocessor constant
  **/
 p99_inline uintmax_t p99_arith_log2(uintmax_t p00_a) {
-   uintmax_t p00_l = 0;
+  uintmax_t p00_l = 0;
 
-   /* Any decent compiler will unroll this loop */
-   for(int i = ffs(P99_UINTMAX_WIDTH) - 2; i >= 0; --i) {
-     uintmax_t p00_s = UINTMAX_C(1) << i;
-      uintmax_t p00_m = ((UINTMAX_C(1) << p00_s) - 1) << p00_s;
-      uintmax_t p00_t = (p00_a & p00_m) != 0;
+  /* Any decent compiler will unroll this loop */
+  for(int i = ffs(P99_UINTMAX_WIDTH) - 2; i >= 0; --i) {
+    uintmax_t p00_s = UINTMAX_C(1) << i;
+    uintmax_t p00_m = ((UINTMAX_C(1) << p00_s) - 1) << p00_s;
+    uintmax_t p00_t = (p00_a & p00_m) != 0;
 
-      p00_l  |= p00_t * p00_s;
-      p00_a   >>= p00_t * p00_s;
-   }
-   return p00_l;
+    p00_l  |= p00_t * p00_s;
+    p00_a   >>= p00_t * p00_s;
+  }
+  return p00_l;
 }
 
 #endif      /* !P99_ARITH_H_ */

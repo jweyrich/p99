@@ -29,13 +29,13 @@
 
 #if defined(P99_DECLARE_ATOMIC) || P00_DOXYGEN
 # define P99_FIFO(T) P99_PASTE2(p00_fifo_, T)
-# define P99_FIFO_DECLARE(T)                                            \
-typedef T volatile P99_PASTE2(p00_fifo_base_, T);                       \
-P99_DECLARE_ATOMIC(P99_PASTE2(p00_fifo_base_, T));                      \
+# define P99_FIFO_DECLARE(T)                                               \
+typedef T volatile P99_PASTE2(p00_fifo_base_, T);                          \
+P99_DECLARE_ATOMIC(P99_PASTE2(p00_fifo_base_, T));                         \
 typedef _Atomic(P99_PASTE2(p00_fifo_base_, T)) P99_PASTE2(p00_fifo_, T)[2]
-# define P99_FIFO_INITIALIZER(HEAD, TAIL) {     \
-  [0] = ATOMIC_VAR_INIT(HEAD),                  \
-  [1] = ATOMIC_VAR_INIT(TAIL),                  \
+# define P99_FIFO_INITIALIZER(HEAD, TAIL) {                    \
+  [0] = ATOMIC_VAR_INIT(HEAD),                                 \
+  [1] = ATOMIC_VAR_INIT(TAIL),                                 \
 }
 
 /**
@@ -46,38 +46,38 @@ typedef _Atomic(P99_PASTE2(p00_fifo_base_, T)) P99_PASTE2(p00_fifo_, T)[2]
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FIFO_APPEND, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FIFO_APPEND, 1)
-#define P99_FIFO_APPEND(L, EL)                                          \
-do {                                                                    \
-  /* first evaluate the macro arguments such that there can't be */     \
-  /* name conflicts */                                                  \
-  register const P99_MACRO_VAR(p00_l, (L));                             \
-  register const P99_MACRO_VAR(p00_el, (EL));                           \
-  register const P99_MACRO_VAR(p00_h, &(*p00_l)[0]);                    \
-  register const P99_MACRO_VAR(p00_t, &(*p00_l)[1]);                    \
-  p00_el->p99_lifo = 0;                                                 \
-  P99_MACRO_VAR(p00_head, atomic_load(p00_h));                          \
-  for (;;) {                                                            \
-    if (p00_head) {                                                     \
-      /* spin lock the whole fifo */                                    \
-      if (atomic_compare_exchange_weak(p00_h, &p00_head, 0)) {          \
-        /* make p00_el the last element */                              \
-        atomic_exchange(p00_t, p00_el)->p99_lifo = p00_el;              \
-        /* unlock the fifo */                                           \
-        atomic_store(p00_h, p00_head);                                  \
-        break;                                                          \
-      }                                                                 \
-    } else {                                                            \
-      P99_MACRO_VAR(p00_tail, atomic_load(p00_t));                      \
-      if (!p00_tail                                                     \
-          && atomic_compare_exchange_weak(p00_t, &p00_tail, p00_el)) {  \
+#define P99_FIFO_APPEND(L, EL)                                             \
+do {                                                                       \
+  /* first evaluate the macro arguments such that there can't be */        \
+  /* name conflicts */                                                     \
+  register const P99_MACRO_VAR(p00_l, (L));                                \
+  register const P99_MACRO_VAR(p00_el, (EL));                              \
+  register const P99_MACRO_VAR(p00_h, &(*p00_l)[0]);                       \
+  register const P99_MACRO_VAR(p00_t, &(*p00_l)[1]);                       \
+  p00_el->p99_lifo = 0;                                                    \
+  P99_MACRO_VAR(p00_head, atomic_load(p00_h));                             \
+  for (;;) {                                                               \
+    if (p00_head) {                                                        \
+      /* spin lock the whole fifo */                                       \
+      if (atomic_compare_exchange_weak(p00_h, &p00_head, 0)) {             \
+        /* make p00_el the last element */                                 \
+        atomic_exchange(p00_t, p00_el)->p99_lifo = p00_el;                 \
+        /* unlock the fifo */                                              \
+        atomic_store(p00_h, p00_head);                                     \
+        break;                                                             \
+      }                                                                    \
+    } else {                                                               \
+      P99_MACRO_VAR(p00_tail, atomic_load(p00_t));                         \
+      if (!p00_tail                                                        \
+          && atomic_compare_exchange_weak(p00_t, &p00_tail, p00_el)) {     \
         /* the fifo was empty, our element is inserted, update the head */ \
-        atomic_store(p00_h, p00_el);                                    \
-        break;                                                          \
-      }                                                                 \
-      /* we were in the middle of an update of another thread */        \
-      p00_head = atomic_load(p00_h);                                    \
-    }                                                                   \
-  }                                                                     \
+        atomic_store(p00_h, p00_el);                                       \
+        break;                                                             \
+      }                                                                    \
+      /* we were in the middle of an update of another thread */           \
+      p00_head = atomic_load(p00_h);                                       \
+    }                                                                      \
+  }                                                                        \
 } while (false)
 
 /**
@@ -121,39 +121,39 @@ do {                                                                    \
  ** @see P99_FIFO_APPEND
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FIFO_POP, 0)
-#define P99_FIFO_POP(L)                                                 \
-p99_extension                                                           \
-({                                                                      \
-  /* first evaluate the macro argument such that there can't be */      \
-  /* a name conflict */                                                 \
-  register const P99_MACRO_VAR(p00_l, (L));                             \
-  register const P99_MACRO_VAR(p00_h, &(*p00_l)[0]);                    \
-  register const P99_MACRO_VAR(p00_t, &(*p00_l)[1]);                    \
-  P99_MACRO_VAR(p00_head, atomic_load(p00_h));                          \
-  for (;;) {                                                            \
-    if (p00_head) {                                                     \
-      /* spin lock the whole fifo */                                    \
-      if (atomic_compare_exchange_weak(p00_h, &p00_head, 0)) {          \
-        if (p00_head->p99_lifo)                                         \
+#define P99_FIFO_POP(L)                                                  \
+p99_extension                                                            \
+({                                                                       \
+  /* first evaluate the macro argument such that there can't be */       \
+  /* a name conflict */                                                  \
+  register const P99_MACRO_VAR(p00_l, (L));                              \
+  register const P99_MACRO_VAR(p00_h, &(*p00_l)[0]);                     \
+  register const P99_MACRO_VAR(p00_t, &(*p00_l)[1]);                     \
+  P99_MACRO_VAR(p00_head, atomic_load(p00_h));                           \
+  for (;;) {                                                             \
+    if (p00_head) {                                                      \
+      /* spin lock the whole fifo */                                     \
+      if (atomic_compare_exchange_weak(p00_h, &p00_head, 0)) {           \
+        if (p00_head->p99_lifo)                                          \
           /* there is still another element to come in the fifo, make it \
-             the head */                                                \
-          atomic_store(p00_h, p00_head->p99_lifo);                      \
-        else                                                            \
-          /* this was the last element in the fifo, set the tail to 0,  \
-             too */                                                     \
-          atomic_store(p00_t, 0);                                       \
-        p00_head->p99_lifo = 0;                                         \
-        break;                                                          \
-      }                                                                 \
-    } else {                                                            \
-      register P99_MACRO_VAR(p00_tail, atomic_load(p00_t));             \
-      if (!p00_tail) break;                                             \
-      p00_head = atomic_load(p00_h);                                    \
-    }                                                                   \
-  }                                                                     \
-  /* make sure that the result can not be used as an lvalue */          \
-  register const __typeof__(p00_head = p00_head) p00_r = p00_head;      \
-  p00_r;                                                                \
+             the head */                                                 \
+          atomic_store(p00_h, p00_head->p99_lifo);                       \
+        else                                                             \
+          /* this was the last element in the fifo, set the tail to 0,   \
+             too */                                                      \
+          atomic_store(p00_t, 0);                                        \
+        p00_head->p99_lifo = 0;                                          \
+        break;                                                           \
+      }                                                                  \
+    } else {                                                             \
+      register P99_MACRO_VAR(p00_tail, atomic_load(p00_t));              \
+      if (!p00_tail) break;                                              \
+      p00_head = atomic_load(p00_h);                                     \
+    }                                                                    \
+  }                                                                      \
+  /* make sure that the result can not be used as an lvalue */           \
+  register const __typeof__(p00_head = p00_head) p00_r = p00_head;       \
+  p00_r;                                                                 \
 })
 
 /**
@@ -166,31 +166,31 @@ p99_extension                                                           \
  ** @see P00_FIFO_EL
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FIFO_CLEAR, 0)
-#define P99_FIFO_CLEAR(L)                                               \
-p99_extension                                                           \
-({                                                                      \
-  /* first evaluate the macro argument such that there can't be */      \
-  /* a name conflict */                                                 \
-  register const P99_MACRO_VAR(p00_l, (L));                             \
-  register const P99_MACRO_VAR(p00_h, &(*p00_l)[0]);                    \
-  register const P99_MACRO_VAR(p00_t, &(*p00_l)[1]);                    \
-  P99_MACRO_VAR(p00_head, atomic_load(p00_h));                          \
-  for (;;) {                                                            \
-    if (p00_head) {                                                     \
-      /* spin lock the whole fifo */                                    \
-      if (atomic_compare_exchange_weak(p00_h, &p00_head, 0)) {          \
-        atomic_store(p00_t, 0);                                         \
-        break;                                                          \
-      }                                                                 \
-    } else {                                                            \
-      register const P99_MACRO_VAR(p00_tail, atomic_load(p00_t));       \
-      if (!p00_tail) break;                                             \
-      p00_head = atomic_load(p00_h);                                    \
-    }                                                                   \
-  }                                                                     \
-  /* make sure that the result can not be used as an lvalue */          \
-  register const __typeof__(p00_head = p00_head) p00_r = p00_head;      \
-  p00_r;                                                                \
+#define P99_FIFO_CLEAR(L)                                          \
+p99_extension                                                      \
+({                                                                 \
+  /* first evaluate the macro argument such that there can't be */ \
+  /* a name conflict */                                            \
+  register const P99_MACRO_VAR(p00_l, (L));                        \
+  register const P99_MACRO_VAR(p00_h, &(*p00_l)[0]);               \
+  register const P99_MACRO_VAR(p00_t, &(*p00_l)[1]);               \
+  P99_MACRO_VAR(p00_head, atomic_load(p00_h));                     \
+  for (;;) {                                                       \
+    if (p00_head) {                                                \
+      /* spin lock the whole fifo */                               \
+      if (atomic_compare_exchange_weak(p00_h, &p00_head, 0)) {     \
+        atomic_store(p00_t, 0);                                    \
+        break;                                                     \
+      }                                                            \
+    } else {                                                       \
+      register const P99_MACRO_VAR(p00_tail, atomic_load(p00_t));  \
+      if (!p00_tail) break;                                        \
+      p00_head = atomic_load(p00_h);                               \
+    }                                                              \
+  }                                                                \
+  /* make sure that the result can not be used as an lvalue */     \
+  register const __typeof__(p00_head = p00_head) p00_r = p00_head; \
+  p00_r;                                                           \
 })
 
 #else
@@ -202,37 +202,37 @@ p99_extension                                                           \
 # define P99_FIFO_DECLARE(T) typedef T P99_PASTE2(p00_fifo_, T)[2]
 # define P99_FIFO_INITIALIZER(HEAD, TAIL) { [0] = (HEAD), [1] = (TAIL) }
 
-#define P99_FIFO_APPEND(L, EL)                                       \
-p99_extension                                                        \
-({                                                                   \
-  P99_MACRO_VAR(p00_l, (L));                                         \
-  P99_MACRO_VAR(p00_el, (EL));                                       \
-  p00_el->p99_lifo = (*p00_l)[1];                                    \
-  (*p00_l)[1] = p00_el;                                              \
-  if (!(*p00_l)[0]) (*p00_l)[0] = p00_el;                            \
+#define P99_FIFO_APPEND(L, EL)                                 \
+p99_extension                                                  \
+({                                                             \
+  P99_MACRO_VAR(p00_l, (L));                                   \
+  P99_MACRO_VAR(p00_el, (EL));                                 \
+  p00_el->p99_lifo = (*p00_l)[1];                              \
+  (*p00_l)[1] = p00_el;                                        \
+  if (!(*p00_l)[0]) (*p00_l)[0] = p00_el;                      \
 })
 
-#define P99_FIFO_POP(L)                                         \
-p99_extension                                                   \
-({                                                              \
-  P99_MACRO_VAR(p00_l, (L));                                    \
-  P99_MACRO_VAR(p00_el, (*p00_l)[0]);                           \
-  (*p00_l)[0] = p00_el->p99_lifo;                               \
-  if (!(*p00_l)[0]) = (*p00_l)[0] = 0;                          \
-  if (p00_el) p00_el->p99_lifo = 0;                             \
-  /* be sure that the result can not be used as an lvalue */    \
-  register const __typeof__(p00_el = p00_el) p00_r = p00_el;    \
-  p00_r;                                                        \
+#define P99_FIFO_POP(L)                                        \
+p99_extension                                                  \
+({                                                             \
+  P99_MACRO_VAR(p00_l, (L));                                   \
+  P99_MACRO_VAR(p00_el, (*p00_l)[0]);                          \
+  (*p00_l)[0] = p00_el->p99_lifo;                              \
+  if (!(*p00_l)[0]) = (*p00_l)[0] = 0;                         \
+  if (p00_el) p00_el->p99_lifo = 0;                            \
+  /* be sure that the result can not be used as an lvalue */   \
+  register const __typeof__(p00_el = p00_el) p00_r = p00_el;   \
+  p00_r;                                                       \
 })
 
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FIFO_CLEAR, 0)
-#define P99_FIFO_CLEAR(L)                       \
-({                                              \
-  P99_MACRO_VAR(p00_l, (L));                    \
-  register P99_MACRO_VAR(p00_ret, (*p00_l)[0]); \
-  (*p00_l)[0] = 0;                              \
-  (*p00_l)[1] = 0;                              \
-  p00_ret;                                      \
+#define P99_FIFO_CLEAR(L)                                      \
+({                                                             \
+  P99_MACRO_VAR(p00_l, (L));                                   \
+  register P99_MACRO_VAR(p00_ret, (*p00_l)[0]);                \
+  (*p00_l)[0] = 0;                                             \
+  (*p00_l)[1] = 0;                                             \
+  p00_ret;                                                     \
 })
 
 #endif

@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
-/* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
+/* (C) copyright  2012-2013 Jens Gustedt, INRIA, France                       */
 /* (C) copyright  2012 William Morris                                         */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
@@ -60,10 +60,10 @@ struct p99_callback_el {
 
 p99_inline
 p99_callback_el* p99_callback_el_init(p99_callback_el * p00_obj,
-                          p99_callback_voidptr_func* p00_voidptr_func,
-                          p99_callback_void_func* p00_void_func,
-                          void* p00_arg
-                         ) {
+                                      p99_callback_voidptr_func* p00_voidptr_func,
+                                      p99_callback_void_func* p00_void_func,
+                                      void* p00_arg
+                                     ) {
   if (p00_obj) {
     if (p00_voidptr_func)
       *p00_obj = (p99_callback_el) {
@@ -91,7 +91,7 @@ P99_GENERIC((&*FUNC),                                                   \
             (p99_callback_voidptr_func*, (p99_callback_void_func*)0)    \
             )
 
-#define p99_callback_el_init_(OBJ, FUNC, ARG)                                    \
+#define p99_callback_el_init_(OBJ, FUNC, ARG)                                                \
 p99_callback_el_init((OBJ), p99_callback_el_init_1(FUNC), p99_callback_el_init_2(FUNC), ARG)
 
 

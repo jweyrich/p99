@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
-/* (C) copyright  2011-2012 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2011-2013 Jens Gustedt, INRIA, France                       */
 /* (C) copyright  2012 William Morris                                         */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
@@ -914,9 +914,9 @@ int p00_threads_main(void* p00_arg) {
 P99_MAIN_INTERCEPT(p99_threads_main) {
   thrd_t id = P99_INIT;
   struct p00_threads_main_arg * p00_arg = malloc(sizeof *p00_arg);
-  *p00_arg = (struct p00_threads_main_arg){
+  *p00_arg = (struct p00_threads_main_arg) {
     .p00_argc = *p00_argc,
-    .p00_argv = *p00_argv,
+     .p00_argv = *p00_argv,
   };
   thrd_create(&id, p00_threads_main, p00_arg);
   thrd_detach(id);

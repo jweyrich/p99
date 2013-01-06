@@ -36,15 +36,15 @@
 
 # define P00_INIT_FUNCTION(NR)  P99_IF_EMPTY(NR)(P99_PASTE2(p00_init_function_, P99_INIT_NR))(P99_PASTE2(p00_init_function_, NR))
 
-# define P00_INIT_FUNC_VAR_S(_0, _1, I)          \
+# define P00_INIT_FUNC_VAR_S(_0, _1, I)                        \
 static p99_callback_el const P99_PASTE2(p00_init_function_, I)
 
 P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_FUNC_VAR_S, P99_REP(P99_MAX_NUMBER,));
 
 # define P00_INIT_TRIGGER_FUNCTION_1(_0, _1, I) p99_callback_el_call(P99_PASTE2(p00_init_function_, I))
 
-# define P00_INIT_FUNCTION_(NAME, NR)                    \
-void NAME(void);                                        \
+# define P00_INIT_FUNCTION_(NAME, NR)                                           \
+void NAME(void);                                                                \
 static p99_callback_el const P00_INIT_FUNCTION(NR) = { .p00_void_func = NAME, }
 
 # ifdef P00_DOXYGEN
@@ -120,11 +120,11 @@ static p99_callback_el const P00_INIT_FUNCTION(NR) = { .p00_void_func = NAME, }
 #  define P99_INIT_FUNCTION_DECLARE(...) P99_IF_EQ(P99_NARG(__VA_ARGS__), 2)(P00_INIT_FUNCTION_(__VA_ARGS__))(P00_INIT_FUNCTION_(__VA_ARGS__,))
 # endif
 
-# define P00_INIT_VARIABLE(NAME, FUNC, NR)              \
-static p99_callback_el const P00_INIT_FUNCTION(NR)      \
-= {                                                     \
-  .p00_voidptr_func = (FUNC),                           \
-  .p00_arg = &(NAME),                                   \
+# define P00_INIT_VARIABLE(NAME, FUNC, NR)                     \
+static p99_callback_el const P00_INIT_FUNCTION(NR)             \
+= {                                                            \
+  .p00_voidptr_func = (FUNC),                                  \
+  .p00_arg = &(NAME),                                          \
 }
 
 # ifdef P00_DOXYGEN
@@ -208,25 +208,25 @@ static p99_callback_el const P00_INIT_FUNCTION(NR)      \
  ** return is mandatory: for the compiler the user @c main is not a @c
  ** main in the sense of the C standard anymore.
  **/
-#  define P99_MAIN_INTERCEPT(NAME)                                      \
-int NAME(int, char*[]);                                                 \
-P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
- void P99_PASTE2(p00_init_func_, NAME)(int*, char***);                  \
-P99_WEAK(main)                                                          \
-int main(int p00_argc, char**p00_argv) {                                \
+#  define P99_MAIN_INTERCEPT(NAME)                                         \
+int NAME(int, char*[]);                                                    \
+P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                                 \
+ void P99_PASTE2(p00_init_func_, NAME)(int*, char***);                     \
+P99_WEAK(main)                                                             \
+int main(int p00_argc, char**p00_argv) {                                   \
   fprintf(stderr, "%s: intercepting " P99_STRINGIFY(NAME) "\n", __func__); \
-  P99_PASTE2(p00_init_func_, NAME)(&p00_argc, &p00_argv);               \
-  return NAME(p00_argc, p00_argv);                                      \
-}                                                                       \
-P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
+  P99_PASTE2(p00_init_func_, NAME)(&p00_argc, &p00_argv);                  \
+  return NAME(p00_argc, p00_argv);                                         \
+}                                                                          \
+P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                                 \
 void P99_PASTE2(p00_init_func_, NAME)(int * p00_argc, char***p00_argv)
 
 #  define P99_INIT_TRIGGER(NAME, ARGC, ARGV) P99_NOP
 
 # else
 
-#  define P99_MAIN_INTERCEPT(NAME)                                      \
-P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
+#  define P99_MAIN_INTERCEPT(NAME)                                     \
+P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                             \
 void P99_PASTE2(p00_init_func_, NAME)(int * p00_argc, char***p00_argv)
 
 #  define P99_INIT_TRIGGER(NAME, ARGC, ARGV) P99_PASTE2(p00_init_func_, NAME)((ARGC), (ARGV))

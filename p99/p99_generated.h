@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2010-2013 Jens Gustedt, INRIA, France                       */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -41,8 +41,8 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Thu, 03 Jan 2013 18:48:58 +0100"
-#define P00_VERSION_ID "33ac89c0993a36ee079572e19bc4b4c63ff71b46"
+#define P00_VERSION_DATE "Sun, 06 Jan 2013 17:30:45 +0100"
+#define P00_VERSION_ID "8ddba875e3a104431fc7e9ad7944501c249d6288"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
  **

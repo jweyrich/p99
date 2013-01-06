@@ -1,2 +1,3 @@
 gustedt		Jens Gustedt, INRIA, France
 ejeanvoi	Emmanuel Jeanvoine, INRIA, France
+pini		Pierre-Nicolas Clauss

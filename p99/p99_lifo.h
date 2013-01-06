@@ -29,8 +29,8 @@
 
 #if defined(P99_DECLARE_ATOMIC) || P00_DOXYGEN
 # define P99_LIFO(T) _Atomic(P99_PASTE2(p00_lifo_, T))
-# define P99_LIFO_DECLARE(T)                    \
-typedef T P99_PASTE2(p00_lifo_, T);             \
+# define P99_LIFO_DECLARE(T)                                   \
+typedef T P99_PASTE2(p00_lifo_, T);                            \
 P99_DECLARE_ATOMIC(P99_PASTE2(p00_lifo_, T))
 # define P99_LIFO_INITIALIZER(VAL) ATOMIC_VAR_INIT((void*)VAL)
 
@@ -115,19 +115,19 @@ p99_extension                                                                   
   p00_r;                                                                                     \
 })
 
-#define P00_LIFO_REVERT(L)                                      \
-p99_extension                                                   \
-({                                                              \
-  register P99_MACRO_VAR(p00_h, (L));                           \
-  register P99_MACRO_VAR(p00_t, P99_PROMOTE_0(p00_h));          \
-  while (p00_h) {                                               \
-    register P99_MACRO_VAR(p00_n, p00_h->p99_lifo);             \
-    p00_h->p99_lifo = p00_t;                                    \
-    p00_h = p00_n;                                              \
-  }                                                             \
-  /* make sure that the result can not be used as an lvalue */  \
-  register const __typeof__(p00_t = p00_t) p00_r = p00_t;       \
-  p00_r;                                                        \
+#define P00_LIFO_REVERT(L)                                     \
+p99_extension                                                  \
+({                                                             \
+  register P99_MACRO_VAR(p00_h, (L));                          \
+  register P99_MACRO_VAR(p00_t, P99_PROMOTE_0(p00_h));         \
+  while (p00_h) {                                              \
+    register P99_MACRO_VAR(p00_n, p00_h->p99_lifo);            \
+    p00_h->p99_lifo = p00_t;                                   \
+    p00_h = p00_n;                                             \
+  }                                                            \
+  /* make sure that the result can not be used as an lvalue */ \
+  register const __typeof__(p00_t = p00_t) p00_r = p00_t;      \
+  p00_r;                                                       \
 })
 
 /**
@@ -153,25 +153,25 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
 
 #define P99_LIFO_TOP(L)  (*(L))
 
-#define P99_LIFO_PUSH(L, EL)                                         \
-p99_extension                                                        \
-({                                                                   \
-  P99_MACRO_VAR(p00_l, (L));                                         \
-  P99_MACRO_VAR(p00_el, (EL));                                       \
-  p00_el->p99_lifo = *p00_l;                                         \
-  *p00_l = p00_el;                                                   \
+#define P99_LIFO_PUSH(L, EL)                                   \
+p99_extension                                                  \
+({                                                             \
+  P99_MACRO_VAR(p00_l, (L));                                   \
+  P99_MACRO_VAR(p00_el, (EL));                                 \
+  p00_el->p99_lifo = *p00_l;                                   \
+  *p00_l = p00_el;                                             \
 })
 
-#define P99_LIFO_POP(L)                                                                      \
-p99_extension                                                                                \
-({                                                                                           \
-  P99_MACRO_VAR(p00_l, (L));                                                                 \
-  P99_MACRO_VAR(p00_el, *p00_l);                                        \
-  *p00_l = p00_el->p99_lifo;                                            \
-  if (p00_el) p00_el->p99_lifo = 0;                                                          \
-  /* be sure that the result can not be used as an lvalue */                                 \
-  register __typeof__(p00_el = p00_el) p00_r = p00_el;                                       \
-  p00_r;                                                                                     \
+#define P99_LIFO_POP(L)                                        \
+p99_extension                                                  \
+({                                                             \
+  P99_MACRO_VAR(p00_l, (L));                                   \
+  P99_MACRO_VAR(p00_el, *p00_l);                               \
+  *p00_l = p00_el->p99_lifo;                                   \
+  if (p00_el) p00_el->p99_lifo = 0;                            \
+  /* be sure that the result can not be used as an lvalue */   \
+  register __typeof__(p00_el = p00_el) p00_r = p00_el;         \
+  p00_r;                                                       \
 })
 
 /**
@@ -183,12 +183,12 @@ p99_extension                                                                   
  ** @see P99_LIFO_TOP
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
-#define P99_LIFO_CLEAR(L)                       \
-({                                              \
-  P99_MACRO_VAR(p00_l, (L));                    \
-  register P99_MACRO_VAR(p00_ret, *p00_l);      \
-  *p00_l = 0;                                   \
-  p00_ret;                                      \
+#define P99_LIFO_CLEAR(L)                                      \
+({                                                             \
+  P99_MACRO_VAR(p00_l, (L));                                   \
+  register P99_MACRO_VAR(p00_ret, *p00_l);                     \
+  *p00_l = 0;                                                  \
+  p00_ret;                                                     \
 })
 
 #endif

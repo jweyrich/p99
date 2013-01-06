@@ -2,7 +2,8 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
-/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2010-2013 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2013 Pierre-Nicolas Clauss                                  */
 /* (C) copyright  2012 William Morris                                         */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
@@ -155,12 +156,12 @@ typedef extendedInt p99x_int128;
 
 #ifdef p99x_uintmax
 
-#define P99X__SIGN_PROMOTE(EXPR)                                              \
+#define P99X__SIGN_PROMOTE(EXPR)                                                \
 ((p99x_uintmax)+P99_SIGN_PROMOTE(P99_UE_MAX(EXPR), (p99x_uintmax)+UINTMAX_MAX))
 
-#define P99X__SHIFT(EXPR)                                                      \
+#define P99X__SHIFT(EXPR)                                                       \
 ((P99_SIGN_PROMOTE(P99_UE_MAX(EXPR), UINTMAX_MAX) > (p99x_uintmax)+UINTMAX_MAX) \
- ? 64u                                                                         \
+ ? 64u                                                                          \
  : 0u)
 #endif
 
@@ -517,10 +518,10 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_TMIN, 0)
 #endif
 
 #ifdef p99x_uintmax
-#define P99_EWIDTH(EXPR)                                                               \
-  (P99X__SHIFT(EXPR)                                                                   \
+#define P99_EWIDTH(EXPR)                                                                \
+  (P99X__SHIFT(EXPR)                                                                    \
  ? (P99_HIGH2_1((uintmax_t)+(P99_UE_MAX(EXPR)>>P99X__SHIFT(EXPR))) + P99X__SHIFT(EXPR)) \
- : P99_HIGH2_1(P99_UE_MAX(EXPR))                                                       \
+ : P99_HIGH2_1(P99_UE_MAX(EXPR))                                                        \
  )
 #else
 #define P99_EWIDTH(EXPR) P99_HIGH2_1(P99_UE_MAX(EXPR))
@@ -1020,11 +1021,11 @@ P00_DECLARE_OVERFLOW(ll);
  ** @see p99_int.h
  **/
 #if P99_COMPILER & P99_COMPILER_CLANG
-# define P99_INIT                                                       \
-_Pragma("GCC diagnostic push")                                          \
-_Pragma("GCC diagnostic ignored \"-Wmissing-braces\"")                  \
-_Pragma("GCC diagnostic ignored \"-Wmissing-field-initializers\"")      \
-  { 0 }                                                                 \
+# define P99_INIT                                                  \
+_Pragma("GCC diagnostic push")                                     \
+_Pragma("GCC diagnostic ignored \"-Wmissing-braces\"")             \
+_Pragma("GCC diagnostic ignored \"-Wmissing-field-initializers\"") \
+  { 0 }                                                            \
 _Pragma("GCC diagnostic pop")
 #else
 # define P99_INIT { 0 }

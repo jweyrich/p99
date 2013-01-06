@@ -142,6 +142,10 @@
  ** @see P99_ENC_DECLARE(T, NAME) for argument <code>T</code>, <code>NAME</code>.
  ** @see P99_FCALLOC(T, F, N) for arguments <code>T</code>, <code>F</code>, <code>N</code>.
  ** @see P99_FHEAD(T, F, P) for argument <code>T</code>.
+ ** @see P99_FIFO_APPEND(L, EL) for argument <code>L</code>, <code>EL</code>.
+ ** @see P99_FIFO_CLEAR(L) for argument <code>L</code>.
+ ** @see P99_FIFO_POP(L) for argument <code>L</code>.
+ ** @see P99_FIFO_TABULATE(TYPE, TAB, L) for arguments <code>TYPE</code>, <code>TAB</code>, <code>L</code>.
  ** @see P99_FMALLOC(T, F, N) for arguments <code>T</code>, <code>F</code>, <code>N</code>.
  ** @see P99_FOR(NAME, N, OP, FUNC, ...) for arguments <code>NAME</code>, <code>N</code>, <code>FUNC</code>.
  ** @see P99_FORALL(NAME, ...) for argument <code>NAME</code>.
