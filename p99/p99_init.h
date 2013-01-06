@@ -13,8 +13,9 @@
 #ifndef     P99_INIT_H_
 # define    P99_INIT_H_
 
-#include "p99_if.h"
-#include "p99_callback.h"
+# include "p99_if.h"
+# include "p99_callback.h"
+# include "p99_hook.h"
 
 /**
  ** @file
@@ -230,6 +231,22 @@ void P99_PASTE2(p00_init_func_, NAME)(int * p00_argc, char***p00_argv)
 #define P99_INIT_TRIGGER(NAME, ARGC, ARGV) P99_PASTE2(p00_init_func_, NAME)((ARGC), (ARGV))
 
 # endif
+
+# if defined(P99_AT_LOAD)
+
+P99_WEAK(p99_init_main)
+P99_AT_LOAD(p99_init_main) {
+  P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_TRIGGER_FUNCTION_1, P99_REP(P99_MAX_NUMBER,));
+}
+
+p99_inline
+void p00_init_func_p99_init_main(int * p00_argc, char***p00_argv) {
+  /* empty */
+}
+
+# else
+
+#  warning "no native load time launcher found, trying to intercept main"
 
 P99_MAIN_INTERCEPT(p99_init_main) {
   P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_TRIGGER_FUNCTION_1, P99_REP(P99_MAX_NUMBER,));
