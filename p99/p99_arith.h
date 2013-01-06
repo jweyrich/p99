@@ -82,14 +82,16 @@ p99_inline uintmax_t p99_arith_next_pow2(uintmax_t a) {
 
 /**
  ** @brief Computes the floored base-2 logarithm.
+ **
+ ** @todo replace ffs(P99_UINTMAX_WIDTH) by a preprocessor constant
  **/
-static p99_inline uintmax_t p99_arith_log2(uintmax_t a) {
+p99_inline uintmax_t p99_arith_log2(uintmax_t a) {
    uintmax_t log = 0;
 
    /* Any decent compiler will unroll this loop */
-   for(int i = ffs(P99_EWIDTH(a)) - 2; i >= 0; --i) {
-      uintmax_t shift = P99_PROMOTE_1(shift) << i;
-      uintmax_t mask = ((P99_PROMOTE_1(mask) << shift) - 1) << shift;
+   for(int i = ffs(P99_UINTMAX_WIDTH) - 2; i >= 0; --i) {
+     uintmax_t shift = UINTMAX_C(1) << i;
+      uintmax_t mask = ((UINTMAX_C(1) << shift) - 1) << shift;
       uintmax_t test = (a & mask) != 0;
 
       log  |= test * shift;
