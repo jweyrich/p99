@@ -13,6 +13,7 @@
 
 #include "p99_futex.h"
 
+#include "p99_arith.h"
 #include "p99_block.h"
 #include "p99_c99.h"
 #include "p99_c99_default.h"
