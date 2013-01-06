@@ -27,15 +27,29 @@
 #include "p99_list.h"
 
 #if p99_has_attribute(constructor)
-# define P99_AT_LOAD(...) __attribute__((constructor P99_IF_LE(P99_NARG(__VA_ARGS__), 1)()((P99_SKP(1, __VA_ARGS__))))) void P99_CHS(0, __VA_ARGS__)(void)
+# define P99_AT_LOAD_DECLARE(...)                                       \
+__attribute__((constructor P99_IF_LE(P99_NARG(__VA_ARGS__), 1)()((P99_SKP(1, __VA_ARGS__))))) \
+void P99_CHS(0, __VA_ARGS__)(void)
+# define P99_AT_LOAD_DEFINE P99_AT_LOAD_DECLARE
 #else
-# define P99_AT_LOAD(...) void P99_CHS(0, __VA_ARGS__)(void); P99_PRAGMA(startup P99_FOR(, P99_NARG(__VA_ARGS__), P00_SER, P00_IDT, __VA_ARGS__)) void P99_CHS(0, __VA_ARGS__)(void)
+# define P99_AT_LOAD_DECLARE(...)                                       \
+void P99_CHS(0, __VA_ARGS__)(void);                                     \
+P99_PRAGMA(startup P99_FOR(, P99_NARG(__VA_ARGS__), P00_SER, P00_IDT, __VA_ARGS__)) \
+P99_MACRO_END(P99_AT_LOAD_DECLARE)
+# define P99_AT_LOAD_DEFINE(...) void P99_CHS(0, __VA_ARGS__)(void)
 #endif
 
 #if p99_has_attribute(destructor)
-# define P99_AT_UNLOAD(...) __attribute__((destructor P99_IF_LE(P99_NARG(__VA_ARGS__), 1)()((P99_SKP(1, __VA_ARGS__))))) void P99_CHS(0, __VA_ARGS__)(void)
+# define P99_AT_UNLOAD_DECLARE(...)                                       \
+__attribute__((destructor P99_IF_LE(P99_NARG(__VA_ARGS__), 1)()((P99_SKP(1, __VA_ARGS__))))) \
+void P99_CHS(0, __VA_ARGS__)(void)
+# define P99_AT_UNLOAD_DEFINE P99_AT_UNLOAD_DECLARE
 #else
-# define P99_AT_UNLOAD(...) void P99_CHS(0, __VA_ARGS__)(void); P99_PRAGMA(exit P99_FOR(, P99_NARG(__VA_ARGS__), P00_SER, P00_IDT, __VA_ARGS__)) void P99_CHS(0, __VA_ARGS__)(void)
+# define P99_AT_UNLOAD_DECLARE(...)                                       \
+void P99_CHS(0, __VA_ARGS__)(void);                                     \
+P99_PRAGMA(exit P99_FOR(, P99_NARG(__VA_ARGS__), P00_SER, P00_IDT, __VA_ARGS__)) \
+P99_MACRO_END(P99_AT_UNLOAD_DECLARE)
+# define P99_AT_UNLOAD_DEFINE(...) void P99_CHS(0, __VA_ARGS__)(void)
 #endif
 
 #endif      /* !P99_HOOK_H_ */

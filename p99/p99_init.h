@@ -233,10 +233,13 @@ void P99_PASTE2(p00_init_func_, NAME)(int * p00_argc, char***p00_argv)
 
 # endif
 
-# if defined(P99_AT_LOAD)
+# if defined(P99_AT_LOAD_DECLARE)
 
 P99_WEAK(p99_init_main)
-P99_AT_LOAD(p99_init_main) {
+P99_AT_LOAD_DECLARE(p99_init_main);
+
+P99_WEAK(p99_init_main)
+P99_AT_LOAD_DEFINE(p99_init_main) {
   P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_TRIGGER_FUNCTION_1, P99_REP(P99_MAX_NUMBER,));
 }
 
