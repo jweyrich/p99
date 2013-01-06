@@ -27,14 +27,18 @@
  **
  **/
 
+/**
+ ** @addtogroup startup_hooks Hooks executed at startup
+ ** @{
+ **/
 
 # define P00_INIT_1
 # define P00_INIT_2
 # define P00_INIT_3
 
-# define P99_INIT_NR P99_PASTE3(P00_INIT_3, P00_INIT_2, P00_INIT_1)
+# define P00_INIT_NR P99_PASTE3(P00_INIT_3, P00_INIT_2, P00_INIT_1)
 
-# define P00_INIT_FUNCTION(NR)  P99_IF_EMPTY(NR)(P99_PASTE2(p00_init_function_, P99_INIT_NR))(P99_PASTE2(p00_init_function_, NR))
+# define P00_INIT_FUNCTION(NR)  P99_IF_EMPTY(NR)(P99_PASTE2(p00_init_function_, P00_INIT_NR))(P99_PASTE2(p00_init_function_, NR))
 
 # define P00_INIT_FUNC_VAR_S(_0, _1, I)                        \
 static p99_callback_el const P99_PASTE2(p00_init_function_, I)
@@ -265,6 +269,10 @@ P99_MAIN_INTERCEPT(p99_init_main) {
 # endif
 
 
+/**
+ ** @}
+ **/
+
 #endif
 
 #if P99_PASTE2(P00_INIT_1, 0) == 0
@@ -360,6 +368,6 @@ P99_MAIN_INTERCEPT(p99_init_main) {
 # endif
 #endif
 
-#if P99_INIT_NR > P99_MAX_NUMBER
+#if P00_INIT_NR > P99_MAX_NUMBER
 # error "more init functions than supported through P99_MAX_NUMBER, compilation aborted"
 #endif

@@ -1255,6 +1255,7 @@ my @groups =
         ["library_wrappers"],
         ["posix_default"],
         ["callbacks"],
+        ["startup_hooks"],
       ],
       [ "preprocessor_macros",
         [ "meta_programming",
