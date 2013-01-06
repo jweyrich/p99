@@ -1099,6 +1099,8 @@ P00_SPRINT_DEFINE(ldouble, "%Lg", "%La");
 
 p99_inline
 char const* p00_sprint__Bool(_Bool p00_val, char*restrict p00_str, unsigned p00_form) {
+  P99_UNUSED(p00_str);
+  P99_UNUSED(p00_form);
   char const*const p00_format[] = {
     "false", "true",
     "0", "1",
@@ -1111,11 +1113,14 @@ char const* p00_sprint__Bool(_Bool p00_val, char*restrict p00_str, unsigned p00_
 
 p99_inline
 char const* p00_sprint_charp(char const* p00_val, char*restrict p00_str, unsigned p00_form) {
+  P99_UNUSED(p00_str);
+  P99_UNUSED(p00_form);
   return p00_val;
 }
 
 p99_inline
 char const* p00_sprint_voidp(void * p00_val, char*restrict p00_str, unsigned p00_form) {
+  P99_UNUSED(p00_form);
   sprintf(p00_str, "%p", p00_val);
   return p00_str;
 }
@@ -1227,6 +1232,7 @@ char const* p00_sprint_p99x_uintmax_X(p99x_uintmax p00_val, char*restrict p00_st
 
 p99_inline
 char const* p00_sprint_p99x_intmax(p99x_intmax p00_val, char*restrict p00_str, unsigned p00_form) {
+  P99_UNUSED(p00_form);
   if (p00_val < 0) {
     p00_str[0] = '-';
     p00_sprint_p99x_uintmax_u(-p00_val, p00_str + 1);
@@ -1363,7 +1369,7 @@ p99_inline
 bool p00_in_range_voidp(void* p00_r_, void* p00_s_, size_t p00_len) {
   unsigned char* p00_r = p00_r_;
   unsigned char* p00_s = p00_s_;
-  return (p00_r >= p00_s) && ((p00_r - p00_s) < p00_len);
+  return (p00_r >= p00_s) && ((size_t)(p00_r - p00_s) < p00_len);
 }
 
 P99_SER(P00_DEFINE_IN_RANGE, P99_EXT_REAL_TYPES)

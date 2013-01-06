@@ -362,7 +362,7 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_MAXOF, 0)
 P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_MAXOF, 1)
 #define P99_MINOF(A, B) ((A) < (B) ? (A) : (B))
 
-#define P00_SIZEOF2(T, ...) sizeof(P99_TOKJOIN(., ((const T)P99_INIT), __VA_ARGS__))
+#define P00_SIZEOF2(T, ...) sizeof(P99_TOKJOIN(., P99_LVAL(const T), __VA_ARGS__))
 
 #ifdef P00_DOXYGEN
 /**

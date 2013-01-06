@@ -1020,10 +1020,11 @@ P00_DECLARE_OVERFLOW(ll);
  ** @see p99_int.h
  **/
 #if P99_COMPILER & P99_COMPILER_CLANG
-# define P99_INIT                                              \
-_Pragma("GCC diagnostic push")                                 \
-_Pragma("GCC diagnostic ignored \"-Wmissing-braces\"")         \
-  { 0 }                                                        \
+# define P99_INIT                                                       \
+_Pragma("GCC diagnostic push")                                          \
+_Pragma("GCC diagnostic ignored \"-Wmissing-braces\"")                  \
+_Pragma("GCC diagnostic ignored \"-Wmissing-field-initializers\"")      \
+  { 0 }                                                                 \
 _Pragma("GCC diagnostic pop")
 #else
 # define P99_INIT { 0 }
