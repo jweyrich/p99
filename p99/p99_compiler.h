@@ -935,6 +935,24 @@ typedef __int128_t p99x_int128;
 P99_IF_COMPILER(INTEL, warning(disable: 1418)) /* external function definition with no prior declaration */
 P99_IF_COMPILER(INTEL, warning(disable: 1419)) /* external declaration in primary source file */
 
+/* Warnings on initializers are a plague. They are responsible for the
+   fact that many people don't use default initializers where they
+   could and should. Shame on gcc and Co that they enable this with
+   -Wall. */
+
+P99_IF_COMPILER(GNU, GCC diagnostic ignored "-Wmissing-braces")
+P99_IF_COMPILER(GNU, GCC diagnostic ignored "-Wmissing-field-initializers")
+
+P99_IF_COMPILER(CLANG, GCC diagnostic ignored "-Wmissing-braces")
+P99_IF_COMPILER(CLANG, GCC diagnostic ignored "-Wmissing-field-initializers")
+
+P99_IF_COMPILER(INTEL, GCC diagnostic ignored "-Wmissing-braces")
+P99_IF_COMPILER(INTEL, GCC diagnostic ignored "-Wmissing-field-initializers")
+
+P99_IF_COMPILER(OPEN64, GCC diagnostic ignored "-Wmissing-braces")
+P99_IF_COMPILER(OPEN64, GCC diagnostic ignored "-Wmissing-field-initializers")
+
+
 #endif
 
 /** @}
