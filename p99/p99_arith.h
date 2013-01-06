@@ -20,48 +20,50 @@
 
 #include "p99_int.h"
 
-#include <strings.h>
+#define P00_UINTMAX_HIGHBIT(X) ((((uintmax_t)+(X)) & (UINTMAX_MAX ^ INTMAX_MAX)) >> (P99_UINTMAX_WIDTH - 1U))
 
-#define P00_HAS_2COMPLEMENT ((INTMAX_MIN < -INTMAX_MAX) || (_XOPENSOURCE >= 600) || _POSIX_C_SOURCE)
+/* The wonders of unsigned types make it act as if it were a signed
+   number in 2complement representation. Unsigned types always have
+   logical shift so we negate the result to simulate an arithmetic
+   shift in that special case.
 
-#define P00_HAS_ARITH_SHIFT (((-1) >> 1) == (-1))
+   To get back to intmax_t even more wonders occur. The result of
+   P99_UINTMAX_HIGHBIT is 0 or 1 and so it fits into intmax_t. That
+   converted value then can be negated to obtain 0 or -1 as a
+   result. */
+#define P00_ARITH_INTMAX_SHIFT(X) (-((intmax_t)+P00_UINTMAX_HIGHBIT(X)))
 
-#if P00_HAS_ARITH_SHIFT
-# define P00_ARITH_SHIFT(X, N) ((X) >> (N))
+p99_inline uintmax_t p00_arith_abs(uintmax_t p00_a) {
+#if UINTMAX_MAX > INTMAX_MAX
+  register uintmax_t p00_m = P00_ARITH_INTMAX_SHIFT(p00_a);
+  return (p00_m ^ p00_a) - p00_m;
 #else
-# define P00_ARITH_SHIFT(X, N) P99_IF_ELSE(P99_SIGNED(X))(((X) >> (N)) | ~((((X) & (P99_PROMOTE_1(X) << (P99_EWIDTH(X) - (N)))) << 1) - 1))((X) >> (N))
-#endif      /* !P00_HAS_ARITH_SHIFT */
-
-static p99_inline uintmax_t p00_arith_abs(intmax_t a) {
-#if P00_HAS_2COMPLEMENT
-   register intmax_t mask = P00_ARITH_SHIFT(a, P99_EWIDTH(a) - 1);
-
-   return (uintmax_t)((a ^ mask) - mask);
-#else
-   return (uintmax_t)(a < 0 ? -a : a);
-#endif      /* !P00_HAS_2COMPLEMENT */
+  /* On such a perverted architecture the case of INTMAX_MIN might
+     raise a application defined signal. */
+  return (p00_a < 0) ? -p00_a : p00_a;
+#endif
 }
-#define p99_arith_abs(X) (P99_SIGNED(X) ? p00_arith_abs(X) : (uintmax_t)(X))
+#define p99_arith_abs(X) (P99_SIGNED(X) ? p00_arith_abs(X) : P99_RVAL(uintmax_t, (X)))
 
-static p99_inline intmax_t p99_arith_min(intmax_t a, intmax_t b) {
-#if P00_HAS_2COMPLEMENT
-   a = a - b;
-   return (a & P00_ARITH_SHIFT(a, P99_EWIDTH(a) - 1)) + b;
+p99_inline intmax_t p99_arith_min(intmax_t a, intmax_t b) {
+#if UINTMAX_MAX > INTMAX_MAX
+   a -= b;
+   return (a & P00_ARITH_INTMAX_SHIFT(a)) + b;
 #else
    return a < b ? a : b;
-#endif      /* !P00_HAS_2COMPLEMENT */
+#endif
 }
 
-static p99_inline intmax_t p99_arith_max(intmax_t a, intmax_t b) {
-#if P00_HAS_2COMPLEMENT
-   a = a - b;
-   return (a & ~P00_ARITH_SHIFT(a, P99_EWIDTH(a) - 1)) + b;
+p99_inline intmax_t p99_arith_max(intmax_t a, intmax_t b) {
+#if UINTMAX_MAX > INTMAX_MAX
+   a -= b;
+   return (a & ~P00_ARITH_INTMAX_SHIFT(a)) + b;
 #else
    return a < b ? b : a;
-#endif      /* !P00_HAS_2COMPLEMENT */
+#endif
 }
 
-static p99_inline uintmax_t p99_arith_prev_pow2(uintmax_t a) {
+p99_inline uintmax_t p99_arith_prev_pow2(uintmax_t a) {
    /* Any decent compiler will unroll this loop */
    for(uintmax_t shift = 1; shift <= P99_EWIDTH(a) >> 1; shift <<= 1) {
       a |= a >> shift;
@@ -69,7 +71,7 @@ static p99_inline uintmax_t p99_arith_prev_pow2(uintmax_t a) {
    return a - (a >> 1);
 }
 
-static p99_inline uintmax_t p99_arith_next_pow2(uintmax_t a) {
+p99_inline uintmax_t p99_arith_next_pow2(uintmax_t a) {
    --a;
    /* Any decent compiler will unroll this loop */
    for(uintmax_t shift = 1; shift <= P99_EWIDTH(a) >> 1; shift <<= 1) {
