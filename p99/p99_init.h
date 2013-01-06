@@ -245,7 +245,8 @@ P99_AT_LOAD_DEFINE(p99_init_main) {
 
 p99_inline
 void p00_init_func_p99_init_main(int * p00_argc, char***p00_argv) {
-  /* empty */
+  P99_UNUSED(p00_argc);
+  P99_UNUSED(p00_argv);
 }
 
 # else

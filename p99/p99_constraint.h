@@ -273,6 +273,7 @@ p99_inline
 void p99_report_handler(const char * restrict p00_msg,
                         void * restrict p00_ptr,
                         errno_t p00_err) {
+  P99_UNUSED(p00_ptr);
   p00_constraint_report(p00_err, 0, 0, p00_msg);
 }
 
@@ -280,13 +281,16 @@ p99_inline
 void p99_ignore_handler(const char * restrict p00_msg,
                         void * restrict p00_ptr,
                         errno_t p00_err) {
-  /* empty */
+  P99_UNUSED(p00_msg);
+  P99_UNUSED(p00_ptr);
+  P99_UNUSED(p00_err);
 }
 
 p99_inline
 void p99_abort_handler(const char * restrict p00_msg,
                        void * restrict p00_ptr,
                        errno_t p00_err) {
+  P99_UNUSED(p00_ptr);
   p00_constraint_report(p00_err, 0, 0, p00_msg);
   fputs("runtime constraint violation: ", stderr);
   abort();
@@ -296,6 +300,8 @@ p99_inline
 void p99_exit_handler(const char * restrict p00_msg,
                       void * restrict p00_ptr,
                       errno_t p00_err) {
+  P99_UNUSED(p00_ptr);
+  P99_UNUSED(p00_err);
   p00_constraint_report(p00_err, 0, 0, p00_msg);
   fputs("runtime constraint violation: ", stderr);
   exit(EXIT_FAILURE);

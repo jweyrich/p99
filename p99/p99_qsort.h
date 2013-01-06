@@ -197,6 +197,7 @@ errno_t p00_qsort_generic16(void *p00_base,
                             rsize_t p00_s,
                             int (*p00_comp)(const void *, const void *, void *),
                             void *p00_ctx) {
+  P99_UNUSED(p00_a);
   size_t const p00_vsize = p00_s / sizeof(uint16_t);
   typedef uint16_t p00_el[p00_vsize];
   register p00_el *const p00_B = p00_base;
@@ -212,6 +213,7 @@ errno_t p00_qsort_generic32(void *p00_base,
                             rsize_t p00_s,
                             int (*p00_comp)(const void *, const void *, void *),
                             void *p00_ctx) {
+  P99_UNUSED(p00_a);
   size_t const p00_vsize = p00_s / sizeof(uint32_t);
   typedef uint32_t p00_el[p00_vsize];
   register p00_el *const p00_B = p00_base;
@@ -227,6 +229,7 @@ errno_t p00_qsort_generic64(void *p00_base,
                             rsize_t p00_s,
                             int (*p00_comp)(const void *, const void *, void *),
                             void *p00_ctx) {
+  P99_UNUSED(p00_a);
   size_t const p00_vsize = p00_s / sizeof(uint64_t);
   typedef uint64_t p00_el[p00_vsize];
   register p00_el *const p00_B = p00_base;
@@ -243,6 +246,7 @@ errno_t p00_qsort_generic128(void *p00_base,
                              rsize_t p00_s,
                              int (*p00_comp)(const void *, const void *, void *),
                              void *p00_ctx) {
+  P99_UNUSED(p00_a);
   size_t const p00_vsize = p00_s / sizeof(uint128_t);
   typedef uint128_t p00_el[p00_vsize];
   register p00_el *const p00_B = p00_base;
@@ -258,6 +262,7 @@ errno_t p00_qsort_generic128(void *p00_base,
                              rsize_t p00_s,
                              int (*p00_comp)(const void *, const void *, void *),
                              void *p00_ctx) {
+  P99_UNUSED(p00_a);
   size_t const p00_vsize = p00_s / sizeof(p99x_uint128);
   typedef p99x_uint128 p00_el[p00_vsize];
   register p00_el *const p00_B = p00_base;
@@ -275,6 +280,7 @@ errno_t p00_qsort_generic(void *p00_base,
                           rsize_t p00_s,
                           int (*p00_comp)(const void *, const void *, void *),
                           void *p00_ctx) {
+  P99_UNUSED(p00_a);
   typedef unsigned char p00_el[p00_s];
   register p00_el *const p00_B = p00_base;
   p00_el p00_tmp;
@@ -290,6 +296,7 @@ errno_t P99_PASTE2(p00_qsort_, T)(void *p00_base,                        \
                     rsize_t p00_s,                                       \
                     int (*p00_comp)(const void *, const void *, void *), \
                     void *p00_ctx) {                                     \
+  P99_UNUSED(p00_a);                                                     \
   register T *const p00_B = p00_base;                                    \
   _Alignas(sizeof(max_align_t)) T p00_tmp;                               \
   P00_QSORT_BODY(P00_QSWAP_ASSIGN);                                      \

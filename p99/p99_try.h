@@ -375,6 +375,7 @@ int p00_throw_call_negate(int p00_neg,
                           char const* p00_file,
                           char const* p00_context,
                           char const* p00_info) {
+  P99_UNUSED(p00_def);
   if (P99_UNLIKELY(p00_neg < 0)) p00_jmp_throw(-p00_neg, p00_top, p00_file, p00_context, p00_info);
   return p00_neg;
 }
