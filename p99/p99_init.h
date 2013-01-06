@@ -28,27 +28,26 @@
  **/
 
 
-#define P00_INIT_1
-#define P00_INIT_2
-#define P00_INIT_3
+# define P00_INIT_1
+# define P00_INIT_2
+# define P00_INIT_3
 
-#define P99_INIT_NR P99_PASTE3(P00_INIT_3, P00_INIT_2, P00_INIT_1)
+# define P99_INIT_NR P99_PASTE3(P00_INIT_3, P00_INIT_2, P00_INIT_1)
 
-#define P00_INIT_FUNCTION(NR)  P99_IF_EMPTY(NR)(P99_PASTE2(p00_init_function_, P99_INIT_NR))(P99_PASTE2(p00_init_function_, NR))
+# define P00_INIT_FUNCTION(NR)  P99_IF_EMPTY(NR)(P99_PASTE2(p00_init_function_, P99_INIT_NR))(P99_PASTE2(p00_init_function_, NR))
 
-#define P00_INIT_FUNC_VAR_S(_0, _1, I)          \
+# define P00_INIT_FUNC_VAR_S(_0, _1, I)          \
 static p99_callback_el const P99_PASTE2(p00_init_function_, I)
 
 P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_FUNC_VAR_S, P99_REP(P99_MAX_NUMBER,));
 
-#define P00_INIT_TRIGGER_FUNCTION_1(_0, _1, I) p99_callback_el_call(P99_PASTE2(p00_init_function_, I))
-#define P00_INIT_TRIGGER_FUNCTION_2(_0, _1, I)
+# define P00_INIT_TRIGGER_FUNCTION_1(_0, _1, I) p99_callback_el_call(P99_PASTE2(p00_init_function_, I))
 
-#define P00_INIT_FUNCTION_(NAME, NR)                    \
+# define P00_INIT_FUNCTION_(NAME, NR)                    \
 void NAME(void);                                        \
 static p99_callback_el const P00_INIT_FUNCTION(NR) = { .p00_void_func = NAME, }
 
-#ifdef P00_DOXYGEN
+# ifdef P00_DOXYGEN
 /**
  ** @brief Request that @a FUNC is to be called at initialization time
  ** with priority @a NR
@@ -77,13 +76,13 @@ static p99_callback_el const P00_INIT_FUNCTION(NR) = { .p00_void_func = NAME, }
  ** units) you should use
  **
  ** @code
- ** //***** file module1.h
+ ** // ***** file module1.h
  ** P99_DECLARE_ONCE_CHAIN(module1);
  ** // always include this immediately before, even several times
  ** #include "p99_init.h"
  ** P99_INIT_FUNCTION_DECLARE(module1_trigger);
  **
- ** //***** file module2.c
+ ** // ***** file module2.c
  ** P99_DEFINE_ONCE_CHAIN(module1) {
  **   // here initialize some global variables e.g
  ** }
@@ -94,13 +93,13 @@ static p99_callback_el const P00_INIT_FUNCTION(NR) = { .p00_void_func = NAME, }
  ** }
  **
  **
- ** //***** file module2.h
+ ** // ***** file module2.h
  ** P99_DECLARE_ONCE_CHAIN(module2);
  ** // always include this immediately before, even several times
  ** #include "p99_init.h"
  ** P99_INIT_FUNCTION_DECLARE(module2_trigger);
  **
- ** //***** file module2.c
+ ** // ***** file module2.c
  ** // module2 depends upon module1 being properly initialized
  ** P99_DEFINE_ONCE_CHAIN(module2, module1) {
  **   // here initialize some global variables e.g
@@ -116,19 +115,19 @@ static p99_callback_el const P00_INIT_FUNCTION(NR) = { .p00_void_func = NAME, }
  ** pointer argument and are compatible with
  ** <code>void (*)(void*)</code>.
  **/
-# define P99_INIT_FUNCTION_DECLARE(FUNC, NR)
-#else
-# define P99_INIT_FUNCTION_DECLARE(...) P99_IF_EQ(P99_NARG(__VA_ARGS__), 2)(P00_INIT_FUNCTION_(__VA_ARGS__))(P00_INIT_FUNCTION_(__VA_ARGS__,))
-#endif
+#  define P99_INIT_FUNCTION_DECLARE(FUNC, NR)
+# else
+#  define P99_INIT_FUNCTION_DECLARE(...) P99_IF_EQ(P99_NARG(__VA_ARGS__), 2)(P00_INIT_FUNCTION_(__VA_ARGS__))(P00_INIT_FUNCTION_(__VA_ARGS__,))
+# endif
 
-#define P00_INIT_VARIABLE(NAME, FUNC, NR)               \
+# define P00_INIT_VARIABLE(NAME, FUNC, NR)              \
 static p99_callback_el const P00_INIT_FUNCTION(NR)      \
 = {                                                     \
   .p00_voidptr_func = (FUNC),                           \
   .p00_arg = &(NAME),                                   \
 }
 
-#ifdef P00_DOXYGEN
+# ifdef P00_DOXYGEN
 /**
  ** @brief Request that @a FUNC is to be called with argument
  ** <code>&(NAME)</code> at initialization time with priority @a NR
@@ -150,12 +149,21 @@ static p99_callback_el const P00_INIT_FUNCTION(NR)      \
  ** @see P99_INIT_FUNCTION_DECLARE for the mechanism that is used to
  ** implement this feature.
  **/
-# define P99_INIT_VARIABLE(NAME, FUNC, NR)
-#else
-# define P99_INIT_VARIABLE(...) P99_IF_EQ(P99_NARG(__VA_ARGS__), 3)(P00_INIT_VARIABLE(__VA_ARGS__))(P00_INIT_VARIABLE(__VA_ARGS__,))
-#endif
+#  define P99_INIT_VARIABLE(NAME, FUNC, NR)
+# else
+#  define P99_INIT_VARIABLE(...) P99_IF_EQ(P99_NARG(__VA_ARGS__), 3)(P00_INIT_VARIABLE(__VA_ARGS__))(P00_INIT_VARIABLE(__VA_ARGS__,))
+# endif
 
-#if defined(P99_INTERCEPT_MAIN) || defined(P00_DOXYGEN)
+# if defined(P00_DOXYGEN)
+/**
+ ** @brief Macro to control compilation of initialization features
+ **
+ ** @see P99_MAIN_INTERCEPT
+ **/
+#  define P99_INTERCEPT_MAIN
+# endif
+
+# if defined(P99_INTERCEPT_MAIN) || defined(P00_DOXYGEN)
 
 /**
  ** @brief Intercept the @c main function before it is called and run
@@ -200,7 +208,7 @@ static p99_callback_el const P00_INIT_FUNCTION(NR)      \
  ** return is mandatory: for the compiler the user @c main is not a @c
  ** main in the sense of the C standard anymore.
  **/
-#define P99_MAIN_INTERCEPT(NAME)                                        \
+#  define P99_MAIN_INTERCEPT(NAME)                                      \
 int NAME(int, char*[]);                                                 \
 P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
  void P99_PASTE2(p00_init_func_, NAME)(int*, char***);                  \
@@ -213,22 +221,15 @@ int main(int p00_argc, char**p00_argv) {                                \
 P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
 void P99_PASTE2(p00_init_func_, NAME)(int * p00_argc, char***p00_argv)
 
-#define P99_INIT_TRIGGER(NAME, ARGC, ARGV) P99_NOP
+#  define P99_INIT_TRIGGER(NAME, ARGC, ARGV) P99_NOP
 
-/**
- ** @brief Macro to control compilation of initialization features
- **
- ** @see P99_MAIN_INTERCEPT
- **/
-#define P99_INTERCEPT_MAIN
+# else
 
-#  else
-
-#define P99_MAIN_INTERCEPT(NAME)                                        \
+#  define P99_MAIN_INTERCEPT(NAME)                                      \
 P99_WEAK(P99_PASTE2(p00_init_func_, NAME))                              \
 void P99_PASTE2(p00_init_func_, NAME)(int * p00_argc, char***p00_argv)
 
-#define P99_INIT_TRIGGER(NAME, ARGC, ARGV) P99_PASTE2(p00_init_func_, NAME)((ARGC), (ARGV))
+#  define P99_INIT_TRIGGER(NAME, ARGC, ARGV) P99_PASTE2(p00_init_func_, NAME)((ARGC), (ARGV))
 
 # endif
 
@@ -253,9 +254,10 @@ P99_MAIN_INTERCEPT(p99_init_main) {
   P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_TRIGGER_FUNCTION_2, P99_REP(P99_MAX_NUMBER,));
 }
 
-# if defined(P99_INTERCEPT_MAIN)
-#  undef main
-#  define main p99_init_main
+#  if defined(P99_INTERCEPT_MAIN)
+#   undef main
+#   define main p99_init_main
+#  endif
 # endif
 
 
