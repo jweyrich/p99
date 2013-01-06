@@ -81,16 +81,20 @@ p99_inline uintmax_t p99_arith_next_pow2(uintmax_t p00_a) {
   return p00_a + 1;
 }
 
+#if P99_UINTMAX_WIDTH >= 64
+# define P00_UINTMAX_WIDTH_HBIT 7
+#else
+# define P00_UINTMAX_WIDTH_HBIT 6
+#endif
+
 /**
  ** @brief Computes the floored base-2 logarithm.
- **
- ** @todo replace ffs(P99_UINTMAX_WIDTH) by a preprocessor constant
  **/
 p99_inline uintmax_t p99_arith_log2(uintmax_t p00_a) {
   uintmax_t p00_l = 0;
 
   /* Any decent compiler will unroll this loop */
-  for(int i = ffs(P99_UINTMAX_WIDTH) - 2; i >= 0; --i) {
+  for(int i = P00_UINTMAX_WIDTH_HBIT - 2; i >= 0; --i) {
     uintmax_t p00_s = UINTMAX_C(1) << i;
     uintmax_t p00_m = ((UINTMAX_C(1) << p00_s) - 1) << p00_s;
     uintmax_t p00_t = (p00_a & p00_m) != 0;
