@@ -4,6 +4,7 @@
 /* the authors and copyright holders for this work are as follows:            */
 /* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                       */
 /* (C) copyright  2012 William Morris                                         */
+/* (C) copyright  2013 Pierre-Nicolas Clauss                                  */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -289,6 +290,8 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_attribute_always_inline 1
 # define p00_has_attribute_weak 1
 # define p00_has_attribute_weakref 1
+# define p00_has_attribute_constructor 1
+# define p00_has_attribute_destructor 1
 # if defined(__GNUC_GNU_INLINE__) || (P99_GCC_VERSION < 40300UL)
 #  define p00_has_attribute_gnu_inline 1
 # endif
