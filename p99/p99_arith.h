@@ -81,23 +81,28 @@ p99_inline uintmax_t p99_arith_next_pow2(uintmax_t p00_a) {
   return p00_a + 1;
 }
 
-#if P99_UINTMAX_WIDTH >= 64
-# define P00_UINTMAX_WIDTH_HBIT 7
-#else
-# define P00_UINTMAX_WIDTH_HBIT 6
-#endif
-
 /**
  ** @brief Computes the floored base-2 logarithm.
  **/
 p99_inline uintmax_t p99_arith_log2(uintmax_t p00_a) {
   uintmax_t p00_l = 0;
-
+  /* If P99_UINTMAX_WIDTH is a power of two, things are relatively
+     simple. */
+#if P99_LOW2(P99_UINTMAX_WIDTH) == P99_UINTMAX_WIDTH
+  P99_CONSTANT(int, p00_ll, P99_HIGH2(P99_UINTMAX_WIDTH) - 1);
+#else
+  /* If not, we xor out the lowest bit until a power of two
+     remains. This while loop should result in a compile time
+     computation, but who knows. */
+  unsigned p00_ll = P99_UINTMAX_WIDTH;
+  while (P99_LOW2(p00_ll) != p00_ll) p00_ll ^= P99_LOW2(p00_ll);
+  p00_ll = P99_HIGH2(p00_ll) - 1;
+#endif
   /* Any decent compiler will unroll this loop */
-  for(int i = P00_UINTMAX_WIDTH_HBIT - 2; i >= 0; --i) {
-    uintmax_t p00_s = UINTMAX_C(1) << i;
+  for(int p00_i = p00_ll; p00_i >= 0; --p00_i) {
+    uintmax_t p00_s = UINTMAX_C(1) << p00_i;
     uintmax_t p00_m = ((UINTMAX_C(1) << p00_s) - 1) << p00_s;
-    uintmax_t p00_t = (p00_a & p00_m) != 0;
+    uintmax_t p00_t = !!(p00_a & p00_m);
 
     p00_l  |= p00_t * p00_s;
     p00_a   >>= p00_t * p00_s;
