@@ -239,7 +239,7 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_TO_UNSIGNED, 1)
  **
  ** The returned expression is of type @c uintmax_t
  **/
-#define P99_M1U(T) (P99_ISSIGNED(T) ? P99_TO_UNSIGNED(T, P99_M1) : P99_M1(T))
+#define P99_M1U(T) (P99_ISSIGNED(T) ? P99_TO_UNSIGNED(T, P99_M1) : P99_C(uintmax_t, P99_M1(T)))
 
 #define P00_DOCUMENT_SIGNED(X) /*! @brief Cast the @c int value @c X to type @a T */
 #define P00_DOCUMENT_UNSIGNED(X) /*! @brief Cast the @c int value @c X to the unsigned type corresponding to @a T */
@@ -620,7 +620,7 @@ uintmax_t p00_abs_signed(intmax_t p00_a) {
  ** function forcibly returns a value of type @c intmax_t, and might
  ** thus fail for @c INTMAX_MIN.
  **/
-#define P99_ABS(EXPR) (P99_SIGNED(EXPR) ? p00_abs_signed(EXPR) : (EXPR))
+#define P99_ABS(EXPR) (P99_SIGNED(EXPR) ? p00_abs_signed(EXPR) : P99_C(uintmax_t, EXPR))
 
 #if defined(p99x_uintmax) && defined(p99x_intmax)
 p99_inline
@@ -696,9 +696,9 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_TMIN, 0)
   : (P99_ISSIGNED(T) ? (P00_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T))))
 #else
 P00_DOCUMENT_TYPE_ARGUMENT(P99_TMAX, 0)
-#define P99_TMAX(T) (P99_ISSIGNED(T) ? P99_UT_MAX1(T) : P99_UT_MAX(T))
+#define P99_TMAX(T) P99_C(T, P99_ISSIGNED(T) ? P99_UT_MAX1(T) : P99_UT_MAX(T))
 P00_DOCUMENT_TYPE_ARGUMENT(P99_TMIN, 0)
-#define P99_TMIN(T) (P99_ISSIGNED(T) ? (P00_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T))
+#define P99_TMIN(T) P99_C(T, P99_ISSIGNED(T) ? (P00_ST_MIN1(T) - P99_2COMPLEMENT(T)) : P99_0(T))
 #endif
 
 
