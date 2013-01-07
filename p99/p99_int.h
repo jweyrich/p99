@@ -396,7 +396,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_UT_MAX, 0)
  ** argument
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_ISSIGNED, 0)
-#define P99_ISSIGNED(T) (P99_M1(T) < P99_0(T))
+#define P99_ISSIGNED(T) (P99_M1(T) < P99_1(T))
 
 /**
  ** @brief Compute expression @a A and apply integer promotion rules
