@@ -595,7 +595,7 @@ P00_SEE_PROMOTE
  ** @see P99_ISSIGNED for a similar macro that takes a type as an argument
  **/
 P00_SEE_PROMOTE
-#define P99_SIGNED(EXPR) (P99_PROMOTE_M1(EXPR) < P99_PROMOTE_0(EXPR))
+#define P99_SIGNED(EXPR) (P99_PROMOTE_M1(EXPR) < P99_PROMOTE_1(EXPR))
 
 
 p99_inline
