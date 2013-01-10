@@ -15,6 +15,17 @@
 #include "p99_int.h"
 #include "p99_defarg.h"
 #include "p99_enum.h"
+#include "p99_getopt.h"
+
+P99_GETOPT_DECLARE(unsigned, unsignedVar, a, 47);
+P99_GETOPT_DECLARE(char, charVar, c, 47);
+P99_GETOPT_DECLARE(double, doubleVar, d);
+P99_GETOPT_DECLARE(char const*, char_cptrVar, s);
+P99_GETOPT_DEFINE(unsigned, unsignedVar, a, 47);
+P99_GETOPT_DEFINE(char, charVar, c, 47);
+P99_GETOPT_DEFINE(double, doubleVar, d);
+P99_GETOPT_DEFINE(char const*, char_cptrVar, s);
+
 
 #define DEF(SUFF)                                                     \
   P99_INSTANTIATE(P99_BUILTIN_TYPE(SUFF), P99_PASTE2(p99_twos, SUFF), \
@@ -191,6 +202,7 @@ typedef enum { a4 = -1, b4, c4 } enum4;
 //typedef enum { a5 = (unsigned)-1, b5, c5 } enum5;
 
 int main(int argc, char** argv) {
+  P99_INIT_TRIGGER(p99_getopt_initialize, &argc, &argv);
   char const versionDate[] = { P99_VERSION_DATE };
   char const versionID[] = { P99_VERSION_ID };
   char const version_Date[] = { P00_VERSION_DATE };
@@ -638,4 +650,6 @@ int i:UINT_WIDTH;
     res = bsearch_s(&el, A, 6, sizeof *A, compar, 0);
     printf("searching for %u, gave %u\n", el, res ? *(unsigned*)res : UINT_MAX);
   }
+  printf("a = %u, c = %c, d = %g, s = \"%s\"\n", unsignedVar, charVar, doubleVar, char_cptrVar);
+  return EXIT_SUCCESS;
 }
