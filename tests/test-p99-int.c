@@ -18,11 +18,11 @@
 #include "p99_getopt.h"
 
 P99_GETOPT_DECLARE(a, unsigned, unsignedVar, 47, "unsigned");
-P99_GETOPT_DECLARE(c, char, charVar, 47);
+P99_GETOPT_DECLARE(c, char, charVar, 47, "unknown");
 P99_GETOPT_DECLARE(d, double, doubleVar, 0, "real");
 P99_GETOPT_DECLARE(s, char const*, char_cptrVar);
 P99_GETOPT_DEFINE(a, unsigned, unsignedVar, 47, "unsigned");
-P99_GETOPT_DEFINE(c, char, charVar, 47);
+P99_GETOPT_DEFINE(c, char, charVar, 47, "unknown");
 P99_GETOPT_DEFINE(d, double, doubleVar, 0, "real");
 P99_GETOPT_DEFINE(s, char const*, char_cptrVar);
 

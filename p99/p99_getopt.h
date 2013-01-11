@@ -29,6 +29,38 @@ struct p00_getopt {
   char const* p00_a;
 };
 
+static_inline
+int p00_getopt_comp(void const* p00_a, void const* p00_b) {
+  struct p00_getopt const*const* p00_A = p00_a;
+  struct p00_getopt const*const* p00_B = p00_b;
+  if (p00_A && (*p00_A) && (*p00_A)->p00_a)
+    if (p00_B && (*p00_B) && (*p00_B)->p00_a)
+      return strcmp((*p00_A)->p00_a, (*p00_B)->p00_a);
+    else
+      return -1;
+  else if (p00_B && (*p00_B) && (*p00_B)->p00_a)
+    return 1;
+  else
+    return 0;
+}
+
+static_inline
+int p00_getopt_subcomp(void const* p00_a, void const* p00_b) {
+  struct p00_getopt const*const* p00_A = p00_a;
+  struct p00_getopt const*const* p00_B = p00_b;
+  if (p00_A && (*p00_A) && (*p00_A)->p00_a)
+    if (p00_B && (*p00_B) && (*p00_B)->p00_a) {
+      size_t p00_n = strlen((*p00_A)->p00_a);
+      return strncmp((*p00_A)->p00_a, (*p00_B)->p00_a, p00_n);
+    } else
+      return -1;
+  else if (p00_B && (*p00_B) && (*p00_B)->p00_a)
+    return 1;
+  else
+    return 0;
+}
+
+
 #define P00_GETOPT_SIGNED(T)                                            \
 static_inline                                                              \
 size_t P99_PASTE2(p00_getopt_process_, T)(void* p00_o, char const* p00_c) { \
@@ -240,28 +272,92 @@ P99_SEP(P00_GETOPT_STRUCT_DECL, P00_GETOPT_CHARS);
 
 #define P00_GETOPT_INITIALIZE(...) P99_SER(P00_GETOPT_INITIALIZE_, __VA_ARGS__)
 
+#define P00_GETOPT_ARRAY_(CHAR) [p00_getopt_enum## CHAR] = p00_getopt_char## CHAR
+
+#define P00_GETOPT_ARRAY(...) P99_SEQ(P00_GETOPT_ARRAY_, __VA_ARGS__)
+
 P99_MAIN_INTERCEPT(p99_getopt_initialize) {
+  /* Create a sorted array with all the aliases, such that we may then
+     search for a matching key. */
+  struct p00_getopt const* p00_A[CHAR_MAX] = {
+    P00_GETOPT_ARRAY(P00_GETOPT_CHARS),
+  };
+  qsort(p00_A, CHAR_MAX, sizeof *p00_A, p00_getopt_comp);
+
+  /* Now comes the main processing loop. One character arguments may
+     be aggregated into one option, that is why this loop looks a bit
+     scary. */
   int p00_arg = 1;
   for (; p00_arg < *p00_argc && (*p00_argv)[p00_arg]; ++p00_arg) {
+    /* All options must start with a dash, otherwise this finishes
+       option processing. */
     if ((*p00_argv)[p00_arg][0] != '-') {
-      break;
+      goto P00_REARANGE;
     } else {
-      if ((*p00_argv)[p00_arg][1] == '-' && !(*p00_argv)[p00_arg][1]) {
+      /* A "--" without anything else finishes option processing. */
+      if ((*p00_argv)[p00_arg][1] == '-' && !(*p00_argv)[p00_arg][2]) {
         ++p00_arg;
-        break;
+        goto P00_REARANGE;;
       }
       for (char const* p00_str = (*p00_argv)[p00_arg] + 1; p00_str && p00_str[0];) {
         size_t p00_used = 0;
-        bool p00_extra = 0;
+        bool p00_extra = false;
         char p00_C = p00_str[0];
         ++p00_str;
+        /* If there was nothing left in the option, take the next one
+           as an argument. */
         if (!p00_str[0]) {
           p00_str = (*p00_argv)[p00_arg + 1];
           if (p00_str) p00_extra = true;
         }
         switch (p00_C) {
+          /* The cases for the one-character options are hidden
+             here. */
           P00_GETOPT_INITIALIZE(P00_GETOPT_CHARS)
-        default: goto P00_REARANGE;
+            /* If the initial string was "--" this announces a long
+               option. */
+        case '-': {
+            /* First split up the option string into option and
+               argument, if possible. */
+            char p00_al[strlen(p00_str) + 1];
+            strcpy(p00_al, p00_str);
+            char* p00_ar = strchr(p00_al, '=');
+            if (p00_ar) {
+              *p00_ar = 0;
+              ++p00_ar;
+            } else {
+              /* If not, suppose that the argument has been given in
+                 the next option. */
+              p00_ar = (*p00_argv)[p00_arg + 1];
+              if (p00_ar) p00_extra = true;
+            }
+            /* Search for a matching alias in the array */
+            struct p00_getopt const* p00_el = &(struct p00_getopt const){ .p00_a = p00_al, };
+            struct p00_getopt const** p00_p = bsearch(&p00_el,
+                                                      p00_A,
+                                                      CHAR_MAX,
+                                                      sizeof *p00_A,
+                                                      p00_getopt_subcomp);
+            if (p00_p && (*p00_p)) {
+              /* Now search if there are several matches. */
+              while (p00_p != p00_A && !p00_getopt_subcomp(&p00_el, p00_p - 1)) --p00_p;
+              /* An exact match must always come first and is preferred.
+                 If the first is not an exact match, second shouldn't be
+                 a partial match. */
+              if (!p00_getopt_comp(&p00_el, p00_p) || (p00_getopt_subcomp(&p00_el, p00_p+1) < 0)) {
+                void* p00_o = (*p00_p)->p00_o;
+                p00_used = (*p00_p)->p00_f(p00_o, p00_ar);
+                break;
+              }
+              fprintf(stderr, "Warning: ambiguous option alias for \"--%s\" with argument \"%s\"\n",
+                      p00_al,
+                      p00_ar);
+            } else
+              fprintf(stderr, "Warning: no matching option alias for \"--%s\" with argument \"%s\"\n",
+                      p00_al,
+                      p00_ar);
+            goto P00_REARANGE;
+          }
         }
         if (p00_used) {
           p00_arg += p00_extra;
@@ -271,6 +367,8 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
     }
   }
  P00_REARANGE:
+  /* At the end of the processing, shift all unused options down, such
+     that they appear at front in the argv array. */
   *p00_argc -= (p00_arg - 1);
   for (int p00_n = 1; p00_n < *p00_argc; ++p00_n) {
     (*p00_argv)[p00_n] = (*p00_argv)[p00_n + (p00_arg - 1)];
