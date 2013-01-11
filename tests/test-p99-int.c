@@ -18,10 +18,12 @@
 #include "p99_getopt.h"
 
 P99_GETOPT_DECLARE(a, unsigned, unsignedVar, 47, "unsigned");
+P99_GETOPT_DECLARE(b, bool, boolVar, false, "flag");
 P99_GETOPT_DECLARE(c, char, charVar, 47, "unknown");
 P99_GETOPT_DECLARE(d, double, doubleVar, 0, "real");
 P99_GETOPT_DECLARE(s, char const*, char_cptrVar);
 P99_GETOPT_DEFINE(a, unsigned, unsignedVar, 47, "unsigned");
+P99_GETOPT_DEFINE(b, bool, boolVar, false, "flag");
 P99_GETOPT_DEFINE(c, char, charVar, 47, "unknown");
 P99_GETOPT_DEFINE(d, double, doubleVar, 0, "real");
 P99_GETOPT_DEFINE(s, char const*, char_cptrVar);
@@ -650,6 +652,6 @@ int i:UINT_WIDTH;
     res = bsearch_s(&el, A, 6, sizeof *A, compar, 0);
     printf("searching for %u, gave %u\n", el, res ? *(unsigned*)res : UINT_MAX);
   }
-  printf("a = %u, c = %c, d = %g, s = \"%s\"\n", unsignedVar, charVar, doubleVar, char_cptrVar);
+  P99_PRINTF("a = %s, b = %s, c = %s, d = %s, s = \"%s\"\n", unsignedVar, boolVar, charVar, doubleVar, char_cptrVar);
   return EXIT_SUCCESS;
 }

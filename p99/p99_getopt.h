@@ -21,7 +21,7 @@
 #include "p99_init.h"
 #include "p99_c99_default.h"
 
-typedef size_t p00_getopt_process_type(void*, char const*);
+typedef int p00_getopt_process_type(void*, char const*);
 
 struct p00_getopt {
   void* p00_o;
@@ -62,15 +62,15 @@ int p00_getopt_subcomp(void const* p00_a, void const* p00_b) {
 
 
 #define P00_GETOPT_SIGNED(T)                                            \
-static_inline                                                              \
-size_t P99_PASTE2(p00_getopt_process_, T)(void* p00_o, char const* p00_c) { \
+static_inline                                                           \
+int P99_PASTE2(p00_getopt_process_, T)(void* p00_o, char const* p00_c) { \
   T*p00_O = p00_o;                                                      \
   if (p00_c && p00_c[0]) {                                              \
     char* endptr = 0;                                                   \
     *p00_O = strtoll(p00_c, &endptr, 0);                                \
     if (endptr) return strlen(p00_c);                                   \
   }                                                                     \
-  return 0;                                                             \
+  return -1;                                                            \
 }
 
 P99_SER(P00_GETOPT_SIGNED,                      \
@@ -83,18 +83,17 @@ P99_SER(P00_GETOPT_SIGNED,                      \
 
 #define P00_GETOPT_UNSIGNED(T)                                          \
 static_inline                                                              \
-size_t P99_PASTE2(p00_getopt_process_, T)(void* p00_o, char const* p00_c) { \
+int P99_PASTE2(p00_getopt_process_, T)(void* p00_o, char const* p00_c) { \
   T*p00_O = p00_o;                                                      \
   if (p00_c && p00_c[0]) {                                              \
     char* endptr = 0;                                                   \
     *p00_O = strtoull(p00_c, &endptr, 0);                               \
     if (endptr) return strlen(p00_c);                                   \
   }                                                                     \
-  return 0;                                                             \
+  return -1;                                                            \
 }
 
 P99_SER(P00_GETOPT_UNSIGNED,                    \
-        _Bool,                                  \
         uchar,                                  \
         ushort,                                 \
         unsigned,                               \
@@ -102,35 +101,43 @@ P99_SER(P00_GETOPT_UNSIGNED,                    \
         ullong)
 
 static_inline
-size_t P99_PASTE2(p00_getopt_process_, char)(void* p00_o, char const*p00_c) {
+int P99_PASTE2(p00_getopt_process_, char)(void* p00_o, char const*p00_c) {
   char*p00_O = p00_o;
   if (p00_c && p00_c[0]) {
     *p00_O = p00_c[0];
     return 1;
   }
+  return -1;
+}
+
+static_inline
+int P99_PASTE2(p00_getopt_process_, _Bool)(void* p00_o, char const*p00_c) {
+  P99_UNUSED(p00_c);
+  bool*p00_O = p00_o;
+  *p00_O = !*p00_O;
   return 0;
 }
 
 static_inline
-size_t P99_PASTE2(p00_getopt_process_, char_cptr)(void* p00_o, char const*p00_c) {
+int P99_PASTE2(p00_getopt_process_, char_cptr)(void* p00_o, char const*p00_c) {
   char const**p00_O = p00_o;
   if (p00_c) {
     *p00_O = p00_c;
-    return strlen(p00_c);
+    return strlen(p00_c) + 1;
   }
-  return 0;
+  return -1;
 }
 
 #define P00_GETOPT_FLOAT(T)                                             \
-static_inline                                                              \
-size_t P99_PASTE2(p00_getopt_process_, T)(void* p00_o, char const* p00_c) { \
+static_inline                                                           \
+int P99_PASTE2(p00_getopt_process_, T)(void* p00_o, char const* p00_c) { \
   T*p00_O = p00_o;                                                      \
   if (p00_c && p00_c[0]) {                                              \
     char* endptr = 0;                                                   \
     *p00_O = strtold(p00_c, &endptr);                                   \
     if (endptr) return strlen(p00_c);                                   \
   }                                                                     \
-  return 0;                                                             \
+  return -1;                                                            \
 }
 
 P99_SER(P00_GETOPT_FLOAT,                       \
@@ -266,8 +273,10 @@ P99_SEP(P00_GETOPT_STRUCT_DECL, P00_GETOPT_CHARS);
     if (p00_p) {                                                        \
       void* p00_o = p00_p->p00_o;                                       \
       p00_used = p00_p->p00_f(p00_o, p00_str);                          \
-      break;                                                            \
-    } else goto P00_REARANGE;                                           \
+      if (p00_used >= 0) break;                                         \
+    }                                                                   \
+    p00_err0 = "unparsable argument";                                   \
+    goto P00_REARANGE;                                                  \
   }
 
 #define P00_GETOPT_INITIALIZE(...) P99_SER(P00_GETOPT_INITIALIZE_, __VA_ARGS__)
@@ -277,6 +286,9 @@ P99_SEP(P00_GETOPT_STRUCT_DECL, P00_GETOPT_CHARS);
 #define P00_GETOPT_ARRAY(...) P99_SEQ(P00_GETOPT_ARRAY_, __VA_ARGS__)
 
 P99_MAIN_INTERCEPT(p99_getopt_initialize) {
+  char const* p00_err0 = 0;
+  char const* p00_err1 = 0;
+  char const* p00_err2 = 0;
   /* Create a sorted array with all the aliases, such that we may then
      search for a matching key. */
   struct p00_getopt const* p00_A[CHAR_MAX] = {
@@ -300,7 +312,7 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
         goto P00_REARANGE;;
       }
       for (char const* p00_str = (*p00_argv)[p00_arg] + 1; p00_str && p00_str[0];) {
-        size_t p00_used = 0;
+        int p00_used = 0;
         bool p00_extra = false;
         char p00_C = p00_str[0];
         ++p00_str;
@@ -310,6 +322,10 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
           p00_str = (*p00_argv)[p00_arg + 1];
           if (p00_str) p00_extra = true;
         }
+        static char p00_err[2];
+        p00_err[0] = p00_C;
+        p00_err1 = p00_err;
+        p00_err2 = p00_str;
         switch (p00_C) {
           /* The cases for the one-character options are hidden
              here. */
@@ -329,8 +345,10 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
               /* If not, suppose that the argument has been given in
                  the next option. */
               p00_ar = (*p00_argv)[p00_arg + 1];
-              if (p00_ar) p00_extra = true;
+              p00_extra = true;
             }
+            p00_err1 = p00_al;
+            p00_err2 = p00_ar;
             /* Search for a matching alias in the array */
             struct p00_getopt const* p00_el = &(struct p00_getopt const){ .p00_a = p00_al, };
             struct p00_getopt const** p00_p = bsearch(&p00_el,
@@ -347,26 +365,32 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
               if (!p00_getopt_comp(&p00_el, p00_p) || (p00_getopt_subcomp(&p00_el, p00_p+1) < 0)) {
                 void* p00_o = (*p00_p)->p00_o;
                 p00_used = (*p00_p)->p00_f(p00_o, p00_ar);
-                break;
-              }
-              fprintf(stderr, "Warning: ambiguous option alias for \"--%s\" with argument \"%s\"\n",
-                      p00_al,
-                      p00_ar);
-            } else
-              fprintf(stderr, "Warning: no matching option alias for \"--%s\" with argument \"%s\"\n",
-                      p00_al,
-                      p00_ar);
+                if (p00_used >= 0) break;
+                else p00_err0 = "unparsable argument";
+              } else p00_err0 = "ambiguous option alias";
+            } else p00_err0 = "no matching option alias";
             goto P00_REARANGE;
           }
         }
-        if (p00_used) {
+        /* If this used the option argument and the argument was found
+           in the next element of argv, skip that. */
+        if (p00_used > 0) {
           p00_arg += p00_extra;
           break;
-        }
+        } else
+          /* Otherwise if this was a flag and we tried to obtain from
+             the next element in argv, check that element again, it
+             might be an option, too. */
+          if (p00_extra) break;
       }
     }
   }
  P00_REARANGE:
+  if (p00_err0)
+    fprintf(stderr, "Warning:%s for \"--%s\" with \"%s\"\n",
+            p00_err0,
+            p00_err1,
+            p00_err2);
   /* At the end of the processing, shift all unused options down, such
      that they appear at front in the argv array. */
   *p00_argc -= (p00_arg - 1);
