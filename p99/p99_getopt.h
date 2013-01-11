@@ -110,7 +110,7 @@ P99_SER(P00_GETOPT_FLOAT,                       \
 
 #define P00_GETOPT_PROCESS_CHOOSE(...) P99_SEQ(P00_GETOPT_PROCESS_CHOOSE_, __VA_ARGS__)
 
-#define P00_GETOPT_DECLARE(T, NAME, CHAR, DEF, ...)                     \
+#define P00_GETOPT_DECLARE(CHAR, T, NAME, DEF, ...)                     \
   extern T NAME;                                                        \
   static struct p00_getopt const* p00_getopt_char_p00## CHAR            \
   = &(struct p00_getopt const){                                         \
@@ -120,20 +120,20 @@ P99_SER(P00_GETOPT_FLOAT,                       \
 
 #define P00_GETOPT_DECLARE_(...) P00_GETOPT_DECLARE(__VA_ARGS__)
 
-#define P99_GETOPT_DECLARE(T, NAME, ...)                                \
-P00_GETOPT_DECLARE_(T,                                                  \
-                   NAME,                                                \
+#define P99_GETOPT_DECLARE(CHAR, T, ...)                                \
+P00_GETOPT_DECLARE_(CHAR,                                               \
+                    T,                                                  \
                    P99_IF_LT(P99_NARG(__VA_ARGS__), 2)(__VA_ARGS__, 0)(__VA_ARGS__), \
                    P00_GETOPT_PROCESS_CHOOSE(P99_STD_REAL_TYPES, char_cptr))
 
 
-#define P00_GETOPT_DEFINE(T, NAME, CHAR, DEF)   \
+#define P00_GETOPT_DEFINE(CHAR, T, NAME, DEF)   \
 T NAME = (DEF)
 
-#define P99_GETOPT_DEFINE(T, NAME, ...)         \
+#define P99_GETOPT_DEFINE(CHAR, T, ...)         \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
-(P00_GETOPT_DEFINE(T, NAME, __VA_ARGS__, 0))    \
-(P00_GETOPT_DEFINE(T, NAME, __VA_ARGS__))
+(P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0))    \
+(P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__))
 
 
 #define P00_GETOPT_STRUCT_DECL(CHAR) static struct p00_getopt const* p00_getopt_char## CHAR

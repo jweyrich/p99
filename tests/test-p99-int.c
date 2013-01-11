@@ -17,14 +17,14 @@
 #include "p99_enum.h"
 #include "p99_getopt.h"
 
-P99_GETOPT_DECLARE(unsigned, unsignedVar, a, 47);
-P99_GETOPT_DECLARE(char, charVar, c, 47);
-P99_GETOPT_DECLARE(double, doubleVar, d);
-P99_GETOPT_DECLARE(char const*, char_cptrVar, s);
-P99_GETOPT_DEFINE(unsigned, unsignedVar, a, 47);
-P99_GETOPT_DEFINE(char, charVar, c, 47);
-P99_GETOPT_DEFINE(double, doubleVar, d);
-P99_GETOPT_DEFINE(char const*, char_cptrVar, s);
+P99_GETOPT_DECLARE(a, unsigned, unsignedVar, 47);
+P99_GETOPT_DECLARE(c, char, charVar, 47);
+P99_GETOPT_DECLARE(d, double, doubleVar);
+P99_GETOPT_DECLARE(s, char const*, char_cptrVar);
+P99_GETOPT_DEFINE(a, unsigned, unsignedVar, 47);
+P99_GETOPT_DEFINE(c, char, charVar, 47);
+P99_GETOPT_DEFINE(d, double, doubleVar);
+P99_GETOPT_DEFINE(s, char const*, char_cptrVar);
 
 
 #define DEF(SUFF)                                                     \
