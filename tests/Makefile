@@ -53,7 +53,7 @@ INCL  	=		# List of *.h
 ################
 OPT     += -O0
 IPATH   += -I../p99
-OBJOPT  += -Wall -Wstrict-prototypes ${OPT}
+OBJOPT  += -Wall -Wstrict-prototypes  -fdata-sections -ffunction-sections ${OPT}
 EXEOPT  += ${OPT}
 LPATH   += -L.
 COPY = "all rights reserved, "
@@ -66,6 +66,9 @@ CONFORM = ${SCRIPTS}/p99_conformance.pl
 ifneq (${POSIX_SEMAPHORES}, -1L)
 LDFLAGS := ${LDFLAGS} -lrt -lpthread
 endif
+
+LDFLAGS += -Wl,--gc-sections -Wl,--print-gc-sections
+
 
 #####################
 # Macro Definitions #
