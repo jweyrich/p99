@@ -27,6 +27,10 @@ struct p00_getopt {
   void* p00_o;
   p00_getopt_process_type* p00_f;
   char const* p00_a;
+  char const* p00_d;
+  char const* p00_t;
+  char const* p00_n;
+  char const* p00_v;
 };
 
 static_inline
@@ -150,13 +154,17 @@ P99_SER(P00_GETOPT_FLOAT,                       \
 
 #define P00_GETOPT_PROCESS_CHOOSE(...) P99_SEQ(P00_GETOPT_PROCESS_CHOOSE_, __VA_ARGS__)
 
-#define P00_GETOPT_DECLARE(CHAR, T, NAME, DEF, ALIAS, ...)              \
+#define P00_GETOPT_DECLARE(CHAR, T, NAME, DEF, ALIAS, DOC, ...)         \
   extern T NAME;                                                        \
   static struct p00_getopt const* p00_getopt_char_p00## CHAR            \
   = &(struct p00_getopt const){                                         \
     .p00_o =  &(NAME),                                                  \
     .p00_f = P99_GENERIC(NAME, 0, __VA_ARGS__),                         \
     .p00_a = (ALIAS),                                                   \
+    .p00_d = (DOC),                                                     \
+    .p00_t = #T,                                                        \
+    .p00_n = #NAME,                                                     \
+    .p00_v = #DEF,                                                      \
   }
 
 #define P00_GETOPT_DECLARE_(...) P00_GETOPT_DECLARE(__VA_ARGS__)
@@ -165,22 +173,26 @@ P99_SER(P00_GETOPT_FLOAT,                       \
 P00_GETOPT_DECLARE_(CHAR,                                               \
                     T,                                                  \
                     P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                 \
-                    (__VA_ARGS__, 0, 0)                                 \
+                    (__VA_ARGS__, 0, 0, 0)                              \
                     (P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                \
-                     (__VA_ARGS__, 0)                                   \
-                     (__VA_ARGS__)),                                    \
+                     (__VA_ARGS__, 0, 0)                                \
+                     (P99_IF_LT(P99_NARG(__VA_ARGS__), 4)               \
+                      (__VA_ARGS__, 0)                                  \
+                      (__VA_ARGS__))),                                  \
                     P00_GETOPT_PROCESS_CHOOSE(P99_STD_REAL_TYPES, char_cptr))
 
 
-#define P00_GETOPT_DEFINE(CHAR, T, NAME, DEF, ALIAS)    \
+#define P00_GETOPT_DEFINE(CHAR, T, NAME, DEF, ALIAS, DOC)       \
 T NAME = (DEF)
 
-#define P99_GETOPT_DEFINE(CHAR, T, ...)         \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
-(P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0, 0)) \
-(P99_IF_LT(P99_NARG(__VA_ARGS__), 3)            \
- (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0))   \
- (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__)))
+#define P99_GETOPT_DEFINE(CHAR, T, ...)                 \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                     \
+(P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0, 0, 0))      \
+(P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                    \
+ (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0, 0))        \
+ (P99_IF_LT(P99_NARG(__VA_ARGS__), 4)                   \
+  (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0))          \
+  (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__))))
 
 
 #define P00_GETOPT_STRUCT_DECL(CHAR) static struct p00_getopt const* p00_getopt_char## CHAR
@@ -195,10 +207,40 @@ _p00A, _p00B, _p00C, _p00D, _p00E, _p00F, _p00G,        \
   _p00o, _p00p, _p00q, _p00r, _p00s, _p00t, _p00u,      \
   _p00v, _p00w, _p00x, _p00y, _p00z,                    \
   _p000, _p001, _p002, _p003, _p004, _p005, _p006,      \
-  _p007, _p008, _p009, _p00_
+  _p007, _p008, _p009, _p00_,                           \
+  _p00AMPERSAND,                                        \
+  _p00APOSTROPHE,                                       \
+  _p00ASTERISK,                                         \
+  _p00AT,                                               \
+  _p00BACKSLASH,                                        \
+  _p00BAR,                                              \
+  _p00BRACELEFT,                                        \
+  _p00BRACERIGHT,                                       \
+  _p00BRACKETLEFT,                                      \
+  _p00BRACKETRIGHT,                                     \
+  _p00CARRET,                                           \
+  _p00COLON,                                            \
+  _p00COMMA,                                            \
+  _p00DOLLAR,                                           \
+  _p00EQUAL,                                            \
+  _p00EXLAM,                                            \
+  _p00GRAVE,                                            \
+  _p00GREATER,                                          \
+  _p00HASH,                                             \
+  _p00HELP,                                             \
+  _p00LESS,                                             \
+  _p00PARENLEFT,                                        \
+  _p00PARENRIGHT,                                       \
+  _p00PERCENT,                                          \
+  _p00PERIOD,                                           \
+  _p00PLUS,                                             \
+  _p00QUOTEDBL,                                         \
+  _p00SEMICOLON,                                        \
+  _p00SLASH,                                            \
+  _p00TILDE
 
 
-enum {
+enum p00_getopt_enum {
   p00_getopt_enum_p00A = 'A',
   p00_getopt_enum_p00B = 'B',
   p00_getopt_enum_p00C = 'C',
@@ -262,10 +304,111 @@ enum {
   p00_getopt_enum_p008 = '8',
   p00_getopt_enum_p009 = '9',
   p00_getopt_enum_p00_ = '_',
+  p00_getopt_enum_p00AMPERSAND = '&',
+  p00_getopt_enum_p00APOSTROPHE = '\'',
+  p00_getopt_enum_p00ASTERISK = '*',
+  p00_getopt_enum_p00AT = '@',
+  p00_getopt_enum_p00BACKSLASH = '\\',
+  p00_getopt_enum_p00BAR = '|',
+  p00_getopt_enum_p00BRACELEFT = '{',
+  p00_getopt_enum_p00BRACERIGHT = '}',
+  p00_getopt_enum_p00BRACKETLEFT = '[',
+  p00_getopt_enum_p00BRACKETRIGHT = ']',
+  p00_getopt_enum_p00CARRET = '^',
+  p00_getopt_enum_p00COLON = ':',
+  p00_getopt_enum_p00COMMA = ',',
+  p00_getopt_enum_p00DOLLAR = '$',
+  p00_getopt_enum_p00EQUAL = '=',
+  p00_getopt_enum_p00EXLAM = '!',
+  p00_getopt_enum_p00GRAVE = '`',
+  p00_getopt_enum_p00GREATER = '>',
+  p00_getopt_enum_p00HASH = '#',
+  p00_getopt_enum_p00HELP = '?',
+  p00_getopt_enum_p00LESS = '<',
+  p00_getopt_enum_p00PARENLEFT = '(',
+  p00_getopt_enum_p00PARENRIGHT = ')',
+  p00_getopt_enum_p00PERCENT = '%',
+  p00_getopt_enum_p00PERIOD = '.',
+  p00_getopt_enum_p00PLUS = '+',
+  p00_getopt_enum_p00QUOTEDBL = '"',
+  p00_getopt_enum_p00SEMICOLON = ';',
+  p00_getopt_enum_p00SLASH = '/',
+  p00_getopt_enum_p00TILDE = '~',
 };
 
-
 P99_SEP(P00_GETOPT_STRUCT_DECL, P00_GETOPT_CHARS);
+
+#define P00_GETOPT_HELP_COUNT_(CHAR)                                    \
+do {                                                                    \
+  struct p00_getopt const* p00_p = p00_getopt_char## CHAR;              \
+  if (p00_p) {                                                          \
+    if (p00_p->p00_a) p00_na = P99_GEN_MAX(p00_na, strlen(p00_p->p00_a)); \
+    if (p00_p->p00_t) p00_nt = P99_GEN_MAX(p00_nt, strlen(p00_p->p00_t)); \
+    if (p00_p->p00_n) p00_nn = P99_GEN_MAX(p00_nn, strlen(p00_p->p00_n)); \
+    if (p00_p->p00_v) p00_nv = P99_GEN_MAX(p00_nv, strlen(p00_p->p00_v)); \
+  }                                                                     \
+} while(false)
+
+#define P00_GETOPT_HELP_COUNT(...) P99_SEP(P00_GETOPT_HELP_COUNT_, __VA_ARGS__)
+
+#define P00_GETOPT_HELP_(CHAR)                                          \
+do {                                                                    \
+  struct p00_getopt const* p00_p = p00_getopt_char## CHAR;              \
+  if (p00_p) {                                                          \
+    char const* p00_d = p00_p->p00_d ? p00_p->p00_d : "(not documented)"; \
+    char const* p00_t = p00_p->p00_t ? p00_p->p00_t : "";               \
+    char const* p00_n = p00_p->p00_n ? p00_p->p00_n : "";               \
+    char const* p00_v = p00_p->p00_v ? p00_p->p00_v : "";               \
+    if (p00_p->p00_a)                                                   \
+      fprintf(stderr, "   -%c  --%-*s%-*s%-*s%-*s\t%s\n",               \
+              p00_getopt_enum## CHAR,                                   \
+              p00_na+2,                                                 \
+              p00_p->p00_a,                                             \
+              p00_nt+2,                                                 \
+              p00_t,                                                    \
+              p00_nn+2,                                                 \
+              p00_n,                                                    \
+              p00_nv+2,                                                 \
+              p00_v,                                                    \
+              p00_d);                                                   \
+    else                                                                \
+      fprintf(stderr, "   -%c    %-*s%-*s%-*s%-*s \t%s\n",           \
+              p00_getopt_enum## CHAR,                                   \
+              p00_na+2,                                                 \
+              "",                                                       \
+              p00_nt+2,                                                 \
+              p00_t,                                                    \
+              p00_nn+2,                                                 \
+              p00_n,                                                    \
+              p00_nv+2,                                                 \
+              p00_v,                                                    \
+              p00_d);                                                   \
+  }                                                                     \
+ } while(false)
+
+#define P00_GETOPT_HELP(...) P99_SEP(P00_GETOPT_HELP_, __VA_ARGS__)
+
+static_inline
+int P99_PASTE2(p00_getopt_process_, help)(void* p00_o, char const*p00_c) {
+  int p00_na = 0;
+  int p00_nt = 0;
+  int p00_nn = 0;
+  int p00_nv = 0;
+  P00_GETOPT_HELP_COUNT(P00_GETOPT_CHARS);
+  if (p00_o) fprintf(stderr, "%s\toptions:\n", (char const*)p00_o);
+  fprintf(stderr, "short  %-*s%-*s%-*s%-*s \t%s\n",
+          p00_na+4,
+          "long",
+          p00_nt+2,
+          "type",
+          p00_nn+2,
+          "name",
+          p00_nv+2,
+          "default",
+          "");
+  P00_GETOPT_HELP(P00_GETOPT_CHARS);
+  exit(EXIT_FAILURE);
+}
 
 #define P00_GETOPT_INITIALIZE_(CHAR)                                    \
   case p00_getopt_enum## CHAR: {                                        \
@@ -295,6 +438,43 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
     P00_GETOPT_ARRAY(P00_GETOPT_CHARS),
   };
   qsort(p00_A, CHAR_MAX, sizeof *p00_A, p00_getopt_comp);
+
+  struct p00_getopt const** p00_up = p00_A;
+  while (*p00_up) ++p00_up;
+
+  bool p00_help = false;
+  {
+    /* Search for a matching alias in the array */
+    struct p00_getopt const* p00_el = &(struct p00_getopt const){ .p00_a = "help", };
+    struct p00_getopt const** p00_p = bsearch(&p00_el,
+                                              p00_A,
+                                              CHAR_MAX,
+                                              sizeof *p00_A,
+                                              p00_getopt_subcomp);
+    if (p00_p && (*p00_p)) {
+      /* Now search if there are several matches. */
+      while (p00_p != p00_A && !p00_getopt_subcomp(&p00_el, p00_p - 1)) --p00_p;
+      /* An exact match must always come first and is preferred.
+         If the first is not an exact match, second shouldn't be
+         a partial match. */
+      p00_help = !p00_getopt_comp(&p00_el, p00_p);
+    }
+  }
+
+  /* If -h is not taken install a help function on it. */
+  struct p00_getopt const p00_h = {
+    .p00_o = (*p00_argv)[0],
+    .p00_f = p00_getopt_process_help,
+    .p00_a = p00_help ? 0 : "help",
+    .p00_d = "provide this help text",
+  };
+  if (!p00_help) {
+    *p00_up = &p00_h;
+    ++p00_up;
+    qsort(p00_A, p00_up - p00_A, sizeof *p00_A, p00_getopt_comp);
+  }
+  if (!p00_getopt_char_p00HELP) p00_getopt_char_p00HELP = &p00_h;
+  if (!p00_getopt_char_p00h) p00_getopt_char_p00h = &p00_h;
 
   /* Now comes the main processing loop. One character arguments may
      be aggregated into one option, that is why this loop looks a bit

@@ -17,16 +17,16 @@
 #include "p99_enum.h"
 #include "p99_getopt.h"
 
-P99_GETOPT_DECLARE(a, unsigned, unsignedVar, 47, "unsigned");
-P99_GETOPT_DECLARE(b, bool, boolVar, false, "flag");
+P99_GETOPT_DECLARE(a, unsigned, unsignedVar, 47, "unsigned", "this an unsigned variable");
+P99_GETOPT_DECLARE(b, bool, boolVar, false, "flag", "you can toggle this on (and off)");
 P99_GETOPT_DECLARE(c, char, charVar, 47, "unknown");
-P99_GETOPT_DECLARE(d, double, doubleVar, 0, "real");
-P99_GETOPT_DECLARE(s, char const*, char_cptrVar);
-P99_GETOPT_DEFINE(a, unsigned, unsignedVar, 47, "unsigned");
-P99_GETOPT_DEFINE(b, bool, boolVar, false, "flag");
+P99_GETOPT_DECLARE(d, double, doubleVar, 0, "real", "a double precision element");
+P99_GETOPT_DECLARE(AT, char const*, char_cptrVar, 0, 0, "just a string");
+P99_GETOPT_DEFINE(a, unsigned, unsignedVar, 47, "unsigned", "this an unsigned variable");
+P99_GETOPT_DEFINE(b, bool, boolVar, false, "flag", "you can toggle this on (and off)");
 P99_GETOPT_DEFINE(c, char, charVar, 47, "unknown");
-P99_GETOPT_DEFINE(d, double, doubleVar, 0, "real");
-P99_GETOPT_DEFINE(s, char const*, char_cptrVar);
+P99_GETOPT_DEFINE(d, double, doubleVar, 0, "real", "a double precision element");
+P99_GETOPT_DEFINE(AT, char const*, char_cptrVar, 0, 0, "just a string");
 
 
 #define DEF(SUFF)                                                     \
