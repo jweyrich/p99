@@ -523,6 +523,37 @@ int P99_PASTE2(p00_getopt_process_, help)(void* p00_o, char const*p00_c) {
 
 #define P00_GETOPT_ARRAY(...) P99_SEQ(P00_GETOPT_ARRAY_, __VA_ARGS__)
 
+p99_inline
+struct p00_getopt const*
+p00_getopt_find_alias(char const* p00_al, size_t p00_size, struct p00_getopt const* p00_A[p00_size]) {
+  /* Search for a matching alias in the array */
+  struct p00_getopt const* p00_el = &(struct p00_getopt const){ .p00_a = p00_al, };
+  struct p00_getopt const** p00_p = bsearch(&p00_el,
+                                            p00_A,
+                                            p00_size,
+                                            sizeof *p00_A,
+                                            p00_getopt_subcomp);
+  if (p00_p && (*p00_p)) {
+    /* Now search if there are several matches. */
+    while (p00_p != p00_A && !p00_getopt_subcomp(&p00_el, p00_p - 1)) --p00_p;
+    /* An exact match must always come first and is preferred.
+       If the first is not an exact match, second shouldn't be
+       a partial match. */
+    if (!p00_getopt_comp(&p00_el, p00_p) || (p00_getopt_subcomp(&p00_el, p00_p+1) < 0))
+      return *p00_p;
+  }
+  return 0;
+}
+
+p99_inline
+void
+p00_getopt_diagnostic(char const* p00_err0, char const* p00_err1, char const* p00_err2) {
+  fprintf(stderr, "Warning: %s for \"--%s\" with \"%s\"\n",
+          p00_err0,
+          p00_err1,
+          p00_err2);
+}
+
 P99_MAIN_INTERCEPT(p99_getopt_initialize) {
   char const* p00_err0 = 0;
   char const* p00_err1 = 0;
@@ -537,24 +568,7 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
   struct p00_getopt const** p00_up = p00_A;
   while (*p00_up) ++p00_up;
 
-  bool p00_help = false;
-  {
-    /* Search for a matching alias in the array */
-    struct p00_getopt const* p00_el = &(struct p00_getopt const){ .p00_a = "help", };
-    struct p00_getopt const** p00_p = bsearch(&p00_el,
-                                              p00_A,
-                                              CHAR_MAX,
-                                              sizeof *p00_A,
-                                              p00_getopt_subcomp);
-    if (p00_p && (*p00_p)) {
-      /* Now search if there are several matches. */
-      while (p00_p != p00_A && !p00_getopt_subcomp(&p00_el, p00_p - 1)) --p00_p;
-      /* An exact match must always come first and is preferred.
-         If the first is not an exact match, second shouldn't be
-         a partial match. */
-      p00_help = !p00_getopt_comp(&p00_el, p00_p);
-    }
-  }
+  bool p00_help = !p00_getopt_find_alias("help", p00_up-p00_A, p00_A);
 
   /* If -h is not taken install a help function on it. */
   struct p00_getopt const p00_h = {
@@ -625,25 +639,13 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
             p00_err1 = p00_al;
             p00_err2 = p00_ar;
             /* Search for a matching alias in the array */
-            struct p00_getopt const* p00_el = &(struct p00_getopt const){ .p00_a = p00_al, };
-            struct p00_getopt const** p00_p = bsearch(&p00_el,
-                                                      p00_A,
-                                                      CHAR_MAX,
-                                                      sizeof *p00_A,
-                                                      p00_getopt_subcomp);
-            if (p00_p && (*p00_p)) {
-              /* Now search if there are several matches. */
-              while (p00_p != p00_A && !p00_getopt_subcomp(&p00_el, p00_p - 1)) --p00_p;
-              /* An exact match must always come first and is preferred.
-                 If the first is not an exact match, second shouldn't be
-                 a partial match. */
-              if (!p00_getopt_comp(&p00_el, p00_p) || (p00_getopt_subcomp(&p00_el, p00_p+1) < 0)) {
-                void* p00_o = (*p00_p)->p00_o;
-                p00_used = (*p00_p)->p00_f(p00_o, p00_ar);
-                if (p00_used >= 0) break;
-                else p00_err0 = "unparsable argument";
-              } else p00_err0 = "ambiguous option alias";
-            } else p00_err0 = "no matching option alias";
+            struct p00_getopt const* p00_p = p00_getopt_find_alias(p00_al, p00_up - p00_A, p00_A);
+            if (p00_p) {
+              void* p00_o = p00_p->p00_o;
+              p00_used = p00_p->p00_f(p00_o, p00_ar);
+              if (p00_used >= 0) break;
+              else p00_getopt_diagnostic("unparsable argument", p00_err1, p00_err2);
+            } else p00_getopt_diagnostic("no or ambiguous option alias", p00_err1, p00_err2);
             goto P00_REARANGE;
           }
         }
@@ -661,11 +663,7 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
     }
   }
  P00_REARANGE:
-  if (p00_err0)
-    fprintf(stderr, "Warning:%s for \"--%s\" with \"%s\"\n",
-            p00_err0,
-            p00_err1,
-            p00_err2);
+  if (p00_err0) p00_getopt_diagnostic(p00_err0, p00_err1, p00_err2);
   /* At the end of the processing, shift all unused options down, such
      that they appear at front in the argv array. */
   *p00_argc -= (p00_arg - 1);
