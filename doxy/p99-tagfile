@@ -5863,6 +5863,675 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>p99_getopt.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__getopt_8h</filename>
+    <includes id="p99__init_8h" name="p99_init.h" local="yes" imported="no">p99_init.h</includes>
+    <includes id="p99__c99__default_8h" name="p99_c99_default.h" local="yes" imported="no">p99_c99_default.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>main</name>
+      <anchorfile>p99__getopt_8h_aa4e97f3782107649d3e4eb3875090b3a.html</anchorfile>
+      <anchor>aa4e97f3782107649d3e4eb3875090b3a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GETOPT_DECLARE</name>
+      <anchorfile>p99__getopt_8h_ac6777e54f35578c2c7e52d4dad2cbf03.html</anchorfile>
+      <anchor>ac6777e54f35578c2c7e52d4dad2cbf03</anchor>
+      <arglist>(CHAR, T,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GETOPT_DEFINE</name>
+      <anchorfile>p99__getopt_8h_aef2170e8097feb6efc427ada44d3d602.html</anchorfile>
+      <anchor>aef2170e8097feb6efc427ada44d3d602</anchor>
+      <arglist>(CHAR, T,...)</arglist>
+    </member>
+    <member kind="enumeration">
+      <name>p99_getopt_enum</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00A</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa10586d1d147573f35adc04cafa39965e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00B</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa2e5b3e149c6b92f4790fe35b756232e9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00C</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa1a365402228f099fafa53a0fe0152011</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00D</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa9b4d0b51d900619b6e388b502f6ec8f9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00E</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa36e7f89aba7968f31803cfde69216b11</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00F</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fadbf777eaaaeaf21fcc71852f5a5d1442</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00G</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa4ea3df17df860e7220f0ec50678bbfeb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00H</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fafecd2b890bb32f7ed12d7dd2a1ce336a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00I</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa552c3facb00e1e1ffc99297d8bc0a42e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00J</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fab351a2dc557d8493c8ca92b058345ee8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00K</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa72e991569c00ab64381467d4f29a8fae</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00L</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa5b2871df695ee10d04e1486df704eeee</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00M</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa523a3b6a4cad601570b91922abf7d736</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00N</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa46a5f9eb822bebda7762e78ce24dd117</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00O</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa5232dfc845e2b624afc6c37173723097</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00P</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faaa063d49f7d6241d8f7f5c3700db5717</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00Q</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa58f5da7c952c97f29d50ae294ca7daa4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00R</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa367cf56082a6fd80b8b9537e88664938</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00S</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa823602043867cea4ab70c7aea5c5517a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00T</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fae6a4ab1f60f64e6392b2c08cce31ff1f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00U</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa4418952e9516fdd85c94eb404b393987</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00V</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faa63d76e4d344e3f4823bd46a415c3bc9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00W</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faa55013ba543d0fc464b151f4713bfbe1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00X</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa601d6e5efb40a8cc35c4d731c671679d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00Y</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa0916ca1e73f17349330933eae0cd966b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00Z</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa0a599c76c4d4d6ab431c391c779a3370</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00a</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faf6ca3c06afccdba51da78bac87b89106</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00b</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa5c020e6904e22cacd9f5d0d08c99df1c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00c</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa8426272d9d5acfc7a736e6b7cd7d2e50</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00d</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa55cb13c7cf2a27bf6d88bac9a8e7bb20</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00e</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa4ff0965cb099763be1a5a1328b60e244</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00f</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa7c6649c821bb1488d6ff4161dea72275</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00g</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa483c43af639f10fb1810b302d60b5e9c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00h</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa7254e935e3ac76f76b89fe935c865c6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00i</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa2e4e88b24b7b666a9aec066bcfe6a512</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00j</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faa3617f6b2ad07bce44c81f33bd2be877</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00k</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faa4b06800406534ea26aeea209bee36a9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00l</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fad7ad5a57fc021d0cbd4ac97208930eba</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00m</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fae39ab03f1876535c203741164d7e88ad</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00n</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa69a888484ff9ada6aa0ab6474b01cfc0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00o</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fae4a573f32dc975268eda266d82076a7a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00p</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa14276e36d07468385643940ba722cee0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00q</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa2d582d6be534e37a70c3eb79c36bf230</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00r</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8face72e38d47fb37912632f1d13991fcf0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00s</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa5e3e146cb922e3d320074aacf81ebd4c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00t</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa0ee2a428077b00eb505a23cad2a57c75</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00u</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa1b8c34ed170dc5e0f531ee18f8e08cad</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00v</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa70ab08e2bb1daabed6897432768ae445</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00w</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fae29aff5fabec00a8b42f27416e110883</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00x</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8facbc3bb25a3ac82e4c4c56989601ebfac</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00y</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa920ef42c7ba107c4c8430954ff58cc7c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00z</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa59b33cc60d41ddefbe6d9f2eb5d71284</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p000</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa63049f634ec47a95929b0c3afe8be24d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p001</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa4435ca590a0cb48bac39c078fc661dcd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p002</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fae4c144d64d430135fca7c6b71eb5489e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p003</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa41a2528de605ad925bb94438ab219b47</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p004</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa741dd29a5de8f1916bee3fc8c4ae1882</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p005</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa746752ee2041ef292b0fe0acd00b3e6b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p006</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fafb3410dc98cf266e29c2251e9a5bccac</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p007</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa69d24de5b8d0abd9da1d0187202ac9c2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p008</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fabbb95749405a72d7734fa4cb3eaae5db</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p009</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa5d0096c325c83822fb8e710e9cf04315</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00_</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faaa9371433074f529d1586dfcc56d617e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00AMPERSAND</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faddd221697e11503890d81446840207fd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00APOSTROPHE</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa161b768050264c9de35272888ef68855</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00ASTERISK</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa449d3b155a14bdc3be7b7a0e276fccee</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00AT</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa2f595104288b57512668012e28ad9322</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00BACKSLASH</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa3a2d7988a0c60bf3137684a4bce08d32</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00BAR</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa51ff66a54fa3f561d878b8f215967f26</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00BRACELEFT</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa63358cad24f261ae79771fbc8dac6ce1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00BRACERIGHT</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa75f853f76d5af4b591dc435b44206074</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00BRACKETLEFT</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa1263c422b3c7d43e14966a6d813d6166</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00BRACKETRIGHT</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa99f90eacaba4531a88b912e4ccf39e6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00CARRET</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faaefc7871f373161d34c81b74b7ce2459</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00COLON</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa8e3010eebbca781567c1de0e08615fe4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00COMMA</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fad6b6adc1da1eac24aea74ed46051e313</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00DOLLAR</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa06ec7fbfffe347eddaa7d7e5b7c147f6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00EQUAL</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa84f9da4e136f5d22f3e771722025409d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00EXLAM</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fab28dca663b199619d265e09f50bca249</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00GRAVE</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa4235a48d4f999dcf91cdfe1a311245d7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00GREATER</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fafc964b827391015bd4df5dffe8a16a76</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00HASH</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faa3d785f1b0f2d58aa53107c329370228</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00HELP</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa76c0bf7b09ab21d9d25d883b27606316</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00LESS</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa0895becba6fca2d31a22ed304a598680</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00PARENLEFT</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fab0122a50f5fcf625535e276a123346b3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00PARENRIGHT</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faaca91c11a1bd6c7c2abcf12b4a8326d8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00PERCENT</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faab5ccbb619228c933627fdf60d9e8ed3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00PERIOD</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa840c0116958b63b80dd349dbc551be5f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00PLUS</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8faecc3337c1329a8c90df0daee88dc2c1e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00QUOTEDBL</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa0ea42f498e0e6995935571d7bf19675f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00SEMICOLON</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa52bf806cd7fdc1f4f15aaf8c1908d13f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00SLASH</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa300374971f061b860a1e4379518b8097</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>p99_getopt_enum_p00TILDE</name>
+      <anchorfile>p99__getopt_8h_ad7006fde6087649d23460666750bfe8f.html</anchorfile>
+      <anchor>ad7006fde6087649d23460666750bfe8fa3053823ff91e17bbeef78361f13db7e7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>p99_getopt_initialize</name>
+      <anchorfile>p99__getopt_8h_a7e476dd3276fdada3d45462ce5b7a1c5.html</anchorfile>
+      <anchor>a7e476dd3276fdada3d45462ce5b7a1c5</anchor>
+      <arglist>(int, char *[])</arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>double</name>
+      <anchorfile>p99__getopt_8h_a45c855d65dd0e2b57b08024500ff9159.html</anchorfile>
+      <anchor>a45c855d65dd0e2b57b08024500ff9159</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>float</name>
+      <anchorfile>p99__getopt_8h_a6a1bb6ed41f44b60e7bd83b0e9945aa7.html</anchorfile>
+      <anchor>a6a1bb6ed41f44b60e7bd83b0e9945aa7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>int</name>
+      <anchorfile>p99__getopt_8h_a61569f2965b7a369eb10b6d75d410d11.html</anchorfile>
+      <anchor>a61569f2965b7a369eb10b6d75d410d11</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>long</name>
+      <anchorfile>p99__getopt_8h_a0bc651ef7626a7868da4cbfdbe70f96f.html</anchorfile>
+      <anchor>a0bc651ef7626a7868da4cbfdbe70f96f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>schar</name>
+      <anchorfile>p99__getopt_8h_a44ac95d6454e8c8be52a3bebf39801e1.html</anchorfile>
+      <anchor>a44ac95d6454e8c8be52a3bebf39801e1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>short</name>
+      <anchorfile>p99__getopt_8h_a607fa506112b93546cb651732cb87e12.html</anchorfile>
+      <anchor>a607fa506112b93546cb651732cb87e12</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>uchar</name>
+      <anchorfile>p99__getopt_8h_a86a4b5380e358b45113e47f1340c1a56.html</anchorfile>
+      <anchor>a86a4b5380e358b45113e47f1340c1a56</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ulong</name>
+      <anchorfile>p99__getopt_8h_a1398ea0e48e059bf4db2f4bcd7eb31fa.html</anchorfile>
+      <anchor>a1398ea0e48e059bf4db2f4bcd7eb31fa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>unsigned</name>
+      <anchorfile>p99__getopt_8h_aca40206900cfc164654362fa8d4ad1e6.html</anchorfile>
+      <anchor>aca40206900cfc164654362fa8d4ad1e6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ushort</name>
+      <anchorfile>p99__getopt_8h_ab513c70f71b4c500b177f09b5f1f8d32.html</anchorfile>
+      <anchor>ab513c70f71b4c500b177f09b5f1f8d32</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>p99_hook.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__hook_8h</filename>
@@ -21082,6 +21751,7 @@
     <file>p99_futex_linux.h</file>
     <file>p99_generated.h</file>
     <file>p99_generic.h</file>
+    <file>p99_getopt.h</file>
     <file>p99_hook.h</file>
     <file>p99_id.h</file>
     <file>p99_if.h</file>

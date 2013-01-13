@@ -26,6 +26,7 @@
 # Prefixes that P99 uses for internal use
 EXCLUDE_SYMBOLS        += P00_*
 EXCLUDE_SYMBOLS        += p00_*
+EXCLUDE_SYMBOLS        += _p00*
 EXCLUDE_SYMBOLS        += P99X__*
 EXCLUDE_SYMBOLS        += p99x__*
 EXCLUDE_SYMBOLS        += *_defarg_[0-9]
