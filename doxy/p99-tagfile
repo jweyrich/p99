@@ -5878,16 +5878,16 @@
     <member kind="define">
       <type>#define</type>
       <name>P99_GETOPT_DECLARE</name>
-      <anchorfile>p99__getopt_8h_ac6777e54f35578c2c7e52d4dad2cbf03.html</anchorfile>
-      <anchor>ac6777e54f35578c2c7e52d4dad2cbf03</anchor>
-      <arglist>(CHAR, T,...)</arglist>
+      <anchorfile>p99__getopt_8h_a1d289f64853fdf8ee49c32e2d69f7492.html</anchorfile>
+      <anchor>a1d289f64853fdf8ee49c32e2d69f7492</anchor>
+      <arglist>(CHAR, T, NAME, DEF, ALIAS, DOC)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GETOPT_DEFINE</name>
-      <anchorfile>p99__getopt_8h_aef2170e8097feb6efc427ada44d3d602.html</anchorfile>
-      <anchor>aef2170e8097feb6efc427ada44d3d602</anchor>
-      <arglist>(CHAR, T,...)</arglist>
+      <anchorfile>p99__getopt_8h_ada3f88a6bad36a39fabb54c7b0358055.html</anchorfile>
+      <anchor>ada3f88a6bad36a39fabb54c7b0358055</anchor>
+      <arglist>(CHAR, T, NAME, DEF, ALIAS, DOC)</arglist>
     </member>
     <member kind="enumeration">
       <name>p99_getopt_enum</name>

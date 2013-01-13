@@ -169,6 +169,87 @@ P99_SER(P00_GETOPT_FLOAT,                       \
 
 #define P00_GETOPT_DECLARE_(...) P00_GETOPT_DECLARE(__VA_ARGS__)
 
+#ifdef P00_DOXYGEN
+/**
+ ** @brief Declare a commandline option for character option @a CHAR.
+ **
+ ** @param CHAR is either an alphanumeric character, an underscore or
+ ** another character as encoded via ::p99_getopt_enum.
+ **
+ ** @param T is one of the basic types or <code>char const*</code>
+ **
+ ** @param NAME declares a global variable of type @a T.
+ **
+ ** @param DEF is the default value of @a NAME, @c 0 if omitted.
+ ** @param ALIAS is an alias name (long option name) for the parameter, may be omitted.
+ ** @param DOC is a documentation string for the option, may be omitted.
+ **
+ ** Commandline options for most types require a parameter to the
+ ** option that is used to determine the value of @a NAME. With
+ **
+ ** @code
+ ** P99_GETOPT_DECLARE(a, myvariable, unsignedVar, 47, "unsigned", "this an unsigned variable");
+ ** @endcode
+ **
+ ** the global variable @c unsignedVar can be set on the commandline
+ ** with the following equivalent options
+ **
+ ** @code
+ ** -a78
+ ** -a 78
+ ** --myvariable=78
+ ** --myvariable 78
+ ** @endcode
+ **
+ ** Long options (aliases) may be shortened if the result is
+ ** unambiguous. So if there would be no other alias starting with
+ ** "my" the above could also be achieved with
+ **
+ ** @code
+ ** --my 78
+ ** @endcode
+ **
+ ** Boolean options (type @c _Bool or @c bool) are special, as they
+ ** are considered to be just flags. They don't process an option
+ ** argument but just toggle the value of their variable. Several
+ ** option characters (not aliases) for such flags can be combined
+ ** into a single commandline option starting with a <code>-</code>.
+ **
+ ** Three other options can be handled by default but which don't
+ ** correspond to a user variable: the option characters
+ ** <code>-?</code> and <code>-h</code> and the alias "help" terminate
+ ** the program and provide a list of option characters, aliases,
+ ** types, variable names on @c stderr. All three access methods for
+ ** commandline help may be overwritten by the program.
+ **
+ ** @remark Usually ::P99_GETOPT_DECLARE would be used in a header
+ ** (@c .h source file).
+ **
+ ** @remark All options that are processed via this mechanism are
+ ** removed from @c argv and the @c argc parameter to @c main is
+ ** adjusted accordingly.
+ **
+ ** @see P99_GETOPT_DEFINE for the corresponding macro that provides
+ ** the definition of the underlying variable(s).
+ **
+ ** @see P99_MAIN_INTERCEPT to see how the commandline parsing can be
+ ** launched automatically at program startup.
+ **/
+#define P99_GETOPT_DECLARE(CHAR, T, NAME, DEF, ALIAS, DOC)
+
+/**
+ ** @brief Define a commandline option that has been declared via
+ ** ::P99_GETOPT_DECLARE
+ **
+ ** @remark Usually ::P99_GETOPT_DEFINE would and should be used in
+ ** just one compilation unit (@c .c source file). It is a good idea
+ ** that this would be the same as your @c main function definition.
+ **
+ ** @see P99_GETOPT_DECLARE for the corresponding macro that provides
+ ** the declaration of the underlying variable(s).
+ **/
+#define P99_GETOPT_DEFINE(CHAR, T, NAME, DEF, ALIAS, DOC)
+#else
 #define P99_GETOPT_DECLARE(CHAR, T, ...)                                \
 P00_GETOPT_DECLARE_(_p00##CHAR,                                         \
                     T,                                                  \
@@ -193,6 +274,7 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                     \
  (P99_IF_LT(P99_NARG(__VA_ARGS__), 4)                   \
   (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0))          \
   (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__))))
+#endif
 
 
 #define P00_GETOPT_STRUCT_DECL(CHAR) static struct p00_getopt const* p00_getopt_char## CHAR
@@ -239,7 +321,20 @@ _p00A, _p00B, _p00C, _p00D, _p00E, _p00F, _p00G,        \
   _p00SLASH,                                            \
   _p00TILDE
 
-
+/**
+ ** @brief A list of constants that can be used for option processing
+ **
+ ** Besides the characters that can be part of identifiers
+ ** (alphanumeric characters and underscore), we provide several other
+ ** characters for commandline option processing. The ones that are
+ ** available can be deduced from the ending of the constant. E.g
+ ** ::p99_getopt_enum_p00AT would be used with the token
+ ** "AT" and corresponds to the @c @@ character:
+ **
+ ** @code
+ ** P99_GETOPT_DECLARE(AT, char const*, char_cptrVar, 0, 0, "just a string");
+ ** @endcode
+ **/
 enum p99_getopt_enum {
   p99_getopt_enum_p00A = 'A',
   p99_getopt_enum_p00B = 'B',
