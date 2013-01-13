@@ -156,7 +156,7 @@ P99_SER(P00_GETOPT_FLOAT,                       \
 
 #define P00_GETOPT_DECLARE(CHAR, T, NAME, DEF, ALIAS, DOC, ...)         \
   extern T NAME;                                                        \
-  static struct p00_getopt const* p00_getopt_char_p00## CHAR            \
+  static struct p00_getopt const* p00_getopt_char## CHAR                \
   = &(struct p00_getopt const){                                         \
     .p00_o =  &(NAME),                                                  \
     .p00_f = P99_GENERIC(NAME, 0, __VA_ARGS__),                         \
@@ -170,7 +170,7 @@ P99_SER(P00_GETOPT_FLOAT,                       \
 #define P00_GETOPT_DECLARE_(...) P00_GETOPT_DECLARE(__VA_ARGS__)
 
 #define P99_GETOPT_DECLARE(CHAR, T, ...)                                \
-P00_GETOPT_DECLARE_(CHAR,                                               \
+P00_GETOPT_DECLARE_(_p00##CHAR,                                         \
                     T,                                                  \
                     P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                 \
                     (__VA_ARGS__, 0, 0, 0)                              \

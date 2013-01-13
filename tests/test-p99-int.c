@@ -19,12 +19,12 @@
 
 P99_GETOPT_DECLARE(a, unsigned, unsignedVar, 47, "unsigned", "this an unsigned variable");
 P99_GETOPT_DECLARE(b, bool, boolVar, false, "flag", "you can toggle this on (and off)");
-P99_GETOPT_DECLARE(c, char, charVar, 47, "unknown");
+P99_GETOPT_DECLARE(I, char, charVar, 47, "unknown");
 P99_GETOPT_DECLARE(d, double, doubleVar, 0, "real", "a double precision element");
 P99_GETOPT_DECLARE(AT, char const*, char_cptrVar, 0, 0, "just a string");
 P99_GETOPT_DEFINE(a, unsigned, unsignedVar, 47, "unsigned", "this an unsigned variable");
 P99_GETOPT_DEFINE(b, bool, boolVar, false, "flag", "you can toggle this on (and off)");
-P99_GETOPT_DEFINE(c, char, charVar, 47, "unknown");
+P99_GETOPT_DEFINE(I, char, charVar, 47, "unknown");
 P99_GETOPT_DEFINE(d, double, doubleVar, 0, "real", "a double precision element");
 P99_GETOPT_DEFINE(AT, char const*, char_cptrVar, 0, 0, "just a string");
 
@@ -652,6 +652,6 @@ int i:UINT_WIDTH;
     res = bsearch_s(&el, A, 6, sizeof *A, compar, 0);
     printf("searching for %u, gave %u\n", el, res ? *(unsigned*)res : UINT_MAX);
   }
-  P99_PRINTF("a = %s, b = %s, c = %s, d = %s, s = \"%s\"\n", unsignedVar, boolVar, charVar, doubleVar, char_cptrVar);
+  P99_PRINTF("a = %s, b = %s, I = %s, d = %s, @ = \"%s\"\n", unsignedVar, boolVar, charVar, doubleVar, char_cptrVar);
   return EXIT_SUCCESS;
 }
