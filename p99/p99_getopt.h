@@ -483,6 +483,17 @@ do {                                                                    \
 
 #define P00_GETOPT_HELP(...) P99_SEP(P00_GETOPT_HELP_, __VA_ARGS__)
 
+static char const*const p00_getopt_synopsis;
+
+/**
+ ** @brief Add a synopsis to the commandline option documentation
+ **
+ ** @param LINE should be a string literal
+ **/
+#define P99_GETOPT_SYNOPSIS(LINE)                               \
+static char const*const p00_getopt_synopsis = { LINE }
+
+
 static_inline
 int P99_PASTE2(p00_getopt_process_, help)(void* p00_o, char const*p00_c) {
   int p00_na = 0;
@@ -490,7 +501,11 @@ int P99_PASTE2(p00_getopt_process_, help)(void* p00_o, char const*p00_c) {
   int p00_nn = 0;
   int p00_nv = 0;
   P00_GETOPT_HELP_COUNT(P00_GETOPT_CHARS);
-  if (p00_o) fprintf(stderr, "%s\toptions:\n", (char const*)p00_o);
+  if (p00_o || p00_getopt_synopsis)
+    fprintf(stderr, "%s%s%s\n\toptions:\n",
+            (p00_o ? (char const*)p00_o : ""),
+            (p00_o && p00_getopt_synopsis ? " -- " : ""),
+            (p00_getopt_synopsis ? p00_getopt_synopsis : ""));
   fprintf(stderr, "short  %-*s%-*s%-*s%-*s \t%s\n",
           p00_na+4,
           "long",

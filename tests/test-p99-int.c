@@ -17,6 +17,8 @@
 #include "p99_enum.h"
 #include "p99_getopt.h"
 
+P99_GETOPT_SYNOPSIS("a P99 test program for integer type features and commandline options");
+
 P99_GETOPT_DECLARE(a, unsigned, unsignedVar, 47, "unsigned", "this an unsigned variable");
 P99_GETOPT_DECLARE(b, bool, boolVar, false, "flag", "you can toggle this on (and off)");
 P99_GETOPT_DECLARE(I, char, charVar, 47, "unknown");
