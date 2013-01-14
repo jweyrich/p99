@@ -583,22 +583,23 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
   struct p00_getopt const** p00_up = p00_A;
   while (*p00_up) ++p00_up;
 
-  bool p00_help = !p00_getopt_find_alias("help", p00_up-p00_A, p00_A);
+  struct p00_getopt const* p00_help = p00_getopt_find_alias("help", p00_up-p00_A, p00_A);
 
   /* If -h is not taken install a help function on it. */
-  struct p00_getopt const p00_h = {
-    .p00_o = (*p00_argv)[0],
-    .p00_f = p00_getopt_process_help,
-    .p00_a = p00_help ? 0 : "help",
-    .p00_d = "provide this help text",
-  };
   if (!p00_help) {
+    static struct p00_getopt p00_h = {
+      .p00_f = p00_getopt_process_help,
+      .p00_a = "help",
+      .p00_d = "provide this help text",
+    };
+    p00_h.p00_o = (*p00_argv)[0],
+    p00_help = &p00_h;
     *p00_up = &p00_h;
     ++p00_up;
     qsort(p00_A, p00_up - p00_A, sizeof *p00_A, p00_getopt_comp);
   }
-  if (!p00_getopt_char_p00HELP) p00_getopt_char_p00HELP = &p00_h;
-  if (!p00_getopt_char_p00h) p00_getopt_char_p00h = &p00_h;
+  if (!p00_getopt_char_p00HELP) p00_getopt_char_p00HELP = p00_help;
+  if (!p00_getopt_char_p00h) p00_getopt_char_p00h = p00_help;
 
   /* Now comes the main processing loop. One character arguments may
      be aggregated into one option, that is why this loop looks a bit

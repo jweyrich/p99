@@ -24,11 +24,25 @@ P99_GETOPT_DECLARE(b, bool, boolVar, false, "flag", "you can toggle this on (and
 P99_GETOPT_DECLARE(I, char, charVar, 47, "unknown");
 P99_GETOPT_DECLARE(d, double, doubleVar, 0, "real", "a double precision element");
 P99_GETOPT_DECLARE(AT, char const*, char_cptrVar, 0, 0, "just a string");
+#if P99_TEST_GETOPT_CASES > 1
+P99_GETOPT_DECLARE(h, bool, h_cptrVar, 0, 0, "don't do that, if you can avoid");
+P99_GETOPT_DECLARE(HELP, bool, help_cptrVar, 0, 0, "don't do that, really, this is reserved to P99 help");
+# if P99_TEST_GETOPT_CASES > 2
+P99_GETOPT_DECLARE(i, bool, h_cptrVar, 0, "help", "never do that");
+# endif
+#endif
 P99_GETOPT_DEFINE(a, unsigned, unsignedVar, 47, "unsigned", "this an unsigned variable");
 P99_GETOPT_DEFINE(b, bool, boolVar, false, "flag", "you can toggle this on (and off)");
 P99_GETOPT_DEFINE(I, char, charVar, 47, "unknown");
 P99_GETOPT_DEFINE(d, double, doubleVar, 0, "real", "a double precision element");
 P99_GETOPT_DEFINE(AT, char const*, char_cptrVar, 0, 0, "just a string");
+#if P99_TEST_GETOPT_CASES > 1
+P99_GETOPT_DEFINE(h, bool, h_cptrVar, 0, 0, "don't do that, if you can avoid");
+P99_GETOPT_DEFINE(HELP, bool, help_cptrVar, 0, 0, "don't do that, really, this is reserved to P99 help");
+# if P99_TEST_GETOPT_CASES > 2
+P99_GETOPT_DEFINE(i, bool, h_cptrVar, 0, "help", "never do that");
+# endif
+#endif
 
 
 #define DEF(SUFF)                                                     \
