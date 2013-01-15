@@ -18,25 +18,36 @@
  ** @brief Providing macros that handle variadic macro argument lists.
  **/
 
+#include "p99_qsort.h"
 #include "p99_init.h"
-#include "p99_c99_default.h"
 
 typedef int p00_getopt_process_type(void*, char const*);
 
 struct p00_getopt {
   void* p00_o;
-  p00_getopt_process_type* p00_f;
-  char const* p00_a;
-  char const* p00_d;
-  char const* p00_t;
-  char const* p00_n;
-  char const* p00_v;
+  p00_getopt_process_type*const p00_f;
+  char const*const p00_a;
+  char const*const p00_d;
+  char const*const p00_t;
+  char const*const p00_n;
+  char const*const p00_v;
 };
 
-static_inline
-int p00_getopt_comp(void const* p00_a, void const* p00_b) {
-  struct p00_getopt const*const* p00_A = p00_a;
-  struct p00_getopt const*const* p00_B = p00_b;
+#define P00_GETOPT_PROCESS(T) P99_PASTE2(p00_getopt_process_, T)
+
+#define P00_GETOPT_CHAR(CHAR) p00_getopt_char## CHAR
+
+p99_inline
+struct p00_getopt const* p00_getopt_char(struct p00_getopt const* p00_p) {
+  return p00_p;
+}
+
+#define P99_GETOPT_CHAR(CHAR) p00_getopt_char(P00_GETOPT_CHAR(CHAR))
+
+p99_inline
+int p00_getopt_comp(void const* p00_a, void const* p00_b, void* p00_context) {
+  register struct p00_getopt const*const*const p00_A = p00_a;
+  register struct p00_getopt const*const*const p00_B = p00_b;
   if (p00_A && (*p00_A) && (*p00_A)->p00_a)
     if (p00_B && (*p00_B) && (*p00_B)->p00_a)
       return strcmp((*p00_A)->p00_a, (*p00_B)->p00_a);
@@ -48,10 +59,10 @@ int p00_getopt_comp(void const* p00_a, void const* p00_b) {
     return 0;
 }
 
-static_inline
-int p00_getopt_subcomp(void const* p00_a, void const* p00_b) {
-  struct p00_getopt const*const* p00_A = p00_a;
-  struct p00_getopt const*const* p00_B = p00_b;
+p99_inline
+int p00_getopt_subcomp(void const* p00_a, void const* p00_b, void* p00_context) {
+  register struct p00_getopt const*const*const p00_A = p00_a;
+  register struct p00_getopt const*const*const p00_B = p00_b;
   if (p00_A && (*p00_A) && (*p00_A)->p00_a)
     if (p00_B && (*p00_B) && (*p00_B)->p00_a) {
       size_t p00_n = strlen((*p00_A)->p00_a);
@@ -67,7 +78,7 @@ int p00_getopt_subcomp(void const* p00_a, void const* p00_b) {
 
 #define P00_GETOPT_SIGNED(T)                                            \
 static_inline                                                           \
-int P99_PASTE2(p00_getopt_process_, T)(void* p00_o, char const* p00_c) { \
+int P00_GETOPT_PROCESS(T)(void* p00_o, char const* p00_c) { \
   T*p00_O = p00_o;                                                      \
   if (p00_c && p00_c[0]) {                                              \
     char* endptr = 0;                                                   \
@@ -87,7 +98,7 @@ P99_SER(P00_GETOPT_SIGNED,                      \
 
 #define P00_GETOPT_UNSIGNED(T)                                          \
 static_inline                                                              \
-int P99_PASTE2(p00_getopt_process_, T)(void* p00_o, char const* p00_c) { \
+int P00_GETOPT_PROCESS(T)(void* p00_o, char const* p00_c) { \
   T*p00_O = p00_o;                                                      \
   if (p00_c && p00_c[0]) {                                              \
     char* endptr = 0;                                                   \
@@ -105,7 +116,7 @@ P99_SER(P00_GETOPT_UNSIGNED,                    \
         ullong)
 
 static_inline
-int P99_PASTE2(p00_getopt_process_, char)(void* p00_o, char const*p00_c) {
+int P00_GETOPT_PROCESS(char)(void* p00_o, char const*p00_c) {
   char*p00_O = p00_o;
   if (p00_c && p00_c[0]) {
     *p00_O = p00_c[0];
@@ -115,7 +126,7 @@ int P99_PASTE2(p00_getopt_process_, char)(void* p00_o, char const*p00_c) {
 }
 
 static_inline
-int P99_PASTE2(p00_getopt_process_, _Bool)(void* p00_o, char const*p00_c) {
+int P00_GETOPT_PROCESS(_Bool)(void* p00_o, char const*p00_c) {
   P99_UNUSED(p00_c);
   bool*p00_O = p00_o;
   *p00_O = !*p00_O;
@@ -123,7 +134,7 @@ int P99_PASTE2(p00_getopt_process_, _Bool)(void* p00_o, char const*p00_c) {
 }
 
 static_inline
-int P99_PASTE2(p00_getopt_process_, char_cptr)(void* p00_o, char const*p00_c) {
+int P00_GETOPT_PROCESS(char_cptr)(void* p00_o, char const*p00_c) {
   char const**p00_O = p00_o;
   if (p00_c) {
     *p00_O = p00_c;
@@ -134,7 +145,7 @@ int P99_PASTE2(p00_getopt_process_, char_cptr)(void* p00_o, char const*p00_c) {
 
 #define P00_GETOPT_FLOAT(T)                                             \
 static_inline                                                           \
-int P99_PASTE2(p00_getopt_process_, T)(void* p00_o, char const* p00_c) { \
+int P00_GETOPT_PROCESS(T)(void* p00_o, char const* p00_c) { \
   T*p00_O = p00_o;                                                      \
   if (p00_c && p00_c[0]) {                                              \
     char* endptr = 0;                                                   \
@@ -150,13 +161,13 @@ P99_SER(P00_GETOPT_FLOAT,                       \
         ldouble)
 
 
-#define P00_GETOPT_PROCESS_CHOOSE_(T) (T, P99_PASTE2(p00_getopt_process_, T))
+#define P00_GETOPT_PROCESS_CHOOSE_(T) (T, P00_GETOPT_PROCESS(T))
 
 #define P00_GETOPT_PROCESS_CHOOSE(...) P99_SEQ(P00_GETOPT_PROCESS_CHOOSE_, __VA_ARGS__)
 
 #define P00_GETOPT_DECLARE(CHAR, T, NAME, DEF, ALIAS, DOC, ...)         \
   extern T NAME;                                                        \
-  static struct p00_getopt const* p00_getopt_char## CHAR                \
+  static struct p00_getopt const*const P00_GETOPT_CHAR(CHAR)            \
   = &(struct p00_getopt const){                                         \
     .p00_o =  &(NAME),                                                  \
     .p00_f = P99_GENERIC(NAME, 0, __VA_ARGS__),                         \
@@ -277,7 +288,7 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                     \
 #endif
 
 
-#define P00_GETOPT_STRUCT_DECL(CHAR) static struct p00_getopt const* p00_getopt_char## CHAR
+#define P00_GETOPT_STRUCT_DECL(CHAR) static struct p00_getopt const*const P00_GETOPT_CHAR(CHAR)
 
 #define P00_GETOPT_CHARS                                \
 _p00A, _p00B, _p00C, _p00D, _p00E, _p00F, _p00G,        \
@@ -433,9 +444,26 @@ enum p99_getopt_enum {
 
 P99_SEP(P00_GETOPT_STRUCT_DECL, P00_GETOPT_CHARS);
 
+static_inline
+int P00_GETOPT_PROCESS(help)(void* p00_o, char const*p00_c);
+
+static char p00_help_alias[] = "help";
+
+static struct p00_getopt p00_help[1] = {
+  {
+    .p00_f = P00_GETOPT_PROCESS(help),
+    .p00_a = p00_help_alias,
+    .p00_d = "provide this help text",
+  }
+};
+
+
 #define P00_GETOPT_HELP_COUNT_(CHAR)                                    \
 do {                                                                    \
-  struct p00_getopt const* p00_p = p00_getopt_char## CHAR;              \
+  register struct p00_getopt const*const p00_p                          \
+    = (((p99_getopt_enum## CHAR != p99_getopt_enum_p00h) && (p99_getopt_enum## CHAR != p99_getopt_enum_p00HELP)) \
+       ? P99_GETOPT_CHAR(CHAR)                                          \
+       : (P99_GETOPT_CHAR(CHAR) ? P99_GETOPT_CHAR(CHAR) : p00_help));   \
   if (p00_p) {                                                          \
     if (p00_p->p00_a) p00_na = P99_GEN_MAX(p00_na, strlen(p00_p->p00_a)); \
     if (p00_p->p00_t) p00_nt = P99_GEN_MAX(p00_nt, strlen(p00_p->p00_t)); \
@@ -448,12 +476,15 @@ do {                                                                    \
 
 #define P00_GETOPT_HELP_(CHAR)                                          \
 do {                                                                    \
-  struct p00_getopt const* p00_p = p00_getopt_char## CHAR;              \
+  register struct p00_getopt const*const p00_p                          \
+    = (((p99_getopt_enum## CHAR != p99_getopt_enum_p00h) && (p99_getopt_enum## CHAR != p99_getopt_enum_p00HELP)) \
+       ? P99_GETOPT_CHAR(CHAR)                                          \
+       : (P99_GETOPT_CHAR(CHAR) ? P99_GETOPT_CHAR(CHAR) : p00_help));   \
   if (p00_p) {                                                          \
-    char const* p00_d = p00_p->p00_d ? p00_p->p00_d : "(not documented)"; \
-    char const* p00_t = p00_p->p00_t ? p00_p->p00_t : "";               \
-    char const* p00_n = p00_p->p00_n ? p00_p->p00_n : "";               \
-    char const* p00_v = p00_p->p00_v ? p00_p->p00_v : "";               \
+    char const*const p00_d = p00_p->p00_d ? p00_p->p00_d : "(not documented)"; \
+    char const*const p00_t = p00_p->p00_t ? p00_p->p00_t : "";               \
+    char const*const p00_n = p00_p->p00_n ? p00_p->p00_n : "";               \
+    char const*const p00_v = p00_p->p00_v ? p00_p->p00_v : "";               \
     if (p00_p->p00_a)                                                   \
       fprintf(stderr, "   -%c  --%-*s%-*s%-*s%-*s\t%s\n",               \
               p99_getopt_enum## CHAR,                                   \
@@ -495,7 +526,7 @@ static char const*const p00_getopt_synopsis = { LINE }
 
 
 static_inline
-int P99_PASTE2(p00_getopt_process_, help)(void* p00_o, char const*p00_c) {
+int P00_GETOPT_PROCESS(help)(void* p00_o, char const*p00_c) {
   int p00_na = 0;
   int p00_nt = 0;
   int p00_nn = 0;
@@ -521,20 +552,23 @@ int P99_PASTE2(p00_getopt_process_, help)(void* p00_o, char const*p00_c) {
 }
 
 #define P00_GETOPT_INITIALIZE_(CHAR)                                    \
-  case p99_getopt_enum## CHAR: {                                        \
-    struct p00_getopt const* p00_p = p00_getopt_char## CHAR;            \
-    if (p00_p) {                                                        \
-      void* p00_o = p00_p->p00_o;                                       \
-      p00_used = p00_p->p00_f(p00_o, p00_str);                          \
-      if (p00_used >= 0) break;                                         \
-    }                                                                   \
-    p00_err0 = "unparsable argument";                                   \
-    goto P00_REARANGE;                                                  \
-  }
+ case p99_getopt_enum## CHAR: {                                         \
+   register struct p00_getopt const*const p00_p                         \
+     = (((p99_getopt_enum## CHAR != p99_getopt_enum_p00h) && (p99_getopt_enum## CHAR != p99_getopt_enum_p00HELP)) \
+        ? P99_GETOPT_CHAR(CHAR)                                         \
+        : (P99_GETOPT_CHAR(CHAR) ? P99_GETOPT_CHAR(CHAR) : p00_help));  \
+   if (p00_p) {                                                         \
+     void* p00_o = p00_p->p00_o;                                        \
+     p00_used = p00_p->p00_f(p00_o, p00_str);                           \
+     if (p00_used >= 0) break;                                          \
+   }                                                                    \
+   p00_err0 = "unparsable argument";                                    \
+   goto P00_REARANGE;                                                   \
+ }
 
 #define P00_GETOPT_INITIALIZE(...) P99_SER(P00_GETOPT_INITIALIZE_, __VA_ARGS__)
 
-#define P00_GETOPT_ARRAY_(CHAR) [p99_getopt_enum## CHAR] = p00_getopt_char## CHAR
+#define P00_GETOPT_ARRAY_(CHAR) [p99_getopt_enum## CHAR] = P99_GETOPT_CHAR(CHAR)
 
 #define P00_GETOPT_ARRAY(...) P99_SEQ(P00_GETOPT_ARRAY_, __VA_ARGS__)
 
@@ -542,19 +576,20 @@ p99_inline
 struct p00_getopt const*
 p00_getopt_find_alias(char const* p00_al, size_t p00_size, struct p00_getopt const* p00_A[p00_size]) {
   /* Search for a matching alias in the array */
-  struct p00_getopt const* p00_el = &(struct p00_getopt const){ .p00_a = p00_al, };
-  struct p00_getopt const** p00_p = bsearch(&p00_el,
-                                            p00_A,
-                                            p00_size,
-                                            sizeof *p00_A,
-                                            p00_getopt_subcomp);
+  struct p00_getopt const*const p00_el = &(struct p00_getopt const){ .p00_a = p00_al, };
+  register struct p00_getopt const*const* p00_p = bsearch_s(&p00_el,
+                                                            p00_A,
+                                                            p00_size,
+                                                            sizeof *p00_A,
+                                                            p00_getopt_subcomp,
+                                                            0);
   if (p00_p && (*p00_p)) {
     /* Now search if there are several matches. */
-    while (p00_p != p00_A && !p00_getopt_subcomp(&p00_el, p00_p - 1)) --p00_p;
+    while (p00_p != p00_A && !p00_getopt_subcomp(&p00_el, p00_p - 1, 0)) --p00_p;
     /* An exact match must always come first and is preferred.
        If the first is not an exact match, second shouldn't be
        a partial match. */
-    if (!p00_getopt_comp(&p00_el, p00_p) || (p00_getopt_subcomp(&p00_el, p00_p+1) < 0))
+    if (!p00_getopt_comp(&p00_el, p00_p, 0) || (p00_getopt_subcomp(&p00_el, p00_p+1, 0) < 0))
       return *p00_p;
   }
   return 0;
@@ -575,31 +610,24 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
   char const* p00_err2 = 0;
   /* Create a sorted array with all the aliases, such that we may then
      search for a matching key. */
-  struct p00_getopt const* p00_A[CHAR_MAX] = {
+  struct p00_getopt const* p00_A[] = {
     P00_GETOPT_ARRAY(P00_GETOPT_CHARS),
   };
-  qsort(p00_A, CHAR_MAX, sizeof *p00_A, p00_getopt_comp);
+  qsort_s(p00_A, P99_ALEN(p00_A), sizeof *p00_A, p00_getopt_comp, 0);
 
-  struct p00_getopt const** p00_up = p00_A;
+  register struct p00_getopt const** p00_up = p00_A;
   while (*p00_up) ++p00_up;
 
-  struct p00_getopt const* p00_help = p00_getopt_find_alias("help", p00_up-p00_A, p00_A);
-
-  /* If -h is not taken install a help function on it. */
-  if (!p00_help) {
-    static struct p00_getopt p00_h = {
-      .p00_f = p00_getopt_process_help,
-      .p00_a = "help",
-      .p00_d = "provide this help text",
-    };
-    p00_h.p00_o = (*p00_argv)[0],
-    p00_help = &p00_h;
-    *p00_up = &p00_h;
+  /* If --help is already used by the application code cancel the
+     mention of --help in p00_help otherwise insert the alias. */
+  if (p00_getopt_find_alias("help", p00_up-p00_A, p00_A)) {
+    p00_help_alias[0] = 0;
+  } else {
+    *p00_up = &p00_help[0];
     ++p00_up;
-    qsort(p00_A, p00_up - p00_A, sizeof *p00_A, p00_getopt_comp);
+    qsort_s(p00_A, p00_up - p00_A, sizeof *p00_A, p00_getopt_comp, 0);
   }
-  if (!p00_getopt_char_p00HELP) p00_getopt_char_p00HELP = p00_help;
-  if (!p00_getopt_char_p00h) p00_getopt_char_p00h = p00_help;
+  p00_help[0].p00_o = (*p00_argv)[0];
 
   /* Now comes the main processing loop. One character arguments may
      be aggregated into one option, that is why this loop looks a bit
@@ -614,7 +642,7 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
       /* A "--" without anything else finishes option processing. */
       if ((*p00_argv)[p00_arg][1] == '-' && !(*p00_argv)[p00_arg][2]) {
         ++p00_arg;
-        goto P00_REARANGE;;
+        goto P00_REARANGE;
       }
       for (char const* p00_str = (*p00_argv)[p00_arg] + 1; p00_str && p00_str[0];) {
         int p00_used = 0;
@@ -655,7 +683,7 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
             p00_err1 = p00_al;
             p00_err2 = p00_ar;
             /* Search for a matching alias in the array */
-            struct p00_getopt const* p00_p = p00_getopt_find_alias(p00_al, p00_up - p00_A, p00_A);
+            register struct p00_getopt const*const p00_p = p00_getopt_find_alias(p00_al, p00_up - p00_A, p00_A);
             if (p00_p) {
               void* p00_o = p00_p->p00_o;
               p00_used = p00_p->p00_f(p00_o, p00_ar);
