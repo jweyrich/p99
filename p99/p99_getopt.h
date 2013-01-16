@@ -246,6 +246,8 @@ P99_SER(P00_GETOPT_FLOAT,                       \
  ** @see P99_MAIN_INTERCEPT to see how the commandline parsing can be
  ** launched automatically at program startup.
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_GETOPT_DECLARE, 1)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_GETOPT_DECLARE, 2)
 #define P99_GETOPT_DECLARE(CHAR, T, NAME, DEF, ALIAS, DOC)
 
 /**
@@ -259,31 +261,37 @@ P99_SER(P00_GETOPT_FLOAT,                       \
  ** @see P99_GETOPT_DECLARE for the corresponding macro that provides
  ** the declaration of the underlying variable(s).
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_GETOPT_DEFINE, 1)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_GETOPT_DEFINE, 2)
 #define P99_GETOPT_DEFINE(CHAR, T, NAME, DEF, ALIAS, DOC)
 #else
-#define P99_GETOPT_DECLARE(CHAR, T, ...)                                \
-P00_GETOPT_DECLARE_(_p00##CHAR,                                         \
-                    T,                                                  \
-                    P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                 \
-                    (__VA_ARGS__, 0, 0, 0)                              \
-                    (P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                \
-                     (__VA_ARGS__, 0, 0)                                \
-                     (P99_IF_LT(P99_NARG(__VA_ARGS__), 4)               \
-                      (__VA_ARGS__, 0)                                  \
-                      (__VA_ARGS__))),                                  \
+P00_DOCUMENT_TYPE_ARGUMENT(P99_GETOPT_DECLARE, 1)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_GETOPT_DECLARE, 2)
+#define P99_GETOPT_DECLARE(CHAR, T, ...)                                      \
+P00_GETOPT_DECLARE_(_p00##CHAR,                                               \
+                    T,                                                        \
+                    P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                       \
+                    (__VA_ARGS__, 0, 0, 0)                                    \
+                    (P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                      \
+                     (__VA_ARGS__, 0, 0)                                      \
+                     (P99_IF_LT(P99_NARG(__VA_ARGS__), 4)                     \
+                      (__VA_ARGS__, 0)                                        \
+                      (__VA_ARGS__))),                                        \
                     P00_GETOPT_PROCESS_CHOOSE(P99_STD_REAL_TYPES, char_cptr))
 
 
 #define P00_GETOPT_DEFINE(CHAR, T, NAME, DEF, ALIAS, DOC)       \
 T NAME = (DEF)
 
-#define P99_GETOPT_DEFINE(CHAR, T, ...)                 \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                     \
-(P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0, 0, 0))      \
-(P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                    \
- (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0, 0))        \
- (P99_IF_LT(P99_NARG(__VA_ARGS__), 4)                   \
-  (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0))          \
+P00_DOCUMENT_TYPE_ARGUMENT(P99_GETOPT_DEFINE, 1)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_GETOPT_DEFINE, 2)
+#define P99_GETOPT_DEFINE(CHAR, T, ...)                        \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
+(P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0, 0, 0))             \
+(P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                           \
+ (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0, 0))               \
+ (P99_IF_LT(P99_NARG(__VA_ARGS__), 4)                          \
+  (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0))                 \
   (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__))))
 #endif
 

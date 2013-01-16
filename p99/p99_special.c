@@ -164,6 +164,8 @@
  ** @see P99_GEN_MAX(A, B) for argument <code>A</code>, <code>B</code>.
  ** @see P99_GEN_MIN(A, B) for argument <code>A</code>, <code>B</code>.
  ** @see P99_GEN_SIN(A) for argument <code>A</code>.
+ ** @see P99_GETOPT_DECLARE(CHAR, T, ...) for argument <code>T</code>, <code>__VA_ARG__[0]</code>.
+ ** @see P99_GETOPT_DEFINE(CHAR, T, ...) for argument <code>T</code>, <code>__VA_ARG__[0]</code>.
  ** @see P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER) for arguments <code>T</code>, <code>NAME</code>, <code>AFTER</code>.
  ** @see P99_HEX_DOUBLE(...) for arguments <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>, <code>__VA_ARG__[4]</code>.
  ** @see P99_HTONL(X) for argument <code>X</code>, <code>1</code>.
