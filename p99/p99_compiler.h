@@ -126,7 +126,22 @@ typedef size_t rsize_t;
 #define P99_STRINGIFY(...) P00_STRINGIFY(__VA_ARGS__)
 
 /* be sure to put all compilers that are faking gcc before gcc itself */
-#if P99_COMPILER & P99_COMPILER_CLANG
+#if P99_COMPILER & P99_COMPILER_APPLE
+# undef P00_COMPILER_PRAGMA_APPLE
+# define P00_COMPILER_PRAGMA_APPLE(STR) _Pragma(STR)
+# undef P99_COMPILER_VERSION
+# define P99_COMPILER_VERSION                                  \
+ "Apple/clang "                                                \
+ __apple_build_version__                                       \
+ "pretending clang version "                                   \
+ __clang_version__                                             \
+ "; gnu "                                                      \
+ P99_STRINGIFY(__GNUC__) "."                                   \
+ P99_STRINGIFY(__GNUC_MINOR__) "."                             \
+ P99_STRINGIFY(__GNUC_PATCHLEVEL__)
+# define P99_VERSION_NO __apple_build_version__
+
+#elif P99_COMPILER & P99_COMPILER_CLANG
 # undef P00_COMPILER_PRAGMA_CLANG
 # define P00_COMPILER_PRAGMA_CLANG(STR) _Pragma(STR)
 # undef P99_COMPILER_VERSION
@@ -252,7 +267,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 #endif
 
-#if !(P99_COMPILER & P99_COMPILER_CLANG)
+#if !(P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_APPLE))
 # ifndef __has_builtin
 #  define __has_builtin(X) p00_has_builtin_ ## X  // Compatibility with non-clang compilers.
 # endif
@@ -393,8 +408,23 @@ signed p00_trailing_comma_in_initializer__(void) {
 # ifndef __GNUC__
 #  define P00_NO_HAVE_TGMATH_H
 # endif
+
 #elif P99_COMPILER & P99_COMPILER_PCC
 /* # error "The P99 preprocessor files can't work with the pcc compiler, yet" */
+
+#elif P99_COMPILER & P99_COMPILER_APPLE
+/* For a start the properties for the apple clang fake are just copied
+   from clang. Adjust once we know more details. */
+# if p99_has_attribute(always_inline)
+#  define p99_inline __attribute__((__always_inline__)) inline
+# endif
+/* clang can't nail a variable to a register, yet */
+# define P99_FIXED_REGISTER(REG)
+/* clang has no stdatomic.h, yet */
+# define __STDC_NO_ATOMICS__ 1
+/* clang has no threads.h, yet */
+# define __STDC_NO_THREADS__ 1
+
 #elif P99_COMPILER & P99_COMPILER_CLANG
 # if p99_has_attribute(always_inline)
 #  define p99_inline __attribute__((__always_inline__)) inline
@@ -414,6 +444,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 //# if P99_VERSION_NO >= 30000UL
 //#  define p00_has_feature_stdalign_h 1
 //# endif
+
 #elif P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 # define P99_ATLEAST
 /* gcc prior to version 4.2.1 has the inline keyword but with slightly
