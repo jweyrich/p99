@@ -1,7 +1,7 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-              */
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the authors and copyright holders for this work are as follows:            */
+/* the author and copyright holder for this work is                           */
 /* (C) copyright  2013 Jens Gustedt, INRIA, France                            */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
@@ -76,43 +76,43 @@ int p00_getopt_subcomp(void const* p00_a, void const* p00_b, void* p00_context) 
 }
 
 
-#define P00_GETOPT_SIGNED(T)                                            \
-static_inline                                                           \
-int P00_GETOPT_PROCESS(T)(void* p00_o, char const* p00_c) { \
-  T*p00_O = p00_o;                                                      \
-  if (p00_c && p00_c[0]) {                                              \
-    char* endptr = 0;                                                   \
-    *p00_O = strtoll(p00_c, &endptr, 0);                                \
-    if (endptr) return strlen(p00_c);                                   \
-  }                                                                     \
-  return -1;                                                            \
+#define P00_GETOPT_SIGNED(T)                                   \
+static_inline                                                  \
+int P00_GETOPT_PROCESS(T)(void* p00_o, char const* p00_c) {    \
+  T*p00_O = p00_o;                                             \
+  if (p00_c && p00_c[0]) {                                     \
+    char* endptr = 0;                                          \
+    *p00_O = strtoll(p00_c, &endptr, 0);                       \
+    if (endptr) return strlen(p00_c);                          \
+  }                                                            \
+  return -1;                                                   \
 }
 
-P99_SER(P00_GETOPT_SIGNED,                      \
-        schar,                                  \
-        short,                                  \
-        int,                                    \
-        long,                                   \
-        llong                                   \
-)
+P99_SER(P00_GETOPT_SIGNED,                                     \
+        schar,                                                 \
+        short,                                                 \
+        int,                                                   \
+        long,                                                  \
+        llong                                                  \
+       )
 
-#define P00_GETOPT_UNSIGNED(T)                                          \
-static_inline                                                              \
-int P00_GETOPT_PROCESS(T)(void* p00_o, char const* p00_c) { \
-  T*p00_O = p00_o;                                                      \
-  if (p00_c && p00_c[0]) {                                              \
-    char* endptr = 0;                                                   \
-    *p00_O = strtoull(p00_c, &endptr, 0);                               \
-    if (endptr) return strlen(p00_c);                                   \
-  }                                                                     \
-  return -1;                                                            \
+#define P00_GETOPT_UNSIGNED(T)                                 \
+static_inline                                                  \
+int P00_GETOPT_PROCESS(T)(void* p00_o, char const* p00_c) {    \
+  T*p00_O = p00_o;                                             \
+  if (p00_c && p00_c[0]) {                                     \
+    char* endptr = 0;                                          \
+    *p00_O = strtoull(p00_c, &endptr, 0);                      \
+    if (endptr) return strlen(p00_c);                          \
+  }                                                            \
+  return -1;                                                   \
 }
 
-P99_SER(P00_GETOPT_UNSIGNED,                    \
-        uchar,                                  \
-        ushort,                                 \
-        unsigned,                               \
-        ulong,                                  \
+P99_SER(P00_GETOPT_UNSIGNED,                                   \
+        uchar,                                                 \
+        ushort,                                                \
+        unsigned,                                              \
+        ulong,                                                 \
         ullong)
 
 static_inline
@@ -143,21 +143,21 @@ int P00_GETOPT_PROCESS(char_cptr)(void* p00_o, char const*p00_c) {
   return -1;
 }
 
-#define P00_GETOPT_FLOAT(T)                                             \
-static_inline                                                           \
-int P00_GETOPT_PROCESS(T)(void* p00_o, char const* p00_c) { \
-  T*p00_O = p00_o;                                                      \
-  if (p00_c && p00_c[0]) {                                              \
-    char* endptr = 0;                                                   \
-    *p00_O = strtold(p00_c, &endptr);                                   \
-    if (endptr) return strlen(p00_c);                                   \
-  }                                                                     \
-  return -1;                                                            \
+#define P00_GETOPT_FLOAT(T)                                    \
+static_inline                                                  \
+int P00_GETOPT_PROCESS(T)(void* p00_o, char const* p00_c) {    \
+  T*p00_O = p00_o;                                             \
+  if (p00_c && p00_c[0]) {                                     \
+    char* endptr = 0;                                          \
+    *p00_O = strtold(p00_c, &endptr);                          \
+    if (endptr) return strlen(p00_c);                          \
+  }                                                            \
+  return -1;                                                   \
 }
 
-P99_SER(P00_GETOPT_FLOAT,                       \
-        float,                                  \
-        double,                                 \
+P99_SER(P00_GETOPT_FLOAT,                                      \
+        float,                                                 \
+        double,                                                \
         ldouble)
 
 
@@ -165,17 +165,17 @@ P99_SER(P00_GETOPT_FLOAT,                       \
 
 #define P00_GETOPT_PROCESS_CHOOSE(...) P99_SEQ(P00_GETOPT_PROCESS_CHOOSE_, __VA_ARGS__)
 
-#define P00_GETOPT_DECLARE(CHAR, T, NAME, DEF, ALIAS, DOC, ...)         \
-  extern T NAME;                                                        \
-  static struct p00_getopt const*const P00_GETOPT_CHAR(CHAR)            \
-  = &(struct p00_getopt const){                                         \
-    .p00_o =  &(NAME),                                                  \
-    .p00_f = P99_GENERIC(NAME, 0, __VA_ARGS__),                         \
-    .p00_a = (ALIAS),                                                   \
-    .p00_d = (DOC),                                                     \
-    .p00_t = #T,                                                        \
-    .p00_n = #NAME,                                                     \
-    .p00_v = #DEF,                                                      \
+#define P00_GETOPT_DECLARE(CHAR, T, NAME, DEF, ALIAS, DOC, ...) \
+  extern T NAME;                                                \
+  static struct p00_getopt const*const P00_GETOPT_CHAR(CHAR)    \
+  = &(struct p00_getopt const){                                 \
+    .p00_o =  &(NAME),                                          \
+    .p00_f = P99_GENERIC(NAME, 0, __VA_ARGS__),                 \
+    .p00_a = (ALIAS),                                           \
+    .p00_d = (DOC),                                             \
+    .p00_t = #T,                                                \
+    .p00_n = #NAME,                                             \
+    .p00_v = #DEF,                                              \
   }
 
 #define P00_GETOPT_DECLARE_(...) P00_GETOPT_DECLARE(__VA_ARGS__)
@@ -280,7 +280,7 @@ P00_GETOPT_DECLARE_(_p00##CHAR,                                               \
                     P00_GETOPT_PROCESS_CHOOSE(P99_STD_REAL_TYPES, char_cptr))
 
 
-#define P00_GETOPT_DEFINE(CHAR, T, NAME, DEF, ALIAS, DOC)       \
+#define P00_GETOPT_DEFINE(CHAR, T, NAME, DEF, ALIAS, DOC)      \
 T NAME = (DEF)
 
 P00_DOCUMENT_TYPE_ARGUMENT(P99_GETOPT_DEFINE, 1)
@@ -298,46 +298,46 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
 
 #define P00_GETOPT_STRUCT_DECL(CHAR) static struct p00_getopt const*const P00_GETOPT_CHAR(CHAR)
 
-#define P00_GETOPT_CHARS                                \
-_p00A, _p00B, _p00C, _p00D, _p00E, _p00F, _p00G,        \
-  _p00H, _p00I, _p00J, _p00K, _p00L, _p00M, _p00N,      \
-  _p00O, _p00P, _p00Q, _p00R, _p00S, _p00T, _p00U,      \
-  _p00V, _p00W, _p00X, _p00Y, _p00Z,                    \
-  _p00a, _p00b, _p00c, _p00d, _p00e, _p00f, _p00g,      \
-  _p00h, _p00i, _p00j, _p00k, _p00l, _p00m, _p00n,      \
-  _p00o, _p00p, _p00q, _p00r, _p00s, _p00t, _p00u,      \
-  _p00v, _p00w, _p00x, _p00y, _p00z,                    \
-  _p000, _p001, _p002, _p003, _p004, _p005, _p006,      \
-  _p007, _p008, _p009, _p00_,                           \
-  _p00AMPERSAND,                                        \
-  _p00APOSTROPHE,                                       \
-  _p00ASTERISK,                                         \
-  _p00AT,                                               \
-  _p00BACKSLASH,                                        \
-  _p00BAR,                                              \
-  _p00BRACELEFT,                                        \
-  _p00BRACERIGHT,                                       \
-  _p00BRACKETLEFT,                                      \
-  _p00BRACKETRIGHT,                                     \
-  _p00CARRET,                                           \
-  _p00COLON,                                            \
-  _p00COMMA,                                            \
-  _p00DOLLAR,                                           \
-  _p00EQUAL,                                            \
-  _p00EXLAM,                                            \
-  _p00GRAVE,                                            \
-  _p00GREATER,                                          \
-  _p00HASH,                                             \
-  _p00HELP,                                             \
-  _p00LESS,                                             \
-  _p00PARENLEFT,                                        \
-  _p00PARENRIGHT,                                       \
-  _p00PERCENT,                                          \
-  _p00PERIOD,                                           \
-  _p00PLUS,                                             \
-  _p00QUOTEDBL,                                         \
-  _p00SEMICOLON,                                        \
-  _p00SLASH,                                            \
+#define P00_GETOPT_CHARS                                       \
+_p00A, _p00B, _p00C, _p00D, _p00E, _p00F, _p00G,               \
+  _p00H, _p00I, _p00J, _p00K, _p00L, _p00M, _p00N,             \
+  _p00O, _p00P, _p00Q, _p00R, _p00S, _p00T, _p00U,             \
+  _p00V, _p00W, _p00X, _p00Y, _p00Z,                           \
+  _p00a, _p00b, _p00c, _p00d, _p00e, _p00f, _p00g,             \
+  _p00h, _p00i, _p00j, _p00k, _p00l, _p00m, _p00n,             \
+  _p00o, _p00p, _p00q, _p00r, _p00s, _p00t, _p00u,             \
+  _p00v, _p00w, _p00x, _p00y, _p00z,                           \
+  _p000, _p001, _p002, _p003, _p004, _p005, _p006,             \
+  _p007, _p008, _p009, _p00_,                                  \
+  _p00AMPERSAND,                                               \
+  _p00APOSTROPHE,                                              \
+  _p00ASTERISK,                                                \
+  _p00AT,                                                      \
+  _p00BACKSLASH,                                               \
+  _p00BAR,                                                     \
+  _p00BRACELEFT,                                               \
+  _p00BRACERIGHT,                                              \
+  _p00BRACKETLEFT,                                             \
+  _p00BRACKETRIGHT,                                            \
+  _p00CARRET,                                                  \
+  _p00COLON,                                                   \
+  _p00COMMA,                                                   \
+  _p00DOLLAR,                                                  \
+  _p00EQUAL,                                                   \
+  _p00EXLAM,                                                   \
+  _p00GRAVE,                                                   \
+  _p00GREATER,                                                 \
+  _p00HASH,                                                    \
+  _p00HELP,                                                    \
+  _p00LESS,                                                    \
+  _p00PARENLEFT,                                               \
+  _p00PARENRIGHT,                                              \
+  _p00PERCENT,                                                 \
+  _p00PERIOD,                                                  \
+  _p00PLUS,                                                    \
+  _p00QUOTEDBL,                                                \
+  _p00SEMICOLON,                                               \
+  _p00SLASH,                                                   \
   _p00TILDE
 
 /**
@@ -466,58 +466,58 @@ static struct p00_getopt p00_help[1] = {
 };
 
 
-#define P00_GETOPT_HELP_COUNT_(CHAR)                                    \
-do {                                                                    \
-  register struct p00_getopt const*const p00_p                          \
+#define P00_GETOPT_HELP_COUNT_(CHAR)                                                                             \
+do {                                                                                                             \
+  register struct p00_getopt const*const p00_p                                                                   \
     = (((p99_getopt_enum## CHAR != p99_getopt_enum_p00h) && (p99_getopt_enum## CHAR != p99_getopt_enum_p00HELP)) \
-       ? P99_GETOPT_CHAR(CHAR)                                          \
-       : (P99_GETOPT_CHAR(CHAR) ? P99_GETOPT_CHAR(CHAR) : p00_help));   \
-  if (p00_p) {                                                          \
-    if (p00_p->p00_a) p00_na = P99_GEN_MAX(p00_na, strlen(p00_p->p00_a)); \
-    if (p00_p->p00_t) p00_nt = P99_GEN_MAX(p00_nt, strlen(p00_p->p00_t)); \
-    if (p00_p->p00_n) p00_nn = P99_GEN_MAX(p00_nn, strlen(p00_p->p00_n)); \
-    if (p00_p->p00_v) p00_nv = P99_GEN_MAX(p00_nv, strlen(p00_p->p00_v)); \
-  }                                                                     \
+       ? P99_GETOPT_CHAR(CHAR)                                                                                   \
+       : (P99_GETOPT_CHAR(CHAR) ? P99_GETOPT_CHAR(CHAR) : p00_help));                                            \
+  if (p00_p) {                                                                                                   \
+    if (p00_p->p00_a) p00_na = P99_GEN_MAX(p00_na, strlen(p00_p->p00_a));                                        \
+    if (p00_p->p00_t) p00_nt = P99_GEN_MAX(p00_nt, strlen(p00_p->p00_t));                                        \
+    if (p00_p->p00_n) p00_nn = P99_GEN_MAX(p00_nn, strlen(p00_p->p00_n));                                        \
+    if (p00_p->p00_v) p00_nv = P99_GEN_MAX(p00_nv, strlen(p00_p->p00_v));                                        \
+  }                                                                                                              \
 } while(false)
 
 #define P00_GETOPT_HELP_COUNT(...) P99_SEP(P00_GETOPT_HELP_COUNT_, __VA_ARGS__)
 
-#define P00_GETOPT_HELP_(CHAR)                                          \
-do {                                                                    \
-  register struct p00_getopt const*const p00_p                          \
+#define P00_GETOPT_HELP_(CHAR)                                                                                   \
+do {                                                                                                             \
+  register struct p00_getopt const*const p00_p                                                                   \
     = (((p99_getopt_enum## CHAR != p99_getopt_enum_p00h) && (p99_getopt_enum## CHAR != p99_getopt_enum_p00HELP)) \
-       ? P99_GETOPT_CHAR(CHAR)                                          \
-       : (P99_GETOPT_CHAR(CHAR) ? P99_GETOPT_CHAR(CHAR) : p00_help));   \
-  if (p00_p) {                                                          \
-    char const*const p00_d = p00_p->p00_d ? p00_p->p00_d : "(not documented)"; \
-    char const*const p00_t = p00_p->p00_t ? p00_p->p00_t : "";               \
-    char const*const p00_n = p00_p->p00_n ? p00_p->p00_n : "";               \
-    char const*const p00_v = p00_p->p00_v ? p00_p->p00_v : "";               \
-    if (p00_p->p00_a)                                                   \
-      fprintf(stderr, "   -%c  --%-*s%-*s%-*s%-*s\t%s\n",               \
-              p99_getopt_enum## CHAR,                                   \
-              p00_na+2,                                                 \
-              p00_p->p00_a,                                             \
-              p00_nt+2,                                                 \
-              p00_t,                                                    \
-              p00_nn+2,                                                 \
-              p00_n,                                                    \
-              p00_nv+2,                                                 \
-              p00_v,                                                    \
-              p00_d);                                                   \
-    else                                                                \
-      fprintf(stderr, "   -%c    %-*s%-*s%-*s%-*s \t%s\n",           \
-              p99_getopt_enum## CHAR,                                   \
-              p00_na+2,                                                 \
-              "",                                                       \
-              p00_nt+2,                                                 \
-              p00_t,                                                    \
-              p00_nn+2,                                                 \
-              p00_n,                                                    \
-              p00_nv+2,                                                 \
-              p00_v,                                                    \
-              p00_d);                                                   \
-  }                                                                     \
+       ? P99_GETOPT_CHAR(CHAR)                                                                                   \
+       : (P99_GETOPT_CHAR(CHAR) ? P99_GETOPT_CHAR(CHAR) : p00_help));                                            \
+  if (p00_p) {                                                                                                   \
+    char const*const p00_d = p00_p->p00_d ? p00_p->p00_d : "(not documented)";                                   \
+    char const*const p00_t = p00_p->p00_t ? p00_p->p00_t : "";                                                   \
+    char const*const p00_n = p00_p->p00_n ? p00_p->p00_n : "";                                                   \
+    char const*const p00_v = p00_p->p00_v ? p00_p->p00_v : "";                                                   \
+    if (p00_p->p00_a)                                                                                            \
+      fprintf(stderr, "   -%c  --%-*s%-*s%-*s%-*s\t%s\n",                                                        \
+              p99_getopt_enum## CHAR,                                                                            \
+              p00_na+2,                                                                                          \
+              p00_p->p00_a,                                                                                      \
+              p00_nt+2,                                                                                          \
+              p00_t,                                                                                             \
+              p00_nn+2,                                                                                          \
+              p00_n,                                                                                             \
+              p00_nv+2,                                                                                          \
+              p00_v,                                                                                             \
+              p00_d);                                                                                            \
+    else                                                                                                         \
+      fprintf(stderr, "   -%c    %-*s%-*s%-*s%-*s \t%s\n",                                                       \
+              p99_getopt_enum## CHAR,                                                                            \
+              p00_na+2,                                                                                          \
+              "",                                                                                                \
+              p00_nt+2,                                                                                          \
+              p00_t,                                                                                             \
+              p00_nn+2,                                                                                          \
+              p00_n,                                                                                             \
+              p00_nv+2,                                                                                          \
+              p00_v,                                                                                             \
+              p00_d);                                                                                            \
+  }                                                                                                              \
  } while(false)
 
 #define P00_GETOPT_HELP(...) P99_SEP(P00_GETOPT_HELP_, __VA_ARGS__)
@@ -529,7 +529,7 @@ static char const*const p00_getopt_synopsis;
  **
  ** @param LINE should be a string literal
  **/
-#define P99_GETOPT_SYNOPSIS(LINE)                               \
+#define P99_GETOPT_SYNOPSIS(LINE)                              \
 static char const*const p00_getopt_synopsis = { LINE }
 
 
@@ -559,19 +559,19 @@ int P00_GETOPT_PROCESS(help)(void* p00_o, char const*p00_c) {
   exit(EXIT_FAILURE);
 }
 
-#define P00_GETOPT_INITIALIZE_(CHAR)                                    \
- case p99_getopt_enum## CHAR: {                                         \
-   register struct p00_getopt const*const p00_p                         \
+#define P00_GETOPT_INITIALIZE_(CHAR)                                                                              \
+ case p99_getopt_enum## CHAR: {                                                                                   \
+   register struct p00_getopt const*const p00_p                                                                   \
      = (((p99_getopt_enum## CHAR != p99_getopt_enum_p00h) && (p99_getopt_enum## CHAR != p99_getopt_enum_p00HELP)) \
-        ? P99_GETOPT_CHAR(CHAR)                                         \
-        : (P99_GETOPT_CHAR(CHAR) ? P99_GETOPT_CHAR(CHAR) : p00_help));  \
-   if (p00_p) {                                                         \
-     void* p00_o = p00_p->p00_o;                                        \
-     p00_used = p00_p->p00_f(p00_o, p00_str);                           \
-     if (p00_used >= 0) break;                                          \
-   }                                                                    \
-   p00_err0 = "unparsable argument";                                    \
-   goto P00_REARANGE;                                                   \
+        ? P99_GETOPT_CHAR(CHAR)                                                                                   \
+        : (P99_GETOPT_CHAR(CHAR) ? P99_GETOPT_CHAR(CHAR) : p00_help));                                            \
+   if (p00_p) {                                                                                                   \
+     void* p00_o = p00_p->p00_o;                                                                                  \
+     p00_used = p00_p->p00_f(p00_o, p00_str);                                                                     \
+     if (p00_used >= 0) break;                                                                                    \
+   }                                                                                                              \
+   p00_err0 = "unparsable argument";                                                                              \
+   goto P00_REARANGE;                                                                                             \
  }
 
 #define P00_GETOPT_INITIALIZE(...) P99_SER(P00_GETOPT_INITIALIZE_, __VA_ARGS__)
@@ -584,13 +584,13 @@ p99_inline
 struct p00_getopt const*
 p00_getopt_find_alias(char const* p00_al, size_t p00_size, struct p00_getopt const* p00_A[p00_size]) {
   /* Search for a matching alias in the array */
-  struct p00_getopt const*const p00_el = &(struct p00_getopt const){ .p00_a = p00_al, };
+  struct p00_getopt const*const p00_el = &(struct p00_getopt const) { .p00_a = p00_al, };
   register struct p00_getopt const*const* p00_p = bsearch_s(&p00_el,
-                                                            p00_A,
-                                                            p00_size,
-                                                            sizeof *p00_A,
-                                                            p00_getopt_subcomp,
-                                                            0);
+      p00_A,
+      p00_size,
+      sizeof *p00_A,
+      p00_getopt_subcomp,
+      0);
   if (p00_p && (*p00_p)) {
     /* Now search if there are several matches. */
     while (p00_p != p00_A && !p00_getopt_subcomp(&p00_el, p00_p - 1, 0)) --p00_p;
@@ -671,35 +671,35 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
           /* The cases for the one-character options are hidden
              here. */
           P00_GETOPT_INITIALIZE(P00_GETOPT_CHARS)
-            /* If the initial string was "--" this announces a long
-               option. */
+          /* If the initial string was "--" this announces a long
+             option. */
         case '-': {
-            /* First split up the option string into option and
-               argument, if possible. */
-            char p00_al[strlen(p00_str) + 1];
-            strcpy(p00_al, p00_str);
-            char* p00_ar = strchr(p00_al, '=');
-            if (p00_ar) {
-              *p00_ar = 0;
-              ++p00_ar;
-            } else {
-              /* If not, suppose that the argument has been given in
-                 the next option. */
-              p00_ar = (*p00_argv)[p00_arg + 1];
-              p00_extra = true;
-            }
-            p00_err1 = p00_al;
-            p00_err2 = p00_ar;
-            /* Search for a matching alias in the array */
-            register struct p00_getopt const*const p00_p = p00_getopt_find_alias(p00_al, p00_up - p00_A, p00_A);
-            if (p00_p) {
-              void* p00_o = p00_p->p00_o;
-              p00_used = p00_p->p00_f(p00_o, p00_ar);
-              if (p00_used >= 0) break;
-              else p00_getopt_diagnostic("unparsable argument", p00_err1, p00_err2);
-            } else p00_getopt_diagnostic("no or ambiguous option alias", p00_err1, p00_err2);
-            goto P00_REARANGE;
+          /* First split up the option string into option and
+             argument, if possible. */
+          char p00_al[strlen(p00_str) + 1];
+          strcpy(p00_al, p00_str);
+          char* p00_ar = strchr(p00_al, '=');
+          if (p00_ar) {
+            *p00_ar = 0;
+            ++p00_ar;
+          } else {
+            /* If not, suppose that the argument has been given in
+               the next option. */
+            p00_ar = (*p00_argv)[p00_arg + 1];
+            p00_extra = true;
           }
+          p00_err1 = p00_al;
+          p00_err2 = p00_ar;
+          /* Search for a matching alias in the array */
+          register struct p00_getopt const*const p00_p = p00_getopt_find_alias(p00_al, p00_up - p00_A, p00_A);
+          if (p00_p) {
+            void* p00_o = p00_p->p00_o;
+            p00_used = p00_p->p00_f(p00_o, p00_ar);
+            if (p00_used >= 0) break;
+            else p00_getopt_diagnostic("unparsable argument", p00_err1, p00_err2);
+          } else p00_getopt_diagnostic("no or ambiguous option alias", p00_err1, p00_err2);
+          goto P00_REARANGE;
+        }
         }
         /* If this used the option argument and the argument was found
            in the next element of argv, skip that. */
@@ -714,7 +714,7 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
       }
     }
   }
- P00_REARANGE:
+P00_REARANGE:
   if (p00_err0) p00_getopt_diagnostic(p00_err0, p00_err1, p00_err2);
   /* At the end of the processing, shift all unused options down, such
      that they appear at front in the argv array. */
