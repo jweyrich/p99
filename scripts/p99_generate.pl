@@ -421,7 +421,6 @@ my @functions_C99 = sort(
 my @compilers = (
     "armcc" => "__ARMCC_VERSION",
     "borland" => "__BORLANDC__",
-    "clang" => "__clang__",
     "comeau" => "__COMO__",
     "cray" => "_CRAYC",
     "dec" => "__DECC_VER",
@@ -440,7 +439,10 @@ my @compilers = (
     "sun" => "__SUNPRO_C",
     "tinyc" => "__TINYC__",
     "watcom" => "__WATCOMC__",
-## put gcc last
+    "apple" => "__apple_build_version__",
+## apple must come before clang, because it is badly faking it
+    "clang" => "__clang__",
+## put gcc last, since clang in turn pretends to be gcc
     "gnu" => "__GNUC__",
     );
 
@@ -1328,7 +1330,7 @@ sub printCompilers(@) {
     my %numbers = ();
     my $num = 1;
     foreach my $comp (sort(keys %compilers)) {
-        print "#define P99_COMPILER_\U${comp}\E ${num}\n";
+        print "#define P99_COMPILER_\U${comp}\E ${num}U\n";
         print "#define P00_COMPILER_PRAGMA_\U${comp}\E(...)\n";
         $numbers{$comp} = $num;
         $num *= 2;
@@ -1336,7 +1338,7 @@ sub printCompilers(@) {
     my $start = "if";
     while (my ($comp, $mac) = (splice(@compilers, 0, 2))) {
         print "#$start defined($mac)\n";
-        print "# define P99_COMPILER $numbers{$comp}\n";
+        print "# define P99_COMPILER $numbers{$comp}U\n";
         print "# define P99_COMPILER_VERSION \"${comp} \"\n";
         print "# undef P00_COMPILER_PRAGMA_\U${comp}\E\n";
         print "# define P00_COMPILER_PRAGMA_\U${comp}\E(...) _Pragma(__VA_ARGS__)\n";
