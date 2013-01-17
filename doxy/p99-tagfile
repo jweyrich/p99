@@ -3987,6 +3987,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_COMPILER_APPLE</name>
+      <anchorfile>p99__generated_8h_aedd16217a76c66e8714a0d9c749a2661.html</anchorfile>
+      <anchor>aedd16217a76c66e8714a0d9c749a2661</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_COMPILER_ARMCC</name>
       <anchorfile>p99__generated_8h_a5e457b8226ad267e1943640e8caed1ad.html</anchorfile>
       <anchor>a5e457b8226ad267e1943640e8caed1ad</anchor>
@@ -5866,14 +5873,21 @@
     <name>p99_getopt.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__getopt_8h</filename>
+    <includes id="p99__qsort_8h" name="p99_qsort.h" local="yes" imported="no">p99_qsort.h</includes>
     <includes id="p99__init_8h" name="p99_init.h" local="yes" imported="no">p99_init.h</includes>
-    <includes id="p99__c99__default_8h" name="p99_c99_default.h" local="yes" imported="no">p99_c99_default.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>main</name>
       <anchorfile>p99__getopt_8h_aa4e97f3782107649d3e4eb3875090b3a.html</anchorfile>
       <anchor>aa4e97f3782107649d3e4eb3875090b3a</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GETOPT_CHAR</name>
+      <anchorfile>p99__getopt_8h_ad5287fdda594953e10e182a55e939e41.html</anchorfile>
+      <anchor>ad5287fdda594953e10e182a55e939e41</anchor>
+      <arglist>(CHAR)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -5888,6 +5902,13 @@
       <anchorfile>p99__getopt_8h_ada3f88a6bad36a39fabb54c7b0358055.html</anchorfile>
       <anchor>ada3f88a6bad36a39fabb54c7b0358055</anchor>
       <arglist>(CHAR, T, NAME, DEF, ALIAS, DOC)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GETOPT_SYNOPSIS</name>
+      <anchorfile>p99__getopt_8h_a76fba856246a439610dd0d8617564003.html</anchorfile>
+      <anchor>a76fba856246a439610dd0d8617564003</anchor>
+      <arglist>(LINE)</arglist>
     </member>
     <member kind="enumeration">
       <name>p99_getopt_enum</name>
@@ -6909,9 +6930,6 @@
     <includes id="p99__c99_8h" name="p99_c99.h" local="yes" imported="no">p99_c99.h</includes>
     <includes id="p99__id_8h" name="p99_id.h" local="yes" imported="no">p99_id.h</includes>
     <includes id="p99__type_8h" name="p99_type.h" local="yes" imported="no">p99_type.h</includes>
-    <class kind="union">p99_endian_2</class>
-    <class kind="union">p99_endian_4</class>
-    <class kind="union">p99_endian_8</class>
     <member kind="define">
       <type>#define</type>
       <name>P99_0</name>
@@ -7415,34 +7433,6 @@
       <anchorfile>group__integers_ga4c51fbcfa4a862ea619f0373b15f205e.html</anchorfile>
       <anchor>ga4c51fbcfa4a862ea619f0373b15f205e</anchor>
       <arglist>(T)</arglist>
-    </member>
-    <member kind="typedef">
-      <type>union p99_endian_16</type>
-      <name>p99_endian_16</name>
-      <anchorfile>group__endianess_gabcc59f6c69c12fc4888a5a195472bbd2.html</anchorfile>
-      <anchor>gabcc59f6c69c12fc4888a5a195472bbd2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>union p99_endian_2</type>
-      <name>p99_endian_2</name>
-      <anchorfile>group__endianess_gafc76184fdc3aa263356b9bdc7ec2d92a.html</anchorfile>
-      <anchor>gafc76184fdc3aa263356b9bdc7ec2d92a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>union p99_endian_4</type>
-      <name>p99_endian_4</name>
-      <anchorfile>group__endianess_ga1ef0dfbd917edc7959fa102df6c433f8.html</anchorfile>
-      <anchor>ga1ef0dfbd917edc7959fa102df6c433f8</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>union p99_endian_8</type>
-      <name>p99_endian_8</name>
-      <anchorfile>group__endianess_ga33efb720ca8c6da761c492e0296606f9.html</anchorfile>
-      <anchor>ga33efb720ca8c6da761c492e0296606f9</anchor>
-      <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>extendedInt</type>
@@ -15949,9 +15939,6 @@
     <name>endianess</name>
     <title>Endianess</title>
     <filename>group__endianess.html</filename>
-    <class kind="union">p99_endian_2</class>
-    <class kind="union">p99_endian_4</class>
-    <class kind="union">p99_endian_8</class>
     <member kind="define">
       <type>#define</type>
       <name>P99_ENDIANNESS</name>
@@ -16014,34 +16001,6 @@
       <anchorfile>group__endianess_ga502649174d3efb3d0ab31b508dbf4a52.html</anchorfile>
       <anchor>ga502649174d3efb3d0ab31b508dbf4a52</anchor>
       <arglist>(X)</arglist>
-    </member>
-    <member kind="typedef">
-      <type>union p99_endian_16</type>
-      <name>p99_endian_16</name>
-      <anchorfile>group__endianess_gabcc59f6c69c12fc4888a5a195472bbd2.html</anchorfile>
-      <anchor>gabcc59f6c69c12fc4888a5a195472bbd2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>union p99_endian_2</type>
-      <name>p99_endian_2</name>
-      <anchorfile>group__endianess_gafc76184fdc3aa263356b9bdc7ec2d92a.html</anchorfile>
-      <anchor>gafc76184fdc3aa263356b9bdc7ec2d92a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>union p99_endian_4</type>
-      <name>p99_endian_4</name>
-      <anchorfile>group__endianess_ga1ef0dfbd917edc7959fa102df6c433f8.html</anchorfile>
-      <anchor>ga1ef0dfbd917edc7959fa102df6c433f8</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>union p99_endian_8</type>
-      <name>p99_endian_8</name>
-      <anchorfile>group__endianess_ga33efb720ca8c6da761c492e0296606f9.html</anchorfile>
-      <anchor>ga33efb720ca8c6da761c492e0296606f9</anchor>
-      <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>enum p99_endianness</type>
@@ -21366,18 +21325,6 @@
       <anchor>gac3ff44e3c10e715562bde8c625002565</anchor>
       <arglist>(p99_count volatile *p00_c)</arglist>
     </member>
-  </compound>
-  <compound kind="union">
-    <name>p99_endian_2</name>
-    <filename>unionp99__endian__2.html</filename>
-  </compound>
-  <compound kind="union">
-    <name>p99_endian_4</name>
-    <filename>unionp99__endian__4.html</filename>
-  </compound>
-  <compound kind="union">
-    <name>p99_endian_8</name>
-    <filename>unionp99__endian__8.html</filename>
   </compound>
   <compound kind="struct">
     <name>p99_event</name>
