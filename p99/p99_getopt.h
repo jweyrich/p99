@@ -44,7 +44,7 @@ struct p00_getopt const* p00_getopt_char(struct p00_getopt const* p00_p) {
 
 #define P99_GETOPT_CHAR(CHAR) p00_getopt_char(P00_GETOPT_CHAR(CHAR))
 
-p99_inline
+static_inline
 int p00_getopt_comp(void const* p00_a, void const* p00_b, void* p00_context) {
   register struct p00_getopt const*const*const p00_A = p00_a;
   register struct p00_getopt const*const*const p00_B = p00_b;
@@ -59,7 +59,7 @@ int p00_getopt_comp(void const* p00_a, void const* p00_b, void* p00_context) {
     return 0;
 }
 
-p99_inline
+static_inline
 int p00_getopt_subcomp(void const* p00_a, void const* p00_b, void* p00_context) {
   register struct p00_getopt const*const*const p00_A = p00_a;
   register struct p00_getopt const*const*const p00_B = p00_b;
