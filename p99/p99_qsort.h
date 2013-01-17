@@ -13,6 +13,7 @@
 #ifndef P99_QSORT_H_
 #define P99_QSORT_H_
 #include "p99_rand.h"
+#include "p99_arith.h"
 
 /** @file
  **
@@ -76,31 +77,6 @@ do {                                                           \
 
 #define P00_QEMPTY(S, P) ((S) == (P))
 
-#define P00_ILOG2_INNER(_0, XI, _2)                            \
-{                                                              \
-  P99_CONSTANT(int, p00_r, (1 << (XI)));                       \
-  if (p00_i >= (UINTMAX_C(1) << p00_r)) {                      \
-    p00_n += p00_r;                                            \
-    p00_i >>= p00_r;                                           \
-  }                                                            \
-}
-
-/**
- ** @brief compute the integer logarithm base @c 2 of @a p00_i
- **/
-p99_inline
-signed p99_ilog2(uintmax_t p00_i) {
-  if (!p00_i) return -1;
-  register unsigned p00_n = 0;
-#if (UINTMAX_MAX/2 + 1) > (1ULL << 63)
-  P99_FOR(, 7, P00_SER, P00_ILOG2_INNER, 6, 5, 4, 3, 2, 1, 0);
-#else
-  P99_FOR(, 6, P00_SER, P00_ILOG2_INNER, 5, 4, 3, 2, 1, 0);
-#endif
-  return p00_n;
-}
-
-
 #define P00_QSORT_BODY(SWAP)                                          \
 if (p00_n > RSIZE_MAX || p00_s > RSIZE_MAX) return ERANGE;            \
 if (p00_n && (!p00_base || !p00_comp)) return EINVAL;                 \
@@ -109,7 +85,7 @@ do {                                                                  \
   /* Initialize a stack of states */                                  \
   P99_CONSTANT(int, p00_tail, 20);                                    \
   /* provide a reasonable stack of states */                          \
-  p00_qsort p00_a[(p99_ilog2(p00_n) + 1)*p00_tail];                   \
+  p00_qsort p00_a[(p99_arith_log2(p00_n) + 1)*p00_tail];              \
   p00_qsort* p00_p = p00_a;                                           \
   P00_QPUSH(p00_p, 0, p00_n);                                         \
   while(!P00_QEMPTY(p00_a, p00_p)) {                                  \
