@@ -580,7 +580,7 @@ int P00_GETOPT_PROCESS(help)(void* p00_o, char const*p00_c) {
 
 #define P00_GETOPT_ARRAY(...) P99_SEQ(P00_GETOPT_ARRAY_, __VA_ARGS__)
 
-p99_inline
+static_inline
 struct p00_getopt const*
 p00_getopt_find_alias(char const* p00_al, size_t p00_size, struct p00_getopt const* p00_A[p00_size]) {
   /* Search for a matching alias in the array */
