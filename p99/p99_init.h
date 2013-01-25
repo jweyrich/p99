@@ -49,7 +49,7 @@ P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_FUNC_VAR_S, P99_REP(P99_MAX_NUMBER,)
 
 # define P00_INIT_FUNCTION_(NAME, NR)                                           \
 void NAME(void);                                                                \
-static p99_callback_el const P00_INIT_FUNCTION(NR) = { .p00_void_func = NAME, }
+ static p99_callback_el const P00_INIT_FUNCTION(NR) = { .p00_void = { .p00_void_func = NAME, }, }
 
 # ifdef P00_DOXYGEN
 /**
@@ -128,7 +128,9 @@ static p99_callback_el const P00_INIT_FUNCTION(NR) = { .p00_void_func = NAME, }
 static p99_callback_el const P00_INIT_FUNCTION(NR)             \
 = {                                                            \
   .p00_voidptr_func = (FUNC),                                  \
-  .p00_arg = &(NAME),                                          \
+  .p00_void = {                                                \
+    .p00_arg = &(NAME),                                        \
+  },                                                           \
 }
 
 # ifdef P00_DOXYGEN

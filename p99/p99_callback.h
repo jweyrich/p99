@@ -54,7 +54,7 @@ struct p99_callback_el {
   union {
     p99_callback_void_func * p00_void_func;
     void* p00_arg;
-  };
+  } p00_void;
 };
 
 
@@ -67,11 +67,13 @@ p99_callback_el* p99_callback_el_init(p99_callback_el * p00_obj,
   if (p00_obj) {
     if (p00_voidptr_func)
       *p00_obj = (p99_callback_el) {
-      .p00_voidptr_func = p00_voidptr_func,
-       .p00_arg = p00_arg,
+        .p00_voidptr_func = p00_voidptr_func,
+        .p00_void = {
+          .p00_arg = p00_arg,
+        },
     };
     else
-      *p00_obj = (p99_callback_el) { .p00_void_func = p00_void_func };
+      *p00_obj = (p99_callback_el) { .p00_void = { .p00_void_func = p00_void_func, }, };
   }
   return p00_obj;
 }
@@ -103,8 +105,8 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                            \
 
 p99_inline
 void p99_callback_el_call(p99_callback_el const p00_el) {
-  if (p00_el.p00_voidptr_func) p00_el.p00_voidptr_func(p00_el.p00_arg);
-  else if (p00_el.p00_void_func) p00_el.p00_void_func();
+  if (p00_el.p00_voidptr_func) p00_el.p00_voidptr_func(p00_el.p00_void.p00_arg);
+  else if (p00_el.p00_void.p00_void_func) p00_el.p00_void.p00_void_func();
 }
 
 p99_inline
