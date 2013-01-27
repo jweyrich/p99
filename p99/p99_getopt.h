@@ -33,6 +33,8 @@ struct p00_getopt {
   char const*const p00_v;
 };
 
+static void** p00_getopt_allocations;
+
 #define P00_GETOPT_PROCESS(T) P99_PASTE2(p00_getopt_process_, T)
 
 #define P00_GETOPT_CHAR(CHAR) p00_getopt_char## CHAR
@@ -137,7 +139,9 @@ static_inline
 int P00_GETOPT_PROCESS(char_cptr)(void* p00_o, char const*p00_c) {
   char const**p00_O = p00_o;
   if (p00_c) {
-    *p00_O = p00_c;
+    *p00_getopt_allocations = P99_STRDUP(p00_c);
+    *p00_O = *p00_getopt_allocations;
+    ++p00_getopt_allocations;
     return strlen(p00_c) + 1;
   }
   return -1;
@@ -580,6 +584,25 @@ int P00_GETOPT_PROCESS(help)(void* p00_o, char const*p00_c) {
 
 #define P00_GETOPT_ARRAY(...) P99_SEQ(P00_GETOPT_ARRAY_, __VA_ARGS__)
 
+#define P00_GETOPT_ALLOCATIONS(CHAR) [p99_getopt_enum## CHAR] = 0
+
+static
+void** p00_getopt_allocations_base = 0;
+
+static
+void** p00_getopt_allocations = 0;
+
+static_inline
+void p00_getopt_atexit(void) {
+  size_t p00_len = p00_getopt_allocations - p00_getopt_allocations_base;
+  void** p00_tmp = p00_getopt_allocations_base;
+  p00_getopt_allocations = 0;
+  p00_getopt_allocations_base = 0;
+  P99_DO(size_t, p00_i, 0, p00_len)
+    free(p00_tmp[p00_i]);
+  free(p00_tmp);
+}
+
 static_inline
 struct p00_getopt const*
 p00_getopt_find_alias(char const* p00_al, size_t p00_size, struct p00_getopt const* p00_A[p00_size]) {
@@ -613,6 +636,9 @@ p00_getopt_diagnostic(char const* p00_err0, char const* p00_err1, char const* p0
 }
 
 P99_MAIN_INTERCEPT(p99_getopt_initialize) {
+  p00_getopt_allocations_base = P99_CALLOC(void*, *p00_argc);
+  p00_getopt_allocations = p00_getopt_allocations_base;
+  atexit(p00_getopt_atexit);
   char const* p00_err0 = 0;
   char const* p00_err1 = 0;
   char const* p00_err2 = 0;
