@@ -307,6 +307,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_attribute_weakref 1
 # define p00_has_attribute_constructor 1
 # define p00_has_attribute_destructor 1
+# define p00_has_attribute_vector_size 1
 # if defined(__GNUC_GNU_INLINE__) || (P99_GCC_VERSION < 40300UL)
 #  define p00_has_attribute_gnu_inline 1
 # endif
@@ -944,6 +945,28 @@ typedef __int128_t p99x_int128;
 #  endif
 # endif
 #endif
+
+/**
+ ** @brief A wrapper for vector type extensions
+ **
+ ** This implements a vector of @a N elements of type @a T. On
+ ** platforms that support this directly such vectors then can be used
+ ** twofold. They can be accessed as arrays through indexing with @c
+ ** [] and they can be used with the standard operators such as @c +,
+ ** @c * etc.
+ **
+ ** On platforms that don't support this type of extension this
+ ** expands to an array declaration with special alignment
+ ** properties. On such platforms such a "vector" can only be used for
+ ** declarations of variables or function parameters, but not as
+ ** types.
+ **/
+#if p99_has_attribute(vector_size)
+# define P99_VECTOR(T, NAME, N) T NAME __attribute__((vector_size(sizeof(T)*(N))))
+#else
+# define P99_VECTOR(T, NAME, N) _Alignas(sizeof(T)*(N)) T NAME[N]
+#endif
+
 
 /* special repair work for non-compliant compilers */
 #if P99_COMPILER & P99_COMPILER_INTEL
