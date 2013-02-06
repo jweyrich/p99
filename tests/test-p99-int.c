@@ -603,7 +603,7 @@ int i:UINT_WIDTH;
 #ifdef p99x_uint128
           print_uintmax_X(P99_HTON(16, ((p99x_uint128)0x0001020304050607) << 64 | ((p99x_uint128)0x08090A0B0C0D0E0F)))
 #else
-          "<128 bit types not supported>", ""
+          "<128 bit types not supported>"
 #endif
          );
   printf ("Endianess results in %#04"PRIX16", %#08"PRIX32", %#016"PRIX64", %s\n",
@@ -613,7 +613,7 @@ int i:UINT_WIDTH;
 #ifdef p99x_uint128
           print_uintmax_X(P99_NTOH(16, ((p99x_uint128)0x0001020304050607) << 64 | ((p99x_uint128)0x08090A0B0C0D0E0F)))
 #else
-          "<128 bit types not supported>", ""
+          "<128 bit types not supported>"
 #endif
          );
   printf("------------------------ testing for overflow behavior -----\n");
