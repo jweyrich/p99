@@ -47,6 +47,7 @@ uint32_t p00_atomic_exchange_4(uint32_t volatile* p00_objp, uint32_t p00_ret) {
 }
 
 #if defined(__x86_64__) || defined(P00_DOXYGEN)
+# if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8) || defined(P00_DOXYGEN)
 p99_inline
 uint64_t p00_atomic_exchange_8(uint64_t volatile* p00_objp, uint64_t p00_ret) {
   __asm__ __volatile__("xchgq %1, %0"
@@ -55,6 +56,9 @@ uint64_t p00_atomic_exchange_8(uint64_t volatile* p00_objp, uint64_t p00_ret) {
                        : "memory");
   return p00_ret;
 }
+# endif
+#else
+#undef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
 #endif
 
 #if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && !defined(P00_DOXYGEN)
