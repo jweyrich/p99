@@ -933,7 +933,7 @@ P00_UNUSED(1);
 
 #if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
 # if defined(__LONG_MAX__) && defined(__LONG_LONG_MAX__) && (P99_GCC_VERSION >= 30000UL)
-#  if (__LONG_MAX__ == 9223372036854775807) && (__LONG_LONG_MAX__ == 9223372036854775807)
+#  if defined(__SIZEOF_INT128__)
 #   define p99x_uintmax p99x_uintmax
 #   define p99x_intmax p99x_intmax
 #   define p99x_uint128 p99x_uint128
