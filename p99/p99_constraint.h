@@ -713,10 +713,14 @@ rsize_t p00_cskip(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l],
 p99_inline
 uint8_t *p00_strtok_inner(
   rsize_t * restrict p00_s1max,
-  uint8_t p00_ret[restrict (*p00_s1max)],
+  uint8_t p00_ret0[restrict (*p00_s1max)],
   rsize_t p00_s2max,
   const uint8_t p00_s2[const restrict p00_s2max],
   uint8_t ** restrict p00_ptr) {
+  /* We have to copy this to a "veritable" pointer because of a bug in
+     clang 3.0 that tells us "read-only variable is not assignable"
+     for the function parameter. */
+  register uint8_t * p00_ret = p00_ret0;
   /* Skip delimiters at the beginning of the string. */
   register size_t const p00_l = p99_span(*p00_s1max, p00_ret, p00_s2max, p00_s2);
   if (p00_l < *p00_s1max) {
