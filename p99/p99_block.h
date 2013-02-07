@@ -632,10 +632,6 @@ P00_BLK_DECL_REC(register p00_jmp_buf *const, p00_unwind_bottom,                
   } else                                                                                         \
   case 1:
 
-/* The construct in the macro sometimes triggers dangling else
-   warnings by clang. */
-P99_IF_COMPILER(CLANG, GCC diagnostic ignored "-Wdangling-else")
-
 p99_inline
 void p00_unwind(void* p00_top, unsigned p00_level, int p00_cond) {
   if (p00_level && p00_cond && p00_top) p00_longjmp(p00_top, p00_cond);
