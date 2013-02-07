@@ -968,6 +968,9 @@ typedef __int128_t p99x_int128;
  ** declarations of variables or function parameters, but not as
  ** types.
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_VECTOR, 0)
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_VECTOR, 1)
+P00_DOCUMENT_NUMBER_ARGUMENT(P99_VECTOR, 2)
 #if p99_has_attribute(vector_size)
 # define P99_VECTOR(T, NAME, N) T NAME __attribute__((vector_size(sizeof(T)*(N))))
 #else
