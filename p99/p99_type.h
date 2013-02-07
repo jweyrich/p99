@@ -134,7 +134,7 @@ P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(P99_PLAIN_TYPE, 0)
 #define P99_PLAIN_TYPE(T)                                          \
 /*! @brief initialize the object that @a p00_id points to by 0. */ \
 p99_inline T* P99_PASTE2(T, _init)(T *p00_id) {                    \
-  if (p00_id) *p00_id = (T){ 0 };                                  \
+  if (p00_id) *p00_id = 0;                                         \
   return p00_id;                                                   \
 }                                                                  \
 /*! @brief destroy the object that @a p00_id points to. */         \
