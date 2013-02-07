@@ -314,6 +314,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_attribute_aligned 1
 # define p00_has_attribute_noreturn 1
 # define p00_has_attribute_deprecated 1
+# define p00_has_attribute_unused 1
 # ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
 #  define p00_has_builtin___sync_val_compare_and_swap 1
 #  define p00_has_builtin___sync_lock_test_and_set 1
@@ -817,9 +818,15 @@ static_assert(1, "test of static assertions");
 
 #define P00_HARMLESS_SIZEOF(ID) sizeof(sizeof(ID))
 
-#define P00_UNUSED(EXPR)                                       \
+#if p99_has_attribute(unused)
+# define P00_UNUSED(EXPR)                                      \
+  extern char const p00_harmless_declaration                   \
+  [P00_HARMLESS_SIZEOF(EXPR)] __attribute__((__unused__))
+#else
+# define P00_UNUSED(EXPR)                                      \
   extern char const p00_harmless_declaration                   \
   [P00_HARMLESS_SIZEOF(EXPR)]
+#endif
 
 /* Used inside P99_MACRO_END. The idea that this is an extern
    declaration, so it doesn't result in any code. On the other hand it
