@@ -599,7 +599,7 @@ void p00_getopt_atexit(void) {
   p00_getopt_allocations = 0;
   p00_getopt_allocations_base = 0;
   P99_DO(size_t, p00_i, 0, p00_len)
-    free(p00_tmp[p00_i]);
+  free(p00_tmp[p00_i]);
   free(p00_tmp);
 }
 
