@@ -29,15 +29,17 @@ my $hfile = join("-", @ARGV, "c99-support.html");
 
 my @compilers = (
     "tcc" => [ [],
-        ["VLA", "TOKEN_CONCAT_ITERATIVE", "TOKEN_CONCAT_HASH_HASH",
+        ["VLA", "TOKEN_CONCAT_ITERATIVE", "TOKEN_CONCAT_HASH_HASH", "TOKEN_HASH_HASH_AS_ARGUMENT",
             "STATIC_PARAMETER", "CONST_PARAMETER", "VOLATILE_PARAMETER", "FOR_DECLARATION",
             "PRAGMA", "PREPRO_ARITH", "UNIVERSAL",
             "DIGRAPH", "TRIGRAPH", "NON_EVALUATED_COMMA_ASSIGN"] ],
     "pcc" => [["-std=c99"],
-        ["DIGRAPH", "TRIGRAPH",
+        ["DIGRAPH",
             "CONST_PARAMETER", "VOLATILE_PARAMETER", "UNIVERSAL", "EVALUATED_COMMA_ASSIGN"]],
     "clang-2.9" => [["-trigraphs", "-Wno-trigraphs"], ["UNIVERSAL", "TOKEN_HASH_HASH_AS_ARGUMENT"]],
+    "clang-3.0" => [["-trigraphs", "-Wno-trigraphs"], ["UNIVERSAL"]],
     "clang" => [["-trigraphs", "-Wno-trigraphs"], ["UNIVERSAL"]],
+    "clang-3.2" => [["-trigraphs", "-Wno-trigraphs"], []],
     "opencc" => [["-std=c99", "-Wno-trigraphs"], ["UNIVERSAL", "EVALUATED_COMMA_ASSIGN"]],
     "icc" => [["-std=c99"], ["UNIVERSAL_UTF8", "UNIVERSAL_MANGLE", "EVALUATED_COMMA_ASSIGN", "EVALUATED_COMMA_PREPRO"]],
     "gcc-4.1" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
@@ -45,6 +47,8 @@ my @compilers = (
     "gcc-4.3" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
     "gcc-4.4" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
     "gcc-4.5" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
+    "gcc-4.6" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
+    "gcc-4.7" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["UNIVERSAL_UTF8", "EVALUATED_COMMA_ASSIGN"]],
     "p99-pcc" => [["-std=c99", "-B$dir"],
                   [#"DIGRAPH", "TRIGRAPH",
                    "CONST_PARAMETER", "VOLATILE_PARAMETER",
@@ -57,6 +61,8 @@ my @compilers = (
     "p99-gcc-4.3" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
     "p99-gcc-4.4" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN"]],
     "p99-gcc-4.5" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN", "EVALUATED_COMMA_PREPRO"]],
+    "p99-gcc-4.6" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN", "EVALUATED_COMMA_PREPRO"]],
+    "p99-gcc-4.7" => [["-std=c99", "-fextended-identifiers", "-Wno-trigraphs"], ["EVALUATED_COMMA_ASSIGN", "EVALUATED_COMMA_PREPRO"]],
 );
 
 my %compilers = @compilers;

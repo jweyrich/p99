@@ -340,12 +340,12 @@ unsigned const has_preprocessor_bitneg = 1;
 # endif
 unsigned has_preprocessor_uintmax;
 # if (1 ? -1 : 0U) < 0
-#  warn "ternary operator should promote to unsigned value"
+#  warning "ternary operator should promote to unsigned value"
 # else
 unsigned const has_preprocessor_ternary_unsigned = 1;
 # endif
 # if (1 ? -1 : 0) > 0
-#  warn "ternary operator should result in signed value"
+#  warning "ternary operator should result in signed value"
 # else
 unsigned const has_preprocessor_ternary_signed = 1;
 # endif
