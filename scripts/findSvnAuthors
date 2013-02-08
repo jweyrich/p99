@@ -1,0 +1,784 @@
+#!/bin/sh -f
+#  This may look like complete nonsense, but it really is -*- mode: perl; coding: utf-8 -*-
+eval 'exec perl -wS -x $0 ${1+"$@"}'
+if 0;               #### for this magic, see findSvnAuthors ####
+#!perl
+#
+#
+# Except of parts copied from previous work and as explicitly stated below,
+# the author and copyright holder for this work is
+# Copyright (c) 2006-2008, 2010 Jens Gustedt, INRIA, France
+#
+#
+# This file is part of the parXXL library. It is free software;
+# you can redistribute it and/or modify it under the terms as given in
+# the file LICENSE. It is distributed without any warranty;
+# without even the implied warranty of merchantability or fitness
+# for a particular purpose.
+#
+
+use English;
+use Getopt::Long;
+use locale;
+
+### Read in files whoes names are given as arguments.
+sub slurp(&;@);
+sub is_comment(@);
+sub fullname($);
+sub scm($);
+sub gitfollow($;$);
+
+my $help = 0;
+my $ifile;
+my $ofile;
+my $type;
+my $spaces = 1;
+my $diff = 1;
+my $metoo = 0;
+my $beauty = "astyle";
+my $copyright = "Copyright (c)";
+my $authorsFile;
+my $licenceFile;
+my @beautyArgs = ("-aNoO", "-s2", "--convert-tabs");
+my $result = GetOptions ("ifile=s"      => \${ifile},      # string
+                         "ofile=s"       => \${ofile},      # string
+                         "copyright=s"   => \${copyright},  # string
+                         "licenceFile=s" => \${licenceFile},# string
+                         "authorsFile=s" => \${authorsFile},# string
+                         "spaces=i"      => \${spaces},     # integer
+                         "type=s"        => \${type},       # string
+                         "metoo!"        => \${metoo},      # flag
+                         "diff!"        => \${diff},      # flag
+                         "beauty=s"      => \${beauty},     # string
+                         "beautyArgs=s"  => \@{beautyArgs}, # list of strings
+                         "help!"        => \${help},      # flag
+);
+
+# collect the command arguments for the log command
+my %commands = (
+    "svn", ["-q"],
+    "bzr", [],
+    "git", ["-M", "-C", "--follow", "--pretty=format:%an %ai", "--"],
+    );
+
+# collect the error codes that status issues if the command
+# doesn't identify this.
+my %errors = (
+    "svn", 0,
+    "bzr", 3,
+    "git", 128,
+    );
+
+$ifile = ${ofile} if (!defined($ifile));
+@beautyArgs = split(/[,:]/,join(',',@beautyArgs));
+
+$spaces = " " x ${spaces};
+
+my ($scriptdir, $execname) = ${PROGRAM_NAME} =~ m{^(.*/)?(.+)$}o;
+$scriptdir = "." if (!defined($scriptdir) || ${scriptdir} eq "");
+
+$authorsFile = "${scriptdir}/AUTHORS.txt"
+    if (!defined($authorsFile));
+print STDERR "reading $authorsFile\n";
+my %names = slurp { m{^(\S+)\s+(.*?)\s*$}o } ${authorsFile};
+print STDERR "$authorsFile: $_\n" foreach (keys %names);
+my %fnames = map { (fullname($_), $_) } values(%names);
+
+foreach my $name (keys(%fnames)) {
+    $names{$name} = $fnames{$name};
+}
+
+my $historyFile = "${scriptdir}/HISTORY.txt";
+my %history = slurp { m{^(\S+)\s+(.*?)\s*$}o } ${historyFile};
+
+$licenceFile = "${scriptdir}/SHORTLICENCE.txt"
+    if (!defined($licenceFile));
+my $licence = slurp { $_ } ${licenceFile};
+$licence = <<'LICENCE' if (!defined($licence));
+
+
+This file is free software; you can redistribute it and/or modify it
+under the terms as given in the file LICENSE. It is distributed
+without any warranty; without even the implied warranty of
+merchantability or fitness for a particular purpose.
+
+LICENCE
+
+
+my %combeg = (
+                "c++" => "//",
+                "c" => "/*",
+                "tex" => "%",
+                "csh" => "#",
+                "sh" => "#",
+                "perl" => "#",
+                "make" =>"#",
+                "makefile" =>"#",
+              "autoconf" => "dnl ",
+);
+
+my %comend = (
+                "c++" => "",
+                "c" => "*/",
+                "tex" => "",
+                "csh" => "",
+                "sh" => "",
+                "perl" => "",
+                "make" => "",
+                "makefile" => "",
+                "autoconf" => "",
+);
+
+
+my %slogan = (
+                "c++" => "//  This may look like C code, but it really is -*- mode: c++; coding: utf-8 -*-",
+                "c" => "/* This may look like nonsense, but it really is -*- mode: C -*- */",
+                "latex" => "% This may look like nonsense, but it really is -*- mode: latex; coding: utf-8 -*-",
+                "csh" => "#  This may look like nonsense, but it really is -*- mode: csh; coding: utf-8 -*-",
+                "sh" => "#  This may look like nonsense, but it really is -*- mode: sh; coding: utf-8 -*-",
+                "perl" => "#  This may look like complete nonsense, but it really is -*- mode: perl; coding: utf-8 -*-",
+                "make" => "# This may look like nonsense, but it really is -*- mode: makefile; coding: utf-8 -*-",
+                "makefile" => "# This may look like nonsense, but it really is -*- mode: makefile; coding: utf-8 -*-",
+                "autoconf" => "dnl This may look like nonsense, but it really is -*- mode: autoconf; coding: utf-8 -*-",
+);
+
+sub usage () {
+  my @types = sort keys %combeg;
+  $ifile = "<undef>" if (!defined($ifile));
+  $ofile = "<undef>" if (!defined($ofile));
+  $metoo = ${metoo} ? "true" : "false";
+  $diff = ${diff} ? "true" : "false";
+  $PROGRAM_NAME =~ s{.*[/\\]}{}o;
+  print STDERR <<"USAGE";
+Add author information to the start of a file.
+
+Usage: ${PROGRAM_NAME} [options]
+             --ofile      <filename>    (${ofile})
+             --ifile      <filename>    (${ifile})
+             --type       <filetype>    (one of: @types)
+             --beauty     <executable>  (${beauty})
+             --beautyArgs arg1:arg2:... (@{beautyArgs})
+             --metoo                    (flag: ${metoo})
+             --diff                     (flag: ${diff})
+
+Where --ifile defaults to --ofile, and --ofile defaults stdout.
+At least one of ifile or ofile must be set.
+
+This program tries to find revision information from an SCM (supported
+are svn and bzr) in terms of author / year pairs and updates an
+initial copyright information at the start of the file. If the option
+--metoo is given it also adds the current user and year to the list of
+revisions.
+
+It knows of different file types (see --type above) and tries to guess
+it if you don\'t provide the --type option. This is used to get the
+comment syntax right. Then it also beautifies the file (see --beauty
+above).
+USAGE
+
+}
+
+if (${help} || !defined($ifile)) {
+  usage();
+  exit(1);
+}
+
+if (!$result || @ARGV) {
+  usage();
+  print STDERR ($#{ARGV} ? <<"OPTIONS" : <<"OPTION");
+Unknown options @{ARGV}
+OPTIONS
+Unknown option @{ARGV}
+OPTION
+  exit(1);
+}
+
+
+### END CONDIDITIONING
+
+my @tuples = ();
+
+my $scm = scm(${ifile});
+
+my $command = join(" ", $scm, "log",
+                   map { "'$_'"; } @{$commands{$scm}});
+
+if ( $scm eq "svn" ) {
+    ## Check if the file is logged into svn.
+    @tuples
+	= slurp { m{^(?:r[^|]*)\s+[|]\s+([^|()]+)\s+[|]\s+(\d+)}o ; }
+    "$command ${ifile} |";
+} elsif ( $scm eq "bzr" ) {
+    my @ttuples
+	= slurp { 
+	    m{(committer|timestamp):\s*(.*)}o ; 
+	    #m{([^:]+):\s*(.+)}o; 
+    }
+    "$command ${ifile} |";
+    while (@ttuples) {
+	my ($tag1, $name, $tag2, $time) = splice(@ttuples, -4);
+        $name = $names{$name}
+        if (defined($names{$name}));
+        $name = fullname($name);
+	if ($name !~ m{^\s*$}o ) {
+	    $time =~ s{^[a-zA-Z]+ ([0-9]+).*}{$1}o;
+	    push(@tuples, $name, $time);
+	}
+    }
+} elsif ( $scm eq "git" ) {
+
+    my $prefix = `git rev-parse --show-prefix`;
+    chomp $prefix;
+    my $fname = "${prefix}${ifile}";
+    $fname =~ s{/[.]/}{/}go;
+    $prefix =~ s{[^/]+}{..}og;
+
+    my @nnames = ($fname);
+    $fname = gitfollow($fname,$prefix);
+    unshift(@nnames, $fname) if (defined($fname));
+
+    my @fnames;
+
+  RETRY:
+    while ($#fnames != $#nnames) {
+        @fnames = (@nnames);
+        foreach my $fname (@fnames) {
+            my $nname = $history{$fname};
+            unshift(@nnames, $nname) if (defined($nname));
+            $nname = gitfollow($fname,$prefix);
+            unshift(@nnames, $nname) if (defined($nname));
+        }
+        my %nnames = map {
+            ($_, $_);
+        } @nnames;
+        @nnames = sort(keys(%nnames));
+    }
+
+    print STDERR "historical names are @fnames\n";
+
+
+    my @ttuples;
+
+    foreach my $fname (@fnames) {
+        my @ntuples
+            = slurp {
+                m/(.+) (\d\d\d\d)/o;
+        }
+        "$command ${prefix}${fname} |";
+        push @ttuples, @ntuples;
+    }
+    while (@ttuples) {
+	my ($name, $year) = splice(@ttuples, -2);
+        if ($name !~ m"^\(.+\)") 
+        {
+            $name = $names{$name}
+            if (defined($names{$name}));
+            $name = fullname($name);
+            if ($name !~ m{^\s*$}o ) {
+                push(@tuples, $name, $year);
+            }
+        }
+    }
+} else {
+    die "unknwon SCM '$scm'";
+}
+
+for (my $i = 0; $i < scalar(@tuples); $i += 2) {
+    my $fname = fullname($names{$tuples[$i]});
+    if (defined($fname) && $fname !~ m{^\s*$}o) {
+        $tuples[$i] = $fname;
+    }
+}
+
+print STDERR @{tuples}/2 . "\t*****\t\trevisions in total\n";
+
+if (!@{tuples} || ${metoo}) {
+  ## nothing found, fall back to POSIX information
+  my $au = $ENV{USER};
+  my @years = ();
+  if ( -e  ${ifile} ) {
+    # Using the file owner and dates as a hint.
+    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,
+        $atime,$mtime,$ctime,$blksize,$blocks)
+      = stat(${ifile});
+    $au = getpwuid(${uid});
+    @years = map {
+      my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)
+        = gmtime($_);
+      $year += 1900;
+      ${year}
+    } (${mtime}, ${ctime});
+  }
+  for (my $i = 0; $i < scalar(@tuples); $i += 2) {
+      my $fname = fullname($names{$tuples[$i]});
+      if (defined($fname) && $fname !~ m{^\s*$}o) {
+          $tuples[$i] = $fname;
+      }
+  }
+  # Fall back to actual date
+  if (!@{years}) {
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)
+      = gmtime(time);
+    $year += 1900;
+    @years = (${year});
+  }
+  push(@tuples, map { ${au} => $_ } @{years});
+}
+
+for (my $i = 0; $i < scalar(@tuples); $i += 2) {
+    my $fname = fullname($names{$tuples[$i]});
+    if (defined($fname) && $fname !~ m{^\s*$}o) {
+        $tuples[$i] = $fname;
+    }
+}
+
+## This now has one occuring year for any author
+my %authors = @{tuples};
+
+
+## Do some statistics and find the full name
+foreach my $au (sort keys %authors) {
+  my $name = \${names{${au}}};
+  ## Fall back to POSIX information
+  if (!defined(${${name}})) {
+    my @pwent = getpwnam(${au});
+    if (@{pwent}) {
+      my ($nname,$passwd,$uid,$gid,
+          $quota,$comment,$gcos,$dir,$shell,$expire)
+        = @{pwent};
+      ${${name}} = ${gcos};
+    } else {
+      ${${name}} = ${au};
+    }
+  }
+  print STDERR scalar(grep { $_ eq ${au} } @{tuples})
+    . "\t${au}\t\t${${name}}\n";
+}
+
+## replace all values with an empty hash reference
+@authors{keys %authors} = {};
+## Hash the years into these hashes
+while (@{tuples}) {
+  my ($au, $year) = splice(@tuples, -2);
+  ${authors{${au}}}->{${year}} = 1;
+}
+
+
+my @text = ();
+my $source;
+my $icopy;
+if (defined($ifile)) {
+  my $tmp = $$ . rand();
+ TMPIFILE:
+  foreach ("/dev/shm/fsa-${tmp}",
+           "/tmp/fsa-${tmp}",
+           "${ifile}-${tmp}") {
+    $icopy = $_;
+    last TMPIFILE
+      if (!system("cp", "-fp", ${ifile}, ${icopy}));
+  }
+}
+
+READIN:
+if (open($source, "<${icopy}")) {
+  # read the first five lines
+ FIRSTLINES:
+  while (my $line = <$source>) {
+    push(@text, ${line});
+    last FIRSTLINES
+      if ($#{text} > 3);
+  }
+}
+unlink(${icopy});
+
+if (@{text}) {
+  foreach my $i (0 ... 1) {
+    my $line = ${text[${i}]};
+    if ($line =~ m{-\*- ([-a-zA-Z0-9]+) -\*-}o) {
+      my ($ntype) = $1;
+      $ntype = lc ${ntype};
+      if (!defined($type)) {
+        $type = ${ntype};
+        print STDERR "guessing ${type}\n";
+      }
+      warn "Given file type ${type} does not match infile magic ${ntype}"
+        if (${type} ne ${ntype});
+    }
+  }
+}
+
+$type = "c++"  if (!defined($type));
+
+unlink(${icopy});
+# Since we are at it try to beautify the file, first.
+if (defined(${beauty}) && ${type} =~ /^c/) {
+  if (system("${beauty} @{beautyArgs} <${ifile} >${icopy}")) {
+    print STDERR "${ifile} beautification had error: " . $OS_ERROR ."\n";
+    # Fall back to the already opened file and remove the garbage.
+    unlink(${icopy});
+  } else {
+    $beauty = undef;
+    # We changed the file so we have to restart
+    close($source);
+    @text = ();
+    goto READIN;
+  }
+}
+
+my  $combeg = ${combeg{${type}}};
+my  $comend = ${comend{${type}}};
+my  $slogan = ${slogan{${type}}};
+
+
+### Compile different comment detection codes according to the level
+### of difficulty ot the parsing.
+if (${combeg} eq "") {
+  ## No comments defined at all
+   eval <<'TRIVIAL' or die ${EVAL_ERROR};
+  sub is_comment(@) {
+    return 0;
+  }
+  return \&is_comment;
+TRIVIAL
+} elsif (${comend} eq "") {
+  ## Only comment begin; end at the end of the line
+  my $cb = ${combeg};
+  $cb =~ s{\W}{[$&]}go;
+  my $reg = qr{^\s*${cb}};
+  eval <<'LINEAR' or die ${EVAL_ERROR};
+  sub is_comment(@) {
+    my (@arg) = @_ ? @_ : ($_);
+    return ! grep { !m{${reg}} } @{arg};
+  }
+  return \&is_comment;
+LINEAR
+} else {
+  ## the general case
+  my $cb = ${combeg};
+  $cb =~ s{\W}{[$&]}go;
+  my $ce = ${comend};
+  $ce =~ s{\W}{[$&]}go;
+  ## A minimal matching pair of opening and closing delimiters with
+  ## some comment in between.
+  my $reg = qr{${cb}.*?${ce}};
+  eval <<'OPENCLOSE' or die ${EVAL_ERROR};
+  sub is_comment(@) {
+    my (@arg) = @_ ? @_ : ($_);
+    my $all = join('', @{arg});
+    # substitute all comments by a tab. No adjacent characters should
+    # be able to clash into new comment deliminators.
+    $all =~ s{${reg}}{\t}go;
+    return $all =~ m{^\s*$}o;
+  }
+  return \&is_comment;
+OPENCLOSE
+}
+
+
+my $tmp;
+
+my $target;
+if (defined($ofile) && ${ofile} ne "-") {
+  my $cookie = rand()."-$$";
+ DIRS:
+  foreach my $dir ("/dev/shm", "/tmp", ".") {
+    $tmp = "${dir}/target-copy-${cookie}.txt";
+    open($target, ">${tmp}");
+    last DIRS if ${target};
+  }
+  die "can't open ${tmp} for writing"
+    if (!${target});
+} else {
+  open($target, ">&", \*STDOUT)
+    || die "can't dup to STDOUT for writing";
+}
+FOUND:
+select $target;
+
+if (@{text}) {
+  if (${type} eq "perl") {
+    print STDERR "you dare?\n";
+    if (defined($text[2])) {
+      # are the first two lines such that they will never be executed
+      # by perl?
+      if ((is_comment(@{text}))
+          ||(is_comment(${text[0]})
+             && is_comment(${text[1]})
+             && ${text[2]} !~ m{;}o
+             && $text[3] =~ m{^\s*if 0;}o
+             && $text[4] =~ m{#!perl})
+          ||(is_comment(${text[0]})
+             && ${text[1]} !~ m{;}o
+             && $text[2] =~ m{^\s*if 0;}o
+             && is_comment(${text[3]})
+             && is_comment(${text[4]}))) {
+        print STDERR "you won!\n";
+        shift @text; shift @text; shift @text; shift @text; shift @text;
+
+        ### Insert a magic sequence that will launch perl wherever it
+        ### is found in PATH.
+        ###
+        ### First we ensure that we get a /bin/sh to execute once that
+        ### may then look for perl in the PATH.
+        ### 
+        ### The 2 evals ensure that this a valid sequence for perl.
+        ### The `if 0' at the end hinders perl to evaluate the parts.
+        ### The `eval ...' launches perl on the same script
+        ###
+        ### At the end we place a line with `#!perl' to ensure that
+        ### perl starts thereafter.
+
+        ${slogan} = <<"INTERPRETER" ;
+#!/bin/sh -f
+${slogan}
+INTERPRETER
+
+        ${slogan} .= <<'INTERPRETER' ;
+eval 'exec perl -wS -x $0 ${1+"$@"}'
+if 0;               #### for this magic, see 
+INTERPRETER
+
+        chomp $slogan;
+        $slogan .= "${execname} ####";
+        print "${slogan}\n#!perl\n";
+        ${slogan} = "";
+      }
+    }
+  } elsif ($text[0] =~ m{^#!}o) {
+    my $line = shift(@text);
+    die "Interpreter line: ${line}\ndoes not match comment begin sequence `${combeg}' of ${type}\n"
+      if (!is_comment(${line}));
+    print ${line};
+    while (@{text} && is_comment(${text[0]})) {
+      shift @text;
+    }
+  } else {
+    shift(@text) while (@{text} && is_comment(${text[0]}));
+  }
+}
+
+{
+  $cb = ${combeg};
+  $cb =~ s{.}{[$&]}go;
+  $ce = ${comend};
+  $ce =~ s{.}{[$&]}go;
+  $slogan =~ s{^\s*${cb}\s*(.*?)\s*${ce}\s*$}{$1};
+}
+my $header = "${slogan}\n";
+$header .= << "HEADER";
+
+Except for parts copied from previous work and as explicitly stated below,
+HEADER
+
+$header .= keys(%authors) > 1 ? << "PLURAL" : << "SINGULAR";
+the authors and copyright holders for this work are as follows:
+PLURAL
+the author and copyright holder for this work is
+SINGULAR
+
+foreach my $au (sort(keys(%authors))) {
+  my $name = ${names{${au}}};
+  my @years = sort(keys(%{${authors{${au}}}}));
+  # Create an array containing the indications of the periods
+  my @periods = ();
+  while (@{years}) {
+    my $start = my $act = shift @years;
+    $act = shift @years
+      while (@{years} && ${act}+1 == ${years[0]});
+    push(@periods,
+         (${start} == ${act}) ? ${start} : "${start}-${act}");
+  }
+  my $all = join(', ', @{periods});
+  $header .= << "copyright";
+${copyright} ${all} ${name}
+copyright
+}
+
+$header .= ${licence};
+my @header = map {
+  chomp;
+  $_ = "${combeg}${spaces}$_";
+  s{\s+$}{};
+  "$_"
+} split(m{\n}o, ${header}, -1);
+
+if (${comend} ne "") {
+  my $width = 60;
+  foreach (@header) {
+    if (length > $width) {
+      $width = length;
+    }
+  }
+  print STDERR "Adapting header width to $width\n";
+  @header = map { sprintf("%-*s%s", ${width}, $_, "${spaces}${comend}")} @{header}
+}
+
+foreach (@header) {
+  print "${_}\n"
+}
+
+if (@{text}) {
+  # @{text} is non empty if there are non comment lines at the start.
+  print foreach @{text};
+} else {
+  # skip the start of the file that we just replaced.
+ HEADER:
+  while (<$source>) {
+    if (!is_comment()) {
+      print;
+      last HEADER;
+    }
+  }
+}
+# dump the remainder of the file
+my @contl = ();
+
+foreach my $line (<$source>) {
+    chomp $line;
+    if ($line =~ m{^(.*\S)?(\s*[\\]$)}go) {
+        if (defined($1)) {
+            push @contl, $1;
+        } else {
+            push @contl, "";
+        }
+    } else {
+        if (@contl) {
+            my $max = length($line);
+            foreach my $con (@contl) {
+                my $len = length($con);
+                $max = $len if ($len > $max);
+            }
+            ++$max;
+            $max = 63 if ($max < 63);
+            foreach my $con (@contl) {
+                my $len = length($con);
+                print "$con" . " " x ($max - $len) . "\\" . "\n";
+            }
+            @contl = ();
+        }
+        print "$line\n";
+    }
+}
+
+close($source) or warn "Error closing source stream: $!";
+if (!close($target)) {
+  my $err = $?;
+  unlink $ {tmp};
+  $? = ${err};
+  die "closing target did not succeed";
+}
+
+if (defined($ofile) && ${ofile} ne "-") {
+  # Be sure to keep the file access rights.
+  if ($diff && system("diff -u ${ofile} ${tmp}") == 0) {
+    print STDERR "no difference encoutered, ${ofile} unchanged.\n";
+  } elsif (system("cp ${tmp} ${ofile}")) {
+    my $err = $?;
+    if ($err == -1) {
+      print "failed to copy to target file: $!\n";
+    } elsif ($err & 127) {
+      printf "child died with signal %d, %s coredump\n",
+        ($err & 127),  ($err & 128) ? 'with' : 'without';
+    } else {
+      printf "final copy to target file exitec with with %d\n", $err >> 8;
+    }
+    exit $err;
+  }
+  unlink ${tmp};
+}
+
+exit 0;
+
+### Read in files whoes names are given as arguments.
+###
+### First argument is code that should operate on each line of the
+### file (given as $_) and return a list of strings.  When called in
+### an array context the long list of the concatenation of all these
+### lists is returned.
+###
+### When called in a scalar context, the code is ignored and a plain
+### concatenation of the files as one single string is returned.
+sub slurp (&;@) {
+  my ($re, @fn) = @_;
+  @fn = ($_) if (!@{fn});
+  my @ret = ();
+  local $INPUT_RECORD_SEPARATOR
+    = wantarray
+      ? ${INPUT_RECORD_SEPARATOR}
+        : undef;
+ FILES:
+  foreach my $fn (@{fn}) {
+    if (${fn} !~ m{^<}o && ${fn} !~ m{|$}o) {
+      if ( -r ${fn}) {
+        $fn = "<${fn}";
+      } else {
+        $fn .= "|";
+      }
+    }
+    open(my $fh, "${fn}") or die "cannot open ${fn}";
+        #or next FILES;
+    print STDERR "file $fn\n";
+    push(@ret, map(&{${re}}, <$fh>));
+    close($fh);
+  }
+  return wantarray ? @{ret} : join('', @{ret})
+    if (@{ret});
+  return;
+}
+
+sub fullname($) {
+    my $fname = shift;
+    $fname =~ s{^([[:alnum:]][-_[:alnum:][:space:]]*[[:alnum:]]).*}{$1}o;
+    $fname;
+}
+
+sub scm($) {
+    my $file = shift;
+    my $ret;
+    if (-d ".svn") {
+        $ret = "svn";
+    } else {
+        $commands{svn} = undef;
+        if (defined($commands{svn})) {
+            print "svn still defined to $commands{svn}\n";
+        }
+      SCM: foreach $scm (keys(%commands)) {
+          my $code = system("$scm status $file >&/dev/null 2>&1");
+          my $code2 = $code >> 8;
+          if ($code == 0 || $code2 != $errors{$scm}) {
+              $ret = $scm;
+              last SCM;
+          }
+      }
+    }
+    $ret;
+}
+
+{
+
+    my %gitorigin = ();
+
+    sub gitfollow($;$) {
+        my ($ifile, $prefix) = (@_);
+        $ifile = $prefix.$ifile if (defined($prefix));
+        $ifile =~ s{/[.]/}{/}go;
+        my $origin = $gitorigin{$ifile};
+        if (!defined($origin)) {
+            my @origin
+                = slurp {
+                    m{^A\s+(.+)}o;
+            }
+            "git log --name-status --follow --diff-filter=A '--pretty=format:' -- $ifile |";
+            my $origin = shift @origin;
+            if (defined($origin)) {
+                $origin =~ s{\s+}{ }o;
+                $origin =~ s{\s+$}{}o;
+                $origin =~ s{^.+\s}{}o;
+                print STDERR "origin of ${ifile} seems to be ${origin}\n";
+            }
+            $gitorigin{$ifile} = $origin;
+        }
+        $origin;
+    }
+
+}
