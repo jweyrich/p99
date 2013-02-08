@@ -332,6 +332,9 @@ signed p00_trailing_comma_in_initializer__(void) {
 //# if P99_GCC_VERSION >= UNKNOWN
 //#  define p00_has_feature_c_alignas 1
 //# endif
+# if P99_GCC_VERSION >= 40300UL
+#  define p00_has_attribute_error 1
+# endif
 # if P99_GCC_VERSION >= 40600UL
 #  define p00_has_feature_c_static_assert 1
 # endif

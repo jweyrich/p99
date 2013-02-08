@@ -72,7 +72,7 @@ __builtin_choose_expr                                          \
    later.
    */
 
-#if P99_GCC_VERSION >= 40300UL
+#if p99_has_attribute(error)
 __attribute__((__error__("Invalid choice in type generic expression")))
 #endif
 extern size_t p00_invalid_type_in_generic(char const*);
