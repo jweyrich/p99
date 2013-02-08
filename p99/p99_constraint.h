@@ -203,7 +203,7 @@ errno_t strerror_s(char *p00_s, rsize_t p00_maxsize, errno_t p00_errnum) {
     break;
   }
   default:
-    P99_FPRINTF(stderr, "strerror_r returned %s\n", p00_ret);
+    fprintf(stderr, "strerror_r returned %d\n", p00_ret);
     break;
   }
   /* Unconditionally set errno to the previous value. */
