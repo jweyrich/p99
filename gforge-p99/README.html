@@ -44,7 +44,7 @@
           <td></td>
           <td></td>
           <td></td>
-          <td>gcc 4.3 - 4.6</td>
+          <td>gcc 4.3 - 4.7</td>
         </tr>
         <tr>
           <!-- one of (TD TH) -->
@@ -68,7 +68,9 @@
           <td></td>
           <td></td>
           <td></td>
-          <td>clang 2.9</td>
+          <td>clang 3.0</td>
+          <td style="background: #DDA">work around from some compound
+            literals</td>
         </tr>
         <tr>
           <!-- one of (TD TH) -->
@@ -115,7 +117,7 @@
           <td></td>
           <td></td>
           <td>i686</td>
-          <td>gcc 4.3 - 4.4</td>
+          <td>gcc 4.3 - 4.6</td>
         </tr>
         <tr>
           <!-- one of (TD TH) -->
@@ -159,6 +161,20 @@
       </tbody>
     </table>
 
+    <hr/>
+
+    <p>
+      P99 is automatically tested on
+      the <a href="https://ci.inria.fr/">Continuous Integration
+      platform of Inria</a> after all git version changes. For the
+      moment this includes two processors in the Intel family, i386
+      and amd64, gcc different version and clang, on Ubuntu Linux with
+      glib or with musl. The current status
+      is
+      <a href='https://ci.inria.fr/p99/job/tidy%20up/'><img src='https://ci.inria.fr/p99/job/tidy%20up/badge/icon'></a>
+    </p>
+
     <hr>
+
     <address><a href="mailto:jens dot gustedt at inria dot fr">Jens Gustedt</a></address>
 
