@@ -313,6 +313,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # endif
 # define p00_has_attribute_aligned 1
 # define p00_has_attribute_noreturn 1
+# define p00_has_attribute___noreturn__ 1
 # define p00_has_attribute_deprecated 1
 # define p00_has_attribute_unused 1
 # ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
@@ -365,6 +366,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_attribute_deprecated 1
 # define p00_has_attribute_aligned 1
 # define p00_has_attribute_noreturn 1
+# define p00_has_attribute___noreturn__ 1
 #endif
 
 #if p99_has_builtin(__sync_val_compare_and_swap)
@@ -768,7 +770,7 @@ static_assert(1);
 
 #ifdef P00_DOXYGEN
 #elif !p99_has_feature(c_noreturn)
-# if p99_has_attribute(noreturn)
+# if p99_has_attribute(__noreturn__)
 #  define _Noreturn __attribute__((__noreturn__))
 # elif p99_has_feature(pragma_noreturn)
 #  define _Noreturn _Pragma(NORETURN)
