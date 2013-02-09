@@ -1,0 +1,124 @@
+<html>
+<header>
+<title>C99 Conformance test of tcc</title>
+<style>
+html { background-color : #FFF }
+tr { frame : 2px solid black;}
+th { background-color : #DDD }
+.missing { background-color : #E11 }
+.toomuch { background-color : #E1E }
+.optional { background-color : #070 }
+.alternative { color : #AAA }
+.command { background-color : #AAA; text-style : sans-serif }
+</style>
+</header>
+<body>
+<h1>C99 Conformance test of tcc</h1>
+<p>
+This test is part of the <a href="http://p99.gforge.inria.fr/">P99</a>
+project. It has been automatically produced by "gustedt" with the commandline
+</p>
+<quote class="command">
+tcc -Wall -c -o test-p99-conformance.o -DSKIP_VLA -DSKIP_TOKEN_CONCAT_ITERATIVE -DSKIP_TOKEN_CONCAT_HASH_HASH -DSKIP_TOKEN_HASH_HASH_AS_ARGUMENT -DSKIP_STATIC_PARAMETER -DSKIP_CONST_PARAMETER -DSKIP_VOLATILE_PARAMETER -DSKIP_FOR_DECLARATION -DSKIP_PRAGMA -DSKIP_PREPRO_ARITH -DSKIP_UNIVERSAL -DSKIP_DIGRAPH -DSKIP_TRIGRAPH -DSKIP_NON_EVALUATED_COMMA_ASSIGN test-p99-conformance.c
+</quote>
+<p>
+This conformance test is only for the preprocessor and compiler, not
+the library. Also it generally only tests that check whether or not
+the code compiles, not whether the produced object is correct.
+</p>
+<p>
+There is one exception to that, we try to detect automatically how the
+compiler handles <code>inline</code> functions.  Some compilers don't
+generate all symbols that they should, others generate too much.
+</p>
+<p>
+This test most likely doesn't cover all aspects of C99 that could be
+compile time tested, yet.  It also probably has errors. If you find
+such an error please let me know.
+</p>
+<table>
+<tr><td></td><th>Variably modified types</th>
+<tr class="missing"><td>-</td><td>variable length array</td><tr>
+<tr class="missing"><td>-</td><td>variable length array as function parameters</td><tr>
+<tr><td></td><th>Temporary variables</th>
+<tr><td>+</td><td>compound literal</td><tr>
+<tr><td></td><th>Preprocessor</th>
+<tr><td>+</td><td>concatenation of 1E and number</td><tr>
+<tr><td>+</td><td>concatenation of floats 1E- and number</td><tr>
+<tr><td>+</td><td>concatenation of floats 1E- 3E-</td><tr>
+<tr class="missing"><td>-</td><td>iterative concatenation of floats</td><tr>
+<tr class="missing"><td>-</td><td>concatenation of hash hash</td><tr>
+<tr><td>+</td><td>determines macro arguments first</td><tr>
+<tr class="missing"><td>-</td><td>## is a valid token</td><tr>
+<tr class="missing"><td>-</td><td>accepts non evaluated comma operator in preprocessor expressions</td><tr>
+<tr class="missing"><td>-</td><td>-1 gives UINTMAX_MAX as unsigned</td><tr>
+<tr><td>+</td><td>doesn't expand macro arguments that are subject to ##</td><tr>
+<tr><td>+</td><td>expands macro arguments that are not subject to ##</td><tr>
+<tr class="missing"><td>-</td><td>logical operators return signed values</td><tr>
+<tr class="missing"><td>-</td><td>-1 is negative</td><tr>
+<tr><td>+</td><td>doesn't introduce placeholder if not immediately concatenated</td><tr>
+<tr><td>+</td><td>concatenates empty macro argument</td><tr>
+<tr class="missing"><td>-</td><td>correct signed promotion in ternary operator</td><tr>
+<tr class="missing"><td>-</td><td>correct unsigned promotion in ternary operator</td><tr>
+<tr><td>+</td><td>can stringify an empty argument</td><tr>
+<tr><td></td><th>Initializers</th>
+<tr><td>+</td><td>designated array initializer</td><tr>
+<tr><td>+</td><td>designated struct initializer</td><tr>
+<tr><td>+</td><td>initializer with trailing commas</td><tr>
+<tr><td>+</td><td>length deduced from initializer</td><tr>
+<tr class="missing"><td>-</td><td>accepts non evaluated comma operator in constant expression</td><tr>
+<tr><td></td><th>Trigraphs and digraphs</th>
+<tr class="missing"><td>-</td><td>stringify with %: digraph</td><tr>
+<tr class="missing"><td>-</td><td>hash hash interpretedCorrectly</td><tr>
+<tr class="missing"><td>-</td><td>punctuation digraphs</td><tr>
+<tr class="missing"><td>-</td><td>punctuation trigraphs</td><tr>
+<tr class="missing"><td>-</td><td>stringfy with ??= trigraph</td><tr>
+<tr><td></td><th>Syntax</th>
+<tr><td>+</td><td>// comment</td><tr>
+<tr><td>+</td><td>enum allows trailing comma</td><tr>
+<tr><td>+</td><td>flexible array</td><tr>
+<tr class="missing"><td>-</td><td>for with variable declaration</td><tr>
+<tr><td>+</td><td>macro __func__ for function name</td><tr>
+<tr><td>+</td><td>hexdouble</td><tr>
+<tr><td>+</td><td>mixed statements and declaration</td><tr>
+<tr><td></td><th>Qualifiers</th>
+<tr class="missing"><td>-</td><td>const in array function parameter</td><tr>
+<tr><td>+</td><td>idempotent const</td><tr>
+<tr><td>+</td><td>idempotent restrict</td><tr>
+<tr><td>+</td><td>idempotent volatile</td><tr>
+<tr><td>+</td><td>restrict keyword</td><tr>
+<tr><td>+</td><td>restrict in array function parameter</td><tr>
+<tr class="missing"><td>-</td><td>static in array function parameter</td><tr>
+<tr class="missing"><td>-</td><td>volatile in array function parameter</td><tr>
+<tr><td></td><th>Data types</th>
+<tr><td>+</td><td>_Bool type</td><tr>
+<tr><td>+</td><td>long double type</td><tr>
+<tr><td>+</td><td>long long type</td><tr>
+<tr class="missing"><td>-</td><td>preprocessor computes at least in long long</td><tr>
+<tr><td>+</td><td>unsigned long long has at least 64 bit</td><tr>
+<tr><td></td><th>Character set support</th>
+<tr class="missing"><td>-</td><td>hexadecimal character as '\x1234'</td><tr>
+<tr class="missing"><td>-</td><td>respects token boundary when universal character starts an identifier</td><tr>
+<tr class="missing"><td>-</td><td>universal character '\u1234'</td><tr>
+<tr class="missing"><td>-</td><td>universal character '\U12345678'</td><tr>
+<tr class="missing"><td>-</td><td>universal string "\u1234"</td><tr>
+<tr class="missing"><td>-</td><td>universal string "\U12345678"</td><tr>
+<tr><td></td><th>External symbols and inline</th>
+<tr><td>+</td><td>generates symbol for inline with explicit extern and definition</td><tr>
+<tr><td>+</td><td>generates symbol for inline with explicit extern, definition and reference</td><tr>
+<tr><td>+</td><td>generates symbol for inline with implicit extern, and reference</td><tr>
+<tr><td>+</td><td>generates symbol for inline with implicit extern, definition, and reference</td><tr>
+<tr><td></td><th>Other Features or Bugs</th>
+<tr class="toomuch"><td>!</td><td>generates symbol for inline definition</td><tr>
+<tr class="toomuch"><td>!</td><td>generates symbol for inline definition and reference</td><tr>
+</table>
+<hr />
+<table>
+<tr><th colspan=2>Legend<th></tr>
+<tr class="missing"><td>-</td><td>missing</td><tr>
+<tr class="toomuch"><td>!</td><td>faulty</td><tr>
+<tr class="alternative"><td>-</td><td>alternative</td><tr>
+<tr class="optional"><td> </td><td>optional</td><tr>
+</table>
+</body>
+</html>
