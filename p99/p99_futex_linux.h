@@ -29,7 +29,18 @@
 #if (defined(__linux__) && !defined(NO_FUTEX)) || defined(DOXYGEN)
 #define P00_FUTEX_LINUX 1
 
-# include <linux/futex.h>
+# if __GLIBC__
+#  include <linux/futex.h>
+# else
+/* Other C libraries (e.g musl) do not provide values for futex
+   operations. Only the first five operations are documented, so
+   probably the occasional user of this will not expect more. */
+#  define FUTEX_WAIT		0
+#  define FUTEX_WAKE		1
+#  define FUTEX_FD		2
+#  define FUTEX_REQUEUE		3
+#  define FUTEX_CMP_REQUEUE	4
+# endif
 # include <sys/syscall.h>
 
 /**
