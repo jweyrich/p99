@@ -316,6 +316,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_attribute___noreturn__ 1
 # define p00_has_attribute_deprecated 1
 # define p00_has_attribute_unused 1
+# define p00_has_attribute_externally_visible 1
 # ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
 #  define p00_has_builtin___sync_val_compare_and_swap 1
 #  define p00_has_builtin___sync_lock_test_and_set 1
@@ -470,10 +471,18 @@ signed p00_trailing_comma_in_initializer__(void) {
 #   define p99_inline __attribute__((__always_inline__,__weak__)) __inline__
 #  endif
 #  define static_inline static __inline__
-#  define p00_instantiate
+#  if p99_has_attribute(externally_visible)
+#   define p00_instantiate __attribute__((__externally_visible__))
+#  else
+#   define p00_instantiate
+#  endif
 # else
 #  define inline __inline__
-#  define p00_instantiate extern __inline__
+#  if p99_has_attribute(externally_visible)
+#   define p00_instantiate __attribute__((__externally_visible__)) extern __inline__
+#  else
+#   define p00_instantiate extern __inline__
+#  endif
 #  define p99_inline __attribute__((__always_inline__)) __inline__
 # endif
 #endif
@@ -509,7 +518,11 @@ signed p00_trailing_comma_in_initializer__(void) {
  ** seen in this unit is not an @c inline definition and thus the
  ** function is generated and a symbol is emitted.
  **/
-# define p00_instantiate extern inline
+#  if p99_has_attribute(externally_visible)
+#   define p00_instantiate __attribute__((__externally_visible__)) extern __inline__
+#  else
+#   define p00_instantiate extern __inline__
+#  endif
 # endif
 
 #if p99_has_attribute(weak)
