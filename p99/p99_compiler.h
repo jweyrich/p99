@@ -316,7 +316,6 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_attribute___noreturn__ 1
 # define p00_has_attribute_deprecated 1
 # define p00_has_attribute_unused 1
-# define p00_has_attribute_externally_visible 1
 # ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
 #  define p00_has_builtin___sync_val_compare_and_swap 1
 #  define p00_has_builtin___sync_lock_test_and_set 1
@@ -339,6 +338,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # endif
 # if P99_GCC_VERSION >= 40600UL
 #  define p00_has_feature_c_static_assert 1
+#  define p00_has_attribute_externally_visible 1
 # endif
 # if defined(__GNUC_STDC_INLINE__) || P99_GCC_VERSION >= 40300UL
 #  define p00_has_feature_c_inline 1
