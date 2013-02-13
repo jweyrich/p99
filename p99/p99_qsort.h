@@ -249,7 +249,7 @@ errno_t p00_qsort_generic128(void *p00_base,
 #endif
 
 
-P99_WEAK(p00_qsort_generic)
+p99_inline
 errno_t p00_qsort_generic(void *p00_base,
                           rsize_t p00_n,
                           rsize_t p00_a,

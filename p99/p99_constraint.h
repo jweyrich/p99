@@ -790,12 +790,11 @@ p00_strtok_s(P99_STRINGIFY(__LINE__), __func__,                \
              (uint8_t**)PTR)
 
 #define P00_SPAN_DECLARE(NAME, SET)                                                            \
-/*p99_inline*/                                                                                 \
-P99_WEAK(P99_PASTE2(p99_span_, NAME))                                                          \
+p99_inline                                                                                     \
 rsize_t P99_PASTE2(p99_span_, NAME)(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l]) { \
   return p99_span(p00_s1l, p00_s1, sizeof(SET)-1, (uint8_t const*)(char const[]){ SET });      \
 }                                                                                              \
-P99_WEAK(P99_PASTE2(p99_strtok_, NAME))                                                        \
+p99_inline                                                                                     \
 char* P99_PASTE2(p99_strtok_, NAME)(rsize_t * restrict p00_s1max,                              \
                                       char p00_s1[restrict (*p00_s1max)],                      \
                                       char ** restrict p00_ptr) {                              \
