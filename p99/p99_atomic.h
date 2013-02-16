@@ -141,9 +141,13 @@
 #  endif
 #endif
 #ifndef ATOMIC_INT128_LOCK_FREE
-#  if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_16)
+#  if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_16) && (defined(UINT128_MAX) || defined(p99x_uint128))
 #   define ATOMIC_INT128_LOCK_FREE 2
-#   define P00_TYPE_LIST_ELEM16 , (16, p99x_uint128)
+#   if defined(UINT128_MAX)
+#    define P00_TYPE_LIST_ELEM16 , (16, uint128_t)
+#   else
+#    define P00_TYPE_LIST_ELEM16 , (16, p99x_uint128)
+#   endif
 #  else
 #   define ATOMIC_INT128_LOCK_FREE 0
 #   define P00_TYPE_LIST_ELEM16
