@@ -252,10 +252,12 @@ P99_WEAK(p99_init_main)
 P99_AT_LOAD_DECLARE(p99_init_main);
 
 P99_WEAK(p99_init_main)
+P99_CONST_FUNCTION
 P99_AT_LOAD_DEFINE(p99_init_main) {
   P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_TRIGGER_FUNCTION_1, P99_REP(P99_MAX_NUMBER,));
 }
 
+P99_CONST_FUNCTION
 p99_inline
 void p00_init_func_p99_init_main(int * p00_argc, char***p00_argv) {
   P99_UNUSED(p00_argc);

@@ -90,12 +90,12 @@
         T p00_r[2];                                            \
   }){ .p00_c = (A) }).p00_r[I])
 
-p99_inline float p99_crealf(float _Complex p00_c) { return P00_COMPLEX_PARTIAL(float, p00_c, 0); }
-p99_inline double p99_creal(double _Complex p00_c) { return P00_COMPLEX_PARTIAL(double, p00_c, 0); }
-p99_inline long double p99_creall(long double _Complex p00_c) { return P00_COMPLEX_PARTIAL(long double, p00_c, 0); }
-p99_inline float p99_cimagf(float _Complex p00_c) { return P00_COMPLEX_PARTIAL(float, p00_c, 1); }
-p99_inline double p99_cimag(double _Complex p00_c) { return P00_COMPLEX_PARTIAL(double, p00_c, 1); }
-p99_inline long double p99_cimagl(long double _Complex p00_c) { return P00_COMPLEX_PARTIAL(long double, p00_c, 1); }
+P99_CONST_FUNCTION p99_inline float p99_crealf(float _Complex p00_c) { return P00_COMPLEX_PARTIAL(float, p00_c, 0); }
+P99_CONST_FUNCTION p99_inline double p99_creal(double _Complex p00_c) { return P00_COMPLEX_PARTIAL(double, p00_c, 0); }
+P99_CONST_FUNCTION p99_inline long double p99_creall(long double _Complex p00_c) { return P00_COMPLEX_PARTIAL(long double, p00_c, 0); }
+P99_CONST_FUNCTION p99_inline float p99_cimagf(float _Complex p00_c) { return P00_COMPLEX_PARTIAL(float, p00_c, 1); }
+P99_CONST_FUNCTION p99_inline double p99_cimag(double _Complex p00_c) { return P00_COMPLEX_PARTIAL(double, p00_c, 1); }
+P99_CONST_FUNCTION p99_inline long double p99_cimagl(long double _Complex p00_c) { return P00_COMPLEX_PARTIAL(long double, p00_c, 1); }
 #   undef P00_COMPLEX_PARTIAL
 #  endif
 # endif

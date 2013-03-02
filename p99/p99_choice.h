@@ -31,6 +31,7 @@
 /*! Default value if @a p00_x is out of range is DEFAULT.                             */ \
 /*! The table values are __VA_ARGS__.                                             */     \
 /*! @param p00_x indicates the value to choose, it must be compatible with @c size_t. */ \
+P99_CONST_FUNCTION                                                                       \
 p99_inline                                                                               \
 TYPE NAME(size_t p00_x) {                                                                \
   switch (p00_x) {                                                                       \
@@ -73,6 +74,7 @@ p99_inline                                                        \
 TYPE P99_PASTE2(NAME, BITS)(size_t p00_x)
 #else
 #define P00_UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH)                 \
+P99_CONST_FUNCTION                                                                \
 p99_inline                                                                        \
 TYPE P99_PASTE2(NAME, BITS)(size_t p00_x) {                                       \
   switch (p00_x) {                                                                \
@@ -98,6 +100,7 @@ P00_UNIQUE_BIT_FUNCTION(unsigned, p00_unique_bit_hash_, -1, 6, 64);
 /*! @brief Find the one unique bit that is set in @a p00_x                     */        \
 /*! @warning this function doesn't check if the precondition is fulfilled. */            \
 /*! @see p99_unique_bit_checked ## WIDTH                                   */            \
+P99_CONST_FUNCTION                                                                       \
 p99_inline                                                                               \
  unsigned P99_PASTE2(p99_unique_bit_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) p00_x) {        \
   /* the index now only has BITS significant bits, so the default case of                \
@@ -110,6 +113,7 @@ p99_inline                                                                      
 /*! @brief Find the one unique bit that is set in @a p00_x                 */            \
 /*! if @a p00_x has 0 or more than one bits set this returns a big number. */            \
 /*! @see p99_unique_bit_ ## WIDTH                                      */                \
+P99_CONST_FUNCTION                                                                       \
 p99_inline                                                                               \
 unsigned P99_PASTE2(p99_unique_bit_checked_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) p00_x) { \
   unsigned p00_ret = P99_PASTE2(p99_unique_bit_, WIDTH)(p00_x);                          \

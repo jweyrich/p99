@@ -52,6 +52,7 @@ P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 1)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 2)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_GETNAME, 3)
 #define P99_DECLARE_ENUM_GETNAME(T, ...)                       \
+P99_CONST_FUNCTION                                             \
 p99_inline                                                     \
 char const* P99_PASTE2(T, _getname)(T p00_x) {                 \
   switch ((uintmax_t)p00_x) {                                  \
@@ -168,6 +169,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_DEFINE_ENUM, 0)
 P99_INSTANTIATE(char const*, P99_PASTE2(T, _getname), T);      \
 P99_INSTANTIATE(T, P99_PASTE2(T, _parse), char const*)
 
+P99_CONST_FUNCTION
 p99_inline
 char const* bool_getname(bool p00_x) {
   switch ((uintmax_t)p00_x) {

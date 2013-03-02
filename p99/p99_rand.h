@@ -206,6 +206,7 @@ UINT64_C(18219113917191524677),                                \
 UINT64_C(18298168206731166317),                                \
 UINT64_C(18319234190200763803)
 
+P99_CONST_FUNCTION
 p99_inline
 uint32_t p00_bitpack(void const* p00_p) {
   uintptr_t p00_u = (uintptr_t)p00_p;

@@ -349,6 +349,7 @@ void P99_PASTE2(T, _delete)(T const*p00_el) {                  \
 
 #define P00_DEFINE_DELETE(T, ...) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)
 
+P99_CONST_FUNCTION
 p99_inline
 size_t p99_maxof(size_t p00_m, size_t p00_n) {
   return p00_m < p00_n ? p00_n : p00_m;

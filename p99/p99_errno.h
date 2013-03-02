@@ -185,6 +185,7 @@ enum {
  ** If an error condition is not found in the list of known values, a
  ** null pointer is returned.
  **/
+P99_CONST_FUNCTION
 p99_inline
 char const* p99_errno_getname(errno_t p00_err) {
   switch (p00_err) {

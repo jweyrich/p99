@@ -34,6 +34,7 @@
    result. */
 #define P00_ARITH_INTMAX_SHIFT(X) (-((intmax_t)+P00_UINTMAX_HIGHBIT(X)))
 
+P99_CONST_FUNCTION
 p99_inline uintmax_t p00_arith_abs(uintmax_t p00_a) {
 #if UINTMAX_MAX > INTMAX_MAX
   register uintmax_t p00_m = P00_ARITH_INTMAX_SHIFT(p00_a);
@@ -46,6 +47,7 @@ p99_inline uintmax_t p00_arith_abs(uintmax_t p00_a) {
 }
 #define p99_arith_abs(X) (P99_SIGNED(X) ? p00_arith_abs(X) : P99_RVAL(uintmax_t, (X)))
 
+P99_CONST_FUNCTION
 p99_inline intmax_t p99_arith_min(intmax_t p00_a, intmax_t p00_b) {
 #if UINTMAX_MAX > INTMAX_MAX
   p00_a -= p00_b;
@@ -55,6 +57,7 @@ p99_inline intmax_t p99_arith_min(intmax_t p00_a, intmax_t p00_b) {
 #endif
 }
 
+P99_CONST_FUNCTION
 p99_inline intmax_t p99_arith_max(intmax_t p00_a, intmax_t p00_b) {
 #if UINTMAX_MAX > INTMAX_MAX
   p00_a -= p00_b;
@@ -64,6 +67,7 @@ p99_inline intmax_t p99_arith_max(intmax_t p00_a, intmax_t p00_b) {
 #endif
 }
 
+P99_CONST_FUNCTION
 p99_inline uintmax_t p99_arith_prev_pow2(uintmax_t p00_a) {
   /* Any decent compiler will unroll this loop */
   for(uintmax_t p00_s = 1; p00_s <= P99_EWIDTH(p00_a) >> 1; p00_s <<= 1) {
@@ -72,6 +76,7 @@ p99_inline uintmax_t p99_arith_prev_pow2(uintmax_t p00_a) {
   return p00_a - (p00_a >> 1);
 }
 
+P99_CONST_FUNCTION
 p99_inline uintmax_t p99_arith_next_pow2(uintmax_t p00_a) {
   --p00_a;
   /* Any decent compiler will unroll this loop */
@@ -84,6 +89,7 @@ p99_inline uintmax_t p99_arith_next_pow2(uintmax_t p00_a) {
 /**
  ** @brief Computes the floored base-2 logarithm.
  **/
+P99_CONST_FUNCTION
 p99_inline uintmax_t p99_arith_log2(uintmax_t p00_a) {
   uintmax_t p00_l = 0;
   /* If P99_UINTMAX_WIDTH is a power of two, things are relatively

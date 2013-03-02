@@ -277,6 +277,7 @@ void p99_report_handler(const char * restrict p00_msg,
   p00_constraint_report(p00_err, 0, 0, p00_msg);
 }
 
+P99_CONST_FUNCTION
 p99_inline
 void p99_ignore_handler(const char * restrict p00_msg,
                         void * restrict p00_ptr,
@@ -354,6 +355,7 @@ void p99_constraint_handler(const char * restrict p00_msg,
 # ifndef __STDC_LIB_EXT1__
 
 P99_WEAK(ignore_handler_s)
+P99_CONST_FUNCTION
 void ignore_handler_s(const char * restrict p00_msg,
                       void * restrict p00_ptr,
                       errno_t p00_err) {

@@ -704,7 +704,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_ATOMIC_INHERIT, 0)
   P00_ATOMIC_TYPES))
 
 p99_inline
-uintptr_t p00_exchange_ignore(void* p00_x, ...) { P99_UNUSED(p00_x); return 0; }
+P99_CONST_FUNCTION uintptr_t p00_exchange_ignore(void* p00_x, ...) { P99_UNUSED(p00_x); return 0; }
 
 #define P00_EXCHANGE(X)                                              \
 P99_GENERIC_SIZE                                                     \

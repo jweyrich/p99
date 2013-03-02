@@ -357,6 +357,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SIZE_INDICATOR, 0)
 
 
 #define P00_DECLARE_INLINE_EXPRESSION1(EXT, BASE, EXP, A)      \
+P99_CONST_FUNCTION                                             \
 p99_inline                                                     \
 P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)          \
 (P99_BUILTIN_TYPE(EXT) A)                                      \
@@ -365,6 +366,7 @@ P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)          \
 }
 
 #define P00_DECLARE_INLINE_EXPRESSION2(EXT, BASE, EXP, A, B)   \
+P99_CONST_FUNCTION                                             \
 p99_inline                                                     \
 P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT)          \
 (P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B)             \
@@ -1097,6 +1099,7 @@ P00_SPRINT_DEFINE(float, "%g", "%a");
 P00_SPRINT_DEFINE(double, "%g", "%a");
 P00_SPRINT_DEFINE(ldouble, "%Lg", "%La");
 
+P99_CONST_FUNCTION
 p99_inline
 char const* p00_sprint__Bool(_Bool p00_val, char*restrict p00_str, unsigned p00_form) {
   P99_UNUSED(p00_str);
@@ -1111,6 +1114,7 @@ char const* p00_sprint__Bool(_Bool p00_val, char*restrict p00_str, unsigned p00_
   return p00_format[p00_form * 2 + p00_val];
 }
 
+P99_CONST_FUNCTION                                                 \
 p99_inline
 char const* p00_sprint_charp(char const* p00_val, char*restrict p00_str, unsigned p00_form) {
   P99_UNUSED(p00_str);
@@ -1360,11 +1364,13 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SNPRINTF, 5)
 #define P99_SNPRINTF(S, N, FORMAT, ...) snprintf(S, N, FORMAT, P99_FORMATS(__VA_ARGS__))
 
 #define P00_DEFINE_IN_RANGE(T)                                   \
+P99_CONST_FUNCTION                                               \
 p99_inline                                                       \
 bool P99_PASTE2(p00_in_range_, T)(T p00_r, T p00_s, T p00_len) { \
   return (p00_r >= p00_s) && ((p00_r - p00_s) < p00_len);        \
 }
 
+P99_CONST_FUNCTION
 p99_inline
 bool p00_in_range_voidp(void* p00_r_, void* p00_s_, size_t p00_len) {
   unsigned char* p00_r = p00_r_;

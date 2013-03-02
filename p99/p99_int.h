@@ -598,6 +598,7 @@ P00_SEE_PROMOTE
 #define P99_SIGNED(EXPR) (P99_PROMOTE_M1(EXPR) < P99_PROMOTE_1(EXPR))
 
 
+P99_CONST_FUNCTION
 p99_inline
 uintmax_t p00_abs_signed(intmax_t p00_a) {
   uintmax_t p00_aa = p00_a;
@@ -623,6 +624,7 @@ uintmax_t p00_abs_signed(intmax_t p00_a) {
 #define P99_ABS(EXPR) (P99_SIGNED(EXPR) ? p00_abs_signed(EXPR) : P99_C(uintmax_t, EXPR))
 
 #if defined(p99x_uintmax) && defined(p99x_intmax)
+P99_CONST_FUNCTION
 p99_inline
 p99x_uintmax p99x__abs_signed(p99x_intmax p00_a) {
   p99x_uintmax p00_aa = p00_a;
@@ -804,6 +806,7 @@ P99_MACRO_END(p99_overflow_, SUFF)
 
 
 #define P00_DECLARE_TWOS(SUFF)                                                                        \
+P99_CONST_FUNCTION                                                                                    \
 p99_inline                                                                                            \
 P99_BUILTIN_TYPE(SUFF)                                                                                \
 P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) p00_a) {                                         \
@@ -828,6 +831,7 @@ P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) p00_a) {                   
 }
 
 #define P00_DECLARE_UNSIG(SUFF)                                                                         \
+P99_CONST_FUNCTION                                                                                      \
 p99_inline                                                                                              \
 P99_BUILTIN_TYPE(u, SUFF)                                                                               \
 P99_PASTE2(p99_unsig, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a) {                                             \
@@ -849,6 +853,7 @@ P99_PASTE2(p99_unsig, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a) {                     
 }
 
 #define P00_DECLARE_ADD0(SUFF)                                                               \
+P99_CONST_FUNCTION                                                                           \
 p99_inline                                                                                   \
 P99_BUILTIN_TYPE(u, SUFF)                                                                    \
 P99_PASTE2(p00_add0, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b) {     \
@@ -859,6 +864,7 @@ P99_PASTE2(p00_add0, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) 
 }
 
 #define P00_DECLARE_SUB0(SUFF)                                                               \
+P99_CONST_FUNCTION                                                                           \
 p99_inline                                                                                   \
 P99_BUILTIN_TYPE(u, SUFF)                                                                    \
 P99_PASTE2(p00_sub0, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b) {     \
@@ -869,6 +875,7 @@ P99_PASTE2(p00_sub0, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) 
 }
 
 #define P00_DECLARE_ADD2(SUFF)                                                                    \
+P99_CONST_FUNCTION                                                                                \
 p99_inline                                                                                        \
 P99_BUILTIN_TYPE(SUFF)                                                                            \
      P99_PASTE2(p00_add2, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a,                                     \
@@ -892,6 +899,7 @@ P99_BUILTIN_TYPE(SUFF)                                                          
 }
 
 #define P00_DECLARE_SUB2(SUFF)                                                                    \
+P99_CONST_FUNCTION                                                                                \
 p99_inline                                                                                        \
 P99_BUILTIN_TYPE(SUFF)                                                                            \
      P99_PASTE2(p00_sub2, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a,                                     \
@@ -915,6 +923,7 @@ P99_BUILTIN_TYPE(SUFF)                                                          
 }
 
 #define P00_DECLARE_ADD1(SUFF)                                 \
+P99_CONST_FUNCTION                                             \
 p99_inline                                                     \
 P99_BUILTIN_TYPE(SUFF)                                         \
      P99_PASTE2(p00_add1, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a,  \
@@ -942,6 +951,7 @@ P99_BUILTIN_TYPE(SUFF)                                         \
 }
 
 #define P00_DECLARE_SUB1(SUFF)                                 \
+P99_CONST_FUNCTION                                             \
 p99_inline                                                     \
 P99_BUILTIN_TYPE(SUFF)                                         \
      P99_PASTE2(p00_sub1, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a,  \
@@ -969,6 +979,7 @@ P99_BUILTIN_TYPE(SUFF)                                         \
 }
 
 #define P00_DECLARE_ADD(SUFF)                                  \
+P99_CONST_FUNCTION                                             \
 p99_inline                                                     \
 P99_BUILTIN_TYPE(SUFF)                                         \
      P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a,   \
@@ -981,6 +992,7 @@ P99_BUILTIN_TYPE(SUFF)                                         \
 }
 
 #define P00_DECLARE_SUB(SUFF)                                  \
+P99_CONST_FUNCTION                                             \
 p99_inline                                                     \
 P99_BUILTIN_TYPE(SUFF)                                         \
      P99_PASTE2(p99_sub, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a,   \
@@ -1209,6 +1221,7 @@ P99_CHOOSE5(xT,                                                \
 /**
  ** @brief function equivalent to ::P99_LOW2
  **/
+P99_CONST_FUNCTION
 p99_inline
 uintmax_t p99_low2(uintmax_t p00_x) { return P99_LOW2(p00_x); }
 
@@ -1223,6 +1236,7 @@ uintmax_t p99_low2(uintmax_t p00_x) { return P99_LOW2(p00_x); }
 /**
  ** @brief function equivalent to ::P99_LOW2MASK1
  **/
+P99_CONST_FUNCTION
 p99_inline
 uintmax_t p99_low2mask1(uintmax_t p00_x) { return P99_LOW2MASK1(p00_x); }
 
@@ -1237,6 +1251,7 @@ uintmax_t p99_low2mask1(uintmax_t p00_x) { return P99_LOW2MASK1(p00_x); }
 /**
  ** @brief function equivalent to ::P99_LOW2MASK0
  **/
+P99_CONST_FUNCTION
 p99_inline
 uintmax_t p99_low2mask0(uintmax_t p00_x) { return P99_LOW2MASK0(p00_x); }
 
@@ -1251,6 +1266,7 @@ uintmax_t p99_low2mask0(uintmax_t p00_x) { return P99_LOW2MASK0(p00_x); }
 /**
  ** @brief function equivalent to ::P99_MASK2LOW1
  **/
+P99_CONST_FUNCTION
 p99_inline
 uintmax_t p99_mask2low1(uintmax_t p00_x) { return P99_MASK2LOW1(p00_x); }
 
@@ -1265,6 +1281,7 @@ uintmax_t p99_mask2low1(uintmax_t p00_x) { return P99_MASK2LOW1(p00_x); }
 /**
  ** @brief function equivalent to ::P99_MASK2LOW0
  **/
+P99_CONST_FUNCTION
 p99_inline
 uintmax_t p99_mask2low0(uintmax_t p00_x) { return P99_MASK2LOW0(p00_x); }
 
@@ -1278,6 +1295,7 @@ uintmax_t p99_mask2low0(uintmax_t p00_x) { return P99_MASK2LOW0(p00_x); }
 /**
  ** @brief function equivalent to ::P99_LOW2CLEAR
  **/
+P99_CONST_FUNCTION
 p99_inline
 uintmax_t p99_low2clear(uintmax_t p00_x) { return P99_LOW2CLEAR(p00_x); }
 
@@ -1291,6 +1309,7 @@ uintmax_t p99_low2clear(uintmax_t p00_x) { return P99_LOW2CLEAR(p00_x); }
 /**
  ** @brief function equivalent to ::P99_LOW2FILL
  **/
+P99_CONST_FUNCTION
 p99_inline
 uintmax_t p99_low2fill(uintmax_t p00_x) { return P99_LOW2FILL(p00_x); }
 
@@ -1304,6 +1323,7 @@ uintmax_t p99_low2fill(uintmax_t p00_x) { return P99_LOW2FILL(p00_x); }
 /**
  ** @brief function equivalent to ::P99_LOW0SET
  **/
+P99_CONST_FUNCTION
 p99_inline
 uintmax_t p99_low0set(uintmax_t p00_x) { return P99_LOW0SET(p00_x); }
 
@@ -1318,6 +1338,7 @@ uintmax_t p99_low0set(uintmax_t p00_x) { return P99_LOW0SET(p00_x); }
 /**
  ** @brief function equivalent to ::P99_LOW2SHIFT
  **/
+P99_CONST_FUNCTION
 p99_inline
 uintmax_t p99_low2shift(uintmax_t p00_x) { return P99_LOW2SHIFT(p00_x); }
 
@@ -1329,6 +1350,7 @@ uintmax_t p99_low2shift(uintmax_t p00_x) { return P99_LOW2SHIFT(p00_x); }
  ** smallest number that also has @c K bits set and that is greater
  ** than @a x.
  **/
+P99_CONST_FUNCTION
 p99_inline
 uintmax_t p99_next_popcount(uintmax_t p00_x) {
   uintmax_t p00_ret = 0;

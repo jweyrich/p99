@@ -110,6 +110,7 @@ p99_inline thrd_t* thrd_t_init(thrd_t *p00_id) {
   return p00_id;
 }
 
+P99_CONST_FUNCTION
 p99_inline void thrd_t_destroy(thrd_t *p00_id) {
   /* special care for bogus warning given by icc */
   (void)p00_id;
@@ -367,6 +368,7 @@ thrd_t thrd_current(void) {
  ** @return @c 0 if the thread @a p00_thr0 and the thread @a p00_thr1 refer to
  ** different threads. Otherwise a nonzero value is returned.
  **/
+P99_CONST_FUNCTION
 p99_inline
 int thrd_equal(thrd_t p00_thr0, thrd_t p00_thr1) {
   return P99_ENC(p00_thr0) ==  P99_ENC(p00_thr1);
@@ -1080,6 +1082,7 @@ enum {
 #  define TIME_THREAD_CPUTIME_ID p00_time_thread_cputime_id,
 # endif
 
+P99_CONST_FUNCTION
 p99_inline
 clockid_t p00_getclockid(int base) {
   return (base >= p00_time_base_max)
