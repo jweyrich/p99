@@ -575,6 +575,7 @@ p99_call_once(&P99_PASTE3(p99_, T, _once), P99_PASTE3(p99_, T, _once).p00_init)
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int cnd_broadcast(cnd_t *p00_cond) {
   return pthread_cond_broadcast(&P99_ENCP(p00_cond)) ? thrd_error : thrd_success;
@@ -596,6 +597,7 @@ void cnd_destroy(cnd_t *p00_cond) {
  ** created condition, or ::thrd_error if the request could not be
  ** honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int cnd_init(cnd_t *p00_cond) {
   int p00_ret = pthread_cond_init(&P99_ENCP(p00_cond), 0);
@@ -612,6 +614,7 @@ int cnd_init(cnd_t *p00_cond) {
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int cnd_signal(cnd_t *p00_cond) {
   return pthread_cond_signal(&P99_ENCP(p00_cond)) ? thrd_error : thrd_success;
@@ -627,6 +630,7 @@ int cnd_signal(cnd_t *p00_cond) {
  ** requested resource, or ::thrd_error if the request could not be
  ** honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int cnd_timedwait(cnd_t *restrict p00_cond, mtx_t *restrict p00_mtx, const struct timespec *restrict p00_ts) {
   int p00_ret = pthread_cond_timedwait(&P99_ENCP(p00_cond), &P99_ENCP(p00_mtx), p00_ts);
@@ -645,6 +649,7 @@ int cnd_timedwait(cnd_t *restrict p00_cond, mtx_t *restrict p00_mtx, const struc
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int cnd_wait(cnd_t *p00_cond, mtx_t *p00_mtx) {
   return pthread_cond_wait(&P99_ENCP(p00_cond), &P99_ENCP(p00_mtx)) ? thrd_error : thrd_success;
@@ -669,6 +674,7 @@ void mtx_destroy(mtx_t *p00_mtx) {
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int mtx_init(mtx_t *p00_mtx, int p00_type) {
   if (p00_type & mtx_extras) {
@@ -697,6 +703,7 @@ int mtx_init(mtx_t *p00_mtx, int p00_type) {
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int mtx_lock(mtx_t *p00_mtx) {
   return pthread_mutex_lock(&P99_ENCP(p00_mtx)) ? thrd_error : thrd_success;
@@ -712,6 +719,7 @@ int mtx_lock(mtx_t *p00_mtx) {
  ** requested resource, or ::thrd_error if the request could not be
  ** honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int mtx_timedlock(mtx_t *restrict p00_mtx, const struct timespec *restrict p00_ts) {
   int p00_ret = pthread_mutex_timedlock(&P99_ENCP(p00_mtx), p00_ts);
@@ -746,6 +754,7 @@ int mtx_trylock(mtx_t *p00_mtx) {
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int mtx_unlock(mtx_t *p00_mtx) {
   return pthread_mutex_unlock(&P99_ENCP(p00_mtx)) ? thrd_error : thrd_success;
@@ -795,6 +804,7 @@ void * p00_thrd_create(void* p00_context);
  ** could be allocated for the thread requested, or ::thrd_error if
  ** the request could not be honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int thrd_create(thrd_t *p00_thr, thrd_start_t p00_func, void *p00_arg) {
   p00_thrd * p00_cntxt = malloc(sizeof *p00_cntxt);
@@ -827,6 +837,7 @@ int thrd_create(thrd_t *p00_thr, thrd_start_t p00_func, void *p00_arg) {
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int thrd_detach(thrd_t p00_thr) {
   /* The thread is not yet detached so its pthread id is still
@@ -936,6 +947,7 @@ P99_MAIN_INTERCEPT(p99_threads_main) {
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int thrd_join(thrd_t p00_thr, int *p00_res) {
   void *p00_res0;
@@ -953,6 +965,7 @@ int thrd_join(thrd_t p00_thr, int *p00_res) {
  ** Consistent with that, this implementation uses ::thrd_success,
  ** ::thrd_intr and ::thrd_error as return values.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int thrd_sleep(const struct timespec *p00_duration, struct timespec *p00_remaining) {
   errno = 0;
@@ -969,6 +982,7 @@ int thrd_sleep(const struct timespec *p00_duration, struct timespec *p00_remaini
 
    sorry, unimplemented: function ‘p00_thrd_create’ can never be inlined because it uses setjmp
 */
+P99_WARN_UNUSED_RESULT
 P99_SETJMP_INLINE(p00_thrd_create)
 void * p00_thrd_create(void* p00_context) {
   p00_thrd * p00_cntxt = p00_context;

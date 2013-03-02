@@ -154,6 +154,7 @@ enum thrd_status {
  ** pointer. Otherwise, the thread-specific storage pointed to by key
  ** is set to an undefined value.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int tss_create(tss_t *p00_key, tss_dtor_t dtor) {
   return pthread_key_create(&P99_ENCP(p00_key), dtor) ? thrd_error : thrd_success;
@@ -183,6 +184,7 @@ void *tss_get(tss_t p00_key) {
  ** @return ::thrd_success on success, or ::thrd_error if the request
  ** could not be honored.
  **/
+P99_WARN_UNUSED_RESULT
 p99_inline
 int tss_set(tss_t p00_key, void *p00_val) {
   return pthread_setspecific(P99_ENC(p00_key), p00_val) ? thrd_error : thrd_success;
@@ -297,6 +299,7 @@ void* p99_tss_get(p99_tss * p00_key) {
  **/
 P99_DEFARG_DOCU(p99_tss_set)
 p99_inline
+P99_WARN_UNUSED_RESULT
 int p99_tss_set(p99_tss * p00_key, void *p00_val) {
   int p00_ret = thrd_success;
   void * p00_vol = p99_tss_get(p00_key);
@@ -409,7 +412,10 @@ void* p99_tss_get_alloc(p99_tss * p00_key, size_t p00_size) {
   if (P99_UNLIKELY(!p00_ret))
     if (p00_size) {
       p00_ret = calloc(1, p00_size);
-      p99_tss_set(p00_key, p00_ret);
+      if (p99_tss_set(p00_key, p00_ret) != thrd_success) {
+        free(p00_ret);
+        p00_ret = 0;
+      }
     }
   return p00_ret;
 }
