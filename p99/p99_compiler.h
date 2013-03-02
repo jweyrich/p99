@@ -308,6 +308,9 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_attribute_constructor 1
 # define p00_has_attribute_destructor 1
 # define p00_has_attribute_vector_size 1
+# define p00_has_attribute_warn_unused_result 1
+# define p00_has_attribute_const 1
+# define p00_has_attribute_pure 1
 # if defined(__GNUC_GNU_INLINE__) || (P99_GCC_VERSION < 40300UL)
 #  define p00_has_attribute_gnu_inline 1
 # endif
@@ -566,6 +569,38 @@ signed p00_trailing_comma_in_initializer__(void) {
  ** Microsoft
  **/
 # define P99_WEAK(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2)(P00_WEAK1(__VA_ARGS__))(P00_WEAK2(__VA_ARGS__))
+
+/**
+ ** @brief On architectures that support this, warn if the result of a
+ ** function is not used.
+ **/
+#if p99_has_attribute(warn_unused_result) && defined(P99_WARN_UNUSED_RESULT)
+# undef P99_WARN_UNUSED_RESULT
+# define P99_WARN_UNUSED_RESULT __attribute__((__warn_unused_result__))
+#else
+# undef P99_WARN_UNUSED_RESULT
+# define P99_WARN_UNUSED_RESULT
+#endif
+
+/**
+ ** @brief On architectures that support this, assert that a function
+ ** is "pure", i.e only depends on parameters and global variables.
+ **/
+#if p99_has_attribute(pure)
+# define P99_PURE_FUNCTION __attribute__((__pure__))
+#else
+# define P99_PURE_FUNCTION
+#endif
+
+/**
+ ** @brief On architectures that support this, assert that a function
+ ** is "const", i.e only depends on parameters and global variables.
+ **/
+#if p99_has_attribute(const)
+# define P99_CONST_FUNCTION __attribute__((__const__))
+#else
+# define P99_CONST_FUNCTION
+#endif
 
 #if p99_has_feature(setjmp_inline)
 # define P99_SETJMP_INLINE(NAME) p99_inline
