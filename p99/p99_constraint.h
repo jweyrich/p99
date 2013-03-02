@@ -287,6 +287,7 @@ void p99_ignore_handler(const char * restrict p00_msg,
   P99_UNUSED(p00_err);
 }
 
+noreturn
 p99_inline
 void p99_abort_handler(const char * restrict p00_msg,
                        void * restrict p00_ptr,
@@ -297,6 +298,7 @@ void p99_abort_handler(const char * restrict p00_msg,
   abort();
 }
 
+noreturn
 p99_inline
 void p99_exit_handler(const char * restrict p00_msg,
                       void * restrict p00_ptr,
@@ -337,6 +339,7 @@ void report_handler_s(const char * restrict p00_msg,
 }
 
 P99_WEAK(exit_handler_s)
+noreturn
 void exit_handler_s(const char * restrict p00_msg,
                     void * restrict p00_ptr,
                     errno_t p00_err) {
@@ -363,6 +366,7 @@ void ignore_handler_s(const char * restrict p00_msg,
 }
 
 P99_WEAK(abort_handler_s)
+noreturn
 void abort_handler_s(const char * restrict p00_msg,
                      void * restrict p00_ptr,
                      errno_t p00_err) {
