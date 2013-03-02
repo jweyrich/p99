@@ -67,6 +67,7 @@ P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_PARSE, 1)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_PARSE, 2)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_DECLARE_ENUM_PARSE, 3)
 #define P99_DECLARE_ENUM_PARSE(T, ...)                         \
+P99_PURE_FUNCTION                                              \
 p99_inline                                                     \
 T P99_PASTE2(T, _parse)(char const p00_s[]) {                  \
   T p00_ret = P99_PASTE2(T, _amount);                          \

@@ -164,6 +164,7 @@ void p99_constraint_handler(const char * restrict p00_msg,
                             errno_t p00_err);
 
 
+P99_PURE_FUNCTION
 p99_inline
 size_t strnlen_s(const char *p00_s, size_t p00_maxsize) {
   size_t p00_ret = p00_maxsize;
@@ -682,6 +683,7 @@ char *p00_gets_s(char const* p00_file, char const* p00_context,
 /** @ingroup C11_library **/
 #define gets_s(...) p00_gets_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
 
+P99_PURE_FUNCTION
 p99_inline
 bool p00_isin0(char p00_c,
                rsize_t p00_s2l, uint8_t const p00_s2[const restrict p00_s2l]) {
@@ -693,6 +695,7 @@ bool p00_isin0(char p00_c,
 }
 
 
+P99_PURE_FUNCTION
 p99_inline
 rsize_t p99_span(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l],
                  rsize_t p00_s2l, uint8_t const p00_s2[const restrict p00_s2l]) {
@@ -796,6 +799,7 @@ p00_strtok_s(P99_STRINGIFY(__LINE__), __func__,                \
              (uint8_t**)PTR)
 
 #define P00_SPAN_DECLARE(NAME, SET)                                                            \
+P99_PURE_FUNCTION                                                                              \
 p99_inline                                                                                     \
 rsize_t P99_PASTE2(p99_span_, NAME)(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l]) { \
   return p99_span(p00_s1l, p00_s1, sizeof(SET)-1, (uint8_t const*)(char const[]){ SET });      \

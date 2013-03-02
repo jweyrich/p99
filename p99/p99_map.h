@@ -109,6 +109,7 @@ p00_strcat_state* p00_strcat(p00_strcat_state *restrict p00_des, char const*rest
   return p00_des;
 }
 
+P99_PURE_FUNCTION
 p99_inline
 char* p00_strcat_terminate(p00_strcat_state *restrict p00_des) {
   return p00_des->p00_buf;
