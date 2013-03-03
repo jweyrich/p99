@@ -707,7 +707,9 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 # define alignof _Alignof
 # if !p99_has_feature(c_alignof)
 #  if p99_has_feature(gnu_alignof)
-#   define _Alignof(T) __alignof__(T)
+#   ifndef _Alignof)
+#    define _Alignof(T) __alignof__(T)
+#   endif
 #  else
 #   define _Alignof(T) offsetof(struct { char p00_c; T p00_t; }, p00_t)
 #  endif
@@ -725,7 +727,9 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 # define alignas _Alignas
 # if !p99_has_feature(c_alignas)
 #  if p99_has_attribute(aligned)
-#   define _Alignas(X) __attribute__((__aligned__(X)))
+#   ifndef _Alignas
+#    define _Alignas(X) __attribute__((__aligned__(X)))
+#   endif
 #  endif
 # endif
 #endif
@@ -819,7 +823,9 @@ static_assert(1);
 #ifdef P00_DOXYGEN
 #elif !p99_has_feature(c_noreturn)
 # if p99_has_attribute(__noreturn__)
-#  define _Noreturn __attribute__((__noreturn__))
+#  ifndef _Noreturn
+#   define _Noreturn __attribute__((__noreturn__))
+#  endif
 # elif p99_has_feature(pragma_noreturn)
 #  define _Noreturn _Pragma(NORETURN)
 # else
