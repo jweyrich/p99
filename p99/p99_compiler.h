@@ -707,7 +707,7 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 # define alignof _Alignof
 # if !p99_has_feature(c_alignof)
 #  if p99_has_feature(gnu_alignof)
-#   ifndef _Alignof)
+#   ifndef _Alignof
 #    define _Alignof(T) __alignof__(T)
 #   endif
 #  else
