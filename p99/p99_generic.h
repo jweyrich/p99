@@ -505,12 +505,14 @@ inline int* p00_generic_test(int * p00_a) {
                        (int*, p00_a),
                        (double*, p00_x+1),
                        (float*, p00_x+2));
+#ifndef P99_CSIN_BUG
   case 1:
     return P99_GENERIC(&*p00_a,
                        /* another form of empty default */,
                        (double[7], P99_GEN_SIN(((p00_x+0)))),
                        (int*, p00_a),
                        (float*, p00_x+2));
+#endif
   default:
     return P99_GENERIC(&*p00_a,
                        /* default expression: */ p00_x,
