@@ -42,14 +42,14 @@
 
 # define P00_HAVE_INIT_FUNCTION(NR)  P99_IF_EMPTY(NR)(P99_PASTE2(p00_have_init_function_, P00_INIT_NR))(P99_PASTE2(p00_have_init_function_, NR))
 
-# define P00_INIT_FUNC_VAR_S(_0, _1, I)                 \
-static bool const P00_HAVE_INIT_FUNCTION(I);            \
+# define P00_INIT_FUNC_VAR_S(_0, _1, I)                        \
+static bool const P00_HAVE_INIT_FUNCTION(I);                   \
 static p99_callback_el const P00_INIT_FUNCTION(I)
 
 P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_FUNC_VAR_S, P99_REP(P99_MAX_NUMBER,));
 
-# define P00_INIT_TRIGGER_FUNCTION_1(_0, _1, I)                         \
-do {                                                                    \
+# define P00_INIT_TRIGGER_FUNCTION_1(_0, _1, I)                              \
+do {                                                                         \
   if (P00_HAVE_INIT_FUNCTION(I)) p99_callback_el_call(P00_INIT_FUNCTION(I)); \
  } while (false)
 

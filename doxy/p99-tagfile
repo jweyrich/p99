@@ -2920,6 +2920,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_CONST_FUNCTION</name>
+      <anchorfile>group__compiler__utilities_ga47dba44e55ac92339ecfac83f86b3168.html</anchorfile>
+      <anchor>ga47dba44e55ac92339ecfac83f86b3168</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_DEPRECATED</name>
       <anchorfile>group__compiler__utilities_ga12bab6ae673e0a0af7fb7dd5e959850e.html</anchorfile>
       <anchor>ga12bab6ae673e0a0af7fb7dd5e959850e</anchor>
@@ -2990,6 +2997,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_PURE_FUNCTION</name>
+      <anchorfile>group__compiler__utilities_gab61d49738a2c410e708f32e269d65284.html</anchorfile>
+      <anchor>gab61d49738a2c410e708f32e269d65284</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_SETJMP_INLINE</name>
       <anchorfile>group__compiler__utilities_gaeb3ec8b13ae8530e6458ac814c0f7348.html</anchorfile>
       <anchor>gaeb3ec8b13ae8530e6458ac814c0f7348</anchor>
@@ -3001,6 +3015,20 @@
       <anchorfile>group__compiler__utilities_ga788ec4bb9b627ac630a546cd8071024e.html</anchorfile>
       <anchor>ga788ec4bb9b627ac630a546cd8071024e</anchor>
       <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_VECTOR</name>
+      <anchorfile>group__compiler__utilities_gac23ea0f6b6306c6f4627d7e983f415a5.html</anchorfile>
+      <anchor>gac23ea0f6b6306c6f4627d7e983f415a5</anchor>
+      <arglist>(T, NAME, N)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_WARN_UNUSED_RESULT</name>
+      <anchorfile>group__compiler__utilities_gad0a668a95cb966c5dfacd3b8d1ac4d05.html</anchorfile>
+      <anchor>gad0a668a95cb966c5dfacd3b8d1ac4d05</anchor>
+      <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -3189,6 +3217,104 @@
       <anchorfile>group__C11__library_ga1933f4242d71d97029d1d63c938340b1.html</anchorfile>
       <anchor>ga1933f4242d71d97029d1d63c938340b1</anchor>
       <arglist>(const char *restrict p00_msg, void *restrict p00_ptr, errno_t p00_err)</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_alnum</name>
+      <anchorfile>group__C11__library_ga3ecc7e5c5257626f1b1db5cf6519c0a6.html</anchorfile>
+      <anchor>ga3ecc7e5c5257626f1b1db5cf6519c0a6</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_alpha</name>
+      <anchorfile>group__C11__library_ga4b954bc49747bd1c242bae1e9003871b.html</anchorfile>
+      <anchor>ga4b954bc49747bd1c242bae1e9003871b</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_digit</name>
+      <anchorfile>group__C11__library_ga478203bc407059ce6dcbb56cd3dcb3f8.html</anchorfile>
+      <anchor>ga478203bc407059ce6dcbb56cd3dcb3f8</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_lower</name>
+      <anchorfile>group__C11__library_gac313a523c9a1f837df340f2c87bbbdb2.html</anchorfile>
+      <anchor>gac313a523c9a1f837df340f2c87bbbdb2</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_space</name>
+      <anchorfile>group__C11__library_ga0ada7ef033b017b4a8fd271df0db3879.html</anchorfile>
+      <anchor>ga0ada7ef033b017b4a8fd271df0db3879</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_upper</name>
+      <anchorfile>group__C11__library_ga124f70a0c8116a0b1b8df146f1f1ce42.html</anchorfile>
+      <anchor>ga124f70a0c8116a0b1b8df146f1f1ce42</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_xdigit</name>
+      <anchorfile>group__C11__library_ga1e647ddd3b282e48717f40933a949331.html</anchorfile>
+      <anchor>ga1e647ddd3b282e48717f40933a949331</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_alnum</name>
+      <anchorfile>group__C11__library_ga68876b347893d873ef86de7337dda857.html</anchorfile>
+      <anchor>ga68876b347893d873ef86de7337dda857</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_alpha</name>
+      <anchorfile>group__C11__library_ga5541467d908451832236e6de1e0bb8ef.html</anchorfile>
+      <anchor>ga5541467d908451832236e6de1e0bb8ef</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_digit</name>
+      <anchorfile>group__C11__library_gad72b3365a51deb76cf977fc77a98e4a8.html</anchorfile>
+      <anchor>gad72b3365a51deb76cf977fc77a98e4a8</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_lower</name>
+      <anchorfile>group__C11__library_ga66ef3f274f112723b5a08b327e6917ce.html</anchorfile>
+      <anchor>ga66ef3f274f112723b5a08b327e6917ce</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_space</name>
+      <anchorfile>group__C11__library_gafbab926f6072f3b31ef9b306cdb0a3b3.html</anchorfile>
+      <anchor>gafbab926f6072f3b31ef9b306cdb0a3b3</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_upper</name>
+      <anchorfile>group__C11__library_ga97fbac79164f1ff0068724b04cbdfb53.html</anchorfile>
+      <anchor>ga97fbac79164f1ff0068724b04cbdfb53</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_xdigit</name>
+      <anchorfile>group__C11__library_gabc02d54050efa8cbd915a02d83c649a6.html</anchorfile>
+      <anchor>gabc02d54050efa8cbd915a02d83c649a6</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
     </member>
     <member kind="function">
       <type>constraint_handler_t</type>
@@ -5497,6 +5623,7 @@
     <filename>p99__generic_8h</filename>
     <includes id="p99__for_8h" name="p99_for.h" local="yes" imported="no">p99_for.h</includes>
     <includes id="p99__typenames_8h" name="p99_typenames.h" local="yes" imported="no">p99_typenames.h</includes>
+    <includes id="p99__c99_8h" name="p99_c99.h" local="yes" imported="no">p99_c99.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>P99_AVALUE</name>
@@ -5881,13 +6008,6 @@
       <anchorfile>p99__getopt_8h_aa4e97f3782107649d3e4eb3875090b3a.html</anchorfile>
       <anchor>aa4e97f3782107649d3e4eb3875090b3a</anchor>
       <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_GETOPT_CHAR</name>
-      <anchorfile>p99__getopt_8h_ad5287fdda594953e10e182a55e939e41.html</anchorfile>
-      <anchor>ad5287fdda594953e10e182a55e939e41</anchor>
-      <arglist>(CHAR)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -8441,19 +8561,13 @@
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__qsort_8h</filename>
     <includes id="p99__rand_8h" name="p99_rand.h" local="yes" imported="no">p99_rand.h</includes>
+    <includes id="p99__arith_8h" name="p99_arith.h" local="yes" imported="no">p99_arith.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>qsort_s</name>
       <anchorfile>group__sorting_ga7dffa4b52032f181ca7360c7de4e48cb.html</anchorfile>
       <anchor>ga7dffa4b52032f181ca7360c7de4e48cb</anchor>
       <arglist>(B, N, S, CMP, CTX)</arglist>
-    </member>
-    <member kind="function">
-      <type>signed</type>
-      <name>p99_ilog2</name>
-      <anchorfile>group__sorting_ga05807be33b5e68937bb6458333d4c339.html</anchorfile>
-      <anchor>ga05807be33b5e68937bb6458333d4c339</anchor>
-      <arglist>(uintmax_t p00_i)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
@@ -15049,6 +15163,104 @@
       <arglist>(const char *restrict p00_msg, void *restrict p00_ptr, errno_t p00_err)</arglist>
     </member>
     <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_alnum</name>
+      <anchorfile>group__C11__library_ga3ecc7e5c5257626f1b1db5cf6519c0a6.html</anchorfile>
+      <anchor>ga3ecc7e5c5257626f1b1db5cf6519c0a6</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_alpha</name>
+      <anchorfile>group__C11__library_ga4b954bc49747bd1c242bae1e9003871b.html</anchorfile>
+      <anchor>ga4b954bc49747bd1c242bae1e9003871b</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_digit</name>
+      <anchorfile>group__C11__library_ga478203bc407059ce6dcbb56cd3dcb3f8.html</anchorfile>
+      <anchor>ga478203bc407059ce6dcbb56cd3dcb3f8</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_lower</name>
+      <anchorfile>group__C11__library_gac313a523c9a1f837df340f2c87bbbdb2.html</anchorfile>
+      <anchor>gac313a523c9a1f837df340f2c87bbbdb2</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_space</name>
+      <anchorfile>group__C11__library_ga0ada7ef033b017b4a8fd271df0db3879.html</anchorfile>
+      <anchor>ga0ada7ef033b017b4a8fd271df0db3879</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_upper</name>
+      <anchorfile>group__C11__library_ga124f70a0c8116a0b1b8df146f1f1ce42.html</anchorfile>
+      <anchor>ga124f70a0c8116a0b1b8df146f1f1ce42</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>rsize_t</type>
+      <name>p99_span_xdigit</name>
+      <anchorfile>group__C11__library_ga1e647ddd3b282e48717f40933a949331.html</anchorfile>
+      <anchor>ga1e647ddd3b282e48717f40933a949331</anchor>
+      <arglist>(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l])</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_alnum</name>
+      <anchorfile>group__C11__library_ga68876b347893d873ef86de7337dda857.html</anchorfile>
+      <anchor>ga68876b347893d873ef86de7337dda857</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_alpha</name>
+      <anchorfile>group__C11__library_ga5541467d908451832236e6de1e0bb8ef.html</anchorfile>
+      <anchor>ga5541467d908451832236e6de1e0bb8ef</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_digit</name>
+      <anchorfile>group__C11__library_gad72b3365a51deb76cf977fc77a98e4a8.html</anchorfile>
+      <anchor>gad72b3365a51deb76cf977fc77a98e4a8</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_lower</name>
+      <anchorfile>group__C11__library_ga66ef3f274f112723b5a08b327e6917ce.html</anchorfile>
+      <anchor>ga66ef3f274f112723b5a08b327e6917ce</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_space</name>
+      <anchorfile>group__C11__library_gafbab926f6072f3b31ef9b306cdb0a3b3.html</anchorfile>
+      <anchor>gafbab926f6072f3b31ef9b306cdb0a3b3</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_upper</name>
+      <anchorfile>group__C11__library_ga97fbac79164f1ff0068724b04cbdfb53.html</anchorfile>
+      <anchor>ga97fbac79164f1ff0068724b04cbdfb53</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>p99_strtok_xdigit</name>
+      <anchorfile>group__C11__library_gabc02d54050efa8cbd915a02d83c649a6.html</anchorfile>
+      <anchor>gabc02d54050efa8cbd915a02d83c649a6</anchor>
+      <arglist>(rsize_t *restrict p00_s1max, char p00_s1[restrict(*p00_s1max)], char **restrict p00_ptr)</arglist>
+    </member>
+    <member kind="function">
       <type>void</type>
       <name>quick_exit</name>
       <anchorfile>group__C11__library_gaa5c766e6d5440124aeaf783a96a92e93.html</anchorfile>
@@ -15102,6 +15314,13 @@
     <name>compiler_utilities</name>
     <title>A small collection of utilities</title>
     <filename>group__compiler__utilities.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_CONST_FUNCTION</name>
+      <anchorfile>group__compiler__utilities_ga47dba44e55ac92339ecfac83f86b3168.html</anchorfile>
+      <anchor>ga47dba44e55ac92339ecfac83f86b3168</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_DEPRECATED</name>
@@ -15174,6 +15393,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_PURE_FUNCTION</name>
+      <anchorfile>group__compiler__utilities_gab61d49738a2c410e708f32e269d65284.html</anchorfile>
+      <anchor>gab61d49738a2c410e708f32e269d65284</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_SETJMP_INLINE</name>
       <anchorfile>group__compiler__utilities_gaeb3ec8b13ae8530e6458ac814c0f7348.html</anchorfile>
       <anchor>gaeb3ec8b13ae8530e6458ac814c0f7348</anchor>
@@ -15185,6 +15411,20 @@
       <anchorfile>group__compiler__utilities_ga788ec4bb9b627ac630a546cd8071024e.html</anchorfile>
       <anchor>ga788ec4bb9b627ac630a546cd8071024e</anchor>
       <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_VECTOR</name>
+      <anchorfile>group__compiler__utilities_gac23ea0f6b6306c6f4627d7e983f415a5.html</anchorfile>
+      <anchor>gac23ea0f6b6306c6f4627d7e983f415a5</anchor>
+      <arglist>(T, NAME, N)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_WARN_UNUSED_RESULT</name>
+      <anchorfile>group__compiler__utilities_gad0a668a95cb966c5dfacd3b8d1ac4d05.html</anchorfile>
+      <anchor>gad0a668a95cb966c5dfacd3b8d1ac4d05</anchor>
+      <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -20822,13 +21062,6 @@
       <arglist>(B, N, S, CMP, CTX)</arglist>
     </member>
     <member kind="function">
-      <type>signed</type>
-      <name>p99_ilog2</name>
-      <anchorfile>group__sorting_ga05807be33b5e68937bb6458333d4c339.html</anchorfile>
-      <anchor>ga05807be33b5e68937bb6458333d4c339</anchor>
-      <arglist>(uintmax_t p00_i)</arglist>
-    </member>
-    <member kind="function">
       <type>bool</type>
       <name>p99_is_sorted</name>
       <anchorfile>group__sorting_ga9ecb9298d2c8cb8cba981000710d7b8d.html</anchorfile>
@@ -21240,13 +21473,6 @@
   <compound kind="struct">
     <name>p99_callback_el</name>
     <filename>structp99__callback__el.html</filename>
-    <member kind="variable">
-      <type>union p99_callback_el::@1</type>
-      <name>@2</name>
-      <anchorfile>structp99__callback__el_a1f191621f6e8bdce84254a262173db1c.html</anchorfile>
-      <anchor>a1f191621f6e8bdce84254a262173db1c</anchor>
-      <arglist></arglist>
-    </member>
     <member kind="variable">
       <type>p99_callback_el_ptr</type>
       <name>p99_lifo</name>

@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
+/* (C) copyright  2012-2013 Jens Gustedt, INRIA, France                       */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -35,11 +35,11 @@
 /* Other C libraries (e.g musl) do not provide values for futex
    operations. Only the first five operations are documented, so
    probably the occasional user of this will not expect more. */
-#  define FUTEX_WAIT		0
-#  define FUTEX_WAKE		1
-#  define FUTEX_FD		2
-#  define FUTEX_REQUEUE		3
-#  define FUTEX_CMP_REQUEUE	4
+#  define FUTEX_WAIT    0
+#  define FUTEX_WAKE    1
+#  define FUTEX_FD    2
+#  define FUTEX_REQUEUE   3
+#  define FUTEX_CMP_REQUEUE 4
 # endif
 # include <sys/syscall.h>
 

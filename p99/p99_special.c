@@ -122,7 +122,7 @@
  ** @see P99_CDIM(NAME, ...) for argument <code>NAME</code>.
  ** @see P99_CHOOSE5(xT, cc, cs, ci, cl, cll) for argument <code>xT</code>.
  ** @see P99_CONSTANT(T, NAME, INIT) for argument <code>NAME</code>.
- ** @see P99_DECLARE_ATOMIC(T, NAME) for argument <code>T</code>.
+ ** @see P99_DECLARE_ATOMIC(T, NAME) for argument <code>T</code>, <code>NAME</code>.
  ** @see P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME) for argument <code>T</code>, <code>NAME</code>.
  ** @see P99_DECLARE_DELETE(T) for argument <code>T</code>.
  ** @see P99_DECLARE_ENUM(T, ...) for arguments <code>T</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
@@ -254,4 +254,5 @@
  ** @see P99_UNROLL(MACRO, N) for argument <code>MACRO</code>, <code>N</code>.
  ** @see P99_UT_MAX(T) for argument <code>T</code>.
  ** @see P99_VASSIGNS(NAME, ...) for argument <code>NAME</code>.
+ ** @see P99_VECTOR(T, NAME, N) for arguments <code>T</code>, <code>NAME</code>, <code>N</code>.
  **/

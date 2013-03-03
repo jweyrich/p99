@@ -476,11 +476,11 @@ void p00_getopt_help_count_(bool p00_set,
                             struct p00_getopt const*p00_help,
                             int p00_ns[4]) {
   register struct p00_getopt const*const p00_p
-    = (p00_set
-       ? p00_pc
-       : (((p00_c != p99_getopt_enum_p00h) && (p00_c != p99_getopt_enum_p00HELP))
-          ? 0
-          : p00_help));
+  = (p00_set
+     ? p00_pc
+     : (((p00_c != p99_getopt_enum_p00h) && (p00_c != p99_getopt_enum_p00HELP))
+        ? 0
+        : p00_help));
   if (p00_p) {
     if (p00_p->p00_a) p00_ns[0] = P99_GEN_MAX(p00_ns[0], strlen(p00_p->p00_a));
     if (p00_p->p00_t) p00_ns[1] = P99_GEN_MAX(p00_ns[1], strlen(p00_p->p00_t));
@@ -497,11 +497,11 @@ void p00_getopt_help_count_(bool p00_set,
 p99_inline
 void p00_getopt_help_(bool p00_set, enum p99_getopt_enum p00_c, struct p00_getopt const*p00_pc, struct p00_getopt const*p00_help, int const p00_ns[4]) {
   register struct p00_getopt const*const p00_p
-    = (p00_set
-       ? p00_pc
-       : (((p00_c != p99_getopt_enum_p00h) && (p00_c != p99_getopt_enum_p00HELP))
-          ? 0
-          : p00_help));
+  = (p00_set
+     ? p00_pc
+     : (((p00_c != p99_getopt_enum_p00h) && (p00_c != p99_getopt_enum_p00HELP))
+        ? 0
+        : p00_help));
   if (p00_p) {
     char const*const p00_d = p00_p->p00_d ? p00_p->p00_d : "(not documented)";
     char const*const p00_t = p00_p->p00_t ? p00_p->p00_t : "";
@@ -580,7 +580,7 @@ int P00_GETOPT_PROCESS(help)(void* p00_o, char const*p00_c) {
    register struct p00_getopt const*const p00_p                                                                   \
      = (((p99_getopt_enum## CHAR != p99_getopt_enum_p00h) && (p99_getopt_enum## CHAR != p99_getopt_enum_p00HELP)) \
         ? (P00_GETOPT_BOOL(CHAR) ? P00_GETOPT_CHAR(CHAR) : 0)                                                     \
-        : (P00_GETOPT_BOOL(CHAR) ? P00_GETOPT_CHAR(CHAR) : p00_getopt_help));                                            \
+        : (P00_GETOPT_BOOL(CHAR) ? P00_GETOPT_CHAR(CHAR) : p00_getopt_help));                                     \
    if (p00_p) {                                                                                                   \
      void* p00_o = p00_p->p00_o;                                                                                  \
      p00_used = p00_p->p00_f(p00_o, p00_str);                                                                     \

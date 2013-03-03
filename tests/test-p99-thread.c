@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* all rights reserved,  2011-2012 Jens Gustedt, INRIA, France                */
+/* all rights reserved,  2011-2013 Jens Gustedt, INRIA, France                */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -126,7 +126,7 @@ int real_task(atomic_intp* arg) {
   case 2: at_thrd_exit(ate1); break;
   }
   tester_ptr unter_tester = P99_MALLOC(tester);
-  *unter_tester = (tester){ .a = ret, };
+  *unter_tester = (tester) { .a = ret, };
   P99_FIFO_APPEND(&ober_tester, unter_tester);
   if (ret % 2)
     return -1;

@@ -1117,7 +1117,7 @@ char const* p00_sprint__Bool(_Bool p00_val, char*restrict p00_str, unsigned p00_
   return p00_format[p00_form * 2 + p00_val];
 }
 
-P99_CONST_FUNCTION                                                 \
+P99_CONST_FUNCTION
 p99_inline
 char const* p00_sprint_charp(char const* p00_val, char*restrict p00_str, unsigned p00_form) {
   P99_UNUSED(p00_str);
