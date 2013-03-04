@@ -1182,7 +1182,7 @@ p99_extension                                                                   
     (else p00_ret = false;)                                                                     \
     (else {                                                                                     \
       register __typeof__(*p00_objp) p00_expm                                                   \
-        = { .p00_xval.p00_t = *P00_ATOMIC_TERN(p00_objp, p00_exp, 0) };                         \
+        = { .p00_xval.p00_t = *P00_ATOMIC_TERN(p00_objp, p00_exp, (__typeof__(p00_exp))0) };    \
       register __typeof__(P00_AX(p00_objp)) const p00_desm = { .p00_t = p00_des };              \
       register __typeof__(*p00_objp) const p00_valm                                             \
         = { .p00_xval.p00_m = P00_ATOMIC_TERN                                                   \
