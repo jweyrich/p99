@@ -1181,16 +1181,16 @@ p99_extension                                                                   
   P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                                      \
     (else p00_ret = false;)                                                                     \
     (else {                                                                                     \
-      register __typeof__(P00_AM(p00_objp))*const p00_expm                                      \
-        = (__typeof__(P00_AM(p00_objp))*)P00_ATOMIC_TERN(p00_objp, p00_exp, 0);                 \
+      register __typeof__(*p00_objp) p00_expm                                                   \
+        = { .p00_xval.p00_t = *P00_ATOMIC_TERN(p00_objp, p00_exp, 0) };                         \
       register __typeof__(P00_AX(p00_objp)) const p00_desm = { .p00_t = p00_des };              \
-      register __typeof__(P00_AM(p00_objp)) const p00_valm                                      \
-        = P00_ATOMIC_TERN                                                                       \
+      register __typeof__(*p00_objp) const p00_valm                                             \
+        = { .p00_xval.p00_m = P00_ATOMIC_TERN                                                   \
         (p00_objp,                                                                              \
-         __sync_val_compare_and_swap(&P00_AM(p00_objp), *p00_expm, p00_desm.p00_m),             \
-         0);                                                                                    \
-      p00_ret = (*p00_expm == p00_valm);                                                        \
-      if (!p00_ret) *p00_expm = p00_valm;                                                       \
+         __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_expm.p00_xval.p00_m, p00_desm.p00_m),      \
+         0) };                                                                                  \
+      p00_ret = (p00_expm.p00_xval.p00_m == p00_valm.p00_xval.p00_m);                           \
+      if (!p00_ret) *p00_exp = p00_valm.p00_xval.p00_t;                                         \
     })                                                                                          \
     p00_ret;                                                                                    \
  })
