@@ -163,18 +163,18 @@ P99_SER(P00_GETOPT_FLOAT,                                      \
 
 #define P00_GETOPT_PROCESS_CHOOSE(...) P99_SEQ(P00_GETOPT_PROCESS_CHOOSE_, __VA_ARGS__)
 
-#define P00_GETOPT_DECLARE(CHAR, T, NAME, DEF, ALIAS, DOC, ...) \
-  extern T NAME;                                                \
-  static bool const P00_GETOPT_BOOL(CHAR) = true;               \
-  static struct p00_getopt const*const P00_GETOPT_CHAR(CHAR)    \
-  = &(struct p00_getopt const){                                 \
-    .p00_o =  &(NAME),                                          \
-    .p00_f = P99_GENERIC(NAME, 0, __VA_ARGS__),                 \
-    .p00_a = (ALIAS),                                           \
-    .p00_d = (DOC),                                             \
-    .p00_t = #T,                                                \
-    .p00_n = #NAME,                                             \
-    .p00_v = #DEF,                                              \
+#define P00_GETOPT_DECLARE(CHAR, T, TS, DEFS, NAME, DEF, ALIAS, DOC, ...) \
+  extern T NAME;                                                          \
+  static bool const P00_GETOPT_BOOL(CHAR) = true;                         \
+  static struct p00_getopt const*const P00_GETOPT_CHAR(CHAR)              \
+  = &(struct p00_getopt const){                                           \
+    .p00_o =  &(NAME),                                                    \
+    .p00_f = P99_GENERIC(NAME, 0, __VA_ARGS__),                           \
+    .p00_a = (ALIAS),                                                     \
+    .p00_d = (DOC),                                                       \
+    .p00_t = TS,                                                          \
+    .p00_n = #NAME,                                                       \
+    .p00_v = DEFS,                                                        \
   }
 
 #define P00_GETOPT_DECLARE_(...) P00_GETOPT_DECLARE(__VA_ARGS__)
@@ -269,6 +269,8 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_GETOPT_DECLARE, 2)
 #define P99_GETOPT_DECLARE(CHAR, T, ...)                                      \
 P00_GETOPT_DECLARE_(_p00##CHAR,                                               \
                     T,                                                        \
+                    #T,                                                       \
+                    #__VA_ARGS__,                                             \
                     P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                       \
                     (__VA_ARGS__, 0, 0, 0)                                    \
                     (P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                      \
@@ -469,6 +471,28 @@ static struct p00_getopt const p00_getopt_help[2] = {
 static char const* p00_getopt_progname;
 
 
+/* Split the "va_arg" argument of the P99_GETOPT macros into the name
+   of the variable and the default value for that variable. We have to
+   take the raw string produced from that argument such that we see
+   the string as the programmer put it, not as the preprocessor
+   expanded it. */
+p99_inline
+void p00_getopt_help_split(size_t p00_len, char p00_buf[p00_len],
+                           char const**p00_n, char const** p00_v) {
+  size_t p00_pos = 0;
+  p00_pos += strspn(&p00_buf[p00_pos], " \t\n");
+  *p00_n = &p00_buf[p00_pos];
+  p00_pos += strcspn(p00_buf, ", \t\n");
+  if (p00_buf[p00_pos]) {
+    p00_buf[p00_pos] = 0;
+    ++p00_pos;
+    p00_pos += strspn(&p00_buf[p00_pos], ", \t\n");
+    *p00_v = &p00_buf[p00_pos];
+    p00_pos += strcspn(*p00_v, ", \t\n");
+    p00_buf[p00_pos] = 0;
+  } else *p00_v = "0";
+}
+
 p99_inline
 void p00_getopt_help_count_(bool p00_set,
                             enum p99_getopt_enum p00_c,
@@ -484,8 +508,16 @@ void p00_getopt_help_count_(bool p00_set,
   if (p00_p) {
     if (p00_p->p00_a) p00_ns[0] = P99_GEN_MAX(p00_ns[0], strlen(p00_p->p00_a));
     if (p00_p->p00_t) p00_ns[1] = P99_GEN_MAX(p00_ns[1], strlen(p00_p->p00_t));
-    if (p00_p->p00_n) p00_ns[2] = P99_GEN_MAX(p00_ns[2], strlen(p00_p->p00_n));
-    if (p00_p->p00_v) p00_ns[3] = P99_GEN_MAX(p00_ns[3], strlen(p00_p->p00_v));
+    char const* p00_n = p00_p->p00_n;
+    char const* p00_v = "";
+    size_t const p00_len = 1 + (p00_p->p00_v ? strlen(p00_p->p00_v) : 0);
+    char p00_buf[p00_len];
+    if (p00_p->p00_v) {
+      strcpy(p00_buf, p00_p->p00_v);
+      p00_getopt_help_split(p00_len, p00_buf, &p00_n, &p00_v);
+    }
+    if (p00_n) p00_ns[2] = P99_GEN_MAX(p00_ns[2], strlen(p00_n));
+    if (p00_v) p00_ns[3] = P99_GEN_MAX(p00_ns[3], strlen(p00_v));
   }
 }
 
@@ -505,8 +537,14 @@ void p00_getopt_help_(bool p00_set, enum p99_getopt_enum p00_c, struct p00_getop
   if (p00_p) {
     char const*const p00_d = p00_p->p00_d ? p00_p->p00_d : "(not documented)";
     char const*const p00_t = p00_p->p00_t ? p00_p->p00_t : "";
-    char const*const p00_n = p00_p->p00_n ? p00_p->p00_n : "";
-    char const*const p00_v = p00_p->p00_v ? p00_p->p00_v : "";
+    char const* p00_n = "";
+    char const* p00_v = "";
+    size_t const p00_len = 1 + (p00_p->p00_v ? strlen(p00_p->p00_v) : 0);
+    char p00_buf[p00_len];
+    if (p00_p->p00_v) {
+      strcpy(p00_buf, p00_p->p00_v);
+      p00_getopt_help_split(p00_len, p00_buf, &p00_n, &p00_v);
+    }
     if (p00_p->p00_a)
       fprintf(stderr, "   -%c  --%-*s%-*s%-*s%-*s\t%s\n",
               p00_c,
