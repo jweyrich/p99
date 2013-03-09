@@ -21,6 +21,7 @@
  ** @{
  **/
 
+
 #define P00_ENUM_CASE(X) case X: return P99_STRINGIFY(X)
 
 #define P00_ENUM_PARSE(C)                                      \
@@ -226,7 +227,7 @@ P99_IF_INT(T)                                                  \
  **
  ** @a INIT can be omitted, resulting in a zero initialized constant.
  **
- ** @remark if @T is one of the special values @c int or @c signed,
+ ** @remark if @a T is one of the special values @c int or @c signed,
  ** enumeration constants are defined.
  **
  ** Use this as in the following:
