@@ -17,6 +17,11 @@
 
 #include "p99_args.h"
 #include <float.h>
+/* For a conforming compiler, this should now have been defined. Set
+   it to "indeterminable" otherwise. */
+#ifndef FLT_EVAL_METHOD
+# define FLT_EVAL_METHOD (-1)
+#endif
 #ifndef P00_NO_HAVE_ISO646_H
 # include <iso646.h>
 #endif
