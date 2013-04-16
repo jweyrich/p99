@@ -20,6 +20,7 @@
 
 #include "p99_qsort.h"
 #include "p99_init.h"
+#include "p99_callback.h"
 
 typedef int p00_getopt_process_type(void*, char const*);
 
@@ -580,6 +581,8 @@ void p00_getopt_help_(bool p00_set, enum p99_getopt_enum p00_c, struct p00_getop
 
 static char const*const p00_getopt_synopsis;
 
+static p99_callback_void_func*const p00_getopt_callback;
+
 /**
  ** @brief Add a synopsis to the commandline option documentation
  **
@@ -587,6 +590,16 @@ static char const*const p00_getopt_synopsis;
  **/
 #define P99_GETOPT_SYNOPSIS(LINE)                              \
 static char const*const p00_getopt_synopsis = { LINE }
+
+
+/**
+ ** @brief Add a callback to the commandline option documentation
+ **
+ ** @param CALLBACK must be assignment compatible to a pointer to
+ ** ::p99_callback_void_func.
+ **/
+#define P99_GETOPT_CALLBACK(CALLBACK)                              \
+static p99_callback_void_func*const p00_getopt_callback = (CALLBACK)
 
 
 static_inline
@@ -610,6 +623,10 @@ int P00_GETOPT_PROCESS(help)(void* p00_o, char const*p00_c) {
           "default",
           "");
   P00_GETOPT_HELP(P00_GETOPT_CHARS);
+  if (p00_getopt_callback) {
+    fputs("-----------------------------------------------------\n", stderr);
+    p00_getopt_callback();
+  }
   exit(EXIT_FAILURE);
 }
 
