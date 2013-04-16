@@ -62,14 +62,6 @@ P00_POSIX_DEFARG_DOCU(pthread_spin_init, int, pthread_spinlock_t* objp, int psha
 #define pthread_spin_init(...) P99_CALL_DEFARG(pthread_spin_init, 2, __VA_ARGS__)
 #define pthread_spin_init_defarg_1() PTHREAD_PROCESS_PRIVATE
 
-P00_POSIX_DEFARG_DOCU(sem_init, int, sem_t* objp, int pshared, unsigned count)
-/*! @param objp is required */
-/*! @param pshared defaults to PTHREAD_PROCESS_PRIVATE, such that @a objp is not shared between different processes  */
-/*! @param count is required */
-#define sem_init(...) P99_CALL_DEFARG(sem_init, 3, __VA_ARGS__)
-#define sem_init_defarg_1() PTHREAD_PROCESS_PRIVATE
-#define sem_init_defarg_2() 0
-
 P00_POSIX_DEFARG_DOCU(pthread_key_create, int, pthread_key_t *key, void (*destr_function) (void *))
 /*! @param objp is required */
 /*! @param destr_function defaults to 0 */
