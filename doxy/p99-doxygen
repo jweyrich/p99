@@ -50,6 +50,7 @@ PREDEFINED += P99_TSS_DECLARE_LOCAL(T,NAME)="/** \brief a thread local variable 
 PREDEFINED += P99_DECLARE_ONCE_CHAIN(T)="/** \brief chain the 'static' initialization for T **/ p99_once_flag p99_ ## T ## _once"
 PREDEFINED += P99_DEFINE_ONCE_CHAIN(T)="p99_once_flag p99_ ## T ## _once"
 PREDEFINED += P99_FSYMB(x):="x ## _symbol"
+PREDEFINED += P99_LIFO(x):="_Atomic p00_lifo_ ## T"
 PREDEFINED += P99_LINEID(x):="p00_unique_id ## x"
 PREDEFINED += P99_MACRO_END(_1, ...)=
 PREDEFINED += P99_PASTE2(_1, _2):="_1 ## _2"

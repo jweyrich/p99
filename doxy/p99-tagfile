@@ -6002,12 +6002,20 @@
     <filename>p99__getopt_8h</filename>
     <includes id="p99__qsort_8h" name="p99_qsort.h" local="yes" imported="no">p99_qsort.h</includes>
     <includes id="p99__init_8h" name="p99_init.h" local="yes" imported="no">p99_init.h</includes>
+    <includes id="p99__callback_8h" name="p99_callback.h" local="yes" imported="no">p99_callback.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>main</name>
       <anchorfile>p99__getopt_8h_aa4e97f3782107649d3e4eb3875090b3a.html</anchorfile>
       <anchor>aa4e97f3782107649d3e4eb3875090b3a</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GETOPT_CALLBACK</name>
+      <anchorfile>p99__getopt_8h_a4fb33c0249ad8611dbe73b19201adb68.html</anchorfile>
+      <anchor>a4fb33c0249ad8611dbe73b19201adb68</anchor>
+      <arglist>(CALLBACK)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -8529,13 +8537,6 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>sem_init</name>
-      <anchorfile>group__posix__default_ga4461bd5cb79c05f949779fcaa8469880.html</anchorfile>
-      <anchor>ga4461bd5cb79c05f949779fcaa8469880</anchor>
-      <arglist>(...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>setsockopt</name>
       <anchorfile>group__posix__default_ga47bba3bfd15eff2c05026e4d386531df.html</anchorfile>
       <anchor>ga47bba3bfd15eff2c05026e4d386531df</anchor>
@@ -9118,9 +9119,9 @@
     <member kind="function">
       <type>struct</type>
       <name>atomic_P99_PASTE2</name>
-      <anchorfile>p99__try_8h_af462d85ded275b0a725865a21efc4403.html</anchorfile>
-      <anchor>af462d85ded275b0a725865a21efc4403</anchor>
-      <arglist>(p00_lifo_, p00_jmp_buf0_ptr) p00_jmp_buf_top</arglist>
+      <anchorfile>p99__try_8h_a5d902a4858e8e71481a3dfbf7adff210.html</anchorfile>
+      <anchor>a5d902a4858e8e71481a3dfbf7adff210</anchor>
+      <arglist>(p00_lifo_, p00_jmp_buf0_ptr) p00_lifo_p00_jmp_buf0_ptr</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -17142,13 +17143,6 @@
       <name>realpath</name>
       <anchorfile>group__posix__default_ga136fd1304569eb34999e6af42f8f0a98.html</anchorfile>
       <anchor>ga136fd1304569eb34999e6af42f8f0a98</anchor>
-      <arglist>(...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>sem_init</name>
-      <anchorfile>group__posix__default_ga4461bd5cb79c05f949779fcaa8469880.html</anchorfile>
-      <anchor>ga4461bd5cb79c05f949779fcaa8469880</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
