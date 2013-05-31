@@ -86,9 +86,9 @@
 #define ATOMIC_CHAR16_T_LOCK_FREE ATOMIC_INT16_LOCK_FREE
 #define ATOMIC_CHAR32_T_LOCK_FREE ATOMIC_INT32_LOCK_FREE
 #define ATOMIC_CHAR_LOCK_FREE ATOMIC_INT8_LOCK_FREE
-#define atomic_compare_exchange_weak(OBJP,EXPECTED,DESIRED) p99_extension ({ P99_MACRO_PVAR(p00_objp, (OBJP)); P99_MACRO_PVAR(p00_exp, (EXPECTED)); P99_MACRO_VAR(p00_des, DESIRED); register _Bool p00_ret = false; if (!atomic_is_lock_free(p00_objp)) { P99_SPIN_EXCLUDE(&p00_objp->p00_lock) { p00_ret = !memcmp(P00_CVT(p00_exp), P00_CVT(&P00_AT(p00_objp)), sizeof P00_AT(p00_objp)); if (p00_ret) P00_AT(p00_objp) = p00_des; else *p00_exp = P00_AT(p00_objp); } } P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES) (else p00_ret = false;) (else { __typeof__(P00_AM(p00_objp))* p00_expm = (__typeof__(P00_AM(p00_objp))*)P00_ATOMIC_TERN(p00_objp, p00_exp, 0); __typeof__(P00_AX(p00_objp)) p00_desm = { .p00_t = p00_des }; __typeof__(P00_AM(p00_objp)) p00_valm = P00_ATOMIC_TERN (p00_objp, __sync_val_compare_and_swap(&P00_AM(p00_objp), *p00_expm, p00_desm.p00_m), 0); p00_ret = (*p00_expm == p00_valm); if (!p00_ret) *p00_expm = p00_valm; }) p00_ret; })
+#define atomic_compare_exchange_weak(OBJP,EXPECTED,DESIRED) p99_extension ({ P99_MACRO_PVAR(p00_objp, (OBJP)); typedef __typeof__(P00_AT(p00_objp)) p00_base_t; typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t; register p00_base_t* const p00_exp = (EXPECTED); register p00_ubase_t const p00_des = { .p00_t = (DESIRED) }; register _Bool p00_ret = false; if (!atomic_is_lock_free(p00_objp)) { P99_SPIN_EXCLUDE(&p00_objp->p00_lock) { p00_ret = !memcmp(P00_CVT(p00_exp), P00_CVT(&P00_AT(p00_objp)), sizeof *p00_exp); if (p00_ret) P00_AT(p00_objp) = p00_des.p00_t; else *p00_exp = P00_AT(p00_objp); } } P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES) (else p00_ret = false;) (else { register p00_ubase_t p00_expm = { .p00_t = *p00_exp, }; register p00_ubase_t const p00_valm = { .p00_m = P00_ATOMIC_TERN (p00_objp, __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_expm.p00_m, p00_des.p00_m), 0) }; p00_ret = (p00_expm.p00_m == p00_valm.p00_m); if (!p00_ret) *p00_exp = p00_valm.p00_t; }) p00_ret; })
 #define __ATOMIC_CONSUME 1
-#define atomic_exchange(OBJP,DESIRED) p99_extension ({ P99_MACRO_PVAR(p00_objp, (OBJP)); __typeof__(P00_AT(p00_objp)) p00_des = (DESIRED); register __typeof__(P00_AX(p00_objp)) p00_ret = P99_INIT; if (!atomic_is_lock_free(p00_objp)) P99_SPIN_EXCLUDE(&p00_objp->p00_lock) { p00_ret.p00_t = P00_AT(p00_objp); P00_AT(p00_objp) = p00_des; } P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES) () (else { __typeof__(P00_AX(p00_objp)) p00_desm = { .p00_t = p00_des }; switch (sizeof(P00_AT(p00_objp))) { case 1:; case 2:; case 4:; case 8:; p00_ret.p00_m = P00_EXCHANGE(P00_AT(p00_objp))(&P00_AM(p00_objp), p00_desm.p00_m); break; default: p00_ret.p00_m = P00_AM(p00_objp); for (;;) { P99_MACRO_VAR(p00_valm, __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_ret.p00_m, p00_desm.p00_m)); if (P99_LIKELY(p00_valm == p00_ret.p00_m)) break; p00_ret.p00_m = p00_valm; } } }) p00_ret.p00_t; })
+#define atomic_exchange(OBJP,DESIRED) p99_extension ({ P99_MACRO_PVAR(p00_objp, (OBJP)); typedef __typeof__(P00_AT(p00_objp)) p00_base_t; typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t; register p00_base_t const p00_des = (DESIRED); register p00_ubase_t p00_ret = P99_INIT; if (!atomic_is_lock_free(p00_objp)) P99_SPIN_EXCLUDE(&p00_objp->p00_lock) { p00_ret.p00_t = P00_AT(p00_objp); P00_AT(p00_objp) = p00_des; } P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES) () (else { register p00_ubase_t const p00_desm = { .p00_t = p00_des }; switch (sizeof(p00_base_t)) { case 1:; case 2:; case 4:; case 8:; p00_ret.p00_m = P00_EXCHANGE(P00_AT(p00_objp))(&P00_AM(p00_objp), p00_desm.p00_m); break; default: p00_ret.p00_m = P00_AM(p00_objp); for (;;) { P99_MACRO_VAR(p00_valm, __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_ret.p00_m, p00_desm.p00_m)); if (P99_LIKELY(p00_valm == p00_ret.p00_m)) break; p00_ret.p00_m = p00_valm; } } }) p00_ret.p00_t; })
 #define atomic_fetch_add_conditional(OBJP,OPERAND) p99_extension ({ P99_MACRO_PVAR(p00_objp, (OBJP)); P99_MACRO_VAR(p00_op, (OPERAND)); P99_MACRO_VAR(p00_ret, atomic_load(p00_objp)); while (p00_ret) { P99_MACRO_VAR(p00_des, p00_ret + p00_op); if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_des)) break; } register __typeof__(p00_ret = p00_ret) p00_r = p00_ret; p00_r; })
 #define atomic_fetch_add(OBJP,OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_add, +=)
 #define atomic_fetch_and(OBJP,OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_and, &=)
@@ -107,7 +107,7 @@
 #define ATOMIC_INTPTR_LOCK_FREE ATOMIC_INT64_LOCK_FREE
 #define atomic_is_lock_free(OBJP) (!offsetof(__typeof__(*OBJP), p00_xval))
 #define ATOMIC_LLONG_LOCK_FREE ATOMIC_INT64_LOCK_FREE
-#define atomic_load(OBJP) p99_extension ({ P99_MACRO_PVAR(p00_objp, (OBJP)); ((!atomic_is_lock_free(p00_objp)) ? ({ register __typeof__(P00_AX(p00_objp).p00_t) p00_ret; P99_SPIN_EXCLUDE(&p00_objp->p00_lock) p00_ret = P00_AT(p00_objp); p00_ret; }) : (P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES) (P00_AT(p00_objp)) (({ register __typeof__(P00_AX(p00_objp)) p00_ret = { .p00_m = P00_ATOMIC_TERN(p00_objp, __sync_val_compare_and_swap(&P00_AM(p00_objp), 0, 0), P00_AM(p00_objp)), }; p00_ret.p00_t; })))); })
+#define atomic_load(OBJP) p99_extension ({ P99_MACRO_PVAR(p00_objp, (OBJP)); typedef __typeof__(P00_AT(p00_objp)) p00_base_t; typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t; ((!atomic_is_lock_free(p00_objp)) ? ({ register p00_base_t p00_ret; P99_SPIN_EXCLUDE(&p00_objp->p00_lock) p00_ret = P00_AT(p00_objp); p00_ret; }) : (P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES) (P00_AT(p00_objp)) ((p00_ubase_t){ .p00_m = P00_ATOMIC_TERN(p00_objp, __sync_val_compare_and_swap(&P00_AM(p00_objp), 0, 0), P00_AM(p00_objp)), }).p00_t)); })
 #define ATOMIC_LONG_LOCK_FREE ATOMIC_INT64_LOCK_FREE
 #define ATOMIC_POINTER_LOCK_FREE ATOMIC_INTPTR_LOCK_FREE
 #define __ATOMIC_RELAXED 0
@@ -1366,6 +1366,7 @@
 #define __NO_INLINE__ 1
 #define __NO_MATH_INLINES 1
 #define __nonnull(params) __attribute__ ((__nonnull__ params))
+#define _Noreturn __attribute__((__noreturn__))
 #define noreturn _Noreturn
 #define not !
 #define not_eq !=
@@ -1786,10 +1787,10 @@
 #define P00_ARE_ORDERED(OP,N,...) P99_IF_LT(N, 3) (P00_ARE_ORDERED2(OP,__VA_ARGS__)) (P00_ARE_ORDERED3(OP, P99_PRED(N), __VA_ARGS__))
 #define P00_ARE_ORDERED_OP(OP,_1,X,Y) X OP Y
 #define P00_ARG(_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,_11,_12,_13,_14,_15,_16,_17,_18,_19,_20,_21,_22,_23,_24,_25,_26,_27,_28,_29,_30,_31,_32,_33,_34,_35,_36,_37,_38,_39,_40,_41,_42,_43,_44,_45,_46,_47,_48,_49,_50,_51,_52,_53,_54,_55,_56,_57,_58,_59,_60,_61,_62,_63,_64,_65,_66,_67,_68,_69,_70,_71,_72,_73,_74,_75,_76,_77,_78,_79,_80,_81,_82,_83,_84,_85,_86,_87,_88,_89,_90,_91,_92,_93,_94,_95,_96,_97,_98,_99,_100,_101,_102,_103,_104,_105,_106,_107,_108,_109,_110,_111,_112,_113,_114,_115,_116,_117,_118,_119,_120,_121,_122,_123,_124,_125,_126,_127,_128,_129,_130,_131,_132,_133,_134,_135,_136,_137,_138,_139,_140,_141,_142,_143,_144,_145,_146,_147,_148,_149,_150,_151,_152,_153,_154,_155,_156,_157,_158,_159,...) _159
+#define P00_ARITH_INTMAX_SHIFT(X) (-((intmax_t)+P00_UINTMAX_HIGHBIT(X)))
 #define P00_ASCENDING() 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158,
 #define P00_AT(OBJP) (P00_AX(OBJP).p00_t)
 #define P00_atomic 
-#define P00_ATOMIC_EXCHANGE_DECLARE(T,N) p99_inline T P99_PASTE(p00_atomic_exchange_, N)(T volatile * p00_p, T p00_des) { T p00_ret = *p00_p; for (;;) { T p00_val = __sync_val_compare_and_swap(p00_p, p00_ret, p00_des); if (P99_LIKELY(p00_val == p00_ret)) break; p00_ret = p00_val; } return p00_ret; } P99_MACRO_END(P00_ATOMIC_EXCHANGE_DECLARE)
 #define P00_ATOMIC_LOCK_FREE_TYPES0 _Bool
 #define P00_ATOMIC_LOCK_FREE_TYPES1 char, signed char, unsigned char
 #define P00_ATOMIC_LOCK_FREE_TYPES1_ P00_ATOMIC_LOCK_FREE_TYPES0, P00_ATOMIC_LOCK_FREE_TYPES1
@@ -1805,6 +1806,7 @@
 #define P00_ATOMIC_LOCK_FREE_TYPES6_ P00_ATOMIC_LOCK_FREE_TYPES5_, P00_ATOMIC_LOCK_FREE_TYPES6
 #define P00_ATOMIC_TERN(OBJP,VAL,ALT) P99_TYPED_TERN(atomic_is_lock_free(OBJP), (VAL), (ALT))
 #define P00_ATOMIC_TYPES (_Bool, atomic_bool*), (char, atomic_char*), (signed char, atomic_schar*), (unsigned char, atomic_uchar*), (short int, atomic_short*), (unsigned short int, atomic_ushort*), (int, atomic_int*), (unsigned int, atomic_uint*), (long int, atomic_long*), (unsigned long int, atomic_ulong*), (long long int, atomic_llong*), (unsigned long long int, atomic_ullong*), (float, atomic_float*), (double, atomic_double*), (long double, atomic_ldouble*), (float _Complex, atomic_cfloat*), (double _Complex, atomic_cdouble*), (long double _Complex, atomic_cldouble*)
+#define P00_AT_THRD_EXIT P99_TSS_LOCAL(p00_at_thrd_exit)
 #define P00_AVALUES(X,...) P99_FOR(X, P99_NARG(__VA_ARGS__), P00_SEQ, P00_AVALUES_, __VA_ARGS__)
 #define P00_AVALUES_(X,T,I) (T*, *(T(*)[1])X)
 #define P00_AVALUE_(X,DEF,...) P99_GENERIC(X, DEF, __VA_ARGS__)
@@ -1819,7 +1821,7 @@
 #define P00_BAND(NAME,I,X,Y) ((X) & (Y))
 #define P00_basic_list_operations 
 #define P00_BIGPRIME UINT64_C(10007814641597694113), UINT64_C(10015183610531627897), UINT64_C(10089390291074425231), UINT64_C(10117275823191396191), UINT64_C(10215588060907623179), UINT64_C(10389441874873414061), UINT64_C(10602620510410479149), UINT64_C(10690793455755991027), UINT64_C(10793439684376201283), UINT64_C(10969167379420052431), UINT64_C(11050883422537956197), UINT64_C(11110712460003231287), UINT64_C(11342254921836171103), UINT64_C(11388752923558666351), UINT64_C(11682943258734137249), UINT64_C(11697622259988783581), UINT64_C(11731205802697935733), UINT64_C(11799524298339249581), UINT64_C(11862963432241722239), UINT64_C(11903172551239393097), UINT64_C(11937270107112816793), UINT64_C(11962673972948293321), UINT64_C(12001454206321043837), UINT64_C(12066567988703197129), UINT64_C(12090279337620046961), UINT64_C(12320220036580238077), UINT64_C(12409336420886496139), UINT64_C(12441355201341188273), UINT64_C(12444926949253327381), UINT64_C(12464345941324672183), UINT64_C(12469071720100075169), UINT64_C(12541090550165194183), UINT64_C(12558029109792848393), UINT64_C(12629045726855953273), UINT64_C(12845265184712635099), UINT64_C(12904165305535099733), UINT64_C(12949777725323667257), UINT64_C(13014679980528315931), UINT64_C(13027415158206533719), UINT64_C(13073256976558063279), UINT64_C(13153853421202095331), UINT64_C(13381351390611252151), UINT64_C(13825543164380321747), UINT64_C(13917403769616578911), UINT64_C(13929904570285153753), UINT64_C(14140216129016347127), UINT64_C(14184039880925065139), UINT64_C(14271570646513640671), UINT64_C(14446852824178510313), UINT64_C(14666997777683867003), UINT64_C(14692182605128454039), UINT64_C(14771388299183335229), UINT64_C(15059759696658839237), UINT64_C(15091316017205268437), UINT64_C(15180626055737690959), UINT64_C(15339437418814258573), UINT64_C(15601183704045111169), UINT64_C(15983170142123181797), UINT64_C(16545722488476290101), UINT64_C(16580005714519352107), UINT64_C(16589193612296178103), UINT64_C(16620171437104037921), UINT64_C(16713706803710883721), UINT64_C(16826711990149094791), UINT64_C(16886322755473635461), UINT64_C(16950140700365130619), UINT64_C(16952043704640877837), UINT64_C(17020386452131177189), UINT64_C(17020824347466355583), UINT64_C(17044414685455096133), UINT64_C(17089443963053420461), UINT64_C(17165479835541081871), UINT64_C(17185820514261086599), UINT64_C(17191892745505804273), UINT64_C(17613198595545138731), UINT64_C(17653178755564367203), UINT64_C(17653752776501147281), UINT64_C(17728444844615762171), UINT64_C(17744620187156425403), UINT64_C(17816722786105806973), UINT64_C(17831662963314755641), UINT64_C(17886004545482299117), UINT64_C(17920151933265509833), UINT64_C(17969552600607433963), UINT64_C(18066918898331824901), UINT64_C(18094173144238831753), UINT64_C(18134240252569387847), UINT64_C(18219113917191524677), UINT64_C(18298168206731166317), UINT64_C(18319234190200763803)
-#define P00_BITS_DECLARE(B) p99_inline p99_bitset P99_PASTE2(p00_bits, B)(rsize_t p00_s2l, uint8_t const p00_s2[const restrict p00_s2l]) { p99_bitset p00_ret = 0; switch (p00_s2l - 2) { P99_FOR(B, 128, P00_PES, P00_BITSET_CASE128, P00_ALLZERO); P99_FOR(B, 128, P00_PES, P00_BITSET_CASE, P00_ALLZERO); } return p00_ret; } P99_MACRO_END(P00_BITS_DECLARE, B)
+#define P00_BITS_DECLARE(B) P99_CONST_FUNCTION p99_inline p99_bitset P99_PASTE2(p00_bits, B)(rsize_t p00_s2l, uint8_t const p00_s2[const restrict p00_s2l]) { p99_bitset p00_ret = 0; switch (p00_s2l - 2) { P99_FOR(B, 128, P00_PES, P00_BITSET_CASE128, P00_ALLZERO); P99_FOR(B, 128, P00_PES, P00_BITSET_CASE, P00_ALLZERO); } return p00_ret; } P99_MACRO_END(P00_BITS_DECLARE, B)
 #define P00_BITSET_CASE128(B,_1,I) case I+128: if (p00_bit_high(p00_s2[I+128]) == B) p00_ret |= p00_set_bit(p00_s2[I+128])
 #define P00_BITSET_CASE(B,_1,I) case I: if (p00_bit_high(p00_s2[I]) == B) p00_ret |= p00_set_bit(p00_s2[I])
 #define P00_BLANK " \t"
@@ -2370,6 +2372,7 @@
 #define P00_CA_FSIZEOF(_0,X,_2) P99_PASTE2(p00_ca_fsize_, X) = sizeof(X)
 #define P00_CA_FSIZEOFS(N,...) P99_FOR(, N, P00_SEP, P00_CA_FSIZEOF, __VA_ARGS__)
 #define P00_CA_FSIZES(N,...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_CA_FSIZE, __VA_ARGS__)
+#define P00_callbacks 
 #define P00_CALLOC0(T,N) p00_calloc((void const*)&P99_LVAL(const T), sizeof(T), N)
 #define P00_CALLOC_defarg_1() 1
 #define P00_CALLOC(...) P00_CALLOC0(__VA_ARGS__)
@@ -2410,6 +2413,7 @@
 #define P00_CLAUSE2(...) P00_IDENT
 #define P00_code_augmenting 
 #define P00_compiler 
+#define P00_COMPILER_PRAGMA_APPLE(...) 
 #define P00_COMPILER_PRAGMA_ARMCC(...) 
 #define P00_COMPILER_PRAGMA_BORLAND(...) 
 #define P00_COMPILER_PRAGMA_CLANG(...) 
@@ -2800,18 +2804,18 @@
 #define P00_dec_eval_minus_98 -98
 #define P00_dec_eval_minus_9 -9
 #define P00_dec_eval_minus_99 -99
-#define P00_DECLARE_ADD0(SUFF) p99_inline P99_BUILTIN_TYPE(u, SUFF) P99_PASTE2(p00_add0, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b) { register P99_BUILTIN_TYPE(u, SUFF) p00_ua = P99_PASTE2(p99_unsig, SUFF)(p00_a); register P99_BUILTIN_TYPE(u, SUFF) p00_ub = P99_PASTE2(p99_unsig, SUFF)(p00_b); register P99_BUILTIN_TYPE(u, SUFF) p00_res = (P99_BUILTIN_TYPE(u, SUFF))(p00_ua + p00_ub); return p00_res; }
-#define P00_DECLARE_ADD1(SUFF) p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p00_add1, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b, int p00_err[P99_ATLEAST 1]) { register P99_BUILTIN_TYPE(SUFF) const type_null = 0; register P99_BUILTIN_TYPE(SUFF) p00_ret; if (p00_b >= type_null) { if (P99_LIKELY(P99_BUILTIN_MAX(SUFF) - p00_b >= p00_a)) { p00_ret = p00_a + p00_b; } else { p00_ret = ((p00_b - P99_BUILTIN_MAX(SUFF)) + p00_a) - 1; p00_err[0] = ERANGE; } } else { if (P99_LIKELY(P99_BUILTIN_MIN(SUFF) - p00_b <= p00_a)) { p00_ret = p00_a + p00_b; } else { p00_ret = ((p00_b + P99_BUILTIN_MAX(SUFF)) + p00_a) + 1; p00_err[0] = ERANGE; } } return p00_ret; }
-#define P00_DECLARE_ADD2(SUFF) p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p00_add2, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b, int p00_err[P99_ATLEAST 1]) { register P99_BUILTIN_TYPE(SUFF) const type_null = 0; register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF); register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); register P99_BUILTIN_TYPE(u, SUFF) p00_uc = P99_PASTE2(p00_add0, SUFF)(p00_a, p00_b); register P99_BUILTIN_TYPE(SUFF) p00_c = P99_PASTE2(p99_twos, SUFF)(p00_uc); if (P99_UNLIKELY(((p00_a ^ p00_b) >= type_null) && ((p00_b ^ p00_c) < type_null)) || ((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (p00_uc == type_max1))) p00_err[0] = ERANGE; return p00_c; }
-#define P00_DECLARE_ADD(SUFF) p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b, int p00_err[P99_ATLEAST 1]) { return (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF)) ? P99_PASTE2(p00_add2, SUFF)(p00_a, p00_b, p00_err) : P99_PASTE2(p00_add1, SUFF)(p00_a, p00_b, p00_err); }
+#define P00_DECLARE_ADD0(SUFF) P99_CONST_FUNCTION p99_inline P99_BUILTIN_TYPE(u, SUFF) P99_PASTE2(p00_add0, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b) { register P99_BUILTIN_TYPE(u, SUFF) p00_ua = P99_PASTE2(p99_unsig, SUFF)(p00_a); register P99_BUILTIN_TYPE(u, SUFF) p00_ub = P99_PASTE2(p99_unsig, SUFF)(p00_b); register P99_BUILTIN_TYPE(u, SUFF) p00_res = (P99_BUILTIN_TYPE(u, SUFF))(p00_ua + p00_ub); return p00_res; }
+#define P00_DECLARE_ADD1(SUFF) P99_CONST_FUNCTION p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p00_add1, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b, int p00_err[P99_ATLEAST 1]) { register P99_BUILTIN_TYPE(SUFF) const type_null = 0; register P99_BUILTIN_TYPE(SUFF) p00_ret; if (p00_b >= type_null) { if (P99_LIKELY(P99_BUILTIN_MAX(SUFF) - p00_b >= p00_a)) { p00_ret = p00_a + p00_b; } else { p00_ret = ((p00_b - P99_BUILTIN_MAX(SUFF)) + p00_a) - 1; p00_err[0] = ERANGE; } } else { if (P99_LIKELY(P99_BUILTIN_MIN(SUFF) - p00_b <= p00_a)) { p00_ret = p00_a + p00_b; } else { p00_ret = ((p00_b + P99_BUILTIN_MAX(SUFF)) + p00_a) + 1; p00_err[0] = ERANGE; } } return p00_ret; }
+#define P00_DECLARE_ADD2(SUFF) P99_CONST_FUNCTION p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p00_add2, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b, int p00_err[P99_ATLEAST 1]) { register P99_BUILTIN_TYPE(SUFF) const type_null = 0; register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF); register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); register P99_BUILTIN_TYPE(u, SUFF) p00_uc = P99_PASTE2(p00_add0, SUFF)(p00_a, p00_b); register P99_BUILTIN_TYPE(SUFF) p00_c = P99_PASTE2(p99_twos, SUFF)(p00_uc); if (P99_UNLIKELY(((p00_a ^ p00_b) >= type_null) && ((p00_b ^ p00_c) < type_null)) || ((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (p00_uc == type_max1))) p00_err[0] = ERANGE; return p00_c; }
+#define P00_DECLARE_ADD(SUFF) P99_CONST_FUNCTION p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p99_add, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b, int p00_err[P99_ATLEAST 1]) { return (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF)) ? P99_PASTE2(p00_add2, SUFF)(p00_a, p00_b, p00_err) : P99_PASTE2(p00_add1, SUFF)(p00_a, p00_b, p00_err); }
 #define P00_DECLARE_ATOMIC2(T,...) P00_DECLARE_ATOMIC_TYPE(union, T, T, P99_PASTE(p99_, __VA_ARGS__)); P00_DECLARE_ATOMIC_TYPE(struct, uintptr_t, T, P99_PASTE(p99_, __VA_ARGS__)); typedef P99_PASTE(p99_, __VA_ARGS__, _struct) __VA_ARGS__
 #define P00_DECLARE_ATOMIC_CHOICE(MAC,T,NAME) P99_IF_EQ_2(MAC) (P99_DECLARE_ATOMIC_LOCK_FREE(T, NAME)) (P99_DECLARE_ATOMIC(T, NAME))
 #define P00_DECLARE_ATOMIC(T,...) typedef P00_ATOMIC_STRUCT(T, __VA_ARGS__) __VA_ARGS__
 #define P00_DECLARE_ATOMIC_TYPE(TAGGER,TI,T,NAME) TAGGER P99_PASTE3(NAME, _, TAGGER) { atomic_flag p00_lock; union { TI p00_o; P99_UINT_DEFAULT(T) p00_m; T p00_t; } p00_xval; }; typedef TAGGER P99_PASTE3(NAME, _, TAGGER) P99_PASTE3(NAME, _, TAGGER)
 #define P00_DECLARE_DEFARG(NAME,N,...) P99_FOR(NAME, N, P00_SER, P00_EXPR_FUNCTION, __VA_ARGS__) P99_MACRO_END(NAME, _declare_defarg)
 #define P00_DECLARE_DELETE(T,...) __VA_ARGS__ void P99_PASTE2(T, _delete)(T const*p00_el) { if (p00_el) { T* p00_e = (T*)p00_el; P99_PASTE2(T, _destroy)(p00_e); free((void*)p00_e); } }
-#define P00_DECLARE_INLINE_EXPRESSION1(EXT,BASE,EXP,A) p99_inline P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT) (P99_BUILTIN_TYPE(EXT) A) { return (EXP); }
-#define P00_DECLARE_INLINE_EXPRESSION2(EXT,BASE,EXP,A,B) p99_inline P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT) (P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B) { return (EXP); }
+#define P00_DECLARE_INLINE_EXPRESSION1(EXT,BASE,EXP,A) P99_CONST_FUNCTION p99_inline P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT) (P99_BUILTIN_TYPE(EXT) A) { return (EXP); }
+#define P00_DECLARE_INLINE_EXPRESSION2(EXT,BASE,EXP,A,B) P99_CONST_FUNCTION p99_inline P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT) (P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B) { return (EXP); }
 #define P00_DECLARE_INLINE_EXPRESSION3(EXT,BASE,EXP,A,B,C) p99_inline P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT) (P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B, P99_BUILTIN_TYPE(EXT) C) { return (EXP); }
 #define P00_DECLARE_INLINE_EXPRESSION4(EXT,BASE,EXP,A,B,C,D) p99_inline P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT) (P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B, P99_BUILTIN_TYPE(EXT) C, P99_BUILTIN_TYPE(EXT) D) { return (EXP); }
 #define P00_DECLARE_INLINE_EXPRESSION5(EXT,BASE,EXP,A,B,C,D,E) p99_inline P99_BUILTIN_TYPE(EXT) P99_PASTE3(p00_gen_, BASE, EXT) (P99_BUILTIN_TYPE(EXT) A, P99_BUILTIN_TYPE(EXT) B, P99_BUILTIN_TYPE(EXT) C, P99_BUILTIN_TYPE(EXT) D, P99_BUILTIN_TYPE(EXT) E) { return (EXP); }
@@ -2821,18 +2825,18 @@
 #define P00_DECLARE_OVERFLOW(SUFF) P00_DECLARE_TWOS(SUFF) P00_DECLARE_UNSIG(SUFF) P00_DECLARE_ADD0(SUFF) P00_DECLARE_ADD1(SUFF) P00_DECLARE_ADD2(SUFF) P00_DECLARE_ADD(SUFF) P00_DECLARE_SUB0(SUFF) P00_DECLARE_SUB1(SUFF) P00_DECLARE_SUB2(SUFF) P00_DECLARE_SUB(SUFF) P99_MACRO_END(p99_overflow_, SUFF)
 #define P00_DECLARE_STRTO(SUFF) p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p99_strto, SUFF)(char const *p00_nptr, char **p00_eptr, int p00_base) { long long p00_ret = (strtoll)(p00_nptr, p00_eptr, p00_base); if ((p00_ret > P99_BUILTIN_MAX(SUFF) || p00_ret < P99_BUILTIN_MIN(SUFF)) && (!errno)) errno = ERANGE; if (p00_ret > P99_BUILTIN_MAX(SUFF)) p00_ret = P99_BUILTIN_MAX(SUFF); if (p00_ret < P99_BUILTIN_MIN(SUFF)) p00_ret = P99_BUILTIN_MIN(SUFF); return p00_ret; } P99_MACRO_END(p99_strto, SUFF)
 #define P00_DECLARE_STRTOU(SUFF) p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p99_strto, SUFF)(char const *p00_nptr, char **p00_eptr, int p00_base) { unsigned long long p00_ret = (strtoull)(p00_nptr, p00_eptr, p00_base); if (p00_ret > P99_BUILTIN_MAX(SUFF)) { if (!errno) errno = ERANGE; p00_ret = P99_BUILTIN_MAX(SUFF); } return p00_ret; } P99_MACRO_END(p99_strto, SUFF)
-#define P00_DECLARE_SUB0(SUFF) p99_inline P99_BUILTIN_TYPE(u, SUFF) P99_PASTE2(p00_sub0, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b) { register P99_BUILTIN_TYPE(u, SUFF) p00_ua = P99_PASTE2(p99_unsig, SUFF)(p00_a); register P99_BUILTIN_TYPE(u, SUFF) p00_ub = P99_PASTE2(p99_unsig, SUFF)(p00_b); register P99_BUILTIN_TYPE(u, SUFF) p00_res = (P99_BUILTIN_TYPE(u, SUFF))(p00_ua - p00_ub); return p00_res; }
-#define P00_DECLARE_SUB1(SUFF) p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p00_sub1, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b, int p00_err[P99_ATLEAST 1]) { register P99_BUILTIN_TYPE(SUFF) const type_null = 0; register P99_BUILTIN_TYPE(SUFF) p00_ret; if (p00_b <= type_null) { if (P99_LIKELY(P99_BUILTIN_MAX(SUFF) + p00_b >= p00_a)) { p00_ret = p00_a - p00_b; } else { p00_ret = (p00_a - (p00_b + P99_BUILTIN_MAX(SUFF))) + 1; p00_err[0] = ERANGE; } } else { if (P99_LIKELY(P99_BUILTIN_MIN(SUFF) + p00_b <= p00_a)) { p00_ret = p00_a - p00_b; } else { p00_ret = (p00_a - (p00_b - P99_BUILTIN_MAX(SUFF))) - 1; p00_err[0] = ERANGE; } } return p00_ret; }
-#define P00_DECLARE_SUB2(SUFF) p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p00_sub2, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b, int p00_err[P99_ATLEAST 1]) { register P99_BUILTIN_TYPE(SUFF) const type_null = 0; register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF); register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); register P99_BUILTIN_TYPE(u, SUFF) p00_uc = P99_PASTE2(p00_sub0, SUFF)(p00_a, p00_b); register P99_BUILTIN_TYPE(SUFF) p00_c = P99_PASTE2(p99_twos, SUFF)(p00_uc); if (P99_UNLIKELY(((p00_a ^ p00_b) < type_null) && ((p00_b ^ p00_c) >= type_null)) || ((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (p00_uc == type_max1))) p00_err[0] = ERANGE; return p00_c; }
-#define P00_DECLARE_SUB(SUFF) p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p99_sub, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b, int p00_err[P99_ATLEAST 1]) { return (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF)) ? P99_PASTE2(p00_sub2, SUFF)(p00_a, p00_b, p00_err) : P99_PASTE2(p00_sub1, SUFF)(p00_a, p00_b, p00_err); }
-#define P00_DECLARE_TWOS(SUFF) p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) p00_a) { P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF); P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); P99_BUILTIN_TYPE(u, SUFF) const utype_max = (P99_BUILTIN_TYPE(u, SUFF))((2 * type_max) + 1); return (p00_a <= type_max) ? p00_a : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (p00_a == type_max1)) ? (P99_BUILTIN_TYPE(SUFF))(-0) : (P99_BUILTIN_TYPE(SUFF))((-(P99_BUILTIN_TYPE(SUFF))(utype_max - (utype_max & p00_a))) - 1)); }
-#define P00_DECLARE_UNSIG(SUFF) p99_inline P99_BUILTIN_TYPE(u, SUFF) P99_PASTE2(p99_unsig, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a) { register P99_BUILTIN_TYPE(SUFF) const type_null = 0; register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF); register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); register P99_BUILTIN_TYPE(u, SUFF) const utype_max = (P99_BUILTIN_TYPE(u, SUFF))((2 * type_max) + 1); return p00_a >= type_null ? p00_a : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (p00_a == P99_BUILTIN_MIN(SUFF))) ? type_max1 : (P99_BUILTIN_TYPE(u, SUFF))((utype_max - (P99_BUILTIN_TYPE(u, SUFF))-p00_a) + 1)); }
+#define P00_DECLARE_SUB0(SUFF) P99_CONST_FUNCTION p99_inline P99_BUILTIN_TYPE(u, SUFF) P99_PASTE2(p00_sub0, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b) { register P99_BUILTIN_TYPE(u, SUFF) p00_ua = P99_PASTE2(p99_unsig, SUFF)(p00_a); register P99_BUILTIN_TYPE(u, SUFF) p00_ub = P99_PASTE2(p99_unsig, SUFF)(p00_b); register P99_BUILTIN_TYPE(u, SUFF) p00_res = (P99_BUILTIN_TYPE(u, SUFF))(p00_ua - p00_ub); return p00_res; }
+#define P00_DECLARE_SUB1(SUFF) P99_CONST_FUNCTION p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p00_sub1, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b, int p00_err[P99_ATLEAST 1]) { register P99_BUILTIN_TYPE(SUFF) const type_null = 0; register P99_BUILTIN_TYPE(SUFF) p00_ret; if (p00_b <= type_null) { if (P99_LIKELY(P99_BUILTIN_MAX(SUFF) + p00_b >= p00_a)) { p00_ret = p00_a - p00_b; } else { p00_ret = (p00_a - (p00_b + P99_BUILTIN_MAX(SUFF))) + 1; p00_err[0] = ERANGE; } } else { if (P99_LIKELY(P99_BUILTIN_MIN(SUFF) + p00_b <= p00_a)) { p00_ret = p00_a - p00_b; } else { p00_ret = (p00_a - (p00_b - P99_BUILTIN_MAX(SUFF))) - 1; p00_err[0] = ERANGE; } } return p00_ret; }
+#define P00_DECLARE_SUB2(SUFF) P99_CONST_FUNCTION p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p00_sub2, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b, int p00_err[P99_ATLEAST 1]) { register P99_BUILTIN_TYPE(SUFF) const type_null = 0; register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF); register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); register P99_BUILTIN_TYPE(u, SUFF) p00_uc = P99_PASTE2(p00_sub0, SUFF)(p00_a, p00_b); register P99_BUILTIN_TYPE(SUFF) p00_c = P99_PASTE2(p99_twos, SUFF)(p00_uc); if (P99_UNLIKELY(((p00_a ^ p00_b) < type_null) && ((p00_b ^ p00_c) >= type_null)) || ((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (p00_uc == type_max1))) p00_err[0] = ERANGE; return p00_c; }
+#define P00_DECLARE_SUB(SUFF) P99_CONST_FUNCTION p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p99_sub, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a, P99_BUILTIN_TYPE(SUFF) p00_b, int p00_err[P99_ATLEAST 1]) { return (P99_BUILTIN_MAX(SUFF) < P99_BUILTIN_MAX(u, SUFF)) ? P99_PASTE2(p00_sub2, SUFF)(p00_a, p00_b, p00_err) : P99_PASTE2(p00_sub1, SUFF)(p00_a, p00_b, p00_err); }
+#define P00_DECLARE_TWOS(SUFF) P99_CONST_FUNCTION p99_inline P99_BUILTIN_TYPE(SUFF) P99_PASTE2(p99_twos, SUFF)(P99_BUILTIN_TYPE(u, SUFF) p00_a) { P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF); P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); P99_BUILTIN_TYPE(u, SUFF) const utype_max = (P99_BUILTIN_TYPE(u, SUFF))((2 * type_max) + 1); return (p00_a <= type_max) ? p00_a : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (p00_a == type_max1)) ? (P99_BUILTIN_TYPE(SUFF))(-0) : (P99_BUILTIN_TYPE(SUFF))((-(P99_BUILTIN_TYPE(SUFF))(utype_max - (utype_max & p00_a))) - 1)); }
+#define P00_DECLARE_UNSIG(SUFF) P99_CONST_FUNCTION p99_inline P99_BUILTIN_TYPE(u, SUFF) P99_PASTE2(p99_unsig, SUFF)(P99_BUILTIN_TYPE(SUFF) p00_a) { register P99_BUILTIN_TYPE(SUFF) const type_null = 0; register P99_BUILTIN_TYPE(u, SUFF) const type_max = P99_BUILTIN_MAX(SUFF); register P99_BUILTIN_TYPE(u, SUFF) const type_max1 = (P99_BUILTIN_TYPE(u, SUFF))(type_max + 1); register P99_BUILTIN_TYPE(u, SUFF) const utype_max = (P99_BUILTIN_TYPE(u, SUFF))((2 * type_max) + 1); return p00_a >= type_null ? p00_a : (((P99_BUILTIN_MIN(SUFF) == -P99_BUILTIN_MAX(SUFF)) && (p00_a == P99_BUILTIN_MIN(SUFF))) ? type_max1 : (P99_BUILTIN_TYPE(u, SUFF))((utype_max - (P99_BUILTIN_TYPE(u, SUFF))-p00_a) + 1)); }
 #define P00_DEFARGS(NAME,N,...) P00__DEFARGS(NAME, N, P99_IF_LT(P99_NARG(__VA_ARGS__),N) (__VA_ARGS__, P99_DUPL(P99_MINUS(N,P99_NARG(__VA_ARGS__)),)) (__VA_ARGS__))
 #define P00__DEFARGS(NAME,N,...) P99_FOR(NAME, N, P00_SEQ, P00_DARG, __VA_ARGS__)
 #define P00_default_arguments 
 #define P00_DEFINE_DEFARG(NAME,N,...) P99_FOR(NAME, N, P00_SEP, P00_DAFE, __VA_ARGS__)
 #define P00_DEFINE_DELETE(T,...) P99_INSTANTIATE(void, P99_PASTE2(T, _delete), T const*)
-#define P00_DEFINE_IN_RANGE(T) p99_inline bool P99_PASTE2(p00_in_range_, T)(T p00_r, T p00_s, T p00_len) { return (p00_r >= p00_s) && ((p00_r - p00_s) < p00_len); }
+#define P00_DEFINE_IN_RANGE(T) P99_CONST_FUNCTION p99_inline bool P99_PASTE2(p00_in_range_, T)(T p00_r, T p00_s, T p00_len) { return (p00_r >= p00_s) && ((p00_r - p00_s) < p00_len); }
 #define P00_DEFINE_STR2(CODE) p99_inline P99_BUILTIN_TYPE(CODE) P99_PASTE2(str2, CODE)(char const* p00_nptr, size_t* p00_pos) { char *p00_eptr; P99_BUILTIN_TYPE(CODE) p00_ret = (strto ## CODE)(p00_nptr, (p00_pos ? &p00_eptr : 0)); if (p00_pos) *p00_pos = p00_eptr - p00_nptr; return p00_ret; } P99_MACRO_END(P00_DEFINE_STR2, CODE)
 #define P00_DEFINE_STR3(CODE) p99_inline P99_BUILTIN_TYPE(CODE) P99_PASTE2(str2, CODE)(char const* p00_nptr, size_t* p00_pos, unsigned p00_base) { char *p00_eptr; P99_BUILTIN_TYPE(CODE) p00_ret = (strto ## CODE)(p00_nptr, (p00_pos ? &p00_eptr : 0), p00_base); if (p00_pos) *p00_pos = p00_eptr - p00_nptr; return p00_ret; } P99_MACRO_END(P00_DEFINE_STR3, CODE)
 #define P00_DESIGNATED(VAR,N,...) P99_FOR(VAR, N, P00_SEQ, P00_DESIGNATE, __VA_ARGS__)
@@ -3858,13 +3862,44 @@
 #define p00_gen_sinf sinf
 #define p00_gen_sinldc csinl
 #define p00_gen_sinld sinl
+#define P00_GETOPT_ALLOCATIONS(CHAR) [p99_getopt_enum ## CHAR] = 0
+#define P00_GETOPT_ARRAY_(CHAR) [p99_getopt_enum ## CHAR] = (P00_GETOPT_BOOL(CHAR) ? P00_GETOPT_CHAR(CHAR) : 0)
+#define P00_GETOPT_ARRAY(...) P99_SEQ(P00_GETOPT_ARRAY_, __VA_ARGS__)
+#define P00_GETOPT_BOOL(CHAR) p00_getopt_bool ## CHAR
+#define P00_GETOPT_CHAR(CHAR) p00_getopt_char ## CHAR
+#define P00_GETOPT_CHARS _p00A, _p00B, _p00C, _p00D, _p00E, _p00F, _p00G, _p00H, _p00I, _p00J, _p00K, _p00L, _p00M, _p00N, _p00O, _p00P, _p00Q, _p00R, _p00S, _p00T, _p00U, _p00V, _p00W, _p00X, _p00Y, _p00Z, _p00a, _p00b, _p00c, _p00d, _p00e, _p00f, _p00g, _p00h, _p00i, _p00j, _p00k, _p00l, _p00m, _p00n, _p00o, _p00p, _p00q, _p00r, _p00s, _p00t, _p00u, _p00v, _p00w, _p00x, _p00y, _p00z, _p000, _p001, _p002, _p003, _p004, _p005, _p006, _p007, _p008, _p009, _p00_, _p00AMPERSAND, _p00APOSTROPHE, _p00ASTERISK, _p00AT, _p00BACKSLASH, _p00BAR, _p00BRACELEFT, _p00BRACERIGHT, _p00BRACKETLEFT, _p00BRACKETRIGHT, _p00CARRET, _p00COLON, _p00COMMA, _p00DOLLAR, _p00EQUAL, _p00EXLAM, _p00GRAVE, _p00GREATER, _p00HASH, _p00HELP, _p00LESS, _p00PARENLEFT, _p00PARENRIGHT, _p00PERCENT, _p00PERIOD, _p00PLUS, _p00QUOTEDBL, _p00SEMICOLON, _p00SLASH, _p00TILDE
+#define P00_GETOPT_DECLARE(CHAR,T,TS,DEFS,NAME,DEF,ALIAS,DOC,...) extern T NAME; static bool const P00_GETOPT_BOOL(CHAR) = true; static struct p00_getopt const*const P00_GETOPT_CHAR(CHAR) = &(struct p00_getopt const){ .p00_o = &(NAME), .p00_f = P99_GENERIC(NAME, 0, __VA_ARGS__), .p00_a = (ALIAS), .p00_d = (DOC), .p00_t = TS, .p00_n = #NAME, .p00_v = DEFS, }
+#define P00_GETOPT_DECLARE_(...) P00_GETOPT_DECLARE(__VA_ARGS__)
+#define P00_GETOPT_DEFINE(CHAR,T,NAME,DEF,ALIAS,DOC) T NAME = (DEF)
+#define P00_GETOPT_FLOAT(T) static_inline int P00_GETOPT_PROCESS(T)(void* p00_o, char const* p00_c) { T*p00_O = p00_o; if (p00_c && p00_c[0]) { char* endptr = 0; *p00_O = strtold(p00_c, &endptr); if (endptr) return strlen(p00_c); } return -1; }
+#define P00_GETOPT_HELP_(CHAR) p00_getopt_help_(p00_getopt_bool ## CHAR, p99_getopt_enum ## CHAR, P00_GETOPT_CHAR(CHAR), p00_getopt_help, p00_ns)
+#define P00_GETOPT_HELP_COUNT_(CHAR) p00_getopt_help_count_(p00_getopt_bool ## CHAR, p99_getopt_enum ## CHAR, P00_GETOPT_CHAR(CHAR), p00_getopt_help, p00_ns)
+#define P00_GETOPT_HELP_COUNT(...) P99_SEP(P00_GETOPT_HELP_COUNT_, __VA_ARGS__)
+#define P00_GETOPT_HELP(...) P99_SEP(P00_GETOPT_HELP_, __VA_ARGS__)
+#define P00_GETOPT_INITIALIZE_(CHAR) case p99_getopt_enum ## CHAR: { register struct p00_getopt const*const p00_p = (((p99_getopt_enum ## CHAR != p99_getopt_enum_p00h) && (p99_getopt_enum ## CHAR != p99_getopt_enum_p00HELP)) ? (P00_GETOPT_BOOL(CHAR) ? P00_GETOPT_CHAR(CHAR) : 0) : (P00_GETOPT_BOOL(CHAR) ? P00_GETOPT_CHAR(CHAR) : p00_getopt_help)); if (p00_p) { void* p00_o = p00_p->p00_o; p00_used = p00_p->p00_f(p00_o, p00_str); if (p00_used >= 0) break; } p00_err0 = "unparsable argument"; goto P00_REARANGE; }
+#define P00_GETOPT_INITIALIZE(...) P99_SER(P00_GETOPT_INITIALIZE_, __VA_ARGS__)
+#define P00_GETOPT_PROCESS_CHOOSE(...) P99_SEQ(P00_GETOPT_PROCESS_CHOOSE_, __VA_ARGS__)
+#define P00_GETOPT_PROCESS_CHOOSE_(T) (T, P00_GETOPT_PROCESS(T))
+#define P00_GETOPT_PROCESS(T) P99_PASTE2(p00_getopt_process_, T)
+#define P00_GETOPT_SIGNED(T) static_inline int P00_GETOPT_PROCESS(T)(void* p00_o, char const* p00_c) { T*p00_O = p00_o; if (p00_c && p00_c[0]) { char* endptr = 0; *p00_O = strtoll(p00_c, &endptr, 0); if (endptr) return strlen(p00_c); } return -1; }
+#define P00_GETOPT_STRUCT_DECL(CHAR) static bool const P00_GETOPT_BOOL(CHAR); static struct p00_getopt const*const P00_GETOPT_CHAR(CHAR)
+#define P00_GETOPT_UNSIGNED(T) static_inline int P00_GETOPT_PROCESS(T)(void* p00_o, char const* p00_c) { T*p00_O = p00_o; if (p00_c && p00_c[0]) { char* endptr = 0; *p00_O = strtoull(p00_c, &endptr, 0); if (endptr) return strlen(p00_c); } return -1; }
 #define p00_getsockopt(FD,LEV,OPTNAME,OPTVAL) getsockopt(FD, LEV, OPTNAME, OPTVAL, (socklen_t[1]){ sizeof *(OPTVAL) })
 #define P00_HARMLESS_DECLARATION P00_UNUSED(p00_harmless_declaration)
 #define P00_HARMLESS_SIZEOF(ID) sizeof(sizeof(ID))
 #define p00_has_attribute_aligned 1
 #define p00_has_attribute_always_inline 1
+#define p00_has_attribute_constructor 1
 #define p00_has_attribute_deprecated 1
+#define p00_has_attribute_destructor 1
+#define p00_has_attribute_error 1
+#define p00_has_attribute_externally_visible 1
 #define p00_has_attribute_noreturn 1
+#define p00_has_attribute___noreturn__ 1
+#define p00_has_attribute_pure 1
+#define p00_has_attribute_unused 1
+#define p00_has_attribute_vector_size 1
+#define p00_has_attribute_warn_unused_result 1
 #define p00_has_attribute_weak 1
 #define p00_has_attribute_weakref 1
 #define p00_has_builtin___builtin_expect 1
@@ -3877,15 +3912,19 @@
 #define p00_has_builtin___sync_lock_test_and_set 1
 #define p00_has_builtin___sync_synchronize 1
 #define p00_has_builtin___sync_val_compare_and_swap 1
+#define p00_has_extension_attribute_const 1
 #define p00_has_extension_c_max_align_t 1
+#define p00_has_extension_quick_exit 1
 #define p00_has_feature_c_inline 1
 #define p00_has_feature_c_max_align_t 1
 #define p00_has_feature_c_static_assert 1
 #define p00_has_feature_gnu_alignof 1
 #define p00_has_feature_gnu_thread_local 1
+#define p00_has_feature_quick_exit 1
 #define p00_has_feature_statement_expression 1
 #define p00_has_feature_stdalign_h 1
 #define p00_has_feature_stdnoreturn_h 1
+#define P00_HAVE_INIT_FUNCTION(NR) P99_IF_EMPTY(NR)(P99_PASTE2(p00_have_init_function_, P00_INIT_NR))(P99_PASTE2(p00_have_init_function_, NR))
 #define P00_HEX_DOUBLE(SIGN,HEXINT,HEXFRAC,ESIGN,BINEXP,...) P99_IF_EMPTY(SIGN)(+)(SIGN)P00_SKIP_ P99_PASTE( 0x, P99_IF_EMPTY(HEXINT)(0)(HEXINT), ., P99_IF_EMPTY(HEXFRAC)(0)(HEXFRAC), P, P99_IF_EMPTY(ESIGN)(+)(ESIGN), P99_IF_EMPTY(BINEXP)(0)(BINEXP), __VA_ARGS__)
 #define P00_HTON0(N,X,I) [I] = (0xFF & ((X)>>((N - (I + 1))*CHAR_BIT)))
 #define P00_HTON(N,X) P99_FOR(N, N, P00_SEQ, P00_HTON0, P99_DUPL(N, X))
@@ -3900,14 +3939,23 @@
 #define P00_IGN(NAME,X,I) 
 #define P00_IGNORE(...) 
 #define P00_I_LIST c, hh, , h, t, j, i8, i16, i32, i64
-#define P00_ILOG2_INNER(_0,XI,_2) { P99_CONSTANT(int, p00_r, (1 << (XI))); if (p00_i >= (UINTMAX_C(1) << p00_r)) { p00_n += p00_r; p00_i >>= p00_r; } }
 #define P00_INHIBIT(NAME,EXT) P99_PASTE3(p00_inhibit_, NAME, EXT)
+#define P00_INIT_1 1
+#define P00_INIT_1 2
+#define P00_INIT_2 
+#define P00_INIT_3 
+#define P00_INIT_FUNCTION_(NAME,NR) void NAME(void); static bool const P00_HAVE_INIT_FUNCTION(NR) = true; static p99_callback_el const P00_INIT_FUNCTION(NR) = { .p00_void = { .p00_void_func = NAME, }, }
+#define P00_INIT_FUNCTION(NR) P99_IF_EMPTY(NR)(P99_PASTE2(p00_init_function_, P00_INIT_NR))(P99_PASTE2(p00_init_function_, NR))
+#define P00_INIT_FUNC_VAR_S(_0,_1,I) static bool const P00_HAVE_INIT_FUNCTION(I); static p99_callback_el const P00_INIT_FUNCTION(I)
 #define P00_INITIALIZE(X,L) p00_initialize(sizeof(*X), P00_APLAIN(memcpy((X), (L), sizeof(*L)), sizeof(*X)), sizeof(*L))
+#define P00_INIT_NR P99_PASTE3(P00_INIT_3, P00_INIT_2, P00_INIT_1)
+#define P00_INIT_TRIGGER_FUNCTION_1(_0,_1,I) do { if (P00_HAVE_INIT_FUNCTION(I)) p99_callback_el_call(P00_INIT_FUNCTION(I)); } while (false)
+#define P00_INIT_VARIABLE(NAME,FUNC,NR) static p99_callback_el const P00_INIT_FUNCTION(NR) = { .p00_voidptr_func = (FUNC), .p00_void = { .p00_arg = &(NAME), }, }
 #define P00_IN_RANGE_LIST() P00_IN_RANGE_LIST_(P99_EXT_REAL_TYPES)
 #define P00_IN_RANGE_LIST_(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_IN_RANGE_PART, __VA_ARGS__)
 #define P00_IN_RANGE_PART(NAME,T,I) (T, P99_PASTE2(p00_in_range_, T)), (T const, P99_PASTE2(p00_in_range_, T)), (T volatile, P99_PASTE2(p00_in_range_, T)), (T const volatile, P99_PASTE2(p00_in_range_, T))
 #define P00_IN_RANGE(R,S,L,...) P99_GENERIC((1 ? (R) : (S)), p00_in_range_voidp, __VA_ARGS__)((R), (S), (L))
-#define p00_instantiate extern __inline__
+#define p00_instantiate __attribute__((__externally_visible__)) extern __inline__
 #define P00_INSTANTIATE(RT,NAME,...) p00_instantiate RT (NAME)(P99_IF_EMPTY(__VA_ARGS__)(void)(__VA_ARGS__))
 #define P00_INTEGER1(SEQ) P99_IF_ELSE(P99_IS_INTEGER_TOK(SEQ))(P00_INTEGER2(P00_EAT_FIRST(SEQ)))(1)
 #define P00_INTEGER2(SEQ) P99_IF_ELSE(P99_IS_INTEGER_TOK(SEQ))(P00_INTEGER3(P00_EAT_FIRST(SEQ)))(2)
@@ -4888,6 +4936,7 @@
 #define P00_library_support 
 #define P00_library_wrappers 
 #define P00_LIB_WRAP_DOC(NAME) 
+#define P00_LIFO_REVERT(L) p99_extension ({ register P99_MACRO_VAR(p00_h, (L)); register P99_MACRO_VAR(p00_t, P99_PROMOTE_0(p00_h)); while (p00_h) { register P99_MACRO_VAR(p00_n, p00_h->p99_lifo); p00_h->p99_lifo = p00_t; p00_h = p00_n; } register const __typeof__(p00_t = p00_t) p00_r = p00_t; p00_r; })
 #define P00_list_processing 
 #define P00_LITERAL(NAME) .NAME = NAME
 #define P00_LOGIC_AND_00 0
@@ -6185,8 +6234,8 @@
 #define P00_QCOMP(A,B) p00_comp(&p00_B[A], &p00_B[B], p00_ctx)
 #define P00_QEMPTY(S,P) ((S) == (P))
 #define P00_QPUSH(P,B,T) do { register p00_qsort *const p00Mp = ++(P); p00Mp->bot = (B); p00Mp->top = (T); } while (false)
-#define P00_QSORT_BODY(SWAP) if (p00_n > RSIZE_MAX || p00_s > RSIZE_MAX) return ERANGE; if (p00_n && (!p00_base || !p00_comp)) return EINVAL; do { register p99_seed *const seed = p99_seed_get(); P99_CONSTANT(int, p00_tail, 20); p00_qsort p00_a[(p99_ilog2(p00_n) + 1)*p00_tail]; p00_qsort* p00_p = p00_a; P00_QPUSH(p00_p, 0, p00_n); while(!P00_QEMPTY(p00_a, p00_p)) { P00_QTOP(p00_p, p00_bot, p00_top); register size_t const p00_len = p00_top - p00_bot; switch (p00_len) { case 2: if (P00_QCOMP(p00_bot, p00_bot + 1) > 0) SWAP(p00_B, p00_bot, p00_bot + 1); case 1: ; case 0: --p00_p; break; default: { size_t p00_c = p99_rand(seed) % p00_len; if (p00_c) SWAP(p00_B, p00_bot, p00_bot + p00_c); } register size_t p00_b = p00_bot + 1; register size_t p00_t = p00_top; while (P99_LIKELY(p00_b < p00_t)) { while (!(P00_QCOMP(p00_bot, p00_b) < 0)) { ++p00_b; if (P99_UNLIKELY(p00_b == p00_t)) goto P00_RECURSE; } while (P00_QCOMP(p00_bot, p00_t - 1) < 0){ --p00_t; if (P99_UNLIKELY(p00_b == p00_t)) goto P00_RECURSE; } --p00_t; SWAP(p00_B, p00_b, p00_t); ++p00_b; } P00_RECURSE: if ((p00_b - p00_bot) > 1) { --p00_b; SWAP(p00_B, p00_bot, p00_b); register size_t const p00_bb = p00_b; for (register size_t p00_c = p00_bot; p00_c < p00_b;) { if (P00_QCOMP(p00_bb, p00_c) <= 0) { --p00_b; if (p00_c == p00_b) break; SWAP(p00_B, p00_c, p00_b); } else ++p00_c; } } if (P99_UNLIKELY(p00_len >= p00_tail)) { size_t p00Mmax = p00_len*0.99; if (P99_UNLIKELY(((p00_b - p00_bot) >= p00Mmax) || ((p00_top - p00_t) >= p00Mmax))) continue; } --p00_p; if ((p00_b - p00_bot) > 1) P00_QPUSH(p00_p, p00_bot, p00_b); if ((p00_top - p00_t) > 1) P00_QPUSH(p00_p, p00_t, p00_top); } } return 0; } while(false)
-#define P00_QSORT_DECLARE(T) p99_inline errno_t P99_PASTE2(p00_qsort_, T)(void *p00_base, rsize_t p00_n, rsize_t p00_a, rsize_t p00_s, int (*p00_comp)(const void *, const void *, void *), void *p00_ctx) { register T *const p00_B = p00_base; _Alignas(sizeof(max_align_t)) T p00_tmp; P00_QSORT_BODY(P00_QSWAP_ASSIGN); } P99_MACRO_END(p00_qsort_, T)
+#define P00_QSORT_BODY(SWAP) if (p00_n > RSIZE_MAX || p00_s > RSIZE_MAX) return ERANGE; if (p00_n && (!p00_base || !p00_comp)) return EINVAL; do { register p99_seed *const seed = p99_seed_get(); P99_CONSTANT(int, p00_tail, 20); p00_qsort p00_a[(p99_arith_log2(p00_n) + 1)*p00_tail]; p00_qsort* p00_p = p00_a; P00_QPUSH(p00_p, 0, p00_n); while(!P00_QEMPTY(p00_a, p00_p)) { P00_QTOP(p00_p, p00_bot, p00_top); register size_t const p00_len = p00_top - p00_bot; switch (p00_len) { case 2: if (P00_QCOMP(p00_bot, p00_bot + 1) > 0) SWAP(p00_B, p00_bot, p00_bot + 1); case 1: ; case 0: --p00_p; break; default: { size_t p00_c = p99_rand(seed) % p00_len; if (p00_c) SWAP(p00_B, p00_bot, p00_bot + p00_c); } register size_t p00_b = p00_bot + 1; register size_t p00_t = p00_top; while (P99_LIKELY(p00_b < p00_t)) { while (!(P00_QCOMP(p00_bot, p00_b) < 0)) { ++p00_b; if (P99_UNLIKELY(p00_b == p00_t)) goto P00_RECURSE; } while (P00_QCOMP(p00_bot, p00_t - 1) < 0){ --p00_t; if (P99_UNLIKELY(p00_b == p00_t)) goto P00_RECURSE; } --p00_t; SWAP(p00_B, p00_b, p00_t); ++p00_b; } P00_RECURSE: if ((p00_b - p00_bot) > 1) { --p00_b; SWAP(p00_B, p00_bot, p00_b); register size_t const p00_bb = p00_b; for (register size_t p00_c = p00_bot; p00_c < p00_b;) { if (P00_QCOMP(p00_bb, p00_c) <= 0) { --p00_b; if (p00_c == p00_b) break; SWAP(p00_B, p00_c, p00_b); } else ++p00_c; } } if (P99_UNLIKELY(p00_len >= p00_tail)) { size_t p00Mmax = p00_len*0.99; if (P99_UNLIKELY(((p00_b - p00_bot) >= p00Mmax) || ((p00_top - p00_t) >= p00Mmax))) continue; } --p00_p; if ((p00_b - p00_bot) > 1) P00_QPUSH(p00_p, p00_bot, p00_b); if ((p00_top - p00_t) > 1) P00_QPUSH(p00_p, p00_t, p00_top); } } return 0; } while(false)
+#define P00_QSORT_DECLARE(T) p99_inline errno_t P99_PASTE2(p00_qsort_, T)(void *p00_base, rsize_t p00_n, rsize_t p00_a, rsize_t p00_s, int (*p00_comp)(const void *, const void *, void *), void *p00_ctx) { P99_UNUSED(p00_a); register T *const p00_B = p00_base; _Alignas(sizeof(max_align_t)) T p00_tmp; P00_QSORT_BODY(P00_QSWAP_ASSIGN); } P99_MACRO_END(p00_qsort_, T)
 #define P00_QSWAP_ASSIGN(P,A,B) do { p00_tmp = (P)[A]; (P)[A] = (P)[B]; (P)[B] = p00_tmp; } while (false)
 #define P00_QSWAP_MEMCPY(P,A,B) do { void * p00Ma = (P)+(A); void * p00Mb = (P)+(B); { memcpy(&p00_tmp, p00Ma, p00_s); memcpy(p00Ma, p00Mb, p00_s); memcpy(p00Mb, &p00_tmp, p00_s); } } while (false)
 #define P00_QSWAP_VCPY_(A,B) for (size_t p00Mi = 0; p00Mi < p00_vsize; ++p00Mi) (A)[p00Mi] = (B)[p00Mi]
@@ -6865,7 +6914,7 @@
 #define P00_SER(NAME,I,REC,X) REC X
 #define p00_setsockopt(FD,LEV,OPTNAME,OPTVAL) (setsockopt)(FD, LEV, OPTNAME, OPTVAL, sizeof *(OPTVAL))
 #define P00_SIZE_CHOICE(YES,UI,I) (char(*)[(size_t)(UI)], YES)
-#define P00_SIZEOF2(T,...) sizeof(P99_TOKJOIN(., ((const T){0}), __VA_ARGS__))
+#define P00_SIZEOF2(T,...) sizeof(P99_TOKJOIN(., P99_LVAL(const T), __VA_ARGS__))
 #define P00_SIZEOF(NAME,X,I) sizeof(X)
 #define P00_SIZEOFS(N,...) P99_FOR(,N, P00_SUM, P00_SIZEOF, __VA_ARGS__)
 #define P00_SKIP_ 
@@ -7030,7 +7079,7 @@
 #define P00_SKP99(_0,...) P00_SKP98(__VA_ARGS__)
 #define P00_SNPRINTF(...) snprintf(__VA_ARGS__)
 #define P00_SPACE " \f\n\r\t\v"
-#define P00_SPAN_DECLARE(NAME,SET) P99_WEAK(P99_PASTE2(p99_span_, NAME)) rsize_t P99_PASTE2(p99_span_, NAME)(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l]) { return p99_span(p00_s1l, p00_s1, sizeof(SET), (uint8_t const[]){ SET }); } P99_WEAK(P99_PASTE2(p99_strtok_, NAME)) char* P99_PASTE2(p99_strtok_, NAME)(rsize_t * restrict p00_s1max, char p00_s1[restrict (*p00_s1max)], char ** restrict p00_ptr) { return strtok_s(p00_s1, p00_s1max, SET, p00_ptr); } P99_MACRO_END(P00_SPAN_DECLARE, NAME)
+#define P00_SPAN_DECLARE(NAME,SET) P99_PURE_FUNCTION p99_inline rsize_t P99_PASTE2(p99_span_, NAME)(rsize_t p00_s1l, uint8_t p00_s1[const restrict p00_s1l]) { return p99_span(p00_s1l, p00_s1, sizeof(SET)-1, (uint8_t const*)(char const[]){ SET }); } p99_inline char* P99_PASTE2(p99_strtok_, NAME)(rsize_t * restrict p00_s1max, char p00_s1[restrict (*p00_s1max)], char ** restrict p00_ptr) { return strtok_s(p00_s1, p00_s1max, SET, p00_ptr); } P99_MACRO_END(P00_SPAN_DECLARE, NAME)
 #define P00_SPRINT_DEFINE(T,...) p99_inline char const* P99_PASTE2(p00_sprint_, T)(T p00_val, char*restrict p00_str, unsigned p00_form) { enum { p00_len = P99_NARG(__VA_ARGS__), }; static char const*const p00_format[p00_len] = { __VA_ARGS__ }; char const*const p00_f = (p00_form < p00_len) ? p00_format[p00_form] : p00_format[0]; sprintf(p00_str, p00_f, p00_val); return p00_str; } P99_MACRO_END(P00_SPRINT_DEFINE, T)
 #define P00_SPRINT_FORMAT(...) P00_SPRINT_FORMAT_(__VA_ARGS__)
 #define P00_SPRINT_FORMAT_(X,A,...) P99_GENERIC((X), p00_sprint_voidp, (char*, p00_sprint_charp), (char const*, p00_sprint_charp), (char*const, p00_sprint_charp), (char const*const, p00_sprint_charp), (char*volatile, p00_sprint_charp), (char const*volatile, p00_sprint_charp), (char*const volatile, p00_sprint_charp), (char const*const volatile, p00_sprint_charp), (char*restrict, p00_sprint_charp), (char const*restrict, p00_sprint_charp), (char*const restrict, p00_sprint_charp), (char const*const restrict, p00_sprint_charp), (char*volatile restrict, p00_sprint_charp), (char const*volatile restrict, p00_sprint_charp), (char*const volatile restrict, p00_sprint_charp), (char const*const volatile restrict, p00_sprint_charp), __VA_ARGS__)((X), (char[(sizeof(X+0)*22+64)/8]){ 0 }, (A))
@@ -7039,6 +7088,7 @@
 #define P00_SPRINT_LIST_(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_SPRINT, __VA_ARGS__)
 #define P00_SPRINT(NAME,T,I) (T, P99_PASTE2(p00_sprint_, T)), (T const, P99_PASTE2(p00_sprint_, T)), (T volatile, P99_PASTE2(p00_sprint_, T)), (T const volatile, P99_PASTE2(p00_sprint_, T))
 #define P00_STARTS(TOK,SEQ) P99_IS_EQ(2, P99_NARG(P99_PASTE4(P00_TOK_, TOK, _STARTS_, SEQ)))
+#define P00_startup_hooks 
 #define P00_statement_lists 
 #define P00_ST_MIN1(T) (-(T)P99_UT_MAX1(T))
 #define P00_STR2_0(X) P00_DEFINE_STR2(X)
@@ -7076,8 +7126,6 @@
 #define P00_SVALUE(X) ((X)+0)
 #define P00_SWAP1(_0,_1) p00_swap1( P99_SIGN_PROMOTE(&(_0), ((_0) = (_1), (void*)0)), P99_SIGN_PROMOTE(&(_1), ((_1) = (_0), (void*)0)), sizeof(_0), (char[sizeof(_0)]){ [(intmax_t)sizeof(_1) - sizeof(_0)] = 0, })
 #define P00_SWAP2(_0,_1) p00_swap2( P99_SIGN_PROMOTE(&(_0), ((_0) = (_1), (void*)0)), P99_SIGN_PROMOTE(&(_1), ((_1) = (_0), (void*)0)), sizeof(_0), (char[sizeof(_0)]){ [(intmax_t)sizeof(_0) - sizeof(_1)] = 0, }, (char[sizeof(_0)]){ [(intmax_t)sizeof(_1) - sizeof(_0)] = 0, })
-#define p00_sync_lock_release(X) __sync_lock_release((X))
-#define p00_sync_lock_test_and_set(X) __sync_lock_test_and_set((X), 1)
 #define P00_THRD_LOCAL P99_THREAD_LOCAL(p00_thrd_local)
 #define P00_threads 
 #define P00_THROW_CALL_NEGATE(F,E,...) p00_throw_call_negate(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", neg return")
@@ -8275,13 +8323,14 @@
 #define P00_TYPE_VALIDATE(CODE) P99_IS_EQ_2(P99_NARG(P99_PASTE2(P00_TYPE_VALIDATE__, CODE)))
 #define P00_TYPE_void ,
 #define P00_TYPE_volatile ,
+#define P00_UINTMAX_HIGHBIT(X) ((((uintmax_t)+(X)) & (UINTMAX_MAX ^ INTMAX_MAX)) >> (P99_UINTMAX_WIDTH - 1U))
 #define P00_UINT_TYPE_LIST (8, uintptr_t) P00_TYPE_LIST_ELEM1 P00_TYPE_LIST_ELEM2 P00_TYPE_LIST_ELEM4 P00_TYPE_LIST_ELEM16
 #define P00_U_LIST uhh, u, uh, uz, uj, u8, u16, u32, u64
 #define P00_UNCASE switch((p00_uncase_enum)0) P99_XCASE 0
 #define P00_UNIQUE_BIT__(BIT,BITS,WIDTH,MULT) (((P99_PASTE3(UINT, WIDTH, _C)(1) << BIT) * MULT) >> (WIDTH - BITS))
 #define P00_UNIQUE_BIT_(BIT,BITS,WIDTH) P00_UNIQUE_BIT__(BIT, BITS, WIDTH, P00_UNIQUE_BIT_MULT(BITS, WIDTH))
-#define P00_UNIQUE_BIT(BITS,WIDTH) p99_inline unsigned P99_PASTE2(p99_unique_bit_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) p00_x) { return P99_PASTE2(p00_unique_bit_hash_, BITS) ((p00_x * P00_UNIQUE_BIT_MULT(BITS, WIDTH)) >> (WIDTH - BITS)); } p99_inline unsigned P99_PASTE2(p99_unique_bit_checked_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) p00_x) { unsigned p00_ret = P99_PASTE2(p99_unique_bit_, WIDTH)(p00_x); return ((P99_PASTE3(UINT, WIDTH, _C)(1) << p00_ret) == p00_x) ? p00_ret : -1; } P99_MACRO_END(_unique_bit)
-#define P00_UNIQUE_BIT_FUNCTION(TYPE,NAME,DEFAULT,BITS,WIDTH) p99_inline TYPE P99_PASTE2(NAME, BITS)(size_t p00_x) { switch (p00_x) { P99_FOR(WIDTH, WIDTH, P00_SEP, P00_UNIQUE_BIT_RETURN, P99_DUPL(WIDTH, BITS)); default: return DEFAULT; } } P99_MACRO_END(_unique_bit)
+#define P00_UNIQUE_BIT(BITS,WIDTH) P99_CONST_FUNCTION p99_inline unsigned P99_PASTE2(p99_unique_bit_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) p00_x) { return P99_PASTE2(p00_unique_bit_hash_, BITS) ((p00_x * P00_UNIQUE_BIT_MULT(BITS, WIDTH)) >> (WIDTH - BITS)); } P99_CONST_FUNCTION p99_inline unsigned P99_PASTE2(p99_unique_bit_checked_, WIDTH)(P99_PASTE3(uint, WIDTH, _t) p00_x) { unsigned p00_ret = P99_PASTE2(p99_unique_bit_, WIDTH)(p00_x); return ((P99_PASTE3(UINT, WIDTH, _C)(1) << p00_ret) == p00_x) ? p00_ret : -1; } P99_MACRO_END(_unique_bit)
+#define P00_UNIQUE_BIT_FUNCTION(TYPE,NAME,DEFAULT,BITS,WIDTH) P99_CONST_FUNCTION p99_inline TYPE P99_PASTE2(NAME, BITS)(size_t p00_x) { switch (p00_x) { P99_FOR(WIDTH, WIDTH, P00_SEP, P00_UNIQUE_BIT_RETURN, P99_DUPL(WIDTH, BITS)); default: return DEFAULT; } } P99_MACRO_END(_unique_bit)
 #define P00_UNIQUE_BIT_MULT_3 0x7C
 #define P00_UNIQUE_BIT_MULT_4 0x13F1
 #define P00_UNIQUE_BIT_MULT_5 0x077CB531
@@ -8290,7 +8339,7 @@
 #define P00_UNIQUE_BIT_MULT_(WIDTH,MULT) P99_PASTE3(UINT, WIDTH, _C)(MULT)
 #define P00_UNIQUE_BIT_RETURN(NAME,X,I) case P00_UNIQUE_BIT_(I, X, NAME): return I
 #define P00_UNSIGNED_MAX ~0u
-#define P00_UNUSED(EXPR) extern char const p00_harmless_declaration [P00_HARMLESS_SIZEOF(EXPR)]
+#define P00_UNUSED(EXPR) extern char const p00_harmless_declaration [P00_HARMLESS_SIZEOF(EXPR)] __attribute__((__unused__))
 #define P00_UNWIND_DOCUMENT 
 #define P00_UPPER "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define P00_VAARG_0(NAME,T) NAME
@@ -8299,8 +8348,8 @@
 #define P00_validity 
 #define P00_variadic 
 #define P00_VASSIGN(NAME,X,I) X = P00_ACCESSOR(NAME, X, I)
-#define P00_VERSION_DATE "Thu, 06 Dec 2012 21:22:58 +0100"
-#define P00_VERSION_ID ""
+#define P00_VERSION_DATE "Wed, 16 Jan 2013 17:32:23 +0100"
+#define P00_VERSION_ID "8ddba875e3a104431fc7e9ad7944501c249d6288"
 #define P00_VERSION_NO(A,B,C) (((A)*10000UL)+(B)*100UL+(C))
 #define P00_VLA 
 #define P00_VMALLOC(X) P00_ABLESS(P99_MALLOC(X), X)
@@ -8394,7 +8443,7 @@
 #define P99_0U(T) P99_TO_UNSIGNED(T, P99_0)
 #define P99_1(T) P99_C(T, 1)
 #define P99_1U(T) P99_TO_UNSIGNED(T, P99_1)
-#define P99_2COMPLEMENT(T) ((T)(P99_SIGNED_REPRESENTATION(T) == p99_signed_representation_twos))
+#define P99_2COMPLEMENT(T) (P99_SIGNED_REPRESENTATION(T) == p99_signed_representation_twos)
 #define P99_2(T) P99_C(T, 2)
 #define P99_2U(T) P99_TO_UNSIGNED(T, P99_2)
 #define P99_3(T) P99_C(T, 3)
@@ -8402,7 +8451,7 @@
 #define P99_AALLOC(T,VB,N) P00_AALLOC(P99_ATYPE(T, , VB, N))
 #define P99_AARG(...) P99_IF_GT(P99_NARG(__VA_ARGS__),3)(P00_AARG(__VA_ARGS__))(P99_PASTE2(P00_AARG_, P99_NARG(__VA_ARGS__))(__VA_ARGS__))
 #define P99_AASSIGN(TARGET,SOURCE,N) P99_BLOCK(P99_VASSIGNS(SOURCE, P99_ACCESSORS(TARGET, N));)
-#define P99_ABS(EXPR) (P99_SIGNED(EXPR) ? p00_abs_signed(EXPR) : (EXPR))
+#define P99_ABS(EXPR) (P99_SIGNED(EXPR) ? p00_abs_signed(EXPR) : P99_C(uintmax_t, EXPR))
 #define P99_ACALL(...) P99_PASTE2(P00_ACALL, P99_NARG(__VA_ARGS__))(__VA_ARGS__)
 #define P99_ACCESSORS(X,N) P00_ACCESSORS(X, N)
 #define P99_ACCOUNT(COUNT) P00_BLK_DECL(p99_count*, p00Mcount, &(COUNT)) P99_PROTECTED_BLOCK(p99_count_inc(p00Mcount), p99_count_dec(p00Mcount))
@@ -8424,16 +8473,20 @@
 #define P99_AREF(T,ARR,...) T P99_ARRAY(*const ARR, __VA_ARGS__)
 #define P99_ARE_ORDERED(OP,...) P00_ARE_ORDERED(OP, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 #define P99_ARGS_H_ 
+#define p99_arith_abs(X) (P99_SIGNED(X) ? p00_arith_abs(X) : P99_RVAL(uintmax_t, (X)))
+#define P99_ARITH_H_ 
 #define P99_ARRAY(ARR,...) (ARR)P99_SUBSCRIPT(__VA_ARGS__)
 #define P99_ASORT(TAB,...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2) (qsort((TAB), P99_ALEN(TAB), sizeof (TAB)[0], __VA_ARGS__)) (qsort_s((TAB), P99_ALEN(TAB), sizeof (TAB)[0], __VA_ARGS__))
 #define P99_ASUB(X,T,N,L) ( (T(*)[L ]) (P99_LVAL(T*, &((*X)[N]))) )
 #define P99_ATLEAST 
-#define P99_ATOMIC_ARM_H 1
-#define P99_ATOMIC_GCC_H 1
+#define P99_AT_LOAD_DECLARE(...) __attribute__((constructor P99_IF_LE(P99_NARG(__VA_ARGS__), 1)()((P99_SKP(1, __VA_ARGS__))))) void P99_CHS(0, __VA_ARGS__)(void)
+#define P99_AT_LOAD_DEFINE P99_AT_LOAD_DECLARE
 #define P99_ATOMIC_H 1
 #define P99_ATOMIC_INHERIT(T) (*P99_GENERIC_LIT ((T){ 0 }, P99_GENERIC_SIZE_LIT (sizeof(T)+1, (struct P99_PASTE3(p99_atomic_, T, _struct)*){ 0 }, (1, union P99_PASTE3(p99_atomic_, T, _union)*) P99_IF_EQ_2(ATOMIC_INT8_LOCK_FREE)(,(2, union P99_PASTE3(p99_atomic_, T, _union)*))() P99_IF_EQ_2(ATOMIC_INT16_LOCK_FREE)(,(3, union P99_PASTE3(p99_atomic_, T, _union)*))() P99_IF_EQ_2(ATOMIC_INT32_LOCK_FREE)(,(5, union P99_PASTE3(p99_atomic_, T, _union)*))() P99_IF_EQ_2(ATOMIC_INT64_LOCK_FREE)(,(9, union P99_PASTE3(p99_atomic_, T, _union)*))() P99_IF_EQ_2(ATOMIC_INT128_LOCK_FREE)(,(17, union P99_PASTE3(p99_atomic_, T, _union)*))() ), P00_ATOMIC_TYPES))
 #define P99_ATOMIC_LOCK_FREE_TYPES P00_ATOMIC_LOCK_FREE_TYPES6_
 #define P99_ATOMIC_X86_H 1
+#define P99_AT_UNLOAD_DECLARE(...) __attribute__((destructor P99_IF_LE(P99_NARG(__VA_ARGS__), 1)()((P99_SKP(1, __VA_ARGS__))))) void P99_CHS(0, __VA_ARGS__)(void)
+#define P99_AT_UNLOAD_DEFINE P99_AT_UNLOAD_DECLARE
 #define P99_ATYPE(T,A,B,N) P99_AREF(T, A, P99_ALENS(*B, N))
 #define P99_AVAL(T) P00_RVAL2_(T)
 #define P99_AVALUE(X,...) P00_AVALUE_((X), P00_OVALUE1_((X), __VA_ARGS__), P00_AVALUES((X), __VA_ARGS__))
@@ -8460,6 +8513,12 @@
 #define P99_C99_H_ 
 #define P99_C99_THROW_H_ 
 #define P99_CA_CALL(NAME,ACHECKS,PCHECKS,...) P00_CA_MANGLE(NAME, ACHECKS, PCHECKS) ( __FILE__ ":" P99_STRINGIFY(__LINE__) ": " P99_STRINGIFY(NAME) "(" #__VA_ARGS__ ")", P99_IF_EMPTY ACHECKS()(P00_CA_SIZEOFS((__VA_ARGS__), P99_NARG ACHECKS, P00_ROBUST ACHECKS),) P99_IF_EMPTY PCHECKS()(P00_CA_PSIZEOFS((__VA_ARGS__), P99_NARG PCHECKS, P00_ROBUST PCHECKS),) __VA_ARGS__ )
+#define p99_callback_el_init_1(FUNC) P99_GENERIC((&*FUNC), , (p99_callback_voidptr_func*, (p99_callback_voidptr_func*)(FUNC)), (p99_callback_void_func*, (p99_callback_voidptr_func*)0) )
+#define p99_callback_el_init_2(FUNC) P99_GENERIC((&*FUNC), , (p99_callback_void_func*, (p99_callback_void_func*)(FUNC)), (p99_callback_voidptr_func*, (p99_callback_void_func*)0) )
+#define p99_callback_el_init_(OBJ,FUNC,ARG) p99_callback_el_init((OBJ), p99_callback_el_init_1(FUNC), p99_callback_el_init_2(FUNC), ARG)
+#define p99_callback_el_init(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 3) (p99_callback_el_init_(__VA_ARGS__, 0)) (p99_callback_el_init_(__VA_ARGS__))
+#define P99_CALLBACK_H 1
+#define P99_CALLBACK_PUSH(STCK,...) p00_callback_push((STCK), P99_NEW(p99_callback_el, __VA_ARGS__))
 #define P99_CALL_DEFARG_LIST(NAME,M,...) P99_IF_EQ(0,M) (__VA_ARGS__) (P99_IF_EMPTY(__VA_ARGS__) (P00_DEFARGS(NAME, M, P99_PASTE2(NAME,_defarg_0)())) (P00_DEFARGS(NAME, M, __VA_ARGS__)) )
 #define P99_CALL_DEFARG(NAME,M,...) NAME(P99_CALL_DEFARG_LIST(NAME, M, __VA_ARGS__))
 #define P99_CALLOC(...) P00_CALLOC(P99_CALL_DEFARG_LIST(P00_CALLOC, 2, __VA_ARGS__))
@@ -8473,39 +8532,41 @@
 #define P99_CA_WRAP_DEFINE(NAME,RET,TYPES,VARS,...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2) (P00_CA_WRAP_DEFINE(NAME, RET, TYPES, VARS, __VA_ARGS__, __VA_ARGS__)) (P00_CA_WRAP_DEFINE(NAME, RET, TYPES, VARS, __VA_ARGS__))
 #define P99_CDIM(NAME,...) P00_CDIM(P99_NARG(__VA_ARGS__), NAME, __VA_ARGS__)
 #define P99_CHECKARGS_H_ 
-#define P99_CHOICE_FUNCTION(TYPE,NAME,DEFAULT,...) p99_inline TYPE NAME(size_t p00_x) { switch (p00_x) { P99_CASE_RETURN(__VA_ARGS__); default: return DEFAULT; } } P99_MACRO_END(_choice_function_, NAME)
+#define P99_CHOICE_FUNCTION(TYPE,NAME,DEFAULT,...) P99_CONST_FUNCTION p99_inline TYPE NAME(size_t p00_x) { switch (p00_x) { P99_CASE_RETURN(__VA_ARGS__); default: return DEFAULT; } } P99_MACRO_END(_choice_function_, NAME)
 #define P99_CHOICE_H_ 
 #define P99_CHOOSE5(xT,cc,cs,ci,cl,cll) ((sizeof(xT) < sizeof(int)) ? ((sizeof(xT) < sizeof(short)) ? cc : cs) : ((sizeof(xT) <= sizeof(long)) ? ((sizeof(xT) == sizeof(int)) ? ci : cl) : cll))
 #define P99_CHS(N,...) P00_CHS(P99_SKP(N, __VA_ARGS__))
 #define P99_CLASSIFICATION_H_ 
 #define P99_CLIB_H 1
-#define P99_COMPILER 128
-#define P99_COMPILER_ARMCC 1
-#define P99_COMPILER_BORLAND 2
-#define P99_COMPILER_CLANG 4
-#define P99_COMPILER_COMEAU 8
-#define P99_COMPILER_CRAY 16
-#define P99_COMPILER_DEC 32
-#define P99_COMPILER_DIAB 64
-#define P99_COMPILER_GNU 128
+#define P99_COMPILER 256U
+#define P99_COMPILER_APPLE 1U
+#define P99_COMPILER_ARMCC 2U
+#define P99_COMPILER_BORLAND 4U
+#define P99_COMPILER_CLANG 8U
+#define P99_COMPILER_COMEAU 16U
+#define P99_COMPILER_CRAY 32U
+#define P99_COMPILER_DEC 64U
+#define P99_COMPILER_DIAB 128U
+#define P99_COMPILER_GNU 256U
 #define P99_COMPILER_H 
-#define P99_COMPILER_HP 256
-#define P99_COMPILER_IBM 512
-#define P99_COMPILER_INTEL 1024
-#define P99_COMPILER_KAI 2048
-#define P99_COMPILER_LCC 4096
-#define P99_COMPILER_METROWERKS 8192
-#define P99_COMPILER_MICROSOFT 16384
-#define P99_COMPILER_OPEN64 32768
-#define P99_COMPILER_PCC 65536
-#define P99_COMPILER_PORTLAND 131072
-#define P99_COMPILER_SGI 262144
-#define P99_COMPILER_SUN 524288
-#define P99_COMPILER_TINYC 1048576
+#define P99_COMPILER_HP 512U
+#define P99_COMPILER_IBM 1024U
+#define P99_COMPILER_INTEL 2048U
+#define P99_COMPILER_KAI 4096U
+#define P99_COMPILER_LCC 8192U
+#define P99_COMPILER_METROWERKS 16384U
+#define P99_COMPILER_MICROSOFT 32768U
+#define P99_COMPILER_OPEN64 65536U
+#define P99_COMPILER_PCC 131072U
+#define P99_COMPILER_PORTLAND 262144U
+#define P99_COMPILER_SGI 524288U
+#define P99_COMPILER_SUN 1048576U
+#define P99_COMPILER_TINYC 2097152U
 #define P99_COMPILER_VERSION "gnu "
 #define P99_COMPILER_VERSION "gnu " P99_STRINGIFY(__GNUC__) "." P99_STRINGIFY(__GNUC_MINOR__) "." P99_STRINGIFY(__GNUC_PATCHLEVEL__)
-#define P99_COMPILER_WATCOM 2097152
+#define P99_COMPILER_WATCOM 4194304U
 #define P99_CONSTANT(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 3) (P00_CONSTANT_2(__VA_ARGS__)) (P00_CONSTANT_3(__VA_ARGS__))
+#define P99_CONST_FUNCTION __attribute__((__const__))
 #define P99_CONST_LEN(SEQ) P99_IF_ELSE(P99_IS_CONST_TOK(SEQ))(P00_CONST1(P00_EAT_FIRST(SEQ)))(0)
 #define P99_CONSTRAINT_CALL(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2) (P00_CONSTRAINT_CALL1(__VA_ARGS__)) (P00_CONSTRAINT_CALL0(__VA_ARGS__))
 #define P99_CONSTRAINT_H 
@@ -8528,8 +8589,8 @@
 #define P99_DECLARE_ATOMIC(...) P99_IF_EQ_1(P99_NARG(__VA_ARGS__)) (P00_DECLARE_ATOMIC2(__VA_ARGS__, P99_PASTE2(atomic_, __VA_ARGS__))) (P00_DECLARE_ATOMIC2(__VA_ARGS__))
 #define P99_DECLARE_DEFARG(NAME,...) P00_DECLARE_DEFARG(NAME, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 #define P99_DECLARE_DELETE(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2) (P00_DECLARE_DELETE(__VA_ARGS__, p99_inline)) (P00_DECLARE_DELETE(__VA_ARGS__)) P99_MACRO_END(P99_DECLARE_DELETE)
-#define P99_DECLARE_ENUM_GETNAME(T,...) p99_inline char const* P99_PASTE2(T, _getname)(T p00_x) { switch ((uintmax_t)p00_x) { P99_SEP(P00_ENUM_CASE, __VA_ARGS__); default: return "((" #T ")unknown value)"; } } P99_MACRO_END(declare_enum_getname, T)
-#define P99_DECLARE_ENUM_PARSE(T,...) p99_inline T P99_PASTE2(T, _parse)(char const p00_s[]) { T p00_ret = P99_PASTE2(T, _amount); if (p00_s) { size_t p00_c = 0; size_t const p00_len = strlen(p00_s); P99_SEP(P00_ENUM_PARSE, __VA_ARGS__); if (p00_c > 1) p00_ret = P99_PASTE2(T, _amount); } return p00_ret; } P99_MACRO_END(declare_enum_parse, T)
+#define P99_DECLARE_ENUM_GETNAME(T,...) P99_CONST_FUNCTION p99_inline char const* P99_PASTE2(T, _getname)(T p00_x) { switch ((uintmax_t)p00_x) { P99_SEP(P00_ENUM_CASE, __VA_ARGS__); default: return "((" #T ")unknown value)"; } } P99_MACRO_END(declare_enum_getname, T)
+#define P99_DECLARE_ENUM_PARSE(T,...) P99_PURE_FUNCTION p99_inline T P99_PASTE2(T, _parse)(char const p00_s[]) { T p00_ret = P99_PASTE2(T, _amount); if (p00_s) { size_t p00_c = 0; size_t const p00_len = strlen(p00_s); P99_SEP(P00_ENUM_PARSE, __VA_ARGS__); if (p00_c > 1) p00_ret = P99_PASTE2(T, _amount); } return p00_ret; } P99_MACRO_END(declare_enum_parse, T)
 #define P99_DECLARE_ENUM(T,...) typedef enum T { __VA_ARGS__ , P99_PASTE2(T, _amount), P99_PASTE2(T, _max) = ((size_t)(P99_PASTE2(T, _amount)) - 1u), P99_PASTE2(T, _min) = 0 } T; P99_DECLARE_ENUM_GETNAME(T, __VA_ARGS__); P99_DECLARE_ENUM_PARSE(T, __VA_ARGS__)
 #define P99_DECLARE_INHIBIT(NAME) enum { P00_INHIBIT(NAME,) = 0 }
 #define P99_DECLARE_INIT_ONCE(T,NAME,ARG) struct NAME { p99_once_flag p00_once; T p00_val; }; P99_DECLARE_STRUCT(NAME); p99_inline void P99_PASTE3(p00_, NAME, _init_func)(T* ARG); p99_inline void P99_PASTE3(p00_, NAME, _init_once)(NAME* ARG) { if (P99_UNLIKELY(!ARG->p00_once.p00_done.p00_done)) do { P99_SPIN_EXCLUDE(&ARG->p00_once.p00_flg) { if (!ARG->p00_once.p00_done.p00_vdone) { P99_PASTE3(p00_, NAME, _init_func)(&ARG->p00_val); ARG->p00_once.p00_done.p00_vdone = true; } } } while (!ARG->p00_once.p00_done.p00_vdone); } p99_inline void P99_PASTE3(p00_, NAME, _init_func)(T* ARG)
@@ -8570,7 +8631,7 @@
 #define P99_E_REPRESENTATION(EXPR) ((p99_signed_representation)(P99_PROMOTE_M1(EXPR) & P99_PROMOTE_3(EXPR)))
 #define P99_ERRNO_H_ 
 #define P99_EVAL(EDEC) P99_PASTE2(P00_dec_eval_, EDEC)
-#define P99_EWIDTH(EXPR) (P99X__SHIFT(EXPR) ? (P99_HIGH2_1((uintmax_t)(P99_UE_MAX(EXPR)>>P99X__SHIFT(EXPR))) + P99X__SHIFT(EXPR)) : P99_HIGH2_1(P99_UE_MAX(EXPR)) )
+#define P99_EWIDTH(EXPR) (P99X__SHIFT(EXPR) ? (P99_HIGH2_1((uintmax_t)+(P99_UE_MAX(EXPR)>>P99X__SHIFT(EXPR))) + P99X__SHIFT(EXPR)) : P99_HIGH2_1(P99_UE_MAX(EXPR)) )
 #define P99_EXPECT(EXP,VAL) __builtin_expect((EXP), (VAL))
 #define P99_EXT_ARITHMETIC_TYPES P99_STD_ARITHMETIC_TYPES
 #define P99_EXT_ARITHMETIC_TYPES P99_STD_ARITHMETIC_TYPES, P99_EXT_INTEGER_TYPES
@@ -8581,6 +8642,14 @@
 #define P99_EXT_REAL_TYPES P99_STD_REAL_TYPES, P99_EXT_INTEGER_TYPES
 #define P99_FCALLOC(T,F,N) calloc(P99_FSIZEOF(T, F, N),1)
 #define P99_FHEAD(T,F,P) ((T*)(((char*)P) - offsetof(T, F)))
+#define P99_FIFO_APPEND(L,EL) do { register const P99_MACRO_VAR(p00_l, (L)); register const P99_MACRO_VAR(p00_el, (EL)); register const P99_MACRO_VAR(p00_h, &(*p00_l)[0]); register const P99_MACRO_VAR(p00_t, &(*p00_l)[1]); p00_el->p99_lifo = 0; P99_MACRO_VAR(p00_head, atomic_load(p00_h)); for (;;) { if (p00_head) { if (atomic_compare_exchange_weak(p00_h, &p00_head, 0)) { atomic_exchange(p00_t, p00_el)->p99_lifo = p00_el; atomic_store(p00_h, p00_head); break; } } else { P99_MACRO_VAR(p00_tail, atomic_load(p00_t)); if (!p00_tail && atomic_compare_exchange_weak(p00_t, &p00_tail, p00_el)) { atomic_store(p00_h, p00_el); break; } p00_head = atomic_load(p00_h); } } } while (false)
+#define P99_FIFO_CLEAR(L) p99_extension ({ register const P99_MACRO_VAR(p00_l, (L)); register const P99_MACRO_VAR(p00_h, &(*p00_l)[0]); register const P99_MACRO_VAR(p00_t, &(*p00_l)[1]); P99_MACRO_VAR(p00_head, atomic_load(p00_h)); for (;;) { if (p00_head) { if (atomic_compare_exchange_weak(p00_h, &p00_head, 0)) { atomic_store(p00_t, 0); break; } } else { register const P99_MACRO_VAR(p00_tail, atomic_load(p00_t)); if (!p00_tail) break; p00_head = atomic_load(p00_h); } } register const __typeof__(p00_head = p00_head) p00_r = p00_head; p00_r; })
+#define P99_FIFO_DECLARE(T) typedef T volatile P99_PASTE2(p00_fifo_base_, T); P99_DECLARE_ATOMIC(P99_PASTE2(p00_fifo_base_, T)); typedef _Atomic(P99_PASTE2(p00_fifo_base_, T)) P99_PASTE2(p00_fifo_, T)[2]
+#define P99_FIFO_H 1
+#define P99_FIFO_INITIALIZER(HEAD,TAIL) { [0] = ATOMIC_VAR_INIT(HEAD), [1] = ATOMIC_VAR_INIT(TAIL), }
+#define P99_FIFO_POP(L) p99_extension ({ register const P99_MACRO_VAR(p00_l, (L)); register const P99_MACRO_VAR(p00_h, &(*p00_l)[0]); register const P99_MACRO_VAR(p00_t, &(*p00_l)[1]); P99_MACRO_VAR(p00_head, atomic_load(p00_h)); for (;;) { if (p00_head) { if (atomic_compare_exchange_weak(p00_h, &p00_head, 0)) { if (p00_head->p99_lifo) atomic_store(p00_h, p00_head->p99_lifo); else atomic_store(p00_t, 0); p00_head->p99_lifo = 0; break; } } else { register P99_MACRO_VAR(p00_tail, atomic_load(p00_t)); if (!p00_tail) break; p00_head = atomic_load(p00_h); } } register const __typeof__(p00_head = p00_head) p00_r = p00_head; p00_r; })
+#define P99_FIFO_TABULATE(TYPE,TAB,L) size_t P99_FILEID(TAB, _cnt) = 0; TYPE * P99_FILEID(TAB, _head) = P99_FIFO_CLEAR(L); for (TYPE * p00_e = P99_FILEID(TAB, _head); p00_e; p00_e = p00_e->p99_lifo) ++P99_FILEID(TAB, _cnt); TYPE * TAB[P99_FILEID(TAB, _cnt)]; for (TYPE ** p00_t = &(TAB[0]), * p00_e = P99_FILEID(TAB, _head); p00_e; p00_e = p00_e->p99_lifo, ++p00_t) *p00_t = p00_e
+#define P99_FIFO(T) P99_PASTE2(p00_fifo_, T)
 #define P99_FILEID(...) P99_PASTE(p00_fileid_, P99_ID(), __VA_ARGS__)
 #define P99_FILENO() P99_PASTE2(0x, P99_ID())
 #define P99_FINALLY P00_FINALLY P00_BLK_AFTER(p00_unw ? P99_RETHROW : P99_NOP)
@@ -8626,8 +8695,12 @@
 #define P99_GEN_MAX(A,B) P99_GEN_EXPR(maximum, ((A) >= (B)) ? (A) : (B), P99_STD_REAL_EXTS ) ((A), (B))
 #define P99_GEN_MIN(A,B) P99_GEN_EXPR(minimum, ((A) <= (B)) ? (A) : (B), P99_STD_REAL_EXTS ) ((A), (B))
 #define P99_GEN_SIN(A) P99_GEN_EXPR(sin, (A), P99_STD_FLOATING_EXTS)(A)
+#define P99_GETOPT_CALLBACK(CALLBACK) static p99_callback_void_func*const p00_getopt_callback = (CALLBACK)
+#define P99_GETOPT_DECLARE(CHAR,T,...) P00_GETOPT_DECLARE_(_p00 ##CHAR, T, #T, #__VA_ARGS__, P99_IF_LT(P99_NARG(__VA_ARGS__), 2) (__VA_ARGS__, 0, 0, 0) (P99_IF_LT(P99_NARG(__VA_ARGS__), 3) (__VA_ARGS__, 0, 0) (P99_IF_LT(P99_NARG(__VA_ARGS__), 4) (__VA_ARGS__, 0) (__VA_ARGS__))), P00_GETOPT_PROCESS_CHOOSE(P99_STD_REAL_TYPES, char_cptr))
+#define P99_GETOPT_DEFINE(CHAR,T,...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2) (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0, 0, 0)) (P99_IF_LT(P99_NARG(__VA_ARGS__), 3) (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0, 0)) (P99_IF_LT(P99_NARG(__VA_ARGS__), 4) (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__, 0)) (P00_GETOPT_DEFINE(CHAR, T, __VA_ARGS__))))
+#define P99_GETOPT_H_ 
+#define P99_GETOPT_SYNOPSIS(LINE) static char const*const p00_getopt_synopsis = { LINE }
 #define P99_GUARDED_BLOCK(T,NAME,INITIAL,BEFORE,AFTER) P00_BLK_START P00_BLK_DECL_REC(T, NAME, P00_ROBUST(INITIAL)) P99_UNWIND_PROTECT if (0) { P99_PROTECT: AFTER; } else P00_BLK_BEFAFT(P00_ROBUST(BEFORE), AFTER) P00_BLK_END
-#define P99_H_ 
 #define P99_HANDLE_ERRNO P00_BLK_START P00_BLK_DECL(int const, p99_errno, errno) switch (P99_UNLIKELY(!!p99_errno)) case true: P00_BLK_AFTER(errno = 0) switch (p99_errno) case 0:
 #define p99_has_attribute(X) (__has_attribute(X) || p00_has_attribute_ ## X)
 #define p99_has_attribute(X) (P99_IF_EQ_1(__has_attribute(X))(1)(0) || P99_IF_EQ_1(p00_has_attribute_ ## X)(1)(0))
@@ -8643,9 +8716,10 @@
 #define P99_HIGH2_1(X) ((X) == P99_UINTMAX_MAX ? P99_UINTMAX_WIDTH : (P99_HIGH2((X) + UINTMAX_C(1))))
 #define P99_HIGH2(X) ((((X) & P00_B0) ? P00_S0 : 0u) | (((X) & P00_B1) ? P00_S1 : 0u) | (((X) & P00_B2) ? P00_S2 : 0u) | (((X) & P00_B3) ? P00_S3 : 0u) | (((X) & P00_B4) ? P00_S4 : 0u) | (((X) & P00_B5) ? P00_S5 : 0u))
 #define P99_HMASK(N,M) (P99_PASTE2(P00_MASK_, N)^P99_PASTE2(P00_MASK_, P99_MINUS(N, M)))
+#define P99_HOOK_H_ 
 #define P99_HTON_INITIALIZER(N,X) { .p00_c = { P00_HTON(N, X) } }
 #define P99_HTONL(X) P99_HTON(4, X)
-#define P99_HTON(N,X) (((P99_PASTE2(p99_endian_, N) const)P99_HTON_INITIALIZER(N, X)).p00_i)
+#define P99_HTON(N,X) (((P99_PASTE2(p00_endian_, N) const)P99_HTON_INITIALIZER(N, X)).p00_i)
 #define P99_HTONS(X) P99_HTON(2, X)
 #define P99_ID_11 1
 #define P99_ID_11 2
@@ -8689,8 +8763,12 @@
 #define P99_INHIBIT(NAME) P00_BLK_START for (unsigned const*const P00_INHIBIT(NAME,) = 0; !P00_INHIBIT(NAME,) && P00; P00 = 0)
 #define P99_INIT { 0 }
 #define P99_INIT_CHAIN(T) p99_call_once(&P99_PASTE3(p99_, T, _once), P99_PASTE3(p99_, T, _once).p00_init)
+#define P99_INIT_FUNCTION_DECLARE(...) P99_IF_EQ(P99_NARG(__VA_ARGS__), 2)(P00_INIT_FUNCTION_(__VA_ARGS__))(P00_INIT_FUNCTION_(__VA_ARGS__,))
+#define P99_INIT_H_ 
 #define P99_INITIALIZE(X,L) P00_ABLESS(P00_INITIALIZE((X), (L)), *(X))
 #define P99_INIT_ONCE(NAME,VARP) P99_PASTE3(p00_, NAME, _init_once)(VARP)
+#define P99_INIT_TRIGGER(NAME,ARGC,ARGV) P99_PASTE2(p00_init_func_, NAME)((ARGC), (ARGV))
+#define P99_INIT_VARIABLE(...) P99_IF_EQ(P99_NARG(__VA_ARGS__), 3)(P00_INIT_VARIABLE(__VA_ARGS__))(P00_INIT_VARIABLE(__VA_ARGS__,))
 #define p99_inline __attribute__((__always_inline__)) __inline__
 #define P99_IN_RANGE(R,S,L) P00_IN_RANGE((R), (S), (L), P00_IN_RANGE_LIST())
 #define P99_INSTANTIATE(...) P99_IF_EQ_2(P99_NARG(__VA_ARGS__)) (P00_INSTANTIATE(__VA_ARGS__, void)) (P00_INSTANTIATE(__VA_ARGS__))
@@ -9276,7 +9354,7 @@
 #define P99_IS_REAL_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P00_REAL_, SEQ))
 #define P99_IS_RESERVED_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P00_RESERVED_, SEQ))
 #define P99_IS_RESTRICT_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P00_RESTRICT_, SEQ))
-#define P99_ISSIGNED(T) (P99_M1(T) < P99_0(T))
+#define P99_ISSIGNED(T) (P99_M1(T) < P99_1(T))
 #define P99_IS_SUP(FIRST,...) P99_FOR(< (FIRST), P99_NARG(__VA_ARGS__), P00_AND, P00_ISIT, __VA_ARGS__)
 #define P99_IS_TYPE_QUAL_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P00_TYPE_QUAL_, SEQ))
 #define P99_IS_TYPE_TOK(SEQ) P99_HAS_COMMA(P99_PASTE2(P00_TYPE_, SEQ))
@@ -9292,9 +9370,13 @@
 #define P99_LENGTH_ARR_ARG(T,...) ((size_t)P99_NARG(__VA_ARGS__)), (T[]){ __VA_ARGS__ }
 #define P99_LENGTH_VA_ARG(...) ((size_t)P99_NARG(__VA_ARGS__)), __VA_ARGS__
 #define P99_LIFO_CLEAR(L) atomic_exchange(L, 0)
-#define P99_LIFO_POP(L) p99_extension ({ P99_MACRO_VAR(p00_l, (L)); __typeof__(P99_LIFO_TOP(p00_l)) p00_el = P99_LIFO_TOP(p00_l); if (P99_LIKELY(p00_el)) { while (P99_UNLIKELY(!atomic_compare_exchange_weak(p00_l, &p00_el, p00_el->p99_lifo))) P99_NOP; p00_el->p99_lifo = 0; } register __typeof__(p00_el = p00_el) p00_r = p00_el; p00_r; })
-#define P99_LIFO_PUSH(L,EL) p99_extension ({ P99_MACRO_VAR(p00_l, (L)); P99_MACRO_VAR(p00_el, (EL)); p00_el->p99_lifo = atomic_exchange(p00_l, p00_el); })
+#define P99_LIFO_DECLARE(T) typedef T P99_PASTE2(p00_lifo_, T); P99_DECLARE_ATOMIC(P99_PASTE2(p00_lifo_, T))
+#define P99_LIFO_H 1
+#define P99_LIFO_INITIALIZER(VAL) ATOMIC_VAR_INIT((void*)VAL)
+#define P99_LIFO_POP(L) p99_extension ({ P99_MACRO_VAR(p00_l, (L)); P99_MACRO_VAR(p00_el, P99_LIFO_TOP(p00_l)); while (p00_el && !atomic_compare_exchange_weak(p00_l, &p00_el, p00_el->p99_lifo)) P99_NOP; if (p00_el) p00_el->p99_lifo = 0; register __typeof__(p00_el = p00_el) p00_r = p00_el; p00_r; })
+#define P99_LIFO_PUSH(L,EL) p99_extension ({ P99_MACRO_VAR(p00_l, (L)); P99_MACRO_VAR(p00_el, (EL)); P99_MACRO_VAR(p00_prev, atomic_load(p00_l)); do { p00_el->p99_lifo = p00_prev; } while (!atomic_compare_exchange_weak(p00_l, &p00_prev, p00_el)); })
 #define P99_LIFO_TABULATE(TYPE,TAB,L) size_t P99_FILEID(TAB, _cnt) = 0; TYPE * P99_FILEID(TAB, _head) = P99_LIFO_CLEAR(L); for (TYPE * p00_e = P99_FILEID(TAB, _head); p00_e; p00_e = p00_e->p99_lifo) ++P99_FILEID(TAB, _cnt); TYPE * TAB[P99_FILEID(TAB, _cnt)]; for (TYPE ** p00_t = &(TAB[0]), * p00_e = P99_FILEID(TAB, _head); p00_e; p00_e = p00_e->p99_lifo, ++p00_t) *p00_t = p00_e
+#define P99_LIFO(T) _Atomic(P99_PASTE2(p00_lifo_, T))
 #define P99_LIFO_TOP(L) atomic_load(L)
 #define P99_LIKELY(...) P99_EXPECT(!!(__VA_ARGS__), 1)
 #define P99_LINEID(...) P99_PASTE(p00_lineid_, __LINE__, P99_ID(), __VA_ARGS__)
@@ -9316,17 +9398,18 @@
 #define P99_LOW2(X) ((X) & -(X))
 #define P99_LVAL(...) P99_IF_LE(P99_NARG(__VA_ARGS__),1)(P00_LVAL1(__VA_ARGS__))(P00_LVAL(__VA_ARGS__))
 #define P99_M1(T) ((T)-1)
-#define P99_M1U(T) (P99_ISSIGNED(T) ? P99_TO_UNSIGNED(T, P99_M1) : P99_M1(T))
+#define P99_M1U(T) (P99_ISSIGNED(T) ? P99_TO_UNSIGNED(T, P99_M1) : P99_C(uintmax_t, P99_M1(T)))
 #define P99_MAC_ARGS(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL0, __VA_ARGS__); P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL1, __VA_ARGS__)
 #define P99_MACRO_END(...) P00_HARMLESS_DECLARATION
 #define P99_MACRO_PVAR(NAME,...) P99_IF_EQ_1(P99_NARG(__VA_ARGS__)) (P00_MACRO_PVAR(NAME, __VA_ARGS__,)) (P00_MACRO_PVAR(NAME, __VA_ARGS__))
 #define P99_MACRO_VAR(NAME,...) P99_IF_EQ_1(P99_NARG(__VA_ARGS__)) (P00_MACRO_VAR(NAME, __VA_ARGS__,)) (P00_MACRO_VAR(NAME, __VA_ARGS__))
+#define P99_MAIN_INTERCEPT(NAME) P99_WEAK(P99_PASTE2(p00_init_func_, NAME)) void P99_PASTE2(p00_init_func_, NAME)(int * p00_argc, char***p00_argv)
 #define P99_MALLOC(X) malloc(sizeof(X))
 #define P99_MAP_H_ 
 #define P99_MARK(X) ({ __asm__ volatile ("# " P99_STRINGIFY(__LINE__: X)); })
 #define P99_MASK2LOW0(X) ((X) ^ -(X))
 #define P99_MASK2LOW1(X) ((X) | -(X))
-#define P99_MAX_NUMBER 159
+#define P99_MAX_NUMBER 158
 #define P99_MAXOF(A,B) ((A) < (B) ? (B) : (A))
 #define P99_MEMSET(TA,SO,N) p00_memset((TA), (void const*)&(SO), sizeof(SO), N)
 #define P99_MEMZERO(T,TA,N) p00_memset((TA), (void const*)&P99_LVAL(const T), sizeof(T), N)
@@ -9350,7 +9433,7 @@
 #define p99_notifier_set(...) P99_CALL_DEFARG(p99_notifier_set, 2, __VA_ARGS__)
 #define P99_NTOH_INITIALIZER(N,X) { .p00_i = (X) }
 #define P99_NTOHL(X) P99_NTOH(4, X)
-#define P99_NTOH(N,X) (P99_PASTE2(p00_uint_byte_, N) const)P00_NTOH(N, X, ((P99_PASTE2(p99_endian_, N) const)P99_NTOH_INITIALIZER(N, X)))
+#define P99_NTOH(N,X) (P99_PASTE2(p00_uint_byte_, N) const)P00_NTOH(N, X, ((P99_PASTE2(p00_endian_, N) const)P99_NTOH_INITIALIZER(N, X)))
 #define P99_NTOHS(X) P99_NTOH(2, X)
 #define P99_OBJLEN(X,...) (P99_OBJSIZE(X, __VA_ARGS__)/(sizeof (X)[0]))
 #define P99_OBJSIZE(X,...) (sizeof P99_OVALUE(X, __VA_ARGS__))
@@ -9523,7 +9606,7 @@
 #define P99_PASTE9(...) P00_PASTE9(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P99_PASTE_H_ 
 #define P99_PASTE(...) P00_PASTE(P00_NARG(__VA_ARGS__), __VA_ARGS__)
-#define P99_PLAIN_TYPE(T) p99_inline T* P99_PASTE2(T, _init)(T *p00_id) { if (p00_id) *p00_id = (T){ 0 }; return p00_id; } p99_inline void P99_PASTE2(T, _destroy)(T* p00_id) { (void)p00_id; } P99_MACRO_END(P99_PLAIN_TYPE, T)
+#define P99_PLAIN_TYPE(T) p99_inline T* P99_PASTE2(T, _init)(T *p00_id) { if (p00_id) *p00_id = 0; return p00_id; } P99_CONST_FUNCTION p99_inline void P99_PASTE2(T, _destroy)(T* p00_id) { (void)p00_id; } P99_MACRO_END(P99_PLAIN_TYPE, T)
 #define P99_POINTER_TYPE(T) typedef T *P99_PASTE2(T, _ptr); typedef T const*P99_PASTE2(T, _cptr)
 #define P99_POSIX_DEFAULT_H_ 
 #define P99_POSS(N) P99_FOR(,N, P00_SEQ, P00_POS,)
@@ -9546,6 +9629,7 @@
 #define P99_PROTECTED_BLOCK(BEFORE,...) P00_BLK_START P00_BLK_BEFAFT(P00_ROBUST(BEFORE), __VA_ARGS__) P00_BLK_END
 #define P99_PROTECT P99_DECLARE_INHIBIT(RETURN); if (0) { case 0 : p00_code = p00_unwind_top[0].p00_code; p00_unw = !!p00_code; } P00_UNCASE
 #define P99_PROTOTYPE(...) P99_IF_EQ_2(P99_NARG(__VA_ARGS__)) (P00_PROTOTYPE(__VA_ARGS__, void)) (P00_PROTOTYPE(__VA_ARGS__))
+#define P99_PURE_FUNCTION __attribute__((__pure__))
 #define P99_PZERO(X,N) (memset((X), 0, sizeof(X[0]) * N))
 #define P99_QSORT_H_ 
 #define P99_QSORT(TAB,NB,...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2) (qsort((TAB), (NB), sizeof (TAB)[0], __VA_ARGS__)) (qsort_s((TAB), (NB), sizeof (TAB)[0], __VA_ARGS__))
@@ -9571,8 +9655,8 @@
 #define P99_SEQ(MACRO,...) P00_MAP_(P99_NARG(__VA_ARGS__), MACRO, (,), __VA_ARGS__)
 #define P99_SER(MACRO,...) P00_MAP_(P99_NARG(__VA_ARGS__), MACRO, ( ), __VA_ARGS__)
 #define P99_SETJMP_INLINE(NAME) P99_WEAK(NAME)
-#define P99_SIGNED(EXPR) (P99_PROMOTE_M1(EXPR) < P99_PROMOTE_0(EXPR))
-#define P99_SIGNED_REPRESENTATION(T) ((p99_signed_representation)(P99_M1(T) & P99_3(T)))
+#define P99_SIGNED(EXPR) (P99_PROMOTE_M1(EXPR) < P99_PROMOTE_1(EXPR))
+#define P99_SIGNED_REPRESENTATION(T) P99_C(p99_signed_representation, (P99_M1(T) & P99_3(T)))
 #define P99_SIGN_PROMOTE(A,B) (1 ? (A) : (B))
 #define P99_SIZE_CHOICE(UI,YES,NO,...) P99_GENERIC ((char(*)[(size_t)(UI)])0, NO, P99_FOR(YES, P99_NARG(__VA_ARGS__), P00_SEQ, P00_SIZE_CHOICE, __VA_ARGS__))
 #define P99_SIZE_INDICATOR(UI,...) P99_SIZE_CHOICE(UI, 1, 0, __VA_ARGS__)
@@ -9741,6 +9825,7 @@
 #define P99_UT_MAX(T) (P99_M1U(T))
 #define P99_VA_ARGS(X) size_t X , ...
 #define P99_VASSIGNS(NAME,...) P99_IF_LT(P99_NARG(__VA_ARGS__),2) (P99_IF_VOID(__VA_ARGS__)((void)0)(__VA_ARGS__ = (NAME)[0])) (P99_FOR(NAME, P00_NARG(__VA_ARGS__),P00_SEP, P00_VASSIGN, __VA_ARGS__))
+#define P99_VECTOR(T,NAME,N) T NAME __attribute__((vector_size(sizeof(T)*(N))))
 #define P99_VERSION_DATE "$Format:%cd$"
 #define P99_VERSION_ID "$Format:%H$"
 #define P99_VERSION_NO P00_VERSION_NO(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
@@ -9748,6 +9833,7 @@
 #define P99_VOID_NORMALIZE(SEQ) P00_TYPE_NORMALIZE(P99_VOID_QUAL_LEN(SEQ), P00_VOID_CLASSIFY(SEQ), SEQ)
 #define P99_VOID_QUAL_LEN(SEQ) P99_IF_ELSE(P99_IS_VOID_QUAL_TOK(SEQ))(P00_VOID_QUAL1(P00_EAT_FIRST(SEQ)))(0)
 #define P99_VOLATILE_LEN(SEQ) P99_IF_ELSE(P99_IS_VOLATILE_TOK(SEQ))(P00_VOLATILE1(P00_EAT_FIRST(SEQ)))(0)
+#define P99_WARN_UNUSED_RESULT 
 #define P99_WEAK(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2)(P00_WEAK1(__VA_ARGS__))(P00_WEAK2(__VA_ARGS__))
 #define P99X_ABS(EXPR) (P99_SIGNED(EXPR) ? p99x__abs_signed(EXPR) : (EXPR))
 #define P99_XCASE P99_AVOID case
@@ -9761,8 +9847,8 @@
 #define P99X_INT64_C2(H,L) ((((int64_t)(int32_t)H) << 32u) | (int64_t)(int32_t)L)
 #define p99x_intmax p99x_intmax
 #define P99_XORS(...) P99_BIGOP(P00_XOR, P99_NARG(__VA_ARGS__),__VA_ARGS__)
-#define P99X__SHIFT(EXPR) ((P99_SIGN_PROMOTE(P99_UE_MAX(EXPR), UINTMAX_MAX) > (p99x_uintmax)UINTMAX_MAX) ? 64u : 0u)
-#define P99X__SIGN_PROMOTE(EXPR) ((p99x_uintmax)P99_SIGN_PROMOTE(P99_UE_MAX(EXPR), (p99x_uintmax)UINTMAX_MAX))
+#define P99X__SHIFT(EXPR) ((P99_SIGN_PROMOTE(P99_UE_MAX(EXPR), UINTMAX_MAX) > (p99x_uintmax)+UINTMAX_MAX) ? 64u : 0u)
+#define P99X__SIGN_PROMOTE(EXPR) ((p99x_uintmax)+P99_SIGN_PROMOTE(P99_UE_MAX(EXPR), (p99x_uintmax)+UINTMAX_MAX))
 #define P99X_UINT128_0 P99X_UINT128_C2(0x0000000000000000, 0x0000000000000000)
 #define P99X_UINT128_C2(H,L) ((((p99x_uint128)H) << 64u) | (p99x_uint128)L)
 #define P99X_UINT128_MAX P99X_UINT128_C2(0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF)
@@ -10446,9 +10532,6 @@
 #define SEEK_SET 0
 #define SEGV_ACCERR SEGV_ACCERR
 #define SEGV_MAPERR SEGV_MAPERR
-#define sem_init_defarg_1() PTHREAD_PROCESS_PRIVATE
-#define sem_init_defarg_2() 0
-#define sem_init(...) P99_CALL_DEFARG(sem_init, 3, __VA_ARGS__)
 #define SEM_VALUE_MAX (2147483647)
 #define setjmp(env) _setjmp (env)
 #define _SETJMP_H 1
