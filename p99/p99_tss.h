@@ -205,7 +205,7 @@ int tss_set(tss_t p00_key, void *p00_val) {
  ** initialized with the default initializer, variables of this type
  ** here will do the dynamic part of the initialization automatically
  ** at the first use. This could come with a tiny overhead of some
- ** instructions, which normally should even be measurable.
+ ** instructions, which normally shouldn't even be measurable.
  **
  ** The dynamic initialization needs to know what the destructor
  ** function of the TSS should be. It can be provided through the
@@ -232,12 +232,21 @@ struct p99_tss {
    ** @brief Destructor function that is automatically called at the
    ** termination of a thread.
    **/
-  tss_dtor_t const p99_dtor;
+  tss_dtor_t p99_dtor;
   bool volatile p00_done;
   atomic_flag p00_flg;
 };
 
 typedef struct p99_tss p99_tss;
+
+p99_inline
+p99_tss* p99_tss_init(p99_tss* p00_el, tss_dtor_t p00_f) {
+  if (p00_el) {
+    *p00_el = (p99_tss){ .p99_dtor = p00_f, };
+    atomic_flag_clear(&p00_el->p00_flg);
+  }
+  return p00_el;
+}
 
 /* This is an implementation to bootstrap the thread specific
    code. Once initialization functionalities that are better suited
