@@ -27,12 +27,54 @@
  ** @{
  **/
 
+#if UINTPTR_MAX == UINT32_MAX
+typedef uint64_t p00_lifo_uint;
+#else
+# if defined(UINT128_MAX)
+typedef uint128_t p00_lifo_uint;
+# else
+typedef p99x_uint128 p00_lifo_uint;
+# endif
+#endif
+
+P99_CONSTANT(int, p00_lifo_bits, sizeof(p00_lifo_uint)*CHAR_BIT);
+P99_CONSTANT(int, p00_lifo_shift, p00_lifo_bits/2);
+
 #if defined(P99_DECLARE_ATOMIC) || P00_DOXYGEN
-# define P99_LIFO(T) _Atomic(P99_PASTE2(p00_lifo_, T))
-# define P99_LIFO_DECLARE(T)                                   \
-typedef T P99_PASTE2(p00_lifo_, T);                            \
-P99_DECLARE_ATOMIC(P99_PASTE2(p00_lifo_, T))
-# define P99_LIFO_INITIALIZER(VAL) ATOMIC_VAR_INIT((void*)VAL)
+P99_DECLARE_ATOMIC(p00_lifo_uint);
+
+# define P99_LIFO(T) P99_PASTE2(p00_lifo_, T)
+# define P99_LIFO_DECLARE(T)                                            \
+typedef struct P99_PASTE2(p00_lifo_, T) P99_PASTE2(p00_lifo_, T);       \
+_Alignas(sizeof(p00_lifo_uint)) struct P99_PASTE2(p00_lifo_, T) {       \
+  _Atomic(p00_lifo_uint) p00_val;                                       \
+  _Atomic(uintptr_t) p00_tic;                                           \
+  T p00_dum; /* we only need this for its type */                       \
+}
+
+# define P99_LIFO_INITIALIZER(VAL) {                    \
+    .p00_val = ATOMIC_VAR_INIT((uintptr_t)(void*)VAL),  \
+      .p00_tic = ATOMIC_VAR_INIT(UINTPTR_C(1)),         \
+}
+
+p99_inline
+void * p00_lifo_i2p(uintptr_t v) {
+  return (void*)v;
+}
+
+p99_inline
+p00_lifo_uint p00_lifo_p2i(void * p, p00_lifo_uint t) {
+  return (t<<p00_lifo_shift)|(uintptr_t)p;
+}
+
+p99_inline
+bool p00_lifo_cmpxchg(_Atomic(p00_lifo_uint)* p00_p, p00_lifo_uint* p00_prev, p00_lifo_uint p00_new) {
+  P99_MARK("wide cmpxchg start");
+  bool ret = atomic_compare_exchange_weak(p00_p, p00_prev, p00_new);
+  P99_MARK("wide cmpxchg end");
+  return ret;
+}
+
 
 /**
  ** @brief Return a pointer to the top element of an atomic LIFO @a L
@@ -41,7 +83,14 @@ P99_DECLARE_ATOMIC(P99_PASTE2(p00_lifo_, T))
  ** @see P99_LIFO_PUSH
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_TOP, 0)
-#define P99_LIFO_TOP(L)  atomic_load(L)
+#define P99_LIFO_TOP(L)                                                 \
+({                                                                      \
+  register const P99_MACRO_VAR(p00_l, (L));                             \
+  /* be sure that the result can not be used as an lvalue */            \
+  register const __typeof__(p00_l->p00_dum) p00_r = p00_lifo_i2p(atomic_load(&p00_l->p00_val));    \
+  p00_r;                                                                \
+ })
+
 
 /**
  ** @brief Push element @a EL into an atomic LIFO @a L
@@ -51,15 +100,17 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_TOP, 0)
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
-#define P99_LIFO_PUSH(L, EL)                                         \
-p99_extension                                                        \
-({                                                                   \
-  P99_MACRO_VAR(p00_l, (L));                                         \
-  P99_MACRO_VAR(p00_el, (EL));                                       \
-  P99_MACRO_VAR(p00_prev, atomic_load(p00_l));                       \
-  do {                                                               \
-    p00_el->p99_lifo = p00_prev;                                     \
-  } while (!atomic_compare_exchange_weak(p00_l, &p00_prev, p00_el)); \
+#define P99_LIFO_PUSH(L, EL)                                            \
+p99_extension                                                           \
+({                                                                      \
+  register const P99_MACRO_VAR(p00_el, (EL));                           \
+  register const P99_MACRO_VAR(p00_l, (L));                             \
+  register const P99_MACRO_VAR(p00_p, &p00_l->p00_val);                 \
+  register const uintptr_t p00_tic = atomic_fetch_add(&p00_l->p00_tic, 1); \
+  p00_lifo_uint p00_prev = atomic_load(p00_p);                          \
+  do {                                                                  \
+    p00_el->p99_lifo = p00_lifo_i2p(p00_prev);                          \
+  } while (!p00_lifo_cmpxchg(p00_p, &p00_prev, p00_lifo_p2i(p00_el, p00_tic))); \
 })
 
 /**
@@ -103,16 +154,21 @@ p99_extension                                                        \
  ** @see P99_LIFO_PUSH
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_POP, 0)
-#define P99_LIFO_POP(L)                                                                      \
-p99_extension                                                                                \
-({                                                                                           \
-  P99_MACRO_VAR(p00_l, (L));                                                                 \
-  P99_MACRO_VAR(p00_el, P99_LIFO_TOP(p00_l));                                                \
-  while (p00_el && !atomic_compare_exchange_weak(p00_l, &p00_el, p00_el->p99_lifo)) P99_NOP; \
-  if (p00_el) p00_el->p99_lifo = 0;                                                          \
-  /* be sure that the result can not be used as an lvalue */                                 \
-  register __typeof__(p00_el = p00_el) p00_r = p00_el;                                       \
-  p00_r;                                                                                     \
+#define P99_LIFO_POP(L)                                                 \
+p99_extension                                                           \
+({                                                                      \
+  register const P99_MACRO_VAR(p00_l, (L));                             \
+  register const P99_MACRO_VAR(p00_p, &p00_l->p00_val);                 \
+  register const uintptr_t p00_tic = atomic_fetch_add(&p00_l->p00_tic, 1); \
+  p00_lifo_uint p00_el = atomic_load(p00_p);                            \
+  /* be sure that the result can not be used as an lvalue */            \
+  register __typeof__(p00_l->p00_dum) p00_r = p00_lifo_i2p(p00_el);     \
+  for (; p00_r; p00_r = p00_lifo_i2p(p00_el)) {                         \
+    if (p00_lifo_cmpxchg(p00_p, &p00_el, p00_lifo_p2i(p00_r->p99_lifo, p00_tic))) \
+      break;                                                            \
+  }                                                                     \
+  if (p00_r) p00_r->p99_lifo = 0;                                       \
+  p00_r;                                                                \
 })
 
 #define P00_LIFO_REVERT(L)                                     \
@@ -140,7 +196,17 @@ p99_extension                                                  \
  ** @see P99_LIFO_TOP
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
-#define P99_LIFO_CLEAR(L) atomic_exchange(L, 0)
+#define P99_LIFO_CLEAR(L)                                               \
+p99_extension                                                           \
+({                                                                      \
+  register const P99_MACRO_VAR(p00_l, (L));                             \
+  register const P99_MACRO_VAR(p00_p, &p00_l->p00_val);                 \
+  p00_lifo_uint p00_el = atomic_load(p00_p);                            \
+  while ((uintptr_t)p00_el && !atomic_compare_exchange_weak(p00_p, &p00_el, (p00_lifo_uint)0)); \
+  /* be sure that the result can not be used as an lvalue */            \
+  register const __typeof__(p00_l->p00_dum) p00_r = p00_lifo_i2p(p00_el);     \
+  p00_r;                                                                \
+})
 
 #else
 
