@@ -28,26 +28,38 @@
  **/
 
 #if UINTPTR_MAX == UINT32_MAX
-typedef uint64_t p00_lifo_uint;
+typedef uint64_t p00_tp_uint;
 #else
 # if defined(UINT128_MAX)
-typedef uint128_t p00_lifo_uint;
+typedef uint128_t p00_tp_uint;
 # else
-typedef p99x_uint128 p00_lifo_uint;
+typedef p99x_uint128 p00_tp_uint;
 # endif
 #endif
 
-P99_CONSTANT(int, p00_lifo_bits, sizeof(p00_lifo_uint)*CHAR_BIT);
-P99_CONSTANT(int, p00_lifo_shift, p00_lifo_bits/2);
+P99_CONSTANT(int, p00_tp_bits, sizeof(p00_tp_uint)*CHAR_BIT);
+P99_CONSTANT(int, p00_tp_shift, p00_tp_bits/2);
 
 #if defined(P99_DECLARE_ATOMIC) || P00_DOXYGEN
-P99_DECLARE_ATOMIC(p00_lifo_uint);
+P99_DECLARE_ATOMIC(p00_tp_uint);
+
+P99_DECLARE_STRUCT(p99_tp);
+
+struct p99_tp {
+  _Atomic(p00_tp_uint) p00_val;
+  _Atomic(uintptr_t) p00_tic;
+};
+
+# define P99_LIFO_INITIALIZER(VAL) {                    \
+    .p00_val = ATOMIC_VAR_INIT((uintptr_t)(void*)VAL),  \
+      .p00_tic = ATOMIC_VAR_INIT(UINTPTR_C(1)),         \
+}
 
 # define P99_LIFO(T) P99_PASTE2(p00_lifo_, T)
 # define P99_LIFO_DECLARE(T)                                            \
 typedef struct P99_PASTE2(p00_lifo_, T) P99_PASTE2(p00_lifo_, T);       \
-_Alignas(sizeof(p00_lifo_uint)) struct P99_PASTE2(p00_lifo_, T) {       \
-  _Atomic(p00_lifo_uint) p00_val;                                       \
+_Alignas(sizeof(p00_tp_uint)) struct P99_PASTE2(p00_lifo_, T) {       \
+  _Atomic(p00_tp_uint) p00_val;                                       \
   _Atomic(uintptr_t) p00_tic;                                           \
   T p00_dum; /* we only need this for its type */                       \
 }
@@ -58,17 +70,17 @@ _Alignas(sizeof(p00_lifo_uint)) struct P99_PASTE2(p00_lifo_, T) {       \
 }
 
 p99_inline
-void * p00_lifo_i2p(uintptr_t v) {
+void * p00_tp_i2p(uintptr_t v) {
   return (void*)v;
 }
 
 p99_inline
-p00_lifo_uint p00_lifo_p2i(void * p, p00_lifo_uint t) {
-  return (t<<p00_lifo_shift)|(uintptr_t)p;
+p00_tp_uint p00_tp_p2i(void * p, p00_tp_uint t) {
+  return (t<<p00_tp_shift)|(uintptr_t)p;
 }
 
 p99_inline
-bool p00_lifo_cmpxchg(_Atomic(p00_lifo_uint)* p00_p, p00_lifo_uint* p00_prev, p00_lifo_uint p00_new) {
+bool p00_tp_cmpxchg(_Atomic(p00_tp_uint)* p00_p, p00_tp_uint* p00_prev, p00_tp_uint p00_new) {
   P99_MARK("wide cmpxchg start");
   bool ret = atomic_compare_exchange_weak(p00_p, p00_prev, p00_new);
   P99_MARK("wide cmpxchg end");
@@ -87,7 +99,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_TOP, 0)
 ({                                                                      \
   register const P99_MACRO_VAR(p00_l, (L));                             \
   /* be sure that the result can not be used as an lvalue */            \
-  register const __typeof__(p00_l->p00_dum) p00_r = p00_lifo_i2p(atomic_load(&p00_l->p00_val));    \
+  register const __typeof__(p00_l->p00_dum) p00_r = p00_tp_i2p(atomic_load(&p00_l->p00_val));    \
   p00_r;                                                                \
  })
 
@@ -107,10 +119,10 @@ p99_extension                                                           \
   register const P99_MACRO_VAR(p00_l, (L));                             \
   register const P99_MACRO_VAR(p00_p, &p00_l->p00_val);                 \
   register const uintptr_t p00_tic = atomic_fetch_add(&p00_l->p00_tic, 1); \
-  p00_lifo_uint p00_prev = atomic_load(p00_p);                          \
+  p00_tp_uint p00_prev = atomic_load(p00_p);                          \
   do {                                                                  \
-    p00_el->p99_lifo = p00_lifo_i2p(p00_prev);                          \
-  } while (!p00_lifo_cmpxchg(p00_p, &p00_prev, p00_lifo_p2i(p00_el, p00_tic))); \
+    p00_el->p99_lifo = p00_tp_i2p(p00_prev);                          \
+  } while (!p00_tp_cmpxchg(p00_p, &p00_prev, p00_tp_p2i(p00_el, p00_tic))); \
 })
 
 /**
@@ -160,11 +172,11 @@ p99_extension                                                           \
   register const P99_MACRO_VAR(p00_l, (L));                             \
   register const P99_MACRO_VAR(p00_p, &p00_l->p00_val);                 \
   register const uintptr_t p00_tic = atomic_fetch_add(&p00_l->p00_tic, 1); \
-  p00_lifo_uint p00_el = atomic_load(p00_p);                            \
+  p00_tp_uint p00_el = atomic_load(p00_p);                            \
   /* be sure that the result can not be used as an lvalue */            \
-  register __typeof__(p00_l->p00_dum) p00_r = p00_lifo_i2p(p00_el);     \
-  for (; p00_r; p00_r = p00_lifo_i2p(p00_el)) {                         \
-    if (p00_lifo_cmpxchg(p00_p, &p00_el, p00_lifo_p2i(p00_r->p99_lifo, p00_tic))) \
+  register __typeof__(p00_l->p00_dum) p00_r = p00_tp_i2p(p00_el);     \
+  for (; p00_r; p00_r = p00_tp_i2p(p00_el)) {                         \
+    if (p00_tp_cmpxchg(p00_p, &p00_el, p00_tp_p2i(p00_r->p99_lifo, p00_tic))) \
       break;                                                            \
   }                                                                     \
   if (p00_r) p00_r->p99_lifo = 0;                                       \
@@ -201,10 +213,10 @@ p99_extension                                                           \
 ({                                                                      \
   register const P99_MACRO_VAR(p00_l, (L));                             \
   register const P99_MACRO_VAR(p00_p, &p00_l->p00_val);                 \
-  p00_lifo_uint p00_el = atomic_load(p00_p);                            \
-  while ((uintptr_t)p00_el && !atomic_compare_exchange_weak(p00_p, &p00_el, (p00_lifo_uint)0)); \
+  p00_tp_uint p00_el = atomic_load(p00_p);                            \
+  while ((uintptr_t)p00_el && !atomic_compare_exchange_weak(p00_p, &p00_el, (p00_tp_uint)0)); \
   /* be sure that the result can not be used as an lvalue */            \
-  register const __typeof__(p00_l->p00_dum) p00_r = p00_lifo_i2p(p00_el);     \
+  register const __typeof__(p00_l->p00_dum) p00_r = p00_tp_i2p(p00_el);     \
   p00_r;                                                                \
 })
 
