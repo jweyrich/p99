@@ -71,9 +71,8 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
 p99_extension                                                          \
 ({                                                                     \
   register const P99_MACRO_VAR(p00_l, (L));                            \
-  p99_tp_state p00_state = p99_tp_state_initializer(&(p00_l)->p00_tp); \
   register __typeof__(p00_l->p00_dum) p00_rr = (EL);                   \
-  p99_tp_state_set(&p00_state, p00_rr);                                \
+  p99_tp_state p00_state = p99_tp_state_initializer(&(p00_l)->p00_tp, p00_rr); \
   do {                                                                 \
     p00_rr->p99_lifo = p99_tp_state_get(&p00_state);                   \
   } while (!p99_tp_state_commit(&p00_state));                          \
@@ -124,7 +123,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_POP, 0)
 p99_extension                                                               \
 ({                                                                          \
   register const P99_MACRO_VAR(p00_l, (L));                                 \
-  p99_tp_state p00_state = p99_tp_state_initializer(&(p00_l)->p00_tp);      \
+  p99_tp_state p00_state = p99_tp_state_initializer(&(p00_l)->p00_tp, 0);   \
   /* be sure that the result can not be used as an lvalue */                \
   register __typeof__(p00_l->p00_dum) p00_r = p99_tp_state_get(&p00_state); \
   for (; p00_r; p00_r = p99_tp_state_get(&p00_state)) {                     \
@@ -165,8 +164,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
 p99_extension                                                               \
 ({                                                                          \
   register const P99_MACRO_VAR(p00_l, (L));                                 \
-  p99_tp_state p00_state = p99_tp_state_initializer(&(p00_l)->p00_tp);      \
-  p99_tp_state_set(&p00_state, 0);                                          \
+  p99_tp_state p00_state = p99_tp_state_initializer(&(p00_l)->p00_tp, 0);   \
   /* be sure that the result can not be used as an lvalue */                \
   register __typeof__(p00_l->p00_dum) p00_r = p99_tp_state_get(&p00_state); \
   for (; p00_r; p00_r = p99_tp_state_get(&p00_state)) {                     \
