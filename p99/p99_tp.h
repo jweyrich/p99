@@ -39,11 +39,41 @@ P99_DECLARE_ATOMIC(p00_tp_uint);
 P99_DECLARE_STRUCT(p99_tp);
 P99_DECLARE_STRUCT(p99_tp_state);
 
+/**
+ ** @brief A tagged pointer for atomic storage.
+ **
+ ** The idea of this data structure is to store a unique transaction
+ ** ID together with a pointer such that different usages of the same
+ ** pointer can be distinguished.
+ **
+ ** @see p99_tp_state
+ **/
 struct p99_tp {
   _Atomic(p00_tp_uint) p00_val;
   _Atomic(uintptr_t) p00_tic;
 };
 
+/**
+ ** @brief A local view of a tagged pointer for atomic storage.
+ **
+ ** This is to be used together with ::p99_tp.
+ **
+ ** @code
+ ** p99_tp tp = P99_TP_INITIALIZER(0);
+ ** ...
+ ** void * fut = &(int){ 37 };
+ ** p99_tp_state st = p99_tp_state_initializer(&tp, fut);
+ ** void * val = p99_tp_state_get(&st);
+ ** // do something with the current value, then
+ ** // commit the new value "fut" if possible
+ ** if (!p99_tp_state_commit(&st)) abort();
+ ** @endcode
+ **
+ ** @see p99_tp_state_get
+ ** @see p99_tp_state_set
+ ** @see p99_tp_state_commit
+ ** @see p99_tp_state_initializer
+ **/
 struct p99_tp_state {
   p00_tp_uint p00_val;
   p00_tp_uint p00_next;
@@ -66,6 +96,10 @@ p00_tp_uint p00_tp_p2i(void * p, p00_tp_uint t) {
   return (t<<p00_tp_shift)|(uintptr_t)p;
 }
 
+/**
+ ** @brief Load the value of @a p00_tp into the state variable and
+ ** prepare it to commit value @a p00_p later.
+ **/
 p99_inline
 p99_tp_state p99_tp_state_initializer(p99_tp* p00_tp, void* p00_p) {
   uintptr_t p00_tic = atomic_fetch_add(&p00_tp->p00_tic, UINTPTR_C(1));
