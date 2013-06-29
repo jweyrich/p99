@@ -21,6 +21,7 @@
 #  include "p99_atomic.h"
 # endif
 
+#ifdef P99_TP_NEED_INTEGER
 #if UINTPTR_MAX == UINT32_MAX
 typedef uint64_t p00_tp_state;
 #else
@@ -48,6 +49,31 @@ p99_inline
 uintptr_t p00_tp_i2i(p00_tp_state v) {
   return v >> p00_tp_shift;
 }
+
+#else
+P99_DECLARE_STRUCT(p00_tp_state);
+
+struct p00_tp_state {
+  uintptr_t p00_tag;
+  void* p00_val;
+};
+
+
+p99_inline
+p00_tp_state p00_tp_p2i(void * p00_val, uintptr_t p00_tag) {
+  return (p00_tp_state){ .p00_tag = p00_tag, .p00_val = p00_val, };
+}
+
+p99_inline
+void * p00_tp_i2p(p00_tp_state p00_sta) {
+  return p00_sta.p00_val;
+}
+
+p99_inline
+uintptr_t p00_tp_i2i(p00_tp_state p00_sta) {
+  return p00_sta.p00_tag;
+}
+#endif
 
 P99_DECLARE_ATOMIC(p00_tp_state);
 
