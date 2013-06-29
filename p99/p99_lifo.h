@@ -34,7 +34,7 @@
 # define P99_LIFO(T) P99_PASTE2(p00_lifo_, T)
 # define P99_LIFO_DECLARE(T)                                      \
 typedef struct P99_PASTE2(p00_lifo_, T) P99_PASTE2(p00_lifo_, T); \
-_Alignas(sizeof(p00_tp_uint)) struct P99_PASTE2(p00_lifo_, T) {   \
+_Alignas(sizeof(p00_tp_state)) struct P99_PASTE2(p00_lifo_, T) {   \
   p99_tp p00_tp;                                                  \
   T p00_dum; /* we only need this for its type */                 \
 }

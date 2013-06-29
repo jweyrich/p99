@@ -22,19 +22,34 @@
 # endif
 
 #if UINTPTR_MAX == UINT32_MAX
-typedef uint64_t p00_tp_uint;
+typedef uint64_t p00_tp_state;
 #else
 # if defined(UINT128_MAX)
-typedef uint128_t p00_tp_uint;
+typedef uint128_t p00_tp_state;
 # else
-typedef p99x_uint128 p00_tp_uint;
+typedef p99x_uint128 p00_tp_state;
 # endif
 #endif
 
-P99_CONSTANT(int, p00_tp_bits, sizeof(p00_tp_uint)*CHAR_BIT);
+P99_CONSTANT(int, p00_tp_bits, sizeof(p00_tp_state)*CHAR_BIT);
 P99_CONSTANT(int, p00_tp_shift, p00_tp_bits/2);
 
-P99_DECLARE_ATOMIC(p00_tp_uint);
+p99_inline
+p00_tp_state p00_tp_p2i(void * p, uintptr_t t) {
+  return (((p00_tp_state)t)<<p00_tp_shift)|(uintptr_t)p;
+}
+
+p99_inline
+void * p00_tp_i2p(p00_tp_state v) {
+  return (void*)(uintptr_t)v;
+}
+
+p99_inline
+uintptr_t p00_tp_i2i(p00_tp_state v) {
+  return v >> p00_tp_shift;
+}
+
+P99_DECLARE_ATOMIC(p00_tp_state);
 
 P99_DECLARE_STRUCT(p99_tp);
 P99_DECLARE_STRUCT(p99_tp_state);
@@ -49,7 +64,7 @@ P99_DECLARE_STRUCT(p99_tp_state);
  ** @see p99_tp_state
  **/
 struct p99_tp {
-  _Atomic(p00_tp_uint) p00_val;
+  _Atomic(p00_tp_state) p00_val;
   _Atomic(uintptr_t) p00_tic;
 };
 
@@ -75,9 +90,8 @@ struct p99_tp {
  ** @see p99_tp_state_initializer
  **/
 struct p99_tp_state {
-  p00_tp_uint p00_val;
-  p00_tp_uint p00_next;
-  uintptr_t p00_tic;
+  p00_tp_state p00_val;
+  p00_tp_state p00_next;
   p99_tp* p00_tp;
 };
 
@@ -87,13 +101,8 @@ struct p99_tp_state {
 }
 
 p99_inline
-p00_tp_uint p00_tp_get(p99_tp* p00_tp) {
+p00_tp_state p00_tp_get(p99_tp* p00_tp) {
   return atomic_load(&p00_tp->p00_val);
-}
-
-p99_inline
-p00_tp_uint p00_tp_p2i(void * p, p00_tp_uint t) {
-  return (t<<p00_tp_shift)|(uintptr_t)p;
 }
 
 /**
@@ -105,15 +114,9 @@ p99_tp_state p99_tp_state_initializer(p99_tp* p00_tp, void* p00_p) {
   uintptr_t p00_tic = atomic_fetch_add(&p00_tp->p00_tic, UINTPTR_C(1));
   return (p99_tp_state) {
     .p00_val = p00_tp_get(p00_tp),
-    .p00_next = (p00_p ? p00_tp_p2i(p00_p, p00_tic) : 0),
-    .p00_tic = p00_tic,
+      .p00_next = p00_tp_p2i(p00_p, p00_tic),
       .p00_tp = p00_tp,
   };
-}
-
-p99_inline
-void * p00_tp_i2p(uintptr_t v) {
-  return (void*)v;
 }
 
 p99_inline
@@ -128,11 +131,11 @@ void * p99_tp_get(p99_tp* p00_tp) {
 
 p99_inline
 void p99_tp_state_set(p99_tp_state* p00_state, void* p00_p) {
-  p00_state->p00_next = p00_tp_p2i(p00_p, p00_state->p00_tic);
+  p00_state->p00_next = p00_tp_p2i(p00_p, p00_tp_i2i(p00_state->p00_next));
 }
 
 p99_inline
-bool p00_tp_cmpxchg(_Atomic(p00_tp_uint)* p00_p, p00_tp_uint* p00_prev, p00_tp_uint p00_new) {
+bool p00_tp_cmpxchg(_Atomic(p00_tp_state)* p00_p, p00_tp_state* p00_prev, p00_tp_state p00_new) {
   P99_MARK("wide cmpxchg start");
   bool ret = atomic_compare_exchange_weak(p00_p, p00_prev, p00_new);
   P99_MARK("wide cmpxchg end");
