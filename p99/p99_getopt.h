@@ -598,7 +598,7 @@ static char const*const p00_getopt_synopsis = { LINE }
  ** @param CALLBACK must be assignment compatible to a pointer to
  ** ::p99_callback_void_func.
  **/
-#define P99_GETOPT_CALLBACK(CALLBACK)                              \
+#define P99_GETOPT_CALLBACK(CALLBACK)                                \
 static p99_callback_void_func*const p00_getopt_callback = (CALLBACK)
 
 

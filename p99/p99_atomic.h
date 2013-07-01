@@ -1167,36 +1167,36 @@ p99_extension                                                                   
  **
  ** @see atomic_int
  **/
-#define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                                   \
-p99_extension                                                                                   \
-({                                                                                              \
-  P99_MACRO_PVAR(p00_objp, (OBJP));                                                             \
-  typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                                              \
-  typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                                             \
-  /* Both, *EXPECTED and DESIRED must be assignment compatible with the base type */            \
-  register p00_base_t* const p00_exp = (EXPECTED);                                               \
-  register p00_ubase_t const p00_des =  { .p00_t = (DESIRED) };                                 \
-  register _Bool p00_ret = false;                                                               \
-  if (!atomic_is_lock_free(p00_objp)) {                                                         \
-    P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                                                     \
-      p00_ret = !memcmp(P00_CVT(p00_exp), P00_CVT(&P00_AT(p00_objp)), sizeof *p00_exp);         \
-      if (p00_ret) P00_AT(p00_objp) = p00_des.p00_t;                                            \
-      else *p00_exp = P00_AT(p00_objp);                                                         \
-    }                                                                                           \
-  }                                                                                             \
-  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                                      \
-    (else p00_ret = false;)                                                                     \
-    (else {                                                                                     \
-      register p00_ubase_t p00_expm = { .p00_t = *p00_exp, };                                   \
-      register p00_ubase_t const p00_valm                                                       \
-        = { .p00_m = P00_ATOMIC_TERN                                                            \
-        (p00_objp,                                                                              \
-         __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_expm.p00_m, p00_des.p00_m),         \
-         0) };                                                                                  \
-      p00_ret = (p00_expm.p00_m == p00_valm.p00_m);                                             \
-      if (!p00_ret) *p00_exp = p00_valm.p00_t;                                                  \
-    })                                                                                          \
-    p00_ret;                                                                                    \
+#define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                           \
+p99_extension                                                                           \
+({                                                                                      \
+  P99_MACRO_PVAR(p00_objp, (OBJP));                                                     \
+  typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                                      \
+  typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                                     \
+  /* Both, *EXPECTED and DESIRED must be assignment compatible with the base type */    \
+  register p00_base_t* const p00_exp = (EXPECTED);                                      \
+  register p00_ubase_t const p00_des =  { .p00_t = (DESIRED) };                         \
+  register _Bool p00_ret = false;                                                       \
+  if (!atomic_is_lock_free(p00_objp)) {                                                 \
+    P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                                             \
+      p00_ret = !memcmp(P00_CVT(p00_exp), P00_CVT(&P00_AT(p00_objp)), sizeof *p00_exp); \
+      if (p00_ret) P00_AT(p00_objp) = p00_des.p00_t;                                    \
+      else *p00_exp = P00_AT(p00_objp);                                                 \
+    }                                                                                   \
+  }                                                                                     \
+  P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                              \
+    (else p00_ret = false;)                                                             \
+    (else {                                                                             \
+      register p00_ubase_t p00_expm = { .p00_t = *p00_exp, };                           \
+      register p00_ubase_t const p00_valm                                               \
+        = { .p00_m = P00_ATOMIC_TERN                                                    \
+        (p00_objp,                                                                      \
+         __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_expm.p00_m, p00_des.p00_m), \
+         0) };                                                                          \
+      p00_ret = (p00_expm.p00_m == p00_valm.p00_m);                                     \
+      if (!p00_ret) *p00_exp = p00_valm.p00_t;                                          \
+    })                                                                                  \
+    p00_ret;                                                                            \
  })
 
 #ifdef P00_DOXYGEN

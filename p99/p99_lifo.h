@@ -54,15 +54,15 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_TOP, 0)
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
-#define P99_LIFO_PUSH(L, EL)                                           \
-p99_extension                                                          \
-({                                                                     \
-  register const P99_MACRO_VAR(p00_l, (L));                            \
-  register P99_TP_TYPE(p00_l)*const p00_rr = (EL);                      \
+#define P99_LIFO_PUSH(L, EL)                                                    \
+p99_extension                                                                   \
+({                                                                              \
+  register const P99_MACRO_VAR(p00_l, (L));                                     \
+  register P99_TP_TYPE(p00_l)*const p00_rr = (EL);                              \
   P99_TP_TYPE_STATE(p00_l) p00_state = P99_TP_STATE_INITIALIZER(p00_l, p00_rr); \
-  do {                                                                 \
-    p00_rr->p99_lifo = P99_TP_STATE_GET(&p00_state);                   \
-  } while (!P99_TP_STATE_COMMIT(&p00_state));                          \
+  do {                                                                          \
+    p00_rr->p99_lifo = P99_TP_STATE_GET(&p00_state);                            \
+  } while (!P99_TP_STATE_COMMIT(&p00_state));                                   \
 })
 
 /**
@@ -106,20 +106,20 @@ p99_extension                                                          \
  ** @see P99_LIFO_PUSH
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_POP, 0)
-#define P99_LIFO_POP(L)                                                     \
-p99_extension                                                               \
-({                                                                          \
-  register const P99_MACRO_VAR(p00_l, (L));                                 \
-  P99_TP_TYPE_STATE(p00_l) p00_state = P99_TP_STATE_INITIALIZER(p00_l, 0);  \
-  /* be sure that the result can not be used as an lvalue */                \
-  register P99_TP_TYPE(p00_l)* p00_r = P99_TP_STATE_GET(&p00_state);         \
-  for (; p00_r; p00_r = P99_TP_STATE_GET(&p00_state)) {                     \
-    P99_TP_STATE_SET(&p00_state, p00_r->p99_lifo);                          \
-    if (P99_TP_STATE_COMMIT(&p00_state))                                    \
-      break;                                                                \
-  }                                                                         \
-  if (p00_r) p00_r->p99_lifo = 0;                                           \
-  p00_r;                                                                    \
+#define P99_LIFO_POP(L)                                                    \
+p99_extension                                                              \
+({                                                                         \
+  register const P99_MACRO_VAR(p00_l, (L));                                \
+  P99_TP_TYPE_STATE(p00_l) p00_state = P99_TP_STATE_INITIALIZER(p00_l, 0); \
+  /* be sure that the result can not be used as an lvalue */               \
+  register P99_TP_TYPE(p00_l)* p00_r = P99_TP_STATE_GET(&p00_state);       \
+  for (; p00_r; p00_r = P99_TP_STATE_GET(&p00_state)) {                    \
+    P99_TP_STATE_SET(&p00_state, p00_r->p99_lifo);                         \
+    if (P99_TP_STATE_COMMIT(&p00_state))                                   \
+      break;                                                               \
+  }                                                                        \
+  if (p00_r) p00_r->p99_lifo = 0;                                          \
+  p00_r;                                                                   \
 })
 
 #define P00_LIFO_REVERT(L)                                     \
@@ -147,18 +147,18 @@ p99_extension                                                  \
  ** @see P99_LIFO_TOP
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
-#define P99_LIFO_CLEAR(L)                                                   \
-p99_extension                                                               \
-({                                                                          \
-  register const P99_MACRO_VAR(p00_l, (L));                                 \
-  P99_TP_TYPE_STATE(p00_l) p00_state = P99_TP_STATE_INITIALIZER(p00_l, 0);  \
-  /* be sure that the result can not be used as an lvalue */                \
-  register P99_TP_TYPE(p00_l)* p00_r = P99_TP_STATE_GET(&p00_state); \
-  for (; p00_r; p00_r = P99_TP_STATE_GET(&p00_state)) {                     \
-    if (P99_TP_STATE_COMMIT(&p00_state))                                    \
-      break;                                                                \
-  }                                                                         \
-  p00_r;                                                                    \
+#define P99_LIFO_CLEAR(L)                                                  \
+p99_extension                                                              \
+({                                                                         \
+  register const P99_MACRO_VAR(p00_l, (L));                                \
+  P99_TP_TYPE_STATE(p00_l) p00_state = P99_TP_STATE_INITIALIZER(p00_l, 0); \
+  /* be sure that the result can not be used as an lvalue */               \
+  register P99_TP_TYPE(p00_l)* p00_r = P99_TP_STATE_GET(&p00_state);       \
+  for (; p00_r; p00_r = P99_TP_STATE_GET(&p00_state)) {                    \
+    if (P99_TP_STATE_COMMIT(&p00_state))                                   \
+      break;                                                               \
+  }                                                                        \
+  p00_r;                                                                   \
 })
 
 #else

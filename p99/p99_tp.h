@@ -61,7 +61,7 @@ struct p00_tp_state {
 
 p99_inline
 p00_tp_state p00_tp_p2i(void * p00_val, uintptr_t p00_tag) {
-  return (p00_tp_state){ .p00_tag = p00_tag, .p00_val = p00_val, };
+  return (p00_tp_state) { .p00_tag = p00_tag, .p00_val = p00_val, };
 }
 
 p99_inline
@@ -140,7 +140,7 @@ p99_tp_state p99_tp_state_initializer(p99_tp* p00_tp, void* p00_p) {
   uintptr_t p00_tic = atomic_fetch_add(&p00_tp->p00_tic, UINTPTR_C(1));
   return (p99_tp_state) {
     .p00_val = p00_tp_get(p00_tp),
-      .p00_next = p00_tp_p2i(p00_p, p00_tic),
+     .p00_next = p00_tp_p2i(p00_p, p00_tic),
       .p00_tp = p00_tp,
   };
 }
@@ -176,18 +176,18 @@ bool p99_tp_state_commit(p99_tp_state* p00_state) {
 
 # define P99_TP(T) P99_PASTE2(p00_tp_, T)
 # define P99_TP_STATE(T) P99_PASTE2(p00_tp_state_, T)
-# define P99_TP_DECLARE(T)                                              \
-typedef union P99_TP(T) P99_TP(T);                                      \
-typedef union P99_TP_STATE(T) P99_TP_STATE(T);                          \
-_Alignas(sizeof(p00_tp_state)) union P99_TP(T) {                        \
-  p99_tp p00_tp;                                                        \
-  T p00_dum;                /* we only need this for its type */        \
-  P99_TP_STATE(T)* p00_mud; /* we only need this for its type */        \
-};                                                                      \
-_Alignas(sizeof(p00_tp_state)) union P99_TP_STATE(T) {                  \
-  p99_tp_state p00_st;                                                  \
-  T p00_dum;          /* we only need this for its type */              \
-  P99_TP(T)* p00_mud; /* we only need this for its type */              \
+# define P99_TP_DECLARE(T)                                       \
+typedef union P99_TP(T) P99_TP(T);                               \
+typedef union P99_TP_STATE(T) P99_TP_STATE(T);                   \
+_Alignas(sizeof(p00_tp_state)) union P99_TP(T) {                 \
+  p99_tp p00_tp;                                                 \
+  T p00_dum;                /* we only need this for its type */ \
+  P99_TP_STATE(T)* p00_mud; /* we only need this for its type */ \
+};                                                               \
+_Alignas(sizeof(p00_tp_state)) union P99_TP_STATE(T) {           \
+  p99_tp_state p00_st;                                           \
+  T p00_dum;          /* we only need this for its type */       \
+  P99_TP(T)* p00_mud; /* we only need this for its type */       \
 }
 
 # define P99_TP_TYPE(TP) __typeof__(*(TP)->p00_dum)
@@ -201,45 +201,45 @@ _Alignas(sizeof(p00_tp_state)) union P99_TP_STATE(T) {                  \
  ** @brief Load the value of @a TP into the state variable and
  ** prepare it to commit value @a P later.
  **/
-#define P99_TP_STATE_INITIALIZER(TP, P)                                 \
-p99_extension ({                                                        \
-    P99_MACRO_VAR(p00_tp, (TP));                                        \
-    /* ensure that P is assignment compatible to the */                 \
-    /* base type, and that the return can't be used as lvalue */        \
-    register P99_TP_TYPE(p00_tp)* const p00_p = (P);                    \
-    register P99_TP_TYPE_STATE(p00_tp) const p00_r = {                  \
-      .p00_st = p99_tp_state_initializer(&p00_tp->p00_tp, p00_p),       \
-    };                                                                  \
-    p00_r;                                                              \
+#define P99_TP_STATE_INITIALIZER(TP, P)                           \
+p99_extension ({                                                  \
+    P99_MACRO_VAR(p00_tp, (TP));                                  \
+    /* ensure that P is assignment compatible to the */           \
+    /* base type, and that the return can't be used as lvalue */  \
+    register P99_TP_TYPE(p00_tp)* const p00_p = (P);              \
+    register P99_TP_TYPE_STATE(p00_tp) const p00_r = {            \
+      .p00_st = p99_tp_state_initializer(&p00_tp->p00_tp, p00_p), \
+    };                                                            \
+    p00_r;                                                        \
 })
 
-#define P99_TP_GET(TP)                                                  \
-p99_extension ({                                                        \
-    P99_MACRO_VAR(p00_tp, (TP));                                        \
-    /* ensure that pointer that is returned is converted to the */      \
-    /* base type, and that the return can't be used as lvalue */        \
-    register P99_TP_TYPE(p00_tp)* const p00_r                           \
-      = p99_tp_get(&p00_tp->p00_tp);                                    \
-    p00_r;                                                              \
+#define P99_TP_GET(TP)                                             \
+p99_extension ({                                                   \
+    P99_MACRO_VAR(p00_tp, (TP));                                   \
+    /* ensure that pointer that is returned is converted to the */ \
+    /* base type, and that the return can't be used as lvalue */   \
+    register P99_TP_TYPE(p00_tp)* const p00_r                      \
+      = p99_tp_get(&p00_tp->p00_tp);                               \
+    p00_r;                                                         \
 })
 
-#define P99_TP_STATE_GET(TPS)                                           \
-p99_extension ({                                                        \
-    P99_MACRO_VAR(p00_tps, (TPS));                                      \
-    /* ensure that pointer that is returned is converted to the */      \
-    /* base type, and that the return can't be used as lvalue */        \
-    register P99_TP_STATE_TYPE(p00_tps)* const p00_r                    \
-      = p99_tp_state_get(&p00_tps->p00_st);                             \
-    p00_r;                                                              \
+#define P99_TP_STATE_GET(TPS)                                      \
+p99_extension ({                                                   \
+    P99_MACRO_VAR(p00_tps, (TPS));                                 \
+    /* ensure that pointer that is returned is converted to the */ \
+    /* base type, and that the return can't be used as lvalue */   \
+    register P99_TP_STATE_TYPE(p00_tps)* const p00_r               \
+      = p99_tp_state_get(&p00_tps->p00_st);                        \
+    p00_r;                                                         \
 })
 
-#define P99_TP_STATE_SET(TPS, P)                                        \
-p99_extension ({                                                        \
-    P99_MACRO_VAR(p00_tps, (TPS));                                      \
-    /* ensure that P is assignment compatible to the */                 \
-    /* base type, and that the return can't be used as lvalue */        \
-    register P99_TP_STATE_TYPE(p00_tps)* p00_p = (P);                   \
-    p99_tp_state_set(&p00_tps->p00_st, p00_p);                          \
+#define P99_TP_STATE_SET(TPS, P)                                 \
+p99_extension ({                                                 \
+    P99_MACRO_VAR(p00_tps, (TPS));                               \
+    /* ensure that P is assignment compatible to the */          \
+    /* base type, and that the return can't be used as lvalue */ \
+    register P99_TP_STATE_TYPE(p00_tps)* p00_p = (P);            \
+    p99_tp_state_set(&p00_tps->p00_st, p00_p);                   \
 })
 
 #define P99_TP_STATE_COMMIT(TPS) p99_tp_state_commit(&(TPS)->p00_st)
