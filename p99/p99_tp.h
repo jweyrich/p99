@@ -121,7 +121,7 @@ struct p99_tp_state {
   p99_tp* p00_tp;
 };
 
-# define P99_TP_INITIALIZER(VAL) {                             \
+# define P00_TP_INITIALIZER(VAL) {                             \
     .p00_val = ATOMIC_VAR_INIT((uintptr_t)(void*)VAL),         \
       .p00_tic = ATOMIC_VAR_INIT(UINTPTR_C(1)),                \
 }
@@ -174,7 +174,75 @@ bool p99_tp_state_commit(p99_tp_state* p00_state) {
 }
 
 
+# define P99_TP(T) P99_PASTE2(p00_tp_, T)
+# define P99_TP_STATE(T) P99_PASTE2(p00_tp_state_, T)
+# define P99_TP_DECLARE(T)                                              \
+typedef union P99_TP(T) P99_TP(T);                                      \
+typedef union P99_TP_STATE(T) P99_TP_STATE(T);                          \
+_Alignas(sizeof(p00_tp_state)) union P99_TP(T) {                        \
+  p99_tp p00_tp;                                                        \
+  T p00_dum;                /* we only need this for its type */        \
+  P99_TP_STATE(T)* p00_mud; /* we only need this for its type */        \
+};                                                                      \
+_Alignas(sizeof(p00_tp_state)) union P99_TP_STATE(T) {                  \
+  p99_tp_state p00_st;                                                  \
+  T p00_dum;          /* we only need this for its type */              \
+  P99_TP(T)* p00_mud; /* we only need this for its type */              \
+}
 
+# define P99_TP_TYPE(TP) __typeof__(*(TP)->p00_dum)
+# define P99_TP_TYPE_STATE(TP) __typeof__(*(TP)->p00_mud)
+# define P99_TP_STATE_TYPE(TPS) __typeof__(*(TPS)->p00_dum)
+
+
+# define P99_TP_INITIALIZER(VAL) { .p00_tp = P00_TP_INITIALIZER(VAL), }
+
+/**
+ ** @brief Load the value of @a TP into the state variable and
+ ** prepare it to commit value @a P later.
+ **/
+#define P99_TP_STATE_INITIALIZER(TP, P)                                 \
+p99_extension ({                                                        \
+    P99_MACRO_VAR(p00_tp, (TP));                                        \
+    /* ensure that P is assignment compatible to the */                 \
+    /* base type, and that the return can't be used as lvalue */        \
+    register P99_TP_TYPE(p00_tp)* const p00_p = (P);                    \
+    register P99_TP_TYPE_STATE(p00_tp) const p00_r = {                  \
+      .p00_st = p99_tp_state_initializer(&p00_tp->p00_tp, p00_p),       \
+    };                                                                  \
+    p00_r;                                                              \
+})
+
+#define P99_TP_GET(TP)                                                  \
+p99_extension ({                                                        \
+    P99_MACRO_VAR(p00_tp, (TP));                                        \
+    /* ensure that pointer that is returned is converted to the */      \
+    /* base type, and that the return can't be used as lvalue */        \
+    register P99_TP_TYPE(p00_tp)* const p00_r                           \
+      = p99_tp_get(&p00_tp->p00_tp);                                    \
+    p00_r;                                                              \
+})
+
+#define P99_TP_STATE_GET(TPS)                                           \
+p99_extension ({                                                        \
+    P99_MACRO_VAR(p00_tps, (TPS));                                      \
+    /* ensure that pointer that is returned is converted to the */      \
+    /* base type, and that the return can't be used as lvalue */        \
+    register P99_TP_STATE_TYPE(p00_tps)* const p00_r                    \
+      = p99_tp_state_get(&p00_tps->p00_st);                             \
+    p00_r;                                                              \
+})
+
+#define P99_TP_STATE_SET(TPS, P)                                        \
+p99_extension ({                                                        \
+    P99_MACRO_VAR(p00_tps, (TPS));                                      \
+    /* ensure that P is assignment compatible to the */                 \
+    /* base type, and that the return can't be used as lvalue */        \
+    register P99_TP_STATE_TYPE(p00_tps)* p00_p = (P);                   \
+    p99_tp_state_set(&p00_tps->p00_st, p00_p);                          \
+})
+
+#define P99_TP_STATE_COMMIT(TPS) p99_tp_state_commit(&(TPS)->p00_st)
 
 
 #endif

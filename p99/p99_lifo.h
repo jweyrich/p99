@@ -31,17 +31,10 @@
 
 #include "p99_tp.h"
 
-# define P99_LIFO(T) P99_PASTE2(p00_lifo_, T)
-# define P99_LIFO_DECLARE(T)                                      \
-typedef union P99_PASTE2(p00_lifo_, T) P99_PASTE2(p00_lifo_, T); \
-_Alignas(sizeof(p00_tp_state)) union P99_PASTE2(p00_lifo_, T) {   \
-  p99_tp p00_tp;                                                  \
-  T p00_dum; /* we only need this for its type */                 \
-}
+# define P99_LIFO(T) P99_TP(T)
+# define P99_LIFO_DECLARE(T) P99_TP_DECLARE(T)
+# define P99_LIFO_INITIALIZER(VAL) P99_TP_INITIALIZER(VAL)
 
-# define P99_LIFO_INITIALIZER(VAL) {                           \
-    .p00_tp = P99_TP_INITIALIZER((uintptr_t)(void*)VAL),       \
-}
 
 /**
  ** @brief Return a pointer to the top element of an atomic LIFO @a L
@@ -50,13 +43,7 @@ _Alignas(sizeof(p00_tp_state)) union P99_PASTE2(p00_lifo_, T) {   \
  ** @see P99_LIFO_PUSH
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_TOP, 0)
-#define P99_LIFO_TOP(L)                                                         \
-({                                                                              \
-  register const P99_MACRO_VAR(p00_l, (L));                                     \
-  /* be sure that the result can not be used as an lvalue */                    \
-  register const __typeof__(p00_l->p00_dum) p00_r = p99_tp_get(&p00_l->p00_tp); \
-  p00_r;                                                                        \
- })
+#define P99_LIFO_TOP(L) P99_TP_GET(L)
 
 
 /**
@@ -71,11 +58,11 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_PUSH, 1)
 p99_extension                                                          \
 ({                                                                     \
   register const P99_MACRO_VAR(p00_l, (L));                            \
-  register __typeof__(p00_l->p00_dum) p00_rr = (EL);                   \
-  p99_tp_state p00_state = p99_tp_state_initializer(&(p00_l)->p00_tp, p00_rr); \
+  register P99_TP_TYPE(p00_l)*const p00_rr = (EL);                      \
+  P99_TP_TYPE_STATE(p00_l) p00_state = P99_TP_STATE_INITIALIZER(p00_l, p00_rr); \
   do {                                                                 \
-    p00_rr->p99_lifo = p99_tp_state_get(&p00_state);                   \
-  } while (!p99_tp_state_commit(&p00_state));                          \
+    p00_rr->p99_lifo = P99_TP_STATE_GET(&p00_state);                   \
+  } while (!P99_TP_STATE_COMMIT(&p00_state));                          \
 })
 
 /**
@@ -123,12 +110,12 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_POP, 0)
 p99_extension                                                               \
 ({                                                                          \
   register const P99_MACRO_VAR(p00_l, (L));                                 \
-  p99_tp_state p00_state = p99_tp_state_initializer(&(p00_l)->p00_tp, 0);   \
+  P99_TP_TYPE_STATE(p00_l) p00_state = P99_TP_STATE_INITIALIZER(p00_l, 0);  \
   /* be sure that the result can not be used as an lvalue */                \
-  register __typeof__(p00_l->p00_dum) p00_r = p99_tp_state_get(&p00_state); \
-  for (; p00_r; p00_r = p99_tp_state_get(&p00_state)) {                     \
-    p99_tp_state_set(&p00_state, p00_r->p99_lifo);                          \
-    if (p99_tp_state_commit(&p00_state))                                    \
+  register P99_TP_TYPE(p00_l)* p00_r = P99_TP_STATE_GET(&p00_state);         \
+  for (; p00_r; p00_r = P99_TP_STATE_GET(&p00_state)) {                     \
+    P99_TP_STATE_SET(&p00_state, p00_r->p99_lifo);                          \
+    if (P99_TP_STATE_COMMIT(&p00_state))                                    \
       break;                                                                \
   }                                                                         \
   if (p00_r) p00_r->p99_lifo = 0;                                           \
@@ -164,11 +151,11 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_LIFO_CLEAR, 0)
 p99_extension                                                               \
 ({                                                                          \
   register const P99_MACRO_VAR(p00_l, (L));                                 \
-  p99_tp_state p00_state = p99_tp_state_initializer(&(p00_l)->p00_tp, 0);   \
+  P99_TP_TYPE_STATE(p00_l) p00_state = P99_TP_STATE_INITIALIZER(p00_l, 0);  \
   /* be sure that the result can not be used as an lvalue */                \
-  register __typeof__(p00_l->p00_dum) p00_r = p99_tp_state_get(&p00_state); \
-  for (; p00_r; p00_r = p99_tp_state_get(&p00_state)) {                     \
-    if (p99_tp_state_commit(&p00_state))                                    \
+  register P99_TP_TYPE(p00_l)* p00_r = P99_TP_STATE_GET(&p00_state); \
+  for (; p00_r; p00_r = P99_TP_STATE_GET(&p00_state)) {                     \
+    if (P99_TP_STATE_COMMIT(&p00_state))                                    \
       break;                                                                \
   }                                                                         \
   p00_r;                                                                    \
