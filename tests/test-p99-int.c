@@ -171,12 +171,17 @@ char const* representation[4] = {
   = "two's compl",
 };
 
+#ifndef alignof
+# define alignof(X) 0
+#endif
+
 #define SAYIT(T)                                               \
-printf("%20s:\t%4u\t%5u\t%3zu\t%20s\t%20s,\t%3ssigned%15s\n",  \
+printf("%20s:\t%4u\t%5u\t%5zu\t%5zu\t%20s\t%20s,\t%3ssigned%15s\n",  \
        #T,                                                     \
        P99_TPREC(T),                                           \
        P99_TWIDTH(T),                                          \
        P99_TPADDING(T),                                        \
+       alignof(T),                                             \
        PRINT_LARGE(P99_TMIN(T)),                               \
        PRINT_LARGE(P99_TMAX(T)),                               \
        (P99_ISSIGNED(T) ? "" : "un"),                          \
@@ -185,11 +190,12 @@ printf("%20s:\t%4u\t%5u\t%3zu\t%20s\t%20s,\t%3ssigned%15s\n",  \
         : representation[P99_SIGNED_REPRESENTATION(T)]))
 
 #define SAYIT3(EXPR)                                           \
-printf("%20s:\t%4u\t%5u\t%3zu\t%20s\t%20s,\t%3ssigned%15s\n",  \
+printf("%20s:\t%4u\t%5u\t%5zu%5zu\t%20s\t%20s,\t%3ssigned%15s\n",  \
        #EXPR,                                                  \
        P99_EPREC(EXPR),                                        \
        P99_EWIDTH(EXPR),                                       \
        P99_EPADDING(EXPR),                                     \
+       alignof(EXPR),                                          \
        PRINT_LARGE(P99_EMIN(EXPR)),                            \
        PRINT_LARGE(P99_EMAX(EXPR)),                            \
        (P99_SIGNED(EXPR) ? "" : "un"),                         \
@@ -367,8 +373,8 @@ int i:UINT_WIDTH;
     printf("P99 warning: Because of the strangeness %u of this platform, some of the following computations may be incorrect\n",
            strangeness);
   }
-  printf("%20s:\t%2s\t%2s\t%2s\t%20s\t%20s,\t%3ssigned%15s\n",
-         "type", "prec", "width", "pad", "min", "max", "{un}", "sign repr");
+  printf("%20s:\t%2s\t%2s\t%2s\t%2s\t%20s\t%20s,\t%3ssigned%15s\n",
+         "type", "prec", "width", "pad", "align", "min", "max", "{un}", "sign repr");
   printf("--------------------------- proper types ---------------------------------\n");
   SAYIT(_Bool);
   SAYIT(char);

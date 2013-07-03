@@ -700,6 +700,21 @@ extern char const p00_compiletime_assert[sizeof(void const*[2])];
 # endif
 #endif
 
+#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
+# if defined(__LONG_MAX__) && defined(__LONG_LONG_MAX__) && (P99_GCC_VERSION >= 30000UL)
+#  if defined(__SIZEOF_INT128__)
+#   define p99x_uintmax p99x_uintmax
+#   define p99x_intmax p99x_intmax
+#   define p99x_uint128 p99x_uint128
+#   define p99x_int128 p99x_int128
+typedef __uint128_t p99x_uintmax;
+typedef __int128_t p99x_intmax;
+typedef __uint128_t p99x_uint128;
+typedef __int128_t p99x_int128;
+#  endif
+# endif
+#endif
+
 /**
  ** @brief Return the alignment requirement for type @a T
  **
@@ -782,6 +797,12 @@ union max_align_t {
   float _Complex P99_PASTE2(p00_, __LINE__);
   double _Complex P99_PASTE2(p00_, __LINE__);
   long double _Complex P99_PASTE2(p00_, __LINE__);
+#  endif
+#  ifdef p99x_uint128
+  p99x_uint128 P99_PASTE2(p00_, __LINE__);
+#  endif
+#  ifdef UINT128_MAX
+  uint128_t P99_PASTE2(p00_, __LINE__);
 #  endif
 }
 #  if p99_has_attribute(aligned)
@@ -1001,21 +1022,6 @@ P00_UNUSED(1);
 # define P99_ATLEAST static
 #endif
 
-
-#if P99_COMPILER & (P99_COMPILER_CLANG | P99_COMPILER_GNU | P99_COMPILER_OPEN64)
-# if defined(__LONG_MAX__) && defined(__LONG_LONG_MAX__) && (P99_GCC_VERSION >= 30000UL)
-#  if defined(__SIZEOF_INT128__)
-#   define p99x_uintmax p99x_uintmax
-#   define p99x_intmax p99x_intmax
-#   define p99x_uint128 p99x_uint128
-#   define p99x_int128 p99x_int128
-typedef __uint128_t p99x_uintmax;
-typedef __int128_t p99x_intmax;
-typedef __uint128_t p99x_uint128;
-typedef __int128_t p99x_int128;
-#  endif
-# endif
-#endif
 
 /**
  ** @brief A wrapper for vector type extensions
