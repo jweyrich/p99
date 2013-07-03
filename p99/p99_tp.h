@@ -179,15 +179,17 @@ bool p99_tp_state_commit(p99_tp_state* p00_state) {
 # define P99_TP_DECLARE(T)                                       \
 typedef union P99_TP(T) P99_TP(T);                               \
 typedef union P99_TP_STATE(T) P99_TP_STATE(T);                   \
-_Alignas(sizeof(p00_tp_state)) union P99_TP(T) {                 \
+union P99_TP(T) {                                                \
   p99_tp p00_tp;                                                 \
   T p00_dum;                /* we only need this for its type */ \
   P99_TP_STATE(T)* p00_mud; /* we only need this for its type */ \
+  max_align_t p00_align;    /* ensure maximal alignment       */ \
 };                                                               \
-_Alignas(sizeof(p00_tp_state)) union P99_TP_STATE(T) {           \
+union P99_TP_STATE(T) {                                          \
   p99_tp_state p00_st;                                           \
-  T p00_dum;          /* we only need this for its type */       \
-  P99_TP(T)* p00_mud; /* we only need this for its type */       \
+  T p00_dum;             /* we only need this for its type */    \
+  P99_TP(T)* p00_mud;    /* we only need this for its type */    \
+  max_align_t p00_align; /* ensure maximal alignment       */    \
 }
 
 # define P99_TP_TYPE(TP) __typeof__(*(TP)->p00_dum)
