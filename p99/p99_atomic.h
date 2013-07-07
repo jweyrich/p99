@@ -1134,7 +1134,7 @@ p99_extension                                                                   
   typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                               \
   ((!atomic_is_lock_free(p00_objp))                                               \
    ? ({                                                                           \
-       register p00_base_t p00_ret;                                               \
+       register p00_base_t p00_ret = P99_INIT;                                    \
        P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                      \
          p00_ret = P00_AT(p00_objp);                                              \
        p00_ret;                                                                   \
@@ -1222,7 +1222,7 @@ p99_extension                                                         \
   P99_MACRO_VAR(p00_op, OPERAND);                                     \
   ((!atomic_is_lock_free(p00_objp))                                   \
    ? ({                                                               \
-       register __typeof__(P00_AT(p00_objp)) p00_ret;                 \
+       register __typeof__(P00_AT(p00_objp)) p00_ret = P99_INIT;      \
        P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                        \
          p00_ret = P00_AT(p00_objp);                                  \
          P00_AT(p00_objp) OPERATOR p00_op;                            \
