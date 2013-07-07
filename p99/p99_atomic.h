@@ -353,7 +353,7 @@ __typeof__(P99_GENERIC_SIZE_LIT(sizeof(T), (uintptr_t){ 0 }, P00_UINT_TYPE_LIST)
  ** @brief Initialize a variable of an atomic type.
  ** @see atomic_int
  **/
-#define ATOMIC_VAR_INIT(V) { .p00_xval = { .p00_t = (V), }, }
+#define ATOMIC_VAR_INIT(...) { .p00_xval = { .p00_t = __VA_ARGS__, }, }
 
 /**
  ** @brief A list of types that are supposed to have lock-free atomic
