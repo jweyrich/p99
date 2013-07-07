@@ -40,6 +40,9 @@ p00_tp_state p00_tp_p2i(void * p, uintptr_t t) {
   return (((p00_tp_state)t)<<p00_tp_shift)|(uintptr_t)p;
 }
 
+#define P00_TP_STATE_INITIALIZER(VAL) { (((p00_tp_state)VAL)<<p00_tp_shift)|(UINTPTR_C(1)) }
+
+
 p99_inline
 void * p00_tp_i2p(p00_tp_state v) {
   return (void*)(uintptr_t)v;
@@ -58,6 +61,7 @@ struct p00_tp_state {
   void* p00_val;
 };
 
+#define P00_TP_STATE_INITIALIZER(VAL) { .p00_tag = 1, .p00_val = (VAL), }
 
 p99_inline
 p00_tp_state p00_tp_p2i(void * p00_val, uintptr_t p00_tag) {
@@ -122,7 +126,7 @@ struct p99_tp_state {
 };
 
 # define P00_TP_INITIALIZER(VAL) {                             \
-    .p00_val = ATOMIC_VAR_INIT((uintptr_t)(void*)VAL),         \
+    .p00_val = ATOMIC_VAR_INIT(P00_TP_STATE_INITIALIZER(VAL)), \
       .p00_tic = ATOMIC_VAR_INIT(UINTPTR_C(1)),                \
 }
 
