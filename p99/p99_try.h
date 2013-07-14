@@ -299,6 +299,17 @@ int p00_throw_call_zero(int p00_err,
 #define P99_THROW_CALL_ZERO(F, E, ...)                                                                            \
 p00_throw_call_zero(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", non-zero return")
 
+/**
+ ** @brief Wrap a function call to @a F such that it throws an error
+ ** on failure.
+ **
+ ** Similar to ::P99_THROW_CALL_ZERO, only that the condition for
+ ** failure is inverted, that is 0 is considered a failure and all
+ ** other values are considered success.
+ **/
+#define P99_THROW_CALL_NOT_ZERO(F, E, ...)                                                                            \
+p00_throw_call_zero(!F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", zero return")
+
 P99_PURE_FUNCTION
 p99_inline
 int p00_throw_call_thrd(int p00_err,
