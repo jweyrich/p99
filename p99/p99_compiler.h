@@ -1077,8 +1077,14 @@ P99_IF_COMPILER(INTEL, warning(disable: 1419)) /* external declaration in primar
 P99_IF_COMPILER(GNU, GCC diagnostic ignored "-Wmissing-braces")
 P99_IF_COMPILER(GNU, GCC diagnostic ignored "-Wmissing-field-initializers")
 
-P99_IF_COMPILER(CLANG, GCC diagnostic ignored "-Wmissing-braces")
-P99_IF_COMPILER(CLANG, GCC diagnostic ignored "-Wmissing-field-initializers")
+#if P99_COMPILER & P99_COMPILER_CLANG
+#define P99_WARN_INIT_PUSH                                              \
+P99_PRAGMA(GCC diagnostic push)                                         \
+P99_PRAGMA(GCC diagnostic ignored "-Wmissing-braces")                   \
+P99_PRAGMA(GCC diagnostic ignored "-Wmissing-field-initializers")       \
+P99_PRAGMA(GCC diagnostic ignored "-Winitializer-overrides")
+#define P99_WARN_INIT_POP P99_PRAGMA(GCC diagnostic pop)
+#endif
 
 P99_IF_COMPILER(INTEL, GCC diagnostic ignored "-Wmissing-braces")
 P99_IF_COMPILER(INTEL, GCC diagnostic ignored "-Wmissing-field-initializers")
@@ -1086,6 +1092,13 @@ P99_IF_COMPILER(INTEL, GCC diagnostic ignored "-Wmissing-field-initializers")
 P99_IF_COMPILER(OPEN64, GCC diagnostic ignored "-Wmissing-braces")
 P99_IF_COMPILER(OPEN64, GCC diagnostic ignored "-Wmissing-field-initializers")
 
+#ifndef P99_WARN_INIT_PUSH
+# define P99_WARN_INIT_PUSH
+#endif
+
+#ifndef P99_WARN_INIT_POP
+# define P99_WARN_INIT_POP
+#endif
 
 #endif
 
