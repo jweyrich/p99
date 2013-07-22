@@ -1,18 +1,18 @@
 #include "p99.h"
 #include "p99_generic.h"
 
-typedef struct p00_cons p00_cons;
+/* Use the following three macros to extend test coverage */
+#ifndef MYCONST
+# define MYCONST const
+#endif
 
-struct p00_cons {
-  void * p00_car;
-  void * p00_cdr;
-};
+#ifndef VTYPE
+# define VTYPE size_t
+#endif
 
-#define P00_VERTEX_EXPAND(NAME3, X, I) (NAME3, P00_ROBUST X)
-
-
-#define P00_GRAPH_EXPAND(NAME3, ...)\
-P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_VERTEX_EXPAND, __VA_ARGS__)
+#ifndef ETYPE
+# define ETYPE double
+#endif
 
 typedef struct p99_vertex p99_vertex;
 typedef struct p99_arc p99_arc;
@@ -50,6 +50,11 @@ p99_graph NAME =                                        \
   }                                                     \
 P99_WARN_INIT_POP
 
+#define P00_VERTEX_EXPAND(NAME3, X, I) (NAME3, P00_ROBUST X)
+
+#define P00_GRAPH_EXPAND(NAME3, ...)\
+P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_VERTEX_EXPAND, __VA_ARGS__)
+
 #define P99_GRAPH(TV, TE, NAME, ...) P00_GRAPH(TV, TE, NAME, P00_GRAPH_EXPAND((TV, TE, NAME), __VA_ARGS__))
 
 #define P00_VERTEX_2(NAME3, POS, VAL, ...)                              \
@@ -64,7 +69,7 @@ P99_GENERIC(&(P00_GRAPH_NAME NAME3)[0], ,                               \
 )
 
 #define P00_VERTEX_0(NAME3, POS)                \
-[P00_VPOS(POS)].p00_id = ((POS)+1),                       \
+[P00_VPOS(POS)].p00_id = ((POS)+1),             \
 [P00_VPOS(POS)].p00_weight = (void*)(0)
 
 #define P00_VERTEX_1(NAME3, ...)                \
@@ -88,16 +93,16 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
 #define P00_GRAPH_NAME(TV, TE, NAME) NAME
 
 #define P00_ARC_VERTEX(NAME, X, I) [I].p00_vertex = (void*)&(P00_GRAPH_NAME NAME)[P00_VPOS(P00_ARC_TARGET X)]
-#define P00_ARC_WEIGHT(NAME, X, I)                \
+#define P00_ARC_WEIGHT(NAME, X, I)              \
 [I].p00_weight =                                \
-  P99_IF_EMPTY(P00_ARC_VALUE X)                \
+  P99_IF_EMPTY(P00_ARC_VALUE X)                 \
   ((void*)0)                                    \
   (&(P00_GRAPH_TE NAME){ P00_ARC_VALUE X })
 
-#define P00_ARC_WEIGHTC(NAME, X, I)                \
-[I].p00_weight =                                \
-  P99_IF_EMPTY(P00_ARC_VALUE X)                \
-  ((void*)0)                                    \
+#define P00_ARC_WEIGHTC(NAME, X, I)                             \
+[I].p00_weight =                                                \
+  P99_IF_EMPTY(P00_ARC_VALUE X)                                 \
+  ((void*)0)                                                    \
   ((void*)&(const P00_GRAPH_TE NAME){ P00_ARC_VALUE X })
 
 #define P00_ARC_ENDPOINT(NAME, X, I) [P00_VPOS(P00_ARC_TARGET X)].p00_id = ((P00_ARC_TARGET X)+1)
@@ -105,7 +110,7 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
 #define P00_ARC_2_(NAME3, N, ...)                               \
   P00_ARC_2_LIT(NAME3, N,                                       \
                 (P00_ARC_2_LIST_W(NAME3, N, __VA_ARGS__)),      \
-                (P00_ARC_2_LIST_WC(NAME3, N, __VA_ARGS__)),      \
+                (P00_ARC_2_LIST_WC(NAME3, N, __VA_ARGS__)),     \
                 (P00_ARC_2_LIST_V(NAME3, N, __VA_ARGS__))       \
                 )
 
@@ -131,15 +136,15 @@ P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_ARC_ENDPOINT, __VA_ARGS__), \
   [P00_VPOS(POS)].p00_arcs = P00_ARC_2_(NAME3, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
 
-#define P00_ARC_0(NAME3, POS, ...)             \
-[P00_VPOS(POS)].p00_deg = 0,                              \
+#define P00_ARC_0(NAME3, POS, ...)              \
+[P00_VPOS(POS)].p00_deg = 0,                    \
 [P00_VPOS(POS)].p00_arcs = (void*)(0)
 
 
 
-#define P00_ARC_1(...)                         \
+#define P00_ARC_1(...)                          \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 4)             \
-(P00_ARC_0(__VA_ARGS__))                       \
+(P00_ARC_0(__VA_ARGS__))                        \
 (P00_ARC_2(__VA_ARGS__))
 
 #define P00_ARC_(ARGS) P00_ARC_1 ARGS
@@ -163,9 +168,9 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 4)             \
 
 #define P00_ARCC_2(NAME3, POS, VAL, ...) P99_NARG(__VA_ARGS__)
 #define P00_ARCC_0(NAME3, POS, ...) 0
-#define P00_ARCC_1(...)                        \
+#define P00_ARCC_1(...)                         \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 4)             \
-(P00_ARCC_0(__VA_ARGS__))                      \
+(P00_ARCC_0(__VA_ARGS__))                       \
 (P00_ARCC_2(__VA_ARGS__))
 
 #define P00_ARCC_(ARGS) P00_ARCC_1 ARGS
@@ -175,10 +180,57 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 4)             \
 
 
 
-#define P99_ARC_VERTEX(ARC) ((ARC)->p00_vertex)
-#define P99_ARC_WEIGHT(ARC) ((ARC)->p00_weight)
+p99_inline
+void* p00_arc_weight(p99_arc* p00_v) {
+  return p00_v ? p00_v->p00_weight : 0;
+}
 
-#define P99_VERTEX_WEIGHT(VERTEX) ((VERTEX)[0].p00_weight)
+p99_inline
+void const* p00_arc_weightc(p99_arc const* p00_v) {
+  return p00_v ? p00_v->p00_weight : 0;
+}
+
+#define P99_ARC_WEIGHT(ARC)                     \
+P99_GENERIC((ARC), ,                            \
+            (p99_arc *, p00_arc_weight),        \
+            (p99_arc const*, p00_arc_weightc))  \
+(ARC)
+
+p99_inline
+p99_vertex* p00_arc_vertex(p99_arc* p00_v) {
+  return p00_v ? p00_v->p00_vertex : 0;
+}
+
+p99_inline
+p99_vertex const* p00_arc_vertexc(p99_arc const* p00_v) {
+  return p00_v ? p00_v->p00_vertex : 0;
+}
+
+#define P99_ARC_VERTEX(ARC)                     \
+P99_GENERIC((ARC), ,                            \
+            (p99_arc *, p00_arc_vertex),        \
+            (p99_arc const*, p00_arc_vertexc))  \
+(ARC)
+
+#define P99_VERTEX_DEGREE(VERTEX) ((VERTEX)[0].p00_deg)
+
+
+p99_inline
+void* p00_vertex_weight(p99_vertex* p00_v) {
+  return p00_v ? p00_v->p00_weight : 0;
+}
+
+p99_inline
+void const* p00_vertex_weightc(p99_vertex const* p00_v) {
+  return p00_v ? p00_v->p00_weight : 0;
+}
+
+#define P99_VERTEX_WEIGHT(VERTEX)                       \
+P99_GENERIC((VERTEX), ,                                 \
+            (p99_vertex *, p00_vertex_weight),          \
+            (p99_vertex const*, p00_vertex_weightc))    \
+(VERTEX)
+
 #define P99_VERTEX_DEGREE(VERTEX) ((VERTEX)[0].p00_deg)
 #define P99_VERTEX_ARCS(VERTEX) ((VERTEX)[0].p00_arcs)
 
@@ -209,10 +261,10 @@ P99_GENERIC(&(NAME)[0], ,                                               \
 
 #define P99_VERTEX_ID(VERTEX) ((VERTEX)[0].p00_id-1)
 
-const
-P99_GRAPH(size_t, double, hey,
+MYCONST
+P99_GRAPH(VTYPE, ETYPE, hey,
           (1, 11),
-          (2, 22, (1, 221), (2, 222), (3, 223), (14, 227)),
+          (2, 0, (1, 221), (2, 222), (3, 223), (14, 227)),
           (3, 33, (4, 334), (7, 337), (9, 339)),
           (4, 33, (4, 334), (7, 337), (9, 339)),
           (12,),
@@ -223,28 +275,28 @@ int main(void) {
   printf("total number of vertices %zu\n", P99_GRAPH_N(hey));
   printf("total number of arcs %zu\n", P99_GRAPH_M(hey));
   P99_DO(size_t, i, 0, P99_GRAPH_N(hey)) {
-    p99_vertex const* vert = P99_GRAPH_VERTEX(hey, i);
+    p99_vertex MYCONST* vert = P99_GRAPH_VERTEX(hey, i);
     if (vert) {
-      size_t * p = P99_GRAPH_VWEIGHT(hey, i);
+      VTYPE MYCONST* p = P99_GRAPH_VWEIGHT(hey, i);
       size_t deg = P99_GRAPH_VDEGREE(hey, i);
       size_t id = P99_VERTEX_ID(vert);
       assert(id == i);
-      if (p) printf("vertex %zu: weight %zu", id, *p);
+      if (p) P99_PRINTF("vertex %s: weight %s", id, *p);
       else printf("vertex %zu no weight", id);
       printf(",\tdegree %zu\n", deg);
       P99_DO(size_t, j, 0, deg) {
-        p99_arc const* arc = P99_GRAPH_ARC(hey, i, j);
-        double * weight = P99_ARC_WEIGHT(arc);
-        p99_vertex* vert = P99_ARC_VERTEX(arc);
-        if (weight) printf("\t\t%zu %g\n", P99_VERTEX_ID(vert), *weight);
-        else printf("\t\t%zu (no weight)\n", P99_VERTEX_ID(vert));
+        p99_arc MYCONST* arc = P99_GRAPH_ARC(hey, i, j);
+        ETYPE MYCONST* weight = P99_ARC_WEIGHT(arc);
+        p99_vertex MYCONST* vert = P99_ARC_VERTEX(arc);
+        if (weight) P99_PRINTF("\t\t%s %s\n", P99_VERTEX_ID(vert), *weight);
+        else P99_PRINTF("\t\t%s (no weight)\n", P99_VERTEX_ID(vert));
       }
-      for (p99_arc const* arc = P99_GRAPH_ARCS(hey, i);
+      for (p99_arc MYCONST* arc = P99_GRAPH_ARCS(hey, i);
            arc && P99_ARC_VERTEX(arc);
            ++arc) {
-        double * weight = P99_ARC_WEIGHT(arc);
-        p99_vertex* vert = P99_ARC_VERTEX(arc);
-        if (weight) printf("\t\t%zu %g\n", P99_VERTEX_ID(vert), *weight);
+        ETYPE MYCONST* weight = P99_ARC_WEIGHT(arc);
+        p99_vertex MYCONST* vert = P99_ARC_VERTEX(arc);
+        if (weight) P99_PRINTF("\t\t%s %s\n", P99_VERTEX_ID(vert), *weight);
         else printf("\t\t%zu (no weight)\n", P99_VERTEX_ID(vert));
       }
     }
