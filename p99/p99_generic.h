@@ -24,9 +24,9 @@
 
 #ifndef P00_DOXYGEN
 
-#define P00_GENERIC_TYPE(T, EXP) T
-#define P00_GENERIC_SIZE_(UI, EXP) char(*)[UI]
-#define P00_GENERIC_EXP_(T, EXP) (EXP)
+#define P00_GENERIC_TYPE(T, ...) T
+#define P00_GENERIC_SIZE_(UI, ...) char(*)[UI]
+#define P00_GENERIC_EXP_(T, ...) (__VA_ARGS__)
 #define P00_GENERIC_LIT_(T, EXP) (EXP){ 0 }
 
 #define P00_GENERIC_SIZE_LIT(EXP, PAIR, I) P00_GENERIC_EXPRESSION(P00_GENERIC_SIZE_, P00_GENERIC_LIT_, EXP, PAIR, I)
