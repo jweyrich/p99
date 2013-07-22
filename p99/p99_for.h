@@ -288,6 +288,33 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_SER, 0)
 P00_DOCUMENT_MACRO_ARGUMENT(P99_SEP, 0)
 #define P99_SEP(MACRO, ...) P00_MAP_(P99_NARG(__VA_ARGS__), MACRO, (;), __VA_ARGS__)
 
+/**
+ ** @brief Apply the macro @a MACRO to the rest of the argument list.
+ **
+ ** The macro is called with each of the other arguments and
+ ** the results are joined by a <code>+</code> token.
+ **
+ ** @see P99_UNROLL for a similar macro that applies @a MACRO a fixed number of times
+ ** @see P99_SEQ for a similar macro that separates the different parts with a @c ,
+ ** @see P99_SER for a similar macro that separates the different parts with a space token
+ ** @see P99_FOR for a more generic and flexible utility
+ **/
+P00_DOCUMENT_MACRO_ARGUMENT(P99_SEA, 0)
+#define P99_SEA(MACRO, ...) P00_MAP_(P99_NARG(__VA_ARGS__), MACRO, (+), __VA_ARGS__)
+
+/**
+ ** @brief Apply the macro @a MACRO to the rest of the argument list.
+ **
+ ** The macro is called with each of the other arguments and
+ ** the results are joined by a <code>*</code> token.
+ **
+ ** @see P99_UNROLL for a similar macro that applies @a MACRO a fixed number of times
+ ** @see P99_SEQ for a similar macro that separates the different parts with a @c ,
+ ** @see P99_SER for a similar macro that separates the different parts with a space token
+ ** @see P99_FOR for a more generic and flexible utility
+ **/
+P00_DOCUMENT_MACRO_ARGUMENT(P99_SEM, 0)
+#define P99_SEM(MACRO, ...) P00_MAP_(P99_NARG(__VA_ARGS__), MACRO, (*), __VA_ARGS__)
 
 
 /**
