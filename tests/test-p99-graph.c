@@ -32,8 +32,14 @@ struct p99_vertex {
 
 typedef p99_vertex p99_graph[];
 
-#define P00_VOFF 1
-#define P00_VPOS(X) ((X)+P00_VOFF)
+/* We need at least one spare vertex at the start of the graph array:
+   we store n and m, there, and p00_id of vertices should never be
+   0. */
+#if P00_GRAPH_OFFSET <= 0
+# define P00_GRAPH_OFFSET 1U
+#endif
+
+#define P00_VPOS(X) ((X)+P00_GRAPH_OFFSET)
 
 
 #define P00_GRAPH(TV, TE, NAME, ...)                    \
@@ -56,8 +62,19 @@ P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_VERTEX_EXPAND, __VA_ARGS__)
 
 #define P99_GRAPH_INITIALIZER(TV, TE, NAME, ...) P00_GRAPH(TV, TE, NAME, P00_GRAPH_EXPAND((TV, TE, NAME), __VA_ARGS__))
 
+/* Many of the macros here receive a triplet for the generic
+   information about the graph. These three macros access the
+   individual parts. */
+
+#define P00_GRAPH_TV(TV, TE, NAME) TV
+#define P00_GRAPH_TE(TV, TE, NAME) TE
+#define P00_GRAPH_NAME(TV, TE, NAME) NAME
+
+/* Implement the P00_VERTEX_ macro that collects the per vertex
+   information. */
+
 #define P00_VERTEX_2(NAME3, POS, VAL, ...)                              \
-[P00_VPOS(POS)].p00_id = ((POS)+1),                                     \
+[P00_VPOS(POS)].p00_id = P00_VPOS(POS),                                 \
 [P00_VPOS(POS)].p00_weight =                                            \
 P99_IF_EMPTY(VAL)                                                       \
 ((void*)0)                                                              \
@@ -68,7 +85,7 @@ P99_GENERIC(&(P00_GRAPH_NAME NAME3)[0], ,                               \
 )
 
 #define P00_VERTEX_0(NAME3, POS)                \
-[P00_VPOS(POS)].p00_id = ((POS)+1),             \
+[P00_VPOS(POS)].p00_id = P00_VPOS(POS),         \
 [P00_VPOS(POS)].p00_weight = (void*)(0)
 
 #define P00_VERTEX_1(NAME3, ...)                \
@@ -78,18 +95,19 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
 
 #define P00_VERTEX_(ARGS) P00_VERTEX_1 ARGS
 
+/* Implement the P00_VERTEXC_ macro that is similar, but only serves
+   to compute the maximum vertex ID. */
 
 #define P00_VERTEXC_0(NAME3, POS, ...) [POS] = 0
 #define P00_VERTEXC_1(NAME3, ...) P00_VERTEXC_0(NAME3, __VA_ARGS__, 0)
 #define P00_VERTEXC_(ARGS) P00_VERTEXC_1 ARGS
 
-
 #define P00_ARC_TARGET(TARGET, ...) TARGET
 #define P00_ARC_VALUE(TARGET, ...) __VA_ARGS__
 
-#define P00_GRAPH_TV(TV, TE, NAME) TV
-#define P00_GRAPH_TE(TV, TE, NAME) TE
-#define P00_GRAPH_NAME(TV, TE, NAME) NAME
+/* Implement the P00_ARC_ macro that collects the information on
+   arcs. This is the most complex part, here, since this has actually
+   to compute a list of items. */
 
 #define P00_ARC_VERTEX(NAME, X, I) [I].p00_vertex = (void*)&(P00_GRAPH_NAME NAME)[P00_VPOS(P00_ARC_TARGET X)]
 #define P00_ARC_WEIGHT(NAME, X, I)              \
@@ -104,7 +122,7 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
   ((void*)0)                                                    \
   ((void*)&(const P00_GRAPH_TE NAME){ P00_ARC_VALUE X })
 
-#define P00_ARC_ENDPOINT(NAME, X, I) [P00_VPOS(P00_ARC_TARGET X)].p00_id = ((P00_ARC_TARGET X)+1)
+#define P00_ARC_ENDPOINT(NAME, X, I) [P00_VPOS(P00_ARC_TARGET X)].p00_id = P00_VPOS(P00_ARC_TARGET X)
 
 #define P00_ARC_2_(NAME3, N, ...)                               \
   P00_ARC_2_LIT(NAME3, N,                                       \
@@ -118,23 +136,37 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
               (p99_vertex*, (p99_arc[(N)+1]){ P00_ROBUST V, P00_ROBUST A, }), \
               (p99_vertex const*, (p99_arc*)(p99_arc const[(N)+1]){ P00_ROBUST VC, P00_ROBUST A, }))
 
+/* create a list of entries for all arc weights, the version that has
+   modifiable weights */
 #define P00_ARC_2_LIST_W(NAME3, N, ...)                      \
   P99_FOR(NAME3, N, P00_SEQ, P00_ARC_WEIGHT, __VA_ARGS__)
 
+/* create a list of entries for all arc weights, the version that has
+   const weights */
 #define P00_ARC_2_LIST_WC(NAME3, N, ...)                      \
   P99_FOR(NAME3, N, P00_SEQ, P00_ARC_WEIGHTC, __VA_ARGS__)
 
+/* create a list of entries for all arc endpoints */
 #define P00_ARC_2_LIST_V(NAME3, N, ...)                      \
   P99_FOR(NAME3, N, P00_SEQ, P00_ARC_VERTEX, __VA_ARGS__)
 
-#define P00_ARC_2(NAME3, POS, VAL, ...)                               \
-  /* force entries for all vertices that are used */                    \
-P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_ARC_ENDPOINT, __VA_ARGS__), \
+/* create a list of entries for all vertices that are used as endpoints of arcs */
+#define P00_ARC_2_LIST_E(NAME3, N, ...)                                 \
+P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_ARC_ENDPOINT, __VA_ARGS__)
+
+/* For the particular arc list of a vertex, first compute entries for
+   all the target vertices of these arcs. Such entries may occur
+   multiple times, for each arc in which a vertex appears. These
+   entries for any target vertex are always the same value. C99
+   explicitly allows such multiple initializations. */
+#define P00_ARC_2(NAME3, POS, VAL, ...)                                 \
+P00_ARC_2_LIST_E(NAME3, P99_NARG(__VA_ARGS__), __VA_ARGS__),            \
   /* store the degree */                                                \
-[P00_VPOS(POS)].p00_deg = (P99_NARG(__VA_ARGS__)),                                \
-  [P00_VPOS(POS)].p00_arcs = P00_ARC_2_(NAME3, P99_NARG(__VA_ARGS__), __VA_ARGS__)
+[P00_VPOS(POS)].p00_deg = (P99_NARG(__VA_ARGS__)),                      \
+[P00_VPOS(POS)].p00_arcs = P00_ARC_2_(NAME3, P99_NARG(__VA_ARGS__), __VA_ARGS__)
 
-
+/* The case of an empty arc list. Set everything to zero, such that
+   this is the same as an arc list that is default initialized. */
 #define P00_ARC_0(NAME3, POS, ...)              \
 [P00_VPOS(POS)].p00_deg = 0,                    \
 [P00_VPOS(POS)].p00_arcs = (void*)(0)
@@ -146,7 +178,13 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 4)             \
 (P00_ARC_0(__VA_ARGS__))                        \
 (P00_ARC_2(__VA_ARGS__))
 
+/* This must be specially expanded because the arc list may be an
+   empty list. */
 #define P00_ARC_(ARGS) P00_ARC_1 ARGS
+
+
+/* Implement the P00_ARCC_ macro that is similar, but only serves to
+   compute the number of arcs. */
 
 #define P00_ARCSC_VERTEX(NAME, X, I)            \
 P99_IF_EMPTY(P00_ARC_TARGET X)                  \
@@ -258,7 +296,7 @@ P99_GENERIC(&(NAME)[0], ,                                               \
             )
 #define P99_GRAPH_ARC(NAME, I, POS) (P99_GRAPH_ARCS(NAME, I)+(POS))
 
-#define P99_VERTEX_ID(VERTEX) ((VERTEX)[0].p00_id-1)
+#define P99_VERTEX_ID(VERTEX) ((VERTEX)[0].p00_id-P00_GRAPH_OFFSET)
 
 MYCONST p99_graph hey
 = P99_GRAPH_INITIALIZER(VTYPE, ETYPE, hey,
