@@ -96,17 +96,25 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
 
 #define P00_ARC_ENDPOINT(NAME, X, I) [P00_VPOS(P00_ARC_TARGET X)].p00_id = ((P00_ARC_TARGET X)+1)
 
+#define P00_ARC_2_(NAME3, N, ...)               \
+  P00_ARC_2_LIT(NAME3, N, P00_ARC_2_LIST(NAME3, N, __VA_ARGS__))
 
-#define P00_ARC_2(NAME3, POS, VAL, ...)                                \
+#define P00_ARC_2_LIT(NAME3, N, ...)                                    \
+  P99_GENERIC(&(P00_GRAPH_NAME NAME3)[0], ,                           \
+              (p99_vertex*, (p99_arc[(N)+1]){ __VA_ARGS__, }),            \
+              (p99_vertex const*, (p99_arc*)(p99_arc const[(N)+1]){ __VA_ARGS__, }))
+
+#define P00_ARC_2_LIST(NAME3, N, ...)                      \
+  P99_FOR(NAME3, N, P00_SEQ, P00_ARC_WEIGHT, __VA_ARGS__), \
+  P99_FOR(NAME3, N, P00_SEQ, P00_ARC_VERTEX, __VA_ARGS__)
+
+#define P00_ARC_2(NAME3, POS, VAL, ...)                               \
   /* force entries for all vertices that are used */                    \
 P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_ARC_ENDPOINT, __VA_ARGS__), \
   /* store the degree */                                                \
 [P00_VPOS(POS)].p00_deg = (P99_NARG(__VA_ARGS__)),                                \
-  [P00_VPOS(POS)].p00_arcs =                                            \
-  (p99_arc[P99_NARG(__VA_ARGS__)+1]){                                   \
-  P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_ARC_WEIGHT, __VA_ARGS__), \
-  P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_ARC_VERTEX, __VA_ARGS__), \
-}
+  [P00_VPOS(POS)].p00_arcs = P00_ARC_2_(NAME3, P99_NARG(__VA_ARGS__), __VA_ARGS__)
+
 
 #define P00_ARC_0(NAME3, POS, ...)             \
 [P00_VPOS(POS)].p00_deg = 0,                              \
@@ -204,6 +212,7 @@ int main(void) {
       size_t * p = P99_GRAPH_VWEIGHT(hey, i);
       size_t deg = P99_GRAPH_VDEGREE(hey, i);
       size_t id = P99_VERTEX_ID(vert);
+      assert(id == i);
       if (p) printf("vertex %zu: weight %zu", id, *p);
       else printf("vertex %zu no weight", id);
       printf(",\tdegree %zu\n", deg);
