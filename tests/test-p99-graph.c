@@ -94,18 +94,33 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
   ((void*)0)                                    \
   (&(P00_GRAPH_TE NAME){ P00_ARC_VALUE X })
 
+#define P00_ARC_WEIGHTC(NAME, X, I)                \
+[I].p00_weight =                                \
+  P99_IF_EMPTY(P00_ARC_VALUE X)                \
+  ((void*)0)                                    \
+  ((void*)&(const P00_GRAPH_TE NAME){ P00_ARC_VALUE X })
+
 #define P00_ARC_ENDPOINT(NAME, X, I) [P00_VPOS(P00_ARC_TARGET X)].p00_id = ((P00_ARC_TARGET X)+1)
 
-#define P00_ARC_2_(NAME3, N, ...)               \
-  P00_ARC_2_LIT(NAME3, N, P00_ARC_2_LIST(NAME3, N, __VA_ARGS__))
+#define P00_ARC_2_(NAME3, N, ...)                               \
+  P00_ARC_2_LIT(NAME3, N,                                       \
+                (P00_ARC_2_LIST_W(NAME3, N, __VA_ARGS__)),      \
+                (P00_ARC_2_LIST_WC(NAME3, N, __VA_ARGS__)),      \
+                (P00_ARC_2_LIST_V(NAME3, N, __VA_ARGS__))       \
+                )
 
-#define P00_ARC_2_LIT(NAME3, N, ...)                                    \
+#define P00_ARC_2_LIT(NAME3, N, V, VC, A)                              \
   P99_GENERIC(&(P00_GRAPH_NAME NAME3)[0], ,                           \
-              (p99_vertex*, (p99_arc[(N)+1]){ __VA_ARGS__, }),            \
-              (p99_vertex const*, (p99_arc*)(p99_arc const[(N)+1]){ __VA_ARGS__, }))
+              (p99_vertex*, (p99_arc[(N)+1]){ P00_ROBUST V, P00_ROBUST A, }), \
+              (p99_vertex const*, (p99_arc*)(p99_arc const[(N)+1]){ P00_ROBUST VC, P00_ROBUST A, }))
 
-#define P00_ARC_2_LIST(NAME3, N, ...)                      \
-  P99_FOR(NAME3, N, P00_SEQ, P00_ARC_WEIGHT, __VA_ARGS__), \
+#define P00_ARC_2_LIST_W(NAME3, N, ...)                      \
+  P99_FOR(NAME3, N, P00_SEQ, P00_ARC_WEIGHT, __VA_ARGS__)
+
+#define P00_ARC_2_LIST_WC(NAME3, N, ...)                      \
+  P99_FOR(NAME3, N, P00_SEQ, P00_ARC_WEIGHTC, __VA_ARGS__)
+
+#define P00_ARC_2_LIST_V(NAME3, N, ...)                      \
   P99_FOR(NAME3, N, P00_SEQ, P00_ARC_VERTEX, __VA_ARGS__)
 
 #define P00_ARC_2(NAME3, POS, VAL, ...)                               \
@@ -199,6 +214,7 @@ P99_GRAPH(size_t, double, hey,
           (1, 11),
           (2, 22, (1, 221), (2, 222), (3, 223), (14, 227)),
           (3, 33, (4, 334), (7, 337), (9, 339)),
+          (4, 33, (4, 334), (7, 337), (9, 339)),
           (12,),
           (8),
           (9, 99, (10,), (11), (12, 8.9)));
