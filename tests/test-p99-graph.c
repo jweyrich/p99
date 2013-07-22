@@ -281,11 +281,13 @@ p99_vertex const* p00_graph_vertexc(p99_vertex const* p00_v) {
   return (p00_v && p00_v->p00_id) ? p00_v : 0;
 }
 
-#define P99_GRAPH_VERTEX(NAME, I)                       \
-P99_GENERIC(&(NAME)[0], ,                               \
+#define p99_graph_vertex(VERTEX)                        \
+P99_GENERIC((VERTEX), ,                                 \
             (p99_vertex *, p00_graph_vertex),           \
             (p99_vertex const*, p00_graph_vertexc))     \
-((NAME)+P00_VPOS(I))
+(VERTEX)
+
+#define P99_GRAPH_VERTEX(NAME, I) p99_graph_vertex((NAME)+P00_VPOS(I))
 
 #define P99_GRAPH_VWEIGHT(NAME, I) P99_VERTEX_WEIGHT(P99_GRAPH_VERTEX(NAME, I))
 #define P99_GRAPH_VDEGREE(NAME, I) P99_VERTEX_DEGREE(P99_GRAPH_VERTEX(NAME, I))
@@ -328,14 +330,25 @@ int main(void) {
         if (weight) P99_PRINTF("\t\t%s %s\n", P99_VERTEX_ID(vert), *weight);
         else P99_PRINTF("\t\t%s (no weight)\n", P99_VERTEX_ID(vert));
       }
-      for (p99_arc MYCONST* arc = P99_GRAPH_ARCS(hey, i);
-           arc && P99_ARC_VERTEX(arc);
-           ++arc) {
-        ETYPE MYCONST* weight = P99_ARC_WEIGHT(arc);
-        p99_vertex MYCONST* vert = P99_ARC_VERTEX(arc);
-        if (weight) P99_PRINTF("\t\t%s %s\n", P99_VERTEX_ID(vert), *weight);
-        else printf("\t\t%zu (no weight)\n", P99_VERTEX_ID(vert));
-      }
+    }
+  }
+  for (size_t pos = P00_GRAPH_OFFSET; pos < P99_ALEN(hey); ++pos) {
+    p99_vertex MYCONST* vert = p99_graph_vertex(&hey[pos]);
+    if (!vert) continue;
+
+    VTYPE MYCONST* p = P99_VERTEX_WEIGHT(vert);
+    size_t deg = P99_VERTEX_DEGREE(vert);
+    size_t id = P99_VERTEX_ID(vert);
+    if (p) P99_PRINTF("vertex %s: weight %s", id, *p);
+    else printf("vertex %zu no weight", id);
+    printf(",\tdegree %zu\n", deg);
+    for (p99_arc MYCONST* arc = P99_VERTEX_ARCS(vert);
+         arc && P99_ARC_VERTEX(arc);
+         ++arc) {
+      ETYPE MYCONST* weight = P99_ARC_WEIGHT(arc);
+      p99_vertex MYCONST* vert = P99_ARC_VERTEX(arc);
+      if (weight) P99_PRINTF("\t\t%s %s\n", P99_VERTEX_ID(vert), *weight);
+      else printf("\t\t%zu (no weight)\n", P99_VERTEX_ID(vert));
     }
   }
 }
