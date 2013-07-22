@@ -38,7 +38,6 @@ typedef p99_vertex p99_graph[];
 
 #define P00_GRAPH(TV, TE, NAME, ...)                    \
 P99_WARN_INIT_PUSH                                      \
-p99_graph NAME =                                        \
   {                                                     \
     [0].p00_deg = P99_SEA(P00_ARCC_, __VA_ARGS__),      \
     [0].p00_id = sizeof((char const[]){                 \
@@ -55,7 +54,7 @@ P99_WARN_INIT_POP
 #define P00_GRAPH_EXPAND(NAME3, ...)\
 P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_VERTEX_EXPAND, __VA_ARGS__)
 
-#define P99_GRAPH(TV, TE, NAME, ...) P00_GRAPH(TV, TE, NAME, P00_GRAPH_EXPAND((TV, TE, NAME), __VA_ARGS__))
+#define P99_GRAPH_INITIALIZER(TV, TE, NAME, ...) P00_GRAPH(TV, TE, NAME, P00_GRAPH_EXPAND((TV, TE, NAME), __VA_ARGS__))
 
 #define P00_VERTEX_2(NAME3, POS, VAL, ...)                              \
 [P00_VPOS(POS)].p00_id = ((POS)+1),                                     \
@@ -261,15 +260,15 @@ P99_GENERIC(&(NAME)[0], ,                                               \
 
 #define P99_VERTEX_ID(VERTEX) ((VERTEX)[0].p00_id-1)
 
-MYCONST
-P99_GRAPH(VTYPE, ETYPE, hey,
-          (1, 11),
-          (2, 0, (1, 221), (2, 222), (3, 223), (14, 227)),
-          (3, 33, (4, 334), (7, 337), (9, 339)),
-          (4, 33, (4, 334), (7, 337), (9, 339)),
-          (12,),
-          (8),
-          (9, 99, (10,), (11), (12, 8.9)));
+MYCONST p99_graph hey
+= P99_GRAPH_INITIALIZER(VTYPE, ETYPE, hey,
+                        (1, 11),
+                        (2, 0, (1, 221), (2, 222), (3, 223), (14, 227)),
+                        (3, 33, (4, 334), (7, 337), (9, 339)),
+                        (4, 33, (4, 334), (7, 337), (9, 339)),
+                        (12,),
+                        (8),
+                        (9, 99, (10,), (11), (12, 8.9)));
 
 int main(void) {
   printf("total number of vertices %zu\n", P99_GRAPH_N(hey));
