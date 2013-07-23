@@ -295,8 +295,8 @@ P99_GENERIC_PQUALIFIED(&(NAME)[0],                                             \
 
 #define P99_VERTEX_ID(VERTEX) ((VERTEX)[0].p00_id-P00_GRAPH_OFFSET)
 
-MYCONST p99_graph hey
-= P99_GRAPH_INITIALIZER(VTYPE, ETYPE, hey,
+MYCONST p99_graph ggraph
+= P99_GRAPH_INITIALIZER(VTYPE, ETYPE, ggraph,
                         (1, 11),
                         (2, 0, (1, 221), (2, 222), (3, 223), (14, 227)),
                         (3, 33, (4, 334), (7, 337), (9, 339)),
@@ -305,45 +305,68 @@ MYCONST p99_graph hey
                         (8),
                         (9, 99, (10,), (11), (12, 8.9)));
 
+const p99_graph bgraph
+= P99_GRAPH_INITIALIZER(char const*, char const*, bgraph,
+                        (0, "a", (1, "b"), (4, "c")),
+                        (1, "b", (2, "bb"), (3, "bc")),
+                        (2, "bb"),
+                        (3, "bc"),
+                        (4, "c", (5, "cc"), (6, "cd")),
+                        (5, "cc"),
+                        (6, "cd"));
+
+
+#define P00_GRAPH_PRINT(TV, TE, G, F)                                     \
+do {                                                                    \
+  fputs("---------------------------------\n", (F));                 \
+  fprintf((F), " %zu vertices (" P99_STRINGIFY(TV) "), %zu arcs (" P99_STRINGIFY(TE) ")\n", \
+         P99_GRAPH_N(G), P99_GRAPH_M(G));                               \
+  P99_DO(size_t, i, 0, P99_GRAPH_N(G)) {                                \
+    p99_vertex const* vert = P99_GRAPH_VERTEX(G, i);                    \
+    if (vert) {                                                         \
+      TV const* p = P99_GRAPH_VWEIGHT(G, i);                            \
+      size_t deg = P99_GRAPH_VDEGREE(G, i);                             \
+      size_t id = P99_VERTEX_ID(vert);                                  \
+      assert(id == i);                                                  \
+      if (p) P99_FPRINTF((F), "%s (%s)\t:\t", id, *p);                  \
+      else fprintf((F), "%zu\t:\t", id);                                \
+      P99_DO(size_t, j, 0, deg) {                                       \
+        p99_arc const* arc = P99_GRAPH_ARC(G, i, j);                    \
+        TE const* weight = P99_ARC_WEIGHT(arc);                         \
+        p99_vertex const* vert = P99_ARC_VERTEX(arc);                   \
+        if (weight) P99_FPRINTF((F), "%s (%s)\t", P99_VERTEX_ID(vert), *weight); \
+        else fprintf((F), "%zu\t", P99_VERTEX_ID(vert));                \
+      }                                                                 \
+      fputs("\n", (F));                                                 \
+    }                                                                   \
+  }                                                                     \
+  fputs("---------------------------------\n", (F));                    \
+} while (0)
+
+#define P99_GRAPH_PRINT(TV, TE, ...)            \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
+(P00_GRAPH_PRINT(TV, TE, __VA_ARGS__, stdout))  \
+(P00_GRAPH_PRINT(TV, TE, __VA_ARGS__))
+
 int main(void) {
-  printf("total number of vertices %zu\n", P99_GRAPH_N(hey));
-  printf("total number of arcs %zu\n", P99_GRAPH_M(hey));
-  P99_DO(size_t, i, 0, P99_GRAPH_N(hey)) {
-    p99_vertex MYCONST* vert = P99_GRAPH_VERTEX(hey, i);
-    if (vert) {
-      VTYPE MYCONST* p = P99_GRAPH_VWEIGHT(hey, i);
-      size_t deg = P99_GRAPH_VDEGREE(hey, i);
-      size_t id = P99_VERTEX_ID(vert);
-      assert(id == i);
-      if (p) P99_PRINTF("vertex %s: weight %s", id, *p);
-      else printf("vertex %zu no weight", id);
-      printf(",\tdegree %zu\n", deg);
-      P99_DO(size_t, j, 0, deg) {
-        p99_arc MYCONST* arc = P99_GRAPH_ARC(hey, i, j);
-        ETYPE MYCONST* weight = P99_ARC_WEIGHT(arc);
-        p99_vertex MYCONST* vert = P99_ARC_VERTEX(arc);
-        if (weight) P99_PRINTF("\t\t%s %s\n", P99_VERTEX_ID(vert), *weight);
-        else P99_PRINTF("\t\t%s (no weight)\n", P99_VERTEX_ID(vert));
-      }
-    }
-  }
-  for (size_t pos = P00_GRAPH_OFFSET; pos < P99_ALEN(hey); ++pos) {
-    p99_vertex MYCONST* vert = p99_graph_vertex(&hey[pos]);
+  for (size_t pos = P00_GRAPH_OFFSET; pos < P99_ALEN(bgraph); ++pos) {
+    p99_vertex const* vert = p99_graph_vertex(&bgraph[pos]);
     if (!vert) continue;
 
-    VTYPE MYCONST* p = P99_VERTEX_WEIGHT(vert);
-    size_t deg = P99_VERTEX_DEGREE(vert);
+    char const*const* p = P99_VERTEX_WEIGHT(vert);
     size_t id = P99_VERTEX_ID(vert);
-    if (p) P99_PRINTF("vertex %s: weight %s", id, *p);
-    else printf("vertex %zu no weight", id);
-    printf(",\tdegree %zu\n", deg);
+    if (p) printf("%zu (%s)\t:\t", id, *p);
+    else printf("%zu\t:\t", id);
     for (p99_arc MYCONST* arc = P99_VERTEX_ARCS(vert);
          arc && P99_ARC_VERTEX(arc);
          ++arc) {
-      ETYPE MYCONST* weight = P99_ARC_WEIGHT(arc);
+      char const*const* weight = P99_ARC_WEIGHT(arc);
       p99_vertex MYCONST* vert = P99_ARC_VERTEX(arc);
-      if (weight) P99_PRINTF("\t\t%s %s\n", P99_VERTEX_ID(vert), *weight);
-      else printf("\t\t%zu (no weight)\n", P99_VERTEX_ID(vert));
+      if (weight) printf("%zu (%s)\t", P99_VERTEX_ID(vert), *weight);
+      else printf("%zu\t", P99_VERTEX_ID(vert));
     }
+    fputs("\n", stdout);
   }
+  P99_GRAPH_PRINT(VTYPE MYCONST, ETYPE MYCONST, ggraph);
+  P99_GRAPH_PRINT(char const*, char const*, bgraph, stderr);
 }
