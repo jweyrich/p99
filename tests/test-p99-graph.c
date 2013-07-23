@@ -50,8 +50,8 @@ P99_WARN_INIT_PUSH                                      \
         P99_SEQ(P00_VERTEXC_, __VA_ARGS__),             \
           P99_SEQ(P00_ARCSC_, __VA_ARGS__),             \
           }),                                           \
-    P99_SEQ(P00_VERTEX_, __VA_ARGS__),                  \
     P99_SEQ(P00_ARC_, __VA_ARGS__),                     \
+    P99_SEQ(P00_VERTEX_, __VA_ARGS__),                  \
   }                                                     \
 P99_WARN_INIT_POP
 
@@ -77,16 +77,12 @@ P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_VERTEX_EXPAND, __VA_ARGS__)
 [P00_VPOS(POS)].p00_id = P00_VPOS(POS),                 \
 [P00_VPOS(POS)].p00_weight =                            \
 P99_IF_EMPTY(VAL)                                       \
-((void*)0)                                              \
-(                                                       \
-(void*)P99_GENERIC_PCONST(&(P00_GRAPH_NAME NAME3)[0],   \
-                   &(P00_GRAPH_TV NAME3){ VAL },        \
-                   &(const P00_GRAPH_TV NAME3){ VAL })  \
-)
+((void*)P99_GENERIC_TCONST(P00_GRAPH_TV NAME3, (P00_GRAPH_TV NAME3[1])P99_INIT, 0)) \
+((void*)(P00_GRAPH_TV NAME3[1]){ VAL })
 
 #define P00_VERTEX_0(NAME3, POS)                \
 [P00_VPOS(POS)].p00_id = P00_VPOS(POS),         \
-[P00_VPOS(POS)].p00_weight = (void*)(0)
+[P00_VPOS(POS)].p00_weight = (void*)P99_GENERIC_TCONST(P00_GRAPH_TV NAME3, (P00_GRAPH_TV NAME3[1])P99_INIT, 0)
 
 #define P00_VERTEX_1(NAME3, ...)                \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
@@ -110,19 +106,21 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
    to compute a list of items. */
 
 #define P00_ARC_VERTEX(NAME, X, I) [I].p00_vertex = (void*)&(P00_GRAPH_NAME NAME)[P00_VPOS(P00_ARC_TARGET X)]
-#define P00_ARC_WEIGHT(NAME, X, I)              \
-[I].p00_weight =                                \
-  P99_IF_EMPTY(P00_ARC_VALUE X)                 \
-  ((void*)0)                                    \
-  ((void*)&(P00_GRAPH_TE NAME){ P00_ARC_VALUE X })
+#define P00_ARC_WEIGHT(NAME, X, I)                      \
+[I].p00_weight =                                        \
+  P99_IF_EMPTY(P00_ARC_VALUE X)                         \
+  ((void*)(P00_GRAPH_TE NAME[1])P99_INIT)               \
+  ((void*)(P00_GRAPH_TE NAME[1]){ P00_ARC_VALUE X })
 
 #define P00_ARC_WEIGHTC(NAME, X, I)                             \
 [I].p00_weight =                                                \
   P99_IF_EMPTY(P00_ARC_VALUE X)                                 \
   ((void*)0)                                                    \
-  ((void*)&(const P00_GRAPH_TE NAME){ P00_ARC_VALUE X })
+  ((void*)(P00_GRAPH_TE NAME[1]){ P00_ARC_VALUE X })
 
-#define P00_ARC_ENDPOINT(NAME, X, I) [P00_VPOS(P00_ARC_TARGET X)].p00_id = P00_VPOS(P00_ARC_TARGET X)
+#define P00_ARC_ENDPOINT(WEIGHT, X, I)                                   \
+[P00_VPOS(P00_ARC_TARGET X)].p00_id = P00_VPOS(P00_ARC_TARGET X),       \
+[P00_VPOS(P00_ARC_TARGET X)].p00_weight = (void*)WEIGHT
 
 #define P00_ARC_2_(NAME3, N, ...)                               \
   P00_ARC_2_LIT(NAME3, N,                                       \
@@ -131,10 +129,17 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
                 (P00_ARC_2_LIST_V(NAME3, N, __VA_ARGS__))       \
                 )
 
+#define P00_ARC_2_LIT_(NAME3, N, A, AC)                                 \
+  P99_GENERIC_PCONST(&(P00_GRAPH_NAME NAME3)[0], A, AC)
+
 #define P00_ARC_2_LIT(NAME3, N, V, VC, A)                               \
-  P99_GENERIC_PCONST(&(P00_GRAPH_NAME NAME3)[0],                        \
-                     ((p99_arc[(N)+1]){ P00_ROBUST V, P00_ROBUST A, }), \
-                     ((p99_arc*)(p99_arc const[(N)+1]){ P00_ROBUST VC, P00_ROBUST A, }))
+P00_ARC_2_LIT_(NAME3, N,                                                \
+               P99_GENERIC_TCONST(P00_GRAPH_TE NAME3,                   \
+                                  ((p99_arc[(N)+1]){ P00_ROBUST V, P00_ROBUST A, }), \
+                                  ((p99_arc[(N)+1]){ P00_ROBUST VC, P00_ROBUST A, })), \
+               P99_GENERIC_TCONST(P00_GRAPH_TE NAME3,                   \
+                                  ((p99_arc*)(p99_arc const[(N)+1]){ P00_ROBUST V, P00_ROBUST A, }), \
+                                  ((p99_arc*)(p99_arc const[(N)+1]){ P00_ROBUST VC, P00_ROBUST A, })))
 
 /* create a list of entries for all arc weights, the version that has
    modifiable weights */
@@ -152,7 +157,9 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
 
 /* create a list of entries for all vertices that are used as endpoints of arcs */
 #define P00_ARC_2_LIST_E(NAME3, N, ...)                                 \
-P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_ARC_ENDPOINT, __VA_ARGS__)
+P99_FOR(                                                                \
+        P99_GENERIC_TCONST(P00_GRAPH_TV NAME3, (P00_GRAPH_TV NAME3[1])P99_INIT, 0), \
+        P99_NARG(__VA_ARGS__), P00_SEQ, P00_ARC_ENDPOINT, __VA_ARGS__)
 
 /* For the particular arc list of a vertex, first compute entries for
    all the target vertices of these arcs. Such entries may occur
@@ -367,6 +374,6 @@ int main(void) {
     }
     fputs("\n", stdout);
   }
-  P99_GRAPH_PRINT(VTYPE MYCONST, ETYPE MYCONST, ggraph);
+  P99_GRAPH_PRINT(VTYPE, ETYPE, ggraph);
   P99_GRAPH_PRINT(char const*, char const*, bgraph, stderr);
 }
