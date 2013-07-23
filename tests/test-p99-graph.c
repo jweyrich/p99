@@ -73,15 +73,15 @@ P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_VERTEX_EXPAND, __VA_ARGS__)
 /* Implement the P00_VERTEX_ macro that collects the per vertex
    information. */
 
-#define P00_VERTEX_2(NAME3, POS, VAL, ...)                              \
-[P00_VPOS(POS)].p00_id = P00_VPOS(POS),                                 \
-[P00_VPOS(POS)].p00_weight =                                            \
-P99_IF_EMPTY(VAL)                                                       \
-((void*)0)                                                              \
-(                                                                       \
-P99_GENERIC(&(P00_GRAPH_NAME NAME3)[0], ,                               \
-            (p99_vertex *, &(P00_GRAPH_TV NAME3){ VAL }),               \
-            (p99_vertex const*, (void*)&(const P00_GRAPH_TV NAME3){ VAL }))  \
+#define P00_VERTEX_2(NAME3, POS, VAL, ...)                      \
+[P00_VPOS(POS)].p00_id = P00_VPOS(POS),                         \
+[P00_VPOS(POS)].p00_weight =                                    \
+P99_IF_EMPTY(VAL)                                               \
+((void*)0)                                                      \
+(                                                               \
+P99_GENERIC_PCONST(&(P00_GRAPH_NAME NAME3)[0],                  \
+                   &(P00_GRAPH_TV NAME3){ VAL },                \
+                   (void*)&(const P00_GRAPH_TV NAME3){ VAL })   \
 )
 
 #define P00_VERTEX_0(NAME3, POS)                \
@@ -131,10 +131,10 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
                 (P00_ARC_2_LIST_V(NAME3, N, __VA_ARGS__))       \
                 )
 
-#define P00_ARC_2_LIT(NAME3, N, V, VC, A)                              \
-  P99_GENERIC(&(P00_GRAPH_NAME NAME3)[0], ,                           \
-              (p99_vertex*, (p99_arc[(N)+1]){ P00_ROBUST V, P00_ROBUST A, }), \
-              (p99_vertex const*, (p99_arc*)(p99_arc const[(N)+1]){ P00_ROBUST VC, P00_ROBUST A, }))
+#define P00_ARC_2_LIT(NAME3, N, V, VC, A)                               \
+  P99_GENERIC_PCONST(&(P00_GRAPH_NAME NAME3)[0],                        \
+                     ((p99_arc[(N)+1]){ P00_ROBUST V, P00_ROBUST A, }), \
+                     ((p99_arc*)(p99_arc const[(N)+1]){ P00_ROBUST VC, P00_ROBUST A, }))
 
 /* create a list of entries for all arc weights, the version that has
    modifiable weights */
@@ -227,10 +227,8 @@ void const* p00_arc_weightc(p99_arc const* p00_v) {
   return p00_v ? p00_v->p00_weight : 0;
 }
 
-#define P99_ARC_WEIGHT(ARC)                     \
-P99_GENERIC((ARC), ,                            \
-            (p99_arc *, p00_arc_weight),        \
-            (p99_arc const*, p00_arc_weightc))  \
+#define P99_ARC_WEIGHT(ARC)                                     \
+P99_GENERIC_PCONST((ARC), p00_arc_weight, p00_arc_weightc)      \
 (ARC)
 
 p99_inline
@@ -243,10 +241,8 @@ p99_vertex const* p00_arc_vertexc(p99_arc const* p00_v) {
   return p00_v ? p00_v->p00_vertex : 0;
 }
 
-#define P99_ARC_VERTEX(ARC)                     \
-P99_GENERIC((ARC), ,                            \
-            (p99_arc *, p00_arc_vertex),        \
-            (p99_arc const*, p00_arc_vertexc))  \
+#define P99_ARC_VERTEX(ARC)                                     \
+P99_GENERIC_PCONST((ARC), p00_arc_vertex, p00_arc_vertexc)      \
 (ARC)
 
 #define P99_VERTEX_DEGREE(VERTEX) ((VERTEX)[0].p00_deg)
@@ -262,10 +258,8 @@ void const* p00_vertex_weightc(p99_vertex const* p00_v) {
   return p00_v ? p00_v->p00_weight : 0;
 }
 
-#define P99_VERTEX_WEIGHT(VERTEX)                       \
-P99_GENERIC((VERTEX), ,                                 \
-            (p99_vertex *, p00_vertex_weight),          \
-            (p99_vertex const*, p00_vertex_weightc))    \
+#define P99_VERTEX_WEIGHT(VERTEX)                                       \
+P99_GENERIC_PCONST((VERTEX), p00_vertex_weight, p00_vertex_weightc)     \
 (VERTEX)
 
 #define P99_VERTEX_DEGREE(VERTEX) ((VERTEX)[0].p00_deg)
@@ -281,10 +275,8 @@ p99_vertex const* p00_graph_vertexc(p99_vertex const* p00_v) {
   return (p00_v && p00_v->p00_id) ? p00_v : 0;
 }
 
-#define p99_graph_vertex(VERTEX)                        \
-P99_GENERIC((VERTEX), ,                                 \
-            (p99_vertex *, p00_graph_vertex),           \
-            (p99_vertex const*, p00_graph_vertexc))     \
+#define p99_graph_vertex(VERTEX)                                        \
+P99_GENERIC_PCONST((VERTEX), p00_graph_vertex, p00_graph_vertexc)       \
 (VERTEX)
 
 #define P99_GRAPH_VERTEX(NAME, I) p99_graph_vertex((NAME)+P00_VPOS(I))
@@ -292,10 +284,13 @@ P99_GENERIC((VERTEX), ,                                 \
 #define P99_GRAPH_VWEIGHT(NAME, I) P99_VERTEX_WEIGHT(P99_GRAPH_VERTEX(NAME, I))
 #define P99_GRAPH_VDEGREE(NAME, I) P99_VERTEX_DEGREE(P99_GRAPH_VERTEX(NAME, I))
 #define P99_GRAPH_ARCS(NAME, I)                                         \
-P99_GENERIC(&(NAME)[0], ,                                               \
-            (p99_vertex *, P99_VERTEX_ARCS(P99_GRAPH_VERTEX(NAME, I))), \
-            (p99_vertex const*, (p99_arc const*)P99_VERTEX_ARCS(P99_GRAPH_VERTEX(NAME, I))) \
-            )
+P99_GENERIC_PQUALIFIED(&(NAME)[0],                                             \
+                       (, P99_VERTEX_ARCS(P99_GRAPH_VERTEX(NAME, I))), \
+                       (const, (p99_arc const*)P99_VERTEX_ARCS(P99_GRAPH_VERTEX(NAME, I))), \
+                       (volatile, (p99_arc volatile*)P99_VERTEX_ARCS(P99_GRAPH_VERTEX(NAME, I))), \
+                       (const volatile, (p99_arc const volatile*)P99_VERTEX_ARCS(P99_GRAPH_VERTEX(NAME, I))) \
+                       )
+
 #define P99_GRAPH_ARC(NAME, I, POS) (P99_GRAPH_ARCS(NAME, I)+(POS))
 
 #define P99_VERTEX_ID(VERTEX) ((VERTEX)[0].p00_id-P00_GRAPH_OFFSET)
