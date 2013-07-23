@@ -1412,4 +1412,159 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IN_RANGE, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IN_RANGE, 1)
 #define P99_IN_RANGE(R, S, L) P00_IN_RANGE((R), (S), (L), P00_IN_RANGE_LIST())
 
+#define P00_VOID_QUAL_(QUAL, ...) (void QUAL*, __VA_ARGS__)
+#define P00_VOID_QUAL(LIST) P00_VOID_QUAL_ LIST
+
+#define P00_VOIDIFY_LIST(...) P99_SEQ(P00_VOID_QUAL, __VA_ARGS__)
+
+/**
+ ** @brief Generic choice based on the qualification of the target of
+ ** a pointer expression
+ **
+ ** This can be used to choose a different function to call if the
+ ** target of a pointer expression is qualified or not. If we suppose
+ ** that for a certain task we want to distinguish @c const or @c
+ ** volatile qualified pointers and have already different functions
+ ** @c myfunc_, @c myfunc_c, ... that handle these cases we can simply
+ ** chose like this:
+ **
+ ** @code
+ ** P99_GENERIC_PQUALIFIED((PEXP),
+ **   (, myfunc_),
+ **   (const, myfunc_c),
+ **   (volatile, myfunc_v),
+ **   (const volatile, myfunc_cv))
+ ** (PEXP)
+ ** @endcode
+ **
+ ** Or if we want the qualification of a return expression to match
+ ** the qualification of the target of an input expression
+ **
+ ** @code
+ ** P99_GENERIC_PQUALIFIED(toto,
+ **   (, tutu),
+ **   (const, (tutu_type const*)tutu),
+ **   (volatile, (tutu_type volatile*)tutu),
+ **   (const volatile, (tutu_type const volatile*)tutu)
+ ** )
+ ** @endcode
+ **
+ ** @see P99_GENERIC_PCONST
+ ** @see P99_GENERIC_PVOLATILE
+ ** @see P99_GENERIC_PCONSTVOLATILE
+ ** @see P99_GENERIC_TQUALIFIED for a similar macro that works for
+ **   type expressions instead of a pointer expression
+ */
+#define P99_GENERIC_PQUALIFIED(PEXP, ...)                               \
+P99_GENERIC(                                                            \
+            /* The second case is subtle. If we would chose (void*)0 */ \
+            /* this would be a null pointer constant and the return  */ \
+            /* type would be the type of PEXP. If it is another type */ \
+            /* of void* expression the return is a qualified version */ \
+            /* of void*.                                             */ \
+(1 ? (PEXP) : (void*)1),,                                               \
+  P00_VOIDIFY_LIST(__VA_ARGS__))
+
+/**
+ ** @brief Generic choice based on the qualification of the target of
+ ** a pointer expression
+ **
+ ** This can be used to choose a different function to call if the
+ ** target of a pointer expression is @c const qualified or not. If we
+ ** suppose that for a certain task we want to distinguish @c const
+ ** qualified pointers and have already two functions @c myfunc_ and
+ ** @c myfunc_c that handle these two cases we can simply chose like
+ ** this:
+ **
+ ** @code
+ ** #define myfunc(PEXP) P99_GENERIC_PQUALIFIED((PEXP), myfunc_, myfunc_c)(PEXP)
+ ** @endcode
+ **
+ ** @see P99_GENERIC_PQUALIFIED
+ ** @see P99_GENERIC_PVOLATILE
+ ** @see P99_GENERIC_PCONSTVOLATILE
+ ** @see P99_GENERIC_TCONST for a similar macro that works for
+ **   type expressions instead of a pointer expression
+ */
+#define P99_GENERIC_PCONST(PEXP, NCONST, CONST)         \
+P99_GENERIC((1 ? (PEXP) : (void volatile*)1),,          \
+            P00_VOID_QUAL_(volatile, NCONST),           \
+            P00_VOID_QUAL_(volatile const, CONST)       \
+            )
+
+/**
+ ** @brief Generic choice based on the qualification of the target of
+ ** a pointer expression
+ **
+ ** Similar to ::P99_GENERIC_PCONST but ask for @c volatile
+ ** qualification.
+ **
+ ** @see P99_GENERIC_PQUALIFIED
+ ** @see P99_GENERIC_PCONST
+ ** @see P99_GENERIC_PCONSTVOLATILE
+ ** @see P99_GENERIC_TCONSTVOLATILE for a similar macro that works for
+ **   type expressions instead of a pointer expression
+ */
+#define P99_GENERIC_PVOLATILE(PEXP, NVOLATILE, VOLATILE)        \
+P99_GENERIC((1 ? (PEXP) : (void const*)1),,                     \
+            P00_VOID_QUAL_(const, NVOLATILE),                   \
+            P00_VOID_QUAL_(const volatile, VOLATILE)            \
+            )
+
+/**
+ ** @brief Generic choice based on the qualification of the target of
+ ** a pointer expression
+ **
+ ** Similar to ::P99_GENERIC_PCONST but ask for @c const and @c volatile
+ ** qualification.
+ **
+ ** @see P99_GENERIC_PQUALIFIED
+ ** @see P99_GENERIC_PCONST
+ ** @see P99_GENERIC_PVOLATILE
+ ** @see P99_GENERIC_TVOLATILE for a similar macro that works for
+ **   type expressions instead of a pointer expression
+ */
+#define P99_GENERIC_PCONSTVOLATILE(PEXP, NON, FULL)     \
+P99_GENERIC((1 ? (PEXP) : (void*)1),                    \
+            NVOLATILE,                                  \
+            P00_VOID_QUAL_(const volatile, VOLATILE)    \
+            )
+
+
+/**
+ ** @brief Generic choice based on the qualification of a type
+ ** expression
+ **
+ ** @see P99_GENERIC_PQUALIFIED 
+ **/
+#define P99_GENERIC_TQUALIFIED(T, ...)          \
+P99_GENERIC_PQUALIFIED((&(T)P99_INIT), ...)
+
+/**
+ ** @brief Generic choice based on the qualification of a type
+ ** expression
+ **
+ ** @see P99_GENERIC_PCONST
+ **/
+#define P99_GENERIC_TCONST(T, NCONST, CONST)            \
+P99_GENERIC_PCONST((&(T)P99_INIT), NCONST, CONST)
+
+/**
+ ** @brief Generic choice based on the qualification of a type
+ ** expression
+ **
+ ** @see P99_GENERIC_PVOLATILE
+ **/
+#define P99_GENERIC_TVOLATILE(T, NVOLATILE, VOLATILE)           \
+P99_GENERIC_PVOLATILE((&(T)P99_INIT), NVOLATILE, VOLATILE)
+
+/**
+ ** @brief Generic choice based on the qualification of a type
+ ** expression
+ **
+ ** @see P99_GENERIC_PCONSTVOLATILE
+ **/
+#define P99_GENERIC_TCONSTVOLATILE(T, NON, FULL)        \
+P99_GENERIC_PCONSTVOLATILE((&(T)P99_INIT), NON, FULL)
+
 #endif

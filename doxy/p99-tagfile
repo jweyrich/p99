@@ -344,9 +344,9 @@
     <member kind="define">
       <type>#define</type>
       <name>ATOMIC_VAR_INIT</name>
-      <anchorfile>group__atomic__macros_ga8e54e6029e1ce44bc7c073f8f71952a7.html</anchorfile>
-      <anchor>ga8e54e6029e1ce44bc7c073f8f71952a7</anchor>
-      <arglist>(V)</arglist>
+      <anchorfile>group__atomic__macros_ga52977141c90693ee000f03f47bef0db0.html</anchorfile>
+      <anchor>ga52977141c90693ee000f03f47bef0db0</anchor>
+      <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -724,6 +724,13 @@
       <name>atomic_ushort</name>
       <anchorfile>group__atomic__types_ga1fe5654b9d17cdc7f262854062536729.html</anchorfile>
       <anchor>ga1fe5654b9d17cdc7f262854062536729</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_void_ptr</type>
+      <name>atomic_void_ptr</name>
+      <anchorfile>group__atomic__types_ga2cfe086f792b00f1aebb62e5b9b9aa8a.html</anchorfile>
+      <anchor>ga2cfe086f792b00f1aebb62e5b9b9aa8a</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -3947,6 +3954,20 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_SEA</name>
+      <anchorfile>group__preprocessor__for_gaa9acd29377c1b2ef72616837960f7eca.html</anchorfile>
+      <anchor>gaa9acd29377c1b2ef72616837960f7eca</anchor>
+      <arglist>(MACRO,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_SEM</name>
+      <anchorfile>group__preprocessor__for_ga8d99e5e9b9f79f3a7927ad1472a41ff3.html</anchorfile>
+      <anchor>ga8d99e5e9b9f79f3a7927ad1472a41ff3</anchor>
+      <arglist>(MACRO,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_SEP</name>
       <anchorfile>group__preprocessor__for_ga587594351f1763bfa31857764b70616e.html</anchorfile>
       <anchor>ga587594351f1763bfa31857764b70616e</anchor>
@@ -5717,6 +5738,34 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_GENERIC_PCONST</name>
+      <anchorfile>p99__generic_8h_a5807d36b4391679e36e20dc3e34e79e4.html</anchorfile>
+      <anchor>a5807d36b4391679e36e20dc3e34e79e4</anchor>
+      <arglist>(PEXP, NCONST, CONST)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_PCONSTVOLATILE</name>
+      <anchorfile>p99__generic_8h_a33ed8baca18ed81aa45c3bb5f2890bce.html</anchorfile>
+      <anchor>a33ed8baca18ed81aa45c3bb5f2890bce</anchor>
+      <arglist>(PEXP, NON, FULL)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_PQUALIFIED</name>
+      <anchorfile>p99__generic_8h_abb76f37a04c51ca7d07c84b38b3470cd.html</anchorfile>
+      <anchor>abb76f37a04c51ca7d07c84b38b3470cd</anchor>
+      <arglist>(PEXP,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_PVOLATILE</name>
+      <anchorfile>p99__generic_8h_aa8c8bd39e6ab543208b33d589d2ca2e3.html</anchorfile>
+      <anchor>aa8c8bd39e6ab543208b33d589d2ca2e3</anchor>
+      <arglist>(PEXP, NVOLATILE, VOLATILE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_GENERIC_SIZE</name>
       <anchorfile>group__generic_gaa0e03c90e67c3f4af1b057435eee5745.html</anchorfile>
       <anchor>gaa0e03c90e67c3f4af1b057435eee5745</anchor>
@@ -5728,6 +5777,34 @@
       <anchorfile>group__generic_gacb915854647e7f1919e6c45ddb576c75.html</anchorfile>
       <anchor>gacb915854647e7f1919e6c45ddb576c75</anchor>
       <arglist>(UI,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_TCONST</name>
+      <anchorfile>p99__generic_8h_ab20e903a8d4913cd3c95d7500dbb12ee.html</anchorfile>
+      <anchor>ab20e903a8d4913cd3c95d7500dbb12ee</anchor>
+      <arglist>(T, NCONST, CONST)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_TCONSTVOLATILE</name>
+      <anchorfile>p99__generic_8h_a1dfb23b0c5167b50a59628847d8f2bb7.html</anchorfile>
+      <anchor>a1dfb23b0c5167b50a59628847d8f2bb7</anchor>
+      <arglist>(T, NON, FULL)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_TQUALIFIED</name>
+      <anchorfile>p99__generic_8h_a7fd3324332a04a407ccdab45c867166a.html</anchorfile>
+      <anchor>a7fd3324332a04a407ccdab45c867166a</anchor>
+      <arglist>(T,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_TVOLATILE</name>
+      <anchorfile>p99__generic_8h_a4e2dd03eacb498b78eaf625bb7f4c1c3.html</anchorfile>
+      <anchor>a4e2dd03eacb498b78eaf625bb7f4c1c3</anchor>
+      <arglist>(T, NVOLATILE, VOLATILE)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -7804,6 +7881,7 @@
     <includes id="p99__enum_8h" name="p99_enum.h" local="yes" imported="no">p99_enum.h</includes>
     <includes id="p99__generic_8h" name="p99_generic.h" local="yes" imported="no">p99_generic.h</includes>
     <includes id="p99__atomic_8h" name="p99_atomic.h" local="yes" imported="no">p99_atomic.h</includes>
+    <includes id="p99__tp_8h" name="p99_tp.h" local="yes" imported="no">p99_tp.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>P99_LIFO</name>
@@ -8992,6 +9070,149 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>p99_tp.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__tp_8h</filename>
+    <includes id="p99__enum_8h" name="p99_enum.h" local="yes" imported="no">p99_enum.h</includes>
+    <includes id="p99__generic_8h" name="p99_generic.h" local="yes" imported="no">p99_generic.h</includes>
+    <includes id="p99__atomic_8h" name="p99_atomic.h" local="yes" imported="no">p99_atomic.h</includes>
+    <class kind="struct">p99_tp</class>
+    <class kind="struct">p99_tp_state</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP</name>
+      <anchorfile>p99__tp_8h_ae2f0d1d7bd113f8b378e6b0c8170c05f.html</anchorfile>
+      <anchor>ae2f0d1d7bd113f8b378e6b0c8170c05f</anchor>
+      <arglist>(T)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_DECLARE</name>
+      <anchorfile>p99__tp_8h_aec25501d442455542440171007617180.html</anchorfile>
+      <anchor>aec25501d442455542440171007617180</anchor>
+      <arglist>(T)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_GET</name>
+      <anchorfile>p99__tp_8h_aaa12bca15f7ec892afaa2c09a850f680.html</anchorfile>
+      <anchor>aaa12bca15f7ec892afaa2c09a850f680</anchor>
+      <arglist>(TP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_INITIALIZER</name>
+      <anchorfile>p99__tp_8h_a0d13e8d0305f82c79a6a3d9c2903ebc9.html</anchorfile>
+      <anchor>a0d13e8d0305f82c79a6a3d9c2903ebc9</anchor>
+      <arglist>(VAL)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_STATE</name>
+      <anchorfile>p99__tp_8h_a70b01e9291377fd5f09de33d227a3c49.html</anchorfile>
+      <anchor>a70b01e9291377fd5f09de33d227a3c49</anchor>
+      <arglist>(T)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_STATE_COMMIT</name>
+      <anchorfile>p99__tp_8h_a3038204a444acbb2515b12f8b01424c1.html</anchorfile>
+      <anchor>a3038204a444acbb2515b12f8b01424c1</anchor>
+      <arglist>(TPS)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_STATE_GET</name>
+      <anchorfile>p99__tp_8h_a123594d6f4596ae90e24f2687ae806cd.html</anchorfile>
+      <anchor>a123594d6f4596ae90e24f2687ae806cd</anchor>
+      <arglist>(TPS)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_STATE_INITIALIZER</name>
+      <anchorfile>p99__tp_8h_ae0e658dab1ff82c42a09635f639763b7.html</anchorfile>
+      <anchor>ae0e658dab1ff82c42a09635f639763b7</anchor>
+      <arglist>(TP, P)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_STATE_SET</name>
+      <anchorfile>p99__tp_8h_a4312480745bea6b6073b9369f718cd6f.html</anchorfile>
+      <anchor>a4312480745bea6b6073b9369f718cd6f</anchor>
+      <arglist>(TPS, P)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_STATE_TYPE</name>
+      <anchorfile>p99__tp_8h_ada06e48ada97921f622a0a8d8923d04c.html</anchorfile>
+      <anchor>ada06e48ada97921f622a0a8d8923d04c</anchor>
+      <arglist>(TPS)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_TYPE</name>
+      <anchorfile>p99__tp_8h_a67c9b272cbf6ed6bf7058800e94da626.html</anchorfile>
+      <anchor>a67c9b272cbf6ed6bf7058800e94da626</anchor>
+      <arglist>(TP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_TYPE_STATE</name>
+      <anchorfile>p99__tp_8h_a2fcde265a329e04ad55916769f82ffb9.html</anchorfile>
+      <anchor>a2fcde265a329e04ad55916769f82ffb9</anchor>
+      <arglist>(TP)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct p99_tp</type>
+      <name>p99_tp</name>
+      <anchorfile>p99__tp_8h_ac71e4676a3f1fabf87e03462bb2e01f5.html</anchorfile>
+      <anchor>ac71e4676a3f1fabf87e03462bb2e01f5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct p99_tp_state</type>
+      <name>p99_tp_state</name>
+      <anchorfile>p99__tp_8h_ae71a4deb6b84d3c849352bdb8e23c142.html</anchorfile>
+      <anchor>ae71a4deb6b84d3c849352bdb8e23c142</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>p99_tp_get</name>
+      <anchorfile>p99__tp_8h_a2e64898992ddc45e048d8b3d9a69bb41.html</anchorfile>
+      <anchor>a2e64898992ddc45e048d8b3d9a69bb41</anchor>
+      <arglist>(p99_tp *p00_tp)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>p99_tp_state_commit</name>
+      <anchorfile>p99__tp_8h_a5c8da5eeea668f84652638330b90d7ac.html</anchorfile>
+      <anchor>a5c8da5eeea668f84652638330b90d7ac</anchor>
+      <arglist>(p99_tp_state *p00_state)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>p99_tp_state_get</name>
+      <anchorfile>p99__tp_8h_afaba7a90da2379d7f48150ff55348e99.html</anchorfile>
+      <anchor>afaba7a90da2379d7f48150ff55348e99</anchor>
+      <arglist>(p99_tp_state *p00_state)</arglist>
+    </member>
+    <member kind="function">
+      <type>p99_tp_state</type>
+      <name>p99_tp_state_initializer</name>
+      <anchorfile>p99__tp_8h_af5833016fba5b14619ae72e4e4c98150.html</anchorfile>
+      <anchor>af5833016fba5b14619ae72e4e4c98150</anchor>
+      <arglist>(p99_tp *p00_tp, void *p00_p)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>p99_tp_state_set</name>
+      <anchorfile>p99__tp_8h_a4e0fdb3bf3f7da5e968f82c7af2e8001.html</anchorfile>
+      <anchor>a4e0fdb3bf3f7da5e968f82c7af2e8001</anchor>
+      <arglist>(p99_tp_state *p00_state, void *p00_p)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>p99_try.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__try_8h</filename>
@@ -9037,6 +9258,13 @@
       <name>P99_THROW_CALL_NEGATE</name>
       <anchorfile>group__try_gaff676c5efd7542cd3eff90b9098b94fb.html</anchorfile>
       <anchor>gaff676c5efd7542cd3eff90b9098b94fb</anchor>
+      <arglist>(F, E,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_NOT_ZERO</name>
+      <anchorfile>group__try_ga7aea8232c6b6d2b14680d108a316c2b2.html</anchorfile>
+      <anchor>ga7aea8232c6b6d2b14680d108a316c2b2</anchor>
       <arglist>(F, E,...)</arglist>
     </member>
     <member kind="define">
@@ -9115,13 +9343,6 @@
       <anchorfile>group__try_ga9162d721fecf634c028ab873912c9cd0.html</anchorfile>
       <anchor>ga9162d721fecf634c028ab873912c9cd0</anchor>
       <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>struct</type>
-      <name>atomic_P99_PASTE2</name>
-      <anchorfile>p99__try_8h_a5d902a4858e8e71481a3dfbf7adff210.html</anchorfile>
-      <anchor>a5d902a4858e8e71481a3dfbf7adff210</anchor>
-      <arglist>(p00_lifo_, p00_jmp_buf0_ptr) p00_lifo_p00_jmp_buf0_ptr</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -9236,6 +9457,13 @@
       <anchorfile>group__thread__enum_ga72c208d2825fef097748da10a5a4f3f7.html</anchorfile>
       <anchor>gga72c208d2825fef097748da10a5a4f3f7ab9572ef600e16755419816012a216f15</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>p99_tss *</type>
+      <name>p99_tss_init</name>
+      <anchorfile>group__threads_gac1f6646aba54fcc7898968e40679abd3.html</anchorfile>
+      <anchor>gac1f6646aba54fcc7898968e40679abd3</anchor>
+      <arglist>(p99_tss *p00_el, tss_dtor_t p00_f)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -12818,9 +13046,9 @@
     <member kind="define">
       <type>#define</type>
       <name>ATOMIC_VAR_INIT</name>
-      <anchorfile>group__atomic__macros_ga8e54e6029e1ce44bc7c073f8f71952a7.html</anchorfile>
-      <anchor>ga8e54e6029e1ce44bc7c073f8f71952a7</anchor>
-      <arglist>(V)</arglist>
+      <anchorfile>group__atomic__macros_ga52977141c90693ee000f03f47bef0db0.html</anchorfile>
+      <anchor>ga52977141c90693ee000f03f47bef0db0</anchor>
+      <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -13276,6 +13504,13 @@
       <name>atomic_ushort</name>
       <anchorfile>group__atomic__types_ga1fe5654b9d17cdc7f262854062536729.html</anchorfile>
       <anchor>ga1fe5654b9d17cdc7f262854062536729</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct atomic_void_ptr</type>
+      <name>atomic_void_ptr</name>
+      <anchorfile>group__atomic__types_ga2cfe086f792b00f1aebb62e5b9b9aa8a.html</anchorfile>
+      <anchor>ga2cfe086f792b00f1aebb62e5b9b9aa8a</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -16330,6 +16565,20 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_SEA</name>
+      <anchorfile>group__preprocessor__for_gaa9acd29377c1b2ef72616837960f7eca.html</anchorfile>
+      <anchor>gaa9acd29377c1b2ef72616837960f7eca</anchor>
+      <arglist>(MACRO,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_SEM</name>
+      <anchorfile>group__preprocessor__for_ga8d99e5e9b9f79f3a7927ad1472a41ff3.html</anchorfile>
+      <anchor>ga8d99e5e9b9f79f3a7927ad1472a41ff3</anchor>
+      <arglist>(MACRO,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_SEP</name>
       <anchorfile>group__preprocessor__for_ga587594351f1763bfa31857764b70616e.html</anchorfile>
       <anchor>ga587594351f1763bfa31857764b70616e</anchor>
@@ -16987,6 +17236,13 @@
       <arglist>(p99_tss *p00_key, size_t p00_size)</arglist>
     </member>
     <member kind="function">
+      <type>p99_tss *</type>
+      <name>p99_tss_init</name>
+      <anchorfile>group__threads_gac1f6646aba54fcc7898968e40679abd3.html</anchorfile>
+      <anchor>gac1f6646aba54fcc7898968e40679abd3</anchor>
+      <arglist>(p99_tss *p00_el, tss_dtor_t p00_f)</arglist>
+    </member>
+    <member kind="function">
       <type>int</type>
       <name>p99_tss_set</name>
       <anchorfile>group__threads_gaf263c5b90eafd1af74e34ef3db8419ea.html</anchorfile>
@@ -17429,6 +17685,13 @@
       <name>P99_THROW_CALL_NEGATE</name>
       <anchorfile>group__try_gaff676c5efd7542cd3eff90b9098b94fb.html</anchorfile>
       <anchor>gaff676c5efd7542cd3eff90b9098b94fb</anchor>
+      <arglist>(F, E,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_CALL_NOT_ZERO</name>
+      <anchorfile>group__try_ga7aea8232c6b6d2b14680d108a316c2b2.html</anchorfile>
+      <anchor>ga7aea8232c6b6d2b14680d108a316c2b2</anchor>
       <arglist>(F, E,...)</arglist>
     </member>
     <member kind="define">
@@ -21767,13 +22030,21 @@
     <filename>structp99__once__flag.html</filename>
   </compound>
   <compound kind="struct">
+    <name>p99_tp</name>
+    <filename>structp99__tp.html</filename>
+  </compound>
+  <compound kind="struct">
+    <name>p99_tp_state</name>
+    <filename>structp99__tp__state.html</filename>
+  </compound>
+  <compound kind="struct">
     <name>p99_tss</name>
     <filename>structp99__tss.html</filename>
     <member kind="variable">
-      <type>tss_dtor_t const</type>
+      <type>tss_dtor_t</type>
       <name>p99_dtor</name>
-      <anchorfile>structp99__tss_af9fbb5466fd9b825eff0ea2f1b937ccf.html</anchorfile>
-      <anchor>af9fbb5466fd9b825eff0ea2f1b937ccf</anchor>
+      <anchorfile>structp99__tss_a7d847e032a4fe447324a8028a4147e46.html</anchorfile>
+      <anchor>a7d847e032a4fe447324a8028a4147e46</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
@@ -21939,6 +22210,7 @@
     <file>p99_str.h</file>
     <file>p99_swap.h</file>
     <file>p99_threads.h</file>
+    <file>p99_tp.h</file>
     <file>p99_try.h</file>
     <file>p99_tss.h</file>
     <file>p99_type.h</file>
