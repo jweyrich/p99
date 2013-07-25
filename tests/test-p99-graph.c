@@ -355,6 +355,175 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
 (P00_GRAPH_PRINT(TV, TE, __VA_ARGS__, stdout))  \
 (P00_GRAPH_PRINT(TV, TE, __VA_ARGS__))
 
+#define P00_GRAPH_PRINT_STRING(G, F)                                     \
+do {                                                                    \
+  fputs("---------------------------------\n", (F));                 \
+  fprintf((F), " %zu vertices, %zu arcs\n", \
+         P99_GRAPH_N(G), P99_GRAPH_M(G));                               \
+  P99_DO(size_t, i, 0, P99_GRAPH_N(G)) {                                \
+    p99_vertex const* vert = P99_GRAPH_VERTEX(G, i);                    \
+    if (vert) {                                                         \
+      char const*const p = P99_GRAPH_VWEIGHT(G, i);                            \
+      size_t deg = P99_GRAPH_VDEGREE(G, i);                             \
+      size_t id = P99_VERTEX_ID(vert);                                  \
+      assert(id == i);                                                  \
+      if (p) fprintf((F), "%zu \"%s\"\t:\t", id, p);                      \
+      else fprintf((F), "%zu\t:\t", id);                                \
+      P99_DO(size_t, j, 0, deg) {                                       \
+        p99_arc const* arc = P99_GRAPH_ARC(G, i, j);                    \
+        char const*const weight = P99_ARC_WEIGHT(arc);                  \
+        p99_vertex const* vert = P99_ARC_VERTEX(arc);                   \
+        if (weight) fprintf((F), "%zu \"%s\"\t", P99_VERTEX_ID(vert), weight); \
+        else fprintf((F), "%zu\t", P99_VERTEX_ID(vert));                \
+      }                                                                 \
+      fputs("\n", (F));                                                 \
+    }                                                                   \
+  }                                                                     \
+  fputs("---------------------------------\n", (F));                    \
+} while (0)
+
+#define P99_GRAPH_PRINT_STRING(...)            \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
+(P00_GRAPH_PRINT_STRING(__VA_ARGS__, stdout))  \
+(P00_GRAPH_PRINT_STRING(__VA_ARGS__))
+
+#define BI_NUM_1(I, ...) I
+#define BI_NUM_0(...) BI_NUM_1 __VA_ARGS__
+#define BI_NUM(X, ...) BI_NUM_0(P99_CHS(X, __VA_ARGS__))
+
+#define BI_VERT_0(...) P00_ROBUST __VA_ARGS__
+#define BI_VERT(X, ...) BI_VERT_0(P99_CHS(X, __VA_ARGS__))
+
+#define BI0(...)
+#define BI1(...) (BI_VERT(0, __VA_ARGS__))
+#define BI2(...) (BI_VERT(1, __VA_ARGS__), (BI_NUM(0, __VA_ARGS__))), \
+    BI1(__VA_ARGS__)
+
+#define BI3(...) (BI_VERT(1, __VA_ARGS__), (BI_NUM(0, __VA_ARGS__)), (BI_NUM(2, __VA_ARGS__))), \
+    BI1(__VA_ARGS__),                                                   \
+    BI1(P99_SKP(2, __VA_ARGS__))
+
+#define BI4(...) (BI_VERT(2, __VA_ARGS__), (BI_NUM(1, __VA_ARGS__)), (BI_NUM(3, __VA_ARGS__))), \
+    BI2(__VA_ARGS__),                                      \
+    BI1(P99_SKP(3, __VA_ARGS__))
+
+#define BI5(...) (BI_VERT(2, __VA_ARGS__), (BI_NUM(1, __VA_ARGS__)), (BI_NUM(4, __VA_ARGS__))), \
+    BI2(__VA_ARGS__),                                      \
+    BI2(P99_SKP(3, __VA_ARGS__))
+
+#define BI6(...) (BI_VERT(3, __VA_ARGS__), (BI_NUM(1, __VA_ARGS__)), (BI_NUM(5, __VA_ARGS__))), \
+    BI3(__VA_ARGS__),                                      \
+    BI2(P99_SKP(4, __VA_ARGS__))
+
+#define BI7(...) (BI_VERT(3, __VA_ARGS__), (BI_NUM(1, __VA_ARGS__)), (BI_NUM(5, __VA_ARGS__))), \
+    BI3(__VA_ARGS__),                                      \
+    BI3(P99_SKP(4, __VA_ARGS__))
+
+#define BI8(...) (BI_VERT(4, __VA_ARGS__), (BI_NUM(2, __VA_ARGS__)), (BI_NUM(6, __VA_ARGS__))), \
+    BI4(__VA_ARGS__),                                      \
+    BI3(P99_SKP(5, __VA_ARGS__))
+
+#define BI9(...) (BI_VERT(4, __VA_ARGS__), (BI_NUM(2, __VA_ARGS__)), (BI_NUM(7, __VA_ARGS__))), \
+    BI4(__VA_ARGS__),                                      \
+    BI4(P99_SKP(5, __VA_ARGS__))
+
+#define BI10(...) (BI_VERT(5, __VA_ARGS__), (BI_NUM(2, __VA_ARGS__)), (BI_NUM(8, __VA_ARGS__))), \
+    BI5(__VA_ARGS__),                                      \
+    BI4(P99_SKP(6, __VA_ARGS__))
+
+#define BI11(...) (BI_VERT(5, __VA_ARGS__), (BI_NUM(2, __VA_ARGS__)), (BI_NUM(8, __VA_ARGS__))), \
+    BI5(__VA_ARGS__),                                      \
+    BI5(P99_SKP(6, __VA_ARGS__))
+
+#define BI12(...) (BI_VERT(6, __VA_ARGS__), (BI_NUM(3, __VA_ARGS__)), (BI_NUM(9, __VA_ARGS__))), \
+    BI6(__VA_ARGS__),                                      \
+    BI5(P99_SKP(7, __VA_ARGS__))
+
+#define BI13(...) (BI_VERT(6, __VA_ARGS__), (BI_NUM(3, __VA_ARGS__)), (BI_NUM(10, __VA_ARGS__))), \
+    BI6(__VA_ARGS__),                                      \
+    BI6(P99_SKP(7, __VA_ARGS__))
+
+#define BI14(...) (BI_VERT(7, __VA_ARGS__), (BI_NUM(3, __VA_ARGS__)), (BI_NUM(11, __VA_ARGS__))), \
+    BI7(__VA_ARGS__),                                      \
+    BI6(P99_SKP(8, __VA_ARGS__))
+
+#define BI15(...) (BI_VERT(7, __VA_ARGS__), (BI_NUM(3, __VA_ARGS__)), (BI_NUM(11, __VA_ARGS__))), \
+    BI7(__VA_ARGS__),                                      \
+    BI7(P99_SKP(8, __VA_ARGS__))
+
+#define BICOUNT_(_0, X, I) (I, X)
+
+#define BICOUNT(...) P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, BICOUNT_, __VA_ARGS__)
+
+
+#define BI_(N, ...) P99_PASTE2(BI, N)(__VA_ARGS__)
+#define BI(...) BI_(P99_NARG(__VA_ARGS__), BICOUNT(__VA_ARGS__))
+
+
+const p99_graph graph1
+= P99_GRAPH_INITIALIZER(char const, void const, graph1,
+                        BI("A1"));
+
+const p99_graph graph2
+= P99_GRAPH_INITIALIZER(char const, char const, graph2,
+                        BI("A2", "B2"));
+
+const p99_graph graph3
+= P99_GRAPH_INITIALIZER(char const, char const, graph3,
+                        BI("A3", "B3", "C3"));
+
+const p99_graph graph4
+= P99_GRAPH_INITIALIZER(char const, char const, graph4,
+                        BI("A4", "B4", "C4", "D4"));
+
+const p99_graph graph5
+= P99_GRAPH_INITIALIZER(char const, char const, graph5,
+                        BI("A5", "B5", "C5", "D5", "E5"));
+
+const p99_graph graph6
+= P99_GRAPH_INITIALIZER(char const, char const, graph5,
+                        BI("A6", "B6", "C6", "D6", "E6", "F6"));
+
+const p99_graph graph7
+= P99_GRAPH_INITIALIZER(char const, char const, graph6,
+                        BI("A7", "B7", "C7", "D7", "E7", "F7", "G7"));
+
+const p99_graph graph8
+= P99_GRAPH_INITIALIZER(char const, char const, graph8,
+                        BI("A8", "B8", "C8", "D8", "E8", "F8", "G8", "H8"));
+
+const p99_graph graph9
+= P99_GRAPH_INITIALIZER(char const, char const, graph9,
+                        BI("A9", "B9", "C9", "D9", "E9", "F9", "G9", "H9", "I9"));
+
+const p99_graph graphA
+= P99_GRAPH_INITIALIZER(char const, char const, graphA,
+                        BI("AA", "BA", "CA", "DA", "EA", "FA", "GA", "HA", "IA", "JA"));
+
+const p99_graph graphB
+= P99_GRAPH_INITIALIZER(char const, char const, graphB,
+                        BI("AB", "BB", "CB", "DB", "EB", "FB", "GB", "HB", "IB", "JB", "KB"));
+
+const p99_graph graphC
+= P99_GRAPH_INITIALIZER(char const, char const, graphC,
+                        BI("AC", "BC", "CC", "DC", "EC", "FC", "GC", "HC", "IC", "JC", "KC", "LC"));
+
+const p99_graph graphD
+= P99_GRAPH_INITIALIZER(char const, char const, graphD,
+                        BI("AD", "BD", "CD", "DD", "ED", "FD", "GD", "HD", "ID", "JD", "KD", "LD", "MD"));
+
+const p99_graph graphE
+= P99_GRAPH_INITIALIZER(char const, char const, graphE,
+                        BI("AE", "BE", "CE", "DE", "EE", "FE", "GE", "HE", "IE", "JE", "KE", "LE", "ME", "NE"));
+
+const p99_graph graphF
+= P99_GRAPH_INITIALIZER(char const, char const, graphF,
+                        BI("AF", "BF", "CF", "DF", "EF", "FF", "GF", "HF", "IF", "JF", "KF", "LF", "MF", "NF", "OF"));
+
+/*
+BI("A", "B", "C", "D", "E", "F", "G", "H", "II", "J", "K", "L", "M", "N", "O", "P")
+*/
+
 int main(void) {
   for (size_t pos = P00_GRAPH_OFFSET; pos < P99_ALEN(bgraph); ++pos) {
     p99_vertex const* vert = p99_graph_vertex(&bgraph[pos]);
@@ -376,4 +545,19 @@ int main(void) {
   }
   P99_GRAPH_PRINT(VTYPE, ETYPE, ggraph);
   P99_GRAPH_PRINT(char const*, char const*, bgraph, stderr);
+  P99_GRAPH_PRINT_STRING(graph1, stderr);
+  P99_GRAPH_PRINT_STRING(graph2, stderr);
+  P99_GRAPH_PRINT_STRING(graph3, stderr);
+  P99_GRAPH_PRINT_STRING(graph4, stderr);
+  P99_GRAPH_PRINT_STRING(graph5, stderr);
+  P99_GRAPH_PRINT_STRING(graph6, stderr);
+  P99_GRAPH_PRINT_STRING(graph7, stderr);
+  P99_GRAPH_PRINT_STRING(graph8, stderr);
+  P99_GRAPH_PRINT_STRING(graph9, stderr);
+  P99_GRAPH_PRINT_STRING(graphA, stderr);
+  P99_GRAPH_PRINT_STRING(graphB, stderr);
+  P99_GRAPH_PRINT_STRING(graphC, stderr);
+  P99_GRAPH_PRINT_STRING(graphD, stderr);
+  P99_GRAPH_PRINT_STRING(graphE, stderr);
+  P99_GRAPH_PRINT_STRING(graphF, stderr);
 }
