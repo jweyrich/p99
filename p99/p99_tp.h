@@ -84,6 +84,14 @@ P99_DECLARE_ATOMIC(p00_tp_state);
 P99_DECLARE_STRUCT(p99_tp);
 P99_DECLARE_STRUCT(p99_tp_state);
 
+p99_inline
+p00_tp_state* p00_tp_state_init(p00_tp_state* el, void * p) {
+  if (el) {
+    *el = (p00_tp_state)P00_TP_STATE_INITIALIZER(p);
+  }
+  return el;
+}
+
 /**
  ** @brief A tagged pointer for atomic storage.
  **
@@ -202,6 +210,17 @@ union P99_TP_STATE(T) {                                          \
 
 
 # define P99_TP_INITIALIZER(VAL) { .p00_tp = P00_TP_INITIALIZER(VAL), }
+
+p99_inline
+void* p00_tp_init(p99_tp* p00_el, void* p00_val) {
+  if (p00_el) {
+    atomic_init(&p00_el->p00_val, (p00_tp_state){ .p00_val = p00_val });
+    atomic_init(&p00_el->p00_tic, 1);
+  }
+  return p00_el;
+}
+
+# define p99_tp_init(EL, VAL) (p00_tp_init(&(EL)->p00_tp, (VAL)), (EL))
 
 /**
  ** @brief Load the value of @a TP into the state variable and
