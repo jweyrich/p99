@@ -77,12 +77,12 @@ P99_FOR(NAME3, P99_NARG(__VA_ARGS__), P00_SEQ, P00_VERTEX_EXPAND, __VA_ARGS__)
 [P00_VPOS(POS)].p00_id = P00_VPOS(POS),                 \
 [P00_VPOS(POS)].p00_weight =                            \
 P99_IF_EMPTY(VAL)                                       \
-((void*)P99_GENERIC_TCONST(P00_GRAPH_TV NAME3, (P00_GRAPH_TV NAME3[1])P99_INIT, 0)) \
-((void*)(P00_GRAPH_TV NAME3[1]){ VAL })
+((void*)P99_GENERIC_TCONST(P00_GRAPH_TV NAME3, (P00_GRAPH_TV NAME3[])P99_INIT, 0)) \
+((void*)(P00_GRAPH_TV NAME3[]){ VAL })
 
 #define P00_VERTEX_0(NAME3, POS)                \
 [P00_VPOS(POS)].p00_id = P00_VPOS(POS),         \
-[P00_VPOS(POS)].p00_weight = (void*)P99_GENERIC_TCONST(P00_GRAPH_TV NAME3, (P00_GRAPH_TV NAME3[1])P99_INIT, 0)
+[P00_VPOS(POS)].p00_weight = (void*)P99_GENERIC_TCONST(P00_GRAPH_TV NAME3, (P00_GRAPH_TV NAME3[])P99_INIT, 0)
 
 #define P00_VERTEX_1(NAME3, ...)                \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
@@ -109,14 +109,14 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
 #define P00_ARC_WEIGHT(NAME, X, I)                      \
 [I].p00_weight =                                        \
   P99_IF_EMPTY(P00_ARC_VALUE X)                         \
-  ((void*)(P00_GRAPH_TE NAME[1])P99_INIT)               \
-  ((void*)(P00_GRAPH_TE NAME[1]){ P00_ARC_VALUE X })
+  ((void*)(P00_GRAPH_TE NAME[])P99_INIT)               \
+  ((void*)(P00_GRAPH_TE NAME[]){ P00_ARC_VALUE X })
 
 #define P00_ARC_WEIGHTC(NAME, X, I)                             \
 [I].p00_weight =                                                \
   P99_IF_EMPTY(P00_ARC_VALUE X)                                 \
   ((void*)0)                                                    \
-  ((void*)(P00_GRAPH_TE NAME[1]){ P00_ARC_VALUE X })
+  ((void*)(P00_GRAPH_TE NAME[]){ P00_ARC_VALUE X })
 
 #define P00_ARC_ENDPOINT(WEIGHT, X, I)                                   \
 [P00_VPOS(P00_ARC_TARGET X)].p00_id = P00_VPOS(P00_ARC_TARGET X),       \
@@ -158,7 +158,7 @@ P00_ARC_2_LIT_(NAME3, N,                                                \
 /* create a list of entries for all vertices that are used as endpoints of arcs */
 #define P00_ARC_2_LIST_E(NAME3, N, ...)                                 \
 P99_FOR(                                                                \
-        P99_GENERIC_TCONST(P00_GRAPH_TV NAME3, (P00_GRAPH_TV NAME3[1])P99_INIT, 0), \
+        P99_GENERIC_TCONST(P00_GRAPH_TV NAME3, (P00_GRAPH_TV NAME3[])P99_INIT, 0), \
         P99_NARG(__VA_ARGS__), P00_SEQ, P00_ARC_ENDPOINT, __VA_ARGS__)
 
 /* For the particular arc list of a vertex, first compute entries for
