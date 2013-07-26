@@ -1119,14 +1119,14 @@ char const* p00_sprint__Bool(_Bool p00_val, char*restrict p00_str, unsigned p00_
 
 P99_CONST_FUNCTION
 p99_inline
-char const* p00_sprint_charp(char const* p00_val, char*restrict p00_str, unsigned p00_form) {
+char const volatile* p00_sprint_charp(char const volatile* p00_val, char*restrict p00_str, unsigned p00_form) {
   P99_UNUSED(p00_str);
   P99_UNUSED(p00_form);
   return p00_val;
 }
 
 p99_inline
-char const* p00_sprint_voidp(void * p00_val, char*restrict p00_str, unsigned p00_form) {
+char const* p00_sprint_voidp(void const volatile* p00_val, char*restrict p00_str, unsigned p00_form) {
   P99_UNUSED(p00_form);
   sprintf(p00_str, "%p", p00_val);
   return p00_str;
