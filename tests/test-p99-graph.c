@@ -323,9 +323,9 @@ const p99_graph bgraph
                         (6, "cd"));
 
 
-#define P00_GRAPH_PRINT(TV, TE, G, F)                                     \
+#define P00_GRAPH_PRINTP(TV, TE, G, F)                                  \
 do {                                                                    \
-  fputs("---------------------------------\n", (F));                 \
+  fputs("---------------------------------\n", (F));                    \
   fprintf((F), " %zu vertices (" P99_STRINGIFY(TV) "), %zu arcs (" P99_STRINGIFY(TE) ")\n", \
          P99_GRAPH_N(G), P99_GRAPH_M(G));                               \
   P99_DO(size_t, i, 0, P99_GRAPH_N(G)) {                                \
@@ -350,30 +350,30 @@ do {                                                                    \
   fputs("---------------------------------\n", (F));                    \
 } while (0)
 
-#define P99_GRAPH_PRINT(TV, TE, ...)            \
+#define P99_GRAPH_PRINTP(TV, TE, ...)           \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
-(P00_GRAPH_PRINT(TV, TE, __VA_ARGS__, stdout))  \
-(P00_GRAPH_PRINT(TV, TE, __VA_ARGS__))
+(P00_GRAPH_PRINTP(TV, TE, __VA_ARGS__, stdout)) \
+(P00_GRAPH_PRINTP(TV, TE, __VA_ARGS__))
 
-#define P00_GRAPH_PRINT_STRING(G, F)                                     \
+#define P00_GRAPH_PRINT(TV, TE, G, F)                                   \
 do {                                                                    \
-  fputs("---------------------------------\n", (F));                 \
-  fprintf((F), " %zu vertices, %zu arcs\n", \
+  fputs("---------------------------------\n", (F));                    \
+  fprintf((F), " %zu vertices, %zu arcs\n",                             \
          P99_GRAPH_N(G), P99_GRAPH_M(G));                               \
   P99_DO(size_t, i, 0, P99_GRAPH_N(G)) {                                \
     p99_vertex const* vert = P99_GRAPH_VERTEX(G, i);                    \
     if (vert) {                                                         \
-      char const*const p = P99_GRAPH_VWEIGHT(G, i);                            \
+      TV const p = P99_GRAPH_VWEIGHT(G, i);                             \
       size_t deg = P99_GRAPH_VDEGREE(G, i);                             \
       size_t id = P99_VERTEX_ID(vert);                                  \
       assert(id == i);                                                  \
-      if (p) fprintf((F), "%zu \"%s\"\t:\t", id, p);                      \
+      if (p) P99_FPRINTF((F), "%s [%s]\t:\t", id, p);                 \
       else fprintf((F), "%zu\t:\t", id);                                \
       P99_DO(size_t, j, 0, deg) {                                       \
         p99_arc const* arc = P99_GRAPH_ARC(G, i, j);                    \
-        char const*const weight = P99_ARC_WEIGHT(arc);                  \
+        TE const weight = P99_ARC_WEIGHT(arc);                          \
         p99_vertex const* vert = P99_ARC_VERTEX(arc);                   \
-        if (weight) fprintf((F), "%zu \"%s\"\t", P99_VERTEX_ID(vert), weight); \
+        if (weight) P99_FPRINTF((F), "%s [%s]\t", P99_VERTEX_ID(vert), weight); \
         else fprintf((F), "%zu\t", P99_VERTEX_ID(vert));                \
       }                                                                 \
       fputs("\n", (F));                                                 \
@@ -382,10 +382,10 @@ do {                                                                    \
   fputs("---------------------------------\n", (F));                    \
 } while (0)
 
-#define P99_GRAPH_PRINT_STRING(...)            \
+#define P99_GRAPH_PRINT(TV, TE, ...)            \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
-(P00_GRAPH_PRINT_STRING(__VA_ARGS__, stdout))  \
-(P00_GRAPH_PRINT_STRING(__VA_ARGS__))
+(P00_GRAPH_PRINT(TV, TE, __VA_ARGS__, stdout))  \
+(P00_GRAPH_PRINT(TV, TE, __VA_ARGS__))
 
 #define BI_NUM_1(I, ...) I
 #define BI_NUM_0(...) BI_NUM_1 __VA_ARGS__
@@ -543,21 +543,21 @@ int main(void) {
     }
     fputs("\n", stdout);
   }
-  P99_GRAPH_PRINT(VTYPE, ETYPE, ggraph);
-  P99_GRAPH_PRINT(char const*, char const*, bgraph, stderr);
-  P99_GRAPH_PRINT_STRING(graph1, stderr);
-  P99_GRAPH_PRINT_STRING(graph2, stderr);
-  P99_GRAPH_PRINT_STRING(graph3, stderr);
-  P99_GRAPH_PRINT_STRING(graph4, stderr);
-  P99_GRAPH_PRINT_STRING(graph5, stderr);
-  P99_GRAPH_PRINT_STRING(graph6, stderr);
-  P99_GRAPH_PRINT_STRING(graph7, stderr);
-  P99_GRAPH_PRINT_STRING(graph8, stderr);
-  P99_GRAPH_PRINT_STRING(graph9, stderr);
-  P99_GRAPH_PRINT_STRING(graphA, stderr);
-  P99_GRAPH_PRINT_STRING(graphB, stderr);
-  P99_GRAPH_PRINT_STRING(graphC, stderr);
-  P99_GRAPH_PRINT_STRING(graphD, stderr);
-  P99_GRAPH_PRINT_STRING(graphE, stderr);
-  P99_GRAPH_PRINT_STRING(graphF, stderr);
+  P99_GRAPH_PRINTP(VTYPE, ETYPE, ggraph);
+  P99_GRAPH_PRINTP(char const*, char const*, bgraph, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graph1, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graph2, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graph3, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graph4, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graph5, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graph6, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graph7, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graph8, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graph9, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graphA, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graphB, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graphC, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graphD, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graphE, stderr);
+  P99_GRAPH_PRINT(char const*, void const*, graphF, stderr);
 }
