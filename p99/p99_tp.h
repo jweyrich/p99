@@ -227,8 +227,12 @@ void* p00_tp_init(p99_tp* p00_el, void* p00_val) {
 # define p99_tp_init(EL, VAL) (p00_tp_init(&(EL)->p00_tp, (VAL)), (EL))
 
 /**
- ** @brief Load the value of @a TP into the state variable and
- ** prepare it to commit value @a P later.
+ ** @brief Load the value of @a TP into the state variable.
+ **
+ ** @see P99_TP_STATE_COMMIT to commit value @a P, later
+ **
+ ** @see P99_TP_STATE_CHECK to check if the such initialized state is
+ ** still consistent with @a TP
  **/
 #define P99_TP_STATE_INITIALIZER(TP, P)                           \
 p99_extension ({                                                  \
@@ -242,6 +246,9 @@ p99_extension ({                                                  \
     p00_r;                                                        \
 })
 
+/**
+ ** @brief Unconditionally return the value of @a TP.
+ **/
 #define P99_TP_GET(TP)                                             \
 p99_extension ({                                                   \
     P99_MACRO_VAR(p00_tp, (TP));                                   \
@@ -252,6 +259,13 @@ p99_extension ({                                                   \
     p00_r;                                                         \
 })
 
+/**
+ ** @brief Return the value the underlying tagged pointer of @a TPS as
+ ** it was found when initializing @a TPS.
+ **
+ ** @see P99_TP_STATE_CHECK to know if that returned value is still
+ ** valid.
+ **/
 #define P99_TP_STATE_GET(TPS)                                      \
 p99_extension ({                                                   \
     P99_MACRO_VAR(p00_tps, (TPS));                                 \
@@ -262,6 +276,11 @@ p99_extension ({                                                   \
     p00_r;                                                         \
 })
 
+
+/**
+ ** @brief Change the value to which the tagged pointer will be
+ ** updated.
+ **/
 #define P99_TP_STATE_SET(TPS, P)                                 \
 p99_extension ({                                                 \
     P99_MACRO_VAR(p00_tps, (TPS));                               \
@@ -271,8 +290,21 @@ p99_extension ({                                                 \
     p99_tp_state_set(&p00_tps->p00_st, p00_p);                   \
 })
 
+/**
+ ** @brief Commit the registered value change to the underlying tagged
+ ** pointer.
+ **
+ ** @return @c true if the commit was succesful, @c false otherwise.
+ **/
 #define P99_TP_STATE_COMMIT(TPS) p99_tp_state_commit(&(TPS)->p00_st)
 
+/**
+ ** @brief Check if the registered value is still consistent with the
+ ** underlying tagged pointer.
+ **
+ ** @return @c true if the value is still consistent, @c false
+ ** otherwise.
+ **/
 #define P99_TP_STATE_CHECK(TPS) p99_tp_state_check(&(TPS)->p00_st)
 
 
