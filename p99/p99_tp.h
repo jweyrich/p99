@@ -185,6 +185,10 @@ bool p99_tp_state_commit(p99_tp_state* p00_state) {
   return p00_tp_cmpxchg(&p00_state->p00_tp->p00_val, &p00_state->p00_val, p00_state->p00_next);
 }
 
+p99_inline
+bool p99_tp_state_check(p99_tp_state* p00_state) {
+  return p00_tp_cmpxchg(&p00_state->p00_tp->p00_val, &p00_state->p00_val, p00_state->p00_val);
+}
 
 # define P99_TP(T) P99_PASTE2(p00_tp_, T)
 # define P99_TP_STATE(T) P99_PASTE2(p00_tp_state_, T)
@@ -268,6 +272,8 @@ p99_extension ({                                                 \
 })
 
 #define P99_TP_STATE_COMMIT(TPS) p99_tp_state_commit(&(TPS)->p00_st)
+
+#define P99_TP_STATE_CHECK(TPS) p99_tp_state_check(&(TPS)->p00_st)
 
 
 #endif
