@@ -41,6 +41,7 @@ while (<STDIN>) {
         s/_Pragma//go;
         s|MACRODEFINE|#define |go;
         s|sizeof|P00_IGNORE|go if (!defined($sizeof));
+        s|__typeof__|P00_IGNORE|go;
         while (m/\(1 \?/) {
             s/\(1 \?/"P00FIRST".++$i."("/e;
         }
