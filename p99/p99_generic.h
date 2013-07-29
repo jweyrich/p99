@@ -1455,6 +1455,10 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IN_RANGE, 1)
  ** @see P99_GENERIC_TQUALIFIED for a similar macro that works for
  **   type expressions instead of a pointer expression
  */
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_PQUALIFIED, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_PQUALIFIED, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_PQUALIFIED, 2)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_PQUALIFIED, 3)
 #define P99_GENERIC_PQUALIFIED(PEXP, ...)                               \
 P99_GENERIC(                                                            \
             /* The second case is subtle. If we would chose (void*)0 */ \
@@ -1486,6 +1490,7 @@ P99_GENERIC(                                                            \
  ** @see P99_GENERIC_TCONST for a similar macro that works for
  **   type expressions instead of a pointer expression
  */
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_PCONST, 0)
 #define P99_GENERIC_PCONST(PEXP, NCONST, CONST)         \
 P99_GENERIC((1 ? (PEXP) : (void volatile*)1),,          \
             P00_VOID_QUAL_(volatile, NCONST),           \
@@ -1505,6 +1510,7 @@ P99_GENERIC((1 ? (PEXP) : (void volatile*)1),,          \
  ** @see P99_GENERIC_TCONSTVOLATILE for a similar macro that works for
  **   type expressions instead of a pointer expression
  */
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_PVOLATILE, 0)
 #define P99_GENERIC_PVOLATILE(PEXP, NVOLATILE, VOLATILE)        \
 P99_GENERIC((1 ? (PEXP) : (void const*)1),,                     \
             P00_VOID_QUAL_(const, NVOLATILE),                   \
@@ -1524,6 +1530,7 @@ P99_GENERIC((1 ? (PEXP) : (void const*)1),,                     \
  ** @see P99_GENERIC_TVOLATILE for a similar macro that works for
  **   type expressions instead of a pointer expression
  */
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_PCONSTVOLATILE, 0)
 #define P99_GENERIC_PCONSTVOLATILE(PEXP, NON, FULL)     \
 P99_GENERIC((1 ? (PEXP) : (void*)1),                    \
             NVOLATILE,                                  \
@@ -1537,6 +1544,7 @@ P99_GENERIC((1 ? (PEXP) : (void*)1),                    \
  **
  ** @see P99_GENERIC_PQUALIFIED 
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_GENERIC_TQUALIFIED, 0)
 #define P99_GENERIC_TQUALIFIED(T, ...)          \
 P99_GENERIC_PQUALIFIED((&(T)P99_INIT), ...)
 
@@ -1546,6 +1554,7 @@ P99_GENERIC_PQUALIFIED((&(T)P99_INIT), ...)
  **
  ** @see P99_GENERIC_PCONST
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_GENERIC_TCONST, 0)
 #define P99_GENERIC_TCONST(T, NCONST, CONST)            \
 P99_GENERIC_PCONST((&(T)P99_INIT), NCONST, CONST)
 
@@ -1555,6 +1564,7 @@ P99_GENERIC_PCONST((&(T)P99_INIT), NCONST, CONST)
  **
  ** @see P99_GENERIC_PVOLATILE
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_GENERIC_TVOLATILE, 0)
 #define P99_GENERIC_TVOLATILE(T, NVOLATILE, VOLATILE)           \
 P99_GENERIC_PVOLATILE((&(T)P99_INIT), NVOLATILE, VOLATILE)
 
@@ -1564,6 +1574,7 @@ P99_GENERIC_PVOLATILE((&(T)P99_INIT), NVOLATILE, VOLATILE)
  **
  ** @see P99_GENERIC_PCONSTVOLATILE
  **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_GENERIC_TCONSTVOLATILE, 0)
 #define P99_GENERIC_TCONSTVOLATILE(T, NON, FULL)        \
 P99_GENERIC_PCONSTVOLATILE((&(T)P99_INIT), NON, FULL)
 
@@ -1636,6 +1647,7 @@ P99_GENERIC((1 ? (p00_nullptr_test*)0 : (PEXP)),        \
  ** @see P99_IS_NULLPTR_CONSTANT
  ** @see P99_IS_NULLPTR
  **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IS_INTEGRAL_CONSTANT, 0)
 #define P99_IS_INTEGRAL_CONSTANT(EXP)                                   \
 P99_GENERIC((EXP),                                                      \
             P99_IS_NULLPTR_CONSTANT((void*)(ptrdiff_t)((EXP)-(EXP))),   \
@@ -1657,6 +1669,7 @@ P99_GENERIC((EXP),                                                      \
  ** @see P99_IS_NULLPTR_CONSTANT
  ** @see P99_IS_INTEGRAL_CONSTANT
  **/
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IS_NULLPTR, 0)
 #define P99_IS_NULLPTR(PEXP) (P99_IS_NULLPTR_CONSTANT(PEXP)&&!P99_IS_INTEGRAL_CONSTANT(PEXP))
 
 

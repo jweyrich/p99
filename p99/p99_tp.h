@@ -192,6 +192,8 @@ bool p99_tp_state_check(p99_tp_state* p00_state) {
 
 # define P99_TP(T) P99_PASTE2(p00_tp_, T)
 # define P99_TP_STATE(T) P99_PASTE2(p00_tp_state_, T)
+
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_DECLARE, 0)
 # define P99_TP_DECLARE(T)                                       \
 typedef union P99_TP(T) P99_TP(T);                               \
 typedef union P99_TP_STATE(T) P99_TP_STATE(T);                   \
