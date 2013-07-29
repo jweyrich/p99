@@ -5815,6 +5815,27 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_IS_INTEGRAL_CONSTANT</name>
+      <anchorfile>p99__generic_8h_ac173db2844587a46588906cdda95c530.html</anchorfile>
+      <anchor>ac173db2844587a46588906cdda95c530</anchor>
+      <arglist>(EXP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_IS_NULLPTR</name>
+      <anchorfile>p99__generic_8h_a69d6e3ca8a08cc960c554ecef01fae5f.html</anchorfile>
+      <anchor>a69d6e3ca8a08cc960c554ecef01fae5f</anchor>
+      <arglist>(PEXP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_IS_NULLPTR_CONSTANT</name>
+      <anchorfile>p99__generic_8h_a3c950158657beea4b96526e27af50d78.html</anchorfile>
+      <anchor>a3c950158657beea4b96526e27af50d78</anchor>
+      <arglist>(PEXP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_OBJLEN</name>
       <anchorfile>p99__generic_8h_a60af7d3df62f118142b1f11285445998.html</anchorfile>
       <anchor>a60af7d3df62f118142b1f11285445998</anchor>
@@ -9101,6 +9122,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>p99_tp_init</name>
+      <anchorfile>p99__tp_8h_ab22c412a20415c7f687912f80c77f120.html</anchorfile>
+      <anchor>ab22c412a20415c7f687912f80c77f120</anchor>
+      <arglist>(EL, VAL)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_TP_INITIALIZER</name>
       <anchorfile>p99__tp_8h_a0d13e8d0305f82c79a6a3d9c2903ebc9.html</anchorfile>
       <anchor>a0d13e8d0305f82c79a6a3d9c2903ebc9</anchor>
@@ -9112,6 +9140,13 @@
       <anchorfile>p99__tp_8h_a70b01e9291377fd5f09de33d227a3c49.html</anchorfile>
       <anchor>a70b01e9291377fd5f09de33d227a3c49</anchor>
       <arglist>(T)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_STATE_CHECK</name>
+      <anchorfile>p99__tp_8h_a582ef0864d426d40cd39496d9c593489.html</anchorfile>
+      <anchor>a582ef0864d426d40cd39496d9c593489</anchor>
+      <arglist>(TPS)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -9182,6 +9217,13 @@
       <anchorfile>p99__tp_8h_a2e64898992ddc45e048d8b3d9a69bb41.html</anchorfile>
       <anchor>a2e64898992ddc45e048d8b3d9a69bb41</anchor>
       <arglist>(p99_tp *p00_tp)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>p99_tp_state_check</name>
+      <anchorfile>p99__tp_8h_a1d8897989f139254b472f41a7ece0693.html</anchorfile>
+      <anchor>a1d8897989f139254b472f41a7ece0693</anchor>
+      <arglist>(p99_tp_state *p00_state)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>

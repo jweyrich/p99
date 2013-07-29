@@ -231,6 +231,79 @@ int main(int argc, char* argv[]) {
              P99_IN_RANGE(5.0, 1u, 7.f),
              P99_IN_RANGE(8.0, 1u, 7),
              P99_IN_RANGE(28.0, 1, 7));
+  static char nullptr0[P99_IS_NULLPTR_CONSTANT(0)+1];
+  static char nullptr1[P99_IS_NULLPTR_CONSTANT((void*)0)+1];
+  enum p00_nullptr_enum { p00_nullptr };
+  static char nullptr2[P99_IS_NULLPTR_CONSTANT(p00_nullptr)+1];
+  static char nullptr3[P99_IS_NULLPTR_CONSTANT((enum p00_nullptr_enum)0)+1];
+  static char nullptr4[P99_IS_NULLPTR_CONSTANT((void const*)0)+1];
+  static char nullptr5[P99_IS_NULLPTR_CONSTANT((void*)1)+1];
+  static void *const ptr = 0;
+  static char nullptr6[P99_IS_NULLPTR_CONSTANT(ptr)+1];
+  printf("Testing for null pointer constant.\n"
+         "\tshould all be true:\t0 (%s),"
+         " (void*)0 (%s),\n"
+         "\t\t\t\tenumeration constant (%s),"
+         " constant of enum type (%s)\n"
+         "\tshould all be false:\t(void const*)0 (%s),"
+         " (void*)1 (%s),"
+         " void*const ptr (%s)\n",
+         bool_getname(2 == sizeof nullptr0),
+         bool_getname(2 == sizeof nullptr1),
+         bool_getname(2 == sizeof nullptr2),
+         bool_getname(2 == sizeof nullptr3),
+         bool_getname(2 == sizeof nullptr4),
+         bool_getname(2 == sizeof nullptr5),
+         bool_getname(2 == sizeof nullptr6)
+         );
+
+  static char integral_constant0[P99_IS_INTEGRAL_CONSTANT(7)+1];
+  enum p00_integral_constant_enum { p00_integral_constant = 1 };
+  static char integral_constant1[P99_IS_INTEGRAL_CONSTANT(p00_integral_constant)+1];
+  static char integral_constant2[P99_IS_INTEGRAL_CONSTANT((enum p00_integral_constant_enum)1)+1];
+  static char integral_constant3[P99_IS_INTEGRAL_CONSTANT(7.0)+1];
+  static char integral_constant4[P99_IS_INTEGRAL_CONSTANT(!!0.0)+1];
+  static int const val = 0;
+  static char integral_constant5[P99_IS_INTEGRAL_CONSTANT(val)+1];
+  static char integral_constant6[P99_IS_INTEGRAL_CONSTANT((char*)1)+1];
+  /* may produce a warning or error*/
+  static char integral_constant7[P99_IS_INTEGRAL_CONSTANT((void*)0)+1];
+  printf("Testing for integral constant.\n"
+         "\tshould all be true:"
+         "\t7 (%s),"
+         "\n"
+         "\t\t\t\tenumeration constant (%s),"
+         "\tconstant of enum type (%s)\n"
+         "\tshould all be false:"
+         "\t7.0 (%s),"
+         "\t!!0.0 (%s),"
+         "\tint const val (%s),\n"
+         "\t\t\t\t(char*)1 (%s),"
+         "\t(void*)0 (%s),\n",
+         bool_getname(2 == sizeof integral_constant0),
+         bool_getname(2 == sizeof integral_constant1),
+         bool_getname(2 == sizeof integral_constant2),
+         bool_getname(2 == sizeof integral_constant3),
+         bool_getname(2 == sizeof integral_constant4),
+         bool_getname(2 == sizeof integral_constant5),
+         bool_getname(2 == sizeof integral_constant6),
+         bool_getname(2 == sizeof integral_constant7)
+         );
+
+  printf("NULL\t\t(" P99_STRINGIFY(NULL) ")\t\tis %sa null pointer.\n",
+         P99_IS_NULLPTR(NULL) ? "" : "not ");
+#undef NULL
+#define NULL UINTPTR_C(0)
+
+  printf("redefined to\t(" P99_STRINGIFY(NULL) ")\tis %sa null pointer.\n",
+         P99_IS_NULLPTR(NULL) ? "" : "not ");
+
+#undef NULL
+#define NULL ((void*)0)
+
+  printf("redefined to\t(" P99_STRINGIFY(NULL) ")\t\tis %sa null pointer.\n",
+         P99_IS_NULLPTR(NULL) ? "" : "not ");
+
   char line[] = "this is a, long text -- it has some special charActers\nnewlines?";
   puts("--- end ---");
 

@@ -1567,4 +1567,97 @@ P99_GENERIC_PVOLATILE((&(T)P99_INIT), NVOLATILE, VOLATILE)
 #define P99_GENERIC_TCONSTVOLATILE(T, NON, FULL)        \
 P99_GENERIC_PCONSTVOLATILE((&(T)P99_INIT), NON, FULL)
 
+typedef struct p00_nullptr_test p00_nullptr_test;
+
+/**
+ ** @brief Test if the expression @a PEXP is a null pointer constant
+ ** in the sense of the C standard.
+ **
+ ** A null pointer constant is any compile time constant of integral
+ ** type (that is of integer or enum type) eventually cast to @c
+ ** void*.
+ **
+ ** @remark Passing other integral values than @c 0 should result in a
+ ** compile time diagnostic about type mismatch.
+ **
+ ** @remark A compile time constant of value @c 0 that is of a
+ ** qualified version of @c void, e.g <code>void const*</p> should
+ ** result in the value false.
+ **
+ ** @remark A const qualified variable of value @c 0 that is of
+ ** integral type or @c void* should also result in the value false.
+ **
+ ** @remark @a PEXP will only be evaluated for its type, not for its
+ ** value.
+ **
+ ** @remark The evaluation of this macro by itself results in a
+ ** compile time expression of value @c false or @c true.
+ **
+ ** @see P99_IS_NULLPTR
+ ** @see P99_IS_INTEGRAL_CONSTANT
+ **/
+#define P99_IS_NULLPTR_CONSTANT(PEXP)                   \
+P99_GENERIC((1 ? (p00_nullptr_test*)0 : (PEXP)),        \
+            false,                                      \
+            (p00_nullptr_test*, true)                   \
+            )
+
+/**
+ ** @brief Test if the expression @a EXP is an integral constant
+ ** in the sense of the C standard.
+ **
+ ** An integral constant is any compile time constant of integral type
+ ** (that is of integer or enum type) that is the result of an
+ ** expression containing only integer literals, integral enumeration
+ ** constants and certain @c sizeof and @c _Alignof evaluations.
+ **
+ ** @warning Any expression of pointer type should result in @c false,
+ ** even if the value of the pointer is a constant @c 0.
+ **
+ ** @warning A compile time constant of pointer value that is of an
+ ** incomplete type (e.g a forward declared @c struct pointer) other
+ ** than <code>void*</code> could result in a diagnostic or even
+ ** error. This can be considered as restriction for this macro.
+ **
+ ** @remark A const qualified variable of value of integer type should
+ ** result in @c false.
+ **
+ ** @remark A literal of type @c float or @c double even with value
+ ** 0.0 should result in @c false. This will not change, even if such
+ ** a literal is used to compute an integral value such as in
+ ** <code>!!0.0</code>.
+ **
+ ** @remark @a EXP will only be evaluated for its type, not for its
+ ** value.
+ **
+ ** @remark The evaluation of this macro by itself results in a
+ ** compile time expression of value @c false or @c true.
+ **
+ ** @see P99_IS_NULLPTR_CONSTANT
+ ** @see P99_IS_NULLPTR
+ **/
+#define P99_IS_INTEGRAL_CONSTANT(EXP)                                   \
+P99_GENERIC((EXP),                                                      \
+            P99_IS_NULLPTR_CONSTANT((void*)(ptrdiff_t)((EXP)-(EXP))),   \
+            /* avoid to test with arithmetic for void* expressions */   \
+            (void*, false),                                             \
+            (void const*, false),                                       \
+            (void volatile*, false),                                    \
+            (void const volatile*, false)                               \
+            )
+
+/**
+ ** @brief Test if the expression @a EXP is a null pointer in the
+ ** sense of the C standard.
+ **
+ ** @warning Beware that there are "null pointer constants" that are
+ ** of integral type and thus are not a null pointer in this sense. In
+ ** fact, even @c NULL may have that property.
+ **
+ ** @see P99_IS_NULLPTR_CONSTANT
+ ** @see P99_IS_INTEGRAL_CONSTANT
+ **/
+#define P99_IS_NULLPTR(PEXP) (P99_IS_NULLPTR_CONSTANT(PEXP)&&!P99_IS_INTEGRAL_CONSTANT(PEXP))
+
+
 #endif
