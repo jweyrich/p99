@@ -1580,6 +1580,12 @@ P99_GENERIC_PCONSTVOLATILE((&(T)P99_INIT), NON, FULL)
 
 typedef struct p00_nullptr_test p00_nullptr_test;
 
+#define P99_GENERIC_NULLPTR_CONSTANT(PEXP, TRUE, FALSE) \
+P99_GENERIC((1 ? (p00_nullptr_test*)0 : (PEXP)),        \
+            FALSE,                                      \
+            (p00_nullptr_test*, TRUE)                   \
+            )
+
 /**
  ** @brief Test if the expression @a PEXP is a null pointer constant
  ** in the sense of the C standard.
@@ -1607,10 +1613,18 @@ typedef struct p00_nullptr_test p00_nullptr_test;
  ** @see P99_IS_NULLPTR
  ** @see P99_IS_INTEGRAL_CONSTANT
  **/
-#define P99_IS_NULLPTR_CONSTANT(PEXP)                   \
-P99_GENERIC((1 ? (p00_nullptr_test*)0 : (PEXP)),        \
-            false,                                      \
-            (p00_nullptr_test*, true)                   \
+#define P99_IS_NULLPTR_CONSTANT(PEXP) P99_GENERIC_NULLPTR_CONSTANT((PEXP), true, false)
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_INTEGRAL_CONSTANT, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_INTEGRAL_CONSTANT, 2)
+#define P99_GENERIC_INTEGRAL_CONSTANT(EXP, TRUE, FALSE)                 \
+P99_GENERIC((EXP),                                                      \
+            P99_GENERIC_NULLPTR_CONSTANT((void*)(ptrdiff_t)((EXP)-(EXP)), TRUE, FALSE), \
+            /* avoid to test with arithmetic for void* expressions */   \
+            (void*, FALSE),                                             \
+            (void const*, FALSE),                                       \
+            (void volatile*, FALSE),                                    \
+            (void const volatile*, FALSE)                               \
             )
 
 /**
@@ -1648,15 +1662,14 @@ P99_GENERIC((1 ? (p00_nullptr_test*)0 : (PEXP)),        \
  ** @see P99_IS_NULLPTR
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IS_INTEGRAL_CONSTANT, 0)
-#define P99_IS_INTEGRAL_CONSTANT(EXP)                                   \
-P99_GENERIC((EXP),                                                      \
-            P99_IS_NULLPTR_CONSTANT((void*)(ptrdiff_t)((EXP)-(EXP))),   \
-            /* avoid to test with arithmetic for void* expressions */   \
-            (void*, false),                                             \
-            (void const*, false),                                       \
-            (void volatile*, false),                                    \
-            (void const volatile*, false)                               \
-            )
+#define P99_IS_INTEGRAL_CONSTANT(EXP) P99_GENERIC_INTEGRAL_CONSTANT((EXP), true, false)
+
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_NULLPTR, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_NULLPTR, 1)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_NULLPTR, 2)
+#define P99_GENERIC_NULLPTR(PEXP, TRUE, FALSE)          \
+(P99_GENERIC_NULLPTR_CONSTANT(PEXP, TRUE, FALSE)        \
+ &&!P99_GENERIC_INTEGRAL_CONSTANT(PEXP, TRUE, FALSE))
 
 /**
  ** @brief Test if the expression @a EXP is a null pointer in the
@@ -1670,7 +1683,7 @@ P99_GENERIC((EXP),                                                      \
  ** @see P99_IS_INTEGRAL_CONSTANT
  **/
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IS_NULLPTR, 0)
-#define P99_IS_NULLPTR(PEXP) (P99_IS_NULLPTR_CONSTANT(PEXP)&&!P99_IS_INTEGRAL_CONSTANT(PEXP))
+#define P99_IS_NULLPTR(PEXP) P99_GENERIC_NULLPTR((PEXP), true, false)
 
 
 #endif
