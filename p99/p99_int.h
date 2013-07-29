@@ -1033,9 +1033,9 @@ P00_DECLARE_OVERFLOW(ll);
  ** @see p99_int.h
  **/
 #if P99_COMPILER & P99_COMPILER_CLANG
-# define P99_INIT                               \
-P99_WARN_INIT_PUSH                              \
-  { 0 }                                         \
+# define P99_INIT                                              \
+P99_WARN_INIT_PUSH                                             \
+  { 0 }                                                        \
 P99_WARN_INIT_POP
 #else
 # define P99_INIT { 0 }
@@ -1057,8 +1057,8 @@ P99_WARN_INIT_POP
  ** @see P99_RVAL for a macro that returns an rvalue of a certain type
  ** and value.
  **/
-#define P99_LVAL(...)                                                   \
-P99_WARN_INIT_PUSH                                                      \
+#define P99_LVAL(...)                                                              \
+P99_WARN_INIT_PUSH                                                                 \
  P99_IF_LE(P99_NARG(__VA_ARGS__),1)(P00_LVAL1(__VA_ARGS__))(P00_LVAL(__VA_ARGS__)) \
 P99_WARN_INIT_POP
 
@@ -1096,11 +1096,11 @@ P99_WARN_INIT_POP
  **/
 # define P99_RVAL(T, VAL)
 #else
-# define P99_RVAL(...)                          \
-P99_WARN_INIT_PUSH                              \
-  P99_IF_EQ_1(P99_NARG(__VA_ARGS__))            \
-  (P00_RVAL1(__VA_ARGS__))                      \
-  (P00_RVAL2(__VA_ARGS__))                      \
+# define P99_RVAL(...)                                         \
+P99_WARN_INIT_PUSH                                             \
+  P99_IF_EQ_1(P99_NARG(__VA_ARGS__))                           \
+  (P00_RVAL1(__VA_ARGS__))                                     \
+  (P00_RVAL2(__VA_ARGS__))                                     \
 P99_WARN_INIT_PUSH
 #endif
 

@@ -307,7 +307,7 @@ p00_throw_call_zero(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), 
  ** failure is inverted, that is 0 is considered a failure and all
  ** other values are considered success.
  **/
-#define P99_THROW_CALL_NOT_ZERO(F, E, ...)                                                                            \
+#define P99_THROW_CALL_NOT_ZERO(F, E, ...)                                                                     \
 p00_throw_call_zero(!F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, #F ", zero return")
 
 P99_PURE_FUNCTION

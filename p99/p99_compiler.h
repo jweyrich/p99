@@ -1078,10 +1078,10 @@ P99_IF_COMPILER(GNU, GCC diagnostic ignored "-Wmissing-braces")
 P99_IF_COMPILER(GNU, GCC diagnostic ignored "-Wmissing-field-initializers")
 
 #if P99_COMPILER & P99_COMPILER_CLANG
-#define P99_WARN_INIT_PUSH                                              \
-P99_PRAGMA(GCC diagnostic push)                                         \
-P99_PRAGMA(GCC diagnostic ignored "-Wmissing-braces")                   \
-P99_PRAGMA(GCC diagnostic ignored "-Wmissing-field-initializers")       \
+#define P99_WARN_INIT_PUSH                                        \
+P99_PRAGMA(GCC diagnostic push)                                   \
+P99_PRAGMA(GCC diagnostic ignored "-Wmissing-braces")             \
+P99_PRAGMA(GCC diagnostic ignored "-Wmissing-field-initializers") \
 P99_PRAGMA(GCC diagnostic ignored "-Winitializer-overrides")
 #define P99_WARN_INIT_POP P99_PRAGMA(GCC diagnostic pop)
 #endif

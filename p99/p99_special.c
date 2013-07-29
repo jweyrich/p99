@@ -156,9 +156,19 @@
  ** @see P99_FSIZEOF(T, F, N) for arguments <code>T</code>, <code>F</code>, <code>N</code>.
  ** @see P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX) for argument <code>ACT</code>.
  ** @see P99_GENERIC(...) for argument <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_GENERIC_INTEGRAL_CONSTANT(EXP, TRUE, FALSE) for argument <code>EXP</code>, <code>FALSE</code>.
  ** @see P99_GENERIC_LIT(...) for argument <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_GENERIC_NULLPTR(PEXP, TRUE, FALSE) for arguments <code>PEXP</code>, <code>TRUE</code>, <code>FALSE</code>.
+ ** @see P99_GENERIC_PCONST(PEXP, NCONST, CONST) for argument <code>PEXP</code>.
+ ** @see P99_GENERIC_PCONSTVOLATILE(PEXP, NON, FULL) for argument <code>PEXP</code>.
+ ** @see P99_GENERIC_PQUALIFIED(PEXP, ...) for arguments <code>PEXP</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_GENERIC_PVOLATILE(PEXP, NVOLATILE, VOLATILE) for argument <code>PEXP</code>.
  ** @see P99_GENERIC_SIZE(UI, ...) for arguments <code>UI</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_GENERIC_SIZE_LIT(UI, ...) for arguments <code>UI</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
+ ** @see P99_GENERIC_TCONST(T, NCONST, CONST) for argument <code>T</code>.
+ ** @see P99_GENERIC_TCONSTVOLATILE(T, NON, FULL) for argument <code>T</code>.
+ ** @see P99_GENERIC_TQUALIFIED(T, ...) for argument <code>T</code>.
+ ** @see P99_GENERIC_TVOLATILE(T, NVOLATILE, VOLATILE) for argument <code>T</code>.
  ** @see P99_GEN_ABS(A) for argument <code>A</code>.
  ** @see P99_GEN_EXPR(BASE, EXPR, ...) for argument <code>BASE</code>, <code>EXPR</code>.
  ** @see P99_GEN_MAX(A, B) for argument <code>A</code>, <code>B</code>.
@@ -176,13 +186,16 @@
  ** @see P99_IPOW(N, X) for argument <code>N</code>, <code>X</code>.
  ** @see P99_ISSIGNED(T) for argument <code>T</code>.
  ** @see P99_IS_INF(FIRST, ...) for argument <code>FIRST</code>.
+ ** @see P99_IS_INTEGRAL_CONSTANT(EXP) for argument <code>EXP</code>.
  ** @see P99_IS_MAX(FIRST, ...) for argument <code>FIRST</code>.
  ** @see P99_IS_MIN(FIRST, ...) for argument <code>FIRST</code>.
+ ** @see P99_IS_NULLPTR(PEXP) for argument <code>PEXP</code>.
  ** @see P99_IS_ONE(FIRST, ...) for argument <code>FIRST</code>.
  ** @see P99_IS_SUP(FIRST, ...) for argument <code>FIRST</code>.
  ** @see P99_JOIN(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_LCOPY(TYPE, VAR, ...) for arguments <code>TYPE</code>, <code>VAR</code>, <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_LIFO_CLEAR(L) for argument <code>L</code>.
+ ** @see P99_LIFO_DECLARE(T) for argument <code>T</code>.
  ** @see P99_LIFO_POP(L) for argument <code>L</code>.
  ** @see P99_LIFO_PUSH(L, EL) for argument <code>L</code>, <code>EL</code>.
  ** @see P99_LIFO_TABULATE(TYPE, TAB, L) for arguments <code>TYPE</code>, <code>TAB</code>, <code>L</code>.
@@ -216,6 +229,8 @@
  ** @see P99_QVALUE(X) for argument <code>X</code>.
  ** @see P99_REP(...) for arguments <code>__VA_ARG__[0]</code>, <code>__VA_ARG__[1]</code>, <code>__VA_ARG__[2]</code>.
  ** @see P99_REPEAT(MACRO, N) for argument <code>MACRO</code>, <code>N</code>.
+ ** @see P99_SEA(MACRO, ...) for argument <code>MACRO</code>.
+ ** @see P99_SEM(MACRO, ...) for argument <code>MACRO</code>.
  ** @see P99_SEP(MACRO, ...) for argument <code>MACRO</code>.
  ** @see P99_SEQ(MACRO, ...) for argument <code>MACRO</code>.
  ** @see P99_SER(MACRO, ...) for argument <code>MACRO</code>.
@@ -237,6 +252,7 @@
  ** @see P99_TMIN(T) for argument <code>T</code>.
  ** @see P99_TOKJOIN(TOK, ...) for argument <code>TOK</code>.
  ** @see P99_TO_UNSIGNED(T, MACRO) for argument <code>T</code>, <code>MACRO</code>.
+ ** @see P99_TP_DECLARE(T) for argument <code>T</code>.
  ** @see P99_TSS_DECLARE_LOCAL(T, NAME, DTOR) for argument <code>NAME</code>.
  ** @see P99_TYPE_ARITHMETIC(EXP) for argument <code>EXP</code>.
  ** @see P99_TYPE_BASIC(EXP) for argument <code>EXP</code>.

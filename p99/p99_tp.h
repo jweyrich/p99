@@ -220,7 +220,7 @@ union P99_TP_STATE(T) {                                          \
 p99_inline
 void* p00_tp_init(p99_tp* p00_el, void* p00_val) {
   if (p00_el) {
-    atomic_init(&p00_el->p00_val, (p00_tp_state){ .p00_val = p00_val });
+    atomic_init(&p00_el->p00_val, (p00_tp_state) { .p00_val = p00_val });
     atomic_init(&p00_el->p00_tic, 1);
   }
   return p00_el;

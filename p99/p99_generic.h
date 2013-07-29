@@ -1491,10 +1491,10 @@ P99_GENERIC(                                                            \
  **   type expressions instead of a pointer expression
  */
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_PCONST, 0)
-#define P99_GENERIC_PCONST(PEXP, NCONST, CONST)         \
-P99_GENERIC((1 ? (PEXP) : (void volatile*)1),,          \
-            P00_VOID_QUAL_(volatile, NCONST),           \
-            P00_VOID_QUAL_(volatile const, CONST)       \
+#define P99_GENERIC_PCONST(PEXP, NCONST, CONST)                \
+P99_GENERIC((1 ? (PEXP) : (void volatile*)1),,                 \
+            P00_VOID_QUAL_(volatile, NCONST),                  \
+            P00_VOID_QUAL_(volatile const, CONST)              \
             )
 
 /**
@@ -1511,10 +1511,10 @@ P99_GENERIC((1 ? (PEXP) : (void volatile*)1),,          \
  **   type expressions instead of a pointer expression
  */
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_PVOLATILE, 0)
-#define P99_GENERIC_PVOLATILE(PEXP, NVOLATILE, VOLATILE)        \
-P99_GENERIC((1 ? (PEXP) : (void const*)1),,                     \
-            P00_VOID_QUAL_(const, NVOLATILE),                   \
-            P00_VOID_QUAL_(const volatile, VOLATILE)            \
+#define P99_GENERIC_PVOLATILE(PEXP, NVOLATILE, VOLATILE)       \
+P99_GENERIC((1 ? (PEXP) : (void const*)1),,                    \
+            P00_VOID_QUAL_(const, NVOLATILE),                  \
+            P00_VOID_QUAL_(const volatile, VOLATILE)           \
             )
 
 /**
@@ -1531,10 +1531,10 @@ P99_GENERIC((1 ? (PEXP) : (void const*)1),,                     \
  **   type expressions instead of a pointer expression
  */
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_PCONSTVOLATILE, 0)
-#define P99_GENERIC_PCONSTVOLATILE(PEXP, NON, FULL)     \
-P99_GENERIC((1 ? (PEXP) : (void*)1),                    \
-            NVOLATILE,                                  \
-            P00_VOID_QUAL_(const volatile, VOLATILE)    \
+#define P99_GENERIC_PCONSTVOLATILE(PEXP, NON, FULL)            \
+P99_GENERIC((1 ? (PEXP) : (void*)1),                           \
+            NVOLATILE,                                         \
+            P00_VOID_QUAL_(const volatile, VOLATILE)           \
             )
 
 
@@ -1542,10 +1542,10 @@ P99_GENERIC((1 ? (PEXP) : (void*)1),                    \
  ** @brief Generic choice based on the qualification of a type
  ** expression
  **
- ** @see P99_GENERIC_PQUALIFIED 
+ ** @see P99_GENERIC_PQUALIFIED
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_GENERIC_TQUALIFIED, 0)
-#define P99_GENERIC_TQUALIFIED(T, ...)          \
+#define P99_GENERIC_TQUALIFIED(T, ...)                         \
 P99_GENERIC_PQUALIFIED((&(T)P99_INIT), ...)
 
 /**
@@ -1555,7 +1555,7 @@ P99_GENERIC_PQUALIFIED((&(T)P99_INIT), ...)
  ** @see P99_GENERIC_PCONST
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_GENERIC_TCONST, 0)
-#define P99_GENERIC_TCONST(T, NCONST, CONST)            \
+#define P99_GENERIC_TCONST(T, NCONST, CONST)                   \
 P99_GENERIC_PCONST((&(T)P99_INIT), NCONST, CONST)
 
 /**
@@ -1565,7 +1565,7 @@ P99_GENERIC_PCONST((&(T)P99_INIT), NCONST, CONST)
  ** @see P99_GENERIC_PVOLATILE
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_GENERIC_TVOLATILE, 0)
-#define P99_GENERIC_TVOLATILE(T, NVOLATILE, VOLATILE)           \
+#define P99_GENERIC_TVOLATILE(T, NVOLATILE, VOLATILE)          \
 P99_GENERIC_PVOLATILE((&(T)P99_INIT), NVOLATILE, VOLATILE)
 
 /**
@@ -1575,15 +1575,15 @@ P99_GENERIC_PVOLATILE((&(T)P99_INIT), NVOLATILE, VOLATILE)
  ** @see P99_GENERIC_PCONSTVOLATILE
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_GENERIC_TCONSTVOLATILE, 0)
-#define P99_GENERIC_TCONSTVOLATILE(T, NON, FULL)        \
+#define P99_GENERIC_TCONSTVOLATILE(T, NON, FULL)               \
 P99_GENERIC_PCONSTVOLATILE((&(T)P99_INIT), NON, FULL)
 
 typedef struct p00_nullptr_test p00_nullptr_test;
 
-#define P99_GENERIC_NULLPTR_CONSTANT(PEXP, TRUE, FALSE) \
-P99_GENERIC((1 ? (p00_nullptr_test*)0 : (PEXP)),        \
-            FALSE,                                      \
-            (p00_nullptr_test*, TRUE)                   \
+#define P99_GENERIC_NULLPTR_CONSTANT(PEXP, TRUE, FALSE)        \
+P99_GENERIC((1 ? (p00_nullptr_test*)0 : (PEXP)),               \
+            FALSE,                                             \
+            (p00_nullptr_test*, TRUE)                          \
             )
 
 /**
@@ -1617,14 +1617,14 @@ P99_GENERIC((1 ? (p00_nullptr_test*)0 : (PEXP)),        \
 
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_INTEGRAL_CONSTANT, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_INTEGRAL_CONSTANT, 2)
-#define P99_GENERIC_INTEGRAL_CONSTANT(EXP, TRUE, FALSE)                 \
-P99_GENERIC((EXP),                                                      \
+#define P99_GENERIC_INTEGRAL_CONSTANT(EXP, TRUE, FALSE)                                 \
+P99_GENERIC((EXP),                                                                      \
             P99_GENERIC_NULLPTR_CONSTANT((void*)(ptrdiff_t)((EXP)-(EXP)), TRUE, FALSE), \
-            /* avoid to test with arithmetic for void* expressions */   \
-            (void*, FALSE),                                             \
-            (void const*, FALSE),                                       \
-            (void volatile*, FALSE),                                    \
-            (void const volatile*, FALSE)                               \
+            /* avoid to test with arithmetic for void* expressions */                   \
+            (void*, FALSE),                                                             \
+            (void const*, FALSE),                                                       \
+            (void volatile*, FALSE),                                                    \
+            (void const volatile*, FALSE)                                               \
             )
 
 /**
@@ -1667,8 +1667,8 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IS_INTEGRAL_CONSTANT, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_NULLPTR, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_NULLPTR, 1)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_NULLPTR, 2)
-#define P99_GENERIC_NULLPTR(PEXP, TRUE, FALSE)          \
-(P99_GENERIC_NULLPTR_CONSTANT(PEXP, TRUE, FALSE)        \
+#define P99_GENERIC_NULLPTR(PEXP, TRUE, FALSE)                 \
+(P99_GENERIC_NULLPTR_CONSTANT(PEXP, TRUE, FALSE)               \
  &&!P99_GENERIC_INTEGRAL_CONSTANT(PEXP, TRUE, FALSE))
 
 /**

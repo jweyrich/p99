@@ -5731,10 +5731,31 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_GENERIC_INTEGRAL_CONSTANT</name>
+      <anchorfile>p99__generic_8h_a01c71c3f57f34f5983a85abaf159d51f.html</anchorfile>
+      <anchor>a01c71c3f57f34f5983a85abaf159d51f</anchor>
+      <arglist>(EXP, TRUE, FALSE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_GENERIC_LIT</name>
       <anchorfile>group__generic_ga4b130d1087a8cc97e561caf90ddc7285.html</anchorfile>
       <anchor>ga4b130d1087a8cc97e561caf90ddc7285</anchor>
       <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_NULLPTR</name>
+      <anchorfile>p99__generic_8h_abb0aa559b774a86a0095133f80da1cbf.html</anchorfile>
+      <anchor>abb0aa559b774a86a0095133f80da1cbf</anchor>
+      <arglist>(PEXP, TRUE, FALSE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_NULLPTR_CONSTANT</name>
+      <anchorfile>p99__generic_8h_a0caa0e08d9037b46cf2b4592ae2a68e5.html</anchorfile>
+      <anchor>a0caa0e08d9037b46cf2b4592ae2a68e5</anchor>
+      <arglist>(PEXP, TRUE, FALSE)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
