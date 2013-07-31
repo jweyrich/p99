@@ -1063,7 +1063,7 @@ p99_extension                                                  \
 (void)({                                                       \
     P99_MAC_ARGS((p00_objp, OBJP), (p00_val, VAL));            \
     /* To take care of the atomic_flag and padding bytes. */   \
-    memset(p00_objp, 0, sizeof *p00_objp);                     \
+    memset((void*)p00_objp, 0, sizeof *p00_objp);              \
     P00_AT(p00_objp) = p00_val;                                \
   })
 
