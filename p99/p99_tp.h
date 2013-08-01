@@ -23,63 +23,63 @@
 
 #ifdef P99_TP_NEED_INTEGER
 #if UINTPTR_MAX == UINT32_MAX
-typedef uint64_t p00_tp_state;
+typedef uint64_t p00_tp_glue;
 #else
 # if defined(UINT128_MAX)
-typedef uint128_t p00_tp_state;
+typedef uint128_t p00_tp_glue;
 # else
-typedef p99x_uint128 p00_tp_state;
+typedef p99x_uint128 p00_tp_glue;
 # endif
 #endif
 
-P99_CONSTANT(int, p00_tp_bits, sizeof(p00_tp_state)*CHAR_BIT);
+P99_CONSTANT(int, p00_tp_bits, sizeof(p00_tp_glue)*CHAR_BIT);
 P99_CONSTANT(int, p00_tp_shift, p00_tp_bits/2);
 
 p99_inline
-p00_tp_state p00_tp_p2i(void * p, uintptr_t t) {
-  return (((p00_tp_state)t)<<p00_tp_shift)|(uintptr_t)p;
+p00_tp_glue p00_tp_p2i(void * p, uintptr_t t) {
+  return (((p00_tp_glue)t)<<p00_tp_shift)|(uintptr_t)p;
 }
 
-#define P00_TP_STATE_INITIALIZER(VAL, TIC) { (((p00_tp_state)VAL)<<p00_tp_shift)|((uintptr_t){(TIC)}) }
+#define P00_TP_GLUE_INITIALIZER(VAL, TIC) { (((p00_tp_glue)VAL)<<p00_tp_shift)|((uintptr_t){(TIC)}) }
 
 
 p99_inline
-void * p00_tp_i2p(p00_tp_state v) {
+void * p00_tp_i2p(p00_tp_glue v) {
   return (void*)(uintptr_t)v;
 }
 
 p99_inline
-uintptr_t p00_tp_i2i(p00_tp_state v) {
+uintptr_t p00_tp_i2i(p00_tp_glue v) {
   return v >> p00_tp_shift;
 }
 
 #else
-P99_DECLARE_STRUCT(p00_tp_state);
+P99_DECLARE_STRUCT(p00_tp_glue);
 
-struct p00_tp_state {
+struct p00_tp_glue {
   uintptr_t p00_tag;
   void* p00_val;
 };
 
-#define P00_TP_STATE_INITIALIZER(VAL, TIC) { .p00_tag = (TIC), .p00_val = (VAL), }
+#define P00_TP_GLUE_INITIALIZER(VAL, TIC) { .p00_tag = (TIC), .p00_val = (VAL), }
 
 p99_inline
-p00_tp_state p00_tp_p2i(void * p00_val, uintptr_t p00_tag) {
-  return (p00_tp_state) { .p00_tag = p00_tag, .p00_val = p00_val, };
+p00_tp_glue p00_tp_p2i(void * p00_val, uintptr_t p00_tag) {
+  return (p00_tp_glue) { .p00_tag = p00_tag, .p00_val = p00_val, };
 }
 
 p99_inline
-void * p00_tp_i2p(p00_tp_state p00_sta) {
+void * p00_tp_i2p(p00_tp_glue p00_sta) {
   return p00_sta.p00_val;
 }
 
 p99_inline
-uintptr_t p00_tp_i2i(p00_tp_state p00_sta) {
+uintptr_t p00_tp_i2i(p00_tp_glue p00_sta) {
   return p00_sta.p00_tag;
 }
 #endif
 
-P99_DECLARE_ATOMIC(p00_tp_state);
+P99_DECLARE_ATOMIC(p00_tp_glue);
 
 P99_DECLARE_STRUCT(p99_tp);
 P99_DECLARE_STRUCT(p99_tp_state);
@@ -128,9 +128,9 @@ uintptr_t p00_tp_tick_get(void) {
 }
 
 p99_inline
-p00_tp_state* p00_tp_state_init(p00_tp_state* el, void * p) {
+p00_tp_glue* p00_tp_glue_init(p00_tp_glue* el, void * p) {
   if (el) {
-    *el = (p00_tp_state)P00_TP_STATE_INITIALIZER(p, p00_tp_tick_get());
+    *el = (p00_tp_glue)P00_TP_GLUE_INITIALIZER(p, p00_tp_tick_get());
   }
   return el;
 }
@@ -145,7 +145,7 @@ p00_tp_state* p00_tp_state_init(p00_tp_state* el, void * p) {
  ** @see p99_tp_state
  **/
 struct p99_tp {
-  _Atomic(p00_tp_state) p00_val;
+  _Atomic(p00_tp_glue) p00_val;
   void*const p00_init;
 };
 
@@ -171,8 +171,8 @@ struct p99_tp {
  ** @see p99_tp_state_initializer
  **/
 struct p99_tp_state {
-  p00_tp_state p00_val;
-  p00_tp_state p00_next;
+  p00_tp_glue p00_val;
+  p00_tp_glue p00_next;
   p99_tp* p00_tp;
 };
 
@@ -181,7 +181,7 @@ struct p99_tp_state {
 }
 
 p99_inline
-bool p00_tp_cmpxchg(_Atomic(p00_tp_state)* p00_p, p00_tp_state* p00_prev, p00_tp_state p00_new) {
+bool p00_tp_cmpxchg(_Atomic(p00_tp_glue)* p00_p, p00_tp_glue* p00_prev, p00_tp_glue p00_new) {
   P99_MARK("wide cmpxchg start");
   bool ret = atomic_compare_exchange_weak(p00_p, p00_prev, p00_new);
   P99_MARK("wide cmpxchg end");
@@ -189,12 +189,12 @@ bool p00_tp_cmpxchg(_Atomic(p00_tp_state)* p00_p, p00_tp_state* p00_prev, p00_tp
 }
 
 p99_inline
-p00_tp_state p00_tp_get(p99_tp* p00_tp) {
-  register p00_tp_state p00_ret = atomic_load(&p00_tp->p00_val);
+p00_tp_glue p00_tp_get(p99_tp* p00_tp) {
+  register p00_tp_glue p00_ret = atomic_load(&p00_tp->p00_val);
   if (P99_UNLIKELY(!p00_tp_i2i(p00_ret))) {
     /* Only store it in addressable memory if we can't avoid it. */
-    p00_tp_state p00_ter = p00_ret;
-    register p00_tp_state p00_rep = P00_TP_STATE_INITIALIZER(p00_tp->p00_init, p00_tp_tick_get());
+    p00_tp_glue p00_ter = p00_ret;
+    register p00_tp_glue p00_rep = P00_TP_GLUE_INITIALIZER(p00_tp->p00_init, p00_tp_tick_get());
     if (p00_tp_cmpxchg(&p00_tp->p00_val, &p00_ter, p00_rep))
       p00_ret = p00_rep;
     else
@@ -211,7 +211,7 @@ p99_inline
 p99_tp_state p99_tp_state_initializer(p99_tp* p00_tp, void* p00_p) {
   return (p99_tp_state) {
     .p00_val = p00_tp_get(p00_tp),
-     .p00_next = P00_TP_STATE_INITIALIZER(p00_p, p00_tp_tick_get()),
+     .p00_next = P00_TP_GLUE_INITIALIZER(p00_p, p00_tp_tick_get()),
       .p00_tp = p00_tp,
   };
 }
@@ -242,7 +242,7 @@ bool p99_tp_state_check(p99_tp_state* p00_state) {
 }
 
 # define P99_TP(T) P99_PASTE2(p00_tp_, T)
-# define P99_TP_STATE(T) P99_PASTE2(p00_tp_state_, T)
+# define P99_TP_STATE(T) P99_PASTE2(p00_tp_glue_, T)
 
 P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_DECLARE, 0)
 # define P99_TP_DECLARE(T)                                       \
