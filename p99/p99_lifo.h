@@ -37,6 +37,7 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_LIFO_DECLARE, 0)
 # define P99_LIFO_DECLARE(T) P99_TP_DECLARE(T)
 # define P99_LIFO_INITIALIZER(VAL) P99_TP_INITIALIZER(VAL)
 
+# define p99_lifo_init(EL, VAL) p99_tp_init((EL), (VAL))
 
 /**
  ** @brief Return a pointer to the top element of an atomic LIFO @a L
