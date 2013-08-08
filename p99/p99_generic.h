@@ -1578,13 +1578,35 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_GENERIC_TCONSTVOLATILE, 0)
 #define P99_GENERIC_TCONSTVOLATILE(T, NON, FULL)               \
 P99_GENERIC_PCONSTVOLATILE((&(T)P99_INIT), NON, FULL)
 
+
+#define P00_GENERIC_VOIDPTR_OR_INTEGER(PEXP, TRUE, FALSE)      \
+P99_GENERIC((1 ? (void*)0 : (PEXP)),                           \
+            FALSE,                                             \
+            (void*, TRUE)                                      \
+            )
+
+#define P00_IS_VOIDPTR_OR_INTEGER(PEXP) P00_GENERIC_VOIDPTR_OR_INTEGER(PEXP, true, false)
+
 typedef struct p00_nullptr_test p00_nullptr_test;
 
-#define P99_GENERIC_NULLPTR_CONSTANT(PEXP, TRUE, FALSE)        \
+#define P00_GENERIC_NULLPTR_CONSTANT(PEXP, TRUE, FALSE)        \
 P99_GENERIC((1 ? (p00_nullptr_test*)0 : (PEXP)),               \
             FALSE,                                             \
             (p00_nullptr_test*, TRUE)                          \
             )
+
+#define P00_IS_NULLPTR_CONSTANT(PEXP) P00_GENERIC_NULLPTR_CONSTANT(PEXP, true, false)
+
+#define P99_GENERIC_NULLPTR_CONSTANT_(PEXP, TRUE, FALSE)                 \
+P00_GENERIC_NULLPTR_CONSTANT(PEXP, \
+                             TRUE,                                     \
+                             FALSE)
+
+#define P99_GENERIC_NULLPTR_CONSTANT(PEXP, TRUE, FALSE)                 \
+P99_GENERIC_NULLPTR_CONSTANT_(P00_GENERIC_VOIDPTR_OR_INTEGER(PEXP, PEXP, (void*)1), \
+                             TRUE,                                     \
+                             FALSE)
+
 
 /**
  ** @brief Test if the expression @a PEXP is a null pointer constant
