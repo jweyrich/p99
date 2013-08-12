@@ -373,23 +373,43 @@ p99_tss NAME
 #else
 # define P99_TSS_DECLARE_LOCAL(...)                            \
 P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                            \
-(P00_TSS_DECLARE_LOCAL3(__VA_ARGS__, (free)))                  \
-(P00_TSS_DECLARE_LOCAL3(__VA_ARGS__))
+(P00_TSS_DECLARE_LOCAL(__VA_ARGS__, (free)))                   \
+(P00_TSS_DECLARE_LOCAL(__VA_ARGS__))
+
+#define P00_TSS_DECLARE_LOCAL(T, NAME, DTOR)    \
+P99_WEAK(NAME)                                  \
+P00_TSS_DECLARE_LOCAL3(NAME, T, DTOR);          \
+P00_TSS_DEFINE_LOCAL3(NAME, T, DTOR)
+
+# define P99_TSS_DECLARE_LOCAL_EXTERN(...)                     \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                            \
+(P00_TSS_DECLARE_LOCAL_EXTERN(__VA_ARGS__, (free)))            \
+(P00_TSS_DECLARE_LOCAL_EXTERN(__VA_ARGS__))
+
+#define P00_TSS_DECLARE_LOCAL_EXTERN(T, NAME, DTOR)  \
+extern                                               \
+P00_TSS_DECLARE_LOCAL3(NAME, T, DTOR)
+
+# define P99_TSS_DEFINE_LOCAL(...)                            \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                           \
+(P00_TSS_DEFINE_LOCAL(__VA_ARGS__, (free)))                   \
+(P00_TSS_DEFINE_LOCAL(__VA_ARGS__))
+
+#define P00_TSS_DEFINE_LOCAL(T, NAME, DTOR)    \
+P00_TSS_DEFINE_LOCAL3(NAME, T, DTOR)
+
+
 #endif
 
 
-#define P00_TSS_DECLARE_LOCAL2(T, NAME)                        \
+#define P00_TSS_DECLARE_LOCAL3(NAME, T, DTOR)                  \
 /** @see P99_TSS_LOCAL to access the variable */               \
-P99_WEAK(NAME)                                                 \
 p99_tss NAME;                                                  \
 typedef T P99_PASTE3(p00_, NAME, _type)
 
-#define P00_TSS_DECLARE_LOCAL3(T, NAME, DTOR)                  \
-/** @see P99_TSS_LOCAL to access the variable */               \
-P99_WEAK(NAME)                                                 \
-p99_tss NAME;                                                  \
-p99_tss NAME = { .p99_dtor = (DTOR), };                        \
-typedef T P99_PASTE3(p00_, NAME, _type)
+#define P00_TSS_DEFINE_LOCAL3(NAME, T, DTOR)                 \
+p99_tss NAME = { .p99_dtor = (DTOR), }
+
 
 /**
  ** @def P99_TSS_LOCAL
@@ -435,6 +455,14 @@ void* p99_tss_get_alloc(p99_tss * p00_key, size_t p00_size) {
 P99_WEAK(NAME)                                                 \
 thread_local T NAME
 
+#define P99_DECLARE_THREAD_LOCAL_EXTERN(T, NAME)               \
+extern                                                         \
+thread_local T NAME
+
+#define P99_DEFINE_THREAD_LOCAL(T, NAME)                       \
+thread_local T NAME
+
+
 #define P99_THREAD_LOCAL(NAME) (NAME)
 
 #else
@@ -452,6 +480,10 @@ thread_local T NAME
  ** @see P99_TSS_DECLARE_LOCAL to see examples how this should work
  **/
 #define P99_DECLARE_THREAD_LOCAL P99_TSS_DECLARE_LOCAL
+
+#define P99_DECLARE_THREAD_LOCAL_EXTERN P99_TSS_DECLARE_LOCAL_EXTERN
+
+#define P99_DEFINE_THREAD_LOCAL P99_TSS_DEFINE_LOCAL
 
 /**
  ** @def P99_THREAD_LOCAL
