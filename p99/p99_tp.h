@@ -204,6 +204,22 @@ p00_tp_glue p00_tp_get(p99_tp* p00_tp) {
 }
 
 /**
+ ** @brief Set to new value @a p00_val and return previous value.
+ **/
+p99_inline
+p00_tp_glue p99_tp_xchg(p99_tp* p00_tp, void* p00_val) {
+  p00_tp_glue p00_ret = atomic_load(&p00_tp->p00_val);
+  register p00_tp_glue p00_rep = P00_TP_GLUE_INITIALIZER(p00_val, p00_tp_tick_get());
+  while (!p00_tp_cmpxchg(&p00_tp->p00_val, &p00_ret, p00_rep));
+  /* if this p99_tp has not been used before, return the value that
+     p99_tp_get would have returned. */
+  if (P99_UNLIKELY(!p00_tp_i2i(p00_ret))) {
+    p00_ret = (p00_tp_glue)P00_TP_GLUE_INITIALIZER(p00_tp->p00_init, p00_tp_tick_get());
+  }
+  return p00_ret;
+}
+
+/**
  ** @brief Load the value of @a p00_tp into the state variable and
  ** prepare it to commit value @a p00_p later.
  **/
@@ -296,6 +312,21 @@ p99_extension ({                                                  \
       .p00_st = p99_tp_state_initializer(&p00_tp->p00_tp, p00_p), \
     };                                                            \
     p00_r;                                                        \
+})
+
+/**
+ ** @brief Unconditionally exchange the value of @a TP to @a VAL and
+ ** return the previous value.
+ **/
+#define P99_TP_XCHG(TP, VAL)                                       \
+p99_extension ({                                                   \
+    P99_MACRO_VAR(p00_tp, (TP));                                   \
+    /* ensure that the pointers that are converted to the */       \
+    /* base type, and that the return can't be used as lvalue */   \
+    register P99_TP_TYPE(p00_tp)* p00_val = (VAL);                 \
+    register P99_TP_TYPE(p00_tp)* const p00_r                      \
+      = p00_tp_i2p(p99_tp_xchg(&p00_tp->p00_tp, p00_val));         \
+    p00_r;                                                         \
 })
 
 /**
