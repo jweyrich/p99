@@ -181,7 +181,7 @@ struct p99_tp_state {
 }
 
 p99_inline
-bool p00_tp_cmpxchg(_Atomic(p00_tp_glue)* p00_p, p00_tp_glue* p00_prev, p00_tp_glue p00_new) {
+bool p00_tp_cmpxchg(_Atomic(p00_tp_glue)*const p00_p, p00_tp_glue*const p00_prev, p00_tp_glue p00_new) {
   P99_MARK("wide cmpxchg start");
   bool ret = atomic_compare_exchange_weak(p00_p, p00_prev, p00_new);
   P99_MARK("wide cmpxchg end");
@@ -189,9 +189,12 @@ bool p00_tp_cmpxchg(_Atomic(p00_tp_glue)* p00_p, p00_tp_glue* p00_prev, p00_tp_g
 }
 
 p99_inline
-p00_tp_glue p00_tp_get(p99_tp* p00_tp) {
-  register p00_tp_glue p00_ret = atomic_load(&p00_tp->p00_val);
-  if (P99_UNLIKELY(!p00_tp_i2i(p00_ret))) {
+p00_tp_glue p00_tp_get(register p99_tp*const p00_tp) {
+  register p00_tp_glue p00_ret
+    = P99_LIKELY(p00_tp)
+    ? atomic_load(&p00_tp->p00_val)
+    : (p00_tp_glue)P00_TP_GLUE_INITIALIZER((void*)0, p00_tp_tick_get());
+  if (p00_tp && P99_UNLIKELY(!p00_tp_i2i(p00_ret))) {
     /* Only store it in addressable memory if we can't avoid it. */
     p00_tp_glue p00_ter = p00_ret;
     register p00_tp_glue p00_rep = P00_TP_GLUE_INITIALIZER(p00_tp->p00_init, p00_tp_tick_get());
@@ -208,13 +211,18 @@ p00_tp_glue p00_tp_get(p99_tp* p00_tp) {
  **/
 p99_inline
 p00_tp_glue p99_tp_xchg(p99_tp* p00_tp, void* p00_val) {
-  p00_tp_glue p00_ret = atomic_load(&p00_tp->p00_val);
-  register p00_tp_glue p00_rep = P00_TP_GLUE_INITIALIZER(p00_val, p00_tp_tick_get());
-  while (!p00_tp_cmpxchg(&p00_tp->p00_val, &p00_ret, p00_rep));
-  /* if this p99_tp has not been used before, return the value that
-     p99_tp_get would have returned. */
-  if (P99_UNLIKELY(!p00_tp_i2i(p00_ret))) {
-    p00_ret = (p00_tp_glue)P00_TP_GLUE_INITIALIZER(p00_tp->p00_init, p00_tp_tick_get());
+  p00_tp_glue p00_ret
+    = P99_LIKELY(p00_tp)
+    ? atomic_load(&p00_tp->p00_val)
+    : (p00_tp_glue)P00_TP_GLUE_INITIALIZER((void*)0, p00_tp_tick_get());
+  if (P99_LIKELY(p00_tp)) {
+    register p00_tp_glue p00_rep = P00_TP_GLUE_INITIALIZER(p00_val, p00_tp_tick_get());
+    while (!p00_tp_cmpxchg(&p00_tp->p00_val, &p00_ret, p00_rep));
+    /* if this p99_tp has not been used before, return the value that
+       p99_tp_get would have returned. */
+    if (P99_UNLIKELY(!p00_tp_i2i(p00_ret))) {
+      p00_ret = (p00_tp_glue)P00_TP_GLUE_INITIALIZER(p00_tp->p00_init, p00_tp_tick_get());
+    }
   }
   return p00_ret;
 }
@@ -224,7 +232,7 @@ p00_tp_glue p99_tp_xchg(p99_tp* p00_tp, void* p00_val) {
  ** prepare it to commit value @a p00_p later.
  **/
 p99_inline
-p99_tp_state p99_tp_state_initializer(p99_tp* p00_tp, void* p00_p) {
+p99_tp_state p99_tp_state_initializer(register p99_tp*const p00_tp, register void*const p00_p) {
   return (p99_tp_state) {
     .p00_val = p00_tp_get(p00_tp),
      .p00_next = P00_TP_GLUE_INITIALIZER(p00_p, p00_tp_tick_get()),
@@ -233,28 +241,32 @@ p99_tp_state p99_tp_state_initializer(p99_tp* p00_tp, void* p00_p) {
 }
 
 p99_inline
-void * p99_tp_state_get(p99_tp_state* p00_state) {
-  return p00_tp_i2p(p00_state->p00_val);
+void * p99_tp_state_get(register p99_tp_state*const p00_state) {
+  return P99_LIKELY(p00_state) ? p00_tp_i2p(p00_state->p00_val) : 0;
 }
 
 p99_inline
-void * p99_tp_get(p99_tp* p00_tp) {
+void * p99_tp_get(register p99_tp*const p00_tp) {
   return p00_tp_i2p(p00_tp_get(p00_tp));
 }
 
 p99_inline
-void p99_tp_state_set(p99_tp_state* p00_state, void* p00_p) {
-  p00_state->p00_next = p00_tp_p2i(p00_p, p00_tp_i2i(p00_state->p00_next));
+void p99_tp_state_set(register p99_tp_state*const p00_state, register void*const p00_p) {
+  if (P99_LIKELY(p00_state)) p00_state->p00_next = p00_tp_p2i(p00_p, p00_tp_i2i(p00_state->p00_next));
 }
 
 p99_inline
-bool p99_tp_state_commit(p99_tp_state* p00_state) {
-  return p00_tp_cmpxchg(&p00_state->p00_tp->p00_val, &p00_state->p00_val, p00_state->p00_next);
+bool p99_tp_state_commit(register p99_tp_state*const p00_state) {
+  return P99_LIKELY(p00_state)
+    ? p00_tp_cmpxchg(&p00_state->p00_tp->p00_val, &p00_state->p00_val, p00_state->p00_next)
+    : false;
 }
 
 p99_inline
-bool p99_tp_state_check(p99_tp_state* p00_state) {
-  return p00_tp_cmpxchg(&p00_state->p00_tp->p00_val, &p00_state->p00_val, p00_state->p00_val);
+bool p99_tp_state_check(register p99_tp_state*const p00_state) {
+  return P99_LIKELY(p00_state)
+    ? p00_tp_cmpxchg(&p00_state->p00_tp->p00_val, &p00_state->p00_val, p00_state->p00_val)
+    : 0;
 }
 
 # define P99_TP(T) P99_PASTE2(p00_tp_, T)
@@ -285,14 +297,18 @@ union P99_TP_STATE(T) {                                          \
 # define P99_TP_INITIALIZER(VAL) { .p00_tp = P00_TP_INITIALIZER(VAL), }
 
 p99_inline
-void* p00_tp_init(p99_tp* p00_el, void* p00_val) {
-  if (p00_el) {
+void p00_tp_init(register p99_tp*const p00_el, register void*const p00_val) {
+  if (P99_LIKELY(p00_el)) {
     atomic_init(&p00_el->p00_val, p00_tp_p2i(p00_val, p00_tp_tick_get()));
   }
-  return p00_el;
 }
 
-# define p99_tp_init(EL, VAL) (p00_tp_init(&(EL)->p00_tp, (VAL)), (EL))
+# define p99_tp_init(EL, VAL)                           \
+p99_extension ({                                        \
+    register __typeof__(EL) const p00_el = (EL);        \
+    if (P99_LIKELY(p00_el)) p00_tp_init(&p00_el->p00_tp, (VAL));        \
+    p00_el;                                             \
+  })
 
 /**
  ** @brief Load the value of @a TP into the state variable.
@@ -302,16 +318,19 @@ void* p00_tp_init(p99_tp* p00_el, void* p00_val) {
  ** @see P99_TP_STATE_CHECK to check if the such initialized state is
  ** still consistent with @a TP
  **/
-#define P99_TP_STATE_INITIALIZER(TP, P)                           \
-p99_extension ({                                                  \
-    P99_MACRO_VAR(p00_tp, (TP));                                  \
-    /* ensure that P is assignment compatible to the */           \
-    /* base type, and that the return can't be used as lvalue */  \
-    register P99_TP_TYPE(p00_tp)* const p00_p = (P);              \
-    register P99_TP_TYPE_STATE(p00_tp) const p00_r = {            \
-      .p00_st = p99_tp_state_initializer(&p00_tp->p00_tp, p00_p), \
-    };                                                            \
-    p00_r;                                                        \
+#define P99_TP_STATE_INITIALIZER(TP, P)                                 \
+p99_extension ({                                                        \
+    P99_MACRO_VAR(p00_tp, (TP));                                        \
+    /* ensure that P is assignment compatible to the */                 \
+    /* base type, and that the return can't be used as lvalue */        \
+    register P99_TP_TYPE(p00_tp)* const p00_p = (P);                    \
+    register P99_TP_TYPE_STATE(p00_tp) const p00_r = {                  \
+      .p00_st =                                                         \
+      p00_tp                                                            \
+      ? p99_tp_state_initializer(&p00_tp->p00_tp, p00_p)                \
+      : (p99_tp_state)P99_INIT,                                         \
+    };                                                                  \
+    p00_r;                                                              \
 })
 
 /**
@@ -323,9 +342,9 @@ p99_extension ({                                                   \
     P99_MACRO_VAR(p00_tp, (TP));                                   \
     /* ensure that the pointers that are converted to the */       \
     /* base type, and that the return can't be used as lvalue */   \
-    register P99_TP_TYPE(p00_tp)* p00_val = (VAL);                 \
+    register P99_TP_TYPE(p00_tp)* const p00_val = (VAL);           \
     register P99_TP_TYPE(p00_tp)* const p00_r                      \
-      = p00_tp_i2p(p99_tp_xchg(&p00_tp->p00_tp, p00_val));         \
+      = p00_tp ? p00_tp_i2p(p99_tp_xchg(&p00_tp->p00_tp, p00_val)) : 0; \
     p00_r;                                                         \
 })
 
@@ -338,7 +357,7 @@ p99_extension ({                                                   \
     /* ensure that pointer that is returned is converted to the */ \
     /* base type, and that the return can't be used as lvalue */   \
     register P99_TP_TYPE(p00_tp)* const p00_r                      \
-      = p99_tp_get(&p00_tp->p00_tp);                               \
+      = p00_tp ? p99_tp_get(&p00_tp->p00_tp) : 0;                  \
     p00_r;                                                         \
 })
 
@@ -355,7 +374,7 @@ p99_extension ({                                                   \
     /* ensure that pointer that is returned is converted to the */ \
     /* base type, and that the return can't be used as lvalue */   \
     register P99_TP_STATE_TYPE(p00_tps)* const p00_r               \
-      = p99_tp_state_get(&p00_tps->p00_st);                        \
+      = p00_tps ? p99_tp_state_get(&p00_tps->p00_st) : 0;          \
     p00_r;                                                         \
 })
 
@@ -365,13 +384,13 @@ p99_extension ({                                                   \
  ** updated.
  **/
 #define P99_TP_STATE_SET(TPS, P)                                 \
-p99_extension ({                                                 \
+do {                                                             \
     P99_MACRO_VAR(p00_tps, (TPS));                               \
     /* ensure that P is assignment compatible to the */          \
-    /* base type, and that the return can't be used as lvalue */ \
-    register P99_TP_STATE_TYPE(p00_tps)* p00_p = (P);            \
-    p99_tp_state_set(&p00_tps->p00_st, p00_p);                   \
-})
+    /* base type.                                    */          \
+    register P99_TP_STATE_TYPE(p00_tps)*const p00_p = (P);       \
+    if (p00_tps) p99_tp_state_set(&p00_tps->p00_st, p00_p);      \
+} while (false)
 
 /**
  ** @brief Commit the registered value change to the underlying tagged
@@ -379,7 +398,13 @@ p99_extension ({                                                 \
  **
  ** @return @c true if the commit was succesful, @c false otherwise.
  **/
-#define P99_TP_STATE_COMMIT(TPS) p99_tp_state_commit(&(TPS)->p00_st)
+#define P99_TP_STATE_COMMIT(TPS)                                \
+p99_extension ({                                                \
+ P99_MACRO_VAR(p00_tps, (TPS));                                 \
+ register bool const p00_r                                      \
+ = p00_tps ? p99_tp_state_commit(&p00_tps->p00_st) : false;     \
+ p00_r;                                                         \
+})
 
 /**
  ** @brief Check if the registered value is still consistent with the
@@ -388,7 +413,13 @@ p99_extension ({                                                 \
  ** @return @c true if the value is still consistent, @c false
  ** otherwise.
  **/
-#define P99_TP_STATE_CHECK(TPS) p99_tp_state_check(&(TPS)->p00_st)
+#define P99_TP_STATE_CHECK(TPS)                                         \
+p99_extension ({                                                        \
+    P99_MACRO_VAR(p00_tps, (TPS));                                      \
+    register bool const p00_r                                           \
+      = p00_tps ? p99_tp_state_check(&(p00_tps)->p00_st) : false;       \
+    p00_r;                                                              \
+  })
 
 
 #endif
