@@ -484,12 +484,59 @@ P99_REF_DISCOUNT(P99_TP_XCHG((TP), P99_TP_XCHG((SP), 0)), (DELETE))
 (void)P99_REF_DISCOUNT(P99_TP_XCHG((TP), 0), (DELETE))
 
 
+/**
+ ** @brief Declare a reference counter type for type @a T
+ **
+ ** @a T should be a @c struct that contains a field
+ ** @code
+ ** _Atomic(size_t) p99_cnt;
+ ** @endcode
+ **
+ ** that is used as a reference counter. On initialization this
+ ** counter must be set to @c 0.
+ **
+ ** In addition the following function must be provided:
+ **
+ ** @code
+ ** void T ## _delete(T const*);
+ ** @endcode
+ **
+ ** This function should take a pointer to an object of type @a T,
+ ** destroy its contents (if necessary) and then call @c free on that
+ ** pointer.
+ **
+ ** @warning A type @a T that is administrated with that should never
+ ** be allocated other than dynamically through @c malloc (or better
+ ** ::P99_NEW) and friends.
+ **
+ ** @see P99_TP_REF_FUNCTIONS for the macro that generates the @c
+ ** inline functions that are needed for this to work
+ **
+ ** @see P99_TP_REF_DEFINE to instantiate all functions
+ **
+ ** @see P99_DECLARE_DELETE
+ ** @see P99_DEFINE_DELETE
+ ** @see P99_NEW
+ **/
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_REF_DECLARE, 0)
+#ifdef P00_DOXYGEN
+#define P99_TP_REF_DECLARE(T)                                           \
+typedef struct T ## _ref T ## _ref;                                     \
+ /** \brief A reference to an object of type T **/                      \
+ /** \remark This is an opaque object type, only use it through the related functions. **/ \
+ /** \see P99_TP_REF_FUNCTIONS **/                                      \
+struct T ## _ref {                                                      \
+  T* p00_ref;                                                           \
+}
+#else
 #define P99_TP_REF_DECLARE(T)                                           \
 P99_POINTER_TYPE(T);                                                    \
 P99_TP_DECLARE(P99_PASTE2(T, _ptr));                                    \
+ /** @brief A reference to a @a T object **/                            \
 typedef P99_TP(P99_PASTE2(T, _ptr)) P99_PASTE2(T, _ref)
+#endif
 
-
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_REF_DEFINE, 0)
 #define P99_TP_REF_DEFINE(T)                                            \
 P99_INSTANTIATE(T*, P99_PASTE2(T, _account), T*);                       \
 P99_INSTANTIATE(T*, P99_PASTE2(T, _discount), T*);                      \
@@ -501,6 +548,50 @@ P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_mv), P99_PASTE2(T, _ref)*, P99_PASTE2(T, 
 P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_assign), P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*); \
 P99_INSTANTIATE(void, P99_PASTE2(T, _ref_destroy), P99_PASTE2(T, _ref)*)
 
+#ifdef P00_DOXYGEN
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_REF_FUNCTIONS, 0)
+#define P99_TP_REF_FUNCTIONS(T)                                         \
+  /** \brief used for reference counting **/                            \
+  /** \related T **/                                                    \
+inline T* P99_PASTE2(T, _account)(T*){}                                 \
+ /** \brief used for reference counting **/                             \
+ /** \remark may destroy the object if the reference count falls to 0 **/ \
+ /** \related T **/                                                     \
+inline T* P99_PASTE2(T, _discount)(T*){}                                \
+ /** \brief initialize a reference count **/                            \
+ /** \remark If ::P99_CALL_DEFARG is used to provide defaults for the arguments, the second argument defaults to \c 0 if omitted **/ \
+ /** \related T ## _ref **/                                             \
+inline P99_PASTE2(T, _ref)* P99_PASTE2(T, _ref_init)(P99_PASTE2(T, _ref)*, T*){} \
+ /** \brief provide a default argument for ::T ## _ref_init **/         \
+ /** \see ::P99_CALL_DEFARG **/                                         \
+ /** \related T ## _ref **/                                             \
+inline T* P99_PASTE2(T, _ref_init_defarg_1)(void){}                     \
+ /** \brief get the value of a reference **/                            \
+ /** \return the pointer to the object that is handled **/              \
+ /** \related T ## _ref **/                                             \
+inline T* P99_PASTE2(T, _ref_get)(P99_PASTE2(T, _ref)*){}               \
+ /** \brief replace the value of a reference **/                        \
+ /** \return the previous pointer before replacement **/                \
+ /** \related T ## _ref **/                                             \
+inline T* P99_PASTE2(T, _ref_replace)(P99_PASTE2(T, _ref)*, T*){}       \
+ /** \brief replace the value of a reference by that of the second argument **/ \
+ /** \remark sets the value of the second argument to \c 0 **/          \
+ /** \return the previous pointer before replacement **/                \
+ /** \related T ## _ref **/                                             \
+inline T* P99_PASTE2(T, _ref_mv)(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*){} \
+ /** \brief replace the value of a reference by that of the second argument **/ \
+ /** \remark the value of the second argument remains untouched **/     \
+ /** \return the previous pointer before replacement **/                \
+ /** \related T ## _ref **/                                             \
+inline T* P99_PASTE2(T, _ref_assign)(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*){} \
+ /** \brief destroy a reference object **/                              \
+ /** \remark this should always be called at the end of the lifetime of a T ## _ref object **/ \
+ /** \related T ## _ref **/                                             \
+inline void P99_PASTE2(T, _ref_destroy)(P99_PASTE2(T, _ref)*) {}        \
+P99_MACRO_END(P99_TP_REF_FUNCTIONS)
+
+#else
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_REF_FUNCTIONS, 0)
 #define P99_TP_REF_FUNCTIONS(T)                                         \
                                                                         \
   inline                                                                \
@@ -552,6 +643,7 @@ P99_INSTANTIATE(void, P99_PASTE2(T, _ref_destroy), P99_PASTE2(T, _ref)*)
                                                                         \
 P99_MACRO_END(P99_TP_REF_FUNCTIONS)
 
+#endif
 
 
 #endif
