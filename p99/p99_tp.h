@@ -176,8 +176,8 @@ struct p99_tp_state {
   p99_tp* p00_tp;
 };
 
-# define P00_TP_INITIALIZER(VAL) {                              \
-    .p00_init = (VAL),                                                \
+# define P00_TP_INITIALIZER(VAL) {                             \
+    .p00_init = (VAL),                                         \
 }
 
 p99_inline
@@ -191,7 +191,7 @@ bool p00_tp_cmpxchg(_Atomic(p00_tp_glue)*const p00_p, p00_tp_glue*const p00_prev
 p99_inline
 p00_tp_glue p00_tp_get(register p99_tp*const p00_tp) {
   register p00_tp_glue p00_ret
-    = P99_LIKELY(p00_tp)
+  = P99_LIKELY(p00_tp)
     ? atomic_load(&p00_tp->p00_val)
     : (p00_tp_glue)P00_TP_GLUE_INITIALIZER((void*)0, p00_tp_tick_get());
   if (p00_tp && P99_UNLIKELY(!p00_tp_i2i(p00_ret))) {
@@ -212,7 +212,7 @@ p00_tp_glue p00_tp_get(register p99_tp*const p00_tp) {
 p99_inline
 p00_tp_glue p99_tp_xchg(p99_tp* p00_tp, void* p00_val) {
   p00_tp_glue p00_ret
-    = P99_LIKELY(p00_tp)
+  = P99_LIKELY(p00_tp)
     ? atomic_load(&p00_tp->p00_val)
     : (p00_tp_glue)P00_TP_GLUE_INITIALIZER((void*)0, p00_tp_tick_get());
   if (P99_LIKELY(p00_tp)) {
@@ -258,15 +258,15 @@ void p99_tp_state_set(register p99_tp_state*const p00_state, register void*const
 p99_inline
 bool p99_tp_state_commit(register p99_tp_state*const p00_state) {
   return P99_LIKELY(p00_state)
-    ? p00_tp_cmpxchg(&p00_state->p00_tp->p00_val, &p00_state->p00_val, p00_state->p00_next)
-    : false;
+         ? p00_tp_cmpxchg(&p00_state->p00_tp->p00_val, &p00_state->p00_val, p00_state->p00_next)
+         : false;
 }
 
 p99_inline
 bool p99_tp_state_check(register p99_tp_state*const p00_state) {
   return P99_LIKELY(p00_state)
-    ? p00_tp_cmpxchg(&p00_state->p00_tp->p00_val, &p00_state->p00_val, p00_state->p00_val)
-    : 0;
+         ? p00_tp_cmpxchg(&p00_state->p00_tp->p00_val, &p00_state->p00_val, p00_state->p00_val)
+         : 0;
 }
 
 # define P99_TP(T) P99_PASTE2(p00_tp_, T)
@@ -303,11 +303,11 @@ void p00_tp_init(register p99_tp*const p00_el, register void*const p00_val) {
   }
 }
 
-# define p99_tp_init(EL, VAL)                           \
-p99_extension ({                                        \
-    register __typeof__(EL) const p00_el = (EL);        \
-    if (P99_LIKELY(p00_el)) p00_tp_init(&p00_el->p00_tp, (VAL));        \
-    p00_el;                                             \
+# define p99_tp_init(EL, VAL)                                    \
+p99_extension ({                                                 \
+    register __typeof__(EL) const p00_el = (EL);                 \
+    if (P99_LIKELY(p00_el)) p00_tp_init(&p00_el->p00_tp, (VAL)); \
+    p00_el;                                                      \
   })
 
 /**
@@ -318,34 +318,34 @@ p99_extension ({                                        \
  ** @see P99_TP_STATE_CHECK to check if the such initialized state is
  ** still consistent with @a TP
  **/
-#define P99_TP_STATE_INITIALIZER(TP, P)                                 \
-p99_extension ({                                                        \
-    P99_MACRO_VAR(p00_tp, (TP));                                        \
-    /* ensure that P is assignment compatible to the */                 \
-    /* base type, and that the return can't be used as lvalue */        \
-    register P99_TP_TYPE(p00_tp)* const p00_p = (P);                    \
-    register P99_TP_TYPE_STATE(p00_tp) const p00_r = {                  \
-      .p00_st =                                                         \
-      p00_tp                                                            \
-      ? p99_tp_state_initializer(&p00_tp->p00_tp, p00_p)                \
-      : (p99_tp_state)P99_INIT,                                         \
-    };                                                                  \
-    p00_r;                                                              \
+#define P99_TP_STATE_INITIALIZER(TP, P)                          \
+p99_extension ({                                                 \
+    P99_MACRO_VAR(p00_tp, (TP));                                 \
+    /* ensure that P is assignment compatible to the */          \
+    /* base type, and that the return can't be used as lvalue */ \
+    register P99_TP_TYPE(p00_tp)* const p00_p = (P);             \
+    register P99_TP_TYPE_STATE(p00_tp) const p00_r = {           \
+      .p00_st =                                                  \
+      p00_tp                                                     \
+      ? p99_tp_state_initializer(&p00_tp->p00_tp, p00_p)         \
+      : (p99_tp_state)P99_INIT,                                  \
+    };                                                           \
+    p00_r;                                                       \
 })
 
 /**
  ** @brief Unconditionally exchange the value of @a TP to @a VAL and
  ** return the previous value.
  **/
-#define P99_TP_XCHG(TP, VAL)                                       \
-p99_extension ({                                                   \
-    P99_MACRO_VAR(p00_tp, (TP));                                   \
-    /* ensure that the pointers that are converted to the */       \
-    /* base type, and that the return can't be used as lvalue */   \
-    register P99_TP_TYPE(p00_tp)* const p00_val = (VAL);           \
-    register P99_TP_TYPE(p00_tp)* const p00_r                      \
+#define P99_TP_XCHG(TP, VAL)                                            \
+p99_extension ({                                                        \
+    P99_MACRO_VAR(p00_tp, (TP));                                        \
+    /* ensure that the pointers that are converted to the */            \
+    /* base type, and that the return can't be used as lvalue */        \
+    register P99_TP_TYPE(p00_tp)* const p00_val = (VAL);                \
+    register P99_TP_TYPE(p00_tp)* const p00_r                           \
       = p00_tp ? p00_tp_i2p(p99_tp_xchg(&p00_tp->p00_tp, p00_val)) : 0; \
-    p00_r;                                                         \
+    p00_r;                                                              \
 })
 
 /**
@@ -383,13 +383,13 @@ p99_extension ({                                                   \
  ** @brief Change the value to which the tagged pointer will be
  ** updated.
  **/
-#define P99_TP_STATE_SET(TPS, P)                                 \
-do {                                                             \
-    P99_MACRO_VAR(p00_tps, (TPS));                               \
-    /* ensure that P is assignment compatible to the */          \
-    /* base type.                                    */          \
-    register P99_TP_STATE_TYPE(p00_tps)*const p00_p = (P);       \
-    if (p00_tps) p99_tp_state_set(&p00_tps->p00_st, p00_p);      \
+#define P99_TP_STATE_SET(TPS, P)                               \
+do {                                                           \
+    P99_MACRO_VAR(p00_tps, (TPS));                             \
+    /* ensure that P is assignment compatible to the */        \
+    /* base type.                                    */        \
+    register P99_TP_STATE_TYPE(p00_tps)*const p00_p = (P);     \
+    if (p00_tps) p99_tp_state_set(&p00_tps->p00_st, p00_p);    \
 } while (false)
 
 /**
@@ -398,12 +398,12 @@ do {                                                             \
  **
  ** @return @c true if the commit was succesful, @c false otherwise.
  **/
-#define P99_TP_STATE_COMMIT(TPS)                                \
-p99_extension ({                                                \
- P99_MACRO_VAR(p00_tps, (TPS));                                 \
- register bool const p00_r                                      \
- = p00_tps ? p99_tp_state_commit(&p00_tps->p00_st) : false;     \
- p00_r;                                                         \
+#define P99_TP_STATE_COMMIT(TPS)                               \
+p99_extension ({                                               \
+ P99_MACRO_VAR(p00_tps, (TPS));                                \
+ register bool const p00_r                                     \
+ = p00_tps ? p99_tp_state_commit(&p00_tps->p00_st) : false;    \
+ p00_r;                                                        \
 })
 
 /**
@@ -413,23 +413,23 @@ p99_extension ({                                                \
  ** @return @c true if the value is still consistent, @c false
  ** otherwise.
  **/
-#define P99_TP_STATE_CHECK(TPS)                                         \
-p99_extension ({                                                        \
-    P99_MACRO_VAR(p00_tps, (TPS));                                      \
-    register bool const p00_r                                           \
-      = p00_tps ? p99_tp_state_check(&(p00_tps)->p00_st) : false;       \
-    p00_r;                                                              \
+#define P99_TP_STATE_CHECK(TPS)                                   \
+p99_extension ({                                                  \
+    P99_MACRO_VAR(p00_tps, (TPS));                                \
+    register bool const p00_r                                     \
+      = p00_tps ? p99_tp_state_check(&(p00_tps)->p00_st) : false; \
+    p00_r;                                                        \
   })
 
 
-#define P99_REF_ACCOUNT(REF)                                       \
-p99_extension ({                                                   \
-    P99_MACRO_VAR(p00_ref, (REF));                                 \
-    /* ensure that the pointer is converted to the */              \
-    /* base type, and that the return can't be used as lvalue */   \
-    register __typeof__(p00_ref) const p00_r = p00_ref;            \
-    if (p00_r) atomic_fetch_add(&p00_r->p99_cnt, 1);               \
-    p00_r;                                                         \
+#define P99_REF_ACCOUNT(REF)                                     \
+p99_extension ({                                                 \
+    P99_MACRO_VAR(p00_ref, (REF));                               \
+    /* ensure that the pointer is converted to the */            \
+    /* base type, and that the return can't be used as lvalue */ \
+    register __typeof__(p00_ref) const p00_r = p00_ref;          \
+    if (p00_r) atomic_fetch_add(&p00_r->p99_cnt, 1);             \
+    p00_r;                                                       \
 })
 
 #define P99_TP_REF_ACCOUNT(TP, REF)                                \
@@ -442,45 +442,45 @@ p99_extension ({                                                   \
     p00_r;                                                         \
 })
 
-#define P99_REF_DISCOUNT(REF, DELETE)                              \
-p99_extension ({                                                   \
-    P99_MACRO_VAR(p00_ref, (REF));                                 \
-    register void (*const p00_d)(__typeof__(*p00_ref) const*)      \
-      = (DELETE);                                                  \
-    /* ensure that the pointer is converted to the */              \
-    /* base type, and that the return can't be used as lvalue */   \
-    register __typeof__(*p00_ref)*const p00_r = p00_ref;           \
-    if (p00_r && (atomic_fetch_sub(&p00_r->p99_cnt, 1) == 1))      \
-      p00_d(p00_r);                                                \
-    p00_r;                                                         \
+#define P99_REF_DISCOUNT(REF, DELETE)                            \
+p99_extension ({                                                 \
+    P99_MACRO_VAR(p00_ref, (REF));                               \
+    register void (*const p00_d)(__typeof__(*p00_ref) const*)    \
+      = (DELETE);                                                \
+    /* ensure that the pointer is converted to the */            \
+    /* base type, and that the return can't be used as lvalue */ \
+    register __typeof__(*p00_ref)*const p00_r = p00_ref;         \
+    if (p00_r && (atomic_fetch_sub(&p00_r->p99_cnt, 1) == 1))    \
+      p00_d(p00_r);                                              \
+    p00_r;                                                       \
 })
 
 #define P99_TP_REF_INITIALIZER(VAL, ACCOUNT) P99_TP_INITIALIZER(P99_GENERIC_NULLPTR_CONSTANT(VAL, (void*)0, ACCOUNT(VAL)))
 
-#define P00_TP_REF_INIT2(TP, VAL)                                       \
-p99_extension ({                                                        \
-    P99_MACRO_VAR(p00_tp, (TP));                                        \
-    /* ensure that pointer that is returned is converted to the */      \
-    /* base type, and that the return can't be used as lvalue */        \
-    register P99_TP_TYPE(p00_tp)* const p00_val = (VAL);                \
-    p99_tp_init(p00_tp, P99_REF_ACCOUNT(p00_val));                      \
+#define P00_TP_REF_INIT2(TP, VAL)                                  \
+p99_extension ({                                                   \
+    P99_MACRO_VAR(p00_tp, (TP));                                   \
+    /* ensure that pointer that is returned is converted to the */ \
+    /* base type, and that the return can't be used as lvalue */   \
+    register P99_TP_TYPE(p00_tp)* const p00_val = (VAL);           \
+    p99_tp_init(p00_tp, P99_REF_ACCOUNT(p00_val));                 \
 })
 
 
 #define P00_TP_REF_INIT1(TP) p99_tp_init(TP, 0)
 
-#define P99_TP_REF_INIT(...)                    \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 2)             \
-(P00_TP_REF_INIT1(__VA_ARGS__))                 \
+#define P99_TP_REF_INIT(...)                                   \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
+(P00_TP_REF_INIT1(__VA_ARGS__))                                \
 (P00_TP_REF_INIT2(__VA_ARGS__))
 
-#define P99_TP_REF_REPLACE(TP, SP, DELETE)                              \
+#define P99_TP_REF_REPLACE(TP, SP, DELETE)                         \
 P99_REF_DISCOUNT(P99_TP_XCHG((TP), P99_REF_ACCOUNT(SP)), (DELETE))
 
-#define P99_TP_REF_MV(TP, SP, DELETE)                                   \
+#define P99_TP_REF_MV(TP, SP, DELETE)                               \
 P99_REF_DISCOUNT(P99_TP_XCHG((TP), P99_TP_XCHG((SP), 0)), (DELETE))
 
-#define P99_TP_REF_DESTROY(TP, DELETE)                  \
+#define P99_TP_REF_DESTROY(TP, DELETE)                         \
 (void)P99_REF_DISCOUNT(P99_TP_XCHG((TP), 0), (DELETE))
 
 
@@ -520,127 +520,127 @@ P99_REF_DISCOUNT(P99_TP_XCHG((TP), P99_TP_XCHG((SP), 0)), (DELETE))
  **/
 P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_REF_DECLARE, 0)
 #ifdef P00_DOXYGEN
-#define P99_TP_REF_DECLARE(T)                                           \
-typedef struct T ## _ref T ## _ref;                                     \
- /** \brief A reference to an object of type T **/                      \
+#define P99_TP_REF_DECLARE(T)                                                              \
+typedef struct T ## _ref T ## _ref;                                                        \
+ /** \brief A reference to an object of type T **/                                         \
  /** \remark This is an opaque object type, only use it through the related functions. **/ \
- /** \see P99_TP_REF_FUNCTIONS **/                                      \
-struct T ## _ref {                                                      \
-  T* p00_ref;                                                           \
+ /** \see P99_TP_REF_FUNCTIONS **/                                                         \
+struct T ## _ref {                                                                         \
+  T* p00_ref;                                                                              \
 }
 #else
-#define P99_TP_REF_DECLARE(T)                                           \
-P99_POINTER_TYPE(T);                                                    \
-P99_TP_DECLARE(P99_PASTE2(T, _ptr));                                    \
- /** @brief A reference to a @a T object **/                            \
+#define P99_TP_REF_DECLARE(T)                                  \
+P99_POINTER_TYPE(T);                                           \
+P99_TP_DECLARE(P99_PASTE2(T, _ptr));                           \
+ /** @brief A reference to a @a T object **/                   \
 typedef P99_TP(P99_PASTE2(T, _ptr)) P99_PASTE2(T, _ref)
 #endif
 
 P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_REF_DEFINE, 0)
-#define P99_TP_REF_DEFINE(T)                                            \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _account), T*);                       \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _discount), T*);                      \
-P99_INSTANTIATE(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref_init), P99_PASTE2(T, _ref)*, T*); \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_init_defarg_1), void);           \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_get), P99_PASTE2(T, _ref)*);     \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_replace), P99_PASTE2(T, _ref)*, T*); \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_mv), P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*); \
+#define P99_TP_REF_DEFINE(T)                                                                 \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _account), T*);                                            \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _discount), T*);                                           \
+P99_INSTANTIATE(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref_init), P99_PASTE2(T, _ref)*, T*);   \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_init_defarg_1), void);                                \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_get), P99_PASTE2(T, _ref)*);                          \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_replace), P99_PASTE2(T, _ref)*, T*);                  \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_mv), P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*);     \
 P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_assign), P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*); \
 P99_INSTANTIATE(void, P99_PASTE2(T, _ref_destroy), P99_PASTE2(T, _ref)*)
 
 #ifdef P00_DOXYGEN
 P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_REF_FUNCTIONS, 0)
-#define P99_TP_REF_FUNCTIONS(T)                                         \
-  /** \brief used for reference counting **/                            \
-  /** \related T **/                                                    \
-inline T* P99_PASTE2(T, _account)(T*){}                                 \
- /** \brief used for reference counting **/                             \
- /** \remark may destroy the object if the reference count falls to 0 **/ \
- /** \related T **/                                                     \
-inline T* P99_PASTE2(T, _discount)(T*){}                                \
- /** \brief initialize a reference count **/                            \
+#define P99_TP_REF_FUNCTIONS(T)                                                                                                      \
+  /** \brief used for reference counting **/                                                                                         \
+  /** \related T **/                                                                                                                 \
+inline T* P99_PASTE2(T, _account)(T*){}                                                                                              \
+ /** \brief used for reference counting **/                                                                                          \
+ /** \remark may destroy the object if the reference count falls to 0 **/                                                            \
+ /** \related T **/                                                                                                                  \
+inline T* P99_PASTE2(T, _discount)(T*){}                                                                                             \
+ /** \brief initialize a reference count **/                                                                                         \
  /** \remark If ::P99_CALL_DEFARG is used to provide defaults for the arguments, the second argument defaults to \c 0 if omitted **/ \
- /** \related T ## _ref **/                                             \
-inline P99_PASTE2(T, _ref)* P99_PASTE2(T, _ref_init)(P99_PASTE2(T, _ref)*, T*){} \
- /** \brief provide a default argument for ::T ## _ref_init **/         \
- /** \see ::P99_CALL_DEFARG **/                                         \
- /** \related T ## _ref **/                                             \
-inline T* P99_PASTE2(T, _ref_init_defarg_1)(void){}                     \
- /** \brief get the value of a reference **/                            \
- /** \return the pointer to the object that is handled **/              \
- /** \related T ## _ref **/                                             \
-inline T* P99_PASTE2(T, _ref_get)(P99_PASTE2(T, _ref)*){}               \
- /** \brief replace the value of a reference **/                        \
- /** \return the previous pointer before replacement **/                \
- /** \related T ## _ref **/                                             \
-inline T* P99_PASTE2(T, _ref_replace)(P99_PASTE2(T, _ref)*, T*){}       \
- /** \brief replace the value of a reference by that of the second argument **/ \
- /** \remark sets the value of the second argument to \c 0 **/          \
- /** \return the previous pointer before replacement **/                \
- /** \related T ## _ref **/                                             \
-inline T* P99_PASTE2(T, _ref_mv)(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*){} \
- /** \brief replace the value of a reference by that of the second argument **/ \
- /** \remark the value of the second argument remains untouched **/     \
- /** \return the previous pointer before replacement **/                \
- /** \related T ## _ref **/                                             \
-inline T* P99_PASTE2(T, _ref_assign)(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*){} \
- /** \brief destroy a reference object **/                              \
- /** \remark this should always be called at the end of the lifetime of a T ## _ref object **/ \
- /** \related T ## _ref **/                                             \
-inline void P99_PASTE2(T, _ref_destroy)(P99_PASTE2(T, _ref)*) {}        \
+ /** \related T ## _ref **/                                                                                                          \
+inline P99_PASTE2(T, _ref)* P99_PASTE2(T, _ref_init)(P99_PASTE2(T, _ref)*, T*){}                                                     \
+ /** \brief provide a default argument for ::T ## _ref_init **/                                                                      \
+ /** \see ::P99_CALL_DEFARG **/                                                                                                      \
+ /** \related T ## _ref **/                                                                                                          \
+inline T* P99_PASTE2(T, _ref_init_defarg_1)(void){}                                                                                  \
+ /** \brief get the value of a reference **/                                                                                         \
+ /** \return the pointer to the object that is handled **/                                                                           \
+ /** \related T ## _ref **/                                                                                                          \
+inline T* P99_PASTE2(T, _ref_get)(P99_PASTE2(T, _ref)*){}                                                                            \
+ /** \brief replace the value of a reference **/                                                                                     \
+ /** \return the previous pointer before replacement **/                                                                             \
+ /** \related T ## _ref **/                                                                                                          \
+inline T* P99_PASTE2(T, _ref_replace)(P99_PASTE2(T, _ref)*, T*){}                                                                    \
+ /** \brief replace the value of a reference by that of the second argument **/                                                      \
+ /** \remark sets the value of the second argument to \c 0 **/                                                                       \
+ /** \return the previous pointer before replacement **/                                                                             \
+ /** \related T ## _ref **/                                                                                                          \
+inline T* P99_PASTE2(T, _ref_mv)(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*){}                                                       \
+ /** \brief replace the value of a reference by that of the second argument **/                                                      \
+ /** \remark the value of the second argument remains untouched **/                                                                  \
+ /** \return the previous pointer before replacement **/                                                                             \
+ /** \related T ## _ref **/                                                                                                          \
+inline T* P99_PASTE2(T, _ref_assign)(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*){}                                                   \
+ /** \brief destroy a reference object **/                                                                                           \
+ /** \remark this should always be called at the end of the lifetime of a T ## _ref object **/                                       \
+ /** \related T ## _ref **/                                                                                                          \
+inline void P99_PASTE2(T, _ref_destroy)(P99_PASTE2(T, _ref)*) {}                                                                     \
 P99_MACRO_END(P99_TP_REF_FUNCTIONS)
 
 #else
 P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_REF_FUNCTIONS, 0)
-#define P99_TP_REF_FUNCTIONS(T)                                         \
-                                                                        \
-  inline                                                                \
-  T*                                                                    \
-  P99_PASTE2(T, _account)(T* p00_el) {                                  \
-    return P99_REF_ACCOUNT(p00_el);                                     \
-  }                                                                     \
-                                                                        \
-  inline                                                                \
-  T*                                                                    \
-  P99_PASTE2(T, _discount)(T* p00_el) {                                 \
-    return P99_REF_DISCOUNT(p00_el, P99_PASTE2(T, _delete));            \
-  }                                                                     \
-                                                                        \
-  inline                                                                \
-  P99_PASTE2(T, _ref)* P99_PASTE2(T, _ref_init)(P99_PASTE2(T, _ref)* el, T* p00_v) { \
-    return P99_TP_REF_INIT(el, p00_v);                                  \
-  }                                                                     \
-                                                                        \
-  inline                                                                \
-  T* P99_PASTE2(T, _ref_init_defarg_1)(void) {                          \
-    return 0;                                                           \
-  }                                                                     \
-                                                                        \
-  inline                                                                \
-  T* P99_PASTE2(T, _ref_get)(P99_PASTE2(T, _ref)* p00_ref) {            \
-    return P99_TP_GET(p00_ref);                                         \
-  }                                                                     \
-                                                                        \
-  inline                                                                \
-  T* P99_PASTE2(T, _ref_replace)(P99_PASTE2(T, _ref)* p00_tar, T* p00_sou) { \
-    return P99_TP_REF_REPLACE(p00_tar, p00_sou, P99_PASTE2(T, _delete)); \
-  }                                                                     \
-                                                                        \
-  inline                                                                \
-  T* P99_PASTE2(T, _ref_mv)(P99_PASTE2(T, _ref)* p00_tar, P99_PASTE2(T, _ref)* p00_sou) { \
-    return P99_TP_REF_MV(p00_tar, p00_sou, P99_PASTE2(T, _delete));     \
-  }                                                                     \
-                                                                        \
-  inline                                                                \
+#define P99_TP_REF_FUNCTIONS(T)                                                               \
+                                                                                              \
+  inline                                                                                      \
+  T*                                                                                          \
+  P99_PASTE2(T, _account)(T* p00_el) {                                                        \
+    return P99_REF_ACCOUNT(p00_el);                                                           \
+  }                                                                                           \
+                                                                                              \
+  inline                                                                                      \
+  T*                                                                                          \
+  P99_PASTE2(T, _discount)(T* p00_el) {                                                       \
+    return P99_REF_DISCOUNT(p00_el, P99_PASTE2(T, _delete));                                  \
+  }                                                                                           \
+                                                                                              \
+  inline                                                                                      \
+  P99_PASTE2(T, _ref)* P99_PASTE2(T, _ref_init)(P99_PASTE2(T, _ref)* el, T* p00_v) {          \
+    return P99_TP_REF_INIT(el, p00_v);                                                        \
+  }                                                                                           \
+                                                                                              \
+  inline                                                                                      \
+  T* P99_PASTE2(T, _ref_init_defarg_1)(void) {                                                \
+    return 0;                                                                                 \
+  }                                                                                           \
+                                                                                              \
+  inline                                                                                      \
+  T* P99_PASTE2(T, _ref_get)(P99_PASTE2(T, _ref)* p00_ref) {                                  \
+    return P99_TP_GET(p00_ref);                                                               \
+  }                                                                                           \
+                                                                                              \
+  inline                                                                                      \
+  T* P99_PASTE2(T, _ref_replace)(P99_PASTE2(T, _ref)* p00_tar, T* p00_sou) {                  \
+    return P99_TP_REF_REPLACE(p00_tar, p00_sou, P99_PASTE2(T, _delete));                      \
+  }                                                                                           \
+                                                                                              \
+  inline                                                                                      \
+  T* P99_PASTE2(T, _ref_mv)(P99_PASTE2(T, _ref)* p00_tar, P99_PASTE2(T, _ref)* p00_sou) {     \
+    return P99_TP_REF_MV(p00_tar, p00_sou, P99_PASTE2(T, _delete));                           \
+  }                                                                                           \
+                                                                                              \
+  inline                                                                                      \
   T* P99_PASTE2(T, _ref_assign)(P99_PASTE2(T, _ref)* p00_tar, P99_PASTE2(T, _ref)* p00_sou) { \
-    return P99_TP_REF_REPLACE(p00_tar, P99_TP_GET(p00_sou), P99_PASTE2(T, _delete)); \
-  }                                                                     \
-                                                                        \
-  inline                                                                \
-  void P99_PASTE2(T, _ref_destroy)(P99_PASTE2(T, _ref)* p00_ref) {      \
-    P99_TP_REF_DESTROY(p00_ref, P99_PASTE2(T, _delete));                \
-  }                                                                     \
-                                                                        \
+    return P99_TP_REF_REPLACE(p00_tar, P99_TP_GET(p00_sou), P99_PASTE2(T, _delete));          \
+  }                                                                                           \
+                                                                                              \
+  inline                                                                                      \
+  void P99_PASTE2(T, _ref_destroy)(P99_PASTE2(T, _ref)* p00_ref) {                            \
+    P99_TP_REF_DESTROY(p00_ref, P99_PASTE2(T, _delete));                                      \
+  }                                                                                           \
+                                                                                              \
 P99_MACRO_END(P99_TP_REF_FUNCTIONS)
 
 #endif

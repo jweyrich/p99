@@ -309,7 +309,7 @@ p00_throw_call_zero(F(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), 
  ** @remark As for @c assert such an assertion is disabled at compile
  ** time if the macro @c NDEBUG is defined.
  **/
-#define P99_THROW_ASSERT(E, ...)                                         \
+#define P99_THROW_ASSERT(E, ...)                                                                                                          \
 (void)p00_throw_call_zero(!(__VA_ARGS__), E, p00_unwind_top, P99_STRINGIFY(__LINE__), __func__, "failed assertion: ``" #__VA_ARGS__ "''")
 #else
 #define P99_THROW_ASSERT(...) P99_NOP

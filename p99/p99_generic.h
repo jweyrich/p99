@@ -1597,14 +1597,14 @@ P99_GENERIC((1 ? (p00_nullptr_test*)0 : (PEXP)),               \
 
 #define P00_IS_NULLPTR_CONSTANT(PEXP) P00_GENERIC_NULLPTR_CONSTANT(PEXP, true, false)
 
-#define P99_GENERIC_NULLPTR_CONSTANT_(PEXP, TRUE, FALSE)                 \
-P00_GENERIC_NULLPTR_CONSTANT(PEXP, \
-                             TRUE,                                     \
+#define P99_GENERIC_NULLPTR_CONSTANT_(PEXP, TRUE, FALSE)       \
+P00_GENERIC_NULLPTR_CONSTANT(PEXP,                             \
+                             TRUE,                             \
                              FALSE)
 
-#define P99_GENERIC_NULLPTR_CONSTANT(PEXP, TRUE, FALSE)                 \
+#define P99_GENERIC_NULLPTR_CONSTANT(PEXP, TRUE, FALSE)                             \
 P99_GENERIC_NULLPTR_CONSTANT_(P00_GENERIC_VOIDPTR_OR_INTEGER(PEXP, PEXP, (void*)1), \
-                             TRUE,                                     \
+                             TRUE,                                                  \
                              FALSE)
 
 

@@ -253,6 +253,9 @@
  ** @see P99_TOKJOIN(TOK, ...) for argument <code>TOK</code>.
  ** @see P99_TO_UNSIGNED(T, MACRO) for argument <code>T</code>, <code>MACRO</code>.
  ** @see P99_TP_DECLARE(T) for argument <code>T</code>.
+ ** @see P99_TP_REF_DECLARE(T) for argument <code>T</code>.
+ ** @see P99_TP_REF_DEFINE(T) for argument <code>T</code>.
+ ** @see P99_TP_REF_FUNCTIONS(T) for argument <code>T</code>.
  ** @see P99_TSS_DECLARE_LOCAL(T, NAME, DTOR) for argument <code>NAME</code>.
  ** @see P99_TYPE_ARITHMETIC(EXP) for argument <code>EXP</code>.
  ** @see P99_TYPE_BASIC(EXP) for argument <code>EXP</code>.

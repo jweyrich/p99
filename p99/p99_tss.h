@@ -376,9 +376,9 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                            \
 (P00_TSS_DECLARE_LOCAL(__VA_ARGS__, (free)))                   \
 (P00_TSS_DECLARE_LOCAL(__VA_ARGS__))
 
-#define P00_TSS_DECLARE_LOCAL(T, NAME, DTOR)    \
-P99_WEAK(NAME)                                  \
-P00_TSS_DECLARE_LOCAL3(NAME, T, DTOR);          \
+#define P00_TSS_DECLARE_LOCAL(T, NAME, DTOR)                   \
+P99_WEAK(NAME)                                                 \
+P00_TSS_DECLARE_LOCAL3(NAME, T, DTOR);                         \
 P00_TSS_DEFINE_LOCAL3(NAME, T, DTOR)
 
 # define P99_TSS_DECLARE_LOCAL_EXTERN(...)                     \
@@ -386,16 +386,16 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                            \
 (P00_TSS_DECLARE_LOCAL_EXTERN(__VA_ARGS__, (free)))            \
 (P00_TSS_DECLARE_LOCAL_EXTERN(__VA_ARGS__))
 
-#define P00_TSS_DECLARE_LOCAL_EXTERN(T, NAME, DTOR)  \
-extern                                               \
+#define P00_TSS_DECLARE_LOCAL_EXTERN(T, NAME, DTOR)            \
+extern                                                         \
 P00_TSS_DECLARE_LOCAL3(NAME, T, DTOR)
 
-# define P99_TSS_DEFINE_LOCAL(...)                            \
-P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                           \
-(P00_TSS_DEFINE_LOCAL(__VA_ARGS__, (free)))                   \
+# define P99_TSS_DEFINE_LOCAL(...)                             \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 3)                            \
+(P00_TSS_DEFINE_LOCAL(__VA_ARGS__, (free)))                    \
 (P00_TSS_DEFINE_LOCAL(__VA_ARGS__))
 
-#define P00_TSS_DEFINE_LOCAL(T, NAME, DTOR)    \
+#define P00_TSS_DEFINE_LOCAL(T, NAME, DTOR)                    \
 P00_TSS_DEFINE_LOCAL3(NAME, T, DTOR)
 
 
@@ -407,7 +407,7 @@ P00_TSS_DEFINE_LOCAL3(NAME, T, DTOR)
 p99_tss NAME;                                                  \
 typedef T P99_PASTE3(p00_, NAME, _type)
 
-#define P00_TSS_DEFINE_LOCAL3(NAME, T, DTOR)                 \
+#define P00_TSS_DEFINE_LOCAL3(NAME, T, DTOR)                   \
 p99_tss NAME = { .p99_dtor = (DTOR), }
 
 
