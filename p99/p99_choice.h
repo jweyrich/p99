@@ -47,21 +47,17 @@ P99_CHOICE_FUNCTION(uint8_t, p99_small_primes, 0,
                     53, 57, 59, 61, 67, 71);
 
 
-#define P00_UNIQUE_BIT_MULT_3 0x1D
-#define P00_UNIQUE_BIT_MULT_4 0xD2F
-#define P00_UNIQUE_BIT_MULT_5 0x077CB531
-#define P00_UNIQUE_BIT_MULT_6 0X022FDD63CC95386D
+#define P00_UNIQUE_BIT_MULT_3 0x1DU
+#define P00_UNIQUE_BIT_MULT_4 0xD2FU
+#define P00_UNIQUE_BIT_MULT_5 0x077CB531U
+#define P00_UNIQUE_BIT_MULT_6 0X022FDD63CC95386DU
 
-#define P00_UNIQUE_BIT_MULT_(WIDTH, MULT) P99_PASTE3(UINT, WIDTH, _C)(MULT)
-#define P00_UNIQUE_BIT_MULT(BITS, WIDTH) P00_UNIQUE_BIT_MULT_(WIDTH, P99_PASTE2(P00_UNIQUE_BIT_MULT_, BITS))
+#define P00_UNIQUE_BIT_MULT(BITS) P99_PASTE2(P00_UNIQUE_BIT_MULT_, BITS)
 
-#define P00_UNIQUE_BIT__(BIT, BITS, WIDTH, MULT)               \
-(((P99_PASTE3(UINT, WIDTH, _C)(1) << BIT)                      \
-  * MULT)                                                      \
- >> (WIDTH - BITS))
+#define P00_UNIQUE_BIT_HASH(X, BITS, WIDTH) (((X) * P00_UNIQUE_BIT_MULT(BITS)) >> (WIDTH - BITS))
 
 #define P00_UNIQUE_BIT_(BIT, BITS, WIDTH)                            \
-P00_UNIQUE_BIT__(BIT, BITS, WIDTH, P00_UNIQUE_BIT_MULT(BITS, WIDTH))
+P00_UNIQUE_BIT_HASH(P99_PASTE3(UINT, WIDTH, _C)(1) << BIT, BITS, WIDTH)
 
 
 #define P00_UNIQUE_BIT_RETURN(NAME, X, I) case P00_UNIQUE_BIT_(I, X, NAME): return I
@@ -107,8 +103,7 @@ p99_inline                                                                      
      P99_PASTE2(p00_unique_bit_hash_, BITS) will never trigger.*/                        \
   return                                                                                 \
     P99_PASTE2(p00_unique_bit_hash_, BITS)                                               \
-    ((p00_x * P00_UNIQUE_BIT_MULT(BITS, WIDTH))                                          \
-     >> (WIDTH - BITS));                                                                 \
+    (P00_UNIQUE_BIT_HASH(p00_x, BITS, WIDTH));                                           \
 }                                                                                        \
 /*! @brief Find the one unique bit that is set in @a p00_x                 */            \
 /*! if @a p00_x has 0 or more than one bits set this returns a big number. */            \
