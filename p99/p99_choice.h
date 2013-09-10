@@ -76,7 +76,7 @@ TYPE P99_PASTE2(NAME, BITS)(size_t p00_x)
 #define P00_UNIQUE_BIT_FUNCTION(TYPE, NAME, DEFAULT, BITS, WIDTH)                 \
 P99_CONST_FUNCTION                                                                \
 p99_inline                                                                        \
-TYPE P99_PASTE2(NAME, BITS)(size_t p00_x) {                                       \
+TYPE P99_PASTE2(NAME, BITS)(P99_PASTE3(uint, WIDTH, _t) p00_x) {                  \
   switch (p00_x) {                                                                \
     P99_FOR(WIDTH, WIDTH, P00_SEP, P00_UNIQUE_BIT_RETURN, P99_DUPL(WIDTH, BITS)); \
   default: return DEFAULT;                                                        \
