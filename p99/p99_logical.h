@@ -59,8 +59,8 @@
 
 #define P00_EVAL_0(_0, _1) P99_PASTE3(P00_EVAL_, _0, _1)
 
-#define P00_EVAL_00 0
-#define P00_EVAL_10 1
+#define P00_EVAL_00 1
+#define P00_EVAL_10 0
 #define P00_EVAL_01 0
 /* should never happen */
 #define P00_EVAL_11 WEIRD_EVALUATION_ERROR
