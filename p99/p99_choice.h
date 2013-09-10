@@ -54,7 +54,9 @@ P99_CHOICE_FUNCTION(uint8_t, p99_small_primes, 0,
 
 #define P00_UNIQUE_BIT_MULT(BITS) P99_PASTE2(P00_UNIQUE_BIT_MULT_, BITS)
 
-#define P00_UNIQUE_BIT_HASH(X, BITS, WIDTH) (((X) * P00_UNIQUE_BIT_MULT(BITS)) >> (WIDTH - BITS))
+#define P00_UNIQUE_BIT_HASH(X, BITS, WIDTH)                     \
+  ((((X) * P00_UNIQUE_BIT_MULT(BITS)) >> (WIDTH - BITS))        \
+   & P99_PASTE3(UINT, WIDTH, _MAX))
 
 #define P00_UNIQUE_BIT_(BIT, BITS, WIDTH)                            \
 P00_UNIQUE_BIT_HASH(P99_PASTE3(UINT, WIDTH, _C)(1) << BIT, BITS, WIDTH)
