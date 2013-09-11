@@ -323,6 +323,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_feature_gnu_thread_local 1
 # define p00_has_feature_gnu_alignof 1
 # define p00_has_feature_statement_expression 1
+# define p00_has_feature_tgmath_h 1
 # define P99_TYPEOF(X) __typeof__(X)
 # if (P99_GCC_VERSION >= 40700UL) && (P99_GCC_VERSION < 40800UL)
 #  define p00_has_feature_stdnoreturn_h 1
@@ -390,8 +391,8 @@ signed p00_trailing_comma_in_initializer__(void) {
 
 #if P99_COMPILER & P99_COMPILER_INTEL
 # define p99_inline __attribute__((__always_inline__)) inline
-# ifndef __GNUC__
-#  define P00_NO_HAVE_TGMATH_H
+# if defined(__GNUC__) && defined(p00_has_feature_tgmath_h)
+#  undef p00_has_feature_tgmath_h
 # endif
 
 #elif P99_COMPILER & P99_COMPILER_PCC
@@ -1001,14 +1002,6 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_VECTOR, 2)
 # define P99_VECTOR(T, NAME, N) T NAME __attribute__((vector_size(sizeof(T)*(N))))
 #else
 # define P99_VECTOR(T, NAME, N) _Alignas(sizeof(T)*(N)) T NAME[N]
-#endif
-
-
-/* special repair work for non-compliant compilers */
-#if P99_COMPILER & P99_COMPILER_INTEL
-# ifndef __GNUC__
-#  define P00_NO_HAVE_TGMATH_H
-# endif
 #endif
 
 /**

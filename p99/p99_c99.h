@@ -30,35 +30,55 @@
 
 #include "p99_compiler.h"
 
-#if __STDC_HOSTED__ || defined(P00_DOXYGEN)
-# ifndef __STDC_NO_COMPLEX__
-#  include <complex.h>
-# endif
+#if p99_has_feature(complex_h)
+# include <complex.h>
+#endif
+#if p99_has_feature(ctype_h)
 # include <ctype.h>
+#endif
+#if p99_has_feature(errno_h)
 # include <errno.h>
+#endif
+#if p99_has_feature(fenv_h)
 # include <fenv.h>
+#endif
+#if p99_has_feature(inttypes_h)
 # include <inttypes.h>
+#endif
+#if p99_has_feature(locale_h)
 # include <locale.h>
+#endif
+#if p99_has_feature(math_h)
 # include <math.h>
+#endif
+#if p99_has_feature(setjmp_h)
 # include <setjmp.h>
+#endif
+#if p99_has_feature(signal_h)
 # include <signal.h>
+#endif
+#if p99_has_feature(stdio_h)
 # include <stdio.h>
+#endif
+#if p99_has_feature(stdlib_h)
 # include <stdlib.h>
+#endif
+#if p99_has_feature(string_h)
 # include <string.h>
-# ifndef P00_NO_HAVE_TGMATH_H
-#  include <tgmath.h>
-# endif
+#endif
+#if p99_has_feature(tgmath_h)
+# include <tgmath.h>
+#endif
+#if p99_has_feature(time_h)
 # include <time.h>
-# include <wchar.h>
-# include <wctype.h>
 #endif
 
 /* Additions by C11 */
 # if __STDC_VERSION__ > 201100L
-#  ifndef  __STDC_NO_ATOMICS__
+#  if p99_has_feature(stdatomic_h)
 #   include <stdatomic.h>
 #  endif
-#  ifndef __STDC_NO_THREADS__
+#  if p99_has_feature(threads_h)
 #   include <threads.h>
 #  endif
 # else
