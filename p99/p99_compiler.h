@@ -601,37 +601,10 @@ signed p00_trailing_comma_in_initializer__(void) {
  ** @}
  **/
 
-#include <float.h>
-/* For a conforming compiler, this should now have been defined. Set
-   it to "indeterminable" otherwise. */
-#ifndef FLT_EVAL_METHOD
-# define FLT_EVAL_METHOD (-1)
-#endif
-#ifndef P00_NO_HAVE_ISO646_H
-# include <iso646.h>
-#endif
-#include <limits.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
+/* Now that feature test macros are set up we may check for the
+   library support. */
+#include "p99_libc.h"
 
-/* This is defined in some header file since C11. Since C11 allows to
-   repeat typedefs as long as they resolve to the same type, this can
-   be done at any place. */
-typedef size_t rsize_t;
-
-#ifndef RSIZE_MAX
-/* This is the recommended practice if there is no other value
-   available. */
-# define RSIZE_MAX (SIZE_MAX >> 1)
-#endif
-
-#if __STDC_HOSTED__
-# include <assert.h>
-# include <wchar.h>
-# include <wctype.h>
-#endif
 
 /**
  ** @addtogroup C11 Emulating features of C11
@@ -652,24 +625,6 @@ typedef size_t rsize_t;
  ** @{
  **/
 
-/* implement emulation of some C11 features */
-#if p99_has_feature(stdalign_h)
-# include <stdalign.h>
-#endif
-#if p99_has_feature(stdnoreturn_h)
-# include <stdnoreturn.h>
-#endif
-/* end C11 emulation support */
-
-#if __STDC_HOSTED__
-# if p99_has_feature(uchar_h)
-#   include <uchar.h>
-# else
-/* Define the unicode character types directly. */
-typedef uint_least16_t char16_t;
-typedef uint_least32_t char32_t;
-# endif
-#endif /* uchar */
 
 #ifndef static_assert
 /**
