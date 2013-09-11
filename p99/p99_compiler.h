@@ -16,37 +16,6 @@
 #define P99_COMPILER_H
 
 #include "p99_args.h"
-#include <float.h>
-/* For a conforming compiler, this should now have been defined. Set
-   it to "indeterminable" otherwise. */
-#ifndef FLT_EVAL_METHOD
-# define FLT_EVAL_METHOD (-1)
-#endif
-#ifndef P00_NO_HAVE_ISO646_H
-# include <iso646.h>
-#endif
-#include <limits.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-
-/* This is defined in some header file since C11. Since C11 allows to
-   repeat typedefs as long as they resolve to the same type, this can
-   be done at any place. */
-typedef size_t rsize_t;
-
-#ifndef RSIZE_MAX
-/* This is the recommended practice if there is no other value
-   available. */
-# define RSIZE_MAX (SIZE_MAX >> 1)
-#endif
-
-#if __STDC_HOSTED__
-# include <assert.h>
-# include <wchar.h>
-# include <wctype.h>
-#endif
 
 /**
  ** @file
@@ -631,6 +600,38 @@ signed p00_trailing_comma_in_initializer__(void) {
 /**
  ** @}
  **/
+
+#include <float.h>
+/* For a conforming compiler, this should now have been defined. Set
+   it to "indeterminable" otherwise. */
+#ifndef FLT_EVAL_METHOD
+# define FLT_EVAL_METHOD (-1)
+#endif
+#ifndef P00_NO_HAVE_ISO646_H
+# include <iso646.h>
+#endif
+#include <limits.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+
+/* This is defined in some header file since C11. Since C11 allows to
+   repeat typedefs as long as they resolve to the same type, this can
+   be done at any place. */
+typedef size_t rsize_t;
+
+#ifndef RSIZE_MAX
+/* This is the recommended practice if there is no other value
+   available. */
+# define RSIZE_MAX (SIZE_MAX >> 1)
+#endif
+
+#if __STDC_HOSTED__
+# include <assert.h>
+# include <wchar.h>
+# include <wctype.h>
+#endif
 
 /**
  ** @addtogroup C11 Emulating features of C11
