@@ -2883,6 +2883,7 @@
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__compiler_8h</filename>
     <includes id="p99__args_8h" name="p99_args.h" local="yes" imported="no">p99_args.h</includes>
+    <includes id="p99__libc_8h" name="p99_libc.h" local="yes" imported="no">p99_libc.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>_Alignof</name>
@@ -3056,13 +3057,6 @@
       <name>thread_local</name>
       <anchorfile>group__C11__keywords_gad4d9b405bcbffaf0d4dae6166c18aa1e.html</anchorfile>
       <anchor>gad4d9b405bcbffaf0d4dae6166c18aa1e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>size_t</type>
-      <name>rsize_t</name>
-      <anchorfile>p99__compiler_8h_a648363f66636da630ae2caff1778b0f4.html</anchorfile>
-      <anchor>a648363f66636da630ae2caff1778b0f4</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
@@ -5759,6 +5753,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_GENERIC_NULLPTR_CONSTANT_</name>
+      <anchorfile>p99__generic_8h_aec0e9a2dbfbfa2dcd81209b0f210ef84.html</anchorfile>
+      <anchor>aec0e9a2dbfbfa2dcd81209b0f210ef84</anchor>
+      <arglist>(PEXP, TRUE, FALSE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_GENERIC_PCONST</name>
       <anchorfile>p99__generic_8h_a5807d36b4391679e36e20dc3e34e79e4.html</anchorfile>
       <anchor>a5807d36b4391679e36e20dc3e34e79e4</anchor>
@@ -7917,6 +7918,32 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>p99_libc.h</name>
+    <path>/home/gustedt/build/orwl/p99-source/p99/</path>
+    <filename>p99__libc_8h</filename>
+    <member kind="typedef">
+      <type>uint_least16_t</type>
+      <name>char16_t</name>
+      <anchorfile>p99__libc_8h_a39f3071d357a0af2958132ae8a05dd55.html</anchorfile>
+      <anchor>a39f3071d357a0af2958132ae8a05dd55</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>uint_least32_t</type>
+      <name>char32_t</name>
+      <anchorfile>p99__libc_8h_a48f88581b441736e61d0c3b79c349189.html</anchorfile>
+      <anchor>a48f88581b441736e61d0c3b79c349189</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>size_t</type>
+      <name>rsize_t</name>
+      <anchorfile>p99__libc_8h_a648363f66636da630ae2caff1778b0f4.html</anchorfile>
+      <anchor>a648363f66636da630ae2caff1778b0f4</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>p99_lifo.h</name>
     <path>/home/gustedt/build/orwl/p99-source/p99/</path>
     <filename>p99__lifo_8h</filename>
@@ -7944,6 +7971,13 @@
       <anchorfile>group__atomic_ga7287d19054c7fea82cf4d004c9a2755d.html</anchorfile>
       <anchor>ga7287d19054c7fea82cf4d004c9a2755d</anchor>
       <arglist>(T)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>p99_lifo_init</name>
+      <anchorfile>group__atomic_ga72b23b6eca21b6878f7c10f73a4d7b23.html</anchorfile>
+      <anchor>ga72b23b6eca21b6878f7c10f73a4d7b23</anchor>
+      <arglist>(EL, VAL)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -9122,6 +9156,20 @@
     <class kind="struct">p99_tp_state</class>
     <member kind="define">
       <type>#define</type>
+      <name>P99_REF_ACCOUNT</name>
+      <anchorfile>p99__tp_8h_a375ea592e2239cf33366cd9445183a0d.html</anchorfile>
+      <anchor>a375ea592e2239cf33366cd9445183a0d</anchor>
+      <arglist>(REF)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_REF_DISCOUNT</name>
+      <anchorfile>p99__tp_8h_a73b8027a165c29f12b759314512c22a8.html</anchorfile>
+      <anchor>a73b8027a165c29f12b759314512c22a8</anchor>
+      <arglist>(REF, DELETE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_TP</name>
       <anchorfile>p99__tp_8h_ae2f0d1d7bd113f8b378e6b0c8170c05f.html</anchorfile>
       <anchor>ae2f0d1d7bd113f8b378e6b0c8170c05f</anchor>
@@ -9154,6 +9202,69 @@
       <anchorfile>p99__tp_8h_a0d13e8d0305f82c79a6a3d9c2903ebc9.html</anchorfile>
       <anchor>a0d13e8d0305f82c79a6a3d9c2903ebc9</anchor>
       <arglist>(VAL)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_REF_ACCOUNT</name>
+      <anchorfile>p99__tp_8h_ae6a662f95676372858c72218f9d66eb7.html</anchorfile>
+      <anchor>ae6a662f95676372858c72218f9d66eb7</anchor>
+      <arglist>(TP, REF)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_REF_DECLARE</name>
+      <anchorfile>p99__tp_8h_a0ecac180d575334f0b8a1b5dafc84854.html</anchorfile>
+      <anchor>a0ecac180d575334f0b8a1b5dafc84854</anchor>
+      <arglist>(T)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_REF_DEFINE</name>
+      <anchorfile>p99__tp_8h_a523863b43031d5c9abba89d03cea0213.html</anchorfile>
+      <anchor>a523863b43031d5c9abba89d03cea0213</anchor>
+      <arglist>(T)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_REF_DESTROY</name>
+      <anchorfile>p99__tp_8h_a49fcc3b69050ccdec39bdf8e884da530.html</anchorfile>
+      <anchor>a49fcc3b69050ccdec39bdf8e884da530</anchor>
+      <arglist>(TP, DELETE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_REF_FUNCTIONS</name>
+      <anchorfile>p99__tp_8h_a796caca7de6ee1c42bc6ffe9e695fbcb.html</anchorfile>
+      <anchor>a796caca7de6ee1c42bc6ffe9e695fbcb</anchor>
+      <arglist>(T)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_REF_INIT</name>
+      <anchorfile>p99__tp_8h_a62e6f5e1e7acb2e5550b3827a394e437.html</anchorfile>
+      <anchor>a62e6f5e1e7acb2e5550b3827a394e437</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_REF_INITIALIZER</name>
+      <anchorfile>p99__tp_8h_a71e98864fd8a6ab673759de39d7cd538.html</anchorfile>
+      <anchor>a71e98864fd8a6ab673759de39d7cd538</anchor>
+      <arglist>(VAL, ACCOUNT)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_REF_MV</name>
+      <anchorfile>p99__tp_8h_a28ef196849aba613fa2e962a568b8042.html</anchorfile>
+      <anchor>a28ef196849aba613fa2e962a568b8042</anchor>
+      <arglist>(TP, SP, DELETE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_REF_REPLACE</name>
+      <anchorfile>p99__tp_8h_a9f03dc3df69ba6574b065b22558641b8.html</anchorfile>
+      <anchor>a9f03dc3df69ba6574b065b22558641b8</anchor>
+      <arglist>(TP, SP, DELETE)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -9218,6 +9329,13 @@
       <anchor>a2fcde265a329e04ad55916769f82ffb9</anchor>
       <arglist>(TP)</arglist>
     </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TP_XCHG</name>
+      <anchorfile>p99__tp_8h_aa3199e0afaaadf397c445812d0d1e3fd.html</anchorfile>
+      <anchor>aa3199e0afaaadf397c445812d0d1e3fd</anchor>
+      <arglist>(TP, VAL)</arglist>
+    </member>
     <member kind="typedef">
       <type>struct p99_tp</type>
       <name>p99_tp</name>
@@ -9235,44 +9353,51 @@
     <member kind="function">
       <type>void *</type>
       <name>p99_tp_get</name>
-      <anchorfile>p99__tp_8h_a2e64898992ddc45e048d8b3d9a69bb41.html</anchorfile>
-      <anchor>a2e64898992ddc45e048d8b3d9a69bb41</anchor>
-      <arglist>(p99_tp *p00_tp)</arglist>
+      <anchorfile>p99__tp_8h_ac78eeeabcf0e3eca8fce2327af5c962e.html</anchorfile>
+      <anchor>ac78eeeabcf0e3eca8fce2327af5c962e</anchor>
+      <arglist>(register p99_tp *const p00_tp)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>p99_tp_state_check</name>
-      <anchorfile>p99__tp_8h_a1d8897989f139254b472f41a7ece0693.html</anchorfile>
-      <anchor>a1d8897989f139254b472f41a7ece0693</anchor>
-      <arglist>(p99_tp_state *p00_state)</arglist>
+      <anchorfile>p99__tp_8h_a055d68dc59df0f740056efaf6387bb1b.html</anchorfile>
+      <anchor>a055d68dc59df0f740056efaf6387bb1b</anchor>
+      <arglist>(register p99_tp_state *const p00_state)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>p99_tp_state_commit</name>
-      <anchorfile>p99__tp_8h_a5c8da5eeea668f84652638330b90d7ac.html</anchorfile>
-      <anchor>a5c8da5eeea668f84652638330b90d7ac</anchor>
-      <arglist>(p99_tp_state *p00_state)</arglist>
+      <anchorfile>p99__tp_8h_a6b9f8df244988966f16c89d766985771.html</anchorfile>
+      <anchor>a6b9f8df244988966f16c89d766985771</anchor>
+      <arglist>(register p99_tp_state *const p00_state)</arglist>
     </member>
     <member kind="function">
       <type>void *</type>
       <name>p99_tp_state_get</name>
-      <anchorfile>p99__tp_8h_afaba7a90da2379d7f48150ff55348e99.html</anchorfile>
-      <anchor>afaba7a90da2379d7f48150ff55348e99</anchor>
-      <arglist>(p99_tp_state *p00_state)</arglist>
+      <anchorfile>p99__tp_8h_a10aeded4a5d6859800859f4f8eca91cb.html</anchorfile>
+      <anchor>a10aeded4a5d6859800859f4f8eca91cb</anchor>
+      <arglist>(register p99_tp_state *const p00_state)</arglist>
     </member>
     <member kind="function">
       <type>p99_tp_state</type>
       <name>p99_tp_state_initializer</name>
-      <anchorfile>p99__tp_8h_af5833016fba5b14619ae72e4e4c98150.html</anchorfile>
-      <anchor>af5833016fba5b14619ae72e4e4c98150</anchor>
-      <arglist>(p99_tp *p00_tp, void *p00_p)</arglist>
+      <anchorfile>p99__tp_8h_a991e1462d10cde078c0d80bd424894fe.html</anchorfile>
+      <anchor>a991e1462d10cde078c0d80bd424894fe</anchor>
+      <arglist>(register p99_tp *const p00_tp, register void *const p00_p)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>p99_tp_state_set</name>
-      <anchorfile>p99__tp_8h_a4e0fdb3bf3f7da5e968f82c7af2e8001.html</anchorfile>
-      <anchor>a4e0fdb3bf3f7da5e968f82c7af2e8001</anchor>
-      <arglist>(p99_tp_state *p00_state, void *p00_p)</arglist>
+      <anchorfile>p99__tp_8h_a1092af3969e4517f62b46cf546c78dcf.html</anchorfile>
+      <anchor>a1092af3969e4517f62b46cf546c78dcf</anchor>
+      <arglist>(register p99_tp_state *const p00_state, register void *const p00_p)</arglist>
+    </member>
+    <member kind="function">
+      <type>p00_tp_glue</type>
+      <name>p99_tp_xchg</name>
+      <anchorfile>p99__tp_8h_a34c8c70d12df68a0e2d4c5530937c1ff.html</anchorfile>
+      <anchor>a34c8c70d12df68a0e2d4c5530937c1ff</anchor>
+      <arglist>(p99_tp *p00_tp, void *p00_val)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -9308,6 +9433,13 @@
       <anchorfile>group__try_ga9362aa9665b1657c14414676c4e3b63c.html</anchorfile>
       <anchor>ga9362aa9665b1657c14414676c4e3b63c</anchor>
       <arglist>(X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_ASSERT</name>
+      <anchorfile>group__try_ga8357ce3c439eaaa3ee719e9e63f1e27c.html</anchorfile>
+      <anchor>ga8357ce3c439eaaa3ee719e9e63f1e27c</anchor>
+      <arglist>(E,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -9428,6 +9560,20 @@
       <name>P99_DECLARE_THREAD_LOCAL</name>
       <anchorfile>group__threads_ga7f9c74bb2abcf81825126f6271c3c440.html</anchorfile>
       <anchor>ga7f9c74bb2abcf81825126f6271c3c440</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_DECLARE_THREAD_LOCAL_EXTERN</name>
+      <anchorfile>group__threads_ga8b6ce84ab1285158d11e17c478e08228.html</anchorfile>
+      <anchor>ga8b6ce84ab1285158d11e17c478e08228</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_DEFINE_THREAD_LOCAL</name>
+      <anchorfile>group__threads_ga8520e2cc7a6a8333cd5d5ccbff482a18.html</anchorfile>
+      <anchor>ga8520e2cc7a6a8333cd5d5ccbff482a18</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -11286,6 +11432,818 @@
     </member>
     <member kind="function">
       <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaac22dbbf4a955c10807d711d3ba0c28b.html</anchorfile>
+      <anchor>gaac22dbbf4a955c10807d711d3ba0c28b</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, void_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gae7fb06b173db8342ed5fbeea849d6a9f.html</anchorfile>
+      <anchor>gae7fb06b173db8342ed5fbeea849d6a9f</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, void_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaf77df9a2b246713b7359e1d469005e24.html</anchorfile>
+      <anchor>gaf77df9a2b246713b7359e1d469005e24</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, float)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga1083303409b50e6a593c14eac8d2556a.html</anchorfile>
+      <anchor>ga1083303409b50e6a593c14eac8d2556a</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, float_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga706d4ad6e70b5259c0074d5985e913db.html</anchorfile>
+      <anchor>ga706d4ad6e70b5259c0074d5985e913db</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, float_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga4073af1ff4347541a13aa8f5c88744ff.html</anchorfile>
+      <anchor>ga4073af1ff4347541a13aa8f5c88744ff</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, double)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga8bc418c8bd9738944132e304db5e2a39.html</anchorfile>
+      <anchor>ga8bc418c8bd9738944132e304db5e2a39</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, double_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga01fbe43e211b7684d17932828124fb73.html</anchorfile>
+      <anchor>ga01fbe43e211b7684d17932828124fb73</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, double_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga4181fd169e3937e96f81f75e6178eff4.html</anchorfile>
+      <anchor>ga4181fd169e3937e96f81f75e6178eff4</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ldouble_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga413ff6865074487c6ebc0b584fe85078.html</anchorfile>
+      <anchor>ga413ff6865074487c6ebc0b584fe85078</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ldouble)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga19a9ca7e0665236bf1e740ea24612436.html</anchorfile>
+      <anchor>ga19a9ca7e0665236bf1e740ea24612436</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ldouble_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga8c3ecd2a18217f4320a2b57648e642d7.html</anchorfile>
+      <anchor>ga8c3ecd2a18217f4320a2b57648e642d7</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cfloat)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga9c6052d75f6fb0065aac59697e2cec5b.html</anchorfile>
+      <anchor>ga9c6052d75f6fb0065aac59697e2cec5b</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cfloat_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga6a25e36a025082c0add50696f10a0dd7.html</anchorfile>
+      <anchor>ga6a25e36a025082c0add50696f10a0dd7</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cfloat_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga865cd1105bc9192d886879e0e25abb30.html</anchorfile>
+      <anchor>ga865cd1105bc9192d886879e0e25abb30</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cdouble)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga3f80c8a7f74a17351b576936892b7bb6.html</anchorfile>
+      <anchor>ga3f80c8a7f74a17351b576936892b7bb6</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cdouble_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga66934c69531b15ecde5815662219f906.html</anchorfile>
+      <anchor>ga66934c69531b15ecde5815662219f906</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cdouble_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaadb9676eebb0b6c4a423a643f532656c.html</anchorfile>
+      <anchor>gaadb9676eebb0b6c4a423a643f532656c</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cldouble)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga7c19af65e3977f6b060298fe78631139.html</anchorfile>
+      <anchor>ga7c19af65e3977f6b060298fe78631139</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cldouble_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga992aa3a8734d0f47643ba899a3017a05.html</anchorfile>
+      <anchor>ga992aa3a8734d0f47643ba899a3017a05</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cldouble_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gadaec3569bbb10a506c3dc5b25ee02b11.html</anchorfile>
+      <anchor>gadaec3569bbb10a506c3dc5b25ee02b11</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ullong_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga8d71bcc944e8eeca7bff1bb3e61bf06c.html</anchorfile>
+      <anchor>ga8d71bcc944e8eeca7bff1bb3e61bf06c</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ullong_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa63135e8b99549de8177bc0dc7a600da.html</anchorfile>
+      <anchor>gaa63135e8b99549de8177bc0dc7a600da</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ullong)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga7dfb148ab72ba31990a447839d65d9ff.html</anchorfile>
+      <anchor>ga7dfb148ab72ba31990a447839d65d9ff</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, sllong)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa74222368f63c0f6642804f7f179bcde.html</anchorfile>
+      <anchor>gaa74222368f63c0f6642804f7f179bcde</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, sllong_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga82afbdef6bfa8d8ddeb6681299250353.html</anchorfile>
+      <anchor>ga82afbdef6bfa8d8ddeb6681299250353</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, sllong_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gabef9e602348b9d5f2ffbda7e4379597c.html</anchorfile>
+      <anchor>gabef9e602348b9d5f2ffbda7e4379597c</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, llong)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga81a10be12ac1ef27a2342cac20a52278.html</anchorfile>
+      <anchor>ga81a10be12ac1ef27a2342cac20a52278</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, llong_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga86d24a4ceb8233f3aa01e62d33bd2ac1.html</anchorfile>
+      <anchor>ga86d24a4ceb8233f3aa01e62d33bd2ac1</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, llong_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga875528cb1aaff6bac803842e92c405ca.html</anchorfile>
+      <anchor>ga875528cb1aaff6bac803842e92c405ca</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ulong)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga58fe0aa1a62d57822a862d876ae931cb.html</anchorfile>
+      <anchor>ga58fe0aa1a62d57822a862d876ae931cb</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ulong_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga1b51534cf988fb3425e9ec9c34455d38.html</anchorfile>
+      <anchor>ga1b51534cf988fb3425e9ec9c34455d38</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ulong_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga44993d5cf287abd248fc50130c6c6c4b.html</anchorfile>
+      <anchor>ga44993d5cf287abd248fc50130c6c6c4b</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, slong)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga6559a92cbad03e48c273458784690fcf.html</anchorfile>
+      <anchor>ga6559a92cbad03e48c273458784690fcf</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, slong_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaaf8c679415418f960fca25f41f72a6dc.html</anchorfile>
+      <anchor>gaaf8c679415418f960fca25f41f72a6dc</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, slong_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gac9ef0c45af27ff4f779b78af4099c886.html</anchorfile>
+      <anchor>gac9ef0c45af27ff4f779b78af4099c886</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, long)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga1194ac5e0a80d9df9229c9da7dff375e.html</anchorfile>
+      <anchor>ga1194ac5e0a80d9df9229c9da7dff375e</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, long_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga95879c59ba2524a5a7e3de5d8b8d36f4.html</anchorfile>
+      <anchor>ga95879c59ba2524a5a7e3de5d8b8d36f4</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, long_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga023f4bc8aa4b3719b43da6172fa924d0.html</anchorfile>
+      <anchor>ga023f4bc8aa4b3719b43da6172fa924d0</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga21d804fcccbeab73c7151791886c0364.html</anchorfile>
+      <anchor>ga21d804fcccbeab73c7151791886c0364</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gacbe3f572c02ea87f5d67290514189ead.html</anchorfile>
+      <anchor>gacbe3f572c02ea87f5d67290514189ead</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga63a0c00b4125ac1419dc65f638151469.html</anchorfile>
+      <anchor>ga63a0c00b4125ac1419dc65f638151469</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, sint_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga0dd850e020f134449ceb21c2365c9fe3.html</anchorfile>
+      <anchor>ga0dd850e020f134449ceb21c2365c9fe3</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, sint_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa09cdcfcf21b9f7fb538abd6227ec8da.html</anchorfile>
+      <anchor>gaa09cdcfcf21b9f7fb538abd6227ec8da</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, sint)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaeb1d41af144e44f254b6b0c77cbe57bd.html</anchorfile>
+      <anchor>gaeb1d41af144e44f254b6b0c77cbe57bd</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gabaf241b36ebe8a6758bc88d17a2fdbe3.html</anchorfile>
+      <anchor>gabaf241b36ebe8a6758bc88d17a2fdbe3</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga5d16059ac55778e94cb48d243581f584.html</anchorfile>
+      <anchor>ga5d16059ac55778e94cb48d243581f584</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga96386b6f1b55ba33534e68707e31eba2.html</anchorfile>
+      <anchor>ga96386b6f1b55ba33534e68707e31eba2</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ushort)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga6856a9c4fffefb1599b4ee1da175dd9d.html</anchorfile>
+      <anchor>ga6856a9c4fffefb1599b4ee1da175dd9d</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ushort_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gad583a4ebca044e51001d74689372a1e2.html</anchorfile>
+      <anchor>gad583a4ebca044e51001d74689372a1e2</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ushort_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa597c0d69481c913bd083d451931c069.html</anchorfile>
+      <anchor>gaa597c0d69481c913bd083d451931c069</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, short)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga343d2655e84ac2b2f6e5674f6bf6902e.html</anchorfile>
+      <anchor>ga343d2655e84ac2b2f6e5674f6bf6902e</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, short_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga05de27f208b66485b0ce9e393b96f6bb.html</anchorfile>
+      <anchor>ga05de27f208b66485b0ce9e393b96f6bb</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, short_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga1b6d17c57c743403bf0ba76266e245fe.html</anchorfile>
+      <anchor>ga1b6d17c57c743403bf0ba76266e245fe</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uchar_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa4cd5d5995d067a900d18916db067a80.html</anchorfile>
+      <anchor>gaa4cd5d5995d067a900d18916db067a80</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uchar_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga269c246312540a27fb6e229d49c2ada1.html</anchorfile>
+      <anchor>ga269c246312540a27fb6e229d49c2ada1</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uchar)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga3ee7d4b9d5144304c49ded6863d8c3c8.html</anchorfile>
+      <anchor>ga3ee7d4b9d5144304c49ded6863d8c3c8</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, schar)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga88a01c146a91f6010a96570749b21b5e.html</anchorfile>
+      <anchor>ga88a01c146a91f6010a96570749b21b5e</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, schar_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gadc5908cdcc70bd48c940225b5ea11c74.html</anchorfile>
+      <anchor>gadc5908cdcc70bd48c940225b5ea11c74</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, schar_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga04c8de600c1172af9b8d7ba8081510c8.html</anchorfile>
+      <anchor>ga04c8de600c1172af9b8d7ba8081510c8</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, char)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga60a8a2811b7622852df0240b24479e08.html</anchorfile>
+      <anchor>ga60a8a2811b7622852df0240b24479e08</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, char_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga55050635cc7892fd30514a92893f91f0.html</anchorfile>
+      <anchor>ga55050635cc7892fd30514a92893f91f0</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, char_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa9ecad0c623e77a583bdcf76409cb0dd.html</anchorfile>
+      <anchor>gaa9ecad0c623e77a583bdcf76409cb0dd</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, unsigned)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gad0c3e185e4d08e5df9ac91e57a16a4a9.html</anchorfile>
+      <anchor>gad0c3e185e4d08e5df9ac91e57a16a4a9</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, unsigned_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa4a3f9fda7d412243bb931f2506535d5.html</anchorfile>
+      <anchor>gaa4a3f9fda7d412243bb931f2506535d5</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, unsigned_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gacbb8ea7eef50fb420ebf96ecf6a4d913.html</anchorfile>
+      <anchor>gacbb8ea7eef50fb420ebf96ecf6a4d913</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, signed)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga2864d829d70bb62b22ff233595de88aa.html</anchorfile>
+      <anchor>ga2864d829d70bb62b22ff233595de88aa</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, signed_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga32b1ee3052dac80c03fe816e1bcc5da1.html</anchorfile>
+      <anchor>ga32b1ee3052dac80c03fe816e1bcc5da1</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, signed_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga5f01f2da2e7894771afe00b882e6dea9.html</anchorfile>
+      <anchor>ga5f01f2da2e7894771afe00b882e6dea9</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, size_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga8b14984149810ffb3413eccdc7e7ac30.html</anchorfile>
+      <anchor>ga8b14984149810ffb3413eccdc7e7ac30</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, size_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga792362f1f279d81f67f5a727e4e8088e.html</anchorfile>
+      <anchor>ga792362f1f279d81f67f5a727e4e8088e</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, size_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga6424bb49aa8355070346bdeecccb5d60.html</anchorfile>
+      <anchor>ga6424bb49aa8355070346bdeecccb5d60</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ssize_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga4d44e00d33c6810e513bf6e67bb030a9.html</anchorfile>
+      <anchor>ga4d44e00d33c6810e513bf6e67bb030a9</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ssize_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga01ba7a14a65cf2758acaad1db2e79ff8.html</anchorfile>
+      <anchor>ga01ba7a14a65cf2758acaad1db2e79ff8</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ssize_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaf721d19482fb8d62a0fe407ed0729090.html</anchorfile>
+      <anchor>gaf721d19482fb8d62a0fe407ed0729090</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, intmax_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga12bbf3c28e1411c5789e9335c27d0012.html</anchorfile>
+      <anchor>ga12bbf3c28e1411c5789e9335c27d0012</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, intmax_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga064596efcfe810794c7c08bb5d806c6a.html</anchorfile>
+      <anchor>ga064596efcfe810794c7c08bb5d806c6a</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, intmax_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga7da39c104440be567d5c94b5792252dd.html</anchorfile>
+      <anchor>ga7da39c104440be567d5c94b5792252dd</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uintmax_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga269c417b83ad7fb9e3ffbb3d3d789d09.html</anchorfile>
+      <anchor>ga269c417b83ad7fb9e3ffbb3d3d789d09</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uintmax_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga6bce8f847d42291a394d128ede629353.html</anchorfile>
+      <anchor>ga6bce8f847d42291a394d128ede629353</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uintmax_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga831484f68a8580855b9faf350df7487c.html</anchorfile>
+      <anchor>ga831484f68a8580855b9faf350df7487c</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, intptr_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga0f0268750cfb1fafa9dee264619cb35f.html</anchorfile>
+      <anchor>ga0f0268750cfb1fafa9dee264619cb35f</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, intptr_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga8162204d56de3cab6934370a22ed7039.html</anchorfile>
+      <anchor>ga8162204d56de3cab6934370a22ed7039</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, intptr_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gad5b3cc55c40b16cfe2fe19c936b311e2.html</anchorfile>
+      <anchor>gad5b3cc55c40b16cfe2fe19c936b311e2</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uintptr_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gadc7164f11e745121668ebec5721e7406.html</anchorfile>
+      <anchor>gadc7164f11e745121668ebec5721e7406</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uintptr_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga9931375698443c3fe3013ef9641d0595.html</anchorfile>
+      <anchor>ga9931375698443c3fe3013ef9641d0595</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uintptr_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga41715b3bc5ab90bf3d350481cae16d5c.html</anchorfile>
+      <anchor>ga41715b3bc5ab90bf3d350481cae16d5c</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ptrdiff_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga0e60dfe8e54c9531c210d6775afc9765.html</anchorfile>
+      <anchor>ga0e60dfe8e54c9531c210d6775afc9765</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ptrdiff_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaf074692fa28f0dfc37adde1db1751312.html</anchorfile>
+      <anchor>gaf074692fa28f0dfc37adde1db1751312</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ptrdiff_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga2fe53a28ec02944127b5ede178ffacc4.html</anchorfile>
+      <anchor>ga2fe53a28ec02944127b5ede178ffacc4</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int8_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga51cad5c773bd27c146be79db55564ba5.html</anchorfile>
+      <anchor>ga51cad5c773bd27c146be79db55564ba5</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int8_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gac6daef67c7957d4dda75607a79e22711.html</anchorfile>
+      <anchor>gac6daef67c7957d4dda75607a79e22711</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int8_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga7deed89970080d94e4880a4cd01c9262.html</anchorfile>
+      <anchor>ga7deed89970080d94e4880a4cd01c9262</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint8_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga65aeb591d98a9afa80602c5c16b0be40.html</anchorfile>
+      <anchor>ga65aeb591d98a9afa80602c5c16b0be40</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint8_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga47dca2ad05d3ead9420640c38273099a.html</anchorfile>
+      <anchor>ga47dca2ad05d3ead9420640c38273099a</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint8_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga7354147f80dc8ba182a0893412e9dada.html</anchorfile>
+      <anchor>ga7354147f80dc8ba182a0893412e9dada</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int16_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga9a906fc46c1b703dcbb96b9dba7f0a38.html</anchorfile>
+      <anchor>ga9a906fc46c1b703dcbb96b9dba7f0a38</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int16_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga1efd6aa6ff9e70f28d1abc5b68924d9d.html</anchorfile>
+      <anchor>ga1efd6aa6ff9e70f28d1abc5b68924d9d</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int16_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga4c2c0ac988471b7d5d0ab8c2c7dee0a4.html</anchorfile>
+      <anchor>ga4c2c0ac988471b7d5d0ab8c2c7dee0a4</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint16_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga5db3cb190b65d1806b399623fa81f736.html</anchorfile>
+      <anchor>ga5db3cb190b65d1806b399623fa81f736</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint16_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga5f126fc16cea8a79349d2087173c7887.html</anchorfile>
+      <anchor>ga5f126fc16cea8a79349d2087173c7887</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint16_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa017a2e75bb8454ccdc75507115f7acf.html</anchorfile>
+      <anchor>gaa017a2e75bb8454ccdc75507115f7acf</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int32_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaf7323d84568ef0975e2446baf53421db.html</anchorfile>
+      <anchor>gaf7323d84568ef0975e2446baf53421db</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int32_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gacfd5065bd742ca751f2c891bc0e154bc.html</anchorfile>
+      <anchor>gacfd5065bd742ca751f2c891bc0e154bc</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int32_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaf6450da033554e5e3d88ad2fcbd00ad1.html</anchorfile>
+      <anchor>gaf6450da033554e5e3d88ad2fcbd00ad1</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint32_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaf31a097598500a44067717803dfa8cef.html</anchorfile>
+      <anchor>gaf31a097598500a44067717803dfa8cef</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint32_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga88847dd0bdc2d432879cb673d1a3e2b9.html</anchorfile>
+      <anchor>ga88847dd0bdc2d432879cb673d1a3e2b9</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint32_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga86405ddd1ac7f9a5a65dc8facc41c5c6.html</anchorfile>
+      <anchor>ga86405ddd1ac7f9a5a65dc8facc41c5c6</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int64_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga250698f3972a8f7af8f6130c7917daf1.html</anchorfile>
+      <anchor>ga250698f3972a8f7af8f6130c7917daf1</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int64_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga3f6528e8f7b31cd31f2a48d9d395c942.html</anchorfile>
+      <anchor>ga3f6528e8f7b31cd31f2a48d9d395c942</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int64_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga234efb9d4f0e9bacba4931e135e4f768.html</anchorfile>
+      <anchor>ga234efb9d4f0e9bacba4931e135e4f768</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint64_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gadbe8c4ba517281d01faa16b9a928f7f8.html</anchorfile>
+      <anchor>gadbe8c4ba517281d01faa16b9a928f7f8</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint64_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga5e5bc0cc01394146c73279db36ab6556.html</anchorfile>
+      <anchor>ga5e5bc0cc01394146c73279db36ab6556</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint64_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__bool__specials_gacac65b3bb101c9888188a6fa3cd16a12.html</anchorfile>
+      <anchor>gacac65b3bb101c9888188a6fa3cd16a12</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, _Bool_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__bool__specials_gad3f484c4282d3d751c5b7bc3877eb936.html</anchorfile>
+      <anchor>gad3f484c4282d3d751c5b7bc3877eb936</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, _Bool_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__bool__specials_gadd133006c567f7e30755bb8339a63c7b.html</anchorfile>
+      <anchor>gadd133006c567f7e30755bb8339a63c7b</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, _Bool)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
       <name>ptrdiff_t_cptr_destroy</name>
       <anchorfile>group__typenames_gadccfd6c4d0000304ae78637a8f3e3a3f.html</anchorfile>
       <anchor>gadccfd6c4d0000304ae78637a8f3e3a3f</anchor>
@@ -12890,6 +13848,13 @@
       <anchorfile>group__atomic_ga7287d19054c7fea82cf4d004c9a2755d.html</anchorfile>
       <anchor>ga7287d19054c7fea82cf4d004c9a2755d</anchor>
       <arglist>(T)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>p99_lifo_init</name>
+      <anchorfile>group__atomic_ga72b23b6eca21b6878f7c10f73a4d7b23.html</anchorfile>
+      <anchor>ga72b23b6eca21b6878f7c10f73a4d7b23</anchor>
+      <arglist>(EL, VAL)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -17139,10 +18104,24 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_DECLARE_THREAD_LOCAL_EXTERN</name>
+      <anchorfile>group__threads_ga8b6ce84ab1285158d11e17c478e08228.html</anchorfile>
+      <anchor>ga8b6ce84ab1285158d11e17c478e08228</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_DEFINE_ONCE_CHAIN</name>
       <anchorfile>group__threads_gac377ca375bcf64d5eccf0bc0d3793431.html</anchorfile>
       <anchor>gac377ca375bcf64d5eccf0bc0d3793431</anchor>
       <arglist>(T,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_DEFINE_THREAD_LOCAL</name>
+      <anchorfile>group__threads_ga8520e2cc7a6a8333cd5d5ccbff482a18.html</anchorfile>
+      <anchor>ga8520e2cc7a6a8333cd5d5ccbff482a18</anchor>
+      <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -17735,6 +18714,13 @@
       <anchorfile>group__try_ga9362aa9665b1657c14414676c4e3b63c.html</anchorfile>
       <anchor>ga9362aa9665b1657c14414676c4e3b63c</anchor>
       <arglist>(X)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_THROW_ASSERT</name>
+      <anchorfile>group__try_ga8357ce3c439eaaa3ee719e9e63f1e27c.html</anchorfile>
+      <anchor>ga8357ce3c439eaaa3ee719e9e63f1e27c</anchor>
+      <arglist>(E,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -19377,6 +20363,797 @@
     </member>
     <member kind="function">
       <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaac22dbbf4a955c10807d711d3ba0c28b.html</anchorfile>
+      <anchor>gaac22dbbf4a955c10807d711d3ba0c28b</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, void_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gae7fb06b173db8342ed5fbeea849d6a9f.html</anchorfile>
+      <anchor>gae7fb06b173db8342ed5fbeea849d6a9f</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, void_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaf77df9a2b246713b7359e1d469005e24.html</anchorfile>
+      <anchor>gaf77df9a2b246713b7359e1d469005e24</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, float)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga1083303409b50e6a593c14eac8d2556a.html</anchorfile>
+      <anchor>ga1083303409b50e6a593c14eac8d2556a</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, float_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga706d4ad6e70b5259c0074d5985e913db.html</anchorfile>
+      <anchor>ga706d4ad6e70b5259c0074d5985e913db</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, float_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga4073af1ff4347541a13aa8f5c88744ff.html</anchorfile>
+      <anchor>ga4073af1ff4347541a13aa8f5c88744ff</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, double)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga8bc418c8bd9738944132e304db5e2a39.html</anchorfile>
+      <anchor>ga8bc418c8bd9738944132e304db5e2a39</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, double_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga01fbe43e211b7684d17932828124fb73.html</anchorfile>
+      <anchor>ga01fbe43e211b7684d17932828124fb73</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, double_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga4181fd169e3937e96f81f75e6178eff4.html</anchorfile>
+      <anchor>ga4181fd169e3937e96f81f75e6178eff4</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ldouble_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga413ff6865074487c6ebc0b584fe85078.html</anchorfile>
+      <anchor>ga413ff6865074487c6ebc0b584fe85078</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ldouble)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga19a9ca7e0665236bf1e740ea24612436.html</anchorfile>
+      <anchor>ga19a9ca7e0665236bf1e740ea24612436</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ldouble_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga8c3ecd2a18217f4320a2b57648e642d7.html</anchorfile>
+      <anchor>ga8c3ecd2a18217f4320a2b57648e642d7</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cfloat)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga9c6052d75f6fb0065aac59697e2cec5b.html</anchorfile>
+      <anchor>ga9c6052d75f6fb0065aac59697e2cec5b</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cfloat_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga6a25e36a025082c0add50696f10a0dd7.html</anchorfile>
+      <anchor>ga6a25e36a025082c0add50696f10a0dd7</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cfloat_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga865cd1105bc9192d886879e0e25abb30.html</anchorfile>
+      <anchor>ga865cd1105bc9192d886879e0e25abb30</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cdouble)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga3f80c8a7f74a17351b576936892b7bb6.html</anchorfile>
+      <anchor>ga3f80c8a7f74a17351b576936892b7bb6</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cdouble_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga66934c69531b15ecde5815662219f906.html</anchorfile>
+      <anchor>ga66934c69531b15ecde5815662219f906</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cdouble_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaadb9676eebb0b6c4a423a643f532656c.html</anchorfile>
+      <anchor>gaadb9676eebb0b6c4a423a643f532656c</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cldouble)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga7c19af65e3977f6b060298fe78631139.html</anchorfile>
+      <anchor>ga7c19af65e3977f6b060298fe78631139</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cldouble_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga992aa3a8734d0f47643ba899a3017a05.html</anchorfile>
+      <anchor>ga992aa3a8734d0f47643ba899a3017a05</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, cldouble_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gadaec3569bbb10a506c3dc5b25ee02b11.html</anchorfile>
+      <anchor>gadaec3569bbb10a506c3dc5b25ee02b11</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ullong_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga8d71bcc944e8eeca7bff1bb3e61bf06c.html</anchorfile>
+      <anchor>ga8d71bcc944e8eeca7bff1bb3e61bf06c</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ullong_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa63135e8b99549de8177bc0dc7a600da.html</anchorfile>
+      <anchor>gaa63135e8b99549de8177bc0dc7a600da</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ullong)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga7dfb148ab72ba31990a447839d65d9ff.html</anchorfile>
+      <anchor>ga7dfb148ab72ba31990a447839d65d9ff</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, sllong)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa74222368f63c0f6642804f7f179bcde.html</anchorfile>
+      <anchor>gaa74222368f63c0f6642804f7f179bcde</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, sllong_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga82afbdef6bfa8d8ddeb6681299250353.html</anchorfile>
+      <anchor>ga82afbdef6bfa8d8ddeb6681299250353</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, sllong_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gabef9e602348b9d5f2ffbda7e4379597c.html</anchorfile>
+      <anchor>gabef9e602348b9d5f2ffbda7e4379597c</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, llong)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga81a10be12ac1ef27a2342cac20a52278.html</anchorfile>
+      <anchor>ga81a10be12ac1ef27a2342cac20a52278</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, llong_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga86d24a4ceb8233f3aa01e62d33bd2ac1.html</anchorfile>
+      <anchor>ga86d24a4ceb8233f3aa01e62d33bd2ac1</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, llong_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga875528cb1aaff6bac803842e92c405ca.html</anchorfile>
+      <anchor>ga875528cb1aaff6bac803842e92c405ca</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ulong)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga58fe0aa1a62d57822a862d876ae931cb.html</anchorfile>
+      <anchor>ga58fe0aa1a62d57822a862d876ae931cb</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ulong_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga1b51534cf988fb3425e9ec9c34455d38.html</anchorfile>
+      <anchor>ga1b51534cf988fb3425e9ec9c34455d38</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ulong_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga44993d5cf287abd248fc50130c6c6c4b.html</anchorfile>
+      <anchor>ga44993d5cf287abd248fc50130c6c6c4b</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, slong)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga6559a92cbad03e48c273458784690fcf.html</anchorfile>
+      <anchor>ga6559a92cbad03e48c273458784690fcf</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, slong_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaaf8c679415418f960fca25f41f72a6dc.html</anchorfile>
+      <anchor>gaaf8c679415418f960fca25f41f72a6dc</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, slong_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gac9ef0c45af27ff4f779b78af4099c886.html</anchorfile>
+      <anchor>gac9ef0c45af27ff4f779b78af4099c886</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, long)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga1194ac5e0a80d9df9229c9da7dff375e.html</anchorfile>
+      <anchor>ga1194ac5e0a80d9df9229c9da7dff375e</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, long_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga95879c59ba2524a5a7e3de5d8b8d36f4.html</anchorfile>
+      <anchor>ga95879c59ba2524a5a7e3de5d8b8d36f4</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, long_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga023f4bc8aa4b3719b43da6172fa924d0.html</anchorfile>
+      <anchor>ga023f4bc8aa4b3719b43da6172fa924d0</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga21d804fcccbeab73c7151791886c0364.html</anchorfile>
+      <anchor>ga21d804fcccbeab73c7151791886c0364</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gacbe3f572c02ea87f5d67290514189ead.html</anchorfile>
+      <anchor>gacbe3f572c02ea87f5d67290514189ead</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga63a0c00b4125ac1419dc65f638151469.html</anchorfile>
+      <anchor>ga63a0c00b4125ac1419dc65f638151469</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, sint_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga0dd850e020f134449ceb21c2365c9fe3.html</anchorfile>
+      <anchor>ga0dd850e020f134449ceb21c2365c9fe3</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, sint_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa09cdcfcf21b9f7fb538abd6227ec8da.html</anchorfile>
+      <anchor>gaa09cdcfcf21b9f7fb538abd6227ec8da</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, sint)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaeb1d41af144e44f254b6b0c77cbe57bd.html</anchorfile>
+      <anchor>gaeb1d41af144e44f254b6b0c77cbe57bd</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gabaf241b36ebe8a6758bc88d17a2fdbe3.html</anchorfile>
+      <anchor>gabaf241b36ebe8a6758bc88d17a2fdbe3</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga5d16059ac55778e94cb48d243581f584.html</anchorfile>
+      <anchor>ga5d16059ac55778e94cb48d243581f584</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga96386b6f1b55ba33534e68707e31eba2.html</anchorfile>
+      <anchor>ga96386b6f1b55ba33534e68707e31eba2</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ushort)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga6856a9c4fffefb1599b4ee1da175dd9d.html</anchorfile>
+      <anchor>ga6856a9c4fffefb1599b4ee1da175dd9d</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ushort_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gad583a4ebca044e51001d74689372a1e2.html</anchorfile>
+      <anchor>gad583a4ebca044e51001d74689372a1e2</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ushort_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga343d2655e84ac2b2f6e5674f6bf6902e.html</anchorfile>
+      <anchor>ga343d2655e84ac2b2f6e5674f6bf6902e</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, short_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga05de27f208b66485b0ce9e393b96f6bb.html</anchorfile>
+      <anchor>ga05de27f208b66485b0ce9e393b96f6bb</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, short_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa597c0d69481c913bd083d451931c069.html</anchorfile>
+      <anchor>gaa597c0d69481c913bd083d451931c069</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, short)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga1b6d17c57c743403bf0ba76266e245fe.html</anchorfile>
+      <anchor>ga1b6d17c57c743403bf0ba76266e245fe</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uchar_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa4cd5d5995d067a900d18916db067a80.html</anchorfile>
+      <anchor>gaa4cd5d5995d067a900d18916db067a80</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uchar_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga269c246312540a27fb6e229d49c2ada1.html</anchorfile>
+      <anchor>ga269c246312540a27fb6e229d49c2ada1</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uchar)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga3ee7d4b9d5144304c49ded6863d8c3c8.html</anchorfile>
+      <anchor>ga3ee7d4b9d5144304c49ded6863d8c3c8</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, schar)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga88a01c146a91f6010a96570749b21b5e.html</anchorfile>
+      <anchor>ga88a01c146a91f6010a96570749b21b5e</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, schar_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gadc5908cdcc70bd48c940225b5ea11c74.html</anchorfile>
+      <anchor>gadc5908cdcc70bd48c940225b5ea11c74</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, schar_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga04c8de600c1172af9b8d7ba8081510c8.html</anchorfile>
+      <anchor>ga04c8de600c1172af9b8d7ba8081510c8</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, char)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga60a8a2811b7622852df0240b24479e08.html</anchorfile>
+      <anchor>ga60a8a2811b7622852df0240b24479e08</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, char_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga55050635cc7892fd30514a92893f91f0.html</anchorfile>
+      <anchor>ga55050635cc7892fd30514a92893f91f0</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, char_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa9ecad0c623e77a583bdcf76409cb0dd.html</anchorfile>
+      <anchor>gaa9ecad0c623e77a583bdcf76409cb0dd</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, unsigned)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gad0c3e185e4d08e5df9ac91e57a16a4a9.html</anchorfile>
+      <anchor>gad0c3e185e4d08e5df9ac91e57a16a4a9</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, unsigned_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa4a3f9fda7d412243bb931f2506535d5.html</anchorfile>
+      <anchor>gaa4a3f9fda7d412243bb931f2506535d5</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, unsigned_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gacbb8ea7eef50fb420ebf96ecf6a4d913.html</anchorfile>
+      <anchor>gacbb8ea7eef50fb420ebf96ecf6a4d913</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, signed)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga2864d829d70bb62b22ff233595de88aa.html</anchorfile>
+      <anchor>ga2864d829d70bb62b22ff233595de88aa</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, signed_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga32b1ee3052dac80c03fe816e1bcc5da1.html</anchorfile>
+      <anchor>ga32b1ee3052dac80c03fe816e1bcc5da1</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, signed_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga5f01f2da2e7894771afe00b882e6dea9.html</anchorfile>
+      <anchor>ga5f01f2da2e7894771afe00b882e6dea9</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, size_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga8b14984149810ffb3413eccdc7e7ac30.html</anchorfile>
+      <anchor>ga8b14984149810ffb3413eccdc7e7ac30</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, size_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga792362f1f279d81f67f5a727e4e8088e.html</anchorfile>
+      <anchor>ga792362f1f279d81f67f5a727e4e8088e</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, size_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga6424bb49aa8355070346bdeecccb5d60.html</anchorfile>
+      <anchor>ga6424bb49aa8355070346bdeecccb5d60</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ssize_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga4d44e00d33c6810e513bf6e67bb030a9.html</anchorfile>
+      <anchor>ga4d44e00d33c6810e513bf6e67bb030a9</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ssize_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga01ba7a14a65cf2758acaad1db2e79ff8.html</anchorfile>
+      <anchor>ga01ba7a14a65cf2758acaad1db2e79ff8</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ssize_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaf721d19482fb8d62a0fe407ed0729090.html</anchorfile>
+      <anchor>gaf721d19482fb8d62a0fe407ed0729090</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, intmax_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga12bbf3c28e1411c5789e9335c27d0012.html</anchorfile>
+      <anchor>ga12bbf3c28e1411c5789e9335c27d0012</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, intmax_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga064596efcfe810794c7c08bb5d806c6a.html</anchorfile>
+      <anchor>ga064596efcfe810794c7c08bb5d806c6a</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, intmax_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga7da39c104440be567d5c94b5792252dd.html</anchorfile>
+      <anchor>ga7da39c104440be567d5c94b5792252dd</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uintmax_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga269c417b83ad7fb9e3ffbb3d3d789d09.html</anchorfile>
+      <anchor>ga269c417b83ad7fb9e3ffbb3d3d789d09</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uintmax_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga6bce8f847d42291a394d128ede629353.html</anchorfile>
+      <anchor>ga6bce8f847d42291a394d128ede629353</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uintmax_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga831484f68a8580855b9faf350df7487c.html</anchorfile>
+      <anchor>ga831484f68a8580855b9faf350df7487c</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, intptr_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga0f0268750cfb1fafa9dee264619cb35f.html</anchorfile>
+      <anchor>ga0f0268750cfb1fafa9dee264619cb35f</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, intptr_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga8162204d56de3cab6934370a22ed7039.html</anchorfile>
+      <anchor>ga8162204d56de3cab6934370a22ed7039</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, intptr_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gad5b3cc55c40b16cfe2fe19c936b311e2.html</anchorfile>
+      <anchor>gad5b3cc55c40b16cfe2fe19c936b311e2</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uintptr_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gadc7164f11e745121668ebec5721e7406.html</anchorfile>
+      <anchor>gadc7164f11e745121668ebec5721e7406</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uintptr_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga9931375698443c3fe3013ef9641d0595.html</anchorfile>
+      <anchor>ga9931375698443c3fe3013ef9641d0595</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uintptr_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga41715b3bc5ab90bf3d350481cae16d5c.html</anchorfile>
+      <anchor>ga41715b3bc5ab90bf3d350481cae16d5c</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ptrdiff_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga0e60dfe8e54c9531c210d6775afc9765.html</anchorfile>
+      <anchor>ga0e60dfe8e54c9531c210d6775afc9765</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ptrdiff_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaf074692fa28f0dfc37adde1db1751312.html</anchorfile>
+      <anchor>gaf074692fa28f0dfc37adde1db1751312</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, ptrdiff_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga2fe53a28ec02944127b5ede178ffacc4.html</anchorfile>
+      <anchor>ga2fe53a28ec02944127b5ede178ffacc4</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int8_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga51cad5c773bd27c146be79db55564ba5.html</anchorfile>
+      <anchor>ga51cad5c773bd27c146be79db55564ba5</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int8_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gac6daef67c7957d4dda75607a79e22711.html</anchorfile>
+      <anchor>gac6daef67c7957d4dda75607a79e22711</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int8_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga7deed89970080d94e4880a4cd01c9262.html</anchorfile>
+      <anchor>ga7deed89970080d94e4880a4cd01c9262</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint8_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga65aeb591d98a9afa80602c5c16b0be40.html</anchorfile>
+      <anchor>ga65aeb591d98a9afa80602c5c16b0be40</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint8_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga47dca2ad05d3ead9420640c38273099a.html</anchorfile>
+      <anchor>ga47dca2ad05d3ead9420640c38273099a</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint8_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga7354147f80dc8ba182a0893412e9dada.html</anchorfile>
+      <anchor>ga7354147f80dc8ba182a0893412e9dada</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int16_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga9a906fc46c1b703dcbb96b9dba7f0a38.html</anchorfile>
+      <anchor>ga9a906fc46c1b703dcbb96b9dba7f0a38</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int16_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga1efd6aa6ff9e70f28d1abc5b68924d9d.html</anchorfile>
+      <anchor>ga1efd6aa6ff9e70f28d1abc5b68924d9d</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int16_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga5db3cb190b65d1806b399623fa81f736.html</anchorfile>
+      <anchor>ga5db3cb190b65d1806b399623fa81f736</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint16_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga4c2c0ac988471b7d5d0ab8c2c7dee0a4.html</anchorfile>
+      <anchor>ga4c2c0ac988471b7d5d0ab8c2c7dee0a4</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint16_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga5f126fc16cea8a79349d2087173c7887.html</anchorfile>
+      <anchor>ga5f126fc16cea8a79349d2087173c7887</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint16_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaf7323d84568ef0975e2446baf53421db.html</anchorfile>
+      <anchor>gaf7323d84568ef0975e2446baf53421db</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int32_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gacfd5065bd742ca751f2c891bc0e154bc.html</anchorfile>
+      <anchor>gacfd5065bd742ca751f2c891bc0e154bc</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int32_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaa017a2e75bb8454ccdc75507115f7acf.html</anchorfile>
+      <anchor>gaa017a2e75bb8454ccdc75507115f7acf</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int32_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga88847dd0bdc2d432879cb673d1a3e2b9.html</anchorfile>
+      <anchor>ga88847dd0bdc2d432879cb673d1a3e2b9</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint32_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaf6450da033554e5e3d88ad2fcbd00ad1.html</anchorfile>
+      <anchor>gaf6450da033554e5e3d88ad2fcbd00ad1</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint32_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gaf31a097598500a44067717803dfa8cef.html</anchorfile>
+      <anchor>gaf31a097598500a44067717803dfa8cef</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint32_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga3f6528e8f7b31cd31f2a48d9d395c942.html</anchorfile>
+      <anchor>ga3f6528e8f7b31cd31f2a48d9d395c942</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int64_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga250698f3972a8f7af8f6130c7917daf1.html</anchorfile>
+      <anchor>ga250698f3972a8f7af8f6130c7917daf1</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int64_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga86405ddd1ac7f9a5a65dc8facc41c5c6.html</anchorfile>
+      <anchor>ga86405ddd1ac7f9a5a65dc8facc41c5c6</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, int64_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga234efb9d4f0e9bacba4931e135e4f768.html</anchorfile>
+      <anchor>ga234efb9d4f0e9bacba4931e135e4f768</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint64_t_cptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_gadbe8c4ba517281d01faa16b9a928f7f8.html</anchorfile>
+      <anchor>gadbe8c4ba517281d01faa16b9a928f7f8</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint64_t)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__typenames_ga5e5bc0cc01394146c73279db36ab6556.html</anchorfile>
+      <anchor>ga5e5bc0cc01394146c73279db36ab6556</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, uint64_t_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
       <name>ptrdiff_t_cptr_destroy</name>
       <anchorfile>group__typenames_gadccfd6c4d0000304ae78637a8f3e3a3f.html</anchorfile>
       <anchor>gadccfd6c4d0000304ae78637a8f3e3a3f</anchor>
@@ -20581,6 +22358,27 @@
       <anchorfile>group__bool__specials_ga6345a57b7d524c19651a546856b7f8b7.html</anchorfile>
       <anchor>ga6345a57b7d524c19651a546856b7f8b7</anchor>
       <arglist>(_Bool_ptr *p00_id)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__bool__specials_gadd133006c567f7e30755bb8339a63c7b.html</anchorfile>
+      <anchor>gadd133006c567f7e30755bb8339a63c7b</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, _Bool)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__bool__specials_gad3f484c4282d3d751c5b7bc3877eb936.html</anchorfile>
+      <anchor>gad3f484c4282d3d751c5b7bc3877eb936</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, _Bool_ptr)(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>P99_PASTE</name>
+      <anchorfile>group__bool__specials_gacac65b3bb101c9888188a6fa3cd16a12.html</anchorfile>
+      <anchor>gacac65b3bb101c9888188a6fa3cd16a12</anchor>
+      <arglist>(p00_harmless_declaration_, P99_PLAIN_TYPE, _Bool_cptr)(void)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -22259,6 +24057,7 @@
     <file>p99_init.h</file>
     <file>p99_int.h</file>
     <file>p99_iterator.h</file>
+    <file>p99_libc.h</file>
     <file>p99_lifo.h</file>
     <file>p99_list.h</file>
     <file>p99_logical.h</file>
