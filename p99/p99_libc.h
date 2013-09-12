@@ -38,6 +38,7 @@
 /* Please drop me a line if avr libc one day supports one of the
    features.that are protected by __AVR_LIBC_VERSION__ */
 # define P99_AVR_LIBC_SOMEDAY (-2U)
+# define p00_has_feature_assert_h 1
 # define p00_has_feature_float_h 1
 # define p00_has_feature_iso646_h 1
 # define p00_has_feature_limits_h 1
@@ -45,14 +46,22 @@
 # define p00_has_feature_stdbool_h 1
 # define p00_has_feature_stddef_h 1
 # define p00_has_feature_stdint_h 1
+# define p00_has_feature_ctype_h 1
+# define p00_has_feature_errno_h 1
+# define p00_has_feature_stdio_h 1
+# define p00_has_feature_stdlib_h 1
+# define p00_has_feature_string_h 1
+# define p00_has_feature_math_h 1
+# define p00_has_feature_setjmp_h 1
+# define P99_CSIN_BUG
 # if __STDC_HOSTED__
-#  define p00_has_feature_assert_h 1
 /* C99 requires this C11 has this conditionally */
-#  ifndef __STDC_NO_COMPLEX__
-#   define p00_has_feature_complex_h 1
+#  if (__AVR_LIBC_VERSION__ > P99_AVR_LIBC_SOMEDAY)
+#   ifndef __STDC_NO_COMPLEX__
+#    define p00_has_feature_complex_h 1
+#    undef P99_CSIN_BUG
+#   endif
 #  endif
-#  define p00_has_feature_ctype_h 1
-#  define p00_has_feature_errno_h 1
 #  if (__AVR_LIBC_VERSION__ > P99_AVR_LIBC_SOMEDAY)
 #   define p00_has_feature_fenv_h 1
 #  endif
@@ -60,14 +69,9 @@
 #  if (__AVR_LIBC_VERSION__ > P99_AVR_LIBC_SOMEDAY)
 #   define p00_has_feature_locale_h 1
 #  endif
-#  define p00_has_feature_math_h 1
-#  define p00_has_feature_setjmp_h 1
 #  if (__AVR_LIBC_VERSION__ > P99_AVR_LIBC_SOMEDAY)
 #   define p00_has_feature_signal_h 1
 #  endif
-#  define p00_has_feature_stdio_h 1
-#  define p00_has_feature_stdlib_h 1
-#  define p00_has_feature_string_h 1
 /* tgmath.h should be given on the compiler level */
 #  if (__AVR_LIBC_VERSION__ > P99_AVR_LIBC_SOMEDAY)
 #   define p00_has_feature_time_h 1
