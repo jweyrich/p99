@@ -291,36 +291,36 @@ unsigned p99_futex_exchange(p99_futex volatile* futex, unsigned p00_desired,
 
 #ifndef P99_FUTEX_COMPARE_EXCHANGE
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_FUTEX_COMPARE_EXCHANGE, 1)
-# define P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX)    \
-do {                                                                                    \
-  _Atomic(unsigned) volatile*const p00Mcntp = (FUTEX);                                  \
-  unsigned volatile*const p00Mcnt = &P00_AT(p00Mcntp);                                  \
-  unsigned p00Mact = *p00Mcnt;                                                          \
-  for (;;) {                                                                            \
-    register unsigned const ACT = p00Mact;                                              \
-    if (P99_LIKELY(EXPECTED)) {                                                         \
-      register unsigned const p00Mdes = (DESIRED);                                      \
-      /* This will only fail if there is contention on the futex, so we then try */     \
-      /* again, immediately. */                                                         \
-      if (P99_LIKELY(((ACT == p00Mdes)                                                  \
-                      || atomic_compare_exchange_weak(p00Mcntp, &p00Mact, p00Mdes)))) { \
-        register unsigned p00Mwmin = (WAKEMIN);                                         \
-        register unsigned p00Mwmax = (WAKEMAX);                                         \
-        p99_futex_wakeup(p00Mcntp, p00Mwmin, p00Mwmax);                                 \
-        break;                                                                          \
-      }                                                                                 \
-    } else {                                                                            \
-      register int p00Mret = p00_futex_wait_once((int*)p00Mcnt, ACT);                   \
-      switch (p00Mret) {                                                                \
-      default: assert(!p00Mret);                                                        \
-      case 0: ;                                                                         \
-        /* Allow for different val or spurious wake ups */                              \
-      case EWOULDBLOCK: ;                                                               \
-      case EINTR: ;                                                                     \
-      }                                                                                 \
-      p00Mact = *p00Mcnt;                                                               \
-    }                                                                                   \
-  }                                                                                     \
+# define P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX) \
+do {                                                                                 \
+  _Atomic(unsigned) volatile*const p00Mcntp = (FUTEX);                               \
+  unsigned volatile*const p00Mcnt = &P00_AT(p00Mcntp);                               \
+  unsigned p00Mact = *p00Mcnt;                                                       \
+  for (;;) {                                                                         \
+    register unsigned const ACT = p00Mact;                                           \
+    if (P99_LIKELY(EXPECTED)) {                                                      \
+      register unsigned const p00Mdes = (DESIRED);                                   \
+      /* This will only fail if there is contention on the futex, so we then try */  \
+      /* again, immediately. */                                                      \
+      if (ACT == p00Mdes) break;                                                     \
+      if (atomic_compare_exchange_weak(p00Mcntp, &p00Mact, p00Mdes)) {               \
+        register unsigned p00Mwmin = (WAKEMIN);                                      \
+        register unsigned p00Mwmax = (WAKEMAX);                                      \
+        p99_futex_wakeup(p00Mcntp, p00Mwmin, p00Mwmax);                              \
+        break;                                                                       \
+      }                                                                              \
+    } else {                                                                         \
+      register int p00Mret = p00_futex_wait_once((int*)p00Mcnt, ACT);                \
+      switch (p00Mret) {                                                             \
+      default: assert(!p00Mret);                                                     \
+      case 0: ;                                                                      \
+        /* Allow for different val or spurious wake ups */                           \
+      case EWOULDBLOCK: ;                                                            \
+      case EINTR: ;                                                                  \
+      }                                                                              \
+      p00Mact = *p00Mcnt;                                                            \
+    }                                                                                \
+  }                                                                                  \
  } while (false)
 #endif
 
