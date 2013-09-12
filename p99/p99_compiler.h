@@ -886,7 +886,8 @@ P00_UNUSED(1);
  **
  ** This should only be used for macros that replace declarations.
  **/
-#define P99_MACRO_END(...) P00_HARMLESS_DECLARATION
+#define P99_MACRO_END(...)                                              \
+extern void P99_PASTE(p00_harmless_declaration_, __VA_ARGS__)(void)
 
 
 /**
