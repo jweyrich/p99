@@ -886,7 +886,7 @@ P00_UNUSED(1);
  **
  ** This should only be used for macros that replace declarations.
  **/
-#define P99_MACRO_END(...)                                              \
+#define P99_MACRO_END(...)                                          \
 extern void P99_PASTE(p00_harmless_declaration_, __VA_ARGS__)(void)
 
 
@@ -1033,6 +1033,20 @@ P99_IF_COMPILER(INTEL, GCC diagnostic ignored "-Wmissing-field-initializers")
 P99_IF_COMPILER(OPEN64, GCC diagnostic ignored "-Wmissing-braces")
 P99_IF_COMPILER(OPEN64, GCC diagnostic ignored "-Wmissing-field-initializers")
 
+/**
+ ** @def P99_WARN_INIT_PUSH
+ ** @brief Switch bogus warnings about initializers off.
+ ** @remark If available this uses compiler specific
+ ** features. Otherwise this just ignored
+ **/
+
+/**
+ ** @def P99_WARN_INIT_POP
+ ** @brief Switch bogus warnings about initializers on again.
+ ** @remark If available this uses compiler specific
+ ** features. Otherwise this just ignored
+ **/
+
 #if P99_COMPILER & P99_COMPILER_CLANG
 #define P99_WARN_INIT_PUSH                                        \
 P99_PRAGMA(GCC diagnostic push)                                   \
@@ -1050,9 +1064,23 @@ P99_PRAGMA(GCC diagnostic ignored "-Winitializer-overrides")
 # define P99_WARN_INIT_POP
 #endif
 
+/**
+ ** @def P99_WARN_REDUNDANT_DECLS_PUSH
+ ** @brief Switch bogus warnings about redundant declarations off.
+ ** @remark If available this uses compiler specific
+ ** features. Otherwise this just ignored
+ **/
+
+/**
+ ** @def P99_WARN_REDUNDANT_DECLS_POP
+ ** @brief Switch bogus warnings about redundant declarations on again.
+ ** @remark If available this uses compiler specific
+ ** features. Otherwise this just ignored
+ **/
+
 #if __GNUC__
-#define P99_WARN_REDUNDANT_DECLS_PUSH                             \
-P99_PRAGMA(GCC diagnostic push)                                   \
+#define P99_WARN_REDUNDANT_DECLS_PUSH                          \
+P99_PRAGMA(GCC diagnostic push)                                \
 P99_PRAGMA(GCC diagnostic ignored "-Wredundant-decls")
 #define P99_WARN_REDUNDANT_DECLS_POP P99_PRAGMA(GCC diagnostic pop)
 #endif
