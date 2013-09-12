@@ -145,7 +145,28 @@ unsigned p99_notifier_load(p99_notifier volatile* p00_n) {
 P99_DEFARG_DOCU(p99_notifier_set)
 p99_inline
 void p99_notifier_set(p99_notifier volatile* p00_n, unsigned p00_v) {
-  p99_futex_exchange(p00_n, p00_v, p00_v, 1u, 0u, P99_FUTEX_MAX_WAITERS);
+  if (p00_v)
+    P99_FUTEX_COMPARE_EXCHANGE(p00_n,
+                               // name of the local variable
+                               p00_l,
+                               // never wait
+                               true,
+                               // the new value
+                               p00_v,
+                               // no enforced wake up
+                               0u,
+                               // wake up all waiters only if there was a change
+                               ((p00_l != p00_v) ? P99_FUTEX_MAX_WAITERS : 0u));
+  else
+    P99_FUTEX_COMPARE_EXCHANGE(p00_n,
+                               // name of the local variable
+                               p00_l,
+                               // never wait
+                               true,
+                               // the new value
+                               p00_v,
+                               // never wake up anybody
+                               0u, 0u);
 }
 
 #ifndef DOXYGEN
