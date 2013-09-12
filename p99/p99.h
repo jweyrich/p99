@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
-/* (C) copyright  2010-2012 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2010-2013 Jens Gustedt, INRIA, France                       */
 /* (C) copyright  2013 Pierre-Nicolas Clauss                                  */
 /* (C) copyright  2012 William Morris                                         */
 /*                                                                            */
@@ -1438,6 +1438,7 @@
 
 
 #include "p99_choice.h"
+P99_WARN_REDUNDANT_DECLS_PUSH
 #include "p99_defarg.h"
 #include "p99_enum.h"
 #include "p99_new.h"
@@ -1446,5 +1447,6 @@
 #include "p99_generic.h"
 #include "p99_hook.h"
 #include "p99_arith.h"
+P99_WARN_REDUNDANT_DECLS_POP
 
 #endif      /* !P99_H_ */
