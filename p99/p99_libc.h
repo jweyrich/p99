@@ -54,6 +54,10 @@
 # define p00_has_feature_math_h 1
 # define p00_has_feature_setjmp_h 1
 # define P99_CSIN_BUG
+/* tgmath.h broken in avr-gcc, tries to include unavailable complex.h. */
+# if (__AVR_LIBC_VERSION__ > P99_AVR_LIBC_SOMEDAY)
+#  undef p00_has_feature_tgmath_h
+# endif
 # if __STDC_HOSTED__
 /* C99 requires this C11 has this conditionally */
 #  if (__AVR_LIBC_VERSION__ > P99_AVR_LIBC_SOMEDAY)
