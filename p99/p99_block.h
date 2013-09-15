@@ -64,12 +64,15 @@ P99_IF_EQ_2(P99_NARG(__VA_ARGS__))                             \
 
 /* Declare @a NAME to be a pointer to a static variable of type @a
  * TYPE for the depending block. */
-#define P00_BLK_DECL_STATIC(TYPE, NAME, ...)                           \
-P00_BLK_BEFORE(TYPE* NAME = 0)                                         \
-P99_PREFER(                                                            \
-  static TYPE P99_PASTE2(p00_static_, NAME) = P00_ROBUST(__VA_ARGS__); \
-  NAME = &P99_PASTE2(p00_static_, NAME);                               \
-  goto P99_FILEID(p00_label_, NAME); ) P99_FILEID(p00_label_, NAME):
+#define P00_BLK_DECL_STATIC(TYPE, NAME, ...)                                          \
+P00_BLK_DECL_STATIC4(TYPE, NAME, P99_UNIQ(p00_static, NAME), P00_ROBUST(__VA_ARGS__))
+
+#define P00_BLK_DECL_STATIC4(TYPE, NAME, ID, INIT)             \
+P00_BLK_BEFORE(TYPE* NAME = 0)                                 \
+P99_PREFER(                                                    \
+  static TYPE ID = INIT;                                       \
+  NAME = &ID;                                                  \
+  goto ID; ) ID:
 
 #endif
 

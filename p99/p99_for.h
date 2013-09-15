@@ -971,16 +971,19 @@ P00_DOCUMENT_MULTIPLE_ARGUMENT(P99_PARALLEL_FORALL, 0)
 
 
 #define P00_CASERANGE0(NAME, X, I) case ((NAME)+I):
-#define P00_CASERANGE(START, LEN, ...)                             \
+#define P00_CASERANGE3(START, LEN, LABEL)                          \
 if (0) {                                                           \
   /* Execution will only go here if one of the cases is chosen. */ \
   P99_FOR(START, LEN, P00_SEP, P00_CASERANGE0, P99_REP(LEN,))      \
     /* Then it just continues with the else part */                \
-    goto P99_LINEID(__VA_ARGS__);                                  \
+    goto LABEL;                                                    \
  } else                                                            \
   /* execution will just fall through, here, if a previous case    \
      matched */                                                    \
-  P99_LINEID(__VA_ARGS__)
+  LABEL
+
+#define P00_CASERANGE1(START, LEN, ...) P00_CASERANGE3(START, LEN, P99_UNIQ(__VA_ARGS__, caselabel))
+#define P00_CASERANGE2(START, LEN) P00_CASERANGE3(START, LEN, P99_UNIQ(caselabel))
 
 
 #ifdef P00_DOXYGEN
@@ -1028,7 +1031,10 @@ if (0) {                                                           \
 #else
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_CASERANGE, 0)
 P00_DOCUMENT_NUMBER_ARGUMENT(P99_CASERANGE, 1)
-#define P99_CASERANGE(START, ...) P00_CASERANGE(START, __VA_ARGS__, _caselabel)
+#define P99_CASERANGE(START, ...)                              \
+P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
+(P00_CASERANGE2(START, __VA_ARGS__))                           \
+(P00_CASERANGE1(START, __VA_ARGS__))
 #endif
 
 
