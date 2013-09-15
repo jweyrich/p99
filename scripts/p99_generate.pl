@@ -589,6 +589,13 @@ for (my $m = 7; $m < $maxnumber; ++$m) {
     print "#define P00_PASTE$m(L, ...) P99_PASTE2(P99_PASTE${m1}(__VA_ARGS__), L)\n";
 }
 
+for (my $m = 3; $m < $maxnumber; ++$m) {
+    my $m1 = $m - 1;
+    print "/** \@brief Paste $m partial identifiers separated by an underscore.*/\n";
+    print "#define P99_PASTID$m(...) P00_PASTID$m(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))\n";
+    print "#define P00_PASTID$m(S, L) P99_PASTID2(P99_PASTID${m1}(S), L)\n";
+}
+
 print <<"PREPRO1";
 /**
  ** \@addtogroup preprocessor_text

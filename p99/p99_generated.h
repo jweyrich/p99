@@ -41,8 +41,8 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Wed, 16 Jan 2013 17:32:23 +0100"
-#define P00_VERSION_ID "8ddba875e3a104431fc7e9ad7944501c249d6288"
+#define P00_VERSION_DATE "Sun, 15 Sep 2013 18:12:18 +0200"
+#define P00_VERSION_ID "3e510c2b0349d9c4d18ee8e402b92dacd6bda42c"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
  **
@@ -1008,6 +1008,474 @@ automatically generated, do not change manually.
 /** @brief Paste 158 arguments at their boundary.*/
 #define P99_PASTE158(...) P00_PASTE158(P99_LAST(__VA_ARGS__), P99_ALLBUTLAST(__VA_ARGS__))
 #define P00_PASTE158(L, ...) P99_PASTE2(P99_PASTE157(__VA_ARGS__), L)
+/** @brief Paste 3 partial identifiers separated by an underscore.*/
+#define P99_PASTID3(...) P00_PASTID3(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID3(S, L) P99_PASTID2(P99_PASTID2(S), L)
+/** @brief Paste 4 partial identifiers separated by an underscore.*/
+#define P99_PASTID4(...) P00_PASTID4(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID4(S, L) P99_PASTID2(P99_PASTID3(S), L)
+/** @brief Paste 5 partial identifiers separated by an underscore.*/
+#define P99_PASTID5(...) P00_PASTID5(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID5(S, L) P99_PASTID2(P99_PASTID4(S), L)
+/** @brief Paste 6 partial identifiers separated by an underscore.*/
+#define P99_PASTID6(...) P00_PASTID6(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID6(S, L) P99_PASTID2(P99_PASTID5(S), L)
+/** @brief Paste 7 partial identifiers separated by an underscore.*/
+#define P99_PASTID7(...) P00_PASTID7(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID7(S, L) P99_PASTID2(P99_PASTID6(S), L)
+/** @brief Paste 8 partial identifiers separated by an underscore.*/
+#define P99_PASTID8(...) P00_PASTID8(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID8(S, L) P99_PASTID2(P99_PASTID7(S), L)
+/** @brief Paste 9 partial identifiers separated by an underscore.*/
+#define P99_PASTID9(...) P00_PASTID9(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID9(S, L) P99_PASTID2(P99_PASTID8(S), L)
+/** @brief Paste 10 partial identifiers separated by an underscore.*/
+#define P99_PASTID10(...) P00_PASTID10(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID10(S, L) P99_PASTID2(P99_PASTID9(S), L)
+/** @brief Paste 11 partial identifiers separated by an underscore.*/
+#define P99_PASTID11(...) P00_PASTID11(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID11(S, L) P99_PASTID2(P99_PASTID10(S), L)
+/** @brief Paste 12 partial identifiers separated by an underscore.*/
+#define P99_PASTID12(...) P00_PASTID12(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID12(S, L) P99_PASTID2(P99_PASTID11(S), L)
+/** @brief Paste 13 partial identifiers separated by an underscore.*/
+#define P99_PASTID13(...) P00_PASTID13(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID13(S, L) P99_PASTID2(P99_PASTID12(S), L)
+/** @brief Paste 14 partial identifiers separated by an underscore.*/
+#define P99_PASTID14(...) P00_PASTID14(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID14(S, L) P99_PASTID2(P99_PASTID13(S), L)
+/** @brief Paste 15 partial identifiers separated by an underscore.*/
+#define P99_PASTID15(...) P00_PASTID15(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID15(S, L) P99_PASTID2(P99_PASTID14(S), L)
+/** @brief Paste 16 partial identifiers separated by an underscore.*/
+#define P99_PASTID16(...) P00_PASTID16(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID16(S, L) P99_PASTID2(P99_PASTID15(S), L)
+/** @brief Paste 17 partial identifiers separated by an underscore.*/
+#define P99_PASTID17(...) P00_PASTID17(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID17(S, L) P99_PASTID2(P99_PASTID16(S), L)
+/** @brief Paste 18 partial identifiers separated by an underscore.*/
+#define P99_PASTID18(...) P00_PASTID18(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID18(S, L) P99_PASTID2(P99_PASTID17(S), L)
+/** @brief Paste 19 partial identifiers separated by an underscore.*/
+#define P99_PASTID19(...) P00_PASTID19(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID19(S, L) P99_PASTID2(P99_PASTID18(S), L)
+/** @brief Paste 20 partial identifiers separated by an underscore.*/
+#define P99_PASTID20(...) P00_PASTID20(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID20(S, L) P99_PASTID2(P99_PASTID19(S), L)
+/** @brief Paste 21 partial identifiers separated by an underscore.*/
+#define P99_PASTID21(...) P00_PASTID21(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID21(S, L) P99_PASTID2(P99_PASTID20(S), L)
+/** @brief Paste 22 partial identifiers separated by an underscore.*/
+#define P99_PASTID22(...) P00_PASTID22(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID22(S, L) P99_PASTID2(P99_PASTID21(S), L)
+/** @brief Paste 23 partial identifiers separated by an underscore.*/
+#define P99_PASTID23(...) P00_PASTID23(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID23(S, L) P99_PASTID2(P99_PASTID22(S), L)
+/** @brief Paste 24 partial identifiers separated by an underscore.*/
+#define P99_PASTID24(...) P00_PASTID24(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID24(S, L) P99_PASTID2(P99_PASTID23(S), L)
+/** @brief Paste 25 partial identifiers separated by an underscore.*/
+#define P99_PASTID25(...) P00_PASTID25(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID25(S, L) P99_PASTID2(P99_PASTID24(S), L)
+/** @brief Paste 26 partial identifiers separated by an underscore.*/
+#define P99_PASTID26(...) P00_PASTID26(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID26(S, L) P99_PASTID2(P99_PASTID25(S), L)
+/** @brief Paste 27 partial identifiers separated by an underscore.*/
+#define P99_PASTID27(...) P00_PASTID27(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID27(S, L) P99_PASTID2(P99_PASTID26(S), L)
+/** @brief Paste 28 partial identifiers separated by an underscore.*/
+#define P99_PASTID28(...) P00_PASTID28(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID28(S, L) P99_PASTID2(P99_PASTID27(S), L)
+/** @brief Paste 29 partial identifiers separated by an underscore.*/
+#define P99_PASTID29(...) P00_PASTID29(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID29(S, L) P99_PASTID2(P99_PASTID28(S), L)
+/** @brief Paste 30 partial identifiers separated by an underscore.*/
+#define P99_PASTID30(...) P00_PASTID30(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID30(S, L) P99_PASTID2(P99_PASTID29(S), L)
+/** @brief Paste 31 partial identifiers separated by an underscore.*/
+#define P99_PASTID31(...) P00_PASTID31(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID31(S, L) P99_PASTID2(P99_PASTID30(S), L)
+/** @brief Paste 32 partial identifiers separated by an underscore.*/
+#define P99_PASTID32(...) P00_PASTID32(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID32(S, L) P99_PASTID2(P99_PASTID31(S), L)
+/** @brief Paste 33 partial identifiers separated by an underscore.*/
+#define P99_PASTID33(...) P00_PASTID33(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID33(S, L) P99_PASTID2(P99_PASTID32(S), L)
+/** @brief Paste 34 partial identifiers separated by an underscore.*/
+#define P99_PASTID34(...) P00_PASTID34(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID34(S, L) P99_PASTID2(P99_PASTID33(S), L)
+/** @brief Paste 35 partial identifiers separated by an underscore.*/
+#define P99_PASTID35(...) P00_PASTID35(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID35(S, L) P99_PASTID2(P99_PASTID34(S), L)
+/** @brief Paste 36 partial identifiers separated by an underscore.*/
+#define P99_PASTID36(...) P00_PASTID36(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID36(S, L) P99_PASTID2(P99_PASTID35(S), L)
+/** @brief Paste 37 partial identifiers separated by an underscore.*/
+#define P99_PASTID37(...) P00_PASTID37(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID37(S, L) P99_PASTID2(P99_PASTID36(S), L)
+/** @brief Paste 38 partial identifiers separated by an underscore.*/
+#define P99_PASTID38(...) P00_PASTID38(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID38(S, L) P99_PASTID2(P99_PASTID37(S), L)
+/** @brief Paste 39 partial identifiers separated by an underscore.*/
+#define P99_PASTID39(...) P00_PASTID39(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID39(S, L) P99_PASTID2(P99_PASTID38(S), L)
+/** @brief Paste 40 partial identifiers separated by an underscore.*/
+#define P99_PASTID40(...) P00_PASTID40(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID40(S, L) P99_PASTID2(P99_PASTID39(S), L)
+/** @brief Paste 41 partial identifiers separated by an underscore.*/
+#define P99_PASTID41(...) P00_PASTID41(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID41(S, L) P99_PASTID2(P99_PASTID40(S), L)
+/** @brief Paste 42 partial identifiers separated by an underscore.*/
+#define P99_PASTID42(...) P00_PASTID42(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID42(S, L) P99_PASTID2(P99_PASTID41(S), L)
+/** @brief Paste 43 partial identifiers separated by an underscore.*/
+#define P99_PASTID43(...) P00_PASTID43(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID43(S, L) P99_PASTID2(P99_PASTID42(S), L)
+/** @brief Paste 44 partial identifiers separated by an underscore.*/
+#define P99_PASTID44(...) P00_PASTID44(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID44(S, L) P99_PASTID2(P99_PASTID43(S), L)
+/** @brief Paste 45 partial identifiers separated by an underscore.*/
+#define P99_PASTID45(...) P00_PASTID45(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID45(S, L) P99_PASTID2(P99_PASTID44(S), L)
+/** @brief Paste 46 partial identifiers separated by an underscore.*/
+#define P99_PASTID46(...) P00_PASTID46(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID46(S, L) P99_PASTID2(P99_PASTID45(S), L)
+/** @brief Paste 47 partial identifiers separated by an underscore.*/
+#define P99_PASTID47(...) P00_PASTID47(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID47(S, L) P99_PASTID2(P99_PASTID46(S), L)
+/** @brief Paste 48 partial identifiers separated by an underscore.*/
+#define P99_PASTID48(...) P00_PASTID48(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID48(S, L) P99_PASTID2(P99_PASTID47(S), L)
+/** @brief Paste 49 partial identifiers separated by an underscore.*/
+#define P99_PASTID49(...) P00_PASTID49(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID49(S, L) P99_PASTID2(P99_PASTID48(S), L)
+/** @brief Paste 50 partial identifiers separated by an underscore.*/
+#define P99_PASTID50(...) P00_PASTID50(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID50(S, L) P99_PASTID2(P99_PASTID49(S), L)
+/** @brief Paste 51 partial identifiers separated by an underscore.*/
+#define P99_PASTID51(...) P00_PASTID51(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID51(S, L) P99_PASTID2(P99_PASTID50(S), L)
+/** @brief Paste 52 partial identifiers separated by an underscore.*/
+#define P99_PASTID52(...) P00_PASTID52(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID52(S, L) P99_PASTID2(P99_PASTID51(S), L)
+/** @brief Paste 53 partial identifiers separated by an underscore.*/
+#define P99_PASTID53(...) P00_PASTID53(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID53(S, L) P99_PASTID2(P99_PASTID52(S), L)
+/** @brief Paste 54 partial identifiers separated by an underscore.*/
+#define P99_PASTID54(...) P00_PASTID54(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID54(S, L) P99_PASTID2(P99_PASTID53(S), L)
+/** @brief Paste 55 partial identifiers separated by an underscore.*/
+#define P99_PASTID55(...) P00_PASTID55(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID55(S, L) P99_PASTID2(P99_PASTID54(S), L)
+/** @brief Paste 56 partial identifiers separated by an underscore.*/
+#define P99_PASTID56(...) P00_PASTID56(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID56(S, L) P99_PASTID2(P99_PASTID55(S), L)
+/** @brief Paste 57 partial identifiers separated by an underscore.*/
+#define P99_PASTID57(...) P00_PASTID57(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID57(S, L) P99_PASTID2(P99_PASTID56(S), L)
+/** @brief Paste 58 partial identifiers separated by an underscore.*/
+#define P99_PASTID58(...) P00_PASTID58(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID58(S, L) P99_PASTID2(P99_PASTID57(S), L)
+/** @brief Paste 59 partial identifiers separated by an underscore.*/
+#define P99_PASTID59(...) P00_PASTID59(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID59(S, L) P99_PASTID2(P99_PASTID58(S), L)
+/** @brief Paste 60 partial identifiers separated by an underscore.*/
+#define P99_PASTID60(...) P00_PASTID60(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID60(S, L) P99_PASTID2(P99_PASTID59(S), L)
+/** @brief Paste 61 partial identifiers separated by an underscore.*/
+#define P99_PASTID61(...) P00_PASTID61(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID61(S, L) P99_PASTID2(P99_PASTID60(S), L)
+/** @brief Paste 62 partial identifiers separated by an underscore.*/
+#define P99_PASTID62(...) P00_PASTID62(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID62(S, L) P99_PASTID2(P99_PASTID61(S), L)
+/** @brief Paste 63 partial identifiers separated by an underscore.*/
+#define P99_PASTID63(...) P00_PASTID63(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID63(S, L) P99_PASTID2(P99_PASTID62(S), L)
+/** @brief Paste 64 partial identifiers separated by an underscore.*/
+#define P99_PASTID64(...) P00_PASTID64(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID64(S, L) P99_PASTID2(P99_PASTID63(S), L)
+/** @brief Paste 65 partial identifiers separated by an underscore.*/
+#define P99_PASTID65(...) P00_PASTID65(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID65(S, L) P99_PASTID2(P99_PASTID64(S), L)
+/** @brief Paste 66 partial identifiers separated by an underscore.*/
+#define P99_PASTID66(...) P00_PASTID66(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID66(S, L) P99_PASTID2(P99_PASTID65(S), L)
+/** @brief Paste 67 partial identifiers separated by an underscore.*/
+#define P99_PASTID67(...) P00_PASTID67(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID67(S, L) P99_PASTID2(P99_PASTID66(S), L)
+/** @brief Paste 68 partial identifiers separated by an underscore.*/
+#define P99_PASTID68(...) P00_PASTID68(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID68(S, L) P99_PASTID2(P99_PASTID67(S), L)
+/** @brief Paste 69 partial identifiers separated by an underscore.*/
+#define P99_PASTID69(...) P00_PASTID69(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID69(S, L) P99_PASTID2(P99_PASTID68(S), L)
+/** @brief Paste 70 partial identifiers separated by an underscore.*/
+#define P99_PASTID70(...) P00_PASTID70(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID70(S, L) P99_PASTID2(P99_PASTID69(S), L)
+/** @brief Paste 71 partial identifiers separated by an underscore.*/
+#define P99_PASTID71(...) P00_PASTID71(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID71(S, L) P99_PASTID2(P99_PASTID70(S), L)
+/** @brief Paste 72 partial identifiers separated by an underscore.*/
+#define P99_PASTID72(...) P00_PASTID72(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID72(S, L) P99_PASTID2(P99_PASTID71(S), L)
+/** @brief Paste 73 partial identifiers separated by an underscore.*/
+#define P99_PASTID73(...) P00_PASTID73(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID73(S, L) P99_PASTID2(P99_PASTID72(S), L)
+/** @brief Paste 74 partial identifiers separated by an underscore.*/
+#define P99_PASTID74(...) P00_PASTID74(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID74(S, L) P99_PASTID2(P99_PASTID73(S), L)
+/** @brief Paste 75 partial identifiers separated by an underscore.*/
+#define P99_PASTID75(...) P00_PASTID75(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID75(S, L) P99_PASTID2(P99_PASTID74(S), L)
+/** @brief Paste 76 partial identifiers separated by an underscore.*/
+#define P99_PASTID76(...) P00_PASTID76(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID76(S, L) P99_PASTID2(P99_PASTID75(S), L)
+/** @brief Paste 77 partial identifiers separated by an underscore.*/
+#define P99_PASTID77(...) P00_PASTID77(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID77(S, L) P99_PASTID2(P99_PASTID76(S), L)
+/** @brief Paste 78 partial identifiers separated by an underscore.*/
+#define P99_PASTID78(...) P00_PASTID78(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID78(S, L) P99_PASTID2(P99_PASTID77(S), L)
+/** @brief Paste 79 partial identifiers separated by an underscore.*/
+#define P99_PASTID79(...) P00_PASTID79(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID79(S, L) P99_PASTID2(P99_PASTID78(S), L)
+/** @brief Paste 80 partial identifiers separated by an underscore.*/
+#define P99_PASTID80(...) P00_PASTID80(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID80(S, L) P99_PASTID2(P99_PASTID79(S), L)
+/** @brief Paste 81 partial identifiers separated by an underscore.*/
+#define P99_PASTID81(...) P00_PASTID81(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID81(S, L) P99_PASTID2(P99_PASTID80(S), L)
+/** @brief Paste 82 partial identifiers separated by an underscore.*/
+#define P99_PASTID82(...) P00_PASTID82(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID82(S, L) P99_PASTID2(P99_PASTID81(S), L)
+/** @brief Paste 83 partial identifiers separated by an underscore.*/
+#define P99_PASTID83(...) P00_PASTID83(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID83(S, L) P99_PASTID2(P99_PASTID82(S), L)
+/** @brief Paste 84 partial identifiers separated by an underscore.*/
+#define P99_PASTID84(...) P00_PASTID84(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID84(S, L) P99_PASTID2(P99_PASTID83(S), L)
+/** @brief Paste 85 partial identifiers separated by an underscore.*/
+#define P99_PASTID85(...) P00_PASTID85(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID85(S, L) P99_PASTID2(P99_PASTID84(S), L)
+/** @brief Paste 86 partial identifiers separated by an underscore.*/
+#define P99_PASTID86(...) P00_PASTID86(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID86(S, L) P99_PASTID2(P99_PASTID85(S), L)
+/** @brief Paste 87 partial identifiers separated by an underscore.*/
+#define P99_PASTID87(...) P00_PASTID87(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID87(S, L) P99_PASTID2(P99_PASTID86(S), L)
+/** @brief Paste 88 partial identifiers separated by an underscore.*/
+#define P99_PASTID88(...) P00_PASTID88(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID88(S, L) P99_PASTID2(P99_PASTID87(S), L)
+/** @brief Paste 89 partial identifiers separated by an underscore.*/
+#define P99_PASTID89(...) P00_PASTID89(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID89(S, L) P99_PASTID2(P99_PASTID88(S), L)
+/** @brief Paste 90 partial identifiers separated by an underscore.*/
+#define P99_PASTID90(...) P00_PASTID90(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID90(S, L) P99_PASTID2(P99_PASTID89(S), L)
+/** @brief Paste 91 partial identifiers separated by an underscore.*/
+#define P99_PASTID91(...) P00_PASTID91(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID91(S, L) P99_PASTID2(P99_PASTID90(S), L)
+/** @brief Paste 92 partial identifiers separated by an underscore.*/
+#define P99_PASTID92(...) P00_PASTID92(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID92(S, L) P99_PASTID2(P99_PASTID91(S), L)
+/** @brief Paste 93 partial identifiers separated by an underscore.*/
+#define P99_PASTID93(...) P00_PASTID93(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID93(S, L) P99_PASTID2(P99_PASTID92(S), L)
+/** @brief Paste 94 partial identifiers separated by an underscore.*/
+#define P99_PASTID94(...) P00_PASTID94(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID94(S, L) P99_PASTID2(P99_PASTID93(S), L)
+/** @brief Paste 95 partial identifiers separated by an underscore.*/
+#define P99_PASTID95(...) P00_PASTID95(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID95(S, L) P99_PASTID2(P99_PASTID94(S), L)
+/** @brief Paste 96 partial identifiers separated by an underscore.*/
+#define P99_PASTID96(...) P00_PASTID96(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID96(S, L) P99_PASTID2(P99_PASTID95(S), L)
+/** @brief Paste 97 partial identifiers separated by an underscore.*/
+#define P99_PASTID97(...) P00_PASTID97(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID97(S, L) P99_PASTID2(P99_PASTID96(S), L)
+/** @brief Paste 98 partial identifiers separated by an underscore.*/
+#define P99_PASTID98(...) P00_PASTID98(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID98(S, L) P99_PASTID2(P99_PASTID97(S), L)
+/** @brief Paste 99 partial identifiers separated by an underscore.*/
+#define P99_PASTID99(...) P00_PASTID99(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID99(S, L) P99_PASTID2(P99_PASTID98(S), L)
+/** @brief Paste 100 partial identifiers separated by an underscore.*/
+#define P99_PASTID100(...) P00_PASTID100(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID100(S, L) P99_PASTID2(P99_PASTID99(S), L)
+/** @brief Paste 101 partial identifiers separated by an underscore.*/
+#define P99_PASTID101(...) P00_PASTID101(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID101(S, L) P99_PASTID2(P99_PASTID100(S), L)
+/** @brief Paste 102 partial identifiers separated by an underscore.*/
+#define P99_PASTID102(...) P00_PASTID102(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID102(S, L) P99_PASTID2(P99_PASTID101(S), L)
+/** @brief Paste 103 partial identifiers separated by an underscore.*/
+#define P99_PASTID103(...) P00_PASTID103(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID103(S, L) P99_PASTID2(P99_PASTID102(S), L)
+/** @brief Paste 104 partial identifiers separated by an underscore.*/
+#define P99_PASTID104(...) P00_PASTID104(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID104(S, L) P99_PASTID2(P99_PASTID103(S), L)
+/** @brief Paste 105 partial identifiers separated by an underscore.*/
+#define P99_PASTID105(...) P00_PASTID105(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID105(S, L) P99_PASTID2(P99_PASTID104(S), L)
+/** @brief Paste 106 partial identifiers separated by an underscore.*/
+#define P99_PASTID106(...) P00_PASTID106(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID106(S, L) P99_PASTID2(P99_PASTID105(S), L)
+/** @brief Paste 107 partial identifiers separated by an underscore.*/
+#define P99_PASTID107(...) P00_PASTID107(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID107(S, L) P99_PASTID2(P99_PASTID106(S), L)
+/** @brief Paste 108 partial identifiers separated by an underscore.*/
+#define P99_PASTID108(...) P00_PASTID108(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID108(S, L) P99_PASTID2(P99_PASTID107(S), L)
+/** @brief Paste 109 partial identifiers separated by an underscore.*/
+#define P99_PASTID109(...) P00_PASTID109(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID109(S, L) P99_PASTID2(P99_PASTID108(S), L)
+/** @brief Paste 110 partial identifiers separated by an underscore.*/
+#define P99_PASTID110(...) P00_PASTID110(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID110(S, L) P99_PASTID2(P99_PASTID109(S), L)
+/** @brief Paste 111 partial identifiers separated by an underscore.*/
+#define P99_PASTID111(...) P00_PASTID111(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID111(S, L) P99_PASTID2(P99_PASTID110(S), L)
+/** @brief Paste 112 partial identifiers separated by an underscore.*/
+#define P99_PASTID112(...) P00_PASTID112(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID112(S, L) P99_PASTID2(P99_PASTID111(S), L)
+/** @brief Paste 113 partial identifiers separated by an underscore.*/
+#define P99_PASTID113(...) P00_PASTID113(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID113(S, L) P99_PASTID2(P99_PASTID112(S), L)
+/** @brief Paste 114 partial identifiers separated by an underscore.*/
+#define P99_PASTID114(...) P00_PASTID114(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID114(S, L) P99_PASTID2(P99_PASTID113(S), L)
+/** @brief Paste 115 partial identifiers separated by an underscore.*/
+#define P99_PASTID115(...) P00_PASTID115(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID115(S, L) P99_PASTID2(P99_PASTID114(S), L)
+/** @brief Paste 116 partial identifiers separated by an underscore.*/
+#define P99_PASTID116(...) P00_PASTID116(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID116(S, L) P99_PASTID2(P99_PASTID115(S), L)
+/** @brief Paste 117 partial identifiers separated by an underscore.*/
+#define P99_PASTID117(...) P00_PASTID117(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID117(S, L) P99_PASTID2(P99_PASTID116(S), L)
+/** @brief Paste 118 partial identifiers separated by an underscore.*/
+#define P99_PASTID118(...) P00_PASTID118(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID118(S, L) P99_PASTID2(P99_PASTID117(S), L)
+/** @brief Paste 119 partial identifiers separated by an underscore.*/
+#define P99_PASTID119(...) P00_PASTID119(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID119(S, L) P99_PASTID2(P99_PASTID118(S), L)
+/** @brief Paste 120 partial identifiers separated by an underscore.*/
+#define P99_PASTID120(...) P00_PASTID120(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID120(S, L) P99_PASTID2(P99_PASTID119(S), L)
+/** @brief Paste 121 partial identifiers separated by an underscore.*/
+#define P99_PASTID121(...) P00_PASTID121(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID121(S, L) P99_PASTID2(P99_PASTID120(S), L)
+/** @brief Paste 122 partial identifiers separated by an underscore.*/
+#define P99_PASTID122(...) P00_PASTID122(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID122(S, L) P99_PASTID2(P99_PASTID121(S), L)
+/** @brief Paste 123 partial identifiers separated by an underscore.*/
+#define P99_PASTID123(...) P00_PASTID123(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID123(S, L) P99_PASTID2(P99_PASTID122(S), L)
+/** @brief Paste 124 partial identifiers separated by an underscore.*/
+#define P99_PASTID124(...) P00_PASTID124(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID124(S, L) P99_PASTID2(P99_PASTID123(S), L)
+/** @brief Paste 125 partial identifiers separated by an underscore.*/
+#define P99_PASTID125(...) P00_PASTID125(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID125(S, L) P99_PASTID2(P99_PASTID124(S), L)
+/** @brief Paste 126 partial identifiers separated by an underscore.*/
+#define P99_PASTID126(...) P00_PASTID126(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID126(S, L) P99_PASTID2(P99_PASTID125(S), L)
+/** @brief Paste 127 partial identifiers separated by an underscore.*/
+#define P99_PASTID127(...) P00_PASTID127(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID127(S, L) P99_PASTID2(P99_PASTID126(S), L)
+/** @brief Paste 128 partial identifiers separated by an underscore.*/
+#define P99_PASTID128(...) P00_PASTID128(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID128(S, L) P99_PASTID2(P99_PASTID127(S), L)
+/** @brief Paste 129 partial identifiers separated by an underscore.*/
+#define P99_PASTID129(...) P00_PASTID129(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID129(S, L) P99_PASTID2(P99_PASTID128(S), L)
+/** @brief Paste 130 partial identifiers separated by an underscore.*/
+#define P99_PASTID130(...) P00_PASTID130(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID130(S, L) P99_PASTID2(P99_PASTID129(S), L)
+/** @brief Paste 131 partial identifiers separated by an underscore.*/
+#define P99_PASTID131(...) P00_PASTID131(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID131(S, L) P99_PASTID2(P99_PASTID130(S), L)
+/** @brief Paste 132 partial identifiers separated by an underscore.*/
+#define P99_PASTID132(...) P00_PASTID132(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID132(S, L) P99_PASTID2(P99_PASTID131(S), L)
+/** @brief Paste 133 partial identifiers separated by an underscore.*/
+#define P99_PASTID133(...) P00_PASTID133(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID133(S, L) P99_PASTID2(P99_PASTID132(S), L)
+/** @brief Paste 134 partial identifiers separated by an underscore.*/
+#define P99_PASTID134(...) P00_PASTID134(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID134(S, L) P99_PASTID2(P99_PASTID133(S), L)
+/** @brief Paste 135 partial identifiers separated by an underscore.*/
+#define P99_PASTID135(...) P00_PASTID135(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID135(S, L) P99_PASTID2(P99_PASTID134(S), L)
+/** @brief Paste 136 partial identifiers separated by an underscore.*/
+#define P99_PASTID136(...) P00_PASTID136(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID136(S, L) P99_PASTID2(P99_PASTID135(S), L)
+/** @brief Paste 137 partial identifiers separated by an underscore.*/
+#define P99_PASTID137(...) P00_PASTID137(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID137(S, L) P99_PASTID2(P99_PASTID136(S), L)
+/** @brief Paste 138 partial identifiers separated by an underscore.*/
+#define P99_PASTID138(...) P00_PASTID138(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID138(S, L) P99_PASTID2(P99_PASTID137(S), L)
+/** @brief Paste 139 partial identifiers separated by an underscore.*/
+#define P99_PASTID139(...) P00_PASTID139(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID139(S, L) P99_PASTID2(P99_PASTID138(S), L)
+/** @brief Paste 140 partial identifiers separated by an underscore.*/
+#define P99_PASTID140(...) P00_PASTID140(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID140(S, L) P99_PASTID2(P99_PASTID139(S), L)
+/** @brief Paste 141 partial identifiers separated by an underscore.*/
+#define P99_PASTID141(...) P00_PASTID141(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID141(S, L) P99_PASTID2(P99_PASTID140(S), L)
+/** @brief Paste 142 partial identifiers separated by an underscore.*/
+#define P99_PASTID142(...) P00_PASTID142(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID142(S, L) P99_PASTID2(P99_PASTID141(S), L)
+/** @brief Paste 143 partial identifiers separated by an underscore.*/
+#define P99_PASTID143(...) P00_PASTID143(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID143(S, L) P99_PASTID2(P99_PASTID142(S), L)
+/** @brief Paste 144 partial identifiers separated by an underscore.*/
+#define P99_PASTID144(...) P00_PASTID144(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID144(S, L) P99_PASTID2(P99_PASTID143(S), L)
+/** @brief Paste 145 partial identifiers separated by an underscore.*/
+#define P99_PASTID145(...) P00_PASTID145(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID145(S, L) P99_PASTID2(P99_PASTID144(S), L)
+/** @brief Paste 146 partial identifiers separated by an underscore.*/
+#define P99_PASTID146(...) P00_PASTID146(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID146(S, L) P99_PASTID2(P99_PASTID145(S), L)
+/** @brief Paste 147 partial identifiers separated by an underscore.*/
+#define P99_PASTID147(...) P00_PASTID147(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID147(S, L) P99_PASTID2(P99_PASTID146(S), L)
+/** @brief Paste 148 partial identifiers separated by an underscore.*/
+#define P99_PASTID148(...) P00_PASTID148(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID148(S, L) P99_PASTID2(P99_PASTID147(S), L)
+/** @brief Paste 149 partial identifiers separated by an underscore.*/
+#define P99_PASTID149(...) P00_PASTID149(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID149(S, L) P99_PASTID2(P99_PASTID148(S), L)
+/** @brief Paste 150 partial identifiers separated by an underscore.*/
+#define P99_PASTID150(...) P00_PASTID150(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID150(S, L) P99_PASTID2(P99_PASTID149(S), L)
+/** @brief Paste 151 partial identifiers separated by an underscore.*/
+#define P99_PASTID151(...) P00_PASTID151(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID151(S, L) P99_PASTID2(P99_PASTID150(S), L)
+/** @brief Paste 152 partial identifiers separated by an underscore.*/
+#define P99_PASTID152(...) P00_PASTID152(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID152(S, L) P99_PASTID2(P99_PASTID151(S), L)
+/** @brief Paste 153 partial identifiers separated by an underscore.*/
+#define P99_PASTID153(...) P00_PASTID153(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID153(S, L) P99_PASTID2(P99_PASTID152(S), L)
+/** @brief Paste 154 partial identifiers separated by an underscore.*/
+#define P99_PASTID154(...) P00_PASTID154(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID154(S, L) P99_PASTID2(P99_PASTID153(S), L)
+/** @brief Paste 155 partial identifiers separated by an underscore.*/
+#define P99_PASTID155(...) P00_PASTID155(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID155(S, L) P99_PASTID2(P99_PASTID154(S), L)
+/** @brief Paste 156 partial identifiers separated by an underscore.*/
+#define P99_PASTID156(...) P00_PASTID156(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID156(S, L) P99_PASTID2(P99_PASTID155(S), L)
+/** @brief Paste 157 partial identifiers separated by an underscore.*/
+#define P99_PASTID157(...) P00_PASTID157(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID157(S, L) P99_PASTID2(P99_PASTID156(S), L)
+/** @brief Paste 158 partial identifiers separated by an underscore.*/
+#define P99_PASTID158(...) P00_PASTID158(P99_ALLBUTLAST(__VA_ARGS__), P99_LAST(__VA_ARGS__))
+#define P00_PASTID158(S, L) P99_PASTID2(P99_PASTID157(S), L)
 /**
  ** @addtogroup preprocessor_text
  **

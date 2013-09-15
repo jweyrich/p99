@@ -81,6 +81,13 @@
 #define P99_PASTE6(_1,  _2, _3, _4, _5, _6)                    \
   P99_PASTE2(P99_PASTE5(_1, _2, _3, _4, _5), _6)
 
+#define P99_PASTID0()
+#define P99_PASTID1(ID) ID
+#define P00_PASTID2(ID0, ID1) ID0 ## _ ## ID1
+#define P99_PASTID2(ID0, ID1) P99_IF_EMPTY(ID1)(P00_PASTID2(ID0, p007))(P00_PASTID2(ID0, ID1))
+
+#define P99_PASTID(...) P99_PASTE2(P99_PASTID, P99_NARG(__VA_ARGS__))(__VA_ARGS__)
+
 #ifndef P00_DOCUMENT_MULTIPLE_ARGUMENT
 #define P00_DOCUMENT_TYPE_ARGUMENT(MACRO, N) /*! @remark argument N should correspond to a type that is not a VLA. */
 #define P00_DOCUMENT_TYPE_IDENTIFIER_ARGUMENT(MACRO, N) /*! @remark argument N should correspond to a type name (one token) that is not a VLA. */
