@@ -94,17 +94,18 @@ P00_DOCUMENT_ID(16)
  ** @brief A number that identifies different times of inclusion of
  ** the file "p99_id.h"
  **
- ** This is a hexadecimal constant of width at most 4 significant digits.
+ ** This is an unsigned hexadecimal constant of at most 4 significant digits.
  **/
-#define P99_FILENO() P99_PASTE2(0x, P99_ID())
+#define P99_FILENO() P99_PASTE2(0x, P99_ID(), U)
 
 /**
- ** @brief An id that identifies different times of inclusion of
- ** the file "p99_id.h"
+ ** @brief An identifier token that identifies different times of
+ ** inclusion of the file "p99_id.h"
  **
- ** The argument may contain a token that is appended to the id.
+ ** The argument may contain a list of partial identifier tokens that
+ ** are appended to the id.
  **/
-#define P99_FILEID(...) P99_PASTE(p00_fileid_, P99_ID(), __VA_ARGS__)
+#define P99_FILEID(...) P99_PASTID(p00_fileid, P99_ID(), __VA_ARGS__)
 
 /**
  ** @brief A number that identifies different lines in an include
@@ -115,7 +116,7 @@ P00_DOCUMENT_ID(16)
  **/
 #define P99_LINENO() P99_PASTE4(0x, __LINE__, P99_ID(), ULL)
 /**
- ** @brief An id that identifies different lines in an include
+ ** @brief An identifier token that identifies different lines in an include
  ** hierarchy.
  **
  ** The argument may contain a token that is appended to the id.
@@ -129,7 +130,63 @@ P00_DOCUMENT_ID(16)
  ** to your executable you should reconsider the offending lines that
  ** use this macro more thoroughly.
  **/
-#define P99_LINEID(...) P99_PASTE(p00_lineid_, __LINE__, P99_ID(), __VA_ARGS__)
+#define P99_LINEID(...) P99_PASTID(p00_lineid, __LINE__, P99_ID(), __VA_ARGS__)
+
+#ifndef P00_UNIQ
+# if __COUNTER__ || __COUNTER__
+#  define P00_UNIQ __COUNTER__
+# else
+#  define P00_UNIQ p00_no_counter_feature
+# endif
+#endif
+
+/**
+ ** @brief An identifier token that is intended to be unique in this
+ ** compilation unit
+ **
+ ** This uses different line numbers in an include hierarchy to
+ ** disambiguate, and, if available, the non-standard macro
+ ** <code>__COUNTER__</code>.
+ **
+ ** The argument may contain a token that is appended to the id.
+ **
+ ** If during an individual compilation there is a conflict because
+ ** this macro is used in lines with exactly the same __LINE__ number,
+ ** and <code>__COUNTER__</code> is not available you'd have to
+ ** include the file "p99_id.h" once more in one of the corresponding
+ ** header files.
+ **
+ ** If you need the same unique identifier at several places in the
+ ** same macro you'd have to cascade as in the following example:
+ **
+ ** @code
+ ** #define MY_DO(ID, START, STOP, INC) MY_DO_(ID, P99_UNIQ(n), P99_UNIQ(p), (START), (STOP), (INC))
+ ** #define MY_DO_(ID, NU, PU, START, STOP, INC) for (unsigned ID = START, NU = STOP, PU = INC; ID < NU; ID += PU)
+ **
+ ** MY_DO(i, 0, strlen(filename), 1)
+ **   printf("%c-", filename[i]);
+ ** @endcode
+ **
+ ** This would expand to
+ **
+ ** @code
+ ** for (unsigned ID = 0, crude_n = strlen(filename), crude_p = 1; i < crude_n; i += crude_p)
+ **    printf("%c-", filename[i]);
+ ** @endcode
+ **
+ ** Here, in the top most expansion of <code>MY_DO</code> two
+ ** identifiers are generated and passed along as arguments of
+ ** <code>MY_DO_</code>. (The "names" @c crude_n or @c crude_p only
+ ** stand for some crude unique identifier you don't really want to
+ ** know.)
+ **
+ ** The effect here is that the generated <code>for</code> loop has
+ ** three local variables, that are initialized to the three arguments
+ ** of <code>MY_DO</code>. By this, this macro can guarantee that the
+ ** loop bounds are only evaluated once and that the number of
+ ** iterations that is performed is known on entry to the loop.
+ **/
+#define P99_UNIQ(...)  P99_IF_EMPTY(__VA_ARGS__)(P99_LINEID(P00_UNIQ, uniq))(P99_LINEID(P00_UNIQ, uniq, __VA_ARGS__))
 
 #ifdef P00_DOXYGEN
 /**
