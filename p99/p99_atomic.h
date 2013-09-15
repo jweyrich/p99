@@ -16,6 +16,7 @@
 
 #include "p99_enum.h"
 #include "p99_generic.h"
+#include P99_ADVANCE_ID
 
 /**
  ** @addtogroup atomic C11 atomic operations
@@ -1023,11 +1024,13 @@ void atomic_flag_unlock(volatile atomic_flag *p00_objp) {
  **
  ** @see P99_MUTUAL_EXCLUDE that is more suited for larger sections.
  **/
-#define P99_SPIN_EXCLUDE(FLAGP)                                             \
-P00_BLK_START                                                               \
-P00_BLK_DECL(register atomic_flag volatile*const, P99_FILEID(flg), (FLAGP)) \
-P00_BLK_BEFAFT(atomic_flag_lock(P99_FILEID(flg)),                           \
-               atomic_flag_unlock(P99_FILEID(flg)))                         \
+#define P99_SPIN_EXCLUDE(FLAGP)   P00_SPIN_EXCLUDE(FLAGP, P99_UNIQ(flg))
+
+#define P00_SPIN_EXCLUDE(FLAGP, ID)                            \
+P00_BLK_START                                                  \
+P00_BLK_DECL(register atomic_flag volatile*const, ID, (FLAGP)) \
+P00_BLK_BEFAFT(atomic_flag_lock(ID),                           \
+               atomic_flag_unlock(ID))                         \
 P00_BLK_END
 
 /**
@@ -1374,10 +1377,12 @@ p99_extension                                                            \
  ** @see P99_MUTUAL_EXCLUDE that is more suited for larger sections.
  **/
 P99_BLOCK_DOCUMENT
-#define P99_CRITICAL                                                 \
-P00_BLK_START                                                        \
-P00_BLK_DECL_STATIC(atomic_flag, P99_LINEID(crit), ATOMIC_FLAG_INIT) \
-P99_SPIN_EXCLUDE(P99_LINEID(crit))
+#define P99_CRITICAL P00_CRITICAL(P99_UNIQ(crit))
+
+#define P00_CRITICAL(ID)                                       \
+P00_BLK_START                                                  \
+P00_BLK_DECL_STATIC(atomic_flag, ID, ATOMIC_FLAG_INIT)         \
+P99_SPIN_EXCLUDE(ID)
 
 /**
  ** @}

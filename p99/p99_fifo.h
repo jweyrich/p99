@@ -240,16 +240,18 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FIFO_CLEAR, 0)
 P00_DOCUMENT_TYPE_ARGUMENT(P99_FIFO_TABULATE, 0)
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_FIFO_TABULATE, 1)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_FIFO_TABULATE, 2)
-#define P99_FIFO_TABULATE(TYPE, TAB, L)                        \
-size_t P99_FILEID(TAB, _cnt) = 0;                              \
-TYPE * P99_FILEID(TAB, _head) = P99_FIFO_CLEAR(L);             \
-for (TYPE * p00_e = P99_FILEID(TAB, _head);                    \
+#define P99_FIFO_TABULATE(TYPE, TAB, L) P00_FIFO_TABULATE(TYPE, TAB, P99_UNIQ(TAB), L)
+
+#define P00_FIFO_TABULATE(TYPE, TAB, ID, L)                    \
+size_t P99_PASTE2(ID, _cnt) = 0;                               \
+TYPE * P99_PASTE2(ID, _head) = P99_FIFO_CLEAR(L);              \
+for (TYPE * p00_e = P99_PASTE2(ID, _head);                     \
      p00_e;                                                    \
      p00_e = p00_e->p99_lifo)                                  \
-  ++P99_FILEID(TAB, _cnt);                                     \
-TYPE * TAB[P99_FILEID(TAB, _cnt)];                             \
+  ++P99_PASTE2(ID, _cnt);                                      \
+TYPE * TAB[P99_PASTE2(ID, _cnt)];                              \
 for (TYPE ** p00_t = &(TAB[0]),                                \
-       * p00_e = P99_FILEID(TAB, _head);                       \
+       * p00_e = P99_PASTE2(ID, _head);                        \
      p00_e;                                                    \
      p00_e = p00_e->p99_lifo,                                  \
        ++p00_t)                                                \

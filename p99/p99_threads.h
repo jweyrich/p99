@@ -774,23 +774,25 @@ int mtx_unlock(mtx_t *p00_mtx) {
  **/
 P99_BLOCK_DOCUMENT
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MUTUAL_EXCLUDE, 0)
-#define P99_MUTUAL_EXCLUDE(MUT)                                                  \
+#define P99_MUTUAL_EXCLUDE(MUT) P00_MUTUAL_EXCLUDE(MUT, P99_UNIQ(mut))
+
+#define P00_MUTUAL_EXCLUDE(MUT, UNIQ)                                            \
 P00_BLK_START                                                                    \
 P00_BLK_DECL(int, p00_errNo, 0)                                                  \
 P99_GUARDED_BLOCK(mtx_t*,                                                        \
-                  P99_FILEID(mut),                                               \
+                  UNIQ,                                                          \
                   &(MUT),                                                        \
-                  (void)(P99_UNLIKELY(p00_errNo = mtx_lock(P99_FILEID(mut)))     \
+                  (void)(P99_UNLIKELY(p00_errNo = mtx_lock(UNIQ))                \
                          && (fprintf(stderr,                                     \
                                      __FILE__ ":"                                \
                                      P99_STRINGIFY(__LINE__) ": lock error for " \
                                      P99_STRINGIFY(MUT) ", %s",                  \
                                      strerror(p00_errNo)), 1)                    \
-                         && (P99_FILEID(mut) = 0, 1)                             \
+                         && (UNIQ = 0, 1)                                        \
                          && (P99_UNWIND(-1), 1)                                  \
                          ),                                                      \
-                  (void)(P99_FILEID(mut)                                         \
-                         && mtx_unlock(P99_FILEID(mut))))
+                  (void)(UNIQ                                                    \
+                         && mtx_unlock(UNIQ)))
 
 
 
