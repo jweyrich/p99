@@ -875,11 +875,10 @@ void thrd_exit(int p00_res) {
   }
   /* should only be reached by threads that where created directly
      with pthreads, e.g main */
-  if (p00_res)
-    fprintf(stderr,
-            "P99: We are exiting a foreign thread (main?) with non zero error code %d\n"
-            "P99: There is no consistent way we can transmit that error code to the environment\n",
-            p00_res);
+  fprintf(stderr,
+          "P99: We are exiting a foreign thread (main?) with error code %d\n"
+          "P99: There is no consistent way we can transmit that code to the environment\n",
+          p00_res);
   pthread_exit(0);
 }
 #endif
@@ -921,6 +920,8 @@ int p00_threads_main(void* p00_arg) {
      return statement is permitted. But the compiler should warn the
      user about that. */
   int p00_ret = p99_threads_main(p00_argc, p00_argv);
+  fprintf(stderr, "exiting main thread with code %d", p00_ret);
+  fflush(0);
   exit(p00_ret);
 }
 
