@@ -109,7 +109,7 @@ P99_DECLARE_STRUCT(p99_tp_state);
 
    */
 P99_DECLARE_THREAD_LOCAL(uintptr_t, p00_tp_tick);
-P99_WEAK(p00_tp_tack) _Atomic(uintptr_t) p00_tp_tack;
+P99_WEAK(p00_tp_tack) _Atomic(uintptr_t) volatile p00_tp_tack;
 
 p99_inline
 uintptr_t p00_tp_tick_get(void) {
@@ -128,7 +128,7 @@ uintptr_t p00_tp_tick_get(void) {
 }
 
 p99_inline
-p00_tp_glue* p00_tp_glue_init(p00_tp_glue* el, void * p) {
+p00_tp_glue volatile* p00_tp_glue_init(p00_tp_glue volatile* el, void * p) {
   if (el) {
     *el = (p00_tp_glue)P00_TP_GLUE_INITIALIZER(p, p00_tp_tick_get());
   }
@@ -145,7 +145,7 @@ p00_tp_glue* p00_tp_glue_init(p00_tp_glue* el, void * p) {
  ** @see p99_tp_state
  **/
 struct p99_tp {
-  _Atomic(p00_tp_glue) p00_val;
+  _Atomic(p00_tp_glue) volatile p00_val;
   void*const p00_init;
 };
 
@@ -181,7 +181,7 @@ struct p99_tp_state {
 }
 
 p99_inline
-bool p00_tp_cmpxchg(_Atomic(p00_tp_glue)*const p00_p, p00_tp_glue*const p00_prev, p00_tp_glue p00_new) {
+bool p00_tp_cmpxchg(_Atomic(p00_tp_glue) volatile*const p00_p, p00_tp_glue*const p00_prev, p00_tp_glue p00_new) {
   P99_MARK("wide cmpxchg start");
   bool ret = atomic_compare_exchange_weak(p00_p, p00_prev, p00_new);
   P99_MARK("wide cmpxchg end");
