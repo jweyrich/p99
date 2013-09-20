@@ -91,6 +91,17 @@ LDFLAGS := $(EXEOPT) $(LPATH) $(LDFLAGS)
 
 .SUFFIXES: .h.Z .c.Z .h.gz .c.gz .c.z .h.z
 
+# every POSIX platform must provide getconf
+XOPEN_VERSION := ${shell getconf _XOPEN_VERSION 2>/dev/null}
+GNU_LIBC_VERSION := ${shell getconf GNU_LIBC_VERSION 2>/dev/null}
+
+ifneq (${XOPEN_VERSION},)
+CFLAGS += -D_XOPEN_SOURCE=${XOPEN_VERSION}
+endif
+ifneq (${GNU_LIBC_VERSION},)
+CFLAGS += -D_GNU_SOURCE=1
+endif
+
 ##############################
 # Basic Compile Instructions #
 ##############################
