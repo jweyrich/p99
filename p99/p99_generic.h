@@ -1273,30 +1273,48 @@ char const* p00_sprint_p99x_uintmax(p99x_uintmax p00_val, char*restrict p00_str,
 
 #define P00_SPRINT_LIST() P00_SPRINT_LIST_(P99_EXT_ARITHMETIC_TYPES)
 
-#define P00_SPRINT_FORMAT_(X, A, ...)                                      \
-P99_GENERIC((X),                                                           \
-            p00_sprint_voidp,                                              \
-            (char*, p00_sprint_charp),                                     \
-            (char const*, p00_sprint_charp),                               \
-            (char*const, p00_sprint_charp),                                \
-            (char const*const, p00_sprint_charp),                          \
-            (char*volatile, p00_sprint_charp),                             \
-            (char const*volatile, p00_sprint_charp),                       \
-            (char*const volatile, p00_sprint_charp),                       \
-            (char const*const volatile, p00_sprint_charp),                 \
-            (char*restrict, p00_sprint_charp),                             \
-            (char const*restrict, p00_sprint_charp),                       \
-            (char*const restrict, p00_sprint_charp),                       \
-            (char const*const restrict, p00_sprint_charp),                 \
-            (char*volatile restrict, p00_sprint_charp),                    \
-            (char const*volatile restrict, p00_sprint_charp),              \
-            (char*const volatile restrict, p00_sprint_charp),              \
-            (char const*const volatile restrict, p00_sprint_charp),        \
-            __VA_ARGS__)((X),                                              \
-                         /* be sure not to have an array for the sizeof */ \
-                         /* times a rough estimate for octal conversion */ \
-                         /* plus a rough offset for floating points */     \
-                         (char[(sizeof(X+0)*22+64)/8]){ 0 },               \
+#define P00_SPRINT_FORMAT_(X, A, ...)                                                  \
+P99_GENERIC((X)+0,                                                                     \
+            p00_sprint_voidp,                                                          \
+            (char*, p00_sprint_charp),                                                 \
+            (char const*, p00_sprint_charp),                                           \
+            (char*const, p00_sprint_charp),                                            \
+            (char const*const, p00_sprint_charp),                                      \
+            (char*volatile, p00_sprint_charp),                                         \
+            (char const*volatile, p00_sprint_charp),                                   \
+            (char*const volatile, p00_sprint_charp),                                   \
+            (char const*const volatile, p00_sprint_charp),                             \
+            (char*restrict, p00_sprint_charp),                                         \
+            (char const*restrict, p00_sprint_charp),                                   \
+            (char*const restrict, p00_sprint_charp),                                   \
+            (char const*const restrict, p00_sprint_charp),                             \
+            (char*volatile restrict, p00_sprint_charp),                                \
+            (char const*volatile restrict, p00_sprint_charp),                          \
+            (char*const volatile restrict, p00_sprint_charp),                          \
+            (char const*const volatile restrict, p00_sprint_charp),                    \
+            __VA_ARGS__)((X),                                                          \
+                         P99_GENERIC((X)+0,                                            \
+                                     /* be sure not to have an array for the sizeof */ \
+                                     /* times a rough estimate for octal conversion */ \
+                                     /* plus a rough offset for floating points */     \
+                                     (char[(sizeof(X+0)*22+64)/8]){ 0 },               \
+                                     (char*, 0),                                       \
+                                     (char const*, 0),                                 \
+                                     (char*const, 0),                                  \
+                                     (char const*const, 0),                            \
+                                     (char*volatile, 0),                               \
+                                     (char const*volatile, 0),                         \
+                                     (char*const volatile, 0),                         \
+                                     (char const*const volatile, 0),                   \
+                                     (char*restrict, 0),                               \
+                                     (char const*restrict, 0),                         \
+                                     (char*const restrict, 0),                         \
+                                     (char const*const restrict, 0),                   \
+                                     (char*volatile restrict, 0),                      \
+                                     (char const*volatile restrict, 0),                \
+                                     (char*const volatile restrict, 0),                \
+                                     (char const*const volatile restrict, 0)           \
+                                     ),                                                \
                          (A))
 
 #define P00_SPRINT_FORMAT(...) P00_SPRINT_FORMAT_(__VA_ARGS__)
