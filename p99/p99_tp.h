@@ -173,7 +173,7 @@ struct p99_tp {
 struct p99_tp_state {
   p00_tp_glue p00_val;
   p00_tp_glue p00_next;
-  p99_tp* p00_tp;
+  p99_tp volatile* p00_tp;
 };
 
 # define P00_TP_INITIALIZER(VAL) {                             \
@@ -181,7 +181,7 @@ struct p99_tp_state {
 }
 
 p99_inline
-bool p00_tp_cmpxchg(_Atomic(p00_tp_glue) volatile*const p00_p, p00_tp_glue*const p00_prev, p00_tp_glue p00_new) {
+bool p00_tp_cmpxchg(_Atomic(p00_tp_glue) volatile*const p00_p, p00_tp_glue volatile*const p00_prev, p00_tp_glue p00_new) {
   P99_MARK("wide cmpxchg start");
   bool ret = atomic_compare_exchange_weak(p00_p, p00_prev, p00_new);
   P99_MARK("wide cmpxchg end");
@@ -189,7 +189,7 @@ bool p00_tp_cmpxchg(_Atomic(p00_tp_glue) volatile*const p00_p, p00_tp_glue*const
 }
 
 p99_inline
-p00_tp_glue p00_tp_get(register p99_tp*const p00_tp) {
+p00_tp_glue p00_tp_get(register p99_tp volatile*const p00_tp) {
   register p00_tp_glue p00_ret
   = P99_LIKELY(p00_tp)
     ? atomic_load(&p00_tp->p00_val)
@@ -210,7 +210,7 @@ p00_tp_glue p00_tp_get(register p99_tp*const p00_tp) {
  ** @brief Set to new value @a p00_val and return previous value.
  **/
 p99_inline
-p00_tp_glue p99_tp_xchg(p99_tp* p00_tp, void* p00_val) {
+p00_tp_glue p99_tp_xchg(p99_tp volatile* p00_tp, void* p00_val) {
   p00_tp_glue p00_ret
   = P99_LIKELY(p00_tp)
     ? atomic_load(&p00_tp->p00_val)
@@ -232,7 +232,7 @@ p00_tp_glue p99_tp_xchg(p99_tp* p00_tp, void* p00_val) {
  ** prepare it to commit value @a p00_p later.
  **/
 p99_inline
-p99_tp_state p99_tp_state_initializer(register p99_tp*const p00_tp, register void*const p00_p) {
+p99_tp_state p99_tp_state_initializer(register p99_tp volatile*const p00_tp, register void*const p00_p) {
   return (p99_tp_state) {
     .p00_val = p00_tp_get(p00_tp),
      .p00_next = P00_TP_GLUE_INITIALIZER(p00_p, p00_tp_tick_get()),
@@ -241,29 +241,29 @@ p99_tp_state p99_tp_state_initializer(register p99_tp*const p00_tp, register voi
 }
 
 p99_inline
-void * p99_tp_state_get(register p99_tp_state*const p00_state) {
+void * p99_tp_state_get(register p99_tp_state volatile*const p00_state) {
   return P99_LIKELY(p00_state) ? p00_tp_i2p(p00_state->p00_val) : 0;
 }
 
 p99_inline
-void * p99_tp_get(register p99_tp*const p00_tp) {
+void * p99_tp_get(register p99_tp volatile*const p00_tp) {
   return p00_tp_i2p(p00_tp_get(p00_tp));
 }
 
 p99_inline
-void p99_tp_state_set(register p99_tp_state*const p00_state, register void*const p00_p) {
+void p99_tp_state_set(register p99_tp_state volatile*const p00_state, register void*const p00_p) {
   if (P99_LIKELY(p00_state)) p00_state->p00_next = p00_tp_p2i(p00_p, p00_tp_i2i(p00_state->p00_next));
 }
 
 p99_inline
-bool p99_tp_state_commit(register p99_tp_state*const p00_state) {
+bool p99_tp_state_commit(register p99_tp_state volatile*const p00_state) {
   return P99_LIKELY(p00_state)
          ? p00_tp_cmpxchg(&p00_state->p00_tp->p00_val, &p00_state->p00_val, p00_state->p00_next)
          : false;
 }
 
 p99_inline
-bool p99_tp_state_check(register p99_tp_state*const p00_state) {
+bool p99_tp_state_check(register p99_tp_state volatile*const p00_state) {
   return P99_LIKELY(p00_state)
          ? p00_tp_cmpxchg(&p00_state->p00_tp->p00_val, &p00_state->p00_val, p00_state->p00_val)
          : 0;
@@ -297,7 +297,7 @@ union P99_TP_STATE(T) {                                          \
 # define P99_TP_INITIALIZER(VAL) { .p00_tp = P00_TP_INITIALIZER(VAL), }
 
 p99_inline
-void p00_tp_init(register p99_tp*const p00_el, register void*const p00_val) {
+void p00_tp_init(register p99_tp volatile*const p00_el, register void*const p00_val) {
   if (P99_LIKELY(p00_el)) {
     atomic_init(&p00_el->p00_val, p00_tp_p2i(p00_val, p00_tp_tick_get()));
   }
@@ -542,10 +542,12 @@ P99_INSTANTIATE(T*, P99_PASTE2(T, _account), T*);                               
 P99_INSTANTIATE(T*, P99_PASTE2(T, _discount), T*);                                           \
 P99_INSTANTIATE(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref_init), P99_PASTE2(T, _ref)*, T*);   \
 P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_init_defarg_1), void);                                \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_get), P99_PASTE2(T, _ref)*);                          \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_replace), P99_PASTE2(T, _ref)*, T*);                  \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_mv), P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*);     \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_assign), P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*); \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_get), P99_PASTE2(T, _ref) volatile*);                 \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_replace), P99_PASTE2(T, _ref) volatile*, T*);         \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_mv), P99_PASTE2(T, _ref) volatile*,                   \
+                P99_PASTE2(T, _ref) volatile*);                                              \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_assign), P99_PASTE2(T, _ref) volatile*,               \
+                P99_PASTE2(T, _ref) volatile*);                                              \
 P99_INSTANTIATE(void, P99_PASTE2(T, _ref_destroy), P99_PASTE2(T, _ref)*)
 
 #ifdef P00_DOXYGEN
@@ -569,21 +571,23 @@ inline T* P99_PASTE2(T, _ref_init_defarg_1)(void){}                             
  /** \brief get the value of a reference **/                                                                                         \
  /** \return the pointer to the object that is handled **/                                                                           \
  /** \related T ## _ref **/                                                                                                          \
-inline T* P99_PASTE2(T, _ref_get)(P99_PASTE2(T, _ref)*){}                                                                            \
+inline T* P99_PASTE2(T, _ref_get)(P99_PASTE2(T, _ref) volatile*){}                                                                   \
  /** \brief replace the value of a reference **/                                                                                     \
  /** \return the previous pointer before replacement **/                                                                             \
  /** \related T ## _ref **/                                                                                                          \
-inline T* P99_PASTE2(T, _ref_replace)(P99_PASTE2(T, _ref)*, T*){}                                                                    \
+inline T* P99_PASTE2(T, _ref_replace)(P99_PASTE2(T, _ref) volatile*, T*){}                                                           \
  /** \brief replace the value of a reference by that of the second argument **/                                                      \
  /** \remark sets the value of the second argument to \c 0 **/                                                                       \
  /** \return the previous pointer before replacement **/                                                                             \
  /** \related T ## _ref **/                                                                                                          \
-inline T* P99_PASTE2(T, _ref_mv)(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*){}                                                       \
+inline T* P99_PASTE2(T, _ref_mv)(P99_PASTE2(T, _ref) volatile*,                                                                      \
+                                 P99_PASTE2(T, _ref) volatile*){}                                                                    \
  /** \brief replace the value of a reference by that of the second argument **/                                                      \
  /** \remark the value of the second argument remains untouched **/                                                                  \
  /** \return the previous pointer before replacement **/                                                                             \
  /** \related T ## _ref **/                                                                                                          \
-inline T* P99_PASTE2(T, _ref_assign)(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref)*){}                                                   \
+inline T* P99_PASTE2(T, _ref_assign)(P99_PASTE2(T, _ref) volatile*,                                                                  \
+                                     P99_PASTE2(T, _ref) volatile*){}                                                                \
  /** \brief destroy a reference object **/                                                                                           \
  /** \remark this should always be called at the end of the lifetime of a T ## _ref object **/                                       \
  /** \related T ## _ref **/                                                                                                          \
@@ -617,22 +621,24 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_REF_FUNCTIONS, 0)
   }                                                                                           \
                                                                                               \
   inline                                                                                      \
-  T* P99_PASTE2(T, _ref_get)(P99_PASTE2(T, _ref)* p00_ref) {                                  \
+  T* P99_PASTE2(T, _ref_get)(P99_PASTE2(T, _ref) volatile* p00_ref) {                         \
     return P99_TP_GET(p00_ref);                                                               \
   }                                                                                           \
                                                                                               \
   inline                                                                                      \
-  T* P99_PASTE2(T, _ref_replace)(P99_PASTE2(T, _ref)* p00_tar, T* p00_sou) {                  \
+  T* P99_PASTE2(T, _ref_replace)(P99_PASTE2(T, _ref) volatile* p00_tar, T* p00_sou) {         \
     return P99_TP_REF_REPLACE(p00_tar, p00_sou, P99_PASTE2(T, _delete));                      \
   }                                                                                           \
                                                                                               \
   inline                                                                                      \
-  T* P99_PASTE2(T, _ref_mv)(P99_PASTE2(T, _ref)* p00_tar, P99_PASTE2(T, _ref)* p00_sou) {     \
+  T* P99_PASTE2(T, _ref_mv)(P99_PASTE2(T, _ref) volatile* p00_tar,                            \
+                            P99_PASTE2(T, _ref) volatile* p00_sou) {                          \
     return P99_TP_REF_MV(p00_tar, p00_sou, P99_PASTE2(T, _delete));                           \
   }                                                                                           \
                                                                                               \
   inline                                                                                      \
-  T* P99_PASTE2(T, _ref_assign)(P99_PASTE2(T, _ref)* p00_tar, P99_PASTE2(T, _ref)* p00_sou) { \
+  T* P99_PASTE2(T, _ref_assign)(P99_PASTE2(T, _ref) volatile* p00_tar,                        \
+                                P99_PASTE2(T, _ref) volatile* p00_sou) {                      \
     return P99_TP_REF_REPLACE(p00_tar, P99_TP_GET(p00_sou), P99_PASTE2(T, _delete));          \
   }                                                                                           \
                                                                                               \
