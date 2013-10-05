@@ -41,8 +41,8 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Sun, 15 Sep 2013 18:12:18 +0200"
-#define P00_VERSION_ID "3e510c2b0349d9c4d18ee8e402b92dacd6bda42c"
+#define P00_VERSION_DATE "Sat, 05 Oct 2013 14:40:13 +0200"
+#define P00_VERSION_ID "378d4942b3e82e63d1ad89b00e7adccac3b3f104"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
  **
@@ -9647,6 +9647,38 @@ automatically generated, do not change manually.
 
 
 #define P00_generic
+
+//! @addtogroup C11_types
+//! @{
+
+
+#define P00_C11_types
+
+//! @addtogroup type_generic
+//! @{
+
+
+#define P00_type_generic
+
+//! @}
+
+//! @}
+
+//! @addtogroup qualifiers
+//! @{
+
+
+#define P00_qualifiers
+
+//! @}
+
+//! @addtogroup tgprint
+//! @{
+
+
+#define P00_tgprint
+
+//! @}
 
 //! @}
 

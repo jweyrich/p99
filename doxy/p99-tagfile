@@ -6734,77 +6734,77 @@
     <member kind="define">
       <type>#define</type>
       <name>P99_AVALUE</name>
-      <anchorfile>p99__generic_8h_a26d31e37d73cfeffe45344cd73876648.html</anchorfile>
-      <anchor>a26d31e37d73cfeffe45344cd73876648</anchor>
+      <anchorfile>group__qualifiers_ga26d31e37d73cfeffe45344cd73876648.html</anchorfile>
+      <anchor>ga26d31e37d73cfeffe45344cd73876648</anchor>
       <arglist>(X,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_DECLARE_INLINE_EXPRESSION</name>
-      <anchorfile>group__generic_gae28597bcea44cad17ed9b94584b1dd8c.html</anchorfile>
+      <anchorfile>group__C11__types_gae28597bcea44cad17ed9b94584b1dd8c.html</anchorfile>
       <anchor>gae28597bcea44cad17ed9b94584b1dd8c</anchor>
       <arglist>(EXT, BASE, EXP,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_DECLARE_INLINE_EXPRESSIONS</name>
-      <anchorfile>group__generic_gaa4db895e099b97c75d0bf641e1c7d290.html</anchorfile>
+      <anchorfile>group__C11__types_gaa4db895e099b97c75d0bf641e1c7d290.html</anchorfile>
       <anchor>gaa4db895e099b97c75d0bf641e1c7d290</anchor>
       <arglist>(NEPL,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_FORMAT</name>
-      <anchorfile>p99__generic_8h_ae16d2bd5effbc6cdbdd480750866223e.html</anchorfile>
-      <anchor>ae16d2bd5effbc6cdbdd480750866223e</anchor>
+      <anchorfile>group__tgprint_gae16d2bd5effbc6cdbdd480750866223e.html</anchorfile>
+      <anchor>gae16d2bd5effbc6cdbdd480750866223e</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_FORMATS</name>
-      <anchorfile>p99__generic_8h_ace29fc3eee87b9ec202f737866f7a3a8.html</anchorfile>
-      <anchor>ace29fc3eee87b9ec202f737866f7a3a8</anchor>
+      <anchorfile>group__tgprint_gace29fc3eee87b9ec202f737866f7a3a8.html</anchorfile>
+      <anchor>gace29fc3eee87b9ec202f737866f7a3a8</anchor>
       <arglist>(...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_FPRINTF</name>
-      <anchorfile>p99__generic_8h_a36a3f823988f7d8a2382175bd580327b.html</anchorfile>
-      <anchor>a36a3f823988f7d8a2382175bd580327b</anchor>
+      <anchorfile>group__tgprint_ga36a3f823988f7d8a2382175bd580327b.html</anchorfile>
+      <anchor>ga36a3f823988f7d8a2382175bd580327b</anchor>
       <arglist>(F, FORMAT,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GEN_ABS</name>
-      <anchorfile>group__generic_ga230a46da075b050dbaf989ae306b0009.html</anchorfile>
+      <anchorfile>group__C11__types_ga230a46da075b050dbaf989ae306b0009.html</anchorfile>
       <anchor>ga230a46da075b050dbaf989ae306b0009</anchor>
       <arglist>(A)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GEN_EXPR</name>
-      <anchorfile>group__generic_ga4f147de7548247824ba7100124556ef3.html</anchorfile>
+      <anchorfile>group__C11__types_ga4f147de7548247824ba7100124556ef3.html</anchorfile>
       <anchor>ga4f147de7548247824ba7100124556ef3</anchor>
       <arglist>(BASE, EXPR,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GEN_MAX</name>
-      <anchorfile>group__generic_gad6ec14be307a040154f682b73c95a943.html</anchorfile>
+      <anchorfile>group__C11__types_gad6ec14be307a040154f682b73c95a943.html</anchorfile>
       <anchor>gad6ec14be307a040154f682b73c95a943</anchor>
       <arglist>(A, B)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GEN_MIN</name>
-      <anchorfile>group__generic_ga700d7b5b32df83d6f286ea29a23fc6cb.html</anchorfile>
+      <anchorfile>group__C11__types_ga700d7b5b32df83d6f286ea29a23fc6cb.html</anchorfile>
       <anchor>ga700d7b5b32df83d6f286ea29a23fc6cb</anchor>
       <arglist>(A, B)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GEN_SIN</name>
-      <anchorfile>group__generic_gab478e912efac0a7847641d17331698bf.html</anchorfile>
+      <anchorfile>group__C11__types_gab478e912efac0a7847641d17331698bf.html</anchorfile>
       <anchor>gab478e912efac0a7847641d17331698bf</anchor>
       <arglist>(A)</arglist>
     </member>
@@ -6818,8 +6818,8 @@
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC_INTEGRAL_CONSTANT</name>
-      <anchorfile>p99__generic_8h_a01c71c3f57f34f5983a85abaf159d51f.html</anchorfile>
-      <anchor>a01c71c3f57f34f5983a85abaf159d51f</anchor>
+      <anchorfile>group__constexpr_ga01c71c3f57f34f5983a85abaf159d51f.html</anchorfile>
+      <anchor>ga01c71c3f57f34f5983a85abaf159d51f</anchor>
       <arglist>(EXP, TRUE, FALSE)</arglist>
     </member>
     <member kind="define">
@@ -6832,50 +6832,50 @@
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC_NULLPTR</name>
-      <anchorfile>p99__generic_8h_abb0aa559b774a86a0095133f80da1cbf.html</anchorfile>
-      <anchor>abb0aa559b774a86a0095133f80da1cbf</anchor>
+      <anchorfile>group__constexpr_gabb0aa559b774a86a0095133f80da1cbf.html</anchorfile>
+      <anchor>gabb0aa559b774a86a0095133f80da1cbf</anchor>
       <arglist>(PEXP, TRUE, FALSE)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC_NULLPTR_CONSTANT</name>
-      <anchorfile>p99__generic_8h_a0caa0e08d9037b46cf2b4592ae2a68e5.html</anchorfile>
-      <anchor>a0caa0e08d9037b46cf2b4592ae2a68e5</anchor>
+      <anchorfile>group__constexpr_ga0caa0e08d9037b46cf2b4592ae2a68e5.html</anchorfile>
+      <anchor>ga0caa0e08d9037b46cf2b4592ae2a68e5</anchor>
       <arglist>(PEXP, TRUE, FALSE)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC_NULLPTR_CONSTANT_</name>
-      <anchorfile>p99__generic_8h_aec0e9a2dbfbfa2dcd81209b0f210ef84.html</anchorfile>
-      <anchor>aec0e9a2dbfbfa2dcd81209b0f210ef84</anchor>
+      <anchorfile>group__constexpr_gaec0e9a2dbfbfa2dcd81209b0f210ef84.html</anchorfile>
+      <anchor>gaec0e9a2dbfbfa2dcd81209b0f210ef84</anchor>
       <arglist>(PEXP, TRUE, FALSE)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC_PCONST</name>
-      <anchorfile>p99__generic_8h_a5807d36b4391679e36e20dc3e34e79e4.html</anchorfile>
-      <anchor>a5807d36b4391679e36e20dc3e34e79e4</anchor>
+      <anchorfile>group__qualifiers_ga5807d36b4391679e36e20dc3e34e79e4.html</anchorfile>
+      <anchor>ga5807d36b4391679e36e20dc3e34e79e4</anchor>
       <arglist>(PEXP, NCONST, CONST)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC_PCONSTVOLATILE</name>
-      <anchorfile>p99__generic_8h_a33ed8baca18ed81aa45c3bb5f2890bce.html</anchorfile>
-      <anchor>a33ed8baca18ed81aa45c3bb5f2890bce</anchor>
+      <anchorfile>group__qualifiers_ga33ed8baca18ed81aa45c3bb5f2890bce.html</anchorfile>
+      <anchor>ga33ed8baca18ed81aa45c3bb5f2890bce</anchor>
       <arglist>(PEXP, NON, FULL)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC_PQUALIFIED</name>
-      <anchorfile>p99__generic_8h_abb76f37a04c51ca7d07c84b38b3470cd.html</anchorfile>
-      <anchor>abb76f37a04c51ca7d07c84b38b3470cd</anchor>
+      <anchorfile>group__qualifiers_gabb76f37a04c51ca7d07c84b38b3470cd.html</anchorfile>
+      <anchor>gabb76f37a04c51ca7d07c84b38b3470cd</anchor>
       <arglist>(PEXP,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC_PVOLATILE</name>
-      <anchorfile>p99__generic_8h_aa8c8bd39e6ab543208b33d589d2ca2e3.html</anchorfile>
-      <anchor>aa8c8bd39e6ab543208b33d589d2ca2e3</anchor>
+      <anchorfile>group__qualifiers_gaa8c8bd39e6ab543208b33d589d2ca2e3.html</anchorfile>
+      <anchor>gaa8c8bd39e6ab543208b33d589d2ca2e3</anchor>
       <arglist>(PEXP, NVOLATILE, VOLATILE)</arglist>
     </member>
     <member kind="define">
@@ -6895,85 +6895,85 @@
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC_TCONST</name>
-      <anchorfile>p99__generic_8h_ab20e903a8d4913cd3c95d7500dbb12ee.html</anchorfile>
-      <anchor>ab20e903a8d4913cd3c95d7500dbb12ee</anchor>
+      <anchorfile>group__qualifiers_gab20e903a8d4913cd3c95d7500dbb12ee.html</anchorfile>
+      <anchor>gab20e903a8d4913cd3c95d7500dbb12ee</anchor>
       <arglist>(T, NCONST, CONST)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC_TCONSTVOLATILE</name>
-      <anchorfile>p99__generic_8h_a1dfb23b0c5167b50a59628847d8f2bb7.html</anchorfile>
-      <anchor>a1dfb23b0c5167b50a59628847d8f2bb7</anchor>
+      <anchorfile>group__qualifiers_ga1dfb23b0c5167b50a59628847d8f2bb7.html</anchorfile>
+      <anchor>ga1dfb23b0c5167b50a59628847d8f2bb7</anchor>
       <arglist>(T, NON, FULL)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC_TQUALIFIED</name>
-      <anchorfile>p99__generic_8h_a7fd3324332a04a407ccdab45c867166a.html</anchorfile>
-      <anchor>a7fd3324332a04a407ccdab45c867166a</anchor>
+      <anchorfile>group__qualifiers_ga7fd3324332a04a407ccdab45c867166a.html</anchorfile>
+      <anchor>ga7fd3324332a04a407ccdab45c867166a</anchor>
       <arglist>(T,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC_TVOLATILE</name>
-      <anchorfile>p99__generic_8h_a4e2dd03eacb498b78eaf625bb7f4c1c3.html</anchorfile>
-      <anchor>a4e2dd03eacb498b78eaf625bb7f4c1c3</anchor>
+      <anchorfile>group__qualifiers_ga4e2dd03eacb498b78eaf625bb7f4c1c3.html</anchorfile>
+      <anchor>ga4e2dd03eacb498b78eaf625bb7f4c1c3</anchor>
       <arglist>(T, NVOLATILE, VOLATILE)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_IN_RANGE</name>
-      <anchorfile>p99__generic_8h_a8e3cb69914277c628755949524187893.html</anchorfile>
-      <anchor>a8e3cb69914277c628755949524187893</anchor>
+      <anchorfile>group__generic_ga8e3cb69914277c628755949524187893.html</anchorfile>
+      <anchor>ga8e3cb69914277c628755949524187893</anchor>
       <arglist>(R, S, L)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_IS_INTEGRAL_CONSTANT</name>
-      <anchorfile>p99__generic_8h_ac173db2844587a46588906cdda95c530.html</anchorfile>
-      <anchor>ac173db2844587a46588906cdda95c530</anchor>
+      <anchorfile>group__constexpr_gac173db2844587a46588906cdda95c530.html</anchorfile>
+      <anchor>gac173db2844587a46588906cdda95c530</anchor>
       <arglist>(EXP)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_IS_NULLPTR</name>
-      <anchorfile>p99__generic_8h_a69d6e3ca8a08cc960c554ecef01fae5f.html</anchorfile>
-      <anchor>a69d6e3ca8a08cc960c554ecef01fae5f</anchor>
+      <anchorfile>group__constexpr_ga69d6e3ca8a08cc960c554ecef01fae5f.html</anchorfile>
+      <anchor>ga69d6e3ca8a08cc960c554ecef01fae5f</anchor>
       <arglist>(PEXP)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_IS_NULLPTR_CONSTANT</name>
-      <anchorfile>p99__generic_8h_a3c950158657beea4b96526e27af50d78.html</anchorfile>
-      <anchor>a3c950158657beea4b96526e27af50d78</anchor>
+      <anchorfile>group__constexpr_ga3c950158657beea4b96526e27af50d78.html</anchorfile>
+      <anchor>ga3c950158657beea4b96526e27af50d78</anchor>
       <arglist>(PEXP)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_OBJLEN</name>
-      <anchorfile>p99__generic_8h_a60af7d3df62f118142b1f11285445998.html</anchorfile>
-      <anchor>a60af7d3df62f118142b1f11285445998</anchor>
+      <anchorfile>group__qualifiers_ga60af7d3df62f118142b1f11285445998.html</anchorfile>
+      <anchor>ga60af7d3df62f118142b1f11285445998</anchor>
       <arglist>(X,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_OBJSIZE</name>
-      <anchorfile>p99__generic_8h_abf4192d2326cacd0ef77fa080d7e8887.html</anchorfile>
-      <anchor>abf4192d2326cacd0ef77fa080d7e8887</anchor>
+      <anchorfile>group__qualifiers_gabf4192d2326cacd0ef77fa080d7e8887.html</anchorfile>
+      <anchor>gabf4192d2326cacd0ef77fa080d7e8887</anchor>
       <arglist>(X,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_OVALUE</name>
-      <anchorfile>p99__generic_8h_a5ac97f2e53b579c63546acc77cb69e36.html</anchorfile>
-      <anchor>a5ac97f2e53b579c63546acc77cb69e36</anchor>
+      <anchorfile>group__qualifiers_ga5ac97f2e53b579c63546acc77cb69e36.html</anchorfile>
+      <anchor>ga5ac97f2e53b579c63546acc77cb69e36</anchor>
       <arglist>(X,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_PRINTF</name>
-      <anchorfile>p99__generic_8h_a5576b3a5a85352f263fbe86b5d79d9a8.html</anchorfile>
-      <anchor>a5576b3a5a85352f263fbe86b5d79d9a8</anchor>
+      <anchorfile>group__tgprint_ga5576b3a5a85352f263fbe86b5d79d9a8.html</anchorfile>
+      <anchor>ga5576b3a5a85352f263fbe86b5d79d9a8</anchor>
       <arglist>(FORMAT,...)</arglist>
     </member>
     <member kind="define">
@@ -6993,15 +6993,15 @@
     <member kind="define">
       <type>#define</type>
       <name>P99_SNPRINTF</name>
-      <anchorfile>p99__generic_8h_ac3a69f1af6e1768890d76d92b019adbd.html</anchorfile>
-      <anchor>ac3a69f1af6e1768890d76d92b019adbd</anchor>
+      <anchorfile>group__tgprint_gac3a69f1af6e1768890d76d92b019adbd.html</anchorfile>
+      <anchor>gac3a69f1af6e1768890d76d92b019adbd</anchor>
       <arglist>(S, N, FORMAT,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>P99_SPRINTF</name>
-      <anchorfile>p99__generic_8h_a3b8ff5ba39a6c5c1b73e1abde144d7a3.html</anchorfile>
-      <anchor>a3b8ff5ba39a6c5c1b73e1abde144d7a3</anchor>
+      <anchorfile>group__tgprint_ga3b8ff5ba39a6c5c1b73e1abde144d7a3.html</anchorfile>
+      <anchor>ga3b8ff5ba39a6c5c1b73e1abde144d7a3</anchor>
       <arglist>(S, FORMAT,...)</arglist>
     </member>
     <member kind="define">
@@ -7087,125 +7087,6 @@
       <anchorfile>group__generic_gaf2c10f0af126c95aac270e3244bd51ae.html</anchorfile>
       <anchor>gaf2c10f0af126c95aac270e3244bd51ae</anchor>
       <arglist>(COND, YES, NO)</arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>_Bool</name>
-      <anchorfile>p99__generic_8h_a3b2f8ce8eb83358d84c6058be0e0a92b.html</anchorfile>
-      <anchor>a3b2f8ce8eb83358d84c6058be0e0a92b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>char</name>
-      <anchorfile>p99__generic_8h_a335bb7fc67438e21069ec7ed0de2343c.html</anchorfile>
-      <anchor>a335bb7fc67438e21069ec7ed0de2343c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>T</type>
-      <name>const</name>
-      <anchorfile>p99__generic_8h_a9a6b2f622722f81a37ee87e5a58f08b1.html</anchorfile>
-      <anchor>a9a6b2f622722f81a37ee87e5a58f08b1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>double</name>
-      <anchorfile>p99__generic_8h_a45c855d65dd0e2b57b08024500ff9159.html</anchorfile>
-      <anchor>a45c855d65dd0e2b57b08024500ff9159</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>float</name>
-      <anchorfile>p99__generic_8h_a6a1bb6ed41f44b60e7bd83b0e9945aa7.html</anchorfile>
-      <anchor>a6a1bb6ed41f44b60e7bd83b0e9945aa7</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>int</name>
-      <anchorfile>p99__generic_8h_a61569f2965b7a369eb10b6d75d410d11.html</anchorfile>
-      <anchor>a61569f2965b7a369eb10b6d75d410d11</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>llong</name>
-      <anchorfile>p99__generic_8h_a134569a97ed09fdece35238a3e6fa669.html</anchorfile>
-      <anchor>a134569a97ed09fdece35238a3e6fa669</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>long</name>
-      <anchorfile>p99__generic_8h_a86ea7407fb6372918b491e26d4b771c9.html</anchorfile>
-      <anchor>a86ea7407fb6372918b491e26d4b771c9</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>schar</name>
-      <anchorfile>p99__generic_8h_a44ac95d6454e8c8be52a3bebf39801e1.html</anchorfile>
-      <anchor>a44ac95d6454e8c8be52a3bebf39801e1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>short</name>
-      <anchorfile>p99__generic_8h_a607fa506112b93546cb651732cb87e12.html</anchorfile>
-      <anchor>a607fa506112b93546cb651732cb87e12</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>T</name>
-      <anchorfile>p99__generic_8h_adf1f3edb9115acb0a1e04209b7a9937b.html</anchorfile>
-      <anchor>adf1f3edb9115acb0a1e04209b7a9937b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>uchar</name>
-      <anchorfile>p99__generic_8h_a86a4b5380e358b45113e47f1340c1a56.html</anchorfile>
-      <anchor>a86a4b5380e358b45113e47f1340c1a56</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ullong</name>
-      <anchorfile>p99__generic_8h_a08001ce50af844b620f3585e7bded579.html</anchorfile>
-      <anchor>a08001ce50af844b620f3585e7bded579</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ulong</name>
-      <anchorfile>p99__generic_8h_a1398ea0e48e059bf4db2f4bcd7eb31fa.html</anchorfile>
-      <anchor>a1398ea0e48e059bf4db2f4bcd7eb31fa</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>unsigned</name>
-      <anchorfile>p99__generic_8h_aca40206900cfc164654362fa8d4ad1e6.html</anchorfile>
-      <anchor>aca40206900cfc164654362fa8d4ad1e6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ushort</name>
-      <anchorfile>p99__generic_8h_ab513c70f71b4c500b177f09b5f1f8d32.html</anchorfile>
-      <anchor>ab513c70f71b4c500b177f09b5f1f8d32</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>T T</type>
-      <name>volatile</name>
-      <anchorfile>p99__generic_8h_a22ea7d2bf6e8f99605dcb6eabc442b97.html</anchorfile>
-      <anchor>a22ea7d2bf6e8f99605dcb6eabc442b97</anchor>
-      <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -7845,8 +7726,8 @@
     <member kind="variable">
       <type></type>
       <name>long</name>
-      <anchorfile>p99__getopt_8h_a0bc651ef7626a7868da4cbfdbe70f96f.html</anchorfile>
-      <anchor>a0bc651ef7626a7868da4cbfdbe70f96f</anchor>
+      <anchorfile>p99__getopt_8h_a86ea7407fb6372918b491e26d4b771c9.html</anchorfile>
+      <anchor>a86ea7407fb6372918b491e26d4b771c9</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -10480,51 +10361,51 @@
     <member kind="function">
       <type>void *</type>
       <name>p99_tp_get</name>
-      <anchorfile>p99__tp_8h_ac78eeeabcf0e3eca8fce2327af5c962e.html</anchorfile>
-      <anchor>ac78eeeabcf0e3eca8fce2327af5c962e</anchor>
-      <arglist>(register p99_tp *const p00_tp)</arglist>
+      <anchorfile>p99__tp_8h_a81d020436c2e418cd166b448eee7a14a.html</anchorfile>
+      <anchor>a81d020436c2e418cd166b448eee7a14a</anchor>
+      <arglist>(register p99_tp volatile *const p00_tp)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>p99_tp_state_check</name>
-      <anchorfile>p99__tp_8h_a055d68dc59df0f740056efaf6387bb1b.html</anchorfile>
-      <anchor>a055d68dc59df0f740056efaf6387bb1b</anchor>
-      <arglist>(register p99_tp_state *const p00_state)</arglist>
+      <anchorfile>p99__tp_8h_a0887b145e159b738f5b94ab3fac7dcba.html</anchorfile>
+      <anchor>a0887b145e159b738f5b94ab3fac7dcba</anchor>
+      <arglist>(register p99_tp_state volatile *const p00_state)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>p99_tp_state_commit</name>
-      <anchorfile>p99__tp_8h_a6b9f8df244988966f16c89d766985771.html</anchorfile>
-      <anchor>a6b9f8df244988966f16c89d766985771</anchor>
-      <arglist>(register p99_tp_state *const p00_state)</arglist>
+      <anchorfile>p99__tp_8h_ac17f9fba06f50f5b803e7bd01b6f9498.html</anchorfile>
+      <anchor>ac17f9fba06f50f5b803e7bd01b6f9498</anchor>
+      <arglist>(register p99_tp_state volatile *const p00_state)</arglist>
     </member>
     <member kind="function">
       <type>void *</type>
       <name>p99_tp_state_get</name>
-      <anchorfile>p99__tp_8h_a10aeded4a5d6859800859f4f8eca91cb.html</anchorfile>
-      <anchor>a10aeded4a5d6859800859f4f8eca91cb</anchor>
-      <arglist>(register p99_tp_state *const p00_state)</arglist>
+      <anchorfile>p99__tp_8h_af8d9f42376aec31a0876aa23d0169da6.html</anchorfile>
+      <anchor>af8d9f42376aec31a0876aa23d0169da6</anchor>
+      <arglist>(register p99_tp_state volatile *const p00_state)</arglist>
     </member>
     <member kind="function">
       <type>p99_tp_state</type>
       <name>p99_tp_state_initializer</name>
-      <anchorfile>p99__tp_8h_a991e1462d10cde078c0d80bd424894fe.html</anchorfile>
-      <anchor>a991e1462d10cde078c0d80bd424894fe</anchor>
-      <arglist>(register p99_tp *const p00_tp, register void *const p00_p)</arglist>
+      <anchorfile>p99__tp_8h_a24af3a37ef064a3275cffbe41e94a9da.html</anchorfile>
+      <anchor>a24af3a37ef064a3275cffbe41e94a9da</anchor>
+      <arglist>(register p99_tp volatile *const p00_tp, register void *const p00_p)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>p99_tp_state_set</name>
-      <anchorfile>p99__tp_8h_a1092af3969e4517f62b46cf546c78dcf.html</anchorfile>
-      <anchor>a1092af3969e4517f62b46cf546c78dcf</anchor>
-      <arglist>(register p99_tp_state *const p00_state, register void *const p00_p)</arglist>
+      <anchorfile>p99__tp_8h_af0c3514c86f3127383ecd56a9feef799.html</anchorfile>
+      <anchor>af0c3514c86f3127383ecd56a9feef799</anchor>
+      <arglist>(register p99_tp_state volatile *const p00_state, register void *const p00_p)</arglist>
     </member>
     <member kind="function">
       <type>p00_tp_glue</type>
       <name>p99_tp_xchg</name>
-      <anchorfile>p99__tp_8h_a34c8c70d12df68a0e2d4c5530937c1ff.html</anchorfile>
-      <anchor>a34c8c70d12df68a0e2d4c5530937c1ff</anchor>
-      <arglist>(p99_tp *p00_tp, void *p00_val)</arglist>
+      <anchorfile>p99__tp_8h_aa79315c7ad2d73daac2963243cb8d18a.html</anchorfile>
+      <anchor>aa79315c7ad2d73daac2963243cb8d18a</anchor>
+      <arglist>(p99_tp volatile *p00_tp, void *p00_val)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -19118,6 +18999,55 @@
     <subgroup>type_generic</subgroup>
     <member kind="define">
       <type>#define</type>
+      <name>P99_DECLARE_INLINE_EXPRESSION</name>
+      <anchorfile>group__C11__types_gae28597bcea44cad17ed9b94584b1dd8c.html</anchorfile>
+      <anchor>gae28597bcea44cad17ed9b94584b1dd8c</anchor>
+      <arglist>(EXT, BASE, EXP,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_DECLARE_INLINE_EXPRESSIONS</name>
+      <anchorfile>group__C11__types_gaa4db895e099b97c75d0bf641e1c7d290.html</anchorfile>
+      <anchor>gaa4db895e099b97c75d0bf641e1c7d290</anchor>
+      <arglist>(NEPL,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GEN_ABS</name>
+      <anchorfile>group__C11__types_ga230a46da075b050dbaf989ae306b0009.html</anchorfile>
+      <anchor>ga230a46da075b050dbaf989ae306b0009</anchor>
+      <arglist>(A)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GEN_EXPR</name>
+      <anchorfile>group__C11__types_ga4f147de7548247824ba7100124556ef3.html</anchorfile>
+      <anchor>ga4f147de7548247824ba7100124556ef3</anchor>
+      <arglist>(BASE, EXPR,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GEN_MAX</name>
+      <anchorfile>group__C11__types_gad6ec14be307a040154f682b73c95a943.html</anchorfile>
+      <anchor>gad6ec14be307a040154f682b73c95a943</anchor>
+      <arglist>(A, B)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GEN_MIN</name>
+      <anchorfile>group__C11__types_ga700d7b5b32df83d6f286ea29a23fc6cb.html</anchorfile>
+      <anchor>ga700d7b5b32df83d6f286ea29a23fc6cb</anchor>
+      <arglist>(A, B)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GEN_SIN</name>
+      <anchorfile>group__C11__types_gab478e912efac0a7847641d17331698bf.html</anchorfile>
+      <anchor>gab478e912efac0a7847641d17331698bf</anchor>
+      <arglist>(A)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_SIZE_CHOICE</name>
       <anchorfile>group__C11__types_ga82919f4a1220f615a3fb905cfddb4f99.html</anchorfile>
       <anchor>ga82919f4a1220f615a3fb905cfddb4f99</anchor>
@@ -19143,55 +19073,9 @@
     <title>Generic type expressions</title>
     <filename>group__generic.html</filename>
     <subgroup>C11_types</subgroup>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_DECLARE_INLINE_EXPRESSION</name>
-      <anchorfile>group__generic_gae28597bcea44cad17ed9b94584b1dd8c.html</anchorfile>
-      <anchor>gae28597bcea44cad17ed9b94584b1dd8c</anchor>
-      <arglist>(EXT, BASE, EXP,...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_DECLARE_INLINE_EXPRESSIONS</name>
-      <anchorfile>group__generic_gaa4db895e099b97c75d0bf641e1c7d290.html</anchorfile>
-      <anchor>gaa4db895e099b97c75d0bf641e1c7d290</anchor>
-      <arglist>(NEPL,...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_GEN_ABS</name>
-      <anchorfile>group__generic_ga230a46da075b050dbaf989ae306b0009.html</anchorfile>
-      <anchor>ga230a46da075b050dbaf989ae306b0009</anchor>
-      <arglist>(A)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_GEN_EXPR</name>
-      <anchorfile>group__generic_ga4f147de7548247824ba7100124556ef3.html</anchorfile>
-      <anchor>ga4f147de7548247824ba7100124556ef3</anchor>
-      <arglist>(BASE, EXPR,...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_GEN_MAX</name>
-      <anchorfile>group__generic_gad6ec14be307a040154f682b73c95a943.html</anchorfile>
-      <anchor>gad6ec14be307a040154f682b73c95a943</anchor>
-      <arglist>(A, B)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_GEN_MIN</name>
-      <anchorfile>group__generic_ga700d7b5b32df83d6f286ea29a23fc6cb.html</anchorfile>
-      <anchor>ga700d7b5b32df83d6f286ea29a23fc6cb</anchor>
-      <arglist>(A, B)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_GEN_SIN</name>
-      <anchorfile>group__generic_gab478e912efac0a7847641d17331698bf.html</anchorfile>
-      <anchor>gab478e912efac0a7847641d17331698bf</anchor>
-      <arglist>(A)</arglist>
-    </member>
+    <subgroup>qualifiers</subgroup>
+    <subgroup>tgprint</subgroup>
+    <subgroup>constexpr</subgroup>
     <member kind="define">
       <type>#define</type>
       <name>P99_GENERIC</name>
@@ -19222,10 +19106,228 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>P99_IN_RANGE</name>
+      <anchorfile>group__generic_ga8e3cb69914277c628755949524187893.html</anchorfile>
+      <anchor>ga8e3cb69914277c628755949524187893</anchor>
+      <arglist>(R, S, L)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>P99_TYPED_TERN</name>
       <anchorfile>group__generic_gaf2c10f0af126c95aac270e3244bd51ae.html</anchorfile>
       <anchor>gaf2c10f0af126c95aac270e3244bd51ae</anchor>
       <arglist>(COND, YES, NO)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>type_generic</name>
+    <title>Generic macros that classify expressions</title>
+    <filename>group__type__generic.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TYPE_ARITHMETIC</name>
+      <anchorfile>group__type__generic_ga2293336d794c9c43d865faa46394a7d3.html</anchorfile>
+      <anchor>ga2293336d794c9c43d865faa46394a7d3</anchor>
+      <arglist>(EXP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TYPE_BASIC</name>
+      <anchorfile>group__type__generic_ga28e9a0e80ce47e0e2d2f83898e2304bc.html</anchorfile>
+      <anchor>ga28e9a0e80ce47e0e2d2f83898e2304bc</anchor>
+      <arglist>(EXP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TYPE_CHARACTER</name>
+      <anchorfile>group__type__generic_ga647d2ffaa1cbada211e584df0011f7d4.html</anchorfile>
+      <anchor>ga647d2ffaa1cbada211e584df0011f7d4</anchor>
+      <arglist>(EXP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TYPE_COMPLEX</name>
+      <anchorfile>group__type__generic_gaa545907ffbe8090238edd502e9fa7111.html</anchorfile>
+      <anchor>gaa545907ffbe8090238edd502e9fa7111</anchor>
+      <arglist>(EXP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TYPE_FLOATING</name>
+      <anchorfile>group__type__generic_gab7bd0d47f685909ec7336295af1aafd1.html</anchorfile>
+      <anchor>gab7bd0d47f685909ec7336295af1aafd1</anchor>
+      <arglist>(EXP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TYPE_INTEGER</name>
+      <anchorfile>group__type__generic_ga573bb4ba12b9e43a39b65bdcd090da58.html</anchorfile>
+      <anchor>ga573bb4ba12b9e43a39b65bdcd090da58</anchor>
+      <arglist>(EXP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TYPE_REAL</name>
+      <anchorfile>group__type__generic_gac5e88ae5062d40f7354c902bf6066f9b.html</anchorfile>
+      <anchor>gac5e88ae5062d40f7354c902bf6066f9b</anchor>
+      <arglist>(EXP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TYPE_REAL_FLOATING</name>
+      <anchorfile>group__type__generic_gab985e16c2c007d6e26adc04a9de1a118.html</anchorfile>
+      <anchor>gab985e16c2c007d6e26adc04a9de1a118</anchor>
+      <arglist>(EXP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TYPE_SIGNED</name>
+      <anchorfile>group__type__generic_gacbdafb713601b2a7d9104eed74b6e710.html</anchorfile>
+      <anchor>gacbdafb713601b2a7d9104eed74b6e710</anchor>
+      <arglist>(EXP)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_TYPE_UNSIGNED</name>
+      <anchorfile>group__type__generic_gadc851de2425b397d687bc6aae902c771.html</anchorfile>
+      <anchor>gadc851de2425b397d687bc6aae902c771</anchor>
+      <arglist>(EXP)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>qualifiers</name>
+    <title>determine type related properties</title>
+    <filename>group__qualifiers.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_AVALUE</name>
+      <anchorfile>group__qualifiers_ga26d31e37d73cfeffe45344cd73876648.html</anchorfile>
+      <anchor>ga26d31e37d73cfeffe45344cd73876648</anchor>
+      <arglist>(X,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_PCONST</name>
+      <anchorfile>group__qualifiers_ga5807d36b4391679e36e20dc3e34e79e4.html</anchorfile>
+      <anchor>ga5807d36b4391679e36e20dc3e34e79e4</anchor>
+      <arglist>(PEXP, NCONST, CONST)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_PCONSTVOLATILE</name>
+      <anchorfile>group__qualifiers_ga33ed8baca18ed81aa45c3bb5f2890bce.html</anchorfile>
+      <anchor>ga33ed8baca18ed81aa45c3bb5f2890bce</anchor>
+      <arglist>(PEXP, NON, FULL)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_PQUALIFIED</name>
+      <anchorfile>group__qualifiers_gabb76f37a04c51ca7d07c84b38b3470cd.html</anchorfile>
+      <anchor>gabb76f37a04c51ca7d07c84b38b3470cd</anchor>
+      <arglist>(PEXP,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_PVOLATILE</name>
+      <anchorfile>group__qualifiers_gaa8c8bd39e6ab543208b33d589d2ca2e3.html</anchorfile>
+      <anchor>gaa8c8bd39e6ab543208b33d589d2ca2e3</anchor>
+      <arglist>(PEXP, NVOLATILE, VOLATILE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_TCONST</name>
+      <anchorfile>group__qualifiers_gab20e903a8d4913cd3c95d7500dbb12ee.html</anchorfile>
+      <anchor>gab20e903a8d4913cd3c95d7500dbb12ee</anchor>
+      <arglist>(T, NCONST, CONST)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_TCONSTVOLATILE</name>
+      <anchorfile>group__qualifiers_ga1dfb23b0c5167b50a59628847d8f2bb7.html</anchorfile>
+      <anchor>ga1dfb23b0c5167b50a59628847d8f2bb7</anchor>
+      <arglist>(T, NON, FULL)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_TQUALIFIED</name>
+      <anchorfile>group__qualifiers_ga7fd3324332a04a407ccdab45c867166a.html</anchorfile>
+      <anchor>ga7fd3324332a04a407ccdab45c867166a</anchor>
+      <arglist>(T,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_TVOLATILE</name>
+      <anchorfile>group__qualifiers_ga4e2dd03eacb498b78eaf625bb7f4c1c3.html</anchorfile>
+      <anchor>ga4e2dd03eacb498b78eaf625bb7f4c1c3</anchor>
+      <arglist>(T, NVOLATILE, VOLATILE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_OBJLEN</name>
+      <anchorfile>group__qualifiers_ga60af7d3df62f118142b1f11285445998.html</anchorfile>
+      <anchor>ga60af7d3df62f118142b1f11285445998</anchor>
+      <arglist>(X,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_OBJSIZE</name>
+      <anchorfile>group__qualifiers_gabf4192d2326cacd0ef77fa080d7e8887.html</anchorfile>
+      <anchor>gabf4192d2326cacd0ef77fa080d7e8887</anchor>
+      <arglist>(X,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_OVALUE</name>
+      <anchorfile>group__qualifiers_ga5ac97f2e53b579c63546acc77cb69e36.html</anchorfile>
+      <anchor>ga5ac97f2e53b579c63546acc77cb69e36</anchor>
+      <arglist>(X,...)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>tgprint</name>
+    <title>type generic printing</title>
+    <filename>group__tgprint.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_FORMAT</name>
+      <anchorfile>group__tgprint_gae16d2bd5effbc6cdbdd480750866223e.html</anchorfile>
+      <anchor>gae16d2bd5effbc6cdbdd480750866223e</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_FORMATS</name>
+      <anchorfile>group__tgprint_gace29fc3eee87b9ec202f737866f7a3a8.html</anchorfile>
+      <anchor>gace29fc3eee87b9ec202f737866f7a3a8</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_FPRINTF</name>
+      <anchorfile>group__tgprint_ga36a3f823988f7d8a2382175bd580327b.html</anchorfile>
+      <anchor>ga36a3f823988f7d8a2382175bd580327b</anchor>
+      <arglist>(F, FORMAT,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_PRINTF</name>
+      <anchorfile>group__tgprint_ga5576b3a5a85352f263fbe86b5d79d9a8.html</anchorfile>
+      <anchor>ga5576b3a5a85352f263fbe86b5d79d9a8</anchor>
+      <arglist>(FORMAT,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_SNPRINTF</name>
+      <anchorfile>group__tgprint_gac3a69f1af6e1768890d76d92b019adbd.html</anchorfile>
+      <anchor>gac3a69f1af6e1768890d76d92b019adbd</anchor>
+      <arglist>(S, N, FORMAT,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_SPRINTF</name>
+      <anchorfile>group__tgprint_ga3b8ff5ba39a6c5c1b73e1abde144d7a3.html</anchorfile>
+      <anchor>ga3b8ff5ba39a6c5c1b73e1abde144d7a3</anchor>
+      <arglist>(S, FORMAT,...)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -24071,78 +24173,57 @@
     </member>
   </compound>
   <compound kind="group">
-    <name>type_generic</name>
-    <title>Generic macros that classify expressions</title>
-    <filename>group__type__generic.html</filename>
+    <name>constexpr</name>
+    <title>Compile time constant expressions</title>
+    <filename>group__constexpr.html</filename>
     <member kind="define">
       <type>#define</type>
-      <name>P99_TYPE_ARITHMETIC</name>
-      <anchorfile>group__type__generic_ga2293336d794c9c43d865faa46394a7d3.html</anchorfile>
-      <anchor>ga2293336d794c9c43d865faa46394a7d3</anchor>
+      <name>P99_GENERIC_INTEGRAL_CONSTANT</name>
+      <anchorfile>group__constexpr_ga01c71c3f57f34f5983a85abaf159d51f.html</anchorfile>
+      <anchor>ga01c71c3f57f34f5983a85abaf159d51f</anchor>
+      <arglist>(EXP, TRUE, FALSE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_NULLPTR</name>
+      <anchorfile>group__constexpr_gabb0aa559b774a86a0095133f80da1cbf.html</anchorfile>
+      <anchor>gabb0aa559b774a86a0095133f80da1cbf</anchor>
+      <arglist>(PEXP, TRUE, FALSE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_NULLPTR_CONSTANT</name>
+      <anchorfile>group__constexpr_ga0caa0e08d9037b46cf2b4592ae2a68e5.html</anchorfile>
+      <anchor>ga0caa0e08d9037b46cf2b4592ae2a68e5</anchor>
+      <arglist>(PEXP, TRUE, FALSE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_GENERIC_NULLPTR_CONSTANT_</name>
+      <anchorfile>group__constexpr_gaec0e9a2dbfbfa2dcd81209b0f210ef84.html</anchorfile>
+      <anchor>gaec0e9a2dbfbfa2dcd81209b0f210ef84</anchor>
+      <arglist>(PEXP, TRUE, FALSE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>P99_IS_INTEGRAL_CONSTANT</name>
+      <anchorfile>group__constexpr_gac173db2844587a46588906cdda95c530.html</anchorfile>
+      <anchor>gac173db2844587a46588906cdda95c530</anchor>
       <arglist>(EXP)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>P99_TYPE_BASIC</name>
-      <anchorfile>group__type__generic_ga28e9a0e80ce47e0e2d2f83898e2304bc.html</anchorfile>
-      <anchor>ga28e9a0e80ce47e0e2d2f83898e2304bc</anchor>
-      <arglist>(EXP)</arglist>
+      <name>P99_IS_NULLPTR</name>
+      <anchorfile>group__constexpr_ga69d6e3ca8a08cc960c554ecef01fae5f.html</anchorfile>
+      <anchor>ga69d6e3ca8a08cc960c554ecef01fae5f</anchor>
+      <arglist>(PEXP)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>P99_TYPE_CHARACTER</name>
-      <anchorfile>group__type__generic_ga647d2ffaa1cbada211e584df0011f7d4.html</anchorfile>
-      <anchor>ga647d2ffaa1cbada211e584df0011f7d4</anchor>
-      <arglist>(EXP)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_TYPE_COMPLEX</name>
-      <anchorfile>group__type__generic_gaa545907ffbe8090238edd502e9fa7111.html</anchorfile>
-      <anchor>gaa545907ffbe8090238edd502e9fa7111</anchor>
-      <arglist>(EXP)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_TYPE_FLOATING</name>
-      <anchorfile>group__type__generic_gab7bd0d47f685909ec7336295af1aafd1.html</anchorfile>
-      <anchor>gab7bd0d47f685909ec7336295af1aafd1</anchor>
-      <arglist>(EXP)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_TYPE_INTEGER</name>
-      <anchorfile>group__type__generic_ga573bb4ba12b9e43a39b65bdcd090da58.html</anchorfile>
-      <anchor>ga573bb4ba12b9e43a39b65bdcd090da58</anchor>
-      <arglist>(EXP)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_TYPE_REAL</name>
-      <anchorfile>group__type__generic_gac5e88ae5062d40f7354c902bf6066f9b.html</anchorfile>
-      <anchor>gac5e88ae5062d40f7354c902bf6066f9b</anchor>
-      <arglist>(EXP)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_TYPE_REAL_FLOATING</name>
-      <anchorfile>group__type__generic_gab985e16c2c007d6e26adc04a9de1a118.html</anchorfile>
-      <anchor>gab985e16c2c007d6e26adc04a9de1a118</anchor>
-      <arglist>(EXP)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_TYPE_SIGNED</name>
-      <anchorfile>group__type__generic_gacbdafb713601b2a7d9104eed74b6e710.html</anchorfile>
-      <anchor>gacbdafb713601b2a7d9104eed74b6e710</anchor>
-      <arglist>(EXP)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>P99_TYPE_UNSIGNED</name>
-      <anchorfile>group__type__generic_gadc851de2425b397d687bc6aae902c771.html</anchorfile>
-      <anchor>gadc851de2425b397d687bc6aae902c771</anchor>
-      <arglist>(EXP)</arglist>
+      <name>P99_IS_NULLPTR_CONSTANT</name>
+      <anchorfile>group__constexpr_ga3c950158657beea4b96526e27af50d78.html</anchorfile>
+      <anchor>ga3c950158657beea4b96526e27af50d78</anchor>
+      <arglist>(PEXP)</arglist>
     </member>
   </compound>
   <compound kind="group">

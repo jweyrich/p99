@@ -537,17 +537,17 @@ typedef P99_TP(P99_PASTE2(T, _ptr)) P99_PASTE2(T, _ref)
 #endif
 
 P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_REF_DEFINE, 0)
-#define P99_TP_REF_DEFINE(T)                                                                 \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _account), T*);                                            \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _discount), T*);                                           \
-P99_INSTANTIATE(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref_init), P99_PASTE2(T, _ref)*, T*);   \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_init_defarg_1), void);                                \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_get), P99_PASTE2(T, _ref) volatile*);                 \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_replace), P99_PASTE2(T, _ref) volatile*, T*);         \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_mv), P99_PASTE2(T, _ref) volatile*,                   \
-                P99_PASTE2(T, _ref) volatile*);                                              \
-P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_assign), P99_PASTE2(T, _ref) volatile*,               \
-                P99_PASTE2(T, _ref) volatile*);                                              \
+#define P99_TP_REF_DEFINE(T)                                                               \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _account), T*);                                          \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _discount), T*);                                         \
+P99_INSTANTIATE(P99_PASTE2(T, _ref)*, P99_PASTE2(T, _ref_init), P99_PASTE2(T, _ref)*, T*); \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_init_defarg_1), void);                              \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_get), P99_PASTE2(T, _ref) volatile*);               \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_replace), P99_PASTE2(T, _ref) volatile*, T*);       \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_mv), P99_PASTE2(T, _ref) volatile*,                 \
+                P99_PASTE2(T, _ref) volatile*);                                            \
+P99_INSTANTIATE(T*, P99_PASTE2(T, _ref_assign), P99_PASTE2(T, _ref) volatile*,             \
+                P99_PASTE2(T, _ref) volatile*);                                            \
 P99_INSTANTIATE(void, P99_PASTE2(T, _ref_destroy), P99_PASTE2(T, _ref)*)
 
 #ifdef P00_DOXYGEN
@@ -596,57 +596,57 @@ P99_MACRO_END(P99_TP_REF_FUNCTIONS)
 
 #else
 P00_DOCUMENT_TYPE_ARGUMENT(P99_TP_REF_FUNCTIONS, 0)
-#define P99_TP_REF_FUNCTIONS(T)                                                               \
-                                                                                              \
-  inline                                                                                      \
-  T*                                                                                          \
-  P99_PASTE2(T, _account)(T* p00_el) {                                                        \
-    return P99_REF_ACCOUNT(p00_el);                                                           \
-  }                                                                                           \
-                                                                                              \
-  inline                                                                                      \
-  T*                                                                                          \
-  P99_PASTE2(T, _discount)(T* p00_el) {                                                       \
-    return P99_REF_DISCOUNT(p00_el, P99_PASTE2(T, _delete));                                  \
-  }                                                                                           \
-                                                                                              \
-  inline                                                                                      \
-  P99_PASTE2(T, _ref)* P99_PASTE2(T, _ref_init)(P99_PASTE2(T, _ref)* el, T* p00_v) {          \
-    return P99_TP_REF_INIT(el, p00_v);                                                        \
-  }                                                                                           \
-                                                                                              \
-  inline                                                                                      \
-  T* P99_PASTE2(T, _ref_init_defarg_1)(void) {                                                \
-    return 0;                                                                                 \
-  }                                                                                           \
-                                                                                              \
-  inline                                                                                      \
-  T* P99_PASTE2(T, _ref_get)(P99_PASTE2(T, _ref) volatile* p00_ref) {                         \
-    return P99_TP_GET(p00_ref);                                                               \
-  }                                                                                           \
-                                                                                              \
-  inline                                                                                      \
-  T* P99_PASTE2(T, _ref_replace)(P99_PASTE2(T, _ref) volatile* p00_tar, T* p00_sou) {         \
-    return P99_TP_REF_REPLACE(p00_tar, p00_sou, P99_PASTE2(T, _delete));                      \
-  }                                                                                           \
-                                                                                              \
-  inline                                                                                      \
-  T* P99_PASTE2(T, _ref_mv)(P99_PASTE2(T, _ref) volatile* p00_tar,                            \
-                            P99_PASTE2(T, _ref) volatile* p00_sou) {                          \
-    return P99_TP_REF_MV(p00_tar, p00_sou, P99_PASTE2(T, _delete));                           \
-  }                                                                                           \
-                                                                                              \
-  inline                                                                                      \
-  T* P99_PASTE2(T, _ref_assign)(P99_PASTE2(T, _ref) volatile* p00_tar,                        \
-                                P99_PASTE2(T, _ref) volatile* p00_sou) {                      \
-    return P99_TP_REF_REPLACE(p00_tar, P99_TP_GET(p00_sou), P99_PASTE2(T, _delete));          \
-  }                                                                                           \
-                                                                                              \
-  inline                                                                                      \
-  void P99_PASTE2(T, _ref_destroy)(P99_PASTE2(T, _ref)* p00_ref) {                            \
-    P99_TP_REF_DESTROY(p00_ref, P99_PASTE2(T, _delete));                                      \
-  }                                                                                           \
-                                                                                              \
+#define P99_TP_REF_FUNCTIONS(T)                                                       \
+                                                                                      \
+  inline                                                                              \
+  T*                                                                                  \
+  P99_PASTE2(T, _account)(T* p00_el) {                                                \
+    return P99_REF_ACCOUNT(p00_el);                                                   \
+  }                                                                                   \
+                                                                                      \
+  inline                                                                              \
+  T*                                                                                  \
+  P99_PASTE2(T, _discount)(T* p00_el) {                                               \
+    return P99_REF_DISCOUNT(p00_el, P99_PASTE2(T, _delete));                          \
+  }                                                                                   \
+                                                                                      \
+  inline                                                                              \
+  P99_PASTE2(T, _ref)* P99_PASTE2(T, _ref_init)(P99_PASTE2(T, _ref)* el, T* p00_v) {  \
+    return P99_TP_REF_INIT(el, p00_v);                                                \
+  }                                                                                   \
+                                                                                      \
+  inline                                                                              \
+  T* P99_PASTE2(T, _ref_init_defarg_1)(void) {                                        \
+    return 0;                                                                         \
+  }                                                                                   \
+                                                                                      \
+  inline                                                                              \
+  T* P99_PASTE2(T, _ref_get)(P99_PASTE2(T, _ref) volatile* p00_ref) {                 \
+    return P99_TP_GET(p00_ref);                                                       \
+  }                                                                                   \
+                                                                                      \
+  inline                                                                              \
+  T* P99_PASTE2(T, _ref_replace)(P99_PASTE2(T, _ref) volatile* p00_tar, T* p00_sou) { \
+    return P99_TP_REF_REPLACE(p00_tar, p00_sou, P99_PASTE2(T, _delete));              \
+  }                                                                                   \
+                                                                                      \
+  inline                                                                              \
+  T* P99_PASTE2(T, _ref_mv)(P99_PASTE2(T, _ref) volatile* p00_tar,                    \
+                            P99_PASTE2(T, _ref) volatile* p00_sou) {                  \
+    return P99_TP_REF_MV(p00_tar, p00_sou, P99_PASTE2(T, _delete));                   \
+  }                                                                                   \
+                                                                                      \
+  inline                                                                              \
+  T* P99_PASTE2(T, _ref_assign)(P99_PASTE2(T, _ref) volatile* p00_tar,                \
+                                P99_PASTE2(T, _ref) volatile* p00_sou) {              \
+    return P99_TP_REF_REPLACE(p00_tar, P99_TP_GET(p00_sou), P99_PASTE2(T, _delete));  \
+  }                                                                                   \
+                                                                                      \
+  inline                                                                              \
+  void P99_PASTE2(T, _ref_destroy)(P99_PASTE2(T, _ref)* p00_ref) {                    \
+    P99_TP_REF_DESTROY(p00_ref, P99_PASTE2(T, _delete));                              \
+  }                                                                                   \
+                                                                                      \
 P99_MACRO_END(P99_TP_REF_FUNCTIONS)
 
 #endif

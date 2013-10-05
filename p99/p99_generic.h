@@ -531,6 +531,93 @@ inline int* p00_generic_test(int * p00_a) {
  ** the macro preprocessor, @c _Generic. Here we provide some tools
  ** that emulate this feature by means of gcc specific extensions.
  **
+ ** @c _Generic is one single construct which could be seen as an
+ ** analogue to a @c switch statement, only that the different choices
+ ** are made with matching types and not values. A typical example is
+ **
+ ** @code
+ ** #define sin(X) _Generic((X), default: sin, float: sinf, long double: sinld)(X)
+ ** @endcode
+ **
+ ** In contrast to that single construct, in C++ there are a several
+ ** of constructs that would be needed to implement similar
+ ** functionalities: function overloading, templates, constexpr.
+ **
+ ** Type generic expressions have an important new feature that was
+ ** difficult to implement before C11:
+ **
+ **  - the @b type of the result of such an expression depends on the
+ **    type or value of the "choice" expression.
+ **
+ ** C++ has a construct that decides on the type of an expression, but
+ ** which is less powerful: function overloading. The actual function
+ ** that is called at any point depends on the types of its
+ ** arguments. E.g in
+ **
+ ** @code
+ ** b = abs(a);
+ ** @endcode
+ **
+ ** the return type of the function call would depend on the type of
+ ** @c a, for that simple example it should be the same type as @c a.
+ **
+ ** Such simple type generic functions can be implemented through
+ ** macros in C11 without problems. They have the advantage that the
+ ** result must not necessarily be a function call but can be any type
+ ** of expression, in particular constants. This can be convenient in
+ ** a context for which optimization is crucial, either for CPU
+ ** efficiency or size of the code. To enforce similar optimizations
+ ** as with C11 @c _Generic, you'd have to use the new @c constexpr
+ ** feature in C++ in the declaration of the functions that is used.
+ **
+ ** But @c _Generic is more powerful than that. It also can take such
+ ** "code" branches according to a value, examples:
+ **
+ ** @code
+ ** #define TOTO_APPROX(X) P99_TYPED_TERN(sizeof(toto) > 4, toto_ld(X), toto_d(X))
+ ** @endcode
+ **
+ ** Using @c _Generic underneath ::P99_TYPED_TERN, this defines a
+ ** function-like macro @c TOTO_APPROX that chooses between to
+ ** functions according to the size of a type @c toto. The result type
+ ** is the type of any of the branches that is chosen. The two types
+ ** need not be compatible.
+ **
+ ** The choice expression (@c sizeof ...) is not known during
+ ** preprocessing phases, so an <code>#if/#else</code> preprocessor
+ ** conditional could not be used for the same purpose.On the other
+ ** hand a conventional ternary expression
+ **
+ ** @code
+ ** #define TOTO_APPROX0(X) (sizeof(toto) > 4 ? toto_ld(X) : toto_d(X))
+ ** @endcode
+ **
+ ** would impose that the return types of the two functions would have
+ ** to be compatible (both arithmetic types or both pointer types,
+ ** e.g). If both were arithmetic types the result of the whole would
+ ** be the wider of the two types. If e.g @c toto_ld would return
+ ** <code>long double</code> and @c toto_d only @c double, in any case
+ ** the result of the whole would still be <code>long double</code>,
+ **
+ ** In C++, one would need a template class that would be parametrized
+ ** with a @c bool to obtain the same effect.
+ **
+ ** < should I leave this in? sounds a bit complicated >
+ **
+ ** - if @c FLT_EVAL_METHOD is 2 (all floating point operations are
+ **   performed in <code>long double<code>) cast the expression down
+ **   to @c double
+ **
+ ** @code
+ ** #define FLOATING_EVAL(X) P99_GENERIC_SIZE(10+FLT_EVAL_METHOD, (X), (12, (double)(X)))
+ **
+ ** printf("toto is %f\n", FLOATING_EVAL(x * y))
+ ** @endcode
+ **
+ ** This would ensure that the @c printf call would never see a
+ ** <code>long double<code>, even if the arguments are only @c float
+ ** or @c double.
+ **
  ** @see P99_GENERIC
  **
  ** @{
@@ -772,10 +859,6 @@ inline int* p00_generic_test(int * p00_a) {
 #define P99_SIZE_INDICATOR(UI, ...)
 
 /**
- ** @}
- **/
-
-/**
  ** @brief Declare an inline function of basename @a BASE for
  ** expression @a EXP, applied to the builtin type @a EXT.
  **
@@ -942,11 +1025,19 @@ P99_GEN_EXPR(minimum, ((A) <= (B)) ? (A) : (B),                \
  **/
 #define P99_GEN_SIN(A) P99_GEN_EXPR(sin, (A), P99_STD_FLOATING_EXTS)(A)
 
+#endif
+
 /**
  ** @}
  **/
 
-#endif
+
+/**
+ ** @addtogroup qualifiers determine type related properties
+ **
+ ** @{
+ **/
+
 
 #define P00_OVALUES_(X, T, I) (T*, X[0])
 #define P00_OVALUES(X, ...) P99_FOR(X, P99_NARG(__VA_ARGS__), P00_SEQ, P00_OVALUES_, __VA_ARGS__)
@@ -1073,6 +1164,19 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJLEN, 2)
 P00_DOCUMENT_TYPE_ARGUMENT(P99_OBJLEN, 3)
 #define P99_OBJLEN(X, ...) (P99_OBJSIZE(X, __VA_ARGS__)/(sizeof (X)[0]))
 #endif
+
+/**
+ ** @}
+ **/
+
+
+/**
+ ** @addtogroup tgprint type generic printing
+ **
+ ** @see P99_GENERIC
+ **
+ ** @{
+ **/
 
 #define P00_SPRINT_DEFINE(T, ...)                                                             \
 p99_inline                                                                                    \
@@ -1384,6 +1488,10 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SNPRINTF, 4)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_SNPRINTF, 5)
 #define P99_SNPRINTF(S, N, FORMAT, ...) snprintf(S, N, FORMAT, P99_FORMATS(__VA_ARGS__))
 
+/**
+ ** @}
+ **/
+
 #define P00_DEFINE_IN_RANGE(T)                                   \
 P99_CONST_FUNCTION                                               \
 p99_inline                                                       \
@@ -1399,7 +1507,9 @@ bool p00_in_range_voidp(void* p00_r_, void* p00_s_, size_t p00_len) {
   return (p00_r >= p00_s) && ((size_t)(p00_r - p00_s) < p00_len);
 }
 
+#ifndef P00_DOXYGEN
 P99_SER(P00_DEFINE_IN_RANGE, P99_EXT_REAL_TYPES)
+#endif
 
 #define P00_IN_RANGE_PART(NAME, T, I)                          \
   (T, P99_PASTE2(p00_in_range_, T)),                           \
@@ -1429,6 +1539,12 @@ P99_GENERIC((1 ? (R) : (S)), p00_in_range_voidp, __VA_ARGS__)((R), (S), (L))
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IN_RANGE, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IN_RANGE, 1)
 #define P99_IN_RANGE(R, S, L) P00_IN_RANGE((R), (S), (L), P00_IN_RANGE_LIST())
+
+/**
+ ** @addtogroup qualifiers
+ **
+ ** @{
+ **/
 
 #define P00_VOID_QUAL_(QUAL, ...) (void QUAL*, __VA_ARGS__)
 #define P00_VOID_QUAL(LIST) P00_VOID_QUAL_ LIST
@@ -1597,6 +1713,16 @@ P00_DOCUMENT_TYPE_ARGUMENT(P99_GENERIC_TCONSTVOLATILE, 0)
 P99_GENERIC_PCONSTVOLATILE((&(T)P99_INIT), NON, FULL)
 
 
+/**
+ ** @}
+ **/
+
+/**
+ ** @addtogroup constexpr Compile time constant expressions
+ **
+ ** @{
+ **/
+
 #define P00_GENERIC_VOIDPTR_OR_INTEGER(PEXP, TRUE, FALSE)      \
 P99_GENERIC((1 ? (void*)0 : (PEXP)),                           \
             FALSE,                                             \
@@ -1725,5 +1851,12 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_NULLPTR, 2)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_IS_NULLPTR, 0)
 #define P99_IS_NULLPTR(PEXP) P99_GENERIC_NULLPTR((PEXP), true, false)
 
+/**
+ ** @}
+ **/
+
+/**
+ ** @}
+ **/
 
 #endif

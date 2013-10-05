@@ -1253,7 +1253,13 @@ my @groups =
         [ "C11",
           [ "C11_keywords" ],
           [ "C11_types" ],
-          [ "generic" ],
+          [ "generic",
+            [ "C11_types",
+              [ "type_generic" ]
+            ],
+            [ "qualifiers" ],
+            [ "tgprint" ]
+          ],
           [ "atomic" ],
           [ "threads" ],
           [ "C11_library" ],
