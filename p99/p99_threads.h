@@ -1029,6 +1029,8 @@ int p00_timespec_get(struct timespec *p00_ts, int p00_base) {
   }
 }
 
+#ifndef TIME_UTC
+
 /**
  ** @brief The ::timespec_get function sets the interval pointed to by
  ** @a p00_ts to hold the current calendar time based on the specified
@@ -1047,8 +1049,6 @@ int p00_timespec_get(struct timespec *p00_ts, int p00_base) {
  **/
 p99_inline
 int timespec_get(struct timespec *p00_ts, int p00_base);
-
-#ifndef TIME_UTC
 
 enum {
   p00_time_base,
