@@ -98,6 +98,24 @@ unsigned globA = P99_GENERIC(globA, ,(unsigned, 1));   // should work and not gi
 //unsigned globB = P99_GENERIC(globB, ,(signed, 1));     // shouldn't work and give a diagnostic
 
 int main(int argc, char* argv[]) {
+  char date[26];
+  struct tm* tm = gmtime(&(time_t){ time(0), });
+  asctime_s(date, sizeof date, tm);
+  printf("current:\t%s", date);
+  ++tm->tm_mday;
+  mktime(tm);
+  asctime_s(date, sizeof date, tm);
+  printf("next day:\t%s", date);
+  tm->tm_mday = 29;
+  tm->tm_mon = 1;
+  tm->tm_year = 100;
+  mktime(tm);
+  asctime_s(date, sizeof date, tm);
+  printf("leap year:\t%s", date);
+  tm->tm_year = 0;
+  mktime(tm);
+  asctime_s(date, sizeof date, tm);
+  printf("no leap year:\t%s", date);
   print_attribute(deprecated);
   print_attribute(weak);
   print_attribute(weakref);

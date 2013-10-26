@@ -823,6 +823,67 @@ P00_SPAN_DECLARE(xdigit, P00_XDIGIT);
 P00_SPAN_DECLARE(alpha, P00_ALPHA);
 P00_SPAN_DECLARE(alnum, P00_ALNUM);
 
+/* This only checks for conformance with the bounds specified in the
+   standard, not if this presents a valid date. */
+p99_inline
+bool p00_tm_valid(struct tm const* p00_tm) {
+  /* int to unsigned conversion is always well defined and arithmetic
+     for it wraps around nicely, So, in general the way that these
+     comparisons are done here will avoid checking for the lower
+     bound. */
+  return
+    ((61u > (unsigned)p00_tm->tm_sec)                 // seconds after the minute — [0, 60]
+                                                      // may have leap second with value 60
+     + (60u    > (unsigned)p00_tm->tm_min)            // minutes after the hour — [0, 59]
+     + (24u    > (unsigned)p00_tm->tm_hour)           // hours since midnight — [0, 23]
+     + (32u    > ((unsigned)p00_tm->tm_mday - 1u))    // day of the month — [1, 31]
+     + (12u    > (unsigned)p00_tm->tm_mon)            // months since January — [0, 11]
+     + (10000u > ((unsigned)p00_tm->tm_year + 1900u)) // years since 1900
+     + (7u     > (unsigned)p00_tm->tm_wday)           // days since Sunday — [0, 6]
+     + (366u   > (unsigned)p00_tm->tm_yday))          // days since January 1 — [0, 365]
+                                                      // may have leap day in leap years
+    == 8;
+}
+
+p99_inline
+errno_t p00_asctime_s(char const* p00_file, char const* p00_context,
+                      char *p00_s, rsize_t p00_maxsize,
+                      const struct tm *p00_tptr) {
+  errno_t p00_ret = 0;
+  if (P99_UNLIKELY(p00_maxsize < 26 || p00_maxsize > RSIZE_MAX)) {
+    p00_ret = ERANGE;
+  } else if (P99_UNLIKELY(!p00_s || !p00_tptr)) {
+    p00_ret = EINVAL;
+  } else if (P99_UNLIKELY(!p00_tm_valid(p00_tptr))) {
+    p00_ret = ERANGE;
+  } else {
+    char const p00_wday[7][3] = {
+      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+    };
+    char const p00_mon[12][3] = {
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+    sprintf(p00_s,
+            "%.3s %.3s %2d %.2d:%.2d:%.2d %4d\n",
+            p00_wday[p00_tptr->tm_wday],
+            p00_mon[p00_tptr->tm_mon],
+            p00_tptr->tm_mday,
+            p00_tptr->tm_hour,
+            p00_tptr->tm_min,
+            p00_tptr->tm_sec,
+            1900 + p00_tptr->tm_year);
+  }
+  if (p00_ret) {
+    if (p00_s && p00_maxsize) p00_s[0] = 0;
+    p00_constraint_call(p00_ret, p00_file, p00_context, "asctime_s runtime constraint violation");
+  }
+  return p00_ret;
+}
+
+/** @ingroup C11_library **/
+#define asctime_s(...) p00_asctime_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
+
 
 # endif
 
