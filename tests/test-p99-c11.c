@@ -99,27 +99,20 @@ unsigned globA = P99_GENERIC(globA, ,(unsigned, 1));   // should work and not gi
 
 int main(int argc, char* argv[]) {
   time_t const now = time(0);
-  struct tm tm = *localtime(&now);
-  char * date_c = asctime(&tm);
+  time_t const epoch = { 0 };
+  char * date_c = ctime(&now);
   char date[26];
-  localtime_s(&now, &tm);
-  asctime_s(date, sizeof date, &tm);
+  ctime_s(date, sizeof date, &now);
   if (!strcmp(date, date_c)) printf("current date:\t%s", date);
   else printf("warning:localtime and localtime_s are not equal\n\t%s\t%s", date_c, date);
 
-  ++tm.tm_mday;
-  mktime(&tm);
-  asctime_s(date, sizeof date, &tm);
-  printf("next day:\t%s", date);
-
-  tm = *localtime(&(time_t){ 0 });
-  date_c = asctime(&tm);
-  localtime_s(&(time_t){ 0 }, &tm);
-  asctime_s(date, sizeof date, &tm);
+  date_c = ctime(&epoch);
+  ctime_s(date, sizeof date, &epoch);
   if (!strcmp(date, date_c)) printf("epoch local:\t%s", date);
   else printf("warning:local epoch are not equal\n\t%s\t%s", date_c, date);
 
-  tm = *gmtime(&(time_t){ 0 });
+  struct tm tm;
+  tm = *gmtime(&epoch);
   date_c = asctime(&tm);
   printf("epoch UTC:\t%s", date_c);
   tm = *gmtime(&now);

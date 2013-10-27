@@ -969,6 +969,8 @@ struct tm* p00_gmtime_s(char const* p00_file, char const* p00_context,
 /** @ingroup C11_library **/
 #define gmtime_s(...) p00_gmtime_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
 
+/** @ingroup C11_library **/
+#define ctime_s(S, M, T) asctime_s((S), (M), localtime_s((T), &(struct tm){ 0 }))
 
 # endif
 
