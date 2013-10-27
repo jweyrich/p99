@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* all rights reserved,  2011-2012 Jens Gustedt, INRIA, France                */
+/* all rights reserved,  2011-2013 Jens Gustedt, INRIA, France                */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -132,6 +132,31 @@ int main(int argc, char* argv[]) {
   mktime(&tm);
   asctime_s(date, sizeof date, &tm);
   printf("no leap year:\t%s", date);
+
+  localtime_s(&now, &tm);
+  tm.tm_mon = 0;
+  tm.tm_mday = 1;
+  tm.tm_isdst = -1;
+  time_t jan1 = mktime(&tm);
+  if (tm.tm_isdst > 0) {
+    tm.tm_mon = 0;
+    tm.tm_mday = 1;
+    tm.tm_isdst = 0;
+    time_t jan1_dst = mktime(&tm);
+    printf("DST difference on Jan 1, %u: %g minutes\n", (tm.tm_year + 1900), difftime(jan1_dst, jan1)/60.0);
+  }
+  tm.tm_mon = 6;
+  tm.tm_mday = 1;
+  tm.tm_isdst = -1;
+  time_t jul1 = mktime(&tm);
+  if (tm.tm_isdst > 0) {
+    tm.tm_mon = 6;
+    tm.tm_mday = 1;
+    tm.tm_isdst = 0;
+    time_t jul1_dst = mktime(&tm);
+    printf("DST difference on Jul 1, %u: %g minutes\n", (tm.tm_year + 1900), difftime(jul1_dst, jul1)/60.0);
+  }
+
   print_attribute(deprecated);
   print_attribute(weak);
   print_attribute(weakref);
