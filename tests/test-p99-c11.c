@@ -98,23 +98,46 @@ unsigned globA = P99_GENERIC(globA, ,(unsigned, 1));   // should work and not gi
 //unsigned globB = P99_GENERIC(globB, ,(signed, 1));     // shouldn't work and give a diagnostic
 
 int main(int argc, char* argv[]) {
+  time_t const now = time(0);
+  struct tm tm = *localtime(&now);
+  char * date_c = asctime(&tm);
   char date[26];
-  struct tm* tm = gmtime(&(time_t){ time(0), });
-  asctime_s(date, sizeof date, tm);
-  printf("current:\t%s", date);
-  ++tm->tm_mday;
-  mktime(tm);
-  asctime_s(date, sizeof date, tm);
+  localtime_s(&now, &tm);
+  asctime_s(date, sizeof date, &tm);
+  if (!strcmp(date, date_c)) printf("current date:\t%s", date);
+  else printf("warning:localtime and localtime_s are not equal\n\t%s\t%s", date_c, date);
+
+  ++tm.tm_mday;
+  mktime(&tm);
+  asctime_s(date, sizeof date, &tm);
   printf("next day:\t%s", date);
-  tm->tm_mday = 29;
-  tm->tm_mon = 1;
-  tm->tm_year = 100;
-  mktime(tm);
-  asctime_s(date, sizeof date, tm);
+
+  tm = *localtime(&(time_t){ 0 });
+  date_c = asctime(&tm);
+  localtime_s(&(time_t){ 0 }, &tm);
+  asctime_s(date, sizeof date, &tm);
+  if (!strcmp(date, date_c)) printf("epoch local:\t%s", date);
+  else printf("warning:local epoch are not equal\n\t%s\t%s", date_c, date);
+
+  tm = *gmtime(&(time_t){ 0 });
+  date_c = asctime(&tm);
+  printf("epoch UTC:\t%s", date_c);
+  tm = *gmtime(&now);
+  date_c = asctime(&tm);
+  gmtime_s(&now, &tm);
+  asctime_s(date, sizeof date, &tm);
+  if (!strcmp(date, date_c)) printf("UTC date:\t%s", date);
+  else printf("warning:gmtime and gmtime_s are not equal\n\t%s\t%s", date_c, date);
+
+  tm.tm_mday = 29;
+  tm.tm_mon = 1;
+  tm.tm_year = 100;
+  mktime(&tm);
+  asctime_s(date, sizeof date, &tm);
   printf("leap year:\t%s", date);
-  tm->tm_year = 0;
-  mktime(tm);
-  asctime_s(date, sizeof date, tm);
+  tm.tm_year = 0;
+  mktime(&tm);
+  asctime_s(date, sizeof date, &tm);
   printf("no leap year:\t%s", date);
   print_attribute(deprecated);
   print_attribute(weak);

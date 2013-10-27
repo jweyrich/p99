@@ -833,7 +833,7 @@ bool p00_tm_valid(struct tm const* p00_tm) {
      bound. */
   return
     ((61u > (unsigned)p00_tm->tm_sec)                 // seconds after the minute — [0, 60]
-                                                      // may have leap second with value 60
+     // may have leap second with value 60
      + (60u    > (unsigned)p00_tm->tm_min)            // minutes after the hour — [0, 59]
      + (24u    > (unsigned)p00_tm->tm_hour)           // hours since midnight — [0, 23]
      + (32u    > ((unsigned)p00_tm->tm_mday - 1u))    // day of the month — [1, 31]
@@ -841,7 +841,7 @@ bool p00_tm_valid(struct tm const* p00_tm) {
      + (10000u > ((unsigned)p00_tm->tm_year + 1900u)) // years since 1900
      + (7u     > (unsigned)p00_tm->tm_wday)           // days since Sunday — [0, 6]
      + (366u   > (unsigned)p00_tm->tm_yday))          // days since January 1 — [0, 365]
-                                                      // may have leap day in leap years
+    // may have leap day in leap years
     == 8;
 }
 
@@ -883,6 +883,91 @@ errno_t p00_asctime_s(char const* p00_file, char const* p00_context,
 
 /** @ingroup C11_library **/
 #define asctime_s(...) p00_asctime_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
+
+p99_inline
+struct tm* p00_localtime_s(char const* p00_file, char const* p00_context,
+                           time_t const * restrict p00_t,
+                           struct tm * p00_tptr) {
+  struct tm * p00_ret = 0;
+  errno_t p00_err = 0;
+  if (P99_UNLIKELY(!p00_t || !p00_tptr)) {
+    p00_err = EINVAL;
+  } else {
+    int byear = 99;               // 1999 was a good year
+    *p00_tptr = (struct tm) {
+      .tm_mday = 1,
+       .tm_year = byear,
+        .tm_isdst = -1,
+    };
+    double p00_diff = difftime(*p00_t, mktime(p00_tptr));
+    int64_t p00_sec = p00_diff;
+    int64_t p00_min = p00_sec/60u;
+    p00_sec -= 60u * p00_min;
+    int64_t p00_hour = p00_min/60u;
+    p00_min -= 60u * p00_hour;
+    int64_t p00_day = p00_hour/24u;
+    p00_hour -= 24u * p00_day;
+    *p00_tptr = (struct tm) {
+      .tm_sec = p00_sec,
+       .tm_min = p00_min,
+        .tm_hour = p00_hour,
+         .tm_mday = p00_day + 1,
+          .tm_year = byear,
+           .tm_isdst = 0,
+    };
+    if (mktime(p00_tptr) == (time_t)-1) {
+      char date[26];
+      asctime_s(date, sizeof date, p00_tptr);
+      printf("warning, time might be before epoch:\t%s", date);
+    }
+    p00_ret = p00_tptr;
+  }
+  if (p00_err) {
+    p00_constraint_call(p00_err, p00_file, p00_context, "localtime_s runtime constraint violation");
+  }
+  return p00_ret;
+}
+
+/** @ingroup C11_library **/
+#define localtime_s(...) p00_localtime_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
+
+p99_inline
+struct tm* p00_gmtime_s(char const* p00_file, char const* p00_context,
+                        time_t const * restrict p00_t,
+                        struct tm * p00_tptr) {
+  struct tm * p00_ret = 0;
+  errno_t p00_err = 0;
+  if (P99_UNLIKELY(!p00_t || !p00_tptr)) {
+    p00_err = EINVAL;
+  } else {
+    localtime_s(&(time_t) { *p00_t }, p00_tptr);
+    char p00_off[6];
+    /* Obtain the local offset from UTC in ISO format, such as
+       +0430. */
+    strftime(p00_off, sizeof p00_off, "%z", p00_tptr);
+    /* See if a time zone can be determined. */
+    if (p00_off[0]) {
+      /* First read the minutes from that. */
+      long p00_min = strtol(&p00_off[3], 0, 10);
+      /* Then the hours, including sign. */
+      p00_off[3] = 0;
+      long p00_hour = strtol(p00_off, 0, 10);
+      /* If the sign was - minutes must be accounted negative, too. */
+      if (p00_hour < 0L) p00_min = -p00_min;
+      p00_tptr->tm_hour -= p00_hour;
+      p00_tptr->tm_min -= p00_min;
+      mktime(p00_tptr);
+    }
+    p00_ret = p00_tptr;
+  }
+  if (p00_err) {
+    p00_constraint_call(p00_err, p00_file, p00_context, "gmtime_s runtime constraint violation");
+  }
+  return p00_ret;
+}
+
+/** @ingroup C11_library **/
+#define gmtime_s(...) p00_gmtime_s(P99_STRINGIFY(__LINE__), __func__, __VA_ARGS__)
 
 
 # endif
