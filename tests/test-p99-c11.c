@@ -97,7 +97,71 @@ thread_local int ret = EXIT_SUCCESS;
 unsigned globA = P99_GENERIC(globA, ,(unsigned, 1));   // should work and not give diagnostic
 //unsigned globB = P99_GENERIC(globB, ,(signed, 1));     // shouldn't work and give a diagnostic
 
+#define LOCALEPRINTSTR(NAME)                    \
+do {                                            \
+  if (l->NAME && l->NAME[0])                    \
+    printf("locale " #NAME ":\t%s\n",           \
+           l->NAME);                            \
+ } while (0)
+
+#define LOCALEPRINTGRP(NAME)                    \
+  do {                                          \
+    if (l->NAME && l->NAME[0]) {                \
+      fputs("locale " #NAME ":\t", stdout);     \
+      for (unsigned i=0; l->NAME[i]; ++i)       \
+        printf("\t%d", (int)l->NAME[i]);        \
+      fputs("\t0\n", stdout);                   \
+    }                                           \
+  } while (0)
+
+#define LOCALEPRINTCHAR(NAME)                   \
+do {                                            \
+  if (l->NAME != CHAR_MAX)                      \
+    printf("locale " #NAME ":\t%d\n",           \
+           (int)l->NAME);                       \
+ } while (0)
+
+void localeprint(void) {
+  struct lconv* l = localeconv();
+  P99_SEP(LOCALEPRINTSTR,
+          decimal_point,
+          thousands_sep,
+          mon_decimal_point,
+          mon_thousands_sep,
+          positive_sign,
+          negative_sign,
+          currency_symbol,
+          int_curr_symbol);
+  P99_SEP(LOCALEPRINTGRP,
+          grouping,
+          mon_grouping);
+  P99_SEP(LOCALEPRINTCHAR,
+          frac_digits,
+          p_cs_precedes,
+          n_cs_precedes,
+          p_sep_by_space,
+          n_sep_by_space,
+          p_sign_posn,
+          n_sign_posn,
+          int_frac_digits,
+          int_p_cs_precedes,
+          int_n_cs_precedes,
+          int_p_sep_by_space,
+          int_n_sep_by_space,
+          int_p_sign_posn,
+          int_n_sign_posn);
+}
+
 int main(int argc, char* argv[]) {
+  char const*loc = setlocale(LC_ALL, 0);
+  printf("initial locale:\t%s%s\n",
+         loc,
+         (loc && !strcmp(loc, "C")) ? "" : " (should have been \"C\")");
+  localeprint();
+  loc = setlocale(LC_ALL, "");
+  loc = setlocale(LC_ALL, 0);
+  printf("locale now:\t%s\n", loc);
+  localeprint();
   struct timespec now_timespec = { 0 };
   timespec_get(&now_timespec, TIME_UTC);
   double now_exact = now_timespec.tv_sec + now_timespec.tv_nsec * 1E-9;
@@ -208,8 +272,7 @@ int main(int argc, char* argv[]) {
   if (!strcmp(date, date_c)) printf("epoch local:\t%s", date);
   else printf("warning:local epoch are not equal\n\t%s\t%s", date_c, date);
 
-  struct tm tm;
-  tm = *gmtime(&epoch);
+  struct tm tm = *gmtime(&epoch);
   date_c = asctime(&tm);
   printf("epoch UTC:\t%s", date_c);
   tm = *gmtime(&now);
@@ -253,6 +316,14 @@ int main(int argc, char* argv[]) {
     time_t jul1_dst = mktime(&tm);
     printf("DST difference on Jul 1, %u: %g minutes\n", (tm.tm_year + 1900), difftime(jul1_dst, jul1)/60.0);
   }
+  tm = *localtime(&now);
+  char wide[256];
+  strftime(wide, sizeof wide, "%c", &tm);
+  printf("locale time (%s):\t%s\n", setlocale(LC_TIME, 0), wide);
+  strftime(wide, sizeof wide, "%Ec", &tm);
+  printf("alternative time (%s):\t%s\n", setlocale(LC_TIME, 0), wide);
+  strerror_s(wide, sizeof wide, EDOM);
+  printf("some locale error:\t%s\n", wide);
 
   print_attribute(deprecated);
   print_attribute(weak);
