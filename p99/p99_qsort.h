@@ -78,7 +78,7 @@ do {                                                           \
 #define P00_QEMPTY(S, P) ((S) == (P))
 
 #define P00_QSORT_BODY(SWAP)                                          \
-if (p00_n > RSIZE_MAX || p00_s > RSIZE_MAX) return ERANGE;            \
+if (p00_n > RSIZE_MAX || p00_s > RSIZE_MAX) return EDOM;              \
 if (p00_n && (!p00_base || !p00_comp)) return EINVAL;                 \
 do {                                                                  \
   register p99_seed *const seed = p99_seed_get();                     \

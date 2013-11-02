@@ -111,7 +111,7 @@ int p00_strerror(int p00_errname, size_t p00_maxsize, char p00_s[p00_maxsize]) {
     if (strlen(p00_ret) < p00_maxsize) {
       strcpy(p00_s, p00_ret);
     } else {
-      errno = ERANGE;
+      errno = EDOM;
       return -1;
     }
   }
@@ -132,7 +132,7 @@ int p00_strerror(int p00_errname, size_t p00_maxsize, char p00_s[p00_maxsize]) {
   size_t p00_ret = 0;
   if (p00_len > p00_maxsize - 1) {
     p00_len = p00_maxsize - 1;
-    p00_ret = ERANGE;
+    p00_ret = EDOM;
   }
   strncpy(p00_s, strerror(p00_errname), p00_len);
   p00_s[p00_len] = 0;
@@ -188,7 +188,7 @@ errno_t strerror_s(char *p00_s, rsize_t p00_maxsize, errno_t p00_errnum) {
   int p00_ret = p00_strerror(p00_errnum, p00_maxsize, p00_s);
   switch (p00_ret) {
   case 0: break;
-  case ERANGE: {
+  case EDOM: {
     /* The output string has been shortend to fit into p00_s. */
     p00_ret = 0;
     if (p00_maxsize > 3) memset(p00_s + (p00_maxsize - 4), '.', 3);
@@ -419,9 +419,9 @@ errno_t p00_memcpy_s(_Bool p00_overlap,
                      const void * restrict p00_s2, rsize_t p00_n) {
   errno_t p00_ret = 0;
   if (!p00_s1) { p00_ret = EINVAL; goto P00_SEVERE; }
-  if (p00_s1max > RSIZE_MAX) { p00_ret = ERANGE; goto P00_SEVERE; }
+  if (p00_s1max > RSIZE_MAX) { p00_ret = EDOM; goto P00_SEVERE; }
   if (!p00_s2) { p00_ret = EINVAL; goto P00_ERR; }
-  if (p00_n > RSIZE_MAX || p00_n > p00_s1max) { p00_ret = ERANGE; goto P00_ERR; }
+  if (p00_n > RSIZE_MAX || p00_n > p00_s1max) { p00_ret = EDOM; goto P00_ERR; }
   if (!p00_overlap) {
     unsigned char const* p00_c1 = p00_s1;
     unsigned char const* p00_c2 = p00_s2;
@@ -530,7 +530,7 @@ void *p00_bsearch_s(char const* p00_file, char const* p00_context,
                     void *p00_ctx) {
   if (p00_nmemb) {
     if (p00_nmemb > RSIZE_MAX || p00_size > RSIZE_MAX) {
-      p00_constraint_call(ERANGE, p00_file, p00_context, "bsearch_s runtime constraint violation");
+      p00_constraint_call(EDOM, p00_file, p00_context, "bsearch_s runtime constraint violation");
     } else if (p00_nmemb && (!p00_key || !p00_base || !p00_compar)) {
       p00_constraint_call(EINVAL, p00_file, p00_context, "bsearch_s runtime constraint violation");
     } else {
@@ -569,7 +569,7 @@ errno_t p00_getenv_s(char const* p00_file, char const* p00_context,
   errno_t p00_ret = 0;
   size_t p00_le = 0;
   if (p00_maxsize > RSIZE_MAX) {
-    p00_ret = ERANGE;
+    p00_ret = EDOM;
     p00_constraint_call(p00_ret, p00_file, p00_context, "getenv_s runtime constraint violation");
   } else if (!p00_name || (p00_maxsize && !p00_value)) {
     p00_ret = EINVAL;
@@ -615,7 +615,7 @@ errno_t p00_tmpnam_s(char const* p00_file, char const* p00_context,
                      char *p00_s, rsize_t p00_maxsize) {
   errno_t p00_ret = 0;
   if (p00_maxsize > RSIZE_MAX) {
-    p00_ret = ERANGE;
+    p00_ret = EDOM;
   } else if (!p00_s) {
     p00_ret = EINVAL;
   } else {
@@ -625,7 +625,7 @@ errno_t p00_tmpnam_s(char const* p00_file, char const* p00_context,
     p00_b[L_tmpnam - 1] = 0;
     size_t p00_l = strlen(p00_b);
     if (!p00_r || ((p00_l == (L_tmpnam - 1)) && p00_p) || (p00_l >= p00_maxsize)) {
-      p00_ret = ERANGE;
+      p00_ret = EDOM;
       /* no name could be created or the result was too long */
       p00_s[0] = 0;
     } else {
@@ -651,7 +651,7 @@ char *p00_gets_s(char const* p00_file, char const* p00_context,
     p00_err = EINVAL;
   } else if (p00_n > RSIZE_MAX) {
     p00_s[0] = '\0';
-    p00_err = ERANGE;
+    p00_err = EDOM;
   } else {
     p00_ret = fgets(p00_s, p00_n - 1, stdin);
     if (p00_ret) {
@@ -759,7 +759,7 @@ char *p00_strtok_s(char const* p00_file, char const* p00_context,
   if (P99_UNLIKELY(!p00_s1max || !p00_s2 || !p00_ptr)) {
     p00_err = EINVAL;
   } else if (P99_UNLIKELY(*p00_s1max > RSIZE_MAX)) {
-    p00_err = ERANGE;
+    p00_err = EDOM;
   } else if (P99_UNLIKELY(!p00_s1 && !*p00_ptr)) {
     p00_err = EINVAL;
   }
@@ -851,11 +851,11 @@ errno_t p00_asctime_s(char const* p00_file, char const* p00_context,
                       const struct tm *p00_tptr) {
   errno_t p00_ret = 0;
   if (P99_UNLIKELY(p00_maxsize < 26 || p00_maxsize > RSIZE_MAX)) {
-    p00_ret = ERANGE;
+    p00_ret = EDOM;
   } else if (P99_UNLIKELY(!p00_s || !p00_tptr)) {
     p00_ret = EINVAL;
   } else if (P99_UNLIKELY(!p00_tm_valid(p00_tptr))) {
-    p00_ret = ERANGE;
+    p00_ret = EDOM;
   } else {
     char const p00_wday[7][3] = {
       "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
