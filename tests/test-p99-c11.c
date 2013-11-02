@@ -10,7 +10,7 @@
 /* without even the implied warranty of merchantability or fitness for a      */
 /* particular purpose.                                                        */
 /*                                                                            */
-#include "p99_constraint.h"
+#include "p99_threads.h"
 #include "stdbool.h"
 #include "stdlib.h"
 #include "p99_compiler.h"
@@ -98,8 +98,105 @@ unsigned globA = P99_GENERIC(globA, ,(unsigned, 1));   // should work and not gi
 //unsigned globB = P99_GENERIC(globB, ,(signed, 1));     // shouldn't work and give a diagnostic
 
 int main(int argc, char* argv[]) {
+  struct timespec now_timespec = { 0 };
+  timespec_get(&now_timespec, TIME_UTC);
+  double now_exact = now_timespec.tv_sec + now_timespec.tv_nsec * 1E-9;
   time_t const now = time(0);
   time_t const epoch = { 0 };
+  timespec_get(&now_timespec, TIME_UTC);
+  now_exact += now_timespec.tv_sec + now_timespec.tv_nsec * 1E-9;
+  now_exact /= 2.0;
+  double time_grain = difftime(now+1, now);
+  printf("time_t, size is %zu bit (%s), granularity is %g seconds\n",
+         sizeof(time_t)*CHAR_BIT,
+         P99_GENERIC((time_t)0, "<unknown>",
+                     (double, "double"),
+                     (float, "float"),
+                     (int, "int"),
+                     (unsigned, "unsigned"),
+                     (long, "long"),
+                     (unsigned long, "unsigned long"),
+                     (long long, "long"),
+                     (unsigned long long, "unsigned long long")),
+         time_grain);
+  double now_loose = difftime(now, epoch);
+
+  if ((now_exact > now_loose) && ((now_exact - now_loose) < 1.0))
+    printf("time_t and timespec seem to use the same epoch\n");
+  else {
+    printf("time_t is at %f, timespec at %f, difference %f\n",
+           now_loose, now_exact,
+           now_exact - now_loose);
+  }
+
+  time_t inv_min = 0;
+  time_t inv_max = now;
+  struct tm * inv_time = gmtime(&(time_t const){ -1, });
+  if (inv_time) {
+    printf("(time_t)-1 is a valid time corresponding to %s", asctime(inv_time));
+    inv_time = gmtime(&(time_t const){ INT_MIN, });
+    if (inv_time) {
+      inv_time = gmtime(&(time_t const){ LONG_MIN, });
+      if (!inv_time) {
+        inv_min = LONG_MIN;
+      }
+    } else {
+      inv_min = INT_MIN;
+    }
+  } else {
+    inv_min = -1;
+  }
+  inv_time = gmtime(&(time_t const){ INT_MAX, });
+  if (inv_time) {
+    struct tm * inv_time = gmtime(&(time_t const){ LONG_MAX, });
+    if (!inv_time) {
+      inv_max = LONG_MAX;
+    }
+  } else {
+    inv_max = INT_MAX;
+  }
+
+  time_t val_min = 0;
+  time_t val_max = now;
+
+  while (inv_min+1 < val_min) {
+    time_t t3 = (inv_min + val_min)/2;
+    inv_time = gmtime(&t3);
+    if (inv_time) val_min = t3;
+    else inv_min = t3;
+  }
+  inv_time = gmtime(&val_min);
+  if (inv_time) {
+    char const * asc = asctime(inv_time);
+    if (asc) P99_PRINTF("smallest valid time_t %s, corresponds to %s", val_min, asc);
+    else P99_PRINTF("smallest valid time_t %s, is not printable, year is %s\n", val_min, inv_time->tm_year+1900L);
+    asc = asctime(&(struct tm){ .tm_year = -900, .tm_mday = 1});
+    if (asc) printf("smallest valid struct tm for asctime, corresponds to %s", asc);
+    else printf("smallest struct tm for asctime is not printable\n");
+    char tc[26];
+    if (!asctime_s(tc, sizeof tc, &(struct tm){ .tm_year = -1900, .tm_mday = 1}))
+      printf("smallest valid struct tm for asctime_s, corresponds to %s", tc);
+    else printf("smallest struct tm for asctime_s is not printable\n");
+  }
+
+
+  while (inv_max > val_max+1) {
+    time_t t3 = (inv_max/2 + val_max/2);
+    inv_time = gmtime(&t3);
+    if (inv_time) val_max = t3;
+    else inv_max = t3;
+  }
+  inv_time = gmtime(&val_max);
+  if (inv_time) {
+    char const * asc = asctime(inv_time);
+    if (asc) P99_PRINTF("largest valid time_t %s, corresponds to %s", val_max, asc);
+    else P99_PRINTF("largest valid time_t %s, is not printable, year is %s\n", val_max, inv_time->tm_year+1900L);
+    asc = asctime(&(struct tm){ .tm_year = 9999-1900, .tm_mon = 11, .tm_mday = 31,
+          .tm_hour = 23, .tm_min = 59, .tm_sec = 59, });
+    if (asc) printf("largest valid struct tm, corresponds to %s", asc);
+    else printf("largest valid struct tm is not printable\n");
+  }
+
   char * date_c = ctime(&now);
   char date[26];
   ctime_s(date, sizeof date, &now);
