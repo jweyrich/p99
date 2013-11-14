@@ -392,8 +392,14 @@ signed p00_trailing_comma_in_initializer__(void) {
 
 #if P99_COMPILER & P99_COMPILER_INTEL
 # define p99_inline __attribute__((__always_inline__)) inline
-# if defined(__GNUC__) && defined(p00_has_feature_tgmath_h)
-#  undef p00_has_feature_tgmath_h
+# if __INTEL_COMPILER < 1310
+#  if defined(__GNUC__) && defined(p00_has_feature_tgmath_h)
+#   undef p00_has_feature_tgmath_h
+#  endif
+# else
+/* Intel now has stdatomic.h, but we still have to integrate this with
+   the rest of the atomic stuff. */
+//#  define p00_has_feature_stdatomic_h 1
 # endif
 
 #elif P99_COMPILER & P99_COMPILER_PCC
@@ -1019,6 +1025,8 @@ P00_DOCUMENT_NUMBER_ARGUMENT(P99_VECTOR, 2)
 
 P99_IF_COMPILER(INTEL, warning(disable: 1418)) /* external function definition with no prior declaration */
 P99_IF_COMPILER(INTEL, warning(disable: 1419)) /* external declaration in primary source file */
+P99_IF_COMPILER(INTEL, warning(disable: 557))  /* pointless comparison of unsigned integer with a negative constant */
+P99_IF_COMPILER(INTEL, warning(disable: 283))  /* duplicate specifier in declaration */
 
 /* Warnings on initializers are a plague. They are responsible for the
    fact that many people don't use default initializers where they
@@ -1027,9 +1035,6 @@ P99_IF_COMPILER(INTEL, warning(disable: 1419)) /* external declaration in primar
 
 P99_IF_COMPILER(GNU, GCC diagnostic ignored "-Wmissing-braces")
 P99_IF_COMPILER(GNU, GCC diagnostic ignored "-Wmissing-field-initializers")
-
-P99_IF_COMPILER(INTEL, GCC diagnostic ignored "-Wmissing-braces")
-P99_IF_COMPILER(INTEL, GCC diagnostic ignored "-Wmissing-field-initializers")
 
 P99_IF_COMPILER(OPEN64, GCC diagnostic ignored "-Wmissing-braces")
 P99_IF_COMPILER(OPEN64, GCC diagnostic ignored "-Wmissing-field-initializers")
@@ -1079,7 +1084,7 @@ P99_PRAGMA(GCC diagnostic ignored "-Winitializer-overrides")
  ** features. Otherwise this just ignored
  **/
 
-#if __GNUC__
+#if P99_COMPILER & (P99_COMPILER_GNU | P99_COMPILER_CLANG)
 #define P99_WARN_REDUNDANT_DECLS_PUSH                          \
 P99_PRAGMA(GCC diagnostic push)                                \
 P99_PRAGMA(GCC diagnostic ignored "-Wredundant-decls")

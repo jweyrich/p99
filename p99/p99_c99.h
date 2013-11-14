@@ -74,13 +74,13 @@
 #endif
 
 /* Additions by C11 */
-# if __STDC_VERSION__ > 201100L
-#  if p99_has_feature(stdatomic_h)
-#   include <stdatomic.h>
-#  endif
-#  if p99_has_feature(threads_h)
-#   include <threads.h>
-#  endif
+#if p99_has_feature(stdatomic_h)
+# include <stdatomic.h>
+#endif
+#if p99_has_feature(threads_h)
+# include <threads.h>
+#endif
+#if __STDC_VERSION__ > 201100L
 # else
 #  ifndef __STDC_NO_COMPLEX__
 /* The CMPLX macros expand to an expression of the specified complex
