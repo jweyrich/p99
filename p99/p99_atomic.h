@@ -1016,7 +1016,7 @@ p99_extension                                                  \
 #define atomic_exchange(OBJP, DESIRED)                                                                  \
 p99_extension                                                                                           \
 ({                                                                                                      \
-  P99_MACRO_PVAR(p00_objp, (OBJP));                                                                     \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                                           \
   typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                                                      \
   typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                                                     \
   register p00_base_t const p00_des = (DESIRED);                                                        \
@@ -1062,7 +1062,7 @@ p99_extension                                                                   
 #define atomic_load(OBJP)                                                         \
 p99_extension                                                                     \
 ({                                                                                \
-  P99_MACRO_PVAR(p00_objp, (OBJP));                                               \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                     \
   typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                                \
   typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                               \
   ((!atomic_is_lock_free(p00_objp))                                               \
@@ -1103,11 +1103,11 @@ p99_extension                                                                   
 #define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                           \
 p99_extension                                                                           \
 ({                                                                                      \
-  P99_MACRO_PVAR(p00_objp, (OBJP));                                                     \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                           \
   typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                                      \
   typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                                     \
   /* Both, *EXPECTED and DESIRED must be assignment compatible with the base type */    \
-  register p00_base_t* const p00_exp = (EXPECTED);                                      \
+  register p00_base_t volatile* const p00_exp = (EXPECTED);                             \
   register p00_ubase_t const p00_des =  { .p00_t = (DESIRED) };                         \
   register _Bool p00_ret = false;                                                       \
   if (!atomic_is_lock_free(p00_objp)) {                                                 \
@@ -1151,7 +1151,7 @@ p99_extension                                                                   
 #define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                \
 p99_extension                                                         \
 ({                                                                    \
-  P99_MACRO_PVAR(p00_objp, (OBJP));                                   \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                         \
   P99_MACRO_VAR(p00_op, OPERAND);                                     \
   ((!atomic_is_lock_free(p00_objp))                                   \
    ? ({                                                               \
@@ -1248,7 +1248,7 @@ p99_extension                                                         \
 #define atomic_fetch_add_conditional(OBJP, OPERAND)                       \
 p99_extension                                                             \
 ({                                                                        \
-  P99_MACRO_PVAR(p00_objp, (OBJP));                                       \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                             \
   P99_MACRO_VAR(p00_op, (OPERAND));                                       \
   P99_MACRO_VAR(p00_ret, atomic_load(p00_objp));                          \
   while (p00_ret) {                                                       \
@@ -1263,7 +1263,7 @@ p99_extension                                                             \
 #define atomic_fetch_max(OBJP, OPERAND)                                  \
 p99_extension                                                            \
 ({                                                                       \
-  P99_MACRO_PVAR(p00_objp, (OBJP));                                      \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                            \
   P99_MACRO_VAR(p00_op, (OPERAND));                                      \
   P99_MACRO_VAR(p00_ret, atomic_load(p00_objp));                         \
   while (p00_ret <= p00_op) {                                            \
