@@ -397,8 +397,8 @@ signed p00_trailing_comma_in_initializer__(void) {
 #   undef p00_has_feature_tgmath_h
 #  endif
 # else
-/* Intel now has stdatomic.h, but we still have to integrate this with
-   the rest of the atomic stuff. */
+/* Intel now has a file stdatomic.h, but this is still quite
+   incomplete and not yet worth it. */
 //#  define p00_has_feature_stdatomic_h 1
 # endif
 

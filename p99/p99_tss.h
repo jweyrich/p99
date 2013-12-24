@@ -17,11 +17,9 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <pthread.h>
-#if defined(__GNUC__) || defined(P00_DOXYGEN)
-# include "p99_atomic.h"
-#endif
 
 #include "p99_defarg.h"
+#include "p99_atomic.h"
 
 /**
  ** @addtogroup threads C11 thread emulation on top of POSIX threads
