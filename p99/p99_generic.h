@@ -497,7 +497,7 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GEN_SIN, 0)
 #define P99_GEN_SIN(A) P99_GEN_EXPR(sin, (A), P99_STD_FLOATING_EXTS)(A)
 
 inline int* p00_generic_test(int * p00_a) {
-  double *p00_x;
+  double *p00_x = 0;
   switch (P99_GEN_ABS(*p00_a % 3)) {
   case 0:
     return P99_GENERIC(&*p00_a,
