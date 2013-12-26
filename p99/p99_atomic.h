@@ -1250,14 +1250,16 @@ p99_extension                                                             \
 ({                                                                        \
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                             \
   P99_MACRO_VAR(p00_op, (OPERAND));                                       \
-  P99_MACRO_VAR(p00_ret, atomic_load(p00_objp));                          \
-  while (p00_ret) {                                                       \
+  __typeof__(P00_AT(p00_objp)) p00_ret;                                   \
+  /* be sure that the result can not be used as an lvalue */              \
+  register __typeof__(p00_ret = p00_ret) p00_r = atomic_load(p00_objp);   \
+  p00_ret = p00_r;                                                        \
+  while (p00_r) {                                                         \
     P99_MACRO_VAR(p00_des, p00_ret + p00_op);                             \
     if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_des)) break; \
+    else p00_r = p00_ret;                                                 \
   }                                                                       \
-  /* be sure that the result can not be used as an lvalue */              \
-  register __typeof__(p00_ret = p00_ret) p00_r = p00_ret;                 \
-  p00_r;                                                                  \
+  p00_r = p00_ret;                                                        \
  })
 
 #define atomic_fetch_max(OBJP, OPERAND)                                  \
@@ -1265,13 +1267,15 @@ p99_extension                                                            \
 ({                                                                       \
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                            \
   P99_MACRO_VAR(p00_op, (OPERAND));                                      \
-  P99_MACRO_VAR(p00_ret, atomic_load(p00_objp));                         \
-  while (p00_ret <= p00_op) {                                            \
-    if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_op)) break; \
-  }                                                                      \
+  __typeof__(P00_AT(p00_objp)) p00_ret;                                  \
   /* be sure that the result can not be used as an lvalue */             \
-  register __typeof__(p00_ret = p00_ret) p00_r = p00_ret;                \
-  p00_r;                                                                 \
+  register __typeof__(p00_ret = p00_ret) p00_r = atomic_load(p00_objp);  \
+  p00_ret = p00_r;                                                       \
+  while (p00_r <= p00_op) {                                              \
+    if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_op)) break; \
+    else p00_r = p00_ret;                                                \
+  }                                                                      \
+  p00_r = p00_ret;                                                       \
  })
 
 /**
