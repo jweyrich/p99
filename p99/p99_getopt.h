@@ -647,9 +647,13 @@ int P00_GETOPT_PROCESS(help)(void* p00_o, char const*p00_c) {
 
 #define P00_GETOPT_INITIALIZE(...) P99_SER(P00_GETOPT_INITIALIZE_, __VA_ARGS__)
 
-#define P00_GETOPT_ARRAY_(CHAR) [p99_getopt_enum## CHAR] = (P00_GETOPT_BOOL(CHAR) ? P00_GETOPT_CHAR(CHAR) : 0)
+#define P00_GETOPT_ARRAY_ASSIGN_(CHAR) p00_A[p99_getopt_enum## CHAR] = (P00_GETOPT_BOOL(CHAR) ? P00_GETOPT_CHAR(CHAR) : 0)
 
-#define P00_GETOPT_ARRAY(...) P99_SEQ(P00_GETOPT_ARRAY_, __VA_ARGS__)
+#define P00_GETOPT_ARRAY_ASSIGN(...) P99_SEP(P00_GETOPT_ARRAY_ASSIGN_, __VA_ARGS__)
+
+#define P00_GETOPT_ARRAY_INIT_(CHAR) [p99_getopt_enum## CHAR] = 0
+
+#define P00_GETOPT_ARRAY_INIT(...) P99_SEQ(P00_GETOPT_ARRAY_INIT_, __VA_ARGS__)
 
 #define P00_GETOPT_ALLOCATIONS(CHAR) [p99_getopt_enum## CHAR] = 0
 
@@ -711,9 +715,13 @@ P99_MAIN_INTERCEPT(p99_getopt_initialize) {
   char const* p00_err2 = 0;
   /* Create a sorted array with all the aliases, such that we may then
      search for a matching key. */
-  struct p00_getopt const* p00_A[] = {
-    P00_GETOPT_ARRAY(P00_GETOPT_CHARS),
+  static struct p00_getopt const* p00_A[] = {
+    P00_GETOPT_ARRAY_INIT(P00_GETOPT_CHARS),
   };
+  memset(p00_A, 0, sizeof p00_A);
+  {
+    P00_GETOPT_ARRAY_ASSIGN(P00_GETOPT_CHARS);
+  }
   qsort_s(p00_A, P99_ALEN(p00_A), sizeof *p00_A, p00_getopt_comp, 0);
 
   register struct p00_getopt const** p00_up = p00_A;
