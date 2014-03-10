@@ -67,6 +67,36 @@
 # undef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
 #endif
 
+/**
+ ** @addtogroup atomic_enum
+ ** @{
+ **/
+
+#if defined(P00_DOXYGEN) || !defined(__ATOMIC_RELAXED)
+P99_DECLARE_ENUM(memory_order,
+                 memory_order_relaxed,
+                 memory_order_consume,
+                 memory_order_acquire,
+                 memory_order_release,
+                 memory_order_acq_rel,
+                 memory_order_seq_cst
+                );
+#else
+enum memory_order {
+  memory_order_relaxed = __ATOMIC_RELAXED,
+  memory_order_consume = __ATOMIC_CONSUME,
+  memory_order_acquire = __ATOMIC_ACQUIRE,
+  memory_order_release = __ATOMIC_RELEASE,
+  memory_order_acq_rel = __ATOMIC_ACQ_REL,
+  memory_order_seq_cst = __ATOMIC_SEQ_CST,
+};
+typedef enum memory_order memory_order;
+#endif
+
+/**
+ ** @}
+ **/
+
 #if defined(__arm__)
 # include "p99_atomic_arm.h"
 #elif defined(__x86_64__) || defined(__i386__)
@@ -474,26 +504,6 @@ __typeof__(P99_GENERIC_SIZE_LIT(sizeof(T), (uintptr_t){ 0 }, P00_UINT_TYPE_LIST)
 #ifndef P00_ATOMIC_LOCK_FREE_TYPES6_
 # define P00_ATOMIC_LOCK_FREE_TYPES6_
 #endif
-
-/**
- ** @}
- **/
-
-
-/**
- ** @addtogroup atomic_enum
- ** @{
- **/
-
-P99_DECLARE_ENUM(memory_order,
-                 memory_order_relaxed,
-                 memory_order_consume,
-                 memory_order_acquire,
-                 memory_order_release,
-                 memory_order_acq_rel,
-                 memory_order_seq_cst
-                );
-
 
 /**
  ** @}
