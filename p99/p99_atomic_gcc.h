@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
+/* (C) copyright  2012, 2014 Jens Gustedt, INRIA, France                      */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -16,6 +16,8 @@
 #ifndef P99_ATOMIC_H
 # warning "never include this file directly, use p99_atomic.h, instead"
 #endif
+
+#include "p99_args.h"
 
 /**
  ** @file
@@ -43,10 +45,32 @@ P00_ATOMIC_EXCHANGE_DECLARE(uint16_t, 2);
 P00_ATOMIC_EXCHANGE_DECLARE(uint32_t, 4);
 P00_ATOMIC_EXCHANGE_DECLARE(uint64_t, 8);
 
-p99_inline void p00_mfence(void) {  __sync_synchronize(); }
 
-# define p00_sync_lock_release(X) __sync_lock_release((X))
-# define p00_sync_lock_test_and_set(X) __sync_lock_test_and_set((X), 1)
+#ifdef __ATOMIC_SEQ_CST
+# define p00_mfence(...)                                       \
+ P99_IF_EMPTY(__VA_ARGS__)                                     \
+ (__atomic_thread_fence(__ATOMIC_SEQ_CST))                     \
+ (__atomic_thread_fence(__VA_ARGS__))
 
+# define p00_sync_lock_release(...)                            \
+  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
+  (__atomic_clear(__VA_ARGS__, __ATOMIC_SEQ_CST))              \
+  (__atomic_clear(__VA_ARGS__))
+
+# define p00_sync_lock_test_and_set(...)                       \
+  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
+  (__atomic_test_and_set(__VA_ARGS__, __ATOMIC_SEQ_CST))       \
+  (__atomic_test_and_set(__VA_ARGS__))
+#else
+# define p00_mfence(...) __sync_synchronize()
+# define p00_sync_lock_release(...)                            \
+  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
+  (__sync_lock_release(__VA_ARGS__))                           \
+  (__sync_lock_release(P99_ALLBUTLAST(__VA_ARGS__)))
+# define p00_sync_lock_test_and_set(...)                       \
+  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
+  (__sync_lock_test_and_set(__VA_ARGS__, 1))                   \
+  (__sync_lock_test_and_set(P99_ALLBUTLAST(__VA_ARGS__), 1))
+#endif
 
 #endif

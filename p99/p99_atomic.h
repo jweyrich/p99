@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
-/* (C) copyright  2011-2013 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2011-2014 Jens Gustedt, INRIA, France                       */
 /* (C) copyright  2012 William Morris                                         */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
@@ -97,12 +97,12 @@ typedef enum memory_order memory_order;
  ** @}
  **/
 
-#if defined(__arm__)
+#if defined(__GNUC__)
+# include "p99_atomic_gcc.h"
+#elif defined(__arm__)
 # include "p99_atomic_arm.h"
 #elif defined(__x86_64__) || defined(__i386__)
 # include "p99_atomic_x86.h"
-#elif defined(__GNUC__)
-# include "p99_atomic_gcc.h"
 #else
 # warning "no support for atomic operations detected for this platform"
 # define P00_NO_ATOMICS
