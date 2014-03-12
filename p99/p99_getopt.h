@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* (C) copyright  2013 Jens Gustedt, INRIA, France                            */
+/* (C) copyright  2013-2014 Jens Gustedt, INRIA, France                       */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -34,14 +34,14 @@ struct p00_getopt {
   char const*const p00_v;
 };
 
-static void** p00_getopt_allocations;
+P99_TENTATIVE_DEC(void**, p00_getopt_allocations);
 
 #define P00_GETOPT_PROCESS(T) P99_PASTE2(p00_getopt_process_, T)
 
 #define P00_GETOPT_CHAR(CHAR) p00_getopt_char## CHAR
 #define P00_GETOPT_BOOL(CHAR) p00_getopt_bool## CHAR
 
-static_inline
+P99_WEAK(p00_getopt_comp)
 int p00_getopt_comp(void const* p00_a, void const* p00_b, void* p00_context) {
   register struct p00_getopt const*const*const p00_A = p00_a;
   register struct p00_getopt const*const*const p00_B = p00_b;
@@ -56,7 +56,7 @@ int p00_getopt_comp(void const* p00_a, void const* p00_b, void* p00_context) {
     return 0;
 }
 
-static_inline
+P99_WEAK(p00_getopt_subcomp)
 int p00_getopt_subcomp(void const* p00_a, void const* p00_b, void* p00_context) {
   register struct p00_getopt const*const*const p00_A = p00_a;
   register struct p00_getopt const*const*const p00_B = p00_b;
@@ -166,8 +166,8 @@ P99_SER(P00_GETOPT_FLOAT,                                      \
 
 #define P00_GETOPT_DECLARE(CHAR, T, TS, DEFS, NAME, DEF, ALIAS, DOC, ...) \
   extern T NAME;                                                          \
-  static bool const P00_GETOPT_BOOL(CHAR) = true;                         \
-  static struct p00_getopt const*const P00_GETOPT_CHAR(CHAR)              \
+  P99_TENTATIVE_DEF(bool const, P00_GETOPT_BOOL(CHAR)) = true;            \
+  P99_TENTATIVE_DEF(struct p00_getopt const*const, P00_GETOPT_CHAR(CHAR)) \
   = &(struct p00_getopt const){                                           \
     .p00_o =  &(NAME),                                                    \
     .p00_f = P99_GENERIC(NAME, 0, __VA_ARGS__),                           \
@@ -298,7 +298,9 @@ P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                            \
 #endif
 
 
-#define P00_GETOPT_STRUCT_DECL(CHAR) static bool const P00_GETOPT_BOOL(CHAR); static struct p00_getopt const*const P00_GETOPT_CHAR(CHAR)
+#define P00_GETOPT_STRUCT_DECL(CHAR)                                      \
+  P99_TENTATIVE_DEC(bool const, P00_GETOPT_BOOL(CHAR));                   \
+  P99_TENTATIVE_DEC(struct p00_getopt const*const ,P00_GETOPT_CHAR(CHAR))
 
 #define P00_GETOPT_CHARS                                       \
 _p00A, _p00B, _p00C, _p00D, _p00E, _p00F, _p00G,               \
@@ -457,7 +459,9 @@ P99_SEP(P00_GETOPT_STRUCT_DECL, P00_GETOPT_CHARS);
 static_inline
 int P00_GETOPT_PROCESS(help)(void* p00_o, char const*p00_c);
 
-static struct p00_getopt const p00_getopt_help[2] = {
+typedef struct p00_getopt p00_getopt_pair[2];
+
+P99_TENTATIVE_DEC(p00_getopt_pair, const p00_getopt_help) = {
   {
     .p00_f = P00_GETOPT_PROCESS(help),
     .p00_a = "help",
@@ -469,7 +473,7 @@ static struct p00_getopt const p00_getopt_help[2] = {
   }
 };
 
-static char const* p00_getopt_progname;
+P99_TENTATIVE_DEC(char const*, p00_getopt_progname);
 
 
 /* Split the "va_arg" argument of the P99_GETOPT macros into the name
@@ -579,17 +583,17 @@ void p00_getopt_help_(bool p00_set, enum p99_getopt_enum p00_c, struct p00_getop
 
 #define P00_GETOPT_HELP(...) P99_SEP(P00_GETOPT_HELP_, __VA_ARGS__)
 
-static char const*const p00_getopt_synopsis;
+P99_TENTATIVE_DEC(char const*const, p00_getopt_synopsis);
 
-static p99_callback_void_func*const p00_getopt_callback;
+P99_TENTATIVE_DEC(p99_callback_void_func*const, p00_getopt_callback);
 
 /**
  ** @brief Add a synopsis to the commandline option documentation
  **
  ** @param LINE should be a string literal
  **/
-#define P99_GETOPT_SYNOPSIS(LINE)                              \
-static char const*const p00_getopt_synopsis = { LINE }
+#define P99_GETOPT_SYNOPSIS(LINE)                                                      \
+P00_TENTATIVE_DEF(p00_getopt_synopsis) char const*const p00_getopt_synopsis = { LINE }
 
 
 /**
@@ -598,8 +602,8 @@ static char const*const p00_getopt_synopsis = { LINE }
  ** @param CALLBACK must be assignment compatible to a pointer to
  ** ::p99_callback_void_func.
  **/
-#define P99_GETOPT_CALLBACK(CALLBACK)                                \
-static p99_callback_void_func*const p00_getopt_callback = (CALLBACK)
+#define P99_GETOPT_CALLBACK(CALLBACK)                                                                \
+P00_TENTATIVE_DEF(p00_getopt_callback) p99_callback_void_func*const p00_getopt_callback = (CALLBACK)
 
 
 static_inline
@@ -657,11 +661,7 @@ int P00_GETOPT_PROCESS(help)(void* p00_o, char const*p00_c) {
 
 #define P00_GETOPT_ALLOCATIONS(CHAR) [p99_getopt_enum## CHAR] = 0
 
-static
-void** p00_getopt_allocations_base = 0;
-
-static
-void** p00_getopt_allocations = 0;
+P99_TENTATIVE_DEC(void**, p00_getopt_allocations_base);
 
 static_inline
 void p00_getopt_atexit(void) {
@@ -674,7 +674,7 @@ void p00_getopt_atexit(void) {
   free(p00_tmp);
 }
 
-static_inline
+p99_inline
 struct p00_getopt const*
 p00_getopt_find_alias(char const* p00_al, size_t p00_size, struct p00_getopt const* p00_A[p00_size]) {
   /* Search for a matching alias in the array */

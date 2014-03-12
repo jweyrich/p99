@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* (C) copyright  2013 Jens Gustedt, INRIA, France                            */
+/* (C) copyright  2013-2014 Jens Gustedt, INRIA, France                       */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -43,8 +43,8 @@
 # define P00_HAVE_INIT_FUNCTION(NR)  P99_IF_EMPTY(NR)(P99_PASTE2(p00_have_init_function_, P00_INIT_NR))(P99_PASTE2(p00_have_init_function_, NR))
 
 # define P00_INIT_FUNC_VAR_S(_0, _1, I)                        \
-static bool const P00_HAVE_INIT_FUNCTION(I);                   \
-static p99_callback_el const P00_INIT_FUNCTION(I)
+P99_TENTATIVE_DEC(bool const, P00_HAVE_INIT_FUNCTION(I));      \
+P99_TENTATIVE_DEC(p99_callback_el const, P00_INIT_FUNCTION(I))
 
 P99_FOR(, P99_MAX_NUMBER, P00_SEP, P00_INIT_FUNC_VAR_S, P99_REP(P99_MAX_NUMBER,));
 
@@ -53,10 +53,10 @@ do {                                                                         \
   if (P00_HAVE_INIT_FUNCTION(I)) p99_callback_el_call(P00_INIT_FUNCTION(I)); \
  } while (false)
 
-# define P00_INIT_FUNCTION_(NAME, NR)                                                             \
-void NAME(void);                                                                                  \
- static bool const P00_HAVE_INIT_FUNCTION(NR) = true;                                             \
- static p99_callback_el const P00_INIT_FUNCTION(NR) = { .p00_void = { .p00_void_func = NAME, }, }
+# define P00_INIT_FUNCTION_(NAME, NR)                                                                         \
+void NAME(void);                                                                                              \
+P99_TENTATIVE_DEF(bool const, P00_HAVE_INIT_FUNCTION(NR)) = true;                                             \
+P99_TENTATIVE_DEF(p99_callback_el const, P00_INIT_FUNCTION(NR)) = { .p00_void = { .p00_void_func = NAME, }, }
 
 # ifdef P00_DOXYGEN
 /**
@@ -131,13 +131,13 @@ void NAME(void);                                                                
 #  define P99_INIT_FUNCTION_DECLARE(...) P99_IF_EQ(P99_NARG(__VA_ARGS__), 2)(P00_INIT_FUNCTION_(__VA_ARGS__))(P00_INIT_FUNCTION_(__VA_ARGS__,))
 # endif
 
-# define P00_INIT_VARIABLE(NAME, FUNC, NR)                     \
-static p99_callback_el const P00_INIT_FUNCTION(NR)             \
-= {                                                            \
-  .p00_voidptr_func = (FUNC),                                  \
-  .p00_void = {                                                \
-    .p00_arg = &(NAME),                                        \
-  },                                                           \
+# define P00_INIT_VARIABLE(NAME, FUNC, NR)                      \
+P99_TENTATIVE_DEF(p99_callback_el const, P00_INIT_FUNCTION(NR)) \
+= {                                                             \
+  .p00_voidptr_func = (FUNC),                                   \
+  .p00_void = {                                                 \
+    .p00_arg = &(NAME),                                         \
+  },                                                            \
 }
 
 # ifdef P00_DOXYGEN

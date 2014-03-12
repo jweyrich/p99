@@ -3,7 +3,7 @@
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
 /* (C) copyright  2013 Bobby                                                  */
-/* (C) copyright  2010-2013 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2010-2014 Jens Gustedt, INRIA, France                       */
 /* (C) copyright  2013 Pierre-Nicolas Clauss                                  */
 /* (C) copyright  2012 William Morris                                         */
 /*                                                                            */
@@ -551,6 +551,41 @@ signed p00_trailing_comma_in_initializer__(void) {
  ** Microsoft
  **/
 # define P99_WEAK(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2)(P00_WEAK1(__VA_ARGS__))(P00_WEAK2(__VA_ARGS__))
+
+#if P99_COMPILER_INTEL
+# define P99_TENTATIVE_CAUTION 1
+#endif
+
+
+#ifndef P99_TENTATIVE_CAUTION
+# define P00_TENTATIVE_DEC(NAME) static
+# define P00_TENTATIVE_DEF(NAME) static
+#else
+# define P00_TENTATIVE_DEC(NAME) P99_WEAK(NAME)
+# define P00_TENTATIVE_DEF(NAME)
+#endif
+
+/**
+ ** @brief A tentative declaration of an object @a NAME of type @a T
+ **
+ ** On most platforms this should just result in
+ ** @code
+ ** static T NAME
+ ** @endcode
+ **
+ ** so a declaration of @a NAME that is also a tentative
+ ** definition. Such a beast is suitable to provide a default value of
+ ** @c 0 for @a NAME, that can at any point in the same compilation
+ ** unit be overwritten by a user specified value.
+ **
+ ** @see P99_TENTATIVE_DEF for the corresponding definition that
+ ** should provide a value through initialization.
+ **/
+# define P99_TENTATIVE_DEC(T, NAME)                            \
+P00_TENTATIVE_DEC(NAME) T NAME
+
+# define P99_TENTATIVE_DEF(T, NAME)                            \
+P00_TENTATIVE_DEF(NAME) T NAME
 
 /**
  ** @brief On architectures that support this, warn if the result of a
