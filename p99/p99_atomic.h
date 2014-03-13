@@ -97,7 +97,7 @@ typedef enum memory_order memory_order;
  ** @}
  **/
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) && !defined(P00_ATOMIC_NO_GCC)
 # include "p99_atomic_gcc.h"
 #elif defined(__arm__)
 # include "p99_atomic_arm.h"
@@ -866,13 +866,7 @@ typedef _Atomic(uintmax_t) atomic_uintmax_t;
  ** @{
  **/
 
-p99_inline
-void atomic_thread_fence(memory_order p00_ord) {
-  switch (p00_ord) {
-  case memory_order_relaxed: break;
-  default: p00_mfence(); break;
-  }
-}
+#define atomic_thread_fence p00_mfence
 
 /**
  ** @remark In the current implementation a signal fence and a thread

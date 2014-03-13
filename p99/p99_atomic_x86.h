@@ -61,26 +61,6 @@ uint64_t p00_atomic_exchange_8(uint64_t volatile* p00_objp, uint64_t p00_ret) {
 #undef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8
 #endif
 
-#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && !defined(P00_DOXYGEN)
-
-p99_inline
-uint32_t p00_sync_lock_test_and_set(uint32_t volatile *p00_objp) {
-  return __sync_lock_test_and_set(p00_objp, 1);
-}
-
-p99_inline
-void p00_sync_lock_release(uint32_t volatile *p00_objp) {
-  __sync_lock_release(p00_objp);
-}
-
-p99_inline
-void p00_mfence(void) {
-  __sync_synchronize();
-}
-
-#else
-
-
 /**
  ** @addtogroup atomic_x86 Atomic operations on i386 and x86_64
  **
@@ -100,14 +80,9 @@ void p00_mfence(void) {
  ** @{
  **/
 
-p99_inline
-uint32_t p00_sync_lock_test_and_set(uint32_t volatile *p00_objp) {
-  register uint32_t p00_ret = 1;
-  return p00_atomic_exchange_4(p00_objp, p00_ret);
-}
 
 p99_inline
-void p00_sync_lock_release(uint32_t volatile *p00_objp) {
+void p00_sync_lock_release_internal(uint32_t volatile *p00_objp) {
   __asm__ __volatile__("movl $0, %0"
                        :
                        : "m"(*p00_objp)
@@ -115,16 +90,28 @@ void p00_sync_lock_release(uint32_t volatile *p00_objp) {
 }
 
 p99_inline
-void p00_mfence(void) {
+void p00_mfence_internal(memory_order p00_ord) {
   __asm__ __volatile__("mfence":::"memory");
 }
+
+#define p00_mfence(...)                         \
+P99_IF_EMPTY(__VA_ARGS__)                       \
+ (p00_mfence_internal(memory_order_seq_cst))    \
+ (p00_mfence_internal(__VA_ARGS__))
+
+#define p00_sync_lock_release(...)                              \
+  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                           \
+  (p00_sync_lock_release_internal(__VA_ARGS__))                 \
+  (p00_sync_lock_release_internal(P99_ALLBUTLAST(__VA_ARGS__)))
+#define p00_sync_lock_test_and_set(...)                         \
+  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                           \
+  (p00_atomic_exchange_4(__VA_ARGS__, 1))                       \
+  (p00_atomic_exchange_4(P99_ALLBUTLAST(__VA_ARGS__), 1))
 
 
 
 /**
  ** @}
  **/
-
-# endif
 
 #endif

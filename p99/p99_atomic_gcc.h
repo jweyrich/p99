@@ -27,50 +27,10 @@
  **/
 
 
-#define P00_ATOMIC_EXCHANGE_DECLARE(T, N)                             \
-p99_inline                                                            \
-T P99_PASTE(p00_atomic_exchange_, N)(T volatile * p00_p, T p00_des) { \
-  T p00_ret = *p00_p;                                                 \
-  for (;;) {                                                          \
-    T p00_val = __sync_val_compare_and_swap(p00_p, p00_ret, p00_des); \
-    if (P99_LIKELY(p00_val == p00_ret)) break;                        \
-    p00_ret = p00_val;                                                \
-  }                                                                   \
-  return p00_ret;                                                     \
-}                                                                     \
-P99_MACRO_END(P00_ATOMIC_EXCHANGE_DECLARE)
-
-P00_ATOMIC_EXCHANGE_DECLARE(uint8_t, 1);
-P00_ATOMIC_EXCHANGE_DECLARE(uint16_t, 2);
-P00_ATOMIC_EXCHANGE_DECLARE(uint32_t, 4);
-P00_ATOMIC_EXCHANGE_DECLARE(uint64_t, 8);
-
-
 #ifdef __ATOMIC_SEQ_CST
-# define p00_mfence(...)                                       \
- P99_IF_EMPTY(__VA_ARGS__)                                     \
- (__atomic_thread_fence(__ATOMIC_SEQ_CST))                     \
- (__atomic_thread_fence(__VA_ARGS__))
-
-# define p00_sync_lock_release(...)                            \
-  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
-  (__atomic_clear(__VA_ARGS__, __ATOMIC_SEQ_CST))              \
-  (__atomic_clear(__VA_ARGS__))
-
-# define p00_sync_lock_test_and_set(...)                       \
-  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
-  (__atomic_test_and_set(__VA_ARGS__, __ATOMIC_SEQ_CST))       \
-  (__atomic_test_and_set(__VA_ARGS__))
+# include "p99_atomic_gcc_atomic.h"
 #else
-# define p00_mfence(...) __sync_synchronize()
-# define p00_sync_lock_release(...)                            \
-  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
-  (__sync_lock_release(__VA_ARGS__))                           \
-  (__sync_lock_release(P99_ALLBUTLAST(__VA_ARGS__)))
-# define p00_sync_lock_test_and_set(...)                       \
-  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
-  (__sync_lock_test_and_set(__VA_ARGS__, 1))                   \
-  (__sync_lock_test_and_set(P99_ALLBUTLAST(__VA_ARGS__), 1))
+# include "p99_atomic_gcc_sync.h"
 #endif
 
 #endif

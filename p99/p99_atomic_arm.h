@@ -279,7 +279,7 @@ void p00_mfence(void) {
 
 
 p99_inline
-uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
+uint32_t p00_sync_lock_test_and_set_internal(uint32_t volatile *object, memory_order p00_ord) {
   for (;;) {
     uint32_t p00_ret = p00_arm_ldrex(object);
     /* Even if the result has been a 1 in p00_ret, We must imperatively
@@ -292,14 +292,28 @@ uint32_t p00_sync_lock_test_and_set(uint32_t volatile *object) {
 }
 
 p99_inline
-void p00_sync_lock_release(uint32_t volatile *object) {
+void p00_sync_lock_release_internal(uint32_t volatile *object, memory_order p00_ord) {
   __sync_lock_release(object);
 }
 
 p99_inline
-void p00_mfence(void) {
+void p00_mfence_internal(memory_order p00_ord) {
   __asm__ __volatile__("dmb":::"memory");
 }
+
+#define p00_mfence(...)                         \
+P99_IF_EMPTY(__VA_ARGS__)                       \
+ (p00_mfence_internal(memory_order_seq_cst))    \
+ (p00_mfence_internal(__VA_ARGS__))
+
+#define p00_sync_lock_release(...)                              \
+  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                           \
+  (p00_sync_lock_release_internal(__VA_ARGS__))                 \
+  (p00_sync_lock_release_internal(P99_ALLBUTLAST(__VA_ARGS__)))
+#define p00_sync_lock_test_and_set(...)                         \
+  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                           \
+  (p00_sync_lock_test_and_set_internal(__VA_ARGS__))            \
+  (p00_sync_lock_test_and_set_internal(P99_ALLBUTLAST(__VA_ARGS__)))
 
 p99_inline
 uint32_t __sync_val_compare_and_swap_4(uint32_t volatile *object, uint32_t p00_pre, uint32_t p00_des) {
