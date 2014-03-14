@@ -45,20 +45,31 @@ P00_ATOMIC_EXCHANGE_DECLARE(uint16_t, 2);
 P00_ATOMIC_EXCHANGE_DECLARE(uint32_t, 4);
 P00_ATOMIC_EXCHANGE_DECLARE(uint64_t, 8);
 
+#define p00_atomic_clear(OBJ, ORD)              \
+p99_extension ({                                \
+  p00_atomic_flag* p00_obj = (OBJ);             \
+  __atomic_clear(p00_obj, (ORD));               \
+ })
 
-#define p00_mfence(...)                                        \
- P99_IF_EMPTY(__VA_ARGS__)                                     \
- (__atomic_thread_fence(__ATOMIC_SEQ_CST))                     \
+#define p00_atomic_test_and_set(OBJ, ORD)       \
+p99_extension ({                                \
+  p00_atomic_flag* p00_obj = (OBJ);             \
+  __atomic_test_and_set(p00_obj, (ORD));        \
+ })
+
+#define p00_mfence(...)                         \
+ P99_IF_EMPTY(__VA_ARGS__)                      \
+ (__atomic_thread_fence(__ATOMIC_SEQ_CST))      \
  (__atomic_thread_fence(__VA_ARGS__))
 
-#define p00_sync_lock_release(...)                             \
-  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
-  (__atomic_clear(__VA_ARGS__, __ATOMIC_SEQ_CST))              \
-  (__atomic_clear(__VA_ARGS__))
+#define p00_sync_lock_release(...)                      \
+  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                   \
+  (p00_atomic_clear(__VA_ARGS__, __ATOMIC_SEQ_CST))     \
+  (p00_atomic_clear(__VA_ARGS__))
 
-#define p00_sync_lock_test_and_set(...)                        \
-  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
-  (__atomic_test_and_set(__VA_ARGS__, __ATOMIC_SEQ_CST))       \
-  (__atomic_test_and_set(__VA_ARGS__))
+#define p00_sync_lock_test_and_set(...)                         \
+  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                           \
+  (p00_atomic_test_and_set(__VA_ARGS__, __ATOMIC_SEQ_CST))      \
+  (p00_atomic_test_and_set(__VA_ARGS__))
 
 #endif

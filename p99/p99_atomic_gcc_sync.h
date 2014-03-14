@@ -45,16 +45,41 @@ P00_ATOMIC_EXCHANGE_DECLARE(uint16_t, 2);
 P00_ATOMIC_EXCHANGE_DECLARE(uint32_t, 4);
 P00_ATOMIC_EXCHANGE_DECLARE(uint64_t, 8);
 
-
 #define p00_mfence(...) __sync_synchronize()
-#define p00_sync_lock_release(...)                             \
-  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
-  (__sync_lock_release(__VA_ARGS__))                           \
-  (__sync_lock_release(P99_ALLBUTLAST(__VA_ARGS__)))
-#define p00_sync_lock_test_and_set(...)                        \
-  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
-  (__sync_lock_test_and_set(__VA_ARGS__, 1))                   \
-  (__sync_lock_test_and_set(P99_ALLBUTLAST(__VA_ARGS__), 1))
+
+#define p00_sync_lock_release_(OBJ, ORD, ...)                           \
+p99_extension ({                                                        \
+  p00_atomic_flag* p00_obj = (OBJ);                                     \
+  /* __sync_lock_release only has release consistency */                \
+  /* the fence must come before so nothing can be reordered after */    \
+  switch (ORD) {                                                        \
+  case memory_order_consume: ;                                          \
+  case memory_order_acquire: ;                                          \
+  case memory_order_acq_rel: ;                                          \
+  case memory_order_seq_cst: ;                                          \
+    p00_mfence();                                                       \
+  }                                                                     \
+  __sync_lock_release(p00_obj);                                         \
+ })
+
+#define p00_sync_lock_test_and_set_(OBJ, ORD, ...)                      \
+p99_extension ({                                                        \
+  p00_atomic_flag* p00_obj = (OBJ);                                     \
+  /* __sync_lock_test_and_set only has acquire consistency */           \
+  int ret = __sync_lock_test_and_set(p00_obj, 1);                       \
+  /* the fence must come after so nothing can be reordered before */    \
+  switch (ORD) {                                                        \
+  case memory_order_consume: ;                                          \
+  case memory_order_release: ;                                          \
+  case memory_order_acq_rel: ;                                          \
+  case memory_order_seq_cst: ;                                          \
+    p00_mfence();                                                       \
+  }                                                                     \
+  ret = ret;                                                            \
+ })
+
+#define p00_sync_lock_release(...) p00_sync_lock_release_(__VA_ARGS__, memory_order_seq_cst, )
+#define p00_sync_lock_test_and_set(...) p00_sync_lock_test_and_set_(__VA_ARGS__, memory_order_seq_cst, )
 
 
 #endif

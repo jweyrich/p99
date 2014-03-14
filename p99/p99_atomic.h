@@ -514,6 +514,8 @@ __typeof__(P99_GENERIC_SIZE_LIT(sizeof(T), (uintptr_t){ 0 }, P00_UINT_TYPE_LIST)
  ** @{
  **/
 
+typedef uint32_t volatile p00_atomic_flag;
+
 /**
  ** @brief The "minimal" type for which atomic operations must be
  ** defined.
@@ -529,7 +531,7 @@ __typeof__(P99_GENERIC_SIZE_LIT(sizeof(T), (uintptr_t){ 0 }, P00_UINT_TYPE_LIST)
  ** ::atomic_flag_unlock that perform these spinlock type operations
  ** with only the necessary memory consistency.
  **/
-P99_ENC_DECLARE(uint32_t volatile, atomic_flag);
+P99_ENC_DECLARE(p00_atomic_flag, atomic_flag);
 
 #define P00_AX(OBJP) ((OBJP)->p00_xval)
 #define P00_AT(OBJP) (P00_AX(OBJP).p00_t)
@@ -884,45 +886,25 @@ typedef _Atomic(uintmax_t) atomic_uintmax_t;
  **
  ** @related atomic_flag
  **
- ** @param object the object that will be set
+ ** @param OBJ the object that will be set
  **
- ** @param order fine tune the set operation for a specific memory
- ** order. The current implementation only uses this to enforce a
- ** complete memory barrier where necessary.
+ ** @param ORD fine tune the set operation for a specific memory order
+ ** if the platform supports it. Otherwise the memory order is the
+ ** most restrictive, namely ::memory_order_seq_cst.
  **/
-p99_inline
-_Bool atomic_flag_test_and_set_explicit(volatile atomic_flag *p00_objp, memory_order p00_ord) {
-  _Bool p00_ret;
-  switch (p00_ord) {
-    /* This case doesn't require any guarantee. */
-  case memory_order_relaxed:
-    p00_ret = P99_ENCP(p00_objp);
-    P99_ENCP(p00_objp) = 1;
-    break;
-    /* For these three the acquire semantics are not sufficient. */
-  case memory_order_release: ;
-  case memory_order_acq_rel: ;
-  case memory_order_seq_cst:
-    atomic_thread_fence(p00_ord);
-    p00_ret = p00_sync_lock_test_and_set(&P99_ENCP(p00_objp));
-    break;
-  default:
-    p00_ret = p00_sync_lock_test_and_set(&P99_ENCP(p00_objp));
-    break;
-  }
-  return p00_ret;
-}
+#define atomic_flag_test_and_set_explicit(OBJ, ORD) p00_sync_lock_test_and_set(&P99_ENCP(OBJ), (ORD))
 
 /**
- ** @brief Unconditionally set @a *object to @c true and return the
+ ** @brief Unconditionally set @a OBJ to @c true and return the
  ** previous value
  **
  ** @related atomic_flag
+ **
+ ** This implementation has the additional feature that a second
+ ** optional argument can be given. The call is then equivalent to one
+ ** to ::atomic_flag_test_and_set_explicit.
  **/
-p99_inline
-_Bool atomic_flag_test_and_set(volatile atomic_flag *p00_objp) {
-  return atomic_flag_test_and_set_explicit(p00_objp, memory_order_seq_cst);
-}
+#define atomic_flag_test_and_set(...) p00_sync_lock_test_and_set(__VA_ARGS__)
 
 /**
  ** @brief Unconditionally set @a *p00_objp to @c false
@@ -935,35 +917,14 @@ _Bool atomic_flag_test_and_set(volatile atomic_flag *p00_objp) {
  ** order. The current implementation only uses this to enforce a
  ** complete memory barrier where necessary.
  **/
-p99_inline
-void atomic_flag_clear_explicit(volatile atomic_flag *p00_objp, memory_order p00_ord) {
-  switch(p00_ord) {
-    /* This case doesn't require any guarantee. */
-  case memory_order_relaxed:
-    P99_ENCP(p00_objp) = 0;
-    break;
-    /* For these three the release semantics are not sufficient. */
-  case memory_order_acquire: ;
-  case memory_order_acq_rel: ;
-  case memory_order_seq_cst:
-    p00_sync_lock_release(&P99_ENCP(p00_objp));
-    atomic_thread_fence(p00_ord);
-    break;
-  default:
-    p00_sync_lock_release(&P99_ENCP(p00_objp));
-    break;
-  }
-}
+#define atomic_flag_clear_explicit(OBJ, ORD) p00_sync_lock_release(&P99_ENCP(OBJ), (ORD))
 
 /**
  ** @brief Unconditionally set @a *p00_objp to @c false
  **
  ** @related atomic_flag
  **/
-p99_inline
-void atomic_flag_clear(volatile atomic_flag *p00_objp) {
-  atomic_flag_clear_explicit(p00_objp, memory_order_seq_cst);
-}
+#define atomic_flag_clear(...)  p00_sync_lock_release(__VA_ARGS__)
 
 #include "p99_atomic_flag.h"
 
