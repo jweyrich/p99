@@ -55,10 +55,10 @@ checkZeroFunc(P99_AARG(double const, C, 2)) {
   atomic_flag ret = ATOMIC_FLAG_INIT;
   P99_PARALLEL_DO(size_t, i, 0, P99_ALEN(*C, 0)) {
     P99_PARALLEL_DO(size_t, j, 0, P99_ALEN(*C, 1)) {
-      if ((*C)[i][j] != 0.0) atomic_flag_test_and_set(&ret);
+      if ((*C)[i][j] != 0.0) atomic_flag_test_and_set_explicit(&ret, memory_order_release);
     }
   }
-  return !atomic_flag_test_and_set(&ret);
+  return !atomic_flag_test_and_set_explicit(&ret, memory_order_acquire);
 }
 
 P99_CA_WRAP_DECLARE(checkZeroFunc, bool, (P99_AARG(double const, C, 2)), (P99_ANAME(C, 2)), (), (2));
