@@ -846,7 +846,7 @@ int thrd_detach(thrd_t p00_thr) {
      valid. If it already has finished, this will just free the
      resources that pthread holds for it. */
   int p00_ret = pthread_detach(P99_ENC(p00_thr)->p00_id) ? thrd_error : thrd_success;
-  if (atomic_flag_test_and_set(&P99_ENC(p00_thr)->p00_detached)) {
+  if (atomic_flag_test_and_set_explicit(&P99_ENC(p00_thr)->p00_detached, memory_order_acq_rel)) {
     /* The thread has already finished. Free the state, since nobody
        will join it, anyhow. */
     free(P99_ENC(p00_thr));
@@ -996,7 +996,7 @@ void * p00_thrd_create(void* p00_context) {
     if (!setjmp(p00_cntxt->p00_ovrl.p00_jmp)) {
       p00_cntxt->p00_ret = p00_func(p00_arg);
     }
-    if (atomic_flag_test_and_set(&p00_cntxt->p00_detached)) {
+    if (atomic_flag_test_and_set_explicit(&p00_cntxt->p00_detached, memory_order_acq_rel)) {
       free(p00_cntxt);
     }
   }
