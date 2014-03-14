@@ -233,7 +233,7 @@ p99_inline
 p99_tss* p99_tss_init(p99_tss* p00_el, tss_dtor_t p00_f) {
   if (p00_el) {
     *p00_el = (p99_tss) { .p99_dtor = p00_f, };
-    atomic_flag_clear(&p00_el->p00_flg);
+    atomic_flag_clear_explicit(&p00_el->p00_flg, memory_order_release);
   }
   return p00_el;
 }
