@@ -108,14 +108,14 @@ P99_DECLARE_STRUCT(p99_tp_state);
    p00_tp_tick wrapping for certain threads.
 
    */
-P99_DECLARE_THREAD_LOCAL(uintptr_t, p00_tp_tick);
+P99_DECLARE_THREAD_LOCAL(uintptr_t volatile, p00_tp_tick);
 P99_WEAK(p00_tp_tack) _Atomic(uintptr_t) volatile p00_tp_tack;
 
 p99_inline
 uintptr_t p00_tp_tick_get(void) {
   enum { p00_bits = sizeof(uintptr_t)*CHAR_BIT/2, };
   register uintptr_t const p00_mask = (UINTPTR_MAX >> p00_bits);
-  register uintptr_t*const p00_ret = &P99_THREAD_LOCAL(p00_tp_tick);
+  register uintptr_t volatile*const p00_ret = &P99_THREAD_LOCAL(p00_tp_tick);
   if (P99_UNLIKELY(!(*p00_ret & p00_mask))) {
     uintptr_t p00_tack = 0;
     while (!p00_tack) {
@@ -177,6 +177,7 @@ struct p99_tp_state {
 };
 
 # define P00_TP_INITIALIZER(VAL) {                             \
+    .p00_val = ATOMIC_VAR_INIT(P00_TP_GLUE_INITIALIZER(0, 0)), \
     .p00_init = (VAL),                                         \
 }
 
