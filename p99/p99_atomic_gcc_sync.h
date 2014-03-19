@@ -81,5 +81,21 @@ p99_extension ({                                                        \
 #define p00_sync_lock_release(...) p00_sync_lock_release_(__VA_ARGS__, memory_order_seq_cst, )
 #define p00_sync_lock_test_and_set(...) p00_sync_lock_test_and_set_(__VA_ARGS__, memory_order_seq_cst, )
 
+#define p00_atomic_compare_exchange_n_(PTR, EXP, DES, WEAK, SUC, FAI, ...) \
+p99_extension ({                                                        \
+    __typeof__(*PTR) volatile* p00_ptr2 = (PTR);                         \
+    __typeof__(EXP) p00_exp2 = (EXP);                                    \
+    __typeof__(DES) const p00_des2 = (DES);                              \
+    __typeof__(*PTR) p00_val2 = __sync_val_compare_and_swap(p00_ptr2, *p00_exp2, p00_des2); \
+    _Bool p00_ret2 = (*p00_exp2 == p00_val2);                              \
+    if (!p00_ret2) *p00_exp2 = p00_val2;                                   \
+    p00_ret2 = p00_ret2;                                                  \
+  })
+
+#define p00_atomic_compare_exchange_n(...)                              \
+  P99_IF_EQ(P99_NARG(__VA_ARGS__), 3)                                   \
+  (p00_atomic_compare_exchange_n_(__VA_ARGS__, 0, memory_order_seq_cst, memory_order_seq_cst)) \
+  (p00_atomic_compare_exchange_n_(__VA_ARGS__, memory_order_seq_cst, memory_order_seq_cst, ))
+
 
 #endif

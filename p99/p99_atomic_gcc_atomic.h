@@ -72,4 +72,17 @@ p99_extension ({                                \
   (p00_atomic_test_and_set(__VA_ARGS__, __ATOMIC_SEQ_CST))      \
   (p00_atomic_test_and_set(__VA_ARGS__))
 
+#define p00_atomic_compare_exchange_n_(PTR, EXP, DES, WEAK, SUC, FAI, ...) \
+p99_extension ({                                                        \
+    __typeof__(*(PTR)) volatile* p00_ptr2 = (PTR);                      \
+    __typeof__(*(PTR)) volatile* p00_exp2 = (EXP);                      \
+    __typeof__(*(PTR)) p00_des2 = (DES);                                \
+    __atomic_compare_exchange_n(p00_ptr2, (void*)p00_exp2, p00_des2, (WEAK), (SUC), (FAI)); \
+  })
+
+#define p00_atomic_compare_exchange_n(...)                              \
+  P99_IF_EQ(P99_NARG(__VA_ARGS__), 3)                                   \
+  (p00_atomic_compare_exchange_n_(__VA_ARGS__, 0, memory_order_seq_cst, memory_order_seq_cst)) \
+  (p00_atomic_compare_exchange_n_(__VA_ARGS__, memory_order_seq_cst, memory_order_seq_cst, ))
+
 #endif

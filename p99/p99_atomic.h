@@ -985,7 +985,7 @@ p99_extension                                                                   
   typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                                                      \
   typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                                                     \
   register p00_base_t const p00_des = (DESIRED);                                                        \
-  register p00_ubase_t p00_ret = P99_INIT;                                                              \
+  p00_ubase_t p00_ret = P99_INIT;                                                                       \
   if (!atomic_is_lock_free(p00_objp))                                                                   \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock) {                                                             \
       p00_ret.p00_t = P00_AT(p00_objp);                                                                 \
@@ -1004,12 +1004,7 @@ p99_extension                                                                   
         break;                                                                                          \
       default:                                                                                          \
         p00_ret.p00_m = P00_AM(p00_objp);                                                               \
-        for (;;) {                                                                                      \
-          P99_MACRO_VAR(p00_valm,                                                                       \
-                        __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_ret.p00_m, p00_desm.p00_m)); \
-          if (P99_LIKELY(p00_valm == p00_ret.p00_m)) break;                                             \
-          p00_ret.p00_m = p00_valm;                                                                     \
-        }                                                                                               \
+        do {} while(!p00_atomic_compare_exchange_n(&P00_AM(p00_objp), &p00_ret.p00_m, p00_desm.p00_m)); \
       }                                                                                                 \
     })                                                                                                  \
     p00_ret.p00_t;                                                                                      \
@@ -1024,27 +1019,24 @@ p99_extension                                                                   
  **
  ** @see atomic_int
  **/
-#define atomic_load(OBJP)                                                         \
-p99_extension                                                                     \
-({                                                                                \
-  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                     \
-  typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                                \
-  typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                               \
-  ((!atomic_is_lock_free(p00_objp))                                               \
-   ? ({                                                                           \
-       register p00_base_t p00_ret = P99_INIT;                                    \
-       P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                      \
-         p00_ret = P00_AT(p00_objp);                                              \
-       p00_ret;                                                                   \
-     })                                                                           \
-   : (P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                    \
-      (P00_AT(p00_objp))                                                          \
-      ((p00_ubase_t){                                                             \
-            .p00_m =                                                              \
-            P00_ATOMIC_TERN(p00_objp,                                             \
-                            __sync_val_compare_and_swap(&P00_AM(p00_objp), 0, 0), \
-                            P00_AM(p00_objp)),                                    \
-            }).p00_t));                                                           \
+#define atomic_load(OBJP)                                               \
+p99_extension                                                           \
+({                                                                      \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                           \
+  typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                      \
+  typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                     \
+  typedef __typeof__(P00_AM(p00_objp)) p00_mbase_t;                     \
+  p00_base_t p00_ret = P99_INIT;                                        \
+  if (!atomic_is_lock_free(p00_objp)) {                                 \
+    P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                               \
+      p00_ret = P00_AT(p00_objp);                                       \
+  } else {                                                              \
+    P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                            \
+      (P00_AT(p00_objp))                                                \
+      (p00_atomic_compare_exchange_n(&P00_AM(p00_objp), (p00_mbase_t*)&p00_ret, 0, \
+                                     false, memory_order_seq_cst, memory_order_seq_cst)); \
+  }                                                                     \
+  p00_ret = p00_ret;                                                    \
  })
 
 #define P00_CVT(EXP) ((void const*)(((struct { void const volatile* a; }){ .a = (EXP) }).a))
@@ -1071,6 +1063,7 @@ p99_extension                                                                   
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                           \
   typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                                      \
   typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                                     \
+  typedef __typeof__(P00_AM(p00_objp)) p00_mbase_t;                                     \
   /* Both, *EXPECTED and DESIRED must be assignment compatible with the base type */    \
   register p00_base_t volatile* const p00_exp = (EXPECTED);                             \
   register p00_ubase_t const p00_des =  { .p00_t = (DESIRED) };                         \
@@ -1084,17 +1077,10 @@ p99_extension                                                                   
   }                                                                                     \
   P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                              \
     (else p00_ret = false;)                                                             \
-    (else {                                                                             \
-      register p00_ubase_t p00_expm = { .p00_t = *p00_exp, };                           \
-      register p00_ubase_t const p00_valm                                               \
-        = { .p00_m = P00_ATOMIC_TERN                                                    \
-        (p00_objp,                                                                      \
-         __sync_val_compare_and_swap(&P00_AM(p00_objp), p00_expm.p00_m, p00_des.p00_m), \
-         0) };                                                                          \
-      p00_ret = (p00_expm.p00_m == p00_valm.p00_m);                                     \
-      if (!p00_ret) *p00_exp = p00_valm.p00_t;                                          \
-    })                                                                                  \
-    p00_ret;                                                                            \
+    (else p00_ret = p00_atomic_compare_exchange_n(&P00_AM(p00_objp), ((p00_mbase_t*)p00_exp), p00_des.p00_m, \
+                                                  true, memory_order_seq_cst, memory_order_seq_cst); \
+     )                                                                  \
+    p00_ret;                                                            \
  })
 
 #ifdef P00_DOXYGEN
