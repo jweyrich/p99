@@ -26,24 +26,20 @@
  ** @c __sync builtins.
  **/
 
+#define p00_atomic_exchange_n_(PTR, DES, ORD, ...)                      \
+p99_extension ({                                                        \
+    register __typeof__(*(PTR)) volatile* p00_ptr = (PTR);              \
+    register __typeof__(*(PTR)) p00_des = (DES);                        \
+    register __typeof__(*(PTR)) p00_ret = p00_des;                      \
+    for (;;) {                                                          \
+      register __typeof__(*(PTR)) p00_val = __sync_val_compare_and_swap(p00_ptr, p00_ret, p00_des); \
+      if (P99_LIKELY(p00_val == p00_ret)) break;                        \
+      p00_ret = p00_val;                                                \
+    }                                                                   \
+    p00_ret = p00_ret;                                                  \
+  })
 
-#define P00_ATOMIC_EXCHANGE_DECLARE(T, N)                             \
-p99_inline                                                            \
-T P99_PASTE(p00_atomic_exchange_, N)(T volatile * p00_p, T p00_des) { \
-  T p00_ret = *p00_p;                                                 \
-  for (;;) {                                                          \
-    T p00_val = __sync_val_compare_and_swap(p00_p, p00_ret, p00_des); \
-    if (P99_LIKELY(p00_val == p00_ret)) break;                        \
-    p00_ret = p00_val;                                                \
-  }                                                                   \
-  return p00_ret;                                                     \
-}                                                                     \
-P99_MACRO_END(P00_ATOMIC_EXCHANGE_DECLARE)
-
-P00_ATOMIC_EXCHANGE_DECLARE(uint8_t, 1);
-P00_ATOMIC_EXCHANGE_DECLARE(uint16_t, 2);
-P00_ATOMIC_EXCHANGE_DECLARE(uint32_t, 4);
-P00_ATOMIC_EXCHANGE_DECLARE(uint64_t, 8);
+#define p00_atomic_exchange_n(...) p00_atomic_exchange_n_(__VA_ARGS__,,)
 
 #define p00_mfence(...) __sync_synchronize()
 

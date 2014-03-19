@@ -85,4 +85,26 @@ p99_extension ({                                                        \
   (p00_atomic_compare_exchange_n_(__VA_ARGS__, 0, memory_order_seq_cst, memory_order_seq_cst)) \
   (p00_atomic_compare_exchange_n_(__VA_ARGS__, memory_order_seq_cst, memory_order_seq_cst, ))
 
+#define p00_atomic_exchange_n_(PTR, DES, ORD, ...)                      \
+p99_extension ({                                                        \
+    __typeof__(*(PTR)) volatile* p00_ptr3 = (PTR);                      \
+    __typeof__(*(PTR)) p00_des3 = (DES);                                \
+    register int p00_ord3 = (ORD);                                      \
+    switch (p00_ord3) {                                                 \
+    case __ATOMIC_RELAXED:;                                             \
+    case __ATOMIC_SEQ_CST:;                                             \
+    case __ATOMIC_ACQUIRE:;                                             \
+    case __ATOMIC_RELEASE:;                                             \
+    case __ATOMIC_ACQ_REL:;                                             \
+      break;                                                            \
+    default:                                                            \
+      p00_ord3 = __ATOMIC_SEQ_CST;                                      \
+    }                                                                   \
+    __atomic_exchange_n(p00_ptr3, p00_des3, p00_ord3);                  \
+  })
+
+#define p00_atomic_exchange_n(...) p00_atomic_exchange_n_(__VA_ARGS__, __ATOMIC_SEQ_CST,)
+
+
+
 #endif
