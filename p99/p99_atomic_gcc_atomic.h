@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* (C) copyright  2012, 2014 Jens Gustedt, INRIA, France                      */
+/* (C) copyright  2014 Jens Gustedt, INRIA, France                            */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -24,26 +24,11 @@
  **
  ** @brief Implement some of the atomic operations as fallback to gcc'
  ** @c __atomic builtins.
+ **
+ ** All call to the __atomic builtins should have the corresponding
+ ** ::memory_order arguments as compile time constants.
  **/
 
-
-#define P00_ATOMIC_EXCHANGE_DECLARE(T, N)                             \
-p99_inline                                                            \
-T P99_PASTE(p00_atomic_exchange_, N)(T volatile * p00_p, T p00_des) { \
-  T p00_ret = *p00_p;                                                 \
-  for (;;) {                                                          \
-    T p00_val = __sync_val_compare_and_swap(p00_p, p00_ret, p00_des); \
-    if (P99_LIKELY(p00_val == p00_ret)) break;                        \
-    p00_ret = p00_val;                                                \
-  }                                                                   \
-  return p00_ret;                                                     \
-}                                                                     \
-P99_MACRO_END(P00_ATOMIC_EXCHANGE_DECLARE)
-
-P00_ATOMIC_EXCHANGE_DECLARE(uint8_t, 1);
-P00_ATOMIC_EXCHANGE_DECLARE(uint16_t, 2);
-P00_ATOMIC_EXCHANGE_DECLARE(uint32_t, 4);
-P00_ATOMIC_EXCHANGE_DECLARE(uint64_t, 8);
 
 #define p00_atomic_clear(OBJ, ORD)              \
 p99_extension ({                                \
@@ -74,10 +59,11 @@ p99_extension ({                                \
 
 #define p00_atomic_compare_exchange_n_(PTR, EXP, DES, WEAK, SUC, FAI, ...) \
 p99_extension ({                                                        \
-    __typeof__(*(PTR)) volatile* p00_ptr2 = (PTR);                      \
-    __typeof__(*(PTR)) volatile* p00_exp2 = (EXP);                      \
-    __typeof__(*(PTR)) p00_des2 = (DES);                                \
-    __atomic_compare_exchange_n(p00_ptr2, (void*)p00_exp2, p00_des2, (WEAK), (SUC), (FAI)); \
+    P99_MACRO_PVAR(p00_ptr, (PTR), volatile);                           \
+    P99_MACRO_PVAR(p00_exp, (EXP), volatile);                           \
+    P99_MACRO_VAR(p00_desp, (DES));                                     \
+    __typeof__(*(PTR)) p00_des = p00_desp;                               \
+    __atomic_compare_exchange_n(p00_ptr, (void*)p00_exp, p00_des, (WEAK), (SUC), (FAI)); \
   })
 
 #define p00_atomic_compare_exchange_n(...)                              \
@@ -87,20 +73,27 @@ p99_extension ({                                                        \
 
 #define p00_atomic_exchange_n_(PTR, DES, ORD, ...)                      \
 p99_extension ({                                                        \
-    __typeof__(*(PTR)) volatile* p00_ptr3 = (PTR);                      \
-    __typeof__(*(PTR)) p00_des3 = (DES);                                \
-    register int p00_ord3 = (ORD);                                      \
-    switch (p00_ord3) {                                                 \
+    P99_MACRO_PVAR(p00_ptr, (PTR), volatile);                           \
+    P99_MACRO_VAR(p00_des, (DES));                                      \
+    P99_MACRO_VAR(p00_ord, (ORD), const);                               \
+    __typeof__(*p00_ptr) p00_ret;                                       \
+    switch (p00_ord) {                                                  \
     case __ATOMIC_RELAXED:;                                             \
-    case __ATOMIC_SEQ_CST:;                                             \
+      p00_ret = __atomic_exchange_n(p00_ptr, p00_des, __ATOMIC_RELAXED); \
+      break;                                                            \
     case __ATOMIC_ACQUIRE:;                                             \
+      p00_ret = __atomic_exchange_n(p00_ptr, p00_des, __ATOMIC_ACQUIRE); \
+      break;                                                            \
     case __ATOMIC_RELEASE:;                                             \
+      p00_ret = __atomic_exchange_n(p00_ptr, p00_des, __ATOMIC_RELEASE); \
+      break;                                                            \
     case __ATOMIC_ACQ_REL:;                                             \
+      p00_ret = __atomic_exchange_n(p00_ptr, p00_des, __ATOMIC_ACQ_REL); \
       break;                                                            \
     default:                                                            \
-      p00_ord3 = __ATOMIC_SEQ_CST;                                      \
+      p00_ret = __atomic_exchange_n(p00_ptr, p00_des, __ATOMIC_SEQ_CST); \
     }                                                                   \
-    __atomic_exchange_n(p00_ptr3, p00_des3, p00_ord3);                  \
+    p00_ret = p00_ret;                                                  \
   })
 
 #define p00_atomic_exchange_n(...) p00_atomic_exchange_n_(__VA_ARGS__, __ATOMIC_SEQ_CST,)
