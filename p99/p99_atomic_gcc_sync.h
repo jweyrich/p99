@@ -28,8 +28,8 @@
 
 #define p00_atomic_exchange_n_(PTR, DES, ORD, ...)                      \
 p99_extension ({                                                        \
-    register __typeof__(*(PTR)) volatile* p00_ptr = (PTR);              \
-    register __typeof__(*(PTR)) p00_des = (DES);                        \
+    P99_MACRO_PVAR(p00_ptr, (PTR), volatile);                           \
+    P99_MACRO_VAR(p00_des, (DES));                                      \
     register __typeof__(*(PTR)) p00_ret = p00_des;                      \
     for (;;) {                                                          \
       register __typeof__(*(PTR)) p00_val = __sync_val_compare_and_swap(p00_ptr, p00_ret, p00_des); \
@@ -45,7 +45,7 @@ p99_extension ({                                                        \
 
 #define p00_sync_lock_release_(OBJ, ORD, ...)                           \
 p99_extension ({                                                        \
-  p00_atomic_flag* p00_obj = (OBJ);                                     \
+  P99_MACRO_PVAR(p00_obj, (OBJ));                                       \
   /* __sync_lock_release only has release consistency */                \
   /* the fence must come before so nothing can be reordered after */    \
   switch (ORD) {                                                        \
@@ -60,7 +60,7 @@ p99_extension ({                                                        \
 
 #define p00_sync_lock_test_and_set_(OBJ, ORD, ...)                      \
 p99_extension ({                                                        \
-  p00_atomic_flag* p00_obj = (OBJ);                                     \
+  P99_MACRO_PVAR(p00_obj, (OBJ));                                       \
   /* __sync_lock_test_and_set only has acquire consistency */           \
   int ret = __sync_lock_test_and_set(p00_obj, 1);                       \
   /* the fence must come after so nothing can be reordered before */    \
@@ -79,13 +79,13 @@ p99_extension ({                                                        \
 
 #define p00_atomic_compare_exchange_n_(PTR, EXP, DES, WEAK, SUC, FAI, ...) \
 p99_extension ({                                                        \
-    __typeof__(*PTR) volatile* p00_ptr2 = (PTR);                         \
-    __typeof__(EXP) p00_exp2 = (EXP);                                    \
-    __typeof__(DES) const p00_des2 = (DES);                              \
-    __typeof__(*PTR) p00_val2 = __sync_val_compare_and_swap(p00_ptr2, *p00_exp2, p00_des2); \
-    _Bool p00_ret2 = (*p00_exp2 == p00_val2);                              \
-    if (!p00_ret2) *p00_exp2 = p00_val2;                                   \
-    p00_ret2 = p00_ret2;                                                  \
+    P99_MACRO_PVAR(p00_ptr, (PTR), volatile);                           \
+    P99_MACRO_VAR(p00_exp, (EXP));                                      \
+    P99_MACRO_VAR(p00_des, (DES), const);                               \
+    __typeof__(*PTR) p00_val = __sync_val_compare_and_swap(p00_ptr, *p00_exp, p00_des); \
+    _Bool p00_ret = (*p00_exp == p00_val);                              \
+    if (!p00_ret) *p00_exp = p00_val;                                   \
+    p00_ret = p00_ret;                                                  \
   })
 
 #define p00_atomic_compare_exchange_n(...)                              \
