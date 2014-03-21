@@ -971,14 +971,17 @@ p99_extension                                                  \
  **
  ** @a DESIRED and the base type of @a OBJP must be assignment compatible.
  **
+ ** @a ORD is the value for the memory consistency. Currently this
+ ** argument will not be taken into account for structure types.
+ **
  ** @remark this can be used in a context that is known to have a race
  ** condition
  **
  ** @see atomic_int
  **/
-#define atomic_exchange(OBJP, DESIRED)
+#define atomic_exchange_explicit(OBJP, DESIRED, ORD)
 #else
-#define atomic_exchange(OBJP, DESIRED)                                            \
+#define atomic_exchange_explicit(OBJP, DESIRED, ORD)                              \
 p99_extension                                                                     \
 ({                                                                                \
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                     \
@@ -995,21 +998,39 @@ p99_extension                                                                   
     P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                      \
       ()                                                                          \
       (register p00_ubase_t const p00_desm = { .p00_t = p00_des };                \
-       p00_ret.p00_m = p00_atomic_exchange_n(&P00_AM(p00_objp), p00_desm.p00_m)); \
+       p00_ret.p00_m = p00_atomic_exchange_n(&P00_AM(p00_objp), p00_desm.p00_m), (ORD)); \
   }                                                                               \
   p00_ret.p00_t;                                                                  \
  })
 #endif
 
 /**
+ ** @brief Store @a DESIRED into the object behind @a OBJP and return its previous value.
+ **
+ ** @a DESIRED and the base type of @a OBJP must be assignment compatible.
+ **
+ ** @remark this can be used in a context that is known to have a race
+ ** condition
+ **
+ ** @see atomic_int
+ ** @see atomic_exchange_explicit
+ **/
+#define atomic_exchange(OBJP, DESIRED)                                  \
+atomic_exchange_explicit((OBJP), (DESIRED), memory_order_seq_cst)
+
+
+/**
  ** @brief Return the value of the object behind @a OBJP.
+ **
+ ** @a ORD is the value for the memory consistency. Currently this
+ ** argument will not be taken into account for structure types.
  **
  ** @remark this can be used in a context that is known to have a race
  ** condition
  **
  ** @see atomic_int
  **/
-#define atomic_load(OBJP)                                                           \
+#define atomic_load_explicit(OBJP, ORD)                                             \
 p99_extension                                                                       \
 ({                                                                                  \
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                       \
@@ -1023,10 +1044,16 @@ p99_extension                                                                   
   } else {                                                                          \
     P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                        \
       (P00_AT(p00_objp))                                                            \
-      (p00_ret.p00_m = p00_atomic_load_n(&P00_AM(p00_objp), memory_order_seq_cst)); \
+      (p00_ret.p00_m = p00_atomic_load_n(&P00_AM(p00_objp), (ORD)));                \
   }                                                                                 \
   p00_ret.p00_t = p00_ret.p00_t;                                                    \
  })
+
+/**
+ ** @see atomic_load_explicit
+ **/
+#define atomic_load(OBJP) atomic_load_explicit((OBJP), memory_order_seq_cst)
+
 
 #define P00_CVT(EXP) ((void const*)(((struct { void const volatile* a; }){ .a = (EXP) }).a))
 
@@ -1044,13 +1071,22 @@ p99_extension                                                                   
  ** @a DESIRED must be assignment compatible with the base type of @a
  ** OBJP.
  **
+ ** @a ORD is the value for the memory consistency. Currently this
+ ** argument will not be taken into account for structure types.
+ **
  ** @see atomic_int
  **/
-#define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                                             \
-  p00_atomic_compare_exchange(true, OBJP, EXPECTED, DESIRED, memory_order_seq_cst, memory_order_seq_cst,)
+#define atomic_compare_exchange_weak_explicit(OBJP, EXPECTED, DESIRED, SUCC, FAIL) \
+  p00_atomic_compare_exchange(true, OBJP, EXPECTED, DESIRED, SUCC, FAIL,)
 
-#define atomic_compare_exchange_strong(OBJP, EXPECTED, DESIRED)                                            \
-  p00_atomic_compare_exchange(false, OBJP, EXPECTED, DESIRED, memory_order_seq_cst, memory_order_seq_cst,)
+#define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)           \
+atomic_compare_exchange_weak_explicit(OBJP, EXPECTED, DESIRED, memory_order_seq_cst, memory_order_seq_cst)
+
+#define atomic_compare_exchange_strong_explicit(OBJP, EXPECTED, DESIRED, SUCC, FAIL) \
+  p00_atomic_compare_exchange(false, OBJP, EXPECTED, DESIRED, SUCC, FAIL,)
+
+#define atomic_compare_exchange_strong(OBJP, EXPECTED, DESIRED)           \
+atomic_compare_exchange_strong_explicit(OBJP, EXPECTED, DESIRED, memory_order_seq_cst, memory_order_seq_cst)
 
 #define p00_atomic_compare_exchange(WEAK, OBJP, EXPECTED, DESIRED, SUCC, FAIL, ...)                          \
 p99_extension                                                                                                \
@@ -1087,11 +1123,14 @@ p99_extension                                                                   
  ** @remark this can be used in a context that is known to have a race
  ** condition
  **
+ ** @a ORD is the value for the memory consistency. Currently this
+ ** argument will not be taken into account for structure types.
+ **
  ** @see atomic_int
  **/
-#define atomic_store(OBJP, DES)
+#define atomic_store_explicit(OBJP, DES, ORD)
 #else
-#define atomic_store(OBJP, DES)                                                     \
+#define atomic_store_explicit(OBJP, DES, ORD)                                       \
 p99_extension                                                                       \
 ({                                                                                  \
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                       \
@@ -1106,12 +1145,18 @@ p99_extension                                                                   
   } else {                                                                          \
     P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                        \
       (P00_AT(p00_objp))                                                            \
-      (p00_atomic_store_n(&P00_AM(p00_objp), p00_des.p00_m, memory_order_seq_cst)); \
+      (p00_atomic_store_n(&P00_AM(p00_objp), p00_des.p00_m, (ORD)));                \
   }                                                                                 \
  })
 #endif
 
-#define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                \
+/**
+ ** @see atomic_store_explicit
+ **/
+#define atomic_store(OBJP, DES) atomic_store_explicit(OBJP, DES, memory_order_seq_cst)
+
+
+#define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR, ORD)           \
 p99_extension                                                         \
 ({                                                                    \
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                         \
@@ -1129,7 +1174,8 @@ p99_extension                                                         \
       (P00_AT(p00_objp))                                              \
       (P00_ATOMIC_TERN(p00_objp,                                      \
                        BUILTIN(&P00_AO(p00_objp),                     \
-                               P00_ATOMIC_TERN(p00_objp, p00_op, 0)), \
+                               P00_ATOMIC_TERN(p00_objp, p00_op, 0),  \
+                               (ORD)),                                \
                        P00_AT(p00_objp)))));                          \
  })
 
@@ -1143,10 +1189,17 @@ p99_extension                                                         \
  **
  ** The base type of @a OBJP must have an operator @c +=.
  **
+ ** @a ORD is the value for the memory consistency. Currently this
+ ** argument will not be taken into account for types that aren't
+ ** natively supported with atomic operations.
+ **
+ ** @see atomic_fetch_add for a simpler version without @a ORD parameter
  ** @see atomic_int
  **/
-#define atomic_fetch_add(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_add, +=)
+#define atomic_fetch_add_explicit(OBJP, OPERAND, ORD)                   \
+P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_add, +=, (ORD))
 
+#define atomic_fetch_add(OBJP, OPERAND) atomic_fetch_add_explicit((OBJP), (OPERAND), memory_order_seq_cst)
 
 /**
  ** @brief Atomically subtract @a OPERAND from @a *OBJP.
@@ -1158,9 +1211,17 @@ p99_extension                                                         \
  **
  ** The base type of @a OBJP must have an operator @c -=.
  **
+ ** @a ORD is the value for the memory consistency. Currently this
+ ** argument will not be taken into account for types that aren't
+ ** natively supported with atomic operations.
+ **
+ ** @see atomic_fetch_sub for a simpler version without @a ORD parameter
  ** @see atomic_int
  **/
-#define atomic_fetch_sub(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_sub, -=)
+#define atomic_fetch_sub_explicit(OBJP, OPERAND, ORD)           \
+P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_sub, -=, ORD)
+
+#define atomic_fetch_sub(OBJP, OPERAND) atomic_fetch_sub_explicit((OBJP), (OPERAND), memory_order_seq_cst)
 
 /**
  ** @brief Atomically do a bitwise OR operation between @a OPERAND and
@@ -1173,9 +1234,17 @@ p99_extension                                                         \
  **
  ** The base type of @a OBJP must have an operator @c |=.
  **
+ ** @a ORD is the value for the memory consistency. Currently this
+ ** argument will not be taken into account for types that aren't
+ ** natively supported with atomic operations.
+ **
+ ** @see atomic_fetch_or for a simpler version without @a ORD parameter
  ** @see atomic_int
  **/
-#define atomic_fetch_or(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_or, |=)
+#define atomic_fetch_or_explicit(OBJP, OPERAND, ORD)            \
+P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_or, |=, (ORD))
+
+#define atomic_fetch_or(OBJP, OPERAND) atomic_fetch_or_explicit((OBJP), (OPERAND), memory_order_seq_cst)
 
 /**
  ** @brief Atomically do a bitwise AND operation between @a OPERAND
@@ -1188,9 +1257,17 @@ p99_extension                                                         \
  **
  ** The base type of @a OBJP must have an operator @c &=.
  **
+ ** @a ORD is the value for the memory consistency. Currently this
+ ** argument will not be taken into account for types that aren't
+ ** natively supported with atomic operations.
+ **
+ ** @see atomic_fetch_and for a simpler version without @a ORD parameter
  ** @see atomic_int
  **/
-#define atomic_fetch_and(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_and, &=)
+#define atomic_fetch_and_explicit(OBJP, OPERAND, ORD)           \
+P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_and, &=, (ORD))
+
+#define atomic_fetch_and(OBJP, OPERAND) atomic_fetch_and_explicit((OBJP), (OPERAND), memory_order_seq_cst)
 
 /**
  ** @brief Atomically do a bitwise XOR operation between @a OPERAND
@@ -1203,10 +1280,18 @@ p99_extension                                                         \
  **
  ** The base type of @a OBJP must have an operator @c ^=.
  **
+ ** @a ORD is the value for the memory consistency. Currently this
+ ** argument will not be taken into account for types that aren't
+ ** natively supported with atomic operations.
+ **
+ ** @see atomic_fetch_xor for a simpler version without @a ORD parameter
  ** @see atomic_int
  ** @see _Atomic
  **/
-#define atomic_fetch_xor(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_xor, ^=)
+#define atomic_fetch_xor_explicit(OBJP, OPERAND, ORD)               \
+P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_xor, ^=, (ORD))
+
+#define atomic_fetch_xor(OBJP, OPERAND) atomic_fetch_xor_explicit((OBJP), (OPERAND), memory_order_seq_cst)
 
 #define atomic_fetch_add_conditional(OBJP, OPERAND)                       \
 p99_extension                                                             \
@@ -1225,7 +1310,26 @@ p99_extension                                                             \
   p00_r = p00_ret;                                                        \
  })
 
-#define atomic_fetch_max(OBJP, OPERAND)                                  \
+#define atomic_fetch_max(OBJP, OPERAND) atomic_fetch_max_explicit((OBJP), (OPERAND), memory_order_seq_cst)
+
+/**
+ ** @brief Atomically do a max operation between @a OPERAND
+ ** and @a *OBJP.
+ **
+ ** @return the current value hidden in @a OBJP before the operation.
+ **
+ ** @a OPERAND must be assignment compatible with the base type of @a
+ ** OBJP.
+ **
+ ** @a ORD is the value for the memory consistency. Currently this
+ ** argument will not be taken into account for types that aren't
+ ** natively supported with atomic operations.
+ **
+ ** @see atomic_fetch_max for a simpler version without @a ORD parameter
+ ** @see atomic_int
+ ** @see _Atomic
+ **/
+#define atomic_fetch_max_explicit(OBJP, OPERAND, ORD)                    \
 p99_extension                                                            \
 ({                                                                       \
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                            \
@@ -1235,7 +1339,7 @@ p99_extension                                                            \
   register __typeof__(p00_ret = p00_ret) p00_r = atomic_load(p00_objp);  \
   p00_ret = p00_r;                                                       \
   while (p00_r <= p00_op) {                                              \
-    if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_op)) break; \
+    if (atomic_compare_exchange_weak_explicit(p00_objp, &p00_ret, p00_op, (ORD), memory_order_seq_cst)) break; \
     else p00_r = p00_ret;                                                \
   }                                                                      \
   p00_r = p00_ret;                                                       \
