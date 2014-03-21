@@ -351,7 +351,7 @@ P99_WEAK(p99_constraint_handler)
 void p99_constraint_handler(const char * restrict p00_msg,
                             void * restrict p00_ptr,
                             errno_t p00_err) {
-  constraint_handler_t p00_func = atomic_load(&p00_constraint_handler);
+  constraint_handler_t p00_func = atomic_load_explicit(&p00_constraint_handler, memory_order_acquire);
   if (p00_func) p00_func(p00_msg, p00_ptr, p00_err);
 }
 
@@ -377,7 +377,7 @@ void abort_handler_s(const char * restrict p00_msg,
 p99_inline
 constraint_handler_t set_constraint_handler_s(constraint_handler_t p00_hand) {
   if (!p00_hand) p00_hand = P99_CONSTRAINT_HANDLER;
-  return atomic_exchange(&p00_constraint_handler, p00_hand);
+  return atomic_exchange_explicit(&p00_constraint_handler, p00_hand, memory_order_acq_rel);
 }
 
 # endif
@@ -387,6 +387,9 @@ errno_t p00_constraint_call(errno_t p00_cond, char const* p00_file, char const* 
   if (p00_cond) {
     if (p00_file) P00_JMP_BUF_FILE = p00_file;
     if (p00_context) P00_JMP_BUF_CONTEXT = p00_context;
+    /* Ensure that all dependent data for this error has been */   \
+    /* synchronized. */                                            \
+    atomic_thread_fence(memory_order_seq_cst);                     \
     p99_constraint_handler(p00_info, 0, p00_cond);
   }
   return p00_cond;

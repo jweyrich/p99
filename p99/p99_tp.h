@@ -119,7 +119,7 @@ uintptr_t p00_tp_tick_get(void) {
   if (P99_UNLIKELY(!(*p00_ret & p00_mask))) {
     uintptr_t p00_tack = 0;
     while (!p00_tack) {
-      p00_tack = atomic_fetch_add(&p00_tp_tack, 1u);
+      p00_tack = atomic_fetch_add_explicit(&p00_tp_tack, 1u, memory_order_acq_rel);
       p00_tack &= p00_mask;
     }
     *p00_ret = (p00_tack << p00_bits);
@@ -184,7 +184,7 @@ struct p99_tp_state {
 p99_inline
 bool p00_tp_cmpxchg(_Atomic(p00_tp_glue) volatile*const p00_p, p00_tp_glue volatile*const p00_prev, p00_tp_glue p00_new) {
   P99_MARK("wide cmpxchg start");
-  bool ret = atomic_compare_exchange_weak(p00_p, p00_prev, p00_new);
+  bool ret = atomic_compare_exchange_weak_explicit(p00_p, p00_prev, p00_new, memory_order_acq_rel, memory_order_consume);
   P99_MARK("wide cmpxchg end");
   return ret;
 }
@@ -193,7 +193,7 @@ p99_inline
 p00_tp_glue p00_tp_get(register p99_tp volatile*const p00_tp) {
   register p00_tp_glue p00_ret
   = P99_LIKELY(p00_tp)
-    ? atomic_load(&p00_tp->p00_val)
+    ? atomic_load_explicit(&p00_tp->p00_val, memory_order_consume)
     : (p00_tp_glue)P00_TP_GLUE_INITIALIZER((void*)0, p00_tp_tick_get());
   if (p00_tp && P99_UNLIKELY(!p00_tp_i2i(p00_ret))) {
     /* Only store it in addressable memory if we can't avoid it. */
@@ -214,7 +214,7 @@ p99_inline
 p00_tp_glue p99_tp_xchg(p99_tp volatile* p00_tp, void* p00_val) {
   p00_tp_glue p00_ret
   = P99_LIKELY(p00_tp)
-    ? atomic_load(&p00_tp->p00_val)
+    ? atomic_load_explicit(&p00_tp->p00_val, memory_order_consume)
     : (p00_tp_glue)P00_TP_GLUE_INITIALIZER((void*)0, p00_tp_tick_get());
   if (P99_LIKELY(p00_tp)) {
     register p00_tp_glue p00_rep = P00_TP_GLUE_INITIALIZER(p00_val, p00_tp_tick_get());
@@ -429,7 +429,7 @@ p99_extension ({                                                 \
     /* ensure that the pointer is converted to the */            \
     /* base type, and that the return can't be used as lvalue */ \
     register __typeof__(p00_ref) const p00_r = p00_ref;          \
-    if (p00_r) atomic_fetch_add(&p00_r->p99_cnt, 1);             \
+    if (p00_r) atomic_fetch_add_explicit(&p00_r->p99_cnt, 1, memory_order_acq_rel); \
     p00_r;                                                       \
 })
 
@@ -439,7 +439,7 @@ p99_extension ({                                                   \
     /* ensure that pointer that is returned is converted to the */ \
     /* base type, and that the return can't be used as lvalue */   \
     register P99_TP_TYPE(p00_tp)* const p00_r = (REF);             \
-    if (p00_r) atomic_fetch_add(&p00_r->p99_cnt, 1);               \
+    if (p00_r) atomic_fetch_add_explicit(&p00_r->p99_cnt, 1, memory_order_acq_rel); \
     p00_r;                                                         \
 })
 
@@ -451,7 +451,7 @@ p99_extension ({                                                 \
     /* ensure that the pointer is converted to the */            \
     /* base type, and that the return can't be used as lvalue */ \
     register __typeof__(*p00_ref)*const p00_r = p00_ref;         \
-    if (p00_r && (atomic_fetch_sub(&p00_r->p99_cnt, 1) == 1))    \
+    if (p00_r && (atomic_fetch_sub_explicit(&p00_r->p99_cnt, 1, memory_order_acq_rel) == 1)) \
       p00_d(p00_r);                                              \
     p00_r;                                                       \
 })

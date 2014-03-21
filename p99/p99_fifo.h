@@ -55,27 +55,27 @@ do {                                                                       \
   register const P99_MACRO_VAR(p00_h, &(*p00_l)[0]);                       \
   register const P99_MACRO_VAR(p00_t, &(*p00_l)[1]);                       \
   p00_el->p99_lifo = 0;                                                    \
-  P99_MACRO_VAR(p00_head, atomic_load(p00_h));                             \
+  P99_MACRO_VAR(p00_head, atomic_load_explicit(p00_h, memory_order_relaxed)); \
   for (;;) {                                                               \
     if (p00_head) {                                                        \
       /* spin lock the whole fifo */                                       \
-      if (atomic_compare_exchange_weak(p00_h, &p00_head, 0)) {             \
+      if (atomic_compare_exchange_weak_explicit(p00_h, &p00_head, 0, memory_order_acq_rel, memory_order_relaxed)) { \
         /* make p00_el the last element */                                 \
-        atomic_exchange(p00_t, p00_el)->p99_lifo = p00_el;                 \
+        atomic_exchange_explicit(p00_t, p00_el, memory_order_acq_rel)->p99_lifo = p00_el; \
         /* unlock the fifo */                                              \
-        atomic_store(p00_h, p00_head);                                     \
+        atomic_store_explicit(p00_h, p00_head, memory_order_release);      \
         break;                                                             \
       }                                                                    \
     } else {                                                               \
-      P99_MACRO_VAR(p00_tail, atomic_load(p00_t));                         \
+      P99_MACRO_VAR(p00_tail, atomic_load_explicit(p00_t, memory_order_relaxed)); \
       if (!p00_tail                                                        \
-          && atomic_compare_exchange_weak(p00_t, &p00_tail, p00_el)) {     \
+          && atomic_compare_exchange_weak_explicit(p00_t, &p00_tail, p00_el, memory_order_acq_rel, memory_order_relaxed)) { \
         /* the fifo was empty, our element is inserted, update the head */ \
-        atomic_store(p00_h, p00_el);                                       \
+        atomic_store_explicit(p00_h, p00_el, memory_order_release);        \
         break;                                                             \
       }                                                                    \
       /* we were in the middle of an update of another thread */           \
-      p00_head = atomic_load(p00_h);                                       \
+      p00_head = atomic_load_explicit(p00_h, memory_order_consume);        \
     }                                                                      \
   }                                                                        \
 } while (false)
@@ -129,26 +129,26 @@ p99_extension                                                            \
   register const P99_MACRO_VAR(p00_l, (L));                              \
   register const P99_MACRO_VAR(p00_h, &(*p00_l)[0]);                     \
   register const P99_MACRO_VAR(p00_t, &(*p00_l)[1]);                     \
-  P99_MACRO_VAR(p00_head, atomic_load(p00_h));                           \
+  P99_MACRO_VAR(p00_head, atomic_load_explicit(p00_h, memory_order_relaxed)); \
   for (;;) {                                                             \
     if (p00_head) {                                                      \
       /* spin lock the whole fifo */                                     \
-      if (atomic_compare_exchange_weak(p00_h, &p00_head, 0)) {           \
+      if (atomic_compare_exchange_weak_explicit(p00_h, &p00_head, 0, memory_order_acq_rel, memory_order_consume)) { \
         if (p00_head->p99_lifo)                                          \
           /* there is still another element to come in the fifo, make it \
              the head */                                                 \
-          atomic_store(p00_h, p00_head->p99_lifo);                       \
+          atomic_store_explicit(p00_h, p00_head->p99_lifo, memory_order_release); \
         else                                                             \
           /* this was the last element in the fifo, set the tail to 0,   \
              too */                                                      \
-          atomic_store(p00_t, 0);                                        \
+          atomic_store_explicit(p00_t, 0, memory_order_release);         \
         p00_head->p99_lifo = 0;                                          \
         break;                                                           \
       }                                                                  \
     } else {                                                             \
-      register P99_MACRO_VAR(p00_tail, atomic_load(p00_t));              \
+      register P99_MACRO_VAR(p00_tail, atomic_load_explicit(p00_t, memory_order_consume)); \
       if (!p00_tail) break;                                              \
-      p00_head = atomic_load(p00_h);                                     \
+      p00_head = atomic_load_explicit(p00_h, memory_order_relaxed);      \
     }                                                                    \
   }                                                                      \
   /* make sure that the result can not be used as an lvalue */           \
@@ -174,18 +174,18 @@ p99_extension                                                      \
   register const P99_MACRO_VAR(p00_l, (L));                        \
   register const P99_MACRO_VAR(p00_h, &(*p00_l)[0]);               \
   register const P99_MACRO_VAR(p00_t, &(*p00_l)[1]);               \
-  P99_MACRO_VAR(p00_head, atomic_load(p00_h));                     \
+  P99_MACRO_VAR(p00_head, atomic_load_explicit(p00_h, memory_order_relaxed)); \
   for (;;) {                                                       \
     if (p00_head) {                                                \
       /* spin lock the whole fifo */                               \
-      if (atomic_compare_exchange_weak(p00_h, &p00_head, 0)) {     \
-        atomic_store(p00_t, 0);                                    \
+      if (atomic_compare_exchange_weak_explicit(p00_h, &p00_head, 0, memory_order_acq_rel, memory_order_consume)) { \
+        atomic_store_explicit(p00_t, 0, memory_order_release);     \
         break;                                                     \
       }                                                            \
     } else {                                                       \
-      register const P99_MACRO_VAR(p00_tail, atomic_load(p00_t));  \
+      register const P99_MACRO_VAR(p00_tail, atomic_load_explicit(p00_t, memory_order_consume)); \
       if (!p00_tail) break;                                        \
-      p00_head = atomic_load(p00_h);                               \
+      p00_head = atomic_load_explicit(p00_h, memory_order_relaxed);\
     }                                                              \
   }                                                                \
   /* make sure that the result can not be used as an lvalue */     \

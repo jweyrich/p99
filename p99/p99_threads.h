@@ -317,13 +317,18 @@ p00_thrd ** p00_foreign_tab;
 
 P99_WEAK(p00_foreign_cleanup)
 void p00_foreign_cleanup(void) {
-  size_t p00_foreign = atomic_load(&p00_foreign_nb);
+  size_t p00_foreign = atomic_load_explicit(&p00_foreign_nb, memory_order_consume);
   p00_thrd ** p00_thrd = p00_foreign_tab;
   p00_foreign_tab = 0;
-  for (size_t p00_i = 0; p00_i < p00_foreign; ++p00_i) {
-    if (!pthread_equal(p00_thrd[p00_i]->p00_id, pthread_self()))
-      fputs("found foreign thread\n", stderr);
-    free(p00_thrd[p00_i]);
+  if (p00_foreign) {
+    /* Ensure that all data is synchronized with all threads, not only
+       with the last one that changed p00_foreign_nb. */
+    atomic_thread_fence(memory_order_seq_cst);
+    for (size_t p00_i = 0; p00_i < p00_foreign; ++p00_i) {
+      if (!pthread_equal(p00_thrd[p00_i]->p00_id, pthread_self()))
+        fputs("found foreign thread\n", stderr);
+      free(p00_thrd[p00_i]);
+    }
   }
   free(p00_thrd);
 }
@@ -337,7 +342,7 @@ p99_inline
 thrd_t thrd_current(void) {
   p00_thrd * p00_loc = P00_THRD_LOCAL;
   if (P99_UNLIKELY(!p00_loc)) {
-    size_t p00_nb = atomic_fetch_add(&p00_foreign_nb, 1);
+    size_t p00_nb = atomic_fetch_add_explicit(&p00_foreign_nb, 1, memory_order_acq_rel);
     if (!p00_nb) atexit(p00_foreign_cleanup);
     if ((p00_nb^(p00_nb-1)) == (p00_nb+(p00_nb-1))) {
       p00_foreign_tab = realloc(p00_foreign_tab, sizeof(p00_thrd*[2*(p00_nb+1)]));
