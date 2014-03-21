@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
-/* (C) copyright  2012-2013 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2012-2014 Jens Gustedt, INRIA, France                       */
 /* (C) copyright  2012 William Morris                                         */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
@@ -94,18 +94,18 @@ void p00_mfence_internal(memory_order p00_ord) {
   __asm__ __volatile__("mfence":::"memory");
 }
 
-#define p00_mfence(...)                         \
-P99_IF_EMPTY(__VA_ARGS__)                       \
- (p00_mfence_internal(memory_order_seq_cst))    \
+#define p00_mfence(...)                                        \
+P99_IF_EMPTY(__VA_ARGS__)                                      \
+ (p00_mfence_internal(memory_order_seq_cst))                   \
  (p00_mfence_internal(__VA_ARGS__))
 
 #define p00_sync_lock_release(...)                              \
   P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                           \
   (p00_sync_lock_release_internal(__VA_ARGS__))                 \
   (p00_sync_lock_release_internal(P99_ALLBUTLAST(__VA_ARGS__)))
-#define p00_sync_lock_test_and_set(...)                         \
-  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                           \
-  (p00_atomic_exchange_4(__VA_ARGS__, 1))                       \
+#define p00_sync_lock_test_and_set(...)                        \
+  P99_IF_LT(P99_NARG(__VA_ARGS__), 2)                          \
+  (p00_atomic_exchange_4(__VA_ARGS__, 1))                      \
   (p00_atomic_exchange_4(P99_ALLBUTLAST(__VA_ARGS__), 1))
 
 
