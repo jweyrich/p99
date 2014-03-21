@@ -1046,7 +1046,13 @@ p99_extension                                                           \
  **
  ** @see atomic_int
  **/
-#define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)                           \
+#define atomic_compare_exchange_weak(OBJP, EXPECTED, DESIRED)   \
+  p00_atomic_compare_exchange(true, OBJP, EXPECTED, DESIRED, memory_order_seq_cst, memory_order_seq_cst,)
+
+#define atomic_compare_exchange_strong(OBJP, EXPECTED, DESIRED) \
+  p00_atomic_compare_exchange(false, OBJP, EXPECTED, DESIRED, memory_order_seq_cst, memory_order_seq_cst,)
+
+#define p00_atomic_compare_exchange(WEAK, OBJP, EXPECTED, DESIRED, SUCC, FAIL, ...)     \
 p99_extension                                                                           \
 ({                                                                                      \
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                           \
@@ -1067,7 +1073,7 @@ p99_extension                                                                   
   P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                              \
     (else p00_ret = false;)                                                             \
     (else p00_ret = p00_atomic_compare_exchange_n(&P00_AM(p00_objp), ((p00_mbase_t*)p00_exp), p00_des.p00_m, \
-                                                  true, memory_order_seq_cst, memory_order_seq_cst); \
+                                                  (WEAK), memory_order_seq_cst, memory_order_seq_cst); \
      )                                                                  \
     p00_ret;                                                            \
  })
