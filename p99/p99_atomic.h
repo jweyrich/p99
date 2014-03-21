@@ -1139,7 +1139,7 @@ p99_extension                                                         \
  **
  ** @see atomic_int
  **/
-#define atomic_fetch_add(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_add, +=)
+#define atomic_fetch_add(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_add, +=)
 
 
 /**
@@ -1154,7 +1154,7 @@ p99_extension                                                         \
  **
  ** @see atomic_int
  **/
-#define atomic_fetch_sub(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_sub, -=)
+#define atomic_fetch_sub(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_sub, -=)
 
 /**
  ** @brief Atomically do a bitwise OR operation between @a OPERAND and
@@ -1169,7 +1169,7 @@ p99_extension                                                         \
  **
  ** @see atomic_int
  **/
-#define atomic_fetch_or(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_or, |=)
+#define atomic_fetch_or(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_or, |=)
 
 /**
  ** @brief Atomically do a bitwise AND operation between @a OPERAND
@@ -1184,7 +1184,7 @@ p99_extension                                                         \
  **
  ** @see atomic_int
  **/
-#define atomic_fetch_and(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_and, &=)
+#define atomic_fetch_and(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_and, &=)
 
 /**
  ** @brief Atomically do a bitwise XOR operation between @a OPERAND
@@ -1200,7 +1200,7 @@ p99_extension                                                         \
  ** @see atomic_int
  ** @see _Atomic
  **/
-#define atomic_fetch_xor(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), __sync_fetch_and_xor, ^=)
+#define atomic_fetch_xor(OBJP, OPERAND) P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_xor, ^=)
 
 #define atomic_fetch_add_conditional(OBJP, OPERAND)                       \
 p99_extension                                                             \

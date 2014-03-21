@@ -138,6 +138,16 @@ p99_extension ({                                                        \
 #define p00_atomic_store_n(...) p00_atomic_store_n_(__VA_ARGS__, memory_order_seq_cst,)
 
 
+#define p00_atomic_fetch_add_(PTR, VAL, ORD, ...) __sync_fetch_and_add((PTR), (VAL))
+#define p00_atomic_fetch_add(...) p00_atomic_fetch_add_(__VA_ARGS__, ,)
+#define p00_atomic_fetch_and_(PTR, VAL, ORD, ...) __sync_fetch_and_and((PTR), (VAL))
+#define p00_atomic_fetch_and(...) p00_atomic_fetch_and_(__VA_ARGS__, ,)
+#define p00_atomic_fetch_or_(PTR, VAL, ORD, ...) __sync_fetch_and_or((PTR), (VAL))
+#define p00_atomic_fetch_or(...) p00_atomic_fetch_or_(__VA_ARGS__, ,)
+#define p00_atomic_fetch_sub_(PTR, VAL, ORD, ...) __sync_fetch_and_sub((PTR), (VAL))
+#define p00_atomic_fetch_sub(...) p00_atomic_fetch_sub_(__VA_ARGS__, ,)
+#define p00_atomic_fetch_xor_(PTR, VAL, ORD, ...) __sync_fetch_and_xor((PTR), (VAL))
+#define p00_atomic_fetch_xor(...) p00_atomic_fetch_xor_(__VA_ARGS__, ,)
 
 
 #endif
