@@ -1016,17 +1016,16 @@ p99_extension                                                           \
   typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                      \
   typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                     \
   typedef __typeof__(P00_AM(p00_objp)) p00_mbase_t;                     \
-  p00_base_t p00_ret = P99_INIT;                                        \
+  register p00_ubase_t p00_ret = P99_INIT;                              \
   if (!atomic_is_lock_free(p00_objp)) {                                 \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                               \
-      p00_ret = P00_AT(p00_objp);                                       \
+      p00_ret.p00_t = P00_AT(p00_objp);                                 \
   } else {                                                              \
     P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                            \
       (P00_AT(p00_objp))                                                \
-      (p00_atomic_compare_exchange_n(&P00_AM(p00_objp), (p00_mbase_t*)&p00_ret, 0, \
-                                     false, memory_order_seq_cst, memory_order_seq_cst)); \
+      (p00_ret.p00_m = p00_atomic_load_n(&P00_AM(p00_objp), memory_order_seq_cst)); \
   }                                                                     \
-  p00_ret = p00_ret;                                                    \
+  p00_ret.p00_t = p00_ret.p00_t;                                        \
  })
 
 #define P00_CVT(EXP) ((void const*)(((struct { void const volatile* a; }){ .a = (EXP) }).a))
@@ -1086,7 +1085,24 @@ p99_extension                                                                   
  **/
 #define atomic_store(OBJP, DES)
 #else
-#define atomic_store(OBJP, DES) ((void)atomic_exchange(OBJP, DES))
+#define atomic_store(OBJP, DES)                                         \
+p99_extension                                                           \
+({                                                                      \
+  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                           \
+  P99_MACRO_VAR(p00_desp, (DES));                                       \
+  typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                      \
+  typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                     \
+  typedef __typeof__(P00_AM(p00_objp)) p00_mbase_t;                     \
+  register p00_ubase_t const p00_des =  { .p00_t = (p00_desp) };        \
+  if (!atomic_is_lock_free(p00_objp)) {                                 \
+    P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                               \
+      P00_AT(p00_objp) = p00_des.p00_t;                                 \
+  } else {                                                              \
+    P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                            \
+      (P00_AT(p00_objp))                                                \
+      (p00_atomic_store_n(&P00_AM(p00_objp), p00_des.p00_m, memory_order_seq_cst)); \
+  }                                                                     \
+ })
 #endif
 
 #define P00_FETCH_OP(OBJP, OPERAND, BUILTIN, OPERATOR)                \

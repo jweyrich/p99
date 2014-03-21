@@ -98,6 +98,47 @@ p99_extension ({                                                        \
 
 #define p00_atomic_exchange_n(...) p00_atomic_exchange_n_(__VA_ARGS__, __ATOMIC_SEQ_CST,)
 
+#define p00_atomic_load_n_(PTR, ORD, ...)                       \
+p99_extension ({                                                \
+    P99_MACRO_PVAR(p00_ptr, (PTR), volatile);                   \
+    P99_MACRO_VAR(p00_ord, (ORD), const);                       \
+    __typeof__(*p00_ptr) p00_ret;                               \
+    switch (p00_ord) {                                          \
+    case __ATOMIC_RELAXED:;                                     \
+      p00_ret = __atomic_load_n(p00_ptr, __ATOMIC_RELAXED);     \
+      break;                                                    \
+    case __ATOMIC_ACQUIRE:;                                     \
+      p00_ret = __atomic_load_n(p00_ptr, __ATOMIC_ACQUIRE);     \
+      break;                                                    \
+    case __ATOMIC_CONSUME:;                                     \
+      p00_ret = __atomic_load_n(p00_ptr, __ATOMIC_CONSUME);     \
+      break;                                                    \
+    default:                                                    \
+      p00_ret =__atomic_load_n(p00_ptr, __ATOMIC_SEQ_CST);      \
+    }                                                           \
+    p00_ret = p00_ret;                                          \
+  })
+
+#define p00_atomic_load_n(...) p00_atomic_load_n_(__VA_ARGS__, __ATOMIC_SEQ_CST,)
+
+#define p00_atomic_store_n_(PTR, DES, ORD, ...)                 \
+p99_extension ({                                                \
+    P99_MACRO_PVAR(p00_ptr, (PTR), volatile);                   \
+    P99_MACRO_VAR(p00_des, (DES));                              \
+    P99_MACRO_VAR(p00_ord, (ORD), const);                       \
+    switch (p00_ord) {                                          \
+    case __ATOMIC_RELAXED:;                                     \
+      __atomic_store_n(p00_ptr, p00_des, __ATOMIC_RELAXED);     \
+      break;                                                    \
+    case __ATOMIC_RELEASE:;                                     \
+      __atomic_store_n(p00_ptr, p00_des, __ATOMIC_RELEASE);     \
+      break;                                                    \
+    default:                                                    \
+      __atomic_store_n(p00_ptr, p00_des, __ATOMIC_SEQ_CST);     \
+    }                                                           \
+  })
+
+#define p00_atomic_store_n(...) p00_atomic_store_n_(__VA_ARGS__, __ATOMIC_SEQ_CST,)
 
 
 #endif
