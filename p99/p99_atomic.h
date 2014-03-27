@@ -904,7 +904,7 @@ typedef _Atomic(uintmax_t) atomic_uintmax_t;
  ** optional argument can be given. The call is then equivalent to one
  ** to ::atomic_flag_test_and_set_explicit.
  **/
-#define atomic_flag_test_and_set(...) p00_sync_lock_test_and_set(__VA_ARGS__)
+#define atomic_flag_test_and_set(OBJ) p00_sync_lock_test_and_set(&P99_ENCP(OBJ))
 
 /**
  ** @brief Unconditionally set @a *p00_objp to @c false
@@ -924,7 +924,7 @@ typedef _Atomic(uintmax_t) atomic_uintmax_t;
  **
  ** @related atomic_flag
  **/
-#define atomic_flag_clear(...)  p00_sync_lock_release(__VA_ARGS__)
+#define atomic_flag_clear(OBJ)  p00_sync_lock_release(&P99_ENCP(OBJ))
 
 #include "p99_atomic_flag.h"
 

@@ -32,13 +32,13 @@
 
 #define p00_atomic_clear(OBJ, ORD)                             \
 p99_extension ({                                               \
-  p00_atomic_flag* p00_obj = (OBJ);                            \
+  p00_atomic_flag volatile* p00_obj = (OBJ);                   \
   __atomic_clear(p00_obj, (ORD));                              \
  })
 
 #define p00_atomic_test_and_set(OBJ, ORD)                      \
 p99_extension ({                                               \
-  p00_atomic_flag* p00_obj = (OBJ);                            \
+  p00_atomic_flag volatile* p00_obj = (OBJ);                   \
   __atomic_test_and_set(p00_obj, (ORD));                       \
  })
 
