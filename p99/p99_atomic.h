@@ -998,7 +998,7 @@ p99_extension                                                                   
     P99_IF_EMPTY(P99_ATOMIC_LOCK_FREE_TYPES)                                      \
       ()                                                                          \
       (register p00_ubase_t const p00_desm = { .p00_t = p00_des };                \
-       p00_ret.p00_m = p00_atomic_exchange_n(&P00_AM(p00_objp), p00_desm.p00_m), (ORD)); \
+       p00_ret.p00_m = p00_atomic_exchange_n(&P00_AM(p00_objp), p00_desm.p00_m, (ORD))); \
   }                                                                               \
   p00_ret.p00_t;                                                                  \
  })
