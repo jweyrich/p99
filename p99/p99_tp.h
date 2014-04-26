@@ -22,15 +22,15 @@
 # endif
 
 #ifdef P99_TP_NEED_INTEGER
-#if UINTPTR_MAX == UINT32_MAX
+# if UINTPTR_MAX == UINT32_MAX
 typedef uint64_t p00_tp_glue;
-#else
-# if defined(UINT128_MAX)
-typedef uint128_t p00_tp_glue;
 # else
+#  if defined(UINT128_MAX)
+typedef uint128_t p00_tp_glue;
+#  else
 typedef p99x_uint128 p00_tp_glue;
+#  endif
 # endif
-#endif
 
 P99_CONSTANT(int, p00_tp_bits, sizeof(p00_tp_glue)*CHAR_BIT);
 P99_CONSTANT(int, p00_tp_shift, p00_tp_bits/2);
