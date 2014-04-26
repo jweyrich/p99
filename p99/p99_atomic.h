@@ -141,51 +141,70 @@ typedef enum memory_order memory_order;
 #ifndef ATOMIC_INT8_LOCK_FREE
 #  if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1)
 #   define ATOMIC_INT8_LOCK_FREE 2
-#   define P00_TYPE_LIST_ELEM1 , (1, uint8_t)
 #  else
 #   define ATOMIC_INT8_LOCK_FREE 0
-#   define P00_TYPE_LIST_ELEM1
 #  endif
 #endif
+#if ATOMIC_INT8_LOCK_FREE == 2
+# define P00_TYPE_LIST_ELEM1 , (1, uint8_t)
+#else
+# define P00_TYPE_LIST_ELEM1
+#endif
+
 #ifndef ATOMIC_INT16_LOCK_FREE
 #  if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2)
 #   define ATOMIC_INT16_LOCK_FREE 2
-#   define P00_TYPE_LIST_ELEM2 , (2, uint16_t)
 #  else
 #   define ATOMIC_INT16_LOCK_FREE 0
-#   define P00_TYPE_LIST_ELEM2
 #  endif
 #endif
+#if ATOMIC_INT16_LOCK_FREE == 2
+# define P00_TYPE_LIST_ELEM2 , (2, uint16_t)
+#else
+# define P00_TYPE_LIST_ELEM2
+#endif
+
 #ifndef ATOMIC_INT32_LOCK_FREE
 #  if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
 #   define ATOMIC_INT32_LOCK_FREE 2
-#   define P00_TYPE_LIST_ELEM4 , (4, uint32_t)
 #  else
 #   define ATOMIC_INT32_LOCK_FREE 0
-#   define P00_TYPE_LIST_ELEM4
 #  endif
 #endif
+#if ATOMIC_INT32_LOCK_FREE == 2
+# define P00_TYPE_LIST_ELEM4 , (4, uint32_t)
+#else
+# define P00_TYPE_LIST_ELEM4
+#endif
+
 #ifndef ATOMIC_INT64_LOCK_FREE
 #  if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)
 #   define ATOMIC_INT64_LOCK_FREE 2
-#   define P00_TYPE_LIST_ELEM8 , (8, uint64_t)
 #  else
 #   define ATOMIC_INT64_LOCK_FREE 0
-#   define P00_TYPE_LIST_ELEM8
 #  endif
 #endif
+#if ATOMIC_INT64_LOCK_FREE == 2
+# define P00_TYPE_LIST_ELEM8 , (8, uint64_t)
+#else
+# define P00_TYPE_LIST_ELEM8
+#endif
+
 #ifndef ATOMIC_INT128_LOCK_FREE
 #  if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_16) && (defined(UINT128_MAX) || defined(p99x_uint128))
 #   define ATOMIC_INT128_LOCK_FREE 2
-#   if defined(UINT128_MAX)
-#    define P00_TYPE_LIST_ELEM16 , (16, uint128_t)
-#   else
-#    define P00_TYPE_LIST_ELEM16 , (16, p99x_uint128)
-#   endif
 #  else
 #   define ATOMIC_INT128_LOCK_FREE 0
-#   define P00_TYPE_LIST_ELEM16
 #  endif
+#endif
+#if ATOMIC_INT128_LOCK_FREE == 2
+# if defined(UINT128_MAX)
+#  define P00_TYPE_LIST_ELEM16 , (16, uint128_t)
+# else
+#  define P00_TYPE_LIST_ELEM16 , (16, p99x_uint128)
+# endif
+#else
+# define P00_TYPE_LIST_ELEM16
 #endif
 
 
@@ -731,6 +750,7 @@ P99_GENERIC_SIZE                                                     \
   (2, p00_atomic_exchange_2),                                        \
   (4, p00_atomic_exchange_4)                                         \
   P99_IF_EQ_2(ATOMIC_INT64_LOCK_FREE)(,(8, p00_atomic_exchange_8))() \
+  P99_IF_EQ_2(ATOMIC_INT128_LOCK_FREE)(,(16, p00_atomic_exchange_16))() \
   )
 
 /**
