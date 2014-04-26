@@ -27,7 +27,7 @@
  **/
 
 
-#ifdef __ATOMIC_SEQ_CST
+#if defined(__ATOMIC_RELAXED) && !defined(P99_GCC_USE_SYNC)
 # include "p99_atomic_gcc_atomic.h"
 #else
 # include "p99_atomic_gcc_sync.h"
