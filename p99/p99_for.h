@@ -1235,18 +1235,50 @@ __typeof__(EXP) __VA_ARGS__ P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
   NAME = P99_PASTE2(p00_macro_var_, NAME)
 
 #define P00_MACRO_PVAR(NAME, EXP, ...)                                                \
-__typeof__(__typeof__(*(EXP)) __VA_ARGS__*) P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
-  NAME = P99_PASTE2(p00_macro_var_, NAME)
+__typeof__(*(EXP)) __VA_ARGS__* P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
+  * NAME = P99_PASTE2(p00_macro_var_, NAME)
 
 #ifdef DOXYGEN
 /**
  ** @brief Define a variable with @a NAME that has the type and value of
- ** @a EXPR. If @a QUAL is given it must be a qualifier list that is
- ** added to the resulting type.
+ ** @a EXPR.
+ **
+ ** If @a QUAL is given it must be a qualifier list that is added to
+ ** the resulting type.
+ **
+ ** @remark Other than just redeclaring @a NAME this macro is safe
+ ** even if @a EXPR contains the evaluation of a variable of the same
+ ** name @a NAME.
+ **
+ ** This is achieved by declaring two variables, one with a dummy name
+ ** that receives @a EXPR as an initializer (so there can't be a name
+ ** conflict), and then @a NAME that is initialized with the
+ ** first. Any normal optimizer should optimize that auxiliary
+ ** variable out.
  **/
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_MACRO_VAR, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MACRO_VAR, 1)
-#define P99_MACRO_VAR(NAME, EXPR, QUAL)
+# define P99_MACRO_VAR(NAME, EXPR, QUAL)
+/**
+ ** @brief Define a variable with @a NAME that has the type and value of
+ ** @a EXPR, where @a EXPR is of a pointer type.
+ **
+ ** If @a QUAL is given it must be a qualifier list that is
+ ** added to the type @a EXPR is pointing to.
+ **
+ ** @remark Other than just redeclaring @a NAME this macro is safe
+ ** even if @a EXPR contains the evaluation of a variable of the same
+ ** name @a NAME.
+ **
+ ** This is achieved by declaring two variables, one with a dummy name
+ ** that receives @a EXPR as an initializer (so there can't be a name
+ ** conflict), and then @a NAME that is initialized with the
+ ** first. Any normal optimizer should optimize that auxiliary
+ ** variable out.
+ **/
+P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_MACRO_PVAR, 0)
+P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MACRO_PVAR, 1)
+# define P99_MACRO_PVAR(NAME, EXPR, QUAL)
 #else
 P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_MACRO_VAR, 0)
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MACRO_VAR, 1)
