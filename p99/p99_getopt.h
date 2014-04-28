@@ -19,7 +19,6 @@
  **/
 
 #include "p99_qsort.h"
-#include "p99_init.h"
 #include "p99_callback.h"
 
 typedef int p00_getopt_process_type(void*, char const*);
@@ -706,7 +705,26 @@ p00_getopt_diagnostic(char const* p00_err0, char const* p00_err1, char const* p0
           p00_err2);
 }
 
-P99_MAIN_INTERCEPT(p99_getopt_initialize) {
+/**
+ ** @brief Parse the commandline arguments
+ **
+ ** If you use the getopt facilities you have to launch the parsing of
+ ** the arguments at the beginning of @c main, with preference before
+ ** your program does anything else.
+ **
+ ** @warning All getopt variable declarations must be visible in the
+ ** same compilation unit that issues the call to this function,
+ ** usually @c main.
+ **
+ ** This function is <code>static inline</code> because it has to use
+ ** all these variable declarations.
+ **
+ ** @see P99_GETOPT_DECLARE
+ ** @see P99_GETOPT_SYNOPSIS
+ ** @see P99_GETOPT_CALLBACK
+ **/
+static inline
+void p99_getopt_initialize(int * p00_argc, char***p00_argv) {
   p00_getopt_allocations_base = P99_CALLOC(void*, *p00_argc);
   p00_getopt_allocations = p00_getopt_allocations_base;
   atexit(p00_getopt_atexit);
@@ -825,11 +843,5 @@ P00_REARANGE:
     (*p00_argv)[p00_n] = (*p00_argv)[p00_n + (p00_arg - 1)];
   }
 }
-
-# if defined(P99_INTERCEPT_MAIN)
-#  undef main
-#  define main p99_getopt_initialize
-# endif
-
 
 #endif      /* !P99_GETOPT_H_ */

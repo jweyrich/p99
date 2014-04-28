@@ -25,6 +25,12 @@
  ** This can emulate gcc's constructor attribute and call init
  ** functions for variables with static storage duration.
  **
+ ** @deprecated This constructor code is too much system dependent and
+ ** too fragile. Don't use it in regular code, this might be removed
+ ** from P99, soon.
+ **
+ ** The only place that uses this in P99 itself is for threads. There
+ ** is an optional feature to replace main.
  **/
 
 /**

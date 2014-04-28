@@ -15,8 +15,6 @@
 #define P99_THREADS_H 1
 
 #include "p99_try.h"
-#include "p99_init.h"
-
 
 /**
  ** @addtogroup threads C11 thread emulation on top of POSIX threads
@@ -907,6 +905,9 @@ void thrd_exit(int p00_res) {
  **
  ** The purpose is to ensure that all threads are C11 threads, and not
  ** only POSIX threads.
+ **
+ ** @deprecated The mechanism to launch this is fragile, avoid it if
+ ** possible.
  **/
 int p99_threads_main(int, char*[]);
 
