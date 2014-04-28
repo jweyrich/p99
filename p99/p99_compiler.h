@@ -391,7 +391,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 #endif
 
 #if P99_COMPILER & P99_COMPILER_INTEL
-# define p99_inline __attribute__((__always_inline__)) inline
+# define p99_inline __attribute__((__weak__,__always_inline__))
 # if __INTEL_COMPILER < 1310
 #  if defined(__GNUC__) && defined(p00_has_feature_tgmath_h)
 #   undef p00_has_feature_tgmath_h
@@ -551,11 +551,6 @@ signed p00_trailing_comma_in_initializer__(void) {
  ** Microsoft
  **/
 # define P99_WEAK(...) P99_IF_LT(P99_NARG(__VA_ARGS__), 2)(P00_WEAK1(__VA_ARGS__))(P00_WEAK2(__VA_ARGS__))
-
-#if P99_COMPILER_INTEL
-# define P99_TENTATIVE_CAUTION 1
-#endif
-
 
 #ifndef P99_TENTATIVE_CAUTION
 # define P00_TENTATIVE_DEC(NAME) static
