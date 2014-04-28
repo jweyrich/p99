@@ -45,7 +45,7 @@ p99_extension ({                                                                
 
 #define p00_sync_lock_release_(OBJ, ORD, ...)                        \
 p99_extension ({                                                     \
-  P99_MACRO_PVAR(p00_obj, (OBJ));                                    \
+  P99_MACRO_PVAR(p00_obj, (OBJ), volatile);                          \
   /* __sync_lock_release only has release consistency */             \
   /* the fence must come before so nothing can be reordered after */ \
   switch (ORD) {                                                     \
@@ -60,7 +60,7 @@ p99_extension ({                                                     \
 
 #define p00_sync_lock_test_and_set_(OBJ, ORD, ...)                   \
 p99_extension ({                                                     \
-  P99_MACRO_PVAR(p00_obj, (OBJ));                                    \
+  P99_MACRO_PVAR(p00_obj, (OBJ), volatile);                          \
   /* __sync_lock_test_and_set only has acquire consistency */        \
   int ret = __sync_lock_test_and_set(p00_obj, 1);                    \
   /* the fence must come after so nothing can be reordered before */ \
