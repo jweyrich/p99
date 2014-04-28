@@ -226,7 +226,7 @@ typedef enum { a4 = -1, b4, c4 } enum4;
 //typedef enum { a5 = (unsigned)-1, b5, c5 } enum5;
 
 int main(int argc, char** argv) {
-  P99_INIT_TRIGGER(p99_getopt_initialize, &argc, &argv);
+  p99_getopt_initialize(&argc, &argv);
   char const versionDate[] = { P99_VERSION_DATE };
   char const versionID[] = { P99_VERSION_ID };
   char const version_Date[] = { P00_VERSION_DATE };
