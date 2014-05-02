@@ -345,7 +345,7 @@ int p00_throw_call_thrd(int p00_err,
  ** such that it ensures that the error code is always checked, and if
  ** an error occurs the value is thrown.
  **
- ** @return ::thread_success if the call was successful. Never returns
+ ** @return ::thrd_success if the call was successful. Never returns
  ** if it wasn't.
  **
  ** @see P99_THROW_CALL_ZERO for a similar macro that checks if the
