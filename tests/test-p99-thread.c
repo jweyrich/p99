@@ -11,6 +11,7 @@
 /* particular purpose.                                                        */
 /*                                                                            */
 #include "p99_threads.h"
+#include "p99_atomic.h"
 #include "p99_generic.h"
 #include "p99_clib.h"
 #include "p99_fifo.h"
@@ -112,7 +113,12 @@ int real_task(atomic_intp* arg) {
   ret = P99_GEN_MAX(count, 23);
   cnd_signal(&cond);
   mtx_unlock(&mut);
-  (void)atomic_fetch_add(&D, ret);
+  {
+    double d = atomic_load(&D);
+    while (!atomic_compare_exchange_weak(&D, &d, d+ret)) {
+      /* empty */
+    }
+  }
   (void)atomic_fetch_add(&intp, 1);
   int * point = atomic_fetch_add(arg, 1);
   *point = ret;
