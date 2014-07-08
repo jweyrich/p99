@@ -40,7 +40,7 @@ p00_tp_glue p00_tp_p2i(void * p, uintptr_t t) {
   return (((p00_tp_glue)t)<<p00_tp_shift)|(uintptr_t)p;
 }
 
-#define P00_TP_GLUE_INITIALIZER(VAL, TIC) { (((p00_tp_glue)VAL)<<p00_tp_shift)|((uintptr_t){(TIC)}) }
+#define P00_TP_GLUE_INITIALIZER(VAL, TIC) ((((p00_tp_glue)VAL)<<p00_tp_shift)|((uintptr_t){(TIC)}))
 
 
 p99_inline
@@ -177,7 +177,7 @@ struct p99_tp_state {
 };
 
 # define P00_TP_INITIALIZER(VAL) {                             \
-    .p00_val = ATOMIC_VAR_INIT(P00_TP_GLUE_INITIALIZER(0, 0)), \
+    .p00_val = ATOMIC_VAR_INIT(0),                             \
     .p00_init = (VAL),                                         \
 }
 
