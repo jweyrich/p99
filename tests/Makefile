@@ -137,10 +137,10 @@ ucomp:
 	 -$(UNCOMP) $<
 
 .c.o:
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $< $(CFLAGS) -c
 
 .c.s:
-	$(CC) $(CFLAGS) -S $<
+	$(CC) $< $(CFLAGS) -S
 
 
 tidy :
