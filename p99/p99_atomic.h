@@ -43,6 +43,18 @@
 #if p99_has_feature(stdatomic_h)
 # include <stdatomic.h>
 # include "p99_atomic_flag.h"
+
+#define P00_DECLARE_ATOMIC2(T, ...) typedef _Atomic(T) __VA_ARGS__
+
+#define P99_DECLARE_ATOMIC(...)                                                                                        \
+/** @brief Atomic access to a value of type <code>T</code> @see atomic_int for the possible operations on this type */ \
+P99_IF_EQ_1(P99_NARG(__VA_ARGS__))                                                                                     \
+(P00_DECLARE_ATOMIC2(__VA_ARGS__, P99_PASTE2(atomic_, __VA_ARGS__)))                                                   \
+(P00_DECLARE_ATOMIC2(__VA_ARGS__))
+
+P99_DECLARE_ATOMIC(float);
+P99_DECLARE_ATOMIC(double);
+
 #else
 /**
  ** @addtogroup atomic_stub Stub replacements of C11 atomic operations
