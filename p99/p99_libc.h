@@ -134,7 +134,9 @@
 # if __STDC_VERSION__ > 201100L
 #  define p00_has_feature_stdalign_h 1
 #  define p00_has_feature_stdnoreturn_h 1
-#  define p00_has_feature_uchar_h 1
+#  ifndef p00_has_feature_uchar_h
+#   define p00_has_feature_uchar_h 1
+#  endif
 #  ifndef  __STDC_NO_ATOMICS__
 #   define p00_has_feature_stdatomic_h 1
 #  endif
