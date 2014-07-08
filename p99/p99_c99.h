@@ -80,9 +80,7 @@
 #if p99_has_feature(threads_h)
 # include <threads.h>
 #endif
-#if __STDC_VERSION__ > 201100L
-# else
-#  ifndef __STDC_NO_COMPLEX__
+#ifndef __STDC_NO_COMPLEX__
 /* The CMPLX macros expand to an expression of the specified complex
  * type, with the real part having the (converted) value of x and the
  * imaginary part having the (converted) value of y. The resulting
@@ -90,15 +88,23 @@
  * object with static or thread storage duration, provided both
  * arguments are likewise suitable.
  */
-#   ifndef CMPLXF
-#    define CMPLXF(A, B) ((float _Complex)((float)(A) + _Complex_I * (float)(B)))
-#   endif
-#   ifndef CMPLX
-#    define CMPLX(A, B) ((double _Complex)((double)(A) + _Complex_I * (double)(B)))
-#   endif
-#   ifndef CMPLXL
-#    define CMPLXL(A, B) ((long double _Complex)((long double)(A) + _Complex_I * (long double)(B)))
-#   endif
+# ifndef CMPLXF
+#  define CMPLXF(A, B) ((float _Complex)((float)(A) + _Complex_I * (float)(B)))
+# endif
+# ifndef CMPLX
+#  define CMPLX(A, B) ((double _Complex)((double)(A) + _Complex_I * (double)(B)))
+# endif
+# ifndef CMPLXL
+#  define CMPLXL(A, B) ((long double _Complex)((long double)(A) + _Complex_I * (long double)(B)))
+# endif
+# if __STDC_VERSION__ > 201100L
+#  define p99_creall creall
+#  define p99_crealf crealf
+#  define p99_creal creal
+#  define p99_cimagl cimagl
+#  define p99_cimagf cimagf
+#  define p99_cimag cimag
+# else
 /* Each complex type has the same representation and alignment
  * requirements as an array type containing exactly two elements of
  * the corresponding real type; the first element is equal to the real
