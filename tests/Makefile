@@ -10,7 +10,6 @@
 
 SRC	=					\
 		test-p99-block.c		\
-		test-p99-c11.c			\
 		test-p99-cases.c		\
 		test-p99-choice.c		\
 		test-p99-classification.c	\
@@ -25,6 +24,10 @@ SRC	=					\
 		test-p99-rand.c 		\
 		test-p99-thread.c		\
 		test-p99-va-arg.c
+
+ifeq (${NO_TEST_C11},)
+SRC	+=	test-p99-c11.c
+endif
 
 ASRC	=       				\
 		libp99.c			\
