@@ -240,7 +240,9 @@ void p99_futex_wakeup(p99_futex volatile* p00_cntp,
                       unsigned p00_wmin, unsigned p00_wmax) {
   if (p00_wmax < p00_wmin) p00_wmax = p00_wmin;
   if (p00_wmax) {
-    unsigned volatile*const p00_cnt = &P00_AT(p00_cntp);
+    unsigned volatile*const p00_cnt = (unsigned*)p00_cntp;
+    static_assert(sizeof *p00_cntp == sizeof *p00_cnt,
+                  "linux futex supposes that there is no hidden lock field");
     for (;;) {
       register signed p00_wok = p00_futex_wake((int*)p00_cnt, p00_wmax);
       assert(p00_wok >= 0);
@@ -253,7 +255,9 @@ void p99_futex_wakeup(p99_futex volatile* p00_cntp,
 
 p99_inline
 void p99_futex_wait(p99_futex volatile* p00_cntp) {
-  unsigned volatile*const p00_cnt = &P00_AT(p00_cntp);
+  unsigned volatile*const p00_cnt = (unsigned*)p00_cntp;
+  static_assert(sizeof *p00_cntp == sizeof *p00_cnt,
+                "linux futex supposes that there is no hidden lock field");
   for (;;) {
     unsigned p00_act = *p00_cnt;
     register int p00_ret = p00_futex_wait_once((int*)p00_cnt, p00_act);
@@ -294,7 +298,9 @@ P00_DOCUMENT_IDENTIFIER_ARGUMENT(P99_FUTEX_COMPARE_EXCHANGE, 1)
 # define P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX) \
 do {                                                                                 \
   _Atomic(unsigned) volatile*const p00Mcntp = (FUTEX);                               \
-  unsigned volatile*const p00Mcnt = &P00_AT(p00Mcntp);                               \
+  unsigned volatile*const p00Mcnt = (unsigned*)p00Mcntp;                             \
+  static_assert(sizeof *p00Mcntp == sizeof *p00Mcnt,                                 \
+                "linux futex stuff supposes that there is no hidden lock field");    \
   unsigned p00Mact = *p00Mcnt;                                                       \
   for (;;) {                                                                         \
     register unsigned const ACT = p00Mact;                                           \
