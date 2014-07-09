@@ -1342,6 +1342,20 @@ p99_extension                                                             \
   p00_r = p00_ret;                                                        \
  })
 
+/**
+ ** @}
+ **/
+
+
+# endif /* P00_NO_ATOMICS */
+#undef P00_NO_ATOMICS
+
+#endif /* no stdatomic.h*/
+
+/**
+ ** @addtogroup atomic_types
+ ** @{
+ **/
 #define atomic_fetch_max(OBJP, OPERAND) atomic_fetch_max_explicit((OBJP), (OPERAND), memory_order_seq_cst)
 
 /**
@@ -1366,12 +1380,12 @@ p99_extension                                                            \
 ({                                                                       \
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                            \
   P99_MACRO_VAR(p00_op, (OPERAND));                                      \
-  __typeof__(P00_AT(p00_objp)) p00_ret;                                  \
+  __typeof__(atomic_load(p00_objp)) p00_ret;                             \
   /* be sure that the result can not be used as an lvalue */             \
   register __typeof__(p00_ret = p00_ret) p00_r = atomic_load(p00_objp);  \
   p00_ret = p00_r;                                                       \
   while (p00_r <= p00_op) {                                              \
-    if (atomic_compare_exchange_weak_explicit(p00_objp, &p00_ret, p00_op, (ORD), memory_order_seq_cst)) break; \
+    if (atomic_compare_exchange_weak(p00_objp, &p00_ret, p00_op)) break; \
     else p00_r = p00_ret;                                                \
   }                                                                      \
   p00_r = p00_ret;                                                       \
@@ -1421,9 +1435,5 @@ P99_SPIN_EXCLUDE(ID)
  ** @}
  **/
 
-# endif /* P00_NO_ATOMICS */
-#undef P00_NO_ATOMICS
-
-#endif /* no stdatomic.h*/
 
 #endif
