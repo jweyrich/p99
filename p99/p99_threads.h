@@ -779,7 +779,8 @@ P99_BLOCK_DOCUMENT
 P00_DOCUMENT_PERMITTED_ARGUMENT(P99_MUTUAL_EXCLUDE, 0)
 #define P99_MUTUAL_EXCLUDE(MUT) P00_MUTUAL_EXCLUDE(MUT, P99_UNIQ(mut))
 
-#define P00_MUTUAL_EXCLUDE(MUT, UNIQ)                                            \
+# if !P99_SIMPLE_BLOCKS
+#  define P00_MUTUAL_EXCLUDE(MUT, UNIQ)                                          \
 P00_BLK_START                                                                    \
 P00_BLK_DECL(int, p00_errNo, 0)                                                  \
 P99_GUARDED_BLOCK(mtx_t*,                                                        \
@@ -796,8 +797,12 @@ P99_GUARDED_BLOCK(mtx_t*,                                                       
                          ),                                                      \
                   (void)(UNIQ                                                    \
                          && mtx_unlock(UNIQ)))
-
-
+# else
+#  define P00_MUTUAL_EXCLUDE(MUT, UNIQ)                 \
+P00_BLK_START                                           \
+P00_BLK_DECL(mtx_t*, UNIQ, &(MUT))                      \
+P00_BLK_BEFAFT(mtx_lock(UNIQ), mtx_unlock(UNIQ))
+# endif
 
 P99_SETJMP_INLINE(p00_thrd_create)
 void * p00_thrd_create(void* p00_context);

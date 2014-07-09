@@ -215,6 +215,23 @@ P00_BLK_BEFAFT(P00_ROBUST(BEFORE), __VA_ARGS__)                \
 P00_BLK_END
 #endif
 
+# ifndef P99_SIMPLE_BLOCKS
+/**
+ ** @brief A bug avoiding macro to reduce the depth of some code
+ ** produced by P99
+ **
+ ** This is only useful if your compiler explodes when compiling in
+ ** normal mode. The only compiler that needs this for the moment is
+ ** gcc 4.9.
+ **
+ ** Predefine this to be @c 1 if you have such a bugger.
+ **
+ ** @warning Switching this to @c 1 disables exception handling for
+ ** the block constructs. Use with care.
+ **/
+#  define P99_SIMPLE_BLOCKS 0
+# endif
+
 #ifdef P00_DOXYGEN
 /**
  ** @brief A meta-macro to protect a dependent block or statement by
@@ -243,16 +260,25 @@ P00_BLK_END
 P00_UNWIND_DOCUMENT
 #define P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)
 #else
+# if !P99_SIMPLE_BLOCKS
 P00_DOCUMENT_WARN_VLA_ARGUMENT(P99_GUARDED_BLOCK, 0)
 P00_DOCUMENT_DECLARATION_ARGUMENT(P99_GUARDED_BLOCK, 1)
 P00_DOCUMENT_STATEMENT_ARGUMENT(P99_GUARDED_BLOCK, 4)
-#define P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)     \
+#  define P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)   \
 P00_BLK_START                                                  \
 P00_BLK_DECL_REC(T, NAME, P00_ROBUST(INITIAL))                 \
 P99_UNWIND_PROTECT if (0) { P99_PROTECT: AFTER; } else         \
 P00_BLK_BEFAFT(P00_ROBUST(BEFORE), AFTER)                      \
 /* Ensure that a `break' will still execute AFTER */           \
 P00_BLK_END
+# else
+#  define P99_GUARDED_BLOCK(T, NAME, INITIAL, BEFORE, AFTER)   \
+P00_BLK_START                                                  \
+P00_BLK_DECL(T, NAME, P00_ROBUST(INITIAL))                     \
+P00_BLK_BEFAFT(P00_ROBUST(BEFORE), AFTER)                      \
+/* Ensure that a `break' will still execute AFTER */           \
+P00_BLK_END
+# endif
 #endif
 
 /**
