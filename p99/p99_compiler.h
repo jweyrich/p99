@@ -326,7 +326,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_feature_statement_expression 1
 # define p00_has_feature_tgmath_h 1
 # define P99_TYPEOF(X) __typeof__(X)
-# if (P99_GCC_VERSION >= 40700UL) && (P99_GCC_VERSION < 40800UL)
+# if (P99_GCC_VERSION >= 40700UL) && (P99_GCC_VERSION < 40900UL)
 #  define p00_has_feature_stdnoreturn_h 1
 #  define p00_has_feature_stdalign_h 1
 #  if __STDC_VERSION__ > 201100L
@@ -335,6 +335,16 @@ signed p00_trailing_comma_in_initializer__(void) {
 #   define __STDC_NO_ATOMICS__ 1
 #   define __STDC_NO_THREADS__ 1
 #   define p00_has_feature_c_generic_selections 0
+#  endif
+# endif
+# if (P99_GCC_VERSION >= 40900UL) && (P99_GCC_VERSION < 41000UL)
+#  define p00_has_feature_stdnoreturn_h 1
+#  define p00_has_feature_stdalign_h 1
+#  if __STDC_VERSION__ > 201100L
+#   define p00_has_feature_c_max_align_t 1
+#   define p00_has_feature_uchar_h 0
+#   define __STDC_NO_THREADS__ 1
+#   define p00_has_feature_c_generic_selections 1
 #  endif
 # endif
 #endif
