@@ -331,9 +331,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 #  define p00_has_feature_stdalign_h 1
 #  if __STDC_VERSION__ > 201100L
 #   define p00_has_feature_c_max_align_t 1
-#   define p00_has_feature_uchar_h 0
 #   define __STDC_NO_ATOMICS__ 1
-#   define __STDC_NO_THREADS__ 1
 #   define p00_has_feature_c_generic_selections 0
 #  endif
 # endif
@@ -342,8 +340,6 @@ signed p00_trailing_comma_in_initializer__(void) {
 #  define p00_has_feature_stdalign_h 1
 #  if __STDC_VERSION__ > 201100L
 #   define p00_has_feature_c_max_align_t 1
-#   define p00_has_feature_uchar_h 0
-#   define __STDC_NO_THREADS__ 1
 #   define p00_has_feature_c_generic_selections 1
 #  endif
 # endif
@@ -380,9 +376,6 @@ signed p00_trailing_comma_in_initializer__(void) {
    but doesn't implement a required feature, you have to define the
    corresponding macro to 0 before this point. */
 #if __STDC_VERSION__ > 201100L
-# ifndef p00_has_feature_uchar_h
-#   define p00_has_feature_uchar_h 1
-# endif
 # ifndef p00_has_feature_stdnoreturn_h
 #   define p00_has_feature_stdnoreturn_h 1
 # endif
@@ -425,8 +418,6 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define P99_FIXED_REGISTER(REG)
 /* clang has no stdatomic.h, yet */
 # define __STDC_NO_ATOMICS__ 1
-/* clang has no threads.h, yet */
-# define __STDC_NO_THREADS__ 1
 
 #elif P99_COMPILER & P99_COMPILER_CLANG
 # if p99_has_attribute(always_inline)
@@ -434,11 +425,10 @@ signed p00_trailing_comma_in_initializer__(void) {
 # endif
 /* clang can't nail a variable to a register, yet */
 # define P99_FIXED_REGISTER(REG)
-# if P99_VERSION_NO < 30200UL
-/* clang has no stdatomic.h, yet */
-#   define __STDC_NO_ATOMICS__ 1
-/* clang has no threads.h, yet */
-#   define __STDC_NO_THREADS__ 1
+/* clang has no stdatomic.h, yet. It can't use the one from gcc, since
+   that (gratuously) uses __auto_type. */
+# if P99_VERSION_NO < 100000UL
+#  define __STDC_NO_ATOMICS__ 1
 # endif
 # if P99_VERSION_NO > 30200UL
 #  define p00_has_feature_stdnoreturn_h 1

@@ -88,17 +88,6 @@
 #   define p00_has_feature_wctype_h 1
 #  endif
 # endif
-# if __STDC_VERSION__ > 201100L
-#  define p00_has_feature_stdalign_h 1
-#  define p00_has_feature_stdnoreturn_h 1
-#  define p00_has_feature_uchar_h 1
-#  ifndef  __STDC_NO_ATOMICS__
-#   define p00_has_feature_stdatomic_h 1
-#  endif
-#  ifndef __STDC_NO_THREADS__
-#   define p00_has_feature_threads_h 1
-#  endif
-# endif
 
 #else
 /* This is what a standard conforming C library must provide. */
@@ -130,19 +119,6 @@
 #  define p00_has_feature_time_h 1
 #  define p00_has_feature_wchar_h 1
 #  define p00_has_feature_wctype_h 1
-# endif
-# if __STDC_VERSION__ > 201100L
-#  define p00_has_feature_stdalign_h 1
-#  define p00_has_feature_stdnoreturn_h 1
-#  ifndef p00_has_feature_uchar_h
-#   define p00_has_feature_uchar_h 1
-#  endif
-#  ifndef  __STDC_NO_ATOMICS__
-#   define p00_has_feature_stdatomic_h 1
-#  endif
-#  ifndef __STDC_NO_THREADS__
-#   define p00_has_feature_threads_h 1
-#  endif
 # endif
 #endif
 
@@ -194,6 +170,27 @@ typedef size_t rsize_t;
 #if p99_has_feature(wctype_h)
 # include <wctype.h>
 #endif
+
+/* Look for C11 features that are typically provided by a C library
+   and not by the compiler itself */
+#ifdef __GLIBC__
+/* The day glibc implements uchar.h, put the correct version number here */
+# define p00_has_feature_uchar_h 0
+/* The day glibc implements uchar.h, put the correct version number here */
+# define __STDC_NO_THREADS__ 1
+#endif
+
+#if __STDC_VERSION__ > 201100L
+# define p00_has_feature_stdalign_h 1
+# define p00_has_feature_stdnoreturn_h 1
+# ifndef  __STDC_NO_ATOMICS__
+#  define p00_has_feature_stdatomic_h 1
+# endif
+# ifndef __STDC_NO_THREADS__
+#  define p00_has_feature_threads_h 1
+# endif
+#endif
+
 
 /* implement emulation of some C11 features */
 #if p99_has_feature(stdalign_h)
