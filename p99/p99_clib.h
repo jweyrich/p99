@@ -17,6 +17,7 @@
 #include "p99_new.h"
 #include "p99_callback.h"
 #include "p99_tss.h"
+#include <time.h>
 
 /**
  ** @addtogroup C11_library C11 additions to the C library
@@ -24,7 +25,10 @@
  ** @{
  **/
 
-# if (_XOPEN_SOURCE >= 600) || defined(P00_DOXYGEN)
+#if __STDC_VERSION__ >= 201112L
+# define p00_has_feature_aligned_alloc 1
+# define p00_has_extension_aligned_alloc 1
+#elif (_XOPEN_SOURCE >= 600) || defined(P00_DOXYGEN)
 
 #define p00_has_feature_aligned_alloc 1
 #define p00_has_extension_aligned_alloc 1
@@ -54,6 +58,8 @@ void *aligned_alloc(size_t p00_alignment, size_t p00_size) {
 # define p00_has_feature_quick_exit 1
 # define p00_has_extension_quick_exit 1
 
+#if __STDC_VERSION__ < 201112L
+
 /* In both cases this is guaranteed to do the correct
    initialization. */
 P99_WEAK(p00_cb)
@@ -81,6 +87,8 @@ _Noreturn void quick_exit(int status) {
   p99_callback(&p00_at_quick_exit);
   _Exit(status);
 }
+
+#endif /* C < C11 */
 
 P99_SETJMP_INLINE(p00_run_at_thrd_exit)
 void p00_run_at_thrd_exit(void * li) {
