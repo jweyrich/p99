@@ -41,6 +41,7 @@
 #  define FUTEX_REQUEUE   3
 #  define FUTEX_CMP_REQUEUE 4
 # endif
+# include <unistd.h>
 # include <sys/syscall.h>
 
 /**
