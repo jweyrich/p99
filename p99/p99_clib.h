@@ -16,6 +16,7 @@
 
 #include "p99_new.h"
 #include "p99_callback.h"
+#include "p99_tss.h"
 
 /**
  ** @addtogroup C11_library C11 additions to the C library
