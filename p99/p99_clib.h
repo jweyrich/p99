@@ -102,6 +102,203 @@ int at_thrd_exit(void (*p00_void_func)(void)) {
   return !P99_CALLBACK_PUSH(&P00_AT_THRD_EXIT, p00_void_func);
 }
 
+/* Add rudimentary support for the timespec data structure */
+
+/* All this fuss is needed because TIME_UTC isn't allowed to be 0.
+   And this is because timespec_get returns failure as 0, and success
+   by returning the time base, oh well. */
+
+/* A fallback version if all else fails */
+
+p99_inline
+int p00_timespec_get(struct timespec *p00_ts, int p00_base) {
+  struct timeval t;
+  if (gettimeofday(&t, P99_0(struct timezone*))) {
+    errno = 0;
+    return 0;
+  } else {
+    p00_ts->tv_sec = t.tv_sec;
+    /* ensure that the usec value is first converted to a nsec
+       value of the correct width ... */
+    p00_ts->tv_nsec = t.tv_usec;
+    /* ... and do the multiplication within that width. */
+    p00_ts->tv_nsec *= 1000;
+    return p00_base;
+  }
+}
+
+#ifndef TIME_UTC
+
+/**
+ ** @brief The ::timespec_get function sets the interval pointed to by
+ ** @a p00_ts to hold the current calendar time based on the specified
+ ** time base.
+ **
+ ** If @a p00_base is ::TIME_UTC, the @c tv_sec member is set to the
+ ** number of seconds since an implementation defined epoch, truncated
+ ** to a whole value and the @c tv_nsec member is set to the integral
+ ** number of nanoseconds, rounded to the resolution of the system
+ ** clock.
+ **
+ ** @return If the ::timespec_get function is successful it returns
+ ** the nonzero value @a p00_base; otherwise, it returns zero.
+ **
+ ** @ingroup C11_library
+ **/
+p99_inline
+int timespec_get(struct timespec *p00_ts, int p00_base);
+
+enum {
+  p00_time_base,
+  p00_time_utc,
+  p00_time_monotonic,
+# ifdef CLOCK_PROCESS_CPUTIME_ID
+  p00_time_process_cputime_id,
+# endif
+# ifdef CLOCK_THREAD_CPUTIME_ID
+  p00_time_thread_cputime_id,
+# endif
+  p00_time_base_max
+};
+
+/**
+ ** @brief expands to an integer constant greater than 0 that
+ ** designates the UTC time base since an implementation defined epoch
+ **
+ ** This is the only time base that is guaranteed to be available by C11.
+ **
+ ** @see TIME_MONOTONIC
+ **/
+# define TIME_UTC p00_time_utc
+
+# if defined(CLOCK_REALTIME) || defined(P00_DOXYGEN)
+
+# if defined(CLOCK_MONOTONIC) || defined(P00_DOXYGEN)
+/**
+ ** @brief expands to an integer constant greater than 0 that
+ ** designates a real time clock who's base is usually the boot time
+ ** of the processor
+ **
+ ** If this is available, this denotes a clock that should be a bit
+ ** more efficient than ::TIME_UTC, since it usually doesn't have to
+ ** perform a call into the OS kernel but may query the processor
+ ** directly.
+ **
+ ** Use this if available and if you are only interested in times
+ ** relative to your program execution, e.g for benchmarks.
+ **/
+#  define TIME_MONOTONIC p00_time_monotonic
+
+# endif
+# ifdef CLOCK_PROCESS_CPUTIME_ID
+#  define TIME_PROCESS_CPUTIME_ID p00_time_process_cputime_id
+# endif
+# ifdef CLOCK_THREAD_CPUTIME_ID
+#  define TIME_THREAD_CPUTIME_ID p00_time_thread_cputime_id,
+# endif
+
+P99_CONST_FUNCTION
+p99_inline
+clockid_t p00_getclockid(int base) {
+  return (base >= p00_time_base_max)
+         ? CLOCK_REALTIME
+  : (clockid_t const[]) {
+    [p00_time_base] = CLOCK_REALTIME,
+                      [p00_time_utc] = CLOCK_REALTIME,
+# ifdef CLOCK_MONOTONIC
+                                       [p00_time_monotonic] = CLOCK_MONOTONIC,
+# endif
+# ifdef CLOCK_PROCESS_CPUTIME_ID
+                                           [p00_time_process_cputime_id] = CLOCK_PROCESS_CPUTIME_ID,
+# endif
+# ifdef CLOCK_THREAD_CPUTIME_ID
+                                               [p00_time_thread_cputime_id] = CLOCK_THREAD_CPUTIME_ID,
+# endif
+  }[base];
+}
+
+/**
+ ** @brief The ::timespec_get function sets the interval pointed to by
+ ** @a p00_ts to hold the current calendar time based on the specified
+ ** time base.
+ **
+ ** If @a p00_base is ::TIME_UTC, the @c tv_sec member is set to the
+ ** number of seconds since an implementation defined epoch, truncated
+ ** to a whole value and the @c tv_nsec member is set to the integral
+ ** number of nanoseconds, rounded to the resolution of the system
+ ** clock.
+ **
+ ** @return If the ::timespec_get function is successful it returns
+ ** the nonzero value @a p00_base; otherwise, it returns zero.
+ **/
+p99_inline
+int timespec_get(struct timespec *p00_ts, int p00_base) {
+  clockid_t p00_clkid = p00_getclockid(p00_base);
+  if (clock_gettime(p00_clkid, p00_ts)) {
+    errno = 0;
+    return 0;
+  } else
+    return p00_base;
+}
+
+# elif defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__)
+# include <mach/mach_time.h>
+
+# define TIME_MONOTONIC p00_time_monotonic
+
+P99_WEAK(p00_timebase)
+double p00_timebase;
+
+P99_WEAK(p00_timeoff_)
+struct timespec p00_timeoff_;
+
+P99_WEAK(p00_timeoff)
+struct timespec const*const p00_timeoff = &p00_timeoff_;
+
+P99_WEAK(p00_timeonce)
+once_flag p00_timeonce = ONCE_FLAG_INIT;
+
+p99_inline
+void p00_timeonce_init(void) {
+  /* Calibrate the monotonic time */
+  mach_timebase_info_data_t p00_tb = P99_INIT;
+  mach_timebase_info(&p00_tb);
+  p00_timebase = p00_tb.numer;
+  p00_timebase /= p00_tb.denom;
+  /* Compute the offset of the monotonic time compared to UTC */
+  /* Nanosec since system start, or something similar. */
+  uint64_t p00_nsec = mach_absolute_time() * p00_timebase;
+  p00_timespec_get(&p00_timeoff_, TIME_UTC);
+  uint64_t const p00_giga = UINT64_C(1000000000);
+  uint64_t p00_epoch = p00_timeoff_.tv_sec * p00_giga + p00_timeoff_.tv_nsec;
+  p00_epoch -= p00_nsec;
+  p00_timeoff_.tv_sec = p00_epoch / p00_giga;
+  p00_timeoff_.tv_nsec = p00_epoch % p00_giga;
+}
+
+p99_inline
+int timespec_get(struct timespec *p00_ts, int p00_base) {
+  call_once(&p00_timeonce, p00_timeonce_init);
+  uint64_t p00_nsec = mach_absolute_time() * p00_timebase;
+  register uint64_t const p00_giga = UINT64_C(1000000000);
+  p00_ts->tv_sec = p00_nsec / p00_giga;
+  p00_ts->tv_nsec = p00_nsec % p00_giga;
+  if (p00_base != TIME_MONOTONIC) {
+    p00_ts->tv_sec += p00_timeoff->tv_sec;
+    p00_ts->tv_nsec += p00_timeoff->tv_nsec;
+    while (p00_ts->tv_nsec >= p00_giga) {
+      p00_ts->tv_nsec -= p00_giga;
+      ++p00_ts->tv_sec;
+    }
+  }
+  return p00_base;
+}
+# else
+# warning only low resolution gettimeofday found
+# define timespec_get p00_timespec_get
+# endif
+#endif
+
 /**
  ** @}
  **/
