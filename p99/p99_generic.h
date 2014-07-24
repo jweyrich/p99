@@ -15,6 +15,7 @@
 # define    P99_GENERIC_H_
 
 #include "p99_for.h"
+#include "p99_enum.h"
 #include "p99_typenames.h"
 #include "p99_c99.h"
 
