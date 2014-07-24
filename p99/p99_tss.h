@@ -21,6 +21,8 @@
 #include "p99_defarg.h"
 #include "p99_atomic.h"
 
+#if !p99_has_feature(threads_h)
+
 /**
  ** @addtogroup threads C11 thread emulation on top of POSIX threads
  **
@@ -179,6 +181,9 @@ p99_inline
 int tss_set(tss_t p00_key, void *p00_val) {
   return pthread_setspecific(P99_ENC(p00_key), p00_val) ? thrd_error : thrd_success;
 }
+
+
+#endif
 
 /**
  ** @brief A stub structure to hold a thread local variable if
