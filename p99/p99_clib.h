@@ -14,6 +14,7 @@
 #ifndef P99_CLIB_H
 #define P99_CLIB_H 1
 
+#include "p99_compiler.h"
 #include "p99_new.h"
 #include "p99_callback.h"
 #include "p99_tss.h"
@@ -30,8 +31,10 @@
 # define p00_has_extension_aligned_alloc 1
 #elif (_XOPEN_SOURCE >= 600) || defined(P00_DOXYGEN)
 
-#define p00_has_feature_aligned_alloc 1
-#define p00_has_extension_aligned_alloc 1
+# if !p99_has_feature(aligned_alloc)
+
+#  define p00_has_feature_aligned_alloc 1
+#  define p00_has_extension_aligned_alloc 1
 
 /**
  ** @brief allocation with a chosen alignment
@@ -52,6 +55,8 @@ void *aligned_alloc(size_t p00_alignment, size_t p00_size) {
   return p00_ret;
 }
 
+#  endif
+
 # endif /* XOPEN */
 
 
@@ -65,6 +70,10 @@ void *aligned_alloc(size_t p00_alignment, size_t p00_size) {
 P99_WEAK(p00_cb)
 p99_callback_stack p00_at_quick_exit = P99_LIFO_INITIALIZER(0);
 
+# ifdef __USE_GNU
+#  if __GLIBC_PREREQ(2,13)
+/* they seem to have implemented quick_exit */
+#  else
 /**
  ** @brief registers the function pointed to by @a p00_void_func, to be called
  ** without arguments should ::quick_exit be called.
@@ -87,6 +96,9 @@ _Noreturn void quick_exit(int status) {
   p99_callback(&p00_at_quick_exit);
   _Exit(status);
 }
+
+#  endif
+# endif /* USE_GNU */
 
 #endif /* C < C11 */
 
