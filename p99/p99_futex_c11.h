@@ -178,6 +178,7 @@ do {                                                                            
   P99_MUTUAL_EXCLUDE(*(mtx_t*)&p00Mfut->p99_mut) {                                   \
     for (;;) {                                                                       \
       register unsigned const ACT = p00Mfut->p99_cnt;                                \
+      P99_UNUSED(ACT);                            /* Don't warn if ACT is unused. */ \
       if (P99_LIKELY(EXPECTED)) {                                                    \
         p00Mfut->p99_cnt = (DESIRED);                                                \
         p00Mwmin = (WAKEMIN);                                                        \
