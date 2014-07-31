@@ -143,7 +143,7 @@ unsigned p99_notifier_load(p99_notifier volatile* p00_n) {
  ** @related p99_notifier
  **/
 P99_DEFARG_DOCU(p99_notifier_set)
-p99_inline
+P99_SETJMP_INLINE(p99_notifier_set)
 void p99_notifier_set(p99_notifier volatile* p00_n, unsigned p00_v) {
   if (p00_v)
     P99_FUTEX_COMPARE_EXCHANGE(p00_n,
