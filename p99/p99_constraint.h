@@ -105,8 +105,16 @@ size_t strerrorlen_s(errno_t p00_errnum) {
 #if (_XOPEN_SOURCE >= 600)
 p99_inline
 int p00_strerror(int p00_errname, size_t p00_maxsize, char p00_s[p00_maxsize]) {
+  /* This "feature" test macro for the bogus glibc version seems to be
+     the only possible. We get in trouble if we compile the library
+     against glibc, and then run the executable with another libc that
+     is POSIX compliant. All of a sudden we have an ABI breakage. We
+     try to get away with it by re-interpreting the return value as
+     integer. If it is small we suppose that we had an ABI breakage,
+     and return that small integer value. */
 # if _GNU_SOURCE && __GLIBC__
   char * p00_ret = strerror_r(p00_errname, p00_s, p00_maxsize);
+  if ((uintptr_t)p00_ret < 2048) return (intptr_t)p00_ret;
   if (p00_ret != p00_s) {
     if (strlen(p00_ret) < p00_maxsize) {
       strcpy(p00_s, p00_ret);
