@@ -108,7 +108,7 @@ uint32_t p00_xorshift(p00_seed160 * p00_s) {
 typedef p00_seed160 p99_seed[2];
 
 struct p00_rand160 {
-  once_flag p00_flag;
+  p99_once_flag p00_flag;
   p99_seed p00_seed;
 };
 
