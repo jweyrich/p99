@@ -31,6 +31,7 @@
 #include "p99_notifier.h"
 #include "p99_qsort.h"
 #include "p99_rand.h"
+#include "p99_rwl.h"
 #include "p99_str.h"
 #include "p99_swap.h"
 #include "p99_try.h"

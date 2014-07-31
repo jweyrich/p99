@@ -57,7 +57,11 @@
 #ifdef P00_DOXYGEN
 struct p99_rwl {};
 #else
-typedef p99_futex p99_rwl;
+typedef struct p99_rwl p99_rwl;
+struct p99_rwl {
+  p99_futex p00_f;
+  _Atomic(unsigned) p00_w;
+};
 #endif
 
 #define P00_RWL_EXCL UINT_MAX
@@ -69,19 +73,29 @@ typedef p99_futex p99_rwl;
 /**
  ** @brief Initialize an ::p99_rwl object.
  **/
-# define P99_RWL_INITIALIZER P99_FUTEX_INITIALIZER
+# define P99_RWL_INITIALIZER                    \
+{                                               \
+  .p00_f = P99_FUTEX_INITIALIZER,               \
+  .p00_w = ATOMIC_VAR_INIT(0),                  \
+}
 
 /**
  ** @brief Initialize an ::p99_rwl object.
  **/
 p99_inline
-p99_rwl* p99_rwl_init(p99_rwl* p00_c) {
-  return p00_c ? p99_futex_init(p00_c, 0u) : 0;
+p99_rwl* p99_rwl_init(p99_rwl* p00_r) {
+  if (p00_r) {
+    p99_futex_init(&p00_r->p00_f, 0u);
+    atomic_init(&p00_r->p00_w, 0u);
+  }
+  return p00_r;
 }
 
 p99_inline
-void p99_rwl_destroy(p99_rwl* p00_c) {
-  p99_futex_destroy(p00_c);
+void p99_rwl_destroy(p99_rwl* p00_r) {
+  if (p00_r) {
+    p99_futex_destroy(&p00_r->p00_f);
+  }
 }
 
 /**
@@ -97,9 +111,10 @@ void p99_rwl_destroy(p99_rwl* p00_c) {
  ** @related p99_rwl
  **/
 P00_FUTEX_INLINE(p99_rwl_rdlock)
-int p99_rwl_rdlock(p99_rwl volatile* p00_c) {
+int p99_rwl_rdlock(p99_rwl volatile* p00_r) {
   uint p00_res = 0;
-  P99_FUTEX_COMPARE_EXCHANGE(p00_c, p00_act,
+  atomic_fetch_add_explicit(&(p00_r->p00_w), 1u, memory_order_acq_rel);
+  P99_FUTEX_COMPARE_EXCHANGE(&(p00_r->p00_f), p00_act,
                              /* block if there is an exclusive lock or
                                 already too many readers */
                              (P00_RWL_DIAG(stderr, "rdlock found %u\n", p00_act),
@@ -110,6 +125,7 @@ int p99_rwl_rdlock(p99_rwl volatile* p00_c) {
                              (p00_res = ((p00_act < P00_RWL_EXCL-1) ? p00_act + 1U : p00_act)),
                              /* never wakeup anybody */
                              0U, 0U);
+  atomic_fetch_add_explicit(&(p00_r->p00_w), -1u, memory_order_acq_rel);
   P00_RWL_DIAG(stderr, "rdlock set to %u\n", p00_res);
   /* Return EAGAIN if we couldn't increment because there were too
      many waiters. */
@@ -119,10 +135,10 @@ int p99_rwl_rdlock(p99_rwl volatile* p00_c) {
 }
 
 /**
- ** @brief establish an exclusive lock for rwlock @a p00_c.
+ ** @brief establish an exclusive lock for rwlock @a p00_r.
  **
  ** This will inhibit anybody else, this thread including, to take a
- ** lock on @a p00_c.
+ ** lock on @a p00_r.
  **
  ** @remark blocks until the lock can be achieved
  **
@@ -130,35 +146,38 @@ int p99_rwl_rdlock(p99_rwl volatile* p00_c) {
  ** @related p99_rwl
  **/
 P00_FUTEX_INLINE(p99_rwl_wrlock)
-int p99_rwl_wrlock(p99_rwl volatile* p00_c) {
+int p99_rwl_wrlock(p99_rwl volatile* p00_r) {
   uint p00_res = 0;
-  P99_FUTEX_COMPARE_EXCHANGE(p00_c, p00_act,
+  atomic_fetch_add_explicit(&(p00_r->p00_w), 1u, memory_order_acq_rel);
+  P99_FUTEX_COMPARE_EXCHANGE(&(p00_r->p00_f), p00_act,
                              /* block if there is any lock */
                              (P00_RWL_DIAG(stderr, "wrlock found %u\n", p00_act), !p00_act),
                              /* as soon as there is no lock, reserve exclusively */
                              (p00_res = P00_RWL_EXCL),
                              /* never wakeup anybody */
                              0U, 0U);
+  atomic_fetch_add_explicit(&(p00_r->p00_w), -1u, memory_order_acq_rel);
   P00_RWL_DIAG(stderr, "wrlock set to %u\n", p00_res);
   return 0;
 }
 
 /**
- ** @brief release a lock on rwlock @a p00_c.
+ ** @brief release a lock on rwlock @a p00_r.
  **
  ** @return 0
  ** @related p99_rwl
  **/
 P00_FUTEX_INLINE(p99_rwl_inc_conditionally)
-int p99_rwl_unlock(p99_rwl volatile* p00_c) {
+int p99_rwl_unlock(p99_rwl volatile* p00_r) {
   uint p00_res = 0;
-  P99_FUTEX_COMPARE_EXCHANGE(p00_c, p00_act,
+  P99_FUTEX_COMPARE_EXCHANGE(&(p00_r->p00_f), p00_act,
                              /* never block */
                              (P00_RWL_DIAG(stderr, "unlock found %u\n", p00_act), true),
                              /* decrement for shared locks, force to 0 for exclusives */
                              (p00_res = ((p00_act == P00_RWL_EXCL) ? 0U : p00_act - 1U)),
-                             /* wakeup potential waiters if the count fell to 0 */
-                             0U, (p00_res ? 0U : P99_FUTEX_MAX_WAITERS));
+                             /* wakeup potential waiters if any and
+                                the count fell to 0 */
+                             0U, (p00_res ? 0U : atomic_load(&p00_r->p00_w)));
   P00_RWL_DIAG(stderr, "unlock set to %u\n", p00_res);
   return 0;
 }
@@ -170,8 +189,19 @@ int p99_rwl_unlock(p99_rwl volatile* p00_c) {
  **
  ** @related p99_rwl
  **/
-p99_inline bool p99_rwl_islocked(p99_rwl volatile* p00_c) {
-  return p99_futex_load(p00_c);
+p99_inline bool p99_rwl_islocked(p99_rwl volatile* p00_r) {
+  return p99_futex_load(&(p00_r->p00_f));
+}
+
+/**
+ ** @brief Tell if @a has waiters.
+ **
+ ** @remark this gives only a temporary picture of the lock state
+ **
+ ** @related p99_rwl
+ **/
+p99_inline bool p99_rwl_haswaiters(p99_rwl volatile* p00_r) {
+  return atomic_load(&(p00_r->p00_w));
 }
 
 # ifndef P99_SIMPLE_BLOCKS
