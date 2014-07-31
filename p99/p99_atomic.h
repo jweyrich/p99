@@ -1328,7 +1328,7 @@ P00_FETCH_OP((OBJP), (OPERAND), p00_atomic_fetch_xor, ^=, (ORD))
 #define atomic_fetch_add_conditional(OBJP, OPERAND)                       \
 p99_extension                                                             \
 ({                                                                        \
-  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                             \
+  P99_MACRO_VAR(p00_objp, (OBJP));                                        \
   P99_MACRO_VAR(p00_op, (OPERAND));                                       \
   __typeof__(P00_AT(p00_objp)) p00_ret;                                   \
   /* be sure that the result can not be used as an lvalue */              \
@@ -1378,7 +1378,7 @@ p99_extension                                                             \
 #define atomic_fetch_max_explicit(OBJP, OPERAND, ORD)                    \
 p99_extension                                                            \
 ({                                                                       \
-  P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                            \
+  P99_MACRO_VAR(p00_objp, (OBJP));                                       \
   P99_MACRO_VAR(p00_op, (OPERAND));                                      \
   __typeof__(atomic_load(p00_objp)) p00_ret;                             \
   /* be sure that the result can not be used as an lvalue */             \
