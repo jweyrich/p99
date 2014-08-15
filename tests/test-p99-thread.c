@@ -111,7 +111,8 @@ int real_task(atomic_intp* arg) {
   mtx_lock(&mut);
   ++count;
   ret = P99_GEN_MAX(count, 23);
-  cnd_signal(&cond);
+  if (count%7) cnd_signal(&cond);
+  else cnd_broadcast(&cond);
   mtx_unlock(&mut);
   {
     double d = atomic_load(&D);
@@ -145,10 +146,18 @@ int task(void* arg) {
   return real_task(arg);
 }
 
+static
+void cleanup(void) {
+  cnd_destroy(&cond);
+  mtx_destroy(&mut);
+}
+
 int main(int argc, char *argv[]) {
   size_t n = argc < 2 ? 2 : strtoul(argv[1], 0, 0);
   mtx_init(&mut, mtx_plain);
   cnd_init(&cond);
+  at_quick_exit(cleanup);
+  atexit(cleanup);
   thrd_t (*id)[n] = P99_MALLOC(*id);
   int* intp2 = 0;
   (void)atomic_compare_exchange_weak(&intp, &intp2, &argc);
@@ -165,13 +174,19 @@ int main(int argc, char *argv[]) {
     thrd_create(&(*id)[i], task, &arrp);
   for (size_t i = 1; i < n; i += 2)
     thrd_detach((*id)[i]);
+  mtx_lock(&mut);
+  while (count < n/2) {
+    printf("start of wait %zu\n", count);
+    struct timespec ts;
+    timespec_get(&ts, TIME_UTC);
+    if (ts.tv_nsec + 100000000 < 1000000000) ts.tv_nsec += 100000000;
+    cnd_timedwait(&cond, &mut, &ts);
+  }
+  mtx_unlock(&mut);
   int res = 0;
   for (size_t i = 0; i < n; i += 2)
     thrd_join((*id)[i], &res);
   if (!(n % 5)) thrd_exit(1);
-  mtx_lock(&mut);
-  while (count < n) cnd_wait(&cond, &mut);
-  mtx_unlock(&mut);
   printf("results are %d, %d, %zu and %g\n",
          res,
          atomic_load(&testvar).a,
