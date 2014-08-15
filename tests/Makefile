@@ -67,7 +67,7 @@ TIDY = ../../../parxxl/scripts/findSvnAuthors --type c --auth ${AUTH} --copy ${C
 CONFORM = ${SCRIPTS}/p99_conformance.pl
 
 ifneq (${POSIX_SEMAPHORES}, -1L)
-LDFLAGS := ${LDFLAGS} -lrt -lpthread
+LDFLAGS := ${LDFLAGS}
 endif
 
 LDFLAGS += -Wl,--gc-sections -Wl,--print-gc-sections
