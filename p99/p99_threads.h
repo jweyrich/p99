@@ -311,7 +311,7 @@ P99_GUARDED_BLOCK(mtx_t*,                                                       
                          && (fprintf(stderr,                                     \
                                      __FILE__ ":"                                \
                                      P99_STRINGIFY(__LINE__) ": lock error for " \
-                                     P99_STRINGIFY(MUT) ", %s",                  \
+                                     P99_STRINGIFY(MUT) ", %s\n",                \
                                      strerror(p00_errNo)), 1)                    \
                          && (UNIQ = 0, 1)                                        \
                          && (P99_UNWIND(-1), 1)                                  \
