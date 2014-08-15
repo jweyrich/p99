@@ -44,6 +44,8 @@
 # include <unistd.h>
 # include <sys/syscall.h>
 
+long syscall(long number, ...);
+
 /**
  ** @brief Wrap the linux system call @c futex.
  **
