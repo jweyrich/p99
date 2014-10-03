@@ -10,6 +10,7 @@
 /* without even the implied warranty of merchantability or fitness for a      */
 /* particular purpose.                                                        */
 /*                                                                            */
+#include <math.h>
 #include "p99_c99_throw.h"
 
 int main(void) {
