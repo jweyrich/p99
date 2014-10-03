@@ -45,22 +45,6 @@ P00_ONE_TOK(double _Complex, cdouble);
 P00_ONE_TOK(long double _Complex, cldouble);
 #endif
 
-#ifndef SSIZE_MAX
-# if SIZE_MAX == SHRT_MAX
-typedef short ssize_t;
-# define SSIZE_MAX SHRT_MAX
-# elif SIZE_MAX == UINT_MAX
-typedef int ssize_t;
-# define SSIZE_MAX INT_MAX
-# elif SIZE_MAX == ULONG_MAX
-typedef long ssize_t;
-# define SSIZE_MAX LONG_MAX
-# else
-typedef long long ssize_t;
-# define SSIZE_MAX LLONG_MAX
-# endif
-#endif
-
 /**
  ** @}
  **/
@@ -104,7 +88,6 @@ P99_POINTER_TYPE(signed);
 P99_POINTER_TYPE(unsigned);
 
 P99_POINTER_TYPE(size_t);
-P99_POINTER_TYPE(ssize_t);
 P99_POINTER_TYPE(intmax_t);
 P99_POINTER_TYPE(uintmax_t);
 P99_POINTER_TYPE(intptr_t);
@@ -150,7 +133,6 @@ P99_DERIVED_TYPES(unsigned);
 P99_DERIVED_TYPES(signed);
 
 P99_DERIVED_TYPES(size_t);
-P99_DERIVED_TYPES(ssize_t);
 P99_DERIVED_TYPES(intmax_t);
 P99_DERIVED_TYPES(uintmax_t);
 P99_DERIVED_TYPES(intptr_t);
