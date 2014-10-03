@@ -14,6 +14,7 @@
 #define P99_RAND_H
 #include "p99_threads.h"
 #include "p99_new.h"
+#include "p99_clib.h"
 
 /** @file
  **

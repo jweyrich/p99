@@ -11,11 +11,12 @@
 /* particular purpose.                                                        */
 /*                                                                            */
 #include "p99_threads.h"
-#include "stdbool.h"
-#include "stdlib.h"
+#include <stdbool.h>
+#include <stdlib.h>
 #include "p99_compiler.h"
 #include "p99_generic.h"
 #include "p99_atomic.h"
+#include "p99_clib.h"
 
 static_assert(true, "everything is alright");
 // static_assert(false, "all goes wrong");

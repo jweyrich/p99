@@ -103,6 +103,7 @@ CFLAGS += -D_XOPEN_SOURCE=${XOPEN_VERSION}
 endif
 ifneq (${GNU_LIBC_VERSION},)
 CFLAGS += -D_GNU_SOURCE=1
+LDFLAGS += -lrt
 endif
 
 ##############################
