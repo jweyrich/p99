@@ -174,10 +174,14 @@ typedef size_t rsize_t;
 /* Look for C11 features that are typically provided by a C library
    and not by the compiler itself */
 #ifdef __GLIBC__
-/* The day glibc implements uchar.h, put the correct version number here */
-# define p00_has_feature_uchar_h 0
-/* The day glibc implements uchar.h, put the correct version number here */
-# define __STDC_NO_THREADS__ 1
+# if __GLIBC_PREREQ(2, 19)
+#  define p00_has_feature_aligned_alloc 1
+#  define p00_has_extension_aligned_alloc 1
+#  define p00_has_feature_uchar_h 1
+# else
+#  define p00_has_feature_uchar_h 0
+#  define __STDC_NO_THREADS__ 1
+# endif
 #endif
 
 #if __STDC_VERSION__ > 201100L
