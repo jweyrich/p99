@@ -1066,9 +1066,7 @@ atomic_exchange_explicit((OBJP), (DESIRED), memory_order_seq_cst)
 p99_extension                                                                       \
 ({                                                                                  \
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                       \
-  typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                                  \
   typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                                 \
-  typedef __typeof__(P00_AM(p00_objp)) p00_mbase_t;                                 \
   register p00_ubase_t p00_ret = P99_INIT;                                          \
   if (!atomic_is_lock_free(p00_objp)) {                                             \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                           \
@@ -1167,9 +1165,7 @@ p99_extension                                                                   
 ({                                                                                  \
   P99_MACRO_PVAR(p00_objp, (OBJP), volatile);                                       \
   P99_MACRO_VAR(p00_desp, (DES));                                                   \
-  typedef __typeof__(P00_AT(p00_objp)) p00_base_t;                                  \
   typedef __typeof__(P00_AX(p00_objp)) p00_ubase_t;                                 \
-  typedef __typeof__(P00_AM(p00_objp)) p00_mbase_t;                                 \
   register p00_ubase_t const p00_des =  { .p00_t = (p00_desp) };                    \
   if (!atomic_is_lock_free(p00_objp)) {                                             \
     P99_SPIN_EXCLUDE(&p00_objp->p00_lock)                                           \
