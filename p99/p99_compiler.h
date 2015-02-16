@@ -853,6 +853,13 @@ static_assert(1);
 # endif
 #endif
 
+/* Patch a flaw in OS X. They use __attribute__((noreturn)) which
+   explodes if noreturn is defined. */
+#ifdef __APPLE__
+# undef __dead2
+# define __dead2 __attribute__((__noreturn__))
+#endif
+
 #ifdef P00_DOXYGEN
 /**
  ** @def _Thread_local
