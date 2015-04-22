@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<style>
+.quote {
+    background-color : #FFD;
+    text-align : left;
+    margin : 0em 2em;
+}
+.alternative {
+    background-color : #FCC;
+    text-align : left;
+    margin : 0em 2em;
+}
+pre {
+    background-color : #EEE;
+    text-style : sans-serif;
+    margin : 0em 2em;
+}
+code { background-color : #EEE; text-style : sans-serif }
+</style>
+<title>Defect report #4nn</title>
+</head>
+<body>
+<h2>Defect report #4nn</h2><a href=
+  "dr_4aa.htm">Previous Defect Report</a> &lt; - &gt; <a href=
+  "dr_4bb.htm">Next Defect Report</a>
+
+  <p><br>
+  <b>Submitter:</b> Jens Gustedt<br>
+  <b>Submission Date:</b> <br>
+  <!-- yyyy-mm-dd -->
+  2015-04-15
+   <b>Source:</b><br>
+  <b>Reference Document:</b> N/A<br>
+  <b>Version:</b> 1.0<br>
+  <b>Date:</b> 2015-04-15<br>
+    <b>Subject:</b> Defect Report relative to C11: controlling
+    expression of _Generic primary expression</p>
+
+  <p><b>Summary</b></p>
+
+<p>
+  This is a follow up of the now closed DR 423 which resulted in the
+  clarification of the status of qualifications of rvalues.
+</p>
+
+<p>
+  This defect report aims to clarify the status of the controlling
+  expression of <code>_Generic</code> primary expression:
+</p>
+
+<em>
+  Does the controlling expression of a <code>_Generic</code> primary
+  expression undergo any type of conversion to calculate the type that
+  is used to do the selection?
+</em>
+
+<p>
+  Implementors have given different answers to this question; clang
+  doesn't apply any conversion, gcc applies the applicable conversions
+  of 6.3.2.1, that is lvalue to rvalue and array to pointer
+  conversions.
+</p>
+
+<h3>Discussion</h3>
+
+<h4>Problem</h4>
+<p>
+  The problem arises to know whether or not the conversions of 6.3
+  apply to the controlling expression.
+  <ul>
+    <li>
+      <b>
+        promotions:
+      </b>
+      There is no general rule to which expressions these apply, but
+      their application is hard coded for the individual operators,
+      where it makes reference to "its (promoted) operand".
+    </li>
+    <li>
+      <b>
+        lvalue conversion:
+      </b>
+      I didn't find any text that would impose lvalue conversion
+      performed to the controlling expression. All wording in 6.3 is
+      "some" and "may". Also it talks of "operators" and "operations",
+      but <code>_Generic</code> is not an operator, but a primary
+      expression. The wording in 6.5.1.1 talks of <em>has a type</em>
+      and doesn't make any reference to any type conversion.
+    </li>
+    <li>
+      <b>
+        array conversion:
+      </b>
+      The support for array conversion is stronger. Array conversion
+      has an explicit list of cases (<em>6.3.2.1 p3</em>) were an
+      array is an
+      <em>operand</em> where it doesn't apply. But
+      <ul>
+        <li>
+          The case of arrays as an exception in <em>6.3.2.1 p3</em>
+          doesn't list the <em>associations</em>
+          of <code>_Generic</code> either, which are listed
+          in <em>6.5.1.1</em>.
+        </li>
+        <li>
+          There is another precedent, namely <em>parenthesized
+          expressions</em>, which are also not listed in <em>6.3.2.1
+          p3</em> and where nobody expects an array conversion,
+          either.
+        </li>
+      </ul>
+    </li>
+  </ul>
+</p>
+
+<h4>Case 1: integer promotions</h4>
+
+<p>
+  Applying promotions would have as an effect that we wouldn't be able
+  to distinguish narrow integer types from <code>int</code>. There is
+  no indication that the text implies that form or conversion, nor
+  that anybody has proposed to use <code>_Generic</code> like this.
+</p>
+
+<h4>Case 2: Consequences of lvalue conversion</h4>
+<p>
+  All conversion in <em>6.3.2.1 p2</em> describe what would in normal
+  CS language be named the evaluation of an object. It has no
+  provision to apply it to types alone.
+
+  In particular it includes the special clause that
+  uninitialized <code>register</code> variables lead to undefined
+  behavior when undergoing lvalue conversion. As a consequence:
+</p>
+
+<p>
+<em>
+  Any lvalue conversion of a <code>register</code> variable leads to
+  undefined behavior.
+</em>
+</p>
+
+<p>
+And thus
+</p>
+<p>
+  <em>
+    <b>
+      Under the hypothesis that the controlling expression undergoes
+      lvalue conversion, any <code>_Generic</code> primary expression
+      that uses an uninitialized <code>register</code> variable as
+      controlling expression leads to undefined behavior.
+    </b>
+  </em>
+</p>
+
+<h4>Case 3: Consequences not doing conversions</h4>
+
+<p>
+  In view of the resolution of DR 423 (rvalues drop qualifiers)
+  using <code>_Generic</code> primary expressions with objects in
+  controlling expression may have results that appear surprising.
+</p>
+
+<pre>
+#define F(X) _Generic((X), char const: 0, char: 1, int: 2)
+char const strc[] = "";
+F(strc[0])   // -> 0
+F(""[0])     // -> 1
+F(+strc[0])  // -> 2
+</pre>
+
+<p>
+  So the problem is here, that there is no type agnostic operator that
+  results in a simple lvalue conversion for <code>char const</code>
+  objects to <code>char</code>; all such operators also
+  promote <code>char</code> to <code>int</code>.
+</p>
+
+<p>
+  <em>
+    <b>
+      Under the hypothesis that the controlling expression doesn't
+      undergo conversion, any <code>_Generic</code> primary expression
+      that uses a qualified lvalue of narrow type <code>T</code> can't
+      trigger the association for <code>T</code> itself.
+    </b>
+  </em>
+</p>
+
+<h4>Possible solutions</h4>
+
+<p>
+In my view, the above discussion describes what can be read from the
+text of C11, alone. In other words if the committee would have wanted
+a solution that doesn't do any conversion (such as the interpretation
+by clang), it would not have looked much different than what we have.
+</p>
+
+<p>
+  To clarify that case, a little addition may be convenient, though:
+</p>
+
+<p><b>Suggested Technical Corrigendum (Case 3)</b><br>
+  Change 6.5.1.1 p3, first sentence from
+
+  <center>
+    The controlling expression of a generic selection is not evaluated.
+  </center>
+
+  to
+
+  <center>
+    The controlling expression of a generic selection is not evaluated
+    and the type of that expression is used without applying any
+    conversions described in Section 6.3.
+  </center>
+</p>
+
+<p>
+  If the intent of the committee had been <em>Case 2</em> or similar,
+  bigger changes of the standard would be indicated. I only list some
+  of the areas that would need changes:
+</p>
+<ul>
+  <li>
+    Move <code>_Generic</code> from primary expressions to a proper
+    subsection, and rename the feature to <code>_Generic</code>
+    operator.
+  </li>
+  <li>
+    Clarify which <em>as-if</em> conversions must be applied to
+    determine the type.
+  </li>
+  <li>
+    Reformulate those conversions as conversions of types instead of
+    values.
+  </li>
+</ul>
+
+<p>
+  A third possibility would be to leave this leeway to
+  implementations. I strongly object to that, but if so, I would
+  suggest to add a phrase like:
+</p>
+
+<center>
+  Whether or not the type of that expression is determined as if any
+  of conversions described in Section 6.3 are applied to the
+  controlling expression is implementation defined.
+</center>
+
+<hr />
+  <!-- Entires below the line by WG14 only. -->
+
+  <p><br>
+  <a href="dr_4aa.htm">Previous Defect Report</a> &lt; - &gt;
+  <a href="dr_4bb.htm">Next Defect Report</a></p>
+</body>
