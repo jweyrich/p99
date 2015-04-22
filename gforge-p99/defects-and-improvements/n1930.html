@@ -19,7 +19,7 @@ pre {
 }
 code { background-color : #EEE; text-style : sans-serif }
 </style>
-<title>Defect report #4nn</title>
+<title>Controlling expression of _Generic primary expression</title>
 </head>
 <body>
 <h2>Defect report #4nn</h2><a href=
@@ -35,8 +35,6 @@ code { background-color : #EEE; text-style : sans-serif }
   <b>Reference Document:</b> N/A<br>
   <b>Version:</b> 1.0<br>
   <b>Date:</b> 2015-04-15<br>
-    <b>Subject:</b> Defect Report relative to C11: controlling
-    expression of _Generic primary expression</p>
 
   <p><b>Summary</b></p>
 
@@ -57,10 +55,26 @@ code { background-color : #EEE; text-style : sans-serif }
 </em>
 
 <p>
-  Implementors have given different answers to this question; clang
-  doesn't apply any conversion, gcc applies the applicable conversions
-  of 6.3.2.1, that is lvalue to rvalue and array to pointer
-  conversions.
+  Implementors have given different answers to this question; gcc on
+  one side and clang and IBM on the other side went quite opposite
+  ways, resulting in severe incompatibility for <code>_Generic</code>
+  expression that use qualifiers or arrays.
+</p>
+
+<pre>
+char const* a = _Generic("bla", char*: "blu");                 // clang error
+char const* b = _Generic("bla", char[4]: "blu");               // gcc error
+char const* c = _Generic((int const){ 0 }, int: "blu");        // clang error
+char const* d = _Generic((int const){ 0 }, int const: "blu");  // gcc error
+char const* e = _Generic(+(int const){ 0 }, int: "blu");       // both ok
+char const* f = _Generic(+(int const){ 0 }, int const: "blu"); // both error
+</pre>
+
+<p>
+  The last two lines, where gcc and clang agree, points to the nature
+  of the problem: gcc treats all such expressions as rvalues and does
+  all applicable conversions of 6.3.2.1, that is lvalue to rvalue and
+  array to pointer conversions. clang treats them as lvalues.
 </p>
 
 <h3>Discussion</h3>
@@ -190,6 +204,36 @@ F(+strc[0])  // -> 2
   </em>
 </p>
 
+<h4>non-equivalence of the two approaches</h4>
+
+<p>
+  For many areas the two approaches are feature equivalent, that is
+  both allow to implement the same semantic concepts, but with
+  different syntax.
+  <ul>
+    <li>
+      Code that was written with gcc's solution in mind (enforced
+      lvalue and array conversion) when translated to clang's model
+      has to enforce such conversions. E.g as long as we know that the
+      type of <code>X</code> is only a wide integer type or an array
+      or pointer type, a macro such as
+      <pre>
+        #define bla(X) _Generic((X), ... something ... )
+      </pre>
+      would have to become
+      <pre>
+        #define bla(X) _Generic((X)+0, ... something ... )
+      </pre>
+      Writing code that takes care of narrow integer types is a bit
+      more difficult, but can be done with a finite number of extra
+      case selections. Code that uses <code>struct</code>
+      or <code>union</code> types must use bizarre things like <code>1
+      ? (X) : (X)</code> to enforce lvalue conversion.
+    </li>
+  </ul>
+</p>
+
+
 <h4>Possible solutions</h4>
 
 <p>
@@ -200,7 +244,7 @@ by clang), it would not have looked much different than what we have.
 </p>
 
 <p>
-  To clarify that case, a little addition may be convenient, though:
+  To clarify that case some additions may be convenient, though:
 </p>
 
 <p><b>Suggested Technical Corrigendum (Case 3)</b><br>
@@ -217,9 +261,17 @@ by clang), it would not have looked much different than what we have.
     and the type of that expression is used without applying any
     conversions described in Section 6.3.
   </center>
+
+  Add <code>_Generic</code> to the exception list in <em>6.3.2.1
+  p3</em> to make it clear that array to pointer conversion applies to
+  none of the controlling or selection expression if they are lvalues
+  of array type.
 </p>
 
-<p>
+
+
+<p><b>Suggested Technical Corrigendum (Case 2)</b><br>
+
   If the intent of the committee had been <em>Case 2</em> or similar,
   bigger changes of the standard would be indicated. I only list some
   of the areas that would need changes:
@@ -240,7 +292,8 @@ by clang), it would not have looked much different than what we have.
   </li>
 </ul>
 
-<p>
+<p><b>Suggested Technical Corrigendum (Status quo)</b><br>
+
   A third possibility would be to leave this leeway to
   implementations. I strongly object to that, but if so, I would
   suggest to add a phrase like:
