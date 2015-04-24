@@ -22,21 +22,11 @@ code { background-color : #EEE; text-style : sans-serif }
 <title>Controlling expression of _Generic primary expression</title>
 </head>
 <body>
-<h2>Defect report #4nn</h2><a href=
-  "dr_4aa.htm">Previous Defect Report</a> &lt; - &gt; <a href=
-  "dr_4bb.htm">Next Defect Report</a>
+<h1>Controlling expression of _Generic primary expression</h1>
+  <b>Author:</b> Jens Gustedt, INRIA<br>
+  <b>Date:</b> 2015-04-24<br>
 
-  <p><br>
-  <b>Submitter:</b> Jens Gustedt<br>
-  <b>Submission Date:</b> <br>
-  <!-- yyyy-mm-dd -->
-  2015-04-15
-   <b>Source:</b><br>
-  <b>Reference Document:</b> N/A<br>
-  <b>Version:</b> 1.0<br>
-  <b>Date:</b> 2015-04-15<br>
-
-  <p><b>Summary</b></p>
+  <h2>Summary</h2>
 
 <p>
   This is a follow up of the now closed DR 423 which resulted in the
@@ -48,16 +38,18 @@ code { background-color : #EEE; text-style : sans-serif }
   expression of <code>_Generic</code> primary expression:
 </p>
 
+<b>
 <em>
   Does the controlling expression of a <code>_Generic</code> primary
   expression undergo any type of conversion to calculate the type that
   is used to do the selection?
 </em>
-
+</b>
 <p>
-  Implementors have given different answers to this question; gcc on
-  one side and clang and IBM on the other side went quite opposite
-  ways, resulting in severe incompatibility for <code>_Generic</code>
+  Implementers have given different answers to this question; gcc
+  (<em>choice 1</em> in the following) on one side and clang and IBM
+  (<em>choice 2</em>) on the other side went quite opposite ways,
+  resulting in severe incompatibility for <code>_Generic</code>
   expression that use qualifiers or arrays.
 </p>
 
@@ -77,9 +69,7 @@ char const* f = _Generic(+(int const){ 0 }, int const: "blu"); // both error
   array to pointer conversions. clang treats them as lvalues.
 </p>
 
-<h3>Discussion</h3>
-
-<h4>Problem</h4>
+<h2>Problem discussion</h2>
 <p>
   The problem arises to know whether or not the conversions of 6.3
   apply to the controlling expression.
@@ -100,8 +90,8 @@ char const* f = _Generic(+(int const){ 0 }, int const: "blu"); // both error
       performed to the controlling expression. All wording in 6.3 is
       "some" and "may". Also it talks of "operators" and "operations",
       but <code>_Generic</code> is not an operator, but a primary
-      expression. The wording in 6.5.1.1 talks of <em>has a type</em>
-      and doesn't make any reference to any type conversion.
+      expression. The wording in 6.5.1.1 is <em>has a type</em>
+      and doesn't make any reference to type conversion.
     </li>
     <li>
       <b>
@@ -129,7 +119,7 @@ char const* f = _Generic(+(int const){ 0 }, int const: "blu"); // both error
   </ul>
 </p>
 
-<h4>Case 1: integer promotions</h4>
+<h3>Integer promotions</h3>
 
 <p>
   Applying promotions would have as an effect that we wouldn't be able
@@ -138,7 +128,7 @@ char const* f = _Generic(+(int const){ 0 }, int const: "blu"); // both error
   that anybody has proposed to use <code>_Generic</code> like this.
 </p>
 
-<h4>Case 2: Consequences of lvalue conversion</h4>
+<h3>Choice 1: Consequences of lvalue conversion</h3>
 <p>
   All conversion in <em>6.3.2.1 p2</em> describe what would in normal
   CS language be named the evaluation of an object. It has no
@@ -170,7 +160,7 @@ And thus
   </em>
 </p>
 
-<h4>Case 3: Consequences not doing conversions</h4>
+<h3>Choice 2: Consequences not doing conversions</h3>
 
 <p>
   In view of the resolution of DR 423 (rvalues drop qualifiers)
@@ -199,24 +189,26 @@ F(+strc[0])  // -> 2
       Under the hypothesis that the controlling expression doesn't
       undergo conversion, any <code>_Generic</code> primary expression
       that uses a qualified lvalue of narrow type <code>T</code> can't
-      trigger the association for <code>T</code> itself.
+      directly trigger the association for <code>T</code> itself.
     </b>
   </em>
 </p>
 
-<h4>non-equivalence of the two approaches</h4>
+<h3>non-equivalence of the two approaches</h3>
 
 <p>
   For many areas the two approaches are feature equivalent, that is
   both allow to implement the same semantic concepts, but with
-  different syntax.
+  different syntax. Rewriting code that was written with one of
+  choices in mind to the other choice is in general not straight
+  forward and probably can't be automated.
   <ul>
     <li>
-      Code that was written with gcc's solution in mind (enforced
-      lvalue and array conversion) when translated to clang's model
-      has to enforce such conversions. E.g as long as we know that the
-      type of <code>X</code> is only a wide integer type or an array
-      or pointer type, a macro such as
+      Code that was written with <em>choice 1</em> in mind (enforced
+      lvalue and array conversion) when translated to <em>choice
+      2</em> has to enforce such conversions. E.g as long as we know
+      that the type of <code>X</code> is only a wide integer type or
+      an array or pointer type, a macro such as
       <pre>
         #define bla(X) _Generic((X), ... something ... )
       </pre>
@@ -225,56 +217,243 @@ F(+strc[0])  // -> 2
         #define bla(X) _Generic((X)+0, ... something ... )
       </pre>
       Writing code that takes care of narrow integer types is a bit
-      more difficult, but can be done with a finite number of extra
-      case selections. Code that uses <code>struct</code>
-      or <code>union</code> types must use bizarre things like <code>1
-      ? (X) : (X)</code> to enforce lvalue conversion.
+      more difficult, but can be done with 48 extra case selections,
+      taking care of all narrow types (6) and all their possible
+      qualifications (8, <code>restrict</code> is not possible,
+      here). Code that uses <code>struct</code> or <code>union</code>
+      types must use bizarre things like <code>1 ? (X) : (X)</code> to
+      enforce lvalue conversion.
+      <pre>
+        #define blaOther((X),                                  \
+          char: blub, char const: blub, ...,                   \
+          short: ...,                                          \
+          default: _Generic(1 ? (X) : (X), struct toto: ... )
+
+        #define bla(X) _Generic((X)+0, ... something ... ,     \
+          default: blaOther(X))
+      </pre>
     </li>
+    <li>
+      Code that was written with <em>choice 2</em> in mind (no lvalue
+      or array conversion) when translated to <em>choice 1</em> has to
+      pass to a setting where qualifiers and arrays are preserved in
+      the type. The only such setting is the address-of
+      operator <code>&amp;</code>.
+      <pre>
+        #define blu(X) _Generic((X), \
+           char const: blub,         \
+           char[4]: blob,            \
+           ...)
+      </pre>
+      has to be changed to something like
+      <pre>
+        #define blu(X) _Generic(&(X),\
+          char const*: blub,         \
+          char(*)[4]: blob,          \
+          ...)
+      </pre>
+      That is each individual type selection has to be transformed,
+      and the syntactical change that is to be apply is no simple
+      textual replacement.
   </ul>
 </p>
 
 
-<h4>Possible solutions</h4>
+<h2>Application work around</h2>
 
 <p>
-In my view, the above discussion describes what can be read from the
-text of C11, alone. In other words if the committee would have wanted
-a solution that doesn't do any conversion (such as the interpretation
-by clang), it would not have looked much different than what we have.
+  Since today C implementations have already taken different paths for
+  this feature, applications should be careful when
+  using <code>_Generic</code> to remain in the intersection of these
+  two interpretations. A certain number of design questions should be
+  answered when implementing a type generic macro:
+  <ul>
+    <li>
+      Do I want to differentiate the outcome according to the
+      qualification of the argument?
+    </li>
+    <li>
+      Do I want to distinguish arrays from pointer arguments?
+    </li>
+    <li>
+      Do I want to distinguish narrow types?
+    </li>
+    <li>
+      Do I want to apply it to composite types,
+      namely <code>struct</code> types?
+    </li>
+  </ul>
+  The following lists different strategies for common scenarios, that
+  can be used to code type generic macros that will work with both of
+  the choices 1 or 2.
 </p>
+
+<h3>Wide integers and floating point types</h3>
 
 <p>
-  To clarify that case some additions may be convenient, though:
+  This is e.g the case of the C library interfaces
+  in <tt>&lt;tgmath.h&gt;</tt>.  If we know that the possible type of
+  the argument is restricted in such a way, the easiest is to apply
+  the unary plus operator <code>+</code>, as in
 </p>
 
-<p><b>Suggested Technical Corrigendum (Case 3)</b><br>
-  Change 6.5.1.1 p3, first sentence from
+<pre>
+  #define F(X) _Generic(+(X),             \
+    default: doubleFunc,                  \
+    int: intFunc,                         \
+    ...                                   \
+    _Complex long double: cldoubleFunc)(X)
 
-  <center>
-    The controlling expression of a generic selection is not evaluated.
-  </center>
+  #define fabs(X) _Generic(+(X),          \
+    default: fabs,                        \
+    float: fabsf,                         \
+    long double: fabsl)(X)
+</pre>
+<p>
+This <code>+</code> sign ensures an lvalue to rvalue conversion, and,
+that it will error out at compilation time for pointer types or
+arrays. It also forcibly promotes narrow integer types, usually
+to <code>int</code>. For the later case of <code>fabs</code> all
+integer types will map to the <code>double</code> version of the
+function, and the argument will eventually be converted
+to <code>double</code> before the call is made.
+</p>
+<h3>Adding pointer types and converting arrays</h3>
 
-  to
+<p>
+  If we also want to capture pointer types <em>and</em> convert arrays
+  to pointers, we should use <code>+0</code>.
+</p>
 
-  <center>
-    The controlling expression of a generic selection is not evaluated
-    and the type of that expression is used without applying any
-    conversions described in Section 6.3.
-  </center>
+<pre>
+  #define F(X) _Generic((X)+0),           \
+    default: doubleFunc,                  \
+    char*: stringFunc,                    \
+    char const*: stringFunc,              \
+    int: intFunc,                         \
+    ...                                   \
+    _Complex long double: cldoubleFunc)(X)
+</pre>
 
+<p>
+This binary <code>+</code> ensures that any array is first converted
+to a pointer; the properties of <code>0</code> ensure that this
+constant works well with all the types that are to be captured, here.
+It also forcibly promotes narrow integer types, usually
+to <code>int</code>.</p>
+
+<h3>Converting arrays, only</h3>
+
+<p>
+  If we k now that a macro will only be used for array and pointer
+  types, we can use the <code>[]</code> operator:
+</p>
+
+<pre>
+  #define F(X) _Generic(&((X)[0]),        \
+    char*: stringFunc,                    \
+    char const*: stringFunc,              \
+    wchar_t*: wcsFunc,                    \
+    ...                                   \
+    )(X)
+</pre>
+
+<p>
+  This operator only applies to array or to pointer types and would
+  error if present with any integer type.
+</p>
+
+<h3>Using qualifiers of types or arrays</h3>
+
+<p>
+  If we want a macro that selects differently according to type
+  qualification or according to different array size, we can use
+  the <code>&</code> operator:
+</p>
+
+<pre>
+  #define F(X) _Generic(&(X),        \
+    char**: stringFunc,              \
+    char(*)[4]: string4Func,         \
+    char const**: stringFunc,        \
+    char const(*)[4]: string4Func,   \
+    wchar_t**: wcsFunc,              \
+    ...                              \
+    )(X)
+</pre>
+
+
+<h2>Possible solutions</h2>
+
+<p>
+The above discussion describes what can be read from the text of C11,
+alone, and not the intent of the committee. I think if the committee
+would have wanted a <em>choice 2</em>, the standard text would not
+have looked much different than what we have, now. Since also the
+intent of the committee to go for <em>choice 1</em> seems not to be
+very clear from any additional text (minutes of the meetings, e.g) I
+think the reading of <em>choice 2</em> should be the preferred one.
+</p>
+
+<p><b>Suggested Technical Corrigendum (any choice)</b><br>
+
+<p>
+  Amend the list in footnote 121 for objects
+  with <code>register</code> storage class. Change
+</p>
+
+<p  class="quote">
+ Thus, the only operators that can be applied to an array declared
+with storage-class specifier <code>register</code>
+are <code>sizeof</code> and <code>_Alignof</code>.
+</p>
+
+<p  class="alternative">
+  Thus, an identifier with array type and declared with storage-class
+  specifier <code>register</code> may only appear in primary
+  expressions and as operand to <code>sizeof</code>
+  and <code>_Alignof</code>.
+</p>
+
+
+<p><b>Suggested Technical Corrigendum (Choice 2)</b><br>
+  Change 6.5.1.1 p3, first sentence
+</p>
+<center  class="quote">
+  The controlling expression of a generic selection is not evaluated
+  <span class="alternative">and the type of that expression is used
+  without applying any conversions described in Section 6.3</span>.
+</center>
+
+<p>
   Add <code>_Generic</code> to the exception list in <em>6.3.2.1
   p3</em> to make it clear that array to pointer conversion applies to
-  none of the controlling or selection expression if they are lvalues
-  of array type.
+  none of the controlling or association expression if they are
+  lvalues of array type.
 </p>
 
+<center  class="quote">
+  Except when it is <span class="alternative">the controlling
+    expression or an association expression
+    of a <code>_Generic</code> primary expression, or is</span> the operand of
+    the <code>sizeof</code> operator, the <code>_Alignof</code>
+    operator, or the unary <code>&amp;</code> operator, or is a string
+    literal used to initialize an array, an expression that has type
+    ‘‘array of type’’ is converted to an expression with type
+    ‘‘pointer to type’’ that points to the initial element of the
+    array object and is not an lvalue. If the array object has
+    register storage class, the behavior is undefined.
+</center>
 
+<p>
+  Also add a forward reference to <code>_Generic</code> in 6.3.2.
+</p>
 
-<p><b>Suggested Technical Corrigendum (Case 2)</b><br>
+<p><b>Suggested Technical Corrigendum (Choice 1)</b><br>
 
-  If the intent of the committee had been <em>Case 2</em> or similar,
-  bigger changes of the standard would be indicated. I only list some
-  of the areas that would need changes:
+  If the intent of the committee had been <em>choice 1</em> or
+  similar, bigger changes of the standard would be indicated. I only
+  list some of the areas that would need changes:
 </p>
 <ul>
   <li>
@@ -292,18 +471,39 @@ by clang), it would not have looked much different than what we have.
   </li>
 </ul>
 
+<p>
+  Also, add <code>_Generic</code> to the exception list in <em>6.3.2.1
+  p3</em> to make it clear that array to pointer conversion applies to
+  none of the association expression if they are lvalues of array type.
+</p>
+
+<center  class="quote">
+  Except when it is <span class="alternative">an association expression
+    of a <code>_Generic</code> expression, or is</span> the operand of
+    the <code>sizeof</code> operator, the <code>_Alignof</code>
+    operator, or the unary <code>&amp;</code> operator, or is a string
+    literal used to initialize an array, an expression that has type
+    ‘‘array of type’’ is converted to an expression with type
+    ‘‘pointer to type’’ that points to the initial element of the
+    array object and is not an lvalue. If the array object has
+    register storage class, the behavior is undefined.
+</center>
+
 <p><b>Suggested Technical Corrigendum (Status quo)</b><br>
 
   A third possibility would be to leave this leeway to
   implementations. I strongly object to that, but if so, I would
-  suggest to add a phrase like:
+  suggest to add a phrase to 6.5.1.1 p3 like:
 </p>
 
-<center>
-  Whether or not the type of that expression is determined as if any
-  of conversions described in Section 6.3 are applied to the
-  controlling expression is implementation defined.
-</center>
+<p class="quote">
+  ... in the default generic
+  association.  <span class="alternative">Whether or not the type of
+    the controlling expression is determined as if any of conversions
+    described in Section 6.3 are applied is implementation
+    defined.</span>
+  None of the expressions ...
+</p>
 
 <hr />
   <!-- Entires below the line by WG14 only. -->
