@@ -22,9 +22,11 @@ code { background-color : #EEE; text-style : sans-serif }
 <title>Controlling expression of _Generic primary expression</title>
 </head>
 <body>
-<h1>Controlling expression of _Generic primary expression</h1>
+  <b>Document:</b> N1930<br>
   <b>Author:</b> Jens Gustedt, INRIA<br>
   <b>Date:</b> 2015-04-24<br>
+  <b>Subject:</b> Controlling expression of _Generic primary expression<br>
+<h1>Controlling expression of _Generic primary expression</h1>
 
   <h2>Summary</h2>
 
@@ -141,8 +143,8 @@ char const* f = _Generic(+(int const){ 0 }, int const: "blu"); // both error
 
 <p>
 <em>
-  Any lvalue conversion of a <code>register</code> variable leads to
-  undefined behavior.
+  Any lvalue conversion of an uninitialized <code>register</code>
+  variable leads to undefined behavior.
 </em>
 </p>
 
