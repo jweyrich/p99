@@ -32,6 +32,7 @@ my $help = 0;
 my $ifile;
 my $ofile;
 my $type;
+my $scm;
 my $spaces = 1;
 my $diff = 1;
 my $metoo = 0;
@@ -39,13 +40,14 @@ my $beauty = "astyle";
 my $copyright = "Copyright (c)";
 my $authorsFile;
 my $licenceFile;
-my @beautyArgs = ("-aNoO", "-s2", "--convert-tabs");
+my @beautyArgs = ("--style=attach", "-NoO", "-s2", "--convert-tabs");
 my $result = GetOptions ("ifile=s"      => \${ifile},      # string
                          "ofile=s"       => \${ofile},      # string
                          "copyright=s"   => \${copyright},  # string
                          "licenceFile=s" => \${licenceFile},# string
                          "authorsFile=s" => \${authorsFile},# string
                          "spaces=i"      => \${spaces},     # integer
+                         "scm=s"        => \${scm},       # string
                          "type=s"        => \${type},       # string
                          "metoo!"        => \${metoo},      # flag
                          "diff!"        => \${diff},      # flag
@@ -64,7 +66,7 @@ my %commands = (
 # collect the error codes that status issues if the command
 # doesn't identify this.
 my %errors = (
-    "svn", 0,
+    "svn", 256,
     "bzr", 3,
     "git", 128,
     );
@@ -198,7 +200,9 @@ OPTION
 
 my @tuples = ();
 
-my $scm = scm(${ifile});
+if (!defined($scm)) {
+    $scm = scm(${ifile});
+}
 
 my $command = join(" ", $scm, "log",
                    map { "'$_'"; } @{$commands{$scm}});
@@ -632,7 +636,7 @@ if (@{text}) {
 }
 # dump the remainder of the file
 my @contl = ();
-
+my $prev;
 foreach my $line (<$source>) {
     chomp $line;
     if ($line =~ m{^(.*\S)?(\s*[\\]$)}go) {
@@ -642,6 +646,10 @@ foreach my $line (<$source>) {
             push @contl, "";
         }
     } else {
+        if (defined($prev)) {
+            print "${prev}\n";
+            $prev = undef;
+        }
         if (@contl) {
             my $max = length($line);
             foreach my $con (@contl) {
@@ -655,10 +663,16 @@ foreach my $line (<$source>) {
                 print "$con" . " " x ($max - $len) . "\\" . "\n";
             }
             @contl = ();
+            print "${line}\n";
+        } else {
+            $prev = "$line";
         }
-        print "$line\n";
     }
 }
+if (defined($prev) && length($prev) > 0) {
+    print "${prev}\n";
+}
+
 
 close($source) or warn "Error closing source stream: $!";
 if (!close($target)) {

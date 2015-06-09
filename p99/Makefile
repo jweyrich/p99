@@ -7,7 +7,7 @@ COPY = "(C) copyright "
 LICENSE = SHORTLICENCE-open.txt
 AUTH = ../scripts/AUTHORS.txt
 TIDY = ../scripts/findSvnAuthors
-TIDYFLAGS = --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
+TIDYFLAGS = --scm git --type c --auth ${AUTH} --copy ${COPY} --lice ${LICENSE} --ofile
 
 target : p99_generated.h check
 

@@ -41,8 +41,8 @@ automatically generated, do not change manually.
  **/
 #define P99_VERSION_ID "$Format:%H$"
 
-#define P00_VERSION_DATE "Sat, 05 Oct 2013 14:40:13 +0200"
-#define P00_VERSION_ID "378d4942b3e82e63d1ad89b00e7adccac3b3f104"
+#define P00_VERSION_DATE "Tue, 09 Jun 2015 08:28:18 +0200"
+#define P00_VERSION_ID "054b2bab90f7a9ecdbe71b2fb71a52d37dd2da21"
 
 /** @brief The maximal number of arguments the P99 macros can handle.
  **
@@ -510,6 +510,27 @@ automatically generated, do not change manually.
  136, 137, 138, 139, 140, 141, 142, 143,                       \
  144, 145, 146, 147, 148, 149, 150, 151,                       \
  152, 153, 154, 155, 156, 157, 158,
+#define P00_DESCENDING()  158, 157, 156, 155, 154, 153,        \
+ 152, 151, 150, 149, 148, 147, 146, 145,                       \
+ 144, 143, 142, 141, 140, 139, 138, 137,                       \
+ 136, 135, 134, 133, 132, 131, 130, 129,                       \
+ 128, 127, 126, 125, 124, 123, 122, 121,                       \
+ 120, 119, 118, 117, 116, 115, 114, 113,                       \
+ 112, 111, 110, 109, 108, 107, 106, 105,                       \
+ 104, 103, 102, 101, 100, 99, 98, 97,                          \
+ 96, 95, 94, 93, 92, 91, 90, 89,                               \
+ 88, 87, 86, 85, 84, 83, 82, 81,                               \
+ 80, 79, 78, 77, 76, 75, 74, 73,                               \
+ 72, 71, 70, 69, 68, 67, 66, 65,                               \
+ 64, 63, 62, 61, 60, 59, 58, 57,                               \
+ 56, 55, 54, 53, 52, 51, 50, 49,                               \
+ 48, 47, 46, 45, 44, 43, 42, 41,                               \
+ 40, 39, 38, 37, 36, 35, 34, 33,                               \
+ 32, 31, 30, 29, 28, 27, 26, 25,                               \
+ 24, 23, 22, 21, 20, 19, 18, 17,                               \
+ 16, 15, 14, 13, 12, 11, 10, 9,                                \
+ 8, 7, 6, 5, 4, 3, 2, 1,                                       \
+ 0,
 #define P00_ALL_ZEROES()                                       \
  0, 0, 0, 0, 0, 0, 0, 0,                                       \
  0, 0, 0, 0, 0, 0, 0, 0,                                       \
@@ -6204,7 +6225,7 @@ automatically generated, do not change manually.
  ** <tr><td>ld</td><td><code>long double</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>ldc</td><td><code>long double _Complex</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>t</td><td><code>ptrdiff_t</code></td><td></td><td></td><td></td><td></td></tr>
- ** <tr><td></td><td><code>signed</code></td><td>1</td><td>i</td><td>u</td><td>3</td></tr>
+ ** <tr><td>i</td><td><code>signed</code></td><td>1</td><td>i</td><td>u</td><td>3</td></tr>
  ** <tr><td>hh</td><td><code>signed char</code></td><td>1</td><td>hh</td><td>uhh</td><td>1</td></tr>
  ** <tr><td>l</td><td><code>signed long</code></td><td>1</td><td>l</td><td>ul</td><td>4</td></tr>
  ** <tr><td>ll</td><td><code>signed long long</code></td><td>1</td><td>ll</td><td>ull</td><td>5</td></tr>
@@ -6217,7 +6238,7 @@ automatically generated, do not change manually.
  ** <tr><td>u8</td><td><code>uint_least8_t</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>uj</td><td><code>uintmax_t</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>u</td><td><code>unsigned</code></td><td>0</td><td>i</td><td>u</td><td>3</td></tr>
- ** <tr><td>uhh</td><td><code>unsigned char</code></td><td>0</td><td>hh</td><td>uhh</td><td>1</td></tr>
+ ** <tr><td>uc</td><td><code>unsigned char</code></td><td></td><td></td><td></td><td></td></tr>
  ** <tr><td>ul</td><td><code>unsigned long</code></td><td>0</td><td>l</td><td>ul</td><td>4</td></tr>
  ** <tr><td>ull</td><td><code>unsigned long long</code></td><td>0</td><td>ll</td><td>ull</td><td>5</td></tr>
  ** <tr><td>uh</td><td><code>unsigned short</code></td><td>0</td><td>h</td><td>uh</td><td>2</td></tr>

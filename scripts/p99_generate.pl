@@ -562,6 +562,16 @@ for (my $i = 0; $i < $maxnumber; ++$i) {
 }
 print STDOUT "\n";
 
+print "#define P00_DESCENDING() ";
+for (my $i = $maxnumber-1; $i >= 0; --$i) {
+    if ($i % 8 != 0) {
+        print " $i,";
+    } else {
+        print "\\\n $i,";
+    }
+}
+print STDOUT "\n";
+
 print "#define P00_ALL_ZEROES() ";
 for (my $i = 0; $i < $maxnumber; ++$i) {
     if ($i % 8 != 0) {
