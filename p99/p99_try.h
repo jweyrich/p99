@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
-/* (C) copyright  2012-2013 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2012-2014 Jens Gustedt, INRIA, France                       */
 /* (C) copyright  2012 Simon Peeters                                          */
 /* (C) copyright  2012 William Morris                                         */
 /*                                                                            */

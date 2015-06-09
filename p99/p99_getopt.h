@@ -504,11 +504,11 @@ void p00_getopt_help_count_(bool p00_set,
                             struct p00_getopt const*p00_help,
                             int p00_ns[4]) {
   register struct p00_getopt const*const p00_p
-  = (p00_set
-     ? p00_pc
-     : (((p00_c != p99_getopt_enum_p00h) && (p00_c != p99_getopt_enum_p00HELP))
-        ? 0
-        : p00_help));
+    = (p00_set
+       ? p00_pc
+       : (((p00_c != p99_getopt_enum_p00h) && (p00_c != p99_getopt_enum_p00HELP))
+          ? 0
+          : p00_help));
   if (p00_p) {
     if (p00_p->p00_a) p00_ns[0] = P99_GEN_MAX(p00_ns[0], strlen(p00_p->p00_a));
     if (p00_p->p00_t) p00_ns[1] = P99_GEN_MAX(p00_ns[1], strlen(p00_p->p00_t));
@@ -533,11 +533,11 @@ void p00_getopt_help_count_(bool p00_set,
 p99_inline
 void p00_getopt_help_(bool p00_set, enum p99_getopt_enum p00_c, struct p00_getopt const*p00_pc, struct p00_getopt const*p00_help, int const p00_ns[4]) {
   register struct p00_getopt const*const p00_p
-  = (p00_set
-     ? p00_pc
-     : (((p00_c != p99_getopt_enum_p00h) && (p00_c != p99_getopt_enum_p00HELP))
-        ? 0
-        : p00_help));
+    = (p00_set
+       ? p00_pc
+       : (((p00_c != p99_getopt_enum_p00h) && (p00_c != p99_getopt_enum_p00HELP))
+          ? 0
+          : p00_help));
   if (p00_p) {
     char const*const p00_d = p00_p->p00_d ? p00_p->p00_d : "(not documented)";
     char const*const p00_t = p00_p->p00_t ? p00_p->p00_t : "";
@@ -791,8 +791,8 @@ void p99_getopt_initialize(int * p00_argc, char***p00_argv) {
           /* The cases for the one-character options are hidden
              here. */
           P00_GETOPT_INITIALIZE(P00_GETOPT_CHARS)
-          /* If the initial string was "--" this announces a long
-             option. */
+        /* If the initial string was "--" this announces a long
+           option. */
         case '-': {
           /* First split up the option string into option and
              argument, if possible. */

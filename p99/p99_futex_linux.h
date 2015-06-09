@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* (C) copyright  2012-2013 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2012-2014 Jens Gustedt, INRIA, France                       */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -267,7 +267,7 @@ void p99_futex_wait(p99_futex volatile* p00_cntp) {
     switch (p00_ret) {
     default: assert(!p00_ret);
     case 0: return;
-      // Allow for different val or spurious wake ups
+    // Allow for different val or spurious wake ups
     case EWOULDBLOCK: ;
     case EINTR: ;
     }

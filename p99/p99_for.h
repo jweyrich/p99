@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
-/* (C) copyright  2010-2013 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2010-2014 Jens Gustedt, INRIA, France                       */
 /* (C) copyright  2012 William Morris                                         */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
@@ -1234,7 +1234,7 @@ P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEP, P00_MAC_ARGS_REAL1, __VA_ARGS__)
 __typeof__(EXP) __VA_ARGS__ P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
   NAME = P99_PASTE2(p00_macro_var_, NAME)
 
-#define P00_MACRO_PVAR(NAME, EXP, ...)                                                \
+#define P00_MACRO_PVAR(NAME, EXP, ...)                                    \
 __typeof__(*(EXP)) __VA_ARGS__* P99_PASTE2(p00_macro_var_, NAME) = (EXP), \
   * NAME = P99_PASTE2(p00_macro_var_, NAME)
 

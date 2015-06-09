@@ -192,9 +192,9 @@ bool p00_tp_cmpxchg(_Atomic(p00_tp_glue) volatile*const p00_p, p00_tp_glue volat
 p99_inline
 p00_tp_glue p00_tp_get(register p99_tp volatile*const p00_tp) {
   register p00_tp_glue p00_ret
-  = P99_LIKELY(p00_tp)
-    ? atomic_load_explicit(&p00_tp->p00_val, memory_order_consume)
-    : (p00_tp_glue)P00_TP_GLUE_INITIALIZER((void*)0, p00_tp_tick_get());
+    = P99_LIKELY(p00_tp)
+      ? atomic_load_explicit(&p00_tp->p00_val, memory_order_consume)
+      : (p00_tp_glue)P00_TP_GLUE_INITIALIZER((void*)0, p00_tp_tick_get());
   if (p00_tp && P99_UNLIKELY(!p00_tp_i2i(p00_ret))) {
     /* Only store it in addressable memory if we can't avoid it. */
     p00_tp_glue p00_ter = p00_ret;
@@ -213,9 +213,9 @@ p00_tp_glue p00_tp_get(register p99_tp volatile*const p00_tp) {
 p99_inline
 p00_tp_glue p99_tp_xchg(p99_tp volatile* p00_tp, void* p00_val) {
   p00_tp_glue p00_ret
-  = P99_LIKELY(p00_tp)
-    ? atomic_load_explicit(&p00_tp->p00_val, memory_order_consume)
-    : (p00_tp_glue)P00_TP_GLUE_INITIALIZER((void*)0, p00_tp_tick_get());
+    = P99_LIKELY(p00_tp)
+      ? atomic_load_explicit(&p00_tp->p00_val, memory_order_consume)
+      : (p00_tp_glue)P00_TP_GLUE_INITIALIZER((void*)0, p00_tp_tick_get());
   if (P99_LIKELY(p00_tp)) {
     register p00_tp_glue p00_rep = P00_TP_GLUE_INITIALIZER(p00_val, p00_tp_tick_get());
     while (!p00_tp_cmpxchg(&p00_tp->p00_val, &p00_ret, p00_rep));
@@ -423,37 +423,37 @@ p99_extension ({                                                  \
   })
 
 
-#define P99_REF_ACCOUNT(REF)                                     \
-p99_extension ({                                                 \
-    P99_MACRO_VAR(p00_ref, (REF));                               \
-    /* ensure that the pointer is converted to the */            \
-    /* base type, and that the return can't be used as lvalue */ \
-    register __typeof__(p00_ref) const p00_r = p00_ref;          \
+#define P99_REF_ACCOUNT(REF)                                                        \
+p99_extension ({                                                                    \
+    P99_MACRO_VAR(p00_ref, (REF));                                                  \
+    /* ensure that the pointer is converted to the */                               \
+    /* base type, and that the return can't be used as lvalue */                    \
+    register __typeof__(p00_ref) const p00_r = p00_ref;                             \
     if (p00_r) atomic_fetch_add_explicit(&p00_r->p99_cnt, 1, memory_order_acq_rel); \
-    p00_r;                                                       \
+    p00_r;                                                                          \
 })
 
-#define P99_TP_REF_ACCOUNT(TP, REF)                                \
-p99_extension ({                                                   \
-    P99_MACRO_VAR(p00_tp, (TP));                                   \
-    /* ensure that pointer that is returned is converted to the */ \
-    /* base type, and that the return can't be used as lvalue */   \
-    register P99_TP_TYPE(p00_tp)* const p00_r = (REF);             \
+#define P99_TP_REF_ACCOUNT(TP, REF)                                                 \
+p99_extension ({                                                                    \
+    P99_MACRO_VAR(p00_tp, (TP));                                                    \
+    /* ensure that pointer that is returned is converted to the */                  \
+    /* base type, and that the return can't be used as lvalue */                    \
+    register P99_TP_TYPE(p00_tp)* const p00_r = (REF);                              \
     if (p00_r) atomic_fetch_add_explicit(&p00_r->p99_cnt, 1, memory_order_acq_rel); \
-    p00_r;                                                         \
+    p00_r;                                                                          \
 })
 
-#define P99_REF_DISCOUNT(REF, DELETE)                            \
-p99_extension ({                                                 \
-    P99_MACRO_VAR(p00_ref, (REF));                               \
-    register void (*const p00_d)(__typeof__(*p00_ref) const*)    \
-      = (DELETE);                                                \
-    /* ensure that the pointer is converted to the */            \
-    /* base type, and that the return can't be used as lvalue */ \
-    register __typeof__(*p00_ref)*const p00_r = p00_ref;         \
+#define P99_REF_DISCOUNT(REF, DELETE)                                                        \
+p99_extension ({                                                                             \
+    P99_MACRO_VAR(p00_ref, (REF));                                                           \
+    register void (*const p00_d)(__typeof__(*p00_ref) const*)                                \
+      = (DELETE);                                                                            \
+    /* ensure that the pointer is converted to the */                                        \
+    /* base type, and that the return can't be used as lvalue */                             \
+    register __typeof__(*p00_ref)*const p00_r = p00_ref;                                     \
     if (p00_r && (atomic_fetch_sub_explicit(&p00_r->p99_cnt, 1, memory_order_acq_rel) == 1)) \
-      p00_d(p00_r);                                              \
-    p00_r;                                                       \
+      p00_d(p00_r);                                                                          \
+    p00_r;                                                                                   \
 })
 
 #define P99_TP_REF_INITIALIZER(VAL, ACCOUNT) P99_TP_INITIALIZER(P99_GENERIC_NULLPTR_CONSTANT(VAL, (void*)0, ACCOUNT(VAL)))

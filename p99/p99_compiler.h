@@ -3,7 +3,7 @@
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
 /* (C) copyright  2013 Bobby                                                  */
-/* (C) copyright  2010-2014 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2010-2015 Jens Gustedt, INRIA, France                       */
 /* (C) copyright  2013 Pierre-Nicolas Clauss                                  */
 /* (C) copyright  2012 William Morris                                         */
 /*                                                                            */

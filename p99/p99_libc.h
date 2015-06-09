@@ -3,7 +3,7 @@
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
 /* (C) copyright  2013 Bobby                                                  */
-/* (C) copyright  2013 Jens Gustedt, INRIA, France                            */
+/* (C) copyright  2013-2014 Jens Gustedt, INRIA, France                       */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */

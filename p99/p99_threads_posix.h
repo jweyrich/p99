@@ -1,8 +1,9 @@
 /* This may look like nonsense, but it really is -*- mode: C -*-              */
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
-/* the authors and copyright holder for this work is as follows:              */
+/* the authors and copyright holders for this work are as follows:            */
 /* (C) copyright  2011-2014 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2012 William Morris                                         */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */

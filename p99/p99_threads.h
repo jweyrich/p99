@@ -319,9 +319,9 @@ P99_GUARDED_BLOCK(mtx_t*,                                                       
                   (void)(UNIQ                                                    \
                          && mtx_unlock(UNIQ)))
 # else
-#  define P00_MUTUAL_EXCLUDE(MUT, UNIQ)                 \
-P00_BLK_START                                           \
-P00_BLK_DECL(mtx_t*, UNIQ, &(MUT))                      \
+#  define P00_MUTUAL_EXCLUDE(MUT, UNIQ)                        \
+P00_BLK_START                                                  \
+P00_BLK_DECL(mtx_t*, UNIQ, &(MUT))                             \
 P00_BLK_BEFAFT(mtx_lock(UNIQ), mtx_unlock(UNIQ))
 # endif
 

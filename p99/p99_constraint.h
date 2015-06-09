@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* (C) copyright  2012-2013 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2012-2014 Jens Gustedt, INRIA, France                       */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -395,9 +395,9 @@ errno_t p00_constraint_call(errno_t p00_cond, char const* p00_file, char const* 
   if (p00_cond) {
     if (p00_file) P00_JMP_BUF_FILE = p00_file;
     if (p00_context) P00_JMP_BUF_CONTEXT = p00_context;
-    /* Ensure that all dependent data for this error has been */   \
-    /* synchronized. */                                            \
-    atomic_thread_fence(memory_order_seq_cst);                     \
+    /* Ensure that all dependent data for this error has been */ \
+    /* synchronized. */                                          \
+    atomic_thread_fence(memory_order_seq_cst);                   \
     p99_constraint_handler(p00_info, 0, p00_cond);
   }
   return p00_cond;

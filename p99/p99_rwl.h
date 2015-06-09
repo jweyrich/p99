@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the author and copyright holder for this work is                           */
-/* (C) copyright  2012 Jens Gustedt, INRIA, France                            */
+/* (C) copyright  2014 Jens Gustedt, INRIA, France                            */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
 /* You can redistribute it and/or modify it under the terms of the QPL as     */
@@ -73,10 +73,10 @@ struct p99_rwl {
 /**
  ** @brief Initialize an ::p99_rwl object.
  **/
-# define P99_RWL_INITIALIZER                    \
-{                                               \
-  .p00_f = P99_FUTEX_INITIALIZER,               \
-  .p00_w = ATOMIC_VAR_INIT(0),                  \
+# define P99_RWL_INITIALIZER                                   \
+{                                                              \
+  .p00_f = P99_FUTEX_INITIALIZER,                              \
+  .p00_w = ATOMIC_VAR_INIT(0),                                 \
 }
 
 /**
@@ -130,8 +130,8 @@ int p99_rwl_rdlock(p99_rwl volatile* p00_r) {
   /* Return EAGAIN if we couldn't increment because there were too
      many waiters. */
   return (p00_res <= P00_RWL_EXCL-1)
-    ? 0
-    : EAGAIN;
+         ? 0
+         : EAGAIN;
 }
 
 /**
@@ -210,61 +210,61 @@ p99_inline bool p99_rwl_haswaiters(p99_rwl volatile* p00_r) {
  **
  ** @see p99_rwl
  **/
-#  define P99_RDLOCK(RWLOCK)                                                                 \
-P00_BLK_START                                                                                \
-P00_BLK_DECL(int, p00_errNo, 0)                                                              \
-P99_GUARDED_BLOCK(p99_rwl*,                                                                  \
-                  P99_FILEID(rwlock),                                                        \
-                  &(RWLOCK),                                                                 \
-                  (void)(P99_UNLIKELY(p00_errNo = p99_rwl_rdlock(P99_FILEID(rwlock)))        \
-                         && (fprintf(stderr,                                                 \
-                                     __FILE__ ":"                                            \
-                                     P99_STRINGIFY(__LINE__) ": read lock error for "        \
-                                     P99_STRINGIFY(RWLOCK) ", %s",                           \
-                                     strerror(p00_errNo)), 1)                                \
-                         && (P99_FILEID(rwlock) = 0, 1)                                      \
-                         && (P99_UNWIND(-1), 1)                                              \
-                         ),                                                                  \
-                  (void)(P99_FILEID(rwlock)                                                  \
+#  define P99_RDLOCK(RWLOCK)                                                          \
+P00_BLK_START                                                                         \
+P00_BLK_DECL(int, p00_errNo, 0)                                                       \
+P99_GUARDED_BLOCK(p99_rwl*,                                                           \
+                  P99_FILEID(rwlock),                                                 \
+                  &(RWLOCK),                                                          \
+                  (void)(P99_UNLIKELY(p00_errNo = p99_rwl_rdlock(P99_FILEID(rwlock))) \
+                         && (fprintf(stderr,                                          \
+                                     __FILE__ ":"                                     \
+                                     P99_STRINGIFY(__LINE__) ": read lock error for " \
+                                     P99_STRINGIFY(RWLOCK) ", %s",                    \
+                                     strerror(p00_errNo)), 1)                         \
+                         && (P99_FILEID(rwlock) = 0, 1)                               \
+                         && (P99_UNWIND(-1), 1)                                       \
+                         ),                                                           \
+                  (void)(P99_FILEID(rwlock)                                           \
                          && p99_rwl_unlock(P99_FILEID(rwlock))))
 
 
 /**
  ** @brief protect the depending statement or block by an exclusive lock
  **
- ** @see p99_rwl 
+ ** @see p99_rwl
  **/
-#  define P99_WRLOCK(RWLOCK)                                                                 \
-P00_BLK_START                                                                                \
-P00_BLK_DECL(int, p00_errNo, 0)                                                              \
-P99_GUARDED_BLOCK(p99_rwl*,                                                                  \
-                  P99_FILEID(rwlock),                                                        \
-                  &(RWLOCK),                                                                 \
-                  (void)(P99_UNLIKELY(p00_errNo = p99_rwl_wrlock(P99_FILEID(rwlock)))        \
-                         && (fprintf(stderr,                                                 \
-                                     __FILE__ ":"                                            \
-                                     P99_STRINGIFY(__LINE__) ": write lock error for "       \
-                                     P99_STRINGIFY(RWLOCK) ", %s",                           \
-                                     strerror(p00_errNo)), 1)                                \
-                         && (P99_FILEID(rwlock) = 0, 1)                                      \
-                         && (P99_UNWIND(-1), 1)                                              \
-                         ),                                                                  \
-                  (void)(P99_FILEID(rwlock)                                                  \
+#  define P99_WRLOCK(RWLOCK)                                                           \
+P00_BLK_START                                                                          \
+P00_BLK_DECL(int, p00_errNo, 0)                                                        \
+P99_GUARDED_BLOCK(p99_rwl*,                                                            \
+                  P99_FILEID(rwlock),                                                  \
+                  &(RWLOCK),                                                           \
+                  (void)(P99_UNLIKELY(p00_errNo = p99_rwl_wrlock(P99_FILEID(rwlock)))  \
+                         && (fprintf(stderr,                                           \
+                                     __FILE__ ":"                                      \
+                                     P99_STRINGIFY(__LINE__) ": write lock error for " \
+                                     P99_STRINGIFY(RWLOCK) ", %s",                     \
+                                     strerror(p00_errNo)), 1)                          \
+                         && (P99_FILEID(rwlock) = 0, 1)                                \
+                         && (P99_UNWIND(-1), 1)                                        \
+                         ),                                                            \
+                  (void)(P99_FILEID(rwlock)                                            \
                          && p99_rwl_unlock(P99_FILEID(rwlock))))
 # else
-#  define P99_RDLOCK(RWLOCK)                                                                 \
-P99_GUARDED_BLOCK(p99_rwl*,                                                                  \
-                  P99_FILEID(rwlock),                                                        \
-                  &(RWLOCK),                                                                 \
-                  p99_rwl_rdlock(P99_FILEID(rwlock)),                                        \
+#  define P99_RDLOCK(RWLOCK)                                   \
+P99_GUARDED_BLOCK(p99_rwl*,                                    \
+                  P99_FILEID(rwlock),                          \
+                  &(RWLOCK),                                   \
+                  p99_rwl_rdlock(P99_FILEID(rwlock)),          \
                   p99_rwl_unlock(P99_FILEID(rwlock)))
 
 
-#  define P99_WRLOCK(RWLOCK)                                                                 \
-P99_GUARDED_BLOCK(p99_rwl*,                                                                  \
-                  P99_FILEID(rwlock),                                                        \
-                  &(RWLOCK),                                                                 \
-                  p99_rwl_wrlock(P99_FILEID(rwlock)),                                        \
+#  define P99_WRLOCK(RWLOCK)                                   \
+P99_GUARDED_BLOCK(p99_rwl*,                                    \
+                  P99_FILEID(rwlock),                          \
+                  &(RWLOCK),                                   \
+                  p99_rwl_wrlock(P99_FILEID(rwlock)),          \
                   p99_rwl_unlock(P99_FILEID(rwlock)))
 # endif
 

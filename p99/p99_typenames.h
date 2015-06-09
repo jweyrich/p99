@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Except for parts copied from previous work and as explicitly stated below, */
 /* the authors and copyright holders for this work are as follows:            */
-/* (C) copyright  2011-2012 Jens Gustedt, INRIA, France                       */
+/* (C) copyright  2011-2012, 2014 Jens Gustedt, INRIA, France                 */
 /* (C) copyright  2012 William Morris                                         */
 /*                                                                            */
 /* This file is free software; it is part of the P99 project.                 */
