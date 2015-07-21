@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>Defect report #4nn</title>
+<style>
+.quote {
+    background-color : #FFD;
+    text-align : left;
+    margin : 0em 2em;
+}
+.alternative {
+    background-color : #FCC;
+    text-align : left;
+    margin : 0em 2em;
+}
+pre {
+    background-color : #EEE;
+    text-style : sans-serif;
+    margin : 0em 2em;
+}
+code { background-color : #EEE; text-style : sans-serif }
+</style>
+</head>
+<body>
+<h2>Defect report #4nn</h2><a href=
+  "dr_4aa.htm">Previous Defect Report</a> &lt; - &gt; <a href=
+  "dr_4bb.htm">Next Defect Report</a>
+
+  <p><br>
+  <b>Submitter:</b> Jens Gustedt<br>
+  <b>Submission Date:</b> <br>
+  <!-- yyyy-mm-dd -->
+  2012-10-08
+   <b>Source:</b><br>
+  <b>Reference Document:</b> N/A<br>
+  <b>Version:</b> 1.0<br>
+  <b>Date:</b> 2015-7-21<br>
+  <b>Subject:</b> problem with the specification of ATOMIC_VAR_INIT</p>
+
+
+  <p><b>Summary</b></p>
+
+<p>
+  The current version of the standard states that the argument to this
+  macro should be a value of the corresponding base type of the atomic
+  object that is to be initialized.
+</p>
+
+<p class="quote">
+  The <code>ATOMIC_VAR_INIT</code> macro expands to a token sequence
+suitable for initializing an atomic object of a type that is
+initialization-compatible with value.
+</p>
+
+<p>
+  This is problematic, because it excludes the primary form of
+  initializers, the <code>{ }</code> form, from the possible uses,
+  that would be necessary to initialize <code>struct</code>
+  or <code>union</code> types properly.
+</p>
+
+  <p><b>Problem discussion</b></p>
+
+<p>
+  As a consequence, there is a problem for atomic objects that combine
+  the two properties:
+</p>
+<ol>
+  <li>
+    The base type is a <code>struct</code> or <code>union</code> type.
+  </li>
+  <li>
+    The object has static or thread-local storage duration.
+  </li>
+</ol>
+
+<p>
+  The problem is, that for such types there are no compile time
+  constants that could be used as <em>value</em>, here. As a
+  consequence the standard <em>doesn't allow explicit
+    initialization</em> for these objects.
+</p>
+<ol>
+  <li>
+    Atomic objects of <code>struct</code> or <code>union</code> type and
+    static or thread-local storage duration can only be default
+    initialized.
+  </li>
+  <li>
+    At program and thread startup, respectively, atomic objects
+    of <code>struct</code> or <code>union</code> type and static or
+    thread-local storage duration are in an indeterminate state.
+  </li>
+</ol>
+
+<p>
+  This is an important drawback that doesn't seem to be
+  intentional:
+</p>
+<ul>
+  <li>The <code>ATOMIC_VAR_INIT</code> had exactly been introduce for
+    the purpose of initializing objects of static storage to a valid
+    state with known value.</li>
+  <li><code>struct</code> atomics play an important role for lock-free
+    data structures to avoid the ABA problem.
+  </li>
+</ul>
+
+  <p><b>Current practice</b></p>
+
+<p>
+  Both compilers that I have my hands on (gcc 4.9 and clang 3.6) that
+  implement <code>&lt;stdatomic.h&gt;</code> have something equivalent
+  to
+</p>
+
+<pre class="brush: cpp;">
+#define ATOMIC_VAR_INIT(VALUE)  (VALUE)
+</pre>
+
+<p>
+Which are, of course conforming to the text as it is now, but exhibit
+the exact problem. They don't allow for a compile time initializer
+since the <code>()</code> around <code>VALUE</code> result in invalid
+syntax if <code>VALUE</code> is a <code>{ }</code> initializer.
+</p>
+
+<p>
+  Clang has an implementation specific way out of this: they allow
+  compound literals with constant initializers in that context. Gcc
+  provides no such solution.
+</p>
+
+<p>
+  For both compilers, it is easily possible to overwrite the macro
+  definition into one that omits the parenthesis and all works fine.
+</p>
+
+<p><b>Suggested Technical Corrigendum</b><br></p>
+
+<p>Change the beginning of the corresponding section, 7.17.2.1p2, to:</p>
+<p class="alternative">
+7.17.2.1 The <code>ATOMIC_VAR_INIT</code> macro<br/>
+<b>Synopsis</b><br/>
+<code>#include &lt;stdatomic.h&gt;</code><br/>
+<code>#define ATOMIC_VAR_INIT(initializer)</code><br/>
+<b>Description</b><br/>
+
+The <code>ATOMIC_VAR_INIT</code> macro expands to a token sequence
+suitable for initializing an atomic object <code>X</code>. For any
+invocation of this macro, the <em>initializer</em> argument shall
+expand to a token sequence that would be suitable to
+initialize <code>X</code> if the atomic qualification would be
+dropped.<b>footnote</b>That is, it could be used to initialize an
+object <code>Y</code> of the same base type, storage duration and
+place of declaration as <code>X</code>, but without atomic
+qualification.<b>end footnote</b><br/>
+
+An atomic object with automatic storage duration ...
+</p>
+
+<p>
+Then append a new note after the actual para 4:
+</p>
+
+<p class="alternative">
+<em>Note:</em> Since <em>initializer</em> may be a token sequence that
+contains commas which are not protected by <code>()</code> it may
+constitute a variable number of arguments for the macro
+evaluation. Implementations should be able to deal with such
+situations by defining <code>ATOMIC_VAR_INIT</code> as accepting a
+variable argument list.
+</p>
+
+<hr />
+  <!-- Entires below the line by WG14 only. -->
+
+  <p><br>
+  <a href="dr_4aa.htm">Previous Defect Report</a> &lt; - &gt;
+  <a href="dr_4bb.htm">Next Defect Report</a></p>
+</body>
+
