@@ -26,16 +26,16 @@ code { background-color : #EEE; text-style : sans-serif }
   "dr_4aa.htm">Previous Defect Report</a> &lt; - &gt; <a href=
   "dr_4bb.htm">Next Defect Report</a>
 
-  <p><br>
-  <b>Submitter:</b> Jens Gustedt<br>
-  <b>Submission Date:</b> <br>
+  <p><br/>
+  <b>Submitter:</b> Jens Gustedt<br/>
+  <b>Submission Date:</b>
   <!-- yyyy-mm-dd -->
-  2012-10-08
-   <b>Source:</b><br>
-  <b>Reference Document:</b> N/A<br>
-  <b>Version:</b> 1.0<br>
-  <b>Date:</b> 2015-7-21<br>
-  <b>Subject:</b> problem with the specification of ATOMIC_VAR_INIT</p>
+  2012-10-08 <br/>
+   <b>Source:</b><br/>
+  <b>Reference Document: </b>n1951<br/>
+  <b>Version:</b> 1.0<br/>
+  <b>Date:</b> 2015-7-21<br/>
+  <b>Subject:</b> Problem with the specification of ATOMIC_VAR_INIT</p>
 
 
   <p><b>Summary</b></p>
@@ -119,7 +119,7 @@ initialization-compatible with value.
 </pre>
 
 <p>
-Which are, of course conforming to the text as it is now, but exhibit
+This is of course conforming to the standard text as it is now, but exhibit
 the exact problem. They don't allow for a compile time initializer
 since the <code>()</code> around <code>VALUE</code> result in invalid
 syntax if <code>VALUE</code> is a <code>{ }</code> initializer.
@@ -136,7 +136,7 @@ syntax if <code>VALUE</code> is a <code>{ }</code> initializer.
   definition into one that omits the parenthesis and all works fine.
 </p>
 
-<p><b>Suggested Technical Corrigendum</b><br></p>
+<p><b>Suggested Technical Corrigendum</b><br/></p>
 
 <p>Change the beginning of the corresponding section, 7.17.2.1p2, to:</p>
 <p class="alternative">
