@@ -1,0 +1,473 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>Defect report #4nn</title>
+<style>
+.quote {
+    background-color : #FFD;
+    text-align : left;
+    margin : 0em 2em;
+}
+.strike {
+    background-color : #FFD;
+    text-align : left;
+    text-decoration : line-through;
+    margin : 0em 2em;
+}
+.alternative {
+    background-color : #FCC;
+    text-align : left;
+    margin : 0em 2em;
+}
+pre {
+    background-color : #EEE;
+    text-style : sans-serif;
+    margin : 0em 2em;
+}
+code { background-color : #EEE; text-style : sans-serif }
+</style>
+</head>
+<body>
+<h2>Defect report #4nn</h2><a href=
+  "dr_4aa.htm">Previous Defect Report</a> &lt; - &gt; <a href=
+  "dr_4bb.htm">Next Defect Report</a>
+
+  <p><br/>
+  <b>Submitter:</b> Jens Gustedt<br/>
+  <b>Submission Date:</b>
+  <!-- yyyy-mm-dd -->
+  2015-08-xx <br/>
+   <b>Source:</b><br/>
+  <b>Reference Document: </b>n195x<br/>
+  <b>Version:</b> 1.0<br/>
+  <b>Date:</b> 2015-7-27<br/>
+  <b>Subject:</b> Inconsistent specifications for arithmetic on
+  atomic objects.</p>
+
+
+  <p><b>Summary</b></p>
+
+
+<p>
+  Whereas its intent is clear, the text in the C standard that
+  concerns atomics has several consistency problems. There are
+  contradictions and the standard vocabulary is not always applied
+  correctly.
+</p>
+  <p><b>Problem discussion</b></p>
+
+    <p><em>— Memory order of operators —</em></p>
+
+<p>
+  The following sections on arithmetic operators, all specify that if
+  they are applied to an atomic object as an operand of <b>any</b>
+  arithmetic base type, the memory order sematic
+  is <code>memory_order_seq_cst</code>:
+</p>
+
+<ul>
+  <li>6.2.6.1 Loads and stores of objects with atomic types are done
+    with <code>memory_order_seq_cst</code> semantics.</li>
+  <li>6.5.2.4 (postfix <code>++</code> and <code>--</code>)</li>
+  <li>6.5.16.2 Compound assignment. No constraints formulated
+  concerning traps for integer types. In contrast to that, no floating
+  exceptions for floating types are allowed. Also, this defines atomic
+  operations for <b>all</b> arithmetic operands, including some that
+  don't have library calls
+  (<code>*=</code>, <code>/=</code>, <code>%=</code>, <code>&lt;&lt;=</code>, <code>&gt;&gt;=</code>)</li>
+</ul>
+
+<p>
+  No such mention is made for
+</p>
+
+<ul>
+  <li>
+  6.5.3.1 (prefix <code>++</code> and <code>--</code>), although it
+  explicitly states that these operators are defined to be equivalent
+  to <code>+= 1</code> and <code>-= 1</code>, respectively.
+  </li>
+  <li>
+  6.5.16.1 Simple assignment, although the paragraph about store says
+  that such a store should be  <code>memory_order_seq_cst</code>.
+  </li>
+</ul>
+
+    <p><em>— Integer representations and erroneous operations —</em></p>
+
+<p>
+  Concerning the generic library calls, they state in 7.17.7.5
+</p>
+
+<p class="quote">
+  For signed integer types, arithmetic is defined to use two’s
+  complement representation with silent wrap-around on overflow; there
+  are no undefined results.
+</p>
+
+<p>and</p>
+
+<p class="quote">
+  For address types, the result may be an undefined address, but the
+  operations otherwise have no undefined behavior.
+</p>
+
+<p>
+  Can the sign representation depend on the operation that we apply to
+  an object? Are these operations supposed to be consistent between
+  operator and function notation? What is an <em>address type</em>?
+</p>
+
+<p><em>— Operators versus generic functions —</em></p>
+
+<p>
+  Then a <b>Note</b> (7.17.7.5 p 5) states
+</p>
+
+<p class="quote">
+  The operation of the atomic_fetch and modify generic functions are
+  nearly equivalent to the operation of the
+  corresponding <code>op=</code> compound assignment operators. The
+  only differences are that the compound assignment operators are not
+  guaranteed to operate atomically, ...
+</p>
+
+<p>
+  Although there are obviously also operators that act on atomic
+  objects, 5.1.2.4 p 4 gives the completely false impression that
+  atomic operations would only be a matter of the C library:
+</p>
+
+<p class="quote">
+  The library defines a number of atomic operations (7.17) ...
+</p>
+
+<p><em>— Pointer types are missing for <code>atomic_fetch_OP</code> —</em></p>
+
+<p>
+  In the general introduction (7.17.1 p4) there is explicitly an
+  extension of the notations to atomic pointer types:
+</p>
+
+<p class="quote">
+  For atomic pointer types, <code>M</code> is <code>ptrdiff_t</code>.
+</p>
+
+<p>
+  Whereas the only section where this notation is relevant (7.17.7.5
+  <code>atomic_fetch_OP</code>) is restricted to <em>atomic integer
+  types</em>, but then later talks about the result of such operations
+  on <em>address types</em>.
+</p>
+
+<p><em>— Vocabulary —</em></p>
+
+<p>
+  For the vocabulary, there is a mixture of the use of the verb
+  combinations between <em>load/store</em>, <em>read/write</em>
+  and <em>fetch/assign</em>.  What is the difference? Is there any?
+</p>
+
+
+<p>
+  This is
+</p>
+<ul>
+  <li>
+    contradictory (the Note is not normative, but still wrong),
+  </li>
+  <li>
+    confusing (<code>=</code> is handled different
+    from <code>op=</code>, operators are not mentioned where they
+    should),
+  </li>
+  <li>
+    weird (the sign representation is described as the result of an
+    operation, not as the value representation of a data type; what is
+    "no undefined behavior" of a address operation?)
+  </li>
+  <li>
+    inconsistent (operators may result in any sign representation ?,
+    and can trap, generic functions are safe)
+  </li>
+  <li>
+    incomplete (the set of operators and generic functions are distinct)
+  </li>
+</ul>
+
+  <p><b>Conclusion</b></p>
+
+<p>
+  Combining all these texts, a number of constraints emerge for
+  arithmetic types on platforms that support the atomics
+  extension. They would better be stated as such.
+</p>
+<ol>
+  <li>
+    Since sign representation is a property of a type and not an
+    operation, all signed integer types must have two's representation
+    for negative values.
+  </li>
+  <li>
+    Pointer arithmetic has a variant that always has defined behavior,
+    only that the stored address may be invalid, if the addition or
+    subtraction passed beyond the boundaries of the object.
+  </li>
+  <li>
+    Binary integer operations <code>+</code>,
+    <code>-</code>, <code>&</code>, <code>|</code> and <code>^</code>
+    must have versions that do not trap.
+  </li>
+  <li>
+    All floating point operations must have versions that don't raise
+    signals.
+  </li>
+</ol>
+
+<p>
+  The distinction in operations on atomics that are realized by
+  operators (all arithmetic) and only by generic functions is
+  arbitrary. As soon as a type has a
+  lock-free <code>atomic_compare_exchange</code> operation,
+  all <code>fetch_op</code> or <code>op_fetch</code> generic functions
+  can be synthesized almost trivially.
+</p>
+
+<ul>
+  <li>Why are atomic operations on pointer types and floating point
+  types restricted to applying the operator, and don't allow for the
+  generic function?</li>
+</ul>
+
+
+  <p><b>Current practice</b></p>
+
+<p>
+  Both gcc and clang permit <code>atomic_fetch_OP</code> on atomic
+  pointer types.
+</p>
+<p>
+ Both disallow floating point types for the functions but not for the
+ operators.
+</p>
+<p>
+  Gcc extends the infrastructure that it provides of atomics
+  to <code>op_fetch</code> generic fuctions and adds a new
+  operator <code>nand</code>.
+</p>
+
+<p><b>Suggested strategy for improvement</b><br/></p>
+
+<p>I suggest to first do some minimal changes to the text with a TC to
+  avoid its contradictions and to centralize its requirements. Then,
+  in a feature request for a new version of the standard we could
+  discuss to add some more features that would make the approach
+  internally consistent.</p>
+
+<p><b>Suggested Technical Corrigendum</b><br/></p>
+
+<p>Change the beginning of 5.1.2.4 p5:</p>
+
+<p class="strike">
+  The library defines a number of atomic operations (7.17) and
+  operations on mutexes (7.26.4) that are specially identified as
+  synchronization operations.
+</p>
+
+<p>to</p>
+
+<p class="alternative">
+  There are a number of operations that are specially identified as
+  synchronization operations: if the implementation supports the
+  atomics extension these are operators and generic functions that act
+  on atomic objects (6.5 and 7.17); if the implementation supports the
+  thread extension these are operations on mutexes (7.26.4).
+</p>
+
+
+<p>Replace paragraph 6.2.6.1 p9</p>
+
+<p class="strike">
+ Loads and stores of objects with atomic types are done with
+ memory_order_seq_cst semantics.
+</p>
+
+<p>
+  by the following
+</P>
+
+<p class="alternative">
+  All operations that act on atomic objects that do not specify
+  otherwise have <code>memory_order_seq_cst</code> memory
+  consistency. If the operation with identical values on the
+  unqualified type is erroneous it results in an unspecific object
+  representation, that may or may not be an invalid value for the
+  type, such as an invalid address or a floating point NaN. Thereby no
+  such operation may by itself raise a signal, a trap, a floating
+  point exception or result otherwise in an interruption of the
+  control flow.FOOTNOTE<br /><br />
+</p>
+
+
+<p class="alternative">
+  FOOTNOTE Whether or not an atomic operation may be interrupted by a
+  signal depends on the lock-free property of the underlying type.
+</p>
+
+<p>
+  Insert a new paragraph after 6.2.6.2 p2
+</p>
+
+<p class="alternative">
+  Implementations that support the atomics extension, represent all
+  signed integers with two's complement such that the object
+  representation with sign bit 1 and all value bits zero is a normal
+  value.
+</p>
+
+<p>
+  Insert a new paragraph after 6.5 p3
+</p>
+
+<p class="alternative">
+  An operation on an lvalue with an atomic type, that consists of the
+  evaluation of the object, an optional arithmetic operation and a
+  side effect for updating the stored value forms a single
+  read-modify-write operation.
+</p>
+
+<p>
+  Remove the following phrase in 6.5.2.4 p2:
+</p>
+
+<p class="strike">
+  Postfix <code>++</code> on an object with atomic type is a
+  read-modify-write operation with memory_order_seq_cst memory order
+  semantics.
+</>
+
+<p>
+  Remove the following phrase in 6.5.16.2 p3:
+</p>
+
+<p class="strike">
+  If <b>E1</b> has an atomic type, compound assignment is a
+  read-modify-write operation with memory_order_seq_cst memory order
+  semantic
+</>
+
+<p>
+  Replace 7.17.7 p1
+</p>
+
+<p class="strike">
+  There are only a few kinds of operations on atomic types, though there are many
+  instances of those kinds. This subclause specifies each general kind.
+</p>
+
+<p>
+  by
+</p>
+
+<p class="alternative">
+  In addition to the operations on atomic objects that are described
+  by operators, there are a few kinds of operations that are specified
+  as generic functions. This subclause specifies each generic
+  function.  After evaluation of its arguments, each of these generic
+  functions forms a single read, write or read-modify-write operation
+  with same general properties as described in 6.2.6.1 p9.
+</p>
+
+<p>
+  Assuming that the intent of 7.17.7.5 has been to allow operations on
+  atomic pointer types, in p1, change:
+</p>
+
+<p class="strike">
+  ... to an object of any atomic integer type. None of these
+  operations is applicable to <code>atomic_bool</code>
+</p>
+
+<p>
+  to
+</p>
+
+<p class="alternative">
+  ... to an object of any atomic integer or pointer type, as long as
+   the unqualified type is valid as left operand of the corresponding
+   operator <code>op=</code>.FOOTNOTE<br/> <br/>
+
+  FOOTNOTE: Thus these operations are not permitted for pointers to
+  atomic <code>_Bool</code>, and only "add" and "sub" variants are
+  permitted for atomic pointer types.
+</p>
+
+<p>
+  Since this topic is then covered already by a more general section,
+  remove this sentence from p3:
+</p>
+
+<p class="strike">
+ For address types, the result may be an undefined address, but the
+ operations otherwise have no undefined behavior.
+</p>
+
+<p>
+  In 7.17.7.5 p 5 replace:
+</p>
+
+<p class="strike">
+  ... the compound assignment operators are not guaranteed to operate
+  atomically, and ...
+</p>
+
+<p>
+  by
+</p>
+
+<p class="alternative">
+  ... the <code>order</code> parameter may make the memory consistency
+  less strict than <code>memory_order_seq_cst</code>, and that ...
+</p>
+
+<p><b>Future Directions</b><br/></p>
+
+<p>An editorial revision of the C standard should clarify the
+  vocabulary for the use of the
+  terms <em>load</em>, <em>store</em>, <em>read</em>, <em>write</em>, <em>modify</em>, <em>fetch</em>
+  and <em>assign</em>.
+</p>
+
+<p>
+  A feature revision of the standard should:
+</p>
+<ul>
+  <li>
+    Add generic interfaces for all arithmetic operations. That is, it
+    should add function-like interfaces for the missing
+    operators <code>*=</code>, <code>/=</code>, <code>%=</code>, <code>&lt;&lt;=</code>, <code>&gt;&gt;=</code>
+  </li>
+  <li>
+    Add atomic pointer types (if not by the TC above) and atomic
+    floating point types to the permitted types of the function-like
+    arithmetic operations, such that they are uniformly defined for
+    all types where the corresponding operator applies.
+  </li>
+  <li>
+    Add generic interfaces <code>atomic_OP_fetch</code> for
+    all <code>atomic_fetch_OP</code>.
+  </li>
+  <li>
+    Reduce 7.17.6 "Atomic integer types" to just a definition
+    of <code>typedef</code> as indicated in the table.
+  </li>
+</ul>
+
+<hr />
+  <!-- Entires below the line by WG14 only. -->
+
+  <p><br>
+  <a href="dr_4aa.htm">Previous Defect Report</a> &lt; - &gt;
+  <a href="dr_4bb.htm">Next Defect Report</a></p>
+</body>
+
