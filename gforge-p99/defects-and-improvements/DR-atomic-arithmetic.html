@@ -36,13 +36,12 @@ code { background-color : #EEE; text-style : sans-serif }
   <b>Submitter:</b> Jens Gustedt<br/>
   <b>Submission Date:</b>
   <!-- yyyy-mm-dd -->
-  2015-08-xx <br/>
+  2015-08-07 <br/>
    <b>Source:</b><br/>
-  <b>Reference Document: </b>n195x<br/>
+  <b>Reference Document: </b>n1955<br/>
   <b>Version:</b> 1.0<br/>
-  <b>Date:</b> 2015-7-27<br/>
-  <b>Subject:</b> Inconsistent specifications for arithmetic on
-  atomic objects.</p>
+  <b>Date:</b> 2015-08-07<br/>
+  <b>Subject:</b> Inconsistent specifications for arithmetic on atomic objects.</p>
 
 
   <p><b>Summary</b></p>
@@ -114,8 +113,12 @@ code { background-color : #EEE; text-style : sans-serif }
 
 <p>
   Can the sign representation depend on the operation that we apply to
-  an object? Are these operations supposed to be consistent between
-  operator and function notation? What is an <em>address type</em>?
+  an object?<br />
+  Are these operations supposed to be consistent between operator and
+  function notation?<br />
+  What is an <em>address type</em>?<br />
+  What is "<em>no undefined behavior</em>"? How is the behavior then
+  defined, when we are not told about it?
 </p>
 
 <p><em>— Operators versus generic functions —</em></p>
@@ -128,8 +131,8 @@ code { background-color : #EEE; text-style : sans-serif }
   The operation of the atomic_fetch and modify generic functions are
   nearly equivalent to the operation of the
   corresponding <code>op=</code> compound assignment operators. The
-  only differences are that the compound assignment operators are not
-  guaranteed to operate atomically, ...
+  only differences are that the <b>compound assignment operators are not
+  guaranteed to operate atomically</b>, ...
 </p>
 
 <p>
@@ -168,6 +171,7 @@ code { background-color : #EEE; text-style : sans-serif }
   and <em>fetch/assign</em>.  What is the difference? Is there any?
 </p>
 
+<p><em>— Over all —</em></p>
 
 <p>
   This is
@@ -205,13 +209,15 @@ code { background-color : #EEE; text-style : sans-serif }
 <ol>
   <li>
     Since sign representation is a property of a type and not an
-    operation, all signed integer types must have two's representation
-    for negative values.
+    operation. To comply to the atomics extension all signed integer
+    types must have two's representation for negative values.
   </li>
   <li>
-    Pointer arithmetic has a variant that always has defined behavior,
-    only that the stored address may be invalid, if the addition or
-    subtraction passed beyond the boundaries of the object.
+    Pointer arithmetic must have a variant that always has defined
+    behavior, only that the stored address may be invalid, if the
+    addition or subtraction passed beyond the boundaries of the
+    object. But that behavior is <b>not</b> defined by the standard,
+    the negation of undefined doesn't give a definition.
   </li>
   <li>
     Binary integer operations <code>+</code>,
@@ -243,12 +249,12 @@ code { background-color : #EEE; text-style : sans-serif }
   <p><b>Current practice</b></p>
 
 <p>
-  Both gcc and clang permit <code>atomic_fetch_OP</code> on atomic
-  pointer types.
+  Both gcc and clang permit <code>atomic_fetch_add</code>
+  and <code>atomic_fetch_sub</code> on atomic pointer types.
 </p>
 <p>
- Both disallow floating point types for the functions but not for the
- operators.
+ Both disallow floating point types for the functions but allow them
+ for the operators.
 </p>
 <p>
   Gcc extends the infrastructure that it provides of atomics
