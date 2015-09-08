@@ -155,32 +155,20 @@ P00_DOCUMENT_PERMITTED_ARGUMENT(P99_GENERIC_SIZE_LIT, 3)
 #  undef creal
 # endif
 # define creal(A)                                              \
-P99_GENERIC((A),                                               \
+P99_GENERIC((A)+0,                                             \
             p99_creall,                                        \
             (float _Complex, p99_crealf),                      \
-            (float _Complex const, p99_crealf),                \
-            (float _Complex volatile, p99_crealf),             \
-            (float _Complex const volatile, p99_creal),        \
-            (double _Complex, p99_creal),                      \
-            (double _Complex const, p99_creal),                \
-            (double _Complex volatile, p99_creal),             \
-            (double _Complex const volatile, p99_creal))       \
+            (double _Complex, p99_creal))                      \
  (A)
 
 # ifdef cimag
 #  undef cimag
 # endif
 # define cimag(A)                                              \
-P99_GENERIC((A),                                               \
+P99_GENERIC((A)+0,                                             \
             p99_cimagl,                                        \
             (float _Complex, p99_cimagf),                      \
-            (float _Complex const, p99_cimagf),                \
-            (float _Complex volatile, p99_cimagf),             \
-            (float _Complex const volatile, p99_cimag),        \
-            (double _Complex, p99_cimag),                      \
-            (double _Complex const, p99_cimag),                \
-            (double _Complex volatile, p99_cimag),             \
-            (double _Complex const volatile, p99_cimag))       \
+            (double _Complex, p99_cimag))                      \
  (A)
 #endif
 
@@ -1364,14 +1352,7 @@ char const* p00_sprint_p99x_uintmax(p99x_uintmax p00_val, char*restrict p00_str,
 }
 #endif
 
-
-
-#define P00_SPRINT(NAME, T, I)                                 \
-  (T, P99_PASTE2(p00_sprint_, T)),                             \
-  (T const, P99_PASTE2(p00_sprint_, T)),                       \
-  (T volatile, P99_PASTE2(p00_sprint_, T)),                    \
-  (T const volatile, P99_PASTE2(p00_sprint_, T))
-
+#define P00_SPRINT(NAME, T, I) (T, P99_PASTE2(p00_sprint_, T))
 
 #define P00_SPRINT_LIST_(...)                                        \
   P99_FOR(, P99_NARG(__VA_ARGS__), P00_SEQ, P00_SPRINT, __VA_ARGS__)
@@ -1383,20 +1364,6 @@ P99_GENERIC((X)+0,                                                              
             p00_sprint_voidp,                                                          \
             (char*, p00_sprint_charp),                                                 \
             (char const*, p00_sprint_charp),                                           \
-            (char*const, p00_sprint_charp),                                            \
-            (char const*const, p00_sprint_charp),                                      \
-            (char*volatile, p00_sprint_charp),                                         \
-            (char const*volatile, p00_sprint_charp),                                   \
-            (char*const volatile, p00_sprint_charp),                                   \
-            (char const*const volatile, p00_sprint_charp),                             \
-            (char*restrict, p00_sprint_charp),                                         \
-            (char const*restrict, p00_sprint_charp),                                   \
-            (char*const restrict, p00_sprint_charp),                                   \
-            (char const*const restrict, p00_sprint_charp),                             \
-            (char*volatile restrict, p00_sprint_charp),                                \
-            (char const*volatile restrict, p00_sprint_charp),                          \
-            (char*const volatile restrict, p00_sprint_charp),                          \
-            (char const*const volatile restrict, p00_sprint_charp),                    \
             __VA_ARGS__)((X),                                                          \
                          P99_GENERIC((X)+0,                                            \
                                      /* be sure not to have an array for the sizeof */ \
@@ -1404,21 +1371,7 @@ P99_GENERIC((X)+0,                                                              
                                      /* plus a rough offset for floating points */     \
                                      (char[(sizeof(X+0)*22+64)/8]){ 0 },               \
                                      (char*, 0),                                       \
-                                     (char const*, 0),                                 \
-                                     (char*const, 0),                                  \
-                                     (char const*const, 0),                            \
-                                     (char*volatile, 0),                               \
-                                     (char const*volatile, 0),                         \
-                                     (char*const volatile, 0),                         \
-                                     (char const*const volatile, 0),                   \
-                                     (char*restrict, 0),                               \
-                                     (char const*restrict, 0),                         \
-                                     (char*const restrict, 0),                         \
-                                     (char const*const restrict, 0),                   \
-                                     (char*volatile restrict, 0),                      \
-                                     (char const*volatile restrict, 0),                \
-                                     (char*const volatile restrict, 0),                \
-                                     (char const*const volatile restrict, 0)           \
+                                     (char const*, 0)                                  \
                                      ),                                                \
                          (A))
 

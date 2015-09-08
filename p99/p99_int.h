@@ -219,6 +219,22 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_TO_UNSIGNED, 1)
         ? MACRO(unsigned long)                                 \
         : MACRO(unsigned long long)))))
 
+P00_DOCUMENT_TYPE_ARGUMENT(P99_TO_UNSIGN, 0)
+P00_DOCUMENT_MACRO_ARGUMENT(P99_TO_UNSIGN, 1)
+#define P99_TO_UNSIGN(T, VAL)                                  \
+((uintmax_t)                                                   \
+ (sizeof(T) < sizeof(signed)                                   \
+  ? (sizeof(T) == 1u                                           \
+     ? (unsigned char)+(VAL)                                   \
+     : (unsigned short)+(VAL))                                 \
+  : (sizeof(T) < sizeof(unsigned long)                         \
+     ? (unsigned)+(VAL)                                        \
+     : (sizeof(T) < sizeof(unsigned long long)                 \
+        ? (unsigned long)+(VAL)                                \
+        : (unsigned long long)+(VAL)))))
+
+
+
 /**
  ** @brief Convert -1 to type @a T
  **
@@ -239,7 +255,7 @@ P00_DOCUMENT_MACRO_ARGUMENT(P99_TO_UNSIGNED, 1)
  **
  ** The returned expression is of type @c uintmax_t
  **/
-#define P99_M1U(T) (P99_ISSIGNED(T) ? P99_TO_UNSIGNED(T, P99_M1) : P99_C(uintmax_t, P99_M1(T)))
+#define P99_M1U(T) (P99_ISSIGNED(T) ? P99_TO_UNSIGN(T, -1) : P99_C(uintmax_t, P99_M1(T)))
 
 #define P00_DOCUMENT_SIGNED(X) /*! @brief Cast the @c int value @c X to type @a T */
 #define P00_DOCUMENT_UNSIGNED(X) /*! @brief Cast the @c int value @c X to the unsigned type corresponding to @a T */
@@ -325,25 +341,25 @@ P00_DOCUMENT_SIGNED(0)
 #define P99_0(T) P99_C(T, 0)
 
 P00_DOCUMENT_UNSIGNED(0)
-#define P99_0U(T) P99_TO_UNSIGNED(T, P99_0)
+#define P99_0U(T) P99_TO_UNSIGN(T, 0)
 
 P00_DOCUMENT_SIGNED(1)
 #define P99_1(T) P99_C(T, 1)
 
 P00_DOCUMENT_UNSIGNED(1)
-#define P99_1U(T)  P99_TO_UNSIGNED(T, P99_1)
+#define P99_1U(T)  P99_TO_UNSIGN(T, 1)
 
 P00_DOCUMENT_SIGNED(2)
 #define P99_2(T) P99_C(T, 2)
 
 P00_DOCUMENT_UNSIGNED(2)
-#define P99_2U(T)  P99_TO_UNSIGNED(T, P99_2)
+#define P99_2U(T)  P99_TO_UNSIGN(T, 2)
 
 P00_DOCUMENT_SIGNED(3)
 #define P99_3(T) P99_C(T, 3)
 
 P00_DOCUMENT_UNSIGNED(3)
-#define P99_3U(T)  P99_TO_UNSIGNED(T, P99_3)
+#define P99_3U(T)  P99_TO_UNSIGN(T, 3)
 
 /**
  ** @brief The maximum representable value of the unsigned type
