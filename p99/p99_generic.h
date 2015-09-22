@@ -1465,11 +1465,7 @@ bool p00_in_range_voidp(void* p00_r_, void* p00_s_, size_t p00_len) {
 P99_SER(P00_DEFINE_IN_RANGE, P99_EXT_REAL_TYPES)
 #endif
 
-#define P00_IN_RANGE_PART(NAME, T, I)                          \
-  (T, P99_PASTE2(p00_in_range_, T)),                           \
-  (T const, P99_PASTE2(p00_in_range_, T)),                     \
-  (T volatile, P99_PASTE2(p00_in_range_, T)),                  \
-  (T const volatile, P99_PASTE2(p00_in_range_, T))
+#define P00_IN_RANGE_PART(NAME, T, I) (T, P99_PASTE2(p00_in_range_, T))
 
 
 #define P00_IN_RANGE_LIST_(...)                                             \
