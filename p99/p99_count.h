@@ -44,7 +44,7 @@ typedef p99_futex p99_count;
 /**
  ** @brief Initialize an ::p99_count object.
  **/
-P99_DEFARG_DOCU(p99_notifier_init)
+P99_DEFARG_DOCU(p99_count_init)
 p99_inline
 p99_count* p99_count_init(p99_count* p00_c, unsigned p00_v) {
   return p99_futex_init(p00_c, p00_v);
