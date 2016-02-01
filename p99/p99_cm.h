@@ -52,12 +52,13 @@
  ** @see p99_cm_wait
  ** @see P99_CM_EXCLUDE
  **/
-#ifdef P00_DOXYGEN
-struct p99_cm { };
-#else
-typedef p99_futex p99_cm;
-#endif
+P99_DECLARE_STRUCT(p99_cm);
 
+struct p99_cm {
+  p99_futex p00_c;
+  p99_futex p00_m;
+  size_t waiters;
+};
 
 p99_inline
 bool p00_cm_islocked(unsigned p00_act) {
@@ -75,7 +76,12 @@ bool p00_cm_isntlocked(unsigned p00_act) {
  **/
 p99_inline
 p99_cm* p99_cm_init(p99_cm* p00_cm) {
-  return p99_futex_init(p00_cm, 0u);
+  if (p00_cm) {
+    *p00_cm = (p99_cm){ .waiters = 0, };
+    p99_futex_init(&p00_cm->p00_c, 0u);
+    p99_futex_init(&p00_cm->p00_m, 0u);
+  }
+  return p00_cm;
 }
 
 /**
@@ -84,13 +90,16 @@ p99_cm* p99_cm_init(p99_cm* p00_cm) {
  **/
 p99_inline
 void p99_cm_destroy(p99_cm* p00_cm) {
-  p99_futex_destroy(p00_cm);
+  p99_futex_destroy(&p00_cm->p00_c);
+  p99_futex_destroy(&p00_cm->p00_m);
 }
 
 /**
  ** @brief Initialize an ::p99_cm object.
  **/
 # define P99_CM_INITIALIZER P99_FUTEX_INITIALIZER(p99_cm_unlocked)
+
+enum { p00_cm_unlocked, p00_cm_locked, };
 
 /**
  ** @brief Unconditionally unlock @a p00_cm and wake up a waiter, if
@@ -105,13 +114,11 @@ void p99_cm_destroy(p99_cm* p00_cm) {
  **/
 p99_inline
 void p99_cm_unlock(p99_cm volatile* p00_cm) {
-  P99_FUTEX_COMPARE_EXCHANGE(p00_cm, p00_act,
-                             // never block
-                             true,
-                             // only change if locked
-                             p00_act + p00_cm_islocked(p00_act),
-                             // wake up at most one other thread
-                             0u, 1u);
+  if (p00_cm->waiters) {
+    p99_futex_wakeup(&p00_cm->p00_c, 1u, 1u);
+    --p00_cm->waiters;
+  }
+  p99_futex_exchange(&p00_cm->p00_m, p00_cm_unlocked, p00_cm_unlocked, 1u, 0u, 1u);
 }
 
 /**
@@ -126,10 +133,10 @@ void p99_cm_unlock(p99_cm volatile* p00_cm) {
  **/
 p99_inline
 void p99_cm_lock(p99_cm volatile* p00_cm) {
-  P99_FUTEX_COMPARE_EXCHANGE(p00_cm, p00_act,
+  P99_FUTEX_COMPARE_EXCHANGE(&p00_cm->p00_m, p00_act,
                              // wait while locked by another thread
-                             p00_cm_isntlocked(p00_act),
-                             p00_act + 1,
+                             p00_act == p00_cm_unlocked,
+                             p00_cm_locked,
                              // never wake up anyone
                              0u, 0u);
 }
@@ -143,17 +150,7 @@ void p99_cm_lock(p99_cm volatile* p00_cm) {
  **/
 p99_inline
 bool p99_cm_trylock(p99_cm volatile* p00_cm) {
-  int p00_ret = 0;
-  P99_FUTEX_COMPARE_EXCHANGE(p00_cm, p00_act,
-                             // never wait
-                             true,
-                             // only change if not locked
-                             p00_act + p00_cm_isntlocked(p00_act),
-                             // store the previous value by side
-                             // effect, but never wake up anyone
-                             (p00_ret = p00_act, 0u),
-                             0u);
-  return p00_cm_islocked(p00_ret);
+  return p99_futex_exchange(&p00_cm->p00_m, p00_cm_locked, 0u, 0u, 0u, 0u);
 }
 
 /**
@@ -164,22 +161,10 @@ bool p99_cm_trylock(p99_cm volatile* p00_cm) {
  **/
 P00_FUTEX_INLINE(p99_cm_wait)
 void p99_cm_wait(p99_cm volatile* p00_cm) {
-  unsigned p00_cur = 0;
-  P99_FUTEX_COMPARE_EXCHANGE(p00_cm, p00_act,
-                             // never wait
-                             true,
-                             // store the new value by side effect,
-                             // and do nothing if the cm wasn't locked
-                             (p00_cur = p00_act + p00_cm_islocked(p00_act)),
-                             // wake up at most one thread
-                             0u, 1u);
-  P99_FUTEX_COMPARE_EXCHANGE(p00_cm, p00_act,
-                             // wait while
-                             // - the cm is locked by another thread
-                             // - there has been not enough progress
-                             p00_cm_isntlocked(p00_act) && (p00_act != p00_cur),
-                             p00_act + 1,
-                             0u, 1u);
+  ++p00_cm->waiters;
+  p99_futex_exchange(&p00_cm->p00_m, p00_cm_unlocked, p00_cm_unlocked, 1u, 0u, 1u);
+  p99_futex_wait(&p00_cm->p00_c);
+  p99_cm_lock(p00_cm);
 }
 
 /**
