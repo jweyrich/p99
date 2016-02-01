@@ -101,6 +101,28 @@ void p99_cm_destroy(p99_cm* p00_cm) {
 
 enum { p00_cm_unlocked, p00_cm_locked, };
 
+/* This is only for internal use. Other than @c cnd_signal this
+   supposes that the corresponding mutex part of the condition-mutex
+   is locked. */
+p99_inline
+void p00_cm_signal(p99_cm volatile* p00_cm) {
+  if (p00_cm->waiters) {
+    /* In most of the cases the waiter will already be in the kernel
+       wait when we arrive here: this thread has acquired the lock,
+       done whatever processing and now is releasing the
+       lock. Nevertheless there is a small window, where we may have
+       doubled a waiter thread. Therefore we force a busy wait if
+       necessary, until we have woken up someone. */
+    p99_futex_wakeup(&p00_cm->p00_c, 1u, 1u);
+    --p00_cm->waiters;
+  }
+}
+
+p99_inline
+void p00_cm_unlock(p99_cm volatile* p00_cm) {
+  p99_futex_exchange(&p00_cm->p00_m, p00_cm_unlocked, p00_cm_unlocked, 1u, 0u, 1u);
+}
+
 /**
  ** @brief Unconditionally unlock @a p00_cm and wake up a waiter, if
  ** any.
@@ -114,11 +136,8 @@ enum { p00_cm_unlocked, p00_cm_locked, };
  **/
 p99_inline
 void p99_cm_unlock(p99_cm volatile* p00_cm) {
-  if (p00_cm->waiters) {
-    p99_futex_wakeup(&p00_cm->p00_c, 1u, 1u);
-    --p00_cm->waiters;
-  }
-  p99_futex_exchange(&p00_cm->p00_m, p00_cm_unlocked, p00_cm_unlocked, 1u, 0u, 1u);
+  p00_cm_signal(p00_cm);
+  p00_cm_unlock(p00_cm);
 }
 
 /**
@@ -162,7 +181,7 @@ bool p99_cm_trylock(p99_cm volatile* p00_cm) {
 P00_FUTEX_INLINE(p99_cm_wait)
 void p99_cm_wait(p99_cm volatile* p00_cm) {
   ++p00_cm->waiters;
-  p99_futex_exchange(&p00_cm->p00_m, p00_cm_unlocked, p00_cm_unlocked, 1u, 0u, 1u);
+  p00_cm_unlock(p00_cm);
   p99_futex_wait(&p00_cm->p00_c);
   p99_cm_lock(p00_cm);
 }
