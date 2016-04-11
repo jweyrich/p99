@@ -33,8 +33,8 @@ code { background-color : #EEE; text-style : sans-serif }
   2015-08-07 <br/>
    <b>Source:</b><br/>
   <b>Reference Document: </b>n1951<br/>
-  <b>Version:</b> 1.0<br/>
-  <b>Date:</b> 2015-08-07<br/>
+  <b>Version:</b> 2.0<br/>
+  <b>Date:</b> 2016-04-11<br/>
   <b>Subject:</b> Problem with the specification of ATOMIC_VAR_INIT</p>
 
 
@@ -59,7 +59,35 @@ initialization-compatible with value.
   or <code>union</code> types properly.
 </p>
 
-  <p><b>Problem discussion</b></p>
+  <p><b>Example</b></p>
+
+<p>
+  Consider the following <code>struct</code> type that represents the
+  head of a linked list.
+</p>
+
+<p>
+  <code>struct head { size_t n; struct elem* first; };</code><br/>
+</p>
+<p>
+  A non-trivial initialization <em>in file scope</em> of an object of
+  that type could attempt to initialize both fields of the structure
+  with non-zero values <code>1</code> for <code>n</code>
+  and <code>toto</code> for <code>first</code>. Of the three
+  alternatives
+</p>
+  <code>_Atomic(struct head) top = ATOMIC_VAR_INIT(.n = 1, .first = toto);</code><br/>
+  <code>_Atomic(struct head) top = ATOMIC_VAR_INIT({.n = 1, .first = toto});</code><br/>
+  <code>_Atomic(struct head) top = ATOMIC_VAR_INIT(((struct head){.n = 1, .first = toto}));</code><br/>
+</p>
+
+<p>
+  none is valid as the standard document stands. The first two are not
+  values of any type, and the third uses a compound literal that is
+  not a constant expression as a file scope initialization would require.
+</p>
+
+<p><b>Problem discussion</b></p>
 
 <p>
   As a consequence, there is a problem for atomic objects that combine
@@ -106,7 +134,7 @@ initialization-compatible with value.
   </li>
 </ul>
 
-  <p><b>Current practice</b></p>
+<p><b>Current practice</b></p>
 
 <p>
   Both compilers that I have my hands on (gcc 4.9 and clang 3.6) that
@@ -138,7 +166,22 @@ syntax if <code>VALUE</code> is a <code>{ }</code> initializer.
 
 <p><b>Suggested Technical Corrigendum</b><br/></p>
 
-<p>Change the beginning of the corresponding section, 7.17.2.1p2, to:</p>
+<p>Change the beginning of the corresponding section, 7.17.2.1p2, from:</p>
+
+<p class="quote">
+7.17.2.1 The <code>ATOMIC_VAR_INIT</code> macro<br/>
+<b>Synopsis</b><br/>
+<code>#include &lt;stdatomic.h&gt;</code><br/>
+<code>#define ATOMIC_VAR_INIT(C value)</code></br>
+<b>Description</b><br/>
+
+The <code>ATOMIC_VAR_INIT</code> macro expands to a token sequence suitable for initializing an
+atomic object of a type that is initialization-compatible with value.
+An atomic object with automatic storage duration ...
+</p>
+
+<p>to:</p>
+
 <p class="alternative">
 7.17.2.1 The <code>ATOMIC_VAR_INIT</code> macro<br/>
 <b>Synopsis</b><br/>
