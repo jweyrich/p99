@@ -23,6 +23,7 @@ SRC	=					\
 		test-p99-qualifier.c            \
 		test-p99-rand.c 		\
 		test-p99-thread.c		\
+		test-p99-uf.c			\
 		test-p99-va-arg.c
 
 ifeq (${NO_TEST_C11},)
