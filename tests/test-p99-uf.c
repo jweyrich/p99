@@ -26,7 +26,7 @@ uint64_t position(size_t n, uint64_t i, uint64_t j) {
  ** upward in the UF chain to the root.
  **/
 static
-void printBoard(size_t n, p99_uf* uf) {
+void printBoard(size_t n, p99_uf const* uf) {
   for (size_t i = 0; i < n; ++i) {
     for (size_t j = 0; j < n; ++j) {
       int64_t region = uf->tab[position(n, i, j)];
@@ -59,7 +59,7 @@ int main(void) {
   // diagonals of width two.
   for (size_t i = 0; i < n-1; ++i) {
     for (size_t j = !(i%2); j < n; j += 2) {
-      p99_uf_union(uf, position(n, i, j), position(n, i+1, j));
+      p99_uf_union(uf, position(n, i+1, j), position(n, i, j));
     }
   }
   printBoard(n, uf);
