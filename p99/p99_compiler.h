@@ -1072,6 +1072,7 @@ P99_IF_COMPILER(INTEL, warning(disable: 283))  /* duplicate specifier in declara
 
 P99_IF_COMPILER(GNU, GCC diagnostic ignored "-Wmissing-braces")
 P99_IF_COMPILER(GNU, GCC diagnostic ignored "-Wmissing-field-initializers")
+P99_IF_COMPILER(GNU, GCC diagnostic ignored "-Wswitch-bool")
 
 P99_IF_COMPILER(OPEN64, GCC diagnostic ignored "-Wmissing-braces")
 P99_IF_COMPILER(OPEN64, GCC diagnostic ignored "-Wmissing-field-initializers")
