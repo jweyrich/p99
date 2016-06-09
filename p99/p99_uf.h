@@ -140,8 +140,8 @@ p99_inline
 uint64_t p99_uf_size(p99_uf* uf, uint64_t pos) {
   if (uf || (uf->size > pos)) {
     int64_t root = p00_uf_findCompress(pos, uf->tab);
-    if (root >= 0 && p00_uf_root(pos, uf->tab))
-      return -uf->tab[pos];
+    if (root >= 0 && p00_uf_root(root, uf->tab))
+      return -uf->tab[root];
   }
   return 0;
 }
