@@ -84,7 +84,7 @@ code { background-color : #EEE; text-style : sans-serif }
 
 <p class="quote">
   The <span class="strike">library defines</span> a number
-  of <span class="strike">atomic operations (7.17)</span> and
+  of atomic operations <span class="strike">(7.17)</span> and
   operations on mutexes (7.26.4) that are specially identified as
   synchronization operations.
 </p>
@@ -93,34 +93,34 @@ code { background-color : #EEE; text-style : sans-serif }
 
 <p class="quote">
   The <span class="alternative">language and the library define</span>
-  a number of <span class="alternative">operators (6.5) and type
-  generic functions (7.17) for atomic types</span> and operations on
-  mutexes (7.26.4) that are specially identified as synchronization
-  operations.
+  a number of atomic operations <span class="alternative">(6.2.6.1,
+  6.5.16 and 7.17)</span>
+  and operations on mutexes (7.26.4) that are specially identified as
+  synchronization operations.
 </p>
 
 
-<p><b>6.2.6.1 p9</b>, replace:</p>
+<p><b>6.2.6.1 p9</b>, for clarification replace:</p>
 
-<p class="strike">
- Loads and stores of objects with atomic types are done with
- memory_order_seq_cst semantics.
+<p class="quote">
+ <span class="strike">Loads and stores of</span> objects with atomic
+ types are done with <code>memory_order_seq_cst</code> semantics.
 </p>
 
 <p>
   by the following
 </P>
 
-<p class="alternative">
-  All operations that affect atomic objects that do not specify
-  otherwise have <code>memory_order_seq_cst</code> memory
-  consistency.
+<p class="quote">
+  <span class="alternative">Unless specified otherwise, all operations
+ that affect</span> objects with atomic types are done with
+ <code>memory_order_seq_cst</code> semantics.
 </p>
 
 <p>
   <b>7.17.7 p1</b>, the discussion omits operators and uses the term
-  "kind of operations" where it should simply speak of "type generic
-  function". Replace
+  "kind of operations" where it should simply speak of "generic
+  functions". Replace
 </p>
 
 <p class="quote">
@@ -136,9 +136,9 @@ code { background-color : #EEE; text-style : sans-serif }
 <p class="quote">
   <span class="alternative">In addition to the operators that are
   defined for atomic objects,</span> there are a
-  few <span class="alternative">operations that are specified as type
+  few <span class="alternative">operations that are specified as
   generic functions</span>. This subclause specifies
-  each <span class="alternative">type generic function</span>.
+  each <span class="alternative">generic function</span>.
 </p>
 
 <p>
@@ -147,7 +147,7 @@ code { background-color : #EEE; text-style : sans-serif }
 
 <p>
   <b>p1</b>, this paragraph misses pointer types as valid
-  operands. Since only "add" and "sub" should be qualified for pointer
+  operands. Since only "add" and "sub" should be used for pointer
   types, also add a mention which operations are valid. Change:
 </p>
 
@@ -162,16 +162,19 @@ code { background-color : #EEE; text-style : sans-serif }
 
 <p class="alternative">
   ... to an object of any atomic integer or pointer type, as long as
-   the unqualified type is valid as left operand of the corresponding
-   operator <code>op=</code>.FOOTNOTE<br/> <br/>
+   type <code>C</code> is valid for the left operand of the
+   corresponding operator <code>op=</code>.FOOTNOTE<br/> <br/>
 
-  FOOTNOTE: Thus these operations are not permitted for pointers to
-  atomic <code>_Bool</code>, and only "add" and "sub" variants are
-  permitted for atomic pointer types.
+  FOOTNOTE: Thus none of these operations are permitted
+  if <code>C</code> is <code>_Bool</code>, and only "add" and "sub"
+  variants are permitted if <code>C</code> is a pointer type.
 </p>
 
 <p>
-  <b>p3</b> clarify "<em>no undefined</em>" by replacing:
+  <b>p3</b> clarify "<em>no undefined</em>". Even if arithmetic
+  silently wraps around the result can be a trap representation, and
+  generally address operations can be erroneous for different
+  reasons. Replace:
 </p>
 
 <p class="quote">
@@ -190,22 +193,24 @@ code { background-color : #EEE; text-style : sans-serif }
   For signed integer types, arithmetic is defined to use two’s
   complement representation with silent wrap-around on
   overflow. <span class="alternative">If the corresponding operation
-  with identical values on the unqualified type is erroneous, the
-  result may not be a valid value</span>, but the operation otherwise
-  has no <span class="alternative">visible effect</span>.
+  for type <code>C</code> is erroneous, the result and stored
+  representation may not be a valid value for <code>C</code></span>,
+  but the operation otherwise has no <span class="alternative">visible
+  effect</span>.
 </p>
 
 <p>
-  <b>p5</b> is non-normative but factually wrong. Replace:
+  <b>p5</b> is non-normative but factually wrong and misleading. One
+  solution could be to remove the entire NOTE, or to replace:
 </p>
 
 <p class="quote">
-  The only differences are that the <span class="strike">compound
-  assignment operators are not guaranteed to operate
-  atomically</span>, and the value yielded by a compound assignment
-  operator is the updated value of the object, whereas the value
-  returned by the atomic_fetch and modify generic functions is the
-  previous value of the atomic object.
+  The <span class="strike">only</span> differences are that
+  the <span class="strike">compound assignment operators are not
+  guaranteed to operate atomically</span>, and the value yielded by a
+  compound assignment operator is the updated value of the object,
+  whereas the value returned by the atomic_fetch and modify generic
+  functions is the previous value of the atomic object.
 </p>
 
 <p>
@@ -213,20 +218,17 @@ code { background-color : #EEE; text-style : sans-serif }
 </p>
 
 <p class="quote">
-  The only differences are that
+  The differences are that
   the <span class="alternative"><code>order</code> parameter may make
   the memory consistency less strict
-  than <code>memory_order_seq_cst</code></span>, and the value yielded
-  by a compound assignment operator is the updated value of the
-  object, whereas the value returned by the atomic_fetch and modify
-  generic functions is the previous value of the atomic object.
+  than <code>memory_order_seq_cst</code>, <code>*object</code>
+  is <code>volatile</code> qualified, the effect of
+  updating <code>*object</code> is sequenced with respect to the
+  call</span>, and the value yielded by a compound assignment operator
+  is the updated value of the object, whereas the value returned by
+  the atomic_fetch and modify generic functions is the previous value
+  of the atomic object.
 </p>
 
-<hr />
-  <!-- Entires below the line by WG14 only. -->
-
-  <p><br>
-  <a href="dr_4aa.htm">Previous Defect Report</a> &lt; - &gt;
-  <a href="dr_4bb.htm">Next Defect Report</a></p>
 </body>
 
