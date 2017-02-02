@@ -305,6 +305,7 @@ signed p00_trailing_comma_in_initializer__(void) {
 #  define p00_has_builtin___sync_fetch_and_and 1
 #  define p00_has_builtin___sync_fetch_and_xor 1
 # endif
+# define P99_TYPEOF(X) __typeof__(X)
 # if P99_GCC_VERSION >= 30000UL
 #  define p00_has_builtin___builtin_expect 1
 # endif
@@ -325,7 +326,6 @@ signed p00_trailing_comma_in_initializer__(void) {
 # define p00_has_feature_gnu_alignof 1
 # define p00_has_feature_statement_expression 1
 # define p00_has_feature_tgmath_h 1
-# define P99_TYPEOF(X) __typeof__(X)
 # if (P99_GCC_VERSION >= 40700UL) && (P99_GCC_VERSION < 40900UL)
 #  define p00_has_feature_stdnoreturn_h 1
 #  define p00_has_feature_stdalign_h 1

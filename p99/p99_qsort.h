@@ -366,6 +366,69 @@ errno_t p00_qsort_s(void *p00_base,
   return p00_qsort_generic(p00_base, p00_n, p00_a, p00_s, p00_comp, p00_ctx);
 }
 
+#ifdef P99_TYPEOF
+# define P99_ALIGNOF(B) alignof(P99_TYPEOF(B))
+#else
+# ifdef __STDC_NO_COMPLEX__
+#  define P99_ALIGNOF(B)                        \
+  P99_GENERIC(&((B)[0]),                        \
+            sizeof((B)[0]),                     \
+            (void_ptr*, 1),                     \
+            /* */                               \
+            (float*, alignof(float)),           \
+            (double*, alignof(double)),         \
+            (double*, alignof(cdouble)),        \
+            /* */                               \
+            (_Bool*, alignof(_Bool)),           \
+            (char*, alignof(char)),             \
+            (uchar*, alignof(uchar)),           \
+            (schar*, alignof(schar)),           \
+            /* */                               \
+            (ushort*, alignof(ushort)),         \
+            (short*, alignof(short)),           \
+            /* */                               \
+            (unsigned*, alignof(unsigned)),     \
+            (signed*, alignof(signed)),         \
+            /* */                               \
+            (long*, alignof(long)),             \
+            (ulong*, alignof(ulong)),           \
+            /* */                               \
+            (llong*, alignof(llong)),           \
+            (ullong*, alignof(ullong))          \
+              )
+#  else
+#   define P99_ALIGNOF(B)                       \
+  P99_GENERIC(&((B)[0]),                        \
+            sizeof((B)[0]),                     \
+            (void_ptr*, 1),                     \
+            /* */                               \
+            (float*, alignof(float)),           \
+            (double*, alignof(double)),         \
+            (ldouble*, alignof(ldouble)),       \
+            /* */                               \
+            (cfloat*, alignof(cfloat)),         \
+            (cdouble*, alignof(cdouble)),       \
+            (cldouble*, alignof(cldouble)),     \
+            /* */                               \
+            (_Bool*, alignof(_Bool)),           \
+            (char*, alignof(char)),             \
+            (uchar*, alignof(uchar)),           \
+            (schar*, alignof(schar)),           \
+            /* */                               \
+            (ushort*, alignof(ushort)),         \
+            (short*, alignof(short)),           \
+            /* */                               \
+            (unsigned*, alignof(unsigned)),     \
+            (signed*, alignof(signed)),         \
+            /* */                               \
+            (long*, alignof(long)),             \
+            (ulong*, alignof(ulong)),           \
+            /* */                               \
+            (llong*, alignof(llong)),           \
+              (ullong*, alignof(ullong))        \
+              )
+# endif
+#endif
 
 /**
  ** @brief A generic sorting routine.
@@ -420,7 +483,7 @@ errno_t p00_qsort_s(void *p00_base,
             /* */                                              \
             (llong*, p00_qsort_llong),                         \
             (ullong*, p00_qsort_ullong)                        \
-              )((B), (N), alignof(*(B)), (S), (CMP), (CTX)),   \
+              )((B), (N), P99_ALIGNOF((B)[0]), (S), (CMP), (CTX)), \
   "qsort_s runtime constraint violation")
 #else
 #define qsort_s(B, N, S, CMP, CTX)                             \
@@ -453,7 +516,7 @@ errno_t p00_qsort_s(void *p00_base,
             /* */                                              \
             (llong*, p00_qsort_llong),                         \
             (ullong*, p00_qsort_ullong)                        \
-              )((B), (N), alignof(*(B)), (S), (CMP), (CTX)),   \
+              )((B), (N), P99_ALIGNOF((B)[0]), (S), (CMP), (CTX)), \
   "qsort_s runtime constraint violation")
 #endif
 
