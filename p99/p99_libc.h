@@ -89,6 +89,41 @@
 #  endif
 # endif
 
+#elif defined __XC16
+#define __STDC_NO_COMPLEX__
+#define P99_CSIN_BUG
+/* This is what a standard conforming C library must provide. */
+# define p00_has_feature_float_h 1
+# define p00_has_feature_iso646_h 1
+# define p00_has_feature_limits_h 1
+# define p00_has_feature_stdarg_h 1
+# define p00_has_feature_stdbool_h 1
+# define p00_has_feature_stddef_h 1
+# define p00_has_feature_stdint_h 1
+# if __STDC_HOSTED__
+#  define p00_has_feature_assert_h 1
+/* C99 requires this C11 has this conditionally */
+#  ifndef __STDC_NO_COMPLEX__
+#   define p00_has_feature_complex_h 1
+#  endif
+#  define p00_has_feature_ctype_h 1
+#  define p00_has_feature_errno_h 1
+#  define p00_has_feature_fenv_h 0
+#  define p00_has_feature_inttypes_h 1
+#  define p00_has_feature_locale_h 0
+#  define p00_has_feature_math_h 1
+#  define p00_has_feature_setjmp_h 1
+#  define p00_has_feature_signal_h 1
+#  define p00_has_feature_stdio_h 1
+#  define p00_has_feature_stdlib_h 1
+#  define p00_has_feature_string_h 1
+/* tgmath.h should be given on the compiler level */
+#  define p00_has_feature_tgmath_h 0
+#  define p00_has_feature_time_h 1
+#  define p00_has_feature_wchar_h 0
+#  define p00_has_feature_wctype_h 0
+# endif
+
 #else
 /* This is what a standard conforming C library must provide. */
 # define p00_has_feature_float_h 1
