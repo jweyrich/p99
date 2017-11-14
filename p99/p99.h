@@ -1436,8 +1436,14 @@
  **/
 
 
+#ifndef __XC16
+    #include "p99_choice.h"
+#else
+    #define P99_CHOICE_H
+    #include "p99_id.h"
+    #include "p99_for.h"
+#endif
 
-#include "p99_choice.h"
 P99_WARN_REDUNDANT_DECLS_PUSH
 #include "p99_defarg.h"
 #include "p99_enum.h"
