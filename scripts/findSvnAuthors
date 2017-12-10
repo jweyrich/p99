@@ -20,6 +20,7 @@ if 0;               #### for this magic, see findSvnAuthors ####
 use English;
 use Getopt::Long;
 use locale;
+use open qw< :encoding(UTF-8) >;
 
 ### Read in files whoes names are given as arguments.
 sub slurp(&;@);
@@ -134,7 +135,7 @@ my %comend = (
 
 my %slogan = (
                 "c++" => "//  This may look like C code, but it really is -*- mode: c++; coding: utf-8 -*-",
-                "c" => "/* This may look like nonsense, but it really is -*- mode: C -*- */",
+                "c" => "/* This may look like nonsense, but it really is -*- mode: C; coding: utf-8 -*- */",
                 "latex" => "% This may look like nonsense, but it really is -*- mode: latex; coding: utf-8 -*-",
                 "csh" => "#  This may look like nonsense, but it really is -*- mode: csh; coding: utf-8 -*-",
                 "sh" => "#  This may look like nonsense, but it really is -*- mode: sh; coding: utf-8 -*-",
