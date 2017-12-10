@@ -39,15 +39,15 @@ my $metoo = 0;
 my $beauty = "astyle";
 my $copyright = "Copyright (c)";
 my $authorsFile;
-my $licenceFile;
+my $licenseFile;
 my @beautyArgs = ("--style=attach", "-NoO", "-s2", "--convert-tabs");
 my $result = GetOptions ("ifile=s"      => \${ifile},      # string
                          "ofile=s"       => \${ofile},      # string
                          "copyright=s"   => \${copyright},  # string
-                         "licenceFile=s" => \${licenceFile},# string
+                         "licenseFile=s" => \${licenseFile},# string
                          "authorsFile=s" => \${authorsFile},# string
                          "spaces=i"      => \${spaces},     # integer
-                         "scm=s"        => \${scm},       # string
+                         "scm=s"        => \$scm,       # string
                          "type=s"        => \${type},       # string
                          "metoo!"        => \${metoo},      # flag
                          "diff!"        => \${diff},      # flag
@@ -93,10 +93,10 @@ foreach my $name (keys(%fnames)) {
 my $historyFile = "${scriptdir}/HISTORY.txt";
 my %history = slurp { m{^(\S+)\s+(.*?)\s*$}o } ${historyFile};
 
-$licenceFile = "${scriptdir}/SHORTLICENCE.txt"
-    if (!defined($licenceFile));
-my $licence = slurp { $_ } ${licenceFile};
-$licence = <<'LICENCE' if (!defined($licence));
+$licenseFile = "${scriptdir}/SHORTLICENCE.txt"
+    if (!defined($licenseFile));
+my $license = slurp { $_ } ${licenseFile};
+$license = <<'LICENSE' if (!defined($license));
 
 
 This file is free software; you can redistribute it and/or modify it
@@ -104,7 +104,7 @@ under the terms as given in the file LICENSE. It is distributed
 without any warranty; without even the implied warranty of
 merchantability or fitness for a particular purpose.
 
-LICENCE
+LICENSE
 
 
 my %combeg = (
@@ -598,7 +598,7 @@ ${copyright} ${all} ${name}
 copyright
 }
 
-$header .= ${licence};
+$header .= ${license};
 my @header = map {
   chomp;
   $_ = "${combeg}${spaces}$_";
