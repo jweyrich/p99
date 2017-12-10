@@ -57,6 +57,13 @@ my $result = GetOptions ("ifile=s"      => \${ifile},      # string
                          "help!"        => \${help},      # flag
 );
 
+# Modular C files may contain extra syntax related to "do" and
+# "foreach" directives, namely some sort of meta-parameters of the
+# form ${IDENTIFIER}. This doesn't work well with beautifiers, so we
+# have to protect this sort of construct.
+my $doparam = "DOPARAM" . rand();
+my $marapod = "MARAPOD" . rand();
+
 # collect the command arguments for the log command
 my %commands = (
     "svn", ["-q"],
@@ -168,7 +175,7 @@ Where --ifile defaults to --ofile, and --ofile defaults stdout.
 At least one of ifile or ofile must be set.
 
 This program tries to find revision information from an SCM (supported
-are svn and bzr) in terms of author / year pairs and updates an
+are svn, git and bzr) in terms of author / year pairs and updates an
 initial copyright information at the start of the file. If the option
 --metoo is given it also adds the current user and year to the list of
 revisions.
@@ -383,6 +390,7 @@ if (defined($ifile)) {
       if (!system("cp", "-fp", ${ifile}, ${icopy}));
   }
 }
+my $icopy2 = "${icopy}-2";
 
 READIN:
 if (open($source, "<${icopy}")) {
@@ -408,6 +416,7 @@ if (@{text}) {
       }
       warn "Given file type ${type} does not match infile magic ${ntype}"
         if (${type} ne ${ntype});
+      ${text[${i}]} = undef;
     }
   }
 }
@@ -417,14 +426,23 @@ $type = "c++"  if (!defined($type));
 unlink(${icopy});
 # Since we are at it try to beautify the file, first.
 if (defined(${beauty}) && ${type} =~ /^c/) {
-  if (system("${beauty} @{beautyArgs} <${ifile} >${icopy}")) {
+  open($osource, ">${icopy2}");
+  foreach my $line (@text, <$source>) {
+      $line =~ s![\$]\{([[:alnum:]]+)\}!${doparam}$1${marapod}!g;
+      print ${osource} "${line}";
+  }
+  close($osource);
+  close($source);
+  if (system("${beauty} @{beautyArgs} ${icopy2} >${icopy}")) {
     print STDERR "${ifile} beautification had error: " . $OS_ERROR ."\n";
-    # Fall back to the already opened file and remove the garbage.
+    # Reopen the file and remove the garbage.
+    open($source, "<${icopy2}");
     unlink(${icopy});
+    unlink(${icopy2});
   } else {
     $beauty = undef;
     # We changed the file so we have to restart
-    close($source);
+    rename ${icopy2}, ${icopy};
     @text = ();
     goto READIN;
   }
@@ -640,6 +658,7 @@ my @contl = ();
 my $prev;
 foreach my $line (<$source>) {
     chomp $line;
+    $line =~ s!${doparam}([[:alnum:]]+)${marapod}!\${$1}!g;
     if ($line =~ m{^(.*\S)?(\s*[\\]$)}go) {
         if (defined($1)) {
             push @contl, $1;
