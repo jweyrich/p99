@@ -300,6 +300,7 @@ union P99_TP_STATE(T) {                                          \
 p99_inline
 void p00_tp_init(register p99_tp volatile*const p00_el, register void*const p00_val) {
   if (P99_LIKELY(p00_el)) {
+    memset((void*)&p00_el->p00_val, 0, sizeof p00_el->p00_val);
     atomic_init(&p00_el->p00_val, p00_tp_p2i(p00_val, p00_tp_tick_get()));
   }
 }
