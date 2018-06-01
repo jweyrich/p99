@@ -3,7 +3,7 @@
 eval 'exec perl -wS -x $0 ${1+"$@"}'
 if 0;               #### for this magic, see findSvnAuthors ####
 #!perl
-#
+#line 7
 #
 # Except for parts copied from previous work and as explicitly stated below,
 # the authors and copyright holders for this work are as follows:
@@ -562,7 +562,7 @@ INTERPRETER
 
         chomp $slogan;
         $slogan .= "${execname} ####";
-        print "${slogan}\n#!perl\n";
+        print "${slogan}\n#!perl\n#line 7\n";
         ${slogan} = "";
       }
     }
