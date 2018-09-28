@@ -332,7 +332,6 @@ p99_inline thrd_t* thrd_t_init(thrd_t *p00_id) {
   return p00_id;
 }
 
-P99_CONST_FUNCTION
 p99_inline void thrd_t_destroy(thrd_t *p00_id) {
   /* special care for bogus warning given by icc */
   (void)p00_id;

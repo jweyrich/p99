@@ -138,7 +138,6 @@ p99_inline T* P99_PASTE2(T, _init)(T *p00_id) {                    \
   return p00_id;                                                   \
 }                                                                  \
 /*! @brief destroy the object that @a p00_id points to. */         \
-P99_CONST_FUNCTION                                                 \
 p99_inline void P99_PASTE2(T, _destroy)(T*  p00_id) {              \
   /* empty */                                                      \
   (void)p00_id;                                                    \
