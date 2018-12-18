@@ -866,22 +866,34 @@ errno_t p00_asctime_s(char const* p00_file, char const* p00_context,
   } else if (P99_UNLIKELY(!p00_tm_valid(p00_tptr))) {
     p00_ret = EDOM;
   } else {
-    char const p00_wday[7][3] = {
-      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-    };
-    char const p00_mon[12][3] = {
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    };
-    sprintf(p00_s,
-            "%.3s %.3s %2d %.2d:%.2d:%.2d %4d\n",
-            p00_wday[p00_tptr->tm_wday],
-            p00_mon[p00_tptr->tm_mon],
-            p00_tptr->tm_mday,
-            p00_tptr->tm_hour,
-            p00_tptr->tm_min,
-            p00_tptr->tm_sec,
-            1900 + p00_tptr->tm_year);
+    /* Watch that the year string has exactly 4 characters. The
+     * standard lists this condition only for asctime (and makes it
+     * UB), but we should watch not to have buffer overflow, here.
+     */
+    unsigned short p00_val = 1900u + p00_tptr->tm_year;
+    if (1000 <= p00_val && p00_val <= 9999) {
+      char p00_year[6] = "XXXX";
+      snprintf(p00_year, 6, "%4hu", p00_val);
+      char const p00_wday[7][3] = {
+        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+      };
+      char const p00_mon[12][3] = {
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      };
+      snprintf(p00_s,
+               p00_maxsize,
+               "%.3s %.3s %2d %.2d:%.2d:%.2d %.4s\n",
+               p00_wday[p00_tptr->tm_wday],
+               p00_mon[p00_tptr->tm_mon],
+               p00_tptr->tm_mday,
+               p00_tptr->tm_hour,
+               p00_tptr->tm_min,
+               p00_tptr->tm_sec,
+               p00_year);
+    } else {
+      p00_ret = EDOM;
+    }
   }
   if (p00_ret) {
     if (p00_s && p00_maxsize) p00_s[0] = 0;
