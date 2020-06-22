@@ -1,0 +1,21 @@
+digraph "Emulating features of C11"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node6 [label="C11 atomic operations",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__atomic.html",tooltip=" "];
+  Node2 [label="Compiler Specific Tuning\l and Extensions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__compiler.html",tooltip=" "];
+  Node4 [label="Generic identification\l of families of types\l or values",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__C11__types.html",tooltip=" "];
+  Node7 [label="C11 thread emulation\l on top of POSIX threads",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__threads.html",tooltip=" "];
+  Node8 [label="C11 additions to the\l C library",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__C11__library.html",tooltip=" "];
+  Node3 [label="Some new C11 keywords",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__C11__keywords.html",tooltip=" "];
+  Node5 [label="Generic type expressions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__generic.html",tooltip=" "];
+  Node1 [label="Emulating features\l of C11",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node3 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node4 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node5 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node6 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node7 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node8 [shape=plaintext, dir="back", style="solid"];
+}

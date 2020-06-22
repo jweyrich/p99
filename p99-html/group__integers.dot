@@ -1,0 +1,13 @@
+digraph "Macros to handle integer type expressions"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node1 [label="Macros to handle integer\l type expressions",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node2 [label="C Programming facilities",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__code__augmenting.html",tooltip=" "];
+  Node3 [label="Bitfiddling",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__bitfiddling.html",tooltip="Bit fiddling of low order bits."];
+  Node4 [label="Endianess",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__endianess.html",tooltip="Help to handle endianess problems of different kind."];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node3 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node4 [shape=plaintext, dir="back", style="solid"];
+}

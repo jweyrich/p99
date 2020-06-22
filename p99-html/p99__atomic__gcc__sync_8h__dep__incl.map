@@ -1,0 +1,4 @@
+<map id="p99_atomic_gcc_sync.h" name="p99_atomic_gcc_sync.h">
+<area shape="rect" id="node1" title="Implement some of the atomic operations as fallback to gcc&#39; __sync builtins." alt="" coords="5,5,221,37"/>
+<area shape="rect" id="node2" href="$p99__atomic__gcc_8h.html" title="Implement some of the atomic operations as fallback to gcc&#39; builtins." alt="" coords="29,85,198,117"/>
+</map>

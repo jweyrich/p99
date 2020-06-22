@@ -1,0 +1,5 @@
+<map id="p99_rand.h" name="p99_rand.h">
+<area shape="rect" id="node1" title="An implementation of George Marsaglia&#39;s xorshift PRG with a period of about 2^160." alt="" coords="12,5,125,37"/>
+<area shape="rect" id="node2" href="$p99__qsort_8h.html" title="An implementation of a sorting routine." alt="" coords="10,85,127,117"/>
+<area shape="rect" id="node3" href="$p99__getopt_8h.html" title="Providing macros that handle variadic macro argument lists." alt="" coords="5,165,132,197"/>
+</map>

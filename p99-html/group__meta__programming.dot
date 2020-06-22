@@ -1,0 +1,21 @@
+digraph "Meta_programming"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node7 [label="Classification",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__classification.html",tooltip="The macros in this group help to classify different token sequences, in particular type specifiers th..."];
+  Node6 [label="Decimal or hexadecimal\l double constants",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__double__constants.html",tooltip=" "];
+  Node8 [label="List processing macros",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__list__processing.html",tooltip="We provide here a series of macros that take a list of arguments of arbitrary length and that transfo..."];
+  Node5 [label="Preprocessor Blocks",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__preprocessor__blocks.html",tooltip="This defines some macros that can be used to ensure that certain operations are always executed befor..."];
+  Node3 [label="Preprocessor conditionals",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__preprocessor__conditionals.html",tooltip="This provides different types of if-else clause for the preprocessor."];
+  Node4 [label="Preprocessor FOR loops",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__preprocessor__for.html",tooltip=" "];
+  Node1 [label="Meta_programming",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node2 [label="Preprocessor_macros",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__preprocessor__macros.html",tooltip=" "];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node3 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node4 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node5 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node6 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node7 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node8 [shape=plaintext, dir="back", style="solid"];
+}

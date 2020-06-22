@@ -1,0 +1,9 @@
+digraph "Wrappers for C library functions"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node2 [label="Compiler and system\l support features",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__library__support.html",tooltip=" "];
+  Node1 [label="Wrappers for C library\l functions",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Wrap library functions such that they throw an exception on error."];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+}

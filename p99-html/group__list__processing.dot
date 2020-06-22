@@ -1,0 +1,13 @@
+digraph "List processing macros"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node1 [label="List processing macros",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="We provide here a series of macros that take a list of arguments of arbitrary length and that transfo..."];
+  Node3 [label="Basic list processing\l macros",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__basic__list__operations.html",tooltip=" "];
+  Node4 [label="Produce C99 statements\l or expression lists",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__statement__lists.html",tooltip=" "];
+  Node2 [label="Meta_programming",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__meta__programming.html",tooltip=" "];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node3 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node4 [shape=plaintext, dir="back", style="solid"];
+}

@@ -1,0 +1,10 @@
+digraph "p99_uf_free"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=record];
+  rankdir="LR";
+  Node1 [label="p99_uf_free",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Free a UF data structure."];
+  Node1 -> Node2 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node2 [label="p99_uf_destroy",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__uf_8h_ac2eeb672a4b6b88668c71620dfcfe9bc.html#ac2eeb672a4b6b88668c71620dfcfe9bc",tooltip=" "];
+}

@@ -1,0 +1,6 @@
+<map id="p99_atomic_gcc_sync.h" name="p99_atomic_gcc_sync.h">
+<area shape="rect" id="node1" title="Implement some of the atomic operations as fallback to gcc&#39; __sync builtins." alt="" coords="5,5,221,37"/>
+<area shape="rect" id="node2" href="$p99__args_8h.html" title="Providing macros that handle variadic macro argument lists." alt="" coords="57,85,169,117"/>
+<area shape="rect" id="node3" href="$p99__paste_8h.html" title="macros that paste tokens in a predictable way" alt="" coords="53,165,174,197"/>
+<area shape="rect" id="node4" href="$p99__generated_8h.html" title="automatically generated macros to handle variadic macros." alt="" coords="34,245,193,277"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="p99_arith.h" name="p99_arith.h">
+<area shape="rect" id="node1" title="Branchless arithmetic and bit twiddling snippets." alt="" coords="40,5,152,37"/>
+<area shape="rect" id="node2" href="$p99_8h.html" title="Use this to include all of P99." alt="" coords="5,85,72,117"/>
+<area shape="rect" id="node3" href="$p99__qsort_8h.html" title="An implementation of a sorting routine." alt="" coords="96,85,213,117"/>
+<area shape="rect" id="node4" href="$p99__getopt_8h.html" title="Providing macros that handle variadic macro argument lists." alt="" coords="91,165,218,197"/>
+</map>

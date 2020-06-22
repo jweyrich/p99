@@ -1,0 +1,10 @@
+digraph "p99_uf_alloc"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=record];
+  rankdir="LR";
+  Node1 [label="p99_uf_alloc",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Allocate an new UF data structure."];
+  Node1 -> Node2 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node2 [label="p99_uf_init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__uf_8h_a1ee45c57b221af0b3e0527f57f9c0db6.html#a1ee45c57b221af0b3e0527f57f9c0db6",tooltip="Initialize the UF data structure to all singletons, that is everybody is root and the size of the set..."];
+}

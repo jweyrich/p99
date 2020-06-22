@@ -1,0 +1,9 @@
+digraph "Preprocessor Boolean operations"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node1 [label="Preprocessor Boolean\l operations",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Preprocessor macros that return tokens 0 or 1 according to the evaluation of their arguments."];
+  Node2 [label="Preprocessor operations",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__preprocessor__operators.html",tooltip="Preprocessor macros that perform simple operations on there arguments, such as Boolean,..."];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+}

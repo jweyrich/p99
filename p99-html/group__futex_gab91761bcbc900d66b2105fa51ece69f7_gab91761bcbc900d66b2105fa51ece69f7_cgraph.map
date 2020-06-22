@@ -1,0 +1,4 @@
+<map id="p99_count::p99_count_value" name="p99_count::p99_count_value">
+<area shape="rect" id="node1" title="Obtain the value of counter p00_c atomically." alt="" coords="5,5,205,57"/>
+<area shape="rect" id="node2" href="$group__futex_ga94890012858ca4b360a0733de64a0116.html#ga94890012858ca4b360a0733de64a0116" title="Obtain the value of futex p00_fut atomically." alt="" coords="253,15,488,47"/>
+</map>

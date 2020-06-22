@@ -1,0 +1,5 @@
+<map id="p99_hook.h" name="p99_hook.h">
+<area shape="rect" id="node1" title="Compiler specific hook functions to execute at load/unload time." alt="" coords="34,5,150,37"/>
+<area shape="rect" id="node2" href="$p99_8h.html" title="Use this to include all of P99." alt="" coords="5,85,72,117"/>
+<area shape="rect" id="node3" href="$p99__init_8h.html" title="Implement initialization functions that are executed early." alt="" coords="97,85,197,117"/>
+</map>

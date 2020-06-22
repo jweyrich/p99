@@ -1,0 +1,6 @@
+<map id="Type Names" name="Type Names">
+<area shape="rect" id="node1" href="$group__bool__specials.html" title="bool must be handled specially since it is not a typedef but a macro" alt="" coords="397,5,523,36"/>
+<area shape="rect" id="node2" href="$group__one__token.html" title="A bunch of types that are one&#45;token synonyms for standard types." alt="" coords="357,60,563,91"/>
+<area shape="rect" id="node3" href="$group__types.html" title="Macros that help in the handling of different kinds of types, forward declaring struct or union,..." alt="" coords="5,33,136,64"/>
+<area shape="rect" id="node4" title="A bunch of types that are derived from the standard types." alt="" coords="184,33,309,64"/>
+</map>

@@ -1,0 +1,10 @@
+digraph "p99_rwl::p99_rwl_islocked"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=record];
+  rankdir="LR";
+  Node1 [label="p99_rwl::p99_rwl_islocked",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Tell if is locked."];
+  Node1 -> Node2 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node2 [label="p99_futex::p99_futex_load",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__futex_ga94890012858ca4b360a0733de64a0116.html#ga94890012858ca4b360a0733de64a0116",tooltip="Obtain the value of futex p00_fut atomically."];
+}

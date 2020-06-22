@@ -1,0 +1,9 @@
+digraph "C11 additions to the C library"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node1 [label="C11 additions to the\l C library",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node2 [label="Emulating features\l of C11",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__C11.html",tooltip=" "];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+}

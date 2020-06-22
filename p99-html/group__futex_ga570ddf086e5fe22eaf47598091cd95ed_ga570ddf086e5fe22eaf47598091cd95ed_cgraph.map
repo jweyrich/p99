@@ -1,0 +1,5 @@
+<map id="p99_event::p99_event_init" name="p99_event::p99_event_init">
+<area shape="rect" id="node1" title="Initialize an event." alt="" coords="5,5,239,37"/>
+<area shape="rect" id="node2" href="$group__futex_ga10d589ca3bdbf2c9553e66cb8f12290b.html#ga10d589ca3bdbf2c9553e66cb8f12290b" title="Initialize an iterator." alt="" coords="287,5,544,37"/>
+<area shape="rect" id="node3" href="$group__futex_ga32fa44dd0ab812e0dfdfff658fdd0552.html#ga32fa44dd0ab812e0dfdfff658fdd0552" title="Initialize an p99_futex object." alt="" coords="592,5,815,37"/>
+</map>

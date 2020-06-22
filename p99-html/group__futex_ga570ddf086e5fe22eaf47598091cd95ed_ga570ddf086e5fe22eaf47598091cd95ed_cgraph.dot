@@ -1,0 +1,12 @@
+digraph "p99_event::p99_event_init"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=record];
+  rankdir="LR";
+  Node1 [label="p99_event::p99_event_init",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Initialize an event."];
+  Node1 -> Node2 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node2 [label="p99_iterator::p99_iterator_init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__futex_ga10d589ca3bdbf2c9553e66cb8f12290b.html#ga10d589ca3bdbf2c9553e66cb8f12290b",tooltip="Initialize an iterator."];
+  Node2 -> Node3 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node3 [label="p99_futex::p99_futex_init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__futex_ga32fa44dd0ab812e0dfdfff658fdd0552.html#ga32fa44dd0ab812e0dfdfff658fdd0552",tooltip="Initialize an p99_futex object."];
+}

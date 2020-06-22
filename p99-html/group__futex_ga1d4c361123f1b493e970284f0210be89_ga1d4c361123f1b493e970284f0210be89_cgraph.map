@@ -1,0 +1,5 @@
+<map id="p99_event::p99_event_destroy" name="p99_event::p99_event_destroy">
+<area shape="rect" id="node1" title="destroy an event" alt="" coords="5,5,205,57"/>
+<area shape="rect" id="node2" href="$group__futex_gab1b62647b08327755c3f35f4fa93ed9b.html#gab1b62647b08327755c3f35f4fa93ed9b" title="destroy a iterator" alt="" coords="253,5,477,57"/>
+<area shape="rect" id="node3" href="$group__futex_gac30811f76a7f0734e34e2d86a41965d2.html#gac30811f76a7f0734e34e2d86a41965d2" title="Destroy an p99_futex object." alt="" coords="525,5,716,57"/>
+</map>

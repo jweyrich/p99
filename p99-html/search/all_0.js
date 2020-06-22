@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['_5f_5fgcc_5fhave_5fsync_5fcompare_5fand_5fswap_5f4_0',['__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4',['../group__atomic__arm_ga6310789290c9c5717826b56443ce69ec.html#ga6310789290c9c5717826b56443ce69ec',1,'p99_atomic_arm.h']]],
+  ['_5f_5fhas_5fattribute_1',['__has_attribute',['../group__compiler__utilities_gaf4e017d0ad659957648f91a84423c62b.html#gaf4e017d0ad659957648f91a84423c62b',1,'p99_compiler.h']]],
+  ['_5f_5fhas_5fbuiltin_2',['__has_builtin',['../group__compiler__utilities_ga3e3d2e2a772f828ef91a7743b8853fa4.html#ga3e3d2e2a772f828ef91a7743b8853fa4',1,'p99_compiler.h']]],
+  ['_5f_5fhas_5fextension_3',['__has_extension',['../group__compiler__utilities_gaea1c4f7b66a67b78ad863176338dae8d.html#gaea1c4f7b66a67b78ad863176338dae8d',1,'p99_compiler.h']]],
+  ['_5f_5fhas_5ffeature_4',['__has_feature',['../group__compiler__utilities_ga9f785cca4345c1a4115d65a1be036c11.html#ga9f785cca4345c1a4115d65a1be036c11',1,'p99_compiler.h']]],
+  ['_5f_5fstdc_5fwant_5flib_5fext1_5f_5f_5',['__STDC_WANT_LIB_EXT1__',['../p99__c99_8h_a7a104b2e349617222c6419b36bfd3260.html#a7a104b2e349617222c6419b36bfd3260',1,'p99_c99.h']]],
+  ['_5f_5fsync_5ffetch_5fand_5fadd_5f4_6',['__sync_fetch_and_add_4',['../group__atomic__arm_ga56217ee508c86f3d10a05e93021f33c4.html#ga56217ee508c86f3d10a05e93021f33c4',1,'p99_atomic_arm.h']]],
+  ['_5f_5fsync_5ffetch_5fand_5fand_5f4_7',['__sync_fetch_and_and_4',['../group__atomic__arm_ga22094bf2d4d9f5aeaadea4f398d2d5f9.html#ga22094bf2d4d9f5aeaadea4f398d2d5f9',1,'p99_atomic_arm.h']]],
+  ['_5f_5fsync_5ffetch_5fand_5for_5f4_8',['__sync_fetch_and_or_4',['../group__atomic__arm_ga54193e6191bba475a4afac9518f66e69.html#ga54193e6191bba475a4afac9518f66e69',1,'p99_atomic_arm.h']]],
+  ['_5f_5fsync_5ffetch_5fand_5fsub_5f4_9',['__sync_fetch_and_sub_4',['../group__atomic__arm_gaadc5d57285644d0661be44b9dca1779b.html#gaadc5d57285644d0661be44b9dca1779b',1,'p99_atomic_arm.h']]],
+  ['_5f_5fsync_5ffetch_5fand_5fxor_5f4_10',['__sync_fetch_and_xor_4',['../group__atomic__arm_ga2ca89c37f3263a749b67e0aad4dd135f.html#ga2ca89c37f3263a749b67e0aad4dd135f',1,'p99_atomic_arm.h']]],
+  ['_5f_5fsync_5fval_5fcompare_5fand_5fswap_5f4_11',['__sync_val_compare_and_swap_4',['../group__atomic__arm_ga310238cf17dc86a38414f6bd32fa74ea.html#ga310238cf17dc86a38414f6bd32fa74ea',1,'p99_atomic_arm.h']]],
+  ['_5falignof_12',['_Alignof',['../group__C11__keywords_ga60b49230057a4bf36eb19d2642180250.html#ga60b49230057a4bf36eb19d2642180250',1,'p99_compiler.h']]],
+  ['_5fbool_5fcptr_13',['_Bool_cptr',['../group__bool__specials_ga1321fabec0c2c1e5d323b38c419f934e.html#ga1321fabec0c2c1e5d323b38c419f934e',1,'p99_typenames.h']]],
+  ['_5fbool_5fdestroy_14',['_Bool_destroy',['../group__bool__specials_ga3839e2649f25ab83030662edc15d4285.html#ga3839e2649f25ab83030662edc15d4285',1,'p99_typenames.h']]],
+  ['_5fbool_5finit_15',['_Bool_init',['../group__bool__specials_ga465b11ddc5eeb050c2eb8146cf983a57.html#ga465b11ddc5eeb050c2eb8146cf983a57',1,'p99_typenames.h']]],
+  ['_5fbool_5fptr_16',['_Bool_ptr',['../group__bool__specials_ga5caf365f0dd345ff901cb9fd46689f74.html#ga5caf365f0dd345ff901cb9fd46689f74',1,'p99_typenames.h']]],
+  ['_5fnoreturn_17',['_Noreturn',['../group__C11__keywords_gafdc60192553b70b37149691b71022d5a.html#gafdc60192553b70b37149691b71022d5a',1,'p99_compiler.h']]],
+  ['_5fstatic_5fassert_18',['_Static_assert',['../p99__uchar_8h_a43a24b913977b7eaf678620ba6d70261.html#a43a24b913977b7eaf678620ba6d70261',1,'p99_uchar.h']]],
+  ['_5fthread_5flocal_19',['_Thread_local',['../group__C11__keywords_ga6ee13d5bcebab292dbc98e06c6cf9fe7.html#ga6ee13d5bcebab292dbc98e06c6cf9fe7',1,'p99_compiler.h']]]
+];

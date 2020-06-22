@@ -1,0 +1,10 @@
+digraph "p99_count_destroy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=record];
+  rankdir="LR";
+  Node1 [label="p99_count_destroy",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node2 [label="p99_futex::p99_futex\l_destroy",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__futex_gac30811f76a7f0734e34e2d86a41965d2.html#gac30811f76a7f0734e34e2d86a41965d2",tooltip="Destroy an p99_futex object."];
+}

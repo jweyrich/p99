@@ -1,0 +1,7 @@
+<map id="p99_logical.h" name="p99_logical.h">
+<area shape="rect" id="node1" title="macros to handle Boolean conditions at compile time." alt="" coords="69,5,197,37"/>
+<area shape="rect" id="node2" href="$p99__args_8h.html" title="Providing macros that handle variadic macro argument lists." alt="" coords="30,85,142,117"/>
+<area shape="rect" id="node5" href="$p99__list_8h.html" title="Basis macros to process the parameter list of a variadic macro." alt="" coords="151,165,250,197"/>
+<area shape="rect" id="node3" href="$p99__paste_8h.html" title="macros that paste tokens in a predictable way" alt="" coords="5,165,127,197"/>
+<area shape="rect" id="node4" href="$p99__generated_8h.html" title="automatically generated macros to handle variadic macros." alt="" coords="53,245,212,277"/>
+</map>

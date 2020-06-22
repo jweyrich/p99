@@ -1,0 +1,9 @@
+digraph "bool specials"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node1 [label="bool specials",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="bool must be handled specially since it is not a typedef but a macro"];
+  Node2 [label="Type Names",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__typenames.html",tooltip="A bunch of types that are derived from the standard types."];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+}

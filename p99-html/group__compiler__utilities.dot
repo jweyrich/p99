@@ -1,0 +1,9 @@
+digraph "A small collection of utilities"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node2 [label="Compiler Specific Tuning\l and Extensions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__compiler.html",tooltip=" "];
+  Node1 [label="A small collection\l of utilities",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+}

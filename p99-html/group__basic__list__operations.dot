@@ -1,0 +1,9 @@
+digraph "Basic list processing macros"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node2 [label="List processing macros",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__list__processing.html",tooltip="We provide here a series of macros that take a list of arguments of arbitrary length and that transfo..."];
+  Node1 [label="Basic list processing\l macros",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+}

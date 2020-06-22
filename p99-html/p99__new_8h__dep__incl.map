@@ -1,0 +1,8 @@
+<map id="p99_new.h" name="p99_new.h">
+<area shape="rect" id="node1" title="Macros for initialization and allocation." alt="" coords="93,5,203,37"/>
+<area shape="rect" id="node2" href="$p99_8h.html" title="Use this to include all of P99." alt="" coords="5,85,72,117"/>
+<area shape="rect" id="node3" href="$p99__clib_8h.html" title=" " alt="" coords="96,85,200,117"/>
+<area shape="rect" id="node4" href="$p99__rand_8h.html" title="An implementation of George Marsaglia&#39;s xorshift PRG with a period of about 2^160." alt="" coords="135,165,249,197"/>
+<area shape="rect" id="node5" href="$p99__qsort_8h.html" title="An implementation of a sorting routine." alt="" coords="133,245,251,277"/>
+<area shape="rect" id="node6" href="$p99__getopt_8h.html" title="Providing macros that handle variadic macro argument lists." alt="" coords="129,325,255,357"/>
+</map>

@@ -1,0 +1,13 @@
+digraph "Type Names"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node4 [label="bool specials",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__bool__specials.html",tooltip="bool must be handled specially since it is not a typedef but a macro"];
+  Node3 [label="One token type names",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__one__token.html",tooltip="A bunch of types that are one-token synonyms for standard types."];
+  Node2 [label="Type facilities",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__types.html",tooltip="Macros that help in the handling of different kinds of types, forward declaring struct or union,..."];
+  Node1 [label="Type Names",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="A bunch of types that are derived from the standard types."];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node3 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node4 [shape=plaintext, dir="back", style="solid"];
+}

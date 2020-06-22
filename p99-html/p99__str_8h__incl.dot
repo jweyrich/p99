@@ -1,0 +1,42 @@
+digraph "p99_str.h"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=record];
+  Node1 [label="p99_str.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Provide a family of functions str2XX that provide a safer end-check with a position in the string ins..."];
+  Node1 -> Node2 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node2 [label="p99_classification.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__classification_8h.html",tooltip="classification of different types of token sequences"];
+  Node2 -> Node3 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node3 [label="p99_map.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__map_8h.html",tooltip="macros to produce lists of statements or declarations."];
+  Node3 -> Node4 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node4 [label="p99_for.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__for_8h.html",tooltip="A preprocessor for loop implementation and some derived list handling macros."];
+  Node4 -> Node5 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node5 [label="p99_block.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__block_8h.html",tooltip="Macros that implement controlling blocks."];
+  Node5 -> Node6 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node6 [label="p99_int.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__int_8h.html",tooltip="Macros handling integer types and initialization."];
+  Node6 -> Node7 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node7 [label="p99_c99.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__c99_8h.html",tooltip="C99 specific include files that are required by the standard."];
+  Node7 -> Node8 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node8 [label="p99_compiler.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__compiler_8h.html",tooltip="Group compiler dependencies together in one file."];
+  Node8 -> Node9 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node9 [label="p99_args.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__args_8h.html",tooltip="Providing macros that handle variadic macro argument lists."];
+  Node9 -> Node10 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node10 [label="p99_paste.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__paste_8h.html",tooltip="macros that paste tokens in a predictable way"];
+  Node10 -> Node11 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node11 [label="p99_generated.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__generated_8h.html",tooltip="automatically generated macros to handle variadic macros."];
+  Node8 -> Node12 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node12 [label="p99_libc.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__libc_8h.html",tooltip="Group C library dependencies together in one file."];
+  Node6 -> Node13 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node13 [label="p99_id.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__id_8h.html",tooltip="Implement a simple FILEID that changes each time this file is included somewhere."];
+  Node13 -> Node14 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node14 [label="p99_if.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__if_8h.html",tooltip="preprocessor conditionals to use inside macros"];
+  Node14 -> Node15 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node15 [label="p99_logical.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__logical_8h.html",tooltip="macros to handle Boolean conditions at compile time."];
+  Node15 -> Node9 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node15 -> Node16 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node16 [label="p99_list.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__list_8h.html",tooltip="Basis macros to process the parameter list of a variadic macro."];
+  Node16 -> Node11 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node6 -> Node17 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node17 [label="p99_type.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__type_8h.html",tooltip=" "];
+  Node17 -> Node10 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+}

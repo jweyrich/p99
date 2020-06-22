@@ -1,0 +1,9 @@
+digraph "simple callbacks with or without void* argument"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node2 [label="Compiler and system\l support features",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__library__support.html",tooltip=" "];
+  Node1 [label="simple callbacks with\l or without void* argument",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+}

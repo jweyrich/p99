@@ -1,0 +1,25 @@
+digraph "C Programming facilities"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node7 [label="Variable Length Arrays",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__VLA.html",tooltip=" "];
+  Node10 [label="Macros to handle integer\l type expressions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__integers.html",tooltip=" "];
+  Node6 [label="Macros to ease programming\l of variadic functions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__variadic.html",tooltip=" "];
+  Node4 [label="Allocation facilities\l throught the preprocessor",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__preprocessor__allocation.html",tooltip=" "];
+  Node1 [label="C Programming facilities",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node9 [label="Conversion of strings\l to integer types",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__stringconversion.html",tooltip="Extensions of the strto and wcsto families of functions."];
+  Node5 [label="Initialization facilities\l through the preprocessor",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__preprocessor__initialization.html",tooltip=" "];
+  Node8 [label="Type facilities",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__types.html",tooltip="Macros that help in the handling of different kinds of types, forward declaring struct or union,..."];
+  Node2 [label="Preprocessor_macros",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__preprocessor__macros.html",tooltip=" "];
+  Node3 [label="Default arguments and\l types for functions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__default__arguments.html",tooltip="As a C++ like feature, this series of macros can be used to provide default arguments to functions an..."];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node3 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node4 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node5 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node6 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node7 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node8 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node9 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node10 [shape=plaintext, dir="back", style="solid"];
+}

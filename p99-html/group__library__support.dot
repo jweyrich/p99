@@ -1,0 +1,19 @@
+digraph "Compiler and system support features"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node5 [label="Provide default arguments\l for some POSIX functions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__posix__default.html",tooltip=" "];
+  Node3 [label="Fast User space locking\l and signaling",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__futex.html",tooltip="A simple to use integer valued conditional for user code."];
+  Node1 [label="Compiler and system\l support features",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node6 [label="simple callbacks with\l or without void* argument",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__callbacks.html",tooltip=" "];
+  Node2 [label="P99",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__P99.html",tooltip=" "];
+  Node4 [label="Wrappers for C library\l functions",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__library__wrappers.html",tooltip="Wrap library functions such that they throw an exception on error."];
+  Node7 [label="Hooks executed at startup",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__startup__hooks.html",tooltip=" "];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node3 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node4 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node5 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node6 [shape=plaintext, dir="back", style="solid"];
+  Node1->Node7 [shape=plaintext, dir="back", style="solid"];
+}

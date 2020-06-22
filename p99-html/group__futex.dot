@@ -1,0 +1,9 @@
+digraph "Fast User space locking and signaling"
+{
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=box];
+  rankdir=LR;
+  Node1 [label="Fast User space locking\l and signaling",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="A simple to use integer valued conditional for user code."];
+  Node2 [label="Compiler and system\l support features",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__library__support.html",tooltip=" "];
+  Node2->Node1 [shape=plaintext, dir="back", style="solid"];
+}

@@ -1,0 +1,4 @@
+<map id="p99_iterator::p99_iterator_signal" name="p99_iterator::p99_iterator_signal">
+<area shape="rect" id="node1" title="Signal an event." alt="" coords="5,5,229,57"/>
+<area shape="rect" id="node2" href="$group__futex_ga805fff4efe80ea7e2553f6abf0fd1621.html#ga805fff4efe80ea7e2553f6abf0fd1621" title="increment the counter of p00_fut atomically by p00_hmuch." alt="" coords="277,15,508,47"/>
+</map>

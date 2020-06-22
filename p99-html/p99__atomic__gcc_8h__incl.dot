@@ -1,0 +1,16 @@
+digraph "p99_atomic_gcc.h"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=record];
+  Node1 [label="p99_atomic_gcc.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Implement some of the atomic operations as fallback to gcc' builtins."];
+  Node1 -> Node2 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node2 [label="p99_args.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__args_8h.html",tooltip="Providing macros that handle variadic macro argument lists."];
+  Node2 -> Node3 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node3 [label="p99_paste.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__paste_8h.html",tooltip="macros that paste tokens in a predictable way"];
+  Node3 -> Node4 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node4 [label="p99_generated.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__generated_8h.html",tooltip="automatically generated macros to handle variadic macros."];
+  Node1 -> Node5 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node5 [label="p99_atomic_gcc_sync.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$p99__atomic__gcc__sync_8h.html",tooltip="Implement some of the atomic operations as fallback to gcc' __sync builtins."];
+  Node5 -> Node2 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+}

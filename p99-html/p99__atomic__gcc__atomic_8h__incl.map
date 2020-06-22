@@ -1,0 +1,6 @@
+<map id="p99_atomic_gcc_atomic.h" name="p99_atomic_gcc_atomic.h">
+<area shape="rect" id="node1" title="Implement some of the atomic operations as fallback to gcc&#39; __atomic builtins." alt="" coords="5,5,239,37"/>
+<area shape="rect" id="node2" href="$p99__args_8h.html" title="Providing macros that handle variadic macro argument lists." alt="" coords="66,85,178,117"/>
+<area shape="rect" id="node3" href="$p99__paste_8h.html" title="macros that paste tokens in a predictable way" alt="" coords="61,165,183,197"/>
+<area shape="rect" id="node4" href="$p99__generated_8h.html" title="automatically generated macros to handle variadic macros." alt="" coords="43,245,201,277"/>
+</map>

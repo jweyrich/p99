@@ -1,0 +1,4 @@
+<map id="p99_notifier::p99_notifier_load" name="p99_notifier::p99_notifier_load">
+<area shape="rect" id="node1" title="Return the value of the notifier. Non blocking." alt="" coords="5,5,269,37"/>
+<area shape="rect" id="node2" href="$group__futex_ga94890012858ca4b360a0733de64a0116.html#ga94890012858ca4b360a0733de64a0116" title="Obtain the value of futex p00_fut atomically." alt="" coords="317,5,552,37"/>
+</map>

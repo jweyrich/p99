@@ -1,0 +1,12 @@
+<map id="C Programming facilities" name="C Programming facilities">
+<area shape="rect" id="node1" href="$group__VLA.html" title=" " alt="" coords="545,5,751,36"/>
+<area shape="rect" id="node2" href="$group__integers.html" title=" " alt="" coords="537,61,759,111"/>
+<area shape="rect" id="node3" href="$group__variadic.html" title=" " alt="" coords="519,135,777,186"/>
+<area shape="rect" id="node4" href="$group__preprocessor__allocation.html" title=" " alt="" coords="531,210,765,261"/>
+<area shape="rect" id="node5" title=" " alt="" coords="252,257,471,288"/>
+<area shape="rect" id="node6" href="$group__stringconversion.html" title="Extensions of the strto and wcsto families of functions." alt="" coords="553,285,743,335"/>
+<area shape="rect" id="node7" href="$group__preprocessor__initialization.html" title=" " alt="" coords="534,359,762,410"/>
+<area shape="rect" id="node8" href="$group__types.html" title="Macros that help in the handling of different kinds of types, forward declaring struct or union,..." alt="" coords="583,435,713,465"/>
+<area shape="rect" id="node10" href="$group__default__arguments.html" title="As a C++ like feature, this series of macros can be used to provide default arguments to functions an..." alt="" coords="545,490,751,541"/>
+<area shape="rect" id="node9" href="$group__preprocessor__macros.html" title=" " alt="" coords="5,257,204,288"/>
+</map>

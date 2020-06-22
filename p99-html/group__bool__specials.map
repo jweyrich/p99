@@ -1,0 +1,4 @@
+<map id="bool specials" name="bool specials">
+<area shape="rect" id="node1" title="bool must be handled specially since it is not a typedef but a macro" alt="" coords="179,5,305,36"/>
+<area shape="rect" id="node2" href="$group__typenames.html" title="A bunch of types that are derived from the standard types." alt="" coords="5,5,131,36"/>
+</map>

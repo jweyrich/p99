@@ -1,0 +1,10 @@
+digraph "p99_cm::p99_cm_trylock"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="14",labelfontname="Helvetica",labelfontsize="14"];
+  node [fontname="Helvetica",fontsize="14",shape=record];
+  rankdir="LR";
+  Node1 [label="p99_cm::p99_cm_trylock",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Acquire p00_cm."];
+  Node1 -> Node2 [color="midnightblue",fontsize="14",style="solid",fontname="Helvetica"];
+  Node2 [label="p99_futex::p99_futex\l_exchange",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$group__futex_ga5f3a21217d8b30a26562eaf0a9fa742a.html#ga5f3a21217d8b30a26562eaf0a9fa742a",tooltip="Unconditionally and atomically set the futex p00_fut to value p00_desired."];
+}

@@ -1,0 +1,11 @@
+<map id="p99_hook.h" name="p99_hook.h">
+<area shape="rect" id="node1" title="Compiler specific hook functions to execute at load/unload time." alt="" coords="162,5,278,37"/>
+<area shape="rect" id="node2" href="$p99__compiler_8h.html" title="Group compiler dependencies together in one file." alt="" coords="5,85,152,117"/>
+<area shape="rect" id="node7" href="$p99__if_8h.html" title="preprocessor conditionals to use inside macros" alt="" coords="177,85,263,117"/>
+<area shape="rect" id="node9" href="$p99__list_8h.html" title="Basis macros to process the parameter list of a variadic macro." alt="" coords="221,245,320,277"/>
+<area shape="rect" id="node3" href="$p99__args_8h.html" title="Providing macros that handle variadic macro argument lists." alt="" coords="85,245,197,277"/>
+<area shape="rect" id="node6" href="$p99__libc_8h.html" title="Group C library dependencies together in one file." alt="" coords="28,165,132,197"/>
+<area shape="rect" id="node4" href="$p99__paste_8h.html" title="macros that paste tokens in a predictable way" alt="" coords="95,325,217,357"/>
+<area shape="rect" id="node5" href="$p99__generated_8h.html" title="automatically generated macros to handle variadic macros." alt="" coords="126,405,285,437"/>
+<area shape="rect" id="node8" href="$p99__logical_8h.html" title="macros to handle Boolean conditions at compile time." alt="" coords="156,165,284,197"/>
+</map>
