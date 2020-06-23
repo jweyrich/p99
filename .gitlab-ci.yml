@@ -6,6 +6,7 @@ pages:
     - mkdir .public
     - cp -r gforge-p99/* .public
     - cp -r p99-html .public
+    - mv .public/README.html .public/index.html
     - mv .public public
   artifacts:
     paths:
