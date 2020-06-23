@@ -5,8 +5,9 @@ pages:
   script:
     - mkdir .public
     - cp -r gforge-p99/* .public
+    - cp -r gforge-p99/.htaccess .public
     - cp -r p99-html .public
-    - mv .public/README.html .public/index.html
+    - mv .public/HEADER.html .public/index.html
     - mv .public public
   artifacts:
     paths:
