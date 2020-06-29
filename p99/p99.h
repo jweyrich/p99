@@ -38,7 +38,7 @@
  **
  ** By using special features of some compilers and operating systems,
  ** we also are able to provide an almost feature complete emulation
- ** of the new C standard, C11.
+ ** of the newer C standards as e.g from C11.
  **
  ** @section introduction Macros and inline functions working together
  **
@@ -87,7 +87,7 @@
  ** promoted to @c intmax_t. If the value @c X that is
  ** passed to the call is positive and greater than <code> INTMAX_MAX
  ** = 2<sup>N</sup> -1</code>, the result is probably not what we'd
- ** expect.@fntm 1@efntm If the conversion to
+ ** expect. If the conversion to
  ** @c intmax_t doesn't result in a range error thrown by the run time
  ** system (it would be permitted to do so), the argument @a a of the
  ** function would receive the negative value @c -C where @c C is @c
@@ -105,8 +105,6 @@
  **
  ** <ul>
  **     <li>For any integral type it returns the correct result.
- **     @fntm 2
- **     @efntm
  **     </li>
  **     <li>The argument @c EXPR is evaluated exactly once.</li>
  **     <li>Any recent and decent compiler will create
@@ -117,7 +115,7 @@
  ** In that spirit, P99 aims to provide utilities that often combine
  ** macros and @c inline funcions and that are only possible with the
  ** @ref c99 "features"
- ** that come with C99 (read ANSI C as normalized in 1999)
+ ** that come with C99 (read ISO C as normalized in 1999)
  ** and that were absent in C89. The features include among others
  **  - @ref variadic
  **  - @ref inline
@@ -127,7 +125,7 @@
  **  - @ref pragma
  **
  ** On some platforms, P99 is also able to emulate the main features
- ** that come with @link C11, the newest C standard, C11:@endlink
+ ** that come with C11 or C17:
  **  - @ref generic
  **  - @ref atomic
  **  - @ref threads
@@ -151,14 +149,6 @@
  **  - There is nothing to configure, P99 include files should work
  **    out of the box with any conforming C99 compiler.
  **
- ** @fnt 1 @efnt
- ** Here <code>N+1</code> is the width of @c uintmax_t,
- ** assuming most common representations of signed integers.
- ** @fnt 2 @efnt
- ** Well, there is exactly one exception to that: on systems where @c
- ** -INTMAX_MIN is not representable in @c uintmax_t, this same value
- ** may cause problems.
- **
  ** @section credits Credits and Rights
  ** @subsection author Author and Maintainer
  ** @author <a href="http://www.loria.fr/~gustedt/">Jens Gustedt</a>
@@ -178,7 +168,9 @@
  ** @subsection copyright Copyright
  ** Copyright &copy; 2010-2012 Jens Gustedt, INRIA, France, http://www.inria.fr/
  **
- ** @htmlinclude SHORTLICENCE-open.txt
+ ** <pre>
+ ** @verbinclude SHORTLICENCE-open.txt
+ ** </pre>
  **
  ** @subsection license License
  **
@@ -898,7 +890,7 @@
  **
  ** @section secC11 Emulating features of C11
  **
- ** The new C standard C11 (published in December 2011) introduces
+ ** C11 (published in December 2011) introduces
  ** some new features that are already present in many compilers or
  ** OS, but sometimes with different syntax or interfaces. We provide
  ** interfaces to some of them with the intention that once compilers
@@ -913,7 +905,7 @@
  **
  ** @subsection secGeneric Type generic macros
  **
- ** C11 provides a new feature to "overload" macros and more generally
+ ** C11 provides a feature to "overload" macros and more generally
  ** the result of any type of expression, @c _Generic. It allows to
  ** write template-like expressions with the macro preprocessor. The
  ** idea is to generate <em>type generic mathematical function</em>
