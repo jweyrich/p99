@@ -1,16 +1,24 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-              */
-/*                                                                            */
-/* Except for parts copied from previous work and as explicitly stated below, */
-/* the authors and copyright holders for this work are as follows:            */
-/* (C) copyright  2011-2014 Jens Gustedt, INRIA, France                       */
-/* (C) copyright  2012 William Morris                                         */
-/*                                                                            */
-/* This file is free software; it is part of the P99 project.                 */
-/* You can redistribute it and/or modify it under the terms of the QPL as     */
-/* given in the file LICENSE. It is distributed without any warranty;         */
-/* without even the implied warranty of merchantability or fitness for a      */
-/* particular purpose.                                                        */
-/*                                                                            */
+/* This may look like nonsense, but it really is -*- mode: C; coding: utf-8 -*- */
+/*                                                                              */
+/* Except for parts copied from previous work and as explicitly stated below,   */
+/* the authors and copyright holders for this work are as follows:              */
+/* (C) copyright  2011-2014, 2018 Jens Gustedt, INRIA, France                   */
+/* (C) copyright  2012 William Morris                                           */
+/*                                                                              */
+/* This file is free software; it is part of the P99 project.                   */
+/*                                                                              */
+/* Licensed under the Apache License, Version 2.0 (the "License");              */
+/* you may not use this file except in compliance with the License.             */
+/* You may obtain a copy of the License at                                      */
+/*                                                                              */
+/*     http://www.apache.org/licenses/LICENSE-2.0                               */
+/*                                                                              */
+/* Unless required by applicable law or agreed to in writing, software          */
+/* distributed under the License is distributed on an "AS IS" BASIS,            */
+/* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.     */
+/* See the License for the specific language governing permissions and          */
+/* limitations under the License.                                               */
+/*                                                                              */
 #ifndef P99_THREADS_POSIX_H
 #define P99_THREADS_POSIX_H 1
 
@@ -257,7 +265,7 @@ thrd_t thrd_current(void) {
     p00_foreign_tab[p00_nb] = p00_loc;
     *p00_loc = (p00_thrd) {
       .p00_id = pthread_self(),
-       .p00_foreign = p00_nb + 1,
+      .p00_foreign = p00_nb + 1,
     };
     P00_THRD_LOCAL = p00_loc;
     if (p00_nb) {
@@ -619,7 +627,7 @@ P99_MAIN_INTERCEPT(p99_threads_main) {
   struct p00_threads_main_arg * p00_arg = malloc(sizeof *p00_arg);
   *p00_arg = (struct p00_threads_main_arg) {
     .p00_argc = *p00_argc,
-     .p00_argv = *p00_argv,
+    .p00_argv = *p00_argv,
   };
   thrd_create(&id, p00_threads_main, p00_arg);
   thrd_detach(id);

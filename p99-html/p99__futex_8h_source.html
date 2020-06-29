@@ -69,117 +69,125 @@ $(function() {
 <div class="title">p99_futex.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="p99__futex_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* This may look like nonsense, but it really is -*- mode: C -*-              */</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">/*                                                                            */</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">/* Except for parts copied from previous work and as explicitly stated below, */</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">/* the author and copyright holder for this work is                           */</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">/* (C) copyright  2012 Jens Gustedt, INRIA, France                            */</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">/*                                                                            */</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">/* This file is free software; it is part of the P99 project.                 */</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">/* You can redistribute it and/or modify it under the terms of the QPL as     */</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">/* given in the file LICENSE. It is distributed without any warranty;         */</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">/* without even the implied warranty of merchantability or fitness for a      */</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">/* particular purpose.                                                        */</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">/*                                                                            */</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#ifndef P99_FUTEX_H</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#define P99_FUTEX_H</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__type_8h.html">p99_type.h</a>&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__threads_8h.html">p99_threads.h</a>&quot;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__posix__default_8h.html">p99_posix_default.h</a>&quot;</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="p99__futex_8h_a47c3e5035a2c3f060d58986fe1e8f811.html#a47c3e5035a2c3f060d58986fe1e8f811">   20</a></span>&#160;<a class="code" href="group__types_gae3d8acb581de618aa43051acfd249120.html#gae3d8acb581de618aa43051acfd249120">P99_DECLARE_STRUCT</a>(<a class="code" href="structp99__futex__c11.html">p99_futex_c11</a>);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#if defined(DOXYGEN)</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#define P00_FUTEX_INLINE(NAME) p99_inline</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#elif (defined(__linux__) &amp;&amp; !defined(NO_FUTEX)) || defined(DOXYGEN)</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">typedef</span> _Atomic(<span class="keywordtype">unsigned</span>) <a class="code" href="structp99__futex.html">p99_futex</a>;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define P00_FUTEX_INLINE(NAME) p99_inline</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">typedef</span> <a class="code" href="structp99__futex__c11.html">p99_futex_c11</a> <a class="code" href="structp99__futex.html">p99_futex</a>;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">/* The C11 implementation needs setjmp in its internals so the</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">   functions must be implemented as weak symbols. */</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#define P00_FUTEX_INLINE(NAME) P99_WEAK(NAME)</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#ifdef P00_DOXYGEN</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00155"></a><span class="lineno"><a class="line" href="structp99__futex.html">  155</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structp99__futex.html">p99_futex</a> { };</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
-<div class="line"><a name="l00170"></a><span class="lineno"><a class="line" href="structp99__futex_a926efa02d7a8893ca806f2e8ca977aa9.html#a926efa02d7a8893ca806f2e8ca977aa9">  170</a></span>&#160;<span class="preprocessor"># define P99_FUTEX_MAX_WAITERS (INT_MAX+0U)</span></div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<a class="code" href="group__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446.html#gaa113bfa0df539e8dee797a00c6947446">p99_inline</a> <a class="code" href="structp99__futex.html">p99_futex</a>* <a class="code" href="group__futex_ga32fa44dd0ab812e0dfdfff658fdd0552.html#ga32fa44dd0ab812e0dfdfff658fdd0552">p99_futex_init</a>(<a class="code" href="structp99__futex.html">p99_futex</a>* p00_c, <span class="keywordtype">unsigned</span> p00_ini);</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160; </div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<a class="code" href="group__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446.html#gaa113bfa0df539e8dee797a00c6947446">p99_inline</a> <span class="keywordtype">void</span> <a class="code" href="group__futex_gac30811f76a7f0734e34e2d86a41965d2.html#gac30811f76a7f0734e34e2d86a41965d2">p99_futex_destroy</a>(<a class="code" href="structp99__futex.html">p99_futex</a>* p00_c);</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<a class="code" href="group__default__arguments_ga4918cf7a052529294962b223e25dd1d7.html#ga4918cf7a052529294962b223e25dd1d7">P99_DEFARG_DOCU</a>(<a class="code" href="group__futex_ga805fff4efe80ea7e2553f6abf0fd1621.html#ga805fff4efe80ea7e2553f6abf0fd1621">p99_futex_add</a>)</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;P00_FUTEX_INLINE(<a class="code" href="group__futex_ga805fff4efe80ea7e2553f6abf0fd1621.html#ga805fff4efe80ea7e2553f6abf0fd1621">p99_futex_add</a>) <span class="keywordtype">unsigned</span> <a class="code" href="group__futex_ga805fff4efe80ea7e2553f6abf0fd1621.html#ga805fff4efe80ea7e2553f6abf0fd1621">p99_futex_add</a>(<a class="code" href="structp99__futex.html">p99_futex</a> <span class="keyword">volatile</span>* p00_fut, <span class="keywordtype">unsigned</span> p00_hmuch,</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="keywordtype">unsigned</span> p00_cstart, <span class="keywordtype">unsigned</span> p00_clen,</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    <span class="keywordtype">unsigned</span> p00_wmin, <span class="keywordtype">unsigned</span> p00_wmax);</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="preprocessor">#ifndef DOXYGEN</span></div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="preprocessor">#define p99_futex_add(...) P99_CALL_DEFARG(p99_futex_add, 6, __VA_ARGS__)</span></div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="preprocessor">#define p99_futex_add_defarg_3() 1u</span></div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;<span class="preprocessor">#define p99_futex_add_defarg_4() 0u</span></div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="preprocessor">#define p99_futex_add_defarg_5() P99_FUTEX_MAX_WAITERS</span></div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
+<a href="p99__futex_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* This may look like nonsense, but it really is -*- mode: C; coding: utf-8 -*- */</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">/* Except for parts copied from previous work and as explicitly stated below,   */</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">/* the author and copyright holder for this work is                             */</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">/* (C) copyright  2012 Jens Gustedt, INRIA, France                              */</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">/* This file is free software; it is part of the P99 project.                   */</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">/* Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);              */</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">/* you may not use this file except in compliance with the License.             */</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">/* You may obtain a copy of the License at                                      */</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">/*     http://www.apache.org/licenses/LICENSE-2.0                               */</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">/* Unless required by applicable law or agreed to in writing, software          */</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment">/* distributed under the License is distributed on an &quot;AS IS&quot; BASIS,            */</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">/* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.     */</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">/* See the License for the specific language governing permissions and          */</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">/* limitations under the License.                                               */</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#ifndef P99_FUTEX_H</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#define P99_FUTEX_H</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__type_8h.html">p99_type.h</a>&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__threads_8h.html">p99_threads.h</a>&quot;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__posix__default_8h.html">p99_posix_default.h</a>&quot;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="p99__futex_8h_a47c3e5035a2c3f060d58986fe1e8f811.html#a47c3e5035a2c3f060d58986fe1e8f811">   28</a></span>&#160;<a class="code" href="group__types_gae3d8acb581de618aa43051acfd249120.html#gae3d8acb581de618aa43051acfd249120">P99_DECLARE_STRUCT</a>(<a class="code" href="structp99__futex__c11.html">p99_futex_c11</a>);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#if defined(DOXYGEN)</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#define P00_FUTEX_INLINE(NAME) p99_inline</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#elif (defined(__linux__) &amp;&amp; !defined(NO_FUTEX)) || defined(DOXYGEN)</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">typedef</span> _Atomic(<span class="keywordtype">unsigned</span>) <a class="code" href="structp99__futex.html">p99_futex</a>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#define P00_FUTEX_INLINE(NAME) p99_inline</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">typedef</span> <a class="code" href="structp99__futex__c11.html">p99_futex_c11</a> <a class="code" href="structp99__futex.html">p99_futex</a>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">/* The C11 implementation needs setjmp in its internals so the</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">   functions must be implemented as weak symbols. */</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#define P00_FUTEX_INLINE(NAME) P99_WEAK(NAME)</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#ifdef P00_DOXYGEN</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="structp99__futex.html">  163</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structp99__futex.html">p99_futex</a> { };</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno"><a class="line" href="structp99__futex_a926efa02d7a8893ca806f2e8ca977aa9.html#a926efa02d7a8893ca806f2e8ca977aa9">  178</a></span>&#160;<span class="preprocessor"># define P99_FUTEX_MAX_WAITERS (INT_MAX+0U)</span></div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;<a class="code" href="group__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446.html#gaa113bfa0df539e8dee797a00c6947446">p99_inline</a> <a class="code" href="structp99__futex.html">p99_futex</a>* <a class="code" href="group__futex_ga32fa44dd0ab812e0dfdfff658fdd0552.html#ga32fa44dd0ab812e0dfdfff658fdd0552">p99_futex_init</a>(<a class="code" href="structp99__futex.html">p99_futex</a>* p00_c, <span class="keywordtype">unsigned</span> p00_ini);</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<a class="code" href="group__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446.html#gaa113bfa0df539e8dee797a00c6947446">p99_inline</a> <span class="keywordtype">void</span> <a class="code" href="group__futex_gac30811f76a7f0734e34e2d86a41965d2.html#gac30811f76a7f0734e34e2d86a41965d2">p99_futex_destroy</a>(<a class="code" href="structp99__futex.html">p99_futex</a>* p00_c);</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;<a class="code" href="group__default__arguments_ga4918cf7a052529294962b223e25dd1d7.html#ga4918cf7a052529294962b223e25dd1d7">P99_DEFARG_DOCU</a>(<a class="code" href="group__futex_ga805fff4efe80ea7e2553f6abf0fd1621.html#ga805fff4efe80ea7e2553f6abf0fd1621">p99_futex_add</a>)</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;P00_FUTEX_INLINE(<a class="code" href="group__futex_ga805fff4efe80ea7e2553f6abf0fd1621.html#ga805fff4efe80ea7e2553f6abf0fd1621">p99_futex_add</a>) <span class="keywordtype">unsigned</span> <a class="code" href="group__futex_ga805fff4efe80ea7e2553f6abf0fd1621.html#ga805fff4efe80ea7e2553f6abf0fd1621">p99_futex_add</a>(<a class="code" href="structp99__futex.html">p99_futex</a> <span class="keyword">volatile</span>* p00_fut, <span class="keywordtype">unsigned</span> p00_hmuch,</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    <span class="keywordtype">unsigned</span> p00_cstart, <span class="keywordtype">unsigned</span> p00_clen,</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <span class="keywordtype">unsigned</span> p00_wmin, <span class="keywordtype">unsigned</span> p00_wmax);</div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160; </div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;P00_FUTEX_INLINE(<a class="code" href="group__futex_ga94890012858ca4b360a0733de64a0116.html#ga94890012858ca4b360a0733de64a0116">p99_futex_load</a>) <span class="keywordtype">unsigned</span> <a class="code" href="group__futex_ga94890012858ca4b360a0733de64a0116.html#ga94890012858ca4b360a0733de64a0116">p99_futex_load</a>(<a class="code" href="structp99__futex.html">p99_futex</a> <span class="keyword">volatile</span>* p00_fut);</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;<a class="code" href="group__default__arguments_ga4918cf7a052529294962b223e25dd1d7.html#ga4918cf7a052529294962b223e25dd1d7">P99_DEFARG_DOCU</a>(<a class="code" href="group__futex_ga5f3a21217d8b30a26562eaf0a9fa742a.html#ga5f3a21217d8b30a26562eaf0a9fa742a">p99_futex_exchange</a>)</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;P00_FUTEX_INLINE(<a class="code" href="group__futex_ga5f3a21217d8b30a26562eaf0a9fa742a.html#ga5f3a21217d8b30a26562eaf0a9fa742a">p99_futex_exchange</a>) <span class="keywordtype">unsigned</span> <a class="code" href="group__futex_ga5f3a21217d8b30a26562eaf0a9fa742a.html#ga5f3a21217d8b30a26562eaf0a9fa742a">p99_futex_exchange</a>(<a class="code" href="structp99__futex.html">p99_futex</a> <span class="keyword">volatile</span>* p00_fut, <span class="keywordtype">unsigned</span> p00_desired,</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    <span class="keywordtype">unsigned</span> p00_cstart, <span class="keywordtype">unsigned</span> p00_clen,</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    <span class="keywordtype">unsigned</span> p00_wmin, <span class="keywordtype">unsigned</span> p00_wmax);</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="preprocessor">#ifndef DOXYGEN</span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="preprocessor">#define p99_futex_exchange(...) P99_CALL_DEFARG(p99_futex_exchange, 6, __VA_ARGS__)</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="preprocessor">#define p99_futex_exchange_defarg_3() 1u</span></div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="preprocessor">#define p99_futex_exchange_defarg_4() 0u</span></div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="preprocessor">#define p99_futex_exchange_defarg_5() P99_FUTEX_MAX_WAITERS</span></div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160; </div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;P00_FUTEX_INLINE(<a class="code" href="group__futex_ga2f178f4b43246a2860289e04769ada88.html#ga2f178f4b43246a2860289e04769ada88">p99_futex_wakeup</a>)</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__futex_ga2f178f4b43246a2860289e04769ada88.html#ga2f178f4b43246a2860289e04769ada88">p99_futex_wakeup</a>(<a class="code" href="structp99__futex.html">p99_futex</a> <span class="keyword">volatile</span>* p00_fut,</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                      <span class="keywordtype">unsigned</span> p00_wmin, <span class="keywordtype">unsigned</span> p00_wmax);</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160; </div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;P00_FUTEX_INLINE(<a class="code" href="group__futex_ga918f22eb5c3fab10bbc0e27e15da511b.html#ga918f22eb5c3fab10bbc0e27e15da511b">p99_futex_wait</a>)</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__futex_ga918f22eb5c3fab10bbc0e27e15da511b.html#ga918f22eb5c3fab10bbc0e27e15da511b">p99_futex_wait</a>(<a class="code" href="structp99__futex.html">p99_futex</a> <span class="keyword">volatile</span>* p00_fut);</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160; </div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160; </div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;<span class="preprocessor">#ifdef DOXYGEN</span></div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160; </div>
-<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;P00_DOCUMENT_IDENTIFIER_ARGUMENT(<a class="code" href="structp99__futex_ad22d35b3a2af941a484a6e06a5e46106.html#ad22d35b3a2af941a484a6e06a5e46106">P99_FUTEX_COMPARE_EXCHANGE</a>, 1)</div>
-<div class="line"><a name="l00555"></a><span class="lineno"><a class="line" href="structp99__futex_ad22d35b3a2af941a484a6e06a5e46106.html#ad22d35b3a2af941a484a6e06a5e46106">  555</a></span>&#160;<span class="preprocessor">#define P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX)</span></div>
-<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160; </div>
-<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;<span class="preprocessor">#if (defined(__linux__) &amp;&amp; !defined(NO_FUTEX)) || defined(DOXYGEN)</span></div>
-<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__futex__linux_8h.html">p99_futex_linux.h</a>&quot;</span></div>
-<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__futex__c11_8h.html">p99_futex_c11.h</a>&quot;</span></div>
-<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160; </div>
-<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160; </div>
-<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="preprocessor">#ifndef DOXYGEN</span></div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="preprocessor">#define p99_futex_add(...) P99_CALL_DEFARG(p99_futex_add, 6, __VA_ARGS__)</span></div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="preprocessor">#define p99_futex_add_defarg_3() 1u</span></div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="preprocessor">#define p99_futex_add_defarg_4() 0u</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="preprocessor">#define p99_futex_add_defarg_5() P99_FUTEX_MAX_WAITERS</span></div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;P00_FUTEX_INLINE(<a class="code" href="group__futex_ga94890012858ca4b360a0733de64a0116.html#ga94890012858ca4b360a0733de64a0116">p99_futex_load</a>) <span class="keywordtype">unsigned</span> <a class="code" href="group__futex_ga94890012858ca4b360a0733de64a0116.html#ga94890012858ca4b360a0733de64a0116">p99_futex_load</a>(<a class="code" href="structp99__futex.html">p99_futex</a> <span class="keyword">volatile</span>* p00_fut);</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160; </div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<a class="code" href="group__default__arguments_ga4918cf7a052529294962b223e25dd1d7.html#ga4918cf7a052529294962b223e25dd1d7">P99_DEFARG_DOCU</a>(<a class="code" href="group__futex_ga5f3a21217d8b30a26562eaf0a9fa742a.html#ga5f3a21217d8b30a26562eaf0a9fa742a">p99_futex_exchange</a>)</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;P00_FUTEX_INLINE(<a class="code" href="group__futex_ga5f3a21217d8b30a26562eaf0a9fa742a.html#ga5f3a21217d8b30a26562eaf0a9fa742a">p99_futex_exchange</a>) <span class="keywordtype">unsigned</span> <a class="code" href="group__futex_ga5f3a21217d8b30a26562eaf0a9fa742a.html#ga5f3a21217d8b30a26562eaf0a9fa742a">p99_futex_exchange</a>(<a class="code" href="structp99__futex.html">p99_futex</a> <span class="keyword">volatile</span>* p00_fut, <span class="keywordtype">unsigned</span> p00_desired,</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    <span class="keywordtype">unsigned</span> p00_cstart, <span class="keywordtype">unsigned</span> p00_clen,</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    <span class="keywordtype">unsigned</span> p00_wmin, <span class="keywordtype">unsigned</span> p00_wmax);</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160; </div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="preprocessor">#ifndef DOXYGEN</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="preprocessor">#define p99_futex_exchange(...) P99_CALL_DEFARG(p99_futex_exchange, 6, __VA_ARGS__)</span></div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="preprocessor">#define p99_futex_exchange_defarg_3() 1u</span></div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="preprocessor">#define p99_futex_exchange_defarg_4() 0u</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;<span class="preprocessor">#define p99_futex_exchange_defarg_5() P99_FUTEX_MAX_WAITERS</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160; </div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;P00_FUTEX_INLINE(<a class="code" href="group__futex_ga2f178f4b43246a2860289e04769ada88.html#ga2f178f4b43246a2860289e04769ada88">p99_futex_wakeup</a>)</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__futex_ga2f178f4b43246a2860289e04769ada88.html#ga2f178f4b43246a2860289e04769ada88">p99_futex_wakeup</a>(<a class="code" href="structp99__futex.html">p99_futex</a> <span class="keyword">volatile</span>* p00_fut,</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;                      <span class="keywordtype">unsigned</span> p00_wmin, <span class="keywordtype">unsigned</span> p00_wmax);</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160; </div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160; </div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;P00_FUTEX_INLINE(<a class="code" href="group__futex_ga918f22eb5c3fab10bbc0e27e15da511b.html#ga918f22eb5c3fab10bbc0e27e15da511b">p99_futex_wait</a>)</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__futex_ga918f22eb5c3fab10bbc0e27e15da511b.html#ga918f22eb5c3fab10bbc0e27e15da511b">p99_futex_wait</a>(<a class="code" href="structp99__futex.html">p99_futex</a> <span class="keyword">volatile</span>* p00_fut);</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160; </div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160; </div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160; </div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;<span class="preprocessor">#ifdef DOXYGEN</span></div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160; </div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;P00_DOCUMENT_IDENTIFIER_ARGUMENT(<a class="code" href="structp99__futex_ad22d35b3a2af941a484a6e06a5e46106.html#ad22d35b3a2af941a484a6e06a5e46106">P99_FUTEX_COMPARE_EXCHANGE</a>, 1)</div>
+<div class="line"><a name="l00563"></a><span class="lineno"><a class="line" href="structp99__futex_ad22d35b3a2af941a484a6e06a5e46106.html#ad22d35b3a2af941a484a6e06a5e46106">  563</a></span>&#160;<span class="preprocessor">#define P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX)</span></div>
+<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160; </div>
+<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;<span class="preprocessor">#if (defined(__linux__) &amp;&amp; !defined(NO_FUTEX)) || defined(DOXYGEN)</span></div>
+<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__futex__linux_8h.html">p99_futex_linux.h</a>&quot;</span></div>
+<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__futex__c11_8h.html">p99_futex_c11.h</a>&quot;</span></div>
+<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160; </div>
+<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160; </div>
+<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="agroup__futex_gac30811f76a7f0734e34e2d86a41965d2_html_gac30811f76a7f0734e34e2d86a41965d2"><div class="ttname"><a href="group__futex_gac30811f76a7f0734e34e2d86a41965d2.html#gac30811f76a7f0734e34e2d86a41965d2">p99_futex::p99_futex_destroy</a></div><div class="ttdeci">void p99_futex_destroy(p99_futex *p00_c)</div><div class="ttdoc">Destroy an p99_futex object.</div></div>
-<div class="ttc" id="astructp99__futex_html"><div class="ttname"><a href="structp99__futex.html">p99_futex</a></div><div class="ttdoc">A counter similar to a conditional variable that allows atomic increment and decrement and to wait fo...</div><div class="ttdef"><b>Definition:</b> <a href="p99__futex_8h_source.html#l00155">p99_futex.h:155</a></div></div>
+<div class="ttc" id="astructp99__futex_html"><div class="ttname"><a href="structp99__futex.html">p99_futex</a></div><div class="ttdoc">A counter similar to a conditional variable that allows atomic increment and decrement and to wait fo...</div><div class="ttdef"><b>Definition:</b> <a href="p99__futex_8h_source.html#l00163">p99_futex.h:163</a></div></div>
 <div class="ttc" id="ap99__type_8h_html"><div class="ttname"><a href="p99__type_8h.html">p99_type.h</a></div></div>
 <div class="ttc" id="agroup__futex_ga5f3a21217d8b30a26562eaf0a9fa742a_html_ga5f3a21217d8b30a26562eaf0a9fa742a"><div class="ttname"><a href="group__futex_ga5f3a21217d8b30a26562eaf0a9fa742a.html#ga5f3a21217d8b30a26562eaf0a9fa742a">p99_futex::p99_futex_exchange</a></div><div class="ttdeci">unsigned p99_futex_exchange(p99_futex volatile *p00_fut, unsigned p00_desired, unsigned p00_cstart, unsigned p00_clen, unsigned p00_wmin, unsigned p00_wmax)</div><div class="ttdoc">Unconditionally and atomically set the futex p00_fut to value p00_desired.</div></div>
-<div class="ttc" id="agroup__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446_html_gaa113bfa0df539e8dee797a00c6947446"><div class="ttname"><a href="group__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446.html#gaa113bfa0df539e8dee797a00c6947446">p99_inline</a></div><div class="ttdeci">#define p99_inline</div><div class="ttdoc">Try to force a function always to be inlined.</div><div class="ttdef"><b>Definition:</b> <a href="p99__compiler_8h_source.html#l00488">p99_compiler.h:488</a></div></div>
-<div class="ttc" id="astructp99__futex_ad22d35b3a2af941a484a6e06a5e46106_html_ad22d35b3a2af941a484a6e06a5e46106"><div class="ttname"><a href="structp99__futex_ad22d35b3a2af941a484a6e06a5e46106.html#ad22d35b3a2af941a484a6e06a5e46106">p99_futex::P99_FUTEX_COMPARE_EXCHANGE</a></div><div class="ttdeci">#define P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX)</div><div class="ttdoc">a catch all macro to operate on p99_futex</div><div class="ttdef"><b>Definition:</b> <a href="p99__futex_8h_source.html#l00555">p99_futex.h:555</a></div></div>
+<div class="ttc" id="agroup__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446_html_gaa113bfa0df539e8dee797a00c6947446"><div class="ttname"><a href="group__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446.html#gaa113bfa0df539e8dee797a00c6947446">p99_inline</a></div><div class="ttdeci">#define p99_inline</div><div class="ttdoc">Try to force a function always to be inlined.</div><div class="ttdef"><b>Definition:</b> <a href="p99__compiler_8h_source.html#l00496">p99_compiler.h:496</a></div></div>
+<div class="ttc" id="astructp99__futex_ad22d35b3a2af941a484a6e06a5e46106_html_ad22d35b3a2af941a484a6e06a5e46106"><div class="ttname"><a href="structp99__futex_ad22d35b3a2af941a484a6e06a5e46106.html#ad22d35b3a2af941a484a6e06a5e46106">p99_futex::P99_FUTEX_COMPARE_EXCHANGE</a></div><div class="ttdeci">#define P99_FUTEX_COMPARE_EXCHANGE(FUTEX, ACT, EXPECTED, DESIRED, WAKEMIN, WAKEMAX)</div><div class="ttdoc">a catch all macro to operate on p99_futex</div><div class="ttdef"><b>Definition:</b> <a href="p99__futex_8h_source.html#l00563">p99_futex.h:563</a></div></div>
 <div class="ttc" id="ap99__futex__c11_8h_html"><div class="ttname"><a href="p99__futex__c11_8h.html">p99_futex_c11.h</a></div></div>
-<div class="ttc" id="agroup__default__arguments_ga4918cf7a052529294962b223e25dd1d7_html_ga4918cf7a052529294962b223e25dd1d7"><div class="ttname"><a href="group__default__arguments_ga4918cf7a052529294962b223e25dd1d7.html#ga4918cf7a052529294962b223e25dd1d7">P99_DEFARG_DOCU</a></div><div class="ttdeci">#define P99_DEFARG_DOCU(NAME)</div><div class="ttdoc">Provide a documentation section to a function defined with P99_CALL_DEFARG.</div><div class="ttdef"><b>Definition:</b> <a href="p99__defarg_8h_source.html#l00310">p99_defarg.h:310</a></div></div>
-<div class="ttc" id="astructp99__futex__c11_html"><div class="ttname"><a href="structp99__futex__c11.html">p99_futex_c11</a></div><div class="ttdoc">The structure that is used in the fallback implementation of p99_futex on non-linux systems.</div><div class="ttdef"><b>Definition:</b> <a href="p99__futex__c11_8h_source.html#l00020">p99_futex_c11.h:20</a></div></div>
-<div class="ttc" id="agroup__types_gae3d8acb581de618aa43051acfd249120_html_gae3d8acb581de618aa43051acfd249120"><div class="ttname"><a href="group__types_gae3d8acb581de618aa43051acfd249120.html#gae3d8acb581de618aa43051acfd249120">P99_DECLARE_STRUCT</a></div><div class="ttdeci">#define P99_DECLARE_STRUCT(NAME)</div><div class="ttdoc">forward declaration of a struct NAME</div><div class="ttdef"><b>Definition:</b> <a href="p99__type_8h_source.html#l00051">p99_type.h:51</a></div></div>
+<div class="ttc" id="agroup__default__arguments_ga4918cf7a052529294962b223e25dd1d7_html_ga4918cf7a052529294962b223e25dd1d7"><div class="ttname"><a href="group__default__arguments_ga4918cf7a052529294962b223e25dd1d7.html#ga4918cf7a052529294962b223e25dd1d7">P99_DEFARG_DOCU</a></div><div class="ttdeci">#define P99_DEFARG_DOCU(NAME)</div><div class="ttdoc">Provide a documentation section to a function defined with P99_CALL_DEFARG.</div><div class="ttdef"><b>Definition:</b> <a href="p99__defarg_8h_source.html#l00318">p99_defarg.h:318</a></div></div>
+<div class="ttc" id="astructp99__futex__c11_html"><div class="ttname"><a href="structp99__futex__c11.html">p99_futex_c11</a></div><div class="ttdoc">The structure that is used in the fallback implementation of p99_futex on non-linux systems.</div><div class="ttdef"><b>Definition:</b> <a href="p99__futex__c11_8h_source.html#l00028">p99_futex_c11.h:28</a></div></div>
+<div class="ttc" id="agroup__types_gae3d8acb581de618aa43051acfd249120_html_gae3d8acb581de618aa43051acfd249120"><div class="ttname"><a href="group__types_gae3d8acb581de618aa43051acfd249120.html#gae3d8acb581de618aa43051acfd249120">P99_DECLARE_STRUCT</a></div><div class="ttdeci">#define P99_DECLARE_STRUCT(NAME)</div><div class="ttdoc">forward declaration of a struct NAME</div><div class="ttdef"><b>Definition:</b> <a href="p99__type_8h_source.html#l00059">p99_type.h:59</a></div></div>
 <div class="ttc" id="agroup__futex_ga94890012858ca4b360a0733de64a0116_html_ga94890012858ca4b360a0733de64a0116"><div class="ttname"><a href="group__futex_ga94890012858ca4b360a0733de64a0116.html#ga94890012858ca4b360a0733de64a0116">p99_futex::p99_futex_load</a></div><div class="ttdeci">unsigned p99_futex_load(p99_futex volatile *p00_fut)</div><div class="ttdoc">Obtain the value of futex p00_fut atomically.</div></div>
 <div class="ttc" id="ap99__posix__default_8h_html"><div class="ttname"><a href="p99__posix__default_8h.html">p99_posix_default.h</a></div></div>
 <div class="ttc" id="agroup__futex_ga2f178f4b43246a2860289e04769ada88_html_ga2f178f4b43246a2860289e04769ada88"><div class="ttname"><a href="group__futex_ga2f178f4b43246a2860289e04769ada88.html#ga2f178f4b43246a2860289e04769ada88">p99_futex::p99_futex_wakeup</a></div><div class="ttdeci">void p99_futex_wakeup(p99_futex volatile *p00_fut, unsigned p00_wmin, unsigned p00_wmax)</div><div class="ttdoc">Wake up threads that are waiting for a futex.</div></div>

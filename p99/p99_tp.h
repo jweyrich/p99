@@ -1,15 +1,23 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-              */
-/*                                                                            */
-/* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                           */
-/* (C) copyright  2013-2014 Jens Gustedt, INRIA, France                       */
-/*                                                                            */
-/* This file is free software; it is part of the P99 project.                 */
-/* You can redistribute it and/or modify it under the terms of the QPL as     */
-/* given in the file LICENSE. It is distributed without any warranty;         */
-/* without even the implied warranty of merchantability or fitness for a      */
-/* particular purpose.                                                        */
-/*                                                                            */
+/* This may look like nonsense, but it really is -*- mode: C; coding: utf-8 -*- */
+/*                                                                              */
+/* Except for parts copied from previous work and as explicitly stated below,   */
+/* the author and copyright holder for this work is                             */
+/* (C) copyright  2013-2014, 2018 Jens Gustedt, INRIA, France                   */
+/*                                                                              */
+/* This file is free software; it is part of the P99 project.                   */
+/*                                                                              */
+/* Licensed under the Apache License, Version 2.0 (the "License");              */
+/* you may not use this file except in compliance with the License.             */
+/* You may obtain a copy of the License at                                      */
+/*                                                                              */
+/*     http://www.apache.org/licenses/LICENSE-2.0                               */
+/*                                                                              */
+/* Unless required by applicable law or agreed to in writing, software          */
+/* distributed under the License is distributed on an "AS IS" BASIS,            */
+/* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.     */
+/* See the License for the specific language governing permissions and          */
+/* limitations under the License.                                               */
+/*                                                                              */
 #ifndef P99_RP_H
 #define P99_RP_H 1
 
@@ -236,8 +244,8 @@ p99_inline
 p99_tp_state p99_tp_state_initializer(register p99_tp volatile*const p00_tp, register void*const p00_p) {
   return (p99_tp_state) {
     .p00_val = p00_tp_get(p00_tp),
-     .p00_next = P00_TP_GLUE_INITIALIZER(p00_p, p00_tp_tick_get()),
-      .p00_tp = p00_tp,
+    .p00_next = P00_TP_GLUE_INITIALIZER(p00_p, p00_tp_tick_get()),
+    .p00_tp = p00_tp,
   };
 }
 

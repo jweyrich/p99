@@ -69,36 +69,44 @@ $(function() {
 <div class="title">p99.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="p99_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* This may look like nonsense, but it really is -*- mode: C -*-              */</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">/*                                                                            */</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">/* Except for parts copied from previous work and as explicitly stated below, */</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">/* the authors and copyright holders for this work are as follows:            */</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">/* (C) copyright  2010-2013 Jens Gustedt, INRIA, France                       */</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">/* (C) copyright  2013 Pierre-Nicolas Clauss                                  */</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">/* (C) copyright  2012 William Morris                                         */</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">/*                                                                            */</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">/* This file is free software; it is part of the P99 project.                 */</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">/* You can redistribute it and/or modify it under the terms of the QPL as     */</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">/* given in the file LICENSE. It is distributed without any warranty;         */</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">/* without even the implied warranty of merchantability or fitness for a      */</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">/* particular purpose.                                                        */</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">/*                                                                            */</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#ifndef     P99_H_</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor"># define    P99_H_</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l01440"></a><span class="lineno"> 1440</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__choice_8h.html">p99_choice.h</a>&quot;</span></div>
-<div class="line"><a name="l01441"></a><span class="lineno"> 1441</span>&#160;P99_WARN_REDUNDANT_DECLS_PUSH</div>
-<div class="line"><a name="l01442"></a><span class="lineno"> 1442</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__defarg_8h.html">p99_defarg.h</a>&quot;</span></div>
-<div class="line"><a name="l01443"></a><span class="lineno"> 1443</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__enum_8h.html">p99_enum.h</a>&quot;</span></div>
-<div class="line"><a name="l01444"></a><span class="lineno"> 1444</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__new_8h.html">p99_new.h</a>&quot;</span></div>
-<div class="line"><a name="l01445"></a><span class="lineno"> 1445</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__double_8h.html">p99_double.h</a>&quot;</span></div>
-<div class="line"><a name="l01446"></a><span class="lineno"> 1446</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__swap_8h.html">p99_swap.h</a>&quot;</span></div>
-<div class="line"><a name="l01447"></a><span class="lineno"> 1447</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__generic_8h.html">p99_generic.h</a>&quot;</span></div>
-<div class="line"><a name="l01448"></a><span class="lineno"> 1448</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__hook_8h.html">p99_hook.h</a>&quot;</span></div>
-<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__arith_8h.html">p99_arith.h</a>&quot;</span></div>
-<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160;P99_WARN_REDUNDANT_DECLS_POP</div>
-<div class="line"><a name="l01451"></a><span class="lineno"> 1451</span>&#160; </div>
-<div class="line"><a name="l01452"></a><span class="lineno"> 1452</span>&#160;<span class="preprocessor">#endif      </span><span class="comment">/* !P99_H_ */</span><span class="preprocessor"></span></div>
+<a href="p99_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* This may look like nonsense, but it really is -*- mode: C; coding: utf-8 -*- */</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">/* Except for parts copied from previous work and as explicitly stated below,   */</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">/* the authors and copyright holders for this work are as follows:              */</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">/* (C) copyright  2010-2013 Jens Gustedt, INRIA, France                         */</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">/* (C) copyright  2013 Pierre-Nicolas Clauss                                    */</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">/* (C) copyright  2012 William Morris                                           */</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">/* This file is free software; it is part of the P99 project.                   */</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">/* Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);              */</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">/* you may not use this file except in compliance with the License.             */</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">/* You may obtain a copy of the License at                                      */</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">/*     http://www.apache.org/licenses/LICENSE-2.0                               */</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">/* Unless required by applicable law or agreed to in writing, software          */</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">/* distributed under the License is distributed on an &quot;AS IS&quot; BASIS,            */</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">/* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.     */</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">/* See the License for the specific language governing permissions and          */</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">/* limitations under the License.                                               */</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#ifndef     P99_H_</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor"># define    P99_H_</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l01448"></a><span class="lineno"> 1448</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__choice_8h.html">p99_choice.h</a>&quot;</span></div>
+<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;P99_WARN_REDUNDANT_DECLS_PUSH</div>
+<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__defarg_8h.html">p99_defarg.h</a>&quot;</span></div>
+<div class="line"><a name="l01451"></a><span class="lineno"> 1451</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__enum_8h.html">p99_enum.h</a>&quot;</span></div>
+<div class="line"><a name="l01452"></a><span class="lineno"> 1452</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__new_8h.html">p99_new.h</a>&quot;</span></div>
+<div class="line"><a name="l01453"></a><span class="lineno"> 1453</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__double_8h.html">p99_double.h</a>&quot;</span></div>
+<div class="line"><a name="l01454"></a><span class="lineno"> 1454</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__swap_8h.html">p99_swap.h</a>&quot;</span></div>
+<div class="line"><a name="l01455"></a><span class="lineno"> 1455</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__generic_8h.html">p99_generic.h</a>&quot;</span></div>
+<div class="line"><a name="l01456"></a><span class="lineno"> 1456</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__hook_8h.html">p99_hook.h</a>&quot;</span></div>
+<div class="line"><a name="l01457"></a><span class="lineno"> 1457</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__arith_8h.html">p99_arith.h</a>&quot;</span></div>
+<div class="line"><a name="l01458"></a><span class="lineno"> 1458</span>&#160;P99_WARN_REDUNDANT_DECLS_POP</div>
+<div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160; </div>
+<div class="line"><a name="l01460"></a><span class="lineno"> 1460</span>&#160;<span class="preprocessor">#endif      </span><span class="comment">/* !P99_H_ */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="ap99__defarg_8h_html"><div class="ttname"><a href="p99__defarg_8h.html">p99_defarg.h</a></div><div class="ttdoc">Macros for default arguments to functions.</div></div>
 <div class="ttc" id="ap99__double_8h_html"><div class="ttname"><a href="p99__double_8h.html">p99_double.h</a></div><div class="ttdoc">Build decimal or hexadecimal double constants with macros.</div></div>

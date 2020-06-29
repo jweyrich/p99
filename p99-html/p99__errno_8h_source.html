@@ -69,197 +69,205 @@ $(function() {
 <div class="title">p99_errno.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="p99__errno_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* This may look like nonsense, but it really is -*- mode: C -*-              */</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">/*                                                                            */</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">/* Except for parts copied from previous work and as explicitly stated below, */</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">/* the author and copyright holder for this work is                           */</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">/* (C) copyright  2012-2013 Jens Gustedt, INRIA, France                       */</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">/*                                                                            */</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">/* This file is free software; it is part of the P99 project.                 */</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">/* You can redistribute it and/or modify it under the terms of the QPL as     */</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">/* given in the file LICENSE. It is distributed without any warranty;         */</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">/* without even the implied warranty of merchantability or fitness for a      */</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">/* particular purpose.                                                        */</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">/*                                                                            */</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#ifndef     P99_ERRNO_H_</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor"># define    P99_ERRNO_H_</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__for_8h.html">p99_for.h</a>&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#define P00_IF_XEQ_(A, B) P99_IF_EQ(A, B)</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define P00_IF_XEQ(A, B) P00_IF_XEQ(A, B)</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">/* A long list of error numbers. C11 only has EDOM, EILSEQ, ERANGE but</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">   usually systems declare their own values:</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">   Additional macro definitions, beginning with E and a digit or E and</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">   an uppercase letter,203) may also be specified by the</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">   implementation.</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">   For the moment this list is from what Linux has to offer. This</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment">   includes the macros that are defined by POSIX.</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#define P00_ERRNO_LIST                                              \</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">       2BIG,                                                        \</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">       ACCES,                                                       \</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">       ADDRINUSE,                                                   \</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">       ADDRNOTAVAIL,                                                \</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">       AFNOSUPPORT,                                                 \</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">         </span><span class="comment">/* POSIX allows these two to be equal */</span><span class="preprocessor">                   \</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">       P99_IF_EQ(EAGAIN, EWOULDBLOCK)(AGAIN,)(AGAIN, WOULDBLOCK,)   \</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">       ALREADY,                                                     \</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">       BADE,                                                        \</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">       BADF,                                                        \</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">       BADFD,                                                       \</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">       BADMSG,                                                      \</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">       BADR,                                                        \</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">       BADRQC,                                                      \</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">       BADSLT,                                                      \</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">       BUSY,                                                        \</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">       CANCELED,                                                    \</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">       CHILD,                                                       \</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">       CHRNG,                                                       \</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">       COMM,                                                        \</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">       CONNABORTED,                                                 \</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">       CONNREFUSED,                                                 \</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">       CONNRESET,                                                   \</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">         </span><span class="comment">/* POSIX has only EDEADLK, Linux also has EDEADLOCK */</span><span class="preprocessor">     \</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">       P99_IF_EQ(EDEADLK, EDEADLOCK)(DEADLK,)(DEADLK, DEADLOCK,)    \</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">       DESTADDRREQ,                                                 \</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">       DOM,                                                         \</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">       DQUOT,                                                       \</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">       EXIST,                                                       \</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">       FAULT,                                                       \</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">       FBIG,                                                        \</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">       HOSTDOWN,                                                    \</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">       HOSTUNREACH,                                                 \</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">       IDRM,                                                        \</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">       ILSEQ,                                                       \</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">       INPROGRESS,                                                  \</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">       INTR,                                                        \</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">       INVAL,                                                       \</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">       IO,                                                          \</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">       ISCONN,                                                      \</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">       ISDIR,                                                       \</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">       ISNAM,                                                       \</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor">       KEYEXPIRED,                                                  \</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">       KEYREJECTED,                                                 \</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">       KEYREVOKED,                                                  \</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">       L2HLT,                                                       \</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">       L2NSYNC,                                                     \</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">       L3HLT,                                                       \</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">       L3RST,                                                       \</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">       LIBACC,                                                      \</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">       LIBBAD,                                                      \</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">       LIBEXEC,                                                     \</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">       LIBMAX,                                                      \</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">       LIBSCN,                                                      \</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">       LOOP,                                                        \</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">       MEDIUMTYPE,                                                  \</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">       MFILE,                                                       \</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor">       MLINK,                                                       \</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">       MSGSIZE,                                                     \</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="preprocessor">       MULTIHOP,                                                    \</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor">       NAMETOOLONG,                                                 \</span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">       NETDOWN,                                                     \</span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor">       NETRESET,                                                    \</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="preprocessor">       NETUNREACH,                                                  \</span></div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="preprocessor">       NFILE,                                                       \</span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="preprocessor">       NOBUFS,                                                      \</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="preprocessor">       NODATA,                                                      \</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="preprocessor">       NODEV,                                                       \</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="preprocessor">       NOENT,                                                       \</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor">       NOEXEC,                                                      \</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">       NOKEY,                                                       \</span></div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor">       NOLCK,                                                       \</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="preprocessor">       NOLINK,                                                      \</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="preprocessor">       NOMEDIUM,                                                    \</span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">       NOMEM,                                                       \</span></div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="preprocessor">       NOMSG,                                                       \</span></div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="preprocessor">       NONET,                                                       \</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="preprocessor">       NOPKG,                                                       \</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="preprocessor">       NOPROTOOPT,                                                  \</span></div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="preprocessor">       NOSPC,                                                       \</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor">       NOSR,                                                        \</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor">       NOSTR,                                                       \</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="preprocessor">       NOSYS,                                                       \</span></div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="preprocessor">       NOTBLK,                                                      \</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="preprocessor">       NOTCONN,                                                     \</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor">       NOTDIR,                                                      \</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">       NOTEMPTY,                                                    \</span></div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor">       NOTSOCK,                                                     \</span></div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor">       NOTTY,                                                       \</span></div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="preprocessor">       NOTUNIQ,                                                     \</span></div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="preprocessor">       NXIO,                                                        \</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="preprocessor">         </span><span class="comment">/* should be distinct for POSIX, but are equal on Linux */</span><span class="preprocessor"> \</span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">       P99_IF_EQ(ENOTSUP, EOPNOTSUPP)(NOTSUP,)(NOTSUP, OPNOTSUPP,)  \</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="preprocessor">         </span><span class="comment">/* is defined by SVID as such: OVERFLOW, */</span><span class="preprocessor">                \</span></div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="preprocessor">       PERM,                                                        \</span></div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="preprocessor">       PFNOSUPPORT,                                                 \</span></div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="preprocessor">       PIPE,                                                        \</span></div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="preprocessor">       PROTO,                                                       \</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="preprocessor">       PROTONOSUPPORT,                                              \</span></div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="preprocessor">       PROTOTYPE,                                                   \</span></div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="preprocessor">       RANGE,                                                       \</span></div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="preprocessor">       REMCHG,                                                      \</span></div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor">       REMOTE,                                                      \</span></div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="preprocessor">       REMOTEIO,                                                    \</span></div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="preprocessor">       RESTART,                                                     \</span></div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="preprocessor">       ROFS,                                                        \</span></div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="preprocessor">       SHUTDOWN,                                                    \</span></div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="preprocessor">       SOCKTNOSUPPORT,                                              \</span></div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="preprocessor">       SPIPE,                                                       \</span></div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="preprocessor">       SRCH,                                                        \</span></div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="preprocessor">       STALE,                                                       \</span></div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="preprocessor">       STRPIPE,                                                     \</span></div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="preprocessor">       TIME,                                                        \</span></div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="preprocessor">       TIMEDOUT,                                                    \</span></div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="preprocessor">       TXTBSY,                                                      \</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="preprocessor">       UCLEAN,                                                      \</span></div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="preprocessor">       UNATCH,                                                      \</span></div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="preprocessor">       USERS,                                                       \</span></div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="preprocessor">       XDEV,                                                        \</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="preprocessor">       XFULL,                                                       \</span></div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="preprocessor">       XXX</span></div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="preprocessor">#define P00_ERRNO_ELEM_(ERR, STR) P99_IF_GT(ERR, 0)([ERR] = 0,)()</span></div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="preprocessor">#define P00_ERRNO_ELEM(ERR) P00_ERRNO_ELEM_(E ## ERR, &quot;E&quot; #ERR)</span></div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="preprocessor">#define P00_ERRNO_ENUM_(ERR, NAME) P99_IF_GT(ERR, 0)(NAME)(ERR)</span></div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="preprocessor">#define P00_ERRNO_ENUM(ERR) P00_ERRNO_ENUM_(E ## ERR, p00_E ## ERR)</span></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="keyword">enum</span> {</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;  p00_errno_max = <span class="keyword">sizeof</span>((<span class="keywordtype">char</span>[]) { <a class="code" href="group__preprocessor__for_gaa8397413f3ecf6c5f24463a728989ab4.html#gaa8397413f3ecf6c5f24463a728989ab4">P99_SER</a>(P00_ERRNO_ELEM, P00_ERRNO_LIST) P00_ERRNO_ELEM(OVERFLOW) }),</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  <span class="comment">/* Add all other codes as enumeration constants */</span></div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  <a class="code" href="group__preprocessor__for_gaaf12072aef5a55a36f400d685525d497.html#gaaf12072aef5a55a36f400d685525d497">P99_SEQ</a>(P00_ERRNO_ENUM, P00_ERRNO_LIST), P00_ERRNO_ENUM(OVERFLOW),</div>
-<div class="line"><a name="l00171"></a><span class="lineno"><a class="line" href="p99__errno_8h_adc29c2ff13d900c2f185ee95427fb06c.html#adc29c2ff13d900c2f185ee95427fb06cafbea1a0d25cce2b80ac320410a422580">  171</a></span>&#160;  <a class="code" href="p99__errno_8h_adc29c2ff13d900c2f185ee95427fb06c.html#adc29c2ff13d900c2f185ee95427fb06cafbea1a0d25cce2b80ac320410a422580">p99_errno_max</a></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;};</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="preprocessor">#define P00_ERRNO_CASE_(ERR, STR) case ERR: return STR</span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="preprocessor">#define P00_ERRNO_CASE(ERR) P00_ERRNO_CASE_(E ## ERR, &quot;E&quot; #ERR)</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<a class="code" href="group__compiler__utilities_ga47dba44e55ac92339ecfac83f86b3168.html#ga47dba44e55ac92339ecfac83f86b3168">P99_CONST_FUNCTION</a></div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<a class="code" href="group__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446.html#gaa113bfa0df539e8dee797a00c6947446">p99_inline</a></div>
-<div class="line"><a name="l00190"></a><span class="lineno"><a class="line" href="p99__errno_8h_a667a1212199edb086dce51213ec6e57c.html#a667a1212199edb086dce51213ec6e57c">  190</a></span>&#160;<span class="keywordtype">char</span> <span class="keyword">const</span>* <a class="code" href="p99__errno_8h_a667a1212199edb086dce51213ec6e57c.html#a667a1212199edb086dce51213ec6e57c">p99_errno_getname</a>(<a class="code" href="group__C11__library_ga46a037236862ac1a534efbe605c10f42.html#ga46a037236862ac1a534efbe605c10f42">errno_t</a> p00_err) {</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;  <span class="keywordflow">switch</span> (p00_err) {</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <a class="code" href="group__preprocessor__for_ga587594351f1763bfa31857764b70616e.html#ga587594351f1763bfa31857764b70616e">P99_SEP</a>(P00_ERRNO_CASE, P00_ERRNO_LIST);</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    P00_ERRNO_CASE(OVERFLOW);</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;  <span class="keywordflow">default</span>: <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  }</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;}</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="preprocessor">#endif</span></div>
+<a href="p99__errno_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* This may look like nonsense, but it really is -*- mode: C; coding: utf-8 -*- */</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">/* Except for parts copied from previous work and as explicitly stated below,   */</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">/* the author and copyright holder for this work is                             */</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">/* (C) copyright  2012-2013 Jens Gustedt, INRIA, France                         */</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">/* This file is free software; it is part of the P99 project.                   */</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">/* Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);              */</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">/* you may not use this file except in compliance with the License.             */</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">/* You may obtain a copy of the License at                                      */</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">/*     http://www.apache.org/licenses/LICENSE-2.0                               */</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">/* Unless required by applicable law or agreed to in writing, software          */</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment">/* distributed under the License is distributed on an &quot;AS IS&quot; BASIS,            */</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">/* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.     */</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">/* See the License for the specific language governing permissions and          */</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">/* limitations under the License.                                               */</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">/*                                                                              */</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#ifndef     P99_ERRNO_H_</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor"># define    P99_ERRNO_H_</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="p99__for_8h.html">p99_for.h</a>&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#define P00_IF_XEQ_(A, B) P99_IF_EQ(A, B)</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define P00_IF_XEQ(A, B) P00_IF_XEQ(A, B)</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment">/* A long list of error numbers. C11 only has EDOM, EILSEQ, ERANGE but</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">   usually systems declare their own values:</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment">   Additional macro definitions, beginning with E and a digit or E and</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment">   an uppercase letter,203) may also be specified by the</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment">   implementation.</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment">   For the moment this list is from what Linux has to offer. This</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment">   includes the macros that are defined by POSIX.</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#define P00_ERRNO_LIST                                              \</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">       2BIG,                                                        \</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">       ACCES,                                                       \</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">       ADDRINUSE,                                                   \</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">       ADDRNOTAVAIL,                                                \</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">       AFNOSUPPORT,                                                 \</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">         </span><span class="comment">/* POSIX allows these two to be equal */</span><span class="preprocessor">                   \</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">       P99_IF_EQ(EAGAIN, EWOULDBLOCK)(AGAIN,)(AGAIN, WOULDBLOCK,)   \</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">       ALREADY,                                                     \</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">       BADE,                                                        \</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">       BADF,                                                        \</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">       BADFD,                                                       \</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">       BADMSG,                                                      \</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">       BADR,                                                        \</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">       BADRQC,                                                      \</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">       BADSLT,                                                      \</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">       BUSY,                                                        \</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">       CANCELED,                                                    \</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">       CHILD,                                                       \</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">       CHRNG,                                                       \</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">       COMM,                                                        \</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">       CONNABORTED,                                                 \</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">       CONNREFUSED,                                                 \</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">       CONNRESET,                                                   \</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">         </span><span class="comment">/* POSIX has only EDEADLK, Linux also has EDEADLOCK */</span><span class="preprocessor">     \</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">       P99_IF_EQ(EDEADLK, EDEADLOCK)(DEADLK,)(DEADLK, DEADLOCK,)    \</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">       DESTADDRREQ,                                                 \</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">       DOM,                                                         \</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">       DQUOT,                                                       \</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">       EXIST,                                                       \</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">       FAULT,                                                       \</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">       FBIG,                                                        \</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">       HOSTDOWN,                                                    \</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">       HOSTUNREACH,                                                 \</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">       IDRM,                                                        \</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor">       ILSEQ,                                                       \</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">       INPROGRESS,                                                  \</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">       INTR,                                                        \</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">       INVAL,                                                       \</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">       IO,                                                          \</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">       ISCONN,                                                      \</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">       ISDIR,                                                       \</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">       ISNAM,                                                       \</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">       KEYEXPIRED,                                                  \</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">       KEYREJECTED,                                                 \</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">       KEYREVOKED,                                                  \</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">       L2HLT,                                                       \</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">       L2NSYNC,                                                     \</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">       L3HLT,                                                       \</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">       L3RST,                                                       \</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor">       LIBACC,                                                      \</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">       LIBBAD,                                                      \</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="preprocessor">       LIBEXEC,                                                     \</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor">       LIBMAX,                                                      \</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">       LIBSCN,                                                      \</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor">       LOOP,                                                        \</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="preprocessor">       MEDIUMTYPE,                                                  \</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="preprocessor">       MFILE,                                                       \</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="preprocessor">       MLINK,                                                       \</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="preprocessor">       MSGSIZE,                                                     \</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="preprocessor">       MULTIHOP,                                                    \</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="preprocessor">       NAMETOOLONG,                                                 \</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor">       NETDOWN,                                                     \</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">       NETRESET,                                                    \</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor">       NETUNREACH,                                                  \</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="preprocessor">       NFILE,                                                       \</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="preprocessor">       NOBUFS,                                                      \</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">       NODATA,                                                      \</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="preprocessor">       NODEV,                                                       \</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="preprocessor">       NOENT,                                                       \</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="preprocessor">       NOEXEC,                                                      \</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="preprocessor">       NOKEY,                                                       \</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="preprocessor">       NOLCK,                                                       \</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor">       NOLINK,                                                      \</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor">       NOMEDIUM,                                                    \</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="preprocessor">       NOMEM,                                                       \</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="preprocessor">       NOMSG,                                                       \</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="preprocessor">       NONET,                                                       \</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor">       NOPKG,                                                       \</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">       NOPROTOOPT,                                                  \</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor">       NOSPC,                                                       \</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor">       NOSR,                                                        \</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="preprocessor">       NOSTR,                                                       \</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="preprocessor">       NOSYS,                                                       \</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="preprocessor">       NOTBLK,                                                      \</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">       NOTCONN,                                                     \</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="preprocessor">       NOTDIR,                                                      \</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="preprocessor">       NOTEMPTY,                                                    \</span></div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="preprocessor">       NOTSOCK,                                                     \</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="preprocessor">       NOTTY,                                                       \</span></div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="preprocessor">       NOTUNIQ,                                                     \</span></div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="preprocessor">       NXIO,                                                        \</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="preprocessor">         </span><span class="comment">/* should be distinct for POSIX, but are equal on Linux */</span><span class="preprocessor"> \</span></div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="preprocessor">       P99_IF_EQ(ENOTSUP, EOPNOTSUPP)(NOTSUP,)(NOTSUP, OPNOTSUPP,)  \</span></div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="preprocessor">         </span><span class="comment">/* is defined by SVID as such: OVERFLOW, */</span><span class="preprocessor">                \</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor">       PERM,                                                        \</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="preprocessor">       PFNOSUPPORT,                                                 \</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="preprocessor">       PIPE,                                                        \</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="preprocessor">       PROTO,                                                       \</span></div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="preprocessor">       PROTONOSUPPORT,                                              \</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="preprocessor">       PROTOTYPE,                                                   \</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="preprocessor">       RANGE,                                                       \</span></div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="preprocessor">       REMCHG,                                                      \</span></div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="preprocessor">       REMOTE,                                                      \</span></div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="preprocessor">       REMOTEIO,                                                    \</span></div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="preprocessor">       RESTART,                                                     \</span></div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="preprocessor">       ROFS,                                                        \</span></div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="preprocessor">       SHUTDOWN,                                                    \</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="preprocessor">       SOCKTNOSUPPORT,                                              \</span></div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="preprocessor">       SPIPE,                                                       \</span></div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="preprocessor">       SRCH,                                                        \</span></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="preprocessor">       STALE,                                                       \</span></div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="preprocessor">       STRPIPE,                                                     \</span></div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="preprocessor">       TIME,                                                        \</span></div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="preprocessor">       TIMEDOUT,                                                    \</span></div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="preprocessor">       TXTBSY,                                                      \</span></div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="preprocessor">       UCLEAN,                                                      \</span></div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="preprocessor">       UNATCH,                                                      \</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="preprocessor">       USERS,                                                       \</span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="preprocessor">       XDEV,                                                        \</span></div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="preprocessor">       XFULL,                                                       \</span></div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="preprocessor">       XXX</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="preprocessor">#define P00_ERRNO_ELEM_(ERR, STR) P99_IF_GT(ERR, 0)([ERR] = 0,)()</span></div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="preprocessor">#define P00_ERRNO_ELEM(ERR) P00_ERRNO_ELEM_(E ## ERR, &quot;E&quot; #ERR)</span></div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="preprocessor">#define P00_ERRNO_ENUM_(ERR, NAME) P99_IF_GT(ERR, 0)(NAME)(ERR)</span></div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="preprocessor">#define P00_ERRNO_ENUM(ERR) P00_ERRNO_ENUM_(E ## ERR, p00_E ## ERR)</span></div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;  p00_errno_max = <span class="keyword">sizeof</span>((<span class="keywordtype">char</span>[]) { <a class="code" href="group__preprocessor__for_gaa8397413f3ecf6c5f24463a728989ab4.html#gaa8397413f3ecf6c5f24463a728989ab4">P99_SER</a>(P00_ERRNO_ELEM, P00_ERRNO_LIST) P00_ERRNO_ELEM(OVERFLOW) }),</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;  <span class="comment">/* Add all other codes as enumeration constants */</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;  <a class="code" href="group__preprocessor__for_gaaf12072aef5a55a36f400d685525d497.html#gaaf12072aef5a55a36f400d685525d497">P99_SEQ</a>(P00_ERRNO_ENUM, P00_ERRNO_LIST), P00_ERRNO_ENUM(OVERFLOW),</div>
+<div class="line"><a name="l00179"></a><span class="lineno"><a class="line" href="p99__errno_8h_adc29c2ff13d900c2f185ee95427fb06c.html#adc29c2ff13d900c2f185ee95427fb06cafbea1a0d25cce2b80ac320410a422580">  179</a></span>&#160;  <a class="code" href="p99__errno_8h_adc29c2ff13d900c2f185ee95427fb06c.html#adc29c2ff13d900c2f185ee95427fb06cafbea1a0d25cce2b80ac320410a422580">p99_errno_max</a></div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;};</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="preprocessor">#define P00_ERRNO_CASE_(ERR, STR) case ERR: return STR</span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="preprocessor">#define P00_ERRNO_CASE(ERR) P00_ERRNO_CASE_(E ## ERR, &quot;E&quot; #ERR)</span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<a class="code" href="group__compiler__utilities_ga47dba44e55ac92339ecfac83f86b3168.html#ga47dba44e55ac92339ecfac83f86b3168">P99_CONST_FUNCTION</a></div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<a class="code" href="group__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446.html#gaa113bfa0df539e8dee797a00c6947446">p99_inline</a></div>
+<div class="line"><a name="l00198"></a><span class="lineno"><a class="line" href="p99__errno_8h_a667a1212199edb086dce51213ec6e57c.html#a667a1212199edb086dce51213ec6e57c">  198</a></span>&#160;<span class="keywordtype">char</span> <span class="keyword">const</span>* <a class="code" href="p99__errno_8h_a667a1212199edb086dce51213ec6e57c.html#a667a1212199edb086dce51213ec6e57c">p99_errno_getname</a>(<a class="code" href="group__C11__library_ga46a037236862ac1a534efbe605c10f42.html#ga46a037236862ac1a534efbe605c10f42">errno_t</a> p00_err) {</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  <span class="keywordflow">switch</span> (p00_err) {</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <a class="code" href="group__preprocessor__for_ga587594351f1763bfa31857764b70616e.html#ga587594351f1763bfa31857764b70616e">P99_SEP</a>(P00_ERRNO_CASE, P00_ERRNO_LIST);</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    P00_ERRNO_CASE(OVERFLOW);</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;  <span class="keywordflow">default</span>: <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;  }</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;}</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="ap99__for_8h_html"><div class="ttname"><a href="p99__for_8h.html">p99_for.h</a></div><div class="ttdoc">A preprocessor for loop implementation and some derived list handling macros.</div></div>
-<div class="ttc" id="ap99__errno_8h_adc29c2ff13d900c2f185ee95427fb06c_html_adc29c2ff13d900c2f185ee95427fb06cafbea1a0d25cce2b80ac320410a422580"><div class="ttname"><a href="p99__errno_8h_adc29c2ff13d900c2f185ee95427fb06c.html#adc29c2ff13d900c2f185ee95427fb06cafbea1a0d25cce2b80ac320410a422580">p99_errno_max</a></div><div class="ttdeci">@ p99_errno_max</div><div class="ttdoc">The maximum error code that we found or defined on this system.</div><div class="ttdef"><b>Definition:</b> <a href="p99__errno_8h_source.html#l00171">p99_errno.h:171</a></div></div>
-<div class="ttc" id="agroup__preprocessor__for_gaa8397413f3ecf6c5f24463a728989ab4_html_gaa8397413f3ecf6c5f24463a728989ab4"><div class="ttname"><a href="group__preprocessor__for_gaa8397413f3ecf6c5f24463a728989ab4.html#gaa8397413f3ecf6c5f24463a728989ab4">P99_SER</a></div><div class="ttdeci">#define P99_SER(MACRO,...)</div><div class="ttdoc">Apply the macro MACRO to the rest of the argument list.</div><div class="ttdef"><b>Definition:</b> <a href="p99__for_8h_source.html#l00256">p99_for.h:256</a></div></div>
-<div class="ttc" id="agroup__preprocessor__for_ga587594351f1763bfa31857764b70616e_html_ga587594351f1763bfa31857764b70616e"><div class="ttname"><a href="group__preprocessor__for_ga587594351f1763bfa31857764b70616e.html#ga587594351f1763bfa31857764b70616e">P99_SEP</a></div><div class="ttdeci">#define P99_SEP(MACRO,...)</div><div class="ttdoc">Apply the macro MACRO to the rest of the argument list.</div><div class="ttdef"><b>Definition:</b> <a href="p99__for_8h_source.html#l00289">p99_for.h:289</a></div></div>
-<div class="ttc" id="ap99__errno_8h_a667a1212199edb086dce51213ec6e57c_html_a667a1212199edb086dce51213ec6e57c"><div class="ttname"><a href="p99__errno_8h_a667a1212199edb086dce51213ec6e57c.html#a667a1212199edb086dce51213ec6e57c">p99_errno_getname</a></div><div class="ttdeci">char const  * p99_errno_getname(errno_t p00_err)</div><div class="ttdoc">Return the name of an error condition.</div><div class="ttdef"><b>Definition:</b> <a href="p99__errno_8h_source.html#l00190">p99_errno.h:190</a></div></div>
-<div class="ttc" id="agroup__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446_html_gaa113bfa0df539e8dee797a00c6947446"><div class="ttname"><a href="group__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446.html#gaa113bfa0df539e8dee797a00c6947446">p99_inline</a></div><div class="ttdeci">#define p99_inline</div><div class="ttdoc">Try to force a function always to be inlined.</div><div class="ttdef"><b>Definition:</b> <a href="p99__compiler_8h_source.html#l00488">p99_compiler.h:488</a></div></div>
-<div class="ttc" id="agroup__preprocessor__for_gaaf12072aef5a55a36f400d685525d497_html_gaaf12072aef5a55a36f400d685525d497"><div class="ttname"><a href="group__preprocessor__for_gaaf12072aef5a55a36f400d685525d497.html#gaaf12072aef5a55a36f400d685525d497">P99_SEQ</a></div><div class="ttdeci">#define P99_SEQ(MACRO,...)</div><div class="ttdoc">Apply the macro MACRO to the rest of the argument list.</div><div class="ttdef"><b>Definition:</b> <a href="p99__for_8h_source.html#l00242">p99_for.h:242</a></div></div>
-<div class="ttc" id="agroup__compiler__utilities_ga47dba44e55ac92339ecfac83f86b3168_html_ga47dba44e55ac92339ecfac83f86b3168"><div class="ttname"><a href="group__compiler__utilities_ga47dba44e55ac92339ecfac83f86b3168.html#ga47dba44e55ac92339ecfac83f86b3168">P99_CONST_FUNCTION</a></div><div class="ttdeci">#define P99_CONST_FUNCTION</div><div class="ttdoc">On architectures that support this, assert that a function is &quot;const&quot;, i.e only depends on parameters...</div><div class="ttdef"><b>Definition:</b> <a href="p99__compiler_8h_source.html#l00614">p99_compiler.h:614</a></div></div>
-<div class="ttc" id="agroup__C11__library_ga46a037236862ac1a534efbe605c10f42_html_ga46a037236862ac1a534efbe605c10f42"><div class="ttname"><a href="group__C11__library_ga46a037236862ac1a534efbe605c10f42.html#ga46a037236862ac1a534efbe605c10f42">errno_t</a></div><div class="ttdeci">int errno_t</div><div class="ttdef"><b>Definition:</b> <a href="p99__type_8h_source.html#l00030">p99_type.h:30</a></div></div>
+<div class="ttc" id="ap99__errno_8h_adc29c2ff13d900c2f185ee95427fb06c_html_adc29c2ff13d900c2f185ee95427fb06cafbea1a0d25cce2b80ac320410a422580"><div class="ttname"><a href="p99__errno_8h_adc29c2ff13d900c2f185ee95427fb06c.html#adc29c2ff13d900c2f185ee95427fb06cafbea1a0d25cce2b80ac320410a422580">p99_errno_max</a></div><div class="ttdeci">@ p99_errno_max</div><div class="ttdoc">The maximum error code that we found or defined on this system.</div><div class="ttdef"><b>Definition:</b> <a href="p99__errno_8h_source.html#l00179">p99_errno.h:179</a></div></div>
+<div class="ttc" id="agroup__preprocessor__for_gaa8397413f3ecf6c5f24463a728989ab4_html_gaa8397413f3ecf6c5f24463a728989ab4"><div class="ttname"><a href="group__preprocessor__for_gaa8397413f3ecf6c5f24463a728989ab4.html#gaa8397413f3ecf6c5f24463a728989ab4">P99_SER</a></div><div class="ttdeci">#define P99_SER(MACRO,...)</div><div class="ttdoc">Apply the macro MACRO to the rest of the argument list.</div><div class="ttdef"><b>Definition:</b> <a href="p99__for_8h_source.html#l00264">p99_for.h:264</a></div></div>
+<div class="ttc" id="agroup__preprocessor__for_ga587594351f1763bfa31857764b70616e_html_ga587594351f1763bfa31857764b70616e"><div class="ttname"><a href="group__preprocessor__for_ga587594351f1763bfa31857764b70616e.html#ga587594351f1763bfa31857764b70616e">P99_SEP</a></div><div class="ttdeci">#define P99_SEP(MACRO,...)</div><div class="ttdoc">Apply the macro MACRO to the rest of the argument list.</div><div class="ttdef"><b>Definition:</b> <a href="p99__for_8h_source.html#l00297">p99_for.h:297</a></div></div>
+<div class="ttc" id="ap99__errno_8h_a667a1212199edb086dce51213ec6e57c_html_a667a1212199edb086dce51213ec6e57c"><div class="ttname"><a href="p99__errno_8h_a667a1212199edb086dce51213ec6e57c.html#a667a1212199edb086dce51213ec6e57c">p99_errno_getname</a></div><div class="ttdeci">char const  * p99_errno_getname(errno_t p00_err)</div><div class="ttdoc">Return the name of an error condition.</div><div class="ttdef"><b>Definition:</b> <a href="p99__errno_8h_source.html#l00198">p99_errno.h:198</a></div></div>
+<div class="ttc" id="agroup__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446_html_gaa113bfa0df539e8dee797a00c6947446"><div class="ttname"><a href="group__compiler__utilities_gaa113bfa0df539e8dee797a00c6947446.html#gaa113bfa0df539e8dee797a00c6947446">p99_inline</a></div><div class="ttdeci">#define p99_inline</div><div class="ttdoc">Try to force a function always to be inlined.</div><div class="ttdef"><b>Definition:</b> <a href="p99__compiler_8h_source.html#l00496">p99_compiler.h:496</a></div></div>
+<div class="ttc" id="agroup__preprocessor__for_gaaf12072aef5a55a36f400d685525d497_html_gaaf12072aef5a55a36f400d685525d497"><div class="ttname"><a href="group__preprocessor__for_gaaf12072aef5a55a36f400d685525d497.html#gaaf12072aef5a55a36f400d685525d497">P99_SEQ</a></div><div class="ttdeci">#define P99_SEQ(MACRO,...)</div><div class="ttdoc">Apply the macro MACRO to the rest of the argument list.</div><div class="ttdef"><b>Definition:</b> <a href="p99__for_8h_source.html#l00250">p99_for.h:250</a></div></div>
+<div class="ttc" id="agroup__compiler__utilities_ga47dba44e55ac92339ecfac83f86b3168_html_ga47dba44e55ac92339ecfac83f86b3168"><div class="ttname"><a href="group__compiler__utilities_ga47dba44e55ac92339ecfac83f86b3168.html#ga47dba44e55ac92339ecfac83f86b3168">P99_CONST_FUNCTION</a></div><div class="ttdeci">#define P99_CONST_FUNCTION</div><div class="ttdoc">On architectures that support this, assert that a function is &quot;const&quot;, i.e only depends on parameters...</div><div class="ttdef"><b>Definition:</b> <a href="p99__compiler_8h_source.html#l00622">p99_compiler.h:622</a></div></div>
+<div class="ttc" id="agroup__C11__library_ga46a037236862ac1a534efbe605c10f42_html_ga46a037236862ac1a534efbe605c10f42"><div class="ttname"><a href="group__C11__library_ga46a037236862ac1a534efbe605c10f42.html#ga46a037236862ac1a534efbe605c10f42">errno_t</a></div><div class="ttdeci">int errno_t</div><div class="ttdef"><b>Definition:</b> <a href="p99__type_8h_source.html#l00038">p99_type.h:38</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

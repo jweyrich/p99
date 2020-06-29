@@ -1,15 +1,23 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-              */
-/*                                                                            */
-/* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                           */
-/* (C) copyright  2016 Jens Gustedt, INRIA, France                            */
-/*                                                                            */
-/* This file is free software; it is part of the P99 project.                 */
-/* You can redistribute it and/or modify it under the terms of the QPL as     */
-/* given in the file LICENSE. It is distributed without any warranty;         */
-/* without even the implied warranty of merchantability or fitness for a      */
-/* particular purpose.                                                        */
-/*                                                                            */
+/* This may look like nonsense, but it really is -*- mode: C; coding: utf-8 -*- */
+/*                                                                              */
+/* Except for parts copied from previous work and as explicitly stated below,   */
+/* the author and copyright holder for this work is                             */
+/* (C) copyright  2016 Jens Gustedt, INRIA, France                              */
+/*                                                                              */
+/* This file is free software; it is part of the P99 project.                   */
+/*                                                                              */
+/* Licensed under the Apache License, Version 2.0 (the "License");              */
+/* you may not use this file except in compliance with the License.             */
+/* You may obtain a copy of the License at                                      */
+/*                                                                              */
+/*     http://www.apache.org/licenses/LICENSE-2.0                               */
+/*                                                                              */
+/* Unless required by applicable law or agreed to in writing, software          */
+/* distributed under the License is distributed on an "AS IS" BASIS,            */
+/* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.     */
+/* See the License for the specific language governing permissions and          */
+/* limitations under the License.                                               */
+/*                                                                              */
 #ifndef P99_UF_H
 #define P99_UF_H
 
@@ -56,7 +64,7 @@ struct p99_uf {
 p99_inline
 p99_uf* p99_uf_init(p99_uf* uf, uint64_t size) {
   if (uf) {
-    *uf = (p99_uf){ .size = size, };
+    *uf = (p99_uf) { .size = size, };
     memset(uf->tab, UCHAR_MAX, sizeof(int64_t[size]));
   }
   return uf;

@@ -1,15 +1,23 @@
-/* This may look like nonsense, but it really is -*- mode: C -*-              */
-/*                                                                            */
-/* Except for parts copied from previous work and as explicitly stated below, */
-/* the author and copyright holder for this work is                           */
-/* (C) copyright  2012-2013 Jens Gustedt, INRIA, France                       */
-/*                                                                            */
-/* This file is free software; it is part of the P99 project.                 */
-/* You can redistribute it and/or modify it under the terms of the QPL as     */
-/* given in the file LICENSE. It is distributed without any warranty;         */
-/* without even the implied warranty of merchantability or fitness for a      */
-/* particular purpose.                                                        */
-/*                                                                            */
+/* This may look like nonsense, but it really is -*- mode: C; coding: utf-8 -*- */
+/*                                                                              */
+/* Except for parts copied from previous work and as explicitly stated below,   */
+/* the author and copyright holder for this work is                             */
+/* (C) copyright  2012-2013, 2017 Jens Gustedt, INRIA, France                   */
+/*                                                                              */
+/* This file is free software; it is part of the P99 project.                   */
+/*                                                                              */
+/* Licensed under the Apache License, Version 2.0 (the "License");              */
+/* you may not use this file except in compliance with the License.             */
+/* You may obtain a copy of the License at                                      */
+/*                                                                              */
+/*     http://www.apache.org/licenses/LICENSE-2.0                               */
+/*                                                                              */
+/* Unless required by applicable law or agreed to in writing, software          */
+/* distributed under the License is distributed on an "AS IS" BASIS,            */
+/* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.     */
+/* See the License for the specific language governing permissions and          */
+/* limitations under the License.                                               */
+/*                                                                              */
 #ifndef P99_QSORT_H_
 #define P99_QSORT_H_
 #include "p99_rand.h"
@@ -370,62 +378,62 @@ errno_t p00_qsort_s(void *p00_base,
 # define P99_ALIGNOF(B) alignof(P99_TYPEOF(B))
 #else
 # ifdef __STDC_NO_COMPLEX__
-#  define P99_ALIGNOF(B)                        \
-  P99_GENERIC(&((B)[0]),                        \
-            sizeof((B)[0]),                     \
-            (void_ptr*, 1),                     \
-            /* */                               \
-            (float*, alignof(float)),           \
-            (double*, alignof(double)),         \
-            (double*, alignof(cdouble)),        \
-            /* */                               \
-            (_Bool*, alignof(_Bool)),           \
-            (char*, alignof(char)),             \
-            (uchar*, alignof(uchar)),           \
-            (schar*, alignof(schar)),           \
-            /* */                               \
-            (ushort*, alignof(ushort)),         \
-            (short*, alignof(short)),           \
-            /* */                               \
-            (unsigned*, alignof(unsigned)),     \
-            (signed*, alignof(signed)),         \
-            /* */                               \
-            (long*, alignof(long)),             \
-            (ulong*, alignof(ulong)),           \
-            /* */                               \
-            (llong*, alignof(llong)),           \
-            (ullong*, alignof(ullong))          \
+#  define P99_ALIGNOF(B)                                       \
+  P99_GENERIC(&((B)[0]),                                       \
+            sizeof((B)[0]),                                    \
+            (void_ptr*, 1),                                    \
+            /* */                                              \
+            (float*, alignof(float)),                          \
+            (double*, alignof(double)),                        \
+            (double*, alignof(cdouble)),                       \
+            /* */                                              \
+            (_Bool*, alignof(_Bool)),                          \
+            (char*, alignof(char)),                            \
+            (uchar*, alignof(uchar)),                          \
+            (schar*, alignof(schar)),                          \
+            /* */                                              \
+            (ushort*, alignof(ushort)),                        \
+            (short*, alignof(short)),                          \
+            /* */                                              \
+            (unsigned*, alignof(unsigned)),                    \
+            (signed*, alignof(signed)),                        \
+            /* */                                              \
+            (long*, alignof(long)),                            \
+            (ulong*, alignof(ulong)),                          \
+            /* */                                              \
+            (llong*, alignof(llong)),                          \
+            (ullong*, alignof(ullong))                         \
               )
 #  else
-#   define P99_ALIGNOF(B)                       \
-  P99_GENERIC(&((B)[0]),                        \
-            sizeof((B)[0]),                     \
-            (void_ptr*, 1),                     \
-            /* */                               \
-            (float*, alignof(float)),           \
-            (double*, alignof(double)),         \
-            (ldouble*, alignof(ldouble)),       \
-            /* */                               \
-            (cfloat*, alignof(cfloat)),         \
-            (cdouble*, alignof(cdouble)),       \
-            (cldouble*, alignof(cldouble)),     \
-            /* */                               \
-            (_Bool*, alignof(_Bool)),           \
-            (char*, alignof(char)),             \
-            (uchar*, alignof(uchar)),           \
-            (schar*, alignof(schar)),           \
-            /* */                               \
-            (ushort*, alignof(ushort)),         \
-            (short*, alignof(short)),           \
-            /* */                               \
-            (unsigned*, alignof(unsigned)),     \
-            (signed*, alignof(signed)),         \
-            /* */                               \
-            (long*, alignof(long)),             \
-            (ulong*, alignof(ulong)),           \
-            /* */                               \
-            (llong*, alignof(llong)),           \
-              (ullong*, alignof(ullong))        \
+#   define P99_ALIGNOF(B)                                      \
+  P99_GENERIC(&((B)[0]),                                       \
+            sizeof((B)[0]),                                    \
+            (void_ptr*, 1),                                    \
+            /* */                                              \
+            (float*, alignof(float)),                          \
+            (double*, alignof(double)),                        \
+            (ldouble*, alignof(ldouble)),                      \
+            /* */                                              \
+            (cfloat*, alignof(cfloat)),                        \
+            (cdouble*, alignof(cdouble)),                      \
+            (cldouble*, alignof(cldouble)),                    \
+            /* */                                              \
+            (_Bool*, alignof(_Bool)),                          \
+            (char*, alignof(char)),                            \
+            (uchar*, alignof(uchar)),                          \
+            (schar*, alignof(schar)),                          \
+            /* */                                              \
+            (ushort*, alignof(ushort)),                        \
+            (short*, alignof(short)),                          \
+            /* */                                              \
+            (unsigned*, alignof(unsigned)),                    \
+            (signed*, alignof(signed)),                        \
+            /* */                                              \
+            (long*, alignof(long)),                            \
+            (ulong*, alignof(ulong)),                          \
+            /* */                                              \
+            (llong*, alignof(llong)),                          \
+              (ullong*, alignof(ullong))                       \
               )
 # endif
 #endif
@@ -457,65 +465,65 @@ errno_t p00_qsort_s(void *p00_base,
  ** argument to @c void* wouldn't be a good idea.
  **/
 #ifdef __STDC_NO_COMPLEX__
-#define qsort_s(B, N, S, CMP, CTX)                             \
-  P99_CONSTRAINT_TRIGGER(                                      \
-  P99_GENERIC(&((B)[0]),                                       \
-            p00_qsort_s,                                       \
-            (void_ptr*, p00_qsort_void_ptr),                   \
-            /* */                                              \
-            (float*, p00_qsort_float),                         \
-            (double*, p00_qsort_double),                       \
-            (double*, p00_qsort_cdouble),                      \
-            /* */                                              \
-            (_Bool*, p00_qsort__Bool),                         \
-            (char*, p00_qsort_char),                           \
-            (uchar*, p00_qsort_uchar),                         \
-            (schar*, p00_qsort_schar),                         \
-            /* */                                              \
-            (ushort*, p00_qsort_ushort),                       \
-            (short*, p00_qsort_short),                         \
-            /* */                                              \
-            (unsigned*, p00_qsort_unsigned),                   \
-            (signed*, p00_qsort_signed),                       \
-            /* */                                              \
-            (long*, p00_qsort_long),                           \
-            (ulong*, p00_qsort_ulong),                         \
-            /* */                                              \
-            (llong*, p00_qsort_llong),                         \
-            (ullong*, p00_qsort_ullong)                        \
+#define qsort_s(B, N, S, CMP, CTX)                                 \
+  P99_CONSTRAINT_TRIGGER(                                          \
+  P99_GENERIC(&((B)[0]),                                           \
+            p00_qsort_s,                                           \
+            (void_ptr*, p00_qsort_void_ptr),                       \
+            /* */                                                  \
+            (float*, p00_qsort_float),                             \
+            (double*, p00_qsort_double),                           \
+            (double*, p00_qsort_cdouble),                          \
+            /* */                                                  \
+            (_Bool*, p00_qsort__Bool),                             \
+            (char*, p00_qsort_char),                               \
+            (uchar*, p00_qsort_uchar),                             \
+            (schar*, p00_qsort_schar),                             \
+            /* */                                                  \
+            (ushort*, p00_qsort_ushort),                           \
+            (short*, p00_qsort_short),                             \
+            /* */                                                  \
+            (unsigned*, p00_qsort_unsigned),                       \
+            (signed*, p00_qsort_signed),                           \
+            /* */                                                  \
+            (long*, p00_qsort_long),                               \
+            (ulong*, p00_qsort_ulong),                             \
+            /* */                                                  \
+            (llong*, p00_qsort_llong),                             \
+            (ullong*, p00_qsort_ullong)                            \
               )((B), (N), P99_ALIGNOF((B)[0]), (S), (CMP), (CTX)), \
   "qsort_s runtime constraint violation")
 #else
-#define qsort_s(B, N, S, CMP, CTX)                             \
-  P99_CONSTRAINT_TRIGGER(                                      \
-  P99_GENERIC(&((B)[0]),                                       \
-            p00_qsort_s,                                       \
-            (void_ptr*, p00_qsort_void_ptr),                   \
-            /* */                                              \
-            (float*, p00_qsort_float),                         \
-            (double*, p00_qsort_double),                       \
-            (ldouble*, p00_qsort_ldouble),                     \
-            /* */                                              \
-            (cfloat*, p00_qsort_cfloat),                       \
-            (cdouble*, p00_qsort_cdouble),                     \
-            (cldouble*, p00_qsort_cldouble),                   \
-            /* */                                              \
-            (_Bool*, p00_qsort__Bool),                         \
-            (char*, p00_qsort_char),                           \
-            (uchar*, p00_qsort_uchar),                         \
-            (schar*, p00_qsort_schar),                         \
-            /* */                                              \
-            (ushort*, p00_qsort_ushort),                       \
-            (short*, p00_qsort_short),                         \
-            /* */                                              \
-            (unsigned*, p00_qsort_unsigned),                   \
-            (signed*, p00_qsort_signed),                       \
-            /* */                                              \
-            (long*, p00_qsort_long),                           \
-            (ulong*, p00_qsort_ulong),                         \
-            /* */                                              \
-            (llong*, p00_qsort_llong),                         \
-            (ullong*, p00_qsort_ullong)                        \
+#define qsort_s(B, N, S, CMP, CTX)                                 \
+  P99_CONSTRAINT_TRIGGER(                                          \
+  P99_GENERIC(&((B)[0]),                                           \
+            p00_qsort_s,                                           \
+            (void_ptr*, p00_qsort_void_ptr),                       \
+            /* */                                                  \
+            (float*, p00_qsort_float),                             \
+            (double*, p00_qsort_double),                           \
+            (ldouble*, p00_qsort_ldouble),                         \
+            /* */                                                  \
+            (cfloat*, p00_qsort_cfloat),                           \
+            (cdouble*, p00_qsort_cdouble),                         \
+            (cldouble*, p00_qsort_cldouble),                       \
+            /* */                                                  \
+            (_Bool*, p00_qsort__Bool),                             \
+            (char*, p00_qsort_char),                               \
+            (uchar*, p00_qsort_uchar),                             \
+            (schar*, p00_qsort_schar),                             \
+            /* */                                                  \
+            (ushort*, p00_qsort_ushort),                           \
+            (short*, p00_qsort_short),                             \
+            /* */                                                  \
+            (unsigned*, p00_qsort_unsigned),                       \
+            (signed*, p00_qsort_signed),                           \
+            /* */                                                  \
+            (long*, p00_qsort_long),                               \
+            (ulong*, p00_qsort_ulong),                             \
+            /* */                                                  \
+            (llong*, p00_qsort_llong),                             \
+            (ullong*, p00_qsort_ullong)                            \
               )((B), (N), P99_ALIGNOF((B)[0]), (S), (CMP), (CTX)), \
   "qsort_s runtime constraint violation")
 #endif
