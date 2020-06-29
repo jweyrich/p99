@@ -165,6 +165,12 @@
  ** tagged with an hexadecimal ID tag that is given in
  ** ::P99_VERSION_ID, namely $Format:%H$.
  **
+ ** @subsection download Download
+ **
+ ** P99 is available as sources from the INRIA gitlab at
+ **
+ ** <a href="https://gitlab.inria.fr/gustedt/p99">https://gitlab.inria.fr/gustedt/p99</a>
+ **
  ** @subsection copyright Copyright
  ** Copyright &copy; 2010-2012 Jens Gustedt, INRIA, France, http://www.inria.fr/
  **
