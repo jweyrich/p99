@@ -66,7 +66,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>P99 is a suite of macro and function definitions that ease programming in modern C, aka C99. By using new facilities in C99 we implement default arguments for functions, scope bound resource management, transparent allocation and initialization, ...</p>
-<p>By using special features of some compilers and operating systems, we also are able to provide an almost feature complete emulation of the new C standard, C11.</p>
+<p>By using special features of some compilers and operating systems, we also are able to provide an almost feature complete emulation of the newer C standards as e.g from C11.</p>
 <h1><a class="anchor" id="introduction"></a>
 Macros and inline functions working together</h1>
 <p>In C, functions (whether <code>inline</code> or not) and macros fulfill different purposes. Their difference should not be seen as ideological as some seem to take it, and what is even more important, they may work nicely together.</p>
@@ -79,19 +79,19 @@ Macros and inline functions working together</h1>
 <div class="line">}</div>
 </div><!-- fragment --><p>It takes signed integer value <code>a</code> and computes its absolute value. Observe that the return type of this function is unsigned. This has to be so, since otherwise not all valid values could be realized.</p>
 <p><code>p00_abs_signed</code> would not be a good candidate for a macro, since <code>a</code> is evaluated twice in the expression; once in the controlling expression and once for returning its value or its negation.</p>
-<p>We may use this function with any integral type, but then the result would probably not be what a naive programmer would expect if the argument is a large unsigned value. The argument will be promoted to <code>intmax_t</code>. If the value <code>X</code> that is passed to the call is positive and greater than <code> INTMAX_MAX = 2<sup>N</sup> -1</code>, the result is probably not what we'd expect.<a class="el" href="footnotes.html"><sup> 1</sup></a> If the conversion to <code>intmax_t</code> doesn't result in a range error thrown by the run time system (it would be permitted to do so), the argument <em>a</em> of the function would receive the negative value <code>-C</code> where <code>C</code> is <code>2<sup>N</sup></code> - X. The result of the function call would then be <code>C</code> and not <code>X</code>.</p>
+<p>We may use this function with any integral type, but then the result would probably not be what a naive programmer would expect if the argument is a large unsigned value. The argument will be promoted to <code>intmax_t</code>. If the value <code>X</code> that is passed to the call is positive and greater than <code> INTMAX_MAX = 2<sup>N</sup> -1</code>, the result is probably not what we'd expect. If the conversion to <code>intmax_t</code> doesn't result in a range error thrown by the run time system (it would be permitted to do so), the argument <em>a</em> of the function would receive the negative value <code>-C</code> where <code>C</code> is <code>2<sup>N</sup></code> - X. The result of the function call would then be <code>C</code> and not <code>X</code>.</p>
 <p>With the following macro we get rid of these restrictions by combining the macro and the function:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#define P99_ABS(EXPR) (P99_SIGNED(EXPR) ? p00_abs_signed(EXPR) : (EXPR))</span></div>
 </div><!-- fragment --><p>This has the following properties</p>
 <ul>
 <li>
-For any integral type it returns the correct result. <a class="el" href="footnotes.html"><sup> 2 </sup></a>  </li>
+For any integral type it returns the correct result.  </li>
 <li>
 The argument <code>EXPR</code> is evaluated exactly once. </li>
 <li>
 Any recent and decent compiler will create <a class="el" href="c99.html#inline">optimal code</a> for that combined macro.  </li>
 </ul>
-<p>In that spirit, P99 aims to provide utilities that often combine macros and <code>inline</code> funcions and that are only possible with the <a class="el" href="c99.html">features</a> that come with C99 (read ANSI C as normalized in 1999) and that were absent in C89. The features include among others</p><ul>
+<p>In that spirit, P99 aims to provide utilities that often combine macros and <code>inline</code> funcions and that are only possible with the <a class="el" href="c99.html">features</a> that come with C99 (read ISO C as normalized in 1999) and that were absent in C89. The features include among others</p><ul>
 <li><a class="el" href="c99.html#variadic">Variadic macros</a></li>
 <li><a class="el" href="c99.html#inline">Inline functions</a></li>
 <li><a class="el" href="c99.html#initializers">Designated initializers</a></li>
@@ -99,7 +99,7 @@ Any recent and decent compiler will create <a class="el" href="c99.html#inline">
 <li><a class="el" href="c99.html#hide">Macros that hide a function</a></li>
 <li><a class="el" href="c99.html#pragma">Pragmas inside macros</a></li>
 </ul>
-<p>On some platforms, P99 is also able to emulate the main features that come with <a class="el" href="">the newest C standard, C11:</a></p><ul>
+<p>On some platforms, P99 is also able to emulate the main features that come with C11 or C17:</p><ul>
 <li><a class="el" href="group__generic.html">Generic type expressions</a></li>
 <li><a class="el" href="group__atomic.html">C11 atomic operations</a></li>
 <li><a class="el" href="group__threads.html">C11 thread emulation on top of POSIX threads</a></li>
@@ -115,9 +115,6 @@ Any recent and decent compiler will create <a class="el" href="c99.html#inline">
 <li>There is no binary library to be linked to your executable. The few functions that are provided are small wrappers that are compiled directly into your code.</li>
 <li>There is nothing to configure, P99 include files should work out of the box with any conforming C99 compiler.</li>
 </ul>
-<dl class="footnotes"><dt><b><a class="el" href="footnotes.html#_footnotes000001">Footnotes:</a></b></dt><dd><p class="startdd"><sup> 1 </sup> Here <code>N+1</code> is the width of <code>uintmax_t</code>, assuming most common representations of signed integers. </p>
-<p class="enddd"><sup> 2 </sup> Well, there is exactly one exception to that: on systems where <code>-INTMAX_MIN</code> is not representable in <code>uintmax_t</code>, this same value may cause problems.</p>
-</dd></dl>
 <h1><a class="anchor" id="credits"></a>
 Credits and Rights</h1>
 <h2><a class="anchor" id="author"></a>
@@ -130,13 +127,12 @@ Contribution</h2>
 <dl class="section date"><dt>Date</dt><dd>2012</dd></dl>
 <h2><a class="anchor" id="version"></a>
 Version</h2>
-<p>The version this documentation describes can be identified via the macros <a class="el" href="p99__generated_8h_ac0b7c01f9f3bc21880b41e49f29ef261.html#ac0b7c01f9f3bc21880b41e49f29ef261" title="The version of the P99 collection indicated by the commit date.">P99_VERSION_DATE</a>, namely </p><dl class="section rcs"><dt>Format</dt><dd>cd</dd></dl>
-<p>. It also is tagged with an hexadecimal ID tag that is given in <a class="el" href="p99__generated_8h_adb0dca35329031f87d0052a6ee520982.html#adb0dca35329031f87d0052a6ee520982" title="The version of the P99 collection indicated by a unique commit ID.">P99_VERSION_ID</a>, namely </p><dl class="section rcs"><dt>Format</dt><dd>H</dd></dl>
-<p>.</p>
+<p>The version this documentation describes can be identified via the macros <a class="el" href="p99__generated_8h_ac0b7c01f9f3bc21880b41e49f29ef261.html#ac0b7c01f9f3bc21880b41e49f29ef261" title="The version of the P99 collection indicated by the commit date.">P99_VERSION_DATE</a>, namely Mon Jun 29 13:56:43 2020 +0200. It also is tagged with an hexadecimal ID tag that is given in <a class="el" href="p99__generated_8h_adb0dca35329031f87d0052a6ee520982.html#adb0dca35329031f87d0052a6ee520982" title="The version of the P99 collection indicated by a unique commit ID.">P99_VERSION_ID</a>, namely 07bbb0a876f4dda835cad316ba05742d34f8e029.</p>
 <h2><a class="anchor" id="copyright"></a>
 Copyright</h2>
 <p>Copyright &copy; 2010-2012 Jens Gustedt, INRIA, France, <a href="http://www.inria.fr/">http://www.inria.fr/</a></p>
-
+<pre>
+   <pre class="fragment">
 This file is free software; it is part of the P99 project.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -150,7 +146,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-<h2><a class="anchor" id="license"></a>
+</pre>
+   </pre><h2><a class="anchor" id="license"></a>
 License</h2>
 <pre>
 **<pre class="fragment">

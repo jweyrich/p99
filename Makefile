@@ -112,6 +112,12 @@ all-commits : p99/*.h tests/test-p99-*.c tests/test-p99-*.h Makefile Doxyfile-p9
 p99-transfer :
 	-rsync -az --no-g --no-p --chmod=ug+rw --progress -e 'ssh -ax' ${P99_ARCHIVE}/ ${P99_GFORGE}:${P99_HTDOCS}
 
+
+p99-html : ${P99_RELEASE}/p99-html
+	rm -rf $@-bak
+	mv -f $@ $@-bak
+	cp -R $< $@
+
 p99-html-transfer : ${P99_RELEASE}/p99-html
 	-cd ${P99_RELEASE}; rsync -az --no-g --no-p --chmod=ug+rw --progress -e 'ssh -ax' p99-html/ ${P99_GFORGE}:${P99_HTDOCS}/p99-html-new
 	-ssh ${P99_GFORGE} mv ${P99_HTDOCS}/p99-html ${P99_HTDOCS}/p99-html-bak
@@ -122,7 +128,7 @@ p99-html-transfer : ${P99_RELEASE}/p99-html
 ${P99_PREFIX} : ${P99_PREFIX}.tgz
 	rm -rf ${P99_PREFIX}
 	tar xzf ${P99_PREFIX}.tgz
-	cp Doxyfile-p99 ${P99_RELEASE}
+	cp Doxyfile-p99 LICENSE-Apache-2.0.txt SHORTLICENCE-open.txt ${P99_RELEASE}
 	cd ${P99_RELEASE}; doxygen Doxyfile-p99
 
 ./p99 :
